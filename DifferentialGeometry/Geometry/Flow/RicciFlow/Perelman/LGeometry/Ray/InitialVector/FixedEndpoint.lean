@@ -23,16 +23,16 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
-theorem isBounded_range_initialVector_of_lRegAction_le_fixed_parameter
+theorem isBounded_range_initialVector_of_lRegularizedAction_le_fixed_parameter
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (Z : Nat → TangentSpace I x) (B A : Real) (hB : 0 < B)
     (hslab : Set.Icc (T - B ^ 2) T ⊆ D.regular)
-    (hdom : ∀ n, B ∈ lRegDomain S T x (Z n))
+    (hdom : ∀ n, B ∈ lRegularizedDomain S T x (Z n))
     (hact : ∀ n,
-      lRegAction S T (lRegCurve S T x (Z n)) 0 B ≤ A) :
+      lRegularizedAction S T (lRegularizedCurve S T x (Z n)) 0 B ≤ A) :
     Bornology.IsBounded (Set.range Z) := by
-  exact isBounded_range_initialVector_of_lRegAction_le
+  exact isBounded_range_initialVector_of_lRegularizedAction_le
     (I := I) S hS T x Z (fun _ ↦ B) B B A hB
       (fun _ ↦ le_rfl) (fun _ ↦ le_rfl) hslab hdom hact
 

@@ -52,10 +52,10 @@ theorem integral_norm_Icc_le (f : timeL2 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 :
 namespace timeH1
 
 omit [CompleteSpace X] in
-theorem norm_toFun_sub_init_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
-    ‖u.toFun t - u.init‖ ≤ Real.sqrt t * ‖u.deriv‖ := by
+theorem norm_toFun_sub_initial_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
+    ‖u.toFun t - u.initial‖ ≤ Real.sqrt t * ‖u.deriv‖ := by
   have h0t : (0 : ℝ) ≤ t := ht.1
-  have hsub : u.toFun t - u.init = ∫ s in (0 : ℝ)..t, u.deriv s := by
+  have hsub : u.toFun t - u.initial = ∫ s in (0 : ℝ)..t, u.deriv s := by
     simp only [toFun_apply]; abel
   rw [hsub, intervalIntegral.integral_of_le h0t]
   refine le_trans (norm_integral_le_integral_norm _) ?_
@@ -67,13 +67,13 @@ theorem norm_toFun_sub_init_le (u : timeH1 X T) {t : ℝ} (ht : t ∈ Set.Icc (0
   · exact LE.le.eventuallyLE Ioc_subset_Icc_self
 
 omit [CompleteSpace X] in
-theorem state_le_of_sqrt_floor (u : timeH1 X T) (hinit : u.init = 0) {B : ℝ}
+theorem state_le_of_sqrt_floor (u : timeH1 X T) (hinit : u.initial = 0) {B : ℝ}
     (hfloor : Real.sqrt T * ‖u.deriv‖ ≤ B) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ‖u.toFun t‖ ≤ B := by
   intro t ht
   calc ‖u.toFun t‖
-      = ‖u.toFun t - u.init‖ := by rw [hinit, sub_zero]
-    _ ≤ Real.sqrt t * ‖u.deriv‖ := u.norm_toFun_sub_init_le ht
+      = ‖u.toFun t - u.initial‖ := by rw [hinit, sub_zero]
+    _ ≤ Real.sqrt t * ‖u.deriv‖ := u.norm_toFun_sub_initial_le ht
     _ ≤ Real.sqrt T * ‖u.deriv‖ :=
         mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt ht.2) (norm_nonneg _)
     _ ≤ B := hfloor

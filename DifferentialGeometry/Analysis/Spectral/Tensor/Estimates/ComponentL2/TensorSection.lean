@@ -125,7 +125,7 @@ private lemma pou_sq_tensorInner_le_sum_scalar_sq
           C * sumScalarSq g r s S α b := by
   classical
   obtain ⟨K, hK_nn, h_C2b⟩ :=
-    exists_tensorInnerPointwise_upper_bound_via_trivProj_norm_sq_on_pouTsupport
+    exists_tensorInnerPointwise_le_tensorTrivProj_norm_sq_on_pouTsupport
       g r s α
   set C₁ : ℝ := midxPairCard (E := E) r s *
     (tensorChartBasisNormConstant (E := E) r s) ^ 2

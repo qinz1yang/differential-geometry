@@ -80,7 +80,7 @@ theorem sq_unit_eval_le
         riemannianFiberNormSq (I := I) (M := M) g 0 1 x W := by
   classical
   obtain ⟨n, e, _bse, _hn, _hbse, _horth, hpars, hexpand, hriemannianFiberNormSq⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g 1 x
+    exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g 1 x
   let vec : Fin 1 → TangentSpace I x := fun _ ↦ X
   let vecE : Fin 1 → E := fun i ↦
     tangentSpaceModelContinuousLinearEquiv (I := I) x (vec i)

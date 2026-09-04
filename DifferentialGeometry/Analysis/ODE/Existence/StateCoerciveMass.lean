@@ -78,11 +78,11 @@ theorem stateMass_exists
     ∃ τ : ℝ, 0 < τ ∧ τ ≤ T ∧
       ∃ γ : ℝ → V, γ 0 = 0 ∧ ContinuousOn γ (Icc (0 : ℝ) τ) ∧
         (∀ t ∈ Icc (0 : ℝ) τ, γ t ∈ closedBall (0 : V) R) ∧
-        ∃ vel : ℝ → V,
+        ∃ velocity : ℝ → V,
           (∀ t, t ∈ Icc (0 : ℝ) τ →
-            HasDerivWithinAt γ (vel t) (Icc (0 : ℝ) τ) t) ∧
+            HasDerivWithinAt γ (velocity t) (Icc (0 : ℝ) τ) t) ∧
           ∀ t, t ∈ Icc (0 : ℝ) τ →
-            mass t (γ t) (vel t) = resid t (γ t) := by
+            mass t (γ t) (velocity t) = resid t (γ t) := by
   classical
   let cinv : ℝ≥0 := ⟨c⁻¹, inv_nonneg.mpr hc.le⟩
   let An : ℝ≥0 := ⟨A, hA⟩
@@ -214,8 +214,8 @@ theorem stateMass_exists
         apply mul_le_mul_of_nonneg_left _ Lf.coe_nonneg
         simpa only [sub_zero] using ht.2
       _ ≤ R := hLfR
-  let vel : ℝ → V := fun t ↦ f t (γ t)
-  refine ⟨τ, hτ, hτT, γ, hγ0, hγcont, hγball, vel, ?_, ?_⟩
+  let velocity : ℝ → V := fun t ↦ f t (γ t)
+  refine ⟨τ, hτ, hτT, γ, hγ0, hγcont, hγball, velocity, ?_, ?_⟩
   · intro t ht
     exact hγderiv t ht
   · intro t ht

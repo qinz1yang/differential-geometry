@@ -263,7 +263,7 @@ theorem hasFDerivAt_paramInt
     simpa only [Gp, G] using (hslice.differentiableAt (by norm_num)).hasFDerivAt
 
 omit [NormedSpace ℝ E] [ProperSpace E] in
-theorem paramInt_tendstoUnif
+theorem paramInt_tendstoUniform
     (G : E × ℝ → F) (K U : Set E) (S : Set ℝ)
     (hK : IsCompact K) (hKU : K ⊆ U)
     (hS : IsOpen S) (h0S : 0 ∈ S)

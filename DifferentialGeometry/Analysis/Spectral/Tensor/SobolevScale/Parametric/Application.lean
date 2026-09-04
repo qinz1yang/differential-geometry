@@ -29,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem app_hs_unif
+theorem app_hs_uniform
     (g : SmoothRiemannianMetric I M) (b c : ℕ) {α : Type*}
     (Φ : α → SmoothCcTensor g b c) (K : Set α) (B : ℕ → ℝ)
     (hB_nn : ∀ i, 0 ≤ B i)
@@ -267,7 +267,7 @@ noncomputable def appHs
       (operatorFieldApplicationLin g b c Φ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g b (n : ℝ))
 
-theorem appHs_unif
+theorem appHs_uniform
     (g : SmoothRiemannianMetric I M) (b c n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (Φ : SmoothCcTensor g b c) (B : ℕ → ℝ),
       (∀ i, i ≤ n → 0 ≤ B i) →
@@ -304,10 +304,10 @@ theorem appHs_norm
     ∃ C : ℝ, 0 ≤ C ∧
       ‖appHs g b c n Φ‖ ≤
         C * Real.sqrt (∑ i ∈ Finset.range (n + 1), B i) := by
-  obtain ⟨C, hC_nn, hC⟩ := appHs_unif (I := I) (M := M) g b c n
+  obtain ⟨C, hC_nn, hC⟩ := appHs_uniform (I := I) (M := M) g b c n
   exact ⟨C, hC_nn, hC Φ B hB_nn hB⟩
 
-theorem appHs_core
+theorem appHs_apply_ccTensorToHs
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
     (Φ : SmoothCcTensor g b c) (W : SmoothCcTensor g 0 b) :
     appHs g b c n Φ
@@ -360,7 +360,7 @@ theorem appHs_add
     funext W
     simp only [Function.comp_apply, L, R, ι, add_apply,
       ccToHsLin_apply]
-    rw [appHs_core, appHs_core, appHs_core, operatorFieldApplication_add_left,
+    rw [appHs_apply_ccTensorToHs, appHs_apply_ccTensorToHs, appHs_apply_ccTensorToHs, operatorFieldApplication_add_left,
       ccTensorToHs_add])
   exact congrFun hLR U
 
@@ -378,7 +378,7 @@ theorem appHs_smul
     funext W
     simp only [Function.comp_apply, L, R, ι, smul_apply,
       ccToHsLin_apply]
-    rw [appHs_core, appHs_core, operatorFieldApplication_smul_left, ccTensorToHs_smul])
+    rw [appHs_apply_ccTensorToHs, appHs_apply_ccTensorToHs, operatorFieldApplication_smul_left, ccTensorToHs_smul])
   exact congrFun hLR U
 
 theorem appHs_sub

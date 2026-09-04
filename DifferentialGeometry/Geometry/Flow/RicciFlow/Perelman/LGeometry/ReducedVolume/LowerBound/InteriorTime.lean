@@ -140,15 +140,15 @@ theorem redVolume_late_low [ConnectedSpace M]
   obtain ⟨y, W, hWmin, hWend, _hval, hmin⟩ :=
     exists_redMin_vec (I := I) S hS K T hg (T - a₁) hTa₁
       hslab₁ hRm₁ x
-  have hWend' : lRegCurve S T x W (Real.sqrt (T - a₁)) = y := by
+  have hWend' : lRegularizedCurve S T x W (Real.sqrt (T - a₁)) = y := by
     simpa only [lExp] using hWend
   have hWred : redLength S T x
-      (lRegCurve S T x W (Real.sqrt (T - a₁))) (T - a₁) ≤
+      (lRegularizedCurve S T x W (Real.sqrt (T - a₁))) (T - a₁) ≤
         (Module.finrank Real E : Real) / 2 := by
     rw [hWend']
     exact (hmin y₀).trans hy₀
-  have hWdom : Real.sqrt (T - a₀) ∈ lRegDomain S T x W := by
-    apply mem_lRegDomain_of_time_slab (I := I) S hS T x W
+  have hWdom : Real.sqrt (T - a₀) ∈ lRegularizedDomain S T x W := by
+    apply mem_lRegularizedDomain_of_time_slab (I := I) S hS T x W
       (Real.sqrt (T - a₀)) (Real.sqrt_nonneg _)
     simpa only [Real.sq_sqrt hTa₀.le, sub_sub_cancel] using hslab
   have hlate : v₀ ≤ redVolume S T x (T - a₀) :=

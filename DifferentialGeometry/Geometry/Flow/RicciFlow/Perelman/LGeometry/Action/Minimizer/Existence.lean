@@ -25,22 +25,22 @@ variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [CompactSpace M] in
-theorem lCost_eq_reg
+theorem lCost_eq_regularity
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (x y : M) (tau : Real) (htau : 0 ≤ tau) :
     lCost S T x y tau =
-      lRegCostC1 S T 0 (Real.sqrt tau) x y := by
-  unfold lCost lRegCostC1
+      lRegularizedCostC1 S T 0 (Real.sqrt tau) x y := by
+  unfold lCost lRegularizedCostC1
   apply congrArg sInf
   ext r
   constructor
   · rintro ⟨alpha, halpha, h0, ht, hr⟩
     refine ⟨alpha, halpha, h0, ht, ?_⟩
-    rw [lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha tau htau] at hr
+    rw [lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T alpha tau htau] at hr
     exact hr
   · rintro ⟨alpha, halpha, h0, ht, hr⟩
     refine ⟨alpha, halpha, h0, ht, ?_⟩
-    rw [lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha tau htau]
+    rw [lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T alpha tau htau]
     exact hr
 
 theorem exists_lMinimizer
@@ -55,8 +55,8 @@ theorem exists_lMinimizer
     (hreg : ∀ s ∈ Icc (0 : Real) (Real.sqrt tau),
       T - s ^ 2 ∈ D.regular) :
     ∃ (alpha : Real → M) (Z : TangentSpace I x),
-      IsLRegCurveOn S T alpha (Icc (0 : Real) (Real.sqrt tau)) x Z ∧
-        Set.EqOn (lRegCurve S T x Z) alpha
+      IsLRegularizedCurveOn S T alpha (Icc (0 : Real) (Real.sqrt tau)) x Z ∧
+        Set.EqOn (lRegularizedCurve S T x Z) alpha
             (Icc (0 : Real) (Real.sqrt tau)) ∧
           (Z, tau) ∈ lExpPosDom S T x ∧
             lExp S T x Z tau = y ∧
@@ -69,7 +69,7 @@ theorem exists_lMinimizer
                   lLength S T (squareRootReparametrization delta) 0 tau := by
   have hsqrt : 0 < Real.sqrt tau := Real.sqrt_pos.2 htau
   obtain ⟨alpha, Z, hcurve, hbDom, hmax, hend, hcost, hmin⟩ :=
-    exists_lRegMinOn (I := I) S hS T t0 t1 (Real.sqrt tau) hsqrt
+    exists_lRegularizedMinOn (I := I) S hS T t0 t1 (Real.sqrt tau) hsqrt
       htime hback x y alpha0 halpha0 h00 h0t hreg
   have hdom : (Z, tau) ∈ lExpPosDom S T x :=
     (mem_lExpPosDom S T x Z tau).2 ⟨htau, htau.le, hbDom⟩
@@ -81,14 +81,14 @@ theorem exists_lMinimizer
   refine ⟨alpha, Z, hcurve, hmax, hdom, hExp, hend, ?_, ?_⟩
   · calc
       lLength S T (squareRootReparametrization alpha) 0 tau =
-          lRegAction S T alpha 0 (Real.sqrt tau) :=
-        lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha tau htau.le
-      _ = lRegCostC1 S T 0 (Real.sqrt tau) x y := hcost
+          lRegularizedAction S T alpha 0 (Real.sqrt tau) :=
+        lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T alpha tau htau.le
+      _ = lRegularizedCostC1 S T 0 (Real.sqrt tau) x y := hcost
       _ = lCost S T x y tau :=
-        (lCost_eq_reg (I := I) S T x y tau htau.le).symm
+        (lCost_eq_regularity (I := I) S T x y tau htau.le).symm
   · intro delta hdelta hd0 hdt
-    rw [lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha tau htau.le,
-      lLength_squareRootReparametrization_eq_lRegAction (I := I) S T delta tau htau.le]
+    rw [lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T alpha tau htau.le,
+      lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T delta tau htau.le]
     exact hmin delta hdelta hd0 hdt
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

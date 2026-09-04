@@ -164,12 +164,12 @@ private lemma tensorPouSobolevNorm_inner_integral_lt_top
         refine hSymmCont.comp h_toEucl_cont.continuousOn ?_
         intro y hy
         unfold chartTargetEuclid at hy
-        obtain ⟨z, hz_tgt, hz_eq⟩ := hy
+        obtain ⟨z, hz_target, hz_eq⟩ := hy
         rw [← hz_eq]
         change (toEuclidean (E := E)).symm
             ((toEuclidean (E := E)) z) ∈ (extChartAt I α).target
         rw [(toEuclidean (E := E)).symm_apply_apply]
-        exact hz_tgt
+        exact hz_target
       exact hPOU_cont.comp_continuousOn' h_inner
     have h_raw_smoothOn : ContMDiffOn I (𝓘(ℝ, ℝ)) ∞
         (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx)
@@ -230,12 +230,12 @@ private lemma tensorPouSobolevNorm_inner_integral_lt_top
       refine h_iter_contOn.comp h_toEucl_cont.continuousOn ?_
       intro y hy
       unfold chartTargetEuclid at hy
-      obtain ⟨z, hz_tgt, hz_eq⟩ := hy
+      obtain ⟨z, hz_target, hz_eq⟩ := hy
       rw [← hz_eq]
       change (toEuclidean (E := E)).symm
           ((toEuclidean (E := E)) z) ∈ (extChartAt I α).target
       rw [(toEuclidean (E := E)).symm_apply_apply]
-      exact hz_tgt
+      exact hz_target
     have h_norm_sq_contOn : ContinuousOn
         (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
           ‖iteratedFDeriv ℝ j
@@ -384,10 +384,10 @@ private lemma tensorChartComponentRaw_euclidPull_contDiffOn
       (chartTargetEuclid (I := I) (M := M) α)
       (extChartAt I α).target := by
     intro y hy
-    rcases hy with ⟨z, hz_tgt, hz_eq⟩
+    rcases hy with ⟨z, hz_target, hz_eq⟩
     have h_eq : (toEuclidean (E := E)).symm y = z := by
       rw [← hz_eq]; exact (toEuclidean (E := E)).symm_apply_apply z
-    rw [h_eq]; exact hz_tgt
+    rw [h_eq]; exact hz_target
   exact h_raw_pull_contDiffOn.comp
     h_toEucl_symm_smooth.contDiffOn h_maps
 
@@ -516,12 +516,12 @@ private lemma tensorPouSobolevHsNorm_inner_integral_lt_top
         refine hSymmCont.comp h_toEucl_cont.continuousOn ?_
         intro y hy
         unfold chartTargetEuclid at hy
-        obtain ⟨z, hz_tgt, hz_eq⟩ := hy
+        obtain ⟨z, hz_target, hz_eq⟩ := hy
         rw [← hz_eq]
         change (toEuclidean (E := E)).symm
             ((toEuclidean (E := E)) z) ∈ (extChartAt I α).target
         rw [(toEuclidean (E := E)).symm_apply_apply]
-        exact hz_tgt
+        exact hz_target
       exact hPOU_cont.comp_continuousOn' h_inner
     have h_iter_contOn : ContinuousOn
         (iteratedFDeriv ℝ j

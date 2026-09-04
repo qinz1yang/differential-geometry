@@ -54,7 +54,7 @@ theorem lChartAction_minimizer_momentum_contDiffOn_one
   have hτc : ContinuousOn τ (Icc (0 : Real) L) := by
     exact (continuous_const.sub
       ((continuous_const.add continuous_id).pow 2)).continuousOn
-  have hτreg : MapsTo τ (Icc (0 : Real) L) D.regular := hreg
+  have hτregularity : MapsTo τ (Icc (0 : Real) L) D.regular := hreg
   have hKc : IsCompact K :=
     isCompact_Icc.image_of_continuousOn u.continuousOn_toFun
   have hKchart : K ⊆ interior (extChartAt I p).target := by
@@ -63,7 +63,7 @@ theorem lChartAction_minimizer_momentum_contDiffOn_one
   have huK : MapsTo u.toFun (Icc (0 : Real) L) K := by
     intro r hr
     exact ⟨r, hr, rfl⟩
-  obtain ⟨C, hA, hC⟩ := exists_chartGramOp_ae_bound hS.smoothMetric p τ hτc hτreg
+  obtain ⟨C, hA, hC⟩ := exists_chartGramOp_ae_bound hS.smoothMetric p τ hτc hτregularity
     hKc hKchart u huK
   obtain ⟨q, hq, hqae, huc1, huderiv⟩ :=
     lChartAction_minimizer_contDiffOn_one (I := I) S hS T a p hL u hreg hchart hmin
@@ -79,7 +79,7 @@ theorem lChartAction_minimizer_momentum_contDiffOn_one
     (2 : Real) • lChartForceRepresentative (I := I) S T a p u q r
   have hF : ContinuousOn F (Icc (0 : Real) L) := by
     exact (hForceRep.const_smul (2 : Real)).congr fun _ _ ↦ rfl
-  have hEuler : ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
+  have hEuler : ∀ v : timeH1 E L, v.initial = 0 → v.toFun L = 0 →
       2 * inner Real
           (timeOp (fun r ↦ chartGramOp (I := I) S.family p
             (τ r, u.toFun r)) hA C hC u.deriv) v.deriv +
@@ -184,7 +184,7 @@ theorem lChartAction_minimizer_momentum_contDiffOn_one
   let J : Set Real := τ '' Icc (0 : Real) L
   have hJreg : J ⊆ D.regular := by
     rintro t ⟨r, hr, rfl⟩
-    exact hτreg hr
+    exact hτregularity hr
   have hpair : ContinuousOn (fun r ↦ (τ r, u.toFun r))
       (Icc (0 : Real) L) := hτc.prodMk u.continuousOn_toFun
   have hAcont : ContinuousOn

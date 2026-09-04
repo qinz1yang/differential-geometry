@@ -411,8 +411,8 @@ end
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem connectionDifferenceBiContrFib_eq_fixedFrame_on_nbhd (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M)
-    (x₀ : M) {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+theorem connectionDifferenceBiContrFib_eq_fixedFrame_on_neighborhood (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M)
+    (x₀ : M) {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     connectionDifferenceBiContrFib (I := I) gj g₀ g₁ g₁' y =
       connectionDifferenceBiContrFibFixedFrame (I := I) gj g₀ g₁ g₁' (smoothOrthoFrame (I := I) g₀ x₀) y := by
   classical
@@ -469,11 +469,11 @@ theorem connectionDifferenceBiContrFib_contMDiff (gj g₀ g₁ g₁' : SmoothRie
     connectionDifferenceBiContrFibFixedFrame_contMDiff (I := I) gj g₀ g₁ g₁' (smoothOrthoFrame (I := I) g₀ x₀)
       (fun i => smoothOrthoFrame_smooth (I := I) g₀ x₀ i) x₀
   refine h_fixed.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
     (E := fun z : M => TensorRSSpace 2 2 I z) y)
     (congrArg TensorRSSpace.ofCLM
-      (connectionDifferenceBiContrFib_eq_fixedFrame_on_nbhd (I := I) gj g₀ g₁ g₁' x₀ hy))
+      (connectionDifferenceBiContrFib_eq_fixedFrame_on_neighborhood (I := I) gj g₀ g₁ g₁' x₀ hy))
 
 def connectionDifferenceBiContrCoeffField (gj g₀ g₁ g₁' : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where

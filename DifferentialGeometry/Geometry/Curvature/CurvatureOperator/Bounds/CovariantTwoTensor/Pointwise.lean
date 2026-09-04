@@ -28,14 +28,14 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 noncomputable def riemannianFrameScalar
     (g : SmoothRiemannianMetric I M) (b : M) (S : TensorRSSpace 0 2 I b) : ℝ :=
-  (riemannianFiberNormSq_le_pointwise_witness (I := I) (M := M) g 0 2 b S).choose
+  (exists_riemannianFiberNormSq_pointwise_bound (I := I) (M := M) g 0 2 b S).choose
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 lemma riemannianFrameScalar_nonneg
     (g : SmoothRiemannianMetric I M) (b : M) (S : TensorRSSpace 0 2 I b) :
     0 ≤ riemannianFrameScalar (I := I) (M := M) g b S :=
-  (riemannianFiberNormSq_le_pointwise_witness (I := I) (M := M) g 0 2 b S).choose_spec.1
+  (exists_riemannianFiberNormSq_pointwise_bound (I := I) (M := M) g 0 2 b S).choose_spec.1
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -43,14 +43,14 @@ lemma riemannianFiberNormSq_le_frameScalar_sq
     (g : SmoothRiemannianMetric I M) (b : M) (S : TensorRSSpace 0 2 I b) :
     riemannianFiberNormSq (I := I) (M := M) g 0 2 b S ≤
       ‖S‖ ^ 2 * riemannianFrameScalar (I := I) (M := M) g b S ^ 2 := by
-  have h := (riemannianFiberNormSq_le_pointwise_witness
+  have h := (exists_riemannianFiberNormSq_pointwise_bound
     (I := I) (M := M) g 0 2 b S).choose_spec.2
   refine h.trans (le_of_eq ?_)
   unfold riemannianFrameScalar
   simp only [Nat.mul_zero, pow_zero, one_mul, Nat.zero_add]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem riemannianFiberNormSq_riemannOp_tensorCov_le_witness
+theorem riemannianFiberNormSq_riemannOp_tensorCov_le
     (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) (T : TensorRSSpace 0 2 I x) :
     riemannianFiberNormSq (I := I) (M := M) g 0 2 x
@@ -86,7 +86,7 @@ theorem riemannianFiberNormSq_riemannOp_tensorCov_le_curvatureFiberNormBoundSq
     riemannianFiberNormSq (I := I) (M := M) g 0 2 x
         (riemannOp (tensorCov (I := I) g 0 2) x (X x) (Y x) (T x)) ≤
       curvatureFiberNormBoundSq (I := I) (M := M) g X Y T x :=
-  riemannianFiberNormSq_riemannOp_tensorCov_le_witness (I := I) (M := M) g x
+  riemannianFiberNormSq_riemannOp_tensorCov_le (I := I) (M := M) g x
     (X x) (Y x) (T x)
 
 omit [NeZero (Module.finrank ℝ E)] in

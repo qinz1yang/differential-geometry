@@ -17,7 +17,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology
 open Bundle Manifold
@@ -407,7 +407,7 @@ private theorem stagePull_coeff
           normalChartAt (I := I) Yl.metric cl
             (F (expMapDiffeo (I := I) Yk.metric ck q))
         (quarterPull (I := I) Yk ck G).inner z u v =
-          _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+          _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
             (normalCoordMetric (I := I) Yl cl (A (z : E)),
               fderiv Real A (z : E)) u v := by
   classical
@@ -478,7 +478,7 @@ private theorem stagePull_coeff
   have hv := DFunLike.congr_fun hcomp v
   rw [quarterPull_inner (I := I) Yk ck G z u v]
   rw [hG]
-  rw [_root_.DifferentialGeometry.HCGCompactness.pullbackForm_apply]
+  rw [_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm_apply]
   rw [normal_coord_metric_apply (I := I), hbase]
   exact congrArg₂
     (fun a b => Yl.metric.inner (F (eK (z : E))) a b) hu.symm hv.symm
@@ -727,7 +727,7 @@ theorem HasStageJetData.cov_comp_tail
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
     let Q : LiveSlot L inp.pack r → Nat → Nat →
         E → (E →L[Real] E →L[Real] Real) := fun alpha k l z =>
-      _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+      _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (B alpha l (A alpha k l z), fderiv Real (A alpha k l) z)
     let Gamma : LiveSlot L inp.pack r → Nat → E →
         Fin (Module.finrank Real E) → Fin (Module.finrank Real E) →
@@ -789,7 +789,7 @@ theorem HasStageJetData.cov_comp_tail
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
   let Q : LiveSlot L inp.pack r → Nat → Nat →
       E → (E →L[Real] E →L[Real] Real) := fun alpha k l z =>
-    _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (B alpha l (A alpha k l z), fderiv Real (A alpha k l) z)
   let Gamma : LiveSlot L inp.pack r → Nat → E →
       Fin (Module.finrank Real E) → Fin (Module.finrank Real E) →
@@ -914,10 +914,10 @@ theorem HasStageJetData.cov_comp_tail
             (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))).symm
           W (Lphi.hatSourceBall inp.decay P S (kn n)) := by
       simpa only [V, W, Lphi] using hstay
-    have hQconv : MapCInfConvOnCompacts V
+    have hQconv : MapCInfConvergenceOnCompacts V
         (fun n => Q alpha (kn n) (ln n)) (gInf alpha) := by
       simpa only [V, W, Q, B, A, Lphi] using
-        HasStageJetData.pb_conv (I := I) inp P L hr phi hphi
+        HasStageJetData.pb_convergence (I := I) inp P L hr phi hphi
           U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha V W hVopen hVcompact
           hVW hWint kn ln hkn hln hstay'
@@ -932,10 +932,10 @@ theorem HasStageJetData.cov_comp_tail
     have hVU : V ⊆ U alpha := by
       intro z hz
       exact hIntU (hWint (hVW (subset_closure hz)))
-    have hGconvD : MapCInfConvOnCompacts D
+    have hGconvD : MapCInfConvergenceOnCompacts D
         (fun n => B alpha (kn n)) (gInf alpha) := by
       simpa only [D, Ralpha, B, Lphi] using hBconv.comp_tendsto_atTop hkn
-    have hGconvV : MapCInfConvOnCompacts V
+    have hGconvV : MapCInfConvergenceOnCompacts V
         (fun n => B alpha (kn n)) (gInf alpha) := by
       intro K hK hKV p'
       exact hGconvD K hK (hKV.trans hVD) p'
@@ -970,10 +970,10 @@ theorem HasStageJetData.cov_comp_tail
       simpa only [pow_two, mul_assoc] using (hgEquiv z (hVD hz) v).1
     obtain ⟨rho, hrho, hthick⟩ :=
       hVcompact.exists_cthickening_subset_open Metric.isOpen_ball hclosureD
-    have hAconvW : MapCInfConvOnCompacts W
+    have hAconvW : MapCInfConvergenceOnCompacts W
         (fun n => A alpha (kn n) (ln n)) id := by
       simpa only [A, Lphi] using
-        HasStageJetData.chart_conv (I := I) inp P L hr phi hphi
+        HasStageJetData.chart_convergence (I := I) inp P L hr phi hphi
           U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha W hWint
           kn ln hkn hln hstay'
@@ -1048,13 +1048,13 @@ theorem HasStageJetData.cov_comp_tail
         intro z hz
         exact ((((hNsm n hn).1).contDiffAt (hVopen.mem_nhds hz)).fderiv_right
           (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt
-      have hpull := (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
+      have hpull := (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm.contDiff
         (E := E) (F := E)).comp_contDiffOn (hBAc.prodMk hDAc)
       with_unfolding_all
         exact hpull
     let Qp : Nat → E → (E →L[Real] E →L[Real] Real) := fun n =>
       if Nsm ≤ n then Q alpha (kn n) (ln n) else gInf alpha
-    have hQpconv : MapCInfConvOnCompacts V Qp (gInf alpha) := by
+    have hQpconv : MapCInfConvergenceOnCompacts V Qp (gInf alpha) := by
       apply hQconv.congr_eventually hVopen
       · filter_upwards [eventually_atTop.2 ⟨Nsm, fun n hn => hn⟩] with n hn
         intro z _hz
@@ -1065,7 +1065,7 @@ theorem HasStageJetData.cov_comp_tail
       by_cases hn : Nsm ≤ n
       · simpa only [Qp, if_pos hn] using hQsmooth n hn
       · simpa only [Qp, if_neg hn] using hgInfV
-    have htower := metric_tower_conv hVopen e
+    have htower := metric_tower_convergence hVopen e
       (fun n => B alpha (kn n)) Qp (gInf alpha)
       hGconvV hQpconv hBcd hQpcd hgInfV hBco hgInfCo (a : Nat)
     let K : Set E := Metric.closedBall zInf (q / 2)
@@ -1279,17 +1279,17 @@ theorem HasStageJetData.fwd_norm_tail
     (Nat.le_max_left _ _).trans ((Nat.le_max_right Ncomp _).trans hk)
   have hlJet : Njet ≤ l :=
     (Nat.le_max_left _ _).trans ((Nat.le_max_right Ncomp _).trans hl)
-  have hkLoc : Nloc ≤ k :=
+  have hkLocal : Nloc ≤ k :=
     (Nat.le_max_left _ _).trans
       ((Nat.le_max_right Njet _).trans ((Nat.le_max_right Ncomp _).trans hk))
-  have hlLoc : Nloc ≤ l :=
+  have hlLocal : Nloc ≤ l :=
     (Nat.le_max_left _ _).trans
       ((Nat.le_max_right Njet _).trans ((Nat.le_max_right Ncomp _).trans hl))
   have hkCenter : Ncenter ≤ k :=
     (Nat.le_max_right _ _).trans
       ((Nat.le_max_right Njet _).trans ((Nat.le_max_right Ncomp _).trans hk))
   have hjetKL := hjet k hkJet l hlJet
-  have hlocKL := hloc k hkLoc l hlLoc
+  have hlocKL := hloc k hkLocal l hlLocal
   intro G hG a ha y hy
   obtain ⟨alpha, z, hzy, hbuffer, hcompZ⟩ :=
     hcomp k hkComp l hlComp y hy
@@ -1302,7 +1302,7 @@ theorem HasStageJetData.fwd_norm_tail
   let B : E → (E →L[Real] E →L[Real] Real) :=
     normalCoordMetric (I := I) Yk ck
   let Q : E → (E →L[Real] E →L[Real] Real) := fun q =>
-    _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (normalCoordMetric (I := I) Yl cl (A q), fderiv Real A q)
   let Ralpha : Real := L.rInf (alpha.1 : Nat) + 1
   let D : Set E := Metric.ball (0 : E)
@@ -1473,7 +1473,7 @@ theorem HasStageJetData.fwd_norm_tail
       (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt)
   have hQcd : ContDiffOn Real (∞ : WithTop ℕ∞) Q V := by
     have hpull :=
-      (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
+      (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm.contDiff
         (E := E) (F := E)).comp_contDiffOn (hBAcd.prodMk hDAcd)
     with_unfolding_all
       exact hpull
@@ -1676,14 +1676,14 @@ theorem HasStageJetData.inv_norm_tail
   let Hinv := Function.invFunOn F (Metric.ball Yk.basepoint T)
   have hkComp : Ncomp ≤ k := by dsimp only [N] at hk; omega
   have hlComp : Ncomp ≤ l := by dsimp only [N] at hl; omega
-  have hkLoc : Nloc ≤ k := by dsimp only [N] at hk; omega
-  have hlLoc : Nloc ≤ l := by dsimp only [N] at hl; omega
+  have hkLocal : Nloc ≤ k := by dsimp only [N] at hk; omega
+  have hlLocal : Nloc ≤ l := by dsimp only [N] at hl; omega
   have hkInj : Ninj ≤ k := by dsimp only [N] at hk; omega
   have hlInj : Ninj ≤ l := by dsimp only [N] at hl; omega
   have hlCenter : Ncenter ≤ l := by dsimp only [N] at hl; omega
   have hmoveLe (alpha : LiveSlot L inp.pack r) : Nmove alpha ≤ NmoveAll :=
     Finset.le_sup (f := Nmove) (Finset.mem_univ alpha)
-  have hlocKL := hloc k hkLoc l hlLoc
+  have hlocKL := hloc k hkLocal l hlLocal
   have hinjKL := hinj k hkInj l hlInj
   intro G hG a ha q hq
   rcases hq with ⟨y, hy, rfl⟩
@@ -1701,7 +1701,7 @@ theorem HasStageJetData.inv_norm_tail
   let BL : E → (E →L[Real] E →L[Real] Real) :=
     normalCoordMetric (I := I) Yl cl
   let Q : E → (E →L[Real] E →L[Real] Real) := fun w =>
-    _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (BK (Grev w), fderiv Real Grev w)
   have hzInt : z ∈ interior (C0 alpha) :=
     hbuffer (Metric.mem_closedBall_self (heta alpha).le)
@@ -1776,16 +1776,16 @@ theorem HasStageJetData.inv_norm_tail
     exact hlocKL ⟨x, Metric.ball_subset_closedBall hx⟩
   have hinjBall : Set.InjOn F (Metric.ball Yk.basepoint T) :=
     hinjKL.mono Metric.ball_subset_closedBall
-  obtain ⟨Phi, hPhiSrc, hPhiTgt, hPhiEq⟩ :=
+  obtain ⟨Phi, hPhiSource, hPhiTarget, hPhiEq⟩ :=
     exists_partial_diffeomorph_of_is_local_diffeomorph_on_inj_on hlocBall hBallOpen hinjBall
   have hsymmEq : Set.EqOn (Phi.symm : Yl.M → Yk.M) Hinv Phi.target := by
     intro q hq
-    rw [hPhiTgt] at hq
+    rw [hPhiTarget] at hq
     obtain ⟨x, hx, rfl⟩ := hq
     have hPhix : (Phi : Yk.M → Yl.M) x = F x := hPhiEq hx
     have hleft : (Phi.symm : Yl.M → Yk.M) (F x) = x := by
       rw [← hPhix]
-      exact Phi.toPartialEquiv.left_inv (by rw [hPhiSrc]; exact hx)
+      exact Phi.toPartialEquiv.left_inv (by rw [hPhiSource]; exact hx)
     have hinv : Hinv (F x) = x := by
       exact hinjBall.leftInvOn_invFunOn hx
     rw [hleft, hinv]
@@ -1797,7 +1797,7 @@ theorem HasStageJetData.inv_norm_tail
     rw [ProperMetricOn.top_eq Yk (P (Lphi.φ k))] at hb
     exact hb
   have hBallSsub : Metric.ball Yk.basepoint S ⊆ Phi.source := by
-    rw [hPhiSrc]
+    rw [hPhiSource]
     exact Metric.ball_subset_ball hST.le
   have hImageOpen : IsOpen ((Phi : Yk.M → Yl.M) ''
       Metric.ball Yk.basepoint S) :=
@@ -1857,16 +1857,16 @@ theorem HasStageJetData.inv_norm_tail
     exact chiL.left_inv hsrc
   have hAzV : A z ∈ V := by
     refine ⟨hAzInt, ?_⟩
-    have hAzSrc : A z ∈ dL.source :=
+    have hAzSource : A z ∈ dL.source :=
       normalQuarter_sub (I := I) Yl cl hAzQ
-    refine ⟨hAzSrc, ?_⟩
+    refine ⟨hAzSource, ?_⟩
     have hdLA : dL (A z) = F y := by
       with_unfolding_all
         exact hdecode
     change dL (A z) ∈ Wphi
     rw [hdLA]
     refine ⟨⟨y, hySopen, hPhiY⟩, ?_, ?_⟩
-    · rw [hPhiTgt]
+    · rw [hPhiTarget]
       exact ⟨y, Metric.ball_subset_ball hST.le hySopen, rfl⟩
     · change Phi.symm (F y) ∈ dK.target
       rw [hPhiSymmY]
@@ -2020,7 +2020,7 @@ theorem HasStageJetData.inv_norm_tail
       (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt)
   have hQcd : ContDiffOn Real (∞ : WithTop ℕ∞) Q V := by
     have hpull :=
-      (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
+      (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm.contDiff
         (E := E) (F := E)).comp_contDiffOn (hBKcd.prodMk hDGrev)
     with_unfolding_all
       exact hpull
@@ -2086,5 +2086,5 @@ theorem HasStageJetData.inv_norm_tail
       let afin : Fin (p + 1) := ⟨a, Nat.lt_succ_iff.mpr ha⟩
       simpa only [fac, afin, mul_assoc] using hbudget afin
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

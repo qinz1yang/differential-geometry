@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -229,15 +229,15 @@ theorem HasRadiusTailOn.local_tail
   have hlq : q ≤ l := (Nat.le_add_right q Nt).trans hl
   have hkNt : Nt ≤ k - q := by omega
   have hlNt : Nt ≤ l - q := by omega
-  have hkLoc : Nloc ≤ k - q := (le_max_left _ _).trans hkNt
-  have hlLoc : Nloc ≤ l - q := (le_max_left _ _).trans hlNt
+  have hkLocal : Nloc ≤ k - q := (le_max_left _ _).trans hkNt
+  have hlLocal : Nloc ≤ l - q := (le_max_left _ _).trans hlNt
   have hkBase : Nbase ≤ k - q :=
     (le_max_right _ _).trans hkNt
   have hki : Lq.φ (k - q) = psi k := by
     exact (hindex (k - q)).trans (congrArg psi (Nat.add_sub_of_le hkq))
   have hli : Lq.φ (l - q) = psi l := by
     exact (hindex (l - q)).trans (congrArg psi (Nat.add_sub_of_le hlq))
-  have hloc0 := hloc (k - q) hkLoc (l - q) hlLoc
+  have hloc0 := hloc (k - q) hkLocal (l - q) hlLocal
   have hbase0 := hbase (k - q) hkBase (l - q)
   apply cast_local inp P Lq q (Nat.cast_nonneg q)
     (k - q) (l - q) (psi k) (psi l) hki hli R chart
@@ -342,8 +342,8 @@ theorem HasRadiusTailOn.geom_tail
   have hlq : q ≤ l := (Nat.le_add_right q Nt).trans hl
   have hkNt : Nt ≤ k - q := by omega
   have hlNt : Nt ≤ l - q := by omega
-  have hkLoc : Nloc ≤ k - q := (le_max_left _ _).trans hkNt
-  have hlLoc : Nloc ≤ l - q := (le_max_left _ _).trans hlNt
+  have hkLocal : Nloc ≤ k - q := (le_max_left _ _).trans hkNt
+  have hlLocal : Nloc ≤ l - q := (le_max_left _ _).trans hlNt
   have hkInj : Ninj ≤ k - q :=
     (le_max_left _ _).trans
       ((le_max_right Nloc (max Ninj Nbase)).trans hkNt)
@@ -359,7 +359,7 @@ theorem HasRadiusTailOn.geom_tail
   have hli : Lq.φ (l - q) = psi l := by
     exact (hindex (l - q)).trans
       (congrArg psi (Nat.add_sub_of_le hlq))
-  have hloc0 := hloc (k - q) hkLoc (l - q) hlLoc
+  have hloc0 := hloc (k - q) hkLocal (l - q) hlLocal
   have hinj0 := hinj (k - q) hkInj (l - q) hlInj
   have hbase0 := hbase (k - q) hkBase (l - q)
   apply cast_geom inp P Lq q (Nat.cast_nonneg q)
@@ -464,8 +464,8 @@ theorem HasRadiusTail.geom_tail
   have hlq : q ≤ l := (Nat.le_add_right q Nt).trans hl
   have hkNt : Nt ≤ k - q := by omega
   have hlNt : Nt ≤ l - q := by omega
-  have hkLoc : Nloc ≤ k - q := (le_max_left _ _).trans hkNt
-  have hlLoc : Nloc ≤ l - q := (le_max_left _ _).trans hlNt
+  have hkLocal : Nloc ≤ k - q := (le_max_left _ _).trans hkNt
+  have hlLocal : Nloc ≤ l - q := (le_max_left _ _).trans hlNt
   have hkInj : Ninj ≤ k - q :=
     (le_max_left _ _).trans ((le_max_right Nloc (max Ninj Nbase)).trans hkNt)
   have hlInj : Ninj ≤ l - q :=
@@ -476,7 +476,7 @@ theorem HasRadiusTail.geom_tail
     exact (hindex (k - q)).trans (congrArg psi (Nat.add_sub_of_le hkq))
   have hli : Lq.φ (l - q) = psi l := by
     exact (hindex (l - q)).trans (congrArg psi (Nat.add_sub_of_le hlq))
-  have hloc0 := hloc (k - q) hkLoc (l - q) hlLoc
+  have hloc0 := hloc (k - q) hkLocal (l - q) hlLocal
   have hinj0 := hinj (k - q) hkInj (l - q) hlInj
   have hbase0 := hbase (k - q) hkBase (l - q)
   apply cast_geom inp P Lq q (Nat.cast_nonneg q)
@@ -488,5 +488,5 @@ theorem HasRadiusTail.geom_tail
     by
       convert hbase0 using 1 <;> rfl⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

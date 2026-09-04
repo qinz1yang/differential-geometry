@@ -34,7 +34,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a : ℝ} {T : ℝ}
 
-abbrev MaxRegSolutionSpace (a : ℝ) (T : ℝ) : Type _ :=
+abbrev MaximalRegularitySolutionSpace (a : ℝ) (T : ℝ) : Type _ :=
   timeH1 (TensorHs (I := I) (M := M) g r s a) T
 
 def homModeCoeff {a : ℝ}
@@ -220,18 +220,18 @@ theorem summable_homDerivModeCoeff (hT : 0 ≤ T)
       (sq_nonneg _)
   · exact weighted_homDerivModeCoeff_le (I := I) (M := M) (a := a) (T := T) hT u₀ i
 
-def maxRegHomogeneousSolField (a : ℝ) (T : ℝ)
+def maximalRegularityHomogeneousSolutionField (a : ℝ) (T : ℝ)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
     timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T :=
   timeL2OfModes (I := I) (M := M) (σ := a + 2)
     (fun i => homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegHomogeneousSolField_timeModeCoeff (hT : 0 ≤ T)
+theorem maximalRegularityHomogeneousSolutionField_timeModeCoeff (hT : 0 ≤ T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
-        (maxRegHomogeneousSolField (I := I) (M := M) a T u₀) i =
+        (maximalRegularityHomogeneousSolutionField (I := I) (M := M) a T u₀) i =
       homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i :=
   timeL2OfModes_timeModeCoeff (I := I) (M := M) (σ := a + 2) _
     (summable_homModeCoeff (I := I) (M := M) (a := a) (T := T) hT u₀) i
@@ -248,100 +248,100 @@ theorem summable_homModeCoeff_Ha1 (hT : 0 ≤ T)
   · exact mul_le_mul_of_nonneg_right
       (tensorSobolevWeight_mono (I := I) (M := M) i (by linarith)) (sq_nonneg _)
 
-def maxRegHomogeneousSolFieldTraceScale (a : ℝ) (T : ℝ)
+def maximalRegularityHomogeneousSolutionFieldTraceScale (a : ℝ) (T : ℝ)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
     timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T :=
   timeL2OfModes (I := I) (M := M) (σ := a + 1)
     (fun i => homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegHomogeneousSolFieldHa1_timeModeCoeff (hT : 0 ≤ T)
+theorem maximalRegularityHomogeneousSolutionFieldHa1_timeModeCoeff (hT : 0 ≤ T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
-        (maxRegHomogeneousSolFieldTraceScale (I := I) (M := M) a T u₀) i =
+        (maximalRegularityHomogeneousSolutionFieldTraceScale (I := I) (M := M) a T u₀) i =
       homModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i :=
   timeL2OfModes_timeModeCoeff (I := I) (M := M) (σ := a + 1) _
     (summable_homModeCoeff_Ha1 (I := I) (M := M) (a := a) (T := T) hT u₀) i
 
-def maxRegHomogeneousDerivField (a : ℝ) (T : ℝ)
+def maximalRegularityHomogeneousDerivField (a : ℝ) (T : ℝ)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
     timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   timeL2OfModes (I := I) (M := M) (σ := a)
     (fun i => homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegHomogeneousDerivField_timeModeCoeff (hT : 0 ≤ T)
+theorem maximalRegularityHomogeneousDerivField_timeModeCoeff (hT : 0 ≤ T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
-        (maxRegHomogeneousDerivField (I := I) (M := M) a T u₀) i =
+        (maximalRegularityHomogeneousDerivField (I := I) (M := M) a T u₀) i =
       homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) u₀ i :=
   timeL2OfModes_timeModeCoeff (I := I) (M := M) (σ := a) _
     (summable_homDerivModeCoeff (I := I) (M := M) (a := a) (T := T) hT u₀) i
 
-def maxRegHomogeneous (a : ℝ) (T : ℝ)
+def maximalRegularityHomogeneous (a : ℝ) (T : ℝ)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
-    MaxRegSolutionSpace (I := I) (M := M) (g := g) (r := r) (s := s) a T :=
+    MaximalRegularitySolutionSpace (I := I) (M := M) (g := g) (r := r) (s := s) a T :=
   TimeSobolev.timeH1.mk
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
       (show a ≤ a + 2 by linarith) u₀)
-    (maxRegHomogeneousDerivField (I := I) (M := M) a T u₀)
+    (maximalRegularityHomogeneousDerivField (I := I) (M := M) a T u₀)
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem maxRegHomogeneous_init
+@[simp] theorem maximalRegularityHomogeneous_initial
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
-    (maxRegHomogeneous (I := I) (M := M) a T u₀).init =
+    (maximalRegularityHomogeneous (I := I) (M := M) a T u₀).initial =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith) u₀ :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegHomogeneous_trace0
+theorem maximalRegularityHomogeneous_trace0
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
     TimeSobolev.timeH1.trace0 _ T
-        (maxRegHomogeneous (I := I) (M := M) a T u₀) =
+        (maximalRegularityHomogeneous (I := I) (M := M) a T u₀) =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith) u₀ :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem maxRegHomogeneous_deriv
+@[simp] theorem maximalRegularityHomogeneous_deriv
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
-    (maxRegHomogeneous (I := I) (M := M) a T u₀).deriv =
-      maxRegHomogeneousDerivField (I := I) (M := M) a T u₀ :=
+    (maximalRegularityHomogeneous (I := I) (M := M) a T u₀).deriv =
+      maximalRegularityHomogeneousDerivField (I := I) (M := M) a T u₀ :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegHomogeneousDerivField_eq_scaleLaplacian (hT : 0 ≤ T)
+theorem maximalRegularityHomogeneousDerivField_eq_scaleLaplacian (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
-    maxRegHomogeneousDerivField (I := I) (M := M) a T u₀ =
+    maximalRegularityHomogeneousDerivField (I := I) (M := M) a T u₀ =
       timeScaleLaplacian (I := I) (M := M) a
-        (maxRegHomogeneousSolField (I := I) (M := M) a T u₀) := by
+        (maximalRegularityHomogeneousSolutionField (I := I) (M := M) a T u₀) := by
   refine timeModeCoeff_injective (I := I) (M := M) h_compact
     (fun i => ?_)
-  rw [maxRegHomogeneousDerivField_timeModeCoeff (I := I) (M := M) (a := a)
+  rw [maximalRegularityHomogeneousDerivField_timeModeCoeff (I := I) (M := M) (a := a)
       (T := T) hT u₀ i,
     timeModeCoeff_timeScaleLaplacian (I := I) (M := M) (τ := a)
-      (maxRegHomogeneousSolField (I := I) (M := M) a T u₀) i,
-    maxRegHomogeneousSolField_timeModeCoeff (I := I) (M := M) (a := a)
+      (maximalRegularityHomogeneousSolutionField (I := I) (M := M) a T u₀) i,
+    maximalRegularityHomogeneousSolutionField_timeModeCoeff (I := I) (M := M) (a := a)
       (T := T) hT u₀ i]
   exact homDerivModeCoeff_eq_smul (I := I) (M := M) (a := a) (T := T) u₀ i
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegHomogeneous_timeDeriv_eq (hT : 0 ≤ T)
+theorem maximalRegularityHomogeneous_timeDeriv_eq (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
     TimeSobolev.timeH1.timeDeriv _ T
-        (maxRegHomogeneous (I := I) (M := M) a T u₀) =
+        (maximalRegularityHomogeneous (I := I) (M := M) a T u₀) =
       timeScaleLaplacian (I := I) (M := M) a
-        (maxRegHomogeneousSolField (I := I) (M := M) a T u₀) := by
-  rw [TimeSobolev.timeH1.timeDeriv_apply, maxRegHomogeneous_deriv (I := I) (M := M)
+        (maximalRegularityHomogeneousSolutionField (I := I) (M := M) a T u₀) := by
+  rw [TimeSobolev.timeH1.timeDeriv_apply, maximalRegularityHomogeneous_deriv (I := I) (M := M)
     (a := a) (T := T) u₀]
-  exact maxRegHomogeneousDerivField_eq_scaleLaplacian (I := I) (M := M)
+  exact maximalRegularityHomogeneousDerivField_eq_scaleLaplacian (I := I) (M := M)
     (h_compact := h_compact) (a := a) (T := T) hT u₀
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -390,7 +390,7 @@ theorem maximalRegularityOp_add (hT : 0 < T)
       maximalRegularityOp (I := I) (M := M) a hT f +
         maximalRegularityOp (I := I) (M := M) a hT f' := by
   refine TimeSobolev.timeH1.ext ?_ ?_
-  · rw [TimeSobolev.timeH1.init_add]
+  · rw [TimeSobolev.timeH1.initial_add]
     change (0 : TensorHs (I := I) (M := M) g r s a) =
       (0 : TensorHs (I := I) (M := M) g r s a) +
         (0 : TensorHs (I := I) (M := M) g r s a)
@@ -407,7 +407,7 @@ theorem maximalRegularityOp_smul (hT : 0 < T)
     maximalRegularityOp (I := I) (M := M) a hT (c • f) =
       c • maximalRegularityOp (I := I) (M := M) a hT f := by
   refine TimeSobolev.timeH1.ext ?_ ?_
-  · rw [TimeSobolev.timeH1.init_smul]
+  · rw [TimeSobolev.timeH1.initial_smul]
     change (0 : TensorHs (I := I) (M := M) g r s a) =
       c • (0 : TensorHs (I := I) (M := M) g r s a)
     rw [smul_zero]
@@ -428,101 +428,101 @@ theorem maximalRegularityOp_sub (hT : 0 < T)
   rw [sub_add_cancel] at hadd
   rw [hadd, add_sub_cancel_right]
 
-def maxRegDuhamelSolField (a : ℝ) {T : ℝ} (hT : 0 < T)
+def maximalRegularityDuhamelSolutionField (a : ℝ) {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T :=
-  maxRegHomogeneousSolField (I := I) (M := M) a T u₀ +
-    maximalRegularitySolField (I := I) (M := M) a hT.le gforce
+  maximalRegularityHomogeneousSolutionField (I := I) (M := M) a T u₀ +
+    maximalRegularitySolutionField (I := I) (M := M) a hT.le gforce
 
-def maxRegDuhamelSolFieldHa1 (a : ℝ) {T : ℝ} (hT : 0 < T)
+def maximalRegularityDuhamelSolutionFieldHa1 (a : ℝ) {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T :=
-  maxRegHomogeneousSolFieldTraceScale (I := I) (M := M) a T u₀ +
-    maximalRegularitySolFieldHa1 (I := I) (M := M) a hT gforce
+  maximalRegularityHomogeneousSolutionFieldTraceScale (I := I) (M := M) a T u₀ +
+    maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT gforce
 
-def maxRegDuhamelMap (a : ℝ) {T : ℝ} (hT : 0 < T)
+def maximalRegularityDuhamelMap (a : ℝ) {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    MaxRegSolutionSpace (I := I) (M := M) (g := g) (r := r) (s := s) a T :=
-  maxRegHomogeneous (I := I) (M := M) a T u₀ +
+    MaximalRegularitySolutionSpace (I := I) (M := M) (g := g) (r := r) (s := s) a T :=
+  maximalRegularityHomogeneous (I := I) (M := M) a T u₀ +
     maximalRegularityOp (I := I) (M := M) a hT gforce
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem maxRegDuhamelMap_init (hT : 0 < T)
+@[simp] theorem maximalRegularityDuhamelMap_initial (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).init =
+    (maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce).initial =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith) u₀ := by
-  rw [maxRegDuhamelMap, TimeSobolev.timeH1.init_add,
-    maxRegHomogeneous_init (I := I) (M := M) (a := a) (T := T) u₀]
-  rw [show (maximalRegularityOp (I := I) (M := M) a hT gforce).init =
+  rw [maximalRegularityDuhamelMap, TimeSobolev.timeH1.initial_add,
+    maximalRegularityHomogeneous_initial (I := I) (M := M) (a := a) (T := T) u₀]
+  rw [show (maximalRegularityOp (I := I) (M := M) a hT gforce).initial =
         (0 : TensorHs (I := I) (M := M) g r s a) from rfl, add_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelMap_trace0 (hT : 0 < T)
+theorem maximalRegularityDuhamelMap_trace0 (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.trace0 _ T
-        (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce) =
+        (maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce) =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith) u₀ := by
   rw [TimeSobolev.timeH1.trace0_apply]
-  exact maxRegDuhamelMap_init (I := I) (M := M) (a := a) (T := T) hT u₀ gforce
+  exact maximalRegularityDuhamelMap_initial (I := I) (M := M) (a := a) (T := T) hT u₀ gforce
 
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] theorem maxRegDuhamelMap_deriv (hT : 0 < T)
+@[simp] theorem maximalRegularityDuhamelMap_deriv (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv =
-      maxRegHomogeneousDerivField (I := I) (M := M) a T u₀ +
+    (maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce).deriv =
+      maximalRegularityHomogeneousDerivField (I := I) (M := M) a T u₀ +
         maximalRegularityDerivField (I := I) (M := M) a hT.le gforce := by
-  rw [maxRegDuhamelMap, TimeSobolev.timeH1.deriv_add]
+  rw [maximalRegularityDuhamelMap, TimeSobolev.timeH1.deriv_add]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelMap_timeDeriv_eq (hT : 0 < T)
+theorem maximalRegularityDuhamelMap_timeDeriv_eq (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     TimeSobolev.timeH1.timeDeriv _ T
-        (maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce) =
+        (maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce) =
       timeScaleLaplacian (I := I) (M := M) a
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce) +
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ gforce) +
         gforce := by
   rw [TimeSobolev.timeH1.timeDeriv_apply,
-    maxRegDuhamelMap_deriv (I := I) (M := M) (a := a) (T := T) hT u₀ gforce]
-  rw [maxRegHomogeneousDerivField_eq_scaleLaplacian (I := I) (M := M)
+    maximalRegularityDuhamelMap_deriv (I := I) (M := M) (a := a) (T := T) hT u₀ gforce]
+  rw [maximalRegularityHomogeneousDerivField_eq_scaleLaplacian (I := I) (M := M)
     (h_compact := h_compact) (a := a) (T := T) hT.le u₀]
   have hsolve := maximalRegularityOp_solves (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT gforce
   rw [maximalRegularityOp_timeDeriv (I := I) (M := M)
     (a := a) hT gforce] at hsolve
   rw [hsolve]
-  rw [maxRegDuhamelSolField, map_add]
+  rw [maximalRegularityDuhamelSolutionField, map_add]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelMap_dist_le (hT : 0 < T)
+theorem maximalRegularityDuhamelMap_dist_le (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce gforce' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    ‖maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce -
-        maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce'‖ ≤
+    ‖maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce -
+        maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce'‖ ≤
       2 * ‖gforce - gforce'‖ := by
-  have hdiff : maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce -
-        maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce' =
+  have hdiff : maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce -
+        maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce' =
       maximalRegularityOp (I := I) (M := M) a hT
         (gforce - gforce') := by
     rw [maximalRegularityOp_sub (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT gforce gforce']
-    change (maxRegHomogeneous (I := I) (M := M) a T u₀ +
+    change (maximalRegularityHomogeneous (I := I) (M := M) a T u₀ +
           maximalRegularityOp (I := I) (M := M) a hT gforce) -
-        (maxRegHomogeneous (I := I) (M := M) a T u₀ +
+        (maximalRegularityHomogeneous (I := I) (M := M) a T u₀ +
           maximalRegularityOp (I := I) (M := M) a hT gforce') =
       maximalRegularityOp (I := I) (M := M) a hT gforce -
         maximalRegularityOp (I := I) (M := M) a hT gforce'
@@ -532,16 +532,16 @@ theorem maxRegDuhamelMap_dist_le (hT : 0 < T)
     (h_compact := h_compact) (a := a) hT (gforce - gforce')
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelMap_lipschitzWith (hT : 0 < T)
+theorem maximalRegularityDuhamelMap_lipschitzWith (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2)) :
     LipschitzWith 2 (fun gforce :
         timeL2 (TensorHs (I := I) (M := M) g r s a) T =>
-      maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce) := by
+      maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce) := by
   refine LipschitzWith.of_dist_le_mul (fun gforce gforce' => ?_)
   rw [dist_eq_norm, dist_eq_norm]
-  have h := maxRegDuhamelMap_dist_le (I := I) (M := M)
+  have h := maximalRegularityDuhamelMap_dist_le (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT u₀ gforce gforce'
   rw [show ((2 : ℝ≥0) : ℝ) = (2 : ℝ) from by norm_num]
   exact h

@@ -7,7 +7,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -26,7 +26,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
   [ConnectedSpace M] [T3Space M]
 
 structure StrictDistInput (g : SmoothRiemannianMetric I M)
-    {ι : Type} [Fintype ι] (pts : ι → M)
+    {ι : Type} [Fintype ι] (points : ι → M)
     (join : M → M → ℝ → M) (p : M) (r : ℝ) : Prop where
   mid :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -61,7 +61,7 @@ structure StrictDistInput (g : SmoothRiemannianMetric I M)
     ∀ i : ι, ∀ a ∈ Metric.closedBall p (2 * r),
       ∀ b ∈ Metric.closedBall p (2 * r), a ≠ b →
         StrictConvexOn ℝ unitInterval
-          (fun t : ℝ => CenterOfMass.halfSqDist (pts i) (join a b t))
+          (fun t : ℝ => CenterOfMass.halfSqDist (points i) (join a b t))
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

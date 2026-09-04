@@ -205,7 +205,7 @@ theorem exists_radial_base
     simpa only [Metric.mem_ball, dist_zero_right] using ht
   have hzeroRad : ‖(0 : E)‖ < expMapC2Radius (I := I) g p := by
     simpa using expMapC2Radius_pos (I := I) g p
-  have hzeroSrc : (0 : E) ∈ (expMapDiffeo (I := I) g p).source :=
+  have hzeroSource : (0 : E) ∈ (expMapDiffeo (I := I) g p).source :=
     zero_mem_expMapDiffeo_source (I := I) g p
   have hbaseQuad
       (d : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
@@ -213,7 +213,7 @@ theorem exists_radial_base
         g.inner p (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
           (∑ j, d j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
     dsimp only [A₀]
-    rw [normalGram_radialMat (I := I) g p hzeroSrc hzeroRad]
+    rw [normalGram_radialMat (I := I) g p hzeroSource hzeroRad]
     rw [radialJacobiGram_quadratic (I := I) g p]
     have hpoint :
         (expMap (I := I) g p
@@ -465,7 +465,7 @@ theorem radialRatio_ge
       ∀ᶠ t in 𝓝[>] (0 : ℝ),
         C ≤ curveDensity (I := I) g (radialCurve (I := I) g p x)
             (fun i => radialJacobiField (I := I) g p x (v i)) t /
-          hypDensity q (Fintype.card ι) t := by
+          hyperbolicDensity q (Fintype.card ι) t := by
   have htx : Tendsto (fun t : ℝ => t • x) (𝓝[>] (0 : ℝ)) (𝓝 (0 : E)) := by
     have hc : Continuous (fun t : ℝ => t • x) :=
       continuous_id.smul continuous_const
@@ -550,7 +550,7 @@ theorem radialRatio_basis
       ∀ᶠ t in 𝓝[>] (0 : ℝ),
         C ≤ curveDensity (I := I) g (radialCurve (I := I) g p x)
             (fun i => radialJacobiField (I := I) g p x (v i)) t /
-          hypDensity q (Fintype.card ι) t := by
+          hyperbolicDensity q (Fintype.card ι) t := by
   rcases exists_coeff_ge (E := E) v hv with ⟨δ, hδ, hcoeff⟩
   have htx : Tendsto (fun t : ℝ => t • x) (𝓝[>] (0 : ℝ)) (𝓝 (0 : E)) := by
     have hc : Continuous (fun t : ℝ => t • x) :=
@@ -672,7 +672,7 @@ theorem radialRatio_auto
       ∀ᶠ t in 𝓝[>] (0 : ℝ),
         C ≤ curveDensity (I := I) g (radialCurve (I := I) g p x)
             (fun i => radialJacobiField (I := I) g p x (v i)) t /
-          hypDensity q (Fintype.card ι) t := by
+          hyperbolicDensity q (Fintype.card ι) t := by
   obtain ⟨B, hB, hbase⟩ := exists_radial_base (I := I) g p x
   exact radialRatio_basis (I := I) g p x v q B hq hB hv hbase
 
@@ -701,17 +701,17 @@ theorem exists_radial_cmp
       (∀ t ∈ Ioo (0 : ℝ) b,
           curveMean (I := I) g (radialCurve (I := I) g p x)
               (fun i => radialJacobiField (I := I) g p x (v i)) t ≤
-            hypMeanCurv (q * Real.sqrt (g.inner p x x))
+            hyperbolicMeanCurv (q * Real.sqrt (g.inner p x x))
               (Module.finrank ℝ E - 1) t) ∧
         AntitoneOn
           (fun t =>
             curveDensity (I := I) g (radialCurve (I := I) g p x)
                 (fun i => radialJacobiField (I := I) g p x (v i)) t /
-              hypDensity (q * Real.sqrt (g.inner p x x))
+              hyperbolicDensity (q * Real.sqrt (g.inner p x x))
                 (Module.finrank ℝ E - 1) t)
           (Ioo (0 : ℝ) b) := by
   obtain ⟨rd, hrd, hdiff⟩ := exists_radialJacobi_diff (I := I) g p
-  obtain ⟨rj, hrj, hJac⟩ := exists_jacobi_Ioo (I := I) g p
+  obtain ⟨rj, hrj, hJacobian⟩ := exists_jacobi_Ioo (I := I) g p
   obtain ⟨rw, hrw, hW⟩ := radial_wronsk_zero (I := I) g hEnorm p
   let re : ℝ := expMapC2Radius (I := I) g p
   let r : ℝ := min rw (min rd (min rj re))
@@ -810,17 +810,17 @@ theorem exists_radial_cmp
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x (v i)) t := by
     intro t ht i
-    exact hJac x (v i) hxj (hvj i) hb1.le t ht
+    exact hJacobian x (v i) hxj (hvj i) hb1.le t ht
   have hRatio : ∃ C : ℝ, 0 < C ∧
       ∀ᶠ t in 𝓝[>] (0 : ℝ),
         C ≤ curveDensity (I := I) g (radialCurve (I := I) g p x)
               (fun i => radialJacobiField (I := I) g p x (v i)) t /
-            hypDensity (q * a) (Module.finrank ℝ E - 1) t := by
+            hyperbolicDensity (q * a) (Module.finrank ℝ E - 1) t := by
     obtain ⟨C, hC, hratio⟩ :=
       radialRatio_auto (I := I) g p x v (q * a) (mul_nonneg hq ha.le) hv
     refine ⟨C, hC, ?_⟩
     simpa only [hcard] using hratio
-  have hmean := curveMean_le_hyp (I := I) (n := (2 : WithTop ℕ∞)) (by norm_num)
+  have hmean := curveMean_le_hyperbolic (I := I) (n := (2 : WithTop ℕ∞)) (by norm_num)
     g (radialCurve (I := I) g p x)
     (fun i => radialJacobiField (I := I) g p x (v i)) q a b
     hq ha hcard hd hγ hspeed hVperp hDVperp hVdiff hDVdiff hLI
@@ -851,30 +851,30 @@ theorem normalRatio_anti
       (fun r =>
         curveDensity (I := I) g (radialCurve (I := I) g p u)
             (fun i : ι => radialJacobiField (I := I) g p u (B (some i))) r /
-          hypDensity q (Fintype.card ι) r)
+          hyperbolicDensity q (Fintype.card ι) r)
       (Ioo (0 : ℝ) b)) :
     AntitoneOn
       (fun r =>
         r ^ Fintype.card ι * normalChartDensity (I := I) g p (r • u) /
-          hypDensity q (Fintype.card ι) r)
+          hyperbolicDensity q (Fintype.card ι) r)
       (Ioo (0 : ℝ) b) := by
   obtain ⟨c, hc, _hcval, hdensity⟩ :=
     normalDensity_curve (I := I) g p u B hBu hperp hsrc hrad
   intro r hr s hs hrs
   calc
     s ^ Fintype.card ι * normalChartDensity (I := I) g p (s • u) /
-          hypDensity q (Fintype.card ι) s =
+          hyperbolicDensity q (Fintype.card ι) s =
         c * (curveDensity (I := I) g (radialCurve (I := I) g p u)
             (fun i : ι => radialJacobiField (I := I) g p u (B (some i))) s /
-          hypDensity q (Fintype.card ι) s) := by
+          hyperbolicDensity q (Fintype.card ι) s) := by
       rw [hdensity s hs]
       ring
     _ ≤ c * (curveDensity (I := I) g (radialCurve (I := I) g p u)
             (fun i : ι => radialJacobiField (I := I) g p u (B (some i))) r /
-          hypDensity q (Fintype.card ι) r) :=
+          hyperbolicDensity q (Fintype.card ι) r) :=
       mul_le_mul_of_nonneg_left (hcurve hr hs hrs) hc.le
     _ = r ^ Fintype.card ι * normalChartDensity (I := I) g p (r • u) /
-          hypDensity q (Fintype.card ι) r := by
+          hyperbolicDensity q (Fintype.card ι) r := by
       rw [hdensity r hr]
       ring
 
@@ -903,7 +903,7 @@ theorem exists_radial_mean
       ∀ t ∈ Ioo (0 : ℝ) b,
         curveMean (I := I) g (radialCurve (I := I) g p x)
             (fun i => radialJacobiField (I := I) g p x (v i)) t ≤
-          hypMeanCurv (q * Real.sqrt (g.inner p x x))
+          hyperbolicMeanCurv (q * Real.sqrt (g.inner p x x))
             (Module.finrank ℝ E - 1) t := by
   obtain ⟨r, hr, hcmp⟩ := exists_radial_cmp (I := I) (ι := ι) g hEnorm p
   refine ⟨r, hr, ?_⟩

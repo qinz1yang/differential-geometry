@@ -183,17 +183,17 @@ theorem spectralPartialSum_ccTensorBilinSymm_tendsto_of_representative
     exact absurd hsum (by norm_num)
   obtain ⟨β, _hβmem, hβpos⟩ := hexists
   set ρ : ℝ := ((chartAtlasPOU I M) β : C^∞⟮I, M; ℝ⟯) x with hρ_def
-  have hx_src : x ∈ (chartAt H β).source := by
+  have hx_source : x ∈ (chartAt H β).source := by
     have hsub := chartAtlasPOU_isSubordinate (I := I) (M := M) β
     apply hsub
     exact subset_tsupport _ (Function.mem_support.mpr (ne_of_gt hβpos))
   set yx : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
     toEuclidean (extChartAt I β x) with hyx_def
   have hyx_mem : yx ∈ chartTargetEuclid (I := I) (M := M) β :=
-    toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) β hx_src
+    toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) β hx_source
   have hround : (extChartAt I β).symm (toEuclidean.symm yx) = x := by
     rw [hyx_def, ContinuousLinearEquiv.symm_apply_apply]
-    exact (extChartAt I β).left_inv (by rw [extChartAt_source (I := I)]; exact hx_src)
+    exact (extChartAt I β).left_inv (by rw [extChartAt_source (I := I)]; exact hx_source)
   have hcomp_eq : ∀ (Z : SmoothCcTensor g 0 2) (Q : CompIdx E 0 2),
       tensorChartComponent (I := I) (M := M) g 0 2 Z β Q.1 Q.2 yx =
         ρ * tensorChartComponentRaw (I := I) (M := M) g 0 2 Z β Q.1 Q.2 x := by
@@ -212,14 +212,14 @@ theorem spectralPartialSum_ccTensorBilinSymm_tendsto_of_representative
     have hscaled := hct.const_mul ρ⁻¹
     simp only [← mul_assoc, inv_mul_cancel₀ hρne, one_mul] at hscaled
     exact hscaled
-  rw [ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g Trep β hx_src v w]
+  rw [ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g Trep β hx_source v w]
   have hrw : (fun n => ccTensorBilinSymm (I := I) g (F n) x v w) =
       fun n => ∑ Q : CompIdx E 0 2,
         tensorChartComponentRaw (I := I) (M := M) g 0 2 (F n) β Q.1 Q.2 x *
           fibreSymmBilinForm (I := I) x
             (chartBasisFiberSection (I := I) (M := M) 0 2 β Q x) v w := by
     funext n
-    exact ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g (F n) β hx_src v w
+    exact ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g (F n) β hx_source v w
   rw [hrw]
   refine tendsto_finsetSum _ (fun Q _ => ?_)
   exact (hraw_tendsto Q).mul_const _

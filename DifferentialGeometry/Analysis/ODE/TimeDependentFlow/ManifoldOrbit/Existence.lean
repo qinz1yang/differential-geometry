@@ -121,7 +121,7 @@ theorem fromZeroChartField_continuousOn_time_from_zero
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 private theorem fromZero_orbit_confined
     {f : ℝ → E → E} {x₀ : E} {a L : ℝ} {δ : ℝ} (hL : 0 ≤ L)
-    (γ : ℝ → E) (hγ_init : γ 0 = x₀)
+    (γ : ℝ → E) (hγ_initial : γ 0 = x₀)
     (hγcont : ContinuousOn γ (Set.Icc (0 : ℝ) δ))
     (hγderiv : ∀ t ∈ Set.Ico (0 : ℝ) δ, HasDerivWithinAt γ (f t (γ t)) (Set.Ici (0 : ℝ)) t)
     (hfnorm : ∀ t ∈ Set.Icc (0 : ℝ) δ, ∀ y ∈ Metric.closedBall x₀ a, ‖f t y‖ ≤ L)
@@ -150,7 +150,7 @@ private theorem fromZero_orbit_confined
       tauto
     rwa [heq] at hpre
   have h0S : (0 : ℝ) ∈ S := by
-    simp only [hS, Set.mem_ofPred_eq, hγ_init, dist_self, mul_zero, le_refl]
+    simp only [hS, Set.mem_ofPred_eq, hγ_initial, dist_self, mul_zero, le_refl]
   have hgt : ∀ x ∈ S ∩ Set.Ico (0 : ℝ) δ, ∀ y ∈ Set.Ioi x, (S ∩ Set.Ioc x y).Nonempty := by
     rintro x ⟨hxS, hx_mem⟩ y hy
     have hxδ : x < δ := hx_mem.2
@@ -308,7 +308,7 @@ theorem fromZero_manifold_orbit_of_lipschitz
     have hbridge := chartCoord_hasDerivWithinAt_to_manifold_hasMFDerivWithinAt
       (I := I) α γE (Set.Ici (0 : ℝ)) t (F t (γE t)) htgt_t hconf_range hd
     set q : M := (extChartAt I α).symm (γE t) with hq_def
-    have hq_src : q ∈ (extChartAt I α).source := (extChartAt I α).map_target htgt_t
+    have hq_source : q ∈ (extChartAt I α).source := (extChartAt I α).map_target htgt_t
     have hq_round : extChartAt I α q = γE t := (extChartAt I α).right_inv htgt_t
     have hcancel :
         (mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (Set.range I) (γE t)) (F t (γE t))
@@ -316,7 +316,7 @@ theorem fromZero_manifold_orbit_of_lipschitz
       have hFeq : F t (γE t)
           = tangentCoordChange I q α q (X t q) := rfl
       rw [hFeq, ← hq_round]
-      exact pushforward_velocity_cancellation (I := I) α q hq_src (X t q)
+      exact pushforward_velocity_cancellation (I := I) α q hq_source (X t q)
     let w : TangentSpace 𝓘(ℝ, E) (γE t) := F t (γE t)
     have hw :
         (mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (Set.range I) (γE t)) w =

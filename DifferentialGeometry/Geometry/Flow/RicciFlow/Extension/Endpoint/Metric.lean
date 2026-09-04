@@ -16,7 +16,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Set Filter
 open scoped Manifold ContDiff Topology
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -77,7 +77,7 @@ theorem exists_endMetric
             metricCovDerivNorm (I := I) q (gSeq k) gRef z <= C := by
         intro q K hK
         obtain ⟨Cq, _hCq, tq, htq, hq⟩ :=
-          covTailBoundSol (I := I) q hdim hS hbound
+          covTailBoundSolution (I := I) q hdim hS hbound
             ⟨Lambda, hLambda, t1, ht1, hEquivTail⟩
         obtain ⟨k0, hk0⟩ :=
           ((tendsto_order.1 hSeqLim).1 tq htq.2).exists_forall_of_atTop
@@ -94,7 +94,7 @@ theorem exists_endMetric
         · intro k x v
           exact (hEquivTail (tSeq k)
             ⟨le_of_lt (lt_trans ht1beta (hSeqMem k).1), (hSeqMem k).2⟩ x v).1
-      obtain ⟨phi, hPhi, gInf, hInner, _hDerivConv⟩ :=
+      obtain ⟨phi, hPhi, gInf, hInner, _hDerivConvergence⟩ :=
         exists_metric_subsequence_tendsto_on_compact (I := I) hM Set.univ isCompact_univ 2 gRef gSeq hbdd hlow
       refine ⟨gInf, ?_⟩
       intro x0 x i j
@@ -161,9 +161,9 @@ theorem exists_endMetric
             (deriv (fun u : Real =>
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (S.base.metric u) x0 x i j) s) s := by
         intro s hs
-        have hsReg : s ∈ Set.Ioo alpha omega :=
+        have hsRegularity : s ∈ Set.Ioo alpha omega :=
           ⟨lt_trans hBeta.1 hs.1, hs.2⟩
-        have h := metricDerivAt (I := I) S hS ⟨s, hsReg⟩ x v w
+        have h := metricDerivAt (I := I) S hS ⟨s, hsRegularity⟩ x v w
         simpa [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, v, w, SolutionOn.family] using
           h.differentiableAt.hasDerivAt
       have hDerivBound : forall s : Real, s ∈ Set.Ioo beta omega ->
@@ -172,9 +172,9 @@ theorem exists_endMetric
               2 * (KShi * (Real.sqrt (Lambda * gRef.inner x v v) *
                 Real.sqrt (Lambda * gRef.inner x w w))) := by
         intro s hs
-        have hsReg : s ∈ Set.Ioo alpha omega :=
+        have hsRegularity : s ∈ Set.Ioo alpha omega :=
           ⟨lt_trans hBeta.1 hs.1, hs.2⟩
-        have h := metricDerivAt (I := I) S hS ⟨s, hsReg⟩ x v w
+        have h := metricDerivAt (I := I) S hS ⟨s, hsRegularity⟩ x v w
         have hVal : S.base.ricciAt s x (vec2 (I := I) v w) =
             ricciTensor (I := I) (S.base.metric s) x v w :=
           metricRicciAt_apply_eq_ricciTensor (I := I) (S.base.metric s) x v w

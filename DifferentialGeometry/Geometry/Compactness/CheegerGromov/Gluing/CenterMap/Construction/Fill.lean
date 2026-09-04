@@ -10,7 +10,7 @@ set_option autoImplicit false
 
 open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Topology
 open scoped ContDiff
@@ -47,8 +47,8 @@ theorem safeFill_diag
     {U : Set X} {V : Set Y} (hU : IsOpen U) (hV : IsOpen V)
     {F : Nat → X → Y} {Finf : X → Y}
     {R : Nat → Y → X} {Rinf : Y → X}
-    (hF : MapCInfConvOnCompacts U F Finf)
-    (hR : MapCInfConvOnCompacts V R Rinf)
+    (hF : MapCInfConvergenceOnCompacts U F Finf)
+    (hR : MapCInfConvergenceOnCompacts V R Rinf)
     (hFc : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (F k) U)
     (hFinfc : ContDiffOn Real (∞ : WithTop ℕ∞) Finf U)
     (hRc : ∀ l, ContDiffOn Real (∞ : WithTop ℕ∞) (R l) V)
@@ -61,17 +61,17 @@ theorem safeFill_diag
       x + cut (Finf x) • (Rinf (safe (Finf x)) - x) = x)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun m => safeFill cut safe (F (kn m)) (R (ln m))) id := by
   let safeF : Nat → X → Y := fun m x => safe (F (kn m) x)
   let safeFinf : X → Y := fun x => safe (Finf x)
-  have hFk : MapCInfConvOnCompacts U (fun m => F (kn m)) Finf :=
+  have hFk : MapCInfConvergenceOnCompacts U (fun m => F (kn m)) Finf :=
     hF.comp_tendsto_atTop hkn
-  have hRl : MapCInfConvOnCompacts V (fun m => R (ln m)) Rinf :=
+  have hRl : MapCInfConvergenceOnCompacts V (fun m => R (ln m)) Rinf :=
     hR.comp_tendsto_atTop hln
-  have hsafeF : MapCInfConvOnCompacts U safeF safeFinf := by
-    apply MapCInfConvOnCompacts.comp hU isOpen_univ hFk
-      (mapCInfConv_const (U := (Set.univ : Set Y)) safe)
+  have hsafeF : MapCInfConvergenceOnCompacts U safeF safeFinf := by
+    apply MapCInfConvergenceOnCompacts.comp hU isOpen_univ hFk
+      (mapCInfConvergence_const (U := (Set.univ : Set Y)) safe)
       (fun m => hFc (kn m)) hFinfc
       (fun _ => hsafe.contDiffOn) hsafe.contDiffOn
     · exact fun _ _ => Set.mem_univ _
@@ -91,8 +91,8 @@ theorem safeFill_diag
     exact hsafeV (Set.mem_univ (F (kn m) x))
   let back : Nat → X → X := fun m x => R (ln m) (safeF m x)
   let backInf : X → X := fun x => Rinf (safeFinf x)
-  have hback : MapCInfConvOnCompacts U back backInf := by
-    exact MapCInfConvOnCompacts.comp hU hV hsafeF hRl hsafeFc
+  have hback : MapCInfConvergenceOnCompacts U back backInf := by
+    exact MapCInfConvergenceOnCompacts.comp hU hV hsafeF hRl hsafeFc
       hsafeFinfc (fun m => hRc (ln m)) hRinfc hsafeMap hsafeMapk
   have hbackc : ∀ m,
       ContDiffOn Real (∞ : WithTop ℕ∞) (back m) U := by
@@ -103,8 +103,8 @@ theorem safeFill_diag
     hRinfc.comp hsafeFinfc hsafeMap
   let targets : Nat → X → Y × X := fun m x => (F (kn m) x, back m x)
   let targetsInf : X → Y × X := fun x => (Finf x, backInf x)
-  have htargets : MapCInfConvOnCompacts U targets targetsInf :=
-    mapCInfConv_prodMk hU hFk hback (fun m => hFc (kn m)) hFinfc
+  have htargets : MapCInfConvergenceOnCompacts U targets targetsInf :=
+    mapCInfConvergence_prodMk hU hFk hback (fun m => hFc (kn m)) hFinfc
       hbackc hbackInfc
   have htargetsc : ∀ m,
       ContDiffOn Real (∞ : WithTop ℕ∞) (targets m) U :=
@@ -116,15 +116,15 @@ theorem safeFill_diag
     q.1 + cut q.2.1 • (q.2.2 - q.1)
   have houter : ContDiff Real (∞ : WithTop ℕ∞) outer := by
     fun_prop
-  have hconv := mapCInfConvOnCompacts_comp_prodMk_id
+  have hconv := mapCInfConvergenceOnCompacts_comp_prodMk_id
     (E' := X) (P := X) (Q := Y × X)
     hU (isOpen_univ : IsOpen (Set.univ : Set (X × (Y × X))))
-    (mapCInfConv_const (U := U) id) htargets
+    (mapCInfConvergence_const (U := U) id) htargets
     (fun _ => contDiffOn_id) contDiffOn_id htargetsc htargetsInfc
     houter.contDiffOn
     (fun _ _ _ => Set.mem_univ _) (fun _ _ => Set.mem_univ _)
     (fun x hx => hdiag x hx)
-  change MapCInfConvOnCompacts U
+  change MapCInfConvergenceOnCompacts U
     (fun m y => y + cut (F (kn m) y) •
       (R (ln m) (safe (F (kn m) y)) - y)) (fun y => y)
   simpa only [safeF, safeFinf, back, backInf, targets,
@@ -144,10 +144,10 @@ noncomputable def stageTotal
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r)
-    (pairPts : InterSlot L pb r alpha → Nat → Nat → E → E)
+    (pairPoints : InterSlot L pb r alpha → Nat → Nat → E → E)
     (a b : Nat) (z : E) (gamma : Fin (pb.A r)) : E :=
   match interSlot? alpha gamma with
-  | some target => pairPts target a b z
+  | some target => pairPoints target a b z
   | none => z
 
 omit [CompleteSpace E] in
@@ -156,13 +156,13 @@ theorem stageTotal_smooth
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r)
-    (pairPts : InterSlot L pb r alpha → Nat → Nat → E → E)
+    (pairPoints : InterSlot L pb r alpha → Nat → Nat → E → E)
     {U : Set E} (a b : Nat)
     (hpair : ∀ target,
-      ContDiffOn Real (∞ : WithTop ℕ∞) (pairPts target a b) U)
+      ContDiffOn Real (∞ : WithTop ℕ∞) (pairPoints target a b) U)
     (gamma : Fin (pb.A r)) :
     ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z => stageTotal alpha pairPts a b z gamma) U := by
+      (fun z => stageTotal alpha pairPoints a b z gamma) U := by
   classical
   unfold stageTotal
   cases hlookup : interSlot? alpha gamma with
@@ -170,46 +170,46 @@ theorem stageTotal_smooth
   | some target => exact hpair target
 
 omit [CompleteSpace E] in
-theorem stageTotal_conv
+theorem stageTotal_convergence
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r)
-    (pairPts : InterSlot L pb r alpha → Nat → Nat → E → E)
+    (pairPoints : InterSlot L pb r alpha → Nat → Nat → E → E)
     {U : Set E} (kn ln : Nat → Nat)
     (hpair : ∀ target,
-      MapCInfConvOnCompacts U
-        (fun m => pairPts target (kn m) (ln m)) id)
+      MapCInfConvergenceOnCompacts U
+        (fun m => pairPoints target (kn m) (ln m)) id)
     (gamma : Fin (pb.A r)) :
-    MapCInfConvOnCompacts U
-      (fun m z => stageTotal alpha pairPts (kn m) (ln m) z gamma) id := by
+    MapCInfConvergenceOnCompacts U
+      (fun m z => stageTotal alpha pairPoints (kn m) (ln m) z gamma) id := by
   classical
   unfold stageTotal
   cases hlookup : interSlot? alpha gamma with
-  | none => exact mapCInfConv_const (U := U) id
+  | none => exact mapCInfConvergence_const (U := U) id
   | some target => exact hpair target
 
 omit [CompleteSpace E] in
-theorem stageTotal_pi_conv
+theorem stageTotal_pi_convergence
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (alpha : LiveSlot L pb r)
-    (pairPts : InterSlot L pb r alpha → Nat → Nat → E → E)
+    (pairPoints : InterSlot L pb r alpha → Nat → Nat → E → E)
     {U : Set E} (hU : IsOpen U) (kn ln : Nat → Nat)
     (hpair : ∀ target,
-      MapCInfConvOnCompacts U
-        (fun m => pairPts target (kn m) (ln m)) id)
+      MapCInfConvergenceOnCompacts U
+        (fun m => pairPoints target (kn m) (ln m)) id)
     (hpairc : ∀ target m,
       ContDiffOn Real (∞ : WithTop ℕ∞)
-        (pairPts target (kn m) (ln m)) U) :
-    MapCInfConvOnCompacts U
-      (fun m z gamma => stageTotal alpha pairPts
+        (pairPoints target (kn m) (ln m)) U) :
+    MapCInfConvergenceOnCompacts U
+      (fun m z gamma => stageTotal alpha pairPoints
         (kn m) (ln m) z gamma)
       (fun z _ => z) := by
-  apply mapCInfConv_pi hU
-  · exact fun gamma => stageTotal_conv alpha pairPts kn ln hpair gamma
-  · exact fun gamma m => stageTotal_smooth alpha pairPts (kn m) (ln m)
+  apply mapCInfConvergence_pi hU
+  · exact fun gamma => stageTotal_convergence alpha pairPoints kn ln hpair gamma
+  · exact fun gamma m => stageTotal_smooth alpha pairPoints (kn m) (ln m)
       (fun target => hpairc target m) gamma
   · exact fun _ => contDiffOn_id
 
@@ -273,11 +273,11 @@ theorem stageFill_eq_self (lam : Real) (hlam : 0 < lam)
     stageFill lam hlam F R x = x := by
   simp only [stageFill, safeFill, hx, zero_smul, add_zero]
 
-theorem stageFill_conv [ProperSpace E]
+theorem stageFill_convergence [ProperSpace E]
     (lam : Real) (hlam : 0 < lam) {U : Set E} (hU : IsOpen U)
     {F R : Nat → E → E} {Finf Rinf : E → E}
-    (hF : MapCInfConvOnCompacts U F Finf)
-    (hR : MapCInfConvOnCompacts (Metric.ball 0 (8 * lam)) R Rinf)
+    (hF : MapCInfConvergenceOnCompacts U F Finf)
+    (hR : MapCInfConvergenceOnCompacts (Metric.ball 0 (8 * lam)) R Rinf)
     (hFc : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (F k) U)
     (hFinfc : ContDiffOn Real (∞ : WithTop ℕ∞) Finf U)
     (hRc : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (R k)
@@ -288,7 +288,7 @@ theorem stageFill_conv [ProperSpace E]
       Rinf (Finf z) = z)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun m => stageFill lam hlam (F (kn m)) (R (ln m))) id := by
   have hdiag : ∀ z ∈ U,
       z + activityBump (E := E) lam hlam (Finf z) •
@@ -354,7 +354,7 @@ noncomputable def pairStageFill
       (seqCenterD inp.decay P L l (target.1.1 : Nat))
       (seqCenterD inp.decay P L l (alpha.1 : Nat)))
 
-noncomputable def stagePts
+noncomputable def stagePoints
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -377,13 +377,13 @@ noncomputable def stageWeight
         inp.pack r beta target k)
       i0) z gamma
 
-noncomputable def stageCfg
+noncomputable def stageConfiguration
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
     (alpha : LiveSlot L inp.pack r) (k l : Nat) (z : E) :
     (Fin (inp.pack.A r) → Real) × (Fin (inp.pack.A r) → E) :=
-  (stageWeight inp P L hr alpha k z, stagePts inp P L alpha k l z)
+  (stageWeight inp P L hr alpha k z, stagePoints inp P L alpha k l z)
 
 noncomputable def pairStageFillSub
     (inp : MetricCompactCore (I := I) X)
@@ -416,7 +416,7 @@ noncomputable def pairStageFillSub
       (seqCenterD inp.decay P L (phi l) (target.1.1 : Nat))
       (seqCenterD inp.decay P L (phi l) (alpha.1 : Nat)))
 
-noncomputable def stagePtsSub
+noncomputable def stagePointsSub
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -476,7 +476,7 @@ theorem stageWeightSub_eq
   simp only [stageWeightSub, seqAtomOn, NormalChartFamily.hom,
     rawWeights, cutRaw]
 
-noncomputable def stageCfgSub
+noncomputable def stageConfigurationSub
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -486,9 +486,9 @@ noncomputable def stageCfgSub
       c2RadiusNormalChartFamily (I := I) X) :
     (Fin (inp.pack.A r) → Real) × (Fin (inp.pack.A r) → E) :=
   (stageWeightSub inp P L hr phi hphi alpha k z (chart := chart),
-    stagePtsSub inp P L phi hphi alpha k l z (chart := chart))
+    stagePointsSub inp P L phi hphi alpha k l z (chart := chart))
 
-theorem HasSuppConvDataOn.weightSub_ev_raw
+theorem HasSupportedCenterMapConvergenceOn.weightSub_ev_raw
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -499,14 +499,14 @@ theorem HasSuppConvDataOn.weightSub_ev_raw
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
+    (hdata : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf) :
     ∀ᶠ k in Filter.atTop, ∀ alpha : LiveSlot L inp.pack r,
       centerAverage.WeightDataOn (U alpha)
         (fun _ : Fin (inp.pack.A r) => Set.univ)
         (stageWeightSub inp P L hr phi hphi alpha k (chart := chart)) := by
   classical
-  dsimp only [HasSuppConvDataOn] at hdata
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hdata
   rcases hdata with
     ⟨_hUopen, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, hgeom, _hlim, _hweightData, _htrans, _hstage⟩
@@ -536,7 +536,7 @@ theorem HasSuppConvDataOn.weightSub_ev_raw
   exact ⟨hweight.nonneg, hweight.pos, hweight.sum_one,
     fun z _hz _gamma _hne => Set.mem_univ z⟩
 
-theorem HasSuppConvDataOn.weightSub_ev
+theorem HasSupportedCenterMapConvergenceOn.weightSub_ev
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -547,7 +547,7 @@ theorem HasSuppConvDataOn.weightSub_ev
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
+    (hdata : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf) :
     ∀ᶠ k in Filter.atTop, ∀ alpha : LiveSlot L inp.pack r,
       centerAverage.WeightDataOn (U alpha)
@@ -556,7 +556,7 @@ theorem HasSuppConvDataOn.weightSub_ev
   exact hdata.weightSub_ev_raw inp P L hr phi hphi chart
     U C0 C1 aInf Jinf Jbarinf
 
-theorem HasSuppConvData.weightSub_ev
+theorem HasSupportedCenterMapConvergence.weightSub_ev
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -566,14 +566,14 @@ theorem HasSuppConvData.weightSub_ev
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (hdata : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf) :
     ∀ᶠ k in Filter.atTop, ∀ alpha : LiveSlot L inp.pack r,
       centerAverage.WeightDataOn (U alpha)
         (fun _ : Fin (inp.pack.A r) => Set.univ)
         (stageWeightSub inp P L hr phi hphi alpha k) := by
   classical
-  dsimp only [HasSuppConvData] at hdata
+  dsimp only [HasSupportedCenterMapConvergence] at hdata
   rcases hdata with
     ⟨_hUopen, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, hgeom, _hlim, _hweightData, _htrans, _hstage⟩
@@ -658,13 +658,13 @@ theorem HasAtomWeightLim.stageWeight_data
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞)
       (stageWeight inp P L hr alpha k) U) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => stageWeight inp P L hr alpha k) weightInf := by
   dsimp only [HasAtomWeightLim] at hlim
   simpa only [stageWeight] using
     ⟨hlim.2.2.2.2.1, hlim.2.2.2.2.2.1, hlim.2.2.2.2.2.2⟩
 
-theorem stageCfg_conv
+theorem stageConfiguration_convergence
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -674,16 +674,16 @@ theorem stageCfg_conv
       inp.realizes inp.pack r hr
       (fun k => seqCenterD inp.decay P L k (alpha.1 : Nat)) U aInf)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
-    (hpts : MapCInfConvOnCompacts U
-      (fun m z => stagePts inp P L alpha (kn m) (ln m) z)
+    (hpts : MapCInfConvergenceOnCompacts U
+      (fun m z => stagePoints inp P L alpha (kn m) (ln m) z)
       (fun z _ => z))
     (hptsc : ∀ m, ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z => stagePts inp P L alpha (kn m) (ln m) z) U) :
+      (fun z => stagePoints inp P L alpha (kn m) (ln m) z) U) :
     let i0 := baseIndex inp.decay inp.realizes inp.pack hr
     let weightInf := fun z gamma =>
       rawWeights (cutRaw (aInf i0) aInf i0) z gamma
-    MapCInfConvOnCompacts U
-      (fun m => stageCfg inp P L hr alpha (kn m) (ln m))
+    MapCInfConvergenceOnCompacts U
+      (fun m => stageConfiguration inp P L hr alpha (kn m) (ln m))
       (fun z => (weightInf z, fun _ => z)) := by
   dsimp only
   obtain ⟨hweightc, hweightInfc, hweight⟩ :=
@@ -695,12 +695,12 @@ theorem stageCfg_conv
   let i0 := baseIndex inp.decay inp.realizes inp.pack hr
   let weightInf := fun z gamma =>
     rawWeights (cutRaw (aInf i0) aInf i0) z gamma
-  change MapCInfConvOnCompacts U
+  change MapCInfConvergenceOnCompacts U
     (fun m z =>
       (stageWeight inp P L hr alpha (kn m) z,
-        stagePts inp P L alpha (kn m) (ln m) z))
+        stagePoints inp P L alpha (kn m) (ln m) z))
     (fun z => (weightInf z, fun _ => z))
-  exact mapCInfConv_prodMk hU hweightKn hpts
+  exact mapCInfConvergence_prodMk hU hweightKn hpts
     (fun m => hweightc (kn m)) hweightInfc hptsc hdiagc
 
 theorem HasAtomWeightLimOn.stageWeightSub_data
@@ -722,7 +722,7 @@ theorem HasAtomWeightLimOn.stageWeightSub_data
       (stageWeightSub inp P L hr phi hphi alpha k
         (chart := chart)) U) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => stageWeightSub inp P L hr phi hphi alpha k
           (chart := chart))
         weightInf := by
@@ -762,7 +762,7 @@ theorem HasAtomWeightLim.stageWeightSub_data
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞)
       (stageWeightSub inp P L hr phi hphi alpha k) U) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => stageWeightSub inp P L hr phi hphi alpha k)
         weightInf := by
   change HasAtomWeightLim (I := I) inp.decay inp.hD P
@@ -793,7 +793,7 @@ theorem HasAtomWeightLim.stageWeightSub_data
   simpa only [stageWeightSub, MetricCompactnessInputs.toCore] using
     ⟨hlim.2.2.2.2.1, hlim.2.2.2.2.2.1, hlim.2.2.2.2.2.2⟩
 
-theorem stageCfgSub_conv_on
+theorem stageConfigurationSub_convergence_on
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -806,18 +806,18 @@ theorem stageCfgSub_conv_on
       (fun k => seqCenterD inp.decay P (L.subseq hphi) k
         (alpha.1 : Nat)) U aInf)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
-    (hpts : MapCInfConvOnCompacts U
-      (fun m z => stagePtsSub inp P L phi hphi alpha
+    (hpts : MapCInfConvergenceOnCompacts U
+      (fun m z => stagePointsSub inp P L phi hphi alpha
         (kn m) (ln m) z (chart := chart))
       (fun z _ => z))
     (hptsc : ∀ m, ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z => stagePtsSub inp P L phi hphi alpha
+      (fun z => stagePointsSub inp P L phi hphi alpha
         (kn m) (ln m) z (chart := chart)) U) :
     let i0 := baseIndex inp.decay inp.realizes inp.pack hr
     let weightInf := fun z gamma =>
       rawWeights (cutRaw (aInf i0) aInf i0) z gamma
-    MapCInfConvOnCompacts U
-      (fun m => stageCfgSub inp P L hr phi hphi alpha
+    MapCInfConvergenceOnCompacts U
+      (fun m => stageConfigurationSub inp P L hr phi hphi alpha
         (kn m) (ln m) (chart := chart))
       (fun z => (weightInf z, fun _ => z)) := by
   dsimp only
@@ -830,17 +830,17 @@ theorem stageCfgSub_conv_on
   let i0 := baseIndex inp.decay inp.realizes inp.pack hr
   let weightInf := fun z gamma =>
     rawWeights (cutRaw (aInf i0) aInf i0) z gamma
-  change MapCInfConvOnCompacts U
+  change MapCInfConvergenceOnCompacts U
     (fun m z =>
       (stageWeightSub inp P L hr phi hphi alpha (kn m) z
           (chart := chart),
-        stagePtsSub inp P L phi hphi alpha (kn m) (ln m) z
+        stagePointsSub inp P L phi hphi alpha (kn m) (ln m) z
           (chart := chart)))
     (fun z => (weightInf z, fun _ => z))
-  exact mapCInfConv_prodMk hU hweightKn hpts
+  exact mapCInfConvergence_prodMk hU hweightKn hpts
     (fun m => hweightc (kn m)) hweightInfc hptsc hdiagc
 
-theorem stageCfgSub_conv
+theorem stageConfigurationSub_convergence
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -852,18 +852,18 @@ theorem stageCfgSub_conv
       (fun k => seqCenterD inp.decay P (L.subseq hphi) k
         (alpha.1 : Nat)) U aInf)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
-    (hpts : MapCInfConvOnCompacts U
-      (fun m z => stagePtsSub inp P L phi hphi alpha
+    (hpts : MapCInfConvergenceOnCompacts U
+      (fun m z => stagePointsSub inp P L phi hphi alpha
         (kn m) (ln m) z)
       (fun z _ => z))
     (hptsc : ∀ m, ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z => stagePtsSub inp P L phi hphi alpha
+      (fun z => stagePointsSub inp P L phi hphi alpha
         (kn m) (ln m) z) U) :
     let i0 := baseIndex inp.decay inp.realizes inp.pack hr
     let weightInf := fun z gamma =>
       rawWeights (cutRaw (aInf i0) aInf i0) z gamma
-    MapCInfConvOnCompacts U
-      (fun m => stageCfgSub inp P L hr phi hphi alpha (kn m) (ln m))
+    MapCInfConvergenceOnCompacts U
+      (fun m => stageConfigurationSub inp P L hr phi hphi alpha (kn m) (ln m))
       (fun z => (weightInf z, fun _ => z)) := by
   dsimp only
   obtain ⟨hweightc, hweightInfc, hweight⟩ :=
@@ -875,15 +875,15 @@ theorem stageCfgSub_conv
   let i0 := baseIndex inp.decay inp.realizes inp.pack hr
   let weightInf := fun z gamma =>
     rawWeights (cutRaw (aInf i0) aInf i0) z gamma
-  change MapCInfConvOnCompacts U
+  change MapCInfConvergenceOnCompacts U
     (fun m z =>
       (stageWeightSub inp.toCore P L hr phi hphi alpha (kn m) z,
-        stagePtsSub inp.toCore P L phi hphi alpha (kn m) (ln m) z))
+        stagePointsSub inp.toCore P L phi hphi alpha (kn m) (ln m) z))
     (fun z => (weightInf z, fun _ => z))
-  exact mapCInfConv_prodMk hU hweightKn hpts
+  exact mapCInfConvergence_prodMk hU hweightKn hpts
     (fun m => hweightc (kn m)) hweightInfc hptsc hdiagc
 
-theorem stagePts_eq_of_transition_mem_closedBall
+theorem stagePoints_eq_of_transition_mem_closedBall
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -893,7 +893,7 @@ theorem stagePts_eq_of_transition_mem_closedBall
       (seqCenterD inp.decay P L k (alpha.1 : Nat))
       (seqCenterD inp.decay P L k (target.1.1 : Nat)) z ∈
         Metric.closedBall 0 (6 * L.lamInf (target.1.1 : Nat))) :
-    stagePts inp P L alpha k l z target.1.1 =
+    stagePoints inp P L alpha k l z target.1.1 =
       normalTransition (I := I) (X.obj (L.φ l))
         (seqCenterD inp.decay P L l (target.1.1 : Nat))
         (seqCenterD inp.decay P L l (alpha.1 : Nat))
@@ -911,7 +911,7 @@ theorem stagePts_eq_of_transition_mem_closedBall
       exact Classical.choose_spec h
     next h =>
       exact (h ⟨target, rfl⟩).elim
-  simp only [stagePts, stageTotal, hlookup]
+  simp only [stagePoints, stageTotal, hlookup]
   simpa only [pairStageFill] using
     (stageFill_eq_of_image_mem_closedBall (E := E) (L.lamInf (target.1.1 : Nat))
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
@@ -922,7 +922,7 @@ theorem stagePts_eq_of_transition_mem_closedBall
         (seqCenterD inp.decay P L l (target.1.1 : Nat))
         (seqCenterD inp.decay P L l (alpha.1 : Nat))) hsmall)
 
-theorem stagePts_eq_of_weight_ne_zero
+theorem stagePoints_eq_of_weight_ne_zero
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -943,17 +943,17 @@ theorem stagePts_eq_of_weight_ne_zero
           (seqCenterD inp.decay P L k (target.1.1 : Nat)))
     (z : E)
     (hweight : stageWeight inp P L hr alpha k z target.1.1 ≠ 0) :
-    stagePts inp P L alpha k l z target.1.1 =
+    stagePoints inp P L alpha k l z target.1.1 =
       normalTransition (I := I) (X.obj (L.φ l))
         (seqCenterD inp.decay P L l (target.1.1 : Nat))
         (seqCenterD inp.decay P L l (alpha.1 : Nat))
         (normalTransition (I := I) (X.obj (L.φ k))
           (seqCenterD inp.decay P L k (alpha.1 : Nat))
           (seqCenterD inp.decay P L k (target.1.1 : Nat)) z) := by
-  exact stagePts_eq_of_transition_mem_closedBall inp P L alpha target k l z
+  exact stagePoints_eq_of_transition_mem_closedBall inp P L alpha target k l z
     (stageWeight_small inp P L hr alpha k hgp target.1.1 hC2 z hweight)
 
-theorem stagePtsSub_eq_of_transition_mem_closedBall
+theorem stagePointsSub_eq_of_transition_mem_closedBall
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -967,7 +967,7 @@ theorem stagePtsSub_eq_of_transition_mem_closedBall
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
         (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)) z ∈
         Metric.closedBall 0 (6 * L.lamInf (target.1.1 : Nat))) :
-    stagePtsSub inp P L phi hphi alpha k l z target.1.1
+    stagePointsSub inp P L phi hphi alpha k l z target.1.1
         (chart := chart) =
       chart.transition (L.φ (phi l))
         (seqCenterD inp.decay P L (phi l) (target.1.1 : Nat))
@@ -986,7 +986,7 @@ theorem stagePtsSub_eq_of_transition_mem_closedBall
       exact Classical.choose_spec h
     next h =>
       exact (h ⟨target, rfl⟩).elim
-  simp only [stagePtsSub, stageTotal, hlookup]
+  simp only [stagePointsSub, stageTotal, hlookup]
   simpa only [pairStageFillSub, NormalChartFamily.transition,
     c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_transition] using
     (stageFill_eq_of_image_mem_closedBall (E := E) (L.lamInf (target.1.1 : Nat))
@@ -999,7 +999,7 @@ theorem stagePtsSub_eq_of_transition_mem_closedBall
         (seqCenterD inp.decay P L (phi l) (alpha.1 : Nat))) hsmall)
 
 
-theorem stagePtsSub_eq_of_weight_ne_zero
+theorem stagePointsSub_eq_of_weight_ne_zero
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -1021,7 +1021,7 @@ theorem stagePtsSub_eq_of_weight_ne_zero
     (z : E)
     (hweight : stageWeightSub inp.toCore P L hr phi hphi alpha k z
       target.1.1 ≠ 0) :
-    stagePtsSub inp.toCore P L phi hphi alpha k l z target.1.1 =
+    stagePointsSub inp.toCore P L phi hphi alpha k l z target.1.1 =
       normalTransition (I := I) (X.obj (L.φ (phi l)))
         (seqCenterD inp.decay P L (phi l)
           (target.1.1 : Nat))
@@ -1045,12 +1045,12 @@ theorem stagePtsSub_eq_of_weight_ne_zero
     exact stageWeight_small inp P L hr alpha (phi k) hgp target.1.1 hC2 z hweight'
   simpa only [NormalChartFamily.transition, c2RadiusNormalChartFamily,
     c2_radius_normal_ball_chart_transition, MetricCompactnessInputs.toCore] using
-      (stagePtsSub_eq_of_transition_mem_closedBall inp.toCore P L phi hphi alpha target k l z
+      (stagePointsSub_eq_of_transition_mem_closedBall inp.toCore P L phi hphi alpha target k l z
         (chart := c2RadiusNormalChartFamily (I := I) X) (hsmall := by
           simpa only [NormalChartFamily.transition, c2RadiusNormalChartFamily,
             c2_radius_normal_ball_chart_transition, MetricCompactnessInputs.toCore] using hsmall))
 
-theorem pairStageFill_conv
+theorem pairStageFill_convergence
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -1061,12 +1061,12 @@ theorem pairStageFill_conv
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))))
     (hJbarc : ContDiffOn Real (∞ : WithTop ℕ∞) Jbar
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))))
-    (hJ : MapCInfConvOnCompacts
+    (hJ : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
       (fun k => normalTransition (I := I) (X.obj (L.φ k))
         (seqCenterD inp.decay P L k (alpha.1 : Nat))
         (seqCenterD inp.decay P L k (target.1.1 : Nat))) J)
-    (hJbar : MapCInfConvOnCompacts
+    (hJbar : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
       (fun k => normalTransition (I := I) (X.obj (L.φ k))
         (seqCenterD inp.decay P L k (target.1.1 : Nat))
@@ -1087,16 +1087,16 @@ theorem pairStageFill_conv
       Jbar (J z) = z)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
-    MapCInfConvOnCompacts
+    MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
       (fun m => pairStageFill inp P L alpha target (kn m) (ln m)) id := by
   simpa only [pairStageFill] using
-    (stageFill_conv (E := E) (L.lamInf (target.1.1 : Nat))
+    (stageFill_convergence (E := E) (L.lamInf (target.1.1 : Nat))
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
       Metric.isOpen_ball hJ hJbar hstage hJc hstageBar hJbarc hinv
       kn ln hkn hln)
 
-theorem pairStageSub_conv
+theorem pairStageSub_convergence
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -1108,14 +1108,14 @@ theorem pairStageSub_conv
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))))
     (hJbarc : ContDiffOn Real (∞ : WithTop ℕ∞) Jbar
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))))
-    (hJ : MapCInfConvOnCompacts
+    (hJ : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
       (fun k => normalTransition (I := I)
         (X.obj (L.φ (phi k)))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
         (seqCenterD inp.decay P L (phi k)
           (target.1.1 : Nat))) J)
-    (hJbar : MapCInfConvOnCompacts
+    (hJbar : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
       (fun k => normalTransition (I := I)
         (X.obj (L.φ (phi k)))
@@ -1142,18 +1142,18 @@ theorem pairStageSub_conv
       Jbar (J z) = z)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
-    MapCInfConvOnCompacts
+    MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
       (fun m => pairStageFillSub inp P L phi hphi alpha target
         (kn m) (ln m)) id := by
   simpa only [pairStageFillSub, NormalChartFamily.transition,
     c2RadiusNormalChartFamily, c2_radius_normal_ball_chart_transition] using
-    (stageFill_conv (E := E) (L.lamInf (target.1.1 : Nat))
+    (stageFill_convergence (E := E) (L.lamInf (target.1.1 : Nat))
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
       Metric.isOpen_ball hJ hJbar hstage hJc hstageBar hJbarc hinv
       kn ln hkn hln)
 
-theorem pairSub_conv_on
+theorem pairSub_convergence_on
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -1166,14 +1166,14 @@ theorem pairSub_conv_on
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))))
     (hJbarc : ContDiffOn Real (∞ : WithTop ℕ∞) Jbar
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))))
-    (hJ : MapCInfConvOnCompacts
+    (hJ : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
       (fun k => NormalChartFamily.transition (I := I) chart
         (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
         (seqCenterD inp.decay P L (phi k)
           (target.1.1 : Nat))) J)
-    (hJbar : MapCInfConvOnCompacts
+    (hJbar : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
       (fun k => NormalChartFamily.transition (I := I) chart
         (L.φ (phi k))
@@ -1202,12 +1202,12 @@ theorem pairSub_conv_on
       Jbar (J z) = z)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
-    MapCInfConvOnCompacts
+    MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
       (fun m => pairStageFillSub inp P L phi hphi alpha target
         (kn m) (ln m) (chart := chart)) id := by
   simpa only [pairStageFillSub, NormalChartFamily.transition] using
-    (stageFill_conv (E := E) (L.lamInf (target.1.1 : Nat))
+    (stageFill_convergence (E := E) (L.lamInf (target.1.1 : Nat))
       (inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat)))
       Metric.isOpen_ball hJ hJbar hstage hJc hstageBar hJbarc hinv
       kn ln hkn hln)
@@ -1315,7 +1315,7 @@ theorem pairSub_smooth_on
           (L.rInf (target.1.1 : Nat)))).radial_contDiff
       hstage hstageBar hsafe)
 
-theorem stagePtsSub_conv
+theorem stagePointsSub_convergence
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -1323,21 +1323,21 @@ theorem stagePtsSub_conv
     (alpha : LiveSlot L inp.pack r) {U : Set E} (hU : IsOpen U)
     (kn ln : Nat → Nat)
     (hpair : ∀ target : InterSlot L inp.pack r alpha,
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun m => pairStageFillSub inp P L phi hphi alpha target
           (kn m) (ln m)) id)
     (hpairc : ∀ target : InterSlot L inp.pack r alpha, ∀ m,
       ContDiffOn Real (∞ : WithTop ℕ∞)
         (pairStageFillSub inp P L phi hphi alpha target
           (kn m) (ln m)) U) :
-    MapCInfConvOnCompacts U
-      (fun m z => stagePtsSub inp P L phi hphi alpha
+    MapCInfConvergenceOnCompacts U
+      (fun m z => stagePointsSub inp P L phi hphi alpha
         (kn m) (ln m) z)
       (fun z _ => z) := by
-  exact stageTotal_pi_conv alpha
+  exact stageTotal_pi_convergence alpha
     (pairStageFillSub inp P L phi hphi alpha) hU kn ln hpair hpairc
 
-theorem ptsSub_conv_on
+theorem pointsSub_convergence_on
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -1346,22 +1346,22 @@ theorem ptsSub_conv_on
     (alpha : LiveSlot L inp.pack r) {U : Set E} (hU : IsOpen U)
     (kn ln : Nat → Nat)
     (hpair : ∀ target : InterSlot L inp.pack r alpha,
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun m => pairStageFillSub inp P L phi hphi alpha target
           (kn m) (ln m) (chart := chart)) id)
     (hpairc : ∀ target : InterSlot L inp.pack r alpha, ∀ m,
       ContDiffOn Real (∞ : WithTop ℕ∞)
         (pairStageFillSub inp P L phi hphi alpha target
           (kn m) (ln m) (chart := chart)) U) :
-    MapCInfConvOnCompacts U
-      (fun m z => stagePtsSub inp P L phi hphi alpha
+    MapCInfConvergenceOnCompacts U
+      (fun m z => stagePointsSub inp P L phi hphi alpha
         (kn m) (ln m) z (chart := chart))
       (fun z _ => z) := by
-  exact stageTotal_pi_conv alpha
+  exact stageTotal_pi_convergence alpha
     (pairStageFillSub inp P L phi hphi alpha (chart := chart))
     hU kn ln hpair hpairc
 
-theorem HasSuppConvDataOn.ptsSub_conv
+theorem HasSupportedCenterMapConvergenceOn.pointsSub_convergence
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -1372,26 +1372,26 @@ theorem HasSuppConvDataOn.ptsSub_conv
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
+    (hdata : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
     ∀ alpha,
-      MapCInfConvOnCompacts (U alpha)
-        (fun m z => stagePtsSub inp P L phi hphi alpha
+      MapCInfConvergenceOnCompacts (U alpha)
+        (fun m z => stagePointsSub inp P L phi hphi alpha
           (kn m) (ln m) z (chart := chart))
         (fun z _ => z) := by
-  dsimp only [HasSuppConvDataOn] at hdata
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hdata
   rcases hdata with
     ⟨hUopen, hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, _hgeom, _hlim, _hweightData, htrans, hstage⟩
   intro alpha
   have hpair : ∀ target : InterSlot L inp.pack r alpha,
-      MapCInfConvOnCompacts (U alpha)
+      MapCInfConvergenceOnCompacts (U alpha)
         (fun m => pairStageFillSub inp P L phi hphi alpha target
           (kn m) (ln m) (chart := chart)) id := by
     intro target
-    have hJ : MapCInfConvOnCompacts
+    have hJ : MapCInfConvergenceOnCompacts
         (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
         (fun k => NormalChartFamily.transition (I := I) chart
           (L.φ (phi k))
@@ -1402,7 +1402,7 @@ theorem HasSuppConvDataOn.ptsSub_conv
         (Jinf alpha target) := by
       simpa only [NormalChartFamily.transition] using
         (htrans alpha target).2.2.2.2.1
-    have hJbar : MapCInfConvOnCompacts
+    have hJbar : MapCInfConvergenceOnCompacts
         (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
         (fun k => NormalChartFamily.transition (I := I) chart
           (L.φ (phi k))
@@ -1435,7 +1435,7 @@ theorem HasSuppConvDataOn.ptsSub_conv
       intro k
       simpa only [NormalChartFamily.transition] using
         (hstage alpha target k).2
-    have hball := pairSub_conv_on inp P L phi hphi chart alpha target
+    have hball := pairSub_convergence_on inp P L phi hphi chart alpha target
       (Jinf alpha target) (Jbarinf alpha target)
       (htrans alpha target).1
       (htrans alpha target).2.1
@@ -1470,10 +1470,10 @@ theorem HasSuppConvDataOn.ptsSub_conv
         (hstage alpha target (ln m)).2
     exact (pairSub_smooth_on inp P L phi hphi chart alpha target
       (kn m) (ln m) hstageF hstageR).mono (hU8 alpha)
-  exact ptsSub_conv_on inp P L phi hphi chart alpha
+  exact pointsSub_convergence_on inp P L phi hphi chart alpha
     (hUopen alpha) kn ln hpair hpairc
 
-theorem HasSuppConvDataOn.pts_coord_tail
+theorem HasSupportedCenterMapConvergenceOn.points_coord_tail
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -1484,60 +1484,60 @@ theorem HasSuppConvDataOn.pts_coord_tail
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
+    (hdata : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf)
     (alpha : LiveSlot L inp.pack r)
     (eps : Real) (heps : 0 < eps) :
     ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ z ∈ C0 alpha,
       ∀ gamma : Fin (inp.pack.A r),
         dist z
-          (stagePtsSub inp P L phi hphi alpha k l z gamma
+          (stagePointsSub inp P L phi hphi alpha k l z gamma
             (chart := chart)) < eps := by
-  have hconv := hdata.ptsSub_conv inp P L hr phi hphi chart
+  have hconv := hdata.pointsSub_convergence inp P L hr phi hphi chart
     U C0 C1 aInf Jinf Jbarinf
-  dsimp only [HasSuppConvDataOn] at hdata
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hdata
   rcases hdata with
     ⟨_hUopen, _hU8, hC0, _hC1, hC01, hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, _hgeom, _hlim, _hweightData, _htrans, _hstage⟩
-  let PhiPts : Nat → Nat → Nat → E → (Fin (inp.pack.A r) → E) :=
-    fun _ k l z => stagePtsSub inp P L phi hphi alpha k l z
+  let PhiPoints : Nat → Nat → Nat → E → (Fin (inp.pack.A r) → E) :=
+    fun _ k l z => stagePointsSub inp P L phi hphi alpha k l z
       (chart := chart)
   have hconv3 : ∀ an kn ln : Nat → Nat,
       Tendsto an atTop atTop → Tendsto kn atTop atTop →
         Tendsto ln atTop atTop →
-          MapCInfConvOnCompacts (U alpha)
-            (fun m => PhiPts (an m) (kn m) (ln m))
+          MapCInfConvergenceOnCompacts (U alpha)
+            (fun m => PhiPoints (an m) (kn m) (ln m))
             (fun z _ => z) := by
     intro _an kn ln _han hkn hln
     exact hconv kn ln hkn hln alpha
   have hepsHalf : 0 < eps / 2 := by positivity
-  obtain ⟨N, hN⟩ := MapCInfConvOnCompacts.three_tail hconv3
+  obtain ⟨N, hN⟩ := MapCInfConvergenceOnCompacts.three_tail hconv3
     (hC0 alpha) ((hC01 alpha).trans (interior_subset.trans (hC1U alpha)))
     0 (eps / 2) hepsHalf
   refine ⟨N, ?_⟩
   intro k hk l hl z hz gamma
   have htuple :
       ‖(fun gamma =>
-          stagePtsSub inp P L phi hphi alpha k l z gamma
+          stagePointsSub inp P L phi hphi alpha k l z gamma
             (chart := chart) - z)‖ ≤ eps / 2 := by
-    change ‖(fun gamma => stagePtsSub inp P L phi hphi alpha k l z gamma
+    change ‖(fun gamma => stagePointsSub inp P L phi hphi alpha k l z gamma
       (chart := chart)) - (fun _ => z)‖ ≤ eps / 2
-    simpa only [PhiPts, mapDerivNorm, norm_iteratedFDeriv_zero] using
+    simpa only [PhiPoints, mapDerivNorm, norm_iteratedFDeriv_zero] using
       hN N le_rfl k hk l hl 0 le_rfl z hz
   have hcomp :
-      ‖stagePtsSub inp P L phi hphi alpha k l z gamma
+      ‖stagePointsSub inp P L phi hphi alpha k l z gamma
           (chart := chart) - z‖ ≤ eps / 2 :=
     (norm_le_pi_norm
-      (fun gamma => stagePtsSub inp P L phi hphi alpha k l z gamma
+      (fun gamma => stagePointsSub inp P L phi hphi alpha k l z gamma
         (chart := chart) - z) gamma).trans htuple
   have hcoord : dist z
-      (stagePtsSub inp P L phi hphi alpha k l z gamma
+      (stagePointsSub inp P L phi hphi alpha k l z gamma
         (chart := chart)) ≤ eps / 2 := by
     simpa only [dist_eq_norm, norm_sub_rev] using hcomp
   exact hcoord.trans_lt (by linarith)
 
 
-theorem HasSuppConvData.cfgSub_conv
+theorem HasSupportedCenterMapConvergence.configurationSub_convergence
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -1547,7 +1547,7 @@ theorem HasSuppConvData.cfgSub_conv
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (hdata : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
@@ -1555,22 +1555,22 @@ theorem HasSuppConvData.cfgSub_conv
       let i0 := baseIndex inp.decay inp.realizes inp.pack hr
       let weightInf := fun z gamma =>
         rawWeights (cutRaw (aInf alpha i0) (aInf alpha) i0) z gamma
-      MapCInfConvOnCompacts (U alpha)
-        (fun m => stageCfgSub inp.toCore P L hr phi hphi alpha
+      MapCInfConvergenceOnCompacts (U alpha)
+        (fun m => stageConfigurationSub inp.toCore P L hr phi hphi alpha
           (kn m) (ln m))
         (fun z => (weightInf z, fun _ => z)) := by
-  dsimp only [HasSuppConvData] at hdata
+  dsimp only [HasSupportedCenterMapConvergence] at hdata
   rcases hdata with
     ⟨hUopen, hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, _hgeom, hlim, _hweightData, htrans, hstage⟩
   intro alpha
   dsimp only
   have hpair : ∀ target : InterSlot L inp.pack r alpha,
-      MapCInfConvOnCompacts (U alpha)
+      MapCInfConvergenceOnCompacts (U alpha)
         (fun m => pairStageFillSub inp.toCore P L phi hphi alpha target
           (kn m) (ln m)) id := by
     intro target
-    have hball := pairStageSub_conv inp.toCore P L phi hphi alpha target
+    have hball := pairStageSub_convergence inp.toCore P L phi hphi alpha target
       (Jinf alpha target) (Jbarinf alpha target)
       (htrans alpha target).1
       (htrans alpha target).2.1
@@ -1589,11 +1589,11 @@ theorem HasSuppConvData.cfgSub_conv
     exact (pairStageSub_smooth inp.toCore P L phi hphi alpha target
       (kn m) (ln m) (hstage alpha target (kn m)).1
       (hstage alpha target (ln m)).2).mono (hU8 alpha)
-  have hpts := stagePtsSub_conv inp.toCore P L phi hphi alpha
+  have hpts := stagePointsSub_convergence inp.toCore P L phi hphi alpha
     (hUopen alpha) kn ln hpair hpairc
   have hptsc : ∀ m,
       ContDiffOn Real (∞ : WithTop ℕ∞)
-        (fun z => stagePtsSub inp.toCore P L phi hphi alpha
+        (fun z => stagePointsSub inp.toCore P L phi hphi alpha
           (kn m) (ln m) z) (U alpha) := by
     intro m
     change ContDiffOn Real (∞ : WithTop ℕ∞)
@@ -1604,10 +1604,10 @@ theorem HasSuppConvData.cfgSub_conv
       stageTotal_smooth alpha
         (pairStageFillSub inp.toCore P L phi hphi alpha)
         (kn m) (ln m) (fun target => hpairc target m) gamma
-  exact stageCfgSub_conv inp P L hr phi hphi alpha (U alpha)
+  exact stageConfigurationSub_convergence inp P L hr phi hphi alpha (U alpha)
     (hUopen alpha) (aInf alpha) (hlim alpha) kn ln hkn hpts hptsc
 
-theorem HasSuppConvDataOn.cfgSub_data
+theorem HasSupportedCenterMapConvergenceOn.configurationSub_data
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -1618,7 +1618,7 @@ theorem HasSuppConvDataOn.cfgSub_data
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
+    (hdata : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
@@ -1627,20 +1627,20 @@ theorem HasSuppConvDataOn.cfgSub_data
       let weightInf := fun z gamma =>
         rawWeights (cutRaw (aInf alpha i0) (aInf alpha) i0) z gamma
       (∀ m, ContDiffOn Real (∞ : WithTop ℕ∞)
-        (stageCfgSub inp P L hr phi hphi alpha (kn m) (ln m)
+        (stageConfigurationSub inp P L hr phi hphi alpha (kn m) (ln m)
           (chart := chart))
         (U alpha)) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞)
         (fun z => (weightInf z,
           fun _ : Fin (inp.pack.A r) => z)) (U alpha) ∧
-      MapCInfConvOnCompacts (U alpha)
-        (fun m => stageCfgSub inp P L hr phi hphi alpha
+      MapCInfConvergenceOnCompacts (U alpha)
+        (fun m => stageConfigurationSub inp P L hr phi hphi alpha
           (kn m) (ln m) (chart := chart))
         (fun z => (weightInf z,
           fun _ : Fin (inp.pack.A r) => z)) := by
-  have hpts := hdata.ptsSub_conv inp P L hr phi hphi chart
+  have hpts := hdata.pointsSub_convergence inp P L hr phi hphi chart
     U C0 C1 aInf Jinf Jbarinf kn ln hkn hln
-  dsimp only [HasSuppConvDataOn] at hdata
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hdata
   rcases hdata with
     ⟨hUopen, hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, _hgeom, hlim, _hweightData, _htrans, hstage⟩
@@ -1678,10 +1678,10 @@ theorem HasSuppConvDataOn.cfgSub_data
       (kn m) (ln m) hstageF hstageR).mono (hU8 alpha)
   have hptsc : ∀ m,
       ContDiffOn Real (∞ : WithTop ℕ∞)
-        (fun z => stagePtsSub inp P L phi hphi alpha
+        (fun z => stagePointsSub inp P L phi hphi alpha
           (kn m) (ln m) z (chart := chart)) (U alpha) := by
     intro m
-    simpa only [stagePtsSub, MetricCompactnessInputs.toCore] using
+    simpa only [stagePointsSub, MetricCompactnessInputs.toCore] using
       (contDiffOn_pi.mpr fun gamma =>
         stageTotal_smooth alpha
           (pairStageFillSub inp P L phi hphi alpha (chart := chart))
@@ -1689,16 +1689,16 @@ theorem HasSuppConvDataOn.cfgSub_data
   have hdiagc : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun z : E => fun _ : Fin (inp.pack.A r) => z) (U alpha) :=
     contDiffOn_pi.mpr fun _ => contDiffOn_id
-  have hconv := stageCfgSub_conv_on inp P L hr phi hphi chart alpha
+  have hconv := stageConfigurationSub_convergence_on inp P L hr phi hphi chart alpha
     (U alpha) (hUopen alpha) (aInf alpha) (hlim alpha)
     kn ln hkn (hpts alpha) hptsc
   refine ⟨?_, hweightInfc.prodMk hdiagc, hconv⟩
   intro m
-  simpa only [stageCfgSub] using
+  simpa only [stageConfigurationSub] using
     (hweightc (kn m)).prodMk (hptsc m)
 
 
-theorem HasSuppConvData.cfgSub_data
+theorem HasSupportedCenterMapConvergence.configurationSub_data
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -1708,7 +1708,7 @@ theorem HasSuppConvData.cfgSub_data
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (hdata : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
@@ -1717,19 +1717,19 @@ theorem HasSuppConvData.cfgSub_data
       let weightInf := fun z gamma =>
         rawWeights (cutRaw (aInf alpha i0) (aInf alpha) i0) z gamma
       (∀ m, ContDiffOn Real (∞ : WithTop ℕ∞)
-        (stageCfgSub inp.toCore P L hr phi hphi alpha (kn m) (ln m))
+        (stageConfigurationSub inp.toCore P L hr phi hphi alpha (kn m) (ln m))
         (U alpha)) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞)
         (fun z => (weightInf z,
           fun _ : Fin (inp.pack.A r) => z)) (U alpha) ∧
-      MapCInfConvOnCompacts (U alpha)
-        (fun m => stageCfgSub inp.toCore P L hr phi hphi alpha
+      MapCInfConvergenceOnCompacts (U alpha)
+        (fun m => stageConfigurationSub inp.toCore P L hr phi hphi alpha
           (kn m) (ln m))
         (fun z => (weightInf z,
           fun _ : Fin (inp.pack.A r) => z)) := by
-  have hconv := hdata.cfgSub_conv inp P L hr phi hphi U C0 C1
+  have hconv := hdata.configurationSub_convergence inp P L hr phi hphi U C0 C1
     aInf Jinf Jbarinf kn ln hkn hln
-  dsimp only [HasSuppConvData] at hdata
+  dsimp only [HasSupportedCenterMapConvergence] at hdata
   rcases hdata with
     ⟨hUopen, hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, _hgeom, hlim, _hweightData, _htrans, hstage⟩
@@ -1748,7 +1748,7 @@ theorem HasSuppConvData.cfgSub_data
       (hstage alpha target (ln m)).2).mono (hU8 alpha)
   have hptsc : ∀ m,
       ContDiffOn Real (∞ : WithTop ℕ∞)
-        (fun z => stagePtsSub inp.toCore P L phi hphi alpha
+        (fun z => stagePointsSub inp.toCore P L phi hphi alpha
           (kn m) (ln m) z) (U alpha) := by
     intro m
     change ContDiffOn Real (∞ : WithTop ℕ∞)
@@ -1764,10 +1764,10 @@ theorem HasSuppConvData.cfgSub_data
     contDiffOn_pi.mpr fun _ => contDiffOn_id
   refine ⟨?_, hweightInfc.prodMk hdiagc, hconv alpha⟩
   intro m
-  simpa only [stageCfgSub] using
+  simpa only [stageConfigurationSub] using
     (hweightc (kn m)).prodMk (hptsc m)
 
-theorem HasSuppConvData.ptsSub_conv
+theorem HasSupportedCenterMapConvergence.pointsSub_convergence
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -1777,30 +1777,30 @@ theorem HasSuppConvData.ptsSub_conv
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (hdata : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (kn ln : Nat → Nat) (hkn : Tendsto kn atTop atTop)
     (hln : Tendsto ln atTop atTop) :
     ∀ alpha,
-      MapCInfConvOnCompacts (U alpha)
-        (fun m z => stagePtsSub inp.toCore P L phi hphi alpha
+      MapCInfConvergenceOnCompacts (U alpha)
+        (fun m z => stagePointsSub inp.toCore P L phi hphi alpha
           (kn m) (ln m) z)
         (fun z _ => z) := by
   intro alpha
   obtain ⟨hU, _hC0, _hC1, _hC01, _hC1U⟩ :=
     hdata.core_on inp P L r hr U C0 C1 aInf Jinf Jbarinf alpha
   obtain ⟨hcfg, hdiag, hconv⟩ :=
-    hdata.cfgSub_data inp P L hr phi hphi U C0 C1 aInf Jinf Jbarinf
+    hdata.configurationSub_data inp P L hr phi hphi U C0 C1 aInf Jinf Jbarinf
       kn ln hkn hln alpha
   let proj := ContinuousLinearMap.snd Real
     (Fin (inp.pack.A r) → Real) (Fin (inp.pack.A r) → E)
-  have hp := mapCInfConv_clm hU proj hconv hcfg hdiag
+  have hp := mapCInfConvergence_clm hU proj hconv hcfg hdiag
   have hproj (q : (Fin (inp.pack.A r) → Real) ×
       (Fin (inp.pack.A r) → E)) : proj q = q.2 := rfl
-  simp only [hproj, stageCfgSub, MetricCompactnessInputs.toCore] at hp
+  simp only [hproj, stageConfigurationSub, MetricCompactnessInputs.toCore] at hp
   exact hp
 
-theorem HasSuppConvData.pts_eq_ne
+theorem HasSupportedCenterMapConvergence.points_eq_ne
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
@@ -1819,14 +1819,14 @@ theorem HasSuppConvData.pts_eq_ne
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (hdata : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf) :
     ∀ᶠ k in atTop, ∀ (alpha : LiveSlot L inp.pack r) (l : Nat)
         (z : E), z ∈ U alpha → ∀ gamma : Fin (inp.pack.A r),
       stageWeightSub inp.toCore P L hr phi hphi alpha k z gamma ≠ 0 →
         ∃ target : InterSlot L inp.pack r alpha,
           target.1.1 = gamma ∧
-          stagePtsSub inp.toCore P L phi hphi alpha k l z gamma =
+          stagePointsSub inp.toCore P L phi hphi alpha k l z gamma =
             normalTransition (I := I) (X.obj ((L.subseq hphi).φ l))
               (seqCenterD inp.decay P (L.subseq hphi) l
                 (target.1.1 : Nat))
@@ -1840,7 +1840,7 @@ theorem HasSuppConvData.pts_eq_ne
                   (target.1.1 : Nat)) z) := by
   classical
   let Lphi := L.subseq hphi
-  dsimp only [HasSuppConvData] at hdata
+  dsimp only [HasSupportedCenterMapConvergence] at hdata
   rcases hdata with
     ⟨_hUopen, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, hgeom, _hlim, _hweightData, _htrans, _hstage⟩
@@ -1931,7 +1931,7 @@ theorem HasSuppConvData.pts_eq_ne
   refine ⟨target, htarget, ?_⟩
   simpa only [htarget, Lphi, NetLimitData.subseq_phi,
     seqCenterD_subseq, Function.comp_apply] using
-    (stagePtsSub_eq_of_weight_ne_zero inp P L hr phi hphi alpha target k l hgpK (by
+    (stagePointsSub_eq_of_weight_ne_zero inp P L hr phi hphi alpha target k l hgpK (by
       simpa only [htarget] using hC2gamma) z (by
       simpa only [htarget] using hweight))
 
@@ -1983,5 +1983,5 @@ theorem pairFill_smooth
 
 end StagePairs
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

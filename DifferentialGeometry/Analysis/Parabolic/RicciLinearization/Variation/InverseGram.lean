@@ -143,8 +143,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[ext] lemma ext {h h' : ChartMetricPerturbation E}
-    (hyp : ∀ i j, (h i j) = (h' i j)) : h = h' := by
-  cases h; cases h'; congr 1; funext i j; exact hyp i j
+    (hyperbolic : ∀ i j, (h i j) = (h' i j)) : h = h' := by
+  cases h; cases h'; congr 1; funext i j; exact hyperbolic i j
 
 end ChartMetricPerturbation
 
@@ -202,11 +202,11 @@ lemma metricTrace_zero (g : SmoothRiemannianMetric I M) (x : M) :
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma metricTrace_congr (g : SmoothRiemannianMetric I M) (x : M)
     {h h' : ChartMetricPerturbation E}
-    (hyp : ∀ m n, h m n (extChartAt I x x) = h' m n (extChartAt I x x)) :
+    (hyperbolic : ∀ m n, h m n (extChartAt I x x) = h' m n (extChartAt I x x)) :
     metricTrace (I := I) g x h = metricTrace (I := I) g x h' := by
   rw [metricTrace_def, metricTrace_def]
   exact Finset.sum_congr rfl (fun m _ =>
-    Finset.sum_congr rfl (fun n _ => by rw [hyp m n]))
+    Finset.sum_congr rfl (fun n _ => by rw [hyperbolic m n]))
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma metricTrace_eq_sum (g : SmoothRiemannianMetric I M) (x : M)

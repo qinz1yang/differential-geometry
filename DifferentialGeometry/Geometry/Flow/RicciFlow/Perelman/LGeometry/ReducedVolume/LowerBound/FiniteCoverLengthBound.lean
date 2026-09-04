@@ -38,8 +38,8 @@ theorem redLen_cover_bound
           (∀ r ∈ Icc (0 : Real) (b - c),
             T - (c + r) ^ 2 ∈ Icc t₀ t₁) →
           T - b ^ 2 = tEarly →
-          b ∈ lRegDomain S T x W → (W, c ^ 2) ∈ lMinDomain S T x →
-          redLength S T x (lRegCurve S T x W c) (c ^ 2) ≤ l₀ →
+          b ∈ lRegularizedDomain S T x W → (W, c ^ 2) ∈ lMinDomain S T x →
+          redLength S T x (lRegularizedCurve S T x W c) (c ^ 2) ≤ l₀ →
           ∃ A : Set M,
             MeasurableSet A ∧
               v ≤ riemannianVolumeMeasure (I := I) (M := M)
@@ -61,11 +61,11 @@ theorem redLen_cover_bound
           Icc (T - b ^ 2) T ⊆ D.regular →
           (∀ r ∈ Icc (0 : Real) (b - c),
             T - (c + r) ^ 2 ∈ Icc t₀ t₁) →
-          b ∈ lRegDomain S T x W → (W, c ^ 2) ∈ lMinDomain S T x →
-          lRegCurve S T x W c ∈ (chartAt H p.1).source →
-          (extChartAt I p.1) (lRegCurve S T x W c) ∈
+          b ∈ lRegularizedDomain S T x W → (W, c ^ 2) ∈ lMinDomain S T x →
+          lRegularizedCurve S T x W c ∈ (chartAt H p.1).source →
+          (extChartAt I p.1) (lRegularizedCurve S T x W c) ∈
             Metric.closedBall ((extChartAt I p.1) p.1) (Rloc p.1) →
-          redLength S T x (lRegCurve S T x W c) (c ^ 2) ≤ l₀ →
+          redLength S T x (lRegularizedCurve S T x W c) (c ^ 2) ≤ l₀ →
           let A := (extChartAt I p.1).symm ''
             Metric.ball ((extChartAt I p.1) p.1) (Rloc p.1)
           MeasurableSet A ∧
@@ -81,27 +81,27 @@ theorem redLen_cover_bound
     exact redLen_ball_bound (I := I) S hS ht₀omega hregFwd p.1
       ((extChartAt I p.1) p.1) (hchart p.1 p.2).1
       (hchart p.1 p.2).2.1
-  choose CgLoc CsLoc hCgLoc hCsLoc hbound using hlocal
-  let Cg : Real := s.attach.sup' hattach CgLoc
-  let Cs : Real := s.attach.sup' hattach CsLoc
+  choose CgLocal CsLocal hCgLocal hCsLocal hbound using hlocal
+  let Cg : Real := s.attach.sup' hattach CgLocal
+  let Cs : Real := s.attach.sup' hattach CsLocal
   let R : Real := s.attach.sup' hattach (fun p ↦ Rloc p.1)
   obtain ⟨p₀, hp₀⟩ := hattach
   have hCg : 0 ≤ Cg :=
-    (hCgLoc p₀).trans (Finset.le_sup' CgLoc hp₀)
+    (hCgLocal p₀).trans (Finset.le_sup' CgLocal hp₀)
   have hCs : 0 ≤ Cs :=
-    (hCsLoc p₀).trans (Finset.le_sup' CsLoc hp₀)
+    (hCsLocal p₀).trans (Finset.le_sup' CsLocal hp₀)
   have hR : 0 < R :=
     (hchart p₀.1 p₀.2).1.trans_le
       (Finset.le_sup' (fun p : {q : M // q ∈ s} ↦ Rloc p.1) hp₀)
   refine ⟨Cg, Cs, R, v, hCg, hCs, hR, hvpos, ?_⟩
   intro T b c l₀ x W hT hc hcb hslab hforward hEarly hbdom hmin hred
   obtain ⟨p, hp, hraySource, hrayBall⟩ :=
-    hcover (lRegCurve S T x W c)
+    hcover (lRegularizedCurve S T x W c)
   let p' : {q : M // q ∈ s} := ⟨p, hp⟩
   have hpAttach : p' ∈ s.attach := by
     simp only [p', Finset.mem_attach]
-  have hCgLe : CgLoc p' ≤ Cg := Finset.le_sup' CgLoc hpAttach
-  have hCsLe : CsLoc p' ≤ Cs := Finset.le_sup' CsLoc hpAttach
+  have hCgLe : CgLocal p' ≤ Cg := Finset.le_sup' CgLocal hpAttach
+  have hCsLe : CsLocal p' ≤ Cs := Finset.le_sup' CsLocal hpAttach
   have hRLe : Rloc p ≤ R :=
     Finset.le_sup' (fun q : {z : M // z ∈ s} ↦ Rloc q.1) hpAttach
   have hresult := hbound p' hT hc hcb hslab hforward hbdom hmin
@@ -114,8 +114,8 @@ theorem redLen_cover_bound
       ∀ y ∈ A,
         redLength S T x y (b ^ 2) ≤
           (2 * c * l₀ +
-              (CgLoc p' / 2) * ((2 * Rloc p) ^ 2 / (b - c)) +
-                CsLoc p' * (b - c)) /
+              (CgLocal p' / 2) * ((2 * Rloc p) ^ 2 / (b - c)) +
+                CsLocal p' * (b - c)) /
             (2 * b) at hresult
   refine ⟨A, hresult.1, ?_, ?_⟩
   · rw [hEarly]
@@ -132,16 +132,16 @@ theorem redLen_cover_bound
     have hqnonneg : 0 ≤ (2 * Rloc p) ^ 2 / (b - c) :=
       div_nonneg (sq_nonneg _) (sub_nonneg.mpr hcb.le)
     have hCgTerm :
-        (CgLoc p' / 2) * ((2 * Rloc p) ^ 2 / (b - c)) ≤
+        (CgLocal p' / 2) * ((2 * Rloc p) ^ 2 / (b - c)) ≤
           (Cg / 2) * ((2 * R) ^ 2 / (b - c)) := by
       calc
-        (CgLoc p' / 2) * ((2 * Rloc p) ^ 2 / (b - c)) ≤
+        (CgLocal p' / 2) * ((2 * Rloc p) ^ 2 / (b - c)) ≤
             (Cg / 2) * ((2 * Rloc p) ^ 2 / (b - c)) :=
           mul_le_mul_of_nonneg_right
             (div_le_div_of_nonneg_right hCgLe (by norm_num)) hqnonneg
         _ ≤ (Cg / 2) * ((2 * R) ^ 2 / (b - c)) :=
           mul_le_mul_of_nonneg_left hfrac (div_nonneg hCg (by norm_num))
-    have hCsTerm : CsLoc p' * (b - c) ≤ Cs * (b - c) :=
+    have hCsTerm : CsLocal p' * (b - c) ≤ Cs * (b - c) :=
       mul_le_mul_of_nonneg_right hCsLe (sub_nonneg.mpr hcb.le)
     have hb : 0 < b := hc.trans hcb
     exact hlocalBound.trans <| by

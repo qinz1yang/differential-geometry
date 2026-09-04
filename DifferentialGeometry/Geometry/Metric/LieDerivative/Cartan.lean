@@ -86,11 +86,11 @@ private lemma chartCoeffOnE_self_eq_basis_comp_pullback_eventuallyEq
     ⟨interior ((extChartAt I x).target : Set E),
       isOpen_interior.mem_nhds hint, ?_⟩
   intro y hy_int
-  have hy_tgt : y ∈ (extChartAt I x).target := interior_subset hy_int
+  have hy_target : y ∈ (extChartAt I x).target := interior_subset hy_int
   have hy_base : (extChartAt I x).symm y ∈
       (trivializationAt E (TangentSpace I) x).baseSet := by
     have hsource : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
-      (extChartAt I x).map_target hy_tgt
+      (extChartAt I x).map_target hy_target
     rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact hsource
@@ -301,7 +301,7 @@ theorem cartan_formula_chart_algebra
   classical
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x :=
     self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
-  have hx_src : x ∈ (extChartAt I x).source :=
+  have hx_source : x ∈ (extChartAt I x).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx_good
   rw [chartLieDerivMetricMatrix_def (I := I) g W x i j x]
   have hgram : ∀ a b : Fin (Module.finrank ℝ E),
@@ -309,7 +309,7 @@ theorem cartan_formula_chart_algebra
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x a b := by
     intro a b
     unfold chartGramOnE
-    rw [(extChartAt I x).left_inv hx_src]
+    rw [(extChartAt I x).left_inv hx_source]
   have hmc : ∀ k : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g x i j) (extChartAt I x x) =
         (∑ l, chartChristoffel (I := I) g x k i l (extChartAt I x x) *
@@ -471,7 +471,7 @@ theorem cartan_formula_for_lie_deriv_metric
     self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx_good
-  have hx_src : x ∈ (extChartAt I x).source :=
+  have hx_source : x ∈ (extChartAt I x).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx_good
   rw [lieDerivMetric_apply (I := I) g W x v w]
   have hrepr : ∀ u : TangentSpace I x,
@@ -687,7 +687,7 @@ theorem cartan_formula_for_lie_deriv_metric
                 ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x v))) i *
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) x x w)) j *
             chartGramOnE (I := I) g x i j (extChartAt I x x) :=
-    g_inner_eq_chart_sum (I := I) g x (x := x) hx_base hx_src
+    g_inner_eq_chart_sum (I := I) g x (x := x) hx_base hx_source
       ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x v) w
   have hRHS2 :
       g.inner x v ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x w) =
@@ -698,7 +698,7 @@ theorem cartan_formula_for_lie_deriv_metric
               (trivToE (I := I) x x
                 ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x w))) j *
             chartGramOnE (I := I) g x i j (extChartAt I x x) :=
-    g_inner_eq_chart_sum (I := I) g x (x := x) hx_base hx_src v
+    g_inner_eq_chart_sum (I := I) g x (x := x) hx_base hx_source v
       ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x w)
   rw [hRHS1, hRHS2]
   have htrivId : ∀ u : TangentSpace I x, trivToE (I := I) x x u = u :=
@@ -708,7 +708,7 @@ theorem cartan_formula_for_lie_deriv_metric
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x a b := by
     intro a b
     unfold chartGramOnE
-    rw [(extChartAt I x).left_inv hx_src]
+    rw [(extChartAt I x).left_inv hx_source]
   rw [show
     (∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),

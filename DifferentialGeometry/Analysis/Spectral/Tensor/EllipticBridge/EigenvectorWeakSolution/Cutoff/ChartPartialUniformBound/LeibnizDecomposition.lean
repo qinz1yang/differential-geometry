@@ -61,7 +61,7 @@ lemma cutoffComponentEuclid_eq_cutoff_mul_rawPushed
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma euclidPartial_rawPushed_eq_covDerivComponent_sub'
+lemma euclidPartial_rawPushed_eq_covDerivComponent_sub
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (k : Fin (Module.finrank ℝ E))

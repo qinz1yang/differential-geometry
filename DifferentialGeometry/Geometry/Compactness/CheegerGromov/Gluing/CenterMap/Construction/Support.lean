@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -30,7 +30,7 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-def HasSuppCmFin
+def HasSupportedFiniteCenterMapConstruction
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -43,7 +43,7 @@ def HasSuppCmFin
     (sourceBall : Set (X.obj (L.φ n)).M)
     (sourcePatch : LiveSlot L pb r → Set (X.obj (L.φ n)).M)
     (mu : LiveSlot L pb r → (X.obj (L.φ n)).M → Fin (pb.A r) → Real)
-    (ptsSeq : LiveSlot L pb r → Nat → Nat → (X.obj (L.φ n)).M →
+    (pointsSeq : LiveSlot L pb r → Nat → Nat → (X.obj (L.φ n)).M →
       Fin (pb.A r) → (X.obj (L.φ n)).M) : Prop :=
   let Y := X.obj (L.φ n)
   letI : TopologicalSpace Y.M := Y.topology
@@ -77,21 +77,21 @@ def HasSuppCmFin
     (∀ alpha a b x, x ∈ sourcePatch alpha → 0 < radSeq alpha a b x) ∧
     (∀ alpha a b x, x ∈ sourcePatch alpha → ∀ gamma,
       mu alpha x gamma ≠ 0 →
-        dist x (ptsSeq alpha a b x gamma) < radSeq alpha a b x) ∧
+        dist x (pointsSeq alpha a b x gamma) < radSeq alpha a b x) ∧
     (∀ epsilon > 0, ∃ N : Nat, ∀ a ≥ N, ∀ b ≥ N,
       ∀ alpha, ∀ x ∈ sourcePatch alpha,
         radSeq alpha a b x < epsilon) ∧
     ∃ N : Nat, ∀ a ≥ N, ∀ b ≥ N,
       ∀ alpha, ∀ x ∈ sourcePatch alpha,
         let join := minJoin (I := I) Y.metric (normal_enorm (I := I) Y)
-        let pts := centerAverage.activeFill (mu alpha) (ptsSeq alpha a b)
+        let points := centerAverage.activeFill (mu alpha) (pointsSeq alpha a b)
           (fun y => y) x
-        ∃ hcm : CenterInput (I := I) Y.metric (mu alpha x) pts join x
+        ∃ hcm : CenterInput (I := I) Y.metric (mu alpha x) points join x
             (radSeq alpha a b x),
-          HasHatCmStrictAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
-            (mu alpha x) pts join x (radSeq alpha a b x) hcm
+          HasHatStrictCenterOfMassSolutionAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
+            (mu alpha x) points join x (radSeq alpha a b x) hcm
 
-theorem HasSuppCmFin.subseq
+theorem HasSupportedFiniteCenterMapConstruction.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j)}
@@ -105,15 +105,15 @@ theorem HasSuppCmFin.subseq
     {sourceBall : Set (X.obj (L.φ (ψ n))).M}
     {sourcePatch : LiveSlot L pb r → Set (X.obj (L.φ (ψ n))).M}
     {mu : LiveSlot L pb r → (X.obj (L.φ (ψ n))).M → Fin (pb.A r) → Real}
-    {ptsSeq : LiveSlot L pb r → Nat → Nat → (X.obj (L.φ (ψ n))).M →
+    {pointsSeq : LiveSlot L pb r → Nat → Nat → (X.obj (L.φ (ψ n))).M →
       Fin (pb.A r) → (X.obj (L.φ (ψ n))).M}
-    (h : HasSuppCmFin (I := I) hd P L pb r (ψ n) hcomplete hconn q δ
-      sourceBall sourcePatch mu ptsSeq) :
-    HasSuppCmFin (I := I) hd P (L.subseq hψ) pb r n hcomplete hconn q δ
+    (h : HasSupportedFiniteCenterMapConstruction (I := I) hd P L pb r (ψ n) hcomplete hconn q δ
+      sourceBall sourcePatch mu pointsSeq) :
+    HasSupportedFiniteCenterMapConstruction (I := I) hd P (L.subseq hψ) pb r n hcomplete hconn q δ
       sourceBall sourcePatch mu
-      (fun alpha a b x gamma ↦ ptsSeq alpha (ψ a) (ψ b) x gamma) := by
+      (fun alpha a b x gamma ↦ pointsSeq alpha (ψ a) (ψ b) x gamma) := by
   classical
-  dsimp only [HasSuppCmFin] at h ⊢
+  dsimp only [HasSupportedFiniteCenterMapConstruction] at h ⊢
   rcases h with ⟨radSeq, hcover, hhat, hweight, hpos, hactive,
     hsmall, N, hN⟩
   let radSeq' := fun alpha a b x ↦ radSeq alpha (ψ a) (ψ b) x
@@ -135,7 +135,7 @@ theorem HasSuppCmFin.subseq
       (ψ b) (hb.trans (hψ.id_le b)) alpha x hx
     with_unfolding_all exact hout
 
-def HasSuppCmData
+def HasSupportedCenterMapConstruction
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -191,7 +191,7 @@ def HasSuppCmData
   let localWeight := fun (alpha : LiveSlot L inp.pack r)
       (x : Y.M) (gamma : Fin (inp.pack.A r)) =>
     weightInf alpha (chi alpha x) gamma
-  let pairPts : (alpha : LiveSlot L inp.pack r) →
+  let pairPoints : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → Nat → Nat → Y.M → Y.M :=
     fun alpha target a b x =>
       (chi alpha).symm
@@ -199,13 +199,13 @@ def HasSuppCmData
           (beta b target.1) (beta b alpha)
           (normalTransition (I := I) (X.obj (Lphi.φ a))
             (beta a alpha) (beta a target.1) (chi alpha x)))
-  let pts := fun (alpha : LiveSlot L inp.pack r) a b x gamma =>
-    totalPts (X := X) pairPts alpha a b x gamma
+  let points := fun (alpha : LiveSlot L inp.pack r) a b x gamma =>
+    totalPoints (X := X) pairPoints alpha a b x gamma
   HasCompactCover sourceBall sourcePatch ∧
-    HasSuppCmFin (I := I) inp.decay P Lphi inp.pack r n
-      hcomplete hconn q δ sourceBall sourcePatch localWeight pts
+    HasSupportedFiniteCenterMapConstruction (I := I) inp.decay P Lphi inp.pack r n
+      hcomplete hconn q δ sourceBall sourcePatch localWeight points
 
-theorem HasSuppCmData.subseq
+theorem HasSupportedCenterMapConstruction.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {inp : MetricCompactnessInputs (I := I) X}
     {P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j)}
@@ -220,19 +220,19 @@ theorem HasSuppCmData.subseq
     {q : LiveSlot L inp.pack r → NNReal}
     {δ : LiveSlot L inp.pack r → Real}
     {phi ψ : Nat → Nat} {hphi : StrictMono phi} (hψ : StrictMono ψ)
-    (h : HasSuppCmData (I := I) inp P L r hr phi hphi (ψ n)
+    (h : HasSupportedCenterMapConstruction (I := I) inp P L r hr phi hphi (ψ n)
       hcomplete hconn U aInf q δ) :
-    HasSuppCmData (I := I) inp P L r hr (phi ∘ ψ) (hphi.comp hψ) n
+    HasSupportedCenterMapConstruction (I := I) inp P L r hr (phi ∘ ψ) (hphi.comp hψ) n
       hcomplete hconn U aInf q δ := by
   classical
-  dsimp only [HasSuppCmData] at h ⊢
+  dsimp only [HasSupportedCenterMapConstruction] at h ⊢
   rcases h with ⟨hcover, hcm⟩
   refine ⟨?_, ?_⟩
   · with_unfolding_all exact hcover
   · have hsub := hcm.subseq hψ
     with_unfolding_all exact hsub
 
-def HasSourceCmFin
+def HasSourceFiniteCenterOfMassSolution
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -245,7 +245,7 @@ def HasSourceCmFin
     (sourceBall : Set (X.obj (L.φ n)).M)
     (sourcePatch : LiveSlot L pb r → Set (X.obj (L.φ n)).M)
     (mu : LiveSlot L pb r → (X.obj (L.φ n)).M → Fin (pb.A r) → Real)
-    (ptsSeq : LiveSlot L pb r → Nat → Nat → (X.obj (L.φ n)).M →
+    (pointsSeq : LiveSlot L pb r → Nat → Nat → (X.obj (L.φ n)).M →
       Fin (pb.A r) → (X.obj (L.φ n)).M) : Prop :=
   let Y := X.obj (L.φ n)
   letI : TopologicalSpace Y.M := Y.topology
@@ -274,7 +274,7 @@ def HasSourceCmFin
     (∀ alpha a b x, x ∈ sourcePatch alpha → 0 < radSeq alpha a b x) ∧
     (∀ alpha a b x, x ∈ sourcePatch alpha → ∀ gamma,
       mu alpha x gamma ≠ 0 →
-        dist x (ptsSeq alpha a b x gamma) < radSeq alpha a b x) ∧
+        dist x (pointsSeq alpha a b x gamma) < radSeq alpha a b x) ∧
     (∀ epsilon > 0, ∃ N : Nat, ∀ a ≥ N, ∀ b ≥ N,
       ∀ alpha, ∀ x ∈ sourcePatch alpha,
         radSeq alpha a b x < epsilon) ∧
@@ -282,14 +282,14 @@ def HasSourceCmFin
       ∀ x ∈ sourceBall,
         ∃ alpha : LiveSlot L pb r, x ∈ sourcePatch alpha ∧
           let join := minJoin (I := I) Y.metric (normal_enorm (I := I) Y)
-          let pts := centerAverage.activeFill (mu alpha) (ptsSeq alpha a b)
+          let points := centerAverage.activeFill (mu alpha) (pointsSeq alpha a b)
             (fun y => y) x
-          ∃ hcm : CenterInput (I := I) Y.metric (mu alpha x) pts join x
+          ∃ hcm : CenterInput (I := I) Y.metric (mu alpha x) points join x
               (radSeq alpha a b x),
-            HasHatCmStrictAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
-              (mu alpha x) pts join x (radSeq alpha a b x) hcm
+            HasHatStrictCenterOfMassSolutionAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
+              (mu alpha x) points join x (radSeq alpha a b x) hcm
 
-theorem HasSuppCmFin.toSource
+theorem HasSupportedFiniteCenterMapConstruction.toSource
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j)}
@@ -302,23 +302,23 @@ theorem HasSuppCmFin.toSource
     {sourceBall : Set (X.obj (L.φ n)).M}
     {sourcePatch : LiveSlot L pb r → Set (X.obj (L.φ n)).M}
     {mu : LiveSlot L pb r → (X.obj (L.φ n)).M → Fin (pb.A r) → Real}
-    {ptsSeq : LiveSlot L pb r → Nat → Nat → (X.obj (L.φ n)).M →
+    {pointsSeq : LiveSlot L pb r → Nat → Nat → (X.obj (L.φ n)).M →
       Fin (pb.A r) → (X.obj (L.φ n)).M}
-    (h : HasSuppCmFin (I := I) hd P L pb r n hcomplete hconn q δ
-      sourceBall sourcePatch mu ptsSeq) :
-    HasSourceCmFin (I := I) hd P L pb r n hcomplete hconn q δ
-      sourceBall sourcePatch mu ptsSeq := by
+    (h : HasSupportedFiniteCenterMapConstruction (I := I) hd P L pb r n hcomplete hconn q δ
+      sourceBall sourcePatch mu pointsSeq) :
+    HasSourceFiniteCenterOfMassSolution (I := I) hd P L pb r n hcomplete hconn q δ
+      sourceBall sourcePatch mu pointsSeq := by
   classical
-  dsimp only [HasSuppCmFin] at h
+  dsimp only [HasSupportedFiniteCenterMapConstruction] at h
   rcases h with ⟨radSeq, hcover, _hhat, _hweight, hpos, hactive,
     hsmall, N, hN⟩
-  dsimp only [HasSourceCmFin]
+  dsimp only [HasSourceFiniteCenterOfMassSolution]
   refine ⟨radSeq, hpos, hactive, hsmall, N, ?_⟩
   intro a ha b hb x hx
   rcases Set.mem_iUnion.mp (hcover hx) with ⟨alpha, hxalpha⟩
   exact ⟨alpha, hxalpha, hN a ha b hb alpha x hxalpha⟩
 
-theorem MetricCompactBase.exists_supp_cm_fin
+theorem MetricCompactBase.exists_supported_finite_center_of_mass
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -356,7 +356,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
             (aInf alpha (baseIndex inp.decay inp.realizes inp.pack hr))
             (aInf alpha) (baseIndex inp.decay inp.realizes inp.pack hr))
           z gamma
-      HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1 aInf Jinf Jbarinf ∧
+      HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1 aInf Jinf Jbarinf ∧
       (∀ a b : Nat,
         (∀ᶠ k in Filter.atTop,
           BInter inp.decay inp.D P L.lamInf a b (L.φ k)) ∨
@@ -442,7 +442,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
         let localWeight := fun (alpha : LiveSlot L inp.pack r)
             (x : Y.M) (gamma : Fin (inp.pack.A r)) =>
           weightInf alpha (chi alpha x) gamma
-        let pairPts : (alpha : LiveSlot L inp.pack r) →
+        let pairPoints : (alpha : LiveSlot L inp.pack r) →
             InterSlot L inp.pack r alpha → Nat → Nat → Y.M → Y.M :=
           fun alpha target a b x =>
             (chi alpha).symm
@@ -450,14 +450,14 @@ theorem MetricCompactBase.exists_supp_cm_fin
                 (beta b target.1) (beta b alpha)
                 (normalTransition (I := I) (X.obj (Lphi.φ a))
                   (beta a alpha) (beta a target.1) (chi alpha x)))
-        let pts := fun (alpha : LiveSlot L inp.pack r) =>
-          totalPts (X := X) pairPts alpha
+        let points := fun (alpha : LiveSlot L inp.pack r) =>
+          totalPoints (X := X) pairPoints alpha
         HasCompactCover sourceBall sourcePatch ∧
-          HasSuppCmFin (I := I) inp.decay P Lphi inp.pack r n
-            hcomplete hconn q δ sourceBall sourcePatch localWeight pts := by
+          HasSupportedFiniteCenterMapConstruction (I := I) inp.decay P Lphi inp.pack r n
+            hcomplete hconn q δ sourceBall sourcePatch localWeight points := by
   classical
   obtain ⟨aMin, haMin, hread⟩ :=
-    exists_hat_cm_min (I := I) b.normalRadius b.realizes
+    exists_hat_center_of_mass_min (I := I) b.normalRadius b.realizes
       hcomplete hconn
   let c0 :=
     (8 * Real.exp b.decay.C / aMin) * b.normalRadius.metricCoerciveRatio
@@ -481,7 +481,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
   let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
   obtain ⟨L, hstable⟩ := inp.exists_stable_net P
   obtain ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, hconv, hptsTail⟩ :=
-    inp.exists_supp_pts_fin h8' hradRatio' P L hstable r hr hconn
+    inp.exists_support_points_fin h8' hradRatio' P L hstable r hr hconn
   let Lphi := L.subseq hphi
   obtain ⟨q, δ, hqdata, hqWide, hqAcc, herr, hinvErr,
       hbranchTail, hscaleTail, hreadTail⟩ :=
@@ -508,7 +508,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
     ?_, hbranchTail, hscaleTail, ?_⟩
   · intro gamma z hz
     have hconv0 := hconv
-    dsimp only [HasSuppConvData] at hconv0
+    dsimp only [HasSupportedCenterMapConvergence] at hconv0
     have hzBall := (hconv0.2.1 gamma)
       ((hconv0.2.2.2.2.2.1 gamma) hz)
     have hlam := lamInf_lt_halfMin inp.decay inp.hD hphys P L
@@ -559,7 +559,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
     let localWeight := fun (alpha : LiveSlot L inp.pack r)
         (x : Y.M) (gamma : Fin (inp.pack.A r)) =>
       weightInf alpha (chi alpha x) gamma
-    let pairPts : (alpha : LiveSlot L inp.pack r) →
+    let pairPoints : (alpha : LiveSlot L inp.pack r) →
         InterSlot L inp.pack r alpha → Nat → Nat → Y.M → Y.M :=
       fun alpha target a b x =>
         (chi alpha).symm
@@ -567,21 +567,21 @@ theorem MetricCompactBase.exists_supp_cm_fin
             (beta b target.1) (beta b alpha)
             (normalTransition (I := I) (X.obj (Lphi.φ a))
               (beta a alpha) (beta a target.1) (chi alpha x)))
-    let pts := fun (alpha : LiveSlot L inp.pack r) =>
-      totalPts (X := X) pairPts alpha
+    let points := fun (alpha : LiveSlot L inp.pack r) =>
+      totalPoints (X := X) pairPoints alpha
     dsimp only at hn hreadN
     rcases hn with ⟨hcompact, hcover, hhat, hweight, hpts⟩
     change HasCompactCover sourceBall sourcePatch ∧
-      HasSuppCmFin (I := I) inp.decay P Lphi inp.pack r n
-        hcomplete hconn q δ sourceBall sourcePatch localWeight pts
+      HasSupportedFiniteCenterMapConstruction (I := I) inp.decay P Lphi inp.pack r n
+        hcomplete hconn q δ sourceBall sourcePatch localWeight points
     refine ⟨hcompact, ?_⟩
-    · dsimp only [HasSuppCmFin]
+    · dsimp only [HasSupportedFiniteCenterMapConstruction]
       let liveFinite : Finite (LiveSlot Lphi inp.pack r) :=
         Finite.of_injective (fun gamma : LiveSlot Lphi inp.pack r => gamma.1)
           Subtype.val_injective
       have hlocal := fun alpha =>
         hreadN.2 alpha (sourcePatch alpha) (hhat alpha)
-          (localWeight alpha) (hweight alpha) (pts alpha) (hpts alpha)
+          (localWeight alpha) (hweight alpha) (points alpha) (hpts alpha)
       choose radSeq hpos hactive hsmall hcap using hlocal
       refine ⟨radSeq, hcover, hhat, hweight, hpos, hactive, ?_, ?_⟩
       · intro epsilon hepsilon
@@ -590,7 +590,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
           (fun alpha => hsmall alpha epsilon hepsilon)
       · exact @finite_cover_two_tail (LiveSlot Lphi inp.pack r) Y.M liveFinite sourcePatch _ hcap
 
-theorem MetricCompactBase.exists_supp_diag_fin
+theorem MetricCompactBase.exists_support_diag_fin
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -630,7 +630,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
       let Xtheta : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
       let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xtheta.obj n).M :=
         fun alpha n ↦ seqCenterD inp.decay P Ltheta n (alpha.1 : Nat)
-      HasSuppConvData (I := I) inp P L r hr theta htheta U C0 C1
+      HasSupportedCenterMapConvergence (I := I) inp P L r hr theta htheta U C0 C1
           aInf Jinf Jbarinf ∧
       (∀ a b : Nat,
         (∀ᶠ k in Filter.atTop,
@@ -672,7 +672,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
         let Ualpha := Metric.ball (0 : E)
           (inp.normalRadius.phaseRadius Ralpha)
         ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) Ualpha ∧
-        MapCInfConvOnCompacts Ualpha
+        MapCInfConvergenceOnCompacts Ualpha
           (fun n ↦ normalCoordMetric (I := I)
             (X.obj (Ltheta.φ n)) (c alpha n))
           (gInf alpha) ∧
@@ -699,20 +699,20 @@ theorem MetricCompactBase.exists_supp_diag_fin
           rho / 2 ≤ metricCoerciveExpRadius
             (I := I) (X.obj (Ltheta.φ n)).metric x) ∧
       (∀ alpha,
-        HasDiagPairConv (I := I) (hcomplete.subseq index)
+        HasDiagPairConvergence (I := I) (hcomplete.subseq index)
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) (q alpha) (q alpha / 2)
           (δ alpha) (deltaInf alpha) (e alpha) (eInf alpha) ∧
         ∀ n, NormalDiagFence (I := I) (Xtheta.obj n)
           (c alpha n) (q alpha) (e alpha n)) ∧
-      ∀ n, HasSuppCmData (I := I) inp P L r hr theta htheta n
+      ∀ n, HasSupportedCenterMapConstruction (I := I) inp P L r hr theta htheta n
         hcomplete hconn U aInf q δ := by
   classical
   obtain ⟨aMin, haMin, inp, L, phi, hphi, U, C0, C1, aInf, Jinf,
       Jbarinf, q, δ, hconv, hstable, hphys, h8, hradD, hradRatio, hqdata, hqWide,
       hqAcc, herr, hinvErr,
       hcore, hbranch, hscaleTail, hcapTail⟩ :=
-    b.exists_supp_cm_fin hcomplete hconn r hr
+    b.exists_supported_finite_center_of_mass hcomplete hconn r hr
   let P := properMetricsOfCompleteConnected (I := I) hcomplete hconn
   let Lphi := L.subseq hphi
   have hq : ∀ alpha : LiveSlot L inp.pack r, 0 < q alpha := by
@@ -748,7 +748,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
         rho / 2 ≤ metricCoerciveExpRadius
           (I := I) (X.obj (Lphi.φ n)).metric x
   let Q : Nat → Prop := fun n ↦
-    HasSuppCmData (I := I) inp P L r hr phi hphi n
+    HasSupportedCenterMapConstruction (I := I) inp P L r hr phi hphi n
         hcomplete hconn U aInf q δ ∧
       ScaleAt n
   have hQ : ∀ᶠ n in Filter.atTop, Q n := by
@@ -762,10 +762,10 @@ theorem MetricCompactBase.exists_supp_diag_fin
   have htheta : StrictMono theta := hphi.comp hpsi
   let Ltheta := L.subseq htheta
   have hconvTheta :
-      HasSuppConvData (I := I) inp P L r hr theta htheta U C0 C1
+      HasSupportedCenterMapConvergence (I := I) inp P L r hr theta htheta U C0 C1
         aInf Jinf Jbarinf := by
     simpa only [theta] using
-      HasSuppConvData.subseq inp P L r hr hphi U C0 C1 aInf Jinf Jbarinf
+      HasSupportedCenterMapConvergence.subseq inp P L r hr hphi U C0 C1 aInf Jinf Jbarinf
         hconv hpsi
   have hcenter : ∀ n (alpha : LiveSlot L inp.pack r),
       inp.decay.dist (Ltheta.φ n)
@@ -779,7 +779,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
       let Ualpha := Metric.ball (0 : E)
         (inp.normalRadius.phaseRadius Ralpha)
       ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) Ualpha ∧
-      MapCInfConvOnCompacts Ualpha
+      MapCInfConvergenceOnCompacts Ualpha
         (fun n ↦ normalCoordMetric (I := I)
           (X.obj (Ltheta.φ n))
           (seqCenterD inp.decay P Ltheta n (alpha.1 : Nat)))
@@ -820,7 +820,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
   let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xtheta.obj n).M :=
     fun alpha n ↦ seqCenterD inp.decay P Ltheta n (alpha.1 : Nat)
   have hpair : ∀ alpha,
-      HasDiagPairConv (I := I) (hcomplete.subseq index)
+      HasDiagPairConvergence (I := I) (hcomplete.subseq index)
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) (q alpha) (q alpha / 2)
           (δ alpha) (deltaInf alpha) (e alpha) (eInf alpha) ∧
@@ -829,12 +829,12 @@ theorem MetricCompactBase.exists_supp_diag_fin
     intro alpha
     with_unfolding_all exact hpair0 alpha
   have hcapAll : ∀ n,
-      HasSuppCmData (I := I) inp P L r hr theta htheta n
+      HasSupportedCenterMapConstruction (I := I) inp P L r hr theta htheta n
         hcomplete hconn U aInf q δ := by
     intro n
     have hQn := hQAll n
     dsimp only [Q] at hQn
-    have hn := HasSuppCmData.subseq (I := I) hpsi hQn.1
+    have hn := HasSupportedCenterMapConstruction.subseq (I := I) hpsi hQn.1
     simpa only [Q, theta] using hn
   refine ⟨aMin, haMin, inp, L, theta, htheta, U, C0, C1, aInf, Jinf,
     Jbarinf, q, δ, gInf, deltaInf, e, eInf, ?_⟩
@@ -843,7 +843,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
     herr, hinvErr, hcore,
     hcenter, hmetric, hbranchTheta, hscaleAll, hpair, hcapAll⟩
 
-theorem MetricCompactBase.exists_cm_on_source
+theorem MetricCompactBase.exists_center_of_mass_on_source
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (b : MetricCompactBase (I := I) X)
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -910,7 +910,7 @@ theorem MetricCompactBase.exists_cm_on_source
         let localWeight := fun (alpha : LiveSlot L inp.pack r)
             (x : Y.M) (gamma : Fin (inp.pack.A r)) =>
           weightInf alpha (chi alpha x) gamma
-        let pairPts : (alpha : LiveSlot L inp.pack r) →
+        let pairPoints : (alpha : LiveSlot L inp.pack r) →
             InterSlot L inp.pack r alpha → Nat → Nat → Y.M → Y.M :=
           fun alpha target a b x =>
             (chi alpha).symm
@@ -918,19 +918,19 @@ theorem MetricCompactBase.exists_cm_on_source
                 (beta b target.1) (beta b alpha)
                 (normalTransition (I := I) (X.obj (Lphi.φ a))
                   (beta a alpha) (beta a target.1) (chi alpha x)))
-        let pts := fun (alpha : LiveSlot L inp.pack r) =>
-          totalPts (X := X) pairPts alpha
-        HasSourceCmFin (I := I) inp.decay P Lphi inp.pack r n
-          hcomplete hconn q δ sourceBall sourcePatch localWeight pts := by
+        let points := fun (alpha : LiveSlot L inp.pack r) =>
+          totalPoints (X := X) pairPoints alpha
+        HasSourceFiniteCenterOfMassSolution (I := I) inp.decay P Lphi inp.pack r n
+          hcomplete hconn q δ sourceBall sourcePatch localWeight points := by
   obtain ⟨aMin, haMin, inp, L, phi, hphi, U, _C0, _C1, aInf, _Jinf,
       _Jbarinf, q, δ, _hconv, _hstable, _hphys, _h8, _hradD, _hradRatio, hqdata,
       _hqWide, _hqAcc, _herr, _hinvErr, _hcore, _hbranch, _hscale, htail⟩ :=
-    b.exists_supp_cm_fin hcomplete hconn r hr
+    b.exists_supported_finite_center_of_mass hcomplete hconn r hr
   refine ⟨aMin, haMin, inp, L, phi, hphi, U, aInf, q, δ, ?_⟩
   dsimp only
   refine ⟨hqdata, ?_⟩
   filter_upwards [htail] with n hn
   exact hn.2.toSource
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

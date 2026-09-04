@@ -169,7 +169,7 @@ private lemma ipjb_trace_center (g : SmoothRiemannianMetric I M) (x : M)
   rw [modelDoubleTrace_apply (E := E) 1 (cometricLmodel (I := I) g x)
     (Tensor0SSpace.toModel D) m]
   exact cometric_dualTrace_eq_orthoFrame_diag (I := I) g (s := 1) x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel D) m
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in

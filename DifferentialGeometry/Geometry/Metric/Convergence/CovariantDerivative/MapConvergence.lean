@@ -10,7 +10,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -85,24 +85,24 @@ private theorem iterCovComp_succ_eq_step
   exact happ.symm
 
 omit [CompleteSpace E] in
-theorem iter_comp_conv
+theorem iter_comp_convergence
     {U : Set E} (hU : IsOpen U) (e : Idx → E) {r : Nat}
     (chr : Nat → E → Idx → Idx → Idx → Real)
     (chrInf : E → Idx → Idx → Idx → Real)
     (base : Nat → E → (Fin r → Idx) → Real)
     (baseInf : E → (Fin r → Idx) → Real)
-    (hchr : MapCInfConvOnCompacts U chr chrInf)
-    (hbase : MapCInfConvOnCompacts U base baseInf)
+    (hchr : MapCInfConvergenceOnCompacts U chr chrInf)
+    (hbase : MapCInfConvergenceOnCompacts U base baseInf)
     (hchr_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (chr n) U)
     (hchrInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) chrInf U)
     (hbase_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (base n) U)
     (hbaseInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) baseInf U)
     (a : Nat) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun n ↦ iterCovComp (I := 𝓘(Real, E)) (constFrame e) (chr n) (base n) a)
       (iterCovComp (I := 𝓘(Real, E)) (constFrame e) chrInf baseInf a) := by
   have hall : ∀ q : Nat,
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
           (fun n ↦ iterCovComp (I := 𝓘(Real, E))
             (constFrame e) (chr n) (base n) q)
           (iterCovComp (I := 𝓘(Real, E)) (constFrame e) chrInf baseInf q) ∧
@@ -117,7 +117,7 @@ theorem iter_comp_conv
           (And.intro hbase (And.intro hbase_cd hbaseInf_cd))
     | succ q ih =>
         rcases ih with ⟨hT, hT_cd, hTInf_cd⟩
-        have hfd : MapCInfConvOnCompacts U
+        have hfd : MapCInfConvergenceOnCompacts U
             (fun n x ↦ fderiv Real
               (iterCovComp (I := 𝓘(Real, E))
                 (constFrame e) (chr n) (base n) q) x)
@@ -135,14 +135,14 @@ theorem iter_comp_conv
               (iterCovComp (I := 𝓘(Real, E))
                 (constFrame e) chrInf baseInf q) x) U :=
           ((contDiffOn_infty_iff_fderiv_of_isOpen hU).1 hTInf_cd).2
-        have hchrT : MapCInfConvOnCompacts U
+        have hchrT : MapCInfConvergenceOnCompacts U
             (fun n x ↦ (chr n x,
               iterCovComp (I := 𝓘(Real, E))
                 (constFrame e) (chr n) (base n) q x))
             (fun x ↦ (chrInf x,
               iterCovComp (I := 𝓘(Real, E))
                 (constFrame e) chrInf baseInf q x)) :=
-          mapCInfConv_prodMk hU hchr hT hchr_cd hchrInf_cd hT_cd hTInf_cd
+          mapCInfConvergence_prodMk hU hchr hT hchr_cd hchrInf_cd hT_cd hTInf_cd
         have hchrT_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
             (fun x ↦ (chr n x,
               iterCovComp (I := 𝓘(Real, E))
@@ -153,7 +153,7 @@ theorem iter_comp_conv
               iterCovComp (I := 𝓘(Real, E))
                 (constFrame e) chrInf baseInf q x)) U :=
           hchrInf_cd.prodMk hTInf_cd
-        have htriple : MapCInfConvOnCompacts U
+        have htriple : MapCInfConvergenceOnCompacts U
             (fun n x ↦
               (fderiv Real
                   (iterCovComp (I := 𝓘(Real, E))
@@ -168,7 +168,7 @@ theorem iter_comp_conv
                 chrInf x,
                 iterCovComp (I := 𝓘(Real, E))
                   (constFrame e) chrInf baseInf q x)) :=
-          mapCInfConv_prodMk hU hfd hchrT hfd_cd hfdInf_cd
+          mapCInfConvergence_prodMk hU hfd hchrT hfd_cd hfdInf_cd
             hchrT_cd hchrTInf_cd
         have htriple_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
             (fun x ↦
@@ -188,7 +188,7 @@ theorem iter_comp_conv
                 iterCovComp (I := 𝓘(Real, E))
                   (constFrame e) chrInf baseInf q x)) U :=
           hfdInf_cd.prodMk hchrTInf_cd
-        have hstep : MapCInfConvOnCompacts U
+        have hstep : MapCInfConvergenceOnCompacts U
             (fun n x ↦ covCompStep e
               (fderiv Real
                   (iterCovComp (I := 𝓘(Real, E))
@@ -203,8 +203,8 @@ theorem iter_comp_conv
                 chrInf x,
                 iterCovComp (I := 𝓘(Real, E))
                   (constFrame e) chrInf baseInf q x)) :=
-          MapCInfConvOnCompacts.comp hU isOpen_univ htriple
-            (mapCInfConv_const (covCompStep e))
+          MapCInfConvergenceOnCompacts.comp hU isOpen_univ htriple
+            (mapCInfConvergence_const (covCompStep e))
             htriple_cd htripleInf_cd
             (fun _ ↦ (covCompStep_contDiff e).contDiffOn)
             (covCompStep_contDiff e).contDiffOn
@@ -262,18 +262,18 @@ theorem iter_comp_zero
     (chr : Nat → E → Idx → Idx → Idx → Real)
     (chrInf : E → Idx → Idx → Idx → Real)
     (base : Nat → E → (Fin r → Idx) → Real)
-    (hchr : MapCInfConvOnCompacts U chr chrInf)
-    (hbase : MapCInfConvOnCompacts U base
+    (hchr : MapCInfConvergenceOnCompacts U chr chrInf)
+    (hbase : MapCInfConvergenceOnCompacts U base
       (fun (_ : E) (_ : Fin r → Idx) ↦ (0 : Real)))
     (hchr_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (chr n) U)
     (hchrInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) chrInf U)
     (hbase_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (base n) U)
     (a : Nat) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun n ↦ iterCovComp (I := 𝓘(Real, E)) (constFrame e) (chr n) (base n) a)
       (fun (_ : E) (_ : Fin (r + a) → Idx) ↦ (0 : Real)) := by
   simpa only [iterCovComp_zero_base] using
-    iter_comp_conv hU e chr chrInf base
+    iter_comp_convergence hU e chr chrInf base
       (fun (_ : E) (_ : Fin r → Idx) ↦ (0 : Real))
       hchr hbase hchr_cd hchrInf_cd hbase_cd contDiffOn_const a
 

@@ -612,7 +612,7 @@ private lemma chartLCConj_chart_pulled_contDiffOn
     chartLeviCivitaGoodSet_isOpen (I := I) α
   intro y hy
   rcases hy with ⟨x, hxS, rfl⟩
-  have hx_src : x ∈ (chartAt H α).source :=
+  have hx_source : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hxS
   set F : M → E →L[ℝ] E := fun b : M =>
     (chartTrivializationLinearMap (I := I) (M := M) α b).comp
@@ -620,17 +620,17 @@ private lemma chartLCConj_chart_pulled_contDiffOn
           (chartLeviCivitaParallelCLM (I := I) g α b B.toFun)).comp
         (chartTrivializationLinearMapSymm (I := I) (M := M) α b)) with hF_def
   have hF_at : ContMDiffAt I 𝓘(ℝ, E →L[ℝ] E) ∞ F x := by
-    have hopen_src : IsOpen (chartAt H α).source :=
+    have hopen_source : IsOpen (chartAt H α).source :=
       (chartAt H α).open_source
-    exact hcm.contMDiffAt (hopen_src.mem_nhds hx_src)
+    exact hcm.contMDiffAt (hopen_source.mem_nhds hx_source)
   set φ := extChartAt I α
-  have hxφ_src : x ∈ φ.source := by rw [extChartAt_source]; exact hx_src
-  have hxφ_tgt : φ x ∈ φ.target := φ.map_source hxφ_src
-  have hxφ_inv : φ.symm (φ x) = x := φ.left_inv hxφ_src
+  have hxφ_source : x ∈ φ.source := by rw [extChartAt_source]; exact hx_source
+  have hxφ_target : φ x ∈ φ.target := φ.map_source hxφ_source
+  have hxφ_inv : φ.symm (φ x) = x := φ.left_inv hxφ_source
   have hsymm_on : ContMDiffOn 𝓘(ℝ, E) I (∞ : WithTop ℕ∞) φ.symm φ.target :=
     contMDiffOn_extChartAt_symm (I := I) (n := ∞) (x := α)
   have hsymm_at : ContMDiffWithinAt 𝓘(ℝ, E) I (∞ : WithTop ℕ∞)
-      φ.symm φ.target (φ x) := hsymm_on (φ x) hxφ_tgt
+      φ.symm φ.target (φ x) := hsymm_on (φ x) hxφ_target
   have hF_at' : ContMDiffAt I 𝓘(ℝ, E →L[ℝ] E) ∞ F (φ.symm (φ x)) := by
     rw [hxφ_inv]; exact hF_at
   have hcomp_at : ContMDiffWithinAt 𝓘(ℝ, E) 𝓘(ℝ, E →L[ℝ] E) ∞

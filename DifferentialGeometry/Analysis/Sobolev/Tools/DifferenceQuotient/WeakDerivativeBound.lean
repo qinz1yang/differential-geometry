@@ -225,18 +225,18 @@ private lemma tendsto_eLpNorm_restrict_of_tendstoUniformlyOn
     {K : Set EuclN} (hK_meas : MeasurableSet K)
     (hK_volume_finite : (volume : Measure EuclN) K < ∞)
     {fSeq : ι → EuclN → ℝ} {f : EuclN → ℝ}
-    (h_unif : TendstoUniformlyOn fSeq f l K) :
+    (h_uniform : TendstoUniformlyOn fSeq f l K) :
     Tendsto (fun i => eLpNorm (fun x => fSeq i x - f x) 2
       ((volume : Measure EuclN).restrict K)) l (𝓝 0) := by
   classical
   have hK_volume_ne_top : (volume : Measure EuclN) K ≠ ∞ := hK_volume_finite.ne
-  have h_unif_metric : ∀ ε : ℝ, 0 < ε →
+  have h_uniform_metric : ∀ ε : ℝ, 0 < ε →
       ∀ᶠ i in l, ∀ x ∈ K, dist (f x) (fSeq i x) < ε :=
-    Metric.tendstoUniformlyOn_iff.mp h_unif
-  have h_unif_real : ∀ ε : ℝ, 0 < ε →
+    Metric.tendstoUniformlyOn_iff.mp h_uniform
+  have h_uniform_real : ∀ ε : ℝ, 0 < ε →
       ∀ᶠ i in l, ∀ x ∈ K, ‖fSeq i x - f x‖ ≤ ε := by
     intro ε hε
-    have := h_unif_metric ε hε
+    have := h_uniform_metric ε hε
     filter_upwards [this] with i hi
     intro x hx
     have h := hi x hx
@@ -253,7 +253,7 @@ private lemma tendsto_eLpNorm_restrict_of_tendstoUniformlyOn
       ∀ᶠ i in l, eLpNorm (fun x => fSeq i x - f x) 2
         ((volume : Measure EuclN).restrict K) ≤ V * ENNReal.ofReal ε := by
     intro ε hε
-    filter_upwards [h_unif_real ε hε] with i hi
+    filter_upwards [h_uniform_real ε hε] with i hi
     exact eLpNorm_two_restrict_le_of_sup_bound hK_meas hi
   rw [ENNReal.tendsto_nhds_zero]
   intro δ hδ_pos
@@ -329,7 +329,7 @@ private lemma tendsto_eLpNorm_restrict_sub_mollifyEps_of_continuous_compactSuppo
     {εFn : ι → ℝ} (hε_pos : ∀ i, 0 < εFn i) (hε_tendsto : Tendsto εFn l (𝓝 0))
     {K : Set EuclN} (hK_compact : IsCompact K)
     {φ : EuclN → ℝ} (hφ_cont : Continuous φ)
-    (hφ_compactSupp : HasCompactSupport φ) :
+    (hφ_compactSupport : HasCompactSupport φ) :
     Tendsto (fun i => eLpNorm
       (fun x => mollifyEps (d := d) (hε_pos i) φ x - φ x) 2
       ((volume : Measure EuclN).restrict K)) l (𝓝 0) := by
@@ -342,23 +342,23 @@ private lemma tendsto_eLpNorm_restrict_sub_mollifyEps_of_continuous_compactSuppo
     rw [tendsto_def]
     intro s hs
     rcases _root_.mem_nhds_iff.mp hs with ⟨t, hts, ht_open, h0_mem⟩
-    refine mem_cocompact.mpr ⟨tsupport φ, hφ_compactSupp, ?_⟩
+    refine mem_cocompact.mpr ⟨tsupport φ, hφ_compactSupport, ?_⟩
     intro x hx
     have hx_notin_tsupp : x ∉ tsupport φ := hx
     have hφx : φ x = 0 := image_eq_zero_of_notMem_tsupport hx_notin_tsupp
     rw [Set.mem_preimage, hφx]
     exact hts h0_mem
-  have h_unif : TendstoUniformlyOn
+  have h_uniform : TendstoUniformlyOn
       (fun i => mollifyEps (d := d) (hε_pos i) φ) φ l K :=
     tendstoUniformlyOn_mollifyEps_of_uniformContinuous hε_pos hε_tendsto
       hφ_cont hφ_uc
-  exact tendsto_eLpNorm_restrict_of_tendstoUniformlyOn hK_meas hK_volume_finite h_unif
+  exact tendsto_eLpNorm_restrict_of_tendstoUniformlyOn hK_meas hK_volume_finite h_uniform
 
 omit [NeZero d] in
 private lemma mollifyEps_sub_eq_mollifyEps_sub
     {ε : ℝ} (hε : 0 < ε) {f g : EuclN → ℝ}
-    (hf_loc : LocallyIntegrable f (volume : Measure EuclN))
-    (hg_loc : LocallyIntegrable g (volume : Measure EuclN)) :
+    (hf_local : LocallyIntegrable f (volume : Measure EuclN))
+    (hg_local : LocallyIntegrable g (volume : Measure EuclN)) :
     mollifyEps (d := d) hε f - mollifyEps (d := d) hε g =
       mollifyEps (d := d) hε (f - g) := by
   funext x
@@ -373,7 +373,7 @@ private lemma mollifyEps_sub_eq_mollifyEps_sub
     have h_existsAt : ConvolutionExistsAt (mollifierEps (d := d) hε) f x
         (ContinuousLinearMap.lsmul ℝ ℝ) (volume : Measure EuclN) :=
       hψ_compact.convolutionExists_left
-        (L := ContinuousLinearMap.lsmul ℝ ℝ) hψ_cont hf_loc x
+        (L := ContinuousLinearMap.lsmul ℝ ℝ) hψ_cont hf_local x
     refine h_existsAt.integrable.congr ?_
     filter_upwards with t
     simp [ContinuousLinearMap.lsmul_apply, smul_eq_mul]
@@ -382,7 +382,7 @@ private lemma mollifyEps_sub_eq_mollifyEps_sub
     have h_existsAt : ConvolutionExistsAt (mollifierEps (d := d) hε) g x
         (ContinuousLinearMap.lsmul ℝ ℝ) (volume : Measure EuclN) :=
       hψ_compact.convolutionExists_left
-        (L := ContinuousLinearMap.lsmul ℝ ℝ) hψ_cont hg_loc x
+        (L := ContinuousLinearMap.lsmul ℝ ℝ) hψ_cont hg_local x
     refine h_existsAt.integrable.congr ?_
     filter_upwards with t
     simp [ContinuousLinearMap.lsmul_apply, smul_eq_mul]
@@ -403,7 +403,7 @@ private lemma tendsto_eLpNorm_restrict_sub_mollifyEps_of_memLp
       ((volume : Measure EuclN).restrict K)) l (𝓝 0) := by
   classical
   have hK_meas : MeasurableSet K := hK_compact.isClosed.measurableSet
-  have hg_loc : LocallyIntegrable g (volume : Measure EuclN) :=
+  have hg_local : LocallyIntegrable g (volume : Measure EuclN) :=
     hg.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   rw [ENNReal.tendsto_nhds_zero]
   intro δ hδ_pos
@@ -416,14 +416,14 @@ private lemma tendsto_eLpNorm_restrict_sub_mollifyEps_of_memLp
   have hδ3_ne_top : δ3 ≠ ∞ := by
     rw [hδ3_def]
     exact ENNReal.div_ne_top hδ_top (by norm_num)
-  obtain ⟨φ, hφ_compactSupp, h_approx, hφ_cont, hφ_memLp⟩ :=
+  obtain ⟨φ, hφ_compactSupport, h_approx, hφ_cont, hφ_memLp⟩ :=
     hg.exists_hasCompactSupport_eLpNorm_sub_le (p := 2)
       (by norm_num : (2 : ℝ≥0∞) ≠ ∞) hδ3_pos.ne'
   set gd : EuclN → ℝ := fun x => g x - φ x with hgd_def
   have hgd_memLp : MemLp gd 2 (volume : Measure EuclN) := hg.sub hφ_memLp
-  have hgd_loc : LocallyIntegrable gd (volume : Measure EuclN) :=
+  have hgd_local : LocallyIntegrable gd (volume : Measure EuclN) :=
     hgd_memLp.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-  have hφ_loc : LocallyIntegrable φ (volume : Measure EuclN) :=
+  have hφ_local : LocallyIntegrable φ (volume : Measure EuclN) :=
     hφ_memLp.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have hgd_eLp_le : eLpNorm gd 2 (volume : Measure EuclN) ≤ δ3 := by
     rw [hgd_def]
@@ -434,15 +434,15 @@ private lemma tendsto_eLpNorm_restrict_sub_mollifyEps_of_memLp
       (fun x => mollifyEps (d := d) (hε_pos i) φ x - φ x) 2
       ((volume : Measure EuclN).restrict K)) l (𝓝 0) :=
     tendsto_eLpNorm_restrict_sub_mollifyEps_of_continuous_compactSupport
-      hε_pos hε_tendsto hK_compact hφ_cont hφ_compactSupp
+      hε_pos hε_tendsto hK_compact hφ_cont hφ_compactSupport
   rw [ENNReal.tendsto_nhds_zero] at h_term2_tendsto
   filter_upwards [h_term2_tendsto δ3 hδ3_pos] with i h2_le
   have h_moll_g_cont : Continuous (mollifyEps (d := d) (hε_pos i) g) :=
-    mollifyEps_continuous (hε_pos i) hg_loc
+    mollifyEps_continuous (hε_pos i) hg_local
   have h_moll_φ_cont : Continuous (mollifyEps (d := d) (hε_pos i) φ) :=
-    mollifyEps_continuous (hε_pos i) hφ_loc
+    mollifyEps_continuous (hε_pos i) hφ_local
   have h_moll_gd_cont : Continuous (mollifyEps (d := d) (hε_pos i) gd) :=
-    mollifyEps_continuous (hε_pos i) hgd_loc
+    mollifyEps_continuous (hε_pos i) hgd_local
   set f1 : EuclN → ℝ := mollifyEps (d := d) (hε_pos i) gd with hf1_def
   set f2 : EuclN → ℝ := fun x => mollifyEps (d := d) (hε_pos i) φ x - φ x with hf2_def
   set f3 : EuclN → ℝ := fun x => φ x - g x with hf3_def
@@ -466,11 +466,11 @@ private lemma tendsto_eLpNorm_restrict_sub_mollifyEps_of_memLp
       rw [hgd_def]
       have h_diff_eq : (fun y => g y - φ y) = g - φ := by funext y; rfl
       rw [h_diff_eq]
-      have := mollifyEps_sub_eq_mollifyEps_sub (hε_pos i) hg_loc hφ_loc
+      have := mollifyEps_sub_eq_mollifyEps_sub (hε_pos i) hg_local hφ_local
       have h_funeq : (g - φ) = (fun y => g y - φ y) := by funext y; rfl
       rw [show g - φ = (fun y => g y - φ y) from rfl]
       symm
-      have := mollifyEps_sub_eq_mollifyEps_sub (hε_pos i) hg_loc hφ_loc
+      have := mollifyEps_sub_eq_mollifyEps_sub (hε_pos i) hg_local hφ_local
       have h_subeq : (fun y => g y - φ y) = g - φ := by funext y; rfl
       rw [h_subeq]
       exact this
@@ -586,12 +586,12 @@ private theorem lintegral_enorm_sq_diffQuot_le_lintegral_enorm_sq_weakPartial
   have hε_tendsto : Tendsto εFn Filter.atTop (𝓝 0) := by
     rw [hεFn_def]; exact tendsto_one_div_add_atTop_nhds_zero_nat
   set u_n : ℕ → EuclN → ℝ := fun n => mollifyEps (d := d) (hε_pos n) u with hu_n_def
-  have hu_loc : LocallyIntegrable u (volume : Measure EuclN) :=
+  have hu_local : LocallyIntegrable u (volume : Measure EuclN) :=
     hu_l2.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-  have hg_k_loc : LocallyIntegrable g_k (volume : Measure EuclN) :=
+  have hg_k_local : LocallyIntegrable g_k (volume : Measure EuclN) :=
     hg_k_l2.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have hu_n_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_n n) := fun n =>
-    mollifyEps_contDiff (hε_pos n) hu_loc
+    mollifyEps_contDiff (hε_pos n) hu_local
   have hu_n_C1 : ∀ n, ContDiff ℝ 1 (u_n n) := fun n =>
     (hu_n_smooth n).of_le (by norm_cast)
   have h_partial_eq : ∀ n,
@@ -599,7 +599,7 @@ private theorem lintegral_enorm_sq_diffQuot_le_lintegral_enorm_sq_weakPartial
         mollifyEps (d := d) (hε_pos n) g_k := by
     intro n
     funext y
-    exact mollifyEps_partial_eq_mollifyEps_weakPartial (hε_pos n) hu_loc hwp y
+    exact mollifyEps_partial_eq_mollifyEps_weakPartial (hε_pos n) hu_local hwp y
   have h_admissible : ∀ x ∈ Ω'', ∀ s ∈ Set.Ioc (0 : ℝ) 1,
       x + (s * h) • EuclideanSpace.single k 1 ∈ K := by
     intro x hx s hs
@@ -657,7 +657,7 @@ private theorem lintegral_enorm_sq_diffQuot_le_lintegral_enorm_sq_weakPartial
     (h_smooth_bound n).trans (le_of_eq (h_partial_substitute n))
   have h_ae_u : ∀ᵐ x ∂(volume : Measure EuclN),
       Tendsto (fun n => u_n n x) Filter.atTop (𝓝 (u x)) :=
-    ae_tendsto_mollifyEps_of_locallyIntegrable hε_pos hε_tendsto hu_loc
+    ae_tendsto_mollifyEps_of_locallyIntegrable hε_pos hε_tendsto hu_local
   have h_ae_u_translate : ∀ᵐ x ∂(volume : Measure EuclN),
       Tendsto (fun n => u_n n (x + h • EuclideanSpace.single k 1))
         Filter.atTop (𝓝 (u (x + h • EuclideanSpace.single k 1))) := by
@@ -760,7 +760,7 @@ private theorem lintegral_enorm_sq_diffQuot_le_lintegral_enorm_sq_weakPartial
     filter_upwards [h_l2_tendsto δ hδ_pos] with n hn
     have h_aestron_n : AEStronglyMeasurable (mollifyEps (d := d) (hε_pos n) g_k)
         ((volume : Measure EuclN).restrict K) :=
-      (mollifyEps_continuous (hε_pos n) hg_k_loc).aestronglyMeasurable.restrict
+      (mollifyEps_continuous (hε_pos n) hg_k_local).aestronglyMeasurable.restrict
     have h_aestron_g : AEStronglyMeasurable g_k
         ((volume : Measure EuclN).restrict K) := hg_k_l2.aestronglyMeasurable.restrict
     exact eLpNorm_sq_le_of_eLpNorm_sub_le h_aestron_n h_aestron_g hn

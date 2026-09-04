@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Riemannian.Variation
 open scoped Bundle Manifold ContDiff ENNReal Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 inductive IntrinsicJacobiJetAtom
   | pathT
@@ -353,13 +353,13 @@ noncomputable def IntrinsicJacobiJetAtom.eval
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (atom : IntrinsicJacobiJetAtom) (q : Real × Real) :
     TangentSpace I
-      (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
+      (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
   let f : Real -> Real -> M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let A : forall r t : Real, TangentSpace I (f r t) := fun r t =>
     varFst (I := I) f r t
   let B : forall r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
   match atom with
   | .pathT => varSnd (I := I) f q.1 q.2
   | .pathDt =>
@@ -385,7 +385,7 @@ theorem IntrinsicJacobiJetAtom.path_dt_zero
     (p : M) (u a b : E) (r t : Real) :
     IntrinsicJacobiJetAtom.pathDt.eval (I := I) g hEnorm p u a b (r, t) = 0 := by
   let f : Real -> Real -> M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let gamma : Real -> M := fun v => f r v
   have hgamma :
       ContMDiff (modelWithCornersSelf Real Real) I ∞ gamma := by
@@ -398,11 +398,11 @@ theorem IntrinsicJacobiJetAtom.path_dt_zero
           ∞ (fun v : Real => ((r, (0 : Real)), v)) :=
       (contMDiff_const.prodMk contMDiff_const).prodMk contMDiff_id
     simpa only [gamma, f, Function.comp_def] using
-      (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
+      (intrinsicLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
   have hgeo :
       DifferentialGeometry.Geometry.Riemannian.Geodesic.IsGeodesic
         (I := I) g gamma := by
-    simpa only [gamma, f, intrLaunch3, zero_smul, add_zero] using
+    simpa only [gamma, f, intrinsicLaunch3, zero_smul, add_zero] using
       intrinsicGeodesic_isGeodesic (I := I) g hEnorm p
         (show TangentSpace I p from u + r • a)
   have hz :=
@@ -423,18 +423,18 @@ theorem IntrinsicJacobiJetAtom.a_jet_eq_self
     (IntrinsicJacobiJetAtom.aJet n).eval (I := I) g hEnorm p u a b (r, t) =
       (IntrinsicJacobiJetAtom.bJet n).eval (I := I) g hEnorm p u a a (r, t) := by
   let fb : Real -> Real -> M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let fa : Real -> Real -> M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a a ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a a ((s, 0), v)
   have hf : fb = fa := by
     funext s v
-    simp only [fb, fa, intrLaunch3, zero_smul, add_zero]
+    simp only [fb, fa, intrinsicLaunch3, zero_smul, add_zero]
   change
     covFstIter (I := I) g fb n
         (fun s v => varFst (I := I) fb s v) r t =
-      intrLaunchJet (I := I) g hEnorm p u a a n (r, t)
+      intrinsicLaunchJet (I := I) g hEnorm p u a a n (r, t)
   rw [hf]
-  exact intrAJet_self (I := I) g hEnorm p u a n (r, t)
+  exact intrinsicAJet_self (I := I) g hEnorm p u a n (r, t)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -449,12 +449,12 @@ theorem IntrinsicJacobiJetAtom.a_time_eq_self
     (IntrinsicJacobiJetAtom.aTime n).eval (I := I) g hEnorm p u a b (r, t) =
       (IntrinsicJacobiJetAtom.bTime n).eval (I := I) g hEnorm p u a a (r, t) := by
   let fb : Real -> Real -> M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let fa : Real -> Real -> M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a a ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a a ((s, 0), v)
   have hf : fb = fa := by
     funext s v
-    simp only [fb, fa, intrLaunch3, zero_smul, add_zero]
+    simp only [fb, fa, intrinsicLaunch3, zero_smul, add_zero]
   change
     covSnd (I := I) g fb
         (fun s v =>
@@ -462,11 +462,11 @@ theorem IntrinsicJacobiJetAtom.a_time_eq_self
             (fun x y => varFst (I := I) fb x y) s v) r t =
       covSnd (I := I) g fa
         (fun s v =>
-          intrLaunchJet (I := I) g hEnorm p u a a n (s, v)) r t
+          intrinsicLaunchJet (I := I) g hEnorm p u a a n (s, v)) r t
   rw [hf]
   congr 1
   funext s v
-  exact intrAJet_self (I := I) g hEnorm p u a n (s, v)
+  exact intrinsicAJet_self (I := I) g hEnorm p u a n (s, v)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -480,7 +480,7 @@ theorem IntrinsicJacobiJetAtom.a_jet_time_zero
     (p : M) (u a b : E) (n : Nat) (r : Real) :
     (IntrinsicJacobiJetAtom.aJet n).eval (I := I) g hEnorm p u a b (r, 0) = 0 := by
   let f : Real -> Real -> M := fun s t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
   let A : forall s t : Real, TangentSpace I (f s t) := fun s t =>
     varFst (I := I) f s t
   change covFstIter (I := I) g f n A r 0 = 0
@@ -506,8 +506,8 @@ theorem IntrinsicJacobiJetAtom.b_jet_time_zero
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r : Real) :
     (IntrinsicJacobiJetAtom.bJet n).eval (I := I) g hEnorm p u a b (r, 0) = 0 := by
-  change intrLaunchJet (I := I) g hEnorm p u a b n (r, 0) = 0
-  exact intrLaunchJet_time0 (I := I) g hEnorm p u a b n r
+  change intrinsicLaunchJet (I := I) g hEnorm p u a b n (r, 0) = 0
+  exact intrinsicLaunchJet_time0 (I := I) g hEnorm p u a b n r
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -520,7 +520,7 @@ noncomputable def CurvatureJetTerm.eval
     (p : M) (u a b : E) :
     CurvatureJetTerm -> forall q : Real × Real,
       TangentSpace I
-        (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+        (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
   | .zero, _ => 0
   | .atom x, q => x.eval (I := I) g hEnorm p u a b q
   | .add x y, q =>
@@ -529,7 +529,7 @@ noncomputable def CurvatureJetTerm.eval
   | .scale c x, q => c • x.eval g hEnorm p u a b q
   | .curv k slots, q =>
       curvOpN (I := I) g k
-        (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+        (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
         (fun i => (slots i).eval g hEnorm p u a b q)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -554,14 +554,14 @@ theorem CurvatureJetTerm.eval_le_at
     (hatom : forall (atom : IntrinsicJacobiJetAtom), P atom ->
         Real.sqrt
             (g.inner
-              (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+              (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
               (atom.eval (I := I) g hEnorm p u a b q)
               (atom.eval (I := I) g hEnorm p u a b q)) <=
           B atom) :
     forall term : CurvatureJetTerm, term.allAtoms P ->
         Real.sqrt
             (g.inner
-              (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+              (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
               (term.eval (I := I) g hEnorm p u a b q)
               (term.eval (I := I) g hEnorm p u a b q)) <=
           term.majorant C B := by
@@ -578,7 +578,7 @@ theorem CurvatureJetTerm.eval_le_at
   | add y z ihy ihz =>
       intro hterm
       let x :=
-        intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)
       calc
         Real.sqrt
             (g.inner x
@@ -602,7 +602,7 @@ theorem CurvatureJetTerm.eval_le_at
   | scale c y ih =>
       intro hterm
       let x :=
-        intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)
       calc
         Real.sqrt
             (g.inner x
@@ -621,7 +621,7 @@ theorem CurvatureJetTerm.eval_le_at
   | curv k slots ih =>
       intro hterm
       let x :=
-        intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)
       have hprod :
           (∏ i : Fin (k + 3),
               Real.sqrt
@@ -675,7 +675,7 @@ theorem CurvatureJetTerm.eval_le_atoms
       forall q : Real × Real,
         Real.sqrt
             (g.inner
-              (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+              (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
               (atom.eval (I := I) g hEnorm p u a b q)
               (atom.eval (I := I) g hEnorm p u a b q)) <=
           B atom) :
@@ -683,7 +683,7 @@ theorem CurvatureJetTerm.eval_le_atoms
       forall q : Real × Real,
         Real.sqrt
             (g.inner
-              (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+              (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
               (term.eval (I := I) g hEnorm p u a b q)
               (term.eval (I := I) g hEnorm p u a b q)) <=
           term.majorant C B := by
@@ -713,14 +713,14 @@ theorem CurvatureJetTerm.eval_le_of
     (hatom : forall (atom : IntrinsicJacobiJetAtom) (q : Real × Real),
       Real.sqrt
           (g.inner
-            (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+            (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
             (atom.eval (I := I) g hEnorm p u a b q)
             (atom.eval (I := I) g hEnorm p u a b q)) <=
         B atom) :
     forall (term : CurvatureJetTerm) (q : Real × Real),
       Real.sqrt
           (g.inner
-            (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+            (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
             (term.eval (I := I) g hEnorm p u a b q)
             (term.eval (I := I) g hEnorm p u a b q)) <=
         term.majorant C B := by
@@ -761,7 +761,7 @@ theorem CurvatureJetTerm.eval_le_geom
     (forall (atom : IntrinsicJacobiJetAtom) (q : Real × Real),
       Real.sqrt
           (P.metric.inner
-            (intrLaunch3 (I := I) P.metric hEnorm p u a b
+            (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b
               ((q.1, 0), q.2))
             (atom.eval (I := I) P.metric hEnorm p u a b q)
             (atom.eval (I := I) P.metric hEnorm p u a b q)) <=
@@ -769,7 +769,7 @@ theorem CurvatureJetTerm.eval_le_geom
       forall (term : CurvatureJetTerm) (q : Real × Real),
         Real.sqrt
             (P.metric.inner
-              (intrLaunch3 (I := I) P.metric hEnorm p u a b
+              (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b
                 ((q.1, 0), q.2))
               (term.eval (I := I) P.metric hEnorm p u a b q)
               (term.eval (I := I) P.metric hEnorm p u a b q)) <=
@@ -818,15 +818,15 @@ private theorem IntrinsicJacobiJetAtom.eval_smooth
       I.tangent ∞
       (fun q : Real × Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
-          (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+          (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
           (atom.eval (I := I) g hEnorm p u a b q) :
             TangentBundle I M)) := by
   let f : Real -> Real -> M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let A : forall r t : Real, TangentSpace I (f r t) := fun r t =>
     varFst (I := I) f r t
   let B : forall r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
   have hA :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -836,9 +836,9 @@ private theorem IntrinsicJacobiJetAtom.eval_smooth
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (A q.1 q.2) : TangentBundle I M)) := by
     have hdir :=
-      intrLaunchDir_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchDir_smooth (I := I) g hEnorm p u a b
         (((1 : Real), (0 : Real)), (0 : Real))
-    simpa only [f, A, intrLaunchA_eq] using hdir
+    simpa only [f, A, intrinsicLaunchA_eq] using hdir
   have hT :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -849,9 +849,9 @@ private theorem IntrinsicJacobiJetAtom.eval_smooth
             (f q.1 q.2) (varSnd (I := I) f q.1 q.2) :
               TangentBundle I M)) := by
     have hdir :=
-      intrLaunchDir_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchDir_smooth (I := I) g hEnorm p u a b
         (((0 : Real), (0 : Real)), (1 : Real))
-    simpa only [f, intrLaunchT_eq] using hdir
+    simpa only [f, intrinsicLaunchT_eq] using hdir
   have hB :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -861,7 +861,7 @@ private theorem IntrinsicJacobiJetAtom.eval_smooth
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (B q.1 q.2) : TangentBundle I M)) := by
     simpa only [f, B] using
-      intrLaunchJ_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchJ_smooth (I := I) g hEnorm p u a b
   cases atom with
   | pathT =>
       simpa only [IntrinsicJacobiJetAtom.eval, f] using hT
@@ -906,7 +906,7 @@ private theorem CurvatureJetTerm.fin_sum_eval
   | zero =>
       rw [CurvatureJetTerm.finSum]
       change (0 : TangentSpace I
-        (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))) =
+        (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))) =
           ∑ i : Fin 0, (terms i).eval g hEnorm p u a b q
       simp only [Finset.univ_eq_empty, Finset.sum_empty]
   | succ n ih =>
@@ -931,11 +931,11 @@ private theorem CurvatureJetTerm.eval_launch_smooth
     ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
       (fun r : Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
-          (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t))
+          (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t))
           (term.eval (I := I) g hEnorm p u a b (r, t)) :
             TangentBundle I M)) := by
   let gamma : Real -> M := fun r =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   have hgamma : ContMDiff (modelWithCornersSelf Real Real) I ∞ gamma := by
     have hincl :
         ContMDiff
@@ -945,7 +945,7 @@ private theorem CurvatureJetTerm.eval_launch_smooth
               (modelWithCornersSelf Real Real))
           ∞ (fun r : Real => ((r, (0 : Real)), t)) :=
       (contMDiff_id.prodMk contMDiff_const).prodMk contMDiff_const
-    exact (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
+    exact (intrinsicLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
   induction term with
   | zero =>
       let Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -985,7 +985,7 @@ private theorem CurvatureJetTerm.eval_launch_smooth
       have hfun :
           (fun r : Real =>
             (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
-              (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t))
+              (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t))
               ((CurvatureJetTerm.add x y).eval
                 (I := I) g hEnorm p u a b (r, t)) :
                 TangentBundle I M)) =
@@ -1021,17 +1021,17 @@ private theorem IntrinsicJacobiJetAtom.launch_deriv_eval
     (p : M) (u a b : E) (atom : IntrinsicJacobiJetAtom) (r t : Real) :
     covFst (I := I) g
         (fun s v : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
         (fun s v : Real =>
           atom.eval (I := I) g hEnorm p u a b (s, v)) r t =
       (CurvatureJetTerm.atom atom).launchDeriv.eval
         (I := I) g hEnorm p u a b (r, t) := by
   let f : Real -> Real -> M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let A : forall s v : Real, TangentSpace I (f s v) := fun s v =>
     varFst (I := I) f s v
   let B : forall s v : Real, TangentSpace I (f s v) := fun s v =>
-    intrLaunchJ (I := I) g hEnorm p u a b (s, v)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (s, v)
   have hfSmooth :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -1046,7 +1046,7 @@ private theorem IntrinsicJacobiJetAtom.launch_deriv_eval
               (modelWithCornersSelf Real Real))
           ∞ (fun q : Real × Real => ((q.1, (0 : Real)), q.2)) :=
       (contMDiff_fst.prodMk contMDiff_const).prodMk contMDiff_snd
-    exact (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
+    exact (intrinsicLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
   have hf : IsSmoothVariation (I := I) f :=
     hfSmooth.of_le ENat.LEInfty.out
   have hA :
@@ -1105,7 +1105,7 @@ private theorem IntrinsicJacobiJetAtom.launch_deriv_eval
         have hgeo :
             DifferentialGeometry.Geometry.Riemannian.Geodesic.IsGeodesic
               (I := I) g gamma := by
-          simpa only [gamma, f, intrLaunch3, zero_smul, add_zero] using
+          simpa only [gamma, f, intrinsicLaunch3, zero_smul, add_zero] using
             intrinsicGeodesic_isGeodesic (I := I) g hEnorm p
               (show TangentSpace I p from u + s • a)
         have hz :=
@@ -1236,11 +1236,11 @@ private theorem IntrinsicJacobiJetAtom.cov_fst_time_zero_of_const
     (r : Real) :
     covFst (I := I) g
         (fun s t : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), t))
         (fun s t : Real => atom.eval (I := I) g hEnorm p u a b (s, t))
         r 0 = 0 := by
   let f : Real -> Real -> M := fun s t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
   let V : forall s t : Real, TangentSpace I (f s t) := fun s t =>
     atom.eval (I := I) g hEnorm p u a b (s, t)
   have hcurve : (fun s : Real => f s 0) =ᶠ[𝓝 r] fun _ : Real => p := by
@@ -1275,26 +1275,26 @@ theorem IntrinsicJacobiJetAtom.a_time_zero
     (p : M) (u a b : E) (r : Real) :
     (IntrinsicJacobiJetAtom.aTime 0).eval (I := I) g hEnorm p u a b (r, 0) = a := by
   let f : Real -> Real -> M := fun s t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
   let fA : Real -> Real -> M := fun s t =>
-    intrLaunch3 (I := I) g hEnorm p u a a ((s, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a a ((s, 0), t)
   let A : forall s t : Real, TangentSpace I (f s t) := fun s t =>
     varFst (I := I) f s t
   let B : forall s t : Real, TangentSpace I (f s t) := fun s t =>
-    intrLaunchJ (I := I) g hEnorm p u a a (s, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a a (s, t)
   have hf : f = fA := by
     funext s t
-    simp only [f, fA, intrLaunch3, zero_smul, add_zero]
+    simp only [f, fA, intrinsicLaunch3, zero_smul, add_zero]
   change covSnd (I := I) g f A r 0 = a
   have hAB : A = B := by
     funext s t
     change varFst (I := I) f s t =
-      intrLaunchJ (I := I) g hEnorm p u a a (s, t)
+      intrinsicLaunchJ (I := I) g hEnorm p u a a (s, t)
     rw [hf]
-    exact intrLaunchA_self (I := I) g hEnorm p u a s t
+    exact intrinsicLaunchA_self (I := I) g hEnorm p u a s t
   rw [hAB]
   rw [hf]
-  exact intrLaunchDJ_time0 (I := I) g hEnorm p u a a r
+  exact intrinsicLaunchDJ_time0 (I := I) g hEnorm p u a a r
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -1308,7 +1308,7 @@ theorem IntrinsicJacobiJetAtom.b_time_zero
     (p : M) (u a b : E) (r : Real) :
     (IntrinsicJacobiJetAtom.bTime 0).eval (I := I) g hEnorm p u a b (r, 0) = b := by
   simpa only [IntrinsicJacobiJetAtom.eval, covFstIter_zero] using
-    intrLaunchDJ_time0 (I := I) g hEnorm p u a b r
+    intrinsicLaunchDJ_time0 (I := I) g hEnorm p u a b r
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -1325,7 +1325,7 @@ private theorem IntrinsicJacobiJetAtom.time_curvature_time_zero
           (CurvatureJetTerm.atom .pathT) (CurvatureJetTerm.atom jet))).eval
         (I := I) g hEnorm p u a b (r, 0) = 0 := by
   change curvOpN (I := I) g 0
-      (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 0))
+      (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 0))
       (fun i =>
         (slots3 (CurvatureJetTerm.atom (.aJet 0))
           (CurvatureJetTerm.atom .pathT) (CurvatureJetTerm.atom jet) i).eval
@@ -1432,13 +1432,13 @@ theorem CurvatureJetTerm.launch_deriv_eval
     (p : M) (u a b : E) (term : CurvatureJetTerm) (r t : Real) :
     covFst (I := I) g
         (fun s v : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
         (fun s v : Real =>
           term.eval (I := I) g hEnorm p u a b (s, v)) r t =
       term.launchDeriv.eval (I := I) g hEnorm p u a b (r, t) := by
   classical
   let f : Real -> Real -> M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   induction term with
   | zero =>
       change
@@ -1504,7 +1504,7 @@ theorem CurvatureJetTerm.launch_deriv_eval
                   (modelWithCornersSelf Real Real))
               ∞ (fun s : Real => ((s, (0 : Real)), t)) :=
           (contMDiff_id.prodMk contMDiff_const).prodMk contMDiff_const
-        exact (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
+        exact (intrinsicLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
       have hY : forall i, ContMDiff
           (modelWithCornersSelf Real Real) I.tangent ∞
           (fun s : Real =>
@@ -1636,7 +1636,7 @@ theorem CurvatureJetTerm.launch_iter_eval
     (p : M) (u a b : E) (m : Nat) (term : CurvatureJetTerm) :
     covFstIter (I := I) g
         (fun s v : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
         m (fun s v : Real =>
           term.eval (I := I) g hEnorm p u a b (s, v)) =
       fun s v : Real =>
@@ -1659,14 +1659,14 @@ theorem intrinsic_jacobi_correction_term_eval
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r t : Real) :
-    intrJetCorr (I := I) g hEnorm p u a b n (r, t) =
+    intrinsicJetCorrection (I := I) g hEnorm p u a b n (r, t) =
       (intrinsicJacobiCorrectionTerm n).eval (I := I) g hEnorm p u a b (r, t) := by
   let f : Real -> Real -> M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let A : forall s v : Real, TangentSpace I (f s v) := fun s v =>
     varFst (I := I) f s v
   let B : forall s v : Real, TangentSpace I (f s v) := fun s v =>
-    intrLaunchJ (I := I) g hEnorm p u a b (s, v)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (s, v)
   let W : forall s v : Real, TangentSpace I (f s v) := fun s v =>
     covFstIter (I := I) g f n B s v
   have hf :
@@ -1683,7 +1683,7 @@ theorem intrinsic_jacobi_correction_term_eval
               (modelWithCornersSelf Real Real))
           ∞ (fun q : Real × Real => ((q.1, (0 : Real)), q.2)) :=
       (contMDiff_fst.prodMk contMDiff_const).prodMk contMDiff_snd
-    exact (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
+    exact (intrinsicLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
   have hA :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -1693,9 +1693,9 @@ theorem intrinsic_jacobi_correction_term_eval
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (A q.1 q.2) : TangentBundle I M)) := by
     have hdir :=
-      intrLaunchDir_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchDir_smooth (I := I) g hEnorm p u a b
         (((1 : Real), (0 : Real)), (0 : Real))
-    simpa only [f, A, intrLaunchA_eq] using hdir
+    simpa only [f, A, intrinsicLaunchA_eq] using hdir
   have hT :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -1706,9 +1706,9 @@ theorem intrinsic_jacobi_correction_term_eval
             (f q.1 q.2) (varSnd (I := I) f q.1 q.2) :
               TangentBundle I M)) := by
     have hdir :=
-      intrLaunchDir_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchDir_smooth (I := I) g hEnorm p u a b
         (((0 : Real), (0 : Real)), (1 : Real))
-    simpa only [f, intrLaunchT_eq] using hdir
+    simpa only [f, intrinsicLaunchT_eq] using hdir
   have hW :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -1717,8 +1717,8 @@ theorem intrinsic_jacobi_correction_term_eval
         (fun q : Real × Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (W q.1 q.2) : TangentBundle I M)) := by
-    simpa only [f, B, W, intrLaunchJet] using
-      intrLaunchJet_smooth (I := I) g hEnorm p u a b n
+    simpa only [f, B, W, intrinsicLaunchJet] using
+      intrinsicLaunchJet_smooth (I := I) g hEnorm p u a b n
   have htime : ContMDiff
       (modelWithCornersSelf Real Real)
       ((modelWithCornersSelf Real Real).prod
@@ -1829,9 +1829,9 @@ theorem intrinsic_jacobi_correction_term_eval
         c • term.eval (I := I) g hEnorm p u a b (r, t) := by
     change c • term.eval (I := I) g hEnorm p u a b (r, t) = _
     rfl
-  change jacStepCorr (I := I) g f W r t =
+  change jacobianStepCorrection (I := I) g f W r t =
     (intrinsicJacobiCorrectionTerm n).eval (I := I) g hEnorm p u a b (r, t)
-  unfold jacStepCorr
+  unfold jacobianStepCorrection
   rw [hderivT, hderivA]
   simp only [curvAlong_eq_op0]
   rw [hmix]
@@ -1849,7 +1849,7 @@ theorem intrinsic_jacobi_residual_term_eval
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) :
     (fun r t : Real =>
-      intrJetResidual (I := I) g hEnorm p u a b n (r, t)) =
+      intrinsicJetResidual (I := I) g hEnorm p u a b n (r, t)) =
         fun r t : Real =>
           (intrinsicJacobiResidualTerm n).eval
             (I := I) g hEnorm p u a b (r, t) := by
@@ -1861,11 +1861,11 @@ theorem intrinsic_jacobi_residual_term_eval
   induction n with
   | zero =>
       funext r t
-      rw [intrJetResidual_zero]
+      rw [intrinsicJetResidual_zero]
       rfl
   | succ n ih =>
       funext r t
-      rw [intrJetResidual_succ]
+      rw [intrinsicJetResidual_succ]
       rw [ih]
       rw [CurvatureJetTerm.launch_deriv_eval
         (I := I) g hEnorm p u a b (intrinsicJacobiResidualTerm n) r t]
@@ -1884,15 +1884,15 @@ theorem intrinsic_jacobi_correction_iter_eval
     (p : M) (u a b : E) (m n : Nat) :
     covFstIter (I := I) g
         (fun s v : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
         m (fun s v : Real =>
-          intrJetCorr (I := I) g hEnorm p u a b n (s, v)) =
+          intrinsicJetCorrection (I := I) g hEnorm p u a b n (s, v)) =
       fun s v : Real =>
         ((intrinsicJacobiCorrectionTerm n).launchIter m).eval
           (I := I) g hEnorm p u a b (s, v) := by
   have hcorr :
       (fun s v : Real =>
-        intrJetCorr (I := I) g hEnorm p u a b n (s, v)) =
+        intrinsicJetCorrection (I := I) g hEnorm p u a b n (s, v)) =
         fun s v : Real =>
           (intrinsicJacobiCorrectionTerm n).eval (I := I) g hEnorm p u a b (s, v) := by
     funext s v
@@ -1901,5 +1901,5 @@ theorem intrinsic_jacobi_correction_iter_eval
   exact CurvatureJetTerm.launch_iter_eval
     (I := I) g hEnorm p u a b m (intrinsicJacobiCorrectionTerm n)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -71,13 +71,13 @@ private lemma chartAtlasPOU_finset_sum_eq_one (x : M) :
   classical
   have h_finsum : ∑ᶠ α : M, ((chartAtlasPOU I M) α x) = 1 :=
     (chartAtlasPOU I M).sum_eq_one (Set.mem_univ x)
-  have h_supp : Function.support (fun α : M => ((chartAtlasPOU I M) α x)) ⊆
+  have h_support : Function.support (fun α : M => ((chartAtlasPOU I M) α x)) ⊆
       (chartAtlasPOUFinset (I := I) (M := M) : Set M) := by
     intro α hα
     rw [Function.mem_support] at hα
     rw [Finset.mem_coe, chartAtlasPOU_finset_mem]
     exact ⟨x, hα⟩
-  rw [← h_finsum, finsum_eq_sum_of_support_subset _ h_supp]
+  rw [← h_finsum, finsum_eq_sum_of_support_subset _ h_support]
 
 private def pouSq (x : M) : ℝ :=
   ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),

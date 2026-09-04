@@ -31,14 +31,14 @@ private theorem coordinateFrameAt_basis_continuousLinearMapAt
   let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
   have hxE : x ∈ e.baseSet := by
     simpa [e, coordinateFrameSet, coordinateTrivializationAt] using hx
-  have hx_src : x ∈ (chartAt H x₀).source := by
+  have hx_source : x ∈ (chartAt H x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt, e] using hx
   have hframe :
       (coordinateFrameAtBasis (I := I) x₀ hx) i =
         e.symmL 𝕜 x ((Module.finBasis 𝕜 E) i) := by
     rw [coordinateFrameAt_basis_apply]
     rw [coordinateFrameAt_apply_of_mem (I := I) hx i]
-    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_source]
     rfl
   rw [hframe]
   exact e.continuousLinearMapAt_symmL (R := 𝕜) hxE ((Module.finBasis 𝕜 E) i)

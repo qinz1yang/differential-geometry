@@ -8,7 +8,7 @@ open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]

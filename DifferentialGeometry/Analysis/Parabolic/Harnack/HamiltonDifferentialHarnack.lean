@@ -806,7 +806,7 @@ theorem hamilton_quantity_slab_bound_of_ricci_lower_bound
             (gradientFun (I := I) g (fun y => Real.log (u p.1 y)) p.2) -
         deriv (fun σ : ℝ => Real.log (u σ p.2)) p.1))
         (Icc 0 τ ×ˢ univ))
-    (hτreg : τ ∈ D.regular)
+    (hτregularity : τ ∈ D.regular)
     (hslabRegular : Ioo 0 τ ⊆ D.regular)
     (y : M) :
     τ * (Real.exp ((-(2 * K)) * τ) *
@@ -915,7 +915,7 @@ theorem hamilton_quantity_slab_bound_of_ricci_lower_bound
     have hsreg : s ∈ D.regular := by
       by_cases hst : s = τ
       · subst s
-        exact hτreg
+        exact hτregularity
       · exact hslabRegular ⟨hspos, lt_of_le_of_ne hsx.1.2 hst⟩
     have hzmax : IsMaxOn (fun τ' : ℝ => G eps τ' x₀) (Set.Icc 0 s) s := by
       intro τ' hτ'

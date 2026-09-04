@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 
@@ -100,10 +100,10 @@ theorem exists_normal_transition_limit_subsequence
       StrictMono φ ∧ StrictMono (phi0 ∘ φ) ∧
         ContDiffOn Real (⊤ : ℕ∞) Jinf U ∧
         ContDiffOn Real (⊤ : ℕ∞) Jbarinf V ∧
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k => normalTransition (I := I) (X.obj (phi0 (φ k)))
             (x (φ k)) (y (φ k))) Jinf ∧
-        MapCInfConvOnCompacts V
+        MapCInfConvergenceOnCompacts V
           (fun k => normalTransition (I := I) (X.obj (phi0 (φ k)))
             (y (φ k)) (x (φ k))) Jbarinf ∧
         (∀ z ∈ U, Jinf z ∈ V -> Jbarinf (Jinf z) = z) ∧
@@ -191,10 +191,10 @@ theorem exists_finite_normal_transition_limit_subsequence
       forall i, i ∈ s -> exists Jinf : E -> E, exists Jbarinf : E -> E,
         ContDiffOn Real (⊤ : ℕ∞) Jinf (U i) /\
         ContDiffOn Real (⊤ : ℕ∞) Jbarinf (V i) /\
-        MapCInfConvOnCompacts (U i)
+        MapCInfConvergenceOnCompacts (U i)
           (fun k => normalTransition (I := I) (X.obj (phi k))
             (x i (phi k)) (y i (phi k))) Jinf /\
-        MapCInfConvOnCompacts (V i)
+        MapCInfConvergenceOnCompacts (V i)
           (fun k => normalTransition (I := I) (X.obj (phi k))
             (y i (phi k)) (x i (phi k))) Jbarinf /\
         (forall z, z ∈ U i -> Jinf z ∈ V i -> Jbarinf (Jinf z) = z) /\
@@ -345,10 +345,10 @@ theorem exists_normal_transition_limit_subsequence_of_finite
           ContDiffOn Real (⊤ : ℕ∞) (Jbarinf i) (V i) /\
           ContinuousOn (Jinf i) (U i) /\
           ContinuousOn (Jbarinf i) (V i) /\
-          MapCInfConvOnCompacts (U i)
+          MapCInfConvergenceOnCompacts (U i)
             (fun k => normalTransition (I := I) (X.obj (phi k))
               (x i (phi k)) (y i (phi k))) (Jinf i) /\
-          MapCInfConvOnCompacts (V i)
+          MapCInfConvergenceOnCompacts (V i)
             (fun k => normalTransition (I := I) (X.obj (phi k))
               (y i (phi k)) (x i (phi k))) (Jbarinf i) /\
           (forall z, z ∈ U i -> Jinf i z ∈ V i -> Jbarinf i (Jinf i z) = z) /\
@@ -380,10 +380,10 @@ theorem exists_normal_transition_limit_subsequence_of_finite
       ContDiffOn Real (⊤ : ℕ∞) (Classical.choose (hlim i hi)) (U i) ∧
       ContDiffOn Real (⊤ : ℕ∞)
         (Classical.choose (Classical.choose_spec (hlim i hi))) (V i) ∧
-      MapCInfConvOnCompacts (U i)
+      MapCInfConvergenceOnCompacts (U i)
         (fun k => normalTransition (I := I) (X.obj (phi k))
           (x i (phi k)) (y i (phi k))) (Classical.choose (hlim i hi)) ∧
-      MapCInfConvOnCompacts (V i)
+      MapCInfConvergenceOnCompacts (V i)
         (fun k => normalTransition (I := I) (X.obj (phi k))
           (y i (phi k)) (x i (phi k)))
         (Classical.choose (Classical.choose_spec (hlim i hi))) ∧
@@ -489,10 +489,10 @@ theorem existsTransTail
           ContDiffOn Real (⊤ : ℕ∞) (Jbarinf i) (V i) ∧
           ContinuousOn (Jinf i) (U i) ∧
           ContinuousOn (Jbarinf i) (V i) ∧
-          MapCInfConvOnCompacts (U i)
+          MapCInfConvergenceOnCompacts (U i)
             (fun k => normalTransition (I := I) (X.obj (phi k))
               (x i (phi k)) (y i (phi k))) (Jinf i) ∧
-          MapCInfConvOnCompacts (V i)
+          MapCInfConvergenceOnCompacts (V i)
             (fun k => normalTransition (I := I) (X.obj (phi k))
               (y i (phi k)) (x i (phi k))) (Jbarinf i) ∧
           (∀ z, z ∈ U i → Jinf i z ∈ V i → Jbarinf i (Jinf i z) = z) ∧
@@ -563,5 +563,5 @@ theorem existsTransTail
 
 end HCGNormalTransition
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

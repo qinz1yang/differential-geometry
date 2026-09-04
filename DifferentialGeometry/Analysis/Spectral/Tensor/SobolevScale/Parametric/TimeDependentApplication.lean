@@ -477,7 +477,7 @@ private theorem coeffRemHs_small
         ‖appHs g b c n
           (coeffRem (I := I) (M := M) g b c dΦ S hS hdjoint a h hseg)‖ < ε := by
   classical
-  obtain ⟨C, hC, happ⟩ := appHs_unif (I := I) (M := M) g b c n
+  obtain ⟨C, hC, happ⟩ := appHs_uniform (I := I) (M := M) g b c n
   intro ε hε
   have hbound_cont : ContinuousAt
       (fun q : ℝ => C * Real.sqrt (∑ i ∈ Finset.range (n + 1), q)) 0 := by

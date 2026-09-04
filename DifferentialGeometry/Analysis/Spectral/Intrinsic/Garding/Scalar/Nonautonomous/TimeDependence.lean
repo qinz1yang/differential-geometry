@@ -57,7 +57,7 @@ theorem lapDiffHs_decomp
                       (m : ℝ) + 2) U)) := by
   classical
   obtain ⟨tau, htau, htau_one, hreg, hcore⟩ :=
-    lapDiffHs_core (I := I) (M := M) g_fam hG T
+    exists_uniform_lapDiffHs_apply_ccTensorToHs (I := I) (M := M) g_fam hG T
   refine ⟨tau, htau, htau_one, hreg, ?_⟩
   intro m s hs U
   let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
@@ -99,7 +99,7 @@ theorem lapDiffHs_decomp
             (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) W) =
           ccTensorToHs (I := I) (M := M) q 2 (m : ℝ)
             (iteratedCovGrad (I := I) q 0 0 2 W) := by
-      exact iterCovGradHs_core (I := I) (M := M) q 0 2 m W
+      exact iterCovGradHs_apply_ccTensorToHs (I := I) (M := M) q 0 2 m W
     rw [hD₂]
     have hJ :
         J (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) W) =
@@ -115,8 +115,8 @@ theorem lapDiffHs_decomp
               ((m : ℝ) + ((1 : ℕ) : ℝ)) W) =
           ccTensorToHs (I := I) (M := M) q 1 (m : ℝ)
             (iteratedCovGrad (I := I) q 0 0 1 W) := by
-      exact iterCovGradHs_core (I := I) (M := M) q 0 1 m W
-    rw [hD₁, appHs_core, appHs_core]
+      exact iterCovGradHs_apply_ccTensorToHs (I := I) (M := M) q 0 1 m W
+    rw [hD₁, appHs_apply_ccTensorToHs, appHs_apply_ccTensorToHs]
     let X := operatorFieldApply (I := I) q 2 0 (scalarTraceCoeff (I := I) q h)
       (iteratedCovGrad (I := I) q 0 0 2 W)
     let Y := operatorFieldApply (I := I) q 1 0 (connTraceCoeff (I := I) q h)

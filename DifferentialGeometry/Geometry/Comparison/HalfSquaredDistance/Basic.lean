@@ -80,7 +80,7 @@ theorem exists_dist_eq_sqrt
       Real.sqrt (g.inner q v v) < ρ →
         dist q (expMapIntrinsic (I := I) g hEnorm q v) = Real.sqrt (g.inner q v v) := by
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  obtain ⟨ρ, hρ, hradial⟩ := radial_riemannianEDist_eq_of_small' (I := I) g hEnorm q
+  obtain ⟨ρ, hρ, hradial⟩ := riemannianEDist_expMapIntrinsic_eq_norm_of_small (I := I) g hEnorm q
   refine ⟨ρ, hρ, ?_⟩
   intro v hv
   rw [HopfRinow.riemMetric_dist_eq (I := I) q (expMapIntrinsic (I := I) g hEnorm q v),
@@ -104,13 +104,13 @@ theorem exists_expMapIntrinsic_normalChart
         (show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt) = pt := by
   obtain ⟨ρ, hρ, hagree⟩ := exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm q
   refine ⟨ρ, hρ, ?_⟩
-  intro pt hpt_src hsmall
+  intro pt hpt_source hsmall
   set ψ := NormalCoordinates.normalChartAt (I := I) g q with hψ
   set w : E := ψ pt with hw
-  have hw_target : w ∈ ψ.target := ψ.map_source hpt_src
+  have hw_target : w ∈ ψ.target := ψ.map_source hpt_source
   have hexp_eq : expMap (I := I) g q (show TangentSpace I q from w) = pt := by
     have hround : ψ.symm (ψ pt) = pt :=
-      NormalCoordinates.normalChartAt_left_inv (I := I) g q hpt_src
+      NormalCoordinates.normalChartAt_left_inv (I := I) g q hpt_source
     have hsymm : ψ.symm w = expMap (I := I) g q (show TangentSpace I q from w) :=
       NormalCoordinates.normalChartAt_symm_apply (I := I) g q
         (show w ∈ ψ.symm.source from hw_target)
@@ -143,12 +143,12 @@ theorem exists_central_geodesic
   obtain ⟨ρ₄, hρ₄, hround⟩ := exists_expMapIntrinsic_normalChart (I := I) g hEnorm q
   obtain ⟨ρ₃, hρ₃, hdistlem⟩ := exists_dist_eq_sqrt (I := I) g hEnorm q
   refine ⟨min ρ₃ ρ₄, lt_min hρ₃ hρ₄, ?_⟩
-  intro pt hpt_src hpt_ne hsmall
+  intro pt hpt_source hpt_ne hsmall
   set v₀ : TangentSpace I q :=
     (show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q pt) with hv₀
   have hs3 : Real.sqrt (g.inner q v₀ v₀) < ρ₃ := lt_of_lt_of_le hsmall (min_le_left _ _)
   have hs4 : Real.sqrt (g.inner q v₀ v₀) < ρ₄ := lt_of_lt_of_le hsmall (min_le_right _ _)
-  have hexp : expMapIntrinsic (I := I) g hEnorm q v₀ = pt := hround hpt_src hs4
+  have hexp : expMapIntrinsic (I := I) g hEnorm q v₀ = pt := hround hpt_source hs4
   set L : ℝ := dist q pt with hL
   have hdist_eq : L = Real.sqrt (g.inner q v₀ v₀) := by
     rw [hL, ← hexp]; exact hdistlem hs3

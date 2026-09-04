@@ -212,7 +212,7 @@ private theorem eigenvector_chartComponent_memWkp_pm
                 g r s i α P₀ (m + 1) idx)
               (chartTargetEuclid (I := I) (M := M) α) := by
         intro idx
-        obtain ⟨D, hD_dir, _hD_fChartEff⟩ :=
+        obtain ⟨D, hD_dir, _hD_fChartEffective⟩ :=
           exists_eigenvectorIteratedCarrier (I := I) (M := M)
             g r s i α P₀ (m + 1) idx h_pou
         exact eigenvectorChartIteratedPartial_memWkp_two_two

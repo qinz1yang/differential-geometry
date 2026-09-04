@@ -707,7 +707,7 @@ private lemma master_operatorFieldApplication_jet_le_sharp
           ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2)) := by
     simp only [hFW]
     rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_add hint1 hint2, hF1eq, hF2eq]
-  have hReg1 : (∑ i ∈ flt1, supΦsq i * ∑ l ∈ Finset.range (q + 1 - i),
+  have hRegularity1 : (∑ i ∈ flt1, supΦsq i * ∑ l ∈ Finset.range (q + 1 - i),
         ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2) ≤
       S1 q * (1 + R₀) ^ 2 * f (q + 3 + 2 * p) ^ 2 := by
     rw [hflt1, hS1]
@@ -737,7 +737,7 @@ private lemma master_operatorFieldApplication_jet_le_sharp
         _ = KballΦ i * (∑ l ∈ Finset.range (q + 1 - i), (Kw l) ^ 2) *
               (1 + R₀) ^ 2 * f (q + 3 + 2 * p) ^ 2 := by ring
     simpa only [Finset.sum_mul] using hsum
-  have hReg2 : (∑ i ∈ flt2, (∑ l ∈ Finset.range (q + 1 - i), supWsq l) *
+  have hRegularity2 : (∑ i ∈ flt2, (∑ l ∈ Finset.range (q + 1 - i), supWsq l) *
         ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2) ≤
       S2 q * (1 + R₀) ^ 2 * f (q + 3 + 2 * p) ^ 2 := by
     rw [hflt2, hS2]
@@ -795,7 +795,7 @@ private lemma master_operatorFieldApplication_jet_le_sharp
           ≤ diagonalGridGrowthFactor (E := E) q *
               (S1 q * (1 + R₀) ^ 2 * f (q + 3 + 2 * p) ^ 2 +
                 S2 q * (1 + R₀) ^ 2 * f (q + 3 + 2 * p) ^ 2) :=
-        mul_le_mul_of_nonneg_left (add_le_add hReg1 hReg2) hG_nn
+        mul_le_mul_of_nonneg_left (add_le_add hRegularity1 hRegularity2) hG_nn
       _ = (diagonalGridGrowthFactor (E := E) q * (S1 q + S2 q)) *
             (1 + R₀) ^ 2 * f (q + 3 + 2 * p) ^ 2 := by ring
   refine le_of_sq_le_sq ?_

@@ -45,40 +45,40 @@ private lemma v_test_supported_in_Ω'_nonsmooth_fterm
     {η : E → ℝ}
     {Ω' : Set E}
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d) {h : ℝ} (hh_le : |h| ≤ R₀) :
     tsupport
       (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
         k h η u) ⊆ Ω' :=
   (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.tsupport_nirenbergTestFunction_subset
-    (d := d) η u k h).trans (hh_supp_in_Ω' hh_le)
+    (d := d) η u k h).trans (hh_support_in_Ω' hh_le)
 
 omit [NeZero d] in
 private lemma hasCompactSupport_v_test_nonsmooth_fterm
-    {η : E → ℝ} (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη_support : HasCompactSupport η)
     {u : E → ℝ} (k : Fin d) (h : ℝ) :
     HasCompactSupport
       (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
         k h η u) :=
   NirenbergTestFunction.hasCompactSupport_nirenbergTestFunction
-    hη_supp k h
+    hη_support k h
 
 omit [NeZero d] in
 private lemma memLp_eta_sq_diffQuot_u_fterm
     {u : E → ℝ} (hu_l2 : MemLp u 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (k : Fin d) (h : ℝ) :
     MemLp (fun x : E => (η x) ^ 2 * diffQuot k h u x) 2
       (volume : Measure E) := by
   classical
   have hη_sq_cont : Continuous (fun x : E => (η x) ^ 2) := hη.continuous.pow 2
-  have hη_sq_supp : HasCompactSupport (fun x : E => (η x) ^ 2) := by
+  have hη_sq_support : HasCompactSupport (fun x : E => (η x) ^ 2) := by
     have heq : (fun y : E => η y ^ 2) = (fun y : E => η y * η y) := by
       funext y; ring
-    rw [heq]; exact hη_supp.mul_right
+    rw [heq]; exact hη_support.mul_right
   obtain ⟨M, _, hM⟩ :=
-    exists_bound_of_continuous_compactSupport hη_sq_cont hη_sq_supp
+    exists_bound_of_continuous_compactSupport hη_sq_cont hη_sq_support
   have h_dq_l2 : MemLp (diffQuot k h u) 2 (volume : Measure E) :=
     memLp_diffQuot_two k h hu_l2
   exact memLp_bounded_mul hη_sq_cont.aestronglyMeasurable hM h_dq_l2
@@ -86,7 +86,7 @@ private lemma memLp_eta_sq_diffQuot_u_fterm
 omit [NeZero d] in
 private lemma memLp_v_test_nonsmooth_fterm
     {u : E → ℝ} (hu_l2 : MemLp u 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (k : Fin d) (h : ℝ) :
     MemLp
       (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
@@ -94,7 +94,7 @@ private lemma memLp_v_test_nonsmooth_fterm
   classical
   have h_inner : MemLp (fun x : E => (η x) ^ 2 * diffQuot k h u x) 2
       (volume : Measure E) :=
-    memLp_eta_sq_diffQuot_u_fterm (d := d) hu_l2 hη hη_supp k h
+    memLp_eta_sq_diffQuot_u_fterm (d := d) hu_l2 hη hη_support k h
   have h_eq :
       DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
         k h η u =
@@ -129,17 +129,17 @@ private lemma pointwise_half_sum_f_v_test
 omit [NeZero d] in
 theorem f_term_bound_nonsmooth_quantitative
     {Ω : Set E}
-    {f : E → ℝ} (hf_l2_loc : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
+    {f : E → ℝ} (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
     {u : E → ℝ}
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     {N : ℝ}
     {Ω' : Set E} (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -179,22 +179,22 @@ theorem f_term_bound_nonsmooth_quantitative
     refine mul_nonneg ?_ (sq_nonneg _)
     exact mul_nonneg (by linarith) hε.le
   intro h hh hh_le
-  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_supp_in_Ω' hh_le
+  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_support_in_Ω' hh_le
   set v_test : E → ℝ :=
     DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
       k h η u with hv_test_def
-  have h_v_test_supp : tsupport v_test ⊆ Ω' :=
-    v_test_supported_in_Ω'_nonsmooth_fterm (d := d) hh_supp_in_Ω' k hh_le
-  have h_v_test_supp_cmp : HasCompactSupport v_test :=
-    hasCompactSupport_v_test_nonsmooth_fterm (d := d) hη_supp k h
+  have h_v_test_support : tsupport v_test ⊆ Ω' :=
+    v_test_supported_in_Ω'_nonsmooth_fterm (d := d) hh_support_in_Ω' k hh_le
+  have h_v_test_support_cmp : HasCompactSupport v_test :=
+    hasCompactSupport_v_test_nonsmooth_fterm (d := d) hη_support k h
   have h_v_test_memLp : MemLp v_test 2 (volume : Measure E) :=
-    memLp_v_test_nonsmooth_fterm (d := d) hu_l2 hη hη_supp k h
+    memLp_v_test_nonsmooth_fterm (d := d) hu_l2 hη hη_support k h
   have h_v_test_zero_outside : ∀ x ∉ Ω, v_test x = 0 := fun x hx =>
     image_eq_zero_of_notMem_tsupport
-      (fun hy => hx (hΩ'_closure (subset_closure (h_v_test_supp hy))))
+      (fun hy => hx (hΩ'_closure (subset_closure (h_v_test_support hy))))
   have h_v_test_zero_outside_Ω' : ∀ x ∉ Ω', v_test x = 0 := fun x hx =>
-    image_eq_zero_of_notMem_tsupport (fun hy => hx (h_v_test_supp hy))
-  have hf_memLp : MemLp f 2 (volume.restrict Ω') := hf_l2_loc hΩ'_compact
+    image_eq_zero_of_notMem_tsupport (fun hy => hx (h_v_test_support hy))
+  have hf_memLp : MemLp f 2 (volume.restrict Ω') := hf_l2_local hΩ'_compact
   have hf_sq_int_Ω' : IntegrableOn (fun x : E => (f x) ^ 2) Ω' volume :=
     hf_memLp.integrable_sq
   have h_int_E : ∫ x in Ω, f x * v_test x ∂(volume : Measure E) =
@@ -360,17 +360,17 @@ theorem f_term_bound_nonsmooth_quantitative
 omit [NeZero d] in
 theorem f_term_bound_nonsmooth
     {Ω : Set E}
-    {f : E → ℝ} (hf_l2_loc : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
+    {f : E → ℝ} (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
     {u : E → ℝ}
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     {N : ℝ}
     {Ω' : Set E} (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -408,8 +408,8 @@ theorem f_term_bound_nonsmooth
     refine mul_nonneg ?_ (sq_nonneg _)
     exact mul_nonneg (by linarith) hε.le
   · intro h hh hh_le
-    exact f_term_bound_nonsmooth_quantitative (d := d) hf_l2_loc hu_l2
-      hη hη_supp hΩ'_closure hΩ'_compact hh_supp_in_Ω' k h_FK_diffQuot_u_bound
+    exact f_term_bound_nonsmooth_quantitative (d := d) hf_l2_local hu_l2
+      hη hη_support hΩ'_closure hΩ'_compact hh_support_in_Ω' k h_FK_diffQuot_u_bound
       h_v_test_l2_bound ε hε hh hh_le
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBoundsNonSmooth

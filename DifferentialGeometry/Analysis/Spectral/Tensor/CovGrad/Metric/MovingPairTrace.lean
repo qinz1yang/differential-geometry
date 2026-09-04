@@ -239,14 +239,14 @@ theorem movingMetricPairTraceOperator_apply
   rw [cometricDoubleTraceFib_toModel (I := I) gm 2 x]
   rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) gm x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) gm x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) gm 4 x Y))
     (fun j => (v j : E))]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [cometricDoubleTraceFib_toModel (I := I) gm 4 x]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) gm x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) gm x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y)
     (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
         (smoothOrthoFrame (I := I) gm x b x))

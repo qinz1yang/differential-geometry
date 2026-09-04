@@ -20,7 +20,7 @@ theorem MemWkpHalfSpace.exists_smooth_compactSupport_approx
     (k : ℕ) (p : ℝ≥0∞) (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
     {u : EuclideanSpace ℝ (Fin d) → ℝ} (hu : MemWkpHalfSpace k p u Ω)
     (hu_compactSupport : HasCompactSupport u)
-    (hu_supp : tsupport u ⊆ interiorHalfSpace Ω)
+    (hu_support : tsupport u ⊆ interiorHalfSpace Ω)
     (ε : ℝ) (hε : 0 < ε) :
     ∃ φ : EuclideanSpace ℝ (Fin d) → ℝ,
       ContDiff ℝ (⊤ : ℕ∞) φ ∧ HasCompactSupport φ ∧
@@ -29,10 +29,10 @@ theorem MemWkpHalfSpace.exists_smooth_compactSupport_approx
   have hΩ_open : IsOpen (interiorHalfSpace (d := d) Ω) :=
     interiorHalfSpace_isOpen hΩ
   have hu' : MemWkp (d := d) k p u (interiorHalfSpace Ω) := hu
-  obtain ⟨φ, hφ_smooth, hφ_compact, hφ_supp, hφ_norm⟩ :=
+  obtain ⟨φ, hφ_smooth, hφ_compact, hφ_support, hφ_norm⟩ :=
     MemWkp.exists_smooth_compactSupport_approx (d := d)
-      hΩ_open k p hp_one hp_top hu' hu_compactSupport hu_supp ε hε
-  refine ⟨φ, hφ_smooth, hφ_compact, hφ_supp, ?_⟩
+      hΩ_open k p hp_one hp_top hu' hu_compactSupport hu_support ε hε
+  refine ⟨φ, hφ_smooth, hφ_compact, hφ_support, ?_⟩
   change iteratedWeakSobolevNorm (d := d) k p (fun x => u x - φ x) (interiorHalfSpace Ω) ≤
     ENNReal.ofReal ε
   exact hφ_norm
@@ -42,7 +42,7 @@ theorem MemWkpHalfSpace.exists_smooth_compactSupport_approx_of_subset_openHalfSp
     (hΩ_open : IsOpen Ω) (hsub : Ω ⊆ openHalfSpace)
     (k : ℕ) (p : ℝ≥0∞) (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
     {u : EuclideanSpace ℝ (Fin d) → ℝ} (hu : MemWkpHalfSpace k p u Ω)
-    (hu_compactSupport : HasCompactSupport u) (hu_supp : tsupport u ⊆ Ω)
+    (hu_compactSupport : HasCompactSupport u) (hu_support : tsupport u ⊆ Ω)
     (ε : ℝ) (hε : 0 < ε) :
     ∃ φ : EuclideanSpace ℝ (Fin d) → ℝ,
       ContDiff ℝ (⊤ : ℕ∞) φ ∧ HasCompactSupport φ ∧ tsupport φ ⊆ Ω ∧
@@ -51,15 +51,15 @@ theorem MemWkpHalfSpace.exists_smooth_compactSupport_approx_of_subset_openHalfSp
     IsHalfSpaceRelOpen.of_isOpen_subset_open hΩ_open hsub
   have h_int_eq : interiorHalfSpace (d := d) Ω = Ω :=
     inter_eq_self_of_subset_left hsub
-  have hu_supp' : tsupport u ⊆ interiorHalfSpace (d := d) Ω := by
+  have hu_support' : tsupport u ⊆ interiorHalfSpace (d := d) Ω := by
     rw [h_int_eq]
-    exact hu_supp
-  obtain ⟨φ, hφ_smooth, hφ_compact, hφ_supp, hφ_norm⟩ :=
+    exact hu_support
+  obtain ⟨φ, hφ_smooth, hφ_compact, hφ_support, hφ_norm⟩ :=
     MemWkpHalfSpace.exists_smooth_compactSupport_approx
-      hΩ k p hp_one hp_top hu hu_compactSupport hu_supp' ε hε
+      hΩ k p hp_one hp_top hu hu_compactSupport hu_support' ε hε
   refine ⟨φ, hφ_smooth, hφ_compact, ?_, hφ_norm⟩
   rw [← h_int_eq]
-  exact hφ_supp
+  exact hφ_support
 
 end Euclidean
 end Sobolev

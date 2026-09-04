@@ -78,7 +78,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_succ_le
   have h_succ_eq : ∀ a : Fin (Module.finrank ℝ E),
       eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (j + 1) (Fin.snoc dirs a) =
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 a
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ j dirs) Ω := by
@@ -87,9 +87,9 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_succ_le
     have h_last : (Fin.snoc dirs a :
         Fin (j + 1) → Fin (Module.finrank ℝ E)) (Fin.last j) = a :=
       Fin.snoc_last _ _
-    have h_init : Fin.init (Fin.snoc dirs a :
+    have h_initial : Fin.init (Fin.snoc dirs a :
         Fin (j + 1) → Fin (Module.finrank ℝ E)) = dirs := Fin.init_snoc _ _
-    rw [h_last, h_init]
+    rw [h_last, h_initial]
   have h_mem :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) (K + 2) 2
@@ -169,7 +169,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_le_of_memWkp
       have h_unfold :
           eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 1) dirs =
-            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ m (Fin.init dirs)) Ω :=

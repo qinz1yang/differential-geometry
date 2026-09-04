@@ -14,7 +14,7 @@ open Filter Set Topology
 open scoped ContDiff Manifold Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -42,7 +42,7 @@ theorem exists_live_metric
           (X.obj (L.φ (psi k))).basepoint ≤ R) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) gInf
         (Metric.ball 0 (inp.normalRadius.phaseRadius R)) ∧
-      MapCInfConvOnCompacts
+      MapCInfConvergenceOnCompacts
         (Metric.ball 0 (inp.normalRadius.phaseRadius R))
         (fun k z alpha ↦ normalCoordMetric (I := I)
           (X.obj (L.φ (psi k)))
@@ -139,7 +139,7 @@ theorem exists_slot_metric
         let Ualpha := Metric.ball (0 : E)
           (inp.normalRadius.phaseRadius Ralpha)
         ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) Ualpha ∧
-        MapCInfConvOnCompacts Ualpha
+        MapCInfConvergenceOnCompacts Ualpha
           (fun n => normalCoordMetric (I := I)
             (X.obj (L.φ (psi n)))
             (seqCenterD inp.decay P L (psi n) (alpha.1 : Nat)))
@@ -170,7 +170,7 @@ theorem exists_slot_metric
   have hstep : ∀ alpha (τ : Nat → Nat), StrictMono τ →
       ∃ (σ : Nat → Nat) (g : E → (E →L[Real] E →L[Real] Real)),
         StrictMono σ ∧
-        MapCInfConvOnCompacts (U alpha)
+        MapCInfConvergenceOnCompacts (U alpha)
           (fun n => Φ alpha (τ (σ n))) g ∧ Q alpha g := by
     intro alpha τ hτ
     let index : Nat → Nat := fun n => L.φ (shift (τ n))
@@ -237,5 +237,5 @@ theorem exists_slot_metric
   · simpa only [U] using hQAlpha.2
 
 end MetricCompactnessInputs
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

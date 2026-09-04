@@ -168,9 +168,9 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] 
 private lemma symm_mem_baseSet_of_mem_interior {α : M} {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
     (extChartAt I α).symm y ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-  have hy_tgt : y ∈ (extChartAt I α).target := interior_subset hy
+  have hy_target : y ∈ (extChartAt I α).target := interior_subset hy
   have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
-    (extChartAt I α).map_target hy_tgt
+    (extChartAt I α).map_target hy_target
   rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
   rw [trivializationAt_baseSet_eq_chartAt_source]
   exact hsource
@@ -346,9 +346,9 @@ private lemma chartGramOnE_joint_contDiffOn_of_manifold
           chartGramOnE (I := I) (g_DT q.1) α i j (extChartAt I α q.2)) ∘ Ψ)
       (Set.Ioo (0 : ℝ) T ×ˢ interior (extChartAt I α).target) := by
     intro p hp
-    have hy_tgt : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
+    have hy_target : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
     simp only [Function.comp_apply, hΨ]
-    rw [(extChartAt I α).right_inv hy_tgt]
+    rw [(extChartAt I α).right_inv hy_target]
   have hcomp' : ContMDiffOn ((𝓘(ℝ, ℝ)).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × E => chartGramOnE (I := I) (g_DT p.1) α i j p.2)
       (Set.Ioo (0 : ℝ) T ×ˢ interior (extChartAt I α).target) :=
@@ -1002,10 +1002,10 @@ private lemma psi_continuousOn_Icc (α : M) (T : ℝ) :
   · intro p hp
     refine ⟨hp.1, ?_⟩
     rw [mem_chartLeviCivitaGoodSet_iff]
-    have hy_tgt : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
-    refine ⟨(extChartAt I α).map_target hy_tgt, ?_, ?_⟩
+    have hy_target : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
+    refine ⟨(extChartAt I α).map_target hy_target, ?_, ?_⟩
     · exact symm_mem_baseSet_of_mem_interior (I := I) (α := α) hp.2
-    · rw [(extChartAt I α).right_inv hy_tgt]; exact hp.2
+    · rw [(extChartAt I α).right_inv hy_target]; exact hp.2
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -1030,9 +1030,9 @@ private lemma chartGramOnE_joint_continuousOn_of_manifold_Icc
       (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) :=
     (h_gram0 i j).comp hΨ_cont hmaps'
   refine hcomp.congr (fun p hp => ?_)
-  have hy_tgt : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
+  have hy_target : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
   simp only [Function.comp_apply]
-  rw [(extChartAt I α).right_inv hy_tgt]
+  rw [(extChartAt I α).right_inv hy_target]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -1054,9 +1054,9 @@ private lemma iteratedFDeriv_chartGramOnE_joint_continuousOn_of_manifold_Icc
       (Set.Icc (0 : ℝ) T ×ˢ interior (extChartAt I α).target) :=
     hC2.comp hΨ_cont hΨ_maps
   refine hcomp.congr (fun p hp => ?_)
-  have hy_tgt : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
+  have hy_target : p.2 ∈ (extChartAt I α).target := interior_subset hp.2
   simp only [Function.comp_apply]
-  rw [(extChartAt I α).right_inv hy_tgt]
+  rw [(extChartAt I α).right_inv hy_target]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in

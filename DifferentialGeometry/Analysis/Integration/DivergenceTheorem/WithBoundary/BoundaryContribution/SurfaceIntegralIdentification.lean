@@ -152,7 +152,7 @@ private lemma chartAtlasPOU_finset_sum_eq_one_at_val
     chartAtlasPOU (modelWithCornersEuclideanHalfSpace n) M with hρ_def
   set S : Finset M := chartAtlasPOUFinset
       (I := modelWithCornersEuclideanHalfSpace n) (M := M) with hS_def
-  have h_supp_subset :
+  have h_support_subset :
       Function.support (fun α : M => (ρ α : M → ℝ) b.val) ⊆ (S : Set M) := by
     intro α hα
     by_contra hαS
@@ -165,7 +165,7 @@ private lemma chartAtlasPOU_finset_sum_eq_one_at_val
   have h_finsum_eq_sum :
       (∑ᶠ α : M, (ρ α : M → ℝ) b.val) =
         ∑ α ∈ S, (ρ α : M → ℝ) b.val :=
-    finsum_eq_sum_of_support_subset _ h_supp_subset
+    finsum_eq_sum_of_support_subset _ h_support_subset
   have h_sum_one : (∑ᶠ α : M, (ρ α : M → ℝ) b.val) = 1 :=
     ρ.sum_eq_one (Set.mem_univ b.val)
   rw [← h_finsum_eq_sum]; exact h_sum_one

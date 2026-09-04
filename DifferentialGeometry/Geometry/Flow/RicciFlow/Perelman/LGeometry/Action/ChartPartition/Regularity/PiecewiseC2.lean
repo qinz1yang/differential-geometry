@@ -25,7 +25,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_chart_piece_contDiffOn_two
+theorem lRegularizedAction_minimizer_chart_piece_contDiffOn_two
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
@@ -42,7 +42,7 @@ theorem lRegAction_minimizer_chart_piece_contDiffOn_two
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
     ∀ i, ContDiffOn Real 2 (u i).toFun
       (Icc (0 : Real) (partitionIntervalLength t i)) := by
   classical
@@ -79,7 +79,7 @@ theorem lRegAction_minimizer_chart_piece_contDiffOn_two
   have hlocal : IsLocalMinOn
       (lChartAction S T (t i.castSucc) (p i))
       (sameTimeEnds (u i)) (u i) :=
-    lChartAction_isLocalMinOn_of_lRegAction_minimizer S hS.smoothMetric hSc T a b t ht.monotone
+    lChartAction_isLocalMinOn_of_lRegularizedAction_minimizer S hS.smoothMetric hSc T a b t ht.monotone
       ht0 htlast p gamma hgamma u hsrc hrep hreg hmin i hpos
   obtain ⟨q₀, hq₀c, hq₀ae, hu1, _⟩ :=
     lChartAction_minimizer_contDiffOn_one (I := I) S hS T (t i.castSucc) (p i) hL
@@ -95,7 +95,7 @@ theorem lRegAction_minimizer_chart_piece_contDiffOn_two
   exact ⟨hu1.differentiableOn (by norm_num), by simp, hq1.congr hder⟩
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior
+theorem lRegularizedAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
@@ -112,7 +112,7 @@ theorem lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b)
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b)
     (i : Fin m) (s : Real) (hs : s ∈ Ioo (t i.castSucc) (t i.succ)) :
     ContMDiffAt (modelWithCornersSelf Real Real) I 2 gamma s := by
   let r : Real := s - t i.castSucc
@@ -122,7 +122,7 @@ theorem lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior
   have hsadd : t i.castSucc + r = s := by
     dsimp only [r]
     ring
-  have hu2 := lRegAction_minimizer_chart_piece_contDiffOn_two (I := I) S hS T a b t ht ht0 htlast
+  have hu2 := lRegularizedAction_minimizer_chart_piece_contDiffOn_two (I := I) S hS T a b t ht ht0 htlast
     p gamma hgamma u hsrc hrep hreg hmin i
   have hIcc : Icc (0 : Real) (partitionIntervalLength t i) ∈ 𝓝 r :=
     mem_of_superset (Ioo_mem_nhds hr.1 hr.2) Ioo_subset_Icc_self

@@ -74,10 +74,10 @@ theorem frozenFrameTrace_self_eq_metricTrace2
   rw [frozenFrameTrace_def, metricTrace2_def]
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem frozenFrameTrace_eq_gWeighted_of_mem_nbhd
+theorem frozenFrameTrace_eq_gWeighted_of_mem_neighborhood
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b) (x : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x) :
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x) :
     frozenFrameTrace (I := I) g r s T x y =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         g.inner y (smoothOrthoFrame (I := I) g x i y)

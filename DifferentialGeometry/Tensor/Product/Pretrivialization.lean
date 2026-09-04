@@ -149,7 +149,7 @@ theorem tensorProduct_symm_apply (p : B × (F₁ ⊗[𝕜] F₂)) :
   rfl
 
 omit [FiniteDimensional 𝕜 F₂] in
-theorem tensorProduct_symm_apply' {b : B} (hb : b ∈ e₁.baseSet ∩ e₂.baseSet) (t : F₁ ⊗[𝕜] F₂) :
+theorem tensorProduct_symm_apply_of_mem {b : B} (hb : b ∈ e₁.baseSet ∩ e₂.baseSet) (t : F₁ ⊗[𝕜] F₂) :
     (tensorProduct 𝕜 e₁ e₂).symm b t =
       TensorProduct.map
         (e₁.symmL 𝕜 b).toLinearMap
@@ -164,7 +164,7 @@ theorem tensorProductCoordChange_apply (b : B)
       (tensorProduct 𝕜 e₁' e₂' ⟨b, (tensorProduct 𝕜 e₁ e₂).symm b t⟩).2 := by
   simp only [tensorProductCoordChange, TensorProduct.mapLFiniteDimensional]
   simp only [LinearMap.coe_toContinuousLinearMap',
-    tensorProduct_symm_apply' (𝕜 := 𝕜) (e₁ := e₁) (e₂ := e₂) hb.1,
+    tensorProduct_symm_apply_of_mem (𝕜 := 𝕜) (e₁ := e₁) (e₂ := e₂) hb.1,
     tensorProduct_apply]
   rw [← LinearMap.comp_apply, ← TensorProduct.map_comp]
   congr 1 ; ext v

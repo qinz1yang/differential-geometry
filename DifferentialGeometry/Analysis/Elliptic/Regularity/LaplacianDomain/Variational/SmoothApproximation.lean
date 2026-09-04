@@ -84,7 +84,7 @@ private lemma pouScalar_tsupport_subset_chartSource
     tsupport (pouScalar (I := I) (M := M) α v).toFun ⊆ (chartAt H α).source := by
   rw [pouScalar_toFun]
   classical
-  have h_supp_sub : Function.support
+  have h_support_sub : Function.support
       (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x * v.toFun x) ⊆
         Function.support fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x := by
     intro x hx
@@ -97,7 +97,7 @@ private lemma pouScalar_tsupport_subset_chartSource
       tsupport (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
           v.toFun x) ⊆
         tsupport fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x :=
-    closure_mono h_supp_sub
+    closure_mono h_support_sub
   exact h_tsupp_sub.trans
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α)
 
@@ -114,7 +114,7 @@ private theorem smooth_principal_identity
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (_hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (_hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramOnEuclid (I := I) g α i j y *
@@ -133,10 +133,10 @@ private theorem smooth_principal_identity
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f := (pouScalar (I := I) (M := M) α v).smooth
   have hf_cs : HasCompactSupport f :=
     pouScalar_hasCompactSupport (I := I) (M := M) α v
-  have hf_supp : tsupport f ⊆ (chartAt H α).source :=
+  have hf_support : tsupport f ⊆ (chartAt H α).source :=
     pouScalar_tsupport_subset_chartSource (I := I) (M := M) α v
   obtain ⟨B, hB_match, hB_c, hB_solv⟩ :=
-    chart_pulled_smooth_weak_solution (I := I) (M := M) g α hf_smooth hf_cs hf_supp
+    chart_pulled_smooth_weak_solution (I := I) (M := M) g α hf_smooth hf_cs hf_support
   obtain ⟨_hB_cd, hB_solv⟩ := hB_solv
   have h_bilin : B.bilin (chartPullback (I := I) α f) ψ =
       ∫ y in (Set.univ : Set EuclN),
@@ -147,7 +147,7 @@ private theorem smooth_principal_identity
     euclideanChartImageOfTsupport (I := I) (M := M) α f with hK_main_def
   have hK_main_subset_target :
       K_main ⊆ chartTargetEuclid (I := I) (M := M) α :=
-    euclideanChartImageOfTsupport_subset_chartTargetEuclid (I := I) (M := M) α hf_supp
+    euclideanChartImageOfTsupport_subset_chartTargetEuclid (I := I) (M := M) α hf_support
   have h_bilin_univ : B.bilin (chartPullback (I := I) α f) ψ =
       ∫ y, B.principalIntegrand (chartPullback (I := I) α f) ψ y := by
     unfold SmoothEllipticBilinearForm.bilin
@@ -161,17 +161,17 @@ private theorem smooth_principal_identity
   rw [h_bilin_univ] at h_bilin
   have h_chartPull_tsupp_in_K_main :
       tsupport (chartPullback (I := I) α f) ⊆ K_main :=
-    chartPullback_tsupport_subset (I := I) α hf_cs hf_supp
+    chartPullback_tsupport_subset (I := I) α hf_cs hf_support
   have h_principal_zero_off_K_main : ∀ y, y ∉ K_main →
       B.principalIntegrand (chartPullback (I := I) α f) ψ y = 0 := by
     intro y hy_not_K
-    have hy_not_supp : y ∉ tsupport (chartPullback (I := I) α f) := fun h =>
+    have hy_not_support : y ∉ tsupport (chartPullback (I := I) α f) := fun h =>
       hy_not_K (h_chartPull_tsupp_in_K_main h)
     have h_compl_open : IsOpen (tsupport (chartPullback (I := I) α f))ᶜ :=
       (isClosed_tsupport _).isOpen_compl
     have h_ev : chartPullback (I := I) α f =ᶠ[𝓝 y]
         (fun _ : EuclN => (0 : ℝ)) := by
-      filter_upwards [h_compl_open.mem_nhds hy_not_supp] with z hz
+      filter_upwards [h_compl_open.mem_nhds hy_not_support] with z hz
       by_contra hne
       exact hz (subset_tsupport _ hne)
     have h_fderiv_zero : fderiv ℝ (chartPullback (I := I) α f) y = 0 := by
@@ -256,13 +256,13 @@ private theorem smooth_principal_identity
           B.principalIntegrand (chartPullback (I := I) α f) ψ y = 0 :=
         h_principal_zero_off_K_main y hy_K
       rw [h_principal_zero]
-      have hy_not_supp : y ∉ tsupport (chartPullback (I := I) α f) := fun h =>
+      have hy_not_support : y ∉ tsupport (chartPullback (I := I) α f) := fun h =>
         hy_K (h_chartPull_tsupp_in_K_main h)
       have h_compl_open : IsOpen (tsupport (chartPullback (I := I) α f))ᶜ :=
         (isClosed_tsupport _).isOpen_compl
       have h_ev : chartPullback (I := I) α f =ᶠ[𝓝 y]
           (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_compl_open.mem_nhds hy_not_supp] with z hz
+        filter_upwards [h_compl_open.mem_nhds hy_not_support] with z hz
         by_contra hne
         exact hz (subset_tsupport _ hne)
       have hOpen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
@@ -270,10 +270,10 @@ private theorem smooth_principal_identity
       have h_ev2 :
           chartPushed (I := I) (M := M) (chartAtlasPOU I M) α v.toFun =ᶠ[𝓝 y]
             (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [hOpen.mem_nhds hy, h_compl_open.mem_nhds hy_not_supp] with z hz_T hz_supp
+        filter_upwards [hOpen.mem_nhds hy, h_compl_open.mem_nhds hy_not_support] with z hz_T hz_support
         have h_pull_zero : chartPullback (I := I) α f z = 0 := by
           by_contra hne
-          exact hz_supp (subset_tsupport _ hne)
+          exact hz_support (subset_tsupport _ hne)
         have h_eq := chartPullback_pouScalar_eq_chartPushed (I := I) (M := M) α v hz_T
         rw [← h_eq]; exact h_pull_zero
       have h_fderiv_zero :
@@ -355,7 +355,7 @@ private lemma integrable_density_pull_mul_test
     {h : M → ℝ} (hh_cont : Continuous h)
     {ψ : EuclN → ℝ} (hψ_cont : Continuous ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     IntegrableOn (fun y : EuclN =>
       densityOnEuclid (I := I) g α y *
         h ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y)
@@ -387,7 +387,7 @@ private lemma integrable_density_pull_mul_test
           h ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) * ψ z) y) := by
     refine continuous_iff_continuousAt.mpr fun y => ?_
     by_cases hy : y ∈ tsupport ψ
-    · have hyT : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_supp hy
+    · have hyT : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_support hy
       have hOpen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
         Sobolev.Chart.chartTargetEuclid_isOpen (I := I) (M := M) α
       have h_ev_indicator :
@@ -416,7 +416,7 @@ private lemma integrable_density_pull_mul_test
         · rw [Set.indicator_of_notMem hzT]
       refine ContinuousAt.congr ?_ h_ev_indicator.symm
       exact continuousAt_const
-  have h_supp_in_tsupp : Function.support
+  have h_support_in_tsupp : Function.support
       (fun y : EuclN =>
         (chartTargetEuclid (I := I) (M := M) α).indicator
           (fun z => densityOnEuclid (I := I) g α z *
@@ -443,8 +443,8 @@ private lemma integrable_density_pull_mul_test
     refine HasCompactSupport.intro hψ_cs ?_
     intro y hy
     by_contra hne
-    have hy_supp : y ∈ Function.support _ := hne
-    exact hy (h_supp_in_tsupp hy_supp)
+    have hy_support : y ∈ Function.support _ := hne
+    exact hy (h_support_in_tsupp hy_support)
   rw [MeasureTheory.IntegrableOn]
   rw [show Integrable (fun y : EuclN => densityOnEuclid (I := I) g α y *
         h ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y)
@@ -462,7 +462,7 @@ private theorem smooth_variational_identity
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramOnEuclid (I := I) g α i j y *
@@ -481,7 +481,7 @@ private theorem smooth_variational_identity
       ∂(volume : Measure EuclN) := by
   classical
   have h_principal :=
-    smooth_principal_identity (I := I) (M := M) α v hψ hψ_cs hψ_supp
+    smooth_principal_identity (I := I) (M := M) α v hψ hψ_cs hψ_support
   set f_pou : M → ℝ := (pouScalar (I := I) (M := M) α v).toFun with hf_pou_def
   set H : M → ℝ := f_pou -
       ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
@@ -530,7 +530,7 @@ private theorem smooth_variational_identity
         f_pou ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y)
       (chartTargetEuclid (I := I) (M := M) α) volume :=
     integrable_density_pull_mul_test (I := I) (M := M) α
-      hf_pou_cont hψ_cont hψ_cs hψ_supp
+      hf_pou_cont hψ_cont hψ_cs hψ_support
   have hint_Δ : IntegrableOn (fun y : EuclN =>
       densityOnEuclid (I := I) g α y *
         (ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
@@ -538,7 +538,7 @@ private theorem smooth_variational_identity
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y)
       (chartTargetEuclid (I := I) (M := M) α) volume :=
     integrable_density_pull_mul_test (I := I) (M := M) α
-      h_Δ_cont hψ_cont hψ_cs hψ_supp
+      h_Δ_cont hψ_cont hψ_cs hψ_support
   have h_RHS_split : ∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
         (pouScalar (I := I) (M := M) α v).oneSubLapClassical.toFun
@@ -576,7 +576,7 @@ private lemma exists_bound_for_invGram_mul_fderiv_psi
     {g : SmoothRiemannianMetric I M} (α : M) (i j : Fin (Module.finrank ℝ E))
     {ψ : EuclN → ℝ} (hψ_cd : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ y : EuclN,
       |invGramOnEuclid (I := I) g α i j y *
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1)| ≤ M := by
@@ -585,10 +585,10 @@ private lemma exists_bound_for_invGram_mul_fderiv_psi
       (fun y : EuclN => invGramOnEuclid (I := I) g α i j y)
       (chartTargetEuclid (I := I) (M := M) α) :=
     (invGramOnEuclid_contDiffOn (I := I) g α i j).continuousOn
-  have h_invGram_contOn_supp : ContinuousOn
+  have h_invGram_contOn_support : ContinuousOn
       (fun y : EuclN => invGramOnEuclid (I := I) g α i j y)
       (tsupport ψ) :=
-    h_invGram_contOn.mono hψ_supp
+    h_invGram_contOn.mono hψ_support
   have h_fderiv_cont : Continuous
       (fun y : EuclN => (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) := by
     have h1 : Continuous (fderiv ℝ ψ) :=
@@ -598,7 +598,7 @@ private lemma exists_bound_for_invGram_mul_fderiv_psi
       (fun y : EuclN => invGramOnEuclid (I := I) g α i j y *
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       (tsupport ψ) :=
-    h_invGram_contOn_supp.mul h_fderiv_cont.continuousOn
+    h_invGram_contOn_support.mul h_fderiv_cont.continuousOn
   obtain ⟨M, _hM⟩ := (hψ_cs : IsCompact (tsupport ψ)).bddAbove_image h_prod_contOn.abs
   refine ⟨max M 0, le_max_right _ _, fun y => ?_⟩
   by_cases hy : y ∈ tsupport ψ
@@ -610,8 +610,8 @@ private lemma exists_bound_for_invGram_mul_fderiv_psi
   · have hy_not : y ∉ Function.support (fderiv ℝ ψ) := by
       intro h
       apply hy
-      have h_supp : Function.support (fderiv ℝ ψ) ⊆ tsupport ψ := support_fderiv_subset ℝ
-      exact h_supp h
+      have h_support : Function.support (fderiv ℝ ψ) ⊆ tsupport ψ := support_fderiv_subset ℝ
+      exact h_support h
     have h_fderiv_zero : fderiv ℝ ψ y = 0 := Function.notMem_support.mp hy_not
     have h_zero : (fderiv ℝ ψ y) (EuclideanSpace.single j 1) = 0 := by
       rw [h_fderiv_zero]
@@ -662,7 +662,7 @@ theorem laplacianDomain_variational_identity_smooth_case
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         weightedInvGramOnEuclid (I := I) g α i j y *
@@ -679,7 +679,7 @@ theorem laplacianDomain_variational_identity_smooth_case
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
         ψ y
       ∂(volume : Measure EuclN) :=
-  smooth_variational_identity (I := I) (M := M) α v hψ hψ_cs hψ_supp
+  smooth_variational_identity (I := I) (M := M) α v hψ hψ_cs hψ_support
 
 end LaplacianDomainVariationalLimit
 end Laplacian

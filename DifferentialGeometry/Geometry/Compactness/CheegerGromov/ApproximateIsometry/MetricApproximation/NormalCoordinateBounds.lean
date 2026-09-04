@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff BigOperators Topology
@@ -152,5 +152,5 @@ theorem SmoothPullbackMetricTensor.metricTensorErrorNorm_le_of_normalChartAt
       (hpb.tensor p - Tensor0SBundle.metricTensorField (I := I) g p)) ≤ _
   simpa [Fintype.card_congr, Nat.cast_pow, Real.sqrt_sq_eq_abs] using hmain
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -933,17 +933,17 @@ private lemma contMDiff_symm_of_fiberBijective'
         · exact hx₂
         · intro q ⟨hq₁, hq₂⟩
           exact trivializationCoord_apply hcompat x q hq₁ hq₂ v
-      have he₁_tgt : (x, v) ∈ e₁.target := by
+      have he₁_target : (x, v) ∈ e₁.target := by
         rw [e₁.target_eq]; exact ⟨hx₁, Set.mem_univ _⟩
       have he₁_symm : ContMDiffAt IB (IB.prod 𝓘(𝕜, F₁)) n
           (fun q => e₁.toOpenPartialHomeomorph.symm (q, v)) x := by
         have h1 := e₁.contMDiffOn_symm (n := n) (IB := IB) |>.contMDiffAt
-          (e₁.toOpenPartialHomeomorph.open_target.mem_nhds he₁_tgt)
+          (e₁.toOpenPartialHomeomorph.open_target.mem_nhds he₁_target)
         have h2 : ContMDiffAt IB (IB.prod 𝓘(𝕜, F₁)) n (fun q => (q, v)) x :=
           contMDiffAt_id.prodMk contMDiffAt_const
         exact h1.comp x h2
       have hpΦ : Φ (e₁.toOpenPartialHomeomorph.symm (x, v)) ∈ e₂.source := by
-        rw [e₂.mem_source, hΦ_proj, e₁.proj_symm_apply he₁_tgt]; exact hx₂
+        rw [e₂.mem_source, hΦ_proj, e₁.proj_symm_apply he₁_target]; exact hx₂
       have hΦ_at : ContMDiffAt (IB.prod 𝓘(𝕜, F₁)) (IB.prod 𝓘(𝕜, F₂)) n Φ
           (e₁.toOpenPartialHomeomorph.symm (x, v)) := hΦ_smooth.contMDiffAt
       have he₂_at : ContMDiffAt (IB.prod 𝓘(𝕜, F₂)) (IB.prod 𝓘(𝕜, F₂)) n e₂

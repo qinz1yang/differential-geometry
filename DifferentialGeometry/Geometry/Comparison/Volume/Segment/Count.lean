@@ -33,45 +33,45 @@ theorem sinh_le_mul_exp (x : ℝ) : Real.sinh x ≤ x * Real.exp x := by
   rw [Real.sinh_eq, div_le_iff₀ (by norm_num : (0 : ℝ) < 2)]
   nlinarith [key]
 
-theorem hypSn_le_mul_exp {q τ : ℝ} (hq : 0 ≤ q) :
-    hypSn q τ ≤ τ * Real.exp (q * τ) := by
+theorem hyperbolicSn_le_mul_exp {q τ : ℝ} (hq : 0 ≤ q) :
+    hyperbolicSn q τ ≤ τ * Real.exp (q * τ) := by
   by_cases hq0 : q = 0
-  · subst hq0; simp [hypSn]
+  · subst hq0; simp [hyperbolicSn]
   · have hqpos : 0 < q := hq.lt_of_ne (Ne.symm hq0)
-    rw [hypSn, if_neg hq0, div_le_iff₀ hqpos]
+    rw [hyperbolicSn, if_neg hq0, div_le_iff₀ hqpos]
     calc Real.sinh (q * τ) ≤ (q * τ) * Real.exp (q * τ) := sinh_le_mul_exp (q * τ)
       _ = τ * Real.exp (q * τ) * q := by ring
 
-theorem hypSn_ge_self {q τ : ℝ} (hq : 0 ≤ q) (hτ : 0 ≤ τ) : τ ≤ hypSn q τ := by
+theorem hyperbolicSn_ge_self {q τ : ℝ} (hq : 0 ≤ q) (hτ : 0 ≤ τ) : τ ≤ hyperbolicSn q τ := by
   by_cases hq0 : q = 0
-  · subst hq0; simp [hypSn]
+  · subst hq0; simp [hyperbolicSn]
   · have hqpos : 0 < q := hq.lt_of_ne (Ne.symm hq0)
-    rw [hypSn, if_neg hq0, le_div_iff₀ hqpos]
+    rw [hyperbolicSn, if_neg hq0, le_div_iff₀ hqpos]
     calc τ * q = q * τ := by ring
       _ ≤ Real.sinh (q * τ) := Real.self_le_sinh_iff.mpr (mul_nonneg hq hτ)
 
-theorem hypDen_le {q τ : ℝ} (d : ℕ) (hq : 0 ≤ q) (hτ : 0 ≤ τ) :
-    hypDensity q d τ ≤ τ ^ d * Real.exp (q * (d : ℝ) * τ) := by
-  have h1 : hypSn q τ ≤ τ * Real.exp (q * τ) := hypSn_le_mul_exp hq
-  have h0 : 0 ≤ hypSn q τ := le_trans hτ (hypSn_ge_self hq hτ)
+theorem hyperbolicDen_le {q τ : ℝ} (d : ℕ) (hq : 0 ≤ q) (hτ : 0 ≤ τ) :
+    hyperbolicDensity q d τ ≤ τ ^ d * Real.exp (q * (d : ℝ) * τ) := by
+  have h1 : hyperbolicSn q τ ≤ τ * Real.exp (q * τ) := hyperbolicSn_le_mul_exp hq
+  have h0 : 0 ≤ hyperbolicSn q τ := le_trans hτ (hyperbolicSn_ge_self hq hτ)
   have hexp : Real.exp (q * τ) ^ d = Real.exp (q * (d : ℝ) * τ) := by
     rw [← Real.exp_nat_mul]; congr 1; ring
-  calc hypDensity q d τ = hypSn q τ ^ d := rfl
+  calc hyperbolicDensity q d τ = hyperbolicSn q τ ^ d := rfl
     _ ≤ (τ * Real.exp (q * τ)) ^ d := pow_le_pow_left₀ h0 h1 d
     _ = τ ^ d * Real.exp (q * (d : ℝ) * τ) := by rw [mul_pow, hexp]
 
-theorem hypRadVol_le (d : ℕ) {q R : ℝ} (hq : 0 ≤ q) (hR : 0 ≤ R) :
-    hypRadVol q d R ≤ R ^ (d + 1) * Real.exp (q * (d : ℝ) * R) := by
+theorem hyperbolicRadialVolume_le (d : ℕ) {q R : ℝ} (hq : 0 ≤ q) (hR : 0 ≤ R) :
+    hyperbolicRadialVolume q d R ≤ R ^ (d + 1) * Real.exp (q * (d : ℝ) * R) := by
   have hqd : (0 : ℝ) ≤ q * (d : ℝ) := mul_nonneg hq (Nat.cast_nonneg d)
-  calc hypRadVol q d R
-      = ∫ τ in (0 : ℝ)..R, hypDensity q d τ := rfl
+  calc hyperbolicRadialVolume q d R
+      = ∫ τ in (0 : ℝ)..R, hyperbolicDensity q d τ := rfl
     _ ≤ ∫ _τ in (0 : ℝ)..R, R ^ d * Real.exp (q * (d : ℝ) * R) := by
         refine intervalIntegral.integral_mono_on hR
-          ((hypDen_continuous q d).intervalIntegrable _ _)
+          ((hyperbolicDen_continuous q d).intervalIntegrable _ _)
           (continuous_const.intervalIntegrable _ _) ?_
         intro τ hτ
         have hτ0 : 0 ≤ τ := hτ.1
-        calc hypDensity q d τ ≤ τ ^ d * Real.exp (q * (d : ℝ) * τ) := hypDen_le d hq hτ0
+        calc hyperbolicDensity q d τ ≤ τ ^ d * Real.exp (q * (d : ℝ) * τ) := hyperbolicDen_le d hq hτ0
           _ ≤ R ^ d * Real.exp (q * (d : ℝ) * R) :=
               mul_le_mul (pow_le_pow_left₀ hτ0 hτ.2 d)
                 (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hτ.2 hqd))
@@ -79,66 +79,66 @@ theorem hypRadVol_le (d : ℕ) {q R : ℝ} (hq : 0 ≤ q) (hR : 0 ≤ R) :
     _ = R ^ (d + 1) * Real.exp (q * (d : ℝ) * R) := by
         rw [intervalIntegral.integral_const, sub_zero, smul_eq_mul, ← mul_assoc, ← pow_succ']
 
-theorem hypRadVol_ge (d : ℕ) {q s : ℝ} (hq : 0 ≤ q) (hs : 0 < s) :
-    (s / 2) ^ (d + 1) ≤ hypRadVol q d s := by
+theorem hyperbolicRadialVolume_ge (d : ℕ) {q s : ℝ} (hq : 0 ≤ q) (hs : 0 < s) :
+    (s / 2) ^ (d + 1) ≤ hyperbolicRadialVolume q d s := by
   have hs2 : (0 : ℝ) ≤ s / 2 := by linarith
   have hss : s / 2 ≤ s := by linarith
-  have hlow_sub : (s / 2) * (s / 2) ^ d ≤ ∫ τ in (s / 2)..s, hypDensity q d τ := by
-    have hmono : ∫ _τ in (s / 2)..s, (s / 2) ^ d ≤ ∫ τ in (s / 2)..s, hypDensity q d τ := by
+  have hlow_sub : (s / 2) * (s / 2) ^ d ≤ ∫ τ in (s / 2)..s, hyperbolicDensity q d τ := by
+    have hmono : ∫ _τ in (s / 2)..s, (s / 2) ^ d ≤ ∫ τ in (s / 2)..s, hyperbolicDensity q d τ := by
       refine intervalIntegral.integral_mono_on hss
         (continuous_const.intervalIntegrable _ _)
-        ((hypDen_continuous q d).intervalIntegrable _ _) ?_
+        ((hyperbolicDen_continuous q d).intervalIntegrable _ _) ?_
       intro τ hτ
-      exact pow_le_pow_left₀ hs2 (le_trans hτ.1 (hypSn_ge_self hq (le_trans hs2 hτ.1))) d
+      exact pow_le_pow_left₀ hs2 (le_trans hτ.1 (hyperbolicSn_ge_self hq (le_trans hs2 hτ.1))) d
     rwa [intervalIntegral.integral_const, smul_eq_mul,
       show s - s / 2 = s / 2 from by ring] at hmono
-  have hnn : 0 ≤ ∫ τ in (0 : ℝ)..(s / 2), hypDensity q d τ :=
+  have hnn : 0 ≤ ∫ τ in (0 : ℝ)..(s / 2), hyperbolicDensity q d τ :=
     intervalIntegral.integral_nonneg hs2
-      (fun τ hτ => pow_nonneg (le_trans hτ.1 (hypSn_ge_self hq hτ.1)) d)
-  have hsplit : (∫ τ in (0 : ℝ)..(s / 2), hypDensity q d τ)
-        + ∫ τ in (s / 2)..s, hypDensity q d τ
-      = ∫ τ in (0 : ℝ)..s, hypDensity q d τ :=
+      (fun τ hτ => pow_nonneg (le_trans hτ.1 (hyperbolicSn_ge_self hq hτ.1)) d)
+  have hsplit : (∫ τ in (0 : ℝ)..(s / 2), hyperbolicDensity q d τ)
+        + ∫ τ in (s / 2)..s, hyperbolicDensity q d τ
+      = ∫ τ in (0 : ℝ)..s, hyperbolicDensity q d τ :=
     intervalIntegral.integral_add_adjacent_intervals
-      ((hypDen_continuous q d).intervalIntegrable _ _)
-      ((hypDen_continuous q d).intervalIntegrable _ _)
+      ((hyperbolicDen_continuous q d).intervalIntegrable _ _)
+      ((hyperbolicDen_continuous q d).intervalIntegrable _ _)
   calc (s / 2) ^ (d + 1) = (s / 2) * (s / 2) ^ d := by rw [pow_succ']
-    _ ≤ ∫ τ in (s / 2)..s, hypDensity q d τ := hlow_sub
-    _ ≤ (∫ τ in (0 : ℝ)..(s / 2), hypDensity q d τ)
-          + ∫ τ in (s / 2)..s, hypDensity q d τ := by linarith
-    _ = hypRadVol q d s := hsplit
+    _ ≤ ∫ τ in (s / 2)..s, hyperbolicDensity q d τ := hlow_sub
+    _ ≤ (∫ τ in (0 : ℝ)..(s / 2), hyperbolicDensity q d τ)
+          + ∫ τ in (s / 2)..s, hyperbolicDensity q d τ := by linarith
+    _ = hyperbolicRadialVolume q d s := hsplit
 
-theorem hypRadVol_ratio_le (d : ℕ) {q s R : ℝ} (hq : 0 ≤ q) (hs : 0 < s)
+theorem hyperbolicRadialVolume_ratio_le (d : ℕ) {q s R : ℝ} (hq : 0 ≤ q) (hs : 0 < s)
     (hsR : s ≤ R) :
-    hypRadVol q d R ≤
-      Real.exp (q * (d : ℝ) * R) * (R / (s / 2)) ^ (d + 1) * hypRadVol q d s := by
-  have hub := hypRadVol_le d hq (hs.le.trans hsR)
-  have hlb := hypRadVol_ge d hq hs
+    hyperbolicRadialVolume q d R ≤
+      Real.exp (q * (d : ℝ) * R) * (R / (s / 2)) ^ (d + 1) * hyperbolicRadialVolume q d s := by
+  have hub := hyperbolicRadialVolume_le d hq (hs.le.trans hsR)
+  have hlb := hyperbolicRadialVolume_ge d hq hs
   have hs2 : (0 : ℝ) < s / 2 := by linarith
   have hRnn : 0 ≤ R := hs.le.trans hsR
   have hcoef : 0 ≤ Real.exp (q * (d : ℝ) * R) * (R / (s / 2)) ^ (d + 1) :=
     mul_nonneg (Real.exp_pos _).le (pow_nonneg (div_nonneg hRnn hs2.le) _)
-  calc hypRadVol q d R
+  calc hyperbolicRadialVolume q d R
       ≤ R ^ (d + 1) * Real.exp (q * (d : ℝ) * R) := hub
     _ = Real.exp (q * (d : ℝ) * R) * (R / (s / 2)) ^ (d + 1) * (s / 2) ^ (d + 1) := by
         have hs2ne : (s / 2) ^ (d + 1) ≠ 0 := pow_ne_zero _ hs2.ne'
         rw [div_pow]; field_simp
-    _ ≤ Real.exp (q * (d : ℝ) * R) * (R / (s / 2)) ^ (d + 1) * hypRadVol q d s :=
+    _ ≤ Real.exp (q * (d : ℝ) * R) * (R / (s / 2)) ^ (d + 1) * hyperbolicRadialVolume q d s :=
         mul_le_mul_of_nonneg_left hlb hcoef
 
-def segImult (n : ℕ) (q r0 m : ℝ) : ℕ :=
+def segmentImult (n : ℕ) (q r0 m : ℝ) : ℕ :=
   ⌈Real.exp (8 * q * ((n - 1 : ℕ) : ℝ) * r0) * (16 * m + 8) ^ n⌉₊ + 1
 
-theorem le_segImult (n : ℕ) (q r0 m : ℝ) :
+theorem le_segmentImult (n : ℕ) (q r0 m : ℝ) :
     Real.exp (8 * q * ((n - 1 : ℕ) : ℝ) * r0) * (16 * m + 8) ^ n
-      ≤ (segImult n q r0 m : ℝ) := by
+      ≤ (segmentImult n q r0 m : ℝ) := by
   have h := Nat.le_ceil
     (Real.exp (8 * q * ((n - 1 : ℕ) : ℝ) * r0) * (16 * m + 8) ^ n)
-  unfold segImult
+  unfold segmentImult
   push_cast
   linarith
 
-theorem one_le_segImult (n : ℕ) (q r0 m : ℝ) : 1 ≤ segImult n q r0 m := by
-  unfold segImult; omega
+theorem one_le_segmentImult (n : ℕ) (q r0 m : ℝ) : 1 ≤ segmentImult n q r0 m := by
+  unfold segmentImult; omega
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -233,7 +233,7 @@ theorem edistBall_disj {ι : Type*} {J : Finset ι} {centers : ι → M} {r : �
           rw [← ENNReal.ofReal_add (by linarith) (by linarith)]; norm_num
   exact absurd hsep_ij (not_le.mpr hlt)
 
-theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -248,9 +248,9 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
     (z : M) (J : Finset α)
     (hJz : ∀ j : α, j ∈ J →
       riemannianEDist I (centers j) z ≤ ENNReal.ofReal (m * r)) :
-    J.card ≤ segImult (Module.finrank ℝ E) q r0 m := by
+    J.card ≤ segmentImult (Module.finrank ℝ E) q r0 m := by
   by_cases hm : m < 1 / 2
-  · refine le_trans ?_ (one_le_segImult (Module.finrank ℝ E) q r0 m)
+  · refine le_trans ?_ (one_le_segmentImult (Module.finrank ℝ E) q r0 m)
     rw [Finset.card_le_one]
     intro a ha b hb
     by_contra hab
@@ -287,10 +287,10 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
     have hR'_pos : (0 : ℝ) < (4 * m + 2) * r := by nlinarith
     have hbigR_pos : (0 : ℝ) < (m + 1 / 2) * r := by nlinarith
     have hsR' : r / 2 ≤ (4 * m + 2) * r := by nlinarith
-    have hvs_pos : 0 < hypRadVol q (Module.finrank ℝ E - 1) (r / 2) :=
-      hypRadVol_pos hq hs_pos
-    have hvR'_pos : 0 < hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) :=
-      hypRadVol_pos hq hR'_pos
+    have hvs_pos : 0 < hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2) :=
+      hyperbolicRadialVolume_pos hq hs_pos
+    have hvR'_pos : 0 < hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) :=
+      hyperbolicRadialVolume_pos hq hR'_pos
     set μ := riemannianVolumeMeasure (I := I) (M := M) g with hμ
     have : μ.IsOpenPosMeasure :=
       riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) g
@@ -307,16 +307,16 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
         exact ENNReal.ofReal_pos.mpr hbigR_pos⟩
     have hbig_pos : 0 < μ big := hbig_open.measure_pos μ hbig_ne
     have hbig_fin : μ big ≠ ⊤ := by
-      rw [hbig]; exact (segBall_vol_fin (I := I) g hEnorm z).ne
+      rw [hbig]; exact (segmentBall_vol_fin (I := I) g hEnorm z).ne
     have hU_pos : 0 < (μ big).toReal := ENNReal.toReal_pos hbig_pos.ne' hbig_fin
     set L : ℝ :=
-      (μ big).toReal * hypRadVol q (Module.finrank ℝ E - 1) (r / 2)
-        / hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) with hL
+      (μ big).toReal * hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2)
+        / hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) with hL
     have hL_pos : 0 < L := by
       rw [hL]; exact div_pos (mul_pos hU_pos hvs_pos) hvR'_pos
     have hLj : ∀ j ∈ J, L ≤ μ.real (small j) := by
       intro j hj
-      have hrel := segBall_vol_rel (I := I) g hEnorm (centers j) hq hs_pos hsR' hRic
+      have hrel := segmentBall_vol_rel (I := I) g hEnorm (centers j) hq hs_pos hsR' hRic
       have hsub_big : big ⊆
           {y : M | riemannianEDist I (centers j) y < ENNReal.ofReal ((4 * m + 2) * r)} := by
         rw [hbig]
@@ -333,18 +333,18 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
           ≤ μ {y : M | riemannianEDist I (centers j) y < ENNReal.ofReal ((4 * m + 2) * r)} :=
         measure_mono hsub_big
       have hcomb :
-          μ big * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) (r / 2))
-            ≤ ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r))
+          μ big * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2))
+            ≤ ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r))
               * μ (small j) := by
-        calc μ big * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) (r / 2))
+        calc μ big * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2))
             ≤ μ {y : M | riemannianEDist I (centers j) y < ENNReal.ofReal ((4 * m + 2) * r)}
-                * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) (r / 2)) := by
+                * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2)) := by
               gcongr
-          _ ≤ ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r))
+          _ ≤ ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r))
                 * μ (small j) := by simp only [hsmall]; exact hrel
       have hfin_small : μ (small j) ≠ ⊤ := by
         rw [hsmall]
-        exact (segBall_vol_fin (I := I) g hEnorm (centers j)).ne
+        exact (segmentBall_vol_fin (I := I) g hEnorm (centers j)).ne
       have hreal := (ENNReal.toReal_le_toReal
         (ENNReal.mul_ne_top hbig_fin ENNReal.ofReal_ne_top)
         (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin_small)).mpr hcomb
@@ -352,10 +352,10 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
         ENNReal.toReal_ofReal hvs_pos.le, ENNReal.toReal_ofReal hvR'_pos.le] at hreal
       simp only [Measure.real]
       rw [hL, div_le_iff₀ hvR'_pos]
-      calc (μ big).toReal * hypRadVol q (Module.finrank ℝ E - 1) (r / 2)
-          ≤ hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) * (μ (small j)).toReal :=
+      calc (μ big).toReal * hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2)
+          ≤ hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) * (μ (small j)).toReal :=
             hreal
-        _ = (μ (small j)).toReal * hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) := by
+        _ = (μ (small j)).toReal * hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) := by
             ring
     have hdisj : (↑J : Set α).PairwiseDisjoint small := by
       simp only [hsmall]
@@ -377,10 +377,10 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
     have hn1 : 1 ≤ Module.finrank ℝ E :=
       Nat.one_le_iff_ne_zero.mpr (NeZero.ne _)
     have hdn : Module.finrank ℝ E - 1 + 1 = Module.finrank ℝ E := Nat.sub_add_cancel hn1
-    have hratio : hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r)
-        ≤ (segImult (Module.finrank ℝ E) q r0 m : ℝ)
-          * hypRadVol q (Module.finrank ℝ E - 1) (r / 2) := by
-      have hbase := hypRadVol_ratio_le (Module.finrank ℝ E - 1) hq hs_pos hsR'
+    have hratio : hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r)
+        ≤ (segmentImult (Module.finrank ℝ E) q r0 m : ℝ)
+          * hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2) := by
+      have hbase := hyperbolicRadialVolume_ratio_le (Module.finrank ℝ E - 1) hq hs_pos hsR'
       have hRs : (4 * m + 2) * r / (r / 2 / 2) = 16 * m + 8 := by
         field_simp; ring
       have hcap8 : (4 * m + 2) * r ≤ 8 * r0 := by
@@ -395,31 +395,31 @@ theorem segBall_card [ConnectedSpace M] [PseudoEMetricSpace M]
       have hcoef_le :
           Real.exp (q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * ((4 * m + 2) * r))
               * ((4 * m + 2) * r / (r / 2 / 2)) ^ (Module.finrank ℝ E - 1 + 1)
-            ≤ (segImult (Module.finrank ℝ E) q r0 m : ℝ) := by
+            ≤ (segmentImult (Module.finrank ℝ E) q r0 m : ℝ) := by
         rw [hRs, hdn]
         calc Real.exp (q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * ((4 * m + 2) * r))
               * (16 * m + 8) ^ Module.finrank ℝ E
             ≤ Real.exp (8 * q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * r0)
                 * (16 * m + 8) ^ Module.finrank ℝ E :=
               mul_le_mul_of_nonneg_right hexp_le (pow_nonneg (by linarith) _)
-          _ ≤ (segImult (Module.finrank ℝ E) q r0 m : ℝ) := le_segImult _ _ _ _
-      calc hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r)
+          _ ≤ (segmentImult (Module.finrank ℝ E) q r0 m : ℝ) := le_segmentImult _ _ _ _
+      calc hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r)
           ≤ Real.exp (q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * ((4 * m + 2) * r))
               * ((4 * m + 2) * r / (r / 2 / 2)) ^ (Module.finrank ℝ E - 1 + 1)
-              * hypRadVol q (Module.finrank ℝ E - 1) (r / 2) := hbase
-        _ ≤ (segImult (Module.finrank ℝ E) q r0 m : ℝ)
-              * hypRadVol q (Module.finrank ℝ E - 1) (r / 2) :=
+              * hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2) := hbase
+        _ ≤ (segmentImult (Module.finrank ℝ E) q r0 m : ℝ)
+              * hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2) :=
             mul_le_mul_of_nonneg_right hcoef_le hvs_pos.le
-    have hNvs : hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r)
-        < ((segImult (Module.finrank ℝ E) q r0 m : ℝ) + 1)
-          * hypRadVol q (Module.finrank ℝ E - 1) (r / 2) := by
+    have hNvs : hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r)
+        < ((segmentImult (Module.finrank ℝ E) q r0 m : ℝ) + 1)
+          * hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2) := by
       nlinarith [hvs_pos, hratio]
     have hlt : (μ big).toReal <
-        ((segImult (Module.finrank ℝ E) q r0 m + 1 : ℕ) : ℝ) * L := by
-      have hexp : ((segImult (Module.finrank ℝ E) q r0 m + 1 : ℕ) : ℝ) * L
-          = ((segImult (Module.finrank ℝ E) q r0 m : ℝ) + 1)
-              * (μ big).toReal * hypRadVol q (Module.finrank ℝ E - 1) (r / 2)
-              / hypRadVol q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) := by
+        ((segmentImult (Module.finrank ℝ E) q r0 m + 1 : ℕ) : ℝ) * L := by
+      have hexp : ((segmentImult (Module.finrank ℝ E) q r0 m + 1 : ℕ) : ℝ) * L
+          = ((segmentImult (Module.finrank ℝ E) q r0 m : ℝ) + 1)
+              * (μ big).toReal * hyperbolicRadialVolume q (Module.finrank ℝ E - 1) (r / 2)
+              / hyperbolicRadialVolume q (Module.finrank ℝ E - 1) ((4 * m + 2) * r) := by
         rw [hL]; push_cast; ring
       rw [hexp, lt_div_iff₀ hvR'_pos]
       nlinarith [mul_lt_mul_of_pos_left hNvs hU_pos]

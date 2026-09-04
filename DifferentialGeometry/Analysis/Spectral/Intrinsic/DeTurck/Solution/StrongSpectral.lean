@@ -135,7 +135,7 @@ noncomputable def strongSpectralSolutionOfSmoothPath
         (hlo.mono (Icc_subset_Icc le_rfl ht.2))
         (fun s hs => hderiv s
           ⟨hs.1, lt_of_lt_of_le hs.2 ht.2⟩) hint
-    simp only [lo, timeH1.toFun_apply, timeH1.init_mk, timeH1.deriv_mk]
+    simp only [lo, timeH1.toFun_apply, timeH1.initial_mk, timeH1.deriv_mk]
     rw [hintEq, hFTC, show Flow 0 = 0 by simpa only [Flow] using hzero]
     simp
   refine

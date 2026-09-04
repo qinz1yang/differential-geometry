@@ -16,7 +16,7 @@ open scoped Manifold ContDiff Topology BigOperators
 
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [CompleteSpace E]
@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private noncomputable def orthoFrameBasis
     (gRef : SmoothRiemannianMetric I M) (z₀ : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) z₀) :
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) z₀) :
     Module.Basis (Fin (Module.finrank Real E)) Real (TangentSpace I y) :=
   basisOfLinearIndependentOfCardEqFinrank
     (b := fun a : Fin (Module.finrank Real E) =>
@@ -58,7 +58,7 @@ omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I
 @[simp]
 private lemma orthoFrameBasis_apply
     (gRef : SmoothRiemannianMetric I M) (z₀ : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) z₀)
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) z₀)
     (a : Fin (Module.finrank Real E)) :
     orthoFrameBasis (I := I) gRef z₀ hy a =
       smoothOrthoFrame (I := I) gRef z₀ a y := by
@@ -82,9 +82,9 @@ private lemma orthoFrameSection_apply
 
 omit [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-private lemma metricCovDerivNorm_eq_sum_sq_on_nbhd
+private lemma metricCovDerivNorm_eq_sum_sq_on_neighborhood
     (q : Nat) (h gRef : SmoothRiemannianMetric I M) (z₀ : M) {z : M}
-    (hz : z ∈ smoothOrthoFrameNbhd (I := I) (M := M) z₀) :
+    (hz : z ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) z₀) :
     metricCovDerivNorm (I := I) q h gRef z =
       Real.sqrt (∑ slots : Fin (q + 2) -> Fin (Module.finrank Real E),
         (metricCovDeriv (I := I) h gRef q z
@@ -126,10 +126,10 @@ theorem metricCovDerivNorm_continuousAt
     (q : Nat) (h gRef : SmoothRiemannianMetric I M) (z₀ : M) :
     ContinuousAt (fun z : M => metricCovDerivNorm (I := I) q h gRef z) z₀ := by
   classical
-  have hnbhd : smoothOrthoFrameNbhd (I := I) (M := M) z₀ ∈ nhds z₀ :=
-    smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) z₀
-  have hz₀ : z₀ ∈ smoothOrthoFrameNbhd (I := I) (M := M) z₀ :=
-    mem_smoothOrthoFrameNbhd_self (I := I) (M := M) z₀
+  have hnbhd : smoothOrthoFrameNeighborhood (I := I) (M := M) z₀ ∈ nhds z₀ :=
+    smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) z₀
+  have hz₀ : z₀ ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) z₀ :=
+    mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) z₀
   set g : M -> Real := fun z =>
     Real.sqrt (∑ slots : Fin (q + 2) -> Fin (Module.finrank Real E),
       (metricCovDeriv (I := I) h gRef q z
@@ -164,7 +164,7 @@ theorem metricCovDerivNorm_continuousAt
     rw [hg_def]; exact Real.continuous_sqrt.comp hsum_cont
   have heq : (fun z : M => metricCovDerivNorm (I := I) q h gRef z) =ᶠ[nhds z₀] g := by
     filter_upwards [hnbhd] with z hz
-    exact metricCovDerivNorm_eq_sum_sq_on_nbhd (I := I) q h gRef z₀ hz
+    exact metricCovDerivNorm_eq_sum_sq_on_neighborhood (I := I) q h gRef z₀ hz
   exact (hg_cont.continuousAt).congr heq.symm
 
 omit [BoundarylessManifold I M] in
@@ -247,5 +247,5 @@ theorem metricCovDerivNorm_eq_of_eqOn
     exact metricCovDeriv_eq_of_eqOn (I := I) h₁ h₂ gRef U hUeq q ⟨z, hz⟩ slots
   rw [metricCovDerivNorm, metricCovDerivNorm, hcov]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -45,10 +45,10 @@ private lemma V_eq_iteratedFDeriv_zero_norm
         ((tensorRSChartESectionRepr (I := I) r s α S) ∘
             (extChartAt I α).symm)
         (extChartAt I α b)‖ := by
-  have hb_chart_src : b ∈ (chartAt H α).source :=
+  have hb_chart_source : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb_good
   have hb_extsrc : b ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hb_chart_src
+    rw [extChartAt_source]; exact hb_chart_source
   have hsymm_eq : (extChartAt I α).symm ((extChartAt I α) b) = b :=
     (extChartAt I α).left_inv hb_extsrc
   rw [norm_iteratedFDeriv_zero]

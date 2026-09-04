@@ -45,7 +45,7 @@ noncomputable def chartPushedChosenFirstPartial
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g)
     (i : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 i
     (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
       ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
@@ -124,7 +124,7 @@ theorem chartPushedWeakPartialLp_ae_eq_chosenFirstPartial_on_precompact_open
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
         (chartPushedChosenFirstPartial (I := I) (M := M) g α u_h i)
         f Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       h_memW1p i
   have h_chartPushed_isWeakPartial_Ω' :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
@@ -150,7 +150,7 @@ theorem chartPushedWeakPartialLp_ae_eq_chosenFirstPartial_on_precompact_open
   have h_chosenFirst_memLp_chartTarget : MemLp
       (chartPushedChosenFirstPartial (I := I) (M := M) g α u_h i) 2
       ((volume : Measure EuclN).restrict Ω) :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       h_memW1p i
   have h_chartTarget_restrict_K : ((volume : Measure EuclN).restrict Ω).restrict K =
       (volume : Measure EuclN).restrict K := by
@@ -162,21 +162,21 @@ theorem chartPushedWeakPartialLp_ae_eq_chosenFirstPartial_on_precompact_open
       ((volume : Measure EuclN).restrict K) := by
     rw [← h_chartTarget_restrict_K]
     exact h_chosenFirst_memLp_chartTarget.restrict K
-  have h_chartPushed_locInt : LocallyIntegrable
+  have h_chartPushed_localInt : LocallyIntegrable
       (((chartPushedWeakPartialLp (I := I) (M := M) g α i
         (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
        ) : EuclN → ℝ))
       ((volume : Measure EuclN).restrict Ω') :=
     locallyIntegrable_of_memLp_two_compact_open_subset
       K Ω' hK_compact hΩ'_subset_K hΩ'_meas h_chartPushed_memLp_K
-  have h_chosenFirst_locInt : LocallyIntegrable
+  have h_chosenFirst_localInt : LocallyIntegrable
       (chartPushedChosenFirstPartial (I := I) (M := M) g α u_h i)
       ((volume : Measure EuclN).restrict Ω') :=
     locallyIntegrable_of_memLp_two_compact_open_subset
       K Ω' hK_compact hΩ'_subset_K hΩ'_meas h_chosenFirst_memLp_K
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ'_open
     h_chartPushed_isWeakPartial_Ω' h_chosenFirst_isWeakPartial_Ω'
-    h_chartPushed_locInt h_chosenFirst_locInt
+    h_chartPushed_localInt h_chosenFirst_localInt
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in

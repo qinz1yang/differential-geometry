@@ -24,7 +24,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-private theorem has_fin_seg
+private theorem has_fin_segment
     {m : Nat} (hm : 0 < m) (t : Fin (m + 1) → Real)
     (ht : Monotone t) {a b s : Real} (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b) (hs : s ∈ Icc a b) :
@@ -71,7 +71,7 @@ private theorem has_fin_seg
       exact hks
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_differentiable_and_acceleration_eq_on_interior
+theorem lRegularizedAction_minimizer_differentiable_and_acceleration_eq_on_interior
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
@@ -88,7 +88,7 @@ theorem lRegAction_minimizer_differentiable_and_acceleration_eq_on_interior
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
     ∀ s ∈ Ioo a b,
       MDifferentiableAt (modelWithCornersSelf Real Real) I gamma s ∧
       DifferentiableAt Real
@@ -96,7 +96,7 @@ theorem lRegAction_minimizer_differentiable_and_acceleration_eq_on_interior
           (fun r ↦ lVelocity (I := I) gamma r) s) s ∧
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
           (fun r ↦ lVelocity (I := I) gamma r) s =
-        lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
+        lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
   classical
   intro s hs
   cases m with
@@ -107,7 +107,7 @@ theorem lRegAction_minimizer_differentiable_and_acceleration_eq_on_interior
       rw [hab] at hs
       exact (hs.1.trans hs.2).false
   | succ n =>
-      obtain ⟨i, hi⟩ := has_fin_seg (Nat.succ_pos n) t ht.monotone
+      obtain ⟨i, hi⟩ := has_fin_segment (Nat.succ_pos n) t ht.monotone
         ht0 htlast ⟨hs.1.le, hs.2.le⟩
       by_cases hleft : s = t i.castSucc
       · have hi0 : i ≠ 0 := by
@@ -124,7 +124,7 @@ theorem lRegAction_minimizer_differentiable_and_acceleration_eq_on_interior
             have hsnode : s = t q.succ.castSucc := by
               rw [hleft, ← hq]
             rw [hsnode]
-            exact lRegAction_minimizer_acceleration_eq_at_partition_nodes (I := I) S hS T a b t ht ht0 htlast p
+            exact lRegularizedAction_minimizer_acceleration_eq_at_partition_nodes (I := I) S hS T a b t ht ht0 htlast p
               gamma hgamma u hsrc hrep hreg hmin q
       · by_cases hright : s = t i.succ
         · have hilast : i ≠ Fin.last n := by
@@ -146,17 +146,17 @@ theorem lRegAction_minimizer_differentiable_and_acceleration_eq_on_interior
                 simp only [Fin.val_succ, Fin.val_castSucc]
                 omega
               rw [hsnode]
-              exact lRegAction_minimizer_acceleration_eq_at_partition_nodes (I := I) S hS T a b t ht ht0 htlast p
+              exact lRegularizedAction_minimizer_acceleration_eq_at_partition_nodes (I := I) S hS T a b t ht ht0 htlast p
                 gamma hgamma u hsrc hrep hreg hmin q
         · have hsopen : s ∈ Ioo (t i.castSucc) (t i.succ) :=
             ⟨lt_of_le_of_ne hi.1 (Ne.symm hleft),
               lt_of_le_of_ne hi.2 hright⟩
-          have hgamma2 := lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior (I := I) S hS T a b t ht ht0
+          have hgamma2 := lRegularizedAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior (I := I) S hS T a b t ht ht0
             htlast p gamma hgamma u hsrc hrep hreg hmin i s hsopen
           exact ⟨hgamma2.mdifferentiableAt (by norm_num),
             DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.velocity_coord_diff
               (I := I) gamma s hgamma2,
-            lRegAction_minimizer_acceleration_eq_on_chart_piece_interior (I := I) S hS T a b t ht ht0 htlast p
+            lRegularizedAction_minimizer_acceleration_eq_on_chart_piece_interior (I := I) S hS T a b t ht ht0 htlast p
               gamma hgamma u hsrc hrep hreg hmin i s hsopen⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

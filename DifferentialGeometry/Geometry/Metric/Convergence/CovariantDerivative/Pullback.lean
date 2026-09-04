@@ -20,7 +20,7 @@ noncomputable section
 namespace DifferentialGeometry
 
 attribute [local instance] Fintype.ofFinite
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff BigOperators
 
@@ -528,12 +528,12 @@ theorem ricciSection_eq_ricciTensor
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [BoundarylessManifold I N] in
-theorem metricRm04StdAt_eq_inner_riemannOp
+theorem metricRm04StandardAt_eq_inner_riemannOp
     [T2Space M] [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (x : M) (X Y Z W : TangentSpace I x) :
-    metricRm04StdAt (I := I) g x X Y Z W
+    metricRm04StandardAt (I := I) g x X Y Z W
       = g.inner x W (riemannOp (cov := LeviCivita (I := I) g) x X Y Z) := by
-  rw [metricRm04StdAt_apply,
+  rw [metricRm04StandardAt_apply,
     show metricRm04At (I := I) g x
         = riemannCurvature04At g (metricCov (I := I) g) (metricCov_smooth (I := I) g) x from rfl,
     riemannCurvature04At_apply_const]
@@ -571,10 +571,10 @@ theorem ricciTensor_pullback
   rw [(Diffeomorph.pullbackMetric (I := I) g Φ).symm x
         (riemannOp (cov := LeviCivita (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ))
           x (B i) v w) (B i),
-      ← metricRm04StdAt_eq_inner_riemannOp (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ)
+      ← metricRm04StandardAt_eq_inner_riemannOp (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ)
         x (B i) v w (B i),
-      metricRm04Std_pullback (I := I) g Φ x (B i) v w (B i),
-      metricRm04StdAt_eq_inner_riemannOp (I := I) g (Φ x)
+      metricRm04Standard_pullback (I := I) g Φ x (B i) v w (B i),
+      metricRm04StandardAt_eq_inner_riemannOp (I := I) g (Φ x)
         (mfderiv I I (Φ : M → N) x (B i)) (mfderiv I I (Φ : M → N) x v)
         (mfderiv I I (Φ : M → N) x w) (mfderiv I I (Φ : M → N) x (B i)),
       g.symm (Φ x) (mfderiv I I (Φ : M → N) x (B i))
@@ -823,8 +823,8 @@ theorem metricCInf_pullback
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     (gSeq : ℕ → SmoothRiemannianMetric I N)
     (gInf gRef : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
-    (hconv : MetricCInfConvOnCompacts (I := I) gSeq gInf gRef) :
-    MetricCInfConvOnCompacts (I := I)
+    (hconv : MetricCInfConvergenceOnCompacts (I := I) gSeq gInf gRef) :
+    MetricCInfConvergenceOnCompacts (I := I)
       (fun k => Diffeomorph.pullbackMetric (I := I) (gSeq k) Phi)
       (Diffeomorph.pullbackMetric (I := I) gInf Phi)
       (Diffeomorph.pullbackMetric (I := I) gRef Phi) := by
@@ -911,5 +911,5 @@ theorem metricCovDerivNorm_pullback
     (metricCovDeriv (I := I) h gRef a (Φ x))
     (metricCovDeriv_pullback (I := I) h gRef Φ a x)]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

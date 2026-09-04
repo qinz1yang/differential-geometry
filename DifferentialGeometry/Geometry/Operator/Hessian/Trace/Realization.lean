@@ -101,12 +101,12 @@ private theorem duFun_contMDiff
         fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j p := by
     funext a
     fin_cases a
-    have hp_src : p ∈ (chartAt H x₀).source := by
+    have hp_source : p ∈ (chartAt H x₀).source := by
       simpa [coordinateFrameSet, coordinateTrivializationAt] using hp
     rw [coordinateFrameAt_apply_of_mem (I := I) (x₀ := x₀) (x := p) hp j]
     convert congrArg
       (fun L : E →L[Real] TangentSpace I p => L (b j))
-      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hp_src) using 1
+      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hp_source) using 1
     all_goals rfl
   rw [continuousMultilinearMap_basis_repr]
   change ((trivializationAt (Tensor0SModel 1 Real E)
@@ -251,7 +251,7 @@ noncomputable def hessianSec
     TwoTensorSection (I := I) (M := M) :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 cov (duSec (I := I) u hu)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       1 cov hcov (duSec (I := I) u hu))
 
 @[simp]
@@ -279,7 +279,7 @@ theorem hessianSec_nabla
   have hreal :=
     totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 cov (duSec (I := I) u hu)
-      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         1 cov hcov (duSec (I := I) u hu))
   have h := TotalNabla0SRealizes.apply (I := I) hreal X x (fun _ : Fin 1 => Y)
   have hslots :
@@ -465,7 +465,7 @@ noncomputable def nablaHessSec
     Tensor0SSection (I := I) (M := M) 3 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     2 cov (hessianSec (I := I) cov hcov u hu)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       2 cov hcov (hessianSec (I := I) cov hcov u hu))
 
 @[simp]
@@ -498,7 +498,7 @@ theorem nablaHess_realizes
     simpa [hessianSec] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         1 cov (duSec (I := I) u hu)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           1 cov hcov (duSec (I := I) u hu)))
   have h2 :
       TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -507,7 +507,7 @@ theorem nablaHess_realizes
     simpa [nablaHessSec] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         2 cov (hessianSec (I := I) cov hcov u hu)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov hcov (hessianSec (I := I) cov hcov u hu)))
   exact nabla2OneFormRealizesAt_of_totalNabla (I := I) cov
     (duSec (I := I) u hu) (hessianSec (I := I) cov hcov u hu)

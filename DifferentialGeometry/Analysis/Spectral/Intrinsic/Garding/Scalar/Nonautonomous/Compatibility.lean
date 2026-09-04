@@ -43,13 +43,13 @@ theorem lapDiffHs_eq_A20
           lapDiffA20 (I := I) (M := M) g_fam T s u := by
   classical
   obtain ⟨tau, htau, _, _, hHs⟩ :=
-    lapDiffHs_core (I := I) (M := M) g_fam hG T
+    exists_uniform_lapDiffHs_apply_ccTensorToHs (I := I) (M := M) g_fam hG T
   have hIcc : Set.Icc (0 : ℝ) tau ∈ 𝓝[Set.Ici (0 : ℝ)] (0 : ℝ) :=
     Icc_mem_nhdsGE htau
   have hle : 𝓝[Set.Ici (0 : ℝ)] (0 : ℝ) ≤ 𝓝 (0 : ℝ) :=
     nhdsWithin_le_nhds
   have hA20 :=
-    (lapDiffA20_core (I := I) (M := M) g_fam hG T).filter_mono
+    (eventually_lapDiffA20_apply_scalarH2Core (I := I) (M := M) g_fam hG T).filter_mono
       hle
   filter_upwards [hIcc, hA20] with s hs hsA20
   let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)

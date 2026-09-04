@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 open Set Topology TopologicalSpace
@@ -131,5 +131,5 @@ noncomputable def directedBallSystem
 
 end ApproxData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

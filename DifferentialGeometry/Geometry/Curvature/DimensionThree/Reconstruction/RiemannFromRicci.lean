@@ -456,11 +456,11 @@ theorem rm04Comp_displayedRiemannFromRicci3D_at_of_curvature_symmetries
     (h : AlgebraicCurvatureSymmetries3 (standardRmCompAt basis Rm04)) :
     forall i j k l : Fin 3,
       rm04CompAt (I := I) basis Rm04 i j l k =
-        stdRicci3 (standardRmCompAt basis Rm04) i l * delta3 j k
-          - stdRicci3 (standardRmCompAt basis Rm04) j l * delta3 i k
-          - stdRicci3 (standardRmCompAt basis Rm04) i k * delta3 j l
-          + stdRicci3 (standardRmCompAt basis Rm04) j k * delta3 i l
-          - (1 / 2 : Real) * stdScalar3 (standardRmCompAt basis Rm04) *
+        standardRicci3 (standardRmCompAt basis Rm04) i l * delta3 j k
+          - standardRicci3 (standardRmCompAt basis Rm04) j l * delta3 i k
+          - standardRicci3 (standardRmCompAt basis Rm04) i k * delta3 j l
+          + standardRicci3 (standardRmCompAt basis Rm04) j k * delta3 i l
+          - (1 / 2 : Real) * standardScalar3 (standardRmCompAt basis Rm04) *
               (delta3 i l * delta3 j k - delta3 j l * delta3 i k) := by
   intro i j k l
   have hformula :=
@@ -478,15 +478,15 @@ theorem rm04Comp_displayedRiemannFromRicci3D_frame_of_curvature_symmetries
       (standardRmCompAt (I := I) (M := M) (hframe.toBasisAt hx) (Rm04 x))) :
     forall i j k l : Fin 3,
       rm04CompAt (I := I) (hframe.toBasisAt hx) (Rm04 x) i j l k =
-        stdRicci3 (standardRmCompAt (I := I) (M := M)
+        standardRicci3 (standardRmCompAt (I := I) (M := M)
           (hframe.toBasisAt hx) (Rm04 x)) i l * delta3 j k
-          - stdRicci3 (standardRmCompAt (I := I) (M := M)
+          - standardRicci3 (standardRmCompAt (I := I) (M := M)
             (hframe.toBasisAt hx) (Rm04 x)) j l * delta3 i k
-          - stdRicci3 (standardRmCompAt (I := I) (M := M)
+          - standardRicci3 (standardRmCompAt (I := I) (M := M)
             (hframe.toBasisAt hx) (Rm04 x)) i k * delta3 j l
-          + stdRicci3 (standardRmCompAt (I := I) (M := M)
+          + standardRicci3 (standardRmCompAt (I := I) (M := M)
             (hframe.toBasisAt hx) (Rm04 x)) j k * delta3 i l
-          - (1 / 2 : Real) * stdScalar3 (standardRmCompAt (I := I) (M := M)
+          - (1 / 2 : Real) * standardScalar3 (standardRmCompAt (I := I) (M := M)
             (hframe.toBasisAt hx) (Rm04 x)) *
               (delta3 i l * delta3 j k - delta3 j l * delta3 i k) :=
   rm04Comp_displayedRiemannFromRicci3D_at_of_curvature_symmetries
@@ -530,11 +530,11 @@ theorem rm04Comp_displayedRiemannFromRicci3D_at_of_leviCivita_realizes
     {x : M} (basis : Module.Basis (Fin 3) Real (TangentSpace I x)) :
     forall i j k l : Fin 3,
       rm04CompAt (I := I) basis (Rm04 x) i j l k =
-        stdRicci3 (standardRmCompAt (I := I) basis (Rm04 x)) i l * delta3 j k
-          - stdRicci3 (standardRmCompAt (I := I) basis (Rm04 x)) j l * delta3 i k
-          - stdRicci3 (standardRmCompAt (I := I) basis (Rm04 x)) i k * delta3 j l
-          + stdRicci3 (standardRmCompAt (I := I) basis (Rm04 x)) j k * delta3 i l
-          - (1 / 2 : Real) * stdScalar3 (standardRmCompAt (I := I) basis (Rm04 x)) *
+        standardRicci3 (standardRmCompAt (I := I) basis (Rm04 x)) i l * delta3 j k
+          - standardRicci3 (standardRmCompAt (I := I) basis (Rm04 x)) j l * delta3 i k
+          - standardRicci3 (standardRmCompAt (I := I) basis (Rm04 x)) i k * delta3 j l
+          + standardRicci3 (standardRmCompAt (I := I) basis (Rm04 x)) j k * delta3 i l
+          - (1 / 2 : Real) * standardScalar3 (standardRmCompAt (I := I) basis (Rm04 x)) *
               (delta3 i l * delta3 j k - delta3 j l * delta3 i k) :=
   rm04Comp_displayedRiemannFromRicci3D_at_of_curvature_symmetries (I := I)
     (algebraicCurvatureSymmetries3_standardRmCompAt_of_leviCivita_realizes
@@ -551,19 +551,19 @@ structure RiemannFromRicci3DTraceDataAt
     AlgebraicCurvatureSymmetries3 (standardRmCompAt basis Rm04)
   ricci_trace : forall i j : Fin 3,
     ricciCompAt (I := I) basis Ric i j =
-      stdRicci3 (standardRmCompAt basis Rm04) i j
+      standardRicci3 (standardRmCompAt basis Rm04) i j
   scalar_trace :
-    scalar = stdScalar3 (standardRmCompAt basis Rm04)
+    scalar = standardScalar3 (standardRmCompAt basis Rm04)
 
 omit [FiniteDimensional ℝ E] in
-theorem firstTrace_delta3_eq_neg_stdRicci3
+theorem firstTrace_delta3_eq_neg_standardRicci3
     {Rm04 : Tensor04At (I := I) (M := M) x}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
     (hcurv : AlgebraicCurvatureSymmetries3 (standardRmCompAt basis Rm04))
     (i j : Fin 3) :
     (∑ k : Fin 3, ∑ l : Fin 3,
         delta3 k l * Rm04 (vec4 (basis k) (basis i) (basis j) (basis l))) =
-      -stdRicci3 (standardRmCompAt basis Rm04) i j := by
+      -standardRicci3 (standardRmCompAt basis Rm04) i j := by
   have h0 := hcurv.anti_last 0 i 0 j
   have h1 := hcurv.anti_last 1 i 1 j
   have h2 := hcurv.anti_last 2 i 2 j
@@ -595,7 +595,7 @@ theorem firstTrace_delta3_eq_neg_stdRicci3
   simp only [delta3, Fin.isValue, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
     Finset.mem_univ, ↓reduceIte]
   rw [h0d, h1d, h2d]
-  unfold stdRicci3
+  unfold standardRicci3
   simp [standardRmCompAt_apply, rm04CompAt_apply]
   ring
 
@@ -614,38 +614,38 @@ theorem traceDataOfFirst
   refine ⟨horth, hcurv, ?_, ?_⟩
   · intro i j
     rw [ricciCompAt_apply]
-    have hfirst := firstTrace_delta3_eq_neg_stdRicci3
+    have hfirst := firstTrace_delta3_eq_neg_standardRicci3
       (I := I) (M := M) hcurv i j
     have hRicij := hRic i j
     change -(Ric (vec2 (basis i) (basis j))) =
-      stdRicci3 (standardRmCompAt basis Rm04) i j
+      standardRicci3 (standardRmCompAt basis Rm04) i j
     rw [hRicij]
     rw [hfirst]
     ring
-  · have h00 := firstTrace_delta3_eq_neg_stdRicci3
+  · have h00 := firstTrace_delta3_eq_neg_standardRicci3
       (I := I) (M := M) hcurv 0 0
-    have h11 := firstTrace_delta3_eq_neg_stdRicci3
+    have h11 := firstTrace_delta3_eq_neg_standardRicci3
       (I := I) (M := M) hcurv 1 1
-    have h22 := firstTrace_delta3_eq_neg_stdRicci3
+    have h22 := firstTrace_delta3_eq_neg_standardRicci3
       (I := I) (M := M) hcurv 2 2
     have hRic00 := hRic 0 0
     have hRic11 := hRic 1 1
     have hRic22 := hRic 2 2
     have hdiag0 :
         Ric (vec2 (basis 0) (basis 0)) =
-          -stdRicci3 (standardRmCompAt basis Rm04) 0 0 := by
+          -standardRicci3 (standardRmCompAt basis Rm04) 0 0 := by
       rw [hRic00, h00]
     have hdiag1 :
         Ric (vec2 (basis 1) (basis 1)) =
-          -stdRicci3 (standardRmCompAt basis Rm04) 1 1 := by
+          -standardRicci3 (standardRmCompAt basis Rm04) 1 1 := by
       rw [hRic11, h11]
     have hdiag2 :
         Ric (vec2 (basis 2) (basis 2)) =
-          -stdRicci3 (standardRmCompAt basis Rm04) 2 2 := by
+          -standardRicci3 (standardRmCompAt basis Rm04) 2 2 := by
       rw [hRic22, h22]
-    change -scalar = stdScalar3 (standardRmCompAt basis Rm04)
+    change -scalar = standardScalar3 (standardRmCompAt basis Rm04)
     rw [hScalar]
-    simp [stdScalar3, Fin.sum_univ_three, delta3, hdiag0, hdiag1, hdiag2]
+    simp [standardScalar3, Fin.sum_univ_three, delta3, hdiag0, hdiag1, hdiag2]
     ring
 
 omit [FiniteDimensional ℝ E] in
@@ -776,7 +776,7 @@ theorem rm04_firstTrace_einstein3_at
   ring
 
 
-theorem rm04Std_ein3_at
+theorem rm04Standard_ein3_at
     {g : SmoothRiemannianMetric I M}
     {Ric : Tensor02At (I := I) (M := M) x}
     {scalar : Real}
@@ -790,7 +790,7 @@ theorem rm04Std_ein3_at
       ricciCompAt (I := I) basis Ric i j =
         (scalar / 3) * delta3 i j)
     (X Y : TangentSpace I x) :
-    DifferentialGeometry.Geometry.Curvature.tensor04StdAt (I := I) (M := M) Rm04 X Y Y X =
+    DifferentialGeometry.Geometry.Curvature.tensor04StandardAt (I := I) (M := M) Rm04 X Y Y X =
       (scalar / 6) *
         (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y) :=

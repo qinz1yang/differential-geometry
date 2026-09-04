@@ -16,32 +16,32 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-def klHeat0 (t : ℝ) (f : ℝ × V → F) (x : V) : F :=
-  heatEarly0 t f x + klLatePotential (Real.sqrt t) f x
+def kochLammHeat0 (t : ℝ) (f : ℝ × V → F) (x : V) : F :=
+  heatEarly0 t f x + kochLammLatePotential (Real.sqrt t) f x
 
 omit [CompleteSpace F] in
-theorem klEarly0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
+theorem kochLammEarly0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
-    (h : KLSource0 T A₁ A_q f) :
+    (h : KochLammSourceZero T A₁ A_q f) :
     IntegrableOn
       (fun z : ℝ × V ↦ heatKernel (t - z.1) (x - z.2) • f z)
       (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V))
-      (stVolume : Measure (ℝ × V)) := by
+      (spaceTimeVolume : Measure (ℝ × V)) := by
   let q : ℝ × V → ℝ≥0∞ := fun z ↦
     ‖heatKernel (t - z.1) (x - z.2) • f z‖₊
-  have hsrc := kl0_to_srcCarl (V := V) h
+  have hsrc := kochLammSourceZero_sourceCarlesonBound (V := V) h
   have hmass :
       (∫⁻ z in (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)), q z
-          ∂(stVolume : Measure (ℝ × V))) ≤
+          ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
         earlyHeatC V * (A₁ : ℝ≥0∞) := by
     calc
       (∫⁻ z in (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)), q z
-          ∂(stVolume : Measure (ℝ × V))) ≤
-          ∫⁻ z in (⋃ k : ℕ, shellCyl t x k), q z
-            ∂(stVolume : Measure (ℝ × V)) :=
+          ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
+          ∫⁻ z in (⋃ k : ℕ, shellCylinder t x k), q z
+            ∂(spaceTimeVolume : Measure (ℝ × V)) :=
         lintegral_mono_set (earlySlab_sub ht x)
-      _ ≤ ∑' k : ℕ, ∫⁻ z in shellCyl t x k, q z
-          ∂(stVolume : Measure (ℝ × V)) :=
+      _ ≤ ∑' k : ℕ, ∫⁻ z in shellCylinder t x k, q z
+          ∂(spaceTimeVolume : Measure (ℝ × V)) :=
         lintegral_iUnion_le _ _
       _ = ∑' k : ℕ, shellMass t f x k := by rfl
       _ ≤ ∑' k : ℕ,
@@ -54,7 +54,7 @@ theorem klEarly0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
         ac_rfl
   have hfinite :
       (∫⁻ z in (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)), q z
-          ∂(stVolume : Measure (ℝ × V))) < ∞ :=
+          ∂(spaceTimeVolume : Measure (ℝ × V))) < ∞ :=
     hmass.trans_lt (lt_top_iff_ne_top.2
       (ENNReal.mul_ne_top (earlyHeatC_ne_top V) ENNReal.coe_ne_top))
   have hk : Measurable
@@ -63,7 +63,7 @@ theorem klEarly0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
     fun_prop
   have hmeas : AEStronglyMeasurable
       (fun z : ℝ × V ↦ heatKernel (t - z.1) (x - z.2) • f z)
-      ((stVolume : Measure (ℝ × V)).restrict
+      ((spaceTimeVolume : Measure (ℝ × V)).restrict
         (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V))) :=
     (hk.aestronglyMeasurable.mono_measure Measure.restrict_le_self).smul
       (h.ae.mono_measure Measure.restrict_le_self)
@@ -71,33 +71,33 @@ theorem klEarly0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
   simpa only [q, enorm_eq_nnnorm] using hfinite
 
 omit [CompleteSpace F] in
-theorem klLate0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
+theorem kochLammLate0_int {T t : ℝ} {A₁ A_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
-    (h : KLSource0 T A₁ A_q f) :
-    Integrable (fun z : ℝ × V ↦ klTermKernel t x z • f z)
-      (klTermMeasure (V := V) t) := by
+    (h : KochLammSourceZero T A₁ A_q f) :
+    Integrable (fun z : ℝ × V ↦ kochLammTermKernel t x z • f z)
+      (kochLammTermMeasure (V := V) t) := by
   classical
   have hsqrt : 0 < Real.sqrt t := Real.sqrt_pos.2 ht
   choose s hcard hcover using
     fun k : ℕ ↦ exists_shell_cover (V := V) x hsqrt k
-  have hi := klTermKernel_smul_integrable (V := V) h x hsqrt (by
+  have hi := kochLammTermKernel_smul_integrable (V := V) h x hsqrt (by
     simpa only [Real.sq_sqrt ht.le] using htT) s hcard hcover
   simpa only [Real.sq_sqrt ht.le] using hi
 
 omit [CompleteSpace F] in
-theorem klHeat0_eq_heatPot {T t : ℝ} {A₁ A_q : ℝ≥0}
+theorem kochLammHeat0_eq_heatPot {T t : ℝ} {A₁ A_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
-    (h : KLSource0 T A₁ A_q f) :
-    klHeat0 t f x = heatPot0 t f x := by
+    (h : KochLammSourceZero T A₁ A_q f) :
+    kochLammHeat0 t f x = heatPot0 t f x := by
   let g : ℝ × V → F := fun z ↦
     heatKernel (t - z.1) (x - z.2) • f z
   let E : Set (ℝ × V) := Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)
   let L : Set (ℝ × V) := Ioc (t / 2) t ×ˢ (Set.univ : Set V)
-  have hearly : IntegrableOn g E (stVolume : Measure (ℝ × V)) := by
-    simpa only [g, E] using klEarly0_int (V := V) ht htT f x h
-  have hlateM := klLate0_int (V := V) ht htT f x h
-  have hlate : IntegrableOn g L (stVolume : Measure (ℝ × V)) := by
-    simpa only [IntegrableOn, g, L, klTermKernel, klTermMeasure, stVolume,
+  have hearly : IntegrableOn g E (spaceTimeVolume : Measure (ℝ × V)) := by
+    simpa only [g, E] using kochLammEarly0_int (V := V) ht htT f x h
+  have hlateM := kochLammLate0_int (V := V) ht htT f x h
+  have hlate : IntegrableOn g L (spaceTimeVolume : Measure (ℝ × V)) := by
+    simpa only [IntegrableOn, g, L, kochLammTermKernel, kochLammTermMeasure, spaceTimeVolume,
       Measure.restrict_prod_eq_prod_univ] using hlateM
   have hdisj : Disjoint E L := by
     exact (Ioc_disjoint_Ioc_of_le (a := 0) (d := t) le_rfl).set_prod_left
@@ -112,60 +112,60 @@ theorem klHeat0_eq_heatPot {T t : ℝ} {A₁ A_q : ℝ≥0}
   rw [hEL] at hsplit
   have hfull : IntegrableOn g
       (Ioc 0 t ×ˢ (Set.univ : Set V))
-      (stVolume : Measure (ℝ × V)) := by
+      (spaceTimeVolume : Measure (ℝ × V)) := by
     rw [← hEL]
     exact hearly.union hlate
   have hprod :
       (∫ z in Ioc 0 t ×ˢ (Set.univ : Set V), g z
-          ∂(stVolume : Measure (ℝ × V))) =
+          ∂(spaceTimeVolume : Measure (ℝ × V))) =
         ∫ s in Ioc 0 t, ∫ y : V, g (s, y) := by
-    unfold stVolume at hfull ⊢
+    unfold spaceTimeVolume at hfull ⊢
     simpa only [setIntegral_univ] using
       (setIntegral_prod (f := g) hfull)
   have hlateEq :
-      (∫ z in L, g z ∂(stVolume : Measure (ℝ × V))) =
-        klLatePotential (V := V) (Real.sqrt t) f x := by
-    unfold L g klLatePotential klTermKernel klTermMeasure stVolume
+      (∫ z in L, g z ∂(spaceTimeVolume : Measure (ℝ × V))) =
+        kochLammLatePotential (V := V) (Real.sqrt t) f x := by
+    unfold L g kochLammLatePotential kochLammTermKernel kochLammTermMeasure spaceTimeVolume
     rw [Real.sq_sqrt ht.le, Measure.restrict_prod_eq_prod_univ]
   change
-    (∫ z in E, g z ∂(stVolume : Measure (ℝ × V))) +
-        klLatePotential (V := V) (Real.sqrt t) f x =
+    (∫ z in E, g z ∂(spaceTimeVolume : Measure (ℝ × V))) +
+        kochLammLatePotential (V := V) (Real.sqrt t) f x =
       ∫ s in 0..t, ∫ y : V, g (s, y)
   rw [intervalIntegral.integral_of_le ht.le, ← hprod, hsplit, hlateEq]
 
 omit [CompleteSpace F] in
-theorem klHeat0_norm {T t : ℝ} {A₁ A_q : ℝ≥0}
+theorem kochLammHeat0_norm {T t : ℝ} {A₁ A_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
-    (h : KLSource0 T A₁ A_q f) :
-    (↑‖klHeat0 t f x‖₊ : ℝ≥0∞) ≤
+    (h : KochLammSourceZero T A₁ A_q f) :
+    (↑‖kochLammHeat0 t f x‖₊ : ℝ≥0∞) ≤
       earlyHeatC V * (A₁ : ℝ≥0∞) +
         ENNReal.ofReal
-          (klLateSeries (Module.finrank ℝ V) *
-            (klLateTailC V * (A_q : ℝ))) := by
+          (kochLammLateSeries (Module.finrank ℝ V) *
+            (kochLammLateTailC V * (A_q : ℝ))) := by
   have hsqrt : 0 < Real.sqrt t := Real.sqrt_pos.2 ht
   have hlate := norm_klLatePotential_le (V := V) h x hsqrt (by
     simpa only [Real.sq_sqrt ht.le] using htT)
   have hlateE :
-      (↑‖klLatePotential (V := V) (Real.sqrt t) f x‖₊ : ℝ≥0∞) ≤
+      (↑‖kochLammLatePotential (V := V) (Real.sqrt t) f x‖₊ : ℝ≥0∞) ≤
         ENNReal.ofReal
-          (klLateSeries (Module.finrank ℝ V) *
-            (klLateTailC V * (A_q : ℝ))) := by
+          (kochLammLateSeries (Module.finrank ℝ V) *
+            (kochLammLateTailC V * (A_q : ℝ))) := by
     simpa only [ofReal_norm, enorm_eq_nnnorm] using
       ENNReal.ofReal_le_ofReal hlate
-  have hearly := kl0_early_norm (V := V) ht htT f x h
-  unfold klHeat0
+  have hearly := KochLammSourceZero.earlyHeat_norm (V := V) ht htT f x h
+  unfold kochLammHeat0
   calc
-    (↑‖heatEarly0 t f x + klLatePotential (V := V) (Real.sqrt t) f x‖₊ :
+    (↑‖heatEarly0 t f x + kochLammLatePotential (V := V) (Real.sqrt t) f x‖₊ :
         ℝ≥0∞) ≤
         (↑‖heatEarly0 t f x‖₊ : ℝ≥0∞) +
-          (↑‖klLatePotential (V := V) (Real.sqrt t) f x‖₊ : ℝ≥0∞) := by
+          (↑‖kochLammLatePotential (V := V) (Real.sqrt t) f x‖₊ : ℝ≥0∞) := by
       simpa only [enorm_eq_nnnorm] using
         enorm_add_le (heatEarly0 t f x)
-          (klLatePotential (V := V) (Real.sqrt t) f x)
+          (kochLammLatePotential (V := V) (Real.sqrt t) f x)
     _ ≤ earlyHeatC V * (A₁ : ℝ≥0∞) +
         ENNReal.ofReal
-          (klLateSeries (Module.finrank ℝ V) *
-            (klLateTailC V * (A_q : ℝ))) :=
+          (kochLammLateSeries (Module.finrank ℝ V) *
+            (kochLammLateTailC V * (A_q : ℝ))) :=
       add_le_add hearly hlateE
 
 end Euclidean

@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators ENNReal
 open Bundle Manifold
@@ -123,5 +123,5 @@ theorem partial_diffeomorph_metric_approximation_refl
 
 end ReflData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

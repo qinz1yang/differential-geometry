@@ -83,7 +83,7 @@ theorem norm_sq_triv_christoffel_correction_le_const_mul_tensorInnerPointwise_on
       + (∑ l : Fin s,
           chartTensorRSOutputSlotCorrection (I := I) r s g α T X b l)
     with hCsum_def
-  have hb_chart_src : b ∈ (chartAt H α).source :=
+  have hb_chart_source : b ∈ (chartAt H α).source :=
     pouTsupport_subset_chartAt_source (I := I) (M := M) α hb
   have h_bridge :
       (trivializationAt (TensorRSModel r s ℝ E)
@@ -92,7 +92,7 @@ theorem norm_sq_triv_christoffel_correction_le_const_mul_tensorInnerPointwise_on
         chartRSTwistInv (I := I) (M := M) α b r s
           (TensorRSSpace.toModel Csum) :=
     triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel
-      (I := I) (M := M) r s α hb_chart_src Csum
+      (I := I) (M := M) r s α hb_chart_source Csum
   have h_twist_bound :
       ‖chartRSTwistInv (I := I) (M := M) α b r s
             (TensorRSSpace.toModel Csum)‖ ^ 2 ≤

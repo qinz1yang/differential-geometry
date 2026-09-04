@@ -70,7 +70,7 @@ theorem fluxDiff_norm (A : U → G →L[ℝ] F)
         (mul_le_mul_of_nonneg_right hA (norm_nonneg _))
         (mul_le_mul_of_nonneg_right hK (norm_nonneg _))
 
-def coeffBCF (A : U → G →L[ℝ] F) (hA : Continuous A)
+def coeffBoundedContinuousFunction (A : U → G →L[ℝ] F) (hA : Continuous A)
     (K : ℝ) (hK0 : 0 ≤ K) (u : V →ᵇ U) (d : V →ᵇ G)
     (hK : ∀ x, ‖A (u x)‖ ≤ K) : V →ᵇ F :=
   BoundedContinuousFunction.ofNormedAddCommGroup
@@ -86,11 +86,11 @@ def coeffBCF (A : U → G →L[ℝ] F) (hA : Continuous A)
           mul_le_mul_of_nonneg_left (d.norm_coe_le_norm x) hK0)
 
 omit [NormedSpace ℝ U] in
-theorem coeffBCF_norm (A : U → G →L[ℝ] F) (hA : Continuous A)
+theorem coeffBoundedContinuousFunction_norm (A : U → G →L[ℝ] F) (hA : Continuous A)
     (K : ℝ) (hK0 : 0 ≤ K) (u : V →ᵇ U) (d : V →ᵇ G)
     (hK : ∀ x, ‖A (u x)‖ ≤ K) :
-    ‖coeffBCF A hA K hK0 u d hK‖ ≤ K * ‖d‖ := by
-  unfold coeffBCF
+    ‖coeffBoundedContinuousFunction A hA K hK0 u d hK‖ ≤ K * ‖d‖ := by
+  unfold coeffBoundedContinuousFunction
   exact BoundedContinuousFunction.norm_ofNormedAddCommGroup_le
     (by fun_prop) (mul_nonneg hK0 (norm_nonneg _)) (fun x => by
       calc
@@ -101,13 +101,13 @@ theorem coeffBCF_norm (A : U → G →L[ℝ] F) (hA : Continuous A)
           mul_le_mul_of_nonneg_left (d.norm_coe_le_norm x) hK0)
 
 omit [NormedSpace ℝ U] in
-theorem coeffBCF_diff (A : U → G →L[ℝ] F) {L : ℝ≥0}
+theorem coeffBoundedContinuousFunction_diff (A : U → G →L[ℝ] F) {L : ℝ≥0}
     (hA : LipschitzWith L A) (K : ℝ) (hK0 : 0 ≤ K)
     (u₁ u₂ : V →ᵇ U) (d₁ d₂ : V →ᵇ G)
     (hK₁ : ∀ x, ‖A (u₁ x)‖ ≤ K)
     (hK₂ : ∀ x, ‖A (u₂ x)‖ ≤ K) :
-    ‖coeffBCF A hA.continuous K hK0 u₁ d₁ hK₁ -
-        coeffBCF A hA.continuous K hK0 u₂ d₂ hK₂‖ ≤
+    ‖coeffBoundedContinuousFunction A hA.continuous K hK0 u₁ d₁ hK₁ -
+        coeffBoundedContinuousFunction A hA.continuous K hK0 u₂ d₂ hK₂‖ ≤
       (L : ℝ) * ‖u₁ - u₂‖ * ‖d₁‖ + K * ‖d₁ - d₂‖ := by
   refine (BoundedContinuousFunction.norm_le ?_).2 ?_
   · exact add_nonneg
@@ -147,15 +147,15 @@ omit [NormedAddCommGroup V]
   [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V]
   [NormedSpace ℝ U] in
-theorem fluxDiffWt (A : U → G →L[ℝ] F) {L : ℝ≥0}
+theorem flux_difference_weighted_bound (A : U → G →L[ℝ] F) {L : ℝ≥0}
     (hA : LipschitzWith L A) {T K D A₁ AΔ : ℝ}
     (hK0 : 0 ≤ K) (hD0 : 0 ≤ D)
     {u₁ u₂ : ℝ × V → U} {d₁ d₂ : ℝ × V → G}
     (hK₂ : ∀ z, ‖A (u₂ z)‖ ≤ K)
-    (hu : PathSup T D (fun z ↦ u₁ z - u₂ z))
-    (hd₁ : GradWt T A₁ d₁)
-    (hdΔ : GradWt T AΔ (fun z ↦ d₁ z - d₂ z)) :
-    GradWt T ((L : ℝ) * D * A₁ + K * AΔ)
+    (hu : PathUniformBound T D (fun z ↦ u₁ z - u₂ z))
+    (hd₁ : GradientWeightedBound T A₁ d₁)
+    (hdΔ : GradientWeightedBound T AΔ (fun z ↦ d₁ z - d₂ z)) :
+    GradientWeightedBound T ((L : ℝ) * D * A₁ + K * AΔ)
       (fun z ↦ A (u₁ z) (d₁ z) - A (u₂ z) (d₂ z)) := by
   intro t x ht hT
   have hLip : ‖A (u₁ (t, x)) - A (u₂ (t, x))‖ ≤
@@ -204,23 +204,23 @@ theorem heatCoeff_diff (A : U → G →L[ℝ] F) {L : ℝ≥0}
     (u₁ u₂ : V →ᵇ U) (d₁ d₂ : V →ᵇ G)
     (hK₁ : ∀ x, ‖A (u₁ x)‖ ≤ K)
     (hK₂ : ∀ x, ‖A (u₂ x)‖ ≤ K) (x : V) :
-    ‖heatD1Sup t v (coeffBCF A hA.continuous K hK0 u₁ d₁ hK₁) x -
-        heatD1Sup t v (coeffBCF A hA.continuous K hK0 u₂ d₂ hK₂) x‖ ≤
+    ‖heatD1Sup t v (coeffBoundedContinuousFunction A hA.continuous K hK0 u₁ d₁ hK₁) x -
+        heatD1Sup t v (coeffBoundedContinuousFunction A hA.continuous K hK0 u₂ d₂ hK₂) x‖ ≤
       (‖v‖ * (heatScale t)⁻¹ * heatC1 V) *
         ((L : ℝ) * ‖u₁ - u₂‖ * ‖d₁‖ + K * ‖d₁ - d₂‖) := by
   rw [← heatD1Sup_sub ht v]
   calc
     ‖heatD1Sup t v
-        (coeffBCF A hA.continuous K hK0 u₁ d₁ hK₁ -
-          coeffBCF A hA.continuous K hK0 u₂ d₂ hK₂) x‖
+        (coeffBoundedContinuousFunction A hA.continuous K hK0 u₁ d₁ hK₁ -
+          coeffBoundedContinuousFunction A hA.continuous K hK0 u₂ d₂ hK₂) x‖
         ≤ (‖v‖ * (heatScale t)⁻¹ * heatC1 V) *
-            ‖coeffBCF A hA.continuous K hK0 u₁ d₁ hK₁ -
-              coeffBCF A hA.continuous K hK0 u₂ d₂ hK₂‖ :=
+            ‖coeffBoundedContinuousFunction A hA.continuous K hK0 u₁ d₁ hK₁ -
+              coeffBoundedContinuousFunction A hA.continuous K hK0 u₂ d₂ hK₂‖ :=
       heatD1Sup_norm ht v _ x
     _ ≤ (‖v‖ * (heatScale t)⁻¹ * heatC1 V) *
           ((L : ℝ) * ‖u₁ - u₂‖ * ‖d₁‖ + K * ‖d₁ - d₂‖) := by
       apply mul_le_mul_of_nonneg_left
-        (coeffBCF_diff A hA K hK0 u₁ u₂ d₁ d₂ hK₁ hK₂)
+        (coeffBoundedContinuousFunction_diff A hA K hK0 u₁ u₂ d₁ d₂ hK₁ hK₂)
       exact mul_nonneg
         (mul_nonneg (norm_nonneg _) (inv_nonneg.mpr (heatScale_pos ht).le))
         (heatC1_nonneg (V := V))
@@ -236,7 +236,7 @@ variable {U G H F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 omit [NormedSpace ℝ U] in
-theorem corrDiff_norm (C : U → G →L[ℝ] H →L[ℝ] F)
+theorem correctionDiff_norm (C : U → G →L[ℝ] H →L[ℝ] F)
     (u₁ u₂ : U) (d₁ d₂ : G) (e₁ e₂ : H) {L K : ℝ}
     (hC : ‖C u₁ - C u₂‖ ≤ L * ‖u₁ - u₂‖)
     (hK : ‖C u₂‖ ≤ K) :
@@ -297,7 +297,7 @@ omit [NormedAddCommGroup V]
   [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V]
   [NormedSpace ℝ U] in
-theorem corrDiffWt (C : U → G →L[ℝ] H →L[ℝ] F) {L : ℝ≥0}
+theorem correction_difference_weighted_bound (C : U → G →L[ℝ] H →L[ℝ] F) {L : ℝ≥0}
     (hC : LipschitzWith L C)
     {T K D A₁ A₂ AΔ E₁ EΔ : ℝ}
     (hK0 : 0 ≤ K) (hD0 : 0 ≤ D) (hA₁0 : 0 ≤ A₁)
@@ -305,19 +305,19 @@ theorem corrDiffWt (C : U → G →L[ℝ] H →L[ℝ] F) {L : ℝ≥0}
     {u₁ u₂ : ℝ × V → U} {d₁ d₂ : ℝ × V → G}
     {e₁ e₂ : ℝ × V → H}
     (hK₂ : ∀ z, ‖C (u₂ z)‖ ≤ K)
-    (hu : PathSup T D (fun z ↦ u₁ z - u₂ z))
-    (hd₁ : GradWt T A₁ d₁) (hd₂ : GradWt T A₂ d₂)
-    (hdΔ : GradWt T AΔ (fun z ↦ d₁ z - d₂ z))
-    (he₁ : GradWt T E₁ e₁)
-    (heΔ : GradWt T EΔ (fun z ↦ e₁ z - e₂ z)) :
-    SrcWt T
+    (hu : PathUniformBound T D (fun z ↦ u₁ z - u₂ z))
+    (hd₁ : GradientWeightedBound T A₁ d₁) (hd₂ : GradientWeightedBound T A₂ d₂)
+    (hdΔ : GradientWeightedBound T AΔ (fun z ↦ d₁ z - d₂ z))
+    (he₁ : GradientWeightedBound T E₁ e₁)
+    (heΔ : GradientWeightedBound T EΔ (fun z ↦ e₁ z - e₂ z)) :
+    SourceWeightedBound T
       ((L : ℝ) * D * A₁ * E₁ + K * AΔ * E₁ + K * A₂ * EΔ)
       (fun z ↦ C (u₁ z) (d₁ z) (e₁ z) - C (u₂ z) (d₂ z) (e₂ z)) := by
   intro t x ht hT
   have hLip : ‖C (u₁ (t, x)) - C (u₂ (t, x))‖ ≤
       (L : ℝ) * ‖u₁ (t, x) - u₂ (t, x)‖ := by
     simpa only [dist_eq_norm] using hC.dist_le_mul (u₁ (t, x)) (u₂ (t, x))
-  have hpoint := corrDiff_norm C (u₁ (t, x)) (u₂ (t, x))
+  have hpoint := correctionDiff_norm C (u₁ (t, x)) (u₂ (t, x))
     (d₁ (t, x)) (d₂ (t, x)) (e₁ (t, x)) (e₂ (t, x))
     hLip (hK₂ (t, x))
   have hu' := hu t x ht hT

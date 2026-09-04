@@ -17,7 +17,7 @@ open DifferentialGeometry.Analysis.Parabolic.Euclidean
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 universe u uE uH
 
@@ -68,7 +68,7 @@ theorem lRedLen_scale
                     (lExp S (time : Real) B.center Z (eps * B.radius ^ 2))
                     (eps * B.radius ^ 2) := by
   obtain ⟨epsR, hepsR, hrange⟩ :=
-    lRegRange_scale (J := J) S hS time hrho hreg
+    lRegularizedRange_scale (J := J) S hS time hrho hreg
   let eps₀ : Real := min epsR 1
   have heps₀ : 0 < eps₀ := lt_min hepsR zero_lt_one
   refine ⟨eps₀, heps₀, ?_⟩
@@ -94,27 +94,27 @@ theorem lRedLen_scale
       (by simpa only [tau] using hsigma.le)
   have hdomTau : (Z, tau) ∈ lExpPosDom S (time : Real) B.center :=
     ((mem_lMinDomain S (time : Real) B.center Z tau).1 hminTau).1
-  have hbdom : b ∈ lRegDomain S (time : Real) B.center Z := by
+  have hbdom : b ∈ lRegularizedDomain S (time : Real) B.center Z := by
     rcases (mem_lExpPosDom S (time : Real) B.center Z tau).1 hdomTau with
       ⟨_, _, hdom⟩
     simpa only [hb] using hdom
-  let alpha : Real → N := lRegCurve S (time : Real) B.center Z
+  let alpha : Real → N := lRegularizedCurve S (time : Real) B.center Z
   have halpha : ContMDiffOn (modelWithCornersSelf Real Real) J 1 alpha
       (Icc (0 : Real) b) := by
     simpa only [alpha] using
-      lRegCurve_c1On S hS (time : Real) B.center Z hbdom
+      lRegularizedCurve_c1On S hS (time : Real) B.center Z hbdom
   have hregRay : ∀ s ∈ Icc (0 : Real) b,
       (time : Real) - s ^ 2 ∈ D'.regular := by
     intro s hs
-    exact lRegDomain_reg S (time : Real) B.center Z
-      (lRegDomain_seg S (time : Real) B.center Z hbdom hs.1 hs.2)
-  have hLagInt : IntervalIntegrable (lRegLagrangian S (time : Real) alpha) volume 0 b :=
-    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one S hS.smoothMetric ⟨hS.scalarCont⟩ (time : Real) 0 b
+    exact lRegularizedDomain_regularity S (time : Real) B.center Z
+      (lRegularizedDomain_segment S (time : Real) B.center Z hbdom hs.1 hs.2)
+  have hLagInt : IntervalIntegrable (lRegularizedLagrangian S (time : Real) alpha) volume 0 b :=
+    intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one S hS.smoothMetric ⟨hS.scalarCont⟩ (time : Real) 0 b
       hbpos.le alpha halpha hregRay
   have hconstInt : IntervalIntegrable (fun _ : Real ↦ -2 * b ^ 2 * K)
       volume 0 b := intervalIntegrable_const
   have hLagLower : ∀ s ∈ Icc (0 : Real) b,
-      -2 * b ^ 2 * K ≤ lRegLagrangian S (time : Real) alpha s := by
+      -2 * b ^ 2 * K ≤ lRegularizedLagrangian S (time : Real) alpha s := by
     intro s hs
     have hsSq : s ^ 2 ≤ b ^ 2 :=
       (sq_le_sq₀ hs.1 hbpos.le).2 hs.2
@@ -148,27 +148,27 @@ theorem lRedLen_scale
           2 * s ^ 2 * S.scalar ((time : Real) - s ^ 2) (alpha s) := by
         nlinarith [sq_nonneg s]
       exact h₁.trans h₂
-    dsimp only [lRegLagrangian]
+    dsimp only [lRegularizedLagrangian]
     linarith
   have haction : -2 * b ^ 2 * K * b ≤
-      lRegAction S (time : Real) alpha 0 b := by
+      lRegularizedAction S (time : Real) alpha 0 b := by
     change -2 * b ^ 2 * K * b ≤
-      ∫ u : Real in 0..b, lRegLagrangian S (time : Real) alpha u
+      ∫ u : Real in 0..b, lRegularizedLagrangian S (time : Real) alpha u
     have hmono := intervalIntegral.integral_mono_on hbpos.le hconstInt hLagInt hLagLower
     calc
       -2 * b ^ 2 * K * b = b * (-2 * b ^ 2 * K) := by ring
-      _ ≤ ∫ u : Real in 0..b, lRegLagrangian S (time : Real) alpha u := by
+      _ ≤ ∫ u : Real in 0..b, lRegularizedLagrangian S (time : Real) alpha u := by
         simpa only [intervalIntegral.integral_const, smul_eq_mul, sub_zero] using hmono
   have hcost : lCost S (time : Real) B.center
       (lExp S (time : Real) B.center Z tau) tau =
-        lRegAction S (time : Real) alpha 0 b := by
+        lRegularizedAction S (time : Real) alpha 0 b := by
     have hlen : lLength S (time : Real)
         (fun r : Real ↦ lExp S (time : Real) B.center Z r) 0 tau =
-          lRegAction S (time : Real) alpha 0 b := by
+          lRegularizedAction S (time : Real) alpha 0 b := by
       change lLength S (time : Real) (squareRootReparametrization alpha) 0 tau =
-        lRegAction S (time : Real) alpha 0 b
+        lRegularizedAction S (time : Real) alpha 0 b
       simpa only [hb] using
-        lLength_squareRootReparametrization_eq_lRegAction (I := J) S (time : Real) alpha tau htau.le
+        lLength_squareRootReparametrization_eq_lRegularizedAction (I := J) S (time : Real) alpha tau htau.le
     exact (((mem_lMinDomain S (time : Real) B.center Z tau).1 hminTau).2.symm).trans hlen
   have hscaleK : B.radius ^ 2 * K = n ^ 2 := by
     dsimp only [K, n]
@@ -191,7 +191,7 @@ theorem lRedLen_scale
     -(n ^ 2 * eps) * (2 * b) = -2 * (n ^ 2 * eps) * b := by ring
     _ = -2 * (b ^ 2 * K) * b := by rw [hb2K]
     _ = -2 * b ^ 2 * K * b := by ring
-    _ ≤ lRegAction S (time : Real) alpha 0 b := haction
+    _ ≤ lRegularizedAction S (time : Real) alpha 0 b := haction
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -232,7 +232,7 @@ theorem lRedDen_scale
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [CompactSpace M] in
-private theorem src_norm_sublevel_measurable
+private theorem source_norm_sublevel_measurable
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) (R : Real) :
     MeasurableSet
       {Z : E | Real.sqrt ((S.base.metric T).inner x Z Z) ≤ R} := by
@@ -241,7 +241,7 @@ private theorem src_norm_sublevel_measurable
   · fun_prop
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [CompactSpace M] in
-private theorem src_norm_superlevel_measurable
+private theorem source_norm_superlevel_measurable
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) (R : Real) :
     MeasurableSet
       {Z : E | R < Real.sqrt ((S.base.metric T).inner x Z Z)} := by
@@ -250,7 +250,7 @@ private theorem src_norm_superlevel_measurable
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lRedJac_ball_le
+theorem lReducedJacobian_ball_le
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (time : RealTimeInterval.FlowTime D) {rho : Real} (hrho : 0 < rho)
     (hreg : Icc ((time : Real) - rho ^ 2) (time : Real) ⊆ D.regular) :
@@ -268,8 +268,8 @@ theorem lRedJac_ball_le
                   ((S.base.metric (time : Real)).inner B.center Z Z) ≤
                     1 / (8 * Real.sqrt eps)},
               ENNReal.ofReal
-                (lRedJac S (time : Real) B.center Z tau *
-                  lSrcDensity S (time : Real) B.center)
+                (lReducedJacobian S (time : Real) B.center Z tau *
+                  lSourceDensity S (time : Real) B.center)
                 ∂(modelHaar (E := E))) ≤
             ENNReal.ofReal c *
               riemannianVolumeMeasure (I := I) (M := M)
@@ -303,7 +303,7 @@ theorem lRedJac_ball_le
       {Z : E | Real.sqrt
         ((S.base.metric (time : Real)).inner B.center Z Z) ≤
           1 / (8 * Real.sqrt eps)} := by
-    exact src_norm_sublevel_measurable S (time : Real) B.center
+    exact source_norm_sublevel_measurable S (time : Real) B.center
       (1 / (8 * Real.sqrt eps))
   have hAmeas : MeasurableSet A := by
     exact (lInj_isOpen S hS (time : Real) B.center tau).measurableSet.inter hnormMeas
@@ -343,8 +343,8 @@ theorem lRedJac_ball_le
   have hsmallEq :
       (∫⁻ Z in A,
           ENNReal.ofReal
-            (lRedJac S (time : Real) B.center Z tau *
-              lSrcDensity S (time : Real) B.center)
+            (lReducedJacobian S (time : Real) B.center Z tau *
+              lSourceDensity S (time : Real) B.center)
           ∂modelHaar (E := E)) =
         ∫⁻ y in Ψ '' A,
           ENNReal.ofReal (redDensity S (time : Real) B.center y tau)
@@ -359,17 +359,17 @@ theorem lRedJac_ball_le
     rw [← ENNReal.ofReal_mul (lExpDensity_pos S hS (time : Real)
       B.center htau hZA.1).le]
     exact congrArg ENNReal.ofReal
-      (lRedJac_mul_src S hS (time : Real) B.center htau hZA.1)
+      (lReducedJacobian_mul_source S hS (time : Real) B.center htau hZA.1)
   change (∫⁻ Z in A,
       ENNReal.ofReal
-        (lRedJac S (time : Real) B.center Z tau *
-          lSrcDensity S (time : Real) B.center)
+        (lReducedJacobian S (time : Real) B.center Z tau *
+          lSourceDensity S (time : Real) B.center)
       ∂modelHaar (E := E)) ≤ _
   calc
     (∫⁻ Z in A,
         ENNReal.ofReal
-          (lRedJac S (time : Real) B.center Z tau *
-            lSrcDensity S (time : Real) B.center)
+          (lReducedJacobian S (time : Real) B.center Z tau *
+            lSourceDensity S (time : Real) B.center)
         ∂modelHaar (E := E)) =
       ∫⁻ y in Ψ '' A,
         ENNReal.ofReal (redDensity S (time : Real) B.center y tau)
@@ -505,11 +505,11 @@ theorem redVolume_ball_eta [ConnectedSpace M]
                   B.volume) +
               eta := by
   obtain ⟨epsJ, hepsJ, hsmall⟩ :=
-    lRedJac_ball_le (I := I) S hS time hrho hreg
+    lReducedJacobian_ball_le (I := I) S hS time hrho hreg
   obtain ⟨epsV, hepsV, hmove⟩ :=
     ballVol_move_le (I := I) S hS time hrho hreg
   obtain ⟨R, hR, htail⟩ :=
-    lSrcGauss_unif (E := E) (I := I) (M := M) (D := D)
+    lSourceGaussian_uniform_tail (E := E) (I := I) (M := M) (D := D)
       eta heta
   let d : Real := 1 / (8 * (R + 1))
   have hRone : 0 < R + 1 := by linarith
@@ -558,15 +558,15 @@ theorem redVolume_ball_eta [ConnectedSpace M]
   let C : Set E := U ∩ {Z | 1 / (8 * Real.sqrt eps) < q Z}
   let f : E → ENNReal := fun Z ↦
     ENNReal.ofReal
-      (lRedJac S (time : Real) B.center Z tau *
-        lSrcDensity S (time : Real) B.center)
+      (lReducedJacobian S (time : Real) B.center Z tau *
+        lSourceDensity S (time : Real) B.center)
   have htau : 0 < tau := by
     dsimp only [tau]
     exact mul_pos heps (sq_pos_of_pos B.radius_pos)
   have hCmeas : MeasurableSet C := by
     apply (lInj_isOpen S hS (time : Real) B.center tau).measurableSet.inter
     dsimp only [q]
-    exact src_norm_superlevel_measurable S (time : Real) B.center
+    exact source_norm_superlevel_measurable S (time : Real) B.center
       (1 / (8 * Real.sqrt eps))
   have hunion : A ∪ C = U := by
     ext Z
@@ -605,13 +605,13 @@ theorem redVolume_ball_eta [ConnectedSpace M]
       (∫⁻ Z in C, f Z ∂(modelHaar (E := E))) ≤
           ∫⁻ Z : E in
             {Z | 1 / (8 * Real.sqrt eps) < q Z},
-            ENNReal.ofReal (lSrcGauss S (time : Real) B.center Z)
+            ENNReal.ofReal (lSourceGaussian S (time : Real) B.center Z)
               ∂(modelHaar (E := E)) := by
         simpa only [C, U, q, f] using
-          lRedJac_tail_le S hS (time : Real) B.center tau
+          lReducedJacobian_tail_le S hS (time : Real) B.center tau
             (1 / (8 * Real.sqrt eps)) htau
       _ ≤ ∫⁻ Z : E in {Z | R < q Z},
-          ENNReal.ofReal (lSrcGauss S (time : Real) B.center Z)
+          ENNReal.ofReal (lSourceGaussian S (time : Real) B.center Z)
             ∂(modelHaar (E := E)) := by
         apply MeasureTheory.lintegral_mono_set
         intro Z hZ

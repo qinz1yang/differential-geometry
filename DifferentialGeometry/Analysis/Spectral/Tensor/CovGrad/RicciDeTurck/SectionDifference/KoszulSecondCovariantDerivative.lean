@@ -67,15 +67,15 @@ theorem connectionDifference_inner_eq_half_covGradKoszul
     rw [sub_self]
   have hXYZ : covGradEval (I := I) (M := M) g₀ S X Y Z x =
       metricDiffCovDeriv (I := I) g₁ g₀ (fun b => X b) (fun b => Y b) (fun b => Z b) x := by
-    rw [covGradEval, covGrad02_unitModel_eval_eq_metricDiffCovDeriv'
+    rw [covGradEval, covGrad02_unitModel_eval_eq_metricDiffCovDeriv_sub
       (I := I) (M := M) g₀ g₁ g₀ S hbil X Y Z x, hzero X Y Z, sub_zero]
   have hYXZ : covGradEval (I := I) (M := M) g₀ S Y X Z x =
       metricDiffCovDeriv (I := I) g₁ g₀ (fun b => Y b) (fun b => X b) (fun b => Z b) x := by
-    rw [covGradEval, covGrad02_unitModel_eval_eq_metricDiffCovDeriv'
+    rw [covGradEval, covGrad02_unitModel_eval_eq_metricDiffCovDeriv_sub
       (I := I) (M := M) g₀ g₁ g₀ S hbil Y X Z x, hzero Y X Z, sub_zero]
   have hZXY : covGradEval (I := I) (M := M) g₀ S Z X Y x =
       metricDiffCovDeriv (I := I) g₁ g₀ (fun b => Z b) (fun b => X b) (fun b => Y b) x := by
-    rw [covGradEval, covGrad02_unitModel_eval_eq_metricDiffCovDeriv'
+    rw [covGradEval, covGrad02_unitModel_eval_eq_metricDiffCovDeriv_sub
       (I := I) (M := M) g₀ g₁ g₀ S hbil Z X Y x, hzero Z X Y, sub_zero]
   rw [hXYZ, hYXZ, hZXY]
   exact connectionDifference_koszul_metricDiff (I := I) g₁ g₀

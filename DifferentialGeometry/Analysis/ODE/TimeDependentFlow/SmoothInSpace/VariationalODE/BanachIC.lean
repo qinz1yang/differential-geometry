@@ -162,7 +162,7 @@ theorem ChartLocalPicardData.contDiffOn_top
   have hρ₀_le_r : ρ₀ ≤ hper.r := min_le_right _ _
   have hT₀_le_T_pl : T₀ ≤ T_pl := min_le_left _ _
   have hT₀_le_T : T₀ ≤ hper.T := min_le_right _ _
-  have hΦ_init : ∀ x ∈ closedBall center rN, Φ_pl ⟨x, 0⟩ = x := by
+  have hΦ_initial : ∀ x ∈ closedBall center rN, Φ_pl ⟨x, 0⟩ = x := by
     intro x hx; exact hΦ_pl.apply_initial x hx
   have hΦ_deriv : ∀ x ∈ closedBall center rN, ∀ t ∈ Icc (0 - εN) (0 + εN),
       HasDerivWithinAt (fun s => Φ_pl ⟨x, s⟩) (fChart t (Φ_pl ⟨x, t⟩))
@@ -283,7 +283,7 @@ theorem ChartLocalPicardData.contDiffOn_top
         Icc_mem_nhdsGE_of_mem ⟨ht.1, ht_lt_T⟩
       exact hdw.mono_of_mem_nhdsWithin hmem
     have hinit : Φ_pl ⟨y, 0⟩ = hper.flow y 0 := by
-      rw [hΦ_init y (hcb_sub hy)]
+      rw [hΦ_initial y (hcb_sub hy)]
       exact (hper.flow_spec y (closedBall_subset_closedBall hρ₀_le_r hy)).1.symm
     exact ODE_solution_unique_of_mem_Icc_right
       (v := fun t z => fChart t z) (s := fun _ => closedBall 0 R) (K := K)

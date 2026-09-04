@@ -179,14 +179,14 @@ theorem second_variation_of_arcLength_eq_indexForm
     rw [hu]; exact one_pos
   obtain ⟨δ, hδpos, c0, hc0, hposnear⟩ :=
     speed_positivity_near (I := I) (M := M) g f L 0 hf hpos0
-  set velT : ℝ → ℝ → E := fun s t : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f s u) t (1 : ℝ)
+  set velocityT : ℝ → ℝ → E := fun s t : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f s u) t (1 : ℝ)
     with hvelT
   set g₁ : ℝ → ℝ := fun s : ℝ =>
     ∫ t in (0 : ℝ)..L,
       g.inner (f s t)
         (covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-          (fun s' : ℝ => velT s' t) s)
-        (velT s t)
+          (fun s' : ℝ => velocityT s' t) s)
+        (velocityT s t)
       / Real.sqrt (speedSq (I := I) g f s t) with hg₁
   have hderiv_eq : ∀ s ∈ Set.Ioo (-δ) δ,
       deriv (fun s' : ℝ => arcLength (I := I) g (fun t : ℝ => f s' t) 0 L) s = g₁ s := by
@@ -219,7 +219,7 @@ theorem second_variation_of_arcLength_eq_indexForm
     have hΨP : ∀ s t : ℝ, 0 < G (s, t) →
         g.inner (f s t)
             (covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-              (fun s' : ℝ => velT s' t) s) (velT s t)
+              (fun s' : ℝ => velocityT s' t) s) (velocityT s t)
           / Real.sqrt (speedSq (I := I) g f s t)
         = P (s, t) := by
       intro s t hpos
@@ -261,10 +261,10 @@ theorem second_variation_of_arcLength_eq_indexForm
           covDerivAlong (I := I) g (fun a : ℝ => fsh a t)
               (fun a : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => fsh a u) t (1 : ℝ)) 0
             = covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-              (fun s' : ℝ => velT s' t) s :=
+              (fun s' : ℝ => velocityT s' t) s :=
         covDerivAlong_const_add_shift (I := I) g (fun s' : ℝ => f s' t)
-          (fun s' : ℝ => velT s' t) s
-      have hsh_velT_fun : (fun u : ℝ => fsh 0 u) = (fun u : ℝ => f s u) := by
+          (fun s' : ℝ => velocityT s' t) s
+      have hsh_velocityT_fun : (fun u : ℝ => fsh 0 u) = (fun u : ℝ => f s u) := by
         funext u; rw [hfsh]; simp
       have hPval : P (s, t) = fderiv ℝ G (s, t) (1, 0) / (2 * Real.sqrt (G (s, t))) := by
         have hsqrt_slice : HasDerivAt (fun u : ℝ => Real.sqrt (G (u, t)))
@@ -277,14 +277,14 @@ theorem second_variation_of_arcLength_eq_indexForm
           have := Aux2.hasDerivAt_slice_fst (fun u v : ℝ => Real.sqrt (G (u, v))) s t hslicediff
           simpa [hP] using this
         exact hP_isfderiv.unique hsqrt_slice
-      rw [hPval, hGval, hfoot0, hcov_shift, hsh_velT_fun]
+      rw [hPval, hGval, hfoot0, hcov_shift, hsh_velocityT_fun]
       have hspeedeq : speedSq (I := I) g f s t = G (s, t) := rfl
       rw [hspeedeq]
       change g.inner (f s t) (covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-              (fun s' : ℝ => velT s' t) s)
+              (fun s' : ℝ => velocityT s' t) s)
             (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f s u) t (1 : ℝ)) / Real.sqrt (G (s, t))
           = (2 * (g.inner (f s t) (covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-              (fun s' : ℝ => velT s' t) s)
+              (fun s' : ℝ => velocityT s' t) s)
             (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f s u) t (1 : ℝ))))
             / (2 * Real.sqrt (G (s, t)))
       rw [mul_div_mul_left _ _ (by norm_num : (2 : ℝ) ≠ 0)]
@@ -570,52 +570,52 @@ theorem second_variation_of_arcLength_eq_indexForm
             (covDerivAlong (I := I) g γ Vsec t) := by
       intro t ht
       set c : ℝ → M := fun s : ℝ => f s t with hc
-      set velTsec : ∀ s : ℝ, TangentSpace I (c s) := fun s : ℝ =>
+      set velocityTsec : ∀ s : ℝ, TangentSpace I (c s) := fun s : ℝ =>
         mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f s w) t (1 : ℝ) with hvelTsec
       set Wsec : ∀ s : ℝ, TangentSpace I (c s) := fun s : ℝ =>
         covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-          (fun s' : ℝ => velTsec s') s with hWsec
+          (fun s' : ℝ => velocityTsec s') s with hWsec
       have hc_smooth : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) c := by
         have hincl : ContMDiff (𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ) (fun s : ℝ => (s, t)) :=
           contMDiff_id.prodMk contMDiff_const
         exact (hf : ContMDiff _ _ _ _).comp hincl
       have hc0 : c 0 = γ t := by rw [hc]; exact hfc t
-      have hvelTdiff : DifferentiableAt ℝ (chartRepAt (I := I) c velTsec 0) 0 := by
+      have hvelTdiff : DifferentiableAt ℝ (chartRepAt (I := I) c velocityTsec 0) 0 := by
         have := slice_longitudinalField_transverse_chartRep_differentiableAt (I := I) f hf t
         exact this
       have hWdiff : DifferentiableAt ℝ (chartRepAt (I := I) c Wsec 0) 0 :=
         slice_secondCovDeriv_chartRep_differentiableAt (I := I) g f hf t
       have hmc := metric_compat_hasDerivAt_inner (I := I)
-        (by exact_mod_cast (by norm_num : (1 : ℕ) ≤ 8)) g c Wsec velTsec 0
+        (by exact_mod_cast (by norm_num : (1 : ℕ) ≤ 8)) g c Wsec velocityTsec 0
         hc_smooth hWdiff hvelTdiff
       have hcovW : covDerivAlong (I := I) g c Wsec 0 = W2 t := by
         rw [hW2def, hc, hWsec, hvelTsec]
       have hcomm := commute_ds_dt_intrinsic (I := I) g f hf t
       have hcomm' : covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-            (fun s' : ℝ => velTsec s') 0
+            (fun s' : ℝ => velocityTsec s') 0
           = covDerivAlong (I := I) g γ Vsec t := by
         rw [hvelTsec]
         rw [hcomm]
         have hfγ' : (fun v : ℝ => f 0 v) = γ := hfγ
         rw [hfγ']
-      have hcovVel : covDerivAlong (I := I) g c velTsec 0
+      have hcovVelocity : covDerivAlong (I := I) g c velocityTsec 0
           = covDerivAlong (I := I) g γ Vsec t := by rw [hc]; exact hcomm'
       have hWval : Wsec 0 = covDerivAlong (I := I) g γ Vsec t := by
         rw [hWsec]; exact hcomm'
-      have hvelval : velTsec 0 = γ' t := by
+      have hvelval : velocityTsec 0 = γ' t := by
         change mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ) = γ' t
         have hfγ' : (fun w : ℝ => f 0 w) = γ := hfγ
         rw [hfγ']
         rfl
-      have hmc' : HasDerivAt (fun s : ℝ => g.inner (c s) (Wsec s) (velTsec s))
+      have hmc' : HasDerivAt (fun s : ℝ => g.inner (c s) (Wsec s) (velocityTsec s))
           (g.inner (γ t) (W2 t) (γ' t)
             + g.inner (γ t) (covDerivAlong (I := I) g γ Vsec t)
               (covDerivAlong (I := I) g γ Vsec t)) 0 := by
         have := hmc
-        rw [hcovW, hcovVel, hWval, hvelval, hc0] at this
+        rw [hcovW, hcovVelocity, hWval, hvelval, hc0] at this
         exact this
       have hpartial_eq : (fun s : ℝ => fderiv ℝ G (s, t) (1, 0))
-          = (fun s : ℝ => 2 * g.inner (c s) (Wsec s) (velTsec s)) := by
+          = (fun s : ℝ => 2 * g.inner (c s) (Wsec s) (velocityTsec s)) := by
         funext s
         set fsh : ℝ → ℝ → M := fun a b : ℝ => f (s + a) b with hfsh
         have hfsh_smooth : IsSmoothVariation (I := I) fsh := by
@@ -656,9 +656,9 @@ theorem second_variation_of_arcLength_eq_indexForm
           rw [hWsec, hvelTsec]
           exact covDerivAlong_const_add_shift (I := I) g (fun s' : ℝ => f s' t)
             (fun s' : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f s' u) t (1 : ℝ)) s
-        have hsh_velT_fun : (fun u : ℝ => fsh 0 u) = (fun u : ℝ => f s u) := by
+        have hsh_velocityT_fun : (fun u : ℝ => fsh 0 u) = (fun u : ℝ => f s u) := by
           funext u; rw [hfsh]; simp
-        rw [hGval, hfoot0, hcov_shift, hsh_velT_fun]
+        rw [hGval, hfoot0, hcov_shift, hsh_velocityT_fun]
       have hgss_deriv : HasDerivAt (fun s : ℝ => fderiv ℝ G (s, t) (1, 0)) (g_ss t) 0 := by
         have hslicediff : DifferentiableAt ℝ
             (fun p : ℝ × ℝ => fderiv ℝ G p (1, 0)) (0, t) := by
@@ -681,12 +681,12 @@ theorem second_variation_of_arcLength_eq_indexForm
       ring
     have hgss_int :
         (∫ t in (0 : ℝ)..L, g_ss t / 2) = indexForm (I := I) g γ 0 L V V := by
-      set velS : ℝ → ℝ → E := fun u v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) u (1 : ℝ)
+      set velocityS : ℝ → ℝ → E := fun u v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) u (1 : ℝ)
         with hvelSdef
-      set velT : ℝ → ℝ → E := fun s v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f s w) v (1 : ℝ)
+      set velocityT : ℝ → ℝ → E := fun s v : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f s w) v (1 : ℝ)
         with hvelTdef
       set Asec : ∀ t : ℝ, TangentSpace I (γ t) := fun t : ℝ =>
-        covDerivAlong (I := I) g (fun u : ℝ => f u t) (fun u : ℝ => velS u t) 0 with hAsecdef
+        covDerivAlong (I := I) g (fun u : ℝ => f u t) (fun u : ℝ => velocityS u t) 0 with hAsecdef
       set Bsec : ∀ t : ℝ, TangentSpace I (γ t) := fun t : ℝ =>
         covDerivAlong (I := I) g γ Asec t with hBsecdef
       set Rsec : ∀ t : ℝ, TangentSpace I (γ t) := fun t : ℝ =>
@@ -697,38 +697,38 @@ theorem second_variation_of_arcLength_eq_indexForm
         intro t
         have houterL : DifferentiableAt ℝ (chartRepAt (I := I) (fun s : ℝ => f s t)
             (fun s : ℝ => covDerivAlong (I := I) g (fun v : ℝ => f s v)
-              (fun v : ℝ => velS s v) t) 0) 0 := by
+              (fun v : ℝ => velocityS s v) t) 0) 0 := by
           have hsec_eq : (fun s : ℝ => covDerivAlong (I := I) g (fun v : ℝ => f s v)
-              (fun v : ℝ => velS s v) t)
+              (fun v : ℝ => velocityS s v) t)
               = (fun s : ℝ => covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-                (fun s' : ℝ => velT s' t) s) :=
+                (fun s' : ℝ => velocityT s' t) s) :=
             (commute_ds_dt_intrinsic_shifted (I := I) g f hf t).symm
           rw [hsec_eq]
           exact slice_secondCovDeriv_chartRep_differentiableAt (I := I) g f hf t
         have houterR : DifferentiableAt ℝ (chartRepAt (I := I) (fun v : ℝ => f 0 v)
             (fun v : ℝ => covDerivAlong (I := I) g (fun u : ℝ => f u v)
-              (fun u : ℝ => velS u v) 0) t) t :=
+              (fun u : ℝ => velocityS u v) 0) t) t :=
           slice_secondCovDeriv_central_chartRep_differentiableAt (I := I) g f hf t
         have hcomm := commute_ds_dt_curvature_innerS (I := I) g f hf t houterL houterR
         have hfirst : covDerivAlong (I := I) g (fun s : ℝ => f s t)
             (fun s : ℝ => covDerivAlong (I := I) g (fun v : ℝ => f s v)
-              (fun v : ℝ => velS s v) t) 0 = W2 t := by
+              (fun v : ℝ => velocityS s v) t) 0 = W2 t := by
           have hsec_eq : (fun s : ℝ => covDerivAlong (I := I) g (fun v : ℝ => f s v)
-              (fun v : ℝ => velS s v) t)
+              (fun v : ℝ => velocityS s v) t)
               = (fun s : ℝ => covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-                (fun s' : ℝ => velT s' t) s) :=
+                (fun s' : ℝ => velocityT s' t) s) :=
             (commute_ds_dt_intrinsic_shifted (I := I) g f hf t).symm
           rw [hsec_eq, hW2def]
         have hsecond : covDerivAlong (I := I) g (fun v : ℝ => f 0 v)
             (fun v : ℝ => covDerivAlong (I := I) g (fun u : ℝ => f u v)
-              (fun u : ℝ => velS u v) 0) t = Bsec t := by
+              (fun u : ℝ => velocityS u v) 0) t = Bsec t := by
           rw [hBsecdef]
           change covDerivAlong (I := I) g (fun v : ℝ => f 0 v) Asec t
             = covDerivAlong (I := I) g γ Asec t
           rw [show (fun v : ℝ => f 0 v) = γ from hfγ]
-        have hvelS0 : velS 0 t = V t := (hVeq t).symm
-        have hvelT0 : velT 0 t = γ' t := by
-          have h1 : velT 0 t = mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ) := rfl
+        have hvelS0 : velocityS 0 t = V t := (hVeq t).symm
+        have hvelT0 : velocityT 0 t = γ' t := by
+          have h1 : velocityT 0 t = mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ) := rfl
           rw [h1, show (fun w : ℝ => f 0 w) = γ from hfγ]
           rfl
         rw [hfirst, hsecond] at hcomm
@@ -769,8 +769,8 @@ theorem second_variation_of_arcLength_eq_indexForm
         linarith [hsk]
       have hAsec_endpoint : ∀ t₀ : ℝ, (∀ u : ℝ, f u t₀ = γ t₀) → Asec t₀ = 0 := by
         intro t₀ hconst
-        change covDerivAlong (I := I) g (fun u : ℝ => f u t₀) (fun u : ℝ => velS u t₀) 0 = 0
-        have hvel0 : (fun u : ℝ => velS u t₀) = (fun _ : ℝ => (0 : E)) := by
+        change covDerivAlong (I := I) g (fun u : ℝ => f u t₀) (fun u : ℝ => velocityS u t₀) 0 = 0
+        have hvel0 : (fun u : ℝ => velocityS u t₀) = (fun _ : ℝ => (0 : E)) := by
           funext u
           change mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w t₀) u (1 : ℝ) = (0 : E)
           have hconstfun : (fun w : ℝ => f w t₀) = (fun _ : ℝ => γ t₀) := by

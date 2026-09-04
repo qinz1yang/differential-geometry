@@ -32,12 +32,12 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [InnerProductSpace Real E]
   [SigmaCompactSpace M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem lRegInitialVector_inner_le_of_action_bound
+private theorem lRegularizedInitialVector_inner_le_of_action_bound
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) (B eps C R A Cp : Real)
     (hB : 0 < B) (hepsB : eps ≤ B) (hBR : B ≤ R) (hC : 0 ≤ C)
-    (hdom : B ∈ lRegDomain S T x Z)
+    (hdom : B ∈ lRegularizedDomain S T x Z)
     (hback : ∀ s ∈ Set.Icc (0 : Real) B,
       T - s ^ 2 ∈ Set.Icc (T - R ^ 2) T)
     (hpot : ∀ s ∈ Set.Icc (0 : Real) B, ∀ y : M,
@@ -48,21 +48,21 @@ private theorem lRegInitialVector_inner_le_of_action_bound
         C * Real.sqrt ((S.base.metric t).inner y v v))
     (hric : ∀ t ∈ Set.Icc (T - R ^ 2) T, ∀ y (v : TangentSpace I y),
       |S.ricciAt t y (vec2 v v)| ≤ C * (S.base.metric t).inner y v v)
-    (hact : lRegAction S T (lRegCurve S T x Z) 0 B ≤ A) :
+    (hact : lRegularizedAction S T (lRegularizedCurve S T x Z) 0 B ≤ A) :
     4 * eps * (S.base.metric T).inner x Z Z ≤
       Real.exp ((1 + 2 * C * R ^ 2 + 4 * C * R) * R) *
         (2 * (A + |Cp| * R) + R *
           ((1 + 2 * C * R ^ 2) /
             (1 + 2 * C * R ^ 2 + 4 * C * R))) := by
-  let alpha : Real → M := lRegCurve S T x Z
-  have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) B) x Z := by
+  let alpha : Real → M := lRegularizedCurve S T x Z
+  have halpha : IsLRegularizedCurveOn S T alpha (Set.Icc (0 : Real) B) x Z := by
     simpa only [alpha, Set.uIcc_of_le hB.le] using
-      lRegCurve_isLRegCurveOn (I := I) S hS T x Z hB hdom
-  have hkin := intervalIntegrable_lRegSpeedSq_lRegCurve
+      lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hB hdom
+  have hkin := intervalIntegrable_lRegularizedSpeedSq_lRegularizedCurve
     (I := I) S hS T x Z hB hdom
-  have hLag := intervalIntegrable_lRegLagrangian_lRegCurve
+  have hLag := intervalIntegrable_lRegularizedLagrangian_lRegularizedCurve
     (I := I) S hS T x Z hB hdom
-  have hkinRaw := lRegKinetic_le (I := I) S T alpha 0 B A Cp hB.le
+  have hkinRaw := lRegularizedKinetic_le (I := I) S T alpha 0 B A Cp hB.le
     (fun s hs ↦ hpot s hs (alpha s))
     (by simpa only [alpha] using hkin) (by simpa only [alpha] using hLag) hact
   have hCpB : -Cp * B ≤ |Cp| * R := by
@@ -71,18 +71,18 @@ private theorem lRegInitialVector_inner_le_of_action_bound
         mul_le_mul_of_nonneg_right (neg_le_abs Cp) hB.le
       _ ≤ |Cp| * R :=
         mul_le_mul_of_nonneg_left hBR (abs_nonneg Cp)
-  have hkinLe : (∫ s in 0..B, lRegSpeedSq S T alpha s) ≤
+  have hkinLe : (∫ s in 0..B, lRegularizedSpeedSq S T alpha s) ≤
       2 * (A + |Cp| * R) := by
     apply hkinRaw.trans
     linarith
-  apply lRegInitialVector_inner_le_of_integral_speedSq_le (I := I) S hS T B eps C R
+  apply lRegularizedInitialVector_inner_le_of_integral_speedSq_le (I := I) S hS T B eps C R
     (2 * (A + |Cp| * R)) hB hepsB hBR hC halpha
   · intro s hs
-    simpa only [alpha, lRegSpeedSq] using
+    simpa only [alpha, lRegularizedSpeedSq] using
       hgrad (T - s ^ 2) (hback s hs) (alpha s)
         (lVelocity (I := I) alpha s)
   · intro s hs
-    simpa only [alpha, lRegSpeedSq] using
+    simpa only [alpha, lRegularizedSpeedSq] using
       hric (T - s ^ 2) (hback s hs) (alpha s)
         (lVelocity (I := I) alpha s)
   · exact hkinLe
@@ -126,16 +126,16 @@ private theorem isBounded_range_of_metric_inner_le
 
 omit [InnerProductSpace Real E]
   [SigmaCompactSpace M] in
-theorem isBounded_range_initialVector_of_lRegAction_le
+theorem isBounded_range_initialVector_of_lRegularizedAction_le
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (Z : Nat → TangentSpace I x) (B : Nat → Real)
     (eps R A : Real) (heps : 0 < eps)
     (hepsB : ∀ n, eps ≤ B n) (hBR : ∀ n, B n ≤ R)
     (hslab : Set.Icc (T - R ^ 2) T ⊆ D.regular)
-    (hdom : ∀ n, B n ∈ lRegDomain S T x (Z n))
+    (hdom : ∀ n, B n ∈ lRegularizedDomain S T x (Z n))
     (hact : ∀ n,
-      lRegAction S T (lRegCurve S T x (Z n)) 0 (B n) ≤ A) :
+      lRegularizedAction S T (lRegularizedCurve S T x (Z n)) 0 (B n) ≤ A) :
     Bornology.IsBounded (Set.range Z) := by
   have hBn (n : Nat) : 0 < B n := heps.trans_le (hepsB n)
   have hR : 0 ≤ R := (hBn 0).le.trans (hBR 0)
@@ -165,7 +165,7 @@ theorem isBounded_range_initialVector_of_lRegAction_le
     exact (hric t ht y v).trans
       (mul_le_mul_of_nonneg_right (le_max_right Cg Cr) hvv)
   let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
-  obtain ⟨Cp, hpot⟩ := exists_uniform_lower_bound_lRegPotential (I := I) S hSc T 0 R (by
+  obtain ⟨Cp, hpot⟩ := exists_uniform_lower_bound_lRegularizedPotential (I := I) S hSc T 0 R (by
     intro s hs
     have hsI : s ∈ Set.Icc (0 : Real) R := by
       simpa only [Set.uIcc_of_le hR] using hs
@@ -181,7 +181,7 @@ theorem isBounded_range_initialVector_of_lRegAction_le
     have hback : ∀ s ∈ Set.Icc (0 : Real) (B n),
         T - s ^ 2 ∈ Set.Icc (T - R ^ 2) T :=
       fun s hs ↦ hbackR s ⟨hs.1, hs.2.trans (hBR n)⟩
-    apply lRegInitialVector_inner_le_of_action_bound (I := I) S hS T x (Z n) (B n) eps C R A Cp
+    apply lRegularizedInitialVector_inner_le_of_action_bound (I := I) S hS T x (Z n) (B n) eps C R A Cp
       (hBn n) (hepsB n) (hBR n) hC (hdom n) hback
       (fun s hs y ↦ hpot s (by
         rw [Set.uIcc_of_le hR]

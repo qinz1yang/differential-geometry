@@ -318,7 +318,7 @@ def interiorHalfSpaceEuclid (Ω : Set (EuclideanSpace ℝ (Fin n))) :
 
 theorem zero_on_boundary_of_tsupport_subset_openHalfSpace
     {u : EuclideanSpace ℝ (Fin n) → ℝ}
-    (h_supp : tsupport u ⊆ openHalfSpaceEuclid (n := n))
+    (h_support : tsupport u ⊆ openHalfSpaceEuclid (n := n))
     {y : EuclideanSpace ℝ (Fin n)} (hy : y ∈ boundaryHyperplaneEuclid (n := n)) :
     u y = 0 := by
   have h_y_not_in_open :
@@ -329,32 +329,32 @@ theorem zero_on_boundary_of_tsupport_subset_openHalfSpace
     have h_pos : (0 : ℝ) < y 0 := h_in
     rw [h_zero] at h_pos
     exact lt_irrefl _ h_pos
-  have h_y_not_in_supp : y ∉ tsupport u := fun hy_supp =>
-    h_y_not_in_open (h_supp hy_supp)
-  exact image_eq_zero_of_notMem_tsupport h_y_not_in_supp
+  have h_y_not_in_support : y ∉ tsupport u := fun hy_support =>
+    h_y_not_in_open (h_support hy_support)
+  exact image_eq_zero_of_notMem_tsupport h_y_not_in_support
 
 theorem zero_on_boundaryHyperplane_of_tsupport_subset_interiorHalfSpace
     {Ω : Set (EuclideanSpace ℝ (Fin n))}
     {u : EuclideanSpace ℝ (Fin n) → ℝ}
-    (h_supp :
+    (h_support :
       tsupport u ⊆ interiorHalfSpaceEuclid (n := n) Ω)
     {y : EuclideanSpace ℝ (Fin n)} (hy : y ∈ boundaryHyperplaneEuclid (n := n)) :
     u y = 0 := by
-  have h_supp' :
+  have h_support' :
       tsupport u ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace
           (d := n) := by
     intro x hx
     have h_in :=
       DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace_subset_openHalfSpace
-        (d := n) Ω (h_supp hx)
+        (d := n) Ω (h_support hx)
     exact h_in
   exact zero_on_boundary_of_tsupport_subset_openHalfSpace
-    (n := n) (u := u) h_supp' hy
+    (n := n) (u := u) h_support' hy
 
-theorem trace_via_inclEuclidean_eq_zero_of_tsupport_subset_openHalfSpace
+theorem inclEuclidean_apply_eq_zero_of_tsupport_subset_openHalfSpace
     {u : EuclideanSpace ℝ (Fin n) → ℝ}
-    (h_supp :
+    (h_support :
       tsupport u ⊆ openHalfSpaceEuclid (n := n))
     (x' : EuclideanSpace ℝ (Fin (n - 1))) :
     u
@@ -362,7 +362,7 @@ theorem trace_via_inclEuclidean_eq_zero_of_tsupport_subset_openHalfSpace
           n x') =
       0 := by
   refine zero_on_boundary_of_tsupport_subset_openHalfSpace
-    (n := n) h_supp ?_
+    (n := n) h_support ?_
   change
     (EuclideanHalfSpaceInstance.inclEuclidean
         n x') 0 = 0
@@ -370,10 +370,10 @@ theorem trace_via_inclEuclidean_eq_zero_of_tsupport_subset_openHalfSpace
     EuclideanHalfSpaceInstance.inclEuclidean_zero_coord
       n x'
 
-theorem trace_via_inclEuclidean_eq_zero_of_tsupport_subset_interiorHalfSpace
+theorem inclEuclidean_apply_eq_zero_of_tsupport_subset_interiorHalfSpace
     {Ω : Set (EuclideanSpace ℝ (Fin n))}
     {u : EuclideanSpace ℝ (Fin n) → ℝ}
-    (h_supp :
+    (h_support :
       tsupport u ⊆ interiorHalfSpaceEuclid (n := n) Ω)
     (x' : EuclideanSpace ℝ (Fin (n - 1))) :
     u
@@ -381,7 +381,7 @@ theorem trace_via_inclEuclidean_eq_zero_of_tsupport_subset_interiorHalfSpace
           n x') =
       0 := by
   refine zero_on_boundaryHyperplane_of_tsupport_subset_interiorHalfSpace
-    (n := n) (Ω := Ω) (u := u) h_supp ?_
+    (n := n) (Ω := Ω) (u := u) h_support ?_
   change
     (EuclideanHalfSpaceInstance.inclEuclidean
         n x') 0 = 0
@@ -391,7 +391,7 @@ theorem trace_via_inclEuclidean_eq_zero_of_tsupport_subset_interiorHalfSpace
 
 theorem eLpNorm_trace_eq_zero_of_tsupport_subset_openHalfSpace
     {u : EuclideanSpace ℝ (Fin n) → ℝ}
-    (h_supp :
+    (h_support :
       tsupport u ⊆ openHalfSpaceEuclid (n := n))
     (p : ℝ≥0∞)
     (μ : Measure (EuclideanSpace ℝ (Fin (n - 1)))) :
@@ -408,8 +408,8 @@ theorem eLpNorm_trace_eq_zero_of_tsupport_subset_openHalfSpace
             n x')) =
       (fun _ : EuclideanSpace ℝ (Fin (n - 1)) => (0 : ℝ)) := by
     funext x'
-    exact trace_via_inclEuclidean_eq_zero_of_tsupport_subset_openHalfSpace
-      (n := n) h_supp x'
+    exact inclEuclidean_apply_eq_zero_of_tsupport_subset_openHalfSpace
+      (n := n) h_support x'
   rw [h_zero]
   exact eLpNorm_zero
 

@@ -49,8 +49,8 @@ theorem tensorComponent_perturbedSource_contDiff
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source)
-    (hF_supp : tsupport F.toFun ⊆ (chartAt H α).source)
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source)
+    (hF_support : tsupport F.toFun ⊆ (chartAt H α).source)
     (l : Fin (Module.finrank ℝ E)) :
     ContDiff ℝ ∞
       (perturbedSource (d := Module.finrank ℝ E)
@@ -61,11 +61,11 @@ theorem tensorComponent_perturbedSource_contDiff
   classical
   have hu_cd : ContDiff ℝ ∞
       (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) :=
-    tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_supp
+    tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_support
   have hf_cd : ContDiff ℝ ∞
       (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_support hF_support
   set B := tensorPrincipalForm (I := I) (M := M) g α hK hK_target with hB_def
   set u := tensorComponentEuclid (I := I) (M := M) g r s T α P₀ with hu_def
   set f := tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀
@@ -121,8 +121,8 @@ theorem tensorComponent_partial_isSmoothWeakSolution
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source)
-    (hF_supp : tsupport F.toFun ⊆ (chartAt H α).source)
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source)
+    (hF_support : tsupport F.toFun ⊆ (chartAt H α).source)
     (hT_K : tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) ⊆ K)
     (hweak : ∀ v : SmoothCcTensor g r s,
       ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s T v x
@@ -144,11 +144,11 @@ theorem tensorComponent_partial_isSmoothWeakSolution
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
         (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponent_isSmoothWeakSolution (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hT_supp hF_supp hT_K hweak
+      g r s T F α hK hK_target P₀ hT_support hF_support hT_K hweak
   have hf_cd : ContDiff ℝ (⊤ : ℕ∞)
       (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_support hF_support
   exact partial_smooth_weak_solution (d := Module.finrank ℝ E)
     (Ω := (Set.univ : Set EuclN)) isOpen_univ
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target)
@@ -166,21 +166,21 @@ omit [NeZero d] in
 private theorem memW1p_of_smooth_compactSupport_anyOpen
     {Ω : Set EE} (hΩ_open : IsOpen Ω)
     {ψ : EE → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) {p : ℝ≥0∞} :
+    (hψ_compact : HasCompactSupport ψ) {p : ℝ≥0∞} :
     DeGiorgi.MemW1p p ψ Ω := by
   classical
   refine ⟨(hψ_smooth.continuous.memLp_of_hasCompactSupport
-    (μ := (volume : Measure EE)) hψ_cpt).restrict _, ?_⟩
+    (μ := (volume : Measure EE)) hψ_compact).restrict _, ?_⟩
   intro i
   refine ⟨fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1), ?_, ?_⟩
   · have h_cont : Continuous
         (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) :=
       (hψ_smooth.continuous_fderiv (by simp)).clm_apply continuous_const
-    have h_cpt : HasCompactSupport
+    have h_compact : HasCompactSupport
         (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) :=
-      hψ_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
+      hψ_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
     exact (h_cont.memLp_of_hasCompactSupport
-      (μ := (volume : Measure EE)) h_cpt).restrict _
+      (μ := (volume : Measure EE)) h_compact).restrict _
   · exact DeGiorgi.HasWeakPartialDeriv.of_contDiff hΩ_open
       (hψ_smooth.of_le (by norm_cast))
 
@@ -188,18 +188,18 @@ omit [NeZero d] in
 theorem memWkp_of_smooth_compactSupport_anyOpen
     {Ω : Set EE} (hΩ_open : IsOpen Ω)
     {ψ : EE → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) {p : ℝ≥0∞} (hp : 1 ≤ p) (k : ℕ) :
+    (hψ_compact : HasCompactSupport ψ) {p : ℝ≥0∞} (hp : 1 ≤ p) (k : ℕ) :
     MemWkp (d := d) k p ψ Ω := by
   classical
   induction k generalizing ψ with
   | zero =>
       rw [MemWkp_zero]
       exact (hψ_smooth.continuous.memLp_of_hasCompactSupport
-        (μ := (volume : Measure EE)) hψ_cpt).restrict _
+        (μ := (volume : Measure EE)) hψ_compact).restrict _
   | succ k ih =>
       rw [MemWkp_succ]
       have hψ_W1p : DeGiorgi.MemW1p p ψ Ω :=
-        memW1p_of_smooth_compactSupport_anyOpen (d := d) hΩ_open hψ_smooth hψ_cpt
+        memW1p_of_smooth_compactSupport_anyOpen (d := d) hΩ_open hψ_smooth hψ_compact
       refine ⟨hψ_W1p, ?_⟩
       intro i
       have h_ae := chosenWeakPartial_smooth_ae_eq (d := d) hp hΩ_open hψ_smooth
@@ -209,10 +209,10 @@ theorem memWkp_of_smooth_compactSupport_anyOpen
         (hψ_smooth.fderiv_right (m := (⊤ : ℕ∞))
           (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) + 1 ≤ ((⊤ : ℕ∞) : WithTop ℕ∞))).clm_apply
             contDiff_const
-      have h_classical_cpt : HasCompactSupport
+      have h_classical_compact : HasCompactSupport
           (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) :=
-        hψ_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
-      have h_ih_classical := ih h_classical_smooth h_classical_cpt
+        hψ_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
+      have h_ih_classical := ih h_classical_smooth h_classical_compact
       exact (MemWkp_congr_ae (d := d) hp hΩ_open h_ae).mpr h_ih_classical
 
 omit [NeZero d] in
@@ -228,10 +228,10 @@ private theorem iterWeakPartial_smooth_ae_eq_iterClassical_anyOpen
       intro β ψ _ _
       rw [iterWeakPartial_zero, iterClassicalPartial_zero]
   | succ j ih =>
-      intro β ψ hψ_smooth hψ_cpt
+      intro β ψ hψ_smooth hψ_compact
       rw [iterWeakPartial_succ, iterClassicalPartial_succ]
       have hψ_W1p : DeGiorgi.MemW1p p ψ Ω :=
-        memW1p_of_smooth_compactSupport_anyOpen (d := d) hΩ_open hψ_smooth hψ_cpt
+        memW1p_of_smooth_compactSupport_anyOpen (d := d) hΩ_open hψ_smooth hψ_compact
       have h_ae := chosenWeakPartial_smooth_ae_eq (d := d) hp hΩ_open hψ_smooth
         hψ_W1p (β 0)
       have h_classical_smooth : ContDiff ℝ (⊤ : ℕ∞)
@@ -239,10 +239,10 @@ private theorem iterWeakPartial_smooth_ae_eq_iterClassical_anyOpen
         (hψ_smooth.fderiv_right (m := (⊤ : ℕ∞))
           (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) + 1 ≤ ((⊤ : ℕ∞) : WithTop ℕ∞))).clm_apply
             contDiff_const
-      have h_classical_cpt : HasCompactSupport
+      have h_classical_compact : HasCompactSupport
           (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single (β 0) 1)) :=
-        hψ_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (β 0) 1)
-      have h_ih := ih (fun i : Fin j => β i.succ) h_classical_smooth h_classical_cpt
+        hψ_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (β 0) 1)
+      have h_ih := ih (fun i : Fin j => β i.succ) h_classical_smooth h_classical_compact
       have h_iter_congr := iterWeakPartial_ae_congr (d := d) hp hΩ_open j
         (fun i : Fin j => β i.succ) h_ae
       exact h_iter_congr.trans h_ih
@@ -306,7 +306,7 @@ private lemma eLpNorm_two_sq_eq_ofReal_integral_sq
     Filter.Eventually.of_forall (fun x => sq_nonneg _)
   exact (ofReal_integral_eq_lintegral_ofReal h_sq_int h_sq_nn).symm
 
-theorem smooth_cc_h2_loc_memWkp_two
+theorem smooth_cc_h2_local_memWkp_two
     (B : SmoothEllipticBilinearForm d (Set.univ : Set EE))
     {Ω'' : Set EE} (hΩ'' : IsOpen Ω'')
     (hΩ''_compact_closure : IsCompact (closure Ω'')) :
@@ -327,7 +327,7 @@ theorem smooth_cc_h2_loc_memWkp_two
       Metric.cthickening 2 (closure Ω'') ⊆ (Set.univ : Set EE) :=
     fun y _ => Set.mem_univ y
   obtain ⟨C_engine, hC_engine_nn, h_engine⟩ :=
-    loc_smooth_solution (d := d) B hΩ'' hΩ''_compact_closure
+    local_smooth_solution (d := d) B hΩ'' hΩ''_compact_closure
       h_room
   set C₀ : ℝ :=
     ((Fintype.card (Fin d) : ℝ) * (Fintype.card (Fin d) : ℝ)) * C_engine + 1
@@ -361,7 +361,7 @@ theorem smooth_cc_h2_loc_memWkp_two
   set Nterms : ℕ := ∑ j ∈ Finset.range 3, (d ^ j : ℕ) with hN_def
   have hNterms_real_nn : (0 : ℝ) ≤ (Nterms : ℝ) := Nat.cast_nonneg _
   refine ⟨(Nterms : ℝ) * Real.sqrt C₀, by positivity, ?_⟩
-  intro u f h_weak hu_cpt hf_cd hf_cpt
+  intro u f h_weak hu_compact hf_cd hf_compact
   have hu_cd : ContDiff ℝ (⊤ : ℕ∞) u := h_weak.1
   have hu_partial_smooth : ∀ j : Fin d, ContDiff ℝ (⊤ : ℕ∞)
       (fun y : EE => (fderiv ℝ u y) (EuclideanSpace.single j 1)) := by
@@ -370,10 +370,10 @@ theorem smooth_cc_h2_loc_memWkp_two
       hu_cd.fderiv_right (m := (⊤ : ℕ∞)) (by simp)
     exact (ContinuousLinearMap.apply ℝ ℝ
       (EuclideanSpace.single j (1 : ℝ))).contDiff.comp h_fderiv_smooth
-  have hu_partial_cpt : ∀ j : Fin d, HasCompactSupport
+  have hu_partial_compact : ∀ j : Fin d, HasCompactSupport
       (fun y : EE => (fderiv ℝ u y) (EuclideanSpace.single j 1)) := by
     intro j
-    exact hu_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+    exact hu_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
   set D : ℝ :=
     (∫ x, ∑ j : Fin d, ((fderiv ℝ u x) (EuclideanSpace.single j 1)) ^ 2
       ∂(volume : Measure EE)) +
@@ -390,15 +390,15 @@ theorem smooth_cc_h2_loc_memWkp_two
     rw [hD_def]; positivity
   have hΩ''_meas : MeasurableSet Ω'' := hΩ''.measurableSet
   have h_memWkp : MemWkp (d := d) 2 2 u Ω'' :=
-    memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ'' hu_cd hu_cpt
+    memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ'' hu_cd hu_compact
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) 2
   refine ⟨h_memWkp, ?_⟩
-  have hf_l2_loc : ∀ {Ω' : Set EE}, IsCompact (closure Ω') →
+  have hf_l2_local : ∀ {Ω' : Set EE}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω') := by
     intro Ω' _
     exact (hf_cd.continuous.memLp_of_hasCompactSupport
-      (μ := (volume : Measure EE)) (p := 2) hf_cpt).restrict _
-  have h_engine_inst := h_engine h_weak hf_l2_loc
+      (μ := (volume : Measure EE)) (p := 2) hf_compact).restrict _
+  have h_engine_inst := h_engine h_weak hf_l2_local
   have h_engine_bound : ∀ i k : Fin d,
       ∫ x in Ω'',
           ((fderiv ℝ (fun z : EE => (fderiv ℝ u z) (EuclideanSpace.single i 1)) x)
@@ -415,7 +415,7 @@ theorem smooth_cc_h2_loc_memWkp_two
           (fun y : EE => (fderiv ℝ u y) (EuclideanSpace.single i 1)) Ω'' :=
       DeGiorgi.HasWeakPartialDeriv.of_contDiff hΩ''
         ((hu_partial_smooth i).of_le (by norm_cast))
-    have hg_loc : LocallyIntegrable g_ik (volume.restrict Ω'') :=
+    have hg_local : LocallyIntegrable g_ik (volume.restrict Ω'') :=
       hg_memLp.locallyIntegrable (by norm_num)
     have h_classical_smooth : ContDiff ℝ (⊤ : ℕ∞)
         (fun y : EE => (fderiv ℝ
@@ -426,7 +426,7 @@ theorem smooth_cc_h2_loc_memWkp_two
         (hu_partial_smooth i).fderiv_right (m := (⊤ : ℕ∞)) (by simp)
       exact (ContinuousLinearMap.apply ℝ ℝ
         (EuclideanSpace.single k (1 : ℝ))).contDiff.comp h_fderiv_smooth
-    have h_classical_loc : LocallyIntegrable
+    have h_classical_local : LocallyIntegrable
         (fun y : EE => (fderiv ℝ
           (fun z : EE => (fderiv ℝ u z) (EuclideanSpace.single i 1)) y)
           (EuclideanSpace.single k 1)) (volume.restrict Ω'') :=
@@ -437,7 +437,7 @@ theorem smooth_cc_h2_loc_memWkp_two
           (fun z : EE => (fderiv ℝ u z) (EuclideanSpace.single i 1)) y)
           (EuclideanSpace.single k 1)) :=
       DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ'' hg_weak h_classical_weak
-        hg_loc h_classical_loc
+        hg_local h_classical_local
     have h_sq_ae : (fun x => g_ik x ^ 2) =ᵐ[volume.restrict Ω'']
         (fun x => ((fderiv ℝ
           (fun z : EE => (fderiv ℝ u z) (EuclideanSpace.single i 1)) x)
@@ -465,16 +465,16 @@ theorem smooth_cc_h2_loc_memWkp_two
         have h_cont : Continuous
             (fun x => ((fderiv ℝ u x) (EuclideanSpace.single j 1)) ^ 2) :=
           ((hu_partial_smooth j).continuous).pow 2
-        have h_cpt : HasCompactSupport
+        have h_compact : HasCompactSupport
             (fun x => ((fderiv ℝ u x) (EuclideanSpace.single j 1)) ^ 2) :=
-          hasCompactSupport_sq (d := d) (hu_partial_cpt j)
-        exact h_cont.integrable_of_hasCompactSupport h_cpt
+          hasCompactSupport_sq (d := d) (hu_partial_compact j)
+        exact h_cont.integrable_of_hasCompactSupport h_compact
       have h_u_int : Integrable (fun x => (u x) ^ 2) (volume : Measure EE) :=
         (hu_cd.continuous.pow 2).integrable_of_hasCompactSupport
-          (hasCompactSupport_sq (d := d) hu_cpt)
+          (hasCompactSupport_sq (d := d) hu_compact)
       have h_f_int : Integrable (fun x => (f x) ^ 2) (volume : Measure EE) :=
         (hf_cd.continuous.pow 2).integrable_of_hasCompactSupport
-          (hasCompactSupport_sq (d := d) hf_cpt)
+          (hasCompactSupport_sq (d := d) hf_compact)
       have h_grad_le :
           ∫ x in Ω', ∑ j : Fin d,
               ((fderiv ℝ u x) (EuclideanSpace.single j 1)) ^ 2
@@ -510,15 +510,15 @@ theorem smooth_cc_h2_loc_memWkp_two
     have h_iter_smooth : ContDiff ℝ (⊤ : ℕ∞)
         (iterClassicalPartial (d := d) j β u) :=
       contDiff_iterClassicalPartial (d := d) j β hu_cd
-    have h_iter_cpt : HasCompactSupport (iterClassicalPartial (d := d) j β u) :=
-      hasCompactSupport_iterClassicalPartial (d := d) j β hu_cpt
+    have h_iter_compact : HasCompactSupport (iterClassicalPartial (d := d) j β u) :=
+      hasCompactSupport_iterClassicalPartial (d := d) j β hu_compact
     interval_cases j
     · have h_eq : iterClassicalPartial (d := d) 0 β u = u := by
         simp [iterClassicalPartial_zero]
       rw [h_eq]
       have h_u_int : Integrable (fun x => (u x) ^ 2) (volume : Measure EE) :=
         (hu_cd.continuous.pow 2).integrable_of_hasCompactSupport
-          (hasCompactSupport_sq (d := d) hu_cpt)
+          (hasCompactSupport_sq (d := d) hu_compact)
       have h_le : ∫ x in Ω'', (u x) ^ 2 ∂(volume : Measure EE) ≤
           ∫ x, (u x) ^ 2 ∂(volume : Measure EE) :=
         setIntegral_le_integral h_u_int
@@ -553,12 +553,12 @@ theorem smooth_cc_h2_loc_memWkp_two
           (volume : Measure EE) := by
         refine integrable_finsetSum Finset.univ (fun j _ => ?_)
         exact (((hu_partial_smooth j).continuous).pow 2).integrable_of_hasCompactSupport
-          (hasCompactSupport_sq (d := d) (hu_partial_cpt j))
+          (hasCompactSupport_sq (d := d) (hu_partial_compact j))
       have h_partial_sq_int : Integrable
           (fun x => ((fderiv ℝ u x) (EuclideanSpace.single (β 0) 1)) ^ 2)
           (volume : Measure EE) :=
         (((hu_partial_smooth (β 0)).continuous).pow 2).integrable_of_hasCompactSupport
-          (hasCompactSupport_sq (d := d) (hu_partial_cpt (β 0)))
+          (hasCompactSupport_sq (d := d) (hu_partial_compact (β 0)))
       have h_step1 :
           ∫ x in Ω'', ((fderiv ℝ u x) (EuclideanSpace.single (β 0) 1)) ^ 2
             ∂(volume : Measure EE) ≤
@@ -615,7 +615,7 @@ theorem smooth_cc_h2_loc_memWkp_two
       iterWeakPartial (d := d) 2 j β u Ω''
         =ᵐ[volume.restrict Ω''] iterClassicalPartial (d := d) j β u :=
     fun j β => iterWeakPartial_smooth_ae_eq_iterClassical_anyOpen (d := d)
-      (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ''_open j β hu_cd hu_cpt
+      (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ''_open j β hu_cd hu_compact
   have h_term_bound : ∀ (j : ℕ), j ∈ Finset.range 3 → ∀ β : Fin j → Fin d,
       eLpNorm (iterWeakPartial (d := d) 2 j β u Ω'') 2 (volume.restrict Ω'') ≤
         ENNReal.ofReal (Real.sqrt (C₀ * D)) := by
@@ -626,12 +626,12 @@ theorem smooth_cc_h2_loc_memWkp_two
     have h_iter_smooth : ContDiff ℝ (⊤ : ℕ∞)
         (iterClassicalPartial (d := d) j β u) :=
       contDiff_iterClassicalPartial (d := d) j β hu_cd
-    have h_iter_cpt : HasCompactSupport (iterClassicalPartial (d := d) j β u) :=
-      hasCompactSupport_iterClassicalPartial (d := d) j β hu_cpt
+    have h_iter_compact : HasCompactSupport (iterClassicalPartial (d := d) j β u) :=
+      hasCompactSupport_iterClassicalPartial (d := d) j β hu_compact
     have h_iter_l2 : MemLp (iterClassicalPartial (d := d) j β u) 2
         (volume.restrict Ω'') :=
       (h_iter_smooth.continuous.memLp_of_hasCompactSupport
-        (μ := (volume : Measure EE)) (p := 2) h_iter_cpt).restrict _
+        (μ := (volume : Measure EE)) (p := 2) h_iter_compact).restrict _
     have h_sq_eq := eLpNorm_two_sq_eq_ofReal_integral_sq (d := d)
       (Ω := Ω'') (h := iterClassicalPartial (d := d) j β u) h_iter_l2
     have h_int_le := h_iter_classical_bound j hj_le β

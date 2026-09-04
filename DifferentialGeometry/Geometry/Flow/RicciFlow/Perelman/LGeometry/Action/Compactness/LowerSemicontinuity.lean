@@ -101,12 +101,12 @@ theorem lKinetic_liminf
   have hτc : ContinuousOn (fun r : Real ↦ T - (a + r) ^ 2)
       (Icc (0 : Real) (b - a)) :=
     (continuous_const.sub ((continuous_const.add continuous_id).pow 2)).continuousOn
-  have hτreg : MapsTo (fun r : Real ↦ T - (a + r) ^ 2)
+  have hτregularity : MapsTo (fun r : Real ↦ T - (a + r) ^ 2)
       (Icc (0 : Real) (b - a)) D.regular := by
     intro r hr
     exact hreg (a + r) ⟨le_add_of_nonneg_right hr.1, by linarith [hr.2]⟩
   have hlim := chartKin_liminf (I := I) hS p hba
-    (fun r : Real ↦ T - (a + r) ^ 2) hτc hτreg hKc hKchart
+    (fun r : Real ↦ T - (a + r) ^ 2) hτc hτregularity hKc hKchart
     u uLim huK huLimK hu hdu
   have hseq :
       (fun n ↦ ∫ r in (0 : Real)..b - a, (1 / 2 : Real) * inner Real
@@ -127,7 +127,7 @@ variable {N : Type u} [UniformSpace N] [ChartedSpace H N]
   [IsManifold I ∞ N] [CompactSpace N]
 
 omit [CompactSpace N] in
-theorem lRegAction_lim_cpt
+theorem lRegularizedAction_lim_compact
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := N) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := N) D S.family.metric)
@@ -157,14 +157,14 @@ theorem lRegAction_lim_cpt
       (fun n (s : Icc a b) ↦ alpha n s.1)
       (fun s ↦ alphaLim s.1) atTop)
     (hact : IsBoundedUnder (· ≤ ·) atTop
-      (fun n ↦ lRegAction S T (alpha n) a b))
+      (fun n ↦ lRegularizedAction S T (alpha n) a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     (∫ r in (0 : Real)..b - a, (1 / 2 : Real) * inner Real
         (chartGramOp (I := I) S.family p
           (T - (a + r) ^ 2, uLim.toFun r) (uLim.deriv r))
         (uLim.deriv r)) +
       (∫ s in a..b, 2 * s ^ 2 * S.scalar (T - s ^ 2) (alphaLim s)) ≤
-        liminf (fun n ↦ lRegAction S T (alpha n) a b) atTop := by
+        liminf (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop := by
   let kin : ℕ → Real := fun n ↦ ∫ s in a..b, (1 / 2 : Real) *
     (S.base.metric (T - s ^ 2)).inner (alpha n s)
       (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)
@@ -176,7 +176,7 @@ theorem lRegAction_lim_cpt
   let potLim : Real :=
     ∫ s in a..b, 2 * s ^ 2 * S.scalar (T - s ^ 2) (alphaLim s)
   change kinLim + potLim ≤
-    liminf (fun n ↦ lRegAction S T (alpha n) a b) atTop
+    liminf (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop
   have hkin : kinLim ≤ liminf kin atTop := by
     exact lKinetic_liminf S hMet T a b hab p alpha u hsrc hrep hdiff
       uLim hKc hKchart huK huLimK hu hdu hreg
@@ -185,7 +185,7 @@ theorem lRegAction_lim_cpt
   have hcarrier : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.carrier :=
     fun s hs ↦ D.regular_subset (hreg s hs)
   have hpot : Tendsto pot atTop (nhds potLim) := by
-    exact lScalar_tendsto_cpt (I := I) S hSc T a b hab hcarrier Q hQ
+    exact lScalar_tendsto_compact (I := I) S hSc T a b hab hcarrier Q hQ
       alpha alphaLim hcont hval halpha
   have hkinInt (n : ℕ) : IntervalIntegrable
       (fun s ↦ (1 / 2 : Real) *
@@ -200,8 +200,8 @@ theorem lRegAction_lim_cpt
       simpa only [uIcc_of_le hab] using hcarrier) (by
       simpa only [uIcc_of_le hab] using hcont n)
   have hsplit (n : ℕ) :
-      lRegAction S T (alpha n) a b = kin n + pot n := by
-    simpa only [lRegAction, lRegLagrangian, kin, pot] using
+      lRegularizedAction S T (alpha n) a b = kin n + pot n := by
+    simpa only [lRegularizedAction, lRegularizedLagrangian, kin, pot] using
       intervalIntegral.integral_add (hkinInt n) (hpotInt n)
   have hkin_nonneg (n : ℕ) : 0 ≤ kin n := by
     change 0 ≤ ∫ s in a..b, (1 / 2 : Real) *
@@ -219,7 +219,7 @@ theorem lRegAction_lim_cpt
     isBoundedUnder_of_eventually_ge (Eventually.of_forall hkin_nonneg)
   have hkin_hi : IsBoundedUnder (· ≤ ·) atTop kin := by
     rcases hact with ⟨A, hA⟩
-    change ∀ᶠ n in atTop, lRegAction S T (alpha n) a b ≤ A at hA
+    change ∀ᶠ n in atTop, lRegularizedAction S T (alpha n) a b ≤ A at hA
     rcases hpot.isBoundedUnder_ge with ⟨B, hB⟩
     change ∀ᶠ n in atTop, pot n ≥ B at hB
     refine ⟨A - B, ?_⟩
@@ -229,13 +229,13 @@ theorem lRegAction_lim_cpt
     linarith
   have hsum := liminf_add_tendsto hkin hkin_lo hkin_hi hpot
   have hseq : (fun n ↦ kin n + pot n) =
-      (fun n ↦ lRegAction S T (alpha n) a b) := by
+      (fun n ↦ lRegularizedAction S T (alpha n) a b) := by
     funext n
     exact (hsplit n).symm
   rw [hseq] at hsum
   exact hsum
 
-theorem lRegAction_liminf
+theorem lRegularizedAction_liminf
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := N) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := N) D S.family.metric)
@@ -263,20 +263,20 @@ theorem lRegAction_liminf
       (fun n (s : Icc a b) ↦ alpha n s.1)
       (fun s ↦ alphaLim s.1) atTop)
     (hact : IsBoundedUnder (· ≤ ·) atTop
-      (fun n ↦ lRegAction S T (alpha n) a b))
+      (fun n ↦ lRegularizedAction S T (alpha n) a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     (∫ r in (0 : Real)..b - a, (1 / 2 : Real) * inner Real
         (chartGramOp (I := I) S.family p
           (T - (a + r) ^ 2, uLim.toFun r) (uLim.deriv r))
         (uLim.deriv r)) +
       (∫ s in a..b, 2 * s ^ 2 * S.scalar (T - s ^ 2) (alphaLim s)) ≤
-        liminf (fun n ↦ lRegAction S T (alpha n) a b) atTop := by
-  exact lRegAction_lim_cpt S hMet hSc T a b hab p alpha u hsrc hrep hdiff
+        liminf (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop := by
+  exact lRegularizedAction_lim_compact S hMet hSc T a b hab p alpha u hsrc hrep hdiff
     alphaLim uLim Set.univ isCompact_univ (fun _ _ _ ↦ Set.mem_univ _)
     hKc hKchart huK huLimK hu hdu halpha hact hreg
 
 omit [CompactSpace N] in
-theorem lRegAction_chart
+theorem lRegularizedAction_chart
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := N) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := N) D S.family.metric)
@@ -292,7 +292,7 @@ theorem lRegAction_chart
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
       (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    lRegAction S T gamma a b =
+    lRegularizedAction S T gamma a b =
       ∑ i : Fin m, (
         (∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
           (chartGramOp (I := I) S.family (p i)
@@ -349,8 +349,8 @@ theorem lRegAction_chart
     ∫ s in t i.castSucc..t i.succ,
       2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s)
   have hsplit (i : Fin m) :
-      lRegAction S T gamma (t i.castSucc) (t i.succ) = kin i + pot i := by
-    simpa only [lRegAction, lRegLagrangian, kin, pot] using
+      lRegularizedAction S T gamma (t i.castSucc) (t i.succ) = kin i + pot i := by
+    simpa only [lRegularizedAction, lRegularizedLagrangian, kin, pot] using
       intervalIntegral.integral_add (hkinInt i) (hpotInt i)
   have hkinChart (i : Fin m) : kin i =
       ∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
@@ -360,18 +360,18 @@ theorem lRegAction_chart
     simpa only [kin, partitionIntervalLength, smul_apply, real_inner_smul_left] using
       lKinetic_eq_chart_integral S T gamma (p i) (t i.castSucc) (t i.succ)
         (hseg i) (u i) (hsrc i) (hrep i) (hdiff i)
-  have hLag (i : Fin m) : IntervalIntegrable (lRegLagrangian S T gamma) volume
+  have hLag (i : Fin m) : IntervalIntegrable (lRegularizedLagrangian S T gamma) volume
       (t i.castSucc) (t i.succ) := by
     with_unfolding_all exact (hkinInt i).add (hpotInt i)
   let tNat : Nat → Real := fun k ↦
     if hk : k < m + 1 then t ⟨k, hk⟩ else b
   have hsum : (∑ i : Fin m,
-      lRegAction S T gamma (t i.castSucc) (t i.succ)) =
-      lRegAction S T gamma a b := by
+      lRegularizedAction S T gamma (t i.castSucc) (t i.succ)) =
+      lRegularizedAction S T gamma a b := by
     calc
-      (∑ i : Fin m, lRegAction S T gamma (t i.castSucc) (t i.succ)) =
+      (∑ i : Fin m, lRegularizedAction S T gamma (t i.castSucc) (t i.succ)) =
           ∑ k ∈ Finset.range m,
-            lRegAction S T gamma (tNat k) (tNat (k + 1)) := by
+            lRegularizedAction S T gamma (tNat k) (tNat (k + 1)) := by
         rw [Finset.sum_fin_eq_sum_range]
         apply Finset.sum_congr rfl
         intro k hk
@@ -381,17 +381,17 @@ theorem lRegAction_chart
         rw [dif_pos hk']
         simp only [tNat, Nat.lt_succ_iff, dif_pos hk0, dif_pos hk1]
         congr 2
-      _ = lRegAction S T gamma (tNat 0) (tNat m) :=
-        lRegAction_sum S T gamma (fun k hk ↦ by
+      _ = lRegularizedAction S T gamma (tNat 0) (tNat m) :=
+        lRegularizedAction_sum S T gamma (fun k hk ↦ by
           have hk' : k < m := hk
           simp only [tNat, dif_pos (Nat.lt_trans hk' (Nat.lt_succ_self m)),
             dif_pos (Nat.succ_lt_succ hk')]
           with_unfolding_all exact hLag ⟨k, hk'⟩)
-      _ = lRegAction S T gamma a b := by
+      _ = lRegularizedAction S T gamma a b := by
         simp only [tNat, dif_pos (Nat.succ_pos m),
           dif_pos (Nat.lt_succ_self m)]
-        change lRegAction S T gamma (t 0) (t (Fin.last m)) =
-          lRegAction S T gamma a b
+        change lRegularizedAction S T gamma (t 0) (t (Fin.last m)) =
+          lRegularizedAction S T gamma a b
         rw [ht0, htlast]
   rw [← hsum]
   apply Finset.sum_congr rfl
@@ -399,7 +399,7 @@ theorem lRegAction_chart
   rw [hsplit i, hkinChart i]
 
 omit [CompactSpace N] in
-theorem lRegAction_fin_cpt
+theorem lRegularizedAction_fin_compact
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := N) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := N) D S.family.metric)
@@ -434,7 +434,7 @@ theorem lRegAction_fin_cpt
       (fun n (s : Icc a b) ↦ alpha n s.1)
       (fun s ↦ gamma s.1) atTop)
     (hact : IsBoundedUnder (· ≤ ·) atTop
-      (fun n ↦ lRegAction S T (alpha n) a b))
+      (fun n ↦ lRegularizedAction S T (alpha n) a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     (∑ i : Fin m, (
       (∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
@@ -444,7 +444,7 @@ theorem lRegAction_fin_cpt
         ((uLim i).deriv r)) +
       (∫ s in (t i.castSucc)..(t i.succ),
         2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s)))) ≤
-      liminf (fun n ↦ lRegAction S T (alpha n) a b) atTop := by
+      liminf (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop := by
   classical
   have hab : a ≤ b := by
     rw [← ht0, ← htlast]
@@ -488,10 +488,10 @@ theorem lRegAction_fin_cpt
       (hcarrier_i i) (by
         simpa only [uIcc_of_le (hseg i)] using hcont i n)
   have hLag (i : Fin m) (n : Nat) : IntervalIntegrable
-      (lRegLagrangian S T (alpha n)) volume (t i.castSucc) (t i.succ) := by
+      (lRegularizedLagrangian S T (alpha n)) volume (t i.castSucc) (t i.succ) := by
     with_unfolding_all exact (hkinInt i n).add (hpotInt i n)
   let q : Fin m → Nat → Real := fun i n ↦
-    lRegAction S T (alpha n) (t i.castSucc) (t i.succ)
+    lRegularizedAction S T (alpha n) (t i.castSucc) (t i.succ)
   let kin : Fin m → Nat → Real := fun i n ↦
     ∫ s in t i.castSucc..t i.succ, (1 / 2 : Real) *
       (S.base.metric (T - s ^ 2)).inner (alpha n s)
@@ -500,7 +500,7 @@ theorem lRegAction_fin_cpt
     ∫ s in t i.castSucc..t i.succ,
       2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha n s)
   have hsplit (i : Fin m) (n : Nat) : q i n = kin i n + pot i n := by
-    simpa only [q, kin, pot, lRegAction, lRegLagrangian] using
+    simpa only [q, kin, pot, lRegularizedAction, lRegularizedLagrangian] using
       intervalIntegral.integral_add (hkinInt i n) (hpotInt i n)
   have hkinNonneg (i : Fin m) (n : Nat) : 0 ≤ kin i n := by
     change 0 ≤ ∫ s in t i.castSucc..t i.succ, (1 / 2 : Real) *
@@ -514,7 +514,7 @@ theorem lRegAction_fin_cpt
     exact mul_nonneg (by norm_num)
       (chartGramOp_nonneg (I := I) S.family (p i)
         (T - (t i.castSucc + r) ^ 2, (u i n).toFun r) ((u i n).deriv r))
-  obtain ⟨C, hC⟩ := lScalar_lower_cpt (I := I) S hSc T a b hcarrier Q hQ
+  obtain ⟨C, hC⟩ := lScalar_lower_compact (I := I) S hSc T a b hcarrier Q hQ
   have hpotLower (i : Fin m) (n : Nat) : C * partitionIntervalLength t i ≤ pot i n := by
     have hmono := intervalIntegral.integral_mono_on (hseg i)
       intervalIntegrable_const (hpotInt i n) (fun s hs ↦
@@ -530,11 +530,11 @@ theorem lRegAction_fin_cpt
   let tNat : Nat → Real := fun k ↦
     if hk : k < m + 1 then t ⟨k, hk⟩ else b
   have hsum (n : Nat) : (∑ i : Fin m, q i n) =
-      lRegAction S T (alpha n) a b := by
+      lRegularizedAction S T (alpha n) a b := by
     calc
       (∑ i : Fin m, q i n) =
           ∑ k ∈ Finset.range m,
-            lRegAction S T (alpha n) (tNat k) (tNat (k + 1)) := by
+            lRegularizedAction S T (alpha n) (tNat k) (tNat (k + 1)) := by
         rw [Finset.sum_fin_eq_sum_range]
         simp only [q]
         apply Finset.sum_congr rfl
@@ -545,20 +545,20 @@ theorem lRegAction_fin_cpt
         rw [dif_pos hk']
         simp only [tNat, Nat.lt_succ_iff, dif_pos hk0, dif_pos hk1]
         congr 2
-      _ = lRegAction S T (alpha n) (tNat 0) (tNat m) :=
-        lRegAction_sum S T (alpha n) (fun k hk ↦ by
+      _ = lRegularizedAction S T (alpha n) (tNat 0) (tNat m) :=
+        lRegularizedAction_sum S T (alpha n) (fun k hk ↦ by
           have hk' : k < m := hk
           simp only [tNat, dif_pos (Nat.lt_trans hk' (Nat.lt_succ_self m)),
             dif_pos (Nat.succ_lt_succ hk')]
           with_unfolding_all exact hLag ⟨k, hk'⟩ n)
-      _ = lRegAction S T (alpha n) a b := by
+      _ = lRegularizedAction S T (alpha n) a b := by
         simp only [tNat, dif_pos (Nat.succ_pos m),
           dif_pos (Nat.lt_succ_self m)]
-        change lRegAction S T (alpha n) (t 0) (t (Fin.last m)) =
-          lRegAction S T (alpha n) a b
+        change lRegularizedAction S T (alpha n) (t 0) (t (Fin.last m)) =
+          lRegularizedAction S T (alpha n) a b
         rw [ht0, htlast]
   obtain ⟨A, hA⟩ := hact
-  change ∀ᶠ n in atTop, lRegAction S T (alpha n) a b ≤ A at hA
+  change ∀ᶠ n in atTop, lRegularizedAction S T (alpha n) a b ≤ A at hA
   have hqUpper (i : Fin m) : IsBoundedUnder (· ≤ ·) atTop (q i) := by
     refine ⟨A - (∑ j ∈ (Finset.univ.erase i), C * partitionIntervalLength t j), ?_⟩
     change ∀ᶠ n in atTop,
@@ -588,7 +588,7 @@ theorem lRegAction_fin_cpt
     let inc : Icc (t i.castSucc) (t i.succ) → Icc a b := fun s ↦
       ⟨s.1, (hleft i).trans s.2.1, s.2.2.trans (hright i)⟩
     have halpha_i := halpha.comp inc
-    apply lRegAction_lim_cpt S hMet hSc T (t i.castSucc) (t i.succ) (hseg i)
+    apply lRegularizedAction_lim_compact S hMet hSc T (t i.castSucc) (t i.succ) (hseg i)
       (p i) alpha (u i) (hsrc i) (hrep i) (hdiff i) gamma (uLim i) Q hQ
       (fun n s hs ↦ hval n s
         ⟨(hleft i).trans hs.1, hs.2.trans (hright i)⟩)
@@ -620,12 +620,12 @@ theorem lRegAction_fin_cpt
         ∑ i : Fin m, liminf (q i) atTop :=
       Finset.sum_le_sum fun i _ ↦ hlocal i
     _ ≤ liminf (fun n ↦ ∑ i : Fin m, q i n) atTop := hsumlim
-    _ = liminf (fun n ↦ lRegAction S T (alpha n) a b) atTop := by
+    _ = liminf (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop := by
       congr 1
       funext n
       exact hsum n
 
-theorem lRegAction_fin_lsc
+theorem lRegularizedAction_fin_lsc
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := N) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := N) D S.family.metric)
@@ -658,7 +658,7 @@ theorem lRegAction_fin_lsc
       (fun n (s : Icc a b) ↦ alpha n s.1)
       (fun s ↦ gamma s.1) atTop)
     (hact : IsBoundedUnder (· ≤ ·) atTop
-      (fun n ↦ lRegAction S T (alpha n) a b))
+      (fun n ↦ lRegularizedAction S T (alpha n) a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     (∑ i : Fin m, (
       (∫ r in (0 : Real)..partitionIntervalLength t i, (1 / 2 : Real) * inner Real
@@ -668,8 +668,8 @@ theorem lRegAction_fin_lsc
         ((uLim i).deriv r)) +
       (∫ s in (t i.castSucc)..(t i.succ),
         2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s)))) ≤
-      liminf (fun n ↦ lRegAction S T (alpha n) a b) atTop := by
-  exact lRegAction_fin_cpt S hMet hSc T a b t htmono ht0 htlast p alpha gamma
+      liminf (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop := by
+  exact lRegularizedAction_fin_compact S hMet hSc T a b t htmono ht0 htlast p alpha gamma
     Set.univ isCompact_univ (fun _ _ _ ↦ Set.mem_univ _) u hsrc hrep hdiff
     K hKc hKchart huK uLim hu hdu halpha hact hreg
 

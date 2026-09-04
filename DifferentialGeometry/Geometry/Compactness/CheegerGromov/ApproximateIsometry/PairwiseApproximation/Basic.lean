@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff BigOperators Topology
@@ -71,8 +71,8 @@ theorem exists_partial_diffeomorph_metric_approximation
       (Φ.symm : N → M) h g := by
     rw [hsetEq]
     refine hrev.congr (fun y hy => ?_)
-    have hy_tgt : y ∈ Φ.target := by rw [htgt]; exact Set.image_mono hKU hy
-    exact Filter.eventuallyEq_of_mem (Φ.open_target.mem_nhds hy_tgt) hsymmEq
+    have hy_target : y ∈ Φ.target := by rw [htgt]; exact Set.image_mono hKU hy
+    exact Filter.eventuallyEq_of_mem (Φ.open_target.mem_nhds hy_target) hsymmEq
   exact ⟨Φ, hclosed_sub, (hEq hOkU).trans hbase,
     ⟨{ source_sub := hclosed_sub, forward := fwdΦ, reverse := revΦ }⟩⟩
 
@@ -158,5 +158,5 @@ theorem PairwiseApproximateIsometryInput.exists_partial_approximate_isometry
     r ε p (Metric.ball (X.obj k).basepoint R) hU (Metric.mem_ball_self hR0)
     (Metric.closedBall_subset_ball hRr) F hloc hinj hbase hfwd hrev
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff BigOperators
 open Set Topology TopologicalSpace
@@ -90,7 +90,7 @@ theorem chain_limit_metric_deriv_norm_le
     (hconv :
       letI : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
         (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-      MetricCInfConvOnCompacts (I := I)
+      MetricCInfConvergenceOnCompacts (I := I)
         (fun k => chainPullbackSeq (I := I) Ψ g U hU (ρ k)) gInf
         ((g j).restrictOpen (I := I) U))
     {q : ℕ} (hqp : q ≤ p) (x : U) :
@@ -101,7 +101,7 @@ theorem chain_limit_metric_deriv_norm_le
   let _ := (inferInstance : (∀ (j : ℕ), SigmaCompactSpace (M j)))
   let _ : SigmaCompactSpace U := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I U.isOpen)
-  apply MetricCInfConvOnCompacts.metric_deriv_norm_le (I := I)
+  apply MetricCInfConvergenceOnCompacts.metric_deriv_norm_le (I := I)
     (fun k => chainPullbackSeq (I := I) Ψ g U hU (ρ k)) gInf
     ((g j).restrictOpen (I := I) U) ((g j).restrictOpen (I := I) U) hconv
   intro k
@@ -263,5 +263,5 @@ theorem tail_metric_deriv_norm_sup_lt
 
 end ApproxData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

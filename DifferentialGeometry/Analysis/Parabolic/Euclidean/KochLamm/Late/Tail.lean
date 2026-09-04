@@ -17,12 +17,12 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-def klTailMeasure (R : ℝ) (S : Set V) : Measure (ℝ × V) :=
+def kochLammTailMeasure (R : ℝ) (S : Set V) : Measure (ℝ × V) :=
   (volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))).prod
     ((volume : Measure V).restrict S)
 
 omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-theorem klTerm_scaled {R k s : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
+theorem kochLammTerm_scaled {R k s : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (hs : s ∈ Ioc (R ^ 2 / 2) (R ^ 2)) (hst : s ≠ R ^ 2)
     {x y : V} (hxy : k * R ≤ ‖x - y‖) :
     Real.sqrt 2 * k ≤
@@ -52,49 +52,49 @@ theorem klTerm_scaled {R k s : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
   rw [norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hρ]
   simpa only [ρ, div_eq_mul_inv, mul_comm] using hdiv
 
-theorem klTailKernel_mem {u p : ℝ} (hu : 0 < u) (hp : 0 < p) (x : V) :
-    Integrable (fun y : V ↦ klTailKernel u p (x - y)) := by
-  unfold klTailKernel
-  exact (((klTailGauss_mem (V := V) hp).comp_smul
+theorem kochLammTailKernel_mem {u p : ℝ} (hu : 0 < u) (hp : 0 < p) (x : V) :
+    Integrable (fun y : V ↦ kochLammTailKernel u p (x - y)) := by
+  unfold kochLammTailKernel
+  exact (((kochLammTailGauss_mem (V := V) hp).comp_smul
     (inv_ne_zero (heatScale_pos hu).ne')).const_mul _).comp_sub_left x
 
-def klTermTailPow (R : ℝ) (x : V) (S : Set V) : ℝ :=
-  ∫ z : ℝ × V, ‖klTermKernel (R ^ 2) x z‖ ^ klQDual V
-    ∂(klTailMeasure (V := V) R S)
+def kochLammTermTailPow (R : ℝ) (x : V) (S : Set V) : ℝ :=
+  ∫ z : ℝ × V, ‖kochLammTermKernel (R ^ 2) x z‖ ^ kochLammQDual V
+    ∂(kochLammTailMeasure (V := V) R S)
 
-theorem klTermTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
+theorem kochLammTermTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (x : V) {S : Set V} (hSm : MeasurableSet S)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :
-    klTermTailPow (V := V) R x S ≤
-      Real.exp (-(klQDual V * k ^ 2) / 4) *
-        (((R ^ 2 / 2) ^ (klHeatExp V + 1) /
-            (klHeatExp V + 1)) * klTailMass V (klQDual V)) := by
-  let p : ℝ := klQDual V
+    kochLammTermTailPow (V := V) R x S ≤
+      Real.exp (-(kochLammQDual V * k ^ 2) / 4) *
+        (((R ^ 2 / 2) ^ (kochLammHeatExp V + 1) /
+            (kochLammHeatExp V + 1)) * kochLammTailMass V (kochLammQDual V)) := by
+  let p : ℝ := kochLammQDual V
   let D : ℝ := Real.exp (-(p * k ^ 2) / 4)
-  have hp : 0 < p := (klQ_holder (V := V)).pos
-  have hμ : klTailMeasure (V := V) R S ≤
-      klTermMeasure (V := V) (R ^ 2) := by
-    unfold klTailMeasure klTermMeasure
+  have hp : 0 < p := (kochLammQ_holder (V := V)).pos
+  have hμ : kochLammTailMeasure (V := V) R S ≤
+      kochLammTermMeasure (V := V) (R ^ 2) := by
+    unfold kochLammTailMeasure kochLammTermMeasure
     rw [Measure.prod_restrict, Measure.restrict_prod_eq_prod_univ]
     exact Measure.restrict_mono
       (Set.prod_mono (subset_refl _) (Set.subset_univ _)) le_rfl
   have hi : Integrable
-      (fun z : ℝ × V ↦ ‖klTermKernel (R ^ 2) x z‖ ^ p)
-      (klTailMeasure (V := V) R S) := by
+      (fun z : ℝ × V ↦ ‖kochLammTermKernel (R ^ 2) x z‖ ^ p)
+      (kochLammTailMeasure (V := V) R S) := by
     have hg :=
-      (klTermKernel_memLp (V := V) (t := R ^ 2) x).integrable_norm_rpow
+      (kochLammTermKernel_memLp (V := V) (t := R ^ 2) x).integrable_norm_rpow
         (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     have hg' : Integrable
-        (fun z : ℝ × V ↦ ‖klTermKernel (R ^ 2) x z‖ ^ p)
-        (klTermMeasure (V := V) (R ^ 2)) := by
+        (fun z : ℝ × V ↦ ‖kochLammTermKernel (R ^ 2) x z‖ ^ p)
+        (kochLammTermMeasure (V := V) (R ^ 2)) := by
       simpa only [ENNReal.toReal_ofReal hp.le, p] using hg
     exact hg'.mono_measure hμ
   have hne : ∀ᵐ s ∂(volume : Measure ℝ), s ≠ R ^ 2 := by
     simp [ae_iff, measure_singleton]
   have hslice : ∀ᵐ s ∂volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2)),
-      (∫ y : V, ‖klTermKernel (R ^ 2) x (s, y)‖ ^ p
+      (∫ y : V, ‖kochLammTermKernel (R ^ 2) x (s, y)‖ ^ p
           ∂(volume : Measure V).restrict S) ≤
-        D * ((R ^ 2 - s) ^ klHeatExp V * klTailMass V p) := by
+        D * ((R ^ 2 - s) ^ kochLammHeatExp V * kochLammTailMass V p) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioc,
       ae_restrict_of_ae hne] with s hs hst
     have hu : 0 < R ^ 2 - s :=
@@ -105,34 +105,34 @@ theorem klTermTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
       ((heatKernelPow_mem (V := V) hu hp).comp_sub_left x).mono_measure
         Measure.restrict_le_self
     have htail : Integrable
-        (fun y : V ↦ D * klTailKernel (R ^ 2 - s) p (x - y)) :=
-      (klTailKernel_mem (V := V) hu hp x).const_mul _
+        (fun y : V ↦ D * kochLammTailKernel (R ^ 2 - s) p (x - y)) :=
+      (kochLammTailKernel_mem (V := V) hu hp x).const_mul _
     have hpoint :
         (fun y : V ↦ (heatKernel (R ^ 2 - s) (x - y)) ^ p) ≤ᵐ[
           (volume : Measure V).restrict S]
-        (fun y : V ↦ D * klTailKernel (R ^ 2 - s) p (x - y)) := by
+        (fun y : V ↦ D * kochLammTailKernel (R ^ 2 - s) p (x - y)) := by
       filter_upwards [ae_restrict_mem hSm] with y hy
-      have hscaled := klTerm_scaled (V := V) hR hk hs hst (hfar y hy)
+      have hscaled := kochLammTerm_scaled (V := V) hR hk hs hst (hfar y hy)
       simpa only [D, p] using
-        (klHeatPow_tail (V := V) hu hp hk hscaled)
+        (kochLammHeatPow_tail (V := V) hu hp hk hscaled)
     calc
-      (∫ y : V, ‖klTermKernel (R ^ 2) x (s, y)‖ ^ p
+      (∫ y : V, ‖kochLammTermKernel (R ^ 2) x (s, y)‖ ^ p
           ∂(volume : Measure V).restrict S) =
           ∫ y : V, (heatKernel (R ^ 2 - s) (x - y)) ^ p
             ∂(volume : Measure V).restrict S := by
         apply integral_congr_ae
         filter_upwards with y
-        rw [Real.norm_of_nonneg (klTermKernel_nonneg (V := V)
+        rw [Real.norm_of_nonneg (kochLammTermKernel_nonneg (V := V)
           (R ^ 2) x (s, y))]
         rfl
-      _ ≤ ∫ y : V, D * klTailKernel (R ^ 2 - s) p (x - y)
+      _ ≤ ∫ y : V, D * kochLammTailKernel (R ^ 2 - s) p (x - y)
           ∂(volume : Measure V).restrict S :=
         integral_mono_ae hpow (htail.mono_measure Measure.restrict_le_self) hpoint
-      _ ≤ ∫ y : V, D * klTailKernel (R ^ 2 - s) p (x - y) :=
+      _ ≤ ∫ y : V, D * kochLammTailKernel (R ^ 2 - s) p (x - y) :=
         integral_mono_measure Measure.restrict_le_self
           (Filter.Eventually.of_forall fun y ↦ mul_nonneg (Real.exp_pos _).le
             (by
-              unfold klTailKernel klTailGauss
+              unfold kochLammTailKernel kochLammTailGauss
               exact mul_nonneg
                 (Real.rpow_nonneg
                   (inv_nonneg.mpr (pow_nonneg (heatScale_pos hu).le _)) _)
@@ -140,37 +140,37 @@ theorem klTermTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
                   (Real.rpow_nonneg
                     (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le) _)
                   (Real.rpow_nonneg (baseHeat_nonneg _) _)))) htail
-      _ = D * ((R ^ 2 - s) ^ klHeatExp V * klTailMass V p) := by
-        rw [integral_const_mul, klTailKernel_int (V := V) hu hp x]
+      _ = D * ((R ^ 2 - s) ^ kochLammHeatExp V * kochLammTailMass V p) := by
+        rw [integral_const_mul, kochLammTailKernel_int (V := V) hu hp x]
         rfl
   have hright : Integrable
       (fun s : ℝ ↦ D *
-        ((R ^ 2 - s) ^ klHeatExp V * klTailMass V p))
+        ((R ^ 2 - s) ^ kochLammHeatExp V * kochLammTailMass V p))
       (volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))) :=
-    (((klTimePow_intble (V := V)).1.mul_const _).const_mul _)
+    (((kochLammTimePow_intble (V := V)).1.mul_const _).const_mul _)
   have hi' : Integrable
-      (fun z : ℝ × V ↦ ‖klTermKernel (R ^ 2) x z‖ ^ p)
+      (fun z : ℝ × V ↦ ‖kochLammTermKernel (R ^ 2) x z‖ ^ p)
       ((volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))).prod
         ((volume : Measure V).restrict S)) := by
-    simpa only [klTailMeasure] using hi
+    simpa only [kochLammTailMeasure] using hi
   change
-    (∫ z : ℝ × V, ‖klTermKernel (R ^ 2) x z‖ ^ p
+    (∫ z : ℝ × V, ‖kochLammTermKernel (R ^ 2) x z‖ ^ p
         ∂((volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))).prod
           ((volume : Measure V).restrict S))) ≤
-      D * (((R ^ 2 / 2) ^ (klHeatExp V + 1) /
-        (klHeatExp V + 1)) * klTailMass V p)
+      D * (((R ^ 2 / 2) ^ (kochLammHeatExp V + 1) /
+        (kochLammHeatExp V + 1)) * kochLammTailMass V p)
   rw [integral_prod _ hi']
   calc
-    (∫ s : ℝ, ∫ y : V, ‖klTermKernel (R ^ 2) x (s, y)‖ ^ p
+    (∫ s : ℝ, ∫ y : V, ‖kochLammTermKernel (R ^ 2) x (s, y)‖ ^ p
           ∂(volume : Measure V).restrict S
         ∂volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))) ≤
-        ∫ s : ℝ, D * ((R ^ 2 - s) ^ klHeatExp V * klTailMass V p)
+        ∫ s : ℝ, D * ((R ^ 2 - s) ^ kochLammHeatExp V * kochLammTailMass V p)
           ∂volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2)) :=
       integral_mono_ae hi'.integral_prod_left hright hslice
-    _ = D * (((R ^ 2 / 2) ^ (klHeatExp V + 1) /
-          (klHeatExp V + 1)) * klTailMass V p) := by
+    _ = D * (((R ^ 2 / 2) ^ (kochLammHeatExp V + 1) /
+          (kochLammHeatExp V + 1)) * kochLammTailMass V p) := by
       rw [integral_const_mul, integral_mul_const,
-        klTermTime_set (V := V) (sq_pos_of_pos hR)]
+        kochLammTermTime_set (V := V) (sq_pos_of_pos hR)]
 
 end Euclidean
 end Parabolic

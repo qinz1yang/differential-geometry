@@ -42,7 +42,7 @@ noncomputable def iterCovGradHs
       (iterCovGradCcLin (I := I) (M := M) g s j)).extendOfNorm
     (ccToHsLin (I := I) (M := M) g s ((k : ℝ) + (j : ℝ)))
 
-theorem iterCovGradHs_core
+theorem iterCovGradHs_apply_ccTensorToHs
     (g : SmoothRiemannianMetric I M) (s j k : ℕ)
     (W : SmoothCcTensor g 0 s) :
     iterCovGradHs (I := I) (M := M) g s j k

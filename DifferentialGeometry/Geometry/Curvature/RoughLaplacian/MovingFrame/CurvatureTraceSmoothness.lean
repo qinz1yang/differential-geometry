@@ -677,9 +677,9 @@ private theorem genuineCurvTraceFixedFramePureR_frame_independent
     orthonormal_basis_bilin_trace (I := I) (M := M) g (x := y) Hb (fun i => C i y) hC_orth]
 
 omit [CompactSpace M] [I.Boundaryless] in
-private lemma genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd
+private lemma genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_neighborhood
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x₀ : M)
-    {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     genuineCurvPureRFib (I := I) (M := M) g s S y =
       genuineCurvPureRFibFixedFrame (I := I) (M := M) g s S
         (smoothOrthoFrame (I := I) g x₀) y := by
@@ -722,10 +722,10 @@ private theorem genuineCurvPureRFib_contMDiff
     genuineCurvPureRFibFixedFrame_contMDiff (I := I) (M := M) g s S
       (fun i => smoothOrthoFrame_smooth (I := I) g x₀ i) x₀
   refine h_fixed_at.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 0 (s + 1) ℝ E)
     (E := fun z : M => TensorRSSpace 0 (s + 1) I z) y)
-    (genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd (I := I) (M := M) g s S x₀ hy)
+    (genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_neighborhood (I := I) (M := M) g s S x₀ hy)
 
 private noncomputable def genuineCurvPureRSection
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
@@ -858,10 +858,10 @@ theorem GcurvSection_toSection_eventuallyEq_fixedFramePureRSection
       (genuineCurvatureOnlySection (I := I) (M := M) g s S).toSection y =
         (fixedFramePureRSection (I := I) (M := M) g s S
           (smoothOrthoFrame (I := I) g x₀) hB).toSection y := by
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   rw [genuineCurvatureOnlySection, genuineCurvPureRSection_toSection,
     fixedFramePureRSection_toSection]
-  exact genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd (I := I) (M := M) g s S x₀ hy
+  exact genuineCurvPureRFib_eq_fixedFrame_smoothOrthoFrame_on_neighborhood (I := I) (M := M) g s S x₀ hy
 
 end Curvature
 end Geometry

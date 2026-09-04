@@ -92,9 +92,9 @@ theorem chartCoeffOnE_deTurckVF_eqOn_goodSet_image
       (chartDeTurckVFComp (I := I) g g_bg α k)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   rintro y ⟨b, hb_good, rfl⟩
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb_good
-  rw [chartCoeffOnE, (extChartAt I α).left_inv hb_src]
+  rw [chartCoeffOnE, (extChartAt I α).left_inv hb_source]
   exact chartCoeff_deTurckVF_eq_chartDeTurckVFComp (I := I) g g_bg α k hb_good
 
 omit [I.Boundaryless] in
@@ -129,13 +129,13 @@ theorem chartLieDerivMetricMatrix_deTurckVF_eq_chartLieDeTurckComp
     chartLieDerivMetricMatrix (I := I) g (deTurckVF (I := I) g g_bg) α i j x =
       chartLieDeTurckComp (I := I) g g_bg α i j (extChartAt I α x) := by
   classical
-  have hx_src : x ∈ (extChartAt I α).source :=
+  have hx_source : x ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx
   have hgram : ∀ a b : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x a b =
         chartGramOnE (I := I) g α a b (extChartAt I α x) := by
     intro a b
-    rw [chartGramOnE, (extChartAt I α).left_inv hx_src]
+    rw [chartGramOnE, (extChartAt I α).left_inv hx_source]
   rw [chartLieDerivMetricMatrix_def, chartLieDeTurckComp_def]
   refine congr_arg₂ (· + ·) (congr_arg₂ (· + ·) ?_ ?_) ?_
   · refine Finset.sum_congr rfl (fun k _ => ?_)

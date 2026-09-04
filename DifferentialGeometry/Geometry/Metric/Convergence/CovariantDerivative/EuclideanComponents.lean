@@ -13,7 +13,7 @@ noncomputable section
 universe uE
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set
 open Bundle Manifold
@@ -280,5 +280,5 @@ theorem metric_iterCovComp_mdifferentiableAt
     (fun z s => (Q z - B z) (e (s 0)) (e (s 1)))
     hframe hchr hbase z.2 q slots
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

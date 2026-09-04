@@ -276,7 +276,7 @@ private lemma density_mul_chosenFChartDeriv_memLp_vol_K
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) := by
       unfold chosenFChartDeriv
-      exact chosenWeakPartial'_memLp_of_mem h_memW1p l
+      exact chosenWeakPartialOrZero_memLp_of_mem h_memW1p l
     have hK_meas : MeasurableSet (Kα (I := I) (M := M) α) :=
       Kα_meas (I := I) (M := M) α
     have h_restrict :
@@ -295,7 +295,7 @@ private lemma density_mul_chosenFChartDeriv_memLp_vol_K
       (densityOnEuclid_continuousOn (I := I) g α) h_K
   · have h_zero : chosenFChartDeriv (I := I) (M := M) g α hu_h l = 0 := by
       unfold chosenFChartDeriv
-      exact chosenWeakPartial'_of_not_mem h_memW1p l
+      exact chosenWeakPartialOrZero_of_not_mem h_memW1p l
     have : (fun y => densityOnEuclid (I := I) g α y *
         chosenFChartDeriv (I := I) (M := M) g α hu_h l y) = (fun _ => 0) := by
       funext y

@@ -13,7 +13,7 @@ open DifferentialGeometry.Analysis.Parabolic.Euclidean
 variable {X A : Type*} [TopologicalSpace X]
   [NormedAddCommGroup A] [NormedSpace Real A]
 
-def compactSupportBcf (f : X → A) (hf : Continuous f)
+def compactSupportBoundedContinuousFunction (f : X → A) (hf : Continuous f)
     (hcs : HasCompactSupport f) : BoundedContinuousFunction X A :=
   BoundedContinuousFunction.ofNormedAddCommGroup f hf
     (Classical.choose (hf.bounded_above_of_compact_support hcs))
@@ -21,9 +21,9 @@ def compactSupportBcf (f : X → A) (hf : Continuous f)
 
 omit [NormedSpace Real A] in
 @[simp]
-theorem compactSupportBcf_apply (f : X → A) (hf : Continuous f)
+theorem compactSupportBoundedContinuousFunction_apply (f : X → A) (hf : Continuous f)
     (hcs : HasCompactSupport f) (x : X) :
-    compactSupportBcf f hf hcs x = f x := rfl
+    compactSupportBoundedContinuousFunction f hf hcs x = f x := rfl
 
 section Euclidean
 
@@ -50,7 +50,7 @@ theorem exists_schauder_cutoff_with_hessian
       HolderWith Kd2chi alpha
         (d2chi : V → V →L[Real] V →L[Real] Real) ∧
       HolderWith Klapchi alpha (coreLap d2chi : V → Real) := by
-  obtain ⟨chiRaw, hchiCd, hchiCs, hchiOne, hchiSupp, hchiRange⟩ :=
+  obtain ⟨chiRaw, hchiCd, hchiCs, hchiOne, hchiSupport, hchiRange⟩ :=
     DifferentialGeometry.Analysis.exists_bump_compact hK hOmega hKOmega
   have hchiCont : Continuous chiRaw := hchiCd.continuous
   let dchiRaw := fderiv Real chiRaw
@@ -63,9 +63,9 @@ theorem exists_schauder_cutoff_with_hessian
     hdchiCd.fderiv_right (m := ∞) (by simp)
   have hd2chiCont : Continuous d2chiRaw := hd2chiCd.continuous
   have hd2chiCs : HasCompactSupport d2chiRaw := hdchiCs.fderiv Real
-  let chi := compactSupportBcf chiRaw hchiCont hchiCs
-  let dchi := compactSupportBcf dchiRaw hdchiCont hdchiCs
-  let d2chi := compactSupportBcf d2chiRaw hd2chiCont hd2chiCs
+  let chi := compactSupportBoundedContinuousFunction chiRaw hchiCont hchiCs
+  let dchi := compactSupportBoundedContinuousFunction dchiRaw hdchiCont hdchiCs
+  let d2chi := compactSupportBoundedContinuousFunction d2chiRaw hd2chiCont hd2chiCs
   have hchiDeriv : ∀ x, HasFDerivAt (chi : V → Real) (dchi x) x := by
     intro x
     change HasFDerivAt chiRaw (fderiv Real chiRaw x) x
@@ -92,7 +92,7 @@ theorem exists_schauder_cutoff_with_hessian
     hd2chiCd.fderiv_right (m := ∞) (by simp)
   have hd3chiCont : Continuous d3chiRaw := hd3chiCd.continuous
   have hd3chiCs : HasCompactSupport d3chiRaw := hd2chiCs.fderiv Real
-  let d3chi := compactSupportBcf d3chiRaw hd3chiCont hd3chiCs
+  let d3chi := compactSupportBoundedContinuousFunction d3chiRaw hd3chiCont hd3chiCs
   have hd2chiDeriv : ∀ x, HasFDerivAt
       (d2chi : V → V →L[Real] V →L[Real] Real) (d3chi x) x := by
     intro x
@@ -116,7 +116,7 @@ theorem exists_schauder_cutoff_with_hessian
     hlapCd.fderiv_right (m := ∞) (by simp)
   have hdlapCont : Continuous dlapRaw := hdlapCd.continuous
   have hdlapCs : HasCompactSupport dlapRaw := hlapCs.fderiv Real
-  let dlap := compactSupportBcf dlapRaw hdlapCont hdlapCs
+  let dlap := compactSupportBoundedContinuousFunction dlapRaw hdlapCont hdlapCs
   have hlapDeriv : ∀ x,
       HasFDerivAt (coreLap d2chi : V → Real) (dlap x) x := by
     intro x
@@ -141,7 +141,7 @@ theorem exists_schauder_cutoff_with_hessian
       funext x
       rfl
     rw [hchi]
-    exact hchiSupp
+    exact hchiSupport
   · have hchi : (chi : V → Real) = chiRaw := by
       funext x
       rfl
@@ -167,11 +167,11 @@ theorem exists_schauder_cutoff
       HolderWith Kdchi alpha (dchi : V → V →L[Real] Real) ∧
       HolderWith Klapchi alpha (coreLap d2chi : V → Real) := by
   obtain ⟨U, chi, dchi, d2chi, Kchi, Kdchi, Kd2chi, Klapchi,
-    hU, hKU, hchiOne, hchiSupp, hchiRange, hchiDeriv, hdchiDeriv,
+    hU, hKU, hchiOne, hchiSupport, hchiRange, hchiDeriv, hdchiDeriv,
     hchiHolder, hdchiHolder, hd2chiHolder, hlapHolder⟩ :=
       exists_schauder_cutoff_with_hessian hK hOmega hKOmega halpha0 halpha1
   exact ⟨U, chi, dchi, d2chi, Kchi, Kdchi, Klapchi,
-    hU, hKU, hchiOne, hchiSupp, hchiRange, hchiDeriv, hdchiDeriv,
+    hU, hKU, hchiOne, hchiSupport, hchiRange, hchiDeriv, hdchiDeriv,
     hchiHolder, hdchiHolder, hlapHolder⟩
 
 end Euclidean

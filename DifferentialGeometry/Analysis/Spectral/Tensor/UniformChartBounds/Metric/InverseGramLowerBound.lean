@@ -514,7 +514,7 @@ theorem chartInvGram_ent_le
     rw [abs_of_neg (lt_of_not_ge hentry)]
     nlinarith [hdiag_nonneg i, hdiag_nonneg j]
 
-theorem chartInvGram_unif_ub
+theorem chartInvGram_uniform_ub
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
@@ -550,7 +550,7 @@ theorem chartInvGram_unif_ub
       mul_le_mul_of_nonneg_left (hbase b hb ξ) hΛpos.le
     _ = (Λ * CBase) * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) := by ring
 
-theorem chartInvGram_unif_lb
+theorem chartInvGram_uniform_lb
     {ι : Type*} (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
@@ -669,7 +669,7 @@ theorem chartInvGram_pou_lb
               ∑ j : Fin (Module.finrank ℝ E),
                 chartInvGramMatrix (I := I) (gSeq k) α b i j * ξ i * ξ j := by
     intro α
-    exact chartInvGram_unif_lb (I := I) (M := M) gBase gSeq α
+    exact chartInvGram_uniform_lb (I := I) (M := M) gBase gSeq α
       (pouTsupport_isCompact (I := I) (M := M) α)
       (pouTsupport_subset_baseSet (I := I) (M := M) α) Λ hΛ
       (fun k b _hb v => hequiv k b v)
@@ -737,7 +737,7 @@ theorem chartInvGram_pou_ub
                 chartInvGramMatrix (I := I) (gSeq k) α b i j * ξ i * ξ j) ≤
             C * (∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) := by
     intro α
-    exact chartInvGram_unif_ub (I := I) (M := M) gBase gSeq α
+    exact chartInvGram_uniform_ub (I := I) (M := M) gBase gSeq α
       (pouTsupport_isCompact (I := I) (M := M) α)
       (pouTsupport_subset_baseSet (I := I) (M := M) α) Λ hΛ
       (fun k b _hb v => hequiv k b v)

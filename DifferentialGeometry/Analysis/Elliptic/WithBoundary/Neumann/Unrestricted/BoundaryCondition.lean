@@ -61,11 +61,11 @@ private lemma localDivergenceWithin_mul_pou_continuous
   rw [continuous_iff_continuousAt]
   intro x
   by_cases hx : x ∈ (chartAt (EuclideanHalfSpace n) α).source
-  · have h_locDiv_at : ContinuousAt
+  · have h_localDiv_at : ContinuousAt
         (localDivergenceWithin (I := I_half n) g α X) x :=
       (hα_cont_on_source x hx).continuousAt
         ((chartAt (EuclideanHalfSpace n) α).open_source.mem_nhds hx)
-    exact h_locDiv_at.mul hρα_cont.continuousAt
+    exact h_localDiv_at.mul hρα_cont.continuousAt
   · have hx_nots : x ∉ tsupport ((ρ α : M → ℝ)) :=
       fun h => hx (hsupp_each h)
     have h_open : IsOpen (tsupport ((ρ α : M → ℝ)))ᶜ :=
@@ -212,15 +212,15 @@ lemma divergence_g_with_boundary_ae_pou
             divergenceGWithBoundary (I := I_half n) g X x *
               ((chartAtlasPOU (I_half n) M) β : M → ℝ) x := by
           intro β _hβ
-          by_cases hβ_supp : ((chartAtlasPOU (I_half n) M) β : M → ℝ) x = 0
-          · rw [hβ_supp, mul_zero, mul_zero]
-          · have hx_in_supp : x ∈ tsupport ((ρ β : M → ℝ)) :=
-              subset_tsupport _ hβ_supp
+          by_cases hβ_support : ((chartAtlasPOU (I_half n) M) β : M → ℝ) x = 0
+          · rw [hβ_support, mul_zero, mul_zero]
+          · have hx_in_support : x ∈ tsupport ((ρ β : M → ℝ)) :=
+              subset_tsupport _ hβ_support
             have hβsub : ρ.IsSubordinate
                 (fun β : M => (chartAt (EuclideanHalfSpace n) β).source) :=
               chartAtlasPOU_isSubordinate (I_half n) M
             have hx_chart_β : x ∈ (chartAt (EuclideanHalfSpace n) β).source :=
-              hβsub β hx_in_supp
+              hβsub β hx_in_support
             have hd_eq :
                 divergenceGWithBoundary (I := I_half n) g X x =
                   localDivergenceWithin (I := I_half n) g β X x :=
@@ -229,7 +229,7 @@ lemma divergence_g_with_boundary_ae_pou
             rw [hd_eq]
         rw [Finset.sum_congr rfl h_each]
         rw [← Finset.mul_sum]
-        have h_supp_subset :
+        have h_support_subset :
             Function.support (fun β : M => (ρ β : M → ℝ) x) ⊆ (S : Set M) := by
           intro β hβ
           by_contra hβS
@@ -241,7 +241,7 @@ lemma divergence_g_with_boundary_ae_pou
         have h_finsum_eq_sum :
             (∑ᶠ β : M, (ρ β : M → ℝ) x) =
               ∑ β ∈ S, (ρ β : M → ℝ) x :=
-          finsum_eq_sum_of_support_subset _ h_supp_subset
+          finsum_eq_sum_of_support_subset _ h_support_subset
         have h_sum_one : (∑ᶠ β : M, (ρ β : M → ℝ) x) = 1 :=
           ρ.sum_eq_one (Set.mem_univ x)
         rw [← h_finsum_eq_sum, h_sum_one, mul_one]
@@ -316,7 +316,7 @@ lemma UnrestrictedSmoothScalar.oneSubLapClassicalLp_ae_oneSubLap
         (gradFunSection (M := M) (n := n) g u.smooth) x from rfl]
   rw [hpou_x]
 
-theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
+theorem unrestrictedSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
     {g : SmoothRiemannianMetric (I_half n) M}
     (u v : UnrestrictedSmoothScalar g)
     (h_neumann : ∀ x : (I_half n).boundary M,
@@ -341,7 +341,7 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
               (gradFunSection (M := M) (n := n) g u.smooth)) b.val))
       (surfaceMeasure
         (I := I_half n) (M := M) g)) :
-    fullSmoothScalarH1Inner u v =
+    unrestrictedSmoothScalarH1Inner u v =
       ∫ x, (u.toFun x -
               ΔGClassical (M := M) (n := n) g u.smooth x) *
             v.toFun x
@@ -402,7 +402,7 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
               ΔGClassical (M := M) (n := n) g u.smooth x
             ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
     linarith
-  unfold fullSmoothScalarH1Inner
+  unfold unrestrictedSmoothScalarH1Inner
   have hu_cont : Continuous u.toFun := u.smooth.continuous
   have hv_cont : Continuous v.toFun := v.smooth.continuous
   have h_uv_int : Integrable (fun x : M => u.toFun x * v.toFun x)
@@ -454,7 +454,7 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
   rw [h_grad_eq]
   ring
 
-theorem fullSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
+theorem unrestrictedSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
     {g : SmoothRiemannianMetric (I_half n) M}
     (u v : UnrestrictedSmoothScalar g)
     (h_neumann : ∀ x : (I_half n).boundary M,
@@ -479,9 +479,9 @@ theorem fullSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
               (gradFunSection (M := M) (n := n) g u.smooth)) b.val))
       (surfaceMeasure
         (I := I_half n) (M := M) g)) :
-    fullSmoothScalarH1Inner u v =
+    unrestrictedSmoothScalarH1Inner u v =
       ⟪u.oneSubLapClassicalLp, smoothToLpUnrestricted g v⟫_ℝ := by
-  rw [fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
+  rw [unrestrictedSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
     (u := u) (v := v) h_neumann h_chart_iden h_int]
   rw [MeasureTheory.L2.inner_def (𝕜 := ℝ)]
   have hae_lhs := u.oneSubLapClassicalLp_ae_oneSubLap
@@ -505,7 +505,7 @@ theorem fullSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
       from RCLike.inner_apply _ _]
   ring
 
-theorem fullSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
+theorem unrestrictedSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
     {g : SmoothRiemannianMetric (I_half n) M}
     (u v : UnrestrictedSmoothScalar g)
     (h_neumann : ∀ x : (I_half n).boundary M,
@@ -536,7 +536,7 @@ theorem fullSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
       lpFunctionalCLMUnrestricted g u.oneSubLapClassicalLp
         (smoothToUnrestrictedH1Compl g v) := by
   rw [unrestrictedH1ComplBilin_smoothToUnrestrictedH1Compl_smoothToUnrestrictedH1Compl,
-    fullSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
+    unrestrictedSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
       (u := u) (v := v) h_neumann h_chart_iden h_int]
   rw [lpFunctionalCLMUnrestricted_apply,
     unrestrictedH1ComplToLp_smoothToUnrestrictedH1Compl]
@@ -583,7 +583,7 @@ theorem smoothToUnrestrictedH1Compl_bilin_eq_lpFunctional_neumann
   have hLR_smooth :
       L ∘ (smoothToUnrestrictedH1Compl g) = R ∘ (smoothToUnrestrictedH1Compl g) := by
     funext v
-    exact fullSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
+    exact unrestrictedSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
       u v h_neumann (h_chart_iden v) (h_int v)
   exact congrFun
     ((denseRange_smoothToUnrestrictedH1Compl g).equalizer hL_cont hR_cont

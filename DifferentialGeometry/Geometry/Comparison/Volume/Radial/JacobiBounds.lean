@@ -251,7 +251,7 @@ lemma dir_deriv_radius
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma dir_init_ge
+lemma dir_initial_ge
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) {B : ℝ}
     (hB : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       B ≤ Real.sqrt
@@ -277,7 +277,7 @@ lemma dir_init_ge
   exact hB v hv
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem exists_dirInit_ge
+theorem exists_dirInitial_ge
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     (hderiv : ∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
       (covDerivAlong (I := I) g (radialCurve (I := I) g p x)
@@ -295,7 +295,7 @@ theorem exists_dirInit_ge
               (radialJacobiField (I := I) g p x
                 (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) 0)) := by
   rcases exists_unitCoeff_ge (I := I) g p with ⟨B, hBpos, hB⟩
-  exact ⟨B, hBpos, dir_init_ge (I := I) g p x hB hderiv⟩
+  exact ⟨B, hBpos, dir_initial_ge (I := I) g p x hB hderiv⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1290,7 +1290,7 @@ theorem radialJacobi_fin_le
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem radialJacobi_fin_le_of_init_bound_at
+theorem radialJacobi_fin_le_of_initial_bound_at
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     {K b A B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
     (hγ : ∀ t ∈ Icc (0 : ℝ) b,
@@ -1366,7 +1366,7 @@ theorem radialJacobi_fin_le_of_init_bound_at
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem radialJacobi_fin_le_of_init_bound
+theorem radialJacobi_fin_le_of_initial_bound
     (g : SmoothRiemannianMetric I M) (p : M) (x : E)
     {K b A B : ℝ} (hK : 0 ≤ K) (hb : 0 ≤ b) (h1b : (1 : ℝ) ≤ b)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 (radialCurve (I := I) g p x))
@@ -1441,7 +1441,7 @@ theorem radialJacobi_fin_le_of_init_bound
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma radialJacobi_init_le_of_deriv_eq
+lemma radialJacobi_initial_le_of_deriv_eq
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) {A : ℝ}
     (hderiv : ∀ k : Fin (Module.finrank ℝ E),
       (covDerivAlong (I := I) g (radialCurve (I := I) g p x)

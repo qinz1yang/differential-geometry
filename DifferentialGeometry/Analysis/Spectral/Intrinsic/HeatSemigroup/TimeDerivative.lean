@@ -110,7 +110,7 @@ lemma summable_heatDerivTerm (b : HilbertBasis ι ℝ X) {lam : ι → ℝ}
   have h_sq_summable : Summable
       (fun i : ι => (heatDerivCoeff lam t i * ⟪b i, v⟫_ℝ) ^ 2) := by
     refine Summable.of_nonneg_of_le ?_ ?_
-      ((summable_basis_coeff_sq' b v).mul_left (C ^ 2))
+      ((summable_basis_real_inner_sq b v).mul_left (C ^ 2))
     · intro i; positivity
     · intro i
       have h_coeff_le : |heatDerivCoeff lam t i| ≤ C := abs_heatDerivCoeff_le hlam ht i
@@ -230,7 +230,7 @@ theorem norm_abstractSpectralSemigroupDeriv_le (b : HilbertBasis ι ℝ X)
   have hcoeff_summable : Summable
       (fun i : ι => (heatDerivCoeff lam t i * ⟪b i, v⟫_ℝ) ^ 2) := by
     refine Summable.of_nonneg_of_le (fun i => sq_nonneg _) (fun i => ?_)
-      ((summable_basis_coeff_sq' b v).mul_left (C ^ 2))
+      ((summable_basis_real_inner_sq b v).mul_left (C ^ 2))
     have hcoeff := abs_heatDerivCoeff_le hlam ht i
     have hcoeff_sq : (heatDerivCoeff lam t i) ^ 2 ≤ C ^ 2 := by
       have := sq_le_sq' (neg_le_of_abs_le hcoeff) (le_of_abs_le hcoeff)
@@ -260,7 +260,7 @@ theorem norm_abstractSpectralSemigroupDeriv_le (b : HilbertBasis ι ℝ X)
       ∑' i : ι, (heatDerivCoeff lam t i * ⟪b i, v⟫_ℝ) ^ 2 ≤
         ∑' i : ι, C ^ 2 * (⟪b i, v⟫_ℝ) ^ 2 := by
     refine Summable.tsum_le_tsum (fun i => ?_) hcoeff_summable
-      ((summable_basis_coeff_sq' b v).mul_left (C ^ 2))
+      ((summable_basis_real_inner_sq b v).mul_left (C ^ 2))
     have hcoeff := abs_heatDerivCoeff_le hlam ht i
     have hcoeff_sq : (heatDerivCoeff lam t i) ^ 2 ≤ C ^ 2 := by
       have := sq_le_sq' (neg_le_of_abs_le hcoeff) (le_of_abs_le hcoeff)
@@ -492,7 +492,7 @@ private theorem slopeMinusDeriv_normSq_tendsto_zero (b : HilbertBasis ι ℝ X)
   set fmode : ℝ → ι → ℝ := fun s i =>
     (slopeMinusDerivCoeff lam t s i * ⟪b i, v⟫_ℝ) ^ 2 with hfmode_def
   have hbound_summable : Summable bound := by
-    rw [hbound_def]; exact (summable_basis_coeff_sq' b v).mul_left Cb
+    rw [hbound_def]; exact (summable_basis_real_inner_sq b v).mul_left Cb
   have hpermode : ∀ i : ι, Tendsto (fun s : ℝ => fmode s i) (𝓝[≠] t) (𝓝 0) := by
     intro i
     rw [hfmode_def]

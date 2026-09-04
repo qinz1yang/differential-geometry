@@ -64,7 +64,7 @@ lemma per_pair_ibp_chosenSecond
     (hφ_chart : ContDiffOn ℝ (⊤ : ℕ∞) φ (chartTargetEuclid (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       φ y * chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l₁ y *
         (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1)
@@ -95,15 +95,15 @@ lemma per_pair_ibp_chosenSecond
         (I := I) (M := M) g α hu_h i l₁ l₂'
   set K : Set EuclN := tsupport ψ with hK_def
   have hK_compact : IsCompact K := hψ_cs
-  have hK_in : K ⊆ Ω := hψ_supp
+  have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
     exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
-  have hv_locMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
+  have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
     exact chosenSecondPartialChartPushedU_locally_memLp
       (I := I) (M := M) g α hu_h i l₁ hK'_compact hK'_in
-  have hw_locMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
+  have hw_localMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
       IsCompact K' → K' ⊆ Ω →
       MemLp (w l₂') 2 ((volume : Measure EuclN).restrict K') := by
     intro l₂' K' hK'_compact hK'_in
@@ -113,8 +113,8 @@ lemma per_pair_ibp_chosenSecond
     Sobolev.Euclidean.integral_smul_weak_partial_eq
       (d := Module.finrank ℝ E) (Ω := Ω) hΩ_open
       (φ := φExt) hφExt_smooth (v := v) (w := w)
-      hv_locMemLp hw_locMemLp hw_isWeakPartial l₂
-      (ψ := ψ) hψ_smooth hψ_cs hψ_supp
+      hv_localMemLp hw_localMemLp hw_isWeakPartial l₂
+      (ψ := ψ) hψ_smooth hψ_cs hψ_support
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   have hK_in_thickening : K ⊆ Metric.cthickening δ K :=
     Metric.self_subset_cthickening _
@@ -136,12 +136,12 @@ lemma per_pair_ibp_chosenSecond
       (fderiv ℝ φ y) (EuclideanSpace.single l₂ 1) := fun y hy_K => by
     have hy_thick_open : y ∈ Metric.thickening δ K := by
       rw [Metric.mem_thickening_iff]; exact ⟨y, hy_K, by simp [hδ_pos]⟩
-    have h_nbhd : Metric.thickening δ K ∈ 𝓝 y :=
+    have h_neighborhood : Metric.thickening δ K ∈ 𝓝 y :=
       Metric.isOpen_thickening.mem_nhds hy_thick_open
-    have h_eq_nbhd : φExt =ᶠ[𝓝 y] φ := by
-      filter_upwards [h_nbhd] with z hz
+    have h_eq_neighborhood : φExt =ᶠ[𝓝 y] φ := by
+      filter_upwards [h_neighborhood] with z hz
       exact hφExt_eq z (Metric.thickening_subset_cthickening _ _ hz)
-    rw [Filter.EventuallyEq.fderiv_eq h_eq_nbhd]
+    rw [Filter.EventuallyEq.fderiv_eq h_eq_neighborhood]
   have hLeibniz1_eq :
       ∫ y in Ω, (fderiv ℝ φExt y) (EuclideanSpace.single l₂ 1) * v y * ψ y
         ∂(volume : Measure EuclN) =
@@ -171,7 +171,7 @@ lemma per_pair_ibp_base_weak_partial
     (hφ_chart : ContDiffOn ℝ (⊤ : ℕ∞) φ (chartTargetEuclid (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       φ y *
         (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
@@ -208,16 +208,16 @@ lemma per_pair_ibp_base_weak_partial
       (I := I) (M := M) g α hu_h i l₂'
   set K : Set EuclN := tsupport ψ with hK_def
   have hK_compact : IsCompact K := hψ_cs
-  have hK_in : K ⊆ Ω := hψ_supp
+  have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
     exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
-  have hv_locMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
+  have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
     exact base_weak_partial_locally_memLp (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h) i hK'_compact hK'_in
-  have hw_locMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
+  have hw_localMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
       IsCompact K' → K' ⊆ Ω →
       MemLp (w l₂') 2 ((volume : Measure EuclN).restrict K') := by
     intro l₂' K' hK'_compact hK'_in
@@ -227,8 +227,8 @@ lemma per_pair_ibp_base_weak_partial
     Sobolev.Euclidean.integral_smul_weak_partial_eq
       (d := Module.finrank ℝ E) (Ω := Ω) hΩ_open
       (φ := φExt) hφExt_smooth (v := v) (w := w)
-      hv_locMemLp hw_locMemLp hw_isWeakPartial l₂
-      (ψ := ψ) hψ_smooth hψ_cs hψ_supp
+      hv_localMemLp hw_localMemLp hw_isWeakPartial l₂
+      (ψ := ψ) hψ_smooth hψ_cs hψ_support
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   have hK_in_thickening : K ⊆ Metric.cthickening δ K :=
     Metric.self_subset_cthickening _
@@ -250,12 +250,12 @@ lemma per_pair_ibp_base_weak_partial
       (fderiv ℝ φ y) (EuclideanSpace.single l₂ 1) := fun y hy_K => by
     have hy_thick_open : y ∈ Metric.thickening δ K := by
       rw [Metric.mem_thickening_iff]; exact ⟨y, hy_K, by simp [hδ_pos]⟩
-    have h_nbhd : Metric.thickening δ K ∈ 𝓝 y :=
+    have h_neighborhood : Metric.thickening δ K ∈ 𝓝 y :=
       Metric.isOpen_thickening.mem_nhds hy_thick_open
-    have h_eq_nbhd : φExt =ᶠ[𝓝 y] φ := by
-      filter_upwards [h_nbhd] with z hz
+    have h_eq_neighborhood : φExt =ᶠ[𝓝 y] φ := by
+      filter_upwards [h_neighborhood] with z hz
       exact hφExt_eq z (Metric.thickening_subset_cthickening _ _ hz)
-    rw [Filter.EventuallyEq.fderiv_eq h_eq_nbhd]
+    rw [Filter.EventuallyEq.fderiv_eq h_eq_neighborhood]
   have hLeibniz1_eq :
       ∫ y in Ω, (fderiv ℝ φExt y) (EuclideanSpace.single l₂ 1) * v y * ψ y
         ∂(volume : Measure EuclN) =
@@ -286,7 +286,7 @@ lemma per_pair_ibp_base_u_chart
     (hφ_chart : ContDiffOn ℝ (⊤ : ℕ∞) φ (chartTargetEuclid (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       φ y *
         (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
@@ -322,17 +322,17 @@ lemma per_pair_ibp_base_u_chart
     fun l₂' => D.weak_partial_isWeakPartial l₂'
   set K : Set EuclN := tsupport ψ with hK_def
   have hK_compact : IsCompact K := hψ_cs
-  have hK_in : K ⊆ Ω := hψ_supp
+  have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
     exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
-  have hv_locMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
+  have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
     exact base_u_chart_locally_memLp (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h) hK'_compact
       hK'_compact.isClosed.measurableSet hK'_in
-  have hw_locMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
+  have hw_localMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
       IsCompact K' → K' ⊆ Ω →
       MemLp (w l₂') 2 ((volume : Measure EuclN).restrict K') := by
     intro l₂' K' hK'_compact hK'_in
@@ -343,8 +343,8 @@ lemma per_pair_ibp_base_u_chart
     Sobolev.Euclidean.integral_smul_weak_partial_eq
       (d := Module.finrank ℝ E) (Ω := Ω) hΩ_open
       (φ := φExt) hφExt_smooth (v := v) (w := w)
-      hv_locMemLp hw_locMemLp hw_isWeakPartial l₂
-      (ψ := ψ) hψ_smooth hψ_cs hψ_supp
+      hv_localMemLp hw_localMemLp hw_isWeakPartial l₂
+      (ψ := ψ) hψ_smooth hψ_cs hψ_support
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   have hK_in_thickening : K ⊆ Metric.cthickening δ K :=
     Metric.self_subset_cthickening _
@@ -364,12 +364,12 @@ lemma per_pair_ibp_base_u_chart
       (fderiv ℝ φ y) (EuclideanSpace.single l₂ 1) := fun y hy_K => by
     have hy_thick_open : y ∈ Metric.thickening δ K := by
       rw [Metric.mem_thickening_iff]; exact ⟨y, hy_K, by simp [hδ_pos]⟩
-    have h_nbhd : Metric.thickening δ K ∈ 𝓝 y :=
+    have h_neighborhood : Metric.thickening δ K ∈ 𝓝 y :=
       Metric.isOpen_thickening.mem_nhds hy_thick_open
-    have h_eq_nbhd : φExt =ᶠ[𝓝 y] φ := by
-      filter_upwards [h_nbhd] with z hz
+    have h_eq_neighborhood : φExt =ᶠ[𝓝 y] φ := by
+      filter_upwards [h_neighborhood] with z hz
       exact hφExt_eq z (Metric.thickening_subset_cthickening _ _ hz)
-    rw [Filter.EventuallyEq.fderiv_eq h_eq_nbhd]
+    rw [Filter.EventuallyEq.fderiv_eq h_eq_neighborhood]
   have hLeibniz1_eq :
       ∫ y in Ω, (fderiv ℝ φExt y) (EuclideanSpace.single l₂ 1) * v y * ψ y
         ∂(volume : Measure EuclN) =
@@ -399,7 +399,7 @@ lemma per_pair_ibp_base_f_chart
     (hφ_chart : ContDiffOn ℝ (⊤ : ℕ∞) φ (chartTargetEuclid (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       φ y *
         (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
@@ -437,22 +437,22 @@ lemma per_pair_ibp_base_f_chart
       chosenFChartDeriv_isWeakPartial (I := I) (M := M) g α hu_h l₂' h_memW1p
   set K : Set EuclN := tsupport ψ with hK_def
   have hK_compact : IsCompact K := hψ_cs
-  have hK_in : K ⊆ Ω := hψ_supp
+  have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
     exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
-  have hv_locMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
+  have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
     exact base_f_chart_locally_memLp (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h) hK'_compact
       hK'_compact.isClosed.measurableSet hK'_in
-  have hw_locMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
+  have hw_localMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
       IsCompact K' → K' ⊆ Ω →
       MemLp (w l₂') 2 ((volume : Measure EuclN).restrict K') := by
     intro l₂' K' hK'_compact hK'_in
     have h_global :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_memW1p l₂'
     have h_K'_meas : MeasurableSet K' := hK'_compact.isClosed.measurableSet
     have h_eq : ((volume : Measure EuclN).restrict Ω).restrict K' =
@@ -461,7 +461,7 @@ lemma per_pair_ibp_base_f_chart
       congr 1
       exact Set.inter_eq_self_of_subset_left hK'_in
     have h_unfold :
-        w l₂' = DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        w l₂' = DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 l₂' D.fChart Ω := rfl
     rw [h_unfold]
     rw [← h_eq]
@@ -470,8 +470,8 @@ lemma per_pair_ibp_base_f_chart
     Sobolev.Euclidean.integral_smul_weak_partial_eq
       (d := Module.finrank ℝ E) (Ω := Ω) hΩ_open
       (φ := φExt) hφExt_smooth (v := v) (w := w)
-      hv_locMemLp hw_locMemLp hw_isWeakPartial l₂
-      (ψ := ψ) hψ_smooth hψ_cs hψ_supp
+      hv_localMemLp hw_localMemLp hw_isWeakPartial l₂
+      (ψ := ψ) hψ_smooth hψ_cs hψ_support
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   have hK_in_thickening : K ⊆ Metric.cthickening δ K :=
     Metric.self_subset_cthickening _
@@ -491,12 +491,12 @@ lemma per_pair_ibp_base_f_chart
       (fderiv ℝ φ y) (EuclideanSpace.single l₂ 1) := fun y hy_K => by
     have hy_thick_open : y ∈ Metric.thickening δ K := by
       rw [Metric.mem_thickening_iff]; exact ⟨y, hy_K, by simp [hδ_pos]⟩
-    have h_nbhd : Metric.thickening δ K ∈ 𝓝 y :=
+    have h_neighborhood : Metric.thickening δ K ∈ 𝓝 y :=
       Metric.isOpen_thickening.mem_nhds hy_thick_open
-    have h_eq_nbhd : φExt =ᶠ[𝓝 y] φ := by
-      filter_upwards [h_nbhd] with z hz
+    have h_eq_neighborhood : φExt =ᶠ[𝓝 y] φ := by
+      filter_upwards [h_neighborhood] with z hz
       exact hφExt_eq z (Metric.thickening_subset_cthickening _ _ hz)
-    rw [Filter.EventuallyEq.fderiv_eq h_eq_nbhd]
+    rw [Filter.EventuallyEq.fderiv_eq h_eq_neighborhood]
   have hLeibniz1_eq :
       ∫ y in Ω, (fderiv ℝ φExt y) (EuclideanSpace.single l₂ 1) * v y * ψ y
         ∂(volume : Measure EuclN) =
@@ -530,7 +530,7 @@ lemma per_pair_ibp_chosenFChartDeriv
     (hφ_chart : ContDiffOn ℝ (⊤ : ℕ∞) φ (chartTargetEuclid (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       φ y *
         chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ y *
@@ -552,17 +552,17 @@ lemma per_pair_ibp_chosenFChartDeriv
   set v : EuclN → ℝ := chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ with hv_def
   set w : Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun l₂' =>
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l₂' v Ω
     with hw_def
   have hw_isWeakPartial : ∀ l₂' : Fin (Module.finrank ℝ E),
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) l₂' (w l₂') v Ω :=
     fun l₂' =>
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
         h_chosenFChartDeriv_memW1p l₂'
   set K : Set EuclN := tsupport ψ with hK_def
   have hK_compact : IsCompact K := hψ_cs
-  have hK_in : K ⊆ Ω := hψ_supp
+  have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
     exists_smooth_global_extension_chart (φ := φ) hφ_chart hK_compact hK_in
   have h_memW1p :=
@@ -573,9 +573,9 @@ lemma per_pair_ibp_chosenFChartDeriv
     change MemLp (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁) 2
         ((volume : Measure EuclN).restrict Ω)
     unfold chosenFChartDeriv
-    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       h_memW1p l₁
-  have hv_locMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
+  have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
     have h_K'_meas : MeasurableSet K' := hK'_compact.isClosed.measurableSet
@@ -586,12 +586,12 @@ lemma per_pair_ibp_chosenFChartDeriv
       exact Set.inter_eq_self_of_subset_left hK'_in
     rw [← h_eq]
     exact h_v_global.restrict K'
-  have hw_locMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
+  have hw_localMemLp : ∀ (l₂' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
       IsCompact K' → K' ⊆ Ω →
       MemLp (w l₂') 2 ((volume : Measure EuclN).restrict K') := by
     intro l₂' K' hK'_compact hK'_in
     have h_global :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_chosenFChartDeriv_memW1p l₂'
     have h_K'_meas : MeasurableSet K' := hK'_compact.isClosed.measurableSet
     have h_eq : ((volume : Measure EuclN).restrict Ω).restrict K' =
@@ -605,8 +605,8 @@ lemma per_pair_ibp_chosenFChartDeriv
     Sobolev.Euclidean.integral_smul_weak_partial_eq
       (d := Module.finrank ℝ E) (Ω := Ω) hΩ_open
       (φ := φExt) hφExt_smooth (v := v) (w := w)
-      hv_locMemLp hw_locMemLp hw_isWeakPartial l₂
-      (ψ := ψ) hψ_smooth hψ_cs hψ_supp
+      hv_localMemLp hw_localMemLp hw_isWeakPartial l₂
+      (ψ := ψ) hψ_smooth hψ_cs hψ_support
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   have hK_in_thickening : K ⊆ Metric.cthickening δ K :=
     Metric.self_subset_cthickening _
@@ -626,12 +626,12 @@ lemma per_pair_ibp_chosenFChartDeriv
       (fderiv ℝ φ y) (EuclideanSpace.single l₂ 1) := fun y hy_K => by
     have hy_thick_open : y ∈ Metric.thickening δ K := by
       rw [Metric.mem_thickening_iff]; exact ⟨y, hy_K, by simp [hδ_pos]⟩
-    have h_nbhd : Metric.thickening δ K ∈ 𝓝 y :=
+    have h_neighborhood : Metric.thickening δ K ∈ 𝓝 y :=
       Metric.isOpen_thickening.mem_nhds hy_thick_open
-    have h_eq_nbhd : φExt =ᶠ[𝓝 y] φ := by
-      filter_upwards [h_nbhd] with z hz
+    have h_eq_neighborhood : φExt =ᶠ[𝓝 y] φ := by
+      filter_upwards [h_neighborhood] with z hz
       exact hφExt_eq z (Metric.thickening_subset_cthickening _ _ hz)
-    rw [Filter.EventuallyEq.fderiv_eq h_eq_nbhd]
+    rw [Filter.EventuallyEq.fderiv_eq h_eq_neighborhood]
   have hLeibniz1_eq :
       ∫ y in Ω, (fderiv ℝ φExt y) (EuclideanSpace.single l₂ 1) * v y * ψ y
         ∂(volume : Measure EuclN) =

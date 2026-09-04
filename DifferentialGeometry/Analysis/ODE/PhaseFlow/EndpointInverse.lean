@@ -76,7 +76,7 @@ theorem invErr_lt_one {N c : NNReal}
       ring
     _ < 1 := (div_lt_one hdiff).2 hnum
 
-theorem invVel_approx
+theorem invVelocity_approx
     {F : E × E → E × E} {s : Set (E × E)} {c : NNReal}
     (hF : ApproximatesLinearOn F
       ((freeDiagCLE (E := E)).symm : (E × E) →L[Real] (E × E)) s c)
@@ -107,7 +107,7 @@ theorem invVel_approx
     _ ≤ (c : Real) * ‖z - z'‖ := hfull
     _ = (c : Real) * ‖x - x'‖ := by rw [hprod]
 
-theorem invVel_fderiv_le
+theorem invVelocity_fderiv_le
     {F : E × E → E × E} {s : Set (E × E)} {c : NNReal}
     (hF : ApproximatesLinearOn F
       ((freeDiagCLE (E := E)).symm : (E × E) →L[Real] (E × E)) s c)
@@ -121,7 +121,7 @@ theorem invVel_fderiv_le
     exact (hFd.comp x
       (differentiableAt_id.prodMk (differentiableAt_const y))).snd
   simpa only [sub_neg_eq_add] using
-    (invVel_approx hF y).fderiv_sub_le hs' hslice
+    (invVelocity_approx hF y).fderiv_sub_le hs' hslice
 
 theorem inv_smooth_of_approx [CompleteSpace E] [FiniteDimensional Real E]
     {f : E → E} {A : E ≃L[Real] E} {s : Set E} {c : NNReal}

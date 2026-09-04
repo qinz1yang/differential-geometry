@@ -11,7 +11,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -46,7 +46,7 @@ private theorem connLow_self_zero
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)) by
     funext i
     exact (tangentSpaceModelContinuousLinearEquiv (I := I) x).apply_symm_apply (m i)]
-  rw [connectionDifferenceLoweredCc_unitModel_apply']
+  rw [connectionDifferenceLoweredCc_unitModel_apply]
   rw [PDE.DeTurck.connectionDifference_self]
   simp
 

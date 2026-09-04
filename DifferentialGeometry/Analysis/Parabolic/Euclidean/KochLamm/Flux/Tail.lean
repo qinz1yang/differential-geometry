@@ -102,7 +102,7 @@ theorem heatD1Tail_pow {t k p : ℝ} (ht : 0 < t) (hk : 0 ≤ k)
           (heatScale t)⁻¹) ^ p) *
             (baseD1Half ((heatScale t)⁻¹ • x)) ^ p) := by ring
 
-theorem klFluxSlice_pow {R k s p : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
+theorem kochLammFluxSlice_pow {R k s p : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (hp1 : 1 ≤ p) (hp2 : p ≤ 2)
     (hs : s ∈ Ioc (R ^ 2 / 2) (R ^ 2)) (hst : s ≠ R ^ 2)
     (x : V) {S : Set V} (hSm : MeasurableSet S)
@@ -133,7 +133,7 @@ theorem klFluxSlice_pow {R k s p : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
         (volume : Measure V).restrict S]
       (fun y : V ↦ D * (heatD1Half u (x - y)) ^ p) := by
     filter_upwards [ae_restrict_mem hSm] with y hy
-    have hstrong := klTerm_scaled (V := V) hR hk hs hst (hfar y hy)
+    have hstrong := kochLammTerm_scaled (V := V) hR hk hs hst (hfar y hy)
     have hkroot : k ≤ Real.sqrt 2 * k := by
       calc
         k = 1 * k := by ring
@@ -167,94 +167,94 @@ theorem klFluxSlice_pow {R k s p : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
           (((Module.finrank ℝ V : ℝ) * (1 - p) - p) / 2) *
             baseD1HalfMass V p) := rfl
 
-def klFluxTailPow (R : ℝ) (x : V) (S : Set V) : ℝ :=
-  ∫ z : ℝ × V, ‖klFluxMajor (R ^ 2) x z‖ ^ klPDual V
-    ∂klTailMeasure (V := V) R S
+def kochLammFluxTailPow (R : ℝ) (x : V) (S : Set V) : ℝ :=
+  ∫ z : ℝ × V, ‖kochLammFluxMajor (R ^ 2) x z‖ ^ kochLammPDual V
+    ∂kochLammTailMeasure (V := V) R S
 
-theorem klFluxTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
+theorem kochLammFluxTail_pow {R k : ℝ} (hR : 0 < R) (hk : 0 ≤ k)
     (x : V) {S : Set V} (hSm : MeasurableSet S)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :
-    klFluxTailPow (V := V) R x S ≤
-      (Real.exp (-(8 : ℝ)⁻¹ * k ^ 2)) ^ klPDual V *
-        (((R ^ 2 / 2) ^ (klD1Exp V + 1) /
-          (klD1Exp V + 1)) * baseD1HalfMass V (klPDual V)) := by
-  let p : ℝ := klPDual V
+    kochLammFluxTailPow (V := V) R x S ≤
+      (Real.exp (-(8 : ℝ)⁻¹ * k ^ 2)) ^ kochLammPDual V *
+        (((R ^ 2 / 2) ^ (kochLammD1Exp V + 1) /
+          (kochLammD1Exp V + 1)) * baseD1HalfMass V (kochLammPDual V)) := by
+  let p : ℝ := kochLammPDual V
   let D : ℝ := (Real.exp (-(8 : ℝ)⁻¹ * k ^ 2)) ^ p
-  have hp : 0 < p := (klPDual_holder (V := V)).pos
-  have hμ : klTailMeasure (V := V) R S ≤
-      klTermMeasure (V := V) (R ^ 2) := by
-    unfold klTailMeasure klTermMeasure
+  have hp : 0 < p := (kochLammPDual_holder (V := V)).pos
+  have hμ : kochLammTailMeasure (V := V) R S ≤
+      kochLammTermMeasure (V := V) (R ^ 2) := by
+    unfold kochLammTailMeasure kochLammTermMeasure
     rw [Measure.prod_restrict, Measure.restrict_prod_eq_prod_univ]
     exact Measure.restrict_mono
       (Set.prod_mono (subset_refl _) (Set.subset_univ _)) le_rfl
   have hi : Integrable
-      (fun z : ℝ × V ↦ ‖klFluxMajor (R ^ 2) x z‖ ^ p)
-      (klTailMeasure (V := V) R S) := by
-    have hg := (klFluxMajor_memLp (V := V) (t := R ^ 2) x).integrable_norm_rpow
+      (fun z : ℝ × V ↦ ‖kochLammFluxMajor (R ^ 2) x z‖ ^ p)
+      (kochLammTailMeasure (V := V) R S) := by
+    have hg := (kochLammFluxMajor_memLp (V := V) (t := R ^ 2) x).integrable_norm_rpow
       (ENNReal.ofReal_pos.mpr hp).ne' ENNReal.ofReal_ne_top
     have hg' : Integrable
-        (fun z : ℝ × V ↦ ‖klFluxMajor (R ^ 2) x z‖ ^ p)
-        (klTermMeasure (V := V) (R ^ 2)) := by
+        (fun z : ℝ × V ↦ ‖kochLammFluxMajor (R ^ 2) x z‖ ^ p)
+        (kochLammTermMeasure (V := V) (R ^ 2)) := by
       simpa only [ENNReal.toReal_ofReal hp.le, p] using hg
     exact hg'.mono_measure hμ
   have hne : ∀ᵐ s ∂(volume : Measure ℝ), s ≠ R ^ 2 := by
     simp [ae_iff, measure_singleton]
   have hslice : ∀ᵐ s ∂volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2)),
-      (∫ y : V, ‖klFluxMajor (R ^ 2) x (s, y)‖ ^ p
+      (∫ y : V, ‖kochLammFluxMajor (R ^ 2) x (s, y)‖ ^ p
           ∂(volume : Measure V).restrict S) ≤
-        D * ((R ^ 2 - s) ^ klD1Exp V * baseD1HalfMass V p) := by
+        D * ((R ^ 2 - s) ^ kochLammD1Exp V * baseD1HalfMass V p) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioc,
       ae_restrict_of_ae hne] with s hs hst
     have hu : 0 < R ^ 2 - s :=
       sub_pos.mpr (lt_of_le_of_ne hs.2 hst)
-    have hslice' := klFluxSlice_pow (V := V) hR hk
-      (klPDual_one (V := V)) (klPDual_two (V := V)) hs hst x hSm hfar
+    have hslice' := kochLammFluxSlice_pow (V := V) hR hk
+      (kochLammPDual_one (V := V)) (kochLammPDual_two (V := V)) hs hst x hSm hfar
     calc
-      (∫ y : V, ‖klFluxMajor (R ^ 2) x (s, y)‖ ^ p
+      (∫ y : V, ‖kochLammFluxMajor (R ^ 2) x (s, y)‖ ^ p
           ∂(volume : Measure V).restrict S) =
           ∫ y : V, (heatD1Maj (R ^ 2 - s) (x - y)) ^ p
             ∂(volume : Measure V).restrict S := by
         apply integral_congr_ae
         filter_upwards with y
         rw [Real.norm_of_nonneg
-          (klFluxMajor_nonneg (V := V) (R ^ 2) x (s, y))]
+          (kochLammFluxMajor_nonneg (V := V) (R ^ 2) x (s, y))]
         rfl
       _ ≤ (Real.exp (-(8 : ℝ)⁻¹ * k ^ 2)) ^ p *
           ((R ^ 2 - s) ^
             (((Module.finrank ℝ V : ℝ) * (1 - p) - p) / 2) *
               baseD1HalfMass V p) := hslice'
-      _ = D * ((R ^ 2 - s) ^ klD1Exp V *
+      _ = D * ((R ^ 2 - s) ^ kochLammD1Exp V *
           baseD1HalfMass V p) := by
-        simp only [D, p, klD1Exp]
+        simp only [D, p, kochLammD1Exp]
   have hright : Integrable
       (fun s : ℝ ↦ D *
-        ((R ^ 2 - s) ^ klD1Exp V * baseD1HalfMass V p))
+        ((R ^ 2 - s) ^ kochLammD1Exp V * baseD1HalfMass V p))
       (volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))) :=
-    (((klD1Time_intble (V := V)).1.mul_const _).const_mul _)
+    (((kochLammD1Time_intble (V := V)).1.mul_const _).const_mul _)
   have hi' : Integrable
-      (fun z : ℝ × V ↦ ‖klFluxMajor (R ^ 2) x z‖ ^ p)
+      (fun z : ℝ × V ↦ ‖kochLammFluxMajor (R ^ 2) x z‖ ^ p)
       ((volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))).prod
         ((volume : Measure V).restrict S)) := by
-    simpa only [klTailMeasure] using hi
+    simpa only [kochLammTailMeasure] using hi
   change
-    (∫ z : ℝ × V, ‖klFluxMajor (R ^ 2) x z‖ ^ p
+    (∫ z : ℝ × V, ‖kochLammFluxMajor (R ^ 2) x z‖ ^ p
       ∂((volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))).prod
         ((volume : Measure V).restrict S))) ≤
-      D * (((R ^ 2 / 2) ^ (klD1Exp V + 1) /
-        (klD1Exp V + 1)) * baseD1HalfMass V p)
+      D * (((R ^ 2 / 2) ^ (kochLammD1Exp V + 1) /
+        (kochLammD1Exp V + 1)) * baseD1HalfMass V p)
   rw [integral_prod _ hi']
   calc
-    (∫ s : ℝ, ∫ y : V, ‖klFluxMajor (R ^ 2) x (s, y)‖ ^ p
+    (∫ s : ℝ, ∫ y : V, ‖kochLammFluxMajor (R ^ 2) x (s, y)‖ ^ p
           ∂(volume : Measure V).restrict S
         ∂volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2))) ≤
         ∫ s : ℝ, D *
-          ((R ^ 2 - s) ^ klD1Exp V * baseD1HalfMass V p)
+          ((R ^ 2 - s) ^ kochLammD1Exp V * baseD1HalfMass V p)
           ∂volume.restrict (Ioc (R ^ 2 / 2) (R ^ 2)) :=
       integral_mono_ae hi'.integral_prod_left hright hslice
-    _ = D * (((R ^ 2 / 2) ^ (klD1Exp V + 1) /
-          (klD1Exp V + 1)) * baseD1HalfMass V p) := by
+    _ = D * (((R ^ 2 / 2) ^ (kochLammD1Exp V + 1) /
+          (kochLammD1Exp V + 1)) * baseD1HalfMass V p) := by
       rw [integral_const_mul, integral_mul_const,
-        klD1Time_set (V := V) (sq_pos_of_pos hR)]
+        kochLammD1Time_set (V := V) (sq_pos_of_pos hR)]
 
 end Euclidean
 end Parabolic

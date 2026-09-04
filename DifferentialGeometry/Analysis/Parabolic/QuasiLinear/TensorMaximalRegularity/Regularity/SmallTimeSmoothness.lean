@@ -23,13 +23,13 @@ open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 
-private theorem perModeConv_sq_le_time_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
+private theorem perModeConvolution_sq_le_time_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
     {c : ℝ → ℝ} (hc : Continuous c) {t : ℝ} (ht : 0 ≤ t) :
-    (perModeConv lam c t) ^ 2 ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 := by
+    (perModeConvolution lam c t) ^ 2 ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 := by
   set k : ℝ → ℝ := fun s => Real.exp (-(lam * (t - s))) * c s with hk_def
   have hk_cont : Continuous k := by fun_prop
-  have hconv_eq : perModeConv lam c t = ∫ s in (0 : ℝ)..t, k s := by
-    rw [perModeConv]
+  have hconv_eq : perModeConvolution lam c t = ∫ s in (0 : ℝ)..t, k s := by
+    rw [perModeConvolution]
   have hCS : (∫ s in (0 : ℝ)..t, (1 : ℝ) * k s) ^ 2
       ≤ (∫ s in (0 : ℝ)..t, (1 : ℝ)) * ∫ s in (0 : ℝ)..t, (1 : ℝ) * (k s) ^ 2 :=
     weighted_cauchy_schwarz ht continuous_const hk_cont (fun _ _ => zero_le_one)
@@ -52,14 +52,14 @@ private theorem perModeConv_sq_le_time_mul_integral (lam : ℝ) (hlam : 0 ≤ la
     · exact hk_sq_le
   have ht_int_nonneg : 0 ≤ ∫ s in (0 : ℝ)..t, (k s) ^ 2 :=
     intervalIntegral.integral_nonneg ht (fun s _ => sq_nonneg _)
-  calc (perModeConv lam c t) ^ 2
+  calc (perModeConvolution lam c t) ^ 2
       = (∫ s in (0 : ℝ)..t, k s) ^ 2 := by rw [hconv_eq]
     _ ≤ t * ∫ s in (0 : ℝ)..t, (k s) ^ 2 := hCS
     _ ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 := by
         exact mul_le_mul_of_nonneg_left hk_sq_int ht
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorHs_smallTime_norm_le_of_perModeConv
+theorem tensorHs_smallTime_norm_le_of_perModeConvolution
     (a : ℝ) {T : ℝ} (hT : 0 < T)
     (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)
     (hc_cont : ∀ i, Continuous (c i))
@@ -71,7 +71,7 @@ theorem tensorHs_smallTime_norm_le_of_perModeConv
       ∀ t ∈ Set.Icc (0 : ℝ) d₂,
         ∀ W : TensorHs (I := I) (M := M) g r s (a + 2),
           (∀ i, W.coeff i =
-            perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (c i) t) →
+            perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (c i) t) →
           ‖W‖ ≤ R₀ := by
   classical
   have hB_nonneg : ∀ i, 0 ≤ B i := by
@@ -99,13 +99,13 @@ theorem tensorHs_smallTime_norm_le_of_perModeConv
     have hlam_nonneg : 0 ≤ lam := tensor_lambda_nonneg (I := I) (M := M) i
     have hwt_nonneg : 0 ≤ tensorSobolevWeight (I := I) (M := M) i (a + 2) :=
       tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2)
-    have hCS := perModeConv_sq_le_time_mul_integral
+    have hCS := perModeConvolution_sq_le_time_mul_integral
       lam hlam_nonneg (hc_cont i) ht0
     have hstep1 : tensorSobolevWeight (I := I) (M := M) i (a + 2) *
-          (perModeConv lam (c i) t) ^ 2 ≤
+          (perModeConvolution lam (c i) t) ^ 2 ≤
         t * (tensorSobolevWeight (I := I) (M := M) i (a + 2) *
           ∫ s in (0 : ℝ)..t, (c i s) ^ 2) := by
-      calc tensorSobolevWeight (I := I) (M := M) i (a + 2) * (perModeConv lam (c i) t) ^ 2
+      calc tensorSobolevWeight (I := I) (M := M) i (a + 2) * (perModeConvolution lam (c i) t) ^ 2
           ≤ tensorSobolevWeight (I := I) (M := M) i (a + 2) *
               (t * ∫ s in (0 : ℝ)..t, (c i s) ^ 2) :=
             mul_le_mul_of_nonneg_left hCS hwt_nonneg
@@ -123,7 +123,7 @@ theorem tensorHs_smallTime_norm_le_of_perModeConv
           exact hB_le i s ⟨hs.1, le_trans hs.2 htT⟩
       rw [intervalIntegral.integral_const, smul_eq_mul, sub_zero] at hmono
       exact hmono
-    calc tensorSobolevWeight (I := I) (M := M) i (a + 2) * (perModeConv lam (c i) t) ^ 2
+    calc tensorSobolevWeight (I := I) (M := M) i (a + 2) * (perModeConvolution lam (c i) t) ^ 2
         ≤ t * (tensorSobolevWeight (I := I) (M := M) i (a + 2) *
             ∫ s in (0 : ℝ)..t, (c i s) ^ 2) := hstep1
       _ ≤ t * (t * B i) :=

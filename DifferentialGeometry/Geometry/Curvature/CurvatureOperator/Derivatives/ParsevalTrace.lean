@@ -647,22 +647,22 @@ private lemma nablaCurvSec_vanish_secondSlot
   have hbase_open : IsOpen e.baseSet := e.open_baseSet
   set bE : Module.Basis (Module.Basis.ofVectorSpaceIndex ℝ E) ℝ E := Module.Basis.ofVectorSpace ℝ E
     with hbE_def
-  set sLoc : Module.Basis.ofVectorSpaceIndex ℝ E → Π b : M, TangentSpace I b :=
-    fun i => e.localFrame bE i with hsLoc_def
-  set cLoc : Module.Basis.ofVectorSpaceIndex ℝ E → M → ℝ :=
-    fun i b => e.localFrameCoeff I bE i b (Δ b) with hcLoc_def
-  have hexpand : ∀ᶠ b in 𝓝 x, Δ b = ∑ i, cLoc i b • sLoc i b :=
+  set sLocal : Module.Basis.ofVectorSpaceIndex ℝ E → Π b : M, TangentSpace I b :=
+    fun i => e.localFrame bE i with hsLocal_def
+  set cLocal : Module.Basis.ofVectorSpaceIndex ℝ E → M → ℝ :=
+    fun i b => e.localFrameCoeff I bE i b (Δ b) with hcLocal_def
+  have hexpand : ∀ᶠ b in 𝓝 x, Δ b = ∑ i, cLocal i b • sLocal i b :=
     e.eventually_eq_localFrame_sum_coeff_smul bE hx_base
-  have hsLoc_on : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% (sLoc i)) e.baseSet :=
+  have hsLocal_on : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% (sLocal i)) e.baseSet :=
     fun i => e.contMDiffOn_localFrame_baseSet (n := ∞) (b := bE) i
-  have hcLoc_on : ∀ i, ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (cLoc i) e.baseSet := by
+  have hcLocal_on : ∀ i, ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (cLocal i) e.baseSet := by
     intro i b hb
     exact (contMDiffAt_localFrameCoeff bE hb (hΔ b) i).contMDiffWithinAt
   obtain ⟨Sglob, hSglob_eq⟩ := exists_contMDiffSection_eqOn_nhd (I := I)
-    (V := fun z : M => TangentSpace I z) (n := (⊤ : ℕ∞)) (s := sLoc)
-    (fun i => (hsLoc_on i).of_le (by exact_mod_cast le_top)) hbase_open hx_base
-  have hfglob : ∀ i, ∃ F : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ F ∧ F =ᶠ[𝓝 x] cLoc i :=
-    fun i => exists_global_smooth_eqOn_nhd_scalar hbase_open hx_base (hcLoc_on i)
+    (V := fun z : M => TangentSpace I z) (n := (⊤ : ℕ∞)) (s := sLocal)
+    (fun i => (hsLocal_on i).of_le (by exact_mod_cast le_top)) hbase_open hx_base
+  have hfglob : ∀ i, ∃ F : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ F ∧ F =ᶠ[𝓝 x] cLocal i :=
+    fun i => exists_global_smooth_eqOn_nhd_scalar hbase_open hx_base (hcLocal_on i)
   choose fglob hfglob_smooth hfglob_eq using hfglob
   set Ssec : Module.Basis.ofVectorSpaceIndex ℝ E → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     fun i => Sglob i with hSsec_def
@@ -675,7 +675,7 @@ private lemma nablaCurvSec_vanish_secondSlot
     refine Finset.sum_congr rfl (fun i _ => ?_)
     have hval : (fbun i • Ssec i) b = fglob i b • (Ssec i : Π z : M, TangentSpace I z) b := rfl
     rw [hval, hbf i]
-    have hSb : (Ssec i : Π z : M, TangentSpace I z) b = sLoc i b := hbS i
+    have hSb : (Ssec i : Π z : M, TangentSpace I z) b = sLocal i b := hbS i
     rw [hSb]
   have hcomb_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% ((∑ i, fbun i • Ssec i :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : Π b : M, TangentSpace I b)) :=
@@ -690,7 +690,7 @@ private lemma nablaCurvSec_vanish_secondSlot
       ((fbun i : M → ℝ) • fun b => (Ssec i : Π z : M, TangentSpace I z) b) from rfl,
     nablaCurvSec_smul_right (g := g) (by rw [hfbun_coe]; exact hfglob_smooth i) X (Ssec i) Z W x]
   have hfix : (fbun i : M → ℝ) x = 0 := by
-    rw [hfbun_coe, (hfglob_eq i).self_of_nhds, hcLoc_def]
+    rw [hfbun_coe, (hfglob_eq i).self_of_nhds, hcLocal_def]
     simp only [hΔx, map_zero]
   rw [hfix, zero_smul]
 

@@ -307,7 +307,7 @@ theorem exists_global_smooth_eqOn_ball_of_rawPull
       ∘ (toEuclidean (E := E)).symm with hrp_def
   have hrp_on : ContDiffOn ℝ ∞ rp Ω :=
     rawPull_contDiffOn (I := I) (M := M) g r s T α Idx Jdx
-  obtain ⟨δ, η, hδ_pos, _hδ_sub, hη_smooth, hη_cpt, _hη_range, hη_one, hη_supp⟩ :=
+  obtain ⟨δ, η, hδ_pos, _hδ_sub, hη_smooth, hη_compact, _hη_range, hη_one, hη_support⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E)
       (isCompact_closedBall y₀ R) hΩ_open hball
@@ -326,7 +326,7 @@ theorem exists_global_smooth_eqOn_ball_of_rawPull
       rw [hΩ_def, ht_def, Set.union_comm, Set.eq_univ_iff_forall]
       intro y
       by_cases hy : y ∈ tsupport η
-      · exact Or.inr (hη_supp hy)
+      · exact Or.inr (hη_support hy)
       · exact Or.inl hy
     exact contDiff_of_contDiffOn_union_of_isOpen h_on_Ω h_on_t h_union hΩ_open ht_open
   · intro y hy
@@ -620,7 +620,7 @@ private theorem rawPullCenter_le_hsNorm
     exists_global_smooth_eqOn_ball_of_rawPull (I := I) (M := M) g r s T' α IJ.1 IJ.2 hball
   have hy₁_cb : y₁ ∈ Metric.closedBall y₀ R :=
     (Metric.ball_subset_ball (by linarith)).trans Metric.ball_subset_closedBall hy₁
-  have h_loc := hCloc (f := ftil) hftil_smooth y₁ hy₁
+  have h_local := hCloc (f := ftil) hftil_smooth y₁ hy₁
   have hftil_y0 : ftil y₁ =
       tensorChartComponentRaw (I := I) (M := M) g r s T' α IJ.1 IJ.2
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y₁)) := by
@@ -707,7 +707,7 @@ private theorem rawPullCenter_le_hsNorm
       _ ≤ Real.sqrt ((A * hsn) ^ 2) := Real.sqrt_le_sqrt h_Xsq_le_Asq
       _ = A * hsn := Real.sqrt_sq hAhsn_nn
   rw [← hftil_y0, ← Real.norm_eq_abs]
-  refine h_loc.trans ?_
+  refine h_local.trans ?_
   have h_sum_le :
       (∑ j ∈ Finset.range (2 * (2 * k) + 1),
           (eLpNorm (fun z => ‖iteratedFDeriv ℝ j ftil z‖) 2
@@ -816,10 +816,10 @@ private theorem superlevel_compact_subset_source
   refine ⟨hclosed.isCompact, ?_⟩
   intro x hx
   have hx_pos : (0 : ℝ) < (chartAtlasPOU I M α : M → ℝ) x := lt_of_lt_of_le hc_pos hx
-  have hx_supp : x ∈ Function.support (fun y : M => (chartAtlasPOU I M α : M → ℝ) y) :=
+  have hx_support : x ∈ Function.support (fun y : M => (chartAtlasPOU I M α : M → ℝ) y) :=
     ne_of_gt hx_pos
   have hx_tsupp : x ∈ tsupport (fun y : M => (chartAtlasPOU I M α : M → ℝ) y) :=
-    subset_tsupport _ hx_supp
+    subset_tsupport _ hx_support
   exact DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α hx_tsupp
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
@@ -873,14 +873,14 @@ private theorem chartFiberNorm_le_hsNorm_on_superlevel
       isOpen_Ioi
   have hO_sub : O ⊆ chartTargetEuclid (I := I) (M := M) α := by
     rw [hO_def]; exact Set.inter_subset_left
-  have hx_ext_src : ∀ x ∈ Kset, x ∈ (extChartAt I α).source := by
+  have hx_ext_source : ∀ x ∈ Kset, x ∈ (extChartAt I α).source := by
     intro x hx; rw [extChartAt_source]; exact hK_sub hx
   have hpull_eq : ∀ x ∈ Kset,
       (extChartAt I α).symm ((toEuclidean (E := E)).symm
         ((toEuclidean (E := E)) ((extChartAt I α) x))) = x := by
     intro x hx
     rw [(toEuclidean (E := E)).symm_apply_apply]
-    exact (extChartAt I α).left_inv (hx_ext_src x hx)
+    exact (extChartAt I α).left_inv (hx_ext_source x hx)
   have hKcO : Kc ⊆ O := by
     intro y hy
     rw [hKc_def] at hy
@@ -890,7 +890,7 @@ private theorem chartFiberNorm_le_hsNorm_on_superlevel
       rw [hy_eq]; exact hpull_eq x hx_K
     have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := by
       rw [hy_eq]
-      exact ⟨(extChartAt I α) x, (extChartAt I α).map_source (hx_ext_src x hx_K), rfl⟩
+      exact ⟨(extChartAt I α) x, (extChartAt I α).map_source (hx_ext_source x hx_K), rfl⟩
     refine ⟨hy_target, ?_⟩
     have hgoal : c / 2 < (chartAtlasPOU I M α : M → ℝ)
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := by

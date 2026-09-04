@@ -62,7 +62,7 @@ private theorem flatJoin_closed
   · exact flatJoin_node x t f ht hzero hnode hi
   · exact flatJoin_eq x t f ht hi hlt hs.2
 
-private theorem exists_fin_seg
+private theorem exists_fin_segment
     {m : Nat} (hm : 0 < m) (t : Fin (m + 1) → Real)
     (ht : Monotone t) {a b s : Real} (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b) (hs : s ∈ Icc a b) :
@@ -381,7 +381,7 @@ theorem exists_c1_of_flat
     have hcoord := chartLift_coord I (p i)
       (fun s ↦ v i n (s - t i.castSucc)) (hmaps i n) hs
     simpa only [Function.comp_apply, sub_self, add_sub_cancel_left] using hcoord.symm
-  have halpha_src (i : Fin m) (n : Nat) : MapsTo (alpha n)
+  have halpha_source (i : Fin m) (n : Nat) : MapsTo (alpha n)
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source := by
     intro s hs
     have htarget := hmaps i n hs
@@ -392,7 +392,7 @@ theorem exists_c1_of_flat
         flatExtend_of_mem (fun q ↦ v i n (q - t i.castSucc)) hs]
     rw [halpha_piece i n hs, hlift]
     simpa only [extChartAt_source] using hin
-  have hinv_unif (i : Fin m) : TendstoUniformly
+  have hinv_uniform (i : Fin m) : TendstoUniformly
       (fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦
         (extChartAt I (p i)).symm (v i n r.1))
       (fun r ↦ gamma (t i.castSucc + r.1)) atTop := by
@@ -404,7 +404,7 @@ theorem exists_c1_of_flat
     filter_upwards [hcomp U hU] with n hn
     intro r
     simpa only [hlim_lift i r] using hn r
-  have halpha_unif : TendstoUniformly
+  have halpha_uniform : TendstoUniformly
       (fun n (s : Icc a b) ↦ alpha n s.1)
       (fun s ↦ gamma s.1) atTop := by
     by_cases hm : 0 < m
@@ -413,10 +413,10 @@ theorem exists_c1_of_flat
           ∀ r : Icc (0 : Real) (partitionIntervalLength t i),
             (gamma (t i.castSucc + r.1),
               (extChartAt I (p i)).symm (v i n r.1)) ∈ U := by
-        exact Filter.eventually_all.mpr fun i ↦ hinv_unif i U hU
+        exact Filter.eventually_all.mpr fun i ↦ hinv_uniform i U hU
       filter_upwards [hall] with n hn
       intro s
-      obtain ⟨i, hs⟩ := exists_fin_seg hm t htmono ht0 htlast s.2
+      obtain ⟨i, hs⟩ := exists_fin_segment hm t htmono ht0 htlast s.2
       let r : Icc (0 : Real) (partitionIntervalLength t i) :=
         ⟨s.1 - t i.castSucc, by
           constructor
@@ -443,7 +443,7 @@ theorem exists_c1_of_flat
       rw [hsval, halpha_left]
       exact refl_mem_uniformity hU
   exact ⟨alpha, halpha_c1, halpha_left, halpha_right, halpha_rep,
-    halpha_src, halpha_unif⟩
+    halpha_source, halpha_uniform⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

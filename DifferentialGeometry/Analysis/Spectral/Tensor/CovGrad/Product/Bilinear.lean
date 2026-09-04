@@ -118,7 +118,7 @@ private theorem eq_zero_of_riemannianFiberNormSq_eq_zero (g : SmoothRiemannianMe
   let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace r s I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have hnorm_sq : ‖z‖ ^ 2 = 0 :=
-    (riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g r s x z).symm.trans hz
+    (riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g r s x z).symm.trans hz
   have hnorm : ‖z‖ = 0 := by nlinarith [norm_nonneg z, hnorm_sq]
   exact norm_eq_zero.mp hnorm
 

@@ -34,8 +34,8 @@ theorem tent_deriv (T c : Real) (z : X) :
   exact (tentSlope_mem T c z).coeFn_toLp
 
 omit [CompleteSpace X] in
-@[simp] theorem tent_init (T c : Real) (z : X) :
-    (tent T c z).init = 0 := rfl
+@[simp] theorem tent_initial (T c : Real) (z : X) :
+    (tent T c z).initial = 0 := rfl
 
 omit [CompleteSpace X] in
 theorem tent_deriv_left {T c : Real} (z : X) (hcT : c < T) :
@@ -90,7 +90,7 @@ theorem tent_toFun_left {T c t : Real} (z : X) (hcT : c < T)
       exact hst.2.trans ht.2
     exact (Iic c).piecewise_eq_of_mem _ _
       (show s ∈ Iic c from hsc)
-  rw [toFun_apply, tent_init, hint, intervalIntegral.integral_const,
+  rw [toFun_apply, tent_initial, hint, intervalIntegral.integral_const,
     zero_add, sub_zero, smul_smul, div_eq_mul_inv]
 
 theorem tent_node {T c : Real} (z : X) (hc : 0 < c) (hcT : c < T) :

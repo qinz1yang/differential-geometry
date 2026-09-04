@@ -52,7 +52,7 @@ lemma modelHaar_ball {R : ℝ} (hR : 0 < R) :
       (μ := modelHaar (E := E)) (x := (0 : E)) hR)
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
-lemma ball_tgt_of_radius
+lemma ball_target_of_radius
     (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ}
     (hR : R ≤ expMapC2Radius (I := I) g p) :
     Metric.ball (0 : E) R ⊆ (normalChartAt (I := I) g p).target := by
@@ -234,7 +234,7 @@ theorem coordBall_vol_le
     (fun w hw => hJ w (hA_ball hw))
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem coordBall_vol_le_tgt
+theorem coordBall_vol_le_target
     (g : SmoothRiemannianMetric I M) (p : M)
     {B R : ℝ} (hB : 0 ≤ B)
     (hR : R ≤ expMapC2Radius (I := I) g p)
@@ -273,7 +273,7 @@ theorem coordBall_vol_scale
         (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   simpa [modelHaar_ball (E := E) hRpos] using
-    coordBall_vol_le_tgt (I := I) g p hB hR hball_target hJ
+    coordBall_vol_le_target (I := I) g p hB hR hball_target hJ
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_scale_c2
@@ -294,7 +294,7 @@ theorem coordBall_vol_scale_c2
         (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) :=
   coordBall_vol_scale (I := I) g p hB hRpos hR
-    (ball_tgt_of_radius (I := I) g p hR) hJ
+    (ball_target_of_radius (I := I) g p hR) hJ
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem coordBall_vol_ge
@@ -365,7 +365,7 @@ theorem coordBall_vol_ge_sc_c2
       riemannianVolumeMeasure (I := I) (M := M) g
         ((normalChartAt (I := I) g p).symm '' Metric.ball (0 : E) R) :=
   coordBall_vol_ge_sc (I := I) g p hRpos
-    (ball_tgt_of_radius (I := I) g p hR) hdens
+    (ball_target_of_radius (I := I) g p hR) hdens
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -460,7 +460,7 @@ theorem smallNormalBall_vol_ge_sc_c2
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) ≤
       riemannianVolumeMeasure (I := I) (M := M) g (smallNormalBall (I := I) p s) :=
   smallNormalBall_vol_ge_sc (I := I) g p hRpos
-    (ball_tgt_of_radius (I := I) g p hR) hcoord_subset hdens
+    (ball_target_of_radius (I := I) g p hR) hcoord_subset hdens
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -488,7 +488,7 @@ theorem exists_smallNormalBall_vol_ge_sc
   refine ⟨ρ, hρpos, ?_⟩
   intro c R s hRpos hR hρball hgs hdens
   exact smallNormalBall_vol_ge_sc_c2 (I := I) g p hRpos hR
-    (hsubset (ball_tgt_of_radius (I := I) g p hR) hρball hgs) hdens
+    (hsubset (ball_target_of_radius (I := I) g p hR) hρball hgs) hdens
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -1059,14 +1059,14 @@ theorem exists_vol_two_dens_pairR
     hlower hRlo_pos hRlo hρlo_ball' hgs hdensLower,
     hupper hRup_pos hsRup hsρup hsdiv hdensUpper⟩
 
-structure RadialExtData
+structure RadialCurveExtension
     (g : SmoothRiemannianMetric I M) (p : M) (R b : ℝ) where
   gamma : E → ℝ → M
   eps : E → ℝ
   smooth : ∀ w ∈ Metric.ball (0 : E) R,
     ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) (gamma w)
   eps_pos : ∀ w ∈ Metric.ball (0 : E) R, 0 < eps w
-  eqOnNbhd : ∀ w ∈ Metric.ball (0 : E) R,
+  eqOnNeighborhood : ∀ w ∈ Metric.ball (0 : E) R,
     Set.EqOn (gamma w) (radialCurve (I := I) g p w) (Set.Icc (-(eps w)) (b + eps w))
   eqOn : ∀ w ∈ Metric.ball (0 : E) R,
     Set.EqOn (gamma w) (radialCurve (I := I) g p w) (Set.Icc 0 b)
@@ -1077,7 +1077,7 @@ lemma exists_radialExtData
     (g : SmoothRiemannianMetric I M) (p : M) {R b : ℝ}
     (hb1 : b ≤ 1)
     (hR : R ≤ expMapC2Radius (I := I) g p) :
-    Nonempty (RadialExtData (I := I) g p R b) := by
+    Nonempty (RadialCurveExtension (I := I) g p R b) := by
   classical
   have hExt : ∀ w : E, ∃ gamma : ℝ → M,
       w ∈ Metric.ball (0 : E) R →
@@ -1089,17 +1089,17 @@ lemma exists_radialExtData
     by_cases hw : w ∈ Metric.ball (0 : E) R
     · have hwR : ‖w‖ < R := by
         simpa [Metric.mem_ball, dist_eq_norm] using hw
-      obtain ⟨eps, heps, gamma, hsmooth, heqNbhd⟩ :=
-        exists_rext_nbhd (I := I) g p w hb1 (hwR.trans_le hR)
+      obtain ⟨eps, heps, gamma, hsmooth, heqNeighborhood⟩ :=
+        exists_rext_neighborhood (I := I) g p w hb1 (hwR.trans_le hR)
       have heq : Set.EqOn gamma (radialCurve (I := I) g p w) (Set.Icc 0 b) := by
         intro t ht
-        exact heqNbhd ⟨by linarith [ht.1, heps], by linarith [ht.2, heps]⟩
-      exact ⟨gamma, fun _ => ⟨eps, heps, hsmooth, heqNbhd, heq⟩⟩
+        exact heqNeighborhood ⟨by linarith [ht.1, heps], by linarith [ht.2, heps]⟩
+      exact ⟨gamma, fun _ => ⟨eps, heps, hsmooth, heqNeighborhood, heq⟩⟩
     · exact ⟨fun _ => p, fun h => False.elim (hw h)⟩
   choose gamma hgamma using hExt
   let eps : E → ℝ := fun w =>
     if hw : w ∈ Metric.ball (0 : E) R then (hgamma w hw).choose else 1
-  let D : RadialExtData (I := I) g p R b := {
+  let D : RadialCurveExtension (I := I) g p R b := {
     gamma := gamma
     eps := eps
     smooth := fun w hw => (hgamma w hw).choose_spec.2.1
@@ -1108,7 +1108,7 @@ lemma exists_radialExtData
         simp only [eps, dif_pos hw]
       rw [heps_eq]
       exact (hgamma w hw).choose_spec.1
-    eqOnNbhd := fun w hw => by
+    eqOnNeighborhood := fun w hw => by
       have heps_eq : eps w = (hgamma w hw).choose := by
         simp only [eps, dif_pos hw]
       change Set.EqOn (gamma w) (radialCurve (I := I) g p w)
@@ -1120,9 +1120,9 @@ lemma exists_radialExtData
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma radialExt_eventuallyEq
+lemma radialCurveExtension_eventuallyEq
     (g : SmoothRiemannianMetric I M) (p : M) {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) :
+    (D : RadialCurveExtension (I := I) g p R b) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b,
       D.gamma w =ᶠ[𝓝 t] radialCurve (I := I) g p w := by
   intro w hw t ht
@@ -1130,30 +1130,30 @@ lemma radialExt_eventuallyEq
   have htopen : t ∈ Set.Ioo (-(D.eps w)) (b + D.eps w) :=
     ⟨by linarith [ht.1, heps], by linarith [ht.2, heps]⟩
   filter_upwards [isOpen_Ioo.mem_nhds htopen] with u hu
-  exact D.eqOnNbhd w hw ⟨le_of_lt hu.1, le_of_lt hu.2⟩
+  exact D.eqOnNeighborhood w hw ⟨le_of_lt hu.1, le_of_lt hu.2⟩
 
 
-structure ExtFrameData
+structure ExtendedRadialFrame
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) where
+    (D : RadialCurveExtension (I := I) g p R b) where
   ι : Type*
   [fintype : Fintype ι]
   [decidableEq : DecidableEq ι]
   [nonempty : Nonempty ι]
   F : ∀ w : E, ι → ∀ t : ℝ, TangentSpace I (D.gamma w t)
 
-attribute [instance] ExtFrameData.fintype
-attribute [instance] ExtFrameData.decidableEq
-attribute [instance] ExtFrameData.nonempty
+attribute [instance] ExtendedRadialFrame.fintype
+attribute [instance] ExtendedRadialFrame.decidableEq
+attribute [instance] ExtendedRadialFrame.nonempty
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 lemma exists_extFrameData
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) (hb : 0 < b) :
-    ∃ Fd : ExtFrameData (I := I) g D,
+    (D : RadialCurveExtension (I := I) g p R b) (hb : 0 < b) :
+    ∃ Fd : ExtendedRadialFrame (I := I) g D,
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
         Fintype.card Fd.ι =
           Module.finrank ℝ (TangentSpace I (D.gamma w t))) ∧
@@ -1193,7 +1193,7 @@ lemma exists_extFrameData
         simp, hFdiff, hFpar, hFON⟩
     · exact ⟨fun _ t => 0, fun h => False.elim (hw h)⟩
   choose F hF using hframe
-  let Fd : ExtFrameData (I := I) g D := {
+  let Fd : ExtendedRadialFrame (I := I) g D := {
     ι := ULift (Fin (Module.finrank ℝ E))
     fintype := inferInstance
     decidableEq := inferInstance
@@ -1214,7 +1214,7 @@ lemma exists_extFrameData
 def radialFrameOfExt
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) (Fd : ExtFrameData (I := I) g D)
+    (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D)
     (w : E) (i : Fd.ι) (t : ℝ) :
     TangentSpace I (radialCurve (I := I) g p w t) := by
   classical
@@ -1226,7 +1226,7 @@ def radialFrameOfExt
   else 0
 
 
-structure Rm04FrameData
+structure Riemann04Frame
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M) (R b : ℝ) where
   ι : Type*
@@ -1235,15 +1235,15 @@ structure Rm04FrameData
   [nonempty : Nonempty ι]
   F : ∀ w : E, ι → ∀ t : ℝ, TangentSpace I (radialCurve (I := I) g p w t)
 
-attribute [instance] Rm04FrameData.fintype
-attribute [instance] Rm04FrameData.decidableEq
-attribute [instance] Rm04FrameData.nonempty
+attribute [instance] Riemann04Frame.fintype
+attribute [instance] Riemann04Frame.decidableEq
+attribute [instance] Riemann04Frame.nonempty
 
-def rm04FrameDataOfExt
+def riemann04FrameOfExt
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) (Fd : ExtFrameData (I := I) g D) :
-    Rm04FrameData (I := I) g p R b where
+    (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D) :
+    Riemann04Frame (I := I) g p R b where
   ι := Fd.ι
   fintype := Fd.fintype
   decidableEq := Fd.decidableEq
@@ -1253,14 +1253,14 @@ def rm04FrameDataOfExt
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma rm04FrameDataOfExt_card
+lemma riemann04FrameOfExt_card
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) (Fd : ExtFrameData (I := I) g D)
+    (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D)
     (hcard : ∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
       Fintype.card Fd.ι = Module.finrank ℝ (TangentSpace I (D.gamma w t))) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
-      Fintype.card (rm04FrameDataOfExt (I := I) g D Fd).ι =
+      Fintype.card (riemann04FrameOfExt (I := I) g D Fd).ι =
         Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t)) := by
   intro w hw t
   have h := hcard w hw t
@@ -1273,17 +1273,17 @@ lemma rm04FrameDataOfExt_card
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma rm04FrameDataOfExt_ON
+lemma riemann04FrameOfExt_ON
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) (Fd : ExtFrameData (I := I) g D)
+    (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D)
     (hON : ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
       g.inner (D.gamma w t) (Fd.F w i t) (Fd.F w j t) =
         if i = j then (1 : ℝ) else 0) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ t ∈ Set.Icc (0 : ℝ) b, ∀ i j,
       g.inner (radialCurve (I := I) g p w t)
-        ((rm04FrameDataOfExt (I := I) g D Fd).F w i t)
-        ((rm04FrameDataOfExt (I := I) g D Fd).F w j t) =
+        ((riemann04FrameOfExt (I := I) g D Fd).F w i t)
+        ((riemann04FrameOfExt (I := I) g D Fd).F w j t) =
           if i = j then (1 : ℝ) else 0 := by
   intro w hw t ht i j
   have htN : t ∈ Set.Icc (-(D.eps w)) (b + D.eps w) :=
@@ -1295,20 +1295,20 @@ lemma rm04FrameDataOfExt_ON
   · have hijFd : (show Fd.ι from i) = (show Fd.ι from j) := hij
     rw [if_pos hijFd] at h
     rw [if_pos hij]
-    simpa [rm04FrameDataOfExt, radialFrameOfExt, hw, htN] using h
+    simpa [riemann04FrameOfExt, radialFrameOfExt, hw, htN] using h
   · have hijFd : ¬(show Fd.ι from i) = (show Fd.ι from j) := hij
     rw [if_neg hijFd] at h
     rw [if_neg hij]
-    simpa [rm04FrameDataOfExt, radialFrameOfExt, hw, htN] using h
+    simpa [riemann04FrameOfExt, radialFrameOfExt, hw, htN] using h
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 lemma radialFrameOfExt_evEq
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) (Fd : ExtFrameData (I := I) g D) :
+    (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
-      (fun s : ℝ => ((rm04FrameDataOfExt (I := I) g D Fd).F w i s : E))
+      (fun s : ℝ => ((riemann04FrameOfExt (I := I) g D Fd).F w i s : E))
         =ᶠ[𝓝 t] fun s : ℝ => (Fd.F w i s : E) := by
   intro w hw i t ht
   have heps := D.eps_pos w hw
@@ -1317,47 +1317,47 @@ lemma radialFrameOfExt_evEq
   filter_upwards [isOpen_Ioo.mem_nhds htopen] with s hs
   have hsN : s ∈ Set.Icc (-(D.eps w)) (b + D.eps w) :=
     ⟨le_of_lt hs.1, le_of_lt hs.2⟩
-  simp [rm04FrameDataOfExt, radialFrameOfExt, hw, hsN]
+  simp [riemann04FrameOfExt, radialFrameOfExt, hw, hsN]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma rm04FrameDataOfExt_par
+lemma riemann04FrameOfExt_par
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) (Fd : ExtFrameData (I := I) g D)
+    (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D)
     (hpar : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
       covDerivAlong (I := I) g (D.gamma w) (Fd.F w i) t = 0) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
       covDerivAlong (I := I) g (radialCurve (I := I) g p w)
-        ((rm04FrameDataOfExt (I := I) g D Fd).F w i) t = 0 := by
+        ((riemann04FrameOfExt (I := I) g D Fd).F w i) t = 0 := by
   intro w hw i t ht
   have hγ : radialCurve (I := I) g p w =ᶠ[𝓝 t] D.gamma w :=
-    (radialExt_eventuallyEq (I := I) g p D w hw t ht).symm
+    (radialCurveExtension_eventuallyEq (I := I) g p D w hw t ht).symm
   have hV := radialFrameOfExt_evEq (I := I) g D Fd w hw i t ht
   have hcongr := covDerivAlong_congr_curve (I := I) g
-    ((rm04FrameDataOfExt (I := I) g D Fd).F w i) (Fd.F w i) hγ hV
+    ((riemann04FrameOfExt (I := I) g D Fd).F w i) (Fd.F w i) hγ hV
   rw [hcongr]
   exact hpar w hw i t ht
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma rm04FrameDataOfExt_diff
+lemma riemann04FrameOfExt_diff
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {p : M} {R b : ℝ}
-    (D : RadialExtData (I := I) g p R b) (Fd : ExtFrameData (I := I) g D)
+    (D : RadialCurveExtension (I := I) g p R b) (Fd : ExtendedRadialFrame (I := I) g D)
     (hFdiff : ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ (chartRepAt (I := I) (D.gamma w) (Fd.F w i) t) t) :
     ∀ w ∈ Metric.ball (0 : E) R, ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) b,
       DifferentiableAt ℝ
         (chartRepAt (I := I) (radialCurve (I := I) g p w)
-          ((rm04FrameDataOfExt (I := I) g D Fd).F w i) t) t := by
+          ((riemann04FrameOfExt (I := I) g D Fd).F w i) t) t := by
   intro w hw i t ht
   have hγ : radialCurve (I := I) g p w =ᶠ[𝓝 t] D.gamma w :=
-    (radialExt_eventuallyEq (I := I) g p D w hw t ht).symm
+    (radialCurveExtension_eventuallyEq (I := I) g p D w hw t ht).symm
   have hV := radialFrameOfExt_evEq (I := I) g D Fd w hw i t ht
   have hrep := chartRep_congr_curve (I := I)
-    ((rm04FrameDataOfExt (I := I) g D Fd).F w i) (Fd.F w i) hγ hV
+    ((riemann04FrameOfExt (I := I) g D Fd).F w i) (Fd.F w i) hγ hV
   rw [hrep.differentiableAt_iff]
   exact hFdiff w hw i t ht
 
@@ -1367,7 +1367,7 @@ lemma exists_rm04FrameData_radius
     (g : SmoothRiemannianMetric I M) (p : M) {R b : ℝ}
     (hb : 0 < b) (hb1 : b ≤ 1)
     (hR : R ≤ expMapC2Radius (I := I) g p) :
-    ∃ D : Rm04FrameData (I := I) g p R b,
+    ∃ D : Riemann04Frame (I := I) g p R b,
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
         Fintype.card D.ι =
           Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t))) ∧
@@ -1381,11 +1381,11 @@ lemma exists_rm04FrameData_radius
           (chartRepAt (I := I) (radialCurve (I := I) g p w) (D.F w i) t) t) := by
   obtain ⟨Dext⟩ := exists_radialExtData (I := I) g p hb1 hR
   obtain ⟨Fd, hcard, hFdiff, hpar, hON⟩ := exists_extFrameData (I := I) g Dext hb
-  refine ⟨rm04FrameDataOfExt (I := I) g Dext Fd, ?_, ?_, ?_, ?_⟩
-  · exact rm04FrameDataOfExt_card (I := I) g Dext Fd hcard
-  · exact rm04FrameDataOfExt_par (I := I) g Dext Fd hpar
-  · exact rm04FrameDataOfExt_ON (I := I) g Dext Fd hON
-  · exact rm04FrameDataOfExt_diff (I := I) g Dext Fd hFdiff
+  refine ⟨riemann04FrameOfExt (I := I) g Dext Fd, ?_, ?_, ?_, ?_⟩
+  · exact riemann04FrameOfExt_card (I := I) g Dext Fd hcard
+  · exact riemann04FrameOfExt_par (I := I) g Dext Fd hpar
+  · exact riemann04FrameOfExt_ON (I := I) g Dext Fd hON
+  · exact riemann04FrameOfExt_diff (I := I) g Dext Fd hFdiff
 
 omit [CompleteSpace E] in
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -1395,7 +1395,7 @@ lemma exists_rm04FrameData
     (g : SmoothRiemannianMetric I M) (p : M) {R b : ℝ} (hb : 0 < b)
     (hγ2 : ∀ w ∈ Metric.ball (0 : E) R,
       ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) (radialCurve (I := I) g p w)) :
-    ∃ D : Rm04FrameData (I := I) g p R b,
+    ∃ D : Riemann04Frame (I := I) g p R b,
       (∀ w ∈ Metric.ball (0 : E) R, ∀ t : ℝ,
         Fintype.card D.ι =
           Module.finrank ℝ (TangentSpace I (radialCurve (I := I) g p w t))) ∧
@@ -1430,7 +1430,7 @@ lemma exists_rm04FrameData
       exact ⟨F, fun _ => ⟨hcard, hFdiff, hpar, hON⟩⟩
     · exact ⟨fun _ t => 0, fun h => False.elim (hw h)⟩
   choose F hF using hframe
-  let D : Rm04FrameData (I := I) g p R b := {
+  let D : Riemann04Frame (I := I) g p R b := {
     ι := ULift (Fin (Module.finrank ℝ E))
     fintype := inferInstance
     decidableEq := inferInstance
@@ -1449,10 +1449,10 @@ lemma exists_rm04FrameData
     exact (hF w hw).2.1 i.down t ht
 
 
-structure IsRm04VolHyp
+structure IsRm04VolHypothesis
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
-    {R b : ℝ} (D : Rm04FrameData (I := I) g p R b)
+    {R b : ℝ} (D : Riemann04Frame (I := I) g p R b)
     (ρ a K Rm Vb A B s : ℝ) : Prop where
   hBnn : 0 ≤ B
   ha : 0 < a
@@ -1507,10 +1507,10 @@ structure IsRm04VolHyp
             (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
               (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1
 
-structure IsRm04VolPairHyp
+structure IsRm04VolPairHypothesis
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
-    {R b : ℝ} (D : Rm04FrameData (I := I) g p R b)
+    {R b : ℝ} (D : Riemann04Frame (I := I) g p R b)
     (ρ a K Rm Vb A Blo Bhi s : ℝ) : Prop where
   hBlo : 0 ≤ Blo
   hBhi : 0 ≤ Bhi
@@ -1567,22 +1567,22 @@ structure IsRm04VolPairHyp
               (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1
 
 omit [T2Space M] [SigmaCompactSpace M] in
-lemma IsRm04VolHyp.radialC2
+lemma IsRm04VolHypothesis.radialC2
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     {g : SmoothRiemannianMetric I M} {p : M}
-    {R b ρ a K Rm Vb A B s : ℝ} {D : Rm04FrameData (I := I) g p R b}
-    (H : IsRm04VolHyp (I := I) g p D ρ a K Rm Vb A B s) :
+    {R b ρ a K Rm Vb A B s : ℝ} {D : Riemann04Frame (I := I) g p R b}
+    (H : IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s) :
     ∀ w ∈ Metric.ball (0 : E) R,
       ContMDiffOn 𝓘(ℝ, ℝ) I (2 : ℕ∞)
         (radialCurve (I := I) g p w) (Set.Icc (0 : ℝ) b) :=
   radialC2OnBallIcc (I := I) g p H.hRC2 H.hb1
 
 omit [T2Space M] [SigmaCompactSpace M] in
-lemma IsRm04VolPairHyp.radialC2
+lemma IsRm04VolPairHypothesis.radialC2
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     {g : SmoothRiemannianMetric I M} {p : M}
-    {R b ρ a K Rm Vb A Blo Bhi s : ℝ} {D : Rm04FrameData (I := I) g p R b}
-    (H : IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s) :
+    {R b ρ a K Rm Vb A Blo Bhi s : ℝ} {D : Riemann04Frame (I := I) g p R b}
+    (H : IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s) :
     ∀ w ∈ Metric.ball (0 : E) R,
       ContMDiffOn 𝓘(ℝ, ℝ) I (2 : ℕ∞)
         (radialCurve (I := I) g p w) (Set.Icc (0 : ℝ) b) :=
@@ -1601,7 +1601,7 @@ lemma radialC1AtBall
     (by norm_num)
 
 omit [T2Space M] [SigmaCompactSpace M] in
-lemma exists_rm04_hyp
+lemma exists_rm04_hyperbolic
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ a K Rm Vb A B s : ℝ}
@@ -1638,8 +1638,8 @@ lemma exists_rm04_hyp
             (K * (b * Real.sqrt
               (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
                 (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) :
-    ∃ D : Rm04FrameData (I := I) g p R b,
-      IsRm04VolHyp (I := I) g p D ρ a K Rm Vb A B s := by
+    ∃ D : Riemann04Frame (I := I) g p R b,
+      IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s := by
   have hb : 0 < b := lt_of_lt_of_le zero_lt_one h1b
   obtain ⟨D, hcard, hpar, hON, hFdiff⟩ :=
     exists_rm04FrameData_radius (I := I) g p hb hb1 hRC2
@@ -1776,16 +1776,16 @@ lemma exists_rm04_scalar
             (K * (b * Real.sqrt
               (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
                 (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) :
-    ∃ D : Rm04FrameData (I := I) g p R b,
-      IsRm04VolHyp (I := I) g p D ρ a K Rm Vb (a * A) B s := by
+    ∃ D : Riemann04Frame (I := I) g p R b,
+      IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb (a * A) B s := by
   obtain ⟨hinit, hmodelLe', hmodelGe'⟩ :=
     scalarModel_smul (I := I) g p ha hbasis hmodelLe hmodelGe
-  exact exists_rm04_hyp (I := I) g p hBnn ha hK hRm_nonneg hVb hb0 hb1 h1b
+  exact exists_rm04_hyperbolic (I := I) g p hBnn ha hK hRm_nonneg hVb hb0 hb1 h1b
     hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch
     hKbound hRm hinit hmodelLe' hmodelGe'
 
 omit [T2Space M] [SigmaCompactSpace M] in
-lemma exists_rm04_pair_hyp
+lemma exists_rm04_pair_hyperbolic
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ a K Rm Vb A Blo Bhi s : ℝ}
@@ -1822,8 +1822,8 @@ lemma exists_rm04_pair_hyp
             (K * (b * Real.sqrt
               (g.inner p (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
                 (a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))))) 1) :
-    ∃ D : Rm04FrameData (I := I) g p R b,
-      IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
+    ∃ D : Riemann04Frame (I := I) g p R b,
+      IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
   have hb : 0 < b := lt_of_lt_of_le zero_lt_one h1b
   obtain ⟨D, hcard, hpar, hON, hFdiff⟩ :=
     exists_rm04FrameData_radius (I := I) g p hb hb1 hRC2
@@ -1897,11 +1897,11 @@ lemma exists_rm04_pair_scalar
             (K * (b * Real.sqrt
               (g.inner p (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
                 (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) 1) :
-    ∃ D : Rm04FrameData (I := I) g p R b,
-      IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb (a * A) Blo Bhi s := by
+    ∃ D : Riemann04Frame (I := I) g p R b,
+      IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb (a * A) Blo Bhi s := by
   obtain ⟨hinit, hmodelLe', hmodelGe'⟩ :=
     scalarModel_pair_smul (I := I) g p ha hbasis hmodelLe hmodelGe
-  exact exists_rm04_pair_hyp (I := I) g p hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1 h1b
+  exact exists_rm04_pair_hyperbolic (I := I) g p hBlo hBhi ha hK hRm_nonneg hVb hb0 hb1 h1b
     hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hsmallBasis hsmallDir hlaunch
     hKbound hRm hinit hmodelLe' hmodelGe'
 
@@ -1910,13 +1910,13 @@ lemma exists_rm04_scale
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ K Rm Vb A B s : ℝ}
-    (D : Rm04FrameData (I := I) g p R b) (hρ : 0 < ρ)
+    (D : Riemann04Frame (I := I) g p R b) (hρ : 0 < ρ)
     (H : ∀ a : ℝ, 0 < a →
       (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
-      IsRm04VolHyp (I := I) g p D ρ a K Rm Vb A B s) :
-    ∃ a : ℝ, IsRm04VolHyp (I := I) g p D ρ a K Rm Vb A B s := by
+      IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s) :
+    ∃ a : ℝ, IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s := by
   obtain ⟨a, ha, hsmallBasis, hsmallDir⟩ := basisUnitScaleSmall (E := E) hρ
   exact ⟨a, H a ha hsmallBasis hsmallDir⟩
 
@@ -1926,13 +1926,13 @@ lemma exists_rm04_pair_scale
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (p : M)
     {R b ρ K Rm Vb A Blo Bhi s : ℝ}
-    (D : Rm04FrameData (I := I) g p R b) (hρ : 0 < ρ)
+    (D : Riemann04Frame (I := I) g p R b) (hρ : 0 < ρ)
     (H : ∀ a : ℝ, 0 < a →
       (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
       (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
         ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
-      IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s) :
-    ∃ a : ℝ, IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
+      IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s) :
+    ∃ a : ℝ, IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s := by
   obtain ⟨a, ha, hsmallBasis, hsmallDir⟩ := basisUnitScaleSmall (E := E) hρ
   exact ⟨a, H a ha hsmallBasis hsmallDir⟩
 
@@ -2038,7 +2038,7 @@ theorem exists_vol_two_rm04_at
     have hwdens : ‖w‖ < ρdens :=
       lt_of_lt_of_le hwR (le_trans hRρ (min_le_right ρvol ρdens))
     have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-      ball_src_of_radius (I := I) g p hRC2 hw
+      ball_source_of_radius (I := I) g p hRC2 hw
     have hwrad : ‖w‖ < expMapC2Radius (I := I) g p :=
       lt_of_lt_of_le hwR hRC2
     exact hdens w hwdens hBnn ha hK hVb hb0 hb1 h1b hsmallBasis_dens hsmallDir_dens
@@ -2153,7 +2153,7 @@ theorem exists_vol_pair_rm04_at
     have hwdens : ‖w‖ < ρdens :=
       lt_of_lt_of_le hwR (le_trans hRρ (min_le_right ρvol ρdens))
     have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-      ball_src_of_radius (I := I) g p hRC2 hw
+      ball_source_of_radius (I := I) g p hRC2 hw
     have hwrad : ‖w‖ < expMapC2Radius (I := I) g p :=
       lt_of_lt_of_le hwR hRC2
     exact hdens w hwdens hBlo hBhi ha hK hVb hb0 hb1 h1b hsmallBasis_dens hsmallDir_dens
@@ -2272,7 +2272,7 @@ theorem exists_pairR_rm04_at
     have hwdens : ‖w‖ < ρdens :=
       lt_of_lt_of_le hwR (le_trans hRloρ (min_le_right ρvol ρdens))
     have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-      ball_src_of_radius (I := I) g p hRloC2 hw
+      ball_source_of_radius (I := I) g p hRloC2 hw
     have hwrad : ‖w‖ < expMapC2Radius (I := I) g p := lt_of_lt_of_le hwR hRloC2
     exact (hdens w hwdens hBlo hBhi ha hK hVb hb0 hb1 h1b hsmallBasis_dens
       hsmallDir_dens (hlaunch w (Or.inl hw)) hKbound (hRm w (Or.inl hw)) hwsrc hwrad
@@ -2290,7 +2290,7 @@ theorem exists_pairR_rm04_at
     have hwdens : ‖w‖ < ρdens :=
       lt_of_lt_of_le hwR (le_trans hRupρ (min_le_right ρvol ρdens))
     have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-      ball_src_of_radius (I := I) g p hRupC2 hw
+      ball_source_of_radius (I := I) g p hRupC2 hw
     have hwrad : ‖w‖ < expMapC2Radius (I := I) g p := lt_of_lt_of_le hwR hRupC2
     exact (hdens w hwdens hBlo hBhi ha hK hVb hb0 hb1 h1b hsmallBasis_dens
       hsmallDir_dens (hlaunch w (Or.inr hw)) hKbound (hRm w (Or.inr hw)) hwsrc hwrad
@@ -2902,8 +2902,8 @@ theorem exists_vol_rm04_pair_pkg
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {a K Rm Vb b A Blo Bhi R s : ℝ},
-      (D : Rm04FrameData (I := I) g p R b) →
-      IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s →
+      (D : Riemann04Frame (I := I) g p R b) →
+      IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -2938,12 +2938,12 @@ theorem exists_vol_pair_scale
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {K Rm Vb b A Blo Bhi R s : ℝ},
-      (D : Rm04FrameData (I := I) g p R b) →
+      (D : Riemann04Frame (I := I) g p R b) →
       (∀ a : ℝ, 0 < a →
         (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
         (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
           ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
-        IsRm04VolPairHyp (I := I) g p D ρ a K Rm Vb A Blo Bhi s) →
+        IsRm04VolPairHypothesis (I := I) g p D ρ a K Rm Vb A Blo Bhi s) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((Blo ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *

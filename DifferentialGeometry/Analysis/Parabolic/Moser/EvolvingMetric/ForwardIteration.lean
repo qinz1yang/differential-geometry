@@ -53,7 +53,7 @@ theorem intervalIntegral_fixed_le_moving_of_volume_le
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) q
   have hfixed_cont : ContinuousOn fixed (Icc a b) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc a b)
       (riemannianVolumeMeasure (I := I) (M := M) q) f
       isCompact_Icc hf.continuousOn
@@ -125,7 +125,7 @@ theorem intervalIntegral_moving_le_fixed_of_volume_le
         (Set.prod_mono (Set.subset_univ (Icc a b)) Set.Subset.rfl)
     · exact hf.continuousOn
   have hfixed_cont : ContinuousOn fixed (Icc a b) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc a b) μ f isCompact_Icc hf.continuousOn
     simpa only [fixed, μ] using h
   have hmoving_int : IntervalIntegrable moving volume a b := by

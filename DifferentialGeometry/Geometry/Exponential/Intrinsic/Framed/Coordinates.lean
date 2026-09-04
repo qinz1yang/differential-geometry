@@ -28,12 +28,12 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M]
 
-noncomputable def intrFrameCLM
+noncomputable def intrinsicFrameCLM
     (g : SmoothRiemannianMetric I M) (p : M) : E →L[Real] E :=
   LinearMap.toContinuousLinearMap
     (normalFrame (I := I) g p).toLinearEquiv.toLinearMap
 
-noncomputable def intrFrameCLE
+noncomputable def intrinsicFrameCLE
     (g : SmoothRiemannianMetric I M) (p : M) : E ≃L[Real] E := by
   let L : E ≃ₗ[Real] E := (normalFrame (I := I) g p).toLinearEquiv
   exact L.toContinuousLinearEquiv
@@ -41,17 +41,17 @@ noncomputable def intrFrameCLE
 omit [CompleteSpace E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] in
-@[simp] theorem intrFrameCLM_apply
+@[simp] theorem intrinsicFrameCLM_apply
     (g : SmoothRiemannianMetric I M) (p : M) (z : E) :
-    intrFrameCLM (I := I) g p z = normalFrame (I := I) g p z := by
+    intrinsicFrameCLM (I := I) g p z = normalFrame (I := I) g p z := by
   rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] in
-@[simp] theorem intrFrameCLE_apply
+@[simp] theorem intrinsicFrameCLE_apply
     (g : SmoothRiemannianMetric I M) (p : M) (z : E) :
-    intrFrameCLE (I := I) g p z = normalFrame (I := I) g p z := by
+    intrinsicFrameCLE (I := I) g p z = normalFrame (I := I) g p z := by
   rfl
 
 section
@@ -69,11 +69,11 @@ noncomputable def intrinsicFramedExp
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) : E → M :=
   fun z => expMapIntrinsic (I := I) g hEnorm p
-    (show TangentSpace I p from intrFrameCLM (I := I) g p z)
+    (show TangentSpace I p from intrinsicFrameCLM (I := I) g p z)
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-@[simp] theorem intrFrame_apply
+@[simp] theorem intrinsicFrame_apply
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -85,11 +85,11 @@ omit [ConnectedSpace M] in
     intrinsicFramedExp (I := I) g hEnorm p z =
       expMapIntrinsic (I := I) g hEnorm p
         (normalFrame (I := I) g p z) := by
-  rw [intrinsicFramedExp, intrFrameCLM_apply]
+  rw [intrinsicFramedExp, intrinsicFrameCLM_apply]
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-theorem intrFrame_mem_eball
+theorem intrinsicFrame_mem_eball
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -112,14 +112,14 @@ theorem intrFrame_mem_eball
     rw [IsRiemannianManifold.out (I := I) p
       (expMapIntrinsic (I := I) g hEnorm p (normalFrame (I := I) g p z))]
     simpa only [intrinsicGeodesic_zero, ← expMapIntrinsic_def,
-      intrFrame_apply, normalFrame_sqrt, sub_zero, mul_one] using hdist
+      intrinsicFrame_apply, normalFrame_sqrt, sub_zero, mul_one] using hdist
   rw [Metric.mem_eball']
   exact hrad.trans_lt
     ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg (norm_nonneg z)).2 hz)
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-theorem intrFrame_smooth
+theorem intrinsicFrame_smooth
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -131,11 +131,11 @@ theorem intrFrame_smooth
     ContMDiff (modelWithCornersSelf Real E) I ∞
       (intrinsicFramedExp (I := I) g hEnorm p) := by
   exact (intrinsicFiber_smooth (I := I) g hEnorm p).comp
-    (intrFrameCLM (I := I) g p).contMDiff
+    (intrinsicFrameCLM (I := I) g p).contMDiff
 
 omit [CompleteSpace E]
   [ConnectedSpace M] in
-theorem intrFrame_zero
+theorem intrinsicFrame_zero
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -150,11 +150,11 @@ theorem intrFrame_zero
   have hzero : Real.sqrt
       (g.inner p (0 : TangentSpace I p) (0 : TangentSpace I p)) < r := by
     simpa using hr
-  rw [intrFrame_apply, map_zero, hagree hzero]
+  rw [intrinsicFrame_apply, map_zero, hagree hzero]
   exact expMap_zero (I := I) g p
 
 omit [ConnectedSpace M] in
-theorem intrFrame_deriv_zero
+theorem intrinsicFrame_deriv_zero
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -165,11 +165,11 @@ theorem intrFrame_deriv_zero
     (p : M) :
     mfderiv (modelWithCornersSelf Real E) I
         (intrinsicFramedExp (I := I) g hEnorm p) 0 =
-      intrFrameCLM (I := I) g p := by
+      intrinsicFrameCLM (I := I) g p := by
   let F : E → M := fun v =>
     expMapIntrinsic (I := I) g hEnorm p (show TangentSpace I p from v)
   let L : E →L[Real] E :=
-    intrFrameCLM (I := I) g p
+    intrinsicFrameCLM (I := I) g p
   have hF : MDifferentiableAt (modelWithCornersSelf Real E) I F (L 0) := by
     rw [map_zero]
     exact (intrinsicFiber_smooth (I := I) g hEnorm p).contMDiffAt.mdifferentiableAt
@@ -199,7 +199,7 @@ theorem intrFrame_deriv_zero
 
 omit [CompleteSpace E]
   [ConnectedSpace M] [T2Space (TangentBundle I M)] in
-theorem intrFrame_mfderiv
+theorem intrinsicFrame_mfderiv
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -217,7 +217,7 @@ theorem intrFrame_mfderiv
   let F : E → M := fun w =>
     expMapIntrinsic (I := I) g hEnorm p
       (show TangentSpace I p from w)
-  let L : E →L[Real] E := intrFrameCLM (I := I) g p
+  let L : E →L[Real] E := intrinsicFrameCLM (I := I) g p
   have hF : MDifferentiableAt (modelWithCornersSelf Real E) I F (L z) :=
     (intrinsicFiber_smooth (I := I) g hEnorm p).contMDiffAt.mdifferentiableAt
       (by decide)
@@ -264,10 +264,10 @@ theorem exists_intrFrame_eq
   intro z hz
   have hnorm : norm z < r := by
     simpa only [Metric.mem_ball, dist_zero_right] using hz
-  rw [intrFrame_apply, framedExpMap_apply]
+  rw [intrinsicFrame_apply, framedExpMap_apply]
   exact hagree (by simpa only [normalFrame_sqrt] using hnorm)
 
-noncomputable def intrFrameRadius
+noncomputable def intrinsicFrameRadius
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -280,7 +280,7 @@ noncomputable def intrFrameRadius
 
 omit [CompleteSpace E]
   [ConnectedSpace M] in
-theorem intrFrameRadius_pos
+theorem intrinsicFrameRadius_pos
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -289,12 +289,12 @@ theorem intrFrameRadius_pos
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) :
-    0 < intrFrameRadius (I := I) g hEnorm p :=
+    0 < intrinsicFrameRadius (I := I) g hEnorm p :=
   (Classical.choose_spec (exists_intrFrame_eq (I := I) g hEnorm p)).1
 
 omit [CompleteSpace E]
   [ConnectedSpace M] in
-theorem intrFrame_eq_of_mem
+theorem intrinsicFrame_eq_of_mem
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -303,12 +303,12 @@ theorem intrFrame_eq_of_mem
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) {z : E}
-    (hz : z ∈ Metric.ball (0 : E) (intrFrameRadius (I := I) g hEnorm p)) :
+    (hz : z ∈ Metric.ball (0 : E) (intrinsicFrameRadius (I := I) g hEnorm p)) :
     intrinsicFramedExp (I := I) g hEnorm p z =
       framedExpMap (I := I) g p z :=
   (Classical.choose_spec (exists_intrFrame_eq (I := I) g hEnorm p)).2 z hz
 
-noncomputable def intrFrameDiffeo
+noncomputable def intrinsicFrameDiffeo
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -319,11 +319,11 @@ noncomputable def intrFrameDiffeo
     (p : M) : PartialDiffeomorph (modelWithCornersSelf Real E) I E M 1 := by
   let Φ := framedExpDiffeo (I := I) g p
   let U : Set E := Φ.source ∩
-    Metric.ball (0 : E) (intrFrameRadius (I := I) g hEnorm p)
+    Metric.ball (0 : E) (intrinsicFrameRadius (I := I) g hEnorm p)
   let f : E → M := intrinsicFramedExp (I := I) g hEnorm p
   have hEq : Set.EqOn f Φ U := by
     intro z hz
-    exact (intrFrame_eq_of_mem (I := I) g hEnorm p hz.2).trans
+    exact (intrinsicFrame_eq_of_mem (I := I) g hEnorm p hz.2).trans
       (framedExp_eq_expMap (I := I) g p hz.1).symm
   exact
     { toPartialEquiv :=
@@ -354,7 +354,7 @@ noncomputable def intrFrameDiffeo
       open_target := by
         exact Φ.toOpenPartialHomeomorph.isOpen_image_source_inter Metric.isOpen_ball
       contMDiffOn_toFun := by
-        exact (intrFrame_smooth (I := I) g hEnorm p).contMDiffOn.of_le
+        exact (intrinsicFrame_smooth (I := I) g hEnorm p).contMDiffOn.of_le
           (by exact_mod_cast le_top)
       contMDiffOn_invFun := by
         apply Φ.contMDiffOn_invFun.mono
@@ -362,7 +362,7 @@ noncomputable def intrFrameDiffeo
         exact Φ.map_source' hz.1 }
 
 omit [ConnectedSpace M] in
-@[simp] theorem intrFrameDiffeo_source
+@[simp] theorem intrinsicFrameDiffeo_source
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -371,9 +371,9 @@ omit [ConnectedSpace M] in
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) :
-    (intrFrameDiffeo (I := I) g hEnorm p).source =
+    (intrinsicFrameDiffeo (I := I) g hEnorm p).source =
       (framedExpDiffeo (I := I) g p).source ∩
-        Metric.ball (0 : E) (intrFrameRadius (I := I) g hEnorm p) := by
+        Metric.ball (0 : E) (intrinsicFrameRadius (I := I) g hEnorm p) := by
   rfl
 
 omit [ConnectedSpace M] in
@@ -386,13 +386,13 @@ theorem zero_mem_intrFrame_source
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) :
-    (0 : E) ∈ (intrFrameDiffeo (I := I) g hEnorm p).source := by
-  rw [intrFrameDiffeo_source]
+    (0 : E) ∈ (intrinsicFrameDiffeo (I := I) g hEnorm p).source := by
+  rw [intrinsicFrameDiffeo_source]
   exact ⟨zero_mem_framedExp_source (I := I) g p,
-    by simpa using intrFrameRadius_pos (I := I) g hEnorm p⟩
+    by simpa using intrinsicFrameRadius_pos (I := I) g hEnorm p⟩
 
 omit [ConnectedSpace M] in
-@[simp] theorem intrFrameDiffeo_apply
+@[simp] theorem intrinsicFrameDiffeo_apply
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -401,12 +401,12 @@ omit [ConnectedSpace M] in
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) (z : E) :
-    intrFrameDiffeo (I := I) g hEnorm p z =
+    intrinsicFrameDiffeo (I := I) g hEnorm p z =
       intrinsicFramedExp (I := I) g hEnorm p z := by
   rfl
 
 omit [ConnectedSpace M] in
-@[simp] theorem intrFrame_symm_eq
+@[simp] theorem intrinsicFrame_symm_eq
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -415,7 +415,7 @@ omit [ConnectedSpace M] in
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) (q : M) :
-    (intrFrameDiffeo (I := I) g hEnorm p).toPartialEquiv.symm q =
+    (intrinsicFrameDiffeo (I := I) g hEnorm p).toPartialEquiv.symm q =
       framedChartAt (I := I) g p q := by
   rfl
 
@@ -429,14 +429,14 @@ theorem intrinsicFramedExp_eq_framedExpDiffeo
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) {z : E}
-    (hz : z ∈ (intrFrameDiffeo (I := I) g hEnorm p).source) :
+    (hz : z ∈ (intrinsicFrameDiffeo (I := I) g hEnorm p).source) :
     intrinsicFramedExp (I := I) g hEnorm p z =
       framedExpDiffeo (I := I) g p z := by
-  rw [intrFrameDiffeo_source] at hz
-  exact (intrFrame_eq_of_mem (I := I) g hEnorm p hz.2).trans
+  rw [intrinsicFrameDiffeo_source] at hz
+  exact (intrinsicFrame_eq_of_mem (I := I) g hEnorm p hz.2).trans
     (framedExp_eq_expMap (I := I) g p hz.1).symm
 
-noncomputable def intrFrameMetric
+noncomputable def intrinsicFrameMetric
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -454,7 +454,7 @@ noncomputable def intrFrameMetric
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-theorem intrFrameMetric_apply
+theorem intrinsicFrameMetric_apply
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -463,17 +463,17 @@ theorem intrFrameMetric_apply
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) (z v w : E) :
-    intrFrameMetric (I := I) g hEnorm p z v w =
+    intrinsicFrameMetric (I := I) g hEnorm p z v w =
       g.inner (intrinsicFramedExp (I := I) g hEnorm p z)
         (mfderiv (modelWithCornersSelf Real E) I
           (intrinsicFramedExp (I := I) g hEnorm p) z v)
         (mfderiv (modelWithCornersSelf Real E) I
           (intrinsicFramedExp (I := I) g hEnorm p) z w) := by
-  simp only [intrFrameMetric, ContinuousLinearMap.comp_apply]
+  simp only [intrinsicFrameMetric, ContinuousLinearMap.comp_apply]
   rfl
 
 omit [ConnectedSpace M] in
-@[simp] theorem intrFrameMetric_zero
+@[simp] theorem intrinsicFrameMetric_zero
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -482,17 +482,17 @@ omit [ConnectedSpace M] in
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) :
-    intrFrameMetric (I := I) g hEnorm p 0 =
+    intrinsicFrameMetric (I := I) g hEnorm p 0 =
       (innerSL Real : E →L[Real] E →L[Real] Real) := by
   ext v w
-  rw [intrFrameMetric_apply, intrFrame_zero,
-    intrFrame_deriv_zero]
+  rw [intrinsicFrameMetric_apply, intrinsicFrame_zero,
+    intrinsicFrame_deriv_zero]
   change g.inner p (normalFrame (I := I) g p v)
     (normalFrame (I := I) g p w) = Inner.inner Real v w
   exact normalFrame_inner (I := I) g p v w
 
 omit [ConnectedSpace M] in
-theorem intrFrameMetric_eq
+theorem intrinsicFrameMetric_eq
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -501,13 +501,13 @@ theorem intrFrameMetric_eq
     (hEnorm : forall x : M, forall v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) {z : E}
-    (hz : z ∈ (intrFrameDiffeo (I := I) g hEnorm p).source) :
-    intrFrameMetric (I := I) g hEnorm p z = framedMetric (I := I) g p z := by
+    (hz : z ∈ (intrinsicFrameDiffeo (I := I) g hEnorm p).source) :
+    intrinsicFrameMetric (I := I) g hEnorm p z = framedMetric (I := I) g p z := by
   have hev : Filter.EventuallyEq (nhds z)
       (intrinsicFramedExp (I := I) g hEnorm p)
       (fun q : E => framedExpDiffeo (I := I) g p q) :=
     Filter.eventuallyEq_of_mem
-      ((intrFrameDiffeo (I := I) g hEnorm p).open_source.mem_nhds hz)
+      ((intrinsicFrameDiffeo (I := I) g hEnorm p).open_source.mem_nhds hz)
       (fun _ hq => intrinsicFramedExp_eq_framedExpDiffeo (I := I) g hEnorm p hq)
   have hD : mfderiv (modelWithCornersSelf Real E) I
       (intrinsicFramedExp (I := I) g hEnorm p) z =
@@ -516,7 +516,7 @@ theorem intrFrameMetric_eq
     Filter.EventuallyEq.mfderiv_eq
       (I := modelWithCornersSelf Real E) (I' := I) hev
   ext v w
-  rw [intrFrameMetric_apply, framedMetric_apply,
+  rw [intrinsicFrameMetric_apply, framedMetric_apply,
     intrinsicFramedExp_eq_framedExpDiffeo (I := I) g hEnorm p hz, hD]
 
 end

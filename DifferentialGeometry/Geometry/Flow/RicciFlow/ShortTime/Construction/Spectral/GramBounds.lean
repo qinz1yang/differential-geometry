@@ -9,7 +9,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped ContDiff Manifold Topology BigOperators
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 variable
@@ -43,14 +43,14 @@ theorem bufferGram3_bnd
                   (DifferentialGeometry.Geometry.Operator.chartGramOnE
                     (I := I) (gSeq k) α i j) (extChartAt I α y)‖ ≤ C := by
   classical
-  obtain ⟨r₀, hr₀, hcollar, hbufferCpt, hbufferSrc⟩ :=
+  obtain ⟨r₀, hr₀, hcollar, hbufferCpt, hbufferSource⟩ :=
     exists_chartBuffer_of_continuousOn (extChartAt I α)
       (continuousOn_extChartAt α) (continuousOn_extChartAt_symm α)
       (isOpen_extChartAt_target α) hK hKsrc
   have hbufferChart :
       chartBuffer (extChartAt I α) K r₀ ⊆ (chartAt H α).source := by
     intro y hy
-    have hy' : y ∈ (extChartAt I α).source := hbufferSrc hy
+    have hy' : y ∈ (extChartAt I α).source := hbufferSource hy
     simpa only [extChartAt_source] using hy'
   choose Cq hCq hbound using fun q : Fin 4 =>
     chartGram_of_orders (I := I) gRef gSeq α hbufferCpt hbufferChart q.val B
@@ -98,13 +98,13 @@ theorem fineGram_of_orders
     let Kc : Set M := chartClosedBall (extChartAt I α)
       ((extChartAt I α) (z.1 : K)) (2 * ε)
     have hKc : IsCompact Kc :=
-      chartClosedBall_cpt_of_continuousOn (extChartAt I α)
+      chartClosedBall_compact_of_continuousOn (extChartAt I α)
         ((extChartAt I α) (z.1 : K)) (2 * ε)
         (continuousOn_extChartAt_symm α) (houter z)
     have hKsrc : Kc ⊆ (chartAt H α).source := by
       intro y hy
       have hy' : y ∈ (extChartAt I α).source :=
-        chartClosedBall_src (extChartAt I α)
+        chartClosedBall_source (extChartAt I α)
           ((extChartAt I α) (z.1 : K)) (2 * ε) (houter z) hy
       simpa only [extChartAt_source] using hy'
     exact chartGram_of_orders (I := I) gRef gSeq α hKc hKsrc r B

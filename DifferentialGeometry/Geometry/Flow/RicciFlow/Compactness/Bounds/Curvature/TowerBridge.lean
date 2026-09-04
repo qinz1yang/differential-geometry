@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 open DifferentialGeometry.Integral.Connection
@@ -150,5 +150,5 @@ theorem curvNormSq_eq
     (fun A => normSq0S (I := I) (S.base.metric t) x (4 + k) (A x))
     (nablaKRm_eq_iterCov (I := I) S t k).symm
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

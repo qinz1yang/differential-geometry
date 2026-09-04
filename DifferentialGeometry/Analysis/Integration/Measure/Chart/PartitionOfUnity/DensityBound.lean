@@ -37,17 +37,17 @@ theorem exists_pou_chartDensity_bound_on_chartTarget
   have hT_compact : IsCompact T := hT_closed.isCompact
   have hT_sub_chart : T ⊆ (chartAt H α).source :=
     (chartAtlasPOU_isSubordinate (I := I) (M := M) α)
-  have hT_sub_extSrc : T ⊆ (extChartAt I α).source := by
+  have hT_sub_extSource : T ⊆ (extChartAt I α).source := by
     intro x hx
     rw [extChartAt_source_eq_chartAt_source (I := I) (M := M)]
     exact hT_sub_chart hx
   have hext_contOn : ContinuousOn (extChartAt I α) T :=
-    (continuousOn_extChartAt α).mono hT_sub_extSrc
+    (continuousOn_extChartAt α).mono hT_sub_extSource
   set K : Set E := (extChartAt I α) '' T with hK_def
   have hK_compact : IsCompact K := hT_compact.image_of_continuousOn hext_contOn
   have hK_sub_target : K ⊆ (extChartAt I α).target := by
     rintro y ⟨x, hxT, rfl⟩
-    exact (extChartAt I α).map_source (hT_sub_extSrc hxT)
+    exact (extChartAt I α).map_source (hT_sub_extSource hxT)
   have hρα_cont : Continuous ρα := ((chartAtlasPOU I M α)).contMDiff.continuous
   have hρα_le_one : ∀ x, ρα x ≤ 1 :=
     fun x => (chartAtlasPOU (I := I) (M := M)).le_one _ _

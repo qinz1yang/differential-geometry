@@ -293,7 +293,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDif
             (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ gB -
               deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2) ≤
           (B0 R + B1 R * A) ^ 2 := by
-  obtain ⟨C, hC, hpt⟩ := bdCovDerivTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
+  obtain ⟨C, hC, hpt⟩ := palatiniCovDerivTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
   obtain ⟨B0, B1, hB0, hB1, hgrid⟩ :=
     h2_grid_tame (I := I) (M := M) hDim g₀ C hC
   refine ⟨B0, B1, hB0, hB1, ?_⟩
@@ -332,7 +332,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covar
             (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ gB -
               deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2) ≤
           (B0 R + B1 R * A) ^ 2 := by
-  obtain ⟨C, hC, hpt⟩ := bdEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
+  obtain ⟨C, hC, hpt⟩ := palatiniEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ gB hδ₀
   obtain ⟨B0, B1, hB0, hB1, hgrid⟩ :=
     h2_grid_tame (I := I) (M := M) hDim g₀ C hC
   refine ⟨B0, B1, hB0, hB1, ?_⟩
@@ -809,7 +809,7 @@ theorem exists_lieCorrectionZeroMixedConnection_backgroundDifference_covariantJe
       mul_le_mul_of_nonneg_left hsum (by norm_num)
     _ = (0 + 4 * B R * A) ^ 2 := by ring
 
-private noncomputable def bgCorrFam
+private noncomputable def bgCorrectionFam
     (g₀ gB : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : gFibreOpBound (I := I) (M := M) g₀
@@ -824,7 +824,7 @@ private noncomputable def bgCorrFam
       g₀ g₀ T hδ hδZ s
 
 omit [SigmaCompactSpace M] in
-private theorem bgCorr_eq
+private theorem bgCorrection_eq
     (g₀ gB : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ}
     (hδ : gFibreOpBound (I := I) (M := M) g₀
@@ -833,7 +833,7 @@ private theorem bgCorr_eq
       (ccTensorBilinSymm (I := I) g₀
         (0 : SmoothCcTensor g₀ 0 2)) δ)
     (s : ℝ) :
-    bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ s =
+    bgCorrectionFam (I := I) (M := M) g₀ gB T hδ hδZ s =
       let g₁ := metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s
       ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ gB -
           deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g₀) +
@@ -843,14 +843,14 @@ private theorem bgCorr_eq
           lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀) +
         (lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ gB -
           lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ g₀)) := by
-  simp only [bgCorrFam, RicciDeTurckLowOrder.pathIntegrand]
+  simp only [bgCorrectionFam, RicciDeTurckLowOrder.pathIntegrand]
   rw [← deTurckLieConnectionDifferenceDerivCoeffField_add_deTurckLieCovariantDerivativeInsertionField,
     ← deTurckLieConnectionDifferenceDerivCoeffField_add_deTurckLieCovariantDerivativeInsertionField,
     lieCorrectionZero_decomp, lieCorrectionZero_decomp]
   abel
 
 
-private theorem bgCorrFam_tame
+private theorem bgCorrectionFam_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -872,7 +872,7 @@ private theorem bgCorrFam_tame
         ∀ s ∈ Set.Icc (0 : ℝ) 1,
           (∑ i ∈ Finset.range 3,
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ s)‖ ^ 2) ≤
+              (bgCorrectionFam (I := I) (M := M) g₀ gB T hδ hδZ s)‖ ^ 2) ≤
             (B0 R + B1 R * A) ^ 2 := by
   obtain ⟨Ba0, Ba1, hBa0, hBa1, hDla⟩ :=
     exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDifference_covariantJetNormSq_two_tame_bound (I := I) (M := M) hDim g₀ gB hδ₀
@@ -994,7 +994,7 @@ private theorem bgCorrFam_tame
     (lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ gB -
       lieCorrectionZeroMixedConnection (I := I) (M := M) g₀ g₁ g₀)
     V V V V hDa hDb hIn hMx
-  rw [bgCorr_eq]
+  rw [bgCorrection_eq]
   dsimp only
   calc
     _ ≤ 4 * (V ^ 2 + V ^ 2 + V ^ 2 + V ^ 2) := by
@@ -1031,14 +1031,14 @@ theorem exists_lowOrderPathIntegrand_backgroundDifference_covariantJetNormSq_two
                   g₀ g₀ T hδ hδZ s)‖ ^ 2) ≤
             (B0 R + B1 R * A) ^ 2 := by
   obtain ⟨B0, B1, hB0, hB1, hcorr⟩ :=
-    bgCorrFam_tame (I := I) (M := M) hDim g₀ gB hδ₀
+    bgCorrectionFam_tame (I := I) (M := M) hDim g₀ gB hδ₀
   refine ⟨B0, B1, hB0, hB1, ?_⟩
   intro T δ hδ_le hδ_nonneg hδ hδZ R A hR hA hT2 hT3 s hs
-  simpa only [bgCorrFam] using
+  simpa only [bgCorrectionFam] using
     hcorr T hδ_le hδ_nonneg hδ hδZ R A hR hA hT2 hT3 s hs
 
 
-private theorem bgCorrFam_h2
+private theorem bgCorrectionFam_h2
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1057,10 +1057,10 @@ private theorem bgCorrFam_h2
         ∀ s ∈ Set.Icc (0 : ℝ) 1,
           (∑ i ∈ Finset.range 3,
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ s)‖ ^ 2) ≤
+              (bgCorrectionFam (I := I) (M := M) g₀ gB T hδ hδZ s)‖ ^ 2) ≤
             (B A) ^ 2 := by
   obtain ⟨B0, B1, hB0, hB1, htame⟩ :=
-    bgCorrFam_tame (I := I) (M := M) hDim g₀ gB hδ₀
+    bgCorrectionFam_tame (I := I) (M := M) hDim g₀ gB hδ₀
   refine ⟨fun A => B0 A + B1 A * A, ?_, ?_⟩
   · intro A hA
     exact add_nonneg (hB0 A hA) (mul_nonneg (hB1 A hA) hA)
@@ -1072,7 +1072,7 @@ private theorem bgCorrFam_h2
         (fun j _ _ => sq_nonneg _)).trans hT
     exact htame T hδ_le hδ_nonneg hδ hδZ A A hA hA hT2 hT s hs
 
-private noncomputable def bgCorrInt
+private noncomputable def bgCorrectionInt
     (g₀ gB : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀
@@ -1082,7 +1082,7 @@ private noncomputable def bgCorrInt
         (0 : SmoothCcTensor g₀ 0 2)) δ) :
     SmoothCcTensor g₀ 2 2 :=
   pathIntegralCoeffField (I := I) (M := M) g₀ 2 2
-    (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ)
+    (bgCorrectionFam (I := I) (M := M) g₀ gB T hδ hδZ)
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen
     (by
@@ -1107,7 +1107,7 @@ private theorem selfLow_bg_sub
           g₀ gB T hδ_lt hδ hδZ -
         RicciDeTurckLowOrder.selfLowInt (I := I) (M := M)
           g₀ g₀ T hδ_lt hδ hδZ =
-      bgCorrInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ := by
+      bgCorrectionInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ := by
   classical
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆
       metricPerturbationPathDomain (δ := δ) (δ' := δ) := by
@@ -1124,7 +1124,7 @@ private theorem selfLow_bg_sub
     RicciDeTurckLowOrder.selfLow_joint
       (I := I) (M := M) g₀ g₀ T hδ hδZ
   have hDjoint : linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
-      (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ)
+      (bgCorrectionFam (I := I) (M := M) g₀ gB T hδ hδZ)
       (δ := δ) (δ' := δ) := by
     exact covariantJetJoint_sub (I := I) (M := M) g₀ _ _ hBjoint h0joint
   have hBjointRaw := hBjoint
@@ -1174,14 +1174,14 @@ private theorem selfLow_bg_sub
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen hSI h0jointRaw x
   have hDmodel := pathIntegralCoeffField_toModel (I := I) (M := M) g₀ 2 2
-    (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ)
+    (bgCorrectionFam (I := I) (M := M) g₀ gB T hδ hδZ)
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen hSI hDjointRaw x
-  simp only [RicciDeTurckLowOrder.selfLowInt, bgCorrInt,
+  simp only [RicciDeTurckLowOrder.selfLowInt, bgCorrectionInt,
     SmoothCcTensor.toSection_sub,
     ContMDiffSection.coe_sub, Pi.sub_apply, TensorRSSpace.toModel_sub]
   rw [hBmodel, h0model, hDmodel]
-  simp only [bgCorrFam, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
+  simp only [bgCorrectionFam, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
     Pi.sub_apply, TensorRSSpace.toModel_sub]
   rw [intervalIntegral.integral_sub hBint h0int]
 
@@ -1195,7 +1195,7 @@ private theorem lowC0_bg_eq
         (0 : SmoothCcTensor g₀ 0 2)) δ) :
     (lowerScaleActionCoefficients (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ).zeroOrderCoefficient =
       (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀ T hδ_lt hδ hδZ).zeroOrderCoefficient +
-        bgCorrInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ +
+        bgCorrectionInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ +
         (metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ -
           metricPrincipalDefectCurvCoeff (I := I) g₀ g₀) := by
   have hself := selfLow_bg_sub (I := I) (M := M)
@@ -1205,7 +1205,7 @@ private theorem lowC0_bg_eq
   rw [hself]
   abel
 
-private theorem bgCorrInt_h2
+private theorem bgCorrectionInt_h2
     (g₀ gB : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀
@@ -1217,18 +1217,18 @@ private theorem bgCorrInt_h2
     (hcoeff : ∀ s ∈ Set.Icc (0 : ℝ) 1,
       (∑ i ∈ Finset.range 3,
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
-          (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ s)‖ ^ 2) ≤
+          (bgCorrectionFam (I := I) (M := M) g₀ gB T hδ hδZ s)‖ ^ 2) ≤
         B ^ 2) :
     (∑ i ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 2 2 i
-        (bgCorrInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ)‖ ^ 2) ≤
+        (bgCorrectionInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ)‖ ^ 2) ≤
       B ^ 2 := by
   have hSI : Set.uIcc (0 : ℝ) 1 ⊆
       metricPerturbationPathDomain (δ := δ) (δ' := δ) := by
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hpath := path_jetL2_le (I := I) (M := M) g₀ 2 2 2
-    (bgCorrFam (I := I) (M := M) g₀ gB T hδ hδZ)
+    (bgCorrectionFam (I := I) (M := M) g₀ gB T hδ hδZ)
     (metricPerturbationPathDomain (δ := δ) (δ' := δ))
     metricPerturbationPathDomain_isOpen hSI
     (covariantJetJoint_sub (I := I) (M := M) g₀ _ _
@@ -1237,7 +1237,7 @@ private theorem bgCorrInt_h2
       (RicciDeTurckLowOrder.selfLow_joint
         (I := I) (M := M) g₀ g₀ T hδ hδZ))
     hcoeff
-  simpa only [bgCorrInt] using hpath
+  simpa only [bgCorrectionInt] using hpath
 
 
 theorem exists_lowOrderPathIntegral_backgroundDifference_covariantJetNormSq_two_bound
@@ -1258,14 +1258,14 @@ theorem exists_lowOrderPathIntegral_backgroundDifference_covariantJetNormSq_two_
           ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2) ≤ A ^ 2 →
         (∑ i ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (bgCorrInt (I := I) (M := M) g₀ gB T
+            (bgCorrectionInt (I := I) (M := M) g₀ gB T
               (lt_of_le_of_lt hδ_le hδ₀) hδ hδZ)‖ ^ 2) ≤
           (B A) ^ 2 := by
   obtain ⟨B, hB, hfam⟩ :=
-    bgCorrFam_h2 (I := I) (M := M) hDim g₀ gB hδ₀
+    bgCorrectionFam_h2 (I := I) (M := M) hDim g₀ gB hδ₀
   refine ⟨B, hB, ?_⟩
   intro T δ hδ_le hδ_nonneg hδ hδZ A hA hT
-  apply bgCorrInt_h2 (I := I) (M := M) g₀ gB T
+  apply bgCorrectionInt_h2 (I := I) (M := M) g₀ gB T
     (lt_of_le_of_lt hδ_le hδ₀) hδ hδZ (B A)
   intro s hs
   exact hfam T hδ_le hδ_nonneg hδ hδZ A hA hT s hs
@@ -1287,7 +1287,7 @@ private theorem fixedBackground_h2
   rw [Real.sq_sqrt hQ]
 
 
-private theorem bgCorr_tame
+private theorem bgCorrection_tame
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1308,14 +1308,14 @@ private theorem bgCorr_tame
           ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2) ≤ A ^ 2 →
         (∑ i ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-            (bgCorrInt (I := I) (M := M) g₀ gB T
+            (bgCorrectionInt (I := I) (M := M) g₀ gB T
               (lt_of_le_of_lt hδ_le hδ₀) hδ hδZ)‖ ^ 2) ≤
           (B0 R + B1 R * A) ^ 2 := by
   obtain ⟨B0, B1, hB0, hB1, hfam⟩ :=
-    bgCorrFam_tame (I := I) (M := M) hDim g₀ gB hδ₀
+    bgCorrectionFam_tame (I := I) (M := M) hDim g₀ gB hδ₀
   refine ⟨B0, B1, hB0, hB1, ?_⟩
   intro T δ hδ_le hδ_nonneg hδ hδZ R A hR hA hT2 hT3
-  apply bgCorrInt_h2 (I := I) (M := M) g₀ gB T
+  apply bgCorrectionInt_h2 (I := I) (M := M) g₀ gB T
     (lt_of_le_of_lt hδ_le hδ₀) hδ hδZ (B0 R + B1 R * A)
   intro s hs
   exact hfam T hδ_le hδ_nonneg hδ hδZ R A hR hA hT2 hT3 s hs
@@ -1344,7 +1344,7 @@ theorem exists_lowerScaleZeroCoefficient_backgroundDifference_covariantJetNormSq
                 (lt_of_le_of_lt hδ_le (by norm_num)) hδ hδZ).zeroOrderCoefficient) ≤
           (B0 R + B1 R * A) ^ 2 := by
   obtain ⟨C0, C1, hC0, hC1, hcorr⟩ :=
-    bgCorr_tame (I := I) (M := M) hDim g₀ gB
+    bgCorrection_tame (I := I) (M := M) hDim g₀ gB
       (δ₀ := (1 : ℝ) / 3) (by norm_num)
   obtain ⟨Bf, hBf, hfixed⟩ := fixedBackground_h2 (I := I) (M := M) g₀
   let B0 : ℝ → ℝ := fun R => 2 * (C0 R + Bf)
@@ -1355,7 +1355,7 @@ theorem exists_lowerScaleZeroCoefficient_backgroundDifference_covariantJetNormSq
   intro T δ hδ_le hδ_nonneg hδ hδZ R A hR hA hT2 hT3
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
   let Cb : SmoothCcTensor g₀ 2 2 :=
-    bgCorrInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ
+    bgCorrectionInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ
   let F : SmoothCcTensor g₀ 2 2 :=
     metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ -
       metricPrincipalDefectCurvCoeff (I := I) g₀ g₀
@@ -1435,7 +1435,7 @@ theorem exists_lowerScaleZeroCoefficient_covariantJetNormSq_two_bound
   let C1 : SmoothCcTensor g₀ 3 2 :=
     (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀ T hδ_lt hδ hδZ).firstOrderCoefficient
   let Cb : SmoothCcTensor g₀ 2 2 :=
-    bgCorrInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ
+    bgCorrectionInt (I := I) (M := M) g₀ gB T hδ_lt hδ hδZ
   let F : SmoothCcTensor g₀ 2 2 :=
     metricPrincipalDefectCurvCoeff (I := I) g₀ g₀ -
       metricPrincipalDefectCurvCoeff (I := I) g₀ g₀

@@ -13,7 +13,7 @@ universe u uE uH
 namespace DifferentialGeometry
 
 attribute [local instance] Fintype.ofFinite
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -484,5 +484,5 @@ def metricFirstOrderConstant
 
 end FixedDomain
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

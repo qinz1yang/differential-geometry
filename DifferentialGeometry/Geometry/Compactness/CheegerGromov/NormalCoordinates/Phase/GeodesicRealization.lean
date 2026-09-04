@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 open DifferentialGeometry.Geometry.Riemannian
@@ -78,32 +78,32 @@ theorem normalGeoOn_of_phase
       (normalTotal (I := I) Y x) (fun t ↦ (Z t).1) s := by
   intro t ht
   let gamma : Real → E := fun r ↦ (Z r).1
-  let vel : Real → E := fun r ↦ (Z r).2
-  have hgamma : ∀ r ∈ s, HasDerivAt gamma (vel r) r := by
+  let velocity : Real → E := fun r ↦ (Z r).2
+  have hgamma : ∀ r ∈ s, HasDerivAt gamma (velocity r) r := by
     intro r hr
     have hfst := ((hZ r hr).hasFDerivAt.fst).hasDerivAt
-    simpa only [gamma, vel, PhaseFlow.phaseField,
+    simpa only [gamma, velocity, PhaseFlow.phaseField,
       ContinuousLinearMap.comp_apply, ContinuousLinearMap.coe_fst',
       ContinuousLinearMap.toSpanSingleton_apply, one_smul] using hfst
-  have hvel : ∀ r ∈ s, HasDerivAt vel
+  have hvel : ∀ r ∈ s, HasDerivAt velocity
       (normalAccel (I := I) Y x (Z r)) r := by
     intro r hr
     have hsnd := ((hZ r hr).hasFDerivAt.snd).hasDerivAt
-    simpa only [vel, PhaseFlow.phaseField, ContinuousLinearMap.comp_apply,
+    simpa only [velocity, PhaseFlow.phaseField, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.coe_snd', ContinuousLinearMap.toSpanSingleton_apply,
       one_smul] using hsnd
   have hchart : Geodesic.chartLocalCurve (I := 𝓘(Real, E)) gamma t = gamma := by
     funext r
     simp only [Geodesic.chartLocalCurve_def, extChartAt_model_space_eq_id,
       PartialEquiv.refl_coe, id_eq]
-  have hderiv : (fun r ↦ deriv gamma r) =ᶠ[nhds t] vel := by
+  have hderiv : (fun r ↦ deriv gamma r) =ᶠ[nhds t] velocity := by
     filter_upwards [hs.mem_nhds ht] with r hr
     exact (hgamma r hr).deriv
   have hacc : HasDerivAt (fun r ↦ deriv gamma r)
       (normalAccel (I := I) Y x (Z t)) t :=
     (hvel t ht).congr_of_eventuallyEq hderiv
-  refine ⟨vel t, normalAccel (I := I) Y x (Z t), ?_, ?_, ?_, ?_⟩
-  · change HasDerivAt gamma (vel t) t
+  refine ⟨velocity t, normalAccel (I := I) Y x (Z t), ?_, ?_, ?_, ?_⟩
+  · change HasDerivAt gamma (velocity t) t
     exact hgamma t ht
   · filter_upwards [hs.mem_nhds ht] with r hr
     rw [hchart]
@@ -114,9 +114,9 @@ theorem normalGeoOn_of_phase
   · have hfield := congrArg Prod.snd
       (normalPhaseVF_eq (I := I) Y x (gamma t) (Z t))
     have hneg : -Geodesic.chartChristoffelContraction (I := 𝓘(Real, E))
-        (normalTotal (I := I) Y x) (gamma t) (vel t) (vel t) (gamma t) =
+        (normalTotal (I := I) Y x) (gamma t) (velocity t) (velocity t) (gamma t) =
           normalAccel (I := I) Y x (Z t) := by
-      simpa only [Geodesic.chartPhaseVF, PhaseFlow.phaseField, gamma, vel] using hfield
+      simpa only [Geodesic.chartPhaseVF, PhaseFlow.phaseField, gamma, velocity] using hfield
     simp only [extChartAt_model_space_eq_id, PartialEquiv.refl_coe, id_eq]
     rw [← hneg]
     abel
@@ -249,32 +249,32 @@ theorem chartGeoOn_of_phase (g : SmoothRiemannianMetric I M) {p : M}
       (c.totalMetric g) (fun t ↦ (Z t).1) s := by
   intro t ht
   let gamma : Real → E := fun r ↦ (Z r).1
-  let vel : Real → E := fun r ↦ (Z r).2
-  have hgamma : ∀ r ∈ s, HasDerivAt gamma (vel r) r := by
+  let velocity : Real → E := fun r ↦ (Z r).2
+  have hgamma : ∀ r ∈ s, HasDerivAt gamma (velocity r) r := by
     intro r hr
     have hfst := ((hZ r hr).hasFDerivAt.fst).hasDerivAt
-    simpa only [gamma, vel, PhaseFlow.phaseField,
+    simpa only [gamma, velocity, PhaseFlow.phaseField,
       ContinuousLinearMap.comp_apply, ContinuousLinearMap.coe_fst',
       ContinuousLinearMap.toSpanSingleton_apply, one_smul] using hfst
-  have hvel : ∀ r ∈ s, HasDerivAt vel
+  have hvel : ∀ r ∈ s, HasDerivAt velocity
       (c.accel g (Z r)) r := by
     intro r hr
     have hsnd := ((hZ r hr).hasFDerivAt.snd).hasDerivAt
-    simpa only [vel, PhaseFlow.phaseField, ContinuousLinearMap.comp_apply,
+    simpa only [velocity, PhaseFlow.phaseField, ContinuousLinearMap.comp_apply,
       ContinuousLinearMap.coe_snd', ContinuousLinearMap.toSpanSingleton_apply,
       one_smul] using hsnd
   have hchart : Geodesic.chartLocalCurve (I := 𝓘(Real, E)) gamma t = gamma := by
     funext r
     simp only [Geodesic.chartLocalCurve_def, extChartAt_model_space_eq_id,
       PartialEquiv.refl_coe, id_eq]
-  have hderiv : (fun r ↦ deriv gamma r) =ᶠ[nhds t] vel := by
+  have hderiv : (fun r ↦ deriv gamma r) =ᶠ[nhds t] velocity := by
     filter_upwards [hs.mem_nhds ht] with r hr
     exact (hgamma r hr).deriv
   have hacc : HasDerivAt (fun r ↦ deriv gamma r)
       (c.accel g (Z t)) t :=
     (hvel t ht).congr_of_eventuallyEq hderiv
-  refine ⟨vel t, c.accel g (Z t), ?_, ?_, ?_, ?_⟩
-  · change HasDerivAt gamma (vel t) t
+  refine ⟨velocity t, c.accel g (Z t), ?_, ?_, ?_, ?_⟩
+  · change HasDerivAt gamma (velocity t) t
     exact hgamma t ht
   · filter_upwards [hs.mem_nhds ht] with r hr
     rw [hchart]
@@ -284,9 +284,9 @@ theorem chartGeoOn_of_phase (g : SmoothRiemannianMetric I M) {p : M}
   · have hfield := congrArg Prod.snd
       (chartPhaseVF_eq (I := I) g c (gamma t) (Z t))
     have hneg : -Geodesic.chartChristoffelContraction (I := 𝓘(Real, E))
-        (c.totalMetric g) (gamma t) (vel t) (vel t) (gamma t) =
+        (c.totalMetric g) (gamma t) (velocity t) (velocity t) (gamma t) =
           c.accel g (Z t) := by
-      simpa only [Geodesic.chartPhaseVF, PhaseFlow.phaseField, gamma, vel] using hfield
+      simpa only [Geodesic.chartPhaseVF, PhaseFlow.phaseField, gamma, velocity] using hfield
     simp only [extChartAt_model_space_eq_id, PartialEquiv.refl_coe, id_eq]
     rw [← hneg]
     abel
@@ -350,5 +350,5 @@ end ChartPhase
 
 end ControlledPhaseRealization
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

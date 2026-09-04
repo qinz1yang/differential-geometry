@@ -32,7 +32,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
     (k : ℕ) (hk : k ≤ kmax)
     {u : EucD → ℝ} (hu : MemWkp (d := d) k p u Ω')
     (hu_compactSupport : HasCompactSupport u)
-    (hu_supp : tsupport u ⊆ Ω') :
+    (hu_support : tsupport u ⊆ Ω') :
     iteratedWeakSobolevNorm (d := d) k p (fun x => u (Φ.toFun x)) Ω ≤
       ENNReal.ofReal (Φ.wkpCompConst' k p) *
         iteratedWeakSobolevNorm (d := d) k p u Ω' := by
@@ -76,24 +76,24 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
     intro n
     have h_pos : 0 < (1 : ℝ) / (n + 1 : ℝ) := by positivity
     exact MemWkp.exists_smooth_compactSupport_approx
-      (d := d) hΩ' k p hp_one hp_top hu hu_compactSupport hu_supp _ h_pos
+      (d := d) hΩ' k p hp_one hp_top hu hu_compactSupport hu_support _ h_pos
   let ψ : ℕ → EucD → ℝ := fun n => (h_approx n).choose
   have hψ_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (ψ n) := fun n =>
     (h_approx n).choose_spec.1
-  have hψ_cpt : ∀ n, HasCompactSupport (ψ n) := fun n =>
+  have hψ_compact : ∀ n, HasCompactSupport (ψ n) := fun n =>
     (h_approx n).choose_spec.2.1
-  have hψ_supp : ∀ n, tsupport (ψ n) ⊆ Ω' := fun n =>
+  have hψ_support : ∀ n, tsupport (ψ n) ⊆ Ω' := fun n =>
     (h_approx n).choose_spec.2.2.1
   have hψ_close : ∀ n,
       iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' ≤
         ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := fun n =>
     (h_approx n).choose_spec.2.2.2
   have hψ_mem : ∀ n, MemWkp (d := d) k p (ψ n) Ω' := fun n =>
-    MemWkp_of_smooth_compactSupport (d := d) hΩ' (hψ_smooth n) (hψ_cpt n)
-      (hψ_supp n) hp_one k
+    MemWkp_of_smooth_compactSupport (d := d) hΩ' (hψ_smooth n) (hψ_compact n)
+      (hψ_support n) hp_one k
   have hψ_comp_mem : ∀ n, MemWkp (d := d) k p (fun x => ψ n (Φ.toFun x)) Ω :=
     fun n => MemWkp.comp_smoothDiffeoBoundedAtOrder
-      (d := d) k hk hp_one hp_top hΩ hΩ' Φ (hψ_mem n) (hψ_cpt n) (hψ_supp n)
+      (d := d) k hk hp_one hp_top hΩ hΩ' Φ (hψ_mem n) (hψ_compact n) (hψ_support n)
   have h_cauchy : ∀ ε > 0, ∃ N : ℕ, ∀ m n, N ≤ m → N ≤ n →
       iteratedWeakSobolevNorm (d := d) k p
         (fun x => (ψ m (Φ.toFun x)) - (ψ n (Φ.toFun x))) Ω ≤
@@ -115,9 +115,9 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
     intro m n hm hn
     let δ : EucD → ℝ := fun x => ψ m x - ψ n x
     have hδ_smooth : ContDiff ℝ (⊤ : ℕ∞) δ := (hψ_smooth m).sub (hψ_smooth n)
-    have hδ_cpt : HasCompactSupport δ := (hψ_cpt m).sub (hψ_cpt n)
-    have hδ_supp : tsupport δ ⊆ Ω' := by
-      have h_supp_sub : Function.support δ ⊆
+    have hδ_compact : HasCompactSupport δ := (hψ_compact m).sub (hψ_compact n)
+    have hδ_support : tsupport δ ⊆ Ω' := by
+      have h_support_sub : Function.support δ ⊆
           Function.support (ψ m) ∪ Function.support (ψ n) := by
         intro x hx
         by_cases hxm : x ∈ Function.support (ψ m)
@@ -130,11 +130,11 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
           rw [Function.notMem_support.mp hxm, hxn, sub_zero]
       have h_tsupp_sub : tsupport δ ⊆ tsupport (ψ m) ∪ tsupport (ψ n) := by
         unfold tsupport
-        refine (closure_mono h_supp_sub).trans ?_
+        refine (closure_mono h_support_sub).trans ?_
         rw [closure_union]
-      exact h_tsupp_sub.trans (Set.union_subset (hψ_supp m) (hψ_supp n))
+      exact h_tsupp_sub.trans (Set.union_subset (hψ_support m) (hψ_support n))
     have hS1 := Φ.wkpNorm_comp_smooth_le hp_one hp_top hΩ hΩ'
-      k hk hδ_smooth hδ_cpt hδ_supp
+      k hk hδ_smooth hδ_compact hδ_support
     have h_uψn_mem : MemWkp (d := d) k p (fun x => u x - ψ n x) Ω' :=
       MemWkp.sub (d := d) hp_one hΩ' hu (hψ_mem n)
     have h_uψm_mem : MemWkp (d := d) k p (fun x => u x - ψ m x) Ω' :=
@@ -401,7 +401,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
     have h_tri := wkpNorm_add_le (d := d) hp_one hΩ h_diff_mem h_ψcomp_mem
     refine h_tri.trans ?_
     have h_smooth_bound := Φ.wkpNorm_comp_smooth_le hp_one hp_top hΩ hΩ' k hk
-      (hψ_smooth n) (hψ_cpt n) (hψ_supp n)
+      (hψ_smooth n) (hψ_compact n) (hψ_support n)
     have h_ψn_le_u : iteratedWeakSobolevNorm (d := d) k p (ψ n) Ω' ≤
         iteratedWeakSobolevNorm (d := d) k p u Ω' + ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
       have h_neg_uψn_mem : MemWkp (d := d) k p (fun x => ψ n x - u x) Ω' := by

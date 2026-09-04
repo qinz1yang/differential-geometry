@@ -19,13 +19,13 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 
 theorem uniform_nirenberg_estimate
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -46,14 +46,14 @@ theorem uniform_nirenberg_estimate
   classical
   obtain ⟨C₀, hC₀_nn, hC₀⟩ :=
     nirenberg_master_inequality_after_young (d := d) B
-      hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
-      hh_supp_in_Ω' k
+      hη hη_support hη_range hN h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact
+      hh_support_in_Ω' k
   set C : ℝ := (2 / B.lam) * C₀ with hC_def
   have hlam_pos : 0 < B.lam := B.hlam_pos
   have hC_nn : 0 ≤ C := by
     rw [hC_def]; exact mul_nonneg (by positivity) hC₀_nn
   refine ⟨C, hC_nn, ?_⟩
-  intro u f h_weak hf_l2_loc h hh hh_le
+  intro u f h_weak hf_l2_local h hh hh_le
   set I : ℝ := ∫ x, (η x)^2 *
       ∑ i : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k h
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2
@@ -63,7 +63,7 @@ theorem uniform_nirenberg_estimate
     ∂(volume : Measure E) +
     ∫ x in Ω', (u x)^2 ∂(volume : Measure E) +
     ∫ x in Ω', (f x)^2 ∂(volume : Measure E) with hR_def
-  have hY : B.lam * I ≤ (B.lam / 2) * I + C₀ * R := hC₀ h_weak hf_l2_loc hh hh_le
+  have hY : B.lam * I ≤ (B.lam / 2) * I + C₀ * R := hC₀ h_weak hf_l2_local hh hh_le
   have h_step1 : (B.lam / 2) * I ≤ C₀ * R := by linarith
   have h_two_lam : (0 : ℝ) ≤ 2 / B.lam := by positivity
   have h_mul : (2 / B.lam) * ((B.lam / 2) * I) ≤ (2 / B.lam) * (C₀ * R) :=
@@ -154,7 +154,7 @@ private lemma memLp_two_continuous_compact_closure
   rw [Real.norm_eq_abs]
   exact h.trans (le_max_left _ _)
 
-theorem loc_smooth_solution
+theorem local_smooth_solution
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {Ω'' : Set E} (hΩ'' : IsOpen Ω'')
     (hΩ''_compact_closure : IsCompact (closure Ω''))
@@ -204,7 +204,7 @@ theorem loc_smooth_solution
       hΩ'_closure_in_cthickening
   have hη_tsupport_in_thick34 : tsupport η ⊆ Metric.cthickening (3/4) K :=
     hη_tsupport_in.trans (Metric.thickening_subset_cthickening _ _)
-  have hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ (1 : ℝ) →
+  have hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ (1 : ℝ) →
       Metric.cthickening |h| (tsupport η) ⊆ Ω' := by
     intro h hh_le
     refine subset_trans (Metric.cthickening_mono hh_le _) ?_
@@ -212,7 +212,7 @@ theorem loc_smooth_solution
     refine subset_trans (Metric.cthickening_cthickening_subset (by norm_num) (by norm_num) K) ?_
     rw [hΩ'_def]
     exact Metric.cthickening_subset_thickening' (by norm_num) (by norm_num) K
-  have h_unif : ∀ k' : Fin d, ∃ C : ℝ, 0 ≤ C ∧
+  have h_uniform : ∀ k' : Fin d, ∃ C : ℝ, 0 ≤ C ∧
       ∀ {u f : E → ℝ}, B.IsSmoothWeakSolution u f →
         (∀ {Ω' : Set E}, IsCompact (closure Ω') →
           MemLp f 2 (volume.restrict Ω')) →
@@ -229,8 +229,8 @@ theorem loc_smooth_solution
             ∫ x in Ω', (f x)^2 ∂(volume : Measure E)) :=
     fun k' => uniform_nirenberg_estimate (d := d) B hη_smooth hη_compact
       hη_range hN_nn h_fderiv_eta hΩ'_open hΩ'_closure_in_Ω hΩ'_closure_compact
-      (R₀ := 1) hh_supp_in_Ω' k'
-  choose Cfun hCfun_nn hCfun using h_unif
+      (R₀ := 1) hh_support_in_Ω' k'
+  choose Cfun hCfun_nn hCfun using h_uniform
   set C : ℝ := ∑ k' : Fin d, Cfun k' with hC_def
   have hC_nn : 0 ≤ C := by
     rw [hC_def]
@@ -241,7 +241,7 @@ theorem loc_smooth_solution
     exact Finset.single_le_sum (f := fun k' => Cfun k')
       (fun k' _ => hCfun_nn k') (Finset.mem_univ k')
   refine ⟨C, hC_nn, ?_⟩
-  intro u f h_weak hf_l2_loc i k
+  intro u f h_weak hf_l2_local i k
   have hu : ContDiff ℝ (⊤ : ℕ∞) u := h_weak.1
   set g : E → ℝ := fun y =>
     (fderiv ℝ
@@ -339,7 +339,7 @@ theorem loc_smooth_solution
     ∂(volume : Measure E) ≤ C₀ * RHS_real := by
     intro n
     rw [hRHS_real_def]
-    exact hCfun k h_weak hf_l2_loc (h_seq n) (h_seq_abs_le_one n)
+    exact hCfun k h_weak hf_l2_local (h_seq n) (h_seq_abs_le_one n)
   have h_indicator_le_eta_sq : ∀ x : E,
       (Ω''.indicator (fun _ => (1 : ℝ)) x) ≤ (η x)^2 := by
     intro x
@@ -416,17 +416,17 @@ theorem loc_smooth_solution
             ((1 : ℝ) / (n + 1))
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x ^ 2) :=
         h_eta_sq_cont.mul h_q_n_cont
-      have h_prod_supp : HasCompactSupport (fun x : E => (η x)^2 *
+      have h_prod_support : HasCompactSupport (fun x : E => (η x)^2 *
           ∑ j : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k
             ((1 : ℝ) / (n + 1))
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x ^ 2) := by
-        have h_eta_sq_supp : HasCompactSupport (fun x : E => (η x)^2) := by
+        have h_eta_sq_support : HasCompactSupport (fun x : E => (η x)^2) := by
           have heq : (fun x : E => η x ^ 2) = (fun x : E => η x * η x) := by
             funext x; ring
           rw [heq]
           exact hη_compact.mul_right
-        exact h_eta_sq_supp.mul_right
-      exact h_prod_cont.integrable_of_hasCompactSupport h_prod_supp
+        exact h_eta_sq_support.mul_right
+      exact h_prod_cont.integrable_of_hasCompactSupport h_prod_support
     · refine Filter.Eventually.of_forall ?_
       intro x
       by_cases hx : x ∈ Ω''

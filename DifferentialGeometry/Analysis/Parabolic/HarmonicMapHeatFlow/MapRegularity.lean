@@ -20,38 +20,38 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
   [BoundarylessManifold I M] [ConnectedSpace M]
 
-noncomputable irreducible_def hmfSpecMap
+noncomputable irreducible_def harmonicMapFlowSpecMap
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) (x : M) :
     EuclideanSpace ℝ {i // i ∈ S} → M :=
   fun z =>
-    hmfAdd (I := I) (M := M) q
-      (hmfSpecIncl (I := I) (M := M) q S z) x
+    harmonicMapFlowAdd (I := I) (M := M) q
+      (harmonicMapFlowSpecIncl (I := I) (M := M) q S z) x
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem hmfSpecMap_eq
+theorem harmonicMapFlowSpecMap_eq
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (x : M) :
-    hmfSpecMap (I := I) (M := M) q S x =
+    harmonicMapFlowSpecMap (I := I) (M := M) q S x =
       fun z : EuclideanSpace ℝ {i // i ∈ S} =>
-        hmfAdd (I := I) (M := M) q
-          (hmfSpecIncl (I := I) (M := M) q S z) x := by
+        harmonicMapFlowAdd (I := I) (M := M) q
+          (harmonicMapFlowSpecIncl (I := I) (M := M) q S z) x := by
   funext z
-  rw [hmfSpecMap_def]
+  rw [harmonicMapFlowSpecMap_def]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-@[simp] theorem hmfSpecMap_apply
+@[simp] theorem harmonicMapFlowSpecMap_apply
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (x : M) (z : EuclideanSpace ℝ {i // i ∈ S}) :
-    hmfSpecMap (I := I) (M := M) q S x z =
-      hmfAdd (I := I) (M := M) q
-        (hmfSpecIncl (I := I) (M := M) q S z) x := by
-  rw [hmfSpecMap_eq]
+    harmonicMapFlowSpecMap (I := I) (M := M) q S x z =
+      harmonicMapFlowAdd (I := I) (M := M) q
+        (harmonicMapFlowSpecIncl (I := I) (M := M) q S z) x := by
+  rw [harmonicMapFlowSpecMap_eq]
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem hmfSpecMap_cd
+theorem harmonicMapFlowSpecMap_cd
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (n : ℕ) :
@@ -59,25 +59,25 @@ theorem hmfSpecMap_cd
       ContMDiffOn (𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}).prod I) I
         (n : ℕ∞)
         (fun p : EuclideanSpace ℝ {i // i ∈ S} × M ↦
-          hmfSpecMap (I := I) (M := M) q S p.2 p.1)
+          harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1)
         (Metric.ball 0 R ×ˢ (Set.univ : Set M)) := by
   obtain ⟨R, hR, hjoint⟩ :=
-    hmfSpecAdd_cd (I := I) (M := M) q S n
+    harmonicMapFlowSpecAdd_cd (I := I) (M := M) q S n
   refine ⟨R, hR, ?_⟩
   intro p hp
-  simpa only [hmfSpecMap_def, hmfAdd, hmfSpecLaunch] using (hjoint p hp).snd
+  simpa only [harmonicMapFlowSpecMap_def, harmonicMapFlowAdd, harmonicMapFlowSpecLaunch] using (hjoint p hp).snd
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem hmfSpecMap_md
+theorem harmonicMapFlowSpecMap_md
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
         ∀ x : M,
           MDifferentiableAt 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
-            (hmfSpecMap (I := I) (M := M) q S x) u := by
+            (harmonicMapFlowSpecMap (I := I) (M := M) q S x) u := by
   obtain ⟨R, hR, hjoint⟩ :=
-    hmfSpecMap_cd (I := I) (M := M) q S 1
+    harmonicMapFlowSpecMap_cd (I := I) (M := M) q S 1
   refine ⟨R, hR, ?_⟩
   intro u hu x
   have hp : (u, x) ∈
@@ -98,17 +98,17 @@ theorem hmfSpecMap_md
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem hmfSpecSlice_cd
+theorem harmonicMapFlowSpecSlice_cd
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (n : ℕ) :
     ∃ R : ℝ, 0 < R ∧
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
         ContMDiff I I (n : ℕ∞)
-          (hmfAdd (I := I) (M := M) q
-            (hmfSpecIncl (I := I) (M := M) q S u)) := by
+          (harmonicMapFlowAdd (I := I) (M := M) q
+            (harmonicMapFlowSpecIncl (I := I) (M := M) q S u)) := by
   obtain ⟨R, hR, hjoint⟩ :=
-    hmfSpecMap_cd (I := I) (M := M) q S n
+    harmonicMapFlowSpecMap_cd (I := I) (M := M) q S n
   refine ⟨R, hR, ?_⟩
   intro u hu x
   have hp :
@@ -122,28 +122,28 @@ theorem hmfSpecSlice_cd
     contMDiffAt_const.prodMk contMDiffAt_id
   have hc := hP.comp x hin
   have hfun :
-      ((fun p => hmfSpecMap (I := I) (M := M) q S p.2 p.1) ∘
+      ((fun p => harmonicMapFlowSpecMap (I := I) (M := M) q S p.2 p.1) ∘
         Prod.mk u) =
-        hmfAdd (I := I) (M := M) q
-          (hmfSpecIncl (I := I) (M := M) q S u) := by
+        harmonicMapFlowAdd (I := I) (M := M) q
+          (harmonicMapFlowSpecIncl (I := I) (M := M) q S u) := by
     funext y
-    exact hmfSpecMap_apply (I := I) (M := M) q S y u
+    exact harmonicMapFlowSpecMap_apply (I := I) (M := M) q S y u
   rw [hfun] at hc
   exact hc
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem hmfSpecTan_cd
+theorem harmonicMapFlowSpecTan_cd
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
         ContMDiff I.tangent I.tangent (1 : ℕ∞)
           (tangentMap I I
-            (hmfAdd (I := I) (M := M) q
-              (hmfSpecIncl (I := I) (M := M) q S u))) := by
+            (harmonicMapFlowAdd (I := I) (M := M) q
+              (harmonicMapFlowSpecIncl (I := I) (M := M) q S u))) := by
   obtain ⟨R, hR, hslice⟩ :=
-    hmfSpecSlice_cd (I := I) (M := M) q S 2
+    harmonicMapFlowSpecSlice_cd (I := I) (M := M) q S 2
   refine ⟨R, hR, ?_⟩
   intro u hu
   exact (hslice u hu).contMDiff_tangentMap (by norm_num)

@@ -42,7 +42,7 @@ def pinchReact
     2 * delta * (ricciNorm3 Ric * DifferentialGeometry.Geometry.Curvature.delta3 i j -
       ricciScal3 Ric * Ric i j)
 
-def stdRmOfRic3
+def standardRmOfRic3
     (Ric : Fin 3 -> Fin 3 -> Real)
     (i j k l : Fin 3) : Real :=
   DifferentialGeometry.Geometry.Curvature.delta3 i k * Ric j l
@@ -58,15 +58,15 @@ def stdRmOfRic3
 theorem pinchReact_add_g00
     (delta a : Real) (Ric : Fin 3 -> Fin 3 -> Real) :
     pinchReact delta
-        (stdRmOfRic3
+        (standardRmOfRic3
           (fun p q : Fin 3 =>
             Ric p q + a * DifferentialGeometry.Geometry.Curvature.delta3 p q))
         (fun p q : Fin 3 =>
           Ric p q + a * DifferentialGeometry.Geometry.Curvature.delta3 p q) 0 0 -
-      pinchReact delta (stdRmOfRic3 Ric) Ric 0 0 =
+      pinchReact delta (standardRmOfRic3 Ric) Ric 0 0 =
         a * (2 * delta - 1) *
           (3 * Ric 0 0 - ricciScal3 Ric) := by
-  unfold pinchReact ricciPresReact ricciSq3 ricciNorm3 stdRmOfRic3
+  unfold pinchReact ricciPresReact ricciSq3 ricciNorm3 standardRmOfRic3
     DifferentialGeometry.Geometry.Curvature.delta3
   simp [Fin.sum_univ_three, ricciScal3]
   ring_nf
@@ -74,11 +74,11 @@ theorem pinchReact_add_g00
 
 theorem ricciReactNull
     (l1 l2 l3 : Real) (hnull : l1 = 0) :
-    ricciPresReact (DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3)
+    ricciPresReact (DifferentialGeometry.Geometry.Curvature.standardRmDiag3 l1 l2 l3)
       (DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3) 0 0 =
       (l2 - l3) ^ 2 := by
   subst l1
-  unfold ricciPresReact ricciSq3 DifferentialGeometry.Geometry.Curvature.stdRmDiag3
+  unfold ricciPresReact ricciSq3 DifferentialGeometry.Geometry.Curvature.standardRmDiag3
     DifferentialGeometry.Geometry.Curvature.ricciDiag3
       DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3
     DifferentialGeometry.Geometry.Curvature.delta3
@@ -88,7 +88,7 @@ theorem ricciReactNull
 
 theorem ricciReact_ge
     (l1 l2 l3 : Real) (hnull : l1 = 0) :
-    0 <= ricciPresReact (DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3)
+    0 <= ricciPresReact (DifferentialGeometry.Geometry.Curvature.standardRmDiag3 l1 l2 l3)
       (DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3) 0 0 := by
   rw [ricciReactNull l1 l2 l3 hnull]
   positivity
@@ -97,13 +97,13 @@ theorem ricciReact_ge
 theorem pinchReactNull
     (delta l1 l2 l3 : Real)
     (hnull : l1 = delta * DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3) :
-    pinchReact delta (DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3)
+    pinchReact delta (DifferentialGeometry.Geometry.Curvature.standardRmDiag3 l1 l2 l3)
       (DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3) 0 0 =
       delta ^ 2 * (1 - 3 * delta) *
           DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3 ^ 2 +
         (1 - delta) * (l2 - l3) ^ 2 := by
   let lhs :=
-    pinchReact delta (DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3)
+    pinchReact delta (DifferentialGeometry.Geometry.Curvature.standardRmDiag3 l1 l2 l3)
       (DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3) 0 0
   let rhs :=
     delta ^ 2 * (1 - 3 * delta) *
@@ -120,7 +120,7 @@ theorem pinchReactNull
             2 * delta * l1 - delta * l2 - delta * l3 + 2 * l1 - l2 - l3) := by
     dsimp [lhs, rhs]
     unfold pinchReact ricciPresReact ricciSq3 ricciNorm3 ricciScal3
-      DifferentialGeometry.Geometry.Curvature.stdRmDiag3
+      DifferentialGeometry.Geometry.Curvature.standardRmDiag3
         DifferentialGeometry.Geometry.Curvature.ricciDiag3
       DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3
         DifferentialGeometry.Geometry.Curvature.delta3
@@ -136,7 +136,7 @@ theorem pinchReact_ge
     (delta l1 l2 l3 : Real)
     (hdelta13 : delta <= (1 : Real) / 3)
     (hnull : l1 = delta * DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3) :
-    0 <= pinchReact delta (DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3)
+    0 <= pinchReact delta (DifferentialGeometry.Geometry.Curvature.standardRmDiag3 l1 l2 l3)
       (DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3) 0 0 := by
   rw [pinchReactNull delta l1 l2 l3 hnull]
   have h1 : 0 <= delta ^ 2 * (1 - 3 * delta) *
@@ -189,7 +189,7 @@ theorem pinchShiftNull_ge
     (delta a b : Real)
     (hdelta13 : delta < (1 : Real) / 3) :
     0 <= pinchReact delta
-      (DifferentialGeometry.Geometry.Curvature.stdRmDiag3
+      (DifferentialGeometry.Geometry.Curvature.standardRmDiag3
         (shiftRic1 delta a b) (shiftRic2 delta a b) (shiftRic3 delta a b))
       (DifferentialGeometry.Geometry.Curvature.ricciDiag3
         (shiftRic1 delta a b) (shiftRic2 delta a b) (shiftRic3 delta a b))
@@ -200,7 +200,7 @@ theorem pinchShiftNull_ge
 
 def shiftReact3 (delta a b : Real) : Real :=
   pinchReact delta
-    (DifferentialGeometry.Geometry.Curvature.stdRmDiag3
+    (DifferentialGeometry.Geometry.Curvature.standardRmDiag3
       (shiftRic1 delta a b) (shiftRic2 delta a b) (shiftRic3 delta a b))
     (DifferentialGeometry.Geometry.Curvature.ricciDiag3
       (shiftRic1 delta a b) (shiftRic2 delta a b) (shiftRic3 delta a b))
@@ -228,7 +228,7 @@ def shiftRicBlock3 (delta a b c : Real) (i j : Fin 3) : Real :=
 
 def shiftReactBlock3 (delta a b c : Real) : Real :=
   pinchReact delta
-    (stdRmOfRic3 (shiftRicBlock3 delta a b c))
+    (standardRmOfRic3 (shiftRicBlock3 delta a b c))
     (shiftRicBlock3 delta a b c) 0 0
 
 
@@ -244,7 +244,7 @@ theorem shiftReactBlock3_eq
     convert hsq using 1
     ring
   unfold shiftReactBlock3 pinchReact ricciPresReact ricciSq3 ricciNorm3
-    stdRmOfRic3 shiftRicBlock3 shiftBlockS3 shiftScal3
+    standardRmOfRic3 shiftRicBlock3 shiftBlockS3 shiftScal3
     DifferentialGeometry.Geometry.Curvature.delta3
   simp [Fin.sum_univ_three, ricciScal3]
   field_simp [hden, hden', hden2]
@@ -782,7 +782,7 @@ theorem rm04OfRic3At_comp_orthonormal
     (i j k l : Fin 3) :
     rm04OfRic3At (I := I) (M := M) g Ric
         (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) =
-      stdRmOfRic3 (fun a b : Fin 3 => Ric (vec2 (I := I) (basis a) (basis b)))
+      standardRmOfRic3 (fun a b : Fin 3 => Ric (vec2 (I := I) (basis a) (basis b)))
         i j k l := by
   have hinv : MetricInverseInBasis (I := I) g x basis
     DifferentialGeometry.Geometry.Curvature.delta3 :=
@@ -797,7 +797,7 @@ theorem rm04OfRic3At_comp_orthonormal
   have horth' :
       ∀ a b : Fin 3, g.inner x (basis a) (basis b) =
         DifferentialGeometry.Geometry.Curvature.delta3 a b := horth
-  simp [rm04OfRic3At, stdRmOfRic3, htrace, metricTensorField_apply, horth',
+  simp [rm04OfRic3At, standardRmOfRic3, htrace, metricTensorField_apply, horth',
     vec2, DifferentialGeometry.Geometry.Curvature.vec2, smul_eq_mul]
 
 def ricciEndCLMAt
@@ -1359,7 +1359,7 @@ theorem shiftNAt_add_g_comp
           (shiftRic3At (I := I) (M := M) delta g
             (A + c • metricTensorField (I := I) g x))
           (vec4 (I := I) (basis p) (basis q) (basis r) (basis s)) =
-        stdRmOfRic3
+        standardRmOfRic3
           (fun u v : Fin 3 => Ric u v + a * DifferentialGeometry.Geometry.Curvature.delta3 u v)
           p q r s := by
     intro p q r s
@@ -1369,7 +1369,7 @@ theorem shiftNAt_add_g_comp
       rm04OfRic3At (I := I) (M := M) g
           (shiftRic3At (I := I) (M := M) delta g A)
           (vec4 (I := I) (basis p) (basis q) (basis r) (basis s)) =
-        stdRmOfRic3 Ric p q r s := by
+        standardRmOfRic3 Ric p q r s := by
     intro p q r s
     rw [rm04OfRic3At_comp_orthonormal (I := I) (M := M) basis horth]
   have htrace :
@@ -1510,7 +1510,7 @@ theorem shiftNAt_comp_shiftBlock
         rm04OfRic3At (I := I) (M := M) g
             (shiftRic3At (I := I) (M := M) delta g A)
             (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) =
-          stdRmOfRic3 (shiftRicBlock3 delta a b c) i j k l := by
+          standardRmOfRic3 (shiftRicBlock3 delta a b c) i j k l := by
     intro i j k l
     rw [rm04OfRic3At_comp_orthonormal (I := I) (M := M) basis hblock.orthonormal]
     simp [hRic]
@@ -1761,7 +1761,7 @@ theorem shiftNAtBasis_comp_shiftBlock
         rm04OfRic3At (I := I) (M := M) g
             (shiftRic3At (I := I) (M := M) δ g A)
             (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) =
-          stdRmOfRic3 (shiftRicBlock3 δ a b c) i j k l := by
+          standardRmOfRic3 (shiftRicBlock3 δ a b c) i j k l := by
     intro i j k l
     rw [rm04OfRic3At_comp_orthonormal (I := I) (M := M) basis hblock.orthonormal]
     simp [hRic]

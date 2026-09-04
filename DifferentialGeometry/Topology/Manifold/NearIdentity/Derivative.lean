@@ -7,7 +7,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -141,5 +141,5 @@ theorem hlocHinj_of_chartNeumann
     x₀ hUsub hinjChart⟩
 
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

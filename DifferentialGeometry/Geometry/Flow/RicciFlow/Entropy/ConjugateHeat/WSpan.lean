@@ -44,7 +44,7 @@ theorem gallim_w_lt
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S)
     (hDim : Module.finrank Real E = 3) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim)
     (hpot : DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn
       (RealTimeInterval.closed 0 tau hτ.le)

@@ -20,8 +20,8 @@ def matrixCutoffCrossTerm
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[Real] F)) :
     BoundedContinuousFunction (Euc n) F :=
   ∑ i, ∑ j,
-    ((a i j * gradientComponentBcf dchi i) • gradientComponentBcf du j +
-      (a i j * gradientComponentBcf dchi j) • gradientComponentBcf du i)
+    ((a i j * gradientComponentBoundedContinuousFunction dchi i) • gradientComponentBoundedContinuousFunction du j +
+      (a i j * gradientComponentBoundedContinuousFunction dchi j) • gradientComponentBoundedContinuousFunction du i)
 
 omit [DecidableEq n] [Nonempty n] in
 @[simp]
@@ -50,7 +50,7 @@ def matrixCutoffHessianTerm
     (u : BoundedContinuousFunction (Euc n) F) :
     BoundedContinuousFunction (Euc n) F :=
   ∑ i, ∑ j,
-    (a i j * hessianComponentBcf d2chi i j) • u
+    (a i j * hessianComponentBoundedContinuousFunction d2chi i j) • u
 
 omit [DecidableEq n] [Nonempty n] in
 @[simp]
@@ -217,7 +217,7 @@ theorem norm_matrixCutoffCommutator_apply_le
         |d2chi x (EuclideanSpace.basisFun n Real i)
           (EuclideanSpace.basisFun n Real j)| ≤ Md2chi := by
       rw [← Real.norm_eq_abs]
-      exact (norm_hessianComponentBcf_apply_le d2chi i j x).trans
+      exact (norm_hessianComponentBoundedContinuousFunction_apply_le d2chi i j x).trans
         hd2chiNorm
     exact_mod_cast mul_le_mul
       (mul_le_mul hai hd2chiij (abs_nonneg _) (by positivity))
@@ -348,8 +348,8 @@ theorem matrixCutoffCommutator_holderWith_of_support
         (fun x ↦ d2chi x (EuclideanSpace.basisFun n Real i)
           (EuclideanSpace.basisFun n Real j)) := by
       intro x y
-      simpa only [hessianComponentBcf_apply, edist_dist] using
-        hessianComponentBcf_holderWith d2chi hd2chi i j x y
+      simpa only [hessianComponentBoundedContinuousFunction_apply, edist_dist] using
+        hessianComponentBoundedContinuousFunction_holderWith d2chi hd2chi i j x y
     have hadchii : HolderWith (A i j * Kdchi + Mdchi * Ka i j) alpha
         (fun x ↦ a i j x * dchi x (EuclideanSpace.basisFun n Real i)) := by
       have hraw := holderWith_smul_of_restrict_of_support
@@ -377,7 +377,7 @@ theorem matrixCutoffCommutator_holderWith_of_support
           (EuclideanSpace.basisFun n Real j)) := by
       have hraw := holderWith_smul_of_restrict_of_support
         (ha i j) hd2chiij (haNorm i j) (fun x ↦ by
-          exact (norm_hessianComponentBcf_apply_le d2chi i j x).trans
+          exact (norm_hessianComponentBoundedContinuousFunction_apply_le d2chi i j x).trans
             (hd2chiNorm x)) (fun x hx ↦ by
           rw [hd2chiSupport x hx]
           simp)
@@ -407,7 +407,7 @@ theorem matrixCutoffCommutator_holderWith_of_support
         exact_mod_cast mul_le_mul (by
           simpa only [Real.norm_eq_abs] using haNorm i j x hx) (by
           rw [← Real.norm_eq_abs]
-          exact (norm_hessianComponentBcf_apply_le d2chi i j x).trans
+          exact (norm_hessianComponentBoundedContinuousFunction_apply_le d2chi i j x).trans
             (hd2chiNorm x)) (abs_nonneg _) (A i j).coe_nonneg
       · rw [hd2chiSupport x hx]
         simp only [zero_apply, mul_zero, norm_zero]

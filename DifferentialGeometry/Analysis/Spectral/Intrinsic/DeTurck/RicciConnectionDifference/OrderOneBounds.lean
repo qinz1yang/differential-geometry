@@ -376,7 +376,7 @@ theorem linearizedRicciConnectionDifferenceOrderOneCoefficient_fiberNormSq_le (g
             TensorRSSpace 0 3 I x)‖ ^ 2 := by
         simpa only [Ac] using hraw
       _ = Ca ^ 2 * P1 := by
-        have hn := riemannianFiberNormSq_eq_bundle_norm_sq'
+        have hn := riemannianFiberNormSq_eq_bundle_norm_sq
           (I := I) (M := M) g 0 3 x
           ((iteratedCovGrad (I := I) g 0 2 1 P).toSection x)
         exact congrArg (fun z : Real => Ca ^ 2 * z) hn.symm

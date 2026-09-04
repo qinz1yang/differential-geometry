@@ -14,7 +14,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -38,7 +38,7 @@ def limitPointedRiemannianConvergence
       (factorSeq S O₀ gSeq) (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim) id
       (limitConvergenceMapsOf S O₀ gSeq gLim hgLim) := by
   let Φ := limitConvergenceMapsOf S O₀ gSeq gLim hgLim
-  have hσsrc : ∀ k : ℕ,
+  have hσsource : ∀ k : ℕ,
       letI : TopologicalSpace (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
         (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).topology
       IsSigmaCompact (Φ.source k) := by
@@ -50,7 +50,7 @@ def limitPointedRiemannianConvergence
     let : SigmaCompactSpace (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
       (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).sigmaCompact
     exact Geometry.isSigmaCompact_of_isOpen I (Φ.source_open k)
-  have hσtgt : ∀ k : ℕ,
+  have hσtarget : ∀ k : ℕ,
       letI : TopologicalSpace ((factorSeq S O₀ gSeq).obj (id k)).M :=
         ((factorSeq S O₀ gSeq).obj (id k)).topology
       IsSigmaCompact (Φ.target k) := by
@@ -77,18 +77,18 @@ def limitPointedRiemannianConvergence
     letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
       metric_source_domain_smooth (I := I) Φ k
     letI : SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) :=
-      metric_source_domain_sigma_compact (I := I) Φ k (hσsrc k)
+      metric_source_domain_sigma_compact (I := I) Φ k (hσsource k)
     letI : T2Space (MetricSourceDomain (I := I) Φ k) :=
       metric_source_domain_t2 (I := I) Φ k
     exact (S.limitMetric gLim hgLim).restrictOpen (I := I) (metricSourceOpenSubset (I := I) Φ k)
   refine PointedRiemannianConverges.ofRestrictPullback (I := I)
-    Φ hσsrc refMetric ?_
+    Φ hσsource refMetric ?_
   intro K hK p ε hε
-  obtain ⟨kSrc, hkSrc⟩ := Φ.source_subset hK
-  obtain ⟨kConv, hkConv⟩ := hstage ε hε p
-  refine ⟨max kSrc kConv, fun k hk => ?_⟩
-  have hkS : kSrc ≤ k := le_trans (Nat.le_max_left kSrc kConv) hk
-  have hkC : kConv ≤ k := le_trans (Nat.le_max_right kSrc kConv) hk
+  obtain ⟨kSource, hkSource⟩ := Φ.source_subset hK
+  obtain ⟨kConvergence, hkConvergence⟩ := hstage ε hε p
+  refine ⟨max kSource kConvergence, fun k hk => ?_⟩
+  have hkS : kSource ≤ k := le_trans (Nat.le_max_left kSource kConvergence) hk
+  have hkC : kConvergence ≤ k := le_trans (Nat.le_max_right kSource kConvergence) hk
   let : TopologicalSpace (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
     (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).topology
   let : ChartedSpace H (pointedDirectLimitOfMetricCocycle S O₀ gLim hgLim).M :=
@@ -106,7 +106,7 @@ def limitPointedRiemannianConvergence
   let : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
     metric_source_domain_smooth (I := I) Φ k
   let : SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) :=
-    metric_source_domain_sigma_compact (I := I) Φ k (hσsrc k)
+    metric_source_domain_sigma_compact (I := I) Φ k (hσsource k)
   let : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomainTopology (I := I) Φ k
   let : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
@@ -116,11 +116,11 @@ def limitPointedRiemannianConvergence
   let : IsManifold I ∞ (MetricTargetDomain (I := I) Φ k) :=
     metric_target_domain_smooth (I := I) Φ k
   let : SigmaCompactSpace (MetricTargetDomain (I := I) Φ k) :=
-    metric_target_domain_sigma_compact (I := I) Φ k (hσtgt k)
+    metric_target_domain_sigma_compact (I := I) Φ k (hσtarget k)
   let F := metricSourceTargetDiffeomorph (I := I) Φ k
   let targetSigma : SigmaCompactSpace (metricTargetOpenSubset (I := I) Φ k) := by
     change SigmaCompactSpace (MetricTargetDomain (I := I) Φ k)
-    exact metric_target_domain_sigma_compact (I := I) Φ k (hσtgt k)
+    exact metric_target_domain_sigma_compact (I := I) Φ k (hσtarget k)
   let targetT2 : T2Space (metricTargetOpenSubset (I := I) Φ k) := by
     change T2Space (MetricTargetDomain (I := I) Φ k)
     exact metric_target_domain_t2 (I := I) Φ k
@@ -185,7 +185,7 @@ def limitPointedRiemannianConvergence
       sourceMetric sourceMetric < ε
   rw [hlim, metricDerivNormSupOn_pullback_image (I := I)]
   have hKsource : IsCompact (metricSourceCompactSet (I := I) Φ k K) :=
-    metric_source_compact_set_is_compact (I := I) Φ k hK (hkSrc k hkS)
+    metric_source_compact_set_is_compact (I := I) Φ k hK (hkSource k hkS)
   have hKtarget : IsCompact (F '' metricSourceCompactSet (I := I) Φ k K) :=
     hKsource.image F.continuous
   let stageVal : MetricTargetDomain (I := I) Φ k → A k := by
@@ -208,9 +208,9 @@ def limitPointedRiemannianConvergence
             (A k) inferInstance inferInstance inferInstance inferInstance
             (gSeq k) (gLim k) (gLim k) (metricTargetOpenSubset (I := I) Φ k)
             targetSigma targetT2 (F '' metricSourceCompactSet (I := I) Φ k K) p
-    _ < ε := hkConv k hkC stageSet hKstage
+    _ < ε := hkConvergence k hkC stageSet hKstage
 
 end
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

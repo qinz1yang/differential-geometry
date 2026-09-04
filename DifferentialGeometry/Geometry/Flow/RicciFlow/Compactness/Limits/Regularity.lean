@@ -19,7 +19,7 @@ open DifferentialGeometry.Geometry.Operator
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 open Bundle
@@ -300,7 +300,7 @@ private theorem metricFrameComp_Ioo
   exact hpx.2
 
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
-private theorem metricCLMSection_reg
+private theorem metricCLMSection_regularity
     (D : RealTimeInterval)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -330,7 +330,7 @@ private theorem metricCLMSection_reg
   exact (hlocal.contMDiffAt hnhds).contMDiffWithinAt
 
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
-private theorem metricFrameComp_reg
+private theorem metricFrameComp_regularity
     (D : RealTimeInterval)
     (g : ℝ → SmoothRiemannianMetric I M)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -349,7 +349,7 @@ private theorem metricFrameComp_reg
         (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) q.2
         ((g q.1).inner q.2))
       (D.regular ×ˢ u) :=
-    (metricCLMSection_reg (I := I) D g hgram).mono
+    (metricCLMSection_regularity (I := I) D g hgram).mono
       (fun q hq => ⟨hq.1, Set.mem_univ _⟩)
   have hv : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun p : ℝ × M => TotalSpace.mk' E p.2 (frame i p.2))
@@ -389,7 +389,7 @@ theorem metric_cont
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.carrier)
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
     letI : TopologicalSpace P.M := P.topology
@@ -411,7 +411,7 @@ theorem metric_cont
       gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) t)
     (gInf := co.gInf) (gRef := R) β ψ
   · intro K hK ε hε
-    obtain ⟨k₀, hk₀⟩ := co.convPt K hK 0 ε hε
+    obtain ⟨k₀, hk₀⟩ := co.convergencePt K hK 0 ε hε
     refine ⟨k₀, fun k hk t ht x hx => ?_⟩
     simpa only using hk₀ k hk t ht 0 le_rfl x hx
   · intro k x₀ i j
@@ -420,12 +420,12 @@ theorem metric_cont
         (co.φ k) x₀ i j).mono (Set.prod_mono hwin Set.Subset.rfl)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gSeqJet_of_soln
+theorem gSeqJet_of_solution
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (k : Nat)
     {D : RealTimeInterval}
     (S : letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
@@ -459,7 +459,7 @@ theorem gSeqJet_of_soln
           sourceDomSigmaOf (I := I) Φ k (hsrc k)
       ∀ (t : Real) (x : SourceDomain (I := I) Φ k)
         (v w : TangentSpace I x),
-        (srcMetric (I := I) Φ hsrc htgt k t).inner x v w =
+        (sourceMetric (I := I) Φ hsrc htgt k t).inner x v w =
           (S.family.metric t).inner x v w)
     (r : Nat) (x₀ : P.M) (i j : Fin (Module.finrank Real E))
     {C : Set E}
@@ -570,7 +570,7 @@ theorem gSeqJet_of_soln
       (𝓘(Real, Real).prod I) (∞ : WithTop ℕ∞)
       (fun p : Real × E => (p.1, core p.2)) q := by
     exact contMDiffAt_fst.prodMk (hcore.comp q contMDiffAt_snd)
-  have hsrcSmooth := solnMetricJointAt (I := I) (x := core y) S
+  have hsrcSmooth := solutionMetricJointAt (I := I) (x := core y) S
     hS (D.regular_isOpen.mem_nhds (hreg hqt)) V
   have hlocalMD := hsrcSmooth.comp q hmap
   let G : Real × E → Real := fun p =>
@@ -580,7 +580,7 @@ theorem gSeqJet_of_soln
       𝓘(Real, Real) (∞ : WithTop ℕ∞) G q := by
     apply hlocalMD.congr_of_eventuallyEq
     filter_upwards [] with p
-    simp only [G, solnMetricField, Tensor0SBundle.metricTensorField_apply,
+    simp only [G, solutionMetricField, Tensor0SBundle.metricTensorField_apply,
       Function.comp_apply]
   have hlocal : ContDiffAt Real (∞ : WithTop ℕ∞) G q := by
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
@@ -654,7 +654,7 @@ private theorem gSeqJet_contOn
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.regular)
     (k r : Nat) (x₀ : P.M) (i j : Fin (Module.finrank Real E))
     {C : Set E}
@@ -674,7 +674,7 @@ private theorem gSeqJet_contOn
           (chartGramOnE (I := I)
             (gSeqExt (I := I) Φ R bf hsrc htgt k p.1) x₀ i j) p.2)
       (Set.Icc β ψ ×ˢ C) := by
-  apply gSeqJet_of_soln (Φ := Φ) (R := R) (bf := bf)
+  apply gSeqJet_of_solution (Φ := Φ) (R := R) (bf := bf)
     (hsrc := hsrc) (htgt := htgt) k
     (sourceFlow (I := I) Φ k (hsrc k) (htgt k))
     (isSolutionOn_sourceFlow (I := I) Φ k (hsrc k) (htgt k))
@@ -690,7 +690,7 @@ theorem gramJets_of_stage
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hstage : letI : TopologicalSpace P.M := P.topology
@@ -768,7 +768,7 @@ theorem gramJets_of_stage
     have hδ : 0 < δ := by
       dsimp only [δ]
       positivity
-    obtain ⟨k₀, hk₀⟩ := co.convPt K hKc r δ hδ
+    obtain ⟨k₀, hk₀⟩ := co.convergencePt K hKc r δ hδ
     filter_upwards [Filter.eventually_ge_atTop k₀] with k hk
     rintro ⟨t, z⟩ ⟨ht, hz⟩
     let y : P.M := (extChartAt I x₀).symm z
@@ -847,7 +847,7 @@ theorem gramJets
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.regular)
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
     letI : TopologicalSpace P.M := P.topology
@@ -910,7 +910,7 @@ theorem gramJets
     have hδ : 0 < δ := by
       dsimp only [δ]
       positivity
-    obtain ⟨k₀, hk₀⟩ := co.convPt K hKc r δ hδ
+    obtain ⟨k₀, hk₀⟩ := co.convergencePt K hKc r δ hδ
     filter_upwards [Filter.eventually_ge_atTop k₀] with k hk
     rintro ⟨t, z⟩ ⟨ht, hz⟩
     let y : P.M := (extChartAt I x₀).symm z
@@ -993,7 +993,7 @@ private theorem gramPiJets
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hjets : letI : TopologicalSpace P.M := P.topology
@@ -1092,7 +1092,7 @@ private theorem gramPiJet_contOn
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hjets : letI : TopologicalSpace P.M := P.topology
@@ -1125,7 +1125,7 @@ private theorem gramPiJet_contOn
     (continuousOn_id.prodMk continuousOn_const)
     (fun t ht => ⟨ht, hy⟩)).congr fun t _ => rfl
 
-private theorem uniform_comp_cpt
+private theorem uniform_comp_compact
     {ι X₀ Y Z : Type*} [UniformSpace Y] [UniformSpace Z]
     {F : ι → X₀ → Y} {f : X₀ → Y} {l : Filter ι} {K : Set X₀}
     {g : Y → Z}
@@ -1144,7 +1144,7 @@ private theorem gramJet_tendsto
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (x₀ : P.M) {y : E}
     (hy : letI : TopologicalSpace P.M := P.topology
@@ -1209,7 +1209,7 @@ private theorem gramJet_tendsto
   have hδ : 0 < δ := by
     dsimp only [δ]
     positivity
-  obtain ⟨k₀, hk₀⟩ := co.convPt {x} isCompact_singleton 2 δ hδ
+  obtain ⟨k₀, hk₀⟩ := co.convergencePt {x} isCompact_singleton 2 δ hδ
   filter_upwards [Filter.eventually_ge_atTop k₀] with k hk
   intro t ht
   have hsum :
@@ -1258,7 +1258,7 @@ private theorem gramRHS_tendsto
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (hjets : letI : TopologicalSpace P.M := P.topology
@@ -1349,7 +1349,7 @@ private theorem gramRHS_tendsto
       (fun p : Analysis.MatJet E (Module.finrank Real E) =>
         Analysis.jetRicciFlow (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p i j) (Jinf t)
     exact (contDiffAt_pi.mp (contDiffAt_pi.mp hΦ i) j).continuousAt
-  have hcomp := uniform_comp_cpt (g := op) hJ
+  have hcomp := uniform_comp_compact (g := op) hJ
     (isCompact_Icc.image_of_continuousOn hJinf) hop
   simpa only [J, Jinf, op] using hcomp
 
@@ -1359,7 +1359,7 @@ theorem gramPDE
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.regular)
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
     (x₀ : P.M) (i j : Fin (Module.finrank Real E))
@@ -1462,7 +1462,7 @@ theorem gramPDE
           (gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) u)
           (co.gInf u) R x < ε := by
       intro ε hε
-      obtain ⟨k₀, hk₀⟩ := co.convPt {x} isCompact_singleton 0 ε hε
+      obtain ⟨k₀, hk₀⟩ := co.convergencePt {x} isCompact_singleton 0 ε hε
       exact ⟨k₀, fun k hk => hk₀ k hk u hu 0 le_rfl x (Set.mem_singleton x)⟩
     have hinner := metricInner_tendsto (I := I)
       (fun k => gSeqExt (I := I) Φ R bf hsrc htgt (co.φ k) u)
@@ -1473,7 +1473,7 @@ theorem gramPDE
   have hRHS := gramRHS_tendsto (I := I) (Φ := Φ) co
     (gramJets (I := I) (Φ := Φ) hwin co) x₀ i j hy
   rw [Metric.tendstoUniformlyOn_iff] at hRHS
-  have hunif : ∀ ε : Real, 0 < ε → ∃ k₀ : Nat, ∀ k : Nat, k₀ ≤ k →
+  have huniform : ∀ ε : Real, 0 < ε → ∃ k₀ : Nat, ∀ k : Nat, k₀ ≤ k →
       ∀ u ∈ Set.Icc β ψ, |f' k u - h u| < ε := by
     intro ε hε
     obtain ⟨k₀, hk₀⟩ := Filter.eventually_atTop.1 (hRHS ε hε)
@@ -1481,7 +1481,7 @@ theorem gramPDE
     have hd := hk₀ k hk u hu
     rw [Real.dist_eq] at hd
     simpa only [f', h, abs_sub_comm] using hd
-  exact hasDeriv_lim_tail (convex_Icc β ψ) ht f f' g h hderiv hfg hunif
+  exact hasDeriv_lim_tail (convex_Icc β ψ) ht f f' g h hderiv hfg huniform
 
 omit [CompleteSpace E] [NeZero (Module.finrank Real E)] in
 private theorem gramModel_to_mfld
@@ -1603,7 +1603,7 @@ theorem gramPDE_regular
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
@@ -1641,7 +1641,7 @@ theorem metricPDE_regular
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ)
@@ -1706,7 +1706,7 @@ theorem gramSmooth
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (hwin : Set.Icc β ψ ⊆ X.D.regular)
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
     letI : TopologicalSpace P.M := P.topology
@@ -1906,7 +1906,7 @@ theorem gramSmoothIcc
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hβψ : β < ψ)
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
@@ -2175,7 +2175,7 @@ theorem gramSmooth_regular
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hcarrier : X.D.carrier ⊆ Set.Icc β ψ)
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
@@ -2216,7 +2216,7 @@ theorem metricSmooth
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real}
     (hcarrier : X.D.carrier = Set.Icc β ψ)
     (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
@@ -2255,7 +2255,7 @@ theorem metricSmooth
         (fun t : ℝ => TotalSpace.mk' (E →L[ℝ] E →L[ℝ] ℝ)
           (E := fun y => TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) x
           ((co.gInf t).inner x)) X.D.regular :=
-      (metricCLMSection_reg (I := I) X.D co.gInf hgram).comp
+      (metricCLMSection_regularity (I := I) X.D co.gInf hgram).comp
         hcurve (fun t ht => ⟨ht, Set.mem_univ _⟩)
     have hv : ContMDiffOn 𝓘(ℝ, ℝ) (I.prod 𝓘(ℝ, E)) ∞
         (fun _ : ℝ => TotalSpace.mk' E
@@ -2290,7 +2290,7 @@ theorem metricSmooth
     refine hbase.congr (fun s _ => ?_)
     simp [metricTensorField_apply, vec2]
   · intro Idx _ frame u hframe i j
-    exact metricFrameComp_reg (I := I) X.D co.gInf hgram frame hframe i j
+    exact metricFrameComp_regularity (I := I) X.D co.gInf hgram frame hframe i j
 
 end FlowMetricConvergenceData
 
@@ -2302,7 +2302,7 @@ theorem smoothMetric
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (hgramWin : letI : TopologicalSpace P.M := P.topology
@@ -2401,7 +2401,7 @@ theorem gramSmooth
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀) :
@@ -2436,12 +2436,12 @@ theorem gramSmooth
   exact (hlocal.contMDiffAt hnhds).contMDiffWithinAt
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem smoothMetric_of_conv
+theorem smoothMetric_of_convergence
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀) :
@@ -2466,5 +2466,5 @@ end OpenMetricConvergenceData
 
 end OpenInterval
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

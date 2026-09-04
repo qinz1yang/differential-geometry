@@ -200,7 +200,7 @@ theorem abs_tensor03_unit_eval_le_fibreNorm_mul_sqrt
     rw [h0, h1, h2]; ring
   have hcompsq : (∑ J : Fin 3 → Fin n, comp J ^ 2) =
       ‖(W : Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ^ 2 := by
-    rw [← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 3 x W]
+    rw [← riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 3 x W]
     rw [hriemannianFiberNormSq W]
     rw [Fintype.sum_unique (fun K : Fin 0 → Fin n =>
       ∑ J : Fin 3 → Fin n,
@@ -392,7 +392,7 @@ theorem abs_tensor04_unit_eval_le_fibreNorm_mul_sqrt
     rw [h0, h1, h2, h3]; ring
   have hcompsq : (∑ J : Fin 4 → Fin n, comp J ^ 2) =
       ‖(W : Tensor0SBundle.TensorRSSpace 0 4 I x)‖ ^ 2 := by
-    rw [← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 4 x W]
+    rw [← riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 4 x W]
     rw [hriemannianFiberNormSq W]
     rw [Fintype.sum_unique (fun K : Fin 0 → Fin n =>
       ∑ J : Fin 4 → Fin n,
@@ -454,7 +454,7 @@ private lemma covGrad3Eval_eq_metricDiff
         g₁.inner b u w - g₀.inner b u w :=
     smoothCcTensorBilinForm_ccTensor02Symm_eq_metric_sub (I := I) (M := M) g₀ g₁ T hg₁
   rw [covGrad3Eval,
-    covGrad02_unitModel_eval_eq_metricDiffCovDeriv' (I := I) (M := M) g₀ g₁ g₀
+    covGrad02_unitModel_eval_eq_metricDiffCovDeriv_sub (I := I) (M := M) g₀ g₁ g₀
       (ccTensor02Symm (I := I) g₀ T) hbil P Q R x]
   have hzero : metricDiffCovDeriv (I := I) g₀ g₀
       (fun b => P b) (fun b => Q b) (fun b => R b) x = 0 := by
@@ -542,8 +542,8 @@ private lemma norm_covGrad_ccTensor02Symm_le
         covGrad (I := I) (M := M) g₀ 0 2 Tsw := by
       rw [iteratedCovGrad_succ, iteratedCovGrad_zero, hTsw_def]
     rw [hiter_sw, hiter] at hfib
-    rw [riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 3 x,
-        riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 3 x] at hfib
+    rw [riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 3 x,
+        riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 3 x] at hfib
     have hnn1 : (0 : ℝ) ≤ ‖((covGrad (I := I) (M := M) g₀ 0 2 Tsw).toSection x :
         Tensor0SBundle.TensorRSSpace 0 3 I x)‖ := norm_nonneg _
     have hnn2 : (0 : ℝ) ≤ ‖((covGrad (I := I) (M := M) g₀ 0 2 T).toSection x :
@@ -954,7 +954,7 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * C₀, by positivity, ?_⟩
   intro g₁ T δ hδ hδ0 h hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := hn
   set G : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG_def
@@ -1039,7 +1039,7 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * C₀, by positivity, ?_⟩
   intro g₁ T δ hδ hδ0 h hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := hn
   set G : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG_def

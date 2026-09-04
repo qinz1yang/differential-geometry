@@ -73,7 +73,7 @@ theorem partitionOfUnity_assembled_section_contMDiff
   have hsummand : ∀ i, q₀ ∈ tsupport (fun q : ℝ × M => ρ i q.2) →
       ContMDiffAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, E) ∞ (g i) q₀ := by
     intro i hi
-    have hx₀_supp : x₀ ∈ tsupport (ρ i) := by
+    have hx₀_support : x₀ ∈ tsupport (ρ i) := by
       have hclosed : IsClosed ((fun q : ℝ × M => q.2) ⁻¹' tsupport (ρ i)) :=
         (isClosed_tsupport (ρ i)).preimage continuous_snd
       have hsubset : tsupport (fun q : ℝ × M => ρ i q.2) ⊆
@@ -82,7 +82,7 @@ theorem partitionOfUnity_assembled_section_contMDiff
         simp only [Function.mem_support, Set.mem_preimage] at hq ⊢
         exact subset_tsupport _ hq
       exact hsubset hi
-    have hx₀_U : x₀ ∈ U i := hsub i hx₀_supp
+    have hx₀_U : x₀ ∈ U i := hsub i hx₀_support
     have hbase : x₀ ∈ e.baseSet := by
       rw [he, TangentBundle.trivializationAt_baseSet]
       exact mem_chart_source H x₀
@@ -250,11 +250,11 @@ theorem seeley_time_extend
   have hgC : ∀ α : M, ContDiffOn ℝ ∞ (Function.uncurry (g α))
       (Set.Icc 0 T ×ˢ (extChartAt I α).target) :=
     fun α => chartE_euclideanReading_contDiffOn (I := I) X (Set.Icc 0 T) α hsmooth0
-  have hz₀tgt : ∀ α : M, extChartAt I α α ∈ (extChartAt I α).target :=
+  have hz₀target : ∀ α : M, extChartAt I α α ∈ (extChartAt I α).target :=
     fun α => mem_extChartAt_target (I := I) α
   have hKexists : ∀ α : M, ∃ K : Set E, IsCompact K ∧ extChartAt I α α ∈ interior K ∧
       K ⊆ (extChartAt I α).target :=
-    fun α => exists_compact_subset (isOpen_extChartAt_target (I := I) α) (hz₀tgt α)
+    fun α => exists_compact_subset (isOpen_extChartAt_target (I := I) α) (hz₀target α)
   choose K hKcompact hKint hKtgt using hKexists
   have hborel : ∀ α : M, ∃ gext : ℝ → E → E, ∃ Vα ∈ nhds (extChartAt I α α),
       ContDiffOn ℝ ∞ (Function.uncurry gext) ((univ : Set ℝ) ×ˢ Vα) ∧
@@ -269,7 +269,7 @@ theorem seeley_time_extend
       Vo ⊆ V α ∧ Vo ⊆ (extChartAt I α).target := by
     intro α
     have hmem : V α ∩ (extChartAt I α).target ∈ nhds (extChartAt I α α) :=
-      Filter.inter_mem (hVnhds α) ((isOpen_extChartAt_target (I := I) α).mem_nhds (hz₀tgt α))
+      Filter.inter_mem (hVnhds α) ((isOpen_extChartAt_target (I := I) α).mem_nhds (hz₀target α))
     obtain ⟨Vo, hVosub, hVoopen, hz₀Vo⟩ := mem_nhds_iff.1 hmem
     exact ⟨Vo, hVoopen, hz₀Vo, fun z hz => (hVosub hz).1, fun z hz => (hVosub hz).2⟩
   choose Vo hVoopen hz₀Vo hVoV hVotgt using hVoexists

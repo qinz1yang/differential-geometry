@@ -55,7 +55,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma bdDelta_nonneg (g₀ : SmoothRiemannianMetric I M) (x₀ : M)
+lemma metricCauchySchwarzBound_nonneg (g₀ : SmoothRiemannianMetric I M) (x₀ : M)
     (P : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P) δ) :
     0 ≤ δ := by
@@ -78,7 +78,7 @@ lemma bdDelta_nonneg (g₀ : SmoothRiemannianMetric I M) (x₀ : M)
   linarith [le_trans habs_nn hbound]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
-lemma bdNorm_zero_of_isEmpty [IsEmpty M] (g₀ : SmoothRiemannianMetric I M)
+lemma smoothCcTensor_norm_eq_zero_of_isEmpty [IsEmpty M] (g₀ : SmoothRiemannianMetric I M)
     (r s : ℕ) (V : SmoothCcTensor g₀ r s) : ‖V‖ = 0 := by
   rw [SmoothCcTensor.norm_def, tensorL2Norm_def, tensorL2Inner,
     MeasureTheory.integral_of_isEmpty, Real.sqrt_zero]
@@ -93,7 +93,7 @@ abbrev deTurckLieCovariantDerivativePairTracePermutation : Equiv.Perm (Fin 6) :=
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma bdTensor0S_zero_rank_decomp (x : M) (t : Tensor0SSpace 0 I x) :
+lemma tensor0S_zero_rank_eq_smul_unitTensor (x : M) (t : Tensor0SSpace 0 I x) :
     t = (Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0)) • unitTensor (I := I) (M := M) x := by
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
@@ -110,7 +110,7 @@ lemma bdTensor0S_zero_rank_decomp (x : M) (t : Tensor0SSpace 0 I x) :
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma bdToModel_eq_eval {s : ℕ} {x : M} (T : Tensor0SSpace s I x)
+private lemma palatiniToModel_eq_eval {s : ℕ} {x : M} (T : Tensor0SSpace s I x)
     (m : Fin s → E) :
     Tensor0SSpace.toModel T m =
       Tensor0SSpace.eval T
@@ -119,7 +119,7 @@ private lemma bdToModel_eq_eval {s : ℕ} {x : M} (T : Tensor0SSpace s I x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma bdTermSlotFib_apply_toModel {s : ℕ} {x : M}
+private lemma palatiniTermSlotFib_apply_toModel {s : ℕ} {x : M}
     (Term : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (m : Fin (s + 1 + 1) → E) :
     Tensor0SSpace.toModel
@@ -128,12 +128,12 @@ private lemma bdTermSlotFib_apply_toModel {s : ℕ} {x : M}
         (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
           (Term ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0))) D)
         (Matrix.vecTail m) := by
-  rw [bdToModel_eq_eval, termSlotFib_apply_eval]
+  rw [palatiniToModel_eq_eval, termSlotFib_apply_eval]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-lemma bdSlotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
+lemma palatiniSlotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x)
     (u : Fin 6 → E) :
     Tensor0SSpace.toModel
@@ -214,7 +214,7 @@ lemma bdSlotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
     funext k
     refine Fin.cases rfl (fun i => ?_) k
     refine Fin.cases rfl (fun i2 => i2.elim0) i
-  have hdecomp := bdTensor0S_zero_rank_decomp (I := I) (M := M) x t
+  have hdecomp := tensor0S_zero_rank_eq_smul_unitTensor (I := I) (M := M) x t
   rw [htval] at hdecomp
   rw [hdecomp, map_smul]
   rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
@@ -230,7 +230,7 @@ def cometricDoubleTraceCc (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma bdToModel_cons_sum_smul {n : ℕ}
+lemma palatiniToModel_cons_sum_smul {n : ℕ}
     (Zm : Tensor0SModel (n + 1) ℝ E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons (∑ c, t c • u c) rest) =
@@ -264,7 +264,7 @@ lemma bdToModel_cons_sum_smul {n : ℕ}
 
 omit [NeZero (Module.finrank ℝ E)] [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [SigmaCompactSpace M] in
-private lemma bdToModel_cons_cons_sum_smul (_x : M) {n : ℕ}
+private lemma palatiniToModel_cons_cons_sum_smul (_x : M) {n : ℕ}
     (Zm : Tensor0SModel (n + 2) ℝ E) (aa : E) (d : ℕ) (t : Fin d → ℝ)
     (u : Fin d → E) (rest : Fin n → E) :
     Zm (Fin.cons aa (Fin.cons (∑ c, t c • u c) rest)) =
@@ -300,7 +300,7 @@ private lemma bdToModel_cons_cons_sum_smul (_x : M) {n : ℕ}
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-lemma bdOrthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
+lemma palatiniOrthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     v = ∑ i : Fin (Module.finrank ℝ E),
       g.inner x (smoothOrthoFrame (I := I) g x i x) v • smoothOrthoFrame (I := I) g x i x := by
@@ -358,7 +358,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
   g0FlatCLM) in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma bdG1_inner_metricComparisonEndomorphism_left (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+private lemma palatiniG1_inner_metricComparisonEndomorphism_left (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     g₁.inner x (metricComparisonEndomorphism (I := I) g₀ g₁ x v) w = g₀.inner x v w := by
   rw [metricComparisonEndomorphism_apply]
@@ -371,7 +371,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
   inverseMetricSharpFib_g0FlatCLM g0FlatCLM) in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M)
+private lemma palatiniPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I M)
     (s : ℕ) :
     cometricDoubleTraceCc (I := I) (M := M) g₀ g₁ s =
       ccOperatorFieldComp (I := I) (M := M) g₀ (s + 2) (s + 2) s
@@ -402,7 +402,7 @@ private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I
     rw [cometricDoubleTraceFib_toModel (I := I) g₁ s x Z]
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) g₁ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) (Tensor0SSpace.toModel Z) mm]
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x) (Tensor0SSpace.toModel Z) mm]
   rw [hLHS]
   have hRHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace (s + 2) I x →L[ℝ] Tensor0SSpace s I x from
@@ -430,7 +430,7 @@ private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I
     rw [cometricDoubleTraceFib_toModel (I := I) g₀ s x]
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) g₀ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
         (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z)) mm]
@@ -448,7 +448,7 @@ private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I
             tangentSpaceModelContinuousLinearEquiv (I := I) x
               (smoothOrthoFrame (I := I) g₁ x c x) := by
     intro a
-    have h1 := bdOrthoFrame_center_repr (I := I) (M := M) g₁ x
+    have h1 := palatiniOrthoFrame_center_repr (I := I) (M := M) g₁ x
       (metricComparisonEndomorphism (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x))
     conv_lhs => rw [h1]
     rw [map_sum]
@@ -457,7 +457,7 @@ private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I
     congr 1
     rw [g₁.symm x (smoothOrthoFrame (I := I) g₁ x c x)
       (metricComparisonEndomorphism (I := I) g₀ g₁ x (smoothOrthoFrame (I := I) g₀ x a x))]
-    rw [bdG1_inner_metricComparisonEndomorphism_left (I := I) (M := M) g₀ g₁ x
+    rw [palatiniG1_inner_metricComparisonEndomorphism_left (I := I) (M := M) g₀ g₁ x
       (smoothOrthoFrame (I := I) g₀ x a x) (smoothOrthoFrame (I := I) g₁ x c x)]
   symm
   calc (∑ a : Fin (Module.finrank ℝ E),
@@ -477,7 +477,7 @@ private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I
                 (smoothOrthoFrame (I := I) g₀ x a x)) mm)) := by
         refine Finset.sum_congr rfl fun a _ => ?_
         rw [hGrep a]
-        exact bdToModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel Z)
+        exact palatiniToModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel Z)
           (Module.finrank ℝ E)
           (fun c => g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
             (smoothOrthoFrame (I := I) g₁ x c x))
@@ -501,7 +501,7 @@ private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I
               (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
                 (smoothOrthoFrame (I := I) g₁ x c x)) mm)) := by
         refine Finset.sum_congr rfl fun c _ => ?_
-        have hsum := bdToModel_cons_cons_sum_smul (E := E) x (Tensor0SSpace.toModel Z)
+        have hsum := palatiniToModel_cons_cons_sum_smul (E := E) x (Tensor0SSpace.toModel Z)
           (tangentSpaceModelContinuousLinearEquiv (I := I) x
             (smoothOrthoFrame (I := I) g₁ x c x))
           (Module.finrank ℝ E)
@@ -511,7 +511,7 @@ private lemma bdPureDT_eq_trace_fullRaised (g₀ g₁ : SmoothRiemannianMetric I
             (smoothOrthoFrame (I := I) g₀ x a x)) mm
         rw [← hsum]
         congr 2
-        have hrep0 := bdOrthoFrame_center_repr (I := I) (M := M) g₀ x
+        have hrep0 := palatiniOrthoFrame_center_repr (I := I) (M := M) g₀ x
           (smoothOrthoFrame (I := I) g₁ x c x)
         congr 1
         calc
@@ -539,7 +539,7 @@ def cometricDoublePairTraceCoefficient
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-lemma bdPairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
+lemma palatiniPairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 4) (x : M) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -578,7 +578,7 @@ lemma bdPairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) termPairTraceSlotPerm6
       ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
-    rw [bdSlotExtendIter_two_toModel (I := I) (M := M) g₀ X x D
+    rw [palatiniSlotExtendIter_two_toModel (I := I) (M := M) g₀ X x D
       (fun i => w (termPairTraceSlotPerm6 i))]
     refine congrArg₂ (· * ·) ?_ ?_
     · refine congrArg _ ?_
@@ -599,14 +599,14 @@ lemma bdPairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
   rw [cometricDoubleTraceFib_toModel (I := I) gm 2 x]
   rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) gm x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) gm x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) gm 4 x Y))
     (fun j => (v j : E))]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [cometricDoubleTraceFib_toModel (I := I) gm 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) gm x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) gm x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y)
     (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
         (smoothOrthoFrame (I := I) gm x b x))
@@ -619,7 +619,7 @@ lemma bdPairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma bdSlotInsertEndoCc_add (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
+private lemma palatiniSlotInsertEndoCc_add (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ s (A + B) =
@@ -645,7 +645,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdRaised_diff_split (g₀ g₁ : SmoothRiemannianMetric I M) :
+private lemma palatiniRaised_diff_split (g₀ g₁ : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ =
       metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁ +
         metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ := by
@@ -672,7 +672,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdEndoCovDeriv_fullRaised_id_zero (g₀ : SmoothRiemannianMetric I M)
+private lemma palatiniEndoCovDeriv_fullRaised_id_zero (g₀ : SmoothRiemannianMetric I M)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v : TangentSpace I x) :
     ((endoCovariantDerivative (I := I) (M := M) g₀)
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) x v) (Y x) = 0 := by
@@ -693,7 +693,7 @@ private lemma bdEndoCovDeriv_fullRaised_id_zero (g₀ : SmoothRiemannianMetric I
   rw [sub_self]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma bdCovGrad_slotInsert_fullRaised_id_zero (g₀ : SmoothRiemannianMetric I M) :
+private lemma palatiniCovGrad_slotInsert_fullRaised_id_zero (g₀ : SmoothRiemannianMetric I M) :
     covGrad (I := I) (M := M) g₀ 1 1
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀)) = 0 := by
@@ -722,7 +722,7 @@ private lemma bdCovGrad_slotInsert_fullRaised_id_zero (g₀ : SmoothRiemannianMe
     obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at (I := I)
       (F := E) (V := fun y : M => TangentSpace I y) (n := (⊤ : ℕ∞)) x w
     rw [← hY]
-    exact bdEndoCovDeriv_fullRaised_id_zero (I := I) (M := M) g₀ Y x
+    exact palatiniEndoCovDeriv_fullRaised_id_zero (I := I) (M := M) g₀ Y x
       (m 0)]
   rw [show slotInsertEndoFib (I := I) (M := M) (0 + 1) 0 x
         (0 : TangentSpace I x →L[ℝ] TangentSpace I x) = 0 from by
@@ -733,7 +733,7 @@ private lemma bdCovGrad_slotInsert_fullRaised_id_zero (g₀ : SmoothRiemannianMe
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma bdICG_slotInsert_fullRaised_id_succ_zero
+private lemma palatiniICG_slotInsert_fullRaised_id_succ_zero
     (g₀ : SmoothRiemannianMetric I M) (m : ℕ) :
     iteratedCovGrad (I := I) g₀ 1 1 (m + 1)
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -741,7 +741,7 @@ private lemma bdICG_slotInsert_fullRaised_id_succ_zero
   induction m with
   | zero =>
       rw [iteratedCovGrad_succ, iteratedCovGrad_zero]
-      exact bdCovGrad_slotInsert_fullRaised_id_zero (I := I) (M := M) g₀
+      exact palatiniCovGrad_slotInsert_fullRaised_id_zero (I := I) (M := M) g₀
   | succ m' ih =>
       rw [iteratedCovGrad_succ, ih, covGrad_zero]
 
@@ -783,10 +783,10 @@ private theorem metricComparisonEndomorphismField_iteratedCovGrad_gridWindow (g�
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) +
         endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) := by
-    rw [bdRaised_diff_split (I := I) (M := M) g₀ g₁,
-      bdSlotInsertEndoCc_add (I := I) (M := M) g₀ 0]
+    rw [palatiniRaised_diff_split (I := I) (M := M) g₀ g₁,
+      palatiniSlotInsertEndoCc_add (I := I) (M := M) g₀ 0]
   rw [hsplit]
-  refine le_trans (bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 1 1 l _ _ x) ?_
+  refine le_trans (palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 1 1 l _ _ x) ?_
   have hA : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + l) x
       ((iteratedCovGrad (I := I) g₀ 1 1 l
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -805,8 +805,8 @@ private theorem metricComparisonEndomorphismField_iteratedCovGrad_gridWindow (g�
         rw [Combinatorics.antidiagonalTupleGrid_zero, mul_one]
         exact hcid x
     | (m + 1) =>
-        rw [bdICG_slotInsert_fullRaised_id_succ_zero (I := I) (M := M) g₀ m]
-        rw [bdRiemannianFiberNormSq_zero_toSection]
+        rw [palatiniICG_slotInsert_fullRaised_id_succ_zero (I := I) (M := M) g₀ m]
+        rw [palatiniRiemannianFiberNormSq_zero_toSection]
         exact mul_nonneg hcid_nn
           (Combinatorics.antidiagonalTupleGrid_nonneg b hb (m + 1))
   calc 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + l) x
@@ -830,7 +830,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
   inverseMetricSharpFib_g0FlatCLM cotangentToDual_g0FlatCLM g0FlatCLM) in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-lemma bdSlotInsertZero_fullRaisedRev_eq_omRecover
+lemma palatiniSlotInsertZero_fullRaisedRev_eq_omRecover
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀) =
       omRecoverEndoCc (I := I) g₀ g₁ := by
@@ -848,7 +848,7 @@ lemma bdSlotInsertZero_fullRaisedRev_eq_omRecover
           (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀ x) om from rfl]
-  rw [bdCotangentToDual_slotInsertEndoFib (I := I) (M := M) x
+  rw [palatiniCotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀ x) om w]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (omRecoverEndoCc (I := I) g₀ g₁).toSection x) om =
@@ -881,14 +881,14 @@ theorem fullRev0_eq (g₀ g₁ : SmoothRiemannianMetric I M) :
     slotInsertEndoCc (I := I) (M := M) g₀ 0
         (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀) =
       omRecoverEndoCc (I := I) g₀ g₁ :=
-  bdSlotInsertZero_fullRaisedRev_eq_omRecover (I := I) (M := M) g₀ g₁
+  palatiniSlotInsertZero_fullRaisedRev_eq_omRecover (I := I) (M := M) g₀ g₁
 
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomorphism metricComparisonEndomorphism_apply
   inverseMetricSharpFib_g0FlatCLM cotangentToDual_g0FlatCLM g0FlatCLM) in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdOmRecover_eq_idEndo_add_raise
+private lemma palatiniOmRecover_eq_idEndo_add_raise
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w) :
@@ -952,7 +952,7 @@ private lemma bdOmRecover_eq_idEndo_add_raise
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x) om from rfl]
-  rw [bdCotangentToDual_slotInsertEndoFib (I := I) (M := M) x
+  rw [palatiniCotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x) om w]
   rw [show (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀ x) w = w from by
     rw [metricComparisonEndomorphismField_apply, metricComparisonEndomorphism_apply, inverseMetricSharpFib_g0FlatCLM]]
@@ -976,7 +976,7 @@ private lemma bdOmRecover_eq_idEndo_add_raise
                 (ccTensor02Symm (I := I) (M := M) g₀ T).toSection x)
               (unitTensor (I := I) (M := M) x)))
           (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x w) from rfl]
-    rw [bdInterior_product_toModel_eval (I := I) (M := M) (0 + 1) x
+    rw [palatiniInterior_product_toModel_eval (I := I) (M := M) (0 + 1) x
       (inverseMetricSharpFib (I := I) g₀ x om)
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (0 + 2) I x from
           (ccTensor02Symm (I := I) (M := M) g₀ T).toSection x)
@@ -1032,11 +1032,11 @@ theorem omRecover_add
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) +
         cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
           (ccTensor02Symm (I := I) (M := M) g₀ T) := by
-  exact bdOmRecover_eq_idEndo_add_raise (I := I) (M := M) g₀ g₁ T htie
+  exact palatiniOmRecover_eq_idEndo_add_raise (I := I) (M := M) g₀ g₁ T htie
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma bdRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (g₀ : SmoothRiemannianMetric I M)
+lemma palatiniRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
         ((iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
@@ -1078,7 +1078,7 @@ lemma riemannianFiberNormSq_ccTensor02Symm_le_of_gFibreOpBound (g₀ : SmoothRie
       (Module.finrank ℝ E : ℝ) ^ 2 * δ ^ 2 := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hrepr, _hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 0 2 x
     ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) e bse hnE hbse horth]
@@ -1152,7 +1152,7 @@ lemma riemannianFiberNormSq_ccTensor02Symm_le_of_gFibreOpBound (g₀ : SmoothRie
         rw [hc0, hc2, one_mul, hnE]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem bdOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
+theorem palatiniOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1182,8 +1182,8 @@ theorem bdOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
   have hW1 : (1 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow b (l + 1) :=
     Combinatorics.one_le_antidiagonalTupleGridWindow b hb (by omega)
   have hW_nn : (0 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow b (l + 1) := by linarith
-  rw [bdOmRecover_eq_idEndo_add_raise (I := I) (M := M) g₀ g₁ T htie]
-  refine le_trans (bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 1 1 l _ _ x) ?_
+  rw [palatiniOmRecover_eq_idEndo_add_raise (I := I) (M := M) g₀ g₁ T htie]
+  refine le_trans (palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 1 1 l _ _ x) ?_
   have hA : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + l) x
       ((iteratedCovGrad (I := I) g₀ 1 1 l
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
@@ -1193,8 +1193,8 @@ theorem bdOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
         rw [iteratedCovGrad_zero]
         exact hcid x
     | (m + 1) =>
-        rw [bdICG_slotInsert_fullRaised_id_succ_zero (I := I) (M := M) g₀ m]
-        rw [bdRiemannianFiberNormSq_zero_toSection]
+        rw [palatiniICG_slotInsert_fullRaised_id_succ_zero (I := I) (M := M) g₀ m]
+        rw [palatiniRiemannianFiberNormSq_zero_toSection]
         exact hcid_nn
   have hB : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + l) x
       ((iteratedCovGrad (I := I) g₀ 1 1 l
@@ -1221,7 +1221,7 @@ theorem bdOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
           nlinarith [hδle, hfr]
         linarith [h3, hW_nn]
     | (m + 1) =>
-        have h1 := bdRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ T (m + 1) x
+        have h1 := palatiniRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ T (m + 1) x
         have h2 : b (m + 1) ≤ Combinatorics.antidiagonalTupleGridWindow b (m + 1 + 1) := by
           have h3 : b (m + 1) * Combinatorics.antidiagonalTupleGrid b 0 ≤
               Combinatorics.antidiagonalTupleGrid b (0 + (m + 1)) :=
@@ -1247,7 +1247,7 @@ theorem bdOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
     nlinarith [hW1, hcid_nn, hfrδ_nn]
   linarith [hA, hB, hstep]
 
-private theorem bdLambdaSlotInsert3_gridWindow (g₀ : SmoothRiemannianMetric I M)
+private theorem palatiniLambdaSlotInsert3_gridWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1265,13 +1265,13 @@ private theorem bdLambdaSlotInsert3_gridWindow (g₀ : SmoothRiemannianMetric I 
             (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
               ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) (l + 1) := by
   classical
-  obtain ⟨C, hC_nn, hC⟩ := bdOmRecover_gridWindow (I := I) (M := M) g₀
+  obtain ⟨C, hC_nn, hC⟩ := palatiniOmRecover_gridWindow (I := I) (M := M) g₀
   refine ⟨fun l => (Module.finrank ℝ E : ℝ) ^ 3 * C l,
     fun l => mul_nonneg (by positivity) (hC_nn l), ?_⟩
   intro g₁ T htie δ hδ_le hδ0 hbound l x
   refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 3
     (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀) l x) ?_
-  rw [bdSlotInsertZero_fullRaisedRev_eq_omRecover (I := I) (M := M) g₀ g₁]
+  rw [palatiniSlotInsertZero_fullRaisedRev_eq_omRecover (I := I) (M := M) g₀ g₁]
   rw [mul_assoc]
   exact mul_le_mul_of_nonneg_left (hC g₁ T htie hδ_le hδ0 hbound l x) (by positivity)
 
@@ -1307,7 +1307,7 @@ lemma connectionDifferenceSection_eq_bilinearSlotInsertionCoefficient_zero (g₀
           (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁)).toSection x) om) =
       bilinearSlotInsertCLM (I := I) (M := M) 0 x (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁ x) om
       from rfl]
-  rw [bdTermSlotFib_apply_toModel (I := I) (M := M)
+  rw [palatiniTermSlotFib_apply_toModel (I := I) (M := M)
     (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁ x) om v]
   rw [slotInsertEndoFib_apply_eval]
   rw [show (Function.update (Matrix.vecTail v) 0
@@ -1327,14 +1327,14 @@ lemma connectionDifferenceSection_eq_bilinearSlotInsertionCoefficient_zero (g₀
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (connectionDifferenceSection (I := I) g₁ g₀).toSection x) om) =
       connectionDifferencePairing (I := I) g₁ g₀ x om from rfl]
-  rw [bdToModel_eq_eval]
+  rw [palatiniToModel_eq_eval]
   rw [Tensor0SSpace.eval_eq]
   rw [connectionDifferencePairing_apply]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma bdTermSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I M)
+private lemma palatiniTermSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I M)
     (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
     bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Term =
@@ -1499,7 +1499,7 @@ private def bilinearSlotInsertionCoefficientReindexPermFour : Equiv.Perm (Fin 4)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma bdTermSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I M)
+private lemma palatiniTermSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRiemannianMetric I M)
     (Term : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
     bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 2 Term =
@@ -1666,7 +1666,7 @@ private lemma bdTermSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRiemannia
   rw [hLHS, e1, e2, e3, e4, e5, e6]
 
 omit [SigmaCompactSpace M] in
-lemma bdTermSlot2_riemannianFiberNormSq_le (g₀ g₁ : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
+lemma palatiniTermSlot2_riemannianFiberNormSq_le (g₀ g₁ : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 3 (4 + j) x
         ((iteratedCovGrad (I := I) g₀ 3 4 j
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 2
@@ -1674,7 +1674,7 @@ lemma bdTermSlot2_riemannianFiberNormSq_le (g₀ g₁ : SmoothRiemannianMetric I
       (Module.finrank ℝ E : ℝ) ^ 2 *
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 1 2 j (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) := by
-  rw [bdTermSlotEndoCc_two_eq_reindex_slotExtend (I := I) (M := M) g₀
+  rw [palatiniTermSlotEndoCc_two_eq_reindex_slotExtend (I := I) (M := M) g₀
     (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁)]
   rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 3 4
     (Equiv.swap (0 : Fin 3) 1) bilinearSlotInsertionCoefficientReindexPermFour
@@ -1684,7 +1684,7 @@ lemma bdTermSlot2_riemannianFiberNormSq_le (g₀ g₁ : SmoothRiemannianMetric I
     (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁)) j x) ?_
   rw [pow_two, mul_assoc]
   refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
-  rw [bdTermSlotEndoCc_one_eq_reindex_slotExtend (I := I) (M := M) g₀
+  rw [palatiniTermSlotEndoCc_one_eq_reindex_slotExtend (I := I) (M := M) g₀
     (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁)]
   rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 3
     (Equiv.swap (0 : Fin 2) 1) (finRotate 3).symm
@@ -1697,7 +1697,7 @@ lemma bdTermSlot2_riemannianFiberNormSq_le (g₀ g₁ : SmoothRiemannianMetric I
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private def bdBilinearSectionSub
+private def palatiniBilinearSectionSub
     (A B : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M =>
         TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
@@ -1708,11 +1708,11 @@ private def bdBilinearSectionSub
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma bdTermSlot_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
+private lemma palatiniTermSlot_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M =>
         TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))) :
-    bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ s (bdBilinearSectionSub A B) =
+    bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ s (palatiniBilinearSectionSub A B) =
       bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ s A -
         bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ s B := by
   apply SmoothCcTensor.ext
@@ -1729,13 +1729,13 @@ private lemma bdTermSlot_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   change Tensor0SSpace.toModel (termSlotFib (I := I) (M := M) s x (A x - B x) D) v =
     Tensor0SSpace.toModel (termSlotFib (I := I) (M := M) s x (A x) D) v -
       Tensor0SSpace.toModel (termSlotFib (I := I) (M := M) s x (B x) D) v
-  rw [bdTermSlotFib_apply_toModel, bdTermSlotFib_apply_toModel,
-    bdTermSlotFib_apply_toModel]
+  rw [palatiniTermSlotFib_apply_toModel, palatiniTermSlotFib_apply_toModel,
+    palatiniTermSlotFib_apply_toModel]
   rw [sub_apply, slotInsertEndoFib_sub_left, sub_apply,
     Tensor0SSpace.toModel_sub, sub_apply]
 
 omit [SigmaCompactSpace M] in
-private lemma bdTermSlot2_sub_le
+private lemma palatiniTermSlot2_sub_le
     (g₀ : SmoothRiemannianMetric I M)
     (A : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M =>
@@ -1749,7 +1749,7 @@ private lemma bdTermSlot2_sub_le
       (Module.finrank ℝ E : ℝ) ^ 2 *
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 1 2 j S).toSection x) := by
-  rw [bdTermSlotEndoCc_two_eq_reindex_slotExtend (I := I) (M := M) g₀ A]
+  rw [palatiniTermSlotEndoCc_two_eq_reindex_slotExtend (I := I) (M := M) g₀ A]
   rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
     (I := I) (M := M) g₀ 3 4
     (Equiv.swap (0 : Fin 3) 1) bilinearSlotInsertionCoefficientReindexPermFour
@@ -1760,7 +1760,7 @@ private lemma bdTermSlot2_sub_le
     (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 A) j x) ?_
   rw [pow_two, mul_assoc]
   refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
-  rw [bdTermSlotEndoCc_one_eq_reindex_slotExtend (I := I) (M := M) g₀ A]
+  rw [palatiniTermSlotEndoCc_one_eq_reindex_slotExtend (I := I) (M := M) g₀ A]
   rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
     (I := I) (M := M) g₀ 2 3
     (Equiv.swap (0 : Fin 2) 1) (finRotate 3).symm
@@ -1786,7 +1786,7 @@ theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_l2 (g₀ g₁ : Smoo
           ((iteratedCovGrad (I := I) g₀ 1 2 j
             (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) := by
   simpa only [deTurckLieCovariantDerivativeSecondOrderCoefficient] using
-    bdTermSlot2_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ j x
+    palatiniTermSlot2_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ j x
 
 omit [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_sub_l2
@@ -1803,23 +1803,23 @@ theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_sub_l2
   let A : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M =>
         TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)) :=
-    bdBilinearSectionSub (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁)
+    palatiniBilinearSectionSub (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁)
       (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₂)
   have hA :
       bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 A =
         connectionDifferenceSection (I := I) g₁ g₀ - connectionDifferenceSection (I := I) g₂ g₀ := by
     dsimp only [A]
-    rw [bdTermSlot_sub]
+    rw [palatiniTermSlot_sub]
     rw [← connectionDifferenceSection_eq_bilinearSlotInsertionCoefficient_zero (I := I) (M := M) g₀ g₁,
       ← connectionDifferenceSection_eq_bilinearSlotInsertionCoefficient_zero (I := I) (M := M) g₀ g₂]
   rw [show deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g₀ g₁ -
       deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g₀ g₂ =
         bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 2 A by
     dsimp only [A, deTurckLieCovariantDerivativeSecondOrderCoefficient]
-    rw [bdTermSlot_sub]]
-  exact bdTermSlot2_sub_le (I := I) (M := M) g₀ A _ hA j x
+    rw [palatiniTermSlot_sub]]
+  exact palatiniTermSlot2_sub_le (I := I) (M := M) g₀ A _ hA j x
 
-private noncomputable def bdKernelCLM (gA gB : SmoothRiemannianMetric I M) (x : M) :
+private noncomputable def palatiniKernelCLM (gA gB : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x :=
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
@@ -1842,14 +1842,14 @@ private noncomputable def bdKernelCLM (gA gB : SmoothRiemannianMetric I M) (x : 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdKernelCLM_apply (gA gB : SmoothRiemannianMetric I M) (x : M)
+private lemma palatiniKernelCLM_apply (gA gB : SmoothRiemannianMetric I M) (x : M)
     (v0 p q : TangentSpace I x) :
-    bdKernelCLM (I := I) (M := M) gA gB x v0 p q =
+    palatiniKernelCLM (I := I) (M := M) gA gB x v0 p q =
       connectionDifferenceCovDerivOp (I := I) gA gB x v0 p q := by
-  rw [bdKernelCLM, LinearMap.coe_toContinuousLinearMap']
+  rw [palatiniKernelCLM, LinearMap.coe_toContinuousLinearMap']
   rfl
 
-private noncomputable def bdFixLoweredCovec (g₀ gA gB : SmoothRiemannianMetric I M) (x : M) :
+private noncomputable def palatiniFixLoweredCovec (g₀ gA gB : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 4 I x :=
   letI : NormedAddCommGroup (TangentSpace I x →L[ℝ] TangentSpace I x) :=
     ContinuousLinearMap.toNormedAddCommGroup (𝕜 := ℝ) (𝕜₂ := ℝ)
@@ -1861,7 +1861,7 @@ private noncomputable def bdFixLoweredCovec (g₀ gA gB : SmoothRiemannianMetric
       (σ₁₂ := RingHom.id ℝ)
   (show ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ from
     { toFun := fun m =>
-        g₀.inner x (bdKernelCLM (I := I) (M := M) gA gB x (m 1) (m 2) (m 3)) (m 0)
+        g₀.inner x (palatiniKernelCLM (I := I) (M := M) gA gB x (m 1) (m 2) (m 3)) (m 0)
       map_update_add' := by
         have h01 : (0 : Fin 4) ≠ 1 := by decide
         have h02 : (0 : Fin 4) ≠ 2 := by decide
@@ -1900,8 +1900,8 @@ private noncomputable def bdFixLoweredCovec (g₀ gA gB : SmoothRiemannianMetric
             not_false_eq_true, ContinuousLinearMap.map_smul, smul_apply]
       cont := by
         have hK : Continuous (fun m : Fin 4 → TangentSpace I x =>
-            bdKernelCLM (I := I) (M := M) gA gB x (m 1) (m 2) (m 3)) :=
-          (((bdKernelCLM (I := I) (M := M) gA gB x).continuous.comp
+            palatiniKernelCLM (I := I) (M := M) gA gB x (m 1) (m 2) (m 3)) :=
+          (((palatiniKernelCLM (I := I) (M := M) gA gB x).continuous.comp
             (continuous_apply 1)).clm_apply (continuous_apply 2)).clm_apply (continuous_apply 3)
         exact ((g₀.inner x).continuous.comp hK).clm_apply (continuous_apply 0) }
     : Tensor0SSpace 4 I x)
@@ -1909,17 +1909,17 @@ private noncomputable def bdFixLoweredCovec (g₀ gA gB : SmoothRiemannianMetric
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdFixLoweredCovec_apply (g₀ gA gB : SmoothRiemannianMetric I M) (x : M)
+private lemma palatiniFixLoweredCovec_apply (g₀ gA gB : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 4 → TangentSpace I x) :
-    bdFixLoweredCovec (I := I) g₀ gA gB x m =
+    palatiniFixLoweredCovec (I := I) g₀ gA gB x m =
       g₀.inner x (connectionDifferenceCovDerivOp (I := I) gA gB x (m 1) (m 2) (m 3)) (m 0) := by
-  change g₀.inner x (bdKernelCLM (I := I) (M := M) gA gB x (m 1) (m 2) (m 3)) (m 0) = _
-  rw [bdKernelCLM_apply]
+  change g₀.inner x (palatiniKernelCLM (I := I) (M := M) gA gB x (m 1) (m 2) (m 3)) (m 0) = _
+  rw [palatiniKernelCLM_apply]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdFixLoweredScalar_global (g₀ gA gB : SmoothRiemannianMetric I M)
+private lemma palatiniFixLoweredScalar_global (g₀ gA gB : SmoothRiemannianMetric I M)
     {V0 W p q : Π b : M, TangentSpace I b}
     (hV0 : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% V0))
     (hW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% W))
@@ -1944,12 +1944,12 @@ private lemma bdFixLoweredScalar_global (g₀ gA gB : SmoothRiemannianMetric I M
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdFixLoweredScalar_contMDiffAt (g₀ gA gB : SmoothRiemannianMetric I M)
+private lemma palatiniFixLoweredScalar_contMDiffAt (g₀ gA gB : SmoothRiemannianMetric I M)
     (V0 V1 V2 V3 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x₀ : M) :
     ContMDiffAt I 𝓘(ℝ, ℝ) ∞
       (fun x : M =>
         g₀.inner x (connectionDifferenceCovDerivOp (I := I) gA gB x (V1 x) (V2 x) (V3 x)) (V0 x)) x₀ := by
-  have hglob := bdFixLoweredScalar_global (I := I) (M := M) g₀ gA gB
+  have hglob := palatiniFixLoweredScalar_global (I := I) (M := M) g₀ gA gB
     (V0 := fun b => V1 b) (W := fun b => V0 b) (p := fun b => V2 b) (q := fun b => V3 b)
     V1.contMDiff V0.contMDiff V2.contMDiff V3.contMDiff
   exact hglob.contMDiffAt
@@ -1957,16 +1957,16 @@ private lemma bdFixLoweredScalar_contMDiffAt (g₀ gA gB : SmoothRiemannianMetri
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem bdFixLoweredCovec_section_contMDiff (g₀ gA gB : SmoothRiemannianMetric I M) :
+private theorem palatiniFixLoweredCovec_section_contMDiff (g₀ gA gB : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
         (E := fun z : M => Tensor0SSpace 4 I z) x
-        (bdFixLoweredCovec (I := I) g₀ gA gB x)) := by
+        (palatiniFixLoweredCovec (I := I) g₀ gA gB x)) := by
   classical
   let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
       (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
-      (fun x : M => (bdFixLoweredCovec (I := I) g₀ gA gB x :
+      (fun x : M => (palatiniFixLoweredCovec (I := I) g₀ gA gB x :
         Bundle.continuousMultilinearMap ℝ 4 E (TangentSpace I) x))).mpr ?_
   intro σ x₀
   set b := Module.finBasis ℝ E with hb
@@ -1978,7 +1978,7 @@ private theorem bdFixLoweredCovec_section_contMDiff (g₀ gA gB : SmoothRiemanni
       (fun x : M => g₀.inner x
         (connectionDifferenceCovDerivOp (I := I) gA gB x (Y (σ 1) x) (Y (σ 2) x) (Y (σ 3) x))
         (Y (σ 0) x)) x₀ :=
-    bdFixLoweredScalar_contMDiffAt (I := I) (M := M) g₀ gA gB
+    palatiniFixLoweredScalar_contMDiffAt (I := I) (M := M) g₀ gA gB
       (Y (σ 0)) (Y (σ 1)) (Y (σ 2)) (Y (σ 3)) x₀
   refine hscalar.congr_of_eventuallyEq ?_
   have h_base₁ : ∀ᶠ x in 𝓝 x₀, x ∈ e₁.baseSet := e₁.open_baseSet.mem_nhds he₁
@@ -1988,34 +1988,34 @@ private theorem bdFixLoweredCovec_section_contMDiff (g₀ gA gB : SmoothRiemanni
     intro k
     rw [hYx (σ k), Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
     exact Trivialization.symmL_apply e₁ hx₁ (b (σ k))
-  change bdFixLoweredCovec (I := I) g₀ gA gB x (fun k => e₁.symmL ℝ x (b (σ k))) = _
-  rw [bdFixLoweredCovec_apply]
+  change palatiniFixLoweredCovec (I := I) g₀ gA gB x (fun k => e₁.symmL ℝ x (b (σ k))) = _
+  rw [palatiniFixLoweredCovec_apply]
   rw [hframeEq 0, hframeEq 1, hframeEq 2, hframeEq 3]
 
-private def bdFixLoweredField (g₀ gA gB : SmoothRiemannianMetric I M) :
+private def palatiniFixLoweredField (g₀ gA gB : SmoothRiemannianMetric I M) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 4 :=
   letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
-  ⟨fun x => bdFixLoweredCovec (I := I) g₀ gA gB x,
-    bdFixLoweredCovec_section_contMDiff (I := I) (M := M) g₀ gA gB⟩
+  ⟨fun x => palatiniFixLoweredCovec (I := I) g₀ gA gB x,
+    palatiniFixLoweredCovec_section_contMDiff (I := I) (M := M) g₀ gA gB⟩
 
-private def bdFixLoweredCc (g₀ gA gB : SmoothRiemannianMetric I M) :
+private def palatiniFixLoweredCc (g₀ gA gB : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 0 4 where
   toSection :=
     MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
-      (E := (TangentSpace I : M → Type _)) ∞ (bdFixLoweredField (I := I) (M := M) g₀ gA gB)
+      (E := (TangentSpace I : M → Type _)) ∞ (palatiniFixLoweredField (I := I) (M := M) g₀ gA gB)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdFixLoweredCc_unitModel (g₀ gA gB : SmoothRiemannianMetric I M) (x : M) :
-    unitModel (I := I) (M := M) g₀ 4 (bdFixLoweredCc (I := I) (M := M) g₀ gA gB) x =
-      Tensor0SSpace.toModel (bdFixLoweredCovec (I := I) g₀ gA gB x) := by
+private lemma palatiniFixLoweredCc_unitModel (g₀ gA gB : SmoothRiemannianMetric I M) (x : M) :
+    unitModel (I := I) (M := M) g₀ 4 (palatiniFixLoweredCc (I := I) (M := M) g₀ gA gB) x =
+      Tensor0SSpace.toModel (palatiniFixLoweredCovec (I := I) g₀ gA gB x) := by
   rw [unitModel]
-  rw [show (bdFixLoweredCc (I := I) (M := M) g₀ gA gB).toSection x
+  rw [show (palatiniFixLoweredCc (I := I) (M := M) g₀ gA gB).toSection x
         (unitTensor (I := I) (M := M) x) =
       (MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) x).smulRight
-          (bdFixLoweredField (I := I) (M := M) g₀ gA gB x)
+          (palatiniFixLoweredField (I := I) (M := M) g₀ gA gB x)
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
       from rfl]
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
@@ -2025,18 +2025,18 @@ private lemma bdFixLoweredCc_unitModel (g₀ gA gB : SmoothRiemannianMetric I M)
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdFixLoweredCc_unitModel_apply (g₀ gA gB : SmoothRiemannianMetric I M) (x : M)
+private lemma palatiniFixLoweredCc_unitModel_apply (g₀ gA gB : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 4 → E) :
-    unitModel (I := I) (M := M) g₀ 4 (bdFixLoweredCc (I := I) (M := M) g₀ gA gB) x m =
+    unitModel (I := I) (M := M) g₀ 4 (palatiniFixLoweredCc (I := I) (M := M) g₀ gA gB) x m =
       g₀.inner x
         (connectionDifferenceCovDerivOp (I := I) gA gB x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 3)))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) := by
-  rw [bdFixLoweredCc_unitModel]
-  rw [bdToModel_eq_eval]
-  exact bdFixLoweredCovec_apply (I := I) (M := M) g₀ gA gB x
+  rw [palatiniFixLoweredCc_unitModel]
+  rw [palatiniToModel_eq_eval]
+  exact palatiniFixLoweredCovec_apply (I := I) (M := M) g₀ gA gB x
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i))
 
 private def connectionDifferenceQuadraticLoweredCc (g₀ gTerm gOut : SmoothRiemannianMetric I M) :
@@ -2048,7 +2048,7 @@ private def connectionDifferenceQuadraticLoweredCc (g₀ gTerm gOut : SmoothRiem
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdQuadLowCc_unitModel_apply (g₀ gTerm gOut : SmoothRiemannianMetric I M)
+private lemma palatiniQuadLowCc_unitModel_apply (g₀ gTerm gOut : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4 (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ gTerm gOut) x m
       =
@@ -2068,7 +2068,7 @@ private lemma bdQuadLowCc_unitModel_apply (g₀ gTerm gOut : SmoothRiemannianMet
           (unitTensor (I := I) (M := M) x)) from by
     rw [connectionDifferenceQuadraticLoweredCc, operatorFieldComposition_toSection]
     rfl]
-  rw [bdTermSlotFib_apply_toModel (I := I) (M := M)
+  rw [palatiniTermSlotFib_apply_toModel (I := I) (M := M)
     (connectionDifferenceEndomorphism (I := I) (M := M) g₀ gTerm x)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gOut).toSection x)
@@ -2115,13 +2115,13 @@ private lemma bdQuadLowCc_unitModel_apply (g₀ gTerm gOut : SmoothRiemannianMet
         m 3
       rw [Function.update_of_ne (by decide : (2 : Fin 3) ≠ 0)]
       rfl]
-  rw [bdConnectionDifferenceLoweredCc_unitModel_apply (I := I) (M := M) g₀ gOut x]
+  rw [palatiniConnectionDifferenceLoweredCc_unitModel_apply (I := I) (M := M) g₀ gOut x]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     Matrix.cons_val_two, Matrix.tail_cons, ContinuousLinearEquiv.symm_apply_apply]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma bdConnectionDifference_self_apply (g₀ : SmoothRiemannianMetric I M) (x : M)
+lemma palatiniConnectionDifference_self_apply (g₀ : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
     PDE.DeTurck.connectionDifference (I := I) g₀ g₀ x u v = 0 := by
   have h := DifferentialGeometry.Analysis.Sobolev.connectionDifference_cocycle (I := I) (M := M) g₀ g₀ g₀ x u v
@@ -2212,40 +2212,40 @@ private lemma deTurckLieConnectionDifferenceDerivativeCovKernel_diff_eq_deTurckL
     rw [map_sub, sub_apply]]
   abel
 
-private def bdSigma2 : Equiv.Perm (Fin 4) :=
+private def palatiniSigma2 : Equiv.Perm (Fin 4) :=
   ⟨fun i => (![2, 3, 1, 0] : Fin 4 → Fin 4) i,
    fun i => (![3, 2, 0, 1] : Fin 4 → Fin 4) i,
    by decide, by decide⟩
 
-private def bdSigma3 : Equiv.Perm (Fin 4) :=
+private def palatiniSigma3 : Equiv.Perm (Fin 4) :=
   ⟨fun i => (![2, 1, 3, 0] : Fin 4 → Fin 4) i,
    fun i => (![3, 1, 0, 2] : Fin 4 → Fin 4) i,
    by decide, by decide⟩
 
-private def bdSigma4 : Equiv.Perm (Fin 4) :=
+private def palatiniSigma4 : Equiv.Perm (Fin 4) :=
   ⟨fun i => (![3, 1, 2, 0] : Fin 4 → Fin 4) i,
    fun i => (![3, 1, 2, 0] : Fin 4 → Fin 4) i,
    by decide, by decide⟩
 
 private def deTurckLieConnectionDifferenceDerivativeCovKernelDiffLoweredCc (g₀ g₁ g_bg : SmoothRiemannianMetric I M) : SmoothCcTensor g₀
     0 4 :=
-  (-1 : ℝ) • bdFixLoweredCc (I := I) (M := M) g₀ g_bg g₀
-    + domDomCongrSection (I := I) g₀ bdSigma2
+  (-1 : ℝ) • palatiniFixLoweredCc (I := I) (M := M) g₀ g_bg g₀
+    + domDomCongrSection (I := I) g₀ palatiniSigma2
       (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g_bg g_bg)
-    - domDomCongrSection (I := I) g₀ bdSigma3
+    - domDomCongrSection (I := I) g₀ palatiniSigma3
       (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g_bg g_bg)
-    - domDomCongrSection (I := I) g₀ bdSigma4
+    - domDomCongrSection (I := I) g₀ palatiniSigma4
       (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g_bg g_bg)
-    - domDomCongrSection (I := I) g₀ bdSigma2
+    - domDomCongrSection (I := I) g₀ palatiniSigma2
       (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g_bg g₁)
-    + domDomCongrSection (I := I) g₀ bdSigma3
+    + domDomCongrSection (I := I) g₀ palatiniSigma3
       (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g₁ g_bg)
-    + domDomCongrSection (I := I) g₀ bdSigma4
+    + domDomCongrSection (I := I) g₀ palatiniSigma4
       (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g₁ g_bg)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma bdUnitModel_smul (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (c : ℝ)
+lemma palatiniUnitModel_smul (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (c : ℝ)
     (A : SmoothCcTensor g₀ 0 s) (x : M) :
     unitModel (I := I) (M := M) g₀ s (c • A) x =
       c • unitModel (I := I) (M := M) g₀ s A x := by
@@ -2256,7 +2256,7 @@ lemma bdUnitModel_smul (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (c : ℝ)
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdLow0_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+private lemma palatiniLow0_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeCovKernelDiffLoweredCc (I := I) (M := M) g₀ g₁ g_bg) x m =
       g₀.inner x
@@ -2271,38 +2271,38 @@ private lemma bdLow0_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I 
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) := by
   classical
   rw [deTurckLieConnectionDifferenceDerivativeCovKernelDiffLoweredCc]
-  rw [bdUnitModel_add, bdUnitModel_add, bdUnitModel_sub, bdUnitModel_sub, bdUnitModel_sub,
-    bdUnitModel_add, bdUnitModel_smul]
+  rw [palatiniUnitModel_add, palatiniUnitModel_add, palatiniUnitModel_sub, palatiniUnitModel_sub, palatiniUnitModel_sub,
+    palatiniUnitModel_add, palatiniUnitModel_smul]
   simp only [add_apply, sub_apply, smul_apply, smul_eq_mul]
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel,
     domDomCongrSection_unitModel, domDomCongrSection_unitModel,
     domDomCongrSection_unitModel, domDomCongrSection_unitModel]
   simp only [ContinuousMultilinearMap.domDomCongr_apply]
-  rw [bdFixLoweredCc_unitModel_apply (I := I) (M := M) g₀ g_bg g₀ x m]
-  rw [bdQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g_bg g_bg x
-      (fun i => m (bdSigma2 i)),
-    bdQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g_bg g_bg x
-      (fun i => m (bdSigma3 i)),
-    bdQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g_bg g_bg x
-      (fun i => m (bdSigma4 i)),
-    bdQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g_bg g₁ x
-      (fun i => m (bdSigma2 i)),
-    bdQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
-      (fun i => m (bdSigma3 i)),
-    bdQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
-      (fun i => m (bdSigma4 i))]
-  have hs2_0 : bdSigma2 (0 : Fin 4) = 2 := by decide
-  have hs2_1 : bdSigma2 (1 : Fin 4) = 3 := by decide
-  have hs2_2 : bdSigma2 (2 : Fin 4) = 1 := by decide
-  have hs2_3 : bdSigma2 (3 : Fin 4) = 0 := by decide
-  have hs3_0 : bdSigma3 (0 : Fin 4) = 2 := by decide
-  have hs3_1 : bdSigma3 (1 : Fin 4) = 1 := by decide
-  have hs3_2 : bdSigma3 (2 : Fin 4) = 3 := by decide
-  have hs3_3 : bdSigma3 (3 : Fin 4) = 0 := by decide
-  have hs4_0 : bdSigma4 (0 : Fin 4) = 3 := by decide
-  have hs4_1 : bdSigma4 (1 : Fin 4) = 1 := by decide
-  have hs4_2 : bdSigma4 (2 : Fin 4) = 2 := by decide
-  have hs4_3 : bdSigma4 (3 : Fin 4) = 0 := by decide
+  rw [palatiniFixLoweredCc_unitModel_apply (I := I) (M := M) g₀ g_bg g₀ x m]
+  rw [palatiniQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g_bg g_bg x
+      (fun i => m (palatiniSigma2 i)),
+    palatiniQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g_bg g_bg x
+      (fun i => m (palatiniSigma3 i)),
+    palatiniQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g_bg g_bg x
+      (fun i => m (palatiniSigma4 i)),
+    palatiniQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g_bg g₁ x
+      (fun i => m (palatiniSigma2 i)),
+    palatiniQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
+      (fun i => m (palatiniSigma3 i)),
+    palatiniQuadLowCc_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
+      (fun i => m (palatiniSigma4 i))]
+  have hs2_0 : palatiniSigma2 (0 : Fin 4) = 2 := by decide
+  have hs2_1 : palatiniSigma2 (1 : Fin 4) = 3 := by decide
+  have hs2_2 : palatiniSigma2 (2 : Fin 4) = 1 := by decide
+  have hs2_3 : palatiniSigma2 (3 : Fin 4) = 0 := by decide
+  have hs3_0 : palatiniSigma3 (0 : Fin 4) = 2 := by decide
+  have hs3_1 : palatiniSigma3 (1 : Fin 4) = 1 := by decide
+  have hs3_2 : palatiniSigma3 (2 : Fin 4) = 3 := by decide
+  have hs3_3 : palatiniSigma3 (3 : Fin 4) = 0 := by decide
+  have hs4_0 : palatiniSigma4 (0 : Fin 4) = 3 := by decide
+  have hs4_1 : palatiniSigma4 (1 : Fin 4) = 1 := by decide
+  have hs4_2 : palatiniSigma4 (2 : Fin 4) = 2 := by decide
+  have hs4_3 : palatiniSigma4 (3 : Fin 4) = 0 := by decide
   rw [hs2_0, hs2_1, hs2_2, hs2_3, hs3_0, hs3_1, hs3_2, hs3_3, hs4_0, hs4_1, hs4_2, hs4_3]
   rw [deTurckLieConnectionDifferenceDerivativeCovKernel_diff_eq_deTurckLieConnectionDifferenceDerivativeCovKernel_connectionDifference_expansion
     (I := I) (M := M) g₀ g₁ g_bg x
@@ -2360,7 +2360,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert (metricComparisonEndomo
   inverseMetricSharpFib_g0FlatCLM cotangentToDual_g0FlatCLM g0FlatCLM) in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma bdG0_inner_lambda (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+lemma palatiniG0_inner_lambda (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (u v : TangentSpace I x) :
     g₀.inner x u (metricComparisonEndomorphism (I := I) g₁ g₀ x v) = g₁.inner x u v := by
   rw [metricComparisonEndomorphism_apply]
@@ -2374,7 +2374,7 @@ lemma bdG0_inner_lambda (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma bdXdHalf_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+private lemma palatiniXdHalf_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4 (deTurckTermCoeffDiffHalfCc (I := I) (M := M) g₀ g₁ g_bg) x m =
       g₁.inner x
@@ -2404,7 +2404,7 @@ private lemma bdXdHalf_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric 
           (unitTensor (I := I) (M := M) x)) =
       unitModel (I := I) (M := M) g₀ 4 (deTurckLieConnectionDifferenceDerivativeCovKernelDiffLoweredCc (I := I) (M := M) g₀ g₁ g_bg) x
         from rfl]
-  rw [bdLow0_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
+  rw [palatiniLow0_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
     (Function.update m 0
       (tangentLinearMapToModel
         (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀ x) (m 0)))]
@@ -2413,7 +2413,7 @@ private lemma bdXdHalf_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric 
     Function.update_of_ne (by decide : (3 : Fin 4) ≠ 0), Function.update_self,
     tangentLinearMapToModel_apply, ContinuousLinearEquiv.symm_apply_apply]
   rw [metricComparisonEndomorphismField_apply]
-  exact bdG0_inner_lambda (I := I) (M := M) g₀ g₁ x
+  exact palatiniG0_inner_lambda (I := I) (M := M) g₀ g₁ x
     (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 1))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
@@ -2427,7 +2427,7 @@ private lemma bdXdHalf_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private lemma bdXd_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
+private lemma palatiniXd_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4 (deTurckTermCoeffDiffCc (I := I) (M := M) g₀ g₁ g_bg) x m =
       g₁.inner x
@@ -2450,18 +2450,18 @@ private lemma bdXd_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 2))
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 3)))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) := by
-  rw [deTurckTermCoeffDiffCc, bdUnitModel_add, add_apply]
+  rw [deTurckTermCoeffDiffCc, palatiniUnitModel_add, add_apply]
   rw [domDomCongrSection_unitModel, ContinuousMultilinearMap.domDomCongr_apply]
-  rw [bdXdHalf_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
+  rw [palatiniXdHalf_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
     (fun i => m ((Equiv.swap (0 : Fin 4) 1) i))]
-  rw [bdXdHalf_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x m]
+  rw [palatiniXdHalf_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x m]
   rw [show (Equiv.swap (0 : Fin 4) 1) 0 = 1 from Equiv.swap_apply_left 0 1,
     show (Equiv.swap (0 : Fin 4) 1) 1 = 0 from Equiv.swap_apply_right 0 1,
     show (Equiv.swap (0 : Fin 4) 1) 2 = 2 from by decide,
     show (Equiv.swap (0 : Fin 4) 1) 3 = 3 from by decide]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem bdCovDerivTermDiff_eq_pairTrace
+private theorem palatiniCovDerivTermDiff_eq_pairTrace
     (g₀ g_bg g₁ : SmoothRiemannianMetric I M) :
     deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg -
         deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g₀ =
@@ -2506,7 +2506,7 @@ private theorem bdCovDerivTermDiff_eq_pairTrace
   rw [hsmul]
   beta_reduce
   rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
-  rw [bdPairTraceOp_apply_toModel (I := I) (M := M) g₀ g₁
+  rw [palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀ g₁
     (deTurckTermCoeffDiffCc (I := I) (M := M) g₀ g₁ g_bg) x D v]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       ((deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg -
@@ -2560,7 +2560,7 @@ private theorem bdCovDerivTermDiff_eq_pairTrace
           (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) := by
     intro a b
-    rw [bdXd_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
+    rw [palatiniXd_unitModel_apply (I := I) (M := M) g₀ g₁ g_bg x
       (![v 0, v 1,
         tangentSpaceModelContinuousLinearEquiv (I := I) x (smoothOrthoFrame (I := I) g₁ x a x),
         tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -2633,7 +2633,7 @@ private theorem bdCovDerivTermDiff_eq_pairTrace
   linear_combination hS
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma bdRiemannianFiberNormSq_neg (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
+lemma palatiniRiemannianFiberNormSq_neg (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (-v) =
       riemannianFiberNormSq (I := I) (M := M) g r s x v := by
@@ -2644,7 +2644,7 @@ lemma bdRiemannianFiberNormSq_neg (g : SmoothRiemannianMetric I M) (r s : ℕ) (
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma bdRiemannianFiberNormSq_iteratedCovGrad_sub_le (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
+lemma palatiniRiemannianFiberNormSq_iteratedCovGrad_sub_le (g : SmoothRiemannianMetric I M) (r s : ℕ) (j : ℕ)
     (A B : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r (s + j) x
         ((iteratedCovGrad (I := I) g r s j (A - B)).toSection x) ≤
@@ -2664,9 +2664,9 @@ lemma bdRiemannianFiberNormSq_iteratedCovGrad_sub_le (g : SmoothRiemannianMetric
     rfl
   rw [hsec]
   refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g r (s + j) x _ _) ?_
-  rw [bdRiemannianFiberNormSq_neg (I := I) (M := M) g r (s + j) x]
+  rw [palatiniRiemannianFiberNormSq_neg (I := I) (M := M) g r (s + j) x]
 
-theorem bdPureDT_tgrid (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
+theorem palatiniPureDT_tgrid (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ j, 0 ≤ C j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -2684,7 +2684,7 @@ theorem bdPureDT_tgrid (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (j + 1) := by
   classical
   obtain ⟨S, hS_nn, hS⟩ := metricComparisonEndomorphismField_iteratedCovGrad_gridWindow (I := I) (M := M) g₀ hδ₀
-  obtain ⟨c0, hc0_nn, hc0⟩ := bdExists_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ (s + 2) s
+  obtain ⟨c0, hc0_nn, hc0⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ (s + 2) s
     (cometricDoubleTraceField (I := I) g₀ s)
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -2726,7 +2726,7 @@ theorem bdPureDT_tgrid (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
             (Combinatorics.antidiagonalTupleGrid_le_window b hb hl) (hS_nn l)
       _ = (fr ^ (s + 1) * S l) * Combinatorics.antidiagonalTupleGridWindow b (j + 1) := by
           ring
-  rw [bdPureDT_eq_trace_fullRaised (I := I) (M := M) g₀ g₁ s]
+  rw [palatiniPureDT_eq_trace_fullRaised (I := I) (M := M) g₀ g₁ s]
   refine le_trans
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) g₀ j (s + 2) (s + 2) s
@@ -2744,8 +2744,8 @@ theorem bdPureDT_tgrid (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
                 (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁))).toSection x) = 0 := by
     intro i' _ hi'0
     obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hi'0
-    rw [bdICG_succ_cometricDT_zero (I := I) (M := M) g₀ s m]
-    rw [bdRiemannianFiberNormSq_zero_toSection, zero_mul]
+    rw [iteratedCovGrad_succ_cometricDoubleTraceField_eq_zero (I := I) (M := M) g₀ s m]
+    rw [palatiniRiemannianFiberNormSq_zero_toSection, zero_mul]
   have hsum_eq : (∑ i' ∈ Finset.range (j + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ (s + 2) (s + i') x
           ((iteratedCovGrad (I := I) g₀ (s + 2) s i'
@@ -2798,7 +2798,7 @@ theorem bdPureDT_tgrid (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rw [← mul_assoc, ← mul_assoc]
   rw [mul_assoc (diagonalGridGrowthFactor (E := E) j) (c0 0)]
 
-theorem bdPairTraceOp_tgrid (g₀ : SmoothRiemannianMetric I M)
+theorem palatiniPairTraceOp_tgrid (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ j, 0 ≤ C j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -2815,8 +2815,8 @@ theorem bdPairTraceOp_tgrid (g₀ : SmoothRiemannianMetric I M)
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (j + 1) := by
   classical
-  obtain ⟨C2, hC2_nn, hC2⟩ := bdPureDT_tgrid (I := I) (M := M) g₀ 2 hδ₀
-  obtain ⟨C4, hC4_nn, hC4⟩ := bdPureDT_tgrid (I := I) (M := M) g₀ 4 hδ₀
+  obtain ⟨C2, hC2_nn, hC2⟩ := palatiniPureDT_tgrid (I := I) (M := M) g₀ 2 hδ₀
+  obtain ⟨C4, hC4_nn, hC4⟩ := palatiniPureDT_tgrid (I := I) (M := M) g₀ 4 hδ₀
   refine ⟨fun j => diagonalGridGrowthFactor (E := E) j * ∑ i' ∈ Finset.range (j + 1),
       C2 i' * ∑ l ∈ Finset.range (j + 1 - i'),
         C4 l * Combinatorics.antidiagonalTupleGridWindowMulConst i' l,
@@ -2917,7 +2917,7 @@ theorem bdPairTraceOp_tgrid (g₀ : SmoothRiemannianMetric I M)
     _ = _ := by
         rw [← Finset.sum_mul, ← mul_assoc]
 
-private theorem bdQuadLow_movingOuter_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem palatiniQuadLow_movingOuter_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -2936,7 +2936,7 @@ private theorem bdQuadLow_movingOuter_gridWindow (g₀ g_bg : SmoothRiemannianMe
   classical
   obtain ⟨CA, hCA_nn, hCA⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid (I := I) (M := M) g₀ hδ₀
-  obtain ⟨cAS, hcAS_nn, hcAS⟩ := bdExists_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ 3 4
+  obtain ⟨cAS, hcAS_nn, hcAS⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 3 4
     (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 2 (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g_bg))
   refine ⟨fun l => diagonalGridGrowthFactor (E := E) l *
       ∑ i' ∈ Finset.range (l + 1), cAS i' * ∑ l' ∈ Finset.range (l + 1 - i'), CA l',
@@ -2982,7 +2982,7 @@ private theorem bdQuadLow_movingOuter_gridWindow (g₀ g_bg : SmoothRiemannianMe
       rw [Finset.sum_mul]
       refine Finset.sum_le_sum fun l' hl' => ?_
       rw [Finset.mem_range] at hl'
-      rw [bdRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ l' x]
+      rw [palatiniRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ l' x]
       refine le_trans (hCA g₁ P htie hδ_le hδ0 hbound l' x) ?_
       refine mul_le_mul_of_nonneg_left ?_ (hCA_nn l')
       rw [show (∑ k ∈ Finset.range (l' + 2), Combinatorics.antidiagonalTupleGrid b k) =
@@ -3011,7 +3011,7 @@ private theorem bdQuadLow_movingOuter_gridWindow (g₀ g_bg : SmoothRiemannianMe
     (operatorFieldApplicationGdiag_nonneg (E := E) l)) ?_
   rw [← Finset.sum_mul, ← mul_assoc]
 
-private theorem bdQuadLow_movingTerm_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem palatiniQuadLow_movingTerm_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -3030,7 +3030,7 @@ private theorem bdQuadLow_movingTerm_gridWindow (g₀ g_bg : SmoothRiemannianMet
   classical
   obtain ⟨CA, hCA_nn, hCA⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid (I := I) (M := M) g₀ hδ₀
-  obtain ⟨cL, hcL_nn, hcL⟩ := bdExists_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ 0 3
+  obtain ⟨cL, hcL_nn, hcL⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 0 3
     (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g_bg)
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -3072,7 +3072,7 @@ private theorem bdQuadLow_movingTerm_gridWindow (g₀ g_bg : SmoothRiemannianMet
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 2
             (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁))).toSection x) ≤
         (fr ^ 2 * CA i') * Combinatorics.antidiagonalTupleGridWindow b (l + 2) := by
-      refine le_trans (bdTermSlot2_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ i' x) ?_
+      refine le_trans (palatiniTermSlot2_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ i' x) ?_
       rw [← hfr_def]
       have h2 := hCA g₁ P htie hδ_le hδ0 hbound i' x
       calc fr ^ 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i') x
@@ -3120,7 +3120,7 @@ private theorem bdQuadLow_movingTerm_gridWindow (g₀ g_bg : SmoothRiemannianMet
     (operatorFieldApplicationGdiag_nonneg (E := E) l)) ?_
   rw [← Finset.sum_mul, ← mul_assoc]
 
-private lemma bd_seven_term_binary_bound
+private lemma palatini_seven_term_binary_bound
     {z s1 s2 s3 s4 s5 a b c d e f g A B C D E F G W : ℝ}
     (h1 : z ≤ 2 * s1 + 2 * g) (h2 : s1 ≤ 2 * s2 + 2 * f)
     (h3 : s2 ≤ 2 * s3 + 2 * e) (h4 : s3 ≤ 2 * s4 + 2 * d)
@@ -3130,7 +3130,7 @@ private lemma bd_seven_term_binary_bound
     z ≤ (64 * A + 64 * B + 32 * C + 16 * D + 8 * E + 4 * F + 2 * G) * W := by
   linarith
 
-private theorem bdLow0_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem palatiniLow0_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -3147,12 +3147,12 @@ private theorem bdLow0_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (l + 2) := by
   classical
-  obtain ⟨cF, hcF_nn, hcF⟩ := bdExists_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ 0 4
-    (bdFixLoweredCc (I := I) (M := M) g₀ g_bg g₀)
-  obtain ⟨cQ, hcQ_nn, hcQ⟩ := bdExists_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ 0 4
+  obtain ⟨cF, hcF_nn, hcF⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 0 4
+    (palatiniFixLoweredCc (I := I) (M := M) g₀ g_bg g₀)
+  obtain ⟨cQ, hcQ_nn, hcQ⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 0 4
     (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g_bg g_bg)
-  obtain ⟨CE, hCE_nn, hCE⟩ := bdQuadLow_movingOuter_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
-  obtain ⟨CF, hCF_nn, hCF⟩ := bdQuadLow_movingTerm_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨CE, hCE_nn, hCE⟩ := palatiniQuadLow_movingOuter_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨CF, hCF_nn, hCF⟩ := palatiniQuadLow_movingTerm_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨fun l => 64 * cF l + 64 * cQ l + 32 * cQ l + 16 * cQ l + 8 * CE l +
       4 * CF l + 2 * CF l,
     fun l => by
@@ -3167,18 +3167,18 @@ private theorem bdLow0_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
   have hW1 : (1 : ℝ) ≤ W :=
     Combinatorics.one_le_antidiagonalTupleGridWindow b hb (by omega)
   have hW_nn : (0 : ℝ) ≤ W := by linarith
-  set A := (-1 : ℝ) • bdFixLoweredCc (I := I) (M := M) g₀ g_bg g₀ with hA_def
-  set B := domDomCongrSection (I := I) g₀ bdSigma2
+  set A := (-1 : ℝ) • palatiniFixLoweredCc (I := I) (M := M) g₀ g_bg g₀ with hA_def
+  set B := domDomCongrSection (I := I) g₀ palatiniSigma2
     (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g_bg g_bg) with hB_def
-  set Cc := domDomCongrSection (I := I) g₀ bdSigma3
+  set Cc := domDomCongrSection (I := I) g₀ palatiniSigma3
     (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g_bg g_bg) with hC_def
-  set Dd := domDomCongrSection (I := I) g₀ bdSigma4
+  set Dd := domDomCongrSection (I := I) g₀ palatiniSigma4
     (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g_bg g_bg) with hD_def
-  set Ee := domDomCongrSection (I := I) g₀ bdSigma2
+  set Ee := domDomCongrSection (I := I) g₀ palatiniSigma2
     (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g_bg g₁) with hE_def
-  set Ff := domDomCongrSection (I := I) g₀ bdSigma3
+  set Ff := domDomCongrSection (I := I) g₀ palatiniSigma3
     (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g₁ g_bg) with hF_def
-  set Gg := domDomCongrSection (I := I) g₀ bdSigma4
+  set Gg := domDomCongrSection (I := I) g₀ palatiniSigma4
     (connectionDifferenceQuadraticLoweredCc (I := I) (M := M) g₀ g₁ g_bg) with hG_def
   have hlow : deTurckLieConnectionDifferenceDerivativeCovKernelDiffLoweredCc (I := I) (M := M) g₀ g₁ g_bg = ((((A + B) - Cc) - Dd) - Ee)
     + Ff + Gg := by
@@ -3187,9 +3187,9 @@ private theorem bdLow0_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
       ((iteratedCovGrad (I := I) g₀ 0 4 l A).toSection x) ≤ cF l * W := by
     rw [hA_def, iteratedCovGrad_smul_real]
     rw [show (((-1 : ℝ) • iteratedCovGrad (I := I) g₀ 0 4 l
-        (bdFixLoweredCc (I := I) (M := M) g₀ g_bg g₀)).toSection x) =
+        (palatiniFixLoweredCc (I := I) (M := M) g₀ g_bg g₀)).toSection x) =
         (-1 : ℝ) • ((iteratedCovGrad (I := I) g₀ 0 4 l
-          (bdFixLoweredCc (I := I) (M := M) g₀ g_bg g₀)).toSection x) from by
+          (palatiniFixLoweredCc (I := I) (M := M) g₀ g_bg g₀)).toSection x) from by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
     rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
@@ -3231,16 +3231,16 @@ private theorem bdLow0_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     rw [hG_def, hddc]
     exact hCF g₁ P htie hδ_le hδ0 hbound l x
   rw [hlow]
-  have h1 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 l
+  have h1 := palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 l
     (((((A + B) - Cc) - Dd) - Ee) + Ff) Gg x
-  have h2 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 l ((((A + B) - Cc) - Dd) - Ee) Ff x
-  have h3 := bdRiemannianFiberNormSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 0 4 l (((A + B) - Cc) - Dd) Ee x
-  have h4 := bdRiemannianFiberNormSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 0 4 l ((A + B) - Cc) Dd x
-  have h5 := bdRiemannianFiberNormSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 0 4 l (A + B) Cc x
-  have h6 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 l A B x
-  exact bd_seven_term_binary_bound h1 h2 h3 h4 h5 h6 hA' hB' hC' hD' hE' hF' hG'
+  have h2 := palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 l ((((A + B) - Cc) - Dd) - Ee) Ff x
+  have h3 := palatiniRiemannianFiberNormSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 0 4 l (((A + B) - Cc) - Dd) Ee x
+  have h4 := palatiniRiemannianFiberNormSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 0 4 l ((A + B) - Cc) Dd x
+  have h5 := palatiniRiemannianFiberNormSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 0 4 l (A + B) Cc x
+  have h6 := palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 l A B x
+  exact palatini_seven_term_binary_bound h1 h2 h3 h4 h5 h6 hA' hB' hC' hD' hE' hF' hG'
 
-private theorem bdXd_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem palatiniXd_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -3257,8 +3257,8 @@ private theorem bdXd_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (l + 2) := by
   classical
-  obtain ⟨CΛ, hCΛ_nn, hCΛ⟩ := bdLambdaSlotInsert3_gridWindow (I := I) (M := M) g₀
-  obtain ⟨CL, hCL_nn, hCL⟩ := bdLow0_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨CΛ, hCΛ_nn, hCΛ⟩ := palatiniLambdaSlotInsert3_gridWindow (I := I) (M := M) g₀
+  obtain ⟨CL, hCL_nn, hCL⟩ := palatiniLow0_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨fun l => 4 * (diagonalGridGrowthFactor (E := E) l *
       ∑ i' ∈ Finset.range (l + 1), CΛ i' * ∑ l' ∈ Finset.range (l + 1 - i'),
         CL l' * Combinatorics.antidiagonalTupleGridWindowMulConst i' (l' + 1)),
@@ -3368,7 +3368,7 @@ private theorem bdXd_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
       (operatorFieldApplicationGdiag_nonneg (E := E) l)) ?_
     rw [← Finset.sum_mul, ← mul_assoc]
   rw [deTurckTermCoeffDiffCc]
-  refine le_trans (bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 l
+  refine le_trans (palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 l
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
       (deTurckTermCoeffDiffHalfCc (I := I) (M := M) g₀ g₁ g_bg))
     (deTurckTermCoeffDiffHalfCc (I := I) (M := M) g₀ g₁ g_bg) x) ?_
@@ -3384,7 +3384,7 @@ private theorem bdXd_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
   rw [hswap]
   linarith [hhalf]
 
-theorem bdCovDerivTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+theorem palatiniCovDerivTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -3402,8 +3402,8 @@ theorem bdCovDerivTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMet
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (i + 2) := by
   classical
-  obtain ⟨CP, hCP_nn, hCP⟩ := bdPairTraceOp_tgrid (I := I) (M := M) g₀ hδ₀
-  obtain ⟨CX, hCX_nn, hCX⟩ := bdXd_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨CP, hCP_nn, hCP⟩ := palatiniPairTraceOp_tgrid (I := I) (M := M) g₀ hδ₀
+  obtain ⟨CX, hCX_nn, hCX⟩ := palatiniXd_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
   refine ⟨fun i => diagonalGridGrowthFactor (E := E) i *
@@ -3495,7 +3495,7 @@ theorem bdCovDerivTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMet
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (deTurckTermCoeffDiffCc (I := I) (M := M) g₀ g₁ g_bg))))).toSection x) := by
-    rw [bdCovDerivTermDiff_eq_pairTrace (I := I) (M := M) g₀ g_bg g₁]
+    rw [palatiniCovDerivTermDiff_eq_pairTrace (I := I) (M := M) g₀ g_bg g₁]
     rw [iteratedCovGrad_smul_real]
     rw [show (((-1 : ℝ) • iteratedCovGrad (I := I) g₀ 2 2 i
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
@@ -3628,9 +3628,9 @@ theorem exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_perOrder_l
   classical
   set δ₁ : ℝ := max δ₀ 0 with hδ₁_def
   have hδ₁_lt : δ₁ < 1 := max_lt hδ₀ one_pos
-  obtain ⟨C, hC_nn, hpt⟩ := bdCovDerivTermDiff_pointwise_gridWindow (I := I) (M := M)
+  obtain ⟨C, hC_nn, hpt⟩ := palatiniCovDerivTermDiff_pointwise_gridWindow (I := I) (M := M)
     g₀ g_bg hδ₁_lt
-  obtain ⟨Kg, hKg_nn, hKg⟩ := bdL2_tameEnvelope_of_gridWindow (I := I) (M := M) g₀ a ha_super hR
+  obtain ⟨Kg, hKg_nn, hKg⟩ := palatiniL2_tameEnvelope_of_gridWindow (I := I) (M := M) g₀ a ha_super hR
   refine ⟨fun i => C i * ∑ k ∈ Finset.range (i + 2), Kg k,
     fun i => mul_nonneg (hC_nn i) (Finset.sum_nonneg fun k _ => hKg_nn k), ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball i
@@ -3643,7 +3643,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_perOrder_l
     rw [covariantDerivativeTermField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField, covariantDerivativeTermField_eq_deTurckLieConnectionDifferenceDerivativeCoeffField]
   by_cases hM : Nonempty M
   · obtain ⟨x₀⟩ := hM
-    have hδ0 : 0 ≤ δ := bdDelta_nonneg (I := I) (M := M) g₀ x₀ P hδ
+    have hδ0 : 0 ≤ δ := metricCauchySchwarzBound_nonneg (I := I) (M := M) g₀ x₀ P hδ
     have hδ_le' : δ ≤ δ₁ := le_trans hδ_le (le_max_left _ _)
     rw [hsubj]
     exact hKg P hPball i (C i) (hC_nn i)
@@ -3654,7 +3654,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_backgroundDifference_perOrder_l
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀ g₁ g_bg -
           deTurckLieCovariantDerivativeTermField (I := I) (M := M) g₀ g₁ g₀)‖ = 0 :=
-      bdNorm_zero_of_isEmpty (I := I) (M := M) g₀ 2 (2 + i) _
+      smoothCcTensor_norm_eq_zero_of_isEmpty (I := I) (M := M) g₀ 2 (2 + i) _
     rw [hz]
     have hK_nn : 0 ≤ C i * ∑ k ∈ Finset.range (i + 2), Kg k :=
       mul_nonneg (hC_nn i) (Finset.sum_nonneg fun k _ => hKg_nn k)
@@ -3750,10 +3750,10 @@ def deTurckLieCovariantDerivativeDecompositionPairTraceFamily (g₀ : SmoothRiem
               (iteratedCovGrad (I := I) g₀ 0 2 2 T))))))
 
 def deTurckLieBackgroundDifferencePermutations : Fin 3 → Equiv.Perm (Fin 4) :=
-  ![bdSigma2, bdSigma3, bdSigma4]
+  ![palatiniSigma2, palatiniSigma3, palatiniSigma4]
 
 def deTurckLieBackgroundDifferenceLoweredCoefficient (g₀ g₁ g_bg : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0 4 :=
-  (-1 : ℝ) • bdFixLoweredCc (I := I) (M := M) g₀ g_bg g₀
+  (-1 : ℝ) • palatiniFixLoweredCc (I := I) (M := M) g₀ g_bg g₀
     + domDomCongrSection (I := I) g₀ (deTurckLieBackgroundDifferencePermutations 0)
         (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 4
           (deTurckLieCovariantDerivativeSecondOrderCoefficient (I := I) (M := M) g₀ g_bg)
@@ -3857,7 +3857,7 @@ theorem deTurckLieConnectionDifferenceDerivative_backgroundDifference_eq
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (deTurckLieBackgroundDifferenceCoefficient (I := I) (M := M) g₀ g₁ g_bg))) := by
   rw [cometricDoublePairTraceCoefficient, deTurckLieCovariantDerivativePairTracePermutation, deTurckLieBackgroundDifferenceCoefficient_eq_canonical]
-  exact bdCovDerivTermDiff_eq_pairTrace (I := I) (M := M) g₀ g_bg g₁
+  exact palatiniCovDerivTermDiff_eq_pairTrace (I := I) (M := M) g₀ g_bg g₁
 
 end TensorSpectral
 end Parabolic

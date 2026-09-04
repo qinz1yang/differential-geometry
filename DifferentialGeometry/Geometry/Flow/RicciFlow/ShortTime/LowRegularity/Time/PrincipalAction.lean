@@ -48,13 +48,13 @@ def lowRegularityStateL2
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
           (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
     timeL2 (metricH2 (I := I) (M := M) g) T :=
   (orderOneH2Iso (I := I) (M := M) g).toLinearIsometry.toContinuousLinearMap.compLpL
     2 (timeMeasure T)
-      (duhReprL2 (I := I) (M := M)
+      (duhamelReprL2 (I := I) (M := M)
         g 0 2 (1 : ℝ) hT 0 f hR hball)
 
 omit [BoundarylessManifold I M] in
@@ -67,7 +67,7 @@ theorem lowRegularityState_ae
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
           (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
     lowRegularityStateL2 (I := I) (M := M)
@@ -76,17 +76,17 @@ theorem lowRegularityState_ae
         (tensorHsInclusion (I := I) (M := M)
           (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-          (maxRegDuhamelSolField (I := I) (M := M)
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M)
             (1 : ℝ) hT
             (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)) := by
   have hmap :=
     (orderOneH2Iso (I := I) (M := M) g).toLinearIsometry.toContinuousLinearMap.coeFn_compLpL
       (p := 2) (μ := timeMeasure T)
-      (duhReprL2 (I := I) (M := M)
+      (duhamelReprL2 (I := I) (M := M)
         g 0 2 (1 : ℝ) hT 0 f hR hball)
-  have hcoe := duhReprL2_ae (I := I) (M := M)
+  have hcoe := duhamelReprL2_ae (I := I) (M := M)
     g 0 2 (1 : ℝ) hT 0 f hR hball
-  have hfield := duhRepr_field_ae (I := I) (M := M)
+  have hfield := duhamelRepr_field_ae (I := I) (M := M)
     g 0 2 (1 : ℝ) hT 0 f
   filter_upwards [hmap, hcoe, hfield] with t hm hc hf
   simpa only [lowRegularityStateL2] using
@@ -103,7 +103,7 @@ theorem lowRegularityState_ae_le
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
           (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
     ∀ᵐ t ∂timeMeasure T,
@@ -125,7 +125,7 @@ def lowRegularityPrincipalSecondOrderActionTime
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
           (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
     ℝ → (metricH4 (I := I) (M := M) g →L[ℝ]
@@ -143,7 +143,7 @@ theorem lowRegularityPrincipalSecondOrderActionTime_ae
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
           (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R) :
     lowRegularityPrincipalSecondOrderActionTime (I := I) (M := M)
@@ -153,7 +153,7 @@ theorem lowRegularityPrincipalSecondOrderActionTime_ae
           (tensorHsInclusion (I := I) (M := M)
             (g := g) (r := 0) (s := 2)
             (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-            (maxRegDuhamelSolField (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M)
               (1 : ℝ) hT
               (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t))) := by
   have hstate := lowRegularityState_ae_le (I := I) (M := M)
@@ -179,7 +179,7 @@ theorem lowRegularityPrincipalSecondOrderActionTime_data
             ‖tensorHsInclusion (I := I) (M := M)
               (g := g) (r := 0) (s := 2)
               (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-              (maxRegDuhamelSolField (I := I) (M := M)
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                 (1 : ℝ) hT
                 (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t)‖ ≤ R),
           AEStronglyMeasurable
@@ -196,7 +196,7 @@ theorem lowRegularityPrincipalSecondOrderActionTime_data
                   (tensorHsInclusion (I := I) (M := M)
                     (g := g) (r := 0) (s := 2)
                     (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-                    (maxRegDuhamelSolField (I := I) (M := M)
+                    (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                       (1 : ℝ) hT
                       (0 : metricThirdOrderSobolev (I := I) (M := M) g) f t))) := by
   obtain ⟨ρ, C, hρ, hdata⟩ :=

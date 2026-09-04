@@ -106,18 +106,18 @@ lemma cutoffComponentEuclid_memW1p
   exact MemWkp.one_iff_memW1p.mp h_W1
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chosenWeakPartial'_cutoffComponentEuclid_memLp
+lemma chosenWeakPartialOrZero_cutoffComponentEuclid_memLp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
     (k : Fin (Module.finrank ℝ E)) :
     MemLp
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M) g r s S.toCcTensor α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α)) 2
       (chartLebesgueMeasure (I := I) (M := M) α) := by
-  have h := chosenWeakPartial'_memLp_of_mem
+  have h := chosenWeakPartialOrZero_memLp_of_mem
     (cutoffComponentEuclid_memW1p (I := I) (M := M) g r s S α Idx Jdx) k
   rwa [chartLebesgueMeasure]
 
@@ -127,7 +127,7 @@ private def smoothCutoffChartPartialLp
     (P₀ : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) :
     Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
-  (chosenWeakPartial'_cutoffComponentEuclid_memLp
+  (chosenWeakPartialOrZero_cutoffComponentEuclid_memLp
     (I := I) (M := M) g r s S α P₀.1 P₀.2 k).toLp _
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -139,7 +139,7 @@ private lemma smoothCutoffChartPartialLp_coeFn
     ((smoothCutoffChartPartialLp (I := I) (M := M) g r s S α P₀ k :
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
         chartLebesgueMeasure (I := I) (M := M) α]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M) g r s S.toCcTensor α P₀.1 P₀.2)
         (chartTargetEuclid (I := I) (M := M) α) := by
   unfold smoothCutoffChartPartialLp
@@ -170,22 +170,22 @@ private lemma smoothCutoffChartPartialLp_add
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hp_one : (1 : ℝ≥0∞) ≤ 2 := by norm_num
   have h_partial_ae :
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M) g r s
             (S₁ + S₂).toCcTensor α P₀.1 P₀.2)
           (chartTargetEuclid (I := I) (M := M) α)
         =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
       (fun y =>
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
             (cutoffComponentEuclid (I := I) (M := M)
               g r s S₁.toCcTensor α P₀.1 P₀.2)
             (chartTargetEuclid (I := I) (M := M) α) y +
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
             (cutoffComponentEuclid (I := I) (M := M)
               g r s S₂.toCcTensor α P₀.1 P₀.2)
             (chartTargetEuclid (I := I) (M := M) α) y) := by
     rw [chartLebesgueMeasure, h_fun]
-    exact chosenWeakPartial'_add_ae (d := Module.finrank ℝ E) hp_one hΩ_open
+    exact chosenWeakPartialOrZero_add_ae (d := Module.finrank ℝ E) hp_one hΩ_open
       (cutoffComponentEuclid_memW1p (I := I) (M := M) g r s S₁ α P₀.1 P₀.2)
       (cutoffComponentEuclid_memW1p (I := I) (M := M) g r s S₂ α P₀.1 P₀.2) k
   refine (smoothCutoffChartPartialLp_coeFn
@@ -220,12 +220,12 @@ private lemma smoothCutoffChartPartialLp_smul
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hp_one : (1 : ℝ≥0∞) ≤ 2 := by norm_num
   have h_partial_ae :
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M) g r s
             (c • S).toCcTensor α P₀.1 P₀.2)
           (chartTargetEuclid (I := I) (M := M) α)
         =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
-      (fun y => c * chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      (fun y => c * chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M)
           g r s S.toCcTensor α P₀.1 P₀.2)
         (chartTargetEuclid (I := I) (M := M) α) y) := by
@@ -237,7 +237,7 @@ private lemma smoothCutoffChartPartialLp_smul
               g r s S.toCcTensor α P₀.1 P₀.2 y) := by
       rw [h_fun]; funext y; rw [smul_eq_mul]
     rw [h_fun']
-    exact chosenWeakPartial'_const_smul_ae (d := Module.finrank ℝ E) hp_one hΩ_open
+    exact chosenWeakPartialOrZero_const_smul_ae (d := Module.finrank ℝ E) hp_one hΩ_open
       (cutoffComponentEuclid_memW1p (I := I) (M := M) g r s S α P₀.1 P₀.2) c k
   refine (smoothCutoffChartPartialLp_coeFn
     (I := I) (M := M) g r s (c • S) α P₀ k).trans (h_partial_ae.trans ?_)
@@ -278,20 +278,20 @@ private lemma smoothCutoffChartPartialLpLin_norm_le
           ≤ C * ‖S‖ := by
   classical
   obtain ⟨C, hC_nn, h_bound⟩ :=
-    exists_const_sum_eLpNorm_chosenWeakPartial'_cutoffComponentEuclid_le_uniform
+    exists_const_sum_eLpNorm_chosenWeakPartialOrZero_cutoffComponentEuclid_le_uniform
       (I := I) (M := M) g r s α
   refine ⟨C, hC_nn, ?_⟩
   intro S
   have h_sum := h_bound S P₀.1 P₀.2
   have h_single :
-      eLpNorm (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      eLpNorm (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M)
             g r s S.toCcTensor α P₀.1 P₀.2)
           (chartTargetEuclid (I := I) (M := M) α)) 2
         ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)) ≤
       ∑ j : Fin (Module.finrank ℝ E),
-        eLpNorm (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
+        eLpNorm (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
             (cutoffComponentEuclid (I := I) (M := M)
               g r s S.toCcTensor α P₀.1 P₀.2)
             (chartTargetEuclid (I := I) (M := M) α)) 2
@@ -299,7 +299,7 @@ private lemma smoothCutoffChartPartialLpLin_norm_le
             (chartTargetEuclid (I := I) (M := M) α)) :=
     Finset.single_le_sum
       (f := fun j : Fin (Module.finrank ℝ E) =>
-        eLpNorm (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
+        eLpNorm (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
             (cutoffComponentEuclid (I := I) (M := M)
               g r s S.toCcTensor α P₀.1 P₀.2)
             (chartTargetEuclid (I := I) (M := M) α)) 2
@@ -307,7 +307,7 @@ private lemma smoothCutoffChartPartialLpLin_norm_le
             (chartTargetEuclid (I := I) (M := M) α)))
       (fun j _ => zero_le) (Finset.mem_univ k)
   have h_eLp :
-      eLpNorm (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      eLpNorm (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M)
             g r s S.toCcTensor α P₀.1 P₀.2)
           (chartTargetEuclid (I := I) (M := M) α)) 2
@@ -317,7 +317,7 @@ private lemma smoothCutoffChartPartialLpLin_norm_le
     exact h_single.trans h_sum
   have h_norm_eq :
       ‖smoothCutoffChartPartialLpLin (I := I) (M := M) g r s α P₀ k S‖ =
-        (eLpNorm (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+        (eLpNorm (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M)
             g r s S.toCcTensor α P₀.1 P₀.2)
           (chartTargetEuclid (I := I) (M := M) α)) 2
@@ -330,7 +330,7 @@ private lemma smoothCutoffChartPartialLpLin_norm_le
       ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) :=
     (ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.coe_lt_top).ne
   have h_toReal_le :
-      (eLpNorm (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      (eLpNorm (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M)
           g r s S.toCcTensor α P₀.1 P₀.2)
         (chartTargetEuclid (I := I) (M := M) α)) 2
@@ -415,11 +415,11 @@ theorem eigenvectorCutoffChartPartialLp_approx_eq
           (smoothToTensorH1Compl (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)) =
       (i.fst.val)⁻¹ •
-        (chosenWeakPartial'_cutoffComponentEuclid_memLp (I := I) (M := M)
+        (chosenWeakPartialOrZero_cutoffComponentEuclid_memLp (I := I) (M := M)
           g r s
           (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
           α P₀.1 P₀.2 k).toLp
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
             (cutoffComponentEuclid (I := I) (M := M) g r s
               (eigenvectorSmoothApprox (I := I) (M := M)
                 g r s i n).toCcTensor α P₀.1 P₀.2)

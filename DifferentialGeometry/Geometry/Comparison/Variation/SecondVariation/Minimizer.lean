@@ -439,7 +439,7 @@ omit [ConnectedSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
-theorem exists_variation_realising_field_via_exp
+theorem exists_variation_realising_field
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -629,14 +629,14 @@ theorem indexForm_nonneg_of_minimising_geodesic
     (hV0 : V 0 = 0) (hVL : V L = 0) :
     0 ≤ indexForm (I := I) g γ 0 L V V := by
   classical
-  obtain ⟨f, hf_smooth, hf0, hf_vel, hf_fix0_if, hf_fixL_if⟩ :=
-    exists_variation_realising_field_via_exp (I := I) g hEnorm γ V L hγ_smooth hVbundle
+  obtain ⟨f, hf_smooth, hf0, hf_velocity, hf_fix0_if, hf_fixL_if⟩ :=
+    exists_variation_realising_field (I := I) g hEnorm γ V L hγ_smooth hVbundle
   have hf_fix0 : ∀ s : ℝ, f s 0 = γ 0 := hf_fix0_if hV0
   have hf_fixL : ∀ s : ℝ, f s L = γ L := hf_fixL_if hVL
   set L_arc : ℝ → ℝ := fun s : ℝ => arcLength (I := I) g (fun t : ℝ => f s t) 0 L with hL_arc
   set Vfield : ℝ → E :=
     fun t : ℝ => (mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => f s t) 0 (1 : ℝ) : E) with hVfield
-  have hVfield_Icc : ∀ t ∈ Set.Icc (0 : ℝ) L, Vfield t = V t := fun t ht => hf_vel t ht
+  have hVfield_Icc : ∀ t ∈ Set.Icc (0 : ℝ) L, Vfield t = V t := fun t ht => hf_velocity t ht
   have hslice_C1 : ∀ s : ℝ, ContMDiffOn 𝓘(ℝ, ℝ) I 1 (fun t : ℝ => f s t) (Set.Icc 0 L) := by
     intro s
     have hincl : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ)

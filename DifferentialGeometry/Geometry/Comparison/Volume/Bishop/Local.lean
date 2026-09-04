@@ -53,15 +53,15 @@ theorem framedBall_eq_small
           (normalFrame (I := I) g p z)) <
         expDiffeoRadius (I := I) g hEnorm p := by
       simpa only [normalFrame_sqrt] using hzExp
-    have hvSrc := expDiffeo_mem_of_lt (I := I) g hEnorm p hvExp
+    have hvSource := expDiffeo_mem_of_lt (I := I) g hEnorm p hvExp
     have hvGp : Real.sqrt
         (g.inner p (normalFrame (I := I) g p z)
           (normalFrame (I := I) g p z)) < metricCoerciveExpRadius (I := I) g p :=
       hvExp.trans_le (min_le_right _ _)
-    have hzFramedSrc : z ∈ (framedExpDiffeo (I := I) g p).source := by
+    have hzFramedSource : z ∈ (framedExpDiffeo (I := I) g p).source := by
       rw [framedExp_source]
-      exact hvSrc
-    rw [mem_smallNormalBall, framedExp_eq_expMap (I := I) g p hzFramedSrc,
+      exact hvSource
+    rw [mem_smallNormalBall, framedExp_eq_expMap (I := I) g p hzFramedSource,
       framedExpMap_apply,
       edist_exp_eq_radius (I := I) g p hEnorm hvGp,
       normalFrame_sqrt]
@@ -300,9 +300,9 @@ theorem localBall_cross
       ENNReal.ofReal ρ < injRadius (I := I) g p ∧
       ∀ {r R : Real}, 0 < r → r ≤ R → R < ρ →
         localBallVolume (I := I) g p R *
-            ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) r) ≤
+            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) r) ≤
           localBallVolume (I := I) g p r *
-            ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) := by
+            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
   obtain ⟨ρc, hρc, hcross⟩ :=
     normalBall_cross (I := I) g hEnorm p q hq hd hRic
   obtain ⟨ri, hri, hiinj⟩ :=
@@ -369,9 +369,9 @@ theorem localBall_cross_of_complete_metric
       ENNReal.ofReal ρ < injRadius (I := I) g p ∧
       ∀ {r R : Real}, 0 < r → r ≤ R → R < ρ →
         localBallVolume (I := I) g p R *
-            ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) r) ≤
+            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) r) ≤
           localBallVolume (I := I) g p r *
-            ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) := by
+            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
   let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
@@ -409,21 +409,21 @@ theorem localBall_ratio
         HopfRinow.riemMetricSpace (I := I) (M := M)
       AntitoneOn
         (fun R => riemannianVolumeMeasure (I := I) (M := M) g (ball p R) /
-          ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R))
+          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
   obtain ⟨ρ, hρ, hρinj, hcross⟩ :=
     localBall_cross (I := I) g hEnorm p q hq hd hRic
   refine ⟨ρ, hρ, hρinj, ?_⟩
   intro r hr R hR hrR
-  have hmr : 0 < hypRadVol q (Module.finrank Real E - 1) r :=
-    hypRadVol_pos hq hr.1
-  have hmR : 0 < hypRadVol q (Module.finrank Real E - 1) R :=
-    hypRadVol_pos hq hR.1
+  have hmr : 0 < hyperbolicRadialVolume q (Module.finrank Real E - 1) r :=
+    hyperbolicRadialVolume_pos hq hr.1
+  have hmR : 0 < hyperbolicRadialVolume q (Module.finrank Real E - 1) R :=
+    hyperbolicRadialVolume_pos hq hR.1
   have hmr0 : ENNReal.ofReal
-      (hypRadVol q (Module.finrank Real E - 1) r) ≠ 0 :=
+      (hyperbolicRadialVolume q (Module.finrank Real E - 1) r) ≠ 0 :=
     ENNReal.ofReal_ne_zero_iff.mpr hmr
   have hmR0 : ENNReal.ofReal
-      (hypRadVol q (Module.finrank Real E - 1) R) ≠ 0 :=
+      (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) ≠ 0 :=
     ENNReal.ofReal_ne_zero_iff.mpr hmR
   rw [ENNReal.div_le_iff hmR0 ENNReal.ofReal_ne_top]
   rw [← ENNReal.mul_div_right_comm]
@@ -459,7 +459,7 @@ theorem localBall_ratio_of_complete_metric
         HopfRinow.riemMetricSpace (I := I) (M := M)
       AntitoneOn
         (fun R => riemannianVolumeMeasure (I := I) (M := M) g (ball p R) /
-          ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R))
+          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
   let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))

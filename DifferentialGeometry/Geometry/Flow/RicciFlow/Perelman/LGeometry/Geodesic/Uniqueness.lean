@@ -24,29 +24,29 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegCurve_initialVector_eq_of_endpoint_eq_of_velocity_eq
+theorem lRegularizedCurve_initialVector_eq_of_endpoint_eq_of_velocity_eq
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z W : TangentSpace I x} {b : Real}
-    (hZ : b ∈ lRegDomain S T x Z) (hW : b ∈ lRegDomain S T x W)
-    (hpos : lRegCurve S T x Z b = lRegCurve S T x W b)
-    (hvel : lVelocity (I := I) (lRegCurve S T x Z) b =
-      lVelocity (I := I) (lRegCurve S T x W) b) :
+    (hZ : b ∈ lRegularizedDomain S T x Z) (hW : b ∈ lRegularizedDomain S T x W)
+    (hpos : lRegularizedCurve S T x Z b = lRegularizedCurve S T x W b)
+    (hvel : lVelocity (I := I) (lRegularizedCurve S T x Z) b =
+      lVelocity (I := I) (lRegularizedCurve S T x W) b) :
     Z = W := by
   obtain ⟨JZ, hJZopen, hJZconn, h0JZ, hbJZ, hchosenZ⟩ :=
-    lRegChosen_spec S T x Z hZ
+    lRegularizedChosen_spec S T x Z hZ
   obtain ⟨JW, hJWopen, hJWconn, h0JW, hbJW, hchosenW⟩ :=
-    lRegChosen_spec S T x W hW
-  let alphaZ := lRegChosen S T x Z hZ
-  let alphaW := lRegChosen S T x W hW
-  have heqZ := lRegCurve_eqOn S hS T hJZopen hJZconn h0JZ hchosenZ
-  have heqW := lRegCurve_eqOn S hS T hJWopen hJWconn h0JW hchosenW
+    lRegularizedChosen_spec S T x W hW
+  let alphaZ := lRegularizedChosen S T x Z hZ
+  let alphaW := lRegularizedChosen S T x W hW
+  have heqZ := lRegularizedCurve_eqOn S hS T hJZopen hJZconn h0JZ hchosenZ
+  have heqW := lRegularizedCurve_eqOn S hS T hJWopen hJWconn h0JW hchosenW
   have hZgerm : Filter.EventuallyEq (nhds b)
-      (lRegCurve S T x Z) alphaZ := by
+      (lRegularizedCurve S T x Z) alphaZ := by
     filter_upwards [hJZopen.mem_nhds hbJZ] with s hs
     exact heqZ hs
   have hWgerm : Filter.EventuallyEq (nhds b)
-      (lRegCurve S T x W) alphaW := by
+      (lRegularizedCurve S T x W) alphaW := by
     filter_upwards [hJWopen.mem_nhds hbJW] with s hs
     exact heqW hs
   have hposChosen : alphaZ b = alphaW b :=
@@ -57,7 +57,7 @@ theorem lRegCurve_initialVector_eq_of_endpoint_eq_of_velocity_eq
     rw [← hZgerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I),
       ← hWgerm.mfderiv_eq (I := modelWithCornersSelf Real Real) (I' := I)]
     exact hvel
-  have hsolEq := lRegSol_eqOn S hS T hJZopen hJZconn hbJZ
+  have hsolEq := lRegularizedSolution_eqOn S hS T hJZopen hJZconn hbJZ
     hJWopen hJWconn hbJW hchosenZ.2.2 hchosenW.2.2
     hposChosen hvelChosen
   have heq0 : Filter.EventuallyEq (nhds (0 : Real)) alphaZ alphaW := by
@@ -77,17 +77,17 @@ theorem lRegCurve_initialVector_eq_of_endpoint_eq_of_velocity_eq
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegCurve_endpoint_velocity_ne_of_initialVector_ne_of_endpoint_eq
+theorem lRegularizedCurve_endpoint_velocity_ne_of_initialVector_ne_of_endpoint_eq
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z W : TangentSpace I x} {b : Real}
-    (hZ : b ∈ lRegDomain S T x Z) (hW : b ∈ lRegDomain S T x W)
+    (hZ : b ∈ lRegularizedDomain S T x Z) (hW : b ∈ lRegularizedDomain S T x W)
     (hZW : Z ≠ W)
-    (hpos : lRegCurve S T x Z b = lRegCurve S T x W b) :
-    lVelocity (I := I) (lRegCurve S T x Z) b ≠
-      lVelocity (I := I) (lRegCurve S T x W) b := by
+    (hpos : lRegularizedCurve S T x Z b = lRegularizedCurve S T x W b) :
+    lVelocity (I := I) (lRegularizedCurve S T x Z) b ≠
+      lVelocity (I := I) (lRegularizedCurve S T x W) b := by
   intro hvel
-  exact hZW (lRegCurve_initialVector_eq_of_endpoint_eq_of_velocity_eq
+  exact hZW (lRegularizedCurve_initialVector_eq_of_endpoint_eq_of_velocity_eq
     S hS T x hZ hW hpos hvel)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

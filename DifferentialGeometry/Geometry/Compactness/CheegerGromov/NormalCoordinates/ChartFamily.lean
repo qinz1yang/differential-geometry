@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Topology Bundle
@@ -322,5 +322,5 @@ theorem c2_radius_normal_ball_chart_metric_deriv_iff
 
 end ControlledNormalCharts
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

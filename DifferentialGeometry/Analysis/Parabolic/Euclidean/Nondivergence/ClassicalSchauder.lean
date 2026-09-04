@@ -15,7 +15,7 @@ variable {n F : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
   [NormedAddCommGroup F] [NormedSpace Real F] [CompleteSpace F]
 
 omit [DecidableEq n] [Nonempty n] [CompleteSpace F] in
-theorem parabolicFrozenMatrixOperator_eq_of_bcf_jets
+theorem parabolicFrozenMatrixOperator_eq_of_boundedContinuousFunction_jets
     (A : Matrix n n Real)
     (u dtU : Real → BoundedContinuousFunction (Euc n) F)
     (du : Real →
@@ -98,7 +98,7 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_classical_solution
       g p.time p.space = dtU p.time p.space -
           matrixLap A (d2u p.time p.space) := hg p.time p.space
       _ = parabolicFrozenMatrixOperator A (fun t x ↦ u t x) p :=
-        (parabolicFrozenMatrixOperator_eq_of_bcf_jets
+        (parabolicFrozenMatrixOperator_eq_of_boundedContinuousFunction_jets
           A u dtU du d2u p (huTime p.time hp.1)
             (hu p.time hp.1) (hdu p.time hp.1)).symm
   have hfrozen := parabolicFrozenMatrixOperator_source_estimate
@@ -132,7 +132,7 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_classical_solution
       exact hgfrozen p.2
     rw [heq]
     exact hfrozen.2
-  have hrep := spdHeatDuh_eqOn_of_zero_initial_of_parabolic_holder
+  have hrep := spdHeatDuhamel_eqOn_of_zero_initial_of_parabolic_holder
     (K := Kf + Kdefect) (B := Bf + Bdefect) halpha0 A hA
       u dtU g du d2u
       (fun s hs ↦ huTime s ⟨hs.1.le, hs.2.le⟩)

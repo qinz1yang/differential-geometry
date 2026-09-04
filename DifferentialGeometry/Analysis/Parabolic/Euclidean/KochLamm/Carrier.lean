@@ -16,10 +16,10 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-def klSpaceDeriv (u : ℝ × V → F) (z : ℝ × V) : V →L[ℝ] F :=
+def kochLammSpaceDeriv (u : ℝ × V → F) (z : ℝ × V) : V →L[ℝ] F :=
   fderiv ℝ (fun y ↦ u (z.1, y)) z.2
 
-structure KLSmoothPath (T : ℝ) where
+structure KochLammSmoothPath (T : ℝ) where
   A₀ : ℝ≥0
   A₂ : ℝ≥0
   Aₚ : ℝ≥0
@@ -28,39 +28,42 @@ structure KLSmoothPath (T : ℝ) where
   smooth : ContDiff ℝ (⊤ : WithTop ℕ∞) field
   value_eq : ∀ z : Set.Icc (0 : ℝ) T × V,
     value z = field (z.1.1, z.2)
-  bounds : KLPath T A₀ A₂ Aₚ field (klSpaceDeriv field)
+  bounds : KochLammPath T A₀ A₂ Aₚ field (kochLammSpaceDeriv field)
 
-variable [Fact (1 ≤ klP V)]
+variable [Fact (1 ≤ kochLammP V)]
 
-def KLSmoothPath.toData {T : ℝ} (u : KLSmoothPath (V := V) (F := F) T) :
-    KLPathData (V := V) (F := F) (G := V →L[ℝ] F) T :=
-  ⟨u.value, pathGradData u.bounds⟩
+def KochLammSmoothPath.toPathProduct {T : ℝ}
+    (u : KochLammSmoothPath (V := V) (F := F) T) :
+    KochLammPathProduct (V := V) (F := F) (G := V →L[ℝ] F) T :=
+  ⟨u.value, kochLammPathGradientProduct u.bounds⟩
 
-def KLPathCore (T : ℝ) :
-    Set (KLPathData (V := V) (F := F) (G := V →L[ℝ] F) T) :=
-  Set.range KLSmoothPath.toData
+def kochLammSmoothPathRange (T : ℝ) :
+    Set (KochLammPathProduct (V := V) (F := F) (G := V →L[ℝ] F) T) :=
+  Set.range KochLammSmoothPath.toPathProduct
 
-abbrev KLPathSpace (T : ℝ) :=
-  {u : KLPathData (V := V) (F := F) (G := V →L[ℝ] F) T //
-    u ∈ closure (KLPathCore (V := V) (F := F) T)}
+abbrev KochLammPathSpace (T : ℝ) :=
+  {u : KochLammPathProduct (V := V) (F := F) (G := V →L[ℝ] F) T //
+    u ∈ closure (kochLammSmoothPathRange (V := V) (F := F) T)}
 
-instance klPathSpace_complete (T : ℝ) :
-    CompleteSpace (KLPathSpace (V := V) (F := F) T) :=
+instance kochLammPathSpace_complete (T : ℝ) :
+    CompleteSpace (KochLammPathSpace (V := V) (F := F) T) :=
   isClosed_closure.completeSpace_coe
 
-def KLPathCore.toSpace {T : ℝ} :
-    KLPathCore (V := V) (F := F) T → KLPathSpace (V := V) (F := F) T :=
+def kochLammSmoothPathRangeInclusion {T : ℝ} :
+    kochLammSmoothPathRange (V := V) (F := F) T →
+      KochLammPathSpace (V := V) (F := F) T :=
   Set.inclusion subset_closure
 
 omit [CompleteSpace F] in
-theorem klPathCore_dense (T : ℝ) :
-    DenseRange (KLPathCore.toSpace (V := V) (F := F) (T := T)) := by
-  unfold KLPathCore.toSpace
+theorem kochLammSmoothPathRange_dense (T : ℝ) :
+    DenseRange (kochLammSmoothPathRangeInclusion (V := V) (F := F) (T := T)) := by
+  unfold kochLammSmoothPathRangeInclusion
   rw [denseRange_inclusion_iff]
 
-def KLSmoothPath.toSpace {T : ℝ} (u : KLSmoothPath (V := V) (F := F) T) :
-    KLPathSpace (V := V) (F := F) T :=
-  ⟨u.toData, subset_closure ⟨u, rfl⟩⟩
+def KochLammSmoothPath.toPathSpace {T : ℝ}
+    (u : KochLammSmoothPath (V := V) (F := F) T) :
+    KochLammPathSpace (V := V) (F := F) T :=
+  ⟨u.toPathProduct, subset_closure ⟨u, rfl⟩⟩
 
 end Euclidean
 end Parabolic

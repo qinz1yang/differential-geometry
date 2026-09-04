@@ -50,7 +50,7 @@ theorem exists_metricLoweredConnectionDifference_markWindow (g₀ : SmoothRieman
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
-private theorem mcd_corr_sub (g₀ : SmoothRiemannianMetric I M)
+private theorem mcd_correction_sub (g₀ : SmoothRiemannianMetric I M)
     (ΦA ΦB : SmoothCcTensor g₀ 3 3) (W₁ W₂ : SmoothCcTensor g₀ 0 3) :
     (W₁ +
         ((1 / 2 : ℝ) • operatorFieldApply (I := I) (M := M) g₀ 3 3 ΦA W₁ +
@@ -152,7 +152,7 @@ theorem mcdBackgroundAntidiagonalTupleGridWindow (g₀ gB : SmoothRiemannianMetr
           2 * ((1 / 2 : ℝ) ^ 2 * operatorFieldCompositionGridConstant (E := E) 0 0 SPhi KW i))) := by
     rw [metricConnectionDifferenceLoweredCoefficient_expansion (I := I) (M := M) g₀ g₁ gB P htie,
       metricConnectionDifferenceLoweredCoefficient_expansion (I := I) (M := M) g₀ g₁ g₀ P htie,
-      mcd_corr_sub (I := I) (M := M) g₀]
+      mcd_correction_sub (I := I) (M := M) g₀]
     refine hasMarkedGridWindow_add (I := I) (M := M) g₀ P hW
       (hasMarkedGridWindow_add (I := I) (M := M) g₀ P
         (hasMarkedGridWindow_smul (I := I) (M := M) g₀ P (1 / 2 : ℝ)

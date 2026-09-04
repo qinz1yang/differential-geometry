@@ -55,7 +55,7 @@ theorem heatScaled_smul
 
 omit [Nontrivial V] [CompleteSpace F] in
 @[simp]
-theorem heatScaled_zero_bcf
+theorem heatScaled_zero_boundedContinuousFunction
     (t : Real) (x : V) :
     heatScaled t (0 : BoundedContinuousFunction V F) x = 0 := by
   have h := heatScaled_smul t 0
@@ -191,7 +191,7 @@ theorem heatScaled_timeSource_intervalIntegrable_of_parabolic_holder
       (fun s ↦ heatScaled (t - s) (f s) x) volume 0 t := by
   have hsup : IntervalIntegrable
       (fun s ↦ heatSup (t - s) (f s) x) volume 0 t :=
-    heatDuh_int ht f hbound x
+    heatDuhamel_int ht f hbound x
       (heatSup_timeSource_aestronglyMeasurable_of_parabolic_holder
         halpha0 ⟨ht, le_rfl⟩ f hsource x)
   apply hsup.congr_ae
@@ -202,7 +202,7 @@ theorem heatScaled_timeSource_intervalIntegrable_of_parabolic_holder
   rw [uIoc_of_le ht.le] at hs
   exact heatSup_scaled (sub_pos.mpr (lt_of_le_of_ne hs.2 hst)) (f s) x
 
-theorem heatDuh_eq_of_zero_initial
+theorem heatDuhamel_eq_of_zero_initial
     {t : Real} (ht : 0 < t)
     (u dtU : Real → BoundedContinuousFunction V F)
     (du : Real → BoundedContinuousFunction V (V →L[Real] F))
@@ -218,7 +218,7 @@ theorem heatDuh_eq_of_zero_initial
     (hint : IntervalIntegrable
       (fun s ↦ heatScaled (t - s) (dtU s - coreLap (d2u s)) x)
       volume 0 t) :
-    heatDuh t (fun s ↦ dtU s - coreLap (d2u s)) x = u t x := by
+    heatDuhamel t (fun s ↦ dtU s - coreLap (d2u s)) x = u t x := by
   let source : Real → BoundedContinuousFunction V F :=
     fun s ↦ dtU s - coreLap (d2u s)
   let w : Real → F := fun s ↦ heatScaled (t - s) (u s) x
@@ -237,7 +237,7 @@ theorem heatDuh_eq_of_zero_initial
     have huT : Tendsto u (nhdsWithin 0 (Ioi 0)) (nhds (u 0)) :=
       huCont.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
     have h := tendsto_heatScaled_of_tendsto hq huT x
-    simpa only [w, hu0, heatScaled_zero_bcf] using h
+    simpa only [w, hu0, heatScaled_zero_boundedContinuousFunction] using h
   have hright : Tendsto w (nhdsWithin t (Iio t)) (nhds (u t x)) := by
     have hq : Tendsto (fun s : Real ↦ t - s) (nhdsWithin t (Iio t))
         (nhds 0) := by
@@ -250,7 +250,7 @@ theorem heatDuh_eq_of_zero_initial
     simpa only [w, heatScaled_zero] using h
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_tendsto
     ht hwderiv (by simpa only [source] using hint) hleft hright
-  unfold heatDuh
+  unfold heatDuhamel
   rw [show (∫ s : Real in 0..t, heatSup (t - s) (source s) x) =
       ∫ s : Real in 0..t, heatScaled (t - s) (source s) x by
     apply intervalIntegral.integral_congr_ae
@@ -263,7 +263,7 @@ theorem heatDuh_eq_of_zero_initial
       (source s) x]
   simpa only [source, sub_zero] using hftc
 
-theorem heatDuh_eq_of_zero_initial_of_parabolic_holder
+theorem heatDuhamel_eq_of_zero_initial_of_parabolic_holder
     {alpha K B : NNReal} (halpha0 : 0 < alpha)
     {t : Real} (ht : 0 < t)
     (u dtU : Real → BoundedContinuousFunction V F)
@@ -282,17 +282,17 @@ theorem heatDuh_eq_of_zero_initial_of_parabolic_holder
       ((parabolicCylinder (Icc (0 : Real) t) Set.univ).domRestrict
         (fun p ↦ (dtU p.time - coreLap (d2u p.time)) p.space)))
     (x : V) :
-    heatDuh t (fun s ↦ dtU s - coreLap (d2u s)) x = u t x := by
-  apply heatDuh_eq_of_zero_initial ht u dtU du d2u huTime hu hdu
+    heatDuhamel t (fun s ↦ dtU s - coreLap (d2u s)) x = u t x := by
+  apply heatDuhamel_eq_of_zero_initial ht u dtU du d2u huTime hu hdu
     huCont hu0 x
   exact heatScaled_timeSource_intervalIntegrable_of_parabolic_holder
     halpha0 ht (fun s ↦ dtU s - coreLap (d2u s)) hbound hsource x
 
-def linPullBcfCLM (L : V ≃L[Real] V) :
+def linPullBoundedContinuousFunctionCLM (L : V ≃L[Real] V) :
     BoundedContinuousFunction V F →L[Real]
       BoundedContinuousFunction V F :=
   LinearMap.mkContinuous
-    { toFun := linPullBcf L
+    { toFun := linPullBoundedContinuousFunction L
       map_add' := by
         intro u v
         ext x
@@ -303,15 +303,15 @@ def linPullBcfCLM (L : V ≃L[Real] V) :
         rfl }
     1
     (fun u ↦ by
-      change ‖linPullBcf L u‖ ≤ 1 * ‖u‖
-      rw [norm_linPullBcf, one_mul])
+      change ‖linPullBoundedContinuousFunction L u‖ ≤ 1 * ‖u‖
+      rw [norm_linPullBoundedContinuousFunction, one_mul])
 
 omit [FiniteDimensional Real V] [MeasurableSpace V] [BorelSpace V]
   [Nontrivial V] [CompleteSpace F] in
 @[simp]
-theorem linPullBcfCLM_apply
+theorem linPullBoundedContinuousFunctionCLM_apply
     (L : V ≃L[Real] V) (u : BoundedContinuousFunction V F) :
-    linPullBcfCLM L u = linPullBcf L u := rfl
+    linPullBoundedContinuousFunctionCLM L u = linPullBoundedContinuousFunction L u := rfl
 
 private abbrev Euc (n : Type*) := EuclideanSpace Real n
 
@@ -339,7 +339,7 @@ theorem coreLap_pullJet2_spd
       simp only [factorLap, pullJet2_apply]
     _ = matrixLap A (d2u (L x)) := spd_factorLap A hA _
 
-theorem spdHeatDuh_eq_of_zero_initial
+theorem spdHeatDuhamel_eq_of_zero_initial
     {t : Real} (ht : 0 < t)
     (A : Matrix n n Real) (hA : A.PosDef)
     (u dtU f : Real → BoundedContinuousFunction (Euc n) F)
@@ -358,12 +358,12 @@ theorem spdHeatDuh_eq_of_zero_initial
     (hint : IntervalIntegrable
       (fun s ↦ heatScaled (t - s) (spdHeatSource A hA f s)
         ((spdSqrtEquiv A hA).symm x)) volume 0 t) :
-    spdHeatDuh A hA t f x = u t x := by
+    spdHeatDuhamel A hA t f x = u t x := by
   let L := spdSqrtEquiv A hA
   let up : Real → BoundedContinuousFunction (Euc n) F :=
-    fun s ↦ linPullBcf L (u s)
+    fun s ↦ linPullBoundedContinuousFunction L (u s)
   let dtp : Real → BoundedContinuousFunction (Euc n) F :=
-    fun s ↦ linPullBcf L (dtU s)
+    fun s ↦ linPullBoundedContinuousFunction L (dtU s)
   let dup : Real →
       BoundedContinuousFunction (Euc n) (Euc n →L[Real] F) :=
     fun s ↦ pullJet1 L (du s)
@@ -373,7 +373,7 @@ theorem spdHeatDuh_eq_of_zero_initial
   have hupTime : ∀ s ∈ Ioo (0 : Real) t,
       HasDerivAt up (dtp s) s := by
     intro s hs
-    have hraw := (linPullBcfCLM L).hasFDerivAt.comp_hasDerivAt s (huTime s hs)
+    have hraw := (linPullBoundedContinuousFunctionCLM L).hasFDerivAt.comp_hasDerivAt s (huTime s hs)
     refine (hraw.congr_of_eventuallyEq (Eventually.of_forall fun r ↦ ?_)).congr_deriv ?_
     · rfl
     · rfl
@@ -387,9 +387,9 @@ theorem spdHeatDuh_eq_of_zero_initial
     intro s hs z
     exact pullJet1_fderiv L (du s) (d2u s) (hdu s hs) z
   have hupCont : Continuous up :=
-    (linPullBcfCLM L).continuous.comp huCont
+    (linPullBoundedContinuousFunctionCLM L).continuous.comp huCont
   have hup0 : up 0 = 0 := by
-    rw [show up 0 = linPullBcfCLM L (u 0) by rfl, hu0, map_zero]
+    rw [show up 0 = linPullBoundedContinuousFunctionCLM L (u 0) by rfl, hu0, map_zero]
   have hsource : (fun s ↦ dtp s - coreLap (d2p s)) =
       spdHeatSource A hA f := by
     funext s
@@ -408,14 +408,14 @@ theorem spdHeatDuh_eq_of_zero_initial
       rw [congrFun hsource s]
     rw [hintegrand]
     exact hint
-  have hiso := heatDuh_eq_of_zero_initial ht up dtp dup d2p
+  have hiso := heatDuhamel_eq_of_zero_initial ht up dtp dup d2p
     hupTime hup hdup hupCont hup0 (L.symm x)
       hint'
   rw [hsource] at hiso
-  simpa only [spdHeatDuh, L, up, linPullBcf_apply,
+  simpa only [spdHeatDuhamel, L, up, linPullBoundedContinuousFunction_apply,
     ContinuousLinearEquiv.apply_symm_apply] using hiso
 
-theorem spdHeatDuh_eq_of_zero_initial_of_parabolic_holder
+theorem spdHeatDuhamel_eq_of_zero_initial_of_parabolic_holder
     {alpha K B : NNReal} (halpha0 : 0 < alpha)
     {t : Real} (ht : 0 < t)
     (A : Matrix n n Real) (hA : A.PosDef)
@@ -436,8 +436,8 @@ theorem spdHeatDuh_eq_of_zero_initial_of_parabolic_holder
       ((parabolicCylinder (Icc (0 : Real) t) Set.univ).domRestrict
         (fun p ↦ f p.time p.space)))
     (x : Euc n) :
-    spdHeatDuh A hA t f x = u t x := by
-  apply spdHeatDuh_eq_of_zero_initial ht A hA u dtU f du d2u
+    spdHeatDuhamel A hA t f x = u t x := by
+  apply spdHeatDuhamel_eq_of_zero_initial ht A hA u dtU f du d2u
     huTime hu hdu hf huCont hu0 x
   apply heatScaled_timeSource_intervalIntegrable_of_parabolic_holder
     (K := spdSourceHolderConst A hA alpha K) halpha0 ht
@@ -447,7 +447,7 @@ theorem spdHeatDuh_eq_of_zero_initial_of_parabolic_holder
     exact hbound s hs
   · exact spdHeatSource_parabolic_holder A hA f hsource
 
-theorem spdHeatDuh_eqOn_of_zero_initial_of_parabolic_holder
+theorem spdHeatDuhamel_eqOn_of_zero_initial_of_parabolic_holder
     {alpha K B : NNReal} (halpha0 : 0 < alpha)
     {S : Real}
     (A : Matrix n n Real) (hA : A.PosDef)
@@ -468,11 +468,11 @@ theorem spdHeatDuh_eqOn_of_zero_initial_of_parabolic_holder
       ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ f p.time p.space))) :
     Set.EqOn
-      (fun p ↦ spdHeatDuh A hA p.time f p.space)
+      (fun p ↦ spdHeatDuhamel A hA p.time f p.space)
       (fun p ↦ u p.time p.space)
       (parabolicCylinder (Ioo (0 : Real) S) Set.univ) := by
   intro p hp
-  apply spdHeatDuh_eq_of_zero_initial_of_parabolic_holder
+  apply spdHeatDuhamel_eq_of_zero_initial_of_parabolic_holder
     halpha0 hp.1.1 A hA u dtU f du d2u
   · intro s hs
     exact huTime s ⟨hs.1, hs.2.trans hp.1.2⟩

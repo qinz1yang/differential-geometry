@@ -147,7 +147,7 @@ theorem parallelTransport_section_contMDiffOn [I.Boundaryless]
       linarith
     · have : s ≤ t₀ + ε / 2 := le_trans hs.2 (min_le_right _ _)
       linarith
-  have hIcc_src : ∀ s ∈ Set.Icc a b, γ s ∈ (chartAt H α).source :=
+  have hIcc_source : ∀ s ∈ Set.Icc a b, γ s ∈ (chartAt H α).source :=
     fun s hs => hW_sub_W₀ (hIcc_sub_W hs)
   have ht₀_mem_Icc : t₀ ∈ Set.Icc a b := ⟨ht₀_lo, ht₀_hi⟩
   have hIcc_eq : Set.Icc a b =
@@ -167,14 +167,14 @@ theorem parallelTransport_section_contMDiffOn [I.Boundaryless]
   have hu_int : ∀ s ∈ W,
       chartCurve (I := I) α γ s ∈ interior (extChartAt I α).target := by
     intro s hs
-    have hs_src : γ s ∈ (chartAt H α).source := hW_sub_W₀ hs
-    have hs_ext_src : γ s ∈ (extChartAt I α).source := by
-      rw [extChartAt_source]; exact hs_src
+    have hs_source : γ s ∈ (chartAt H α).source := hW_sub_W₀ hs
+    have hs_ext_source : γ s ∈ (extChartAt I α).source := by
+      rw [extChartAt_source]; exact hs_source
     have hur : chartCurve (I := I) α γ s = extChartAt I α (γ s) := by
       rw [chartCurve_def]
     rw [hur]
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) α
-      ((extChartAt I α).map_source hs_ext_src)
+      ((extChartAt I α).map_source hs_ext_source)
   have hVF_cd : ContDiffOn ℝ ∞
       (Function.uncurry (parallelTransportVF (I := I) g α γ))
       (W ×ˢ (Set.univ : Set E)) :=
@@ -183,23 +183,23 @@ theorem parallelTransport_section_contMDiffOn [I.Boundaryless]
       HasDerivAt Y (parallelTransportVF (I := I) g α γ s (Y s)) s := by
     intro s hs
     have hs0L : s ∈ Set.Icc (0:ℝ) L := hIcc_sub_Icc0L hs
-    have hs_src : γ s ∈ (chartAt H α).source := hIcc_src s hs
+    have hs_source : γ s ∈ (chartAt H α).source := hIcc_source s hs
     have hVdiff_s : DifferentiableAt ℝ (chartRepAt (I := I) γ V s) s := hVdiff s hs0L
     have hY_diff_s : DifferentiableAt ℝ Y s := by
       rw [hY_def]
       exact chartRepAtBase_differentiableAt (I := I) (n := ∞) (by simp) γ V s α hγ
-        hs_src hVdiff_s
+        hs_source hVdiff_s
     have hY_hd : HasDerivAt Y (deriv Y s) s := hY_diff_s.hasDerivAt
     have hfoot :
         (trivializationAt E (TangentSpace I) α).symmL ℝ (γ s)
             (chartCovDerivAlong (I := I) g α γ Y s) = 0 := by
       have hinv := covDerivAlong_chart_foot_invariance (I := I) (E := E) (n := ∞) (by simp) g γ V s α
-        hγ hs_src hVdiff_s
+        hγ hs_source hVdiff_s
       rw [hY_def]
       rw [hinv]
       exact hVpar s hs0L
     have hbase : γ s ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-      rw [TangentBundle.trivializationAt_baseSet]; exact hs_src
+      rw [TangentBundle.trivializationAt_baseSet]; exact hs_source
     have hchart_zero : chartCovDerivAlong (I := I) g α γ Y s = 0 := by
       have := congrArg
         ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ s)) hfoot
@@ -289,7 +289,7 @@ theorem parallelTransport_section_contMDiffOn_Ioo [I.Boundaryless]
       refine ⟨by rw [ha_def] at hs; linarith [hs.1], by rw [hb_def] at hs; linarith [hs.2]⟩
     have hIcc_sub_W₀ : Set.Icc a b ⊆ W₀ := fun s hs => (hIcc_sub_inter hs).1
     have hIcc_sub_Ω : Set.Icc a b ⊆ Ω := fun s hs => (hIcc_sub_inter hs).2
-    have hIcc_src : ∀ s ∈ Set.Icc a b, γ s ∈ (chartAt H α).source :=
+    have hIcc_source : ∀ s ∈ Set.Icc a b, γ s ∈ (chartAt H α).source :=
       fun s hs => hIcc_sub_W₀ hs
     have ht₀_mem_Icc : t₀ ∈ Set.Icc a b := ⟨ht₀_lo, ht₀_hi⟩
     have hIcc_nhds : Set.Icc a b ∈ 𝓝 t₀ :=
@@ -319,14 +319,14 @@ theorem parallelTransport_section_contMDiffOn_Ioo [I.Boundaryless]
     have hu_int : ∀ s ∈ W,
         chartCurve (I := I) α γ s ∈ interior (extChartAt I α).target := by
       intro s hs
-      have hs_src : γ s ∈ (chartAt H α).source := hW_sub_W₀ hs
-      have hs_ext_src : γ s ∈ (extChartAt I α).source := by
-        rw [extChartAt_source]; exact hs_src
+      have hs_source : γ s ∈ (chartAt H α).source := hW_sub_W₀ hs
+      have hs_ext_source : γ s ∈ (extChartAt I α).source := by
+        rw [extChartAt_source]; exact hs_source
       have hur : chartCurve (I := I) α γ s = extChartAt I α (γ s) := by
         rw [chartCurve_def]
       rw [hur]
       exact extChartAt_target_subset_interior_of_boundaryless (I := I) α
-        ((extChartAt I α).map_source hs_ext_src)
+        ((extChartAt I α).map_source hs_ext_source)
     have hVF_cd : ContDiffOn ℝ ∞
         (Function.uncurry (parallelTransportVF (I := I) g α γ))
         (W ×ˢ (Set.univ : Set E)) :=
@@ -335,23 +335,23 @@ theorem parallelTransport_section_contMDiffOn_Ioo [I.Boundaryless]
         HasDerivAt Y (parallelTransportVF (I := I) g α γ s (Y s)) s := by
       intro s hs
       have hsΩ : s ∈ Ω := hIcc_sub_Ω hs
-      have hs_src : γ s ∈ (chartAt H α).source := hIcc_src s hs
+      have hs_source : γ s ∈ (chartAt H α).source := hIcc_source s hs
       have hVdiff_s : DifferentiableAt ℝ (chartRepAt (I := I) γ V s) s := hVdiff s hsΩ
       have hY_diff_s : DifferentiableAt ℝ Y s := by
         rw [hY_def]
         exact chartRepAtBase_differentiableAt (I := I) (n := ∞) (by simp) γ V s α hγ
-          hs_src hVdiff_s
+          hs_source hVdiff_s
       have hY_hd : HasDerivAt Y (deriv Y s) s := hY_diff_s.hasDerivAt
       have hfoot :
           (trivializationAt E (TangentSpace I) α).symmL ℝ (γ s)
               (chartCovDerivAlong (I := I) g α γ Y s) = 0 := by
         have hinv := covDerivAlong_chart_foot_invariance (I := I) (E := E) (n := ∞) (by simp) g γ V s α
-          hγ hs_src hVdiff_s
+          hγ hs_source hVdiff_s
         rw [hY_def]
         rw [hinv]
         exact hVpar s hsΩ
       have hbase : γ s ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-        rw [TangentBundle.trivializationAt_baseSet]; exact hs_src
+        rw [TangentBundle.trivializationAt_baseSet]; exact hs_source
       have hchart_zero : chartCovDerivAlong (I := I) g α γ Y s = 0 := by
         have := congrArg
           ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ s)) hfoot

@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Topology
@@ -483,5 +483,5 @@ theorem seqFramedChartNorm_ge
 
 end PathBridge
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

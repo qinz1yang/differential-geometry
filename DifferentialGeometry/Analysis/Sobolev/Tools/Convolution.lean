@@ -98,11 +98,11 @@ theorem convolution_sup_le_holder
 omit [NeZero d] in
 theorem convolution_continuous_of_compact_support
     {f η : E → ℝ}
-    (hf_loc : LocallyIntegrable f volume)
+    (hf_local : LocallyIntegrable f volume)
     (hη_cont : Continuous η) (hη_compact : HasCompactSupport η) :
     Continuous (f ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] η : E → ℝ) :=
   hη_compact.continuous_convolution_right
-    (L := ContinuousLinearMap.lsmul ℝ ℝ) hf_loc hη_cont
+    (L := ContinuousLinearMap.lsmul ℝ ℝ) hf_local hη_cont
 
 omit [NeZero d] in
 theorem convolution_lipschitz_with

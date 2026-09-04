@@ -830,25 +830,25 @@ private theorem volterra_time {t : ℝ}
   exact (hc.add hz).congr_of_eventuallyEq <|
     Filter.Eventually.of_forall fun q => by rfl
 
-def frozenDuh (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
+def frozenDuhamel (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction V F) (x : V) : F :=
   ∫ r in (0 : ℝ)..t, a (t - r) • heatScaled r u x
 
 omit [Nontrivial V]
   [CompleteSpace F] in
 @[simp]
-theorem frozenDuh_zero (a : BoundedContinuousFunction ℝ ℝ)
+theorem frozenDuhamel_zero (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction V F) (x : V) :
-    frozenDuh 0 a u x = 0 := by
-  simp [frozenDuh]
+    frozenDuhamel 0 a u x = 0 := by
+  simp [frozenDuhamel]
 
 omit [CompleteSpace F] in
-theorem frozenDuh_space (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
+theorem frozenDuhamel_space (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction V F)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
     (hu : ∀ x : V, HasFDerivAt (u : V → F) (du x) x) (x : V) :
-    HasFDerivAt (fun y : V => frozenDuh t a u y)
-      (frozenDuh t a du x) x := by
+    HasFDerivAt (fun y : V => frozenDuhamel t a u y)
+      (frozenDuhamel t a du x) x := by
   let F₀ : V → ℝ → F := fun y r =>
     a (t - r) • heatScaled r u y
   let F₁ : V → ℝ → (V →L[ℝ] F) := fun y r =>
@@ -889,19 +889,19 @@ theorem frozenDuh_space (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
   have key := hasFDerivAt_integral_of_dominated_of_fderiv_le''
     (F := F₀) (F' := F₁) (bound := bound) hs hmeas hint hder_meas
       hbound hbound_int hdiff
-  simpa only [F₀, F₁, frozenDuh] using key
+  simpa only [F₀, F₁, frozenDuhamel] using key
 
-theorem frozenDuh_map {G : Type*}
+theorem frozenDuhamel_map {G : Type*}
     [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G]
     (L : F →L[ℝ] G) (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction V F) (x : V) :
-    L (frozenDuh t a u x) =
-      frozenDuh t a (L.compLeftContinuousBounded V u) x := by
+    L (frozenDuhamel t a u x) =
+      frozenDuhamel t a (L.compLeftContinuousBounded V u) x := by
   have hint : IntervalIntegrable
       (fun r : ℝ => a (t - r) • heatScaled r u x) volume 0 t :=
     ((a.continuous.comp (continuous_const.sub continuous_id)).smul
       (heatScaled_cont u x)).intervalIntegrable 0 t
-  unfold frozenDuh
+  unfold frozenDuhamel
   rw [← L.intervalIntegral_comp_comm hint]
   apply intervalIntegral.integral_congr
   intro r hr
@@ -909,17 +909,17 @@ theorem frozenDuh_map {G : Type*}
     a (t - r) • heatScaled r (L.compLeftContinuousBounded V u) x
   rw [map_smul, heatScaled_map]
 
-theorem frozenDuh_lap (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
+theorem frozenDuhamel_lap (t : ℝ) (a : BoundedContinuousFunction ℝ ℝ)
     (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F)) (x : V) :
-    lapEval (frozenDuh (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) =
-      frozenDuh (V := V) (F := F) t a (coreLap d2u) x := by
-  change lapEval (frozenDuh (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) =
-    frozenDuh (V := V) (F := F) t a
+    lapEval (frozenDuhamel (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) =
+      frozenDuhamel (V := V) (F := F) t a (coreLap d2u) x := by
+  change lapEval (frozenDuhamel (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) =
+    frozenDuhamel (V := V) (F := F) t a
       ((lapEval (V := V) (F := F)).compLeftContinuousBounded V d2u) x
-  exact frozenDuh_map (V := V) (F := V →L[ℝ] V →L[ℝ] F)
+  exact frozenDuhamel_map (V := V) (F := V →L[ℝ] V →L[ℝ] F)
     (G := F) (lapEval (V := V) (F := F)) t a d2u x
 
-theorem frozenDuh_time {t : ℝ} (ht : 0 < t)
+theorem frozenDuhamel_time {t : ℝ} (ht : 0 < t)
     (a da : BoundedContinuousFunction ℝ ℝ)
     (ha : ∀ q : ℝ, HasDerivAt (a : ℝ → ℝ) (da q) q)
     (u : BoundedContinuousFunction V F)
@@ -928,8 +928,8 @@ theorem frozenDuh_time {t : ℝ} (ht : 0 < t)
     (hu : ∀ x : V, HasFDerivAt (u : V → F) (du x) x)
     (hdu : ∀ x : V, HasFDerivAt (du : V → V →L[ℝ] F) (d2u x) x)
     (x : V) :
-    HasDerivAt (fun q : ℝ => frozenDuh q a u x)
-      (a t • u x + frozenDuh t a (coreLap d2u) x) t := by
+    HasDerivAt (fun q : ℝ => frozenDuhamel q a u x)
+      (a t • u x + frozenDuhamel t a (coreLap d2u) x) t := by
   have hraw := volterra_time (t := t) a da ha
     (fun r : ℝ => heatScaled r u x) (heatScaled_cont u x) ‖u‖
       (fun r => heatScaled_norm r u x)
@@ -993,10 +993,10 @@ theorem frozenDuh_time {t : ℝ} (ht : 0 < t)
         a t • u x) hftc
     abel_nf at hadd ⊢
     exact hadd.symm
-  unfold frozenDuh
+  unfold frozenDuhamel
   convert hraw using 1
   exact hcoef.symm
-theorem frozenDuh_pde {t : ℝ} (ht : 0 < t)
+theorem frozenDuhamel_pde {t : ℝ} (ht : 0 < t)
     (a da : BoundedContinuousFunction ℝ ℝ)
     (ha : ∀ q : ℝ, HasDerivAt (a : ℝ → ℝ) (da q) q)
     (u : BoundedContinuousFunction V F)
@@ -1005,18 +1005,18 @@ theorem frozenDuh_pde {t : ℝ} (ht : 0 < t)
     (hu : ∀ x : V, HasFDerivAt (u : V → F) (du x) x)
     (hdu : ∀ x : V, HasFDerivAt (du : V → V →L[ℝ] F) (d2u x) x)
     (x : V) :
-    HasFDerivAt (fun y : V => frozenDuh t a u y)
-        (frozenDuh t a du x) x ∧
-      HasFDerivAt (fun y : V => frozenDuh t a du y)
-        (frozenDuh (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) x ∧
-      HasDerivAt (fun q : ℝ => frozenDuh q a u x)
+    HasFDerivAt (fun y : V => frozenDuhamel t a u y)
+        (frozenDuhamel t a du x) x ∧
+      HasFDerivAt (fun y : V => frozenDuhamel t a du y)
+        (frozenDuhamel (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) x ∧
+      HasDerivAt (fun q : ℝ => frozenDuhamel q a u x)
         (lapEval
-          (frozenDuh (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) +
+          (frozenDuhamel (V := V) (F := V →L[ℝ] V →L[ℝ] F) t a d2u x) +
             a t • u x) t := by
-  refine ⟨frozenDuh_space t a u du hu x,
-    frozenDuh_space t a du d2u hdu x, ?_⟩
-  rw [frozenDuh_lap, add_comm]
-  exact frozenDuh_time ht a da ha u du d2u hu hdu x
+  refine ⟨frozenDuhamel_space t a u du hu x,
+    frozenDuhamel_space t a du d2u hdu x, ?_⟩
+  rw [frozenDuhamel_lap, add_comm]
+  exact frozenDuhamel_time ht a da ha u du d2u hu hdu x
 
 end Duhamel
 

@@ -53,7 +53,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M]
 variable {D : RealTimeInterval}
 
-theorem exists_lPhaseSol_at
+theorem exists_lPhaseSolution_at
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T : Real) (x0 : M) (s0 : Real) (z0 : E × E)

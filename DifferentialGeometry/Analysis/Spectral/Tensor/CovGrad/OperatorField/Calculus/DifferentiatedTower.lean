@@ -73,14 +73,14 @@ theorem operatorFieldApplication_castCcTensorRank {a a' b b' : ℕ} (g : SmoothR
 
 omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem covGrad_heq_congr' (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
+theorem covGrad_heq_congr (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
     (h : a = b) {Y : SmoothCcTensor g r a} {Z : SmoothCcTensor g r b} (hYZ : HEq Y Z) :
     HEq (covGrad g r a Y) (covGrad g r b Z) := by
   subst h; rw [eq_of_heq hYZ]
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem iteratedCovGrad_covGrad_comm_heq' (g : SmoothRiemannianMetric I M) (r s m : ℕ)
+theorem iteratedCovGrad_covGrad_comm_heq (g : SmoothRiemannianMetric I M) (r s m : ℕ)
     (X : SmoothCcTensor g r s) :
     HEq (iteratedCovGrad g r (s + 1) m (covGrad g r s X))
       (iteratedCovGrad g r s (m + 1) X) := by
@@ -89,7 +89,7 @@ theorem iteratedCovGrad_covGrad_comm_heq' (g : SmoothRiemannianMetric I M) (r s 
   | succ k ih =>
       rw [iteratedCovGrad_succ (g := g) (r := r) (s := s + 1) (j := k) (covGrad g r s X)]
       rw [iteratedCovGrad_succ (g := g) (r := r) (s := s) (j := k + 1) X]
-      exact covGrad_heq_congr' g r (by omega : (s + 1) + k = s + (k + 1)) ih
+      exact covGrad_heq_congr g r (by omega : (s + 1) + k = s + (k + 1)) ih
 
 def IsIteratedCovGradNormalForm (g : SmoothRiemannianMetric I M)
     (op : ∀ (p r : ℕ), SmoothCcTensor g 0 r → SmoothCcTensor g 0 (r + p))
@@ -138,7 +138,7 @@ theorem operatorFieldApplication_iteratedCovGrad_succ_of_covGrad (g : SmoothRiem
     (by omega : (r + 1) + p = r + (p + 1)) Ψ (iteratedCovGrad g 0 (r + 1) k (covGrad g 0 r W))]
   congr 1
   apply eq_of_heq
-  refine HEq.trans ?_ (iteratedCovGrad_covGrad_comm_heq' g 0 r k W)
+  refine HEq.trans ?_ (iteratedCovGrad_covGrad_comm_heq g 0 r k W)
   exact castCcTensorRank_heq g 0 (by omega : (r + 1) + k = r + (k + 1))
     (iteratedCovGrad g 0 (r + 1) k (covGrad g 0 r W))
 

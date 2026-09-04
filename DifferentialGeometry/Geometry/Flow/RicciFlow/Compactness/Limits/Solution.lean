@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -29,5 +29,5 @@ theorem solutionComp_of_mc
     compactnessConclusion (I := I) X :=
   hflow.toConclusion
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

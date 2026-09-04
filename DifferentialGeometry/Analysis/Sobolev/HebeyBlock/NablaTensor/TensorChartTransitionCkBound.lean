@@ -111,12 +111,12 @@ lemma transitionCoeffOnEuclid_contDiffOn
       ((chartAt H α).source ∩ (chartAt H β).source) := by
     intro y hy
     refine ⟨?_, hy.2⟩
-    have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
+    have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
       toEuclidean_symm_mem_target (I := I) hy.1
-    have h_src : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+    have h_source : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         (extChartAt I α).source :=
-      (extChartAt I α).map_target h_tgt
-    rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_src
+      (extChartAt I α).map_target h_target
+    rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_source
   have h_overlap_subset_target :
       chartTransitionEuclidOverlap (E := E) (I := I) (M := M) α β ⊆
         chartTargetEuclid (I := I) (M := M) α := fun y hy => hy.1
@@ -263,13 +263,13 @@ theorem tensorChartTransition_Ck_bound_on_compact_manifold
   have h_KE_sub : f '' K_M ⊆
       chartTransitionEuclidOverlap (E := E) (I := I) (M := M) α β := by
     rintro y ⟨x, hx, hfx⟩
-    have hx_src : x ∈ (extChartAt I α).source := by
+    have hx_source : x ∈ (extChartAt I α).source := by
       rw [extChartAt_source_eq_chartAt_source (I := I)]
       exact hK_α hx
-    have hx_tgt : (extChartAt I α) x ∈ (extChartAt I α).target :=
-      (extChartAt I α).map_source hx_src
+    have hx_target : (extChartAt I α) x ∈ (extChartAt I α).target :=
+      (extChartAt I α).map_source hx_source
     have h_first : y ∈ chartTargetEuclid (I := I) (M := M) α := by
-      refine ⟨(extChartAt I α) x, hx_tgt, ?_⟩
+      refine ⟨(extChartAt I α) x, hx_target, ?_⟩
       change (toEuclidean (E := E)) ((extChartAt I α) x) = y
       exact hfx
     have h_toE_symm : (toEuclidean (E := E)).symm y = (extChartAt I α) x := by
@@ -279,7 +279,7 @@ theorem tensorChartTransition_Ck_bound_on_compact_manifold
     have h_chart_symm : (extChartAt I α).symm
         ((toEuclidean (E := E)).symm y) = x := by
       rw [h_toE_symm]
-      exact (extChartAt I α).left_inv hx_src
+      exact (extChartAt I α).left_inv hx_source
     have h_second : (extChartAt I α).symm
         ((toEuclidean (E := E)).symm y) ∈ (chartAt H β).source := by
       rw [h_chart_symm]; exact hK_β hx

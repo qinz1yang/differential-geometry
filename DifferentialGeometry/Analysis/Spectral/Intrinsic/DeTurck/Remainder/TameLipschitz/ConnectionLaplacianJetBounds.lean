@@ -65,8 +65,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
   exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
   linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
-  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
-  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
@@ -1111,19 +1111,19 @@ theorem rawTensorConnLapSmooth_iteratedCovGrad_l2_tame
   choose Cfam hCfam_nn hCfam using
     (fun q : ℕ => rawTensorConnLapSmooth_iteratedCovGrad_riemannianFiberNormSq_jet_le
       (I := I) (M := M) g₀ q)
-  set Cunif : ℝ := ∑ q ∈ Finset.range (a + 1), Cfam q with hCunif_def
-  have hCunif_nn : 0 ≤ Cunif :=
+  set Cuniform : ℝ := ∑ q ∈ Finset.range (a + 1), Cfam q with hCuniform_def
+  have hCuniform_nn : 0 ≤ Cuniform :=
     Finset.sum_nonneg fun q _ => hCfam_nn q
-  refine ⟨Real.sqrt Cunif, Real.sqrt_nonneg _, fun W q hq => ?_⟩
-  have hCfam_le_Cunif : Cfam q ≤ Cunif := by
-    rw [hCunif_def]
+  refine ⟨Real.sqrt Cuniform, Real.sqrt_nonneg _, fun W q hq => ?_⟩
+  have hCfam_le_Cuniform : Cfam q ≤ Cuniform := by
+    rw [hCuniform_def]
     exact Finset.single_le_sum (f := Cfam) (fun i _ => hCfam_nn i)
       (Finset.mem_range.mpr (by omega))
   have hpt : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + q) x
           ((iteratedCovGrad (I := I) g₀ 0 2 q
             (rawTensorConnLapSmooth (I := I) g₀ 0 2 W)).toSection x) ≤
-        Cunif * ∑ i ∈ Finset.range (a + 2 + 1),
+        Cuniform * ∑ i ∈ Finset.range (a + 2 + 1),
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 0 2 i W).toSection x) := by
     intro x
@@ -1149,12 +1149,12 @@ theorem rawTensorConnLapSmooth_iteratedCovGrad_l2_tame
             riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + i) x
               ((iteratedCovGrad (I := I) g₀ 0 2 i W).toSection x) :=
           mul_le_mul_of_nonneg_left hwindow (hCfam_nn q)
-      _ ≤ Cunif * ∑ i ∈ Finset.range (a + 2 + 1),
+      _ ≤ Cuniform * ∑ i ∈ Finset.range (a + 2 + 1),
             riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + i) x
               ((iteratedCovGrad (I := I) g₀ 0 2 i W).toSection x) :=
-          mul_le_mul_of_nonneg_right hCfam_le_Cunif hsum_nn
+          mul_le_mul_of_nonneg_right hCfam_le_Cuniform hsum_nn
   exact l2RootSum_of_pointwise_iteratedCovGrad_jet (I := I) g₀ q (a + 2)
-    (rawTensorConnLapSmooth (I := I) g₀ 0 2 W) W Cunif hCunif_nn hpt
+    (rawTensorConnLapSmooth (I := I) g₀ 0 2 W) W Cuniform hCuniform_nn hpt
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
@@ -1242,11 +1242,11 @@ theorem deTurckTermDiff_supercritical_pointwise_jet_le
           ((iteratedCovGrad (I := I) g₀ 0 2 1 W).toSection x) +
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 2) x
           ((iteratedCovGrad (I := I) g₀ 0 2 2 W).toSection x) ≤ 3 * (Cc * Mn) ^ 2
-    rw [riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 0) x
+    rw [riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 (2 + 0) x
         ((iteratedCovGrad (I := I) g₀ 0 2 0 W).toSection x),
-      riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 1) x
+      riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 (2 + 1) x
         ((iteratedCovGrad (I := I) g₀ 0 2 1 W).toSection x),
-      riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 2) x
+      riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 (2 + 2) x
         ((iteratedCovGrad (I := I) g₀ 0 2 2 W).toSection x)]
     rw [Finset.sum_range_succ] at hCol
     rw [Finset.sum_range_succ] at hCol

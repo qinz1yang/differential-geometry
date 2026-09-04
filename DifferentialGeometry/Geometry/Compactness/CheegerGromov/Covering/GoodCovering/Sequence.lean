@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 
@@ -698,5 +698,5 @@ theorem exists_stableNetData (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
   rw [hlam] at hstab
   exact ⟨L, hstab⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -28,7 +28,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_contMDiffOn_one_of_two_chart_pieces
+theorem lRegularizedAction_minimizer_contMDiffOn_one_of_two_chart_pieces
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (t : Fin 3 → Real) (p : Fin 2 → M) (gamma : Real → M)
     (u : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
@@ -43,8 +43,8 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_two_chart_pieces
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta (t 0) = gamma (t 0) →
       delta (t (Fin.last 2)) = gamma (t (Fin.last 2)) →
-      lRegAction S T gamma (t 0) (t (Fin.last 2)) ≤
-        lRegAction S T delta (t 0) (t (Fin.last 2))) :
+      lRegularizedAction S T gamma (t 0) (t (Fin.last 2)) ≤
+        lRegularizedAction S T delta (t 0) (t (Fin.last 2))) :
     ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
       (Icc (t 0) (t (Fin.last 2))) := by
   classical
@@ -113,7 +113,7 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_two_chart_pieces
         ⟨by simpa only [partitionIntervalLength, hfin1c, hfin1s] using
             sub_nonneg.mpr (hpos 1).le, le_rfl⟩
       simpa only [partitionIntervalLength, hfin1c, hfin1s, add_sub_cancel] using h
-    exact lChartAction_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
+    exact lChartAction_pair_le_of_lRegularizedAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
       hsrc hrep hreg hmin v hvtar (hv0.trans hu0) (hv2.trans hu2) hvnode
   have hlocal0 : IsLocalMinOn
       (lChartAction S T (t 0) (p 0)) (sameTimeEnds (u 0)) (u 0) :=
@@ -200,7 +200,7 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_two_chart_pieces
     hgamma1 ⟨le_rfl, ht12.le⟩
     (uniqueDiffOn_Icc ht12 (t 1) ⟨le_rfl, ht12.le⟩)
     (hsrc 1) hnodesrc
-  have hvel := lRegAction_minimizer_velocity_eq_under_chart_change (I := I) S hS T t p gamma u
+  have hvel := lRegularizedAction_minimizer_velocity_eq_under_chart_change (I := I) S hS T t p gamma u
     hpos hsrc hrep hreg hmin
   have hder :
       derivWithin ((extChartAt I (gamma (t 1))) ∘ gamma)

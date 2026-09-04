@@ -215,7 +215,7 @@ theorem ricciFirstOrderKoszulCoeff_operatorFieldApplication_eq
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-def corrFieldDataSpec (g₀ : SmoothRiemannianMetric I M)
+def correctionFieldDataSpec (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -233,9 +233,9 @@ def corrFieldDataSpec (g₀ : SmoothRiemannianMetric I M)
       (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
       (∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
         Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x ((C0 s).toSection x)) ≤
-          corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ ∧
+          correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ ∧
         Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x ((C1 s).toSection x)) ≤
-          corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀) ∧
+          correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀) ∧
       (∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (C0 s
@@ -243,12 +243,12 @@ def corrFieldDataSpec (g₀ : SmoothRiemannianMetric I M)
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
               - ricciOrderZeroCurvCoeff (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s))‖ ^ 2 ≤
-          corrFieldTameJetBound (I := I) (M := M) g₀ a R δ₀ i *
+          correctionFieldTameJetBound (I := I) (M := M) g₀ a R δ₀ i *
             (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)) ∧
         ‖iteratedCovGrad (I := I) g₀ 3 2 i (C1 s)‖ ^ 2 ≤
-          corrFieldTameJetBound (I := I) (M := M) g₀ a R δ₀ i *
+          correctionFieldTameJetBound (I := I) (M := M) g₀ a R δ₀ i *
             (1 + ∑ j ∈ Finset.range (i + 2),
               (‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 +
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2)))) ∧
@@ -279,14 +279,14 @@ def corrFieldDataSpec (g₀ : SmoothRiemannianMetric I M)
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
+theorem exists_correctionFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
     ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ T) δ)
         {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ T') δ'),
         ∃ (C0 : ℝ → SmoothCcTensor g₀ 2 2) (C1 : ℝ → SmoothCcTensor g₀ 3 2),
-          corrFieldDataSpec (I := I) (M := M) g₀ T T' hδ hδ' C0 C1 := by
+          correctionFieldDataSpec (I := I) (M := M) g₀ T T' hδ hδ' C0 C1 := by
   classical
   intro T T' δ hδ δ' hδ'
   refine ⟨fun s => linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s
@@ -325,7 +325,7 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
     constructor
     · intro s hs x
       have hcond : 2 * Module.finrank ℝ E + 10 ≤ a ∧ (0 : ℝ) ≤ R ∧ δ₀ < 1 := ⟨ha_super, hR, hδ₀⟩
-      have hbnd : corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ =
+      have hbnd : correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ =
           Classical.choose
             (exists_uniformBound_sqrt_riemannianFiberNormSq_linRicciConnectionDifferenceCoeff_of_jetEnvelope
               (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)
@@ -337,7 +337,7 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
                     (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)))
             + Real.sqrt (Classical.choose (exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform
               (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)) := by
-        unfold corrFieldChristoffelBound
+        unfold correctionFieldChristoffelBound
         rw [dif_pos hcond]
       have hconn := (Classical.choose_spec
           (exists_uniformBound_sqrt_riemannianFiberNormSq_linRicciConnectionDifferenceCoeff_of_jetEnvelope
@@ -355,7 +355,7 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
       · change Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
             ((linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s
               - linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤
-          corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀
+          correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀
         have htri : Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
               ((linearizedRicciConnectionDifferenceOrder0Coeff (I := I) g₀ T T' hδ hδ' s
                 - linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤
@@ -415,7 +415,7 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
       · change Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
             ((linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s
               - linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤
-          corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀
+          correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀
         have htri : Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
               ((linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s
                 - linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤
@@ -454,21 +454,21 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
         linarith
     · intro i hi s hs
       have hcond : 2 * Module.finrank ℝ E + 10 ≤ a ∧ (0 : ℝ) ≤ R ∧ δ₀ < 1 := ⟨ha_super, hR, hδ₀⟩
-      have hbnd : corrFieldTameJetBound (I := I) (M := M) g₀ a R δ₀ i =
-          2 * Classical.choose (exists_corrTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
+      have hbnd : correctionFieldTameJetBound (I := I) (M := M) g₀ a R δ₀ i =
+          2 * Classical.choose (exists_correctionTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
               (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2) i
-            + 2 * Classical.choose (exists_corrTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
+            + 2 * Classical.choose (exists_correctionTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
               (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2) i := by
-        unfold corrFieldTameJetBound
+        unfold correctionFieldTameJetBound
         rw [dif_pos hcond]
-      have hK0_nn := (Classical.choose_spec (exists_corrTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
+      have hK0_nn := (Classical.choose_spec (exists_correctionTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
           (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)).1 i
-      have hK1_nn := (Classical.choose_spec (exists_corrTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
+      have hK1_nn := (Classical.choose_spec (exists_correctionTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
           (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)).1 i
-      have h0 := (Classical.choose_spec (exists_corrTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
+      have h0 := (Classical.choose_spec (exists_correctionTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
           (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)).2
         T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i hi s hs
-      have h1 := (Classical.choose_spec (exists_corrTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
+      have h1 := (Classical.choose_spec (exists_correctionTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
           (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)).2
         T T' hδ_le hδ hδ'_le hδ' hTball hT'ball i s hs
       have hwin_nn : 0 ≤ ∑ j ∈ Finset.range (i + 2),
@@ -488,30 +488,30 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
   · exact fun s => rfl
   · exact fun s => rfl
 
-theorem exists_orderZero_firstOrder_corrField_data (g₀ : SmoothRiemannianMetric I M)
+theorem exists_orderZero_firstOrder_correctionField_data (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
     ∃ (C0 : ℝ → SmoothCcTensor g₀ 2 2) (C1 : ℝ → SmoothCcTensor g₀ 3 2),
-      corrFieldDataSpec (I := I) (M := M) g₀ T T' hδ hδ' C0 C1 :=
-  exists_corrFieldChristoffelConst (I := I) (M := M) g₀ T T' hδ hδ'
+      correctionFieldDataSpec (I := I) (M := M) g₀ T T' hδ hδ' C0 C1 :=
+  exists_correctionFieldChristoffelConst (I := I) (M := M) g₀ T T' hδ hδ'
 
-noncomputable def linearizedRicciOrderZeroCorrField (g₀ : SmoothRiemannianMetric I M)
+noncomputable def linearizedRicciOrderZeroCorrectionField (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
     ℝ → SmoothCcTensor g₀ 2 2 :=
-  (exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose
+  (exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose
 
-noncomputable def linearizedRicciFirstOrderCorrField (g₀ : SmoothRiemannianMetric I M)
+noncomputable def linearizedRicciFirstOrderCorrectionField (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
       δ') :
     ℝ → SmoothCcTensor g₀ 3 2 :=
-  (exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose
+  (exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose
 
 def linearizedRicciOrderZeroField (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -519,7 +519,7 @@ def linearizedRicciOrderZeroField (g₀ : SmoothRiemannianMetric I M) (T T' : Sm
       δ')
     (s : ℝ) : SmoothCcTensor g₀ 2 2 :=
   linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s
-    + linearizedRicciOrderZeroCorrField (I := I) g₀ T T' hδ hδ' s
+    + linearizedRicciOrderZeroCorrectionField (I := I) g₀ T T' hδ hδ' s
 
 def linearizedRicciFirstOrderField (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -527,7 +527,7 @@ def linearizedRicciFirstOrderField (g₀ : SmoothRiemannianMetric I M) (T T' : S
       δ')
     (s : ℝ) : SmoothCcTensor g₀ 3 2 :=
   linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s
-    + linearizedRicciFirstOrderCorrField (I := I) g₀ T T' hδ hδ' s
+    + linearizedRicciFirstOrderCorrectionField (I := I) g₀ T T' hδ hδ' s
 
 theorem linearizedRicci_orderZeroField_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -536,7 +536,7 @@ theorem linearizedRicci_orderZeroField_jointSmooth (g₀ : SmoothRiemannianMetri
       δ') :
     linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
       (linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') :=
-  (exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec.1
+  (exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec.1
 
 theorem linearizedRicci_firstOrderField_jointSmooth (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
@@ -545,7 +545,7 @@ theorem linearizedRicci_firstOrderField_jointSmooth (g₀ : SmoothRiemannianMetr
       δ') :
     linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 3
       (linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') :=
-  (exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec.2.1
+  (exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec.2.1
 
 theorem ricciCovariantTermBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -576,7 +576,7 @@ theorem ricciCovariantTermBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_
   refine ⟨Real.sqrt (4 * K), Real.sqrt_nonneg _, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   obtain ⟨hRm, hCurvFib⟩ := hcurv T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
-  obtain ⟨hPrin, hTH⟩ := hcom T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
+  obtain ⟨hPrincipal, hTH⟩ := hcom T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
   have hRm' : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
       ((ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) ≤ K :=
@@ -585,10 +585,10 @@ theorem ricciCovariantTermBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_
       ((ricciOrderZeroCurvCoeff (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) ≤ K :=
     le_trans hCurvFib (le_max_left _ _)
-  have hPrin' : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
+  have hPrincipal' : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
       ((ricciDeTurckPrincipalCoefficient (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) ≤ K :=
-    le_trans hPrin (le_max_right _ _)
+    le_trans hPrincipal (le_max_right _ _)
   have hTH' : riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
       ((traceHessianCoeff (I := I) (M := M) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x) ≤ K :=
@@ -641,7 +641,7 @@ theorem ricciCovariantTermBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_
           - (1 / 2 : ℝ) • ((traceHessianCoeff (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x)) ≤ 4 * K := by
       rw [hsmul] at hsub
-      nlinarith [hsub, hPrin', hTH', hK_nn]
+      nlinarith [hsub, hPrincipal', hTH', hK_nn]
     refine Real.sqrt_le_sqrt hbound
 
 theorem exists_firstOrderBase_metricPerturbationPath_riemannianFiberNormSq_ballUniform
@@ -674,11 +674,11 @@ theorem exists_firstOrderBase_metricPerturbationPath_riemannianFiberNormSq_ballU
 
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
-theorem exists_orderZero_firstOrder_corrField_riemannianFiberNormSq_ballUniform
+theorem exists_orderZero_firstOrder_correctionField_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
-    ∃ Λcorr : ℝ, 0 ≤ Λcorr ∧
+    ∃ Λcorrection : ℝ, 0 ≤ Λcorrection ∧
       ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (_hδ_le : δ ≤ δ₀)
         (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -688,26 +688,26 @@ theorem exists_orderZero_firstOrder_corrField_riemannianFiberNormSq_ballUniform
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
           Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ Λcorr ∧
+            ((linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ Λcorrection ∧
           Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
-            ((linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ Λcorr := by
+            ((linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤ Λcorrection := by
   classical
   obtain ⟨ΛCbase, hΛCbase_nn, hbase⟩ :=
     ricciCovariantTermBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Λarm1, hΛarm1_nn, harm1⟩ :=
     exists_firstOrderBase_metricPerturbationPath_riemannianFiberNormSq_ballUniform (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
-  have hCΓ_nn : 0 ≤ corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ :=
-    corrFieldChristoffelBound_nonneg (I := I) (M := M) g₀ a R δ₀
+  have hCΓ_nn : 0 ≤ correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ :=
+    correctionFieldChristoffelBound_nonneg (I := I) (M := M) g₀ a R δ₀
   refine ⟨(ΛCbase + Real.sqrt Λarm1) +
-    corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀, ?_, ?_⟩
+    correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀, ?_, ?_⟩
   · have h2 : 0 ≤ Real.sqrt Λarm1 := Real.sqrt_nonneg _
     linarith
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   obtain ⟨hbase0, _hbase2⟩ := hbase T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
   have harm1' := harm1 T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
   obtain ⟨_hj0, _hj1, hbound, _hident⟩ :=
-    (exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
+    (exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
   obtain ⟨hb0, hb1⟩ := (hbound ha_super hR hδ₀ hδ_le hδ'_le hTball hT'ball).1 s hs x
   have harm1sqrt_nn : 0 ≤ Real.sqrt Λarm1 := Real.sqrt_nonneg _
   constructor
@@ -716,7 +716,7 @@ theorem exists_orderZero_firstOrder_corrField_riemannianFiberNormSq_ballUniform
         Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
             ((linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x)) +
           Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            (((exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose s).toSection
+            (((exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose s).toSection
               x)) := by
       let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 2 I b) :=
         Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 2 2
@@ -725,22 +725,22 @@ theorem exists_orderZero_firstOrder_corrField_riemannianFiberNormSq_ballUniform
         ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _]
       have hfield_eq : (linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ' s).toSection x =
           (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x +
-            ((exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose s).toSection x := by
-        rw [linearizedRicciOrderZeroField, linearizedRicciOrderZeroCorrField,
+            ((exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose s).toSection x := by
+        rw [linearizedRicciOrderZeroField, linearizedRicciOrderZeroCorrectionField,
           SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
       rw [hfield_eq]
       exact norm_add_le _ _
     refine le_trans htri ?_
     have hcorr0 : Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-        (((exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose s).toSection x)) ≤
-        corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ := hb0
+        (((exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose s).toSection x)) ≤
+        correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ := hb0
     linarith [hbase0, hcorr0, harm1sqrt_nn]
   · have htri : Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
           ((linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤
         Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
             ((linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x)) +
           Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
-            (((exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose
+            (((exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose
               s).toSection
               x)) := by
       let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 3 2 I b) :=
@@ -750,9 +750,9 @@ theorem exists_orderZero_firstOrder_corrField_riemannianFiberNormSq_ballUniform
         ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _]
       have hfield_eq : (linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ' s).toSection x =
           (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x +
-            ((exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose
+            ((exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose
               s).toSection x := by
-        rw [linearizedRicciFirstOrderField, linearizedRicciFirstOrderCorrField,
+        rw [linearizedRicciFirstOrderField, linearizedRicciFirstOrderCorrectionField,
           SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
       rw [hfield_eq]
       exact norm_add_le _ _
@@ -761,9 +761,9 @@ theorem exists_orderZero_firstOrder_corrField_riemannianFiberNormSq_ballUniform
         ((linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s).toSection x)) ≤
         Real.sqrt Λarm1 := Real.sqrt_le_sqrt harm1'
     have hcorr1 : Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
-        (((exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose s).toSection
+        (((exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose s).toSection
           x)) ≤
-        corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ := hb1
+        correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ := hb1
     linarith [hbase1', hcorr1, hΛCbase_nn]
 
 theorem ricciCovariantTermFields_concrete_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
@@ -791,9 +791,9 @@ theorem ricciCovariantTermFields_concrete_lichnerowicz_uniform_riemannianFiberNo
     ricciCovariantTermBaseFields_lichnerowicz_uniform_riemannianFiberNormSq_ballUniform
       (I := I) (M := M) g₀ a ha_super hR
       hδ₀
-  obtain ⟨Λcorr, hΛcorr_nn, hcorr⟩ :=
-    exists_orderZero_firstOrder_corrField_riemannianFiberNormSq_ballUniform (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
-  refine ⟨max ΛCbase Λcorr, le_trans hΛCbase_nn (le_max_left _ _), ?_⟩
+  obtain ⟨Λcorrection, hΛcorrection_nn, hcorr⟩ :=
+    exists_orderZero_firstOrder_correctionField_riemannianFiberNormSq_ballUniform (I := I) (M := M) (E := E) g₀ a ha_super hR hδ₀
+  refine ⟨max ΛCbase Λcorrection, le_trans hΛCbase_nn (le_max_left _ _), ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   obtain ⟨_hbase0, hbase2⟩ := hbase T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x
   obtain ⟨hcorr0, hcorr1⟩ := hcorr T T' hδ_le hδ hδ'_le hδ' hTball hT'ball s hs x

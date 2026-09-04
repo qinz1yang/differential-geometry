@@ -130,7 +130,7 @@ theorem chartPushedRaw_tensorChartComponentRaw_contDiffOn
         (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx))
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  have hraw_src : ContMDiffOn I 𝓘(ℝ) ∞
+  have hraw_source : ContMDiffOn I 𝓘(ℝ) ∞
       (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx)
       ((chartAt H α).source) :=
     tensorChartComponentRaw_contMDiffOn_chart_source (I := I) (M := M)
@@ -138,7 +138,7 @@ theorem chartPushedRaw_tensorChartComponentRaw_contDiffOn
   have hraw_extsrc : ContMDiffOn I 𝓘(ℝ) ∞
       (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx)
       ((extChartAt I α).source) := by
-    rw [extChartAt_source]; exact hraw_src
+    rw [extChartAt_source]; exact hraw_source
   have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
       (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
   have hmaps : Set.MapsTo (extChartAt I α).symm (extChartAt I α).target

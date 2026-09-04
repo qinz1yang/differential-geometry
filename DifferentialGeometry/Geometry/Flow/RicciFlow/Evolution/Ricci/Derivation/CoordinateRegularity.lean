@@ -192,7 +192,7 @@ theorem coordRicciMdiff
   exact hEval
 
 omit [SigmaCompactSpace M] in
-theorem coordNablaReg
+theorem coordNablaRegularity
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real)
@@ -259,7 +259,7 @@ theorem coordNablaReg
   simpa [hfun] using hmdiff
 
 omit [SigmaCompactSpace M] in
-theorem coordNablaRegOn
+theorem coordNablaRegularityOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (t : Real) (x : M)
@@ -912,7 +912,7 @@ theorem coordMetricDeriv
           ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀)
             t x a b) := by
   intro a b
-  apply fixedBaseOnReg_of_timeDerivWithin
+  apply fixedBaseOnRegularity_of_timeDerivWithin
   · exact D.regular_subset
   · exact fun {_t} ht => D.regular_mem_nhds ht
   · intro t ht x hx
@@ -965,7 +965,7 @@ theorem coordMetricMix
     (coordNablaRealOn (I := I) S x₀)
 
 omit [SigmaCompactSpace M] in
-theorem coordGammaEvol
+theorem coordGammaEvolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -983,7 +983,7 @@ theorem coordGammaEvol
       (coordinateFrameAt (I := I) x₀)
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
       (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀)) := by
-  exact gammaEvolLocal
+  exact gammaEvolutionLocal
     (I := I) S (coordInv (I := I) S x₀)
     (coordinateFrameAt (I := I) x₀)
     (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
@@ -993,7 +993,7 @@ theorem coordGammaEvol
         nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀) t x d a b)
     (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))
     (coordInvLocal (I := I) S x₀)
-    (coordInvEvol (I := I) S hS x₀)
+    (coordInvEvolution (I := I) S hS x₀)
     hmetric
     (metricCovDerivDerivativeIsRicciFlowInFrame_neg_two
       (M := M)
@@ -1124,19 +1124,19 @@ theorem coordGammaRhsMd
           (fun y : M =>
             nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀)
               t y i j l) x :=
-      coordNablaRegOn (I := I) S x₀ t x hx i j l
+      coordNablaRegularityOn (I := I) S x₀ t x hx i j l
     have h₂ :
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M =>
             nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀)
               t y j i l) x :=
-      coordNablaRegOn (I := I) S x₀ t x hx j i l
+      coordNablaRegularityOn (I := I) S x₀ t x hx j i l
     have h₃ :
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M =>
             nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀)
               t y l i j) x :=
-      coordNablaRegOn (I := I) S x₀ t x hx l i j
+      coordNablaRegularityOn (I := I) S x₀ t x hx l i j
     have h := hg.mul (((h₁.neg).sub h₂).add h₃)
     change MDifferentiableAt I 𝓘(Real, Real)
       (fun y : M => coordInv (I := I) S x₀ t y k l *
@@ -1325,7 +1325,7 @@ theorem coordGammaMix
         (M := M) (coordInv (I := I) S x₀)
         (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))) := by
   intro i j k
-  refine fixedBaseOnRegLocal
+  refine fixedBaseOnRegularityLocal
     (I := I) (timeSet := D.carrier) (regularSet := D.regular)
     (u := coordinateFrameSet (I := I) x₀)
     (F := fun s x =>
@@ -1369,7 +1369,7 @@ theorem coordGammaBack
       tau := by
   have hmetric := coordMetricMix (I := I) S hS x₀
     (coordMetricDeriv (I := I) S hS x₀)
-  have hforward := coordGammaEvol (I := I) S hS x₀ hmetric
+  have hforward := coordGammaEvolution (I := I) S hS x₀ hmetric
     ⟨T - tau, ht⟩ x hx i j k
   have hforwardAt := hforward.hasDerivAt (D.regular_mem_nhds ht)
   have hsub : HasDerivAt (fun s : Real ↦ T - s) (-1) tau := by

@@ -39,7 +39,7 @@ theorem lapDiffA2_cont
     (hreg : ∀ s ∈ S, (T : Real) - s ∈ D.regular)
     (hsmall : ∀ s ∈ S,
       (Module.finrank Real E : Real) *
-          HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+          CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
             (g_fam ((T : Real) - s))
             (g_fam (T : Real)) (g_fam (T : Real)) ≤
         (1 / 2 : Real)) :
@@ -54,7 +54,7 @@ theorem lapDiffA2_cont
   let K : D.RegularTime := ⟨(T : Real) - s0, hreg s0 hs0⟩
   let k : SmoothRiemannianMetric I M := g_fam (K : Real)
   let rhoK : Real → Real := fun s =>
-    HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+    CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
       (g_fam ((T : Real) - s)) k k
   have hshiftK :
       Tendsto (fun s : Real => (T : Real) - s)
@@ -65,7 +65,7 @@ theorem lapDiffA2_cont
         (tendsto_id : Tendsto (fun s : Real => s) (nhds s0) (nhds s0)))
   have hrhoK : Tendsto rhoK (nhds s0) (nhds 0) := by
     refine Filter.Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl) ?_
-    exact (HCGCompactness.metric_c1_tendsto (I := I) g_fam hG K).comp hshiftK
+    exact (CheegerGromovCompactness.metric_c1_tendsto (I := I) g_fam hG K).comp hshiftK
   obtain ⟨C, hC, hpair⟩ :=
     lapDiff_pair_norm (I := I) (M := M) q k
   change Tendsto
@@ -94,7 +94,7 @@ theorem lapDiffA2_cont
   have hqk := hsmall s0 hs0
   have hkh :
       (Module.finrank Real E : Real) *
-          HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+          CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
             (g_fam ((T : Real) - s)) k k ≤
         (1 / 2 : Real) := by
     simpa only [rhoK] using hks.le
@@ -125,7 +125,7 @@ theorem lapDiffA20_short
     ContinuousLinearMap.toSeminormedAddCommGroup
   let q : SmoothRiemannianMetric I M := g_fam (T : Real)
   let rhoQ : Real → Real := fun s =>
-    HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+    CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
       (g_fam ((T : Real) - s)) q q
   have hshift :
       Tendsto (fun s : Real => (T : Real) - s)
@@ -135,7 +135,7 @@ theorem lapDiffA20_short
         (tendsto_id : Tendsto (fun s : Real => s) (nhds 0) (nhds 0)))
   have hrhoQ : Tendsto rhoQ (nhds 0) (nhds 0) := by
     refine Filter.Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl) ?_
-    exact (HCGCompactness.metric_c1_tendsto (I := I) g_fam hG T).comp hshift
+    exact (CheegerGromovCompactness.metric_c1_tendsto (I := I) g_fam hG T).comp hshift
   have hreg :
       ∀ᶠ s in nhds (0 : Real), (T : Real) - s ∈ D.regular :=
     hshift.eventually (D.regular_isOpen.mem_nhds T.2)

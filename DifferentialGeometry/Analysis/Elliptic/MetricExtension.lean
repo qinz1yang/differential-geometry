@@ -99,12 +99,12 @@ private lemma mapsTo_chart_symm_baseSet (α : M) :
       (trivializationAt E (TangentSpace I) α).baseSet := by
   intro y hy
   change (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈ (chartAt H α).source
-  have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
+  have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
     toEuclidean_symm_mem_target (I := I) hy
-  have h_src : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+  have h_source : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
       (extChartAt I α).source :=
-    (extChartAt I α).map_target h_tgt
-  rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_src
+    (extChartAt I α).map_target h_target
+  rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_source
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gramOnEuclid_contDiffOn
@@ -185,13 +185,13 @@ lemma invGramOnEuclid_symm_of_mem
     invGramOnEuclid (I := I) g α i j y =
       invGramOnEuclid (I := I) g α j i y := by
   set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hx_def
-  have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
+  have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
     toEuclidean_symm_mem_target (I := I) hy
-  have h_src : x ∈ (extChartAt I α).source :=
-    (extChartAt I α).map_target h_tgt
+  have h_source : x ∈ (extChartAt I α).source :=
+    (extChartAt I α).map_target h_target
   have h_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     change x ∈ (chartAt H α).source
-    rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_src
+    rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_source
   have hHerm : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).IsHermitian :=
     DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_isHermitian (I := I) g α x
   have hHermInv : (chartInvGramMatrix (I := I) g α x).IsHermitian := by
@@ -219,13 +219,13 @@ lemma densityOnEuclid_pos
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     0 < densityOnEuclid (I := I) g α y := by
   set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hx_def
-  have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
+  have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
     toEuclidean_symm_mem_target (I := I) hy
-  have h_src : x ∈ (extChartAt I α).source :=
-    (extChartAt I α).map_target h_tgt
+  have h_source : x ∈ (extChartAt I α).source :=
+    (extChartAt I α).map_target h_target
   have h_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     change x ∈ (chartAt H α).source
-    rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_src
+    rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_source
   exact chartDensity_pos (I := I) g α h_base
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -243,13 +243,13 @@ lemma invGramOnEuclid_posDef
     (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
         invGramOnEuclid (I := I) g α i j y)).PosDef := by
   set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hx_def
-  have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
+  have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
     toEuclidean_symm_mem_target (I := I) hy
-  have h_src : x ∈ (extChartAt I α).source :=
-    (extChartAt I α).map_target h_tgt
+  have h_source : x ∈ (extChartAt I α).source :=
+    (extChartAt I α).map_target h_target
   have h_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     change x ∈ (chartAt H α).source
-    rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_src
+    rwa [extChartAt_source_eq_chartAt_source (I := I)] at h_source
   have hG : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).PosDef :=
     DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α h_base
   have hGinv : (chartInvGramMatrix (I := I) g α x).PosDef := by
@@ -407,7 +407,7 @@ private lemma rayleighInt_continuousOn
     h_xi_j.continuousOn.comp h_snd (Set.mapsTo_univ _ _)
   exact (h_a.mul h_xi_i_p).mul h_xi_j_p
 
-lemma exists_unif_lower_bound_on_compact
+lemma exists_uniform_lower_bound_on_compact
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
@@ -577,19 +577,19 @@ lemma extendedMatrix_symm_off_tsupport
 omit [NeZero (Module.finrank ℝ E)] in
 lemma extendedMatrix_symm
     (g : SmoothRiemannianMetric I M) (α : M) {χ : EuclN → ℝ}
-    (hχ_supp : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hχ_support : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) :
     extendedMatrix (I := I) g α χ i j y =
       extendedMatrix (I := I) g α χ j i y := by
   by_cases hy : y ∈ tsupport χ
-  · exact extendedMatrix_symm_of_mem (I := I) g α χ i j (hχ_supp hy)
+  · exact extendedMatrix_symm_of_mem (I := I) g α χ i j (hχ_support hy)
   · exact extendedMatrix_symm_off_tsupport (I := I) g α i j hy
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma extendedMatrix_contDiff
     (g : SmoothRiemannianMetric I M) (α : M) [I.Boundaryless]
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
-    (hχ_supp : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hχ_support : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E)) :
     ContDiff ℝ (⊤ : ℕ∞) (extendedMatrix (I := I) g α χ i j) := by
   set f : EuclN → ℝ := extendedMatrix (I := I) g α χ i j with hf_def
@@ -601,7 +601,7 @@ lemma extendedMatrix_contDiff
     refine Set.eq_univ_of_forall ?_
     intro y
     by_cases hy : y ∈ tsupport χ
-    · exact Or.inl (hχ_supp hy)
+    · exact Or.inl (hχ_support hy)
     · exact Or.inr hy
   have hf_on_s : ContDiffOn ℝ (⊤ : ℕ∞) f s := by
     change ContDiffOn ℝ (⊤ : ℕ∞) (fun y =>
@@ -729,7 +729,7 @@ lemma extendedMatrix_coercive_on_chart
     (hχ_range : Set.range χ ⊆ Set.Icc (0 : ℝ) 1)
     {y : EuclN}
     {lamK : ℝ}
-    (h_unif : ∀ ξ : EuclN,
+    (h_uniform : ∀ ξ : EuclN,
         lamK * ‖ξ‖ ^ 2 ≤
           ⟪ξ, DeGiorgi.matMulE
             (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
@@ -747,12 +747,12 @@ lemma extendedMatrix_coercive_on_chart
   have h_one_minus_chi_nn : 0 ≤ 1 - χ y := by linarith
   have h_decomp := extendedMatrix_quad_decomp (I := I) g α χ y ξ
   rw [h_decomp]
-  have h_unif_ξ := h_unif ξ
+  have h_uniform_ξ := h_uniform ξ
   have h_first : χ y * (lamK * ‖ξ‖ ^ 2) ≤
       χ y * ⟪ξ, DeGiorgi.matMulE
         (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
           weightedInvGramOnEuclid (I := I) g α i j y)) ξ⟫_ℝ :=
-    mul_le_mul_of_nonneg_left h_unif_ξ hχ_nn
+    mul_le_mul_of_nonneg_left h_uniform_ξ hχ_nn
   have h_norm_sq_nn : 0 ≤ ‖ξ‖ ^ 2 := sq_nonneg _
   have h_min_le : min (1 : ℝ) lamK ≤ χ y * lamK + (1 - χ y) := by
     have h_min_le_lamK : min (1 : ℝ) lamK ≤ lamK := min_le_right _ _
@@ -809,9 +809,9 @@ lemma extendedMatrix_coercive
     (g : SmoothRiemannianMetric I M) (α : M)
     {χ : EuclN → ℝ}
     (hχ_range : Set.range χ ⊆ Set.Icc (0 : ℝ) 1)
-    (hχ_supp : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hχ_support : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {lamK : ℝ} (hlamK_le : lamK ≤ 1)
-    (h_unif : ∀ y ∈ tsupport χ, ∀ ξ : EuclN,
+    (h_uniform : ∀ y ∈ tsupport χ, ∀ ξ : EuclN,
         lamK * ‖ξ‖ ^ 2 ≤
           ⟪ξ, DeGiorgi.matMulE
             (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
@@ -823,15 +823,15 @@ lemma extendedMatrix_coercive
           extendedMatrix (I := I) g α χ i j y)) ξ⟫_ℝ := by
   classical
   by_cases hy : y ∈ tsupport χ
-  · have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hχ_supp hy
-    have h_unif_y : ∀ ξ : EuclN, lamK * ‖ξ‖ ^ 2 ≤
+  · have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hχ_support hy
+    have h_uniform_y : ∀ ξ : EuclN, lamK * ‖ξ‖ ^ 2 ≤
         ⟪ξ, DeGiorgi.matMulE
           (Matrix.of (fun i j : Fin (Module.finrank ℝ E) =>
             weightedInvGramOnEuclid (I := I) g α i j y)) ξ⟫_ℝ :=
-      fun ξ => h_unif y hy ξ
+      fun ξ => h_uniform y hy ξ
     have h_min_eq : min (1 : ℝ) lamK = lamK := min_eq_right hlamK_le
     have h := extendedMatrix_coercive_on_chart (I := I) g α
-      (χ := χ) hχ_range (y := y) h_unif_y ξ
+      (χ := χ) hχ_range (y := y) h_uniform_y ξ
     rw [h_min_eq] at h
     exact h
   · have h_eq : ⟪ξ, DeGiorgi.matMulE
@@ -880,7 +880,7 @@ theorem exists_smooth_metric_extension
     hK'_compact.of_isClosed_subset isClosed_closure h_closure_Ω'_in_K'
   have h_closure_in_chart : closure Ω' ⊆ chartTargetEuclid (I := I) (M := M) α :=
     h_closure_Ω'_in_K'.trans h_K'_in_chart
-  obtain ⟨χ, hχ_smooth, hχ_supp, hχ_one_nhds, hχ_tsupp, hχ_range⟩ :=
+  obtain ⟨χ, hχ_smooth, hχ_support, hχ_one_nhds, hχ_tsupp, hχ_range⟩ :=
     DifferentialGeometry.Analysis.exists_bump_compact
       (K := K) (U := Ω') hK hΩ'_open h_K_in_Ω'
   have hχ_one : ∀ x ∈ K, χ x = 1 := fun _ hx =>
@@ -889,9 +889,9 @@ theorem exists_smooth_metric_extension
     intro y hy
     have h1 : y ∈ Ω' := hχ_tsupp hy
     exact (h_Ω'_in_K'.trans h_K'_in_chart) h1
-  have hχ_tsupp_compact : IsCompact (tsupport χ) := hχ_supp
+  have hχ_tsupp_compact : IsCompact (tsupport χ) := hχ_support
   obtain ⟨lamK0, hlamK0_pos, hlamK0_bound⟩ :=
-    exists_unif_lower_bound_on_compact (I := I) g α hχ_tsupp_compact hχ_tsupp_chart
+    exists_uniform_lower_bound_on_compact (I := I) g α hχ_tsupp_compact hχ_tsupp_chart
   set lamK : ℝ := min 1 lamK0 with hlamK_def
   have hlamK_pos : 0 < lamK := lt_min one_pos hlamK0_pos
   have hlamK_le_one : lamK ≤ 1 := min_le_left _ _

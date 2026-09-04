@@ -45,14 +45,14 @@ theorem chartH2_localBound_of_laplacianDomain
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : HasCompactSupport η)
+    (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set EuclN} (hΩ' : IsOpen Ω')
     (hΩ'_chart : closure Ω' ⊆ chartTargetEuclid (I := I) (M := M) α)
     (hΩ'_compact : IsCompact (closure Ω'))
     (hη_in_Ω' : tsupport η ⊆ Ω')
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ 1 →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ 1 →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_open : IsOpen Ω'')
@@ -76,8 +76,8 @@ theorem chartH2_localBound_of_laplacianDomain
   obtain ⟨MBound, hM_nn, h_uniform_bd⟩ :=
     uniform_diffQuot_weakPartial_bound
       (I := I) (M := M) (g := g) (α := α) D
-      hη hη_supp hη_range hN h_fderiv_eta
-      hΩ' hΩ'_chart hΩ'_compact hη_in_Ω' (R₀ := 1) one_pos hh_supp_in_Ω'
+      hη hη_support hη_range hN h_fderiv_eta
+      hΩ' hΩ'_chart hΩ'_compact hη_in_Ω' (R₀ := 1) one_pos hh_support_in_Ω'
       hη_one_on_Ω'' hΩ''_open.measurableSet
   have hh₀ : (0 : ℝ) < 1 := by norm_num
   have h_h2 :=

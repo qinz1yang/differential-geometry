@@ -39,20 +39,20 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma nirenbergTestFunction_tsupport_in_thickening
     (k : Fin (Module.finrank ℝ E)) (h : ℝ) {η : EuclN → ℝ}
-    {K_0 : Set EuclN} (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {K_0 : Set EuclN} (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (u : EuclN → ℝ) :
     tsupport (nirenbergTestFunction k h η u) ⊆
       Metric.cthickening |h| K_0 := by
   classical
-  have h_supp := nirenbergTestFunction_tsupport_subset
+  have h_support := nirenbergTestFunction_tsupport_subset
     (d := Module.finrank ℝ E) (η := η) k h u
-  refine h_supp.trans ?_
+  refine h_support.trans ?_
   intro x hx
   rcases hx with hx_in | hx_trans
-  · have hx_K_0 : x ∈ K_0 := hη_supp_in_K_0 hx_in
+  · have hx_K_0 : x ∈ K_0 := hη_support_in_K_0 hx_in
     exact Metric.self_subset_cthickening _ hx_K_0
   · have hy_K_0 : x + (-h) • EuclideanSpace.single k 1 ∈ K_0 :=
-      hη_supp_in_K_0 hx_trans
+      hη_support_in_K_0 hx_trans
     have h_dist : dist x (x + (-h) • EuclideanSpace.single k 1) ≤ |h| := by
       have h_norm_eq : dist x (x + (-h) • EuclideanSpace.single k 1) = |h| := by
         rw [dist_eq_norm]
@@ -70,13 +70,13 @@ omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma nirenbergTestFunction_tsupport_in_chartTarget
     {α : M}
     (k : Fin (Module.finrank ℝ E)) (h : ℝ) {η : EuclN → ℝ}
-    {K_0 : Set EuclN} (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {K_0 : Set EuclN} (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (h_thick :
       Metric.cthickening |h| K_0 ⊆ chartTargetEuclid (I := I) (M := M) α)
     (u : EuclN → ℝ) :
     tsupport (nirenbergTestFunction k h η u) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-  (nirenbergTestFunction_tsupport_in_thickening (E := E) k h hη_supp_in_K_0
+  (nirenbergTestFunction_tsupport_in_thickening (E := E) k h hη_support_in_K_0
       u).trans h_thick
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -608,8 +608,8 @@ lemma nirenbergTestFunction_smooth_admissible
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (hu_chart_smooth : ContDiff ℝ (⊤ : ℕ∞) D.uChart)
     {K_0 : Set EuclN}
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     (h : ℝ)
     (h_thick : Metric.cthickening |h| K_0 ⊆
@@ -629,9 +629,9 @@ lemma nirenbergTestFunction_smooth_admissible
     · exact NirenbergTestFunction.contDiff_nirenbergTestFunction
         (d := Module.finrank ℝ E) hη hu_chart_smooth k hh
   · exact hasCompactSupport_nirenbergTestFunction
-      (d := Module.finrank ℝ E) hη_supp k h
+      (d := Module.finrank ℝ E) hη_support k h
   · exact nirenbergTestFunction_tsupport_in_chartTarget (E := E) (I := I) (M := M)
-      (α := α) k h hη_supp_in_K_0 h_thick D.uChart
+      (α := α) k h hη_support_in_K_0 h_thick D.uChart
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma variational_identity_at_nirenbergTestFunction_smooth_uChart
@@ -640,8 +640,8 @@ lemma variational_identity_at_nirenbergTestFunction_smooth_uChart
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (hu_chart_smooth : ContDiff ℝ (⊤ : ℕ∞) D.uChart)
     {K_0 : Set EuclN}
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E)) (h : ℝ)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α) :
@@ -664,11 +664,11 @@ lemma variational_identity_at_nirenbergTestFunction_smooth_uChart
           nirenbergTestFunction
             (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN) := by
-  obtain ⟨h_v_smooth, h_v_supp, h_v_tsupp⟩ :=
+  obtain ⟨h_v_smooth, h_v_support, h_v_tsupp⟩ :=
     nirenbergTestFunction_smooth_admissible (I := I) (M := M) (α := α)
-      D hu_chart_smooth hη hη_supp hη_supp_in_K_0 k h h_thick
+      D hu_chart_smooth hη hη_support hη_support_in_K_0 k h h_thick
   exact D.variational_identity (nirenbergTestFunction
-    (d := Module.finrank ℝ E) k h η D.uChart) h_v_smooth h_v_supp h_v_tsupp
+    (d := Module.finrank ℝ E) k h η D.uChart) h_v_smooth h_v_support h_v_tsupp
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma smooth_uChart_variational_lhs_identity
@@ -677,8 +677,8 @@ lemma smooth_uChart_variational_lhs_identity
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (hu_chart_smooth : ContDiff ℝ (⊤ : ℕ∞) D.uChart)
     {K_0 : Set EuclN}
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E)) (h : ℝ)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α) :
@@ -702,8 +702,8 @@ lemma smooth_uChart_variational_lhs_identity
             (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN) := by
   have h_var := variational_identity_at_nirenbergTestFunction_smooth_uChart
-    (I := I) (M := M) (α := α) D hu_chart_smooth hη hη_supp
-    hη_supp_in_K_0 k h h_thick
+    (I := I) (M := M) (α := α) D hu_chart_smooth hη hη_support
+    hη_support_in_K_0 k h h_thick
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] in

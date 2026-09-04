@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology
 open Bundle Manifold
@@ -111,7 +111,7 @@ theorem HasStageJetData.inv_cov_comp_tail
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
     let Q : LiveSlot L inp.pack r → Nat → Nat →
         E → (E →L[Real] E →L[Real] Real) := fun alpha k l w =>
-      _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+      _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (B alpha k (G alpha k l w), fderiv Real (G alpha k l) w)
     let Gamma : LiveSlot L inp.pack r → Nat → E →
         Fin (Module.finrank Real E) → Fin (Module.finrank Real E) →
@@ -204,7 +204,7 @@ theorem HasStageJetData.inv_cov_comp_tail
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
   let Q : LiveSlot L inp.pack r → Nat → Nat →
       E → (E →L[Real] E →L[Real] Real) := fun alpha k l w =>
-    _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (B alpha k (G alpha k l w), fderiv Real (G alpha k l) w)
   let Gamma : LiveSlot L inp.pack r → Nat → E →
       Fin (Module.finrank Real E) → Fin (Module.finrank Real E) →
@@ -335,10 +335,10 @@ theorem HasStageJetData.inv_cov_comp_tail
             (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))).symm
           W (Lphi.hatSourceBall inp.decay P S (kn n)) := by
       simpa only [V, W, Lphi] using hstay
-    have hAconvW : MapCInfConvOnCompacts W
+    have hAconvW : MapCInfConvergenceOnCompacts W
         (fun n => A alpha (kn n) (ln n)) id := by
       simpa only [A, Lphi] using
-        HasStageJetData.chart_conv (I := I) inp P L hr phi hphi
+        HasStageJetData.chart_convergence (I := I) inp P L hr phi hphi
           U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha W hWint
           kn ln hkn hln hstay'
@@ -346,7 +346,7 @@ theorem HasStageJetData.inv_cov_comp_tail
     have hKcompact : IsCompact K := isCompact_closedBall zInf (q / 2)
     have hKV : K ⊆ V := Metric.closedBall_subset_ball (by linarith)
     obtain ⟨Vout, hVoutOpen, hVoutCompact, hKVout, hGconv, hGcd⟩ :=
-      HasStageJetData.inv_chart_conv (I := I) inp P L hr phi hphi
+      HasStageJetData.inv_chart_convergence (I := I) inp P L hr phi hphi
         hcomplete hconn U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, hbase⟩ S T Vrad hST hroom hVr
         alpha V W K hVopen Metric.isOpen_ball hKcompact hKV hVW hWint
@@ -371,7 +371,7 @@ theorem HasStageJetData.inv_cov_comp_tail
     have hOcompact : IsCompact (closure O) :=
       hVoutCompact.of_isClosed_subset isClosed_closure
         (hOclosureVout.trans subset_closure)
-    have hGconvO : MapCInfConvOnCompacts O
+    have hGconvO : MapCInfConvergenceOnCompacts O
         (fun n => G alpha (kn n) (ln n)) id := by
       intro C hC hCO p'
       exact hGconv C hC (hCO.trans hOsubVout) p'
@@ -392,7 +392,7 @@ theorem HasStageJetData.inv_cov_comp_tail
     obtain ⟨Nsm, hNsm⟩ := eventually_atTop.mp (hGcdO.and hGmapO)
     let Gp : Nat → E → E := fun n =>
       if Nsm ≤ n then G alpha (kn n) (ln n) else id
-    have hGpconv : MapCInfConvOnCompacts O Gp id := by
+    have hGpconv : MapCInfConvergenceOnCompacts O Gp id := by
       apply hGconvO.congr_eventually hOopen
       · filter_upwards [eventually_atTop.2 ⟨Nsm, fun n hn => hn⟩] with n hn
         intro w _hw
@@ -419,12 +419,12 @@ theorem HasStageJetData.inv_cov_comp_tail
       exact interior_subset.trans (hC01.trans
         (interior_subset.trans hC1phase))
     have hOphase : O ⊆ Dphase := hOD.trans hDphase
-    have hBkconvD : MapCInfConvOnCompacts D
+    have hBkconvD : MapCInfConvergenceOnCompacts D
         (fun n => B alpha (kn n)) (gInf alpha) := by
       intro C hC hCD p'
       exact (hBconv.comp_tendsto_atTop hkn) C hC
         (hCD.trans hDphase) p'
-    have hBlconvO : MapCInfConvOnCompacts O
+    have hBlconvO : MapCInfConvergenceOnCompacts O
         (fun n => B alpha (ln n)) (gInf alpha) := by
       intro C hC hCO p'
       exact (hBconv.comp_tendsto_atTop hln) C hC
@@ -473,20 +473,20 @@ theorem HasStageJetData.inv_cov_comp_tail
       intro v
       simpa only [pow_two, mul_assoc] using (hgEquiv w (hOphase hw) v).1
     let Qp : Nat → E → (E →L[Real] E →L[Real] Real) := fun n w =>
-      _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+      _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (B alpha (kn n) (Gp n w), fderiv Real (Gp n) w)
-    have hQraw := MapCInfConvOnCompacts.pullbackForm_comp_fderiv
+    have hQraw := MapCInfConvergenceOnCompacts.pullbackForm_comp_fderiv
       hOopen isOpen_interior hGpconv hBkconvD hGpcd
       ((contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn)
       hBkcd hgInfD hOD hGpmap
-    have hQpconv : MapCInfConvOnCompacts O Qp (gInf alpha) := by
+    have hQpconv : MapCInfConvergenceOnCompacts O Qp (gInf alpha) := by
       apply hQraw.congr hOopen
       · intro n
         exact Set.eqOn_refl (Qp n) O
       · intro w _hw
         ext u v
         simp only [
-          _root_.DifferentialGeometry.HCGCompactness.pullbackForm_apply,
+          _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm_apply,
           fderiv_id, ContinuousLinearMap.id_apply, id_eq]
     have hQpcd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (Qp n) O := by
       intro n
@@ -500,13 +500,13 @@ theorem HasStageJetData.inv_cov_comp_tail
         exact (((hGpcd n).contDiffAt (hOopen.mem_nhds hw)).fderiv_right
           (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt
       have hpull :=
-        (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
+        (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm.contDiff
           (E := E) (F := E)).comp_contDiffOn (hBG.prodMk hDG)
       change ContDiffOn Real (∞ : WithTop ℕ∞)
-        (_root_.DifferentialGeometry.HCGCompactness.pullbackForm ∘
+        (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm ∘
           fun w => (B alpha (kn n) (Gp n w), fderiv Real (Gp n) w)) O
       exact hpull
-    have htower := metric_tower_conv hOopen e
+    have htower := metric_tower_convergence hOopen e
       (fun n => B alpha (ln n)) Qp (gInf alpha)
       hBlconvO hQpconv hBlcd hQpcd hgInfO hBlco hgInfCo (a : Nat)
     obtain ⟨Ntower, hNtower⟩ :=
@@ -627,5 +627,5 @@ theorem HasStageJetData.inv_cov_comp_tail
   simpa only [chiK, Yk, Lphi, afin] using
     hNaa alpha afin k hkAfin l hlAfin z hzbuffer hzSource slots
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

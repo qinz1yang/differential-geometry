@@ -46,7 +46,7 @@ lemma iteratedFDeriv_tensorChartComponentRaw_comp_symm_continuousOn
           y)
       ((extChartAt I α).target) := by
   classical
-  have hraw_src : ContMDiffOn I 𝓘(ℝ) ∞
+  have hraw_source : ContMDiffOn I 𝓘(ℝ) ∞
       (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx)
       ((chartAt H α).source) :=
     tensorChartComponentRaw_contMDiffOn_chart_source (I := I) (M := M)
@@ -54,7 +54,7 @@ lemma iteratedFDeriv_tensorChartComponentRaw_comp_symm_continuousOn
   have hraw_extsrc : ContMDiffOn I 𝓘(ℝ) ∞
       (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx)
       ((extChartAt I α).source) := by
-    rw [extChartAt_source]; exact hraw_src
+    rw [extChartAt_source]; exact hraw_source
   have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
       (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
   have hmaps : Set.MapsTo (extChartAt I α).symm (extChartAt I α).target
@@ -160,7 +160,7 @@ theorem measurable_tensorChartComponentRaw_iteratedFDeriv_normSq
       ((tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx) ∘
         (extChartAt I α).symm)
       (extChartAtExt (I := I) α b) with hf_def
-  have hf_cont_src : ContinuousOn f ((chartAt H α).source) := by
+  have hf_cont_source : ContinuousOn f ((chartAt H α).source) := by
     rw [hf_def]
     exact comp_extChartAtExt_continuousOn_chart_source
       (I := I) (M := M) g r s T₀ α Idx Jdx j
@@ -172,7 +172,7 @@ theorem measurable_tensorChartComponentRaw_iteratedFDeriv_normSq
     with hf_pw_def
   have hf_pw_meas : Measurable f_pw := by
     rw [hf_pw_def]
-    exact ContinuousOn.measurable_piecewise hf_cont_src hzero_cont hsrc_meas
+    exact ContinuousOn.measurable_piecewise hf_cont_source hzero_cont hsrc_meas
   set c : E [×j]→L[ℝ] ℝ :=
     iteratedFDeriv ℝ j
       ((tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx) ∘
@@ -197,7 +197,7 @@ theorem measurable_tensorChartComponentRaw_iteratedFDeriv_normSq
   rw [h_target_eq]
   have hf_norm_sq_cont : ContinuousOn (fun b : M => ‖f b‖ ^ 2)
       ((chartAt H α).source) :=
-    (hf_cont_src.norm).pow 2
+    (hf_cont_source.norm).pow 2
   have hconst_cont : ContinuousOn (fun _ : M => ‖c‖ ^ 2)
       ((chartAt H α).source)ᶜ := continuous_const.continuousOn
   exact ContinuousOn.measurable_piecewise hf_norm_sq_cont hconst_cont hsrc_meas

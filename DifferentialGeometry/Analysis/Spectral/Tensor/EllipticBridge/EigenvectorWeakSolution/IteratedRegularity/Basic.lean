@@ -40,7 +40,7 @@ private lemma memWkp_succ_of_chosenWeakPartial_memWkp
     (h_partials : ∀ i : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) m 2
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i u Ω) Ω) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) (m + 1) 2 u Ω := by
@@ -84,7 +84,7 @@ theorem tensorChartComponent_memWkp_succ_of_diffData
     (h_w1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 u Ω'')
     {v : Fin (Module.finrank ℝ E) → EuclN → ℝ}
     (h_diff_ae : ∀ l : Fin (Module.finrank ℝ E),
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         2 l u Ω'' =ᵐ[(volume : Measure EuclN).restrict Ω''] v l)
     (h_diff_memWkp : ∀ l : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp

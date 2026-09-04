@@ -156,14 +156,14 @@ theorem chartInvGramMatrix_l1Sum_isBounded_on_pouTsupport
   have hKα_sub_base :
       Kα ⊆ (trivializationAt E (TangentSpace I) α).baseSet :=
     pouTsupport_subset_baseSet (I := I) (M := M) α
-  have hKα_sub_src : Kα ⊆ (chartAt H α).source := by
+  have hKα_sub_source : Kα ⊆ (chartAt H α).source := by
     have h_set_eq : ((trivializationAt E (TangentSpace I) α).baseSet : Set M)
         = (chartAt H α).source :=
       trivializationAt_baseSet_eq_chartAt_source (I := I) (M := M) α
     rw [← h_set_eq]
     exact hKα_sub_base
   rcases chartInvGramMatrix_l1Sum_isBounded_on_compact
-      (I := I) (M := M) g α hKα_compact hKα_sub_src with ⟨C, hC_pos, hC_le⟩
+      (I := I) (M := M) g α hKα_compact hKα_sub_source with ⟨C, hC_pos, hC_le⟩
   exact ⟨C, hC_pos, fun b hb => hC_le b hb⟩
 
 end TensorSpectral

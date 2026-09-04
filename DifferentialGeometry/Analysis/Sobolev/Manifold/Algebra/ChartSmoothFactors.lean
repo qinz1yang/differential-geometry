@@ -120,9 +120,9 @@ lemma exists_chart_cutoff_with_data
       (∀ x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
         I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ), b x = 1) ∧
       tsupport b ⊆ (chartAt H α).source := by
-  obtain ⟨b, hb_smooth, hb_range, hb_one_on_tsupp, hb_supp⟩ :=
+  obtain ⟨b, hb_smooth, hb_range, hb_one_on_tsupp, hb_support⟩ :=
     exists_chart_cutoff (I := I) (M := M) α
-  refine ⟨b, hb_smooth, ?_, hb_one_on_tsupp, hb_supp⟩
+  refine ⟨b, hb_smooth, ?_, hb_one_on_tsupp, hb_support⟩
   intro x
   exact hb_range ⟨x, rfl⟩
 
@@ -163,16 +163,16 @@ lemma chosenWeakPartial_eq_classical_ae
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     {f : EuclN → ℝ}
     (hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f) (hf_compact : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ Ω) (i : Fin (Module.finrank ℝ E)) :
+    (hf_support : tsupport f ⊆ Ω) (i : Fin (Module.finrank ℝ E)) :
     (fun z : EuclN => (fderiv ℝ f z) (EuclideanSpace.single i (1 : ℝ)))
       =ᵐ[volume.restrict Ω]
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i f Ω := by
   classical
   have hf_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 p f Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
-      (d := Module.finrank ℝ E) hΩ_open hf_smooth hf_compact hf_supp hp_one 1
+      (d := Module.finrank ℝ E) hΩ_open hf_smooth hf_compact hf_support hp_one 1
   have hf_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) p f Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hf_mem
   have h_classical_isWeak :
@@ -182,24 +182,24 @@ lemma chosenWeakPartial_eq_classical_ae
       hΩ_open (hf_smooth.of_le (by norm_cast))
   have h_chosen_isWeak :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) p i f Ω) f Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       hf_W1p i
-  have h_classical_loc : LocallyIntegrable
+  have h_classical_local : LocallyIntegrable
       (fun z : EuclN => (fderiv ℝ f z) (EuclideanSpace.single i (1 : ℝ)))
       (volume.restrict Ω) := by
     have h_cont : Continuous
         (fun z : EuclN => (fderiv ℝ f z) (EuclideanSpace.single i (1 : ℝ))) :=
       ((hf_smooth.continuous_fderiv (by simp)).clm_apply continuous_const)
     exact h_cont.locallyIntegrable.mono_measure Measure.restrict_le_self
-  have h_chosen_loc : LocallyIntegrable
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have h_chosen_local : LocallyIntegrable
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i f Ω) (volume.restrict Ω) :=
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       hf_W1p i).locallyIntegrable hp_one
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq (Ω := Ω) hΩ_open
-    h_classical_isWeak h_chosen_isWeak h_classical_loc h_chosen_loc
+    h_classical_isWeak h_chosen_isWeak h_classical_local h_chosen_local
 
 noncomputable def liftedPou
     [T2Space M] [SigmaCompactSpace M] (α : M) : EuclN → ℝ :=
@@ -278,12 +278,12 @@ lemma smoothPushed_smooth
         : C^∞⟮I, M; ℝ⟯) x * u x) :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯).contMDiff.mul hu
-  have hpou_u_supp : tsupport (fun x : M =>
+  have hpou_u_support : tsupport (fun x : M =>
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u x) ⊆ (chartAt H α).source :=
     DifferentialGeometry.Analysis.Sobolev.Chart.tsupport_chartAtlasPOU_mul_subset_chartAt_source
       (I := I) (M := M) α u
-  exact contDiff_smoothExtension (I := I) (M := M) α hpou_u_smooth hpou_u_supp
+  exact contDiff_smoothExtension (I := I) (M := M) α hpou_u_smooth hpou_u_support
 
 lemma smoothPushed_hasCompactSupport
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
@@ -291,55 +291,55 @@ lemma smoothPushed_hasCompactSupport
     HasCompactSupport (smoothPushed (I := I) (M := M) α u) := by
   classical
   unfold smoothPushed
-  have hpou_u_supp : tsupport (fun x : M =>
+  have hpou_u_support : tsupport (fun x : M =>
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u x) ⊆ (chartAt H α).source :=
     DifferentialGeometry.Analysis.Sobolev.Chart.tsupport_chartAtlasPOU_mul_subset_chartAt_source
       (I := I) (M := M) α u
-  exact hasCompactSupport_smoothExtension (I := I) (M := M) α hpou_u_supp
+  exact hasCompactSupport_smoothExtension (I := I) (M := M) α hpou_u_support
 
 lemma leftSmoothFactor_smooth
     [CompactSpace M] [I.Boundaryless]
     (α : M) {b u : M → ℝ}
     (hb : ContMDiff I 𝓘(ℝ, ℝ) ∞ b) (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
-    (hb_supp : tsupport b ⊆ (chartAt H α).source) :
+    (hb_support : tsupport b ⊆ (chartAt H α).source) :
     ContDiff ℝ ∞ (leftSmoothFactor (I := I) (M := M) α b u) := by
   classical
   unfold leftSmoothFactor
   have hbu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M => b x * u x) := hb.mul hu
-  have hbu_supp : tsupport (fun x : M => b x * u x) ⊆ (chartAt H α).source := by
+  have hbu_support : tsupport (fun x : M => b x * u x) ⊆ (chartAt H α).source := by
     have h_eq : (fun x : M => b x * u x) = (fun x : M => b x • u x) := by funext x; rfl
     rw [h_eq]
-    refine (tsupport_smul_subset_left (f := b) (g := u)).trans hb_supp
-  exact contDiff_smoothExtension (I := I) (M := M) α hbu_smooth hbu_supp
+    refine (tsupport_smul_subset_left (f := b) (g := u)).trans hb_support
+  exact contDiff_smoothExtension (I := I) (M := M) α hbu_smooth hbu_support
 
 omit [IsManifold I ∞ M] in
 private lemma leftSmoothFactor_hasCompactSupport
     [CompactSpace M]
     (α : M) {b u : M → ℝ}
-    (hb_supp : tsupport b ⊆ (chartAt H α).source) :
+    (hb_support : tsupport b ⊆ (chartAt H α).source) :
     HasCompactSupport (leftSmoothFactor (I := I) (M := M) α b u) := by
   classical
   unfold leftSmoothFactor
-  have hbu_supp : tsupport (fun x : M => b x * u x) ⊆ (chartAt H α).source := by
+  have hbu_support : tsupport (fun x : M => b x * u x) ⊆ (chartAt H α).source := by
     have h_eq : (fun x : M => b x * u x) = (fun x : M => b x • u x) := by funext x; rfl
     rw [h_eq]
-    refine (tsupport_smul_subset_left (f := b) (g := u)).trans hb_supp
-  exact hasCompactSupport_smoothExtension (I := I) (M := M) α hbu_supp
+    refine (tsupport_smul_subset_left (f := b) (g := u)).trans hb_support
+  exact hasCompactSupport_smoothExtension (I := I) (M := M) α hbu_support
 
 omit [IsManifold I ∞ M] in
 private lemma tsupport_leftSmoothFactor_subset_chartTarget
     [CompactSpace M] (α : M) {b u : M → ℝ}
-    (hb_supp : tsupport b ⊆ (chartAt H α).source) :
+    (hb_support : tsupport b ⊆ (chartAt H α).source) :
     tsupport (leftSmoothFactor (I := I) (M := M) α b u) ⊆
       chartTargetEuclid (I := I) (M := M) α := by
   classical
   unfold leftSmoothFactor
-  have hbu_supp : tsupport (fun x : M => b x * u x) ⊆ (chartAt H α).source := by
+  have hbu_support : tsupport (fun x : M => b x * u x) ⊆ (chartAt H α).source := by
     have h_eq : (fun x : M => b x * u x) = (fun x : M => b x • u x) := by funext x; rfl
     rw [h_eq]
-    refine (tsupport_smul_subset_left (f := b) (g := u)).trans hb_supp
-  exact tsupport_smoothExtension_subset_chartTarget (I := I) (M := M) α hbu_supp
+    refine (tsupport_smul_subset_left (f := b) (g := u)).trans hb_support
+  exact tsupport_smoothExtension_subset_chartTarget (I := I) (M := M) α hbu_support
 
 lemma tsupport_smoothPushed_subset_chartTarget
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
@@ -348,18 +348,18 @@ lemma tsupport_smoothPushed_subset_chartTarget
       chartTargetEuclid (I := I) (M := M) α := by
   classical
   unfold smoothPushed
-  have hpou_u_supp : tsupport (fun x : M =>
+  have hpou_u_support : tsupport (fun x : M =>
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u x) ⊆ (chartAt H α).source :=
     DifferentialGeometry.Analysis.Sobolev.Chart.tsupport_chartAtlasPOU_mul_subset_chartAt_source
       (I := I) (M := M) α u
-  exact tsupport_smoothExtension_subset_chartTarget (I := I) (M := M) α hpou_u_supp
+  exact tsupport_smoothExtension_subset_chartTarget (I := I) (M := M) α hpou_u_support
 
 lemma leftSmoothFactor_memW1p
     [CompactSpace M] [I.Boundaryless]
     (α : M) {b u : M → ℝ}
     (hb : ContMDiff I 𝓘(ℝ, ℝ) ∞ b) (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
-    (hb_supp : tsupport b ⊆ (chartAt H α).source)
+    (hb_support : tsupport b ⊆ (chartAt H α).source)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) p
       (leftSmoothFactor (I := I) (M := M) α b u)
@@ -368,12 +368,12 @@ lemma leftSmoothFactor_memW1p
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hSmooth : ContDiff ℝ ∞ (leftSmoothFactor (I := I) (M := M) α b u) :=
-    leftSmoothFactor_smooth (I := I) (M := M) α hb hu hb_supp
+    leftSmoothFactor_smooth (I := I) (M := M) α hb hu hb_support
   have hCompact : HasCompactSupport (leftSmoothFactor (I := I) (M := M) α b u) :=
-    leftSmoothFactor_hasCompactSupport (I := I) (M := M) α hb_supp
+    leftSmoothFactor_hasCompactSupport (I := I) (M := M) α hb_support
   have h_tsupp : tsupport (leftSmoothFactor (I := I) (M := M) α b u) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-    tsupport_leftSmoothFactor_subset_chartTarget (I := I) (M := M) α hb_supp
+    tsupport_leftSmoothFactor_subset_chartTarget (I := I) (M := M) α hb_support
   exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
     (d := Module.finrank ℝ E) hΩ_open hSmooth hCompact h_tsupp hp_one 1).memW1p
 
@@ -437,11 +437,11 @@ lemma exists_liftedPou_grad_bound
         : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯).contMDiff
-  have hf_supp : tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
+  have hf_support : tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆ (chartAt H α).source :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
   obtain ⟨C, hC_nn, hC⟩ :=
-    smoothExtension_first_order_bound (I := I) (M := M) α hf_smooth hf_supp
+    smoothExtension_first_order_bound (I := I) (M := M) α hf_smooth hf_support
   refine ⟨C, hC_nn, fun y => ?_⟩
   have h := hC 1 (le_refl _) y
   rwa [norm_iteratedFDeriv_one] at h
@@ -535,10 +535,10 @@ lemma liftedPou_mul_leftSmoothFactor_eq_smoothPushed
   by_cases hρ : (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
     : C^∞⟮I, M; ℝ⟯) x = 0
   · rw [hρ]; ring
-  · have hx_supp : x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
+  · have hx_support : x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
         I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
       subset_tsupport _ (Function.mem_support.mpr hρ)
-    have hb_x : b x = 1 := hb_one x hx_supp
+    have hb_x : b x = 1 := hb_one x hx_support
     rw [hb_x]; ring
 
 lemma smoothPushed_mul_leftSmoothFactor_eq_smoothExtension_uv

@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Integral.Connection
@@ -83,7 +83,7 @@ theorem exists_uniform_galerkin_action_all_order_affine_bound
   refine ⟨Ca2, Ca1, hCa2, hCa1, ?_⟩
   intro F c R4 hE4 m
   let T : SmoothCcTensor g 0 2 :=
-    ccTensor02Symm (I := I) (M := M) g (galCoreRep (I := I) (M := M) g R F c)
+    ccTensor02Symm (I := I) (M := M) g (galerkinCoreRep (I := I) (M := M) g R F c)
   have hT : ∀ (x : M) (u v : TangentSpace I x),
       ccTensorBilin (I := I) g T x u v =
         ccTensorBilin (I := I) g T x v u := by
@@ -92,7 +92,7 @@ theorem exists_uniform_galerkin_action_all_order_affine_bound
   have hδg : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) δ := by
     dsimp only [T]
-    exact galRepFib (I := I) (M := M) g hR0 hreal F c
+    exact galerkinRepFib (I := I) (M := M) g hR0 hreal F c
   have hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ :=
     zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR0 hreal
@@ -105,18 +105,18 @@ theorem exists_uniform_galerkin_action_all_order_affine_bound
         smoothCcToTensorHs_norm_order_congr (I := I) (M := M) g (by norm_num) T
       _ ≤ R := by
         simpa only [T] using symm_h2_of_state (I := I) (M := M) g
-          (galCoreRep (I := I) (M := M) g R F c)
-          (galCoreRep_ball (I := I) (M := M) g hR0 F c)
+          (galerkinCoreRep (I := I) (M := M) g R F c)
+          (galerkinCoreRep_ball (I := I) (M := M) g hR0 F c)
   have hT4 : ‖smoothCcToTensorHs (I := I) (M := M) g (4 : ℝ) T‖ ≤ R4 := by
-    exact (galRepHs_le (I := I) (M := M) g 4 hR0 F c).trans hE4
+    exact (galerkinRepHs_le (I := I) (M := M) g 4 hR0 F c).trans hE4
   have hT5 : ‖smoothCcToTensorHs (I := I) (M := M) g (5 : ℝ) T‖ ≤
       Real.sqrt (∑ i ∈ F,
         tensorSobolevWeight (I := I) (M := M) i 5 * (c i) ^ 2) :=
-    galRepHs_le (I := I) (M := M) g 5 hR0 F c
+    galerkinRepHs_le (I := I) (M := M) g 5 hR0 F c
   have h2 := ha2g T hT hδg hδZ hT2 m
   have h1 := ha1g hδ0 hδ_le T hT hδg hδZ hT4 m
-  have htop := galRepHs_le (I := I) (M := M) g ((m : ℝ) + 2) hR0 F c
-  have hmid := galRepHs_le (I := I) (M := M) g ((m : ℝ) + 1) hR0 F c
+  have htop := galerkinRepHs_le (I := I) (M := M) g ((m : ℝ) + 2) hR0 F c
+  have hmid := galerkinRepHs_le (I := I) (M := M) g ((m : ℝ) + 1) hR0 F c
   let A := lowerScaleActionCoefficients (I := I) (M := M) g gBase T
     (lt_of_le_of_lt hδ_le (by norm_num)) hδg hδZ
   have harms : ‖smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)

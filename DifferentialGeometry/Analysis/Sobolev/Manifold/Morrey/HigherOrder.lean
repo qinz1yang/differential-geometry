@@ -149,7 +149,7 @@ private lemma sum_eLpNorm_norm_iteratedFDeriv_chartSmoothExt_le_wkpNorm
     exact hasCompactSupport_chartSmoothExt_pou_mul (I := I) (M := M) α
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) u
-  have hh_supp : tsupport h ⊆ Ω := by
+  have hh_support : tsupport h ⊆ Ω := by
     rw [hh_def, hΩ_def]
     have h1 : tsupport (chartSmoothExt (I := I) (M := M) α
         (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -159,7 +159,7 @@ private lemma sum_eLpNorm_norm_iteratedFDeriv_chartSmoothExt_le_wkpNorm
   have hΩ_open : IsOpen Ω :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.eLpNorm_iteratedFDeriv_le_wkpNorm
-    (d := Module.finrank ℝ E) hΩ_open hp_one k hh_smooth_top hh_compact hh_supp
+    (d := Module.finrank ℝ E) hΩ_open hp_one k hh_smooth_top hh_compact hh_support
 
 omit [I.Boundaryless] in
 private lemma wkpNorm_chartPushed_target_le_wkpNormChart_k
@@ -235,7 +235,7 @@ private lemma memWkp_chartSmoothExt_pou_mul
     exact hasCompactSupport_chartSmoothExt_pou_mul (I := I) (M := M) α
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) u
-  have hh_supp : tsupport h ⊆ Ω := by
+  have hh_support : tsupport h ⊆ Ω := by
     rw [hh_def, hΩ_def]
     have h1 : tsupport (chartSmoothExt (I := I) (M := M) α
         (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -244,7 +244,7 @@ private lemma memWkp_chartSmoothExt_pou_mul
     exact h1.trans (chartCarrier_subset_chartTargetEuclid (I := I) (M := M) α)
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
-    (d := Module.finrank ℝ E) hΩ_open hh_smooth_top hh_compact hh_supp hp_one k
+    (d := Module.finrank ℝ E) hΩ_open hh_smooth_top hh_compact hh_support hp_one k
 
 private lemma memWkp_chartPushed_of_contMDiff
     (α : M) {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)

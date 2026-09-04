@@ -9,7 +9,7 @@ open Set
 open scoped ContDiff Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe uX
 
@@ -25,27 +25,27 @@ theorem normWeights_contDiffOn {U : Set E'} {num : ι → E' → Real}
   (hnum i).div (ContDiffOn.sum fun j _ => hnum j) hne
 
 omit [DecidableEq ι] in
-theorem normWeightsConv {U : Set E'} (hU : IsOpen U)
+theorem normWeightsConvergence {U : Set E'} (hU : IsOpen U)
     {num : Nat → ι → E' → Real} {numinf : ι → E' → Real}
     {δ : Real} (hδ : 0 < δ)
-    (hconv : ∀ i, MapCInfConvOnCompacts U (fun k => num k i) (numinf i))
+    (hconv : ∀ i, MapCInfConvergenceOnCompacts U (fun k => num k i) (numinf i))
     (hc : ∀ k i, ContDiffOn Real (∞ : WithTop ℕ∞) (num k i) U)
     (hcinf : ∀ i, ContDiffOn Real (∞ : WithTop ℕ∞) (numinf i) U)
     (hlow : ∀ k, ∀ z ∈ U, δ < ∑ j, num k j z)
     (hlowinf : ∀ z ∈ U, δ < ∑ j, numinf j z) (i : ι) :
-    MapCInfConvOnCompacts U (fun k => normWeights (num k) i) (normWeights numinf i) := by
-  have hpi := mapCInfConv_pi hU hconv (fun i k => hc k i) hcinf
+    MapCInfConvergenceOnCompacts U (fun k => normWeights (num k) i) (normWeights numinf i) := by
+  have hpi := mapCInfConvergence_pi hU hconv (fun i k => hc k i) hcinf
   set Lsum : (ι → Real) →L[Real] Real := ∑ j : ι, ContinuousLinearMap.proj j with hLsum
   have hpic : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (fun z (j : ι) => num k j z) U :=
     fun k => contDiffOn_pi.mpr fun j => hc k j
   have hpiinfc : ContDiffOn Real (∞ : WithTop ℕ∞) (fun z (j : ι) => numinf j z) U :=
     contDiffOn_pi.mpr fun j => hcinf j
-  have hsum0 := mapCInfConv_clm hU Lsum hpi hpic hpiinfc
+  have hsum0 := mapCInfConvergence_clm hU Lsum hpi hpic hpiinfc
   have hLapp : ∀ v : ι → Real, Lsum v = ∑ j, v j := by
     intro v
     rw [hLsum, sum_apply]
     exact Finset.sum_congr rfl fun j _ => ContinuousLinearMap.proj_apply j v
-  have hsum : MapCInfConvOnCompacts U (fun k z => ∑ j, num k j z)
+  have hsum : MapCInfConvergenceOnCompacts U (fun k z => ∑ j, num k j z)
       (fun z => ∑ j, numinf j z) := by
     refine hsum0.congr hU (fun k z _ => ?_) (fun z _ => ?_)
     · exact (hLapp (fun j => num k j z)).symm
@@ -54,12 +54,12 @@ theorem normWeightsConv {U : Set E'} (hU : IsOpen U)
     fun k => ContDiffOn.sum fun j _ => hc k j
   have hsuminfc : ContDiffOn Real (∞ : WithTop ℕ∞) (fun z => ∑ j, numinf j z) U :=
     ContDiffOn.sum fun j _ => hcinf j
-  have hinv := mapCInfConv_inv hU hδ hsum hsumc hsuminfc hlow hlowinf
+  have hinv := mapCInfConvergence_inv hU hδ hsum hsumc hsuminfc hlow hlowinf
   have hinvc : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (fun z => (∑ j, num k j z)⁻¹) U :=
     fun k => (hsumc k).inv (fun z hz => ne_of_gt (lt_trans hδ (hlow k z hz)))
   have hinvinfc : ContDiffOn Real (∞ : WithTop ℕ∞) (fun z => (∑ j, numinf j z)⁻¹) U :=
     hsuminfc.inv (fun z hz => ne_of_gt (lt_trans hδ (hlowinf z hz)))
-  have hmul := mapCInfConv_mul hU (hconv i) hinv
+  have hmul := mapCInfConvergence_mul hU (hconv i) hinv
     (fun k => hc k i) (hcinf i) hinvc hinvinfc
   refine hmul.congr hU (fun k z _ => ?_) (fun z _ => ?_) <;>
     simp [normWeights, div_eq_mul_inv]
@@ -86,13 +86,13 @@ theorem cutRaw_contDiffOn {U : Set X} {a : ι -> X -> Real}
     exact cutRaw_of_ne (a i0) a i0 i x hi
 
 omit [Fintype ι] in
-theorem cutRaw_conv {U : Set X} (hU : IsOpen U)
+theorem cutRaw_convergence {U : Set X} (hU : IsOpen U)
     {a : Nat -> ι -> X -> Real} {ainf : ι -> X -> Real}
-    (hconv : forall i, MapCInfConvOnCompacts U (fun k => a k i) (ainf i))
+    (hconv : forall i, MapCInfConvergenceOnCompacts U (fun k => a k i) (ainf i))
     (hc : forall k i, ContDiffOn Real (∞ : WithTop ℕ∞) (a k i) U)
     (hcinf : forall i, ContDiffOn Real (∞ : WithTop ℕ∞) (ainf i) U)
     (i0 i : ι) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k => cutRaw (a k i0) (a k) i0 i)
       (cutRaw (ainf i0) ainf i0 i) := by
   by_cases hi : i = i0
@@ -109,12 +109,12 @@ theorem cutRaw_conv {U : Set X} (hU : IsOpen U)
   · let oneSub : Real -> Real := fun t => 1 - t
     have hone : ContDiff Real (∞ : WithTop ℕ∞) oneSub :=
       contDiff_const.sub contDiff_id
-    have hkill := MapCInfConvOnCompacts.comp_of_finiteDimensional
+    have hkill := MapCInfConvergenceOnCompacts.comp_of_finiteDimensional
       hU isOpen_univ (hconv i0)
-      (mapCInfConv_const (U := (Set.univ : Set Real)) oneSub)
+      (mapCInfConvergence_const (U := (Set.univ : Set Real)) oneSub)
       (fun k => hc k i0) (hcinf i0) (fun _ => hone.contDiffOn) hone.contDiffOn
       (Set.mapsTo_univ _ _) (fun _ => Set.mapsTo_univ _ _)
-    have hmul := mapCInfConv_mul hU hkill (hconv i)
+    have hmul := mapCInfConvergence_mul hU hkill (hconv i)
       (fun k => contDiffOn_const.sub (hc k i0)) (contDiffOn_const.sub (hcinf i0))
       (fun k => hc k i) (hcinf i)
     refine hmul.congr hU (fun k x _ => ?_) (fun x _ => ?_)
@@ -124,19 +124,19 @@ theorem cutRaw_conv {U : Set X} (hU : IsOpen U)
       exact cutRaw_of_ne (ainf i0) ainf i0 i x hi
 
 omit [DecidableEq ι] in
-theorem rawWeights_conv {U : Set X} (hU : IsOpen U)
+theorem rawWeights_convergence {U : Set X} (hU : IsOpen U)
     {num : Nat -> ι -> X -> Real} {numinf : ι -> X -> Real}
     {delta : Real} (hdelta : 0 < delta)
-    (hconv : forall i, MapCInfConvOnCompacts U (fun k => num k i) (numinf i))
+    (hconv : forall i, MapCInfConvergenceOnCompacts U (fun k => num k i) (numinf i))
     (hc : forall k i, ContDiffOn Real (∞ : WithTop ℕ∞) (num k i) U)
     (hcinf : forall i, ContDiffOn Real (∞ : WithTop ℕ∞) (numinf i) U)
     (hlow : forall k, forall z, z ∈ U -> delta < ∑ j, num k j z)
     (hlowinf : forall z, z ∈ U -> delta < ∑ j, numinf j z) (i : ι) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k z => rawWeights (num k) z i) (fun z => rawWeights numinf z i) := by
-  change MapCInfConvOnCompacts U
+  change MapCInfConvergenceOnCompacts U
     (fun k => normWeights (num k) i) (normWeights numinf i)
-  exact normWeightsConv hU hdelta hconv hc hcinf hlow hlowinf i
+  exact normWeightsConvergence hU hdelta hconv hc hcinf hlow hlowinf i
 
 omit [NormedAddCommGroup X] [NormedSpace Real X] in
 theorem cutRaw_sum_half {a : ι -> X -> Real} {i0 : ι} {x : X}
@@ -160,9 +160,9 @@ theorem cutRaw_sum_half {a : ι -> X -> Real} {i0 : ι} {x : X}
     exact hjraw.trans
       (Finset.single_le_sum (fun q _ => hrawnn q) (Finset.mem_univ j))
 
-theorem cutWeights_conv {U : Set X} (hU : IsOpen U)
+theorem cutWeights_convergence {U : Set X} (hU : IsOpen U)
     {a : Nat -> ι -> X -> Real} {ainf : ι -> X -> Real}
-    (hconv : forall i, MapCInfConvOnCompacts U (fun k => a k i) (ainf i))
+    (hconv : forall i, MapCInfConvergenceOnCompacts U (fun k => a k i) (ainf i))
     (hc : forall k i, ContDiffOn Real (∞ : WithTop ℕ∞) (a k i) U)
     (hcinf : forall i, ContDiffOn Real (∞ : WithTop ℕ∞) (ainf i) U)
     (i0 : ι)
@@ -170,13 +170,13 @@ theorem cutWeights_conv {U : Set X} (hU : IsOpen U)
     (hnn : forall k z, z ∈ U -> forall i, 0 <= a k i z)
     (hcover : forall k z, z ∈ U -> exists i, a k i z = 1)
     (i : ι) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k z => rawWeights (cutRaw (a k i0) (a k) i0) z i)
       (fun z => rawWeights (cutRaw (ainf i0) ainf i0) z i) := by
-  have hraw : forall j, MapCInfConvOnCompacts U
+  have hraw : forall j, MapCInfConvergenceOnCompacts U
       (fun k => cutRaw (a k i0) (a k) i0 j)
       (cutRaw (ainf i0) ainf i0 j) :=
-    fun j => cutRaw_conv hU hconv hc hcinf i0 j
+    fun j => cutRaw_convergence hU hconv hc hcinf i0 j
   have hrawc : forall k j, ContDiffOn Real (∞ : WithTop ℕ∞)
       (cutRaw (a k i0) (a k) i0 j) U :=
     fun k j => cutRaw_contDiffOn (fun q => hc k q) i0 j
@@ -199,9 +199,9 @@ theorem cutWeights_conv {U : Set X} (hU : IsOpen U)
       ge_of_tendsto hsum (Filter.Eventually.of_forall fun k =>
         cutRaw_sum_half (hbase k z hz) (hnn k z hz) (hcover k z hz))
     linarith
-  exact rawWeights_conv hU (by norm_num : (0 : Real) < 1 / 4)
+  exact rawWeights_convergence hU (by norm_num : (0 : Real) < 1 / 4)
     hraw hrawc hrawcinf hlow hlowinf i
 
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

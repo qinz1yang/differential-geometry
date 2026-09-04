@@ -17,7 +17,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -52,7 +52,7 @@ private theorem connLow_self_zero
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)) by
     funext i
     exact (tangentSpaceModelContinuousLinearEquiv (I := I) x).apply_symm_apply (m i)]
-  rw [connectionDifferenceLoweredCc_unitModel_apply']
+  rw [connectionDifferenceLoweredCc_unitModel_apply]
   rw [PDE.DeTurck.connectionDifference_self]
   simp
 
@@ -80,7 +80,7 @@ theorem connSec_h1_uniform
             ‖iteratedCovGrad (I := I) g₀ 1 2 i
               (connectionDifferenceSection (I := I) g₁ g₀)‖ ^ 2) ≤ (B R) ^ 2 := by
   classical
-  obtain ⟨C, hC, hpt⟩ := connectionDifference_grid_unif (I := I) (M := M) hδ₀
+  obtain ⟨C, hC, hpt⟩ := connectionDifference_grid_uniform (I := I) (M := M) hδ₀
   obtain ⟨B, hB, hlow⟩ := h1_low_uniform
     (I := I) (M := M) hDim gBase hΛ (r := 1) (s := 2) C hC
   refine ⟨B, hB, ?_⟩

@@ -87,7 +87,7 @@ theorem scalar_curvature_hessian_trace_symmetric
         cov hcov
     let nablaRic :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov hcov Ric)
     let nabla2Ric :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -112,7 +112,7 @@ theorem scalar_curvature_hessian_trace_symmetric
   let Hess := hessianSec (I := I) cov hcov scalar hscalar
   let nablaRic :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         2 cov hcov Ric)
   let nabla2Ric :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1107,14 +1107,14 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
         (M := M) cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         5 cov nablaRm04 x
     let nablaRic :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov hcov Ric)
     let nabla2Ric :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1135,14 +1135,14 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
       (M := M) cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       5 cov nablaRm04 x
   let nablaRic :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         2 cov hcov Ric)
   let nabla2Ric :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1257,7 +1257,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section (I := I) g cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1280,7 +1280,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
     DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section (I := I) g cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

@@ -820,14 +820,14 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
   set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
-  have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hαsource : α ∈ (chartAt H α).source := mem_chart_source H α
   have hαbaseT : α ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     mem_baseSet_trivializationAt E (TangentSpace I) α
   have hαbase : α ∈ e.baseSet := by
     rw [he]; exact mem_baseSet_trivializationAt _ _ α
   have hnhd : (chartAt H α).source ×ˢ S ∈ nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S) := by
     refine mem_nhdsWithin.mpr ⟨(chartAt H α).source ×ˢ S,
-      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsrc, hp₀.2⟩, fun q hq => hq.1⟩
+      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsource, hp₀.2⟩, fun q hq => hq.1⟩
   have hcoordEach : ∀ σ : Fin 2 → Fin (Module.finrank ℝ E),
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Bcmm.repr
@@ -835,7 +835,7 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
         ((Set.univ : Set M) ×ˢ S) p₀ := by
     intro σ
     have hscal := riemannBiContrFibAppY_chartCoord_jointContMDiffOn (I := I) g₀ T T' hδ hδ' Y α σ
-    have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
+    have hscalAt := (hscal p₀ ⟨hαsource, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
     have hcoordinates : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1)⟩).2 σ =
           Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
@@ -1162,14 +1162,14 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
   set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
-  have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hαsource : α ∈ (chartAt H α).source := mem_chart_source H α
   have hαbaseT : α ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     mem_baseSet_trivializationAt E (TangentSpace I) α
   have hαbase : α ∈ e.baseSet := by
     rw [he]; exact mem_baseSet_trivializationAt _ _ α
   have hnhd : (chartAt H α).source ×ˢ S ∈ nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S) := by
     refine mem_nhdsWithin.mpr ⟨(chartAt H α).source ×ˢ S,
-      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsrc, hp₀.2⟩, fun q hq => hq.1⟩
+      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsource, hp₀.2⟩, fun q hq => hq.1⟩
   have hcoordEach : ∀ σ : Fin 2 → Fin (Module.finrank ℝ E),
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Bcmm.repr
@@ -1179,7 +1179,7 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
         ((Set.univ : Set M) ×ˢ S) p₀ := by
     intro σ
     have hscal := raisedKoszulFibAppOm_chartCoord_jointContMDiffOn (I := I) g₀ T T' hδ hδ' om α σ
-    have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
+    have hscalAt := (hscal p₀ ⟨hαsource, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
     have hcoordinates : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, (show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ]
             Tensor0SBundle.Tensor0SSpace 2 I q.1 from
@@ -1372,7 +1372,7 @@ theorem linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (g₀ : SmoothR
       δ') :
     linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4
       (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ') (δ := δ) (δ' := δ') := by
-  have hPrin := ricciDeTurckPrincipalCoefficient_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
+  have hPrincipal := ricciDeTurckPrincipalCoefficient_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
   have hTH := traceHessianCoeff_metricPerturbationPath_jointContMDiff (I := I) g₀ T T' hδ hδ'
   have hsmul := jointTotalSpaceRS_const_smul (I := I) (r := 4) (s := 2) (1 / 2 : ℝ)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
@@ -1385,7 +1385,7 @@ theorem linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (g₀ : SmoothR
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
     (fun p : M × ℝ => (1 / 2 : ℝ) • (traceHessianCoeff (I := I) g₀
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)).toSection p.1)
-    hPrin hsmul
+    hPrincipal hsmul
   refine hsub.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.TensorRSModel 4 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace 4 2 I z) p.1 t) ?_

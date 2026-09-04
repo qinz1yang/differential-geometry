@@ -116,7 +116,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
   obtain ⟨Cg2, hCg2_nn, hG2⟩ :=
     exists_eLpNorm_sq_pou_mul_sum_triv_chart_cov_le_const_mul_h1NormSq
       (I := I) (M := M) g r s α
-  have hK_cpt :
+  have hK_compact :
       IsCompact (tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     covRiem_pouTsupport_isCompact (I := I) (M := M) α
@@ -127,7 +127,7 @@ theorem exists_eLpNorm_pou_mul_sum_fiber_chart_cov_le_const_mul_h1Norm
     covRiem_pouTsupport_subset_chartSource (I := I) (M := M) α
   obtain ⟨Cop, hCop_pos, hCop_bound⟩ :=
     tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
-      (I := I) (M := M) g r s α hK_cpt hK_sub
+      (I := I) (M := M) g r s α hK_compact hK_sub
   have hCop_nn : 0 ≤ Cop := le_of_lt hCop_pos
   refine ⟨Cop * Cg2, mul_nonneg hCop_nn hCg2_nn, ?_⟩
   intro S _Idx _Jdx

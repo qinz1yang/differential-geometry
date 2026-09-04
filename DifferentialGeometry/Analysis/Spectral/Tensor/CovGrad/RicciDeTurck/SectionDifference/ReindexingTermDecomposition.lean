@@ -1416,7 +1416,7 @@ theorem combinedLowerCoeff0_operatorFieldApplication_eq
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-theorem connectionDifference_g1g1'_order_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
+theorem connectionDifference_three_metrics_order_split (g₀ g₁ g₁' : SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     PDE.DeTurck.connectionDifference (I := I) g₁ g₁' x (Y x) (X x) =
       (inverseMetricSharpFib (I := I) g₁ x

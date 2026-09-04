@@ -55,7 +55,7 @@ theorem strictBarrierBounds
     {X : TimeDependentVectorField (I := I) (M := M)}
     {N : TwoTensorReaction (I := I) (M := M)}
     {T t0 : Real}
-    (hreg : TensorWMPCore (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleCore (I := I) (M := M) G S X N T)
     (ht0 : t0 ∈ Set.Icc 0 T)
     (ht0T : t0 < T) :
     ∃ delta0 K : Real,
@@ -212,7 +212,7 @@ theorem tensorBarrier_strict_supersolution
     {t0 T : Real}
     (ht0 : t0 ∈ Set.Icc 0 T)
     (ht0T : t0 < T)
-    (hreg : TensorWMPRegularityOn (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleRegularityOn (I := I) (M := M) G S X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G S X N nabla2S nablaS T) :
     ∃ delta : Real, 0 < delta ∧ t0 + delta ≤ T ∧
@@ -241,7 +241,7 @@ theorem tensorBarrier_strict_supersolution
     metricDeriv reactionErr metricGain hmetric_deriv hgain hreaction hmargin
 
 omit [IsManifold I 2 M] in
-theorem certSlab_of_reg
+theorem certSlab_of_regularity
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -251,7 +251,7 @@ theorem certSlab_of_reg
     {t0 T : Real}
     (ht0 : t0 ∈ Set.Icc 0 T)
     (ht0T : t0 < T)
-    (hreg : TensorWMPRegularityOn (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleRegularityOn (I := I) (M := M) G S X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G S X N nabla2S nablaS T) :
     ∃ delta : Real, 0 < delta ∧ t0 + delta ≤ T ∧
@@ -292,7 +292,7 @@ theorem strictCert_sec
     {t0 T : Real}
     (ht0 : t0 ∈ Set.Icc 0 T)
     (ht0T : t0 < T)
-    (hreg : TensorWMPSectionCore (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G (twoTensorSecToFamily (I := I) (M := M) S) X N
       (fun t x => nabla2S t x) (fun t x => nablaS t x) T)
@@ -359,7 +359,7 @@ theorem strictCert_sec
     (Xsec := Xsec) (hlapMin := hlapMin) (hX := hXsec.symm)
 
 omit [IsManifold I 2 M] in
-theorem certSlab_of_sectionReg
+theorem certSlab_of_sectionRegularity
     {G : Real -> SmoothRiemannianMetric I M}
     {S : TwoTensorSecFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -369,14 +369,14 @@ theorem certSlab_of_sectionReg
     {t0 T : Real}
     (ht0 : t0 ∈ Set.Icc 0 T)
     (ht0T : t0 < T)
-    (hreg : TensorWMPSectionReg (I := I) (M := M) G S X N T)
+    (hreg : TensorWeakMaximumPrincipleSectionRegularity (I := I) (M := M) G S X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G (twoTensorSecToFamily (I := I) (M := M) S) X N
       nabla2S nablaS T) :
     ∃ delta : Real, 0 < delta ∧ t0 + delta ≤ T ∧
       TensorStrictCertSlab (I := I) (M := M) G
         (twoTensorSecToFamily (I := I) (M := M) S) X N delta t0 :=
-  certSlab_of_reg (I := I) (M := M)
+  certSlab_of_regularity (I := I) (M := M)
     (G := G) (S := twoTensorSecToFamily (I := I) (M := M) S)
     (X := X) (N := N) ht0 ht0T hreg.toRaw hparabolic
 

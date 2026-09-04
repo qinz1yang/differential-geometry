@@ -31,7 +31,7 @@ theorem parabolicLaplacian_add
   rw [parabolicSpatialJet_add 2 u v p hu hv, map_add, map_add]
 
 omit [CompleteSpace F] in
-theorem heatD3Conv_int_of_bounded {t : Real} (ht : 0 < t)
+theorem heatD3Convolution_int_of_bounded {t : Real} (ht : 0 < t)
     (h v w : V) (u : BoundedContinuousFunction V F) (x : V) :
     Integrable (fun y : V => heatD3 t h v w y • u (x - y)) := by
   refine ((heatD3Maj_int (V := V) ht).const_mul
@@ -53,11 +53,11 @@ theorem heatD3Conv_int_of_bounded {t : Real} (ht : 0 < t)
       _ = (‖h‖ * ‖v‖ * ‖w‖ * ‖u‖) * heatD3Maj t y := by ring
 
 omit [CompleteSpace F] in
-theorem heatD3Conv_norm_of_bounded {t : Real} (ht : 0 < t)
+theorem heatD3Convolution_norm_of_bounded {t : Real} (ht : 0 < t)
     (h v w : V) (u : BoundedContinuousFunction V F) (x : V) :
-    ‖heatD3Conv t h v w u x‖ ≤
+    ‖heatD3Convolution t h v w u x‖ ≤
       ‖h‖ * ‖v‖ * ‖w‖ * ‖u‖ * t⁻¹ * (heatScale t)⁻¹ * heatC3 V := by
-  unfold heatD3Conv
+  unfold heatD3Convolution
   calc
     ‖∫ y : V, heatD3 t h v w y • u (x - y)‖ ≤
         ∫ y : V, ‖heatD3 t h v w y‖ * ‖u‖ := by
@@ -93,7 +93,7 @@ theorem heatD3_path_integrable_of_bounded {t : Real} (ht : 0 < t)
     fun_prop
   have hslice_int : ∀ s : Real, Integrable (fun y : V ↦ G (s, y)) := by
     intro s
-    have hs := (heatD3Conv_int_of_bounded ht h v w u (x - s • h)).neg
+    have hs := (heatD3Convolution_int_of_bounded ht h v w u (x - s • h)).neg
       |>.comp_add_right (s • (-h))
     refine hs.congr (Eventually.of_forall fun y ↦ ?_)
     have hfarg : x - s • h - (y + s • (-h)) = x - y := by
@@ -157,10 +157,10 @@ theorem heatD3_path_integrable_of_bounded {t : Real} (ht : 0 < t)
     ⟨Eventually.of_forall hslice_int, houter⟩
 
 omit [CompleteSpace F] in
-theorem heatD2Conv_space_sub_eq_integral_kernel_diff_of_bounded
+theorem heatD2Convolution_space_sub_eq_integral_kernel_diff_of_bounded
     {t : Real} (ht : 0 < t) (h v w : V)
     (u : BoundedContinuousFunction V F) (x : V) :
-    heatD2Conv t v w u (x - h) - heatD2Conv t v w u x =
+    heatD2Convolution t v w u (x - h) - heatD2Convolution t v w u x =
       ∫ z : V, (heatD2 t v w (z - h) - heatD2 t v w z) • u (x - z) := by
   have hzero := supKernel_int (heatD2_int ht v w) u x
   have hone0 := supKernel_int (heatD2_int ht v w) u (x - h)
@@ -173,24 +173,24 @@ theorem heatD2Conv_space_sub_eq_integral_kernel_diff_of_bounded
     have hk : z + -h = z - h := by abel
     have hfarg : x - h - (z - h) = x - z := by abel
     simp only [hk, hfarg]
-  rw [heatD2Conv_translate_kernel]
-  unfold heatD2Conv
+  rw [heatD2Convolution_translate_kernel]
+  unfold heatD2Convolution
   rw [← integral_sub hone hzero]
   apply integral_congr_ae
   filter_upwards with z
   rw [sub_smul]
 
-theorem heatD2Conv_space_sub_eq_integral_heatD3Conv_of_bounded
+theorem heatD2Convolution_space_sub_eq_integral_heatD3Convolution_of_bounded
     {t : Real} (ht : 0 < t) (h v w : V)
     (u : BoundedContinuousFunction V F) (x : V) :
-    heatD2Conv t v w u (x - h) - heatD2Conv t v w u x =
-      ∫ s : Real in 0..1, -heatD3Conv t h v w u (x - s • h) := by
+    heatD2Convolution t v w u (x - h) - heatD2Convolution t v w u x =
+      ∫ s : Real in 0..1, -heatD3Convolution t h v w u (x - s • h) := by
   let μ : Measure Real := volume.restrict (Ioc 0 1)
   let G : Real × V → F := fun z ↦
     (-heatD3 t h v w (z.2 + z.1 • (-h))) • u (x - z.2)
   have hGint : Integrable G (μ.prod (volume : Measure V)) := by
     simpa only [G, μ] using heatD3_path_integrable_of_bounded ht h v w u x
-  rw [heatD2Conv_space_sub_eq_integral_kernel_diff_of_bounded ht]
+  rw [heatD2Convolution_space_sub_eq_integral_kernel_diff_of_bounded ht]
   calc
     (∫ z : V, (heatD2 t v w (z - h) - heatD2 t v w z) • u (x - z)) =
         ∫ z : V, (∫ s : Real in 0..1,
@@ -219,60 +219,60 @@ theorem heatD2Conv_space_sub_eq_integral_heatD3Conv_of_bounded
             ∫ z : V, (∫ s : Real, G (s, z) ∂μ) :=
         integral_integral_swap huncurry
       exact hswap.symm
-    _ = ∫ s : Real in 0..1, -heatD3Conv t h v w u (x - s • h) := by
+    _ = ∫ s : Real in 0..1, -heatD3Convolution t h v w u (x - s • h) := by
       rw [intervalIntegral.integral_of_le (by norm_num)]
       apply integral_congr_ae
       filter_upwards with s
-      simpa only [G] using integral_heatD3_path_eq_neg_heatD3Conv t h v w u x s
+      simpa only [G] using integral_heatD3_path_eq_neg_heatD3Convolution t h v w u x s
 
 omit [CompleteSpace F] in
-theorem heatD3Conv_path_intervalIntegrable_of_bounded
+theorem heatD3Convolution_path_intervalIntegrable_of_bounded
     {t : Real} (ht : 0 < t) (h v w : V)
     (u : BoundedContinuousFunction V F) (x : V) :
     IntervalIntegrable
-      (fun s : Real ↦ heatD3Conv t h v w u (x - s • h)) volume 0 1 := by
+      (fun s : Real ↦ heatD3Convolution t h v w u (x - s • h)) volume 0 1 := by
   let μ : Measure Real := volume.restrict (Ioc 0 1)
   let G : Real × V → F := fun z ↦
     (-heatD3 t h v w (z.2 + z.1 • (-h))) • u (x - z.2)
   have hGint : Integrable G (μ.prod (volume : Measure V)) := by
     simpa only [G, μ] using heatD3_path_integrable_of_bounded ht h v w u x
   have hneg : Integrable
-      (fun s : Real ↦ -heatD3Conv t h v w u (x - s • h)) μ := by
+      (fun s : Real ↦ -heatD3Convolution t h v w u (x - s • h)) μ := by
     refine hGint.integral_prod_left.congr (Eventually.of_forall fun s ↦ ?_)
-    simpa only [G] using integral_heatD3_path_eq_neg_heatD3Conv t h v w u x s
+    simpa only [G] using integral_heatD3_path_eq_neg_heatD3Convolution t h v w u x s
   have hconv : Integrable
-      (fun s : Real ↦ heatD3Conv t h v w u (x - s • h)) μ := by
+      (fun s : Real ↦ heatD3Convolution t h v w u (x - s • h)) μ := by
     refine hneg.neg.congr (Eventually.of_forall fun s ↦ ?_)
     simp
   rw [intervalIntegrable_iff,
     uIoc_of_le (by norm_num : (0 : Real) ≤ 1)]
   change Integrable
-    (fun s : Real ↦ heatD3Conv t h v w u (x - s • h))
+    (fun s : Real ↦ heatD3Convolution t h v w u (x - s • h))
     (volume.restrict (Ioc 0 1)) at hconv
   exact hconv
 
-theorem heatD2Conv_space_sub_norm_le_of_bounded
+theorem heatD2Convolution_space_sub_norm_le_of_bounded
     {t : Real} (ht : 0 < t) (h v w : V)
     (u : BoundedContinuousFunction V F) (x : V) :
-    ‖heatD2Conv t v w u (x - h) - heatD2Conv t v w u x‖ ≤
+    ‖heatD2Convolution t v w u (x - h) - heatD2Convolution t v w u x‖ ≤
       ‖h‖ * ‖v‖ * ‖w‖ * ‖u‖ * t⁻¹ * (heatScale t)⁻¹ * heatC3 V := by
   let M : Real :=
     ‖h‖ * ‖v‖ * ‖w‖ * ‖u‖ * t⁻¹ * (heatScale t)⁻¹ * heatC3 V
-  have hpath := heatD3Conv_path_intervalIntegrable_of_bounded ht h v w u x
+  have hpath := heatD3Convolution_path_intervalIntegrable_of_bounded ht h v w u x
   have hconst : IntervalIntegrable (fun _ : Real ↦ M) volume 0 1 :=
     (continuous_const : Continuous (fun _ : Real ↦ M)).intervalIntegrable
       (μ := volume) 0 1
-  rw [heatD2Conv_space_sub_eq_integral_heatD3Conv_of_bounded ht]
+  rw [heatD2Convolution_space_sub_eq_integral_heatD3Convolution_of_bounded ht]
   calc
-    ‖∫ s : Real in 0..1, -heatD3Conv t h v w u (x - s • h)‖ ≤
-        ∫ s : Real in 0..1, ‖-heatD3Conv t h v w u (x - s • h)‖ :=
+    ‖∫ s : Real in 0..1, -heatD3Convolution t h v w u (x - s • h)‖ ≤
+        ∫ s : Real in 0..1, ‖-heatD3Convolution t h v w u (x - s • h)‖ :=
       intervalIntegral.norm_integral_le_integral_norm (by norm_num)
     _ ≤ ∫ _s : Real in 0..1, M := by
       refine intervalIntegral.integral_mono (by norm_num) hpath.neg.norm hconst ?_
       intro s
       dsimp only
       rw [norm_neg]
-      simpa only [M] using heatD3Conv_norm_of_bounded ht h v w u (x - s • h)
+      simpa only [M] using heatD3Convolution_norm_of_bounded ht h v w u (x - s • h)
     _ = M := by simp
     _ = ‖h‖ * ‖v‖ * ‖w‖ * ‖u‖ * t⁻¹ * (heatScale t)⁻¹ * heatC3 V := by
       rfl
@@ -283,17 +283,17 @@ def heatD2SupHolderConst (t : Real)
     (2 * Real.toNNReal (t⁻¹ * heatC2 V * ‖u‖))
     (Real.toNNReal (‖u‖ * t⁻¹ * (heatScale t)⁻¹ * heatC3 V))
 
-theorem heatD2Conv_holder_of_norm_le_one
+theorem heatD2Convolution_holder_of_norm_le_one
     {alpha : NNReal} (halpha : alpha ≤ 1)
     {t : Real} (ht : 0 < t) (v w : V)
     (hv : ‖v‖ ≤ 1) (hw : ‖w‖ ≤ 1)
     (u : BoundedContinuousFunction V F) :
     HolderWith (heatD2SupHolderConst (V := V) t u) alpha
-      (fun x ↦ heatD2Conv t v w u x) := by
+      (fun x ↦ heatD2Convolution t v w u x) := by
   let B₀ : NNReal := Real.toNNReal (t⁻¹ * heatC2 V * ‖u‖)
   let B₁ : NNReal :=
     Real.toNNReal (‖u‖ * t⁻¹ * (heatScale t)⁻¹ * heatC3 V)
-  have hnorm : ∀ x : V, ‖heatD2Conv t v w u x‖ ≤ B₀ := by
+  have hnorm : ∀ x : V, ‖heatD2Convolution t v w u x‖ ≤ B₀ := by
     intro x
     have hraw := heatD2Sup_norm ht v w u x
     have hunit :
@@ -311,19 +311,19 @@ theorem heatD2Conv_holder_of_norm_le_one
         _ ≤ 1 * (t⁻¹ * heatC2 V * ‖u‖) :=
           mul_le_mul_of_nonneg_right hvw hcoef
         _ = t⁻¹ * heatC2 V * ‖u‖ := one_mul _
-    have hraw' : ‖heatD2Conv t v w u x‖ ≤
+    have hraw' : ‖heatD2Convolution t v w u x‖ ≤
         t⁻¹ * heatC2 V * ‖u‖ := by
-      simpa only [heatD2Conv, heatD2Sup, supKernel] using hraw.trans hunit
+      simpa only [heatD2Convolution, heatD2Sup, supKernel] using hraw.trans hunit
     exact hraw'.trans (Real.le_coe_toNNReal _)
   have hzero : HolderWith (2 * B₀) 0
-      (fun x ↦ heatD2Conv t v w u x) :=
+      (fun x ↦ heatD2Convolution t v w u x) :=
     holderWith_zero_of_norm_le hnorm
   have hlip : LipschitzWith B₁
-      (fun x ↦ heatD2Conv t v w u x) := by
+      (fun x ↦ heatD2Convolution t v w u x) := by
     apply LipschitzWith.of_dist_le_mul
     intro x y
     rw [dist_eq_norm, dist_eq_norm]
-    have hraw := heatD2Conv_space_sub_norm_le_of_bounded ht (y - x) v w u y
+    have hraw := heatD2Convolution_space_sub_norm_le_of_bounded ht (y - x) v w u y
     have hxy : y - (y - x) = x := by abel
     rw [hxy] at hraw
     have hunit :
@@ -358,7 +358,7 @@ theorem heatD2Conv_holder_of_norm_le_one
       gcongr
       exact Real.le_coe_toNNReal _))
   have hone : HolderWith B₁ 1
-      (fun x ↦ heatD2Conv t v w u x) := hlip.holderWith
+      (fun x ↦ heatD2Convolution t v w u x) := hlip.holderWith
   have hinterp := hzero.of_le_of_le hone bot_le halpha
   simpa only [heatD2SupHolderConst, B₀, B₁] using hinterp
 
@@ -417,15 +417,15 @@ theorem heatSup_spatialJet_norm_le
     · intro m
       rw [heatSup_iteratedFDeriv_two_apply ht, heatSupHessian_apply ht]
       have hraw := heatD2Sup_norm ht (m 1) (m 0) u x
-      have hraw' : ‖heatD2Conv t (m 1) (m 0) u x‖ ≤
+      have hraw' : ‖heatD2Convolution t (m 1) (m 0) u x‖ ≤
           (‖m 1‖ * ‖m 0‖ * t⁻¹ * heatC2 V) * ‖u‖ := by
-        simpa only [heatD2Conv, heatD2Sup, supKernel] using hraw
+        simpa only [heatD2Convolution, heatD2Sup, supKernel] using hraw
       have hnonneg : 0 ≤ t⁻¹ * heatC2 V * ‖u‖ :=
         mul_nonneg
           (mul_nonneg (inv_nonneg.mpr ht.le) (heatC2_nonneg (V := V)))
           (norm_nonneg u)
       calc
-        ‖heatD2Conv t (m 1) (m 0) u x‖ ≤
+        ‖heatD2Convolution t (m 1) (m 0) u x‖ ≤
             (‖m 1‖ * ‖m 0‖ * t⁻¹ * heatC2 V) * ‖u‖ := hraw'
         _ = (t⁻¹ * heatC2 V * ‖u‖) * ∏ i, ‖m i‖ := by
           rw [Fin.prod_univ_two]
@@ -444,7 +444,7 @@ theorem heatSup_iteratedFDeriv_two_holder
   apply holderWith_continuousMultilinearMap_of_stdOrthonormalBasis
     (C := fun _ ↦ heatD2SupHolderConst (V := V) t u)
   intro β
-  have h := heatD2Conv_holder_of_norm_le_one halpha ht
+  have h := heatD2Convolution_holder_of_norm_le_one halpha ht
     ((stdOrthonormalBasis Real V) (β 1))
     ((stdOrthonormalBasis Real V) (β 0))
     (by simp) (by simp) u
@@ -461,7 +461,7 @@ theorem heatSupHessian_holder
     (A := heatSupHessian t u)
     (C := fun _ _ ↦ heatD2SupHolderConst (V := V) t u)
   intro i j
-  have h := heatD2Conv_holder_of_norm_le_one halpha ht
+  have h := heatD2Convolution_holder_of_norm_le_one halpha ht
     ((stdOrthonormalBasis Real V) j)
     ((stdOrthonormalBasis Real V) i)
     (by simp) (by simp) u
@@ -829,7 +829,7 @@ theorem heatSup_parabolicTimeDerivative_eq_laplacian
   rw [heatSup_parabolicTimeDerivative_eq u du d2u hu hdu p ht,
     heatSup_parabolicLaplacian_eq u du d2u hu hdu p ht]
 
-theorem heatDuh_parabolicLaplacian_eq_heatLapDuh
+theorem heatDuhamel_parabolicLaplacian_eq_heatLapDuhamel
     {alpha K B : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     (p : ParabolicPoint V) (ht : 0 < p.time)
     (f : Real → BoundedContinuousFunction V F)
@@ -844,20 +844,20 @@ theorem heatDuh_parabolicLaplacian_eq_heatLapDuh
     (hmeas2 : ∀ z : V, AEStronglyMeasurable
       (fun s : Real ↦ heatSupHessian (p.time - s) (f s) z)
       (volume.restrict (uIoc (0 : Real) p.time))) :
-    parabolicLaplacian (fun t x ↦ heatDuh t f x) p =
-      heatLapDuh p.time (fun s ↦ f s) p.space := by
+    parabolicLaplacian (fun t x ↦ heatDuhamel t f x) p =
+      heatLapDuhamel p.time (fun s ↦ f s) p.space := by
   unfold parabolicLaplacian parabolicSpatialJet
-  rw [heatDuh_hessianCurryEquiv_iteratedFDeriv_two
+  rw [heatDuhamel_hessianCurryEquiv_iteratedFDeriv_two
     halpha0 halpha1 ht f hbound hf hmeas0 hmeas1 hmeas2]
   rw [lapEval_apply]
-  unfold heatLapDuh
+  unfold heatLapDuhamel
   apply Finset.sum_congr rfl
   intro i _hi
-  exact heatDuhHessian_apply halpha0 halpha1 ht f hbound hf hmeas1 hmeas2
+  exact heatDuhamelHessian_apply halpha0 halpha1 ht f hbound hf hmeas1 hmeas2
     p.space ((stdOrthonormalBasis Real V) i)
       ((stdOrthonormalBasis Real V) i)
 
-theorem heatDuh_parabolicTimeDerivative_eq_source_add_laplacian
+theorem heatDuhamel_parabolicTimeDerivative_eq_source_add_laplacian
     {alpha K B : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S : Real} (p : ParabolicPoint V) (hp : p.time ∈ Ioo (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
@@ -865,8 +865,8 @@ theorem heatDuh_parabolicTimeDerivative_eq_source_add_laplacian
     (hsource : HolderWith K alpha
       ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun q ↦ f q.time q.space))) :
-    parabolicTimeDerivative (fun t x ↦ heatDuh t f x) p =
-      f p.time p.space + parabolicLaplacian (fun t x ↦ heatDuh t f x) p := by
+    parabolicTimeDerivative (fun t x ↦ heatDuhamel t f x) p =
+      f p.time p.space + parabolicLaplacian (fun t x ↦ heatDuhamel t f x) p := by
   have htIoc : p.time ∈ Ioc (0 : Real) S := ⟨hp.1, hp.2.le⟩
   have hf : ∀ r ∈ Icc (0 : Real) S, HolderWith K alpha (f r) :=
     fun r hr ↦ holderWith_slice_of_parabolicCylinder
@@ -904,16 +904,16 @@ theorem heatDuh_parabolicTimeDerivative_eq_source_add_laplacian
       (fun s : Real ↦ heatSupHessian (p.time - s) (f s) z)
       (volume.restrict (uIoc (0 : Real) p.time)) :=
     hmeas2All p.time htIoc
-  have htime := heatDuh_time halpha0 halpha1 hp f hf hsource'
+  have htime := heatDuhamel_time halpha0 halpha1 hp f hf hsource'
     hmeas2All p.space
-  have htimeEq : parabolicTimeDerivative (fun t x ↦ heatDuh t f x) p =
-      f p.time p.space + heatLapDuh p.time (fun s ↦ f s) p.space := by
+  have htimeEq : parabolicTimeDerivative (fun t x ↦ heatDuhamel t f x) p =
+      f p.time p.space + heatLapDuhamel p.time (fun s ↦ f s) p.space := by
     unfold parabolicTimeDerivative
     rw [htime.hasFDerivAt.fderiv]
-    simp only [heatDuhTimeDerivativeField, heatDuhTimeDerivative,
+    simp only [heatDuhamelTimeDerivativeField, heatDuhamelTimeDerivative,
       parabolicPoint_time, parabolicPoint_space,
       ContinuousLinearMap.toSpanSingleton_apply, one_smul]
-  rw [htimeEq, heatDuh_parabolicLaplacian_eq_heatLapDuh
+  rw [htimeEq, heatDuhamel_parabolicLaplacian_eq_heatLapDuhamel
     halpha0 halpha1.le p hp.1 f hbound' hf' hmeas0 hmeas1 hmeas2]
 
 def heatSupParabolicSchauderConst
@@ -1035,7 +1035,7 @@ theorem heatSup_parabolic_schauder_estimate_nnnorm
 def heatSolution
     (u0 : BoundedContinuousFunction V F)
     (f : Real → BoundedContinuousFunction V F) : Real → V → F :=
-  fun t x ↦ heatSup t u0 x + heatDuh t f x
+  fun t x ↦ heatSup t u0 x + heatDuhamel t f x
 
 theorem heatSolution_parabolicTimeDerivative_eq_source_add_laplacian
     {alpha K B : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
@@ -1054,14 +1054,14 @@ theorem heatSolution_parabolicTimeDerivative_eq_source_add_laplacian
     parabolicTimeDerivative (heatSolution u0 f) p =
       f p.time p.space + parabolicLaplacian (heatSolution u0 f) p := by
   let uh : Real → V → F := fun t x ↦ heatSup t u0 x
-  let uf : Real → V → F := fun t x ↦ heatDuh t f x
+  let uf : Real → V → F := fun t x ↦ heatDuhamel t f x
   have hpQ : p ∈ parabolicCylinder (Ioc (0 : Real) p.time) Set.univ :=
     ⟨⟨hp.1, le_rfl⟩, Set.mem_univ p.space⟩
   have huhSpatial : ContDiffAt Real 2 (uh p.time) p.space :=
     (heatSup_contDiff_two hp.1 u0).contDiffAt
   have huhTime : DifferentiableAt Real (fun t ↦ uh t p.space) p.time :=
     (heatSup_time hp.1 u0 du0 d2u0 hu0 hdu0 p.space).differentiableAt
-  have huf := (heatDuh_isParabolicC2HolderOn
+  have huf := (heatDuhamel_isParabolicC2HolderOn
     halpha0 halpha1 hp.1.le hp.2 f hbound hsource).1
   have hufSpatial : ContDiffAt Real 2 (uf p.time) p.space :=
     huf.1 p hpQ
@@ -1074,7 +1074,7 @@ theorem heatSolution_parabolicTimeDerivative_eq_source_add_laplacian
     parabolicLaplacian_add uh uf p huhSpatial hufSpatial,
     heatSup_parabolicTimeDerivative_eq_laplacian
       u0 du0 d2u0 hu0 hdu0 p hp.1,
-    heatDuh_parabolicTimeDerivative_eq_source_add_laplacian
+    heatDuhamel_parabolicTimeDerivative_eq_source_add_laplacian
       halpha0 halpha1 p hp f hbound hsource]
   abel
 
@@ -1129,7 +1129,7 @@ theorem heatSolution_parabolic_schauder_estimate
   let Q : Set (ParabolicPoint V) :=
     parabolicCylinder (Ioc (0 : Real) T) Set.univ
   let uh : Real → V → F := fun t x ↦ heatSup t u0 x
-  let uf : Real → V → F := fun t x ↦ heatDuh t f x
+  let uf : Real → V → F := fun t x ↦ heatDuhamel t f x
   have hQ : Q ⊆ parabolicCylinder (Ioi (0 : Real)) Set.univ := by
     intro p hp
     exact ⟨hp.1.1, hp.2⟩
@@ -1140,7 +1140,7 @@ theorem heatSolution_parabolic_schauder_estimate
         u0 du0 d2u0 hu0 hdu0 hB0 hB1 hB2 hK2)
   have hufGauge : eParabolicC2HolderGaugeOn alpha Q uf ≤
       heatPotentialSchauderConst (V := V) alpha Kf Bf Kf T :=
-    heatDuh_schauder_estimate_of_parabolic_holder
+    heatDuhamel_schauder_estimate_of_parabolic_holder
       halpha0 halpha1 hT hTS f hBf hKf
   have huh : IsParabolicC2On Q uh := by
     constructor
@@ -1149,7 +1149,7 @@ theorem heatSolution_parabolic_schauder_estimate
     · intro p hp
       exact (heatSup_time hp.1.1 u0 du0 d2u0 hu0 hdu0 p.space).differentiableAt
   have huf : IsParabolicC2On Q uf :=
-    (heatDuh_isParabolicC2HolderOn
+    (heatDuhamel_isParabolicC2HolderOn
       halpha0 halpha1 hT hTS f hBf hKf).1
   have hadd := eParabolicC2HolderGaugeOn_add_le alpha Q uh uf huh huf
   unfold heatSolutionSchauderConst

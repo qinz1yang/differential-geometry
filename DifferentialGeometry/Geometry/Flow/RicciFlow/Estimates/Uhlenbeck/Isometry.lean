@@ -817,8 +817,8 @@ theorem uhlenbeckPulledRm04At_apply
     {Idx : Type*} [Fintype Idx]
     (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
     (iota : MatrixComp M Idx) (t : ℝ) (x : M) (X Y Z W : TangentSpace I x) :
-    tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W =
-      tensor04StdAt (S.base.rm04 t x)
+    tensor04StandardAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W =
+      tensor04StandardAt (S.base.rm04 t x)
         (uhlenbeckEndomorphismAt (basisAt x) iota t X)
         (uhlenbeckEndomorphismAt (basisAt x) iota t Y)
         (uhlenbeckEndomorphismAt (basisAt x) iota t Z)
@@ -847,11 +847,11 @@ theorem uhlenbeckPulledRm04At_mem_algebraicCurvatureTensorSubmodule
       algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
   rw [mem_algebraicCurvatureTensorSubmodule]
   let Rm : Tensor04At (I := I) (M := M) x := S.base.rm04 t x
-  have hform : IsAlgCurvForm (tensor04StdAt (I := I) (M := M) Rm) :=
+  have hform : IsAlgCurvForm (tensor04StandardAt (I := I) (M := M) Rm) :=
     mem_algebraicCurvatureTensorSubmodule.mp
       (metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x)
   change IsAlgCurvForm (fun X Y Z W =>
-    tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W)
+    tensor04StandardAt (uhlenbeckPulledRm04At S basisAt iota t x) X Y Z W)
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro x₁ x₂ y z w
     rw [uhlenbeckPulledRm04At_apply, uhlenbeckPulledRm04At_apply,
@@ -883,9 +883,9 @@ theorem uhlenbeckPulledRm04At_apply_basis
     {Idx : Type*} [Fintype Idx]
     (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x))
     (iota : MatrixComp M Idx) (t : ℝ) (x : M) (a b c d : Idx) :
-    tensor04StdAt (uhlenbeckPulledRm04At S basisAt iota t x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
+    tensor04StandardAt (uhlenbeckPulledRm04At S basisAt iota t x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) =
       uhlenbeckPullbackRmInFrame iota
-        (fun s x a b c d => tensor04StdAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+        (fun s x a b c d => tensor04StandardAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
         t x a b c d := by
   classical
   change (S.base.rm04 t x :
@@ -894,9 +894,9 @@ theorem uhlenbeckPulledRm04At_apply_basis
         uhlenbeckEndomorphismAt (basisAt x) iota t
           (vec4 (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) i)) =
     uhlenbeckPullbackRmInFrame iota
-      (fun s x a b c d => tensor04StdAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
+      (fun s x a b c d => tensor04StandardAt (S.base.rm04 s x) (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d))
       t x a b c d
-  simp only [uhlenbeckPullbackRmInFrame, tensor04StdAt_apply]
+  simp only [uhlenbeckPullbackRmInFrame, tensor04StandardAt_apply]
   let g : Fin 4 → TangentSpace I x := fun _ => 0
   have harg : (fun i : Fin 4 =>
       uhlenbeckEndomorphismAt (basisAt x) iota t

@@ -212,13 +212,13 @@ theorem leviCivita_chartFrame_self_chartCoord_pullback_contDiffOn_chartTarget
         (chartTargetEuclid (I := I) (M := M) α)
         (trivializationAt E (TangentSpace I) α).baseSet := by
     intro y hy
-    have h_src : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+    have h_source : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         (chartAt H α).source :=
       DifferentialGeometry.Analysis.Sobolev.Chart.symm_toEuclidean_symm_mem_chartAtSource
         (I := I) (M := M) α hy
     change (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
       (chartAt H α).source
-    exact h_src
+    exact h_source
   have h_comp :
       ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) 𝓘(ℝ, ℝ) ∞
         (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>

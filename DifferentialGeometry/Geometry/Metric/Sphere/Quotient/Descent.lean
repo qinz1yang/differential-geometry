@@ -23,7 +23,7 @@ variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)] [NeZero n]
 
-structure SectionWitness (E : Type*) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+structure LocalSmoothSection (E : Type*) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] (n : ℕ) [Fact (finrank ℝ E = n + 1)] [NeZero n]
     (Q : Type*) [TopologicalSpace Q] [ChartedSpace (EuclideanSpace ℝ (Fin n)) Q]
     [IsManifold (𝓡 n) ∞ Q]
@@ -65,15 +65,15 @@ structure RoundQuotientData (E : Type uE) [NormedAddCommGroup E] [InnerProductSp
     proj (sphereDiffeo (n := n) (ρ γ) q) = proj q
   proj_eq_imp : ∀ q₁ q₂ : sphere (0 : E) 1,
     proj q₁ = proj q₂ → ∃ γ : Γ, sphereDiffeo (n := n) (ρ γ) q₁ = q₂
-  sectionAt : ∀ x : Q, SectionWitness E n Q proj x
+  sectionAt : ∀ x : Q, LocalSmoothSection E n Q proj x
 
 attribute [instance] RoundQuotientData.topos RoundQuotientData.charted RoundQuotientData.mfld
   RoundQuotientData.mfld1 RoundQuotientData.mfldTop RoundQuotientData.t2
   RoundQuotientData.sigmaCompact RoundQuotientData.boundaryless RoundQuotientData.grp
   RoundQuotientData.fin
-  SectionWitness.scW SectionWitness.t2W SectionWitness.bW SectionWitness.m1W
-  SectionWitness.mtW SectionWitness.scV SectionWitness.t2V SectionWitness.bV
-  SectionWitness.m1V SectionWitness.mtV
+  LocalSmoothSection.scW LocalSmoothSection.t2W LocalSmoothSection.bW LocalSmoothSection.m1W
+  LocalSmoothSection.mtW LocalSmoothSection.scV LocalSmoothSection.t2V LocalSmoothSection.bV
+  LocalSmoothSection.m1V LocalSmoothSection.mtV
 
 theorem SmoothRiemannianMetric.ext'
     {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
@@ -124,17 +124,17 @@ private theorem tangentOpenEquiv_mfderiv_subtype_val
   exact (tangentSpaceModelContinuousLinearEquiv_apply (I := 𝓡 n) (x : Q) v).trans
     (tangentSpaceModelContinuousLinearEquiv_apply (I := 𝓡 n) x v).symm
 
-namespace SectionWitness
+namespace LocalSmoothSection
 
 variable {Q : Type*} [TopologicalSpace Q] [ChartedSpace (EuclideanSpace ℝ (Fin n)) Q]
   [IsManifold (𝓡 n) ∞ Q] {proj : sphere (0 : E) 1 → Q} {x₀ : Q}
-  (S : SectionWitness E n Q proj x₀)
+  (S : LocalSmoothSection E n Q proj x₀)
 
 noncomputable def ofLocal
     [SigmaCompactSpace Q] [T2Space Q] [BoundarylessManifold (𝓡 n) Q]
     (hsurj : Function.Surjective proj)
     (hloc : IsLocalDiffeomorph (𝓡 n) (𝓡 n) ∞ proj)
-    (x : Q) : SectionWitness E n Q proj x := by
+    (x : Q) : LocalSmoothSection E n Q proj x := by
   let q := Classical.choose (hsurj x)
   have hqx : proj q = x := Classical.choose_spec (hsurj x)
   let Φ := Classical.choose (hloc q)
@@ -232,7 +232,7 @@ theorem dproj_inj (hproj : ContMDiff (𝓡 n) (𝓡 n) ∞ proj) (r : S.W) :
     LinearMap.injective_iff_surjective.mpr hsurj
   exact hlin
 
-end SectionWitness
+end LocalSmoothSection
 
 namespace RoundQuotientData
 
@@ -381,7 +381,7 @@ theorem gQuot_inner (x : D.Q) (v w : TangentSpace (𝓡 n) x) :
 
 theorem gQuot_constPosSec :
     ∃ c : ℝ, 0 < c ∧ ∀ (x : D.Q) (X Y : TangentSpace (𝓡 n) x),
-      metricRm04StdAt (I := 𝓡 n) D.gQuot x X Y Y X =
+      metricRm04StandardAt (I := 𝓡 n) D.gQuot x X Y Y X =
         c * (D.gQuot.inner x X X * D.gQuot.inner x Y Y
           - D.gQuot.inner x X Y * D.gQuot.inner x X Y) := by
   refine ⟨1, one_pos, fun x X Y => ?_⟩
@@ -395,9 +395,9 @@ theorem gQuot_constPosSec :
     mfderiv_subtype_val_tangentOpenEquiv S.W xW X
   have hYW : mfderiv (𝓡 n) (𝓡 n) (Subtype.val : S.W → D.Q) xW YW = Y :=
     mfderiv_subtype_val_tangentOpenEquiv S.W xW Y
-  have hB : metricRm04StdAt (I := 𝓡 n) D.gQuot x X Y Y X
-      = metricRm04StdAt (I := 𝓡 n) (D.gQuot.restrictOpen S.W) xW XW YW YW XW := by
-    rw [metricRm04StdAt_restrictOpen, hXW, hYW]
+  have hB : metricRm04StandardAt (I := 𝓡 n) D.gQuot x X Y Y X
+      = metricRm04StandardAt (I := 𝓡 n) (D.gQuot.restrictOpen S.W) xW XW YW YW XW := by
+    rw [metricRm04StandardAt_restrictOpen, hXW, hYW]
   have hmetric : D.gQuot.restrictOpen S.W
       = Diffeomorph.pullbackMetric
           ((roundMetric (E := E) (n := n)).restrictOpen S.V) S.s := by
@@ -422,15 +422,15 @@ theorem gQuot_constPosSec :
               exact tangentOpenEquiv_mfderiv_subtype_val S.W r v,
           show tangentOpenEquiv S.W r wQ = w from by
               exact tangentOpenEquiv_mfderiv_subtype_val S.W r w]
-  have hC : metricRm04StdAt (I := 𝓡 n)
+  have hC : metricRm04StandardAt (I := 𝓡 n)
         (Diffeomorph.pullbackMetric
           ((roundMetric (E := E) (n := n)).restrictOpen S.V) S.s) xW XW YW YW XW
-      = metricRm04StdAt (I := 𝓡 n) (roundMetric (E := E) (n := n)) (S.toSphere xW)
+      = metricRm04StandardAt (I := 𝓡 n) (roundMetric (E := E) (n := n)) (S.toSphere xW)
           (mfderiv (𝓡 n) (𝓡 n) S.toSphere xW XW)
           (mfderiv (𝓡 n) (𝓡 n) S.toSphere xW YW)
           (mfderiv (𝓡 n) (𝓡 n) S.toSphere xW YW)
           (mfderiv (𝓡 n) (𝓡 n) S.toSphere xW XW) := by
-    rw [metricRm04StdAt_pullback_localDiffeo (I := 𝓡 n) (roundMetric (E := E) (n := n))
+    rw [metricRm04StandardAt_pullback_localDiffeo (I := 𝓡 n) (roundMetric (E := E) (n := n))
         S.V S.W S.s xW XW YW YW XW,
       S.mfderiv_toSphere_apply xW XW, S.mfderiv_toSphere_apply xW YW]
     rfl

@@ -28,7 +28,7 @@ variable
 
 def IsAdaptedBackgroundLowRegularitySolution (g₀ g_bg : SmoothRiemannianMetric I M)
     (K : LowRegularityBoundParameters) {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+    (u : MaximalRegularitySolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
@@ -45,7 +45,7 @@ namespace IsAdaptedBackgroundLowRegularitySolution
 
 variable {g₀ g_bg : SmoothRiemannianMetric I M} {K : LowRegularityBoundParameters}
   {T Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ} {hT : 0 < T} {hT1 : T ≤ 1}
-  {u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+  {u : MaximalRegularitySolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
     ((1 : ℕ) : ℝ) T}
   {gforce : timeL2
     (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
@@ -90,7 +90,7 @@ theorem absorb
   have hR : 0 ≤ lowRegularityStateRadius K.top K.slope K.outer K.realize :=
     (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg
       K.outer_pos K.realize_pos).le
-  have hdom := energyLadder_absorption_coefficient_le hA hB h.1.hδ0 hR
+  have hdom := energyLadder_absorption_coefficient_le hA hB h.1.threshold_nonneg hR
   exact ⟨ε, hε, by linarith only [hdom, hbudget]⟩
 
 end IsAdaptedBackgroundLowRegularitySolution
@@ -98,7 +98,7 @@ end IsAdaptedBackgroundLowRegularitySolution
 theorem adaptedBackground_of_given
     {g₀ g_bg : SmoothRiemannianMetric I M} {K : LowRegularityBoundParameters}
     {T Rcap : ℝ} {hT : 0 < T} {hT1 : T ≤ 1}
-    {u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+    {u : MaximalRegularitySolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T}
     {gforce : timeL2
       (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}

@@ -16,68 +16,68 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
-structure KLCylIndex (V : Type*) [NormedAddCommGroup V]
+structure KochLammCylinderIndex (V : Type*) [NormedAddCommGroup V]
     [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] (T : ℝ) where
   center : V
   radius : ℝ
   radius_pos : 0 < radius
   time_le : radius ^ 2 ≤ T
 
-def klCylMeasure {T : ℝ} (i : KLCylIndex V T) : Measure (ℝ × V) :=
-  (klVolume : Measure (ℝ × V)).restrict (klCyl i.center i.radius)
+def kochLammCylinderMeasure {T : ℝ} (i : KochLammCylinderIndex V T) : Measure (ℝ × V) :=
+  (kochLammVolume : Measure (ℝ × V)).restrict (kochLammCylinder i.center i.radius)
 
-def klLateMeasure {T : ℝ} (i : KLCylIndex V T) : Measure (ℝ × V) :=
-  (klVolume : Measure (ℝ × V)).restrict (klLateCyl i.center i.radius)
+def kochLammLateMeasure {T : ℝ} (i : KochLammCylinderIndex V T) : Measure (ℝ × V) :=
+  (kochLammVolume : Measure (ℝ × V)).restrict (kochLammLateCylinder i.center i.radius)
 
 variable {F G : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
   [NormedAddCommGroup G] [NormedSpace ℝ G] [CompleteSpace G]
-  [Fact (1 ≤ klP V)] [Fact (klP V ≠ ∞)]
-  [Fact (1 ≤ klQ V)] [Fact (klQ V ≠ ∞)]
+  [Fact (1 ≤ kochLammP V)] [Fact (kochLammP V ≠ ∞)]
+  [Fact (1 ≤ kochLammQ V)] [Fact (kochLammQ V ≠ ∞)]
 
-abbrev KLL2Data (T : ℝ) (G : Type*)
+abbrev KochLammL2Family (T : ℝ) (G : Type*)
     [NormedAddCommGroup G] :=
-  lp (fun i : KLCylIndex V T ↦ Lp G 2 (klCylMeasure i)) ∞
+  lp (fun i : KochLammCylinderIndex V T ↦ Lp G 2 (kochLammCylinderMeasure i)) ∞
 
-abbrev KLLpData (T : ℝ) (G : Type*)
+abbrev KochLammLpFamily (T : ℝ) (G : Type*)
     [NormedAddCommGroup G] :=
-  lp (fun i : KLCylIndex V T ↦ Lp G (klP V) (klLateMeasure i)) ∞
+  lp (fun i : KochLammCylinderIndex V T ↦ Lp G (kochLammP V) (kochLammLateMeasure i)) ∞
 
-abbrev KLL1Data (T : ℝ) (F : Type*)
+abbrev KochLammL1Family (T : ℝ) (F : Type*)
     [NormedAddCommGroup F] :=
-  lp (fun i : KLCylIndex V T ↦ Lp F 1 (klCylMeasure i)) ∞
+  lp (fun i : KochLammCylinderIndex V T ↦ Lp F 1 (kochLammCylinderMeasure i)) ∞
 
-abbrev KLLqData (T : ℝ) (F : Type*)
+abbrev KochLammLqFamily (T : ℝ) (F : Type*)
     [NormedAddCommGroup F] :=
-  lp (fun i : KLCylIndex V T ↦ Lp F (klQ V) (klLateMeasure i)) ∞
+  lp (fun i : KochLammCylinderIndex V T ↦ Lp F (kochLammQ V) (kochLammLateMeasure i)) ∞
 
-abbrev KLPathData (T : ℝ) :=
+abbrev KochLammPathProduct (T : ℝ) :=
   ((Set.Icc (0 : ℝ) T × V) →ᵇ F) ×
-    KLL2Data (V := V) T G × KLLpData (V := V) T G
+    KochLammL2Family (V := V) T G × KochLammLpFamily (V := V) T G
 
-abbrev KLSrc0Data (T : ℝ) :=
-  KLL1Data (V := V) T F × KLLqData (V := V) T F
+abbrev KochLammSourceZeroProduct (T : ℝ) :=
+  KochLammL1Family (V := V) T F × KochLammLqFamily (V := V) T F
 
-abbrev KLSrc1Data (T : ℝ) :=
-  KLL2Data (V := V) T F × KLLpData (V := V) T F
+abbrev KochLammSourceOneProduct (T : ℝ) :=
+  KochLammL2Family (V := V) T F × KochLammLpFamily (V := V) T F
 
 section Complete
 
-omit [NormedSpace ℝ F] [NormedSpace ℝ G] [Fact (klP V ≠ ∞)] [Fact (1 ≤ klQ V)]
-  [Fact (klQ V ≠ ∞)] in
-theorem klPathData_complete (T : ℝ) :
-    CompleteSpace (KLPathData (V := V) (F := F) (G := G) T) := by
+omit [NormedSpace ℝ F] [NormedSpace ℝ G] [Fact (kochLammP V ≠ ∞)] [Fact (1 ≤ kochLammQ V)]
+  [Fact (kochLammQ V ≠ ∞)] in
+theorem kochLammPathProduct_complete (T : ℝ) :
+    CompleteSpace (KochLammPathProduct (V := V) (F := F) (G := G) T) := by
   infer_instance
 
-omit [NormedSpace ℝ F] [NormedSpace ℝ G] [Fact (1 ≤ klP V)] [Fact (klP V ≠ ∞)]
-  [Fact (klQ V ≠ ∞)] in
-theorem klSrc0Data_complete (T : ℝ) :
-    CompleteSpace (KLSrc0Data (V := V) (F := F) T) := by
+omit [NormedSpace ℝ F] [NormedSpace ℝ G] [Fact (1 ≤ kochLammP V)] [Fact (kochLammP V ≠ ∞)]
+  [Fact (kochLammQ V ≠ ∞)] in
+theorem kochLammSourceZeroProduct_complete (T : ℝ) :
+    CompleteSpace (KochLammSourceZeroProduct (V := V) (F := F) T) := by
   infer_instance
 
-omit [NormedSpace ℝ F] [Fact (klP V ≠ ∞)] [Fact (1 ≤ klQ V)] [Fact (klQ V ≠ ∞)] in
-theorem klSrc1Data_complete (T : ℝ) :
-    CompleteSpace (KLSrc1Data (V := V) (F := F) T) := by
+omit [NormedSpace ℝ F] [Fact (kochLammP V ≠ ∞)] [Fact (1 ≤ kochLammQ V)] [Fact (kochLammQ V ≠ ∞)] in
+theorem kochLammSourceOneProduct_complete (T : ℝ) :
+    CompleteSpace (KochLammSourceOneProduct (V := V) (F := F) T) := by
   infer_instance
 
 end Complete

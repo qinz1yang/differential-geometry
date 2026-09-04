@@ -27,7 +27,7 @@ private theorem diffQuot_coeff_cutoff_gradient_pointwise_bound_nonsmooth
     (h_M : ∀ i j : Fin d, ∀ x ∈ closure Ω',
       |(fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single k 1)| ≤ M)
     {h : ℝ}
-    (hh_supp_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω') (x : E) :
+    (hh_support_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω') (x : E) :
     |2 * diffQuot k h (fun y => B.a y i j) x * (η x) *
         ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
         ((g i) x) *
@@ -44,7 +44,7 @@ private theorem diffQuot_coeff_cutoff_gradient_pointwise_bound_nonsmooth
       have hCD : ContDiff ℝ 1 (fun y : E => B.a y i j) :=
         (B.contDiff_a i j).of_le (by norm_cast)
       exact abs_diffQuot_a_le_of_bound_on_set (d := d) hCD k h
-        (h_M i j) ((singleton_cthick_subset (d := d) η hh_supp_in_Ω' (le_refl _) hx).trans
+        (h_M i j) ((singleton_cthick_subset (d := d) η hh_support_in_Ω' (le_refl _) hx).trans
           subset_closure)
     have h_dη_bound : |(fderiv ℝ η x) (EuclideanSpace.single j 1)| ≤ N := by
       have hsing_norm :
@@ -198,7 +198,7 @@ private lemma integrable_cross_3_summand_nonsmooth
     {u : E → ℝ} (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (i j k : Fin d) {h : ℝ} (hh : h ≠ 0) :
     Integrable (fun x : E =>
       2 * diffQuot k h (fun y => B.a y i j) x * (η x) *
@@ -219,14 +219,14 @@ private lemma integrable_cross_3_summand_nonsmooth
       ((fderiv ℝ η x) (EuclideanSpace.single j 1)) with hf₃_def
   have hf₃_cont : Continuous f₃ :=
     ((continuous_const.mul h_dq_a).mul hη.continuous).mul h_partial_η
-  have hf₃_supp : HasCompactSupport f₃ := by
+  have hf₃_support : HasCompactSupport f₃ := by
     have h_step1 : HasCompactSupport (fun x : E =>
         2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (fun y : E => B.a y i j) x * (η x)) := by
-      exact hη_supp.mul_left
+      exact hη_support.mul_left
     exact h_step1.mul_right
   obtain ⟨M, hM_nn, hM⟩ :=
-    exists_bound_of_continuous_compactSupport hf₃_cont hf₃_supp
+    exists_bound_of_continuous_compactSupport hf₃_cont hf₃_support
   have h_dq_u_l2 : MemLp (diffQuot k h u) 2 (volume : Measure E) :=
     memLp_diffQuot_two k h hu_l2
   have hf₃_gi_l2 : MemLp (fun x => f₃ x * (g i) x) 2
@@ -347,13 +347,13 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E}
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -400,7 +400,7 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative
     refine mul_nonneg ?_ hN
     exact mul_nonneg (by linarith) hM_nn
   intro h hh hh_le
-  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_supp_in_Ω' hh_le
+  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_support_in_Ω' hh_le
   have h_each_pointwise := fun (i j : Fin d) (x : E) =>
     diffQuot_coeff_cutoff_gradient_pointwise_bound_nonsmooth (d := d) B u g hη_range h_fderiv_eta i
       j k hM_nn h_M
@@ -426,7 +426,7 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative
         ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
         ((g i) x) *
         diffQuot k h u x) volume :=
-    fun i j => integrable_cross_3_summand_nonsmooth (d := d) B hu_l2 hg_l2 hη hη_supp
+    fun i j => integrable_cross_3_summand_nonsmooth (d := d) B hu_l2 hg_l2 hη hη_support
       i j k hh
   have h_pt_bound1_int : ∀ i : Fin d, Integrable (fun x : E =>
       M * N *
@@ -437,7 +437,7 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative
       M * N *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
         (diffQuot k h u x)^2) volume :=
-    integrable_const_indicator_diffQuot_u_sq (d := d) hu_l2 hη_supp k h (M * N)
+    integrable_const_indicator_diffQuot_u_sq (d := d) hu_l2 hη_support k h (M * N)
   have h_pt_bound_int : ∀ i j : Fin d, Integrable (fun x : E =>
       M * N *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
@@ -726,13 +726,13 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E}
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -766,7 +766,7 @@ theorem diffQuot_coeff_cutoff_gradient_bound_nonsmooth
     exact mul_nonneg (by linarith) hM_nn
   · intro h hh hh_le
     exact diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-      hη hη_supp hη_range hN h_fderiv_eta hΩ'_compact hh_supp_in_Ω' k
+      hη hη_support hη_range hN h_fderiv_eta hΩ'_compact hh_support_in_Ω' k
       h_FK_diffQuot_u_bound hh hh_le
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBoundsNonSmooth

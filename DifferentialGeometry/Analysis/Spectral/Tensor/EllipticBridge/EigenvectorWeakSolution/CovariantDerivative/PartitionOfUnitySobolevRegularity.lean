@@ -44,25 +44,25 @@ private lemma memWkp_of_hasWeakPartialDeriv
     {K : ℕ} {Ω : Set EuclN} (hΩ : IsOpen Ω)
     {k : Fin (Module.finrank ℝ E)} {gfun u : EuclN → ℝ}
     (hg_weak : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k gfun u Ω)
-    (hg_loc : LocallyIntegrable gfun ((volume : Measure EuclN).restrict Ω))
+    (hg_local : LocallyIntegrable gfun ((volume : Measure EuclN).restrict Ω))
     (hu : MemWkp (d := Module.finrank ℝ E) (K + 1) 2 u Ω) :
     MemWkp (d := Module.finrank ℝ E) K 2 gfun Ω := by
   classical
   have hu_W1 : DeGiorgi.MemW1p 2 u Ω := hu.memW1p
   have h_chosen_weak : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u Ω) u Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem (d := Module.finrank ℝ E) hu_W1 k
-  have h_chosen_loc : LocallyIntegrable
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u Ω)
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u Ω) u Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem (d := Module.finrank ℝ E) hu_W1 k
+  have h_chosen_local : LocallyIntegrable
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u Ω)
       ((volume : Measure EuclN).restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem (d := Module.finrank ℝ E) hu_W1 k).locallyIntegrable
+    (chosenWeakPartialOrZero_memLp_of_mem (d := Module.finrank ℝ E) hu_W1 k).locallyIntegrable
       (by norm_num)
   have h_ae : gfun =ᵐ[(volume : Measure EuclN).restrict Ω]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u Ω :=
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u Ω :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq (d := Module.finrank ℝ E) hΩ
-      hg_weak h_chosen_weak hg_loc h_chosen_loc
+      hg_weak h_chosen_weak hg_local h_chosen_local
   have h_chosen_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u Ω) Ω :=
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u Ω) Ω :=
     hu.chosenWeakPartial_mem k
   exact (MemWkp_congr_ae (d := Module.finrank ℝ E)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ h_ae).mpr h_chosen_memWkp
@@ -96,13 +96,13 @@ private lemma memWkp_coef_mul_factor
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport χ
-    · have hy_chart : y ∈ Ω := hχ_tsupp hy_supp
+    by_cases hy_support : y ∈ tsupport χ
+    · have hy_chart : y ∈ Ω := hχ_tsupp hy_support
       exact hχ_smooth.contDiffAt.mul
         ((hcoef_chart y hy_chart).contDiffAt (hΩ_open.mem_nhds hy_chart))
     · have h_eq_zero : (fun y => χ y * coef y)
           =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_open_compl.mem_nhds hy_supp] with z hz
+        filter_upwards [h_open_compl.mem_nhds hy_support] with z hz
         rw [image_eq_zero_of_notMem_tsupport hz, zero_mul]
       exact contDiffAt_const.congr_of_eventuallyEq h_eq_zero
   have hχ_coef_cs : HasCompactSupport (fun y => χ y * coef y) :=
@@ -286,7 +286,7 @@ private lemma eigenvectorChartWeakPartial_memWkp
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     eigenvectorChartWeakPartial_hasWeakPartialDeriv (I := I) (M := M)
       g r s i β P k
-  have hg_loc : LocallyIntegrable
+  have hg_local : LocallyIntegrable
       (eigenvectorChartWeakPartial (I := I) (M := M) g r s i β P k)
       ((volume : Measure EuclN).restrict Ω) := by
     have h_memLp : MemLp (eigenvectorChartWeakPartial (I := I)
@@ -295,7 +295,7 @@ private lemma eigenvectorChartWeakPartial_memWkp
       rw [eigenvectorChartWeakPartial]
       exact Lp.memLp _
     exact h_memLp.locallyIntegrable (by norm_num)
-  exact memWkp_of_hasWeakPartialDeriv (K := K) hΩ_open hg_weak hg_loc hu
+  exact memWkp_of_hasWeakPartialDeriv (K := K) hΩ_open hg_weak hg_local hu
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
@@ -317,18 +317,18 @@ private lemma covGradPouLeibnizCrossLimit_memWkp
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) β with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) β
-  have hpou_supp : tsupport
+  have hpou_support : tsupport
       ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆ (chartAt H β).source :=
     chartAtlasPOU_isSubordinate I M β
   have hpou_pushed_smooth : ContDiff ℝ ∞
       (chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
     Analysis.Laplacian.SmoothFChartResidualBilinearBound.chartPushedRaw_contDiff
       (I := I) (M := M)
-      (chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯).contMDiff hpou_supp
+      (chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯).contMDiff hpou_support
   have hpou_pushed_cs : HasCompactSupport
       (chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
     chartPushedRaw_smooth_hasCompactSupport_local
-      (I := I) (M := M) hpou_supp
+      (I := I) (M := M) hpou_support
   have hmult_smooth : ContDiff ℝ ∞
       (euclidPartial (E := E) k
         (chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ))) :=

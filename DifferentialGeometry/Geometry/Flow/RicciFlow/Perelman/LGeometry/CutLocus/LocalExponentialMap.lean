@@ -72,7 +72,7 @@ theorem lExpTime_local
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (tau : Real)
     (hdom : (Z, tau) ∈ lExpPosDom S T x)
-    (hconj : ¬ IsLConj S T x Z tau) :
+    (hconj : ¬ IsLConjugate S T x Z tau) :
     IsLocalDiffeomorphAt
       (𝓘(Real, E).prod 𝓘(Real, Real))
       (I.prod 𝓘(Real, Real)) ∞

@@ -213,15 +213,15 @@ theorem closedCellPermute_zero {n : ℕ} (e : Fin n ≃ Fin n) :
   ext j
   simp
 
-theorem closedCellPermute_inv {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
+theorem closedCellPermute_left_inv {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
     closedCellPermute e.symm (closedCellPermute e x) = x := by
   ext j
   rw [closedCellPermute_apply, closedCellPermute_apply]
   simp
 
-theorem closedCellPermute_inv' {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
+theorem closedCellPermute_right_inv {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n)) :
     closedCellPermute e (closedCellPermute e.symm x) = x := by
-  simpa [Equiv.symm_symm] using closedCellPermute_inv e.symm x
+  simpa [Equiv.symm_symm] using closedCellPermute_left_inv e.symm x
 
 theorem closedCellPermute_coord_ne_zero {n : ℕ} (e : Fin (n + 1) ≃ Fin (n + 1))
     {s : ℝ} {x : EuclideanSpace ℝ (Fin (n + 1))}
@@ -246,7 +246,7 @@ theorem closedCellPermute_symm_eq {n : ℕ} (e : Fin n ≃ Fin n) :
     (closedCellPermute e) ((closedCellPermute e).symm x) = x :=
       (closedCellPermute e).apply_symm_apply x
     _ = (closedCellPermute e) (closedCellPermute e.symm x) :=
-      by simpa using (closedCellPermute_inv e.symm x).symm
+      by simpa using (closedCellPermute_left_inv e.symm x).symm
 
 theorem closedCellPermute_symm_apply {n : ℕ} (e : Fin n ≃ Fin n) (x : EuclideanSpace ℝ (Fin n))
     (j : Fin n) : (closedCellPermute e).symm x j = x (e j) := by
@@ -357,7 +357,7 @@ theorem closedCellShiftSucc_eq_add {n : ℕ} (c : ℝ) (x : EuclideanSpace ℝ (
     rw [if_neg hj']
     ring
 
-theorem closedCellShiftSucc_neg (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
+theorem closedCellShiftSucc_neg_left_inv (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
     closedCellShiftSucc n (-c) (closedCellShiftSucc n c x) = x := by
   ext j
   by_cases hj : j = (0)
@@ -368,7 +368,7 @@ theorem closedCellShiftSucc_neg (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin
     rw [closedCellShiftSucc_apply_of_ne (-c) (closedCellShiftSucc n c x) hnot]
     exact closedCellShiftSucc_apply_of_ne c x hnot
 
-theorem closedCellShiftSucc_neg' (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
+theorem closedCellShiftSucc_neg_right_inv (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
     closedCellShiftSucc n c (closedCellShiftSucc n (-c) x) = x := by
   ext j
   by_cases hj : j = (0)
@@ -441,7 +441,7 @@ noncomputable def closedCellInteriorChart (n : ℕ) :
     intro x hx
     change ‖closedCellShiftSucc n (-1) (closedCellInteriorChartValue n x).1‖ < 1
     rw [closedCellInteriorChartValue_coe]
-    rw [closedCellShiftSucc_neg n 1 x.1]
+    rw [closedCellShiftSucc_neg_left_inv n 1 x.1]
     exact hx
   map_target' := by
     intro y hy
@@ -452,14 +452,14 @@ noncomputable def closedCellInteriorChart (n : ℕ) :
     intro x hx
     apply Subtype.ext
     rw [closedCellInteriorChartValue_coe]
-    rw [closedCellShiftSucc_neg n 1 x.1]
+    rw [closedCellShiftSucc_neg_left_inv n 1 x.1]
     rw [closedCellProject_of_mem (le_of_lt hx)]
   right_inv' := by
     intro y hy
     apply Subtype.ext
     rw [closedCellInteriorChartValue_coe]
     rw [closedCellProject_of_mem (le_of_lt hy)]
-    rw [closedCellShiftSucc_neg' n 1 y.1]
+    rw [closedCellShiftSucc_neg_right_inv n 1 y.1]
   continuousOn_toFun := by
     have hcont : Continuous (fun x : ClosedCell (n + 1) =>
         closedCellShiftSucc n 1 x.1) := by
@@ -642,7 +642,7 @@ noncomputable def closedCellBoundaryChart (n : ℕ) (i : Fin (n + 1)) (σ : Bool
     change 0 < s * (closedCellPermute e (closedCellBoundaryInvValue n e s y.1))
       (0)
     dsimp [closedCellBoundaryInvValue]
-    rw [closedCellPermute_inv']
+    rw [closedCellPermute_right_inv]
     rw [closedCellCons_apply_zero]
     change 0 < s * (s * Real.sqrt (1 - y.1 (0) - ‖closedCellTail n y.1‖ ^ 2))
     rw [← mul_assoc, hss, one_mul]
@@ -708,7 +708,7 @@ noncomputable def closedCellBoundaryChart (n : ℕ) (i : Fin (n + 1)) (σ : Bool
     change (closedCellPermute e.symm (closedCellCons n ((closedCellPermute e x.1) (0))
         (closedCellTail n (closedCellPermute e x.1)))) = x.1
     rw [closedCellCons_split n (closedCellPermute e x.1)]
-    exact closedCellPermute_inv e x.1
+    exact closedCellPermute_left_inv e x.1
   · intro y hy
     apply Subtype.ext
     rw [closedCellBoundaryChartValue_coe]
@@ -716,7 +716,7 @@ noncomputable def closedCellBoundaryChart (n : ℕ) (i : Fin (n + 1)) (σ : Bool
       closedCellBoundaryInvValue_norm_le_one e hs y.1 hy.2 y.2
     rw [closedCellProject_of_mem hzle]
     dsimp [closedCellBoundaryInvValue]
-    rw [closedCellPermute_inv']
+    rw [closedCellPermute_right_inv]
     rw [closedCellCons_tail]
     have hnorm : ‖closedCellPermute e.symm (closedCellCons n
         (s * Real.sqrt (1 - y.1 (0) - ‖closedCellTail n y.1‖ ^ 2))

@@ -85,15 +85,15 @@ theorem normal_chart_at_cont_mdiff_at_infty
     hF_cd.toOpenPartialHomeomorph (χ ∘ fexp) hF_fderiv hne with hΦ
   have hloc_eq : hF_cd.localInverse hF_fderiv hne = Φ.symm := rfl
   rw [hloc_eq] at hinv
-  have hv₀_Φsrc : v₀ ∈ Φ.source :=
+  have hv₀_Φsource : v₀ ∈ Φ.source :=
     hF_cd.mem_toOpenPartialHomeomorph_source hF_fderiv hne
-  have hv₀_src : v₀ ∈ (expMapDiffeo (I := I) g p).source := by
+  have hv₀_source : v₀ ∈ (expMapDiffeo (I := I) g p).source := by
     have h := ball_subset_normalChartAt_target (I := I) g p hv₀
     rwa [normalChartAt_target_eq] at h
-  have hq_tgt : q ∈ (expMapDiffeo (I := I) g p).target := by
+  have hq_target : q ∈ (expMapDiffeo (I := I) g p).target := by
     have hev : expMapDiffeo (I := I) g p v₀ = q := by
-      rw [expMapDiffeo_apply_eq (I := I) g p hv₀_src]
-    rw [← hev]; exact (expMapDiffeo (I := I) g p).map_source hv₀_src
+      rw [expMapDiffeo_apply_eq (I := I) g p hv₀_source]
+    rw [← hev]; exact (expMapDiffeo (I := I) g p).map_source hv₀_source
   have hsymm_cm : ContMDiffAt 𝓘(ℝ, E) 𝓘(ℝ, E) ∞ Φ.symm (χ q) :=
     (contMDiffAt_iff_contDiffAt).mpr hinv
   have hcomp : ContMDiffAt I 𝓘(ℝ, E) ∞ (Φ.symm ∘ χ) q := hsymm_cm.comp q hχ_cd
@@ -101,12 +101,12 @@ theorem normal_chart_at_cont_mdiff_at_infty
     hF_cd.toOpenPartialHomeomorph_coe hF_fderiv hne
   have hncq : normalChartAt (I := I) g p q = v₀ := by
     have hv₀_nctgt : v₀ ∈ (normalChartAt (I := I) g p).target := by
-      rw [normalChartAt_target_eq]; exact hv₀_src
+      rw [normalChartAt_target_eq]; exact hv₀_source
     have hq_eq : q = (normalChartAt (I := I) g p).symm v₀ := by
       rw [normalChartAt_symm_apply (I := I) g p hv₀_nctgt]
     rw [hq_eq]; exact normalChartAt_right_inv (I := I) g p hv₀_nctgt
-  have hq_src : q ∈ (normalChartAt (I := I) g p).source := by
-    rw [normalChartAt_source_eq]; exact hq_tgt
+  have hq_source : q ∈ (normalChartAt (I := I) g p).source := by
+    rw [normalChartAt_source_eq]; exact hq_target
   have heqEv : normalChartAt (I := I) g p =ᶠ[nhds q] (Φ.symm ∘ χ) := by
     have hUopen : IsOpen ((normalChartAt (I := I) g p).source ∩
         normalChartAt (I := I) g p ⁻¹' Φ.source) :=
@@ -114,17 +114,17 @@ theorem normal_chart_at_cont_mdiff_at_infty
         (normalChartAt (I := I) g p).open_source Φ.open_source
     have hqU : q ∈ (normalChartAt (I := I) g p).source ∩
         normalChartAt (I := I) g p ⁻¹' Φ.source :=
-      ⟨hq_src, by rw [Set.mem_preimage, hncq]; exact hv₀_Φsrc⟩
+      ⟨hq_source, by rw [Set.mem_preimage, hncq]; exact hv₀_Φsource⟩
     refine Filter.eventuallyEq_of_mem (hUopen.mem_nhds hqU) (fun q' hq' => ?_)
-    obtain ⟨hq'_src, hq'_pre⟩ := hq'
+    obtain ⟨hq'_source, hq'_pre⟩ := hq'
     rw [Set.mem_preimage] at hq'_pre
     set v' := normalChartAt (I := I) g p q' with hv'def
     have hv'_symmsrc : v' ∈ (normalChartAt (I := I) g p).symm.source :=
-      (normalChartAt (I := I) g p).map_source hq'_src
+      (normalChartAt (I := I) g p).map_source hq'_source
     have hfv' : fexp v' = q' := by
       change (expMap (I := I) g p (show TangentSpace I p from v') : M) = q'
       rw [← normalChartAt_symm_apply (I := I) g p hv'_symmsrc]
-      exact normalChartAt_left_inv (I := I) g p hq'_src
+      exact normalChartAt_left_inv (I := I) g p hq'_source
     have hΦv' : Φ v' = χ q' := by
       have hc : (χ ∘ fexp) v' = χ q' := by rw [Function.comp_apply, hfv']
       rw [hΦcoe]; exact hc

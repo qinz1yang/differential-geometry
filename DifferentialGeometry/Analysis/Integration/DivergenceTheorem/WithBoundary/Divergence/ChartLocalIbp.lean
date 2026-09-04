@@ -41,27 +41,27 @@ private def chartImageOfTsupport (α : M) (φ : M → ℝ) : Set E :=
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma chartImageOfTsupport_isCompact
     (α : M) {φ : M → ℝ}
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source) :
     IsCompact (chartImageOfTsupport (I := I) α φ) := by
   unfold chartImageOfTsupport
   have hcontOn : ContinuousOn (extChartAt I α) (tsupport φ) := by
     refine (continuousOn_extChartAt (I := I) α).mono ?_
     intro x hx
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hφ_supp hx
-  exact (hφ_compactSupp : IsCompact (tsupport φ)).image_of_continuousOn hcontOn
+    exact hφ_support hx
+  exact (hφ_compactSupport : IsCompact (tsupport φ)).image_of_continuousOn hcontOn
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma chartImageOfTsupport_subset_target
     (α : M) {φ : M → ℝ}
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source) :
     chartImageOfTsupport (I := I) α φ ⊆ (extChartAt I α).target := by
   intro y hy
   rcases hy with ⟨x, hxsupp, hxy⟩
   have hxsrc : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hφ_supp hxsupp
+    exact hφ_support hxsupp
   have : (extChartAt I α) x ∈ (extChartAt I α).target :=
     (extChartAt I α).map_source hxsrc
   rwa [hxy] at this
@@ -69,23 +69,23 @@ private lemma chartImageOfTsupport_subset_target
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma chartImageOfTsupport_isClosed
     (α : M) {φ : M → ℝ}
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source) :
     IsClosed (chartImageOfTsupport (I := I) α φ) :=
-  (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupp hφ_supp).isClosed
+  (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupport hφ_support).isClosed
 
 omit [Module.Finite ℝ E] in
 private lemma chartImageOfTsupport_subset_interior_target
     (α : M) {φ : M → ℝ}
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M) :
     chartImageOfTsupport (I := I) α φ ⊆ interior (extChartAt I α).target := by
   intro y hy
   rcases hy with ⟨x, hxsupp, hxy⟩
-  have hx_src : x ∈ (chartAt H α).source := hφ_supp hxsupp
+  have hx_source : x ∈ (chartAt H α).source := hφ_support hxsupp
   have hx_int : x ∈ I.interior M := hφ_int hxsupp
   have h := extChartAt_mem_interior_target_of_isInteriorPoint
-    (I := I) (M := M) α hx_src hx_int
+    (I := I) (M := M) α hx_source hx_int
   rwa [hxy] at h
 
 private def vwIntegrandOnE
@@ -199,20 +199,20 @@ private lemma phiOnE_support_subset_chartImage
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma phiOnE_tsupport_subset_chartImage
     (α : M) {φ : M → ℝ}
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source) :
     tsupport (phiOnE (I := I) α φ) ⊆ chartImageOfTsupport (I := I) α φ := by
   refine closure_minimal (phiOnE_support_subset_chartImage (I := I) α φ) ?_
-  exact chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp
+  exact chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma phiOnE_hasCompactSupport
     (α : M) {φ : M → ℝ}
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source) :
     HasCompactSupport (phiOnE (I := I) α φ) := by
   refine HasCompactSupport.intro
-    (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupp hφ_supp) ?_
+    (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupport hφ_support) ?_
   intro y hy
   by_cases hyT : y ∈ (extChartAt I α).target
   · rw [phiOnE_apply_of_mem (I := I) α φ hyT]
@@ -226,16 +226,16 @@ private lemma phiOnE_hasCompactSupport
 omit [Module.Finite ℝ E] in
 private lemma phiOnE_contDiff
     (α : M) {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M) :
     ContDiff ℝ ∞ (phiOnE (I := I) α φ) := by
   refine contDiff_of_smooth_on_open_zero_outside
     (U := interior (extChartAt I α).target)
     isOpen_interior
     (K := chartImageOfTsupport (I := I) α φ)
-    (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp)
-    (chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int) ?_ ?_
+    (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support)
+    (chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int) ?_ ?_
   · exact phiOnE_contDiffOn_interior_target (I := I) α hφ
   · intro y hy
     by_cases hyT : y ∈ (extChartAt I α).target
@@ -275,8 +275,8 @@ private theorem ibp_per_index
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M)
     (i : Fin (Module.finrank ℝ E)) :
     ∫ y, vwIntegrandOnE (I := I) g α X i y *
@@ -287,15 +287,15 @@ private theorem ibp_per_index
           phiOnE (I := I) α φ y
         ∂(modelHaar (E := E)) := by
   have hphi_smooth : ContDiff ℝ ∞ (phiOnE (I := I) α φ) :=
-    phiOnE_contDiff (I := I) α hφ hφ_compactSupp hφ_supp hφ_int
-  have hphi_compactSupp : HasCompactSupport (phiOnE (I := I) α φ) :=
-    phiOnE_hasCompactSupport (I := I) α hφ_compactSupp hφ_supp
+    phiOnE_contDiff (I := I) α hφ hφ_compactSupport hφ_support hφ_int
+  have hphi_compactSupport : HasCompactSupport (phiOnE (I := I) α φ) :=
+    phiOnE_hasCompactSupport (I := I) α hφ_compactSupport hφ_support
   have hvw_diff_on_interior :=
     vwIntegrandOnE_differentiableOn_interior_target (I := I) g α X i
   have hphi_tsupp_in_interior_target : tsupport (phiOnE (I := I) α φ) ⊆
       interior (extChartAt I α).target := by
-    refine (phiOnE_tsupport_subset_chartImage (I := I) α hφ_compactSupp hφ_supp).trans ?_
-    exact chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int
+    refine (phiOnE_tsupport_subset_chartImage (I := I) α hφ_compactSupport hφ_support).trans ?_
+    exact chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int
   have hvw_diff_tsupp_phi : ∀ y ∈ tsupport (phiOnE (I := I) α φ),
       DifferentiableAt ℝ (vwIntegrandOnE (I := I) g α X i) y :=
     fun y hy => hvw_diff_on_interior y (hphi_tsupp_in_interior_target hy)
@@ -311,10 +311,10 @@ private theorem ibp_per_index
       (U := interior (extChartAt I α).target)
       isOpen_interior
       (K := chartImageOfTsupport (I := I) α φ)
-      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp)
-      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int) ?_ ?_
+      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support)
+      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int) ?_ ?_
     · exact (vwIntegrandOnE_contDiffOn_interior_target (I := I) g α X i).mul
-        ((phiOnE_contDiff (I := I) α hφ hφ_compactSupp hφ_supp hφ_int).contDiffOn)
+        ((phiOnE_contDiff (I := I) α hφ hφ_compactSupport hφ_support hφ_int).contDiffOn)
     · intro y hy
       have hphi_zero : phiOnE (I := I) α φ y = 0 := by
         by_cases hyT : y ∈ (extChartAt I α).target
@@ -324,13 +324,13 @@ private theorem ibp_per_index
           exact hy ⟨(extChartAt I α).symm y, this, (extChartAt I α).right_inv hyT⟩
         · exact phiOnE_apply_of_notMem (I := I) α φ hyT
       rw [hphi_zero, mul_zero]
-  have hI1_compactSupp : HasCompactSupport
+  have hI1_compactSupport : HasCompactSupport
       (fun y => vwIntegrandOnE (I := I) g α X i y * phiOnE (I := I) α φ y) :=
-    hphi_compactSupp.mul_left
+    hphi_compactSupport.mul_left
   have hfg_int : Integrable
       (fun y => vwIntegrandOnE (I := I) g α X i y * phiOnE (I := I) α φ y)
       (modelHaar (E := E)) :=
-    hI1_smooth.continuous.integrable_of_hasCompactSupport hI1_compactSupp
+    hI1_smooth.continuous.integrable_of_hasCompactSupport hI1_compactSupport
   have hI2_smooth : ContDiff ℝ ∞
       (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) * phiOnE (I := I) α φ y) := by
@@ -338,8 +338,8 @@ private theorem ibp_per_index
       (U := interior (extChartAt I α).target)
       isOpen_interior
       (K := chartImageOfTsupport (I := I) α φ)
-      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp)
-      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int) ?_ ?_
+      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support)
+      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int) ?_ ?_
     · have hvw_fderiv : ContDiffOn ℝ ∞
           (fderiv ℝ (vwIntegrandOnE (I := I) g α X i))
           (interior (extChartAt I α).target) :=
@@ -351,7 +351,7 @@ private theorem ibp_per_index
           (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) (interior (extChartAt I α).target) :=
         hvw_fderiv.clm_apply hbasis_const
-      exact hpartial.mul ((phiOnE_contDiff (I := I) α hφ hφ_compactSupp hφ_supp hφ_int).contDiffOn)
+      exact hpartial.mul ((phiOnE_contDiff (I := I) α hφ hφ_compactSupport hφ_support hφ_int).contDiffOn)
     · intro y hy
       have hphi_zero : phiOnE (I := I) α φ y = 0 := by
         by_cases hyT : y ∈ (extChartAt I α).target
@@ -361,15 +361,15 @@ private theorem ibp_per_index
           exact hy ⟨(extChartAt I α).symm y, this, (extChartAt I α).right_inv hyT⟩
         · exact phiOnE_apply_of_notMem (I := I) α φ hyT
       rw [hphi_zero, mul_zero]
-  have hI2_compactSupp : HasCompactSupport
+  have hI2_compactSupport : HasCompactSupport
       (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) * phiOnE (I := I) α φ y) :=
-    hphi_compactSupp.mul_left
+    hphi_compactSupport.mul_left
   have hf'g_int : Integrable
       (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) * phiOnE (I := I) α φ y)
       (modelHaar (E := E)) :=
-    hI2_smooth.continuous.integrable_of_hasCompactSupport hI2_compactSupp
+    hI2_smooth.continuous.integrable_of_hasCompactSupport hI2_compactSupport
   have hI3_smooth : ContDiff ℝ ∞
       (fun y => vwIntegrandOnE (I := I) g α X i y *
           fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
@@ -377,8 +377,8 @@ private theorem ibp_per_index
       (U := interior (extChartAt I α).target)
       isOpen_interior
       (K := chartImageOfTsupport (I := I) α φ)
-      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp)
-      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int) ?_ ?_
+      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support)
+      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int) ?_ ?_
     · have hphi_smooth_total : ContDiff ℝ ∞ (phiOnE (I := I) α φ) := hphi_smooth
       have hphi_fderiv_total : ContDiff ℝ ∞ (fderiv ℝ (phiOnE (I := I) α φ)) := by
         have := hphi_smooth_total.fderiv_right (m := ∞) (by rw [ENat.coe_top_add_one])
@@ -394,7 +394,7 @@ private theorem ibp_per_index
       exact (vwIntegrandOnE_contDiffOn_interior_target (I := I) g α X i).mul hpartial
     · intro y hy
       have hKc_open : IsOpen (chartImageOfTsupport (I := I) α φ)ᶜ :=
-        (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp).isOpen_compl
+        (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support).isOpen_compl
       have hphi_zero_on_nhd : phiOnE (I := I) α φ =ᶠ[𝓝 y] (fun _ => (0 : ℝ)) := by
         filter_upwards [hKc_open.mem_nhds hy] with z hz
         by_cases hzT : z ∈ (extChartAt I α).target
@@ -413,14 +413,14 @@ private theorem ibp_per_index
         rfl
       rw [hfderiv_const_zero]
       simp
-  have hI3_compactSupp : HasCompactSupport
+  have hI3_compactSupport : HasCompactSupport
       (fun y => vwIntegrandOnE (I := I) g α X i y *
           fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
     refine HasCompactSupport.intro
-      (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupp hφ_supp) ?_
+      (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupport hφ_support) ?_
     intro y hy
     have hKc_open : IsOpen (chartImageOfTsupport (I := I) α φ)ᶜ :=
-      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp).isOpen_compl
+      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support).isOpen_compl
     have hphi_zero_on_nhd : phiOnE (I := I) α φ =ᶠ[𝓝 y] (fun _ => (0 : ℝ)) := by
       filter_upwards [hKc_open.mem_nhds hy] with z hz
       by_cases hzT : z ∈ (extChartAt I α).target
@@ -443,7 +443,7 @@ private theorem ibp_per_index
       (fun y => vwIntegrandOnE (I := I) g α X i y *
           fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
       (modelHaar (E := E)) :=
-    hI3_smooth.continuous.integrable_of_hasCompactSupport hI3_compactSupp
+    hI3_smooth.continuous.integrable_of_hasCompactSupport hI3_compactSupport
   exact integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable hf'g_int hfg'_int hfg_int
     hvw_diff_tsupp_phi hphi_diff_tsupp_vw
 
@@ -457,7 +457,7 @@ private lemma localDivergenceWithin_mul_phi_measurable
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ_cont : Continuous φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source) :
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source) :
     Measurable (fun x => localDivergenceWithin (I := I) g α X x * φ x) := by
   set s : Set M := (chartAt H α).source
   have hs_open : IsOpen s := (chartAt H α).open_source
@@ -470,7 +470,7 @@ private lemma localDivergenceWithin_mul_phi_measurable
     hldiv_cont_s.mul hφ_cont_s
   have h_zero_off : ∀ x ∉ s, localDivergenceWithin (I := I) g α X x * φ x = 0 := by
     intro x hx
-    have hxsupp : x ∉ tsupport φ := fun h => hx (hφ_supp h)
+    have hxsupp : x ∉ tsupport φ := fun h => hx (hφ_support h)
     have : φ x = 0 := by
       by_contra hne
       exact hxsupp (subset_tsupport _ hne)
@@ -494,7 +494,7 @@ private lemma localDivergenceWithin_mul_phi_measurable
 private lemma tangentSectionAction_measurable
     (α : M) (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M) :
     Measurable (tangentSectionAction (I := I) X φ) := by
   have h_zero_off : ∀ x, x ∉ tsupport φ →
@@ -517,12 +517,12 @@ private lemma tangentSectionAction_measurable
         (extChartAt I α).source ∩
           (extChartAt I α) ⁻¹' interior (extChartAt I α).target := by
       intro x hx
-      have hx_src : x ∈ (chartAt H α).source := hφ_supp hx
+      have hx_source : x ∈ (chartAt H α).source := hφ_support hx
       have hx_intM : x ∈ I.interior M := hφ_int hx
       refine ⟨?_, ?_⟩
-      · rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_src
+      · rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_source
       · exact extChartAt_mem_interior_target_of_isInteriorPoint
-          (I := I) (M := M) α hx_src hx_intM
+          (I := I) (M := M) α hx_source hx_intM
     have h_cmd := (tangentSectionAction_contMDiffOn (I := I) α X hφ).mono
       h_in_smooth_domain
     exact h_cmd.continuousOn
@@ -567,9 +567,9 @@ private lemma localDivergenceWithin_mul_phi_pullback_eq_on_chartImage
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ}
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M)
-    {y : E} (hy_img : y ∈ chartImageOfTsupport (I := I) α φ) :
+    {y : E} (hy_image : y ∈ chartImageOfTsupport (I := I) α φ) :
     chartDensity (I := I) g α ((extChartAt I α).symm y) *
       (localDivergenceWithin (I := I) g α X ((extChartAt I α).symm y) *
         φ ((extChartAt I α).symm y)) =
@@ -578,9 +578,9 @@ private lemma localDivergenceWithin_mul_phi_pullback_eq_on_chartImage
         phiOnE (I := I) α φ y := by
   classical
   have hyT : y ∈ (extChartAt I α).target :=
-    chartImageOfTsupport_subset_target (I := I) α hφ_supp hy_img
+    chartImageOfTsupport_subset_target (I := I) α hφ_support hy_image
   have hy_int : y ∈ interior (extChartAt I α).target :=
-    chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int hy_img
+    chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int hy_image
   have hsymm : (extChartAt I α) ((extChartAt I α).symm y) = y :=
     (extChartAt I α).right_inv hyT
   have hsymmsrc : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
@@ -620,7 +620,7 @@ private lemma lhs_chart_target
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M) :
     ∫ x, localDivergenceWithin (I := I) g α X x * φ x
         ∂(chartLocalMeasure (I := I) g α) =
@@ -631,7 +631,7 @@ private lemma lhs_chart_target
   classical
   set h : M → ℝ := fun x => localDivergenceWithin (I := I) g α X x * φ x with hh_def
   have hh_meas : Measurable h :=
-    localDivergenceWithin_mul_phi_measurable (I := I) g α X hφ.continuous hφ_supp
+    localDivergenceWithin_mul_phi_measurable (I := I) g α X hφ.continuous hφ_support
   rw [integral_chartLocalMeasure (I := I) g α h hh_meas]
   have hT_meas := measurableSet_extChartAt_target (I := I) α
   rw [show ∫ y, (∑ i : Fin (Module.finrank ℝ E),
@@ -645,11 +645,11 @@ private lemma lhs_chart_target
         ∂(modelHaar (E := E)) from ?_]
   · refine setIntegral_congr_fun hT_meas ?_
     intro y hyT
-    by_cases hy_img : y ∈ chartImageOfTsupport (I := I) α φ
+    by_cases hy_image : y ∈ chartImageOfTsupport (I := I) α φ
     · have hy_int : y ∈ interior (extChartAt I α).target :=
-        chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int hy_img
+        chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int hy_image
       have heq := localDivergenceWithin_mul_phi_pullback_eq_on_chartImage
-        (I := I) g α X hφ_supp hφ_int hy_img
+        (I := I) g α X hφ_support hφ_int hy_image
       change chartDensity (I := I) g α ((extChartAt I α).symm y) *
           h ((extChartAt I α).symm y) = _
       change chartDensity (I := I) g α ((extChartAt I α).symm y) *
@@ -658,7 +658,7 @@ private lemma lhs_chart_target
       rw [heq]
       rfl
     · have hzero_lhs := localDivergenceWithin_mul_phi_pullback_zero_off_chartImage
-        (I := I) g α X (φ := φ) hyT hy_img
+        (I := I) g α X (φ := φ) hyT hy_image
       change chartDensity (I := I) g α ((extChartAt I α).symm y) *
           h ((extChartAt I α).symm y) = _
       change chartDensity (I := I) g α ((extChartAt I α).symm y) *
@@ -667,7 +667,7 @@ private lemma lhs_chart_target
       rw [hzero_lhs]
       have hsymm_notin : (extChartAt I α).symm y ∉ tsupport φ := by
         intro hsymm_in
-        apply hy_img
+        apply hy_image
         refine ⟨(extChartAt I α).symm y, hsymm_in, ?_⟩
         exact (extChartAt I α).right_inv hyT
       have hφ_zero : φ ((extChartAt I α).symm y) = 0 := by
@@ -689,8 +689,8 @@ private lemma rhs_chart_target
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M) :
     ∫ x, tangentSectionAction (I := I) X φ x ∂(chartLocalMeasure (I := I) g α) =
       ∫ y, (∑ i : Fin (Module.finrank ℝ E),
@@ -699,7 +699,7 @@ private lemma rhs_chart_target
         ∂(modelHaar (E := E)) := by
   classical
   have htsa_meas : Measurable (tangentSectionAction (I := I) X φ) :=
-    tangentSectionAction_measurable (I := I) α X hφ hφ_supp hφ_int
+    tangentSectionAction_measurable (I := I) α X hφ hφ_support hφ_int
   rw [integral_chartLocalMeasure (I := I) g α (tangentSectionAction (I := I) X φ)
       htsa_meas]
   have hT_meas := measurableSet_extChartAt_target (I := I) α
@@ -714,9 +714,9 @@ private lemma rhs_chart_target
         ∂(modelHaar (E := E)) from ?_]
   · refine setIntegral_congr_fun hT_meas ?_
     intro y hyT
-    by_cases hy_img : y ∈ chartImageOfTsupport (I := I) α φ
+    by_cases hy_image : y ∈ chartImageOfTsupport (I := I) α φ
     · have hy_int : y ∈ interior (extChartAt I α).target :=
-        chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int hy_img
+        chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int hy_image
       have hyT' := hyT
       have hsymm : (extChartAt I α) ((extChartAt I α).symm y) = y :=
         (extChartAt I α).right_inv hyT
@@ -755,7 +755,7 @@ private lemma rhs_chart_target
       ring
     · have hsymm_notin : (extChartAt I α).symm y ∉ tsupport φ := by
         intro hsymm_in
-        apply hy_img
+        apply hy_image
         refine ⟨(extChartAt I α).symm y, hsymm_in, ?_⟩
         exact (extChartAt I α).right_inv hyT
       have htsa_zero : tangentSectionAction (I := I) X φ ((extChartAt I α).symm y) = 0 := by
@@ -776,9 +776,9 @@ private lemma rhs_chart_target
           tangentSectionAction (I := I) X φ ((extChartAt I α).symm y) = _
       rw [htsa_zero, mul_zero]
       have hKc_open : IsOpen (chartImageOfTsupport (I := I) α φ)ᶜ :=
-        (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp).isOpen_compl
+        (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support).isOpen_compl
       have hphi_zero_on_nhd : phiOnE (I := I) α φ =ᶠ[𝓝 y] (fun _ => (0 : ℝ)) := by
-        filter_upwards [hKc_open.mem_nhds hy_img] with z hz
+        filter_upwards [hKc_open.mem_nhds hy_image] with z hz
         by_cases hzT : z ∈ (extChartAt I α).target
         · rw [phiOnE_apply_of_mem (I := I) α φ hzT]
           by_contra hne
@@ -808,17 +808,17 @@ private lemma summand_int_lhs
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M)
     (i : Fin (Module.finrank ℝ E)) :
     Integrable (fun y =>
       fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) *
         phiOnE (I := I) α φ y) (modelHaar (E := E)) := by
   have hphi_smooth : ContDiff ℝ ∞ (phiOnE (I := I) α φ) :=
-    phiOnE_contDiff (I := I) α hφ hφ_compactSupp hφ_supp hφ_int
-  have hphi_compactSupp : HasCompactSupport (phiOnE (I := I) α φ) :=
-    phiOnE_hasCompactSupport (I := I) α hφ_compactSupp hφ_supp
+    phiOnE_contDiff (I := I) α hφ hφ_compactSupport hφ_support hφ_int
+  have hphi_compactSupport : HasCompactSupport (phiOnE (I := I) α φ) :=
+    phiOnE_hasCompactSupport (I := I) α hφ_compactSupport hφ_support
   have hI_smooth : ContDiff ℝ ∞
       (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) * phiOnE (I := I) α φ y) := by
@@ -826,8 +826,8 @@ private lemma summand_int_lhs
       (U := interior (extChartAt I α).target)
       isOpen_interior
       (K := chartImageOfTsupport (I := I) α φ)
-      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp)
-      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int) ?_ ?_
+      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support)
+      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int) ?_ ?_
     · have hvw_fderiv : ContDiffOn ℝ ∞
           (fderiv ℝ (vwIntegrandOnE (I := I) g α X i))
           (interior (extChartAt I α).target) :=
@@ -849,18 +849,18 @@ private lemma summand_int_lhs
           exact hy ⟨(extChartAt I α).symm y, this, (extChartAt I α).right_inv hyT⟩
         · exact phiOnE_apply_of_notMem (I := I) α φ hyT
       rw [hphi_zero, mul_zero]
-  have hI_compactSupp : HasCompactSupport
+  have hI_compactSupport : HasCompactSupport
       (fun y => fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) * phiOnE (I := I) α φ y) :=
-    hphi_compactSupp.mul_left
-  exact hI_smooth.continuous.integrable_of_hasCompactSupport hI_compactSupp
+    hphi_compactSupport.mul_left
+  exact hI_smooth.continuous.integrable_of_hasCompactSupport hI_compactSupport
 
 private lemma summand_int_rhs
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M)
     (i : Fin (Module.finrank ℝ E)) :
     Integrable (fun y =>
@@ -868,7 +868,7 @@ private lemma summand_int_rhs
         fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
       (modelHaar (E := E)) := by
   have hphi_smooth : ContDiff ℝ ∞ (phiOnE (I := I) α φ) :=
-    phiOnE_contDiff (I := I) α hφ hφ_compactSupp hφ_supp hφ_int
+    phiOnE_contDiff (I := I) α hφ hφ_compactSupport hφ_support hφ_int
   have hI_smooth : ContDiff ℝ ∞
       (fun y => vwIntegrandOnE (I := I) g α X i y *
           fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
@@ -876,8 +876,8 @@ private lemma summand_int_rhs
       (U := interior (extChartAt I α).target)
       isOpen_interior
       (K := chartImageOfTsupport (I := I) α φ)
-      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp)
-      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_supp hφ_int) ?_ ?_
+      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support)
+      (chartImageOfTsupport_subset_interior_target (I := I) α hφ_support hφ_int) ?_ ?_
     · have hphi_fderiv : ContDiffOn ℝ ∞ (fderiv ℝ (phiOnE (I := I) α φ))
           (interior (extChartAt I α).target) :=
         (hphi_smooth.fderiv_right (m := ∞) (by rw [ENat.coe_top_add_one])).contDiffOn
@@ -890,7 +890,7 @@ private lemma summand_int_rhs
       exact (vwIntegrandOnE_contDiffOn_interior_target (I := I) g α X i).mul hpartial
     · intro y hy
       have hKc_open : IsOpen (chartImageOfTsupport (I := I) α φ)ᶜ :=
-        (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp).isOpen_compl
+        (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support).isOpen_compl
       have hphi_zero_on_nhd : phiOnE (I := I) α φ =ᶠ[𝓝 y] (fun _ => (0 : ℝ)) := by
         filter_upwards [hKc_open.mem_nhds hy] with z hz
         by_cases hzT : z ∈ (extChartAt I α).target
@@ -907,14 +907,14 @@ private lemma summand_int_rhs
         rw [show (fun _ : E => (0 : ℝ)) = Function.const E (0 : ℝ) from rfl]
         rw [fderiv_const]; rfl
       rw [hfderiv_zero]; simp
-  have hI_compactSupp : HasCompactSupport
+  have hI_compactSupport : HasCompactSupport
       (fun y => vwIntegrandOnE (I := I) g α X i y *
           fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) := by
     refine HasCompactSupport.intro
-      (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupp hφ_supp) ?_
+      (chartImageOfTsupport_isCompact (I := I) α hφ_compactSupport hφ_support) ?_
     intro y hy
     have hKc_open : IsOpen (chartImageOfTsupport (I := I) α φ)ᶜ :=
-      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupp hφ_supp).isOpen_compl
+      (chartImageOfTsupport_isClosed (I := I) α hφ_compactSupport hφ_support).isOpen_compl
     have hphi_zero_on_nhd : phiOnE (I := I) α φ =ᶠ[𝓝 y] (fun _ => (0 : ℝ)) := by
       filter_upwards [hKc_open.mem_nhds hy] with z hz
       by_cases hzT : z ∈ (extChartAt I α).target
@@ -931,20 +931,20 @@ private lemma summand_int_rhs
       rw [show (fun _ : E => (0 : ℝ)) = Function.const E (0 : ℝ) from rfl]
       rw [fderiv_const]; rfl
     rw [hfderiv_zero]; simp
-  exact hI_smooth.continuous.integrable_of_hasCompactSupport hI_compactSupp
+  exact hI_smooth.continuous.integrable_of_hasCompactSupport hI_compactSupport
 
 theorem chart_local_ibp_within
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source)
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source)
     (hφ_int : tsupport φ ⊆ I.interior M) :
     ∫ x, localDivergenceWithin (I := I) g α X x * φ x ∂(chartLocalMeasure (I := I) g α) =
       -∫ x, tangentSectionAction (I := I) X φ x ∂(chartLocalMeasure (I := I) g α) := by
   classical
-  rw [lhs_chart_target (I := I) g α X hφ hφ_supp hφ_int]
-  rw [rhs_chart_target (I := I) g α X hφ hφ_compactSupp hφ_supp hφ_int]
+  rw [lhs_chart_target (I := I) g α X hφ hφ_support hφ_int]
+  rw [rhs_chart_target (I := I) g α X hφ hφ_compactSupport hφ_support hφ_int]
   have h_lhs_distrib :
       (fun y : E => (∑ i : Fin (Module.finrank ℝ E),
             fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) *
@@ -956,7 +956,7 @@ theorem chart_local_ibp_within
     rw [Finset.sum_mul]
   rw [h_lhs_distrib]
   rw [integral_finsetSum (s := Finset.univ)
-        (fun i _ => summand_int_lhs (I := I) g α X hφ hφ_compactSupp hφ_supp hφ_int i)]
+        (fun i _ => summand_int_lhs (I := I) g α X hφ hφ_compactSupport hφ_support hφ_int i)]
   have h_each : ∀ i : Fin (Module.finrank ℝ E),
       ∫ y, fderiv ℝ (vwIntegrandOnE (I := I) g α X i) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) *
           phiOnE (I := I) α φ y
@@ -965,13 +965,13 @@ theorem chart_local_ibp_within
             fderiv ℝ (phiOnE (I := I) α φ) y ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ∂(modelHaar (E := E)) := by
     intro i
-    have h_ibp := ibp_per_index (I := I) g α X hφ hφ_compactSupp hφ_supp hφ_int i
+    have h_ibp := ibp_per_index (I := I) g α X hφ hφ_compactSupport hφ_support hφ_int i
     linarith [h_ibp]
   rw [Finset.sum_congr rfl (fun i _ => h_each i)]
   rw [Finset.sum_neg_distrib]
   congr 1
   rw [← integral_finsetSum (s := Finset.univ)
-        (fun i _ => summand_int_rhs (I := I) g α X hφ hφ_compactSupp hφ_supp hφ_int i)]
+        (fun i _ => summand_int_rhs (I := I) g α X hφ hφ_compactSupport hφ_support hφ_int i)]
 
 end WithBoundary
 end DivergenceTheorem

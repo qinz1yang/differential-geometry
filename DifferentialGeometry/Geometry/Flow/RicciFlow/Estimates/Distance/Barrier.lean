@@ -386,7 +386,7 @@ private theorem pathLength_deriv_ge
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem intrGeo_vel_ne
+private theorem intrinsicGeo_velocity_ne
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -830,11 +830,11 @@ private theorem calabi_core_of_tail
     exact hreal
   have htreg : t ∈ D.regular :=
     hreg ⟨htpos, ht.2⟩
-  have hγ_vel : ∀ u ∈ Set.Icc (0 : Real) 1,
+  have hγ_velocity : ∀ u ∈ Set.Icc (0 : Real) 1,
       mfderiv 𝓘(Real, Real) I γ u (1 : Real) ≠ 0 := by
     intro u _hu
     simpa only [γ] using
-      intrGeo_vel_ne
+      intrinsicGeo_velocity_ne
         (I := I) (S.base.metric t) hEnorm O vLeft hvLeft_pos u
   have hinv_x : tail.branch.inv x = (tail.u : E) := by
     have hleft := tail.branch.left_inv tail.source_mem
@@ -865,11 +865,11 @@ private theorem calabi_core_of_tail
     rw [hinv_x]
     rw [hu_round]
     exact hu_pos
-  have hδx_vel : ∀ u ∈ Set.Icc (0 : Real) 1,
+  have hδx_velocity : ∀ u ∈ Set.Icc (0 : Real) 1,
       mfderiv 𝓘(Real, Real) I (δ x) u (1 : Real) ≠ 0 := by
     intro u _hu
     simpa only [δ] using
-      intrGeo_vel_ne
+      intrinsicGeo_velocity_ne
         (I := I) (S.base.metric t) hEnorm tail.p
           ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
             (tail.branch.inv x))
@@ -910,10 +910,10 @@ private theorem calabi_core_of_tail
     exact hseg'.trans_lt ((ENNReal.ofReal_lt_ofReal_iff hR).2 hmul)
   have hL₁_deriv :=
     pathLength_timeDeriv_of_ricciFlow
-      (I := I) S hS zero_le_one htreg γ hγ_smooth hγ_vel
+      (I := I) S hS zero_le_one htreg γ hγ_smooth hγ_velocity
   have hL₂_deriv :=
     pathLength_timeDeriv_of_ricciFlow
-      (I := I) S hS zero_le_one htreg (δ x) (hδ_smooth x) hδx_vel
+      (I := I) S hS zero_le_one htreg (δ x) (hδ_smooth x) hδx_velocity
   have hL₁_diff : DifferentiableAt Real L₁ t := by
     simpa only [L₁] using hL₁_deriv.differentiableAt
   have hL₂_diff : DifferentiableAt Real (fun s => L₂ s x) t := by
@@ -922,7 +922,7 @@ private theorem calabi_core_of_tail
       -Λ * L₁ t ≤ deriv L₁ t := by
     simpa only [L₁] using
       pathLength_deriv_ge
-        (I := I) S hS (A := Λ) zero_le_one htreg γ hγ_smooth hγ_vel
+        (I := I) S hS (A := Λ) zero_le_one htreg γ hγ_smooth hγ_velocity
           (fun u hu => hricBall (γ u) (hγ_ball u hu)
             (mfderiv 𝓘(Real, Real) I γ u (1 : Real)))
   have hL₂_lower :
@@ -930,7 +930,7 @@ private theorem calabi_core_of_tail
     simpa only [L₂] using
       pathLength_deriv_ge
         (I := I) S hS (A := Λ) zero_le_one htreg (δ x)
-          (hδ_smooth x) hδx_vel
+          (hδ_smooth x) hδx_velocity
           (fun u hu => hricBall (δ x u) (hδ_ball u hu)
             (mfderiv 𝓘(Real, Real) I (δ x) u (1 : Real)))
   have hv_diffAt :
@@ -987,7 +987,7 @@ private theorem calabi_core_of_tail
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem calabi_core_of_sol
+private theorem calabi_core_of_solution
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E
@@ -1373,7 +1373,7 @@ theorem scaled_of_quad
       n = ((Module.finrank Real E - 1 : Nat) : Real) := by
     rfl
   obtain ⟨core⟩ :=
-    calabi_core_of_sol
+    calabi_core_of_solution
       (I := I) S hS O hreg hricQuad ht htpos x hfinite' hOx
         hEnorm hq hRicLower hr hnDim
   have hcoef :

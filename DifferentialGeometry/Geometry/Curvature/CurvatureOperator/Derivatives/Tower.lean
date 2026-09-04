@@ -26,7 +26,7 @@ open DifferentialGeometry.Tensor.RSTensor
 open scoped Manifold ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -524,7 +524,7 @@ private noncomputable def curvOpNablaForm
     (I := I) (M := M) 1
     (DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := M) g)
     (curvOpNForm (I := I) g k Y)
-    (Tensor0SBundle.totalNabla0S_reg (E := E) (H := H)
+    (Tensor0SBundle.totalNabla0S_regularity (E := E) (H := H)
       (I := I) (M := M) 1
       (DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := M) g)
       (DifferentialGeometry.Geometry.Curvature.metricCov_smooth
@@ -547,7 +547,7 @@ private theorem curvOpNabla_real
       (I := I) (M := M) 1
       (DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := M) g)
       (curvOpNForm (I := I) g k Y)
-      (Tensor0SBundle.totalNabla0S_reg (E := E) (H := H)
+      (Tensor0SBundle.totalNabla0S_regularity (E := E) (H := H)
         (I := I) (M := M) 1
         (DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := M) g)
         (DifferentialGeometry.Geometry.Curvature.metricCov_smooth
@@ -649,7 +649,7 @@ private noncomputable def curvNextForm
     (Fin.snoc (Fin.cons (X x) (fun i : Fin (k + 3) => Y i x)) 0)
     (Fin.last ((k + 1) + 3))
 
-private noncomputable def curvCorrForm
+private noncomputable def curvCorrectionForm
     (g : SmoothRiemannianMetric I M) (k : Nat)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
@@ -723,7 +723,7 @@ private theorem curvOpNabla_curry
     Tensor0SBundle.tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
         (curvOpNablaForm (I := I) g k Y x) (X x) =
       curvNextForm (I := I) g k X Y x +
-        ∑ i : Fin (k + 3), curvCorrForm (I := I) g k X Y x i := by
+        ∑ i : Fin (k + 3), curvCorrectionForm (I := I) g k X Y x i := by
   classical
   apply ContinuousMultilinearMap.ext
   intro slots
@@ -758,18 +758,18 @@ private theorem curvOpNabla_curry
               (slots 0)) :=
       curvOpNabla_eval_sum (I := I) g k X Y x (slots 0)
     _ = curvNextForm (I := I) g k X Y x slots +
-        ∑ i : Fin (k + 3), curvCorrForm (I := I) g k X Y x i slots := by
+        ∑ i : Fin (k + 3), curvCorrectionForm (I := I) g k X Y x i slots := by
       congr 1
       · rw [curvNextForm, hslots_one]
         rw [DifferentialGeometry.Tensor.RSTensor.oneFormAtSlot0S_apply]
         rw [update_snoc_last, Fin.cons_snoc_eq_snoc_cons]
       · apply Finset.sum_congr rfl
         intro i hi
-        rw [curvCorrForm, hslots_one]
+        rw [curvCorrectionForm, hslots_one]
         rw [DifferentialGeometry.Tensor.RSTensor.oneFormAtSlot0S_apply]
         rw [update_snoc_last]
     _ = (curvNextForm (I := I) g k X Y x +
-        ∑ i : Fin (k + 3), curvCorrForm (I := I) g k X Y x i) slots := by
+        ∑ i : Fin (k + 3), curvCorrectionForm (I := I) g k X Y x i) slots := by
       simp
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
@@ -901,7 +901,7 @@ theorem curvOpN_cov_sum
   change
     Tensor0SBundle.cotangentSharpLinear (I := I) g x
         (curvNextForm (I := I) g k X Y x +
-          ∑ i : Fin (k + 3), curvCorrForm (I := I) g k X Y x i) =
+          ∑ i : Fin (k + 3), curvCorrectionForm (I := I) g k X Y x i) =
       _
   rw [map_add, map_sum]
   congr 1
@@ -910,7 +910,7 @@ theorem curvOpN_cov_sum
         (Fin.cons (X x) (fun i : Fin (k + 3) => Y i x))).symm
   · apply Finset.sum_congr rfl
     intro i hi
-    simpa [curvCorrForm] using
+    simpa [curvCorrectionForm] using
       (curvOpN_eq_sharp (I := I) g k x
         (Function.update (fun j : Fin (k + 3) => Y j x) i
           (curvSlotCov (I := I) g k X Y x i))).symm
@@ -1134,41 +1134,41 @@ private theorem curvOpNDeriv_smul
         Function.update_of_ne hji.symm _ _
       rw [← hvi, Function.update_eq_self]
     rw [hbase]
-  let corrF : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
+  let correctionF : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
     curvOpN (I := I) g k (gamma t)
       (Function.update (fun q => Yf q t) j
         (covDerivAlong (I := I) g gamma (Yf j) t))
-  let corr : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
+  let correction : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
     curvOpN (I := I) g k (gamma t)
       (Function.update v j (dY j))
   have herase :
-      (∑ j ∈ Finset.univ.erase i, corrF j) =
-        f t • ∑ j ∈ Finset.univ.erase i, corr j := by
+      (∑ j ∈ Finset.univ.erase i, correctionF j) =
+        f t • ∑ j ∈ Finset.univ.erase i, correction j := by
     rw [Finset.smul_sum]
     apply Finset.sum_congr rfl
     intro j hj
     exact hcorr_ne j (Finset.mem_erase.mp hj).1
   have hfull :
-      (∑ j ∈ Finset.univ.erase i, corr j) + corr i =
-        ∑ j : Fin (k + 3), corr j :=
-    Finset.sum_erase_add Finset.univ corr (Finset.mem_univ i)
+      (∑ j ∈ Finset.univ.erase i, correction j) + correction i =
+        ∑ j : Fin (k + 3), correction j :=
+    Finset.sum_erase_add Finset.univ correction (Finset.mem_univ i)
   have hsumcorr :
-      (∑ j : Fin (k + 3), corrF j) =
+      (∑ j : Fin (k + 3), correctionF j) =
         (deriv f t) • curvOpN (I := I) g k (gamma t) v +
-          f t • ∑ j : Fin (k + 3), corr j := by
+          f t • ∑ j : Fin (k + 3), correction j := by
     calc
-      (∑ j : Fin (k + 3), corrF j) =
-          (∑ j ∈ Finset.univ.erase i, corrF j) + corrF i :=
-        (Finset.sum_erase_add Finset.univ corrF (Finset.mem_univ i)).symm
-      _ = f t • (∑ j ∈ Finset.univ.erase i, corr j) +
+      (∑ j : Fin (k + 3), correctionF j) =
+          (∑ j ∈ Finset.univ.erase i, correctionF j) + correctionF i :=
+        (Finset.sum_erase_add Finset.univ correctionF (Finset.mem_univ i)).symm
+      _ = f t • (∑ j ∈ Finset.univ.erase i, correction j) +
           ((deriv f t) • curvOpN (I := I) g k (gamma t) v +
-            f t • corr i) := by
+            f t • correction i) := by
         rw [herase]
         exact congrArg
-          (fun z => f t • (∑ j ∈ Finset.univ.erase i, corr j) + z)
-          (by simpa only [corrF, corr] using hcorr_i)
+          (fun z => f t • (∑ j ∈ Finset.univ.erase i, correction j) + z)
+          (by simpa only [correctionF, correction] using hcorr_i)
       _ = (deriv f t) • curvOpN (I := I) g k (gamma t) v +
-          f t • ∑ j : Fin (k + 3), corr j := by
+          f t • ∑ j : Fin (k + 3), correction j := by
         rw [← hfull]
         module
   change curvOpNDerivAlong (I := I) g k gamma Yf t =
@@ -1183,12 +1183,12 @@ private theorem curvOpNDeriv_smul
         f t • covDerivAlong (I := I) g gamma
           (fun s : Real =>
             curvOpN (I := I) g k (gamma s) (fun j => Y j s)) t -
-      ∑ j : Fin (k + 3), corrF j =
+      ∑ j : Fin (k + 3), correctionF j =
     f t •
       (covDerivAlong (I := I) g gamma
           (fun s : Real =>
             curvOpN (I := I) g k (gamma s) (fun j => Y j s)) t -
-        ∑ j : Fin (k + 3), corr j)
+        ∑ j : Fin (k + 3), correction j)
   rw [hsumcorr]
   module
 
@@ -1306,19 +1306,19 @@ private theorem curvOpNDeriv_add
   let v : Fin (k + 3) -> TangentSpace I (gamma t) := fun j => Y j t
   let dY : Fin (k + 3) -> TangentSpace I (gamma t) :=
     fun j => covDerivAlong (I := I) g gamma (Y j) t
-  let corrAB : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
+  let correctionAB : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
     curvOpN (I := I) g k (gamma t)
       (Function.update (fun q => YAB q t) j
         (covDerivAlong (I := I) g gamma (YAB j) t))
-  let corrA : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
+  let correctionA : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
     curvOpN (I := I) g k (gamma t)
       (Function.update (fun q => YA q t) j
         (covDerivAlong (I := I) g gamma (YA j) t))
-  let corrB : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
+  let correctionB : Fin (k + 3) -> TangentSpace I (gamma t) := fun j =>
     curvOpN (I := I) g k (gamma t)
       (Function.update (fun q => YB q t) j
         (covDerivAlong (I := I) g gamma (YB j) t))
-  have hcorr (j : Fin (k + 3)) : corrAB j = corrA j + corrB j := by
+  have hcorr (j : Fin (k + 3)) : correctionAB j = correctionA j + correctionB j := by
     by_cases hji : j = i
     · subst j
       have hDAB :
@@ -1352,7 +1352,7 @@ private theorem curvOpNDeriv_add
           (fun q => (Function.update Y i B) q t) =
             Function.update v i (B t)
         simpa only [v] using hupdate B t
-      simp only [corrAB, corrA, corrB, hDAB, hYAi, hYBi]
+      simp only [correctionAB, correctionA, correctionB, hDAB, hYAi, hYBi]
       rw [hbaseAB, hbaseA, hbaseB]
       simp only [Function.update_idem]
       exact curvOpN_update_add (I := I) g k (gamma t) v i
@@ -1373,7 +1373,7 @@ private theorem curvOpNDeriv_add
         have hEq : YB j = Y j := by
           simp only [YB, Function.update_of_ne hji]
         rw [hEq]
-      simp only [corrAB, corrA, corrB, hDAB, hDA, hDB]
+      simp only [correctionAB, correctionA, correctionB, hDAB, hDA, hDB]
       rw [hupdate, hupdate, hupdate]
       rw [Function.update_comm (Ne.symm hji),
         Function.update_comm (Ne.symm hji),
@@ -1381,9 +1381,9 @@ private theorem curvOpNDeriv_add
       exact curvOpN_update_add (I := I) g k (gamma t)
         (Function.update v j (dY j)) i (A t) (B t)
   have hsumcorr :
-      (∑ j : Fin (k + 3), corrAB j) =
-        (∑ j : Fin (k + 3), corrA j) +
-          ∑ j : Fin (k + 3), corrB j := by
+      (∑ j : Fin (k + 3), correctionAB j) =
+        (∑ j : Fin (k + 3), correctionA j) +
+          ∑ j : Fin (k + 3), correctionB j := by
     rw [← Finset.sum_add_distrib]
     apply Finset.sum_congr rfl
     intro j hj
@@ -1406,15 +1406,15 @@ private theorem curvOpNDeriv_add
         covDerivAlong (I := I) g gamma
           (fun s : Real =>
             curvOpN (I := I) g k (gamma s) (fun j => YB j s)) t) -
-      ∑ j : Fin (k + 3), corrAB j =
+      ∑ j : Fin (k + 3), correctionAB j =
     (covDerivAlong (I := I) g gamma
           (fun s : Real =>
             curvOpN (I := I) g k (gamma s) (fun j => YA j s)) t -
-        ∑ j : Fin (k + 3), corrA j) +
+        ∑ j : Fin (k + 3), correctionA j) +
       (covDerivAlong (I := I) g gamma
           (fun s : Real =>
             curvOpN (I := I) g k (gamma s) (fun j => YB j s)) t -
-        ∑ j : Fin (k + 3), corrB j)
+        ∑ j : Fin (k + 3), correctionB j)
   rw [hsumcorr]
   abel
 
@@ -2078,5 +2078,5 @@ theorem curvDeriv_eq_op1
 
 end FixedMetric
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

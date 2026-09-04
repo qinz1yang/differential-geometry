@@ -14,7 +14,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -25,7 +25,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-theorem compactnessSol_cond
+theorem compactnessSolution_cond
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (inp : MetricCompactnessInputs (I := I) (X.atZero (I := I)))
     (hcomplete0 : SeqMetricComplete (I := I) (X.atZero (I := I)))
@@ -39,7 +39,7 @@ theorem compactnessSol_cond
     compactnessConclusion (I := I) X :=
   solutionComp_cond (I := I) X inp hcomplete0 hconn hflow
 
-theorem compactnessSol
+theorem compactnessSolution
     {α b : Real} (h0 : (0 : Real) ∈ Set.Ioo α b)
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hD : X.D =
@@ -47,7 +47,7 @@ theorem compactnessSol
         α b 0 h0)
     (hcomplete : CompleteInput (I := I) X)
     (hcurv : CurvBoundInput (I := I) X)
-    (hinj : FlowerScaleInjBound (I := I) X)
+    (hinj : FlowScaleInjectivityBound (I := I) X)
     (hconn : ∀ k : Nat,
       letI : TopologicalSpace (X.term k).M := (X.term k).topology
       ConnectedSpace (X.term k).M) :
@@ -85,7 +85,7 @@ theorem compactnessSol
     canon.compactness.compSubseq d.φ d.hφ
   refine ⟨d.data.L, mc'.subseq, mc'.strictMono, ?_, hcompleteL⟩
   exact ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsrc
+    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsource
     d.data.refMetric
     (letI : TopologicalSpace d.data.L.M := d.data.L.topology
      letI : ChartedSpace H d.data.L.M := d.data.L.charted
@@ -95,7 +95,7 @@ theorem compactnessSol
        infer_instance
      letI : SigmaCompactSpace d.data.L.M := d.data.L.sigmaCompact
      letI : T2Space d.data.L.M := d.data.L.t2
-     d.data.L.S.family.metric) d.data.conv⟩
+     d.data.L.S.family.metric) d.data.convergence⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -10,7 +10,7 @@ open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral hiding TensorEigenIdx
@@ -53,7 +53,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_for_smaller_metri
               ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
                 (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
                 let theta : ℝ := min 1
-                  (R / ‖galLowView (I := I) (M := M) g 1
+                  (R / ‖galerkinLowView (I := I) (M := M) g 1
                     (finiteEigenComboHs (I := I) (M := M) g F c
                       (((1 : ℕ) : ℝ) + 2))‖)
                 let E3 : ℝ := ∑ i ∈ F,
@@ -78,13 +78,13 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_for_smaller_metri
   refine ⟨G, hG, ?_⟩
   intro R hR hRR0 hdelta_lt hreal F c
   let theta : ℝ := min 1
-    (R / ‖galLowView (I := I) (M := M) g 1
+    (R / ‖galerkinLowView (I := I) (M := M) g 1
       (finiteEigenComboHs (I := I) (M := M) g F c
         (((1 : ℕ) : ℝ) + 2))‖)
   let T : SmoothCcTensor g 0 2 :=
     ccTensor02Symm (I := I) (M := M) g
-      (galCoreRep (I := I) (M := M) g R F c)
-  let hT := galRepFib (I := I) (M := M) g hR hreal F c
+      (galerkinCoreRep (I := I) (M := M) g R F c)
+  let hT := galerkinRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
   let E3 : ℝ := ∑ i ∈ F,
     tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2
@@ -103,8 +103,8 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_for_smaller_metri
   have hT2smooth :
       ‖smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T‖ ≤ R := by
     have hraw := symm_h2_of_state (I := I) (M := M) g
-      (galCoreRep (I := I) (M := M) g R F c)
-      (galCoreRep_ball (I := I) (M := M) g hR F c)
+      (galerkinCoreRep (I := I) (M := M) g R F c)
+      (galerkinCoreRep_ball (I := I) (M := M) g hR F c)
     rw [show (2 : ℝ) = (((1 : ℕ) : ℝ) + 1) by norm_num]
     simpa only [T] using hraw
   have hT2 : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R := by
@@ -117,16 +117,16 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_for_smaller_metri
     dsimp only [T]
     exact ccTensor02Symm_idem (I := I) (M := M) g _
   have hmain := hpairG T hTsymm hdelta_lt hT hZ hR hRR0 hT2
-  have hdiag := galTermPair3_diag (I := I) (M := M) g gBase hR
+  have hdiag := galerkinTermPair3_diag (I := I) (M := M) g gBase hR
     hdelta_lt hdelta.le hdeltathird hreal F c
   have hT3 : ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ ≤
       Real.sqrt E3 := by
     rw [norm_ccHs_eq_smoothHs]
-    simpa only [T, E3] using galRepHs_le (I := I) (M := M) g 3 hR F c
+    simpa only [T, E3] using galerkinRepHs_le (I := I) (M := M) g 3 hR F c
   have hT4 : ‖ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) T‖ ≤
       Real.sqrt E4 := by
     rw [norm_ccHs_eq_smoothHs]
-    simpa only [T, E4] using galRepHs_le (I := I) (M := M) g 4 hR F c
+    simpa only [T, E4] using galerkinRepHs_le (I := I) (M := M) g 4 hR F c
   have hT3sq : ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ ^ 2 ≤ E3 := by
     calc
       _ ≤ (Real.sqrt E3) ^ 2 :=
@@ -190,7 +190,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound
               ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
                 (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
                 let theta : ℝ := min 1
-                  (R / ‖galLowView (I := I) (M := M) g 1
+                  (R / ‖galerkinLowView (I := I) (M := M) g 1
                     (finiteEigenComboHs (I := I) (M := M) g F c
                       (((1 : ℕ) : ℝ) + 2))‖)
                 let E3 : ℝ := ∑ i ∈ F,
@@ -231,7 +231,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_
                     (ccTensorBilinSymm (I := I) g T) delta),
               ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
                 (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
-                ‖galLowView (I := I) (M := M) g 1
+                ‖galerkinLowView (I := I) (M := M) g 1
                     (finiteEigenComboHs (I := I) (M := M) g F c
                       (((1 : ℕ) : ℝ) + 2))‖ ≤ R →
                 2 * |∑ i ∈ F,
@@ -257,11 +257,11 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_
   refine ⟨G, hG, ?_⟩
   intro R hR hRR0 hdelta_lt hreal F c hmem
   have hraw := hpairG hR hRR0 hdelta_lt hreal F c
-  set q : ℝ := ‖galLowView (I := I) (M := M) g 1
+  set q : ℝ := ‖galerkinLowView (I := I) (M := M) g 1
     (finiteEigenComboHs (I := I) (M := M) g F c
       (((1 : ℕ) : ℝ) + 2))‖ with hq
   by_cases hq0 : q = 0
-  · have hview : galLowView (I := I) (M := M) g 1
+  · have hview : galerkinLowView (I := I) (M := M) g 1
         (finiteEigenComboHs (I := I) (M := M) g F c
           (((1 : ℕ) : ℝ) + 2)) = 0 := by
       exact norm_eq_zero.mp (by simpa only [q] using hq0)
@@ -270,7 +270,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_
       refine tensorHsInclusion_injective (I := I) (M := M) (g := g) (r := 0)
         (s := 2) (show (((1 : ℕ) : ℝ) + 1) ≤ ((1 : ℕ) : ℝ) + 2 by
           norm_num) ?_
-      simpa only [galLowView, map_zero] using hview
+      simpa only [galerkinLowView, map_zero] using hview
     have hc : ∀ i ∈ F, c i = 0 := by
       intro i hi
       have hcoeff := congrArg (fun u => u.coeff i) hcombo
@@ -314,7 +314,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_
                     (ccTensorBilinSymm (I := I) g T) delta),
               ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
                 (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
-                ‖galLowView (I := I) (M := M) g 1
+                ‖galerkinLowView (I := I) (M := M) g 1
                     (finiteEigenComboHs (I := I) (M := M) g F c
                       (((1 : ℕ) : ℝ) + 2))‖ ≤ R →
                 2 * |∑ i ∈ F,

@@ -87,7 +87,7 @@ theorem global_flow_jointContMDiffOn_on_closed_manifold
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (Φ p t)))) :=
     fun p₀ => local_flow_jointSmooth_and_integralCurve X hX t₀ p₀
-  choose U hU_open hU_mem Tloc hTloc_pos Φloc hΦloc_init hΦloc_smooth hΦloc_bare
+  choose U hU_open hU_mem Tloc hTloc_pos Φlocal hΦlocal_initial hΦlocal_smooth hΦlocal_bare
     using hlocal
   have hcover : (Set.univ : Set M) ⊆ ⋃ p₀, U p₀ :=
     fun x _ => Set.mem_iUnion.mpr ⟨x, hU_mem x⟩
@@ -120,37 +120,37 @@ theorem global_flow_jointContMDiffOn_on_closed_manifold
       obtain ⟨i, hi, hxi⟩ := hx
       exact ⟨i, hi, hxi⟩
     choose αRep hαRep_mem hαRep_in using hαRep
-    set Φ : M → ℝ → M := fun x s => Φloc (αRep x) x s with hΦ_def
+    set Φ : M → ℝ → M := fun x s => Φlocal (αRep x) x s with hΦ_def
     have hagree : ∀ (i j : M) (x : M), i ∈ s → j ∈ s → x ∈ U i → x ∈ U j →
-        ∀ t ∈ Set.Ioo (t₀ - T) (t₀ + T), Φloc i x t = Φloc j x t := by
+        ∀ t ∈ Set.Ioo (t₀ - T) (t₀ + T), Φlocal i x t = Φlocal j x t := by
       intro i j x hi hj hxi hxj t ht
       have hwin_i : Set.Ioo (t₀ - T) (t₀ + T) ⊆ Set.Ioo (t₀ - Tloc i) (t₀ + Tloc i) :=
         Set.Ioo_subset_Ioo (by linarith [hT_le i hi]) (by linarith [hT_le i hi])
       have hwin_j : Set.Ioo (t₀ - T) (t₀ + T) ⊆ Set.Ioo (t₀ - Tloc j) (t₀ + Tloc j) :=
         Set.Ioo_subset_Ioo (by linarith [hT_le j hj]) (by linarith [hT_le j hj])
       have hflow_i : ∀ u ∈ Set.Ioo (t₀ - T) (t₀ + T),
-          HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun r : ℝ => (fun r' _ => Φloc i x r') r (x : M))
+          HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun r : ℝ => (fun r' _ => Φlocal i x r') r (x : M))
             (Set.Ioo (t₀ - T) (t₀ + T)) u
-            ((1 : ℝ →L[ℝ] ℝ).smulRight (X u ((fun r' _ => Φloc i x r') u (x : M)))) := by
+            ((1 : ℝ →L[ℝ] ℝ).smulRight (X u ((fun r' _ => Φlocal i x r') u (x : M)))) := by
         intro u hu
-        exact (hΦloc_bare i x hxi u (hwin_i hu)).hasMFDerivWithinAt
+        exact (hΦlocal_bare i x hxi u (hwin_i hu)).hasMFDerivWithinAt
       have hflow_j : ∀ u ∈ Set.Ioo (t₀ - T) (t₀ + T),
-          HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun r : ℝ => (fun r' _ => Φloc j x r') r (x : M))
+          HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun r : ℝ => (fun r' _ => Φlocal j x r') r (x : M))
             (Set.Ioo (t₀ - T) (t₀ + T)) u
-            ((1 : ℝ →L[ℝ] ℝ).smulRight (X u ((fun r' _ => Φloc j x r') u (x : M)))) := by
+            ((1 : ℝ →L[ℝ] ℝ).smulRight (X u ((fun r' _ => Φlocal j x r') u (x : M)))) := by
         intro u hu
-        exact (hΦloc_bare j x hxj u (hwin_j hu)).hasMFDerivWithinAt
-      have hstart : (fun r' _ => Φloc i x r') t₀ (x : M) = (fun r' _ => Φloc j x r') t₀
+        exact (hΦlocal_bare j x hxj u (hwin_j hu)).hasMFDerivWithinAt
+      have hstart : (fun r' _ => Φlocal i x r') t₀ (x : M) = (fun r' _ => Φlocal j x r') t₀
         (x : M) := by
         simp only
-        rw [hΦloc_init i x hxi, hΦloc_init j x hxj]
+        rw [hΦlocal_initial i x hxi, hΦlocal_initial j x hxj]
       have := integral_curves_eqOn_of_jointC1 (a := t₀ - T) (b := t₀ + T) (t₀ := t₀)
-        X hX_auto (fun r' _ => Φloc i x r') (fun r' _ => Φloc j x r') x x
+        X hX_auto (fun r' _ => Φlocal i x r') (fun r' _ => Φlocal j x r') x x
         ht₀_mem hflow_i hflow_j hstart t ht
       simpa using this
     have hinit : ∀ p, Φ p t₀ = p := by
       intro p
-      have := hΦloc_init (αRep p) p (hαRep_in p)
+      have := hΦlocal_initial (αRep p) p (hαRep_in p)
       simpa [hΦ_def] using this
     have hbare : ∀ p, ∀ t ∈ Set.Ioo (t₀ - T) (t₀ + T),
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun u => Φ p u) t
@@ -159,8 +159,8 @@ theorem global_flow_jointContMDiffOn_on_closed_manifold
       have hi := hαRep_mem p
       have hwin : Set.Ioo (t₀ - T) (t₀ + T) ⊆ Set.Ioo (t₀ - Tloc (αRep p)) (t₀ + Tloc (αRep p)) :=
         Set.Ioo_subset_Ioo (by linarith [hT_le (αRep p) hi]) (by linarith [hT_le (αRep p) hi])
-      have h := hΦloc_bare (αRep p) p (hαRep_in p) t (hwin ht)
-      change HasMFDerivAt 𝓘(ℝ, ℝ) I (fun u => Φloc (αRep p) p u) t _
+      have h := hΦlocal_bare (αRep p) p (hαRep_in p) t (hwin ht)
+      change HasMFDerivAt 𝓘(ℝ, ℝ) I (fun u => Φlocal (αRep p) p u) t _
       simpa [hΦ_def] using h
     have hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.2 q.1)
         (Set.Ioo (t₀ - T) (t₀ + T) ×ˢ (Set.univ : Set M)) := by
@@ -174,17 +174,17 @@ theorem global_flow_jointContMDiffOn_on_closed_manifold
       have hq_W : q ∈ W := ⟨ht, hq2_Ui⟩
       have hwin_i : Set.Ioo (t₀ - T) (t₀ + T) ⊆ Set.Ioo (t₀ - Tloc i) (t₀ + Tloc i) :=
         Set.Ioo_subset_Ioo (by linarith [hT_le i hi_s]) (by linarith [hT_le i hi_s])
-      have hΦi_W : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q' : ℝ × M => Φloc i q'.2 q'.1) W :=
-        (hΦloc_smooth i).mono (Set.prod_mono hwin_i (subset_refl _))
+      have hΦi_W : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q' : ℝ × M => Φlocal i q'.2 q'.1) W :=
+        (hΦlocal_smooth i).mono (Set.prod_mono hwin_i (subset_refl _))
       have hcongr : ∀ q' ∈ W, (fun q' : ℝ × M => Φ q'.2 q'.1) q' =
-          (fun q' : ℝ × M => Φloc i q'.2 q'.1) q' := by
+          (fun q' : ℝ × M => Φlocal i q'.2 q'.1) q' := by
         rintro ⟨t', x'⟩ ⟨ht', hx'_Ui⟩
-        change Φloc (αRep x') x' t' = Φloc i x' t'
+        change Φlocal (αRep x') x' t' = Φlocal i x' t'
         exact hagree (αRep x') i x' (hαRep_mem x') hi_s (hαRep_in x') hx'_Ui t' ht'
       have hWnhds : W ∈ 𝓝[Set.Ioo (t₀ - T) (t₀ + T) ×ˢ (Set.univ : Set M)] q :=
         mem_nhdsWithin_of_mem_nhds (hW_open.mem_nhds hq_W)
       have hΦi_at : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I ∞
-          (fun q' : ℝ × M => Φloc i q'.2 q'.1) W q := hΦi_W q hq_W
+          (fun q' : ℝ × M => Φlocal i q'.2 q'.1) W q := hΦi_W q hq_W
       have hΦglob_W : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) I ∞
           (fun q' : ℝ × M => Φ q'.2 q'.1) W q := by
         refine hΦi_at.congr_of_eventuallyEq ?_ (hcongr q hq_W)

@@ -16,30 +16,30 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-def earlyCyl (t : ℝ) (x : V) : Set (ℝ × V) :=
+def earlyCylinder (t : ℝ) (x : V) : Set (ℝ × V) :=
   Set.Ioc 0 (t / 2) ×ˢ Metric.ball x (heatScale t)
 
 omit [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V]
   [Nontrivial V] in
-private theorem earlyCyl_meas (t : ℝ) (x : V) :
-    MeasurableSet (earlyCyl t x) :=
+private theorem earlyCylinder_meas (t : ℝ) (x : V) :
+    MeasurableSet (earlyCylinder t x) :=
   measurableSet_Ioc.prod measurableSet_ball
 omit [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V]
   [MeasurableSpace V]
   [BorelSpace V]
   [Nontrivial V] in
-theorem earlyCyl_sub {t : ℝ} (ht : 0 ≤ t) (x : V) :
-    earlyCyl t x ⊆ paraCyl x (heatScale t) := by
+theorem earlyCylinder_subset {t : ℝ} (ht : 0 ≤ t) (x : V) :
+    earlyCylinder t x ⊆ forwardParabolicCylinder x (heatScale t) := by
   rintro z ⟨hzs, hzy⟩
   refine ⟨⟨hzs.1, ?_⟩, hzy⟩
   have hhalf : t / 2 ≤ t := by linarith
   simpa [heatScale, Real.sq_sqrt ht] using hzs.2.trans hhalf
 
 def heatEarlyNear (t : ℝ) (f : ℝ × V → F) (x : V) : F :=
-  ∫ z in earlyCyl t x,
-    heatKernel (t - z.1) (x - z.2) • f z ∂(stVolume : Measure (ℝ × V))
+  ∫ z in earlyCylinder t x,
+    heatKernel (t - z.1) (x - z.2) • f z ∂(spaceTimeVolume : Measure (ℝ × V))
 
 def nearHeatC (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     : ℝ≥0∞ :=
@@ -78,7 +78,7 @@ omit [CompleteSpace F]
   [Nontrivial V] in
 theorem heatEarlyNear_norm {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
-    (hsrc : SrcCarl T C f) :
+    (hsrc : SourceCarlesonBound T C f) :
     ‖heatEarlyNear t f x‖ₑ ≤ nearHeatC V * C := by
   let K : ℝ :=
     ((heatScale (t / 2)) ^ Module.finrank ℝ V)⁻¹ *
@@ -87,7 +87,7 @@ theorem heatEarlyNear_norm {T t : ℝ} {C : ℝ≥0∞}
     exact mul_nonneg
       (inv_nonneg.mpr (pow_nonneg (Real.sqrt_nonneg _) _))
       (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le)
-  have hpoint : ∀ z ∈ earlyCyl t x,
+  have hpoint : ∀ z ∈ earlyCylinder t x,
       ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ ≤
         ENNReal.ofReal K * ENNReal.ofReal ‖f z‖ := by
     intro z hz
@@ -110,17 +110,17 @@ theorem heatEarlyNear_norm {T t : ℝ} {C : ℝ≥0∞}
       _ = ENNReal.ofReal K * ENNReal.ofReal ‖f z‖ :=
         ENNReal.ofReal_mul hK0
   have hm : AEMeasurable (fun z : ℝ × V ↦ ENNReal.ofReal ‖f z‖)
-      ((stVolume : Measure (ℝ × V)).restrict (earlyCyl t x)) :=
+      ((spaceTimeVolume : Measure (ℝ × V)).restrict (earlyCylinder t x)) :=
     (hsrc.ae.norm.aemeasurable.ennreal_ofReal).mono_measure
       Measure.restrict_le_self
   have hlocal :
-      ∫⁻ z in earlyCyl t x, ENNReal.ofReal ‖f z‖
-          ∂(stVolume : Measure (ℝ × V)) ≤
-        srcMass f x (heatScale t) := by
-    exact lintegral_mono_set (earlyCyl_sub ht.le x)
+      ∫⁻ z in earlyCylinder t x, ENNReal.ofReal ‖f z‖
+          ∂(spaceTimeVolume : Measure (ℝ × V)) ≤
+        sourceCarlesonMass f x (heatScale t) := by
+    exact lintegral_mono_set (earlyCylinder_subset ht.le x)
   have hscaleT : (heatScale t) ^ 2 ≤ T := by
     simpa [heatScale, Real.sq_sqrt ht.le] using htT
-  have hcarl : srcMass f x (heatScale t) ≤
+  have hcarl : sourceCarlesonMass f x (heatScale t) ≤
       C * ENNReal.ofReal
         ((heatScale t) ^ Module.finrank ℝ V) :=
     hsrc.bound x (heatScale t) (heatScale_pos ht) hscaleT
@@ -131,24 +131,24 @@ theorem heatEarlyNear_norm {T t : ℝ} {C : ℝ≥0∞}
             ((heatScale t) ^ Module.finrank ℝ V)) := by
     unfold heatEarlyNear
     calc
-      ‖∫ z in earlyCyl t x,
+      ‖∫ z in earlyCylinder t x,
           heatKernel (t - z.1) (x - z.2) • f z
-            ∂(stVolume : Measure (ℝ × V))‖ₑ ≤
-          ∫⁻ z in earlyCyl t x,
+            ∂(spaceTimeVolume : Measure (ℝ × V))‖ₑ ≤
+          ∫⁻ z in earlyCylinder t x,
             ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ
-              ∂(stVolume : Measure (ℝ × V)) :=
+              ∂(spaceTimeVolume : Measure (ℝ × V)) :=
         enorm_integral_le_lintegral_enorm _
-      _ ≤ ∫⁻ z in earlyCyl t x,
+      _ ≤ ∫⁻ z in earlyCylinder t x,
           ENNReal.ofReal K * ENNReal.ofReal ‖f z‖
-            ∂(stVolume : Measure (ℝ × V)) := by
+            ∂(spaceTimeVolume : Measure (ℝ × V)) := by
         apply lintegral_mono_ae
-        filter_upwards [ae_restrict_mem (earlyCyl_meas t x)] with z hz
+        filter_upwards [ae_restrict_mem (earlyCylinder_meas t x)] with z hz
         exact hpoint z hz
       _ = ENNReal.ofReal K *
-          (∫⁻ z in earlyCyl t x, ENNReal.ofReal ‖f z‖
-            ∂(stVolume : Measure (ℝ × V))) := by
+          (∫⁻ z in earlyCylinder t x, ENNReal.ofReal ‖f z‖
+            ∂(spaceTimeVolume : Measure (ℝ × V))) := by
         rw [lintegral_const_mul'' _ hm]
-      _ ≤ ENNReal.ofReal K * srcMass f x (heatScale t) :=
+      _ ≤ ENNReal.ofReal K * sourceCarlesonMass f x (heatScale t) :=
         mul_le_mul_right hlocal _
       _ ≤ ENNReal.ofReal K *
           (C * ENNReal.ofReal

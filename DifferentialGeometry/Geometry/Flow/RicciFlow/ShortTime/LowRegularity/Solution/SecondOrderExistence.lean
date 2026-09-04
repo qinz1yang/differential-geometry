@@ -57,7 +57,7 @@ def HasCompatibleSecondOrderSolution
     (hA1Hi : MemLp
       (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f) 2
         (timeMeasure T))
-    (uHi : MaxRegSolutionSpace (I := I) (M := M)
+    (uHi : MaximalRegularitySolutionSpace (I := I) (M := M)
       (g := g) (r := 0) (s := 2) (2 : ℝ) T)
     (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
     (u : CrossScaleField (I := I) (M := M) g 0 2 (2 : ℝ) T)
@@ -72,7 +72,7 @@ def HasCompatibleSecondOrderSolution
           (ccTensorBilinSymm (I := I) g S) δ),
     u.lo = uHi ∧
       u.hiL2 =
-        maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT 0 fHi ∧
+        maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT 0 fHi ∧
       fHi =
         nonautL2Map (I := I) (M := M) hT hT1
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
@@ -93,7 +93,7 @@ def HasCompatibleSecondOrderSolution
       (∀ t ∈ Icc (0 : ℝ) T,
         tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (1 : ℝ) ≤ (2 : ℝ) by norm_num) (u.lo.toFun t) =
-          (maxRegDuhamelMap (I := I) (M := M)
+          (maximalRegularityDuhamelMap (I := I) (M := M)
             (1 : ℝ) hT 0 f).toFun t) ∧
       u.repr 0 =
         (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 1)) ∧
@@ -106,7 +106,7 @@ def HasCompatibleSecondOrderSolution
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (1 : ℝ) + 2 ≤ (2 : ℝ) + 1 by norm_num) (u.repr t)) =ᵐ[
             timeMeasure T]
-        fun t => maxRegDuhamelSolField (I := I) (M := M)
+        fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT 0 f t) ∧
       ((fun t => fHi t) =ᵐ[timeMeasure T]
         fun t => liftHiN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' FHi
@@ -232,9 +232,9 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
     exists_affine_forcing_operator_data (I := I) (M := M) hDim g hR hρ hRρ hδ0 hδ_le hδ
       hreal hreal' hNcont hcoreN hA2cont hA2core hB2 hA2bd hZ hL
       FHi FLo hFHi hFLo hFLoCore hFHiBd hFLoBd hFComm hT hT1 f hball hforce
-  have hduh : L * ‖duhH3 (I := I) (M := M) g hT f‖ ≤ 2 * L * ‖f‖ := by
+  have hduh : L * ‖duhamelH3 (I := I) (M := M) g hT f‖ ≤ 2 * L * ‖f‖ := by
     have h1 := mul_le_mul_of_nonneg_left
-      (norm_duhH3_le (I := I) (M := M) g hT f) hL
+      (norm_duhamelH3_le (I := I) (M := M) g hT f) hL
     have h2 : (0 : ℝ) ≤ (1 - T) * (L * ‖f‖) :=
       mul_nonneg (by linarith) (mul_nonneg hL (norm_nonneg f))
     nlinarith
@@ -307,11 +307,11 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
       (stateField (I := I) (M := M) g hT f) t =
         tensorHsCongr (I := I) (M := M) g 0 2
           (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)
-          (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT 0 f t) := by
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT 0 f t) := by
     filter_upwards [(tensorHsCongrL (I := I) (M := M) g 0 2
       (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)).coeFn_compLpL
       (p := 2) (μ := timeMeasure T)
-      (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
         (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)] with t ht
     simpa only [stateField, tensorHsCongrL_apply] using ht
   have hballU : ∀ᵐ t ∂timeMeasure T, ‖u.lo.toFun t‖ ≤ R := by
@@ -334,13 +334,13 @@ theorem hasCompatibleSecondOrderSolution_of_bounds
             (show (1 : ℝ) + 2 ≤ (2 : ℝ) + 1 by norm_num)]
       _ = ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (1 : ℝ) + 2 by norm_num)
-            (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT 0 f t)‖ := by
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT 0 f t)‖ := by
           rw [hrae]
       _ = ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by norm_num)
             (tensorHsCongr (I := I) (M := M) g 0 2
               (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)
-              (maxRegDuhamelSolField (I := I) (M := M)
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                 (1 : ℝ) hT 0 f t))‖ :=
           (norm_incl_congr (I := I) (M := M) g
             (show (2 : ℝ) = ((1 : ℕ) : ℝ) + 1 by norm_num)
@@ -426,11 +426,11 @@ private theorem duhamel_congr (g : SmoothRiemannianMetric I M) {a b : ℝ}
     (u : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T) :
     (tensorHsCongrL (I := I) (M := M) g 0 2
           (show b + 2 = a + 2 by rw [h])).compLpL 2 (timeMeasure T)
-        (maxRegDuhamelSolField (I := I) (M := M) b hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) b hT
           (0 : TensorHs (I := I) (M := M) g 0 2 (b + 2))
           ((tensorHsCongrL (I := I) (M := M) g 0 2 h).compLpL
             2 (timeMeasure T) u)) =
-      maxRegDuhamelSolField (I := I) (M := M) a hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT
         (0 : TensorHs (I := I) (M := M) g 0 2 (a + 2)) u := by
   cases h
   rw [congrLp_self, congrLp_self]
@@ -565,7 +565,7 @@ theorem exists_compatible_second_order_solution_with_contraction
       (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num)).compLpL 2 (timeMeasure T)
       gforce with hfdef
   have hstate : stateField (I := I) (M := M) g hT f =
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
         (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) gforce := by
     rw [hfdef]
     exact duhamel_congr (I := I) (M := M) g

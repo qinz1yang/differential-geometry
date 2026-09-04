@@ -59,10 +59,10 @@ private lemma input_slot_pulled_eq_kernel_repr_eventually
   refine Filter.eventually_of_mem (hU_open.mem_nhds hmem) ?_
   intro y hy
   rcases hy with ⟨x, hx_good, hxy⟩
-  have hx_src : x ∈ (chartAt H α).source :=
+  have hx_source : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx_good
   have hx_extsrc : x ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hx_src
+    rw [extChartAt_source]; exact hx_source
   have hx_inv : (extChartAt I α).symm y = x := by
     rw [← hxy]; exact (extChartAt I α).left_inv hx_extsrc
   have h_factor :=
@@ -70,7 +70,7 @@ private lemma input_slot_pulled_eq_kernel_repr_eventually
       (I := I) (M := M) g r s α
       (fun b' : M => T.toSection b') B.toFun
       (b := (extChartAt I α).symm y)
-      (by rw [hx_inv]; exact hx_src) k
+      (by rw [hx_inv]; exact hx_source) k
   change (trivializationAt (TensorRSModel r s ℝ E)
         (fun y' : M => TensorRSSpace r s I y') α).continuousLinearMapAt ℝ
       ((extChartAt I α).symm y)
@@ -113,10 +113,10 @@ private lemma output_slot_pulled_eq_kernel_repr_eventually
   refine Filter.eventually_of_mem (hU_open.mem_nhds hmem) ?_
   intro y hy
   rcases hy with ⟨x, hx_good, hxy⟩
-  have hx_src : x ∈ (chartAt H α).source :=
+  have hx_source : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx_good
   have hx_extsrc : x ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hx_src
+    rw [extChartAt_source]; exact hx_source
   have hx_inv : (extChartAt I α).symm y = x := by
     rw [← hxy]; exact (extChartAt I α).left_inv hx_extsrc
   have h_factor :=
@@ -124,7 +124,7 @@ private lemma output_slot_pulled_eq_kernel_repr_eventually
       (I := I) (M := M) g r s α
       (fun b' : M => T.toSection b') B.toFun
       (b := (extChartAt I α).symm y)
-      (by rw [hx_inv]; exact hx_src) l
+      (by rw [hx_inv]; exact hx_source) l
   change (trivializationAt (TensorRSModel r s ℝ E)
         (fun y' : M => TensorRSSpace r s I y') α).continuousLinearMapAt ℝ
       ((extChartAt I α).symm y)

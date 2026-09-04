@@ -18,7 +18,7 @@ private theorem finOnCpt (μ : Measure X) [IsFiniteMeasure μ] :
     IsFiniteMeasureOnCompacts μ :=
   ⟨fun K _ => MeasureTheory.measure_lt_top μ K⟩
 
-theorem bdFactorCell_int (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
+theorem boundedFactorCell_integrable (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
     (n : ℕ) (e : Fin n → ℕ) :
     Integrable (fun x => ∏ m : Fin n, b x (e m)) μ := by
   have := finOnCpt (X := X) μ
@@ -26,7 +26,7 @@ theorem bdFactorCell_int (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuou
     (HasCompactSupport.of_compactSpace _)
 
 omit [MeasurableSpace X] [OpensMeasurableSpace X] [CompactSpace X] in
-theorem bdFactorGrid_cont (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
+theorem boundedFactorGrid_continuous (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
     (K k : ℕ) :
     Continuous fun x => boundedFactorGrid (b x) K k := by
   simp only [boundedFactorGrid]
@@ -34,14 +34,14 @@ theorem bdFactorGrid_cont (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuo
   refine continuous_finsetSum _ (fun e _ => ?_)
   exact continuous_finsetProd _ (fun m _ => hcont (e m))
 
-theorem bdFactorGrid_int (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
+theorem boundedFactorGrid_integrable (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
     (K k : ℕ) :
     Integrable (fun x => boundedFactorGrid (b x) K k) μ := by
   have := finOnCpt (X := X) μ
-  exact (bdFactorGrid_cont b hcont K k).integrable_of_hasCompactSupport
+  exact (boundedFactorGrid_continuous b hcont K k).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 
-theorem bdFactorGrid_int_eq (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
+theorem integral_boundedFactorGrid (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Continuous fun x => b x l)
     (K k : ℕ) :
     (∫ x, boundedFactorGrid (b x) K k ∂μ) =
       ∑ n ∈ Finset.range (k + 1),
@@ -55,10 +55,10 @@ theorem bdFactorGrid_int_eq (b : X → ℕ → ℝ) (hcont : ∀ l : ℕ, Contin
   · apply Finset.sum_congr rfl
     intro n _
     rw [MeasureTheory.integral_finsetSum]
-    intro e _; exact bdFactorCell_int b hcont n e
+    intro e _; exact boundedFactorCell_integrable b hcont n e
   · intro n _
     apply MeasureTheory.integrable_finsetSum
-    intro e _; exact bdFactorCell_int b hcont n e
+    intro e _; exact boundedFactorCell_integrable b hcont n e
 
 end Combinatorics
 end DifferentialGeometry

@@ -11,7 +11,7 @@ open scoped ContDiff Topology
 namespace DifferentialGeometry
 namespace Analysis
 
-open HCGCompactness
+open CheegerGromovCompactness
 
 private theorem fderiv_inv_of_local
     {X : Type*}
@@ -63,7 +63,7 @@ private theorem partial_sub_snd
 
 namespace OpenPartialHomeomorph
 
-theorem exists_symm_convOn_ball
+theorem exists_symm_convergenceOn_ball
     {X : Type*}
     [NormedAddCommGroup X] [NormedSpace Real X]
     [FiniteDimensional Real X]
@@ -71,7 +71,7 @@ theorem exists_symm_convOn_ball
     {eInf : OpenPartialHomeomorph X X}
     {Q : Set X} {delta : Real}
     (hQ : IsOpen Q)
-    (hforward : MapCInfConvOnCompacts Q
+    (hforward : MapCInfConvergenceOnCompacts Q
       (fun n ↦ (e n : X → X)) eInf)
     (hsource : Filter.Eventually
       (fun n : Nat ↦ closure Q ⊆ (e n).source) Filter.atTop)
@@ -88,7 +88,7 @@ theorem exists_symm_convOn_ball
       Filter.Eventually
         (fun n : Nat ↦ Set.MapsTo (e n).symm
           (Metric.closedBall 0 delta₀) Q) Filter.atTop ∧
-      MapCInfConvOnCompacts (Metric.ball 0 delta₀)
+      MapCInfConvergenceOnCompacts (Metric.ball 0 delta₀)
         (fun n ↦ ((e n).symm : X → X)) eInf.symm := by
   have hzero_closed : (0 : X) ∈ Metric.closedBall 0 delta := by
     simp only [Metric.mem_closedBall, dist_self, hdelta.le]
@@ -178,25 +178,25 @@ theorem exists_symm_convOn_ball
     exact hderiv_inv
   obtain ⟨T⟩ := exists_compactRootTube hD_open hW₀_open
     isCompact_singleton hK_W₀ hFInf_cd hPhiInf_cd hgraph hroot hinv
-  have hforward_S : MapCInfConvOnCompacts S
+  have hforward_S : MapCInfConvergenceOnCompacts S
       (fun n ↦ (e n : X → X)) eInf := by
     intro K hK hKS p
     exact hforward K hK (hKS.trans inter_subset_left) p
-  have hsnd_conv : MapCInfConvOnCompacts D
+  have hsnd_convergence : MapCInfConvergenceOnCompacts D
       (fun _ : Nat ↦ (fun z : X × X ↦ z.2)) (fun z : X × X ↦ z.2) :=
-    mapCInfConv_const (U := D) (fun z : X × X ↦ z.2)
-  have he_snd_conv : MapCInfConvOnCompacts D
+    mapCInfConvergence_const (U := D) (fun z : X × X ↦ z.2)
+  have he_snd_convergence : MapCInfConvergenceOnCompacts D
       (fun n z ↦ e n z.2) (fun z ↦ eInf z.2) :=
-    MapCInfConvOnCompacts.comp hD_open hS_open hsnd_conv hforward_S
+    MapCInfConvergenceOnCompacts.comp hD_open hS_open hsnd_convergence hforward_S
       (fun _ ↦ contDiff_snd.contDiffOn) contDiff_snd.contDiffOn
       hstage_S_cd hInf_S_cd
       (fun z hz ↦ hz.2) (fun _ z hz ↦ hz.2)
-  have hfst_conv : MapCInfConvOnCompacts D
+  have hfst_convergence : MapCInfConvergenceOnCompacts D
       (fun _ : Nat ↦ (fun z : X × X ↦ z.1)) (fun z : X × X ↦ z.1) :=
-    mapCInfConv_const (U := D) (fun z : X × X ↦ z.1)
-  have hpair_conv : MapCInfConvOnCompacts D
+    mapCInfConvergence_const (U := D) (fun z : X × X ↦ z.1)
+  have hpair_convergence : MapCInfConvergenceOnCompacts D
       (fun n z ↦ (e n z.2, z.1)) (fun z ↦ (eInf z.2, z.1)) :=
-    mapCInfConv_prodMk hD_open he_snd_conv hfst_conv
+    mapCInfConvergence_prodMk hD_open he_snd_convergence hfst_convergence
       (fun n ↦ (hstage_S_cd n).comp contDiff_snd.contDiffOn
         (fun z hz ↦ hz.2))
       (hInf_S_cd.comp contDiff_snd.contDiffOn (fun z hz ↦ hz.2))
@@ -204,9 +204,9 @@ theorem exists_symm_convOn_ball
   let subMap : X × X → X := fun z ↦ z.1 - z.2
   have hsub_cd : ContDiffOn Real ∞ subMap Set.univ :=
     contDiff_fst.contDiffOn.sub contDiff_snd.contDiffOn
-  have hF_conv : MapCInfConvOnCompacts D F FInf := by
-    have hcomp := MapCInfConvOnCompacts.comp hD_open isOpen_univ hpair_conv
-      (mapCInfConv_const (U := Set.univ) subMap)
+  have hF_convergence : MapCInfConvergenceOnCompacts D F FInf := by
+    have hcomp := MapCInfConvergenceOnCompacts.comp hD_open isOpen_univ hpair_convergence
+      (mapCInfConvergence_const (U := Set.univ) subMap)
       (fun n ↦ (hstage_S_cd n).comp contDiff_snd.contDiffOn
           (fun z hz ↦ hz.2) |>.prodMk contDiff_fst.contDiffOn)
       ((hInf_S_cd.comp contDiff_snd.contDiffOn
@@ -214,8 +214,8 @@ theorem exists_symm_convOn_ball
       (fun _ ↦ hsub_cd) hsub_cd
       (fun _ _ ↦ Set.mem_univ _) (fun _ _ _ ↦ Set.mem_univ _)
     simpa only [F, FInf, subMap] using hcomp
-  obtain ⟨Nroot, Phi, hPhi_conv, hPhi_cd, hspec, huniq⟩ :=
-    T.exists_root_cInf hF_cd hF_conv
+  obtain ⟨Nroot, Phi, hPhi_convergence, hPhi_cd, hspec, huniq⟩ :=
+    T.exists_root_cInf hF_cd hF_convergence
   have hzero_TW : (0 : X) ∈ T.W := T.K_subset_W (by simp)
   obtain ⟨b, hb, hbsub⟩ :=
     Metric.mem_nhds_iff.mp (T.isOpen_W.mem_nhds hzero_TW)
@@ -274,22 +274,22 @@ theorem exists_symm_convOn_ball
     refine ⟨N, fun n hn w hw ↦ ?_⟩
     rw [← heq_closed n hn hw]
     exact hselected_Q n hn hw
-  have hPhi_ball : MapCInfConvOnCompacts (Metric.ball (0 : X) delta₀)
+  have hPhi_ball : MapCInfConvergenceOnCompacts (Metric.ball (0 : X) delta₀)
       Phi PhiInf := by
     intro K hK hKball p
-    exact hPhi_conv K hK (hKball.trans hball_TW) p
+    exact hPhi_convergence K hK (hKball.trans hball_TW) p
   have heq_eventually : Filter.Eventually
       (fun n : Nat ↦ Set.EqOn ((e n).symm : X → X) (Phi n)
         (Metric.ball (0 : X) delta₀)) Filter.atTop := by
     apply eventually_atTop.mpr
     refine ⟨N, fun n hn w hw ↦ ?_⟩
     exact (heq_closed n hn (Metric.ball_subset_closedBall hw)).symm
-  have hinv_conv : MapCInfConvOnCompacts (Metric.ball (0 : X) delta₀)
+  have hinv_convergence : MapCInfConvergenceOnCompacts (Metric.ball (0 : X) delta₀)
       (fun n ↦ ((e n).symm : X → X)) eInf.symm := by
     simpa only [PhiInf] using hPhi_ball.congr_eventually Metric.isOpen_ball
       heq_eventually (fun _ _ ↦ rfl)
   exact ⟨delta₀, hdelta₀, hdelta₀delta, hInf_maps,
-    hmaps_eventually, hinv_conv⟩
+    hmaps_eventually, hinv_convergence⟩
 
 theorem exists_symm_cInf
     {X : Type*}
@@ -299,7 +299,7 @@ theorem exists_symm_cInf
     {eInf : OpenPartialHomeomorph X X}
     {Q K : Set X}
     (hQ : IsOpen Q) (hK : IsCompact K)
-    (hforward : MapCInfConvOnCompacts Q
+    (hforward : MapCInfConvergenceOnCompacts Q
       (fun n ↦ (e n : X → X)) eInf)
     (hsource : Filter.Eventually
       (fun n : Nat ↦ closure Q ⊆ (e n).source) Filter.atTop)
@@ -316,7 +316,7 @@ theorem exists_symm_cInf
       Filter.Eventually
         (fun n : Nat ↦ closure V ⊆ (e n).target ∧
           Set.MapsTo (e n).symm (closure V) Q) Filter.atTop ∧
-      MapCInfConvOnCompacts V
+      MapCInfConvergenceOnCompacts V
         (fun n ↦ ((e n).symm : X → X)) eInf.symm := by
   let G : Set X := eInf.target ∩ eInf.symm ⁻¹' Q
   have hGopen : IsOpen G := by
@@ -377,23 +377,23 @@ theorem exists_symm_cInf
     exact hderiv_inv
   obtain ⟨T⟩ := exists_compactRootTube hDopen hW₀open hK hKW₀
     hFInf_cd hPhiInf_cd hgraph hroot hinv
-  have hsnd_conv : MapCInfConvOnCompacts D
+  have hsnd_convergence : MapCInfConvergenceOnCompacts D
       (fun _ : Nat ↦ (fun z : X × X ↦ z.2))
       (fun z : X × X ↦ z.2) :=
-    mapCInfConv_const (U := D) (fun z : X × X ↦ z.2)
-  have he_snd_conv : MapCInfConvOnCompacts D
+    mapCInfConvergence_const (U := D) (fun z : X × X ↦ z.2)
+  have he_snd_convergence : MapCInfConvergenceOnCompacts D
       (fun n z ↦ e n z.2) (fun z ↦ eInf z.2) :=
-    MapCInfConvOnCompacts.comp hDopen hQ hsnd_conv hforward
+    MapCInfConvergenceOnCompacts.comp hDopen hQ hsnd_convergence hforward
       (fun _ ↦ contDiff_snd.contDiffOn) contDiff_snd.contDiffOn
       hstage_cd hInf_cd
       (fun z hz ↦ hz.2) (fun _ z hz ↦ hz.2)
-  have hfst_conv : MapCInfConvOnCompacts D
+  have hfst_convergence : MapCInfConvergenceOnCompacts D
       (fun _ : Nat ↦ (fun z : X × X ↦ z.1))
       (fun z : X × X ↦ z.1) :=
-    mapCInfConv_const (U := D) (fun z : X × X ↦ z.1)
-  have hpair_conv : MapCInfConvOnCompacts D
+    mapCInfConvergence_const (U := D) (fun z : X × X ↦ z.1)
+  have hpair_convergence : MapCInfConvergenceOnCompacts D
       (fun n z ↦ (e n z.2, z.1)) (fun z ↦ (eInf z.2, z.1)) :=
-    mapCInfConv_prodMk hDopen he_snd_conv hfst_conv
+    mapCInfConvergence_prodMk hDopen he_snd_convergence hfst_convergence
       (fun n ↦ (hstage_cd n).comp contDiff_snd.contDiffOn
         (fun z hz ↦ hz.2))
       (hInf_cd.comp contDiff_snd.contDiffOn (fun z hz ↦ hz.2))
@@ -401,9 +401,9 @@ theorem exists_symm_cInf
   let subMap : X × X → X := fun z ↦ z.1 - z.2
   have hsub_cd : ContDiffOn Real ∞ subMap Set.univ :=
     contDiff_fst.contDiffOn.sub contDiff_snd.contDiffOn
-  have hF_conv : MapCInfConvOnCompacts D F FInf := by
-    have hcomp := MapCInfConvOnCompacts.comp hDopen isOpen_univ hpair_conv
-      (mapCInfConv_const (U := Set.univ) subMap)
+  have hF_convergence : MapCInfConvergenceOnCompacts D F FInf := by
+    have hcomp := MapCInfConvergenceOnCompacts.comp hDopen isOpen_univ hpair_convergence
+      (mapCInfConvergence_const (U := Set.univ) subMap)
       (fun n ↦ (hstage_cd n).comp contDiff_snd.contDiffOn
           (fun z hz ↦ hz.2) |>.prodMk contDiff_fst.contDiffOn)
       ((hInf_cd.comp contDiff_snd.contDiffOn
@@ -411,8 +411,8 @@ theorem exists_symm_cInf
       (fun _ ↦ hsub_cd) hsub_cd
       (fun _ _ ↦ Set.mem_univ _) (fun _ _ _ ↦ Set.mem_univ _)
     simpa only [F, FInf, subMap] using hcomp
-  obtain ⟨Nroot, Phi, hPhi_conv, _hPhi_cd, hspec, _huniq⟩ :=
-    T.exists_root_cInf hF_cd hF_conv
+  obtain ⟨Nroot, Phi, hPhi_convergence, _hPhi_cd, hspec, _huniq⟩ :=
+    T.exists_root_cInf hF_cd hF_convergence
   obtain ⟨V, hVopen, hKV, hVT, hVcompact⟩ :=
     exists_open_between_and_isCompact_closure hK T.isOpen_W T.K_subset_W
   have hVtarget : closure V ⊆ eInf.target := by
@@ -467,9 +467,9 @@ theorem exists_symm_cInf
     intro w hw
     rw [← heq_closed n hn hw]
     exact hselected_Q n hn hw
-  have hPhi_V : MapCInfConvOnCompacts V Phi PhiInf := by
+  have hPhi_V : MapCInfConvergenceOnCompacts V Phi PhiInf := by
     intro K' hK' hK'V p
-    exact hPhi_conv K' hK'
+    exact hPhi_convergence K' hK'
       (hK'V.trans (subset_closure.trans hVT)) p
   have heq_eventually : Filter.Eventually
       (fun n : Nat ↦ Set.EqOn ((e n).symm : X → X) (Phi n) V)
@@ -477,11 +477,11 @@ theorem exists_symm_cInf
     apply eventually_atTop.mpr
     refine ⟨N, fun n hn w hw ↦ ?_⟩
     exact (heq_closed n hn (subset_closure hw)).symm
-  have hinv_conv : MapCInfConvOnCompacts V
+  have hinv_convergence : MapCInfConvergenceOnCompacts V
       (fun n ↦ ((e n).symm : X → X)) eInf.symm := by
     simpa only [PhiInf] using hPhi_V.congr_eventually hVopen
       heq_eventually (fun _ _ ↦ rfl)
-  exact ⟨V, hVopen, hVcompact, hKV, hVtarget, hVmap, hstage, hinv_conv⟩
+  exact ⟨V, hVopen, hVcompact, hKV, hVtarget, hVmap, hstage, hinv_convergence⟩
 
 end OpenPartialHomeomorph
 end Analysis

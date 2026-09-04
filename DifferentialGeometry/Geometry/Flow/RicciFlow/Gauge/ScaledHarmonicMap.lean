@@ -248,7 +248,7 @@ theorem fixed_pullback_drift
 
 omit [CompactSpace M]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem scaled_hmf_target
+theorem scaled_harmonic_map_flow_target_gauge
     (g h : SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, I⟯ M)
     (r : ScalarField (I := I) (M := M)) (x : M) :
     r x • diffeoTension (I := I) g h Φ (Φ x) =
@@ -266,7 +266,7 @@ theorem scaled_hmf_target
 
 omit [CompactSpace M]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem scaled_inv_vel
+theorem scaled_inv_velocity
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)
     (r : ℝ → ScalarField (I := I) (M := M))
@@ -308,18 +308,18 @@ theorem scaled_inv_vel
           (-(W t ((Ψ_fam t : M → M) y)))) := by
     intro y t ht
     have h := hHMF y t ht
-    rw [scaled_hmf_target] at h
+    rw [scaled_harmonic_map_flow_target_gauge] at h
     change HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
       (fun s : ℝ => (Ψ_fam s : M → M) y) (Set.Ici (0 : ℝ)) t
       ((1 : ℝ →L[ℝ] ℝ).smulRight (-(W t ((Ψ_fam t : M → M) y)))) at h
     exact h
   intro x t ht
   simpa only [W, a] using
-    (symm_gauge_vel (I := I) Ψ_fam W T hΨneg hjoint hsymm_joint t ht x)
+    (symm_gauge_velocity (I := I) Ψ_fam W T hΨneg hjoint hsymm_joint t ht x)
 
 omit [SigmaCompactSpace M] in
 omit [CompactSpace M] in
-theorem scaled_hmf_inverse
+theorem scaled_harmonic_map_flow_inverse_metric_has_deTurck_derivative
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)
     (r : ℝ → ScalarField (I := I) (M := M))
@@ -374,7 +374,7 @@ theorem scaled_hmf_inverse
           (Diffeomorph.pushforward (Ψ_fam t).symm (W t)
             (((Ψ_fam t).symm : M → M) x))) := by
     intro x t ht
-    have h := scaled_inv_vel (I := I) g_RF g_bg r T Ψ_fam hHMF hjoint
+    have h := scaled_inv_velocity (I := I) g_RF g_bg r T Ψ_fam hHMF hjoint
       hsymm_joint x t ht
     change HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
       (fun s : ℝ => ((Ψ_fam s).symm : M → M) x) (Set.Ici (0 : ℝ)) t
@@ -434,7 +434,7 @@ theorem scaled_bg_inverse
           (Diffeomorph.pushforward (Ψ_fam t).symm (W t)
             (((Ψ_fam t).symm : M → M) x))) := by
     intro x t ht
-    have h := scaled_inv_vel (I := I) g_RF g_bg r T Ψ_fam hHMF hjoint
+    have h := scaled_inv_velocity (I := I) g_RF g_bg r T Ψ_fam hHMF hjoint
       hsymm_joint x t ht
     change HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
       (fun s : ℝ => ((Ψ_fam s).symm : M → M) x) (Set.Ici (0 : ℝ)) t

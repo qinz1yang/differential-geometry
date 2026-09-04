@@ -43,7 +43,7 @@ def nablaRm04Field
       (n := (∞ : WithTop ℕ∞)) 5 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     4 (S.family.connection t) (S.base.rm04 t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       4 (S.family.connection t) (connSmoothInf (I := I) S t) (S.base.rm04 t))
 
 def nabla2Rm04Field
@@ -53,7 +53,7 @@ def nabla2Rm04Field
       (n := (∞ : WithTop ℕ∞)) 6 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     5 (S.family.connection t) (nablaRm04Field (I := I) S t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       5 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nablaRm04Field (I := I) S t))
 
@@ -64,7 +64,7 @@ def nabla3Rm04Field
       (n := (∞ : WithTop ℕ∞)) 7 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     6 (S.family.connection t) (nabla2Rm04Field (I := I) S t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       6 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nabla2Rm04Field (I := I) S t))
 
@@ -77,7 +77,7 @@ theorem nablaRm04Field_realizes
       4 (S.family.connection t) (S.base.rm04 t) (nablaRm04Field (I := I) S t) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     4 (S.family.connection t) (S.base.rm04 t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       4 (S.family.connection t) (connSmoothInf (I := I) S t) (S.base.rm04 t))
 
 omit [I.Boundaryless] in
@@ -90,7 +90,7 @@ theorem nabla2Rm04Field_realizes
       (nabla2Rm04Field (I := I) S t) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     5 (S.family.connection t) (nablaRm04Field (I := I) S t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       5 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nablaRm04Field (I := I) S t))
 
@@ -104,7 +104,7 @@ theorem nabla3Rm04Field_realizes
       (nabla3Rm04Field (I := I) S t) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     6 (S.family.connection t) (nabla2Rm04Field (I := I) S t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       6 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nabla2Rm04Field (I := I) S t))
 
@@ -269,7 +269,7 @@ theorem rm04_ricciIdentityAt
   have hcov :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (S.family.connection (t : Real)) (1 : WithTop ℕ∞) :=
-    connSmoothOfSol (I := I) S (t : Real)
+    connSmoothOfSolution (I := I) S (t : Real)
   have htor : (S.family.connection (t : Real)).torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -280,7 +280,7 @@ theorem rm04_ricciIdentityAt
     (S.base.rm04 (t : Real)) (nablaRm04Field (I := I) S (t : Real))
     (S.base.rm04 (t : Real) x) (nablaRm04Field (I := I) S (t : Real) x)
     (nabla2Rm04Field (I := I) S (t : Real) x)
-    (rm13OfSol (I := I) S (t : Real)) rfl rfl
+    (rm13OfSolution (I := I) S (t : Real)) rfl rfl
     (rm04_nabla20SRealizesAt (I := I) S (t : Real) x) htor
 
 omit [I.Boundaryless] in
@@ -296,7 +296,7 @@ theorem nablaRm04_ricciIdentityAt
   have hcov :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (S.family.connection (t : Real)) (1 : WithTop ℕ∞) :=
-    connSmoothOfSol (I := I) S (t : Real)
+    connSmoothOfSolution (I := I) S (t : Real)
   have htor : (S.family.connection (t : Real)).torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -308,7 +308,7 @@ theorem nablaRm04_ricciIdentityAt
     (nablaRm04Field (I := I) S (t : Real) x)
     (nabla2Rm04Field (I := I) S (t : Real) x)
     (nabla3Rm04Field (I := I) S (t : Real) x)
-    (rm13OfSol (I := I) S (t : Real)) rfl rfl
+    (rm13OfSolution (I := I) S (t : Real)) rfl rfl
     (nablaRm04_nabla20SRealizesAt (I := I) S (t : Real) x) htor
 
 end RicciIdentity

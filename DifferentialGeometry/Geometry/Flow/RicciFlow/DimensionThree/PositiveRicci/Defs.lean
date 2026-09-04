@@ -135,12 +135,12 @@ structure HamiltonCGHLimit (I : ModelWithCorners Real E H) (M : Type u)
   S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := N) D
   isSolution : DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) S
   sourceTerm : Nat ->
-    DifferentialGeometry.HCGCompactness.PointedFlowData.{u} (I := I) D
+    DifferentialGeometry.CheegerGromovCompactness.PointedFlowData.{u} (I := I) D
   origIndex : Nat -> Nat
   origStrict : StrictMono origIndex
   cghSubseq : Nat -> Nat
   cghStrict : StrictMono cghSubseq
-  cgh : DifferentialGeometry.HCGCompactness.SmoothCGHConverges
+  cgh : DifferentialGeometry.CheegerGromovCompactness.SmoothCGHConverges
     (I := I)
     { D := D, term := sourceTerm }
     { M := N, topology := topology, charted := charted, smooth := smooth,
@@ -153,7 +153,7 @@ structure HamiltonCGHLimit (I : ModelWithCorners Real E H) (M : Type u)
     letI : ChartedSpace H (sourceTerm i).M := (sourceTerm i).charted
     (sourceTerm i).M ≃ₘ⟮I, I⟯ M
   limitComplete : forall t : Real, t ∈ D.carrier ->
-    DifferentialGeometry.HCGCompactness.MetricComplete (I := I)
+    DifferentialGeometry.CheegerGromovCompactness.MetricComplete (I := I)
       { M := N, topology := topology, charted := charted, smooth := smooth,
         sigmaCompact := sigmaCompact, t2 := t2,
         t2TangentBundle := t2TangentBundle, basepoint := basepoint,
@@ -162,11 +162,11 @@ structure HamiltonCGHLimit (I : ModelWithCorners Real E H) (M : Type u)
 namespace HamiltonCGHLimit
 
 abbrev source (L : HamiltonCGHLimit (I := I) M) :
-    DifferentialGeometry.HCGCompactness.PointedFlowSeq.{u} (I := I) :=
+    DifferentialGeometry.CheegerGromovCompactness.PointedFlowSeq.{u} (I := I) :=
   { D := L.D, term := L.sourceTerm }
 
 abbrev limit (L : HamiltonCGHLimit (I := I) M) :
-    DifferentialGeometry.HCGCompactness.PointedFlowData.{u} (I := I) L.D :=
+    DifferentialGeometry.CheegerGromovCompactness.PointedFlowData.{u} (I := I) L.D :=
   { M := L.N, topology := L.topology, charted := L.charted, smooth := L.smooth,
     sigmaCompact := L.sigmaCompact, t2 := L.t2,
     t2TangentBundle := L.t2TangentBundle, basepoint := L.basepoint,

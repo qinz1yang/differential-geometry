@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -221,7 +221,7 @@ noncomputable def ofRestrictPullback
     {subseq : Nat -> Nat}
     {Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq}
     {k : Nat}
-    (hσsrc : letI : TopologicalSpace L.M := L.topology; IsSigmaCompact (Φ.source k))
+    (hσsource : letI : TopologicalSpace L.M := L.topology; IsSigmaCompact (Φ.source k))
     (referenceMetric :
       letI : TopologicalSpace (MetricSourceDomain (I := I) Φ k) :=
         metricSourceDomainTopology (I := I) Φ k
@@ -259,7 +259,7 @@ noncomputable def ofRestrictPullback
   letI : IsManifold I ∞ (MetricSourceDomain (I := I) Φ k) :=
     metric_source_domain_smooth (I := I) Φ k
   letI : SigmaCompactSpace (MetricSourceDomain (I := I) Φ k) :=
-    metric_source_domain_sigma_compact (I := I) Φ k hσsrc
+    metric_source_domain_sigma_compact (I := I) Φ k hσsource
   letI : TopologicalSpace (MetricTargetDomain (I := I) Φ k) :=
     metricTargetDomainTopology (I := I) Φ k
   letI : ChartedSpace H (MetricTargetDomain (I := I) Φ k) :=
@@ -269,7 +269,7 @@ noncomputable def ofRestrictPullback
     metric_target_domain_smooth (I := I) Φ k
   refine MetricSourceData.ofCanonical (I := I)
     (Φ := Φ) (k := k)
-    (metric_source_domain_sigma_compact (I := I) Φ k hσsrc)
+    (metric_source_domain_sigma_compact (I := I) Φ k hσsource)
     (by
       let sourceT2 : T2Space (metricSourceOpenSubset (I := I) Φ k) := by
         change T2Space (MetricSourceDomain (I := I) Φ k)
@@ -447,5 +447,5 @@ end MetricSourceData
 
 end MetricCompactnessCore
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

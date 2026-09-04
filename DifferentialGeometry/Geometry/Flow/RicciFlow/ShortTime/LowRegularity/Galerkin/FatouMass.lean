@@ -30,7 +30,7 @@ theorem weightedEnergyLimit_bound
     (hconv : ∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2),
       ∀ t ∈ Set.Icc (0 : ℝ) T,
         Tendsto (fun N => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i) atTop
-          (𝓝 (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (𝓝 (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t)))
     (hστ : σ ≤ τ)
     (hΦ : ∀ N : ℕ, ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -39,10 +39,10 @@ theorem weightedEnergyLimit_bound
         (galerkinSolutionMode (I := I) (M := M) g₀ fseq N) τ t ≤ Φ) :
     ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t) ^ 2) ∧
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t) ^ 2 ≤ Φ := by
   classical
   intro t ht
@@ -64,7 +64,7 @@ theorem weightedEnergyLimit_bound
     (fun i => tensorSobolevWeight (I := I) (M := M) i σ)
     (fun i => tensorSobolevWeight_nonneg (I := I) (M := M) i σ)
     (fun N i => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i)
-    (fun i => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+    (fun i => perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
       (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t)
     (fun i => hconv i t ht) Φ hpartial
 
@@ -78,10 +78,10 @@ theorem exists_weighted_energy_bound_up_to_three_of_adapted_solution
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
     ∀ σ : ℝ, σ ≤ 3 → ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t) ^ 2) ∧
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t) ^ 2 ≤
           Cσ := by
   classical
@@ -107,7 +107,7 @@ theorem exists_weighted_energy_bound_up_to_three_of_adapted_solution
     (fun i => tensorSobolevWeight (I := I) (M := M) i σ)
     (fun i => tensorSobolevWeight_nonneg (I := I) (M := M) i σ)
     (fun N i => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i)
-    (fun i => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+    (fun i => perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
       (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t)
     (fun i => hconv i t ht) Φ hpartial
 
@@ -122,10 +122,10 @@ theorem exists_weighted_energy_bound_up_to_three (hDim : Module.finrank ℝ E = 
             Kr1 * lowRegularityStateRadius Ctop B1 ρ P + ε < 1 →
         ∀ σ : ℝ, σ ≤ 3 → ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
           Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-              (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+              (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
                 (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t) ^ 2) ∧
             ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-                (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+                (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
                   (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t) ^ 2 ≤
               Cσ := by
   classical
@@ -153,7 +153,7 @@ theorem exists_weighted_energy_bound_up_to_three (hDim : Module.finrank ℝ E = 
     (fun i => tensorSobolevWeight (I := I) (M := M) i σ)
     (fun i => tensorSobolevWeight_nonneg (I := I) (M := M) i σ)
     (fun N i => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i)
-    (fun i => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+    (fun i => perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
       (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t)
     (fun i => hconv i t ht) Φ hpartial
 

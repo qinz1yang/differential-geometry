@@ -753,10 +753,10 @@ lemma cutoffChartKernel_subset_target (α : M) :
     cutoffChartKernel (I := I) (M := M) α ⊆ (extChartAt I α).target := by
   classical
   rintro y ⟨x, hx, rfl⟩
-  have hx_src : x ∈ (extChartAt I α).source := by
+  have hx_source : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source]
     exact chartKernelCutoff_tsupport_subset_source (I := I) (M := M) α hx
-  exact (extChartAt I α).map_source hx_src
+  exact (extChartAt I α).map_source hx_source
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma cutoffComponentScalar_chartImage_subset_kernel
@@ -824,7 +824,7 @@ lemma cutoffComponentEuclid_eLpNorm_le_uniform
     exact h_chain
   · refine ⟨0, le_refl 0, ?_⟩
     intro S Idx Jdx
-    have h_supp_empty :
+    have h_support_empty :
         ¬ (tsupport (cutoffComponentScalar (I := I) (M := M)
           g r s S α Idx Jdx)).Nonempty := by
       intro h_ne
@@ -837,7 +837,7 @@ lemma cutoffComponentEuclid_eLpNorm_le_uniform
           (fun _ : M => (0 : ℝ)) := by
       funext x
       exact image_eq_zero_of_notMem_tsupport
-        (fun hxs => h_supp_empty ⟨x, hxs⟩)
+        (fun hxs => h_support_empty ⟨x, hxs⟩)
     have h_comp_zero :
         cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx =
           (fun _ : EuclN => (0 : ℝ)) := by
@@ -1233,7 +1233,7 @@ private lemma cutoff_chartPull_integrand_eq
   rw [covChartMetricGram_symm (I := I) (M := M) g r s α Q P y]
   by_cases hSg_zero : tensorComponentEuclid (I := I) (M := M) g r s Sg α P y = 0
   · rw [hSg_zero]; ring
-  · have hb_supp : b ∈ tsupport Sg.toFun := by
+  · have hb_support : b ∈ tsupport Sg.toFun := by
       have hraw_ne :
           tensorChartComponentRaw (I := I) (M := M) g r s Sg α P.1 P.2 b ≠ 0 := by
         intro hzero
@@ -1243,7 +1243,7 @@ private lemma cutoff_chartPull_integrand_eq
       exact tensorChartComponentRaw_tsupport_subset
         (I := I) (M := M) g r s Sg α P.1 P.2 (subset_tsupport _ hraw_ne)
     have hχb_one : χb = 1 :=
-      chartKernelCutoff_eqOn_one (I := I) (M := M) α (hSg hb_supp)
+      chartKernelCutoff_eqOn_one (I := I) (M := M) α (hSg hb_support)
     rw [hχb_one]; ring
 
 private noncomputable def chartPullCoeffCutoff

@@ -164,7 +164,7 @@ theorem trace_free_ricci_norm_sq_laplacian_identity
           rw [hdiv, hsq]
           simp [G, ricciNormLap, flowG]
 
-structure RicciHeatData
+private structure RicciHeatData
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) where
@@ -176,7 +176,7 @@ structure RicciHeatData
     RicciNormLaplacianComponentsOn
       (ricciNormLap (I := I) S) roughLapInner (ricciGradSq (I := I) S)
 
-theorem ricciHeat_of_data
+private theorem ricciHeat_of_data
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -464,7 +464,7 @@ theorem coordReact
   refine Finset.sum_congr rfl fun l _ => ?_
   simp [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply]
 
-def ricciDataAtCoord
+private def ricciDataAtCoord
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -473,12 +473,12 @@ def ricciDataAtCoord
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real)
-    (hInvEvol : forall x0,
+    (hInvEvolution : forall x0,
       InverseMetricEvolutionEquationInFrame
         (I := I) S (coordInv (I := I) S x0)
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0)
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0))
-    (hRicciEvol : forall x0,
+    (hRicciEvolution : forall x0,
       ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
         (i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E),
         HasDerivWithinAt
@@ -523,8 +523,8 @@ def ricciDataAtCoord
       ricciNormSqDerivAt
         (I := I) S S.base.rm04 (coordInv (I := I) S x) frame
         (coordRoughRic (I := I) S x (nabla2Ric x))
-        (hInvEvol x) t x (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_mem (I := I) x)
-        (hRicciEvol x t)
+        (hInvEvolution x) t x (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_mem (I := I) x)
+        (hRicciEvolution x t)
     have hsimplify :=
       ricciDerivSimpAt
         (I := I) S S.base.rm04 (coordInv (I := I) S x) frame
@@ -576,7 +576,7 @@ def ricciDataAtCoord
           2 * ricciGradSq (I := I) S t x
     exact hLap t x
 
-def ricciHeatDataSmooth
+private def ricciHeatDataSmooth
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -584,8 +584,8 @@ def ricciHeatDataSmooth
     RicciHeatData (I := I) S := by
   exact
     ricciDataAtCoord (I := I) S (coordNab2Ric (I := I) S)
-      (fun x0 => hS.invEvol x0)
-      (fun x0 => hS.ricciEvol x0)
+      (fun x0 => hS.invEvolution x0)
+      (fun x0 => hS.ricciEvolution x0)
       (fun x0 => hS.invSymm x0)
       (fun x0 => hS.ricciSymm x0)
       hS.ricciLap

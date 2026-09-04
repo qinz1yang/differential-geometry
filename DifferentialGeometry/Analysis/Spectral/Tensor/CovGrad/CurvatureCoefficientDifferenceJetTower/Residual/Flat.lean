@@ -139,11 +139,11 @@ theorem boundedFactorGrid_cappedTopLayer_integral_flat
   have hcell_int : ∀ (n : ℕ) (e : Fin n → ℕ),
       MeasureTheory.Integrable (fun x => ∏ m : Fin n, b x (e m))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    fun n e => Combinatorics.bdFactorCell_int b hcont n e
+    fun n e => Combinatorics.boundedFactorCell_integrable b hcont n e
   have hgrid_int : MeasureTheory.Integrable
       (fun x => Combinatorics.boundedFactorGrid (b x) (i + 1) (i + 2))
       (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-    Combinatorics.bdFactorGrid_int b hcont (i + 1) (i + 2)
+    Combinatorics.boundedFactorGrid_integrable b hcont (i + 1) (i + 2)
   refine ⟨hgrid_int, ?_⟩
   have hPT : ∀ n ∈ Finset.range (i + 2 + 1),
       ∀ e ∈ (Finset.Nat.antidiagonalTuple n (i + 2)).filter (fun e => ∀ m, e m ≤ i + 1),
@@ -159,7 +159,7 @@ theorem boundedFactorGrid_cappedTopLayer_integral_flat
       Cgn hCgn_nn hGNv i n e hnle he_sum he_cap (MB i) (hMB1 i) (hMB_Lam i)
       (hMB_vol i) (fun k hk => hMB_Cgn i k hk)
   refine le_trans
-    (le_of_eq (Combinatorics.bdFactorGrid_int_eq b hcont (i + 1) (i + 2))) ?_
+    (le_of_eq (Combinatorics.integral_boundedFactorGrid b hcont (i + 1) (i + 2))) ?_
   have hKcell_nn : (0 : ℝ) ≤ ((i : ℝ) + 2) * MB i ^ (9 * (i + 2)) :=
     mul_nonneg (by positivity) (pow_nonneg (hMB_nn i) _)
   have hWsum_nn : (0 : ℝ) ≤ 1 + ∑ j ∈ Finset.range (i + 2),

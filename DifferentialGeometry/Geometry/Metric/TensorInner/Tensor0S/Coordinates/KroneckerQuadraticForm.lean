@@ -3,7 +3,7 @@ import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
-namespace DifferentialGeometry.HCGCompactness
+namespace DifferentialGeometry.CheegerGromovCompactness
 
 open scoped BigOperators
 open Matrix
@@ -460,4 +460,4 @@ theorem quad_ub_of_near_id {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 end KroneckerPow
 
-end DifferentialGeometry.HCGCompactness
+end DifferentialGeometry.CheegerGromovCompactness

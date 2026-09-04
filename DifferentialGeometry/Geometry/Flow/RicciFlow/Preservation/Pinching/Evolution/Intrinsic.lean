@@ -86,7 +86,7 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_diagonal_frame_components
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) i j)
     (hRm : ∀ (t : Real) (x : M) (i j k l : Fin 3),
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-(l1 t x)) (-(l2 t x)) (-(l3 t x))
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (-(l1 t x)) (-(l2 t x)) (-(l3 t x))
           i k j l) :
     TraceFreeRicciNormSqHeatEquationOn
       (D := D)

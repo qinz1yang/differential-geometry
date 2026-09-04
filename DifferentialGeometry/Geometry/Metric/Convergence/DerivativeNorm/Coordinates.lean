@@ -7,7 +7,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
@@ -146,5 +146,5 @@ theorem metricDerivNorm_le_compSq
     metricDerivNorm_le_compSq_uniform (I := I) gRef a x
   exact ⟨basisE, u', Cu, hopen, hxu', hsub, hCu, fun z hzu' hz => h gk gInf z hzu' hz⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

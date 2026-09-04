@@ -285,7 +285,7 @@ private theorem sum_nablaRicci_div
 
 omit [InnerProductSpace Real E] in
 omit [SigmaCompactSpace M] in
-theorem lRegIndexIntegrand_trace
+theorem lRegularizedIndexIntegrand_trace
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M)
     (P : Fin (Module.finrank Real E) → ∀ r, TangentSpace I (alpha r))
@@ -298,7 +298,7 @@ theorem lRegIndexIntegrand_trace
       (S.base.metric (T - s ^ 2)).inner (alpha s) (P i s) (P j s) =
         if i = j then 1 else 0) :
     ∑ i : Fin (Module.finrank Real E),
-        lRegIndexIntegrand S T alpha (P i) (P i) s =
+        lRegularizedIndexIntegrand S T alpha (P i) (P i) s =
       2 * s ^ 2 * ricciNorm (I := I) S (T - s ^ 2) (alpha s) -
         (1 / 2 : Real) * S.ricciAt (T - s ^ 2) (alpha s)
           (vec2 (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) +
@@ -341,15 +341,15 @@ theorem lRegIndexIntegrand_trace
   have hHess :
       ∑ i, hessianSec (I := I) (S.base.connection t)
           (metricCov_smooth (I := I) g) (S.scalar t)
-          (scalarSmoothOfSol (I := I) S t) x (vec2 (P i s) (P i s)) =
+          (scalarSmoothOfSolution (I := I) S t) x (vec2 (P i s) (P i s)) =
         laplacian (I := I) (LeviCivita (I := I) g) g (S.scalar t) x := by
     change ∑ i, hessianSec (I := I) (LeviCivita (I := I) g)
         (leviCivita_contMDiffCovariantDerivativeLocally (I := I) g)
-        (S.scalar t) (scalarSmoothOfSol (I := I) S t) x
+        (S.scalar t) (scalarSmoothOfSolution (I := I) S t) x
         (vec2 (P i s) (P i s)) =
       laplacian (I := I) (LeviCivita (I := I) g) g (S.scalar t) x
     exact sum_hessian_diag (I := I) g x (S.scalar t)
-      (scalarSmoothOfSol (I := I) S t) (fun i ↦ P i s) hON
+      (scalarSmoothOfSolution (I := I) S t) (fun i ↦ P i s) hON
   have hFirst :
       ∑ i, dRic (vec3 A (P i s) (P i s)) =
         nablaScalar (I := I) g
@@ -395,7 +395,7 @@ theorem lRegIndexIntegrand_trace
             S.base.rm04 t x (vec4 (P i s) A A (P i s))) +
         s ^ 2 * hessianSec (I := I) (S.base.connection t)
           (metricCov_smooth (I := I) g) (S.scalar t)
-          (scalarSmoothOfSol (I := I) S t) x (vec2 (P i s) (P i s)) +
+          (scalarSmoothOfSolution (I := I) S t) x (vec2 (P i s) (P i s)) +
         s * (dRic (vec3 A (P i s) (P i s)) -
           dRic (vec3 (P i s) A (P i s)) -
           dRic (vec3 (P i s) A (P i s)))) =

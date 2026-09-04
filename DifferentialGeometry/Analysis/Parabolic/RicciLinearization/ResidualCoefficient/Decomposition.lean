@@ -88,7 +88,7 @@ private theorem residualPerturbation_eq_metricDifference (g₀ g₁ : SmoothRiem
     rw [show metricDifferenceCcTensor (I := I) (M := M) g₀ g₁ =
         metricCcTensor (I := I) (M := M) g₀ g₁ - metricCcTensor (I := I) (M := M) g₀ g₀
         from rfl]
-    rw [unitModel_sub_loc (I := I) (M := M) g₀ 2
+    rw [unitModel_sub_local (I := I) (M := M) g₀ 2
       (metricCcTensor (I := I) (M := M) g₀ g₁) (metricCcTensor (I := I) (M := M) g₀ g₀) x]
     rw [sub_apply]
     rw [residualMetricCcTensor_unitModel_apply (I := I) (M := M) g₀ g₁ x m,

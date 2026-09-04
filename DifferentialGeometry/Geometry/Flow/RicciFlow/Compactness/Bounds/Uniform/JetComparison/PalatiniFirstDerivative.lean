@@ -14,7 +14,7 @@ open scoped Manifold Topology ContDiff BigOperators
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 namespace DifferentialGeometry
 namespace PDE
@@ -113,7 +113,7 @@ private theorem covD2_eq_hcg
     (gB g₀ : SmoothRiemannianMetric I M)
     (D X Y Z : Π b : M, TangentSpace I b) (x : M) :
     DifferentialGeometry.Geometry.Curvature.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x =
-      HCGCompactness.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x :=
+      CheegerGromovCompactness.covDerivConnectionDifference2 (I := I) gB g₀ D X Y Z x :=
   rfl
 
 noncomputable def palatiniJet1At
@@ -399,10 +399,10 @@ theorem uniformPalatini1_le
   have hA₂xy : L A₂xy ≤ C₂ * prod4 := by
     simpa [A₂xy, Ds, Xs, Ys, Zs, extSec, L, prod4, C₂, covD2_eq_hcg,
       mul_assoc] using
-      HCGCompactness.covDConnectionDifference2_gJet_le (I := I) hEq hjet1 hjet2 hjet3
+      CheegerGromovCompactness.covDConnectionDifference2_gJet_le (I := I) hEq hjet1 hjet2 hjet3
         (Set.mem_univ x) D X Y Z
   have hA₂yx : L A₂yx ≤ C₂ * prod4 := by
-    have h := HCGCompactness.covDConnectionDifference2_gJet_le (I := I)
+    have h := CheegerGromovCompactness.covDConnectionDifference2_gJet_le (I := I)
       hEq hjet1 hjet2 hjet3 (Set.mem_univ x) D Y X Z
     simpa [A₂yx, Ds, Xs, Ys, Zs, extSec, L, prod4, C₂, covD2_eq_hcg, mul_assoc,
       mul_left_comm, mul_comm] using h

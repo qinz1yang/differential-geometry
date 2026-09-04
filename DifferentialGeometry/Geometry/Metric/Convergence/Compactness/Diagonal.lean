@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 theorem exists_diag_subseq
     (P : ℕ → (ℕ → ℕ) → Prop)
@@ -244,7 +244,7 @@ lemma exists_frame_component_limit_subsequence
       metricCovDerivNorm (I := I) q ((gSeq ∘ φ) k) gRef z ≤ C := by
     intro q K hK; obtain ⟨C, hC⟩ := hbdd q K hK; exact ⟨C, fun k z hz => hC (φ k) z hz⟩
   obtain ⟨ψ, Φinf, χ, hψ, hΦinf, hχ1, hconv⟩ :=
-    exists_chart_cInfConv (I := I) gRef (gSeq ∘ φ) hbdd' x₀ ![σi, σj] hK₀ hK₀chart
+    exists_chart_cInfConvergence (I := I) gRef (gSeq ∘ φ) hbdd' x₀ ![σi, σj] hK₀ hK₀chart
   refine ⟨ψ, Φinf, hψ, hΦinf, fun x hx => ?_⟩
   have htend := tendsto_of_cInf hconv (Set.mem_univ (extChartAt I x₀ x))
   have hxsrc : x ∈ (extChartAt I x₀).source := by
@@ -334,7 +334,7 @@ lemma exists_smooth_frame_component_limit_subsequence
       (∀ x ∈ K₀, σi x = Geometry.frameVec (I := I) x₀ i x) ∧
       (∀ x ∈ K₀, σj x = Geometry.frameVec (I := I) x₀ j x) ∧
       (∀ x ∈ K₀, χ (extChartAt I x₀ x) = 1) ∧
-      MapCInfConvOnCompacts (Set.univ : Set E)
+      MapCInfConvergenceOnCompacts (Set.univ : Set E)
         (fun k => fun x : E => χ x * writtenInExtChartAt I 𝓘(Real, Real) x₀
           (fun w : M => (gSeq (φ (ψ k))).inner w (σi w) (σj w)) x) Φinf := by
   obtain ⟨σi, hσi⟩ :=
@@ -345,7 +345,7 @@ lemma exists_smooth_frame_component_limit_subsequence
       metricCovDerivNorm (I := I) q ((gSeq ∘ φ) k) gRef z ≤ C := by
     intro q K hK; obtain ⟨C, hC⟩ := hbdd q K hK; exact ⟨C, fun k z hz => hC (φ k) z hz⟩
   obtain ⟨ψ, Φinf, χ, hψ, hΦinf, hχ1, hconv⟩ :=
-    exists_chart_cInfConv (I := I) gRef (gSeq ∘ φ) hbdd' x₀ ![σi, σj] hK₀ hK₀chart
+    exists_chart_cInfConvergence (I := I) gRef (gSeq ∘ φ) hbdd' x₀ ![σi, σj] hK₀ hK₀chart
   have hxi : ∀ x ∈ K₀, σi x = Geometry.frameVec (I := I) x₀ i x := fun x hx =>
     (hσi.self_of_nhdsSet x hx).trans (congrFun (frameVec_eq_tangentConst (I := I) x₀ i).symm x)
   have hxj : ∀ x ∈ K₀, σj x = Geometry.frameVec (I := I) x₀ j x := fun x hx =>
@@ -379,7 +379,7 @@ lemma exists_smooth_frame_component_limit_subsequence_eq_metric_limit
       (∀ x ∈ K₀, χ (extChartAt I x₀ x) = 1) ∧
       (∀ x ∈ K₀, Φinf (extChartAt I x₀ x)
         = gm x (Geometry.frameVec (I := I) x₀ i x) (Geometry.frameVec (I := I) x₀ j x)) ∧
-      MapCInfConvOnCompacts (Set.univ : Set E)
+      MapCInfConvergenceOnCompacts (Set.univ : Set E)
         (fun k => fun x : E => χ x * writtenInExtChartAt I 𝓘(Real, Real) x₀
           (fun w : M => (gSeq (φ (ψ k))).inner w (σi w) (σj w)) x) Φinf := by
   obtain ⟨ψ, Φinf, χ, σi, σj, hψ, hΦinf, hxi, hxj, hχ1, hconv⟩ :=
@@ -408,7 +408,7 @@ lemma exists_smooth_frame_component_limit_subsequence_eq_metric_limit
 
 include I in
 omit [IsManifold I 2 M] in
-lemma exists_refine_componentConv
+lemma exists_refine_componentConvergence
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
       metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C)
@@ -478,7 +478,7 @@ lemma exists_refine_allComponents
       intro φ'
       obtain ⟨ψ₀, hψ₀, hs⟩ := ih φ'
       obtain ⟨ψ₁, hψ₁, hp⟩ :=
-        exists_refine_componentConv (I := I) gRef gSeq hbdd x₀ hK₀ hK₀chart p.1 p.2 (φ' ∘ ψ₀)
+        exists_refine_componentConvergence (I := I) gRef gSeq hbdd x₀ hK₀ hK₀chart p.1 p.2 (φ' ∘ ψ₀)
       refine ⟨ψ₀ ∘ ψ₁, hψ₀.comp hψ₁, fun q hq x hx => ?_⟩
       rcases Finset.mem_insert.1 hq with rfl | hqs
       · obtain ⟨L, hL⟩ := hp x hx
@@ -757,7 +757,7 @@ omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
-lemma componentConv_covDeriv_zero
+lemma componentConvergence_covDeriv_zero
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (φ : ℕ → ℕ) (gInf : SmoothRiemannianMetric I M)
     (hconv : ∀ x : M, Filter.Tendsto (fun m => (gSeq (φ m)).inner x) Filter.atTop
@@ -784,5 +784,5 @@ lemma componentConv_covDeriv_zero
 
 end Realization
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -127,15 +127,15 @@ omit [NeZero d] in
 private lemma classical_partial_ae_eq_chosenWeakPartial
     {q : ℝ≥0∞} (hq_one : 1 ≤ q) {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_compact : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω)
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω)
     (i : Fin d) :
     (fun y : EuclN => (fderiv ℝ ψ y) (EuclideanSpace.single i 1))
       =ᵐ[volume.restrict Ω]
-      chosenWeakPartial' (d := d) q i ψ Ω := by
+      chosenWeakPartialOrZero (d := d) q i ψ Ω := by
   classical
   have hψ_mem : MemWkp (d := d) 1 q ψ Ω :=
     MemWkp_of_smooth_compactSupport
-      (d := d) hΩ_open hψ_smooth hψ_compact hψ_supp hq_one 1
+      (d := d) hΩ_open hψ_smooth hψ_compact hψ_support hq_one 1
   have hψ_W1p : DeGiorgi.MemW1p (d := d) q ψ Ω :=
     MemWkp.one_iff_memW1p.mp hψ_mem
   have h_classical_isWeak :
@@ -145,13 +145,13 @@ private lemma classical_partial_ae_eq_chosenWeakPartial
       hΩ_open (hψ_smooth.of_le (by norm_cast))
   have h_chosen_isWeak :
       DeGiorgi.HasWeakPartialDeriv (d := d) i
-        (chosenWeakPartial' (d := d) q i ψ Ω) ψ Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem (d := d) hψ_W1p i
-  have h_chosen_loc : LocallyIntegrable
-      (chosenWeakPartial' (d := d) q i ψ Ω) (volume.restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem (d := d)
+        (chosenWeakPartialOrZero (d := d) q i ψ Ω) ψ Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem (d := d) hψ_W1p i
+  have h_chosen_local : LocallyIntegrable
+      (chosenWeakPartialOrZero (d := d) q i ψ Ω) (volume.restrict Ω) :=
+    (chosenWeakPartialOrZero_memLp_of_mem (d := d)
       hψ_W1p i).locallyIntegrable hq_one
-  have h_classical_loc : LocallyIntegrable
+  have h_classical_local : LocallyIntegrable
       (fun y : EuclN => (fderiv ℝ ψ y) (EuclideanSpace.single i 1))
       (volume.restrict Ω) := by
     have h_cont : Continuous
@@ -159,7 +159,7 @@ private lemma classical_partial_ae_eq_chosenWeakPartial
       (hψ_smooth.continuous_fderiv (by simp)).clm_apply continuous_const
     exact h_cont.locallyIntegrable.mono_measure Measure.restrict_le_self
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq (Ω := Ω) hΩ_open
-    h_classical_isWeak h_chosen_isWeak h_classical_loc h_chosen_loc
+    h_classical_isWeak h_chosen_isWeak h_classical_local h_chosen_local
 
 omit [NeZero d] in
 private lemma wkpNorm_order_one_block_eq_sum_partials
@@ -168,17 +168,17 @@ private lemma wkpNorm_order_one_block_eq_sum_partials
         eLpNorm (iterWeakPartial (d := d) q 1 β ψ Ω) q
           (volume.restrict Ω)) =
       ∑ i : Fin d,
-        eLpNorm (chosenWeakPartial' (d := d) q i ψ Ω) q
+        eLpNorm (chosenWeakPartialOrZero (d := d) q i ψ Ω) q
           (volume.restrict Ω) := by
   classical
   have h_unfold : ∀ β : Fin 1 → Fin d,
       eLpNorm (iterWeakPartial (d := d) q 1 β ψ Ω) q (volume.restrict Ω) =
-        eLpNorm (chosenWeakPartial' (d := d) q (β 0) ψ Ω) q
+        eLpNorm (chosenWeakPartialOrZero (d := d) q (β 0) ψ Ω) q
           (volume.restrict Ω) := by
     intro β
     have hit :
         iterWeakPartial (d := d) q 1 β ψ Ω =
-          chosenWeakPartial' (d := d) q (β 0) ψ Ω := by
+          chosenWeakPartialOrZero (d := d) q (β 0) ψ Ω := by
       rw [iterWeakPartial_succ]
       simp [iterWeakPartial_zero]
     rw [hit]
@@ -193,16 +193,16 @@ private lemma wkpNorm_order_one_block_eq_sum_partials
       right_inv := fun _ => rfl }
   exact Fintype.sum_equiv e
     (fun β =>
-      eLpNorm (chosenWeakPartial' (d := d) q (β 0) ψ Ω) q (volume.restrict Ω))
+      eLpNorm (chosenWeakPartialOrZero (d := d) q (β 0) ψ Ω) q (volume.restrict Ω))
     (fun i =>
-      eLpNorm (chosenWeakPartial' (d := d) q i ψ Ω) q (volume.restrict Ω))
+      eLpNorm (chosenWeakPartialOrZero (d := d) q i ψ Ω) q (volume.restrict Ω))
     (fun _ => rfl)
 
 omit [NeZero d] in
 private lemma sum_eLpNorm_chosenWeakPartial_le_wkpNorm_two
     (Ω : Set EuclN) (ψ : EuclN → ℝ) :
     (∑ i : Fin d,
-        eLpNorm (chosenWeakPartial' (d := d) (2 : ℝ≥0∞) i ψ Ω) 2
+        eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i ψ Ω) 2
           (volume.restrict Ω)) ≤
       iteratedWeakSobolevNorm (d := d) 2 2 ψ Ω := by
   classical
@@ -267,7 +267,7 @@ omit [NeZero d] in
 theorem chartTarget_fderiv_eLpNorm_le_wkpNorm_two
     {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     {u : EuclN → ℝ} (hu_smooth : ContDiff ℝ (⊤ : ℕ∞) u)
-    (hu_compact : HasCompactSupport u) (hu_supp : tsupport u ⊆ Ω) :
+    (hu_compact : HasCompactSupport u) (hu_support : tsupport u ⊆ Ω) :
     eLpNorm (fun y : EuclN => ‖fderiv ℝ u y‖) 2 (volume.restrict Ω) ≤
       iteratedWeakSobolevNorm (d := d) 2 2 u Ω := by
   classical
@@ -279,17 +279,17 @@ theorem chartTarget_fderiv_eLpNorm_le_wkpNorm_two
   have h_each_eq : ∀ i : Fin d,
       eLpNorm (fun y : EuclN => (fderiv ℝ u y) (EuclideanSpace.single i 1)) 2
         (volume.restrict Ω) =
-      eLpNorm (chosenWeakPartial' (d := d) (2 : ℝ≥0∞) i u Ω) 2
+      eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i u Ω) 2
         (volume.restrict Ω) := fun i =>
     eLpNorm_congr_ae (classical_partial_ae_eq_chosenWeakPartial
-      (d := d) hq_one hΩ_open hu_smooth hu_compact hu_supp i)
+      (d := d) hq_one hΩ_open hu_smooth hu_compact hu_support i)
   have h_step :
       (∑ i : Fin d,
           eLpNorm
             (fun y : EuclN => (fderiv ℝ u y) (EuclideanSpace.single i 1)) 2
             (volume.restrict Ω)) =
         ∑ i : Fin d,
-          eLpNorm (chosenWeakPartial' (d := d) (2 : ℝ≥0∞) i u Ω) 2
+          eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i u Ω) 2
             (volume.restrict Ω) :=
     Finset.sum_congr rfl (fun i _ => h_each_eq i)
   have h_le_wkp :=
@@ -300,7 +300,7 @@ omit [NeZero d] in
 private lemma sum_eLpNorm_chosenWeakPartial_le_wkpNorm_one_two
     (Ω : Set EuclN) (ψ : EuclN → ℝ) :
     (∑ i : Fin d,
-        eLpNorm (chosenWeakPartial' (d := d) (2 : ℝ≥0∞) i ψ Ω) 2
+        eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i ψ Ω) 2
           (volume.restrict Ω)) ≤
       iteratedWeakSobolevNorm (d := d) 1 2 ψ Ω := by
   classical
@@ -338,7 +338,7 @@ omit [NeZero d] in
 theorem chartTarget_fderiv_eLpNorm_le_wkpNorm_one_two
     {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     {u : EuclN → ℝ} (hu_smooth : ContDiff ℝ (⊤ : ℕ∞) u)
-    (hu_compact : HasCompactSupport u) (hu_supp : tsupport u ⊆ Ω) :
+    (hu_compact : HasCompactSupport u) (hu_support : tsupport u ⊆ Ω) :
     eLpNorm (fun y : EuclN => ‖fderiv ℝ u y‖) 2 (volume.restrict Ω) ≤
       iteratedWeakSobolevNorm (d := d) 1 2 u Ω := by
   classical
@@ -350,17 +350,17 @@ theorem chartTarget_fderiv_eLpNorm_le_wkpNorm_one_two
   have h_each_eq : ∀ i : Fin d,
       eLpNorm (fun y : EuclN => (fderiv ℝ u y) (EuclideanSpace.single i 1)) 2
         (volume.restrict Ω) =
-      eLpNorm (chosenWeakPartial' (d := d) (2 : ℝ≥0∞) i u Ω) 2
+      eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i u Ω) 2
         (volume.restrict Ω) := fun i =>
     eLpNorm_congr_ae (classical_partial_ae_eq_chosenWeakPartial
-      (d := d) hq_one hΩ_open hu_smooth hu_compact hu_supp i)
+      (d := d) hq_one hΩ_open hu_smooth hu_compact hu_support i)
   have h_step :
       (∑ i : Fin d,
           eLpNorm
             (fun y : EuclN => (fderiv ℝ u y) (EuclideanSpace.single i 1)) 2
             (volume.restrict Ω)) =
         ∑ i : Fin d,
-          eLpNorm (chosenWeakPartial' (d := d) (2 : ℝ≥0∞) i u Ω) 2
+          eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i u Ω) 2
             (volume.restrict Ω) :=
     Finset.sum_congr rfl (fun i _ => h_each_eq i)
   have h_le_wkp :=

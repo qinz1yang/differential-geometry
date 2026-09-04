@@ -25,7 +25,7 @@ variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] in
 omit [CompactSpace M] in
-theorem lChartAction_initial_pair_le_of_lRegAction_minimizer
+theorem lChartAction_initial_pair_le_of_lRegularizedAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -46,7 +46,7 @@ theorem lChartAction_initial_pair_le_of_lRegAction_minimizer
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta d = gamma d →
-      lRegAction S T gamma a d ≤ lRegAction S T delta a d)
+      lRegularizedAction S T gamma a d ≤ lRegularizedAction S T delta a d)
     (v0 : timeH1 E (b - a)) (v1 : timeH1 E (c - b))
     (hvtar0 : MapsTo v0.toFun (Icc (0 : Real) (b - a))
       (extChartAt I p).target)
@@ -97,8 +97,8 @@ theorem lChartAction_initial_pair_le_of_lRegAction_minimizer
     apply hreg s
     exact ⟨hs.1, hs.2.trans hcd⟩
   obtain ⟨gammaV, _hgammaV, hsrcV, hrepV, hV0, hV2, alpha, _w,
-      halpha, halpha0, halpha2, _hsrcA, _hrepA, _hw, _hunif, hact⟩ :=
-    exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T th hth ph vh hvhtar hvhnode
+      halpha, halpha0, halpha2, _hsrcA, _hrepA, _hw, _huniform, hact⟩ :=
+    exists_contMDiff_one_lRegularizedAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T th hth ph vh hvhtar hvhnode
       hregHead
   have hjoin : gammaV c = gamma c := by
     exact hV2.trans (by
@@ -204,12 +204,12 @@ theorem lChartAction_initial_pair_le_of_lRegAction_minimizer
         simpa [tf, partitionIntervalLength] using hr
       rw [hdelta_tail (by linarith [hrt.1])]
       exact hrep2 hrt
-  obtain ⟨beta, _z, hbeta, hbeta0, hbeta3, _hsrcB, _hrepB, _hz, _hunifB,
+  obtain ⟨beta, _z, hbeta, hbeta0, hbeta3, _hsrcB, _hrepB, _hz, _huniformB,
       hactB⟩ :=
     lAction_c1_dense (I := I) S hMet hSc T a d tf htf rfl rfl pf delta
       vf hsrcDelta hrepDelta hreg
-  have hneg : Tendsto (fun n ↦ -lRegAction S T (beta n) a d) atTop
-      (nhds (-lRegAction S T delta a d)) :=
+  have hneg : Tendsto (fun n ↦ -lRegularizedAction S T (beta n) a d) atTop
+      (nhds (-lRegularizedAction S T delta a d)) :=
     continuousAt_neg.tendsto.comp hactB
   have hdelta0 : delta a = gamma a :=
     (hdelta_head (hab.trans hbc)).trans
@@ -217,14 +217,14 @@ theorem lChartAction_initial_pair_le_of_lRegAction_minimizer
         rw [hvh0]
         simpa [th, ph, partitionIntervalLength] using hv0))
   have hdelta3 : delta d = gamma d := hdelta_tail hcd
-  have hglobal : lRegAction S T gamma a d ≤ lRegAction S T delta a d := by
+  have hglobal : lRegularizedAction S T gamma a d ≤ lRegularizedAction S T delta a d := by
     have hlim := le_of_tendsto' hneg fun n ↦ neg_le_neg
       (hmin (beta n) (hbeta n) ((hbeta0 n).trans hdelta0)
         ((hbeta3 n).trans hdelta3))
     linarith
-  rw [lRegAction_eq_sum_lChartAction S hMet hSc T a d tf htf rfl rfl pf gamma uf
+  rw [lRegularizedAction_eq_sum_lChartAction S hMet hSc T a d tf htf rfl rfl pf gamma uf
     hsrcBase hrepBase hreg] at hglobal
-  rw [lRegAction_eq_sum_lChartAction S hMet hSc T a d tf htf rfl rfl pf delta vf
+  rw [lRegularizedAction_eq_sum_lChartAction S hMet hSc T a d tf htf rfl rfl pf delta vf
     hsrcDelta hrepDelta hreg] at hglobal
   rw [Fin.sum_univ_three, Fin.sum_univ_three] at hglobal
   rw [huf0, huf1, huf2, hvf0, hvf1, hvf2] at hglobal

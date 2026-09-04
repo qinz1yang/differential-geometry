@@ -570,11 +570,11 @@ lemma chartChristoffel_extChartAt_proj_contMDiffOn
       (geodesicChartDomain (I := I) α) := by
   classical
   intro p hp
-  have hp_src : p.proj ∈ (chartAt H α).source := hp
-  have hp_ext_src : p.proj ∈ (extChartAt I α).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hp_src
+  have hp_source : p.proj ∈ (chartAt H α).source := hp
+  have hp_ext_source : p.proj ∈ (extChartAt I α).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hp_source
   have hp_target : extChartAt I α p.proj ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hp_ext_src
+    (extChartAt I α).map_source hp_ext_source
   have hp_int : extChartAt I α p.proj ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α hp_target
   set Γ : E → ℝ := chartChristoffel (I := I) g α i j k with hΓ_eq

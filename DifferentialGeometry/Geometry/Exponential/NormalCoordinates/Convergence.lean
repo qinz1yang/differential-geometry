@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped ContDiff
 
@@ -14,7 +14,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [CompleteSpace E] [FiniteDimensional Real E]
 
 omit [CompleteSpace E] in
-theorem normalGeodesicSpray_conv
+theorem normalGeodesicSpray_convergence
     {U : Set E} (hU : IsOpen U)
     {g : ℕ → E → E →L[Real] E →L[Real] Real}
     {gInf : E → E →L[Real] E →L[Real] Real}
@@ -22,14 +22,14 @@ theorem normalGeodesicSpray_conv
     (hgInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U)
     (hg_co : ∀ n x, x ∈ U → IsCoercive (g n x))
     (hgInf_co : ∀ x, x ∈ U → IsCoercive (gInf x))
-    (hg_conv : MapCInfConvOnCompacts U g gInf) :
-    MapCInfConvOnCompacts (U ×ˢ Set.univ)
+    (hg_convergence : MapCInfConvergenceOnCompacts U g gInf) :
+    MapCInfConvergenceOnCompacts (U ×ˢ Set.univ)
       (fun n => MetricKoszul.metricSpray (g n))
       (MetricKoszul.metricSpray gInf) :=
-  MetricKoszul.metricSpray_conv hU hg_cd hgInf_cd hg_co hgInf_co hg_conv
+  MetricKoszul.metricSpray_convergence hU hg_cd hgInf_cd hg_co hgInf_co hg_convergence
 
 omit [CompleteSpace E] in
-private theorem normalSpray_time_conv
+private theorem normalSpray_time_convergence
     {U : Set E} (hU : IsOpen U)
     {g : ℕ → E → E →L[Real] E →L[Real] Real}
     {gInf : E → E →L[Real] E →L[Real] Real}
@@ -37,8 +37,8 @@ private theorem normalSpray_time_conv
     (hgInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U)
     (hg_co : ∀ n x, x ∈ U → IsCoercive (g n x))
     (hgInf_co : ∀ x, x ∈ U → IsCoercive (gInf x))
-    (hg_conv : MapCInfConvOnCompacts U g gInf) :
-    MapCInfConvOnCompacts (Set.univ ×ˢ (U ×ˢ Set.univ))
+    (hg_convergence : MapCInfConvergenceOnCompacts U g gInf) :
+    MapCInfConvergenceOnCompacts (Set.univ ×ˢ (U ×ˢ Set.univ))
       (fun (n : ℕ) (q : Real × (E × E)) => MetricKoszul.metricSpray (g n) q.2)
       (fun q : Real × (E × E) => MetricKoszul.metricSpray gInf q.2) := by
   let : ProperSpace (E × E) := FiniteDimensional.proper Real _
@@ -49,14 +49,14 @@ private theorem normalSpray_time_conv
   have hsprayInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (MetricKoszul.metricSpray gInf) (U ×ˢ Set.univ) :=
     MetricKoszul.metricSpray_contDiffOn hU hgInf_cd hgInf_co
-  exact MapCInfConvOnCompacts.comp (isOpen_univ.prod hphaseU) hphaseU
-    (mapCInfConv_const (fun q : Real × (E × E) => q.2))
-    (normalGeodesicSpray_conv hU hg_cd hgInf_cd hg_co hgInf_co hg_conv)
+  exact MapCInfConvergenceOnCompacts.comp (isOpen_univ.prod hphaseU) hphaseU
+    (mapCInfConvergence_const (fun q : Real × (E × E) => q.2))
+    (normalGeodesicSpray_convergence hU hg_cd hgInf_cd hg_co hgInf_co hg_convergence)
     (fun _ => contDiff_snd.contDiffOn) contDiff_snd.contDiffOn
     hspray_cd hsprayInf_cd (fun q hq => hq.2) (fun _ q hq => hq.2)
 
 omit [CompleteSpace E] in
-theorem normalPhase_end_conv
+theorem normalPhase_end_convergence
     {U : Set E} (hU : IsOpen U)
     {Q : Set (E × E)} (hQ : IsOpen Q)
     {g : ℕ → E → E →L[Real] E →L[Real] Real}
@@ -65,7 +65,7 @@ theorem normalPhase_end_conv
     (hgInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U)
     (hg_co : ∀ n x, x ∈ U → IsCoercive (g n x))
     (hgInf_co : ∀ x, x ∈ U → IsCoercive (gInf x))
-    (hg_conv : MapCInfConvOnCompacts U g gInf)
+    (hg_convergence : MapCInfConvergenceOnCompacts U g gInf)
     {γ : ℕ → (E × E) → Real → E × E}
     {γInf : (E × E) → Real → E × E}
     (hγ : ∀ n q, q ∈ Q →
@@ -76,7 +76,7 @@ theorem normalPhase_end_conv
         (fun _ => MetricKoszul.metricSpray gInf) (Set.Icc 0 1))
     (hstayInf : ∀ q ∈ Q, ∀ t ∈ Set.Icc (0 : Real) 1,
       (γInf q t).1 ∈ U) :
-    MapCInfConvOnCompacts Q
+    MapCInfConvergenceOnCompacts Q
       (fun n q => γ n q 1) (fun q => γInf q 1) := by
   let phaseU : Set (E × E) := U ×ˢ Set.univ
   have hphaseU : IsOpen phaseU := hU.prod isOpen_univ
@@ -86,24 +86,24 @@ theorem normalPhase_end_conv
   have hsprayInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (MetricKoszul.metricSpray gInf) phaseU :=
     MetricKoszul.metricSpray_contDiffOn hU hgInf_cd hgInf_co
-  have hv_conv : MapCInfConvOnCompacts ((Set.univ : Set Real) ×ˢ phaseU)
+  have hv_convergence : MapCInfConvergenceOnCompacts ((Set.univ : Set Real) ×ˢ phaseU)
       (fun (n : ℕ) (q : Real × (E × E)) => MetricKoszul.metricSpray (g n) q.2)
       (fun q : Real × (E × E) => MetricKoszul.metricSpray gInf q.2) := by
     simpa only [phaseU] using
-      normalSpray_time_conv hU hg_cd hgInf_cd hg_co hgInf_co hg_conv
-  exact MapCInfConvOnCompacts.ode_solutionAt
+      normalSpray_time_convergence hU hg_cd hgInf_cd hg_co hgInf_co hg_convergence
+  exact MapCInfConvergenceOnCompacts.ode_solutionAt
     (P := E × E) (X := E × E) (A := Q) (J := Set.univ) (V := phaseU)
     (v := fun n _ => MetricKoszul.metricSpray (g n))
     (vInf := fun _ => MetricKoszul.metricSpray gInf)
     (a := fun _ => id) (aInf := id) (γ := γ) (γInf := γInf)
     hQ isOpen_univ hphaseU (by norm_num) (Set.subset_univ _)
     (fun n => (hspray_cd n).comp contDiffOn_snd (fun q hq => hq.2))
-    (hsprayInf_cd.comp contDiffOn_snd (fun q hq => hq.2)) hv_conv
+    (hsprayInf_cd.comp contDiffOn_snd (fun q hq => hq.2)) hv_convergence
     (fun _ => contDiff_id.contDiffOn) contDiff_id.contDiffOn
-    (mapCInfConv_const id) hγ hγInf
+    (mapCInfConvergence_const id) hγ hγInf
     (fun q hq t ht => ⟨hstayInf q hq t ht, Set.mem_univ _⟩)
 
-theorem normalDiag_end_conv
+theorem normalDiag_end_convergence
     {U : Set E} (hU : IsOpen U)
     {Q : Set (E × E)} (hQ : IsOpen Q)
     {g : ℕ → E → E →L[Real] E →L[Real] Real}
@@ -112,7 +112,7 @@ theorem normalDiag_end_conv
     (hgInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U)
     (hg_co : ∀ n x, x ∈ U → IsCoercive (g n x))
     (hgInf_co : ∀ x, x ∈ U → IsCoercive (gInf x))
-    (hg_conv : MapCInfConvOnCompacts U g gInf)
+    (hg_convergence : MapCInfConvergenceOnCompacts U g gInf)
     {γ : ℕ → (E × E) → Real → E × E}
     {γInf : (E × E) → Real → E × E}
     (hγ : ∀ n q, q ∈ Q →
@@ -125,7 +125,7 @@ theorem normalDiag_end_conv
       (γ n q t).1 ∈ U)
     (hstayInf : ∀ q ∈ Q, ∀ t ∈ Set.Icc (0 : Real) 1,
       (γInf q t).1 ∈ U) :
-    MapCInfConvOnCompacts Q
+    MapCInfConvergenceOnCompacts Q
       (fun n q => (q.1, (γ n q 1).1))
       (fun q => (q.1, (γInf q 1).1)) := by
   let phaseU : Set (E × E) := U ×ˢ Set.univ
@@ -136,8 +136,8 @@ theorem normalDiag_end_conv
   have hsprayInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (MetricKoszul.metricSpray gInf) phaseU :=
     MetricKoszul.metricSpray_contDiffOn hU hgInf_cd hgInf_co
-  have hphase := normalPhase_end_conv hU hQ hg_cd hgInf_cd hg_co hgInf_co
-    hg_conv hγ hγInf hstayInf
+  have hphase := normalPhase_end_convergence hU hQ hg_cd hgInf_cd hg_co hgInf_co
+    hg_convergence hγ hγInf hstayInf
   have hv_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun q : Real × (E × E) => MetricKoszul.metricSpray (g n) q.2)
       ((Set.univ : Set Real) ×ˢ phaseU) := fun n =>
@@ -173,14 +173,14 @@ theorem normalDiag_end_conv
   have hendInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) (fun q => γInf q 1) Q :=
     hjointInf.comp (contDiff_id.prodMk contDiff_const).contDiffOn
       (fun q hq => ⟨hq, Set.right_mem_Icc.mpr (by norm_num)⟩)
-  have hpos : MapCInfConvOnCompacts Q
+  have hpos : MapCInfConvergenceOnCompacts Q
       (fun n q => (γ n q 1).1) (fun q => (γInf q 1).1) :=
-    mapCInfConv_clm hQ (ContinuousLinearMap.fst Real E E) hphase
+    mapCInfConvergence_clm hQ (ContinuousLinearMap.fst Real E E) hphase
       hend_cd hendInf_cd
-  exact mapCInfConv_prodMk hQ
-    (mapCInfConv_const (fun q : E × E => q.1)) hpos
+  exact mapCInfConvergence_prodMk hQ
+    (mapCInfConvergence_const (fun q : E × E => q.1)) hpos
     (fun _ => contDiff_fst.contDiffOn) contDiff_fst.contDiffOn
     (fun n => (hend_cd n).fst) hendInf_cd.fst
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

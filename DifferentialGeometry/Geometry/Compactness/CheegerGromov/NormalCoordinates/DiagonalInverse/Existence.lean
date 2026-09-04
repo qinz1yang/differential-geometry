@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
@@ -201,5 +201,5 @@ theorem normalDiagAt
       q hq hqWide hqAccel herr
   exact ⟨δ, e, hδ, hδeq, he⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -1115,7 +1115,7 @@ theorem strict_barrier_positive_region
       linarith
     exact not_lt_of_ge hbarrier hbarrier_neg
 
-theorem strict_barrier_cpt
+theorem strict_barrier_compact
     [I.Boundaryless]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
@@ -1235,7 +1235,7 @@ theorem strict_barrier_cpt
       linarith
     exact not_lt_of_ge hbarrier hbarrier_neg
 
-theorem strict_barrier_cpt_of_upperSupport
+theorem strict_barrier_compact_of_upperSupport
     [I.Boundaryless]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)

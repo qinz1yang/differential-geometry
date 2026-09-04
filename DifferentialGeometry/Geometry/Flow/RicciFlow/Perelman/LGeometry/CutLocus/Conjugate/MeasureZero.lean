@@ -45,10 +45,10 @@ theorem lCutConj_null
   · intro alpha halpha
     let N : Set E :=
       (fun Z : E => (extChartAt I alpha) (lExp S T x Z tau)) ''
-        {Z : E | IsLConj S T x Z tau ∧
+        {Z : E | IsLConjugate S T x Z tau ∧
           lExp S T x Z tau ∈ (chartAt H alpha).source}
     have hN0 : modelHaar (E := E) N = 0 := by
-      simpa only [N] using lConjChart_null S hS T x tau alpha
+      simpa only [N] using lConjugateChart_null S hS T x tau alpha
     have hNT0 : modelHaar (E := E)
         (N ∩ (extChartAt I alpha).target) = 0 :=
       measure_mono_null inter_subset_left hN0

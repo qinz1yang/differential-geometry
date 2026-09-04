@@ -10,7 +10,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 namespace OrderedNet
 
 open Metric Set
@@ -676,5 +676,5 @@ theorem packingBound_pack (hd : InjectivityRadiusDecay (I := I) X)
 
 end SeqInstantiation
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

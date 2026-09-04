@@ -132,7 +132,7 @@ lemma tensorChartComponentRaw_eq_zero_of_notMem_chart_source
     ∀ x : M, x ∉ (chartAt H α).source →
       tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx x = 0 := by
   classical
-  intro x hx_src
+  intro x hx_source
   have hbase : (trivializationAt (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) α).baseSet = (chartAt H α).source := by
     change ((trivializationAt (Tensor0SModel r ℝ E)
@@ -147,7 +147,7 @@ lemma tensorChartComponentRaw_eq_zero_of_notMem_chart_source
   have hx_base : x ∉ (trivializationAt (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) α).baseSet := by
     rw [hbase]
-    exact hx_src
+    exact hx_source
   have hzero : tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx x = 0 := by
     have hx_base' : x ∉ (trivializationAt (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x) α).toPretrivialization.baseSet := by
@@ -573,7 +573,7 @@ private lemma lintegral_comp_toFun_le_const
         (∫⁻ y in Ω, F (Φ.toFun y) ∂(volume : Measure (EuclideanSpace ℝ (Fin d)))) ≤
       ∫⁻ z in Ω', F z ∂(volume : Measure (EuclideanSpace ℝ (Fin d))) :=
     h_mono.trans_eq h_aux.symm
-  have h_jac_ne : ENNReal.ofReal Φ.jacobianLowerBound ≠ 0 := by
+  have h_jacobian_ne : ENNReal.ofReal Φ.jacobianLowerBound ≠ 0 := by
     exact (ENNReal.ofReal_ne_zero_iff.mpr Φ.jacobian_lower_bound_pos)
   have h_mul_inv : ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
         ENNReal.ofReal Φ.jacobianLowerBound = 1 := by
@@ -883,11 +883,11 @@ lemma chartAtlasPOU_sum_eq_one_on_chartTarget
     (f := fun γ : M => ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
     (s := chartAtlasPOUFinset (I := I) (M := M))
     (by
-      intro γ hγ_supp
+      intro γ hγ_support
       by_contra hγ
       have hzero : ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0 :=
         chartAtlasPOU_weight_zero_of_notMem (I := I) (M := M) hγ x
-      exact hγ_supp (by simpa [Function.support] using hzero))).symm
+      exact hγ_support (by simpa [Function.support] using hzero))).symm
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [T2Space M]
@@ -895,7 +895,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
 lemma eLpNorm_iterWeakPartial_le_basis
     {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     {u : EuclN → ℝ} (hu_smooth : ContDiff ℝ (⊤ : ℕ∞) u)
-    (hu_supp : HasCompactSupport u) (hu_sub : tsupport u ⊆ Ω)
+    (hu_support : HasCompactSupport u) (hu_sub : tsupport u ⊆ Ω)
     {m : ℕ} (β : Fin m → Fin (Module.finrank ℝ E)) :
     eLpNorm (iterWeakPartial (d := Module.finrank ℝ E) 2 m β u Ω) 2
         (volume.restrict Ω) ≤
@@ -904,7 +904,7 @@ lemma eLpNorm_iterWeakPartial_le_basis
   classical
   have hae := iterWeakPartial_smooth_ae_eq_iterClassicalPartial
     (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open m β
-    hu_smooth hu_supp hu_sub
+    hu_smooth hu_support hu_sub
   rw [eLpNorm_congr_ae (p := 2) hae]
   have hpt : ∀ᵐ y ∂(volume.restrict Ω),
       ‖iterClassicalPartial (d := Module.finrank ℝ E) m β u y‖ ≤
@@ -967,7 +967,7 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
   have hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f := by
     rw [hf_def]
     exact (tensorChartComponent_contMDiff (I := I) (M := M) g r s T α Idx Jdx).contDiff
-  have hf_cpt : HasCompactSupport f := by
+  have hf_compact : HasCompactSupport f := by
     rw [hf_def]
     exact tensorChartComponent_hasCompactSupport (I := I) (M := M) g r s T α Idx Jdx
   have hf_sub : tsupport f ⊆ Ω := by
@@ -996,7 +996,7 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
     set KP : Set EuclN := (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)))
       with hKP_def
-    have hη_supp_KP : Function.support η ⊆ KP := by
+    have hη_support_KP : Function.support η ⊆ KP := by
       intro y hy
       by_contra hyK
       apply hy
@@ -1018,12 +1018,12 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
         rw [hy_symm]
         by_contra hne
         apply hyK
-        have hsymm_in_supp : (extChartAt I α).symm z ∈ tsupport
+        have hsymm_in_support : (extChartAt I α).symm z ∈ tsupport
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
           subset_tsupport _ (Function.mem_support.mpr hne)
         have hz_eq : (extChartAt I α) ((extChartAt I α).symm z) = z :=
           (extChartAt I α).right_inv hz_target
-        refine ⟨z, ⟨(extChartAt I α).symm z, hsymm_in_supp, hz_eq⟩, hzy⟩
+        refine ⟨z, ⟨(extChartAt I α).symm z, hsymm_in_support, hz_eq⟩, hzy⟩
       · rw [hη_def]
         change (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
@@ -1049,11 +1049,11 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
     have hKP_closed : IsClosed KP := hKP_compact.isClosed
     have hη_ts_KP : tsupport η ⊆ KP := by
       rw [tsupport]
-      exact hKP_closed.closure_subset_iff.mpr hη_supp_KP
+      exact hKP_closed.closure_subset_iff.mpr hη_support_KP
     have hKP_Ω : KP ⊆ Ω := by
       intro y hy
-      rcases hy with ⟨z, ⟨x, hx_supp, hxz⟩, hzy⟩
-      have hxsrc : x ∈ (chartAt H α).source := hPOU_tsupp hx_supp
+      rcases hy with ⟨z, ⟨x, hx_support, hxz⟩, hzy⟩
+      have hxsrc : x ∈ (chartAt H α).source := hPOU_tsupp hx_support
       have hx_ext : x ∈ (extChartAt I α).source := by
         rw [extChartAt_source_eq_chartAt_source (I := I) (M := M)]; exact hxsrc
       have hz_target : z ∈ (extChartAt I α).target := by
@@ -1124,18 +1124,18 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
           Km * (∑ l ∈ Finset.range (m + 1), ‖iteratedFDeriv ℝ l v y‖) :=
       (Classical.choose_spec (hpt_mul m hm)).2
     have hKm_eq : Km = (hpt_mul m hm).choose := rfl
-    have hb := eLpNorm_iterWeakPartial_le_basis hΩ_open hf_smooth hf_cpt hf_sub β
-    have hder_supp : Function.support (iteratedFDeriv ℝ m f) ⊆ K := by
+    have hb := eLpNorm_iterWeakPartial_le_basis hΩ_open hf_smooth hf_compact hf_sub β
+    have hder_support : Function.support (iteratedFDeriv ℝ m f) ⊆ K := by
       intro y hy
       exact hts_f_η ((tsupport_iteratedFDeriv_subset m)
         (subset_tsupport (iteratedFDeriv ℝ m f) hy))
-    have hg_supp_K : Function.support (fun y : EuclN =>
+    have hg_support_K : Function.support (fun y : EuclN =>
         Real.sqrt (m + 1 : ℝ) * ‖iteratedFDeriv ℝ m f y‖) ⊆ K := by
       intro y hy
       have hder : ‖iteratedFDeriv ℝ m f y‖ ≠ 0 := by
         by_contra hz
         exact hy (by simp [hz])
-      exact hder_supp (by
+      exact hder_support (by
         have hder0 : iteratedFDeriv ℝ m f y ≠ 0 := by
           intro hz
           exact hder (by simp [hz])
@@ -1147,7 +1147,7 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
           Real.sqrt (m + 1 : ℝ) * ‖iteratedFDeriv ℝ m f y‖) 2
           (volume.restrict K) := by
       have h := eLpNorm_restrict_eq_of_support_subset (p := 2) (μ := volume.restrict Ω)
-        (s := K) hg_supp_K
+        (s := K) hg_support_K
       rw [← h]
       congr 1
       exact Measure.restrict_restrict_of_subset hK_sub_Ω
@@ -1542,7 +1542,7 @@ lemma tsupport_chartSmoothExt_pou_subset_chartImage
   have hPOU_tsupp : tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆
       (chartAt H α).source :=
     chartAtlasPOU_isSubordinate (I := I) (M := M) α
-  have hη_supp_KP : Function.support (chartSmoothExt (I := I) (M := M) α
+  have hη_support_KP : Function.support (chartSmoothExt (I := I) (M := M) α
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) ⊆ KP := by
     intro y hy
     by_contra hyK
@@ -1564,12 +1564,12 @@ lemma tsupport_chartSmoothExt_pou_subset_chartImage
       rw [hy_symm]
       by_contra hne
       apply hyK
-      have hsymm_in_supp : (extChartAt I α).symm z ∈ tsupport
+      have hsymm_in_support : (extChartAt I α).symm z ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
         subset_tsupport _ (Function.mem_support.mpr hne)
       have hz_eq : (extChartAt I α) ((extChartAt I α).symm z) = z :=
         (extChartAt I α).right_inv hz_target
-      refine ⟨z, ⟨(extChartAt I α).symm z, hsymm_in_supp, hz_eq⟩, hzy⟩
+      refine ⟨z, ⟨(extChartAt I α).symm z, hsymm_in_support, hz_eq⟩, hzy⟩
     · change (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
@@ -1593,7 +1593,7 @@ lemma tsupport_chartSmoothExt_pou_subset_chartImage
   have hKP_closed : IsClosed KP := hKP_compact.isClosed
   rw [tsupport]
   rw [← Set.image_image]
-  exact hKP_closed.closure_subset_iff.mpr hη_supp_KP
+  exact hKP_closed.closure_subset_iff.mpr hη_support_KP
 
 lemma eLpNorm_pou_weighted_raw_transition_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
@@ -1654,7 +1654,7 @@ lemma eLpNorm_pou_weighted_raw_transition_le
     fun x => (chartAtlasPOU I M).le_one γ x
   have hPOUγ_nn : ∀ x : M, 0 ≤ (chartAtlasPOU I M γ : M → ℝ) x :=
     fun x => (chartAtlasPOU I M).nonneg γ x
-  have hF_supp : ∀ y, y ∈ chartTargetEuclid (I := I) (M := M) α ∩ K_α →
+  have hF_support : ∀ y, y ∈ chartTargetEuclid (I := I) (M := M) α ∩ K_α →
       ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
           ‖iteratedFDeriv ℝ m v_α y‖ ^ 2 ≠ 0 →
@@ -1679,19 +1679,19 @@ lemma eLpNorm_pou_weighted_raw_transition_le
         have hxx : (toEuclidean (E := E)) (extChartAt I α x) = y := by
           rw [hx_def, (extChartAt I α).right_inv hy_target']
           exact (toEuclidean (E := E)).apply_symm_apply y
-        have hx'_src : x' ∈ (extChartAt I α).source := by
+        have hx'_source : x' ∈ (extChartAt I α).source := by
           have hx'_chart : x' ∈ (chartAt H α).source :=
             chartAtlasPOU_isSubordinate (I := I) (M := M) α hx'_tsuppα
           rw [← extChartAt_source_eq_chartAt_source (I := I) (M := M)] at hx'_chart
           exact hx'_chart
-        have hx_src : x ∈ (extChartAt I α).source :=
+        have hx_source : x ∈ (extChartAt I α).source :=
           (extChartAt I α).map_target hy_target'
         have hcoor_eq : (toEuclidean (E := E)) (extChartAt I α x') =
             (toEuclidean (E := E)) (extChartAt I α x) := by
           rw [hzx, hxx]
         have hcoord_eq : extChartAt I α x' = extChartAt I α x :=
           (toEuclidean (E := E)).injective hcoor_eq
-        exact (extChartAt I α).injOn hx'_src hx_src hcoord_eq
+        exact (extChartAt I α).injOn hx'_source hx_source hcoord_eq
       rw [← hx'_eq]
       exact hx'_tsuppα
     have hy_eq : y = (toEuclidean (E := E)) (extChartAt I α x) := by
@@ -1739,7 +1739,7 @@ lemma eLpNorm_pou_weighted_raw_transition_le
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
               ‖iteratedFDeriv ℝ m v_α y‖ ^ 2 = 0 := by
         by_contra hne
-        exact hyC (by simpa [C, A] using hF_supp y (by simpa [A] using hyA) hne)
+        exact hyC (by simpa [C, A] using hF_support y (by simpa [A] using hyA) hne)
       change ENNReal.ofReal (
         ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
@@ -2081,9 +2081,9 @@ lemma eLpNorm_pou_weighted_raw_transition_le
       (show (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target from by
         simpa [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] using hy_target)
     have hxα : x ∈ (chartAt H α).source := by
-      have hx_src : x ∈ (extChartAt I α).source :=
+      have hx_source : x ∈ (extChartAt I α).source :=
         (extChartAt I α).map_target hy_target'
-      rwa [extChartAt_source_eq_chartAt_source (I := I) (M := M)] at hx_src
+      rwa [extChartAt_source_eq_chartAt_source (I := I) (M := M)] at hx_source
     have hxγ : x ∈ (chartAt H γ).source := by
       have hy_overlap : y ∈ chartOverlapEuclid (I := I) (M := M) α γ := hΩαγ_overlap hy
       rcases hy_overlap with ⟨w, ⟨z, hz_in, hzw⟩, hwy⟩
@@ -2233,7 +2233,7 @@ lemma eLpNorm_pou_weighted_raw_transition_le
       (I := I) (M := M) g r s T γ α P₀ m hΩαγ_open hC_meas_top
         hΩγα_subset_target Φ (ENNReal.ofReal (K_pw ^ 2 * N_terms))
         ENNReal.ofReal_ne_top h_pt h_meas
-    have h_jac_inv : Kchg ^ 2 = 1 / Φ.jacobianLowerBound := by
+    have h_jacobian_inv : Kchg ^ 2 = 1 / Φ.jacobianLowerBound := by
       dsimp [Kchg]
       rw [← Real.rpow_natCast, ← Real.rpow_mul
         (div_nonneg (by norm_num) Φ.jacobian_lower_bound_pos.le)]
@@ -2241,7 +2241,7 @@ lemma eLpNorm_pou_weighted_raw_transition_le
     have hK_prod : ENNReal.ofReal (K_pw ^ 2 * N_terms) * ENNReal.ofReal (Kchg ^ 2) =
         ENNReal.ofReal (K_pw ^ 2 * N_terms * Kchg ^ 2) := by
       rw [ENNReal.ofReal_mul (mul_nonneg (sq_nonneg _) hN_nn)]
-    rw [← h_jac_inv, hK_prod] at hraw
+    rw [← h_jacobian_inv, hK_prod] at hraw
     exact hraw
   refine ⟨K_pw ^ 2 * N_terms * Kchg ^ 2, ?_, ?_⟩
   · positivity

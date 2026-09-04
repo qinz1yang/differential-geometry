@@ -185,7 +185,7 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         (fun x : M => ENNReal.ofReal ((chartAtlasPOU I M α : M → ℝ) x) * F x) :=
       hρα_meas.mul hF_meas
     have hbridge :=
-      chartLocalMeasure_lintegral_via_chartTargetEuclid
+      chartLocalMeasure_lintegral_eq_chartTargetEuclid
         (I := I) (M := M) g α (F := fun x : M =>
           ENNReal.ofReal ((chartAtlasPOU I M α : M → ℝ) x) * F x) hgα_meas
     rw [hbridge]
@@ -483,7 +483,7 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         (fun x : M => ENNReal.ofReal ((chartAtlasPOU I M α : M → ℝ) x) * F x) :=
       hρα_meas.mul hF_meas
     have hbridge :=
-      chartLocalMeasure_lintegral_via_chartTargetEuclid
+      chartLocalMeasure_lintegral_eq_chartTargetEuclid
         (I := I) (M := M) g α (F := fun x : M =>
           ENNReal.ofReal ((chartAtlasPOU I M α : M → ℝ) x) * F x) hgα_meas
     rw [hbridge]

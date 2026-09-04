@@ -14,21 +14,21 @@ section Normed
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-structure IsJacobiSolOn (R : ℝ → F →L[ℝ] F) (a b : ℝ) (y v : ℝ → F) : Prop where
+structure IsJacobiFieldOn (R : ℝ → F →L[ℝ] F) (a b : ℝ) (y v : ℝ → F) : Prop where
   deriv_fst : ∀ t ∈ Icc a b, HasDerivWithinAt y (v t) (Icc a b) t
   deriv_snd : ∀ t ∈ Icc a b, HasDerivWithinAt v (-(R t) (y t)) (Icc a b) t
 
-namespace IsJacobiSolOn
+namespace IsJacobiFieldOn
 
 variable {R : ℝ → F →L[ℝ] F} {a b : ℝ} {y v z w : ℝ → F}
 
-theorem contOn_fst (h : IsJacobiSolOn R a b y v) : ContinuousOn y (Icc a b) :=
+theorem contOn_fst (h : IsJacobiFieldOn R a b y v) : ContinuousOn y (Icc a b) :=
   fun t ht => (h.deriv_fst t ht).continuousWithinAt
 
-theorem contOn_snd (h : IsJacobiSolOn R a b y v) : ContinuousOn v (Icc a b) :=
+theorem contOn_snd (h : IsJacobiFieldOn R a b y v) : ContinuousOn v (Icc a b) :=
   fun t ht => (h.deriv_snd t ht).continuousWithinAt
 
-end IsJacobiSolOn
+end IsJacobiFieldOn
 
 end Normed
 
@@ -72,9 +72,9 @@ theorem intInt_indexIntegrand {R : ℝ → F →L[ℝ] F} {y v z w : ℝ → F} 
     IntervalIntegrable (indexIntegrand R y v z w) volume a b :=
   (contOn_indexIntegrand hR hy hv hz hw).intervalIntegrable
 
-theorem IsJacobiSolOn.hasDerivAt_inner {R : ℝ → F →L[ℝ] F} {a b : ℝ}
+theorem IsJacobiFieldOn.hasDerivAt_inner {R : ℝ → F →L[ℝ] F} {a b : ℝ}
     {y v z w : ℝ → F}
-    (hy : IsJacobiSolOn R a b y v)
+    (hy : IsJacobiFieldOn R a b y v)
     (hz : ∀ t ∈ Icc a b, HasDerivWithinAt z (w t) (Icc a b) t)
     {t : ℝ} (ht : t ∈ Ioo a b) :
     HasDerivAt (fun s => (⟪v s, z s⟫ : ℝ)) (indexIntegrand R y v z w t) t := by
@@ -92,10 +92,10 @@ theorem IsJacobiSolOn.hasDerivAt_inner {R : ℝ → F →L[ℝ] F} {a b : ℝ}
   rw [← hcalc]
   exact h
 
-theorem IsJacobiSolOn.indexForm_eq_sub {R : ℝ → F →L[ℝ] F} {a b : ℝ}
+theorem IsJacobiFieldOn.indexForm_eq_sub {R : ℝ → F →L[ℝ] F} {a b : ℝ}
     {y v z w : ℝ → F}
     (hab : a ≤ b) (hR : ContinuousOn R (Icc a b))
-    (hy : IsJacobiSolOn R a b y v)
+    (hy : IsJacobiFieldOn R a b y v)
     (hz : ∀ t ∈ Icc a b, HasDerivWithinAt z (w t) (Icc a b) t)
     (hw : ContinuousOn w (Icc a b)) :
     indexForm R a b y v z w = ⟪v b, z b⟫ - ⟪v a, z a⟫ := by
@@ -113,10 +113,10 @@ theorem IsJacobiSolOn.indexForm_eq_sub {R : ℝ → F →L[ℝ] F} {a b : ℝ}
   exact intervalIntegral.integral_eq_sub_of_hasDeriv_right_of_le hab hcont
     hderiv hint
 
-theorem IsJacobiSolOn.indexForm_self_zero {R : ℝ → F →L[ℝ] F} {a b : ℝ}
+theorem IsJacobiFieldOn.indexForm_self_zero {R : ℝ → F →L[ℝ] F} {a b : ℝ}
     {y v : ℝ → F}
     (hab : a ≤ b) (hR : ContinuousOn R (Icc a b))
-    (hy : IsJacobiSolOn R a b y v) (hya : y a = 0) (hyb : y b = 0) :
+    (hy : IsJacobiFieldOn R a b y v) (hya : y a = 0) (hyb : y b = 0) :
     indexForm R a b y v y v = 0 := by
   rw [hy.indexForm_eq_sub hab hR hy.deriv_fst hy.contOn_snd, hya, hyb]
   simp

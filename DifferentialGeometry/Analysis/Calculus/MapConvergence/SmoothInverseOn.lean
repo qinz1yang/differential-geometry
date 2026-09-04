@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Pi
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 
@@ -56,23 +56,23 @@ theorem iteratedFDerivBoundsOnCompacts.to_within {Φ : ℕ → E → F} (h : ite
   fun r K hK _ => h r K hK
 
 omit [FiniteDimensional ℝ E] in
-theorem comp_eq_id_of_mapCInfConvOnCompacts_on
+theorem comp_eq_id_of_mapCInfConvergenceOnCompacts_on
     {U : Set E} {V : Set F}
     {Φ : ℕ → F → E} {Φinf : F → E} {Ψ : ℕ → E → F} {Ψinf : E → F}
     (hV : IsOpen V)
-    (hΦ : MapCInfConvOnCompacts V Φ Φinf) (hΦc : ContinuousOn Φinf V)
-    (hΨ : MapCInfConvOnCompacts U Ψ Ψinf)
+    (hΦ : MapCInfConvergenceOnCompacts V Φ Φinf) (hΦc : ContinuousOn Φinf V)
+    (hΨ : MapCInfConvergenceOnCompacts U Ψ Ψinf)
     (hid : ∀ k, ∀ x' ∈ U, Φ k (Ψ k x') = x') {x : E} (hx : x ∈ U) (hΨinf : Ψinf x ∈ V) :
     Φinf (Ψinf x) = x := by
   have hΨx : Tendsto (fun k => Ψ k x) atTop (𝓝 (Ψinf x)) := tendsto_of_cInf hΨ hx
   obtain ⟨K, hKcomp, hKint, hKV⟩ := exists_compact_subset hV hΨinf
   have hKmem : K ∈ 𝓝 (Ψinf x) := mem_interior_iff_mem_nhds.mp hKint
-  have hΦunif : TendstoUniformlyOn Φ Φinf atTop K :=
-    tendstoUniformlyOn_of_cPConv (hΦ K hKcomp hKV 0)
+  have hΦuniform : TendstoUniformlyOn Φ Φinf atTop K :=
+    tendstoUniformlyOn_of_cPConvergence (hΦ K hKcomp hKV 0)
   have hΨxK : Tendsto (fun k => Ψ k x) atTop (𝓝[K] (Ψinf x)) :=
     tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hΨx (hΨx.eventually_mem hKmem)
   have hcomp : Tendsto (fun k => Φ k (Ψ k x)) atTop (𝓝 (Φinf (Ψinf x))) :=
-    hΦunif.tendsto_comp ((hΦc (Ψinf x) hΨinf).mono hKV) hΨxK
+    hΦuniform.tendsto_comp ((hΦc (Ψinf x) hΨinf).mono hKV) hΨxK
   have hidx : ∀ k, Φ k (Ψ k x) = x := fun k => hid k x hx
   simp only [hidx] at hcomp
   exact (tendsto_nhds_unique tendsto_const_nhds hcomp).symm
@@ -82,7 +82,7 @@ theorem exists_c_inf_convergent_subsequence_on
     (hΦ : ∀ k, ContDiffOn ℝ (⊤ : ℕ∞) (Φ k) U) (hbdd : iteratedFDerivBoundsOnCompactsWithin U Φ) :
     ∃ (φ : ℕ → ℕ) (Φinf : E → F),
       StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) Φinf U ∧
-        MapCInfConvOnCompacts U (fun k => Φ (φ k)) Φinf :=
+        MapCInfConvergenceOnCompacts U (fun k => Φ (φ k)) Φinf :=
   exists_cInf_subseq_on hU Φ hΦ hbdd
 
 theorem exists_smooth_inverse_limit_subsequence_on
@@ -94,22 +94,22 @@ theorem exists_smooth_inverse_limit_subsequence_on
     (hLeft : ∀ k, ∀ x ∈ U, Ψ k (Φ k x) = x) (hRight : ∀ k, ∀ y ∈ V, Φ k (Ψ k y) = y) :
     ∃ (φ : ℕ → ℕ) (Φinf : E → F) (Ψinf : F → E),
       StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) Φinf U ∧ ContDiffOn ℝ (⊤ : ℕ∞) Ψinf V ∧
-        MapCInfConvOnCompacts U (fun k => Φ (φ k)) Φinf ∧
-        MapCInfConvOnCompacts V (fun k => Ψ (φ k)) Ψinf ∧
+        MapCInfConvergenceOnCompacts U (fun k => Φ (φ k)) Φinf ∧
+        MapCInfConvergenceOnCompacts V (fun k => Ψ (φ k)) Ψinf ∧
         (∀ x ∈ U, Φinf x ∈ V → Ψinf (Φinf x) = x) ∧
         (∀ y ∈ V, Ψinf y ∈ U → Φinf (Ψinf y) = y) := by
   obtain ⟨φ1, Φinf, hφ1, hΦinf, hΦconv⟩ := exists_cInf_subseq_on hU Φ hΦ hbΦ
   obtain ⟨φ2, Ψinf, hφ2, hΨinf, hΨconv⟩ :=
     exists_cInf_subseq_on hV (fun k => Ψ (φ1 k)) (fun k => hΨ (φ1 k)) (hbΨ.comp_subseq φ1)
-  have hΦconv' : MapCInfConvOnCompacts U (fun k => Φ (φ1 (φ2 k))) Φinf :=
+  have hΦconv' : MapCInfConvergenceOnCompacts U (fun k => Φ (φ1 (φ2 k))) Φinf :=
     hΦconv.comp_subseq hφ2
   refine ⟨φ1 ∘ φ2, Φinf, Ψinf, hφ1.comp hφ2, hΦinf, hΨinf, hΦconv', hΨconv, ?_, ?_⟩
   · intro x hx hΦx
-    exact comp_eq_id_of_mapCInfConvOnCompacts_on hV hΨconv hΨinf.continuousOn hΦconv'
+    exact comp_eq_id_of_mapCInfConvergenceOnCompacts_on hV hΨconv hΨinf.continuousOn hΦconv'
       (fun k x' hx' => hLeft (φ1 (φ2 k)) x' hx') hx hΦx
   · intro y hy hΨy
-    exact comp_eq_id_of_mapCInfConvOnCompacts_on hU hΦconv' hΦinf.continuousOn hΨconv
+    exact comp_eq_id_of_mapCInfConvergenceOnCompacts_on hU hΦconv' hΦinf.continuousOn hΨconv
       (fun k y' hy' => hRight (φ1 (φ2 k)) y' hy') hy hΨy
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

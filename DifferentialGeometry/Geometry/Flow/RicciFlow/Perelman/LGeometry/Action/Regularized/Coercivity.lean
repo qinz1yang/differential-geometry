@@ -27,7 +27,7 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem exists_uniform_lower_bound_lRegPotential
+theorem exists_uniform_lower_bound_lRegularizedPotential
     [CompactSpace M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : ScalarSTContOn (I := I) (M := M) S)
@@ -60,7 +60,7 @@ theorem exists_uniform_lower_bound_lRegPotential
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem lRegAction_ge_reference_energy_add_constant
+theorem lRegularizedAction_ge_reference_energy_add_constant
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (gRef : SmoothRiemannianMetric I M)
     (a b c C : Real) (hab : a ≤ b)
@@ -74,11 +74,11 @@ theorem lRegAction_ge_reference_energy_add_constant
     (href : IntervalIntegrable
       (fun s => gRef.inner (alpha s) (lVelocity (I := I) alpha s)
         (lVelocity (I := I) alpha s)) volume a b)
-    (hLag : IntervalIntegrable (lRegLagrangian S T alpha) volume a b) :
+    (hLag : IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b) :
     (∫ s in a..b, (c / 2) *
         gRef.inner (alpha s) (lVelocity (I := I) alpha s)
           (lVelocity (I := I) alpha s)) +
-      C * (b - a) ≤ lRegAction S T alpha a b := by
+      C * (b - a) ≤ lRegularizedAction S T alpha a b := by
   have href' : IntervalIntegrable
       (fun s => (c / 2) *
         gRef.inner (alpha s) (lVelocity (I := I) alpha s)
@@ -88,7 +88,7 @@ theorem lRegAction_ge_reference_energy_add_constant
       (∫ s in a..b, (c / 2) *
           gRef.inner (alpha s) (lVelocity (I := I) alpha s)
             (lVelocity (I := I) alpha s) + C) ≤
-        ∫ s in a..b, lRegLagrangian S T alpha s := by
+        ∫ s in a..b, lRegularizedLagrangian S T alpha s := by
     refine intervalIntegral.integral_mono_on hab
       (href'.add intervalIntegrable_const) hLag ?_
     intro s hs
@@ -113,11 +113,11 @@ theorem lRegAction_ge_reference_energy_add_constant
           (hpot s hs)
   rw [intervalIntegral.integral_add href' intervalIntegrable_const,
     intervalIntegral.integral_const] at hmono
-  simpa [lRegAction, smul_eq_mul, mul_comm] using hmono
+  simpa [lRegularizedAction, smul_eq_mul, mul_comm] using hmono
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem exists_lRegAction_coercivity_constants
+theorem exists_lRegularizedAction_coercivity_constants
     [CompactSpace M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -130,11 +130,11 @@ theorem exists_lRegAction_coercivity_constants
         IntervalIntegrable
             (fun s => gRef.inner (alpha s) (lVelocity (I := I) alpha s)
               (lVelocity (I := I) alpha s)) volume a b →
-          IntervalIntegrable (lRegLagrangian S T alpha) volume a b →
+          IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b →
             (∫ s in a..b, (c / 2) *
                 gRef.inner (alpha s) (lVelocity (I := I) alpha s)
                   (lVelocity (I := I) alpha s)) +
-              C * (b - a) ≤ lRegAction S T alpha a b := by
+              C * (b - a) ≤ lRegularizedAction S T alpha a b := by
   have hquad :
       Continuous
         (DifferentialGeometry.metricTimeBundleQuad
@@ -147,13 +147,13 @@ theorem exists_lRegAction_coercivity_constants
   have hST : ScalarSTContOn (I := I) (M := M) S :=
     ⟨hS.scalarCont⟩
   obtain ⟨C, hscalar⟩ :=
-    exists_uniform_lower_bound_lRegPotential (I := I) S hST T a b (by
+    exists_uniform_lower_bound_lRegularizedPotential (I := I) S hST T a b (by
       intro s hs
       exact htime (hback s (by
         simpa only [Set.uIcc_of_le hab] using hs)))
   refine ⟨c, C, hc, ?_⟩
   intro alpha href hLag
-  apply lRegAction_ge_reference_energy_add_constant (I := I) S T alpha gRef a b c C hab
+  apply lRegularizedAction_ge_reference_energy_add_constant (I := I) S T alpha gRef a b c C hab
   · intro s hs
     exact hmetric (T - s ^ 2) (hback s hs) (alpha s)
       (lVelocity (I := I) alpha s)
@@ -165,7 +165,7 @@ theorem exists_lRegAction_coercivity_constants
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem exists_lRegAction_coercivity_bound
+theorem exists_lRegularizedAction_coercivity_bound
     [CompactSpace M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -176,19 +176,19 @@ theorem exists_lRegAction_coercivity_bound
     (href : IntervalIntegrable
       (fun s => gRef.inner (alpha s) (lVelocity (I := I) alpha s)
         (lVelocity (I := I) alpha s)) volume a b)
-    (hLag : IntervalIntegrable (lRegLagrangian S T alpha) volume a b) :
+    (hLag : IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b) :
     ∃ c C : Real, 0 < c ∧
       (∫ s in a..b, (c / 2) *
           gRef.inner (alpha s) (lVelocity (I := I) alpha s)
             (lVelocity (I := I) alpha s)) +
-        C * (b - a) ≤ lRegAction S T alpha a b := by
+        C * (b - a) ≤ lRegularizedAction S T alpha a b := by
   obtain ⟨c, C, hc, hall⟩ :=
-    exists_lRegAction_coercivity_constants (I := I) S hS T t0 t1 gRef a b hab htime hback
+    exists_lRegularizedAction_coercivity_constants (I := I) S hS T t0 t1 gRef a b hab htime hback
   exact ⟨c, C, hc, hall alpha href hLag⟩
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem exists_curveEnergy_le_of_lRegAction_le
+theorem exists_curveEnergy_le_of_lRegularizedAction_le
     [CompactSpace M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -201,13 +201,13 @@ theorem exists_curveEnergy_le_of_lRegAction_le
         IntervalIntegrable
             (fun s => gRef.inner (alpha s) (lVelocity (I := I) alpha s)
               (lVelocity (I := I) alpha s)) volume a b →
-          IntervalIntegrable (lRegLagrangian S T alpha) volume a b →
-            lRegAction S T alpha a b ≤ A →
+          IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b →
+            lRegularizedAction S T alpha a b ≤ A →
               DifferentialGeometry.Geometry.Riemannian.curveEnergy
                   (I := I) gRef alpha a b ≤
                 (2 / c) * (A - C * (b - a)) := by
   obtain ⟨c, C, hc, hall⟩ :=
-    exists_lRegAction_coercivity_constants (I := I) S hS T t0 t1 gRef a b hab htime hback
+    exists_lRegularizedAction_coercivity_constants (I := I) S hS T t0 t1 gRef a b hab htime hback
   refine ⟨c, C, hc, ?_⟩
   intro alpha href hLag hA
   have hcoerc := hall alpha href hLag
@@ -227,7 +227,7 @@ theorem exists_curveEnergy_le_of_lRegAction_le
               gRef.inner (alpha s) (lVelocity (I := I) alpha s)
                 (lVelocity (I := I) alpha s)) + C * (b - a) := by
             rw [intervalIntegral.integral_const_mul]
-      _ ≤ lRegAction S T alpha a b := hcoerc
+      _ ≤ lRegularizedAction S T alpha a b := hcoerc
       _ ≤ A := hA
   have henergy :
       (c / 2) *
@@ -246,7 +246,7 @@ theorem exists_curveEnergy_le_of_lRegAction_le
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem exists_riemannianEDistOf_le_of_lRegAction_le
+theorem exists_riemannianEDistOf_le_of_lRegularizedAction_le
     [CompactSpace M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -258,8 +258,8 @@ theorem exists_riemannianEDistOf_le_of_lRegAction_le
     (hE : IntegrableOn
       (fun s => gRef.inner (alpha s) (lVelocity (I := I) alpha s)
         (lVelocity (I := I) alpha s)) (Set.Icc a b))
-    (hLag : IntervalIntegrable (lRegLagrangian S T alpha) volume a b)
-    (hA : lRegAction S T alpha a b ≤ A) :
+    (hLag : IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b)
+    (hA : lRegularizedAction S T alpha a b ≤ A) :
     ∃ c C : Real, 0 < c ∧
       ∀ s t, a ≤ s → s ≤ t → t ≤ b →
         DifferentialGeometry.riemannianEDistOf
@@ -273,7 +273,7 @@ theorem exists_riemannianEDistOf_le_of_lRegAction_le
     apply MeasureTheory.IntegrableOn.intervalIntegrable
     simpa only [Set.uIcc_of_le hab] using hE
   obtain ⟨c, C, hc, hbudget⟩ :=
-    exists_curveEnergy_le_of_lRegAction_le (I := I) S hS T t0 t1 gRef a b A hab htime hback
+    exists_curveEnergy_le_of_lRegularizedAction_le (I := I) S hS T t0 t1 gRef a b A hab htime hback
   refine ⟨c, C, hc, ?_⟩
   intro s t has hst htb
   have hsub : Set.Icc s t ⊆ Set.Icc a b :=

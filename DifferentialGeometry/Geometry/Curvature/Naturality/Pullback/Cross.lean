@@ -458,14 +458,14 @@ private theorem connectionRiemannCurvatureField_pullback_pushFwdCross
   simp [covg]
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
-theorem metricRm04Std_pullbackCross
+theorem metricRm04Standard_pullbackCross
     [T2Space M] [T2Space N]
     [IsManifold I 1 M] [IsManifold J 1 N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
     (x : M) (X Y Z W : TangentSpace I x) :
-    metricRm04StdAt (I := I) (M := M)
+    metricRm04StandardAt (I := I) (M := M)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x X Y Z W =
-      metricRm04StdAt (I := J) (M := N) g (Phi x)
+      metricRm04StandardAt (I := J) (M := N) g (Phi x)
         (mfderiv I J (Phi : M -> N) x X)
         (mfderiv I J (Phi : M -> N) x Y)
         (mfderiv I J (Phi : M -> N) x Z)
@@ -482,7 +482,7 @@ theorem metricRm04Std_pullbackCross
   obtain ⟨Ws, hWs⟩ :=
     ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
-  rw [metricRm04StdAt_apply, metricRm04StdAt_apply]
+  rw [metricRm04StandardAt_apply, metricRm04StandardAt_apply]
   unfold metricRm04At
   have hleft :=
     DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At_apply_smooth

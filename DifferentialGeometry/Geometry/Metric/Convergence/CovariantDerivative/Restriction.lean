@@ -15,7 +15,7 @@ open scoped Manifold Topology ContDiff ENNReal
 open DifferentialGeometry.Geometry.Curvature.CovariantDerivative
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -204,5 +204,5 @@ theorem covDerivOfField_restrictOpen
       rw [hcons, hconsM] at hsmooth
       exact hsmooth
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -11,7 +11,7 @@ noncomputable section
 universe u
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set
 open scoped Manifold ContDiff Topology
@@ -113,5 +113,5 @@ noncomputable def globalDiffeomorph
   exact hlocal.diffeomorphOfBijective hbijective
 
 end PointedCGHMaps
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

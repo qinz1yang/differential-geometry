@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Topology
@@ -33,15 +33,15 @@ omit [Module.Finite ℝ E] [CompleteSpace E] in
 theorem centerOfMass_diag
     [Module.Finite ℝ E]
     (g : SmoothRiemannianMetric I M') {ι : Type} [Fintype ι]
-    (μ : ι → ℝ) (pts : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
-    (h : CenterInput (I := I) g μ pts join p r) (q : M') (hall : ∀ i, pts i = q) :
-    centerOfMass (I := I) g μ pts join p r h = q := by
+    (μ : ι → ℝ) (points : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
+    (h : CenterInput (I := I) g μ points join p r) (q : M') (hall : ∀ i, points i = q) :
+    centerOfMass (I := I) g μ points join p r h = q := by
   let : RiemannianBundle (fun x : M' => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M' => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
   let : MetricSpace M' := HopfRinow.riemMetricSpace (I := I) (M := M')
-  have hnear : ∀ i : ι, dist q (pts i) ≤ (0 : ℝ) := fun i => by rw [hall i, dist_self]
-  have hd := centerOfMass.dist_le (I := I) (g := g) (μ := μ) (pts := pts) (join := join)
+  have hnear : ∀ i : ι, dist q (points i) ≤ (0 : ℝ) := fun i => by rw [hall i, dist_self]
+  have hd := centerOfMass.dist_le (I := I) (g := g) (μ := μ) (points := points) (join := join)
     (p := p) (r := r) h le_rfl hnear
   rw [mul_zero] at hd
   exact dist_le_zero.mp hd
@@ -49,7 +49,7 @@ theorem centerOfMass_diag
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
-theorem chartCm_diag
+theorem normalChartCenterOfMass_diag
     [Module.Finite ℝ E]
     (g : SmoothRiemannianMetric I M') {ι : Type} [Fintype ι]
     (μ : ι → ℝ) (join : M' → M' → ℝ → M') (p : M') (r : ℝ) (z : E)
@@ -69,15 +69,15 @@ omit [Module.Finite ℝ E] [CompleteSpace E] in
 theorem centerOfMass_delta
     [Module.Finite ℝ E]
     (g : SmoothRiemannianMetric I M') {ι : Type} [Fintype ι]
-    (μ : ι → ℝ) (pts : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
-    (h : CenterInput (I := I) g μ pts join p r) (i0 : ι)
+    (μ : ι → ℝ) (points : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
+    (h : CenterInput (I := I) g μ points join p r) (i0 : ι)
     (hdead : ∀ i, i ≠ i0 → μ i = 0) :
-    centerOfMass (I := I) g μ pts join p r h = pts i0 := by
+    centerOfMass (I := I) g μ points join p r h = points i0 := by
   let : RiemannianBundle (fun x : M' => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M' => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
   let : MetricSpace M' := HopfRinow.riemMetricSpace (I := I) (M := M')
-  have hzero : CenterOfMass.centerEnergy (I := I) g μ pts (pts i0) = 0 := by
+  have hzero : CenterOfMass.centerEnergy (I := I) g μ points (points i0) = 0 := by
     simp only [CenterOfMass.centerEnergy]
     rw [Finset.sum_eq_zero, mul_zero]
     intro i _
@@ -85,15 +85,15 @@ theorem centerOfMass_delta
     · rw [Manifold.riemannianEDist_self]
       simp
     · rw [hdead i hne, zero_mul]
-  have hmin : ∀ z : M', CenterOfMass.centerEnergy (I := I) g μ pts (pts i0)
-      ≤ CenterOfMass.centerEnergy (I := I) g μ pts z := by
+  have hmin : ∀ z : M', CenterOfMass.centerEnergy (I := I) g μ points (points i0)
+      ≤ CenterOfMass.centerEnergy (I := I) g μ points z := by
     intro z
     rw [hzero]
     simp only [CenterOfMass.centerEnergy]
     refine mul_nonneg (by norm_num) (Finset.sum_nonneg fun i _ => ?_)
     exact mul_nonneg (h.μ_nonneg i) (by positivity)
-  exact ((centerOfMass.unique (I := I) (g := g) (μ := μ) (pts := pts) (join := join)
-    (p := p) (r := r) h) (pts i0) hmin).symm
+  exact ((centerOfMass.unique (I := I) (g := g) (μ := μ) (points := points) (join := join)
+    (p := p) (r := r) h) (points i0) hmin).symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -114,25 +114,25 @@ theorem diagEventuallyEqId
           (H z hz))) :
     G =ᶠ[nhds x] fun y => y := by
   filter_upwards [hV.mem_nhds hxV] with z hz
-  rw [hagree z hz, chartCm_diag (I := I) g (μfun z) join p r z (hVtgt hz) (H z hz)]
+  rw [hagree z hz, normalChartCenterOfMass_diag (I := I) g (μfun z) join p r z (hVtgt hz) (H z hz)]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 omit [CompleteSpace E] in
-theorem cmDeltaOfBump
+theorem centerOfMass_eq_point_of_bump_weights
     [Module.Finite ℝ E]
     {ι : Type} [DecidableEq ι] [Fintype ι] [HasContDiffBump E]
     (g : SmoothRiemannianMetric I M') {χ : E → ℝ} (f : ι → ContDiffBump (0 : E))
     {J : ι → E → E} {i0 : ι} {x₀ : E}
-    (pts : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
+    (points : ι → M') (join : M' → M' → ℝ → M') (p : M') (r : ℝ)
     (hfar : ∀ j, j ≠ i0 → (f j).rOut ≤ ‖J j x₀‖)
     (hmem0 : ‖J i0 x₀‖ ≤ (f i0).rIn)
     (H : CenterInput (I := I) g
-      (fun i => normWeights (bumpNum χ (fun i' => ⇑(f i')) J i0) i x₀) pts join p r) :
+      (fun i => normWeights (bumpNum χ (fun i' => ⇑(f i')) J i0) i x₀) points join p r) :
     centerOfMass (I := I) g
-      (fun i => normWeights (bumpNum χ (fun i' => ⇑(f i')) J i0) i x₀) pts join p r H
-      = pts i0 := by
+      (fun i => normWeights (bumpNum χ (fun i' => ⇑(f i')) J i0) i x₀) points join p r H
+      = points i0 := by
   obtain ⟨hkill, hbase⟩ := bumpNumDeltaOfNorm (χ := χ) f (J := J) hfar
   have hone : f i0 (J i0 x₀) = 1 :=
     (f i0).one_of_mem_closedBall
@@ -141,9 +141,9 @@ theorem cmDeltaOfBump
     rw [hbase, hone]; exact one_ne_zero
   obtain ⟨hw1, hw0⟩ := normWeights_delta (num := bumpNum χ (fun i' => ⇑(f i')) J i0)
     (z := x₀) i0 hkill hne
-  exact centerOfMass_delta (I := I) g _ pts join p r H i0 (fun j hj => hw0 j hj)
+  exact centerOfMass_delta (I := I) g _ points join p r H i0 (fun j hj => hw0 j hj)
 
 end Diagonal
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

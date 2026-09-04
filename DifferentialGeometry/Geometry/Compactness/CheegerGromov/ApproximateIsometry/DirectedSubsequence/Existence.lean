@@ -22,7 +22,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators ENNReal
 open Bundle Manifold
@@ -110,7 +110,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           ((1 / 2 : ℝ) ^ (j + 1)) j Φ (X.obj (σ j)).metric (X.obj (σ (j + 1))).metric) :=
     fun j => (PairwiseApproximateIsometryInput.exists_partial_approximate_isometry P B ((2 : ℝ) ^ (j + 1)) (hrpos j) ((1 / 2 : ℝ) ^ (j + 1)) (hepos j)
       (helt j) j).choose_spec (σ j) (σ (j + 1)) (hstep j).1 (hstep j).2
-  choose Ψ hΨsrc hΨbase hΨdata using hΨex
+  choose Ψ hΨsource hΨbase hΨdata using hΨex
   refine ⟨Ψ, hΨbase, ?_⟩
   intro ε hε hε1 p
   let C : ℝ := (exists_uniform_iterated_covariant_derivative_add_norm_bound.{u, uE, uH} (I := I) p).choose
@@ -134,7 +134,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         (X.obj (σ s)).metric (X.obj (σ (s + l))).metric) ∧
       (∀ m (hm : s + l = m), Nonempty (PartialDiffeomorphMetricApproximationBounds (I := I)
         (Metric.ball ((X.obj (σ s)).basepoint) ((2 : ℝ) ^ s * (1 + (1 / 2 : ℝ) ^ (l + 1)))) c0 cov p
-        (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l s m hm)
+        (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l s m hm)
         (X.obj (σ s)).metric (X.obj (σ m)).metric)) by
     intro l
     obtain ⟨c0, cov, _hc0non, _hcovnon, hc0e, hcove, _, _, _, _, ⟨⟨D⟩, _⟩⟩ :=
@@ -221,7 +221,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             sepNextC0_le hTR0 hδR0 hc0R0 hc0Rbudget hcovRbudget hTRsmall
           _ = 2 * sepTail s (l + 1) := by
             dsimp [δR]
-            rw [sepTail_succ']
+            rw [sepTail_succ_left]
             ring
       have hcovNRbudget : covNR ≤ sepBeta B * sepTail s (l + 1) := by
         dsimp [covNR]
@@ -230,7 +230,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             sepNextCov_le hTR0 hδR0 hc0R0 hc0Rbudget hcovRbudget hTRsmall
           _ = sepBeta B * sepTail s (l + 1) := by
             dsimp [δR]
-            rw [sepTail_succ']
+            rw [sepTail_succ_left]
             ring
       have hc0NextBudget : c0Next ≤ 2 * sepTail s (l + 1) := by
         dsimp [c0Next]
@@ -305,13 +305,13 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       have hK₂_nonempty : Nonempty K₂ :=
         ⟨⟨(X.obj (σ (s + l))).basepoint,
           Metric.mem_ball_self (by positivity : (0 : ℝ) < (2 : ℝ) ^ (s + l + 1))⟩⟩
-      have hU₁_src : (U₁ : Set (X.obj (σ s)).M) ⊆
+      have hU₁_source : (U₁ : Set (X.obj (σ s)).M) ⊆
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l).source := by
         intro x hx
         exact DforAcc.source_sub (Metric.ball_subset_ball hRmid_lt_Rcur.le hx)
-      have hK₂_src : (K₂ : Set (X.obj (σ (s + l))).M) ⊆ (Ψ (s + l)).source := by
+      have hK₂_source : (K₂ : Set (X.obj (σ (s + l))).M) ⊆ (Ψ (s + l)).source := by
         intro y hy
-        exact hΨsrc (s + l) (Metric.ball_subset_closedBall hy)
+        exact hΨsource (s + l) (Metric.ball_subset_closedBall hy)
       have D₁mid : PartialDiffeomorphMetricApproximationBounds (I := I) (U₁ : Set (X.obj (σ s)).M) c0F covF p
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l)
           (X.obj (σ s)).metric (X.obj (σ (s + l))).metric :=
@@ -417,7 +417,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           (X.obj (σ s)).metric (X.obj (σ (s + l + 1))).metric :=
         PartialDiffeomorphMetricApproximationBounds.transForward (I := I)
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s l) (Ψ (s + l))
-          hU₁_src hK₂_src himg_mid hKcompactF hKU₁F hc0F2
+          hU₁_source hK₂_source himg_mid hKcompactF hKU₁F hc0F2
           hfeedF0 hqF1 (sepEnvelope_c0 c0F covF) (sepEnvelope_cov c0F covF)
           hδF0 le_rfl le_rfl C hC0
           (by
@@ -458,12 +458,12 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           ((X.obj (σ (s + 1))).basepoint) (openRadius_pos (s + 1) l)
       have DtailR_Ktail : PartialDiffeomorphMetricApproximationBounds (I := I) (Ktail : Set (X.obj (σ (s + 1))).M)
           c0R covR p
-          (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
+          (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
             htail_index)
           (X.obj (σ (s + 1))).metric (X.obj (σ (s + (l + 1)))).metric := by
         exact DrevTail
-      have hKtail_src : (Ktail : Set (X.obj (σ (s + 1))).M) ⊆
-          (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
+      have hKtail_source : (Ktail : Set (X.obj (σ (s + 1))).M) ⊆
+          (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
             htail_index).source :=
         DtailR_Ktail.source_sub
       let KmidE : Set (X.obj (σ s)).M :=
@@ -474,7 +474,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         rw [Metric.closedEBall_ofReal hRmid_pos.le]
         exact Metric.closedBall_subset_closedBall hRmid_le_step
       have hsrc_step_mid : KmidE ⊆ (Ψ s).source :=
-        fun x hx => hΨsrc s (hclosed_mid_step hx)
+        fun x hx => hΨsource s (hclosed_mid_step hx)
       have hRmid_le_mid0 : Rmid ≤ midRadius s 0 := by
         change midRadius s l ≤ midRadius s 0
         exact midRadius_le_zero s l
@@ -519,19 +519,19 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
             exact le_max_right _ _
       have hRclosedSep : MapMetricApproximationBoundsOn (I := I)
           ((_root_.PartialDiffeomorph.trans (I := I) (Ψ s)
-              (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
+              (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
                 htail_index) :
                 (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''
             Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
           ((_root_.PartialDiffeomorph.trans (I := I) (Ψ s)
-              (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
+              (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
                 htail_index)).symm :
                 (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
           (X.obj (σ (s + (l + 1)))).metric (X.obj (σ s)).metric :=
         PartialDiffeomorphMetricApproximationBounds.transReverse (I := I)
-          (Ψ s) (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
+          (Ψ s) (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l (s + 1) (s + (l + 1))
             htail_index)
-          DstepRopen.source_sub hKtail_src himg_step_mid hKcompactF hKU₁F hc0R2
+          DstepRopen.source_sub hKtail_source himg_step_mid hKcompactF hKU₁F hc0R2
           hfeedR0 hqR1 (sepEnvelope_c0 c0R covR) (sepEnvelope_cov c0R covR)
           hδR0 le_rfl le_rfl C hC0
           (by
@@ -554,34 +554,34 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         rw [chainComp_apply_succ]
         rfl
       have hfoldR_eq :
-          (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+          (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M)
             =
           (_root_.PartialDiffeomorph.trans (I := I) (Ψ s)
-            (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l
+            (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l
               (s + 1) (s + (l + 1)) htail_index) :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) := by
         funext x
-        rw [chainComp'_apply_succ]
+        rw [chainCompOfAddEq_apply_succ]
         rfl
       have hsrcFchain : Metric.closedBall ((X.obj (σ s)).basepoint) Rnext ⊆
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1)).source := by
         intro x hx
-        exact ⟨hU₁_src (hKU₁F hx), hK₂_src (himg_mid (Set.mem_image_of_mem _ (hKU₁F hx)))⟩
+        exact ⟨hU₁_source (hKU₁F hx), hK₂_source (himg_mid (Set.mem_image_of_mem _ (hKU₁F hx)))⟩
       have hsrcRchain : Metric.closedBall ((X.obj (σ s)).basepoint) Rnext ⊆
-          (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+          (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
             (s + (l + 1)) rfl).source := by
         intro x hx
         exact ⟨DstepRopen.source_sub (hKU₁F hx),
-          hKtail_src (himg_step_mid (Set.mem_image_of_mem _ (hKU₁F hx)))⟩
+          hKtail_source (himg_step_mid (Set.mem_image_of_mem _ (hKU₁F hx)))⟩
       have hfoldR_symm_eq :
-          ((chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+          ((chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl).symm :
               (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
             =
           ((_root_.PartialDiffeomorph.trans (I := I) (Ψ s)
-            (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l
+            (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ l
               (s + 1) (s + (l + 1)) htail_index)).symm :
               (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M) := by
         rfl
@@ -592,18 +592,18 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
           (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
         hFclosedSep.congrEq hfoldF_eq
       have hRclosed : MapMetricApproximationBoundsOn (I := I)
-          ((chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+          ((chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''
             Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
-          ((chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+          ((chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
             (s + (l + 1)) rfl).symm :
             (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
           (X.obj (σ (s + (l + 1)))).metric (X.obj (σ s)).metric := by
         simpa [hfoldR_eq] using
           hRclosedSep.congrEq hfoldR_symm_eq
       have hLR_eq :
-          (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+          (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M)
             =
@@ -612,7 +612,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         (chainComp_eq_right (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s).symm
       have hRightForward : MapMetricApproximationBoundsOn (I := I)
           (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
-          (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+          (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
             (s + (l + 1)) rfl :
             (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M)
           (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
@@ -620,26 +620,26 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       have hRightClosed :
           PartialDiffeomorphMetricApproximationBounds (I := I)
             (Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
-            (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+            (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl)
             (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
         PartialDiffeomorphMetricApproximationBounds.ofParts hsrcRchain hRightForward hRclosed
-      have hU₁_srcRchain : (U₁ : Set (X.obj (σ s)).M) ⊆
-          (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+      have hU₁_sourceRchain : (U₁ : Set (X.obj (σ s)).M) ⊆
+          (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
             (s + (l + 1)) rfl).source := by
         intro x hx
         exact ⟨DstepRopen.source_sub hx,
-          hKtail_src (himg_step_mid (Set.mem_image_of_mem _ hx))⟩
-      have hU₁_srcFchain : (U₁ : Set (X.obj (σ s)).M) ⊆
+          hKtail_source (himg_step_mid (Set.mem_image_of_mem _ hx))⟩
+      have hU₁_sourceFchain : (U₁ : Set (X.obj (σ s)).M) ⊆
           (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1)).source := by
         intro x hx
-        exact ⟨hU₁_src hx, hK₂_src (himg_mid (Set.mem_image_of_mem _ hx))⟩
-      have hNonempty_src_s : Nonempty (X.obj (σ s)).M := ⟨(X.obj (σ s)).basepoint⟩
+        exact ⟨hU₁_source hx, hK₂_source (himg_mid (Set.mem_image_of_mem _ hx))⟩
+      have hNonempty_source_s : Nonempty (X.obj (σ s)).M := ⟨(X.obj (σ s)).basepoint⟩
       have hrev_germ_final :
           ∀ y ∈ (chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
                 (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''
                 Metric.closedBall ((X.obj (σ s)).basepoint) Rnext,
-            ((chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+            ((chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
                 (s + (l + 1)) rfl).symm :
                 (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
               =ᶠ[nhds y]
@@ -648,16 +648,16 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
         have hgermU :=
           PartialDiffeomorph.symm_eventuallyEq_on_image_of_eq (I := I)
             (Φ := chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1))
-            (Ψ := chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+            (Ψ := chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl)
-            hU₁_srcFchain hU₁_srcRchain hLR_eq
+            hU₁_sourceFchain hU₁_sourceRchain hLR_eq
         intro y hy
         exact hgermU y (Set.image_mono hKU₁F hy)
       have hR_on_left_zone : MapMetricApproximationBoundsOn (I := I)
           ((chainComp (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ s (l + 1) :
               (X.obj (σ s)).M → (X.obj (σ (s + (l + 1)))).M) ''
             Metric.closedBall ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
-          ((chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+          ((chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
             (s + (l + 1)) rfl).symm :
             (X.obj (σ (s + (l + 1)))).M → (X.obj (σ s)).M)
           (X.obj (σ (s + (l + 1)))).metric (X.obj (σ s)).metric := by
@@ -685,7 +685,7 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
       have hRightOpen :
           PartialDiffeomorphMetricApproximationBounds (I := I)
             (Metric.ball ((X.obj (σ s)).basepoint) Rnext) c0Next covNext p
-            (chainComp' (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
+            (chainCompOfAddEq (I := I) (Mf := fun i => (X.obj (σ i)).M) Ψ (l + 1) s
               (s + (l + 1)) rfl)
             (X.obj (σ s)).metric (X.obj (σ (s + (l + 1)))).metric :=
         hRightClosed.mono Metric.ball_subset_closedBall le_rfl le_rfl
@@ -695,5 +695,5 @@ theorem exists_directed_approximate_isometry_subsequence (P : ∀ k, ProperMetri
 
 end Endpoint
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

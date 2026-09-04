@@ -47,7 +47,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-private lemma fin_init_cons_aux {α : Type*} {m : ℕ}
+private lemma fin_initial_cons_aux {α : Type*} {m : ℕ}
     (x : α) (p : Fin (m + 1) → α) :
     Fin.init (Fin.cons x p : Fin (m + 2) → α) =
       Fin.cons x (Fin.init p) := by
@@ -87,7 +87,7 @@ theorem chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMix
           (Fin.cons i dirs) =ᵐ[
         (volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
         (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h m dirs)
         (chartTargetEuclid (I := I) (M := M) α) := by
   intro m
@@ -97,16 +97,16 @@ theorem chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMix
       have h_lhs_eq :
           chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h 1
               (Fin.cons i dirs) =
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
               (chosenMthMixedPartialChartPushedU (I := I) (M := M)
                 g α u_h 0 dirs)
               (chartTargetEuclid (I := I) (M := M) α) := by
         rw [chosenMthMixedPartialChartPushedU_succ]
         have h_last : (Fin.cons i dirs : Fin 1 → _) (Fin.last 0) = i := rfl
-        have h_init : Fin.init (Fin.cons i dirs : Fin 1 → _) = dirs := by
+        have h_initial : Fin.init (Fin.cons i dirs : Fin 1 → _) = dirs := by
           funext k
           exact (k.elim0)
-        rw [h_last, h_init]
+        rw [h_last, h_initial]
       exact Filter.EventuallyEq.of_eq h_lhs_eq
   | succ m ih =>
       intro dirs i h_parent
@@ -117,24 +117,24 @@ theorem chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMix
           (Fin.cons i dirs : Fin (m + 2) → Fin (Module.finrank ℝ E))
             (Fin.last (m + 1)) = dirs (Fin.last m) :=
         fin_cons_last_succ_aux i dirs
-      have h_init :
+      have h_initial :
           Fin.init (Fin.cons i dirs :
             Fin (m + 2) → Fin (Module.finrank ℝ E)) =
             Fin.cons i (Fin.init dirs) :=
-        fin_init_cons_aux i dirs
+        fin_initial_cons_aux i dirs
       have h_lhs_unfold :
           chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
               (m + 2) (Fin.cons i dirs) =
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
               (dirs (Fin.last m))
               (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                 (m + 1) (Fin.cons i (Fin.init dirs))) Ω := by
         rw [chosenMthMixedPartialChartPushedU_succ]
-        rw [h_last, h_init]
+        rw [h_last, h_initial]
       have h_dirs_unfold :
           chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
               (m + 1) dirs =
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
               (dirs (Fin.last m))
               (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                 m (Fin.init dirs)) Ω := by
@@ -147,17 +147,17 @@ theorem chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMix
         MemWkp.le_of_le (by omega) h_parent
       have h_ih := ih (Fin.init dirs) i h_parent_for_ih
       have h_propagate :
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
               (dirs (Fin.last m))
               (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                 (m + 1) (Fin.cons i (Fin.init dirs))) Ω =ᵐ[
           (volume : Measure EuclN).restrict Ω]
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
             (dirs (Fin.last m))
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
               (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                 m (Fin.init dirs)) Ω) Ω :=
-        chosenWeakPartial'_ae_congr (d := Module.finrank ℝ E)
+        chosenWeakPartialOrZero_ae_congr (d := Module.finrank ℝ E)
           (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ih (dirs (Fin.last m))
       have h_inner_memWkp_2_2 :
           MemWkp (d := Module.finrank ℝ E) 2 2
@@ -174,37 +174,37 @@ theorem chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMix
         exact chosenMthMixedPartialChartPushedU_memWkp_of_chartPushed_memWkp
           (I := I) (M := M) g α u_h m 2 h_parent_2_m (Fin.init dirs)
       have h_swap :=
-        chosenWeakPartial'_swap_ae_of_memWkp_two
+        chosenWeakPartialOrZero_swap_ae_of_memWkp_two
           hΩ_open h_inner_memWkp_2_2 i (dirs (Fin.last m))
       have h_final :
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
                 (dirs (Fin.last m))
                 (chosenMthMixedPartialChartPushedU (I := I) (M := M)
                   g α u_h m (Fin.init dirs)) Ω) Ω =
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
               (chosenMthMixedPartialChartPushedU (I := I) (M := M)
                 g α u_h (m + 1) dirs) Ω := by
         rw [← h_dirs_unfold]
       calc chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
               (m + 2) (Fin.cons i dirs)
-          = chosenWeakPartial' (d := Module.finrank ℝ E) 2
+          = chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
               (dirs (Fin.last m))
               (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                 (m + 1) (Fin.cons i (Fin.init dirs))) Ω := h_lhs_unfold
         _ =ᵐ[(volume : Measure EuclN).restrict Ω]
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
               (dirs (Fin.last m))
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
                 (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                   m (Fin.init dirs)) Ω) Ω := h_propagate
         _ =ᵐ[(volume : Measure EuclN).restrict Ω]
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
                 (dirs (Fin.last m))
                 (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                   m (Fin.init dirs)) Ω) Ω := h_swap
-        _ = chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+        _ = chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
               (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h
                 (m + 1) dirs) Ω := h_final
 
@@ -221,7 +221,7 @@ private lemma iterated_weak_partial_locally_memLp_weak
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     MemLp
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
         (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h m dirs)
         (chartTargetEuclid (I := I) (M := M) α)) 2
       ((volume : Measure EuclN).restrict K) := by
@@ -237,13 +237,13 @@ private lemma iterated_weak_partial_locally_memLp_weak
   have h_schwarz :
       chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h (m + 1)
           (Fin.cons i dirs) =ᵐ[(volume : Measure EuclN).restrict Ω]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
         (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h m dirs)
         Ω :=
     chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMixed_ae_weak
       (I := I) (M := M) g α u_h m dirs i h_parent_m_plus_1
   have h_chosen_memLp_global :
-      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+      MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
         (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h m dirs) Ω) 2
         ((volume : Measure EuclN).restrict Ω) :=
     (memLp_congr_ae h_schwarz).mp h_cons_memLp_global
@@ -267,7 +267,7 @@ private noncomputable def iterated_weak_partial_weak
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
     (i : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+  chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
     (iterated_u_chart_weak (I := I) (M := M) g α u_h m dirs)
     (chartTargetEuclid (I := I) (M := M) α)
 
@@ -294,7 +294,7 @@ noncomputable def iteratedChartBilinearH1ComplDataWeak
     unfold iterated_u_chart_weak
     exact chosenMthMixedPartialChartPushedU_memLp_weighted
       (I := I) (M := M) g α u_h m h_parent_m h_chart_H_m_plus_1 D_m.directions
-  f_chart_memLp_weighted := D_m.fChartEff_memLp_weighted
+  f_chart_memLp_weighted := D_m.fChartEffective_memLp_weighted
   weak_partial_locally_memLp := fun i _K hK_compact hK_in =>
     iterated_weak_partial_locally_memLp_weak
       (I := I) (M := M) g α u_h m h_chart_H_m_plus_1 D_m.directions i
@@ -304,18 +304,18 @@ noncomputable def iteratedChartBilinearH1ComplDataWeak
     have h_memW1p :=
       chosenMthMixedPartialChartPushedU_memW1p_two
         (I := I) (M := M) g α u_h m h_chart_H_m_plus_1 D_m.directions
-    exact chosenWeakPartial'_isWeakPartial_of_mem h_memW1p i
+    exact chosenWeakPartialOrZero_isWeakPartial_of_mem h_memW1p i
   variational_identity := by
     classical
-    intro ψ hψ hψ_cs hψ_supp
-    have h_in := D_m.m_diff_variational_identity ψ hψ hψ_cs hψ_supp
+    intro ψ hψ hψ_cs hψ_support
+    have h_in := D_m.m_diff_variational_identity ψ hψ hψ_cs hψ_support
     set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
     have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
     have h_schwarz_ae : ∀ i : Fin (Module.finrank ℝ E),
         chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h (m + 1)
           (Fin.cons i D_m.directions) =ᵐ[
           (volume : Measure EuclN).restrict Ω]
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
           (chosenMthMixedPartialChartPushedU (I := I) (M := M)
             g α u_h m D_m.directions) Ω := fun i =>
       chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMixed_ae_weak
@@ -449,13 +449,13 @@ theorem iteratedDerivedChartBilinear_memWkp_two_two_interior_weakened
   have hΩ_η_open : IsOpen Ω_η := Metric.isOpen_thickening
   have hK_η_in_Ω_η : K_η ⊆ Ω_η := by
     refine Metric.cthickening_subset_thickening' (by positivity) (by linarith) K_α
-  obtain ⟨δ_η, η, hδ_η_pos, hδ_η_sub_Ωη, hη_smooth, hη_supp, hη_range,
+  obtain ⟨δ_η, η, hδ_η_pos, hδ_η_sub_Ωη, hη_smooth, hη_support, hη_range,
       hη_one_on_cthick_K_η, hη_tsupp_in_Ω_η⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E) hK_η_compact hΩ_η_open hK_η_in_Ω_η
   obtain ⟨N, hN_pos, h_fderiv_eta⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.exists_grad_bound_of_compactSupport_smooth
-      hη_smooth hη_supp
+      hη_smooth hη_support
   have hN_nn : 0 ≤ N := hN_pos.le
   have hη_one_on_K_η : ∀ x ∈ K_η, η x = 1 := by
     intro x hx
@@ -476,7 +476,7 @@ theorem iteratedDerivedChartBilinear_memWkp_two_two_interior_weakened
     have h := Metric.mem_thickening_iff_infEDist_lt.mp hy
     exact lt_of_lt_of_le h
       (ENNReal.ofReal_le_ofReal (by linarith))
-  have hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+  have hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω' := by
     intro h hh
     have h_tsupp_in_cthick_5ε : tsupport η ⊆ Metric.cthickening (5 * ε) K_α := by
@@ -511,9 +511,9 @@ theorem iteratedDerivedChartBilinear_memWkp_two_two_interior_weakened
   obtain ⟨MBound, hM_nn, h_uniform_bd⟩ :=
     uniform_diffQuot_weakPartial_bound
       (I := I) (M := M) (g := g) (α := α) D
-      hη_smooth hη_supp hη_range hN_nn h_fderiv_eta
+      hη_smooth hη_support hη_range hN_nn h_fderiv_eta
       hΩ'_open h_closureΩ'_in_chart hΩ'_compact_closure
-      hη_in_Ω' hR₀_pos hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_open.measurableSet
+      hη_in_Ω' hR₀_pos hh_support_in_Ω' hη_one_on_Ω'' hΩ''_open.measurableSet
   have h_h2 :=
     exists_weak_second_partial_of_uniform_diffQuot_bound
       (I := I) (M := M) (g := g) (α := α) D
@@ -564,24 +564,24 @@ theorem iteratedDerivedChartBilinear_memWkp_two_two_interior_weakened
     intro i
     have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
         (d := Module.finrank ℝ E) i
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i D.uChart Ω'') D.uChart Ω'' :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
         h_uChart_memW1p_Ω'' i
-    have h_chosen_loc : MeasureTheory.LocallyIntegrable
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_chosen_local : MeasureTheory.LocallyIntegrable
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i D.uChart Ω'') (volume.restrict Ω'') :=
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_uChart_memW1p_Ω'' i).locallyIntegrable
           (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-    have h_dwp_loc : MeasureTheory.LocallyIntegrable (D.weakPartial i)
+    have h_dwp_local : MeasureTheory.LocallyIntegrable (D.weakPartial i)
         (volume.restrict Ω'') :=
       (h_dwp_memLp_Ω'' i).locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have h_ae :
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i D.uChart Ω'' =ᵐ[volume.restrict Ω''] D.weakPartial i :=
       DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial
-        (h_dwp_weak_uChart_Ω'' i) h_chosen_loc h_dwp_loc
+        (h_dwp_weak_uChart_Ω'' i) h_chosen_local h_dwp_local
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]
     exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae
       hΩ''_open h_ae.symm).mp (h_wp_i_memW1p_Ω'' i)

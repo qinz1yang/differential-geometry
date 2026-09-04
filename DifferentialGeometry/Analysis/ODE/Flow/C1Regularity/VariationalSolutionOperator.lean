@@ -109,9 +109,9 @@ theorem exists_isVariationalSolutionOn_Icc_of_short
       exact hMaT_le
   have hδ_mem : δ ∈ closedBall (0 : E) rN := by
     rw [mem_closedBall_zero_iff]; change ‖δ‖ ≤ r₀; rfl
-  obtain ⟨y, hy_init, hy_deriv⟩ :=
+  obtain ⟨y, hy_initial, hy_deriv⟩ :=
     hpl.exists_eq_forall_mem_Icc_hasDerivWithinAt hδ_mem
-  exact ⟨y, hy_init, fun τ hτ => hy_deriv τ hτ⟩
+  exact ⟨y, hy_initial, fun τ hτ => hy_deriv τ hτ⟩
 
 end UniformExistence
 
@@ -304,10 +304,10 @@ lemma variationalSolutionFun_linear
     variationalSolutionFun hT hM hMT hA_cont hA_bd (c₁ • δ₁ + c₂ • δ₂) t
       = c₁ • variationalSolutionFun hT hM hMT hA_cont hA_bd δ₁ t
         + c₂ • variationalSolutionFun hT hM hMT hA_cont hA_bd δ₂ t := by
-  set vSol := variationalSolutionFun hT hM hMT hA_cont hA_bd with hvSol
-  set y₁ := vSol δ₁ with hy₁
-  set y₂ := vSol δ₂ with hy₂
-  set y₁₂ := vSol (c₁ • δ₁ + c₂ • δ₂) with hy₁₂
+  set vSolution := variationalSolutionFun hT hM hMT hA_cont hA_bd with hvSolution
+  set y₁ := vSolution δ₁ with hy₁
+  set y₂ := vSolution δ₂ with hy₂
+  set y₁₂ := vSolution (c₁ • δ₁ + c₂ • δ₂) with hy₁₂
   have h₁ : IsVariationalSolutionOn f α δ₁ t₀ y₁ (Icc (t₀ - T) (t₀ + T)) :=
     variationalSolutionFun_isSolution hT hM hMT hA_cont hA_bd δ₁
   have h₂ : IsVariationalSolutionOn f α δ₂ t₀ y₂ (Icc (t₀ - T) (t₀ + T)) :=

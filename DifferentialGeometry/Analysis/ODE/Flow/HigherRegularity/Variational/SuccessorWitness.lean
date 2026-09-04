@@ -57,9 +57,9 @@ theorem exists_isVariationalFlowProjection_succ_C_step
       rw [h2, ← add_assoc]
     rw [h_eq_wt]
     exact hf_C
-  have h_augVF_Cn_plus_1 : ContDiffOn ℝ ((n : ℕ∞) + 1) (uncurry (augmentedVectorField f))
+  have h_augmentedVectorField_Cn_plus_1 : ContDiffOn ℝ ((n : ℕ∞) + 1) (uncurry (augmentedVectorField f))
       (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) :=
-    augVF_uncurry_contDiff (k := ((n : ℕ∞) + 1)) hf_Cn_plus_2_as_succ
+    augmentedVectorField_uncurry_contDiff (k := ((n : ℕ∞) + 1)) hf_Cn_plus_2_as_succ
   have ht₀_minus_tmin_a : 0 < t₀ - tmin_a := by linarith [ht₀_a_Ioo.1]
   have htmax_a_minus_t₀ : 0 < tmax_a - t₀ := by linarith [ht₀_a_Ioo.2]
   set T_a_out : ℝ := min (t₀ - tmin_a) (tmax_a - t₀) / 2 with hT_a_out_def
@@ -109,7 +109,7 @@ theorem exists_isVariationalFlowProjection_succ_C_step
     rw [hR_a_outN_eq, hR_a_out_def]; linarith
   set Slab_a : Set ((E × (E →L[ℝ] E)) × ℝ) :=
     closedBall p₀ R_a_out ×ˢ Icc (t₀ - T_a_out) (t₀ + T_a_out)
-  have hSlab_a_cpt : IsCompact Slab_a :=
+  have hSlab_a_compact : IsCompact Slab_a :=
     (isCompact_closedBall (p₀ : E × (E →L[ℝ] E)) R_a_out).prod isCompact_Icc
   have hSlab_a_ne : Slab_a.Nonempty :=
     ⟨(p₀, t₀), Metric.mem_closedBall_self (le_of_lt hR_a_out_pos),
@@ -121,13 +121,13 @@ theorem exists_isVariationalFlowProjection_succ_C_step
   have haΦ_cont : ContinuousOn aΦ Slab_a := haΦ.continuousOn.mono hslab_a_sub_full
   have hpartial_a : ContDiffOn ℝ 0 (fun p : ℝ × (E × (E →L[ℝ] E)) =>
       fderiv ℝ (augmentedVectorField f p.1) p.2) (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) := by
-    have h_augVF_C1 : ContDiffOn ℝ 1 (uncurry (augmentedVectorField f))
+    have h_augmentedVectorField_C1 : ContDiffOn ℝ 1 (uncurry (augmentedVectorField f))
         (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) := by
-      refine h_augVF_Cn_plus_1.of_le ?_
+      refine h_augmentedVectorField_Cn_plus_1.of_le ?_
       have h1 : (1 : ℕ∞) ≤ (n : ℕ∞) + 1 := le_add_self
       exact_mod_cast h1
     exact contDiffOn_partial_fderiv_of_succ (f := augmentedVectorField f) (k := (0 : ℕ∞))
-      (by simpa using h_augVF_C1)
+      (by simpa using h_augmentedVectorField_C1)
   have hpartial_a_cont : ContinuousOn (fun p : ℝ × (E × (E →L[ℝ] E)) =>
       fderiv ℝ (augmentedVectorField f p.1) p.2) (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) :=
     hpartial_a.continuousOn
@@ -144,7 +144,7 @@ theorem exists_isVariationalFlowProjection_succ_C_step
         (fun A : (E × (E →L[ℝ] E)) →L[ℝ] (E × (E →L[ℝ] E)) => ‖A‖) :=
       continuous_norm
     exact hnorm.comp_continuousOn h_fderiv_a_cont
-  rcases hSlab_a_cpt.exists_isMaxOn hSlab_a_ne h_norm_cont_a with ⟨qmax, _, hqmax⟩
+  rcases hSlab_a_compact.exists_isMaxOn hSlab_a_ne h_norm_cont_a with ⟨qmax, _, hqmax⟩
   set M_aug_pre : ℝ := ‖fderiv ℝ (augmentedVectorField f qmax.2) (aΦ qmax)‖ with hM_aug_pre_def
   have hM_aug_pre_nn : 0 ≤ M_aug_pre := norm_nonneg _
   have hM_aug_pre_bd : ∀ q ∈ Slab_a, ‖fderiv ℝ (augmentedVectorField f q.2) (aΦ q)‖ ≤ M_aug_pre :=
@@ -224,7 +224,7 @@ theorem exists_isVariationalFlowProjection_succ_C_step
     · have h_eq_succ : (((n + 1 : ℕ) : ℕ∞) : WithTop ℕ∞) =
           ((n : ℕ∞) : WithTop ℕ∞) + 1 := by push_cast; ring
       rw [h_eq_succ]
-      exact h_augVF_Cn_plus_1
+      exact h_augmentedVectorField_Cn_plus_1
   have h_aug_Cn_plus_1' : ContDiffOn ℝ ((n : ℕ∞) + 1) aΦ
       ((ball p₀ (R_aN : ℝ)) ×ˢ Ioo (t₀ - T_a) (t₀ + T_a)) := by
     have h_eq_succ : (((n + 1 : ℕ) : ℕ∞) : WithTop ℕ∞) =
@@ -245,46 +245,46 @@ theorem exists_isVariationalFlowProjection_succ_C_step
         (ContinuousLinearMap.id ℝ E)) = dist q.1 x₀
       rw [dist_self, max_eq_left dist_nonneg]
     rw [hd]; exact hq_x
-  have h_Y_smooth : ContDiffOn ℝ ((n : ℕ∞) + 1) (fromAugFlow aΦ) U_E :=
-    contDiffOn_fromAugFlow (k := ((n : ℕ∞) + 1)) (Ω := U_a) (U := U_E)
+  have h_Y_smooth : ContDiffOn ℝ ((n : ℕ∞) + 1) (fromAugmentedFlow aΦ) U_E :=
+    contDiffOn_fromAugmentedFlow (k := ((n : ℕ∞) + 1)) (Ω := U_a) (U := U_E)
       h_aug_Cn_plus_1' hmap
   obtain ⟨T_help, ρ_help, hT_help_pos, hρ_help_pos, h_help⟩ :=
-    exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
+    exists_fderiv_eq_fromAugmentedFlow_coprod_timePieceFn
       (Φ := Φ) hΦ hf_C1 ht₀_Ioo hr_pos haΦ ht₀_a_Ioo hR_aug_pos
-  set T_eff : ℝ := min T_a T_help with hT_eff_def
-  have hT_eff_pos : 0 < T_eff := lt_min hT_a_pos hT_help_pos
-  have hT_eff_le_T_a : T_eff ≤ T_a := min_le_left _ _
-  have hT_eff_le_T_help : T_eff ≤ T_help := min_le_right _ _
-  set ρ_eff : ℝ := min (R_aN : ℝ) (ρ_help : ℝ) with hρ_eff_def
-  have hρ_eff_pos : 0 < ρ_eff := lt_min hR_a_pos hρ_help_pos
-  set ρ_effN : ℝ≥0 := ⟨ρ_eff, le_of_lt hρ_eff_pos⟩
-  have hρ_effN_eq : (ρ_effN : ℝ) = ρ_eff := rfl
-  have hρ_eff_le_R_a : ρ_eff ≤ (R_aN : ℝ) := min_le_left _ _
-  have hρ_eff_le_help : ρ_eff ≤ (ρ_help : ℝ) := min_le_right _ _
-  have hρ_effN_le_R_a : (ρ_effN : ℝ) ≤ (R_aN : ℝ) := by rw [hρ_effN_eq]; exact hρ_eff_le_R_a
-  have hρ_effN_le_help : (ρ_effN : ℝ) ≤ (ρ_help : ℝ) := by rw [hρ_effN_eq]; exact hρ_eff_le_help
-  have h_eff_sub_smooth : (ball x₀ (ρ_effN : ℝ)) ×ˢ Ioo (t₀ - T_eff) (t₀ + T_eff) ⊆ U_E := by
+  set T_effective : ℝ := min T_a T_help with hT_effective_def
+  have hT_effective_pos : 0 < T_effective := lt_min hT_a_pos hT_help_pos
+  have hT_effective_le_T_a : T_effective ≤ T_a := min_le_left _ _
+  have hT_effective_le_T_help : T_effective ≤ T_help := min_le_right _ _
+  set ρ_effective : ℝ := min (R_aN : ℝ) (ρ_help : ℝ) with hρ_effective_def
+  have hρ_effective_pos : 0 < ρ_effective := lt_min hR_a_pos hρ_help_pos
+  set ρ_effectiveN : ℝ≥0 := ⟨ρ_effective, le_of_lt hρ_effective_pos⟩
+  have hρ_effectiveN_eq : (ρ_effectiveN : ℝ) = ρ_effective := rfl
+  have hρ_effective_le_R_a : ρ_effective ≤ (R_aN : ℝ) := min_le_left _ _
+  have hρ_effective_le_help : ρ_effective ≤ (ρ_help : ℝ) := min_le_right _ _
+  have hρ_effectiveN_le_R_a : (ρ_effectiveN : ℝ) ≤ (R_aN : ℝ) := by rw [hρ_effectiveN_eq]; exact hρ_effective_le_R_a
+  have hρ_effectiveN_le_help : (ρ_effectiveN : ℝ) ≤ (ρ_help : ℝ) := by rw [hρ_effectiveN_eq]; exact hρ_effective_le_help
+  have h_effective_sub_smooth : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ + T_effective) ⊆ U_E := by
     rw [hU_E_def]
     refine Set.prod_mono ?_ ?_
     · intro y hy
       rw [mem_ball] at hy ⊢
-      exact lt_of_lt_of_le hy hρ_effN_le_R_a
+      exact lt_of_lt_of_le hy hρ_effectiveN_le_R_a
     · intro s hs
       rcases hs with ⟨h1, h2⟩
       refine ⟨?_, ?_⟩ <;> linarith
-  have h_eff_sub_help : (ball x₀ (ρ_effN : ℝ)) ×ˢ Ioo (t₀ - T_eff) (t₀ + T_eff)
+  have h_effective_sub_help : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ + T_effective)
       ⊆ (ball x₀ (ρ_help : ℝ)) ×ˢ Ioo (t₀ - T_help) (t₀ + T_help) := by
     refine Set.prod_mono ?_ ?_
     · intro y hy
       rw [mem_ball] at hy ⊢
-      exact lt_of_lt_of_le hy hρ_effN_le_help
+      exact lt_of_lt_of_le hy hρ_effectiveN_le_help
     · intro s hs
       rcases hs with ⟨h1, h2⟩
       refine ⟨?_, ?_⟩ <;> linarith
-  refine ⟨T_eff, ρ_effN, hT_eff_pos, hρ_eff_pos, fromAugFlow aΦ, ?_⟩
-  refine { contDiffOn := h_Y_smooth.mono h_eff_sub_smooth, fderiv_eq := ?_ }
+  refine ⟨T_effective, ρ_effectiveN, hT_effective_pos, hρ_effective_pos, fromAugmentedFlow aΦ, ?_⟩
+  refine { contDiffOn := h_Y_smooth.mono h_effective_sub_smooth, fderiv_eq := ?_ }
   intro q hq
-  exact h_help q (h_eff_sub_help hq)
+  exact h_help q (h_effective_sub_help hq)
 
 end SuccStepWitness
 

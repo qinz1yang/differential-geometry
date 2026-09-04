@@ -66,7 +66,7 @@ theorem integral_divergence_with_boundary_eq_boundaryFaceSum
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       boundaryFaceSum (I := I) g X := by
   rw [boundaryFaceSum_def]
-  exact stokes_compact_via_pou (I := I) g X
+  exact stokes_compact (I := I) g X
 
 omit hI in
 private lemma inner_grad_grad_continuous_of_interior_support
@@ -95,8 +95,8 @@ private lemma inner_grad_grad_continuous_of_interior_support
     classical
     rw [continuous_iff_continuousAt]
     intro x
-    by_cases hx_supp : x ∈ tsupport (Y : ∀ x, TangentSpace I x)
-    · have hx_int : x ∈ I.interior M := hY_int hx_supp
+    by_cases hx_support : x ∈ tsupport (Y : ∀ x, TangentSpace I x)
+    · have hx_int : x ∈ I.interior M := hY_int hx_support
       have hx_chart : x ∈ (chartAt H x).source := mem_chart_source H x
       have hx_target_int : extChartAt I x x ∈ interior (extChartAt I x).target :=
         extChartAt_mem_interior_target_of_isInteriorPoint
@@ -120,7 +120,7 @@ private lemma inner_grad_grad_continuous_of_interior_support
         (isClosed_tsupport _).isOpen_compl
       have hev_zero : tangentSectionAction (I := I) Y f =ᶠ[𝓝 x]
           (fun _ => (0 : ℝ)) := by
-        filter_upwards [h_open.mem_nhds hx_supp] with y hy
+        filter_upwards [h_open.mem_nhds hx_support] with y hy
         have hY_zero : (Y : ∀ z, TangentSpace I z) y = 0 := by
           by_contra hne
           exact hy (subset_tsupport _ hne)

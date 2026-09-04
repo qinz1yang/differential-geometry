@@ -465,7 +465,7 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
   have hb_chartJ :
       ‖(trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b‖ ≤ C_J :=
     hCJ_bound b hb
-  have hb_extImg : extChartAt I α b ∈
+  have hb_extImage : extChartAt I α b ∈
       (extChartAt I α) ''
         (tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) := by
@@ -473,7 +473,7 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
   have hb_Γ : ∀ i j k : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) g α i j k (extChartAt I α b)| ≤ C_Γ := by
     intro i j k
-    exact hCΓ_bound (extChartAt I α b) hb_extImg i j k
+    exact hCΓ_bound (extChartAt I α b) hb_extImage i j k
   set D : ℝ := C_coord * C_J * (C_coord * ‖Y‖ * C_Γ) * C_vec with hD_def
   have hD_nn : 0 ≤ D := by
     have : 0 ≤ C_coord * ‖Y‖ * C_Γ := by positivity

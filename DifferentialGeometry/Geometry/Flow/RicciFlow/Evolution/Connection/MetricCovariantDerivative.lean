@@ -73,7 +73,7 @@ theorem metricFrameComp_fixedBaseSwap_of_solution
     FixedBaseExtDerivTimeDerivativeOnRegular (I := I) D.carrier D.regular u
       (fun s y => (S.family.metric s).inner y (frame a y) (frame b y))
       (fun t y => (-2 : Real) * ricciCompInFrame (I := I) S frame t y a b) := by
-  refine fixedBaseOnReg_of_timeDerivWithin (I := I)
+  refine fixedBaseOnRegularity_of_timeDerivWithin (I := I)
     (D.regular_subset) (fun {t} ht => D.regular_mem_nhds ht)
     hSmooth hFdiff hFtdiff ?hTime
   intro t ht x

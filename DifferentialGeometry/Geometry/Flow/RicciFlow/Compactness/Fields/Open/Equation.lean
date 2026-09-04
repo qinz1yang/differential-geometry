@@ -12,7 +12,7 @@ open Set Function Filter Bundle Manifold TopologicalSpace
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -31,7 +31,7 @@ theorem gInf_pde
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
@@ -54,7 +54,7 @@ theorem gInf_pde
               sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
               sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
@@ -99,5 +99,5 @@ theorem gInf_pde
 
 end OpenMetricConvergenceData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

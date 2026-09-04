@@ -26,7 +26,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
+private theorem lRegularizedAction_minimizer_contMDiffOn_one_of_chart_partition_aux
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 3) → Real)
     (ht0 : t 0 = a) (htlast : t (Fin.last (m + 2)) = b)
@@ -42,7 +42,7 @@ private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
     ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma (Icc a b) := by
   classical
   have ht : StrictMono t := by
@@ -50,7 +50,7 @@ private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
     exact hpos
   have huC1 : ∀ i, ContDiffOn Real 1 (u i).toFun
       (Icc (0 : Real) (partitionIntervalLength t i)) :=
-    lRegAction_minimizer_chart_piece_contDiffOn_one (I := I) S hS T a b t ht ht0 htlast p gamma hgamma
+    lRegularizedAction_minimizer_chart_piece_contDiffOn_one (I := I) S hS T a b t ht ht0 htlast p gamma hgamma
       u hsrc hrep hreg hmin
   have hpieceFin (i : Fin (m + 2)) :
       ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
@@ -183,7 +183,7 @@ private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
             (Icc (0 : Real) (partitionIntervalLength t i)) (partitionIntervalLength t i)) =
         derivWithin (u j).toFun (Icc (0 : Real) (partitionIntervalLength t j)) 0 := by
       simpa only [i, j] using
-        lRegAction_minimizer_velocity_eq_at_partition_nodes (I := I) S hS T a b t ht0 htlast p gamma hgamma u
+        lRegularizedAction_minimizer_velocity_eq_at_partition_nodes (I := I) S hS T a b t ht0 htlast p gamma hgamma u
           hpos hsrc hrep hreg hmin q
     rw [hchange0, hchange1, hp0der, hp1der, ← hvel]
     exact (tangentCoordChange_comp (I := I) (w := p i) (x := p j)
@@ -201,7 +201,7 @@ private theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux
   simpa only [htn0, htnlast] using hfull
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition
+theorem lRegularizedAction_minimizer_contMDiffOn_one_of_chart_partition
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (hm : 0 < m) (t : Fin (m + 1) → Real)
     (ht0 : t 0 = a) (htlast : t (Fin.last m) = b)
@@ -217,7 +217,7 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
     ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma (Icc a b) := by
   classical
   cases m with
@@ -228,7 +228,7 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition
           have ht : StrictMono t := by
             rw [Fin.strictMono_iff_lt_succ]
             exact hpos
-          have huC1 := lRegAction_minimizer_chart_piece_contDiffOn_one (I := I) S hS T a b t ht ht0
+          have huC1 := lRegularizedAction_minimizer_chart_piece_contDiffOn_one (I := I) S hS T a b t ht ht0
             htlast p gamma hgamma u hsrc hrep hreg hmin (0 : Fin 1)
           have hpiece := curve_c1_local I (p 0) gamma (u 0) (hsrc 0)
             (hrep 0) huC1
@@ -240,7 +240,7 @@ theorem lRegAction_minimizer_contMDiffOn_one_of_chart_partition
             exact htlast
           simpa only [hleft, hright] using hpiece
       | succ n =>
-          exact lRegAction_minimizer_contMDiffOn_one_of_chart_partition_aux (I := I) S hS T a b t ht0 htlast p gamma
+          exact lRegularizedAction_minimizer_contMDiffOn_one_of_chart_partition_aux (I := I) S hS T a b t ht0 htlast p gamma
             hgamma u hpos hsrc hrep hreg hmin
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

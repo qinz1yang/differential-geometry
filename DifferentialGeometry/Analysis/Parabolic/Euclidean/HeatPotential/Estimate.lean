@@ -20,7 +20,7 @@ def heatPotentialSchauderConst
     (Real.toNNReal (T * (B : Real)))
     (Real.toNNReal (2 * (B : Real) * heatC1 V * Real.sqrt T)) T).toNNReal
 
-def heatDuhConstSchauderConst
+def heatDuhamelConstSchauderConst
     (alpha K B : NNReal) (T : Real) : NNReal :=
   4 * heatPotentialSchauderConst (V := V) alpha K B K T
 
@@ -32,56 +32,56 @@ private theorem real_toNNReal_nnreal_mul (c : NNReal) (x : Real) :
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhHolderConst_nnreal_mul
+private theorem d2DuhamelHolderConst_nnreal_mul
     (alpha : NNReal) (v w : V) (c K : NNReal) :
-    d2DuhHolderConst alpha v w (c * K) =
-      (c : Real) * d2DuhHolderConst alpha v w K := by
-  simp [d2DuhHolderConst]
+    d2DuhamelHolderConst alpha v w (c * K) =
+      (c : Real) * d2DuhamelHolderConst alpha v w K := by
+  simp [d2DuhamelHolderConst]
   ring
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhSpaceHolderConst_nnreal_mul
+private theorem d2DuhamelSpaceHolderConst_nnreal_mul
     (alpha : NNReal) (v w : V) (c K : NNReal) :
-    d2DuhSpaceHolderConst alpha v w (c * K) =
-      (c : Real) * d2DuhSpaceHolderConst alpha v w K := by
-  simp [d2DuhSpaceHolderConst]
+    d2DuhamelSpaceHolderConst alpha v w (c * K) =
+      (c : Real) * d2DuhamelSpaceHolderConst alpha v w K := by
+  simp [d2DuhamelSpaceHolderConst]
   ring
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhTimeHolderConst_nnreal_mul
+private theorem d2DuhamelTimeHolderConst_nnreal_mul
     (alpha : NNReal) (v w : V) (c K : NNReal) :
-    d2DuhTimeHolderConst alpha v w (c * K) =
-      (c : Real) * d2DuhTimeHolderConst alpha v w K := by
-  simp [d2DuhTimeHolderConst]
+    d2DuhamelTimeHolderConst alpha v w (c * K) =
+      (c : Real) * d2DuhamelTimeHolderConst alpha v w K := by
+  simp [d2DuhamelTimeHolderConst]
   ring
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhParabolicHolderConst_nnreal_mul
+private theorem d2DuhamelParabolicHolderConst_nnreal_mul
     (alpha : NNReal) (v w : V) (c K : NNReal) :
-    d2DuhParabolicHolderConst alpha v w (c * K) =
-      (c : Real) * d2DuhParabolicHolderConst alpha v w K := by
-  rw [d2DuhParabolicHolderConst, d2DuhParabolicHolderConst,
-    d2DuhSpaceHolderConst_nnreal_mul, d2DuhTimeHolderConst_nnreal_mul]
+    d2DuhamelParabolicHolderConst alpha v w (c * K) =
+      (c : Real) * d2DuhamelParabolicHolderConst alpha v w K := by
+  rw [d2DuhamelParabolicHolderConst, d2DuhamelParabolicHolderConst,
+    d2DuhamelSpaceHolderConst_nnreal_mul, d2DuhamelTimeHolderConst_nnreal_mul]
   ring
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhJetNormConst_nnreal_mul
+private theorem d2DuhamelJetNormConst_nnreal_mul
     (alpha : NNReal) (c K : NNReal) (T : Real) :
-    d2DuhJetNormConst (V := V) alpha (c * K) T =
-      c * d2DuhJetNormConst (V := V) alpha K T := by
-  rw [d2DuhJetNormConst, d2DuhJetNormConst, Finset.mul_sum]
+    d2DuhamelJetNormConst (V := V) alpha (c * K) T =
+      c * d2DuhamelJetNormConst (V := V) alpha K T := by
+  rw [d2DuhamelJetNormConst, d2DuhamelJetNormConst, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro beta hbeta
-  rw [d2DuhHolderConst_nnreal_mul]
-  rw [show (c : Real) * d2DuhHolderConst alpha
+  rw [d2DuhamelHolderConst_nnreal_mul]
+  rw [show (c : Real) * d2DuhamelHolderConst alpha
       ((stdOrthonormalBasis Real V) (beta 0))
       ((stdOrthonormalBasis Real V) (beta 1)) K *
         ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2)) =
-      (c : Real) * (d2DuhHolderConst alpha
+      (c : Real) * (d2DuhamelHolderConst alpha
         ((stdOrthonormalBasis Real V) (beta 0))
         ((stdOrthonormalBasis Real V) (beta 1)) K *
           ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2))) by ring]
@@ -89,31 +89,31 @@ private theorem d2DuhJetNormConst_nnreal_mul
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhJetHolderConst_nnreal_mul
+private theorem d2DuhamelJetHolderConst_nnreal_mul
     (alpha : NNReal) (c K : NNReal) :
-    d2DuhJetHolderConst (V := V) alpha (c * K) =
-      c * d2DuhJetHolderConst (V := V) alpha K := by
-  rw [d2DuhJetHolderConst, d2DuhJetHolderConst, Finset.mul_sum]
+    d2DuhamelJetHolderConst (V := V) alpha (c * K) =
+      c * d2DuhamelJetHolderConst (V := V) alpha K := by
+  rw [d2DuhamelJetHolderConst, d2DuhamelJetHolderConst, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro beta hbeta
-  rw [d2DuhParabolicHolderConst_nnreal_mul,
+  rw [d2DuhamelParabolicHolderConst_nnreal_mul,
     real_toNNReal_nnreal_mul]
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem lapDuhNormConst_nnreal_mul
+private theorem lapDuhamelNormConst_nnreal_mul
     (alpha : NNReal) (c K : NNReal) (T : Real) :
-    lapDuhNormConst (V := V) alpha (c * K) T =
-      c * lapDuhNormConst (V := V) alpha K T := by
-  rw [lapDuhNormConst, lapDuhNormConst, Finset.mul_sum]
+    lapDuhamelNormConst (V := V) alpha (c * K) T =
+      c * lapDuhamelNormConst (V := V) alpha K T := by
+  rw [lapDuhamelNormConst, lapDuhamelNormConst, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i hi
-  rw [d2DuhHolderConst_nnreal_mul]
-  rw [show (c : Real) * d2DuhHolderConst alpha
+  rw [d2DuhamelHolderConst_nnreal_mul]
+  rw [show (c : Real) * d2DuhamelHolderConst alpha
       ((stdOrthonormalBasis Real V) i)
       ((stdOrthonormalBasis Real V) i) K *
         ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2)) =
-      (c : Real) * (d2DuhHolderConst alpha
+      (c : Real) * (d2DuhamelHolderConst alpha
         ((stdOrthonormalBasis Real V) i)
         ((stdOrthonormalBasis Real V) i) K *
           ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2))) by ring]
@@ -121,15 +121,15 @@ private theorem lapDuhNormConst_nnreal_mul
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem lapDuhParabolicHolderConst_nnreal_mul
+private theorem lapDuhamelParabolicHolderConst_nnreal_mul
     (alpha : NNReal) (c K : NNReal) :
-    lapDuhParabolicHolderConst (V := V) alpha (c * K) =
-      (c : Real) * lapDuhParabolicHolderConst (V := V) alpha K := by
-  rw [lapDuhParabolicHolderConst, lapDuhParabolicHolderConst,
+    lapDuhamelParabolicHolderConst (V := V) alpha (c * K) =
+      (c : Real) * lapDuhamelParabolicHolderConst (V := V) alpha K := by
+  rw [lapDuhamelParabolicHolderConst, lapDuhamelParabolicHolderConst,
     Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i hi
-  exact d2DuhParabolicHolderConst_nnreal_mul alpha _ _ c K
+  exact d2DuhamelParabolicHolderConst_nnreal_mul alpha _ _ c K
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
@@ -140,9 +140,9 @@ private theorem heatPotentialC2HolderGaugeConst_nnreal_mul
       c * heatPotentialC2HolderGaugeConst (V := V)
         alpha K B Csource C0 C1 T := by
   rw [heatPotentialC2HolderGaugeConst, heatPotentialC2HolderGaugeConst,
-    d2DuhJetNormConst_nnreal_mul, lapDuhNormConst_nnreal_mul,
-    d2DuhJetHolderConst_nnreal_mul,
-    lapDuhParabolicHolderConst_nnreal_mul,
+    d2DuhamelJetNormConst_nnreal_mul, lapDuhamelNormConst_nnreal_mul,
+    d2DuhamelJetHolderConst_nnreal_mul,
+    lapDuhamelParabolicHolderConst_nnreal_mul,
     real_toNNReal_nnreal_mul]
   push_cast
   ring
@@ -173,174 +173,174 @@ theorem heatPotentialSchauderConst_nnreal_mul
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-theorem heatDuhConstSchauderConst_nnreal_mul
+theorem heatDuhamelConstSchauderConst_nnreal_mul
     (alpha : NNReal) (c K B : NNReal) (T : Real) :
-    heatDuhConstSchauderConst (V := V) alpha (c * K) (c * B) T =
-      c * heatDuhConstSchauderConst (V := V) alpha K B T := by
-  rw [heatDuhConstSchauderConst, heatDuhConstSchauderConst,
+    heatDuhamelConstSchauderConst (V := V) alpha (c * K) (c * B) T =
+      c * heatDuhamelConstSchauderConst (V := V) alpha K B T := by
+  rw [heatDuhamelConstSchauderConst, heatDuhamelConstSchauderConst,
     heatPotentialSchauderConst_nnreal_mul]
   ring
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhHolderConst_add
+private theorem d2DuhamelHolderConst_add
     (alpha : NNReal) (v w : V) (K₁ K₂ : NNReal) :
-    d2DuhHolderConst alpha v w (K₁ + K₂) =
-      d2DuhHolderConst alpha v w K₁ +
-        d2DuhHolderConst alpha v w K₂ := by
-  simp [d2DuhHolderConst]
+    d2DuhamelHolderConst alpha v w (K₁ + K₂) =
+      d2DuhamelHolderConst alpha v w K₁ +
+        d2DuhamelHolderConst alpha v w K₂ := by
+  simp [d2DuhamelHolderConst]
   ring
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhSpaceHolderConst_add
+private theorem d2DuhamelSpaceHolderConst_add
     (alpha : NNReal) (v w : V) (K₁ K₂ : NNReal) :
-    d2DuhSpaceHolderConst alpha v w (K₁ + K₂) =
-      d2DuhSpaceHolderConst alpha v w K₁ +
-        d2DuhSpaceHolderConst alpha v w K₂ := by
-  simp [d2DuhSpaceHolderConst]
+    d2DuhamelSpaceHolderConst alpha v w (K₁ + K₂) =
+      d2DuhamelSpaceHolderConst alpha v w K₁ +
+        d2DuhamelSpaceHolderConst alpha v w K₂ := by
+  simp [d2DuhamelSpaceHolderConst]
   ring
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhTimeHolderConst_add
+private theorem d2DuhamelTimeHolderConst_add
     (alpha : NNReal) (v w : V) (K₁ K₂ : NNReal) :
-    d2DuhTimeHolderConst alpha v w (K₁ + K₂) =
-      d2DuhTimeHolderConst alpha v w K₁ +
-        d2DuhTimeHolderConst alpha v w K₂ := by
-  simp [d2DuhTimeHolderConst]
+    d2DuhamelTimeHolderConst alpha v w (K₁ + K₂) =
+      d2DuhamelTimeHolderConst alpha v w K₁ +
+        d2DuhamelTimeHolderConst alpha v w K₂ := by
+  simp [d2DuhamelTimeHolderConst]
   ring
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhParabolicHolderConst_add
+private theorem d2DuhamelParabolicHolderConst_add
     (alpha : NNReal) (v w : V) (K₁ K₂ : NNReal) :
-    d2DuhParabolicHolderConst alpha v w (K₁ + K₂) =
-      d2DuhParabolicHolderConst alpha v w K₁ +
-        d2DuhParabolicHolderConst alpha v w K₂ := by
-  rw [d2DuhParabolicHolderConst, d2DuhParabolicHolderConst,
-    d2DuhParabolicHolderConst,
-    d2DuhSpaceHolderConst_add, d2DuhTimeHolderConst_add]
+    d2DuhamelParabolicHolderConst alpha v w (K₁ + K₂) =
+      d2DuhamelParabolicHolderConst alpha v w K₁ +
+        d2DuhamelParabolicHolderConst alpha v w K₂ := by
+  rw [d2DuhamelParabolicHolderConst, d2DuhamelParabolicHolderConst,
+    d2DuhamelParabolicHolderConst,
+    d2DuhamelSpaceHolderConst_add, d2DuhamelTimeHolderConst_add]
   ring
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhHolderConst_nonneg'
+private theorem d2DuhamelHolderConst_nonneg'
     (alpha : NNReal) (v w : V) (K : NNReal) :
-    0 ≤ d2DuhHolderConst alpha v w K := by
-  unfold d2DuhHolderConst
+    0 ≤ d2DuhamelHolderConst alpha v w K := by
+  unfold d2DuhamelHolderConst
   exact mul_nonneg
     (mul_nonneg (mul_nonneg (norm_nonneg v) (norm_nonneg w)) K.coe_nonneg)
     (heatC2Holder_nonneg (V := V) alpha)
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhJetNormConst_add
+private theorem d2DuhamelJetNormConst_add
     {alpha : NNReal} (K₁ K₂ : NNReal)
     {T : Real} (hT : 0 ≤ T) :
-    d2DuhJetNormConst (V := V) alpha (K₁ + K₂) T =
-      d2DuhJetNormConst (V := V) alpha K₁ T +
-        d2DuhJetNormConst (V := V) alpha K₂ T := by
-  rw [d2DuhJetNormConst, d2DuhJetNormConst, d2DuhJetNormConst,
+    d2DuhamelJetNormConst (V := V) alpha (K₁ + K₂) T =
+      d2DuhamelJetNormConst (V := V) alpha K₁ T +
+        d2DuhamelJetNormConst (V := V) alpha K₂ T := by
+  rw [d2DuhamelJetNormConst, d2DuhamelJetNormConst, d2DuhamelJetNormConst,
     ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro beta hbeta
-  rw [d2DuhHolderConst_add]
-  rw [show (d2DuhHolderConst alpha
+  rw [d2DuhamelHolderConst_add]
+  rw [show (d2DuhamelHolderConst alpha
         ((stdOrthonormalBasis Real V) (beta 0))
         ((stdOrthonormalBasis Real V) (beta 1)) K₁ +
-      d2DuhHolderConst alpha
+      d2DuhamelHolderConst alpha
         ((stdOrthonormalBasis Real V) (beta 0))
         ((stdOrthonormalBasis Real V) (beta 1)) K₂) *
         ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2)) =
-      d2DuhHolderConst alpha
+      d2DuhamelHolderConst alpha
           ((stdOrthonormalBasis Real V) (beta 0))
           ((stdOrthonormalBasis Real V) (beta 1)) K₁ *
           ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2)) +
-        d2DuhHolderConst alpha
+        d2DuhamelHolderConst alpha
           ((stdOrthonormalBasis Real V) (beta 0))
           ((stdOrthonormalBasis Real V) (beta 1)) K₂ *
           ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2)) by ring,
     Real.toNNReal_add]
-  · exact mul_nonneg (d2DuhHolderConst_nonneg' alpha _ _ K₁)
+  · exact mul_nonneg (d2DuhamelHolderConst_nonneg' alpha _ _ K₁)
       (mul_nonneg (div_nonneg (by norm_num) alpha.coe_nonneg)
         (Real.rpow_nonneg hT _))
-  · exact mul_nonneg (d2DuhHolderConst_nonneg' alpha _ _ K₂)
+  · exact mul_nonneg (d2DuhamelHolderConst_nonneg' alpha _ _ K₂)
       (mul_nonneg (div_nonneg (by norm_num) alpha.coe_nonneg)
         (Real.rpow_nonneg hT _))
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem d2DuhJetHolderConst_add
+private theorem d2DuhamelJetHolderConst_add
     {alpha : NNReal} (halpha1 : alpha < 1) (K₁ K₂ : NNReal) :
-    d2DuhJetHolderConst (V := V) alpha (K₁ + K₂) =
-      d2DuhJetHolderConst (V := V) alpha K₁ +
-        d2DuhJetHolderConst (V := V) alpha K₂ := by
-  rw [d2DuhJetHolderConst, d2DuhJetHolderConst,
-    d2DuhJetHolderConst, ← Finset.sum_add_distrib]
+    d2DuhamelJetHolderConst (V := V) alpha (K₁ + K₂) =
+      d2DuhamelJetHolderConst (V := V) alpha K₁ +
+        d2DuhamelJetHolderConst (V := V) alpha K₂ := by
+  rw [d2DuhamelJetHolderConst, d2DuhamelJetHolderConst,
+    d2DuhamelJetHolderConst, ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro beta hbeta
-  rw [d2DuhParabolicHolderConst_add, Real.toNNReal_add]
-  · exact d2DuhParabolicHolderConst_nonneg halpha1.le _ _ K₁
-  · exact d2DuhParabolicHolderConst_nonneg halpha1.le _ _ K₂
+  rw [d2DuhamelParabolicHolderConst_add, Real.toNNReal_add]
+  · exact d2DuhamelParabolicHolderConst_nonneg halpha1.le _ _ K₁
+  · exact d2DuhamelParabolicHolderConst_nonneg halpha1.le _ _ K₂
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem lapDuhNormConst_add
+private theorem lapDuhamelNormConst_add
     {alpha : NNReal} (K₁ K₂ : NNReal)
     {T : Real} (hT : 0 ≤ T) :
-    lapDuhNormConst (V := V) alpha (K₁ + K₂) T =
-      lapDuhNormConst (V := V) alpha K₁ T +
-        lapDuhNormConst (V := V) alpha K₂ T := by
-  rw [lapDuhNormConst, lapDuhNormConst, lapDuhNormConst,
+    lapDuhamelNormConst (V := V) alpha (K₁ + K₂) T =
+      lapDuhamelNormConst (V := V) alpha K₁ T +
+        lapDuhamelNormConst (V := V) alpha K₂ T := by
+  rw [lapDuhamelNormConst, lapDuhamelNormConst, lapDuhamelNormConst,
     ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro i hi
-  rw [d2DuhHolderConst_add]
-  rw [show (d2DuhHolderConst alpha
+  rw [d2DuhamelHolderConst_add]
+  rw [show (d2DuhamelHolderConst alpha
         ((stdOrthonormalBasis Real V) i)
         ((stdOrthonormalBasis Real V) i) K₁ +
-      d2DuhHolderConst alpha
+      d2DuhamelHolderConst alpha
         ((stdOrthonormalBasis Real V) i)
         ((stdOrthonormalBasis Real V) i) K₂) *
         ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2)) =
-      d2DuhHolderConst alpha
+      d2DuhamelHolderConst alpha
           ((stdOrthonormalBasis Real V) i)
           ((stdOrthonormalBasis Real V) i) K₁ *
           ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2)) +
-        d2DuhHolderConst alpha
+        d2DuhamelHolderConst alpha
           ((stdOrthonormalBasis Real V) i)
           ((stdOrthonormalBasis Real V) i) K₂ *
           ((2 / (alpha : Real)) * T ^ ((alpha : Real) / 2)) by ring,
     Real.toNNReal_add]
-  · exact mul_nonneg (d2DuhHolderConst_nonneg' alpha _ _ K₁)
+  · exact mul_nonneg (d2DuhamelHolderConst_nonneg' alpha _ _ K₁)
       (mul_nonneg (div_nonneg (by norm_num) alpha.coe_nonneg)
         (Real.rpow_nonneg hT _))
-  · exact mul_nonneg (d2DuhHolderConst_nonneg' alpha _ _ K₂)
+  · exact mul_nonneg (d2DuhamelHolderConst_nonneg' alpha _ _ K₂)
       (mul_nonneg (div_nonneg (by norm_num) alpha.coe_nonneg)
         (Real.rpow_nonneg hT _))
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem lapDuhParabolicHolderConst_add
+private theorem lapDuhamelParabolicHolderConst_add
     (alpha : NNReal) (K₁ K₂ : NNReal) :
-    lapDuhParabolicHolderConst (V := V) alpha (K₁ + K₂) =
-      lapDuhParabolicHolderConst (V := V) alpha K₁ +
-        lapDuhParabolicHolderConst (V := V) alpha K₂ := by
-  rw [lapDuhParabolicHolderConst, lapDuhParabolicHolderConst,
-    lapDuhParabolicHolderConst, ← Finset.sum_add_distrib]
+    lapDuhamelParabolicHolderConst (V := V) alpha (K₁ + K₂) =
+      lapDuhamelParabolicHolderConst (V := V) alpha K₁ +
+        lapDuhamelParabolicHolderConst (V := V) alpha K₂ := by
+  rw [lapDuhamelParabolicHolderConst, lapDuhamelParabolicHolderConst,
+    lapDuhamelParabolicHolderConst, ← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro i hi
-  exact d2DuhParabolicHolderConst_add alpha _ _ K₁ K₂
+  exact d2DuhamelParabolicHolderConst_add alpha _ _ K₁ K₂
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-private theorem lapDuhParabolicHolderConst_nonneg'
+private theorem lapDuhamelParabolicHolderConst_nonneg'
     {alpha : NNReal} (halpha1 : alpha < 1) (K : NNReal) :
-    0 ≤ lapDuhParabolicHolderConst (V := V) alpha K := by
-  unfold lapDuhParabolicHolderConst
+    0 ≤ lapDuhamelParabolicHolderConst (V := V) alpha K := by
+  unfold lapDuhamelParabolicHolderConst
   exact Finset.sum_nonneg fun i hi ↦
-    d2DuhParabolicHolderConst_nonneg halpha1.le _ _ K
+    d2DuhamelParabolicHolderConst_nonneg halpha1.le _ _ K
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
@@ -358,13 +358,13 @@ private theorem heatPotentialC2HolderGaugeConst_add
   rw [heatPotentialC2HolderGaugeConst,
     heatPotentialC2HolderGaugeConst,
     heatPotentialC2HolderGaugeConst,
-    d2DuhJetNormConst_add K₁ K₂ hT,
-    lapDuhNormConst_add K₁ K₂ hT,
-    d2DuhJetHolderConst_add halpha1 K₁ K₂,
-    lapDuhParabolicHolderConst_add]
+    d2DuhamelJetNormConst_add K₁ K₂ hT,
+    lapDuhamelNormConst_add K₁ K₂ hT,
+    d2DuhamelJetHolderConst_add halpha1 K₁ K₂,
+    lapDuhamelParabolicHolderConst_add]
   rw [Real.toNNReal_add
-    (lapDuhParabolicHolderConst_nonneg' halpha1 K₁)
-    (lapDuhParabolicHolderConst_nonneg' halpha1 K₂)]
+    (lapDuhamelParabolicHolderConst_nonneg' halpha1 K₁)
+    (lapDuhamelParabolicHolderConst_nonneg' halpha1 K₂)]
   push_cast
   ring
 
@@ -416,15 +416,15 @@ theorem heatPotentialSchauderConst_add
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F]
   [CompleteSpace F] in
-theorem heatDuhConstSchauderConst_add
+theorem heatDuhamelConstSchauderConst_add
     {alpha : NNReal} (halpha1 : alpha < 1)
     (K₁ K₂ B₁ B₂ : NNReal) {T : Real} (hT : 0 ≤ T) :
-    heatDuhConstSchauderConst (V := V) alpha
+    heatDuhamelConstSchauderConst (V := V) alpha
         (K₁ + K₂) (B₁ + B₂) T =
-      heatDuhConstSchauderConst (V := V) alpha K₁ B₁ T +
-        heatDuhConstSchauderConst (V := V) alpha K₂ B₂ T := by
-  rw [heatDuhConstSchauderConst, heatDuhConstSchauderConst,
-    heatDuhConstSchauderConst,
+      heatDuhamelConstSchauderConst (V := V) alpha K₁ B₁ T +
+        heatDuhamelConstSchauderConst (V := V) alpha K₂ B₂ T := by
+  rw [heatDuhamelConstSchauderConst, heatDuhamelConstSchauderConst,
+    heatDuhamelConstSchauderConst,
     heatPotentialSchauderConst_add halpha1 K₁ K₂ B₁ B₂ K₁ K₂ hT]
   ring
 
@@ -439,7 +439,7 @@ theorem coe_heatPotentialSchauderConst
   simp [heatPotentialC2HolderGaugeConst]
 
 omit [CompleteSpace F] in
-theorem heatDuhGradientMap_norm_le
+theorem heatDuhamelGradientMap_norm_le
     {t : Real} (ht : 0 < t) {B : NNReal}
     (f : Real → BoundedContinuousFunction V F)
     (hbound : ∀ s ∈ Icc (0 : Real) t, ‖f s‖ ≤ B)
@@ -447,16 +447,16 @@ theorem heatDuhGradientMap_norm_le
     (hmeas : AEStronglyMeasurable
       (fun s : Real => heatSupGradient (t - s) (f s) x)
       (volume.restrict (uIoc (0 : Real) t))) :
-    ‖heatDuhGradientMap t f x‖ ≤
+    ‖heatDuhamelGradientMap t f x‖ ≤
       2 * (B : Real) * heatC1 V * Real.sqrt t := by
-  have hint := heatDuhGradient_int (V := V) ht f hbound x hmeas
-  have hmajor := heatDuhGradientMajor_intble (V := V) (t := t) B
-  unfold heatDuhGradientMap
+  have hint := heatDuhamelGradient_int (V := V) ht f hbound x hmeas
+  have hmajor := heatDuhamelGradientMajor_intble (V := V) (t := t) B
+  unfold heatDuhamelGradientMap
   calc
     ‖∫ s : Real in 0..t, heatSupGradient (t - s) (f s) x‖ ≤
         ∫ s : Real in 0..t, ‖heatSupGradient (t - s) (f s) x‖ :=
       intervalIntegral.norm_integral_le_integral_norm ht.le
-    _ ≤ ∫ s : Real in 0..t, heatDuhGradientMajor (V := V) B t s := by
+    _ ≤ ∫ s : Real in 0..t, heatDuhamelGradientMajor (V := V) B t s := by
       apply intervalIntegral.integral_mono_on_of_le_Ioo ht.le hint.norm hmajor
       intro s hs
       have hpos : 0 < t - s := sub_pos.mpr hs.2
@@ -468,18 +468,18 @@ theorem heatDuhGradientMap_norm_le
           mul_le_mul_of_nonneg_left (hbound s ⟨hs.1.le, hs.2.le⟩)
             (mul_nonneg (inv_nonneg.mpr (heatScale_pos hpos).le)
               (heatC1_nonneg (V := V)))
-        _ = heatDuhGradientMajor (V := V) B t s := by
+        _ = heatDuhamelGradientMajor (V := V) B t s := by
           rw [← heatScale12_eq hpos]
-          unfold heatDuhGradientMajor
+          unfold heatDuhamelGradientMajor
           ring
     _ = 2 * (B : Real) * heatC1 V * Real.sqrt t := by
-      unfold heatDuhGradientMajor
+      unfold heatDuhamelGradientMajor
       rw [intervalIntegral.integral_const_mul, timeScale12_int,
         Real.sqrt_eq_rpow]
       ring
 
 omit [CompleteSpace F] in
-theorem heatDuh_fderiv_norm_le
+theorem heatDuhamel_fderiv_norm_le
     {t : Real} (ht : 0 < t) {B : NNReal}
     (f : Real → BoundedContinuousFunction V F)
     (hbound : ∀ s ∈ Icc (0 : Real) t, ‖f s‖ ≤ B)
@@ -490,12 +490,12 @@ theorem heatDuh_fderiv_norm_le
       (fun s : Real => heatSupGradient (t - s) (f s) z)
       (volume.restrict (uIoc (0 : Real) t)))
     (x : V) :
-    ‖fderiv Real (heatDuh t f) x‖ ≤
+    ‖fderiv Real (heatDuhamel t f) x‖ ≤
       2 * (B : Real) * heatC1 V * Real.sqrt t := by
-  rw [(heatDuh_hasFDerivAt ht f hbound hmeas0 hmeas1 x).fderiv]
-  exact heatDuhGradientMap_norm_le ht f hbound x (hmeas1 x)
+  rw [(heatDuhamel_hasFDerivAt ht f hbound hmeas0 hmeas1 x).fderiv]
+  exact heatDuhamelGradientMap_norm_le ht f hbound x (hmeas1 x)
 
-theorem heatDuh_schauder_estimate
+theorem heatDuhamel_schauder_estimate
     {alpha K B Csource : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S T : Real} (hT : 0 ≤ T) (hTS : T < S)
@@ -519,10 +519,10 @@ theorem heatDuh_schauder_estimate
         (volume.restrict (uIoc (0 : Real) t))) :
     eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
-      (fun t x => heatDuh t f x) ≤
+      (fun t x => heatDuhamel t f x) ≤
       heatPotentialSchauderConst (V := V) alpha K B Csource T := by
   rw [coe_heatPotentialSchauderConst]
-  apply eParabolicC2HolderGaugeOn_heatDuh_le_of_lower_jets
+  apply eParabolicC2HolderGaugeOn_heatDuhamel_le_of_lower_jets
     halpha0 halpha1 hT hTS f
   · intro p hp
     unfold parabolicSpatialJet
@@ -530,7 +530,7 @@ theorem heatDuh_schauder_estimate
     have hbound' : ∀ s ∈ Icc (0 : Real) p.time, ‖f s‖ ≤ B := by
       intro s hs
       exact hbound s ⟨hs.1, hs.2.trans (hp.1.2.trans hTS.le)⟩
-    have hraw := heatDuh_norm hp.1.1 f hbound' p.space
+    have hraw := heatDuhamel_norm hp.1.1 f hbound' p.space
       (hmeas0 p.time ⟨hp.1.1, hp.1.2.trans hTS.le⟩ p.space)
     have hTB : 0 ≤ T * (B : Real) := mul_nonneg hT B.coe_nonneg
     rw [Real.coe_toNNReal _ hTB]
@@ -542,7 +542,7 @@ theorem heatDuh_schauder_estimate
     have hbound' : ∀ s ∈ Icc (0 : Real) p.time, ‖f s‖ ≤ B := by
       intro s hs
       exact hbound s ⟨hs.1, hs.2.trans (hp.1.2.trans hTS.le)⟩
-    have hraw := heatDuh_fderiv_norm_le hp.1.1 f hbound'
+    have hraw := heatDuhamel_fderiv_norm_le hp.1.1 f hbound'
       (hmeas0 p.time ⟨hp.1.1, hp.1.2.trans hTS.le⟩)
       (hmeas1 p.time ⟨hp.1.1, hp.1.2.trans hTS.le⟩) p.space
     have hcoef : 0 ≤ 2 * (B : Real) * heatC1 V :=
@@ -560,7 +560,7 @@ theorem heatDuh_schauder_estimate
   · exact hmeas1
   · exact hmeas2
 
-theorem heatDuh_schauder_estimate_of_parabolic_holder
+theorem heatDuhamel_schauder_estimate_of_parabolic_holder
     {alpha K B : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S T : Real} (hT : 0 ≤ T) (hTS : T < S)
@@ -571,7 +571,7 @@ theorem heatDuh_schauder_estimate_of_parabolic_holder
         (fun p => f p.time p.space))) :
     eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
-      (fun t x => heatDuh t f x) ≤
+      (fun t x => heatDuhamel t f x) ≤
       heatPotentialSchauderConst (V := V) alpha K B K T := by
   have hf : ∀ r ∈ Icc (0 : Real) S, HolderWith K alpha (f r) :=
     fun r hr => holderWith_slice_of_parabolicCylinder
@@ -581,7 +581,7 @@ theorem heatDuh_schauder_estimate_of_parabolic_holder
         (fun p => f p.time p.space)) := by
     rw [HolderWith.restrict_iff] at hsource ⊢
     exact hsource.mono fun p hp => ⟨⟨hp.1.1.le, hp.1.2⟩, hp.2⟩
-  exact heatDuh_schauder_estimate halpha0 halpha1 hT hTS f hbound hf
+  exact heatDuhamel_schauder_estimate halpha0 halpha1 hT hTS f hbound hf
     hsource'
     (fun t ht z =>
       heatSup_timeSource_aestronglyMeasurable_of_parabolic_holder
@@ -593,7 +593,7 @@ theorem heatDuh_schauder_estimate_of_parabolic_holder
       heatSupHessian_timeSource_aestronglyMeasurable_of_parabolic_holder
         halpha0 ht f hsource z)
 
-theorem heatDuh_isParabolicC2HolderOn
+theorem heatDuhamel_isParabolicC2HolderOn
     {alpha K B : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S T : Real} (hT : 0 ≤ T) (hTS : T < S)
@@ -604,10 +604,10 @@ theorem heatDuh_isParabolicC2HolderOn
         (fun p ↦ f p.time p.space))) :
     IsParabolicC2HolderOn alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
-      (fun t x ↦ heatDuh t f x) := by
+      (fun t x ↦ heatDuhamel t f x) := by
   let Q : Set (ParabolicPoint V) :=
     parabolicCylinder (Ioc (0 : Real) T) Set.univ
-  let w : Real → V → F := fun t x ↦ heatDuh t f x
+  let w : Real → V → F := fun t x ↦ heatDuhamel t f x
   let C : NNReal := heatPotentialSchauderConst (V := V) alpha K B K T
   have hf : ∀ r ∈ Icc (0 : Real) S, HolderWith K alpha (f r) :=
     fun r hr ↦ holderWith_slice_of_parabolicCylinder
@@ -639,7 +639,7 @@ theorem heatDuh_isParabolicC2HolderOn
       heatSupHessian_timeSource_aestronglyMeasurable_of_parabolic_holder
         halpha0 ht f hsource z
   have hgauge : eParabolicC2HolderGaugeOn alpha Q w ≤ C :=
-    heatDuh_schauder_estimate_of_parabolic_holder
+    heatDuhamel_schauder_estimate_of_parabolic_holder
       halpha0 halpha1 hT hTS f hbound hsource
   refine ⟨⟨?_, ?_⟩,
     (parabolicSpatialJet_holderWith_restrict hgauge).memHolder,
@@ -657,7 +657,7 @@ theorem heatDuh_isParabolicC2HolderOn
     have hslice := holderWith_slice_of_parabolicCylinder
       (f := fun t x ↦ parabolicSpatialJet 2 w (parabolicPoint t x))
       (parabolicSpatialJet_holderWith_restrict hgauge) hp.1
-    have hhessHolder : HolderWith C alpha (heatDuhHessian p.time f) := by
+    have hhessHolder : HolderWith C alpha (heatDuhamelHessian p.time f) := by
       have hcomp := (hessianCurryEquiv V F).lipschitz.holderWith.comp hslice
       have hcomp' : HolderWith C alpha
           (hessianCurryEquiv V F ∘
@@ -665,43 +665,43 @@ theorem heatDuh_isParabolicC2HolderOn
         simpa only [NNReal.coe_one, NNReal.rpow_one, one_mul] using hcomp
       convert hcomp' using 1
       funext x
-      exact (heatDuh_hessianCurryEquiv_iteratedFDeriv_two
+      exact (heatDuhamel_hessianCurryEquiv_iteratedFDeriv_two
         halpha0 halpha1.le hp.1.1 f hbound' hf'
         (hmeas0 p.time htS) (hmeas1 p.time htS)
         (hmeas2 p.time htS) x).symm
-    have hhess : Continuous (heatDuhHessian p.time f) :=
+    have hhess : Continuous (heatDuhamelHessian p.time f) :=
       hhessHolder.continuous halpha0
-    have hgrad : ContDiff Real 1 (heatDuhGradientMap p.time f) :=
+    have hgrad : ContDiff Real 1 (heatDuhamelGradientMap p.time f) :=
       contDiff_one_iff_hasFDerivAt.mpr
-        ⟨heatDuhHessian p.time f, hhess, fun x ↦
-          heatDuhGradientMap_hasFDerivAt halpha0 halpha1.le hp.1.1
+        ⟨heatDuhamelHessian p.time f, hhess, fun x ↦
+          heatDuhamelGradientMap_hasFDerivAt halpha0 halpha1.le hp.1.1
             f hbound' hf' (hmeas1 p.time htS) (hmeas2 p.time htS) x⟩
     exact ((contDiff_succ_iff_hasFDerivAt (n := 1)).mpr
-      ⟨heatDuhGradientMap p.time f, hgrad, fun x ↦
-        heatDuh_hasFDerivAt hp.1.1 f hbound'
+      ⟨heatDuhamelGradientMap p.time f, hgrad, fun x ↦
+        heatDuhamel_hasFDerivAt hp.1.1 f hbound'
           (hmeas0 p.time htS) (hmeas1 p.time htS) x⟩).contDiffAt
   · intro p hp
     have htS : p.time ∈ Ioo (0 : Real) S :=
       ⟨hp.1.1, hp.1.2.trans_lt hTS⟩
-    exact (heatDuh_time halpha0 halpha1 htS f hf hsource'
+    exact (heatDuhamel_time halpha0 halpha1 htS f hf hsource'
       hmeas2 p.space).differentiableAt
 
-theorem heatDuh_const_schauder_estimate
+theorem heatDuhamel_const_schauder_estimate
     {alpha K B : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S T : Real} (hT : 0 < T) (hTS : T < S)
     (f : BoundedContinuousFunction V F)
     (hbound : ‖f‖ ≤ B) (hholder : HolderWith K alpha f) :
     eContDiffHolderGaugeOn 2 alpha Set.univ
-      (heatDuh T (fun _ => f)) ≤
-      heatDuhConstSchauderConst (V := V) alpha K B T := by
-  have hpar := heatDuh_schauder_estimate_of_parabolic_holder
+      (heatDuhamel T (fun _ => f)) ≤
+      heatDuhamelConstSchauderConst (V := V) alpha K B T := by
+  have hpar := heatDuhamel_schauder_estimate_of_parabolic_holder
     halpha0 halpha1 hT.le hTS (fun _ => f)
     (fun _ _ => hbound)
     (holderWith_parabolic_const_time f hholder (Icc (0 : Real) S))
   have hslice := eContDiffHolderGaugeOn_slice_le
     (t := T) (J := Ioc (0 : Real) T) ⟨hT, le_rfl⟩ hpar
-  unfold heatDuhConstSchauderConst
+  unfold heatDuhamelConstSchauderConst
   convert hslice using 1
   simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
     ENNReal.coe_mul, ENNReal.coe_ofNat]

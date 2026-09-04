@@ -41,13 +41,13 @@ theorem galerkinSolutionMode_state_bound
     (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (u : ℝ → lowerState (I := I) (M := M) g 1 R)
     (hball : ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           (fseq N) t ∈ lowerState (I := I) (M := M) g 1 R)
     (hnem : ⇑(fseq N) =ᵐ[timeMeasure T]
       fun t => projNfun (I := I) (M := M) g 1 N Nfun (u t)) :
     ∀ t ∈ Set.Icc (0 : ℝ) T,
-      ‖galLowView (I := I) (M := M) g 1
+      ‖galerkinLowView (I := I) (M := M) g 1
         (finiteEigenComboHs (I := I) (M := M) g
           (eigenIdxFinset (I := I) (M := M) g N)
           (galerkinSolutionMode (I := I) (M := M) g fseq N t)
@@ -59,7 +59,7 @@ theorem galerkinSolutionMode_state_bound
     fun i _ => galerkinSolutionMode_continuous (I := I) (M := M) g hT.le fseq N i
   have hfield := continuousOn_galerkinForcing_field (I := I) (M := M) g 1 U N hUcont
   have hview : ContinuousOn
-      (fun t => galLowView (I := I) (M := M) g 1
+      (fun t => galerkinLowView (I := I) (M := M) g 1
         (finiteEigenComboHs (I := I) (M := M) g
           (eigenIdxFinset (I := I) (M := M) g N) (U N t)
           (((1 : ℕ) : ℝ) + 2))) (Set.Icc (0 : ℝ) T) :=
@@ -67,14 +67,14 @@ theorem galerkinSolutionMode_state_bound
       (show (((1 : ℕ) : ℝ) + 1) ≤ ((1 : ℕ) : ℝ) + 2 by
         norm_num)).continuous.comp_continuousOn hfield
   have hcont : ContinuousOn
-      (fun t => ‖galLowView (I := I) (M := M) g 1
+      (fun t => ‖galerkinLowView (I := I) (M := M) g 1
         (finiteEigenComboHs (I := I) (M := M) g
           (eigenIdxFinset (I := I) (M := M) g N) (U N t)
           (((1 : ℕ) : ℝ) + 2))‖) (Set.Icc (0 : ℝ) T) :=
     continuous_norm.comp_continuousOn hview
   have hcombo := galerkinSolutionMode_finiteEigenCombo (I := I) (M := M) g hT N fseq u hnem
   have hae : ∀ᵐ t ∂(timeMeasure T),
-      ‖galLowView (I := I) (M := M) g 1
+      ‖galerkinLowView (I := I) (M := M) g 1
         (finiteEigenComboHs (I := I) (M := M) g
           (eigenIdxFinset (I := I) (M := M) g N) (U N t)
           (((1 : ℕ) : ℝ) + 2))‖ ≤ R := by
@@ -82,18 +82,18 @@ theorem galerkinSolutionMode_state_bound
     rw [← htc]
     exact ht
   have hmincont : ContinuousOn
-      (fun t => ‖galLowView (I := I) (M := M) g 1
+      (fun t => ‖galerkinLowView (I := I) (M := M) g 1
           (finiteEigenComboHs (I := I) (M := M) g
             (eigenIdxFinset (I := I) (M := M) g N) (U N t)
             (((1 : ℕ) : ℝ) + 2))‖ ⊓ R)
       (Set.Icc (0 : ℝ) T) := hcont.inf continuousOn_const
   have haeeq :
-      (fun t => ‖galLowView (I := I) (M := M) g 1
+      (fun t => ‖galerkinLowView (I := I) (M := M) g 1
           (finiteEigenComboHs (I := I) (M := M) g
             (eigenIdxFinset (I := I) (M := M) g N) (U N t)
             (((1 : ℕ) : ℝ) + 2))‖) =ᵐ[
         (MeasureTheory.volume : MeasureTheory.Measure ℝ).restrict (Set.Icc (0 : ℝ) T)]
-      (fun t => ‖galLowView (I := I) (M := M) g 1
+      (fun t => ‖galerkinLowView (I := I) (M := M) g 1
           (finiteEigenComboHs (I := I) (M := M) g
             (eigenIdxFinset (I := I) (M := M) g N) (U N t)
             (((1 : ℕ) : ℝ) + 2))‖ ⊓ R) := by
@@ -103,15 +103,15 @@ theorem galerkinSolutionMode_state_bound
     (MeasureTheory.volume : MeasureTheory.Measure ℝ) (ne_of_lt hT) haeeq hcont hmincont
   intro t ht
   have hmin := heq ht
-  change ‖galLowView (I := I) (M := M) g 1
+  change ‖galerkinLowView (I := I) (M := M) g 1
       (finiteEigenComboHs (I := I) (M := M) g
         (eigenIdxFinset (I := I) (M := M) g N) (U N t)
         (((1 : ℕ) : ℝ) + 2))‖ =
-      ‖galLowView (I := I) (M := M) g 1
+      ‖galerkinLowView (I := I) (M := M) g 1
         (finiteEigenComboHs (I := I) (M := M) g
           (eigenIdxFinset (I := I) (M := M) g N) (U N t)
           (((1 : ℕ) : ℝ) + 2))‖ ⊓ R at hmin
-  have hle : ‖galLowView (I := I) (M := M) g 1
+  have hle : ‖galerkinLowView (I := I) (M := M) g 1
       (finiteEigenComboHs (I := I) (M := M) g
         (eigenIdxFinset (I := I) (M := M) g N) (U N t)
         (((1 : ℕ) : ℝ) + 2))‖ ≤ R := by
@@ -140,20 +140,20 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
         Ctop * lowRegularityOuterRadius Ctop ρ P *
             ‖(u.1 : TensorHs (I := I) (M := M) g 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
-          B0 * ‖galLowView (I := I) (M := M) g 1
+          B0 * ‖galerkinLowView (I := I) (M := M) g 1
             ((u.1 : TensorHs (I := I) (M := M) g 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
           B1 * (‖(u.1 : TensorHs (I := I) (M := M) g 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
               ‖(v.1 : TensorHs (I := I) (M := M) g 0 2
                 (((1 : ℕ) : ℝ) + 2))‖) *
-            ‖galLowView (I := I) (M := M) g 1
+            ‖galerkinLowView (I := I) (M := M) g 1
               ((u.1 : TensorHs (I := I) (M := M) g 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     (hG : 0 ≤ G)
     (hpair : ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
         (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
-      ‖galLowView (I := I) (M := M) g 1
+      ‖galerkinLowView (I := I) (M := M) g 1
           (finiteEigenComboHs (I := I) (M := M) g F c
             (((1 : ℕ) : ℝ) + 2))‖ ≤ lowRegularityStateRadius Ctop B1 ρ P →
       2 * |∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
@@ -169,7 +169,7 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
             tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2) ^ 2))
     (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ∀ N : ℕ, ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           (fseq N) t ∈ lowerState (I := I) (M := M) g 1
             (lowRegularityStateRadius Ctop B1 ρ P))
@@ -178,7 +178,7 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
         (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1 hρ hP hreal)
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             (fseq N)) t))
     (hL2H3 : ∀ N : ℕ, ∫ t, galerkinEnergy (I := I) (M := M)
@@ -204,7 +204,7 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
       ∀ i ∈ eigenIdxFinset (I := I) (M := M) g N,
       HasDerivWithinAt (fun s => U N s i)
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) * U N t i +
-          galTameForce (I := I) (M := M) g 1
+          galerkinTameForce (I := I) (M := M) g 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
             (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1 hρ hP hreal)
             (eigenIdxFinset (I := I) (M := M) g N) (U N t) i)
@@ -218,7 +218,7 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
         (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le hT N fseq
         (hball N) (hnem N) i
   have hstate : ∀ N, ∀ t ∈ Set.Icc (0 : ℝ) T,
-      ‖galLowView (I := I) (M := M) g 1
+      ‖galerkinLowView (I := I) (M := M) g 1
         (finiteEigenComboHs (I := I) (M := M) g
           (eigenIdxFinset (I := I) (M := M) g N) (U N t)
           (((1 : ℕ) : ℝ) + 2))‖ ≤ lowRegularityStateRadius Ctop B1 ρ P := by
@@ -226,7 +226,7 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
     simpa only [U] using galerkinSolutionMode_state_bound (I := I) (M := M) g hT N
       fseq (fun t => aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1
         (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-        (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           (fseq N)) t) (hball N) (hnem N) t ht
   let EE : ℕ → ℝ → ℝ := fun N => Set.IccExtend hT.le
@@ -333,7 +333,7 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
   have hclosure : ∀ N : ℕ, ∀ t ∈ Set.Ico (0 : ℝ) T,
       2 * ∑ i ∈ eigenIdxFinset (I := I) (M := M) g N,
           tensorSobolevWeight (I := I) (M := M) i 3 *
-            (U N t i * galTameForce (I := I) (M := M) g 1 hRpos.le
+            (U N t i * galerkinTameForce (I := I) (M := M) g 1 hRpos.le
               (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1 hρ hP hreal)
               (eigenIdxFinset (I := I) (M := M) g N) (U N t) i) ≤
         1 * galerkinEnergy (I := I) (M := M)
@@ -349,13 +349,13 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
     let arm := galerkinActionVectorBackground (I := I) (M := M) g gBase hRpos.le hδ hrealR F (U N t)
     let seed := boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1 hρ hP hreal
       ⟨0, zero_mem_lowerState (I := I) (M := M) g 1 hRpos.le⟩
-    let force := galTameForce (I := I) (M := M) g 1 hRpos.le
+    let force := galerkinTameForce (I := I) (M := M) g 1 hRpos.le
       (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1 hρ hP hreal)
       F (U N t)
     have hsplit : ∀ i ∈ F, force i = arm.coeff i + seed.coeff i := by
       intro i hi
       dsimp only [force, arm, seed]
-      rw [galForceTermBackground (I := I) (M := M) g gBase hδ hδ0 hδ3 hCtop hB1 hρ hP
+      rw [galerkinForceTermBackground (I := I) (M := M) g gBase hδ hδ0 hδ3 hCtop hB1 hρ hP
         hreal hcore F (U N t) i, if_pos hi]
       simp only [galerkinActionVectorBackground]
       module
@@ -447,10 +447,10 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
       rw [hUinit N i]
       ring
     rw [hz]
-  obtain ⟨Bound, hBound⟩ := galRiderDiss (I := I) (M := M) (g := g)
+  obtain ⟨Bound, hBound⟩ := galerkinRiderDiss (I := I) (M := M) (g := g)
     (r := 0) (s₀ := 2)
     (U := U) (T := T) (σ := 3)
-    (Fseq := fun N t => galTameForce (I := I) (M := M) g 1 hRpos.le
+    (Fseq := fun N t => galerkinTameForce (I := I) (M := M) g 1 hRpos.le
       (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1 hρ hP hreal)
       (eigenIdxFinset (I := I) (M := M) g N) (U N t))
     (sseq := fun N => eigenIdxFinset (I := I) (M := M) g N)
@@ -499,20 +499,20 @@ theorem exists_uniform_galerkin_energy_three_bound_background_of_pairing_bounds
         Ctop * lowRegularityOuterRadius Ctop ρ P *
             ‖(u.1 : TensorHs (I := I) (M := M) g 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1‖ +
-          B0 * ‖galLowView (I := I) (M := M) g 1
+          B0 * ‖galerkinLowView (I := I) (M := M) g 1
             ((u.1 : TensorHs (I := I) (M := M) g 0 2
               (((1 : ℕ) : ℝ) + 2)) - v.1)‖ +
           B1 * (‖(u.1 : TensorHs (I := I) (M := M) g 0 2
                 (((1 : ℕ) : ℝ) + 2))‖ +
               ‖(v.1 : TensorHs (I := I) (M := M) g 0 2
                 (((1 : ℕ) : ℝ) + 2))‖) *
-            ‖galLowView (I := I) (M := M) g 1
+            ‖galerkinLowView (I := I) (M := M) g 1
               ((u.1 : TensorHs (I := I) (M := M) g 0 2
                 (((1 : ℕ) : ℝ) + 2)) - v.1)‖)
     (hG : 0 ≤ G)
     (hpair : ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
         (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
-      ‖galLowView (I := I) (M := M) g 1
+      ‖galerkinLowView (I := I) (M := M) g 1
           (finiteEigenComboHs (I := I) (M := M) g F c
             (((1 : ℕ) : ℝ) + 2))‖ ≤ lowRegularityStateRadius Ctop B1 ρ P →
       2 * |∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
@@ -528,7 +528,7 @@ theorem exists_uniform_galerkin_energy_three_bound_background_of_pairing_bounds
             tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2) ^ 2))
     (fseq : ℕ → timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hball : ∀ N : ℕ, ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
           (fseq N) t ∈ lowerState (I := I) (M := M) g 1
             (lowRegularityStateRadius Ctop B1 ρ P))
@@ -537,7 +537,7 @@ theorem exists_uniform_galerkin_energy_three_bound_background_of_pairing_bounds
         (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1 hρ hP hreal)
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             (fseq N)) t))
     (hL2H3 : ∀ N : ℕ, ∫ t, galerkinEnergy (I := I) (M := M)

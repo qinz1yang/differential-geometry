@@ -194,7 +194,7 @@ theorem rmResidual_cost
       baseDt chrDt hrm hchr hchrId hswap k x hx I0
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem resStarSol
+theorem resStarSolution
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
@@ -252,7 +252,7 @@ theorem resStarSol
   let D' := RealTimeInterval.closedOpen t0 omega hT0Omega
   let S' := S.timeRestrict D'
   have hS' : IsSolutionOn (I := I) S' := by
-    simpa [S', D'] using isSoln_tailRestrict (I := I) hS hAlphaT0 hT0Omega
+    simpa [S', D'] using isSolutionOn_tailRestrict (I := I) hS hAlphaT0 hT0Omega
   obtain ⟨hframe1, baseDt, chrDt, hrm, hchr, hchrId, hswap⟩ :=
     tailTowerData (I := I) hS hAlphaT0 hT0Omega frame hframe hu
   have hbase := riemann_component_evolution_in_orthonormal_frame_of_solution

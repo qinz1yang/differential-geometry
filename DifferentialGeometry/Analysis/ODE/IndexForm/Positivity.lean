@@ -180,10 +180,10 @@ theorem weighted_poincare_lt_of_left_endpoint_eq_zero
     intervalIntegral.integral_const_mul] at henergy_pos
   linarith
 
-theorem IsJacobiSolOn.inner_velocity_position_at_right_pos
+theorem IsJacobiFieldOn.inner_velocity_position_at_right_pos
     {R : ℝ → F →L[ℝ] F} {y v : ℝ → F} {κ : ℝ}
     (hR : ContinuousOn R (Set.Icc (0 : ℝ) 1))
-    (hsol : IsJacobiSolOn R 0 1 y v)
+    (hsol : IsJacobiFieldOn R 0 1 y v)
     (hy0 : y 0 = 0) (hy1 : y 1 ≠ 0)
     (hκ0 : 0 ≤ κ) (hκπ : κ < (Real.pi / 2) ^ 2)
     (hupper : ∀ t ∈ Set.Icc (0 : ℝ) 1,

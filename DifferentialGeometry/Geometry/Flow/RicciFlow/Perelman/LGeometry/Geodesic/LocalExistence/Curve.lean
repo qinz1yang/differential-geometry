@@ -30,7 +30,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRegCurve_at
+theorem exists_lRegularizedCurve_at
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T s0 : Real) (x : M) (A0 : TangentSpace I x)
@@ -45,14 +45,14 @@ theorem exists_lRegCurve_at
                 (fun r : Real ↦ lVelocity (I := I) alpha r) s) s ∧
             covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
                 (fun r : Real ↦ lVelocity (I := I) alpha r) s =
-              lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
+              lRegularizedAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
   let z0 : E × E :=
     (extChartAt I x x, trivToE (I := I) x x A0)
   have hz0pos : z0.1 ∈ interior (extChartAt I x).target := by
     apply mem_interior_iff_mem_nhds.mpr
     simpa only [z0] using extChartAt_target_mem_nhds (I := I) x
   obtain ⟨epsilon0, hepsilon0, z, hz0, hsol⟩ :=
-    exists_lPhaseSol_at S hS T x s0 z0 hT hz0pos
+    exists_lPhaseSolution_at S hS T x s0 z0 hT hz0pos
   have hs00 : s0 ∈ Ioo (s0 - epsilon0) (s0 + epsilon0) := by
     constructor <;> linarith
   have hzder0 := hsol s0 hs00
@@ -73,7 +73,7 @@ theorem exists_lRegCurve_at
   obtain ⟨epsilon, hepsilon, hsmall⟩ :=
     Metric.eventually_nhds_iff.mp hgood
   let alpha : Real → M := lPhaseCurve (I := I) x z
-  let A : ∀ s, TangentSpace I (alpha s) := lPhaseVel (I := I) x z
+  let A : ∀ s, TangentSpace I (alpha s) := lPhaseVelocity (I := I) x z
   have hdata : ∀ s ∈ Ioo (s0 - epsilon) (s0 + epsilon),
       s ∈ Ioo (s0 - epsilon0) (s0 + epsilon0) ∧
         (z s).1 ∈ interior (extChartAt I x).target := by
@@ -122,7 +122,7 @@ theorem exists_lRegCurve_at
         lPhaseCurve_mdiff (I := I) x z s hq.differentiableAt hsdata.2
     have hAdiff : DifferentiableAt Real
         (chartRepAt (I := I) alpha A s) s := by
-      simpa only [alpha, A] using lPhaseVel_diff (I := I) x z s
+      simpa only [alpha, A] using lPhaseVelocity_diff (I := I) x z s
         hq.differentiableAt hv.differentiableAt hsdata.2
     have hveldiff : DifferentiableAt Real
         (chartRepAt (I := I) alpha
@@ -136,10 +136,10 @@ theorem exists_lRegCurve_at
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha A s :=
           covDerivAlong_congr_of_eventuallyEq
             (I := I) (S.base.metric (T - s ^ 2)) alpha hfield
-      _ = lRegAccel S T s (alpha s) (A s) := by
+      _ = lRegularizedAccel S T s (alpha s) (A s) := by
         simpa only [alpha, A] using
           lPhase_accel S T x z s hzs hsdata.2
-      _ = lRegAccel S T s (alpha s)
+      _ = lRegularizedAccel S T s (alpha s)
           (lVelocity (I := I) alpha s) := by
         rw [hfield.eq_of_nhds]
 

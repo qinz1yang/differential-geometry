@@ -440,7 +440,7 @@ theorem lowerScaleDifference_zeroOrderCoefficient
   simpa only [lowerScaleDiff, LowerScaleActionCoefficients.firstOrderCoefficientDifference] using
     lowerScaleActionCoefficients_zeroOrderCoefficient_sub (I := I) (M := M) g T U hδ_lt hδT hδU hδZ
 
-theorem metricCorr_sub_h2
+theorem metricCorrection_sub_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -462,7 +462,7 @@ theorem metricCorr_sub_h2
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
-theorem metricCorr_tel
+theorem metricCorrection_tel
     (g gT gU g_bg : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) :
     metricLoweredConnectionDifferenceCorrection (I := I) (M := M) g gT g_bg T -
@@ -1146,7 +1146,7 @@ theorem lieSecondOrder_pair_h1
       simp only [B0, B1, X]
       ring
 
-theorem metricCorr_pair
+theorem metricCorrection_pair
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -1164,7 +1164,7 @@ theorem metricCorr_pair
                   (metricLoweredConnectionDifference (I := I) (M := M) g gT g_bg -
                     metricLoweredConnectionDifference (I := I) (M := M) g gU g_bg)) := by
   obtain ⟨C₀, hC₀, hsub⟩ :=
-    metricCorr_sub_h2 (I := I) (M := M) hDim g
+    metricCorrection_sub_h2 (I := I) (M := M) hDim g
   obtain ⟨C₁, hC₁, hmove⟩ :=
     metricLoweredConnectionDifferenceCorrection_metric_difference_sobolev_two_bound (I := I) (M := M) hDim g
   let C : ℝ := 2 * max C₀ C₁
@@ -1214,7 +1214,7 @@ theorem metricCorr_pair
     mul_le_mul_of_nonneg_right (le_max_left C₀ C₁) hA
   have hC₁max : C₁ * B ≤ max C₀ C₁ * B :=
     mul_le_mul_of_nonneg_right (le_max_right C₀ C₁) hB
-  rw [metricCorr_tel (I := I) (M := M) g gT gU g_bg T U]
+  rw [metricCorrection_tel (I := I) (M := M) g gT gU g_bg T U]
   calc
     covariantJetNormSq (I := I) (M := M) g 2 (X + Y) ≤
         2 * (covariantJetNormSq (I := I) (M := M) g 2 X +
@@ -1280,7 +1280,7 @@ private theorem wXi_zero_lip
     zero_apply, map_zero]
   rfl
 
-theorem metricCorr_pair_h3
+theorem metricCorrection_pair_h3
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ K : ℝ, 0 ≤ K ∧
@@ -1313,7 +1313,7 @@ theorem metricCorr_pair_h3
           (1 + covariantJetNormSq (I := I) (M := M) g 3 U) ^ 2 *
           covariantJetNormSq (I := I) (M := M) g 3 (T - U) := by
   obtain ⟨C, hC, hpair⟩ :=
-    metricCorr_pair (I := I) (M := M) hDim g
+    metricCorrection_pair (I := I) (M := M) hDim g
   obtain ⟨Kw, hKw, hw⟩ :=
     exists_metricLoweredConnectionDifference_covariantJetNormSq_two_sub_bound (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
@@ -10148,7 +10148,7 @@ theorem firstOrderCoefficientDifference_lowAction_tame
       exact mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hQle hCs) (norm_nonneg _)
 
-theorem metricCorr_tame
+theorem metricCorrection_tame
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ B0 B1 : ℝ → ℝ,
@@ -10187,7 +10187,7 @@ theorem metricCorr_tame
             metricLoweredConnectionDifferenceCorrection (I := I) (M := M) g gU g U) ≤
         (B0 R * D3 + B1 R * D2 + B1 R * A * D2) ^ 2 := by
   obtain ⟨C, hC, hpair⟩ :=
-    metricCorr_pair (I := I) (M := M) hDim g
+    metricCorrection_pair (I := I) (M := M) hDim g
   obtain ⟨Bs, hBs, hself⟩ :=
     wXi_self_tame (I := I) (M := M) hDim g
   obtain ⟨W0, W1, hW0, hW1, hw⟩ :=
@@ -10290,7 +10290,7 @@ theorem metricCorr_tame
     _ ≤ (B0 R * D3 + B1 R * D2 + B1 R * A * D2) ^ 2 :=
       pow_le_pow_left₀ hlin0 hlin 2
 
-theorem metricCorr_tame_h1
+theorem metricCorrection_tame_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ B0 B1 : ℝ → ℝ,
@@ -10328,7 +10328,7 @@ theorem metricCorr_tame_h1
             metricLoweredConnectionDifferenceCorrection (I := I) (M := M) g gU g U) ≤
         (B0 R * D2 + B1 R * A * D2) ^ 2 := by
   obtain ⟨C, hC, hpair⟩ :=
-    metricCorr_pair_h1 (I := I) (M := M) hDim g
+    metricCorrection_pair_h1 (I := I) (M := M) hDim g
   obtain ⟨Bs, hBs, hself⟩ :=
     wXi_self_tame (I := I) (M := M) hDim g
   obtain ⟨W0, W1, hW0, hW1, hw⟩ :=

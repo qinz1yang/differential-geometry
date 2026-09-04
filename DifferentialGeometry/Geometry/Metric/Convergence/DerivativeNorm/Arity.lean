@@ -9,7 +9,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 open DifferentialGeometry.Tensor0SBundle
@@ -148,5 +148,5 @@ theorem metricDerivNorm_self
   rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gRef x (a + 2) basis hinv 0]
   simp
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

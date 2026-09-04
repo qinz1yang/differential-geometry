@@ -88,12 +88,12 @@ private theorem lVelocity_pull
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace N] in
-theorem lRegAccel_pull
+theorem lRegularizedAccel_pull
     (S : SolutionOn (I := I) (M := N) D) (Phi : M ≃ₘ⟮I, I⟯ N)
     (T s : Real) (x : M) (A : TangentSpace I x) :
     mfderiv I I (Phi : M → N) x
-        (lRegAccel (solutionOnPullback (I := I) S Phi) T s x A) =
-      lRegAccel S T s (Phi x) (mfderiv I I (Phi : M → N) x A) := by
+        (lRegularizedAccel (solutionOnPullback (I := I) S Phi) T s x A) =
+      lRegularizedAccel S T s (Phi x) (mfderiv I I (Phi : M → N) x A) := by
   let SP := solutionOnPullback (I := I) S Phi
   let t := T - s ^ 2
   let g := S.base.metric t
@@ -108,7 +108,7 @@ theorem lRegAccel_pull
     funext y
     exact scalar_pullback (I := I) S Phi t y
   have hgrad := gradientFun_pullback (I := I) g Phi (S.scalar t) x
-    ((scalarSmoothOfSol (I := I) S t).contMDiffAt.mdifferentiableAt (by simp))
+    ((scalarSmoothOfSolution (I := I) S t).contMDiffAt.mdifferentiableAt (by simp))
   have hgradMap :
       mfderiv I I (Phi : M → N) x
           (gradientFun (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi)
@@ -132,18 +132,18 @@ theorem lRegAccel_pull
   calc
     g.inner (Phi x)
         (mfderiv I I (Phi : M → N) x
-          (lRegAccel SP T s x A)) Y =
+          (lRegularizedAccel SP T s x A)) Y =
       g.inner (Phi x) Y
         (mfderiv I I (Phi : M → N) x
-          (lRegAccel SP T s x A)) := g.symm _ _ _
+          (lRegularizedAccel SP T s x A)) := g.symm _ _ _
     _ = (SP.base.metric t).inner x
-        (Yback Y) (lRegAccel SP T s x A) := by
+        (Yback Y) (lRegularizedAccel SP T s x A) := by
           rw [show SP.base.metric t = Diffeomorph.pullbackMetric (I := I) g Phi from rfl,
             Diffeomorph.pullbackMetric_inner, hY]
     _ = 2 * s ^ 2 * (SP.base.metric t).inner x
           (gradientFun (I := I) (SP.base.metric t) (SP.scalar t) x) (Yback Y) -
         4 * s * SP.ricciAt t x (vec2 (Yback Y) A) :=
-      by simpa only [t] using lRegAccel_inner SP T s x A (Yback Y)
+      by simpa only [t] using lRegularizedAccel_inner SP T s x A (Yback Y)
     _ = 2 * s ^ 2 * g.inner (Phi x)
           (gradientFun (I := I) g (S.scalar t) (Phi x)) Y -
         4 * s * S.ricciAt t (Phi x)
@@ -151,21 +151,21 @@ theorem lRegAccel_pull
       rw [show SP.base.metric t = Diffeomorph.pullbackMetric (I := I) g Phi from rfl,
         Diffeomorph.pullbackMetric_inner, hgradMap, hY, hric]
     _ = g.inner (Phi x)
-        Y (lRegAccel S T s (Phi x) (mfderiv I I (Phi : M → N) x A)) := by
-      simpa only [t, g] using (lRegAccel_inner S T s (Phi x)
+        Y (lRegularizedAccel S T s (Phi x) (mfderiv I I (Phi : M → N) x A)) := by
+      simpa only [t, g] using (lRegularizedAccel_inner S T s (Phi x)
         (mfderiv I I (Phi : M → N) x A) Y).symm
     _ = g.inner (Phi x)
-        (lRegAccel S T s (Phi x) (mfderiv I I (Phi : M → N) x A)) Y :=
+        (lRegularizedAccel S T s (Phi x) (mfderiv I I (Phi : M → N) x A)) Y :=
       g.symm _ _ _
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace N] in
-theorem isLRegCurve_pull
+theorem isLRegularizedCurve_pull
     (S : SolutionOn (I := I) (M := N) D) (Phi : M ≃ₘ⟮I, I⟯ N)
     (T : Real) (alpha : Real → M) (J : Set Real) (x : M)
     (Z : TangentSpace I x) (halpha :
-      IsLRegCurveOn (solutionOnPullback (I := I) S Phi) T alpha J x Z) :
-    IsLRegCurveOn S T (fun s => Phi (alpha s)) J (Phi x)
+      IsLRegularizedCurveOn (solutionOnPullback (I := I) S Phi) T alpha J x Z) :
+    IsLRegularizedCurveOn S T (fun s => Phi (alpha s)) J (Phi x)
       (mfderiv I I (Phi : M → N) x Z) := by
   refine ⟨?_, ?_, ?_⟩
   · change Phi (alpha 0) = Phi x
@@ -198,9 +198,9 @@ theorem isLRegCurve_pull
           covDerivAlong (I := I)
               (Diffeomorph.pullbackMetric (I := I) (S.base.metric (T - s ^ 2)) Phi)
               alpha (fun r => lVelocity (I := I) alpha r) s =
-            lRegAccel (solutionOnPullback (I := I) S Phi) T s (alpha s)
+            lRegularizedAccel (solutionOnPullback (I := I) S Phi) T s (alpha s)
               (lVelocity (I := I) alpha s) := hacc
-      rw [← hvelEq, ← hnat, hacc', lRegAccel_pull, lVelocity_pull]
+      rw [← hvelEq, ← hnat, hacc', lRegularizedAccel_pull, lVelocity_pull]
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] [I.Boundaryless] in
 private theorem solution_pull_inv
@@ -219,26 +219,26 @@ private theorem solution_pull_inv
             Diffeomorph.pullbackMetric_refl]
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] in
-theorem lRegDomain_pull
+theorem lRegularizedDomain_pull
     (S : SolutionOn (I := I) (M := N) D) (Phi : M ≃ₘ⟮I, I⟯ N)
     (T : Real) (x : M) (Z : TangentSpace I x) :
-    lRegDomain (solutionOnPullback (I := I) S Phi) T x Z =
-      lRegDomain S T (Phi x) (mfderiv I I (Phi : M → N) x Z) := by
+    lRegularizedDomain (solutionOnPullback (I := I) S Phi) T x Z =
+      lRegularizedDomain S T (Phi x) (mfderiv I I (Phi : M → N) x Z) := by
   ext s
   constructor
   · rintro ⟨alpha, J, hJopen, hJconn, h0J, hsJ, halpha⟩
     exact ⟨fun r => Phi (alpha r), J, hJopen, hJconn, h0J, hsJ,
-      isLRegCurve_pull (I := I) S Phi T alpha J x Z halpha⟩
+      isLRegularizedCurve_pull (I := I) S Phi T alpha J x Z halpha⟩
   · rintro ⟨beta, J, hJopen, hJconn, h0J, hsJ, hbeta⟩
     have hdouble :
         solutionOnPullback (I := I) (solutionOnPullback (I := I) S Phi) Phi.symm = S :=
       solution_pull_inv (I := I) S Phi
-    have hbeta' : IsLRegCurveOn
+    have hbeta' : IsLRegularizedCurveOn
         (solutionOnPullback (I := I) (solutionOnPullback (I := I) S Phi) Phi.symm)
         T beta J (Phi x) (mfderiv I I (Phi : M → N) x Z) := by
       rw [hdouble]
       exact hbeta
-    have hback := isLRegCurve_pull (I := I)
+    have hback := isLRegularizedCurve_pull (I := I)
       (solutionOnPullback (I := I) S Phi) Phi.symm T beta J (Phi x)
       (mfderiv I I (Phi : M → N) x Z) hbeta'
     have hZ := mfderiv_symm_apply_apply (I := I) Phi x Z
@@ -247,23 +247,23 @@ theorem lRegDomain_pull
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegCurve_pull
+theorem lRegularizedCurve_pull
     (S : SolutionOn (I := I) (M := N) D) (hS : IsSolutionOn (I := I) S)
     (Phi : M ≃ₘ⟮I, I⟯ N) (T : Real) (x : M) (Z : TangentSpace I x) (s : Real) :
-    lRegCurve S T (Phi x) (mfderiv I I (Phi : M → N) x Z) s =
-      Phi (lRegCurve (solutionOnPullback (I := I) S Phi) T x Z s) := by
-  by_cases hs : s ∈ lRegDomain (solutionOnPullback (I := I) S Phi) T x Z
+    lRegularizedCurve S T (Phi x) (mfderiv I I (Phi : M → N) x Z) s =
+      Phi (lRegularizedCurve (solutionOnPullback (I := I) S Phi) T x Z s) := by
+  by_cases hs : s ∈ lRegularizedDomain (solutionOnPullback (I := I) S Phi) T x Z
   · obtain ⟨J, hJopen, hJconn, h0J, hsJ, hchosen⟩ :=
-      lRegChosen_spec (solutionOnPullback (I := I) S Phi) T x Z hs
-    have hmap := isLRegCurve_pull (I := I) S Phi T
-      (lRegChosen (solutionOnPullback (I := I) S Phi) T x Z hs) J x Z hchosen
-    have heq := lRegCurve_eqOn S hS T hJopen hJconn h0J hmap hsJ
-    rw [heq, lRegCurve_of_mem hs]
-  · have ht : s ∉ lRegDomain S T (Phi x)
+      lRegularizedChosen_spec (solutionOnPullback (I := I) S Phi) T x Z hs
+    have hmap := isLRegularizedCurve_pull (I := I) S Phi T
+      (lRegularizedChosen (solutionOnPullback (I := I) S Phi) T x Z hs) J x Z hchosen
+    have heq := lRegularizedCurve_eqOn S hS T hJopen hJconn h0J hmap hsJ
+    rw [heq, lRegularizedCurve_of_mem hs]
+  · have ht : s ∉ lRegularizedDomain S T (Phi x)
         (mfderiv I I (Phi : M → N) x Z) := by
-      rw [← lRegDomain_pull (I := I) S Phi T x Z]
+      rw [← lRegularizedDomain_pull (I := I) S Phi T x Z]
       exact hs
-    rw [lRegCurve_of_not_mem hs, lRegCurve_of_not_mem ht]
+    rw [lRegularizedCurve_of_not_mem hs, lRegularizedCurve_of_not_mem ht]
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] in
 theorem lExpDomain_pull
@@ -274,7 +274,7 @@ theorem lExpDomain_pull
   ext tau
   simp only [lExpDomain, mem_ofPred_eq, and_congr_right_iff]
   intro _
-  rw [lRegDomain_pull (I := I) S Phi T x Z]
+  rw [lRegularizedDomain_pull (I := I) S Phi T x Z]
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -283,6 +283,6 @@ theorem lExp_pull
     (Phi : M ≃ₘ⟮I, I⟯ N) (T : Real) (x : M) (Z : TangentSpace I x) (tau : Real) :
     lExp S T (Phi x) (mfderiv I I (Phi : M → N) x Z) tau =
       Phi (lExp (solutionOnPullback (I := I) S Phi) T x Z tau) := by
-  exact lRegCurve_pull (I := I) S hS Phi T x Z (Real.sqrt tau)
+  exact lRegularizedCurve_pull (I := I) S hS Phi T x Z (Real.sqrt tau)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

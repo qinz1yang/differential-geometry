@@ -433,7 +433,7 @@ private theorem reconSec_jointContMDiffOn
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) :=
     reconChartRepr_jointContMDiffOn (I := I) g₀ g_bg hT F hδ_lt hδ φ hφ_smooth hcoeff hmodemass α
   intro p₀ hp₀
-  obtain ⟨hx₀src, hs₀'⟩ := hp₀
+  obtain ⟨hx₀source, hs₀'⟩ := hp₀
   have hbaseSet : p₀.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).baseSet := by
     change p₀.1 ∈ ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -444,7 +444,7 @@ private theorem reconSec_jointContMDiffOn
       · change p₀.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet
         rw [show (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source from
           TangentBundle.trivializationAt_baseSet (I := I) α]
-        rw [hα]; exact hx₀src
+        rw [hα]; exact hx₀source
   have hsource : (⟨p₀.1,
       (deTurckRHSReconSection (I := I) g₀ g_bg (F p₀.2) hδ_lt (hδ p₀.2)).toSection p₀.1⟩ :
       TotalSpace (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
@@ -460,7 +460,7 @@ private theorem reconSec_jointContMDiffOn
           ⟨p.1,
             (deTurckRHSReconSection (I := I) g₀ g_bg (F p.2) hδ_lt (hδ p.2)).toSection p.1⟩).2)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) p₀ := by
-    refine (hCR p₀ ⟨hx₀src, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
+    refine (hCR p₀ ⟨hx₀source, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with p hp
       obtain ⟨hpx, _⟩ := hp
       have hpbase : p.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
@@ -1058,7 +1058,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
       tauto
     rw [hsub_eq]
     intro p₀ hp₀
-    obtain ⟨hx₀src, hs₀'⟩ := hp₀
+    obtain ⟨hx₀source, hs₀'⟩ := hp₀
     have hbaseSet : p₀.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).baseSet := by
       change p₀.1 ∈ ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -1069,7 +1069,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
         · change p₀.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet
           rw [show (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source from
             TangentBundle.trivializationAt_baseSet (I := I) α]
-          rw [hα]; exact hx₀src
+          rw [hα]; exact hx₀source
     have hsource : (⟨p₀.1, Tensor0SBundle.TensorRSSpace.ofModel (jetD p₀.1 p₀.2)⟩ :
         TotalSpace (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
           (fun z : M => Tensor0SBundle.TensorRSSpace 0 2 I z)) ∈
@@ -1083,7 +1083,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
               (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α)
             ⟨p.1, Tensor0SBundle.TensorRSSpace.ofModel (jetD p.1 p.2)⟩).2)
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) p₀ := by
-      refine ((hChartJet α) p₀ ⟨hx₀src, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
+      refine ((hChartJet α) p₀ ⟨hx₀source, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
       · filter_upwards [self_mem_nhdsWithin] with p hp
         obtain ⟨hpx, _⟩ := hp
         have hpbase : p.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)

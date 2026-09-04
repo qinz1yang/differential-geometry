@@ -3,7 +3,7 @@ import Mathlib.Topology.Compactness.Compact
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 structure ExhaustsByOpen {M : Type*} [TopologicalSpace M]
     (U : Nat -> Set M) : Prop where
@@ -41,5 +41,5 @@ theorem comp_subseq {M : Type*} [TopologicalSpace M]
 
 end ExhaustsByOpen
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -26,9 +26,9 @@ def ballInteriorLaplacianSchauderConst
     (ballCutoffFDerivHolderConst r R)
     (ballCutoffLaplacianHolderConst (V := V) r R)
     Ku Kdu Kf
-    (ballCutoffBcf center hr hrR)
-    (ballCutoffFDerivBcf center hr hrR)
-    (ballCutoffFDeriv2Bcf center hr hrR)
+    (ballCutoffBoundedContinuousFunction center hr hrR)
+    (ballCutoffFDerivBoundedContinuousFunction center hr hrR)
+    (ballCutoffFDeriv2BoundedContinuousFunction center hr hrR)
     u du d2u
 
 theorem ball_interior_laplacian_schauder_estimate
@@ -48,9 +48,9 @@ theorem ball_interior_laplacian_schauder_estimate
     eContDiffHolderGaugeOn 2 alpha (Metric.closedBall center rho) (u : V → F) ≤
       ballInteriorLaplacianSchauderConst center (hrho.trans hrhor.le) hrR
         alpha Ku Kdu Kf u du d2u := by
-  let chi := ballCutoffBcf center (hrho.trans hrhor.le) hrR
-  let dchi := ballCutoffFDerivBcf center (hrho.trans hrhor.le) hrR
-  let d2chi := ballCutoffFDeriv2Bcf center (hrho.trans hrhor.le) hrR
+  let chi := ballCutoffBoundedContinuousFunction center (hrho.trans hrhor.le) hrR
+  let dchi := ballCutoffFDerivBoundedContinuousFunction center (hrho.trans hrhor.le) hrR
+  let d2chi := ballCutoffFDeriv2BoundedContinuousFunction center (hrho.trans hrhor.le) hrR
   have hsU : Metric.closedBall center rho ⊆ Metric.ball center r := by
     intro x hx
     exact Metric.mem_ball.mpr
@@ -80,7 +80,7 @@ theorem ball_interior_laplacian_schauder_estimate
     have heq : (coreLap d2chi : V → Real) =
         ballCutoffLaplacian center r R := by
       funext x
-      exact coreLap_ballCutoffFDeriv2Bcf center
+      exact coreLap_ballCutoffFDeriv2BoundedContinuousFunction center
         (hrho.trans hrhor.le) hrR x
     rw [heq]
     exact ballCutoffLaplacian_holderWith (V := V) (center := center)

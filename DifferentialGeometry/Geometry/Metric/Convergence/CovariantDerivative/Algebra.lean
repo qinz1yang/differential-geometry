@@ -13,7 +13,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -252,7 +252,7 @@ noncomputable def covStep
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
         (I := I) (M := M) gRef
   let hreg :=
-    Tensor0SBundle.totalNabla0S_reg (E := E) (H := H)
+    Tensor0SBundle.totalNabla0S_regularity (E := E) (H := H)
       (I := I) (M := M) s cov hcov A
   exact
     Tensor0SBundle.totalNabla0S (𝕜 := Real) (E := E) (H := H)
@@ -801,6 +801,6 @@ theorem diffStep_leibniz_eval
     abel
   linarith [hFib]
 
-end HCGCompactness
+end CheegerGromovCompactness
 
 end DifferentialGeometry

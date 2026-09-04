@@ -163,10 +163,10 @@ theorem exists_compatible_cross_scale_solution
       nonautL2Map (I := I) (M := M) hT hT1
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           A2Lo hA2Lo C2Lo hC2Lo A1Lo hA1Lo fLo + f0Lo) :
-    ∃ (uHi : MaxRegSolutionSpace (I := I) (M := M)
+    ∃ (uHi : MaximalRegularitySolutionSpace (I := I) (M := M)
         (g := g) (r := 0) (s := 2) aHi T)
       (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 aHi) T),
-      uHi = maxRegDuhamelMap (I := I) (M := M) aHi hT 0 fHi ∧
+      uHi = maximalRegularityDuhamelMap (I := I) (M := M) aHi hT 0 fHi ∧
         fHi =
           nonautL2Map (I := I) (M := M) hT hT1
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
@@ -175,9 +175,9 @@ theorem exists_compatible_cross_scale_solution
         timeH1.trace0 _ T uHi = 0 ∧
         timeH1.timeDeriv _ T uHi =
           timeScaleLaplacian (I := I) (M := M) aHi
-              (maxRegDuhamelSolField (I := I) (M := M) aHi hT 0 fHi) +
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) aHi hT 0 fHi) +
             (timeOp A2Hi hA2Hi C2Hi hC2Hi
-                (maxRegDuhamelSolField (I := I) (M := M) aHi hT 0 fHi) +
+                (maximalRegularityDuhamelSolutionField (I := I) (M := M) aHi hT 0 fHi) +
               a1L2Term (I := I) (M := M) hT hT1
                 (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
                 A1Hi hA1Hi fHi +
@@ -186,17 +186,17 @@ theorem exists_compatible_cross_scale_solution
             hOrd fHi = fLo ∧
         timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             hOrdSt
-            (maxRegDuhamelSolField (I := I) (M := M) aHi hT 0 fHi) =
-          maxRegDuhamelSolField (I := I) (M := M) aLo hT 0 fLo ∧
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) aHi hT 0 fHi) =
+          maximalRegularityDuhamelSolutionField (I := I) (M := M) aLo hT 0 fLo ∧
         (∀ᵐ t ∂timeMeasure T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               hOrd (fHi t) = fLo t) ∧
         (∀ᵐ t ∂timeMeasure T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               hOrdSt
-              (maxRegDuhamelSolField (I := I) (M := M)
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                 aHi hT 0 fHi t) =
-            maxRegDuhamelSolField (I := I) (M := M) aLo hT 0 fLo t) := by
+            maximalRegularityDuhamelSolutionField (I := I) (M := M) aLo hT 0 fLo t) := by
   subst hlo
   obtain ⟨uHi, fHi, huHi, hfHi, htrace, hderiv, hforce, hfield⟩ :=
     nonautL2_lift (I := I) (M := M) hT hT1
@@ -225,23 +225,23 @@ theorem exists_compatible_cross_scale_solution
   · have hcoe :
         timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             hOrdSt
-            (maxRegDuhamelSolField (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M)
               aHi hT 0 fHi) =ᵐ[timeMeasure T]
           fun t =>
             tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               hOrdSt
-              (maxRegDuhamelSolField (I := I) (M := M)
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                 aHi hT 0 fHi t) :=
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         hOrdSt).coeFn_compLpL (p := 2) (μ := timeMeasure T)
-          (maxRegDuhamelSolField (I := I) (M := M) aHi hT 0 fHi)
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) aHi hT 0 fHi)
     have hcoe2 :
-        maxRegDuhamelSolField (I := I) (M := M)
+        maximalRegularityDuhamelSolutionField (I := I) (M := M)
             (aHi - 1) hT 0 fLo =ᵐ[timeMeasure T]
           fun t =>
             tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               hOrdSt
-              (maxRegDuhamelSolField (I := I) (M := M)
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                 aHi hT 0 fHi t) := by
       rw [← hfield]
       exact hcoe

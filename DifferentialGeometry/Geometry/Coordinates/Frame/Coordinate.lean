@@ -339,7 +339,7 @@ theorem coordinateFrameAt_apply_of_mem {x₀ x : M}
     coordinateFrameAt (I := I) x₀ i x =
       (mfderiv[Set.range I] (extChartAt I x₀).symm (extChartAt I x₀ x))
         ((Module.finBasis 𝕜 E) i) := by
-  have hx_src : x ∈ (chartAt H x₀).source := by
+  have hx_source : x ∈ (chartAt H x₀).source := by
     have hx_triv : x ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
       change x ∈ coordinateFrameSet (I := I) x₀
       exact hx
@@ -360,7 +360,7 @@ theorem coordinateFrameAt_apply_of_mem {x₀ x : M}
     Trivialization.linearEquivAt_symm_apply]
   rw [← Trivialization.symmL_apply (R := 𝕜)
     (trivializationAt E (TangentSpace I : M → Type _) x₀) hx_triv]
-  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_source]
   rfl
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
@@ -381,7 +381,7 @@ theorem coordinateFrameAt_basis_triv
   have hxE : x ∈ e.baseSet := by
     change x ∈ coordinateFrameSet (I := I) x₀
     exact hx
-  have hx_src : x ∈ (chartAt H x₀).source := by
+  have hx_source : x ∈ (chartAt H x₀).source := by
     have hx_triv : x ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
       change x ∈ coordinateFrameSet (I := I) x₀
       exact hx
@@ -392,7 +392,7 @@ theorem coordinateFrameAt_basis_triv
         e.symmL 𝕜 x ((Module.finBasis 𝕜 E) i) := by
     rw [coordinateFrameAt_basis_apply]
     rw [coordinateFrameAt_apply_of_mem (I := I) hx i]
-    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_source]
     rfl
   rw [hframe]
   exact e.continuousLinearMapAt_symmL (R := 𝕜) hxE ((Module.finBasis 𝕜 E) i)
@@ -547,14 +547,14 @@ private theorem coordinateFrame_pullback_eq_const (x₀ : M) (i : CoordinateIdx 
     IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   filter_upwards [extChartAt_target_mem_nhdsWithin (I := I) x₀] with y hy
   simp only [VectorField.mpullbackWithin_apply]
-  have hy_src : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
+  have hy_source : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x₀).map_target hy
   have hy_base : (extChartAt I x₀).symm y ∈ coordinateFrameSet (I := I) x₀ := by
     change (extChartAt I x₀).symm y ∈
       (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet
     rw [TangentBundle.trivializationAt_baseSet]
-    exact hy_src
+    exact hy_source
   rw [coordinateFrameAt_apply_of_mem (I := I) hy_base i]
   rw [(extChartAt I x₀).right_inv hy]
   exact ContinuousLinearMap.IsInvertible.inverse_apply_self
@@ -571,7 +571,7 @@ private theorem coordinateFrame_pullback_eq_const_of_mem {x₀ x : M}
         fun _ : E => (Module.finBasis 𝕜 E i : E) := by
   have : IsManifold I (1 : WithTop ℕ∞) M :=
     IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
-  have hx_src : x ∈ (extChartAt I x₀).source := by
+  have hx_source : x ∈ (extChartAt I x₀).source := by
     have hx_chart : x ∈ (chartAt H x₀).source := by
       have hx_triv : x ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
         change x ∈ coordinateFrameSet (I := I) x₀
@@ -580,16 +580,16 @@ private theorem coordinateFrame_pullback_eq_const_of_mem {x₀ x : M}
       exact hx_triv
     rw [extChartAt_source]
     exact hx_chart
-  filter_upwards [extChartAt_target_mem_nhdsWithin' (I := I) hx_src] with y hy
+  filter_upwards [extChartAt_target_mem_nhdsWithin' (I := I) hx_source] with y hy
   simp only [VectorField.mpullbackWithin_apply]
-  have hy_src : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
+  have hy_source : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x₀).map_target hy
   have hy_base : (extChartAt I x₀).symm y ∈ coordinateFrameSet (I := I) x₀ := by
     change (extChartAt I x₀).symm y ∈
       (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet
     rw [TangentBundle.trivializationAt_baseSet]
-    exact hy_src
+    exact hy_source
   rw [coordinateFrameAt_apply_of_mem (I := I) hy_base i]
   rw [(extChartAt I x₀).right_inv hy]
   exact ContinuousLinearMap.IsInvertible.inverse_apply_self
@@ -641,7 +641,7 @@ theorem coordinateFrameAt_bracket_zero_of_mem [IsRCLikeNormedField 𝕜] {x₀ x
   let W : (x : M) → TangentSpace I x := coordinateFrameAt (I := I) x₀ j
   let z : E := extChartAt I x₀ x
   let f : E → M := (extChartAt I x₀).symm
-  have hx_src : x ∈ (extChartAt I x₀).source := by
+  have hx_source : x ∈ (extChartAt I x₀).source := by
     have hx_chart : x ∈ (chartAt H x₀).source := by
       have hx_triv : x ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
         change x ∈ coordinateFrameSet (I := I) x₀
@@ -651,11 +651,11 @@ theorem coordinateFrameAt_bracket_zero_of_mem [IsRCLikeNormedField 𝕜] {x₀ x
     rw [extChartAt_source]
     exact hx_chart
   have hz_target : z ∈ (extChartAt I x₀).target := by
-    exact (extChartAt I x₀).map_source hx_src
+    exact (extChartAt I x₀).map_source hx_source
   have hz_range : z ∈ Set.range I :=
     extChartAt_target_subset_range x₀ hz_target
   have hfz : f z = x := by
-    exact (extChartAt I x₀).left_inv hx_src
+    exact (extChartAt I x₀).left_inv hx_source
   have hVdiff : MDiffAt[Set.univ] (T% V) (f z) := by
     rw [hfz]
     exact (((coordinateFrameAt_isLocalFrame (I := I) x₀).contMDiffAt
@@ -722,7 +722,7 @@ structure CoordinateFrameAt (x₀ : M) where
     VectorField.mlieBracket I (frame i) (frame j) x₀ = 0
 
 
-def coordinateFramePackageAt (x₀ : M) : CoordinateFrameAt (I := I) x₀ where
+def canonicalCoordinateFrameAt (x₀ : M) : CoordinateFrameAt (I := I) x₀ where
   u := coordinateFrameSet (I := I) x₀
   frame := coordinateFrameAt (I := I) x₀
   hframe := coordinateFrameAt_isLocalFrame (I := I) x₀

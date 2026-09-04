@@ -39,7 +39,7 @@ theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
     have hbasis :
         (∑ i, (b.repr vModel i) • e.localFrame b i p) =
           tangentConstAt (I := I) x v p := by
-      have hx_src : p ∈ (chartAt H x).source := by
+      have hx_source : p ∈ (chartAt H x).source := by
         simpa [e, TangentBundle.trivializationAt_baseSet] using hp
       have hframe_apply (i) :
           e.localFrame b i p = e.symmL Real p (b i) := by

@@ -99,7 +99,7 @@ noncomputable def intrinsicJacobi
   rw [hconst, mfderiv_const]
   rfl
 
-theorem intrJacobi_diff
+theorem intrinsicJacobi_diff
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u w : TangentSpace I p) (t : Real) :
@@ -161,7 +161,7 @@ theorem intrinsicJacobi_perp
   exact hgauss
 
 
-private theorem intrVel_smul
+private theorem intrinsicVelocity_smul
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (c : Real) :
@@ -196,7 +196,7 @@ private theorem intrVel_smul
   rw [hct] at hvel
   exact hvel
 
-theorem intrJacobi_perp_ne
+theorem intrinsicJacobi_perp_ne
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u w : TangentSpace I p) {t : Real}
@@ -238,7 +238,7 @@ theorem intrJacobi_perp_ne
   have hscaled :=
     intrinsicJacobi_perp (I := I) g hEnorm p (t • u) (t • w)
   rw [intrinsicGeodesic_smul (I := I) g hEnorm p u t,
-    intrVel_smul (I := I) g hEnorm p u t, ← hfield] at hscaled
+    intrinsicVelocity_smul (I := I) g hEnorm p u t, ← hfield] at hscaled
   have hright : g.inner p (t • u) (t • w) = 0 := by
     simp only [map_smul, smul_apply, smul_eq_mul,
       hperp, mul_zero]
@@ -257,7 +257,7 @@ theorem intrJacobi_perp_ne
       hscaled
   exact (mul_eq_zero.mp hmul).resolve_left ht
 
-theorem intrJacobi_self
+theorem intrinsicJacobi_self
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) :
@@ -308,7 +308,7 @@ theorem intrJacobi_self
   rw [hJ.mfderiv]
   rfl
 
-private theorem intrGeodesic_smooth
+private theorem intrinsicGeodesic_smooth
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) :
@@ -337,7 +337,7 @@ private theorem intrGeodesic_smooth
   rw [heq] at hcomp
   exact hcomp
 
-theorem intrJacobi_dperp
+theorem intrinsicJacobi_dperp
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u w : TangentSpace I p) {t : Real}
@@ -351,7 +351,7 @@ theorem intrJacobi_dperp
   let γ := intrinsicGeodesic (I := I) g hEnorm p u
   let J := intrinsicJacobi (I := I) g hEnorm p u w
   have hγInf : ContMDiff 𝓘(Real, Real) I (8 : Nat) γ :=
-    intrGeodesic_smooth (I := I) g hEnorm p u
+    intrinsicGeodesic_smooth (I := I) g hEnorm p u
   have hγ : ContMDiffAt 𝓘(Real, Real) I 2 γ t :=
     hγInf.contMDiffAt.of_le (by norm_num)
   have hgeo : HasGeodesicEquationAt (I := I) g γ t := by
@@ -369,7 +369,7 @@ theorem intrJacobi_dperp
   have hJdiff : DifferentiableAt Real
       (chartRepAt (I := I) γ J t) t := by
     simpa only [γ, J] using
-      (intrJacobi_diff (I := I) g hEnorm p u w t).1
+      (intrinsicJacobi_diff (I := I) g hEnorm p u w t).1
   have hinner := inner_deriv_at (I := I) (n := (2 : WithTop ℕ∞))
     (by norm_num) g γ (curveVelocity (I := I) γ) J t hγ hvelDiff hJdiff
   have hne : ∀ᶠ s in 𝓝 t, s ≠ 0 := eventually_ne_nhds ht
@@ -379,7 +379,7 @@ theorem intrJacobi_dperp
         (fun _ : Real => 0) := by
     filter_upwards [hne] with s hs
     simpa only [γ, J] using
-      intrJacobi_perp_ne (I := I) g hEnorm p u w hs hperp
+      intrinsicJacobi_perp_ne (I := I) g hEnorm p u w hs hperp
   have hzero : HasDerivAt
       (fun s : Real =>
         g.inner (γ s) (curveVelocity (I := I) γ s) (J s)) 0 t :=
@@ -687,7 +687,7 @@ theorem branchEnergy_hess
       (by
         simpa only [η, F, q, zero_smul, add_zero, expMapIntrinsic_def] using
           hgradAt)
-  have hηvel :
+  have hηvelocity :
       (mfderiv 𝓘(Real, Real) I η 0 : Real →L[Real] TangentSpace I (η 0)) 1 =
         J w₁ 1 := by
     rfl
@@ -701,14 +701,14 @@ theorem branchEnergy_hess
           (fun z => gradientFun (I := I) g
             (branchEnergy (I := I) g B) z)
           q (J w₁ 1) := by
-    rw [hη0] at hηvel hchain
+    rw [hη0] at hηvelocity hchain
     exact hchain.trans
       (congrArg
         (fun Z : TangentSpace I q =>
           (LeviCivita (I := I) g).toFun
             (fun z => gradientFun (I := I) g
               (branchEnergy (I := I) g B) z) q Z)
-        hηvel)
+        hηvelocity)
   have hcomm := commute_ds_dt_intrinsic (I := I) g F hF 1
   have hbase :
       (fun t : Real => F 0 t) =
@@ -879,7 +879,7 @@ theorem branchHess_jacobi
       (by
         simpa only [η, F, q, zero_smul, add_zero, expMapIntrinsic_def] using
           hgradAt)
-  have hηvel :
+  have hηvelocity :
       (mfderiv 𝓘(Real, Real) I η 0 : Real →L[Real] TangentSpace I (η 0)) 1 =
         J w₁ 1 := by
     rfl
@@ -893,14 +893,14 @@ theorem branchHess_jacobi
           (fun z => gradientFun (I := I) g
             (branchRadius (I := I) g B) z)
           q (J w₁ 1) := by
-    rw [hη0] at hηvel hchain
+    rw [hη0] at hηvelocity hchain
     exact hchain.trans
       (congrArg
         (fun Z : TangentSpace I q =>
           (LeviCivita (I := I) g).toFun
             (fun z => gradientFun (I := I) g
               (branchRadius (I := I) g B) z) q Z)
-        hηvel)
+        hηvelocity)
   have hend := endpointJacobi_eq (I := I) g hEnorm p
     (u := u) (w := w₁) hu_pos
   have hend' :

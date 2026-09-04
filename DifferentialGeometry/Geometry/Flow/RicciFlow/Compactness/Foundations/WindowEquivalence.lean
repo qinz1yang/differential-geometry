@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -125,5 +125,5 @@ theorem metricEquiv_open
 
 end CurvBoundInput
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

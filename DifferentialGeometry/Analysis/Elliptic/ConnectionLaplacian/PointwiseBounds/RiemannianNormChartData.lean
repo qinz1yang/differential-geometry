@@ -258,11 +258,11 @@ theorem rawTensorConnLap_riemannianFiberNormSq_le_chart_α_data_on_pouTsupport_g
       _ ≤ K_max * _ := mul_le_mul_of_nonneg_right (hKmax_bd Idx Jdx) h_sum_nn
   have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := by
     have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α := hb_inter.2
-    have hb_src : b ∈ (extChartAt I α).source :=
+    have hb_source : b ∈ (extChartAt I α).source :=
       chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb_good
-    have hb_tgt : (extChartAt I α) b ∈ (extChartAt I α).target :=
-      (extChartAt I α).map_source hb_src
-    exact ⟨(extChartAt I α) b, hb_tgt, rfl⟩
+    have hb_target : (extChartAt I α) b ∈ (extChartAt I α).target :=
+      (extChartAt I α).map_source hb_source
+    exact ⟨(extChartAt I α) b, hb_target, rfl⟩
   have h_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have h_y_mem_nhds : chartTargetEuclid (I := I) (M := M) α ∈ nhds y :=

@@ -13,7 +13,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Set Filter
 open scoped Manifold ContDiff Topology
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -24,7 +24,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [SigmaCompactSpace M] in
-theorem covTailBoundSol
+theorem covTailBoundSolution
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
@@ -92,9 +92,9 @@ theorem covTailBoundSol
       (fun _ t ht => by
         change t ∈ Set.Ioo alpha omega
         exact ⟨lt_of_lt_of_le hAlphaT2 ht.1, lt_of_le_of_lt ht.2 hPsi.2⟩)
-      (fun _ p hp V x0 => solnTowerSwap_reg (I := I) gRef S hS q hDreg p hp V x0)) i x
-  obtain ⟨initC, hinitC0, hinit⟩ :=
-    exists_initC (I := I) (S.base.metric t2) gRef
+      (fun _ p hp V x0 => solutionTowerSwap_regularity (I := I) gRef S hS q hDreg p hp V x0)) i x
+  obtain ⟨initialC, hinitC0, hinit⟩ :=
+    exists_initialC (I := I) (S.base.metric t2) gRef
   have htime : forall t : Real, t ∈ Set.Ico t2 omega ->
       |t - t2| <= omega - t2 := by
     intro t ht
@@ -104,7 +104,7 @@ theorem covTailBoundSol
     (K := Set.univ) (U := Set.univ) (t0 := t2) (omega := omega)
     (gSeq := gSeq) (gRef := gRef)
     isCompact_univ isOpen_univ (subset_refl Set.univ) order
-    Lambda hLambda KShi hKShi0 initC hinitC0 (omega - t2)
+    Lambda hLambda KShi hKShi0 initialC hinitC0 (omega - t2)
     (fun _ => Lambda) hequivWindow (fun _ _ => le_rfl) hShiWindow hevWindow
     (fun q _ _ _i x _hx => hinit q x) htime
   have hPosExists : forall a : Nat, exists Ca : Real,

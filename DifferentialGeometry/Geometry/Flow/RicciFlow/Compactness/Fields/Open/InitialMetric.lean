@@ -11,7 +11,7 @@ open Set Bundle Manifold
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -33,7 +33,7 @@ theorem gInf_zero_eq
       letI : ChartedSpace H P.M := P.charted;
       letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     {a b t₀ : Real} (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (hzero : (0 : Real) ∈ Set.Ioo a b)
     (g₀ : letI : TopologicalSpace P.M := P.topology;
@@ -53,7 +53,7 @@ theorem gInf_zero_eq
                 sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
                 sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k 0).inner ⟨x, hx⟩ v w) -
+            (sourceMetric (I := I) Φ hsrc htgt k 0).inner ⟨x, hx⟩ v w) -
               g₀.inner x v w| < ε) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
@@ -65,11 +65,11 @@ theorem gInf_zero_eq
   let : IsManifold I ∞ P.M := P.smooth
   let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨n, hzeroN⟩ := RealTimeInterval.mem_openWindow (t₀ := t₀) hzero
-  exact DifferentialGeometry.HCGCompactness.gInf_zero_eq (I := I) Φ R bf hsrc htgt
+  exact DifferentialGeometry.CheegerGromovCompactness.gInf_zero_eq (I := I) Φ R bf hsrc htgt
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n)
     (OpenMetricConvergenceData.atWindow Φ co n) hzeroN g₀ hconv₀
 
 end OpenMetricConvergenceData
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -78,11 +78,11 @@ theorem exists_isGeodesicOn_Ioo_at
     rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_lt]; exact ⟨ht.1, ht.2⟩
   have ht_both := hδ_sub htball
   have ht_ballε : t ∈ Metric.ball (0 : ℝ) ε := ht_both.1
-  have ht_src : (f t).proj ∈ (chartAt H y).source := ht_both.2
+  have ht_source : (f t).proj ∈ (chartAt H y).source := ht_both.2
   have hf_at_t : IsMIntegralCurveAt f (geodesicVectorFieldChart (I := I) g y) t :=
     hf_on.isMIntegralCurveAt (Metric.isOpen_ball.mem_nhds ht_ballε)
   have hgeo_at : IsGeodesicAt (I := I) g (projectCurve (I := I) f) t :=
-    ⟨y, f, hηt, ht_src, hf_at_t⟩
+    ⟨y, f, hηt, ht_source, hf_at_t⟩
   exact hgeo_at.hasGeodesicEquationAt g
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
@@ -114,11 +114,11 @@ theorem exists_isGeodesicOn_Ioo_at_velocity
   have hball_nhds : Metric.ball (0 : ℝ) ε ∈ 𝓝 (0 : ℝ) := Metric.ball_mem_nhds _ hε
   obtain ⟨δ, hδ, hδ_sub⟩ :=
     Metric.mem_nhds_iff.mp (Filter.inter_mem hball_nhds hsrc_nhds)
-  have hf0_src : (f 0).proj ∈ (chartAt H y).source := by
+  have hf0_source : (f 0).proj ∈ (chartAt H y).source := by
     rw [hf0proj]; exact mem_chart_source H y
   have hmf : mfderiv 𝓘(ℝ, ℝ) I (fun t => (f t).proj) 0 (1 : ℝ) = (f 0).snd :=
     IsMIntegralCurveAt.mfderiv_proj_one (I := I) (g := g) (α := y) (t₀ := 0)
-      hf_int hf0_src
+      hf_int hf0_source
   have hf0snd : ((f 0).snd : E) = (w : E) := by rw [hf0]
   have hf_at_t : ∀ t ∈ Set.Ioo (-δ) δ,
       IsMIntegralCurveAt f (geodesicVectorFieldChart (I := I) g y) t ∧

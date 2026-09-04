@@ -37,7 +37,7 @@ def scalHessFrame
       hcov
   let nablaRic :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         2 cov hcov Ric)
   let nabla2Ric :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

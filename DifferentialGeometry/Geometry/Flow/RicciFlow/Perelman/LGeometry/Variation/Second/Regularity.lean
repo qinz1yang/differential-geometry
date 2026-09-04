@@ -73,7 +73,7 @@ private theorem hasDerivAt_lEulerPair_variation_at_sq
   have hWreg : DifferentiableAt Real
       (chartRepAt (I := I) (fun u ↦ F u s) W 0) 0 := by
     simpa only [F] using hW
-  have hreg := lRegEuler_deriv (I := I) S T s F W hFat hWreg
+  have hreg := lRegularizedEuler_deriv (I := I) S T s F W hFat hWreg
   let DW : TangentSpace I (f 0 (s ^ 2)) :=
     covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
       (fun u ↦ f u (s ^ 2)) W 0
@@ -108,7 +108,7 @@ private theorem hasDerivAt_lEulerPair_variation_at_sq
       (chartRepAt (I := I) (F 0)
         (fun r : Real ↦ lVelocity (I := I) (F 0) r) s) s
     exact hA
-  rcases lRegVar_reg (I := I) S T s F hF with
+  rcases lRegularizedVar_regularity (I := I) S T s F hF with
     ⟨_, _, hZraw⟩
   have hZ : DifferentiableAt Real
       (chartRepAt (I := I) (squareReparametrization gamma)
@@ -128,10 +128,10 @@ private theorem hasDerivAt_lEulerPair_variation_at_sq
     hgamma_sq hY_sq hA_sq hDY hZ (W 0)
   have hpair :
       c * lJacobiPair S T gamma Y (s ^ 2) (W 0) =
-        lRegJacobiPair S T (F 0)
+        lRegularizedJacobiPair S T (F 0)
           (fun r ↦ lVelocity (I := I) (fun u ↦ F u r) 0) s (W 0) := by
     change c * lJacobiPair S T gamma Y (s ^ 2) (W 0) =
-      lRegJacobiPair S T (squareReparametrization gamma)
+      lRegularizedJacobiPair S T (squareReparametrization gamma)
         (fun r ↦ lVelocity (I := I) (fun u ↦ F u r) 0) s (W 0)
     simpa only [c, F, gamma, Y] using hpairRaw
   have hcurve (u : Real) :
@@ -140,30 +140,30 @@ private theorem hasDerivAt_lEulerPair_variation_at_sq
       (contMDiff_const.prodMk contMDiff_id)
   have htail :
       c * lEulerPair S T gamma (s ^ 2) DW =
-        lRegEulerPair S T (F 0) s
+        lRegularizedEulerPair S T (F 0) s
           (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
             (fun u ↦ F u s) W 0) := by
     change c * lEulerPair S T gamma (s ^ 2) DW =
-      lRegEulerPair S T (squareReparametrization gamma) s
+      lRegularizedEulerPair S T (squareReparametrization gamma) s
         (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
           (fun u ↦ F u s) W 0)
     simpa only [c] using
-      lRegEuler_sq (I := I) S T gamma s DW hs
+      lRegularizedEuler_sq (I := I) S T gamma s DW hs
         (hgamma.mdifferentiableAt (by norm_num))
         (differentiableAt_chartRepAt_lVelocity (I := I) gamma (s ^ 2)
           (hgamma.contMDiffAt.of_le (by norm_num)))
   have hscale (u : Real) :
       c * lEulerPair S T (f u) (s ^ 2) (W u) =
-        lRegEulerPair S T (F u) s (W u) := by
+        lRegularizedEulerPair S T (F u) s (W u) := by
     change c * lEulerPair S T (f u) (s ^ 2) (W u) =
-      lRegEulerPair S T (squareReparametrization (f u)) s (W u)
+      lRegularizedEulerPair S T (squareReparametrization (f u)) s (W u)
     simpa only [c] using
-      lRegEuler_sq (I := I) S T (f u) s (W u) hs
+      lRegularizedEuler_sq (I := I) S T (f u) s (W u) hs
         ((hcurve u).mdifferentiableAt (by norm_num))
         (differentiableAt_chartRepAt_lVelocity (I := I) (f u) (s ^ 2)
           ((hcurve u).contMDiffAt.of_le (by norm_num)))
   have hfun :
-      (fun u : Real ↦ lRegEulerPair S T (F u) s (W u)) =
+      (fun u : Real ↦ lRegularizedEulerPair S T (F u) s (W u)) =
         fun u : Real ↦ c * lEulerPair S T (f u) (s ^ 2) (W u) := by
     funext u
     exact (hscale u).symm
@@ -426,39 +426,39 @@ theorem lLength_second_variation_eq_integral_lJacobiPair
   have ht : ∀ tau ∈ Set.uIcc a b, T - tau ∈ D.regular :=
     fun tau htau => hgeo.regular htau
   have hderivEq (u : Real) : deriv L u = Eul u := by
-    let fu : Real → Real → M := fun v tau => f (u + v) tau
-    have hfu : IsSmoothVariation (I := I) fu := by
+    let forwardUniqueness : Real → Real → M := fun v tau => f (u + v) tau
+    have hfu : IsSmoothVariation (I := I) forwardUniqueness := by
       exact (hf : ContMDiff _ _ (8 : ℕ) _).comp
         ((contMDiff_const.add contMDiff_fst).prodMk contMDiff_snd)
-    have hfu0 : fu 0 = f u := by
+    have hfu0 : forwardUniqueness 0 = f u := by
       funext tau
-      simp only [fu, add_zero]
+      simp only [forwardUniqueness, add_zero]
     have hYshift (tau : Real) :
-        lVelocity (I := I) (fun v : Real => fu v tau) 0 =
+        lVelocity (I := I) (fun v : Real => forwardUniqueness v tau) 0 =
           lVelocity (I := I) (fun v : Real => f v tau) u := by
-      simpa only [fu, lVelocity, varFst] using
+      simpa only [forwardUniqueness, lVelocity, varFst] using
         varFst_shift (I := I) f hf u tau
     have hYa :
-        lVelocity (I := I) (fun v : Real => fu v a) 0 = 0 := by
-      have hconst : (fun v : Real => fu v a) = fun _ : Real => f 0 a := by
+        lVelocity (I := I) (fun v : Real => forwardUniqueness v a) 0 = 0 := by
+      have hconst : (fun v : Real => forwardUniqueness v a) = fun _ : Real => f 0 a := by
         funext v
         exact hfixa (u + v)
       rw [hconst]
       simp only [lVelocity, mfderiv_const]
       rfl
     have hYb :
-        lVelocity (I := I) (fun v : Real => fu v b) 0 = 0 := by
-      have hconst : (fun v : Real => fu v b) = fun _ : Real => f 0 b := by
+        lVelocity (I := I) (fun v : Real => forwardUniqueness v b) 0 = 0 := by
+      have hconst : (fun v : Real => forwardUniqueness v b) = fun _ : Real => f 0 b := by
         funext v
         exact hfixb (u + v)
       rw [hconst]
       simp only [lVelocity, mfderiv_const]
       rfl
-    have hshift := lLength_euler S hS T fu hfu a b hpos ht
+    have hshift := lLength_euler S hS T forwardUniqueness hfu a b hpos ht
     rw [hYa, hYb] at hshift
     rw [hfu0] at hshift
     have hshift' : HasDerivAt (fun v : Real => L (u + v)) (Eul u) 0 := by
-      simpa [L, Eul, fu, hYshift] using hshift
+      simpa [L, Eul, forwardUniqueness, hYshift] using hshift
     have hderiv := hshift'.deriv
     rw [deriv_comp_const_add L u 0, add_zero] at hderiv
     exact hderiv
@@ -731,7 +731,7 @@ theorem differentiableAt_chartRepAt_lJacobiVelocity_variation_field
       (chartRepAt (I := I) (F 0)
         (fun r : Real ↦ lVelocity (I := I) (F 0) r) s) s
     exact hA
-  rcases lRegVar_reg (I := I) S T s F hF with ⟨_, _, hZraw⟩
+  rcases lRegularizedVar_regularity (I := I) S T s F hF with ⟨_, _, hZraw⟩
   have hZ : DifferentiableAt Real
       (chartRepAt (I := I) (squareReparametrization gamma)
         (fun r : Real =>
@@ -802,30 +802,30 @@ theorem contDiffOn_one_metric_inner_lJacobiVelocity_variation_field
         exact (hf : ContMDiff _ _ (8 : ℕ) _).comp
           (contMDiff_const.prodMk contMDiff_id)
       exact hcurve.mdifferentiableAt (by norm_num)
-    let fu : Real → Real → M := fun a r => f (u + a) r
-    have hfu : IsSmoothVariation (I := I) fu := by
+    let forwardUniqueness : Real → Real → M := fun a r => f (u + a) r
+    have hfu : IsSmoothVariation (I := I) forwardUniqueness := by
       exact (hf : ContMDiff _ _ (8 : ℕ) _).comp
         ((contMDiff_const.add contMDiff_fst).prodMk contMDiff_snd)
-    have hfu0 : fu 0 = gamma := by
+    have hfu0 : forwardUniqueness 0 = gamma := by
       funext r
-      simp only [fu, gamma, add_zero]
+      simp only [forwardUniqueness, gamma, add_zero]
     have hYshift (r : Real) :
-        lVelocity (I := I) (fun a : Real => fu a r) 0 = Y r := by
-      simpa only [fu, Y, lVelocity, varFst] using
+        lVelocity (I := I) (fun a : Real => forwardUniqueness a r) 0 = Y r := by
+      simpa only [forwardUniqueness, Y, lVelocity, varFst] using
         varFst_shift (I := I) f hf u r
     have hYfun :
         (fun r : Real =>
-          lVelocity (I := I) (fun a : Real => fu a r) 0) = Y :=
+          lVelocity (I := I) (fun a : Real => forwardUniqueness a r) 0) = Y :=
       funext hYshift
     have hY : DifferentiableAt Real
         (chartRepAt (I := I) gamma Y tau) tau := by
       have hout : DifferentiableAt Real
-          (chartRepAt (I := I) (fu 0)
+          (chartRepAt (I := I) (forwardUniqueness 0)
             (fun r : Real =>
-              lVelocity (I := I) (fun a : Real => fu a r) 0) tau) tau := by
+              lVelocity (I := I) (fun a : Real => forwardUniqueness a r) 0) tau) tau := by
         simpa only [lVelocity, chartRepAt_apply] using
           variationField_chartRep_differentiableAt
-            (I := I) fu hfu tau
+            (I := I) forwardUniqueness hfu tau
       rw [hfu0, hYfun] at hout
       exact hout
     have hinner := lInner_deriv S hS T gamma Y Y tau htau

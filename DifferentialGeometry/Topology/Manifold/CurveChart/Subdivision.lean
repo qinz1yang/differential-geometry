@@ -75,13 +75,13 @@ theorem exists_compact_chart_subdivision
     exact ⟨le_trans (t n).property.1 hr.1,
       le_trans hr.2 (t (n + 1)).property.2⟩
   have hJc : IsCompact J := isCompact_Icc
-  have hImg : IsCompact (γ '' J) :=
+  have hImage : IsCompact (γ '' J) :=
     hJc.image_of_continuousOn (hγ.mono hJsub)
-  have hImgSrc : γ '' J ⊆ (chartAt H p).source :=
+  have hImageSource : γ '' J ⊆ (chartAt H p).source :=
     mapsTo_iff_image_subset.mp hp
-  obtain ⟨K, hKc, _hKclosed, hImgK, hKsrc⟩ :=
-    exists_compact_closed_between hImg (chartAt H p).open_source hImgSrc
-  exact ⟨p, K, hKc, hKsrc, mapsTo_iff_image_subset.mpr hImgK⟩
+  obtain ⟨K, hKc, _hKclosed, hImageK, hKsrc⟩ :=
+    exists_compact_closed_between hImage (chartAt H p).open_source hImageSource
+  exact ⟨p, K, hKc, hKsrc, mapsTo_iff_image_subset.mpr hImageK⟩
 
 end Geometry
 end DifferentialGeometry

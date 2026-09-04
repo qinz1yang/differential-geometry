@@ -153,7 +153,7 @@ def tensor04ToField (Rm04 : Tensor04Section (I := I) (M := M)) :
     RawFourTensorField (I := I) (M := M) :=
   fun x X Y Z W => Rm04 x (vec4 X Y Z W)
 
-def tensor04StdAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
+def tensor04StandardAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
     (X Y Z W : TangentSpace I x) : Real :=
   Rm04 (vec4 X Y Z W)
 
@@ -161,7 +161,7 @@ def tensor04OutAt {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
     (W X Y Z : TangentSpace I x) : Real :=
   Rm04 (vec4 X Y Z W)
 
-def tensor04StdToOutPerm : Equiv.Perm (Fin 4) where
+def tensor04StandardToOutPerm : Equiv.Perm (Fin 4) where
   toFun i := if i = 0 then 3 else if i = 1 then 0 else if i = 2 then 1 else 2
   invFun i := if i = 0 then 1 else if i = 1 then 2 else if i = 2 then 3 else 0
   left_inv i := by
@@ -169,16 +169,16 @@ def tensor04StdToOutPerm : Equiv.Perm (Fin 4) where
   right_inv i := by
     fin_cases i <;> simp
 
-def tensor04StdOfOutAt {x : M} (Rm04Out : Tensor04At (I := I) (M := M) x) :
+def tensor04StandardOfOutAt {x : M} (Rm04Out : Tensor04At (I := I) (M := M) x) :
     Tensor04At (I := I) (M := M) x :=
-  Rm04Out.domDomCongr tensor04StdToOutPerm
+  Rm04Out.domDomCongr tensor04StandardToOutPerm
 
 omit [FiniteDimensional ℝ E] in
 @[simp]
-theorem tensor04StdAt_apply
+theorem tensor04StandardAt_apply
     {x : M} (Rm04 : Tensor04At (I := I) (M := M) x)
     (X Y Z W : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) Rm04 X Y Z W =
+    tensor04StandardAt (I := I) (M := M) Rm04 X Y Z W =
       Rm04 (vec4 X Y Z W) := rfl
 
 omit [FiniteDimensional ℝ E] in
@@ -191,20 +191,20 @@ theorem tensor04OutAt_apply
 
 omit [FiniteDimensional ℝ E] in
 @[simp]
-theorem tensor04StdOfOutAt_apply
+theorem tensor04StandardOfOutAt_apply
     {x : M} (Rm04Out : Tensor04At (I := I) (M := M) x)
     (X Y Z W : TangentSpace I x) :
-    tensor04StdOfOutAt (I := I) (M := M) Rm04Out (vec4 X Y Z W) =
+    tensor04StandardOfOutAt (I := I) (M := M) Rm04Out (vec4 X Y Z W) =
       Rm04Out (vec4 W X Y Z) := by
-  change Rm04Out (fun i => (vec4 X Y Z W) (tensor04StdToOutPerm i)) =
+  change Rm04Out (fun i => (vec4 X Y Z W) (tensor04StandardToOutPerm i)) =
     Rm04Out (vec4 W X Y Z)
   congr 1
   funext i
-  fin_cases i <;> simp [tensor04StdToOutPerm, vec4]
+  fin_cases i <;> simp [tensor04StandardToOutPerm, vec4]
 
-def tensor04ToStdField (Rm04 : Tensor04Section (I := I) (M := M)) :
+def tensor04ToStandardField (Rm04 : Tensor04Section (I := I) (M := M)) :
     RawFourTensorField (I := I) (M := M) :=
-  fun x X Y Z W => tensor04StdAt (I := I) (Rm04 x) X Y Z W
+  fun x X Y Z W => tensor04StandardAt (I := I) (Rm04 x) X Y Z W
 
 def tensor04ToOutField (Rm04 : Tensor04Section (I := I) (M := M)) :
     RawFourTensorField (I := I) (M := M) :=

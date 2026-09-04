@@ -381,7 +381,7 @@ private theorem connectionDifferenceSection_metricPerturbationPath_jointContMDif
       (g0FlatField_contMDiff (I := I) g₀).comp_contMDiffOn contMDiffOn_fst
     have hflatom := ContMDiffOn.clm_bundle_apply (b := Prod.fst) hflatj hsharpom
     have hkosom := ContMDiffOn.clm_bundle_apply (b := Prod.fst)
-      (corrField_raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hflatom
+      (correctionField_raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hflatom
     refine hkosom.congr (fun p _ => ?_)
     rfl
   have hCLM := contMDiffOn_clm_section_of_apply (I := I) (M := M)

@@ -74,7 +74,7 @@ private theorem lWeakScal_fderiv
   let f : M → Real := S.scalar (T - (a + r) ^ 2)
   have hxt : x ∈ (extChartAt I p).target := interior_subset hx
   have hf : ContMDiff I 𝓘(Real, Real) ∞ f := by
-    simpa only [f] using scalarSmoothOfSol (I := I) S (T - (a + r) ^ 2)
+    simpa only [f] using scalarSmoothOfSolution (I := I) S (T - (a + r) ^ 2)
   have hcoord : ContDiffAt Real ∞ (scalarOnE (I := I) p f) x :=
     (scalarOnE_contDiffOn (I := I) p hf).contDiffAt
       ((isOpen_extChartAt_target (I := I) p).mem_nhds hxt)
@@ -870,7 +870,7 @@ private theorem lWeak_pos_pair
   have hright : extChartAt I p y = u.toFun r :=
     (extChartAt I p).right_inv hxt
   have hf : ContMDiff I 𝓘(Real, Real) ∞ f := by
-    simpa only [f] using scalarSmoothOfSol (I := I) S (T - (a + r) ^ 2)
+    simpa only [f] using scalarSmoothOfSolution (I := I) S (T - (a + r) ^ 2)
   have hcovBasis (i : Fin (Module.finrank Real E)) :
       chartScalCov (I := I) S p (T - (a + r) ^ 2, u.toFun r)
           (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) =
@@ -1066,7 +1066,7 @@ theorem lChartAction_weak_euler_lagrange_of_isLocalMinOn
     (hmin : IsLocalMinOn (lChartAction S T a p) (sameTimeEnds u) u) :
     IntegrableOn (lChartForce (I := I) S T a p u)
         (Icc (0 : Real) L) volume ∧
-      ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
+      ∀ v : timeH1 E L, v.initial = 0 → v.toFun L = 0 →
         (∫ r in (0 : Real)..L,
           inner Real (lChartForce (I := I) S T a p u r) (v.toFun r) +
             inner Real
@@ -1125,8 +1125,8 @@ theorem lChartAction_weak_euler_lagrange_of_isLocalMinOn
       ‖q.1 * scale‖ * ‖v.toFun q.2‖ ≤ scale * V := by
         exact mul_le_mul hs (hV q.2 hq.2) (norm_nonneg _) hscale.le
       _ ≤ δ := hscaleV
-  have hw0 : w.init = 0 := by
-    simp only [w, timeH1.init_smul, hv0, smul_zero]
+  have hw0 : w.initial = 0 := by
+    simp only [w, timeH1.initial_smul, hv0, smul_zero]
   have hwL : w.toFun L = 0 := by
     rw [show w = scale • v from rfl,
       timeH1.toFun_smul scale v ⟨hL.le, le_rfl⟩, hvL, smul_zero]
@@ -1136,7 +1136,7 @@ theorem lChartAction_weak_euler_lagrange_of_isLocalMinOn
   have hmaps : univ ⊆ line ⁻¹' sameTimeEnds u := by
     intro c _
     constructor
-    · simp only [line, timeH1.init_add, timeH1.init_smul,
+    · simp only [line, timeH1.initial_add, timeH1.initial_smul,
         hw0, smul_zero, add_zero]
     · change (u + c • w).toFun L = u.toFun L
       rw [timeH1.toFun_add u (c • w) ⟨hL.le, le_rfl⟩,

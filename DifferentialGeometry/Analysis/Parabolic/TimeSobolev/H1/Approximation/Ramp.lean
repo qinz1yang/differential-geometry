@@ -85,7 +85,7 @@ theorem rampDown_deriv {T : ℝ} (hT : 0 < T) (z : X) :
 theorem rampUp_smul {T : ℝ} (hT : 0 < T) (c : ℝ) (z : X) :
     rampUp T (c • z) = c • rampUp T z := by
   apply timeH1.ext
-  · rw [← toFun_zero (rampUp T (c • z)), init_smul,
+  · rw [← toFun_zero (rampUp T (c • z)), initial_smul,
       ← toFun_zero (rampUp T z), rampUp_zero hT, rampUp_zero hT, smul_zero]
   · rw [deriv_smul]
     apply Lp.ext
@@ -97,7 +97,7 @@ theorem rampUp_smul {T : ℝ} (hT : 0 < T) (c : ℝ) (z : X) :
 theorem rampDown_smul {T : ℝ} (hT : 0 < T) (c : ℝ) (z : X) :
     rampDown T (c • z) = c • rampDown T z := by
   apply timeH1.ext
-  · rw [← toFun_zero (rampDown T (c • z)), init_smul,
+  · rw [← toFun_zero (rampDown T (c • z)), initial_smul,
       ← toFun_zero (rampDown T z), rampDown_zero hT, rampDown_zero hT]
   · rw [deriv_smul]
     apply Lp.ext

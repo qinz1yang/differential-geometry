@@ -41,57 +41,57 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
-theorem kl1_map_bound {T : ℝ} {A₂ Aₚ ε : ℝ≥0}
+theorem KochLammSourceOne.clm_apply {T : ℝ} {A₂ Aₚ ε : ℝ≥0}
     (A : ℝ × V → E →L[ℝ] F) (d : ℝ × V → E)
     (hA : ∀ z, ‖A z‖ ≤ (ε : ℝ))
     (hmeas : AEStronglyMeasurable (fun z => A z (d z))
-      (klVolume : Measure (ℝ × V)))
-    (hd : KLSource1 T A₂ Aₚ d) :
-    KLSource1 T (ε * A₂) (ε * Aₚ) (fun z => A z (d z)) := by
+      (kochLammVolume : Measure (ℝ × V)))
+    (hd : KochLammSourceOne T A₂ Aₚ d) :
+    KochLammSourceOne T (ε * A₂) (ε * Aₚ) (fun z => A z (d z)) := by
   refine ⟨hmeas, ?_, ?_⟩
   · intro x R hR hRT
     calc
-      klL2Scale (V := V) R *
+      kochLammL2Scale (V := V) R *
           eLpNorm (fun z => A z (d z)) 2
-            ((klVolume : Measure (ℝ × V)).restrict (klCyl x R)) ≤
-        klL2Scale (V := V) R *
+            ((kochLammVolume : Measure (ℝ × V)).restrict (kochLammCylinder x R)) ≤
+        kochLammL2Scale (V := V) R *
           ((ε : ℝ≥0∞) * eLpNorm d 2
-            ((klVolume : Measure (ℝ × V)).restrict (klCyl x R))) :=
+            ((kochLammVolume : Measure (ℝ × V)).restrict (kochLammCylinder x R))) :=
           mul_le_mul_right (eLpNorm_clm_le A d ε hA 2 _) _
       _ = (ε : ℝ≥0∞) *
-          (klL2Scale (V := V) R *
+          (kochLammL2Scale (V := V) R *
             eLpNorm d 2
-              ((klVolume : Measure (ℝ × V)).restrict (klCyl x R))) := by
+              ((kochLammVolume : Measure (ℝ × V)).restrict (kochLammCylinder x R))) := by
         ac_rfl
       _ ≤ (ε : ℝ≥0∞) * (A₂ : ℝ≥0∞) :=
         mul_le_mul_right (hd.local_l2 x R hR hRT) _
       _ = ((ε * A₂ : ℝ≥0) : ℝ≥0∞) := by norm_cast
   · intro x R hR hRT
     calc
-      klLpScale (V := V) R *
-          eLpNorm (fun z => A z (d z)) (klP V)
-            ((klVolume : Measure (ℝ × V)).restrict (klLateCyl x R)) ≤
-        klLpScale (V := V) R *
-          ((ε : ℝ≥0∞) * eLpNorm d (klP V)
-            ((klVolume : Measure (ℝ × V)).restrict (klLateCyl x R))) :=
-          mul_le_mul_right (eLpNorm_clm_le A d ε hA (klP V) _) _
+      kochLammLpScale (V := V) R *
+          eLpNorm (fun z => A z (d z)) (kochLammP V)
+            ((kochLammVolume : Measure (ℝ × V)).restrict (kochLammLateCylinder x R)) ≤
+        kochLammLpScale (V := V) R *
+          ((ε : ℝ≥0∞) * eLpNorm d (kochLammP V)
+            ((kochLammVolume : Measure (ℝ × V)).restrict (kochLammLateCylinder x R))) :=
+          mul_le_mul_right (eLpNorm_clm_le A d ε hA (kochLammP V) _) _
       _ = (ε : ℝ≥0∞) *
-          (klLpScale (V := V) R *
-            eLpNorm d (klP V)
-              ((klVolume : Measure (ℝ × V)).restrict (klLateCyl x R))) := by
+          (kochLammLpScale (V := V) R *
+            eLpNorm d (kochLammP V)
+              ((kochLammVolume : Measure (ℝ × V)).restrict (kochLammLateCylinder x R))) := by
         ac_rfl
       _ ≤ (ε : ℝ≥0∞) * (Aₚ : ℝ≥0∞) :=
         mul_le_mul_right (hd.late_lp x R hR hRT) _
       _ = ((ε * Aₚ : ℝ≥0) : ℝ≥0∞) := by norm_cast
 
-theorem klPath_map_bound {T : ℝ} {A₀ A₂ Aₚ ε : ℝ≥0}
+theorem kochLammPath_map_bound {T : ℝ} {A₀ A₂ Aₚ ε : ℝ≥0}
     (A : ℝ × V → E →L[ℝ] F) (u : ℝ × V → F) (d : ℝ × V → E)
     (hA : ∀ z, ‖A z‖ ≤ (ε : ℝ))
     (hmeas : AEStronglyMeasurable (fun z => A z (d z))
-      (klVolume : Measure (ℝ × V)))
-    (hd : KLPath T A₀ A₂ Aₚ u d) :
-    KLSource1 T (ε * A₂) (ε * Aₚ) (fun z => A z (d z)) := by
-  apply kl1_map_bound A d hA hmeas
+      (kochLammVolume : Measure (ℝ × V)))
+    (hd : KochLammPath T A₀ A₂ Aₚ u d) :
+    KochLammSourceOne T (ε * A₂) (ε * Aₚ) (fun z => A z (d z)) := by
+  apply KochLammSourceOne.clm_apply A d hA hmeas
   exact ⟨hd.grad_ae, hd.grad_l2, hd.grad_lp⟩
 
 end KochLamm

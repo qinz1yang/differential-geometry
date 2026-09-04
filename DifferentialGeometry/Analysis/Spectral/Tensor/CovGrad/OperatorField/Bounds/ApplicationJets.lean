@@ -45,7 +45,7 @@ private theorem riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_drop (g : Smo
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + (m + 1)) x
         ((iteratedCovGrad g 0 s (m + 1) W).toSection x) :=
   riemannianFiberNormSq_toSection_heq_congr_leibnizTower g (by omega : (s + 1) + m = s + (m + 1))
-    (iteratedCovGrad_covGrad_comm_heq' g 0 s m W) x
+    (iteratedCovGrad_covGrad_comm_heq g 0 s m W) x
 
 private lemma sum_range_shift_le_drop (n : ℕ) (f : ℕ → ℝ) (hf : ∀ i, 0 ≤ f i) :
     ∑ i ∈ Finset.range n, f (i + 1) ≤ ∑ i ∈ Finset.range (n + 1), f i := by
@@ -163,7 +163,7 @@ theorem castRankCc_operatorFieldComposition_drop_iteratedCovGrad_covGrad (g : Sm
     (iteratedCovGrad g 0 (b₀ + (w + 1)) k (covGrad g 0 (b₀ + w) W))]
   congr 1
   apply eq_of_heq
-  refine HEq.trans ?_ (iteratedCovGrad_covGrad_comm_heq' g 0 (b₀ + w) k W)
+  refine HEq.trans ?_ (iteratedCovGrad_covGrad_comm_heq g 0 (b₀ + w) k W)
   exact castCcTensorRank_heq g 0 (by omega : (b₀ + (w + 1)) + k = (b₀ + w) + (k + 1))
     (iteratedCovGrad g 0 (b₀ + (w + 1)) k (covGrad g 0 (b₀ + w) W))
 

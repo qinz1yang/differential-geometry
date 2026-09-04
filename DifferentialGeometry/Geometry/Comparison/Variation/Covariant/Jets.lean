@@ -458,13 +458,13 @@ theorem cov_snd2_expand_at
   rw [hleft, hlead, hcurvD, hcurv1, hcurv2, hvar] at hraw
   exact hraw
 
-noncomputable def jacResidual
+noncomputable def jacobianResidual
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t)) (s t : Real) :
     TangentSpace I (f s t) :=
-  covSnd2 (I := I) g f V s t + jacCurv (I := I) g f V s t
+  covSnd2 (I := I) g f V s t + jacobianCurv (I := I) g f V s t
 
-noncomputable def jacStepCorr
+noncomputable def jacobianStepCorrection
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t)) (s t : Real) :
     TangentSpace I (f s t) :=
@@ -506,7 +506,7 @@ noncomputable def jacStepCorr
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem jacResidual_step
+theorem jacobianResidual_step
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (hf : IsSmoothVariation (I := I) f)
     (V : forall s t : Real, TangentSpace I (f s t))
@@ -523,14 +523,14 @@ theorem jacResidual_step
       I.tangent ∞
       (fun q : Real × Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
-          (f q.1 q.2) (jacCurv (I := I) g f V q.1 q.2) :
+          (f q.1 q.2) (jacobianCurv (I := I) g f V q.1 q.2) :
             TangentBundle I M)))
     (s t : Real) :
-    jacResidual (I := I) g f
+    jacobianResidual (I := I) g f
         (fun r v => covFst (I := I) g f V r v) s t =
       covFst (I := I) g f
-          (fun r v => jacResidual (I := I) g f V r v) s t -
-        jacStepCorr (I := I) g f V s t := by
+          (fun r v => jacobianResidual (I := I) g f V r v) s t -
+        jacobianStepCorrection (I := I) g f V s t := by
   have hDt := cov_snd_smooth (I := I) g f V hV
   have hD2 :
       ContMDiff
@@ -553,19 +553,19 @@ theorem jacResidual_step
   have hadd :=
     covFst_add (I := I) g f
       (fun r v => covSnd2 (I := I) g f V r v)
-      (fun r v => jacCurv (I := I) g f V r v) hD2 hJ s t
+      (fun r v => jacobianCurv (I := I) g f V r v) hD2 hJ s t
   have hD2comm := cov_snd2_expand_at (I := I) g f hf V hV s t
-  have hRcomm := cov_jacCurv (I := I) g f V s t
+  have hRcomm := cov_jacobianCurv (I := I) g f V s t
   have hJlead :
       curvAlong (I := I) g (fun r : Real => f r t)
           (fun r : Real => covFst (I := I) g f V r t)
           (fun r : Real => varSnd (I := I) f r t)
           (fun r : Real => varSnd (I := I) f r t) s =
-        jacCurv (I := I) g f
+        jacobianCurv (I := I) g f
           (fun r v => covFst (I := I) g f V r v) s t :=
     rfl
   rw [hJlead] at hRcomm
-  unfold jacResidual jacStepCorr
+  unfold jacobianResidual jacobianStepCorrection
   rw [hadd]
   linear_combination (norm := module) - hD2comm - hRcomm
 
@@ -653,21 +653,21 @@ theorem covFstIter_smooth
           (fun s t => covFstIter (I := I) g f n V s t) ih
       simpa only [covFstIter_succ, covFst] using hnext
 
-noncomputable def jacJetResidual
+noncomputable def jacobianJetResidual
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t))
     (n : Nat) (s t : Real) : TangentSpace I (f s t) :=
-  jacResidual (I := I) g f (covFstIter (I := I) g f n V) s t
+  jacobianResidual (I := I) g f (covFstIter (I := I) g f n V) s t
 
-noncomputable def jacJetCorr
+noncomputable def jacobianJetCorrection
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t))
     (n : Nat) (s t : Real) : TangentSpace I (f s t) :=
-  jacStepCorr (I := I) g f (covFstIter (I := I) g f n V) s t
+  jacobianStepCorrection (I := I) g f (covFstIter (I := I) g f n V) s t
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem jacJetResidual_succ
+theorem jacobianJetResidual_succ
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (hf : IsSmoothVariation (I := I) f)
     (V : forall s t : Real, TangentSpace I (f s t))
@@ -686,26 +686,26 @@ theorem jacJetResidual_succ
       (fun q : Real × Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
           (f q.1 q.2)
-          (jacCurv (I := I) g f
+          (jacobianCurv (I := I) g f
             (covFstIter (I := I) g f n V) q.1 q.2) :
               TangentBundle I M)))
     (s t : Real) :
-    jacJetResidual (I := I) g f V (Nat.succ n) s t =
+    jacobianJetResidual (I := I) g f V (Nat.succ n) s t =
       covFst (I := I) g f
-          (fun r v => jacJetResidual (I := I) g f V n r v) s t -
-        jacJetCorr (I := I) g f V n s t := by
+          (fun r v => jacobianJetResidual (I := I) g f V n r v) s t -
+        jacobianJetCorrection (I := I) g f V n s t := by
   have hstep :=
-    jacResidual_step (I := I) g f hf
+    jacobianResidual_step (I := I) g f hf
       (covFstIter (I := I) g f n V)
       (covFstIter_smooth (I := I) g f V hV n) hJn s t
   change
-    jacResidual (I := I) g f
+    jacobianResidual (I := I) g f
         (fun r v => covFst (I := I) g f
           (covFstIter (I := I) g f n V) r v) s t =
       covFst (I := I) g f
-          (fun r v => jacResidual (I := I) g f
+          (fun r v => jacobianResidual (I := I) g f
             (covFstIter (I := I) g f n V) r v) s t -
-        jacStepCorr (I := I) g f (covFstIter (I := I) g f n V) s t
+        jacobianStepCorrection (I := I) g f (covFstIter (I := I) g f n V) s t
   exact hstep
 
 omit [NeZero (Module.finrank ℝ E)] in

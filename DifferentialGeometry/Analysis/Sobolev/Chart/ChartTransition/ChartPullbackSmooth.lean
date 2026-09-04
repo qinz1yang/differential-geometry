@@ -24,21 +24,21 @@ private lemma tsupport_chartPullback_subset
     [T2Space M]
     (α : M)
     {ψ : EuclN → ℝ}
-    (hψ_cpt : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_compact : HasCompactSupport ψ)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     tsupport (chartPullback I α ψ) ⊆
       (extChartAt I α).symm '' ((toEuclidean (E := E)).symm '' tsupport ψ) := by
   classical
   set Kψ : Set EuclN := tsupport ψ with hKψ_def
-  have hKψ_compact : IsCompact Kψ := hψ_cpt
-  have hImg_E_compact :
+  have hKψ_compact : IsCompact Kψ := hψ_compact
+  have hImage_E_compact :
       IsCompact ((toEuclidean (E := E)).symm '' Kψ) :=
     hKψ_compact.image (toEuclidean (E := E)).symm.continuous
-  have hImg_E_subset_target :
+  have hImage_E_subset_target :
       ((toEuclidean (E := E)).symm '' Kψ) ⊆ (extChartAt I α).target := by
     intro z hz
     rcases hz with ⟨y, hy_in, hyz⟩
-    have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_supp hy_in
+    have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_support hy_in
     rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy_target
     rw [← hyz]
     exact hy_target
@@ -50,15 +50,15 @@ private lemma tsupport_chartPullback_subset
     have hcontOn_restricted :
         ContinuousOn (extChartAt I α).symm
           ((toEuclidean (E := E)).symm '' Kψ) :=
-      hcontOn.mono hImg_E_subset_target
-    exact hImg_E_compact.image_of_continuousOn hcontOn_restricted
+      hcontOn.mono hImage_E_subset_target
+    exact hImage_E_compact.image_of_continuousOn hcontOn_restricted
   have hK_M_closed : IsClosed K_M := hK_M_compact.isClosed
   have hfun_support_subset :
       Function.support (chartPullback I α ψ) ⊆ K_M := by
     intro x hx
     simp only [Function.mem_support, ne_eq] at hx
-    by_cases hx_src : x ∈ (chartAt H α).source
-    · rw [chartPullback_apply_of_mem (I := I) (M := M) α ψ hx_src] at hx
+    by_cases hx_source : x ∈ (chartAt H α).source
+    · rw [chartPullback_apply_of_mem (I := I) (M := M) α ψ hx_source] at hx
       have hψ_nz : (toEuclidean (E := E)) (extChartAt I α x) ∈ Function.support ψ := hx
       have hψ_in_K : (toEuclidean (E := E)) (extChartAt I α x) ∈ Kψ :=
         subset_tsupport ψ hψ_nz
@@ -71,11 +71,11 @@ private lemma tsupport_chartPullback_subset
         refine ⟨(toEuclidean (E := E)) (extChartAt I α x), hψ_in_K, ?_⟩
         exact hsymm_eq
       refine ⟨extChartAt I α x, h_in_E, ?_⟩
-      have hx_src' : x ∈ (extChartAt I α).source := by
+      have hx_source' : x ∈ (extChartAt I α).source := by
         rw [extChartAt_source (I := I)]
-        exact hx_src
-      exact (extChartAt I α).left_inv hx_src'
-    · rw [chartPullback_apply_of_notMem (I := I) (M := M) α ψ hx_src] at hx
+        exact hx_source
+      exact (extChartAt I α).left_inv hx_source'
+    · rw [chartPullback_apply_of_notMem (I := I) (M := M) α ψ hx_source] at hx
       exact (hx rfl).elim
   intro x hx
   have h_close : closure (Function.support (chartPullback I α ψ)) ⊆ K_M :=
@@ -86,41 +86,41 @@ omit [IsManifold I ∞ M] in
 private lemma tsupport_chartPullback_image_subset_chartAt_source
     (α : M)
     {ψ : EuclN → ℝ}
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (extChartAt I α).symm '' ((toEuclidean (E := E)).symm '' tsupport ψ) ⊆
       (chartAt H α).source := by
   intro x hx
   rcases hx with ⟨z, hz, hxz⟩
   rcases hz with ⟨y, hy_in, hyz⟩
-  have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_supp hy_in
+  have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_support hy_in
   rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy_target
   have hz_target : z ∈ (extChartAt I α).target := by
     rw [← hyz]; exact hy_target
-  have hx_in_src : x ∈ (extChartAt I α).source := by
+  have hx_in_source : x ∈ (extChartAt I α).source := by
     rw [← hxz]
     exact (extChartAt I α).map_target hz_target
-  rw [extChartAt_source (I := I)] at hx_in_src
-  exact hx_in_src
+  rw [extChartAt_source (I := I)] at hx_in_source
+  exact hx_in_source
 
 theorem chartPullback_contMDiff
     [T2Space M]
     (α : M)
     {ψ : EuclN → ℝ}
     (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_compact : HasCompactSupport ψ)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (chartPullback I α ψ) := by
   classical
   have h_tsupp : tsupport (chartPullback I α ψ) ⊆ (chartAt H α).source := by
     refine subset_trans ?_
-      (tsupport_chartPullback_image_subset_chartAt_source (I := I) (M := M) α hψ_supp)
-    exact tsupport_chartPullback_subset (I := I) (M := M) α hψ_cpt hψ_supp
+      (tsupport_chartPullback_image_subset_chartAt_source (I := I) (M := M) α hψ_support)
+    exact tsupport_chartPullback_subset (I := I) (M := M) α hψ_compact hψ_support
   set T : Set M := tsupport (chartPullback I α ψ) with hT_def
   have hT_closed : IsClosed T := isClosed_tsupport _
   refine contMDiff_of_locally_contMDiffOn ?_
   intro x
-  by_cases hx_src : x ∈ (chartAt H α).source
-  · refine ⟨(chartAt H α).source, (chartAt H α).open_source, hx_src, ?_⟩
+  by_cases hx_source : x ∈ (chartAt H α).source
+  · refine ⟨(chartAt H α).source, (chartAt H α).open_source, hx_source, ?_⟩
     have h_eq_on : Set.EqOn (chartPullback I α ψ)
         (fun y => ψ ((toEuclidean (E := E)) (extChartAt I α y)))
         (chartAt H α).source := by
@@ -149,16 +149,16 @@ theorem chartPullback_contMDiff
     exact h_eq_on hy
   · have hxT : x ∉ T := by
       intro hxT
-      apply hx_src
+      apply hx_source
       exact h_tsupp hxT
     refine ⟨Tᶜ, hT_closed.isOpen_compl, hxT, ?_⟩
     have h_zero_on : Set.EqOn (chartPullback I α ψ) (fun _ : M => (0 : ℝ)) Tᶜ := by
       intro y hy
       simp only [Set.mem_compl_iff] at hy
-      have hy_not_supp : y ∉ Function.support (chartPullback I α ψ) := by
-        intro hy_supp
-        exact hy (subset_tsupport _ hy_supp)
-      simpa [Function.mem_support, not_not] using hy_not_supp
+      have hy_not_support : y ∉ Function.support (chartPullback I α ψ) := by
+        intro hy_support
+        exact hy (subset_tsupport _ hy_support)
+      simpa [Function.mem_support, not_not] using hy_not_support
     have h_const : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (0 : ℝ)) Tᶜ :=
       contMDiff_const.contMDiffOn
     refine h_const.congr ?_
@@ -185,10 +185,10 @@ lemma chartTransitionEuclid_eq_chartα_image
       (toEuclidean (E := E)) (extChartAt I α x) := by
   unfold chartTransitionEuclid
   rw [(toEuclidean (E := E)).symm_apply_apply]
-  have hx_src : x ∈ (extChartAt I γ).source := by
+  have hx_source : x ∈ (extChartAt I γ).source := by
     rw [extChartAt_source (I := I)]
     exact hx_γ
-  rw [(extChartAt I γ).left_inv hx_src]
+  rw [(extChartAt I γ).left_inv hx_source]
 
 def chartCenterEuclid (α : M) : EuclN :=
   (toEuclidean (E := E)) (extChartAt I α α)
@@ -243,10 +243,10 @@ lemma chartOverlapEuclid_subset_chartTarget
   rcases hy with ⟨z, ⟨x, hx, hxz⟩, hzy⟩
   refine ⟨z, ?_, hzy⟩
   rw [← hxz]
-  have hx_src : x ∈ (extChartAt I γ).source := by
+  have hx_source : x ∈ (extChartAt I γ).source := by
     rw [extChartAt_source (I := I)]
     exact hx.1
-  exact (extChartAt I γ).map_source hx_src
+  exact (extChartAt I γ).map_source hx_source
 
 omit [IsManifold I ∞ M] in
 lemma chartOverlapEuclid_isOpen
@@ -327,14 +327,14 @@ lemma chartTransitionEuclid_contDiffOn_overlap
     rcases hz with ⟨x, hx_in, hxz⟩
     rcases hx_in with ⟨hx_γ, hx_α⟩
     refine ⟨?_, ?_⟩
-    · have hx_extγ_src : x ∈ (extChartAt I γ).source := by
+    · have hx_extγ_source : x ∈ (extChartAt I γ).source := by
         rw [extChartAt_source (I := I)]; exact hx_γ
       rw [← hxz]
-      exact (extChartAt I γ).map_source hx_extγ_src
-    · have hx_extγ_src : x ∈ (extChartAt I γ).source := by
+      exact (extChartAt I γ).map_source hx_extγ_source
+    · have hx_extγ_source : x ∈ (extChartAt I γ).source := by
         rw [extChartAt_source (I := I)]; exact hx_γ
       have h_lr : (extChartAt I γ).symm (extChartAt I γ x) = x :=
-        (extChartAt I γ).left_inv hx_extγ_src
+        (extChartAt I γ).left_inv hx_extγ_source
       change (extChartAt I γ).symm z ∈ (extChartAt I α).source
       rw [← hxz, h_lr]
       rw [extChartAt_source (I := I)]; exact hx_α
@@ -432,13 +432,13 @@ lemma chartTransitionExtensionSubC_contDiff
     (γ α : M)
     {η : EuclN → ℝ}
     (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : tsupport η ⊆ chartOverlapEuclid (I := I) (M := M) γ α)
+    (hη_support : tsupport η ⊆ chartOverlapEuclid (I := I) (M := M) γ α)
     (c : EuclN) :
     ContDiff ℝ (⊤ : ℕ∞) (chartTransitionCutoffShifted (I := I) (M := M) γ α η c) := by
   rw [contDiff_iff_contDiffAt]
   intro y
-  by_cases hy_supp : y ∈ tsupport η
-  · have hy_overlap : y ∈ chartOverlapEuclid (I := I) (M := M) γ α := hη_supp hy_supp
+  by_cases hy_support : y ∈ tsupport η
+  · have hy_overlap : y ∈ chartOverlapEuclid (I := I) (M := M) γ α := hη_support hy_support
     have h_overlap_open : IsOpen (chartOverlapEuclid (I := I) (M := M) γ α) :=
       chartOverlapEuclid_isOpen (I := I) (M := M) γ α
     have h_smooth_on : ContDiffOn ℝ (⊤ : ℕ∞)
@@ -448,7 +448,7 @@ lemma chartTransitionExtensionSubC_contDiff
         hη_smooth c
     exact h_smooth_on.contDiffAt (h_overlap_open.mem_nhds hy_overlap)
   · have h_open : IsOpen ((tsupport η)ᶜ) := (isClosed_tsupport _).isOpen_compl
-    have hy_in : y ∈ ((tsupport η)ᶜ) := hy_supp
+    have hy_in : y ∈ ((tsupport η)ᶜ) := hy_support
     have h_smooth_on : ContDiffOn ℝ (⊤ : ℕ∞)
         (chartTransitionCutoffShifted (I := I) (M := M) γ α η c)
         ((tsupport η)ᶜ) :=
@@ -460,7 +460,7 @@ lemma chartTransitionExtended_contDiff
     (γ α : M)
     {η : EuclN → ℝ}
     (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : tsupport η ⊆ chartOverlapEuclid (I := I) (M := M) γ α)
+    (hη_support : tsupport η ⊆ chartOverlapEuclid (I := I) (M := M) γ α)
     (c : EuclN) :
     ContDiff ℝ (⊤ : ℕ∞) (chartTransitionExtended (I := I) (M := M) γ α η c) := by
   have h_eq : chartTransitionExtended (I := I) (M := M) γ α η c =
@@ -473,13 +473,13 @@ lemma chartTransitionExtended_contDiff
     rfl
   rw [h_eq]
   exact contDiff_const.add (chartTransitionExtensionSubC_contDiff (I := I) (M := M)
-    γ α hη_smooth hη_supp c)
+    γ α hη_smooth hη_support c)
 
 omit [IsManifold I ∞ M] in
 lemma chartTransitionExtended_hasCompactSupport_sub
     (γ α : M)
     {η : EuclN → ℝ}
-    (hη_cpt : HasCompactSupport η)
+    (hη_compact : HasCompactSupport η)
     (c : EuclN) :
     HasCompactSupport
       (fun y => chartTransitionExtended (I := I) (M := M) γ α η c y - c) := by
@@ -488,20 +488,20 @@ lemma chartTransitionExtended_hasCompactSupport_sub
     funext y
     exact chartTransitionExtended_sub_const (I := I) (M := M) γ α η c y
   rw [h_eq]
-  have h_supp_sub : Function.support
+  have h_support_sub : Function.support
       (chartTransitionCutoffShifted (I := I) (M := M) γ α η c) ⊆ tsupport η := by
     intro y hy
     by_contra hy_not
     apply hy
     exact chartTransitionExtensionSubC_zero_off_tsupport (I := I) (M := M) γ α c hy_not
-  have h_tsupport_compact : IsCompact (tsupport η) := hη_cpt
+  have h_tsupport_compact : IsCompact (tsupport η) := hη_compact
   refine HasCompactSupport.intro' (K := tsupport η)
     h_tsupport_compact (isClosed_tsupport _) ?_
   intro y hy
   have hy_not : y ∉ Function.support
       (chartTransitionCutoffShifted (I := I) (M := M) γ α η c) := by
-    intro hy_supp
-    exact hy (h_supp_sub hy_supp)
+    intro hy_support
+    exact hy (h_support_sub hy_support)
   simpa [Function.mem_support, not_not] using hy_not
 
 lemma chartTransitionExtended_iter_deriv_bound
@@ -509,21 +509,21 @@ lemma chartTransitionExtended_iter_deriv_bound
     (γ α : M)
     {η : EuclN → ℝ}
     (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_cpt : HasCompactSupport η)
-    (hη_supp : tsupport η ⊆ chartOverlapEuclid (I := I) (M := M) γ α)
+    (hη_compact : HasCompactSupport η)
+    (hη_support : tsupport η ⊆ chartOverlapEuclid (I := I) (M := M) γ α)
     (c : EuclN) (kmax : ℕ) :
     ∃ M_bd : ℝ, 0 < M_bd ∧
       ∀ i, i ≤ kmax → ∀ x : EuclN,
         ‖iteratedFDeriv ℝ i (chartTransitionExtended (I := I) (M := M) γ α η c) x‖ ≤ M_bd := by
   have hT_smooth : ContDiff ℝ (⊤ : ℕ∞)
       (chartTransitionExtended (I := I) (M := M) γ α η c) :=
-    chartTransitionExtended_contDiff (I := I) (M := M) γ α hη_smooth hη_supp c
-  have hT_diff_cpt : HasCompactSupport
+    chartTransitionExtended_contDiff (I := I) (M := M) γ α hη_smooth hη_support c
+  have hT_diff_compact : HasCompactSupport
       (fun y => chartTransitionExtended (I := I) (M := M) γ α η c y - c) :=
-    chartTransitionExtended_hasCompactSupport_sub (I := I) (M := M) γ α hη_cpt c
+    chartTransitionExtended_hasCompactSupport_sub (I := I) (M := M) γ α hη_compact c
   exact
     Analysis.Sobolev.Euclidean.iter_deriv_bound_of_eq_const_offCompactSupport_atOrder
-    (d := Module.finrank ℝ E) hT_smooth hT_diff_cpt kmax
+    (d := Module.finrank ℝ E) hT_smooth hT_diff_compact kmax
 
 omit [IsManifold I ∞ M] in
 lemma chartTransitionEuclid_mapsTo_overlap

@@ -161,8 +161,8 @@ theorem wronskian_zero_on
     (hDKdiff : ∀ t ∈ Icc (0 : ℝ) b, DifferentiableAt ℝ
       (chartRepAt (I := I) γ
         (fun s => covDerivAlong (I := I) g γ K s) t) t)
-    (hJacJ : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I) g γ J t)
-    (hJacK : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I) g γ K t)
+    (hJacobianJ : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I) g γ J t)
+    (hJacobianK : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I) g γ K t)
     (hJ0 : J 0 = 0) (hK0 : K 0 = 0) :
     ∀ t ∈ Icc (0 : ℝ) b, jacobiWronskian (I := I) g γ J K t = 0 := by
   have hderiv : ∀ t ∈ Icc (0 : ℝ) b,
@@ -170,7 +170,7 @@ theorem wronskian_zero_on
     intro t ht
     exact wronskian_deriv_at (I := I) hn g γ J K t (hγ t ht)
       (hJdiff t ht) (hKdiff t ht) (hDJdiff t ht) (hDKdiff t ht)
-      (hJacJ t ht) (hJacK t ht)
+      (hJacobianJ t ht) (hJacobianK t ht)
   have hcont : ContinuousOn (jacobiWronskian (I := I) g γ J K)
       (Icc (0 : ℝ) b) := by
     intro t ht
@@ -199,12 +199,12 @@ theorem wronskian_eq_zero
     (hDKdiff : ∀ t ∈ Icc (0 : ℝ) b, DifferentiableAt ℝ
       (chartRepAt (I := I) γ
         (fun s => covDerivAlong (I := I) g γ K s) t) t)
-    (hJacJ : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I) g γ J t)
-    (hJacK : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I) g γ K t)
+    (hJacobianJ : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I) g γ J t)
+    (hJacobianK : ∀ t ∈ Icc (0 : ℝ) b, IsJacobiAt (I := I) g γ K t)
     (hJ0 : J 0 = 0) (hK0 : K 0 = 0) :
     ∀ t ∈ Icc (0 : ℝ) b, jacobiWronskian (I := I) g γ J K t = 0 :=
   wronskian_zero_on (I := I) hn g γ J K (fun _ _ => hγ.contMDiffAt)
-    hJdiff hKdiff hDJdiff hDKdiff hJacJ hJacK hJ0 hK0
+    hJdiff hKdiff hDJdiff hDKdiff hJacobianJ hJacobianK hJ0 hK0
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ode_bound_of_isJacobiAt

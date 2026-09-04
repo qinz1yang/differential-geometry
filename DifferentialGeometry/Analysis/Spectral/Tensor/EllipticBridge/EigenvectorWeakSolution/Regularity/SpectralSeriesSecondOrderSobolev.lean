@@ -73,8 +73,8 @@ theorem tensorHs_eq_finset_sum_of_finite_support
   funext j
   rw [TensorHsSmoothRepresentative.sum_basisVec_coeff_apply
     (I := I) (M := M) g r s σ hT_fs.toFinset T j]
-  by_cases hj_supp : j ∈ Function.support T.coeff
-  · have hj_mem : j ∈ hT_fs.toFinset := hT_fs.mem_toFinset.mpr hj_supp
+  by_cases hj_support : j ∈ Function.support T.coeff
+  · have hj_mem : j ∈ hT_fs.toFinset := hT_fs.mem_toFinset.mpr hj_support
     have h_isolate :
         ∑ i ∈ hT_fs.toFinset, (if j = i then T.coeff i else 0) =
           (if j = j then T.coeff j else 0) := by
@@ -85,7 +85,7 @@ theorem tensorHs_eq_finset_sum_of_finite_support
     simp
   · have hzero : T.coeff j = 0 := by
       by_contra hne
-      exact hj_supp (Function.mem_support.mpr hne)
+      exact hj_support (Function.mem_support.mpr hne)
     have h_rhs_zero :
         ∑ i ∈ hT_fs.toFinset,
             (if j = i then T.coeff i else (0 : ℝ)) = 0 := by

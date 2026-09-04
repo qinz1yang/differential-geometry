@@ -97,12 +97,12 @@ theorem frame_pairing_locally_const
         (smoothOrthoFrame (I := I) g x i y)
         (smoothOrthoFrame (I := I) g x j y)) =ᶠ[nhds x]
       (fun _ : M => (if i = j then (1 : ℝ) else 0)) := by
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x] with y hy
   exact smoothOrthoFrame_orthonormal (I := I) g x hy i j
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem cometric_skew_core
+theorem connection_smoothOrthoFrame_inner_add_eq_zero
     (g : SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) (w : TangentSpace I x) :
     g.inner x
@@ -140,7 +140,7 @@ theorem cometric_diagonal_skew
     g.inner x
         ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x w)
         (smoothOrthoFrame (I := I) g x i x) = 0 := by
-  have hcore := cometric_skew_core (I := I) g x i i w
+  have hcore := connection_smoothOrthoFrame_inner_add_eq_zero (I := I) g x i i w
   have hsymm : g.inner x
         (smoothOrthoFrame (I := I) g x i x)
         ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x w) =

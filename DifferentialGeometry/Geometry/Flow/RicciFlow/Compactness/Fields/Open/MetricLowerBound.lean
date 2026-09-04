@@ -11,7 +11,7 @@ open Set Bundle Manifold
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -33,7 +33,7 @@ theorem metric_lower
       letI : ChartedSpace H P.M := P.charted;
       letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (c : Nat → Real) (hc : ∀ n, 0 < c n)
     (hseq : letI : TopologicalSpace P.M := P.topology;
@@ -62,5 +62,5 @@ theorem metric_lower
     (hseq n) t htn
 
 end OpenMetricConvergenceData
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

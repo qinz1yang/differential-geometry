@@ -1119,7 +1119,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart
     hε hε₀ hδ hδr hr hθ hθr hR hR0 hR0lt hR0' hbig hbig' hδR hε₀le hR₁₂ hR₁₂R hR₁₂R''
     hR₁₂R''' hf haε hcompact hunique hreg_f hη hηε₀ hεr hεr' hRbig hR₁big hcont with
     ⟨e₂, e, hcomm, hlower, hinj⟩
-  have hmani_src : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
+  have hmani_source : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
       (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
       (Handle.AdjunctionSpace k (m + 1 - k)
         (morseAttachingEmbedding hk c ε r data hε hεr)) _
@@ -1127,7 +1127,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart
         hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f) :=
     morseHandleAdjunctionIsManifold hk c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr hεr
       hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f
-  have hmani_tgt : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
+  have hmani_target : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
       (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
       (SublevelSpace f (c + ε)) _
       (manifoldSublevelChartedSpace I f (c + ε) hf hreg_upper) :=
@@ -1166,7 +1166,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart
     morseHandleAdjunctionChartedSpace hk c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr
       hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f,
     e,
-    ⟨hmani_src, hmani_tgt, hlower_sm, hcell_sm, hlower, hinj⟩⟩
+    ⟨hmani_source, hmani_target, hlower_sm, hcell_sm, hlower, hinj⟩⟩
 
 theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_zero
     {m : ℕ}
@@ -1257,7 +1257,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_zer
     hε hε₀ hδ hδr hr hθ hθr hR hR0 hR0lt hR0' hbig hbig' hδR hε₀le hR₁₂ hR₁₂R hR₁₂R''
     hR₁₂R''' hf haε hcompact hunique hreg_f hη hηε₀ hεr hεr' hRbig hR₁big hcont with
     ⟨e₂, e, hcomm, hlower, hinj⟩
-  have hmani_src : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
+  have hmani_source : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
       (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
       (Handle.AdjunctionSpace 0 (m + 1)
         (morseAttachingEmbedding (Nat.zero_le (m + 1)) c ε r data hε hεr)) _
@@ -1265,7 +1265,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_zer
         hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f) :=
     morseHandleAdjunctionIsManifold (Nat.zero_le (m + 1)) c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr hεr
       hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f
-  have hmani_tgt : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
+  have hmani_target : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
       (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
       (SublevelSpace f (c + ε)) _
       (manifoldSublevelChartedSpace I f (c + ε) hf hreg_upper) :=
@@ -1303,7 +1303,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_zer
     morseHandleAdjunctionChartedSpace (Nat.zero_le (m + 1)) c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr
       hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f,
     e,
-    ⟨hmani_src, hmani_tgt, hlower_sm, hcell_sm, hlower, hinj⟩⟩
+    ⟨hmani_source, hmani_target, hlower_sm, hcell_sm, hlower, hinj⟩⟩
 
 theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_top
     {m : ℕ}
@@ -1394,7 +1394,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_top
     hε hε₀ hδ hδr hr hθ hθr hR hR0 hR0lt hR0' hbig hbig' hδR hε₀le hR₁₂ hR₁₂R hR₁₂R''
     hR₁₂R''' hf haε hcompact hunique hreg_f hη hηε₀ hεr hεr' hRbig hR₁big hcont with
     ⟨e₂, e, hcomm, hlower, hinj⟩
-  have hmani_src : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
+  have hmani_source : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
       (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
       (Handle.AdjunctionSpace (m + 1) (m + 1 - (m + 1))
         (morseAttachingEmbedding (le_rfl : m + 1 ≤ m + 1) c ε r data hε hεr)) _
@@ -1402,7 +1402,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_top
         hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f) :=
     morseHandleAdjunctionIsManifold (le_rfl : m + 1 ≤ m + 1) c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr hεr
       hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f
-  have hmani_tgt : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
+  have hmani_target : @IsManifold ℝ _ (MorseModel (m + 1)) _ _ (MorseHalfSpace m) _
       (morseModelWithCornersHalfSpace m) (⊤ : ℕ∞)
       (SublevelSpace f (c + ε)) _
       (manifoldSublevelChartedSpace I f (c + ε) hf hreg_upper) :=
@@ -1440,7 +1440,7 @@ theorem exists_morseHandleAdjunction_diffeomorph_upperSublevel_of_morseChart_top
     morseHandleAdjunctionChartedSpace (le_rfl : m + 1 ≤ m + 1) c ε r δ θ R₀ R₀' R₁' R₁'' data hε hδ hθ hδr hθr hr
       hεr hεr' hR0 hR0lt hbig hRbig hR hR0' hbig' hR₁big hR₁₂R hR₁₂ hR₁₂R'' hR₁₂R''' hcont hf hreg_f,
     e,
-    ⟨hmani_src, hmani_tgt, hlower_sm, hcell_sm, hlower, hinj⟩⟩
+    ⟨hmani_source, hmani_target, hlower_sm, hcell_sm, hlower, hinj⟩⟩
 
 end
 

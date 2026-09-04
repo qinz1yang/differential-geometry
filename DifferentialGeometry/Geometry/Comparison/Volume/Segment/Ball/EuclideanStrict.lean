@@ -33,7 +33,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_vol_lt_eucl
+theorem segmentBall_vol_lt_eucl
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (y : M) ↦ TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -52,14 +52,14 @@ theorem segBall_vol_lt_eucl
           ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
             (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
           ∂(modelHaar (E := E)).toSphere) *
-        ENNReal.ofReal (hypRadVol 0 (Module.finrank ℝ E - 1) R) :=
-      segBall_vol_lt (I := I) g hEnorm x hR hd hRicPos
+        ENNReal.ofReal (hyperbolicRadialVolume 0 (Module.finrank ℝ E - 1) R) :=
+      segmentBall_vol_lt (I := I) g hEnorm x hR hd hRicPos
     _ = (volume : Measure E) (Metric.ball (0 : E) R) :=
       gBall_model_eucl (I := I) g x hR
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_lt_of_sec
+theorem segmentBall_lt_of_sec
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (y : M) ↦ TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -68,11 +68,11 @@ theorem segBall_lt_of_sec
     (hd : 0 < Module.finrank ℝ E - 1)
     (hsec : ∀ (y : M) (a b : TangentSpace I y),
       a ≠ 0 → b ≠ 0 → g.inner y a b = 0 →
-        0 < metricRm04StdAt (I := I) (M := M) g y a b b a) :
+        0 < metricRm04StandardAt (I := I) (M := M) g y a b b a) :
     riemannianVolumeMeasure (I := I) (M := M) g
         {y : M | riemannianEDist I x y < ENNReal.ofReal R}
       < (volume : Measure E) (Metric.ball (0 : E) R) :=
-  segBall_vol_lt_eucl (I := I) g hEnorm x hR hd fun y _ hu ↦
+  segmentBall_vol_lt_eucl (I := I) g hEnorm x hR hd fun y _ hu ↦
     ricci_pos_of_sec (I := I) g y hd (hsec y) hu
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

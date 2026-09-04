@@ -84,12 +84,12 @@ theorem chart_preimage_null
     rw [measure_eq_zero_iff_ae_notMem]
     filter_upwards [hchart] with x hx
     intro hxA
-    have hx_src : x ∈ (chartAt H x₀).source := hxA.1
+    have hx_source : x ∈ (chartAt H x₀).source := hxA.1
     have hx_ext : x ∈ (extChartAt I x₀).source := by
       rwa [extChartAt_source_eq_chartAt_source (I := I) (M := M)]
     have hxT : (toEuclidean (E := E)) ((extChartAt I x₀) x) ∈ T := by
       exact ⟨(extChartAt I x₀) x, (extChartAt I x₀).map_source hx_ext, rfl⟩
-    exact hx hx_src (hNT_sub ⟨hxA.2, hxT⟩)
+    exact hx hx_source (hNT_sub ⟨hxA.2, hxT⟩)
   calc
     riemannianVolumeMeasure (I := I) (M := M) g A =
         (riemannianVolumeMeasure (I := I) (M := M) g).restrict

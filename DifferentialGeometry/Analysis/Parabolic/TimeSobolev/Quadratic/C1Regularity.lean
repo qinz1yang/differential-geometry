@@ -68,7 +68,7 @@ theorem mom_rep_c1
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
     (u : timeH1 X T) (F : ℝ → X)
     (hF : ContinuousOn F (Icc (0 : ℝ) T))
-    (hEuler : ∀ v : timeH1 X T, v.init = 0 → v.toFun T = 0 →
+    (hEuler : ∀ v : timeH1 X T, v.initial = 0 → v.toFun T = 0 →
       2 * inner ℝ (timeOp A hA C hC u.deriv) v.deriv +
         ∫ t in Icc (0 : ℝ) T, inner ℝ (F t) (v.toFun t) = 0) :
     ∃ c : X,

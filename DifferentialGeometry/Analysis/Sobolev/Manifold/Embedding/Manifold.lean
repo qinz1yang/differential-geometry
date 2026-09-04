@@ -154,7 +154,7 @@ private theorem perChart_eLpNorm_le
     ENNReal.mul_ne_top ENNReal.ofReal_ne_top hH_α_ne_top
   refine ⟨K_α, hK_α_ne_top, ?_⟩
   intro u hu_meas hu
-  have h_supp : tsupport (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) ⊆ Kα :=
+  have h_support : tsupport (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) ⊆ Kα :=
     tsupport_pou_mul_subset_tsupport_pou' (I := I) (M := M) ρ α u
   have h_meas : Measurable (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) :=
     measurable_pou_mul (I := I) (M := M) ρ α hu_meas
@@ -167,7 +167,7 @@ private theorem perChart_eLpNorm_le
               (ρ α : C^∞⟮I, M; ℝ⟯) x * u x)) q
               ((volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict
                 (chartTargetEuclid (I := I) (M := M) α)) :=
-    hbridge h_meas h_supp
+    hbridge h_meas h_support
   have h_eLpNorm_eq :
       eLpNorm (chartPushedRaw I α (fun x : M =>
           (ρ α : C^∞⟮I, M; ℝ⟯) x * u x)) q

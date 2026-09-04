@@ -11,7 +11,7 @@ open Bundle
 open scoped Manifold ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -95,7 +95,7 @@ theorem jacobi_variation_force_le
       let DJ :=
         Geometry.Riemannian.Variation.covSnd (I := I) P.metric f V 0 t
       let F :=
-        Geometry.Riemannian.Variation.jacVarForce (I := I) P.metric f V t
+        Geometry.Riemannian.Variation.jacobianVarForce (I := I) P.metric f V t
       let L : TangentSpace I (f 0 t) -> Real :=
         fun z => Real.sqrt (P.metric.inner (f 0 t) z z)
       L F <=
@@ -234,7 +234,7 @@ theorem jacobi_variation_force_le
       (Geometry.Riemannian.sqrt_inner_smul (I := I) P.metric (f 0 t)
         (-1 : Real) (F1 + F2 + (2 : Real) • F3 + F4 + F5 + F6))
   change
-    L (Geometry.Riemannian.Variation.jacVarForce
+    L (Geometry.Riemannian.Variation.jacobianVarForce
       (I := I) P.metric f V t) <=
       C1 * L T * L A * L T * L J +
         C0 * L K * L T * L J +
@@ -242,7 +242,7 @@ theorem jacobi_variation_force_le
         C1 * L A * L J * L T * L T +
         C0 * L J * L K * L T +
         C0 * L J * L T * L K
-  rw [show Geometry.Riemannian.Variation.jacVarForce
+  rw [show Geometry.Riemannian.Variation.jacobianVarForce
       (I := I) P.metric f V t =
         -(F1 + F2 + (2 : Real) • F3 + F4 + F5 + F6) from rfl,
     hneg]
@@ -282,10 +282,10 @@ theorem intrinsic_jacobi_force_le
       exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := I) P.metric x v
     let f : Real → Real → P.M := fun s v =>
-      Geometry.Riemannian.Exponential.intrLaunch3
+      Geometry.Riemannian.Exponential.intrinsicLaunch3
         (I := I) P.metric hEnorm p u a b ((s, 0), v)
     let V : ∀ s v : Real, TangentSpace I (f s v) := fun s v =>
-      Geometry.Riemannian.Exponential.intrLaunchJ
+      Geometry.Riemannian.Exponential.intrinsicLaunchJ
         (I := I) P.metric hEnorm p u a b (s, v)
     let A := Geometry.Riemannian.Variation.varFst (I := I) f 0 t
     let T := Geometry.Riemannian.Variation.varSnd (I := I) f 0 t
@@ -297,7 +297,7 @@ theorem intrinsic_jacobi_force_le
     let DJ :=
       Geometry.Riemannian.Variation.covSnd (I := I) P.metric f V 0 t
     let F :=
-      Geometry.Riemannian.Variation.jacVarForce (I := I) P.metric f V t
+      Geometry.Riemannian.Variation.jacobianVarForce (I := I) P.metric f V t
     let L : TangentSpace I (f 0 t) → Real :=
       fun z => Real.sqrt (P.metric.inner (f 0 t) z z)
     L F <=
@@ -331,10 +331,10 @@ theorem intrinsic_jacobi_force_le
     exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
       (I := I) P.metric x v
   let f : Real → Real → P.M := fun s v =>
-    Geometry.Riemannian.Exponential.intrLaunch3
+    Geometry.Riemannian.Exponential.intrinsicLaunch3
       (I := I) P.metric hEnorm p u a b ((s, 0), v)
   let V : ∀ s v : Real, TangentSpace I (f s v) := fun s v =>
-    Geometry.Riemannian.Exponential.intrLaunchJ
+    Geometry.Riemannian.Exponential.intrinsicLaunchJ
       (I := I) P.metric hEnorm p u a b (s, v)
   let Q := (modelWithCornersSelf Real Real).prod
     (modelWithCornersSelf Real Real)
@@ -348,7 +348,7 @@ theorem intrinsic_jacobi_force_le
           ∞ (fun q : Real × Real => ((q.1, (0 : Real)), q.2)) :=
       (contMDiff_fst.prodMk contMDiff_const).prodMk contMDiff_snd
     exact
-      (Geometry.Riemannian.Exponential.intrLaunch3_smooth
+      (Geometry.Riemannian.Exponential.intrinsicLaunch3_smooth
         (I := I) P.metric hEnorm p u a b).comp hincl
   have hV :
       ContMDiff Q I.tangent ∞
@@ -356,7 +356,7 @@ theorem intrinsic_jacobi_force_le
           (TotalSpace.mk' E (E := (TangentSpace I : P.M → Type _))
             (f q.1 q.2) (V q.1 q.2) : TangentBundle I P.M)) := by
     simpa only [f, V] using
-      Geometry.Riemannian.Exponential.intrLaunchJ_smooth
+      Geometry.Riemannian.Exponential.intrinsicLaunchJ_smooth
         (I := I) P.metric hEnorm p u a b
   have hA :
       ContMDiff Q I.tangent ∞
@@ -372,13 +372,13 @@ theorem intrinsic_jacobi_force_le
           (Geometry.Riemannian.Variation.varFst
             (I := I) f q.1 q.2) : TangentBundle I P.M))
     refine ContMDiff.congr
-      (Geometry.Riemannian.Exponential.intrLaunchDir_smooth
+      (Geometry.Riemannian.Exponential.intrinsicLaunchDir_smooth
         (I := I) P.metric hEnorm p u a b ((1, 0), 0)) ?_
     intro q
     apply TotalSpace.ext
     · rfl
     · exact heq_of_eq
-        (Geometry.Riemannian.Exponential.intrLaunchA_eq
+        (Geometry.Riemannian.Exponential.intrinsicLaunchA_eq
           (I := I) P.metric hEnorm p u a b q).symm
   have hT :
       ContMDiff Q I.tangent ∞
@@ -394,13 +394,13 @@ theorem intrinsic_jacobi_force_le
           (Geometry.Riemannian.Variation.varSnd
             (I := I) f q.1 q.2) : TangentBundle I P.M))
     refine ContMDiff.congr
-      (Geometry.Riemannian.Exponential.intrLaunchDir_smooth
+      (Geometry.Riemannian.Exponential.intrinsicLaunchDir_smooth
         (I := I) P.metric hEnorm p u a b ((0, 0), 1)) ?_
     intro q
     apply TotalSpace.ext
     · rfl
     · exact heq_of_eq
-        (Geometry.Riemannian.Exponential.intrLaunchT_eq
+        (Geometry.Riemannian.Exponential.intrinsicLaunchT_eq
           (I := I) P.metric hEnorm p u a b q).symm
   have hzero :
       ContMDiff (modelWithCornersSelf Real Real) Q ∞
@@ -457,7 +457,7 @@ theorem intrinsic_jacobi_force_le
   exact jacobi_variation_force_le (I := I) P h0 h1 f V t
     hγt hAt hTt hJt hγs hJs hTs
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

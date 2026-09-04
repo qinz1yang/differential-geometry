@@ -237,9 +237,9 @@ private theorem metricDoubleTraceFibFixedFrame_frame_independent (g : SmoothRiem
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     in
-private lemma metricDoubleTraceFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd
+private lemma metricDoubleTraceFib_eq_fixedFrame_smoothOrthoFrame_on_neighborhood
     (g : SmoothRiemannianMetric I M) (r t : ℕ) (x₀ : M)
-    {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     metricDoubleTraceFib (I := I) (M := M) g r t y =
       metricDoubleTraceFibFixedFrame (I := I) (M := M) r t (smoothOrthoFrame (I := I) g x₀) y := by
   rw [metricDoubleTraceFib_eq_fixedFrame_moving]
@@ -260,10 +260,10 @@ private lemma metricDoubleTraceFib_eventuallyEq_fixedFrame
         (E := fun z : M => TensorRSSpace r (t + 2) I z →L[ℝ] TensorRSSpace r t I z) x
         (metricDoubleTraceFibFixedFrame (I := I) (M := M) r t
           (smoothOrthoFrame (I := I) g x₀) x)) := by
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel r (t + 2) ℝ E →L[ℝ] TensorRSModel r t ℝ E)
     (E := fun z : M => TensorRSSpace r (t + 2) I z →L[ℝ] TensorRSSpace r t I z) y)
-    (metricDoubleTraceFib_eq_fixedFrame_smoothOrthoFrame_on_nbhd (I := I) (M := M) g r t x₀ hy)
+    (metricDoubleTraceFib_eq_fixedFrame_smoothOrthoFrame_on_neighborhood (I := I) (M := M) g r t x₀ hy)
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
   private theorem metricDoubleTraceFib_contMDiffAt

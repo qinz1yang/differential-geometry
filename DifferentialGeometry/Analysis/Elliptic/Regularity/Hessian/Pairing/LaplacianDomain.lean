@@ -704,7 +704,7 @@ private lemma chartContribSurrogate_tsupport_subset
     tsupport (chartContribSurrogate (I := I) (M := M) g φ α hu_h) ⊆
       (chartAt H α).source := by
   classical
-  have h_supp_sub : Function.support
+  have h_support_sub : Function.support
       (chartContribSurrogate (I := I) (M := M) g φ α hu_h) ⊆
         (chartAt H α).source := by
     intro x hx
@@ -712,7 +712,7 @@ private lemma chartContribSurrogate_tsupport_subset
     apply hx
     exact chartContribSurrogate_zero_off_source
       (I := I) (M := M) g φ α hu_h h_notin
-  have h_supp_in_pou : Function.support
+  have h_support_in_pou : Function.support
       (chartContribSurrogate (I := I) (M := M) g φ α hu_h) ⊆
         Function.support fun x : M => (chartAtlasPOU I M α : M → ℝ) x := by
     intro x hx
@@ -724,7 +724,7 @@ private lemma chartContribSurrogate_tsupport_subset
   have h_tsupp_in_pou : tsupport
       (chartContribSurrogate (I := I) (M := M) g φ α hu_h) ⊆
         tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
-    closure_mono h_supp_in_pou
+    closure_mono h_support_in_pou
   exact h_tsupp_in_pou.trans
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
 
@@ -811,7 +811,7 @@ theorem riemannianVolumeMeasure_pullback_null
   classical
   set NM : Set M := (chartAt H α).source ∩
     { x : M | (toEuclidean (E := E)) ((extChartAt I α) x) ∈ N } with hNM_def
-  have h_src_meas : MeasurableSet ((chartAt H α).source) :=
+  have h_source_meas : MeasurableSet ((chartAt H α).source) :=
     ((chartAt H α).open_source).measurableSet
   have h_extChartExt_meas : Measurable
       (DifferentialGeometry.Analysis.Sobolev.Chart.extChartAtExt (I := I) α) :=
@@ -831,28 +831,28 @@ theorem riemannianVolumeMeasure_pullback_null
       { x : M | (toEuclidean (E := E))
         (DifferentialGeometry.Analysis.Sobolev.Chart.extChartAtExt (I := I) α x) ∈ N } := by
     apply Set.eq_of_subset_of_subset
-    · intro x ⟨hx_src, hx_N⟩
-      refine ⟨hx_src, ?_⟩
+    · intro x ⟨hx_source, hx_N⟩
+      refine ⟨hx_source, ?_⟩
       simp only [Set.mem_ofPred_eq]
       rw [DifferentialGeometry.Analysis.Sobolev.Chart.extChartAtExt_apply_of_mem
-        (I := I) α hx_src]
+        (I := I) α hx_source]
       exact hx_N
-    · intro x ⟨hx_src, hx_N⟩
-      refine ⟨hx_src, ?_⟩
+    · intro x ⟨hx_source, hx_N⟩
+      refine ⟨hx_source, ?_⟩
       simp only [Set.mem_ofPred_eq]
       simp only [Set.mem_ofPred_eq] at hx_N
       rw [DifferentialGeometry.Analysis.Sobolev.Chart.extChartAtExt_apply_of_mem
-        (I := I) α hx_src] at hx_N
+        (I := I) α hx_source] at hx_N
       exact hx_N
   have hNM_meas : MeasurableSet NM := by
-    rw [hNM_eq]; exact h_src_meas.inter h_preim_meas
+    rw [hNM_eq]; exact h_source_meas.inter h_preim_meas
   have h_meas_as_lint : (riemannianVolumeMeasure (I := I) (M := M) g) NM =
       ∫⁻ a, NM.indicator (fun _ : M => (1 : ℝ≥0∞)) a
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     rw [MeasureTheory.lintegral_indicator_const hNM_meas (1 : ℝ≥0∞)]
     rw [one_mul]
   rw [h_meas_as_lint]
-  have hF_supp : ∀ x : M, x ∉ (chartAt H α).source →
+  have hF_support : ∀ x : M, x ∉ (chartAt H α).source →
       NM.indicator (fun _ => (1 : ℝ≥0∞)) x = 0 := by
     intro x hx
     have hx_notNM : x ∉ NM := fun hxNM => hx hxNM.1
@@ -861,13 +861,13 @@ theorem riemannianVolumeMeasure_pullback_null
     Measurable.indicator measurable_const hNM_meas
   have h_bridge :=
     riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn
-      (I := I) (M := M) g α hF_meas hF_supp
+      (I := I) (M := M) g α hF_meas hF_support
   change ∫⁻ x, NM.indicator (fun _ : M => (1 : ℝ≥0∞)) x
       ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) = 0
   rw [h_bridge]
   have h_via :=
-    DifferentialGeometry.Analysis.Sobolev.Chart.chartLocalMeasure_lintegral_via_chartTargetEuclid
+    DifferentialGeometry.Analysis.Sobolev.Chart.chartLocalMeasure_lintegral_eq_chartTargetEuclid
       (I := I) (M := M) g α hF_meas
   rw [h_via]
   have h_setLInt_eq :
@@ -892,7 +892,7 @@ theorem riemannianVolumeMeasure_pullback_null
       have h_eq : (toEuclidean (E := E)).symm y = w := by
         rw [← hwy]; exact (toEuclidean (E := E)).symm_apply_apply w
       rw [h_eq]; exact hw_target
-    have hx_in_src :
+    have hx_in_source :
         (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈ (chartAt H α).source := by
       have : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈ (extChartAt I α).source :=
         (extChartAt I α).map_target hy_target'
@@ -920,7 +920,7 @@ theorem riemannianVolumeMeasure_pullback_null
         have h_not_in_preim : (toEuclidean (E := E)) ((extChartAt I α)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ∉ N := by
           intro h
-          exact hxNM ⟨hx_in_src, h⟩
+          exact hxNM ⟨hx_in_source, h⟩
         rw [h_toE_extChart_x] at h_not_in_preim
         rw [Set.indicator_of_notMem h_not_in_preim]
     change ENNReal.ofReal _ * NM.indicator _ _ =
@@ -985,8 +985,8 @@ private lemma chartContribSurrogate_ae_eq
   refine MeasureTheory.measure_mono_null ?_ hpre_null
   intro x hx
   simp only [Set.mem_ofPred_eq] at hx
-  by_cases hx_src : x ∈ (chartAt H α).source
-  · refine ⟨hx_src, ?_⟩
+  by_cases hx_source : x ∈ (chartAt H α).source
+  · refine ⟨hx_source, ?_⟩
     simp only [Set.mem_ofPred_eq]
     have h_y_in_target : (toEuclidean (E := E)) ((extChartAt I α) x) ∈
         chartTargetEuclid (I := I) (M := M) α := by
@@ -999,15 +999,15 @@ private lemma chartContribSurrogate_ae_eq
     have h_agree_at_y :=
       hN_agree _ h_y_in_target h_not_in_N
     apply hx
-    rw [chartContribSurrogate_eq_on_source (I := I) (M := M) g φ α hu_h hx_src,
+    rw [chartContribSurrogate_eq_on_source (I := I) (M := M) g φ α hu_h hx_source,
         hessPairingMChartContribution_eq_on_source (I := I) (M := M) g φ α
           (u_h := u_h),
         h_agree_at_y]
   · exfalso
     apply hx
-    rw [chartContribSurrogate_zero_off_source (I := I) (M := M) g φ α hu_h hx_src,
+    rw [chartContribSurrogate_zero_off_source (I := I) (M := M) g φ α hu_h hx_source,
         hessPairingMChartContribution_zero_off_source (I := I) (M := M) g φ α
-          (u_h := u_h) hx_src]
+          (u_h := u_h) hx_source]
 
 private lemma chartPushedRaw_chartContribSurrogate_le_rep
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
@@ -1025,13 +1025,13 @@ private lemma chartPushedRaw_chartContribSurrogate_le_rep
       have h_eq : (toEuclidean (E := E)).symm y = w := by
         rw [← hwy]; exact (toEuclidean (E := E)).symm_apply_apply w
       rw [h_eq]; exact hw_target
-    have hx_src :
+    have hx_source :
         (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈ (chartAt H α).source := by
       have : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈ (extChartAt I α).source :=
         (extChartAt I α).map_target hy_target'
       rwa [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)] at this
-    rw [chartContribSurrogate_eq_on_source (I := I) (M := M) g φ α hu_h hx_src]
+    rw [chartContribSurrogate_eq_on_source (I := I) (M := M) g φ α hu_h hx_source]
     have h_toE_extChart_x :
         (toEuclidean (E := E)) ((extChartAt I α)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) = y := by

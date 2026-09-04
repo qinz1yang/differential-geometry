@@ -324,9 +324,9 @@ theorem halfSqDist_flat
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨ρ, hρ, hgeo⟩ := exists_central_geodesic (I := I) g hEnorm q
   refine ⟨ρ, hρ, ?_⟩
-  intro pt hpt_src hpt_ne hsmall hdiff
+  intro pt hpt_source hpt_ne hsmall hdiff
   obtain ⟨u, L, hLpos, hLdist, hguu, hgL, hLu, hgeoOn, hmfd, harc⟩ :=
-    hgeo hpt_src hpt_ne hsmall
+    hgeo hpt_source hpt_ne hsmall
   apply LinearMap.ext
   intro w
   obtain ⟨f, hf, hf0, hfixL, hfderiv⟩ :=

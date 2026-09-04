@@ -2163,12 +2163,12 @@ theorem timeMulLogDeriv_continuousOn
         hbd'
     simpa [ContinuousWithinAt] using hmain
   · have ht₀pos : 0 < t₀ := lt_of_le_of_ne hp₀.1.1 (Ne.symm ht₀₀)
-    have ht₀reg : t₀ ∈ D.regular := by
+    have ht₀regularity : t₀ ∈ D.regular := by
       by_cases ht₀t : t₀ = t
       · subst t₀
         exact ht
       · exact hslabRegular ⟨ht₀pos, lt_of_le_of_ne hp₀.1.2 ht₀t⟩
-    have hfReg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+    have hfRegularity : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => f p.1 p.2) (D.regular ×ˢ univ) := by
       intro p hp
       have hlogAt : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ Real.log (u p.1 p.2) :=
@@ -2192,7 +2192,7 @@ theorem timeMulLogDeriv_continuousOn
       have hNOn : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
           (fun p : ℝ × M => normGradSqFun (I := I) g (f p.1) p.2)
           (D.regular ×ˢ univ) :=
-        normGradSqFun_contMDiffOn (I := I) (M := M) (D := D) g f hfReg
+        normGradSqFun_contMDiffOn (I := I) (M := M) (D := D) g f hfRegularity
           (fun τ hτ => Moser.contMDiff_log_of_pos_slice
             (hslice τ (D.regular_subset hτ)) (hpos τ (D.regular_subset hτ)))
       have hly_def : ∀ (τ : ℝ) (y : M), liYauQuantity g f τ y =
@@ -2208,7 +2208,7 @@ theorem timeMulLogDeriv_continuousOn
         p.1 * deriv (fun s : ℝ => f s p.2) p.1) (t₀, y₀) := by
       have hc : ContinuousAt (fun p : ℝ × M => deriv (fun s : ℝ => f s p.2) p.1) (t₀, y₀) :=
         hDOn.continuousOn.continuousAt
-          ((IsOpen.prod D.regular_isOpen isOpen_univ).mem_nhds ⟨ht₀reg, trivial⟩)
+          ((IsOpen.prod D.regular_isOpen isOpen_univ).mem_nhds ⟨ht₀regularity, trivial⟩)
       exact continuousAt_fst.mul hc
     exact hcontAt.continuousWithinAt
 

@@ -33,8 +33,8 @@ theorem contMDiff_finsetSum_chartPullback
     {ι : Type*} (S : Finset ι) (α : ι → M)
     (ψ : ι → EuclN → ℝ)
     (hψ_smooth : ∀ i ∈ S, ContDiff ℝ (⊤ : ℕ∞) (ψ i))
-    (hψ_cpt : ∀ i ∈ S, HasCompactSupport (ψ i))
-    (hψ_supp : ∀ i ∈ S,
+    (hψ_compact : ∀ i ∈ S, HasCompactSupport (ψ i))
+    (hψ_support : ∀ i ∈ S,
       tsupport (ψ i) ⊆ chartTargetEuclid (I := I) (M := M) (α i)) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun x : M => ∑ i ∈ S, chartPullback I (α i) (ψ i) x) := by
@@ -47,17 +47,17 @@ theorem contMDiff_finsetSum_chartPullback
       have h_smooth_i : ContMDiff I 𝓘(ℝ, ℝ) ∞ (chartPullback I (α i) (ψ i)) :=
         chartPullback_contMDiff (I := I) (M := M) (α i)
           (hψ_smooth i (Finset.mem_insert_self i S))
-          (hψ_cpt i (Finset.mem_insert_self i S))
-          (hψ_supp i (Finset.mem_insert_self i S))
+          (hψ_compact i (Finset.mem_insert_self i S))
+          (hψ_support i (Finset.mem_insert_self i S))
       have ih' : ContMDiff I 𝓘(ℝ, ℝ) ∞
           (fun x : M => ∑ j ∈ S, chartPullback I (α j) (ψ j) x) := by
         refine ih ?_ ?_ ?_
         · intro j hj
           exact hψ_smooth j (Finset.mem_insert.mpr (Or.inr hj))
         · intro j hj
-          exact hψ_cpt j (Finset.mem_insert.mpr (Or.inr hj))
+          exact hψ_compact j (Finset.mem_insert.mpr (Or.inr hj))
         · intro j hj
-          exact hψ_supp j (Finset.mem_insert.mpr (Or.inr hj))
+          exact hψ_support j (Finset.mem_insert.mpr (Or.inr hj))
       have h_eq : (fun x : M => ∑ j ∈ insert i S, chartPullback I (α j) (ψ j) x) =
           (fun x : M => chartPullback I (α i) (ψ i) x +
             ∑ j ∈ S, chartPullback I (α j) (ψ j) x) := by

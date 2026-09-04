@@ -63,8 +63,8 @@ private lemma chartPushedPouFun_memWkp_two_two
       (chartPushedPouFun (I := I) (M := M) g α u_h)
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold chartPushedPouFun
-  exact (chartH2NonSmoothPOUWitness_of_laplacianDomain
-    (I := I) (M := M) g hu_h α).memWkp_two
+  exact chartPushed_memWkp_two_of_laplacianDomain
+    (I := I) (M := M) g hu_h α
 
 private lemma chartPushedPouFun_memW1p
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -80,7 +80,7 @@ noncomputable def chosenChartFirstWeakPartial
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (j : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 j
     (chartPushedPouFun (I := I) (M := M) g α u_h)
     (chartTargetEuclid (I := I) (M := M) α)
@@ -91,7 +91,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     {u_h : H1Compl (I := I) (M := M) g}
     (j : Fin (Module.finrank ℝ E)) :
     chosenChartFirstWeakPartial (I := I) (M := M) (u_h := u_h) g α j =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 j
         (chartPushedPouFun (I := I) (M := M) g α u_h)
         (chartTargetEuclid (I := I) (M := M) α) := rfl
@@ -106,7 +106,7 @@ theorem chosenChartFirstWeakPartial_isWeakPartial
       (chartPushedPouFun (I := I) (M := M) g α u_h)
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold chosenChartFirstWeakPartial
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
     (chartPushedPouFun_memW1p (I := I) (M := M) g α hu_h) j
 
 theorem chosenChartFirstWeakPartial_memLp_chartTarget
@@ -118,7 +118,7 @@ theorem chosenChartFirstWeakPartial_memLp_chartTarget
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   unfold chosenChartFirstWeakPartial
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
     (chartPushedPouFun_memW1p (I := I) (M := M) g α hu_h) j
 
 theorem chosenChartFirstWeakPartial_locally_memLp
@@ -146,9 +146,9 @@ noncomputable def chosenChartSecondWeakPartial
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (k l : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 l
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := Module.finrank ℝ E) 2 k
       (chartPushedPouFun (I := I) (M := M) g α u_h)
       (chartTargetEuclid (I := I) (M := M) α))
@@ -160,9 +160,9 @@ omit [NeZero (Module.finrank ℝ E)] in
     {u_h : H1Compl (I := I) (M := M) g}
     (k l : Fin (Module.finrank ℝ E)) :
     chosenChartSecondWeakPartial (I := I) (M := M) (u_h := u_h) g α k l =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 k
           (chartPushedPouFun (I := I) (M := M) g α u_h)
           (chartTargetEuclid (I := I) (M := M) α))
@@ -179,7 +179,7 @@ theorem chosenChartSecondWeakPartial_memLp_chartTarget
   classical
   have h_memWkp_2 := chartPushedPouFun_memWkp_two_two (I := I) (M := M) g α hu_h
   have h_inner_memW1p : DeGiorgi.MemW1p 2
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 k
         (chartPushedPouFun (I := I) (M := M) g α u_h)
         (chartTargetEuclid (I := I) (M := M) α))
@@ -188,7 +188,7 @@ theorem chosenChartSecondWeakPartial_memLp_chartTarget
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p] at h_step
     exact h_step
   unfold chosenChartSecondWeakPartial
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
     h_inner_memW1p l
 
 theorem chosenChartSecondWeakPartial_locally_memLp

@@ -222,12 +222,6 @@ section SmoothnessDerived
 
 variable (I : ModelWithCorners ℝ E H) [hI : HasSmoothBoundary E H I]
 
-theorem projE_contDiff' : ContDiff ℝ ∞ hI.projE := hI.projE_contDiff
-
-theorem I_inclH_boundaryI_symm_contDiff' :
-    ContDiff ℝ ∞ ((I : H → E) ∘ hI.inclH ∘ hI.boundaryI.symm) :=
-  hI.I_inclH_boundaryI_symm_contDiff
-
 theorem projE_contDiffOn (s : Set E) : ContDiffOn ℝ ∞ hI.projE s :=
   hI.projE_contDiff.contDiffOn
 

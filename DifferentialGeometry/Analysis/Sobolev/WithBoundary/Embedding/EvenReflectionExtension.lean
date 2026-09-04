@@ -190,12 +190,12 @@ lemma tsupport_evenReflect_subset {n : ℕ} [NeZero n]
     tsupport (evenReflect n f) ⊆
       evenReflectFun n ⁻¹' tsupport f := by
   classical
-  have h_supp : Function.support (evenReflect n f) ⊆
+  have h_support : Function.support (evenReflect n f) ⊆
       evenReflectFun n ⁻¹' Function.support f := support_evenReflect_subset f
-  have h_supp_le_tsupp : evenReflectFun n ⁻¹' Function.support f ⊆
+  have h_support_le_tsupp : evenReflectFun n ⁻¹' Function.support f ⊆
       evenReflectFun n ⁻¹' tsupport f :=
     fun y hy => Set.preimage_mono (subset_tsupport _) hy
-  refine Set.Subset.trans (closure_mono (h_supp.trans h_supp_le_tsupp)) ?_
+  refine Set.Subset.trans (closure_mono (h_support.trans h_support_le_tsupp)) ?_
   exact (isClosed_tsupport _).preimage continuous_evenReflectFun |>.closure_subset
 
 lemma evenReflectFun_comp_self {n : ℕ} [NeZero n] :
@@ -360,23 +360,23 @@ lemma continuous_evenReflect_of_continuous {n : ℕ} [NeZero n]
 theorem memLp_evenReflect_of_contDiff_hasCompactSupport
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hf_supp : HasCompactSupport f)
+    (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hf_support : HasCompactSupport f)
     (p : ℝ≥0∞) :
     MemLp (evenReflect n f) p
       (volume : Measure (EuclideanSpace ℝ (Fin n))) := by
   classical
   have h_cont : Continuous (evenReflect n f) :=
     continuous_evenReflect (n := n) hf.continuous
-  have h_supp_sub : tsupport (evenReflect n f) ⊆
+  have h_support_sub : tsupport (evenReflect n f) ⊆
       evenReflectFun n ⁻¹' tsupport f :=
     tsupport_evenReflect_subset (n := n) f
-  have h_supp_compact :
+  have h_support_compact :
       HasCompactSupport (evenReflect n f) := by
     apply IsCompact.of_isClosed_subset
-      (((hf_supp.image continuous_signFlipFun).union hf_supp))
+      (((hf_support.image continuous_signFlipFun).union hf_support))
       (isClosed_tsupport _)
     intro y hy
-    have h1 : y ∈ evenReflectFun n ⁻¹' tsupport f := h_supp_sub hy
+    have h1 : y ∈ evenReflectFun n ⁻¹' tsupport f := h_support_sub hy
     rcases le_or_gt 0 (y 0) with hupper | hlower
     · right
       have : evenReflectFun n y = y :=
@@ -397,7 +397,7 @@ theorem memLp_evenReflect_of_contDiff_hasCompactSupport
       rw [Set.mem_preimage, h_eq_sf] at h1
       refine ⟨signFlipFun n y, h1, ?_⟩
       exact signFlipFun_signFlipFun y
-  exact h_cont.memLp_of_hasCompactSupport h_supp_compact
+  exact h_cont.memLp_of_hasCompactSupport h_support_compact
 
 private noncomputable def fderivVec
     {n : ℕ} (f : EuclideanSpace ℝ (Fin n) → ℝ)
@@ -627,19 +627,19 @@ lemma continuous_norm_fderiv_compReflect
 lemma hasCompactSupport_norm_fderiv_compReflect
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hf_supp : HasCompactSupport f) :
+    (hf_support : HasCompactSupport f) :
     HasCompactSupport (fun y : EuclideanSpace ℝ (Fin n) =>
       ‖fderiv ℝ f (evenReflectFun n y)‖) := by
   classical
-  have h_fderiv_supp : HasCompactSupport (fderiv ℝ f) :=
-    hf_supp.fderiv ℝ
+  have h_fderiv_support : HasCompactSupport (fderiv ℝ f) :=
+    hf_support.fderiv ℝ
   have h_compact_union :
       IsCompact (signFlipFun n '' tsupport f ∪ tsupport f) :=
-    (hf_supp.image continuous_signFlipFun).union hf_supp
+    (hf_support.image continuous_signFlipFun).union hf_support
   apply IsCompact.of_isClosed_subset h_compact_union
     (isClosed_tsupport _)
   intro y hy
-  have h_supp_pre : Function.support
+  have h_support_pre : Function.support
       (fun y : EuclideanSpace ℝ (Fin n) => ‖fderiv ℝ f (evenReflectFun n y)‖) ⊆
       evenReflectFun n ⁻¹' Function.support (fderiv ℝ f) := by
     intro z hz
@@ -659,7 +659,7 @@ lemma hasCompactSupport_norm_fderiv_compReflect
       have h1 : Function.support
           (fun y : EuclideanSpace ℝ (Fin n) => ‖fderiv ℝ f (evenReflectFun n y)‖) ⊆
           evenReflectFun n ⁻¹' tsupport f :=
-        h_supp_pre.trans (h_pre_subset_t.trans h_pre_subset_t_f)
+        h_support_pre.trans (h_pre_subset_t.trans h_pre_subset_t_f)
       exact h_closed.closure_subset_iff.mpr h1
     exact h_subset hy
   rcases le_or_gt 0 (y 0) with hupper | hlower
@@ -686,7 +686,7 @@ lemma hasCompactSupport_norm_fderiv_compReflect
 theorem memLp_evenReflectGrad_component_of_contDiff_hasCompactSupport
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hf_supp : HasCompactSupport f)
+    (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hf_support : HasCompactSupport f)
     (p : ℝ≥0∞) (i : Fin n) :
     MemLp (fun y : EuclideanSpace ℝ (Fin n) => evenReflectGrad n f y i) p
       (volume : Measure (EuclideanSpace ℝ (Fin n))) := by
@@ -698,10 +698,10 @@ theorem memLp_evenReflectGrad_component_of_contDiff_hasCompactSupport
   set g : EuclideanSpace ℝ (Fin n) → ℝ :=
     fun y => ‖fderiv ℝ f (evenReflectFun n y)‖ with hg_def
   have h_g_cont : Continuous g := continuous_norm_fderiv_compReflect hf
-  have h_g_supp : HasCompactSupport g :=
-    hasCompactSupport_norm_fderiv_compReflect hf_supp
+  have h_g_support : HasCompactSupport g :=
+    hasCompactSupport_norm_fderiv_compReflect hf_support
   have h_g_memLp : MemLp g p (volume : Measure (EuclideanSpace ℝ (Fin n))) :=
-    h_g_cont.memLp_of_hasCompactSupport h_g_supp
+    h_g_cont.memLp_of_hasCompactSupport h_g_support
   refine MemLp.of_le_mul (g := g) (c := 1) h_g_memLp h_aesm ?_
   filter_upwards
   intro y
@@ -716,13 +716,13 @@ theorem memLp_evenReflectGrad_component_of_contDiff_hasCompactSupport
 theorem memLp_evenReflectGrad_of_contDiff_hasCompactSupport
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hf_supp : HasCompactSupport f)
+    (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hf_support : HasCompactSupport f)
     (p : ℝ≥0∞) :
     MemLp (evenReflectGrad n f) p
       (volume : Measure (EuclideanSpace ℝ (Fin n))) := by
   apply MemLp.of_eval_piLp
   intro i
-  exact memLp_evenReflectGrad_component_of_contDiff_hasCompactSupport hf hf_supp p i
+  exact memLp_evenReflectGrad_component_of_contDiff_hasCompactSupport hf hf_support p i
 
 lemma contDiff_signFlipFun {n : ℕ} [NeZero n] {k : WithTop ℕ∞} :
     ContDiff ℝ k (signFlipFun n) :=
@@ -736,32 +736,32 @@ lemma contDiff_comp_signFlipFun {n : ℕ} [NeZero n]
 lemma evenReflect_eq_add_comp_signFlip_of_tsupport_in_openHalfSpace
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hf_supp : tsupport f ⊆
+    (hf_support : tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace) :
     evenReflect n f =
       fun y : EuclideanSpace ℝ (Fin n) => f y + f (signFlipFun n y) := by
   funext y
   classical
   rcases lt_trichotomy (y 0) 0 with hlt | heq | hgt
-  · have h_y_not_supp : y ∉ tsupport f := by
+  · have h_y_not_support : y ∉ tsupport f := by
       intro hin
-      have : y ∈ DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := hf_supp hin
+      have : y ∈ DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := hf_support hin
       have : (0 : ℝ) < y 0 := this
       linarith
-    have h_y_zero : f y = 0 := image_eq_zero_of_notMem_tsupport h_y_not_supp
+    have h_y_zero : f y = 0 := image_eq_zero_of_notMem_tsupport h_y_not_support
     rw [evenReflect_eq_comp_signFlip_of_lower f hlt]
     rw [h_y_zero, zero_add]
-  · have h_y_not_supp : y ∉ tsupport f := by
+  · have h_y_not_support : y ∉ tsupport f := by
       intro hin
-      have : y ∈ DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := hf_supp hin
+      have : y ∈ DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := hf_support hin
       have : (0 : ℝ) < y 0 := this
       linarith
-    have h_y_zero : f y = 0 := image_eq_zero_of_notMem_tsupport h_y_not_supp
+    have h_y_zero : f y = 0 := image_eq_zero_of_notMem_tsupport h_y_not_support
     have h_sfy_zero : f (signFlipFun n y) = 0 := by
       apply image_eq_zero_of_notMem_tsupport
       intro hin
       have : signFlipFun n y ∈ DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace :=
-        hf_supp hin
+        hf_support hin
       have hopen : (0 : ℝ) < signFlipFun n y 0 := this
       rw [signFlipFun_apply_zero] at hopen
       have : (0 : ℝ) < -y 0 := hopen
@@ -775,44 +775,44 @@ lemma evenReflect_eq_add_comp_signFlip_of_tsupport_in_openHalfSpace
         y ∈ DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace :=
       le_of_lt hgt
     rw [evenReflect_eq_self_of_upper f h_y_in_closed]
-    have h_sfy_not_supp : signFlipFun n y ∉ tsupport f := by
+    have h_sfy_not_support : signFlipFun n y ∉ tsupport f := by
       intro hin
       have : signFlipFun n y ∈ DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace :=
-        hf_supp hin
+        hf_support hin
       have hopen : (0 : ℝ) < signFlipFun n y 0 := this
       rw [signFlipFun_apply_zero] at hopen
       have : (0 : ℝ) < -y 0 := hopen
       linarith
     have h_sfy_zero : f (signFlipFun n y) = 0 :=
-      image_eq_zero_of_notMem_tsupport h_sfy_not_supp
+      image_eq_zero_of_notMem_tsupport h_sfy_not_support
     rw [h_sfy_zero, add_zero]
 
 theorem contDiff_evenReflect_of_tsupport_in_openHalfSpace
     {n : ℕ} [NeZero n] {k : WithTop ℕ∞}
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf : ContDiff ℝ k f)
-    (hf_supp : tsupport f ⊆
+    (hf_support : tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace) :
     ContDiff ℝ k (evenReflect n f) := by
-  rw [evenReflect_eq_add_comp_signFlip_of_tsupport_in_openHalfSpace hf_supp]
+  rw [evenReflect_eq_add_comp_signFlip_of_tsupport_in_openHalfSpace hf_support]
   exact hf.add (contDiff_comp_signFlipFun hf)
 
 theorem hasCompactSupport_evenReflect_of_tsupport_in_openHalfSpace
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hf_supp_compact : HasCompactSupport f) :
+    (hf_support_compact : HasCompactSupport f) :
     HasCompactSupport (evenReflect n f) := by
   classical
   have h_compact_union :
       IsCompact (signFlipFun n '' tsupport f ∪ tsupport f) :=
-    (hf_supp_compact.image continuous_signFlipFun).union hf_supp_compact
+    (hf_support_compact.image continuous_signFlipFun).union hf_support_compact
   apply IsCompact.of_isClosed_subset h_compact_union
     (isClosed_tsupport _)
-  have h_supp_sub : tsupport (evenReflect n f) ⊆
+  have h_support_sub : tsupport (evenReflect n f) ⊆
       evenReflectFun n ⁻¹' tsupport f :=
     tsupport_evenReflect_subset (n := n) f
   intro y hy
-  have h1 : y ∈ evenReflectFun n ⁻¹' tsupport f := h_supp_sub hy
+  have h1 : y ∈ evenReflectFun n ⁻¹' tsupport f := h_support_sub hy
   rcases le_or_gt 0 (y 0) with hupper | hlower
   · right
     have h_eq_self : evenReflectFun n y = y :=
@@ -838,7 +838,7 @@ theorem fderiv_evenReflect_apply_single_eq_evenReflectGrad
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf : ContDiff ℝ (⊤ : ℕ∞) f)
-    (hf_supp : tsupport f ⊆
+    (hf_support : tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace)
     (y : EuclideanSpace ℝ (Fin n)) (i : Fin n) :
     (fderiv ℝ (evenReflect n f) y) (EuclideanSpace.single i 1) =
@@ -846,7 +846,7 @@ theorem fderiv_evenReflect_apply_single_eq_evenReflectGrad
   classical
   have h_eq : evenReflect n f =
       fun z : EuclideanSpace ℝ (Fin n) => f z + f (signFlipFun n z) :=
-    evenReflect_eq_add_comp_signFlip_of_tsupport_in_openHalfSpace hf_supp
+    evenReflect_eq_add_comp_signFlip_of_tsupport_in_openHalfSpace hf_support
   have hf_diff : Differentiable ℝ f := hf.differentiable (by simp)
   have hg : ContDiff ℝ (⊤ : ℕ∞) (fun z : EuclideanSpace ℝ (Fin n) => f (signFlipFun n z)) :=
     contDiff_comp_signFlipFun hf
@@ -880,10 +880,10 @@ theorem fderiv_evenReflect_apply_single_eq_evenReflectGrad
     h_iso_apply _
   rw [h_clm_eval]
   rcases le_or_gt 0 (y 0) with hupper | hlower
-  · have h_sfy_not_supp : signFlipFun n y ∉ tsupport f := by
+  · have h_sfy_not_support : signFlipFun n y ∉ tsupport f := by
       intro hin
       have : signFlipFun n y ∈
-          DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := hf_supp hin
+          DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := hf_support hin
       have hopen : (0 : ℝ) < signFlipFun n y 0 := this
       rw [signFlipFun_apply_zero] at hopen
       linarith
@@ -891,23 +891,23 @@ theorem fderiv_evenReflect_apply_single_eq_evenReflectGrad
       have h_eventually : ∀ᶠ z in nhds (signFlipFun n y), f z = 0 := by
         rw [eventually_iff_exists_mem]
         exact ⟨(tsupport f)ᶜ,
-          (isClosed_tsupport f).isOpen_compl.mem_nhds h_sfy_not_supp,
+          (isClosed_tsupport f).isOpen_compl.mem_nhds h_sfy_not_support,
           fun z hz => image_eq_zero_of_notMem_tsupport hz⟩
       have h_filt_eq : f =ᶠ[nhds (signFlipFun n y)] 0 := h_eventually
       rw [Filter.EventuallyEq.fderiv_eq h_filt_eq]
       simp
     rw [h_fderiv_sfy_zero, zero_apply, add_zero]
     rw [evenReflectGrad_apply_component_upper f hupper i]
-  · have h_y_not_supp : y ∉ tsupport f := by
+  · have h_y_not_support : y ∉ tsupport f := by
       intro hin
-      have : y ∈ DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := hf_supp hin
+      have : y ∈ DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := hf_support hin
       have : (0 : ℝ) < y 0 := this
       linarith
     have h_fderiv_y_zero : fderiv ℝ f y = 0 := by
       have h_eventually : ∀ᶠ z in nhds y, f z = 0 := by
         rw [eventually_iff_exists_mem]
         exact ⟨(tsupport f)ᶜ,
-          (isClosed_tsupport f).isOpen_compl.mem_nhds h_y_not_supp,
+          (isClosed_tsupport f).isOpen_compl.mem_nhds h_y_not_support,
           fun z hz => image_eq_zero_of_notMem_tsupport hz⟩
       have h_filt_eq : f =ᶠ[nhds y] 0 := h_eventually
       rw [Filter.EventuallyEq.fderiv_eq h_filt_eq]
@@ -956,13 +956,13 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf : ContDiff ℝ (⊤ : ℕ∞) f)
-    (hf_supp : tsupport f ⊆
+    (hf_support : tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace)
     {Ω : Set (EuclideanSpace ℝ (Fin n))} (hΩ : IsOpen Ω) :
     DeGiorgi.HasWeakGrad (evenReflectGrad n f) (evenReflect n f) Ω := by
   intro i
   have h_evRefl_smooth : ContDiff ℝ (⊤ : ℕ∞) (evenReflect n f) :=
-    contDiff_evenReflect_of_tsupport_in_openHalfSpace hf hf_supp
+    contDiff_evenReflect_of_tsupport_in_openHalfSpace hf hf_support
   have h_classical : DeGiorgi.HasWeakPartialDeriv i
       (fun y : EuclideanSpace ℝ (Fin n) =>
         (fderiv ℝ (evenReflect n f) y) (EuclideanSpace.single i 1))
@@ -972,26 +972,26 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect
         (fderiv ℝ (evenReflect n f) y) (EuclideanSpace.single i 1)) =
       fun y => evenReflectGrad n f y i := by
     funext y
-    exact fderiv_evenReflect_apply_single_eq_evenReflectGrad hf hf_supp y i
+    exact fderiv_evenReflect_apply_single_eq_evenReflectGrad hf hf_support y i
   rw [← h_eq]
   exact h_classical
 
-noncomputable def evenReflectMemW1pWitnessOfSmoothStrictInterior
+noncomputable def evenReflectMemW1pOfSmoothStrictInterior
     {n : ℕ} [NeZero n]
     {x₀ : EuclideanSpace ℝ (Fin n)}
     {R : ℝ}
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f)
-    (hf_supp : tsupport f ⊆
+    (hf_support : tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace ∩
           Metric.ball x₀ R)
     {p : ℝ≥0∞} :
     DeGiorgi.MemW1pWitness p (evenReflect (n := n) f) (Metric.ball x₀ R)
       (volume : Measure (EuclideanSpace ℝ (Fin n))) := by
   classical
-  have hf_supp_open :
+  have hf_support_open :
       tsupport f ⊆ DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace :=
-    hf_supp.trans Set.inter_subset_left
+    hf_support.trans Set.inter_subset_left
   have hf_compact : HasCompactSupport f := by
     apply HasCompactSupport.intro (isCompact_closedBall x₀ R)
     intro x hx
@@ -1000,7 +1000,7 @@ noncomputable def evenReflectMemW1pWitnessOfSmoothStrictInterior
       exact hx (Metric.ball_subset_closedBall hx_in)
     apply image_eq_zero_of_notMem_tsupport
     intro h_x_in_tsupp
-    exact h_x_not_in_ball ((hf_supp h_x_in_tsupp).2)
+    exact h_x_not_in_ball ((hf_support h_x_in_tsupp).2)
   refine
     { memLp := ?_
       weakGrad := evenReflectGrad n f
@@ -1015,7 +1015,7 @@ noncomputable def evenReflectMemW1pWitnessOfSmoothStrictInterior
         (volume : Measure (EuclideanSpace ℝ (Fin n))) :=
       memLp_evenReflectGrad_component_of_contDiff_hasCompactSupport hf_smooth hf_compact p i
     exact h_full.restrict (Metric.ball x₀ R)
-  · exact hasWeakGrad_evenReflectGrad_evenReflect hf_smooth hf_supp_open Metric.isOpen_ball
+  · exact hasWeakGrad_evenReflectGrad_evenReflect hf_smooth hf_support_open Metric.isOpen_ball
 
 private noncomputable def basisE0 (n : ℕ) [NeZero n] :
     EuclideanSpace ℝ (Fin n) :=
@@ -1113,19 +1113,19 @@ private lemma tsupport_shiftDownFun_eq_preimage {n : ℕ} [NeZero n] (δ : ℝ)
     tsupport (shiftDownFun (n := n) δ f) =
       shiftDownE0 (n := n) δ ⁻¹' tsupport f := by
   classical
-  have h_supp_eq : Function.support (shiftDownFun (n := n) δ f) =
+  have h_support_eq : Function.support (shiftDownFun (n := n) δ f) =
       shiftDownE0 (n := n) δ ⁻¹' Function.support f := by
     ext y
     simp [shiftDownFun, Function.support]
   unfold tsupport
-  rw [h_supp_eq]
+  rw [h_support_eq]
   have h_eq := (shiftDownE0Homeo (n := n) δ).preimage_closure (Function.support f)
   exact h_eq.symm
 
 lemma tsupport_shiftDownFun_subset_openHalfSpace
     {n : ℕ} [NeZero n] {δ : ℝ} (hδ : 0 < δ)
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hf_supp :
+    (hf_support :
       tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace) :
     tsupport (shiftDownFun (n := n) δ f) ⊆
@@ -1135,7 +1135,7 @@ lemma tsupport_shiftDownFun_subset_openHalfSpace
   intro y hy
   have h_y_in_closed : shiftDownE0 δ y ∈
       DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace :=
-    hf_supp hy
+    hf_support hy
   have h0 : (0 : ℝ) ≤ (shiftDownE0 δ y) 0 := h_y_in_closed
   rw [shiftDownE0_apply_zero] at h0
   change (0 : ℝ) < y 0
@@ -1174,7 +1174,7 @@ lemma tsupport_shiftDownFun_subset_ball
     {n : ℕ} [NeZero n] {δ : ℝ} (hδ : 0 < δ)
     {x₀ : EuclideanSpace ℝ (Fin n)} {R : ℝ}
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hf_supp :
+    (hf_support :
       tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace ∩
           Metric.ball x₀ R) :
@@ -1184,10 +1184,10 @@ lemma tsupport_shiftDownFun_subset_ball
   classical
   refine Set.subset_inter ?_ ?_
   · exact tsupport_shiftDownFun_subset_openHalfSpace hδ
-      (hf_supp.trans Set.inter_subset_left)
+      (hf_support.trans Set.inter_subset_left)
   · rw [tsupport_shiftDownFun_eq_preimage]
     intro y hy
-    have h_in_ball : shiftDownE0 δ y ∈ Metric.ball x₀ R := (hf_supp hy).2
+    have h_in_ball : shiftDownE0 δ y ∈ Metric.ball x₀ R := (hf_support hy).2
     rw [Metric.mem_ball] at h_in_ball ⊢
     have h_eq : y - x₀ = (shiftDownE0 δ y - x₀) + δ • basisE0 n := by
       unfold shiftDownE0
@@ -1412,7 +1412,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
     {n : ℕ} [NeZero n]
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hf_compact : HasCompactSupport f)
-    (hf_supp :
+    (hf_support :
       tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace)
     {Ω : Set (EuclideanSpace ℝ (Fin n))} (hΩ : IsOpen Ω) :
@@ -1429,11 +1429,11 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
     fun k => shiftDownFun (n := n) (δseq k) f with hf_seq_def
   have hf_seq_smooth : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (fSeq k) := by
     intro k; exact contDiff_shiftDownFun (n := n) (δseq k) hf
-  have hf_seq_supp_open : ∀ k,
+  have hf_seq_support_open : ∀ k,
       tsupport (fSeq k) ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := by
     intro k
-    exact tsupport_shiftDownFun_subset_openHalfSpace (hδ_pos k) hf_supp
+    exact tsupport_shiftDownFun_subset_openHalfSpace (hδ_pos k) hf_support
   have h_seq_ibp : ∀ k,
       ∫ x in Ω, evenReflect n (fSeq k) x *
           (fderiv ℝ φ x) (EuclideanSpace.single i 1) =
@@ -1443,7 +1443,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
         DeGiorgi.HasWeakGrad (evenReflectGrad n (fSeq k))
           (evenReflect n (fSeq k)) Ω :=
       hasWeakGrad_evenReflectGrad_evenReflect (hf_seq_smooth k)
-        (hf_seq_supp_open k) hΩ
+        (hf_seq_support_open k) hΩ
     exact h_grad_seq i φ hφ_smooth hφ_compact hφ_sub
   have hf_diff : Differentiable ℝ f := hf.differentiable (by simp)
   have h_fderiv_cont : Continuous (fderiv ℝ f) :=
@@ -1486,7 +1486,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
       fun x => C₀ * ‖(fderiv ℝ φ x) (EuclideanSpace.single i 1)‖ with hbound_LHS_def
     have h_bound_LHS_cont : Continuous bound_LHS :=
       continuous_const.mul hdφ_cont.norm
-    have h_bound_LHS_supp : HasCompactSupport bound_LHS := by
+    have h_bound_LHS_support : HasCompactSupport bound_LHS := by
       apply HasCompactSupport.intro hdφ_compact.isCompact
       intro x hx
       have hx0 : (fderiv ℝ φ x) (EuclideanSpace.single i 1) = 0 := by
@@ -1496,7 +1496,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
       rw [hx0]
       simp
     have h_bound_LHS_int : Integrable bound_LHS (volume.restrict Ω) :=
-      (h_bound_LHS_cont.integrable_of_hasCompactSupport h_bound_LHS_supp).restrict
+      (h_bound_LHS_cont.integrable_of_hasCompactSupport h_bound_LHS_support).restrict
     have h_F_meas : ∀ k, AEStronglyMeasurable
         (fun x : EuclideanSpace ℝ (Fin n) =>
           evenReflect n (fSeq k) x *
@@ -1555,7 +1555,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
         fun x => C₁ * ‖φ x‖ with hbound_RHS_def
       have h_bound_RHS_cont : Continuous bound_RHS :=
         continuous_const.mul hφ_smooth.continuous.norm
-      have h_bound_RHS_supp : HasCompactSupport bound_RHS := by
+      have h_bound_RHS_support : HasCompactSupport bound_RHS := by
         apply HasCompactSupport.intro hφ_compact.isCompact
         intro x hx
         have hx0 : φ x = 0 := by
@@ -1565,7 +1565,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
         rw [hx0]
         simp
       have h_bound_RHS_int : Integrable bound_RHS (volume.restrict Ω) :=
-        (h_bound_RHS_cont.integrable_of_hasCompactSupport h_bound_RHS_supp).restrict
+        (h_bound_RHS_cont.integrable_of_hasCompactSupport h_bound_RHS_support).restrict
       have h_G_meas : ∀ k, AEStronglyMeasurable
           (fun x : EuclideanSpace ℝ (Fin n) =>
             evenReflectGrad n (fSeq k) x i * φ x) (volume.restrict Ω) := by
@@ -1617,13 +1617,13 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
     exact h_RHS_tendsto
   exact tendsto_nhds_unique h_LHS_tendsto h_LHS_eq_lim
 
-noncomputable def evenReflectMemW1pWitnessOfSmoothClosedHalfSpace
+noncomputable def evenReflectMemW1pOfSmoothClosedHalfSpace
     {n : ℕ} [NeZero n]
     {x₀ : EuclideanSpace ℝ (Fin n)}
     {R : ℝ}
     {f : EuclideanSpace ℝ (Fin n) → ℝ}
     (hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f)
-    (hf_supp : tsupport f ⊆
+    (hf_support : tsupport f ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace ∩
           Metric.ball x₀ R)
     {p : ℝ≥0∞} :
@@ -1638,10 +1638,10 @@ noncomputable def evenReflectMemW1pWitnessOfSmoothClosedHalfSpace
       exact hx (Metric.ball_subset_closedBall hx_in)
     apply image_eq_zero_of_notMem_tsupport
     intro h_x_in_tsupp
-    exact h_x_not_in_ball ((hf_supp h_x_in_tsupp).2)
-  have hf_supp_closed :
+    exact h_x_not_in_ball ((hf_support h_x_in_tsupp).2)
+  have hf_support_closed :
       tsupport f ⊆ DifferentialGeometry.Analysis.Sobolev.Euclidean.closedHalfSpace :=
-    hf_supp.trans Set.inter_subset_left
+    hf_support.trans Set.inter_subset_left
   refine
     { memLp := ?_
       weakGrad := evenReflectGrad n f
@@ -1657,7 +1657,7 @@ noncomputable def evenReflectMemW1pWitnessOfSmoothClosedHalfSpace
       memLp_evenReflectGrad_component_of_contDiff_hasCompactSupport hf_smooth hf_compact p i
     exact h_full.restrict (Metric.ball x₀ R)
   · exact hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
-      hf_smooth hf_compact hf_supp_closed Metric.isOpen_ball
+      hf_smooth hf_compact hf_support_closed Metric.isOpen_ball
 
 end WithBoundary
 end Sobolev

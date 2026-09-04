@@ -16,7 +16,7 @@ namespace PDE
 namespace RicciFlow
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
@@ -40,7 +40,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 def morreyRSC (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) (r s : ℕ) : ℝ :=
   let L₁ := max (revJetOneC (E := E) Λ) Λ
   let L₂ := revJetTwoC (E := E) Λ
-  morreyUnifConst Λ
+  morreyUniformConst Λ
     (baseMorreyConst (I := I) (M := M) gBase 0 (r + s))
     (kjetConst (Module.finrank ℝ E) Λ L₁ L₂ (r + s))
     (Module.finrank ℝ E) (r + s)
@@ -56,7 +56,7 @@ lemma morreyRSC_nonneg (gBase : SmoothRiemannianMetric I M) {Λ : ℝ}
     dsimp [revJetTwoC]
     exact le_max_left _ _
   unfold morreyRSC
-  exact morreyUnifConst_nonneg hΛ0
+  exact morreyUniformConst_nonneg hΛ0
     (baseMorreyConst_nonneg (I := I) (M := M) gBase 0 (r + s))
     (kjetConst_nonneg hΛ0 hL₁ hL₂ (Module.finrank ℝ E) (r + s))
     (Module.finrank ℝ E) (r + s)

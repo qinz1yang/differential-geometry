@@ -15,7 +15,7 @@ universe u
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -493,5 +493,5 @@ theorem exists_uniform_iterated_covariant_derivative_norm_comparison_bound (q₂
     u hu g gRef T eps heps0 heps1 hequiv hgK
   exact iterated_covariant_derivative_norm_comparison_bound hu g gRef T p eps heps0 heps1 hequiv hgK
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

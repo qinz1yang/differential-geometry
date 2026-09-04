@@ -48,7 +48,7 @@ def IntrinsicRm04Bound
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrJacobi_ode
+theorem intrinsicJacobi_ode
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -83,7 +83,7 @@ theorem intrJacobi_ode
     intrinsicGeodesic (I := I) g hEnorm p u
   let J : ∀ t : Real, TangentSpace I (γ t) :=
     intrinsicJacobi (I := I) g hEnorm p u w
-  have hJac : IsJacobiAlong (I := I) g γ J := by
+  have hJacobian : IsJacobiAlong (I := I) g γ J := by
     have hγeq :
         γ = fun t ↦ intrinsicGeodesic (I := I) g hEnorm p u t := rfl
     have hJeq :
@@ -91,7 +91,7 @@ theorem intrJacobi_ode
     rw [hγeq, hJeq]
     exact intrinsic_jacobi (I := I) g hEnorm p (u : E) (w : E)
   intro t ht
-  have hD2 := (isJacobiAlong_iff (I := I) g γ J).mp hJac t
+  have hD2 := (isJacobiAlong_iff (I := I) g γ J).mp hJacobian t
   have htBound : t ∈ Ico (0 : Real) 1 := ht
   · let q : M := γ t
     let V : TangentSpace I q := curveVelocity (I := I) γ t
@@ -216,7 +216,7 @@ theorem intrJacobi_ode
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrJacobi_bounds
+theorem intrinsicJacobi_bounds
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -290,13 +290,13 @@ theorem intrJacobi_bounds
   have hJdiff : ∀ t ∈ Icc (0 : Real) b,
       DifferentiableAt Real (chartRepAt (I := I) γ J t) t := by
     intro t _ht
-    exact (intrJacobi_diff (I := I) g hEnorm p u w t).1
+    exact (intrinsicJacobi_diff (I := I) g hEnorm p u w t).1
   have hDJdiff : ∀ t ∈ Icc (0 : Real) b,
       DifferentiableAt Real
         (chartRepAt (I := I) γ
           (fun s => covDerivAlong (I := I) g γ J s) t) t := by
     intro t _ht
-    exact (intrJacobi_diff (I := I) g hEnorm p u w t).2
+    exact (intrinsicJacobi_diff (I := I) g hEnorm p u w t).2
   have hJ0 : J 0 = 0 := by
     simpa only [J] using intrinsicJacobi_zero (I := I) g hEnorm p u w
   have hDJ0 : covDerivAlong (I := I) g γ J 0 = w := by
@@ -317,7 +317,7 @@ theorem intrJacobi_bounds
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrForce_pair
+theorem intrinsicForce_pair
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -428,7 +428,7 @@ theorem intrForce_pair
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrJacobi_pair
+theorem intrinsicJacobi_pair
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -503,13 +503,13 @@ theorem intrJacobi_pair
   have hJdiff : ∀ t ∈ Icc (0 : Real) b,
       DifferentiableAt Real (chartRepAt (I := I) γ J t) t := by
     intro t _ht
-    exact (intrJacobi_diff (I := I) g hEnorm p u w t).1
+    exact (intrinsicJacobi_diff (I := I) g hEnorm p u w t).1
   have hDJdiff : ∀ t ∈ Icc (0 : Real) b,
       DifferentiableAt Real
         (chartRepAt (I := I) γ
           (fun s => covDerivAlong (I := I) g γ J s) t) t := by
     intro t _ht
-    exact (intrJacobi_diff (I := I) g hEnorm p u w t).2
+    exact (intrinsicJacobi_diff (I := I) g hEnorm p u w t).2
   have hJ0 : J 0 = 0 := by
     simpa only [J] using intrinsicJacobi_zero (I := I) g hEnorm p u w
   have hDJ0 : covDerivAlong (I := I) g γ J 0 = w := by

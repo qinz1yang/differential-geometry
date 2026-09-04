@@ -46,14 +46,14 @@ theorem exists_var_pair
       (∀ t, V t = 0 → ∀ u, fV u t = gamma t) ∧
       (∀ t, W t = 0 → ∀ u, fW u t = gamma t) := by
   classical
-  let init : (Real → E) → Real → TangentBundle I M := fun Q t ↦
+  let initial : (Real → E) → Real → TangentBundle I M := fun Q t ↦
     (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
       (gamma t) (Q t) : TangentBundle I M)
   let K : Set (TangentBundle I M) :=
-    init V '' uIcc a b ∪ init W '' uIcc a b
-  have hKV : IsCompact (init V '' uIcc a b) :=
+    initial V '' uIcc a b ∪ initial W '' uIcc a b
+  have hKV : IsCompact (initial V '' uIcc a b) :=
     isCompact_uIcc.image hV.continuous
-  have hKW : IsCompact (init W '' uIcc a b) :=
+  have hKW : IsCompact (initial W '' uIcc a b) :=
     isCompact_uIcc.image hW.continuous
   have hK : IsCompact K := hKV.union hKW
   obtain ⟨psi, hpsi, hpsic, hpsione⟩ :=
@@ -79,7 +79,7 @@ theorem exists_var_pair
     contMDiff_globalFlow_joint_of_compactSupport
       (I := I.tangent) (M := TangentBundle I M) X hX hXc
   let f : (Real → E) → Real → Real → M := fun Q u t ↦
-    (curveAt X hcomplete (init Q t) u).proj
+    (curveAt X hcomplete (initial Q t) u).proj
   have hsmooth (Q : Real → E)
       (hQ : ContMDiff 𝓘(Real, Real) I.tangent (8 : Nat)
         (fun t ↦ (TotalSpace.mk' E
@@ -89,11 +89,11 @@ theorem exists_var_pair
     have hin : ContMDiff
         (𝓘(Real, Real).prod 𝓘(Real, Real))
         (𝓘(Real, Real).prod I.tangent) (8 : Nat)
-        (fun p : Real × Real ↦ (p.1, init Q p.2)) := by
+        (fun p : Real × Real ↦ (p.1, initial Q p.2)) := by
       exact contMDiff_fst.prodMk (hQ.comp contMDiff_snd)
     have hlift : ContMDiff
         (𝓘(Real, Real).prod 𝓘(Real, Real)) I.tangent (8 : Nat)
-        (fun p : Real × Real ↦ curveAt X hcomplete (init Q p.2) p.1) :=
+        (fun p : Real × Real ↦ curveAt X hcomplete (initial Q p.2) p.1) :=
       (hflow.of_le
         (WithTop.coe_le_coe.mpr (le_top : (8 : ℕ∞) ≤ ⊤))).comp hin
     have hproj : ContMDiff I.tangent I (8 : Nat)
@@ -102,26 +102,26 @@ theorem exists_var_pair
     change ContMDiff
       (𝓘(Real, Real).prod 𝓘(Real, Real)) I (8 : Nat)
       (fun p : Real × Real =>
-        (curveAt X hcomplete (init Q p.2) p.1).proj)
+        (curveAt X hcomplete (initial Q p.2) p.1).proj)
     exact hproj.comp hlift
   have hzero (Q : Real → E) : ∀ t, f Q 0 t = gamma t := by
     intro t
     simp only [f, curveAt_zero]
     rfl
   have hfield (Q : Real → E)
-      (hQK : ∀ t ∈ uIcc a b, init Q t ∈ K) :
+      (hQK : ∀ t ∈ uIcc a b, initial Q t ∈ K) :
       ∀ t ∈ uIcc a b,
         (mfderiv 𝓘(Real, Real) I (fun u ↦ f Q u t) 0 1 : E) = Q t := by
     intro t ht
     let c : Real → TangentBundle I M := fun u ↦
-      curveAt X hcomplete (init Q t) u
+      curveAt X hcomplete (initial Q t) u
     have hc : IsMIntegralCurve c X :=
-      curveAt_integralCurve X hcomplete (init Q t)
-    have hpsinit : psi =ᶠ[nhds (init Q t)] 1 :=
-      eventually_nhdsSet_iff_forall.mp hpsione (init Q t) (hQK t ht)
+      curveAt_integralCurve X hcomplete (initial Q t)
+    have hpsinit : psi =ᶠ[nhds (initial Q t)] 1 :=
+      eventually_nhdsSet_iff_forall.mp hpsione (initial Q t) (hQK t ht)
     have hpsic : ∀ᶠ u in nhds 0, psi (c u) = 1 := by
-      have hc0 : Tendsto c (nhds 0) (nhds (init Q t)) := by
-        have hc0eq : c 0 = init Q t := by
+      have hc0 : Tendsto c (nhds 0) (nhds (initial Q t)) := by
+        have hc0eq : c 0 = initial Q t := by
           simp only [c, curveAt_zero]
         rw [← hc0eq]
         exact (hc.continuous.continuousAt : ContinuousAt c 0)
@@ -150,7 +150,7 @@ theorem exists_var_pair
       rw [hXu] at hu
       exact hu
     have hvel := hchart.mfderiv_proj_one hsrc0
-    have hc0 : c 0 = init Q t := by
+    have hc0 : c 0 = initial Q t := by
       simp only [c, curveAt_zero]
     rw [hc0] at hvel
     rw [hzero Q t]
@@ -158,38 +158,38 @@ theorem exists_var_pair
   have hstationary (Q : Real → E) (t : Real) (hQt : Q t = 0) :
       ∀ u, f Q u t = gamma t := by
     intro u
-    have hXt : X (init Q t) = 0 := by
-      have hinit : init Q t =
+    have hXt : X (initial Q t) = 0 := by
+      have hinit : initial Q t =
           (⟨gamma t, (0 : E)⟩ : TangentBundle I M) := by
-        simp only [init, hQt]
+        simp only [initial, hQt]
       rw [hinit]
       simp only [X, geodesicVectorField_zero_section]
       exact smul_zero _
-    have hconst : IsMIntegralCurve (fun _ : Real ↦ init Q t) X := by
+    have hconst : IsMIntegralCurve (fun _ : Real ↦ initial Q t) X := by
       intro s
       rw [hXt, ContinuousLinearMap.smulRight_zero]
-      exact hasMFDerivAt_const (c := init Q t) (x := s)
+      exact hasMFDerivAt_const (c := initial Q t) (x := s)
         (I := 𝓘(Real, Real)) (I' := I.tangent)
     have hXone : ContMDiff I.tangent I.tangent.tangent 1
         (fun q : TangentBundle I M ↦
           (⟨q, X q⟩ : TangentBundle I.tangent (TangentBundle I M))) :=
       hX.of_le (by norm_num)
     have heq := integralCurve_eq_of_agree_zero X hXone
-      (curveAt_integralCurve X hcomplete (init Q t)) hconst (by
+      (curveAt_integralCurve X hcomplete (initial Q t)) hconst (by
         rw [curveAt_zero])
     have hcurve := congrFun heq u
-    simp only [f, hcurve, init]
-  have hKVmem : ∀ t ∈ uIcc a b, init V t ∈ K := by
+    simp only [f, hcurve, initial]
+  have hKVmem : ∀ t ∈ uIcc a b, initial V t ∈ K := by
     intro t ht
     exact Or.inl ⟨t, ht, rfl⟩
-  have hKWmem : ∀ t ∈ uIcc a b, init W t ∈ K := by
+  have hKWmem : ∀ t ∈ uIcc a b, initial W t ∈ K := by
     intro t ht
     exact Or.inr ⟨t, ht, rfl⟩
   refine ⟨f V, f W, hsmooth V hV, hsmooth W hW, hzero V, hzero W,
     hfield V hKVmem, hfield W hKWmem, ?_, hstationary V, hstationary W⟩
   intro t hVW u
-  have hinit : init V t = init W t := by
-    simp only [init, hVW]
+  have hinit : initial V t = initial W t := by
+    simp only [initial, hVW]
   simp only [f, hinit]
 
 end Variation

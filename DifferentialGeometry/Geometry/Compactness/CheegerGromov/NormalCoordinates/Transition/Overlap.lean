@@ -10,7 +10,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Bundle
@@ -224,7 +224,7 @@ def FramedNormalOverlapOn
       framedExpDiffeo (I := I) Y.metric x z ∈
         (framedChartAt (I := I) Y.metric y).source
 
-private theorem mem_framed_src
+private theorem mem_framed_source
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) {z : E}
     (hz :
@@ -289,11 +289,11 @@ theorem framedOverlap_of_map
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   intro z hz
   have hzx : z ∈ (framedExpDiffeo (I := I) Y.metric x).source :=
-    mem_framed_src (I := I) Y x (hUx hz)
+    mem_framed_source (I := I) Y x (hUx hz)
   refine ⟨hzx, ?_⟩
   obtain ⟨v, hv, hvz⟩ := hmaps hz
   have hvy : v ∈ (framedExpDiffeo (I := I) Y.metric y).source :=
-    mem_framed_src (I := I) Y y (hVy hv)
+    mem_framed_source (I := I) Y y (hVy hv)
   have heq : framedExpDiffeo (I := I) Y.metric y v =
       framedExpDiffeo (I := I) Y.metric x z :=
     (framedExp_eq_expMap (I := I) Y.metric y hvy).trans hvz
@@ -328,7 +328,7 @@ theorem framedTransition_mapsTo
   intro z hz
   obtain ⟨v, hv, hvz⟩ := hmaps hz
   have hvy : v ∈ (framedExpDiffeo (I := I) Y.metric y).source :=
-    mem_framed_src (I := I) Y y (hVy hv)
+    mem_framed_source (I := I) Y y (hVy hv)
   have hvTarget : v ∈ (framedChartAt (I := I) Y.metric y).target := by
     change v ∈ (framedExpDiffeo (I := I) Y.metric y).source
     exact hvy
@@ -395,5 +395,5 @@ theorem FramedNormalOverlapOn.cancel
 
 end Framed
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -926,10 +926,10 @@ theorem contDiffOn_manifoldSublevelBoundary_transition [I.Boundaryless]
     contDiff_sublevelBoundaryChartValue g₂ a p₂ hx₂' hg₂ hr₂
   have hW₁val : ∀ z : MorseHalfSpace m, z ∈ m₁.target → (m₁.symm z).1 = w₁ z := by
     intro z hz
-    rw [sublevelBoundaryChart_symm_value' g₁ a p₁ hx₁' hg₁ hr₁ hz]
+    rw [sublevelBoundaryChart_symm_value g₁ a p₁ hx₁' hg₁ hr₁ hz]
   have hV₂val : ∀ w : SublevelSpace g₂ a, w ∈ m₂.source → (m₂ w : MorseModel (m + 1)) = v₂ w.1 := by
     intro w hw
-    exact sublevelBoundaryChart_apply_value' g₂ a p₂ hx₂' hg₂ hr₂ w
+    exact sublevelBoundaryChart_apply_value g₂ a p₂ hx₂' hg₂ hr₂ w
   have hD₁ : ∀ y : MorseModel (m + 1), 0 ≤ y (Fin.last m) →
       (morseModelWithCornersHalfSpace m).symm y ∈ m₁.target → y ∈ D₁ := by
     intro y hy0 hz
@@ -1081,7 +1081,7 @@ theorem contDiffOn_manifoldSublevelBoundaryInterior_transition [I.Boundaryless]
     exact contDiff_morseHalfSpaceShift c₂
   have hW₁val : ∀ z : MorseHalfSpace m, z ∈ m₁.target → (m₁.symm z).1 = w₁ z := by
     intro z hz
-    rw [sublevelBoundaryChart_symm_value' g₁ a p₁ hx₁' hg₁ hr₁ hz]
+    rw [sublevelBoundaryChart_symm_value g₁ a p₁ hx₁' hg₁ hr₁ hz]
   have hV₂val : ∀ w : SublevelSpace g₂ a, w ∈ m₂.source → (m₂ w : MorseModel (m + 1)) = v₂ w.1 := by
     intro w hw
     have hw' : dist w.1 p₂.1 < sublevelInteriorRadius g₂ a p₂ hx₂' hg₂ := by
@@ -1166,7 +1166,7 @@ theorem contDiffOn_manifoldSublevelInteriorBoundary_transition [I.Boundaryless]
     rw [sublevelInteriorChart_symm_value g₁ a p₁ hx₁' hg₁ hz]
   have hV₂val : ∀ w : SublevelSpace g₂ a, w ∈ m₂.source → (m₂ w : MorseModel (m + 1)) = v₂ w.1 := by
     intro w hw
-    exact sublevelBoundaryChart_apply_value' g₂ a p₂ hx₂' hg₂ hr₂ w
+    exact sublevelBoundaryChart_apply_value g₂ a p₂ hx₂' hg₂ hr₂ w
   have hD₁ : ∀ y : MorseModel (m + 1), 0 ≤ y (Fin.last m) →
       (morseModelWithCornersHalfSpace m).symm y ∈ m₁.target → y ∈ D₁ := by
     intro y hy0 hz
@@ -1738,11 +1738,11 @@ theorem contDiffOn_manifoldLevelSet_transition [I.Boundaryless]
     exact contDiff_levelSetChartValue g₂ a p₂ hg₂ hr₂
   have hW₁val : ∀ z : MorseModel m, z ∈ m₁.target → (m₁.symm z).1 = w₁ z := by
     intro z hz
-    rw [levelSetChart_symm_value' g₁ a p₁ hg₁ hr₁ hz]
+    rw [levelSetChart_symm_value g₁ a p₁ hg₁ hr₁ hz]
     rfl
   have hV₂val : ∀ w : LevelSetSpace g₂ a, w ∈ m₂.source → (m₂ w : MorseModel m) = v₂ w.1 := by
     intro w hw
-    exact levelSetChart_apply_value' g₂ a p₂ hg₂ hr₂ w
+    exact levelSetChart_apply_value g₂ a p₂ hg₂ hr₂ w
   have hD₁ : ∀ y : MorseModel m, y ∈ m₁.target → y ∈ D₁ := by
     intro y hy
     change y ∈ m₁.target
@@ -1957,7 +1957,7 @@ theorem contMDiff_levelSetInclusion [I.Boundaryless] [IsManifold I (⊤ : WithTo
       have hze : mc.symm z ∈ e.target := by
         dsimp [c, manifoldLevelSetChart] at hz
         exact hz.2
-      have hsymm₁ := levelSetChart_symm_value' g a p hg hr hz'
+      have hsymm₁ := levelSetChart_symm_value g a p hg hr hz'
       have hsymm₂ := levelSetPullbackChart_symm_value I f a x b hb hze
       have hzball : (mc.symm z).1 ∈ Metric.ball ((extChartAt I x.1) x.1) b.rIn := by
         change dist (mc.symm z).1 ((extChartAt I x.1) x.1) < b.rIn at hze
@@ -2196,7 +2196,7 @@ theorem contMDiff_levelSet_factor [I.Boundaryless] [IsManifold I (⊤ : WithTop 
         have hmcval : ((mc (e ⟨F ((extChartAt IX p0).symm z), hFa _⟩)) : MorseModel m) =
             levelSetChartValue g a p hg hr
               ((e ⟨F ((extChartAt IX p0).symm z), hFa _⟩).1) := by
-          exact levelSetChart_apply_value' g a p hg hr (e ⟨F ((extChartAt IX p0).symm z), hFa _⟩)
+          exact levelSetChart_apply_value g a p hg hr (e ⟨F ((extChartAt IX p0).symm z), hFa _⟩)
         rw [heval] at hmcval
         exact hmcval
       have hz0mem : z0 ∈ Set.range IX := by
@@ -2294,7 +2294,7 @@ theorem contMDiff_levelSetSublevelInclusion {m : ℕ} {H : Type} [TopologicalSpa
       have hzt : (mc.symm z).1 ∈ (extChartAt I x.1).target :=
         ((Metric.ball_subset_ball (le_of_lt b.rIn_lt_rOut)).trans
           Metric.ball_subset_closedBall).trans hb hzball
-      have hsymm₁ := levelSetChart_symm_value' g a p hg hr hz₁
+      have hsymm₁ := levelSetChart_symm_value g a p hg hr hz₁
       have hsymm₂ := levelSetPullbackChart_symm_value I f a x b hb hze
       have hiv : g (mc.symm z).1 = a := (mc.symm z).2
       have hp'₁ : p'.1 = p.1 := by
@@ -2312,14 +2312,14 @@ theorem contMDiff_levelSetSublevelInclusion {m : ℕ} {H : Type} [TopologicalSpa
       have hconds : (c₁.symm z).1 ∈ (extChartAt I x.1).source ∧
           (extChartAt I x.1) ((c₁.symm z).1) ∈ Metric.ball ((extChartAt I x.1) x.1) b.rIn := by
         simpa [e₁, levelSetPullbackChart] using hzsrc₁e
-      have hmap_src : (⟨(c₁.symm z).1, (le_of_eq (c₁.symm z).2 : f (c₁.symm z).1 ≤ a)⟩ : SublevelSpace f a) ∈ e₂.source := by
+      have hmap_source : (⟨(c₁.symm z).1, (le_of_eq (c₁.symm z).2 : f (c₁.symm z).1 ≤ a)⟩ : SublevelSpace f a) ∈ e₂.source := by
         simpa [e₂, sublevelPullbackChart, e₁, levelSetPullbackChart, hc₁inv, x'] using hzsrc₁e
       have he₂val : (e₂ (⟨(c₁.symm z).1, (le_of_eq (c₁.symm z).2 : f (c₁.symm z).1 ≤ a)⟩ : SublevelSpace f a)).1 =
           (mc.symm z).1 := by
-        rw [sublevelPullbackChart_apply_of_mem I f a x' b hb hmap_src]
+        rw [sublevelPullbackChart_apply_of_mem I f a x' b hb hmap_source]
         rw [hc₁inv]
         exact (extChartAt I x.1).right_inv hzt
-      have hsc_src : e₂ (⟨(c₁.symm z).1, (le_of_eq (c₁.symm z).2 : f (c₁.symm z).1 ≤ a)⟩ : SublevelSpace f a) ∈ sc.source := by
+      have hsc_source : e₂ (⟨(c₁.symm z).1, (le_of_eq (c₁.symm z).2 : f (c₁.symm z).1 ≤ a)⟩ : SublevelSpace f a) ∈ sc.source := by
         have hzsrc₀ : mc.symm z ∈ mc.source := mc.symm.map_source hz₁
         dsimp [sc, sublevelBoundaryChart] at hzsrc₀ ⊢
         rw [he₂val]
@@ -2343,7 +2343,7 @@ theorem contMDiff_levelSetSublevelInclusion {m : ℕ} {H : Type} [TopologicalSpa
             exact he₂val
           rw [hval]
           exact mc.right_inv hz₁
-        rw [levelSetChart_apply_value' g a ⟨p'.1, (sublevelPullbackCutoffPoint_value I f a x' b x.2)⟩ hg
+        rw [levelSetChart_apply_value g a ⟨p'.1, (sublevelPullbackCutoffPoint_value I f a x' b x.2)⟩ hg
           (fderiv_sublevelPullbackCutoffPoint_ne_zero I f hf a hreg x' b x.2)
           (⟨(e₂ (⟨(c₁.symm z).1, (le_of_eq (c₁.symm z).2 : f (c₁.symm z).1 ≤ a)⟩ : SublevelSpace f a)).1, hgval⟩ :
             LevelSetSpace g a)]
@@ -2521,9 +2521,9 @@ theorem contMDiffAt_manifoldSublevelBoundaryMap [I.Boundaryless]
     let Φc : MorseModel (m + 1) → MorseModel (m + 1) :=
       fun y => (extChartAt I x₂.1) (Φ ((extChartAt I x.1).symm y))
     let F : MorseModel (m + 1) → MorseModel (m + 1) := fun z => ψ₂ (Φc (ψ₁ z))
-    have hpb₁src : x ∈ pb₁.source := mem_sublevelPullbackChart_source I g₁ a₁ x b₁ hb₁
+    have hpb₁source : x ∈ pb₁.source := mem_sublevelPullbackChart_source I g₁ a₁ x b₁ hb₁
     have hpb₁val : (pb₁ x).1 = (extChartAt I x.1) x.1 := by
-      exact sublevelPullbackChart_apply_of_mem I g₁ a₁ x b₁ hb₁ hpb₁src
+      exact sublevelPullbackChart_apply_of_mem I g₁ a₁ x b₁ hb₁ hpb₁source
     have hmb₁x : mb₁ (pb₁ x) = c₁ x := rfl
     have hz₀ : (extChartAt (morseModelWithCornersHalfSpace m) x x) =
         (morseModelWithCornersHalfSpace m) (c₁ x) := by
@@ -2534,12 +2534,12 @@ theorem contMDiffAt_manifoldSublevelBoundaryMap [I.Boundaryless]
     have hz₀D₁ : (extChartAt (morseModelWithCornersHalfSpace m) x x) ∈ D₁ := by
       have hsrc : x ∈ c₁.source := mem_manifoldSublevelBoundaryChart_source I g₁ a₁ x hx hg₁ hreg₁
       have htgt : (c₁ x : MorseHalfSpace m) ∈ c₁.target := c₁.map_source hsrc
-      have hmb₁tgt' : (c₁ x : MorseHalfSpace m) ∈ mb₁.target := by
+      have hmb₁target' : (c₁ x : MorseHalfSpace m) ∈ mb₁.target := by
         have hsplit := (by simpa [c₁, manifoldSublevelBoundaryChart] using htgt)
         exact hsplit.1
       rw [hz₀]
       change (c₁ x : MorseHalfSpace m) ∈ mb₁.target
-      exact hmb₁tgt'
+      exact hmb₁target'
     have hψ₁cd : ContDiffOn ℝ (⊤ : ℕ∞) ψ₁ D₁ :=
       contDiffOn_sublevelBoundaryChartInvValueRaw g₁c a₁ p₁
         (sublevelPullbackCutoffPoint_value I g₁ a₁ x b₁ hx) hg₁c hr₁c
@@ -2552,7 +2552,7 @@ theorem contMDiffAt_manifoldSublevelBoundaryMap [I.Boundaryless]
         have htgt : (c₁ x : MorseHalfSpace m) ∈ c₁.target := c₁.map_source hsrc
         have hsplit := (by simpa [c₁, manifoldSublevelBoundaryChart] using htgt)
         exact hsplit.1
-      have hsm := sublevelBoundaryChart_symm_value g₁c a₁ p₁
+      have hsm := sublevelBoundaryChart_symm_levelSetReindex g₁c a₁ p₁
         (sublevelPullbackCutoffPoint_value I g₁ a₁ x b₁ hx) hg₁c hr₁c hu
       have hsymm : (mb₁.symm (c₁ x : MorseHalfSpace m) : SublevelSpace g₁c a₁).1 = ψ₁ (c₁ x : MorseHalfSpace m) := by
         have hsmval := congrArg Subtype.val hsm
@@ -2698,23 +2698,23 @@ theorem contMDiffAt_manifoldSublevelBoundaryMap [I.Boundaryless]
         apply Subtype.ext
         exact morseHalfSpaceClamp_of_mem m hzmem
       rw [hu]
-      have hmb₁tgt : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mb₁.target := by
+      have hmb₁target : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mb₁.target := by
         change z ∈ D₁
         exact hzD₁
-      have hmb₁sm := sublevelBoundaryChart_symm_value g₁c a₁ p₁
-        (sublevelPullbackCutoffPoint_value I g₁ a₁ x b₁ hx) hg₁c hr₁c hmb₁tgt
+      have hmb₁sm := sublevelBoundaryChart_symm_levelSetReindex g₁c a₁ p₁
+        (sublevelPullbackCutoffPoint_value I g₁ a₁ x b₁ hx) hg₁c hr₁c hmb₁target
       have hmb₁sm' : (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m) : SublevelSpace g₁c a₁).1 = ψ₁ z := by
         have hsmval := congrArg Subtype.val hmb₁sm
         change (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m) : SublevelSpace g₁c a₁).1 =
           ψ₁ z at hsmval
         exact hsmval
-      have hpb₁tgt : (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
+      have hpb₁target : (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
         change (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 ∈
           Metric.ball ((extChartAt I x.1) x.1) b₁.rIn
         rwa [hmb₁sm']
       have hpb₁sm : (pb₁.symm (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m))).1 =
           (extChartAt I x.1).symm (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 :=
-        sublevelPullbackChart_symm_value I g₁ a₁ x b₁ hb₁ hpb₁tgt
+        sublevelPullbackChart_symm_value I g₁ a₁ x b₁ hb₁ hpb₁target
       have hc₁sm : (c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 =
           (extChartAt I x.1).symm (ψ₁ z) := by
         change (pb₁.symm (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m))).1 =
@@ -2723,7 +2723,7 @@ theorem contMDiffAt_manifoldSublevelBoundaryMap [I.Boundaryless]
       let y₁ : SublevelSpace g₁ a₁ := c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)
       let w₂ : SublevelSpace g₂ a₂ := ⟨Φ y₁.1, hmap y₁.1 y₁.2⟩
       have hΘ : y₁.1 = (extChartAt I x.1).symm (ψ₁ z) := hc₁sm
-      have hpb₂src : w₂ ∈ pb₂.source := by
+      have hpb₂source : w₂ ∈ pb₂.source := by
         change w₂.1 ∈ (extChartAt I x₂.1).source ∧ (extChartAt I x₂.1) w₂.1 ∈
           Metric.ball ((extChartAt I x₂.1) x₂.1) b₂.rIn
         constructor
@@ -2735,12 +2735,12 @@ theorem contMDiffAt_manifoldSublevelBoundaryMap [I.Boundaryless]
           rw [hΘ]
           exact hzψ₂
       have hpb₂val : (pb₂ w₂).1 = (extChartAt I x₂.1) w₂.1 :=
-        sublevelPullbackChart_apply_of_mem I g₂ a₂ x₂ b₂ hb₂ hpb₂src
+        sublevelPullbackChart_apply_of_mem I g₂ a₂ x₂ b₂ hb₂ hpb₂source
       have hmb₂val : (mb₂ (pb₂ w₂) : MorseModel (m + 1)) =
           sublevelBoundaryChartValue g₂c a₂ p₂
             (sublevelPullbackCutoffPoint_value I g₂ a₂ x₂ b₂ hx₂) hg₂c hr₂c
             ((extChartAt I x₂.1) w₂.1) := by
-        rw [sublevelBoundaryChart_apply_value' g₂c a₂ p₂
+        rw [sublevelBoundaryChart_apply_value g₂c a₂ p₂
           (sublevelPullbackCutoffPoint_value I g₂ a₂ x₂ b₂ hx₂) hg₂c hr₂c]
         rw [hpb₂val]
       change (morseModelWithCornersHalfSpace m)
@@ -2853,9 +2853,9 @@ theorem contMDiffAt_manifoldSublevelBoundaryToInteriorMap [I.Boundaryless]
     let Φc : MorseModel (m + 1) → MorseModel (m + 1) :=
       fun y => (extChartAt I x₂.1) (Φ ((extChartAt I x.1).symm y))
     let F : MorseModel (m + 1) → MorseModel (m + 1) := fun z => morseHalfSpaceShift s₂ (Φc (ψ₁ z))
-    have hpb₁src : x ∈ pb₁.source := mem_sublevelPullbackChart_source I g₁ a₁ x b₁ hb₁
+    have hpb₁source : x ∈ pb₁.source := mem_sublevelPullbackChart_source I g₁ a₁ x b₁ hb₁
     have hpb₁val : (pb₁ x).1 = (extChartAt I x.1) x.1 := by
-      exact sublevelPullbackChart_apply_of_mem I g₁ a₁ x b₁ hb₁ hpb₁src
+      exact sublevelPullbackChart_apply_of_mem I g₁ a₁ x b₁ hb₁ hpb₁source
     have hmb₁x : mb₁ (pb₁ x) = c₁ x := rfl
     have hz₀ : (extChartAt (morseModelWithCornersHalfSpace m) x x) =
         (morseModelWithCornersHalfSpace m) (c₁ x) := by
@@ -2866,12 +2866,12 @@ theorem contMDiffAt_manifoldSublevelBoundaryToInteriorMap [I.Boundaryless]
     have hz₀D₁ : (extChartAt (morseModelWithCornersHalfSpace m) x x) ∈ D₁ := by
       have hsrc : x ∈ c₁.source := mem_manifoldSublevelBoundaryChart_source I g₁ a₁ x hx hg₁ hreg₁
       have htgt : (c₁ x : MorseHalfSpace m) ∈ c₁.target := c₁.map_source hsrc
-      have hmb₁tgt' : (c₁ x : MorseHalfSpace m) ∈ mb₁.target := by
+      have hmb₁target' : (c₁ x : MorseHalfSpace m) ∈ mb₁.target := by
         have hsplit := (by simpa [c₁, manifoldSublevelBoundaryChart] using htgt)
         exact hsplit.1
       rw [hz₀]
       change (c₁ x : MorseHalfSpace m) ∈ mb₁.target
-      exact hmb₁tgt'
+      exact hmb₁target'
     have hψ₁cd : ContDiffOn ℝ (⊤ : ℕ∞) ψ₁ D₁ :=
       contDiffOn_sublevelBoundaryChartInvValueRaw g₁c a₁ p₁
         (sublevelPullbackCutoffPoint_value I g₁ a₁ x b₁ hx) hg₁c hr₁c
@@ -2884,7 +2884,7 @@ theorem contMDiffAt_manifoldSublevelBoundaryToInteriorMap [I.Boundaryless]
         have htgt : (c₁ x : MorseHalfSpace m) ∈ c₁.target := c₁.map_source hsrc
         have hsplit := (by simpa [c₁, manifoldSublevelBoundaryChart] using htgt)
         exact hsplit.1
-      have hsm := sublevelBoundaryChart_symm_value g₁c a₁ p₁
+      have hsm := sublevelBoundaryChart_symm_levelSetReindex g₁c a₁ p₁
         (sublevelPullbackCutoffPoint_value I g₁ a₁ x b₁ hx) hg₁c hr₁c hu
       have hsymm : (mb₁.symm (c₁ x : MorseHalfSpace m) : SublevelSpace g₁c a₁).1 = ψ₁ (c₁ x : MorseHalfSpace m) := by
         have hsmval := congrArg Subtype.val hsm
@@ -3065,23 +3065,23 @@ theorem contMDiffAt_manifoldSublevelBoundaryToInteriorMap [I.Boundaryless]
         apply Subtype.ext
         exact morseHalfSpaceClamp_of_mem m hzmem
       rw [hu]
-      have hmb₁tgt : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mb₁.target := by
+      have hmb₁target : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mb₁.target := by
         change z ∈ D₁
         exact hzD₁
-      have hmb₁sm := sublevelBoundaryChart_symm_value g₁c a₁ p₁
-        (sublevelPullbackCutoffPoint_value I g₁ a₁ x b₁ hx) hg₁c hr₁c hmb₁tgt
+      have hmb₁sm := sublevelBoundaryChart_symm_levelSetReindex g₁c a₁ p₁
+        (sublevelPullbackCutoffPoint_value I g₁ a₁ x b₁ hx) hg₁c hr₁c hmb₁target
       have hmb₁sm' : (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m) : SublevelSpace g₁c a₁).1 = ψ₁ z := by
         have hsmval := congrArg Subtype.val hmb₁sm
         change (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m) : SublevelSpace g₁c a₁).1 =
           ψ₁ z at hsmval
         exact hsmval
-      have hpb₁tgt : (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
+      have hpb₁target : (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
         change (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 ∈
           Metric.ball ((extChartAt I x.1) x.1) b₁.rIn
         rwa [hmb₁sm']
       have hpb₁sm : (pb₁.symm (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m))).1 =
           (extChartAt I x.1).symm (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 :=
-        sublevelPullbackChart_symm_value I g₁ a₁ x b₁ hb₁ hpb₁tgt
+        sublevelPullbackChart_symm_value I g₁ a₁ x b₁ hb₁ hpb₁target
       have hc₁sm : (c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 =
           (extChartAt I x.1).symm (ψ₁ z) := by
         change (pb₁.symm (mb₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m))).1 =
@@ -3090,7 +3090,7 @@ theorem contMDiffAt_manifoldSublevelBoundaryToInteriorMap [I.Boundaryless]
       let y₁ : SublevelSpace g₁ a₁ := c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)
       let w₂ : SublevelSpace g₂ a₂ := ⟨Φ y₁.1, hmap y₁.1 y₁.2⟩
       have hΘ : y₁.1 = (extChartAt I x.1).symm (ψ₁ z) := hc₁sm
-      have hpb₂src : w₂ ∈ pb₂.source := by
+      have hpb₂source : w₂ ∈ pb₂.source := by
         change w₂.1 ∈ (extChartAt I x₂.1).source ∧ (extChartAt I x₂.1) w₂.1 ∈
           Metric.ball ((extChartAt I x₂.1) x₂.1) b₂.rIn
         constructor
@@ -3102,7 +3102,7 @@ theorem contMDiffAt_manifoldSublevelBoundaryToInteriorMap [I.Boundaryless]
           rw [hΘ]
           exact hzψ₂
       have hpb₂val : (pb₂ w₂).1 = (extChartAt I x₂.1) w₂.1 :=
-        sublevelPullbackChart_apply_of_mem I g₂ a₂ x₂ b₂ hb₂ hpb₂src
+        sublevelPullbackChart_apply_of_mem I g₂ a₂ x₂ b₂ hb₂ hpb₂source
       have hmi₂val : (mi₂ (pb₂ w₂) : MorseModel (m + 1)) =
           morseHalfSpaceShift s₂ ((extChartAt I x₂.1) w₂.1) := by
         rw [sublevelInteriorChart_apply_value g₂c a₂ p₂
@@ -3225,9 +3225,9 @@ theorem contMDiffAt_manifoldSublevelInteriorMap [I.Boundaryless]
       fun y => (extChartAt I x₂.1) (Φ ((extChartAt I x.1).symm y))
     let F : MorseModel (m + 1) → MorseModel (m + 1) :=
       fun z => morseHalfSpaceShift s₂ (Φc (morseHalfSpaceShift (-s₁) z))
-    have hpb₁src : x ∈ pb₁.source := mem_sublevelPullbackChart_source I g₁ a₁ x b₁ hb₁
+    have hpb₁source : x ∈ pb₁.source := mem_sublevelPullbackChart_source I g₁ a₁ x b₁ hb₁
     have hpb₁val : (pb₁ x).1 = (extChartAt I x.1) x.1 := by
-      exact sublevelPullbackChart_apply_of_mem I g₁ a₁ x b₁ hb₁ hpb₁src
+      exact sublevelPullbackChart_apply_of_mem I g₁ a₁ x b₁ hb₁ hpb₁source
     have hz₀ : (extChartAt (morseModelWithCornersHalfSpace m) x x) =
         (morseModelWithCornersHalfSpace m) (c₁ x) := by
       simp [extChartAt, hchart₁']
@@ -3453,24 +3453,24 @@ theorem contMDiffAt_manifoldSublevelInteriorMap [I.Boundaryless]
         apply Subtype.ext
         exact morseHalfSpaceClamp_of_mem m hzmem
       rw [hu]
-      have hmi₁tgt : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mi₁.target := hz₁
+      have hmi₁target : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mi₁.target := hz₁
       have hmi₁sm := sublevelInteriorChart_symm_value g₁c a₁ p₁
-        (sublevelPullbackCutoffPoint_value_lt I g₁ a₁ x b₁ hx) hg₁c (z := (⟨z, hzmem⟩ : MorseHalfSpace m)) hmi₁tgt
+        (sublevelPullbackCutoffPoint_value_lt I g₁ a₁ x b₁ hx) hg₁c (z := (⟨z, hzmem⟩ : MorseHalfSpace m)) hmi₁target
       have hmi₁sm' : (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m) : SublevelSpace g₁c a₁).1 =
           morseHalfSpaceShift (-s₁) (⟨z, hzmem⟩ : MorseHalfSpace m) := by
         simpa [s₁] using congrArg Subtype.val hmi₁sm
-      have hpb₁tgt : (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
+      have hpb₁target : (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
         change (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 ∈
           Metric.ball ((extChartAt I x.1) x.1) b₁.rIn
         rwa [hmi₁sm']
       have hc₁sm : (c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 =
           (extChartAt I x.1).symm (morseHalfSpaceShift (-s₁) (⟨z, hzmem⟩ : MorseHalfSpace m)) := by
         change (pb₁.symm (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m))).1 = _
-        rw [sublevelPullbackChart_symm_value I g₁ a₁ x b₁ hb₁ hpb₁tgt, hmi₁sm']
+        rw [sublevelPullbackChart_symm_value I g₁ a₁ x b₁ hb₁ hpb₁target, hmi₁sm']
       let y₁ : SublevelSpace g₁ a₁ := c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)
       let w₂ : SublevelSpace g₂ a₂ := ⟨Φ y₁.1, hmap y₁.1 y₁.2⟩
       have hΘ : y₁.1 = (extChartAt I x.1).symm (morseHalfSpaceShift (-s₁) (⟨z, hzmem⟩ : MorseHalfSpace m)) := hc₁sm
-      have hpb₂src : w₂ ∈ pb₂.source := by
+      have hpb₂source : w₂ ∈ pb₂.source := by
         change w₂.1 ∈ (extChartAt I x₂.1).source ∧ (extChartAt I x₂.1) w₂.1 ∈
           Metric.ball ((extChartAt I x₂.1) x₂.1) b₂.rIn
         constructor
@@ -3482,7 +3482,7 @@ theorem contMDiffAt_manifoldSublevelInteriorMap [I.Boundaryless]
           rw [hΘ]
           exact hz₂
       have hpb₂val : (pb₂ w₂).1 = (extChartAt I x₂.1) w₂.1 :=
-        sublevelPullbackChart_apply_of_mem I g₂ a₂ x₂ b₂ hb₂ hpb₂src
+        sublevelPullbackChart_apply_of_mem I g₂ a₂ x₂ b₂ hb₂ hpb₂source
       have hmi₂val : (mi₂ (pb₂ w₂) : MorseModel (m + 1)) =
           morseHalfSpaceShift s₂ ((extChartAt I x₂.1) w₂.1) := by
         rw [sublevelInteriorChart_apply_value g₂c a₂ p₂
@@ -3695,12 +3695,12 @@ theorem contMDiffAt_sublevelCorestrictInterior [I.Boundaryless]
     rcases hy with ⟨hsrc, hrest⟩
     rcases hrest with ⟨hball, hrad⟩
     let y₂ : SublevelSpace g a := ⟨f y, hmem y⟩
-    have hpb₂src : y₂ ∈ pb₂.source := by
+    have hpb₂source : y₂ ∈ pb₂.source := by
       change y₂.1 ∈ (extChartAt I x₂.1).source ∧
         (extChartAt I x₂.1) y₂.1 ∈ Metric.ball ((extChartAt I x₂.1) x₂.1) b₂.rIn
       exact ⟨hsrc, hball⟩
     have hpb₂val : (pb₂ y₂).1 = (extChartAt I x₂.1) y₂.1 :=
-      sublevelPullbackChart_apply_of_mem I g a x₂ b₂ hb₂ hpb₂src
+      sublevelPullbackChart_apply_of_mem I g a x₂ b₂ hb₂ hpb₂source
     have hmi₂val : (mi₂ (pb₂ y₂) : MorseModel (m + 1)) =
         morseHalfSpaceShift s₂ ((extChartAt I x₂.1) y₂.1) := by
       rw [sublevelInteriorChart_apply_value g₂c a p₂
@@ -3795,14 +3795,14 @@ theorem contMDiffAt_sublevelCorestrictBoundary [I.Boundaryless]
     intro y hy
     rcases hy with ⟨hsrc, hball⟩
     let y₂ : SublevelSpace g a := ⟨f y, hmem y⟩
-    have hpb₂src : y₂ ∈ pb₂.source := by
+    have hpb₂source : y₂ ∈ pb₂.source := by
       change y₂.1 ∈ (extChartAt I x₂.1).source ∧
         (extChartAt I x₂.1) y₂.1 ∈ Metric.ball ((extChartAt I x₂.1) x₂.1) b₂.rIn
       exact ⟨hsrc, hball⟩
     have hpb₂val : (pb₂ y₂).1 = (extChartAt I x₂.1) y₂.1 :=
-      sublevelPullbackChart_apply_of_mem I g a x₂ b₂ hb₂ hpb₂src
+      sublevelPullbackChart_apply_of_mem I g a x₂ b₂ hb₂ hpb₂source
     have hmb₂val : (mb₂ (pb₂ y₂) : MorseModel (m + 1)) = ψ₂ ((extChartAt I x₂.1) y₂.1) := by
-      rw [sublevelBoundaryChart_apply_value' g₂c a p₂
+      rw [sublevelBoundaryChart_apply_value g₂c a p₂
         (sublevelPullbackCutoffPoint_value I g a x₂ b₂ hx₂) hg₂c hr₂c (pb₂ y₂)]
       rw [hpb₂val]
     change (extChartAt (morseModelWithCornersHalfSpace m) x₂) y₂ =
@@ -4110,9 +4110,9 @@ theorem contMDiffAt_manifoldSublevelSetEqIdentityInterior [I.Boundaryless]
     let s₁ : ℝ := sublevelInteriorShift g₁c a p₁ (sublevelPullbackCutoffPoint_value_lt I g a x b₁ hx) hg₁c
     let Φc : MorseModel (m + 1) → MorseModel (m + 1) :=
       fun y => (extChartAt I x₂.1) ((extChartAt I x.1).symm y)
-    have hpb₁src : x ∈ pb₁.source := mem_sublevelPullbackChart_source I g a x b₁ hb₁
+    have hpb₁source : x ∈ pb₁.source := mem_sublevelPullbackChart_source I g a x b₁ hb₁
     have hpb₁val : (pb₁ x).1 = (extChartAt I x.1) x.1 := by
-      exact sublevelPullbackChart_apply_of_mem I g a x b₁ hb₁ hpb₁src
+      exact sublevelPullbackChart_apply_of_mem I g a x b₁ hb₁ hpb₁source
     have hz₀ : (extChartAt (morseModelWithCornersHalfSpace m) x x) =
         (morseModelWithCornersHalfSpace m) (c₁ x) := by
       simp [extChartAt, hchart₁']
@@ -4326,24 +4326,24 @@ theorem contMDiffAt_manifoldSublevelSetEqIdentityInterior [I.Boundaryless]
           apply Subtype.ext
           exact morseHalfSpaceClamp_of_mem m hzmem
         rw [hu]
-        have hmi₁tgt : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mi₁.target := hz₁
+        have hmi₁target : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mi₁.target := hz₁
         have hmi₁sm := sublevelInteriorChart_symm_value g₁c a p₁
-          (sublevelPullbackCutoffPoint_value_lt I g a x b₁ hx) hg₁c (z := (⟨z, hzmem⟩ : MorseHalfSpace m)) hmi₁tgt
+          (sublevelPullbackCutoffPoint_value_lt I g a x b₁ hx) hg₁c (z := (⟨z, hzmem⟩ : MorseHalfSpace m)) hmi₁target
         have hmi₁sm' : (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m) : SublevelSpace g₁c a).1 =
             morseHalfSpaceShift (-s₁) (⟨z, hzmem⟩ : MorseHalfSpace m) := by
           simpa [s₁] using congrArg Subtype.val hmi₁sm
-        have hpb₁tgt : (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
+        have hpb₁target : (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
           change (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 ∈
             Metric.ball ((extChartAt I x.1) x.1) b₁.rIn
           rwa [hmi₁sm']
         have hc₁sm : (c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 =
             (extChartAt I x.1).symm (morseHalfSpaceShift (-s₁) (⟨z, hzmem⟩ : MorseHalfSpace m)) := by
           change (pb₁.symm (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m))).1 = _
-          rw [sublevelPullbackChart_symm_value I g a x b₁ hb₁ hpb₁tgt, hmi₁sm']
+          rw [sublevelPullbackChart_symm_value I g a x b₁ hb₁ hpb₁target, hmi₁sm']
         let y₁ : SublevelSpace g a := c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)
         let w₂ : SublevelSpace f a := ⟨y₁.1, hmap y₁.1 y₁.2⟩
         have hΘ : y₁.1 = (extChartAt I x.1).symm (morseHalfSpaceShift (-s₁) (⟨z, hzmem⟩ : MorseHalfSpace m)) := hc₁sm
-        have hpb₂src : w₂ ∈ pb₂.source := by
+        have hpb₂source : w₂ ∈ pb₂.source := by
           change w₂.1 ∈ (extChartAt I x₂.1).source ∧ (extChartAt I x₂.1) w₂.1 ∈
             Metric.ball ((extChartAt I x₂.1) x₂.1) b₂.rIn
           constructor
@@ -4357,11 +4357,11 @@ theorem contMDiffAt_manifoldSublevelSetEqIdentityInterior [I.Boundaryless]
               Metric.ball ((extChartAt I x₂.1) x₂.1) b₂.rIn
             simpa using hz₂
         have hpb₂val : (pb₂ w₂).1 = (extChartAt I x₂.1) w₂.1 :=
-          sublevelPullbackChart_apply_of_mem I f a x₂ b₂ hb₂ hpb₂src
+          sublevelPullbackChart_apply_of_mem I f a x₂ b₂ hb₂ hpb₂source
         have hmi₂val : (mi₂ (pb₂ w₂) : MorseModel (m + 1)) =
             sublevelBoundaryChartValue f₂c a p₂ (sublevelPullbackCutoffPoint_value I f a x₂ b₂ hx₂b)
               hf₂c hr₂c (pb₂ w₂).1 := by
-          rw [sublevelBoundaryChart_apply_value' f₂c a p₂ (sublevelPullbackCutoffPoint_value I f a x₂ b₂ hx₂b)
+          rw [sublevelBoundaryChart_apply_value f₂c a p₂ (sublevelPullbackCutoffPoint_value I f a x₂ b₂ hx₂b)
             hf₂c hr₂c (pb₂ w₂)]
         change (morseModelWithCornersHalfSpace m) (mi₂ (pb₂ w₂)) = F z
         change (mi₂ (pb₂ w₂) : MorseModel (m + 1)) = F z
@@ -4525,24 +4525,24 @@ theorem contMDiffAt_manifoldSublevelSetEqIdentityInterior [I.Boundaryless]
           apply Subtype.ext
           exact morseHalfSpaceClamp_of_mem m hzmem
         rw [hu]
-        have hmi₁tgt : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mi₁.target := hz₁
+        have hmi₁target : (⟨z, hzmem⟩ : MorseHalfSpace m) ∈ mi₁.target := hz₁
         have hmi₁sm := sublevelInteriorChart_symm_value g₁c a p₁
-          (sublevelPullbackCutoffPoint_value_lt I g a x b₁ hx) hg₁c (z := (⟨z, hzmem⟩ : MorseHalfSpace m)) hmi₁tgt
+          (sublevelPullbackCutoffPoint_value_lt I g a x b₁ hx) hg₁c (z := (⟨z, hzmem⟩ : MorseHalfSpace m)) hmi₁target
         have hmi₁sm' : (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m) : SublevelSpace g₁c a).1 =
             morseHalfSpaceShift (-s₁) (⟨z, hzmem⟩ : MorseHalfSpace m) := by
           simpa [s₁] using congrArg Subtype.val hmi₁sm
-        have hpb₁tgt : (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
+        have hpb₁target : (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)) ∈ pb₁.target := by
           change (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 ∈
             Metric.ball ((extChartAt I x.1) x.1) b₁.rIn
           rwa [hmi₁sm']
         have hc₁sm : (c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)).1 =
             (extChartAt I x.1).symm (morseHalfSpaceShift (-s₁) (⟨z, hzmem⟩ : MorseHalfSpace m)) := by
           change (pb₁.symm (mi₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m))).1 = _
-          rw [sublevelPullbackChart_symm_value I g a x b₁ hb₁ hpb₁tgt, hmi₁sm']
+          rw [sublevelPullbackChart_symm_value I g a x b₁ hb₁ hpb₁target, hmi₁sm']
         let y₁ : SublevelSpace g a := c₁.symm (⟨z, hzmem⟩ : MorseHalfSpace m)
         let w₂ : SublevelSpace f a := ⟨y₁.1, hmap y₁.1 y₁.2⟩
         have hΘ : y₁.1 = (extChartAt I x.1).symm (morseHalfSpaceShift (-s₁) (⟨z, hzmem⟩ : MorseHalfSpace m)) := hc₁sm
-        have hpb₂src : w₂ ∈ pb₂.source := by
+        have hpb₂source : w₂ ∈ pb₂.source := by
           change w₂.1 ∈ (extChartAt I x₂.1).source ∧ (extChartAt I x₂.1) w₂.1 ∈
             Metric.ball ((extChartAt I x₂.1) x₂.1) b₂.rIn
           constructor
@@ -4556,7 +4556,7 @@ theorem contMDiffAt_manifoldSublevelSetEqIdentityInterior [I.Boundaryless]
               Metric.ball ((extChartAt I x₂.1) x₂.1) b₂.rIn
             simpa using hz₂
         have hpb₂val : (pb₂ w₂).1 = (extChartAt I x₂.1) w₂.1 :=
-          sublevelPullbackChart_apply_of_mem I f a x₂ b₂ hb₂ hpb₂src
+          sublevelPullbackChart_apply_of_mem I f a x₂ b₂ hb₂ hpb₂source
         have hmi₂val : (mi₂ (pb₂ w₂) : MorseModel (m + 1)) =
             morseHalfSpaceShift s₂ ((extChartAt I x₂.1) w₂.1) := by
           rw [sublevelInteriorChart_apply_value f₂c a p₂

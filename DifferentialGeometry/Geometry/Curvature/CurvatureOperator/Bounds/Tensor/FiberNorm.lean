@@ -592,7 +592,7 @@ theorem exists_Cx_riemannianFiberNormSq_riemannOp_tensorCovS_le_rs
             riemannianFiberNormSq (I := I) (M := M) g r s x T := by
   classical
   obtain ⟨n, e, bse, _hn, hbse, horth, hpars, hexpand, hrepr⟩ :=
-    tangent_orthonormalBasisRS_witness (I := I) (M := M) g r s x
+    exists_tangent_orthonormalBasisRS_with_norm_sum (I := I) (M := M) g r s x
   set R := riemannOp (tensorCov (I := I) g r s) x with hR_def
   set Cx : ℝ :=
     ∑ i : Fin n, ∑ j : Fin n, ∑ K : Fin r → Fin n, ∑ J : Fin s → Fin n,
@@ -734,7 +734,7 @@ theorem riemannianFiberNormSq_riemannOp_tensorCovS_vw_factor_le
               (riemannOp (tensorCov (I := I) g 0 t) x (e i) (e j) T) := by
   classical
   obtain ⟨n, e, _bse, _hn, _hbse, horth, hpars, hexpand, hrepr⟩ :=
-    tangent_orthonormalBasisRS_witness (I := I) (M := M) g 0 t x
+    exists_tangent_orthonormalBasisRS_with_norm_sum (I := I) (M := M) g 0 t x
   refine ⟨n, e, horth, hrepr, ?_⟩
   set R := riemannOp (tensorCov (I := I) g 0 t) x with hR_def
   rw [hrepr (R v w T)]

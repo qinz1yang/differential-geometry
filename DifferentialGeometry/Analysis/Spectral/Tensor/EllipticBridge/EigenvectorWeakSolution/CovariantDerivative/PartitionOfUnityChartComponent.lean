@@ -198,20 +198,20 @@ private lemma crossMultiplier_mul_chartPushedRaw_eq_cutoffComponent
   classical
   set b : M := (extChartAt I β).symm ((toEuclidean (E := E)).symm y) with hb_def
   by_cases hker : y ∈ chartPouKernel (I := I) (M := M) β
-  · have hb_supp : b ∈ tsupport
+  · have hb_support : b ∈ tsupport
         (fun x : M => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) := by
-      obtain ⟨e, ⟨z, hz_supp, hz_eq⟩, he_eq⟩ := hker
-      have hz_src : z ∈ (extChartAt I β).source := by
+      obtain ⟨e, ⟨z, hz_support, hz_eq⟩, he_eq⟩ := hker
+      have hz_source : z ∈ (extChartAt I β).source := by
         rw [extChartAt_source]
         exact (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate
-          I M) β hz_supp
+          I M) β hz_support
       have hb_z : b = z := by
         rw [hb_def, ← he_eq, toEuclidean.symm_apply_apply, ← hz_eq,
-          (extChartAt I β).left_inv hz_src]
-      rw [hb_z]; exact hz_supp
+          (extChartAt I β).left_inv hz_source]
+      rw [hb_z]; exact hz_support
     have hcut_one :
         ((chartKernelCutoff (I := I) (M := M) β : C^∞⟮I, M; ℝ⟯) : M → ℝ) b = 1 :=
-      chartKernelCutoff_eqOn_one (I := I) (M := M) β hb_supp
+      chartKernelCutoff_eqOn_one (I := I) (M := M) β hb_support
     have hcomp_eq :
         chartPushedRaw I β
             (tensorChartComponentRaw (I := I) (M := M) g r s S β Idx Jdx) y =
@@ -573,7 +573,7 @@ private lemma principalTerm_tendsto
     g r s i β (Q'.1, Matrix.vecTail Q'.2) (Q'.2 0) n]
   congr 1
   exact MemLp.toLp_congr _ _
-    (chosenWeakPartial'_tensorChartComponent_ae_eq (I := I) (M := M)
+    (chosenWeakPartialOrZero_tensorChartComponent_ae_eq (I := I) (M := M)
       g r s (eigenvectorSmoothApprox (I := I) (M := M)
         g r s i n).toCcTensor β Q'.1 (Matrix.vecTail Q'.2)
       (Q'.2 0))
@@ -664,10 +664,10 @@ theorem eigenvectorCovGrad_pou_chartComponent_ae_eq
             g r s i n).toCcTensor β Q'.1
           (Matrix.vecTail Q'.2))) 2
       (chartLebesgueMeasure (I := I) (M := M) β) := fun n =>
-    (chosenWeakPartial'_tensorChartComponent_memLp (I := I) (M := M) g r s
+    (chosenWeakPartialOrZero_tensorChartComponent_memLp (I := I) (M := M) g r s
       (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
       β Q'.1 (Matrix.vecTail Q'.2) (Q'.2 0)).ae_eq
-      (chosenWeakPartial'_tensorChartComponent_ae_eq (I := I) (M := M)
+      (chosenWeakPartialOrZero_tensorChartComponent_ae_eq (I := I) (M := M)
         g r s (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor β Q'.1 (Matrix.vecTail Q'.2)
         (Q'.2 0))

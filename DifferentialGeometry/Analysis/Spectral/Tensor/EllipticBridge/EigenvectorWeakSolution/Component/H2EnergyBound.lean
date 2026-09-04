@@ -52,7 +52,7 @@ private theorem wkpNorm_le_of_memWkp_precompact_uniform
   classical
   have hΩ'Ω : Ω' ⊆ Ω := subset_closure.trans hΩ'_cl
   obtain ⟨δ, χ, hδ_pos, _hδ_sub, hχ_smooth, hχ_compact, _hχ_range,
-      hχ_one, hχ_supp⟩ :=
+      hχ_one, hχ_support⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := d) hK_compact hΩ'_open hKΩ'
   set N : Set (EuclideanSpace ℝ (Fin d)) := Metric.cthickening δ K with hN_def
@@ -72,7 +72,7 @@ private theorem wkpNorm_le_of_memWkp_precompact_uniform
     MemWkp.smul_smooth_bounded (d := d) k hp hΩ'_open hχ_smooth
       (fun j _hj x _hx => hCχ_bound x j _hj) hu_precompact
   have hv_tsupp : tsupport v ⊆ Ω' :=
-    (tsupport_smul_subset_left χ u).trans hχ_supp
+    (tsupport_smul_subset_left χ u).trans hχ_support
   have hv_compact : HasCompactSupport v := hχ_compact.mul_right
   have hv_ae_eq_u : v =ᵐ[(volume : Measure (EuclideanSpace ℝ (Fin d))).restrict Ω] u := by
     have h_split : Ω = (Ω ∩ N) ∪ (Ω \ N) := by rw [Set.inter_union_sdiff]
@@ -142,17 +142,17 @@ private theorem chosenWeakPartial_ae_eq_of_memLp
     (hΩ : IsOpen Ω) (hu : DeGiorgi.MemW1p 2 u Ω)
     (hf : MemLp f 2 (volume.restrict Ω))
     (hpartial : DeGiorgi.HasWeakPartialDeriv i f u Ω) :
-    chosenWeakPartial' 2 i u Ω =ᵐ[volume.restrict Ω] f := by
+    chosenWeakPartialOrZero 2 i u Ω =ᵐ[volume.restrict Ω] f := by
   have hchosen : DeGiorgi.HasWeakPartialDeriv i
-      (chosenWeakPartial' 2 i u Ω) u Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem hu i
-  have hchosenLoc : LocallyIntegrable (chosenWeakPartial' 2 i u Ω)
+      (chosenWeakPartialOrZero 2 i u Ω) u Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hu i
+  have hchosenLocal : LocallyIntegrable (chosenWeakPartialOrZero 2 i u Ω)
       (volume.restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem hu i).locallyIntegrable
+    (chosenWeakPartialOrZero_memLp_of_mem hu i).locallyIntegrable
       (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-  have hfLoc : LocallyIntegrable f (volume.restrict Ω) :=
+  have hfLocal : LocallyIntegrable f (volume.restrict Ω) :=
     hf.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-  exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ hchosen hpartial hchosenLoc hfLoc
+  exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ hchosen hpartial hchosenLocal hfLocal
 
 private theorem memWkp_two_two_of_weakPartials
     {d : ℕ} {Ω : Set (EuclideanSpace ℝ (Fin d))}
@@ -273,13 +273,13 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
   have hK_η_in_Ω_η : K_η ⊆ Ω_η :=
     Metric.cthickening_subset_thickening' (by positivity) (by linarith)
       (closure Ω'')
-  obtain ⟨_δ_η, η, _hδ_η_pos, _hδ_η_sub_Ωη, hη_smooth, hη_supp, hη_range,
+  obtain ⟨_δ_η, η, _hδ_η_pos, _hδ_η_sub_Ωη, hη_smooth, hη_support, hη_range,
       hη_one_on_cthick_K_η, hη_tsupp_in_Ω_η⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E) hK_η_compact hΩ_η_open hK_η_in_Ω_η
   obtain ⟨N, hN_pos, h_fderiv_eta⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.exists_grad_bound_of_compactSupport_smooth
-      hη_smooth hη_supp
+      hη_smooth hη_support
   have hN_nn : 0 ≤ N := hN_pos.le
   have hη_one_on_K_η : ∀ x ∈ K_η, η x = 1 := fun x hx =>
     hη_one_on_cthick_K_η x (Metric.self_subset_cthickening _ hx)
@@ -295,7 +295,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
     refine Metric.mem_thickening_iff_infEDist_lt.mpr ?_
     have h := Metric.mem_thickening_iff_infEDist_lt.mp hy
     exact lt_of_lt_of_le h (ENNReal.ofReal_le_ofReal (by linarith))
-  have hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ ε →
+  have hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ ε →
       Metric.cthickening |h| (tsupport η) ⊆ Ω' := by
     intro h hh
     have h_tsupp_in_cthick_5ε :
@@ -330,10 +330,10 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
     (Metric.cthickening_mono (by rw [hε_def]; linarith) (closure Ω'')).trans
       h_room
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
-    tensor_h2_chart_loc_of_data_quantitative (I := I) (M := M) (g := g)
+    tensor_h2_chart_local_of_data_quantitative (I := I) (M := M) (g := g)
       (α := α) (r := r) (s := s) (P₀ := P₀)
-      hη_smooth hη_supp hη_range hN_nn h_fderiv_eta hΩ'_open
-      h_closureΩ'_in_chart hΩ'_compact_closure hη_in_Ω' hε_pos hh_supp_in_Ω'
+      hη_smooth hη_support hη_range hN_nn h_fderiv_eta hΩ'_open
+      h_closureΩ'_in_chart hΩ'_compact_closure hη_in_Ω' hε_pos hh_support_in_Ω'
       hη_one_on_Ω'' hΩ''_open hΩ''_compact_closure h_room_ε
   set C_geom_max : ℝ :=
     ∑ i' : Fin (Module.finrank ℝ E), ∑ k' : Fin (Module.finrank ℝ E),
@@ -667,7 +667,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
       (fun j => DeGiorgi.HasWeakPartialDeriv.restrict hΩ''_open hΩ''_in_chart
         (D.weak_partial_isWeakPartial j))
   have h_chosen_ae_wp : ∀ i' : Fin (Module.finrank ℝ E),
-      chosenWeakPartial' 2 i' D.uChart Ω''
+      chosenWeakPartialOrZero 2 i' D.uChart Ω''
         =ᵐ[(volume : Measure EuclN).restrict Ω''] D.weakPartial i' := by
     intro i'
     exact chosenWeakPartial_ae_eq_of_memLp hΩ''_open h_uChart_memW1p
@@ -729,7 +729,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
     have h_per_i : ∀ i' : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 1 2
-            (chosenWeakPartial' 2 i' D.uChart Ω'') Ω''
+            (chosenWeakPartialOrZero 2 i' D.uChart Ω'') Ω''
           ≤ Tsum + ∑ _k' : Fin (Module.finrank ℝ E), Tsum := by
       intro i'
       rw [wkpNorm_congr_ae (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ''_open
@@ -740,7 +740,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
       rw [wkpNorm_zero]
       obtain ⟨g_ik, hg_memLp, hg_weak, hg_norm⟩ := h_gik_bound i' k'
       have h_ae :
-          chosenWeakPartial' 2 k' (D.weakPartial i') Ω''
+          chosenWeakPartialOrZero 2 k' (D.weakPartial i') Ω''
             =ᵐ[(volume : Measure EuclN).restrict Ω''] g_ik :=
         chosenWeakPartial_ae_eq_of_memLp hΩ''_open (h_wp_memW1p i')
           hg_memLp hg_weak

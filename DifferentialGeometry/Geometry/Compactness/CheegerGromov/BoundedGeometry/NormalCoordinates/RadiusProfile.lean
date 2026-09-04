@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter
 open scoped Manifold ContDiff Topology
@@ -432,5 +432,5 @@ theorem radius_scale_tail
 
 end NormalRadiusProfile
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

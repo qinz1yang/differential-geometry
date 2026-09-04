@@ -51,7 +51,7 @@ theorem hsCovsum_smoothCc
       hsCovsumC Fc (Module.finrank ℝ E) n * ∑ j ∈ Finset.range (n + 1),
         ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ := by
   rw [← norm_ccHs_eq_smoothHs]
-  exact hsCovsum_unif_const (I := I) (M := M) g₀ Fc hFc hcurv 2 n T
+  exact hsCovsum_uniform_const (I := I) (M := M) g₀ Fc hFc hcurv 2 n T
 
 theorem covsumHs_smoothCc
     (g₀ : SmoothRiemannianMetric I M)
@@ -66,7 +66,7 @@ theorem covsumHs_smoothCc
       covsumHsC Fc (Module.finrank ℝ E) n *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) T‖ := by
   rw [← norm_ccHs_eq_smoothHs]
-  exact covsum_hs_unif_const (I := I) (M := M) g₀ Fc hFc hcurv 2 n T
+  exact covsum_hs_uniform_const (I := I) (M := M) g₀ Fc hFc hcurv 2 n T
 
 theorem covsumHs2_smoothCc
     (g₀ : SmoothRiemannianMetric I M) {K : ℝ}
@@ -110,7 +110,7 @@ theorem hs2OpActionC_pos {Cpt : ℝ} (hCpt : 0 ≤ Cpt) (K : ℝ) :
   unfold hs2OpActionC
   linarith
 
-theorem hs2_fiber_sq_unif
+theorem hs2_fiber_sq_uniform
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -141,7 +141,7 @@ theorem hs2_fiber_sq_unif
       ∑ j ∈ Finset.range 3, ‖iteratedCovGrad (I := I) g 0 s j T‖ ≤
         covsumHsC Fc (Module.finrank ℝ E) 2 *
           ‖ccTensorToHs (I := I) (M := M) g s (2 : ℝ) T‖ := by
-    simpa using covsum_hs_unif_const (I := I) (M := M) g Fc hFc hcurv s 2 T
+    simpa using covsum_hs_uniform_const (I := I) (M := M) g Fc hFc hcurv s 2 T
   calc
     riemannianFiberNormSq (I := I) (M := M) g 0 s x (T.toSection x)
         ≤ Cpt ^ 2 * ∑ j ∈ Finset.range 3,
@@ -260,7 +260,7 @@ theorem gFibreOp_of_fiberSq
       mul_le_mul_of_nonneg_left (add_le_add hvw hwv) (by norm_num)
     _ = K * Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) := by ring
 
-theorem hs2_op_bound_unif
+theorem hs2_op_bound_uniform
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -289,7 +289,7 @@ theorem hs2_op_bound_unif
     riemannianFiberNormSq (I := I) (M := M) g 0 2 x (T.toSection x)
         ≤ hs2FibreC Cpt Fc (Module.finrank ℝ E) ^ 2 *
             ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ^ 2 :=
-      hs2_fiber_sq_unif (I := I) (M := M) hDim g 2 Fc hFc hcurv hmorrey T x
+      hs2_fiber_sq_uniform (I := I) (M := M) hDim g 2 Fc hFc hcurv hmorrey T x
     _ ≤ hs2OpC Cpt Fc (Module.finrank ℝ E) ^ 2 *
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ^ 2 := by
       refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
@@ -330,7 +330,7 @@ theorem hs2_op_bound_action
     _ = (hs2OpActionC Cpt K *
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖) ^ 2 := by ring
 
-theorem hs2_op_smoothCc_unif
+theorem hs2_op_smoothCc_uniform
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -349,20 +349,20 @@ theorem hs2_op_smoothCc_unif
       (hs2OpC Cpt Fc (Module.finrank ℝ E) *
         ‖smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T‖) := by
   rw [← norm_ccHs_eq_smoothHs]
-  exact hs2_op_bound_unif (I := I) (M := M) hDim g Fc hFc hcurv hCpt hmorrey T
+  exact hs2_op_bound_uniform (I := I) (M := M) hDim g Fc hFc hcurv hCpt hmorrey T
 
-def unifRealizeRad (Cpt : ℝ) (Fc : ℕ → ℝ) (d : ℕ) : ℝ :=
+def uniformRealizationRadius (Cpt : ℝ) (Fc : ℕ → ℝ) (d : ℕ) : ℝ :=
   deTurckRemainderContractionThreshold d / hs2OpC Cpt Fc d
 
-theorem unifRealizeRad_pos {Cpt : ℝ} (hCpt : 0 ≤ Cpt) {Fc : ℕ → ℝ}
-    (hFc : ∀ p, 0 ≤ Fc p) (d : ℕ) : 0 < unifRealizeRad Cpt Fc d :=
+theorem uniformRealizationRadius_pos {Cpt : ℝ} (hCpt : 0 ≤ Cpt) {Fc : ℕ → ℝ}
+    (hFc : ∀ p, 0 ≤ Fc p) (d : ℕ) : 0 < uniformRealizationRadius Cpt Fc d :=
   div_pos (de_turck_remainder_contraction_threshold_pos d) (hs2OpC_pos hCpt hFc d)
 
-def actionRealizeRad (Cpt K : ℝ) (d : ℕ) : ℝ :=
+def actionRealizationRadius (Cpt K : ℝ) (d : ℕ) : ℝ :=
   deTurckRemainderContractionThreshold d / hs2OpActionC Cpt K
 
-theorem actionRealizeRad_pos {Cpt : ℝ} (hCpt : 0 ≤ Cpt) (K : ℝ) (d : ℕ) :
-    0 < actionRealizeRad Cpt K d :=
+theorem actionRealizationRadius_pos {Cpt : ℝ} (hCpt : 0 ≤ Cpt) (K : ℝ) (d : ℕ) :
+    0 < actionRealizationRadius Cpt K d :=
   div_pos (de_turck_remainder_contraction_threshold_pos d) (hs2OpActionC_pos hCpt K)
 
 theorem realize_at_action
@@ -376,18 +376,18 @@ theorem realize_at_action
             ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) :
     ∀ T : SmoothCcTensor g 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1) T‖ ≤
-          actionRealizeRad Cpt K (Module.finrank ℝ E) →
+          actionRealizationRadius Cpt K (Module.finrank ℝ E) →
         gFibreOpBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g T)
           (deTurckRemainderContractionThreshold (Module.finrank ℝ E)) := by
   intro T hT
   have hOp : 0 < hs2OpActionC Cpt K := hs2OpActionC_pos hCpt K
   have hTtwo : ‖smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T‖ ≤
-      actionRealizeRad Cpt K (Module.finrank ℝ E) := by
+      actionRealizationRadius Cpt K (Module.finrank ℝ E) := by
     rw [Nat.cast_one] at hT
     rw [show (1 : ℝ) + 1 = 2 by norm_num] at hT
     exact hT
   have hT' : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤
-      actionRealizeRad Cpt K (Module.finrank ℝ E) := by
+      actionRealizationRadius Cpt K (Module.finrank ℝ E) := by
     rw [norm_ccHs_eq_smoothHs]
     exact hTtwo
   have hdelta : hs2OpActionC Cpt K *
@@ -397,10 +397,10 @@ theorem realize_at_action
       hs2OpActionC Cpt K *
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖
           ≤ hs2OpActionC Cpt K *
-              actionRealizeRad Cpt K (Module.finrank ℝ E) :=
+              actionRealizationRadius Cpt K (Module.finrank ℝ E) :=
         mul_le_mul_of_nonneg_left hT' hOp.le
       _ = deTurckRemainderContractionThreshold (Module.finrank ℝ E) := by
-        unfold actionRealizeRad
+        unfold actionRealizationRadius
         field_simp
   have hsmall := hs2_op_bound_action (I := I) (M := M) hDim g hact hCpt hmorrey T
   intro x v w
@@ -409,7 +409,7 @@ theorem realize_at_action
     (mul_le_mul_of_nonneg_right hdelta (Real.sqrt_nonneg _))
     (Real.sqrt_nonneg _)
 
-theorem realize_at_unif
+theorem realize_at_uniform
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -425,18 +425,18 @@ theorem realize_at_unif
             ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) :
     ∀ T : SmoothCcTensor g 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1) T‖ ≤
-          unifRealizeRad Cpt Fc (Module.finrank ℝ E) →
+          uniformRealizationRadius Cpt Fc (Module.finrank ℝ E) →
         gFibreOpBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g T)
           (deTurckRemainderContractionThreshold (Module.finrank ℝ E)) := by
   intro T hT
   have hOp : 0 < hs2OpC Cpt Fc (Module.finrank ℝ E) := hs2OpC_pos hCpt hFc _
   have hTtwo : ‖smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T‖ ≤
-      unifRealizeRad Cpt Fc (Module.finrank ℝ E) := by
+      uniformRealizationRadius Cpt Fc (Module.finrank ℝ E) := by
     rw [Nat.cast_one] at hT
     rw [show (1 : ℝ) + 1 = 2 by norm_num] at hT
     exact hT
   have hT' : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤
-      unifRealizeRad Cpt Fc (Module.finrank ℝ E) := by
+      uniformRealizationRadius Cpt Fc (Module.finrank ℝ E) := by
     rw [norm_ccHs_eq_smoothHs]
     exact hTtwo
   have hdelta : hs2OpC Cpt Fc (Module.finrank ℝ E) *
@@ -446,12 +446,12 @@ theorem realize_at_unif
       hs2OpC Cpt Fc (Module.finrank ℝ E) *
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖
           ≤ hs2OpC Cpt Fc (Module.finrank ℝ E) *
-              unifRealizeRad Cpt Fc (Module.finrank ℝ E) :=
+              uniformRealizationRadius Cpt Fc (Module.finrank ℝ E) :=
         mul_le_mul_of_nonneg_left hT' hOp.le
       _ = deTurckRemainderContractionThreshold (Module.finrank ℝ E) := by
-        unfold unifRealizeRad
+        unfold uniformRealizationRadius
         field_simp
-  have hsmall := hs2_op_bound_unif (I := I) (M := M) hDim g Fc hFc hcurv hCpt hmorrey T
+  have hsmall := hs2_op_bound_uniform (I := I) (M := M) hDim g Fc hFc hcurv hCpt hmorrey T
   intro x v w
   refine (hsmall x v w).trans ?_
   exact mul_le_mul_of_nonneg_right

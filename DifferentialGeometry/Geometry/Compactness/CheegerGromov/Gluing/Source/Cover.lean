@@ -11,7 +11,7 @@ open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
@@ -51,7 +51,7 @@ theorem liveMetric0_close
     (L : NetLimitData inp.decay inp.D P) (r : Real)
     {psi : Nat → Nat}
     {gInf : E → (LiveSlot L inp.pack r → (E →L[Real] E →L[Real] Real))}
-    (hconv : MapCInfConvOnCompacts Set.univ
+    (hconv : MapCInfConvergenceOnCompacts Set.univ
       (fun k _ alpha => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
         (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0)
       gInf) :
@@ -113,7 +113,7 @@ theorem liveMetric0_symm
     (L : NetLimitData inp.decay inp.D P) (r : Real)
     {psi : Nat → Nat}
     {gInf : E → (LiveSlot L inp.pack r → (E →L[Real] E →L[Real] Real))}
-    (hconv : MapCInfConvOnCompacts Set.univ
+    (hconv : MapCInfConvergenceOnCompacts Set.univ
       (fun k _ alpha => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
         (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0)
       gInf) :
@@ -174,7 +174,7 @@ theorem MetricCompactnessInputs.exists_live_cores
           LiveSlot L inp.pack r → (E →L[Real] E →L[Real] Real))
         (U C0 C1 : LiveSlot L inp.pack r → Set E),
       ContDiffOn Real (∞ : WithTop ℕ∞) gInf Set.univ ∧
-      MapCInfConvOnCompacts Set.univ
+      MapCInfConvergenceOnCompacts Set.univ
         (fun k _ alpha => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
           (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0)
         gInf ∧
@@ -598,7 +598,7 @@ theorem MetricCompactnessInputs.exists_live_source_cover
           LiveSlot L inp.pack r → (E →L[Real] E →L[Real] Real))
         (U : LiveSlot L inp.pack r → Set E),
       ContDiffOn Real (∞ : WithTop ℕ∞) gInf Set.univ ∧
-      MapCInfConvOnCompacts Set.univ
+      MapCInfConvergenceOnCompacts Set.univ
         (fun k _ alpha => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
           (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0)
         gInf ∧
@@ -643,5 +643,5 @@ theorem MetricCompactnessInputs.exists_live_source_cover
   refine mem_iUnion.mpr ⟨alpha, v, ?_, rfl⟩
   exact hC1U alpha (interior_subset (hC01 alpha (interior_subset hv)))
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

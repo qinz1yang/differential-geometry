@@ -826,12 +826,12 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
   set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
-  have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hαsource : α ∈ (chartAt H α).source := mem_chart_source H α
   have hαbase : α ∈ e.baseSet := by
     rw [he]; exact mem_baseSet_trivializationAt _ _ α
   have hnhd : (chartAt H α).source ×ˢ S ∈ nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S) := by
     refine mem_nhdsWithin.mpr ⟨(chartAt H α).source ×ˢ S,
-      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsrc, hp₀.2⟩, fun q hq => hq.1⟩
+      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsource, hp₀.2⟩, fun q hq => hq.1⟩
   have hcoordEach : ∀ σc : Fin 2 → Fin (Module.finrank ℝ E),
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Bcmm.repr
@@ -841,7 +841,7 @@ private lemma curvatureDecompositionMonomialBiContrFibAppY_metricPerturbationPat
     intro σc
     have hscal := curvatureDecompositionMonomialBiContrFibAppY_chartCoord_jointContMDiffOn
       (I := I) (M := M) g₀ T hδ hδZ W hW σp Y α σc
-    have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
+    have hscalAt := (hscal p₀ ⟨hαsource, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
     have hcoordinates : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, curvatureActionMonomialTrace (I := I) (M := M)
             (gfam q.2) W σp q.1 (Y q.1)⟩).2 σc =

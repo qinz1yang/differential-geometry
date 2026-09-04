@@ -65,7 +65,7 @@ private theorem lapDiff_rho
     (T : D.RegularTime) :
     Tendsto
       (fun s : Real =>
-        HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+        CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
           (g_fam ((T : Real) - s))
           (g_fam (T : Real)) (g_fam (T : Real)))
       (𝓝 0) (𝓝 0) := by
@@ -75,7 +75,7 @@ private theorem lapDiff_rho
     simpa only [id_eq, sub_zero] using
       (tendsto_const_nhds.sub
         (tendsto_id : Tendsto (fun s : Real => s) (𝓝 0) (𝓝 0)))
-  exact (HCGCompactness.metric_c1_tendsto
+  exact (CheegerGromovCompactness.metric_c1_tendsto
     (I := I) g_fam hG T).comp hshift
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M] in
@@ -93,7 +93,7 @@ theorem lapDiff_fibreSmall
         (1 / 4 : Real) := by
   let q : SmoothRiemannianMetric I M := g_fam (T : Real)
   let rho : Real → Real := fun s =>
-    HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+    CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
       (g_fam ((T : Real) - s)) q q
   have hrho : Tendsto rho (𝓝 0) (𝓝 0) := by
     simpa only [rho, q] using lapDiff_rho (I := I) g_fam hG T
@@ -102,13 +102,13 @@ theorem lapDiff_fibreSmall
   filter_upwards [hsmall] with s hs
   intro x v w
   have hnorm :
-      HCGCompactness.metricDerivNorm (I := I) 0
+      CheegerGromovCompactness.metricDerivNorm (I := I) 0
           (g_fam ((T : Real) - s)) q q x ≤ rho s := by
     simpa only [rho] using
-      (HCGCompactness.derivNorm_le_sup (I := I) (K := Set.univ)
+      (CheegerGromovCompactness.derivNorm_le_sup (I := I) (K := Set.univ)
         isCompact_univ (a := 0) (p := 1) (by omega)
         (g_fam ((T : Real) - s)) q q (Set.mem_univ x))
-  have heval := HCGCompactness.metricDifference_abs_le (I := I)
+  have heval := CheegerGromovCompactness.metricDifference_abs_le (I := I)
     (g_fam ((T : Real) - s)) q q x v w
   have hfinal :
       |(g_fam ((T : Real) - s)).inner x v w - q.inner x v w| ≤
@@ -194,7 +194,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem lapDiffA2_core
+theorem eventually_lapDiffA2_apply_scalarH2Core
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -205,7 +205,7 @@ theorem lapDiffA2_core
           lapDiffCore (I := I) (M := M) (g_fam (T : Real))
             (g_fam ((T : Real) - s)) v := by
   let rho : Real → Real := fun s =>
-    HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+    CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
       (g_fam ((T : Real) - s))
       (g_fam (T : Real)) (g_fam (T : Real))
   have hrho : Tendsto rho (𝓝 0) (𝓝 0) := by
@@ -217,7 +217,7 @@ theorem lapDiffA2_core
       (by norm_num)
   filter_upwards [hsmall] with s hs
   intro v
-  exact lapDiffOp_core (I := I) (M := M)
+  exact lapDiffOp_apply_scalarH2Core (I := I) (M := M)
     (g_fam (T : Real)) (g_fam ((T : Real) - s)) v hs.le
 
 theorem lapDiffA2_bound
@@ -236,7 +236,7 @@ theorem lapDiffA2_bound
   obtain ⟨C, hC, hop⟩ :=
     lapDiffOp_norm (I := I) (M := M) (g_fam (T : Real))
   let rho : Real → Real := fun s =>
-    HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+    CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
       (g_fam ((T : Real) - s))
       (g_fam (T : Real)) (g_fam (T : Real))
   let omega : Real → Real := fun s => Real.sqrt C * |rho s|
@@ -272,7 +272,7 @@ theorem lapDiffA2_zero
   obtain ⟨C, hC, hop⟩ :=
     lapDiffOp_norm (I := I) (M := M) (g_fam (T : Real))
   let rho : Real → Real := fun s =>
-    HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+    CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
       (g_fam ((T : Real) - s))
       (g_fam (T : Real)) (g_fam (T : Real))
   have hrho : Tendsto rho (𝓝 0) (𝓝 0) := by

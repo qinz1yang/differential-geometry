@@ -382,11 +382,11 @@ theorem nablaKRmSlabSup (gN gC : Real → SmoothRiemannianMetric I M)
     ∃ B : Real, 0 ≤ B ∧ ∀ t ∈ Icc a c, ∀ x : M,
       normSq0S (I := I) (gN t) x (4 + k)
         (nablaKRm04Field (I := I)
-          (solOfMetric (I := I) (D := RealTimeInterval.univ 0) gC) t k x) ≤ B :=
+          (solutionOfMetric (I := I) (D := RealTimeInterval.univ 0) gC) t k x) ≤ B :=
   normSqSlabSup (I := I) gN
     (fun t x =>
       nablaKRm04Field (I := I)
-        (solOfMetric (I := I) (D := RealTimeInterval.univ 0) gC) t k x)
+        (solutionOfMetric (I := I) (D := RealTimeInterval.univ 0) gC) t k x)
     hgramN
     (fun x₀ K _ ht => nablaKRmChartJoint (I := I) gC x₀ (hgramC x₀) k K ht)
 
@@ -465,7 +465,7 @@ theorem crossRm2SlabSup
         (hgramL x₀) (hgramC x₀) (hgramD x₀) K ht)
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-theorem fu_metric_comp_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
+theorem forwardUniqueness_metric_comp_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     g₁.inner x v v ≤
       Real.sqrt (normSq0S (I := I) g₂ x 2 (metricTensorField (I := I) g₁ x)) *
@@ -505,7 +505,7 @@ theorem metricCompSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     rcases eq_or_ne v 0 with hv0 | hv0
     · rw [hv0]; simp
     · exact ((g₂ t).pos x v hv0).le
-  refine (fu_metric_comp_le (I := I) (g₁ t) (g₂ t) x v).trans ?_
+  refine (forwardUniqueness_metric_comp_le (I := I) (g₁ t) (g₂ t) x v).trans ?_
   exact mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt (hB t ht x)) hvv
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] in

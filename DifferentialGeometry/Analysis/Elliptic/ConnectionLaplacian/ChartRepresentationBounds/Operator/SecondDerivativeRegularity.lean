@@ -82,7 +82,7 @@ private lemma raw_reprT_contDiffOn_goodSet
     (e := trivializationAt (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) α)).mp hsmooth_total.contMDiffOn
   rw [hbase] at hrewrite
-  have hcm_on_source :
+  have hcenter_of_mass_on_source :
       ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
         (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) b)
@@ -105,7 +105,7 @@ private lemma raw_reprT_contDiffOn_goodSet
         (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) b)
         (chartLeviCivitaGoodSet (I := I) α) := by
-    rw [h_good_eq_source]; exact hcm_on_source
+    rw [h_good_eq_source]; exact hcenter_of_mass_on_source
   set hgood_open : IsOpen (chartLeviCivitaGoodSet (I := I) α) :=
     chartLeviCivitaGoodSet_isOpen (I := I) α
   intro y hy
@@ -116,17 +116,17 @@ private lemma raw_reprT_contDiffOn_goodSet
   have hF_at : ContMDiffAt I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞ F x :=
     hcm_on_good.contMDiffAt (hgood_open.mem_nhds hx_good)
   set φ := extChartAt I α
-  have hx_src : x ∈ (chartAt H α).source :=
+  have hx_source : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx_good
-  have hxφ_src : x ∈ φ.source := by
-    rw [extChartAt_source]; exact hx_src
-  have hxφ_tgt : φ x ∈ φ.target := φ.map_source hxφ_src
-  have hxφ_inv : φ.symm (φ x) = x := φ.left_inv hxφ_src
+  have hxφ_source : x ∈ φ.source := by
+    rw [extChartAt_source]; exact hx_source
+  have hxφ_target : φ x ∈ φ.target := φ.map_source hxφ_source
+  have hxφ_inv : φ.symm (φ x) = x := φ.left_inv hxφ_source
   have hsymm_on :
       ContMDiffOn 𝓘(ℝ, E) I (∞ : WithTop ℕ∞) φ.symm φ.target :=
     contMDiffOn_extChartAt_symm (I := I) (n := ∞) (x := α)
   have hsymm_at : ContMDiffWithinAt 𝓘(ℝ, E) I (∞ : WithTop ℕ∞)
-      φ.symm φ.target (φ x) := hsymm_on (φ x) hxφ_tgt
+      φ.symm φ.target (φ x) := hsymm_on (φ x) hxφ_target
   have hF_at' : ContMDiffAt I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       F (φ.symm (φ x)) := by
     rw [hxφ_inv]; exact hF_at

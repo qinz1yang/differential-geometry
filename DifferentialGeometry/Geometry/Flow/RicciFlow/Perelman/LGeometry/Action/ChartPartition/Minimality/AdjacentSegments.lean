@@ -23,12 +23,12 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-private theorem seg_before {m : Nat} {i j : Fin m} (hij : i < j) :
+private theorem segment_before {m : Nat} {i j : Fin m} (hij : i < j) :
     i.succ ≤ j.castSucc := by
   exact Fin.succ_le_castSucc_iff.mpr hij
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lChartAction_adjacent_pair_le_of_lRegAction_minimizer
+theorem lChartAction_adjacent_pair_le_of_lRegularizedAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -46,7 +46,7 @@ theorem lChartAction_adjacent_pair_le_of_lRegAction_minimizer
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b)
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b)
     (q : Fin (m + 1))
     (hpos0 : t q.castSucc.castSucc < t q.castSucc.succ)
     (hpos1 : t q.succ.castSucc < t q.succ.succ)
@@ -167,9 +167,9 @@ theorem lChartAction_adjacent_pair_le_of_lRegAction_minimizer
     · rw [← htlast]
       exact hs.2.trans (htmono (Fin.le_last j.succ))
   obtain ⟨gammaW, hgammaW, hsrcW, hrepW, hW0, hW2, _alphaW, _wW,
-      _halphaW, _halphaW0, _halphaW2, _hsrcAW, _hrepAW, _hwW, _hunifW,
+      _halphaW, _halphaW0, _halphaW2, _hsrcAW, _hrepAW, _hwW, _huniformW,
       _hactW⟩ :=
-    exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T tw htw pw vw hvwtar hvwnode hregw
+    exists_contMDiff_one_lRegularizedAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T tw htw pw vw hvwtar hvwnode hregw
   have hWleft : gammaW (t i.castSucc) = gamma (t i.castSucc) := by
     have hW0' := hW0
     rw [htw0, hpw0, hvw0] at hW0'
@@ -220,10 +220,10 @@ theorem lChartAction_adjacent_pair_le_of_lRegAction_minimizer
             omega
           exact Or.inr (Fin.mk_lt_mk.mpr hjk)
       rcases hcases with hleft | hright
-      · have hle : t k.succ ≤ t i.castSucc := htmono (seg_before hleft)
+      · have hle : t k.succ ≤ t i.castSucc := htmono (segment_before hleft)
         have heq : s = t i.castSucc := le_antisymm (hs.2.trans hle) hsw.1
         simpa only [heq] using hgammaV_left
-      · have hle : t j.succ ≤ t k.castSucc := htmono (seg_before hright)
+      · have hle : t j.succ ≤ t k.castSucc := htmono (segment_before hright)
         have heq : s = t j.succ := le_antisymm hsw.2 (hle.trans hs.1)
         simpa only [heq] using hgammaV_right
     · exact hgammaV_out hsw
@@ -301,13 +301,13 @@ theorem lChartAction_adjacent_pair_le_of_lRegAction_minimizer
       simpa only [heq] using hgammaV_right
     · exact hgammaV_out hs
   obtain ⟨alpha, _w, halpha, halphaa, halphab, _hsrcA, _hrepA, _hw,
-      _hunif, hact⟩ :=
+      _huniform, hact⟩ :=
     lAction_c1_dense (I := I) S hMet hSc T a b t htmono ht0 htlast p
       gammaV uv hsrcV hrepV hreg
-  have hneg : Tendsto (fun n ↦ -lRegAction S T (alpha n) a b) atTop
-      (nhds (-lRegAction S T gammaV a b)) :=
+  have hneg : Tendsto (fun n ↦ -lRegularizedAction S T (alpha n) a b) atTop
+      (nhds (-lRegularizedAction S T gammaV a b)) :=
     continuousAt_neg.tendsto.comp hact
-  have hglobal : lRegAction S T gamma a b ≤ lRegAction S T gammaV a b := by
+  have hglobal : lRegularizedAction S T gamma a b ≤ lRegularizedAction S T gammaV a b := by
     have hlim := le_of_tendsto' hneg fun n ↦ neg_le_neg
       (hmin (alpha n) (halpha n) ((halphaa n).trans hstart)
         ((halphab n).trans hend))
@@ -317,11 +317,11 @@ theorem lChartAction_adjacent_pair_le_of_lRegAction_minimizer
   let G : Fin (m + 2) → Real := fun k ↦
     lChartAction S T (t k.castSucc) (p k) (uv k)
   have hsum : ∑ k, F k ≤ ∑ k, G k := by
-    rw [show (∑ k, F k) = lRegAction S T gamma a b from
-      (lRegAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gamma
+    rw [show (∑ k, F k) = lRegularizedAction S T gamma a b from
+      (lRegularizedAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gamma
         u hsrc hrep hreg).symm]
-    rw [show (∑ k, G k) = lRegAction S T gammaV a b from
-      (lRegAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gammaV
+    rw [show (∑ k, G k) = lRegularizedAction S T gammaV a b from
+      (lRegularizedAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gammaV
         uv hsrcV hrepV hreg).symm]
     exact hglobal
   let R : Finset (Fin (m + 2)) := (Finset.univ.erase i).erase j

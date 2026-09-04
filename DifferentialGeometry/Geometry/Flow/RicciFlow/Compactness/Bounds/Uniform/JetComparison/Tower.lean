@@ -22,7 +22,7 @@ namespace RicciFlow
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Elliptic
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
@@ -866,11 +866,11 @@ theorem fibreMorrey_uniform_class
     (hdim : Module.finrank ℝ E / 2 + 2 = 3)
     (s : ℕ) (T : SmoothCcTensor g₀ 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 s x (T.toSection x) ≤
-      morreyUnifConst Λ (baseMorreyConst (I := I) (M := M) gBase 0 s)
+      morreyUniformConst Λ (baseMorreyConst (I := I) (M := M) gBase 0 s)
           (kjetConst (Module.finrank ℝ E) Λ Λ' Λ'' s) (Module.finrank ℝ E) s ^ 2 *
         ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
           ‖iteratedCovGrad (I := I) g₀ 0 s j T‖ ^ 2 :=
-  fibreMorrey_unif_base (I := I) gBase g₀ hEq.1
+  fibreMorrey_uniform_base (I := I) gBase g₀ hEq.1
     (fun y v => hEq.2 y (Set.mem_univ y) v) s
     (fun S j hj =>
       kjet_of_class (I := I) gBase g₀ hEq hjet hJet1 hJet2 hΛ' hΛ'' hdim s S j hj) T x

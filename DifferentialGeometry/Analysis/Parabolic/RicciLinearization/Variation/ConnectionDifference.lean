@@ -194,7 +194,7 @@ private theorem connectionDifference_app_joint
   set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
-  have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hαsource : α ∈ (chartAt H α).source := mem_chart_source H α
   have hαbase : α ∈ e.baseSet := by
     rw [he]
     exact mem_baseSet_trivializationAt _ _ α
@@ -203,7 +203,7 @@ private theorem connectionDifference_app_joint
     refine mem_nhdsWithin.mpr ⟨(chartAt H α).source ×ˢ D.regular,
       (chartAt H α).open_source.prod D.regular_isOpen,
       ⟨?_, hp₀.2⟩, fun z hz => hz.1⟩
-    simpa only [α] using hαsrc
+    simpa only [α] using hαsource
   have hcoordEach : ∀ σ : Fin 2 → Fin (Module.finrank ℝ E),
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Bcmm.repr
@@ -212,7 +212,7 @@ private theorem connectionDifference_app_joint
         ((Set.univ : Set M) ×ˢ D.regular) p₀ := by
     intro σ
     have hscal := conn_pair_joint (I := I) g_fam hG q om α (σ 0) (σ 1)
-    have hscalAt := (hscal p₀ ⟨by simpa only [α] using hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
+    have hscalAt := (hscal p₀ ⟨by simpa only [α] using hαsource, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
     have hcoordinates : ∀ {z : M × ℝ}, z.1 ∈ e.baseSet →
         Bcmm.repr
             (e ⟨z.1, (show Tensor0SSpace 1 I z.1 →L[ℝ] Tensor0SSpace 2 I z.1 from

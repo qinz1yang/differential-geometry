@@ -10,7 +10,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped ContDiff Manifold Topology BigOperators
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.Measure
@@ -49,7 +49,7 @@ theorem invGram_buffer_bnd
           |chartInvGramOnE (I := I) (gSeq k) α i j
             (extChartAt I α b)| ≤ M_b := by
   have hbufferCpt : IsCompact (chartBuffer (extChartAt I α) K r₀) :=
-    chartBuffer_cpt_of_continuousOn (extChartAt I α) r₀
+    chartBuffer_compact_of_continuousOn (extChartAt I α) r₀
       (continuousOn_extChartAt α) (continuousOn_extChartAt_symm α)
       hK hKsrc hcollar
   have hbufferBase :
@@ -58,15 +58,15 @@ theorem invGram_buffer_bnd
     intro b hb
     rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
     have hbsrc : b ∈ (extChartAt I α).source :=
-      chartBuffer_src (extChartAt I α) K r₀ hcollar hb
+      chartBuffer_source (extChartAt I α) K r₀ hcollar hb
     simpa only [extChartAt_source] using hbsrc
   obtain ⟨M_b, hM_b, hquad⟩ :=
-    chartInvGram_unif_ub (I := I) (M := M) gBase gSeq α
+    chartInvGram_uniform_ub (I := I) (M := M) gBase gSeq α
       hbufferCpt hbufferBase Λ hΛ hequiv
   refine ⟨M_b, hM_b, ?_⟩
   intro k b hb i j
   have hbsrc : b ∈ (extChartAt I α).source :=
-    chartBuffer_src (extChartAt I α) K r₀ hcollar hb
+    chartBuffer_source (extChartAt I α) K r₀ hcollar hb
   have hentry := chartInvGram_ent_le (I := I) (gSeq k) α
     (hbufferBase hb) (hquad k b hb) i j
   simpa only [chartInvGramOnE_def,
@@ -152,7 +152,7 @@ theorem invGramD_buffer_bnd
           (Module.finrank ℝ E : ℝ) ^ 2 * M_b ^ 2 * Q := by
   intro k b hb m i j
   have hbsrc : b ∈ (extChartAt I α).source :=
-    chartBuffer_src (extChartAt I α) K r₀ hcollar hb
+    chartBuffer_source (extChartAt I α) K r₀ hcollar hb
   have hbint : extChartAt I α b ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hbsrc)

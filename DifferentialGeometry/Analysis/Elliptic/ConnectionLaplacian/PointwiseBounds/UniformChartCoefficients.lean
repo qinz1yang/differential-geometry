@@ -82,13 +82,13 @@ lemma pouTsupport_image_subset_chartTargetEuclid (α : M) :
       chartTargetEuclid (I := I) (M := M) α := by
   classical
   rintro y ⟨b, hb_tsupp, rfl⟩
-  have hb_src : b ∈ (extChartAt I α).source := by
+  have hb_source : b ∈ (extChartAt I α).source := by
     rw [extChartAt_source (I := I)]
     exact DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate
       I M α hb_tsupp
-  have hb_tgt : (extChartAt I α) b ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb_src
-  exact ⟨(extChartAt I α) b, hb_tgt, rfl⟩
+  have hb_target : (extChartAt I α) b ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hb_source
+  exact ⟨(extChartAt I α) b, hb_target, rfl⟩
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma exists_sup_bound_of_contDiffOn_on_compact_subset
@@ -262,18 +262,18 @@ theorem rawTensorConnLap_chartα_coeffs_uniform_bound_on_pouTsupport
           (tensorChartComponentRaw (I := I) (M := M) g r s
             (rawTensorConnLapSmooth (I := I) g r s T₀) α idx jdx)) y = lhs := by
       have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α := hb_inter.2
-      have hb_src : b ∈ (extChartAt I α).source :=
+      have hb_source : b ∈ (extChartAt I α).source :=
         chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb_good
-      have hb_tgt : (extChartAt I α) b ∈ (extChartAt I α).target :=
-        (extChartAt I α).map_source hb_src
+      have hb_target : (extChartAt I α) b ∈ (extChartAt I α).target :=
+        (extChartAt I α).map_source hb_source
       have hy_chartTarget : y ∈ chartTargetEuclid (I := I) (M := M) α :=
-        ⟨(extChartAt I α) b, hb_tgt, rfl⟩
+        ⟨(extChartAt I α) b, hb_target, rfl⟩
       rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy_chartTarget]
       have hsymm_te : (toEuclidean (E := E)).symm
           ((toEuclidean (E := E)) ((extChartAt I α) b)) = (extChartAt I α) b :=
         (toEuclidean (E := E)).symm_apply_apply _
       have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-        (extChartAt I α).left_inv hb_src
+        (extChartAt I α).left_inv hb_source
       simp only [hy_def, hsymm_te, hleft_inv, hlhs_def]
     simp only [hCoeff_LO_fn_def, h_chartPushed_eq]
     ring

@@ -421,13 +421,13 @@ theorem rhsDecomposition0_joint
     g g_bg T hdelta hdeltaZ
   have hEndo := endo_joint (I := I) (M := M)
     g g_bg T hdelta hdeltaZ
-  have hCorr := lieCorrectionZero_path_joint (I := I) (M := M)
+  have hCorrection := lieCorrectionZero_path_joint (I := I) (M := M)
     g T 0 hdelta hdeltaZ g_bg
   have hhead := covariantJetJoint_add (I := I) (M := M) g _ _
     (covariantJetJoint_smul (I := I) (M := M) g (-2 : Real) _ hRicci)
     hDecomposition
   have htail := covariantJetJoint_add (I := I) (M := M) g _ _
-    (covariantJetJoint_add (I := I) (M := M) g _ _ hLie hEndo) hCorr
+    (covariantJetJoint_add (I := I) (M := M) g _ _ hLie hEndo) hCorrection
   have hall := covariantJetJoint_add (I := I) (M := M) g _ _ hhead htail
   have hfamily :
       rhsDecomposition0 (I := I) (M := M) g g_bg T hdelta hdeltaZ =

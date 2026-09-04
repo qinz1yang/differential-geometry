@@ -150,7 +150,7 @@ theorem tensorInnerPointwise_hasMFDerivAt_metricCompatible
 
 open DifferentialGeometry.Tensor0SNabla in
 omit [CompleteSpace E] in
-theorem tensorInnerPointwise_hasMFDerivAt_metricCompatible'
+theorem hasMFDerivAt_tensorInnerPointwise_metricCompatible
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (W S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (x : M) :

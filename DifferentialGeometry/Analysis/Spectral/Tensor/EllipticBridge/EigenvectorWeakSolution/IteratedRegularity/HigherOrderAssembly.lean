@@ -49,7 +49,7 @@ private lemma fin_cons_last_succ
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma fin_init_cons
+private lemma fin_initial_cons
     {a : Fin (Module.finrank ℝ E)} {m : ℕ}
     (dirs : Fin (m + 1) → Fin (Module.finrank ℝ E)) :
     Fin.init (Fin.cons a dirs : Fin (m + 2) → Fin (Module.finrank ℝ E)) =
@@ -75,7 +75,7 @@ theorem eigenvectorChartIteratedPartial_cons_eq_chosenWeakPartial_ae
           g r s i α P₀ (m + 1) (Fin.cons a dirs)
         =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 a
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ m dirs)
         (chartTargetEuclid (I := I) (M := M) α) := by
@@ -86,15 +86,15 @@ theorem eigenvectorChartIteratedPartial_cons_eq_chosenWeakPartial_ae
       have h_lhs_eq :
           eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ 1 (Fin.cons a dirs) =
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 a
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ 0 dirs)
               (chartTargetEuclid (I := I) (M := M) α) := by
         rw [eigenvectorChartIteratedPartial_succ]
         have h_last : (Fin.cons a dirs : Fin 1 → _) (Fin.last 0) = a := rfl
-        have h_init : Fin.init (Fin.cons a dirs : Fin 1 → _) = dirs := by
+        have h_initial : Fin.init (Fin.cons a dirs : Fin 1 → _) = dirs := by
           funext k; exact (k.elim0)
-        rw [h_last, h_init]
+        rw [h_last, h_initial]
       exact Filter.EventuallyEq.of_eq h_lhs_eq
   | succ m ih =>
       intro dirs a h_parent
@@ -103,20 +103,20 @@ theorem eigenvectorChartIteratedPartial_cons_eq_chosenWeakPartial_ae
       have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
       have h_last : (Fin.cons a dirs : Fin (m + 2) → Fin (Module.finrank ℝ E))
           (Fin.last (m + 1)) = dirs (Fin.last m) := fin_cons_last_succ dirs
-      have h_init : Fin.init (Fin.cons a dirs :
+      have h_initial : Fin.init (Fin.cons a dirs :
           Fin (m + 2) → Fin (Module.finrank ℝ E)) = Fin.cons a (Fin.init dirs) :=
-        fin_init_cons dirs
+        fin_initial_cons dirs
       have h_lhs_unfold :
           eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 2) (Fin.cons a dirs) =
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ (m + 1) (Fin.cons a (Fin.init dirs))) Ω := by
-        rw [eigenvectorChartIteratedPartial_succ, h_last, h_init]
+        rw [eigenvectorChartIteratedPartial_succ, h_last, h_initial]
       have h_dirs_unfold :
           eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 1) dirs =
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ m (Fin.init dirs)) Ω := by
         rw [eigenvectorChartIteratedPartial_succ]
@@ -130,15 +130,15 @@ theorem eigenvectorChartIteratedPartial_cons_eq_chosenWeakPartial_ae
           (by omega) h_parent
       have h_ih := ih (Fin.init dirs) a h_parent_for_ih
       have h_propagate :
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ (m + 1) (Fin.cons a (Fin.init dirs))) Ω
             =ᵐ[(volume : Measure EuclN).restrict Ω]
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 a
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ m (Fin.init dirs)) Ω) Ω :=
-        chosenWeakPartial'_ae_congr (d := Module.finrank ℝ E)
+        chosenWeakPartialOrZero_ae_congr (d := Module.finrank ℝ E)
           (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ih (dirs (Fin.last m))
       have h_inner_memWkp_2_2 :
           DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -155,34 +155,34 @@ theorem eigenvectorChartIteratedPartial_cons_eq_chosenWeakPartial_ae
         exact eigenvectorChartIteratedPartial_memWkp_of_memWkp
           (I := I) (M := M) g r s i α P₀ m 2 h_parent_2_m (Fin.init dirs)
       have h_swap :=
-        chosenWeakPartial'_swap_ae_of_memWkp_two
+        chosenWeakPartialOrZero_swap_ae_of_memWkp_two
           hΩ_open h_inner_memWkp_2_2 a (dirs (Fin.last m))
       have h_final :
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 a
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
                 (eigenvectorChartIteratedPartial (I := I) (M := M)
                   g r s i α P₀ m (Fin.init dirs)) Ω) Ω =
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 a
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ (m + 1) dirs) Ω := by
         rw [← h_dirs_unfold]
       calc eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 2) (Fin.cons a dirs)
-          = chosenWeakPartial' (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
+          = chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ (m + 1) (Fin.cons a (Fin.init dirs))) Ω :=
             h_lhs_unfold
         _ =ᵐ[(volume : Measure EuclN).restrict Ω]
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 a
                 (eigenvectorChartIteratedPartial (I := I) (M := M)
                   g r s i α P₀ m (Fin.init dirs)) Ω) Ω := h_propagate
         _ =ᵐ[(volume : Measure EuclN).restrict Ω]
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 a
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (dirs (Fin.last m))
                 (eigenvectorChartIteratedPartial (I := I) (M := M)
                   g r s i α P₀ m (Fin.init dirs)) Ω) Ω := h_swap
-        _ = chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+        _ = chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 a
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ (m + 1) dirs) Ω := h_final
 
@@ -218,7 +218,7 @@ private theorem eigenvectorIteratedPartial_memWkp_of_chartH_at_all_indices
   · have h_succ_eq :
         eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (j + 1) (Fin.snoc dirs a) =
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 a
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 a
             (eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ j dirs)
             (chartTargetEuclid (I := I) (M := M) α) := by
@@ -226,9 +226,9 @@ private theorem eigenvectorIteratedPartial_memWkp_of_chartH_at_all_indices
       have h_last : (Fin.snoc dirs a :
           Fin (j + 1) → Fin (Module.finrank ℝ E)) (Fin.last j) = a :=
         Fin.snoc_last _ _
-      have h_init : Fin.init (Fin.snoc dirs a :
+      have h_initial : Fin.init (Fin.snoc dirs a :
           Fin (j + 1) → Fin (Module.finrank ℝ E)) = dirs := Fin.init_snoc _ _
-      rw [h_last, h_init]
+      rw [h_last, h_initial]
     have h_next := h_memWkp_succ (Fin.snoc dirs a)
     rw [h_succ_eq] at h_next
     exact h_next

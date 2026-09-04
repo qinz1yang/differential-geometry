@@ -22,20 +22,20 @@ variable [T2Space N] [SigmaCompactSpace N]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace N] in
-theorem metricRm04StdAt_pullback_localDiffeo
+theorem metricRm04StandardAt_pullback_localDiffeo
     (g : SmoothRiemannianMetric I N)
     (V : TopologicalSpace.Opens N) [SigmaCompactSpace V] [T2Space V]
       [IsManifold I 1 V]
     (W : TopologicalSpace.Opens M) [T2Space W]
       [IsManifold I 1 W]
     (Ψ : W ≃ₘ⟮I, I⟯ V) (x : W) (X Y Z W' : TangentSpace I x) :
-    metricRm04StdAt (I := I) (M := W)
+    metricRm04StandardAt (I := I) (M := W)
         (Diffeomorph.pullbackMetric (I := I) (g.restrictOpen (I := I) V) Ψ) x X Y Z W' =
-      metricRm04StdAt (I := I) (M := N) g ((Ψ x : V) : N)
+      metricRm04StandardAt (I := I) (M := N) g ((Ψ x : V) : N)
         (mfderiv I I (Ψ : W → V) x X) (mfderiv I I (Ψ : W → V) x Y)
         (mfderiv I I (Ψ : W → V) x Z) (mfderiv I I (Ψ : W → V) x W') := by
-  rw [metricRm04Std_pullback (I := I) (g.restrictOpen (I := I) V) Ψ x X Y Z W',
-    metricRm04StdAt_restrictOpen (I := I) g V (Ψ x)
+  rw [metricRm04Standard_pullback (I := I) (g.restrictOpen (I := I) V) Ψ x X Y Z W',
+    metricRm04StandardAt_restrictOpen (I := I) g V (Ψ x)
       (mfderiv I I (Ψ : W → V) x X) (mfderiv I I (Ψ : W → V) x Y)
       (mfderiv I I (Ψ : W → V) x Z) (mfderiv I I (Ψ : W → V) x W')]
   simp only [mfderiv_subtype_val_apply]

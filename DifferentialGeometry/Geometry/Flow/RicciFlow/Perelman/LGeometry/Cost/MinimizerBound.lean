@@ -29,16 +29,16 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem lCost_ray_near
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (b : Real)
-    (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z)
+    (hb0 : 0 < b) (hb : b ∈ lRegularizedDomain S T x Z)
     (A : Real)
-    (hA : lRegAction S T (lRegCurve S T x Z) 0 b < A)
+    (hA : lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b < A)
     (q : Nat → M)
-    (hq : Tendsto q atTop (nhds (lRegCurve S T x Z b))) :
+    (hq : Tendsto q atTop (nhds (lRegularizedCurve S T x Z b))) :
     ∀ᶠ n in atTop, lCost S T x (q n) (b ^ 2) < A := by
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lRegDomain_smoothClamp S T x Z hb0 hb
+    exists_lRegularizedDomain_smoothClamp S T x Z hb0 hb
   let z : E := Z
-  let gamma : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
+  let gamma : Real → M := fun s ↦ lRegularizedCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞ rho :=
     contMDiff_iff_contDiff.mpr hrho
@@ -50,20 +50,20 @@ theorem lCost_ray_near
   have hgammaInf : ContMDiff (modelWithCornersSelf Real Real) I ∞ gamma := by
     rw [← contMDiffOn_univ]
     change ContMDiffOn (modelWithCornersSelf Real Real) I ∞
-      (fun s ↦ lRegCurve S T x Z (rho s)) univ
-    exact (lRegCurve_smoothOn S hS T x).comp hpair.contMDiffOn
+      (fun s ↦ lRegularizedCurve S T x Z (rho s)) univ
+    exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
       (fun s _hs ↦ by
-        change rho s ∈ lRegDomain S T x Z
+        change rho s ∈ lRegularizedDomain S T x Z
         exact hrho_range s)
   have hgamma : ContMDiff (modelWithCornersSelf Real Real) I 1 gamma :=
     hgammaInf.of_le (by norm_num)
-  have heq : EqOn gamma (lRegCurve S T x Z) (Icc (0 : Real) b) := by
+  have heq : EqOn gamma (lRegularizedCurve S T x Z) (Icc (0 : Real) b) := by
     intro s hs
-    exact congrArg (lRegCurve S T x Z) (hrho_id hs)
+    exact congrArg (lRegularizedCurve S T x Z) (hrho_id hs)
   have hreg : ∀ s ∈ Icc (0 : Real) b, T - s ^ 2 ∈ D.regular := by
     intro s hs
-    exact lRegDomain_reg S T x Z
-      (lRegDomain_seg S T x Z hb hs.1 hs.2)
+    exact lRegularizedDomain_regularity S T x Z
+      (lRegularizedDomain_segment S T x Z hb hs.1 hs.2)
   have htime : Icc (T - b ^ 2) T ⊆ D.carrier := by
     intro r hr
     have hnonneg : 0 ≤ T - r := by linarith [hr.2]
@@ -84,9 +84,9 @@ theorem lCost_ray_near
     have hsq : s ^ 2 ≤ b ^ 2 :=
       (sq_le_sq₀ hs.1 hb0.le).2 hs.2
     exact ⟨by linarith, by nlinarith [sq_nonneg s]⟩
-  have hact : lRegAction S T gamma 0 b =
-      lRegAction S T (lRegCurve S T x Z) 0 b := by
-    apply lRegAction_congr (I := I) S T gamma (lRegCurve S T x Z) 0 b
+  have hact : lRegularizedAction S T gamma 0 b =
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b := by
+    apply lRegularizedAction_congr (I := I) S T gamma (lRegularizedCurve S T x Z) 0 b
     intro s hs
     apply heq
     have hs' : s ∈ Ioo (0 : Real) b := by
@@ -102,28 +102,28 @@ theorem lCost_ray_near
   have hreg' : ∀ s ∈ Icc (0 : Real) (Real.sqrt (b ^ 2)),
       T - s ^ 2 ∈ D.regular := by
     simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb0] using hreg
-  have hA' : lRegAction S T gamma 0 (Real.sqrt (b ^ 2)) < A := by
+  have hA' : lRegularizedAction S T gamma 0 (Real.sqrt (b ^ 2)) < A := by
     rw [Real.sqrt_sq_eq_abs, abs_of_pos hb0, hact]
     exact hA
   exact lCost_lt_event (I := I) S hS T (T - b ^ 2) T (b ^ 2)
-    (sq_pos_of_pos hb0) htime hback' x (lRegCurve S T x Z b) gamma hgamma
-    (by simp only [gamma, hrho0, lRegCurve_zero])
+    (sq_pos_of_pos hb0) htime hback' x (lRegularizedCurve S T x Z b) gamma hgamma
+    (by simp only [gamma, hrho0, lRegularizedCurve_zero])
     (by simp only [gamma, Real.sqrt_sq_eq_abs, abs_of_pos hb0, hrhob])
     hreg' A hA' q hq
 
-theorem lMinVec_end_bdd
+theorem lMinimizingVector_end_bdd
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (b : Real)
-    (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z)
+    (hb0 : 0 < b) (hb : b ∈ lRegularizedDomain S T x Z)
     (W : Nat → TangentSpace I x)
     (hmin : ∀ n, (W n, b ^ 2) ∈ lMinDomain S T x)
     (hend : Tendsto (fun n ↦ lExp S T x (W n) (b ^ 2)) atTop
-      (nhds (lRegCurve S T x Z b))) :
+      (nhds (lRegularizedCurve S T x Z b))) :
     Bornology.IsBounded (Set.range W) := by
   let act : Nat → Real := fun n ↦
-    lRegAction S T (lRegCurve S T x (W n)) 0 b
-  let A : Real := lRegAction S T (lRegCurve S T x Z) 0 b + 1
-  have hA : lRegAction S T (lRegCurve S T x Z) 0 b < A := by
+    lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 b
+  let A : Real := lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b + 1
+  have hA : lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b < A := by
     dsimp only [A]
     linarith
   have hcost : ∀ᶠ n in atTop,
@@ -136,13 +136,13 @@ theorem lMinVec_end_bdd
     have hminEq := ((mem_lMinDomain S T x (W n) (b ^ 2)).1 (hmin n)).2
     calc
       act n = lLength S T
-          (squareRootReparametrization (lRegCurve S T x (W n))) 0 (b ^ 2) := by
+          (squareRootReparametrization (lRegularizedCurve S T x (W n))) 0 (b ^ 2) := by
         simpa only [act, Real.sqrt_sq_eq_abs, abs_of_pos hb0] using
-          (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x (W n))
+          (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T (lRegularizedCurve S T x (W n))
             (b ^ 2) (sq_nonneg b)).symm
       _ = lCost S T x (lExp S T x (W n) (b ^ 2)) (b ^ 2) := by
-        rw [show squareRootReparametrization (lRegCurve S T x (W n)) =
-          (fun r ↦ lRegCurve S T x (W n) (Real.sqrt r)) by rfl]
+        rw [show squareRootReparametrization (lRegularizedCurve S T x (W n)) =
+          (fun r ↦ lRegularizedCurve S T x (W n) (Real.sqrt r)) by rfl]
         exact hminEq
   let A' : Real := max A 0 + ∑ i ∈ Finset.range N, |act i|
   have hact (n : Nat) : act n ≤ A' := by
@@ -175,17 +175,17 @@ theorem lMinVec_end_bdd
       calc
         Real.sqrt (T - r) ≤ Real.sqrt (b ^ 2) := Real.sqrt_le_sqrt hle
         _ = b := by rw [Real.sqrt_sq_eq_abs, abs_of_pos hb0]
-    have hreg := lRegDomain_reg S T x Z
-      (lRegDomain_seg S T x Z hb hsqrt.1 hsqrt.2)
+    have hreg := lRegularizedDomain_regularity S T x Z
+      (lRegularizedDomain_segment S T x Z hb hsqrt.1 hsqrt.2)
     have heq : T - (Real.sqrt (T - r)) ^ 2 = r := by
       rw [Real.sq_sqrt hnonneg]
       ring
     simpa only [heq] using hreg
-  have hdom (n : Nat) : b ∈ lRegDomain S T x (W n) := by
+  have hdom (n : Nat) : b ∈ lRegularizedDomain S T x (W n) := by
     have hpos := ((mem_lMinDomain S T x (W n) (b ^ 2)).1 (hmin n)).1
     have hdata := (mem_lExpPosDom S T x (W n) (b ^ 2)).1 hpos
     simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb0] using hdata.2.2
-  apply isBounded_range_initialVector_of_lRegAction_le_fixed_parameter (I := I) S hS T x W b A' hb0 hslab hdom
+  apply isBounded_range_initialVector_of_lRegularizedAction_le_fixed_parameter (I := I) S hS T x W b A' hb0 hslab hdom
   intro n
   simpa only [act] using hact n
 

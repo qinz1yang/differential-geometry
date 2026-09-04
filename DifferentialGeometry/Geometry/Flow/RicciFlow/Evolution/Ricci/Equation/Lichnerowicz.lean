@@ -27,7 +27,7 @@ variable {u : Set M}
 
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem evol_ricci_inFrame_of_variation_commutators
+theorem evolution_ricci_inFrame_of_variation_commutators
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -626,7 +626,7 @@ theorem ricciLichnerowiczEquationInFrame_of_ricciEvolution_lc
       hTrace hRm13 hLower hinv)
 
 omit [SigmaCompactSpace M] in
-theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_commutators
+theorem evolution_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_commutators
     [hManifoldTop : IsManifold I (∞ + 1) M]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -645,11 +645,11 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
       Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
         CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
     (x₀ : M)
-    (hmetricReg :
+    (hmetricRegularity :
       MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt (coordinateFrameAt (I := I) x₀)
         (coordinateFrameSet (I := I) x₀))
-    (hnablaReg :
+    (hnablaRegularity :
       Nabla2RicciComponentsRegularInFrameOnLocal
         (I := I) S (coordinateFrameAt (I := I) x₀)
         (coordinateFrameSet (I := I) x₀)
@@ -685,9 +685,9 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
       (t : Real) := by
   let _ := hManifoldTop
   have hRicci :=
-    evol_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
-      (I := I) S hS Rm13 Rm04 gInv gInvDt nablaRic nabla2Ric x₀ hmetricReg
-      hnablaReg hRicTrace hRm hcurv hmix hcomm t i j
+    evolution_ricci_coordFrameAt_of_christoffelEvolution_nabla2_commutators
+      (I := I) S hS Rm13 Rm04 gInv gInvDt nablaRic nabla2Ric x₀ hmetricRegularity
+      hnablaRegularity hRicTrace hRm hcurv hmix hcomm t i j
   have hx₀ : x₀ ∈ coordinateFrameSet (I := I) x₀ :=
     coordinateFrameAt_mem (I := I) x₀
   have hinvAt :
@@ -698,7 +698,7 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
     metricInverseInBasis_of_local
       (I := I) S gInv (coordinateFrameAt (I := I) x₀)
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
-      hmetricReg.nondegenerateGram (t : Real) hx₀
+      hmetricRegularity.nondegenerateGram (t : Real) hx₀
   have hInvAt :
       forall a b : CoordinateIdx (𝕜 := Real) E,
         gInv (t : Real) x₀ a b = gInv (t : Real) x₀ b a := by
@@ -806,7 +806,7 @@ theorem coordRicciLich
   apply ricciLichAt (I := I) S S.base.rm04
     (coordInv (I := I) S x₀) (coordinateFrameAt (I := I) x₀)
     (coordRoughRic (I := I) S x₀ (coordNab2Ric (I := I) S x₀)) t x₀ i j
-    (coordRicciEvol (I := I) S hS x₀ t i j)
+    (coordRicciEvolution (I := I) S hS x₀ t i j)
   · intro a b
     exact coordInvSymmOn (I := I) S x₀ (t : Real)
       (coordinateFrameAt_mem (I := I) x₀) a b
@@ -900,7 +900,7 @@ theorem ricciPairCoord
               (s := D.carrier) (x := (t : Real))
               (fun j _hj => by
                 simpa [rhs, b, frame, mul_assoc] using
-                  ((coordRicciEvol (I := I) S hS x₀ t i j).const_mul
+                  ((coordRicciEvolution (I := I) S hS x₀ t i j).const_mul
                     (b.coord i v * b.coord j w))))))
   have hderiv := hsum_deriv.congr_of_eventuallyEq
     (by

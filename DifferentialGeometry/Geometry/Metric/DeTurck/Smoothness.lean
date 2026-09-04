@@ -176,7 +176,7 @@ theorem deTurckFun_contMDiff_total (g g' : SmoothRiemannianMetric I M) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x (deTurckFun (I := I) g g' x)) := by
   intro x
-  have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
+  have hx_source : x ∈ (chartAt H x).source := mem_chart_source H x
   have hsrc_open : IsOpen ((chartAt H x).source) := (chartAt H x).open_source
   have hsmooth_local : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun y : M => TotalSpace.mk' E y (deTurckChartLocal (I := I) g g' x y))
@@ -190,7 +190,7 @@ theorem deTurckFun_contMDiff_total (g g' : SmoothRiemannianMetric I M) :
     change TotalSpace.mk' E y (deTurckFun (I := I) g g' y) =
       TotalSpace.mk' E y (deTurckChartLocal (I := I) g g' x y)
     rw [h]
-  exact (hsmooth_local2 x hx_src).contMDiffAt (hsrc_open.mem_nhds hx_src)
+  exact (hsmooth_local2 x hx_source).contMDiffAt (hsrc_open.mem_nhds hx_source)
 
 end DeTurck
 end PDE

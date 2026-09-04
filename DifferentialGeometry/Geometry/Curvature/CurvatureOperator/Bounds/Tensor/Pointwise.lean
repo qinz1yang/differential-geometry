@@ -32,7 +32,7 @@ lemma exists_fiberNormSq_le_factor
     ∃ B : ℝ, 0 ≤ B ∧
       riemannianFiberNormSq (I := I) (M := M) g r s x T ≤ ‖T‖ ^ 2 * B := by
   obtain ⟨Ab, hAb_nonneg, hbound⟩ :=
-    riemannianFiberNormSq_le_pointwise_witness (I := I) (M := M) g r s x T
+    exists_riemannianFiberNormSq_pointwise_bound (I := I) (M := M) g r s x T
   refine ⟨_, ?_, hbound⟩
   refine mul_nonneg (pow_nonneg ?_ _) (pow_nonneg hAb_nonneg _)
   unfold metricInnerOpNorm

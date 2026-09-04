@@ -601,7 +601,7 @@ theorem jacobi_perp_of_ends
     (hDJdiff : ∀ t, DifferentiableAt ℝ
       (chartRepAt (I := I) γ
         (fun s => covDerivAlong (I := I) g γ J s) t) t)
-    (hJac : IsJacobiAlong (I := I) g γ J)
+    (hJacobian : IsJacobiAlong (I := I) g γ J)
     (hJ0 : J 0 = 0) (hJc : J c = 0) :
     ∀ t, g.inner (γ t) (J t) (curveVelocity (I := I) γ t) = 0 := by
   let f : ℝ → ℝ := fun t =>
@@ -688,7 +688,7 @@ theorem jacobi_perp_of_ends
       (curveVelocity (I := I) γ)
       (fun s => covDerivAlong (I := I) g γ J s) t hγ.contMDiffAt
       (hveldiff t) (hDJdiff t)
-    rw [hvelpar t, jacobi_d2_eq (I := I) g γ J (hJac t)] at h
+    rw [hvelpar t, jacobi_d2_eq (I := I) g γ J (hJacobian t)] at h
     simpa only [q, map_zero, zero_apply, zero_add,
       map_neg, neg_apply, hcurvzero t, neg_zero] using h
   have hqconst (t : ℝ) : q t = q 0 :=

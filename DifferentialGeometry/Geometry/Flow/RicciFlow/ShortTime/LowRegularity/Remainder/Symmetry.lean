@@ -326,9 +326,9 @@ theorem duhamel_solution_of_deTurck_remainder_symmetric_ae (g₀ g_bg : SmoothRi
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (u t)) :
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g₀ h2
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t) =
-        maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+        maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t :=
   duhamel_solution_symmetric_ae (I := I) (M := M) g₀ ha h2 hT gforce
     (deTurck_remainder_forcing_symmetric_ae (I := I) (M := M) g₀ g_bg hR hδ hreal hcont hcore ha u
@@ -362,11 +362,11 @@ theorem duhamel_solution_of_deTurck_remainder_symmetric_h3_ae (g₀ g_bg : Smoot
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g₀ h3
           (tensorHsCongr (I := I) (M := M) g₀ 0 2 hex
-            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
               (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
               gforce t)) =
         tensorHsCongr (I := I) (M := M) g₀ 0 2 hex
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce t) := by
   filter_upwards [duhamel_solution_of_deTurck_remainder_symmetric_ae (I := I) (M := M) g₀ g_bg hR hδ hreal

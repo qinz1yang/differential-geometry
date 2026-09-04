@@ -132,12 +132,12 @@ theorem geodesic_speed_constant
     have hev' : ∀ᶠ s in nhds t, HasDerivAt u (deriv u s) s := hev
     have ha' : HasDerivAt V a t := ha
     have hVt : V t = v := by rw [hV_def]; exact hv'.deriv
-    have hut_src : γ t ∈ (chartAt H α).source := by
+    have hut_source : γ t ∈ (chartAt H α).source := by
       rw [hα_def]; exact mem_chart_source H (γ t)
-    have hut_ext_src : γ t ∈ (extChartAt I α).source := by
-      rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hut_src
+    have hut_ext_source : γ t ∈ (extChartAt I α).source := by
+      rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hut_source
     have hut_target : extChartAt I α (γ t) ∈ (extChartAt I α).target :=
-      (extChartAt I α).map_source hut_ext_src
+      (extChartAt I α).map_source hut_ext_source
     have hmem : u t ∈ interior (extChartAt I α).target := by
       rw [hu_def, chartCurve_def]
       exact extChartAt_target_subset_interior_of_boundaryless (I := I) α hut_target
@@ -173,7 +173,7 @@ theorem geodesic_speed_constant
       have hsrc_nhds : {s : ℝ | γ s ∈ (chartAt H α).source} ∈ nhds t := by
         have hcont : Continuous γ := hγ_C1.continuous
         exact hcont.continuousAt.preimage_mem_nhds
-          ((chartAt H α).open_source.mem_nhds hut_src)
+          ((chartAt H α).open_source.mem_nhds hut_source)
       filter_upwards [hev', hsrc_nhds] with s hus hsrc
       have hγ_s : MDifferentiableAt 𝓘(ℝ, ℝ) I γ s := hγ_mdiff s
       have hraw := raw_mfderiv_eq_symmL_fderiv_at (I := I) (γ := γ)
@@ -237,12 +237,12 @@ theorem isGeodesicOn_speedSq_hasDerivAt_zero
   have hv' : HasDerivAt u v t := hv
   have ha' : HasDerivAt V a t := ha
   have hVt : V t = v := by rw [hV_def]; exact hv'.deriv
-  have hut_src : γ t ∈ (chartAt H α).source := by
+  have hut_source : γ t ∈ (chartAt H α).source := by
     rw [hα_def]; exact mem_chart_source H (γ t)
-  have hut_ext_src : γ t ∈ (extChartAt I α).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hut_src
+  have hut_ext_source : γ t ∈ (extChartAt I α).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hut_source
   have hut_target : extChartAt I α (γ t) ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hut_ext_src
+    (extChartAt I α).map_source hut_ext_source
   have hmem : u t ∈ interior (extChartAt I α).target := by
     rw [hu_def, chartCurve_def]
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) α hut_target
@@ -278,7 +278,7 @@ theorem isGeodesicOn_speedSq_hasDerivAt_zero
       have hcont : ContinuousAt γ t :=
         (hγ_C1.continuousOn.continuousAt (hs.mem_nhds ht))
       exact hcont.preimage_mem_nhds
-        ((chartAt H α).open_source.mem_nhds hut_src)
+        ((chartAt H α).open_source.mem_nhds hut_source)
     have hs_nhds : s ∈ nhds t := hs.mem_nhds ht
     filter_upwards [hev, hsrc_nhds, hs_nhds] with r hur hsrc hrs
     have hγ_r : MDifferentiableAt 𝓘(ℝ, ℝ) I γ r := hγ_mdiffAt r hrs

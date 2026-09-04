@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter
 open scoped ContDiff Manifold Topology
@@ -42,7 +42,7 @@ theorem exists_stage_metric
         let Ralpha := L.rInf (alpha.1 : Nat) + 1
         let V := Metric.ball (0 : E) (d.phaseRadius Ralpha)
         ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) V ∧
-        MapCInfConvOnCompacts V
+        MapCInfConvergenceOnCompacts V
           (fun n => d.chartMetric (L.φ (psi n))
             (seqCenterD inp.decay P L (psi n) (alpha.1 : Nat)))
           (gInf alpha) ∧
@@ -70,7 +70,7 @@ theorem exists_stage_metric
   have hstep : ∀ alpha (τ : Nat → Nat), StrictMono τ →
       ∃ (σ : Nat → Nat) (g : E → (E →L[Real] E →L[Real] Real)),
         StrictMono σ ∧
-        MapCInfConvOnCompacts (V alpha)
+        MapCInfConvergenceOnCompacts (V alpha)
           (fun n => Φ alpha (τ (σ n))) g ∧ Q alpha g := by
     intro alpha τ hτ
     let index : Nat → Nat := fun n => L.φ (shift (τ n))
@@ -176,7 +176,7 @@ theorem exists_stage_pair
           Nat → OpenPartialHomeomorph (E × E) (E × E))
         (eInf : LiveSlot L inp.pack r →
           OpenPartialHomeomorph (E × E) (E × E)),
-      (∀ alpha, HasDiagPairConv (I := I) (hcomplete.subseq index)
+      (∀ alpha, HasDiagPairConvergence (I := I) (hcomplete.subseq index)
         (PointedRiemannianSeq.connected_subseq hconn index)
         (c alpha) (q alpha) (q alpha / 2)
         (deltaStage alpha) (deltaInf alpha) (e alpha) (eInf alpha)
@@ -209,7 +209,7 @@ theorem exists_stage_pair
       ∃ (deltaStage deltaInf : Real)
           (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
           (eInf : OpenPartialHomeomorph (E × E) (E × E)),
-        HasDiagPairConv (I := I) (hcomplete.subseq index)
+        HasDiagPairConvergence (I := I) (hcomplete.subseq index)
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) (q alpha) (q alpha / 2)
           deltaStage deltaInf e eInf (chart := dphi.chart) ∧
@@ -242,7 +242,7 @@ theorem exists_stage_pair
         (Metric.ball 0 (dphi.phaseRadius Ralpha)) := by
       with_unfolding_all
         exact hgInf
-    have hconv' : MapCInfConvOnCompacts
+    have hconv' : MapCInfConvergenceOnCompacts
         (Metric.ball 0 (dphi.phaseRadius Ralpha))
         (fun n ↦ dphi.chartMetric n (c alpha n)) (gInf alpha) := by
       with_unfolding_all
@@ -270,5 +270,5 @@ theorem exists_stage_pair
 
 end BoundedGeometryNormalChartData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

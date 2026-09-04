@@ -558,7 +558,7 @@ private lemma isCompact_closure_of_bounded
   hΩ_bdd.isCompact_closure
 
 omit [NeZero d] in
-private lemma indicator_supp_subset_closure
+private lemma indicator_support_subset_closure
     {Ω : Set E} {u : E → ℝ} (x : E) (hx : x ∉ closure Ω) :
     Ω.indicator u x = 0 := by
   rw [Set.indicator_of_notMem]
@@ -588,10 +588,10 @@ theorem rellich_kondrachov_W01p_seq
   have hK_compact : IsCompact K := isCompact_closure_of_bounded (d := d) hΩ_bdd
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   set u_ext : ℕ → E → ℝ := fun n => Ω.indicator (u n) with hu_ext_def
-  have hu_ext_supp : ∀ n, ∀ x, x ∉ K → u_ext n x = 0 := by
+  have hu_ext_support : ∀ n, ∀ x, x ∉ K → u_ext n x = 0 := by
     intro n x hx
     rw [hu_ext_def]
-    exact indicator_supp_subset_closure (d := d) x hx
+    exact indicator_support_subset_closure (d := d) x hx
   have hu_ext_memLp : ∀ n, MemLp (u_ext n) p volume := by
     intro n
     have h_iff := MeasureTheory.memLp_indicator_iff_restrict (μ := volume) (s := Ω)
@@ -644,7 +644,7 @@ theorem rellich_kondrachov_W01p_seq
       exact ENNReal.ofReal_le_ofReal h3
     exact hPhB'.trans (h2.trans h4)
   rcases tendsto_subseq_of_uniform_translation_in_Lp (d := d)
-    hp_one hp_top hK_compact hu_ext_memLp hu_ext_supp hu_ext_bdd hu_ext_translation with
+    hp_one hp_top hK_compact hu_ext_memLp hu_ext_support hu_ext_bdd hu_ext_translation with
     ⟨φ, hφ_mono, u_lim_v, hu_lim_v_memLp, h_tendsto_v⟩
   refine ⟨φ, hφ_mono, u_lim_v, hu_lim_v_memLp.restrict Ω, ?_⟩
   have hSqueeze : ∀ k,

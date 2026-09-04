@@ -18,7 +18,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 namespace DifferentialGeometry
 namespace PDE
@@ -368,7 +368,7 @@ private theorem curvSup_of_diff
       _ = (Cd + Real.sqrt Kb) ^ 2 * P3 := by rw [Real.mul_self_sqrt hP30]
   have hout : g₀.inner x R0 R0 ≤ Λ * gBase.inner x R0 R0 := (hcomp x R0).2
   have hcoeff_nn : 0 ≤ (Cd + Real.sqrt Kb) ^ 2 := sq_nonneg _
-  have hinConv : ∀ z : TangentSpace I x, gBase.inner x z z ≤ Λ * g₀.inner x z z := by
+  have hinConvergence : ∀ z : TangentSpace I x, gBase.inner x z z ≤ Λ * g₀.inner x z z := by
     intro z
     have hz := (hcomp x z).1
     have hz2 := mul_le_mul_of_nonneg_left hz hΛ0.le
@@ -379,11 +379,11 @@ private theorem curvSup_of_diff
   have hΛg0ww : 0 ≤ Λ * g₀.inner x w w := mul_nonneg hΛ0.le hg0ww0
   have hstep1 : gBase.inner x v v * gBase.inner x w w ≤
       (Λ * g₀.inner x v v) * (Λ * g₀.inner x w w) :=
-    mul_le_mul (hinConv v) (hinConv w) hbww0 hΛg0vv
+    mul_le_mul (hinConvergence v) (hinConvergence w) hbww0 hΛg0vv
   have hstep2 : P3 ≤ (Λ * g₀.inner x v v) * (Λ * g₀.inner x w w) * (Λ * g₀.inner x u u) := by
     rw [hP3]
-    exact mul_le_mul hstep1 (hinConv u) hbuu0 (mul_nonneg hΛg0vv hΛg0ww)
-  have hP3_conv : P3 ≤ Λ ^ 3 * (g₀.inner x v v * g₀.inner x w w * g₀.inner x u u) := by
+    exact mul_le_mul hstep1 (hinConvergence u) hbuu0 (mul_nonneg hΛg0vv hΛg0ww)
+  have hP3_convergence : P3 ≤ Λ ^ 3 * (g₀.inner x v v * g₀.inner x w w * g₀.inner x u u) := by
     refine le_trans hstep2 (le_of_eq ?_); ring
   calc g₀.inner x R0 R0
       ≤ Λ * gBase.inner x R0 R0 := hout
@@ -392,7 +392,7 @@ private theorem curvSup_of_diff
     _ ≤ Λ * ((Cd + Real.sqrt Kb) ^ 2 *
           (Λ ^ 3 * (g₀.inner x v v * g₀.inner x w w * g₀.inner x u u))) :=
           mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_left hP3_conv hcoeff_nn) hΛ0.le
+            (mul_le_mul_of_nonneg_left hP3_convergence hcoeff_nn) hΛ0.le
     _ = (Λ ^ 2 * (Cd + Real.sqrt Kb)) ^ 2 *
           g₀.inner x v v * g₀.inner x w w * g₀.inner x u u := by ring
 

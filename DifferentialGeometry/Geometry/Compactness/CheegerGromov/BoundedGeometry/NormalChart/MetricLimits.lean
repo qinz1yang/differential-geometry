@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 open scoped Manifold ContDiff Bundle
@@ -38,7 +38,7 @@ theorem exists_chart_metric_limit_subsequence
         (gInf : E → (E →L[Real] E →L[Real] Real)),
       StrictMono phi ∧
       ContDiffOn Real (⊤ : ℕ∞) gInf U ∧
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => d.chartMetric (phi k) (c (phi k))) gInf ∧
       ∀ z ∈ U, ∀ v : E,
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v ∧
@@ -97,16 +97,16 @@ theorem exists_finite_chart_metric_limit_subsequence
         (gInf : E → (ι → (E →L[Real] E →L[Real] Real))),
       StrictMono phi ∧
       ContDiffOn Real (⊤ : ℕ∞) gInf U ∧
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k z i ↦ d.chartMetric (phi k) (c i (phi k)) z) gInf ∧
       ∀ z ∈ U, ∀ i v,
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z i v v ∧
           gInf z i v v ≤ 2 * ‖v‖ ^ 2 := by
   classical
-  let gLoc : Nat → E → (ι → (E →L[Real] E →L[Real] Real)) :=
+  let gLocal : Nat → E → (ι → (E →L[Real] E →L[Real] Real)) :=
     fun k z i ↦ d.chartMetric k (c i k) z
   have hsmoothComp : ∀ k i,
-      ContDiffOn Real (⊤ : ℕ∞) (fun z ↦ gLoc k z i) U := by
+      ContDiffOn Real (⊤ : ℕ∞) (fun z ↦ gLocal k z i) U := by
     intro k i
     let : TopologicalSpace (X.obj k).M := (X.obj k).topology
     let : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -116,13 +116,13 @@ theorem exists_finite_chart_metric_limit_subsequence
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c i k)).radius := by
       simpa only [d.radius_eq k (c i k)] using hsub k i
-    simpa only [gLoc, BoundedGeometryNormalChartData.chartMetric] using
+    simpa only [gLocal, BoundedGeometryNormalChartData.chartMetric] using
       (d.chart k (c i k)).metric_cont_diff_on (X.obj k).metric hU
         ((d.chart k (c i k)).smooth_to.mono hrad)
-  have hsmooth : ∀ k, ContDiffOn Real (⊤ : ℕ∞) (gLoc k) U :=
+  have hsmooth : ∀ k, ContDiffOn Real (⊤ : ℕ∞) (gLocal k) U :=
     fun k ↦ contDiffOn_pi.mpr (hsmoothComp k)
   have hbddComp : ∀ i, iteratedFDerivBoundsOnCompactsWithin U
-      (fun k z ↦ gLoc k z i) := by
+      (fun k z ↦ gLocal k z i) := by
     intro i p K hK hKU
     refine ⟨d.metricC p, ?_⟩
     intro k z hz
@@ -134,29 +134,29 @@ theorem exists_finite_chart_metric_limit_subsequence
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c i k)).radius := by
       simpa only [d.radius_eq k (c i k)] using hsub k i
-    simpa only [gLoc, BoundedGeometryNormalChartData.chartMetric] using
+    simpa only [gLocal, BoundedGeometryNormalChartData.chartMetric] using
       d.metric_deriv k p (c i k) z (hrad (hKU hz))
-  have hbdd : iteratedFDerivBoundsOnCompactsWithin U gLoc :=
+  have hbdd : iteratedFDerivBoundsOnCompactsWithin U gLocal :=
     iteratedFDerivBoundsOnCompactsWithin.pi hU hsmoothComp hbddComp
   obtain ⟨phi, gInf, hphi, hginf, hconv⟩ :=
-    exists_cInf_subseq_on hU gLoc hsmooth hbdd
+    exists_cInf_subseq_on hU gLocal hsmooth hbdd
   refine ⟨phi, gInf, hphi, hginf, hconv, ?_⟩
   intro z hz i v
-  have htendAll : Tendsto (fun k ↦ gLoc (phi k) z) atTop
+  have htendAll : Tendsto (fun k ↦ gLocal (phi k) z) atTop
       (nhds (gInf z)) :=
     tendsto_of_cInf hconv hz
-  have htend : Tendsto (fun k ↦ gLoc (phi k) z i) atTop
+  have htend : Tendsto (fun k ↦ gLocal (phi k) z i) atTop
       (nhds (gInf z i)) :=
     (tendsto_pi_nhds.mp htendAll) i
   have heval : Continuous
       (fun A : E →L[Real] E →L[Real] Real ↦ A v v) := by
     fun_prop
-  have htendv : Tendsto (fun k ↦ gLoc (phi k) z i v v) atTop
+  have htendv : Tendsto (fun k ↦ gLocal (phi k) z i v v) atTop
       (nhds (gInf z i v v)) :=
     (heval.tendsto _).comp htend
   have hequiv : ∀ n,
-      (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gLoc (phi n) z i v v ∧
-        gLoc (phi n) z i v v ≤ 2 * ‖v‖ ^ 2 := by
+      (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gLocal (phi n) z i v v ∧
+        gLocal (phi n) z i v v ≤ 2 * ‖v‖ ^ 2 := by
     intro n
     let : TopologicalSpace (X.obj (phi n)).M :=
       (X.obj (phi n)).topology
@@ -170,7 +170,7 @@ theorem exists_finite_chart_metric_limit_subsequence
         U ⊆ Metric.ball (0 : E)
           (d.chart (phi n) (c i (phi n))).radius := by
       simpa only [d.radius_eq (phi n) (c i (phi n))] using hsub (phi n) i
-    simpa only [gLoc, BoundedGeometryNormalChartData.chartMetric] using
+    simpa only [gLocal, BoundedGeometryNormalChartData.chartMetric] using
       d.metric_equiv (phi n) (c i (phi n)) z (hrad hz) v
   exact ⟨
     ge_of_tendsto htendv
@@ -178,5 +178,5 @@ theorem exists_finite_chart_metric_limit_subsequence
     le_of_tendsto htendv
       (Filter.Eventually.of_forall fun n ↦ (hequiv n).2)⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

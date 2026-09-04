@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Topology.ThreeManifold
 open DifferentialGeometry.Geometry
 
@@ -310,12 +310,12 @@ theorem round_at_zero_of_smooth_cgh
     tracefree_zero_of_decay (I := I) (M := M) hdim hdecay
   have heinstein : limitEinsteinAt (I := I) (M := M) Lh 0 :=
     limit_einstein_of_tracefree_ricci_zero (I := I) (M := M) hdim htf
-  have hbaseConv : hamiltonLimitBaseScalarConvergence (I := I) (M := M) P Q Lh := by
+  have hbaseConvergence : hamiltonLimitBaseScalarConvergence (I := I) (M := M) P Q Lh := by
     simpa [Lh] using
       (base_scalar_convergence_of_smooth_cgh (I := I) (M := M) P Q hsel hsource
         h0 hsubseq hconv hcomplete)
   have hbaseOne : limitBaseScalarOne (I := I) (M := M) Lh :=
-    limit_base_scalar_one (I := I) (M := M) P Q hsel hbaseConv
+    limit_base_scalar_one (I := I) (M := M) P Q hsel hbaseConvergence
   let : TopologicalSpace Lh.N := Lh.topology
   let : ChartedSpace H Lh.N := Lh.charted
   let : IsManifold I ∞ Lh.N := Lh.smooth
@@ -362,7 +362,7 @@ theorem flow_upgrade_data_converges
     Nonempty (SmoothCGHConverges (I := I) X d.data.L
       (mc.compSubseq d.φ d.hφ).subseq) :=
   ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsrc
+    d.data.maps d.data.scalar d.data.ricciNorm d.data.hσsource
     d.data.refMetric
     (letI : TopologicalSpace d.data.L.M := d.data.L.topology
      letI : ChartedSpace H d.data.L.M := d.data.L.charted
@@ -372,7 +372,7 @@ theorem flow_upgrade_data_converges
        infer_instance
      letI : SigmaCompactSpace d.data.L.M := d.data.L.sigmaCompact
      letI : T2Space d.data.L.M := d.data.L.t2
-     d.data.L.S.family.metric) d.data.conv⟩
+     d.data.L.S.family.metric) d.data.convergence⟩
 
 omit [SigmaCompactSpace M] in
 theorem constant_positive_sectional_curvature_of_smooth_cgh

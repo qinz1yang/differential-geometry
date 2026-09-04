@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -64,7 +64,7 @@ theorem HasStageJetDataOn.hloc_tail
   classical
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hcoverData := hdata
-  dsimp only [HasSuppConvDataOn] at hcoverData
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hcoverData
   rcases hcoverData with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, hsource, _hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
@@ -223,5 +223,5 @@ theorem HasStageJetDataOn.hloc_tail
     simpa only [F, hc_symm, hd_apply] using hout
   exact Coordinates.isLocalDiffeomorphAt_of_coordinates c d hVloc hxc hcxV hmap hG hinv
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

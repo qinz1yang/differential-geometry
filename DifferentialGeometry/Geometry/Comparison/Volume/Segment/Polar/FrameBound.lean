@@ -163,13 +163,13 @@ private theorem curveDensity_basis_eq_orthogonalComplement
     exact L.map_smul ell⁻¹ (show E from u)
   have hrec (i : Option (Fin d)) :
       Va i 1 =
-        ∑ k, C k i • velJacFrame (I := I) g hEnorm p u
+        ∑ k, C k i • velocityJacobianFrame (I := I) g hEnorm p u
           (fun j => v ⟨j, by simpa only [d] using j.2⟩) k 1 := by
     rcases i with _ | i
     · rw [show Va none 1 =
           intrinsicJacobi (I := I) g hEnorm p u (ell⁻¹ • u) 1 by
             simp only [Va, hBa, a]]
-      rw [hjac_smul, radialJac_eq_vel (I := I) g hEnorm p u]
+      rw [hjac_smul, radialJacobian_eq_velocity (I := I) g hEnorm p u]
       simp only [C, Matrix.diagonal_apply]
       simp only [Fin.eta, ite_smul, zero_smul, Finset.sum_ite_eq', Finset.mem_univ,
         ↓reduceIte, Option.elim_none]
@@ -187,10 +187,10 @@ private theorem curveDensity_basis_eq_orthogonalComplement
   have hCabs : |C.det| = ell⁻¹ := by
     rw [hCdet, abs_of_pos (inv_pos.2 hell)]
   have hscale := curveDensity_recomb (I := I) g γ
-    (velJacFrame (I := I) g hEnorm p u
+    (velocityJacobianFrame (I := I) g hEnorm p u
       (fun j => v ⟨j, by simpa only [d] using j.2⟩))
     Va 1 C hrec
-  have hsplit := velJac_density_split (I := I) g hEnorm p u
+  have hsplit := velocityJacobian_density_split (I := I) g hEnorm p u
     (fun j => v ⟨j, by simpa only [d] using j.2⟩)
     (fun j => hperp ⟨j, by simpa only [d] using j.2⟩)
   have hadapt :
@@ -198,7 +198,7 @@ private theorem curveDensity_basis_eq_orthogonalComplement
         curveDensity (I := I) g γ Vt 1 := by
     rw [hscale, hCabs, hsplit]
     rw [← mul_assoc, inv_mul_cancel₀ hell.ne', one_mul]
-  have hbasis := jacDens_basis (I := I) g hEnorm p u Ba Bs
+  have hbasis := jacobianDens_basis (I := I) g hEnorm p u Ba Bs
   rw [show |Ba.det Bs| = 1 by
     rw [Ba.det_apply]
     exact hdet_basis, one_mul] at hbasis
@@ -258,7 +258,7 @@ theorem expDens_scale
   rw [abs_of_pos ht] at hscale
   exact hscale.symm
 
-theorem expDens_le_hyp
+theorem expDens_le_hyperbolic
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -276,7 +276,7 @@ theorem expDens_le_hyp
         (intrinsicGeodesic (I := I) g hEnorm p u)
         (fun i t => intrinsicJacobi (I := I) g hEnorm p u
           (B i) t) 1 ≤
-      hypDensity (q * Real.sqrt (g.inner p u u))
+      hyperbolicDensity (q * Real.sqrt (g.inner p u u))
         (Module.finrank Real E - 1) 1 := by
   have hu_pos : 0 < g.inner p u u := g.pos p u hu
   by_cases hd : 0 < Module.finrank Real E - 1
@@ -301,6 +301,6 @@ theorem expDens_le_hyp
       ext i
       exact isEmptyElim (hd0 ▸ i)
     rw [curveDensity, hgram, Matrix.det_one, Real.sqrt_one]
-    simp only [hd0, hypDensity, pow_zero, le_refl]
+    simp only [hd0, hyperbolicDensity, pow_zero, le_refl]
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

@@ -117,7 +117,7 @@ lemma variational_identity {g : SmoothRiemannianMetric I M} {r s : ℕ} {α : M}
     {P₀ : TensorCompIdx (E := E) r s}
     (D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀)
     (ψ : EuclN → ℝ) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -131,7 +131,7 @@ lemma variational_identity {g : SmoothRiemannianMetric I M} {r s : ℕ} {α : M}
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y * D.fChart y * ψ y
       ∂(volume : Measure EuclN) :=
-  D.toChartData.variational_identity ψ hψ hψ_cs hψ_supp
+  D.toChartData.variational_identity ψ hψ hψ_cs hψ_support
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma memLp_volume_restrict_u_chart {g : SmoothRiemannianMetric I M} {r s : ℕ}
@@ -163,7 +163,7 @@ theorem tensor_chart_bilinear_identity_h1Compl
     (D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -177,7 +177,7 @@ theorem tensor_chart_bilinear_identity_h1Compl
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y * D.fChart y * ψ y
       ∂(volume : Measure EuclN) :=
-  D.variational_identity ψ hψ hψ_cs hψ_supp
+  D.variational_identity ψ hψ hψ_cs hψ_support
 
 end TensorSpectral
 end Parabolic

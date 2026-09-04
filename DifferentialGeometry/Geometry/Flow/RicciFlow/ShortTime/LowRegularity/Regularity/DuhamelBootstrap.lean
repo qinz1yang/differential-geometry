@@ -33,9 +33,9 @@ def duhamelCross (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     CrossScaleField (I := I) (M := M) g r s a T where
-  hiL2 := maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f
-  lo := maxRegDuhamelMap (I := I) (M := M) a hT u₀ f
-  link := solField_toFun_ae (I := I) (M := M) hT
+  hiL2 := maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ f
+  lo := maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ f
+  link := solutionField_toFun_ae (I := I) (M := M) hT
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) u₀ f
 
 omit [NeZero (Module.finrank ℝ E)]
@@ -66,7 +66,7 @@ theorem crossRepr_hi_ae
   exact hcoeff i
 
 omit [BoundarylessManifold I M] in
-theorem duhRepr_toFun
+theorem duhamelRepr_toFun
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -75,13 +75,13 @@ theorem duhRepr_toFun
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 1 by linarith)
         ((duhamelCross (I := I) (M := M) g r s a hT u₀ f).repr t) =
-      (maxRegDuhamelMap (I := I) (M := M) a hT u₀ f).toFun t := by
+      (maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ f).toFun t := by
   simpa only [duhamelCross] using
     crossRepr_toFun (I := I) (M := M)
       (duhamelCross (I := I) (M := M) g r s a hT u₀ f) hT ht
 
 omit [BoundarylessManifold I M] in
-theorem duhRepr_field_ae
+theorem duhamelRepr_field_ae
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -90,13 +90,13 @@ theorem duhRepr_field_ae
       =ᵐ[timeMeasure T]
         fun t => tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a + 1 ≤ a + 2 by linarith)
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f t) := by
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ f t) := by
   simpa only [duhamelCross] using
     crossRepr_hi_ae (I := I) (M := M)
       (duhamelCross (I := I) (M := M) g r s a hT u₀ f) hT
 
 omit [BoundarylessManifold I M] in
-theorem duhRepr_meas
+theorem duhamelRepr_meas
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -109,17 +109,17 @@ theorem duhRepr_meas
       (fun t => tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT u₀ f t))
       (timeMeasure T) :=
     (tensorHsInclusion (I := I) (M := M)
       (g := g) (r := r) (s := s)
       (show a + 1 ≤ a + 2 by linarith)).continuous.comp_aestronglyMeasurable
         (Lp.aestronglyMeasurable
-          (maxRegDuhamelSolField (I := I) (M := M)
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M)
             a hT u₀ f))
   exact hfield.congr
-    (duhRepr_field_ae (I := I) (M := M)
+    (duhamelRepr_field_ae (I := I) (M := M)
       g r s a hT u₀ f).symm
 
 omit [NeZero (Module.finrank ℝ E)]
@@ -159,14 +159,14 @@ theorem crossRepr_ball
   exact (sq_le_sq₀ (norm_nonneg _) hR).1 (sub_nonpos.mp hsub)
 
 omit [BoundarylessManifold I M] in
-theorem duhRepr_ball
+theorem duhamelRepr_ball
     (g₀ : SmoothRiemannianMetric I M) {T R : ℝ}
     (hT : 0 < T)
     (f : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2
       ((1 : ℕ) : ℝ)) T)
     (hR : 0 ≤ R)
     (hstate : ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2
             (((1 : ℕ) : ℝ) + 2)) f t ∈
         lowerState (I := I) (M := M) g₀ 1 R) :
@@ -180,7 +180,7 @@ theorem duhRepr_ball
   exact ht
 
 omit [BoundarylessManifold I M] in
-theorem duhRepr_memLp
+theorem duhamelRepr_memLp
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -190,14 +190,14 @@ theorem duhRepr_memLp
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT u₀ f t)‖ ≤ R) :
     MemLp
       (fun t => (duhamelCross (I := I) (M := M)
         g r s a hT u₀ f).repr t)
       2 (timeMeasure T) := by
   refine MemLp.of_bound
-    (duhRepr_meas (I := I) (M := M)
+    (duhamelRepr_meas (I := I) (M := M)
       g r s a hT u₀ f) R ?_
   have hrepr := crossRepr_ball (I := I) (M := M)
     (duhamelCross (I := I) (M := M)
@@ -205,7 +205,7 @@ theorem duhRepr_memLp
   filter_upwards [ae_restrict_mem (μ := volume) measurableSet_Icc] with t ht
   exact hrepr t ht
 
-def duhReprL2
+def duhamelReprL2
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -215,16 +215,16 @@ def duhReprL2
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT u₀ f t)‖ ≤ R) :
     timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T :=
-  (duhRepr_memLp (I := I) (M := M)
+  (duhamelRepr_memLp (I := I) (M := M)
     g r s a hT u₀ f hR hball).toLp
       (fun t => (duhamelCross (I := I) (M := M)
         g r s a hT u₀ f).repr t)
 
 omit [BoundarylessManifold I M] in
-theorem duhReprL2_ae
+theorem duhamelReprL2_ae
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -234,17 +234,17 @@ theorem duhReprL2_ae
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT u₀ f t)‖ ≤ R) :
-    duhReprL2 (I := I) (M := M)
+    duhamelReprL2 (I := I) (M := M)
         g r s a hT u₀ f hR hball =ᵐ[timeMeasure T]
       fun t => (duhamelCross (I := I) (M := M)
         g r s a hT u₀ f).repr t :=
-  (duhRepr_memLp (I := I) (M := M)
+  (duhamelRepr_memLp (I := I) (M := M)
     g r s a hT u₀ f hR hball).coeFn_toLp
 
 omit [BoundarylessManifold I M] in
-theorem duhReprL2_ae_le
+theorem duhamelReprL2_ae_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -254,15 +254,15 @@ theorem duhReprL2_ae_le
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT u₀ f t)‖ ≤ R) :
     ∀ᵐ t ∂(timeMeasure T),
-      ‖duhReprL2 (I := I) (M := M)
+      ‖duhamelReprL2 (I := I) (M := M)
         g r s a hT u₀ f hR hball t‖ ≤ R := by
   filter_upwards [
-    duhReprL2_ae (I := I) (M := M)
+    duhamelReprL2_ae (I := I) (M := M)
       g r s a hT u₀ f hR hball,
-    duhRepr_field_ae (I := I) (M := M)
+    duhamelRepr_field_ae (I := I) (M := M)
       g r s a hT u₀ f,
     hball] with t hcoe hrepr ht
   rw [hcoe, hrepr]
@@ -316,7 +316,7 @@ theorem crossRepr_hi_ae
   IntrinsicSpectral.crossRepr_hi_ae (I := I) (M := M) u hT
 
 omit [BoundarylessManifold I M] in
-theorem duhRepr_toFun
+theorem duhamelRepr_toFun
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -325,13 +325,13 @@ theorem duhRepr_toFun
     tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 1 by linarith)
         ((duhamelCross (I := I) (M := M) g r s a hT u₀ f).repr t) =
-      (maxRegDuhamelMap (I := I) (M := M) a hT u₀ f).toFun t := by
+      (maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ f).toFun t := by
   simpa only [duhamelCross] using
-    IntrinsicSpectral.duhRepr_toFun (I := I) (M := M)
+    IntrinsicSpectral.duhamelRepr_toFun (I := I) (M := M)
       g r s a hT u₀ f ht
 
 omit [BoundarylessManifold I M] in
-theorem duhRepr_field_ae
+theorem duhamelRepr_field_ae
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a : ℝ)
     {T : ℝ} (hT : 0 < T)
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -340,9 +340,9 @@ theorem duhRepr_field_ae
         g r s a hT u₀ f).repr t) =ᵐ[timeMeasure T]
       fun t => tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f t) := by
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ f t) := by
   simpa only [duhamelCross] using
-    IntrinsicSpectral.duhRepr_field_ae (I := I) (M := M)
+    IntrinsicSpectral.duhamelRepr_field_ae (I := I) (M := M)
       g r s a hT u₀ f
 
 omit [NeZero (Module.finrank ℝ E)]
@@ -357,14 +357,14 @@ theorem crossRepr_ball
   IntrinsicSpectral.crossRepr_ball (I := I) (M := M) u hT hR hball
 
 omit [BoundarylessManifold I M] in
-theorem duhRepr_ball
+theorem duhamelRepr_ball
     (g₀ : SmoothRiemannianMetric I M) {T R : ℝ}
     (hT : 0 < T)
     (f : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2
       ((1 : ℕ) : ℝ)) T)
     (hR : 0 ≤ R)
     (hstate : ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2
             (((1 : ℕ) : ℝ) + 2)) f t ∈
         lowerState (I := I) (M := M) g₀ 1 R) :
@@ -372,7 +372,7 @@ theorem duhRepr_ball
       ‖(duhamelCross (I := I) (M := M) g₀ 0 2
         ((1 : ℕ) : ℝ) hT 0 f).repr t‖ ≤ R := by
   simpa only [duhamelCross] using
-    IntrinsicSpectral.duhRepr_ball (I := I) (M := M)
+    IntrinsicSpectral.duhamelRepr_ball (I := I) (M := M)
       g₀ hT f hR hstate
 
 end DifferentialGeometry.PDE.RicciFlow

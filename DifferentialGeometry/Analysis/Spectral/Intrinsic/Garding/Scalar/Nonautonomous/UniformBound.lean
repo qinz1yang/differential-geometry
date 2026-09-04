@@ -262,7 +262,7 @@ private theorem traceCast_jet_bdd
     (add_le_add (mul_le_mul_of_nonneg_left (hscalar i t ht x) (by norm_num))
       (mul_le_mul_of_nonneg_left (hF i x) (by norm_num)))
 
-theorem cc_comm_unif
+theorem cc_comm_uniform
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -315,7 +315,7 @@ theorem cc_comm_unif
     app_jet_of_bdd (I := I) (M := M) q 1 0 Φ A D₀ hD₀_nn hΦ
   refine ⟨tau, htau, htau_one, fun n => ?_⟩
   obtain ⟨Ct, hCt_nn, hCt⟩ :=
-    slot_iterL_unif (I := I) (M := M) q 0 n C₀ A B hB_nn hC₀
+    slot_iterL_uniform (I := I) (M := M) q 0 n C₀ A B hB_nn hC₀
   obtain ⟨Cd, hCd_nn, hCd⟩ :=
     iterL_pair_jet_of (I := I) (M := M) q 0 n Φ A CG hCG_nn hCG
   refine ⟨Ct + Cd, add_nonneg hCt_nn hCd_nn, ?_⟩
@@ -474,7 +474,7 @@ theorem lapCoeff_slab
   · intro i x
     simpa only [q, gm, Phi] using hPhi i s hs x
 
-theorem cc_conn_unif
+theorem cc_conn_uniform
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -520,7 +520,7 @@ theorem cc_conn_unif
     intro s hs U
     with_unfolding_all exact hC s hs U
 
-theorem cc_lap_unif
+theorem cc_lap_uniform
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -543,9 +543,9 @@ theorem cc_lap_unif
                 (∑ j ∈ Finset.range (n + 2),
                   ‖iteratedCovGrad (I := I) (g_fam (T : ℝ)) 0 0 j U‖)) := by
   classical
-  obtain ⟨taup, htaup, htaup_one, hp⟩ := cc_comm_unif (I := I) (M := M) g_fam hG T
+  obtain ⟨taup, htaup, htaup_one, hp⟩ := cc_comm_uniform (I := I) (M := M) g_fam hG T
   obtain ⟨tauc, htauc, _, _, hc⟩ :=
-    cc_conn_unif (I := I) (M := M) g_fam hG T
+    cc_conn_uniform (I := I) (M := M) g_fam hG T
   obtain ⟨taum, htaum, _, _, _, hm⟩ :=
     metricDifference_slab (I := I) (M := M) g_fam hG T
   let tau : ℝ := min taup (min tauc taum)
@@ -611,7 +611,7 @@ theorem cc_lap_unif
     dsimp only [Atop]
     apply eq_of_heq
     exact HEq.trans
-      (iteratedCovGrad_covGrad_comm_heq' (I := I) (M := M) q 0 0 n U)
+      (iteratedCovGrad_covGrad_comm_heq (I := I) (M := M) q 0 0 n U)
       (castCcTensorRank_heq (I := I) (M := M) q 0
         (by omega : 0 + (n + 1) = 1 + n)
         (iteratedCovGrad (I := I) q 0 0 (n + 1) U)).symm
@@ -654,7 +654,7 @@ theorem cc_lap_unif
     P + -Q ≤ (Dtop + Cp * J) + Cc * J := add_le_add hprincipal hconnection
     _ = Dtop + (Cp + Cc) * J := by ring
 
-theorem finite_lap_unif
+theorem finite_lap_uniform
     (q : SmoothRiemannianMetric I M) {alpha : Type*}
     (h : alpha → SmoothRiemannianMetric I M) (A : Set alpha)
     (n : ℕ) (Clap : ℝ) (hClap_nn : 0 ≤ Clap)
@@ -803,7 +803,7 @@ theorem finite_lap_unif
   rw [hpair]
   simpa only [U, L] using hmain'
 
-theorem cc_a2_unif
+theorem cc_a2_uniform
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -838,7 +838,7 @@ theorem cc_a2_unif
                         (v.coeff i) ^ 2) := by
   classical
   obtain ⟨tau, htau, htau_one, hreg, hlap⟩ :=
-    cc_lap_unif (I := I) (M := M) g_fam hG T
+    cc_lap_uniform (I := I) (M := M) g_fam hG T
   let q : SmoothRiemannianMetric I M := g_fam (T : ℝ)
   let gm : ℝ → SmoothRiemannianMetric I M := fun s => g_fam ((T : ℝ) - s)
   let A : Set ℝ := Set.Icc (0 : ℝ) tau
@@ -860,7 +860,7 @@ theorem cc_a2_unif
     intro s hs U
     simpa only [q, gm, A] using hClap s hs U
   obtain ⟨Cmid, hCmid_nn, hcore⟩ :=
-    finite_lap_unif (I := I) (M := M) q gm A n Clap hClap_nn hlap'
+    finite_lap_uniform (I := I) (M := M) q gm A n Clap hClap_nn hlap'
   refine ⟨Cmid, hCmid_nn, ?_⟩
   intro s hs F v hv hsub
   have hcoeff {i} (hi : i ∉ hv.toFinset) : v.coeff i = 0 := by

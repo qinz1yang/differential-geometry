@@ -83,19 +83,19 @@ lemma chartTensor0SParallelExtend_repr_eventuallyEq_const
   have hU_open : IsOpen e.baseSet := e.open_baseSet
   have hb_U : b ∈ e.baseSet :=
     chartLeviCivitaGoodSet_mem_tensor0S_baseSet (I := I) r hb
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hb_int : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
   have hint_open : IsOpen (interior ((extChartAt I α).target : Set E)) :=
     isOpen_interior
   have hsymm_cont : ContinuousAt (extChartAt I α).symm (extChartAt I α b) :=
-    continuousAt_extChartAt_symm' hb_src
+    continuousAt_extChartAt_symm' hb_source
   have hU_preim_nhds :
       (extChartAt I α).symm ⁻¹' e.baseSet ∈ 𝓝 (extChartAt I α b) := by
     apply hsymm_cont.preimage_mem_nhds
     have hxφ_inv : (extChartAt I α).symm (extChartAt I α b) = b :=
-      (extChartAt I α).left_inv hb_src
+      (extChartAt I α).left_inv hb_source
     rw [hxφ_inv]
     exact hU_open.mem_nhds hb_U
   have hint_nhds : interior ((extChartAt I α).target : Set E) ∈

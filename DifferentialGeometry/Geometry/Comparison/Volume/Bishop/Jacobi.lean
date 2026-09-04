@@ -42,14 +42,14 @@ theorem hasDerivAt_denRatio
     (hpos : 0 < (curveGram (I := I) g γ V t).det)
     (hW : ∀ i j, jacobiWronskian g γ (V i) (V j) t = 0) :
     HasDerivAt
-      (fun r => curveDensity (I := I) g γ V r / hypDensity q d r)
-      ((curveDensity (I := I) g γ V t / hypDensity q d t) *
-        (curveMean (I := I) g γ V t - hypMeanCurv q d t)) t := by
+      (fun r => curveDensity (I := I) g γ V r / hyperbolicDensity q d r)
+      ((curveDensity (I := I) g γ V t / hyperbolicDensity q d t) *
+        (curveMean (I := I) g γ V t - hyperbolicMeanCurv q d t)) t := by
   have hden : HasDerivAt (curveDensity (I := I) g γ V)
       (curveMean (I := I) g γ V t * curveDensity (I := I) g γ V t) t := by
     refine (hasDerivAt_symmDen (I := I) hn g γ V t hγ hVdiff hpos hW).congr_deriv ?_
     rw [curveMean, curveShape]
-  exact hasDerivAt_hypRatio
+  exact hasDerivAt_hyperbolicRatio
     (j' := fun r => curveMean (I := I) g γ V r *
       curveDensity (I := I) g γ V r)
     (m := curveMean (I := I) g γ V) hq ht hden rfl
@@ -71,10 +71,10 @@ theorem denRatio_ge_of_dir
     ∃ C : ℝ, 0 < C ∧
       ∀ᶠ t in 𝓝[>] (0 : ℝ),
         C ≤ curveDensity (I := I) g γ V t /
-          hypDensity q (Fintype.card ι) t := by
+          hyperbolicDensity q (Fintype.card ι) t := by
   refine ⟨(B / 2) ^ Fintype.card ι,
     pow_pos (div_pos hB (by norm_num)) _, ?_⟩
-  filter_upwards [hLI, hdir, hypSn_le_two q, self_mem_nhdsWithin]
+  filter_upwards [hLI, hdir, hyperbolicSn_le_two q, self_mem_nhdsWithin]
     with t hLIt hdirT hsn ht
   change 0 < t at ht
   have hgram := curveGram_posDef (I := I) g γ V t hLIt
@@ -107,12 +107,12 @@ theorem denRatio_ge_of_dir
       (B * t) ^ Fintype.card ι ≤ curveDensity (I := I) g γ V t := by
     rw [← hsqrt]
     simpa only [curveDensity] using hdet
-  have hmodel : hypDensity q (Fintype.card ι) t ≤
+  have hmodel : hyperbolicDensity q (Fintype.card ι) t ≤
       (2 * t) ^ Fintype.card ι := by
-    exact pow_le_pow_left₀ (hypSn_pos hq ht).le hsn _
-  rw [le_div_iff₀ (hypDensity_pos hq ht)]
+    exact pow_le_pow_left₀ (hyperbolicSn_pos hq ht).le hsn _
+  rw [le_div_iff₀ (hyperbolicDensity_pos hq ht)]
   calc
-    (B / 2) ^ Fintype.card ι * hypDensity q (Fintype.card ι) t ≤
+    (B / 2) ^ Fintype.card ι * hyperbolicDensity q (Fintype.card ι) t ≤
         (B / 2) ^ Fintype.card ι * (2 * t) ^ Fintype.card ι :=
       mul_le_mul_of_nonneg_left hmodel (pow_nonneg (div_nonneg hB.le (by norm_num)) _)
     _ = (B * t) ^ Fintype.card ι := by
@@ -139,15 +139,15 @@ theorem curveRatio_anti
     (hW : ∀ t ∈ Ioo (0 : ℝ) b, ∀ i j,
       jacobiWronskian g γ (V i) (V j) t = 0)
     (hmean : ∀ t ∈ Ioo (0 : ℝ) b,
-      curveMean (I := I) g γ V t ≤ hypMeanCurv q d t) :
+      curveMean (I := I) g γ V t ≤ hyperbolicMeanCurv q d t) :
     AntitoneOn
-      (fun t => curveDensity (I := I) g γ V t / hypDensity q d t)
+      (fun t => curveDensity (I := I) g γ V t / hyperbolicDensity q d t)
       (Ioo (0 : ℝ) b) := by
   let R : ℝ → ℝ := fun t =>
-    curveDensity (I := I) g γ V t / hypDensity q d t
+    curveDensity (I := I) g γ V t / hyperbolicDensity q d t
   have hR : ∀ t ∈ Ioo (0 : ℝ) b,
       HasDerivAt R
-        (R t * (curveMean (I := I) g γ V t - hypMeanCurv q d t)) t := by
+        (R t * (curveMean (I := I) g γ V t - hyperbolicMeanCurv q d t)) t := by
     intro t ht
     simpa only [R] using
       hasDerivAt_denRatio (I := I) hn g γ V q t d hq ht.1 (hγ t ht)
@@ -156,12 +156,12 @@ theorem curveRatio_anti
   have hRpos : ∀ t ∈ Ioo (0 : ℝ) b, 0 < R t := by
     intro t ht
     exact div_pos (curveDensity_pos (I := I) g γ V t (hLI t ht))
-      (hypDensity_pos hq ht.1)
+      (hyperbolicDensity_pos hq ht.1)
   have hdiff : DifferentiableOn ℝ R (Ioo (0 : ℝ) b) := by
     intro t ht
     exact (hR t ht).differentiableAt.differentiableWithinAt
   have hderiv : ∀ t ∈ Ioo (0 : ℝ) b,
-      R t * (curveMean (I := I) g γ V t - hypMeanCurv q d t) ≤ 0 := by
+      R t * (curveMean (I := I) g γ V t - hyperbolicMeanCurv q d t) ≤ 0 := by
     intro t ht
     exact mul_nonpos_of_nonneg_of_nonpos (hRpos t ht).le
       (sub_nonpos.mpr (hmean t ht))
@@ -175,7 +175,7 @@ theorem curveRatio_anti
   simpa only [R] using hanti
 
 omit [SigmaCompactSpace M] in
-theorem curveMean_le_hyp
+theorem curveMean_le_hyperbolic
     {n : WithTop ℕ∞} (hn : 1 ≤ n)
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -211,10 +211,10 @@ theorem curveMean_le_hyp
     (hRatioLower : ∃ C : ℝ, 0 < C ∧
       ∀ᶠ t in 𝓝[>] (0 : ℝ),
         C ≤ curveDensity (I := I) g γ V t /
-          hypDensity (q * a) (Module.finrank ℝ E - 1) t) :
+          hyperbolicDensity (q * a) (Module.finrank ℝ E - 1) t) :
     ∀ t ∈ Ioo (0 : ℝ) b,
       curveMean (I := I) g γ V t ≤
-        hypMeanCurv (q * a) (Module.finrank ℝ E - 1) t := by
+        hyperbolicMeanCurv (q * a) (Module.finrank ℝ E - 1) t := by
   let d : ℕ := Module.finrank ℝ E - 1
   have hqa : 0 ≤ q * a := mul_nonneg hq ha.le
   let m' : ℝ → ℝ := fun t =>
@@ -247,10 +247,10 @@ theorem curveMean_le_hyp
       (hLI t ht) (hW t ht) (hJ t ht) e hON hEperp
       hRic).2
   let R : ℝ → ℝ := fun t =>
-    curveDensity (I := I) g γ V t / hypDensity (q * a) d t
+    curveDensity (I := I) g γ V t / hyperbolicDensity (q * a) d t
   have hR : ∀ t ∈ Ioo (0 : ℝ) b,
       HasDerivAt R
-        (R t * (curveMean (I := I) g γ V t - hypMeanCurv (q * a) d t)) t := by
+        (R t * (curveMean (I := I) g γ V t - hyperbolicMeanCurv (q * a) d t)) t := by
     intro t ht
     simpa only [R, d] using
       hasDerivAt_denRatio (I := I) hn g γ V (q * a) t d hqa ht.1 (hγ t ht)
@@ -259,8 +259,8 @@ theorem curveMean_le_hyp
   have hRpos : ∀ t ∈ Ioo (0 : ℝ) b, 0 < R t := by
     intro t ht
     exact div_pos (curveDensity_pos (I := I) g γ V t (hLI t ht))
-      (hypDensity_pos hqa ht.1)
-  apply mean_le_hyp_of_ratio hqa hd hm hmle hR hRpos
+      (hyperbolicDensity_pos hqa ht.1)
+  apply mean_le_hyperbolic_of_ratio hqa hd hm hmle hR hRpos
   simpa only [R, d] using hRatioLower
 
 end VolumeComparison

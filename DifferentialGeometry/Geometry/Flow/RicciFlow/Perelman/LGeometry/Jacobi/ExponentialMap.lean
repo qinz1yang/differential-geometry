@@ -49,13 +49,13 @@ theorem hasLJacobiAt_lExp
         (fun W : E ↦ lExp S T x W q) Z V)
       tau := by
   let s : Real := Real.sqrt tau
-  let alpha : Real → M := lRegCurve S T x Z
+  let alpha : Real → M := lRegularizedCurve S T x Z
   let J : ∀ r, TangentSpace I (alpha r) :=
-    fun r ↦ lRegJacobiField S T x Z V r
+    fun r ↦ lRegularizedJacobiField S T x Z V r
   let gamma : Real → M := fun q ↦ lExp S T x Z q
   let Y : ∀ q, TangentSpace I (gamma q) := fun q ↦
     mfderiv 𝓘(Real, E) I (fun W : E ↦ lExp S T x W q) Z V
-  change 0 < tau ∧ Real.sqrt tau ∈ lRegDomain S T x Z at hpos
+  change 0 < tau ∧ Real.sqrt tau ∈ lRegularizedDomain S T x Z at hpos
   rcases hpos with ⟨htau, hsdom⟩
   have hs : 0 < s := by
     simpa only [s] using Real.sqrt_pos.2 htau
@@ -64,13 +64,13 @@ theorem hasLJacobiAt_lExp
   have ht : T - s ^ 2 ∈ D.regular := by
     rcases hsdom with ⟨beta, K, _hKopen, _hKconn, _h0K, hsK, hbeta⟩
     exact (hbeta.2.2 s hsK).1
-  have hregAll : IsLRegJacobi S T alpha J (lRegDomain S T x Z) := by
+  have hregAll : IsLRegularizedJacobi S T alpha J (lRegularizedDomain S T x Z) := by
     simpa only [alpha, J] using
-      lRegCurve_jacobi (I := I) S hS T x Z V
-        (lRegDomain S T x Z) (fun _ hr ↦ hr)
-  have hreg : HasLRegJacobiAt S T alpha J s := hregAll s hsdom
-  have hdom : ∀ᶠ r in nhds s, r ∈ lRegDomain S T x Z :=
-    (lRegDomain_isOpen S T x Z).mem_nhds hsdom
+      lRegularizedCurve_jacobi (I := I) S hS T x Z V
+        (lRegularizedDomain S T x Z) (fun _ hr ↦ hr)
+  have hreg : HasLRegularizedJacobiAt S T alpha J s := hregAll s hsdom
+  have hdom : ∀ᶠ r in nhds s, r ∈ lRegularizedDomain S T x Z :=
+    (lRegularizedDomain_isOpen S T x Z).mem_nhds hsdom
   have hgamma_sq : ∀ᶠ r in nhds s,
       MDifferentiableAt (modelWithCornersSelf Real Real) I gamma (r ^ 2) := by
     filter_upwards [hdom, Ioi_mem_nhds hs] with r hrdom hr
@@ -119,7 +119,7 @@ theorem hasLJacobiAt_lExp
         (𝓘(Real, E).prod 𝓘(Real, Real)) ∞
         (fun r : Real ↦ (((Z : E), r) : E × Real)) s :=
       (contMDiff_const.prodMk contMDiff_id).contMDiffAt
-    have hcomp := (lRegCurve_smooth (I := I) (M := M) S hS T x hsdom).comp
+    have hcomp := (lRegularizedCurve_smooth (I := I) (M := M) S hS T x hsdom).comp
       s hparam
     simpa only [alpha, Function.comp_def] using hcomp
   have hdelta_eq : delta =ᶠ[nhds s] alpha := by
@@ -147,9 +147,9 @@ theorem hasLJacobiAt_lExp
     intro r hr
     simp only [J, Y, lExpJacobi_eq]
     rw [Real.sqrt_sq hr.le]
-  have hregSq : HasLRegJacobiAt S T delta
+  have hregSq : HasLRegularizedJacobiAt S T delta
       (fun r : Real ↦ Y (r ^ 2)) s :=
-    HasLRegJacobiAt.congr_of_eqOn (I := I) S T J (fun r : Real ↦ Y (r ^ 2)) s
+    HasLRegularizedJacobiAt.congr_of_eqOn (I := I) S T J (fun r : Real ↦ Y (r ^ 2)) s
       (Set.Ioi 0) isOpen_Ioi hs hcurve hfield hreg
   have hout := hasLJacobiAt_of_squareReparametrization (I := I) S hS T gamma Y s hs ht
     hgamma_sq hY_sq (by simpa only [delta] using hA)

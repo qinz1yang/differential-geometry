@@ -103,10 +103,10 @@ lemma differentiableAt_tensorTrivProj_pullback
   set φ : PartialEquiv M E := extChartAt I α
   have hf_at : MDifferentiableAt I (𝓘(ℝ, TensorRSModel r s ℝ E)) fE b :=
     mdifferentiableAt_tensorTrivProj (I := I) (M := M) g r s S α hb_chart
-  have hb_src : b ∈ φ.source := by
-    have hb_src' : b ∈ (extChartAt I α).source := by
+  have hb_source : b ∈ φ.source := by
+    have hb_source' : b ∈ (extChartAt I α).source := by
       rw [extChartAt_source]; exact hb_chart
-    exact hb_src'
+    exact hb_source'
   have hbridge :
       MDifferentiableAt I (𝓘(ℝ, TensorRSModel r s ℝ E)) fE b ↔
         MDifferentiableWithinAt (𝓘(ℝ, E)) (𝓘(ℝ, TensorRSModel r s ℝ E))
@@ -147,14 +147,14 @@ theorem mfderiv_tensorTrivProj_eq_chart_fderiv
   set φ : PartialEquiv M E := extChartAt I α
   set y₀ : E := φ b
   set gE : E → TensorRSModel r s ℝ E := fE ∘ φ.symm
-  have hb_src : b ∈ φ.source := by
+  have hb_source : b ∈ φ.source := by
     rw [extChartAt_source]; exact hb_chart
   have hfE_eqOn : ∀ y, y ∈ φ.source → fE y = gE (φ y) := by
     intro y hy
     change fE y = fE (φ.symm (φ y))
     rw [φ.left_inv hy]
   have hsrc_nhds : φ.source ∈ 𝓝 b :=
-    extChartAt_source_mem_nhds' (I := I) hb_src
+    extChartAt_source_mem_nhds' (I := I) hb_source
   have hev : fE =ᶠ[𝓝 b] gE ∘ φ := by
     filter_upwards [hsrc_nhds] with y hy
     exact hfE_eqOn y hy

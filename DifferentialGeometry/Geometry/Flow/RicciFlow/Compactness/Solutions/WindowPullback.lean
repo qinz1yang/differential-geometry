@@ -11,7 +11,7 @@ open scoped Manifold Topology ContDiff ENNReal
 
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -49,12 +49,12 @@ theorem metricUniformEquivalentOnWindow_pullback
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem solLowData_pullback
+theorem solutionSubsequenceMetricLowerBound_pullback
     (β ψ : ℝ) (gSeq : ℕ → ℝ → SmoothRiemannianMetric I N)
     (gRef : SmoothRiemannianMetric I N)
-    (hLow : SolLowData (I := I) β ψ gSeq gRef)
+    (hLow : SolutionSubsequenceMetricLowerBound (I := I) β ψ gSeq gRef)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
-    SolLowData (I := I) β ψ
+    SolutionSubsequenceMetricLowerBound (I := I) β ψ
       (fun i t => Diffeomorph.pullbackMetric (I := I) (gSeq i t) Φ)
       (Diffeomorph.pullbackMetric (I := I) gRef Φ) := by
   intro ρ hρ t ht
@@ -94,16 +94,16 @@ theorem metricCovDerivOrderBoundOnWindow_pullback
   intro i t ht
   exact metricCovDerivOrderBoundOn_pullback (I := I) K a (gSeq i t) gRef C (hbound i t ht) Φ hV
 
-noncomputable def solLip0DataPullback
+noncomputable def solutionZeroOrderMetricBoundsPullback
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [IsManifold I 1 N] [IsManifold I 2 N]
     [T2Space N]
     (K : Set N) (β ψ : ℝ)
     (gSeq : ℕ → ℝ → SmoothRiemannianMetric I N) (gRef : SmoothRiemannianMetric I N)
-    (hData : SolLip0Data (I := I) K β ψ gSeq gRef)
+    (hData : SolutionZeroOrderMetricBounds (I := I) K β ψ gSeq gRef)
     (Φ : M ≃ₘ⟮I, I⟯ N) :
-    SolLip0Data (I := I) ((Φ : M → N) ⁻¹' K) β ψ
+    SolutionZeroOrderMetricBounds (I := I) ((Φ : M → N) ⁻¹' K) β ψ
       (fun i t => Diffeomorph.pullbackMetric (I := I) (gSeq i t) Φ)
       (Diffeomorph.pullbackMetric (I := I) gRef Φ) where
   U0 := (Φ : M → N) ⁻¹' hData.U0
@@ -129,7 +129,7 @@ noncomputable def solLip0DataPullback
     exact hData.hShi0 i t ht (Φ x) hx
 
 omit [I.Boundaryless] in
-theorem solCovData_pullback
+theorem solutionCovariantDerivativeBounds_pullback
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
@@ -137,17 +137,17 @@ theorem solCovData_pullback
     (β ψ t0 : ℝ) (gSeq : ℕ → ℝ → SmoothRiemannianMetric I N)
     (gRef : SmoothRiemannianMetric I N) (D : ℕ → RealTimeInterval)
     (S : (i : ℕ) → SolutionOn (I := I) (M := N) (D i))
-    (hData : SolCovData (I := I) β ψ t0 gSeq gRef D S) (Φ : M ≃ₘ⟮I, I⟯ N) :
-    SolCovData (I := I) β ψ t0
+    (hData : SolutionCovariantDerivativeBounds (I := I) β ψ t0 gSeq gRef D S) (Φ : M ≃ₘ⟮I, I⟯ N) :
+    SolutionCovariantDerivativeBounds (I := I) β ψ t0
       (fun i t => Diffeomorph.pullbackMetric (I := I) (gSeq i t) Φ)
       (Diffeomorph.pullbackMetric (I := I) gRef Φ) D
       (fun i => solutionOnPullback (I := I) (S i) Φ) where
   pack := by
     intro K' hK' n hn
-    obtain ⟨U, hUopen, hK'U, B, Bmax, KShi, initC, timeRadius,
+    obtain ⟨U, hUopen, hK'U, B, Bmax, KShi, initialC, timeRadius,
         hequiv, hBmax1, hBmax, hKShi0, hShi, ht0, hreg, hinitC0, hinitCbound, htime⟩ :=
       hData.pack ((Φ : M → N) '' K') (hK'.image Φ.continuous) n hn
-    refine ⟨(Φ : M → N) ⁻¹' U, hUopen.preimage Φ.continuous, ?_, B, Bmax, KShi, initC,
+    refine ⟨(Φ : M → N) ⁻¹' U, hUopen.preimage Φ.continuous, ?_, B, Bmax, KShi, initialC,
       timeRadius, ?_, hBmax1, hBmax, hKShi0, ?_, ht0, hreg, hinitC0, ?_, htime⟩
     · exact fun x hx => hK'U ⟨x, hx, rfl⟩
     · exact metricUniformEquivalentOnWindow_pullback (I := I) U β ψ gRef gSeq B hequiv Φ
@@ -160,7 +160,7 @@ theorem solCovData_pullback
       exact hinitCbound r hr1 hrn i (Φ x) hx
 
 omit [I.Boundaryless] in
-theorem solLipData_pullback
+theorem solutionMetricLipschitzBounds_pullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -169,8 +169,8 @@ theorem solLipData_pullback
     (K : Set N) (β ψ : ℝ) (p : ℕ) (gSeq : ℕ → ℝ → SmoothRiemannianMetric I N)
     (gRef : SmoothRiemannianMetric I N) (D : ℕ → RealTimeInterval)
     (S : (i : ℕ) → SolutionOn (I := I) (M := N) (D i))
-    (hData : SolLipData (I := I) K β ψ p gSeq gRef D S) (Φ : M ≃ₘ⟮I, I⟯ N) :
-    SolLipData (I := I) ((Φ : M → N) ⁻¹' K) β ψ p
+    (hData : SolutionMetricLipschitzBounds (I := I) K β ψ p gSeq gRef D S) (Φ : M ≃ₘ⟮I, I⟯ N) :
+    SolutionMetricLipschitzBounds (I := I) ((Φ : M → N) ⁻¹' K) β ψ p
       (fun i t => Diffeomorph.pullbackMetric (I := I) (gSeq i t) Φ)
       (Diffeomorph.pullbackMetric (I := I) gRef Φ) D
       (fun i => solutionOnPullback (I := I) (S i) Φ) where
@@ -193,48 +193,48 @@ theorem solLipData_pullback
         (fun _x hx => hx)
 
 omit [I.Boundaryless] in
-theorem solnMetricField_pullback
+theorem solutionMetricField_pullback
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := N) D) (Φ : M ≃ₘ⟮I, I⟯ N)
     (r : ℝ) (y : M) (slots : Fin 2 → TangentSpace I y) :
-    solnMetricField (I := I) (solutionOnPullback (I := I) S Φ) r y slots
-      = solnMetricField (I := I) S r (Φ y)
+    solutionMetricField (I := I) (solutionOnPullback (I := I) S Φ) r y slots
+      = solutionMetricField (I := I) S r (Φ y)
           (fun q : Fin 2 => mfderiv I I (Φ : M → N) y (slots q)) := by
-  simp only [solnMetricField]
+  simp only [solutionMetricField]
   rw [Tensor0SBundle.metricTensorField_apply, Tensor0SBundle.metricTensorField_apply]
   exact Diffeomorph.pullbackMetric_inner (I := I) (S.family.metric r) Φ y (slots 0) (slots 1)
 
 omit [I.Boundaryless] in
-theorem solnRicField_pullback
+theorem solutionRicField_pullback
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M]
     [IsManifold I 1 N]
     [T2Space N]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := N) D) (Φ : M ≃ₘ⟮I, I⟯ N)
     (t : ℝ) (y : M) (slots : Fin 2 → TangentSpace I y) :
-    solnRicField (I := I) (solutionOnPullback (I := I) S Φ) t y slots
-      = solnRicField (I := I) S t (Φ y)
+    solutionRicField (I := I) (solutionOnPullback (I := I) S Φ) t y slots
+      = solutionRicField (I := I) S t (Φ y)
           (fun q : Fin 2 => mfderiv I I (Φ : M → N) y (slots q)) :=
   ricciSection_pullback (I := I) (S.family.metric t) Φ y slots
 
 omit [I.Boundaryless] in
-theorem solnEvolField_pullback
+theorem solutionEvolutionField_pullback
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [hManifoldM : IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [hManifoldN : IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     [T2Space N]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := N) D) (Φ : M ≃ₘ⟮I, I⟯ N)
     (t : ℝ) (y : M) (slots : Fin 2 → TangentSpace I y) :
-    solnEvolField (I := I) (solutionOnPullback (I := I) S Φ) t y slots
-      = solnEvolField (I := I) S t (Φ y)
+    solutionEvolutionField (I := I) (solutionOnPullback (I := I) S Φ) t y slots
+      = solutionEvolutionField (I := I) S t (Φ y)
           (fun q : Fin 2 => mfderiv I I (Φ : M → N) y (slots q)) := by
   let _ := hManifoldM
   let _ := hManifoldN
-  simp only [solnEvolField, ContMDiffSection.coe_smul, Pi.smul_apply,
+  simp only [solutionEvolutionField, ContMDiffSection.coe_smul, Pi.smul_apply,
     Tensor0SBundle.Tensor0SSpace.smul_apply,
-    solnRicField_pullback (I := I) S Φ t y slots]
+    solutionRicField_pullback (I := I) S Φ t y slots]
 
 omit [I.Boundaryless] in
-theorem solSwapData_pullback
+theorem solutionTimeDerivativeCommutation_pullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
@@ -242,8 +242,8 @@ theorem solSwapData_pullback
     [T2Space N]
     {D : ℕ → RealTimeInterval} (gRef : SmoothRiemannianMetric I N)
     (S : (i : ℕ) → SolutionOn (I := I) (M := N) (D i))
-    (hData : SolSwapData (I := I) gRef D S) (Φ : M ≃ₘ⟮I, I⟯ N) :
-    SolSwapData (I := I) (Diffeomorph.pullbackMetric (I := I) gRef Φ) D
+    (hData : SolutionTimeDerivativeCommutation (I := I) gRef D S) (Φ : M ≃ₘ⟮I, I⟯ N) :
+    SolutionTimeDerivativeCommutation (I := I) (Diffeomorph.pullbackMetric (I := I) gRef Φ) D
       (fun i => solutionOnPullback (I := I) (S i) Φ) := by
   let _ := (inferInstance : (NeZero (Module.finrank ℝ E)))
   intro i n p' hp' V x0 t ht x hx Vdir
@@ -291,40 +291,40 @@ theorem solSwapData_pullback
         (fun a => (pushFwdSection (I := I) Φ (V a)) z)) Φ x Vdir (hMDiff A0N)
   have hfun : (fun s : ℝ => mvfderiv (I := I)
         (fun y : M => covDerivOfField (I := I) (Diffeomorph.pullbackMetric (I := I) gRef Φ)
-          (solnMetricField (I := I) (solutionOnPullback (I := I) (S i) Φ) s) p' y
+          (solutionMetricField (I := I) (solutionOnPullback (I := I) (S i) Φ) s) p' y
           (fun a => V a y)) x Vdir)
       = fun s : ℝ => mvfderiv (I := I)
-          (fun z : N => covDerivOfField (I := I) gRef (solnMetricField (I := I) (S i) s) p' z
+          (fun z : N => covDerivOfField (I := I) gRef (solutionMetricField (I := I) (S i) s) p' z
             (fun a => (pushFwdSection (I := I) Φ (V a)) z)) (Φ x)
           (mfderiv I I (Φ : M → N) x Vdir) := by
     funext s
-    exact hconv _ _ (fun y sl => solnMetricField_pullback (I := I) (S i) Φ s y sl)
-  rw [hfun, hconv _ _ (fun y sl => solnEvolField_pullback (I := I) (S i) Φ t y sl)]
+    exact hconv _ _ (fun y sl => solutionMetricField_pullback (I := I) (S i) Φ s y sl)
+  rw [hfun, hconv _ _ (fun y sl => solutionEvolutionField_pullback (I := I) (S i) Φ t y sl)]
   exact hData i n p' hp' (fun a => pushFwdSection (I := I) Φ (V a)) (Φ x0) t ht (Φ x)
     (by rw [Set.mem_singleton_iff] at hx ⊢; rw [hx]) (mfderiv I I (Φ : M → N) x Vdir)
 
-noncomputable def solWindowDataPullback
+noncomputable def solutionWindowCompactnessInputPullback
     [NeZero (Module.finrank ℝ E)]
     [BoundarylessManifold I M] [BoundarylessManifold I N]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     [T2Space N]
-    (W : SolWindowData (I := I) (M := N)) (Φ : M ≃ₘ⟮I, I⟯ N) :
-    SolWindowData (I := I) (M := M) := by
+    (W : SolutionWindowCompactnessInput (I := I) (M := N)) (Φ : M ≃ₘ⟮I, I⟯ N) :
+    SolutionWindowCompactnessInput (I := I) (M := M) := by
   cases W with
   | mk K hK beta psiT t0 hbeta p gSeq gRef D S hS hmet hreg H0 hswap Hcov Hlip hlow =>
-    refine SolWindowData.mk ((Φ : M → N) ⁻¹' K) ?_ beta psiT t0 hbeta p
+    refine SolutionWindowCompactnessInput.mk ((Φ : M → N) ⁻¹' K) ?_ beta psiT t0 hbeta p
       (fun i r => Diffeomorph.pullbackMetric (I := I) (gSeq i r) Φ)
       (Diffeomorph.pullbackMetric (I := I) gRef Φ) D
       (fun i => solutionOnPullback (I := I) (S i) Φ)
       (fun i => isSolutionOn_pullback (I := I) (S i) (hS i) Φ)
       (fun i r => congrArg (fun g => Diffeomorph.pullbackMetric (I := I) g Φ) (hmet i r))
       hreg
-      (solLip0DataPullback (I := I) K beta psiT gSeq gRef H0 Φ)
-      (solSwapData_pullback (I := I) gRef S hswap Φ)
-      (solCovData_pullback (I := I) beta psiT t0 gSeq gRef D S Hcov Φ)
-      (solLipData_pullback (I := I) K beta psiT p gSeq gRef D S Hlip Φ)
-      (solLowData_pullback (I := I) beta psiT gSeq gRef hlow Φ)
+      (solutionZeroOrderMetricBoundsPullback (I := I) K beta psiT gSeq gRef H0 Φ)
+      (solutionTimeDerivativeCommutation_pullback (I := I) gRef S hswap Φ)
+      (solutionCovariantDerivativeBounds_pullback (I := I) beta psiT t0 gSeq gRef D S Hcov Φ)
+      (solutionMetricLipschitzBounds_pullback (I := I) K beta psiT p gSeq gRef D S Hlip Φ)
+      (solutionSubsequenceMetricLowerBound_pullback (I := I) beta psiT gSeq gRef hlow Φ)
     have hset : (Φ : M → N) ⁻¹' K = (Φ.symm : N → M) '' K := by
       ext z
       simp only [Set.mem_preimage, Set.mem_image]
@@ -342,9 +342,9 @@ noncomputable def windowMetricPrecompactnessConclusionOfPullback
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     [T2Space N]
-    (hne : Nonempty M) (W : SolWindowData (I := I) (M := N)) (Φ : M ≃ₘ⟮I, I⟯ N) :
+    (hne : Nonempty M) (W : SolutionWindowCompactnessInput (I := I) (M := N)) (Φ : M ≃ₘ⟮I, I⟯ N) :
     WindowMetricPrecompactnessConclusion (E := E) (H := H) (I := I) (M := M) :=
-  windowMetricPrecompactnessConclusion (I := I) hne (solWindowDataPullback (I := I) W Φ)
+  windowMetricPrecompactnessConclusion (I := I) hne (solutionWindowCompactnessInputPullback (I := I) W Φ)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

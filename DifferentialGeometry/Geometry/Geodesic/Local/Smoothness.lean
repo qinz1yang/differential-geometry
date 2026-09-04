@@ -52,7 +52,7 @@ theorem IsGeodesicAt.continuousAt
     {g : SmoothRiemannianMetric I M} {γ : ℝ → M} {t₀ : ℝ}
     (hγ : IsGeodesicAt (I := I) g γ t₀) :
     ContinuousAt γ t₀ := by
-  obtain ⟨α, f, hproj, _hα_src, hf⟩ := hγ
+  obtain ⟨α, f, hproj, _hα_source, hf⟩ := hγ
   have hf_cont : ContinuousAt f t₀ := hf.continuousAt
   have hπ_cont : ContinuousAt
       (Bundle.TotalSpace.proj : TangentBundle I M → M) (f t₀) :=
@@ -139,7 +139,7 @@ theorem IsGeodesicAt.exists_chartPushLift_hasDerivAt
       IsMIntegralCurveAt f (geodesicVectorFieldChart (I := I) g α) t₀ ∧
       ∀ᶠ t in 𝓝 t₀, HasDerivAt (chartPushLift (I := I) f t₀)
         (chartPushVF (I := I) g α f t₀ t) t := by
-  obtain ⟨α, f, hproj, _hα_src, hf⟩ := hγ
+  obtain ⟨α, f, hproj, _hα_source, hf⟩ := hγ
   exact ⟨α, f, hproj, hf,
     chartPushLift_eventually_hasDerivAt (I := I) (g := g) (α := α)
       (t₀ := t₀) (f := f) hf⟩

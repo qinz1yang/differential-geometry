@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Geometry.Connection
@@ -89,5 +89,5 @@ theorem covNorm_self_succ (g : SmoothRiemannianMetric I M) (a : Nat) (x : M) :
 
 end FixedDomain
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

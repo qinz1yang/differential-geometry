@@ -202,14 +202,14 @@ lemma chartCoord_leviCivita_chartBasis
   congr 1
   · set F : E → E :=
       chartESectionRepr (I := I) α Z.toFun ∘ (extChartAt I α).symm with hF_def
-    have hb_src : b ∈ (chartAt H α).source :=
+    have hb_source : b ∈ (chartAt H α).source :=
       chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
     have hb_int : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) :=
       chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
     have hF_diff : DifferentiableAt ℝ F y₀ := by
       rw [hF_def, hy₀_def]
       exact (mdifferentiableAt_section_iff_chartE_fderiv I α Z.toFun
-        hb_src hb_base hb_int).mp hZ_mdiff
+        hb_source hb_base hb_int).mp hZ_mdiff
     rw [show ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (fderiv ℝ F y₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m))) k =
           coordProjE (E := E) k (fderiv ℝ F y₀ ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)) from by
         rw [coordProjE_apply]]
@@ -602,9 +602,9 @@ theorem voss_weyl_divergence_eq_leviCivita_frameTrace
             ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b))
           ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b) := by
   classical
-  have hb_src : b ∈ (chartAt H α).source :=
+  have hb_source : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
-  rw [voss_weyl_divergence_formula (I := I) g α Z hb_src]
+  rw [voss_weyl_divergence_formula (I := I) g α Z hb_source]
   rw [localDivergence_eq_coord_covariant_divergence (I := I) g α Z hb]
   rw [frameTrace_eq_metricTrace (I := I) g α Z hb_pou hb]
   rw [metricTrace_eq_coord_covariant_divergence (I := I) g α Z hb]

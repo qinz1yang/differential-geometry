@@ -145,7 +145,7 @@ private lemma manifold_lintegral_pou_sq_section_normSq_eq_chartTarget
   have hF_meas : Measurable F := by
     rw [hF_def]
     exact ENNReal.measurable_ofReal.comp (hρ_sq_meas.mul hsec_meas)
-  have hF_supp : ∀ x : M, x ∉ (chartAt H α).source → F x = 0 := by
+  have hF_support : ∀ x : M, x ∉ (chartAt H α).source → F x = 0 := by
     intro x hx
     have hρ_zero : (chartAtlasPOU I M α : M → ℝ) x = 0 := by
       have hsub : tsupport
@@ -161,8 +161,8 @@ private lemma manifold_lintegral_pou_sq_section_normSq_eq_chartTarget
   rw [show riemannianVolumeMeasure (I := I) (M := M) g =
       riemannianMeasure (I := I) g (chartAtlasPOU I M) from rfl]
   rw [riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn
-      (I := I) (M := M) g α hF_meas hF_supp]
-  rw [chartLocalMeasure_lintegral_via_chartTargetEuclid
+      (I := I) (M := M) g α hF_meas hF_support]
+  rw [chartLocalMeasure_lintegral_eq_chartTargetEuclid
       (I := I) (M := M) g α hF_meas]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -185,7 +185,7 @@ private lemma section_normSq_apply_eq_pushedNormSq
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma density_pou_sq_le_section
     (g : SmoothRiemannianMetric I M) (α : M)
-    (h_supp_ne :
+    (h_support_ne :
       (tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)).Nonempty)
     {y : EuclN}
@@ -209,18 +209,18 @@ private lemma density_pou_sq_le_section
   by_cases hρ_zero : ρ = 0
   · rw [show ρ ^ 2 = 0 from by rw [hρ_zero]; ring]
     simp
-  · have hx_supp : x ∈ tsupport
+  · have hx_support : x ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
       subset_tsupport _ (Function.mem_support.mpr hρ_zero)
     have hy_image : (toEuclidean (E := E)).symm y ∈
         (extChartAt I α) '' (tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) := by
-      refine ⟨x, hx_supp, ?_⟩
+      refine ⟨x, hx_support, ?_⟩
       rw [hx_def]
       exact (extChartAt I α).right_inv hy_target
     have hdens_le : dens ≤ chartDensitySupPou (I := I) (M := M) g α := by
       rw [hdens_def, hx_def]
-      exact chartDensitySupPou_le (I := I) (M := M) g α h_supp_ne hy_image
+      exact chartDensitySupPou_le (I := I) (M := M) g α h_support_ne hy_image
     have hbound : dens ≤ chartDensitySupPou (I := I) (M := M) g α + 1 := by
       linarith
     exact mul_le_mul_of_nonneg_right hbound hρ_sq_nn
@@ -360,7 +360,7 @@ theorem tensorSection_L2NormSq_le_chartSobolevSectionNormPou
                   (fun b : M => T.toSection b) y)
             ∂(volume : Measure EuclN) := by
     intro α hα_mem
-    have h_supp_ne : (tsupport
+    have h_support_ne : (tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)).Nonempty := by
       rw [chartAtlasPOU_finset_mem] at hα_mem
       exact hα_mem.mono (subset_tsupport _)
@@ -384,7 +384,7 @@ theorem tensorSection_L2NormSq_le_chartSobolevSectionNormPou
                     (fun b : M => T.toSection b) y)) := by
       intro y hy
       have hdens_pou_sq_le := density_pou_sq_le_section
-        (I := I) (M := M) g α h_supp_ne hy
+        (I := I) (M := M) g α h_support_ne hy
       have hdens_nn : 0 ≤ chartDensity g α
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) :=
         Real.sqrt_nonneg _

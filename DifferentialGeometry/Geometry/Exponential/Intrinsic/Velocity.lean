@@ -84,13 +84,13 @@ theorem lift_isIntegral
       (intrinsicGeodesic_isGeodesic (I := I) g hEnorm p v)
       (intrinsicGeodesic_continuous (I := I) g hEnorm p v) t
   let alpha : M := gamma t
-  have ht_src : (f t).proj ∈ (chartAt H alpha).source := by
+  have ht_source : (f t).proj ∈ (chartAt H alpha).source := by
     rw [hfproj_t]
     exact mem_chart_source H alpha
   have hproj_cont : ContinuousAt (fun s => (f s).proj) t :=
     (FiberBundle.continuous_proj E (TangentSpace I)).continuousAt.comp hf.continuousAt
   have hsrc : ∀ᶠ s in nhds t, (f s).proj ∈ (chartAt H alpha).source :=
-    hproj_cont.preimage_mem_nhds ((chartAt H alpha).open_source.mem_nhds ht_src)
+    hproj_cont.preimage_mem_nhds ((chartAt H alpha).open_source.mem_nhds ht_source)
   obtain ⟨S, hS, hfS⟩ := isMIntegralCurveAt_iff.mp hf
   obtain ⟨O, hOS, hOopen, htO⟩ := _root_.mem_nhds_iff.mp hS
   have hO : O ∈ nhds t := hOopen.mem_nhds htO

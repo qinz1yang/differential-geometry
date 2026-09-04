@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold Topology
@@ -153,7 +153,7 @@ theorem lamInf_lt_halfMin
       div_lt_div_of_pos_right hhat (by norm_num)
 
 
-theorem exists_cage_rad
+theorem exists_cage_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real} (hD : 0 < D)
     (haMin : 0 < aMin)
@@ -184,7 +184,7 @@ theorem exists_cage_rad
       simpa only [rho] using hreal)
 
 
-theorem exists_rad_cage
+theorem eventually_cage_radius_bound
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real} (hD : 0 < D)
     (haMin : 0 < aMin) (hphys : 8 * Real.exp hd.C < aMin * D)
@@ -253,5 +253,5 @@ theorem liveCenters_cage
   · exact_mod_cast Nat.le_of_lt gamma.1.isLt
   · exact (mul_pos (by norm_num) (hd.lambda_pos hD 0)).le
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

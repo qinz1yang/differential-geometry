@@ -81,7 +81,7 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_family
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
-    (hh_supp : HasCompactSupport h) (t : ℝ) :
+    (hh_support : HasCompactSupport h) (t : ℝ) :
     ∫ x, (g_fam t).inner x
             ((gradG (I := I) (g_fam t) ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
@@ -92,7 +92,7 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_family
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) := by
   rw [riemannianMeasureFamily_def]
   exact green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
-    (I := I) (g_fam t) hf hh hh_supp
+    (I := I) (g_fam t) hf hh hh_support
 
 theorem integral_smul_laplacian_sub_eq_zero_family
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]

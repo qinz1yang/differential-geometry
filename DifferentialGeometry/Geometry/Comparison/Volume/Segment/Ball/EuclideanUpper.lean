@@ -41,7 +41,7 @@ theorem gBall_model_eucl
         ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
           (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
         ∂(modelHaar (E := E)).toSphere) *
-      ENNReal.ofReal (hypRadVol 0 (Module.finrank ℝ E - 1) R) =
+      ENNReal.ofReal (hyperbolicRadialVolume 0 (Module.finrank ℝ E - 1) R) =
         (volume : Measure E) (Metric.ball (0 : E) R) := by
   let _ : Nontrivial E :=
     Module.nontrivial_of_finrank_pos
@@ -64,10 +64,10 @@ theorem gBall_model_eucl
         ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
           (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
         ∂(modelHaar (E := E)).toSphere) *
-        ENNReal.ofReal (hypRadVol 0 (Module.finrank ℝ E - 1) R) =
+        ENNReal.ofReal (hyperbolicRadialVolume 0 (Module.finrank ℝ E - 1) R) =
       ∫⁻ v in closedGBall (I := I) g x R,
         ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
-          hypDensity (0 * Real.sqrt (g.inner x
+          hyperbolicDensity (0 * Real.sqrt (g.inner x
             (show TangentSpace I x from v)
             (show TangentSpace I x from v)))
             (Module.finrank ℝ E - 1) 1) ∂(modelHaar (E := E)) :=
@@ -76,14 +76,14 @@ theorem gBall_model_eucl
         (modelHaar (E := E)) (closedGBall (I := I) g x R) := by
       have hfun : (fun v : E =>
           ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
-            hypDensity (0 * Real.sqrt (g.inner x
+            hyperbolicDensity (0 * Real.sqrt (g.inner x
               (show TangentSpace I x from v)
               (show TangentSpace I x from v)))
               (Module.finrank ℝ E - 1) 1)) =
           fun _ : E =>
             ENNReal.ofReal (normalChartDensity (I := I) g x 0) := by
         funext v
-        simp [hypDensity, hypSn]
+        simp [hyperbolicDensity, hyperbolicSn]
       rw [hfun, setLIntegral_const]
     _ = (ENNReal.ofReal (normalChartDensity (I := I) g x 0) •
           modelHaar (E := E)) (closedGBall (I := I) g x R) := by
@@ -105,7 +105,7 @@ theorem gBall_model_eucl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -118,20 +118,20 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
         {y : M | riemannianEDist I x y < ENNReal.ofReal R}
       ≤ ((MeasureTheory.volume : MeasureTheory.Measure
           (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere Set.univ)
-        * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
+        * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
   classical
   let : Nontrivial E :=
     Module.nontrivial_of_finrank_pos
       (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
   let L : E ≃L[ℝ] E := normalFrame (I := I) (E := E) g x
   let K : Set E :=
-    (SegDom (I := I) g hEnorm x : Set E) ∩
+    (SegmentDom (I := I) g hEnorm x : Set E) ∩
       L '' Metric.closedBall (0 : E) R
   have hK : IsCompact K := by
     dsimp only [K]
     exact
       ((isCompact_closedBall (0 : E) R).image L.continuous).inter_left
-        (isClosed_segDom (I := I) g hEnorm x)
+        (isClosed_segmentDom (I := I) g hEnorm x)
   have hpre :
       L ⁻¹' gBall (I := I) g x R = Metric.ball (0 : E) R := by
     with_unfolding_all exact preimage_gBall (I := I) (E := E) g x R
@@ -142,7 +142,7 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
             (show TangentSpace I x from b)) '' K := by
     intro y hy
     obtain ⟨v, hv, hexp⟩ :=
-      ball_sub_image_segDom (I := I) g hEnorm x R hy
+      ball_sub_image_segmentDom (I := I) g hEnorm x R hy
     have hwopen : L.symm v ∈ Metric.ball (0 : E) R := by
       rw [← hpre]
       change (show TangentSpace I x from
@@ -162,7 +162,7 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
       1
   let Dh : E → ℝ≥0∞ := fun w =>
     ENNReal.ofReal
-      (hypDensity (q * ‖w‖) (Module.finrank ℝ E - 1) 1)
+      (hyperbolicDensity (q * ‖w‖) (Module.finrank ℝ E - 1) 1)
   have hpreK :
       L ⁻¹' K ⊆ Metric.closedBall (0 : E) R := by
     intro w hw
@@ -186,9 +186,9 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
         ∀ t ∈ Set.Ioo (0 : ℝ) 1,
           ¬ IsConjVec (I := I) g hEnorm x
             ((t • L w : TangentSpace I x) : E) :=
-      segDom_no_conj (I := I) g hEnorm hw.1 hu0
+      segmentDom_no_conj (I := I) g hEnorm hw.1 hu0
     have hdens :=
-      expDens_le_hyp (I := I) g hEnorm x (L w)
+      expDens_le_hyperbolic (I := I) g hEnorm x (L w)
         (normalBasis (I := I) g x)
         (normalBasis_inner (I := I) g x)
         q hq hu0 hno hRic
@@ -218,7 +218,7 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
         ((volume : Measure
             (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere Set.univ)
           * ENNReal.ofReal
-              (hypRadVol q (Module.finrank ℝ E - 1) R) := by
+              (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
     calc
       (∫⁻ w in L ⁻¹' K,
           ENNReal.ofReal (Dn w) ∂(volume : Measure E)) ≤
@@ -231,12 +231,12 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
         setLIntegral_congr hball_ae
       _ = (volume : Measure E).toSphere Set.univ *
           ENNReal.ofReal
-            (hypRadVol q (Module.finrank ℝ E - 1) R) := by
-        simpa only [Dh] using hypBall_lintegral (E := E) q hq hR
+            (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
+        simpa only [Dh] using hyperbolicBall_lintegral (E := E) q hq hR
       _ = ((volume : Measure
             (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere Set.univ)
           * ENNReal.ofReal
-              (hypRadVol q (Module.finrank ℝ E - 1) R) := by
+              (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
         rw [volSphere_finrank (E := E)]
   calc
     riemannianVolumeMeasure (I := I) (M := M) g
@@ -247,22 +247,22 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
             (show TangentSpace I x from b)) '' K) :=
       measure_mono hcover
     _ ≤ ∫⁻ v in K,
-        ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+        ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) :=
       riemVol_exp_image_le (I := I) g hEnorm x hK
     _ = ∫⁻ w in L ⁻¹' K,
         ENNReal.ofReal (Dn w) ∂(volume : Measure E) := by
       with_unfolding_all exact
-        expJac_normal_int (I := I) (E := E) g hEnorm x K
+        expJacobian_normal_int (I := I) (E := E) g hEnorm x K
     _ ≤ ((volume : Measure
           (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).toSphere Set.univ)
         * ENNReal.ofReal
-            (hypRadVol q (Module.finrank ℝ E - 1) R) :=
+            (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) :=
       hnormal
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_vol_pow [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentBall_vol_pow [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -278,15 +278,15 @@ theorem segBall_vol_pow [ConnectedSpace M] [PseudoEMetricSpace M]
   let n : ℕ := Module.finrank ℝ E
   have hn : 0 < n := Nat.pos_of_ne_zero (NeZero.ne n)
   have hR : 0 < R := hs.trans_le hsR
-  have hrel := segBall_vol_rel (I := I) g hEnorm x
+  have hrel := segmentBall_vol_rel (I := I) g hEnorm x
     (q := 0) (s := s) (R := R) (by positivity) hs hsR (by simpa using hRic)
   have hmodel (t : ℝ) (ht : 0 ≤ t) :
-      ENNReal.ofReal (hypRadVol 0 (n - 1) t) =
+      ENNReal.ofReal (hyperbolicRadialVolume 0 (n - 1) t) =
         ENNReal.ofReal (t ^ n) * ENNReal.ofReal ((n : ℝ)⁻¹) := by
     have hnR : ((n - 1 : ℕ) : ℝ) + 1 = n := by
       rw [Nat.cast_sub hn]
       norm_num
-    rw [hypRadVol_zero, Nat.sub_add_cancel hn, hnR, div_eq_mul_inv,
+    rw [hyperbolicRadialVolume_zero, Nat.sub_add_cancel hn, hnR, div_eq_mul_inv,
       ENNReal.ofReal_mul (pow_nonneg ht n)]
   rw [show Module.finrank ℝ E - 1 = n - 1 by rfl,
     hmodel s hs.le, hmodel R hR.le] at hrel

@@ -552,7 +552,7 @@ theorem riemannSec_first_bianchi_levi_civita
     exact happ
   have hJacobi := VectorField.leibniz_identity_mlieBracket_apply (I := I)
     (U := X) (V := Y) (W := Z) (x := x) hX2 hY2 hZ2
-  have hJac_cyc :
+  have hJacobian_cyc :
       VectorField.mlieBracket I X (VectorField.mlieBracket I Y Z) x +
         VectorField.mlieBracket I Y (VectorField.mlieBracket I Z X) x +
         VectorField.mlieBracket I Z (VectorField.mlieBracket I X Y) x = 0 := by
@@ -669,7 +669,7 @@ theorem riemannSec_first_bianchi_levi_civita
         cov.toFun Z x (VectorField.mlieBracket I X Y x)) := by abel
     rw [hLHS, h1, h2, h3]
   rw [hgoal]
-  exact hJac_cyc
+  exact hJacobian_cyc
 
 end Bianchi
 

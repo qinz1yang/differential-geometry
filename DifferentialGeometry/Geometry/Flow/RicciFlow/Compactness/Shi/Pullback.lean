@@ -12,7 +12,7 @@ open scoped Manifold Topology ContDiff ENNReal
 open DifferentialGeometry.Geometry.Curvature.CovariantDerivative
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -104,7 +104,7 @@ theorem movingShiBoundOn_pullback
   rw [ricCovTower_normSq0S_pullback (I := I) (gSeq i t) Φ s x]
   exact hShi s hs i t ht (Φ x) (hV x hx)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

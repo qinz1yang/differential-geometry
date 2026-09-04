@@ -380,7 +380,7 @@ private theorem morseLemma {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
     rw [h1]
     exact hmain
   rcases Completion.morse_lemma_diagonal n h hh hcrit_h w hw hdiag_h
-    with ⟨ψ, hψsrc, hψtarget, hψ0, hψsmooth, hψsymmSmooth, hψnorm⟩
+    with ⟨ψ, hψsource, hψtarget, hψ0, hψsmooth, hψsymmSmooth, hψnorm⟩
   rcases mem_nhds_iff.mp hg1Eq with ⟨U, hUg, hUopen, hU0⟩
   let D : Set (MorseModel n) := ψ.target ∩ (fun y => σ (ψ y)) ⁻¹' U
   have hD : D ∈ nhds (0 : MorseModel n) := by
@@ -390,7 +390,7 @@ private theorem morseLemma {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
       have hσc : ContinuousAt σ (ψ (0 : MorseModel n)) := σ.cont.continuousAt
       have hcont : ContinuousAt (fun y : MorseModel n => σ (ψ y)) (0 : MorseModel n) :=
         (ContinuousAt.comp (g := σ) (f := ψ) (x := (0 : MorseModel n))
-          (hσc : ContinuousAt σ (ψ (0 : MorseModel n))) (ψ.continuousAt hψsrc))
+          (hσc : ContinuousAt σ (ψ (0 : MorseModel n))) (ψ.continuousAt hψsource))
       have hval : U ∈ nhds (σ (ψ (0 : MorseModel n))) := by
         have hσ0 : σ (0 : MorseModel n) = 0 := by simp
         simpa [hψ0, hσ0] using (IsOpen.mem_nhds hUopen hU0)
@@ -400,17 +400,17 @@ private theorem morseLemma {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
   have hW : ψ ⁻¹' D ∈ nhds (0 : MorseModel n) := by
     have hD0 : D ∈ nhds (ψ (0 : MorseModel n)) := by
       simpa [hψ0] using hD
-    exact (ψ.continuousAt hψsrc).preimage_mem_nhds hD0
-  have hφsrc0 : (0 : MorseModel n) ∈ φ.source := by
+    exact (ψ.continuousAt hψsource).preimage_mem_nhds hD0
+  have hφsource0 : (0 : MorseModel n) ∈ φ.source := by
     dsimp [φ]
     constructor
-    · exact hψsrc
+    · exact hψsource
     · exact (mem_interior_iff_mem_nhds).2 hW
   have hψsymm0 : ψ.symm 0 = 0 := by
     have hrinv : ψ (ψ.symm 0) = 0 := ψ.right_inv hψtarget
     have hψeq : ψ (ψ.symm 0) = ψ 0 := by
       simpa [hψ0] using hrinv
-    exact (ψ.injOn (ψ.map_target hψtarget) hψsrc hψeq)
+    exact (ψ.injOn (ψ.map_target hψtarget) hψsource hψeq)
   have hφtarget0 : (0 : MorseModel n) ∈ φ.target := by
     dsimp [φ]
     constructor
@@ -440,7 +440,7 @@ private theorem morseLemma {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
         · exact e0.apply_symm_apply j
     rw [hn, ← hchart₀, ← hchart₁]
     simpa [gp] using hsig
-  refine ⟨φ, hφsrc0, hφtarget0, hφ0, ?_, ?_, w, hw, hsig', ?_⟩
+  refine ⟨φ, hφsource0, hφtarget0, hφ0, ?_, ?_, w, hw, hsig', ?_⟩
   · exact hψsmooth.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => by rfl)
   · exact hψsymmSmooth.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => by rfl)
   refine ⟨L, ?_⟩
@@ -692,7 +692,7 @@ theorem morse_lemma_smooth {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
     rw [h1]
     exact hmain
   rcases Completion.morse_lemma_diagonal_smooth n h hh hcrit_h w hw hdiag_h
-    with ⟨ψ, hψsrc, hψtarget, hψ0, hψsmooth, hψsymmSmooth, hψLocal, hψnorm⟩
+    with ⟨ψ, hψsource, hψtarget, hψ0, hψsmooth, hψsymmSmooth, hψLocal, hψnorm⟩
   rcases mem_nhds_iff.mp hg1Eq with ⟨U, hUg, hUopen, hU0⟩
   let D : Set (MorseModel n) := ψ.target ∩ (fun y => σ (ψ y)) ⁻¹' U
   have hD : D ∈ nhds (0 : MorseModel n) := by
@@ -702,7 +702,7 @@ theorem morse_lemma_smooth {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
       have hσc : ContinuousAt σ (ψ (0 : MorseModel n)) := σ.cont.continuousAt
       have hcont : ContinuousAt (fun y : MorseModel n => σ (ψ y)) (0 : MorseModel n) :=
         (ContinuousAt.comp (g := σ) (f := ψ) (x := (0 : MorseModel n))
-          (hσc : ContinuousAt σ (ψ (0 : MorseModel n))) (ψ.continuousAt hψsrc))
+          (hσc : ContinuousAt σ (ψ (0 : MorseModel n))) (ψ.continuousAt hψsource))
       have hval : U ∈ nhds (σ (ψ (0 : MorseModel n))) := by
         have hσ0 : σ (0 : MorseModel n) = 0 := by simp
         simpa [hψ0, hσ0] using (IsOpen.mem_nhds hUopen hU0)
@@ -712,17 +712,17 @@ theorem morse_lemma_smooth {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
   have hW : ψ ⁻¹' D ∈ nhds (0 : MorseModel n) := by
     have hD0 : D ∈ nhds (ψ (0 : MorseModel n)) := by
       simpa [hψ0] using hD
-    exact (ψ.continuousAt hψsrc).preimage_mem_nhds hD0
-  have hφsrc0 : (0 : MorseModel n) ∈ φ.source := by
+    exact (ψ.continuousAt hψsource).preimage_mem_nhds hD0
+  have hφsource0 : (0 : MorseModel n) ∈ φ.source := by
     dsimp [φ]
     constructor
-    · exact hψsrc
+    · exact hψsource
     · exact (mem_interior_iff_mem_nhds).2 hW
   have hψsymm0 : ψ.symm 0 = 0 := by
     have hrinv : ψ (ψ.symm 0) = 0 := ψ.right_inv hψtarget
     have hψeq : ψ (ψ.symm 0) = ψ 0 := by
       simpa [hψ0] using hrinv
-    exact (ψ.injOn (ψ.map_target hψtarget) hψsrc hψeq)
+    exact (ψ.injOn (ψ.map_target hψtarget) hψsource hψeq)
   have hφtarget0 : (0 : MorseModel n) ∈ φ.target := by
     dsimp [φ]
     constructor
@@ -752,7 +752,7 @@ theorem morse_lemma_smooth {n : ℕ} {H : Type*} [TopologicalSpace H] {M : Type*
         · exact e0.apply_symm_apply j
     rw [hn, ← hchart₀, ← hchart₁]
     simpa [gp] using hsig
-  refine ⟨φ, hφsrc0, hφtarget0, hφ0, ?_, ?_, ?_, w, hw, hsig', ?_⟩
+  refine ⟨φ, hφsource0, hφtarget0, hφ0, ?_, ?_, ?_, w, hw, hsig', ?_⟩
   · exact hψsmooth.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => by rfl)
   · exact hψsymmSmooth.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => by rfl)
   · exact hψLocal
@@ -853,9 +853,9 @@ theorem isCriticalPointAt_iff_chart_fderiv {n : ℕ} {H : Type} [TopologicalSpac
   have hep : e.symm (e p) = p := e.left_inv hpsrc
   have hσc : ContMDiffAt 𝓘(ℝ, MorseModel n) I (⊤ : WithTop ℕ∞) e.symm (e p) :=
     (contMDiffOn_extChartAt_symm p).contMDiffAt (by
-      have hmemTgt : e p ∈ (extChartAt I p).target :=
+      have hmemTarget : e p ∈ (extChartAt I p).target :=
         (extChartAt I p).map_source (mem_extChartAt_source p)
-      simpa [e] using (isOpen_extChartAt_target p).mem_nhds hmemTgt)
+      simpa [e] using (isOpen_extChartAt_target p).mem_nhds hmemTarget)
   have hσmd : MDifferentiableAt 𝓘(ℝ, MorseModel n) I e.symm (e p) :=
     hσc.mdifferentiableAt (by norm_num)
   have hmdChart : MDifferentiableAt I 𝓘(ℝ, MorseModel n) e p :=
@@ -978,7 +978,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
   have hndChart : (QuadraticMap.associated (R := ℝ)
       (chartHessianAt (g := fun y => f ((extChartAt I p).symm y)) (extChartAt I p p))).SeparatingLeft := hnd.2
   rcases morse_lemma_of_contMDiff I f hf p hcritChart hndChart
-    with ⟨ψ, hψsrc, hψtarget, hψ0, hψsmooth, hψsymmSmooth, hψLocal, w, hw, hsig, L, hnormal⟩
+    with ⟨ψ, hψsource, hψtarget, hψ0, hψsmooth, hψsymmSmooth, hψLocal, w, hw, hsig, L, hnormal⟩
   have hcard : {i : Fin n | w i < 0}.ncard = k := by
     exact hsig.trans hindex
   rcases exists_reindexEquiv hk w hw hcard with ⟨σe, hwneg, hwpos⟩
@@ -1004,7 +1004,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
     constructor
     · have h1 : (0 : MorseModel n) ∈ (ψ.trans (Lh.toOpenPartialHomeomorph)).source := by
         rw [OpenPartialHomeomorph.trans_source]
-        exact ⟨hψsrc, by simp⟩
+        exact ⟨hψsource, by simp⟩
       have h2 : (0 : MorseModel n) ∈
           ((ψ.trans (Lh.toOpenPartialHomeomorph)).trans
             ((addHomeo n e₀).toOpenPartialHomeomorph)).source := by
@@ -1045,16 +1045,16 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
       rw [Metric.mem_ball, dist_zero_right]
       linarith
     exact hrball hmem
-  have hΦsrc : ∀ y : MorseModel n, morseNorm n y ≤ R → y ∈ Φ.source := by
+  have hΦsource : ∀ y : MorseModel n, morseNorm n y ≤ R → y ∈ Φ.source := by
     intro y hy
     have hyS : T y ∈ S := (Set.mem_preimage.mp (hball y hy))
     have hyκ : T y ∈ κ.source := hyS.1
     dsimp [Φ]
     simp [hyκ]
-  have hΦsrc0 : (0 : MorseModel n) ∈ Φ.source := by
+  have hΦsource0 : (0 : MorseModel n) ∈ Φ.source := by
     have hmemR : morseNorm n 0 ≤ R := by
       simp [morseNorm, le_of_lt hRpos]
-    exact hΦsrc 0 hmemR
+    exact hΦsource 0 hmemR
   have hκ0val : κ 0 = p := by
     have hL0 : Lh 0 = 0 := by dsimp [Lh]; exact L.symm.map_zero
     dsimp [κ]
@@ -1207,7 +1207,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
     have hψsymm0 : ψ.symm 0 = 0 := by
       have hlinv : ψ (ψ.symm 0) = 0 := ψ.right_inv hψtarget
       have hψeq : ψ (ψ.symm 0) = ψ 0 := by simpa [hψ0] using hlinv
-      exact (ψ.injOn (ψ.map_target hψtarget) hψsrc hψeq)
+      exact (ψ.injOn (ψ.map_target hψtarget) hψsource hψeq)
     have hchartInv0 : chart.symm p = e₀ := by
       change (extChartAt I p) p = e₀
       rfl
@@ -1312,7 +1312,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
       nhds (0 : MorseModel n) := by
     have hc : ContinuousAt (fun y : MorseModel n =>
         (addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ y))) (0 : MorseModel n) := by
-      have hψc : ContinuousAt ψ (0 : MorseModel n) := ψ.continuousAt hψsrc
+      have hψc : ContinuousAt ψ (0 : MorseModel n) := ψ.continuousAt hψsource
       have hLhc : ContinuousAt Lh (ψ (0 : MorseModel n)) := Lh.continuous.continuousAt
       have haddc : ContinuousAt (addHomeo n e₀ : MorseModel n → MorseModel n) (Lh (ψ (0 : MorseModel n))) :=
         (addHomeo n e₀).continuous.continuousAt
@@ -1393,7 +1393,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
         (by intro y hy; trivial)
     have hcomp := hκmdOn.comp hTOnΦ (by intro y hy; exact hballΦ hy)
     exact hcomp.congr (by intro y hy; rfl)
-  refine ⟨R, hRpos, Φ, hΦsrc0, hΦtarget0, hΦ0, hΦsrc, hnormal', hΦmd, hΦsymm,
+  refine ⟨R, hRpos, Φ, hΦsource0, hΦtarget0, hΦ0, hΦsource, hnormal', hΦmd, hΦsymm,
     rΦ, hrΦ, hΦmdOn, ?_⟩
   have hchartInvOn : ContMDiffOn I 𝓘(ℝ, MorseModel n) (⊤ : WithTop ℕ∞)
       (chart.symm : M → MorseModel n) chart.target := by
@@ -1419,7 +1419,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
         (ContinuousLinearMap.proj (σe i) : MorseModel n →L[ℝ] ℝ) by rfl]
       exact (ContinuousLinearMap.proj (σe i) : MorseModel n →L[ℝ] ℝ).contDiff
     exact (contMDiffOn_iff_contDiffOn).2 hc.contDiffOn
-  have hκimg_target : κ '' Metric.ball (0 : MorseModel n) rκ ⊆ chart.target := by
+  have hκimage_target : κ '' Metric.ball (0 : MorseModel n) rκ ⊆ chart.target := by
     intro x hx
     rcases hx with ⟨y, hy, rfl⟩
     exact (chart.map_source (by exact (hballκ hy).2))
@@ -1433,7 +1433,7 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
       have h1' := hchartInv.comp
         (contMDiffOn_id : ContMDiffOn I I (↑(⊤ : ℕ∞) : WithTop ℕ∞) (id : M → M)
           (κ '' Metric.ball (0 : MorseModel n) rκ))
-        (by intro x hx; exact hκimg_target hx)
+        (by intro x hx; exact hκimage_target hx)
       have haddInv : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
           ((addHomeo n e₀).symm : MorseModel n → MorseModel n) Set.univ :=
         haddInvOn.of_le (by decide : (↑(⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
@@ -1476,14 +1476,14 @@ theorem morse_lemma {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [Topolo
       funext x
       rfl
     simpa [hfun] using h3
-  have hΦimg_sub : Φ '' Metric.ball (0 : MorseModel n) rΦ ⊆ κ '' Metric.ball (0 : MorseModel n) rκ := by
+  have hΦimage_sub : Φ '' Metric.ball (0 : MorseModel n) rΦ ⊆ κ '' Metric.ball (0 : MorseModel n) rκ := by
     intro x hx
     rcases hx with ⟨y, hy, rfl⟩
     refine ⟨T y, hballΦ hy, ?_⟩
     rw [hΦfun]
   have hκinvOn' : ContMDiffOn I 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (κ.symm : M → MorseModel n) (Φ '' Metric.ball (0 : MorseModel n) rΦ) :=
-    hκinvOn.mono hΦimg_sub
+    hκinvOn.mono hΦimage_sub
   have hTInv : ContMDiffOn 𝓘(ℝ, MorseModel n) 𝓘(ℝ, MorseModel n) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
       (T.symm : MorseModel n → MorseModel n) Set.univ :=
     (contMDiffOn_iff_contDiffOn).2 (by

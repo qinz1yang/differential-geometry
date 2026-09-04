@@ -57,7 +57,7 @@ theorem lCutMulti_null
           Real.sqrt (T - r) ∈ Icc (0 : Real) (Real.sqrt tau) :=
         ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hle⟩
       have hreg :=
-        lExpPosDom_reg S T x Z₀ hZ₀dom hsqrt
+        lExpPosDom_regularity S T x Z₀ hZ₀dom hsqrt
       have heq : T - (Real.sqrt (T - r)) ^ 2 = r := by
         rw [Real.sq_sqrt hnonneg]
         ring
@@ -76,9 +76,9 @@ theorem lCutMulti_null
       ((mem_lCutDomain S T x tau Z).1 hZcut).1
     have hWcut : (W : E) ∈ lCutDomain S T x tau :=
       mem_lCutDomain_of_distinct_minimizer_same_endpoint S hS T x hZcut hWne hWmin hend
-    by_cases hZconj : IsLConj S T x Z tau
+    by_cases hZconj : IsLConjugate S T x Z tau
     · exact Or.inl ⟨Z, hZcut, hZconj, rfl⟩
-    by_cases hWconj : IsLConj S T x W tau
+    by_cases hWconj : IsLConjugate S T x W tau
     · exact Or.inl ⟨W, hWcut, hWconj, hend⟩
     · exact Or.inr <|
         lCost_nondiff_two (I := I) S hS T x

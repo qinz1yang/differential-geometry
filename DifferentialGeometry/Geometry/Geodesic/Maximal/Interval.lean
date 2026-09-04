@@ -37,11 +37,11 @@ lemma IsGeodesicOnWithInitial.isGeodesicAt
     {g : SmoothRiemannianMetric I M} {γ : ℝ → M} {s : Set ℝ}
     {p : M} {v : TangentSpace I p} {t : ℝ}
     (hγ : IsGeodesicOnWithInitial (I := I) g γ s p v) (ht : s ∈ 𝓝 t)
-    (ht_src : γ t ∈ (chartAt H p).source) :
+    (ht_source : γ t ∈ (chartAt H p).source) :
     IsGeodesicAt (I := I) g γ t := by
   obtain ⟨f, hproj, _, hf⟩ := hγ
   refine ⟨p, f, hproj, ?_, hf.isMIntegralCurveAt ht⟩
-  rw [hproj t]; exact ht_src
+  rw [hproj t]; exact ht_source
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma IsGeodesicOnWithInitial.start_eq
@@ -63,7 +63,7 @@ lemma IsGeodesicOnWithInitial.mono
   obtain ⟨f, hproj, hf0, hf⟩ := hγ
   exact ⟨f, hproj, hf0, hf.mono hs⟩
 
-def MaximalGeodesicWitness
+def HasGeodesicAt
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
     (t : ℝ) : Prop :=
   ∃ γ : ℝ → M, ∃ J : Set ℝ,
@@ -73,14 +73,14 @@ def MaximalGeodesicWitness
 def maximalGeodesicInterval
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p) :
     Set ℝ :=
-  {t : ℝ | MaximalGeodesicWitness (I := I) g p v t}
+  {t : ℝ | HasGeodesicAt (I := I) g p v t}
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma mem_maximalGeodesicInterval_iff
     {g : SmoothRiemannianMetric I M} {p : M} {v : TangentSpace I p}
     {t : ℝ} :
     t ∈ maximalGeodesicInterval (I := I) g p v ↔
-      MaximalGeodesicWitness (I := I) g p v t :=
+      HasGeodesicAt (I := I) g p v t :=
   Iff.rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -99,9 +99,9 @@ section LocalExistence
 variable [I.Boundaryless] [CompleteSpace E]
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma exists_maximalGeodesicWitness_zero
+lemma hasGeodesicAt_zero
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p) :
-    MaximalGeodesicWitness (I := I) g p v 0 := by
+    HasGeodesicAt (I := I) g p v 0 := by
   obtain ⟨f, hf0, hf⟩ :=
     exists_isMIntegralCurveAt_geodesicVectorFieldChart (I := I) g p v
   rw [isMIntegralCurveAt_iff'] at hf
@@ -115,7 +115,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem zero_mem_maximalGeodesicInterval
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p) :
     (0 : ℝ) ∈ maximalGeodesicInterval (I := I) g p v :=
-  exists_maximalGeodesicWitness_zero (I := I) g p v
+  hasGeodesicAt_zero (I := I) g p v
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalGeodesicInterval_nonempty
@@ -131,7 +131,7 @@ variable [I.Boundaryless] [CompleteSpace E]
 
 def maximalGeodesicChosenCurve
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
-    {t : ℝ} (h : MaximalGeodesicWitness (I := I) g p v t) :
+    {t : ℝ} (h : HasGeodesicAt (I := I) g p v t) :
     ℝ → M :=
   Classical.choose h
 
@@ -139,7 +139,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [CompleteSpace E] in
 lemma maximalGeodesicChosenCurve_spec
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
-    {t : ℝ} (h : MaximalGeodesicWitness (I := I) g p v t) :
+    {t : ℝ} (h : HasGeodesicAt (I := I) g p v t) :
     ∃ J : Set ℝ, IsOpen J ∧ IsPreconnected J ∧ (0 : ℝ) ∈ J ∧ t ∈ J ∧
       IsGeodesicOnWithInitial (I := I) g
         (maximalGeodesicChosenCurve (I := I) g p v h) J p v :=
@@ -148,8 +148,8 @@ lemma maximalGeodesicChosenCurve_spec
 def maximalGeodesic
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
     (t : ℝ) : M :=
-  letI : Decidable (MaximalGeodesicWitness (I := I) g p v t) := Classical.dec _
-  if h : MaximalGeodesicWitness (I := I) g p v t then
+  letI : Decidable (HasGeodesicAt (I := I) g p v t) := Classical.dec _
+  if h : HasGeodesicAt (I := I) g p v t then
     maximalGeodesicChosenCurve (I := I) g p v h t
   else p
 
@@ -160,7 +160,7 @@ lemma maximalGeodesic_of_not_mem
     {t : ℝ} (ht : t ∉ maximalGeodesicInterval (I := I) g p v) :
     maximalGeodesic (I := I) g p v t = p := by
   unfold maximalGeodesic
-  let : Decidable (MaximalGeodesicWitness (I := I) g p v t) := Classical.dec _
+  let : Decidable (HasGeodesicAt (I := I) g p v t) := Classical.dec _
   exact dif_neg ht
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
@@ -171,7 +171,7 @@ lemma maximalGeodesic_of_mem
     maximalGeodesic (I := I) g p v t =
       maximalGeodesicChosenCurve (I := I) g p v h t := by
   unfold maximalGeodesic
-  let : Decidable (MaximalGeodesicWitness (I := I) g p v t) := Classical.dec _
+  let : Decidable (HasGeodesicAt (I := I) g p v t) := Classical.dec _
   exact dif_pos h
 
 end MaximalGeodesicDefinition
@@ -200,7 +200,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
 theorem exists_isGeodesicAt_of_mem_maximalGeodesicInterval
     {g : SmoothRiemannianMetric I M} {p : M} {v : TangentSpace I p}
     {t : ℝ} (h : t ∈ maximalGeodesicInterval (I := I) g p v)
-    (ht_src : ∀ (γ : ℝ → M) (J : Set ℝ),
+    (ht_source : ∀ (γ : ℝ → M) (J : Set ℝ),
       IsGeodesicOnWithInitial (I := I) g γ J p v →
         γ t ∈ (chartAt H p).source) :
     ∃ (γ : ℝ → M) (J : Set ℝ), IsOpen J ∧ (0 : ℝ) ∈ J ∧ t ∈ J ∧
@@ -208,22 +208,22 @@ theorem exists_isGeodesicAt_of_mem_maximalGeodesicInterval
       IsGeodesicAt (I := I) g γ t := by
   obtain ⟨γ, J, hJ, _hJ_conn, h0, ht, hγ⟩ := h
   refine ⟨γ, J, hJ, h0, ht, hγ, ?_⟩
-  exact hγ.isGeodesicAt (hJ.mem_nhds ht) (ht_src γ J hγ)
+  exact hγ.isGeodesicAt (hJ.mem_nhds ht) (ht_source γ J hγ)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
 theorem exists_isGeodesicAt_zero_of_mem_maximalGeodesicInterval
     {g : SmoothRiemannianMetric I M} {p : M} {v : TangentSpace I p}
     {t : ℝ} (h : t ∈ maximalGeodesicInterval (I := I) g p v)
-    (ht_src : ∀ (γ : ℝ → M) (J : Set ℝ),
+    (ht_source : ∀ (γ : ℝ → M) (J : Set ℝ),
       IsGeodesicOnWithInitial (I := I) g γ J p v →
         γ t ∈ (chartAt H p).source) :
     ∃ γ : ℝ → M, γ 0 = p ∧ IsGeodesicAt (I := I) g γ 0 ∧
       IsGeodesicAt (I := I) g γ t := by
-  obtain ⟨γ, J, hJ, h0, ht, hγ_init, hγ_at⟩ :=
-    exists_isGeodesicAt_of_mem_maximalGeodesicInterval (I := I) h ht_src
-  refine ⟨γ, hγ_init.start_eq, ?_, hγ_at⟩
-  refine hγ_init.isGeodesicAt (hJ.mem_nhds h0) ?_
-  rw [hγ_init.start_eq]; exact mem_chart_source H p
+  obtain ⟨γ, J, hJ, h0, ht, hγ_initial, hγ_at⟩ :=
+    exists_isGeodesicAt_of_mem_maximalGeodesicInterval (I := I) h ht_source
+  refine ⟨γ, hγ_initial.start_eq, ?_, hγ_at⟩
+  refine hγ_initial.isGeodesicAt (hJ.mem_nhds h0) ?_
+  rw [hγ_initial.start_eq]; exact mem_chart_source H p
 
 end MaximalGeodesicAtTime
 

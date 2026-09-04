@@ -400,7 +400,7 @@ def nablaRmFrozenSlotField
       (n := (∞ : WithTop ℕ∞)) 2 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 (S.family.connection t) (rmFrozenSlotField (I := I) S t q Y)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       1 (S.family.connection t) (rmFrozen_connSmoothInf (I := I) S t)
       (rmFrozenSlotField (I := I) S t q Y))
 
@@ -416,7 +416,7 @@ theorem nablaRmFrozenSlotField_realizes
       (nablaRmFrozenSlotField (I := I) S t q Y) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 (S.family.connection t) (rmFrozenSlotField (I := I) S t q Y)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       1 (S.family.connection t) (rmFrozen_connSmoothInf (I := I) S t)
       (rmFrozenSlotField (I := I) S t q Y))
 

@@ -46,7 +46,7 @@ lemma tensorRS_eq_of_eval_eq {r a : ℕ} {x : M}
   apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) a x).injective
   exact ContinuousMultilinearMap.ext (fun v => h D v)
 
-lemma vecTail_cons' {n : ℕ} {α : Type*} (a : α) (v : Fin n → α) :
+lemma vecTail_cons {n : ℕ} {α : Type*} (a : α) (v : Fin n → α) :
     Matrix.vecTail (Fin.cons a v) = v := by
   funext j
   simp [Matrix.vecTail, Fin.cons_succ]
@@ -132,7 +132,7 @@ private lemma covGrad_covDeriv_eval (r t : ℕ) (W : SmoothCcTensor g r t)
     (Tensor0SNabla.tensor0SCovariantDerivative I M r (LeviCivita (I := I) g) w x (X x))
     (Fin.cons (Y x) m)]
   simp only [Fin.cons_zero]
-  rw [vecTail_cons' (Y x) m]
+  rw [vecTail_cons (Y x) m]
   rw [tensorCovDerivAt_def, ContinuousLinearEquiv.symm_apply_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
@@ -158,7 +158,7 @@ theorem secondCovGrad_eval_eq_tensorSecondCovDeriv (r t : ℕ)
   rw [covGrad_toSection_apply_natural (I := I) (M := M) g r (t + 1) GW x (w x)
     (Fin.cons (X x) (Fin.cons (Y x) m))]
   simp only [Fin.cons_zero]
-  rw [vecTail_cons' (X x) (Fin.cons (Y x) m)]
+  rw [vecTail_cons (X x) (Fin.cons (Y x) m)]
   have happly₁ : (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (t + 1) I x from
       TensorRSNabla.tensorRSCovariantDerivative I M r (t + 1) (LeviCivita (I := I) g)
         GW.toSection x (X x)) (w x) =

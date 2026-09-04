@@ -248,7 +248,7 @@ private theorem integral_diffQuot_sq_on_tsupport_le
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (k : Fin d) {h : ℝ} (hh : h ≠ 0)
     (η : E → ℝ)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_compact : IsCompact (closure Ω'))
-    (hh_supp_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω') :
+    (hh_support_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω') :
     ∫ x in tsupport η, (diffQuot k h u x)^2 ∂(volume : Measure E) ≤
       ∫ x in Ω', ((fderiv ℝ u x) (EuclideanSpace.single k 1))^2
         ∂(volume : Measure E) := by
@@ -264,7 +264,7 @@ private theorem integral_diffQuot_sq_on_tsupport_le
     have h_thick_closed : IsClosed (Metric.cthickening |h| (tsupport η)) :=
       isClosed_cthickening
     have h_thick_subset_clO : Metric.cthickening |h| (tsupport η) ⊆ closure Ω' :=
-      hh_supp_in_Ω'.trans subset_closure
+      hh_support_in_Ω'.trans subset_closure
     exact hΩ'_compact.of_isClosed_subset h_thick_closed h_thick_subset_clO
   have h_thick_int :
       Integrable (fun y : E =>
@@ -295,7 +295,7 @@ private theorem integral_diffQuot_sq_on_tsupport_le
           ∂(volume : Measure E) := by
     refine setIntegral_mono_set h_Ω'_int ?_ ?_
     · refine Filter.Eventually.of_forall ?_; intro x; exact sq_nonneg _
-    · exact (Filter.Eventually.of_forall hh_supp_in_Ω').mono (fun _ h => h)
+    · exact (Filter.Eventually.of_forall hh_support_in_Ω').mono (fun _ h => h)
   exact h_local.trans h_setIntegral_mono
 
 noncomputable def absorbingIntegral
@@ -333,11 +333,11 @@ theorem integral_diffQuot_sq_on_tsupport_le_gradL2sqOn
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (k : Fin d) {h : ℝ} (hh : h ≠ 0)
     (η : E → ℝ)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_compact : IsCompact (closure Ω'))
-    (hh_supp_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω') :
+    (hh_support_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω') :
     ∫ x in tsupport η, (diffQuot k h u x)^2 ∂(volume : Measure E) ≤
       gradL2sqOn (d := d) Ω' u := by
   have h_step1 := integral_diffQuot_sq_on_tsupport_le (d := d) hu k hh η hΩ'
-    hΩ'_compact hh_supp_in_Ω'
+    hΩ'_compact hh_support_in_Ω'
   refine h_step1.trans ?_
   unfold gradL2sqOn
   have hu_C1 : ContDiff ℝ 1 u := hu.of_le (by norm_cast)

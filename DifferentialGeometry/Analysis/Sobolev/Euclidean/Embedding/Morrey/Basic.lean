@@ -96,14 +96,14 @@ private lemma exists_grad_bound_of_smooth_compactSupport
   have h_norm_compact : HasCompactSupport (fun x => ‖fderiv ℝ η x‖) :=
     h_grad_compact.norm
   obtain ⟨M, hM_nn, hM⟩ : ∃ M : ℝ, 0 ≤ M ∧ ∀ x, ‖fderiv ℝ η x‖ ≤ M := by
-    by_cases h_supp : (Function.support fun x => ‖fderiv ℝ η x‖).Nonempty
+    by_cases h_support : (Function.support fun x => ‖fderiv ℝ η x‖).Nonempty
     · have h_compact_set : IsCompact (tsupport (fun x => ‖fderiv ℝ η x‖)) :=
         h_norm_compact
       have h_continuousOn : ContinuousOn (fun x => ‖fderiv ℝ η x‖)
           (tsupport (fun x => ‖fderiv ℝ η x‖)) := h_norm_cont.continuousOn
       have h_compact_nonempty :
           (tsupport (fun x => ‖fderiv ℝ η x‖)).Nonempty :=
-        h_supp.mono (subset_tsupport _)
+        h_support.mono (subset_tsupport _)
       obtain ⟨x_max, hx_in, hx_max⟩ :=
         h_compact_set.exists_isMaxOn h_compact_nonempty h_continuousOn
       refine ⟨‖fderiv ℝ η x_max‖, norm_nonneg _, ?_⟩
@@ -118,7 +118,7 @@ private lemma exists_grad_bound_of_smooth_compactSupport
       intro x
       have hx : x ∉ Function.support (fun x => ‖fderiv ℝ η x‖) := by
         intro hx_in
-        exact h_supp ⟨x, hx_in⟩
+        exact h_support ⟨x, hx_in⟩
       simp only [Function.mem_support, ne_eq, not_not] at hx
       rw [hx]
   exact ⟨M, hM_nn, hM⟩
@@ -308,7 +308,7 @@ private theorem exists_smooth_cutoff_approx
     (hu : DeGiorgi.MemW1pWitness (ENNReal.ofReal p) u Ω)
     (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_compact : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
-    (hη_supp : tsupport η ⊆ K) :
+    (hη_support : tsupport η ⊆ K) :
     ∃ φ : ℕ → E → ℝ,
       (∀ n, ContDiff ℝ (⊤ : ℕ∞) (φ n)) ∧
       (∀ n, HasCompactSupport (φ n)) ∧
@@ -328,8 +328,8 @@ private theorem exists_smooth_cutoff_approx
   classical
   have hp_pos : 0 < p := lt_trans zero_lt_one hp
   let hw' := cutoffWitness (d := d) hp.le hΩ_open hu hη hη_compact hη_range
-  have h_supp_sub : tsupport (fun x => η x * u x) ⊆ K :=
-    (tsupport_smul_subset_left' (d := d) (η := η) (u := u)).trans hη_supp
+  have h_support_sub : tsupport (fun x => η x * u x) ⊆ K :=
+    (tsupport_smul_subset_left' (d := d) (η := η) (u := u)).trans hη_support
   have hgrad_sub : ∀ i : Fin d, tsupport (fun x => hw'.weakGrad x i) ⊆ K := by
     intro i
     have hcl : Function.support (fun x => hw'.weakGrad x i) ⊆ K := by
@@ -337,15 +337,15 @@ private theorem exists_smooth_cutoff_approx
       simp only [Function.mem_support, ne_eq] at hx
       by_contra hxK
       apply hx
-      have hx_not_supp : x ∉ tsupport η := fun h => hxK (hη_supp h)
-      have hη_zero : η x = 0 := image_eq_zero_of_notMem_tsupport hx_not_supp
+      have hx_not_support : x ∉ tsupport η := fun h => hxK (hη_support h)
+      have hη_zero : η x = 0 := image_eq_zero_of_notMem_tsupport hx_not_support
       have hη_fderiv_zero : (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) = 0 := by
-        have h_supp_fderiv_apply : tsupport
+        have h_support_fderiv_apply : tsupport
             (fun y => (fderiv ℝ η y) (EuclideanSpace.single i (1 : ℝ))) ⊆ tsupport η :=
           tsupport_fderiv_apply_subset ℝ (EuclideanSpace.single i (1 : ℝ))
         have hxh : x ∉ tsupport
             (fun y => (fderiv ℝ η y) (EuclideanSpace.single i (1 : ℝ))) :=
-          fun h => hx_not_supp (h_supp_fderiv_apply h)
+          fun h => hx_not_support (h_support_fderiv_apply h)
         exact image_eq_zero_of_notMem_tsupport
           (f := fun y => (fderiv ℝ η y) (EuclideanSpace.single i (1 : ℝ))) hxh
       change (η x • hu.weakGrad x +
@@ -355,7 +355,7 @@ private theorem exists_smooth_cutoff_approx
     refine (closure_mono hcl).trans ?_
     exact hK_compact.isClosed.closure_subset
   rcases DeGiorgi.exists_smooth_W1p_approx_of_supportedWitness (d := d)
-    hΩ_open hp hw' hK_compact hKΩ h_supp_sub hgrad_sub with
+    hΩ_open hp hw' hK_compact hKΩ h_support_sub hgrad_sub with
     ⟨φ, hφ_smooth, hφ_compact, hφ_sub, hφ_fun, hφ_grad⟩
   exact ⟨φ, hφ_smooth, hφ_compact, hφ_sub, hφ_fun, hφ_grad⟩
 
@@ -821,11 +821,11 @@ theorem mean_value_inequality_W1p
     linarith
   refine ⟨C, hC_pos, ?_⟩
   intro x y hx hy
-  obtain ⟨η, hη_smooth, hη_compact, hη_range, hη_one, hη_supp⟩ :=
+  obtain ⟨η, hη_smooth, hη_compact, hη_range, hη_one, hη_support⟩ :=
     exists_smooth_cutoff_ball (d := d) (x₀ := x₀) hR
   have hsupp_in_ball : tsupport η ⊆ Metric.ball x₀ R := by
     intro z hz
-    have hz_close : z ∈ Metric.closedBall x₀ (7 * R / 8) := hη_supp hz
+    have hz_close : z ∈ Metric.closedBall x₀ (7 * R / 8) := hη_support hz
     rw [Metric.mem_closedBall] at hz_close
     rw [Metric.mem_ball]
     linarith
@@ -839,7 +839,7 @@ theorem mean_value_inequality_W1p
     rw [Metric.mem_ball]; linarith
   obtain ⟨φ, hφ_smooth, hφ_compact, hφ_sub, hφ_fun, hφ_grad⟩ :=
     exists_smooth_cutoff_approx (d := d) hp_one hΩ_open hK_compact hKΩ hu
-      hη_smooth hη_compact hη_range hη_supp
+      hη_smooth hη_compact hη_range hη_support
   by_cases h_xy_eq : x = y
   · subst h_xy_eq
     have h_means_zero :
@@ -1463,7 +1463,7 @@ private theorem exists_smooth_cutoff_inner
       (t := Metric.closedBall x₀ (R / 4))
       hopen_thick hclosed hsub with
     ⟨χ, hχ_smooth, hχ_range, hχ_support, hχ_one_iff⟩
-  have h_supp_in_closedBall :
+  have h_support_in_closedBall :
       tsupport χ ⊆ Metric.closedBall x₀ (R / 3) := by
     have h_closed_R3 : IsClosed (Metric.closedBall x₀ (R / 3)) := Metric.isClosed_closedBall
     rw [tsupport, hχ_support]
@@ -1477,10 +1477,10 @@ private theorem exists_smooth_cutoff_inner
           have hyz_le : dist y z ≤ R / 24 := le_of_lt hyz
           linarith
       _ ≤ R / 3 := by linarith
-  refine ⟨χ, contMDiff_iff_contDiff.mp hχ_smooth, ?_, hχ_range, ?_, h_supp_in_closedBall⟩
+  refine ⟨χ, contMDiff_iff_contDiff.mp hχ_smooth, ?_, hχ_range, ?_, h_support_in_closedBall⟩
   · refine HasCompactSupport.of_support_subset_isCompact
       (isCompact_closedBall (x := x₀) (R / 3)) ?_
-    exact (subset_tsupport _).trans h_supp_in_closedBall
+    exact (subset_tsupport _).trans h_support_in_closedBall
   · intro x hx
     exact (hχ_one_iff x).1 hx
 
@@ -1623,9 +1623,9 @@ private theorem morrey_representative_of_W1pWitness
     exact ENNReal.ofReal_le_ofReal hp_one.le
   have h_exp_pos : 0 < 1 - (d : ℝ) / p := by
     rw [sub_pos, div_lt_one hp_pos]; exact hp
-  obtain ⟨η, hη_smooth, hη_compact, hη_range, hη_one, hη_supp⟩ :=
+  obtain ⟨η, hη_smooth, hη_compact, hη_range, hη_one, hη_support⟩ :=
     exists_smooth_cutoff_ball (d := d) (x₀ := x₀) hR
-  obtain ⟨χ, hχ_smooth, hχ_compact, hχ_range, hχ_one, hχ_supp⟩ :=
+  obtain ⟨χ, hχ_smooth, hχ_compact, hχ_range, hχ_one, hχ_support⟩ :=
     exists_smooth_cutoff_inner (d := d) (x₀ := x₀) hR
   have hχ_cont : Continuous χ := hχ_smooth.continuous
   have hΩ_open : IsOpen (Metric.ball x₀ R) := Metric.isOpen_ball
@@ -1663,7 +1663,7 @@ private theorem morrey_representative_of_W1pWitness
     intro z hz; rw [Metric.mem_closedBall] at hz; rw [Metric.mem_ball]; linarith
   obtain ⟨φ, hφ_smooth, hφ_compact, hφ_sub, hφ_fun, hφ_grad⟩ :=
     exists_smooth_cutoff_approx (d := d) hp_one hΩ_open hK_compact hKΩ hu
-      hη_smooth hη_compact hη_range hη_supp
+      hη_smooth hη_compact hη_range hη_support
   let hw' := cutoffWitness (d := d) hp_one.le hΩ_open hu hη_smooth hη_compact hη_range
   have h_eta_one_on_R34 : ∀ z ∈ Metric.ball x₀ (3 * R / 4), η z = 1 := fun z hz => by
     apply hη_one
@@ -1929,15 +1929,15 @@ private theorem morrey_representative_of_W1pWitness
               mul_le_mul_of_nonneg_right h_chi_le_one (abs_nonneg _)
           _ = |φ n x - φ m x| := by ring
           _ < ε := h_phi_lt
-      · have hx_not_supp : x ∉ tsupport χ := fun h => hx (hχ_supp h)
-        have hχ_zero : χ x = 0 := image_eq_zero_of_notMem_tsupport hx_not_supp
+      · have hx_not_support : x ∉ tsupport χ := fun h => hx (hχ_support h)
+        have hχ_zero : χ x = 0 := image_eq_zero_of_notMem_tsupport hx_not_support
         rw [hχ_zero, zero_mul, zero_mul, sub_zero, abs_zero]
         exact hε
     · intro n
       exact hχ_cont.mul (hφ_smooth n).continuous
     · intro n x hx
-      have hx_not_supp : x ∉ tsupport χ := fun h => hx (hχ_supp h)
-      have hχ_zero : χ x = 0 := image_eq_zero_of_notMem_tsupport hx_not_supp
+      have hx_not_support : x ∉ tsupport χ := fun h => hx (hχ_support h)
+      have hχ_zero : χ x = 0 := image_eq_zero_of_notMem_tsupport hx_not_support
       rw [hχ_zero, zero_mul]
   have h_g_to_ũ_pre :
       ∀ x : EuclideanSpace ℝ (Fin d),

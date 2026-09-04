@@ -80,7 +80,7 @@ private noncomputable def valueLocalLinearHomFib
     Tensor0SBundle.tensorRSSpaceNormedAddCommGroup r c x
   letI : NormedSpace ℝ (TensorRSSpace r c I x) :=
     Tensor0SBundle.tensorRSSpaceNormedSpace r c x
-  letI instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
+  letI instSource : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r a
   haveI : FiniteDimensional ℝ (TensorRSSpace r a I x) :=
     homTensorRSSpaceFiniteDimensional (I := I) (M := M)
@@ -128,7 +128,7 @@ private lemma valueLocalLinearHomFib_apply
     Tensor0SBundle.tensorRSSpaceNormedAddCommGroup r c x
   let : NormedSpace ℝ (TensorRSSpace r c I x) :=
     Tensor0SBundle.tensorRSSpaceNormedSpace r c x
-  let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
+  let instSource : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r a I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r a
   have : FiniteDimensional ℝ (TensorRSSpace r a I x) :=
     homTensorRSSpaceFiniteDimensional (I := I) (M := M)

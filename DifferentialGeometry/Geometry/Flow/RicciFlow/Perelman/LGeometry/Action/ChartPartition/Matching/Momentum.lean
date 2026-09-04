@@ -43,7 +43,7 @@ private theorem nodeMatch_act_cast {a b : Real} (h : a = b)
   rfl
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_momentum_pairing_eq
+theorem lRegularizedAction_minimizer_momentum_pairing_eq
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (t : Fin 3 → Real) (p : Fin 2 → M) (gamma : Real → M)
     (u : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
@@ -58,8 +58,8 @@ theorem lRegAction_minimizer_momentum_pairing_eq
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta (t 0) = gamma (t 0) →
       delta (t (Fin.last 2)) = gamma (t (Fin.last 2)) →
-      lRegAction S T gamma (t 0) (t (Fin.last 2)) ≤
-        lRegAction S T delta (t 0) (t (Fin.last 2))) :
+      lRegularizedAction S T gamma (t 0) (t (Fin.last 2)) ≤
+        lRegularizedAction S T delta (t 0) (t (Fin.last 2))) :
     ∀ z : E,
       inner Real
           (chartGramOp (I := I) S.family (p 0)
@@ -138,7 +138,7 @@ theorem lRegAction_minimizer_momentum_pairing_eq
         ⟨by simpa only [partitionIntervalLength, hfin1c, hfin1s] using
             sub_nonneg.mpr (hpos 1).le, le_rfl⟩
       simpa only [partitionIntervalLength, hfin1c, hfin1s, add_sub_cancel] using h
-    exact lChartAction_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
+    exact lChartAction_pair_le_of_lRegularizedAction_minimizer (I := I) S hS.smoothMetric hSc T t htmono p gamma u
       hsrc hrep hreg hmin v hvtar (hv0.trans hu0) (hv2.trans hu2) hvnode
   have hlocal1 : IsLocalMinOn
       (lChartAction S T (t 1) (p 1)) (sameTimeEnds (u 1)) (u 1) :=
@@ -229,7 +229,7 @@ theorem lRegAction_minimizer_momentum_pairing_eq
         lChartAction S T (t 0) (p 0) v0 +
           lChartAction S T (t 1) (p 0) v1 := by
     intro v0 v1 hv0tar hv1tar hv0 hv2 hvnode
-    exact lChartAction_initial_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T
+    exact lChartAction_initial_pair_le_of_lRegularizedAction_minimizer (I := I) S hS.smoothMetric hSc T
       (t 0) (t 1) c (t (Fin.last 2)) (hpos 0).le h1c.le hc2
       (p 0) (p 1) gamma (u 0) uHead uTail
       (hsrc 0) hsrcHead hsrcTail (hrep 0)
@@ -447,10 +447,10 @@ theorem lRegAction_minimizer_momentum_pairing_eq
     simpa only [gammaHead, add_zero, hfin1c] using
       hchange ⟨le_rfl, sub_nonneg.mpr h1c.le⟩
   intro z
-  have hpSrc : gamma (t 1) ∈ (extChartAt I (p 0)).source := by
+  have hpSource : gamma (t 1) ∈ (extChartAt I (p 0)).source := by
     rw [extChartAt_source]
     exact hpNode
-  have hqSrc : gamma (t 1) ∈ (extChartAt I (p 1)).source := by
+  have hqSource : gamma (t 1) ∈ (extChartAt I (p 1)).source := by
     rw [extChartAt_source]
     exact hsrc 1 (by simpa using
       (show t 1 ∈ Icc (t 1) (t (Fin.last 2)) from ⟨le_rfl, (hpos 1).le⟩))
@@ -493,7 +493,7 @@ theorem lRegAction_minimizer_momentum_pairing_eq
           (tangentCoordChange I (p 0) (p 1) (gamma (t 1))
             (derivWithin uHead.toFun (Icc (0 : Real) (c - t 1)) 0)))
         (tangentCoordChange I (p 0) (p 1) (gamma (t 1)) z) :=
-      chartGramOp_change (I := I) S.family hpSrc hqSrc
+      chartGramOp_change (I := I) S.family hpSource hqSource
         (T - (t 1) ^ 2)
         (derivWithin uHead.toFun (Icc (0 : Real) (c - t 1)) 0) z
     _ = inner Real

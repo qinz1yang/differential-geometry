@@ -82,9 +82,9 @@ theorem exists_linearODE_solution_of_short
       exact hMaT_le
   have hZ₀_mem : Z₀ ∈ closedBall (0 : G) rN := by
     rw [mem_closedBall_zero_iff]; change ‖Z₀‖ ≤ r₀; rfl
-  obtain ⟨Z, hZ_init, hZ_deriv⟩ :=
+  obtain ⟨Z, hZ_initial, hZ_deriv⟩ :=
     hpl.exists_eq_forall_mem_Icc_hasDerivWithinAt hZ₀_mem
-  exact ⟨Z, hZ_init, hZ_deriv⟩
+  exact ⟨Z, hZ_initial, hZ_deriv⟩
 
 end ShortIntervalExistence
 
@@ -169,7 +169,7 @@ noncomputable def linearODESolution
 
 omit [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace G] in
 @[simp]
-theorem linearODESolution_init
+theorem linearODESolution_initial
     (A : F → ℝ → (G →L[ℝ] G)) (a b h₀ : ℝ) (Z₀ : F → G) (x : F) :
     linearODESolution A a b h₀ Z₀ x h₀ = Z₀ x := by
   unfold linearODESolution

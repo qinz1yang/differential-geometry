@@ -24,7 +24,7 @@ theorem chartKin_tendsto {D : RealTimeInterval}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (hL : 0 ≤ L) (τ : Real → Real)
     (hτc : ContinuousOn τ (Icc (0 : Real) L))
-    (hτreg : MapsTo τ (Icc (0 : Real) L) D.regular)
+    (hτregularity : MapsTo τ (Icc (0 : Real) L) D.regular)
     {K : Set E} (hKc : IsCompact K)
     (hKchart : K ⊆ interior (extChartAt I alpha).target)
     (u : ℕ → timeH1 E L) (uLim : timeH1 E L)
@@ -46,7 +46,7 @@ theorem chartKin_tendsto {D : RealTimeInterval}
   have hJc : IsCompact J := isCompact_Icc.image_of_continuousOn hτc
   have hJreg : J ⊆ D.regular := by
     rintro t ⟨r, hr, rfl⟩
-    exact hτreg hr
+    exact hτregularity hr
   let A : ℕ → Real → E →L[Real] E := fun n r ↦
     (1 / 2 : Real) • chartGramOp (I := I) G alpha (τ r, (u n).toFun r)
   let ALim : Real → E →L[Real] E := fun r ↦
@@ -92,16 +92,16 @@ theorem chartKin_tendsto {D : RealTimeInterval}
     exact (mul_le_mul_of_nonneg_left hb (by norm_num)).trans (by
       have hC0 := NNReal.coe_nonneg C
       linarith)
-  have hGramUnif : TendstoUniformly
+  have hGramUniform : TendstoUniformly
       (fun n (r : Icc (0 : Real) L) ↦
         chartGramOp (I := I) G alpha (τ r.1, (u n).toFun r.1))
       (fun r ↦ chartGramOp (I := I) G alpha (τ r.1, uLim.toFun r.1)) atTop :=
-    chartGramOp_unif (I := I) hG hJreg hJc alpha hKchart hKc
+    chartGramOp_uniform (I := I) hG hJreg hJc alpha hKchart hKc
       (fun r ↦ ⟨r.1, r.2, rfl⟩) (Eventually.of_forall huK) huLimK hu
   have hconv : ∀ δ : Real, 0 < δ → ∀ᶠ n in atTop,
       ∀ᵐ r ∂timeMeasure L, ‖A n r - ALim r‖ ≤ δ := by
     intro δ hδ
-    have hev := (Metric.tendstoUniformly_iff.1 hGramUnif) (2 * δ) (by positivity)
+    have hev := (Metric.tendstoUniformly_iff.1 hGramUniform) (2 * δ) (by positivity)
     filter_upwards [hev] with n hn
     filter_upwards [ae_restrict_mem measurableSet_Icc] with r hr
     have hraw := hn ⟨r, hr⟩

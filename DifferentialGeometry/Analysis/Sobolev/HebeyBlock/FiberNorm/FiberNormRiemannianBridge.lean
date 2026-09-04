@@ -40,12 +40,12 @@ theorem triv_eq_toModel_at_chartCenter
         (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b₀ T =
       TensorRSSpace.toModel (𝕜 := ℝ) (I := I) T := by
   ext D_α
-  have h_loc :=
+  have h_local :=
     tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
       (I := I) (M := M) r s b₀
-      (h_chart := rfl) (h_src := mem_chart_source H b₀) T D_α
+      (h_chart := rfl) (h_source := mem_chart_source H b₀) T D_α
   simp only [TensorRSSpace.toModel, tensorRSSpaceContinuousLinearEquiv]
-  rw [h_loc]
+  rw [h_local]
   rfl
 
 

@@ -31,30 +31,30 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem hasDerivAt_integral_lRegEulerPair_variation
+theorem hasDerivAt_integral_lRegularizedEulerPair_variation
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real) (x : M) (Z : TangentSpace I x)
-    (hgeo : IsLRegCurveOn S T (f 0) (Set.uIcc a b) x Z) :
+    (hgeo : IsLRegularizedCurveOn S T (f 0) (Set.uIcc a b) x Z) :
     HasDerivAt
       (fun u : Real ↦
         ∫ s in a..b,
-          -lRegEulerPair S T (f u) s
+          -lRegularizedEulerPair S T (f u) s
             (lVelocity (I := I) (fun v : Real ↦ f v s) u))
       (-(∫ s in a..b,
-        lRegJacobiPair S T (f 0)
+        lRegularizedJacobiPair S T (f 0)
           (fun r : Real ↦
             lVelocity (I := I) (fun u : Real ↦ f u r) 0)
           s (lVelocity (I := I) (fun u : Real ↦ f u s) 0))) 0 := by
   let U : Set (Real × Real) :=
     {p : Real × Real | T - p.2 ^ 2 ∈ D.regular}
   let F : Real → Real → Real := fun u s ↦
-    -lRegEulerPair S T (f u) s
+    -lRegularizedEulerPair S T (f u) s
       (lVelocity (I := I) (fun v : Real ↦ f v s) u)
   let dF : Real → Real → Real := fun u s ↦
     fderiv Real (fun p : Real × Real ↦ F p.1 p.2) (u, s) (1, 0)
   let J : Real → Real := fun s ↦
-    -lRegJacobiPair S T (f 0)
+    -lRegularizedJacobiPair S T (f 0)
       (fun r : Real ↦ lVelocity (I := I) (fun u : Real ↦ f u r) 0)
       s (lVelocity (I := I) (fun u : Real ↦ f u s) 0)
   have ht : ∀ s ∈ Set.uIcc a b, T - s ^ 2 ∈ D.regular :=
@@ -64,7 +64,7 @@ theorem hasDerivAt_integral_lRegEulerPair_variation
       (continuous_const.sub (continuous_snd.pow 2))
   have hFJoint : ContDiffOn Real 1
       (fun p : Real × Real ↦ F p.1 p.2) U := by
-    simpa only [F, U] using (lRegEulerPair_variation_contDiffOn_one (I := I) S hS T f hf).neg
+    simpa only [F, U] using (lRegularizedEulerPair_variation_contDiffOn_one (I := I) S hS T f hf).neg
   have hFContJoint : ContinuousOn
       (fun p : Real × Real ↦ F p.1 p.2) U :=
     hFJoint.continuousOn
@@ -163,12 +163,12 @@ theorem hasDerivAt_integral_lRegEulerPair_variation
       with_unfolding_all exact
         (DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.velocity_coord_diff
           (I := I) (fun u : Real ↦ f u s) 0 hslice)
-    have hpoint := lRegEuler_deriv (I := I) S T s f W hfAt hW
+    have hpoint := lRegularizedEuler_deriv (I := I) S T s f W hfAt hW
     have hzero :
-        lRegEulerPair S T (f 0) s
+        lRegularizedEulerPair S T (f 0) s
           (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
             (fun u : Real ↦ f u s) W 0) = 0 := by
-      simp only [lRegEulerPair]
+      simp only [lRegularizedEulerPair]
       rw [(hgeo.2.2 s hs).2.2.2, sub_self, map_zero]
     rw [hzero, add_zero] at hpoint
     have hneg : HasDerivAt (fun u : Real ↦ F u s) (J s) 0 := by
@@ -181,70 +181,70 @@ theorem hasDerivAt_integral_lRegEulerPair_variation
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem hasDerivAt_deriv_lRegAction
+private theorem hasDerivAt_deriv_lRegularizedAction
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real) (x : M) (Z : TangentSpace I x)
-    (hgeo : IsLRegCurveOn S T (f 0) (Set.uIcc a b) x Z)
+    (hgeo : IsLRegularizedCurveOn S T (f 0) (Set.uIcc a b) x Z)
     (hfixa : ∀ u : Real, f u a = f 0 a)
     (hfixb : ∀ u : Real, f u b = f 0 b) :
     HasDerivAt
       (fun u : Real ↦
-        deriv (fun v : Real ↦ lRegAction S T (f v) a b) u)
+        deriv (fun v : Real ↦ lRegularizedAction S T (f v) a b) u)
       (-(∫ s in a..b,
-        lRegJacobiPair S T (f 0)
+        lRegularizedJacobiPair S T (f 0)
           (fun r : Real ↦
             lVelocity (I := I) (fun u : Real ↦ f u r) 0)
           s (lVelocity (I := I) (fun u : Real ↦ f u s) 0))) 0 := by
-  let L : Real → Real := fun u ↦ lRegAction S T (f u) a b
+  let L : Real → Real := fun u ↦ lRegularizedAction S T (f u) a b
   let Eul : Real → Real := fun u ↦
     ∫ s in a..b,
-      -lRegEulerPair S T (f u) s
+      -lRegularizedEulerPair S T (f u) s
         (lVelocity (I := I) (fun v : Real ↦ f v s) u)
   have ht : ∀ s ∈ Set.uIcc a b, T - s ^ 2 ∈ D.regular :=
     fun s hs ↦ (hgeo.2.2 s hs).1
   have hderivEq (u : Real) : deriv L u = Eul u := by
-    let fu : Real → Real → M := fun v s ↦ f (u + v) s
-    have hfu : IsSmoothVariation (I := I) fu := by
+    let forwardUniqueness : Real → Real → M := fun v s ↦ f (u + v) s
+    have hfu : IsSmoothVariation (I := I) forwardUniqueness := by
       exact (hf : ContMDiff _ _ (8 : Nat) _).comp
         ((contMDiff_const.add contMDiff_fst).prodMk contMDiff_snd)
-    have hfu0 : fu 0 = f u := by
+    have hfu0 : forwardUniqueness 0 = f u := by
       funext s
-      simp only [fu, add_zero]
+      simp only [forwardUniqueness, add_zero]
     have hYshift (s : Real) :
-        lVelocity (I := I) (fun v : Real ↦ fu v s) 0 =
+        lVelocity (I := I) (fun v : Real ↦ forwardUniqueness v s) 0 =
           lVelocity (I := I) (fun v : Real ↦ f v s) u := by
-      simpa only [fu, lVelocity, varFst] using
+      simpa only [forwardUniqueness, lVelocity, varFst] using
         varFst_shift (I := I) f hf u s
     have hYa :
-        lVelocity (I := I) (fun v : Real ↦ fu v a) 0 = 0 := by
-      have hconst : (fun v : Real ↦ fu v a) = fun _ : Real ↦ f 0 a := by
+        lVelocity (I := I) (fun v : Real ↦ forwardUniqueness v a) 0 = 0 := by
+      have hconst : (fun v : Real ↦ forwardUniqueness v a) = fun _ : Real ↦ f 0 a := by
         funext v
         exact hfixa (u + v)
       rw [hconst]
       simp only [lVelocity, mfderiv_const]
       rfl
     have hYb :
-        lVelocity (I := I) (fun v : Real ↦ fu v b) 0 = 0 := by
-      have hconst : (fun v : Real ↦ fu v b) = fun _ : Real ↦ f 0 b := by
+        lVelocity (I := I) (fun v : Real ↦ forwardUniqueness v b) 0 = 0 := by
+      have hconst : (fun v : Real ↦ forwardUniqueness v b) = fun _ : Real ↦ f 0 b := by
         funext v
         exact hfixb (u + v)
       rw [hconst]
       simp only [lVelocity, mfderiv_const]
       rfl
-    have hshift := lRegAction_first_variation (I := I) S hS T fu hfu a b ht
+    have hshift := lRegularizedAction_first_variation (I := I) S hS T forwardUniqueness hfu a b ht
     rw [hYa, hYb] at hshift
     simp only [map_zero, zero_apply, sub_self, zero_sub]
       at hshift
     rw [hfu0] at hshift
     have hshift' : HasDerivAt (fun v : Real ↦ L (u + v)) (Eul u) 0 := by
       with_unfolding_all
-        simpa only [L, Eul, fu, hYshift, intervalIntegral.integral_neg]
+        simpa only [L, Eul, forwardUniqueness, hYshift, intervalIntegral.integral_neg]
           using hshift
     have hderiv := hshift'.deriv
     rw [deriv_comp_const_add L u 0, add_zero] at hderiv
     exact hderiv
-  have hEul := hasDerivAt_integral_lRegEulerPair_variation (I := I) S hS T f hf a b x Z hgeo
+  have hEul := hasDerivAt_integral_lRegularizedEulerPair_variation (I := I) S hS T f hf a b x Z hgeo
   have hfun : (fun u : Real ↦ deriv L u) = Eul :=
     funext hderivEq
   rw [hfun]
@@ -252,14 +252,14 @@ private theorem hasDerivAt_deriv_lRegAction
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem continuousOn_lRegJacobiPair_variation
+theorem continuousOn_lRegularizedJacobiPair_variation
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real) (x : M) (Z : TangentSpace I x)
-    (hgeo : IsLRegCurveOn S T (f 0) (Set.uIcc a b) x Z) :
+    (hgeo : IsLRegularizedCurveOn S T (f 0) (Set.uIcc a b) x Z) :
     ContinuousOn
       (fun s : Real ↦
-        lRegJacobiPair S T (f 0)
+        lRegularizedJacobiPair S T (f 0)
           (fun r : Real ↦
             lVelocity (I := I) (fun u : Real ↦ f u r) 0)
           s (lVelocity (I := I) (fun u : Real ↦ f u s) 0))
@@ -267,12 +267,12 @@ theorem continuousOn_lRegJacobiPair_variation
   let U : Set (Real × Real) :=
     {p : Real × Real | T - p.2 ^ 2 ∈ D.regular}
   let Eul : Real × Real → Real := fun p ↦
-    lRegEulerPair S T (f p.1) p.2
+    lRegularizedEulerPair S T (f p.1) p.2
       (lVelocity (I := I) (fun u : Real ↦ f u p.2) p.1)
   let dEul : Real → Real := fun s ↦
     fderiv Real Eul (0, s) (1, 0)
   let J : Real → Real := fun s ↦
-    lRegJacobiPair S T (f 0)
+    lRegularizedJacobiPair S T (f 0)
       (fun r : Real ↦ lVelocity (I := I) (fun u : Real ↦ f u r) 0)
       s (lVelocity (I := I) (fun u : Real ↦ f u s) 0)
   have ht : ∀ s ∈ Set.uIcc a b, T - s ^ 2 ∈ D.regular :=
@@ -281,7 +281,7 @@ theorem continuousOn_lRegJacobiPair_variation
     D.regular_isOpen.preimage
       (continuous_const.sub (continuous_snd.pow 2))
   have hEul1 : ContDiffOn Real 1 Eul U := by
-    simpa only [Eul, U] using lRegEulerPair_variation_contDiffOn_one (I := I) S hS T f hf
+    simpa only [Eul, U] using lRegularizedEulerPair_variation_contDiffOn_one (I := I) S hS T f hf
   have hEulDiff : DifferentiableOn Real Eul U :=
     hEul1.differentiableOn (by norm_num)
   have hdJoint : ContinuousOn
@@ -323,12 +323,12 @@ theorem continuousOn_lRegJacobiPair_variation
       with_unfolding_all exact
         (DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.velocity_coord_diff
           (I := I) (fun u : Real ↦ f u s) 0 hline)
-    have hpoint := lRegEuler_deriv (I := I) S T s f W hfAt hW
+    have hpoint := lRegularizedEuler_deriv (I := I) S T s f W hfAt hW
     have hzero :
-        lRegEulerPair S T (f 0) s
+        lRegularizedEulerPair S T (f 0) s
           (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
             (fun u : Real ↦ f u s) W 0) = 0 := by
-      simp only [lRegEulerPair]
+      simp only [lRegularizedEulerPair]
       rw [(hgeo.2.2 s hs).2.2.2, sub_self, map_zero]
     rw [hzero, add_zero] at hpoint
     have hpoint' : HasDerivAt (fun u : Real ↦ Eul (u, s)) (J s) 0 := by
@@ -338,17 +338,17 @@ theorem continuousOn_lRegJacobiPair_variation
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem lRegAction_second_variation
+theorem lRegularizedAction_second_variation
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real) (x : M) (Z : TangentSpace I x)
-    (hgeo : IsLRegCurveOn S T (f 0) (Set.uIcc a b) x Z)
+    (hgeo : IsLRegularizedCurveOn S T (f 0) (Set.uIcc a b) x Z)
     (hfixa : ∀ u : Real, f u a = f 0 a)
     (hfixb : ∀ u : Real, f u b = f 0 b) :
     HasDerivAt
       (fun u : Real ↦
-        deriv (fun v : Real ↦ lRegAction S T (f v) a b) u)
-      (2 * lRegIndex S T (f 0)
+        deriv (fun v : Real ↦ lRegularizedAction S T (f v) a b) u)
+      (2 * lRegularizedIndex S T (f 0)
         (fun s : Real ↦
           lVelocity (I := I) (fun u : Real ↦ f u s) 0)
         (fun s : Real ↦
@@ -361,8 +361,8 @@ theorem lRegAction_second_variation
       (covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha Y s)
       (Y s)
   let J : Real → Real := fun s ↦
-    lRegJacobiPair S T alpha Y s (Y s)
-  let G : Real → Real := lRegIndexIntegrand S T alpha Y Y
+    lRegularizedJacobiPair S T alpha Y s (Y s)
+  let G : Real → Real := lRegularizedIndexIntegrand S T alpha Y Y
   let V : Set Real := {s : Real | T - s ^ 2 ∈ D.regular}
   let W : Set (Real × Real) :=
     {p : Real × Real | T - p.1 ∈ D.regular}
@@ -390,17 +390,17 @@ theorem lRegAction_second_variation
       (chartRepAt (I := I) alpha Y s) s := by
     intro s _
     simpa only [alpha, Y] using
-      (lRegVar_reg (I := I) S T s f hf).2.1
+      (lRegularizedVar_regularity (I := I) S T s f hf).2.1
   have hZ : ∀ s ∈ Set.uIcc a b, DifferentiableAt Real
       (chartRepAt (I := I) alpha
         (fun r : Real ↦ covDerivAlong (I := I)
           (S.base.metric (T - s ^ 2)) alpha Y r) s) s := by
     intro s _
     simpa only [alpha, Y] using
-      (lRegVar_reg (I := I) S T s f hf).2.2
+      (lRegularizedVar_regularity (I := I) S T s f hf).2.2
   have hJcont : ContinuousOn J (Set.uIcc a b) := by
     simpa only [J, alpha, Y] using
-      continuousOn_lRegJacobiPair_variation (I := I) S hS T f hf a b x Z hgeo
+      continuousOn_lRegularizedJacobiPair_variation (I := I) S hS T f hf a b x Z hgeo
   have hJint : IntervalIntegrable J MeasureTheory.volume a b :=
     hJcont.intervalIntegrable
   have hVopen : IsOpen V :=
@@ -437,7 +437,7 @@ theorem lRegAction_second_variation
     have hYs : DifferentiableAt Real
         (chartRepAt (I := I) alpha Y s) s := by
       simpa only [alpha, Y] using
-        (lRegVar_reg (I := I) S T s f hf).2.1
+        (lRegularizedVar_regularity (I := I) S T s f hf).2.1
     have hinner := inner_deriv_at
       (I := I) (n := (8 : WithTop ENat)) (by norm_num)
       (S.base.metric (T - s ^ 2)) alpha Y Y s
@@ -461,7 +461,7 @@ theorem lRegAction_second_variation
       HasDerivAt B (2 * G s + J s) s := by
     intro s hs
     simpa only [B, G, J] using
-      lRegIndex_balance (I := I) S hS T alpha Y Y s (ht s hs)
+      lRegularizedIndex_balance (I := I) S hS T alpha Y Y s (ht s hs)
         (halpha s hs) (hA s hs) (hY s hs) (hZ s hs) (hY s hs)
   let Graw : Real → Real := fun s ↦ (deriv B s - J s) / 2
   have hGrawCont : ContinuousOn Graw (Set.uIcc a b) := by
@@ -491,13 +491,13 @@ theorem lRegAction_second_variation
     rw [hconst]
     simp only [lVelocity, mfderiv_const]
     rfl
-  have hindex := lRegIndex_eq_neg_half_integral_lRegJacobiPair_of_boundary_eq_zero (I := I) S hS T alpha Y Y a b ht
+  have hindex := lRegularizedIndex_eq_neg_half_integral_lRegularizedJacobiPair_of_boundary_eq_zero (I := I) S hS T alpha Y Y a b ht
     halpha hA hY hZ hY hIint hJint hYa hYb
-  have hjac := hasDerivAt_deriv_lRegAction (I := I) S hS T f hf a b x Z hgeo hfixa hfixb
+  have hjac := hasDerivAt_deriv_lRegularizedAction (I := I) S hS T f hf a b x Z hgeo hfixa hfixb
   apply hjac.congr_deriv
   symm
   simpa only [alpha, Y, G, J] using (by
     rw [hindex]
-    ring : 2 * lRegIndex S T alpha Y Y a b = -(∫ s in a..b, J s))
+    ring : 2 * lRegularizedIndex S T alpha Y Y a b = -(∫ s in a..b, J s))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

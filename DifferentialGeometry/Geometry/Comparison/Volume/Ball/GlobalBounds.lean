@@ -656,8 +656,8 @@ theorem exists_vol_rm04_pkg
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {a K Rm Vb b A B R s : ℝ},
-      (D : Rm04FrameData (I := I) g p R b) →
-      IsRm04VolHyp (I := I) g p D ρ a K Rm Vb A B s →
+      (D : Riemann04Frame (I := I) g p R b) →
+      IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -692,12 +692,12 @@ theorem exists_vol_scale
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ ρ : ℝ, 0 < ρ ∧ ∀ {K Rm Vb b A B R s : ℝ},
-      (D : Rm04FrameData (I := I) g p R b) →
+      (D : Riemann04Frame (I := I) g p R b) →
       (∀ a : ℝ, 0 < a →
         (∀ k : Fin (Module.finrank ℝ E), ‖a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖ < ρ) →
         (∀ v : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)), ‖v‖ = 1 →
           ‖a • (∑ i, v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)‖ < ρ) →
-        IsRm04VolHyp (I := I) g p D ρ a K Rm Vb A B s) →
+        IsRm04VolHypothesis (I := I) g p D ρ a K Rm Vb A B s) →
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
       ENNReal.ofReal (Real.sqrt ((B ^ 2) ^ Module.finrank ℝ E)) *
           (ENNReal.ofReal (R ^ Module.finrank ℝ E) *
@@ -1464,7 +1464,7 @@ theorem metricBall_vol_ge_sc_c2 [PseudoMetricSpace M]
           (modelHaar (E := E)) (Metric.ball (0 : E) 1)) ≤
       riemannianVolumeMeasure (I := I) (M := M) g (Metric.ball p s) :=
   metricBall_vol_ge_sc (I := I) g p hRpos
-    (ball_tgt_of_radius (I := I) g p hR) hcoord_subset hdens
+    (ball_target_of_radius (I := I) g p hR) hcoord_subset hdens
 
 end BallUpper
 

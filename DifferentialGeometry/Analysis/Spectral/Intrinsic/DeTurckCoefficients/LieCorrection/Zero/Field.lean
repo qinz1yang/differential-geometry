@@ -108,17 +108,17 @@ private lemma lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv
   classical
   have hev := realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x c d
-  have hx_src : x ∈ (extChartAt I x).source := by
+  have hx_source : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
   have htarget : extChartAt I x x ∈ (extChartAt I x).target :=
-    (extChartAt I x).map_source hx_src
+    (extChartAt I x).map_source hx_source
   have htarget_open : IsOpen ((extChartAt I x).target : Set E) :=
     isOpen_extChartAt_target (I := I) x
-  filter_upwards [htarget_open.mem_nhds htarget, hev] with y hy_tgt hev_y
+  filter_upwards [htarget_open.mem_nhds htarget, hev] with y hy_target hev_y
   rw [hev_y]
   have hb : (extChartAt I x).symm y ∈ (chartAt H x).source := by
     rw [← extChartAt_source (I := I)]
-    exact (extChartAt I x).map_target hy_tgt
+    exact (extChartAt I x).map_target hy_target
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
   rw [lieTerm_ccTensor02Symm_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def,
@@ -1351,9 +1351,9 @@ private lemma lieCorrectionZero_symmetrizedDifference_chartComponent (hδ_lt : �
     hδ_lt hδ hδ'_lt hδ' x c d
   have hpt := hev.self_of_nhds
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def] at hpt
-  have hx_src : x ∈ (extChartAt I x).source := by
+  have hx_source : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
-  rw [(extChartAt I x).left_inv hx_src] at hpt
+  rw [(extChartAt I x).left_inv hx_source] at hpt
   rw [show (![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d] : Fin 2 → E) =
       (fun k => DifferentialGeometry.Tensor.Coordinates.chartModelBasis E ((![c, d] : Fin 2 → Fin (Module.finrank ℝ E)) k)) from by
     funext k
@@ -2052,17 +2052,17 @@ private lemma lieCorrectionZero_covariantOrderZero_chartComponent (hδ_lt : δ <
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma lieCorrectionZero_chrCorr_center (g₁ : SmoothRiemannianMetric I M) (x : M)
+private lemma lieCorrectionZero_chrCorrection_center (g₁ : SmoothRiemannianMetric I M) (x : M)
     (F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (a b k : Fin (Module.finrank ℝ E)) :
-    PDE.DeTurck.DeTurckLinearization.christoffelFirstOrderCorrRaw (I := I) g₁ x F a b k
+    PDE.DeTurck.DeTurckLinearization.christoffelFirstOrderCorrectionRaw (I := I) g₁ x F a b k
         (extChartAt I x x) =
       (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
         (-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
             chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
               chartInvGramMatrix (I := I) g₁ x x q l)) *
           chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x) := by
-  simp only [PDE.DeTurck.DeTurckLinearization.christoffelFirstOrderCorrRaw]
+  simp only [PDE.DeTurck.DeTurckLinearization.christoffelFirstOrderCorrectionRaw]
   refine congrArg (fun t : ℝ => (1 / 2 : ℝ) * t)
     (Finset.sum_congr rfl (fun l _ => ?_))
   refine congrArg₂ (fun t₁ t₂ : ℝ => t₁ * t₂) (congrArg Neg.neg
@@ -2075,7 +2075,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieCorrectionZero_wc_center (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (k : Fin (Module.finrank ℝ E)) :
-    PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrRaw (I := I) g₁ g_bg x F k
+    PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrectionRaw (I := I) g₁ g_bg x F k
         (extChartAt I x x) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
@@ -2089,7 +2089,7 @@ private lemma lieCorrectionZero_wc_center (g₁ g_bg : SmoothRiemannianMetric I 
                 chartInvGramMatrix (I := I) g₁ x x k p * F p q (extChartAt I x x) *
                   chartInvGramMatrix (I := I) g₁ x x q l)) *
               chartChristoffelBracket (I := I) g₁ x a b l (extChartAt I x x))) := by
-  simp only [PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrRaw]
+  simp only [PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrectionRaw]
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
   refine congrArg₂ (fun t₁ t₂ : ℝ => t₁ + t₂)
     (congrArg₂ (fun t₁ t₂ : ℝ => t₁ * t₂) (congrArg Neg.neg
@@ -2098,13 +2098,13 @@ private lemma lieCorrectionZero_wc_center (g₁ g_bg : SmoothRiemannianMetric I 
   · rw [lieTerm_chartInvGramOnE_center (I := I) g₁ x a p,
       lieTerm_chartInvGramOnE_center (I := I) g₁ x q b]
   · exact lieTerm_chartInvGramOnE_center (I := I) g₁ x a b
-  · exact lieCorrectionZero_chrCorr_center (I := I) g₁ x F a b k
+  · exact lieCorrectionZero_chrCorrection_center (I := I) g₁ x F a b k
 omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieCorrectionZero_d0_center (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (m k : Fin (Module.finrank ℝ E)) :
-    PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrDeriv0Raw (I := I) g₁ g_bg x
+    PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrectionDeriv0Raw (I := I) g₁ g_bg x
         F m k (extChartAt I x x) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ((-(∑ q : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
@@ -2144,7 +2144,7 @@ private lemma lieCorrectionZero_d0_center (g₁ g_bg : SmoothRiemannianMetric I 
                   chartInvGramMatrix (I := I) g₁ x x q l)) *
               DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffelBracket (I := I) g₁ x a b l)
                 (extChartAt I x x)))) := by
-  simp only [PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrDeriv0Raw]
+  simp only [PDE.DeTurck.DeTurckLinearization.deTurckVFFirstOrderCorrectionDeriv0Raw]
   refine Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ => ?_))
   refine congrArg₂ (fun t₁ t₂ : ℝ => t₁ + t₂) (congrArg₂ (fun t₁ t₂ : ℝ => t₁ + t₂)
     (congrArg₂ (fun t₁ t₂ : ℝ => t₁ + t₂) ?_ ?_) ?_) ?_
@@ -2159,7 +2159,7 @@ private lemma lieCorrectionZero_d0_center (g₁ g_bg : SmoothRiemannianMetric I 
         lieTerm_chartInvGramOnE_center (I := I) g₁ x q b]
     · exact lieCorrectionZero_pd_christoffel_sub (I := I) g₁ g_bg x m a b k
   · refine congrArg₂ (fun t₁ t₂ : ℝ => t₁ * t₂) rfl ?_
-    exact lieCorrectionZero_chrCorr_center (I := I) g₁ x F a b k
+    exact lieCorrectionZero_chrCorrection_center (I := I) g₁ x F a b k
   · refine congrArg₂ (fun t₁ t₂ : ℝ => t₁ * t₂)
       (lieTerm_chartInvGramOnE_center (I := I) g₁ x a b)
       (congrArg (fun t : ℝ => (1 / 2 : ℝ) * t)

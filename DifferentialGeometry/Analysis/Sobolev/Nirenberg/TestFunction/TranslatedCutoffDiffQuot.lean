@@ -319,9 +319,9 @@ omit [NeZero d] in
 theorem hasWeakPartialDeriv_translatedCutoffSqDiffQuot
     (k j : Fin d) (h : ℝ) {η u g_j : EuclN → ℝ}
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hu_locInt :
+    (hu_localInt :
       LocallyIntegrable u ((volume : Measure EuclN).restrict Set.univ))
-    (hg_j_locInt :
+    (hg_j_localInt :
       LocallyIntegrable g_j ((volume : Measure EuclN).restrict Set.univ))
     (hwp : DeGiorgi.HasWeakPartialDeriv (d := d) j g_j u Set.univ) :
     DeGiorgi.HasWeakPartialDeriv (d := d) j
@@ -332,7 +332,7 @@ theorem hasWeakPartialDeriv_translatedCutoffSqDiffQuot
       (translatedCutoffSqDiffQuot k h η u) Set.univ := by
   have h_inner_wp :=
     hasWeakPartialDeriv_cutoff_sq_mul_diffQuot (d := d) k j h hη
-      hu_locInt hg_j_locInt hwp
+      hu_localInt hg_j_localInt hwp
   unfold translatedCutoffSqDiffQuot
   exact hasWeakPartialDeriv_translate (d := d) k j (-h) h_inner_wp
 
@@ -340,9 +340,9 @@ omit [NeZero d] in
 theorem hasWeakPartialDeriv_translatedCutoffSqDiffQuot_expanded
     (k j : Fin d) (h : ℝ) {η u g_j : EuclN → ℝ}
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hu_locInt :
+    (hu_localInt :
       LocallyIntegrable u ((volume : Measure EuclN).restrict Set.univ))
-    (hg_j_locInt :
+    (hg_j_localInt :
       LocallyIntegrable g_j ((volume : Measure EuclN).restrict Set.univ))
     (hwp : DeGiorgi.HasWeakPartialDeriv (d := d) j g_j u Set.univ) :
     DeGiorgi.HasWeakPartialDeriv (d := d) j
@@ -354,7 +354,7 @@ theorem hasWeakPartialDeriv_translatedCutoffSqDiffQuot_expanded
       (translatedCutoffSqDiffQuot k h η u) Set.univ := by
   have h_general :=
     hasWeakPartialDeriv_translatedCutoffSqDiffQuot (d := d) k j h hη
-      hu_locInt hg_j_locInt hwp
+      hu_localInt hg_j_localInt hwp
   have h_eq :
       (fun y : EuclN =>
         (η y)^2 * diffQuot k h g_j y +

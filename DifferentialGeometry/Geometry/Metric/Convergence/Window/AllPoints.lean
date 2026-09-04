@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 
@@ -136,5 +136,5 @@ theorem exists_metric_subsequence_tendsto_in_derivative_norm_on_compacts_uniform
       (Finset.le_sup' (fun b => Cf b + Cf b + 1) (Finset.mem_range.2 (Nat.lt_succ_of_le hbp)))
   exact lt_of_le_of_lt (le_csSup hbddAbove ⟨a, hap, x, hx, rfl⟩) (hk0 k hk t ht)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

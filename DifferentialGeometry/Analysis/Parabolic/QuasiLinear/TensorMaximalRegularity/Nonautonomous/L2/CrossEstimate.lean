@@ -92,22 +92,22 @@ theorem duhamel_incl
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a + 1 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT u₀ f) =
-      maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+      maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
         a hT u₀ f := by
   refine timeModeCoeff_injective (I := I) (M := M) hcompact (fun i => ?_)
   rw [timeModeCoeff_timeL2Inclusion (I := I) (M := M),
-    maxRegDuhamelSolField, maxRegDuhamelSolFieldHa1,
+    maximalRegularityDuhamelSolutionField, maximalRegularityDuhamelSolutionFieldHa1,
     timeModeCoeff_add (I := I) (M := M),
     timeModeCoeff_add (I := I) (M := M),
-    maxRegHomogeneousSolField_timeModeCoeff (I := I) (M := M)
+    maximalRegularityHomogeneousSolutionField_timeModeCoeff (I := I) (M := M)
       (a := a) (T := T) hT.le u₀ i,
-    maxRegHomogeneousSolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularityHomogeneousSolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (a := a) (T := T) hT.le u₀ i,
-    maximalRegularitySolField_timeModeCoeff (I := I) (M := M)
+    maximalRegularitySolutionField_timeModeCoeff (I := I) (M := M)
       (h_compact := hcompact) (a := a) hT.le f i,
-    maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularitySolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (h_compact := hcompact) (a := a) hT hT1 f i]
 
 end QuasiLinear

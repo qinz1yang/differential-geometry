@@ -63,16 +63,16 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
 theorem chartMovingTriv_orbit_hasDerivAt_of_chartJet
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (α x : M) (t : ℝ)
-    {G' : E →L[ℝ] (E →L[ℝ] E)} {velChart : E}
+    {G' : E →L[ℝ] (E →L[ℝ] E)} {velocityChart : E}
     (hGfd : HasFDerivAt (fun z => chartMovingTriv (I := I) α z) G'
       (extChartAt I α ((Φ_fam t : M → M) x)))
-    (hc : HasDerivAt (fun s : ℝ => extChartAt I α ((Φ_fam s : M → M) x)) velChart t) :
+    (hc : HasDerivAt (fun s : ℝ => extChartAt I α ((Φ_fam s : M → M) x)) velocityChart t) :
     HasDerivAt (fun s : ℝ => chartMovingTriv (I := I) α
-        (extChartAt I α ((Φ_fam s : M → M) x))) (G' velChart) t := by
+        (extChartAt I α ((Φ_fam s : M → M) x))) (G' velocityChart) t := by
   change HasDerivAt
     ((fun z => chartMovingTriv (I := I) α z) ∘
       fun s : ℝ => extChartAt I α ((Φ_fam s : M → M) x))
-    (G' velChart) t
+    (G' velocityChart) t
   exact hGfd.comp_hasDerivAt t hc
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
@@ -80,7 +80,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpac
 theorem chartCloseFactors_of_chart_realisation
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (x : M) (t : ℝ)
     (Φ_eucl : E → ℝ → E) {D'_eucl g' : E →L[ℝ] E}
-    (hx_src : x ∈ (chartAt H (Φ_fam t x)).source)
+    (hx_source : x ∈ (chartAt H (Φ_fam t x)).source)
     (heucl : HasDerivAt
       (fun s : ℝ => fderiv ℝ (fun z => Φ_eucl z s) (extChartAt I (Φ_fam t x) x)) D'_eucl t)
     (heucl_diff : ∀ᶠ s : ℝ in 𝓝 t,
@@ -99,14 +99,14 @@ theorem chartCloseFactors_of_chart_realisation
           (D'_eucl.comp (trivToE (I := I) (Φ_fam t x) x)) t := by
   refine ⟨chartCloseTriv_hasDerivAt_of_movingTriv (I := I) Φ_fam t x hg hcontAt, ?_⟩
   exact chartCloseFderiv_hasDerivAt_of_eucl (I := I) Φ_fam (Φ_fam t x) x t Φ_eucl
-    hx_src heucl heucl_diff hagree
+    hx_source heucl heucl_diff hagree
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 theorem rawVariationalIdentityFlat_of_chart_realisation
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (x : M) (t : ℝ) (v : TangentSpace I x)
     (Φ_eucl : E → ℝ → E) {D'_eucl g' : E →L[ℝ] E}
-    (hx_src : x ∈ (chartAt H (Φ_fam t x)).source)
+    (hx_source : x ∈ (chartAt H (Φ_fam t x)).source)
     (heucl : HasDerivAt
       (fun s : ℝ => fderiv ℝ (fun z => Φ_eucl z s) (extChartAt I (Φ_fam t x) x)) D'_eucl t)
     (heucl_diff : ∀ᶠ s : ℝ in 𝓝 t,
@@ -123,7 +123,7 @@ theorem rawVariationalIdentityFlat_of_chart_realisation
           (1 : E →L[ℝ] E) (1 : E →L[ℝ] E)) g')
       (D'_eucl.comp (trivToE (I := I) (Φ_fam t x) x)) := by
   obtain ⟨hT, hP⟩ := chartCloseFactors_of_chart_realisation (I := I) Φ_fam x t Φ_eucl
-    hx_src heucl heucl_diff hagree hg hcontAt
+    hx_source heucl heucl_diff hagree hg hcontAt
   exact rawVariationalIdentityFlat_of_orbitODE_factors (I := I) Φ_fam t x v hcontAt hT hP
 
 end Discharge

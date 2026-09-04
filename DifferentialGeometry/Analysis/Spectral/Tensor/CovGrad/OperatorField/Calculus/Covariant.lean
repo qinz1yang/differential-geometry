@@ -42,9 +42,9 @@ theorem riemannianFiberNormSq_comp_clm_le
         (show TensorRSSpace 0 s I x from
           φ.comp (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W)) ≤
         Cφ * riemannianFiberNormSq (I := I) (M := M) g 0 r x W := by
-  let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
+  let instSource : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 r
-  let instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
+  let instTarget : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 s
   let appOp : TensorRSSpace 0 r I x →L[ℝ] TensorRSSpace 0 s I x :=
     LinearMap.toContinuousLinearMap

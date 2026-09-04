@@ -57,12 +57,12 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 lemma densityPsi_cont
     {g : SmoothRiemannianMetric I M} {α : M}
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Continuous (fun y : EuclN => densityOnEuclid (I := I) g α y * ψ y) := by
   classical
   refine continuous_iff_continuousAt.mpr fun y => ?_
   by_cases hy : y ∈ tsupport ψ
-  · have hy_T : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_supp hy
+  · have hy_T : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_support hy
     have hOpen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
       Sobolev.Chart.chartTargetEuclid_isOpen (I := I) (M := M) α
     have h_dens : ContinuousAt (densityOnEuclid (I := I) g α) y :=
@@ -91,13 +91,13 @@ lemma densityPsi_cs
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
-lemma densityPsi_supp
+lemma densityPsi_support
     {g : SmoothRiemannianMetric I M} {α : M}
     {ψ : EuclN → ℝ}
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     tsupport (fun y : EuclN => densityOnEuclid (I := I) g α y * ψ y) ⊆
       chartTargetEuclid (I := I) (M := M) α := by
-  refine subset_trans (closure_mono ?_) hψ_supp
+  refine subset_trans (closure_mono ?_) hψ_support
   intro y hy
   rw [Function.mem_support] at hy
   by_contra hyψ
@@ -254,21 +254,21 @@ lemma chartPulledIntegralCLM_gradInnerSmooth_tendsto
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {u_h : H1Compl g}
     {v : ℕ → SmoothScalar g}
     (h_tendsto : Tendsto (fun n => smoothToH1Compl (I := I) (M := M) g (v n))
       atTop (𝓝 u_h)) :
     Tendsto (fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (gradInnerSmooth (I := I) (M := M) g
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) (v n))) atTop
       (𝓝 (chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (gradInnerCLM (I := I) (M := M) g
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) u_h))) := by
   classical
@@ -280,24 +280,24 @@ lemma chartPulledIntegralCLM_gradInnerSmooth_tendsto
           (smoothToH1Compl (I := I) (M := M) g (v n)) :=
     fun n => (gradInnerCLM_smoothToH1Compl (I := I) (M := M) g _ (v n)).symm
   have h_funeq : (fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (gradInnerSmooth (I := I) (M := M) g
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) (v n))) =
       (fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (gradInnerCLM (I := I) (M := M) g
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
           (smoothToH1Compl (I := I) (M := M) g (v n)))) := by
     funext n; rw [h_eq_n n]
   rw [h_funeq]
   exact chartPulledIntegralCLM_tendsto (I := I) (M := M) g α
-    (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+    (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
     (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-    (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+    (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
     (((gradInnerCLM (I := I) (M := M) g
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)).continuous.tendsto _).comp h_tendsto)
 
@@ -306,22 +306,22 @@ lemma chartPulledIntegralCLM_smoothMulLp_tendsto
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {u_h : H1Compl g}
     {v : ℕ → SmoothScalar g}
     (h_tendsto : Tendsto (fun n => smoothToH1Compl (I := I) (M := M) g (v n))
       atTop (𝓝 u_h)) :
     Tendsto (fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothMulLp (I := I) (M := M) g
           (laplacianOfChartPOU (I := I) (M := M) g α)
           (smoothToLp (I := I) (M := M) g (v n)))) atTop
       (𝓝 (chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothMulLp (I := I) (M := M) g
           (laplacianOfChartPOU (I := I) (M := M) g α)
           (H1ComplToLp (I := I) (M := M) g u_h)))) := by
@@ -340,20 +340,20 @@ lemma chartPulledIntegralCLM_smoothMulLp_tendsto
         (laplacianOfChartPOU (I := I) (M := M) g α)).continuous.tendsto _).comp
       h_lp_tendsto
   exact chartPulledIntegralCLM_tendsto (I := I) (M := M) g α
-    (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+    (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
     (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-    (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+    (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
     h_smoothMul_tendsto
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartPulledIntegralCLM_smoothToLp_eq_lpInner
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (h_smooth : SmoothScalar g) :
-    chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+    chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
         (smoothToLp (I := I) (M := M) g h_smooth) =
-      ⟪chartPulledIntegralWeightLp (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp,
+      ⟪chartPulledIntegralWeightLp (I := I) (M := M) g α hθ_cont hθ_cs hθ_support,
         smoothToLp (I := I) (M := M) g h_smooth⟫_ℝ := by
   unfold chartPulledIntegralCLM
   rw [innerSL_apply_apply]
@@ -363,27 +363,27 @@ private lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_eq_lpInner
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (v : SmoothScalar g) :
     chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothMulLp (I := I) (M := M) g
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
           (smoothToLp (I := I) (M := M) g v.oneSubLapClassical)) =
       ⟪chartPulledIntegralWeightLp (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp),
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support),
         smoothToLp (I := I) (M := M) g
           (rhoOneSubLapSmoothScalar (I := I) (M := M) g
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) v)⟫_ℝ := by
   rw [smoothMulLp_oneSubLap_eq_smoothToLp]
   exact chartPulledIntegralCLM_smoothToLp_eq_lpInner (I := I) (M := M) g α
-    (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+    (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
     (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-    (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+    (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
     (rhoOneSubLapSmoothScalar (I := I) (M := M) g
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) v)
 
@@ -425,7 +425,7 @@ private noncomputable def rhoChartWeightSmoothScalarOn
     (_hθ_cont : Continuous θ)
     (hθ_contDiffOn : ContDiffOn ℝ ∞ θ (chartTargetEuclid (I := I) (M := M) α))
     (_hθ_cs : HasCompactSupport θ)
-    (_hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (_hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     SmoothScalar g where
   toFun := fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
@@ -522,9 +522,9 @@ omit [NeZero (Module.finrank ℝ E)] in
     (hθ_cont : Continuous θ)
     (hθ_contDiffOn : ContDiffOn ℝ ∞ θ (chartTargetEuclid (I := I) (M := M) α))
     (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (rhoChartWeightSmoothScalarOn (I := I) (M := M) g α
-        hθ_cont hθ_contDiffOn hθ_cs hθ_supp).toFun =
+        hθ_cont hθ_contDiffOn hθ_cs hθ_support).toFun =
       fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
         chartPulledIntegralWeight (I := I) (M := M) g α θ x := rfl
 
@@ -535,44 +535,44 @@ private lemma smoothMulLp_chartWeight_eq_smoothToLp_rhoWeightOn
     (hθ_cont : Continuous θ)
     (hθ_contDiffOn : ContDiffOn ℝ ∞ θ (chartTargetEuclid (I := I) (M := M) α))
     (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
         (chartPulledIntegralWeightLp (I := I) (M := M) g α
-          hθ_cont hθ_cs hθ_supp) =
+          hθ_cont hθ_cs hθ_support) =
       smoothToLp (I := I) (M := M) g
         (rhoChartWeightSmoothScalarOn (I := I) (M := M) g α
-          hθ_cont hθ_contDiffOn hθ_cs hθ_supp) := by
+          hθ_cont hθ_contDiffOn hθ_cs hθ_support) := by
   classical
   apply MeasureTheory.Lp.ext
   have h_mul := smoothMulLp_apply_coeFn (I := I) (M := M) g
     (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
     (chartPulledIntegralWeightLp (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp)
+      hθ_cont hθ_cs hθ_support)
   have h_w_coe : (chartPulledIntegralWeightLp (I := I) (M := M) g α
-        hθ_cont hθ_cs hθ_supp :
+        hθ_cont hθ_cs hθ_support :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g]
       chartPulledIntegralWeight (I := I) (M := M) g α θ :=
     MemLp.coeFn_toLp (chartPulledIntegralWeight_memLp
-      (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp)
+      (I := I) (M := M) g α hθ_cont hθ_cs hθ_support)
   have h_rhs_coe : ((smoothToLp (I := I) (M := M) g
         (rhoChartWeightSmoothScalarOn (I := I) (M := M) g α
-          hθ_cont hθ_contDiffOn hθ_cs hθ_supp) :
+          hθ_cont hθ_contDiffOn hθ_cs hθ_support) :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g]
       (rhoChartWeightSmoothScalarOn
-        (I := I) (M := M) g α hθ_cont hθ_contDiffOn hθ_cs hθ_supp).toFun :=
+        (I := I) (M := M) g α hθ_cont hθ_contDiffOn hθ_cs hθ_support).toFun :=
     MemLp.coeFn_toLp (rhoChartWeightSmoothScalarOn (I := I) (M := M) g α
-      hθ_cont hθ_contDiffOn hθ_cs hθ_supp).memLp_two
+      hθ_cont hθ_contDiffOn hθ_cs hθ_support).memLp_two
   refine h_mul.trans ?_
   filter_upwards [h_w_coe, h_rhs_coe] with x hx_w hx_rhs
   change ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
       ((chartPulledIntegralWeightLp (I := I) (M := M) g α
-        hθ_cont hθ_cs hθ_supp :
+        hθ_cont hθ_cs hθ_support :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x =
     ((smoothToLp (I := I) (M := M) g
         (rhoChartWeightSmoothScalarOn (I := I) (M := M) g α
-          hθ_cont hθ_contDiffOn hθ_cs hθ_supp) :
+          hθ_cont hθ_contDiffOn hθ_cs hθ_support) :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x
   rw [hx_w, hx_rhs]
   rfl
@@ -591,22 +591,22 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {v : ℕ → SmoothScalar g}
     (h_tendsto : Tendsto (fun n => smoothToH1Compl (I := I) (M := M) g (v n))
       atTop (𝓝 u_h)) :
     Tendsto (fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothMulLp (I := I) (M := M) g
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
           (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical))) atTop
       (𝓝 (chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothMulLp (I := I) (M := M) g
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
           (H1ComplToLp (I := I) (M := M) g u_h -
@@ -615,23 +615,23 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
   set θ : EuclN → ℝ := fun y : EuclN =>
     densityOnEuclid (I := I) g α y * ψ y with hθ_def
   have hθ_cont : Continuous θ :=
-    densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp
+    densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support
   have hθ_cs : HasCompactSupport θ :=
     densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs
-  have hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α :=
-    densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp
+  have hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support
   have hθ_contDiffOn : ContDiffOn ℝ ∞ θ
       (chartTargetEuclid (I := I) (M := M) α) :=
     densityPsi_contDiffOn (I := I) (M := M) g α hψ
   let w_smooth : SmoothScalar g :=
     rhoChartWeightSmoothScalarOn (I := I) (M := M) g α
-      hθ_cont hθ_contDiffOn hθ_cs hθ_supp
+      hθ_cont hθ_contDiffOn hθ_cs hθ_support
   have h_clm_eq_inner_n : ∀ n,
-      chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+      chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
           (smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
             (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical)) =
         ⟪chartPulledIntegralWeightLp (I := I) (M := M) g α
-            hθ_cont hθ_cs hθ_supp,
+            hθ_cont hθ_cs hθ_support,
           smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
             (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical)⟫_ℝ := by
     intro n
@@ -639,12 +639,12 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
     rw [innerSL_apply_apply]
   have h_inner_assoc_n : ∀ n,
       ⟪chartPulledIntegralWeightLp (I := I) (M := M) g α
-          hθ_cont hθ_cs hθ_supp,
+          hθ_cont hθ_cs hθ_support,
         smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
           (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical)⟫_ℝ =
       ⟪smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
           (chartPulledIntegralWeightLp (I := I) (M := M) g α
-            hθ_cont hθ_cs hθ_supp),
+            hθ_cont hθ_cs hθ_support),
         smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical⟫_ℝ := by
     intro n
     rw [L2.inner_def, L2.inner_def]
@@ -654,11 +654,11 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
     have h_rhs_mul := smoothMulLp_apply_coeFn (I := I) (M := M) g
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
       (chartPulledIntegralWeightLp (I := I) (M := M) g α
-        hθ_cont hθ_cs hθ_supp)
+        hθ_cont hθ_cs hθ_support)
     refine integral_congr_ae ?_
     filter_upwards [h_lhs_mul, h_rhs_mul] with x hx_lhs hx_rhs
     have h_inner_lhs : ⟪((chartPulledIntegralWeightLp (I := I) (M := M) g α
-            hθ_cont hθ_cs hθ_supp :
+            hθ_cont hθ_cs hθ_support :
             Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x,
           ((smoothMulLp (I := I) (M := M) g
               (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
@@ -669,13 +669,13 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
               (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical) :
             Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
           ((chartPulledIntegralWeightLp (I := I) (M := M) g α
-              hθ_cont hθ_cs hθ_supp :
+              hθ_cont hθ_cs hθ_support :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x :=
         rfl
     have h_inner_rhs : ⟪((smoothMulLp (I := I) (M := M) g
               (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
               (chartPulledIntegralWeightLp (I := I) (M := M) g α
-                hθ_cont hθ_cs hθ_supp) :
+                hθ_cont hθ_cs hθ_support) :
             Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x,
           ((smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical :
             Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x⟫_ℝ =
@@ -684,7 +684,7 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
           ((smoothMulLp (I := I) (M := M) g
               (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
               (chartPulledIntegralWeightLp (I := I) (M := M) g α
-                hθ_cont hθ_cs hθ_supp) :
+                hθ_cont hθ_cs hθ_support) :
             Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x :=
         rfl
     rw [h_inner_lhs, h_inner_rhs, hx_lhs, hx_rhs]
@@ -692,13 +692,13 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
   have h_smooth_replace_n : ∀ n,
       ⟪smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
           (chartPulledIntegralWeightLp (I := I) (M := M) g α
-            hθ_cont hθ_cs hθ_supp),
+            hθ_cont hθ_cs hθ_support),
         smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical⟫_ℝ =
       ⟪smoothToLp (I := I) (M := M) g w_smooth,
         smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical⟫_ℝ := by
     intro n
     rw [smoothMulLp_chartWeight_eq_smoothToLp_rhoWeightOn (I := I) (M := M) g α
-      hθ_cont hθ_contDiffOn hθ_cs hθ_supp]
+      hθ_cont hθ_contDiffOn hθ_cs hθ_support]
   have h_bridge_n : ∀ n,
       ⟪smoothToLp (I := I) (M := M) g w_smooth,
         smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical⟫_ℝ =
@@ -712,7 +712,7 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
         smoothToH1Compl (I := I) (M := M) g w_smooth⟫_ℝ :=
     fun n => (inner_smoothToH1Compl_smoothToH1Compl (v n) w_smooth).symm
   have h_per_n : ∀ n,
-      chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+      chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
           (smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
             (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical)) =
         ⟪smoothToH1Compl (I := I) (M := M) g (v n),
@@ -751,20 +751,20 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
       ⟪smoothToLp (I := I) (M := M) g w_smooth,
         H1ComplToLp (I := I) (M := M) g u_h -
           laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩⟫_ℝ =
-        chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+        chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
           (smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
             (H1ComplToLp (I := I) (M := M) g u_h -
               laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩)) := by
     rw [← smoothMulLp_chartWeight_eq_smoothToLp_rhoWeightOn (I := I) (M := M) g α
-      hθ_cont hθ_contDiffOn hθ_cs hθ_supp]
+      hθ_cont hθ_contDiffOn hθ_cs hθ_support]
     have h_assoc :
         ⟪smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
             (chartPulledIntegralWeightLp (I := I) (M := M) g α
-              hθ_cont hθ_cs hθ_supp),
+              hθ_cont hθ_cs hθ_support),
           H1ComplToLp (I := I) (M := M) g u_h -
             laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩⟫_ℝ =
         ⟪chartPulledIntegralWeightLp (I := I) (M := M) g α
-            hθ_cont hθ_cs hθ_supp,
+            hθ_cont hθ_cs hθ_support,
           smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
             (H1ComplToLp (I := I) (M := M) g u_h -
               laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩)⟫_ℝ := by
@@ -772,7 +772,7 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
       have h_lhs_mul := smoothMulLp_apply_coeFn (I := I) (M := M) g
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
         (chartPulledIntegralWeightLp (I := I) (M := M) g α
-          hθ_cont hθ_cs hθ_supp)
+          hθ_cont hθ_cs hθ_support)
       have h_rhs_mul := smoothMulLp_apply_coeFn (I := I) (M := M) g
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
         (H1ComplToLp (I := I) (M := M) g u_h -
@@ -783,7 +783,7 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
           ⟪((smoothMulLp (I := I) (M := M) g
                 (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
                 (chartPulledIntegralWeightLp (I := I) (M := M) g α
-                  hθ_cont hθ_cs hθ_supp) :
+                  hθ_cont hθ_cs hθ_support) :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x,
             ((H1ComplToLp (I := I) (M := M) g u_h -
                 laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩ :
@@ -794,12 +794,12 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
             ((smoothMulLp (I := I) (M := M) g
                 (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
                 (chartPulledIntegralWeightLp (I := I) (M := M) g α
-                  hθ_cont hθ_cs hθ_supp) :
+                  hθ_cont hθ_cs hθ_support) :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x :=
         rfl
       have h_inner_rhs :
           ⟪((chartPulledIntegralWeightLp (I := I) (M := M) g α
-                hθ_cont hθ_cs hθ_supp :
+                hθ_cont hθ_cs hθ_support :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x,
             ((smoothMulLp (I := I) (M := M) g
                 (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
@@ -812,7 +812,7 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
                   laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩) :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x *
             ((chartPulledIntegralWeightLp (I := I) (M := M) g α
-                hθ_cont hθ_cs hθ_supp :
+                hθ_cont hθ_cs hθ_support :
               Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x :=
         rfl
       rw [h_inner_lhs, h_inner_rhs, hx_lhs, hx_rhs]
@@ -821,14 +821,14 @@ lemma chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
     unfold chartPulledIntegralCLM
     rw [innerSL_apply_apply]
   rw [show (fun n : ℕ => chartPulledIntegralCLM (I := I) (M := M) g α
-        hθ_cont hθ_cs hθ_supp
+        hθ_cont hθ_cs hθ_support
         (smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
           (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical))) =
       fun n : ℕ =>
         ⟪smoothToH1Compl (I := I) (M := M) g (v n),
           smoothToH1Compl (I := I) (M := M) g w_smooth⟫_ℝ from
       funext h_per_n]
-  rw [show chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+  rw [show chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
       (smoothMulLp (I := I) (M := M) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
         (H1ComplToLp (I := I) (M := M) g u_h -
           laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩)) =
@@ -842,84 +842,84 @@ theorem laplacianDomain_variational_identity_clm_form
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothMulLp (I := I) (M := M) g
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
           (H1ComplToLp (I := I) (M := M) g u_h -
             laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩)) -
       (2 : ℝ) *
         chartPulledIntegralCLM (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
           (gradInnerCLM (I := I) (M := M) g
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) u_h) -
       chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothMulLp (I := I) (M := M) g
           (laplacianOfChartPOU (I := I) (M := M) g α)
           (H1ComplToLp (I := I) (M := M) g u_h)) =
     chartPulledIntegralCLM (I := I) (M := M) g α
-      (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+      (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
       (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-      (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+      (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
       (leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h) := by
   classical
   obtain ⟨v, h_v_tendsto⟩ :=
     exists_smooth_approx_seq (I := I) (M := M) g u_h
   have h_lim_1 := chartPulledIntegralCLM_smoothMulLp_oneSubLap_tendsto
-    (I := I) (M := M) g α hψ hψ_cs hψ_supp hu_h h_v_tendsto
+    (I := I) (M := M) g α hψ hψ_cs hψ_support hu_h h_v_tendsto
   have h_lim_2 := chartPulledIntegralCLM_gradInnerSmooth_tendsto
-    (I := I) (M := M) g α hψ hψ_cs hψ_supp h_v_tendsto
+    (I := I) (M := M) g α hψ hψ_cs hψ_support h_v_tendsto
   have h_lim_3 := chartPulledIntegralCLM_smoothMulLp_tendsto
-    (I := I) (M := M) g α hψ hψ_cs hψ_supp h_v_tendsto
+    (I := I) (M := M) g α hψ hψ_cs hψ_support h_v_tendsto
   have h_lhs_lim : Tendsto (fun n =>
       chartPulledIntegralCLM (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
           (smoothMulLp (I := I) (M := M) g
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
             (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical)) -
         (2 : ℝ) *
           chartPulledIntegralCLM (I := I) (M := M) g α
-            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
             (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-            (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+            (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
             (gradInnerSmooth (I := I) (M := M) g
               (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) (v n)) -
         chartPulledIntegralCLM (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
           (smoothMulLp (I := I) (M := M) g
             (laplacianOfChartPOU (I := I) (M := M) g α)
             (smoothToLp (I := I) (M := M) g (v n)))) atTop
       (𝓝 (chartPulledIntegralCLM (I := I) (M := M) g α
-            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
             (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-            (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+            (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
             (smoothMulLp (I := I) (M := M) g
               (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
               (H1ComplToLp (I := I) (M := M) g u_h -
                 laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩)) -
           (2 : ℝ) *
             chartPulledIntegralCLM (I := I) (M := M) g α
-              (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+              (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
               (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-              (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+              (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
               (gradInnerCLM (I := I) (M := M) g
                 (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) u_h) -
           chartPulledIntegralCLM (I := I) (M := M) g α
-            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
             (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-            (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+            (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
             (smoothMulLp (I := I) (M := M) g
               (laplacianOfChartPOU (I := I) (M := M) g α)
               (H1ComplToLp (I := I) (M := M) g u_h)))) := by
@@ -927,30 +927,30 @@ theorem laplacianDomain_variational_identity_clm_form
     exact (tendsto_const_nhds.mul h_lim_2 : Tendsto _ _ _)
   have h_smooth_eq_n : ∀ n,
       chartPulledIntegralCLM (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
           (smoothMulLp (I := I) (M := M) g
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
             (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical)) -
         (2 : ℝ) *
           chartPulledIntegralCLM (I := I) (M := M) g α
-            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
             (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-            (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+            (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
             (gradInnerSmooth (I := I) (M := M) g
               (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) (v n)) -
         chartPulledIntegralCLM (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
           (smoothMulLp (I := I) (M := M) g
             (laplacianOfChartPOU (I := I) (M := M) g α)
             (smoothToLp (I := I) (M := M) g (v n))) =
       chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (leibnizCompensatedSource (I := I) (M := M) g α
           (smoothToH1Compl (I := I) (M := M) g (v n))
           (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) (v n))) := by
@@ -960,62 +960,62 @@ theorem laplacianDomain_variational_identity_clm_form
       smul_eq_mul]
   have h_lhs_smooth_form : Tendsto (fun n =>
       chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (leibnizCompensatedSource (I := I) (M := M) g α
           (smoothToH1Compl (I := I) (M := M) g (v n))
           (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) (v n))))
       atTop
       (𝓝 (chartPulledIntegralCLM (I := I) (M := M) g α
-            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
             (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-            (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+            (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
             (smoothMulLp (I := I) (M := M) g
               (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
               (H1ComplToLp (I := I) (M := M) g u_h -
                 laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩)) -
           (2 : ℝ) *
             chartPulledIntegralCLM (I := I) (M := M) g α
-              (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+              (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
               (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-              (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+              (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
               (gradInnerCLM (I := I) (M := M) g
                 (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) u_h) -
           chartPulledIntegralCLM (I := I) (M := M) g α
-            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
             (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-            (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+            (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
             (smoothMulLp (I := I) (M := M) g
               (laplacianOfChartPOU (I := I) (M := M) g α)
               (H1ComplToLp (I := I) (M := M) g u_h)))) := by
     have h_fun_eq : (fun n =>
         chartPulledIntegralCLM (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
           (leibnizCompensatedSource (I := I) (M := M) g α
             (smoothToH1Compl (I := I) (M := M) g (v n))
             (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) (v n)))) =
         (fun n =>
           chartPulledIntegralCLM (I := I) (M := M) g α
-              (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+              (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
               (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-              (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+              (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
               (smoothMulLp (I := I) (M := M) g
                 (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
                 (smoothToLp (I := I) (M := M) g (v n).oneSubLapClassical)) -
             (2 : ℝ) *
               chartPulledIntegralCLM (I := I) (M := M) g α
-                (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+                (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
                 (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-                (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+                (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
                 (gradInnerSmooth (I := I) (M := M) g
                   (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) (v n)) -
             chartPulledIntegralCLM (I := I) (M := M) g α
-              (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+              (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
               (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-              (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+              (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
               (smoothMulLp (I := I) (M := M) g
                 (laplacianOfChartPOU (I := I) (M := M) g α)
                 (smoothToLp (I := I) (M := M) g (v n)))) := by
@@ -1024,29 +1024,29 @@ theorem laplacianDomain_variational_identity_clm_form
     rw [h_fun_eq]
     exact h_lhs_lim
   have h_rhs_eq : chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h) =
       chartPulledIntegralCLM (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
           (smoothMulLp (I := I) (M := M) g
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)
             (H1ComplToLp (I := I) (M := M) g u_h -
               laplacianOp (I := I) (M := M) g ⟨u_h, hu_h⟩)) -
         (2 : ℝ) *
           chartPulledIntegralCLM (I := I) (M := M) g α
-            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+            (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
             (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-            (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+            (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
             (gradInnerCLM (I := I) (M := M) g
               (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) u_h) -
         chartPulledIntegralCLM (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
           (smoothMulLp (I := I) (M := M) g
             (laplacianOfChartPOU (I := I) (M := M) g α)
             (H1ComplToLp (I := I) (M := M) g u_h)) := by

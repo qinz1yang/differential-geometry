@@ -138,7 +138,7 @@ private theorem deTurckLieKoszulTrace_metricPerturbationPath_apply_jointContMDif
     (g0FlatField_contMDiff (I := I) g₀).comp_contMDiffOn contMDiffOn_fst
   have hflat := ContMDiffOn.clm_bundle_apply (b := Prod.fst) hflatfield hsharp
   have hkos := ContMDiffOn.clm_bundle_apply (b := Prod.fst)
-    (corrField_raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hflat
+    (correctionField_raisedKoszulFib_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hflat
   refine hkos.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) p.1 t) ?_
@@ -900,7 +900,7 @@ private theorem dLieDiagTrace_eval (g₁ : SmoothRiemannianMetric I M) (p : ℕ)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) u)) := by
   classical
   rw [cometricDoubleTraceFib_eq_orthoFrame_diag (I := I) g₁ p x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) D]
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x) D]
   rw [Tensor0SBundle.Tensor0SSpace.eval_sum]
   refine Finset.sum_congr rfl (fun e _ => ?_)
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
@@ -986,13 +986,13 @@ private theorem dLieFrameExpand_update (g₁ : SmoothRiemannianMetric I M) (x : 
 private def dLieBiPairPerm : Equiv.Perm (Fin 6) :=
   ⟨![2, 0, 4, 5, 3, 1], ![1, 5, 0, 4, 2, 3], by decide, by decide⟩
 
-private def dLieCorrPermA : Equiv.Perm (Fin 6) :=
+private def dLieCorrectionPermA : Equiv.Perm (Fin 6) :=
   ⟨![0, 4, 5, 3, 2, 1], ![0, 5, 4, 3, 1, 2], by decide, by decide⟩
 
-private def dLieCorrPermB : Equiv.Perm (Fin 6) :=
+private def dLieCorrectionPermB : Equiv.Perm (Fin 6) :=
   ⟨![3, 0, 5, 4, 2, 1], ![1, 5, 4, 0, 3, 2], by decide, by decide⟩
 
-private def dLieCorrPermC : Equiv.Perm (Fin 6) :=
+private def dLieCorrectionPermC : Equiv.Perm (Fin 6) :=
   ⟨![3, 4, 0, 5, 2, 1], ![2, 5, 4, 0, 1, 3], by decide, by decide⟩
 
 private def dLieXiPermA : Equiv.Perm (Fin 4) :=
@@ -1028,12 +1028,12 @@ private theorem dLieUpdateTwo (x : M) (a b c u : TangentSpace I x) :
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
+private theorem dLieCorrectionA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (w : Fin 4 → TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.eval
         (cometricDoubleTraceFib (I := I) g₁ 4 x
           (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-            (ContinuousMultilinearMap.domDomCongr dLieCorrPermA
+            (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermA
               (Tensor0SBundle.Tensor0SSpace.toModel
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
@@ -1048,7 +1048,7 @@ private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   have hterm : ∀ e : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.eval
           (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-            (ContinuousMultilinearMap.domDomCongr dLieCorrPermA
+            (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermA
               (Tensor0SBundle.Tensor0SSpace.toModel
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
@@ -1071,7 +1071,7 @@ private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
         tangentSpaceModelContinuousLinearEquiv (I := I) x
           ((Fin.cons (smoothOrthoFrame (I := I) g₁ x e x)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) w) : Fin 6 → TangentSpace I x)
-            (dLieCorrPermA i))) ∘ Fin.castAdd 3) =
+            (dLieCorrectionPermA i))) ∘ Fin.castAdd 3) =
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
           (![smoothOrthoFrame (I := I) g₁ x e x, w 2, w 3] i)) := by
       funext j
@@ -1080,7 +1080,7 @@ private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
         tangentSpaceModelContinuousLinearEquiv (I := I) x
           ((Fin.cons (smoothOrthoFrame (I := I) g₁ x e x)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) w) : Fin 6 → TangentSpace I x)
-            (dLieCorrPermA i))) ∘ Fin.natAdd 3) =
+            (dLieCorrectionPermA i))) ∘ Fin.natAdd 3) =
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
           (![w 1, w 0, smoothOrthoFrame (I := I) g₁ x e x] i)) := by
       funext j
@@ -1118,12 +1118,12 @@ private theorem dLieCorrA_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
+private theorem dLieCorrectionB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (w : Fin 4 → TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.eval
         (cometricDoubleTraceFib (I := I) g₁ 4 x
           (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-            (ContinuousMultilinearMap.domDomCongr dLieCorrPermB
+            (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermB
               (Tensor0SBundle.Tensor0SSpace.toModel
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
@@ -1138,7 +1138,7 @@ private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   have hterm : ∀ e : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.eval
           (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-            (ContinuousMultilinearMap.domDomCongr dLieCorrPermB
+            (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermB
               (Tensor0SBundle.Tensor0SSpace.toModel
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
@@ -1161,7 +1161,7 @@ private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
         tangentSpaceModelContinuousLinearEquiv (I := I) x
           ((Fin.cons (smoothOrthoFrame (I := I) g₁ x e x)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) w) : Fin 6 → TangentSpace I x)
-            (dLieCorrPermB i))) ∘ Fin.castAdd 3) =
+            (dLieCorrectionPermB i))) ∘ Fin.castAdd 3) =
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
           (![w 1, smoothOrthoFrame (I := I) g₁ x e x, w 3] i)) := by
       funext j
@@ -1170,7 +1170,7 @@ private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
         tangentSpaceModelContinuousLinearEquiv (I := I) x
           ((Fin.cons (smoothOrthoFrame (I := I) g₁ x e x)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) w) : Fin 6 → TangentSpace I x)
-            (dLieCorrPermB i))) ∘ Fin.natAdd 3) =
+            (dLieCorrectionPermB i))) ∘ Fin.natAdd 3) =
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
           (![w 2, w 0, smoothOrthoFrame (I := I) g₁ x e x] i)) := by
       funext j
@@ -1208,12 +1208,12 @@ private theorem dLieCorrB_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private theorem dLieCorrC_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
+private theorem dLieCorrectionC_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (w : Fin 4 → TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.eval
         (cometricDoubleTraceFib (I := I) g₁ 4 x
           (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-            (ContinuousMultilinearMap.domDomCongr dLieCorrPermC
+            (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermC
               (Tensor0SBundle.Tensor0SSpace.toModel
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
@@ -1228,7 +1228,7 @@ private theorem dLieCorrC_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   have hterm : ∀ e : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.eval
           (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-            (ContinuousMultilinearMap.domDomCongr dLieCorrPermC
+            (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermC
               (Tensor0SBundle.Tensor0SSpace.toModel
                 (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
                   (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
@@ -1251,7 +1251,7 @@ private theorem dLieCorrC_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
         tangentSpaceModelContinuousLinearEquiv (I := I) x
           ((Fin.cons (smoothOrthoFrame (I := I) g₁ x e x)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) w) : Fin 6 → TangentSpace I x)
-            (dLieCorrPermC i))) ∘ Fin.castAdd 3) =
+            (dLieCorrectionPermC i))) ∘ Fin.castAdd 3) =
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
           (![w 1, w 2, smoothOrthoFrame (I := I) g₁ x e x] i)) := by
       funext j
@@ -1260,7 +1260,7 @@ private theorem dLieCorrC_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
         tangentSpaceModelContinuousLinearEquiv (I := I) x
           ((Fin.cons (smoothOrthoFrame (I := I) g₁ x e x)
             (Fin.cons (smoothOrthoFrame (I := I) g₁ x e x) w) : Fin 6 → TangentSpace I x)
-            (dLieCorrPermC i))) ∘ Fin.natAdd 3) =
+            (dLieCorrectionPermC i))) ∘ Fin.natAdd 3) =
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
           (![w 3, w 0, smoothOrthoFrame (I := I) g₁ x e x] i)) := by
       funext j
@@ -1307,7 +1307,7 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
           (unitZeroSec (I := I) (M := M) x)
         - cometricDoubleTraceFib (I := I) g₁ 4 x
             (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-              (ContinuousMultilinearMap.domDomCongr dLieCorrPermA
+              (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermA
                 (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                       (Tensor0SBundle.Tensor0SSpace.toModel
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
@@ -1315,7 +1315,7 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))
         - cometricDoubleTraceFib (I := I) g₁ 4 x
             (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-              (ContinuousMultilinearMap.domDomCongr dLieCorrPermB
+              (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermB
                 (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                       (Tensor0SBundle.Tensor0SSpace.toModel
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
@@ -1323,7 +1323,7 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))
         - cometricDoubleTraceFib (I := I) g₁ 4 x
             (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-              (ContinuousMultilinearMap.domDomCongr dLieCorrPermC
+              (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermC
                 (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                       (Tensor0SBundle.Tensor0SSpace.toModel
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
@@ -1351,7 +1351,7 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
   have hCa : Tensor0SBundle.Tensor0SSpace.eval
       (cometricDoubleTraceFib (I := I) g₁ 4 x
         (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-          (ContinuousMultilinearMap.domDomCongr dLieCorrPermA
+          (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermA
             (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                   (Tensor0SBundle.Tensor0SSpace.toModel
                     (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
@@ -1359,11 +1359,11 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                     (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))) ![w0, w1, w2, w3] =
       Tensor0SBundle.Tensor0SSpace.eval (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
         ![PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w1 w0, w2, w3] :=
-    dLieCorrA_eval (I := I) g₀ g₁ g_bg x ![w0, w1, w2, w3]
+    dLieCorrectionA_eval (I := I) g₀ g₁ g_bg x ![w0, w1, w2, w3]
   have hCb : Tensor0SBundle.Tensor0SSpace.eval
       (cometricDoubleTraceFib (I := I) g₁ 4 x
         (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-          (ContinuousMultilinearMap.domDomCongr dLieCorrPermB
+          (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermB
             (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                   (Tensor0SBundle.Tensor0SSpace.toModel
                     (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
@@ -1371,11 +1371,11 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                     (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))) ![w0, w1, w2, w3] =
       Tensor0SBundle.Tensor0SSpace.eval (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
         ![w1, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w2 w0, w3] :=
-    dLieCorrB_eval (I := I) g₀ g₁ g_bg x ![w0, w1, w2, w3]
+    dLieCorrectionB_eval (I := I) g₀ g₁ g_bg x ![w0, w1, w2, w3]
   have hCu : Tensor0SBundle.Tensor0SSpace.eval
       (cometricDoubleTraceFib (I := I) g₁ 4 x
         (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-          (ContinuousMultilinearMap.domDomCongr dLieCorrPermC
+          (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermC
             (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                   (Tensor0SBundle.Tensor0SSpace.toModel
                     (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
@@ -1383,7 +1383,7 @@ private theorem dLieTheta_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x 
                     (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))) ![w0, w1, w2, w3] =
       Tensor0SBundle.Tensor0SSpace.eval (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
         ![w1, w2, PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x w3 w0] :=
-    dLieCorrC_eval (I := I) g₀ g₁ g_bg x ![w0, w1, w2, w3]
+    dLieCorrectionC_eval (I := I) g₀ g₁ g_bg x ![w0, w1, w2, w3]
   rw [Tensor0SBundle.Tensor0SSpace.eval_sub, Tensor0SBundle.Tensor0SSpace.eval_sub,
     Tensor0SBundle.Tensor0SSpace.eval_sub]
   rw [hCa, hCb, hCu]
@@ -1527,7 +1527,7 @@ private theorem dLieTheta_toModel (g₀ g₁ g_bg : SmoothRiemannianMetric I M) 
           (unitZeroSec (I := I) (M := M) x)
         - cometricDoubleTraceFib (I := I) g₁ 4 x
             (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-              (ContinuousMultilinearMap.domDomCongr dLieCorrPermA
+              (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermA
                 (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                       (Tensor0SBundle.Tensor0SSpace.toModel
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
@@ -1535,7 +1535,7 @@ private theorem dLieTheta_toModel (g₀ g₁ g_bg : SmoothRiemannianMetric I M) 
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))
         - cometricDoubleTraceFib (I := I) g₁ 4 x
             (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-              (ContinuousMultilinearMap.domDomCongr dLieCorrPermB
+              (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermB
                 (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                       (Tensor0SBundle.Tensor0SSpace.toModel
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
@@ -1543,7 +1543,7 @@ private theorem dLieTheta_toModel (g₀ g₁ g_bg : SmoothRiemannianMetric I M) 
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)))))
         - cometricDoubleTraceFib (I := I) g₁ 4 x
             (Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-              (ContinuousMultilinearMap.domDomCongr dLieCorrPermC
+              (ContinuousMultilinearMap.domDomCongr dLieCorrectionPermC
                 (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) 3 3
                       (Tensor0SBundle.Tensor0SSpace.toModel
                         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x))
@@ -1972,11 +1972,11 @@ private theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_metricPerturb
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g₀ p.1)
     hLraw hMraw
-  have hpermA := domDomCongrField_jointContMDiffOn (I := I) dLieCorrPermA
+  have hpermA := domDomCongrField_jointContMDiffOn (I := I) dLieCorrectionPermA
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hprodLM
-  have hpermB := domDomCongrField_jointContMDiffOn (I := I) dLieCorrPermB
+  have hpermB := domDomCongrField_jointContMDiffOn (I := I) dLieCorrectionPermB
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hprodLM
-  have hpermC := domDomCongrField_jointContMDiffOn (I := I) dLieCorrPermC
+  have hpermC := domDomCongrField_jointContMDiffOn (I := I) dLieCorrectionPermC
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hprodLM
   have hCa := cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn (I := I) (p := 4)
     g₀ T T' hδ hδ' _ hpermA

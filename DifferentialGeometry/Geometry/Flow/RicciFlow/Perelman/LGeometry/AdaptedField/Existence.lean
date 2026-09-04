@@ -668,7 +668,7 @@ theorem exists_lAdaptedField
     intro s hs
     dsimp only [Omega']
     constructor <;> linarith [hs.1, hs.2, heta]
-  have hOmegaReg : Omega' ⊆ Set.Ioo a c := by
+  have hOmegaRegularity : Omega' ⊆ Set.Ioo a c := by
     intro s hs
     dsimp only [Omega'] at hs
     constructor <;> linarith [hs.1, hs.2, heta_a, heta_c]
@@ -691,7 +691,7 @@ theorem exists_lAdaptedField
       ContDiffOn Real ∞ (fun s ↦ aij s i j) Omega' := by
     simpa only [aij] using adaptCoeff_smooth (E := E) S hS T q alpha
       (F i) (F j) halpha hOmega (hFsmooth i) (hFsmooth j)
-      (fun s hs ↦ hreg s (hOmegaReg hs))
+      (fun s hs ↦ hreg s (hOmegaRegularity hs))
   let amat : Real → Matrix (Fin (Module.finrank Real E))
       (Fin (Module.finrank Real E)) Real := fun s i j ↦ aij s i j
   let A : Unit → Real →
@@ -736,7 +736,7 @@ theorem exists_lAdaptedField
     simpa only [P] using
       sumField_smooth (E := E) alpha z F halpha hOmega hz hFsmooth
   have hzb : z b = z0 () := by
-    exact linearODESolution_init A (-eta) (b + eta) b z0 ()
+    exact linearODESolution_initial A (-eta) (b + eta) b z0 ()
   have hcard : Fintype.card (Fin (Module.finrank Real E)) =
       Module.finrank Real (TangentSpace I (alpha b)) := by
     rw [Fintype.card_fin]
@@ -747,7 +747,7 @@ theorem exists_lAdaptedField
     dsimp only [z0]
     exact (Geometry.Riemannian.expand_orthonormal q (alpha b) hcard
       (fun i ↦ F i b) (hFON b (hIcc ⟨le_of_lt hb, le_rfl⟩)) V).symm
-  refine ⟨P, Omega', hOmega, hIcc, hOmegaReg, hPsmooth, hPb, ?_⟩
+  refine ⟨P, Omega', hOmega, hIcc, hOmegaRegularity, hPsmooth, hPb, ?_⟩
   intro s hs
   change covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha P s =
     (-2 * s) •

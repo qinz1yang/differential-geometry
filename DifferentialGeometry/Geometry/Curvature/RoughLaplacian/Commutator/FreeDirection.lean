@@ -196,7 +196,7 @@ lemma curry_unitGradAbstractRoughLap_along
         (smoothExtensionTangent (I := I) x
           ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x
             (smoothOrthoFrame (I := I) g x i x)) x) from by rw [hCx]]
-  rw [curry_abstract_covDeriv_unitGrad_unfold' (I := I) (M := M) g T₀ hC hW]
+  rw [curry_abstract_covDeriv_unitGrad_unfold_of_contMDiff (I := I) (M := M) g T₀ hC hW]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

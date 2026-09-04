@@ -20,7 +20,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped BigOperators ContDiff Manifold NNReal Topology
@@ -277,18 +277,18 @@ theorem normalReadCLM_cd
   filter_upwards [hnormal, hbaseNhd] with a ha hb
   exact (normalPhaseRead_eq (I := I) Y x (u := a) (v := v) ha hb).symm
 
-noncomputable def invVelSum {ι : Type*} [Fintype ι]
+noncomputable def invVelocitySum {ι : Type*} [Fintype ι]
     (e : OpenPartialHomeomorph (E × E) (E × E))
     (mu : ι → Real) (xi : ι → E) (z : E) : E :=
   ∑ i, mu i • (e.symm (z, xi i)).2
 
 omit [FiniteDimensional Real E] [CompleteSpace E]
     [NeZero (Module.finrank Real E)] in
-theorem invVelSum_congr_ne {ι : Type*} [Fintype ι]
+theorem invVelocitySum_congr_ne {ι : Type*} [Fintype ι]
     (e : OpenPartialHomeomorph (E × E) (E × E))
     (mu : ι → Real) (xi xi' : ι → E) (z : E)
     (hxi : ∀ i, mu i ≠ 0 → xi i = xi' i) :
-    invVelSum e mu xi z = invVelSum e mu xi' z := by
+    invVelocitySum e mu xi z = invVelocitySum e mu xi' z := by
   classical
   apply Finset.sum_congr rfl
   intro i _hi
@@ -298,11 +298,11 @@ theorem invVelSum_congr_ne {ι : Type*} [Fintype ι]
 
 omit [FiniteDimensional Real E] [CompleteSpace E]
     [NeZero (Module.finrank Real E)] in
-theorem invVelSum_congr_br {ι : Type*} [Fintype ι]
+theorem invVelocitySum_congr_br {ι : Type*} [Fintype ι]
     (e e' : OpenPartialHomeomorph (E × E) (E × E))
     (mu : ι → Real) (xi : ι → E) (z : E) (heq : e ≈ e')
     (htgt : ∀ i, mu i ≠ 0 → (z, xi i) ∈ e.target) :
-    invVelSum e mu xi z = invVelSum e' mu xi z := by
+    invVelocitySum e mu xi z = invVelocitySum e' mu xi z := by
   classical
   apply Finset.sum_congr rfl
   intro i _hi
@@ -312,12 +312,12 @@ theorem invVelSum_congr_br {ι : Type*} [Fintype ι]
 
 omit [FiniteDimensional Real E] [CompleteSpace E]
     [NeZero (Module.finrank Real E)] in
-theorem invVelSum_fderiv {ι : Type*} [Fintype ι]
+theorem invVelocitySum_fderiv {ι : Type*} [Fintype ι]
     (e : OpenPartialHomeomorph (E × E) (E × E))
     (mu : ι → Real) (xi : ι → E) {z : E}
     (hinv : ContDiffOn Real ∞ (e.symm : E × E → E × E) e.target)
     (htgt : ∀ i, (z, xi i) ∈ e.target) :
-    HasFDerivAt (invVelSum e mu xi)
+    HasFDerivAt (invVelocitySum e mu xi)
       (∑ i, mu i • fderiv Real (fun u : E => (e.symm (u, xi i)).2) z) z := by
   classical
   have hvel : ∀ i, DifferentiableAt Real
@@ -334,7 +334,7 @@ theorem invVelSum_fderiv {ι : Type*} [Fintype ι]
       (hvel i).hasFDerivAt.const_smul (mu i)
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] in
-theorem invVelSum_inv {ι : Type*} [Fintype ι]
+theorem invVelocitySum_inv {ι : Type*} [Fintype ι]
     (e : OpenPartialHomeomorph (E × E) (E × E))
     (mu : ι → Real) (xi : ι → E) {z : E} {eta : NNReal}
     (hinv : ContDiffOn Real ∞ (e.symm : E × E → E × E) e.target)
@@ -344,7 +344,7 @@ theorem invVelSum_inv {ι : Type*} [Fintype ι]
         (E × E) →L[Real] (E × E)) e.target eta)
     (hmu : ∀ i, 0 ≤ mu i) (hsum : ∑ i, mu i = 1) (heta : eta < 1) :
     ∃ L : E ≃L[Real] E,
-      HasFDerivAt (invVelSum e mu xi) (L : E →L[Real] E) z := by
+      HasFDerivAt (invVelocitySum e mu xi) (L : E →L[Real] E) z := by
   classical
   let A : ι → E →L[Real] E := fun i =>
     fderiv Real (fun u : E => (e.symm (u, xi i)).2) z
@@ -355,15 +355,15 @@ theorem invVelSum_inv {ι : Type*} [Fintype ι]
       (e.open_target.mem_nhds (htgt i))).differentiableAt (by simp)
   have hA : ∀ i, ‖A i + ContinuousLinearMap.id Real E‖ ≤ (eta : Real) := by
     intro i
-    exact PhaseFlow.invVel_fderiv_le happrox
+    exact PhaseFlow.invVelocity_fderiv_le happrox
       (e.open_target.mem_nhds (htgt i)) (hInvDiff i)
   have hetaReal : (eta : Real) < 1 := by exact_mod_cast heta
   obtain ⟨L, hL⟩ := ContinuousLinearMap.sum_near_neg_inv
     mu A (eta : Real) hmu hsum hA hetaReal
   refine ⟨L, ?_⟩
-  have hderiv : HasFDerivAt (invVelSum e mu xi)
+  have hderiv : HasFDerivAt (invVelocitySum e mu xi)
       (∑ i, mu i • A i) z := by
-    simpa only [A] using invVelSum_fderiv e mu xi hinv htgt
+    simpa only [A] using invVelocitySum_fderiv e mu xi hinv htgt
   rw [hL]
   exact hderiv
 
@@ -379,7 +379,7 @@ theorem normalComp_inv {ι : Type*} [Fintype ι]
       ((PhaseFlow.freeDiagCLE (E := E)).symm :
         (E × E) →L[Real] (E × E)) e.target eta)
     (hmu : ∀ i, 0 ≤ mu i) (hsum : ∑ i, mu i = 1) (heta : eta < 1)
-    (hzero : invVelSum e mu xi z = 0) :
+    (hzero : invVelocitySum e mu xi z = 0) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -390,7 +390,7 @@ theorem normalComp_inv {ι : Type*} [Fintype ι]
       (trivializationAt E (TangentSpace I) x).baseSet →
     ∃ L : E ≃L[Real] E,
       HasFDerivAt
-        (fun u : E => normalReadCLM (I := I) Y x u (invVelSum e mu xi u))
+        (fun u : E => normalReadCLM (I := I) Y x u (invVelocitySum e mu xi u))
         (L : E →L[Real] E) z := by
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
@@ -399,13 +399,13 @@ theorem normalComp_inv {ι : Type*} [Fintype ι]
     (I := I) (M := Y.M) (n := ∞) (by decide)
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   intro hbase
-  obtain ⟨LS, hLS⟩ := invVelSum_inv e mu xi hinv htgt happrox hmu hsum heta
+  obtain ⟨LS, hLS⟩ := invVelocitySum_inv e mu xi hinv htgt happrox hmu hsum heta
   have hK : HasFDerivAt (normalReadCLM (I := I) Y x)
       (fderiv Real (normalReadCLM (I := I) Y x) z) z :=
     ((normalReadCLM_cd (I := I) Y x hu hbase).differentiableAt
       (by simp)).hasFDerivAt
   have happ : HasFDerivAt
-      (fun u : E => normalReadCLM (I := I) Y x u (invVelSum e mu xi u))
+      (fun u : E => normalReadCLM (I := I) Y x u (invVelocitySum e mu xi u))
       ((normalReadCLM (I := I) Y x z).comp (LS : E →L[Real] E)) z := by
     simpa only [hzero, map_zero, add_zero] using hK.clm_apply hLS
   let KR : E ≃L[Real] E := normalReadCLE (I := I) Y x hu hbase
@@ -1097,7 +1097,7 @@ theorem hess_inv_lower
     ((heData.2.2.2.2.1 (z, xi) hw).contDiffAt
       (e.open_target.mem_nhds hw)).differentiableAt (by simp)
   have hAop : ‖A + ContinuousLinearMap.id Real E‖ ≤ (eta : Real) := by
-    simpa only [A, V] using PhaseFlow.invVel_fderiv_le happrox
+    simpa only [A, V] using PhaseFlow.invVelocity_fderiv_le happrox
       (e.open_target.mem_nhds hw) hInvDiff
   have hAeval :
       ‖(A + ContinuousLinearMap.id Real E) v‖ ≤ (eta : Real) * ‖v‖ :=
@@ -1305,7 +1305,7 @@ theorem hess_inv_sixth
   exact (mul_le_mul_of_nonneg_right hcoef hg0).trans hlower
 
 omit [CompleteSpace E] in
-theorem chartCmEqnC_factor
+theorem chartCenterOfMassEquation_factor
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1337,10 +1337,10 @@ theorem chartCmEqnC_factor
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y) x c
+    chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y) x c
         (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he)
         z (mu, xi) =
-      invVelSum e mu xi z := by
+      invVelocitySum e mu xi z := by
   classical
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
@@ -1362,7 +1362,7 @@ theorem chartCmEqnC_factor
     (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
   let : EMetricSpace Y.M := Y.emetricSpace (I := I)
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-  unfold chartCmEqnC invVelSum
+  unfold chartCenterOfMassEquation invVelocitySum
   apply Finset.sum_congr rfl
   intro i _hi
   congr 1
@@ -1374,7 +1374,7 @@ theorem chartCmEqnC_factor
     hq he hf (htgt i)
 
 omit [CompleteSpace E] in
-theorem chartCmC_zero_iff
+theorem chartCenterOfMassEquation_zero_iff
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1406,15 +1406,15 @@ theorem chartCmC_zero_iff
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    (chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y) x c
+    (chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y) x c
         (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he)
         z (mu, xi) = 0 ↔
-      invVelSum e mu xi z = 0) := by
-  rw [chartCmEqnC_factor (I := I) Y hcomplete hconn x
+      invVelocitySum e mu xi z = 0) := by
+  rw [chartCenterOfMassEquation_factor (I := I) Y hcomplete hconn x
     hq he hf z mu xi htgt]
 
 omit [CompleteSpace E] in
-theorem HasCmSolC.target_mem
+theorem HasCenterOfMassChartSolution.target_mem
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1445,7 +1445,7 @@ theorem HasCmSolC.target_mem
       Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    HasCmSolC (I := I) Y.metric (normal_enorm (I := I) Y) x c
+    HasCenterOfMassChartSolution (I := I) Y.metric (normal_enorm (I := I) Y) x c
         (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he)
         z (mu, xi) →
       ∀ i, (z, xi i) ∈ e.target := by
@@ -1490,7 +1490,7 @@ theorem HasCmSolC.target_mem
   rwa [hzDecode, hxiDecode] at hout
 
 omit [CompleteSpace E] in
-theorem HasCmSolC.invVel_zero
+theorem HasCenterOfMassChartSolution.invVelocity_zero
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1522,10 +1522,10 @@ theorem HasCmSolC.invVel_zero
       Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    HasCmSolC (I := I) Y.metric (normal_enorm (I := I) Y) x c
+    HasCenterOfMassChartSolution (I := I) Y.metric (normal_enorm (I := I) Y) x c
         (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he)
         z (mu, xi) →
-      invVelSum e mu xi z = 0 := by
+      invVelocitySum e mu xi z = 0 := by
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
@@ -1548,12 +1548,12 @@ theorem HasCmSolC.invVel_zero
   let : EMetricSpace Y.M := Y.emetricSpace (I := I)
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
   intro hsol
-  have htgt := HasCmSolC.target_mem (I := I) Y hcomplete hconn x
+  have htgt := HasCenterOfMassChartSolution.target_mem (I := I) Y hcomplete hconn x
     hq he z mu xi hsol
-  exact (IsNormalDiag.chartCmC_zero_iff (I := I) Y hcomplete hconn x
+  exact (IsNormalDiag.chartCenterOfMassEquation_zero_iff (I := I) Y hcomplete hconn x
     hq he hf z mu xi htgt).mp hsol.2.2.2.1
 
-theorem cmC_deriv_inv
+theorem chartCenterOfMassEquation_has_invertible_derivative
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1594,7 +1594,7 @@ theorem cmC_deriv_inv
     ∃ L : E ≃L[Real] E,
       HasFDerivAt
         (fun u : E =>
-          chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y) x c
+          chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y) x c
             (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he)
             u (mu, xi))
         (L : E →L[Real] E) z := by
@@ -1632,23 +1632,23 @@ theorem cmC_deriv_inv
   have hinv : ContDiffOn Real ∞ (e.symm : E × E → E × E) e.target :=
     heData.2.2.2.2.1
   obtain ⟨L, hL⟩ :=
-    invVelSum_inv e mu xi hinv htgt happrox hmu hsum heta
+    invVelocitySum_inv e mu xi hinv htgt happrox hmu hsum heta
   have htgtNhd : ∀ i, ∀ᶠ u in nhds z, (u, xi i) ∈ e.target := by
     intro i
     have hpair : ContinuousAt (fun u : E => (u, xi i)) z := by fun_prop
     exact hpair.preimage_mem_nhds (e.open_target.mem_nhds (htgt i))
   have heq :
       (fun u : E =>
-        chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y) x c
+        chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y) x c
           (IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he)
           u (mu, xi)) =ᶠ[nhds z]
-      invVelSum e mu xi := by
+      invVelocitySum e mu xi := by
     filter_upwards [Filter.eventually_all.mpr htgtNhd] with u hu
-    exact chartCmEqnC_factor (I := I) Y hcomplete hconn x
+    exact chartCenterOfMassEquation_factor (I := I) Y hcomplete hconn x
       hq he hf u mu xi hu
   exact ⟨L, hL.congr_of_eventuallyEq heq⟩
 
-theorem cmC_sol_strict
+theorem chartCenterOfMassEquation_has_strict_solution
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1691,7 +1691,7 @@ theorem cmC_sol_strict
       z ∈ Metric.ball (0 : E) c.radius ∧
         (∀ i, xi i ∈ Metric.ball (0 : E) c.radius) ∧
         (∀ i, (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c) ∧
-        chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y) x c
+        chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y) x c
           B z (mu, xi) = 0) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -1717,17 +1717,17 @@ theorem cmC_sol_strict
     ∃ L : E ≃L[Real] E,
       HasFDerivAt
           (fun u : E =>
-            chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y)
+            chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y)
               x c B u (mu, xi))
           (L : E →L[Real] E) z ∧
         ∃ (f : ((ι → Real) × (ι → E)) → E)
             (Df : ((ι → Real) × (ι → E)) →L[Real] E),
           f (mu, xi) = z ∧ HasStrictFDerivAt f Df (mu, xi) ∧
             (∀ᶠ params in nhds (mu, xi),
-              chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y)
+              chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y)
                 x c B (f params) params = 0) ∧
             (∀ᶠ zp in nhds (z, (mu, xi)),
-              chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y)
+              chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y)
                   x c B zp.1 zp.2 = 0 →
                 zp.1 = f zp.2) := by
   classical
@@ -1753,13 +1753,13 @@ theorem cmC_sol_strict
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
   let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he
   rcases hdata with ⟨hz, hxi, hdom, hzero⟩
-  obtain ⟨L, hL⟩ := cmC_deriv_inv (I := I) Y hcomplete hconn x hq he hf
+  obtain ⟨L, hL⟩ := chartCenterOfMassEquation_has_invertible_derivative (I := I) Y hcomplete hconn x hq he hf
     happrox heta z mu xi htgt hmu hsum
   refine ⟨L, hL, ?_⟩
-  exact chartCmEqnC_implicitFunction_hasStrictFDerivAt (I := I) Y.metric (normal_enorm (I := I) Y)
+  exact chartCenterOfMassEquation_implicitFunction_hasStrictFDerivAt (I := I) Y.metric (normal_enorm (I := I) Y)
     x c B z (mu, xi) hz hxi hdom ⟨L, hL⟩ hzero
 
-theorem cmC_sol_cd
+theorem chartCenterOfMassEquation_has_contDiff_solution
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1803,7 +1803,7 @@ theorem cmC_sol_cd
       z ∈ Metric.ball (0 : E) c.radius ∧
         (∀ i, xi i ∈ Metric.ball (0 : E) c.radius) ∧
         (∀ i, (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c) ∧
-        chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y) x c
+        chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y) x c
           B z (mu, xi) = 0) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -1829,10 +1829,10 @@ theorem cmC_sol_cd
     ∃ f : ((ι → Real) × (ι → E)) → E,
       f (mu, xi) = z ∧ ContDiffAt Real (n : ℕ∞) f (mu, xi) ∧
         (∀ᶠ params in nhds (mu, xi),
-          chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y)
+          chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y)
             x c B (f params) params = 0) ∧
         (∀ᶠ zp in nhds (z, (mu, xi)),
-          chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y)
+          chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y)
               x c B zp.1 zp.2 = 0 →
             zp.1 = f zp.2) := by
   classical
@@ -1858,11 +1858,11 @@ theorem cmC_sol_cd
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
   let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he
   rcases hdata with ⟨hz, hxi, hdom, hzero⟩
-  obtain ⟨L, hL⟩ := cmC_deriv_inv (I := I) Y hcomplete hconn x hq he hf
+  obtain ⟨L, hL⟩ := chartCenterOfMassEquation_has_invertible_derivative (I := I) Y hcomplete hconn x hq he hf
     happrox heta z mu xi htgt hmu hsum
-  exact chartCmEqnC_implicitFunction_contDiffAt (I := I) Y.metric (normal_enorm (I := I) Y)
+  exact chartCenterOfMassEquation_implicitFunction_contDiffAt (I := I) Y.metric (normal_enorm (I := I) Y)
     x c B z (mu, xi) n hn hz hxi hdom ⟨L, hL⟩ hzero
-theorem chartCmEqnB_factor
+theorem normalChartCenterOfMassEquationWithBranch_factor
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1892,9 +1892,9 @@ theorem chartCmEqnB_factor
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    chartCmEqnB (I := I) Y.metric (normal_enorm (I := I) Y) x
+    normalChartCenterOfMassEquationWithBranch (I := I) Y.metric (normal_enorm (I := I) Y) x
         (toBranch (I := I) Y hcomplete hconn x hq he) z (mu, xi) =
-      normalReadCLM (I := I) Y x z (invVelSum e mu xi z) := by
+      normalReadCLM (I := I) Y x z (invVelocitySum e mu xi z) := by
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
@@ -1915,7 +1915,7 @@ theorem chartCmEqnB_factor
     (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
   let : EMetricSpace Y.M := Y.emetricSpace (I := I)
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-  unfold chartCmEqnB invVelSum
+  unfold normalChartCenterOfMassEquationWithBranch invVelocitySum
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro i hi
@@ -1926,7 +1926,7 @@ theorem chartCmEqnB_factor
     normalReadCLM (I := I) Y x z (e.symm (z, xi i)).2
   exact diagonalInverseCoordinates_normalPair_eq (I := I) Y hcomplete hconn x hq he hf (htgt i)
 
-theorem chartCm_zero_iff
+theorem normalChartCenterOfMass_zero_iff
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -1957,9 +1957,9 @@ theorem chartCm_zero_iff
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    (chartCmEqnB (I := I) Y.metric (normal_enorm (I := I) Y) x
+    (normalChartCenterOfMassEquationWithBranch (I := I) Y.metric (normal_enorm (I := I) Y) x
         (toBranch (I := I) Y hcomplete hconn x hq he) z (mu, xi) = 0 ↔
-      invVelSum e mu xi z = 0) := by
+      invVelocitySum e mu xi z = 0) := by
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
@@ -1992,11 +1992,11 @@ theorem chartCm_zero_iff
     rw [TangentBundle.trivializationAt_baseSet]
     exact NormalCoordinates.exp_target_sub_chart (I := I) Y.metric x
       ((expMapDiffeo (I := I) Y.metric x).map_source hzSource)
-  rw [chartCmEqnB_factor (I := I) Y hcomplete hconn x hq he hf z mu xi htgt,
+  rw [normalChartCenterOfMassEquationWithBranch_factor (I := I) Y hcomplete hconn x hq he hf z mu xi htgt,
     ← normalReadCLE_coe (I := I) Y x hz hbase]
   exact (normalReadCLE (I := I) Y x hz hbase).map_eq_zero_iff
 
-theorem cmC_sol_of_vel
+theorem chartCenterOfMassEquation_solution_of_inverse_velocity_sum
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -2016,7 +2016,7 @@ theorem cmC_sol_of_vel
     (htgt : ∀ i, (z, xi i) ∈ e.target)
     (hmu : ∀ i, 0 ≤ mu i) (hsum : ∑ i, mu i = 1)
     (hz : z ∈ normalBall (I := I) Y x)
-    (hvel : invVelSum e mu xi z = 0) :
+    (hvel : invVelocitySum e mu xi z = 0) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -2042,17 +2042,17 @@ theorem cmC_sol_of_vel
     ∃ L : E ≃L[Real] E,
       HasFDerivAt
           (fun u : E =>
-            chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y)
+            chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y)
               x c B u (mu, xi))
           (L : E →L[Real] E) z ∧
         ∃ (f : ((ι → Real) × (ι → E)) → E)
             (Df : ((ι → Real) × (ι → E)) →L[Real] E),
           f (mu, xi) = z ∧ HasStrictFDerivAt f Df (mu, xi) ∧
             (∀ᶠ params in nhds (mu, xi),
-              chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y)
+              chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y)
                 x c B (f params) params = 0) ∧
             (∀ᶠ zp in nhds (z, (mu, xi)),
-              chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y)
+              chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y)
                   x c B zp.1 zp.2 = 0 →
                 zp.1 = f zp.2) := by
   classical
@@ -2098,15 +2098,15 @@ theorem cmC_sol_of_vel
     refine ⟨?_, hzTarget⟩
     simpa only [normalPair, NormalBallChart.pair] using hpair
   have hzeroC :
-      chartCmEqnC (I := I) Y.metric (normal_enorm (I := I) Y)
+      chartCenterOfMassEquation (I := I) Y.metric (normal_enorm (I := I) Y)
         x c B z (mu, xi) = 0 :=
-    (IsNormalDiag.chartCmC_zero_iff (I := I) Y hcomplete hconn x
+    (IsNormalDiag.chartCenterOfMassEquation_zero_iff (I := I) Y hcomplete hconn x
       hq he hf z mu xi htgt).mpr hvel
-  exact IsNormalDiag.cmC_sol_strict (I := I) Y hcomplete hconn x
+  exact IsNormalDiag.chartCenterOfMassEquation_has_strict_solution (I := I) Y hcomplete hconn x
     hq he hf happrox heta z mu xi htgt hmu hsum
       ⟨hzBall, hxiBall, hdom, hzeroC⟩
 
-theorem cm_deriv_inv
+theorem normalChartCenterOfMassEquationWithBranch_has_invertible_derivative
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -2142,11 +2142,11 @@ theorem cm_deriv_inv
       (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
     letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
     letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-    chartCmEqnB (I := I) Y.metric (normal_enorm (I := I) Y) x
+    normalChartCenterOfMassEquationWithBranch (I := I) Y.metric (normal_enorm (I := I) Y) x
         (toBranch (I := I) Y hcomplete hconn x hq he) z (mu, xi) = 0 →
       ∃ L : E ≃L[Real] E,
       HasFDerivAt
-        (fun u : E => chartCmEqnB (I := I) Y.metric
+        (fun u : E => normalChartCenterOfMassEquationWithBranch (I := I) Y.metric
           (normal_enorm (I := I) Y) x
           (toBranch (I := I) Y hcomplete hconn x hq he) u (mu, xi))
         (L : E →L[Real] E) z := by
@@ -2215,17 +2215,17 @@ theorem cm_deriv_inv
     rw [TangentBundle.trivializationAt_baseSet]
     exact NormalCoordinates.exp_target_sub_chart (I := I) Y.metric x
       ((expMapDiffeo (I := I) Y.metric x).map_source hzExpSource)
-  have hfactor := chartCmEqnB_factor (I := I) Y hcomplete hconn x
+  have hfactor := normalChartCenterOfMassEquationWithBranch_factor (I := I) Y hcomplete hconn x
     hq he hf z mu xi htgt
-  have hreadZero : normalReadCLM (I := I) Y x z (invVelSum e mu xi z) = 0 := by
+  have hreadZero : normalReadCLM (I := I) Y x z (invVelocitySum e mu xi z) = 0 := by
     rw [← hfactor]
     exact hzero
-  have hvelZero : invVelSum e mu xi z = 0 := by
+  have hvelZero : invVelocitySum e mu xi z = 0 := by
     apply (normalReadCLE (I := I) Y x hzNormal hbase).injective
     have hcoe := normalReadCLE_coe (I := I) Y x hzNormal hbase
-    rw [show normalReadCLE (I := I) Y x hzNormal hbase (invVelSum e mu xi z) =
-        normalReadCLM (I := I) Y x z (invVelSum e mu xi z) from
-      congrArg (fun A : E →L[Real] E => A (invVelSum e mu xi z)) hcoe,
+    rw [show normalReadCLE (I := I) Y x hzNormal hbase (invVelocitySum e mu xi z) =
+        normalReadCLM (I := I) Y x z (invVelocitySum e mu xi z) from
+      congrArg (fun A : E →L[Real] E => A (invVelocitySum e mu xi z)) hcoe,
       show normalReadCLE (I := I) Y x hzNormal hbase 0 =
         normalReadCLM (I := I) Y x z 0 from
       congrArg (fun A : E →L[Real] E => A 0) hcoe,
@@ -2237,16 +2237,16 @@ theorem cm_deriv_inv
     have hpair : ContinuousAt (fun u : E => (u, xi i)) z := by fun_prop
     exact hpair.preimage_mem_nhds (e.open_target.mem_nhds (htgt i))
   have heq :
-      (fun u : E => chartCmEqnB (I := I) Y.metric
+      (fun u : E => normalChartCenterOfMassEquationWithBranch (I := I) Y.metric
         (normal_enorm (I := I) Y) x
         (toBranch (I := I) Y hcomplete hconn x hq he) u (mu, xi)) =ᶠ[nhds z]
-      (fun u : E => normalReadCLM (I := I) Y x u (invVelSum e mu xi u)) := by
+      (fun u : E => normalReadCLM (I := I) Y x u (invVelocitySum e mu xi u)) := by
     filter_upwards [Filter.eventually_all.mpr htgtNhd] with u hu
-    exact chartCmEqnB_factor (I := I) Y hcomplete hconn x
+    exact normalChartCenterOfMassEquationWithBranch_factor (I := I) Y hcomplete hconn x
       hq he hf u mu xi hu
   exact ⟨L, hL.congr_of_eventuallyEq heq⟩
 
-theorem cm_sol_strict
+theorem normalChartCenterOfMassEquationWithBranch_has_strict_solution
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -2283,7 +2283,7 @@ theorem cm_sol_strict
         (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
       letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
       letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-      chartCmEqnB (I := I) Y.metric (normal_enorm (I := I) Y) x
+      normalChartCenterOfMassEquationWithBranch (I := I) Y.metric (normal_enorm (I := I) Y) x
         (toBranch (I := I) Y hcomplete hconn x hq he) z (mu, xi) = 0) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -2308,17 +2308,17 @@ theorem cm_sol_strict
     let B := toBranch (I := I) Y hcomplete hconn x hq he
     ∃ L : E ≃L[Real] E,
       HasFDerivAt
-          (fun u : E => chartCmEqnB (I := I) Y.metric
+          (fun u : E => normalChartCenterOfMassEquationWithBranch (I := I) Y.metric
             (normal_enorm (I := I) Y) x B u (mu, xi))
           (L : E →L[Real] E) z ∧
         ∃ (f : ((ι → Real) × (ι → E)) → E)
             (Df : ((ι → Real) × (ι → E)) →L[Real] E),
           f (mu, xi) = z ∧ HasStrictFDerivAt f Df (mu, xi) ∧
             (∀ᶠ params in nhds (mu, xi),
-              chartCmEqnB (I := I) Y.metric (normal_enorm (I := I) Y)
+              normalChartCenterOfMassEquationWithBranch (I := I) Y.metric (normal_enorm (I := I) Y)
                 x B (f params) params = 0) ∧
             (∀ᶠ zp in nhds (z, (mu, xi)),
-              chartCmEqnB (I := I) Y.metric (normal_enorm (I := I) Y)
+              normalChartCenterOfMassEquationWithBranch (I := I) Y.metric (normal_enorm (I := I) Y)
                   x B zp.1 zp.2 = 0 →
                 zp.1 = f zp.2) := by
   classical
@@ -2343,7 +2343,7 @@ theorem cm_sol_strict
   let : EMetricSpace Y.M := Y.emetricSpace (I := I)
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
   let B := toBranch (I := I) Y hcomplete hconn x hq he
-  obtain ⟨L, hL⟩ := cm_deriv_inv (I := I) Y hcomplete hconn x hq he hf
+  obtain ⟨L, hL⟩ := normalChartCenterOfMassEquationWithBranch_has_invertible_derivative (I := I) Y hcomplete hconn x hq he hf
     happrox heta z mu xi htgt hmu hsum hzero
   refine ⟨L, hL, ?_⟩
   have heData := he
@@ -2425,10 +2425,10 @@ theorem cm_sol_strict
     have hdata := B.diagonalInverseCoordinates_properties
     exact ((hdata.2.2.1 _ hmem).contMDiffAt (hdata.1.mem_nhds hmem)).of_le
       (by simp)
-  exact chartCmEqnB_implicitFunction_hasStrictFDerivAt (I := I) Y.metric (normal_enorm (I := I) Y) x B
+  exact normalChartCenterOfMassEquationWithBranch_implicitFunction_hasStrictFDerivAt (I := I) Y.metric (normal_enorm (I := I) Y) x B
     z (mu, xi) hchz hchxi hread ⟨L, hL⟩ hzero
 
-theorem cm_sol_cd
+theorem normalChartCenterOfMassEquationWithBranch_has_contDiff_solution
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -2466,7 +2466,7 @@ theorem cm_sol_cd
         (fun y : Y.M => TangentSpace I y) := Y.riemBundle_cont (I := I)
       letI : EMetricSpace Y.M := Y.emetricSpace (I := I)
       letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
-      chartCmEqnB (I := I) Y.metric (normal_enorm (I := I) Y) x
+      normalChartCenterOfMassEquationWithBranch (I := I) Y.metric (normal_enorm (I := I) Y) x
         (toBranch (I := I) Y hcomplete hconn x hq he) z (mu, xi) = 0) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -2492,10 +2492,10 @@ theorem cm_sol_cd
     ∃ f : ((ι → Real) × (ι → E)) → E,
       f (mu, xi) = z ∧ ContDiffAt Real (n : ℕ∞) f (mu, xi) ∧
         (∀ᶠ params in nhds (mu, xi),
-          chartCmEqnB (I := I) Y.metric (normal_enorm (I := I) Y)
+          normalChartCenterOfMassEquationWithBranch (I := I) Y.metric (normal_enorm (I := I) Y)
             x B (f params) params = 0) ∧
         (∀ᶠ zp in nhds (z, (mu, xi)),
-          chartCmEqnB (I := I) Y.metric (normal_enorm (I := I) Y)
+          normalChartCenterOfMassEquationWithBranch (I := I) Y.metric (normal_enorm (I := I) Y)
               x B zp.1 zp.2 = 0 →
             zp.1 = f zp.2) := by
   classical
@@ -2520,7 +2520,7 @@ theorem cm_sol_cd
   let : EMetricSpace Y.M := Y.emetricSpace (I := I)
   let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
   let B := toBranch (I := I) Y hcomplete hconn x hq he
-  obtain ⟨L, hL, _hstrict⟩ := cm_sol_strict (I := I) Y hcomplete hconn x
+  obtain ⟨L, hL, _hstrict⟩ := normalChartCenterOfMassEquationWithBranch_has_strict_solution (I := I) Y hcomplete hconn x
     hq he hf happrox heta z mu xi htgt hmu hsum hzero
   have heData := he
   change e.source = Metric.ball (0 : E × E) q ∧
@@ -2600,7 +2600,7 @@ theorem cm_sol_cd
     have hdata := B.diagonalInverseCoordinates_properties
     exact ((hdata.2.2.1 _ hmem).contMDiffAt (hdata.1.mem_nhds hmem)).of_le
       (WithTop.coe_le_coe.mpr le_top)
-  exact chartCmEqnB_implicitFunction_contDiffAt (I := I) Y.metric (normal_enorm (I := I) Y) x B
+  exact normalChartCenterOfMassEquationWithBranch_implicitFunction_contDiffAt (I := I) Y.metric (normal_enorm (I := I) Y) x B
     z (mu, xi) n hn hchz hchxi hread ⟨L, hL⟩ hzero
 
 end IsNormalDiag
@@ -2723,7 +2723,7 @@ theorem hess_pos
     simpa only [z, xi] using
       IsNormalDiag.target_of_chart_dom (I := I) (X.obj k) hcomplete hconn x
         hq he hf hyControl.1 hptControl.1 hdom
-  have hzSrc : z ∈
+  have hzSource : z ∈
       (expMapDiffeo (I := I) (X.obj k).metric x).source := by
     change z ∈ (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).target
@@ -2739,7 +2739,7 @@ theorem hess_pos
       (expMapDiffeo (I := I) (X.obj k).metric x) z :=
     PartialDiffeomorph.isLocalDiffeomorphAt
       (I := 𝓘(Real, E)) (J := I) (n := 1)
-      (expMapDiffeo (I := I) (X.obj k).metric x) hzSrc
+      (expMapDiffeo (I := I) (X.obj k).metric x) hzSource
   let dExpEquiv : E ≃L[Real] TangentSpace I
       (expMapDiffeo (I := I) (X.obj k).metric x z) :=
     hloc.mfderivToContinuousLinearEquiv (by norm_num)
@@ -2817,5 +2817,5 @@ theorem hess_pos
 
 end HasControlledNormalBranch
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

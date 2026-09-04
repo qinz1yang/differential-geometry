@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 open scoped Manifold ContDiff Bundle
@@ -182,10 +182,10 @@ theorem exists_transition_limit_subsequence
       StrictMono phi ∧
       ContDiffOn Real (⊤ : ℕ∞) Jinf U ∧
       ContDiffOn Real (⊤ : ℕ∞) Jbarinf V ∧
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => d.chartTransition (phi k)
           (x (phi k)) (y (phi k))) Jinf ∧
-      MapCInfConvOnCompacts V
+      MapCInfConvergenceOnCompacts V
         (fun k => d.chartTransition (phi k)
           (y (phi k)) (x (phi k))) Jbarinf ∧
       (∀ z ∈ U, Jinf z ∈ V → Jbarinf (Jinf z) = z) ∧
@@ -248,5 +248,5 @@ theorem exists_transition_limit_subsequence
         (d.chart k (x k)) hovl' hz
 
 end BoundedGeometryNormalChartData
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

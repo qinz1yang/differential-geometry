@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -26,7 +26,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 omit [CompleteSpace E] in
-theorem liveCenters_core
+theorem eventually_seqCenterD_distance_lt_add
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) (s : Real)
@@ -88,7 +88,7 @@ theorem BoundedGeometryNormalChartData.mapsTo_tail
   classical
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hraw := hdata
-  dsimp only [HasSuppConvDataOn] at hraw
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hraw
   rcases hraw with
     ⟨_hU, hU8, _hC0, _hC1, hC01, hC1U, hconvex, hzero,
       hbuffer, _hcore, hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
@@ -121,7 +121,7 @@ theorem BoundedGeometryNormalChartData.mapsTo_tail
     hjets R0 hR0s 0 (epsA alpha) (hepsA alpha)
   choose Njet hNjet using hjetA
   let Njets := Finset.univ.sup Njet
-  obtain ⟨Nrad, hrad⟩ := liveCenters_core inp P L s phi hphi
+  obtain ⟨Nrad, hrad⟩ := eventually_seqCenterD_distance_lt_add inp P L s phi hphi
     (gap / 4) (div_pos hgap (by norm_num))
   refine ⟨max Nrad Njets, ?_⟩
   intro k l hk hl
@@ -322,7 +322,7 @@ theorem BoundedGeometryNormalChartData.return_tail
     V U C0 C1 aInf Jinf Jbarinf gInf hstage R0 R1 hroom hR1s
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hraw := hdata
-  dsimp only [HasSuppConvDataOn] at hraw
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hraw
   rcases hraw with
     ⟨_hU, _hU8, _hC0, _hC1, hC01, hC1U, hconvex, _hzero,
       hbuffer, _hcore, hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
@@ -498,5 +498,5 @@ theorem BoundedGeometryNormalChartData.return_tail
       mul_le_mul_of_nonneg_left hcoordEps (by norm_num)
     _ < eps := by linarith
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

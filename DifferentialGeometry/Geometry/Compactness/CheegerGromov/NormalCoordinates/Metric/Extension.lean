@@ -15,7 +15,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Set TopologicalSpace
 open scoped Manifold ContDiff Topology
@@ -351,7 +351,7 @@ theorem normalCut_range
   exact ⟨(normalCut (I := I) Y x).nonneg, (normalCut (I := I) Y x).le_one⟩
 
 omit [NeZero (Module.finrank Real E)] in
-theorem normalCut_supp
+theorem normalCut_support
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -496,7 +496,7 @@ noncomputable def normalTotal
     (normalBall (I := I) Y x) (normalMetric (I := I) Y x)
     (normalCut (I := I) Y x : E → Real)
     (normalCut_smooth (I := I) Y x) (normalCut_range (I := I) Y x)
-    (normalCut_supp (I := I) Y x)
+    (normalCut_support (I := I) Y x)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalTotal_inner
@@ -550,7 +550,7 @@ theorem normalTotal_inner
           (modelFlatMetric (I := I) Y x) (normalBall (I := I) Y x)
           (normalMetric (I := I) Y x) (normalCut (I := I) Y x : E → Real)
           (normalCut_smooth (I := I) Y x) (normalCut_range (I := I) Y x)
-          (normalCut_supp (I := I) Y x)
+          (normalCut_support (I := I) Y x)
           (Metric.ball (0 : E) (expMapC2Radius (I := I) Y.metric x / 4))
           (fun q hq ↦ normalCut_one (I := I) Y x hq) hsub z hz
           ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm v)
@@ -677,5 +677,5 @@ theorem normal_cov_eq_fderiv
     (normalTotal (I := I) Y x) (normalCoordMetric (I := I) Y x)
     hB hdiff hco V _hV v
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

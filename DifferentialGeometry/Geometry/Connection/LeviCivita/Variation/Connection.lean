@@ -1113,7 +1113,7 @@ theorem gammaSub_l2_le
   have habs := (sq_le_sq.mp hsquares)
   simpa [abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg hrhs_nonneg] using habs
 
-theorem gammaEvol_l2Sq_le
+theorem gammaEvolution_l2Sq_le
     (A D : Idx -> Idx -> Idx -> Real)
     (hcombo :
       forall a b e : Idx,
@@ -1166,14 +1166,14 @@ theorem gammaEvol_l2Sq_le
           rw [componentL2Sq3_swap12, componentL2Sq3_cyc]
     _ = 9 * componentL2Sq3 A := by ring
 
-theorem gammaEvol_l2_le
+theorem gammaEvolution_l2_le
     (A D : Idx -> Idx -> Idx -> Real)
     (hcombo :
       forall a b e : Idx,
         D a b e = -A a b e - A b a e + A e a b) :
     Real.sqrt (componentL2Sq3 D) <=
       3 * Real.sqrt (componentL2Sq3 A) := by
-  have hsq := gammaEvol_l2Sq_le (Idx := Idx) A D hcombo
+  have hsq := gammaEvolution_l2Sq_le (Idx := Idx) A D hcombo
   have hA_nonneg : 0 <= componentL2Sq3 A := componentL2Sq3_nonneg (Idx := Idx) A
   have hD_nonneg : 0 <= componentL2Sq3 D := componentL2Sq3_nonneg (Idx := Idx) D
   have hrhs_nonneg : 0 <= 3 * Real.sqrt (componentL2Sq3 A) :=

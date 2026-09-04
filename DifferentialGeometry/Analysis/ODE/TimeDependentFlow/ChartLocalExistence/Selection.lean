@@ -62,7 +62,7 @@ theorem chart_local_picard_flow_selection
   let Φ : ℝ → M → M := fun s x =>
     (chartAt H (αRep x)).symm
       (I.symm ((hper (αRep x)).flow (I ((chartAt H (αRep x)) x)) s))
-  have hΦ_init : ∀ x : M, Φ 0 x = x := by
+  have hΦ_initial : ∀ x : M, Φ 0 x = x := by
     intro x
     obtain ⟨hinit, _⟩ :=
       (hper (αRep x)).flow_spec (I ((chartAt H (αRep x)) x)) (hxChart_closedBall x)
@@ -73,7 +73,7 @@ theorem chart_local_picard_flow_selection
       I.left_inv ((chartAt H (αRep x)) x)
     rw [hI_left]
     exact (chartAt H (αRep x)).left_inv (hxChart_source x)
-  refine ⟨T, hT_pos, S, hCoverEq, Φ, hΦ_init, ?_⟩
+  refine ⟨T, hT_pos, S, hCoverEq, Φ, hΦ_initial, ?_⟩
   intro x
   refine ⟨αRep x, hαRep_S x, hαRep_U x, hTle (αRep x) (hαRep_S x), ?_⟩
   intro s

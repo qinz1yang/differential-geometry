@@ -94,7 +94,7 @@ theorem timeOp_weak_lim
     sub_add_cancel, zero_add] using
     herr_inner.add hfixed
 
-theorem timeOp_weak_unif
+theorem timeOp_weak_uniform
     (A : ℕ → ℝ → X →L[ℝ] Y) (A_lim : ℝ → X →L[ℝ] Y)
     (hA : ∀ n, AEStronglyMeasurable (A n) (timeMeasure T))
     (hA_lim : AEStronglyMeasurable A_lim (timeMeasure T))

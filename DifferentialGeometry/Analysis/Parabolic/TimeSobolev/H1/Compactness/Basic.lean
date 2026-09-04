@@ -139,9 +139,9 @@ theorem compact_subseq (u : ℕ → timeH1 Y T) {C : ℝ} (hu : ∀ n, ‖u n‖
       _ ≤ (1 + Real.sqrt T) * ‖u n‖ := (u n).norm_toFun_le_norm t.property
       _ ≤ (1 + Real.sqrt T) * C := by
         exact mul_le_mul_of_nonneg_left (hu n) (by positivity)
-  rcases DifferentialGeometry.HCGCompactness.arzelaAscoli_subseq_vec f hequi hbdd with
+  rcases DifferentialGeometry.CheegerGromovCompactness.arzelaAscoli_subseq_vec f hequi hbdd with
     ⟨phi₁, g, hphi₁, hg⟩
-  have hgunif : TendstoUniformly (fun n => f (phi₁ n)) g atTop :=
+  have hguniform : TendstoUniformly (fun n => f (phi₁ n)) g atTop :=
     tendstoUniformlyOn_univ.mp (hg Set.univ isCompact_univ)
   let w : ℕ → WeakDual ℝ (timeH1 Y T) := fun n =>
     StrongDual.toWeakDual (innerSL ℝ (u (phi₁ n)))
@@ -176,16 +176,16 @@ theorem compact_subseq (u : ℕ → timeH1 Y T) {C : ℝ} (hu : ∀ n, ‖u n‖
     simpa only [Function.comp_apply, Function.comp_def, w, StrongDual.toWeakDual_apply,
       WeakDual.toStrongDual_apply, innerSL_apply_apply, uLim,
       InnerProductSpace.toDual_symm_apply] using heval
-  have hgunif' : TendstoUniformly (fun n => f (phi₁ (phi₂ n))) g atTop := by
+  have hguniform' : TendstoUniformly (fun n => f (phi₁ (phi₂ n))) g atTop := by
     intro V hV
-    have h := hphi₂.tendsto_atTop.eventually (hgunif V hV)
+    have h := hphi₂.tendsto_atTop.eventually (hguniform V hV)
     change ∀ᶠ n in atTop, ∀ x, (g x, f (phi₁ (phi₂ n)) x) ∈ V at h
     exact h
   have hgeq : ∀ t : Icc (0 : ℝ) T, g t = uLim.toFun t := by
     intro t
     apply ext_inner_right ℝ
     intro y
-    have hgpoint := hgunif'.tendsto_at t
+    have hgpoint := hguniform'.tendsto_at t
     have hginner : Tendsto
         (fun n => inner ℝ ((u (phi₁ (phi₂ n))).toFun t) y) atTop
         (nhds (inner ℝ (g t) y)) := by
@@ -202,7 +202,7 @@ theorem compact_subseq (u : ℕ → timeH1 Y T) {C : ℝ} (hu : ∀ n, ‖u n‖
       funext fun t => (hgeq t).symm
     rw [hgfun]
     intro V hV
-    have h := hgunif' V hV
+    have h := hguniform' V hV
     change ∀ᶠ n in atTop, ∀ t : Icc (0 : ℝ) T,
       (g t, (u (phi₁ (phi₂ n))).toFun t) ∈ V
     change ∀ᶠ n in atTop, ∀ t : Icc (0 : ℝ) T,
@@ -231,11 +231,11 @@ private theorem compact_subseq_fin_aux {m : ℕ} (T : Fin m → ℝ)
       let u₀ : (i : Fin m) → ℕ → timeH1 Y (T₀ i) := fun i => u i.castSucc
       let C₀ : Fin m → ℝ := fun i => C i.castSucc
       have hu₀ : ∀ i n, ‖u₀ i n‖ ≤ C₀ i := fun i n => hu i.castSucc n
-      obtain ⟨phi₀, uLim₀, hphi₀, hweak₀, hunif₀⟩ := ih T₀ u₀ C₀ hu₀
+      obtain ⟨phi₀, uLim₀, hphi₀, hweak₀, huniform₀⟩ := ih T₀ u₀ C₀ hu₀
       let iLast : Fin (m + 1) := Fin.last m
       let uLast : ℕ → timeH1 Y (T iLast) := fun n => u iLast (phi₀ n)
       have huLast : ∀ n, ‖uLast n‖ ≤ C iLast := fun n => hu iLast (phi₀ n)
-      obtain ⟨psi, uLimLast, hpsi, hweakLast, hunifLast⟩ :=
+      obtain ⟨psi, uLimLast, hpsi, hweakLast, huniformLast⟩ :=
         compact_subseq uLast huLast
       let phi : ℕ → ℕ := phi₀ ∘ psi
       let uLim : (i : Fin (m + 1)) → timeH1 Y (T i) :=
@@ -253,9 +253,9 @@ private theorem compact_subseq_fin_aux {m : ℕ} (T : Fin m → ℝ)
       · intro i
         refine Fin.lastCases ?_ (fun j => ?_) i
         · simpa only [phi, uLast, iLast, Function.comp_apply, uLim,
-            Fin.lastCases_last] using hunifLast
+            Fin.lastCases_last] using huniformLast
         · intro V hV
-          have hVevent := hpsi.tendsto_atTop.eventually (hunif₀ j V hV)
+          have hVevent := hpsi.tendsto_atTop.eventually (huniform₀ j V hV)
           simpa only [phi, u₀, T₀, Function.comp_apply, uLim,
             Fin.lastCases_castSucc] using hVevent
 
@@ -270,11 +270,11 @@ theorem compact_subseq_fin {m : ℕ} (T : Fin m → ℝ)
         (∀ i, TendstoUniformly
           (fun n (t : Icc (0 : ℝ) (T i)) => (u i (phi n)).toFun t)
           (fun t => (uLim i).toFun t) atTop) := by
-  obtain ⟨phi, uLim, hphi, hweak, hunif⟩ := compact_subseq_fin_aux T u C hu
-  refine ⟨phi, uLim, hphi, ?_, hunif⟩
+  obtain ⟨phi, uLim, hphi, hweak, huniform⟩ := compact_subseq_fin_aux T u C hu
+  refine ⟨phi, uLim, hphi, ?_, huniform⟩
   intro i z
   have hz := hweak i (timeH1.mk 0 z)
-  simpa only [timeH1.inner_def, init_mk, deriv_mk, inner_zero_right, zero_add] using hz
+  simpa only [timeH1.inner_def, initial_mk, deriv_mk, inner_zero_right, zero_add] using hz
 
 end Hilbert
 

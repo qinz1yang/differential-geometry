@@ -10,7 +10,7 @@ open scoped ContDiff Manifold Topology
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
-namespace CGT
+namespace CheegerGromovTaylor
 
 open Exponential Geodesic NormalCoordinates
 open DifferentialGeometry.Integral.Connection
@@ -30,12 +30,12 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
 noncomputable local instance {R : Real} :
-    SigmaCompactSpace (intrPullBall (E := E) R) :=
+    SigmaCompactSpace (intrinsicPullBall (E := E) R) :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen
-      𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
+      𝓘(Real, E) (intrinsicPullBall (E := E) R).isOpen)
 
-theorem intrCore_minimizingVec_regular_unique
+theorem intrinsicCore_minimizingVec_regular_unique
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -53,10 +53,10 @@ theorem intrCore_minimizingVec_regular_unique
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    {pt q : intrPullBall (E := E) R}
-    (hpt : pt ∈ intrCore (E := E) R a)
-    (hq : q ∈ intrCore (E := E) R a) :
-    let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+    {pt q : intrinsicPullBall (E := E) R}
+    (hpt : pt ∈ intrinsicCore (E := E) R a)
+    (hq : q ∈ intrinsicCore (E := E) R a) :
+    let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
     letI : RiemannianBundle
         (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
       ⟨gExt.toRiemannianMetric⟩
@@ -68,7 +68,7 @@ theorem intrCore_minimizingVec_regular_unique
     letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
     letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
     letI : CompleteSpace E :=
-      (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+      (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
     let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
       fun z v =>
@@ -84,7 +84,7 @@ theorem intrCore_minimizingVec_regular_unique
           (riemannianEDistOf
             (I := 𝓘(Real, E)) gExt (pt : E) (q : E)).toReal →
         v = u := by
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -102,7 +102,7 @@ theorem intrCore_minimizingVec_regular_unique
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
     fun z v =>
@@ -113,7 +113,7 @@ theorem intrCore_minimizingVec_regular_unique
   dsimp only
   constructor
   · simpa only [gExt, hExt, u] using
-      intrCore_min_regular
+      intrinsicCore_min_regular
         (I := I) g hEnorm p hR h4aR hloc hK hsmall hRm hpt hq
   · intro v hvEnd hvMin
     obtain ⟨L, h2aL, hbudget, hsmallL⟩ :=
@@ -124,7 +124,7 @@ theorem intrCore_minimizingVec_regular_unique
         riemannianEDistOf
             (I := 𝓘(Real, E)) gExt (pt : E) (q : E) ≤
           ENNReal.ofReal (2 * a) :=
-      intrExt_edist_le (I := I) g hEnorm p hR hloc hpt hq haInner
+      intrinsicExt_edist_le (I := I) g hEnorm p hR hloc hpt hq haInner
     have hdistReal :
         (riemannianEDistOf
           (I := 𝓘(Real, E)) gExt (pt : E) (q : E)).toReal ≤
@@ -144,7 +144,7 @@ theorem intrCore_minimizingVec_regular_unique
       rw [hvMin]
       exact hdistReal.trans_lt h2aL
     have huEnd :
-        intrExtLaunch (I := I) g hEnorm p hR hloc
+        intrinsicExtLaunch (I := I) g hEnorm p hR hloc
             (pt : E) u 1 = (q : E) := by
       with_unfolding_all
         exact (expMapIntrinsic_def
@@ -152,17 +152,17 @@ theorem intrCore_minimizingVec_regular_unique
             (minimizingVec_exp
               (I := 𝓘(Real, E)) gExt hExt (pt : E) (q : E))
     have hvEnd' :
-        intrExtLaunch (I := I) g hEnorm p hR hloc
+        intrinsicExtLaunch (I := I) g hEnorm p hR hloc
             (pt : E) v 1 = (q : E) := by
       with_unfolding_all
         exact (expMapIntrinsic_def
           (I := 𝓘(Real, E)) gExt hExt (pt : E) v).symm.trans hvEnd
-    exact (intrCore_short_inj
+    exact (intrinsicCore_short_inj
       (I := I) g hEnorm p hR hloc hK hRm hsmallL h2aL hbudget
         (x := (pt : E)) (y := (q : E)) (u := u) (v := v)
         hpt hq huL hvL huEnd hvEnd').symm
 
-private def intrCoreDistGermProp
+private def intrinsicCoreDistGermProp
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -171,8 +171,8 @@ private def intrCoreDistGermProp
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
-    {pt q : intrPullBall (E := E) R} : Prop :=
-    let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+    {pt q : intrinsicPullBall (E := E) R} : Prop :=
+    let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
     letI : RiemannianBundle
         (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
       ⟨gExt.toRiemannianMetric⟩
@@ -184,7 +184,7 @@ private def intrCoreDistGermProp
     letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
     letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
     letI : CompleteSpace E :=
-      (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+      (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
     let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
       fun z v =>
@@ -200,7 +200,7 @@ private def intrCoreDistGermProp
             (riemannianEDistOf
               (I := 𝓘(Real, E)) gExt (pt : E) z).toReal ^ 2)
 
-theorem intrCore_dist_germ
+theorem intrinsicCore_dist_germ
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -218,11 +218,11 @@ theorem intrCore_dist_germ
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    {pt q : intrPullBall (E := E) R}
-    (hpt : pt ∈ intrCore (E := E) R a)
-    (hq : q ∈ intrCore (E := E) R a) :
-    intrCoreDistGermProp (I := I) g hEnorm p hR hloc (pt := pt) (q := q) := by
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+    {pt q : intrinsicPullBall (E := E) R}
+    (hpt : pt ∈ intrinsicCore (E := E) R a)
+    (hq : q ∈ intrinsicCore (E := E) R a) :
+    intrinsicCoreDistGermProp (I := I) g hEnorm p hR hloc (pt := pt) (q := q) := by
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -240,7 +240,7 @@ theorem intrCore_dist_germ
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
     fun z v =>
@@ -248,9 +248,9 @@ theorem intrCore_dist_germ
         (I := 𝓘(Real, E)) gExt z v
   let u :=
     minimizingVec (I := 𝓘(Real, E)) gExt hExt (pt : E) (q : E)
-  dsimp only [intrCoreDistGermProp]
+  dsimp only [intrinsicCoreDistGermProp]
   have hru :=
-    intrCore_minimizingVec_regular_unique
+    intrinsicCore_minimizingVec_regular_unique
       (I := I) g hEnorm p hR h4aR hloc hK hsmall hRm hpt hq
   change
     (¬ IsConjVec
@@ -276,7 +276,7 @@ theorem intrCore_dist_germ
     apply hru.2 v hv
     simpa only [riemannianEDistOf] using hlen
   have hmem :=
-    intrExt_minVec_mem
+    intrinsicExt_minVec_mem
       (I := I) g hEnorm p hR hloc
         (pt := (pt : E)) (q := (q : E)) (u := u) B huB huniq
   refine ⟨B, huB, ?_⟩
@@ -285,7 +285,7 @@ theorem intrCore_dist_germ
       (I := 𝓘(Real, E)) gExt hExt B hmem
   simpa only [riemannianEDistOf] using hgerm
 
-end CGT
+end CheegerGromovTaylor
 end Riemannian
 end Geometry
 end DifferentialGeometry

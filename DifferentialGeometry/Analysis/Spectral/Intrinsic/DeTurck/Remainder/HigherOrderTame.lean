@@ -733,11 +733,11 @@ theorem deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
       3 * (D * Ssum) ^ 2 := by
     rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ,
       Finset.sum_range_zero, zero_add,
-      riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 0) x
+      riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 (2 + 0) x
         ((iteratedCovGrad (I := I) g₀ 0 2 0 W).toSection x),
-      riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 1) x
+      riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 (2 + 1) x
         ((iteratedCovGrad (I := I) g₀ 0 2 1 W).toSection x),
-      riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 2) x
+      riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 (2 + 2) x
         ((iteratedCovGrad (I := I) g₀ 0 2 2 W).toSection x)]
     have hDS_nn : 0 ≤ D * Ssum := mul_nonneg hD_nn hSsum_nn
     nlinarith only [hpt0, hpt1, hpt2,

@@ -244,7 +244,7 @@ private theorem movingCov_cont
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn
+theorem intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiffOn
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a b : Real)
     (alpha : Real → M) (Y W : ∀ s, TangentSpace I (alpha s))
@@ -258,7 +258,7 @@ theorem intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (alpha s) (W s) : TangentBundle I M)) Ω)
     (hreg : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.regular) :
-    IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
+    IntervalIntegrable (lRegularizedIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b := by
   classical
   have halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 2 alpha Ω := by
@@ -362,7 +362,7 @@ theorem intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn
   have hHess : Continuous (fun z : P ↦
       hessianSec (I := I) (S.base.connection (tau z))
         (metricCov_smooth (I := I) (S.base.metric (tau z)))
-        (S.scalar (tau z)) (scalarSmoothOfSol (I := I) S (tau z)) (base z)
+        (S.scalar (tau z)) (scalarSmoothOfSolution (I := I) S (tau z)) (base z)
         (vec2 (Y z) (W z))) := by
     apply (scalarHess_cont (I := I) S hS).eval_continuous
       (P := P) htau (fun z ↦ hreg z (by simpa only [K] using z.2)) hbase
@@ -418,16 +418,16 @@ theorem intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn
   have hsq : Continuous (fun z : P ↦ (z : Real) ^ 2) := hz.pow 2
   have hall := ((hhalf.mul (hInner.sub hRm)).add (hsq.mul hHess)).add
     (hz.mul ((hRic1.sub hRic2).sub hRic3))
-  have hcont : ContinuousOn (lRegIndexIntegrand S T alpha Y W) K := by
+  have hcont : ContinuousOn (lRegularizedIndexIntegrand S T alpha Y W) K := by
     rw [continuousOn_iff_continuous_domRestrict]
     refine hall.congr (fun z ↦ ?_)
-    change _ = lRegIndexIntegrand S T alpha Y W (z : Real)
+    change _ = lRegularizedIndexIntegrand S T alpha Y W (z : Real)
     rfl
   exact hcont.intervalIntegrable
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem intervalIntegrable_lRegIndexIntegrand_of_contMDiff
+theorem intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiff
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T a b : Real)
     (alpha : Real → M) (Y W : ∀ s, TangentSpace I (alpha s))
@@ -440,9 +440,9 @@ theorem intervalIntegrable_lRegIndexIntegrand_of_contMDiff
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (alpha s) (W s) : TangentBundle I M)))
     (hreg : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.regular) :
-    IntervalIntegrable (lRegIndexIntegrand S T alpha Y W)
+    IntervalIntegrable (lRegularizedIndexIntegrand S T alpha Y W)
       MeasureTheory.volume a b :=
-  intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn S hS T a b alpha Y W isOpen_univ
+  intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiffOn S hS T a b alpha Y W isOpen_univ
     (Set.subset_univ (uIcc a b)) hY.contMDiffOn hW.contMDiffOn hreg
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

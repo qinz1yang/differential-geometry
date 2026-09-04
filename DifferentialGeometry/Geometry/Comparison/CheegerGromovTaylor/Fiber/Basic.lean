@@ -10,7 +10,7 @@ open scoped ContDiff ENNReal Manifold Topology
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
-namespace CGT
+namespace CheegerGromovTaylor
 
 open Exponential NormalCoordinates
 
@@ -28,7 +28,7 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-def intrFiber
+def intrinsicFiber
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -82,7 +82,7 @@ private noncomputable def radialLoopLift
     (p : M) (u : E)
     (hu :
       intrinsicFramedExp (I := I) g hEnorm p u = p) :
-    IntrFrameLift (I := I) g hEnorm p
+    IntrinsicFrameLift (I := I) g hEnorm p
       (radialLoop (I := I) g hEnorm p u hu).extend 0 1 where
   toFun := (radialFlatLift (I := I) g hEnorm p u).toFun
   contDiff := (radialFlatLift (I := I) g hEnorm p u).contDiff
@@ -115,28 +115,28 @@ theorem exists_fiber_inj
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R)) :
     ∃ f :
-        intrFiber (I := I) g hEnorm p p r₀ →
-          intrFiber (I := I) g hEnorm p q (r₀ + s),
+        intrinsicFiber (I := I) g hEnorm p p r₀ →
+          intrinsicFiber (I := I) g hEnorm p q (r₀ + s),
       Function.Injective f := by
   obtain ⟨c, hcFlat, hcLen⟩ :=
     exists_flat_path (I := I) hqs
   have hR : 0 < R := lt_trans (add_pos hr₀ hs) hfit
   let loop :
-      intrFiber (I := I) g hEnorm p p r₀ → Path p p :=
+      intrinsicFiber (I := I) g hEnorm p p r₀ → Path p p :=
     fun u => radialLoop (I := I) g hEnorm p u.1 u.2.2
   let path :
-      intrFiber (I := I) g hEnorm p p r₀ → Path p q :=
+      intrinsicFiber (I := I) g hEnorm p p r₀ → Path p q :=
     fun u => (loop u).trans c
-  have hloopFlat (u : intrFiber (I := I) g hEnorm p p r₀) :
+  have hloopFlat (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       IsFlatC1Path (I := I) (loop u) :=
     radialLoop_flat (I := I) g hEnorm p u.1 u.2.2
-  have hpathFlat (u : intrFiber (I := I) g hEnorm p p r₀) :
+  have hpathFlat (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       IsFlatC1Path (I := I) (path u) :=
     (hloopFlat u).trans hcFlat
-  have huNorm (u : intrFiber (I := I) g hEnorm p p r₀) :
+  have huNorm (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       ‖u.1‖ < r₀ := by
-    simpa only [intrFiber, Metric.mem_ball, dist_zero_right] using u.2.1
-  have hpathSmall (u : intrFiber (I := I) g hEnorm p p r₀) :
+    simpa only [intrinsicFiber, Metric.mem_ball, dist_zero_right] using u.2.1
+  have hpathSmall (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       pathLen (I := I) (path u) < ENNReal.ofReal (r₀ + s) := by
     dsimp only [path]
     rw [pathLen_trans (hloopFlat u) hcFlat,
@@ -148,22 +148,22 @@ theorem exists_fiber_inj
           ((ENNReal.ofReal_lt_ofReal_iff hr₀).2 (huNorm u)) hcLen
       _ = ENNReal.ofReal (r₀ + s) :=
         (ENNReal.ofReal_add hr₀.le hs.le).symm
-  have hpathR (u : intrFiber (I := I) g hEnorm p p r₀) :
+  have hpathR (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       pathLen (I := I) (path u) < ENNReal.ofReal R :=
     (hpathSmall u).trans
       ((ENNReal.ofReal_lt_ofReal_iff hR).2 hfit)
-  have hex (u : intrFiber (I := I) g hEnorm p p r₀) :
+  have hex (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
       Nonempty
-        (IntrFrameLift (I := I) g hEnorm p (path u).extend 0 1) :=
+        (IntrinsicFrameLift (I := I) g hEnorm p (path u).extend 0 1) :=
     exists_intr_lift (I := I) g hEnorm p zero_le_one
       (hpathFlat u).c1.contMDiffOn (by simp)
       hR (hpathR u) hloc
-  let lift (u : intrFiber (I := I) g hEnorm p p r₀) :
-      IntrFrameLift (I := I) g hEnorm p (path u).extend 0 1 :=
+  let lift (u : intrinsicFiber (I := I) g hEnorm p p r₀) :
+      IntrinsicFrameLift (I := I) g hEnorm p (path u).extend 0 1 :=
     Classical.choice (hex u)
   let f :
-      intrFiber (I := I) g hEnorm p p r₀ →
-        intrFiber (I := I) g hEnorm p q (r₀ + s) :=
+      intrinsicFiber (I := I) g hEnorm p p r₀ →
+        intrinsicFiber (I := I) g hEnorm p q (r₀ + s) :=
     fun u => ⟨(lift u).toFun 1, by
       constructor
       · simpa only [Metric.mem_ball, dist_zero_right] using
@@ -176,10 +176,10 @@ theorem exists_fiber_inj
   intro u v huv
   apply Subtype.ext
   let A :
-      IntrFrameLift (I := I) g hEnorm p (loop u).extend 0 1 :=
+      IntrinsicFrameLift (I := I) g hEnorm p (loop u).extend 0 1 :=
     radialLoopLift (I := I) g hEnorm p u.1 u.2.2
   let B :
-      IntrFrameLift (I := I) g hEnorm p (loop v).extend 0 1 :=
+      IntrinsicFrameLift (I := I) g hEnorm p (loop v).extend 0 1 :=
     radialLoopLift (I := I) g hEnorm p v.1 v.2.2
   have huR :
       pathLen (I := I) (loop u) < ENNReal.ofReal R := by
@@ -212,13 +212,13 @@ theorem fiber_encard_le
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R)) :
-    (intrFiber (I := I) g hEnorm p p r₀).encard ≤
-      (intrFiber (I := I) g hEnorm p q (r₀ + s)).encard := by
+    (intrinsicFiber (I := I) g hEnorm p p r₀).encard ≤
+      (intrinsicFiber (I := I) g hEnorm p q (r₀ + s)).encard := by
   obtain ⟨f, hf⟩ :=
     exists_fiber_inj (I := I) g hEnorm hr₀ hs hqs hfit hloc
   exact (Function.Embedding.mk f hf).encard_le
 
-end CGT
+end CheegerGromovTaylor
 end Riemannian
 end Geometry
 end DifferentialGeometry

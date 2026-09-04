@@ -14,29 +14,29 @@ def parabolicBallCutoff
     (a t₀ t₁ b : Real) (ha : a < t₀) (ht : t₀ ≤ t₁) (hb : t₁ < b)
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) :
     Real → BoundedContinuousFunction V Real :=
-  separableBcfPath (intervalCutoffBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffBcf center hr hrR)
+  separableBoundedContinuousFunctionPath (intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffBoundedContinuousFunction center hr hrR)
 
 def parabolicBallCutoffTimeDerivative
     (a t₀ t₁ b : Real) (ha : a < t₀) (ht : t₀ ≤ t₁) (hb : t₁ < b)
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) :
     Real → BoundedContinuousFunction V Real :=
-  separableBcfPath (intervalCutoffDerivBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffBcf center hr hrR)
+  separableBoundedContinuousFunctionPath (intervalCutoffDerivBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffBoundedContinuousFunction center hr hrR)
 
 def parabolicBallCutoffSpatialFDeriv
     (a t₀ t₁ b : Real) (ha : a < t₀) (ht : t₀ ≤ t₁) (hb : t₁ < b)
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) :
     Real → BoundedContinuousFunction V (V →L[Real] Real) :=
-  separableBcfPath (intervalCutoffBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffFDerivBcf center hr hrR)
+  separableBoundedContinuousFunctionPath (intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffFDerivBoundedContinuousFunction center hr hrR)
 
 def parabolicBallCutoffSpatialFDeriv2
     (a t₀ t₁ b : Real) (ha : a < t₀) (ht : t₀ ≤ t₁) (hb : t₁ < b)
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) :
     Real → BoundedContinuousFunction V (V →L[Real] V →L[Real] Real) :=
-  separableBcfPath (intervalCutoffBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffFDeriv2Bcf center hr hrR)
+  separableBoundedContinuousFunctionPath (intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffFDeriv2BoundedContinuousFunction center hr hrR)
 
 @[simp]
 theorem parabolicBallCutoff_apply
@@ -44,7 +44,7 @@ theorem parabolicBallCutoff_apply
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
     (t : Real) (x : V) :
     parabolicBallCutoff a t₀ t₁ b ha ht hb center hr hrR t x =
-      intervalCutoffBcf a t₀ t₁ b ha ht hb t •
+      intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb t •
         ballCutoff center r R x := rfl
 
 @[simp]
@@ -53,7 +53,7 @@ theorem parabolicBallCutoffTimeDerivative_apply
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
     (t : Real) (x : V) :
     parabolicBallCutoffTimeDerivative a t₀ t₁ b ha ht hb center hr hrR t x =
-      intervalCutoffDerivBcf a t₀ t₁ b ha ht hb t •
+      intervalCutoffDerivBoundedContinuousFunction a t₀ t₁ b ha ht hb t •
         ballCutoff center r R x := rfl
 
 @[simp]
@@ -62,7 +62,7 @@ theorem parabolicBallCutoffSpatialFDeriv_apply
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
     (t : Real) (x : V) :
     parabolicBallCutoffSpatialFDeriv a t₀ t₁ b ha ht hb center hr hrR t x =
-      intervalCutoffBcf a t₀ t₁ b ha ht hb t •
+      intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb t •
         ballCutoffFDeriv center r R x := rfl
 
 @[simp]
@@ -71,7 +71,7 @@ theorem parabolicBallCutoffSpatialFDeriv2_apply
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
     (t : Real) (x : V) :
     parabolicBallCutoffSpatialFDeriv2 a t₀ t₁ b ha ht hb center hr hrR t x =
-      intervalCutoffBcf a t₀ t₁ b ha ht hb t •
+      intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb t •
         ballCutoffFDeriv2 center r R x := rfl
 
 theorem parabolicBallCutoff_hasDerivAt
@@ -80,11 +80,11 @@ theorem parabolicBallCutoff_hasDerivAt
     HasDerivAt (parabolicBallCutoff a t₀ t₁ b ha ht hb center hr hrR)
       (parabolicBallCutoffTimeDerivative
         a t₀ t₁ b ha ht hb center hr hrR t) t := by
-  exact separableBcfPath_hasDerivAt
-    (intervalCutoffBcf a t₀ t₁ b ha ht hb)
-    (intervalCutoffDerivBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffBcf center hr hrR) t
-    (intervalCutoffBcf_hasDerivAt ha ht hb t)
+  exact separableBoundedContinuousFunctionPath_hasDerivAt
+    (intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (intervalCutoffDerivBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffBoundedContinuousFunction center hr hrR) t
+    (intervalCutoffBoundedContinuousFunction_hasDerivAt ha ht hb t)
 
 theorem parabolicBallCutoff_hasFDerivAt
     (a t₀ t₁ b : Real) (ha : a < t₀) (ht : t₀ ≤ t₁) (hb : t₁ < b)
@@ -94,9 +94,9 @@ theorem parabolicBallCutoff_hasFDerivAt
       (parabolicBallCutoff a t₀ t₁ b ha ht hb center hr hrR t : V → Real)
       (parabolicBallCutoffSpatialFDeriv
         a t₀ t₁ b ha ht hb center hr hrR t x) x := by
-  exact separableBcfPath_hasFDerivAt
-    (intervalCutoffBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffBcf center hr hrR) (ballCutoffFDerivBcf center hr hrR)
+  exact separableBoundedContinuousFunctionPath_hasFDerivAt
+    (intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffBoundedContinuousFunction center hr hrR) (ballCutoffFDerivBoundedContinuousFunction center hr hrR)
     (hasFDerivAt_ballCutoff center r R) t x
 
 theorem parabolicBallCutoffSpatialFDeriv_hasFDerivAt
@@ -108,10 +108,10 @@ theorem parabolicBallCutoffSpatialFDeriv_hasFDerivAt
         a t₀ t₁ b ha ht hb center hr hrR t : V → V →L[Real] Real)
       (parabolicBallCutoffSpatialFDeriv2
         a t₀ t₁ b ha ht hb center hr hrR t x) x := by
-  exact separableBcfPath_fderiv_hasFDerivAt
-    (intervalCutoffBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffFDerivBcf center hr hrR)
-    (ballCutoffFDeriv2Bcf center hr hrR)
+  exact separableBoundedContinuousFunctionPath_fderiv_hasFDerivAt
+    (intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffFDerivBoundedContinuousFunction center hr hrR)
+    (ballCutoffFDeriv2BoundedContinuousFunction center hr hrR)
     (hasFDerivAt_ballCutoffFDeriv center r R) t x
 
 theorem parabolicBallCutoff_eq_one
@@ -121,7 +121,7 @@ theorem parabolicBallCutoff_eq_one
     {x : V} (hx : x ∈ Metric.closedBall center r) :
     parabolicBallCutoff a t₀ t₁ b ha ht hb center hr hrR t x = 1 := by
   rw [parabolicBallCutoff_apply,
-    intervalCutoffBcf_eq_one ha ht hb htmem,
+    intervalCutoffBoundedContinuousFunction_eq_one ha ht hb htmem,
     ballCutoff_eq_one_of_mem_closedBall hr hrR hx, one_smul]
 
 theorem parabolicBallCutoff_eq_zero_of_time_not_mem
@@ -131,7 +131,7 @@ theorem parabolicBallCutoff_eq_zero_of_time_not_mem
     parabolicBallCutoff a t₀ t₁ b ha ht hb center hr hrR t = 0 := by
   ext x
   rw [parabolicBallCutoff_apply,
-    intervalCutoffBcf_eq_zero_of_not_mem ha ht hb htmem, zero_smul]
+    intervalCutoffBoundedContinuousFunction_eq_zero_of_not_mem ha ht hb htmem, zero_smul]
   rfl
 
 theorem parabolicBallCutoffTimeDerivative_eq_zero_of_time_not_mem
@@ -142,7 +142,7 @@ theorem parabolicBallCutoffTimeDerivative_eq_zero_of_time_not_mem
       a t₀ t₁ b ha ht hb center hr hrR t = 0 := by
   ext x
   rw [parabolicBallCutoffTimeDerivative_apply,
-    intervalCutoffDerivBcf_eq_zero_of_not_mem ha ht hb htmem, zero_smul]
+    intervalCutoffDerivBoundedContinuousFunction_eq_zero_of_not_mem ha ht hb htmem, zero_smul]
   rfl
 
 theorem parabolicBallCutoff_eq_zero_of_space_not_mem
@@ -214,9 +214,9 @@ theorem norm_parabolicBallCutoff_le_one
     (t : Real) (x : V) :
     ‖parabolicBallCutoff a t₀ t₁ b ha ht hb center hr hrR t x‖ ≤ 1 := by
   rw [parabolicBallCutoff_apply, norm_smul, Real.norm_eq_abs,
-    abs_of_nonneg (intervalCutoffBcf_mem_Icc ha ht hb t).1,
+    abs_of_nonneg (intervalCutoffBoundedContinuousFunction_mem_Icc ha ht hb t).1,
     Real.norm_eq_abs, abs_of_nonneg (ballCutoff_mem_Icc center r R x).1]
-  exact mul_le_one₀ (intervalCutoffBcf_mem_Icc ha ht hb t).2
+  exact mul_le_one₀ (intervalCutoffBoundedContinuousFunction_mem_Icc ha ht hb t).2
     (ballCutoff_mem_Icc center r R x).1
     (ballCutoff_mem_Icc center r R x).2
 
@@ -229,16 +229,16 @@ theorem norm_parabolicBallCutoffTimeDerivative_le
         intervalCutoffDerivSupConst a t₀ t₁ b := by
   rw [parabolicBallCutoffTimeDerivative_apply, norm_smul]
   calc
-    ‖intervalCutoffDerivBcf a t₀ t₁ b ha ht hb t‖ *
+    ‖intervalCutoffDerivBoundedContinuousFunction a t₀ t₁ b ha ht hb t‖ *
         ‖ballCutoff center r R x‖ ≤
-        ‖intervalCutoffDerivBcf a t₀ t₁ b ha ht hb t‖ := by
+        ‖intervalCutoffDerivBoundedContinuousFunction a t₀ t₁ b ha ht hb t‖ := by
       exact mul_le_of_le_one_right (norm_nonneg _)
         (by
           rw [Real.norm_eq_abs,
             abs_of_nonneg (ballCutoff_mem_Icc center r R x).1]
           exact (ballCutoff_mem_Icc center r R x).2)
     _ ≤ intervalCutoffDerivSupConst a t₀ t₁ b :=
-      norm_intervalCutoffDerivBcf_le ha ht hb t
+      norm_intervalCutoffDerivBoundedContinuousFunction_le ha ht hb t
 
 theorem norm_parabolicBallCutoffSpatialFDeriv_le
     (a t₀ t₁ b : Real) (ha : a < t₀) (ht : t₀ ≤ t₁) (hb : t₁ < b)
@@ -250,11 +250,11 @@ theorem norm_parabolicBallCutoffSpatialFDeriv_le
   rw [parabolicBallCutoffSpatialFDeriv_apply, norm_smul]
   have hbound := ballCutoffFDerivBound_nonneg hr hrR
   calc
-    ‖intervalCutoffBcf a t₀ t₁ b ha ht hb t‖ *
+    ‖intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb t‖ *
         ‖ballCutoffFDeriv center r R x‖ ≤
         ‖ballCutoffFDeriv center r R x‖ := by
       exact mul_le_of_le_one_left (norm_nonneg _)
-        (norm_intervalCutoffBcf_le_one ha ht hb t)
+        (norm_intervalCutoffBoundedContinuousFunction_le_one ha ht hb t)
     _ ≤ ballCutoffFDerivBound r R := norm_ballCutoffFDeriv_le hr hrR x
     _ = parabolicBallCutoffSpatialFDerivSupConst r R := by
       rw [parabolicBallCutoffSpatialFDerivSupConst,
@@ -270,11 +270,11 @@ theorem norm_parabolicBallCutoffSpatialFDeriv2_le
   rw [parabolicBallCutoffSpatialFDeriv2_apply, norm_smul]
   have hbound := ballCutoffFDeriv2Bound_nonneg hr hrR
   calc
-    ‖intervalCutoffBcf a t₀ t₁ b ha ht hb t‖ *
+    ‖intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb t‖ *
         ‖ballCutoffFDeriv2 center r R x‖ ≤
         ‖ballCutoffFDeriv2 center r R x‖ := by
       exact mul_le_of_le_one_left (norm_nonneg _)
-        (norm_intervalCutoffBcf_le_one ha ht hb t)
+        (norm_intervalCutoffBoundedContinuousFunction_le_one ha ht hb t)
     _ ≤ ballCutoffFDeriv2Bound r R := norm_ballCutoffFDeriv2_le hr hrR x
     _ = parabolicBallCutoffSpatialFDeriv2SupConst r R := by
       rw [parabolicBallCutoffSpatialFDeriv2SupConst,
@@ -288,18 +288,18 @@ theorem parabolicBallCutoff_holderWith_restrict
       ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ parabolicBallCutoff
           a t₀ t₁ b ha ht hb center hr hrR p.time p.space)) := by
-  have htime := intervalCutoffBcf_holderWith ha ht hb
+  have htime := intervalCutoffBoundedContinuousFunction_holderWith ha ht hb
     ((div_le_iff₀ (by norm_num : (0 : NNReal) < 2)).2
       (by simpa using halpha1.trans (show (1 : NNReal) ≤ 2 by norm_num)))
   have hspace := ballCutoff_holderWith (V := V) (center := center)
     hr hrR bot_le halpha1
-  have h := separableBcfPath_holderWith_restrict
+  have h := separableBoundedContinuousFunctionPath_holderWith_restrict
     (Meta := 1) (Mv := 1) (J := J)
-    (intervalCutoffBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffBcf center hr hrR) htime hspace
-    (fun t ↦ norm_intervalCutoffBcf_le_one ha ht hb t)
+    (intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffBoundedContinuousFunction center hr hrR) htime hspace
+    (fun t ↦ norm_intervalCutoffBoundedContinuousFunction_le_one ha ht hb t)
     (fun x ↦ by
-      rw [ballCutoffBcf_apply, Real.norm_eq_abs,
+      rw [ballCutoffBoundedContinuousFunction_apply, Real.norm_eq_abs,
         abs_of_nonneg (ballCutoff_mem_Icc center r R x).1]
       exact (ballCutoff_mem_Icc center r R x).2)
   simpa only [parabolicBallCutoffHolderConst, one_mul,
@@ -314,18 +314,18 @@ theorem parabolicBallCutoffTimeDerivative_holderWith_restrict
       alpha ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ parabolicBallCutoffTimeDerivative
           a t₀ t₁ b ha ht hb center hr hrR p.time p.space)) := by
-  have htime := intervalCutoffDerivBcf_holderWith ha ht hb
+  have htime := intervalCutoffDerivBoundedContinuousFunction_holderWith ha ht hb
     ((div_le_iff₀ (by norm_num : (0 : NNReal) < 2)).2
       (by simpa using halpha1.trans (show (1 : NNReal) ≤ 2 by norm_num)))
   have hspace := ballCutoff_holderWith (V := V) (center := center)
     hr hrR bot_le halpha1
-  have h := separableBcfPath_holderWith_restrict
+  have h := separableBoundedContinuousFunctionPath_holderWith_restrict
     (Meta := intervalCutoffDerivSupConst a t₀ t₁ b) (Mv := 1) (J := J)
-    (intervalCutoffDerivBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffBcf center hr hrR) htime hspace
-    (fun t ↦ norm_intervalCutoffDerivBcf_le ha ht hb t)
+    (intervalCutoffDerivBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffBoundedContinuousFunction center hr hrR) htime hspace
+    (fun t ↦ norm_intervalCutoffDerivBoundedContinuousFunction_le ha ht hb t)
     (fun x ↦ by
-      rw [ballCutoffBcf_apply, Real.norm_eq_abs,
+      rw [ballCutoffBoundedContinuousFunction_apply, Real.norm_eq_abs,
         abs_of_nonneg (ballCutoff_mem_Icc center r R x).1]
       exact (ballCutoff_mem_Icc center r R x).2)
   simpa only [parabolicBallCutoffTimeDerivativeHolderConst,
@@ -340,24 +340,24 @@ theorem parabolicBallCutoffSpatialFDeriv_holderWith_restrict
       alpha ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ parabolicBallCutoffSpatialFDeriv
           a t₀ t₁ b ha ht hb center hr hrR p.time p.space)) := by
-  have htime := intervalCutoffBcf_holderWith ha ht hb
+  have htime := intervalCutoffBoundedContinuousFunction_holderWith ha ht hb
     ((div_le_iff₀ (by norm_num : (0 : NNReal) < 2)).2
       (by simpa using halpha1.trans (show (1 : NNReal) ≤ 2 by norm_num)))
   have hspace := ballCutoffFDeriv_holderWith (V := V) (center := center)
     hr hrR bot_le halpha1
   have hbound := ballCutoffFDerivBound_nonneg hr hrR
-  have h := separableBcfPath_holderWith_restrict
+  have h := separableBoundedContinuousFunctionPath_holderWith_restrict
     (V := V) (F := V →L[Real] Real)
     (alpha := alpha)
     (Keta := intervalCutoffHolderConst a t₀ t₁ b)
     (Kv := ballCutoffFDerivHolderConst r R)
     (Meta := 1) (Mv := parabolicBallCutoffSpatialFDerivSupConst r R)
     (J := J)
-    (intervalCutoffBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffFDerivBcf center hr hrR) htime hspace
-    (fun t ↦ norm_intervalCutoffBcf_le_one ha ht hb t)
+    (intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffFDerivBoundedContinuousFunction center hr hrR) htime hspace
+    (fun t ↦ norm_intervalCutoffBoundedContinuousFunction_le_one ha ht hb t)
     (fun x ↦ by
-      rw [ballCutoffFDerivBcf_apply,
+      rw [ballCutoffFDerivBoundedContinuousFunction_apply,
         parabolicBallCutoffSpatialFDerivSupConst,
         Real.coe_toNNReal _ hbound]
       exact norm_ballCutoffFDeriv_le hr hrR x)
@@ -374,24 +374,24 @@ theorem parabolicBallCutoffSpatialFDeriv2_holderWith_restrict
       alpha ((parabolicCylinder J Set.univ).domRestrict
         (fun p ↦ parabolicBallCutoffSpatialFDeriv2
           a t₀ t₁ b ha ht hb center hr hrR p.time p.space)) := by
-  have htime := intervalCutoffBcf_holderWith ha ht hb
+  have htime := intervalCutoffBoundedContinuousFunction_holderWith ha ht hb
     ((div_le_iff₀ (by norm_num : (0 : NNReal) < 2)).2
       (by simpa using halpha1.trans (show (1 : NNReal) ≤ 2 by norm_num)))
   have hspace := ballCutoffFDeriv2_holderWith (V := V) (center := center)
     hr hrR bot_le halpha1
   have hbound := ballCutoffFDeriv2Bound_nonneg hr hrR
-  have h := separableBcfPath_holderWith_restrict
+  have h := separableBoundedContinuousFunctionPath_holderWith_restrict
     (V := V) (F := V →L[Real] V →L[Real] Real)
     (alpha := alpha)
     (Keta := intervalCutoffHolderConst a t₀ t₁ b)
     (Kv := ballCutoffFDeriv2HolderConst center hr hrR)
     (Meta := 1) (Mv := parabolicBallCutoffSpatialFDeriv2SupConst r R)
     (J := J)
-    (intervalCutoffBcf a t₀ t₁ b ha ht hb)
-    (ballCutoffFDeriv2Bcf center hr hrR) htime hspace
-    (fun t ↦ norm_intervalCutoffBcf_le_one ha ht hb t)
+    (intervalCutoffBoundedContinuousFunction a t₀ t₁ b ha ht hb)
+    (ballCutoffFDeriv2BoundedContinuousFunction center hr hrR) htime hspace
+    (fun t ↦ norm_intervalCutoffBoundedContinuousFunction_le_one ha ht hb t)
     (fun x ↦ by
-      rw [ballCutoffFDeriv2Bcf_apply,
+      rw [ballCutoffFDeriv2BoundedContinuousFunction_apply,
         parabolicBallCutoffSpatialFDeriv2SupConst,
         Real.coe_toNNReal _ hbound]
       exact norm_ballCutoffFDeriv2_le hr hrR x)

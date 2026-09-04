@@ -79,7 +79,7 @@ private theorem velocity_rep_diffAt
   exact hdu.congr_of_eventuallyEq (by simpa [a, u] using hev)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-private theorem geoEq_of_covVel_C2
+private theorem geoEq_of_covVelocity_C2
     (g : SmoothRiemannianMetric I M) (gamma : ℝ → M) (t : ℝ)
     (hgamma : ContMDiffAt 𝓘(ℝ, ℝ) I 2 gamma t)
     (hzero :
@@ -96,17 +96,17 @@ private theorem geoEq_of_covVel_C2
   have hev_c2 : ∀ᶠ s in nhds t,
       ContMDiffAt 𝓘(ℝ, ℝ) I 2 gamma s :=
     (contMDiffAt_iff_contMDiffAt_nhds (n := 2) (by decide)).mp hgamma
-  have hev_src : ∀ᶠ s in nhds t,
+  have hev_source : ∀ᶠ s in nhds t,
       gamma s ∈ (chartAt H (gamma t)).source := by
     exact hgamma.continuousAt.preimage_mem_nhds
       ((chartAt H (gamma t)).open_source.mem_nhds
         (mem_chart_source H (gamma t)))
   obtain ⟨U, hU_sub, hU_open, ht_U⟩ :=
-    eventually_nhds_iff.mp (hev_c2.and hev_src)
+    eventually_nhds_iff.mp (hev_c2.and hev_source)
   have hUsub_c2 : ∀ s ∈ U,
       ContMDiffAt 𝓘(ℝ, ℝ) I 2 gamma s :=
     fun s hs => (hU_sub s hs).1
-  have hUsub_src : ∀ s ∈ U,
+  have hUsub_source : ∀ s ∈ U,
       gamma s ∈ (chartAt H (gamma t)).source :=
     fun s hs => (hU_sub s hs).2
   have hU_nhds : U ∈ nhds t := hU_open.mem_nhds ht_U
@@ -118,7 +118,7 @@ private theorem geoEq_of_covVel_C2
         contMDiffOn_extChartAt (I := I) (n := 2) (x := gamma t)
       have hgammaU : ContMDiffOn 𝓘(ℝ, ℝ) I 2 gamma U :=
         fun s hs => (hUsub_c2 s hs).contMDiffWithinAt
-      exact hchart.comp hgammaU (fun s hs => hUsub_src s hs)
+      exact hchart.comp hgammaU (fun s hs => hUsub_source s hs)
     change ContDiffOn ℝ 2 ((extChartAt I (gamma t)) ∘ gamma) U
     exact contMDiffOn_iff_contDiffOn.mp hcomp
   have hderiv_cdiffOn : ContDiffOn ℝ 1 (deriv u) U :=
@@ -145,7 +145,7 @@ private theorem geoEq_of_covVel_C2
     rw [hrep_def, chartRepAt_apply]
     rw [MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (γ := gamma) hs_mdiff (gamma t)
-      (t := s) (hUsub_src s hs)]
+      (t := s) (hUsub_source s hs)]
     rfl
   have hrep_eq : rep =ᶠ[nhds t] deriv u :=
     hrep_eqOn.eventuallyEq_of_mem hU_nhds
@@ -234,14 +234,14 @@ theorem geoEq_mapCrossAt
     rw [covDerivAlong_def, covDerivAlong_def,
       chartCovDerivAlong_def, chartCovDerivAlong_def,
       hrep.deriv_eq, hrep.eq_of_nhds]
-  have htargetVelZero : covDerivAlong (I := J) g delta
+  have htargetVelocityZero : covDerivAlong (I := J) g delta
       (fun s => (mfderiv 𝓘(ℝ, ℝ) J delta s :
         ℝ →L[ℝ] TangentSpace J (delta s)) (1 : ℝ)) t = 0 := by
     rw [← hcovEq]
     exact htargetZero
-  exact geoEq_of_covVel_C2 (I := J) g delta t
+  exact geoEq_of_covVelocity_C2 (I := J) g delta t
     (hdelta.of_le
-      (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) htargetVelZero
+      (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) htargetVelocityZero
 
 omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)]
     [CompleteSpace E] [CompleteSpace F] in
@@ -305,7 +305,7 @@ theorem geoEq_of_mapCrossAt
     rw [covDerivAlong_def, covDerivAlong_def,
       chartCovDerivAlong_def, chartCovDerivAlong_def,
       hrep.deriv_eq, hrep.eq_of_nhds]
-  have htargetVelZero : covDerivAlong (I := J) g delta
+  have htargetVelocityZero : covDerivAlong (I := J) g delta
       (fun s => (mfderiv 𝓘(ℝ, ℝ) J delta s :
         ℝ →L[ℝ] TangentSpace J (delta s)) (1 : ℝ)) t = 0 :=
     covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
@@ -314,7 +314,7 @@ theorem geoEq_of_mapCrossAt
         (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) hgeo
   have htargetZero : covDerivAlong (I := J) g delta W t = 0 := by
     rw [hcovEq]
-    exact htargetVelZero
+    exact htargetVelocityZero
   have hpushZero :
       mfderiv I J (Phi : M → N) (gamma t)
         (covDerivAlong (I := I)
@@ -344,7 +344,7 @@ theorem geoEq_of_mapCrossAt
       gamma V t = 0 := by
     apply hinj
     rw [hpushZero, map_zero]
-  exact geoEq_of_covVel_C2 (I := I)
+  exact geoEq_of_covVelocity_C2 (I := I)
     (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
     gamma t hgamma2 (by simpa [V] using hsourceZero)
 

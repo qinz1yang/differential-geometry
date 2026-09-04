@@ -81,11 +81,11 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 private theorem cross_point_le
     (q k : SmoothRiemannianMetric I M) (Ce R : Real)
-    (hEq : DifferentialGeometry.HCGCompactness.MetricUniformEquivalentOn
+    (hEq : DifferentialGeometry.CheegerGromovCompactness.MetricUniformEquivalentOn
       (I := I) Set.univ q k Ce)
     (hR0 : 0 <= R) {f : M -> Real}
     (hf : ContMDiff I 𝓘(Real, Real) ∞ f) (x : M)
-    (hderiv : DifferentialGeometry.HCGCompactness.metricDerivNorm
+    (hderiv : DifferentialGeometry.CheegerGromovCompactness.metricDerivNorm
       (I := I) 1 q k k x <= R) :
     normSq0S (I := I) k x 2 (leviHessSec (I := I) k f hf x) +
         normSq0S (I := I) k x 1 (duSec (I := I) f hf x) <=
@@ -106,7 +106,7 @@ private theorem cross_point_le
   let B := connectionDifferenceOutput (I := I)
     (CovariantDerivative.difference covQ covK x) du
   have hEq' :=
-    DifferentialGeometry.HCGCompactness.metricUniformEquivalentOn_symm
+    DifferentialGeometry.CheegerGromovCompactness.metricUniformEquivalentOn_symm
       (I := I) hEq
   have hCe0 : 0 <= Ce := le_trans zero_le_one hEq.1
   have hA0 : 0 <= A := by
@@ -116,12 +116,12 @@ private theorem cross_point_le
   have hDx :
       Real.sqrt (normSqRS (I := I) (g := q) (x := x) 1 2 Dt) <= A := by
     have hbase :=
-      DifferentialGeometry.HCGCompactness.lcDiff_norm_le
+      DifferentialGeometry.CheegerGromovCompactness.lcDiff_norm_le
         (I := I) (K := Set.univ) k q hEq'
         (x := x) (Set.mem_univ x)
     have hinner :
         Real.sqrt (Ce ^ 3) *
-            DifferentialGeometry.HCGCompactness.metricDerivNorm
+            DifferentialGeometry.CheegerGromovCompactness.metricDerivNorm
               (I := I) 1 q k k x <=
           Real.sqrt (Ce ^ 3) * R :=
       mul_le_mul_of_nonneg_left hderiv (Real.sqrt_nonneg _)
@@ -269,13 +269,13 @@ theorem cross_energy_le
           C * ‖v‖ ^ 2 := by
   classical
   obtain ⟨Ce, hEq⟩ :=
-    DifferentialGeometry.HCGCompactness.metricUniformEquivalentOn_of_compact
+    DifferentialGeometry.CheegerGromovCompactness.metricUniformEquivalentOn_of_compact
       (I := I) q k
   have hEq' :=
-    DifferentialGeometry.HCGCompactness.metricUniformEquivalentOn_symm
+    DifferentialGeometry.CheegerGromovCompactness.metricUniformEquivalentOn_symm
       (I := I) hEq
   obtain ⟨R, hR0, hR⟩ :=
-    DifferentialGeometry.HCGCompactness.metricDerivNorm_bddOn
+    DifferentialGeometry.CheegerGromovCompactness.metricDerivNorm_bddOn
       (I := I) isCompact_univ 1 q k k
   obtain ⟨CH, hCH, hHess⟩ := hessSec_energy_le (I := I) (M := M) q
   let A : Real := (3 / 2 : Real) * (Real.sqrt (Ce ^ 3) * R)

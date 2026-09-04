@@ -99,7 +99,7 @@ theorem rawTensorConnLap_riemannianFiberNormSq_le_chartPouSobolevSummand_T0_unif
   have hB_at := hB T₀ (b := b) hb_inter
   set y : EuclideanSpace ℝ (Fin n) := (toEuclidean (E := E)) ((extChartAt I α) b)
     with hy_def
-  have hb_src : b ∈ (chartAt H α).source := by
+  have hb_source : b ∈ (chartAt H α).source := by
     have h_sub : tsupport
         (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
           (chartAt H α).source := by
@@ -107,7 +107,7 @@ theorem rawTensorConnLap_riemannianFiberNormSq_le_chartPouSobolevSummand_T0_unif
       exact this
     exact h_sub hb_inter.1
   have hb_extsrc : b ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hb_src
+    rw [extChartAt_source]; exact hb_source
   have h_extat_b_in_target : (extChartAt I α) b ∈ (extChartAt I α).target :=
     (extChartAt I α).map_source hb_extsrc
   have hy_in_target : y ∈ chartTargetEuclid (I := I) (M := M) α := by
@@ -122,7 +122,7 @@ theorem rawTensorConnLap_riemannianFiberNormSq_le_chartPouSobolevSummand_T0_unif
           (extChartAt I α).symm)
         (extChartAt I α).target := by
     intro Idx Jdx
-    have hraw_src : ContMDiffOn I 𝓘(ℝ) ∞
+    have hraw_source : ContMDiffOn I 𝓘(ℝ) ∞
         (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx)
         ((chartAt H α).source) :=
       tensorChartComponentRaw_contMDiffOn_chart_source (I := I) (M := M)
@@ -130,7 +130,7 @@ theorem rawTensorConnLap_riemannianFiberNormSq_le_chartPouSobolevSummand_T0_unif
     have hraw_extsrc : ContMDiffOn I 𝓘(ℝ) ∞
         (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx)
         ((extChartAt I α).source) := by
-      rw [extChartAt_source]; exact hraw_src
+      rw [extChartAt_source]; exact hraw_source
     have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
         (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
     have hmaps : Set.MapsTo (extChartAt I α).symm (extChartAt I α).target

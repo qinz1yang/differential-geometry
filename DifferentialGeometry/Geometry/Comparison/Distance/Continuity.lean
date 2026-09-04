@@ -204,14 +204,14 @@ theorem param_edist_le
     apply hseg
     rw [segment_eq_image_lineMap]
     exact ⟨t, ht, rfl⟩
-  have hηsrc : MapsTo η (Set.Icc (0 : ℝ) 1) Ψ.source :=
+  have hηsource : MapsTo η (Set.Icc (0 : ℝ) 1) Ψ.source :=
     fun t ht ↦ hU (hηU ht)
   have hηsmooth :
       ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, E) 1 η (Set.Icc (0 : ℝ) 1) := by
     rw [contMDiffOn_iff_contDiffOn]
     exact η.contDiff.contDiffOn
   have hγsmooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Icc (0 : ℝ) 1) :=
-    Ψ.contMDiffOn_toFun.comp hηsmooth hηsrc
+    Ψ.contMDiffOn_toFun.comp hηsmooth hηsource
   have hγzero : γ 0 = Ψ u := by
     simp only [γ, Function.comp_apply, η, ContinuousAffineMap.coe_lineMap_eq,
       AffineMap.lineMap_apply_zero]
@@ -223,7 +223,7 @@ theorem param_edist_le
         ENNReal.ofReal (L * dist u v) := by
     intro t ht
     have hΨdiff : MDifferentiableAt 𝓘(ℝ, E) I Ψ (η t) :=
-      Ψ.mdifferentiableAt one_ne_zero (hηsrc ht)
+      Ψ.mdifferentiableAt one_ne_zero (hηsource ht)
     have hηdiff : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) η t := by
       rw [mdifferentiableAt_iff_differentiableAt]
       exact η.differentiableAt
@@ -346,7 +346,7 @@ theorem continuousOn_riemannianEDist_toReal_on_finite
   exact hq
 
 omit [FiniteDimensional ℝ E] in
-theorem dist_lt_riedist_cpt
+theorem dist_lt_riedist_compact
     {N : Type*} [PseudoMetricSpace N] [ChartedSpace H N]
     [IsManifold I ∞ N]
     (g : SmoothRiemannianMetric I N) (K : Set N) (hK : IsCompact K)

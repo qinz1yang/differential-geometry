@@ -85,7 +85,7 @@ theorem chartα_proj_secondCovDeriv_eq_chartCoord_first_deriv_of_Sk_ext
   refine ⟨S_k_ext, U, hU_open, hb₀_U, hU_sub_good, ?_⟩
   intro b hb_U
   have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α := hU_sub_good hb_U
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb_good
   set cov := TensorRSNabla.tensorRSCovariantDerivative I M r s
     (LeviCivita (I := I) g) with hcov_def
@@ -136,14 +136,14 @@ theorem chartα_proj_secondCovDeriv_eq_chartCoord_first_deriv_of_Sk_ext
           (E := fun z : M => TensorRSSpace r s I z) y (σ y)) b :=
     (htotal_agree.mdifferentiableAt_iff (𝕜 := ℝ) (I := I)
       (I' := I.prod 𝓘(ℝ, TensorRSModel r s ℝ E))).mpr hσ'_total_mdiff
-  have hcov_loc : cov.toFun σ b = cov.toFun σ' b :=
+  have hcov_local : cov.toFun σ b = cov.toFun σ' b :=
     tensorRSCovariantDerivative_congr_of_eventuallyEq
       (I := I) (M := M) g r s
       (σ := σ) (σ' := σ') (x := b) hagree_σ_σ' hσ_total_mdiff hσ'_total_mdiff
-  have hcov_loc_at_v :
+  have hcov_local_at_v :
       cov.toFun σ b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       cov.toFun σ' b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
-    rw [hcov_loc]
+    rw [hcov_local]
   have hcov_σ'_eq_packed :
       cov.toFun σ' b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       cov.toFun (fun y : M => S_k_packed.toSection y) b
@@ -169,7 +169,7 @@ theorem chartα_proj_secondCovDeriv_eq_chartCoord_first_deriv_of_Sk_ext
       cov.toFun σ b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) =
       chartTensorRSCovariantDerivative (I := I) r s g α S_k_packed.toSection
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l) b := by
-    rw [hcov_loc_at_v, hcov_σ'_eq_packed, hcov_tensor, hcov_chart]
+    rw [hcov_local_at_v, hcov_σ'_eq_packed, hcov_tensor, hcov_chart]
   rw [hinner]
   rw [covDerivComponentEuclid_def]
   have hsymm_te :
@@ -178,7 +178,7 @@ theorem chartα_proj_secondCovDeriv_eq_chartCoord_first_deriv_of_Sk_ext
         (extChartAt I α) b :=
     (toEuclidean (E := E)).symm_apply_apply _
   have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   rw [hsymm_te, hleft_inv]
 
 end TensorRegularity

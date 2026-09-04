@@ -113,7 +113,7 @@ variable [IsManifold I ∞ M] [FiniteDimensional Real E]
 variable [IsManifold I 1 M]
 variable [T2Space M] [SigmaCompactSpace M]
 
-noncomputable def lRegDensity
+noncomputable def lRegularizedDensity
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real -> M)
     (s : Real) : Real :=
   (1 / 2 : Real) *
@@ -130,7 +130,7 @@ theorem lDensity_squareReparametrization
     (s : Real)
     (hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma (s ^ 2))
     (hs : 0 <= s) :
-    lDensity S T gamma (s ^ 2) * (2 * s) = lRegDensity S T gamma s := by
+    lDensity S T gamma (s ^ 2) * (2 * s) = lRegularizedDensity S T gamma s := by
   let g := S.base.metric (T - s ^ 2)
   let p := gamma (s ^ 2)
   let v := lVelocity (I := I) gamma (s ^ 2)
@@ -155,7 +155,7 @@ theorem lDensity_squareReparametrization
         (lVelocity (I := I) gamma (s ^ 2))
         (lVelocity (I := I) gamma (s ^ 2)) := by
     simpa only [g, p, v] using hquad
-  rw [lRegDensity, lDensity, lSpeedSq, Real.sqrt_sq hs,
+  rw [lRegularizedDensity, lDensity, lSpeedSq, Real.sqrt_sq hs,
     lVelocity_squareReparametrization gamma s hgamma]
   simp only [squareReparametrization]
   calc
@@ -176,7 +176,7 @@ theorem lDensity_squareReparametrization_of_pos
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real → M)
     (s : Real) (hs : 0 < s) :
     lDensity S T gamma (s ^ 2) * (2 * s) =
-      lRegDensity S T gamma s := by
+      lRegularizedDensity S T gamma s := by
   by_cases hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma (s ^ 2)
   · exact lDensity_squareReparametrization S T gamma s hgamma hs.le
   · have hvel : lVelocity (I := I) gamma (s ^ 2) = 0 := by
@@ -194,7 +194,7 @@ theorem lDensity_squareReparametrization_of_pos
           (lVelocity (I := I) (squareReparametrization gamma) s)
           (lVelocity (I := I) (squareReparametrization gamma) s) = 0 := by
       simp [hvelsq]
-    rw [lDensity, lRegDensity, Real.sqrt_sq hs.le, hspeed0, hreg0]
+    rw [lDensity, lRegularizedDensity, Real.sqrt_sq hs.le, hspeed0, hreg0]
     simp only [squareReparametrization]
     ring
 
@@ -205,7 +205,7 @@ theorem lLength_squareReparametrization
     (hgamma : ∀ s ∈ uIcc (Real.sqrt tau1) (Real.sqrt tau2),
       MDifferentiableAt 𝓘(Real, Real) I gamma (s ^ 2)) :
     lLength S T gamma tau1 tau2 =
-      ∫ s in Real.sqrt tau1..Real.sqrt tau2, lRegDensity S T gamma s := by
+      ∫ s in Real.sqrt tau1..Real.sqrt tau2, lRegularizedDensity S T gamma s := by
   have hsub :=
     intervalIntegral.integral_comp_mul_deriv_of_deriv_nonneg
       (g := lDensity S T gamma) (f := fun s : Real => s ^ 2)
@@ -228,7 +228,7 @@ theorem lLength_squareReparametrization
   have hcongr :
       (∫ s in Real.sqrt tau1..Real.sqrt tau2,
         (lDensity S T gamma ∘ fun r : Real => r ^ 2) s * (2 * s)) =
-        ∫ s in Real.sqrt tau1..Real.sqrt tau2, lRegDensity S T gamma s := by
+        ∫ s in Real.sqrt tau1..Real.sqrt tau2, lRegularizedDensity S T gamma s := by
     apply intervalIntegral.integral_congr
     intro s hs
     have hs0 : 0 <= s := by
@@ -244,7 +244,7 @@ theorem lLength_squareReparametrization_ae
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real → M)
     (tau1 tau2 : Real) (htau1 : 0 ≤ tau1) (htau2 : 0 ≤ tau2) :
     lLength S T gamma tau1 tau2 =
-      ∫ s in Real.sqrt tau1..Real.sqrt tau2, lRegDensity S T gamma s := by
+      ∫ s in Real.sqrt tau1..Real.sqrt tau2, lRegularizedDensity S T gamma s := by
   have hsub :=
     intervalIntegral.integral_comp_mul_deriv_of_deriv_nonneg
       (g := lDensity S T gamma) (f := fun s : Real => s ^ 2)
@@ -267,7 +267,7 @@ theorem lLength_squareReparametrization_ae
   have hcongr :
       (∫ s in Real.sqrt tau1..Real.sqrt tau2,
         (lDensity S T gamma ∘ fun r : Real => r ^ 2) s * (2 * s)) =
-        ∫ s in Real.sqrt tau1..Real.sqrt tau2, lRegDensity S T gamma s := by
+        ∫ s in Real.sqrt tau1..Real.sqrt tau2, lRegularizedDensity S T gamma s := by
     apply intervalIntegral.integral_congr_ae
     filter_upwards
       [MeasureTheory.Measure.ae_ne MeasureTheory.volume (0 : Real)]

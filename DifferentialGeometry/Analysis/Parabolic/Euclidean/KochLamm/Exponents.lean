@@ -14,21 +14,21 @@ namespace Euclidean
 variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
 
-def klQReal (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+def kochLammQReal (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     : ℝ :=
   (Module.finrank ℝ V + 4 : ℝ) / 2
 
-def klQDual (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+def kochLammQDual (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     : ℝ :=
   (Module.finrank ℝ V + 4 : ℝ) / (Module.finrank ℝ V + 2 : ℝ)
 
-def klHeatExp (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+def kochLammHeatExp (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     : ℝ :=
-  (Module.finrank ℝ V : ℝ) * (1 - klQDual V) / 2
+  (Module.finrank ℝ V : ℝ) * (1 - kochLammQDual V) / 2
 
 omit [FiniteDimensional ℝ V] in
-theorem klQReal_ofReal : ENNReal.ofReal (klQReal V) = klQ V := by
-  unfold klQReal klQ klP
+theorem kochLammQReal_ofReal : ENNReal.ofReal (kochLammQReal V) = kochLammQ V := by
+  unfold kochLammQReal kochLammQ kochLammP
   rw [ENNReal.ofReal_div_of_pos (by norm_num : (0 : ℝ) < 2)]
   rw [show (Module.finrank ℝ V : ℝ) + 4 =
       ((Module.finrank ℝ V + 4 : ℕ) : ℝ) by norm_num]
@@ -36,7 +36,7 @@ theorem klQReal_ofReal : ENNReal.ofReal (klQReal V) = klQ V := by
   norm_num
 
 omit [FiniteDimensional ℝ V] in
-theorem klQ_holder : (klQDual V).HolderConjugate (klQReal V) := by
+theorem kochLammQ_holder : (kochLammQDual V).HolderConjugate (kochLammQReal V) := by
   let n : ℝ := Module.finrank ℝ V
   have hn2 : 0 < n + 2 := by
     dsimp [n]
@@ -45,27 +45,27 @@ theorem klQ_holder : (klQDual V).HolderConjugate (klQReal V) := by
     dsimp [n]
     positivity
   refine ⟨?_, ?_, ?_⟩
-  · unfold klQDual klQReal
+  · unfold kochLammQDual kochLammQReal
     change ((n + 4) / (n + 2))⁻¹ + ((n + 4) / 2)⁻¹ = (1 : ℝ)⁻¹
     field_simp [hn2.ne', hn4.ne']
     ring
-  · unfold klQDual
+  · unfold kochLammQDual
     exact div_pos hn4 hn2
-  · unfold klQReal
+  · unfold kochLammQReal
     positivity
 
 omit [FiniteDimensional ℝ V] in
-theorem klHeatExp_eq :
-    klHeatExp V =
+theorem kochLammHeatExp_eq :
+    kochLammHeatExp V =
       -(Module.finrank ℝ V : ℝ) / (Module.finrank ℝ V + 2 : ℝ) := by
-  unfold klHeatExp klQDual
+  unfold kochLammHeatExp kochLammQDual
   have hn2 : (Module.finrank ℝ V : ℝ) + 2 ≠ 0 := by positivity
   field_simp [hn2]
   ring
 
 omit [FiniteDimensional ℝ V] in
-theorem klHeatExp_gt : -1 < klHeatExp V := by
-  rw [klHeatExp_eq]
+theorem kochLammHeatExp_gt : -1 < kochLammHeatExp V := by
+  rw [kochLammHeatExp_eq]
   have hn2 : 0 < (Module.finrank ℝ V : ℝ) + 2 := by positivity
   rw [show -(Module.finrank ℝ V : ℝ) /
       (Module.finrank ℝ V + 2 : ℝ) =
@@ -75,12 +75,12 @@ theorem klHeatExp_gt : -1 < klHeatExp V := by
   exact (div_lt_one hn2).2 (by linarith)
 
 omit [FiniteDimensional ℝ V] in
-theorem klTimePow_intble {t : ℝ} :
-    IntervalIntegrable (fun s : ℝ ↦ (t - s) ^ klHeatExp V)
+theorem kochLammTimePow_intble {t : ℝ} :
+    IntervalIntegrable (fun s : ℝ ↦ (t - s) ^ kochLammHeatExp V)
       volume (t / 2) t := by
-  have hbase : IntervalIntegrable (fun u : ℝ ↦ u ^ klHeatExp V)
+  have hbase : IntervalIntegrable (fun u : ℝ ↦ u ^ kochLammHeatExp V)
       volume 0 (t / 2) :=
-    intervalIntegral.intervalIntegrable_rpow' (klHeatExp_gt (V := V))
+    intervalIntegral.intervalIntegrable_rpow' (kochLammHeatExp_gt (V := V))
   have href := hbase.symm.comp_sub_left t
   convert href using 1 <;> ring
 

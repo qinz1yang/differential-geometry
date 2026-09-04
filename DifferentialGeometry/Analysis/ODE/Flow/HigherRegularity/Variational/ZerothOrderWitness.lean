@@ -55,7 +55,7 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
   have hρ_outerN_eq : (ρ_outerN : ℝ) = ρ_outer := rfl
   set Slab_Φ_outer : Set (E × ℝ) :=
     closedBall x₀ ρ_outer ×ˢ Icc (t₀ - T_outer) (t₀ + T_outer) with hSlab_Φ_outer_def
-  have hSlab_Φ_outer_cpt : IsCompact Slab_Φ_outer :=
+  have hSlab_Φ_outer_compact : IsCompact Slab_Φ_outer :=
     (isCompact_closedBall x₀ ρ_outer).prod isCompact_Icc
   have hSlab_Φ_outer_ne : Slab_Φ_outer.Nonempty :=
     ⟨(x₀, t₀), Metric.mem_closedBall_self (le_of_lt hρ_outer_pos),
@@ -68,7 +68,7 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
     have h_sub_cont : ContinuousOn (fun p : E × ℝ => Φ p - x₀) Slab_Φ_outer :=
       hΦ_cont_slab.sub continuousOn_const
     exact continuous_norm.comp_continuousOn h_sub_cont
-  rcases hSlab_Φ_outer_cpt.exists_isMaxOn hSlab_Φ_outer_ne h_Φ_norm_cont
+  rcases hSlab_Φ_outer_compact.exists_isMaxOn hSlab_Φ_outer_ne h_Φ_norm_cont
     with ⟨pmax_R, _, hpmax_R⟩
   set R_Φ_image_pre : ℝ := ‖Φ pmax_R - x₀‖ with hR_Φ_image_pre_def
   have hR_Φ_image_pre_nn : 0 ≤ R_Φ_image_pre := norm_nonneg _
@@ -79,7 +79,7 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
   have hr₀_lip_ge_Φ : R_Φ_image_pre ≤ r₀_lip := by rw [hr₀_lip_def]; linarith
   set Slab_f : Set (ℝ × E) :=
     Icc (t₀ - T_outer) (t₀ + T_outer) ×ˢ closedBall x₀ r₀_lip with hSlab_f_def
-  have hSlab_f_cpt : IsCompact Slab_f :=
+  have hSlab_f_compact : IsCompact Slab_f :=
     isCompact_Icc.prod (isCompact_closedBall x₀ r₀_lip)
   have hSlab_f_ne : Slab_f.Nonempty :=
     ⟨(t₀, x₀), ⟨by linarith, by linarith⟩, Metric.mem_closedBall_self (le_of_lt hr₀_lip_pos)⟩
@@ -91,7 +91,7 @@ theorem exists_isVariationalFlowProjection_zero_of_C1
     hpartial_f.continuousOn.mono (subset_univ _)
   have hpartial_f_norm_cont : ContinuousOn (fun p : ℝ × E => ‖fderiv ℝ (f p.1) p.2‖) Slab_f :=
     continuous_norm.comp_continuousOn hpartial_f_cont
-  rcases hSlab_f_cpt.exists_isMaxOn hSlab_f_ne hpartial_f_norm_cont
+  rcases hSlab_f_compact.exists_isMaxOn hSlab_f_ne hpartial_f_norm_cont
     with ⟨pmax_K, _, hpmax_K⟩
   set K_pre : ℝ := ‖fderiv ℝ (f pmax_K.1) pmax_K.2‖ with hK_pre_def
   have hK_pre_nn : 0 ≤ K_pre := norm_nonneg _

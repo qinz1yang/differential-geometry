@@ -3371,7 +3371,7 @@ private lemma metricLoweredConnectionDifferenceCoefficient_unitModel_toModel
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 2)) := by
-  have h := connectionDifferenceLoweredCc_unitModel_apply' (I := I) (M := M) g g₁ x
+  have h := connectionDifferenceLoweredCc_unitModel_apply (I := I) (M := M) g g₁ x
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
   simpa only [ContinuousLinearEquiv.apply_symm_apply] using h
 

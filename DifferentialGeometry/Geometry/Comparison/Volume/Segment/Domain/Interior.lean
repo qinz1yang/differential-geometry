@@ -34,82 +34,82 @@ private local instance instBorelTangent (x : M) :
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-def SegInt [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+def SegmentInt [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
   (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (x : M) : Set (TangentSpace I x) :=
-  {v | ∃ c : ℝ, 1 < c ∧ c • v ∈ SegDom (I := I) g hEnorm x}
+  {v | ∃ c : ℝ, 1 < c ∧ c • v ∈ SegmentDom (I := I) g hEnorm x}
 
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem mem_segInt [PseudoEMetricSpace M] [IsRiemannianManifold I M]
+theorem mem_segmentInt [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w))}
     {x : M} {v : TangentSpace I x} :
-    v ∈ SegInt (I := I) g hEnorm x ↔
-      ∃ c : ℝ, 1 < c ∧ c • v ∈ SegDom (I := I) g hEnorm x :=
+    v ∈ SegmentInt (I := I) g hEnorm x ↔
+      ∃ c : ℝ, 1 < c ∧ c • v ∈ SegmentDom (I := I) g hEnorm x :=
   Iff.rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem segInt_subset [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentInt_subset [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (x : M) :
-    SegInt (I := I) g hEnorm x ⊆ SegDom (I := I) g hEnorm x := by
+    SegmentInt (I := I) g hEnorm x ⊆ SegmentDom (I := I) g hEnorm x := by
   rintro v ⟨c, hc, hcv⟩
   have hc0 : 0 < c := one_pos.trans hc
   have hs0 : 0 ≤ c⁻¹ := inv_nonneg.mpr hc0.le
   have hs1 : c⁻¹ ≤ 1 := (inv_le_one₀ hc0).2 hc.le
-  have h := segDom_smul (I := I) g hEnorm hcv hs0 hs1
+  have h := segmentDom_smul (I := I) g hEnorm hcv hs0 hs1
   simpa only [smul_smul, inv_mul_cancel₀ hc0.ne', one_smul] using h
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem segInt_smul [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentInt_smul [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     {x : M} {v : TangentSpace I x}
-    (hv : v ∈ SegInt (I := I) g hEnorm x)
+    (hv : v ∈ SegmentInt (I := I) g hEnorm x)
     {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1) :
-    s • v ∈ SegInt (I := I) g hEnorm x := by
+    s • v ∈ SegmentInt (I := I) g hEnorm x := by
   obtain ⟨c, hc, hcv⟩ := hv
   refine ⟨c, hc, ?_⟩
   simpa only [smul_smul, mul_comm] using
-    (segDom_smul (I := I) g hEnorm hcv hs0 hs1)
+    (segmentDom_smul (I := I) g hEnorm hcv hs0 hs1)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem measurableSet_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem measurableSet_segmentInt [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (x : M) :
-    MeasurableSet (SegInt (I := I) g hEnorm x) := by
+    MeasurableSet (SegmentInt (I := I) g hEnorm x) := by
   let Q : Set ℚ := {q | (1 : ℝ) < (q : ℝ)}
   let A : ℚ → Set (TangentSpace I x) := fun q =>
-    (fun v => (q : ℝ) • v) ⁻¹' SegDom (I := I) g hEnorm x
+    (fun v => (q : ℝ) • v) ⁻¹' SegmentDom (I := I) g hEnorm x
   have hA (q : ℚ) : MeasurableSet (A q) := by
-    exact (isClosed_segDom (I := I) g hEnorm x).preimage
+    exact (isClosed_segmentDom (I := I) g hEnorm x).preimage
       (continuous_const_smul (q : ℝ)) |>.measurableSet
-  have hEq : SegInt (I := I) g hEnorm x = ⋃ q ∈ Q, A q := by
+  have hEq : SegmentInt (I := I) g hEnorm x = ⋃ q ∈ Q, A q := by
     ext v
     constructor
     · rintro ⟨c, hc, hcv⟩
@@ -118,8 +118,8 @@ theorem measurableSet_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
       have hq0 : 0 ≤ (q : ℝ) := (zero_lt_one.trans hq1).le
       have hs0 : 0 ≤ (q : ℝ) / c := div_nonneg hq0 hc0.le
       have hs1 : (q : ℝ) / c ≤ 1 := (div_le_one hc0).mpr hqc.le
-      have hqv : (q : ℝ) • v ∈ SegDom (I := I) g hEnorm x := by
-        have h := segDom_smul (I := I) g hEnorm hcv hs0 hs1
+      have hqv : (q : ℝ) • v ∈ SegmentDom (I := I) g hEnorm x := by
+        have h := segmentDom_smul (I := I) g hEnorm hcv hs0 hs1
         have hcne : c ≠ 0 := hc0.ne'
         simpa only [smul_smul, div_mul_cancel₀ _ hcne] using h
       exact mem_iUnion₂.mpr ⟨q, hq1, hqv⟩
@@ -132,7 +132,7 @@ theorem measurableSet_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem exp_inj_segmentInt [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -140,13 +140,13 @@ theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (x : M) :
     Set.InjOn (expMapIntrinsic (I := I) g hEnorm x)
-      (SegInt (I := I) g hEnorm x) := by
+      (SegmentInt (I := I) g hEnorm x) := by
   classical
   intro v hv w hw heq
-  have hvD : v ∈ SegDom (I := I) g hEnorm x :=
-    segInt_subset (I := I) g hEnorm x hv
-  have hwD : w ∈ SegDom (I := I) g hEnorm x :=
-    segInt_subset (I := I) g hEnorm x hw
+  have hvD : v ∈ SegmentDom (I := I) g hEnorm x :=
+    segmentInt_subset (I := I) g hEnorm x hv
+  have hwD : w ∈ SegmentDom (I := I) g hEnorm x :=
+    segmentInt_subset (I := I) g hEnorm x hw
   let L : ℝ := Real.sqrt (g.inner x v v)
   have hlen :
       Real.sqrt (g.inner x w w) = L := by
@@ -154,11 +154,11 @@ theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
       Real.sqrt (g.inner x w w) =
           (riemannianEDist I x
             (expMapIntrinsic (I := I) g hEnorm x w)).toReal :=
-        (mem_segDom (I := I)).mp hwD
+        (mem_segmentDom (I := I)).mp hwD
       _ = (riemannianEDist I x
             (expMapIntrinsic (I := I) g hEnorm x v)).toReal := by
         rw [heq]
-      _ = L := ((mem_segDom (I := I)).mp hvD).symm
+      _ = L := ((mem_segmentDom (I := I)).mp hvD).symm
   by_cases hv0 : v = 0
   · subst v
     have hL0 : L = 0 := by
@@ -304,7 +304,7 @@ theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
           rw [sqrt_gInner_smul_self (I := I) g x hc0.le v]
         _ = (riemannianEDist I x
             (expMapIntrinsic (I := I) g hEnorm x (c • v))).toReal :=
-          (mem_segDom (I := I)).mp hcv
+          (mem_segmentDom (I := I)).mp hcv
     rw [← ENNReal.ofReal_toReal
       (riemannianEDist_ne_top (I := I) x
         (expMapIntrinsic (I := I) g hEnorm x (c • v)))]
@@ -328,14 +328,14 @@ theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
       (hσ_geo.isGeodesicOn (Icc 0 ell))
       hγw_smooth hσ_smooth
       (fun t _ => hγw_unit t) (fun t _ => hσ_unit t) hjunc hmin
-  have hσvel :
+  have hσvelocity :
       (mfderiv 𝓘(ℝ, ℝ) I σ 0 (1 : ℝ) : E) = (a : E) := by
     simpa only [σ] using
       (intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm (γv L) a)
   have hvel :
       (mfderiv 𝓘(ℝ, ℝ) I γw L (1 : ℝ) : E) =
         (mfderiv 𝓘(ℝ, ℝ) I γv L (1 : ℝ) : E) := by
-    rw [hmatch, hσvel]
+    rw [hmatch, hσvelocity]
   have hcontw :=
     intrinsicGeodesic_continuation (I := I) g hEnorm x z L
   have hfoot : γw L = γv L :=
@@ -383,14 +383,14 @@ theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segInt_no_conj [PseudoEMetricSpace M]
+theorem segmentInt_no_conj [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     {x : M} {v : TangentSpace I x}
-    (hv : v ∈ SegInt (I := I) g hEnorm x) :
+    (hv : v ∈ SegmentInt (I := I) g hEnorm x) :
     ¬ IsConjVec (I := I) g hEnorm x (v : E) := by
   let : CompleteSpace E := FiniteDimensional.complete ℝ E
   by_cases hv0 : v = 0
@@ -409,13 +409,13 @@ theorem segInt_no_conj [PseudoEMetricSpace M]
   have ht : c⁻¹ ∈ Ioo (0 : ℝ) 1 :=
     ⟨inv_pos.mpr hc0, (inv_lt_one₀ hc0).2 hc⟩
   have hno :=
-    segDom_no_conj (I := I) g hEnorm hcv hcv0 c⁻¹ ht
+    segmentDom_no_conj (I := I) g hEnorm hcv hcv0 c⁻¹ ht
   simpa only [smul_smul, inv_mul_cancel₀ hc0.ne', one_smul] using hno
 
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segEnd_ray_sub [PseudoEMetricSpace M]
+theorem segmentEnd_ray_sub [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -424,7 +424,7 @@ theorem segEnd_ray_sub [PseudoEMetricSpace M]
     (x : M) (u : TangentSpace I x) :
     ({r : Ioi (0 : ℝ) |
       r.1 • u ∈
-        SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x} :
+        SegmentDom (I := I) g hEnorm x \ SegmentInt (I := I) g hEnorm x} :
       Set (Ioi (0 : ℝ))).Subsingleton := by
   rintro ⟨a, ha0⟩ ⟨haD, haI⟩ ⟨b, hb0⟩ ⟨hbD, hbI⟩
   have ha_pos : 0 < a := ha0
@@ -446,7 +446,7 @@ theorem segEnd_ray_sub [PseudoEMetricSpace M]
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segEnd_zero [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentEnd_zero [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -455,18 +455,18 @@ theorem segEnd_zero [ConnectedSpace M] [PseudoEMetricSpace M]
     (x : M) :
     (volume : Measure E)
         ((normalFrame (I := I) (E := E) g x) ⁻¹'
-          (SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x)) = 0 := by
+          (SegmentDom (I := I) g hEnorm x \ SegmentInt (I := I) g hEnorm x)) = 0 := by
   classical
   let : Nontrivial E :=
     Module.nontrivial_of_finrank_pos
       (show 0 < Module.finrank ℝ E from NeZero.pos _)
   let L := normalFrame (I := I) (E := E) g x
   let B : Set E :=
-    L ⁻¹' (SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x)
+    L ⁻¹' (SegmentDom (I := I) g hEnorm x \ SegmentInt (I := I) g hEnorm x)
   let f : E → ℝ≥0∞ := B.indicator fun _ => 1
   have hB : MeasurableSet B := by
-    exact ((measurableSet_segDom (I := I) g hEnorm x).diff
-      (measurableSet_segInt (I := I) g hEnorm x)).preimage
+    exact ((measurableSet_segmentDom (I := I) g hEnorm x).diff
+      (measurableSet_segmentInt (I := I) g hEnorm x)).preimage
         L.continuous.measurable
   have hf : Measurable f :=
     measurable_const.indicator hB
@@ -488,18 +488,18 @@ theorem segEnd_zero [ConnectedSpace M] [PseudoEMetricSpace M]
       have hAsub : A.Subsingleton := by
         intro r hr s hs
         change L (r.1 • u.1) ∈
-          SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x at hr
+          SegmentDom (I := I) g hEnorm x \ SegmentInt (I := I) g hEnorm x at hr
         change L (s.1 • u.1) ∈
-          SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x at hs
+          SegmentDom (I := I) g hEnorm x \ SegmentInt (I := I) g hEnorm x at hs
         have hr' : (r : ℝ) • L (u : E) ∈
-            SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x := by
+            SegmentDom (I := I) g hEnorm x \ SegmentInt (I := I) g hEnorm x := by
           rw [← map_smul]
           exact hr
         have hs' : (s : ℝ) • L (u : E) ∈
-            SegDom (I := I) g hEnorm x \ SegInt (I := I) g hEnorm x := by
+            SegmentDom (I := I) g hEnorm x \ SegmentInt (I := I) g hEnorm x := by
           rw [← map_smul]
           exact hs
-        exact (segEnd_ray_sub (I := I) g hEnorm x (L u.1)) hr' hs'
+        exact (segmentEnd_ray_sub (I := I) g hEnorm x (L u.1)) hr' hs'
       have hbase :
           (Measure.comap ((↑) : Ioi (0 : ℝ) → ℝ) volume) A = 0 := by
         rw [comap_subtype_coe_apply measurableSet_Ioi]

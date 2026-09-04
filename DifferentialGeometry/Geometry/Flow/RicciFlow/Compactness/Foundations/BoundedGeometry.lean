@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
@@ -72,5 +72,5 @@ structure FlowDerivativeInput
   atZeroGeom : SeqBoundedGeometry (I := I) (X.atZero (I := I))
 
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

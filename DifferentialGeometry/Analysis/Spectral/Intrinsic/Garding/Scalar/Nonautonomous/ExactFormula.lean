@@ -61,8 +61,8 @@ theorem lapHs_norm_on
         simpa only [Φ₁, K] using
           connTrace_rev_on (I := I) (M := M) g_fam hG q (T : ℝ) hback)
   intro m
-  obtain ⟨A₂, hA₂, hApp₂⟩ := appHs_unif (I := I) (M := M) q 2 0 m
-  obtain ⟨A₁, hA₁, hApp₁⟩ := appHs_unif (I := I) (M := M) q 1 0 m
+  obtain ⟨A₂, hA₂, hApp₂⟩ := appHs_uniform (I := I) (M := M) q 2 0 m
+  obtain ⟨A₁, hA₁, hApp₁⟩ := appHs_uniform (I := I) (M := M) q 1 0 m
   let C₂ : ℝ := A₂ * Real.sqrt (∑ i ∈ Finset.range (m + 1), B₂ i)
   let C₁ : ℝ := A₁ * Real.sqrt (∑ i ∈ Finset.range (m + 1), B₁ i)
   let D₂ := iterCovGradHs (I := I) (M := M) q 0 2 m
@@ -172,7 +172,7 @@ theorem lapHs_A20_on
           (scalarLapDiffCc (I := I) q h U) by
       change K (lapDiffHs (I := I) (M := M) q h 0
           (J (ccTensorToHs (I := I) (M := M) q 0 2 U))) = _
-      rw [hJ, lapHs_core (I := I) (M := M)]
+      rw [hJ, lapDiffHs_apply_ccTensorToHs (I := I) (M := M)]
       apply TensorHs.ext
       funext i
       rfl]

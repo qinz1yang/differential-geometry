@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -29,7 +29,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 
-theorem BoundedGeometryNormalChartData.inv_chart_conv
+theorem BoundedGeometryNormalChartData.inv_chart_convergence
     (inp : MetricCompactCore (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -96,7 +96,7 @@ theorem BoundedGeometryNormalChartData.inv_chart_conv
         (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.hom w))
     ∃ Vout : Set E,
       IsOpen Vout ∧ IsCompact (closure Vout) ∧ K ⊆ Vout ∧
-        MapCInfConvOnCompacts Vout G id ∧
+        MapCInfConvergenceOnCompacts Vout G id ∧
         ∀ᶠ n in atTop,
           ContDiffOn Real (∞ : WithTop ℕ∞) (G n) Vout := by
   classical
@@ -146,7 +146,7 @@ theorem BoundedGeometryNormalChartData.inv_chart_conv
       (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.hom w))
   change ∃ Vout : Set E,
     IsOpen Vout ∧ IsCompact (closure Vout) ∧ K ⊆ Vout ∧
-      MapCInfConvOnCompacts Vout G id ∧
+      MapCInfConvergenceOnCompacts Vout G id ∧
       ∀ᶠ n in atTop,
         ContDiffOn Real (∞ : WithTop ℕ∞) (G n) Vout
   have hstage0 := hstage
@@ -172,9 +172,9 @@ theorem BoundedGeometryNormalChartData.inv_chart_conv
     filter_upwards [hsource] with n hn
     simpa only [Lphi] using
       hn.mono_left (subset_closure.trans hQW)
-  have hAconv : MapCInfConvOnCompacts Q A id := by
+  have hAconv : MapCInfConvergenceOnCompacts Q A id := by
     simpa only [A, Lphi] using
-      HasStageJetDataOn.chart_conv (I := I) inp P L hr phi hphi
+      HasStageJetDataOn.chart_convergence (I := I) inp P L hr phi hphi
         d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha Q hQint
         kn ln hkn hln hsourceQ
@@ -223,10 +223,10 @@ theorem BoundedGeometryNormalChartData.inv_chart_conv
           ContDiffAt Real ∞ (A n) z ∧
           ∀ j ≤ 1, mapDerivNorm j (A n) id z ≤ (1 / 2 : Real) := by
       have hzInt : z ∈ interior (C0 alpha) := hWint hz
-      have hzSrc := hsrc hz
+      have hzSource := hsrc hz
       simpa only [A, F, chiK, chiL, ck, cl, Yk, Yl, Lphi] using
         hNjet (kn n) hnkJet (ln n) hnlJet alpha z
-          (interior_subset hzInt) hzInt hzSrc
+          (interior_subset hzInt) hzInt hzSource
     have hAcd : ContDiffOn Real ∞ (A n) W := fun z hz ↦
       (hjet z hz).2.1.contDiffWithinAt
     have hAinv : ∀ z ∈ W,
@@ -322,5 +322,5 @@ theorem BoundedGeometryNormalChartData.inv_chart_conv
     exact ⟨hAloc, hAinj, hleft⟩
   exact exists_inv_seq hQ hW hK hKQ hQW hAconv hgood
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

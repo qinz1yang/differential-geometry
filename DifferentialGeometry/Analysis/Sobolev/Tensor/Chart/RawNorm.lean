@@ -271,7 +271,7 @@ theorem exists_per_chart_leibniz_multiplier_bound
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hη_def
   have hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η :=
     chartSmoothExt_chartAtlasPOU_contDiff (I := I) (M := M) α
-  have hη_cpt : HasCompactSupport η :=
+  have hη_compact : HasCompactSupport η :=
     chartSmoothExt_chartAtlasPOU_hasCompactSupport (I := I) (M := M) α
   obtain ⟨C, hC_nn, hC_bound⟩ :=
     exists_iteratedFDeriv_bound_chartSmoothExt_chartAtlasPOU

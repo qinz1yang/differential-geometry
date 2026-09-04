@@ -59,7 +59,7 @@ section BalLadder
 variable (g₀ : SmoothRiemannianMetric I M)
 
 
-lemma DeTurckRemainderPrincipalTerm.grid_core (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+lemma DeTurckRemainderPrincipalTerm.grid_bound (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
     (T₀ : SmoothCcTensor g₀ 0 2)
     (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T₀‖ ≤ R₀)
@@ -443,7 +443,7 @@ lemma DeTurckRemainderPrincipalTerm.principal_block (g₀ : SmoothRiemannianMetr
           ((∑ l ∈ Finset.range (j + 1), (CDS l) ^ 2) * (1 + R₀) ^ 2))),
     fun q j => Real.sqrt_nonneg _, ?_⟩
   intro C₀ T₀ hball henv q j
-  refine DeTurckRemainderPrincipalTerm.grid_core (I := I) (M := M) g₀ a ha_super hR₀ T₀ hball q j 0 2
+  refine DeTurckRemainderPrincipalTerm.grid_bound (I := I) (M := M) g₀ a ha_super hR₀ T₀ hball q j 0 2
     (Module.finrank ℝ E / 2 + 3) (by omega) (by omega) (by omega) (by omega)
     (iteratedCovGrad (I := I) g₀ 0 2 j
       (operatorFieldApply (I := I) (M := M) g₀ 2 2
@@ -711,7 +711,7 @@ lemma DeTurckRemainderPrincipalTerm.mixed_blocks (g₀ : SmoothRiemannianMetric 
             ((∑ l ∈ Finset.range (j + 1), (CDS0 (1 + l)) ^ 2) * (1 + R₀) ^ 2))) *
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j + 2 * q + 3 : ℕ) : ℝ) T₀‖ := by
     intro sz Z hpt
-    refine DeTurckRemainderPrincipalTerm.grid_core (I := I) (M := M) g₀ a ha_super hR₀ T₀ hball q j 1 1
+    refine DeTurckRemainderPrincipalTerm.grid_bound (I := I) (M := M) g₀ a ha_super hR₀ T₀ hball q j 1 1
       (Module.finrank ℝ E / 2 + 2) (by omega) (by omega) (by omega) (by omega)
       Z (fun i => 2 + (1 + i))
       (fun i => iteratedCovGrad (I := I) g₀ 2 2 (1 + i) Ĉq)

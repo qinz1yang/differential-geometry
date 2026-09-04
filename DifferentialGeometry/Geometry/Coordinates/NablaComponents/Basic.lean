@@ -76,8 +76,8 @@ theorem tensor0SModelAt_coordComponent0SAt {s : ℕ} (x₀ : M)
       A (fun a => (Module.finBasis 𝕜 E) (slots a))
   congr 1
   funext a
-  have hx_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
-  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+  have hx_source : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
+  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_source]
   rw [mfderivWithin_range_extChartAt_symm]
   rfl
 
@@ -113,13 +113,13 @@ private theorem model_component_eq_coord_component_comp_eventually {s : ℕ}
         (fun a => coordinateFrameAt (I := I) x₀ (slots a) ((extChartAt I x₀).symm y))
   congr 1
   funext a
-  have hy_src : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
+  have hy_source : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x₀).map_target hy
   have hy_base : (extChartAt I x₀).symm y ∈ coordinateFrameSet (I := I) x₀ := by
-    simpa [coordinateFrameSet, coordinateTrivializationAt] using hy_src
+    simpa [coordinateFrameSet, coordinateTrivializationAt] using hy_source
   rw [coordinateFrameAt_apply_of_mem (I := I) hy_base (slots a)]
-  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hy_src]
+  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hy_source]
   rfl
 
 omit [IsManifold I 2 M] in

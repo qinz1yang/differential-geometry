@@ -74,15 +74,15 @@ theorem eventually_mem_lInjDomain
     refine tendsto_nhdsWithin_iff.2 ⟨hBLim, ?_⟩
     exact Filter.Eventually.of_forall hBPos
   let qact : Nat → Real := fun n ↦
-    lRegAction S T (lRegCurve S T x Z) 0 (B n) / (2 * B n)
+    lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (B n) / (2 * B n)
   have hqactLim : Tendsto qact atTop
       (𝓝 ((S.base.metric T).inner x Z Z)) := by
     simpa only [qact, Function.comp_def] using
-      (tendsto_lRegAction_div_at_zero S hS T x Z hT).comp hBLimGT
+      (tendsto_lRegularizedAction_div_at_zero S hS T x Z hT).comp hBLimGT
   obtain ⟨A, hA⟩ := (Metric.isBounded_range_of_tendsto qact hqactLim).bddAbove
   let A0 : Real := 2 * A
   have hZact (n : Nat) :
-      lRegAction S T (lRegCurve S T x Z) 0 (B n) ≤ A0 * B n := by
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (B n) ≤ A0 * B n := by
     have hq := hA (Set.mem_range_self n)
     rw [div_le_iff₀ (mul_pos (by norm_num) (hBPos n))] at hq
     dsimp only [A0]
@@ -117,8 +117,8 @@ theorem eventually_mem_lInjDomain
     have hsq : (Bt n) ^ 2 ≤ R ^ 2 :=
       (sq_le_sq₀ (hBtPos n).le hR.le).2 (hBtR n)
     exact ⟨by linarith [ht.1], ht.2⟩
-  have hZdom (n : Nat) : Bt n ∈ lRegDomain S T x Z :=
-    mem_lRegDomain_of_time_slab S hS T x Z (Bt n) (hBtPos n).le (hslabBt n)
+  have hZdom (n : Nat) : Bt n ∈ lRegularizedDomain S T x Z :=
+    mem_lRegularizedDomain_of_time_slab S hS T x Z (Bt n) (hBtPos n).le (hslabBt n)
   have hZexp (n : Nat) : (Z, sigmat n) ∈ lExpPosDom S T x := by
     apply (mem_lExpPosDom S T x Z (sigmat n)).2
     refine ⟨hsigmatPos n, (hsigmatPos n).le, ?_⟩
@@ -127,53 +127,53 @@ theorem eventually_mem_lInjDomain
   have hWexists (n : Nat) : ∃ W : TangentSpace I x,
       (W, sigmat n) ∈ lMinDomain S T x ∧
         lExp S T x W (sigmat n) = lExp S T x Z (sigmat n) :=
-    exists_lMinVec_ray S hS T x Z (sigmat n) (hZexp n)
+    exists_lMinimizingVector_ray S hS T x Z (sigmat n) (hZexp n)
   let W : Nat → TangentSpace I x := fun n ↦ (hWexists n).choose
   have hWmin (n : Nat) : (W n, sigmat n) ∈ lMinDomain S T x :=
     (hWexists n).choose_spec.1
   have hWend (n : Nat) :
       lExp S T x (W n) (sigmat n) = lExp S T x Z (sigmat n) :=
     (hWexists n).choose_spec.2
-  have hWdom (n : Nat) : Bt n ∈ lRegDomain S T x (W n) := by
+  have hWdom (n : Nat) : Bt n ∈ lRegularizedDomain S T x (W n) := by
     have hdata := (mem_lExpPosDom S T x (W n) (sigmat n)).1
       ((mem_lMinDomain S T x (W n) (sigmat n)).1 (hWmin n)).1
     simpa only [Bt, sigmat, B, Real.sqrt_sq_eq_abs,
       abs_of_nonneg (hsigmatPos n).le] using hdata.2.2
   have hWact (n : Nat) :
-      lRegAction S T (lRegCurve S T x (W n)) 0 (Bt n) ≤ A0 * Bt n := by
+      lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 (Bt n) ≤ A0 * Bt n := by
     have hminEq := ((mem_lMinDomain S T x (W n) (sigmat n)).1 (hWmin n)).2
     have hcostEq :
-        lRegAction S T (lRegCurve S T x (W n)) 0 (Bt n) =
+        lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 (Bt n) =
           lCost S T x (lExp S T x (W n) (sigmat n)) (sigmat n) := by
       calc
-        lRegAction S T (lRegCurve S T x (W n)) 0 (Bt n) =
-            lLength S T (squareRootReparametrization (lRegCurve S T x (W n))) 0 (sigmat n) := by
+        lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 (Bt n) =
+            lLength S T (squareRootReparametrization (lRegularizedCurve S T x (W n))) 0 (sigmat n) := by
           rw [← hBtSq n]
           simpa only [Real.sqrt_sq_eq_abs, abs_of_nonneg (hBtPos n).le] using
-            (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x (W n))
+            (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T (lRegularizedCurve S T x (W n))
               ((Bt n) ^ 2) (sq_nonneg (Bt n))).symm
         _ = lCost S T x (lExp S T x (W n) (sigmat n)) (sigmat n) := by
           change lLength S T
-            (fun r : Real ↦ lRegCurve S T x (W n) (Real.sqrt r))
+            (fun r : Real ↦ lRegularizedCurve S T x (W n) (Real.sqrt r))
               0 (sigmat n) =
-            lCost S T x (lRegCurve S T x (W n) (Real.sqrt (sigmat n)))
+            lCost S T x (lRegularizedCurve S T x (W n) (Real.sqrt (sigmat n)))
               (sigmat n)
           exact hminEq
     have hcostLe := lCost_le_ray (I := I) S hS T x Z (Bt n)
       (hBtPos n) (hZdom n)
     have hcostLe' :
         lCost S T x (lExp S T x Z (sigmat n)) (sigmat n) ≤
-          lRegAction S T (lRegCurve S T x Z) 0 (Bt n) := by
+          lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (Bt n) := by
       rw [← hBtSq n]
       simpa only [lExp, Real.sqrt_sq_eq_abs, abs_of_nonneg (hBtPos n).le] using hcostLe
     calc
-      lRegAction S T (lRegCurve S T x (W n)) 0 (Bt n) =
+      lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 (Bt n) =
           lCost S T x (lExp S T x (W n) (sigmat n)) (sigmat n) := hcostEq
       _ = lCost S T x (lExp S T x Z (sigmat n)) (sigmat n) := by rw [hWend n]
-      _ ≤ lRegAction S T (lRegCurve S T x Z) 0 (Bt n) := hcostLe'
+      _ ≤ lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (Bt n) := hcostLe'
       _ ≤ A0 * Bt n := hZact (n + N)
   have hWbounded : Bornology.IsBounded (Set.range W) :=
-    isBounded_range_initialVector_of_lRegAction_le_mul_parameter (I := I) S hS T x W Bt R A0 hBtPos hBtR hslab hWdom hWact
+    isBounded_range_initialVector_of_lRegularizedAction_le_mul_parameter (I := I) S hS T x W Bt R A0 hBtPos hBtR hslab hWdom hWact
   obtain ⟨L, hWL⟩ :=
     (Metric.isBounded_iff_subset_closedBall (0 : TangentSpace I x)).1 hWbounded
   let C : Real := max L (dist Z (0 : TangentSpace I x))
@@ -181,7 +181,7 @@ theorem eventually_mem_lInjDomain
     exact Metric.mem_closedBall.mpr ((hWL (Set.mem_range_self n)).trans (le_max_left _ _))
   have hZC : Z ∈ Metric.closedBall (0 : TangentSpace I x) C := by
     exact Metric.mem_closedBall.mpr (le_max_right _ _)
-  obtain ⟨epsC, hepsC, hCinj⟩ := lRegCurve_endpoint_injOn_closedBall_of_small_time S hS T x C hT
+  obtain ⟨epsC, hepsC, hCinj⟩ := lRegularizedCurve_endpoint_injOn_closedBall_of_small_time S hS T x C hT
   have hBC : ∀ᶠ n in atTop, Bt n < epsC := by
     have hBtLim : Tendsto Bt atTop (𝓝 (0 : Real)) := by
       simpa only [Bt, Function.comp_def] using hBLim.comp (tendsto_add_atTop_nat N)

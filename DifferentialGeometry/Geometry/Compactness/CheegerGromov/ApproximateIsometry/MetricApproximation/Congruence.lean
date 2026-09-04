@@ -7,7 +7,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators ENNReal
 open Bundle Manifold
@@ -109,5 +109,5 @@ noncomputable def PartialDiffeomorphMetricApproximationBounds.congrSet {K K' : S
 
 end DataTransport
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

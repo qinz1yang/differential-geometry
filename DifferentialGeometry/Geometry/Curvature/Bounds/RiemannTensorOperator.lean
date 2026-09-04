@@ -26,13 +26,13 @@ omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpac
 theorem rm04_eq_inner
     (g : SmoothRiemannianMetric I M) (q : M)
     (J V W : TangentSpace I q) :
-    metricRm04StdAt (I := I) (M := M) g q J V V W =
+    metricRm04StandardAt (I := I) (M := M) g q J V V W =
       g.inner q W
         (riemannOp (LeviCivita (I := I) g) q J V V) := by
   have hcov :=
     DifferentialGeometry.leviCivita_contMDiffCovariantDerivativeLocally
       (I := I) g
-  rw [metricRm04StdAt_apply,
+  rw [metricRm04StandardAt_apply,
     DifferentialGeometry.metricRm04At_eq_riemannCurvature04At,
     CovariantDerivative.riemannCurvature04At_apply_const,
     DifferentialGeometry.connectionRiemannCurvatureField_tangentConst_eq_riemannOp
@@ -118,7 +118,7 @@ theorem riemann_quad_le
           (metricRm04At (I := I) (M := M) g q)) *
             (g.inner q J J * g.inner q V V) := by
     rw [← rm04_eq_inner (I := I) g q J V J]
-    simpa only [metricRm04StdAt_apply] using hCS
+    simpa only [metricRm04StandardAt_apply] using hCS
   calc
     g.inner q
         (riemannOp (LeviCivita (I := I) g) q J V V) J =
@@ -180,13 +180,13 @@ theorem riemannOp_sq_le
       have habs : |g.inner q (basis i) Rv| <= B := by
         rw [← rm04_eq_inner (I := I) g q J V (basis i)]
         calc
-          |metricRm04StdAt (I := I) (M := M) g q J V V (basis i)| <=
+          |metricRm04StandardAt (I := I) (M := M) g q J V V (basis i)| <=
               Real.sqrt (normSq0S (I := I) g q 4
                 (metricRm04At (I := I) (M := M) g q)) *
                 (∏ a : Fin 4, Real.sqrt (g.inner q
                   ((vec4 (I := I) J V V (basis i)) a)
                   ((vec4 (I := I) J V V (basis i)) a))) := by
-            simpa [metricRm04StdAt_apply] using hCS
+            simpa [metricRm04StandardAt_apply] using hCS
           _ <= B := by
             simpa only [B, mul_assoc] using
               mul_le_mul_of_nonneg_left hprod (Real.sqrt_nonneg _)

@@ -68,7 +68,7 @@ private lemma iteratedPartial_wkpNorm_le_of_chart_perK
                   g r s) i‖ := by
   classical
   intro i j hj idx K'
-  have h_chart_cpt :
+  have h_chart_compact :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (K' + m + 3) 2
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
@@ -80,7 +80,7 @@ private lemma iteratedPartial_wkpNorm_le_of_chart_perK
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖ :=
     hCeig_bd i (K' + m + 3)
-  have h_chart_cpt_memWkp :
+  have h_chart_compact_memWkp :
       MemWkp (d := Module.finrank ℝ E) ((2 + K') + j) 2
           (eigenvectorChartComponentFun (I := I) (M := M)
             g r s i α P₀)
@@ -89,7 +89,7 @@ private lemma iteratedPartial_wkpNorm_le_of_chart_perK
       g r s i ((2 + K') + j) α P₀
   obtain ⟨_, h_partial⟩ :=
     eigenvectorChartIteratedPartial_wkpNorm_le_of_memWkp
-      (I := I) (M := M) g r s i α P₀ j (2 + K') h_chart_cpt_memWkp idx
+      (I := I) (M := M) g r s i α P₀ j (2 + K') h_chart_compact_memWkp idx
   have h_order_le : (2 + K') + j ≤ K' + m + 3 := by omega
   have h_mono :
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) ((2 + K') + j) 2
@@ -101,7 +101,7 @@ private lemma iteratedPartial_wkpNorm_le_of_chart_perK
               g r s i α P₀)
             (chartTargetEuclid (I := I) (M := M) α) :=
     wkpNorm_mono_order (d := Module.finrank ℝ E) h_order_le _ _
-  exact h_partial.trans (h_mono.trans h_chart_cpt)
+  exact h_partial.trans (h_mono.trans h_chart_compact)
 
 omit [CompleteSpace E] in
 theorem eigenvectorChartRHSDiff_eLpNorm_le_chartcpt

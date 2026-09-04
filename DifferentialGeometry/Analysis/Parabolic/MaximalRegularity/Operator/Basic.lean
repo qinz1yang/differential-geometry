@@ -33,38 +33,38 @@ private local instance : BorelSpace M := ⟨rfl⟩
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ}
 variable {a : ℝ} {T : ℝ}
 
-def solModeCoeff (hT : 0 ≤ T)
+def solutionModeCoeff (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) : timeL2 ℝ T :=
-  perModeConvL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
+  perModeConvolutionL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
     (tensor_lambda_nonneg (I := I) (M := M) i) hT
     (timeModeCoeff (I := I) (M := M) f i)
 
 def derivModeCoeff (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) : timeL2 ℝ T :=
-  perModeConvDerivL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
+  perModeConvolutionDerivL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
     (tensor_lambda_nonneg (I := I) (M := M) i) hT
     (timeModeCoeff (I := I) (M := M) f i)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem norm_solModeCoeff_le (hT : 0 ≤ T)
+theorem norm_solutionModeCoeff_le (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
-    ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
+    ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
       T * ‖timeModeCoeff (I := I) (M := M) f i‖ := by
-  rw [solModeCoeff, perModeConvL2_apply]
-  exact norm_perModeConvL2Fun_le (TensorEigenIdx.lambda (I := I) (M := M) i)
+  rw [solutionModeCoeff, perModeConvolutionL2_apply]
+  exact norm_perModeConvolutionL2Fun_le (TensorEigenIdx.lambda (I := I) (M := M) i)
     (tensor_lambda_nonneg (I := I) (M := M) i) hT _
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
+theorem lambda_mul_norm_solutionModeCoeff_le (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     TensorEigenIdx.lambda (I := I) (M := M) i *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
       ‖timeModeCoeff (I := I) (M := M) f i‖ := by
-  have hbase := perModeConvL2_sq_le (TensorEigenIdx.lambda (I := I) (M := M) i)
+  have hbase := perModeConvolutionL2_sq_le (TensorEigenIdx.lambda (I := I) (M := M) i)
     (tensor_lambda_nonneg (I := I) (M := M) i) hT
     (timeModeCoeff (I := I) (M := M) f i)
   rw [norm_smul, Real.norm_eq_abs,
@@ -72,43 +72,43 @@ theorem lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
   exact hbase
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem one_add_lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
+theorem one_add_lambda_mul_norm_solutionModeCoeff_le (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (1 + TensorEigenIdx.lambda (I := I) (M := M) i) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
       (1 + T) * ‖timeModeCoeff (I := I) (M := M) f i‖ := by
-  have h1 := norm_solModeCoeff_le (I := I) (M := M) (a := a) hT f i
-  have h2 := lambda_mul_norm_solModeCoeff_le (I := I) (M := M) (a := a) hT f i
+  have h1 := norm_solutionModeCoeff_le (I := I) (M := M) (a := a) hT f i
+  have h2 := lambda_mul_norm_solutionModeCoeff_le (I := I) (M := M) (a := a) hT f i
   have hexpand : (1 + TensorEigenIdx.lambda (I := I) (M := M) i) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖
-      = ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ +
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖
+      = ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ +
         TensorEigenIdx.lambda (I := I) (M := M) i *
-          ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ := by ring
+          ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ := by ring
   rw [hexpand]
-  calc ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ +
+  calc ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ +
         TensorEigenIdx.lambda (I := I) (M := M) i *
-          ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖
+          ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖
       ≤ T * ‖timeModeCoeff (I := I) (M := M) f i‖ +
           ‖timeModeCoeff (I := I) (M := M) f i‖ := by gcongr
     _ = (1 + T) * ‖timeModeCoeff (I := I) (M := M) f i‖ := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem sqrt_lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
+theorem sqrt_lambda_mul_norm_solutionModeCoeff_le (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     Real.sqrt (TensorEigenIdx.lambda (I := I) (M := M) i) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
       Real.sqrt T * ‖timeModeCoeff (I := I) (M := M) f i‖ := by
   set lam := TensorEigenIdx.lambda (I := I) (M := M) i with hlam_def
   have hlam_nn : 0 ≤ lam := tensor_lambda_nonneg (I := I) (M := M) i
-  set φ := ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ with hφ_def
+  set φ := ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ with hφ_def
   set ff := ‖timeModeCoeff (I := I) (M := M) f i‖ with hff_def
   have hφ_nn : 0 ≤ φ := norm_nonneg _
   have hff_nn : 0 ≤ ff := norm_nonneg _
-  have h1 : φ ≤ T * ff := norm_solModeCoeff_le (I := I) (M := M) (a := a) hT f i
+  have h1 : φ ≤ T * ff := norm_solutionModeCoeff_le (I := I) (M := M) (a := a) hT f i
   have h2 : lam * φ ≤ ff :=
-    lambda_mul_norm_solModeCoeff_le (I := I) (M := M) (a := a) hT f i
+    lambda_mul_norm_solutionModeCoeff_le (I := I) (M := M) (a := a) hT f i
   have hlhs_nn : 0 ≤ Real.sqrt lam * φ :=
     mul_nonneg (Real.sqrt_nonneg _) hφ_nn
   have hrhs_nn : 0 ≤ Real.sqrt T * ff :=
@@ -125,16 +125,16 @@ theorem sqrt_lambda_mul_norm_solModeCoeff_le (hT : 0 ≤ T)
   nlinarith [hsq_le, hlhs_nn, hrhs_nn]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem one_add_lambda_sqrt_mul_norm_solModeCoeff_le (hT : 0 < T) (hT1 : T ≤ 1)
+theorem one_add_lambda_sqrt_mul_norm_solutionModeCoeff_le (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (1 + TensorEigenIdx.lambda (I := I) (M := M) i) ^ (1 / 2 : ℝ) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ≤
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ≤
       2 * Real.sqrt T * ‖timeModeCoeff (I := I) (M := M) f i‖ := by
   set lam := TensorEigenIdx.lambda (I := I) (M := M) i with hlam_def
   have hlam_nn : 0 ≤ lam := tensor_lambda_nonneg (I := I) (M := M) i
   have hbase_nn : (0 : ℝ) ≤ 1 + lam := by linarith
-  set φ := ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ with hφ_def
+  set φ := ‖solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ with hφ_def
   set ff := ‖timeModeCoeff (I := I) (M := M) f i‖ with hff_def
   have hφ_nn : 0 ≤ φ := norm_nonneg _
   have hff_nn : 0 ≤ ff := norm_nonneg _
@@ -155,10 +155,10 @@ theorem one_add_lambda_sqrt_mul_norm_solModeCoeff_le (hT : 0 < T) (hT1 : T ≤ 1
       have hsqrt_le_one : Real.sqrt T ≤ 1 :=
         Real.sqrt_le_one.mpr hT1
       nlinarith [Real.sqrt_nonneg T, hsqrt_ge, hsqrt_le_one]
-    calc φ ≤ T * ff := norm_solModeCoeff_le (I := I) (M := M) (a := a) hT.le f i
+    calc φ ≤ T * ff := norm_solutionModeCoeff_le (I := I) (M := M) (a := a) hT.le f i
       _ ≤ Real.sqrt T * ff := mul_le_mul_of_nonneg_right hTle hff_nn
   have hhalf : Real.sqrt lam * φ ≤ Real.sqrt T * ff :=
-    sqrt_lambda_mul_norm_solModeCoeff_le (I := I) (M := M) (a := a) hT.le f i
+    sqrt_lambda_mul_norm_solutionModeCoeff_le (I := I) (M := M) (a := a) hT.le f i
   calc (1 + lam) ^ (1 / 2 : ℝ) * φ
       ≤ (1 + Real.sqrt lam) * φ := mul_le_mul_of_nonneg_right hsqrt_le hφ_nn
     _ = φ + Real.sqrt lam * φ := by ring
@@ -171,7 +171,7 @@ theorem norm_derivModeCoeff_le (hT : 0 ≤ T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     ‖derivModeCoeff (I := I) (M := M) (a := a) hT f i‖ ≤
       2 * ‖timeModeCoeff (I := I) (M := M) f i‖ :=
-  perModeConvDerivL2_sq_le (TensorEigenIdx.lambda (I := I) (M := M) i)
+  perModeConvolutionDerivL2_sq_le (TensorEigenIdx.lambda (I := I) (M := M) i)
     (tensor_lambda_nonneg (I := I) (M := M) i) hT
     (timeModeCoeff (I := I) (M := M) f i)
 
@@ -187,35 +187,35 @@ private theorem tensorSobolevWeight_add_two
     show ((2 : ℝ)) = ((2 : ℕ) : ℝ) from by norm_num, Real.rpow_natCast]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem weighted_solModeCoeff_le (hT : 0 ≤ T)
+theorem weighted_solutionModeCoeff_le (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorSobolevWeight (I := I) (M := M) i (a + 2) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2 ≤
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2 ≤
       (1 + T) ^ 2 * (tensorSobolevWeight (I := I) (M := M) i a *
         ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2) := by
-  have hperMode := one_add_lambda_mul_norm_solModeCoeff_le (I := I) (M := M)
+  have hperMode := one_add_lambda_mul_norm_solutionModeCoeff_le (I := I) (M := M)
     (a := a) hT f i
   have hwa_nonneg : 0 ≤ tensorSobolevWeight (I := I) (M := M) i a :=
     tensorSobolevWeight_nonneg (I := I) (M := M) i a
   have hlam_nonneg : 0 ≤ 1 + TensorEigenIdx.lambda (I := I) (M := M) i := by
     have := tensor_lambda_nonneg (I := I) (M := M) i; linarith
-  have hsol_nonneg : 0 ≤ ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ :=
+  have hsol_nonneg : 0 ≤ ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ :=
     norm_nonneg _
   have hsq : ((1 + TensorEigenIdx.lambda (I := I) (M := M) i) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖) ^ 2 ≤
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖) ^ 2 ≤
       ((1 + T) * ‖timeModeCoeff (I := I) (M := M) f i‖) ^ 2 := by
     have hrhs_nonneg : 0 ≤ (1 + T) * ‖timeModeCoeff (I := I) (M := M) f i‖ :=
       mul_nonneg (by linarith) (norm_nonneg _)
     have hlhs_nonneg : 0 ≤ (1 + TensorEigenIdx.lambda (I := I) (M := M) i) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ :=
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ :=
       mul_nonneg hlam_nonneg hsol_nonneg
     nlinarith [hperMode, hlhs_nonneg, hrhs_nonneg]
   calc tensorSobolevWeight (I := I) (M := M) i (a + 2) *
-          ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2
+          ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2
       = tensorSobolevWeight (I := I) (M := M) i a *
           (((1 + TensorEigenIdx.lambda (I := I) (M := M) i) *
-            ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖) ^ 2) := by
+            ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖) ^ 2) := by
         rw [tensorSobolevWeight_add_two (I := I) (M := M) i a]; ring
     _ ≤ tensorSobolevWeight (I := I) (M := M) i a *
           (((1 + T) * ‖timeModeCoeff (I := I) (M := M) f i‖) ^ 2) :=
@@ -235,40 +235,40 @@ private theorem tensorSobolevWeight_add_one
     Real.rpow_one]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem weighted_solModeCoeff_Ha1_le (hT : 0 < T) (hT1 : T ≤ 1)
+theorem weighted_solutionModeCoeff_Ha1_le (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ^ 2 ≤
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ^ 2 ≤
       (2 * Real.sqrt T) ^ 2 * (tensorSobolevWeight (I := I) (M := M) i a *
         ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2) := by
   set lam := TensorEigenIdx.lambda (I := I) (M := M) i with hlam_def
   have hlam_nn : 0 ≤ lam := tensor_lambda_nonneg (I := I) (M := M) i
   have hbase_nn : (0 : ℝ) ≤ 1 + lam := by linarith
-  have hperMode := one_add_lambda_sqrt_mul_norm_solModeCoeff_le (I := I) (M := M)
+  have hperMode := one_add_lambda_sqrt_mul_norm_solutionModeCoeff_le (I := I) (M := M)
     (a := a) hT hT1 f i
   have hwa_nonneg : 0 ≤ tensorSobolevWeight (I := I) (M := M) i a :=
     tensorSobolevWeight_nonneg (I := I) (M := M) i a
-  have hsol_nonneg : 0 ≤ ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ :=
+  have hsol_nonneg : 0 ≤ ‖solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ :=
     norm_nonneg _
   have hweight_sq : (1 + lam) = ((1 + lam) ^ (1 / 2 : ℝ)) ^ 2 := by
     rw [← Real.rpow_natCast ((1 + lam) ^ (1 / 2 : ℝ)) 2, ← Real.rpow_mul hbase_nn]
     norm_num
   have hsq : ((1 + lam) ^ (1 / 2 : ℝ) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖) ^ 2 ≤
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i‖) ^ 2 ≤
       (2 * Real.sqrt T * ‖timeModeCoeff (I := I) (M := M) f i‖) ^ 2 := by
     have hlhs_nonneg : 0 ≤ (1 + lam) ^ (1 / 2 : ℝ) *
-        ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ :=
+        ‖solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ :=
       mul_nonneg (Real.rpow_nonneg hbase_nn _) hsol_nonneg
     have hrhs_nonneg : 0 ≤ 2 * Real.sqrt T *
         ‖timeModeCoeff (I := I) (M := M) f i‖ :=
       mul_nonneg (by positivity) (norm_nonneg _)
     nlinarith [hperMode, hlhs_nonneg, hrhs_nonneg]
   calc tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-          ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ^ 2
+          ‖solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ^ 2
       = tensorSobolevWeight (I := I) (M := M) i a *
           (((1 + lam) ^ (1 / 2 : ℝ) *
-            ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖) ^ 2) := by
+            ‖solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i‖) ^ 2) := by
         rw [tensorSobolevWeight_add_one (I := I) (M := M) i a, hlam_def]
         rw [mul_pow]
         rw [← hweight_sq]; ring
@@ -280,12 +280,12 @@ theorem weighted_solModeCoeff_Ha1_le (hT : 0 < T) (hT1 : T ≤ 1)
           ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2) := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem summable_solModeCoeff_Ha1 (hT : 0 < T) (hT1 : T ≤ 1)
+theorem summable_solutionModeCoeff_Ha1 (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     Summable (fun i => tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-      ‖solModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ^ 2) := by
+      ‖solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i‖ ^ 2) := by
   have hdom : Summable (fun i => (2 * Real.sqrt T) ^ 2 *
       (tensorSobolevWeight (I := I) (M := M) i a *
         ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2)) :=
@@ -294,15 +294,15 @@ theorem summable_solModeCoeff_Ha1 (hT : 0 < T) (hT1 : T ≤ 1)
   refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_) hdom
   · exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 1))
       (sq_nonneg _)
-  · exact weighted_solModeCoeff_Ha1_le (I := I) (M := M) (a := a) hT hT1 f i
+  · exact weighted_solutionModeCoeff_Ha1_le (I := I) (M := M) (a := a) hT hT1 f i
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem summable_solModeCoeff (hT : 0 ≤ T)
+theorem summable_solutionModeCoeff (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     Summable (fun i => tensorSobolevWeight (I := I) (M := M) i (a + 2) *
-      ‖solModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2) := by
+      ‖solutionModeCoeff (I := I) (M := M) (a := a) hT f i‖ ^ 2) := by
   have hdom : Summable (fun i => (1 + T) ^ 2 *
       (tensorSobolevWeight (I := I) (M := M) i a *
         ‖timeModeCoeff (I := I) (M := M) f i‖ ^ 2)) :=
@@ -311,7 +311,7 @@ theorem summable_solModeCoeff (hT : 0 ≤ T)
   refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_) hdom
   · exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 2))
       (sq_nonneg _)
-  · exact weighted_solModeCoeff_le (I := I) (M := M) (a := a) hT f i
+  · exact weighted_solutionModeCoeff_le (I := I) (M := M) (a := a) hT f i
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem weighted_derivModeCoeff_le (hT : 0 ≤ T)
@@ -371,88 +371,88 @@ theorem maximalRegularityDerivField_timeModeCoeff (hT : 0 ≤ T)
   timeL2OfModes_timeModeCoeff (I := I) (M := M) _
     (summable_derivModeCoeff (I := I) (M := M) (a := a) hT h_compact f) i
 
-def maximalRegularitySolField (a : ℝ) {T : ℝ} (hT : 0 ≤ T)
+def maximalRegularitySolutionField (a : ℝ) {T : ℝ} (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2 (TensorHs (I := I) (M := M) g r s (a + 2)) T :=
   timeL2OfModes (I := I) (M := M)
-    (fun i => solModeCoeff (I := I) (M := M) (a := a) hT f i)
+    (fun i => solutionModeCoeff (I := I) (M := M) (a := a) hT f i)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maximalRegularitySolField_timeModeCoeff (hT : 0 ≤ T)
+theorem maximalRegularitySolutionField_timeModeCoeff (hT : 0 ≤ T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
-        (maximalRegularitySolField (I := I) (M := M) a hT f) i =
-      solModeCoeff (I := I) (M := M) (a := a) hT f i :=
+        (maximalRegularitySolutionField (I := I) (M := M) a hT f) i =
+      solutionModeCoeff (I := I) (M := M) (a := a) hT f i :=
   timeL2OfModes_timeModeCoeff (I := I) (M := M) _
-    (summable_solModeCoeff (I := I) (M := M) (a := a) hT h_compact f) i
+    (summable_solutionModeCoeff (I := I) (M := M) (a := a) hT h_compact f) i
 
-def maximalRegularitySolFieldHa1 (a : ℝ) {T : ℝ} (hT : 0 < T)
+def maximalRegularitySolutionFieldHa1 (a : ℝ) {T : ℝ} (hT : 0 < T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2 (TensorHs (I := I) (M := M) g r s (a + 1)) T :=
   timeL2OfModes (I := I) (M := M) (σ := a + 1)
-    (fun i => solModeCoeff (I := I) (M := M) (a := a) hT.le f i)
+    (fun i => solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maximalRegularitySolFieldHa1_timeModeCoeff (hT : 0 < T)
+theorem maximalRegularitySolutionFieldHa1_timeModeCoeff (hT : 0 < T)
     (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     timeModeCoeff (I := I) (M := M)
-        (maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f) i =
-      solModeCoeff (I := I) (M := M) (a := a) hT.le f i :=
+        (maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT f) i =
+      solutionModeCoeff (I := I) (M := M) (a := a) hT.le f i :=
   timeL2OfModes_timeModeCoeff (I := I) (M := M) (σ := a + 1) _
-    (summable_solModeCoeff_Ha1 (I := I) (M := M) (a := a) hT hT1
+    (summable_solutionModeCoeff_Ha1 (I := I) (M := M) (a := a) hT hT1
       h_compact f) i
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maximalRegularitySolFieldHa1_norm_le
+theorem maximalRegularitySolutionFieldHa1_norm_le
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    ‖maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f‖ ≤
+    ‖maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT f‖ ≤
       2 * Real.sqrt T * ‖f‖ := by
   refine norm_le_of_weighted_perMode_le (I := I) (M := M) (b := a + 1)
     h_compact (C := 2 * Real.sqrt T)
     (by positivity) _ f (fun i => ?_)
-  rw [maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
+  rw [maximalRegularitySolutionFieldHa1_timeModeCoeff (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 f i]
-  exact weighted_solModeCoeff_Ha1_le (I := I) (M := M) (a := a) hT hT1 f i
+  exact weighted_solutionModeCoeff_Ha1_le (I := I) (M := M) (a := a) hT hT1 f i
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maximalRegularitySolFieldHa1_add (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maximalRegularitySolutionFieldHa1_add (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    maximalRegularitySolFieldHa1 (I := I) (M := M) a hT (f + f') =
-      maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f +
-        maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f' := by
+    maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT (f + f') =
+      maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT f +
+        maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT f' := by
   refine timeModeCoeff_injective (I := I) (M := M) h_compact
     (fun i => ?_)
-  rw [maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
+  rw [maximalRegularitySolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT hT1 (f + f') i,
     timeModeCoeff_add (I := I) (M := M),
-    maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularitySolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT hT1 f i,
-    maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularitySolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT hT1 f' i]
-  rw [solModeCoeff, solModeCoeff, solModeCoeff,
+  rw [solutionModeCoeff, solutionModeCoeff, solutionModeCoeff,
     timeModeCoeff_add (I := I) (M := M), map_add]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maximalRegularitySolFieldHa1_sub (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maximalRegularitySolutionFieldHa1_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    maximalRegularitySolFieldHa1 (I := I) (M := M) a hT (f - f') =
-      maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f -
-        maximalRegularitySolFieldHa1 (I := I) (M := M) a hT f' := by
-  have hadd := maximalRegularitySolFieldHa1_add (I := I) (M := M)
+    maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT (f - f') =
+      maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT f -
+        maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT f' := by
+  have hadd := maximalRegularitySolutionFieldHa1_add (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 (f - f') f'
   rw [sub_add_cancel] at hadd
   rw [hadd, add_sub_cancel_right]
@@ -494,13 +494,13 @@ theorem maximalRegularityOp_norm_Ha2_le
       (I := I) (M := M) g r s))
     (hT : 0 < T)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    ‖maximalRegularitySolField (I := I) (M := M) a hT.le f‖ ≤
+    ‖maximalRegularitySolutionField (I := I) (M := M) a hT.le f‖ ≤
       (1 + T) * ‖f‖ := by
   refine norm_le_of_weighted_perMode_le (I := I) (M := M) (b := a + 2)
     h_compact (C := 1 + T) (by linarith [hT.le]) _ f (fun i => ?_)
-  rw [maximalRegularitySolField_timeModeCoeff (I := I) (M := M)
+  rw [maximalRegularitySolutionField_timeModeCoeff (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT.le f i]
-  exact weighted_solModeCoeff_le (I := I) (M := M) (a := a) hT.le f i
+  exact weighted_solutionModeCoeff_le (I := I) (M := M) (a := a) hT.le f i
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem maximalRegularityOp_norm_deriv_le
@@ -525,7 +525,7 @@ theorem maximalRegularityOp_norm_le
     ‖maximalRegularityOp (I := I) (M := M) a hT f‖ ≤ 2 * ‖f‖ := by
   have hnormsq := TimeSobolev.timeH1.norm_sq_eq
     (maximalRegularityOp (I := I) (M := M) a hT f)
-  have hinit : (maximalRegularityOp (I := I) (M := M) a hT f).init = 0 :=
+  have hinit : (maximalRegularityOp (I := I) (M := M) a hT f).initial = 0 :=
     rfl
   have hderiv : (maximalRegularityOp (I := I) (M := M) a hT f).deriv =
       maximalRegularityDerivField (I := I) (M := M) a hT.le f := rfl

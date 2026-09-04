@@ -67,7 +67,7 @@ noncomputable def lowerScaleForce (g : SmoothRiemannianMetric I M) :
   incl21 (I := I) (M := M) g
     (zeroStateDeTurckRemainderH2 (I := I) (M := M) g g)
 
-theorem lowerScaleForce_core (g : SmoothRiemannianMetric I M) :
+theorem lowerScaleForce_eq_ccTensorToHs (g : SmoothRiemannianMetric I M) :
     lowerScaleForce (I := I) (M := M) g =
       ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
         (deTurckSmoothRemainder (I := I) g g

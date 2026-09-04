@@ -42,33 +42,33 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-private def chartSrcPreimage (α : M) (θ : EuclN → ℝ) : Set M :=
+private def chartSourcePreimage (α : M) (θ : EuclN → ℝ) : Set M :=
   (fun y : EuclN => (extChartAt I α).symm ((toEuclidean (E := E)).symm y)) ''
     (tsupport θ)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
-private lemma chartSrcPreimage_isCompact
+private lemma chartSourcePreimage_isCompact
     (α : M) {θ : EuclN → ℝ} (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    IsCompact (chartSrcPreimage (I := I) (M := M) α θ) := by
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    IsCompact (chartSourcePreimage (I := I) (M := M) α θ) := by
   classical
-  unfold chartSrcPreimage
+  unfold chartSourcePreimage
   exact (hθ_cs : IsCompact (tsupport θ)).image_of_continuousOn
-    ((continuousOn_symm_toEuclideanSymm (I := I) (M := M) α).mono hθ_supp)
+    ((continuousOn_symm_toEuclideanSymm (I := I) (M := M) α).mono hθ_support)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
-private lemma chartSrcPreimage_subset_chartSource
+private lemma chartSourcePreimage_subset_chartSource
     (α : M) {θ : EuclN → ℝ}
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    chartSrcPreimage (I := I) (M := M) α θ ⊆ (chartAt H α).source := by
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    chartSourcePreimage (I := I) (M := M) α θ ⊆ (chartAt H α).source := by
   classical
-  unfold chartSrcPreimage
+  unfold chartSourcePreimage
   intro x hx
-  rcases hx with ⟨y, hy_supp, hxy⟩
+  rcases hx with ⟨y, hy_support, hxy⟩
   rw [← hxy]
-  exact symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α (hθ_supp hy_supp)
+  exact symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α (hθ_support hy_support)
 
 noncomputable def chartPulledIntegralWeight
     (g : SmoothRiemannianMetric I M) (α : M) (θ : EuclN → ℝ) : M → ℝ := by
@@ -103,11 +103,11 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
 private lemma chartPulledIntegralWeight_apply_zero_off_preimage
     (g : SmoothRiemannianMetric I M) (α : M) {θ : EuclN → ℝ} {x : M}
-    (hx_src : x ∈ (chartAt H α).source)
-    (hx_off : x ∉ chartSrcPreimage (I := I) (M := M) α θ) :
+    (hx_source : x ∈ (chartAt H α).source)
+    (hx_off : x ∉ chartSourcePreimage (I := I) (M := M) α θ) :
     chartPulledIntegralWeight (I := I) (M := M) g α θ x = 0 := by
   classical
-  rw [chartPulledIntegralWeight_apply_of_mem (I := I) (M := M) g α θ hx_src]
+  rw [chartPulledIntegralWeight_apply_of_mem (I := I) (M := M) g α θ hx_source]
   have hTx_not_in : (toEuclidean (E := E)) ((extChartAt I α) x) ∉ tsupport θ := by
     intro h_in
     apply hx_off
@@ -121,7 +121,7 @@ private lemma chartPulledIntegralWeight_apply_zero_off_preimage
     rw [hsymm_inv]
     have hxE : x ∈ (extChartAt I α).source := by
       rw [extChartAt_source_eq_chartAt_source (I := I)]
-      exact hx_src
+      exact hx_source
     exact (extChartAt I α).left_inv hxE
   have hθ_zero : θ ((toEuclidean (E := E)) ((extChartAt I α) x)) = 0 :=
     image_eq_zero_of_notMem_tsupport hTx_not_in
@@ -132,51 +132,51 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
 private lemma chartPulledIntegralWeight_support_subset
     (g : SmoothRiemannianMetric I M) (α : M) (θ : EuclN → ℝ) :
     Function.support (chartPulledIntegralWeight (I := I) (M := M) g α θ) ⊆
-      chartSrcPreimage (I := I) (M := M) α θ := by
+      chartSourcePreimage (I := I) (M := M) α θ := by
   classical
   intro x hx
   rw [Function.mem_support] at hx
-  by_cases hx_src : x ∈ (chartAt H α).source
+  by_cases hx_source : x ∈ (chartAt H α).source
   · by_contra hx_not
     have h_zero := chartPulledIntegralWeight_apply_zero_off_preimage
-      (I := I) (M := M) g α (θ := θ) hx_src hx_not
+      (I := I) (M := M) g α (θ := θ) hx_source hx_not
     exact hx h_zero
   · have h_zero := chartPulledIntegralWeight_apply_of_notMem
-      (I := I) (M := M) g α θ hx_src
+      (I := I) (M := M) g α θ hx_source
     exact (hx h_zero).elim
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
 private lemma chartPulledIntegralWeight_tsupport_subset
     (g : SmoothRiemannianMetric I M) (α : M) {θ : EuclN → ℝ}
     (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     tsupport (chartPulledIntegralWeight (I := I) (M := M) g α θ) ⊆
-      chartSrcPreimage (I := I) (M := M) α θ := by
+      chartSourcePreimage (I := I) (M := M) α θ := by
   classical
   refine closure_minimal
     (chartPulledIntegralWeight_support_subset (I := I) (M := M) g α θ) ?_
-  exact (chartSrcPreimage_isCompact (I := I) (M := M) α hθ_cs hθ_supp).isClosed
+  exact (chartSourcePreimage_isCompact (I := I) (M := M) α hθ_cs hθ_support).isClosed
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
 private lemma chartPulledIntegralWeight_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (α : M) {θ : EuclN → ℝ}
     (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     HasCompactSupport (chartPulledIntegralWeight (I := I) (M := M) g α θ) :=
   HasCompactSupport.of_support_subset_isCompact
-    (chartSrcPreimage_isCompact (I := I) (M := M) α hθ_cs hθ_supp)
+    (chartSourcePreimage_isCompact (I := I) (M := M) α hθ_cs hθ_support)
     (chartPulledIntegralWeight_support_subset (I := I) (M := M) g α θ)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
 private lemma chartPulledIntegralWeight_tsupport_subset_chartSource
     (g : SmoothRiemannianMetric I M) (α : M) {θ : EuclN → ℝ}
     (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     tsupport (chartPulledIntegralWeight (I := I) (M := M) g α θ) ⊆
       (chartAt H α).source :=
   (chartPulledIntegralWeight_tsupport_subset (I := I) (M := M) g α
-      hθ_cs hθ_supp).trans
-    (chartSrcPreimage_subset_chartSource (I := I) (M := M) α hθ_supp)
+      hθ_cs hθ_support).trans
+    (chartSourcePreimage_subset_chartSource (I := I) (M := M) α hθ_support)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
@@ -184,10 +184,10 @@ private lemma chart_map_continuousOn (α : M) :
     ContinuousOn (fun x : M => (toEuclidean (E := E)) ((extChartAt I α) x))
       (chartAt H α).source := by
   have h_ext : ContinuousOn (extChartAt I α) (chartAt H α).source := by
-    have h_src : (chartAt H α).source = (extChartAt I α).source :=
+    have h_source : (chartAt H α).source = (extChartAt I α).source :=
       (DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M) α).symm
-    rw [h_src]; exact continuousOn_extChartAt α
+    rw [h_source]; exact continuousOn_extChartAt α
   exact (toEuclidean (E := E)).continuous.continuousOn.comp h_ext (Set.mapsTo_univ _ _)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
@@ -230,7 +230,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
 lemma chartPulledIntegralWeight_continuous
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Continuous (chartPulledIntegralWeight (I := I) (M := M) g α θ) := by
   classical
   refine continuous_iff_continuousAt.mpr fun x => ?_
@@ -239,12 +239,12 @@ lemma chartPulledIntegralWeight_continuous
     have h_contOn := chartPulledIntegralWeight_continuousOn_chartSource
       (I := I) (M := M) g α (θ := θ) hθ_cont
     exact h_contOn.continuousAt (h_open.mem_nhds hx_in)
-  · have h_supp_sub : tsupport (chartPulledIntegralWeight (I := I) (M := M) g α θ) ⊆
+  · have h_support_sub : tsupport (chartPulledIntegralWeight (I := I) (M := M) g α θ) ⊆
         (chartAt H α).source :=
       chartPulledIntegralWeight_tsupport_subset_chartSource
-        (I := I) (M := M) g α hθ_cs hθ_supp
-    have hx_not_supp : x ∉ tsupport (chartPulledIntegralWeight (I := I) (M := M) g α θ) :=
-      fun h_in => hx_in (h_supp_sub h_in)
+        (I := I) (M := M) g α hθ_cs hθ_support
+    have hx_not_support : x ∉ tsupport (chartPulledIntegralWeight (I := I) (M := M) g α θ) :=
+      fun h_in => hx_in (h_support_sub h_in)
     have h_compl_open : IsOpen
         (tsupport (chartPulledIntegralWeight (I := I) (M := M) g α θ))ᶜ :=
       (isClosed_tsupport _).isOpen_compl
@@ -254,12 +254,12 @@ lemma chartPulledIntegralWeight_continuous
       intro y hy
       have hy_off : y ∉ Function.support
           (chartPulledIntegralWeight (I := I) (M := M) g α θ) := by
-        intro h_supp
-        exact hy (subset_tsupport _ h_supp)
+        intro h_support
+        exact hy (subset_tsupport _ h_support)
       exact Function.notMem_support.mp hy_off
     have h_ev : (chartPulledIntegralWeight (I := I) (M := M) g α θ) =ᶠ[𝓝 x]
         (fun _ : M => (0 : ℝ)) := by
-      filter_upwards [h_compl_open.mem_nhds hx_not_supp] with y hy
+      filter_upwards [h_compl_open.mem_nhds hx_not_support] with y hy
       exact h_zero hy
     refine ContinuousAt.congr ?_ h_ev.symm
     exact continuousAt_const
@@ -268,45 +268,45 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma chartPulledIntegralWeight_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     MemLp (chartPulledIntegralWeight (I := I) (M := M) g α θ) 2
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   exact (chartPulledIntegralWeight_continuous (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp).memLp_of_hasCompactSupport
+      hθ_cont hθ_cs hθ_support).memLp_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
 
 noncomputable def chartPulledIntegralWeightLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
   (chartPulledIntegralWeight_memLp (I := I) (M := M) g α
-    hθ_cont hθ_cs hθ_supp).toLp _
+    hθ_cont hθ_cs hθ_support).toLp _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
 private lemma weight_smul_continuous
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {v : M → ℝ} (hv_cont : Continuous v) :
     Continuous (fun x : M => chartPulledIntegralWeight (I := I) (M := M) g α θ x *
       v x) :=
   (chartPulledIntegralWeight_continuous (I := I) (M := M) g α
-    hθ_cont hθ_cs hθ_supp).mul hv_cont
+    hθ_cont hθ_cs hθ_support).mul hv_cont
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M] in
 private lemma weight_smul_tsupport_subset_chartSource
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (v : M → ℝ) :
     tsupport (fun x : M => chartPulledIntegralWeight (I := I) (M := M) g α θ x *
       v x) ⊆ (chartAt H α).source := by
   classical
-  have h_supp_sub : Function.support
+  have h_support_sub : Function.support
       (fun x : M => chartPulledIntegralWeight (I := I) (M := M) g α θ x *
         v x) ⊆
       Function.support (chartPulledIntegralWeight (I := I) (M := M) g α θ) := by
@@ -317,9 +317,9 @@ private lemma weight_smul_tsupport_subset_chartSource
     have h_w_zero : chartPulledIntegralWeight (I := I) (M := M) g α θ x = 0 :=
       Function.notMem_support.mp h_w
     rw [h_w_zero, zero_mul]
-  refine (closure_mono h_supp_sub).trans ?_
+  refine (closure_mono h_support_sub).trans ?_
   exact chartPulledIntegralWeight_tsupport_subset_chartSource
-    (I := I) (M := M) g α hθ_cs hθ_supp
+    (I := I) (M := M) g α hθ_cs hθ_support
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
@@ -342,7 +342,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma integral_weight_smul_eq_chartPulled
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {v : M → ℝ} (hv_cont : Continuous v) :
     ∫ x, chartPulledIntegralWeight (I := I) (M := M) g α θ x * v x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
@@ -353,18 +353,18 @@ private lemma integral_weight_smul_eq_chartPulled
   set f : M → ℝ := fun x : M =>
     chartPulledIntegralWeight (I := I) (M := M) g α θ x * v x with hf_def
   have hf_cont : Continuous f :=
-    weight_smul_continuous (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp hv_cont
-  have hf_supp : tsupport f ⊆ (chartAt H α).source :=
-    weight_smul_tsupport_subset_chartSource (I := I) (M := M) g α hθ_cs hθ_supp v
+    weight_smul_continuous (I := I) (M := M) g α hθ_cont hθ_cs hθ_support hv_cont
+  have hf_support : tsupport f ⊆ (chartAt H α).source :=
+    weight_smul_tsupport_subset_chartSource (I := I) (M := M) g α hθ_cs hθ_support v
   have h_main := integral_riemannianVolumeMeasure_eq_euclidean_chartTarget
-    (I := I) (M := M) g α (f := f) hf_cont hf_supp
+    (I := I) (M := M) g α (f := f) hf_cont hf_support
   rw [h_main]
   rw [DifferentialGeometry.Integral.Measure.map_toEuclidean_modelHaar_eq_volume]
   refine MeasureTheory.setIntegral_congr_fun
     (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
       (I := I) (M := M) α).measurableSet ?_
   intro y hy
-  have hy_src : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+  have hy_source : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
       (chartAt H α).source :=
     symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy
   have h_density_eq : densityOnEuclid (I := I) g α y =
@@ -376,7 +376,7 @@ private lemma integral_weight_smul_eq_chartPulled
     (extChartAt I α).right_inv hy_target
   have h_inv2 : (toEuclidean (E := E)) ((toEuclidean (E := E)).symm y) = y :=
     (toEuclidean (E := E)).apply_symm_apply y
-  have h_pw := density_mul_weight_eq_theta (I := I) (M := M) g α θ hy_src
+  have h_pw := density_mul_weight_eq_theta (I := I) (M := M) g α θ hy_source
   have h_pw' : chartDensity g α ((extChartAt I α).symm
       ((toEuclidean (E := E)).symm y)) *
       chartPulledIntegralWeight (I := I) (M := M) g α θ
@@ -402,32 +402,32 @@ private lemma integral_weight_smul_eq_chartPulled
 noncomputable def chartPulledIntegralCLM
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) →L[ℝ] ℝ :=
   (innerSL ℝ : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) →L[ℝ]
       Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) →L[ℝ] ℝ)
-    (chartPulledIntegralWeightLp (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp)
+    (chartPulledIntegralWeightLp (I := I) (M := M) g α hθ_cont hθ_cs hθ_support)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem chartPulledIntegralCLM_norm_le
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∃ C : ℝ, 0 ≤ C ∧
-      ‖chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp‖ ≤ C := by
+      ‖chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support‖ ≤ C := by
   refine ⟨‖chartPulledIntegralWeightLp (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp‖, norm_nonneg _, ?_⟩
+      hθ_cont hθ_cs hθ_support‖, norm_nonneg _, ?_⟩
   unfold chartPulledIntegralCLM
   exact le_of_eq (innerSL_apply_norm (𝕜 := ℝ)
-    (chartPulledIntegralWeightLp (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp))
+    (chartPulledIntegralWeightLp (I := I) (M := M) g α hθ_cont hθ_cs hθ_support))
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPulledIntegralCLM_smoothToLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (v : SmoothScalar g) :
-    chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+    chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
         (smoothToLp (I := I) (M := M) g v) =
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
         v.toFun ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
@@ -436,20 +436,20 @@ theorem chartPulledIntegralCLM_smoothToLp
   unfold chartPulledIntegralCLM
   rw [innerSL_apply_apply]
   rw [L2.inner_def
-    (chartPulledIntegralWeightLp (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp)
+    (chartPulledIntegralWeightLp (I := I) (M := M) g α hθ_cont hθ_cs hθ_support)
     (smoothToLp (I := I) (M := M) g v)]
   have hae_w : (chartPulledIntegralWeightLp (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp : Lp ℝ 2 _) =ᵐ[
+      hθ_cont hθ_cs hθ_support : Lp ℝ 2 _) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g]
       chartPulledIntegralWeight (I := I) (M := M) g α θ :=
     MemLp.coeFn_toLp (chartPulledIntegralWeight_memLp
-      (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp)
+      (I := I) (M := M) g α hθ_cont hθ_cs hθ_support)
   have hae_v : (smoothToLp (I := I) (M := M) g v : Lp ℝ 2 _) =ᵐ[
         riemannianVolumeMeasure (I := I) (M := M) g] v.toFun :=
     MemLp.coeFn_toLp v.memLp_two
   have h_int_eq : ∫ a, @inner ℝ _ _
         ((chartPulledIntegralWeightLp (I := I) (M := M) g α
-          hθ_cont hθ_cs hθ_supp : Lp ℝ 2 _) a)
+          hθ_cont hθ_cs hθ_support : Lp ℝ 2 _) a)
         ((smoothToLp (I := I) (M := M) g v : Lp ℝ 2 _) a)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ a, chartPulledIntegralWeight (I := I) (M := M) g α θ a * v.toFun a
@@ -464,37 +464,37 @@ theorem chartPulledIntegralCLM_smoothToLp
     ring
   rw [h_int_eq]
   exact integral_weight_smul_eq_chartPulled (I := I) (M := M) g α
-    hθ_cont hθ_cs hθ_supp v.smooth.continuous
+    hθ_cont hθ_cs hθ_support v.smooth.continuous
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem chartPulledIntegralCLM_continuous
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Continuous (chartPulledIntegralCLM (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp) :=
-  (chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp).continuous
+      hθ_cont hθ_cs hθ_support) :=
+  (chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support).continuous
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem chartPulledIntegralCLM_tendsto
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {F : ℕ → Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
     {F_lim : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
     (h_tendsto : Tendsto F atTop (𝓝 F_lim)) :
     Tendsto (fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp (F n)) atTop
+      hθ_cont hθ_cs hθ_support (F n)) atTop
       (𝓝 (chartPulledIntegralCLM (I := I) (M := M) g α
-        hθ_cont hθ_cs hθ_supp F_lim)) :=
+        hθ_cont hθ_cs hθ_support F_lim)) :=
   ((chartPulledIntegralCLM_continuous (I := I) (M := M) g α
-    hθ_cont hθ_cs hθ_supp).tendsto _).comp h_tendsto
+    hθ_cont hθ_cs hθ_support).tendsto _).comp h_tendsto
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPulledIntegralCLM_tendsto_of_smoothToLp_tendsto
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {v : ℕ → SmoothScalar g}
     {F_lim : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
     (h_tendsto : Tendsto (fun n => smoothToLp (I := I) (M := M) g (v n))
@@ -503,18 +503,18 @@ theorem chartPulledIntegralCLM_tendsto_of_smoothToLp_tendsto
         (v n).toFun ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
           θ y ∂(volume : Measure EuclN)) atTop
       (𝓝 (chartPulledIntegralCLM (I := I) (M := M) g α
-        hθ_cont hθ_cs hθ_supp F_lim)) := by
+        hθ_cont hθ_cs hθ_support F_lim)) := by
   have h_smooth_formula : (fun n => ∫ y in chartTargetEuclid (I := I) (M := M) α,
         (v n).toFun ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
           θ y ∂(volume : Measure EuclN)) =
       (fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-          hθ_cont hθ_cs hθ_supp (smoothToLp (I := I) (M := M) g (v n))) := by
+          hθ_cont hθ_cs hθ_support (smoothToLp (I := I) (M := M) g (v n))) := by
     funext n
     exact (chartPulledIntegralCLM_smoothToLp (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp (v n)).symm
+      hθ_cont hθ_cs hθ_support (v n)).symm
   rw [h_smooth_formula]
   exact chartPulledIntegralCLM_tendsto (I := I) (M := M) g α
-    hθ_cont hθ_cs hθ_supp h_tendsto
+    hθ_cont hθ_cs hθ_support h_tendsto
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma smoothToLp_pouScalar_oneSubLap_eq_fHLeibniz
@@ -544,12 +544,12 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPulledIntegralCLM_pouScalar_oneSubLap_eq_fHLeibniz_smooth
     (g : SmoothRiemannianMetric I M) (α : M)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (v : SmoothScalar g) :
-    chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+    chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
         (smoothToLp (I := I) (M := M) g
           (pouScalar (I := I) (M := M) α v).oneSubLapClassical) =
-      chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+      chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
         (leibnizCompensatedSource (I := I) (M := M) g α
           (smoothToH1Compl (I := I) (M := M) g v)
           (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) v)) := by
@@ -560,7 +560,7 @@ theorem chartPulledIntegralCLM_RHS_tendsto_of_fHLeibniz_tendsto
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {θ : EuclN → ℝ} (hθ_cont : Continuous θ) (hθ_cs : HasCompactSupport θ)
-    (hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {v : ℕ → SmoothScalar g}
     (h_fHLeibniz_tendsto :
       Tendsto (fun n => leibnizCompensatedSource (I := I) (M := M) g α
@@ -568,11 +568,11 @@ theorem chartPulledIntegralCLM_RHS_tendsto_of_fHLeibniz_tendsto
           (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) (v n)))
         atTop (𝓝 (leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h))) :
     Tendsto (fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-        hθ_cont hθ_cs hθ_supp
+        hθ_cont hθ_cs hθ_support
         (smoothToLp (I := I) (M := M) g
           (pouScalar (I := I) (M := M) α (v n)).oneSubLapClassical))
       atTop (𝓝 (chartPulledIntegralCLM (I := I) (M := M) g α
-        hθ_cont hθ_cs hθ_supp
+        hθ_cont hθ_cs hθ_support
         (leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h))) := by
   classical
   have h_eq_n : ∀ n,
@@ -584,11 +584,11 @@ theorem chartPulledIntegralCLM_RHS_tendsto_of_fHLeibniz_tendsto
     fun n => smoothToLp_pouScalar_oneSubLap_eq_fHLeibniz
       (I := I) (M := M) g α (v n)
   have h_funeq : (fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp
+      hθ_cont hθ_cs hθ_support
       (smoothToLp (I := I) (M := M) g
         (pouScalar (I := I) (M := M) α (v n)).oneSubLapClassical)) =
     fun n => chartPulledIntegralCLM (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp
+      hθ_cont hθ_cs hθ_support
       (leibnizCompensatedSource (I := I) (M := M) g α
         (smoothToH1Compl (I := I) (M := M) g (v n))
         (smoothToH1Compl_mem_laplacianDomain (I := I) (M := M) (v n))) := by
@@ -596,7 +596,7 @@ theorem chartPulledIntegralCLM_RHS_tendsto_of_fHLeibniz_tendsto
     rw [h_eq_n n]
   rw [h_funeq]
   exact chartPulledIntegralCLM_tendsto (I := I) (M := M) g α
-    hθ_cont hθ_cs hθ_supp h_fHLeibniz_tendsto
+    hθ_cont hθ_cs hθ_support h_fHLeibniz_tendsto
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
@@ -604,7 +604,7 @@ theorem rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
     (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {v : ℕ → SmoothScalar g}
     (h_fHLeibniz_tendsto :
       Tendsto (fun n => leibnizCompensatedSource (I := I) (M := M) g α
@@ -621,7 +621,7 @@ theorem rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
         (by
           refine continuous_iff_continuousAt.mpr fun y => ?_
           by_cases hy : y ∈ tsupport ψ
-          · have hy_T : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_supp hy
+          · have hy_T : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_support hy
             have hOpen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
               Sobolev.Chart.chartTargetEuclid_isOpen (I := I) (M := M) α
             have h_dens : ContinuousAt (densityOnEuclid (I := I) g α) y :=
@@ -641,7 +641,7 @@ theorem rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
           have hψ_y : ψ y = 0 := image_eq_zero_of_notMem_tsupport hy
           rw [hψ_y, mul_zero])
         (by
-          refine subset_trans (closure_mono ?_) hψ_supp
+          refine subset_trans (closure_mono ?_) hψ_support
           intro y hy
           rw [Function.mem_support] at hy
           by_contra hyψ
@@ -654,7 +654,7 @@ theorem rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
   have hθ_cont : Continuous θ := by
     refine continuous_iff_continuousAt.mpr fun y => ?_
     by_cases hy : y ∈ tsupport ψ
-    · have hy_T : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_supp hy
+    · have hy_T : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_support hy
       have hOpen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
         Sobolev.Chart.chartTargetEuclid_isOpen (I := I) (M := M) α
       have h_dens : ContinuousAt (densityOnEuclid (I := I) g α) y :=
@@ -674,8 +674,8 @@ theorem rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
       have hψ_y : ψ y = 0 := image_eq_zero_of_notMem_tsupport hy
       change densityOnEuclid (I := I) g α y * ψ y = 0
       rw [hψ_y, mul_zero])
-  have hθ_supp : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α := by
-    refine subset_trans (closure_mono ?_) hψ_supp
+  have hθ_support : tsupport θ ⊆ chartTargetEuclid (I := I) (M := M) α := by
+    refine subset_trans (closure_mono ?_) hψ_support
     intro y hy
     rw [Function.mem_support] at hy
     by_contra hyψ
@@ -689,12 +689,12 @@ theorem rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
             ((pouScalar (I := I) (M := M) α (v n)).oneSubLapClassical.toFun)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
             ψ y ∂(volume : Measure EuclN) =
-      chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+      chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
         (smoothToLp (I := I) (M := M) g
           (pouScalar (I := I) (M := M) α (v n)).oneSubLapClassical) := by
     intro n
     rw [chartPulledIntegralCLM_smoothToLp (I := I) (M := M) g α
-      hθ_cont hθ_cs hθ_supp
+      hθ_cont hθ_cs hθ_support
       (pouScalar (I := I) (M := M) α (v n)).oneSubLapClassical]
     refine MeasureTheory.setIntegral_congr_fun
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
@@ -713,12 +713,12 @@ theorem rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
             ((pouScalar (I := I) (M := M) α (v n)).oneSubLapClassical.toFun)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
             ψ y ∂(volume : Measure EuclN)) =
-        (fun n => chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_supp
+        (fun n => chartPulledIntegralCLM (I := I) (M := M) g α hθ_cont hθ_cs hθ_support
           (smoothToLp (I := I) (M := M) g
             (pouScalar (I := I) (M := M) α (v n)).oneSubLapClassical)) from
       funext h_eq_smooth]
   exact chartPulledIntegralCLM_RHS_tendsto_of_fHLeibniz_tendsto
-    (I := I) (M := M) g α u_h hu_h hθ_cont hθ_cs hθ_supp h_fHLeibniz_tendsto
+    (I := I) (M := M) g α u_h hu_h hθ_cont hθ_cs hθ_support h_fHLeibniz_tendsto
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacianDomain_variational_identity_partial
@@ -726,7 +726,7 @@ theorem laplacianDomain_variational_identity_partial
     (u_h : H1Compl g) (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     {v : ℕ → SmoothScalar g}
     (h_fHLeibniz_tendsto :
       Tendsto (fun n => leibnizCompensatedSource (I := I) (M := M) g α
@@ -743,7 +743,7 @@ theorem laplacianDomain_variational_identity_partial
         (by
           refine continuous_iff_continuousAt.mpr fun y => ?_
           by_cases hy : y ∈ tsupport ψ
-          · have hy_T : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_supp hy
+          · have hy_T : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_support hy
             have hOpen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
               Sobolev.Chart.chartTargetEuclid_isOpen (I := I) (M := M) α
             have h_dens : ContinuousAt (densityOnEuclid (I := I) g α) y :=
@@ -763,7 +763,7 @@ theorem laplacianDomain_variational_identity_partial
           have hψ_y : ψ y = 0 := image_eq_zero_of_notMem_tsupport hy
           rw [hψ_y, mul_zero])
         (by
-          refine subset_trans (closure_mono ?_) hψ_supp
+          refine subset_trans (closure_mono ?_) hψ_support
           intro y hy
           rw [Function.mem_support] at hy
           by_contra hyψ
@@ -772,7 +772,7 @@ theorem laplacianDomain_variational_identity_partial
           rw [hψ_y, mul_zero])
         (leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h))) := by
   exact rhs_integral_smooth_tendsto_chartPulledIntegralCLM_fHLeibniz
-    (I := I) (M := M) g α u_h hu_h hψ hψ_cs hψ_supp h_fHLeibniz_tendsto
+    (I := I) (M := M) g α u_h hu_h hψ hψ_cs hψ_support h_fHLeibniz_tendsto
 
 end ChartPulledIntegralContinuity
 end Laplacian

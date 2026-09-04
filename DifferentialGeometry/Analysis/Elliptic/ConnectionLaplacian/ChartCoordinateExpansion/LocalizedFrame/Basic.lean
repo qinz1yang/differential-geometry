@@ -92,7 +92,7 @@ private lemma exists_globalBump_data (α : M) :
       (∀ x, x ∈ closure V₁ ↔ ψ x = 1) ∧
       (∀ x, x ∈ (V₂ᶜ : Set M) ↔ ψ x = 0) := by
   classical
-  obtain ⟨V₁, V₂, hV₁_open, hV₂_open, hKV₁, hclos_V₁_V₂, hclos_V₂_src⟩ :=
+  obtain ⟨V₁, V₂, hV₁_open, hV₂_open, hKV₁, hclos_V₁_V₂, hclos_V₂_source⟩ :=
     exists_open_closure_open_closure_subset_open_of_isCompact
       (E := E) (H := H) (M := M) I
       (pouTsupport_isCompact (I := I) (M := M) α)
@@ -123,7 +123,7 @@ private lemma exists_globalBump_data (α : M) :
     have : ((⊤ : ℕ∞) : WithTop ℕ∞) = (∞ : WithTop ℕ∞) := rfl
     rw [this] at hψ_smooth
     exact hψ_smooth
-  exact ⟨V₁, V₂, ψ, hV₁_open, hV₂_open, hKV₁, hclos_V₁_V₂, hclos_V₂_src,
+  exact ⟨V₁, V₂, ψ, hV₁_open, hV₂_open, hKV₁, hclos_V₁_V₂, hclos_V₂_source,
     hψ_smooth', hψ_range, hψ_t, hψ_s⟩
 
 private noncomputable def globalBumpV₁ (α : M) : Set M :=
@@ -217,7 +217,7 @@ noncomputable def chartFrameNormGlobalSmooth
   have hψ_tsupport_subset_clV₂ :
       tsupport (globalBumpψ (I := I) (M := M) α) ⊆
         closure (globalBumpV₂ (I := I) (M := M) α) := by
-    have h_supp : Function.support (globalBumpψ (I := I) (M := M) α) ⊆
+    have h_support : Function.support (globalBumpψ (I := I) (M := M) α) ⊆
         globalBumpV₂ (I := I) (M := M) α := by
       intro x hx
       by_contra hxV₂
@@ -225,7 +225,7 @@ noncomputable def chartFrameNormGlobalSmooth
       have hψx : globalBumpψ (I := I) (M := M) α x = 0 :=
         globalBumpψ_eq_zero_off_V₂ (I := I) (M := M) α hx_in
       exact hx hψx
-    exact closure_mono h_supp
+    exact closure_mono h_support
   have hψ_tsupport_subset_u :
       tsupport (globalBumpψ (I := I) (M := M) α) ⊆ u :=
     hψ_tsupport_subset_clV₂.trans
@@ -253,7 +253,7 @@ private lemma chartFrameNormGlobalSmooth_toFun_apply
   rfl
 
 omit [I.Boundaryless] in
-theorem chartFrameNormGlobalSmooth_eq_chartFrameNorm_on_pouTsupportNbhd
+theorem chartFrameNormGlobalSmooth_eq_chartFrameNorm_on_pouTsupportNeighborhood
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) :
     ∃ U : Set M, IsOpen U ∧
@@ -291,10 +291,10 @@ theorem chartFrameNormGlobalSmooth_orthonormal_on_pouTsupportGoodSet
       if i = j then 1 else 0 := by
   classical
   obtain ⟨U_i, _hU_i_open, htsupp_U_i, hU_i_source, hU_eq_i⟩ :=
-    chartFrameNormGlobalSmooth_eq_chartFrameNorm_on_pouTsupportNbhd
+    chartFrameNormGlobalSmooth_eq_chartFrameNorm_on_pouTsupportNeighborhood
       (I := I) (M := M) g α i
   obtain ⟨U_j, _hU_j_open, htsupp_U_j, _hU_j_source, hU_eq_j⟩ :=
-    chartFrameNormGlobalSmooth_eq_chartFrameNorm_on_pouTsupportNbhd
+    chartFrameNormGlobalSmooth_eq_chartFrameNorm_on_pouTsupportNeighborhood
       (I := I) (M := M) g α j
   have hb_pou : b ∈ tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) := hb.1

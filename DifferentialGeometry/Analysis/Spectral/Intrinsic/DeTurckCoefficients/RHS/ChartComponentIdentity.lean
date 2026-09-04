@@ -90,12 +90,12 @@ theorem tensorChartComponentRaw_deTurckRHSSectionBackground_eq_chartRicciLie
       (-2 : ℝ) * chartRicciTensor (I := I) g₁ α (Jdx 0) (Jdx 1) (extChartAt I α b) +
         chartLieDeTurckComp (I := I) g₁ g_bg α (Jdx 0) (Jdx 1) (extChartAt I α b) := by
   classical
-  have hb_src : b ∈ (chartAt H α).source :=
+  have hb_source : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
   set v₀ : TangentSpace I b := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b with hv₀_def
   set v₁ : TangentSpace I b := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 1) b with hv₁_def
   rw [tensorChartComponentRaw_deTurckRHSSectionBackground_eq_deTurckRicciRHS (I := I) (M := M) g_bg g₁ α
-      hb_src Idx Jdx]
+      hb_source Idx Jdx]
   rw [show DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 0) b = v₀ from rfl,
     show DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (Jdx 1) b = v₁ from rfl]
   rw [deTurckRicciRHS, add_apply, add_apply,

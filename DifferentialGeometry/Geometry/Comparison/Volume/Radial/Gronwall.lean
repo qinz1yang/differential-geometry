@@ -244,7 +244,7 @@ lemma exists_radial_clip
       (mul_le_mul_of_nonneg_right (htau_bound t) (norm_nonneg x)) hprod
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
-lemma exists_rclip_nbhd
+lemma exists_rclip_neighborhood
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) {b : ℝ}
     (hb1 : b ≤ 1)
     (hx : ‖x‖ < expMapC2Radius (I := I) g p) :
@@ -342,7 +342,7 @@ lemma exists_radial_ext
     rfl
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
-lemma exists_rext_nbhd
+lemma exists_rext_neighborhood
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) {b : ℝ}
     (hb1 : b ≤ 1)
     (hx : ‖x‖ < expMapC2Radius (I := I) g p) :
@@ -350,7 +350,7 @@ lemma exists_rext_nbhd
       ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) gamma ∧
       Set.EqOn gamma (radialCurve (I := I) g p x) (Set.Icc (-eps) (b + eps)) := by
   obtain ⟨eps, heps, tau, htau, htau_eq, hradius⟩ :=
-    exists_rclip_nbhd (I := I) g p x hb1 hx
+    exists_rclip_neighborhood (I := I) g p x hb1 hx
   refine ⟨eps, heps, fun t : ℝ => (expMap (I := I) g p
     (show TangentSpace I p from (tau t • x)) : M), ?_, ?_⟩
   · exact radial_clip_contMDiff (I := I) g p x tau htau hradius
@@ -407,19 +407,19 @@ theorem exists_jacobi_Ioo
       ∀ t ∈ Ioo (0 : ℝ) b,
         IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
           (radialJacobiField (I := I) g p x w) t := by
-  obtain ⟨r, hr, hJac⟩ := exists_radialJacobi_radius (I := I) g p
+  obtain ⟨r, hr, hJacobian⟩ := exists_radialJacobi_radius (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x w hx hw b hb t ht
   have ht01 : t ∈ Ioo (0 : ℝ) 1 := ⟨ht.1, lt_of_lt_of_le ht.2 hb⟩
   unfold radialCurve
-  exact hJac x w hx hw t ht01
+  exact hJacobian x w hx hw t ht01
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem radialJacobi_ode_of_curv
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {K b : ℝ}
-    (hJac : ∀ t ∈ Ico (0 : ℝ) b,
+    (hJacobian : ∀ t ∈ Ico (0 : ℝ) b,
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) t)
     (hcurv : ∀ t ∈ Ico (0 : ℝ) b,
@@ -452,7 +452,7 @@ theorem radialJacobi_ode_of_curv
         (radialJacobiField (I := I) g p x w t) := by
   intro t ht
   exact ode_bound_of_isJacobiAt (I := I) g (radialCurve (I := I) g p x)
-    (radialJacobiField (I := I) g p x w) (K := K) (t := t) (hJac t ht)
+    (radialJacobiField (I := I) g p x w) (K := K) (t := t) (hJacobian t ht)
     (hcurv t ht)
 
 omit [T2Space (TangentBundle I M)] in
@@ -460,7 +460,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem ode_Ico_of_Ioo_zero
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {K b : ℝ}
-    (hJac : ∀ t ∈ Ioo (0 : ℝ) b,
+    (hJacobian : ∀ t ∈ Ioo (0 : ℝ) b,
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) t)
     (hcurv : ∀ t ∈ Ioo (0 : ℝ) b,
@@ -509,13 +509,13 @@ theorem ode_Ico_of_Ioo_zero
   · have htpos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm ht0)
     exact ode_bound_of_isJacobiAt (I := I) g (radialCurve (I := I) g p x)
       (radialJacobiField (I := I) g p x w) (K := K) (t := t)
-      (hJac t ⟨htpos, ht.2⟩) (hcurv t ⟨htpos, ht.2⟩)
+      (hJacobian t ⟨htpos, ht.2⟩) (hcurv t ⟨htpos, ht.2⟩)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem ode_Ico_of_Ioo_d2
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {K b : ℝ}
-    (hJac : ∀ t ∈ Ioo (0 : ℝ) b,
+    (hJacobian : ∀ t ∈ Ioo (0 : ℝ) b,
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) t)
     (hcurv : ∀ t ∈ Ioo (0 : ℝ) b,
@@ -550,7 +550,7 @@ theorem ode_Ico_of_Ioo_d2
       ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
         (radialJacobiField (I := I) g p x w t)
         (radialJacobiField (I := I) g p x w t) := by
-  refine ode_Ico_of_Ioo_zero (I := I) g p x w hJac hcurv ?_
+  refine ode_Ico_of_Ioo_zero (I := I) g p x w hJacobian hcurv ?_
   rw [hD2, radialJacobi_zero]
   change
     g.inner (radialCurve (I := I) g p x 0)
@@ -569,15 +569,15 @@ theorem ode_Ico_of_Ioo_d2
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem d2_zero_of_jac0
+theorem d2_zero_of_jacobian0
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
-    (hJac0 : IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
+    (hJacobian0 : IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
       (radialJacobiField (I := I) g p x w) 0) :
     covDerivAlong (I := I) g (radialCurve (I := I) g p x)
       (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) s) 0 = 0 := by
-  unfold IsJacobiAt at hJac0
-  rw [radialJacobi_zero] at hJac0
+  unfold IsJacobiAt at hJacobian0
+  rw [radialJacobi_zero] at hJacobian0
   set D : TangentSpace I (radialCurve (I := I) g p x 0) :=
     covDerivAlong (I := I) g (radialCurve (I := I) g p x)
       (fun s => covDerivAlong (I := I) g (radialCurve (I := I) g p x)
@@ -589,13 +589,13 @@ theorem d2_zero_of_jac0
         (0 : TangentSpace I (radialCurve (I := I) g p x 0))
         (curveVelocity (I := I) (radialCurve (I := I) g p x) 0)
         (curveVelocity (I := I) (radialCurve (I := I) g p x) 0)) with hC_def
-  change D + C = 0 at hJac0
+  change D + C = 0 at hJacobian0
   have hCzero : C = 0 := by
     rw [hC_def]
     rw [map_zero]
     rw [zero_apply, zero_apply]
-  rw [hCzero, add_zero] at hJac0
-  exact hJac0
+  rw [hCzero, add_zero] at hJacobian0
+  exact hJacobian0
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -640,11 +640,11 @@ theorem exists_ode_Ico
         ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
           (radialJacobiField (I := I) g p x w t)
           (radialJacobiField (I := I) g p x w t) := by
-  obtain ⟨r, hr, hJac⟩ := exists_jacobi_Ioo (I := I) g p
+  obtain ⟨r, hr, hJacobian⟩ := exists_jacobi_Ioo (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x w hx hw K b hb hcurv h0
   exact ode_Ico_of_Ioo_zero (I := I) g p x w (K := K) (b := b)
-    (hJac x w hx hw hb) hcurv h0
+    (hJacobian x w hx hw hb) hcurv h0
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
@@ -720,11 +720,11 @@ private theorem radialCurvTermFlat_inner
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem radialCurvTermFlat_apply_eq_metricRm04StdAt
+private theorem radialCurvTermFlat_apply_eq_metricRm04StandardAt
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real)
     (W : TangentSpace I (radialCurve (I := I) g p x t)) :
     radialCurvTermFlat (I := I) g p x w t (fun _ : Fin 1 => W) =
-      DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
+      DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt
         (I := I) (M := M) g (radialCurve (I := I) g p x t)
         (radialJacobiField (I := I) g p x w t)
         (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -742,7 +742,7 @@ private theorem radialCurvTermFlat_apply_eq_metricRm04StdAt
         (Tensor0SBundle.tangentFlatLinear_apply (I := I) g
           (radialCurve (I := I) g p x t) (radialCurvTerm (I := I) g p x w t) W))
   have hrhs :
-      DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
+      DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt
           (I := I) (M := M) g (radialCurve (I := I) g p x t)
           (radialJacobiField (I := I) g p x w t)
           (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
@@ -750,7 +750,7 @@ private theorem radialCurvTermFlat_apply_eq_metricRm04StdAt
         g.inner (radialCurve (I := I) g p x t) W
           (radialCurvTerm (I := I) g p x w t) := by
     unfold radialCurve at W ⊢
-    rw [DifferentialGeometry.Geometry.Curvature.metricRm04StdAt_apply,
+    rw [DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt_apply,
       DifferentialGeometry.metricRm04At_eq_riemannCurvature04At,
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.riemannCurvature04At_apply_const,
       DifferentialGeometry.connectionRiemannCurvatureField_tangentConst_eq_riemannOp
@@ -763,21 +763,21 @@ private theorem radialCurvTermFlat_apply_eq_metricRm04StdAt
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem radialCurvTermFlat_component_eq_metricRm04StdAt
+private theorem radialCurvTermFlat_component_eq_metricRm04StandardAt
     {Idx : Type*}
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real)
     (basis : Module.Basis Idx Real (TangentSpace I (radialCurve (I := I) g p x t)))
     (i : Idx) :
     Tensor0SBundle.component0S (I := I) basis
         (radialCurvTermFlat (I := I) g p x w t) (fun _ : Fin 1 => i) =
-      DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
+      DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt
         (I := I) (M := M) g (radialCurve (I := I) g p x t)
         (radialJacobiField (I := I) g p x w t)
         (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
         (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
         (basis i) := by
   rw [Tensor0SBundle.component0S_apply]
-  exact radialCurvTermFlat_apply_eq_metricRm04StdAt (I := I) g p x w t (basis i)
+  exact radialCurvTermFlat_apply_eq_metricRm04StandardAt (I := I) g p x w t (basis i)
 
 omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -829,7 +829,7 @@ theorem abs_flat_apply_le_rm04
       (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
       (curveVelocity (I := I) (radialCurve (I := I) g p x) t)
       W)
-  rw [radialCurvTermFlat_apply_eq_metricRm04StdAt (I := I) g p x w t W]
+  rw [radialCurvTermFlat_apply_eq_metricRm04StandardAt (I := I) g p x w t W]
   with_unfolding_all exact hCS
 
 omit [T2Space (TangentBundle I M)] in
@@ -1609,7 +1609,7 @@ theorem exists_ode_rm04_d2
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem exists_ode_rm04_jac0
+theorem exists_ode_rm04_jacobian0
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ r : Real, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       ∀ {K R Vb b : Real}, 0 ≤ K → 0 ≤ Vb → b ≤ 1 →
@@ -1636,9 +1636,9 @@ theorem exists_ode_rm04_jac0
           (radialJacobiField (I := I) g p x w t) := by
   obtain ⟨r, hr, hODE⟩ := exists_ode_rm04_d2 (I := I) g p
   refine ⟨r, hr, ?_⟩
-  intro x w hx hw K R Vb b hK hVb hb hlaunch hKbound hRm hJac0
+  intro x w hx hw K R Vb b hK hVb hb hlaunch hKbound hRm hJacobian0
   exact hODE x w hx hw hK hVb hb hlaunch hKbound hRm
-    (d2_zero_of_jac0 (I := I) g p x w hJac0)
+    (d2_zero_of_jacobian0 (I := I) g p x w hJacobian0)
 
 open Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -1671,8 +1671,8 @@ theorem exists_ode_rm04
         ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
           (radialJacobiField (I := I) g p x w t)
           (radialJacobiField (I := I) g p x w t) := by
-  obtain ⟨r₀, hr₀, hODE⟩ := exists_ode_rm04_jac0 (I := I) g p
-  obtain ⟨r₁, hr₁, hJac0⟩ :=
+  obtain ⟨r₀, hr₀, hODE⟩ := exists_ode_rm04_jacobian0 (I := I) g p
+  obtain ⟨r₁, hr₁, hJacobian0⟩ :=
     exists_radialJacobi_zero_radius (I := I) g hEnorm p
   refine ⟨min r₀ r₁, lt_min hr₀ hr₁, ?_⟩
   intro x w hx hw K R Vb b hK hVb hb hlaunch hKbound hRm
@@ -1680,12 +1680,12 @@ theorem exists_ode_rm04
   have hw₀ : ‖w‖ < r₀ := lt_of_lt_of_le hw (min_le_left _ _)
   have hx₁ : ‖x‖ < r₁ := lt_of_lt_of_le hx (min_le_right _ _)
   have hw₁ : ‖w‖ < r₁ := lt_of_lt_of_le hw (min_le_right _ _)
-  have hJac0' :
+  have hJacobian0' :
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) 0 := by
     unfold radialCurve
-    exact hJac0 x w hx₁ hw₁
-  exact hODE x w hx₀ hw₀ hK hVb hb hlaunch hKbound hRm hJac0'
+    exact hJacobian0 x w hx₁ hw₁
+  exact hODE x w hx₀ hw₀ hK hVb hb hlaunch hKbound hRm hJacobian0'
 
 open Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -1936,12 +1936,12 @@ theorem exists_ode_expBall
         ≤ K ^ 2 * g.inner (radialCurve (I := I) g p x t)
           (radialJacobiField (I := I) g p x w t)
           (radialJacobiField (I := I) g p x w t) := by
-  obtain ⟨r, hr, hODE⟩ := exists_ode_rm04_jac0 (I := I) g p
+  obtain ⟨r, hr, hODE⟩ := exists_ode_rm04_jacobian0 (I := I) g p
   refine ⟨r, hr, ?_⟩
-  intro x w hx hw K R Vb b ρ hK hVb hb hxρ hlaunch hKbound hRm hJac0
+  intro x w hx hw K R Vb b ρ hK hVb hb hxρ hlaunch hKbound hRm hJacobian0
   exact hODE x w hx hw hK hVb hb hlaunch hKbound
     (rm04_Ioo_of_region (I := I) g p x
-      (radial_mem_expBall (I := I) g p x hxρ hb) hRm) hJac0
+      (radial_mem_expBall (I := I) g p x hxρ hb) hRm) hJacobian0
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -1971,9 +1971,9 @@ theorem exists_ode_global
           (radialJacobiField (I := I) g p x w t) := by
   obtain ⟨r, hr, hODE⟩ := exists_ode_expBall (I := I) g p
   refine ⟨r, hr, ?_⟩
-  intro x w hx hw K R Vb b ρ hK hVb hb hxρ hlaunch hKbound hRm hJac0
+  intro x w hx hw K R Vb b ρ hK hVb hb hxρ hlaunch hKbound hRm hJacobian0
   exact hODE x w hx hw hK hVb hb hxρ hlaunch hKbound
-    (fun q _hq => hRm q) hJac0
+    (fun q _hq => hRm q) hJacobian0
 
 
 end Radial

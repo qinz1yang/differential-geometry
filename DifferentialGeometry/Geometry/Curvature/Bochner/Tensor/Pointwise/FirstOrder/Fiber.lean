@@ -83,7 +83,7 @@ lemma smoothOrthoFrame_parsevalExpand
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-private lemma tensor0SAsRS_add_loc {t : ℕ} (x : M) (C D : Tensor0SSpace t I x) :
+private lemma tensor0SAsRS_add_local {t : ℕ} (x : M) (C D : Tensor0SSpace t I x) :
     tensor0SToTensorRS (I := I) (M := M) x (C + D) =
       tensor0SToTensorRS (I := I) (M := M) x C + tensor0SToTensorRS (I := I) (M := M) x D := by
   apply tensorRSSpace_ext (𝕜 := ℝ) 0 t x
@@ -101,7 +101,7 @@ private lemma tensor0SAsRS_add_loc {t : ℕ} (x : M) (C D : Tensor0SSpace t I x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-private lemma tensor0SAsRS_smul_loc {t : ℕ} (x : M) (c : ℝ) (C : Tensor0SSpace t I x) :
+private lemma tensor0SAsRS_smul_local {t : ℕ} (x : M) (c : ℝ) (C : Tensor0SSpace t I x) :
     tensor0SToTensorRS (I := I) (M := M) x (c • C) =
       c • tensor0SToTensorRS (I := I) (M := M) x C := by
   apply tensorRSSpace_ext (𝕜 := ℝ) 0 t x
@@ -140,7 +140,7 @@ noncomputable def tensorSlotZeroEvalFib (x : M) (s : ℕ)
             add_apply]
         rw [hval, map_add (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x),
           add_apply,
-          tensor0SAsRS_add_loc (I := I) (M := M) x]
+          tensor0SAsRS_add_local (I := I) (M := M) x]
       map_smul' := fun c W => by
         have hval : (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from c • W)
             (unitZeroSec (I := I) (M := M) x) =
@@ -150,7 +150,7 @@ noncomputable def tensorSlotZeroEvalFib (x : M) (s : ℕ)
               c • (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W) from rfl,
             smul_apply]
         rw [hval, map_smul (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x),
-          smul_apply, tensor0SAsRS_smul_loc (I := I) (M := M) x]
+          smul_apply, tensor0SAsRS_smul_local (I := I) (M := M) x]
         rfl }
 
 
@@ -194,7 +194,7 @@ lemma slot0SliceFib_eq_covGradBundleEquiv_symm (x : M) (s : ℕ) (v : TangentSpa
       tensor00Scalar (I := I) (M := M) x D •
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T)
           (unitZeroSec (I := I) (M := M) x) from by
-    conv_lhs => rw [tensor0S_zero_span' (I := I) (M := M) x D]
+    conv_lhs => rw [tensor0S_zero_span (I := I) (M := M) x D]
     rw [ContinuousLinearMap.map_smul]]
   simp only [Tensor0SSpace.eval_smul]
 
@@ -221,7 +221,7 @@ lemma slot0SliceFib_dir_add (x : M) (s : ℕ) (v v' : TangentSpace I x)
   rw [map_add (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Wx)
       (unitZeroSec (I := I) (M := M) x)))]
-  rw [tensor0SAsRS_add_loc (I := I) (M := M) x]
+  rw [tensor0SAsRS_add_local (I := I) (M := M) x]
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -234,7 +234,7 @@ lemma slot0SliceFib_dir_smul (x : M) (s : ℕ) (c : ℝ) (v : TangentSpace I x)
   rw [map_smul (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Wx)
       (unitZeroSec (I := I) (M := M) x)))]
-  rw [tensor0SAsRS_smul_loc (I := I) (M := M) x]
+  rw [tensor0SAsRS_smul_local (I := I) (M := M) x]
 
 noncomputable def curvatureGradContractionDirLM
     (g : SmoothRiemannianMetric I M) (s : ℕ)
@@ -776,7 +776,7 @@ lemma gradTermDirCLM_frame_independent
           Tensor0SSpace.toModel
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from T)
               (unitZeroSec (I := I) (M := M) x)) m := by
-      conv_lhs => rw [tensor0S_zero_span' (I := I) (M := M) x D]
+      conv_lhs => rw [tensor0S_zero_span (I := I) (M := M) x D]
       rw [ContinuousLinearMap.map_smul]
       simp only [Tensor0SSpace.toModel_smul,
         smul_apply, smul_eq_mul]

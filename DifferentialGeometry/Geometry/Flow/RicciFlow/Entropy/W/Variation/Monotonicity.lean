@@ -550,7 +550,7 @@ theorem gallim_w_cont
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S)
     (hDim : Module.finrank Real E = 3) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim)
     {a : Real} (ha : 0 < a)
     (hpos : ∀ q ∈ Set.Icc (0 : Real) tau, ∀ x : M,
@@ -597,7 +597,7 @@ theorem gallim_w_cont
     wFunctional (volumeMeasureFamily (I := I) (M := M) G s)
       n (a + s) (R s) (Q s) (f s)
   obtain ⟨tauG, htauG, _htauG_tau, hgrad⟩ :=
-    galLim_grad_cont (I := I) (M := M) hS hDim hτ hlim
+    galerkinLim_grad_cont (I := I) (M := M) hS hDim hτ hlim
   obtain ⟨tauH, htauH, _htauH_tau, hheat⟩ :=
     heatpot_of_gallim (I := I) (M := M) hS hτ hlim
   let Wr : Set Real := (fun r : Real => (T : Real) - r) ⁻¹' D.regular
@@ -636,7 +636,7 @@ theorem gallim_w_cont
     exact ⟨⟨hsx.1.1, hsx.1.2.trans htau'_G⟩, hsx.2⟩
   have hu : ContinuousOn (fun p : Real × M => u p.1 p.2) K := by
     simpa only [u, K] using
-      (galLim_joint_cont (I := I) (M := M) hτ hlim).mono hKtau
+      (galerkinLim_joint_cont (I := I) (M := M) hτ hlim).mono hKtau
   have hdU : ContinuousOn (fun p : Real × M => dU p.1 p.2) K := by
     simpa only [dU, G, u, K] using hgrad.mono hKtauG
   have hgram (x₀ : M) (i j : Fin (Module.finrank Real E)) :
@@ -804,7 +804,7 @@ theorem gallim_w_le
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S)
     (hDim : Module.finrank Real E = 3) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim)
     {a : Real} (ha : 0 < a)
     (hpos : ∀ q ∈ Set.Icc (0 : Real) tau, ∀ x : M,

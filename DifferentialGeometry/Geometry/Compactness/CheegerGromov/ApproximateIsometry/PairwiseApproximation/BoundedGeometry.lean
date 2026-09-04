@@ -17,7 +17,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped ContDiff Manifold
 
@@ -303,7 +303,7 @@ theorem MetricCompactSeed.exists_pairwise_approximate_isometry_subsequence_of_bo
   have haMin : 0 < aMin :=
     d.stageScale_pos b.realizes hcomplete hconn
   let c0 := 8 * Real.exp b.decay.C / aMin
-  obtain ⟨D, hD, hcap, _hD_one, _hmuD, hc0⟩ := b.exists_core c0
+  obtain ⟨D, hD, hcap, _hD_one, _hmuD, hc0⟩ := b.exists_admissible_divisor c0
   let inp := b.withDivisor D hD hcap
   have haMin' :
       0 < d.stageScale inp.realizes hcomplete hconn := by
@@ -343,5 +343,5 @@ theorem MetricCompactBase.exists_pairwise_approximate_isometry_subsequence_of_bo
       PairwiseApproximateIsometryInput (I := I) (X := Xpsi) Ppsi := by
   exact b.toSeed.exists_pairwise_approximate_isometry_subsequence_of_bounded_geometry d hcomplete hconn
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

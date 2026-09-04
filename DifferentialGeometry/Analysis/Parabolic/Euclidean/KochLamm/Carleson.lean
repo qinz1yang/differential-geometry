@@ -36,8 +36,8 @@ theorem eLpNorm_two_sq (d : ℝ × V → G) (μ : Measure (ℝ × V)) :
 
 omit [MeasurableSpace V] [BorelSpace V] in
 omit [FiniteDimensional ℝ V] in
-theorem klL2_inv_sq {R : ℝ} (hR : 0 < R) :
-    (klL2Scale (V := V) R)⁻¹ ^ 2 =
+theorem kochLammL2_inv_sq {R : ℝ} (hR : 0 < R) :
+    (kochLammL2Scale (V := V) R)⁻¹ ^ 2 =
       ENNReal.ofReal (R ^ Module.finrank ℝ V) := by
   let a : ℝ := (Module.finrank ℝ V : ℝ) / 2
   have hneg :
@@ -48,7 +48,7 @@ theorem klL2_inv_sq {R : ℝ} (hR : 0 < R) :
       ENNReal.ofReal ((Real.rpow R a)⁻¹) =
         (ENNReal.ofReal (Real.rpow R a))⁻¹ :=
     ENNReal.ofReal_inv_of_pos hpos
-  rw [klL2Scale, klL2ScaleR, klDim]
+  rw [kochLammL2Scale, kochLammL2ScaleR, kochLammDim]
   rw [show -((Module.finrank ℝ V : ℝ)) / 2 =
       -((Module.finrank ℝ V : ℝ) / 2) by ring]
   change
@@ -73,62 +73,62 @@ theorem klL2_inv_sq {R : ℝ} (hR : 0 < R) :
       Real.rpow_natCast R (Module.finrank ℝ V)
 
 omit [NormedSpace ℝ G] in
-theorem kl1_to_gradCarl {T : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → G} (h : KLSource1 T A₂ Aₚ f) :
-    GradCarl T ((A₂ : ℝ≥0∞) ^ 2) f := by
+theorem kochLammSourceOne_gradientCarlesonBound {T : ℝ} {A₂ Aₚ : ℝ≥0}
+    {f : ℝ × V → G} (h : KochLammSourceOne T A₂ Aₚ f) :
+    GradientCarlesonBound T ((A₂ : ℝ≥0∞) ^ 2) f := by
   refine ⟨?_, ?_⟩
-  · simpa [klVolume, stVolume] using h.ae
+  · simpa [kochLammVolume, spaceTimeVolume] using h.ae
   · intro x R hR hRT
     have hb := h.local_l2 x R hR hRT
-    have hs0 : klL2Scale (V := V) R ≠ 0 :=
+    have hs0 : kochLammL2Scale (V := V) R ≠ 0 :=
       (ENNReal.ofReal_pos.mpr
-        (Real.rpow_pos_of_pos hR (-klDim V / 2))).ne'
-    have hsT : klL2Scale (V := V) R ≠ ∞ := ENNReal.ofReal_ne_top
+        (Real.rpow_pos_of_pos hR (-kochLammDim V / 2))).ne'
+    have hsT : kochLammL2Scale (V := V) R ≠ ∞ := ENNReal.ofReal_ne_top
     have hi := (ENNReal.mul_le_iff_le_inv hs0 hsT).mp hb
     have hi' :
         eLpNorm f 2
-            ((stVolume : Measure (ℝ × V)).restrict (paraCyl x R)) ≤
-          (A₂ : ℝ≥0∞) * (klL2Scale (V := V) R)⁻¹ := by
-      simpa [klVolume, stVolume, klCyl, paraCyl, mul_comm] using hi
+            ((spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)) ≤
+          (A₂ : ℝ≥0∞) * (kochLammL2Scale (V := V) R)⁻¹ := by
+      simpa [kochLammVolume, spaceTimeVolume, kochLammCylinder, forwardParabolicCylinder, mul_comm] using hi
     calc
-      gradMass f x R =
+      gradientCarlesonMass f x R =
           eLpNorm f 2
-            ((stVolume : Measure (ℝ × V)).restrict (paraCyl x R)) ^ 2 := by
+            ((spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)) ^ 2 := by
               rw [eLpNorm_two_sq]
               rfl
-      _ ≤ ((A₂ : ℝ≥0∞) * (klL2Scale (V := V) R)⁻¹) ^ 2 :=
+      _ ≤ ((A₂ : ℝ≥0∞) * (kochLammL2Scale (V := V) R)⁻¹) ^ 2 :=
         pow_le_pow_left₀ (by positivity) hi' 2
       _ = (A₂ : ℝ≥0∞) ^ 2 * ENNReal.ofReal (R ^ Module.finrank ℝ V) := by
-        rw [mul_pow, klL2_inv_sq (V := V) hR]
+        rw [mul_pow, kochLammL2_inv_sq (V := V) hR]
 
 omit [NormedSpace ℝ F] [NormedSpace ℝ G] in
-theorem klPath_gradCarl {T : ℝ} {A₀ A₂ Aₚ : ℝ≥0}
-    {u : ℝ × V → F} {d : ℝ × V → G} (h : KLPath T A₀ A₂ Aₚ u d) :
-    GradCarl T ((A₂ : ℝ≥0∞) ^ 2) d := by
+theorem KochLammPath.gradientCarlesonBound {T : ℝ} {A₀ A₂ Aₚ : ℝ≥0}
+    {u : ℝ × V → F} {d : ℝ × V → G} (h : KochLammPath T A₀ A₂ Aₚ u d) :
+    GradientCarlesonBound T ((A₂ : ℝ≥0∞) ^ 2) d := by
   refine ⟨?_, ?_⟩
-  · simpa [klVolume, stVolume] using h.grad_ae
+  · simpa [kochLammVolume, spaceTimeVolume] using h.grad_ae
   · intro x R hR hRT
     have hb := h.grad_l2 x R hR hRT
-    have hs0 : klL2Scale (V := V) R ≠ 0 :=
+    have hs0 : kochLammL2Scale (V := V) R ≠ 0 :=
       (ENNReal.ofReal_pos.mpr
-        (Real.rpow_pos_of_pos hR (-klDim V / 2))).ne'
-    have hsT : klL2Scale (V := V) R ≠ ∞ := ENNReal.ofReal_ne_top
+        (Real.rpow_pos_of_pos hR (-kochLammDim V / 2))).ne'
+    have hsT : kochLammL2Scale (V := V) R ≠ ∞ := ENNReal.ofReal_ne_top
     have hi := (ENNReal.mul_le_iff_le_inv hs0 hsT).mp hb
     have hi' :
         eLpNorm d 2
-            ((stVolume : Measure (ℝ × V)).restrict (paraCyl x R)) ≤
-          (A₂ : ℝ≥0∞) * (klL2Scale (V := V) R)⁻¹ := by
-      simpa [klVolume, stVolume, klCyl, paraCyl, mul_comm] using hi
+            ((spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)) ≤
+          (A₂ : ℝ≥0∞) * (kochLammL2Scale (V := V) R)⁻¹ := by
+      simpa [kochLammVolume, spaceTimeVolume, kochLammCylinder, forwardParabolicCylinder, mul_comm] using hi
     calc
-      gradMass d x R =
+      gradientCarlesonMass d x R =
           eLpNorm d 2
-            ((stVolume : Measure (ℝ × V)).restrict (paraCyl x R)) ^ 2 := by
+            ((spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)) ^ 2 := by
               rw [eLpNorm_two_sq]
               rfl
-      _ ≤ ((A₂ : ℝ≥0∞) * (klL2Scale (V := V) R)⁻¹) ^ 2 :=
+      _ ≤ ((A₂ : ℝ≥0∞) * (kochLammL2Scale (V := V) R)⁻¹) ^ 2 :=
         pow_le_pow_left₀ (by positivity) hi' 2
       _ = (A₂ : ℝ≥0∞) ^ 2 * ENNReal.ofReal (R ^ Module.finrank ℝ V) := by
-        rw [mul_pow, klL2_inv_sq (V := V) hR]
+        rw [mul_pow, kochLammL2_inv_sq (V := V) hR]
 
 end Euclidean
 end Parabolic

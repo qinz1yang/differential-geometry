@@ -184,7 +184,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 theorem chartRepack_fine (r s : ℕ) (α : M)
     (φ : C^∞⟮I, M; ℝ⟯) (S : RSTensorSection I M r s) (x : M) :
     chartRepack (I := I) (M := M) r s α
-        (fun P => fineLocComp (I := I) (M := M) r s φ S α P) x =
+        (fun P => fineLocalComp (I := I) (M := M) r s φ S α P) x =
       ((φ : M → ℝ) x *
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) • S x := by
   classical
@@ -197,14 +197,14 @@ theorem chartRepack_fine (r s : ℕ) (α : M)
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x
     have hmodel :
         modelRepack (E := E) r s
-            (fun P => fineLocComp (I := I) (M := M) r s φ S α P)
+            (fun P => fineLocalComp (I := I) (M := M) r s φ S α P)
             (toEuclidean (E := E) (extChartAt I α x)) =
           c • secTriv (I := I) (M := M) r s S α x := by
       unfold modelRepack
       calc
         (∑ Idx : Fin r → Fin (Module.finrank ℝ E),
             ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
-              fineLocComp (I := I) (M := M) r s φ S α (Idx, Jdx)
+              fineLocalComp (I := I) (M := M) r s φ S α (Idx, Jdx)
                   (toEuclidean (E := E) (extChartAt I α x)) •
                 tensorChartBasisElement (E := E) r s Idx Jdx) =
             ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -216,7 +216,7 @@ theorem chartRepack_fine (r s : ℕ) (α : M)
           intro Idx _
           refine Finset.sum_congr rfl ?_
           intro Jdx _
-          rw [fineLoc_apply (I := I) (M := M) r s φ S α
+          rw [fineLocal_apply (I := I) (M := M) r s φ S α
               (Idx, Jdx) hy,
             secComp_coord (I := I) (M := M) r s S α (Idx, Jdx) hx,
             symm_toEuclidean_symm_toEuclidean_extChartAt
@@ -267,7 +267,7 @@ noncomputable def finePouRepack
     ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∑ z : κ α,
         chartRepack (I := I) (M := M) r s α
-          (fun P => fineLocComp (I := I) (M := M) r s (φ α z) S α P) x
+          (fun P => fineLocalComp (I := I) (M := M) r s (φ α z) S α P) x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem finePou_retract
@@ -285,14 +285,14 @@ theorem finePou_retract
   have hinner : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       (∑ z : κ α,
           chartRepack (I := I) (M := M) r s α
-            (fun P => fineLocComp (I := I) (M := M) r s
+            (fun P => fineLocalComp (I := I) (M := M) r s
               (φ α z) S α P) x) =
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x • S x := by
     intro α hα
     calc
       (∑ z : κ α,
           chartRepack (I := I) (M := M) r s α
-            (fun P => fineLocComp (I := I) (M := M) r s
+            (fun P => fineLocalComp (I := I) (M := M) r s
               (φ α z) S α P) x) =
         ∑ z : κ α,
           (((φ α z : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
@@ -313,7 +313,7 @@ theorem finePou_retract
     (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ z : κ α,
           chartRepack (I := I) (M := M) r s α
-            (fun P => fineLocComp (I := I) (M := M) r s
+            (fun P => fineLocalComp (I := I) (M := M) r s
               (φ α z) S α P) x) =
       ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x • S x := by
@@ -326,7 +326,7 @@ theorem finePou_retract
     _ = S x := by
       rw [chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x, one_smul]
 
-noncomputable def canonFineData
+noncomputable def canonicalFineChartData
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α) (α : M) :
     FineChartData (I := I)
       (extChartOpenPartialHomeomorph (I := I) α)
@@ -343,189 +343,189 @@ noncomputable def canonFineData
       exact chartAtlasPOU_isSubordinate I M α)
     (hr α))
 
-abbrev CanonFineIdx
+abbrev CanonicalFineIndex
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α) (α : M) : Type _ :=
-  (canonFineData (I := I) (M := M) rFine hr α).S
+  (canonicalFineChartData (I := I) (M := M) rFine hr α).S
 
-noncomputable def canonFineWeight
+noncomputable def canonicalFineWeight
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (α : M) (z : CanonFineIdx (I := I) (M := M) rFine hr α) :
+    (α : M) (z : CanonicalFineIndex (I := I) (M := M) rFine hr α) :
     C^∞⟮I, M; ℝ⟯ :=
-  (canonFineData (I := I) (M := M) rFine hr α).rho z
+  (canonicalFineChartData (I := I) (M := M) rFine hr α).rho z
 
-noncomputable def canonFineChi
+noncomputable def canonicalFineChi
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (α : M) (z : CanonFineIdx (I := I) (M := M) rFine hr α) :
+    (α : M) (z : CanonicalFineIndex (I := I) (M := M) rFine hr α) :
     C^∞⟮I, M; ℝ⟯ :=
-  (canonFineData (I := I) (M := M) rFine hr α).chi z
+  (canonicalFineChartData (I := I) (M := M) rFine hr α).chi z
 
-noncomputable def canonFinePsi
+noncomputable def canonicalFinePsi
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (α : M) (z : CanonFineIdx (I := I) (M := M) rFine hr α) :
+    (α : M) (z : CanonicalFineIndex (I := I) (M := M) rFine hr α) :
     C^∞⟮I, M; ℝ⟯ :=
-  (canonFineData (I := I) (M := M) rFine hr α).psi z
+  (canonicalFineChartData (I := I) (M := M) rFine hr α).psi z
 
-abbrev CanonChartIdx : Type _ :=
+abbrev CanonicalChartIndex : Type _ :=
   chartAtlasPOUFinset (I := I) (M := M)
 
-abbrev CanonFineFlat
+abbrev CanonicalFineFlatIndex
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α) : Type _ :=
-  Σ a : CanonChartIdx (I := I) (M := M),
-    CanonFineIdx (I := I) (M := M) rFine hr a.1
+  Σ a : CanonicalChartIndex (I := I) (M := M),
+    CanonicalFineIndex (I := I) (M := M) rFine hr a.1
 
-def canonFlatBase
+def canonicalFlatBase
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) : M :=
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) : M :=
   z.1.1
 
-noncomputable def canonFlatWeight
+noncomputable def canonicalFlatWeight
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
     C^∞⟮I, M; ℝ⟯ :=
-  canonFineWeight (I := I) (M := M) rFine hr z.1.1 z.2
+  canonicalFineWeight (I := I) (M := M) rFine hr z.1.1 z.2
 
-noncomputable def canonFlatChi
+noncomputable def canonicalFlatChi
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
     C^∞⟮I, M; ℝ⟯ :=
-  canonFineChi (I := I) (M := M) rFine hr z.1.1 z.2
+  canonicalFineChi (I := I) (M := M) rFine hr z.1.1 z.2
 
-noncomputable def canonFlatPsi
+noncomputable def canonicalFlatPsi
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
     C^∞⟮I, M; ℝ⟯ :=
-  canonFinePsi (I := I) (M := M) rFine hr z.1.1 z.2
+  canonicalFinePsi (I := I) (M := M) rFine hr z.1.1 z.2
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem canonChi_weight
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (α : M) (z : CanonFineIdx (I := I) (M := M) rFine hr α)
+    (α : M) (z : CanonicalFineIndex (I := I) (M := M) rFine hr α)
     (x : M) :
-    ((canonFineChi (I := I) (M := M) rFine hr α z :
+    ((canonicalFineChi (I := I) (M := M) rFine hr α z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
-        ((canonFineWeight (I := I) (M := M) rFine hr α z :
+        ((canonicalFineWeight (I := I) (M := M) rFine hr α z :
           C^∞⟮I, M; ℝ⟯) : M → ℝ) x =
-      ((canonFineWeight (I := I) (M := M) rFine hr α z :
+      ((canonicalFineWeight (I := I) (M := M) rFine hr α z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ) x := by
   by_cases hρ :
-      ((canonFineWeight (I := I) (M := M) rFine hr α z :
+      ((canonicalFineWeight (I := I) (M := M) rFine hr α z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0
   · rw [hρ, mul_zero]
   · have hx : x ∈ tsupport
-        (((canonFineData (I := I) (M := M) rFine hr α).rho z :
+        (((canonicalFineChartData (I := I) (M := M) rFine hr α).rho z :
           C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
       subset_tsupport _ hρ
     have hχ :
-        ((canonFineChi (I := I) (M := M) rFine hr α z :
+        ((canonicalFineChi (I := I) (M := M) rFine hr α z :
           C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1 := by
-      exact ((canonFineData (I := I) (M := M) rFine hr α).chi_one z)
+      exact ((canonicalFineChartData (I := I) (M := M) rFine hr α).chi_one z)
         |>.self_of_nhdsSet x hx
     rw [hχ, one_mul]
 
-noncomputable def canonFineQMap
+noncomputable def canonicalFineQMap
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
     WkpTensorQuot (I := I) (M := M) r s k p hp →
       FineWkpArray (E := E)
-        (CanonFineFlat (I := I) (M := M) rFine hr) r s k p hp :=
+        (CanonicalFineFlatIndex (I := I) (M := M) rFine hr) r s k p hp :=
   fineExtractMap (I := I) (M := M) r s k hp hp_top
-    (canonFlatWeight (I := I) (M := M) rFine hr)
-    (canonFlatBase (I := I) (M := M) rFine hr)
+    (canonicalFlatWeight (I := I) (M := M) rFine hr)
+    (canonicalFlatBase (I := I) (M := M) rFine hr)
 
-theorem canonFineQ_add
+theorem canonicalFineQ_add
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
-    canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top
+    canonicalFineQMap (I := I) (M := M) rFine hr r s k hp hp_top
         (qadd (I := I) (M := M) r s k p hp a b) =
       fun z P => eadd k p hp Set.univ
-        (canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top a z P)
-        (canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top b z P) := by
+        (canonicalFineQMap (I := I) (M := M) rFine hr r s k hp hp_top a z P)
+        (canonicalFineQMap (I := I) (M := M) rFine hr r s k hp hp_top b z P) := by
   exact fineExtract_add (I := I) (M := M) r s k hp hp_top
-    (canonFlatWeight (I := I) (M := M) rFine hr)
-    (canonFlatBase (I := I) (M := M) rFine hr) a b
+    (canonicalFlatWeight (I := I) (M := M) rFine hr)
+    (canonicalFlatBase (I := I) (M := M) rFine hr) a b
 
-theorem canonFineQ_smul
+theorem canonicalFineQ_smul
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (c : ℝ) (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
-    canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top
+    canonicalFineQMap (I := I) (M := M) rFine hr r s k hp hp_top
         (qsmul (I := I) (M := M) r s k p hp c a) =
       fun z P => esmul k p hp Set.univ c
-        (canonFineQMap (I := I) (M := M) rFine hr r s k hp hp_top a z P) := by
+        (canonicalFineQMap (I := I) (M := M) rFine hr r s k hp hp_top a z P) := by
   exact fineExtract_smul (I := I) (M := M) r s k hp hp_top
-    (canonFlatWeight (I := I) (M := M) rFine hr)
-    (canonFlatBase (I := I) (M := M) rFine hr) c a
+    (canonicalFlatWeight (I := I) (M := M) rFine hr)
+    (canonicalFlatBase (I := I) (M := M) rFine hr) c a
 
-noncomputable def canonFineRaw
+noncomputable def canonicalFineRaw
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (S : RSTensorSection I M r s) :
     FineCompArray (E := E)
-      (CanonFineFlat (I := I) (M := M) rFine hr) r s :=
-  fun z P => fineLocComp (I := I) (M := M) r s
-    (canonFlatWeight (I := I) (M := M) rFine hr z) S
-    (canonFlatBase (I := I) (M := M) rFine hr z) P
+      (CanonicalFineFlatIndex (I := I) (M := M) rFine hr) r s :=
+  fun z P => fineLocalComp (I := I) (M := M) r s
+    (canonicalFlatWeight (I := I) (M := M) rFine hr z) S
+    (canonicalFlatBase (I := I) (M := M) rFine hr z) P
 
-noncomputable def canonCutRepack
+noncomputable def canonicalCutRepack
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ)
     (u : FineCompArray (E := E)
-      (CanonFineFlat (I := I) (M := M) rFine hr) r s) :
+      (CanonicalFineFlatIndex (I := I) (M := M) rFine hr) r s) :
     RSTensorSection I M r s :=
   fun x =>
-    ∑ a : CanonChartIdx (I := I) (M := M),
-      ∑ z : CanonFineIdx (I := I) (M := M) rFine hr a.1,
-        ((canonFineChi (I := I) (M := M) rFine hr a.1 z :
+    ∑ a : CanonicalChartIndex (I := I) (M := M),
+      ∑ z : CanonicalFineIndex (I := I) (M := M) rFine hr a.1,
+        ((canonicalFineChi (I := I) (M := M) rFine hr a.1 z :
           C^∞⟮I, M; ℝ⟯) : M → ℝ) x •
           chartRepack (I := I) (M := M) r s a.1
             (u ⟨a, z⟩) x
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonCut_retract
+theorem canonicalCut_retract
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (S : RSTensorSection I M r s) :
-    canonCutRepack (I := I) (M := M) rFine hr r s
-        (canonFineRaw (I := I) (M := M) rFine hr r s S) =
+    canonicalCutRepack (I := I) (M := M) rFine hr r s
+        (canonicalFineRaw (I := I) (M := M) rFine hr r s S) =
       S := by
   classical
   funext x
-  unfold canonCutRepack canonFineRaw
-  have hinner : ∀ a : CanonChartIdx (I := I) (M := M),
-      (∑ z : CanonFineIdx (I := I) (M := M) rFine hr a.1,
-          ((canonFineChi (I := I) (M := M) rFine hr a.1 z :
+  unfold canonicalCutRepack canonicalFineRaw
+  have hinner : ∀ a : CanonicalChartIndex (I := I) (M := M),
+      (∑ z : CanonicalFineIndex (I := I) (M := M) rFine hr a.1,
+          ((canonicalFineChi (I := I) (M := M) rFine hr a.1 z :
             C^∞⟮I, M; ℝ⟯) : M → ℝ) x •
             chartRepack (I := I) (M := M) r s a.1
-              (fun P => fineLocComp (I := I) (M := M) r s
-                (canonFineWeight (I := I) (M := M) rFine hr a.1 z)
+              (fun P => fineLocalComp (I := I) (M := M) r s
+                (canonicalFineWeight (I := I) (M := M) rFine hr a.1 z)
                 S a.1 P) x) =
         ((chartAtlasPOU I M a.1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x • S x := by
     intro a
     calc
-      (∑ z : CanonFineIdx (I := I) (M := M) rFine hr a.1,
-          ((canonFineChi (I := I) (M := M) rFine hr a.1 z :
+      (∑ z : CanonicalFineIndex (I := I) (M := M) rFine hr a.1,
+          ((canonicalFineChi (I := I) (M := M) rFine hr a.1 z :
             C^∞⟮I, M; ℝ⟯) : M → ℝ) x •
             chartRepack (I := I) (M := M) r s a.1
-              (fun P => fineLocComp (I := I) (M := M) r s
-                (canonFineWeight (I := I) (M := M) rFine hr a.1 z)
+              (fun P => fineLocalComp (I := I) (M := M) r s
+                (canonicalFineWeight (I := I) (M := M) rFine hr a.1 z)
                 S a.1 P) x) =
-        ∑ z : CanonFineIdx (I := I) (M := M) rFine hr a.1,
-          (((canonFineWeight (I := I) (M := M) rFine hr a.1 z :
+        ∑ z : CanonicalFineIndex (I := I) (M := M) rFine hr a.1,
+          (((canonicalFineWeight (I := I) (M := M) rFine hr a.1 z :
               C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
             ((chartAtlasPOU I M a.1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) •
               S x := by
           refine Finset.sum_congr rfl ?_
           intro z _
           rw [chartRepack_fine (I := I) (M := M) r s a.1
-            (canonFineWeight (I := I) (M := M) rFine hr a.1 z) S x,
+            (canonicalFineWeight (I := I) (M := M) rFine hr a.1 z) S x,
             smul_smul]
           congr 1
           rw [← mul_assoc,
             canonChi_weight (I := I) (M := M) rFine hr a.1 z x]
-      _ = ((∑ z : CanonFineIdx (I := I) (M := M) rFine hr a.1,
-            ((canonFineWeight (I := I) (M := M) rFine hr a.1 z :
+      _ = ((∑ z : CanonicalFineIndex (I := I) (M := M) rFine hr a.1,
+            ((canonicalFineWeight (I := I) (M := M) rFine hr a.1 z :
               C^∞⟮I, M; ℝ⟯) : M → ℝ) x) *
           ((chartAtlasPOU I M a.1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) • S x := by
           rw [Finset.sum_mul, Finset.sum_smul]
@@ -534,15 +534,15 @@ theorem canonCut_retract
               ((chartAtlasPOU I M a.1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0
           · rw [hρ, mul_zero]
           · have hsum :
-                (∑ z : CanonFineIdx (I := I) (M := M) rFine hr a.1,
-                  ((canonFineWeight (I := I) (M := M) rFine hr a.1 z :
+                (∑ z : CanonicalFineIndex (I := I) (M := M) rFine hr a.1,
+                  ((canonicalFineWeight (I := I) (M := M) rFine hr a.1 z :
                     C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = 1 := by
-              simpa only [canonFineWeight] using
-                (canonFineData (I := I) (M := M) rFine hr a.1).rho_sum
+              simpa only [canonicalFineWeight] using
+                (canonicalFineChartData (I := I) (M := M) rFine hr a.1).rho_sum
                   (subset_tsupport _ hρ)
             rw [hsum, one_mul]
   have hcanon :
-      (∑ a : CanonChartIdx (I := I) (M := M),
+      (∑ a : CanonicalChartIndex (I := I) (M := M),
           ((chartAtlasPOU I M a.1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = 1 := by
     exact (Finset.sum_subtype
       (s := chartAtlasPOUFinset (I := I) (M := M))
@@ -552,36 +552,36 @@ theorem canonCut_retract
         ((chartAtlasPOU I M a : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)).symm.trans
           (chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x)
   calc
-    (∑ a : CanonChartIdx (I := I) (M := M),
-        ∑ z : CanonFineIdx (I := I) (M := M) rFine hr a.1,
-          ((canonFineChi (I := I) (M := M) rFine hr a.1 z :
+    (∑ a : CanonicalChartIndex (I := I) (M := M),
+        ∑ z : CanonicalFineIndex (I := I) (M := M) rFine hr a.1,
+          ((canonicalFineChi (I := I) (M := M) rFine hr a.1 z :
             C^∞⟮I, M; ℝ⟯) : M → ℝ) x •
             chartRepack (I := I) (M := M) r s a.1
-              (fun P => fineLocComp (I := I) (M := M) r s
-                (canonFineWeight (I := I) (M := M) rFine hr a.1 z)
+              (fun P => fineLocalComp (I := I) (M := M) r s
+                (canonicalFineWeight (I := I) (M := M) rFine hr a.1 z)
                 S a.1 P) x) =
-      ∑ a : CanonChartIdx (I := I) (M := M),
+      ∑ a : CanonicalChartIndex (I := I) (M := M),
         ((chartAtlasPOU I M a.1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x • S x := by
           refine Finset.sum_congr rfl ?_
           intro a _
           exact hinner a
-    _ = (∑ a : CanonChartIdx (I := I) (M := M),
+    _ = (∑ a : CanonicalChartIndex (I := I) (M := M),
           ((chartAtlasPOU I M a.1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) • S x := by
         rw [Finset.sum_smul]
     _ = S x := by rw [hcanon, one_smul]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonFine_retract
+theorem canonicalFine_retract
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (S : RSTensorSection I M r s) :
     finePouRepack (I := I) (M := M)
-        (κ := fun α => CanonFineIdx (I := I) (M := M) rFine hr α)
-        r s (canonFineWeight (I := I) (M := M) rFine hr) S =
+        (κ := fun α => CanonicalFineIndex (I := I) (M := M) rFine hr α)
+        r s (canonicalFineWeight (I := I) (M := M) rFine hr) S =
       S := by
   apply finePou_retract (I := I) (M := M) r s
-    (canonFineWeight (I := I) (M := M) rFine hr)
+    (canonicalFineWeight (I := I) (M := M) rFine hr)
   intro α _hα x hx
-  exact (canonFineData (I := I) (M := M) rFine hr α).rho_sum hx
+  exact (canonicalFineChartData (I := I) (M := M) rFine hr α).rho_sum hx
 
 noncomputable def fineExtract {ι : Type*} (r s : ℕ) (α : ι → M)
     (S : RSTensorSection I M r s) : FineCompArray (E := E) ι r s :=

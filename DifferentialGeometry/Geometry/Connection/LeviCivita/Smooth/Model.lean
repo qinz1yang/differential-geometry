@@ -114,14 +114,14 @@ theorem metricFlatModelInChart_apply_of_target
         ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real
           ((extChartAt I x₀).symm y) w) := by
   let p : M := (extChartAt I x₀).symm y
-  have hp_src : p ∈ (extChartAt I x₀).source := by
+  have hp_source : p ∈ (extChartAt I x₀).source := by
     simpa [p] using (extChartAt I x₀).map_target hy
   have hp_frame : p ∈ coordinateFrameSet (I := I) x₀ := by
-    simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source] using hp_src
+    simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source] using hp_source
   have hpy : extChartAt I x₀ p = y := by
     simpa [p] using (extChartAt I x₀).right_inv hy
   have hcenter : (extChartAt I x₀).symm (extChartAt I x₀ p) = p :=
-    (extChartAt I x₀).left_inv hp_src
+    (extChartAt I x₀).left_inv hp_source
   rw [← hpy, hcenter]
   exact Tensor.Coordinates.flatChart_apply (I := I) g x₀ hp_frame v w
 
@@ -150,10 +150,10 @@ theorem metricFlatModelInChart_contDiffWithinAt_of_mem
   let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
   let b := Module.finBasis Real E
   let p : M := (extChartAt I x₀).symm y
-  have hp_src : p ∈ (extChartAt I x₀).source := by
+  have hp_source : p ∈ (extChartAt I x₀).source := by
     simpa [p] using (extChartAt I x₀).map_target hy
   have hpE : p ∈ e.baseSet := by
-    simpa [e, TangentBundle.trivializationAt_baseSet, extChartAt_source] using hp_src
+    simpa [e, TangentBundle.trivializationAt_baseSet, extChartAt_source] using hp_source
   have hlocal :
       ContMDiffAt I 𝓘(Real, E →L[Real] E →L[Real] Real) ∞
         (fun p : M => localMetricFlatBasis (I := I) e b g p) p :=
@@ -175,10 +175,10 @@ theorem metricFlatModelInChart_contDiffWithinAt_of_mem
         fun y' : E =>
           localMetricFlatBasis (I := I) e b g ((extChartAt I x₀).symm y') := by
     filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem (I := I) hy] with y' hy'
-    have hp'_src : (extChartAt I x₀).symm y' ∈ (extChartAt I x₀).source :=
+    have hp'_source : (extChartAt I x₀).symm y' ∈ (extChartAt I x₀).source :=
       (extChartAt I x₀).map_target hy'
     have hp'E : (extChartAt I x₀).symm y' ∈ e.baseSet := by
-      simpa [e, TangentBundle.trivializationAt_baseSet, extChartAt_source] using hp'_src
+      simpa [e, TangentBundle.trivializationAt_baseSet, extChartAt_source] using hp'_source
     ext v w
     calc
       metricFlatModelInChart (I := I) g x₀ y' v w =

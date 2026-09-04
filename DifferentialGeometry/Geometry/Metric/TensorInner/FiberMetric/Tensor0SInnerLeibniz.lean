@@ -33,7 +33,7 @@ private theorem sum_reorder_b_out {s : Nat} {α : Type*} [AddCommMonoid α]
   rw [Finset.sum_comm
     (f := fun I0 b : _ => ∑ J0 : Fin s -> Idx, F I0 J0 b)]
 
-def christoffelCorrComp {s : Nat}
+def christoffelCorrectionComp {s : Nat}
     (Γ : Idx -> Idx -> Real)
     (cA : (Fin s -> Idx) -> Real) :
     (Fin s -> Idx) -> Real :=
@@ -232,7 +232,7 @@ theorem coordContractDt_secondPart_slot {s : Nat}
   rw [hprod]
   ring
 
-theorem coordContractDt_eq_neg_christoffelCorr {s : Nat}
+theorem coordContractDt_eq_neg_christoffelCorrection {s : Nat}
     (gInv Γ : Idx -> Idx -> Real)
     (DU : Idx -> Idx -> Real)
     (cA cB : (Fin s -> Idx) -> Real)
@@ -240,8 +240,8 @@ theorem coordContractDt_eq_neg_christoffelCorr {s : Nat}
       DU p q =
         - ((∑ c : Idx, Γ c p * gInv c q) + (∑ c : Idx, Γ c q * gInv p c))) :
     coordContractDt gInv DU cA cB =
-      - coordContract gInv (christoffelCorrComp Γ cA) cB
-        - coordContract gInv cA (christoffelCorrComp Γ cB) := by
+      - coordContract gInv (christoffelCorrectionComp Γ cA) cB
+        - coordContract gInv cA (christoffelCorrectionComp Γ cB) := by
   classical
   have hStep1 :
       coordContractDt gInv DU cA cB =
@@ -297,11 +297,11 @@ theorem coordContractDt_eq_neg_christoffelCorr {s : Nat}
     refine Finset.sum_congr rfl fun b _ => ?_
     exact coordContractDt_secondPart_slot gInv Γ cA cB b]
   have hContrA :
-      coordContract gInv (christoffelCorrComp Γ cA) cB =
+      coordContract gInv (christoffelCorrectionComp Γ cA) cB =
         ∑ b : Fin s, ∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
           (∏ a : Fin s, gInv (I0 a) (J0 a)) *
             (∑ c : Idx, Γ (I0 b) c * cA (Function.update I0 b c)) * cB J0 := by
-    unfold coordContract christoffelCorrComp
+    unfold coordContract christoffelCorrectionComp
     rw [show
         (∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
             (∏ a : Fin s, gInv (I0 a) (J0 a)) *
@@ -316,11 +316,11 @@ theorem coordContractDt_eq_neg_christoffelCorr {s : Nat}
       (∏ a : Fin s, gInv (I0 a) (J0 a)) *
         (∑ c : Idx, Γ (I0 b) c * cA (Function.update I0 b c)) * cB J0)]
   have hContrB :
-      coordContract gInv cA (christoffelCorrComp Γ cB) =
+      coordContract gInv cA (christoffelCorrectionComp Γ cB) =
         ∑ b : Fin s, ∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
           (∏ a : Fin s, gInv (I0 a) (J0 a)) *
             cA I0 * (∑ c : Idx, Γ (J0 b) c * cB (Function.update J0 b c)) := by
-    unfold coordContract christoffelCorrComp
+    unfold coordContract christoffelCorrectionComp
     rw [show
         (∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
             (∏ a : Fin s, gInv (I0 a) (J0 a)) * cA I0 *
@@ -478,7 +478,7 @@ theorem mvfderiv_coordContract {s : Nat}
           (∑ J0 : Fin s -> Idx,
             (∏ a : Fin s, U y (I0 a) (J0 a)) * cA y I0 * cB y J0) from by
     funext y; rfl]
-  rw [DifferentialGeometry.mvfderiv_finset_sum_at'
+  rw [DifferentialGeometry.mvfderiv_finset_sum_apply
     (I := I) (Finset.univ : Finset (Fin s -> Idx))
     (fun I0 y => ∑ J0 : Fin s -> Idx,
       (∏ a : Fin s, U y (I0 a) (J0 a)) * cA y I0 * cB y J0) v
@@ -498,7 +498,7 @@ theorem mvfderiv_coordContract {s : Nat}
               (∏ a : Fin s, U x (I0 a) (J0 a)) * cA x I0 *
                 mvfderiv (I := I) (fun y => cB y J0) x v)) from by
     refine Finset.sum_congr rfl fun I0 _ => ?_
-    rw [DifferentialGeometry.mvfderiv_finset_sum_at'
+    rw [DifferentialGeometry.mvfderiv_finset_sum_apply
       (I := I) (Finset.univ : Finset (Fin s -> Idx))
       (fun J0 y => (∏ a : Fin s, U y (I0 a) (J0 a)) * cA y I0 * cB y J0) v
       (fun J0 _ => hGmdiff I0 J0)]
@@ -615,12 +615,12 @@ theorem inner0S_nabla {s : Nat}
           (cA x) (cB x) from by
     refine congrArg (fun D => coordContractDt (U x) D (cA x) (cB x)) ?_
     funext i j; exact hDU i j]
-  rw [coordContractDt_eq_neg_christoffelCorr (U x) Γ
+  rw [coordContractDt_eq_neg_christoffelCorrection (U x) Γ
     (fun i j => - ((∑ c : Idx, Γ c i * U x c j) + (∑ c : Idx, Γ c j * U x i c)))
     (cA x) (cB x) (fun p q => rfl)]
   have hcompA : ∀ I0 : Fin s -> Idx,
       mvfderiv (I := I) (fun y => cA y I0) x (X x) -
-          christoffelCorrComp Γ (cA x) I0 =
+          christoffelCorrectionComp Γ (cA x) I0 =
         tensor0SComponent (I := I)
           (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X A x)
           (fun i => frame i x) I0 := by
@@ -647,7 +647,7 @@ theorem inner0S_nabla {s : Nat}
       rw [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply]
     rw [hRHS, hnab, hDcA]
     congr 1
-    simp only [christoffelCorrComp, hΓ]
+    simp only [christoffelCorrectionComp, hΓ]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun k _ => ?_
     congr 1
     rw [DifferentialGeometry.Tensor.Coordinates.coordComponent0SAt_apply]
@@ -656,7 +656,7 @@ theorem inner0S_nabla {s : Nat}
     rw [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply]
   have hcompB : ∀ J0 : Fin s -> Idx,
       mvfderiv (I := I) (fun y => cB y J0) x (X x) -
-          christoffelCorrComp Γ (cB x) J0 =
+          christoffelCorrectionComp Γ (cB x) J0 =
         tensor0SComponent (I := I)
           (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X B x)
           (fun i => frame i x) J0 := by
@@ -683,7 +683,7 @@ theorem inner0S_nabla {s : Nat}
       rw [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply]
     rw [hRHS, hnab, hDcB]
     congr 1
-    simp only [christoffelCorrComp, hΓ]
+    simp only [christoffelCorrectionComp, hΓ]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun k _ => ?_
     congr 1
     rw [DifferentialGeometry.Tensor.Coordinates.coordComponent0SAt_apply]
@@ -709,13 +709,13 @@ theorem inner0S_nabla {s : Nat}
   have hgroupA :
       coordContract (U x)
             (fun I0 => mvfderiv (I := I) (fun y => cA y I0) x (X x)) (cB x) -
-          coordContract (U x) (christoffelCorrComp Γ (cA x)) (cB x) =
+          coordContract (U x) (christoffelCorrectionComp Γ (cA x)) (cB x) =
         inner0S (I := I) g x s
           (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X A x) (B x) := by
     rw [← coordContract_sub_left]
     rw [show
         (fun I0 => mvfderiv (I := I) (fun y => cA y I0) x (X x) -
-            christoffelCorrComp Γ (cA x) I0) =
+            christoffelCorrectionComp Γ (cA x) I0) =
           fun I0 => tensor0SComponent (I := I)
             (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X A x)
             (fun i => frame i x) I0 from funext hcompA]
@@ -725,13 +725,13 @@ theorem inner0S_nabla {s : Nat}
   have hgroupB :
       coordContract (U x) (cA x)
             (fun J0 => mvfderiv (I := I) (fun y => cB y J0) x (X x)) -
-          coordContract (U x) (cA x) (christoffelCorrComp Γ (cB x)) =
+          coordContract (U x) (cA x) (christoffelCorrectionComp Γ (cB x)) =
         inner0S (I := I) g x s (A x)
           (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X B x) := by
     rw [← coordContract_sub_right]
     rw [show
         (fun J0 => mvfderiv (I := I) (fun y => cB y J0) x (X x) -
-            christoffelCorrComp Γ (cB x) J0) =
+            christoffelCorrectionComp Γ (cB x) J0) =
           fun J0 => tensor0SComponent (I := I)
             (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X B x)
             (fun i => frame i x) J0 from funext hcompB]

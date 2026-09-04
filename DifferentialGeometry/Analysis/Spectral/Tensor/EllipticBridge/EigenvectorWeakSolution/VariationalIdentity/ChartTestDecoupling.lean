@@ -622,7 +622,7 @@ theorem tensorComponentEuclid_prependCovGradSlot_rotatedTestSection_chartTestPul
     (P₀ : CompIdx E r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (Q : CompIdx E r (s + 1)) :
     Set.EqOn
       (tensorComponentEuclid (I := I) (M := M) g r (s + 1)
@@ -631,7 +631,7 @@ theorem tensorComponentEuclid_prependCovGradSlot_rotatedTestSection_chartTestPul
             (chartTestPullback (I := I) (M := M) α ψ)
             (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
             (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-              hψ_cs hψ_supp)))
+              hψ_cs hψ_support)))
         α Q)
       (fun y => crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y * ψ y)
       (chartTargetEuclid (I := I) (M := M) α) := by
@@ -639,7 +639,7 @@ theorem tensorComponentEuclid_prependCovGradSlot_rotatedTestSection_chartTestPul
   rw [tensorComponentEuclid_prependCovGradSlot_rotatedTestSection_eqOn
     (I := I) (M := M) g r s α P₀
     (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
-    (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_supp)
+    (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_support)
     Q hy]
   beta_reduce
   rw [chartPushedRaw_chartTestPullback_eqOn (I := I) (M := M) α ψ hy]
@@ -650,7 +650,7 @@ theorem tensorComponentEuclid_covDerivAlongGrad_rotatedTestSection_chartTestPull
     (P₀ : CompIdx E r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (Q : CompIdx E r s) :
     Set.EqOn
       (tensorComponentEuclid (I := I) (M := M) g r s
@@ -659,7 +659,7 @@ theorem tensorComponentEuclid_covDerivAlongGrad_rotatedTestSection_chartTestPull
             (chartTestPullback (I := I) (M := M) α ψ)
             (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
             (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-              hψ_cs hψ_supp))
+              hψ_cs hψ_support))
           (chartAtlasPOU I M α))
         α Q)
       (fun y => crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y *
@@ -672,7 +672,7 @@ theorem tensorComponentEuclid_covDerivAlongGrad_rotatedTestSection_chartTestPull
   rw [tensorComponentEuclid_covDerivAlongGrad_rotatedTestSection_eqOn
     (I := I) (M := M) g r s α P₀
     (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
-    (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_supp)
+    (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_support)
     Q hy]
   beta_reduce
   rw [chartPushedRaw_chartTestPullback_eqOn (I := I) (M := M) α ψ hy]

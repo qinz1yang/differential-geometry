@@ -73,11 +73,11 @@ lemma exists_chartCenteredLift_at
     ∃ f : ℝ → TangentBundle I M,
       f t₀ = (⟨p, v⟩ : TangentBundle I M) ∧
       IsMIntegralCurveAt f (geodesicVectorFieldChart (I := I) g p) t₀ := by
-  obtain ⟨f₀, hf₀_init, hf₀⟩ :=
+  obtain ⟨f₀, hf₀_initial, hf₀⟩ :=
     exists_isMIntegralCurveAt_geodesicVectorFieldChart (I := I) g p v
   refine ⟨f₀ ∘ (· - t₀), ?_, ?_⟩
   · change f₀ (t₀ - t₀) = (⟨p, v⟩ : TangentBundle I M)
-    rw [sub_self]; exact hf₀_init
+    rw [sub_self]; exact hf₀_initial
   · have hshift := hf₀.comp_add (-t₀)
     have hfn : (fun s : ℝ => s + -t₀) = (fun s : ℝ => s - t₀) := by
       funext s; ring
@@ -337,7 +337,7 @@ theorem IsGeodesicAt.hasGeodesicEquationAt_chartCentered
     (hγ : IsGeodesicAt (I := I) g γ t₀)
     (hα : (hγ.choose) = γ t₀) :
     HasGeodesicEquationAt (I := I) g γ t₀ := by
-  obtain ⟨hproj, _hα_src, hf⟩ := hγ.choose_spec.choose_spec
+  obtain ⟨hproj, _hα_source, hf⟩ := hγ.choose_spec.choose_spec
   set f : ℝ → TangentBundle I M := hγ.choose_spec.choose with hf_def
   rw [hα] at hf
   exact hasGeodesicEquationAt_of_chartCentered
@@ -390,10 +390,10 @@ lemma exists_chartCenteredLift_at_lift_eq
     ∃ f₁ : ℝ → TangentBundle I M,
       f₁ t₀ = f t₀ ∧
       IsMIntegralCurveAt f₁ (geodesicVectorFieldChart (I := I) g (γ t₀)) t₀ := by
-  obtain ⟨f₁, hf₁_init, hf₁⟩ :=
+  obtain ⟨f₁, hf₁_initial, hf₁⟩ :=
     exists_chartCenteredLift_at (I := I) g (γ t₀) ((f t₀).snd : E) t₀
   refine ⟨f₁, ?_, hf₁⟩
-  rw [hf₁_init, ← hproj_t₀]
+  rw [hf₁_initial, ← hproj_t₀]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in

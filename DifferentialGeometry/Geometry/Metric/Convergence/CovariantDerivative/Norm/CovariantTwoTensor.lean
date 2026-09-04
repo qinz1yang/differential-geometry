@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -39,5 +39,5 @@ theorem tensor02CovDerivNormWith_eq_iterCov
   rw [Tensor0SBundle.normSq0S_domDomCongr (I := I) gRef x basis hinv (acEquiv a)
       (iterCov (I := I) gRef 2 A a x)]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

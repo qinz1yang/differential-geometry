@@ -45,7 +45,7 @@ private abbrev metricH2 (g : SmoothRiemannianMetric I M) :=
 private abbrev metricH4 (g : SmoothRiemannianMetric I M) :=
   TensorHs (I := I) (M := M) g 0 2 (4 : ℝ)
 
-private abbrev solH3 (g : SmoothRiemannianMetric I M) :=
+private abbrev solutionH3 (g : SmoothRiemannianMetric I M) :=
   TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)
 
 private abbrev opH3 (g : SmoothRiemannianMetric I M) :=
@@ -71,8 +71,8 @@ private abbrev pLoOp (g : SmoothRiemannianMetric I M) :=
   TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
     TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)
 
-private abbrev solToOpH3 (g : SmoothRiemannianMetric I M) :
-    solH3 (I := I) (M := M) g ≃ₗᵢ[ℝ] opH3 (I := I) (M := M) g :=
+private abbrev solutionToOpH3 (g : SmoothRiemannianMetric I M) :
+    solutionH3 (I := I) (M := M) g ≃ₗᵢ[ℝ] opH3 (I := I) (M := M) g :=
   tensorHsCongr (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = (3 : ℝ) by norm_num)
 
@@ -88,9 +88,9 @@ def lowRegularityFirstOrderActionTime
     ℝ → (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
       TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t => lowerScaleFirstOrderActionThirdToSecondOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
-    (solToOpH3 (I := I) (M := M) g
-      (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-        (0 : solH3 (I := I) (M := M) g) f t))
+    (solutionToOpH3 (I := I) (M := M) g
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+        (0 : solutionH3 (I := I) (M := M) g) f t))
 
 theorem lowRegularityFirstOrderActionTime_memLp
     (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
@@ -112,20 +112,20 @@ theorem lowRegularityFirstOrderActionTime_memLp
         (timeMeasure T) ∧
       (∀ᵐ t ∂timeMeasure T,
         ‖lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f t‖ ≤
-          Φ * (1 + ‖maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-            (0 : solH3 (I := I) (M := M) g) f t‖)) ∧
+          Φ * (1 + ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+            (0 : solutionH3 (I := I) (M := M) g) f t‖)) ∧
       MemLp (lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f) 2
         (timeMeasure T) := by
   have hufield : AEStronglyMeasurable
-      (fun t => maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-        (0 : solH3 (I := I) (M := M) g) f t) (timeMeasure T) :=
+      (fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+        (0 : solutionH3 (I := I) (M := M) g) f t) (timeMeasure T) :=
     Lp.aestronglyMeasurable _
   have hiso : AEStronglyMeasurable
-      (fun t => solToOpH3 (I := I) (M := M) g
-        (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t)) (timeMeasure T) :=
+      (fun t => solutionToOpH3 (I := I) (M := M) g
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+          (0 : solutionH3 (I := I) (M := M) g) f t)) (timeMeasure T) :=
     (LinearIsometry.toContinuousLinearMap
-      (solToOpH3 (I := I) (M := M) g).toLinearIsometry).continuous
+      (solutionToOpH3 (I := I) (M := M) g).toLinearIsometry).continuous
         |>.comp_aestronglyMeasurable hufield
   have hmeas : AEStronglyMeasurable
       (lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f)
@@ -133,27 +133,27 @@ theorem lowRegularityFirstOrderActionTime_memLp
     hcont.comp_aestronglyMeasurable hiso
   have hbound : ∀ᵐ t ∂timeMeasure T,
       ‖lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f t‖ ≤
-        Φ * (1 + ‖maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t‖) := by
+        Φ * (1 + ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+          (0 : solutionH3 (I := I) (M := M) g) f t‖) := by
     refine Eventually.of_forall fun t => ?_
-    have h := hlin (solToOpH3 (I := I) (M := M) g
-      (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-        (0 : solH3 (I := I) (M := M) g) f t))
+    have h := hlin (solutionToOpH3 (I := I) (M := M) g
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+        (0 : solutionH3 (I := I) (M := M) g) f t))
     rwa [LinearIsometryEquiv.norm_map] at h
   have haffine : ∀ᵐ t ∂timeMeasure T,
       ‖lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f t‖ ≤
-        Φ + Φ * ‖maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t‖ := by
+        Φ + Φ * ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+          (0 : solutionH3 (I := I) (M := M) g) f t‖ := by
     filter_upwards [hbound] with t ht
     calc
-      _ ≤ Φ * (1 + ‖maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-            (0 : solH3 (I := I) (M := M) g) f t‖) := ht
-      _ = Φ + Φ * ‖maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-            (0 : solH3 (I := I) (M := M) g) f t‖ := by ring
+      _ ≤ Φ * (1 + ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+            (0 : solutionH3 (I := I) (M := M) g) f t‖) := ht
+      _ = Φ + Φ * ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+            (0 : solutionH3 (I := I) (M := M) g) f t‖ := by ring
   obtain ⟨hmem, -⟩ :=
     memLp_clm_affine (T := T)
-      (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-        (0 : solH3 (I := I) (M := M) g) f)
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+        (0 : solutionH3 (I := I) (M := M) g) f)
       (lowRegularityFirstOrderActionTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f)
       hmeas hΦ hΦ haffine
   exact ⟨hmeas, hbound, hmem⟩
@@ -362,9 +362,9 @@ def lowRegularityFirstOrderActionLowerScaleTime
     ℝ → (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ) →L[ℝ]
       TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
   fun t => lowerScaleFirstOrderActionSecondToFirstOrder (I := I) (M := M) g hρ hδ0 hδ_le hreal
-    (solToOpH3 (I := I) (M := M) g
-      (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-        (0 : solH3 (I := I) (M := M) g) f t))
+    (solutionToOpH3 (I := I) (M := M) g
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+        (0 : solutionH3 (I := I) (M := M) g) f t))
 
 theorem lowRegularityFirstOrderActionTime_extensions_commute
     (hDim : Module.finrank ℝ E = 3)
@@ -423,15 +423,15 @@ theorem lowRegularityFirstOrderActionLowerScaleTime_memLp
       MemLp (lowRegularityFirstOrderActionLowerScaleTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f) 2
         (timeMeasure T) := by
   have hufield : AEStronglyMeasurable
-      (fun t => maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-        (0 : solH3 (I := I) (M := M) g) f t) (timeMeasure T) :=
+      (fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+        (0 : solutionH3 (I := I) (M := M) g) f t) (timeMeasure T) :=
     Lp.aestronglyMeasurable _
   have hiso : AEStronglyMeasurable
-      (fun t => solToOpH3 (I := I) (M := M) g
-        (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t)) (timeMeasure T) :=
+      (fun t => solutionToOpH3 (I := I) (M := M) g
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+          (0 : solutionH3 (I := I) (M := M) g) f t)) (timeMeasure T) :=
     (LinearIsometry.toContinuousLinearMap
-      (solToOpH3 (I := I) (M := M) g).toLinearIsometry).continuous
+      (solutionToOpH3 (I := I) (M := M) g).toLinearIsometry).continuous
         |>.comp_aestronglyMeasurable hufield
   have hmeas : AEStronglyMeasurable
       (lowRegularityFirstOrderActionLowerScaleTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f)
@@ -439,22 +439,22 @@ theorem lowRegularityFirstOrderActionLowerScaleTime_memLp
     hcont.comp_aestronglyMeasurable hiso
   have haffine : ∀ᵐ t ∂timeMeasure T,
       ‖lowRegularityFirstOrderActionLowerScaleTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f t‖ ≤
-        Φ + Φ * ‖maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t‖ := by
+        Φ + Φ * ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+          (0 : solutionH3 (I := I) (M := M) g) f t‖ := by
     refine Filter.Eventually.of_forall fun t => ?_
-    have h := hlin (solToOpH3 (I := I) (M := M) g
-      (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-        (0 : solH3 (I := I) (M := M) g) f t))
+    have h := hlin (solutionToOpH3 (I := I) (M := M) g
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+        (0 : solutionH3 (I := I) (M := M) g) f t))
     rw [LinearIsometryEquiv.norm_map] at h
     calc
-      _ ≤ Φ * (1 + ‖maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-            (0 : solH3 (I := I) (M := M) g) f t‖) := h
-      _ = Φ + Φ * ‖maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-            (0 : solH3 (I := I) (M := M) g) f t‖ := by ring
+      _ ≤ Φ * (1 + ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+            (0 : solutionH3 (I := I) (M := M) g) f t‖) := h
+      _ = Φ + Φ * ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+            (0 : solutionH3 (I := I) (M := M) g) f t‖ := by ring
   obtain ⟨hmem, -⟩ :=
     memLp_clm_affine (T := T)
-      (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
-        (0 : solH3 (I := I) (M := M) g) f)
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
+        (0 : solutionH3 (I := I) (M := M) g) f)
       (lowRegularityFirstOrderActionLowerScaleTime (I := I) (M := M) g hρ hδ0 hδ_le hreal hT f)
       hmeas hΦ hΦ haffine
   exact ⟨hmeas, hmem⟩
@@ -473,9 +473,9 @@ def lowRegularitySecondOrderActionTotal
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t)‖ ≤ R) :
+          (0 : solutionH3 (I := I) (M := M) g) f t)‖ ≤ R) :
     ℝ → (TensorHs (I := I) (M := M) g 0 2 (4 : ℝ) →L[ℝ]
       TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
   fun t =>
@@ -681,9 +681,9 @@ theorem lowRegularitySecondOrderActionTotal_data
             ‖tensorHsInclusion (I := I) (M := M)
               (g := g) (r := 0) (s := 2)
               (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-              (maxRegDuhamelSolField (I := I) (M := M)
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                 (1 : ℝ) hT
-                (0 : solH3 (I := I) (M := M) g) f t)‖ ≤ R),
+                (0 : solutionH3 (I := I) (M := M) g) f t)‖ ≤ R),
           AEStronglyMeasurable
               (lowRegularitySecondOrderActionTotal (I := I) (M := M)
                 g hρ0 hδ0 hδ_le hreal' hT f hR hball)
@@ -743,9 +743,9 @@ def lowRegularitySecondOrderActionLowerScaleTime
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t)‖ ≤ R) :
+          (0 : solutionH3 (I := I) (M := M) g) f t)‖ ≤ R) :
     ℝ → (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
       TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
   fun t =>
@@ -766,9 +766,9 @@ theorem lowRegularitySecondOrderActionLowerScaleTime_data
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t)‖ ≤ R),
+          (0 : solutionH3 (I := I) (M := M) g) f t)‖ ≤ R),
           AEStronglyMeasurable
               (lowRegularitySecondOrderActionLowerScaleTime (I := I) (M := M) g hT f hR hball)
               (timeMeasure T) ∧
@@ -867,9 +867,9 @@ def lowRegularitySecondOrderActionTotalLowerScale
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t)‖ ≤ R) :
+          (0 : solutionH3 (I := I) (M := M) g) f t)‖ ≤ R) :
     ℝ → (TensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
       TensorHs (I := I) (M := M) g 0 2 (1 : ℝ)) :=
   fun t =>
@@ -898,9 +898,9 @@ theorem lowRegularitySecondOrderActionTotalLowerScale_data
       ‖tensorHsInclusion (I := I) (M := M)
         (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT
-          (0 : solH3 (I := I) (M := M) g) f t)‖ ≤ R),
+          (0 : solutionH3 (I := I) (M := M) g) f t)‖ ≤ R),
           AEStronglyMeasurable
               (lowRegularitySecondOrderActionTotalLowerScale (I := I) (M := M)
                 g hρ0 hδ0 hδ_le hreal' hT f hR hball)

@@ -41,14 +41,14 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-private lemma chosenWeakPartial'_memLp_volume_unconditional
+private lemma chosenWeakPartialOrZero_memLp_volume_unconditional
     {Ω : Set EuclN} (k : Fin (Module.finrank ℝ E)) (w : EuclN → ℝ) :
-    MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k w Ω) 2
+    MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k w Ω) 2
       ((volume : Measure EuclN).restrict Ω) := by
   classical
   by_cases hw : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 w Ω
-  · exact chosenWeakPartial'_memLp_of_mem hw k
-  · rw [chosenWeakPartial'_of_not_mem hw k]
+  · exact chosenWeakPartialOrZero_memLp_of_mem hw k
+  · rw [chosenWeakPartialOrZero_of_not_mem hw k]
     exact MemLp.zero
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
@@ -111,7 +111,7 @@ def eigenvectorChartIteratedPartial
     ∀ (m : ℕ), (Fin m → Fin (Module.finrank ℝ E)) → EuclN → ℝ
   | 0, _ => eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀
   | m + 1, l =>
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 (l (Fin.last m))
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (l (Fin.last m))
         (eigenvectorChartIteratedPartial g r s i α P₀ m (Fin.init l))
         (chartTargetEuclid (I := I) (M := M) α)
 
@@ -134,7 +134,7 @@ theorem eigenvectorChartIteratedPartial_succ
     (m : ℕ) (l : Fin (m + 1) → Fin (Module.finrank ℝ E)) :
     eigenvectorChartIteratedPartial (I := I) (M := M)
         g r s i α P₀ (m + 1) l =
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 (l (Fin.last m))
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (l (Fin.last m))
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ m (Fin.init l))
         (chartTargetEuclid (I := I) (M := M) α) := rfl
@@ -156,7 +156,7 @@ theorem eigenvectorChartIteratedPartial_memLp_volume
         (I := I) (M := M) g r s i α P₀
   | succ m _ih =>
       rw [eigenvectorChartIteratedPartial_succ]
-      exact chosenWeakPartial'_memLp_volume_unconditional
+      exact chosenWeakPartialOrZero_memLp_volume_unconditional
         (l (Fin.last m)) _
 
 omit [CompleteSpace E] in
@@ -186,7 +186,7 @@ def eigenvectorChartRHSDiffNumerator
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : EuclN → ℝ) (y : EuclN) : ℝ :=
+    (fChartEffectivePrev : EuclN → ℝ) (y : EuclN) : ℝ :=
   (∑ a : Fin (Module.finrank ℝ E),
     ∑ b : Fin (Module.finrank ℝ E),
       (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α a b
@@ -197,17 +197,17 @@ def eigenvectorChartRHSDiffNumerator
   + (∑ a : Fin (Module.finrank ℝ E),
       ∑ b : Fin (Module.finrank ℝ E),
         weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
             (eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
             (chartTargetEuclid (I := I) (M := M) α) y)
   - densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y *
       eigenvectorChartIteratedPartial (I := I) (M := M)
         g r s i α P₀ m (Fin.init l) y
-  + densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y * fChartEffPrev y
+  + densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y * fChartEffectivePrev y
   + densityOnEuclid (I := I) g α y *
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 (l (Fin.last m))
-        fChartEffPrev (chartTargetEuclid (I := I) (M := M) α) y
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (l (Fin.last m))
+        fChartEffectivePrev (chartTargetEuclid (I := I) (M := M) α) y
 
 omit [CompleteSpace E] in
 lemma eigenvectorChartRHSDiffNumerator_memLp_volume_compact
@@ -215,12 +215,12 @@ lemma eigenvectorChartRHSDiffNumerator_memLp_volume_compact
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
-    (h_prev : MemLp fChartEffPrev 2
+    {fChartEffectivePrev : EuclN → ℝ}
+    (h_prev : MemLp fChartEffectivePrev 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))) :
     MemLp (fun y => eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-        g r s i α P₀ m l fChartEffPrev y) 2
+        g r s i α P₀ m l fChartEffectivePrev y) 2
       ((volume : Measure EuclN).restrict
         (chartPouKernel (I := I) (M := M) α)) := by
   classical
@@ -230,7 +230,7 @@ lemma eigenvectorChartRHSDiffNumerator_memLp_volume_compact
     chartPouKernel_measurableSet (I := I) (M := M) α
   have hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α :=
     chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α
-  have h_prev_K : MemLp fChartEffPrev 2 ((volume : Measure EuclN).restrict K) :=
+  have h_prev_K : MemLp fChartEffectivePrev 2 ((volume : Measure EuclN).restrict K) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure
       (g := g) (α := α) h_prev hK_compact hK_meas hK_in
   have hA : MemLp (fun y => ∑ a : Fin (Module.finrank ℝ E),
@@ -270,7 +270,7 @@ lemma eigenvectorChartRHSDiffNumerator_memLp_volume_compact
   have hB : MemLp (fun y => ∑ a : Fin (Module.finrank ℝ E),
       ∑ b : Fin (Module.finrank ℝ E),
         weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
             (eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
             (chartTargetEuclid (I := I) (M := M) α) y) 2
@@ -279,7 +279,7 @@ lemma eigenvectorChartRHSDiffNumerator_memLp_volume_compact
     refine memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
       (weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α a b (l (Fin.last m)))
       hK_compact hK_meas hK_in ?_
-    have h_global := chosenWeakPartial'_memLp_volume_unconditional
+    have h_global := chosenWeakPartialOrZero_memLp_volume_unconditional
       (Ω := chartTargetEuclid (I := I) (M := M) α) b
       (eigenvectorChartIteratedPartial (I := I) (M := M)
         g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
@@ -304,20 +304,20 @@ lemma eigenvectorChartRHSDiffNumerator_memLp_volume_compact
         hK_meas hK_in)
   have hD : MemLp (fun y =>
       densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y *
-        fChartEffPrev y) 2
+        fChartEffectivePrev y) 2
       ((volume : Measure EuclN).restrict K) :=
     memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
       (densityDerivOnEuclid_contDiffOn (I := I) g α (l (Fin.last m)))
       hK_compact hK_meas hK_in h_prev_K
   have hE : MemLp (fun y =>
       densityOnEuclid (I := I) g α y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 (l (Fin.last m))
-          fChartEffPrev (chartTargetEuclid (I := I) (M := M) α) y) 2
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (l (Fin.last m))
+          fChartEffectivePrev (chartTargetEuclid (I := I) (M := M) α) y) 2
       ((volume : Measure EuclN).restrict K) := by
     refine memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
       (densityOnEuclid_contDiffOn (I := I) g α) hK_compact hK_meas hK_in ?_
-    have h_global := chosenWeakPartial'_memLp_volume_unconditional
-      (Ω := chartTargetEuclid (I := I) (M := M) α) (l (Fin.last m)) fChartEffPrev
+    have h_global := chosenWeakPartialOrZero_memLp_volume_unconditional
+      (Ω := chartTargetEuclid (I := I) (M := M) α) (l (Fin.last m)) fChartEffectivePrev
     have h_eq : ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)).restrict K =
         (volume : Measure EuclN).restrict K := by

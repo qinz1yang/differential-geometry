@@ -28,7 +28,7 @@ theorem exists_galerkin_approximation_with_uniform_all_order_energy_bounds_backg
     (g₀ g_bg : SmoothRiemannianMetric I M) (K : LowRegularityBoundParameters)
     {Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+    (u : MaximalRegularitySolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
@@ -44,7 +44,7 @@ theorem exists_galerkin_approximation_with_uniform_all_order_energy_bounds_backg
   obtain ⟨A, B, hgate, _hA3, _hB3, ε, hε, hbudget⟩ := hlo.exists_absorption_constants_and_margin
   obtain ⟨κ, hhm, hκA⟩ := hgate.2.2.2.2.2
   have hrate : 0 ≤ K.threshold / (1 - K.threshold) ^ 2 :=
-    div_nonneg hsol.hδ0 (sq_nonneg _)
+    div_nonneg hsol.threshold_nonneg (sq_nonneg _)
   have hstate : 0 ≤ lowRegularityStateRadius K.top K.slope K.outer K.realize :=
     (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg K.outer_pos K.realize_pos).le
   have hκrate : κ * (K.threshold / (1 - K.threshold) ^ 2) ≤
@@ -77,7 +77,7 @@ theorem per_mode_limit_weighted_energy_bound_all_orders_background
     (g₀ g_bg : SmoothRiemannianMetric I M) (K : LowRegularityBoundParameters)
     {Rcap Ctop₂ Kr2 Kr1 Kcap T : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (u : MaxRegSolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+    (u : MaximalRegularitySolutionSpace (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T)
@@ -85,10 +85,10 @@ theorem per_mode_limit_weighted_energy_bound_all_orders_background
       u gforce Rcap Ctop₂ Kr2 Kr1 Kcap) :
     ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t) ^ 2) ∧
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t) ^ 2 ≤
           Cσ := by
   classical

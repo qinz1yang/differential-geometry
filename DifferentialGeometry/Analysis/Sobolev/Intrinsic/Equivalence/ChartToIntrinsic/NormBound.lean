@@ -124,7 +124,7 @@ theorem eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
       ENNReal.ofReal (Cα α) *
         wkpNormChart (I := I) (M := M) 1 p u := by
     intro α _
-    have h_supp : tsupport (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) ⊆
+    have h_support : tsupport (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) ⊆
         tsupport (ρ α : M → ℝ) := by
       have h_eq : (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) =
           (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x • u x) := by funext x; rfl
@@ -133,7 +133,7 @@ theorem eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
         (f := fun x : M => ((ρ α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) (g := u)
     have h_meas : Measurable (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) :=
       (ρ α).contMDiff.continuous.measurable.mul hu_meas
-    have h_bridge := hCα_bound α h_meas h_supp
+    have h_bridge := hCα_bound α h_meas h_support
     refine h_bridge.trans ?_
     have h_ae :=
       DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed_eq_chartPushedRaw_pou_ae

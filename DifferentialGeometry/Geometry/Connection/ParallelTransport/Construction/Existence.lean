@@ -70,13 +70,13 @@ theorem parallel_local_existence_uniqueness [I.Boundaryless]
                 (chartCurve (I := I) α γ t)) (Set.Icc a b) t) ∧
           Y' t₀ = v₀) →
         Set.EqOn Y Y' (Set.Icc a b)) := by
-  obtain ⟨Y, hY_deriv, hY_init⟩ :=
+  obtain ⟨Y, hY_deriv, hY_initial⟩ :=
     parallel_local_existence_on_Icc (I := I) g α γ uPrime hab ht₀ huCont
       huCurveCont hsource v₀
-  refine ⟨Y, ⟨hY_deriv, hY_init⟩, ?_⟩
-  rintro Y' ⟨hY'_deriv, hY'_init⟩
+  refine ⟨Y, ⟨hY_deriv, hY_initial⟩, ?_⟩
+  rintro Y' ⟨hY'_deriv, hY'_initial⟩
   exact parallel_local_uniqueness_on_Icc (I := I) g α γ uPrime hab ht₀ huCont
-    huCurveCont hsource hY_deriv hY'_deriv (hY_init.trans hY'_init.symm)
+    huCurveCont hsource hY_deriv hY'_deriv (hY_initial.trans hY'_initial.symm)
 
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -187,7 +187,7 @@ theorem parallel_chart_overlap_consistency [I.Boundaryless]
                   (chartTransitionMap (I := I) α β x)) := by
         rw [htransform]; abel
       rw [hsub, map_neg]
-      have hinv := chartTransitionAt_comp_chartTransitionAt' (I := I) α β hsrc_t
+      have hinv := chartTransitionAt_reverse_comp (I := I) α β hsrc_t
       have hid := congrArg (fun L : E →L[ℝ] E => L
           (chartChristoffelContraction (I := I) g β
             (chartTransitionAt (I := I) α β x (uPrimeα t))
@@ -223,7 +223,7 @@ theorem parallel_global_extension [I.Boundaryless]
           IsParallelChart (I := I) g α γ
             (fun t => deriv (chartCurve (I := I) α γ) t) V' (Set.Ioo a b)) →
         Set.EqOn V V' (Set.Ioo a b)) := by
-  obtain ⟨Y, ⟨hY_deriv, hY_init⟩, -⟩ :=
+  obtain ⟨Y, ⟨hY_deriv, hY_initial⟩, -⟩ :=
     parallel_local_existence_uniqueness (I := I) g α γ
       (fun t => deriv (chartCurve (I := I) α γ) t) hab (Set.mem_Icc_of_Ioo ht₀)
       huCont huCurveCont hsource v₀
@@ -237,16 +237,16 @@ theorem parallel_global_extension [I.Boundaryless]
     have hin : t ∈ Set.Icc a b := Set.mem_Icc_of_Ioo ht
     have hd := (hY_deriv t hin).hasDerivAt (hIccNhds t ht)
     simpa using hd
-  refine ⟨Y, ⟨hY_init, hY_par⟩, ?_⟩
+  refine ⟨Y, ⟨hY_initial, hY_par⟩, ?_⟩
   obtain ⟨K, hK_Icc⟩ :=
     parallel_lipschitz_bound_on_compact (I := I) g α γ
       (fun t => deriv (chartCurve (I := I) α γ) t) hab huCont huCurveCont hsource
   have hK_Ioo : ParallelTransportLipschitzBound (I := I) g α γ
       (fun t => deriv (chartCurve (I := I) α γ) t) K (Set.Ioo a b) :=
     fun t ht => hK_Icc t (Set.mem_Icc_of_Ioo ht)
-  intro V' ⟨hV'_init, hV'_par⟩
+  intro V' ⟨hV'_initial, hV'_par⟩
   exact IsParallelChart.unique_of_initial hY_par hV'_par hK_Ioo ht₀
-    (hY_init.trans hV'_init.symm)
+    (hY_initial.trans hV'_initial.symm)
 
 
 structure ParallelSegmentData [I.Boundaryless]
@@ -408,18 +408,18 @@ theorem trivialization_coordinateChange_eq_chartTransitionAt [I.Boundaryless]
     (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ b
         ((trivializationAt E (TangentSpace I) α).symmL ℝ b v) =
       Geodesic.chartTransitionAt (I := I) α β (extChartAt I α b) v := by
-  have hαsrc : b ∈ (chartAt H α).source := hα
-  have hβsrc : b ∈ (chartAt H β).source := hβ
-  rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (I := I) hβsrc,
-    TangentBundle.symmL_trivializationAt_eq_core (I := I) hαsrc]
+  have hαsource : b ∈ (chartAt H α).source := hα
+  have hβsource : b ∈ (chartAt H β).source := hβ
+  rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (I := I) hβsource,
+    TangentBundle.symmL_trivializationAt_eq_core (I := I) hαsource]
   have hb_self : b ∈ (chartAt H b).source := mem_chart_source H b
   have hmem : b ∈ (tangentBundleCore I M).baseSet (achart H α)
       ∩ (tangentBundleCore I M).baseSet (achart H b)
       ∩ (tangentBundleCore I M).baseSet (achart H β) := by
     refine ⟨⟨?_, ?_⟩, ?_⟩
-    · rw [tangentBundleCore_baseSet]; exact hαsrc
+    · rw [tangentBundleCore_baseSet]; exact hαsource
     · rw [tangentBundleCore_baseSet]; exact hb_self
-    · rw [tangentBundleCore_baseSet]; exact hβsrc
+    · rw [tangentBundleCore_baseSet]; exact hβsource
   have hcomp := (tangentBundleCore I M).coordChange_comp
     (achart H α) (achart H b) (achart H β) b hmem v
   have hcc : ((tangentBundleCore I M).coordChange (achart H α) (achart H β) b) v =
@@ -546,10 +546,10 @@ theorem exists_piece_parallel_section [I.Boundaryless]
         have : (1 : ℕ) ≤ N := le_trans one_le_two hN
         exact_mod_cast this)
     exact (hderiv_cd.continuousOn).mono hIcc_sub_U
-  have hγa_src : γ t₀ ∈ (chartAt H α).source := hsrc t₀ ht₀
+  have hγa_source : γ t₀ ∈ (chartAt H α).source := hsrc t₀ ht₀
   set y₀ : E := (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ t₀) v₀ with
     hy₀_def
-  obtain ⟨Y, hY_deriv, hY_init⟩ :=
+  obtain ⟨Y, hY_deriv, hY_initial⟩ :=
     parallel_local_existence_on_Icc (I := I) g α γ uPrime hab.le ht₀
       huPrimeCont hcurveCont hsrc y₀
   set V : ∀ t, TangentSpace I (γ t) := fun s =>
@@ -587,9 +587,9 @@ theorem exists_piece_parallel_section [I.Boundaryless]
   refine ⟨V, ?_, ?_, ?_⟩
   · rw [hV_def]
     simp only
-    rw [hY_init, hy₀_def]
+    rw [hY_initial, hy₀_def]
     have hbase : γ t₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-      rw [TangentBundle.trivializationAt_baseSet]; exact hγa_src
+      rw [TangentBundle.trivializationAt_baseSet]; exact hγa_source
     exact (trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt (R := ℝ) hbase v₀
   · intro t ht
     refine (DifferentiableAt.congr_of_eventuallyEq ?_ (hrep_eq t ht))
@@ -928,16 +928,16 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
     have hlt : p - step < p + 2 * step := by linarith [hstep_pos]
     have hp_mem : p ∈ Set.Icc (p - step) (p + 2 * step) :=
       ⟨by linarith [hstep_pos], by linarith [hstep_pos]⟩
-    obtain ⟨Vp, hVp_init, hVp_diff, hVp_par⟩ :=
+    obtain ⟨Vp, hVp_initial, hVp_diff, hVp_par⟩ :=
       exists_piece_parallel_section (I := I) g α γ hN hγ hlt hp_mem hsrc' w
-    exact ⟨Vp, hVp_init, hVp_diff, hVp_par⟩
+    exact ⟨Vp, hVp_initial, hVp_diff, hVp_par⟩
   have hc0 : c 0 = 0 := by
     change min L ((0 : ℕ) * step) = 0
     rw [Nat.cast_zero, zero_mul]; exact min_eq_right hL.le
   have hQ0 : Q 0 := by
     have h0L : (0 : ℝ) ∈ Set.Icc (0 : ℝ) L := ⟨le_refl _, hL.le⟩
-    obtain ⟨V0, hV0_init, hV0_diff, hV0_par⟩ := hpiece 0 h0L v₀
-    refine ⟨V0, hV0_init, ?_, ?_⟩
+    obtain ⟨V0, hV0_initial, hV0_diff, hV0_par⟩ := hpiece 0 h0L v₀
+    refine ⟨V0, hV0_initial, ?_, ?_⟩
     · intro t ht
       rw [hc0] at ht
       refine hV0_diff t ⟨by linarith [ht.1], by linarith [ht.2, hstep_pos]⟩
@@ -946,10 +946,10 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
       refine hV0_par t ⟨by linarith [ht.1], by linarith [ht.2, hstep_pos]⟩
   have hQstep : ∀ n, Q n → Q (n + 1) := by
     intro n hn
-    obtain ⟨Vn, hVn_init, hVn_diff, hVn_par⟩ := hn
+    obtain ⟨Vn, hVn_initial, hVn_diff, hVn_par⟩ := hn
     by_cases hcL : c n = L
     · have hcn1L : c (n + 1) = L := hc_stuck n hcL
-      refine ⟨Vn, hVn_init, ?_, ?_⟩
+      refine ⟨Vn, hVn_initial, ?_, ?_⟩
       · intro t ht
         refine hVn_diff t ⟨ht.1, ?_⟩
         rw [hcn1L] at ht; rw [hcL]; exact ht.2
@@ -966,7 +966,7 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
       have hcn_eq : c n = (n : ℝ) * step := by
         rw [hcn_def]; exact min_eq_right (le_of_lt hns_lt)
       have hcn_mem : c n ∈ Set.Icc (0 : ℝ) L := ⟨hc_nonneg n, hc_le n⟩
-      obtain ⟨Vp, hVp_init, hVp_diff, hVp_par⟩ := hpiece (c n) hcn_mem (Vn (c n))
+      obtain ⟨Vp, hVp_initial, hVp_diff, hVp_par⟩ := hpiece (c n) hcn_mem (Vn (c n))
       set ov_lo : ℝ := c n - step / 2 with hov_lo
       have hov_lo_lt : ov_lo ≤ c n := by rw [hov_lo]; linarith [hstep_pos]
       have hVn_dom : Set.Icc ov_lo (c n) ⊆ Set.Ioo (-step) (c n + step) := by
@@ -982,12 +982,12 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
           (fun s hs => hVn_diff s (hVn_dom hs)) (fun s hs => hVp_diff s (hVp_dom hs))
           (fun s hs => hVn_par s (hVn_dom hs)) (fun s hs => hVp_par s (hVp_dom hs))
           ⟨hov_lo_lt, le_refl _⟩ ?_
-        rw [hVp_init]
+        rw [hVp_initial]
       set Vc : ∀ t, TangentSpace I (γ t) := fun s => if s ≤ c n then Vn s else Vp s with hVc_def
       have hVc0 : Vc 0 = v₀ := by
         rw [hVc_def]; simp only
         rw [if_pos (by linarith [hc_nonneg n] : (0 : ℝ) ≤ c n)]
-        exact hVn_init
+        exact hVn_initial
       have hcast : ((n + 1 : ℕ) : ℝ) * step = (n : ℝ) * step + step := by
         push_cast; ring
       have hcn1_eq : c (n + 1) = min L ((n : ℝ) * step + step) := by
@@ -1040,9 +1040,9 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
     rw [ge_iff_le, ← div_le_iff₀ hstep_pos]; exact le_of_lt hN
   have hcN : c N = L := by
     rw [hc_def]; exact min_eq_left hN_ge
-  obtain ⟨V, hV_init, hV_diff, hV_par⟩ := hQall N
+  obtain ⟨V, hV_initial, hV_diff, hV_par⟩ := hQall N
   rw [hcN] at hV_diff hV_par
-  refine ⟨step, hstep_pos, V, hV_init, ?_, ?_⟩
+  refine ⟨step, hstep_pos, V, hV_initial, ?_, ?_⟩
   · intro t ht
     exact hV_diff t ⟨ht.1, ht.2⟩
   · intro t ht

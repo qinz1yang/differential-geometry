@@ -49,7 +49,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJac_normal_int
+theorem expJacobian_normal_int
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -58,7 +58,7 @@ theorem expJac_normal_int
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y v v)))
     (x : M) (K : Set E) :
     (∫⁻ v in K,
-        ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+        ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E))) =
       ∫⁻ w in (normalFrame (I := I) (E := E) g x) ⁻¹' K,
         ENNReal.ofReal
@@ -83,27 +83,27 @@ theorem expJac_normal_int
       (fun i t => intrinsicJacobi (I := I) g hEnorm x v (b' i) t) 1
   have hD (v : E) :
       ENNReal.ofReal |b.det b'| *
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) =
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) =
         ENNReal.ofReal (Dn v) := by
     rw [← ENNReal.ofReal_mul (abs_nonneg (b.det b'))]
     congr 1
-    change |b.det b'| * expJacDensity (I := I) g hEnorm x v =
+    change |b.det b'| * expJacobianDensity (I := I) g hEnorm x v =
       curveDensity (I := I) g
         (intrinsicGeodesic (I := I) g hEnorm x v)
         (fun i t => intrinsicJacobi (I := I) g hEnorm x v (b' i) t) 1
-    exact (jacDens_basis (I := I) g hEnorm x v b b').symm
+    exact (jacobianDens_basis (I := I) g hEnorm x v b b').symm
   have hbasis :
       (∫⁻ v in K,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E))) =
         ∫⁻ v in K, ENNReal.ofReal (Dn v) ∂b'.addHaar := by
     calc
       _ = ∫⁻ v in K,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂b.addHaar := by rfl
       _ = ∫⁻ v in K,
           ENNReal.ofReal |b.det b'| *
-            ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+            ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂b'.addHaar := by
             rw [← Module.Basis.det_smul_addHaar b b',
               setLIntegral_smul_measure]
@@ -205,7 +205,7 @@ theorem framed_mul_le_area
               (normalFrame (I := I) g x w) :=
             congrArg (expMapIntrinsic (I := I) g hEnorm x) (hL w)
           _ = intrinsicFramedExp (I := I) g hEnorm x w :=
-            (intrFrame_apply (I := I) g hEnorm x w).symm]
+            (intrinsicFrame_apply (I := I) g hEnorm x w).symm]
     exact hloc
   have hraw :
       IsLocalHomeomorphOn
@@ -233,7 +233,7 @@ theorem framed_mul_le_area
               _ = expMapIntrinsic (I := I) g hEnorm x
                   (normalFrame (I := I) g x w.1) :=
                 congrArg (expMapIntrinsic (I := I) g hEnorm x) (hL w.1)
-              _ = y := by simpa only [intrFrame_apply] using w.2.2⟩⟩
+              _ = y := by simpa only [intrinsicFrame_apply] using w.2.2⟩⟩
         inj' := by
           intro w z hwz
           apply Subtype.ext
@@ -250,7 +250,7 @@ theorem framed_mul_le_area
   have hpreRaw : (normalFrame (I := I) (E := E) g x) ⁻¹' K = U := by
     change L ⁻¹' K = U
     exact hpre
-  rw [expJac_normal_int (I := I) g hEnorm x K, hpreRaw] at harea
+  rw [expJacobian_normal_int (I := I) g hEnorm x K, hpreRaw] at harea
   simpa only [L] using harea
 
 end Measure

@@ -316,12 +316,12 @@ theorem contMDiff_bilinSection_of_chartScalar
   have hcomp : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun x : M => Hb x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 0) x) (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x))
       (chartAt H x₀).source := hscalar x₀ σ
-  have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
+  have hx₀_source : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
   have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
     mem_baseSet_trivializationAt E (TangentSpace I) x₀
-  have h_src_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
-    (chartAt H x₀).open_source.mem_nhds hx₀_src
-  refine ((hcomp x₀ hx₀_src).contMDiffAt h_src_nhd).congr_of_eventuallyEq ?_
+  have h_source_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
+    (chartAt H x₀).open_source.mem_nhds hx₀_source
+  refine ((hcomp x₀ hx₀_source).contMDiffAt h_source_nhd).congr_of_eventuallyEq ?_
   have h_base_nhd : (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 x₀ :=
     (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hx₀_base
   filter_upwards [h_base_nhd] with x hx
@@ -599,8 +599,8 @@ private theorem riemannBiContrFibFixedFrame_eq_of_orthonormal
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem riemannBiContrFib_eq_fixedFrame_on_nbhd (g₁ : SmoothRiemannianMetric I M) (x₀ : M)
-    {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+theorem riemannBiContrFib_eq_fixedFrame_on_neighborhood (g₁ : SmoothRiemannianMetric I M) (x₀ : M)
+    {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     riemannBiContrFib (I := I) g₁ y =
       riemannBiContrFibFixedFrame (I := I) g₁ (smoothOrthoFrame (I := I) g₁ x₀) y := by
   rw [riemannBiContrFib]
@@ -625,11 +625,11 @@ theorem riemannBiContrFib_contMDiff (g₁ : SmoothRiemannianMetric I M) :
     riemannBiContrFibFixedFrame_contMDiff (I := I) g₁ (smoothOrthoFrame (I := I) g₁ x₀)
       (fun i => smoothOrthoFrame_smooth (I := I) g₁ x₀ i) x₀
   refine h_fixed.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
     (E := fun z : M => TensorRSSpace 2 2 I z) y)
     (congrArg TensorRSSpace.ofCLM
-      (riemannBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₁ x₀ hy))
+      (riemannBiContrFib_eq_fixedFrame_on_neighborhood (I := I) g₁ x₀ hy))
 
 def ricciOrderZeroRiemannCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where

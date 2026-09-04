@@ -140,7 +140,7 @@ theorem strongPair_zero (hT : 0 < T)
     u = 0 ∧ field = 0 := by
   let x : CrossScaleField (I := I) (M := M) g r s a T :=
     strongCross (I := I) (M := M) field u hlink
-  have hinit : u.init = 0 := by
+  have hinit : u.initial = 0 := by
     simpa only [timeH1.trace0_apply] using htrace
   have heq' : u.deriv = timeScaleLaplacian (I := I) (M := M) a field := by
     simpa only [timeH1.timeDeriv_apply] using heq
@@ -216,48 +216,48 @@ theorem strongPair_zero (hT : 0 < T)
     rw [hfield] at heq'
     simpa only [map_zero] using heq'
   constructor
-  · exact timeH1.ext (by simpa only [timeH1.init_zero] using hinit)
+  · exact timeH1.ext (by simpa only [timeH1.initial_zero] using hinit)
       (by simpa only [timeH1.deriv_zero] using hderiv)
   · exact hfield
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem duhField_pin (hT : 0 < T)
+theorem duhamelField_pin (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force) =
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ force) =
       timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T
-        (maxRegDuhamelMap (I := I) (M := M) a hT u₀ force) := by
+        (maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ force) := by
   rw [timeH1.toTimeL2_apply]
   refine Lp.ext ?_
   have hincl :=
     (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
       (show a ≤ a + 2 by linarith)).coeFn_compLpL
         (p := 2) (μ := timeMeasure T)
-        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force)
-  have hsol := solField_toFun_ae (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ force)
+  have hsol := solutionField_toFun_ae (I := I) (M := M)
     (a := a) hT h_compact u₀ force
   have hfun := TimeSobolev.coeFn_ofContinuousOn
-    (maxRegDuhamelMap (I := I) (M := M) a hT u₀ force).continuousOn_toFun
+    (maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ force).continuousOn_toFun
   filter_upwards [hincl, hsol, hfun] with t hit hst hft
   change
     (timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
       (show a ≤ a + 2 by linarith)
-      (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force)) t =
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ force)) t =
         (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith))
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force t) at hit
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ force t) at hit
   change
-    (timeH1.toFunL2 (maxRegDuhamelMap (I := I) (M := M)
+    (timeH1.toFunL2 (maximalRegularityDuhamelMap (I := I) (M := M)
       a hT u₀ force)) t =
-        (maxRegDuhamelMap (I := I) (M := M) a hT u₀ force).toFun t at hft
+        (maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ force).toFun t at hft
   exact hit.trans (hst.trans hft.symm)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem strongPair_eq_duh (hT : 0 < T)
+theorem strongPair_eq_duhamel (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
@@ -273,23 +273,23 @@ theorem strongPair_eq_duh (hT : 0 < T)
         timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T u)
     (heq : timeH1.timeDeriv _ T u =
       timeScaleLaplacian (I := I) (M := M) a field + force) :
-    field = maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force ∧
-      u = maxRegDuhamelMap (I := I) (M := M) a hT u₀ force := by
-  let ud := maxRegDuhamelMap (I := I) (M := M) a hT u₀ force
-  let fd := maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force
+    field = maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ force ∧
+      u = maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ force := by
+  let ud := maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ force
+  let fd := maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ force
   have htraceD : timeH1.trace0 _ T ud =
       tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show a ≤ a + 2 by linarith) u₀ := by
-    exact maxRegDuhamelMap_trace0 (I := I) (M := M)
+    exact maximalRegularityDuhamelMap_trace0 (I := I) (M := M)
       (a := a) hT u₀ force
   have hlinkD :
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
           (show a ≤ a + 2 by linarith) fd =
         timeH1.toTimeL2 (TensorHs (I := I) (M := M) g r s a) T ud := by
-    exact duhField_pin (I := I) (M := M) hT h_compact u₀ force
+    exact duhamelField_pin (I := I) (M := M) hT h_compact u₀ force
   have heqD : timeH1.timeDeriv _ T ud =
       timeScaleLaplacian (I := I) (M := M) a fd + force := by
-    exact maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M)
+    exact maximalRegularityDuhamelMap_timeDeriv_eq (I := I) (M := M)
       (a := a) hT h_compact u₀ force
   have hzeroTrace : timeH1.trace0 _ T (u - ud) = 0 := by
     rw [map_sub, htrace, htraceD, sub_self]
@@ -329,13 +329,13 @@ theorem strongNemy_fixed {L : ℝ≥0}
       timeScaleLaplacian (I := I) (M := M) a field + force)
     (hforce : force = nemytskii (I := I) (M := M) hN field) :
     force = nemytskii (I := I) (M := M) hN
-      (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force) := by
-  rcases strongPair_eq_duh (I := I) (M := M) hT h_compact
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ force) := by
+  rcases strongPair_eq_duhamel (I := I) (M := M) hT h_compact
       u₀ force u field htrace hlink heq with ⟨hfield, _⟩
   calc
     force = nemytskii (I := I) (M := M) hN field := hforce
     _ = nemytskii (I := I) (M := M) hN
-        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ force) := by
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ force) := by
       rw [hfield]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -378,21 +378,21 @@ theorem strongPair_unique {L : ℝ≥0}
     u₀ force₂ u₂ field₂ hN htrace₂ hlink₂ heq₂ hforce₂
   rcases quasilinear_strong_unique (I := I) (M := M) (a := a)
       h_compact hT hT1 u₀ hN hL hfix₁ hfix₂ with ⟨hforces, hmaps⟩
-  rcases strongPair_eq_duh (I := I) (M := M) hT h_compact
+  rcases strongPair_eq_duhamel (I := I) (M := M) hT h_compact
       u₀ force₁ u₁ field₁ htrace₁ hlink₁ heq₁ with ⟨hfield₁, hu₁⟩
-  rcases strongPair_eq_duh (I := I) (M := M) hT h_compact
+  rcases strongPair_eq_duhamel (I := I) (M := M) hT h_compact
       u₀ force₂ u₂ field₂ htrace₂ hlink₂ heq₂ with ⟨hfield₂, hu₂⟩
   refine ⟨hforces, ?_, ?_⟩
   · calc
-      field₁ = maxRegDuhamelSolField (I := I) (M := M)
+      field₁ = maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT u₀ force₁ := hfield₁
-      _ = maxRegDuhamelSolField (I := I) (M := M)
+      _ = maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT u₀ force₂ := by rw [hforces]
       _ = field₂ := hfield₂.symm
   · calc
-      u₁ = maxRegDuhamelMap (I := I) (M := M)
+      u₁ = maximalRegularityDuhamelMap (I := I) (M := M)
           a hT u₀ force₁ := hu₁
-      _ = maxRegDuhamelMap (I := I) (M := M)
+      _ = maximalRegularityDuhamelMap (I := I) (M := M)
           a hT u₀ force₂ := hmaps
       _ = u₂ := hu₂.symm
 

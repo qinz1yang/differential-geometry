@@ -56,7 +56,7 @@ theorem timeQuad_line
   simpa only [timeQuad, L, zero_smul, add_zero, hsymm, two_mul] using hinner
 
 def sameTimeEnds (u : timeH1 X T) : Set (timeH1 X T) :=
-  {v | v.init = u.init ∧ v.toFun T = u.toFun T}
+  {v | v.initial = u.initial ∧ v.toFun T = u.toFun T}
 
 def timeQuadPot
     (A : ℝ → X →L[ℝ] X)
@@ -77,7 +77,7 @@ theorem timeQuad_weak_euler
     (hP : HasFDerivAt P
       ((innerSL ℝ F).comp (timeH1.toTimeL2 X T)) u)
     (hmin : IsLocalMinOn (timeQuadPot A hA C hC P) (sameTimeEnds u) u)
-    (v : timeH1 X T) (hv0 : v.init = 0) (hvT : v.toFun T = 0) :
+    (v : timeH1 X T) (hv0 : v.initial = 0) (hvT : v.toFun T = 0) :
     2 * inner ℝ (timeOp A hA C hC u.deriv) v.deriv +
       inner ℝ F v.toFunL2 = 0 := by
   let line : ℝ → timeH1 X T := fun c ↦ u + c • v
@@ -88,7 +88,7 @@ theorem timeQuad_weak_euler
   have hmaps : univ ⊆ line ⁻¹' sameTimeEnds u := by
     intro c _
     constructor
-    · simp only [line, timeH1.init_add, timeH1.init_smul, hv0, smul_zero, add_zero]
+    · simp only [line, timeH1.initial_add, timeH1.initial_smul, hv0, smul_zero, add_zero]
     · change (u + c • v).toFun T = u.toFun T
       rw [timeH1.toFun_add u (c • v) ⟨hT, le_rfl⟩,
         timeH1.toFun_smul c v ⟨hT, le_rfl⟩, hvT, smul_zero, add_zero]

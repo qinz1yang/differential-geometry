@@ -182,10 +182,10 @@ noncomputable def pureRGenuineEndoFib
   pureRFrozenEndoFib (I := I) (M := M) g m (smoothOrthoFrame (I := I) g x) W x
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-private lemma pureRGenuineEndoFib_eq_frozen_on_nbhd
+private lemma pureRGenuineEndoFib_eq_frozen_on_neighborhood
     (g : SmoothRiemannianMetric I M) (m : ℕ)
     (W : SmoothCcTensor g 0 (m + 1)) (x₀ : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     pureRGenuineEndoFib (I := I) (M := M) g m W y =
       pureRFrozenEndoFib (I := I) (M := M) g m (smoothOrthoFrame (I := I) g x₀) W y := by
   rw [pureRGenuineEndoFib, pureRFrozenEndoFib, pureRFrozenEndoFib]
@@ -210,10 +210,10 @@ theorem pureRGenuineEndoFib_contMDiff
     pureRFrozenEndoFib_contMDiff (I := I) (M := M) g m
       (fun i => smoothOrthoFrame_smooth (I := I) g x₀ i) W x₀
   refine h_fixed_at.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 0 (m + 1) ℝ E)
     (E := fun z : M => TensorRSSpace 0 (m + 1) I z) y)
-    (pureRGenuineEndoFib_eq_frozen_on_nbhd (I := I) (M := M) g m W x₀ hy)
+    (pureRGenuineEndoFib_eq_frozen_on_neighborhood (I := I) (M := M) g m W x₀ hy)
 
 private noncomputable def pureRGenuineEndoSucc
     (g : SmoothRiemannianMetric I M) (m : ℕ) (W : SmoothCcTensor g 0 (m + 1)) :

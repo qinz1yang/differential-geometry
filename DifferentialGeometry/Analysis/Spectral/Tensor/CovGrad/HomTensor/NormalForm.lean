@@ -85,9 +85,9 @@ theorem castRankCc_homTensorRSFieldApply_iteratedCovGrad_covGrad (g : SmoothRiem
         (homTensorRSFieldApply (I := I) (M := M) g r ((rr + 1) + k) ((rr + 1) + d + p) Q
           (iteratedCovGrad g r (rr + 1) k (covGrad g r rr W))) =
       homTensorRSFieldApply (I := I) (M := M) g r (rr + (k + 1)) (rr + d + (p + 1))
-        (castHomTensorRSFieldSrc (E := E) (M := M) r (rr + d + (p + 1))
+        (castHomTensorRSFieldSourceRank (E := E) (M := M) r (rr + d + (p + 1))
           (by omega : (rr + 1) + k = rr + (k + 1))
-          (castHomTensorRSFieldTgt (E := E) (M := M) r ((rr + 1) + k)
+          (castHomTensorRSFieldTargetRank (E := E) (M := M) r ((rr + 1) + k)
             (by omega : (rr + 1) + d + p = rr + d + (p + 1)) Q))
         (iteratedCovGrad g r rr (k + 1) W) := by
   rw [homTensorRSFieldApply_castCcTensorRank (E := E) g r (by omega : (rr + 1) + k = rr + (k + 1))
@@ -95,7 +95,7 @@ theorem castRankCc_homTensorRSFieldApply_iteratedCovGrad_covGrad (g : SmoothRiem
     (iteratedCovGrad g r (rr + 1) k (covGrad g r rr W))]
   congr 1
   apply eq_of_heq
-  refine HEq.trans ?_ (iteratedCovGrad_covGrad_comm_heq' g r rr k W)
+  refine HEq.trans ?_ (iteratedCovGrad_covGrad_comm_heq g r rr k W)
   exact castCcTensorRank_heq g r (by omega : (rr + 1) + k = rr + (k + 1))
     (iteratedCovGrad g r (rr + 1) k (covGrad g r rr W))
 
@@ -116,9 +116,9 @@ theorem covariantOperatorNormalForm_succ (g : SmoothRiemannianMetric I M) (r d :
   set Tk : (k : ℕ) → HomTensorRSField (E := E) (M := M) r (rr + (k + 1)) (rr + d + (p + 1)) I := fun
     k =>
     slotInsertHomTensorRSField (I := I) (M := M) r (rr + k) (rr + d + p) (Qr k) -
-      castHomTensorRSFieldSrc (E := E) (M := M) r (rr + d + (p + 1))
+      castHomTensorRSFieldSourceRank (E := E) (M := M) r (rr + d + (p + 1))
         (by omega : (rr + 1) + k = rr + (k + 1))
-        (castHomTensorRSFieldTgt (E := E) (M := M) r ((rr + 1) + k)
+        (castHomTensorRSFieldTargetRank (E := E) (M := M) r ((rr + 1) + k)
           (by omega : (rr + 1) + d + p = rr + d + (p + 1)) (Qr1 k))
     with hTk_def
   refine ⟨fun j => match j with
@@ -142,9 +142,9 @@ theorem covariantOperatorNormalForm_succ (g : SmoothRiemannianMetric I M) (r d :
             (iteratedCovGrad g r (rr + 1) k (covGrad g r rr W)))) =
       ∑ k ∈ Finset.range (p + 1),
         homTensorRSFieldApply (I := I) (M := M) g r (rr + (k + 1)) (rr + d + (p + 1))
-          (castHomTensorRSFieldSrc (E := E) (M := M) r (rr + d + (p + 1))
+          (castHomTensorRSFieldSourceRank (E := E) (M := M) r (rr + d + (p + 1))
             (by omega : (rr + 1) + k = rr + (k + 1))
-            (castHomTensorRSFieldTgt (E := E) (M := M) r ((rr + 1) + k)
+            (castHomTensorRSFieldTargetRank (E := E) (M := M) r ((rr + 1) + k)
               (by omega : (rr + 1) + d + p = rr + d + (p + 1)) (Qr1 k)))
           (iteratedCovGrad g r rr (k + 1) W) from
     Finset.sum_congr rfl (fun k _ =>
@@ -187,9 +187,9 @@ theorem covariantOperatorNormalForm_succ (g : SmoothRiemannianMetric I M) (r d :
           (iteratedCovGrad g r rr (k + 1) W)) -
       (∑ k ∈ Finset.range (p + 1),
         homTensorRSFieldApply (I := I) (M := M) g r (rr + (k + 1)) (rr + d + (p + 1))
-          (castHomTensorRSFieldSrc (E := E) (M := M) r (rr + d + (p + 1))
+          (castHomTensorRSFieldSourceRank (E := E) (M := M) r (rr + d + (p + 1))
             (by omega : (rr + 1) + k = rr + (k + 1))
-            (castHomTensorRSFieldTgt (E := E) (M := M) r ((rr + 1) + k)
+            (castHomTensorRSFieldTargetRank (E := E) (M := M) r ((rr + 1) + k)
               (by omega : (rr + 1) + d + p = rr + d + (p + 1)) (Qr1 k)))
           (iteratedCovGrad g r rr (k + 1) W)) from by
     rw [← Finset.sum_sub_distrib]

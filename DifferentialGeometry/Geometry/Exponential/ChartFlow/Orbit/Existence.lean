@@ -59,21 +59,21 @@ theorem exists_unified_chartFlow_data
           (geodesicVectorFieldChart (I := I) g p) (Set.Ioo (-T) T)) := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
-  have hx₀_src : p ∈ (extChartAt I p).source :=
+  have hx₀_source : p ∈ (extChartAt I p).source :=
     mem_extChartAt_source (I := I) p
   have hx₀_target : x₀ ∈ (extChartAt I p).target :=
-    (extChartAt I p).map_source hx₀_src
+    (extChartAt I p).map_source hx₀_source
   have hx₀_interior : x₀ ∈ interior (extChartAt I p).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) p hx₀_target
   obtain ⟨b, r, ε, ρ_V4, T_V4, Φ, hr, hε, hρ_V4_pos, hT_V4_pos, hb_sub, hΦ_ILF,
-    hΦ_cd_V4, hΦ_init0⟩ :=
+    hΦ_cd_V4, hΦ_initial0⟩ :=
     Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined
       (I := I) (g := g) (α := p) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   obtain ⟨ρ₀, T₀, hρ₀_pos, hT₀_pos, hρ₀_le_V4, hT₀_lt_V4, h_orbit_in⟩ :=
     exists_uniform_orbit_in_inner_ball
       (x₀ := x₀)
       (b := b) (ρ_V4 := ρ_V4) (T_V4 := T_V4) hρ_V4_pos hT_V4_pos
-      (Φ := Φ) hΦ_cd_V4 hΦ_init0
+      (Φ := Φ) hΦ_cd_V4 hΦ_initial0
   set ρ : ℝ := min ρ₀ ((r : ℝ) / 2) with hρ_def
   have hρ_pos : 0 < ρ := by
     apply lt_min hρ₀_pos
@@ -106,7 +106,7 @@ theorem exists_unified_chartFlow_data
     · refine ⟨?_, ?_⟩
       · linarith [hw.2.1]
       · linarith [hw.2.2]
-  have hΦ_init_v : ∀ v ∈ Metric.ball (0 : E) ρ,
+  have hΦ_initial_v : ∀ v ∈ Metric.ball (0 : E) ρ,
       Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) := by
     intro v hv
     have hr_nn : (0 : ℝ) ≤ (r : ℝ) := r.coe_nonneg
@@ -194,11 +194,11 @@ theorem exists_unified_chartFlow_data
     exact hΦ_cd
   · change Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
       ((extChartAt I p p, (0 : E)) : E × E)
-    exact hΦ_init0
+    exact hΦ_initial0
   · intro v hv
     change Φ (((extChartAt I p p, v) : E × E), 0) =
       ((extChartAt I p p, v) : E × E)
-    exact hΦ_init_v v hv
+    exact hΦ_initial_v v hv
   · intro v hv s hs
     change Φ (((extChartAt I p p, v) : E × E), s) ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E)

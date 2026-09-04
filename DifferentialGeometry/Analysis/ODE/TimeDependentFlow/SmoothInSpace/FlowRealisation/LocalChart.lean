@@ -38,11 +38,11 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [I.Boundaryless] in
 theorem precompMap_chartPoint
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (α x : M)
-    (hx_src : x ∈ (extChartAt I α).source) :
+    (hx_source : x ∈ (extChartAt I α).source) :
     precompMap (I := I) Φ_fam t α (extChartAt I α x)
       = extChartAt I α ((Φ_fam t : M → M) x) := by
   unfold precompMap
-  rw [(extChartAt I α).left_inv hx_src]
+  rw [(extChartAt I α).left_inv hx_source]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [BoundarylessManifold I M]
@@ -142,20 +142,20 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [BoundarylessManifold I M] in
 theorem precompMap_differentiableAt
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (α x : M)
-    (hx_src : x ∈ (extChartAt I α).source)
-    (hΦtx_src : (Φ_fam t : M → M) x ∈ (chartAt H α).source) :
+    (hx_source : x ∈ (extChartAt I α).source)
+    (hΦtx_source : (Φ_fam t : M → M) x ∈ (chartAt H α).source) :
     DifferentiableAt ℝ (precompMap (I := I) Φ_fam t α) (extChartAt I α x) := by
   set z₀ : E := extChartAt I α x with hz₀
   have hrange : (range I) = (univ : Set E) := I.range_eq_univ
   have htgt : z₀ ∈ (extChartAt I α).target := by
-    rw [hz₀]; exact (extChartAt I α).map_source hx_src
+    rw [hz₀]; exact (extChartAt I α).map_source hx_source
   have hsymm : MDifferentiableWithinAt 𝓘(ℝ, E) I (extChartAt I α).symm (range I) z₀ :=
     mdifferentiableWithinAt_extChartAt_symm htgt
-  have hround : (extChartAt I α).symm z₀ = x := (extChartAt I α).left_inv hx_src
+  have hround : (extChartAt I α).symm z₀ = x := (extChartAt I α).left_inv hx_source
   have hΦt : MDifferentiableAt I I (Φ_fam t : M → M) x :=
     (Φ_fam t).contMDiff.mdifferentiable (by simp) x
   have hext : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I α) ((Φ_fam t : M → M) x) :=
-    mdifferentiableAt_extChartAt hΦtx_src
+    mdifferentiableAt_extChartAt hΦtx_source
   have hcomp1 : MDifferentiableWithinAt 𝓘(ℝ, E) I
       ((Φ_fam t : M → M) ∘ (extChartAt I α).symm) (range I) z₀ :=
     (hround ▸ hΦt).comp_mdifferentiableWithinAt z₀ hsymm
@@ -175,11 +175,11 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpac
 theorem rawVariationalIdentityFlat_of_localGeometricFlow
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (x : M) (v : TangentSpace I x)
     {f : ℝ → E → E} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ} {ΦE : E × ℝ → E}
-    {G' : E →L[ℝ] (E →L[ℝ] E)} {velChart : E}
+    {G' : E →L[ℝ] (E →L[ℝ] E)} {velocityChart : E}
     (hΦE : IsLocalFlow f t x₀ r tmin tmax ΦE)
     (hf : ContDiff ℝ ∞ (uncurry f))
     {U : Set (E × ℝ)} (hUopen : IsOpen U) (hΦsmooth : ContDiffOn ℝ ∞ ΦE U)
-    (hx_src : x ∈ (chartAt H (Φ_fam t x)).source)
+    (hx_source : x ∈ (chartAt H (Φ_fam t x)).source)
     (hzsU : (precompMap (I := I) Φ_fam t (Φ_fam t x) (extChartAt I (Φ_fam t x) x), t) ∈ U)
     (hz : precompMap (I := I) Φ_fam t (Φ_fam t x) (extChartAt I (Φ_fam t x) x)
       ∈ Metric.ball x₀ r)
@@ -194,13 +194,13 @@ theorem rawVariationalIdentityFlat_of_localGeometricFlow
             ∈ (extChartAt I (Φ_fam t x)).target)
     (hc_eucl : HasDerivAt
       (fun s : ℝ => ΦE (precompMap (I := I) Φ_fam t (Φ_fam t x)
-        (extChartAt I (Φ_fam t x) x), s)) velChart t)
+        (extChartAt I (Φ_fam t x) x), s)) velocityChart t)
     (hGfd : HasFDerivAt (fun z => chartMovingTriv (I := I) (Φ_fam t x) z) G'
       (extChartAt I (Φ_fam t x) ((Φ_fam t : M → M) x)))
     (hcontAt : ContinuousAt (fun s : ℝ => (Φ_fam s : M → M) x) t) :
     RawVariationalIdentityFlat (I := I) Φ_fam t x v
       ((-ContinuousLinearMap.mulLeftRight ℝ (E →L[ℝ] E)
-          (1 : E →L[ℝ] E) (1 : E →L[ℝ] E)) (G' velChart))
+          (1 : E →L[ℝ] E) (1 : E →L[ℝ] E)) (G' velocityChart))
       ((((fderiv ℝ (f t) (ΦE (precompMap (I := I) Φ_fam t (Φ_fam t x)
               (extChartAt I (Φ_fam t x) x), t))).comp
             (fderiv ℝ (fun w => ΦE (w, t))
@@ -213,13 +213,13 @@ theorem rawVariationalIdentityFlat_of_localGeometricFlow
   set α : M := Φ_fam t x with hα
   set z₀ : E := extChartAt I α x with hz₀
   set w₀ : E := precompMap (I := I) Φ_fam t α z₀ with hw₀
-  have hx_src' : x ∈ (extChartAt I α).source := by rwa [extChartAt_source]
+  have hx_source' : x ∈ (extChartAt I α).source := by rwa [extChartAt_source]
   set Φ_eucl : E → ℝ → E := Φ_euclLocal (I := I) ΦE Φ_fam t α with hΦeucl
-  have hΦtx_src : (Φ_fam t : M → M) x ∈ (chartAt H α).source := by
+  have hΦtx_source : (Φ_fam t : M → M) x ∈ (chartAt H α).source := by
     rw [show (Φ_fam t : M → M) x = α from rfl]
     exact mem_chart_source H α
   have hprecomp_diff : DifferentiableAt ℝ (precompMap (I := I) Φ_fam t α) z₀ :=
-    precompMap_differentiableAt (I := I) Φ_fam t α x hx_src' hΦtx_src
+    precompMap_differentiableAt (I := I) Φ_fam t α x hx_source' hΦtx_source
   have hΦsmooth_time : ∀ᶠ s : ℝ in 𝓝 t,
       DifferentiableAt ℝ (fun w => ΦE (w, s)) w₀ := by
     filter_upwards [hUtime] with s hsU
@@ -242,7 +242,7 @@ theorem rawVariationalIdentityFlat_of_localGeometricFlow
     rw [hcomp]
     exact hsd.comp z₀ hprecomp_diff
   have hsrc_nhds : ∀ᶠ y : M in 𝓝 x, y ∈ (extChartAt I α).source :=
-    Filter.eventually_iff.mpr ((isOpen_extChartAt_source α).mem_nhds hx_src')
+    Filter.eventually_iff.mpr ((isOpen_extChartAt_source α).mem_nhds hx_source')
   have hagree : ∀ᶠ s : ℝ in 𝓝 t,
       (fun y => extChartAt I α ((Φ_fam s : M → M) y))
         =ᶠ[𝓝 x] (fun y => Φ_eucl (extChartAt I α y) s) :=
@@ -256,16 +256,16 @@ theorem rawVariationalIdentityFlat_of_localGeometricFlow
     filter_upwards [hself] with s hs
     simpa [hΦeucl, Φ_euclLocal, hz₀, hw₀] using hs
   have hc : HasDerivAt
-      (fun s : ℝ => extChartAt I α ((Φ_fam s : M → M) x)) velChart t := by
+      (fun s : ℝ => extChartAt I α ((Φ_fam s : M → M) x)) velocityChart t := by
     refine hc_eucl.congr_of_eventuallyEq ?_
     filter_upwards [hreal_orbit] with s hs
     simpa [hz₀, hw₀] using hs
   have hg : HasDerivAt
       (fun s : ℝ => chartMovingTriv (I := I) α (extChartAt I α ((Φ_fam s : M → M) x)))
-      (G' velChart) t :=
+      (G' velocityChart) t :=
     chartMovingTriv_orbit_hasDerivAt_of_chartJet (I := I) Φ_fam α x t hGfd hc
   exact rawVariationalIdentityFlat_of_chart_realisation (I := I) Φ_fam x t v
-    Φ_eucl hx_src heucl heucl_diff hagree hg hcontAt
+    Φ_eucl hx_source heucl heucl_diff hagree hg hcontAt
 
 end LocalChartDischarge
 
@@ -284,7 +284,7 @@ theorem exists_chartPicard_and_cocycle_realisation
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))
     (hXauto : AutonomizedFieldJointC1 (I := I) X)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (x : M) {T₀ : ℝ} {W : Set M}
-    (hx_src : x ∈ (chartAt H (Φ_fam t x)).source)
+    (hx_source : x ∈ (chartAt H (Φ_fam t x)).source)
     (hT₀ : 0 < T₀) (hW : IsOpen W) (hxW : x ∈ W)
     (hΦfam_ode : ∀ y ∈ W, ∀ s ∈ Set.Ioo (t - T₀) (t + T₀),
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => (Φ_fam u : M → M) y)
@@ -310,15 +310,15 @@ theorem exists_chartPicard_and_cocycle_realisation
   classical
   set α : M := Φ_fam t x with hα
   obtain ⟨U, hU_open, hp₀_U, T, hT_pos, Φ, f, x₀, r, ε, ΦE, hf, hx₀eq, hr_pos, hε_pos, hflow,
-      ⟨ρE, TE, hρE_pos, hTE_pos, hΦE_smooth⟩, hΦinit, hΦreal, hΦconf, hΦsmoothOn, hΦbare⟩ :=
+      ⟨ρE, TE, hρE_pos, hTE_pos, hΦE_smooth⟩, hΦinitial, hΦreal, hΦconf, hΦsmoothOn, hΦbare⟩ :=
     local_flow_chartIsLocalFlow_and_realisation (I := I) X hX t α
   set z₀ : E := extChartAt I α x with hz₀
   set w₀ : E := precompMap (I := I) Φ_fam t α z₀ with hw₀
   have hαα : extChartAt I α α = x₀ := hx₀eq.symm
-  have hx_src' : x ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hx_src
+  have hx_source' : x ∈ (extChartAt I α).source := by
+    rw [extChartAt_source]; exact hx_source
   have hw₀_eq : w₀ = x₀ := by
-    rw [hw₀, precompMap_chartPoint (I := I) Φ_fam t α x hx_src']
+    rw [hw₀, precompMap_chartPoint (I := I) Φ_fam t α x hx_source']
     rw [show (Φ_fam t : M → M) x = α from rfl, hαα]
   set Ubox : Set (E × ℝ) := Metric.ball x₀ ρE ×ˢ Set.Ioo (t - TE) (t + TE) with hUbox
   have hUbox_open : IsOpen Ubox := (Metric.isOpen_ball).prod isOpen_Ioo
@@ -359,7 +359,7 @@ theorem exists_chartPicard_and_cocycle_realisation
       intro s hs
       exact (hΦbare ((Φ_fam t : M → M) y) hyU s (hsub_T hs)).hasMFDerivWithinAt
     have hstart : (Φ_fam t : M → M) y = Φ ((Φ_fam t : M → M) y) t :=
-      (hΦinit ((Φ_fam t : M → M) y) hyU).symm
+      (hΦinitial ((Φ_fam t : M → M) y) hyU).symm
     exact integral_curves_eqOn_of_jointC1 X hXauto
       (fun u p => (Φ_fam u : M → M) p) (fun u p => Φ p u) y ((Φ_fam t : M → M) y)
       ht_mem' hode_fam hode_chart hstart
@@ -379,7 +379,7 @@ theorem rawVariationalIdentityFlat_of_jointSmoothField
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M)))
     (hXauto : AutonomizedFieldJointC1 (I := I) X)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (x : M) (v : TangentSpace I x) {T₀ : ℝ} {W : Set M}
-    (hx_src : x ∈ (chartAt H (Φ_fam t x)).source)
+    (hx_source : x ∈ (chartAt H (Φ_fam t x)).source)
     (hT₀ : 0 < T₀) (hW : IsOpen W) (hxW : x ∈ W)
     (hΦfam_ode : ∀ y ∈ W, ∀ s ∈ Set.Ioo (t - T₀) (t + T₀),
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun u : ℝ => (Φ_fam u : M → M) y)
@@ -390,33 +390,33 @@ theorem rawVariationalIdentityFlat_of_jointSmoothField
     {G' : E →L[ℝ] (E →L[ℝ] E)}
     (hGfd : HasFDerivAt (fun z => chartMovingTriv (I := I) (Φ_fam t x) z) G'
       (extChartAt I (Φ_fam t x) ((Φ_fam t : M → M) x))) :
-    ∃ (ΦE : E × ℝ → E) (velChart : E) (P' : E →L[ℝ] E),
+    ∃ (ΦE : E × ℝ → E) (velocityChart : E) (P' : E →L[ℝ] E),
       HasDerivAt
         (fun s : ℝ => ΦE (precompMap (I := I) Φ_fam t (Φ_fam t x)
-          (extChartAt I (Φ_fam t x) x), s)) velChart t ∧
+          (extChartAt I (Φ_fam t x) x), s)) velocityChart t ∧
       RawVariationalIdentityFlat (I := I) Φ_fam t x v
         ((-ContinuousLinearMap.mulLeftRight ℝ (E →L[ℝ] E)
-            (1 : E →L[ℝ] E) (1 : E →L[ℝ] E)) (G' velChart))
+            (1 : E →L[ℝ] E) (1 : E →L[ℝ] E)) (G' velocityChart))
         (P'.comp (trivToE (I := I) (Φ_fam t x) x)) := by
   classical
   obtain ⟨x₀, r, ε, ΦE, f, U, hf, hΦE, hUopen, hΦsmooth, hzsU, hz, ht, hUtime, hrealΨ⟩ :=
     exists_chartPicard_and_cocycle_realisation (I := I) X hX hXauto Φ_fam t x
-      hx_src hT₀ hW hxW hΦfam_ode hcontAt_orbit
+      hx_source hT₀ hW hxW hΦfam_ode hcontAt_orbit
   set w₀ : E := precompMap (I := I) Φ_fam t (Φ_fam t x) (extChartAt I (Φ_fam t x) x) with hw₀
   have hslice_diff : DifferentiableAt ℝ (fun s : ℝ => ΦE (w₀, s)) t := by
     have hΦE_at : ContDiffAt ℝ ∞ ΦE (w₀, t) := hΦsmooth.contDiffAt (hUopen.mem_nhds hzsU)
     have hincl : ContDiffAt ℝ ∞ (fun s : ℝ => (w₀, s)) t :=
       contDiffAt_const.prodMk contDiffAt_id
     exact (hΦE_at.comp t hincl).differentiableAt (by simp)
-  set velChart : E := deriv (fun s : ℝ => ΦE (w₀, s)) t with hvel
-  have hc_eucl : HasDerivAt (fun s : ℝ => ΦE (w₀, s)) velChart t :=
+  set velocityChart : E := deriv (fun s : ℝ => ΦE (w₀, s)) t with hvel
+  have hc_eucl : HasDerivAt (fun s : ℝ => ΦE (w₀, s)) velocityChart t :=
     hslice_diff.hasDerivAt
-  refine ⟨ΦE, velChart, ((fderiv ℝ (f t) (ΦE (w₀, t))).comp
+  refine ⟨ΦE, velocityChart, ((fderiv ℝ (f t) (ΦE (w₀, t))).comp
       (fderiv ℝ (fun w => ΦE (w, t)) w₀)).comp
         (fderiv ℝ (precompMap (I := I) Φ_fam t (Φ_fam t x)) (extChartAt I (Φ_fam t x) x)),
       hc_eucl, ?_⟩
   exact rawVariationalIdentityFlat_of_localGeometricFlow (I := I) Φ_fam t x v
-    hΦE hf hUopen hΦsmooth hx_src hzsU hz ht hUtime hrealΨ hc_eucl hGfd hcontAt
+    hΦE hf hUopen hΦsmooth hx_source hzsU hz ht hUtime hrealΨ hc_eucl hGfd hcontAt
 
 end RealisationProducer
 

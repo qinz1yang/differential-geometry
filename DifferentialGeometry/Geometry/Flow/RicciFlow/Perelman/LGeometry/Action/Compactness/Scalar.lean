@@ -63,7 +63,7 @@ theorem lScalar_int
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [CompactSpace M] in
-theorem lScalar_lower_cpt
+theorem lScalar_lower_compact
     (S : SolutionOn (I := I) (M := M) D)
     (hS : ScalarSTContOn (I := I) (M := M) S)
     (T a b : Real)
@@ -96,7 +96,7 @@ theorem lScalar_lower_cpt
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [CompactSpace M] in
-theorem lScalar_tendsto_cpt
+theorem lScalar_tendsto_compact
     (S : SolutionOn (I := I) (M := M) D)
     (hS : ScalarSTContOn (I := I) (M := M) S)
     (T a b : Real) (hab : a ≤ b)

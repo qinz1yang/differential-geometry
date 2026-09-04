@@ -49,10 +49,10 @@ theorem coeffMulJointK
               (chartTargetEuclid (I := I) (M := M) β) := by
   classical
   have h_smooth := transCoeffE_smooth (I := I) (M := M) r s β α P Q
-  have h_cpt := transCoeffE_cpt (I := I) (M := M) r s β α P Q
+  have h_compact := transCoeffE_compact (I := I) (M := M) r s β α P Q
   obtain ⟨C, hC_nonneg, hC_bound⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
-      (d := Module.finrank ℝ E) h_smooth h_cpt k
+      (d := Module.finrank ℝ E) h_smooth h_compact k
   obtain ⟨K, hK_pos, hK_bound⟩ :=
     wkpNorm_smul_smooth_bounded_le (d := Module.finrank ℝ E) k hp hp_top
       (chartTargetEuclid_isOpen (I := I) (M := M) β)
@@ -67,7 +67,7 @@ theorem secTermJointOn
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     (β α : M) (P Q : TensorCompIdx (E := E) r s)
     {K₀ : Set M} (hK₀ : IsCompact K₀)
-    (hK₀src : K₀ ⊆ (chartAt H β).source) :
+    (hK₀source : K₀ ⊆ (chartAt H β).source) :
     ∃ K : ℝ, 0 < K ∧ ∀ {v : EuclN → ℝ},
       MemWkp (d := Module.finrank ℝ E) k p v
           (chartTargetEuclid (I := I) (M := M) β) →
@@ -87,7 +87,7 @@ theorem secTermJointOn
     coeffMulJointK (I := I) (M := M) r s k hp hp_top β α P Q
   obtain ⟨K_cross, hK_cross_pos, hK_cross⟩ :=
     crossChartJointK (I := I) (M := M) k hp hp_top α β
-      (K_α := K₀) hK₀ hK₀src
+      (K_α := K₀) hK₀ hK₀source
   refine ⟨K_cross * K_mul, mul_pos hK_cross_pos hK_mul_pos, ?_⟩
   intro v hv hv_support
   have hmul := hK_mul hv

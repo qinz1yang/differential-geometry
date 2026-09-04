@@ -88,7 +88,7 @@ lemma eigenvectorChartWeakPartial_memWkp_and_wkpNorm_le
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     eigenvectorChartWeakPartial_hasWeakPartialDeriv (I := I) (M := M)
       g r s i β P k
-  have hg_loc : LocallyIntegrable
+  have hg_local : LocallyIntegrable
       (eigenvectorChartWeakPartial (I := I) (M := M) g r s i β P k)
       ((volume : Measure EuclN).restrict Ω) := by
     have h_memLp : MemLp (eigenvectorChartWeakPartial (I := I)
@@ -105,7 +105,7 @@ lemma eigenvectorChartWeakPartial_memWkp_and_wkpNorm_le
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     hu.memW1p
   have h_chosen_weak : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -116,30 +116,30 @@ lemma eigenvectorChartWeakPartial_memWkp_and_wkpNorm_le
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
             i) β P :
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem (d := Module.finrank ℝ E) hu_W1 k
-  have h_chosen_loc : LocallyIntegrable
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+    chosenWeakPartialOrZero_isWeakPartial_of_mem (d := Module.finrank ℝ E) hu_W1 k
+  have h_chosen_local : LocallyIntegrable
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) β P :
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω)
       ((volume : Measure EuclN).restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem (d := Module.finrank ℝ E)
+    (chosenWeakPartialOrZero_memLp_of_mem (d := Module.finrank ℝ E)
       hu_W1 k).locallyIntegrable (by norm_num)
   have h_ae : eigenvectorChartWeakPartial (I := I) (M := M)
         g r s i β P k
       =ᵐ[(volume : Measure EuclN).restrict Ω]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) β P :
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq (d := Module.finrank ℝ E) hΩ_open
-      hg_weak h_chosen_weak hg_loc h_chosen_loc
+      hg_weak h_chosen_weak hg_local h_chosen_local
   have h_chosen_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -156,7 +156,7 @@ lemma eigenvectorChartWeakPartial_memWkp_and_wkpNorm_le
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae]
   calc
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -223,7 +223,7 @@ lemma eigenvectorChartWeakPartial_wkpNorm_le_uniform
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     eigenvectorChartWeakPartial_hasWeakPartialDeriv (I := I) (M := M)
       g r s i β P k
-  have hg_loc : LocallyIntegrable
+  have hg_local : LocallyIntegrable
       (eigenvectorChartWeakPartial (I := I) (M := M) g r s i β P k)
       ((volume : Measure EuclN).restrict Ω) := by
     have h_memLp : MemLp (eigenvectorChartWeakPartial (I := I)
@@ -240,7 +240,7 @@ lemma eigenvectorChartWeakPartial_wkpNorm_le_uniform
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     hu.memW1p
   have h_chosen_weak : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -251,33 +251,33 @@ lemma eigenvectorChartWeakPartial_wkpNorm_le_uniform
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
             i) β P :
           Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem (d := Module.finrank ℝ E) hu_W1 k
-  have h_chosen_loc : LocallyIntegrable
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+    chosenWeakPartialOrZero_isWeakPartial_of_mem (d := Module.finrank ℝ E) hu_W1 k
+  have h_chosen_local : LocallyIntegrable
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) β P :
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω)
       ((volume : Measure EuclN).restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem (d := Module.finrank ℝ E)
+    (chosenWeakPartialOrZero_memLp_of_mem (d := Module.finrank ℝ E)
       hu_W1 k).locallyIntegrable (by norm_num)
   have h_ae : eigenvectorChartWeakPartial (I := I) (M := M)
         g r s i β P k
       =ᵐ[(volume : Measure EuclN).restrict Ω]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i) β P :
             Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) : EuclN → ℝ) y) Ω :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq (d := Module.finrank ℝ E) hΩ_open
-      hg_weak h_chosen_weak hg_loc h_chosen_loc
+      hg_weak h_chosen_weak hg_local h_chosen_local
   rw [wkpNorm_congr_ae (d := Module.finrank ℝ E)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_ae, mul_one]
   calc
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
           (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
               (tensorResolventEigenbasisVec (I := I) (M := M)
                 (tensorResolventL2_isCompactOperator (I := I) (M := M)

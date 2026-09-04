@@ -18,7 +18,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [BoundarylessManifold I M] [I.Boundaryless]
   [T2Space M] in
-private theorem bareVel_to_chartDeriv
+private theorem bareVelocity_to_chartDeriv
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (γ : ℝ → M) (s : Set ℝ) (t : ℝ)
     (hsrc : γ t ∈ (chartAt H α).source)
     (hd : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I γ s t
@@ -151,7 +151,7 @@ theorem integral_curves_eventuallyEq_zero_of_lipschitz
     intro t ht
     have hsrc' : γ₁ t ∈ (extChartAt I α).source := (hc₁ t ⟨ht.1, le_of_lt ht.2⟩).1
     have hsrcch : γ₁ t ∈ (chartAt H α).source := by rwa [extChartAt_source] at hsrc'
-    have hbridge := bareVel_to_chartDeriv (I := I) X α γ₁ (Set.Ici 0) t hsrcch
+    have hbridge := bareVelocity_to_chartDeriv (I := I) X α γ₁ (Set.Ici 0) t hsrcch
       (hflow₁ t ⟨ht.1, lt_of_lt_of_le ht.2 (le_of_lt hδ'_lt_δ)⟩)
     have hbridge' : HasDerivWithinAt f₁ (tangentCoordChange I (γ₁ t) α (γ₁ t) (X t (γ₁ t)))
         (Set.Ici t) t := hbridge.mono (fun u hu => le_trans ht.1 hu)
@@ -161,7 +161,7 @@ theorem integral_curves_eventuallyEq_zero_of_lipschitz
     intro t ht
     have hsrc' : γ₂ t ∈ (extChartAt I α).source := (hc₂ t ⟨ht.1, le_of_lt ht.2⟩).1
     have hsrcch : γ₂ t ∈ (chartAt H α).source := by rwa [extChartAt_source] at hsrc'
-    have hbridge := bareVel_to_chartDeriv (I := I) X α γ₂ (Set.Ici 0) t hsrcch
+    have hbridge := bareVelocity_to_chartDeriv (I := I) X α γ₂ (Set.Ici 0) t hsrcch
       (hflow₂ t ⟨ht.1, lt_of_lt_of_le ht.2 (le_of_lt hδ'_lt_δ)⟩)
     have hbridge' : HasDerivWithinAt f₂ (tangentCoordChange I (γ₂ t) α (γ₂ t) (X t (γ₂ t)))
         (Set.Ici t) t := hbridge.mono (fun u hu => le_trans ht.1 hu)

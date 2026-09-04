@@ -106,7 +106,7 @@ theorem exists_weak_second_partial_of_uniform_diffQuot_bound
         ≤ ENNReal.ofReal (MBound i k) :=
     fun h hh hh_le => h_uniform_bd i k h hh hh_le
   obtain ⟨g_ik, hg_ik_memLp, hg_ik_partial, hg_ik_norm⟩ :=
-    hasWeakPartialDeriv_of_diffQuot_uniform_bound_loc
+    hasWeakPartialDeriv_of_diffQuot_uniform_bound_local
       (d := Module.finrank ℝ E)
       hΩ_open hΩ''_open hΩ''_compact_closure
       hh₀ h_room_Ω h_wp_memLp_Ω k (hM_nn i k) h_bdd

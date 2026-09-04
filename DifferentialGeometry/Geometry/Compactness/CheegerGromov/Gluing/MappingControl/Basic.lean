@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -112,7 +112,7 @@ theorem HasStageJetData.mapsTo_tail
   classical
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hraw := hdata
-  dsimp only [HasSuppConvData] at hraw
+  dsimp only [HasSupportedCenterMapConvergence] at hraw
   rcases hraw with
     ⟨_hU, hU8, hC0, _hC1, hC01, hC1U, hconvex, hzero,
       hbuffer, _hcore, hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
@@ -354,7 +354,7 @@ theorem HasStageJetData.return_tail
     U C0 C1 aInf Jinf Jbarinf gInf hstage R0 R1 hroom hR1s
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hraw := hdata
-  dsimp only [HasSuppConvData] at hraw
+  dsimp only [HasSupportedCenterMapConvergence] at hraw
   rcases hraw with
     ⟨_hU, _hU8, _hC0, _hC1, hC01, hC1U, hconvex, hzero,
       hbuffer, _hcore, hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
@@ -554,5 +554,5 @@ theorem HasStageJetData.return_tail
       mul_le_mul_of_nonneg_left hcoordEps (by norm_num)
     _ < eps := by linarith
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

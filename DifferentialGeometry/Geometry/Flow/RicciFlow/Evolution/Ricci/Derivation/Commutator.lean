@@ -244,12 +244,12 @@ theorem ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
         (fun a b : Idx => gInv (t : Real) x a b) :=
     metricInverseInBasis_of_local
       (I := I) S gInv frame hframe hinv (t : Real) (hcover x)
-  have hTraceReg :
+  have hTraceRegularity :
       RicciTensorRealizesRm04FirstTraceInFrameOnRegular
         (I := I) S Rm04 gInv frame :=
     ricciTensorRealizesRm04FirstTraceInFrameOnRegular_of_rm13Trace
       (I := I) S Rm13 Rm04 gInv frame hframe hcover hinv hRicTrace13 hLower
-  have hTraceFrame := hTraceReg t
+  have hTraceFrame := hTraceRegularity t
   have hTraceAt :
       DifferentialGeometry.Geometry.Curvature.RicciRealizesRm04FirstTraceAt (I := I)
         (S.ricci (t : Real) x) (Rm04 (t : Real) x)
@@ -473,7 +473,7 @@ theorem ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
             ring
 
 omit [SigmaCompactSpace M] in
-theorem ricciSecCommLocId
+theorem ricciSecCommLocalId
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {u : Set M}
     (S : SolutionOn (I := I) (M := M) D)
@@ -486,7 +486,7 @@ theorem ricciSecCommLocId
     (nabla2RicTensor : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I)
       (M := M))
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
-    (hNabla2 : Nab2RicLoc
+    (hNabla2 : Nab2RicLocal
       (I := I) frame u nabla2RicTensor nabla2Ric)
     (hRicciId : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -517,7 +517,7 @@ theorem ricciSecCommLocId
       x ∈ u -> forall i j : Idx,
         ricciCompInFrame (I := I) S frame (t : Real) x i j =
           ricciCompInFrame (I := I) S frame (t : Real) x j i) :
-    RicciSecCommLoc (I := I) S Rm04 gInv frame u nabla2Ric := by
+    RicciSecCommLocal (I := I) S Rm04 gInv frame u nabla2Ric := by
   classical
   intro t x hx i j
   have hinvAt :
@@ -846,7 +846,7 @@ theorem ricci_trace_terms_eq_of_differentiatedBianchi
   rw [hA, hB]
 
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
-theorem traceTermsEqLoc
+theorem traceTermsEqLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
@@ -866,7 +866,7 @@ theorem traceTermsEqLoc
 
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem ricciCommLoc
+theorem ricciCommLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -876,19 +876,19 @@ theorem ricciCommLoc
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (hbianchi : DifferentiatedContractedBianchiInFrameOnLocal
       (D := D) (M := M) gInv nabla2Ric u)
-    (hHess : HessSymmLoc (D := D) (M := M) gInv nabla2Ric u)
-    (hsecond : RicciSecCommLoc (I := I) S Rm04 gInv frame u nabla2Ric) :
+    (hHess : HessSymmLocal (D := D) (M := M) gInv nabla2Ric u)
+    (hsecond : RicciSecCommLocal (I := I) S Rm04 gInv frame u nabla2Ric) :
     RicciContractedCommutatorsInFrameOnLocal
       (I := I) S Rm04 gInv frame u nabla2Ric := by
   intro t x hx i j
   have hleft := (hsecond t x hx i j).1
   have hright := (hsecond t x hx i j).2
   have hA := (hbianchi t x hx i j).1
-  have hB := traceRightNatLoc
+  have hB := traceRightNatLocal
     (M := M) gInv nabla2Ric u hbianchi hHess t x hx i j
   have hB' := (hbianchi t x hx i j).2
   exact ⟨by rw [hleft, hA], by rw [hright, hB, hB'],
-    traceTermsEqLoc (M := M) gInv nabla2Ric u hbianchi t x hx i j⟩
+    traceTermsEqLocal (M := M) gInv nabla2Ric u hbianchi t x hx i j⟩
 
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -1021,13 +1021,13 @@ theorem RicciContractedCommutatorsInFrame_of_tensor0S_ricciIdentity_lc
         (S.ricci (t : Real) x) (Rm04 (t : Real) x)
         (gInv (t : Real) x)
         (hframe.toBasisAt (hcover x)) := by
-    have hTraceReg :
+    have hTraceRegularity :
       RicciTensorRealizesRm04FirstTraceInFrameOnRegular
         (I := I) S Rm04 gInv frame :=
     ricciTensorRealizesRm04FirstTraceInFrameOnRegular_of_rm13Trace
         (I := I) S Rm13 Rm04 gInv frame hframe hcover hinv hRicTrace13 hLower
     intro t x i j
-    have h := hTraceReg t x i j
+    have h := hTraceRegularity t x i j
     simpa [DifferentialGeometry.Geometry.Curvature.RicciTensorRealizesRm04FirstTraceInFrame,
       IsLocalFrameOn.toBasisAt_coe] using h
   have hRic : RicciSymmetricInFrameOnRegular (I := I) S frame :=
@@ -1272,7 +1272,7 @@ theorem ricciEvolutionEquationInFrameOnLocal_of_variation_commutators
 
 omit [DecidableEq Idx] in
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem ricciEvolLocal
+theorem ricciEvolutionLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))

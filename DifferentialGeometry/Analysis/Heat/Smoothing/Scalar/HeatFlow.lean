@@ -4951,7 +4951,7 @@ private lemma summable_scalarEigen_coeff_sq
   classical
   set b := tensorResolventHilbertEigenbasisSigma (I := I) (M := M)
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 0)
-  have hsum := DifferentialGeometry.Analysis.Parabolic.summable_basis_coeff_sq' b
+  have hsum := DifferentialGeometry.Analysis.Parabolic.summable_basis_real_inner_sq b
     ((tensor00ScalarL2Equiv g).symm u₀)
   refine Summable.congr hsum (fun i => ?_)
   have hφ : scalarEigenFunctionLp g i =

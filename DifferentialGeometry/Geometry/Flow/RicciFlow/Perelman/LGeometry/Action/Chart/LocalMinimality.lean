@@ -110,7 +110,7 @@ theorem lChartAction_eq_kinetic_add_potential
   · simpa only [τ] using hpot
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lRegAction_eq_sum_lChartAction
+theorem lRegularizedAction_eq_sum_lChartAction
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -125,10 +125,10 @@ theorem lRegAction_eq_sum_lChartAction
       (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
       (Icc (0 : Real) (partitionIntervalLength t i)))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    lRegAction S T gamma a b =
+    lRegularizedAction S T gamma a b =
       ∑ i : Fin m, lChartAction S T (t i.castSucc) (p i) (u i) := by
   classical
-  rw [lRegAction_chart S hMet hSc T a b t htmono ht0 htlast p gamma u
+  rw [lRegularizedAction_chart S hMet hSc T a b t htmono ht0 htlast p gamma u
     hsrc hrep hreg]
   apply Finset.sum_congr rfl
   intro i _hi
@@ -202,7 +202,7 @@ theorem lRegAction_eq_sum_lChartAction
     (sub_nonneg.mpr hseg) (u i) htar hregi
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lChartAction_isLocalMinOn_of_lRegAction_minimizer
+theorem lChartAction_isLocalMinOn_of_lRegularizedAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -220,7 +220,7 @@ theorem lChartAction_isLocalMinOn_of_lRegAction_minimizer
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b)
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b)
     (i : Fin m) (hpos : t i.castSucc < t i.succ) :
     IsLocalMinOn (lChartAction S T (t i.castSucc) (p i))
       (sameTimeEnds (u i)) (u i) := by
@@ -294,13 +294,13 @@ theorem lChartAction_isLocalMinOn_of_lRegAction_minimizer
     rw [← htlast]
     exact hVab
   obtain ⟨alpha, w, halpha, halphaa, halphab, _hsrcA, _hrepA, _hw,
-      _hunif, hact⟩ :=
+      _huniform, hact⟩ :=
     lAction_c1_dense (I := I) S hMet hSc T a b t htmono ht0 htlast p
       gammaV (Function.update u i v) hsrcV hrepV hreg
-  have hneg : Tendsto (fun n ↦ -lRegAction S T (alpha n) a b) atTop
-      (nhds (-lRegAction S T gammaV a b)) :=
+  have hneg : Tendsto (fun n ↦ -lRegularizedAction S T (alpha n) a b) atTop
+      (nhds (-lRegularizedAction S T gammaV a b)) :=
     continuousAt_neg.tendsto.comp hact
-  have hglobal : lRegAction S T gamma a b ≤ lRegAction S T gammaV a b := by
+  have hglobal : lRegularizedAction S T gamma a b ≤ lRegularizedAction S T gammaV a b := by
     have hlim := le_of_tendsto' hneg fun n ↦ neg_le_neg
       (hmin (alpha n) (halpha n) ((halphaa n).trans hVa)
         ((halphab n).trans hVb))
@@ -310,11 +310,11 @@ theorem lChartAction_isLocalMinOn_of_lRegAction_minimizer
   let G : Fin m → Real := fun j ↦
     lChartAction S T (t j.castSucc) (p j) ((Function.update u i v) j)
   have hsum : ∑ j, F j ≤ ∑ j, G j := by
-    rw [show (∑ j, F j) = lRegAction S T gamma a b from
-      (lRegAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gamma
+    rw [show (∑ j, F j) = lRegularizedAction S T gamma a b from
+      (lRegularizedAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gamma
         u hsrc hrep hreg).symm]
-    rw [show (∑ j, G j) = lRegAction S T gammaV a b from
-      (lRegAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gammaV
+    rw [show (∑ j, G j) = lRegularizedAction S T gammaV a b from
+      (lRegularizedAction_eq_sum_lChartAction S hMet hSc T a b t htmono ht0 htlast p gammaV
         (Function.update u i v) hsrcV hrepV hreg).symm]
     exact hglobal
   have hrest : ∑ j ∈ Finset.univ.erase i, G j =

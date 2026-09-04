@@ -377,13 +377,13 @@ theorem localizedSpacetimeRpowMoment_gain_le
       |middle.toFun z.2 * u z.1 z.2 ^ (q / 2)| ^ critical) :=
     hright_base.rpow_const fun _ => Or.inr hcritical
   have hleft_cont : ContinuousOn left (Icc a b) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc a b) μ
       (fun t x => inner.toFun x ^ 2 * u t x ^ p)
       isCompact_Icc hleft_joint.continuousOn
     simpa only [left] using h
   have hright_cont : ContinuousOn right (Icc a b) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc a b) μ
       (fun t x => |middle.toFun x * u t x ^ (q / 2)| ^ critical)
       isCompact_Icc hright_joint.continuousOn
@@ -2009,13 +2009,13 @@ theorem forwardMoserLocalizedMass_succ_le
   have haupper : a ≤ upper :=
     haτ.trans (moserUpperTimeLevel_lt hτb (k + 1)).le
   have hleft_cont : ContinuousOn left (Icc a upper) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc a upper) μ
       (fun t x => (spatialMoserCutoff rho (2 * (k + 1))).toFun x ^ 2 * u t x ^ p)
       isCompact_Icc hleft_joint.continuousOn
     simpa only [left] using h
   have hright_cont : ContinuousOn right (Icc a upper) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc a upper) μ
       (fun t x => |(spatialMoserCutoff rho (2 * k + 1)).toFun x *
         u t x ^ (parabolicMoserExponent n p₀ k / 2)| ^ critical)

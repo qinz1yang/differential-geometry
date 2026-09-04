@@ -102,7 +102,7 @@ private lemma smoothChartExt_smooth
   ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff).mul v.smooth
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-private lemma smoothChartExt_supp_in_chartSrc
+private lemma smoothChartExt_support_in_chartSource
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     tsupport (fun x : M =>
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x) ⊆
@@ -176,20 +176,20 @@ private lemma smoothChartExt_contDiffAt_of_mem_target
   rw [smoothChartExt_apply_of_mem_target (I := I) (M := M) g α v h_toE_symm_in]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-private lemma image_toE_chart_supp_isCompact
+private lemma image_toE_chart_support_isCompact
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     IsCompact ((toEuclidean (E := E)) ''
       ((extChartAt I α) '' (tsupport
         (fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x)))) := by
   set f : M → ℝ := fun x : M =>
     (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x with hf_def
-  have hf_supp : tsupport f ⊆ (chartAt H α).source :=
-    smoothChartExt_supp_in_chartSrc (I := I) (M := M) g α v
+  have hf_support : tsupport f ⊆ (chartAt H α).source :=
+    smoothChartExt_support_in_chartSource (I := I) (M := M) g α v
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
   have hsub : tsupport f ⊆ (extChartAt I α).source := by
     intro x hx
     rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source (I := I)]
-    exact hf_supp hx
+    exact hf_support hx
   have hcont : ContinuousOn (extChartAt I α) (tsupport f) :=
     (continuousOn_extChartAt α).mono hsub
   have h1 : IsCompact ((extChartAt I α) '' (tsupport f)) :=
@@ -197,23 +197,23 @@ private lemma image_toE_chart_supp_isCompact
   exact h1.image (toEuclidean (E := E)).continuous
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-private lemma image_toE_chart_supp_subset_chartTarget
+private lemma image_toE_chart_support_subset_chartTarget
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g) :
     (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport
           (fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x))) ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α := by
   intro y hy
-  rcases hy with ⟨z, ⟨x, hx_supp, hxz⟩, hzy⟩
-  have hf_supp : tsupport (fun x : M =>
+  rcases hy with ⟨z, ⟨x, hx_support, hxz⟩, hzy⟩
+  have hf_support : tsupport (fun x : M =>
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x) ⊆
         (chartAt H α).source :=
-    smoothChartExt_supp_in_chartSrc (I := I) (M := M) g α v
-  have hx_src : x ∈ (extChartAt I α).source := by
+    smoothChartExt_support_in_chartSource (I := I) (M := M) g α v
+  have hx_source : x ∈ (extChartAt I α).source := by
     rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source (I := I)]
-    exact hf_supp hx_supp
+    exact hf_support hx_support
   have hz_target : z ∈ (extChartAt I α).target := by
-    rw [← hxz]; exact (extChartAt I α).map_source hx_src
+    rw [← hxz]; exact (extChartAt I α).map_source hx_source
   exact ⟨z, hz_target, hzy⟩
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -228,7 +228,7 @@ private lemma smoothChartExt_contDiffAt_of_notMem
       ((extChartAt I α) '' (tsupport
         (fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x)))
     with hK_def
-  have hK_compact : IsCompact K := image_toE_chart_supp_isCompact (I := I) (M := M) g α v
+  have hK_compact : IsCompact K := image_toE_chart_support_isCompact (I := I) (M := M) g α v
   have hK_closed : IsClosed K := hK_compact.isClosed
   have hK_compl_open : IsOpen Kᶜ := hK_closed.isOpen_compl
   have hy_compl : y ∈ Kᶜ := hy_off
@@ -278,7 +278,7 @@ theorem smoothChartExt_contDiff
   · have hy_off : y ∉ (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport
           (fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x))) := fun h_in =>
-      hy_target (image_toE_chart_supp_subset_chartTarget (I := I) (M := M) g α v h_in)
+      hy_target (image_toE_chart_support_subset_chartTarget (I := I) (M := M) g α v h_in)
     exact smoothChartExt_contDiffAt_of_notMem (I := I) (M := M) g α v hy_off
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -289,11 +289,11 @@ theorem smoothChartExt_hasCompactSupport
   have hK_compact : IsCompact ((toEuclidean (E := E)) ''
       ((extChartAt I α) '' (tsupport
         (fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x)))) :=
-    image_toE_chart_supp_isCompact (I := I) (M := M) g α v
+    image_toE_chart_support_isCompact (I := I) (M := M) g α v
   apply HasCompactSupport.of_support_subset_isCompact hK_compact
-  intro y hy_supp
+  intro y hy_support
   by_contra hyK
-  apply hy_supp
+  apply hy_support
   by_cases hy_target : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
       (I := I) (M := M) α
   · obtain ⟨w, hw_target, hwy⟩ := hy_target
@@ -575,7 +575,7 @@ theorem smoothChartExtPartial_memLp_chartWeighted_restrict
     exact hy (subset_tsupport _ hne)
   have hK_partial_in_chartTarget : K_partial ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α := by
-    have h_fderiv_supp : tsupport (smoothChartExtPartial (I := I) (M := M) g α j v) ⊆
+    have h_fderiv_support : tsupport (smoothChartExtPartial (I := I) (M := M) g α j v) ⊆
         tsupport (smoothChartExt (I := I) (M := M) g α v) :=
       tsupport_fderiv_apply_subset (𝕜 := ℝ) (EuclideanSpace.single j 1)
     set K_image : Set EuclN := (toEuclidean (E := E)) ''
@@ -583,15 +583,15 @@ theorem smoothChartExtPartial_memLp_chartWeighted_restrict
           (fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x)))
       with hK_image_def
     have hK_image_compact : IsCompact K_image :=
-      image_toE_chart_supp_isCompact (I := I) (M := M) g α v
+      image_toE_chart_support_isCompact (I := I) (M := M) g α v
     have hK_image_in : K_image ⊆ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α :=
-      image_toE_chart_supp_subset_chartTarget (I := I) (M := M) g α v
-    have h_supp_in_K_image : Function.support (smoothChartExt (I := I) (M := M) g α v) ⊆
+      image_toE_chart_support_subset_chartTarget (I := I) (M := M) g α v
+    have h_support_in_K_image : Function.support (smoothChartExt (I := I) (M := M) g α v) ⊆
         K_image := by
-      intro y hy_supp
+      intro y hy_support
       by_contra hyK
-      apply hy_supp
+      apply hy_support
       by_cases hy_target : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α
       · obtain ⟨w, hw_target, hwy⟩ := hy_target
@@ -623,13 +623,13 @@ theorem smoothChartExtPartial_memLp_chartWeighted_restrict
           refine ⟨(toEuclidean (E := E)).symm y, h_in, ?_⟩
           simp
         exact smoothChartExt_apply_of_notMem_target (I := I) (M := M) g α v h_notMem
-    have h_smoothExt_supp_in_chartTarget :
+    have h_smoothExt_support_in_chartTarget :
         tsupport (smoothChartExt (I := I) (M := M) g α v) ⊆
           DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M) α := by
       have h_tsupp_in_K : tsupport (smoothChartExt (I := I) (M := M) g α v) ⊆ K_image :=
-        closure_minimal h_supp_in_K_image hK_image_compact.isClosed
+        closure_minimal h_support_in_K_image hK_image_compact.isClosed
       exact h_tsupp_in_K.trans hK_image_in
-    exact h_fderiv_supp.trans h_smoothExt_supp_in_chartTarget
+    exact h_fderiv_support.trans h_smoothExt_support_in_chartTarget
   have h_dens_contOn :
       ContinuousOn (densityOnEuclid (I := I) g α) K_partial :=
     (densityOnEuclid_continuousOn (I := I) g α).mono hK_partial_in_chartTarget

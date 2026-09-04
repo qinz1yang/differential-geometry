@@ -42,7 +42,7 @@ theorem HasLowRegularityBoundsAt.realizeCc
     (hS : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ K.realize) :
     gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g S) K.threshold := by
-  apply hK.hreal S
+  apply hK.metric_realization S
   rw [show (((1 : ℕ) : ℝ) + 1) = 2 by norm_num]
   have heq :
       ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S =

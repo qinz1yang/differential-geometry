@@ -13,7 +13,7 @@ noncomputable section
 open Bundle Manifold Set TopologicalSpace
 open scoped Manifold Topology ContDiff
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 open DifferentialGeometry.Integral.Measure
 
@@ -47,7 +47,7 @@ private theorem compBase_mem
 omit [NeZero (Module.finrank ℝ E)]
   [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
-theorem compRestrict_init
+theorem compRestrict_initial
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) (p : M) (a : ℝ)
     (h₀ : g₁ a = g₂ a) :
     compRestrict (I := I) g₁ p a = compRestrict (I := I) g₂ p a := by
@@ -274,6 +274,6 @@ theorem forward_of_comp
     (compRestrict_cont (I := I) g₂ p h2cont)
     (compRestrict_pde (I := I) g₁ p h1pde)
     (compRestrict_pde (I := I) g₂ p h2pde)
-    (compRestrict_init (I := I) g₁ g₂ p a h₀) t ht
+    (compRestrict_initial (I := I) g₁ g₂ p a h₀) t ht
 
 end DifferentialGeometry.PDE.RicciFlow

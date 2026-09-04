@@ -99,7 +99,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem flowFamily_regularity_package
+private theorem flowFamily_regularity
     (X : ℝ → ∀ x : M, TangentSpace I x)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (hbare : ∀ s : ℝ, 0 < s → s < T → ∀ x : M,

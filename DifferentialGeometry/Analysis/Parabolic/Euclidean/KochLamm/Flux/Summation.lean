@@ -17,177 +17,177 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-def klFluxPotential {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+def kochLammFluxPotential {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (R : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
-  ∫ z : ℝ × V, klFluxKernel (R ^ 2) w x z • f z
-    ∂klTermMeasure (V := V) (R ^ 2)
+  ∫ z : ℝ × V, kochLammFluxKernel (R ^ 2) w x z • f z
+    ∂kochLammTermMeasure (V := V) (R ^ 2)
 
 variable {F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-theorem klFluxSt_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+theorem kochLammFluxSt_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)
     (hcover : Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) ⊆
       ⋃ c ∈ s, Metric.ball c R) :
-    IntegrableOn (fun z : ℝ × V ↦ klFluxKernel (R ^ 2) w x z • f z)
-      (klLateStShell x R k) (klTailMeasure (V := V) R Set.univ) := by
-  rw [IntegrableOn, klLateStShell, klTail_restrict]
-  exact (klFluxCover_est (V := V) h w x hR (Nat.cast_nonneg k) hRT s
-    (klLateShell_mble (V := V) x R k)
-    (fun _ hy ↦ hcover (klLateShell_sub (V := V) x R k hy))
-    (klLateShell_far (V := V) x R k)).1
+    IntegrableOn (fun z : ℝ × V ↦ kochLammFluxKernel (R ^ 2) w x z • f z)
+      (kochLammLateStShell x R k) (kochLammTailMeasure (V := V) R Set.univ) := by
+  rw [IntegrableOn, kochLammLateStShell, kochLammTail_restrict]
+  exact (kochLammFluxCover_est (V := V) h w x hR (Nat.cast_nonneg k) hRT s
+    (kochLammLateShell_mble (V := V) x R k)
+    (fun _ hy ↦ hcover (kochLammLateShell_sub (V := V) x R k hy))
+    (kochLammLateShell_far (V := V) x R k)).1
 
 omit [CompleteSpace F] in
-theorem klFluxSt_abs {T R : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+theorem kochLammFluxSt_abs {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)
     (hcard : s.card ≤ (5 * (k + 1)) ^ Module.finrank ℝ V)
     (hcover : Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) ⊆
       ⋃ c ∈ s, Metric.ball c R) :
-    (∫ z : ℝ × V in klLateStShell x R k,
-        ‖klFluxKernel (R ^ 2) w x z • f z‖
-        ∂klTailMeasure (V := V) R Set.univ) ≤
-      klFluxWeight (Module.finrank ℝ V) k *
-        (‖w‖ * (klFluxTailC V * (Aₚ : ℝ))) := by
-  rw [klLateStShell, klTail_restrict]
-  have habs := klFluxShell_abs (V := V) h w x hR hRT k s hcard hcover
+    (∫ z : ℝ × V in kochLammLateStShell x R k,
+        ‖kochLammFluxKernel (R ^ 2) w x z • f z‖
+        ∂kochLammTailMeasure (V := V) R Set.univ) ≤
+      kochLammFluxWeight (Module.finrank ℝ V) k *
+        (‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ))) := by
+  rw [kochLammLateStShell, kochLammTail_restrict]
+  have habs := kochLammFluxShell_abs (V := V) h w x hR hRT k s hcard hcover
   calc
-    (∫ z : ℝ × V, ‖klFluxKernel (R ^ 2) w x z • f z‖
-        ∂klTailMeasure (V := V) R (klLateShell x R k)) ≤
+    (∫ z : ℝ × V, ‖kochLammFluxKernel (R ^ 2) w x z • f z‖
+        ∂kochLammTailMeasure (V := V) R (kochLammLateShell x R k)) ≤
         (((5 * (k + 1)) ^ Module.finrank ℝ V : ℕ) : ℝ) *
           (‖w‖ * Real.exp (-(8 : ℝ)⁻¹ * (k : ℝ) ^ 2) *
-            (klFluxTailC V * (Aₚ : ℝ))) := habs
-    _ = klFluxWeight (Module.finrank ℝ V) k *
-        (‖w‖ * (klFluxTailC V * (Aₚ : ℝ))) := by
-      unfold klFluxWeight
+            (kochLammFluxTailC V * (Aₚ : ℝ))) := habs
+    _ = kochLammFluxWeight (Module.finrank ℝ V) k *
+        (‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ))) := by
+      unfold kochLammFluxWeight
       norm_num [Nat.cast_pow, Nat.cast_mul]
       ring
 
 omit [CompleteSpace F] in
-theorem klFluxAbs_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+theorem kochLammFluxAbs_sum {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
       (5 * (k + 1)) ^ Module.finrank ℝ V)
     (hcover : ∀ k, Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) ⊆
       ⋃ c ∈ s k, Metric.ball c R) :
     Summable (fun k : ℕ ↦
-      ∫ z : ℝ × V in klLateStShell x R k,
-        ‖klFluxKernel (R ^ 2) w x z • f z‖
-        ∂klTailMeasure (V := V) R Set.univ) := by
-  let C : ℝ := ‖w‖ * (klFluxTailC V * (Aₚ : ℝ))
+      ∫ z : ℝ × V in kochLammLateStShell x R k,
+        ‖kochLammFluxKernel (R ^ 2) w x z • f z‖
+        ∂kochLammTailMeasure (V := V) R Set.univ) := by
+  let C : ℝ := ‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ))
   exact Summable.of_nonneg_of_le
     (fun k ↦ integral_nonneg fun _ ↦ norm_nonneg _)
     (fun k ↦ by
       simpa only [C] using
-        (klFluxSt_abs (V := V) h w x hR hRT k (s k)
+        (kochLammFluxSt_abs (V := V) h w x hR hRT k (s k)
           (hcard k) (hcover k)))
-    ((klFluxWeight_sum (Module.finrank ℝ V)).mul_right C)
+    ((kochLammFluxWeight_sum (Module.finrank ℝ V)).mul_right C)
 
 omit [CompleteSpace F] in
-theorem klFluxKernel_smul_integrable {T R : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+theorem kochLammFluxKernel_smul_integrable {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
       (5 * (k + 1)) ^ Module.finrank ℝ V)
     (hcover : ∀ k, Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) ⊆
       ⋃ c ∈ s k, Metric.ball c R) :
-    Integrable (fun z : ℝ × V ↦ klFluxKernel (R ^ 2) w x z • f z)
-      (klTermMeasure (V := V) (R ^ 2)) := by
-  rw [klTerm_eq_tail (V := V) R]
+    Integrable (fun z : ℝ × V ↦ kochLammFluxKernel (R ^ 2) w x z • f z)
+      (kochLammTermMeasure (V := V) (R ^ 2)) := by
+  rw [kochLammTerm_eq_tail (V := V) R]
   have hU := integrableOn_iUnion_of_summable_integral_norm
-    (fun k ↦ klFluxSt_int (V := V) h w x hR hRT k (s k)
+    (fun k ↦ kochLammFluxSt_int (V := V) h w x hR hRT k (s k)
       (hcover k))
-    (klFluxAbs_sum (V := V) h w x hR hRT s hcard hcover)
-  rw [klLateSt_union (V := V) x hR] at hU
+    (kochLammFluxAbs_sum (V := V) h w x hR hRT s hcard hcover)
+  rw [kochLammLateSt_union (V := V) x hR] at hU
   simpa only [IntegrableOn, Measure.restrict_univ] using hU
 
 omit [CompleteSpace F] in
 theorem hasSum_klFluxPiece_klFluxPotential {T R : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
       (5 * (k + 1)) ^ Module.finrank ℝ V)
     (hcover : ∀ k, Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) ⊆
       ⋃ c ∈ s k, Metric.ball c R) :
     HasSum (fun k : ℕ ↦
-      klFluxPiece1 R w f x (klLateShell x R k))
-      (klFluxPotential R w f x) := by
-  let μ := klTailMeasure (V := V) R Set.univ
-  let g : ℝ × V → F := fun z ↦ klFluxKernel (R ^ 2) w x z • f z
-  have hU : IntegrableOn g (⋃ k : ℕ, klLateStShell x R k) μ := by
-    rw [klLateSt_union (V := V) x hR]
+      kochLammFluxPiece1 R w f x (kochLammLateShell x R k))
+      (kochLammFluxPotential R w f x) := by
+  let μ := kochLammTailMeasure (V := V) R Set.univ
+  let g : ℝ × V → F := fun z ↦ kochLammFluxKernel (R ^ 2) w x z • f z
+  have hU : IntegrableOn g (⋃ k : ℕ, kochLammLateStShell x R k) μ := by
+    rw [kochLammLateSt_union (V := V) x hR]
     simpa only [IntegrableOn, Measure.restrict_univ, μ, g,
-      ← klTerm_eq_tail (V := V) R] using
-      (klFluxKernel_smul_integrable (V := V) h w x hR hRT s hcard hcover)
+      ← kochLammTerm_eq_tail (V := V) R] using
+      (kochLammFluxKernel_smul_integrable (V := V) h w x hR hRT s hcard hcover)
   have hsum := hasSum_integral_iUnion
-    (f := g) (μ := μ) (fun k ↦ klLateSt_mble (V := V) x R k)
-    (klLateSt_disj (V := V) x hR) hU
+    (f := g) (μ := μ) (fun k ↦ kochLammLateSt_mble (V := V) x R k)
+    (kochLammLateSt_disj (V := V) x hR) hU
   convert hsum using 1
   · funext k
-    simp only [klFluxPiece1, g, μ, klLateStShell]
-    rw [klTail_restrict]
-  · simp only [klFluxPotential, g, μ]
-    rw [klLateSt_union (V := V) x hR, Measure.restrict_univ,
-      klTerm_eq_tail (V := V) R]
+    simp only [kochLammFluxPiece1, g, μ, kochLammLateStShell]
+    rw [kochLammTail_restrict]
+  · simp only [kochLammFluxPotential, g, μ]
+    rw [kochLammLateSt_union (V := V) x hR, Measure.restrict_univ,
+      kochLammTerm_eq_tail (V := V) R]
 
 omit [CompleteSpace F] in
 theorem norm_klFluxPotential_le_of_shellCover {T R : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (s : ℕ → Finset V)
     (hcard : ∀ k, (s k).card ≤
       (5 * (k + 1)) ^ Module.finrank ℝ V)
     (hcover : ∀ k, Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) ⊆
       ⋃ c ∈ s k, Metric.ball c R) :
-    ‖klFluxPotential R w f x‖ ≤
-      klFluxSeries (Module.finrank ℝ V) *
-        (‖w‖ * (klFluxTailC V * (Aₚ : ℝ))) := by
-  let μ := klTailMeasure (V := V) R Set.univ
-  let g : ℝ × V → F := fun z ↦ klFluxKernel (R ^ 2) w x z • f z
-  let C : ℝ := ‖w‖ * (klFluxTailC V * (Aₚ : ℝ))
+    ‖kochLammFluxPotential R w f x‖ ≤
+      kochLammFluxSeries (Module.finrank ℝ V) *
+        (‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ))) := by
+  let μ := kochLammTailMeasure (V := V) R Set.univ
+  let g : ℝ × V → F := fun z ↦ kochLammFluxKernel (R ^ 2) w x z • f z
+  let C : ℝ := ‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ))
   have hint : Integrable g μ := by
-    simpa only [μ, g, ← klTerm_eq_tail (V := V) R] using
-      (klFluxKernel_smul_integrable (V := V) h w x hR hRT s hcard hcover)
-  have habs := klFluxAbs_sum (V := V) h w x hR hRT s hcard hcover
+    simpa only [μ, g, ← kochLammTerm_eq_tail (V := V) R] using
+      (kochLammFluxKernel_smul_integrable (V := V) h w x hR hRT s hcard hcover)
+  have habs := kochLammFluxAbs_sum (V := V) h w x hR hRT s hcard hcover
   have hmaj : Summable
-      (fun k : ℕ ↦ klFluxWeight (Module.finrank ℝ V) k * C) :=
-    (klFluxWeight_sum (Module.finrank ℝ V)).mul_right C
+      (fun k : ℕ ↦ kochLammFluxWeight (Module.finrank ℝ V) k * C) :=
+    (kochLammFluxWeight_sum (Module.finrank ℝ V)).mul_right C
   have hnormU : IntegrableOn (fun z ↦ ‖g z‖)
-      (⋃ k : ℕ, klLateStShell x R k) μ := by
-    rw [klLateSt_union (V := V) x hR]
+      (⋃ k : ℕ, kochLammLateStShell x R k) μ := by
+    rw [kochLammLateSt_union (V := V) x hR]
     simpa only [IntegrableOn, Measure.restrict_univ] using hint.norm
   have hdecomp := integral_iUnion
     (f := fun z ↦ ‖g z‖) (μ := μ)
-    (fun k ↦ klLateSt_mble (V := V) x R k)
-    (klLateSt_disj (V := V) x hR) hnormU
-  rw [klLateSt_union (V := V) x hR, Measure.restrict_univ] at hdecomp
+    (fun k ↦ kochLammLateSt_mble (V := V) x R k)
+    (kochLammLateSt_disj (V := V) x hR) hnormU
+  rw [kochLammLateSt_union (V := V) x hR, Measure.restrict_univ] at hdecomp
   calc
-    ‖klFluxPotential R w f x‖ = ‖∫ z, g z ∂μ‖ := by
-      simp only [klFluxPotential, g, μ]
-      rw [klTerm_eq_tail (V := V) R]
+    ‖kochLammFluxPotential R w f x‖ = ‖∫ z, g z ∂μ‖ := by
+      simp only [kochLammFluxPotential, g, μ]
+      rw [kochLammTerm_eq_tail (V := V) R]
     _ ≤ ∫ z, ‖g z‖ ∂μ := norm_integral_le_integral_norm g
-    _ = ∑' k : ℕ, ∫ z in klLateStShell x R k, ‖g z‖ ∂μ := hdecomp
-    _ ≤ ∑' k : ℕ, klFluxWeight (Module.finrank ℝ V) k * C :=
+    _ = ∑' k : ℕ, ∫ z in kochLammLateStShell x R k, ‖g z‖ ∂μ := hdecomp
+    _ ≤ ∑' k : ℕ, kochLammFluxWeight (Module.finrank ℝ V) k * C :=
       habs.tsum_le_tsum
         (fun k ↦ by
           simpa only [g, μ, C] using
-            (klFluxSt_abs (V := V) h w x hR hRT k (s k)
+            (kochLammFluxSt_abs (V := V) h w x hR hRT k (s k)
               (hcard k) (hcover k))) hmaj
-    _ = klFluxSeries (Module.finrank ℝ V) * C := by
+    _ = kochLammFluxSeries (Module.finrank ℝ V) * C := by
       rw [tsum_mul_right]
       rfl
-    _ = klFluxSeries (Module.finrank ℝ V) *
-        (‖w‖ * (klFluxTailC V * (Aₚ : ℝ))) := rfl
+    _ = kochLammFluxSeries (Module.finrank ℝ V) *
+        (‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ))) := rfl
 
 omit [CompleteSpace F] in
 theorem norm_klFluxPotential_le {T R : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) :
-    ‖klFluxPotential R w f x‖ ≤
-      klFluxSeries (Module.finrank ℝ V) *
-        (‖w‖ * (klFluxTailC V * (Aₚ : ℝ))) := by
+    ‖kochLammFluxPotential R w f x‖ ≤
+      kochLammFluxSeries (Module.finrank ℝ V) *
+        (‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ))) := by
   classical
   choose s hcard hcover using
     fun k : ℕ ↦ exists_shell_cover (V := V) x hR k

@@ -169,11 +169,11 @@ theorem orbit_unique_Icc_on
       exact hfΩ ht
     · obtain ⟨t, ht, rfl⟩ := hx
       exact hgΩ ht
-  obtain ⟨χ, hχ, hχone, hχsupp, _⟩ :=
+  obtain ⟨χ, hχ, hχone, hχsupport, _⟩ :=
     DifferentialGeometry.Analysis.exists_bump_one_on hC hΩ hCΩ
   let w : E → E := fun x => χ x • v x
   have hw : ContDiff ℝ ∞ w :=
-    DifferentialGeometry.Analysis.contDiff_cutoff_smul hΩ hχ hχsupp hv
+    DifferentialGeometry.Analysis.contDiff_cutoff_smul hΩ hχ hχsupport hv
   have hfw : IsIntegralCurveOn f (fun _ => w) (Icc a b) := by
     intro t ht
     have hχf : χ (f t) = 1 := hχone (Or.inl ⟨t, ht, rfl⟩)
@@ -221,8 +221,8 @@ theorem exists_uniform_flow
   intro y hy
   have hymem := hsf hy
   rw [mem_iUnion₂] at hymem
-  obtain ⟨p, hp, hyp⟩ := hymem
-  refine ⟨U p, isOpen_ball, hyp, Ψ p, ?_, ?_, ?_⟩
+  obtain ⟨p, hp, hyperbolic⟩ := hymem
+  refine ⟨U p, isOpen_ball, hyperbolic, Ψ p, ?_, ?_, ?_⟩
   · intro z hz
     have hz' : z ∈ closedBall p (r p : ℝ) := by
       rw [mem_closedBall]
@@ -253,11 +253,11 @@ theorem exists_flow_on
             HasDerivAt (fun s ↦ Ψ (z, s)) (v (Ψ (z, t))) t) ∧
           MapsTo Ψ (U ×ˢ Ioo (-ε) ε) Ω := by
   obtain ⟨L, hL, hKL, hLΩ⟩ := exists_compact_between hK hΩ hKΩ
-  obtain ⟨χ, hχ, hχone, hχsupp, _⟩ :=
+  obtain ⟨χ, hχ, hχone, hχsupport, _⟩ :=
     DifferentialGeometry.Analysis.exists_bump_one_on hL hΩ hLΩ
   let w : E → E := fun x => χ x • v x
   have hw : ContDiff ℝ ∞ w :=
-    DifferentialGeometry.Analysis.contDiff_cutoff_smul hΩ hχ hχsupp hv
+    DifferentialGeometry.Analysis.contDiff_cutoff_smul hΩ hχ hχsupport hv
   obtain ⟨ε₀, hε₀, hlocal⟩ := exists_uniform_flow hw hK
   choose U₀ hU₀ hyU₀ Ψ hΨ₀ hΨsm hΨderiv using
     fun y : K ↦ hlocal y y.2
@@ -299,8 +299,8 @@ theorem exists_flow_on
   intro y hy
   have hymem := hsf hy
   rw [mem_iUnion₂] at hymem
-  obtain ⟨p, hp, hyp⟩ := hymem
-  refine ⟨U p, hU p, hyp, Ψ p, ?_, ?_, ?_, ?_⟩
+  obtain ⟨p, hp, hyperbolic⟩ := hymem
+  refine ⟨U p, hU p, hyperbolic, Ψ p, ?_, ?_, ?_, ?_⟩
   · intro z hz
     exact hΨ₀ p z hz.1
   · apply (hΨsm p).mono

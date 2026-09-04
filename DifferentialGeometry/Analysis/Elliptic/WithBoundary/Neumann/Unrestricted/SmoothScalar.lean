@@ -197,7 +197,7 @@ lemma UnrestrictedSmoothScalar.integrable_inner_grad
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
   integrable_g_inner_gradFun_gradFun (n := n) (M := M) g f.smooth h.smooth
 
-def fullSmoothScalarH1Inner
+def unrestrictedSmoothScalarH1Inner
     {g : SmoothRiemannianMetric (I_half n) M}
     (f h : UnrestrictedSmoothScalar g) : ℝ :=
   (∫ x, f.toFun x * h.toFun x
@@ -207,9 +207,9 @@ def fullSmoothScalarH1Inner
       ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g))
 
 
-lemma fullSmoothScalarH1Inner_def
+lemma unrestrictedSmoothScalarH1Inner_def
     {g : SmoothRiemannianMetric (I_half n) M} (f h : UnrestrictedSmoothScalar g) :
-    fullSmoothScalarH1Inner f h =
+    unrestrictedSmoothScalarH1Inner f h =
       (∫ x, f.toFun x * h.toFun x
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g)) +
       (∫ x, g.inner x (gradFun (I := I_half n) g f.toFun x)
@@ -217,10 +217,10 @@ lemma fullSmoothScalarH1Inner_def
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g)) := rfl
 
 
-lemma fullSmoothScalarH1Inner_symm
+lemma unrestrictedSmoothScalarH1Inner_symm
     {g : SmoothRiemannianMetric (I_half n) M} (f h : UnrestrictedSmoothScalar g) :
-    fullSmoothScalarH1Inner f h = fullSmoothScalarH1Inner h f := by
-  unfold fullSmoothScalarH1Inner
+    unrestrictedSmoothScalarH1Inner f h = unrestrictedSmoothScalarH1Inner h f := by
+  unfold unrestrictedSmoothScalarH1Inner
   congr 1
   · refine integral_congr_ae (Filter.Eventually.of_forall ?_)
     intro x; exact mul_comm _ _
@@ -257,10 +257,10 @@ lemma UnrestrictedSmoothScalar.integral_inner_grad_self_nonneg
   exact SmoothRiemannianMetric_inner_self_nonneg g x _
 
 
-lemma fullSmoothScalarH1Inner_nonneg
+lemma unrestrictedSmoothScalarH1Inner_nonneg
     {g : SmoothRiemannianMetric (I_half n) M} (f : UnrestrictedSmoothScalar g) :
-    0 ≤ fullSmoothScalarH1Inner f f := by
-  unfold fullSmoothScalarH1Inner
+    0 ≤ unrestrictedSmoothScalarH1Inner f f := by
+  unfold unrestrictedSmoothScalarH1Inner
   exact add_nonneg f.integral_mul_self_nonneg f.integral_inner_grad_self_nonneg
 
 omit [T2Space M] [CompactSpace M] in
@@ -276,7 +276,7 @@ lemma UnrestrictedSmoothScalar.gradFun_add_apply
     (f₁.smooth.mdifferentiable (by simp) x)
     (f₂.smooth.mdifferentiable (by simp) x)
 
-lemma fullSmoothScalar_integral_mul_add_left
+lemma unrestrictedSmoothScalar_integral_mul_add_left
     {g : SmoothRiemannianMetric (I_half n) M}
     (f₁ f₂ h : UnrestrictedSmoothScalar g) :
     (∫ x, (f₁ + f₂).toFun x * h.toFun x
@@ -295,7 +295,7 @@ lemma fullSmoothScalar_integral_mul_add_left
       funext hpt]
   exact integral_add (f₁.integrable_mul h) (f₂.integrable_mul h)
 
-lemma fullSmoothScalar_integral_inner_grad_add_left
+lemma unrestrictedSmoothScalar_integral_inner_grad_add_left
     {g : SmoothRiemannianMetric (I_half n) M}
     (f₁ f₂ h : UnrestrictedSmoothScalar g) :
     (∫ x, g.inner x (gradFun (I := I_half n) g (f₁ + f₂).toFun x)
@@ -326,14 +326,14 @@ lemma fullSmoothScalar_integral_inner_grad_add_left
           (gradFun (I := I_half n) g h.toFun x)) from funext hpt]
   exact integral_add (f₁.integrable_inner_grad h) (f₂.integrable_inner_grad h)
 
-lemma fullSmoothScalarH1Inner_add_left
+lemma unrestrictedSmoothScalarH1Inner_add_left
     {g : SmoothRiemannianMetric (I_half n) M}
     (f₁ f₂ h : UnrestrictedSmoothScalar g) :
-    fullSmoothScalarH1Inner (f₁ + f₂) h =
-      fullSmoothScalarH1Inner f₁ h + fullSmoothScalarH1Inner f₂ h := by
-  unfold fullSmoothScalarH1Inner
-  rw [fullSmoothScalar_integral_mul_add_left,
-    fullSmoothScalar_integral_inner_grad_add_left]
+    unrestrictedSmoothScalarH1Inner (f₁ + f₂) h =
+      unrestrictedSmoothScalarH1Inner f₁ h + unrestrictedSmoothScalarH1Inner f₂ h := by
+  unfold unrestrictedSmoothScalarH1Inner
+  rw [unrestrictedSmoothScalar_integral_mul_add_left,
+    unrestrictedSmoothScalar_integral_inner_grad_add_left]
   ring
 
 omit [T2Space M] [CompactSpace M] in
@@ -366,7 +366,7 @@ lemma UnrestrictedSmoothScalar.gradFun_smul_apply
   rw [smul_apply, smul_eq_mul]
 
 
-lemma fullSmoothScalar_integral_mul_smul_left
+lemma unrestrictedSmoothScalar_integral_mul_smul_left
     {g : SmoothRiemannianMetric (I_half n) M}
     (c : ℝ) (f h : UnrestrictedSmoothScalar g) :
     (∫ x, (c • f).toFun x * h.toFun x
@@ -380,7 +380,7 @@ lemma fullSmoothScalar_integral_mul_smul_left
   rw [integral_const_mul]
 
 
-lemma fullSmoothScalar_integral_inner_grad_smul_left
+lemma unrestrictedSmoothScalar_integral_inner_grad_smul_left
     {g : SmoothRiemannianMetric (I_half n) M}
     (c : ℝ) (f h : UnrestrictedSmoothScalar g) :
     (∫ x, g.inner x (gradFun (I := I_half n) g (c • f).toFun x)
@@ -400,35 +400,35 @@ lemma fullSmoothScalar_integral_inner_grad_smul_left
   rw [hpt, integral_const_mul]
 
 
-lemma fullSmoothScalarH1Inner_smul_left
+lemma unrestrictedSmoothScalarH1Inner_smul_left
     {g : SmoothRiemannianMetric (I_half n) M}
     (c : ℝ) (f h : UnrestrictedSmoothScalar g) :
-    fullSmoothScalarH1Inner (c • f) h =
-      c * fullSmoothScalarH1Inner f h := by
-  unfold fullSmoothScalarH1Inner
-  rw [fullSmoothScalar_integral_mul_smul_left,
-    fullSmoothScalar_integral_inner_grad_smul_left]
+    unrestrictedSmoothScalarH1Inner (c • f) h =
+      c * unrestrictedSmoothScalarH1Inner f h := by
+  unfold unrestrictedSmoothScalarH1Inner
+  rw [unrestrictedSmoothScalar_integral_mul_smul_left,
+    unrestrictedSmoothScalar_integral_inner_grad_smul_left]
   ring
 
 noncomputable instance instPreInnerProductSpaceCoreUnrestrictedSmoothScalar
     {g : SmoothRiemannianMetric (I_half n) M} :
     PreInnerProductSpace.Core ℝ (UnrestrictedSmoothScalar g) where
-  inner f h := fullSmoothScalarH1Inner f h
+  inner f h := unrestrictedSmoothScalarH1Inner f h
   conj_inner_symm f h := by
-    change (fullSmoothScalarH1Inner h f : ℝ) =
-      fullSmoothScalarH1Inner f h
-    exact fullSmoothScalarH1Inner_symm h f
+    change (unrestrictedSmoothScalarH1Inner h f : ℝ) =
+      unrestrictedSmoothScalarH1Inner f h
+    exact unrestrictedSmoothScalarH1Inner_symm h f
   re_inner_nonneg f := by
-    change (0 : ℝ) ≤ fullSmoothScalarH1Inner f f
-    exact fullSmoothScalarH1Inner_nonneg f
+    change (0 : ℝ) ≤ unrestrictedSmoothScalarH1Inner f f
+    exact unrestrictedSmoothScalarH1Inner_nonneg f
   add_left f₁ f₂ h := by
-    change fullSmoothScalarH1Inner (f₁ + f₂) h =
-      fullSmoothScalarH1Inner f₁ h + fullSmoothScalarH1Inner f₂ h
-    exact fullSmoothScalarH1Inner_add_left f₁ f₂ h
+    change unrestrictedSmoothScalarH1Inner (f₁ + f₂) h =
+      unrestrictedSmoothScalarH1Inner f₁ h + unrestrictedSmoothScalarH1Inner f₂ h
+    exact unrestrictedSmoothScalarH1Inner_add_left f₁ f₂ h
   smul_left f h c := by
-    change fullSmoothScalarH1Inner (c • f) h =
-      c * fullSmoothScalarH1Inner f h
-    exact fullSmoothScalarH1Inner_smul_left c f h
+    change unrestrictedSmoothScalarH1Inner (c • f) h =
+      c * unrestrictedSmoothScalarH1Inner f h
+    exact unrestrictedSmoothScalarH1Inner_smul_left c f h
 
 noncomputable instance instSeminormedAddCommGroupUnrestrictedSmoothScalar
     {g : SmoothRiemannianMetric (I_half n) M} :
@@ -442,7 +442,7 @@ noncomputable instance instInnerProductSpaceUnrestrictedSmoothScalar
 
 @[simp] lemma UnrestrictedSmoothScalar.inner_def
     {g : SmoothRiemannianMetric (I_half n) M} (f h : UnrestrictedSmoothScalar g) :
-    @inner ℝ _ _ f h = fullSmoothScalarH1Inner f h := rfl
+    @inner ℝ _ _ f h = unrestrictedSmoothScalarH1Inner f h := rfl
 
 end Neumann
 end WithBoundary

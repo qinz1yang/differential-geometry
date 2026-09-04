@@ -169,7 +169,7 @@ private theorem sourceD2_fourier (v w : V) (f : ℝ × V → ℝ)
   simp [mul_assoc, mul_left_comm, mul_comm]
 
 omit [Nontrivial V] in
-private theorem fourier_conv_l1
+private theorem fourier_convergence_l1
     {g h : WithLp 2 (ℝ × V) → ℂ}
     (hg : Integrable g) (hh : Integrable h)
     (q : WithLp 2 (ℝ × V)) :
@@ -220,7 +220,7 @@ private def dampD2Past (δ : ℝ) (v w : V) (f : ℝ × V → ℝ)
         ((heatD2 (z.fst - s) v w (z.snd - y) * f (s, y) : ℝ) : ℂ)
   else 0
 
-private theorem dampPast_eq_conv {δ : ℝ} (hδ : 0 < δ) (v w : V)
+private theorem dampPast_eq_convergence {δ : ℝ} (hδ : 0 < δ) (v w : V)
     (f : ℝ × V → ℝ) (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f) :
     dampD2Past δ v w f =ᵐ[volume]
       sourceD2Sch v w f hf hfc ⋆[ContinuousLinearMap.mul ℂ ℂ]
@@ -304,9 +304,9 @@ private theorem dampPast_eq_conv {δ : ℝ} (hδ : 0 < δ) (v w : V)
       ht, mul_zero, integral_zero]
 
 omit [Nontrivial V] in
-private theorem translate_src_ae
-    (src : SchwartzMap (WithLp 2 (ℝ × V)) ℂ) (y : WithLp 2 (ℝ × V)) :
-    lpTranslate y (src.toLp 2) =ᵐ[volume] fun x => src (x - y) := by
+private theorem translate_source_ae
+    (source : SchwartzMap (WithLp 2 (ℝ × V)) ℂ) (y : WithLp 2 (ℝ × V)) :
+    lpTranslate y (source.toLp 2) =ᵐ[volume] fun x => source (x - y) := by
   unfold lpTranslate
   unfold SchwartzMap.toLp
   rw [DomAddAct.mk_vadd_toLp]
@@ -314,49 +314,49 @@ private theorem translate_src_ae
   filter_upwards with x
   simp [sub_eq_add_neg, add_comm]
 
-private noncomputable def dampConvOut (δ : ℝ) (v w : V)
+private noncomputable def dampConvergenceOut (δ : ℝ) (v w : V)
     (f : ℝ × V → ℝ) (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f) :
     Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
   lpOpKernel
     (fun y => ContinuousLinearMap.mul ℝ ℂ (dampHeat (V := V) δ y))
     ((sourceD2Sch v w f hf hfc).toLp 2)
 
-private theorem dampConv_rep {δ : ℝ} (hδ : 0 < δ) (v w : V)
+private theorem dampConvergence_rep {δ : ℝ} (hδ : 0 < δ) (v w : V)
     (f : ℝ × V → ℝ) (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f) :
     (sourceD2Sch v w f hf hfc ⋆[ContinuousLinearMap.mul ℂ ℂ]
       dampHeat (V := V) δ) =ᵐ[volume]
-        (dampConvOut δ v w f hf hfc : WithLp 2 (ℝ × V) → ℂ) := by
+        (dampConvergenceOut δ v w f hf hfc : WithLp 2 (ℝ × V) → ℂ) := by
   let B : ℂ →L[ℝ] ℂ →L[ℝ] ℂ :=
     ContinuousLinearMap.mul ℝ ℂ
-  let src : WithLp 2 (ℝ × V) → ℂ := sourceD2Sch v w f hf hfc
+  let source : WithLp 2 (ℝ × V) → ℂ := sourceD2Sch v w f hf hfc
   let k : WithLp 2 (ℝ × V) → ℂ := dampHeat (V := V) δ
   let out : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
-    dampConvOut δ v w f hf hfc
-  change (src ⋆[ContinuousLinearMap.mul ℂ ℂ] k) =ᵐ[volume]
+    dampConvergenceOut δ v w f hf hfc
+  change (source ⋆[ContinuousLinearMap.mul ℂ ℂ] k) =ᵐ[volume]
     (out : WithLp 2 (ℝ × V) → ℂ)
   have hflip :
-      (k ⋆[ContinuousLinearMap.mul ℂ ℂ] src) =
-        src ⋆[ContinuousLinearMap.mul ℂ ℂ] k := by
+      (k ⋆[ContinuousLinearMap.mul ℂ ℂ] source) =
+        source ⋆[ContinuousLinearMap.mul ℂ ℂ] k := by
     simpa only [ContinuousLinearMap.flip_mul] using
       (MeasureTheory.convolution_flip
-        (L := ContinuousLinearMap.mul ℂ ℂ) (f := src) (g := k))
+        (L := ContinuousLinearMap.mul ℂ ℂ) (f := source) (g := k))
   rw [← hflip]
-  have hsrc : Integrable src := (sourceD2Sch v w f hf hfc).integrable
+  have hsrc : Integrable source := (sourceD2Sch v w f hf hfc).integrable
   have hk : Integrable k := dampHeat_int (V := V) hδ
   have hK : Integrable (fun y => B (k y)) := B.integrable_comp hk
-  have hconv : Integrable (k ⋆[ContinuousLinearMap.mul ℂ ℂ] src) :=
+  have hconv : Integrable (k ⋆[ContinuousLinearMap.mul ℂ ℂ] source) :=
     hk.integrable_convolution (ContinuousLinearMap.mul ℂ ℂ) hsrc
   have hout : MemLp (out : WithLp 2 (ℝ × V) → ℂ) 2 volume := Lp.memLp out
   apply ae_eq_of_integral_contDiff_smul_eq hconv.locallyIntegrable
     (hout.locallyIntegrable (by norm_num))
   intro φ hφ hφc
   simp only [convolution_def]
-  let srcLp : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
+  let sourceLp : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
     (sourceD2Sch v w f hf hfc).toLp 2
   let φC : WithLp 2 (ℝ × V) → ℂ := fun x => (φ x : ℂ)
   have hφC_cont : Continuous φC :=
     Complex.ofRealCLM.continuous.comp hφ.continuous
-  have hφC_supp : HasCompactSupport φC := by
+  have hφC_support : HasCompactSupport φC := by
     have hcomp := hφc.comp_left (map_zero Complex.ofRealCLM)
     have heq : Complex.ofRealCLM ∘ φ = φC := by
       funext x
@@ -364,56 +364,56 @@ private theorem dampConv_rep {δ : ℝ} (hδ : 0 < δ) (v w : V)
     rw [heq] at hcomp
     exact hcomp
   have hφC_mem : MemLp φC 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
-    hφC_cont.memLp_of_hasCompactSupport hφC_supp
+    hφC_cont.memLp_of_hasCompactSupport hφC_support
   let φLp : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
     hφC_mem.toLp φC
   have hφLp_ae : (φLp : WithLp 2 (ℝ × V) → ℂ) =ᵐ[volume] φC := by
     simpa only [φLp] using hφC_mem.coeFn_toLp
   have hjoint0 : Integrable (fun p :
       WithLp 2 (ℝ × V) × WithLp 2 (ℝ × V) =>
-        B (k p.2) (src (p.1 - p.2))) :=
+        B (k p.2) (source (p.1 - p.2))) :=
     hk.convolution_integrand B hsrc
   obtain ⟨C, hC⟩ := hφ.continuous.bounded_above_of_compact_support hφc
   have hjoint : Integrable (fun p :
       WithLp 2 (ℝ × V) × WithLp 2 (ℝ × V) =>
-        φ p.1 • B (k p.2) (src (p.1 - p.2))) :=
+        φ p.1 • B (k p.2) (source (p.1 - p.2))) :=
     hjoint0.bdd_smul C hφ.continuous.aestronglyMeasurable.comp_fst
       (Filter.Eventually.of_forall fun p => hC p.1)
   have hinner (y : WithLp 2 (ℝ × V)) :
-      (∫ x, φ x • B (k y) (src (x - y))) =
-        inner ℂ φLp (lpOpIntegrand (fun q => B (k q)) srcLp y) := by
+      (∫ x, φ x • B (k y) (source (x - y))) =
+        inner ℂ φLp (lpOpIntegrand (fun q => B (k q)) sourceLp y) := by
     rw [L2.inner_def]
-    have htr : lpTranslate y srcLp =ᵐ[volume] fun x => src (x - y) := by
-      simpa only [srcLp, src] using translate_src_ae (sourceD2Sch v w f hf hfc) y
+    have htr : lpTranslate y sourceLp =ᵐ[volume] fun x => source (x - y) := by
+      simpa only [sourceLp, source] using translate_source_ae (sourceD2Sch v w f hf hfc) y
     have hop :
-        (lpOpIntegrand (fun q => B (k q)) srcLp y :
+        (lpOpIntegrand (fun q => B (k q)) sourceLp y :
           WithLp 2 (ℝ × V) → ℂ) =ᵐ[volume]
-            fun x => B (k y) ((lpTranslate y srcLp) x) := by
+            fun x => B (k y) ((lpTranslate y sourceLp) x) := by
       simpa only [lpOpIntegrand, liftLp_apply] using
-        (B (k y)).coeFn_compLpL (lpTranslate y srcLp)
+        (B (k y)).coeFn_compLpL (lpTranslate y sourceLp)
     refine integral_congr_ae ?_
     filter_upwards [hφLp_ae, htr, hop] with x hφx htrx hopx
     rw [hφx, hopx, htrx]
     simp only [φC, B, ContinuousLinearMap.mul_apply', RCLike.inner_apply,
       conj_ofReal, real_smul]
     ring
-  change (∫ x, φ x • ∫ y, B (k y) (src (x - y))) =
+  change (∫ x, φ x • ∫ y, B (k y) (source (x - y))) =
     ∫ x, φ x • out x
   calc
-    (∫ x, φ x • ∫ y, B (k y) (src (x - y))) =
-        ∫ x, ∫ y, φ x • B (k y) (src (x - y)) := by
+    (∫ x, φ x • ∫ y, B (k y) (source (x - y))) =
+        ∫ x, ∫ y, φ x • B (k y) (source (x - y)) := by
           refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
-          exact (integral_smul (φ x) (fun y => B (k y) (src (x - y)))).symm
-    _ = ∫ y, ∫ x, φ x • B (k y) (src (x - y)) :=
+          exact (integral_smul (φ x) (fun y => B (k y) (source (x - y)))).symm
+    _ = ∫ y, ∫ x, φ x • B (k y) (source (x - y)) :=
       integral_integral_swap hjoint
     _ = ∫ y, inner ℂ φLp
-        (lpOpIntegrand (fun q => B (k q)) srcLp y) := by
+        (lpOpIntegrand (fun q => B (k q)) sourceLp y) := by
           exact integral_congr_ae (Filter.Eventually.of_forall hinner)
     _ = inner ℂ φLp
-        (lpOpKernel (fun q => B (k q)) srcLp) := by
+        (lpOpKernel (fun q => B (k q)) sourceLp) := by
           let : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
           unfold lpOpKernel
-          exact integral_inner (lpOpKernel_int hK srcLp) φLp
+          exact integral_inner (lpOpKernel_int hK sourceLp) φLp
     _ = inner ℂ φLp out := by rfl
     _ = ∫ x, φ x • out x := by
       rw [L2.inner_def]
@@ -423,12 +423,12 @@ private theorem dampConv_rep {δ : ℝ} (hδ : 0 < δ) (v w : V)
       simp only [φC, RCLike.inner_apply, conj_ofReal, real_smul]
       ring
 
-private theorem dampConv_memLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
+private theorem dampConvergence_memLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
     (f : ℝ × V → ℝ) (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f) :
     MemLp (sourceD2Sch v w f hf hfc ⋆[ContinuousLinearMap.mul ℂ ℂ]
       dampHeat (V := V) δ) 2 volume := by
-  exact MemLp.ae_eq (dampConv_rep hδ v w f hf hfc).symm
-    (Lp.memLp (dampConvOut δ v w f hf hfc))
+  exact MemLp.ae_eq (dampConvergence_rep hδ v w f hf hfc).symm
+    (Lp.memLp (dampConvergenceOut δ v w f hf hfc))
 
 private def dampHessSym (δ : ℝ) (v w : V)
     (q : WithLp 2 (ℝ × V)) : ℂ :=
@@ -495,13 +495,13 @@ private theorem dampSym_memLp {δ : ℝ} (hδ : 0 < δ) (v w : V) :
   memLp_top_of_bound (dampSym_meas δ v w).aestronglyMeasurable
     (‖v‖ * ‖w‖) (Filter.Eventually.of_forall (dampSym_norm hδ v w))
 
-private theorem dampConv_fourier {δ : ℝ} (hδ : 0 < δ) (v w : V)
+private theorem dampConvergence_fourier {δ : ℝ} (hδ : 0 < δ) (v w : V)
     (f : ℝ × V → ℝ) (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f)
     (q : WithLp 2 (ℝ × V)) :
     𝓕 (sourceD2Sch v w f hf hfc ⋆[ContinuousLinearMap.mul ℂ ℂ]
       dampHeat (V := V) δ) q =
       dampHessSym δ v w q * 𝓕 (sourceSch f hf hfc) q := by
-  rw [fourier_conv_l1 (sourceD2Sch v w f hf hfc).integrable
+  rw [fourier_convergence_l1 (sourceD2Sch v w f hf hfc).integrable
     (dampHeat_int (V := V) hδ) q]
   rw [← SchwartzMap.fourier_coe (sourceD2Sch v w f hf hfc)]
   rw [sourceD2_fourier, dampHeat_fourier hδ]
@@ -519,10 +519,10 @@ private theorem dampProd_memLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
   exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ => rfl)
     (hFsrc.smul (dampSym_memLp hδ v w))
 
-private theorem dampConv_fourierLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
+private theorem dampConvergence_fourierLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
     (f : ℝ × V → ℝ) (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f) :
     Lp.fourierTransformₗᵢ (WithLp 2 (ℝ × V)) ℂ
-        ((dampConv_memLp hδ v w f hf hfc).toLp
+        ((dampConvergence_memLp hδ v w f hf hfc).toLp
           (sourceD2Sch v w f hf hfc ⋆[ContinuousLinearMap.mul ℂ ℂ]
             dampHeat (V := V) δ)) =
       (dampProd_memLp hδ v w f hf hfc).toLp
@@ -538,20 +538,20 @@ private theorem dampConv_fourierLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
       (ContinuousLinearMap.mul ℂ ℂ) (dampHeat_int (V := V) hδ)
   have hEq : 𝓕 conv =ᵐ[volume] prod := by
     exact Filter.Eventually.of_forall fun q => by
-      simpa only [conv, prod] using dampConv_fourier hδ v w f hf hfc q
+      simpa only [conv, prod] using dampConvergence_fourier hδ v w f hf hfc q
   have hprod : MemLp prod 2 volume := by
     simpa only [prod] using dampProd_memLp hδ v w f hf hfc
   have hFconv : MemLp (𝓕 conv) 2 volume :=
     MemLp.ae_eq hEq.symm hprod
   change Lp.fourierTransformₗᵢ (WithLp 2 (ℝ × V)) ℂ
-      ((dampConv_memLp hδ v w f hf hfc).toLp conv) =
+      ((dampConvergence_memLp hδ v w f hf hfc).toLp conv) =
     hprod.toLp prod
   calc
     Lp.fourierTransformₗᵢ (WithLp 2 (ℝ × V)) ℂ
-        ((dampConv_memLp hδ v w f hf hfc).toLp conv) =
+        ((dampConvergence_memLp hδ v w f hf hfc).toLp conv) =
         hFconv.toLp (𝓕 conv) :=
       fourier_toLp_two conv hconv_int
-        (dampConv_memLp hδ v w f hf hfc) hFconv
+        (dampConvergence_memLp hδ v w f hf hfc) hFconv
     _ = hprod.toLp prod := MemLp.toLp_congr hFconv hprod hEq
 
 def heatD2Past (v w : V) (f : ℝ × V → ℝ)

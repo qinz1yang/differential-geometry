@@ -327,7 +327,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma prodUnitEval_chartPullback_eventuallyEq (g : SmoothRiemannianMetric I M) {p q : ℕ}
     (S : SmoothCcTensor g 0 p) (T : SmoothCcTensor g 0 q) (α : M) {b : M}
-    (hb_src : b ∈ (extChartAt I α).source)
+    (hb_source : b ∈ (extChartAt I α).source)
     (hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     (tensor0SChartESectionRepr (I := I) (p + q) α (prodUnitEval (I := I) g S T) ∘
         (extChartAt I α).symm) =ᶠ[𝓝 (extChartAt I α b)]
@@ -340,9 +340,9 @@ private lemma prodUnitEval_chartPullback_eventuallyEq (g : SmoothRiemannianMetri
   set φ := extChartAt I α with hφ
   have hBase_open : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
     (trivializationAt E (TangentSpace I) α).open_baseSet
-  have hb_inv : φ.symm (φ b) = b := φ.left_inv hb_src
+  have hb_inv : φ.symm (φ b) = b := φ.left_inv hb_source
   have hcont_symm : ContinuousAt φ.symm (φ b) :=
-    continuousAt_extChartAt_symm' (I := I) (x := α) (x' := b) hb_src
+    continuousAt_extChartAt_symm' (I := I) (x := α) (x' := b) hb_source
   have hBase_pre : φ.symm ⁻¹' (trivializationAt E (TangentSpace I) α).baseSet ∈ 𝓝 (φ b) := by
     have hmem : (φ.symm (φ b)) ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
       rw [hb_inv]; exact hb_base
@@ -354,7 +354,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma fderiv_prodUnitEval_chartPullback (g : SmoothRiemannianMetric I M) {p q : ℕ}
     (S : SmoothCcTensor g 0 p) (T : SmoothCcTensor g 0 q) (α : M) {b : M}
-    (hb_src : b ∈ (extChartAt I α).source)
+    (hb_source : b ∈ (extChartAt I α).source)
     (hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hS : DifferentiableAt ℝ
       (tensor0SChartESectionRepr (I := I) p α (factorUnitEval (I := I) g S) ∘
@@ -377,7 +377,7 @@ private lemma fderiv_prodUnitEval_chartPullback (g : SmoothRiemannianMetric I M)
             (extChartAt I α).symm) (extChartAt I α b)) := by
   classical
   rw [Filter.EventuallyEq.fderiv_eq
-    (prodUnitEval_chartPullback_eventuallyEq (I := I) g S T α hb_src hb_base)]
+    (prodUnitEval_chartPullback_eventuallyEq (I := I) g S T α hb_source hb_base)]
   exact (Bundle.continuousMultilinearMap.hasFDerivAt_modelProduct (𝕜 := ℝ) (F := E) p q
     hS.hasFDerivAt hT.hasFDerivAt).fderiv
 
@@ -489,7 +489,7 @@ private lemma toModel_tensor0SIntrinsicChartCLM_prodUnitEval_self (g : SmoothRie
             (tensor0SIntrinsicChartCLM (I := I) q x (factorUnitEval (I := I) g T) x v)) := by
   classical
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x := self_mem_chartLeviCivitaGoodSet x
-  have hx_src : x ∈ (extChartAt I x).source := mem_extChartAt_source (I := I) x
+  have hx_source : x ∈ (extChartAt I x).source := mem_extChartAt_source (I := I) x
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx_good
   have hSdiff := differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt (I := I) p x
@@ -499,7 +499,7 @@ private lemma toModel_tensor0SIntrinsicChartCLM_prodUnitEval_self (g : SmoothRie
   rw [toModel_tensor0SIntrinsicChartCLM_self (I := I) (p + q) x (prodUnitEval (I := I) g S T) v,
     toModel_tensor0SIntrinsicChartCLM_self (I := I) p x (factorUnitEval (I := I) g S) v,
     toModel_tensor0SIntrinsicChartCLM_self (I := I) q x (factorUnitEval (I := I) g T) v]
-  rw [fderiv_prodUnitEval_chartPullback (I := I) g S T x hx_src hx_base hSdiff hTdiff]
+  rw [fderiv_prodUnitEval_chartPullback (I := I) g S T x hx_source hx_base hSdiff hTdiff]
   simp only [ContinuousLinearMap.precompR_apply,
     ContinuousLinearMap.compL_apply,
         factor_chartPullback_self (I := I) g S x, factor_chartPullback_self (I := I) g T x]

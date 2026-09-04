@@ -866,7 +866,7 @@ theorem nabla2Eval_extDeriv
   rw [hfun, hsum]
   simp
 
-private theorem nabla2Eval_extDeriv_oneSec_corr
+private theorem nabla2Eval_extDeriv_oneSec_correction
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {nablaB : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3}
@@ -971,7 +971,7 @@ private theorem nabla2Eval_extDeriv_oneSec_corr
         simp [W, vec2_self_eq_const, Fin.cons_succ]
   rw [hfun, hsum]
 
-private theorem nabla2Eval_extDeriv_oneSec_corr_phi
+private theorem nabla2Eval_extDeriv_oneSec_correction_phi
     [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1016,7 +1016,7 @@ private theorem nabla2Eval_extDeriv_oneSec_corr_phi
         x (X x) -
       nablaB x
         (Fin.cons ((cov (fun p : M => Y p) x) (X x)) (vec2 (I := I) v v)) := by
-          exact nabla2Eval_extDeriv_oneSec_corr (I := I) (M := M)
+          exact nabla2Eval_extDeriv_oneSec_correction (I := I) (M := M)
             hreal2 X Y Vsec hV hcovV
     _ =
       mvfderiv (I := I)
@@ -1080,8 +1080,8 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
   let phi : M -> Real := fun p => B p (vec2 (I := I) (V p) (V p))
   let A : (p : M) -> TangentSpace I p := fun p => ((cov (fun q : M => V q) p) (Y p))
   let dphiY : M -> Real := fun p => mvfderiv (I := I) phi p (Y p)
-  let corrL : M -> Real := fun p => B p (vec2 (I := I) (A p) (V p))
-  let corrR : M -> Real := fun p => B p (vec2 (I := I) (V p) (A p))
+  let correctionL : M -> Real := fun p => B p (vec2 (I := I) (A p) (V p))
+  let correctionR : M -> Real := fun p => B p (vec2 (I := I) (V p) (A p))
   have hV_at :
       ContMDiffAt I (I.prod 𝓘(Real, E)) (1 : WithTop ℕ∞)
         (fun p : M =>
@@ -1097,7 +1097,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
         (fun p : M => (⟨p, A p⟩ : TotalSpace E (TangentSpace I : M -> Type _))) x := by
     simpa [A] using hA_at
   have hcorrL :
-      MDifferentiableAt I 𝓘(Real, Real) corrL x := by
+      MDifferentiableAt I 𝓘(Real, Real) correctionL x := by
     let Slots : Fin 2 -> (p : M) -> TangentSpace I p :=
       Fin.cons A (fun _ : Fin 1 => fun p : M => V p)
     have hSlots : ∀ a : Fin 2,
@@ -1111,7 +1111,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
     have hraw := tensor0SField_eval_C1_slots_mdiffAt
       (I := I) (M := M) B Slots x hSlots
     have hfun :
-        (fun p : M => B p (fun a : Fin 2 => Slots a p)) = corrL := by
+        (fun p : M => B p (fun a : Fin 2 => Slots a p)) = correctionL := by
       funext p
       congr
       funext a
@@ -1119,7 +1119,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
     rw [← hfun]
     exact hraw
   have hcorrR :
-      MDifferentiableAt I 𝓘(Real, Real) corrR x := by
+      MDifferentiableAt I 𝓘(Real, Real) correctionR x := by
     let Slots : Fin 2 -> (p : M) -> TangentSpace I p :=
       Fin.cons (fun p : M => V p) (fun _ : Fin 1 => A)
     have hSlots : ∀ a : Fin 2,
@@ -1133,7 +1133,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
     have hraw := tensor0SField_eval_C1_slots_mdiffAt
       (I := I) (M := M) B Slots x hSlots
     have hfun :
-        (fun p : M => B p (fun a : Fin 2 => Slots a p)) = corrR := by
+        (fun p : M => B p (fun a : Fin 2 => Slots a p)) = correctionR := by
       funext p
       congr
       funext a
@@ -1143,7 +1143,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
   have hleft_fun :
       (fun p : M =>
         nablaB p (Fin.cons (Y p) (vec2 (I := I) (V p) (V p)))) =
-        (fun p : M => dphiY p - corrL p - corrR p) := by
+        (fun p : M => dphiY p - correctionL p - correctionR p) := by
     funext p
     let Slots : Fin 2 ->
         ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -1165,13 +1165,13 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
           B p
             (Function.update (vec2 (I := I) (V p) (V p)) a
               ((cov (fun q : M => Slots a q) p) (Y p)))) =
-          corrL p + corrR p := by
+          correctionL p + correctionR p := by
       rw [Fin.sum_univ_two]
       have h0 :
           B p
             (Function.update (vec2 (I := I) (V p) (V p)) (0 : Fin 2)
               ((cov (fun q : M => Slots 0 q) p) (Y p))) =
-            corrL p := by
+            correctionL p := by
         have hcov :
             ((cov (fun q : M => Slots 0 q) p) (Y p)) = A p := by
           rfl
@@ -1183,7 +1183,7 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
           B p
             (Function.update (vec2 (I := I) (V p) (V p)) (1 : Fin 2)
               ((cov (fun q : M => Slots 1 q) p) (Y p))) =
-            corrR p := by
+            correctionR p := by
         have hcov :
             ((cov (fun q : M => Slots 1 q) p) (Y p)) = A p := by
           rfl
@@ -1201,26 +1201,26 @@ private theorem nabla2Eval_extDeriv_oneSec_hess
       mvfderiv (I := I) dphiY x (X x) := by
     rw [hleft_fun]
     have hsub1 :
-        MDifferentiableAt I 𝓘(Real, Real) (fun p : M => dphiY p - corrL p) x :=
+        MDifferentiableAt I 𝓘(Real, Real) (fun p : M => dphiY p - correctionL p) x :=
       hdphi.sub hcorrL
     rw [mvfderiv_sub_at (I := I) (x := x) (v := X x) hsub1 hcorrR]
     rw [mvfderiv_sub_at (I := I) (x := x) (v := X x) hdphi hcorrL]
     have hA0 : A x = 0 := by
       simp [A, hcovVY]
     have hcorrL_zero :
-        mvfderiv (I := I) corrL x (X x) = 0 := by
-      simpa [corrL] using
+        mvfderiv (I := I) correctionL x (X x) = 0 := by
+      simpa [correctionL] using
         deriv_eval_zero_left_C1 (I := I) (M := M)
           hreal1 X V A hA_at' hA0 hV hkerR
     have hcorrR_zero :
-        mvfderiv (I := I) corrR x (X x) = 0 := by
-      simpa [corrR] using
+        mvfderiv (I := I) correctionR x (X x) = 0 := by
+      simpa [correctionR] using
         deriv_eval_zero_right_C1 (I := I) (M := M)
           hreal1 X V A hA_at' hV hA0 hkerL
     rw [hcorrL_zero, hcorrR_zero]
     ring
   have hcorr_phi :=
-    nabla2Eval_extDeriv_oneSec_corr_phi (I := I) (M := M)
+    nabla2Eval_extDeriv_oneSec_correction_phi (I := I) (M := M)
       hreal1 hreal2 X Y V hV hcovVX hkerL hkerR
   rw [hleft_deriv] at hcorr_phi
   simpa [phi, dphiY] using hcorr_phi
@@ -1293,7 +1293,7 @@ private theorem nabla2Eval_hess
     funext y
     rw [hdu y]
     exact differential1FormFun_apply_eq_mvfderiv (I := I) phi y (Y y)
-  have hdu_corr :
+  have hdu_correction :
       du x (fun _ : Fin 1 => (cov (fun y : M => Y y) x) (X x)) =
         mvfderiv (I := I) phi x ((cov (fun y : M => Y y) x) (X x)) := by
     rw [hdu x]
@@ -1304,7 +1304,7 @@ private theorem nabla2Eval_hess
         mvfderiv (I := I) (fun y : M => mvfderiv (I := I) phi y (Y y))
           x (X x) -
         mvfderiv (I := I) phi x ((cov (fun y : M => Y y) x) (X x)) := by
-    rw [hnabla_eval, hdu_fun, hdu_corr]
+    rw [hnabla_eval, hdu_fun, hdu_correction]
   calc
     nabla2B x (Fin.cons (X x) (Fin.cons (Y x) (vec2 (I := I) v v)))
         =

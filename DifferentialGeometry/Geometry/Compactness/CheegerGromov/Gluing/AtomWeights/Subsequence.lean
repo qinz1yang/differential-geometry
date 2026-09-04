@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH uι
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 open scoped Manifold ContDiff Topology
@@ -46,10 +46,10 @@ def HasAtomWeightLim
   (∀ gamma : Fin (pb.A r), L.alive (gamma : Nat) = false → aInf gamma = 0) ∧
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (atomPi k) U) ∧
     ContDiffOn Real (∞ : WithTop ℕ∞) atomInf U ∧
-    MapCInfConvOnCompacts U atomPi atomInf ∧
+    MapCInfConvergenceOnCompacts U atomPi atomInf ∧
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U) ∧
     ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-    MapCInfConvOnCompacts U weight weightInf
+    MapCInfConvergenceOnCompacts U weight weightInf
 
 theorem HasAtomWeightLim.of_atoms
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -72,7 +72,7 @@ theorem HasAtomWeightLim.of_atoms
     (hdead : ∀ gamma : Fin (pb.A r),
       L.alive (gamma : Nat) = false → aInf gamma = 0)
     (hatom : ∀ gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => seqAtomChart (I := I) hd hD P L pb r beta gamma k)
         (aInf gamma))
     (hatomSmooth : ∀ k (gamma : Fin (pb.A r)),
@@ -99,15 +99,15 @@ theorem HasAtomWeightLim.subseq
   classical
   dsimp only [HasAtomWeightLim] at h ⊢
   rcases h with
-    ⟨hdead, hatomSmooth, hatomInfSmooth, hatomConv,
-      hweightSmooth, hweightInfSmooth, hweightConv⟩
+    ⟨hdead, hatomSmooth, hatomInfSmooth, hatomConvergence,
+      hweightSmooth, hweightInfSmooth, hweightConvergence⟩
   refine ⟨hdead, ?_, hatomInfSmooth, ?_, ?_, hweightInfSmooth, ?_⟩
   · intro k
     simpa only [seqAtomChart_subseq] using hatomSmooth (ψ k)
-  · simpa only [seqAtomChart_subseq] using hatomConv.comp_subseq hψ
+  · simpa only [seqAtomChart_subseq] using hatomConvergence.comp_subseq hψ
   · intro k
     simpa only [seqAtomChart_subseq] using hweightSmooth (ψ k)
-  · simpa only [seqAtomChart_subseq] using hweightConv.comp_subseq hψ
+  · simpa only [seqAtomChart_subseq] using hweightConvergence.comp_subseq hψ
 
 theorem HasAtomWeightLim.weight_ne_tail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -131,10 +131,10 @@ theorem HasAtomWeightLim.weight_ne_tail
           (baseIndex hd hre pb hr)) z gamma ≠ 0 := by
   dsimp only [HasAtomWeightLim] at hlim
   rcases hlim with
-    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConv,
-      _hweightSmooth, _hweightInfSmooth, hweightConv⟩
+    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConvergence,
+      _hweightSmooth, _hweightInfSmooth, hweightConvergence⟩
   exact
-    ((tendsto_pi_nhds.mp (tendsto_of_cInf hweightConv hz)) gamma).eventually_ne
+    ((tendsto_pi_nhds.mp (tendsto_of_cInf hweightConvergence hz)) gamma).eventually_ne
       hweight
 
 theorem HasAtomWeightLim.weight_data_of_innerCover
@@ -180,13 +180,13 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
       seqWeights_data hd hD P L pb r k i0 Set.Subset.rfl
   dsimp only [HasAtomWeightLim] at hlim
   rcases hlim with
-    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConv,
-      _hweightSmooth, _hweightInfSmooth, hweightConv⟩
+    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConvergence,
+      _hweightSmooth, _hweightInfSmooth, hweightConvergence⟩
   have hconv (z : E) (hz : z ∈ U) (gamma : Fin (pb.A r)) :
       Filter.Tendsto (fun k => weight k z gamma) Filter.atTop
         (nhds (weightInf z gamma)) := by
     simpa only [weight, weightInf] using
-      (tendsto_pi_nhds.mp (tendsto_of_cInf hweightConv hz)) gamma
+      (tendsto_pi_nhds.mp (tendsto_of_cInf hweightConvergence hz)) gamma
   have hnonneg (z : E) (hz : z ∈ U) (gamma : Fin (pb.A r)) :
       0 ≤ weightInf z gamma := by
     apply ge_of_tendsto (hconv z hz gamma)
@@ -204,7 +204,7 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
       (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
       (hmap hz) gamma
   have hsum (z : E) (hz : z ∈ U) : ∑ gamma, weightInf z gamma = 1 := by
-    have hsumConv : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
+    have hsumConvergence : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
         Filter.atTop (nhds (∑ gamma, weightInf z gamma)) :=
       tendsto_finsetSum Finset.univ fun gamma _ => hconv z hz gamma
     have hsumStage : ∀ᶠ k in Filter.atTop, ∑ gamma, weight k z gamma = 1 := by
@@ -224,7 +224,7 @@ theorem HasAtomWeightLim.weight_data_of_innerCover
     have hsumOne : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
         Filter.atTop (nhds (1 : Real)) :=
       tendsto_const_nhds.congr' (hsumStage.mono fun _ hk => hk.symm)
-    exact tendsto_nhds_unique hsumConv hsumOne
+    exact tendsto_nhds_unique hsumConvergence hsumOne
   change centerAverage.WeightDataOn U (fun _ : Fin (pb.A r) => Set.univ) weightInf
   refine
     { nonneg := hnonneg
@@ -314,8 +314,8 @@ theorem HasAtomWeightLim.binter_of_weight
       BInter hd D P L.lamInf (alpha : Nat) (gamma : Nat) (L.φ k) := by
   dsimp only [HasAtomWeightLim] at hlim
   rcases hlim with
-    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConv,
-      _hweightSmooth, _hweightInfSmooth, hweightConv⟩
+    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConvergence,
+      _hweightSmooth, _hweightInfSmooth, hweightConvergence⟩
   have hweightTendsto : Tendsto
       (fun k => rawWeights
         (cutRaw
@@ -327,7 +327,7 @@ theorem HasAtomWeightLim.binter_of_weight
       (𝓝 (rawWeights
         (cutRaw (aInf (baseIndex hd hre pb hr)) aInf (baseIndex hd hre pb hr))
         z gamma)) :=
-    (tendsto_pi_nhds.mp (tendsto_of_cInf hweightConv hz)) gamma
+    (tendsto_pi_nhds.mp (tendsto_of_cInf hweightConvergence hz)) gamma
   have hweightEventually : ∀ᶠ k in Filter.atTop,
       rawWeights
         (cutRaw
@@ -601,10 +601,10 @@ def HasAtomWeightLimOn
   (∀ gamma : Fin (pb.A r), L.alive (gamma : Nat) = false → aInf gamma = 0) ∧
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (atomPi k) U) ∧
     ContDiffOn Real (∞ : WithTop ℕ∞) atomInf U ∧
-    MapCInfConvOnCompacts U atomPi atomInf ∧
+    MapCInfConvergenceOnCompacts U atomPi atomInf ∧
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U) ∧
     ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-    MapCInfConvOnCompacts U weight weightInf
+    MapCInfConvergenceOnCompacts U weight weightInf
 
 theorem HasAtomWeightLimOn.of_raw
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -628,7 +628,7 @@ theorem HasAtomWeightLimOn.of_raw
     (hdead : ∀ gamma : Fin (pb.A r),
       L.alive (gamma : Nat) = false → aInf gamma = 0)
     (hatom : ∀ gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => seqAtomOn (I := I) chart hd hD P L pb r beta gamma k)
         (aInf gamma))
     (hatomSmooth : ∀ k (gamma : Fin (pb.A r)),
@@ -662,7 +662,7 @@ theorem HasAtomWeightLimOn.of_atoms
     (hdead : ∀ gamma : Fin (pb.A r),
       L.alive (gamma : Nat) = false → aInf gamma = 0)
     (hatom : ∀ gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => seqAtomOn (I := I) chart hd hD P L pb r beta gamma k)
         (aInf gamma))
     (hatomSmooth : ∀ k (gamma : Fin (pb.A r)),
@@ -690,15 +690,15 @@ theorem HasAtomWeightLimOn.subseq
   classical
   dsimp only [HasAtomWeightLimOn] at h ⊢
   rcases h with
-    ⟨hdead, hatomSmooth, hatomInfSmooth, hatomConv,
-      hweightSmooth, hweightInfSmooth, hweightConv⟩
+    ⟨hdead, hatomSmooth, hatomInfSmooth, hatomConvergence,
+      hweightSmooth, hweightInfSmooth, hweightConvergence⟩
   refine ⟨hdead, ?_, hatomInfSmooth, ?_, ?_, hweightInfSmooth, ?_⟩
   · intro k
     simpa only [seqAtomOn_subseq] using hatomSmooth (ψ k)
-  · simpa only [seqAtomOn_subseq] using hatomConv.comp_subseq hψ
+  · simpa only [seqAtomOn_subseq] using hatomConvergence.comp_subseq hψ
   · intro k
     simpa only [seqAtomOn_subseq] using hweightSmooth (ψ k)
-  · simpa only [seqAtomOn_subseq] using hweightConv.comp_subseq hψ
+  · simpa only [seqAtomOn_subseq] using hweightConvergence.comp_subseq hψ
 
 
 theorem HasAtomWeightLimOn.weight_ne_tail
@@ -725,10 +725,10 @@ theorem HasAtomWeightLimOn.weight_ne_tail
           (baseIndex hd hre pb hr)) z gamma ≠ 0 := by
   dsimp only [HasAtomWeightLimOn] at hlim
   rcases hlim with
-    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConv,
-      _hweightSmooth, _hweightInfSmooth, hweightConv⟩
+    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConvergence,
+      _hweightSmooth, _hweightInfSmooth, hweightConvergence⟩
   exact
-    ((tendsto_pi_nhds.mp (tendsto_of_cInf hweightConv hz)) gamma).eventually_ne
+    ((tendsto_pi_nhds.mp (tendsto_of_cInf hweightConvergence hz)) gamma).eventually_ne
       hweight
 
 theorem HasAtomWeightLimOn.weight_data_raw
@@ -777,13 +777,13 @@ theorem HasAtomWeightLimOn.weight_data_raw
       seqWeights_data hd hD P L pb r k i0 Set.Subset.rfl
   dsimp only [HasAtomWeightLimOn] at hlim
   rcases hlim with
-    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConv,
-      _hweightSmooth, _hweightInfSmooth, hweightConv⟩
+    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConvergence,
+      _hweightSmooth, _hweightInfSmooth, hweightConvergence⟩
   have hconv (z : E) (hz : z ∈ U) (gamma : Fin (pb.A r)) :
       Filter.Tendsto (fun k => weight k z gamma) Filter.atTop
         (nhds (weightInf z gamma)) := by
     simpa only [weight, weightInf] using
-      (tendsto_pi_nhds.mp (tendsto_of_cInf hweightConv hz)) gamma
+      (tendsto_pi_nhds.mp (tendsto_of_cInf hweightConvergence hz)) gamma
   have hnonneg (z : E) (hz : z ∈ U) (gamma : Fin (pb.A r)) :
       0 ≤ weightInf z gamma := by
     apply ge_of_tendsto (hconv z hz gamma)
@@ -799,7 +799,7 @@ theorem HasAtomWeightLimOn.weight_data_raw
         ((chart (L.φ k) (beta k)).hom z) gamma
     exact hdata.nonneg ((chart (L.φ k) (beta k)).hom z) (hmap hz) gamma
   have hsum (z : E) (hz : z ∈ U) : ∑ gamma, weightInf z gamma = 1 := by
-    have hsumConv : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
+    have hsumConvergence : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
         Filter.atTop (nhds (∑ gamma, weightInf z gamma)) :=
       tendsto_finsetSum Finset.univ fun gamma _ => hconv z hz gamma
     have hsumStage : ∀ᶠ k in Filter.atTop, ∑ gamma, weight k z gamma = 1 := by
@@ -817,7 +817,7 @@ theorem HasAtomWeightLimOn.weight_data_raw
     have hsumOne : Filter.Tendsto (fun k => ∑ gamma, weight k z gamma)
         Filter.atTop (nhds (1 : Real)) :=
       tendsto_const_nhds.congr' (hsumStage.mono fun _ hk => hk.symm)
-    exact tendsto_nhds_unique hsumConv hsumOne
+    exact tendsto_nhds_unique hsumConvergence hsumOne
   change centerAverage.WeightDataOn U (fun _ : Fin (pb.A r) => Set.univ) weightInf
   refine
     { nonneg := hnonneg
@@ -937,8 +937,8 @@ theorem HasAtomWeightLimOn.binter_of_weight
       BInter hd D P L.lamInf (alpha : Nat) (gamma : Nat) (L.φ k) := by
   dsimp only [HasAtomWeightLimOn] at hlim
   rcases hlim with
-    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConv,
-      _hweightSmooth, _hweightInfSmooth, hweightConv⟩
+    ⟨_hdead, _hatomSmooth, _hatomInfSmooth, _hatomConvergence,
+      _hweightSmooth, _hweightInfSmooth, hweightConvergence⟩
   have hweightTendsto : Tendsto
       (fun k => rawWeights
         (cutRaw
@@ -951,7 +951,7 @@ theorem HasAtomWeightLimOn.binter_of_weight
       (𝓝 (rawWeights
         (cutRaw (aInf (baseIndex hd hre pb hr)) aInf (baseIndex hd hre pb hr))
         z gamma)) :=
-    (tendsto_pi_nhds.mp (tendsto_of_cInf hweightConv hz)) gamma
+    (tendsto_pi_nhds.mp (tendsto_of_cInf hweightConvergence hz)) gamma
   have hweightEventually : ∀ᶠ k in Filter.atTop,
       rawWeights
         (cutRaw
@@ -967,5 +967,5 @@ theorem HasAtomWeightLimOn.binter_of_weight
       simpa only [seqAtomOn] using
         (num_ne_of_cut_ne (num_ne_of_raw_ne hweightK))))
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

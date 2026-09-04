@@ -55,31 +55,31 @@ private theorem chosenWeakPartial_smooth_ae
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ_open : IsOpen Ω)
     {ψ : E → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_W : DeGiorgi.MemW1p p ψ Ω) (i : Fin d) :
-    chosenWeakPartial' p i ψ Ω
+    chosenWeakPartialOrZero p i ψ Ω
       =ᵐ[volume.restrict Ω]
       (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) := by
-  have h_chosen : DeGiorgi.HasWeakPartialDeriv i (chosenWeakPartial' p i ψ Ω) ψ Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem hψ_W i
+  have h_chosen : DeGiorgi.HasWeakPartialDeriv i (chosenWeakPartialOrZero p i ψ Ω) ψ Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hψ_W i
   have h_classical : DeGiorgi.HasWeakPartialDeriv i
       (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) ψ Ω :=
     DeGiorgi.HasWeakPartialDeriv.of_contDiff hΩ_open
       (hψ_smooth.of_le (by norm_cast))
-  have h_chosen_loc : LocallyIntegrable (chosenWeakPartial' p i ψ Ω)
+  have h_chosen_local : LocallyIntegrable (chosenWeakPartialOrZero p i ψ Ω)
       (volume.restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem hψ_W i).locallyIntegrable hp
-  have h_classical_loc : LocallyIntegrable
+    (chosenWeakPartialOrZero_memLp_of_mem hψ_W i).locallyIntegrable hp
+  have h_classical_local : LocallyIntegrable
       (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) (volume.restrict Ω) := by
     have h_cont : Continuous (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) :=
       (hψ_smooth.continuous_fderiv (by simp)).clm_apply continuous_const
     exact h_cont.locallyIntegrable.mono_measure Measure.restrict_le_self
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ_open h_chosen h_classical
-    h_chosen_loc h_classical_loc
+    h_chosen_local h_classical_local
 
 omit [NeZero d] in
 private theorem MemWkp_of_smooth_compactSupport_local
     {Ω : Set E} (hΩ_open : IsOpen Ω)
     {ψ : E → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω)
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (k : ℕ) :
     MemWkp (d := d) k p ψ Ω := by
   classical
@@ -87,22 +87,22 @@ private theorem MemWkp_of_smooth_compactSupport_local
   | zero =>
       rw [MemWkp_zero]
       exact (hψ_smooth.continuous.memLp_of_hasCompactSupport
-        (μ := (volume : Measure E)) hψ_cpt).restrict _
+        (μ := (volume : Measure E)) hψ_compact).restrict _
   | succ k ih =>
       rw [MemWkp_succ]
       have hψ_W1p : DeGiorgi.MemW1p p ψ Ω := by
         refine ⟨(hψ_smooth.continuous.memLp_of_hasCompactSupport
-          (μ := (volume : Measure E)) hψ_cpt).restrict _, ?_⟩
+          (μ := (volume : Measure E)) hψ_compact).restrict _, ?_⟩
         intro i
         refine ⟨fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1), ?_, ?_⟩
         · have h_cont : Continuous
               (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) :=
             (hψ_smooth.continuous_fderiv (by simp)).clm_apply continuous_const
-          have h_cpt : HasCompactSupport
+          have h_compact : HasCompactSupport
               (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) :=
-            hψ_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
+            hψ_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
           exact (h_cont.memLp_of_hasCompactSupport
-            (μ := (volume : Measure E)) h_cpt).restrict _
+            (μ := (volume : Measure E)) h_compact).restrict _
         · exact DeGiorgi.HasWeakPartialDeriv.of_contDiff hΩ_open
             (hψ_smooth.of_le (by norm_cast))
       refine ⟨hψ_W1p, ?_⟩
@@ -113,14 +113,14 @@ private theorem MemWkp_of_smooth_compactSupport_local
         (hψ_smooth.fderiv_right (m := (⊤ : ℕ∞))
           (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) + 1 ≤ ((⊤ : ℕ∞) : WithTop ℕ∞))).clm_apply
             contDiff_const
-      have h_classical_cpt : HasCompactSupport
+      have h_classical_compact : HasCompactSupport
           (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) :=
-        hψ_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
-      have h_classical_supp :
+        hψ_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
+      have h_classical_support :
           tsupport (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single i 1)) ⊆ Ω := by
-        refine subset_trans ?_ hψ_supp
+        refine subset_trans ?_ hψ_support
         exact tsupport_fderiv_apply_subset (𝕜 := ℝ) (EuclideanSpace.single i 1)
-      have h_ih_classical := ih h_classical_smooth h_classical_cpt h_classical_supp
+      have h_ih_classical := ih h_classical_smooth h_classical_compact h_classical_support
       exact (MemWkp_congr_ae (d := d) hp hΩ_open h_ae).mpr h_ih_classical
 
 omit [NeZero d] in
@@ -136,12 +136,12 @@ private theorem iterWeakPartial_smooth_ae_eq_iterClassicalPartial_local
       intro β ψ _ _ _
       simp [iterWeakPartial_zero, iterClassicalPartial_zero]
   | succ j ih =>
-      intro β ψ hψ_smooth hψ_cpt hψ_supp
+      intro β ψ hψ_smooth hψ_compact hψ_support
       rw [iterWeakPartial_succ, iterClassicalPartial_succ]
       have hψ_W1p : DeGiorgi.MemW1p p ψ Ω := by
         have hψ_Wk : MemWkp (d := d) 1 p ψ Ω :=
-          MemWkp_of_smooth_compactSupport_local (d := d) hΩ_open hψ_smooth hψ_cpt
-            hψ_supp hp 1
+          MemWkp_of_smooth_compactSupport_local (d := d) hΩ_open hψ_smooth hψ_compact
+            hψ_support hp 1
         rwa [MemWkp.one_iff_memW1p] at hψ_Wk
       have h_ae := chosenWeakPartial_smooth_ae (d := d) hp hΩ_open hψ_smooth hψ_W1p (β 0)
       have h_classical_smooth : ContDiff ℝ (⊤ : ℕ∞)
@@ -149,15 +149,15 @@ private theorem iterWeakPartial_smooth_ae_eq_iterClassicalPartial_local
         (hψ_smooth.fderiv_right (m := (⊤ : ℕ∞))
           (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) + 1 ≤ ((⊤ : ℕ∞) : WithTop ℕ∞))).clm_apply
             contDiff_const
-      have h_classical_cpt : HasCompactSupport
+      have h_classical_compact : HasCompactSupport
           (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single (β 0) 1)) :=
-        hψ_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (β 0) 1)
-      have h_classical_supp :
+        hψ_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (β 0) 1)
+      have h_classical_support :
           tsupport (fun x => (fderiv ℝ ψ x) (EuclideanSpace.single (β 0) 1)) ⊆ Ω :=
         (tsupport_fderiv_apply_subset (𝕜 := ℝ)
-          (EuclideanSpace.single (β 0) 1)).trans hψ_supp
+          (EuclideanSpace.single (β 0) 1)).trans hψ_support
       have h_ih := ih (fun i : Fin j => β i.succ)
-        h_classical_smooth h_classical_cpt h_classical_supp
+        h_classical_smooth h_classical_compact h_classical_support
       have h_iter_congr := iterWeakPartial_ae_congr (d := d) hp hΩ_open j
         (fun i : Fin j => β i.succ) h_ae
       exact h_iter_congr.trans h_ih
@@ -165,7 +165,7 @@ private theorem iterWeakPartial_smooth_ae_eq_iterClassicalPartial_local
 omit [NeZero d] in
 lemma exists_iter_deriv_bound_of_smooth_compactSupport
     {η : E → ℝ} (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_cpt : HasCompactSupport η) (k : ℕ) :
+    (hη_compact : HasCompactSupport η) (k : ℕ) :
     ∃ Mη : ℝ, 0 ≤ Mη ∧ ∀ i, i ≤ k → ∀ y : E, ‖iteratedFDeriv ℝ i η y‖ ≤ Mη := by
   classical
   have h_each : ∀ i, i ≤ k →
@@ -173,9 +173,9 @@ lemma exists_iter_deriv_bound_of_smooth_compactSupport
     intro i _
     have hη_cont : Continuous (fun y => iteratedFDeriv ℝ i η y) :=
       hη_smooth.continuous_iteratedFDeriv (m := i) (by exact_mod_cast le_top)
-    have hη_cpt_i : HasCompactSupport (fun y => iteratedFDeriv ℝ i η y) :=
-      hη_cpt.iteratedFDeriv (𝕜 := ℝ) i
-    obtain ⟨C, hC⟩ := hη_cont.bounded_above_of_compact_support hη_cpt_i
+    have hη_compact_i : HasCompactSupport (fun y => iteratedFDeriv ℝ i η y) :=
+      hη_compact.iteratedFDeriv (𝕜 := ℝ) i
+    obtain ⟨C, hC⟩ := hη_cont.bounded_above_of_compact_support hη_compact_i
     refine ⟨max C 0, le_max_right _ _, ?_⟩
     intro y
     exact (hC y).trans (le_max_left _ _)
@@ -209,8 +209,8 @@ omit [NeZero d] in
 private lemma exists_cutoff_for_comp
     {Ωsource Ωtarget : Set E}
     (Φ : SmoothDiffeoBounded d Ωsource Ωtarget) (hΩ_open : IsOpen Ωsource)
-    {ψ : E → ℝ} (hψ_cpt : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ Ωtarget) :
+    {ψ : E → ℝ} (hψ_compact : HasCompactSupport ψ)
+    (hψ_support : tsupport ψ ⊆ Ωtarget) :
     ∃ (η : E → ℝ),
       ContDiff ℝ (⊤ : ℕ∞) η ∧
       HasCompactSupport η ∧
@@ -218,8 +218,8 @@ private lemma exists_cutoff_for_comp
       (∀ x ∈ Ωsource, η x * ψ (Φ.toFun x) = ψ (Φ.toFun x)) := by
   classical
   set Ktarget : Set E := tsupport ψ with hKtarget_def
-  have hKtarget_compact : IsCompact Ktarget := hψ_cpt
-  have hKtargetΩtarget : Ktarget ⊆ Ωtarget := hψ_supp
+  have hKtarget_compact : IsCompact Ktarget := hψ_compact
+  have hKtargetΩtarget : Ktarget ⊆ Ωtarget := hψ_support
   set Ksource : Set E := Φ.invFun '' Ktarget with hKsource_def
   have hKsource_compact : IsCompact Ksource :=
     hKtarget_compact.image Φ.continuous_invFun
@@ -228,10 +228,10 @@ private lemma exists_cutoff_for_comp
     rcases hx with ⟨y, hy_in, hxy⟩
     rw [← hxy]
     exact Φ.mapsTo_invFun (hKtargetΩtarget hy_in)
-  obtain ⟨δ, η, hδ_pos, _hδ_subset, hη_smooth, hη_cpt, _hη_range, hη_one, hη_supp⟩ :=
+  obtain ⟨δ, η, hδ_pos, _hδ_subset, hη_smooth, hη_compact, _hη_range, hη_one, hη_support⟩ :=
     exists_smooth_cutoff_with_neighborhood (d := d) hKsource_compact hΩ_open
       hKsourceΩsource
-  refine ⟨η, hη_smooth, hη_cpt, hη_supp, ?_⟩
+  refine ⟨η, hη_smooth, hη_compact, hη_support, ?_⟩
   intro x hx
   by_cases hxK : x ∈ Ksource
   · have hx_cthick : x ∈ Metric.cthickening δ Ksource :=
@@ -252,21 +252,21 @@ private theorem comp_smooth_compactSupport_memWkp
     {Ωsource Ωtarget : Set E}
     (Φ : SmoothDiffeoBounded d Ωsource Ωtarget) (hΩ_open : IsOpen Ωsource)
     {ψ : E → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ωtarget)
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ωtarget)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (k : ℕ) :
     MemWkp (d := d) k p (fun x => ψ (Φ.toFun x)) Ωsource := by
   classical
-  obtain ⟨η, hη_smooth, hη_cpt, hη_supp, h_eq_on_Ω⟩ :=
-    exists_cutoff_for_comp (d := d) Φ hΩ_open hψ_cpt hψ_supp
+  obtain ⟨η, hη_smooth, hη_compact, hη_support, h_eq_on_Ω⟩ :=
+    exists_cutoff_for_comp (d := d) Φ hΩ_open hψ_compact hψ_support
   let g : E → ℝ := fun x => η x * ψ (Φ.toFun x)
   have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g :=
     hη_smooth.mul (Φ.comp_toFun_contDiff hψ_smooth)
-  have hg_cpt : HasCompactSupport g :=
-    HasCompactSupport.mul_right hη_cpt
-  have hg_supp : tsupport g ⊆ Ωsource :=
-    (tsupport_mul_subset_left (f := η) (g := fun x => ψ (Φ.toFun x))).trans hη_supp
+  have hg_compact : HasCompactSupport g :=
+    HasCompactSupport.mul_right hη_compact
+  have hg_support : tsupport g ⊆ Ωsource :=
+    (tsupport_mul_subset_left (f := η) (g := fun x => ψ (Φ.toFun x))).trans hη_support
   have hg_mem : MemWkp (d := d) k p g Ωsource :=
-    MemWkp_of_smooth_compactSupport_local (d := d) hΩ_open hg_smooth hg_cpt hg_supp hp k
+    MemWkp_of_smooth_compactSupport_local (d := d) hΩ_open hg_smooth hg_compact hg_support hp k
   have h_ae : (fun x => ψ (Φ.toFun x)) =ᵐ[volume.restrict Ωsource] g := by
     refine (ae_restrict_iff' hΩ_open.measurableSet).mpr ?_
     refine Filter.Eventually.of_forall ?_
@@ -742,7 +742,7 @@ lemma eLpNorm_iteratedFDeriv_le_wkpNorm
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     (k : ℕ)
     {ψ : E → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω) :
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω) :
     ∑ n ∈ Finset.range (k + 1),
       eLpNorm (fun y => ‖iteratedFDeriv ℝ n ψ y‖) p (volume.restrict Ω) ≤
     iteratedWeakSobolevNorm (d := d) k p ψ Ω := by
@@ -758,7 +758,7 @@ lemma eLpNorm_iteratedFDeriv_le_wkpNorm
       eLpNorm (iterWeakPartial (d := d) p n β ψ Ω) p (volume.restrict Ω) := fun n β => by
     refine eLpNorm_congr_ae ?_
     exact (iterWeakPartial_smooth_ae_eq_iterClassicalPartial_local
-      (d := d) hp_one hΩ_open n β hψ_smooth hψ_cpt hψ_supp).symm
+      (d := d) hp_one hΩ_open n β hψ_smooth hψ_compact hψ_support).symm
   unfold iteratedWeakSobolevNorm
   refine Finset.sum_le_sum ?_
   intro n hn
@@ -931,26 +931,26 @@ private theorem iterWeakPartial_comp_smooth_ae_eq_iterClassicalPartial
     (Φ : SmoothDiffeoBounded d Ω Ω')
     (j : ℕ) (β : Fin j → Fin d)
     {ψ : E → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω') :
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω') :
     iterWeakPartial (d := d) p j β (fun x => ψ (Φ.toFun x)) Ω
       =ᵐ[volume.restrict Ω]
       iterClassicalPartial (d := d) j β (fun x => ψ (Φ.toFun x)) := by
   classical
-  obtain ⟨η, hη_smooth, hη_cpt, hη_supp, h_eq_on_Ω⟩ :=
-    exists_cutoff_for_comp (d := d) Φ hΩ hψ_cpt hψ_supp
+  obtain ⟨η, hη_smooth, hη_compact, hη_support, h_eq_on_Ω⟩ :=
+    exists_cutoff_for_comp (d := d) Φ hΩ hψ_compact hψ_support
   let g : E → ℝ := fun x => η x * ψ (Φ.toFun x)
   let comp_smooth : E → ℝ := fun x => ψ (Φ.toFun x)
   have hcomp_smooth_smooth : ContDiff ℝ (⊤ : ℕ∞) comp_smooth :=
     Φ.comp_toFun_contDiff hψ_smooth
   have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g :=
     hη_smooth.mul hcomp_smooth_smooth
-  have hg_cpt : HasCompactSupport g :=
-    HasCompactSupport.mul_right hη_cpt
-  have hg_supp : tsupport g ⊆ Ω :=
-    (tsupport_mul_subset_left (f := η) (g := comp_smooth)).trans hη_supp
+  have hg_compact : HasCompactSupport g :=
+    HasCompactSupport.mul_right hη_compact
+  have hg_support : tsupport g ⊆ Ω :=
+    (tsupport_mul_subset_left (f := η) (g := comp_smooth)).trans hη_support
   have h_g_ae :=
     iterWeakPartial_smooth_ae_eq_iterClassicalPartial_local
-      (d := d) hp_one hΩ j β hg_smooth hg_cpt hg_supp
+      (d := d) hp_one hΩ j β hg_smooth hg_compact hg_support
   have h_comp_ae_g : comp_smooth =ᵐ[volume.restrict Ω] g := by
     refine (ae_restrict_iff' hΩ.measurableSet).mpr ?_
     refine Filter.Eventually.of_forall ?_
@@ -1034,7 +1034,7 @@ private lemma eLpNorm_iterWeakPartial_comp_le
     (Φ : SmoothDiffeoBounded d Ω Ω')
     (k : ℕ)
     {ψ : E → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω')
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω')
     (j : ℕ) (β : Fin j → Fin d) (hj : j ≤ k) :
     eLpNorm
         (iterWeakPartial (d := d) p j β (fun x => ψ (Φ.toFun x)) Ω) p
@@ -1046,7 +1046,7 @@ private lemma eLpNorm_iterWeakPartial_comp_le
             (volume.restrict Ω) := by
   classical
   have h_eq := iterWeakPartial_comp_smooth_ae_eq_iterClassicalPartial
-    (d := d) hp_one hΩ Φ j β hψ_smooth hψ_cpt hψ_supp
+    (d := d) hp_one hΩ Φ j β hψ_smooth hψ_compact hψ_support
   rw [eLpNorm_congr_ae h_eq]
   have h_pt := norm_iterClassicalPartial_comp_le_uniform
     (d := d) Φ hψ_smooth k j β hj
@@ -1181,7 +1181,7 @@ theorem wkpNorm_comp_smooth_le
     {Ω Ω' : Set E} (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω')
     (Φ : SmoothDiffeoBounded d Ω Ω') (k : ℕ)
     {ψ : E → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω') :
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω') :
     iteratedWeakSobolevNorm (d := d) k p (fun x => ψ (Φ.toFun x)) Ω ≤
       ENNReal.ofReal (wkpCompConst (d := d) Φ k p) *
         iteratedWeakSobolevNorm (d := d) k p ψ Ω' := by
@@ -1210,7 +1210,7 @@ theorem wkpNorm_comp_smooth_le
     intro j hj β
     have hjk : j ≤ k := by rw [Finset.mem_range] at hj; omega
     have h1 := eLpNorm_iterWeakPartial_comp_le
-      (d := d) hp_one hΩ Φ k hψ_smooth hψ_cpt hψ_supp j β hjk
+      (d := d) hp_one hΩ Φ k hψ_smooth hψ_compact hψ_support j β hjk
     have h_per_n : ∀ n,
         eLpNorm (fun x => ‖iteratedFDeriv ℝ n ψ (Φ.toFun x)‖) p
             (volume.restrict Ω) ≤
@@ -1229,7 +1229,7 @@ theorem wkpNorm_comp_smooth_le
       rw [Finset.mul_sum]
       exact Finset.sum_le_sum (fun n _ => h_per_n n)
     have h_iter_le := eLpNorm_iteratedFDeriv_le_wkpNorm
-      (d := d) hΩ' hp_one k hψ_smooth hψ_cpt hψ_supp
+      (d := d) hΩ' hp_one k hψ_smooth hψ_compact hψ_support
     refine h1.trans ?_
     refine (mul_le_mul_of_nonneg_left h_sum_le_chg (zero_le)).trans ?_
     have h_step :
@@ -1325,7 +1325,7 @@ theorem MemWkp.comp_smoothDiffeoBounded
     (Φ : SmoothDiffeoBounded d Ω Ω')
     {u : E → ℝ} (hu : MemWkp (d := d) k p u Ω')
     (hu_compactSupport : HasCompactSupport u)
-    (hu_supp : tsupport u ⊆ Ω') :
+    (hu_support : tsupport u ⊆ Ω') :
     MemWkp (d := d) k p (fun x => u (Φ.toFun x)) Ω := by
   classical
   set K_const : ℝ := wkpCompConst (d := d) Φ k p with hK_def
@@ -1339,13 +1339,13 @@ theorem MemWkp.comp_smoothDiffeoBounded
     intro n
     have h_pos : 0 < (1 : ℝ) / (n + 1 : ℝ) := by positivity
     exact MemWkp.exists_smooth_compactSupport_approx
-      (d := d) hΩ' k p hp_one hp_top hu hu_compactSupport hu_supp _ h_pos
+      (d := d) hΩ' k p hp_one hp_top hu hu_compactSupport hu_support _ h_pos
   let ψ : ℕ → E → ℝ := fun n => (h_approx n).choose
   have hψ_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (ψ n) := fun n =>
     (h_approx n).choose_spec.1
-  have hψ_cpt : ∀ n, HasCompactSupport (ψ n) := fun n =>
+  have hψ_compact : ∀ n, HasCompactSupport (ψ n) := fun n =>
     (h_approx n).choose_spec.2.1
-  have hψ_supp : ∀ n, tsupport (ψ n) ⊆ Ω' := fun n =>
+  have hψ_support : ∀ n, tsupport (ψ n) ⊆ Ω' := fun n =>
     (h_approx n).choose_spec.2.2.1
   have hψ_close : ∀ n,
       iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' ≤
@@ -1353,11 +1353,11 @@ theorem MemWkp.comp_smoothDiffeoBounded
     (h_approx n).choose_spec.2.2.2
   have hψ_mem_target : ∀ n, MemWkp (d := d) k p (ψ n) Ω' := fun n =>
     MemWkp_of_smooth_compactSupport_local
-      (d := d) hΩ' (hψ_smooth n) (hψ_cpt n) (hψ_supp n) hp_one k
+      (d := d) hΩ' (hψ_smooth n) (hψ_compact n) (hψ_support n) hp_one k
   have hψ_comp_mem : ∀ n, MemWkp (d := d) k p (fun x => ψ n (Φ.toFun x)) Ω :=
     fun n =>
       comp_smooth_compactSupport_memWkp (d := d) Φ hΩ
-        (hψ_smooth n) (hψ_cpt n) (hψ_supp n) hp_one k
+        (hψ_smooth n) (hψ_compact n) (hψ_support n) hp_one k
   have h_cauchy : ∀ ε > 0, ∃ N : ℕ, ∀ m n, N ≤ m → N ≤ n →
       iteratedWeakSobolevNorm (d := d) k p
         (fun x => (ψ m (Φ.toFun x)) - (ψ n (Φ.toFun x))) Ω ≤
@@ -1379,9 +1379,9 @@ theorem MemWkp.comp_smoothDiffeoBounded
     intro m n hm hn
     let δ : E → ℝ := fun x => ψ m x - ψ n x
     have hδ_smooth : ContDiff ℝ (⊤ : ℕ∞) δ := (hψ_smooth m).sub (hψ_smooth n)
-    have hδ_cpt : HasCompactSupport δ := (hψ_cpt m).sub (hψ_cpt n)
-    have hδ_supp : tsupport δ ⊆ Ω' := by
-      have h_supp_sub : Function.support δ ⊆
+    have hδ_compact : HasCompactSupport δ := (hψ_compact m).sub (hψ_compact n)
+    have hδ_support : tsupport δ ⊆ Ω' := by
+      have h_support_sub : Function.support δ ⊆
           Function.support (ψ m) ∪ Function.support (ψ n) := by
         intro x hx
         by_cases hxm : x ∈ Function.support (ψ m)
@@ -1394,11 +1394,11 @@ theorem MemWkp.comp_smoothDiffeoBounded
           rw [Function.notMem_support.mp hxm, hxn, sub_zero]
       have h_tsupp_sub : tsupport δ ⊆ tsupport (ψ m) ∪ tsupport (ψ n) := by
         unfold tsupport
-        refine (closure_mono h_supp_sub).trans ?_
+        refine (closure_mono h_support_sub).trans ?_
         rw [closure_union]
-      exact h_tsupp_sub.trans (Set.union_subset (hψ_supp m) (hψ_supp n))
+      exact h_tsupp_sub.trans (Set.union_subset (hψ_support m) (hψ_support n))
     have hS1 := wkpNorm_comp_smooth_le (d := d) hp_one hp_top hΩ hΩ'
-      Φ k hδ_smooth hδ_cpt hδ_supp
+      Φ k hδ_smooth hδ_compact hδ_support
     have h_δ_alg : δ = (fun x => (u x - ψ n x) - (u x - ψ m x)) := by
       funext x
       change ψ m x - ψ n x = u x - ψ n x - (u x - ψ m x)

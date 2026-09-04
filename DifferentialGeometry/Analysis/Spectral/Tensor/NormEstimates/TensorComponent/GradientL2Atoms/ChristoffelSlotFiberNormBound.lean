@@ -279,9 +279,9 @@ private lemma christoffelChartConjugationFactor_basisVector_norm_le_on_pouTsuppo
       (Finset.le_sup' (f := fun k => ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k‖) hk₀)
   refine ⟨Cχ * Cvec, mul_nonneg hCχ_nn hCvec_nn, ?_⟩
   intro b hb k
-  have hb_src : b ∈ (chartAt H α).source :=
+  have hb_source : b ∈ (chartAt H α).source :=
     chartAtlasPOU_isSubordinate (I := I) (M := M) α hb
-  have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := hb_src
+  have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := hb_source
   have hX_triv :
       trivToE (I := I) α b (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b) =
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k := by
@@ -299,7 +299,7 @@ private lemma christoffelChartConjugationFactor_basisVector_norm_le_on_pouTsuppo
             (chartTrivializationLinearMapSymm (I := I) (M := M) α b)) w‖ ≤ Cχ * Cvec * ‖w‖ := by
     intro w
     rw [chrRiem_slotConjFactor_self_apply (I := I) (M := M) g α
-      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) hb_src w, hX_triv]
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) hb_source w, hX_triv]
     have hround :
         trivToE (I := I) α b (trivFromE (I := I) α b w) = w :=
       trivToE_trivFromE (I := I) α hb_base w
@@ -469,7 +469,7 @@ theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport_local
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   let _ : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
     fun b => tensorRSRiemannianNormedAddCommGroup r s b
-  have hK_cpt : IsCompact (tsupport (fun x : M =>
+  have hK_compact : IsCompact (tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     pouTsupport_isCompact (I := I) (M := M) α
   have hK_sub : tsupport (fun x : M =>
@@ -477,10 +477,10 @@ theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport_local
     intro x hx; exact chartAtlasPOU_isSubordinate (I := I) (M := M) α hx
   obtain ⟨Cto, hCto_pos, hCto_bound⟩ :=
     tensorRSChartFiberToModel_opNorm_isBounded_on_compact
-      (I := I) (M := M) g r s α hK_cpt hK_sub
+      (I := I) (M := M) g r s α hK_compact hK_sub
   obtain ⟨Cfrom, hCfrom_pos, hCfrom_bound⟩ :=
     tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
-      (I := I) (M := M) g r s α hK_cpt hK_sub
+      (I := I) (M := M) g r s α hK_compact hK_sub
   obtain ⟨Cprod, hCprod_nn, hCprod_bound⟩ :=
     christoffelChartConjugation_inputSlotCLM_prodNorm_le_on_pouTsupport (I := I) (M := M) g r α
   refine ⟨Cfrom * Cprod * Cto,
@@ -568,7 +568,7 @@ theorem chartTensorRSOutputSlotCorrection_riemannian_norm_le_on_pouTsupport_loca
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   let _ : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
     fun b => tensorRSRiemannianNormedAddCommGroup r s b
-  have hK_cpt : IsCompact (tsupport (fun x : M =>
+  have hK_compact : IsCompact (tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     pouTsupport_isCompact (I := I) (M := M) α
   have hK_sub : tsupport (fun x : M =>
@@ -576,10 +576,10 @@ theorem chartTensorRSOutputSlotCorrection_riemannian_norm_le_on_pouTsupport_loca
     intro x hx; exact chartAtlasPOU_isSubordinate (I := I) (M := M) α hx
   obtain ⟨Cto, hCto_pos, hCto_bound⟩ :=
     tensorRSChartFiberToModel_opNorm_isBounded_on_compact
-      (I := I) (M := M) g r s α hK_cpt hK_sub
+      (I := I) (M := M) g r s α hK_compact hK_sub
   obtain ⟨Cfrom, hCfrom_pos, hCfrom_bound⟩ :=
     tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
-      (I := I) (M := M) g r s α hK_cpt hK_sub
+      (I := I) (M := M) g r s α hK_compact hK_sub
   obtain ⟨Cprod, hCprod_nn, hCprod_bound⟩ :=
     chrRiem_slotOutputConjCLM_prod_norm_le_on_pouTsupport (I := I) (M := M) g s α
   refine ⟨Cfrom * Cprod * Cto,

@@ -481,7 +481,7 @@ theorem ricciBase_l2 (g : SmoothRiemannianMetric I M) :
           TensorRSSpace 0 3 I x)‖ ^ 2 := hraw
     _ = C ^ 2 * riemannianFiberNormSq (I := I) (M := M) g 0 3 x
         ((iteratedCovGrad (I := I) g 0 2 1 P).toSection x) := by
-      have hn := riemannianFiberNormSq_eq_bundle_norm_sq'
+      have hn := riemannianFiberNormSq_eq_bundle_norm_sq
         (I := I) (M := M) g 0 3 x
         ((iteratedCovGrad (I := I) g 0 2 1 P).toSection x)
       exact congrArg (fun z : Real => C ^ 2 * z) hn.symm

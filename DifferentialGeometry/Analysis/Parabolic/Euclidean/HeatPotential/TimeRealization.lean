@@ -217,7 +217,7 @@ private theorem heatDt_norm_le_timeLocalMajor {t q : Real} (ht : 0 < t)
 
 def heatLapSup (t : Real) (u : BoundedContinuousFunction V F) (x : V) : F :=
   ∑ i : Fin (Module.finrank Real V),
-    heatD2Conv t ((stdOrthonormalBasis Real V) i)
+    heatD2Convolution t ((stdOrthonormalBasis Real V) i)
       ((stdOrthonormalBasis Real V) i) u x
 
 omit [CompleteSpace F] in
@@ -275,7 +275,7 @@ theorem heatSup_time_eq_heatLapSup {t : Real} (ht : 0 < t)
       intro i
       exact supKernel_int (heatD2_int ht ((stdOrthonormalBasis Real V) i)
         ((stdOrthonormalBasis Real V) i)) u x
-    unfold heatLapSup heatD2Conv
+    unfold heatLapSup heatD2Convolution
     rw [← MeasureTheory.integral_finsetSum _ (fun i _ => hterm i)]
     apply integral_congr_ae
     filter_upwards with y
@@ -295,17 +295,17 @@ theorem heatLapSup_norm_le_of_holder {alpha K : NNReal}
   unfold heatLapSup
   calc
     ‖∑ i : Fin (Module.finrank Real V),
-        heatD2Conv t ((stdOrthonormalBasis Real V) i)
+        heatD2Convolution t ((stdOrthonormalBasis Real V) i)
           ((stdOrthonormalBasis Real V) i) u x‖ ≤
       ∑ i : Fin (Module.finrank Real V),
-        ‖heatD2Conv t ((stdOrthonormalBasis Real V) i)
+        ‖heatD2Convolution t ((stdOrthonormalBasis Real V) i)
           ((stdOrthonormalBasis Real V) i) u x‖ := norm_sum_le _ _
     _ ≤ ∑ _i : Fin (Module.finrank Real V),
         ((K : Real) * holderHeatScale alpha t *
           heatC2Holder (V := V) alpha) := by
       apply Finset.sum_le_sum
       intro i hi
-      rw [heatD2Conv_eq_cancel_of_holder halpha0 halpha1 ht hu]
+      rw [heatD2Convolution_eq_cancel_of_holder halpha0 halpha1 ht hu]
       have hraw := heatD2Cancel_norm_of_holder halpha1 ht hu
         ((stdOrthonormalBasis Real V) i)
         ((stdOrthonormalBasis Real V) i) x
@@ -373,7 +373,7 @@ def heatLapPotential (t : Real)
     (f : Real → BoundedContinuousFunction V F) (x : V) : F :=
   ∫ s : Real in 0..t, heatLapSup (t - s) (f s) x
 
-theorem heatLapPotential_eq_heatLapDuh
+theorem heatLapPotential_eq_heatLapDuhamel
     {alpha K : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {t : Real} (ht : 0 < t)
     (f : Real → BoundedContinuousFunction V F)
@@ -382,19 +382,19 @@ theorem heatLapPotential_eq_heatLapDuh
       (fun s : Real => heatSupHessian (t - s) (f s) z)
       (volume.restrict (uIoc (0 : Real) t)))
     (x : V) :
-    heatLapPotential t f x = heatLapDuh t (fun s z => f s z) x := by
+    heatLapPotential t f x = heatLapDuhamel t (fun s z => f s z) x := by
   have hterm : ∀ i : Fin (Module.finrank Real V), IntervalIntegrable
-      (fun s : Real => heatD2Conv (t - s)
+      (fun s : Real => heatD2Convolution (t - s)
         ((stdOrthonormalBasis Real V) i)
         ((stdOrthonormalBasis Real V) i) (f s) x) volume 0 t := by
     intro i
-    exact heatD2Duh_int_of_holder halpha0 halpha1 ht (fun s z => f s z) hf
+    exact heatD2Duhamel_int_of_holder halpha0 halpha1 ht (fun s z => f s z) hf
       ((stdOrthonormalBasis Real V) i)
       ((stdOrthonormalBasis Real V) i) x
-      (heatD2Conv_time_aestronglyMeasurable ht f hmeas2
+      (heatD2Convolution_time_aestronglyMeasurable ht f hmeas2
         ((stdOrthonormalBasis Real V) i)
         ((stdOrthonormalBasis Real V) i) x)
-  unfold heatLapPotential heatLapSup heatLapDuh heatD2Duh
+  unfold heatLapPotential heatLapSup heatLapDuhamel heatD2Duhamel
   rw [intervalIntegral.integral_finsetSum (fun i _ => hterm i)]
 
 def heatLapTriangle
@@ -505,7 +505,7 @@ private theorem heatLapTriangle_aestronglyMeasurable_of_holder
   have hterm : ∀ i : Fin (Module.finrank Real V),
       AEStronglyMeasurable
         (fun z : Real × Real => if z.2 < z.1 then
-          heatD2Conv (z.1 - z.2) ((stdOrthonormalBasis Real V) i)
+          heatD2Convolution (z.1 - z.2) ((stdOrthonormalBasis Real V) i)
             ((stdOrthonormalBasis Real V) i) (f z.2) x else 0) (μ.prod μ) := by
     intro i
     have hraw := (heatLapTriangleIntegrand_aestronglyMeasurable
@@ -519,7 +519,7 @@ private theorem heatLapTriangle_aestronglyMeasurable_of_holder
   have hsum : AEStronglyMeasurable
       (fun z : Real × Real =>
         ∑ i : Fin (Module.finrank Real V), if z.2 < z.1 then
-          heatD2Conv (z.1 - z.2) ((stdOrthonormalBasis Real V) i)
+          heatD2Convolution (z.1 - z.2) ((stdOrthonormalBasis Real V) i)
             ((stdOrthonormalBasis Real V) i) (f z.2) x else 0) (μ.prod μ) := by
     fun_prop
   apply hsum.congr
@@ -775,7 +775,7 @@ private theorem integral_heatLapTriangle_left
   exact heatSup_primitive_of_holder halpha0 halpha1 (sub_pos.mpr hs.2)
     (f s) (hf s ⟨hs.1.le, hs.2.le⟩) x
 
-theorem heatDuh_eq_integral_add_heatLapPotential
+theorem heatDuhamel_eq_integral_add_heatLapPotential
     {alpha K : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {t : Real} (ht : 0 < t)
     (f : Real → BoundedContinuousFunction V F)
@@ -785,7 +785,7 @@ theorem heatDuh_eq_integral_add_heatLapPotential
     (htriangle : Integrable (heatLapTriangle f x)
       ((volume.restrict (Ioc (0 : Real) t)).prod
         (volume.restrict (Ioc (0 : Real) t)))) :
-    heatDuh t f x =
+    heatDuhamel t f x =
       ∫ r : Real in 0..t, f r x + heatLapPotential r f x := by
   let μ : Measure Real := volume.restrict (Ioc (0 : Real) t)
   have hlapMu : Integrable (fun r : Real => heatLapPotential r f x) μ := by
@@ -844,7 +844,7 @@ theorem heatDuh_eq_integral_add_heatLapPotential
       abel
     rw [heq] at hadd
     exact hadd
-  unfold heatDuh
+  unfold heatDuhamel
   calc
     (∫ s : Real in 0..t, heatSup (t - s) (f s) x) =
         (∫ s : Real in 0..t, f s x) +
@@ -856,7 +856,7 @@ theorem heatDuh_eq_integral_add_heatLapPotential
     _ = ∫ r : Real in 0..t, f r x + heatLapPotential r f x :=
       (intervalIntegral.integral_add hftime hlapInt).symm
 
-theorem heatDuhTimeDerivative_continuousAt
+theorem heatDuhamelTimeDerivative_continuousAt
     {alpha K Csource : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S t : Real} (ht : t ∈ Ioo (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
@@ -870,17 +870,17 @@ theorem heatDuhTimeDerivative_continuousAt
         (volume.restrict (uIoc (0 : Real) q)))
     (x : V) :
     ContinuousAt
-      (fun q : Real => heatDuhTimeDerivativeField (fun r z => f r z)
+      (fun q : Real => heatDuhamelTimeDerivativeField (fun r z => f r z)
         (parabolicPoint q x)) t := by
   let Q : Set (ParabolicPoint V) :=
     parabolicCylinder (Ioc (0 : Real) S) Set.univ
-  have hcand := heatDuhTimeDerivativeField_holderWith_restrict_of_holder
+  have hcand := heatDuhamelTimeDerivativeField_holderWith_restrict_of_holder
     halpha0 halpha1 (fun r z => f r z) hf hsource
-      (fun q hq z i => heatD2Conv_time_aestronglyMeasurable hq.1 f
+      (fun q hq z i => heatD2Convolution_time_aestronglyMeasurable hq.1 f
         (hmeas2 q hq) ((stdOrthonormalBasis Real V) i)
         ((stdOrthonormalBasis Real V) i) z)
   have hcandCont : Continuous
-      (Q.domRestrict (heatDuhTimeDerivativeField (fun r z => f r z))) :=
+      (Q.domRestrict (heatDuhamelTimeDerivativeField (fun r z => f r z))) :=
     hcand.continuous halpha0
   let phi : Ioc (0 : Real) S → Q := fun q =>
     ⟨parabolicPoint q.1 x, ⟨q.2, Set.mem_univ x⟩⟩
@@ -888,16 +888,16 @@ theorem heatDuhTimeDerivative_continuousAt
     unfold phi parabolicPoint
     fun_prop
   have hcomp : Continuous (fun q : Ioc (0 : Real) S =>
-      heatDuhTimeDerivativeField (fun r z => f r z)
+      heatDuhamelTimeDerivativeField (fun r z => f r z)
         (parabolicPoint q.1 x)) := by
     exact (hcandCont.comp hphi).congr fun _ => rfl
   have hOn : ContinuousOn
-      (fun q : Real => heatDuhTimeDerivativeField (fun r z => f r z)
+      (fun q : Real => heatDuhamelTimeDerivativeField (fun r z => f r z)
         (parabolicPoint q x)) (Ioc (0 : Real) S) :=
     continuousOn_iff_continuous_domRestrict.mpr hcomp
   exact (hOn t ⟨ht.1, ht.2.le⟩).continuousAt (Ioc_mem_nhds ht.1 ht.2)
 
-theorem heatDuh_time_of_integrable_triangle
+theorem heatDuhamel_time_of_integrable_triangle
     {alpha K Csource : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S t : Real} (ht : t ∈ Ioo (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
@@ -916,21 +916,21 @@ theorem heatDuh_time_of_integrable_triangle
         ((volume.restrict (Ioc (0 : Real) q)).prod
           (volume.restrict (Ioc (0 : Real) q))))
     (x : V) :
-    HasDerivAt (fun q : Real => heatDuh q f x)
-      (heatDuhTimeDerivativeField (fun r z => f r z)
+    HasDerivAt (fun q : Real => heatDuhamel q f x)
+      (heatDuhamelTimeDerivativeField (fun r z => f r z)
         (parabolicPoint t x)) t := by
   let g : Real → F := fun q =>
-    heatDuhTimeDerivativeField (fun r z => f r z) (parabolicPoint q x)
+    heatDuhamelTimeDerivativeField (fun r z => f r z) (parabolicPoint q x)
   have hg : ContinuousAt g t := by
-    simpa only [g] using heatDuhTimeDerivative_continuousAt
+    simpa only [g] using heatDuhamelTimeDerivative_continuousAt
       halpha0 halpha1 ht f hf hsource hmeas2 x
   have heq : ∀ q ∈ Ioc (0 : Real) S,
-      heatDuh q f x = ∫ r : Real in 0..q, g r := by
+      heatDuhamel q f x = ∫ r : Real in 0..q, g r := by
     intro q hq
     have hfq : ∀ r ∈ Icc (0 : Real) q, HolderWith K alpha (f r) := by
       intro r hr
       exact hf r ⟨hr.1, hr.2.trans hq.2⟩
-    rw [heatDuh_eq_integral_add_heatLapPotential halpha0 halpha1.le hq.1
+    rw [heatDuhamel_eq_integral_add_heatLapPotential halpha0 halpha1.le hq.1
       f hfq x (hftime q hq x) (htriangle q hq x)]
     apply intervalIntegral.integral_congr_ae
     filter_upwards with r
@@ -938,7 +938,7 @@ theorem heatDuh_time_of_integrable_triangle
     rw [uIoc_of_le hq.1.le] at hr
     have hrpos : 0 < r := hr.1
     have hrS : r ∈ Ioc (0 : Real) S := ⟨hrpos, hr.2.trans hq.2⟩
-    rw [heatLapPotential_eq_heatLapDuh halpha0 halpha1.le hrpos f
+    rw [heatLapPotential_eq_heatLapDuhamel halpha0 halpha1.le hrpos f
       (fun s hs => hf s ⟨hs.1, hs.2.trans hrS.2⟩) (hmeas2 r hrS) x]
     rfl
   have hgInt : IntervalIntegrable g volume 0 t := by
@@ -957,13 +957,13 @@ theorem heatDuh_time_of_integrable_triangle
     intro r hr
     rw [uIoc_of_le ht.1.le] at hr
     have hrS : r ∈ Ioc (0 : Real) S := ⟨hr.1, hr.2.trans ht.2.le⟩
-    change f r x + heatLapPotential r f x = f r x + heatLapDuh r (fun s z => f s z) x
-    rw [heatLapPotential_eq_heatLapDuh halpha0 halpha1.le hr.1 f
+    change f r x + heatLapPotential r f x = f r x + heatLapDuhamel r (fun s z => f s z) x
+    rw [heatLapPotential_eq_heatLapDuhamel halpha0 halpha1.le hr.1 f
       (fun s hs => hf s ⟨hs.1, hs.2.trans hrS.2⟩) (hmeas2 r hrS) x]
   have hgMeas : StronglyMeasurableAtFilter g (nhds t) volume := by
     apply ContinuousAt.stronglyMeasurableAtFilter isOpen_Ioo
       (fun q hq => ?_) t ht
-    simpa only [g] using heatDuhTimeDerivative_continuousAt
+    simpa only [g] using heatDuhamelTimeDerivative_continuousAt
       halpha0 halpha1 hq f hf hsource hmeas2 x
   have hprim : HasDerivAt (fun q : Real => ∫ r : Real in 0..q, g r) (g t) t :=
     intervalIntegral.integral_hasDerivAt_right hgInt hgMeas hg
@@ -971,7 +971,7 @@ theorem heatDuh_time_of_integrable_triangle
   filter_upwards [Ioc_mem_nhds ht.1 ht.2] with q hq
   exact heq q hq
 
-theorem heatDuh_time_of_intervalIntegrable
+theorem heatDuhamel_time_of_intervalIntegrable
     {alpha K Csource : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S t : Real} (ht : t ∈ Ioo (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
@@ -986,10 +986,10 @@ theorem heatDuh_time_of_intervalIntegrable
     (hftime : ∀ q ∈ Ioc (0 : Real) S, ∀ z : V,
       IntervalIntegrable (fun s : Real => f s z) volume 0 q)
     (x : V) :
-    HasDerivAt (fun q : Real => heatDuh q f x)
-      (heatDuhTimeDerivativeField (fun r z => f r z)
+    HasDerivAt (fun q : Real => heatDuhamel q f x)
+      (heatDuhamelTimeDerivativeField (fun r z => f r z)
         (parabolicPoint t x)) t := by
-  apply heatDuh_time_of_integrable_triangle halpha0 halpha1 ht f hf hsource
+  apply heatDuhamel_time_of_integrable_triangle halpha0 halpha1 ht f hf hsource
     hmeas2 hftime
   · intro q hq z
     exact heatLapTriangle_integrable_of_aestronglyMeasurable
@@ -1052,7 +1052,7 @@ private theorem heatSource_intervalIntegrable_of_holder
           (mul_le_mul_of_nonneg_left hpow (NNReal.coe_nonneg Csource))
   simpa only [intervalIntegrable_iff, uIoc_of_le ht.1.le] using hint
 
-theorem heatDuh_time
+theorem heatDuhamel_time
     {alpha K Csource : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S t : Real} (ht : t ∈ Ioo (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
@@ -1065,23 +1065,23 @@ theorem heatDuh_time
         (fun s : Real => heatSupHessian (q - s) (f s) z)
         (volume.restrict (uIoc (0 : Real) q)))
     (x : V) :
-    HasDerivAt (fun q : Real => heatDuh q f x)
-      (heatDuhTimeDerivativeField (fun r z => f r z)
+    HasDerivAt (fun q : Real => heatDuhamel q f x)
+      (heatDuhamelTimeDerivativeField (fun r z => f r z)
         (parabolicPoint t x)) t := by
-  apply heatDuh_time_of_intervalIntegrable halpha0 halpha1 ht f hf hsource
+  apply heatDuhamel_time_of_intervalIntegrable halpha0 halpha1 ht f hf hsource
     hmeas2
   intro q hq z
   exact heatSource_intervalIntegrable_of_holder halpha0 hq f hsource z
 
-theorem eParabolicC2HolderGaugeOn_heatDuh_le_of_lower_jets
+theorem eParabolicC2HolderGaugeOn_heatDuhamel_le_of_lower_jets
     {alpha K B Csource C0 C1 : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S T : Real} (hT : 0 ≤ T) (hTS : T < S)
     (f : Real → BoundedContinuousFunction V F)
     (hzero : ∀ p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ,
-      ‖parabolicSpatialJet 0 (fun t x => heatDuh t f x) p‖ ≤ C0)
+      ‖parabolicSpatialJet 0 (fun t x => heatDuhamel t f x) p‖ ≤ C0)
     (hone : ∀ p ∈ parabolicCylinder (Ioc (0 : Real) T) Set.univ,
-      ‖parabolicSpatialJet 1 (fun t x => heatDuh t f x) p‖ ≤ C1)
+      ‖parabolicSpatialJet 1 (fun t x => heatDuhamel t f x) p‖ ≤ C1)
     (hbound : ∀ r ∈ Icc (0 : Real) S, ‖f r‖ ≤ B)
     (hf : ∀ r ∈ Icc (0 : Real) S, HolderWith K alpha (f r))
     (hsource : HolderWith Csource alpha
@@ -1101,10 +1101,10 @@ theorem eParabolicC2HolderGaugeOn_heatDuh_le_of_lower_jets
         (volume.restrict (uIoc (0 : Real) t))) :
     eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
-      (fun t x => heatDuh t f x) ≤
+      (fun t x => heatDuhamel t f x) ≤
       heatPotentialC2HolderGaugeConst (V := V)
         alpha K B Csource C0 C1 T := by
-  apply eParabolicC2HolderGaugeOn_heatDuh_le_of_lower_jets_of_time_realization
+  apply eParabolicC2HolderGaugeOn_heatDuhamel_le_of_lower_jets_of_time_realization
     halpha0 halpha1 hT f hzero hone
   · intro r hr
     exact hbound r ⟨hr.1, hr.2.trans hTS.le⟩
@@ -1114,7 +1114,7 @@ theorem eParabolicC2HolderGaugeOn_heatDuh_le_of_lower_jets
     exact (HolderWith.restrict_iff.mp hsource).mono fun p hp =>
       ⟨⟨hp.1.1, hp.1.2.trans hTS.le⟩, hp.2⟩
   · intro p hp
-    exact heatDuh_time halpha0 halpha1
+    exact heatDuhamel_time halpha0 halpha1
       ⟨hp.1.1, lt_of_le_of_lt hp.1.2 hTS⟩ f hf hsource
         hmeas2 p.space
   · intro t ht z

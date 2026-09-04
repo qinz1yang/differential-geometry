@@ -22,7 +22,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-theorem exists_lMinVec_ray
+theorem exists_lMinimizingVector_ray
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (tau : Real)
     (hdom : (Z, tau) ∈ lExpPosDom S T x) :
@@ -33,9 +33,9 @@ theorem exists_lMinVec_ray
     ⟨htau, _htau0, hbDom⟩
   let b : Real := Real.sqrt tau
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lRegDomain_smoothClamp S T x Z (Real.sqrt_pos.2 htau) hbDom
+    exists_lRegularizedDomain_smoothClamp S T x Z (Real.sqrt_pos.2 htau) hbDom
   let z : E := Z
-  let alpha : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
+  let alpha : Real → M := fun s ↦ lRegularizedCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞ rho :=
     contMDiff_iff_contDiff.mpr hrho
@@ -47,10 +47,10 @@ theorem exists_lMinVec_ray
   have halphaInf : ContMDiff (modelWithCornersSelf Real Real) I ∞ alpha := by
     rw [← contMDiffOn_univ]
     change ContMDiffOn (modelWithCornersSelf Real Real) I ∞
-      (fun s ↦ lRegCurve S T x Z (rho s)) univ
-    exact (lRegCurve_smoothOn S hS T x).comp hpair.contMDiffOn
+      (fun s ↦ lRegularizedCurve S T x Z (rho s)) univ
+    exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
       (fun s _hs ↦ by
-        change rho s ∈ lRegDomain S T x Z
+        change rho s ∈ lRegularizedDomain S T x Z
         exact hrho_range s)
   have halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha :=
     halphaInf.of_le (by norm_num)
@@ -59,12 +59,12 @@ theorem exists_lMinVec_ray
   have hrhob : rho b = b := by
     simpa only [id_eq] using hrho_id ⟨(Real.sqrt_pos.2 htau).le, le_rfl⟩
   have halpha0 : alpha 0 = x := by
-    simp only [alpha, hrho0, lRegCurve_zero]
+    simp only [alpha, hrho0, lRegularizedCurve_zero]
   have halphab : alpha b = lExp S T x Z tau := by
     simp only [alpha, hrhob, lExp, b]
   have hreg : ∀ s ∈ Icc (0 : Real) b, T - s ^ 2 ∈ D.regular := by
     intro s hs
-    exact lExpPosDom_reg S T x Z hdom (by simpa only [b] using hs)
+    exact lExpPosDom_regularity S T x Z hdom (by simpa only [b] using hs)
   have hback : ∀ s ∈ Icc (0 : Real) b,
       T - s ^ 2 ∈ Icc (T - tau) T := by
     intro s hs
@@ -82,13 +82,13 @@ theorem exists_lMinVec_ray
     have hsqrtMem : Real.sqrt (T - r) ∈ Icc (0 : Real) b :=
       ⟨Real.sqrt_nonneg _, by
         simpa only [b] using Real.sqrt_le_sqrt hleTau⟩
-    have hregR := lExpPosDom_reg S T x Z hdom hsqrtMem
+    have hregR := lExpPosDom_regularity S T x Z hdom hsqrtMem
     have heq : T - (Real.sqrt (T - r)) ^ 2 = r := by
       rw [Real.sq_sqrt hnonneg]
       ring
     exact D.regular_subset (by simpa only [heq] using hregR)
   obtain ⟨W, hW, hend⟩ :=
-    exists_lMinVec (I := I) S hS T (T - tau) T tau htau htime
+    exists_lMinimizingVector (I := I) S hS T (T - tau) T tau htau htime
       (by simpa only [b] using hback) x (lExp S T x Z tau) alpha halpha
       halpha0 (by simpa only [b] using halphab)
       (by simpa only [b] using hreg)

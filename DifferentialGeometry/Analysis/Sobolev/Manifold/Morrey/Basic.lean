@@ -99,27 +99,27 @@ private lemma chartSmoothExt_eq_chartPushed_on_target
 omit [IsManifold I ∞ M] in
 private lemma image_toEuclidean_chart_tsupport_isCompact
     [CompactSpace M] {f : M → ℝ} {α : M}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     IsCompact ((toEuclidean (E := E)) ''
       ((extChartAt I α) '' (tsupport f))) := by
   have hKE := image_extChartAt_tsupport_compact_subset_target
-    (I := I) (M := M) (u := f) (α := α) hf_supp
+    (I := I) (M := M) (u := f) (α := α) hf_support
   exact hKE.1.image (toEuclidean (E := E)).continuous
 
 omit [IsManifold I ∞ M] in
 private lemma image_toEuclidean_chart_tsupport_subset_chartTargetEuclid
     {f : M → ℝ} {α : M}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport f)) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
   image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
-    (I := I) (M := M) (u := f) (α := α) hf_supp
+    (I := I) (M := M) (u := f) (α := α) hf_support
 
 omit [IsManifold I ∞ M] in
 private lemma chartSmoothExt_eq_zero_off_image_tsupport
     (α : M) {f : M → ℝ}
-    (_hf_supp : tsupport f ⊆ (chartAt H α).source) {y : EuclN}
+    (_hf_support : tsupport f ⊆ (chartAt H α).source) {y : EuclN}
     (hy_off : y ∉ (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport f))) :
     chartSmoothExt (I := I) (M := M) α f y = 0 := by
@@ -133,35 +133,35 @@ private lemma chartSmoothExt_eq_zero_off_image_tsupport
       hy_symm]
     by_contra hne
     apply hy_off
-    have hsymm_in_supp : (extChartAt I α).symm z ∈ tsupport f :=
+    have hsymm_in_support : (extChartAt I α).symm z ∈ tsupport f :=
       subset_tsupport _ (Function.mem_support.mpr hne)
     have hz_eq : (extChartAt I α) ((extChartAt I α).symm z) = z :=
       (extChartAt I α).right_inv hz_target
-    refine ⟨z, ⟨(extChartAt I α).symm z, hsymm_in_supp, hz_eq⟩, hzy⟩
+    refine ⟨z, ⟨(extChartAt I α).symm z, hsymm_in_support, hz_eq⟩, hzy⟩
   · exact chartSmoothExt_apply_of_notMem_chartTargetEuclid (I := I) (M := M) α f hy_target
 
 omit [IsManifold I ∞ M] in
 private lemma hasCompactSupport_chartSmoothExt
     [CompactSpace M] (α : M) {f : M → ℝ}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     HasCompactSupport (chartSmoothExt (I := I) (M := M) α f) := by
   classical
   set K : Set EuclN :=
     (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport f)) with hK_def
   have hK_compact : IsCompact K :=
     image_toEuclidean_chart_tsupport_isCompact
-      (I := I) (M := M) (f := f) (α := α) hf_supp
+      (I := I) (M := M) (f := f) (α := α) hf_support
   apply HasCompactSupport.of_support_subset_isCompact hK_compact
-  intro y hy_supp
+  intro y hy_support
   by_contra hyK
-  apply hy_supp
+  apply hy_support
   exact chartSmoothExt_eq_zero_off_image_tsupport
-    (I := I) (M := M) α (f := f) hf_supp hyK
+    (I := I) (M := M) α (f := f) hf_support hyK
 
 omit [IsManifold I ∞ M] in
 private lemma tsupport_chartSmoothExt_subset
     [CompactSpace M] (α : M) {f : M → ℝ}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     tsupport (chartSmoothExt (I := I) (M := M) α f) ⊆
       (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport f)) := by
   classical
@@ -169,16 +169,16 @@ private lemma tsupport_chartSmoothExt_subset
     (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport f)) with hK_def
   have hK_compact : IsCompact K :=
     image_toEuclidean_chart_tsupport_isCompact
-      (I := I) (M := M) (f := f) (α := α) hf_supp
+      (I := I) (M := M) (f := f) (α := α) hf_support
   have hK_closed : IsClosed K := hK_compact.isClosed
-  have h_supp_sub : Function.support (chartSmoothExt (I := I) (M := M) α f) ⊆ K := by
+  have h_support_sub : Function.support (chartSmoothExt (I := I) (M := M) α f) ⊆ K := by
     intro y hy
     by_contra hyK
     apply hy
     exact chartSmoothExt_eq_zero_off_image_tsupport
-      (I := I) (M := M) α (f := f) hf_supp hyK
+      (I := I) (M := M) α (f := f) hf_support hyK
   rw [tsupport]
-  exact hK_closed.closure_subset_iff.mpr h_supp_sub
+  exact hK_closed.closure_subset_iff.mpr h_support_sub
 
 private lemma contDiffOn_chartSmoothExt_formula
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -222,7 +222,7 @@ private lemma contDiffAt_chartSmoothExt_of_mem_target
 omit [IsManifold I ∞ M] in
 private lemma contDiffAt_chartSmoothExt_of_notMem_image_tsupport
     (α : M) {f : M → ℝ}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source)
+    (hf_support : tsupport f ⊆ (chartAt H α).source)
     (hf_compact : IsCompact (tsupport f)) {y : EuclN}
     (hy_off : y ∉ (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport f))) :
@@ -235,7 +235,7 @@ private lemma contDiffAt_chartSmoothExt_of_notMem_image_tsupport
       intro x hx
       rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)]
-      exact hf_supp hx
+      exact hf_support hx
     have hcont : ContinuousOn (extChartAt I α) (tsupport f) :=
       (continuousOn_extChartAt α).mono hsub
     have h1 : IsCompact ((extChartAt I α) '' (tsupport f)) :=
@@ -247,12 +247,12 @@ private lemma contDiffAt_chartSmoothExt_of_notMem_image_tsupport
   apply ContDiffAt.congr_of_eventuallyEq (f := fun _ : EuclN => (0 : ℝ)) contDiffAt_const
   filter_upwards [hK_compl_open.mem_nhds hy_compl] with z hz
   exact chartSmoothExt_eq_zero_off_image_tsupport
-    (I := I) (M := M) α (f := f) hf_supp hz
+    (I := I) (M := M) α (f := f) hf_support hz
 
 private lemma contDiff_chartSmoothExt
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     [I.Boundaryless]
-    (hf_supp : tsupport f ⊆ (chartAt H α).source)
+    (hf_support : tsupport f ⊆ (chartAt H α).source)
     (hf_compact : IsCompact (tsupport f)) :
     ContDiff ℝ ∞ (chartSmoothExt (I := I) (M := M) α f) := by
   classical
@@ -265,9 +265,9 @@ private lemma contDiff_chartSmoothExt
       intro hy_in
       apply hy_target
       exact image_toEuclidean_chart_tsupport_subset_chartTargetEuclid
-        (I := I) (M := M) (f := f) (α := α) hf_supp hy_in
+        (I := I) (M := M) (f := f) (α := α) hf_support hy_in
     exact contDiffAt_chartSmoothExt_of_notMem_image_tsupport
-      (I := I) (M := M) α (f := f) hf_supp hf_compact hy_off
+      (I := I) (M := M) α (f := f) hf_support hf_compact hy_off
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 private lemma tsupport_pou_mul_subset_chart_source
@@ -295,10 +295,10 @@ lemma contDiff_chartSmoothExt_pou_mul
   set f : M → ℝ := fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x with hf_def
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f :=
     ((ρ α : C^∞⟮I, M; ℝ⟯).contMDiff).mul hu
-  have hf_supp : tsupport f ⊆ (chartAt H α).source :=
+  have hf_support : tsupport f ⊆ (chartAt H α).source :=
     tsupport_pou_mul_subset_chart_source (I := I) (M := M) ρ hρ α u
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
-  exact contDiff_chartSmoothExt (I := I) (M := M) α hf_smooth hf_supp hf_compact
+  exact contDiff_chartSmoothExt (I := I) (M := M) α hf_smooth hf_support hf_compact
 
 omit [IsManifold I ∞ M] in
 lemma hasCompactSupport_chartSmoothExt_pou_mul
@@ -307,9 +307,9 @@ lemma hasCompactSupport_chartSmoothExt_pou_mul
     HasCompactSupport (chartSmoothExt (I := I) (M := M) α
       (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x)) := by
   set f : M → ℝ := fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x with hf_def
-  have hf_supp : tsupport f ⊆ (chartAt H α).source :=
+  have hf_support : tsupport f ⊆ (chartAt H α).source :=
     tsupport_pou_mul_subset_chart_source (I := I) (M := M) ρ hρ α u
-  exact hasCompactSupport_chartSmoothExt (I := I) (M := M) α hf_supp
+  exact hasCompactSupport_chartSmoothExt (I := I) (M := M) α hf_support
 
 omit [IsManifold I ∞ M] in
 private lemma tsupport_chartSmoothExt_pou_mul_subset_chart_image
@@ -333,8 +333,8 @@ private lemma tsupport_chartSmoothExt_pou_mul_subset_chart_image
   have hstep := tsupport_chartSmoothExt_subset (I := I) (M := M) α (f :=
     fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) hsupp_pou_mul
   refine hstep.trans ?_
-  intro y ⟨z, ⟨x, hx_supp, hxz⟩, hzy⟩
-  refine ⟨z, ⟨x, hsubset_tsupport hx_supp, hxz⟩, hzy⟩
+  intro y ⟨z, ⟨x, hx_support, hxz⟩, hzy⟩
+  refine ⟨z, ⟨x, hsubset_tsupport hx_support, hxz⟩, hzy⟩
 
 variable [T2Space M] [CompactSpace M] [I.Boundaryless]
 
@@ -352,18 +352,18 @@ lemma chartCarrier_isCompact (α : M) :
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hTα_def
   have hTα_compact : IsCompact Tα := (isClosed_tsupport _).isCompact
-  have hTα_chart_src : Tα ⊆ (chartAt H α).source :=
+  have hTα_chart_source : Tα ⊆ (chartAt H α).source :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
-  have hTα_ext_src : Tα ⊆ (extChartAt I α).source := by
+  have hTα_ext_source : Tα ⊆ (extChartAt I α).source := by
     intro x hx
     rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
       (I := I) (M := M)]
-    exact hTα_chart_src hx
+    exact hTα_chart_source hx
   have hcont_ext : ContinuousOn (extChartAt I α) Tα :=
-    (continuousOn_extChartAt α).mono hTα_ext_src
-  have hImg_ext_compact : IsCompact ((extChartAt I α) '' Tα) :=
+    (continuousOn_extChartAt α).mono hTα_ext_source
+  have hImage_ext_compact : IsCompact ((extChartAt I α) '' Tα) :=
     hTα_compact.image_of_continuousOn hcont_ext
-  exact hImg_ext_compact.image (toEuclidean (E := E)).continuous
+  exact hImage_ext_compact.image (toEuclidean (E := E)).continuous
 
 omit [I.Boundaryless] in
 lemma chartCarrier_subset_chartTargetEuclid (α : M) :
@@ -372,17 +372,17 @@ lemma chartCarrier_subset_chartTargetEuclid (α : M) :
   set Tα : Set M := tsupport
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hTα_def
-  have hTα_chart_src : Tα ⊆ (chartAt H α).source :=
+  have hTα_chart_source : Tα ⊆ (chartAt H α).source :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
-  have hTα_ext_src : Tα ⊆ (extChartAt I α).source := by
+  have hTα_ext_source : Tα ⊆ (extChartAt I α).source := by
     intro x hx
     rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
       (I := I) (M := M)]
-    exact hTα_chart_src hx
-  rintro y ⟨z, ⟨x, hx_supp, hxz⟩, hzy⟩
+    exact hTα_chart_source hx
+  rintro y ⟨z, ⟨x, hx_support, hxz⟩, hzy⟩
   refine ⟨z, ?_, hzy⟩
   rw [← hxz]
-  exact (extChartAt I α).map_source (hTα_ext_src hx_supp)
+  exact (extChartAt I α).map_source (hTα_ext_source hx_support)
 
 noncomputable def chartRadius (α : M) : ℝ :=
   (((chartCarrier_isCompact (I := I) (M := M) α).isBounded.subset_ball_lt
@@ -449,10 +449,10 @@ private lemma chartSmoothExt_pou_mul_eq_zero_off_half_ball
         : C^∞⟮I, M; ℝ⟯) x * u x) y = 0 := by
   by_contra hne
   apply hy
-  have h_in_supp : y ∈ Function.support (chartSmoothExt (I := I) (M := M) α
+  have h_in_support : y ∈ Function.support (chartSmoothExt (I := I) (M := M) α
       (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u x)) := Function.mem_support.mpr hne
-  have h_in_tsupport := subset_tsupport _ h_in_supp
+  have h_in_tsupport := subset_tsupport _ h_in_support
   exact chartCarrier_subset_half_ball (I := I) (M := M) α
     (tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (I := I) (M := M) α u
       h_in_tsupport)
@@ -525,14 +525,14 @@ private lemma chartSmoothExt_eq_zero_off_target
 omit [FiniteDimensional ℝ E] in
 private lemma fderiv_eq_zero_off_tsupport_subset_closed
     {h : EuclN → ℝ} {K : Set EuclN} (hK_closed : IsClosed K)
-    (hh_supp : tsupport h ⊆ K) {y : EuclN} (hy : y ∉ K) :
+    (hh_support : tsupport h ⊆ K) {y : EuclN} (hy : y ∉ K) :
     fderiv ℝ h y = 0 := by
-  have hy_off_tsupp : y ∉ tsupport h := fun hyt => hy (hh_supp hyt)
+  have hy_off_tsupp : y ∉ tsupport h := fun hyt => hy (hh_support hyt)
   have h_compl : Kᶜ ∈ 𝓝 y := hK_closed.isOpen_compl.mem_nhds hy
   have hh_zero_eventually : h =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
     refine Filter.eventuallyEq_of_mem h_compl ?_
     intro z hz
-    have hz_off_tsupp : z ∉ tsupport h := fun hzt => hz (hh_supp hzt)
+    have hz_off_tsupp : z ∉ tsupport h := fun hzt => hz (hh_support hzt)
     exact image_eq_zero_of_notMem_tsupport hz_off_tsupp
   rw [Filter.EventuallyEq.fderiv_eq hh_zero_eventually]
   simp
@@ -576,7 +576,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_eq_restrict_target
       : C^∞⟮I, M; ℝ⟯) x * u x) with hh_def
   set K : Set EuclN := chartCarrier (I := I) (M := M) α with hK_def
   have hK_closed : IsClosed K := (chartCarrier_isCompact (I := I) (M := M) α).isClosed
-  have hK_supp : tsupport h ⊆ K :=
+  have hK_support : tsupport h ⊆ K :=
     tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (I := I) (M := M) α u
   have hK_subset_Ω : K ⊆ Ω :=
     chartCarrier_subset_chartTargetEuclid (I := I) (M := M) α
@@ -590,7 +590,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_eq_restrict_target
     · rw [Set.indicator_of_notMem hy]
       have hyK : y ∉ K := fun h2 => hy (hK_subset_Ω h2)
       have h_fderiv_zero : fderiv ℝ h y = 0 :=
-        fderiv_eq_zero_off_tsupport_subset_closed hK_closed hK_supp hyK
+        fderiv_eq_zero_off_tsupport_subset_closed hK_closed hK_support hyK
       change ‖fderiv ℝ h y‖ = 0
       rw [h_fderiv_zero, norm_zero]
   calc eLpNorm fnNorm q volume
@@ -618,7 +618,7 @@ private lemma eLpNorm_chartSmoothExt_pou_mul_restrict_ball_eq_restrict_target
     with hBR_def
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hK_closed : IsClosed K := (chartCarrier_isCompact (I := I) (M := M) α).isClosed
-  have hK_supp : tsupport h ⊆ K :=
+  have hK_support : tsupport h ⊆ K :=
     tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (I := I) (M := M) α u
   have hK_BR : K ⊆ BR :=
     chartCarrier_subset_radius_ball (I := I) (M := M) α
@@ -633,7 +633,7 @@ private lemma eLpNorm_chartSmoothExt_pou_mul_restrict_ball_eq_restrict_target
     · rw [Set.indicator_of_mem hy]
     · rw [Set.indicator_of_notMem hy]
       have hyK : y ∉ K := fun h2 => hy (hK_BR h2)
-      have hy_off_tsupp : y ∉ tsupport h := fun hyt => hyK (hK_supp hyt)
+      have hy_off_tsupp : y ∉ tsupport h := fun hyt => hyK (hK_support hyt)
       exact image_eq_zero_of_notMem_tsupport hy_off_tsupp
   have h_eq_Ω : h = Ω.indicator h := by
     funext y
@@ -669,7 +669,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_restrict_ball_eq_restri
     with hBR_def
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hK_closed : IsClosed K := (chartCarrier_isCompact (I := I) (M := M) α).isClosed
-  have hK_supp : tsupport h ⊆ K :=
+  have hK_support : tsupport h ⊆ K :=
     tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (I := I) (M := M) α u
   have hK_BR : K ⊆ BR :=
     chartCarrier_subset_radius_ball (I := I) (M := M) α
@@ -686,7 +686,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_restrict_ball_eq_restri
     · rw [Set.indicator_of_notMem hy]
       have hyK : y ∉ K := fun h2 => hy (hK_BR h2)
       have h_fderiv_zero : fderiv ℝ h y = 0 :=
-        fderiv_eq_zero_off_tsupport_subset_closed hK_closed hK_supp hyK
+        fderiv_eq_zero_off_tsupport_subset_closed hK_closed hK_support hyK
       change ‖fderiv ℝ h y‖ = 0
       rw [h_fderiv_zero, norm_zero]
   have h_eq_Ω : fnNorm = Ω.indicator fnNorm := by
@@ -696,7 +696,7 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_pou_mul_restrict_ball_eq_restri
     · rw [Set.indicator_of_notMem hy]
       have hyK : y ∉ K := fun h2 => hy (hK_Ω h2)
       have h_fderiv_zero : fderiv ℝ h y = 0 :=
-        fderiv_eq_zero_off_tsupport_subset_closed hK_closed hK_supp hyK
+        fderiv_eq_zero_off_tsupport_subset_closed hK_closed hK_support hyK
       change ‖fderiv ℝ h y‖ = 0
       rw [h_fderiv_zero, norm_zero]
   calc eLpNorm fnNorm q (volume.restrict BR)
@@ -859,16 +859,16 @@ omit [FiniteDimensional ℝ E] in
 private lemma classical_partial_ae_eq_chosenWeakPartial_local
     {q : ℝ≥0∞} (hq_one : 1 ≤ q) {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     {f : EuclN → ℝ} (hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f)
-    (hf_compact : HasCompactSupport f) (hf_supp : tsupport f ⊆ Ω)
+    (hf_compact : HasCompactSupport f) (hf_support : tsupport f ⊆ Ω)
     (i : Fin (Module.finrank ℝ E)) :
     (fun z : EuclN => (fderiv ℝ f z) (EuclideanSpace.single i 1))
       =ᵐ[volume.restrict Ω]
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q i f Ω := by
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q i f Ω := by
   classical
   have hf_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 q f Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
-      (d := Module.finrank ℝ E) hΩ_open hf_smooth hf_compact hf_supp hq_one 1
+      (d := Module.finrank ℝ E) hΩ_open hf_smooth hf_compact hf_support hq_one 1
   have hf_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) q f Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hf_mem
   have h_classical_isWeak :
@@ -878,30 +878,30 @@ private lemma classical_partial_ae_eq_chosenWeakPartial_local
       hΩ_open (hf_smooth.of_le (by norm_cast))
   have h_chosen_isWeak :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q i f Ω) f Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q i f Ω) f Ω :=
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       hf_W1p i
-  have h_classical_loc : LocallyIntegrable
+  have h_classical_local : LocallyIntegrable
       (fun z : EuclN => (fderiv ℝ f z) (EuclideanSpace.single i 1))
       (volume.restrict Ω) := by
     have h_cont : Continuous
         (fun z : EuclN => (fderiv ℝ f z) (EuclideanSpace.single i 1)) :=
       ((hf_smooth.continuous_fderiv (by simp)).clm_apply continuous_const)
     exact h_cont.locallyIntegrable.mono_measure Measure.restrict_le_self
-  have h_chosen_loc : LocallyIntegrable
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q i f Ω)
+  have h_chosen_local : LocallyIntegrable
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q i f Ω)
       (volume.restrict Ω) :=
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       hf_W1p i).locallyIntegrable hq_one
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq (Ω := Ω) hΩ_open
-    h_classical_isWeak h_chosen_isWeak h_classical_loc h_chosen_loc
+    h_classical_isWeak h_chosen_isWeak h_classical_local h_chosen_local
 
 omit [FiniteDimensional ℝ E] in
 private lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm
     [NeZero (Module.finrank ℝ E)]
     {q : ℝ≥0∞} (hq_one : 1 ≤ q) {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     {f : EuclN → ℝ} (hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f)
-    (hf_compact : HasCompactSupport f) (hf_supp : tsupport f ⊆ Ω) :
+    (hf_compact : HasCompactSupport f) (hf_support : tsupport f ⊆ Ω) :
     eLpNorm (fun z : EuclN => ‖fderiv ℝ f z‖) q (volume.restrict Ω) ≤
       ((Module.finrank ℝ E : ℕ) : ℝ≥0∞) *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -914,17 +914,17 @@ private lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm
       eLpNorm (fun z : EuclN => (fderiv ℝ f z) (EuclideanSpace.single i 1)) q
         (volume.restrict Ω) =
       eLpNorm
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q i f Ω)
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q i f Ω)
         q (volume.restrict Ω) := fun i =>
     eLpNorm_congr_ae (classical_partial_ae_eq_chosenWeakPartial_local
-      hq_one hΩ_open hf_smooth hf_compact hf_supp i)
+      hq_one hΩ_open hf_smooth hf_compact hf_support i)
   have h_step1 :
       ∑ i : Fin (Module.finrank ℝ E),
         eLpNorm (fun z : EuclN => (fderiv ℝ f z) (EuclideanSpace.single i 1)) q
           (volume.restrict Ω)
         = ∑ i : Fin (Module.finrank ℝ E),
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q i f Ω)
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q i f Ω)
             q (volume.restrict Ω) :=
     Finset.sum_congr rfl (fun i _ => h_each_eq i)
   rw [h_step1]
@@ -945,20 +945,20 @@ private lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm
               (d := Module.finrank ℝ E) q 1 β f Ω) q (volume.restrict Ω)) =
         ∑ i : Fin (Module.finrank ℝ E),
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q i f Ω)
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q i f Ω)
             q (volume.restrict Ω) := by
     have h_unfold : ∀ β : Fin 1 → Fin (Module.finrank ℝ E),
         eLpNorm
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial
             (d := Module.finrank ℝ E) q 1 β f Ω) q (volume.restrict Ω) =
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q (β 0) f Ω)
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q (β 0) f Ω)
             q (volume.restrict Ω) := by
       intro β
       have hit :
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial
               (d := Module.finrank ℝ E) q 1 β f Ω =
-            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q (β 0) f Ω := by
+            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q (β 0) f Ω := by
         rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial_succ]
         simp [DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial_zero]
       rw [hit]
@@ -974,17 +974,17 @@ private lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm
     exact Fintype.sum_equiv e
       (fun β =>
         eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q (β 0) f Ω)
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q (β 0) f Ω)
           q (volume.restrict Ω))
       (fun i =>
         eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q i f Ω)
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q i f Ω)
           q (volume.restrict Ω))
       (fun _ => rfl)
   have h_le_wkp :
       (∑ i : Fin (Module.finrank ℝ E),
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' q i f Ω)
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero q i f Ω)
             q (volume.restrict Ω)) ≤
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 1 q f Ω := by
@@ -1034,14 +1034,14 @@ private lemma eLpNorm_norm_fderiv_chartSmoothExt_target_le_wkpNormChart
     exact hasCompactSupport_chartSmoothExt_pou_mul (I := I) (M := M) α
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) u
-  have hf_supp : tsupport f ⊆ Ω := by
+  have hf_support : tsupport f ⊆ Ω := by
     rw [hf_def, hΩ_def]
     have h1 : tsupport (chartSmoothExt (I := I) (M := M) α
         (fun x : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) x * u x)) ⊆ chartCarrier (I := I) (M := M) α :=
       tsupport_chartSmoothExt_pou_mul_subset_chartCarrier (I := I) (M := M) α u
     exact h1.trans (chartCarrier_subset_chartTargetEuclid (I := I) (M := M) α)
-  exact eLpNorm_norm_fderiv_le_d_mul_wkpNorm hq_one hΩ_open hf_smooth_top hf_compact hf_supp
+  exact eLpNorm_norm_fderiv_le_d_mul_wkpNorm hq_one hΩ_open hf_smooth_top hf_compact hf_support
 
 private lemma wkpNorm_chartSmoothExt_target_eq_wkpNorm_chartPushed_target
     {q : ℝ≥0∞} (hq_one : 1 ≤ q) (α : M) (u : M → ℝ) :
@@ -1224,10 +1224,10 @@ private lemma norm_pou_mul_le_norm_chartSmoothExt_at_some_point
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M).IsSubordinate
             (fun α : M => (chartAt H α).source) :=
         DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M
-      have h_supp := hsubord α
+      have h_support := hsubord α
       by_contra hne
       apply hx
-      apply h_supp
+      apply h_support
       apply subset_tsupport
       exact Function.mem_support.mpr hne
     rw [hρ_zero, zero_mul, norm_zero]
@@ -1378,7 +1378,7 @@ private lemma eLpNorm_riemannianMeasure_le_const_mul_wkpNormChart
         (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g ρ) ≤
       ENNReal.ofReal (Cα α) * wkpNormChart (I := I) (M := M) 1 p u := by
     intro α _
-    have h_supp : tsupport (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) ⊆
+    have h_support : tsupport (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) ⊆
         tsupport (ρ α : M → ℝ) := by
       have h_eq : (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) =
           (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x • u x) := by funext x; rfl
@@ -1387,7 +1387,7 @@ private lemma eLpNorm_riemannianMeasure_le_const_mul_wkpNormChart
         (f := fun x : M => ((ρ α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) (g := u)
     have h_meas : Measurable (fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x) :=
       (ρ α).contMDiff.continuous.measurable.mul hu_meas
-    have h_bridge := hCα_bound α h_meas h_supp
+    have h_bridge := hCα_bound α h_meas h_support
     refine h_bridge.trans ?_
     have h_ae := chartPushed_eq_chartPushedRaw_pou_ae (I := I) (M := M) ρ α u
     have h_eLpNorm_eq :
@@ -1852,8 +1852,8 @@ private lemma pou_mul_holder_chart_uniform_tsupport
       tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆ (chartAt H α).source :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
-  have hx_src : x ∈ (chartAt H α).source := h_subord hx
-  have hy_src : y ∈ (chartAt H α).source := h_subord hy
+  have hx_source : x ∈ (chartAt H α).source := h_subord hx
+  have hy_source : y ∈ (chartAt H α).source := h_subord hy
   set y₁ : EuclN := (toEuclidean (E := E)) (extChartAt I α x) with hy₁_def
   set y₂ : EuclN := (toEuclidean (E := E)) (extChartAt I α y) with hy₂_def
   have hy₁_R2 : y₁ ∈ Metric.ball (0 : EuclN)
@@ -1870,7 +1870,7 @@ private lemma pou_mul_holder_chart_uniform_tsupport
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) x * u x := by
     rw [hy₁_def]
-    exact chartSmoothExt_pou_mul_apply_at_chart_image (I := I) (M := M) α u hx_src
+    exact chartSmoothExt_pou_mul_apply_at_chart_image (I := I) (M := M) α u hx_source
   have h_eq_y :
       chartSmoothExt (I := I) (M := M) α
           (fun z : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -1878,7 +1878,7 @@ private lemma pou_mul_holder_chart_uniform_tsupport
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) y * u y := by
     rw [hy₂_def]
-    exact chartSmoothExt_pou_mul_apply_at_chart_image (I := I) (M := M) α u hy_src
+    exact chartSmoothExt_pou_mul_apply_at_chart_image (I := I) (M := M) α u hy_source
   rw [h_eq_x, h_eq_y] at h_pair
   exact h_pair
 

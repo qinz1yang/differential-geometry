@@ -96,9 +96,9 @@ def mixedMap (a : Real) {T : Real} (hT : 0 < T)
       timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   fun force =>
     nemytskii (I := I) (M := M) hN2
-        (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
       nemytskiiHa1 (I := I) (M := M) hN1
-        (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force)
+        (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem mixedMap_apply (hT : 0 < T)
@@ -114,9 +114,9 @@ omit [NeZero (Module.finrank ℝ E)] in
     (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     mixedMap (I := I) (M := M) a hT u0 N2 hN2 N1 hN1 force =
       nemytskii (I := I) (M := M) hN2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
         nemytskiiHa1 (I := I) (M := M) hN1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force) :=
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force) :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -138,57 +138,57 @@ theorem mixedMap_dist_le
         (mixedMap (I := I) (M := M) a hT u0 N2 hN2 N1 hN1 force') ≤
       ((L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T)) *
         dist force force' := by
-  have hfield2 := maxRegDuhamelSolField_dist_le (I := I) (M := M)
+  have hfield2 := maximalRegularityDuhamelSolutionField_dist_le (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT u0 force force'
-  have hfield1 := maxRegDuhamelSolFieldHa1_dist_le (I := I) (M := M)
+  have hfield1 := maximalRegularityDuhamelSolutionFieldHa1_dist_le (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 u0 force force'
   have h2 := (nemytskii_lipschitzWith (I := I) (M := M) hN2).dist_le_mul
-    (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force)
-    (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force')
+    (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force)
+    (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force')
   have h1 := (nemytskiiHa1_lipschitzWith (I := I) (M := M) hN1).dist_le_mul
-    (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force)
-    (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force')
+    (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force)
+    (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force')
   have hfield2d : dist
-      (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force)
-      (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force') ≤
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force)
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force') ≤
         (1 + T) * dist force force' := by
     simpa only [dist_eq_norm] using hfield2
   have hfield1d : dist
-      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force)
-      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force') ≤
+      (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force)
+      (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force') ≤
         2 * Real.sqrt T * dist force force' := by
     simpa only [dist_eq_norm] using hfield1
   rw [dist_eq_norm, dist_eq_norm]
   unfold mixedMap
   have hsplit :
       (nemytskii (I := I) (M := M) hN2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
           nemytskiiHa1 (I := I) (M := M) hN1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force)) -
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force)) -
         (nemytskii (I := I) (M := M) hN2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force') +
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force') +
           nemytskiiHa1 (I := I) (M := M) hN1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force')) =
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force')) =
       (nemytskii (I := I) (M := M) hN2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) -
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) -
           nemytskii (I := I) (M := M) hN2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force')) +
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force')) +
         (nemytskiiHa1 (I := I) (M := M) hN1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force) -
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force) -
           nemytskiiHa1 (I := I) (M := M) hN1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force')) := by
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force')) := by
     abel
   rw [hsplit]
   calc
     _ ≤
         ‖nemytskii (I := I) (M := M) hN2
-              (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) -
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) -
             nemytskii (I := I) (M := M) hN2
-              (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force')‖ +
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force')‖ +
           ‖nemytskiiHa1 (I := I) (M := M) hN1
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force) -
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force) -
             nemytskiiHa1 (I := I) (M := M) hN1
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force')‖ :=
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force')‖ :=
         norm_add_le _ _
     _ ≤ (L2 : Real) * ((1 + T) * ‖force - force'‖) +
           (L1 : Real) * ((2 * Real.sqrt T) * ‖force - force'‖) := by
@@ -249,24 +249,24 @@ theorem mixed_strong_exists
     (hN1 : LipschitzWith L1 N1)
     (hsmall :
       (L2 : Real) * (1 + T) + (L1 : Real) * (2 * Real.sqrt T) < 1) :
-    ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
+    ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) a T)
       (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
-      u = maxRegDuhamelMap (I := I) (M := M) a hT u0 force ∧
+      u = maximalRegularityDuhamelMap (I := I) (M := M) a hT u0 force ∧
         force =
           nemytskii (I := I) (M := M) hN2
-              (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
             nemytskiiHa1 (I := I) (M := M) hN1
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force) ∧
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force) ∧
         TimeSobolev.timeH1.trace0 _ T u =
           tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
             (show a ≤ a + 2 by linarith) u0 ∧
         TimeSobolev.timeH1.timeDeriv _ T u =
           timeScaleLaplacian (I := I) (M := M) a
-              (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
             (nemytskii (I := I) (M := M) hN2
-                (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+                (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
               nemytskiiHa1 (I := I) (M := M) hN1
-                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0
+                (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0
                   force)) := by
   have hcontr := mixedMap_contract (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 u0 N2 hN2 N1 hN1 hsmall
@@ -278,17 +278,17 @@ theorem mixed_strong_exists
         forceStar := ContractingWith.fixedPoint_isFixedPt hcontr
   have hforce : forceStar =
       nemytskii (I := I) (M := M) hN2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 forceStar) +
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 forceStar) +
         nemytskiiHa1 (I := I) (M := M) hN1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0
             forceStar) := by
     rw [← mixedMap_apply (I := I) (M := M) (a := a) hT u0
       N2 hN2 N1 hN1 forceStar, hfix]
-  refine ⟨maxRegDuhamelMap (I := I) (M := M) a hT u0 forceStar,
+  refine ⟨maximalRegularityDuhamelMap (I := I) (M := M) a hT u0 forceStar,
     forceStar, rfl, hforce, ?_, ?_⟩
-  · exact maxRegDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
+  · exact maximalRegularityDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
       hT u0 forceStar
-  · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M)
+  · rw [maximalRegularityDuhamelMap_timeDeriv_eq (I := I) (M := M)
       (h_compact := h_compact) (a := a) (T := T) hT u0 forceStar]
     exact congrArg₂ (fun x y => x + y) rfl hforce
 
@@ -311,17 +311,17 @@ theorem mixed_strong_unique
     {force₁ force₂ : timeL2 (TensorHs (I := I) (M := M) g r s a) T}
     (hfix₁ : force₁ =
       nemytskii (I := I) (M := M) hN2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force₁) +
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force₁) +
         nemytskiiHa1 (I := I) (M := M) hN1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force₁))
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force₁))
     (hfix₂ : force₂ =
       nemytskii (I := I) (M := M) hN2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force₂) +
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force₂) +
         nemytskiiHa1 (I := I) (M := M) hN1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force₂)) :
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force₂)) :
     force₁ = force₂ ∧
-      maxRegDuhamelMap (I := I) (M := M) a hT u0 force₁ =
-        maxRegDuhamelMap (I := I) (M := M) a hT u0 force₂ := by
+      maximalRegularityDuhamelMap (I := I) (M := M) a hT u0 force₁ =
+        maximalRegularityDuhamelMap (I := I) (M := M) a hT u0 force₂ := by
   have hcontr := mixedMap_contract (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 u0 N2 hN2 N1 hN1 hsmall
   have hf₁ : Function.IsFixedPt

@@ -37,7 +37,7 @@ theorem sphereCover_one
     (g : SmoothRiemannianMetric (𝓡 n) Q)
     (c : ℝ) (hc : 0 < c)
     (hsec : ∀ x : Q, ∀ X Y : TangentSpace (𝓡 n) x,
-      DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
+      DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt
           (I := 𝓡 n) (M := Q) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y))

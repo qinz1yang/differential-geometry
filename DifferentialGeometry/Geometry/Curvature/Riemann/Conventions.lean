@@ -49,10 +49,10 @@ theorem rm04LowersRm13At_convention
 
 
 omit [FiniteDimensional ℝ E] in
-theorem tensor04StdAt_convention
+theorem tensor04StandardAt_convention
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (X Y Z W : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) Rm04 X Y Z W =
+    tensor04StandardAt (I := I) (M := M) Rm04 X Y Z W =
       Rm04 (vec4 X Y Z W) := by
   rfl
 
@@ -95,13 +95,13 @@ theorem rm04RealizesConnection_convention
       g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov X Y Z) x) :=
   h X Y Z W x
 
-theorem rm04StdRealizesConnection_convention
+theorem rm04StandardRealizesConnection_convention
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (Rm04 : Tensor04Section (I := I) (M := M))
     (h : rm04RealizesConnection (I := I) g cov Rm04)
     (X Y Z W : SmoothTangentSection (I := I) (M := M)) (x : M) :
-    DifferentialGeometry.Geometry.Curvature.tensor04StdAt (I := I) (M := M) (Rm04 x)
+    DifferentialGeometry.Geometry.Curvature.tensor04StandardAt (I := I) (M := M) (Rm04 x)
         (X x) (Y x) (Z x) (W x) =
       g.inner x (W x) ((connectionRiemannCurvatureField (I := I) cov X Y Z) x) :=
   h X Y Z W x

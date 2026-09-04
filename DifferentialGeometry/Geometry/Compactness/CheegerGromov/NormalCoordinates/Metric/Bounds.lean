@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Topology Bundle
@@ -554,5 +554,5 @@ end NormalCoordMetricBounds
 
 end RawNormalCoordinates
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

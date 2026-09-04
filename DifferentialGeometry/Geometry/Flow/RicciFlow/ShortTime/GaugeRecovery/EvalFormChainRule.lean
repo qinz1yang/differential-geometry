@@ -135,7 +135,7 @@ theorem evalForm_pullbackPart_hasDerivWithinAt_neg_lieDerivMetric_deTurckVF
                   ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x w))
     (Dbase : ℝ → (x : M) → (v w : TangentSpace I x) → ℝ)
-    (h_reg_base : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
+    (h_regularity_base : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivWithinAt
         (fun s : ℝ => (g_DT t).inner ((Φ_fam s : M → M) x)
           (mfderiv I I (Φ_fam t : M → M) x v) (mfderiv I I (Φ_fam t : M → M) x w))
@@ -186,7 +186,7 @@ theorem evalForm_pullbackPart_hasDerivWithinAt_neg_lieDerivMetric_deTurckVF
           (-(deTurckVF (I := I) (g_DT s) g_bg ((Φ_fam s : M → M) y)))) :=
     fun s hs y => hΦ_orbit y s hs
   have hbase := basepoint_motion_datum (I := I) g_DT g_bg T Φ_fam hΦ_orbit'
-    Dbase h_reg_base h_compat_base t ht x v w
+    Dbase h_regularity_base h_compat_base t ht x v w
   have hR10 : R' (1, 0)
       = -metricTransportResidual (I := I) (g_DT t)
           (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x v w :=

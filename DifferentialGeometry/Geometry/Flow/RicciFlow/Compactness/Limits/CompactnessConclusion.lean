@@ -7,7 +7,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -21,5 +21,5 @@ def compactnessConclusion (X : PointedFlowSeq.{u, uE, uH} (I := I)) : Prop :=
     StrictMono subseq /\
       Nonempty.{max (max uE uH) u + 1} (SmoothCGHConverges (I := I) X L subseq)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

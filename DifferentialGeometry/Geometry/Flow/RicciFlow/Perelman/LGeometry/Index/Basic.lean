@@ -51,7 +51,7 @@ noncomputable def lIndexIntegrand
       S.base.rm04 t (gamma tau) (vec4 (Y tau) X X (W tau)) +
       (1 / 2 : Real) *
         hessianSec (I := I) cov (metricCov_smooth (I := I) g)
-          (S.scalar t) (scalarSmoothOfSol (I := I) S t) (gamma tau)
+          (S.scalar t) (scalarSmoothOfSolution (I := I) S t) (gamma tau)
           (vec2 (Y tau) (W tau)) +
       dRic (vec3 X (Y tau) (W tau)) -
       dRic (vec3 (Y tau) X (W tau)) -
@@ -102,16 +102,16 @@ theorem lIndexIntegrand_symm
   have hhess :
       hessianSec (I := I) (S.base.connection t)
           (metricCov_smooth (I := I) g)
-          (S.scalar t) (scalarSmoothOfSol (I := I) S t) x
+          (S.scalar t) (scalarSmoothOfSolution (I := I) S t) x
           (vec2 (Y tau) (W tau)) =
         hessianSec (I := I) (S.base.connection t)
           (metricCov_smooth (I := I) g)
-          (S.scalar t) (scalarSmoothOfSol (I := I) S t) x
+          (S.scalar t) (scalarSmoothOfSolution (I := I) S t) x
           (vec2 (W tau) (Y tau)) := by
     simpa only [g, t, SolutionFamily.connection] using
       DifferentialGeometry.Geometry.Connection.hessSymm
         (I := I) (M := M) g (S.scalar t)
-        (scalarSmoothOfSol (I := I) S t) (Y tau) (W tau)
+        (scalarSmoothOfSolution (I := I) S t) (Y tau) (W tau)
   have hdRic :
       dRic (vec3 X (Y tau) (W tau)) =
         dRic (vec3 X (W tau) (Y tau)) := by
@@ -143,7 +143,7 @@ theorem lIndexIntegrand_self
           S.base.rm04 t (gamma tau) (vec4 (Y tau) X X (Y tau)) +
           (1 / 2 : Real) *
             hessianSec (I := I) cov (metricCov_smooth (I := I) g)
-              (S.scalar t) (scalarSmoothOfSol (I := I) S t) (gamma tau)
+              (S.scalar t) (scalarSmoothOfSolution (I := I) S t) (gamma tau)
               (vec2 (Y tau) (Y tau)) +
           dRic (vec3 X (Y tau) (Y tau)) -
           2 * dRic (vec3 (Y tau) X (Y tau))) := by

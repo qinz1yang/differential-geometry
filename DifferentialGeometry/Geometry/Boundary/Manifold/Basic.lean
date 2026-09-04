@@ -527,16 +527,16 @@ theorem contDiffOn_boundaryChart_trans [Nonempty hI.boundaryH]
       (fun e : hI.boundaryE => I (hI.inclH (hI.boundaryI.symm e)))
       S_boundary S_ambient := by
     intro e he
-    have he_src : hI.boundaryI.symm e ∈
+    have he_source : hI.boundaryI.symm e ∈
         ((boundaryChart (I := I) x').symm ≫ₕ boundaryChart (I := I) x).source := he.1
-    rw [OpenPartialHomeomorph.trans_source] at he_src
-    obtain ⟨he_target, he_src_in_chart⟩ := he_src
+    rw [OpenPartialHomeomorph.trans_source] at he_source
+    obtain ⟨he_target, he_source_in_chart⟩ := he_source
     have he_target' : hI.boundaryI.symm e ∈ (boundaryChart (I := I) x').target := he_target
-    have he_src_in_chart' :
+    have he_source_in_chart' :
         (boundaryChart (I := I) x').symm (hI.boundaryI.symm e) ∈
-          (boundaryChart (I := I) x).source := he_src_in_chart
+          (boundaryChart (I := I) x).source := he_source_in_chart
     rw [boundaryChart_target_eq] at he_target'
-    rw [boundaryChart_source_eq] at he_src_in_chart'
+    rw [boundaryChart_source_eq] at he_source_in_chart'
     have h_inclH_target : hI.inclH (hI.boundaryI.symm e) ∈ (chartAt H (x' : M)).target :=
       he_target'
     refine ⟨?_, mem_range_self _⟩
@@ -551,7 +551,7 @@ theorem contDiffOn_boundaryChart_trans [Nonempty hI.boundaryH]
             (chartAt H (x' : M)).symm (hI.inclH (hI.boundaryI.symm e))
         exact boundaryChartInvFun_val_of_mem_target (I := I) x' he_target
       rw [Set.mem_preimage, ← h_val_eq]
-      exact he_src_in_chart'
+      exact he_source_in_chart'
   have h_inner_smooth : ContDiff ℝ ∞
       (fun e : hI.boundaryE => I (hI.inclH (hI.boundaryI.symm e))) :=
     hI.I_inclH_boundaryI_symm_contDiff
@@ -567,18 +567,18 @@ theorem contDiffOn_boundaryChart_trans [Nonempty hI.boundaryH]
     h_proj_smooth.contDiffOn.comp h_TE_comp (Set.mapsTo_univ _ _)
   refine h_full.congr ?_
   intro e he
-  have he_src : hI.boundaryI.symm e ∈
+  have he_source : hI.boundaryI.symm e ∈
       ((boundaryChart (I := I) x').symm ≫ₕ boundaryChart (I := I) x).source := he.1
-  rw [OpenPartialHomeomorph.trans_source] at he_src
-  obtain ⟨he_target, he_src_in_chart⟩ := he_src
+  rw [OpenPartialHomeomorph.trans_source] at he_source
+  obtain ⟨he_target, he_source_in_chart⟩ := he_source
   have he_target' : hI.boundaryI.symm e ∈ (boundaryChart (I := I) x').target := he_target
   rw [boundaryChart_target_eq] at he_target'
-  have he_src_in_chart' :
+  have he_source_in_chart' :
       (boundaryChart (I := I) x').symm (hI.boundaryI.symm e) ∈
-        (boundaryChart (I := I) x).source := he_src_in_chart
-  rw [boundaryChart_source_eq] at he_src_in_chart'
+        (boundaryChart (I := I) x).source := he_source_in_chart
+  rw [boundaryChart_source_eq] at he_source_in_chart'
   have h_factor := boundaryI_trans_eq_projE_extend (I := I) x x'
-    (e := e) he_target' he_src_in_chart'
+    (e := e) he_target' he_source_in_chart'
   change hI.boundaryI (((boundaryChart (I := I) x').symm ≫ₕ boundaryChart (I := I) x)
       (hI.boundaryI.symm e)) = hI.projE (TE (I (hI.inclH (hI.boundaryI.symm e))))
   rw [OpenPartialHomeomorph.coe_trans, Function.comp_apply]

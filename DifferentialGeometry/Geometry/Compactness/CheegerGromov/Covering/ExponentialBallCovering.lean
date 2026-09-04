@@ -15,7 +15,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 open DifferentialGeometry.Geometry.Riemannian
@@ -394,5 +394,5 @@ theorem exists_framed_exponential_ball_partial_diffeomorph
 
 end
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -95,13 +95,13 @@ private lemma memWkp_smoothCoef_mul_aeZeroFactor
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport χ
-    · have hy_chart : y ∈ Ω := hχ_tsupp hy_supp
+    by_cases hy_support : y ∈ tsupport χ
+    · have hy_chart : y ∈ Ω := hχ_tsupp hy_support
       exact hχ_smooth.contDiffAt.mul
         ((hcoef_chart y hy_chart).contDiffAt (hΩ_open.mem_nhds hy_chart))
     · have h_eq_zero : (fun y => χ y * coef y)
           =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_open_compl.mem_nhds hy_supp] with z hz
+        filter_upwards [h_open_compl.mem_nhds hy_support] with z hz
         rw [image_eq_zero_of_notMem_tsupport hz, zero_mul]
       exact contDiffAt_const.congr_of_eventuallyEq h_eq_zero
   have hχ_coef_cs : HasCompactSupport (fun y => χ y * coef y) :=
@@ -183,22 +183,22 @@ private lemma memWkp_of_weakPartial_of_memWkp_succ
   classical
   have hu_w1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 u Ω := hu.memW1p
   have h_chosen_weak : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u Ω) u Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem hu_w1p k
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u Ω) u Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hu_w1p k
   have h_chosen_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u Ω) Ω :=
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u Ω) Ω :=
     hu.chosenWeakPartial_mem k
-  have hgpart_loc : LocallyIntegrable gpart
+  have hgpart_local : LocallyIntegrable gpart
       ((volume : Measure EuclN).restrict Ω) :=
     hgpart_memLp.locallyIntegrable (by norm_num)
-  have h_chosen_loc : LocallyIntegrable
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u Ω)
+  have h_chosen_local : LocallyIntegrable
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u Ω)
       ((volume : Measure EuclN).restrict Ω) :=
     h_chosen_memWkp.memLp.locallyIntegrable (by norm_num)
   have h_ae : gpart =ᵐ[(volume : Measure EuclN).restrict Ω]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u Ω :=
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u Ω :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ hgpart_weak h_chosen_weak
-      hgpart_loc h_chosen_loc
+      hgpart_local h_chosen_local
   exact (MemWkp_congr_ae (d := Module.finrank ℝ E)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ h_ae).mpr h_chosen_memWkp
 
@@ -234,28 +234,28 @@ private lemma hasWeakPartialDeriv_ae_zero_off_of_ae_zero_off
     exact hy hy_mem.2
   have hu_w1p_V : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 u V :=
     MemW1p.mono_set hV_open hV_sub hu_w1p
-  have h_chosen_zero : chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u V
+  have h_chosen_zero : chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u V
       =ᵐ[(volume : Measure EuclN).restrict V] (fun _ : EuclN => (0 : ℝ)) :=
-    chosenWeakPartial'_ae_zero_of_ae_zero (d := Module.finrank ℝ E)
+    chosenWeakPartialOrZero_ae_zero_of_ae_zero (d := Module.finrank ℝ E)
       (by norm_num) hV_open hu_zero_V k
   have h_chosen_weak : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u V) u V :=
-    chosenWeakPartial'_isWeakPartial_of_mem hu_w1p_V k
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u V) u V :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hu_w1p_V k
   have hgp_weak_V : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
       gp u V :=
     DeGiorgi.HasWeakPartialDeriv.restrict hV_open hV_sub hgp_weak
-  have hgp_loc_V : LocallyIntegrable gp
+  have hgp_local_V : LocallyIntegrable gp
       ((volume : Measure EuclN).restrict V) :=
     (hgp_memLp.mono_measure (Measure.restrict_mono hV_sub le_rfl)).locallyIntegrable
       (by norm_num)
-  have h_chosen_loc_V : LocallyIntegrable
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u V)
+  have h_chosen_local_V : LocallyIntegrable
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u V)
       ((volume : Measure EuclN).restrict V) :=
-    (chosenWeakPartial'_memLp_of_mem hu_w1p_V k).locallyIntegrable (by norm_num)
+    (chosenWeakPartialOrZero_memLp_of_mem hu_w1p_V k).locallyIntegrable (by norm_num)
   have h_gp_eq : gp =ᵐ[(volume : Measure EuclN).restrict V]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 k u V :=
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k u V :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq hV_open hgp_weak_V h_chosen_weak
-      hgp_loc_V h_chosen_loc_V
+      hgp_local_V h_chosen_local_V
   have hgp_zero_V : gp =ᵐ[(volume : Measure EuclN).restrict V]
       (fun _ : EuclN => (0 : ℝ)) := h_gp_eq.trans h_chosen_zero
   have hgp_zero_V' : ∀ᵐ y ∂(volume : Measure EuclN),
@@ -408,27 +408,27 @@ private lemma memWkp_offKernelSmoothCoef_mul
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
-  have h_supp : Function.support coef ⊆ Kkern := by
+  have h_support : Function.support coef ⊆ Kkern := by
     intro z hz
     by_contra hzk
     exact hz (hcoef_zero_off z hzk)
   have h_tsupp : tsupport coef ⊆ Kkern :=
-    closure_minimal h_supp hKkern_compact.isClosed
+    closure_minimal h_support hKkern_compact.isClosed
   have h_tsupp_Ω : tsupport coef ⊆ Ω := h_tsupp.trans hKkern_in
   have hcoef_smooth : ContDiff ℝ (⊤ : ℕ∞) coef := by
     have h_open_compl : IsOpen ((tsupport coef)ᶜ) :=
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport coef
-    · have hy_chart : y ∈ Ω := h_tsupp_Ω hy_supp
+    by_cases hy_support : y ∈ tsupport coef
+    · have hy_chart : y ∈ Ω := h_tsupp_Ω hy_support
       exact (hcoef_chart y hy_chart).contDiffAt (hΩ_open.mem_nhds hy_chart)
     · have h_eq_zero : coef =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_open_compl.mem_nhds hy_supp] with z hz
+        filter_upwards [h_open_compl.mem_nhds hy_support] with z hz
         exact image_eq_zero_of_notMem_tsupport hz
       exact contDiffAt_const.congr_of_eventuallyEq h_eq_zero
   have hcoef_cs : HasCompactSupport coef :=
-    HasCompactSupport.of_support_subset_isCompact hKkern_compact h_supp
+    HasCompactSupport.of_support_subset_isCompact hKkern_compact h_support
   obtain ⟨C, _hC_nn, hC_bd⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
       (d := Module.finrank ℝ E) hcoef_smooth hcoef_cs K

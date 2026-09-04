@@ -16,7 +16,7 @@ open Set
 open scoped ContDiff Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 section OriginMetric
 
@@ -226,7 +226,7 @@ theorem seqAtomChart_smooth
   exact (seqAtom_contMDiff (I := I) hd hD P L pb r k hgp gamma).comp_contMDiffOn
     ((exp_map_diffeo_cont_mdiff_on_exp_ball (I := I) (X.obj (L.φ k)) (beta k)).mono hUx)
 
-theorem seqAtom_live_conv
+theorem seqAtom_live_convergence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -235,11 +235,11 @@ theorem seqAtom_live_conv
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
     {U : Set E} (hU : IsOpen U) {ainf : E -> Real}
     (hgamma : L.alive (gamma : Nat) = true)
-    (hconv : MapCInfConvOnCompacts U
+    (hconv : MapCInfConvergenceOnCompacts U
       (fun k => gluingAtomChart (I := I) (X.obj (L.φ k)) (beta k)
         (seqCenterD hd P L k (gamma : Nat)) (L.lamInf (gamma : Nat))
         (hd.lambda_pos hD (L.rInf (gamma : Nat)))) ainf) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k => seqAtomChart (I := I) hd hD P L pb r beta gamma k) ainf := by
   refine hconv.congr_eventually hU ?_ fun _ _ => rfl
   filter_upwards [seqCenterD_live hd P L (gamma : Nat) hgamma] with k hk
@@ -265,25 +265,25 @@ theorem seqAtom_live_conv
     (L.lamInf (gamma : Nat))
     (hd.lambda_pos hD (L.rInf (gamma : Nat))) hR).symm
 
-theorem seqAtom_dead_conv
+theorem seqAtom_dead_convergence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
     {U : Set E} (hU : IsOpen U) (hgamma : L.alive (gamma : Nat) = false) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k => seqAtomChart (I := I) hd hD P L pb r beta gamma k)
       (fun _ => 0) := by
-  have hzero : MapCInfConvOnCompacts U
+  have hzero : MapCInfConvergenceOnCompacts U
       (fun _ : Nat => fun _ : E => (0 : Real)) (fun _ => 0) :=
-    mapCInfConv_const (fun _ : E => (0 : Real))
+    mapCInfConvergence_const (fun _ : E => (0 : Real))
   refine hzero.congr_eventually hU ?_ fun _ _ => rfl
   filter_upwards [seqCenter_dead hd P L (gamma : Nat) hgamma] with k hk
   intro z _hz
   simp [seqAtomChart,     seqAtom_none hd hD P L pb r k gamma hk]
 
-theorem atom_disjoint_conv
+theorem atom_disjoint_convergence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -301,12 +301,12 @@ theorem atom_disjoint_conv
         U (L.hatBall hd D P pb r k alpha))
     (hdisjoint : ∀ᶠ k in Filter.atTop,
       ¬ BInter hd D P L.lamInf (alpha : Nat) (gamma : Nat) (L.φ k)) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k => seqAtomChart (I := I) hd hD P L pb r beta gamma k)
       (fun _ => 0) := by
-  have hzero : MapCInfConvOnCompacts U
+  have hzero : MapCInfConvergenceOnCompacts U
       (fun _ : Nat => fun _ : E => (0 : Real)) (fun _ => 0) :=
-    mapCInfConv_const (fun _ : E => (0 : Real))
+    mapCInfConvergence_const (fun _ : E => (0 : Real))
   refine hzero.congr_eventually hU ?_ fun _ _ => rfl
   filter_upwards [hsource, hdisjoint] with k hsourceK hdisjointK
   intro z hz
@@ -323,7 +323,7 @@ theorem atom_disjoint_conv
   exact L.binter_of_mem_hat hd hD P pb r k (hsourceK hz)
     (seqAtom_mem_hat hd hD P L pb r k gamma hne)
 
-theorem seqAtoms_conv
+theorem seqAtoms_convergence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -332,22 +332,22 @@ theorem seqAtoms_conv
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) {U : Set E} (hU : IsOpen U)
     (ainf : Fin (pb.A r) -> E -> Real)
     (hlive : ∀ gamma : Fin (pb.A r), L.alive (gamma : Nat) = true ->
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => gluingAtomChart (I := I) (X.obj (L.φ k)) (beta k)
           (seqCenterD hd P L k (gamma : Nat)) (L.lamInf (gamma : Nat))
           (hd.lambda_pos hD (L.rInf (gamma : Nat)))) (ainf gamma)) :
     ∀ gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => seqAtomChart (I := I) hd hD P L pb r beta gamma k)
         (if L.alive (gamma : Nat) = true then ainf gamma else fun _ => 0) := by
   intro gamma
   cases hgamma : L.alive (gamma : Nat) with
   | false =>
       simpa only [hgamma, Bool.false_eq_true, ↓reduceIte] using
-        seqAtom_dead_conv (I := I) hd hD P L pb r beta gamma hU hgamma
+        seqAtom_dead_convergence (I := I) hd hD P L pb r beta gamma hU hgamma
   | true =>
       simpa only [hgamma, ↓reduceIte] using
-        seqAtom_live_conv (I := I) hd hD P L pb r hgp beta gamma hU hgamma
+        seqAtom_live_convergence (I := I) hd hD P L pb r hgp beta gamma hU hgamma
           (hlive gamma hgamma)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -358,11 +358,11 @@ theorem gluing_atom_converges {ι : Type*} [Fintype ι]
     (lam : ι -> Real) (hlam : forall i, 0 < lam i)
     {U : Set E} (hU : IsOpen U)
     {gInf : E -> (ι -> (E →L[Real] E →L[Real] Real))}
-    (hg : MapCInfConvOnCompacts U
+    (hg : MapCInfConvergenceOnCompacts U
       (fun k _ i => normalCoordMetric (I := I) (X.obj k) (center i k) 0) gInf)
     (hginf : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U)
     {Jinf : ι -> E -> E}
-    (hJ : forall i, MapCInfConvOnCompacts U
+    (hJ : forall i, MapCInfConvergenceOnCompacts U
       (fun k => normalTransition (I := I) (X.obj k) (beta k) (center i k))
       (Jinf i))
     (hJc : forall i k, ContDiffOn Real (∞ : WithTop ℕ∞)
@@ -377,12 +377,12 @@ theorem gluing_atom_converges {ι : Type*} [Fintype ι]
       expMapDiffeo (I := I) (X.obj k).metric (beta k) z ∈
         (normalChartAt (I := I) (X.obj k).metric (center i k)).source)
     (i : ι) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k => gluingAtomChart (I := I) (X.obj k) (beta k) (center i k)
         (lam i) (hlam i))
       (fun z => gluingBump (lam i) (hlam i)
         (gInf z i (Jinf i z) (Jinf i z))) := by
-  have hraw := quadPiBump_conv hU hg (hJ i)
+  have hraw := quadPiBump_convergence hU hg (hJ i)
     (fun _ => contDiffOn_const) hginf (hJc i) (hJinfc i)
     i (gluingBump (lam i) (hlam i)) (gluingBump (lam i) (hlam i)).contDiff
   refine hraw.congr hU (fun k z hz => ?_) (fun _ _ => rfl)
@@ -398,7 +398,7 @@ theorem existsOriginMetric
     exists (phi : Nat -> Nat)
         (gInf : E -> (E →L[Real] E →L[Real] Real)),
       StrictMono phi ∧ ContDiffOn Real (∞ : WithTop ℕ∞) gInf Set.univ ∧
-        MapCInfConvOnCompacts Set.univ
+        MapCInfConvergenceOnCompacts Set.univ
           (fun k _ => normalCoordMetric (I := I) (X.obj (phi k)) (c (phi k)) 0)
           gInf ∧
         forall z : E, forall v : E,
@@ -440,7 +440,7 @@ theorem existsMetric0Univ {ι : Type*} [Fintype ι]
     exists (phi : Nat -> Nat)
         (gInf : E -> (ι -> (E →L[Real] E →L[Real] Real))),
       StrictMono phi ∧ ContDiffOn Real (∞ : WithTop ℕ∞) gInf Set.univ ∧
-        MapCInfConvOnCompacts Set.univ
+        MapCInfConvergenceOnCompacts Set.univ
           (fun k _ i => normalCoordMetric (I := I) (X.obj (phi k))
             (c i (phi k)) 0)
           gInf := by
@@ -479,7 +479,7 @@ theorem existsLiveMetric0
     exists (psi : Nat -> Nat)
         (gInf : E -> (LiveSlot L pb r -> (E →L[Real] E →L[Real] Real))),
       StrictMono psi ∧ ContDiffOn Real (∞ : WithTop ℕ∞) gInf Set.univ ∧
-        MapCInfConvOnCompacts Set.univ
+        MapCInfConvergenceOnCompacts Set.univ
           (fun k _ gamma => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
             (seqCenterD hd P L (psi k) (gamma.1 : Nat)) 0)
           gInf := by
@@ -501,7 +501,7 @@ theorem liveMetric0_equiv
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     {psi : Nat → Nat}
     {gInf : E → (LiveSlot L pb r → (E →L[Real] E →L[Real] Real))}
-    (hconv : MapCInfConvOnCompacts Set.univ
+    (hconv : MapCInfConvergenceOnCompacts Set.univ
       (fun k _ gamma => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
         (seqCenterD hd P L (psi k) (gamma.1 : Nat)) 0)
       gInf) :
@@ -543,5 +543,5 @@ theorem liveMetric0_equiv
 
 end OriginMetric
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

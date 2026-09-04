@@ -352,7 +352,7 @@ private theorem abs_add4 (a b c d : ℝ) :
     _ ≤ |a| + |b| + |c| + |d| := by
       linarith [abs_add_le a b]
 
-private theorem slot_stage_unif (g : SmoothRiemannianMetric I M)
+private theorem slot_stage_uniform (g : SmoothRiemannianMetric I M)
     (σ m k : ℕ) {α : Type*} (C : α → SmoothCcTensor g σ σ) (A : Set α)
     (cC cD cE : ℕ → ℝ) (hcC_nn : ∀ p, 0 ≤ cC p)
     (hcD_nn : ∀ p, 0 ≤ cD p) (hcE_nn : ∀ p, 0 ≤ cE p)
@@ -608,7 +608,7 @@ private theorem slot_stage_bound (g : SmoothRiemannianMetric I M)
     app_shift_win (I := I) (M := M) g σ m ((σ + m) + 1) D
   obtain ⟨cE, hcE_nn, hcE⟩ :=
     app_shift_win (I := I) (M := M) g σ (m + 1) ((σ + m) + 1) E₁
-  obtain ⟨K, hK_nn, hK⟩ := slot_stage_unif (I := I) (M := M) g σ m k
+  obtain ⟨K, hK_nn, hK⟩ := slot_stage_uniform (I := I) (M := M) g σ m k
     (fun _ : Unit => C) Set.univ cC cD cE hcC_nn hcD_nn hcE_nn
     (fun _ _ => by simpa only [Cm] using hcC)
     (fun _ _ => by simpa only [Cm, D] using hcD)
@@ -623,7 +623,7 @@ private theorem sum_telescope (H : ℕ → ℝ) (n : ℕ) :
       rw [Finset.sum_range_succ, ih]
       ring
 
-private theorem slot_main_unif (g : SmoothRiemannianMetric I M)
+private theorem slot_main_uniform (g : SmoothRiemannianMetric I M)
     (sigma n : ℕ) {α : Type*} (C : α → SmoothCcTensor g sigma sigma)
     (A : Set α) (cC cD cE : ℕ → ℕ → ℝ)
     (hcC_nn : ∀ m p, 0 ≤ cC m p) (hcD_nn : ∀ m p, 0 ≤ cD m p)
@@ -656,7 +656,7 @@ private theorem slot_main_unif (g : SmoothRiemannianMetric I M)
             ‖iteratedCovGrad (I := I) g 0 sigma j V‖)) := by
     intro m
     by_cases hm : m < n
-    · obtain ⟨Km, hKm_nn, hKm⟩ := slot_stage_unif (I := I) (M := M) g
+    · obtain ⟨Km, hKm_nn, hKm⟩ := slot_stage_uniform (I := I) (M := M) g
         sigma m (n - 1 - m) C A (cC m) (cD m) (cE m)
         (hcC_nn m) (hcD_nn m) (hcE_nn m) (hcC m) (hcD m) (hcE m)
       refine ⟨Km, hKm_nn, fun t ht V _ => ?_⟩
@@ -777,7 +777,7 @@ private theorem slot_main_bdd (g : SmoothRiemannianMetric I M)
       A BE hBE_nn hBE
     exact ⟨cC, cD, cE, hcC_nn, hcD_nn, hcE_nn, hcC, hcD, hcE⟩
   choose cC cD cE hcC_nn hcD_nn hcE_nn hcC hcD hcE using hwin
-  exact slot_main_unif (I := I) (M := M) g sigma n C A cC cD cE
+  exact slot_main_uniform (I := I) (M := M) g sigma n C A cC cD cE
     hcC_nn hcD_nn hcE_nn hcC hcD hcE
 
 private theorem slot_main_bound (g : SmoothRiemannianMetric I M)
@@ -981,7 +981,7 @@ theorem slot_iterL_pair (g : SmoothRiemannianMetric I M) (s n : ℕ)
   refine le_trans (abs_add_le _ _) ?_
   exact le_trans (add_le_add hmain hcurv) (le_of_eq (by ring))
 
-theorem slot_iterL_unif (g : SmoothRiemannianMetric I M) (s n : ℕ)
+theorem slot_iterL_uniform (g : SmoothRiemannianMetric I M) (s n : ℕ)
     {α : Type*} (C : α → SmoothCcTensor g (s + 1) (s + 1)) (A : Set α)
     (B : ℕ → ℝ) (hB_nn : ∀ i, 0 ≤ B i)
     (hB : ∀ i t, t ∈ A → ∀ x : M,

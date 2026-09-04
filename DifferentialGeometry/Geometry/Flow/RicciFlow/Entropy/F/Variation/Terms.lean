@@ -309,24 +309,24 @@ theorem fFunctionalIntegrationByPartsRemainder_integral_eq_zero [MeasurableSpace
         potentialVariation metricVariationTrace weightedDivergenceTrace
         shiftedTrace x
       ∂weightedMeasure = 0 := by
-  let corr : M -> Real := fun x =>
+  let correction : M -> Real := fun x =>
     expWeightedMeasureVariationFactor potentialVariation
       metricVariationTrace x *
       (lapPotential x - gradPotentialNormSq x)
-  have hcorr_int' : Integrable corr weightedMeasure := by
-    simpa [corr] using hcorr_int
+  have hcorr_int' : Integrable correction weightedMeasure := by
+    simpa [correction] using hcorr_int
   have hshift' :
       ∫ x, shiftedTrace x ∂weightedMeasure =
-        ∫ x, corr x ∂weightedMeasure := by
-    simpa [corr] using hshift
+        ∫ x, correction x ∂weightedMeasure := by
+    simpa [correction] using hshift
   unfold fFunctionalIntegrationByPartsRemainder
   change
-    ∫ x, weightedDivergenceTrace x + (shiftedTrace - corr) x
+    ∫ x, weightedDivergenceTrace x + (shiftedTrace - correction) x
       ∂weightedMeasure = 0
   rw [integral_add hdiv_int (hshift_int.sub hcorr_int')]
   change
     ∫ x, weightedDivergenceTrace x ∂weightedMeasure +
-      ∫ x, shiftedTrace x - corr x ∂weightedMeasure = 0
+      ∫ x, shiftedTrace x - correction x ∂weightedMeasure = 0
   rw [integral_sub hshift_int hcorr_int']
   rw [hdiv_zero, hshift']
   ring

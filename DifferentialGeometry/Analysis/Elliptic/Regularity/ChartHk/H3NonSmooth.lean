@@ -34,7 +34,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chart_loc_of_diff_data_and_uniform_bound
+theorem chart_local_of_diff_data_and_uniform_bound
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D_deriv : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -67,7 +67,7 @@ theorem chart_loc_of_diff_data_and_uniform_bound
     hΩ''_open hΩ''_compact_closure hh₀ h_room hM_nn h_uniform_bd i k
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chart_loc_weak_partial_deriv_of_diff_data_and_uniform_bound
+theorem chart_local_weak_partial_deriv_of_diff_data_and_uniform_bound
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -109,13 +109,13 @@ theorem chart_loc_weak_partial_deriv_of_diff_data_and_uniform_bound
     rw [h_weak_partial_eq i']
     exact h_uniform_bd i' k' h hh hh_le
   obtain ⟨g_ik, hg_ik_memLp, hg_ik_partial, hg_ik_norm⟩ :=
-    chart_loc_of_diff_data_and_uniform_bound (I := I) (M := M)
+    chart_local_of_diff_data_and_uniform_bound (I := I) (M := M)
       (g := g) (α := α) D_deriv hΩ''_open hΩ''_compact_closure hh₀ h_room
       hM_nn h_uniform_bd' i k
   refine ⟨g_ik, hg_ik_memLp, ?_, hg_ik_norm⟩
   have h_eq := h_weak_partial_eq i
-  intro φ hφ_smooth hφ_supp hφ_sub
-  have h_id := hg_ik_partial φ hφ_smooth hφ_supp hφ_sub
+  intro φ hφ_smooth hφ_support hφ_sub
+  have h_id := hg_ik_partial φ hφ_smooth hφ_support hφ_sub
   rw [show D.weakPartialDeriv i = D_deriv.weakPartial i from h_eq.symm]
   exact h_id
 

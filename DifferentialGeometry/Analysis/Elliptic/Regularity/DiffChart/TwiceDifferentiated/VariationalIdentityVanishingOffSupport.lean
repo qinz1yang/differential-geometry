@@ -84,14 +84,14 @@ private lemma chartTarget_diff_K_α_subset_target (α : M) :
       chartTargetEuclid (I := I) (M := M) α := fun _ hy => hy.1
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma chosenWeakPartial'_ae_zero_on_open_subset_of_ae_zero
+private lemma chosenWeakPartialOrZero_ae_zero_on_open_subset_of_ae_zero
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω V : Set EuclN}
     (_hΩ : IsOpen Ω) (hV : IsOpen V) (hV_sub : V ⊆ Ω)
     {u : EuclN → ℝ}
     (hu : DeGiorgi.MemW1p (d := Module.finrank ℝ E) p u Ω)
     (hu_ae_zero_V : u =ᵐ[(volume : Measure EuclN).restrict V] (fun _ => (0 : ℝ)))
     (i : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u Ω
       =ᵐ[(volume : Measure EuclN).restrict V] (fun _ : EuclN => (0 : ℝ)) := by
   classical
@@ -106,60 +106,60 @@ private lemma chosenWeakPartial'_ae_zero_on_open_subset_of_ae_zero
           (MeasureTheory.Measure.restrict_mono_set _ hV_sub)
       · exact DeGiorgi.HasWeakPartialDeriv.restrict hV hV_sub hg_weak
   have h_partial_V : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u V) u V :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       hu_V i
   have h_partial_Ω : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u Ω) u Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       hu i
   have h_partial_Ω_V : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u Ω) u V :=
     DeGiorgi.HasWeakPartialDeriv.restrict hV hV_sub h_partial_Ω
   have h_chosen_V_zero :
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u V
         =ᵐ[(volume : Measure EuclN).restrict V] (fun _ : EuclN => (0 : ℝ)) :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_ae_zero_of_ae_zero
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_ae_zero_of_ae_zero
       (d := Module.finrank ℝ E) hp hV hu_ae_zero_V i
   have hg_lp_Ω : MemLp
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u Ω) p
       ((volume : Measure EuclN).restrict Ω) :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       hu i
   have hg_lp_Ω_V : MemLp
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u Ω) p
       ((volume : Measure EuclN).restrict V) :=
     hg_lp_Ω.mono_measure (MeasureTheory.Measure.restrict_mono_set _ hV_sub)
-  have hg_loc_Ω_V : LocallyIntegrable
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have hg_local_Ω_V : LocallyIntegrable
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u Ω)
       ((volume : Measure EuclN).restrict V) :=
     hg_lp_Ω_V.locallyIntegrable hp
   have hgV_lp : MemLp
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u V) p
       ((volume : Measure EuclN).restrict V) :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       hu_V i
-  have hgV_loc : LocallyIntegrable
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have hgV_local : LocallyIntegrable
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u V)
       ((volume : Measure EuclN).restrict V) :=
     hgV_lp.locallyIntegrable hp
   have h_unique :
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u Ω
         =ᵐ[(volume : Measure EuclN).restrict V]
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i u V :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq hV h_partial_Ω_V h_partial_V
-      hg_loc_Ω_V hgV_loc
+      hg_local_Ω_V hgV_local
   exact h_unique.trans h_chosen_V_zero
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -187,7 +187,7 @@ private lemma chosenWeakPartial_chartPushed_u_h_ae_zero_off_K_α
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (i : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 i
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α
@@ -200,7 +200,7 @@ private lemma chosenWeakPartial_chartPushed_u_h_ae_zero_off_K_α
   have h_w1p :=
     Analysis.Laplacian.ChartPushedMemWkpThree.chartPushed_memW1p_two_of_laplacianDomainPow_two
       (I := I) (M := M) g α hu_h
-  exact chosenWeakPartial'_ae_zero_on_open_subset_of_ae_zero
+  exact chosenWeakPartialOrZero_ae_zero_on_open_subset_of_ae_zero
     (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     (chartTarget_diff_K_α_isOpen (I := I) (M := M) α)
@@ -220,7 +220,7 @@ private lemma chosenSecond_ae_zero_off_K_α
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   set g_i : EuclN → ℝ :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := Module.finrank ℝ E) 2 i
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
         (I := I) (M := M) (chartAtlasPOU I M) α
@@ -244,14 +244,14 @@ private lemma chosenSecond_ae_zero_off_K_α
       at h_step
     exact h_step
   have h_unfold : chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l g_i
         (chartTargetEuclid (I := I) (M := M) α) := rfl
   rw [h_unfold]
   have h_g_i_ae :=
     chosenWeakPartial_chartPushed_u_h_ae_zero_off_K_α
       (I := I) (M := M) g α hu_h i
-  exact chosenWeakPartial'_ae_zero_on_open_subset_of_ae_zero
+  exact chosenWeakPartialOrZero_ae_zero_on_open_subset_of_ae_zero
     (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open
     (chartTarget_diff_K_α_isOpen (I := I) (M := M) α)
     (chartTarget_diff_K_α_subset_target (I := I) (M := M) α)
@@ -273,11 +273,11 @@ private lemma weakPartial_ae_zero_on_open_subset_of_ae_zero
     rw [← ae_restrict_iff' hU_meas]; exact hf_ae_zero
   have h_target : ∀ᵐ y ∂(volume : Measure EuclN), y ∈ U → w y = 0 := by
     apply hU_open.ae_eq_zero_of_integral_contDiff_smul_eq_zero hw_li
-    intro ψ hψ_smooth hψ_cs hψ_supp
-    have hψ_supp_Ω : tsupport ψ ⊆ Ω := hψ_supp.trans hU_sub
+    intro ψ hψ_smooth hψ_cs hψ_support
+    have hψ_support_Ω : tsupport ψ ⊆ Ω := hψ_support.trans hU_sub
     have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
-    have h_weak := hw_isWeak ψ hψ_smooth hψ_cs hψ_supp_Ω
-    have h_f_supp_ae : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
+    have h_weak := hw_isWeak ψ hψ_smooth hψ_cs hψ_support_Ω
+    have h_f_support_ae : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
         f y * (fderiv ℝ ψ y) (EuclideanSpace.single i 1) = 0 := by
       refine (ae_restrict_iff' hΩ_meas).mpr ?_
       filter_upwards [hf_ae_zero_vol] with y hy _hyΩ
@@ -285,24 +285,24 @@ private lemma weakPartial_ae_zero_on_open_subset_of_ae_zero
       · rw [hy hy_U]; ring
       · have h_compl_open : IsOpen ((tsupport ψ)ᶜ) :=
           (isClosed_tsupport _).isOpen_compl
-        have h_y_not_supp : y ∉ tsupport ψ := fun h => hy_U (hψ_supp h)
-        have h_zero_nbhd : ∀ᶠ z in 𝓝 y, ψ z = 0 := by
-          filter_upwards [h_compl_open.mem_nhds h_y_not_supp] with z hz
+        have h_y_not_support : y ∉ tsupport ψ := fun h => hy_U (hψ_support h)
+        have h_zero_neighborhood : ∀ᶠ z in 𝓝 y, ψ z = 0 := by
+          filter_upwards [h_compl_open.mem_nhds h_y_not_support] with z hz
           exact image_eq_zero_of_notMem_tsupport hz
         have h_fderiv_zero : fderiv ℝ ψ y = 0 := by
-          have h_ev_const : ψ =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := h_zero_nbhd
+          have h_ev_const : ψ =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := h_zero_neighborhood
           rw [Filter.EventuallyEq.fderiv_eq h_ev_const]; simp
         rw [h_fderiv_zero]; simp
     have h_zero_lhs :
         ∫ y in Ω, f y * (fderiv ℝ ψ y) (EuclideanSpace.single i 1)
           ∂(volume : Measure EuclN) = 0 := by
-      rw [MeasureTheory.integral_congr_ae h_f_supp_ae]; simp
+      rw [MeasureTheory.integral_congr_ae h_f_support_ae]; simp
     rw [h_zero_lhs] at h_weak
     have h_rhs_zero :
         ∫ y in Ω, w y * ψ y ∂(volume : Measure EuclN) = 0 := by linarith
     have h_vanish_off_Ω : ∀ x ∉ Ω, ψ x • w x = 0 := fun x hx => by
-      have hx_supp : x ∉ tsupport ψ := fun h => hx (hψ_supp_Ω h)
-      have hψ_x : ψ x = 0 := image_eq_zero_of_notMem_tsupport hx_supp
+      have hx_support : x ∉ tsupport ψ := fun h => hx (hψ_support_Ω h)
+      have hψ_x : ψ x = 0 := image_eq_zero_of_notMem_tsupport hx_support
       rw [hψ_x]; simp
     rw [← MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero
       h_vanish_off_Ω]
@@ -557,7 +557,7 @@ private lemma base_f_chart_ae_zero_off_K_α
   have hU_meas : MeasurableSet U := hU_open.measurableSet
   have h_density_contOn : ContinuousOn (densityOnEuclid (I := I) g α) Ω :=
     densityOnEuclid_continuousOn (I := I) g α
-  have h_prod_locInt : LocallyIntegrableOn
+  have h_prod_localInt : LocallyIntegrableOn
       (fun y => densityOnEuclid (I := I) g α y * D.fChart y) U
       (volume : Measure EuclN) := by
     intro x hx
@@ -592,9 +592,9 @@ private lemma base_f_chart_ae_zero_off_K_α
       tsupport ψ ⊆ U →
       ∫ y, ψ y • (densityOnEuclid (I := I) g α y * D.fChart y)
         ∂(volume : Measure EuclN) = 0 := by
-    intro ψ hψ_smooth hψ_cs hψ_supp_U
-    have hψ_supp_chart : tsupport ψ ⊆ Ω := hψ_supp_U.trans hU_sub
-    have h_var := D.variational_identity ψ hψ_smooth hψ_cs hψ_supp_chart
+    intro ψ hψ_smooth hψ_cs hψ_support_U
+    have hψ_support_chart : tsupport ψ ⊆ Ω := hψ_support_U.trans hU_sub
+    have h_var := D.variational_identity ψ hψ_smooth hψ_cs hψ_support_chart
     change (∫ y in Ω,
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
@@ -640,14 +640,14 @@ private lemma base_f_chart_ae_zero_off_K_α
         · refine Finset.sum_eq_zero ?_; intro i _
           refine Finset.sum_eq_zero ?_; intro j _
           rw [hy i hy_U]; ring
-        · have h_y_not_in_supp : y ∉ tsupport ψ := fun h => hy_U (hψ_supp_U h)
+        · have h_y_not_in_support : y ∉ tsupport ψ := fun h => hy_U (hψ_support_U h)
           have h_compl_open : IsOpen (tsupport ψ)ᶜ :=
             (isClosed_tsupport _).isOpen_compl
-          have h_zero_nbhd : ∀ᶠ z in 𝓝 y, ψ z = 0 := by
-            filter_upwards [h_compl_open.mem_nhds h_y_not_in_supp] with z hz
+          have h_zero_neighborhood : ∀ᶠ z in 𝓝 y, ψ z = 0 := by
+            filter_upwards [h_compl_open.mem_nhds h_y_not_in_support] with z hz
             exact image_eq_zero_of_notMem_tsupport hz
           have h_fderiv_zero : fderiv ℝ ψ y = 0 := by
-            have h_ev_const : ψ =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := h_zero_nbhd
+            have h_ev_const : ψ =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := h_zero_neighborhood
             rw [Filter.EventuallyEq.fderiv_eq h_ev_const]; simp
           refine Finset.sum_eq_zero ?_; intro i _
           refine Finset.sum_eq_zero ?_; intro j _
@@ -670,8 +670,8 @@ private lemma base_f_chart_ae_zero_off_K_α
         filter_upwards [h_uc_vol] with y hy _hyΩ
         by_cases hy_U : y ∈ U
         · rw [hy hy_U]; ring
-        · have h_y_not_in_supp : y ∉ tsupport ψ := fun h => hy_U (hψ_supp_U h)
-          have hψ_y : ψ y = 0 := image_eq_zero_of_notMem_tsupport h_y_not_in_supp
+        · have h_y_not_in_support : y ∉ tsupport ψ := fun h => hy_U (hψ_support_U h)
+          have hψ_y : ψ y = 0 := image_eq_zero_of_notMem_tsupport h_y_not_in_support
           rw [hψ_y]; ring
       rw [MeasureTheory.integral_congr_ae h_integrand_ae_zero]; simp
     rw [h_principal_zero, h_mass_zero] at h_var
@@ -681,8 +681,8 @@ private lemma base_f_chart_ae_zero_off_K_α
       linarith
     have h_vanish_off_Ω : ∀ x ∉ Ω, ψ x • (densityOnEuclid (I := I) g α x *
         D.fChart x) = 0 := fun x hx => by
-      have hx_supp : x ∉ tsupport ψ := fun h => hx (hψ_supp_chart h)
-      have hψ_x : ψ x = 0 := image_eq_zero_of_notMem_tsupport hx_supp
+      have hx_support : x ∉ tsupport ψ := fun h => hx (hψ_support_chart h)
+      have hψ_x : ψ x = 0 := image_eq_zero_of_notMem_tsupport hx_support
       rw [hψ_x]; simp
     rw [← MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero
       h_vanish_off_Ω]
@@ -690,7 +690,7 @@ private lemma base_f_chart_ae_zero_off_K_α
     intro x _hxΩ; simp [smul_eq_mul, mul_comm]
   have h_cf_vol : ∀ᵐ y ∂(volume : Measure EuclN),
       y ∈ U → densityOnEuclid (I := I) g α y * D.fChart y = 0 :=
-    hU_open.ae_eq_zero_of_integral_contDiff_smul_eq_zero h_prod_locInt h_zero_for_test
+    hU_open.ae_eq_zero_of_integral_contDiff_smul_eq_zero h_prod_localInt h_zero_for_test
   refine (ae_restrict_iff' hU_meas).mpr ?_
   filter_upwards [h_cf_vol] with y hy hy_U
   have h_pos : 0 < densityOnEuclid (I := I) g α y :=
@@ -716,7 +716,7 @@ private lemma chosenFChartDeriv_ae_zero_off_K_α
       (fChartResidual_memW1p (I := I) (M := M) g α hu_h)
   have h_base_fc_ae := base_f_chart_ae_zero_off_K_α (I := I) (M := M) g α
     (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
-  exact chosenWeakPartial'_ae_zero_on_open_subset_of_ae_zero
+  exact chosenWeakPartialOrZero_ae_zero_on_open_subset_of_ae_zero
     (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open hU_open hU_sub
     h_memW1p h_base_fc_ae l
 
@@ -739,25 +739,25 @@ private lemma fChartDeriv2_ae_zero_off_K_α
   have h_chosenFC_ae := chosenFChartDeriv_ae_zero_off_K_α
     (I := I) (M := M) g α hu_h l₁
   have h_chosen :
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l₂
         (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁)
         (chartTargetEuclid (I := I) (M := M) α)
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)) :=
-    chosenWeakPartial'_ae_zero_on_open_subset_of_ae_zero
+    chosenWeakPartialOrZero_ae_zero_on_open_subset_of_ae_zero
       (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open hU_open hU_sub
       h_chosenFChartDeriv_memW1p h_chosenFC_ae l₂
   change ∀ᵐ y ∂((volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \ K_α (I := I) (M := M) α)),
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l₂
         (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁)
         (chartTargetEuclid (I := I) (M := M) α) y = 0
   exact h_chosen
 
-private lemma fChartEffTwiceNumerator_ae_zero_off_K_α
+private lemma fChartEffectiveTwiceNumerator_ae_zero_off_K_α
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
@@ -888,7 +888,7 @@ private lemma fChartEffTwiceNumerator_ae_zero_off_K_α
       hy_wp l₁, hy_wp l₂, hy_fcD1, hy_fcD2, hy_fcD12, hy_uc, hy_fc]
   ring
 
-lemma integral_fChartEffTwiceNumerator_eq_integral_density_fChartEffTwice
+lemma integral_fChartEffectiveTwiceNumerator_eq_integral_density_fChartEffectiveTwice
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
@@ -916,7 +916,7 @@ lemma integral_fChartEffTwiceNumerator_eq_integral_density_fChartEffTwice
       (volume : Measure EuclN).restrict Ω]
       (fun y : EuclN => densityOnEuclid (I := I) g α y *
         effectiveSourceChartSecondOrder (I := I) (M := M) g α l₁ l₂ hu_h y * ψ y) := by
-    have h_numer_off := fChartEffTwiceNumerator_ae_zero_off_K_α
+    have h_numer_off := fChartEffectiveTwiceNumerator_ae_zero_off_K_α
       (I := I) (M := M) g α hu_h l₁ l₂ h_chosenFChartDeriv_memW1p
     refine (ae_restrict_iff' hΩ_meas).mpr ?_
     have h_off_vol : ∀ᵐ y ∂(volume : Measure EuclN),
@@ -925,12 +925,12 @@ lemma integral_fChartEffTwiceNumerator_eq_integral_density_fChartEffTwice
       rw [← ae_restrict_iff' hU_meas]; exact h_numer_off
     filter_upwards [h_off_vol] with y hy hy_Ω
     by_cases hy_K : y ∈ K_α (I := I) (M := M) α
-    · have h_pt := density_mul_fChartEffTwice_eq_indicator_numerator
+    · have h_pt := density_mul_fChartEffectiveTwice_eq_indicator_numerator
         (I := I) (M := M) g α l₁ l₂ hu_h y hy_Ω
       rw [Set.indicator_of_mem hy_K] at h_pt
       rw [h_pt]
     · have hy_diff : y ∈ Ω \ K_α (I := I) (M := M) α := ⟨hy_Ω, hy_K⟩
-      have h_pt := density_mul_fChartEffTwice_eq_indicator_numerator
+      have h_pt := density_mul_fChartEffectiveTwice_eq_indicator_numerator
         (I := I) (M := M) g α l₁ l₂ hu_h y hy_Ω
       rw [Set.indicator_of_notMem hy_K] at h_pt
       rw [hy hy_diff]

@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff BigOperators
@@ -52,5 +52,5 @@ theorem MetricsTwoSidedCloseOn.metrics_close_on
 
 end FixedDomain
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

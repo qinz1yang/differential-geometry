@@ -7,7 +7,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff BigOperators Topology
@@ -192,5 +192,5 @@ theorem exists_partial_diffeomorph_metric_approximation_of_zero_order_bounds
 
 end
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

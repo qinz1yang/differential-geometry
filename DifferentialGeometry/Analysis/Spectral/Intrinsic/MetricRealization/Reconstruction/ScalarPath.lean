@@ -820,13 +820,13 @@ theorem scalarTsum_smooth
   have hBc_int : (interior Bc).Nonempty := by
     rw [hBc_def, interior_closedBall y₀ (by positivity : r / 2 ≠ 0)]
     exact ⟨y₀, Metric.mem_ball_self (by positivity)⟩
-  have hBc_conv : Convex ℝ Bc := convex_closedBall y₀ (r / 2)
+  have hBc_convergence : Convex ℝ Bc := convex_closedBall y₀ (r / 2)
   have hBc_uniq : UniqueDiffOn ℝ Bc :=
-    uniqueDiffOn_convex hBc_conv hBc_int
+    uniqueDiffOn_convex hBc_convergence hBc_int
   have hBc_ne : Bc.Nonempty :=
     ⟨y₀, Metric.mem_closedBall_self (by positivity)⟩
   exact (scalarTsum_chart (I := I) (M := M) g htail hab N c
-    hU hIccU hc hmass α hBc_compact hBc_uniq hBc_conv hBc_ne hBcΩ).mono
+    hU hIccU hc hmass α hBc_compact hBc_uniq hBc_convergence hBc_ne hBcΩ).mono
       (Set.prod_mono (le_refl _) hBBc)
 
 theorem scalarSpec_local

@@ -375,7 +375,7 @@ private lemma riemannSec_eq_zero_of_Z_eq_zero
   have he : x ∈ e.baseSet := mem_baseSet_trivializationAt F V x
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (⊤ : ℕ∞) basisF
   obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
-  obtain ⟨χ, -, hχsupp⟩ :=
+  obtain ⟨χ, -, hχsupport⟩ :=
     (SmoothBumpFunction.nhds_basis_tsupport (I := I) x).mem_iff.mp
       (e.open_baseSet.mem_nhds he)
   have hZ_le : ContMDiff I (I.prod 𝓘(ℝ, F)) ((∞ : WithTop ℕ∞) + 1) (T% Z) := by simpa using hZ
@@ -388,7 +388,7 @@ private lemma riemannSec_eq_zero_of_Z_eq_zero
       intro b
       by_cases hb : b ∈ tsupport (χ : M → ℝ)
       · exact (χ.contMDiff.of_le (by exact_mod_cast le_top)).contMDiffAt.smul
-          (contMDiffAt_localFrameCoeff basisF (hχsupp hb) hZ.contMDiffAt i)
+          (contMDiffAt_localFrameCoeff basisF (hχsupport hb) hZ.contMDiffAt i)
       · have hχ_zero : ∀ᶠ y in nhds b, (χ : M → ℝ) y = 0 := by
           apply Filter.Eventually.mono
             ((isClosed_tsupport (χ : M → ℝ)).isOpen_compl.mem_nhds hb)

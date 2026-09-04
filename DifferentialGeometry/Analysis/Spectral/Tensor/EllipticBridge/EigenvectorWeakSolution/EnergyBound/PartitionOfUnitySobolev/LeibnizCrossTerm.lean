@@ -91,18 +91,18 @@ lemma covGradPouLeibnizCrossLimit_memWkp_and_wkpNorm_le
     exact (eigenvectorVec_pou_memWkp_and_wkpNorm_le (I := I) (M := M)
       g r s i K β' Q
       ((h_pou_phi β' Q).le_of_le (Nat.le_succ K))).1
-  have hpou_supp : tsupport
+  have hpou_support : tsupport
       ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆ (chartAt H β).source :=
     chartAtlasPOU_isSubordinate I M β
   have hpou_pushed_smooth : ContDiff ℝ ∞
       (chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
     Analysis.Laplacian.SmoothFChartResidualBilinearBound.chartPushedRaw_contDiff
       (I := I) (M := M)
-      (chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯).contMDiff hpou_supp
+      (chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯).contMDiff hpou_support
   have hpou_pushed_cs : HasCompactSupport
       (chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
     chartPushedRaw_smooth_hasCompactSupport_local
-      (I := I) (M := M) hpou_supp
+      (I := I) (M := M) hpou_support
   have hmult_smooth : ContDiff ℝ ∞
       (euclidPartial (E := E) k
         (chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ))) :=
@@ -339,18 +339,18 @@ lemma covGradPouLeibnizCrossLimit_wkpNorm_le_uniform
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) β with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) β
-  have hpou_supp : tsupport
+  have hpou_support : tsupport
       ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆ (chartAt H β).source :=
     chartAtlasPOU_isSubordinate I M β
   have hpou_pushed_smooth : ContDiff ℝ ∞
       (chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
     Analysis.Laplacian.SmoothFChartResidualBilinearBound.chartPushedRaw_contDiff
       (I := I) (M := M)
-      (chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯).contMDiff hpou_supp
+      (chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯).contMDiff hpou_support
   have hpou_pushed_cs : HasCompactSupport
       (chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
     chartPushedRaw_smooth_hasCompactSupport_local
-      (I := I) (M := M) hpou_supp
+      (I := I) (M := M) hpou_support
   have hmult_smooth : ContDiff ℝ ∞
       (euclidPartial (E := E) k
         (chartPushedRaw I β ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ))) :=

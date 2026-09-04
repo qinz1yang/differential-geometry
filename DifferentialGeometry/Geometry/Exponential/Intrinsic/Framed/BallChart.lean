@@ -43,7 +43,7 @@ noncomputable def framed
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
     {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) :
     PartialDiffeomorph (modelWithCornersSelf Real E) I E M ∞ := by
-  let L := intrFrameCLE (I := I) g p
+  let L := intrinsicFrameCLE (I := I) g p
   exact
     { toPartialEquiv :=
         { toFun := fun z => B.hom (L z)
@@ -82,7 +82,7 @@ omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
     {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) :
     B.framed.source =
-      intrFrameCLE (I := I) g p ⁻¹' B.hom.source :=
+      intrinsicFrameCLE (I := I) g p ⁻¹' B.hom.source :=
   rfl
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
@@ -91,7 +91,7 @@ omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
     {p : M} (B : ExponentialInverseBranch (I := I) g hEnorm p) (z : E) :
-    B.framed z = B.hom (intrFrameCLE (I := I) g p z) :=
+    B.framed z = B.hom (intrinsicFrameCLE (I := I) g p z) :=
   rfl
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
@@ -103,14 +103,14 @@ theorem framed_eq_intr
     EqOn (intrinsicFramedExp (I := I) g hEnorm p) B.framed
       B.framed.source := by
   intro z hz
-  change intrFrameCLE (I := I) g p z ∈ B.hom.source at hz
+  change intrinsicFrameCLE (I := I) g p z ∈ B.hom.source at hz
   have hframe :
       (tangentSpaceModelContinuousLinearEquiv (I := I) p).symm
-          (intrFrameCLE (I := I) g p z) =
+          (intrinsicFrameCLE (I := I) g p z) =
         normalFrame (I := I) g p z := by
     exact (tangentSpaceModelContinuousLinearEquiv_symm_apply
-      (I := I) p (intrFrameCLE (I := I) g p z)).trans rfl
-  rw [intrFrame_apply, framed_apply]
+      (I := I) p (intrinsicFrameCLE (I := I) g p z)).trans rfl
+  rw [intrinsicFrame_apply, framed_apply]
   exact (congrArg (expMapIntrinsic (I := I) g hEnorm p) hframe.symm).trans
     (B.hom_eq hz)
 
@@ -122,7 +122,7 @@ namespace NormalCoordinates
 open Exponential
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
-theorem intrFrame_localAt
+theorem intrinsicFrame_localAt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
@@ -131,12 +131,12 @@ theorem intrFrame_localAt
     IsLocalDiffeomorphAt (modelWithCornersSelf Real E) I ∞
       (intrinsicFramedExp (I := I) g hEnorm p) z := by
   refine ⟨B.framed, ?_, B.framed_eq_intr⟩
-  change intrFrameCLE (I := I) g p z ∈ B.hom.source
+  change intrinsicFrameCLE (I := I) g p z ∈ B.hom.source
   convert hz using 1
   rfl
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
-theorem intrFrame_localOn
+theorem intrinsicFrame_localOn
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w)))
@@ -147,7 +147,7 @@ theorem intrFrame_localOn
       (intrinsicFramedExp (I := I) g hEnorm p) U := by
   intro z
   obtain ⟨B, hz⟩ := hbranch z z.2
-  exact intrFrame_localAt (I := I) g hEnorm p B hz
+  exact intrinsicFrame_localAt (I := I) g hEnorm p B hz
 
 structure IntrinsicBallChart
     (g : SmoothRiemannianMetric I M)
@@ -174,7 +174,7 @@ def IntrinsicBallChart.toNormalBallChart
     rw [c.source_eq]
   have hzero : c.hom 0 = p := by
     rw [c.hom_eq (Metric.mem_ball.mpr (by simpa using hr))]
-    exact intrFrame_zero (I := I) g hEnorm p
+    exact intrinsicFrame_zero (I := I) g hEnorm p
   exact NormalBallChart.ofHigher (I := I) hr c.hom hsub hzero
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in

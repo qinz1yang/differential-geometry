@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Set Filter
 open scoped Manifold ContDiff Topology BigOperators
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -88,7 +88,7 @@ theorem ricci_tendsto_left
         metricCovDerivNorm (I := I) q (gSeq k) gRef z <= C := by
     intro q K hK
     obtain ⟨Cq, _hCq, tq, htq, hq⟩ :=
-      covTailBoundSol (I := I) q hdim hS hbound
+      covTailBoundSolution (I := I) q hdim hS hbound
         ⟨Lambda, hLambda, t1, ht1, hEquivTail⟩
     have hqNhds : Tendsto qShift atTop (nhds omega) :=
       hqShift.mono_right nhdsWithin_le_nhds
@@ -106,7 +106,7 @@ theorem ricci_tendsto_left
       ⟨le_of_lt (lt_trans ht1beta (hShiftMem k).1), (hShiftMem k).2⟩ y xi).1
   have hLambdaInv : 0 < Lambda⁻¹ :=
     inv_pos.mpr (lt_of_lt_of_le zero_lt_one hLambda)
-  obtain ⟨phi, hPhi, gLim, hInner, hDerivConv⟩ :=
+  obtain ⟨phi, hPhi, gLim, hInner, hDerivConvergence⟩ :=
     exists_metric_subsequence_tendsto_on_compact (I := I) ⟨x⟩
       Set.univ isCompact_univ 2 gRef gSeq hbdd
       ⟨Lambda⁻¹, hLambdaInv, hlowSeq⟩
@@ -223,7 +223,7 @@ theorem ricci_tendsto_left
               metricCovDerivNorm (I := I) b gInf gRef x)
             (fun b _ => add_nonneg (le_max_left 0 (C b)) (Real.sqrt_nonneg _)) haMem)
     exact (le_add_of_nonneg_left (le_max_left 0 (C a))).trans hterm
-  have hRicEps := ricciConv_of_dnConv (I := I) gRef x
+  have hRicEps := ricciConvergence_of_dnConvergence (I := I) gRef x
     (fun k _ => gSeq (phi k)) (fun _ => gInf)
     0 0 Lambda⁻¹ B hLambdaInv hB
     (fun k _ _ xi => hlowSeq (phi k) x xi)
@@ -231,7 +231,7 @@ theorem ricci_tendsto_left
     (fun k _ _ a ha => hbddSeq k a ha)
     (fun _ _ a ha => hbddInf a ha)
     (fun eps heps => by
-      obtain ⟨k0, hk0⟩ := hDerivConv eps heps
+      obtain ⟨k0, hk0⟩ := hDerivConvergence eps heps
       exact ⟨k0, fun k hk _ _ a ha => hk0 k hk a ha x (Set.mem_univ x)⟩)
     v w
   have hRicLim : Tendsto

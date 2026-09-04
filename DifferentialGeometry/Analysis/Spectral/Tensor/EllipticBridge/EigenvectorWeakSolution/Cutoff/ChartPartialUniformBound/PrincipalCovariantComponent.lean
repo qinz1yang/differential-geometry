@@ -174,11 +174,11 @@ private lemma cutoffCovNormSumFun_continuous
     rfl
   rw [hfun_eq]
   refine continuous_of_tsupport (fun x hx => ?_)
-  have hx_supp : x ∈ tsupport ((χ : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
+  have hx_support : x ∈ tsupport ((χ : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
     tsupport_smul_subset_left
       (f := fun b : M => ((χ : C^∞⟮I, M; ℝ⟯) : M → ℝ) b) (g := w) hx
-  have hx_src : x ∈ (chartAt H α).source :=
-    chartKernelCutoff_tsupport_subset_source (I := I) (M := M) α hx_supp
+  have hx_source : x ∈ (chartAt H α).source :=
+    chartKernelCutoff_tsupport_subset_source (I := I) (M := M) α hx_support
   have hχ_contAt : ContinuousAt ((χ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x :=
     (χ.contMDiff.continuous).continuousAt
   have hw_contOn : ContinuousOn w ((chartAt H α).source) := by
@@ -186,7 +186,7 @@ private lemma cutoffCovNormSumFun_continuous
     exact (cutoffCovNormSqSum_continuousOn_chart_source (I := I) (M := M)
       g r s S α).sqrt
   have hw_contAt : ContinuousAt w x :=
-    hw_contOn.continuousAt ((chartAt H α).open_source.mem_nhds hx_src)
+    hw_contOn.continuousAt ((chartAt H α).open_source.mem_nhds hx_source)
   exact hχ_contAt.smul hw_contAt
 
 omit [CompleteSpace E] in
@@ -234,7 +234,7 @@ lemma cutoffCovDerivComponent_le_chartPushedRaw
       with hb_def
     have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α :=
       chartBasePoint_mem_goodSet' (I := I) (M := M) α hy
-    have hb_src : b ∈ (chartAt H α).source := by
+    have hb_source : b ∈ (chartAt H α).source := by
       have := symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy
       rwa [← hb_def] at this
     have hχ_nn : 0 ≤ ((chartKernelCutoff (I := I) (M := M) α
@@ -265,7 +265,7 @@ lemma cutoffCovDerivComponent_le_chartPushedRaw
       rw [← tensorCovDerivAt_eq_chartTensorRSCovariantDerivative (I := I) (M := M)
         g r s S α k hb_good]
       rw [triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel (I := I) (M := M)
-        r s α hb_src
+        r s α hb_source
         (tensorCovDerivAt (I := I) (M := M) g r s S b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k b)))]

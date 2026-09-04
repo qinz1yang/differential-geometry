@@ -72,34 +72,34 @@ theorem redLength_lap_le
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau) (hZ : Z ∈ lInjDomain S T x tau)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     {Ω : Set Real} (hΩ : IsOpen Ω)
-    (hΩseg : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
+    (hΩsegment : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
     (hW : ∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent
       (8 : Nat)
       (fun s : Real ↦ (TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _))
-        (lRegCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
+        (lRegularizedCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
           TangentBundle I M)) Ω)
     (hP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
       (S.base.metric (T - tau)).inner (lExp S T x Z tau)
           (P i (Real.sqrt tau)) (P j (Real.sqrt tau)) =
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
-        S.ricciAt (T - s ^ 2) (lRegCurve S T x Z s)
+        S.ricciAt (T - s ^ 2) (lRegularizedCurve S T x Z s)
           (vec2 (P i s) (P i s)))
       MeasureTheory.volume 0 (Real.sqrt tau)) :
     laplacian (I := I) (LeviCivita (I := I)
@@ -110,12 +110,12 @@ theorem redLength_lap_le
           ∫ s in (0 : Real)..Real.sqrt tau,
             ((s / Real.sqrt tau) ^ 2 *
                 ∑ i : Fin (Module.finrank Real E),
-                  lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
+                  lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s) -
               (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
-                S.scalar (T - s ^ 2) (lRegCurve S T x Z s) := by
+                S.scalar (T - s ^ 2) (lRegularizedCurve S T x Z s) := by
   classical
   let b : Real := Real.sqrt tau
-  let alpha : Real → M := lRegCurve S T x Z
+  let alpha : Real → M := lRegularizedCurve S T x Z
   let y : M := lExp S T x Z tau
   let g : SmoothRiemannianMetric I M := S.base.metric (T - tau)
   rcases hZ with ⟨sigma, hsigma, hmin⟩
@@ -126,10 +126,10 @@ theorem redLength_lap_le
     ((mem_lMinDomain S T x Z tau).1 hminTau).1
   have hb : 0 < b := by
     simpa only [b] using Real.sqrt_pos.2 htau
-  have hbdom : b ∈ lRegDomain S T x Z := by
+  have hbdom : b ∈ lRegularizedDomain S T x Z := by
     simpa only [b] using
       ((mem_lExpPosDom S T x Z tau).1 hdom).2.2
-  have hgeo := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb hbdom
+  have hgeo := lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hb hbdom
   have ht : ∀ s ∈ Set.Icc (0 : Real) b, T - s ^ 2 ∈ D.regular := by
     intro s hs
     exact (hgeo.2.2 s (by
@@ -199,7 +199,7 @@ theorem redLength_lap_le
   have hfield (i : Fin (Module.finrank Real E)) :
       hessFun (I := I) g (fun q : M ↦ redLength S T x q tau) y
           (P i b) (P i b) ≤
-        lRegIndex S T alpha (fun s ↦ (s / b) • P i s)
+        lRegularizedIndex S T alpha (fun s ↦ (s / b) • P i s)
             (fun s ↦ (s / b) • P i s) 0 b / b := by
     have hW0 : (fun s ↦ (s / b) • P i s) 0 = 0 := by
       simp only [zero_div, zero_smul]
@@ -209,9 +209,9 @@ theorem redLength_lap_le
     simpa only [g, y, alpha, b] using
       redLength_hess_le S hS T x htau hZinj (P i b)
         (fun s ↦ (s / b) • P i s) hΩ
-        (by simpa only [b] using hΩseg)
+        (by simpa only [b] using hΩsegment)
         (by simpa only [alpha, b] using hW i) hW0 hWb
-  have htrace := lRegIndex_trace_linear_cutoff_zero (I := I) S hS T alpha P b hb
+  have htrace := lRegularizedIndex_trace_linear_cutoff_zero (I := I) S hS T alpha P b hb
     (by simpa only [alpha] using ht)
     (by simpa only [alpha] using halpha)
     (by simpa only [alpha, b] using hP)
@@ -225,11 +225,11 @@ theorem redLength_lap_le
         hessFun (I := I) g (fun q : M ↦ redLength S T x q tau) y
           (P i b) (P i b)) ≤
         ∑ i : Fin (Module.finrank Real E),
-          lRegIndex S T alpha (fun s ↦ (s / b) • P i s)
+          lRegularizedIndex S T alpha (fun s ↦ (s / b) • P i s)
             (fun s ↦ (s / b) • P i s) 0 b / b :=
       Finset.sum_le_sum fun i _ ↦ hfield i
     _ = (∑ i : Fin (Module.finrank Real E),
-          lRegIndex S T alpha (fun s ↦ (s / b) • P i s)
+          lRegularizedIndex S T alpha (fun s ↦ (s / b) • P i s)
             (fun s ↦ (s / b) • P i s) 0 b) / b := by
       rw [Finset.sum_div]
     _ = (Module.finrank Real E : Real) / (2 * tau) +
@@ -237,15 +237,15 @@ theorem redLength_lap_le
           ∫ s in (0 : Real)..Real.sqrt tau,
             ((s / Real.sqrt tau) ^ 2 *
                 ∑ i : Fin (Module.finrank Real E),
-                  lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
+                  lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s) -
               (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
-                S.scalar (T - s ^ 2) (lRegCurve S T x Z s) := by
+                S.scalar (T - s ^ 2) (lRegularizedCurve S T x Z s) := by
       rw [htrace]
       let A : Real :=
         ∫ s in (0 : Real)..b,
           ((s / b) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexIntegrand S T alpha (P i) (P i) s) -
+                lRegularizedIndexIntegrand S T alpha (P i) (P i) s) -
             (2 * s ^ 2 / b ^ 2) * S.scalar (T - s ^ 2) (alpha s)
       change ((Module.finrank Real E : Real) / (2 * b) + A) / b =
         (Module.finrank Real E : Real) / (2 * tau) + (1 / b) * A

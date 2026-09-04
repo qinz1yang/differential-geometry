@@ -65,10 +65,10 @@ private theorem covApply_chartRepr_euclid_jointContDiffWithinAt
   set U : Set E := φ '' chartLeviCivitaGoodSet (I := I) α with hU_def
   have hU_open : IsOpen U := chartLeviCivitaGoodSet_image_isOpen (I := I) α
   have hx_mem : φ b ∈ U := ⟨b, hb_good, rfl⟩
-  have hb_src : b ∈ (chartAt H α).source :=
+  have hb_source : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb_good
-  have hyb_tgt : φ b ∈ φ.target :=
-    φ.map_source (by rw [hφ, extChartAt_source]; exact hb_src)
+  have hyb_target : φ b ∈ φ.target :=
+    φ.map_source (by rw [hφ, extChartAt_source]; exact hb_source)
   have hchartRep_w : ∀ y₀ : E, y₀ ∈ φ.target →
       ContDiffWithinAt ℝ ∞ (fun q : ℝ × E => chartRep q.1 q.2) (S ×ˢ φ.target) (t₀, y₀) := by
     intro y₀ hy₀
@@ -98,7 +98,7 @@ private theorem covApply_chartRepr_euclid_jointContDiffWithinAt
         ((S ×ˢ φ.target) ×ˢ φ.target)
         ((t₀, φ b), (fun q : ℝ × E => q.2) (t₀, φ b)) := by
       have hbrick : ContDiffWithinAt ℝ ∞ (fun r : ℝ × E => chartRep r.1 r.2)
-          (S ×ˢ φ.target) (t₀, φ b) := hchartRep_w (φ b) hyb_tgt
+          (S ×ˢ φ.target) (t₀, φ b) := hchartRep_w (φ b) hyb_target
       have hproj : ContDiffWithinAt ℝ ∞
           (fun r : (ℝ × E) × E => (r.1.1, r.2))
           ((S ×ˢ φ.target) ×ˢ φ.target) ((t₀, φ b), φ b) :=
@@ -113,17 +113,17 @@ private theorem covApply_chartRepr_euclid_jointContDiffWithinAt
     have h_le : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by rw [ENat.coe_top_add_one]
     have hsub : (S ×ˢ φ.target) ⊆ (fun q : ℝ × E => q.2) ⁻¹' φ.target := by
       intro q hq; exact hq.2
-    have hfdw := ContDiffWithinAt.fderivWithin huncurry hg hud h_le ⟨ht₀, hyb_tgt⟩ hsub
+    have hfdw := ContDiffWithinAt.fderivWithin huncurry hg hud h_le ⟨ht₀, hyb_target⟩ hsub
     have hfd_eq : ContDiffWithinAt ℝ ∞
         (fun q : ℝ × E => fderiv ℝ (fun y' : E => chartRep q.1 y') q.2) (S ×ˢ φ.target)
           (t₀, φ b) := by
       refine hfdw.congr_of_eventuallyEq ?_ ?_
       · filter_upwards [self_mem_nhdsWithin] with q hq
         exact (fderivWithin_of_isOpen htgt_open hq.2).symm
-      · exact (fderivWithin_of_isOpen htgt_open hyb_tgt).symm
+      · exact (fderivWithin_of_isOpen htgt_open hyb_target).symm
     exact hfd_eq.clm_apply hvec_q
   have hchartRep_q : ContDiffWithinAt ℝ ∞ (fun q : ℝ × E => chartRep q.1 q.2)
-      (S ×ˢ φ.target) (t₀, φ b) := hchartRep_w (φ b) hyb_tgt
+      (S ×ˢ φ.target) (t₀, φ b) := hchartRep_w (φ b) hyb_target
   have h_input : ∀ k : Fin r, ContDiffWithinAt ℝ ∞
       (fun q : ℝ × E =>
         (trivializationAt (TensorRSModel r s ℝ E)
@@ -152,23 +152,23 @@ private theorem covApply_chartRepr_euclid_jointContDiffWithinAt
       rintro ⟨t, y⟩ hq
       have hy : y ∈ U := hq.2
       obtain ⟨x', hx'_good, hx'y⟩ := hy
-      have hx'_src : x' ∈ (chartAt H α).source :=
+      have hx'_source : x' ∈ (chartAt H α).source :=
         chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx'_good
-      have hx'_extsrc : x' ∈ φ.source := by rw [hφ, extChartAt_source]; exact hx'_src
+      have hx'_extsrc : x' ∈ φ.source := by rw [hφ, extChartAt_source]; exact hx'_source
       have hx'_inv : φ.symm y = x' := by rw [← hx'y]; exact φ.left_inv hx'_extsrc
       change _ = Ker y (chartRep t y)
       rw [hKer, hchartRep]
       simp only []
       exact (chartTensorRSInputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s α
         (fun b' : M => (F t).toSection b') B.toFun
-        (b := φ.symm y) (by rw [hx'_inv]; exact hx'_src) k)
-    · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_src)
+        (b := φ.symm y) (by rw [hx'_inv]; exact hx'_source) k)
+    · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_source)
       change _ = Ker (φ b) (chartRep t₀ (φ b))
       rw [hKer, hchartRep]
       simp only []
       exact (chartTensorRSInputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s α
         (fun b' : M => (F t₀).toSection b') B.toFun
-        (b := φ.symm (φ b)) (by rw [hgood_inv]; exact hb_src) k)
+        (b := φ.symm (φ b)) (by rw [hgood_inv]; exact hb_source) k)
   have h_output : ∀ l : Fin s, ContDiffWithinAt ℝ ∞
       (fun q : ℝ × E =>
         (trivializationAt (TensorRSModel r s ℝ E)
@@ -197,23 +197,23 @@ private theorem covApply_chartRepr_euclid_jointContDiffWithinAt
       rintro ⟨t, y⟩ hq
       have hy : y ∈ U := hq.2
       obtain ⟨x', hx'_good, hx'y⟩ := hy
-      have hx'_src : x' ∈ (chartAt H α).source :=
+      have hx'_source : x' ∈ (chartAt H α).source :=
         chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx'_good
-      have hx'_extsrc : x' ∈ φ.source := by rw [hφ, extChartAt_source]; exact hx'_src
+      have hx'_extsrc : x' ∈ φ.source := by rw [hφ, extChartAt_source]; exact hx'_source
       have hx'_inv : φ.symm y = x' := by rw [← hx'y]; exact φ.left_inv hx'_extsrc
       change _ = Ker y (chartRep t y)
       rw [hKer, hchartRep]
       simp only []
       exact (chartTensorRSOutputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s α
         (fun b' : M => (F t).toSection b') B.toFun
-        (b := φ.symm y) (by rw [hx'_inv]; exact hx'_src) l)
-    · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_src)
+        (b := φ.symm y) (by rw [hx'_inv]; exact hx'_source) l)
+    · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_source)
       change _ = Ker (φ b) (chartRep t₀ (φ b))
       rw [hKer, hchartRep]
       simp only []
       exact (chartTensorRSOutputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s α
         (fun b' : M => (F t₀).toSection b') B.toFun
-        (b := φ.symm (φ b)) (by rw [hgood_inv]; exact hb_src) l)
+        (b := φ.symm (φ b)) (by rw [hgood_inv]; exact hb_source) l)
   have h_sum : ContDiffWithinAt ℝ ∞
       (fun q : ℝ × E =>
         fderiv ℝ (fun y' : E => chartRep q.1 y') q.2
@@ -245,20 +245,20 @@ private theorem covApply_chartRepr_euclid_jointContDiffWithinAt
     obtain ⟨x', hx'_good, hx'y⟩ := hy
     have hx'_extsrc : x' ∈ φ.source := by
       rw [hφ, extChartAt_source]; exact chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx'_good
-    have hy_tgt : y ∈ φ.target := hx'y ▸ φ.map_source hx'_extsrc
+    have hy_target : y ∈ φ.target := hx'y ▸ φ.map_source hx'_extsrc
     have hy_good : φ.symm y ∈ chartLeviCivitaGoodSet (I := I) α := by
       rw [← hx'y, φ.left_inv hx'_extsrc]; exact hx'_good
     have hform := chart_pulled_covApply_explicit_formula_target_smoothCc (I := I) (M := M)
-      g₀ r s α (F t) B hy_tgt hy_good
+      g₀ r s α (F t) B hy_target hy_good
     change DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) r s α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g₀))
           B.toFun (fun z : M => (F t).toSection z)) (φ.symm y) = _
     rw [hchartRep]
     simp only [Function.comp_apply] at hform
     exact hform
-  · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_src)
+  · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_source)
     have hform := chart_pulled_covApply_explicit_formula_target_smoothCc (I := I) (M := M)
-      g₀ r s α (F t₀) B hyb_tgt (by rw [hgood_inv]; exact hb_good)
+      g₀ r s α (F t₀) B hyb_target (by rw [hgood_inv]; exact hb_good)
     change DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) r s α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g₀))
           B.toFun (fun z : M => (F t₀).toSection z)) (φ.symm (φ b)) = _
@@ -369,7 +369,7 @@ theorem covApply_section_jointContMDiffOn
       ((chartAt H α).source ×ˢ S) :=
     covApply_chartRepr_manifold_jointContMDiffOn (I := I) g₀ r s F S α B hF
   intro p₀ hp₀
-  obtain ⟨hx₀src, hs₀'⟩ := hp₀
+  obtain ⟨hx₀source, hs₀'⟩ := hp₀
   have hbaseSet : p₀.1 ∈ (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).baseSet := by
     change p₀.1 ∈ ((trivializationAt (Tensor0SBundle.Tensor0SModel r ℝ E)
@@ -380,7 +380,7 @@ theorem covApply_section_jointContMDiffOn
       · change p₀.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet
         rw [show (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source from
           TangentBundle.trivializationAt_baseSet (I := I) α]
-        rw [hα]; exact hx₀src
+        rw [hα]; exact hx₀source
   have hsource : (⟨p₀.1,
       covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g₀))
         B.toFun (fun z : M => (F p₀.2).toSection z) p₀.1⟩ :
@@ -398,7 +398,7 @@ theorem covApply_section_jointContMDiffOn
             covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g₀))
               B.toFun (fun z : M => (F p.2).toSection z) p.1⟩).2)
       ((chartAt H α).source ×ˢ S) p₀ := by
-    refine (hCR p₀ ⟨hx₀src, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
+    refine (hCR p₀ ⟨hx₀source, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with p hp
       obtain ⟨hpx, _⟩ := hp
       have hpbase : p.1 ∈ (trivializationAt (TensorRSModel r s ℝ E)

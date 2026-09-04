@@ -31,7 +31,7 @@ def ricciDiag3 (l1 l2 l3 : Real) (i j : Fin 3) : Real :=
     if i = 0 then l1 else if i = 1 then l2 else l3
   else 0
 
-def stdRmDiag3 (l1 l2 l3 : Real)
+def standardRmDiag3 (l1 l2 l3 : Real)
     (i j k l : Fin 3) : Real :=
   delta3 i k * ricciDiag3 l1 l2 l3 j l
     - delta3 i l * ricciDiag3 l1 l2 l3 j k
@@ -41,7 +41,7 @@ def stdRmDiag3 (l1 l2 l3 : Real)
         (delta3 i k * delta3 j l - delta3 i l * delta3 j k)
 
 
-def stdRmNormSq3
+def standardRmNormSq3
     (R : Fin 3 -> Fin 3 -> Fin 3 -> Fin 3 -> Real) : Real :=
   ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
     (R i j k l) ^ 2
@@ -601,19 +601,19 @@ private theorem scalar_eq_of_trace_diag
     (hdiag : RicciDiagAt (I := I) Ric scalar0 l1 l2 l3 basis) :
     scalar = scalar0 := by
   rcases hdiag with ⟨hscalar0, hric⟩
-  have h00 : stdRicci3 (standardRmCompAt basis Rm04) 0 0 = l1 := by
+  have h00 : standardRicci3 (standardRmCompAt basis Rm04) 0 0 = l1 := by
     rw [← htrace.ricci_trace 0 0]
     simpa [ricciDiag3] using hric 0 0
-  have h11 : stdRicci3 (standardRmCompAt basis Rm04) 1 1 = l2 := by
+  have h11 : standardRicci3 (standardRmCompAt basis Rm04) 1 1 = l2 := by
     rw [← htrace.ricci_trace 1 1]
     simpa [ricciDiag3] using hric 1 1
-  have h22 : stdRicci3 (standardRmCompAt basis Rm04) 2 2 = l3 := by
+  have h22 : standardRicci3 (standardRmCompAt basis Rm04) 2 2 = l3 := by
     rw [← htrace.ricci_trace 2 2]
     simpa [ricciDiag3] using hric 2 2
   calc
-    scalar = stdScalar3 (standardRmCompAt basis Rm04) := htrace.scalar_trace
+    scalar = standardScalar3 (standardRmCompAt basis Rm04) := htrace.scalar_trace
     _ = ricciEigenScalar3 l1 l2 l3 := by
-      simp [stdScalar3, h00, h11, h22, ricciEigenScalar3]
+      simp [standardScalar3, h00, h11, h22, ricciEigenScalar3]
     _ = scalar0 := hscalar0.symm
 
 
@@ -661,18 +661,18 @@ def sec23Ric3 (l1 l2 l3 : Real) : Real :=
 def rmSecNormSq3 (K12 K13 K23 : Real) : Real :=
   4 * (K12 ^ 2 + K13 ^ 2 + K23 ^ 2)
 
-theorem stdRmNormSq3_diag
+theorem standardRmNormSq3_diag
     (l1 l2 l3 : Real) :
-    stdRmNormSq3 (stdRmDiag3 l1 l2 l3) =
+    standardRmNormSq3 (standardRmDiag3 l1 l2 l3) =
       rmSecNormSq3 (sec12Ric3 l1 l2 l3) (sec13Ric3 l1 l2 l3)
         (sec23Ric3 l1 l2 l3) := by
-  unfold stdRmNormSq3 stdRmDiag3 rmSecNormSq3 sec12Ric3 sec13Ric3 sec23Ric3
+  unfold standardRmNormSq3 standardRmDiag3 rmSecNormSq3 sec12Ric3 sec13Ric3 sec23Ric3
     ricciDiag3 ricciEigenScalar3 delta3
   simp [Fin.sum_univ_three]
   ring
 
 omit [FiniteDimensional ℝ E] in
-theorem stdRmComp_eq_diag
+theorem standardRmComp_eq_diag
     {g : SmoothRiemannianMetric I M}
     {Ric : Tensor02At (I := I) (M := M) x}
     {scalar : Real}
@@ -683,7 +683,7 @@ theorem stdRmComp_eq_diag
     (hdiag : RicciDiagAt (I := I) Ric scalar l1 l2 l3 basis) :
     forall i j k l : Fin 3,
       standardRmCompAt (I := I) basis Rm04 i j k l =
-        stdRmDiag3 l1 l2 l3 i j k l := by
+        standardRmDiag3 l1 l2 l3 i j k l := by
   intro i j k l
   have hformula :=
     rm04Comp_displayedRiemannFromRicci3D_at (I := I) htrace i j l k
@@ -709,11 +709,11 @@ theorem stdRmComp_eq_diag
   have r22 : Ric (vec2 (basis 2) (basis 2)) = l3 := by
     simpa [ricciCompAt_apply, ricciDiag3] using hric 2 2
   fin_cases i <;> fin_cases j <;> fin_cases k <;> fin_cases l <;>
-    simp [stdRmDiag3, ricciDiag3, ricciEigenScalar3, delta3, hscalar,
+    simp [standardRmDiag3, ricciDiag3, ricciEigenScalar3, delta3, hscalar,
       r00, r01, r02, r10, r11, r12, r20, r21, r22] <;> ring_nf
 
 omit [FiniteDimensional ℝ E] in
-theorem stdRmNormSq3_at
+theorem standardRmNormSq3_at
     {g : SmoothRiemannianMetric I M}
     {Ric : Tensor02At (I := I) (M := M) x}
     {scalar : Real}
@@ -722,39 +722,39 @@ theorem stdRmNormSq3_at
     (htrace : RiemannFromRicci3DTraceDataAt g Ric scalar Rm04 basis)
     {l1 l2 l3 : Real}
     (hdiag : RicciDiagAt (I := I) Ric scalar l1 l2 l3 basis) :
-    stdRmNormSq3 (standardRmCompAt (I := I) basis Rm04) =
+    standardRmNormSq3 (standardRmCompAt (I := I) basis Rm04) =
       rmSecNormSq3 (sec12Ric3 l1 l2 l3) (sec13Ric3 l1 l2 l3)
         (sec23Ric3 l1 l2 l3) := by
-  have hcomp := stdRmComp_eq_diag (I := I) htrace hdiag
-  unfold stdRmNormSq3
+  have hcomp := standardRmComp_eq_diag (I := I) htrace hdiag
+  unfold standardRmNormSq3
   simp_rw [hcomp]
-  exact stdRmNormSq3_diag l1 l2 l3
+  exact standardRmNormSq3_diag l1 l2 l3
 
 omit [FiniteDimensional ℝ E] in
-theorem coordInner0S_four_delta3_eq_stdRmNormSq3
+theorem coordInner0S_four_delta3_eq_standardRmNormSq3
     {Rm04 : Tensor04At (I := I) (M := M) x}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)} :
     coordInner0S (I := I) (x := x) 4 delta3 Rm04 Rm04 basis =
-      stdRmNormSq3 (standardRmCompAt (I := I) basis Rm04) := by
+      standardRmNormSq3 (standardRmCompAt (I := I) basis Rm04) := by
   classical
   unfold coordInner0S
   rw [sum_delta3_slots4_contract]
   rw [sum_fin_four_fun]
-  unfold stdRmNormSq3 standardRmCompAt rm04CompAt component0S
+  unfold standardRmNormSq3 standardRmCompAt rm04CompAt component0S
     tensor0SComponent DifferentialGeometry.Geometry.Curvature.slots4
   simp [Fin.sum_univ_three]
 
-theorem normSq0S_four_eq_stdRmNormSq3
+theorem normSq0S_four_eq_standardRmNormSq3
     {g : SmoothRiemannianMetric I M}
     {Rm04 : Tensor04At (I := I) (M := M) x}
     {basis : Module.Basis (Fin 3) Real (TangentSpace I x)}
     (horth : OrthonormalBasisAt (I := I) g x basis) :
     normSq0S (I := I) g x 4 Rm04 =
-      stdRmNormSq3 (standardRmCompAt (I := I) basis Rm04) := by
+      standardRmNormSq3 (standardRmCompAt (I := I) basis Rm04) := by
   have hinv : MetricInverseInBasis (I := I) g x basis delta3 :=
     orthonormal_invBasis3 (I := I) g basis horth
   rw [normSq0S_eq_coord (I := I) g x 4 basis delta3 hinv Rm04]
-  exact coordInner0S_four_delta3_eq_stdRmNormSq3 (I := I)
+  exact coordInner0S_four_delta3_eq_standardRmNormSq3 (I := I)
 
 private theorem sq_le_of_abs_le {a b : Real} (h : |a| <= b) :
     a ^ 2 <= b ^ 2 := by
@@ -800,7 +800,7 @@ theorem rmSqLe100ScalSq3
   exact le_trans hsum hcoarse
 
 omit [FiniteDimensional ℝ E] in
-theorem stdRmNormSq3_at_le
+theorem standardRmNormSq3_at_le
     {g : SmoothRiemannianMetric I M}
     {Ric : Tensor02At (I := I) (M := M) x}
     {scalar : Real}
@@ -810,8 +810,8 @@ theorem stdRmNormSq3_at_le
     {l1 l2 l3 : Real}
     (hdiag : RicciDiagAt (I := I) Ric scalar l1 l2 l3 basis)
     (h1 : 0 <= l1) (h2 : 0 <= l2) (h3 : 0 <= l3) :
-    stdRmNormSq3 (standardRmCompAt (I := I) basis Rm04) <= 100 ^ 2 * scalar ^ 2 := by
-  have hnorm := stdRmNormSq3_at (I := I) htrace hdiag
+    standardRmNormSq3 (standardRmCompAt (I := I) basis Rm04) <= 100 ^ 2 * scalar ^ 2 := by
+  have hnorm := standardRmNormSq3_at (I := I) htrace hdiag
   have hscalar : scalar = ricciEigenScalar3 l1 l2 l3 := hdiag.1
   rw [hnorm, hscalar]
   exact rmSqLe100ScalSq3 l1 l2 l3 h1 h2 h3
@@ -827,8 +827,8 @@ theorem normSq0S_four_at_le
     (hdiag : RicciDiagAt (I := I) Ric scalar l1 l2 l3 basis)
     (h1 : 0 <= l1) (h2 : 0 <= l2) (h3 : 0 <= l3) :
     normSq0S (I := I) g x 4 Rm04 <= 100 ^ 2 * scalar ^ 2 := by
-  rw [normSq0S_four_eq_stdRmNormSq3 (I := I) htrace.orthonormal]
-  exact stdRmNormSq3_at_le (I := I) htrace hdiag h1 h2 h3
+  rw [normSq0S_four_eq_standardRmNormSq3 (I := I) htrace.orthonormal]
+  exact standardRmNormSq3_at_le (I := I) htrace hdiag h1 h2 h3
 
 theorem normSqLeOfRicNonneg
     {g : SmoothRiemannianMetric I M}
@@ -927,8 +927,8 @@ theorem normSqLeOfFirstTrace
       unfold ricciEigenScalar3 at hscalar ⊢
       linarith
     exact ⟨hnegscalar, hric⟩
-  rw [normSq0S_four_eq_stdRmNormSq3 (I := I) htrace_basis.orthonormal]
-  have hnorm := stdRmNormSq3_at (I := I) htrace_basis hnegdiag
+  rw [normSq0S_four_eq_standardRmNormSq3 (I := I) htrace_basis.orthonormal]
+  have hnorm := standardRmNormSq3_at (I := I) htrace_basis hnegdiag
   rw [hnorm, rmSecNormSq3_neg, hscalar]
   exact rmSqLe100ScalSq3 l1 l2 l3 h1 h2 h3
 

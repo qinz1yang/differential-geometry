@@ -11,7 +11,7 @@ open scoped ContDiff Manifold Topology
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
-namespace CGT
+namespace CheegerGromovTaylor
 
 open Exponential NormalCoordinates
 
@@ -29,7 +29,7 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-structure IntrFrameLift
+structure IntrinsicFrameLift
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -42,7 +42,7 @@ structure IntrFrameLift
       ((intrinsicFramedExp (I := I) g hEnorm p) ∘ toFun)
       γ (Set.Icc a b)
 
-namespace IntrFrameLift
+namespace IntrinsicFrameLift
 
 variable {g : SmoothRiemannianMetric I M}
   {hEnorm : ∀ (x : M) (v : TangentSpace I x),
@@ -50,7 +50,7 @@ variable {g : SmoothRiemannianMetric I M}
   {p : M} {γ : Real → M} {a b R : Real}
 
 theorem norm_le_length
-    (L : IntrFrameLift (I := I) g hEnorm p γ a b)
+    (L : IntrinsicFrameLift (I := I) g hEnorm p γ a b)
     (hfin : Manifold.pathELength I γ a b ≠ ⊤)
     {t : Real} (ht : t ∈ Set.Icc a b) :
     ‖L.toFun t‖ ≤ (Manifold.pathELength I γ a b).toReal := by
@@ -60,7 +60,7 @@ theorem norm_le_length
       ENNReal.ofReal ‖L.toFun t‖ ≤
         Manifold.pathELength I
           ((intrinsicFramedExp (I := I) g hEnorm p) ∘ L.toFun) a t :=
-    intrLift_norm_le (J := I) g hEnorm p ht.1 L.start
+    intrinsicLift_norm_le (J := I) g hEnorm p ht.1 L.start
       (L.contDiff.mono hsub)
   have hlift :
       Manifold.pathELength I
@@ -87,7 +87,7 @@ theorem norm_le_length
   simpa only [ENNReal.toReal_ofReal (norm_nonneg _)] using hreal
 
 theorem norm_lt
-    (L : IntrFrameLift (I := I) g hEnorm p γ a b)
+    (L : IntrinsicFrameLift (I := I) g hEnorm p γ a b)
     (hR : 0 < R)
     (hlen :
       Manifold.pathELength I γ a b < ENNReal.ofReal R)
@@ -99,7 +99,7 @@ theorem norm_lt
       ENNReal.ofReal ‖L.toFun t‖ ≤
         Manifold.pathELength I
           ((intrinsicFramedExp (I := I) g hEnorm p) ∘ L.toFun) a t :=
-    intrLift_norm_le (J := I) g hEnorm p ht.1 L.start
+    intrinsicLift_norm_le (J := I) g hEnorm p ht.1 L.start
       (L.contDiff.mono hsub)
   have hlift :
       Manifold.pathELength I
@@ -124,7 +124,7 @@ theorem norm_lt
   exact (ENNReal.ofReal_lt_ofReal_iff hR).mp hlt
 
 theorem maps_ball
-    (L : IntrFrameLift (I := I) g hEnorm p γ a b)
+    (L : IntrinsicFrameLift (I := I) g hEnorm p γ a b)
     (hR : 0 < R)
     (hlen :
       Manifold.pathELength I γ a b < ENNReal.ofReal R) :
@@ -133,7 +133,7 @@ theorem maps_ball
   simpa only [Metric.mem_ball, dist_zero_right] using L.norm_lt hR hlen ht
 
 theorem eqOn
-    (L L' : IntrFrameLift (I := I) g hEnorm p γ a b)
+    (L L' : IntrinsicFrameLift (I := I) g hEnorm p γ a b)
     (hab : a ≤ b) (hR : 0 < R)
     (hlen :
       Manifold.pathELength I γ a b < ENNReal.ofReal R)
@@ -156,7 +156,7 @@ theorem eqOn
       fun t ht ↦ ⟨L'.maps_ball hR hlen ht, L'.lifts ht⟩⟩
   exact hL.eqOn hab Metric.isOpen_ball hloc hL'
 
-end IntrFrameLift
+end IntrinsicFrameLift
 
 theorem exists_intr_lift
     (g : SmoothRiemannianMetric I M)
@@ -173,7 +173,7 @@ theorem exists_intr_lift
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R)) :
-    Nonempty (IntrFrameLift (I := I) g hEnorm p γ a b) := by
+    Nonempty (IntrinsicFrameLift (I := I) g hEnorm p γ a b) := by
   let ell : Real := (Manifold.pathELength I γ a b).toReal
   have hfin : Manifold.pathELength I γ a b ≠ ⊤ := hlen.ne_top
   have hellR : ell < R := by
@@ -190,7 +190,7 @@ theorem exists_intr_lift
     simpa only [Metric.mem_ball, dist_self] using hR
   have hstart :
       intrinsicFramedExp (I := I) g hEnorm p 0 = γ a := by
-    rw [intrFrame_zero, hγa]
+    rw [intrinsicFrame_zero, hγa]
   have hfence :
       ∀ {t : Real}, t ∈ Set.Icc a b →
         ∀ {η : Real → E},
@@ -207,7 +207,7 @@ theorem exists_intr_lift
         ENNReal.ofReal ‖η t‖ ≤
           Manifold.pathELength I
             ((intrinsicFramedExp (I := I) g hEnorm p) ∘ η) a t :=
-      intrLift_norm_le (J := I) g hEnorm p ht.1 hη.2.1 hηcd
+      intrinsicLift_norm_le (J := I) g hEnorm p ht.1 hη.2.1 hηcd
     have hlift :
         Manifold.pathELength I
             ((intrinsicFramedExp (I := I) g hEnorm p) ∘ η) a t =
@@ -241,7 +241,7 @@ theorem exists_intr_lift
     start := hη.2.1
     lifts := fun t ht ↦ (hη.2.2 t ht).2 }⟩
 
-end CGT
+end CheegerGromovTaylor
 end Riemannian
 end Geometry
 end DifferentialGeometry

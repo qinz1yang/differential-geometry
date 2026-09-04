@@ -461,12 +461,12 @@ private theorem offchart_rescaledLift_chartDeriv_self
     (hasDerivAt_affine c d s₀).hasDerivWithinAt
   have hmaps : MapsTo aff {s : ℝ | c * s + d ∈ S} S := fun s hs => hs
   have haff_s0 : aff s₀ = a := rfl
-  have hself_src : f a ∈ (extChartAt I.tangent (f a)).source := mem_extChartAt_source (f a)
+  have hself_source : f a ∈ (extChartAt I.tangent (f a)).source := mem_extChartAt_source (f a)
   have hfwd : HasDerivWithinAt (fun s' => extChartAt I.tangent (f a) (f s'))
       (tangentCoordChange I.tangent (f a) (f a) (f a)
         (tangentSpaceModelContinuousLinearEquiv (I := I.tangent) (f a)
           (geodesicVectorFieldChart (I := I) g α (f a)))) S a :=
-    hf.hasDerivWithinAt (t₀ := a) hs₀ hself_src
+    hf.hasDerivWithinAt (t₀ := a) hs₀ hself_source
   have hVzero : geodesicVectorFieldChart (I := I) g α (f a) = 0 :=
     geodesicVectorFieldChart_eq_zero_of_notMem_source (I := I) g α (f a) hoff
   have hVzero_model :
@@ -492,7 +492,7 @@ private theorem offchart_rescaledLift_chartDeriv_self
       {s : ℝ | c * s + d ∈ S} s₀ :=
     (FiberBundle.continuous_proj E (TangentSpace I)).continuousWithinAt.comp hf_cont
       (mapsTo_univ _ _)
-  have hβsrc : β ∈ (chartAt H β).source := mem_chart_source H β
+  have hβsource : β ∈ (chartAt H β).source := mem_chart_source H β
   have hpe : extChartAt I.tangent (⟨β, (0 : E)⟩ : TangentBundle I M)
       = extChartAt I.tangent (f a) := by
     rw [hβ, FiberBundle.extChartAt, FiberBundle.extChartAt]
@@ -501,7 +501,7 @@ private theorem offchart_rescaledLift_chartDeriv_self
     apply hproj_cont.preimage_mem_nhdsWithin
     refine (chartAt H β).open_source.mem_nhds ?_
     show (f (aff s₀)).proj ∈ (chartAt H β).source
-    rw [haff_s0]; exact hβsrc
+    rw [haff_s0]; exact hβsource
   refine HasDerivWithinAt.congr_of_eventuallyEq hcomp2 ?_ ?_
   · filter_upwards [hUnhds] with s hs
     have hssrc : (f (aff s)).proj ∈ (chartAt H β).source := hs
@@ -510,7 +510,7 @@ private theorem offchart_rescaledLift_chartDeriv_self
       = fiberRescaleCLM (E := E) c (extChartAt I.tangent (f a) (f (aff s)))
     rw [← hpe, extChartAt_tangent_zero_fiberScale (I := I) β c hssrc, fiberRescaleCLM_apply,
       rescaleChartOrbit_apply]
-  · have hssrc : (f (aff s₀)).proj ∈ (chartAt H β).source := by rw [haff_s0]; exact hβsrc
+  · have hssrc : (f (aff s₀)).proj ∈ (chartAt H β).source := by rw [haff_s0]; exact hβsource
     change extChartAt I.tangent (⟨β, (0 : E)⟩ : TangentBundle I M)
           (⟨(f (c * s₀ + d)).proj, c • (f (c * s₀ + d)).snd⟩ : TangentBundle I M)
       = fiberRescaleCLM (E := E) c (extChartAt I.tangent (f a) (f (aff s₀)))

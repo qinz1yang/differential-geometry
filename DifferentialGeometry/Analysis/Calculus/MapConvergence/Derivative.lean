@@ -4,7 +4,7 @@ import Mathlib.Analysis.Calculus.ContDiff.Bounds
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 open scoped ContDiff
@@ -35,11 +35,11 @@ theorem mapDerivNorm_fderivApply_le (r : ℕ) (v : E) {Φk Φinf : E → F} {x :
     _ = ‖v‖ * ‖iteratedFDeriv ℝ (r + 1) g x‖ := by rw [norm_iteratedFDeriv_fderiv]
     _ = ‖v‖ * mapDerivNorm (r + 1) Φk Φinf x := by rw [mapDerivNorm, hg]
 
-theorem MapCInfConvOnCompacts.fderivApply {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
-    (h : MapCInfConvOnCompacts U Φ Φinf)
+theorem MapCInfConvergenceOnCompacts.fderivApply {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
+    (h : MapCInfConvergenceOnCompacts U Φ Φinf)
     (hΦ : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k))
     (hΦinf : ContDiff ℝ (∞ : WithTop ℕ∞) Φinf) (v : E) :
-    MapCInfConvOnCompacts U (fun k z => fderiv ℝ (Φ k) z v) (fun z => fderiv ℝ Φinf z v) := by
+    MapCInfConvergenceOnCompacts U (fun k z => fderiv ℝ (Φ k) z v) (fun z => fderiv ℝ Φinf z v) := by
   intro K hK hKU p ε hε
   obtain ⟨k0, hk0⟩ := h K hK hKU (p + 1) (ε / (‖v‖ + 1)) (by positivity)
   refine ⟨k0, fun k hk r hr x hx => ?_⟩
@@ -53,12 +53,12 @@ theorem MapCInfConvOnCompacts.fderivApply {U : Set E} {Φ : ℕ → E → F} {Φ
         rw [← mul_div_assoc, div_le_iff₀ (by positivity : (0:ℝ) < ‖v‖ + 1)]
         nlinarith [norm_nonneg v, hε.le]
 
-theorem MapCInfConvOnCompacts.fderivOn {U : Set E} (hU : IsOpen U)
+theorem MapCInfConvergenceOnCompacts.fderivOn {U : Set E} (hU : IsOpen U)
     {Φ : ℕ → E → F} {Φinf : E → F}
-    (h : MapCInfConvOnCompacts U Φ Φinf)
+    (h : MapCInfConvergenceOnCompacts U Φ Φinf)
     (hΦ : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (Φ k) U)
     (hΦinf : ContDiffOn ℝ (∞ : WithTop ℕ∞) Φinf U) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k x => fderiv ℝ (Φ k) x) (fun x => fderiv ℝ Φinf x) := by
   intro K hK hKU p ε hε
   obtain ⟨k0, hk0⟩ := h K hK hKU (p + 1) ε hε
@@ -131,14 +131,14 @@ theorem pullbackForm.contDiff :
     hflip₁.clm_comp contDiff_snd
   exact contDiff_clm_flip.comp hcomp₂
 
-theorem MapCPConvOn.succ_of_fderiv {U K : Set E} {p : ℕ} (hU : IsOpen U)
+theorem MapCPConvergenceOn.succ_of_fderiv {U K : Set E} {p : ℕ} (hU : IsOpen U)
     (hKU : K ⊆ U) {Φ : ℕ → E → F} {Φinf : E → F}
-    (h0 : MapCPConvOn K 0 Φ Φinf)
-    (hfd : MapCPConvOn K p
+    (h0 : MapCPConvergenceOn K 0 Φ Φinf)
+    (hfd : MapCPConvergenceOn K p
       (fun k x => fderiv ℝ (Φ k) x) (fun x => fderiv ℝ Φinf x))
     (hΦ : ∀ k, DifferentiableOn ℝ (Φ k) U)
     (hΦinf : DifferentiableOn ℝ Φinf U) :
-    MapCPConvOn K (p + 1) Φ Φinf := by
+    MapCPConvergenceOn K (p + 1) Φ Φinf := by
   intro ε hε
   obtain ⟨k0, hk0⟩ := h0 ε hε
   obtain ⟨k1, hk1⟩ := hfd ε hε
@@ -167,11 +167,11 @@ theorem MapCPConvOn.succ_of_fderiv {U K : Set E} {p : ℕ} (hU : IsOpen U)
       rw [← hnorm]
       exact hk1 k (le_trans (le_max_right _ _) hk) r (by omega) x hx
 
-theorem MapCInfConvOnCompacts.add {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf Ψinf : E → F}
-    (hΦ : MapCInfConvOnCompacts U Φ Φinf) (hΨ : MapCInfConvOnCompacts U Ψ Ψinf)
+theorem MapCInfConvergenceOnCompacts.add {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf Ψinf : E → F}
+    (hΦ : MapCInfConvergenceOnCompacts U Φ Φinf) (hΨ : MapCInfConvergenceOnCompacts U Ψ Ψinf)
     (hΦc : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k)) (hΦic : ContDiff ℝ (∞ : WithTop ℕ∞) Φinf)
     (hΨc : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Ψ k)) (hΨic : ContDiff ℝ (∞ : WithTop ℕ∞) Ψinf) :
-    MapCInfConvOnCompacts U (fun k z => Φ k z + Ψ k z) (fun z => Φinf z + Ψinf z) := by
+    MapCInfConvergenceOnCompacts U (fun k z => Φ k z + Ψ k z) (fun z => Φinf z + Ψinf z) := by
   intro K hK hKU p ε hε
   obtain ⟨k1, hk1⟩ := hΦ K hK hKU p (ε / 2) (by positivity)
   obtain ⟨k2, hk2⟩ := hΨ K hK hKU p (ε / 2) (by positivity)
@@ -199,11 +199,11 @@ theorem MapCInfConvOnCompacts.add {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf �
         · exact hk2 k (le_trans (le_max_right _ _) hk) r hr x hx
     _ = ε := by ring
 
-theorem MapCInfConvOnCompacts.sub {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf Ψinf : E → F}
-    (hΦ : MapCInfConvOnCompacts U Φ Φinf) (hΨ : MapCInfConvOnCompacts U Ψ Ψinf)
+theorem MapCInfConvergenceOnCompacts.sub {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf Ψinf : E → F}
+    (hΦ : MapCInfConvergenceOnCompacts U Φ Φinf) (hΨ : MapCInfConvergenceOnCompacts U Ψ Ψinf)
     (hΦc : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k)) (hΦic : ContDiff ℝ (∞ : WithTop ℕ∞) Φinf)
     (hΨc : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Ψ k)) (hΨic : ContDiff ℝ (∞ : WithTop ℕ∞) Ψinf) :
-    MapCInfConvOnCompacts U (fun k z => Φ k z - Ψ k z) (fun z => Φinf z - Ψinf z) := by
+    MapCInfConvergenceOnCompacts U (fun k z => Φ k z - Ψ k z) (fun z => Φinf z - Ψinf z) := by
   intro K hK hKU p ε hε
   obtain ⟨k1, hk1⟩ := hΦ K hK hKU p (ε / 2) (by positivity)
   obtain ⟨k2, hk2⟩ := hΨ K hK hKU p (ε / 2) (by positivity)
@@ -231,10 +231,10 @@ theorem MapCInfConvOnCompacts.sub {U : Set E} {Φ Ψ : ℕ → E → F} {Φinf �
         · exact hk2 k (le_trans (le_max_right _ _) hk) r hr x hx
     _ = ε := by ring
 
-theorem MapCInfConvOnCompacts.mulLeft {U : Set E} {Φ : ℕ → E → ℝ} {Φlim : E → ℝ}
-    (h : MapCInfConvOnCompacts U Φ Φlim) {g : E → ℝ} (hg : ContDiff ℝ (∞ : WithTop ℕ∞) g)
+theorem MapCInfConvergenceOnCompacts.mulLeft {U : Set E} {Φ : ℕ → E → ℝ} {Φlim : E → ℝ}
+    (h : MapCInfConvergenceOnCompacts U Φ Φlim) {g : E → ℝ} (hg : ContDiff ℝ (∞ : WithTop ℕ∞) g)
     (hΦc : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k)) (hΦic : ContDiff ℝ (∞ : WithTop ℕ∞) Φlim) :
-    MapCInfConvOnCompacts U (fun k z => g z * Φ k z) (fun z => g z * Φlim z) := by
+    MapCInfConvergenceOnCompacts U (fun k z => g z * Φ k z) (fun z => g z * Φlim z) := by
   intro K hK hKU p ε hε
   obtain ⟨Background, hBackground0, hBackground⟩ : ∃ Background : ℝ, 0 ≤ Background ∧ ∀ i ≤ p, ∀ x ∈ K,
       ‖iteratedFDeriv ℝ i g x‖ ≤ Background := by
@@ -285,12 +285,12 @@ theorem MapCInfConvOnCompacts.mulLeft {U : Set E} {Φ : ℕ → E → ℝ} {Φli
       = 2 ^ r * Background * ε / (2 ^ p * Background + 1) from by ring, div_le_iff₀ hD]
   nlinarith [mul_nonneg (mul_nonneg hε.le (sub_nonneg.mpr h2r)) hBackground0, hε.le]
 
-theorem MapCInfConvOnCompacts.sum {ι : Type*} {U : Set E} (s : Finset ι)
+theorem MapCInfConvergenceOnCompacts.sum {ι : Type*} {U : Set E} (s : Finset ι)
     {Φ : ι → ℕ → E → F} {Φinf : ι → E → F}
-    (h : ∀ i, MapCInfConvOnCompacts U (Φ i) (Φinf i))
+    (h : ∀ i, MapCInfConvergenceOnCompacts U (Φ i) (Φinf i))
     (hc : ∀ i k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ i k))
     (hic : ∀ i, ContDiff ℝ (∞ : WithTop ℕ∞) (Φinf i)) :
-    MapCInfConvOnCompacts U (fun k z => ∑ i ∈ s, Φ i k z) (fun z => ∑ i ∈ s, Φinf i z) := by
+    MapCInfConvergenceOnCompacts U (fun k z => ∑ i ∈ s, Φ i k z) (fun z => ∑ i ∈ s, Φinf i z) := by
   classical
   induction s using Finset.induction with
   | empty =>
@@ -306,14 +306,14 @@ theorem MapCInfConvOnCompacts.sum {ι : Type*} {U : Set E} (s : Finset ι)
       show (fun z => ∑ i ∈ insert a t, Φinf i z)
           = (fun z => Φinf a z + ∑ i ∈ t, Φinf i z) from by
             funext z; rw [Finset.sum_insert hat]]
-    exact MapCInfConvOnCompacts.add (h a) ih (fun k => hc a k) (hic a)
+    exact MapCInfConvergenceOnCompacts.add (h a) ih (fun k => hc a k) (hic a)
       (fun k => ContDiff.sum (fun i _ => hc i k)) (ContDiff.sum (fun i _ => hic i))
 
-theorem MapCPConvOn.congr {U K : Set E} {p : ℕ}
+theorem MapCPConvergenceOn.congr {U K : Set E} {p : ℕ}
     {Φ Φ' : ℕ → E → F} {Φinf Φ'inf : E → F}
-    (h : MapCPConvOn K p Φ Φinf) (hU : IsOpen U) (hKU : K ⊆ U)
+    (h : MapCPConvergenceOn K p Φ Φinf) (hU : IsOpen U) (hKU : K ⊆ U)
     (hΦ : ∀ k, Set.EqOn (Φ' k) (Φ k) U) (hΦinf : Set.EqOn Φ'inf Φinf U) :
-    MapCPConvOn K p Φ' Φ'inf := by
+    MapCPConvergenceOn K p Φ' Φ'inf := by
   intro ε hε
   obtain ⟨k0, hk0⟩ := h ε hε
   refine ⟨k0, fun k hk r hr x hx => ?_⟩
@@ -327,19 +327,19 @@ theorem MapCPConvOn.congr {U K : Set E} {p : ℕ}
   rw [hval]
   exact hk0 k hk r hr x hx
 
-theorem MapCInfConvOnCompacts.congr {U : Set E} {Φ Φ' : ℕ → E → F} {Φinf Φ'inf : E → F}
-    (h : MapCInfConvOnCompacts U Φ Φinf) (hU : IsOpen U)
+theorem MapCInfConvergenceOnCompacts.congr {U : Set E} {Φ Φ' : ℕ → E → F} {Φinf Φ'inf : E → F}
+    (h : MapCInfConvergenceOnCompacts U Φ Φinf) (hU : IsOpen U)
     (hΦ : ∀ k, Set.EqOn (Φ' k) (Φ k) U) (hΦinf : Set.EqOn Φ'inf Φinf U) :
-    MapCInfConvOnCompacts U Φ' Φ'inf := by
+    MapCInfConvergenceOnCompacts U Φ' Φ'inf := by
   intro K hK hKU p
   exact (h K hK hKU p).congr hU hKU hΦ hΦinf
 
-theorem MapCInfConvOnCompacts.congr_eventually
+theorem MapCInfConvergenceOnCompacts.congr_eventually
     {U : Set E} {Φ Φ' : ℕ → E → F} {Φinf Φ'inf : E → F}
-    (h : MapCInfConvOnCompacts U Φ Φinf) (hU : IsOpen U)
+    (h : MapCInfConvergenceOnCompacts U Φ Φinf) (hU : IsOpen U)
     (hΦ : ∀ᶠ k in Filter.atTop, Set.EqOn (Φ' k) (Φ k) U)
     (hΦinf : Set.EqOn Φ'inf Φinf U) :
-    MapCInfConvOnCompacts U Φ' Φ'inf := by
+    MapCInfConvergenceOnCompacts U Φ' Φ'inf := by
   intro K hK hKU p ε hε
   obtain ⟨k0, hk0⟩ := h K hK hKU p ε hε
   obtain ⟨N, hN⟩ := eventually_atTop.mp hΦ
@@ -357,5 +357,5 @@ theorem MapCInfConvOnCompacts.congr_eventually
   rw [hval]
   exact hk0 k hk0k r hr x hx
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

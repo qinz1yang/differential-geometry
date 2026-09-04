@@ -496,7 +496,7 @@ private theorem sharpFlatEndomorphism_slot_zero
           (metricComparisonEndomorphismField (I := I) (M := M) g g₁)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g g₁ x) om from rfl]
-  rw [cotangentToDual_slotInsertEndoFib' (I := I) (M := M) x
+  rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g g₁ x) om w]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (sharpFlatEndoCc (I := I) g g₁).toSection x) om =

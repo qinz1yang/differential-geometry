@@ -39,34 +39,34 @@ theorem eigenvectorChartIteratedStep_memWkp_K_two
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
+    {fChartEffectivePrev : EuclN → ℝ}
     (l : Fin (Module.finrank ℝ E))
     (h_comp : MemWkp (d := Module.finrank ℝ E) (m + 2 + K) 2
       (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
       (chartTargetEuclid (I := I) (M := M) α))
     (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffPrev
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffectivePrev
         (chartTargetEuclid (I := I) (M := M) α))
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : fChartEffectivePrev =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \
         chartPouKernel (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     MemWkp (d := Module.finrank ℝ E) K 2
       (eigenvectorChartIteratedStep (I := I) (M := M)
-        g r s i α P₀ m dirs fChartEffPrev l)
+        g r s i α P₀ m dirs fChartEffectivePrev l)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   set Q : EuclN → ℝ := fun y =>
     eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-      g r s i α P₀ m (Fin.snoc dirs l) fChartEffPrev y /
+      g r s i α P₀ m (Fin.snoc dirs l) fChartEffectivePrev y /
     densityOnEuclid (I := I) g α y with hQ_def
   have h_step_eq :
       eigenvectorChartIteratedStep (I := I) (M := M)
-        g r s i α P₀ m dirs fChartEffPrev l =
+        g r s i α P₀ m dirs fChartEffectivePrev l =
       Set.indicator (chartPouKernel (I := I) (M := M) α) Q := by
     unfold eigenvectorChartIteratedStep
     have h_num := eigenvectorChartIteratedStepNumerator_eq_rhsDiffNumerator
-      (I := I) (M := M) g r s i α P₀ m dirs fChartEffPrev l
+      (I := I) (M := M) g r s i α P₀ m dirs fChartEffectivePrev l
     funext y
     simp only [hQ_def]
     rw [h_num]
@@ -138,24 +138,24 @@ theorem eigenvectorChartIteratedStep_memW1p_two
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
+    {fChartEffectivePrev : EuclN → ℝ}
     (l : Fin (Module.finrank ℝ E))
     (h_comp : MemWkp (d := Module.finrank ℝ E) (m + 3) 2
       (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
       (chartTargetEuclid (I := I) (M := M) α))
     (h_prev_memWkp_two :
-      MemWkp (d := Module.finrank ℝ E) 2 2 fChartEffPrev
+      MemWkp (d := Module.finrank ℝ E) 2 2 fChartEffectivePrev
         (chartTargetEuclid (I := I) (M := M) α))
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : fChartEffectivePrev =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \
         chartPouKernel (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
       (eigenvectorChartIteratedStep (I := I) (M := M)
-        g r s i α P₀ m dirs fChartEffPrev l)
+        g r s i α P₀ m dirs fChartEffectivePrev l)
       (chartTargetEuclid (I := I) (M := M) α) := by
   have h_prev_memWkp_succ : MemWkp (d := Module.finrank ℝ E) (1 + 1) 2
-      fChartEffPrev (chartTargetEuclid (I := I) (M := M) α) := by
+      fChartEffectivePrev (chartTargetEuclid (I := I) (M := M) α) := by
     have h_eq : (1 + 1 : ℕ) = 2 := by norm_num
     rw [h_eq]; exact h_prev_memWkp_two
   have h_comp' : MemWkp (d := Module.finrank ℝ E) (m + 2 + 1) 2
@@ -164,7 +164,7 @@ theorem eigenvectorChartIteratedStep_memW1p_two
     have h_eq : m + 2 + 1 = m + 3 := by ring
     rw [h_eq]; exact h_comp
   have h_mem := eigenvectorChartIteratedStep_memWkp_K_two (I := I) (M := M)
-    g r s i α P₀ m 1 dirs (fChartEffPrev := fChartEffPrev) l
+    g r s i α P₀ m 1 dirs (fChartEffectivePrev := fChartEffectivePrev) l
     h_comp' h_prev_memWkp_succ h_prev_ae_zero
   rw [MemWkp.one_iff_memW1p] at h_mem
   exact h_mem

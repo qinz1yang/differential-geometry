@@ -50,22 +50,22 @@ private theorem exists_redMin_seed [ConnectedSpace M]
     apply hreg
     exact ⟨by linarith, le_rfl⟩
   let Z0 : TangentSpace I x := 0
-  have hzeroDom : (0 : Real) ∈ lRegDomain S T x Z0 :=
-    zero_mem_lRegDomain S hS T x Z0 hT
+  have hzeroDom : (0 : Real) ∈ lRegularizedDomain S T x Z0 :=
+    zero_mem_lRegularizedDomain S hS T x Z0 hT
   have hdomEv : ∀ᶠ s in 𝓝[>] (0 : Real),
-      s ∈ lRegDomain S T x Z0 :=
+      s ∈ lRegularizedDomain S T x Z0 :=
     Filter.Eventually.filter_mono nhdsWithin_le_nhds
-      ((lRegDomain_isOpen S T x Z0).mem_nhds hzeroDom)
+      ((lRegularizedDomain_isOpen S T x Z0).mem_nhds hzeroDom)
   have hnpos : 0 < (Module.finrank Real E : Real) := by
     exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E))
   have hn2 : 0 < (Module.finrank Real E : Real) / 2 := div_pos hnpos (by norm_num)
   have hlim : Tendsto
-      (fun s : Real ↦ lRegAction S T (lRegCurve S T x Z0) 0 s / (2 * s))
+      (fun s : Real ↦ lRegularizedAction S T (lRegularizedCurve S T x Z0) 0 s / (2 * s))
       (𝓝[>] (0 : Real)) (nhds 0) := by
     simpa only [Z0, ContinuousLinearMap.map_zero] using
-      tendsto_lRegAction_div_at_zero (I := I) S hS T x Z0 hT
+      tendsto_lRegularizedAction_div_at_zero (I := I) S hS T x Z0 hT
   have hsmall : ∀ᶠ s in 𝓝[>] (0 : Real),
-      lRegAction S T (lRegCurve S T x Z0) 0 s / (2 * s) <
+      lRegularizedAction S T (lRegularizedCurve S T x Z0) 0 s / (2 * s) <
         (Module.finrank Real E : Real) / 2 :=
     hlim.eventually (Iio_mem_nhds hn2)
   have htime : ∀ᶠ s in 𝓝[>] (0 : Real),
@@ -90,18 +90,18 @@ private theorem exists_redMin_seed [ConnectedSpace M]
     exact hRm q ⟨(sub_le_sub_left hasigma.le T).trans hq.1, hq.2⟩ z
   obtain ⟨y, _Z, _hZmin, _hZend, hval, hmin⟩ :=
     exists_redMin_vec (I := I) S hS K T hg a ha hregA hRmA x
-  have hbdd := lRegCosts_bdd_rm (I := I) S hS K T 0 s le_rfl hstime.1.le
+  have hbdd := lRegularizedCosts_bdd_rm (I := I) S hS K T 0 s le_rfl hstime.1.le
     (by simpa only [a] using hregA) (by simpa only [a] using hRmA)
-    x (lRegCurve S T x Z0 s)
+    x (lRegularizedCurve S T x Z0 s)
   have hcost := lCost_le_ray_bdd (I := I) S hS T x Z0 s hstime.1 hsdom hbdd
-  have hred : redLength S T x (lRegCurve S T x Z0 s) a ≤
-      lRegAction S T (lRegCurve S T x Z0) 0 s / (2 * s) := by
+  have hred : redLength S T x (lRegularizedCurve S T x Z0 s) a ≤
+      lRegularizedAction S T (lRegularizedCurve S T x Z0) 0 s / (2 * s) := by
     rw [redLength, show Real.sqrt a = s by
       simpa only [a] using Real.sqrt_sq hstime.1.le]
     exact (div_le_div_iff_of_pos_right (mul_pos (by norm_num) hstime.1)).2 hcost
   refine ⟨a, ⟨ha, hatau⟩, ?_⟩
   rw [hval]
-  exact (hmin (lRegCurve S T x Z0 s)).trans (hred.trans hsact.le)
+  exact (hmin (lRegularizedCurve S T x Z0 s)).trans (hred.trans hsact.le)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

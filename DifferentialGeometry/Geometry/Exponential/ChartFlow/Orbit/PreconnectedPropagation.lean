@@ -25,7 +25,7 @@ section MaximalGeodesicWitnessFromLift
 variable [I.Boundaryless] [CompleteSpace E]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
-theorem exists_picardLift_witness_interval
+theorem exists_interval_isGeodesicOnWithInitial_of_integralCurveAt
     (g : SmoothRiemannianMetric I M) (p : M) (v : E)
     {g_v : ℝ → TangentBundle I M}
     (hg0 : g_v 0 = (⟨p, v⟩ : TangentBundle I M))
@@ -79,7 +79,7 @@ theorem isMIntegralCurveOn_eq_of_isPreconnected
     (h0_K : (0 : ℝ) ∈ K)
     (hf₁_on : IsMIntegralCurveOn f₁ (geodesicVectorFieldChart (I := I) g p) K)
     (hf₂_on : IsMIntegralCurveOn f₂ (geodesicVectorFieldChart (I := I) g p) K)
-    (hf₁_src : ∀ s ∈ K, (f₁ s).proj ∈ (chartAt H p).source)
+    (hf₁_source : ∀ s ∈ K, (f₁ s).proj ∈ (chartAt H p).source)
     (h0_eq : f₁ 0 = f₂ 0) :
     Set.EqOn f₁ f₂ K := by
   classical
@@ -98,7 +98,7 @@ theorem isMIntegralCurveOn_eq_of_isPreconnected
     have hf₂_at_s : IsMIntegralCurveAt f₂
         (geodesicVectorFieldChart (I := I) g p) s :=
       hf₂_on.isMIntegralCurveAt hK_nhds
-    have hsrc_s : (f₁ s).proj ∈ (chartAt H p).source := hf₁_src s hs_K
+    have hsrc_s : (f₁ s).proj ∈ (chartAt H p).source := hf₁_source s hs_K
     have heq_ev :=
       isMIntegralCurveAt_geodesicVectorFieldChart_eventuallyEq
         (I := I) (g := g) (α := p) (t₀ := s)
@@ -201,13 +201,13 @@ theorem picardLift_proj_eq_maximalGeodesic_on_ball
       ∀ t ∈ Metric.ball (0 : ℝ) ε,
         maximalGeodesic (I := I) g p v t = (g_v t).proj := by
   classical
-  obtain ⟨ε, hε, hg_on, hgeo, hg_src⟩ :=
-    exists_picardLift_witness_interval (I := I) (g := g) (p := p)
+  obtain ⟨ε, hε, hg_on, hgeo, hg_source⟩ :=
+    exists_interval_isGeodesicOnWithInitial_of_integralCurveAt (I := I) (g := g) (p := p)
       (v := v) hg0 hg_int
   set J : Set ℝ := Metric.ball (0 : ℝ) ε with hJ_def
   refine ⟨ε, hε, ?_⟩
   intro t ht
-  have ht_witness : MaximalGeodesicWitness (I := I) g p v t :=
+  have ht_witness : HasGeodesicAt (I := I) g p v t :=
     ⟨projectCurve (I := I) g_v, J, Metric.isOpen_ball,
       (convex_ball (0 : ℝ) ε).isPreconnected, Metric.mem_ball_self hε, ht, hgeo⟩
   have ht_mem : t ∈ maximalGeodesicInterval (I := I) g p v := ht_witness
@@ -230,11 +230,11 @@ theorem picardLift_proj_eq_maximalGeodesic_on_ball
     hg_on.mono Set.inter_subset_left
   have hf'_on_K : IsMIntegralCurveOn f' (geodesicVectorFieldChart (I := I) g p) K :=
     hf'_on.mono Set.inter_subset_right
-  have hg_src_K : ∀ s ∈ K, (g_v s).proj ∈ (chartAt H p).source := by
+  have hg_source_K : ∀ s ∈ K, (g_v s).proj ∈ (chartAt H p).source := by
     intro s hs_K
-    exact hg_src s hs_K.1
+    exact hg_source s hs_K.1
   have heqOn := isMIntegralCurveOn_eq_of_isPreconnected (I := I) (g := g) (p := p)
-    (f₁ := g_v) (f₂ := f') hK_open hK_conn h0_K hg_on_K hf'_on_K hg_src_K
+    (f₁ := g_v) (f₂ := f') hK_open hK_conn h0_K hg_on_K hf'_on_K hg_source_K
     (by rw [hg0, hf'_0])
   have hg_t_eq : g_v t = f' t := heqOn ht_K
   have : (g_v t).proj = (f' t).proj := by rw [hg_t_eq]
@@ -266,7 +266,7 @@ theorem chartFlowOrbitLift_proj_eq_maximalGeodesic_eventually
       (v := v) hg0 hg_int
   have hF_proj_0 : (chartFlowOrbitLift (I := I) Φ p v 0).proj = p := by
     rw [hF_0]
-  have hp_src : (g_v 0).proj ∈ (chartAt H p).source := by
+  have hp_source : (g_v 0).proj ∈ (chartAt H p).source := by
     rw [hg0]; exact mem_chart_source H p
   have h0_eq : g_v 0 = chartFlowOrbitLift (I := I) Φ p v 0 := by
     rw [hg0, hF_0]
@@ -274,7 +274,7 @@ theorem chartFlowOrbitLift_proj_eq_maximalGeodesic_eventually
     isMIntegralCurveAt_geodesicVectorFieldChart_eventuallyEq
       (I := I) (g := g) (α := p) (t₀ := 0)
       (f₁ := g_v) (f₂ := chartFlowOrbitLift (I := I) Φ p v)
-      hp_src hg_int hF_int h0_eq
+      hp_source hg_int hF_int h0_eq
   have h_ball_nhds : Metric.ball (0 : ℝ) ε ∈ 𝓝 (0 : ℝ) :=
     Metric.isOpen_ball.mem_nhds (Metric.mem_ball_self hε)
   filter_upwards [hgF_ev, h_ball_nhds] with s hs_eq hs_ball
@@ -314,10 +314,10 @@ theorem exists_chartFlowOrbitLift_proj_eq_maximalGeodesic_data
           (chartFlowOrbitLift (I := I) Φ p v s).proj =
             maximalGeodesic (I := I) g p v s) := by
   classical
-  obtain ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, hF_0,
+  obtain ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, hF_0,
     _hF_proj, _hF_chartPush, hF_int⟩ :=
     exists_chartFlowOrbitLift_data_uniform (I := I) (g := g) (p := p)
-  refine ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, hF_0,
+  refine ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, hF_0,
     hF_int, ?_⟩
   intro v hv
   exact chartFlowOrbitLift_proj_eq_maximalGeodesic_eventually

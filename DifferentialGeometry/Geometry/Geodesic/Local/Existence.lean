@@ -26,14 +26,14 @@ theorem exists_isMIntegralCurveAt_geodesicVectorFieldChart
       f 0 = (⟨p, v⟩ : TangentBundle I M) ∧
       IsMIntegralCurveAt f (geodesicVectorFieldChart (I := I) g p) 0 := by
   classical
-  have hp_src : p ∈ (chartAt H p).source := mem_chart_source H p
+  have hp_source : p ∈ (chartAt H p).source := mem_chart_source H p
   have hsmooth : ContMDiffAt I.tangent I.tangent.tangent ∞
       (fun q : TangentBundle I M =>
         (⟨q, geodesicVectorFieldChart (I := I) g p q⟩ :
           TangentBundle I.tangent (TangentBundle I M)))
       (⟨p, v⟩ : TangentBundle I M) :=
     geodesicVectorFieldChart_contMDiffAt (I := I) g p
-      (p₀ := (⟨p, v⟩ : TangentBundle I M)) hp_src
+      (p₀ := (⟨p, v⟩ : TangentBundle I M)) hp_source
   have hsmooth1 : ContMDiffAt I.tangent I.tangent.tangent 1
       (fun q : TangentBundle I M =>
         (⟨q, geodesicVectorFieldChart (I := I) g p q⟩ :

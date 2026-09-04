@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 
@@ -95,7 +95,7 @@ omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
 omit [SigmaCompactSpace M] in
 theorem metricCInf_inner
     (gSeq : ℕ → SmoothRiemannianMetric I M) (gInf gRef : SmoothRiemannianMetric I M)
-    (hconv : MetricCInfConvOnCompacts (I := I) gSeq gInf gRef)
+    (hconv : MetricCInfConvergenceOnCompacts (I := I) gSeq gInf gRef)
     (x : M) (v w : TangentSpace I x) :
     Tendsto (fun k => (gSeq k).inner x v w) atTop (nhds (gInf.inner x v w)) := by
   rw [Metric.tendsto_atTop]
@@ -143,8 +143,8 @@ omit [SigmaCompactSpace M] in
 theorem metricCInf_unique
     (gSeq : ℕ → SmoothRiemannianMetric I M)
     (A B gRefA gRefB : SmoothRiemannianMetric I M)
-    (hA : MetricCInfConvOnCompacts (I := I) gSeq A gRefA)
-    (hB : MetricCInfConvOnCompacts (I := I) gSeq B gRefB) : A = B := by
+    (hA : MetricCInfConvergenceOnCompacts (I := I) gSeq A gRefA)
+    (hB : MetricCInfConvergenceOnCompacts (I := I) gSeq B gRefB) : A = B := by
   refine metric_ext_inner A B fun x => ?_
   refine ContinuousLinearMap.ext fun v => ContinuousLinearMap.ext fun w => ?_
   exact tendsto_nhds_unique
@@ -507,11 +507,11 @@ omit [Module.Finite ℝ E] [I.Boundaryless] [SigmaCompactSpace M]
     [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
-theorem MetricCInfConvOnCompacts.metric_deriv_norm_le
+theorem MetricCInfConvergenceOnCompacts.metric_deriv_norm_le
     [Module.Finite ℝ E]
     (gSeq : ℕ → SmoothRiemannianMetric I M)
     (gInf g₀ gRef : SmoothRiemannianMetric I M)
-    (hconv : MetricCInfConvOnCompacts (I := I) gSeq gInf gRef)
+    (hconv : MetricCInfConvergenceOnCompacts (I := I) gSeq gInf gRef)
     {a : ℕ} {x : M} {δ : ℝ}
     (hbound : ∀ k, metricDerivNorm (I := I) a (gSeq k) g₀ gRef x ≤ δ) :
     metricDerivNorm (I := I) a gInf g₀ gRef x ≤ δ := by
@@ -853,5 +853,5 @@ theorem metricWindowSubsequence_of_bounds
   exact
     ⟨exists_metric_subsequence_tendsto_uniformly_on_time_interval (I := I) hne K hK beta psiT p gSeq gRef e he hdense L hL hgLip hbdd hlow⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

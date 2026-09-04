@@ -15,7 +15,7 @@ open scoped ContDiff Manifold Topology
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
-namespace CGT
+namespace CheegerGromovTaylor
 
 open Exponential Geodesic NormalCoordinates
 open DifferentialGeometry.Integral.DivergenceTheorem
@@ -40,10 +40,10 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
 noncomputable local instance {R : Real} :
-    SigmaCompactSpace (intrPullBall (E := E) R) :=
+    SigmaCompactSpace (intrinsicPullBall (E := E) R) :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen
-      𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
+      𝓘(Real, E) (intrinsicPullBall (E := E) R).isOpen)
 
 theorem exists_short_scale
     {R a K : Real} (h4aR : 4 * a < R)
@@ -74,7 +74,7 @@ theorem exists_short_scale
   dsimp only [cap] at hLcap
   linarith
 
-theorem intrCore_min_regular
+theorem intrinsicCore_min_regular
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -92,10 +92,10 @@ theorem intrCore_min_regular
           (DifferentialGeometry.Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
-    {pt q : intrPullBall (E := E) R}
-    (hpt : pt ∈ intrCore (E := E) R a)
-    (hq : q ∈ intrCore (E := E) R a) :
-    let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+    {pt q : intrinsicPullBall (E := E) R}
+    (hpt : pt ∈ intrinsicCore (E := E) R a)
+    (hq : q ∈ intrinsicCore (E := E) R a) :
+    let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
     letI : RiemannianBundle
         (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
       ⟨gExt.toRiemannianMetric⟩
@@ -107,7 +107,7 @@ theorem intrCore_min_regular
     letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
     letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
     letI : CompleteSpace E :=
-      (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+      (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
     let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
       fun z v =>
@@ -116,7 +116,7 @@ theorem intrCore_min_regular
     let u :=
       minimizingVec (I := 𝓘(Real, E)) gExt hExt (pt : E) (q : E)
     ¬ IsConjVec (I := 𝓘(Real, E)) gExt hExt (pt : E) (u : E) := by
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -128,7 +128,7 @@ theorem intrCore_min_regular
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
     fun z v =>
@@ -146,7 +146,7 @@ theorem intrCore_min_regular
   have hdist :
       riemannianEDistOf (I := 𝓘(Real, E)) gExt (pt : E) (q : E) ≤
         ENNReal.ofReal (2 * a) :=
-    intrExt_edist_le (I := I) g hEnorm p hR hloc hpt hq haInner
+    intrinsicExt_edist_le (I := I) g hEnorm p hR hloc hpt hq haInner
   have hdistReal :
       (riemannianEDistOf
         (I := 𝓘(Real, E)) gExt (pt : E) (q : E)).toReal ≤
@@ -161,12 +161,12 @@ theorem intrCore_min_regular
     hu2a.trans h2aL.le
   have hfence :
       ∀ t ∈ Set.Icc (0 : Real) 1,
-        ‖intrExtLaunch (I := I) g hEnorm p hR hloc
+        ‖intrinsicExtLaunch (I := I) g hEnorm p hR hloc
           (pt : E) u t‖ < 3 * R / 4 :=
-    intrExt_shortLaunch_fenced
+    intrinsicExt_shortLaunch_fenced
       (I := I) g hEnorm p hR hloc hpt u huL hbudget
   have hnot :=
-    intrExt_not_conj_of_shortLaunch
+    intrinsicExt_not_conj_of_shortLaunch
       (I := I) g hEnorm p hR hloc u hfence huL hK hRm hsmallL
   change
     ¬ IsConjVec
@@ -333,7 +333,7 @@ private theorem shortBigons_compact
   · simpa only [Metric.mem_closedBall, dist_zero_right] using hb.1
   · simpa only [Metric.mem_closedBall, dist_zero_right] using hb.2
 
-theorem intrExt_minVec_mem
+theorem intrinsicExt_minVec_mem
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -343,7 +343,7 @@ theorem intrExt_minVec_mem
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
     {pt q u : E} :
-    let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+    let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
     letI : RiemannianBundle
         (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
       ⟨gExt.toRiemannianMetric⟩
@@ -355,7 +355,7 @@ theorem intrExt_minVec_mem
     letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
     letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
     letI : CompleteSpace E :=
-      (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+      (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
     let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
       fun z v =>
@@ -372,7 +372,7 @@ theorem intrExt_minVec_mem
         (minimizingVec (I := 𝓘(Real, E)) gExt hExt pt z : E) ∈
           B.hom.source := by
   classical
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -384,7 +384,7 @@ theorem intrExt_minVec_mem
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
     fun z v =>
@@ -556,7 +556,7 @@ theorem branchEnergy_min_germ
     (Real.sq_sqrt
       (gInner_self_nonneg (I := I) g pt v)).symm
 
-private theorem intrExt_radial_geo
+private theorem intrinsicExt_radial_geo
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -568,7 +568,7 @@ private theorem intrExt_radial_geo
     {z : E} (hz : ‖z‖ < 3 * R / 4) :
     ∃ c : Real, 1 < c ∧
       IsGeodesicOn (I := 𝓘(Real, E))
-        (intrExtMetric (I := I) g hEnorm p hR hloc)
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc)
         (fun t : Real => t • z) (Set.Ioo (-c) c) := by
   classical
   let B : Real := 3 * R / 4
@@ -629,7 +629,7 @@ private theorem intrExt_radial_geo
     apply b.radial_eq_self
     rw [Metric.mem_closedBall, Real.dist_eq, sub_zero]
     exact (abs_lt.mpr ht).le
-  let γ : Real → intrPullBall (E := E) R := fun t =>
+  let γ : Real → intrinsicPullBall (E := E) R := fun t =>
     ⟨φ t • z, by
       change φ t • z ∈ Metric.ball (0 : E) R
       rw [Metric.mem_ball, dist_zero_right]
@@ -639,22 +639,22 @@ private theorem intrExt_radial_geo
     intro t
     exact codRestr_contMDiffAt
       (I := 𝓘(Real, Real)) (J := 𝓘(Real, E))
-      (V := intrPullBall (E := E) R)
+      (V := intrinsicPullBall (E := E) R)
       (f := fun s : Real => φ s • z)
       (fun s => (γ s).property)
       ((hφ_smooth.smul contDiff_const).contMDiff.contMDiffAt)
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun x : intrPullBall (E := E) R ↦
+      (fun x : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) x) :=
     ⟨gPull.toRiemannianMetric⟩
   have hmap_geo :
       IsGeodesicOn (I := I) g
-        (fun t => intrExpOn (I := I) g hEnorm p R (γ t))
+        (fun t => intrinsicExpOn (I := I) g hEnorm p R (γ t))
         (Set.Ioo (-c) c) := by
     intro t ht
     have heq :
-        (fun s => intrExpOn (I := I) g hEnorm p R (γ s)) =ᶠ[𝓝 t]
+        (fun s => intrinsicExpOn (I := I) g hEnorm p R (γ s)) =ᶠ[𝓝 t]
           intrinsicGeodesic (I := I) g hEnorm p
             (normalFrame (I := I) g p z) := by
       filter_upwards [isOpen_Ioo.mem_nhds ht] with s hs
@@ -665,7 +665,7 @@ private theorem intrExt_radial_geo
         change φ s • z = s • z
         rw [hφ_eq hs]]
       with_unfolding_all
-        rw [intrFrame_apply, map_smul]
+        rw [intrinsicFrame_apply, map_smul]
         change intrinsicGeodesic (I := I) g hEnorm p
             (s • normalFrame (I := I) g p z) 1 =
           intrinsicGeodesic (I := I) g hEnorm p
@@ -682,25 +682,25 @@ private theorem intrExt_radial_geo
     intro t ht
     apply Geodesic.geoEq_of_map_localIso
       (I := 𝓘(Real, E)) (J := I) gPull g
-      (intrExpOn_local (I := I) g hEnorm p hloc)
+      (intrinsicExpOn_local (I := I) g hEnorm p hloc)
       (γ := γ) (t := t)
     · intro x v w
       change
-        (intrPullMetric (I := I) g hEnorm p hloc).inner x v w =
-          g.inner (intrExpOn (I := I) g hEnorm p R x)
+        (intrinsicPullMetric (I := I) g hEnorm p hloc).inner x v w =
+          g.inner (intrinsicExpOn (I := I) g hEnorm p R x)
             (mfderiv 𝓘(Real, E) I
-              (intrExpOn (I := I) g hEnorm p R) x v)
+              (intrinsicExpOn (I := I) g hEnorm p R) x v)
             (mfderiv 𝓘(Real, E) I
-              (intrExpOn (I := I) g hEnorm p R) x w)
-      rw [intrPullMetric, localPullMetric_inner]
+              (intrinsicExpOn (I := I) g hEnorm p R) x w)
+      rw [intrinsicPullMetric, localPullMetric_inner]
     · exact hγ_smooth t
     · exact hmap_geo t ht
   have hext_geo :
       IsGeodesicOn (I := 𝓘(Real, E))
-        (intrExtMetric (I := I) g hEnorm p hR hloc)
-        (fun t => ((γ t : intrPullBall (E := E) R) : E))
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc)
+        (fun t => ((γ t : intrinsicPullBall (E := E) R) : E))
         (Set.Ioo (-c) c) := by
-    exact intrExt_geo_of_pull (I := I) g hEnorm p hR hloc γ
+    exact intrinsicExt_geo_of_pull (I := I) g hEnorm p hR hloc γ
       (Set.Ioo (-c) c) hγ_smooth
       (fun t _ht => by
         change ‖φ t • z‖ < 3 * R / 4
@@ -709,17 +709,17 @@ private theorem intrExt_radial_geo
   refine ⟨c, hc, ?_⟩
   intro t ht
   have heq :
-      (fun s => ((γ s : intrPullBall (E := E) R) : E)) =ᶠ[𝓝 t]
+      (fun s => ((γ s : intrinsicPullBall (E := E) R) : E)) =ᶠ[𝓝 t]
         (fun s : Real => s • z) := by
     filter_upwards [isOpen_Ioo.mem_nhds ht] with s hs
     change φ s • z = s • z
     rw [hφ_eq hs]
   exact HasGeodesicEquationAt.congr_of_eventuallyEq_at
     (I := 𝓘(Real, E))
-    (g := intrExtMetric (I := I) g hEnorm p hR hloc)
+    (g := intrinsicExtMetric (I := I) g hEnorm p hR hloc)
     heq.eq_of_nhds.symm heq.symm (hext_geo t ht)
 
-theorem intrExt_radial_eq
+theorem intrinsicExt_radial_eq
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -730,9 +730,9 @@ theorem intrExt_radial_eq
         (Metric.ball (0 : E) R))
     {z : E} (hz : ‖z‖ < 3 * R / 4)
     {t : Real} (ht : t ∈ Set.Icc (0 : Real) 1) :
-    intrExtLaunch (I := I) g hEnorm p hR hloc (0 : E) z t =
+    intrinsicExtLaunch (I := I) g hEnorm p hR hloc (0 : E) z t =
       t • z := by
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun x : E ↦ TangentSpace 𝓘(Real, E) x) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -750,14 +750,14 @@ theorem intrExt_radial_eq
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (x : E) (v : TangentSpace 𝓘(Real, E) x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner x v v)) :=
     fun x v =>
       tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := 𝓘(Real, E)) gExt x v
   obtain ⟨c, hc, hline⟩ :=
-    intrExt_radial_geo (I := I) g hEnorm p hR hloc hz
+    intrinsicExt_radial_geo (I := I) g hEnorm p hR hloc hz
   let O : Set Real := Set.Ioo (-c) c
   let Γ : Real → E :=
     intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt (0 : E) z
@@ -803,7 +803,7 @@ theorem intrExt_radial_eq
     dsimp only [O]
     constructor <;> linarith
   have heq :=
-    geo_eqOn_of_init (I := 𝓘(Real, E)) gExt
+    geo_eqOn_of_initial (I := 𝓘(Real, E)) gExt
       (O := O) isOpen_Ioo isPreconnected_Ioo h0O hΓ hline'
       hΓcont hlineCont
       (by
@@ -818,9 +818,9 @@ theorem intrExt_radial_eq
     · linarith [ht.1]
     · linarith [ht.2]
   have hΓt : Γ t = t • z := heq htO
-  simpa only [Γ, gExt, hExt, intrExtLaunch] using hΓt
+  simpa only [Γ, gExt, hExt, intrinsicExtLaunch] using hΓt
 
-theorem intrExt_exp_zero
+theorem intrinsicExt_exp_zero
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -830,12 +830,12 @@ theorem intrExt_exp_zero
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
     {z : E} (hz : ‖z‖ < 3 * R / 4) :
-    intrExtLaunch (I := I) g hEnorm p hR hloc (0 : E) z 1 = z := by
+    intrinsicExtLaunch (I := I) g hEnorm p hR hloc (0 : E) z 1 = z := by
   simpa only [one_smul] using
-    intrExt_radial_eq (I := I) g hEnorm p hR hloc hz
+    intrinsicExt_radial_eq (I := I) g hEnorm p hR hloc hz
       (t := (1 : Real)) ⟨zero_le_one, le_rfl⟩
 
-private noncomputable def intrOriginHom {R : Real} :
+private noncomputable def intrinsicOriginHom {R : Real} :
     PartialDiffeomorph 𝓘(Real, E) 𝓘(Real, E) E E ∞ where
   toPartialEquiv :=
     PartialEquiv.ofSet (Metric.ball (0 : E) (3 * R / 4))
@@ -856,30 +856,30 @@ variable
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
 
-theorem intrExt_inner_zero (v w : E) :
-    (intrExtMetric (I := I) g hEnorm p hR hloc).inner (0 : E) v w =
+theorem intrinsicExt_inner_zero (v w : E) :
+    (intrinsicExtMetric (I := I) g hEnorm p hR hloc).inner (0 : E) v w =
       Inner.inner Real v w := by
   have hzero :
       (0 : E) ∈ Metric.closedBall (0 : E) (3 * R / 4) := by
     rw [Metric.mem_closedBall, dist_zero_right, norm_zero]
     linarith
-  rw [intrExt_inner (I := I) g hEnorm p hR hloc hzero]
-  have hinner := intrPullMetric_inner (I := I) g hEnorm p hloc
-    ⟨(0 : E), intrClosed_subset (E := E) R hR hzero⟩ v w
+  rw [intrinsicExt_inner (I := I) g hEnorm p hR hloc hzero]
+  have hinner := intrinsicPullMetric_inner (I := I) g hEnorm p hloc
+    ⟨(0 : E), intrinsicClosed_subset (E := E) R hR hzero⟩ v w
   have hinner' :
-      (intrPullMetric (I := I) g hEnorm p hloc).inner
-          ⟨(0 : E), intrClosed_subset (E := E) R hR hzero⟩ v w =
+      (intrinsicPullMetric (I := I) g hEnorm p hloc).inner
+          ⟨(0 : E), intrinsicClosed_subset (E := E) R hR hzero⟩ v w =
         innerSL Real v w := by
     with_unfolding_all
-      simpa only [intrFrameMetric_zero,
+      simpa only [intrinsicFrameMetric_zero,
         tangentSpaceModelContinuousLinearEquiv_symm_apply] using hinner
   exact hinner'.trans (innerSL_apply_apply Real v w)
 
-theorem intrOrigin_energy (z : E) :
+theorem intrinsicOrigin_energy (z : E) :
     (1 / 2 : Real) *
-        (intrExtMetric (I := I) g hEnorm p hR hloc).inner (0 : E) z z =
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc).inner (0 : E) z z =
       (1 / 2 : Real) * ‖z‖ ^ 2 := by
-  rw [intrExt_inner_zero (I := I) g hEnorm p hR hloc,
+  rw [intrinsicExt_inner_zero (I := I) g hEnorm p hR hloc,
     real_inner_self_eq_norm_sq]
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] in
@@ -975,7 +975,7 @@ private theorem halfSq_line_deriv2 (z : E) (t : Real) :
   rw [deriv_mul_const_field, deriv_id'']
   exact one_mul (‖z‖ ^ 2)
 
-theorem intrOrigin_hess_zero
+theorem intrinsicOrigin_hess_zero
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -986,11 +986,11 @@ theorem intrOrigin_hess_zero
         (Metric.ball (0 : E) R))
     (Y : E) :
     hessFun (I := 𝓘(Real, E))
-        (intrExtMetric (I := I) g hEnorm p hR hloc)
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc)
         (fun y : E => (1 / 2 : Real) * ‖y‖ ^ 2) 0 Y Y =
       ‖Y‖ ^ 2 := by
   classical
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun y : E ↦ TangentSpace 𝓘(Real, E) y) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -1002,7 +1002,7 @@ theorem intrOrigin_hess_zero
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let f : E → Real := fun y => (1 / 2 : Real) * ‖y‖ ^ 2
   change hessFun (I := 𝓘(Real, E)) gExt f 0 Y Y = ‖Y‖ ^ 2
   let B : Real := 3 * R / 4
@@ -1033,7 +1033,7 @@ theorem intrOrigin_hess_zero
         dsimp only [B]
         ring
   obtain ⟨c, hc, hline⟩ :=
-    intrExt_radial_geo (I := I) g hEnorm p hR hloc hz₀
+    intrinsicExt_radial_geo (I := I) g hEnorm p hR hloc hz₀
   let line : Real → E := fun t => t • z₀
   have hlineSmooth :
       ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ line := by
@@ -1091,7 +1091,7 @@ theorem intrOrigin_hess_zero
   rw [show z₀ = ε • Y by rfl, hscale, hnorm] at hdiag
   nlinarith [sq_pos_of_pos hε]
 
-theorem intrOrigin_hess_pos
+theorem intrinsicOrigin_hess_pos
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1113,10 +1113,10 @@ theorem intrOrigin_hess_pos
     (hz0 : z ≠ 0) (hY : Y ≠ 0) :
     0 <
       hessFun (I := 𝓘(Real, E))
-        (intrExtMetric (I := I) g hEnorm p hR hloc)
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc)
         (fun y : E => (1 / 2 : Real) * ‖y‖ ^ 2) z Y Y := by
   classical
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun y : E ↦ TangentSpace 𝓘(Real, E) y) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -1134,20 +1134,20 @@ theorem intrOrigin_hess_pos
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (y : E) (v : TangentSpace 𝓘(Real, E) y),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner y v v)) :=
     fun y v =>
       tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := 𝓘(Real, E)) gExt y v
   let hom : PartialDiffeomorph 𝓘(Real, E) 𝓘(Real, E) E E ∞ :=
-    intrOriginHom (E := E) (R := R)
+    intrinsicOriginHom (E := E) (R := R)
   let B : ExponentialInverseBranch (I := 𝓘(Real, E)) gExt hExt (0 : E) :=
     { hom := hom
       hom_eq := by
         intro y hy
         have hy' : ‖y‖ < 3 * R / 4 := by
-          simpa only [hom, intrOriginHom, PartialEquiv.ofSet_source,
+          simpa only [hom, intrinsicOriginHom, PartialEquiv.ofSet_source,
             Metric.mem_ball, dist_zero_right] using hy
         change expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt
           (0 : E)
@@ -1157,12 +1157,12 @@ theorem intrOrigin_hess_pos
         with_unfolding_all
           change intrinsicGeodesic (I := 𝓘(Real, E))
             gExt hExt (0 : E) y 1 = y
-          exact intrExt_exp_zero (I := I) g hEnorm p hR hloc hy' }
+          exact intrinsicExt_exp_zero (I := I) g hEnorm p hR hloc hy' }
   let f : E → Real := fun y => (1 / 2 : Real) * ‖y‖ ^ 2
   change
     0 < hessFun (I := 𝓘(Real, E)) gExt f z Y Y
   have hBsrc : (z : E) ∈ B.hom.source := by
-    simpa only [B, hom, intrOriginHom, PartialEquiv.ofSet_source,
+    simpa only [B, hom, intrinsicOriginHom, PartialEquiv.ofSet_source,
       Metric.mem_ball, dist_zero_right] using hz
   have henergy :
       branchEnergy (I := 𝓘(Real, E)) gExt B = f := by
@@ -1171,7 +1171,7 @@ theorem intrOrigin_hess_pos
       (1 / 2 : Real) * gExt.inner (0 : E) y y =
         (1 / 2 : Real) * ‖y‖ ^ 2
     simpa only [gExt] using
-      intrOrigin_energy (I := I) g hEnorm p hR hloc y
+      intrinsicOrigin_energy (I := I) g hEnorm p hR hloc y
   let expf : E → E := fun u =>
     expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt (0 : E) u
   have hzBall : z ∈ Metric.ball (0 : E) (3 * R / 4) := by
@@ -1185,7 +1185,7 @@ theorem intrOrigin_hess_pos
     with_unfolding_all
       change intrinsicGeodesic (I := 𝓘(Real, E))
         gExt hExt (0 : E) y 1 = y
-      exact intrExt_exp_zero (I := I) g hEnorm p hR hloc hy'
+      exact intrinsicExt_exp_zero (I := I) g hEnorm p hR hloc hy'
   have hDexp (W : E) :
       mfderiv 𝓘(Real, E) 𝓘(Real, E) expf z W = W := by
     rw [hexpid.mfderiv_eq, mfderiv_id]
@@ -1195,8 +1195,8 @@ theorem intrOrigin_hess_pos
   let J : E → Real → E := fun W =>
     intrinsicJacobi (I := 𝓘(Real, E)) gExt hExt (0 : E) z W
   have hγone : γ 1 = z := by
-    simpa only [γ, gExt, hExt, intrExtLaunch] using
-      intrExt_exp_zero (I := I) g hEnorm p hR hloc hz
+    simpa only [γ, gExt, hExt, intrinsicExtLaunch] using
+      intrinsicExt_exp_zero (I := I) g hEnorm p hR hloc hz
   have hJone (W : E) : J W 1 = W := by
     have hraw :=
       congrArg (fun V => (V : E))
@@ -1226,17 +1226,17 @@ theorem intrOrigin_hess_pos
       all_goals rfl
   have hfence :
       ∀ t ∈ Set.Icc (0 : Real) 1,
-        ‖intrExtLaunch (I := I) g hEnorm p hR hloc
+        ‖intrinsicExtLaunch (I := I) g hEnorm p hR hloc
           (0 : E) z t‖ < 3 * R / 4 := by
     intro t ht
     have htAbs : |t| ≤ 1 := by
       rw [abs_le]
       constructor <;> linarith [ht.1, ht.2]
     calc
-      ‖intrExtLaunch (I := I) g hEnorm p hR hloc
+      ‖intrinsicExtLaunch (I := I) g hEnorm p hR hloc
           (0 : E) z t‖ =
           ‖t • z‖ := congrArg norm
-            (intrExt_radial_eq (I := I) g hEnorm p hR hloc hz ht)
+            (intrinsicExt_radial_eq (I := I) g hEnorm p hR hloc hz ht)
       _ = |t| * ‖z‖ := by rw [norm_smul, Real.norm_eq_abs]
       _ ≤ ‖z‖ := by
         simpa only [one_mul] using
@@ -1245,7 +1245,7 @@ theorem intrOrigin_hess_pos
   have hspeedLe : Real.sqrt (gExt.inner (0 : E) z z) ≤ L := by
     rw [show gExt.inner (0 : E) z z = Inner.inner Real z z by
       simpa only [gExt] using
-        intrExt_inner_zero (I := I) g hEnorm p hR hloc z z,
+        intrinsicExt_inner_zero (I := I) g hEnorm p hR hloc z z,
       real_inner_self_eq_norm_sq, Real.sqrt_sq (norm_nonneg z)]
     exact hzL
   let d : Real := Inner.inner Real z z
@@ -1265,7 +1265,7 @@ theorem intrOrigin_hess_pos
   have hperp : gExt.inner (0 : E) z W = 0 := by
     rw [show gExt.inner (0 : E) z W = Inner.inner Real z W by
       simpa only [gExt] using
-        intrExt_inner_zero (I := I) g hEnorm p hR hloc z W]
+        intrinsicExt_inner_zero (I := I) g hEnorm p hR hloc z W]
     exact hperpE
   have hdecomp : Y = W + α • z := by
     dsimp only [W]
@@ -1277,7 +1277,7 @@ theorem intrOrigin_hess_pos
   have hdiag :
       hessFun (I := 𝓘(Real, E)) gExt f z z z = ‖z‖ ^ 2 := by
     obtain ⟨c, hc, hline⟩ :=
-      intrExt_radial_geo (I := I) g hEnorm p hR hloc hz
+      intrinsicExt_radial_geo (I := I) g hEnorm p hR hloc hz
     let line : Real → E := fun t => t • z
     have hlineSmooth :
         ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ line := by
@@ -1310,7 +1310,7 @@ theorem intrOrigin_hess_pos
         J z 1 =
           Variation.curveVelocity (I := 𝓘(Real, E)) γ 1 := by
       have hselfT :=
-        intrJacobi_self
+        intrinsicJacobi_self
           (I := 𝓘(Real, E)) gExt hExt (0 : E) z
       have hselfE := congrArg
         (tangentSpaceModelContinuousLinearEquiv
@@ -1320,7 +1320,7 @@ theorem intrOrigin_hess_pos
       simpa only [γ, J,
         tangentSpaceModelContinuousLinearEquiv_apply] using hselfE
     have hdperp :=
-      intrJacobi_dperp
+      intrinsicJacobi_dperp
         (I := 𝓘(Real, E)) gExt hExt (0 : E) z W
           one_ne_zero hperp
     have hpair :
@@ -1374,7 +1374,7 @@ theorem intrOrigin_hess_pos
     rw [hscale, hdiag]
     positivity
   · have hpair :=
-      intrExt_pair_pos
+      intrinsicExt_pair_pos
         (I := I) g hEnorm p hR hloc z W hfence hspeedLe
           hz0 hW hperp hK hRm hsmall
     have hh :=
@@ -1460,7 +1460,7 @@ theorem intrOrigin_hess_pos
       add_zero, zero_add]
     exact add_pos_of_pos_of_nonneg hWW hrad
 
-theorem intrOrigin_hess_all
+theorem intrinsicOrigin_hess_all
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1482,17 +1482,17 @@ theorem intrOrigin_hess_all
     (hY : Y ≠ 0) :
     0 <
       hessFun (I := 𝓘(Real, E))
-        (intrExtMetric (I := I) g hEnorm p hR hloc)
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc)
         (fun y : E => (1 / 2 : Real) * ‖y‖ ^ 2) z Y Y := by
   by_cases hz0 : z = 0
   · subst z
-    rw [intrOrigin_hess_zero (I := I) g hEnorm p hR hloc Y]
+    rw [intrinsicOrigin_hess_zero (I := I) g hEnorm p hR hloc Y]
     exact sq_pos_of_pos (norm_pos_iff.mpr hY)
   · exact
-      intrOrigin_hess_pos (I := I) g hEnorm p hR hloc
+      intrinsicOrigin_hess_pos (I := I) g hEnorm p hR hloc
         hK hRm hsmall hz hzL hz0 hY
 
-theorem intrOrigin_strict
+theorem intrinsicOrigin_strict
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1514,7 +1514,7 @@ theorem intrOrigin_strict
     {D : Set Real}
     (hgeo :
       IsGeodesicOn (I := 𝓘(Real, E))
-        (intrExtMetric (I := I) g hEnorm p hR hloc) γ
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc) γ
         (interior D))
     (hD : Convex Real D)
     (hfence : ∀ t ∈ interior D, ‖γ t‖ < 3 * R / 4)
@@ -1523,7 +1523,7 @@ theorem intrOrigin_strict
       (mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t (1 : Real) : E) ≠ 0) :
     StrictConvexOn Real D
       ((fun y : E => (1 / 2 : Real) * ‖y‖ ^ 2) ∘ γ) := by
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let f : E → Real := fun y => (1 / 2 : Real) * ‖y‖ ^ 2
   have hf :
       ContMDiff 𝓘(Real, E) 𝓘(Real, Real) ∞ f :=
@@ -1536,10 +1536,10 @@ theorem intrOrigin_strict
       (fun _ _ => Set.mem_univ _) ?_
   intro t ht
   with_unfolding_all
-    exact intrOrigin_hess_all (I := I) g hEnorm p hR hloc
+    exact intrinsicOrigin_hess_all (I := I) g hEnorm p hR hloc
       hK hRm hsmall (hfence t ht) (hbound t ht) (hvel t ht)
 
-theorem intrExt_edge_core
+theorem intrinsicExtendedGeodesic_stays_in_ball
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1562,12 +1562,12 @@ theorem intrExt_edge_core
     (v : TangentSpace 𝓘(Real, E) x)
     (hv :
       Real.sqrt
-          ((intrExtMetric (I := I) g hEnorm p hR hloc).inner x v v) ≤
+          ((intrinsicExtMetric (I := I) g hEnorm p hR hloc).inner x v v) ≤
         L)
-    (hend : intrExtLaunch (I := I) g hEnorm p hR hloc x v 1 = y) :
+    (hend : intrinsicExtLaunch (I := I) g hEnorm p hR hloc x v 1 = y) :
     ∀ t ∈ Set.Icc (0 : Real) 1,
-      ‖intrExtLaunch (I := I) g hEnorm p hR hloc x v t‖ ≤ a := by
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+      ‖intrinsicExtLaunch (I := I) g hEnorm p hR hloc x v t‖ ≤ a := by
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -1579,7 +1579,7 @@ theorem intrExt_edge_core
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (w : TangentSpace 𝓘(Real, E) z),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z w w)) :=
     fun z w =>
@@ -1590,7 +1590,7 @@ theorem intrExt_edge_core
   have hγ0 : γ 0 = x :=
     intrinsicGeodesic_zero (I := 𝓘(Real, E)) gExt hExt x v
   have hγ1 : γ 1 = y := by
-    simpa only [γ, gExt, hExt, intrExtLaunch] using hend
+    simpa only [γ, gExt, hExt, intrinsicExtLaunch] using hend
   have ha : 0 ≤ a := (norm_nonneg x).trans hx
   intro t ht
   by_cases hv0 : v = 0
@@ -1607,21 +1607,21 @@ theorem intrExt_edge_core
         (I := 𝓘(Real, E)) (γ 0) (γ t)
         (le_antisymm (by simpa only [γ, sub_zero] using hdist) bot_le)
     rw [hγ0] at heq
-    simpa only [γ, gExt, hExt, intrExtLaunch, ← heq] using hx
+    simpa only [γ, gExt, hExt, intrinsicExtLaunch, ← heq] using hx
   · have hfence :
         ∀ s ∈ Set.Icc (0 : Real) 1, ‖γ s‖ < 3 * R / 4 := by
-      simpa only [γ, gExt, hExt, intrExtLaunch] using
-        intrExt_shortLaunch_fenced
+      simpa only [γ, gExt, hExt, intrinsicExtLaunch] using
+        intrinsicExt_shortLaunch_fenced
           (I := I) g hEnorm p hR hloc hx v hv hbudget
     have hscale :
         ∀ s ∈ Set.Icc (0 : Real) 1, ‖γ s‖ ≤ a + L / 2 := by
-      simpa only [γ, gExt, hExt, intrExtLaunch] using
-        intrExt_scale_bound
+      simpa only [γ, gExt, hExt, intrinsicExtLaunch] using
+        intrinsicExt_scale_bound
           (I := I) g hEnorm p hR hloc hx hy v hv hbudget hend
     have hstrict :
         StrictConvexOn Real (Set.Icc (0 : Real) 1)
           ((fun z : E => (1 / 2 : Real) * ‖z‖ ^ 2) ∘ γ) :=
-      intrOrigin_strict (I := I) g hEnorm p hR hloc
+      intrinsicOrigin_strict (I := I) g hEnorm p hR hloc
         hK hRm hsmall
         (intrinsicGeodesic_contMDiff
           (I := 𝓘(Real, E)) gExt hExt x v)
@@ -1642,7 +1642,7 @@ theorem intrExt_edge_core
           have hsBound := hscale s ⟨hs'.1.le, hs'.2.le⟩
           linarith)
         (fun s _hs =>
-          intrGeo_vel_ne
+          intrinsicGeo_velocity_ne
             (I := 𝓘(Real, E)) gExt hExt x v hv0 s)
     have hjensen :=
       hstrict.convexOn.2
@@ -1669,9 +1669,9 @@ theorem intrExt_edge_core
       nlinarith
     have hnorm : ‖γ t‖ ≤ a :=
       (sq_le_sq₀ (norm_nonneg (γ t)) ha).1 hγSq
-    simpa only [γ, gExt, hExt, intrExtLaunch] using hnorm
+    simpa only [γ, gExt, hExt, intrinsicExtLaunch] using hnorm
 
-theorem intrOrigin_no_return
+theorem intrinsicOrigin_no_return
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1693,7 +1693,7 @@ theorem intrOrigin_no_return
     {γ : Real → E} (hγ : ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γ)
     (hgeo :
       IsGeodesicOn (I := 𝓘(Real, E))
-        (intrExtMetric (I := I) g hEnorm p hR hloc) γ
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc) γ
         (Set.Ioo (0 : Real) (2 * T)))
     (hfence :
       ∀ t ∈ Set.Ioo (0 : Real) (2 * T), ‖γ t‖ < 3 * R / 4)
@@ -1703,7 +1703,7 @@ theorem intrOrigin_no_return
     (h0T : γ 0 = γ T) (hT2 : γ T = γ (2 * T)) :
     False := by
   have hstrict :=
-    intrOrigin_strict (I := I) g hEnorm p hR hloc hK hRm hsmall
+    intrinsicOrigin_strict (I := I) g hEnorm p hR hloc hK hRm hsmall
       hγ (D := Set.Icc (0 : Real) (2 * T))
       (by simpa only [interior_Icc] using hgeo)
       (convex_Icc (0 : Real) (2 * T))
@@ -1798,7 +1798,7 @@ private theorem midpoint_minimal_loop
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (hsmall : K * L ^ 2 < (Real.pi / 2) ^ 2)
     (h2aL : 2 * a < L) (hbudget : a + L < 3 * R / 4) :
-    let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+    let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
     letI : RiemannianBundle
         (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
       ⟨gExt.toRiemannianMetric⟩
@@ -1816,7 +1816,7 @@ private theorem midpoint_minimal_loop
     letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
     letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
     letI : CompleteSpace E :=
-      (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+      (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
     let hExt : ∀ (z : E) (w : TangentSpace 𝓘(Real, E) z),
         ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z w w)) :=
       fun z w =>
@@ -1841,7 +1841,7 @@ private theorem midpoint_minimal_loop
           ell (z₁.1, z₁.2.1) < L ∧
           ell (z₁.1, z₁.2.2) < L := by
   dsimp only
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -1853,7 +1853,7 @@ private theorem midpoint_minimal_loop
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (w : TangentSpace 𝓘(Real, E) z),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z w w)) :=
     fun z w =>
@@ -1881,11 +1881,11 @@ private theorem midpoint_minimal_loop
         gExt hExt x₀ q₀ = x₀
       exact hloop
   have hm : ‖m‖ ≤ a := by
-    apply intrExt_edge_core
+    apply intrinsicExtendedGeodesic_stays_in_ball
       (I := I) g hEnorm p hR hloc hK hRm hsmall h2aL hbudget
       hx₀ hx₀ q₀
     · simpa only [ell, gExt] using hqL
-    · simpa only [γ, m, gExt, hExt, intrExtLaunch] using hγ1
+    · simpa only [γ, m, gExt, hExt, intrinsicExtLaunch] using hγ1
     · norm_num
   have hcont :
       (fun s : Real => γ (s + 1 / 2)) =
@@ -1962,7 +1962,7 @@ private theorem midpoint_minimal_loop
         _ = gExt.inner m w w := by norm_num
     rw [hscale, hneg, hspeed]
   have hwne : w ≠ 0 := by
-    have hvelne := intrGeo_vel_ne
+    have hvelne := intrinsicGeo_velocity_ne
       (I := 𝓘(Real, E)) gExt hExt x₀ q₀ hqne (1 / 2)
     intro hw
     apply hvelne
@@ -2042,7 +2042,7 @@ private theorem midpoint_minimal_loop
       by simpa only [z₁] using hplusLt,
       by simpa only [z₁] using hminusLt⟩
 
-theorem intrCore_short_inj
+theorem intrinsicCore_short_inj
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -2064,16 +2064,16 @@ theorem intrCore_short_inj
     {x y u v : E} (hx : ‖x‖ ≤ a) (hy : ‖y‖ ≤ a)
     (huL :
       Real.sqrt
-          ((intrExtMetric (I := I) g hEnorm p hR hloc).inner x u u) <
+          ((intrinsicExtMetric (I := I) g hEnorm p hR hloc).inner x u u) <
         L)
     (hvL :
       Real.sqrt
-          ((intrExtMetric (I := I) g hEnorm p hR hloc).inner x v v) <
+          ((intrinsicExtMetric (I := I) g hEnorm p hR hloc).inner x v v) <
         L)
-    (huEnd : intrExtLaunch (I := I) g hEnorm p hR hloc x u 1 = y)
-    (hvEnd : intrExtLaunch (I := I) g hEnorm p hR hloc x v 1 = y) :
+    (huEnd : intrinsicExtLaunch (I := I) g hEnorm p hR hloc x u 1 = y)
+    (hvEnd : intrinsicExtLaunch (I := I) g hEnorm p hR hloc x v 1 = y) :
     u = v := by
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -2085,7 +2085,7 @@ theorem intrCore_short_inj
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (w : TangentSpace 𝓘(Real, E) z),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z w w)) :=
     fun z w =>
@@ -2133,13 +2133,13 @@ theorem intrCore_short_inj
     intro x₀ u₀ hx₀ hu₀
     have hfence :
         ∀ t ∈ Set.Icc (0 : Real) 1,
-          ‖intrExtLaunch (I := I) g hEnorm p hR hloc x₀ u₀ t‖ <
+          ‖intrinsicExtLaunch (I := I) g hEnorm p hR hloc x₀ u₀ t‖ <
             3 * R / 4 := by
-      apply intrExt_shortLaunch_fenced
+      apply intrinsicExt_shortLaunch_fenced
         (I := I) g hEnorm p hR hloc hx₀ u₀
       · simpa only [ell, gExt] using hu₀
       · exact hbudget
-    exact intrExt_not_conj_of_shortLaunch
+    exact intrinsicExt_not_conj_of_shortLaunch
       (I := I) g hEnorm p hR hloc u₀ hfence
         (by simpa only [ell, gExt] using hu₀)
         hK hRm hsmall
@@ -2239,15 +2239,15 @@ theorem intrCore_short_inj
       hlaunchBound z.1 hz.1 z.2.1 hz.2.2.2.1,
       hlaunchBound z.1 hz.1 z.2.2 hz.2.2.2.2.1⟩
   by_contra huv
-  let zInit : E × E × E := (x, u, v)
-  have hzInit : zInit ∈ shortBigons F ell a L := by
+  let zInitial : E × E × E := (x, u, v)
+  have hzInitial : zInitial ∈ shortBigons F ell a L := by
     refine ⟨hx, ?_, ?_, huL.le, hvL.le, huv⟩
     · have hFu : F (x, u) = y := by
         with_unfolding_all
           change intrinsicGeodesic (I := 𝓘(Real, E))
             gExt hExt x u 1 = y
           exact huEnd
-      simpa only [zInit, hFu] using hy
+      simpa only [zInitial, hFu] using hy
     · have hFu : F (x, u) = y := by
         with_unfolding_all
           change intrinsicGeodesic (I := 𝓘(Real, E))
@@ -2258,9 +2258,9 @@ theorem intrCore_short_inj
           change intrinsicGeodesic (I := 𝓘(Real, E))
             gExt hExt x v 1 = y
           exact hvEnd
-      simp only [zInit, hFu, hFv]
+      simp only [zInitial, hFu, hFv]
   have hbadNonempty : (shortBigons F ell a L).Nonempty :=
-    ⟨zInit, hzInit⟩
+    ⟨zInitial, hzInitial⟩
   let total : E × E × E → Real := fun z =>
     ell (z.1, z.2.1) + ell (z.1, z.2.2)
   have htotal : Continuous total :=
@@ -2270,11 +2270,11 @@ theorem intrCore_short_inj
         (continuous_fst.prodMk continuous_snd.snd))
   obtain ⟨z₀, hz₀, hmin⟩ :=
     hbadCompact.exists_isMinOn hbadNonempty htotal.continuousOn
-  have hminInit : total z₀ ≤ total zInit :=
-    (isMinOn_iff.mp hmin) zInit hzInit
+  have hminInitial : total z₀ ≤ total zInitial :=
+    (isMinOn_iff.mp hmin) zInitial hzInitial
   have htotalLt : total z₀ < 2 * L := by
-    dsimp only [total, zInit] at hminInit ⊢
-    exact hminInit.trans_lt
+    dsimp only [total, zInitial] at hminInitial ⊢
+    exact hminInitial.trans_lt
       (by simpa only [ell, gExt, two_mul] using add_lt_add huL hvL)
   have hslack :
       ell (z₀.1, z₀.2.1) < L ∨
@@ -2417,22 +2417,22 @@ theorem intrCore_short_inj
         ¬ IsConjVec
           (I := 𝓘(Real, E)) gExt hExt x₀ v₀ :=
       hshortNotConj x₀ v₀ hx₀ hvLe
-    obtain ⟨Br, hvSrc⟩ :=
+    obtain ⟨Br, hvSource⟩ :=
       branch_of_not_conj
         (I := 𝓘(Real, E)) gExt hExt hvNot
     have hyDom : y₀ ∈ Br.dom := by
       have hyHom : y₀ = Br.hom v₀ :=
-        hyvExp.trans (Br.hom_eq hvSrc)
+        hyvExp.trans (Br.hom_eq hvSource)
       rw [hyHom]
-      exact Br.hom.map_source hvSrc
+      exact Br.hom.map_source hvSource
     have hInvY : Br.inv y₀ = v₀ := by
       rw [hyvExp]
-      exact Br.left_inv hvSrc
+      exact Br.left_inv hvSource
     have hbrY :
         branchRadius (I := 𝓘(Real, E)) gExt Br y₀ = lv := by
       rw [hyvExp]
       simpa only [lv, ell] using
-        branchRadius_exp (I := 𝓘(Real, E)) Br hvSrc
+        branchRadius_exp (I := 𝓘(Real, E)) Br hvSource
     have hvPos : 0 < gExt.inner x₀ v₀ v₀ :=
       gExt.pos x₀ v₀ hzv
     have hbrDiff :
@@ -2440,7 +2440,7 @@ theorem intrCore_short_inj
           (branchRadius (I := 𝓘(Real, E)) gExt Br) y₀ := by
       rw [hyvExp]
       exact branchRadius_diff
-        (I := 𝓘(Real, E)) Br hvSrc hvPos
+        (I := 𝓘(Real, E)) Br hvSource hvPos
     let η : Real → E := fun s => γu (1 - s)
     have hη0 : η 0 = y₀ := by
       simpa only [η, sub_zero] using hγu1
@@ -2454,7 +2454,7 @@ theorem intrCore_short_inj
     have hηDiff :
         MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, E) η 0 :=
       hηInf.contMDiffAt.mdifferentiableAt (by simp)
-    have hηVel :
+    have hηVelocity :
         mfderiv 𝓘(Real, Real) 𝓘(Real, E) η 0 (1 : Real) = -U := by
       have h :=
         curveVelocity_comp_affine
@@ -2484,7 +2484,7 @@ theorem intrCore_short_inj
           lv⁻¹ • V := by
       rw [hyvExp]
       convert grad_branchRadius
-        (I := 𝓘(Real, E)) Br hvSrc hvPos using 1
+        (I := 𝓘(Real, E)) Br hvSource hvPos using 1
       all_goals rfl
     have hbrDeriv :
         HasDerivAt
@@ -2496,11 +2496,11 @@ theorem intrCore_short_inj
             (branchRadius (I := 𝓘(Real, E)) gExt Br) (η 0) := by
         rw [hη0]
         exact hbrDiff
-      have hηVelOne :
+      have hηVelocityOne :
           mfderiv 𝓘(Real, Real) 𝓘(Real, E) η 0
               (DifferentialGeometry.Analysis.Calculus.realTangentOne 0) =
             -U := by
-        with_unfolding_all exact hηVel
+        with_unfolding_all exact hηVelocity
       have hraw :=
         DifferentialGeometry.Analysis.Calculus.hasDerivAt_comp_mfderiv_along
           𝓘(Real, E)
@@ -2522,7 +2522,7 @@ theorem intrCore_short_inj
           rfl
         _ = mvfderiv 𝓘(Real, E)
               (branchRadius (I := 𝓘(Real, E)) gExt Br) y₀ (-U) := by
-          rw [hηVelOne]
+          rw [hηVelocityOne]
         _ = gExt.inner y₀ (lv⁻¹ • V) (-U) := by
           rw [← inner_gradientFun
             (I := 𝓘(Real, E)) gExt
@@ -2570,7 +2570,7 @@ theorem intrCore_short_inj
       apply (hleftCont.ne_iff_eventually_ne hrightCont).1
       simpa only [sub_zero, one_smul, hη0, hInvY] using huv
     have huEnd :
-        intrExtLaunch (I := I) g hEnorm p hR hloc x₀ u₀ 1 = y₀ := by
+        intrinsicExtLaunch (I := I) g hEnorm p hR hloc x₀ u₀ 1 = y₀ := by
       rfl
     have hbadEv :
         ∀ᶠ s in 𝓝[>] (0 : Real),
@@ -2588,8 +2588,8 @@ theorem intrCore_short_inj
       have hsIcc : 1 - s ∈ Set.Icc (0 : Real) 1 := by
         exact ⟨sub_nonneg.mpr hsOne.le, sub_le_self 1 hsPos.le⟩
       have hηCore : ‖η s‖ ≤ a := by
-        simpa only [η, γu, gExt, hExt, intrExtLaunch] using
-          intrExt_edge_core
+        simpa only [η, γu, gExt, hExt, intrinsicExtLaunch] using
+          intrinsicExtendedGeodesic_stays_in_ball
             (I := I) g hEnorm p hR hloc hK hRm hsmall h2aL hbudget
               hx₀ hy₀ u₀
               (by simpa only [lu, ell, gExt] using huLe)
@@ -2912,10 +2912,10 @@ theorem intrCore_short_inj
       change lu⁻¹ • U = -(lv⁻¹ • V) at htermModel
       exact htermModel
   have hUne : U ≠ 0 := by
-    exact intrGeo_vel_ne
+    exact intrinsicGeo_velocity_ne
       (I := 𝓘(Real, E)) gExt hExt x₁ u₁ hu₁ 1
   have hVne : V ≠ 0 := by
-    exact intrGeo_vel_ne
+    exact intrinsicGeo_velocity_ne
       (I := 𝓘(Real, E)) gExt hExt x₁ v₁ hv₁ 1
   have hUVne : U ≠ V := by
     intro hUV
@@ -2969,7 +2969,7 @@ theorem intrCore_short_inj
       intrinsicGeodesic
           (I := 𝓘(Real, E)) gExt hExt y₁ (-U) =
         fun t => γu (1 - t) := by
-    have hr := intrGeo_reverse
+    have hr := intrinsicGeo_reverse
       (I := 𝓘(Real, E)) gExt hExt x₁ u₁
     change
       intrinsicGeodesic
@@ -2982,7 +2982,7 @@ theorem intrCore_short_inj
           (I := 𝓘(Real, E)) gExt hExt y₁ (-V) =
         fun t => γv (1 - t) := by
     have hr :=
-      intrGeo_reverse
+      intrinsicGeo_reverse
         (I := 𝓘(Real, E)) gExt hExt x₁ v₁
     change
       intrinsicGeodesic
@@ -3034,25 +3034,25 @@ theorem intrCore_short_inj
     corner_opposite zr hzr hminr
       (neg_ne_zero.mpr hUne) (neg_ne_zero.mpr hVne) hslackr
   dsimp only [zr] at hrevCorner
-  have hrevVelU :
+  have hrevVelocityU :
       mfderiv 𝓘(Real, Real) 𝓘(Real, E)
           (intrinsicGeodesic
             (I := 𝓘(Real, E)) gExt hExt y₁ (-U)) 1 (1 : Real) =
         -u₁ := by
-    have hv := intrGeo_rev_vel
+    have hv := intrinsicGeo_rev_velocity
       (I := 𝓘(Real, E)) gExt hExt x₁ u₁
     apply (tangentSpaceModelContinuousLinearEquiv
       (I := 𝓘(Real, E))
         (intrinsicGeodesic
           (I := 𝓘(Real, E)) gExt hExt y₁ (-U) 1)).injective
     with_unfolding_all exact hv
-  have hrevVelV :
+  have hrevVelocityV :
       mfderiv 𝓘(Real, Real) 𝓘(Real, E)
           (intrinsicGeodesic
             (I := 𝓘(Real, E)) gExt hExt y₁ (-V)) 1 (1 : Real) =
         -v₁ := by
     have hv :=
-      intrGeo_rev_vel
+      intrinsicGeo_rev_velocity
         (I := 𝓘(Real, E)) gExt hExt x₁ v₁
     change
       mfderiv 𝓘(Real, Real) 𝓘(Real, E)
@@ -3061,7 +3061,7 @@ theorem intrCore_short_inj
         -v₁ at hv
     rw [hγv1] at hv
     exact hv
-  rw [hlenU, hlenV, hrevVelU, hrevVelV] at hrevCorner
+  rw [hlenU, hlenV, hrevVelocityU, hrevVelocityV] at hrevCorner
   have hinit : lu⁻¹ • u₁ = -(lv⁻¹ • v₁) := by
     have hleft :
         lu⁻¹ • (-u₁) = -(lu⁻¹ • u₁) :=
@@ -3123,7 +3123,7 @@ theorem intrCore_short_inj
           rw [hUscale]
       _ = intrinsicGeodesic
             (I := 𝓘(Real, E)) gExt hExt y₁ (-V) (c * s) :=
-          intrGeo_smul_apply
+          intrinsicGeo_smul_apply
             (I := 𝓘(Real, E)) gExt hExt y₁ (-V) c s
       _ = γv (1 - c * s) := congrFun hrevV (c * s)
   have hbase (s : Real) : γu s = γv (-(c * s)) := by
@@ -3139,11 +3139,11 @@ theorem intrCore_short_inj
         rw [huscale]
       _ = intrinsicGeodesic
             (I := 𝓘(Real, E)) gExt hExt x₁ (-v₁) (c * s) :=
-          intrGeo_smul_apply
+          intrinsicGeo_smul_apply
             (I := 𝓘(Real, E)) gExt hExt x₁ (-v₁) c s
       _ = γv (-(c * s)) := by
         have hs :=
-          intrGeo_smul_apply
+          intrinsicGeo_smul_apply
             (I := 𝓘(Real, E)) gExt hExt x₁ v₁ (-1) (c * s)
         have hnegV := neg_one_smul (R := Real)
           (show TangentSpace 𝓘(Real, E) x₁ from v₁)
@@ -3164,16 +3164,16 @@ theorem intrCore_short_inj
         ring
       _ = γu s := (hbase s).symm
   have huEnd₁ :
-      intrExtLaunch (I := I) g hEnorm p hR hloc x₁ u₁ 1 = y₁ := by
-    simpa only [γu, gExt, hExt, intrExtLaunch] using hγu1
+      intrinsicExtLaunch (I := I) g hEnorm p hR hloc x₁ u₁ 1 = y₁ := by
+    simpa only [γu, gExt, hExt, intrinsicExtLaunch] using hγu1
   have hvEnd₁ :
-      intrExtLaunch (I := I) g hEnorm p hR hloc x₁ v₁ 1 = y₁ := by
-    simpa only [γv, gExt, hExt, intrExtLaunch] using hγv1
+      intrinsicExtLaunch (I := I) g hEnorm p hR hloc x₁ v₁ 1 = y₁ := by
+    simpa only [γv, gExt, hExt, intrinsicExtLaunch] using hγv1
   have hcoreU :
       ∀ t ∈ Set.Icc (0 : Real) 1, ‖γu t‖ ≤ a := by
     intro t ht
-    simpa only [γu, gExt, hExt, intrExtLaunch] using
-      intrExt_edge_core
+    simpa only [γu, gExt, hExt, intrinsicExtLaunch] using
+      intrinsicExtendedGeodesic_stays_in_ball
         (I := I) g hEnorm p hR hloc hK hRm hsmall h2aL hbudget
           hx₁ hy₁ u₁
           (by simpa only [lu, ell, gExt] using hz₁.2.2.2.1)
@@ -3181,8 +3181,8 @@ theorem intrCore_short_inj
   have hcoreV :
       ∀ t ∈ Set.Icc (0 : Real) 1, ‖γv t‖ ≤ a := by
     intro t ht
-    simpa only [γv, gExt, hExt, intrExtLaunch] using
-      intrExt_edge_core
+    simpa only [γv, gExt, hExt, intrinsicExtLaunch] using
+      intrinsicExtendedGeodesic_stays_in_ball
         (I := I) g hEnorm p hR hloc hK hRm hsmall h2aL hbudget
           hx₁ hy₁ v₁
           (by simpa only [lv, ell, gExt] using hz₁.2.2.2.2.1)
@@ -3202,13 +3202,13 @@ theorem intrCore_short_inj
     exact (le_add_of_nonneg_right hLpos.le).trans_lt hbudget
   have hgeo :
       IsGeodesicOn (I := 𝓘(Real, E))
-        (intrExtMetric (I := I) g hEnorm p hR hloc) γu
+        (intrinsicExtMetric (I := I) g hEnorm p hR hloc) γu
         (Set.Ioo (0 : Real) (2 * T)) := by
     change IsGeodesicOn (I := 𝓘(Real, E)) gExt γu _
     exact
       (intrinsicGeodesic_isGeodesic
         (I := 𝓘(Real, E)) gExt hExt x₁ u₁).isGeodesicOn _
-  apply intrOrigin_no_return
+  apply intrinsicOrigin_no_return
     (I := I) g hEnorm p hR hloc hK hRm hsmall hTPos
     (γ := γu)
     (intrinsicGeodesic_contMDiff
@@ -3217,7 +3217,7 @@ theorem intrCore_short_inj
     (fun t ht => (hcore t ht).trans_lt haFence)
     (fun t ht => (hcore t ht).trans haL)
     (fun t _ =>
-      intrGeo_vel_ne
+      intrinsicGeo_velocity_ne
         (I := 𝓘(Real, E)) gExt hExt x₁ u₁ hu₁ t)
   · have hp := hperiod 0
     simpa only [zero_add] using hp.symm
@@ -3228,7 +3228,7 @@ theorem intrCore_short_inj
 
 end OriginEnergy
 
-end CGT
+end CheegerGromovTaylor
 end Riemannian
 end Geometry
 end DifferentialGeometry

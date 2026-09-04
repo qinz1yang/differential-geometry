@@ -13,7 +13,7 @@ open Filter Set
 open scoped ContDiff Manifold Topology NNReal
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -37,7 +37,7 @@ theorem limit_accel_bounds
       (Metric.ball 0 (h.phaseRadius R)))
     (hgInf_lo : ∀ z ∈ Metric.ball (0 : E) (h.phaseRadius R), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v)
-    (hg_conv : MapCInfConvOnCompacts
+    (hg_convergence : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (h.phaseRadius R))
       (fun n ↦ normalCoordMetric (I := I) (X.obj n) (c n)) gInf)
     (V : NNReal) :
@@ -71,11 +71,11 @@ theorem limit_accel_bounds
     refine ⟨1 / 2, by norm_num, ?_⟩
     intro v
     simpa only [pow_two, mul_assoc] using hgInf_lo z hz v
-  have hspray : MapCInfConvOnCompacts (U ×ˢ (Set.univ : Set E))
+  have hspray : MapCInfConvergenceOnCompacts (U ×ˢ (Set.univ : Set E))
       (fun n ↦ MetricKoszul.metricSpray (g n))
       (MetricKoszul.metricSpray gInf) :=
-    normalGeodesicSpray_conv Metric.isOpen_ball hg_cd hgInf_cd hg_co
-      hgInf_co (by simpa only [U, g] using hg_conv)
+    normalGeodesicSpray_convergence Metric.isOpen_ball hg_cd hgInf_cd hg_co
+      hgInf_co (by simpa only [U, g] using hg_convergence)
   have hacc_tendsto : ∀ z ∈ normalPhaseBox (h.phaseRadius R) V,
       Tendsto (fun n ↦ a n z) atTop (nhds (aInf z)) := by
     intro z hz
@@ -133,7 +133,7 @@ theorem exists_limit_phase
       (Metric.ball 0 (h.phaseRadius R)))
     (hgInf_lo : ∀ z ∈ Metric.ball (0 : E) (h.phaseRadius R), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v)
-    (hg_conv : MapCInfConvOnCompacts
+    (hg_convergence : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (h.phaseRadius R))
       (fun n ↦ normalCoordMetric (I := I) (X.obj n) (c n)) gInf)
     (q : NNReal) (hq : 0 < q)
@@ -166,7 +166,7 @@ theorem exists_limit_phase
   have hP : 0 < P := by dsimp only [P]; positivity
   have hV : 0 < V := by dsimp only [V]; positivity
   obtain ⟨haLipFull, haNormFull⟩ :=
-    h.limit_accel_bounds R c hc hgInf_cd hgInf_lo hg_conv V
+    h.limit_accel_bounds R c hc hgInf_cd hgInf_lo hg_convergence V
   have hbox : PhaseFlow.phaseBox (E := E) P V ⊆
       normalPhaseBox (h.phaseRadius R) V := by
     intro z hz
@@ -309,7 +309,7 @@ theorem exists_limit_diag
       (Metric.ball 0 (h.phaseRadius R)))
     (hgInf_lo : ∀ z ∈ Metric.ball (0 : E) (h.phaseRadius R), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v)
-    (hg_conv : MapCInfConvOnCompacts
+    (hg_convergence : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (h.phaseRadius R))
       (fun n ↦ normalCoordMetric (I := I) (X.obj n) (c n)) gInf)
     (q : NNReal) (hq : 0 < q)
@@ -350,7 +350,7 @@ theorem exists_limit_diag
             PhaseFlow.phaseErr (normalPhaseK hb (2 * q)))⁻¹ *
           PhaseFlow.phaseErr (normalPhaseK hb (2 * q))) := by
   obtain ⟨ΦInf, hinit, hcurve, hstay, hzeroEnd, happ, hendSmooth⟩ :=
-    h.exists_limit_phase R c hc hgInf_cd hgInf_lo hg_conv q hq hqPos hqAcc
+    h.exists_limit_phase R c hc hgInf_cd hgInf_lo hg_convergence q hq hqPos hqAcc
   let f : E × E → E × E := fun z ↦ (z.1, (ΦInf z 1).1)
   obtain ⟨eInf, deltaInf, hdeltaInf, hsource, hcoe, htarget,
       _hdeltaEq, hinvApprox⟩ :=
@@ -452,5 +452,5 @@ theorem exists_limit_diag
     hdiagInv, hinvApprox⟩
 
 end NormalRadiusProfile
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

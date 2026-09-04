@@ -104,9 +104,9 @@ theorem laplacianDomainHessianChart_smooth_aeEq
         (u_h := smoothToH1Compl (I := I) (M := M) g v) i j
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 j
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := Module.finrank ℝ E) 2 i
           (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α v.toFun)
           (chartTargetEuclid (I := I) (M := M) α))
@@ -120,9 +120,9 @@ theorem laplacianDomainHessianChart_smooth_aeEq
 noncomputable def chartPushedEuclidHessian
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) : ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := Module.finrank ℝ E) 2 j
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 i
       (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α v.toFun)
       (chartTargetEuclid (I := I) (M := M) α))
@@ -133,9 +133,9 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g)
     (i j : Fin (Module.finrank ℝ E)) (y : EuclN) :
     chartPushedEuclidHessian (I := I) (M := M) (g := g) α v i j y =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 j
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := Module.finrank ℝ E) 2 i
           (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α v.toFun)
           (chartTargetEuclid (I := I) (M := M) α))

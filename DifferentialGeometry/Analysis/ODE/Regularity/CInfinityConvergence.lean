@@ -9,7 +9,7 @@ import Mathlib.Topology.MetricSpace.Thickening
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Metric Set Topology
 open DifferentialGeometry.Analysis.ODE.Flow
@@ -36,14 +36,14 @@ private theorem ode_c0_on_compact
     (hvInf_cd :
       ContDiffOn ℝ ∞
         (fun q : ℝ × X => vInf q.1 q.2) (J ×ˢ V))
-    (hv_conv :
-      MapCInfConvOnCompacts (J ×ˢ V)
+    (hv_convergence :
+      MapCInfConvergenceOnCompacts (J ×ˢ V)
         (fun n q => v n q.1 q.2)
         (fun q => vInf q.1 q.2))
     {a : ℕ → P → X}
     {aInf : P → X}
     (haInf_cd : ContDiffOn ℝ ∞ aInf A)
-    (ha_conv : MapCInfConvOnCompacts A a aInf)
+    (ha_convergence : MapCInfConvergenceOnCompacts A a aInf)
     {γ : ℕ → P → ℝ → X}
     {γInf : P → ℝ → X}
     (hγ :
@@ -114,7 +114,7 @@ private theorem ode_c0_on_compact
       exact hGne.mono (self_subset_cthickening G)
     have hinit : TendstoUniformlyOn
         (fun n p => γ n p t₀) (fun p => γInf p t₀) atTop K := by
-      have ha0 := tendstoUniformlyOn_of_cPConv (ha_conv K hK hKA 0)
+      have ha0 := tendstoUniformlyOn_of_cPConvergence (ha_convergence K hK hKA 0)
       rw [Metric.tendstoUniformlyOn_iff] at ha0 ⊢
       intro ε hε
       filter_upwards [ha0 ε hε] with n hn
@@ -126,18 +126,18 @@ private theorem ode_c0_on_compact
         (fun q : P × ℝ => vInf q.2 (γInf q.1 q.2))
         atTop (K ×ˢ Set.Icc t₀ t₁) := by
       have hfieldG :=
-        tendstoUniformlyOn_of_cPConv (hv_conv G hG hGU 0)
+        tendstoUniformlyOn_of_cPConvergence (hv_convergence G hG hGU 0)
       rw [Metric.tendstoUniformlyOn_iff] at hfieldG ⊢
       intro ε hε
       filter_upwards [hfieldG ε hε] with n hn
       intro q hq
       exact hn (q.2, γInf q.1 q.2) ⟨q, hq, rfl⟩
-    have hderiv_conv : MapCInfConvOnCompacts (J ×ˢ V)
+    have hderiv_convergence : MapCInfConvergenceOnCompacts (J ×ˢ V)
         (fun n q => fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) q)
         (fun q => fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) q) :=
-      MapCInfConvOnCompacts.fderivOn (hJ.prod hV) hv_conv hv_cd hvInf_cd
-    have hderiv_unif :=
-      tendstoUniformlyOn_of_cPConv (hderiv_conv Q hQ hQU 0)
+      MapCInfConvergenceOnCompacts.fderivOn (hJ.prod hV) hv_convergence hv_cd hvInf_cd
+    have hderiv_uniform :=
+      tendstoUniformlyOn_of_cPConvergence (hderiv_convergence Q hQ hQU 0)
     have hlimit_deriv_cont : ContinuousOn
         (fun q : ℝ × X =>
           ‖fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) q‖) Q := by
@@ -153,8 +153,8 @@ private theorem ode_c0_on_compact
     have hstage_deriv : ∀ᶠ n in atTop,
         ∀ q ∈ Q,
           ‖fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) q‖ ≤ M := by
-      rw [Metric.tendstoUniformlyOn_iff] at hderiv_unif
-      filter_upwards [hderiv_unif 1 one_pos] with n hn
+      rw [Metric.tendstoUniformlyOn_iff] at hderiv_uniform
+      filter_upwards [hderiv_uniform 1 one_pos] with n hn
       intro q hq
       have hdist := hn q hq
       have hlim_le :
@@ -276,12 +276,12 @@ private theorem ode_iterated_compact
     {v : ℕ → ℝ → X → X} {vInf : ℝ → X → X}
     (hv_cd : ∀ n, ContDiffOn ℝ ∞ (Function.uncurry (v n)) (J ×ˢ V))
     (hvInf_cd : ContDiffOn ℝ ∞ (Function.uncurry vInf) (J ×ˢ V))
-    (hv_conv : MapCInfConvOnCompacts (J ×ˢ V)
+    (hv_convergence : MapCInfConvergenceOnCompacts (J ×ˢ V)
       (fun n q => v n q.1 q.2) (fun q => vInf q.1 q.2))
     {a : ℕ → P → X} {aInf : P → X}
     (ha_cd : ∀ n, ContDiffOn ℝ ∞ (a n) A)
     (haInf_cd : ContDiffOn ℝ ∞ aInf A)
-    (ha_conv : MapCInfConvOnCompacts A a aInf)
+    (ha_convergence : MapCInfConvergenceOnCompacts A a aInf)
     {γ : ℕ → P → ℝ → X} {γInf : P → ℝ → X}
     (hγ : ∀ n p, p ∈ A →
       γ n p t₀ = a n p ∧ IsIntegralCurveOn (γ n p) (v n) (Icc t₀ t₁))
@@ -296,8 +296,8 @@ private theorem ode_iterated_compact
       atTop (K ×ˢ Icc t₀ t₁) := by
   induction m generalizing X with
   | zero =>
-      have hzero := (ode_c0_on_compact hA hJ hV ht₀₁ hI hv_cd hvInf_cd hv_conv
-        haInf_cd ha_conv hγ hγInf hstayInf hK hKA).1
+      have hzero := (ode_c0_on_compact hA hJ hV ht₀₁ hI hv_cd hvInf_cd hv_convergence
+        haInf_cd ha_convergence hγ hγInf hstayInf hK hKA).1
       rw [Metric.tendstoUniformlyOn_iff] at hzero ⊢
       intro ε hε
       filter_upwards [hzero ε hε] with n hn
@@ -319,25 +319,25 @@ private theorem ode_iterated_compact
           (J ×ˢ Vtan) :=
         DifferentialGeometry.Analysis.ODE.Flow.paramTangentVF_contDiffOn
           hJ hV hvInf_cd
-      have hvTan_conv : MapCInfConvOnCompacts (J ×ˢ Vtan)
+      have hvTan_convergence : MapCInfConvergenceOnCompacts (J ×ˢ Vtan)
           (fun n q =>
             DifferentialGeometry.Analysis.ODE.Flow.paramTangentVF P (v n) q.1 q.2)
           (fun q =>
             DifferentialGeometry.Analysis.ODE.Flow.paramTangentVF P vInf q.1 q.2) :=
-        MapCInfConvOnCompacts.paramTangentVF hJ hV hv_cd hvInf_cd hv_conv
+        MapCInfConvergenceOnCompacts.paramTangentVF hJ hV hv_cd hvInf_cd hv_convergence
       have haTan_cd : ∀ n, ContDiffOn ℝ ∞
-          (DifferentialGeometry.Analysis.ODE.Flow.paramTangentInit (a n)) A := fun n =>
-        DifferentialGeometry.Analysis.ODE.Flow.paramTangentInit_contDiffOn hA (ha_cd n)
+          (DifferentialGeometry.Analysis.ODE.Flow.paramTangentInitial (a n)) A := fun n =>
+        DifferentialGeometry.Analysis.ODE.Flow.paramTangentInitial_contDiffOn hA (ha_cd n)
       have haTanInf_cd : ContDiffOn ℝ ∞
-          (DifferentialGeometry.Analysis.ODE.Flow.paramTangentInit aInf) A :=
-        DifferentialGeometry.Analysis.ODE.Flow.paramTangentInit_contDiffOn hA haInf_cd
-      have haTan_conv : MapCInfConvOnCompacts A
-          (fun n => DifferentialGeometry.Analysis.ODE.Flow.paramTangentInit (a n))
-          (DifferentialGeometry.Analysis.ODE.Flow.paramTangentInit aInf) :=
-        MapCInfConvOnCompacts.paramTangentInit hA ha_cd haInf_cd ha_conv
+          (DifferentialGeometry.Analysis.ODE.Flow.paramTangentInitial aInf) A :=
+        DifferentialGeometry.Analysis.ODE.Flow.paramTangentInitial_contDiffOn hA haInf_cd
+      have haTan_convergence : MapCInfConvergenceOnCompacts A
+          (fun n => DifferentialGeometry.Analysis.ODE.Flow.paramTangentInitial (a n))
+          (DifferentialGeometry.Analysis.ODE.Flow.paramTangentInitial aInf) :=
+        MapCInfConvergenceOnCompacts.paramTangentInitial hA ha_cd haInf_cd ha_convergence
       have hγTan : ∀ n p, p ∈ A →
           DifferentialGeometry.Analysis.ODE.Flow.paramTangentCurve (γ n) p t₀ =
-              DifferentialGeometry.Analysis.ODE.Flow.paramTangentInit (a n) p ∧
+              DifferentialGeometry.Analysis.ODE.Flow.paramTangentInitial (a n) p ∧
             IsIntegralCurveOn
               (DifferentialGeometry.Analysis.ODE.Flow.paramTangentCurve (γ n) p)
               (DifferentialGeometry.Analysis.ODE.Flow.paramTangentVF P (v n))
@@ -348,7 +348,7 @@ private theorem ode_iterated_compact
             (hv_cd n) (ha_cd n) (hγ n) (hstay n)
       have hγTanInf : ∀ p, p ∈ A →
           DifferentialGeometry.Analysis.ODE.Flow.paramTangentCurve γInf p t₀ =
-              DifferentialGeometry.Analysis.ODE.Flow.paramTangentInit aInf p ∧
+              DifferentialGeometry.Analysis.ODE.Flow.paramTangentInitial aInf p ∧
             IsIntegralCurveOn
               (DifferentialGeometry.Analysis.ODE.Flow.paramTangentCurve γInf p)
               (DifferentialGeometry.Analysis.ODE.Flow.paramTangentVF P vInf)
@@ -356,8 +356,8 @@ private theorem ode_iterated_compact
         DifferentialGeometry.Analysis.ODE.Flow.paramTangentCurve_initial_isIntegralCurveOn
             hA hJ hV ht₀₁ hI
             hvInf_cd haInf_cd hγInf hstayInf
-      have hTan := ih hVtan hvTan_cd hvTanInf_cd hvTan_conv
-        haTan_cd haTanInf_cd haTan_conv hγTan hγTanInf
+      have hTan := ih hVtan hvTan_cd hvTanInf_cd hvTan_convergence
+        haTan_cd haTanInf_cd haTan_convergence hγTan hγTanInf
         (fun n p hp t ht => ⟨hstay n p hp t ht, mem_univ _⟩)
         (fun p hp t ht => ⟨hstayInf p hp t ht, mem_univ _⟩)
       have hγJoint : ∀ n, ContDiffOn ℝ ∞
@@ -475,12 +475,12 @@ private theorem ode_iterated_any
     {v : ℕ → ℝ → X → X} {vInf : ℝ → X → X}
     (hv_cd : ∀ n, ContDiffOn ℝ ∞ (Function.uncurry (v n)) (J ×ˢ V))
     (hvInf_cd : ContDiffOn ℝ ∞ (Function.uncurry vInf) (J ×ˢ V))
-    (hv_conv : MapCInfConvOnCompacts (J ×ˢ V)
+    (hv_convergence : MapCInfConvergenceOnCompacts (J ×ˢ V)
       (fun n q => v n q.1 q.2) (fun q => vInf q.1 q.2))
     {a : ℕ → P → X} {aInf : P → X}
     (ha_cd : ∀ n, ContDiffOn ℝ ∞ (a n) A)
     (haInf_cd : ContDiffOn ℝ ∞ aInf A)
-    (ha_conv : MapCInfConvOnCompacts A a aInf)
+    (ha_convergence : MapCInfConvergenceOnCompacts A a aInf)
     {γ : ℕ → P → ℝ → X} {γInf : P → ℝ → X}
     (hγ : ∀ n p, p ∈ A →
       γ n p t₀ = a n p ∧ IsIntegralCurveOn (γ n p) (v n) (Icc t₀ t₁))
@@ -495,8 +495,8 @@ private theorem ode_iterated_any
       atTop (K ×ˢ Icc t₀ t₁) := by
   cases m with
   | zero =>
-      have hzero := (ode_c0_on_compact hA hJ hV ht₀₁ hI hv_cd hvInf_cd hv_conv
-        haInf_cd ha_conv hγ hγInf hstayInf hK hKA).1
+      have hzero := (ode_c0_on_compact hA hJ hV ht₀₁ hI hv_cd hvInf_cd hv_convergence
+        haInf_cd ha_convergence hγ hγInf hstayInf hK hKA).1
       rw [Metric.tendstoUniformlyOn_iff] at hzero ⊢
       intro ε hε
       filter_upwards [hzero ε hε] with n hn
@@ -512,33 +512,33 @@ private theorem ode_iterated_any
       have hvTanInf_cd : ContDiffOn ℝ ∞
           (Function.uncurry (paramTangentVF P vInf)) (J ×ˢ Vtan) :=
         paramTangentVF_contDiffOn hJ hV hvInf_cd
-      have hvTan_conv : MapCInfConvOnCompacts (J ×ˢ Vtan)
+      have hvTan_convergence : MapCInfConvergenceOnCompacts (J ×ˢ Vtan)
           (fun n q => paramTangentVF P (v n) q.1 q.2)
           (fun q => paramTangentVF P vInf q.1 q.2) :=
-        MapCInfConvOnCompacts.paramTangentVF hJ hV hv_cd hvInf_cd hv_conv
-      have haTan_cd : ∀ n, ContDiffOn ℝ ∞ (paramTangentInit (a n)) A :=
-        fun n => paramTangentInit_contDiffOn hA (ha_cd n)
-      have haTanInf_cd : ContDiffOn ℝ ∞ (paramTangentInit aInf) A :=
-        paramTangentInit_contDiffOn hA haInf_cd
-      have haTan_conv : MapCInfConvOnCompacts A
-          (fun n => paramTangentInit (a n)) (paramTangentInit aInf) :=
-        MapCInfConvOnCompacts.paramTangentInit hA ha_cd haInf_cd ha_conv
+        MapCInfConvergenceOnCompacts.paramTangentVF hJ hV hv_cd hvInf_cd hv_convergence
+      have haTan_cd : ∀ n, ContDiffOn ℝ ∞ (paramTangentInitial (a n)) A :=
+        fun n => paramTangentInitial_contDiffOn hA (ha_cd n)
+      have haTanInf_cd : ContDiffOn ℝ ∞ (paramTangentInitial aInf) A :=
+        paramTangentInitial_contDiffOn hA haInf_cd
+      have haTan_convergence : MapCInfConvergenceOnCompacts A
+          (fun n => paramTangentInitial (a n)) (paramTangentInitial aInf) :=
+        MapCInfConvergenceOnCompacts.paramTangentInitial hA ha_cd haInf_cd ha_convergence
       have hγTan : ∀ n p, p ∈ A →
-          paramTangentCurve (γ n) p t₀ = paramTangentInit (a n) p ∧
+          paramTangentCurve (γ n) p t₀ = paramTangentInitial (a n) p ∧
             IsIntegralCurveOn (paramTangentCurve (γ n) p)
               (paramTangentVF P (v n)) (Icc t₀ t₁) := by
         intro n
         exact paramTangentCurve_initial_isIntegralCurveOn hA hJ hV ht₀₁ hI
           (hv_cd n) (ha_cd n) (hγ n) (hstay n)
       have hγTanInf : ∀ p, p ∈ A →
-          paramTangentCurve γInf p t₀ = paramTangentInit aInf p ∧
+          paramTangentCurve γInf p t₀ = paramTangentInitial aInf p ∧
             IsIntegralCurveOn (paramTangentCurve γInf p)
               (paramTangentVF P vInf) (Icc t₀ t₁) :=
         paramTangentCurve_initial_isIntegralCurveOn hA hJ hV ht₀₁ hI
           hvInf_cd haInf_cd hγInf hstayInf
       have hTan := ode_iterated_compact.{uP, uX} (P := P)
         (X := X × (P →L[ℝ] X)) m hA hJ hVtan ht₀₁ hI
-        hvTan_cd hvTanInf_cd hvTan_conv haTan_cd haTanInf_cd haTan_conv
+        hvTan_cd hvTanInf_cd hvTan_convergence haTan_cd haTanInf_cd haTan_convergence
         hγTan hγTanInf
         (fun n p hp t ht => ⟨hstay n p hp t ht, mem_univ _⟩)
         (fun p hp t ht => ⟨hstayInf p hp t ht, mem_univ _⟩) hK hKA
@@ -644,8 +644,8 @@ private theorem mapCP_of_comp_add
     [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F]
     {K : Set E} {p N : ℕ} {Φ : ℕ → E → F} {Φinf : E → F}
-    (h : MapCPConvOn K p (fun n => Φ (n + N)) Φinf) :
-    MapCPConvOn K p Φ Φinf := by
+    (h : MapCPConvergenceOn K p (fun n => Φ (n + N)) Φinf) :
+    MapCPConvergenceOn K p Φ Φinf := by
   intro ε hε
   obtain ⟨k₀, hk₀⟩ := h ε hε
   refine ⟨k₀ + N, ?_⟩
@@ -654,7 +654,7 @@ private theorem mapCP_of_comp_add
   have hb := hk₀ (k - N) (Nat.le_sub_of_add_le hk) r hr x hx
   simpa only [Nat.sub_add_cancel hNk] using hb
 
-theorem MapCInfConvOnCompacts.ode_solutionAt
+theorem MapCInfConvergenceOnCompacts.ode_solutionAt
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
     [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
@@ -673,15 +673,15 @@ theorem MapCInfConvOnCompacts.ode_solutionAt
     (hvInf_cd :
       ContDiffOn ℝ ∞
         (fun q : ℝ × X => vInf q.1 q.2) (J ×ˢ V))
-    (hv_conv :
-      MapCInfConvOnCompacts (J ×ˢ V)
+    (hv_convergence :
+      MapCInfConvergenceOnCompacts (J ×ˢ V)
         (fun n q => v n q.1 q.2)
         (fun q => vInf q.1 q.2))
     {a : ℕ → P → X}
     {aInf : P → X}
     (ha_cd : ∀ n, ContDiffOn ℝ ∞ (a n) A)
     (haInf_cd : ContDiffOn ℝ ∞ aInf A)
-    (ha_conv : MapCInfConvOnCompacts A a aInf)
+    (ha_convergence : MapCInfConvergenceOnCompacts A a aInf)
     {γ : ℕ → P → ℝ → X}
     {γInf : P → ℝ → X}
     (hγ :
@@ -697,28 +697,28 @@ theorem MapCInfConvOnCompacts.ode_solutionAt
     (hstayInf :
       ∀ p ∈ A, ∀ t ∈ Set.Icc t₀ t₁,
         γInf p t ∈ V) :
-    MapCInfConvOnCompacts A
+    MapCInfConvergenceOnCompacts A
       (fun n p => γ n p t₁)
       (fun p => γInf p t₁) := by
   intro K hK hKA p
   obtain ⟨W, hW, hKW, hWA, hWcompact⟩ :=
     exists_open_between_and_isCompact_closure hK hA hKA
   have hWA' : W ⊆ A := fun x hx => hWA (subset_closure hx)
-  have hc₀ := ode_c0_on_compact hA hJ hV ht₀₁ hI hv_cd hvInf_cd hv_conv
-    haInf_cd ha_conv hγ hγInf hstayInf hWcompact hWA
+  have hc₀ := ode_c0_on_compact hA hJ hV ht₀₁ hI hv_cd hvInf_cd hv_convergence
+    haInf_cd ha_convergence hγ hγInf hstayInf hWcompact hWA
   obtain ⟨N, hN⟩ := eventually_atTop.mp hc₀.2
   have hstayShift : ∀ n p, p ∈ W → ∀ t ∈ Icc t₀ t₁,
       γ (n + N) p t ∈ V := by
     intro n x hx t ht
     exact hN (n + N) (Nat.le_add_left N n) x (subset_closure hx) t ht
-  have hvConvShift : MapCInfConvOnCompacts (J ×ˢ V)
+  have hvConvergenceShift : MapCInfConvergenceOnCompacts (J ×ˢ V)
       (fun n q => v (n + N) q.1 q.2) (fun q => vInf q.1 q.2) :=
-    hv_conv.comp_tendsto_atTop (Filter.tendsto_add_atTop_nat N)
-  have haConvW : MapCInfConvOnCompacts W a aInf :=
-    fun C hC hCW r => ha_conv C hC (hCW.trans hWA') r
-  have haConvShift : MapCInfConvOnCompacts W
+    hv_convergence.comp_tendsto_atTop (Filter.tendsto_add_atTop_nat N)
+  have haConvergenceW : MapCInfConvergenceOnCompacts W a aInf :=
+    fun C hC hCW r => ha_convergence C hC (hCW.trans hWA') r
+  have haConvergenceShift : MapCInfConvergenceOnCompacts W
       (fun n => a (n + N)) aInf :=
-    haConvW.comp_tendsto_atTop (Filter.tendsto_add_atTop_nat N)
+    haConvergenceW.comp_tendsto_atTop (Filter.tendsto_add_atTop_nat N)
   have hγShift : ∀ n x, x ∈ W →
       γ (n + N) x t₀ = a (n + N) x ∧
         IsIntegralCurveOn (γ (n + N) x) (v (n + N)) (Icc t₀ t₁) :=
@@ -753,20 +753,20 @@ theorem MapCInfConvOnCompacts.ode_solutionAt
         atTop K := by
     intro r _hr
     have htraj := ode_iterated_any (P := P) (X := X) r hW hJ hV ht₀₁ hI
-      (fun n => hv_cd (n + N)) hvInf_cd hvConvShift
-      (fun n => (ha_cd (n + N)).mono hWA') (haInf_cd.mono hWA') haConvShift
+      (fun n => hv_cd (n + N)) hvInf_cd hvConvergenceShift
+      (fun n => (ha_cd (n + N)).mono hWA') (haInf_cd.mono hWA') haConvergenceShift
       hγShift hγInfW hstayShift hstayInfW hK hKW
     rw [Metric.tendstoUniformlyOn_iff] at htraj ⊢
     intro ε hε
     filter_upwards [htraj ε hε] with n hn
     intro x hx
     exact hn (x, t₁) ⟨hx, right_mem_Icc.mpr ht₀₁⟩
-  have hshift : MapCPConvOn K p
+  have hshift : MapCPConvergenceOn K p
       (fun n x => γ (n + N) x t₁) (fun x => γInf x t₁) :=
-    mapCPConvOn_of_tendstoUniformlyOn hW hKW
+    mapCPConvergenceOn_of_tendstoUniformlyOn hW hKW
       (fun n => (hstageSmooth n).of_le (by exact_mod_cast le_top))
       (hlimitSmooth.of_le (by exact_mod_cast le_top)) htu
   exact mapCP_of_comp_add hshift
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

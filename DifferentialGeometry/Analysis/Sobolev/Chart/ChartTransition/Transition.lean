@@ -208,8 +208,8 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder
     kEuclid_subset_overlap (I := I) (M := M) α γ hK_α hK_γ
   have hOverlap_αγ_open : IsOpen (chartOverlapEuclid (I := I) (M := M) α γ) :=
     chartOverlapEuclid_isOpen (I := I) (M := M) α γ
-  obtain ⟨δ_γ, η_γ, hδ_γ_pos, hδγ_subset, hη_γ_smooth, hη_γ_cpt, hη_γ_range,
-      hη_γ_one, hη_γ_supp⟩ :=
+  obtain ⟨δ_γ, η_γ, hδ_γ_pos, hδγ_subset, hη_γ_smooth, hη_γ_compact, hη_γ_range,
+      hη_γ_one, hη_γ_support⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E)
       hKEγ_compact hOverlap_γα_open hKEγ_subset_overlap_γα
@@ -240,7 +240,7 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder
     chartTransitionExtended (I := I) (M := M) γ α η_γ c_γ with hTγα_def
   have hT_γα_smooth : ContDiff ℝ (⊤ : ℕ∞) T_γα :=
     chartTransitionExtended_contDiff (I := I) (M := M) γ α
-      hη_γ_smooth hη_γ_supp c_γ
+      hη_γ_smooth hη_γ_support c_γ
   have hT_γα_eq_on_Ωγα : ∀ y ∈ Ω_γα,
       T_γα y = chartTransitionEuclid (I := I) (M := M) γ α y := by
     intro y hy
@@ -317,8 +317,8 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder
     intro z hz
     rcases hz with ⟨y, hy_Ωγα, hyz⟩
     refine ⟨y, subset_closure hy_Ωγα, hyz⟩
-  obtain ⟨δ_α, η_α, hδ_α_pos, hδα_subset, hη_α_smooth, hη_α_cpt, hη_α_range,
-      hη_α_one, hη_α_supp⟩ :=
+  obtain ⟨δ_α, η_α, hδ_α_pos, hδα_subset, hη_α_smooth, hη_α_compact, hη_α_range,
+      hη_α_one, hη_α_support⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E)
       hL_αγ_compact hOverlap_αγ_open hL_αγ_subset_overlap_αγ
@@ -331,7 +331,7 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder
     chartTransitionExtended (I := I) (M := M) α γ η_α c_α with hTαγ_def
   have hT_αγ_smooth : ContDiff ℝ (⊤ : ℕ∞) T_αγ :=
     chartTransitionExtended_contDiff (I := I) (M := M) α γ
-      hη_α_smooth hη_α_supp c_α
+      hη_α_smooth hη_α_support c_α
   have hT_αγ_eq_on_Ωαγ : ∀ z ∈ Ω_αγ,
       T_αγ z = chartTransitionEuclid (I := I) (M := M) α γ z := by
     intro z hz
@@ -408,10 +408,10 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder
     exact hyz
   obtain ⟨B_γ, hBγ_pos, hBγ_bound⟩ :=
     chartTransitionExtended_iter_deriv_bound (I := I) (M := M) γ α
-      hη_γ_smooth hη_γ_cpt hη_γ_supp c_γ kmax
+      hη_γ_smooth hη_γ_compact hη_γ_support c_γ kmax
   obtain ⟨B_α, hBα_pos, hBα_bound⟩ :=
     chartTransitionExtended_iter_deriv_bound (I := I) (M := M) α γ
-      hη_α_smooth hη_α_cpt hη_α_supp c_α kmax
+      hη_α_smooth hη_α_compact hη_α_support c_α kmax
   set B : ℝ := max B_γ B_α with hB_def
   have hB_pos : 0 < B := lt_of_lt_of_le hBγ_pos (le_max_left _ _)
   have hB_γ_bound : ∀ i, i ≤ kmax → ∀ x : EuclN,

@@ -81,7 +81,7 @@ theorem exists_contDiffOn_one_velocity_representative_of_weak_euler {D : RealTim
     (C : NNReal) (hC : ∀ᵐ t ∂timeMeasure L,
       ‖chartGramOp (I := I) G alpha (tau t, u.toFun t)‖ ≤ (C : Real))
     (F : Real → E) (hF : ContinuousOn F (Icc (0 : Real) L))
-    (hEuler : ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
+    (hEuler : ∀ v : timeH1 E L, v.initial = 0 → v.toFun L = 0 →
       2 * inner Real
           (timeOp (fun t ↦ chartGramOp (I := I) G alpha
             (tau t, u.toFun t)) hA C hC u.deriv) v.deriv +

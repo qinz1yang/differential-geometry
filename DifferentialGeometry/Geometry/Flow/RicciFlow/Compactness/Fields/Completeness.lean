@@ -11,7 +11,7 @@ open scoped Manifold Topology ContDiff
 open DifferentialGeometry.Integral.Connection
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
   [FiniteDimensional Real E] [CompleteSpace E]
@@ -29,7 +29,7 @@ namespace FlowMetricConvergenceData
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem complete_at
     (hP : MetricComplete (I := I) P)
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ c : Real}
     (co : FlowMetricConvergenceData (I := I) Φ P.metric bf hsrc htgt β ψ)
     (hc : 0 < c)
@@ -50,7 +50,7 @@ theorem complete_at
     (FlowMetricConvergenceData.lower_of (I := I) (Φ := Φ) co hseq t ht)
 
 end FlowMetricConvergenceData
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -131,7 +131,7 @@ theorem transition_patch_geometry
     nlinarith [hlam alpha]
 
 omit [CompleteSpace E] in
-theorem closed_ball_subset_inner_transition_core
+theorem closedBall_subset_interior_innerTransitionCore
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real}
@@ -645,7 +645,7 @@ theorem transition_patch_eventually
     have hbuffer :
         Metric.closedBall z (transitionCoreBuffer L alpha) ⊆
           interior (innerTransitionCore L alpha) := by
-      apply closed_ball_subset_inner_transition_core inp P L alpha
+      apply closedBall_subset_interior_innerTransitionCore inp P L alpha
       simpa only [alpha, gammaFin] using hzNorm
     refine ⟨alpha, z, ?_, hbuffer⟩
     change (d.chart j (seqCenterD inp.decay P L k gamma)).hom z = y
@@ -730,10 +730,10 @@ private theorem trans_fin
       ∀ i, i ∈ s → ∃ Jinf : E → E, ∃ Jbarinf : E → E,
         ContDiffOn Real (⊤ : ℕ∞) Jinf (U i) ∧
         ContDiffOn Real (⊤ : ℕ∞) Jbarinf (V i) ∧
-        MapCInfConvOnCompacts (U i)
+        MapCInfConvergenceOnCompacts (U i)
           (fun k => d.chartTransition (phi k)
             (x i (phi k)) (y i (phi k))) Jinf ∧
-        MapCInfConvOnCompacts (V i)
+        MapCInfConvergenceOnCompacts (V i)
           (fun k => d.chartTransition (phi k)
             (y i (phi k)) (x i (phi k))) Jbarinf ∧
         (∀ z ∈ U i, Jinf z ∈ V i → Jbarinf (Jinf z) = z) ∧
@@ -857,21 +857,21 @@ theorem seqAtomOn_eq_gluingBump_chartTransition_norm_sq
   rw [hdist]
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] in
-private theorem normBump_conv
+private theorem normBump_convergence
     {U : Set E} (hU : IsOpen U)
     {J : Nat → E → E} {Jinf : E → E}
-    (hJ : MapCInfConvOnCompacts U J Jinf)
+    (hJ : MapCInfConvergenceOnCompacts U J Jinf)
     (hJc : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (J k) U)
     (hJinf : ContDiffOn Real (∞ : WithTop ℕ∞) Jinf U)
     (lam : Real) (hlam : 0 < lam) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k z => gluingBump lam hlam (‖J k z‖ ^ 2))
       (fun z => gluingBump lam hlam (‖Jinf z‖ ^ 2)) := by
   let B : E →L[Real] E →L[Real] Real := innerSL Real
-  have hB : MapCInfConvOnCompacts U
+  have hB : MapCInfConvergenceOnCompacts U
       (fun _ : Nat => fun _ : E => B) (fun _ : E => B) :=
-    mapCInfConv_const (fun _ : E => B)
-  have hconv := quadBump_conv hU hB hJ
+    mapCInfConvergence_const (fun _ : E => B)
+  have hconv := quadBump_convergence hU hB hJ
     (fun _ => contDiffOn_const) contDiffOn_const hJc hJinf
     (gluingBump lam hlam) (gluingBump lam hlam).contDiff
   have hquad (v : E) : B v v = ‖v‖ ^ 2 := by
@@ -901,7 +901,7 @@ private theorem normBump_smooth
   exact (gluingBump lam hlam).contDiff.comp_contDiffOn hnorm
 
 omit [CompleteSpace E] in
-theorem atomOn_live_conv
+theorem atomOn_live_convergence
     (inp : MetricCompactCore (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -909,7 +909,7 @@ theorem atomOn_live_conv
     (alpha gamma : LiveSlot L inp.pack r)
     {U : Set E} (hU : IsOpen U)
     {Jinf : E → E}
-    (hJ : MapCInfConvOnCompacts U
+    (hJ : MapCInfConvergenceOnCompacts U
       (fun k => d.chartTransition (L.φ k)
         (seqCenterD inp.decay P L k (alpha.1 : Nat))
         (seqCenterD inp.decay P L k (gamma.1 : Nat))) Jinf)
@@ -927,7 +927,7 @@ theorem atomOn_live_conv
           (seqCenterD inp.decay P L k (gamma.1 : Nat))
           (d.chartMap (L.φ k)
             (seqCenterD inp.decay P L k (alpha.1 : Nat)) z)) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k => seqAtomOn (I := I) d.chart inp.decay inp.hD P L
         inp.pack r
         (fun n => seqCenterD inp.decay P L n (alpha.1 : Nat))
@@ -935,7 +935,7 @@ theorem atomOn_live_conv
       (fun z => gluingBump (L.lamInf (gamma.1 : Nat))
         (inp.decay.lambda_pos inp.hD (L.rInf (gamma.1 : Nat)))
         (‖Jinf z‖ ^ 2)) := by
-  have hbump := normBump_conv hU hJ hJc hJinf
+  have hbump := normBump_convergence hU hJ hJc hJinf
     (L.lamInf (gamma.1 : Nat))
     (inp.decay.lambda_pos inp.hD (L.rInf (gamma.1 : Nat)))
   refine hbump.congr_eventually hU ?_ fun _ _ => rfl
@@ -946,26 +946,26 @@ theorem atomOn_live_conv
     (hreadK z hz)
 
 omit [CompleteSpace E] in
-theorem atomOn_dead_conv
+theorem atomOn_dead_convergence
     (chart : NormalChartFamily (I := I) X)
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData hd D P) (pb : hd.PackingBound D) (r : Real)
     (beta : ∀ k : Nat, (X.obj (L.φ k)).M) (gamma : Fin (pb.A r))
     {U : Set E} (hU : IsOpen U) (hgamma : L.alive (gamma : Nat) = false) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k => seqAtomOn (I := I) chart hd hD P L pb r beta gamma k)
       (fun _ => 0) := by
-  have hzero : MapCInfConvOnCompacts U
+  have hzero : MapCInfConvergenceOnCompacts U
       (fun _ : Nat => fun _ : E => (0 : Real)) (fun _ => 0) :=
-    mapCInfConv_const (fun _ : E => (0 : Real))
+    mapCInfConvergence_const (fun _ : E => (0 : Real))
   refine hzero.congr_eventually hU ?_ fun _ _ => rfl
   filter_upwards [seqCenter_dead hd P L (gamma : Nat) hgamma] with k hk
   intro z _hz
   simp [seqAtomOn, seqAtom_none hd hD P L pb r k gamma hk]
 
 omit [CompleteSpace E] in
-theorem atomOn_disjoint_conv
+theorem atomOn_disjoint_convergence
     (chart : NormalChartFamily (I := I) X)
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real} (hD : 0 < D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -983,12 +983,12 @@ theorem atomOn_disjoint_conv
         (L.hatBall hd D P pb r k alpha))
     (hdisjoint : ∀ᶠ k in Filter.atTop,
       ¬ BInter hd D P L.lamInf (alpha : Nat) (gamma : Nat) (L.φ k)) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k => seqAtomOn (I := I) chart hd hD P L pb r beta gamma k)
       (fun _ => 0) := by
-  have hzero : MapCInfConvOnCompacts U
+  have hzero : MapCInfConvergenceOnCompacts U
       (fun _ : Nat => fun _ : E => (0 : Real)) (fun _ => 0) :=
-    mapCInfConv_const (fun _ : E => (0 : Real))
+    mapCInfConvergence_const (fun _ : E => (0 : Real))
   refine hzero.congr_eventually hU ?_ fun _ _ => rfl
   filter_upwards [hsource, hdisjoint] with k hsourceK hdisjointK
   intro z hz
@@ -998,7 +998,7 @@ theorem atomOn_disjoint_conv
     (seqAtom_mem_hat hd hD P L pb r k gamma (by
       simpa only [seqAtomOn] using hne))
 
-theorem exists_supp_data
+theorem exists_support_data
     (inp : MetricCompactCore (I := I) X)
     (d : BoundedGeometryNormalChartData (I := I) X inp.decay)
     (aMin : Real)
@@ -1024,7 +1024,7 @@ theorem exists_supp_data
           InterSlot L inp.pack r alpha → E → E)
         (Jbarinf : (alpha : LiveSlot L inp.pack r) →
           InterSlot L inp.pack r alpha → E → E),
-      HasSuppConvDataOn (I := I) inp P L r hr phi hphi d.chart
+      HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi d.chart
         U C0 C1 aInf Jinf Jbarinf := by
   classical
   let PairSlot := Σ alpha : LiveSlot L inp.pack r,
@@ -1308,10 +1308,10 @@ theorem exists_supp_data
   have hspec (pair : PairSlot) :
       ContDiffOn Real (⊤ : ℕ∞) (J pair) (U8 pair) ∧
       ContDiffOn Real (⊤ : ℕ∞) (Jbar pair) (V8 pair) ∧
-      MapCInfConvOnCompacts (U8 pair)
+      MapCInfConvergenceOnCompacts (U8 pair)
         (fun k => d0.chartTransition (tau k)
           (x0 pair (tau k)) (y0 pair (tau k))) (J pair) ∧
-      MapCInfConvOnCompacts (V8 pair)
+      MapCInfConvergenceOnCompacts (V8 pair)
         (fun k => d0.chartTransition (tau k)
           (y0 pair (tau k)) (x0 pair (tau k))) (Jbar pair) ∧
       (∀ z ∈ U8 pair, J pair z ∈ V8 pair →
@@ -1423,8 +1423,8 @@ theorem exists_supp_data
         ContDiffOn Real (⊤ : ℕ∞) (Jinf alpha target) (U alpha) := by
       have hs := (hspec (⟨alpha, target⟩ : PairSlot)).1.mono hU8alpha
       simpa only [Jinf, J, U8] using hs
-    have hJConv (target : InterSlot L inp.pack r alpha) :
-        MapCInfConvOnCompacts (U alpha)
+    have hJConvergence (target : InterSlot L inp.pack r alpha) :
+        MapCInfConvergenceOnCompacts (U alpha)
           (fun k => d.chartTransition (Lphi.φ k)
             (beta k)
             (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)))
@@ -1477,7 +1477,7 @@ theorem exists_supp_data
       with_unfolding_all
         exact hreadK
     have hatom (gamma : Fin (inp.pack.A r)) :
-        MapCInfConvOnCompacts (U alpha)
+        MapCInfConvergenceOnCompacts (U alpha)
           (fun k => seqAtomOn (I := I) d.chart inp.decay inp.hD P Lphi
             inp.pack r beta gamma k)
           (aInf alpha gamma) := by
@@ -1488,8 +1488,8 @@ theorem exists_supp_data
         let gammaPhi : LiveSlot Lphi inp.pack r :=
           ⟨target.1.1, by
             simpa only [Lphi, NetLimitData.subseq] using target.1.2⟩
-        have hc := d.atomOn_live_conv inp P Lphi r
-          alphaPhi gammaPhi (hgeom.1 alpha) (hJConv target)
+        have hc := d.atomOn_live_convergence inp P Lphi r
+          alphaPhi gammaPhi (hgeom.1 alpha) (hJConvergence target)
           (hJStage target) (hJInf target) (hread target)
         simpa only [aInf, dif_pos htarget, target, Jinf, beta, alphaPhi,
           gammaPhi, hslot, Lphi, NetLimitData.subseq_lamInf] using hc
@@ -1498,7 +1498,7 @@ theorem exists_supp_data
             have hgammaPhi : Lphi.alive (gamma : Nat) = false := by
               simpa only [Lphi, NetLimitData.subseq] using hgamma
             simpa only [aInf, dif_neg htarget] using
-              atomOn_dead_conv (I := I) d.chart inp.decay inp.hD P Lphi
+              atomOn_dead_convergence (I := I) d.chart inp.decay inp.hD P Lphi
                 inp.pack r beta gamma (hgeom.1 alpha) hgammaPhi
         | true =>
             rcases hstable (alpha.1 : Nat) (gamma : Nat) with hinter | hdisjoint
@@ -1525,7 +1525,7 @@ theorem exists_supp_data
                 Filter.Eventually.of_forall fun k z hz =>
                   ((hpatchPhi k).1 alpha).2 hz |>.1
               simpa only [aInf, dif_neg htarget] using
-                atomOn_disjoint_conv (I := I) d.chart inp.decay inp.hD P Lphi
+                atomOn_disjoint_convergence (I := I) d.chart inp.decay inp.hD P Lphi
                   inp.pack r beta alpha.1 gamma (hgeom.1 alpha)
                   hsourceTail hdisjointPhi
     have hdead (gamma : Fin (inp.pack.A r))
@@ -1653,13 +1653,13 @@ theorem exists_supp_data
           (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))) ∧
       ContinuousOn (Jbarinf alpha target)
           (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))) ∧
-      MapCInfConvOnCompacts
+      MapCInfConvergenceOnCompacts
         (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
         (fun k => d.chartTransition (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)))
         (Jinf alpha target) ∧
-      MapCInfConvOnCompacts
+      MapCInfConvergenceOnCompacts
         (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
         (fun k => d.chartTransition (Lphi.φ k)
           (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
@@ -1791,7 +1791,7 @@ theorem exists_supp_data
       (interior_subset
         (hgeom.2.2.2.2.1 alpha (interior_subset hz)))
   refine ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, ?_⟩
-  dsimp only [HasSuppConvDataOn]
+  dsimp only [HasSupportedCenterMapConvergenceOn]
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_,
     ?_, ?_, ?_, ?_⟩
   · simpa only [U] using hgeom.1
@@ -1829,5 +1829,5 @@ theorem exists_supp_data
 
 end BoundedGeometryNormalChartData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

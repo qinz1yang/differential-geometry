@@ -127,17 +127,17 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
     exact absurd hsum (by norm_num)
   obtain ⟨β, _hβmem, hβpos⟩ := hexists
   set ρ : ℝ := ((chartAtlasPOU I M) β : C^∞⟮I, M; ℝ⟯) x with hρ_def
-  have hx_src : x ∈ (chartAt H β).source := by
+  have hx_source : x ∈ (chartAt H β).source := by
     have hsub := chartAtlasPOU_isSubordinate (I := I) (M := M) β
     apply hsub
     exact subset_tsupport _ (Function.mem_support.mpr (ne_of_gt hβpos))
   set yx : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
     toEuclidean (extChartAt I β x) with hyx_def
-  have hyx_mem := toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) β hx_src
+  have hyx_mem := toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) β hx_source
   rw [← hyx_def] at hyx_mem
   have hround : (extChartAt I β).symm (toEuclidean.symm yx) = x := by
     rw [hyx_def, ContinuousLinearEquiv.symm_apply_apply]
-    exact (extChartAt I β).left_inv (by rw [extChartAt_source (I := I)]; exact hx_src)
+    exact (extChartAt I β).left_inv (by rw [extChartAt_source (I := I)]; exact hx_source)
   have hcomp_eq : ∀ (Z : SmoothCcTensor g 0 2) (Q : CompIdx E 0 2),
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorChartComponent
           (I := I) (M := M) g 0 2 Z β Q.1 Q.2 yx =
@@ -165,7 +165,7 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
         ∑ Q : CompIdx E 0 2,
           tensorChartComponentRaw (I := I) (M := M) g 0 2 Z β Q.1 Q.2 x •
             chartBasisFiberSection (I := I) (M := M) 0 2 β Q x :=
-      fun Z => toSection_eq_sum_chartBasisFiberSection (I := I) (M := M) g 0 2 Z β hx_src
+      fun Z => toSection_eq_sum_chartBasisFiberSection (I := I) (M := M) g 0 2 Z β hx_source
     simp only [hexpand]
     exact tendsto_finsetSum _ (fun Q _ => (hraw_tendsto Q).smul_const _)
   have hLval : ∀ Z : SmoothCcTensor g 0 2,
@@ -338,7 +338,7 @@ private theorem spectralPathFO_rawCompOnE_euclidean_contDiffOn_local
     htsum_Bc.mono (Set.prod_mono (le_refl _) hball_le)
   refine htsum.congr ?_
   intro q hq
-  have hq_symm_src : (extChartAt I α).symm q.2 ∈ (chartAt H α).source := by
+  have hq_symm_source : (extChartAt I α).symm q.2 ∈ (chartAt H α).source := by
     have hqt : q.2 ∈ (extChartAt I α).target := interior_subset (hB_sub hq.2)
     have := (extChartAt I α).map_target hqt
     rwa [extChartAt_source (I := I)] at this
@@ -349,7 +349,7 @@ private theorem spectralPathFO_rawCompOnE_euclidean_contDiffOn_local
       refine ⟨B', hB'_sum, fun i => ?_⟩
       have h := hB'_le i q.1 hq.1
       rwa [iteratedDeriv_zero] at h)
-    α Jdx hq_symm_src
+    α Jdx hq_symm_source
 
 private theorem spectralPathFO_rawChartComponent_jointContMDiffOn_local
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk : ℕ)
@@ -491,7 +491,7 @@ theorem spectralPathFO_section_jointContMDiffOn_local
     rw [hQ1]
     exact hraw.smul contMDiffOn_const
   intro p₀ hp₀
-  obtain ⟨hx₀src, hs₀'⟩ := hp₀
+  obtain ⟨hx₀source, hs₀'⟩ := hp₀
   have hbaseSet : p₀.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).baseSet := by
     change p₀.1 ∈ ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -502,7 +502,7 @@ theorem spectralPathFO_section_jointContMDiffOn_local
       · change p₀.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet
         rw [show (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source from
           TangentBundle.trivializationAt_baseSet (I := I) α]
-        rw [hα]; exact hx₀src
+        rw [hα]; exact hx₀source
   have hsource : (⟨p₀.1, (T_rep p₀.2).toSection p₀.1⟩ :
       TotalSpace (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
         (fun z : M => Tensor0SBundle.TensorRSSpace 0 2 I z)) ∈
@@ -559,10 +559,10 @@ theorem spectralPathFO_section_jointContMDiffOn_local
             (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α)
           ⟨p.1, (T_rep p.2).toSection p.1⟩).2)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) p₀ := by
-    refine (hSum p₀ ⟨hx₀src, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
+    refine (hSum p₀ ⟨hx₀source, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with p hp
       exact hfibeq p hp.1
-    · exact hfibeq p₀ hx₀src
+    · exact hfibeq p₀ hx₀source
   exact ((Bundle.Trivialization.contMDiffWithinAt_iff
     (IM := I.prod 𝓘(ℝ, ℝ)) (n := ((kk : ℕ) : WithTop ℕ∞))
     (f := fun p : M × ℝ => (⟨p.1, (T_rep p.2).toSection p.1⟩ :

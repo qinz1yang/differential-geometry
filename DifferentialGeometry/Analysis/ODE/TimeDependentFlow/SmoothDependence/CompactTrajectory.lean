@@ -38,7 +38,7 @@ theorem exists_flow_compact [CompleteSpace E] [I.Boundaryless]
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Phi p s) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (Phi p t)))) :=
     fun p₀ => local_flow_jointSmooth_and_integralCurve X hX t₀ p₀
-  choose U hU_open hU_mem Tloc hTloc_pos Phi hPhi_init hPhi_smooth hPhi_bare
+  choose U hU_open hU_mem Tloc hTloc_pos Phi hPhi_initial hPhi_smooth hPhi_bare
     using hlocal
   have hcover : K ⊆ ⋃ p, U p := fun x hx => Set.mem_iUnion.mpr ⟨x, hU_mem x⟩
   obtain ⟨s, hs_cover⟩ := hK.elim_finite_subcover U hU_open hcover
@@ -53,7 +53,7 @@ theorem exists_flow_compact [CompleteSpace E] [I.Boundaryless]
     have hymem := hs_cover hy
     rw [Set.mem_iUnion₂] at hymem
     obtain ⟨i, hi, hyU⟩ := hymem
-    refine ⟨U i, hU_open i, hyU, Phi i, hPhi_init i, ?_, ?_⟩
+    refine ⟨U i, hU_open i, hyU, Phi i, hPhi_initial i, ?_, ?_⟩
     · exact (hPhi_smooth i).mono (Set.prod_mono
         (Set.Ioo_subset_Ioo (by linarith [hε_le i hi]) (by linarith [hε_le i hi]))
         (subset_refl _))

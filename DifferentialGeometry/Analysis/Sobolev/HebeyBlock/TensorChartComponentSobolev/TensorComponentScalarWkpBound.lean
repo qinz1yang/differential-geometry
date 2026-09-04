@@ -59,8 +59,8 @@ private lemma chartPushed_pou_mul_smooth_compactSupport
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M β
       : C^∞⟮I, M; ℝ⟯).contMDiff
   have hg_M_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ g_M := hPOU_smooth.mul hf
-  have hg_M_supp : tsupport g_M ⊆ (chartAt H β).source := by
-    have h_subset_pou_supp :
+  have hg_M_support : tsupport g_M ⊆ (chartAt H β).source := by
+    have h_subset_pou_support :
         tsupport g_M ⊆
           tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M β
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
@@ -72,22 +72,22 @@ private lemma chartPushed_pou_mul_smooth_compactSupport
       exact tsupport_smul_subset_left
         (f := fun x : M => ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
           I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) (g := f)
-    exact h_subset_pou_supp.trans
+    exact h_subset_pou_support.trans
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M β)
   set v : EuclN → ℝ := chartPushedRaw I β g_M with hv_def
   refine ⟨v, ?_, ?_, ?_, ?_⟩
   · rw [hv_def]
     exact
       Analysis.Laplacian.SmoothFChartResidualBilinearBound.chartPushedRaw_contDiff
-      (I := I) (M := M) (α := β) (u := g_M) hg_M_smooth hg_M_supp
+      (I := I) (M := M) (α := β) (u := g_M) hg_M_smooth hg_M_support
   · rw [hv_def]
     exact
       chartPushedRaw_smooth_hasCompactSupport_local
-      (I := I) (M := M) (α := β) (u := g_M) hg_M_supp
+      (I := I) (M := M) (α := β) (u := g_M) hg_M_support
   · rw [hv_def]
     exact
       tsupport_chartPushedRaw_subset_chartTargetEuclid
-      (I := I) (M := M) (α := β) (u := g_M) hg_M_supp
+      (I := I) (M := M) (α := β) (u := g_M) hg_M_support
   · refine (ae_restrict_iff'
       (chartTargetEuclid_measurableSet (I := I) (M := M) β)).mpr ?_
     refine Filter.Eventually.of_forall ?_
@@ -111,7 +111,7 @@ theorem tensorChartComponentScalar_memWkpChart
       (tensorChartComponentScalar (I := I) (M := M) g r s T α Idx Jdx) :=
     tensorChartComponentScalar_contMDiff
       (I := I) (M := M) g r s T α Idx Jdx
-  obtain ⟨v, hv_smooth, hv_cpt, hv_supp, hv_ae⟩ :=
+  obtain ⟨v, hv_smooth, hv_compact, hv_support, hv_ae⟩ :=
     chartPushed_pou_mul_smooth_compactSupport
       (f := tensorChartComponentScalar (I := I) (M := M) g r s T α Idx Jdx)
       hf_smooth β
@@ -122,7 +122,7 @@ theorem tensorChartComponentScalar_memWkpChart
         (chartTargetEuclid (I := I) (M := M) β) :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := Module.finrank ℝ E)
-      (chartTargetEuclid_isOpen (I := I) (M := M) β) hv_smooth hv_cpt hv_supp hp k
+      (chartTargetEuclid_isOpen (I := I) (M := M) β) hv_smooth hv_compact hv_support hp k
   exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
     (d := Module.finrank ℝ E) hp
     (chartTargetEuclid_isOpen (I := I) (M := M) β) hv_ae.symm).mp hv_mem

@@ -65,7 +65,7 @@ theorem eigenvectorChartVariationalIdentity
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i' : Fin (Module.finrank ℝ E),
         ∑ j' : Fin (Module.finrank ℝ E),
@@ -154,14 +154,14 @@ theorem eigenvectorChartVariationalIdentity
             g r s i n).toCcTensor
           (pouSmul (I := I) (M := M) g r s α
             (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-              hψ hψ_cs hψ_supp)) x
+              hψ hψ_cs hψ_support)) x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) -
       (∫ x, tensorCovDerivCrossLeft (I := I) (M := M) g r s
           (chartAtlasPOU I M α)
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor
           (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-            hψ hψ_cs hψ_supp) x
+            hψ hψ_cs hψ_support) x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
       ((∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityOnEuclid (I := I) g α y *
@@ -206,24 +206,24 @@ theorem eigenvectorChartVariationalIdentity
       (eigenvectorPouApprox_tsupport_subset_source (I := I) (M := M)
         g r s i α n)
       (eigenvectorPouApprox_component_tsupport_subset (I := I) (M := M)
-        g r s i α P₀ n) hψ hψ_cs hψ_supp]
+        g r s i α P₀ n) hψ hψ_cs hψ_support]
     rw [show (∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s
             (eigenvectorPouApprox (I := I) (M := M) g r s i α n)
             (rotatedTestSection (I := I) (M := M) g r s α P₀
               (chartTestPullback (I := I) (M := M) α ψ)
               (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
               (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-                hψ_cs hψ_supp)) x
+                hψ_cs hψ_support)) x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
         ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s
             (eigenvectorPouApprox (I := I) (M := M) g r s i α n)
             (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-              hψ hψ_cs hψ_supp) x
+              hψ hψ_cs hψ_support) x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) from rfl]
     rw [eigenvectorSource_integral_split (I := I) (M := M) g r s i
-      α P₀ hψ hψ_cs hψ_supp n,
+      α P₀ hψ hψ_cs hψ_support n,
       eigenvectorCrossRight_integral_eq_value_plus_grad (I := I) (M := M)
-        g r s i α P₀ hψ hψ_cs hψ_supp n]
+        g r s i α P₀ hψ hψ_cs hψ_support n]
   set L : ℝ := ((1 - μ) * U - CL + (CRV + -CRGdiv) - PRC - LOV + GD) with hL_def
   have h_rhs_tendsto : Filter.Tendsto
       (fun n => ((∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s
@@ -231,14 +231,14 @@ theorem eigenvectorChartVariationalIdentity
               g r s i n).toCcTensor
             (pouSmul (I := I) (M := M) g r s α
               (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-                hψ hψ_cs hψ_supp)) x
+                hψ hψ_cs hψ_support)) x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) -
         (∫ x, tensorCovDerivCrossLeft (I := I) (M := M) g r s
             (chartAtlasPOU I M α)
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor
             (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-              hψ hψ_cs hψ_supp) x
+              hψ hψ_cs hψ_support) x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
         ((∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
@@ -279,20 +279,20 @@ theorem eigenvectorChartVariationalIdentity
       atTop (𝓝 L) := by
     rw [hL_def]
     have h_md := eigenvectorMainDir_tendsto (I := I) (M := M) g r s i
-      α P₀ hψ hψ_cs hψ_supp
+      α P₀ hψ hψ_cs hψ_support
     refine (((((h_md.sub
       (eigenvectorCrossLeft_tendsto (I := I) (M := M) g r s i
-        α P₀ hψ hψ_cs hψ_supp)).add
+        α P₀ hψ hψ_cs hψ_support)).add
       ((eigenvectorCrossRight_tendsto (I := I) (M := M) g r s i
-        α P₀ hψ hψ_cs hψ_supp).add
+        α P₀ hψ hψ_cs hψ_support).add
         (eigenvectorCrossRightGrad_tendsto (I := I) (M := M) g r s i
-          α P₀ hψ hψ_cs hψ_supp))).sub
+          α P₀ hψ hψ_cs hψ_support))).sub
       (covPrincipalRotationCoeff_source_tendsto (I := I) (M := M) g r s
-        i α P₀ hψ hψ_cs hψ_supp)).sub
+        i α P₀ hψ hψ_cs hψ_support)).sub
       (covLowerOrderRotationValueCoeff_source_tendsto (I := I) (M := M)
-        g r s i α P₀ hψ hψ_cs hψ_supp)).add
+        g r s i α P₀ hψ hψ_cs hψ_support)).add
       (weightedGradCoeffDivSum_source_tendsto (I := I) (M := M) g r s
-        i α P₀ hψ hψ_cs hψ_supp)).congr ?_
+        i α P₀ hψ hψ_cs hψ_support)).congr ?_
     intro n
     rfl
   have h_lhs_tendsto : Filter.Tendsto
@@ -306,7 +306,7 @@ theorem eigenvectorChartVariationalIdentity
       atTop (𝓝 (μ * P)) := by
     rw [hμ_def, hP_def]
     exact bilin_eigenvectorPouApprox_tendsto (I := I) (M := M) g r s i
-      α P₀ hψ hψ_cs hψ_supp
+      α P₀ hψ hψ_cs hψ_support
   have h_mu_P : μ * P = L := by
     refine tendsto_nhds_unique (h_lhs_tendsto.congr ?_) h_rhs_tendsto
     intro n
@@ -329,7 +329,7 @@ theorem eigenvectorChartVariationalIdentity
           (chartTargetEuclid (I := I) (M := M) α)) :=
       density_memLp2_test_integrable (I := I) (M := M) g α
         (Lp.memLp (tensorL2ChartComponent (I := I) (M := M) g r s φ α P₀))
-        hψ hψ_cs hψ_supp
+        hψ hψ_cs hψ_support
     have hint_CLsum : Integrable (fun y => densityOnEuclid (I := I) g α y *
         (∑ P' : TensorCompIdx (E := E) r (s + 1),
           ∑ Q : TensorCompIdx (E := E) r (s + 1),
@@ -355,7 +355,7 @@ theorem eigenvectorChartVariationalIdentity
         MeasureTheory.integrable_finsetSum _ (fun P' _ =>
           MeasureTheory.integrable_finsetSum _ (fun Q _ =>
             crossLeftLimitPairing_integrable (I := I) (M := M) g r s i
-              α P₀ P' Q hψ hψ_cs hψ_supp))
+              α P₀ P' Q hψ hψ_cs hψ_support))
       refine h_sum.congr (Filter.Eventually.of_forall (fun y => ?_))
       simp only [Finset.mul_sum, Finset.sum_mul]
     have hint_CRVsum : Integrable (fun y => densityOnEuclid (I := I) g α y *
@@ -383,7 +383,7 @@ theorem eigenvectorChartVariationalIdentity
         MeasureTheory.integrable_finsetSum _ (fun P' _ =>
           MeasureTheory.integrable_finsetSum _ (fun Q _ =>
             crossRightValueLimitPairing_integrable (I := I) (M := M)
-              g r s i α P₀ P' Q hψ hψ_cs hψ_supp))
+              g r s i α P₀ P' Q hψ hψ_cs hψ_support))
       refine h_sum.congr (Filter.Eventually.of_forall (fun y => ?_))
       simp only [Finset.mul_sum, Finset.sum_mul]
     have hint_PRC : Integrable (fun y => densityOnEuclid (I := I) g α y *
@@ -394,7 +394,7 @@ theorem eigenvectorChartVariationalIdentity
       density_memLp2_test_integrable (I := I) (M := M) g α
         (covPrincipalRotationCoeffLimit_memLp (I := I) (M := M)
           g r s i α P₀)
-        hψ hψ_cs hψ_supp
+        hψ hψ_cs hψ_support
     have hint_LOV : Integrable (fun y => densityOnEuclid (I := I) g α y *
         covLowerOrderRotationValueCoeffLimit (I := I) (M := M)
           g r s i α P₀ y * ψ y)
@@ -403,7 +403,7 @@ theorem eigenvectorChartVariationalIdentity
       density_memLp2_test_integrable (I := I) (M := M) g α
         (covLowerOrderRotationValueCoeffLimit_memLp (I := I) (M := M)
           g r s i α P₀)
-        hψ hψ_cs hψ_supp
+        hψ hψ_cs hψ_support
     have hint_GD : Integrable (fun y => densityOnEuclid (I := I) g α y *
         ((1 / densityOnEuclid (I := I) g α y) *
           ∑ l : Fin (Module.finrank ℝ E),
@@ -418,7 +418,7 @@ theorem eigenvectorChartVariationalIdentity
           (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
           (fun l _ => weightedGradCoeffDivLimit_memLp (I := I) (M := M)
             g r s i α P₀ l))
-        hψ hψ_cs hψ_supp
+        hψ hψ_cs hψ_support
     have hint_CRGD : Integrable (fun y => densityOnEuclid (I := I) g α y *
         ((1 / densityOnEuclid (I := I) g α y) *
           crossRightGradCoeffDivLimit (I := I) (M := M)
@@ -429,7 +429,7 @@ theorem eigenvectorChartVariationalIdentity
         h_one_div_density
         (crossRightGradCoeffDivLimit_memLp (I := I) (M := M)
           g r s i α P₀)
-        hψ hψ_cs hψ_supp
+        hψ hψ_cs hψ_support
     have h_integrand : Set.EqOn
         (fun y => densityOnEuclid (I := I) g α y *
           eigenvectorChartRHS (I := I) (M := M) g r s i α P₀ y * ψ y)
@@ -482,7 +482,7 @@ theorem eigenvectorChartVariationalIdentity
     rw [MeasureTheory.integral_const_mul]
     congr 1
     have hψ_zero : ∀ y, y ∉ chartTargetEuclid (I := I) (M := M) α → ψ y = 0 :=
-      fun y hy => image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h))
+      fun y hy => image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_support h))
     have hD4 : (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
             covPrincipalRotationCoeffLimit (I := I) (M := M)
@@ -680,9 +680,9 @@ def eigenvectorTensorChartBilinearData
      weak_partial_isWeakPartial := fun k =>
        eigenvectorChartWeakPartial_hasWeakPartialDeriv (I := I) (M := M)
          g r s i α P₀ k
-     variational_identity := fun _ψ hψ hψ_cs hψ_supp =>
+     variational_identity := fun _ψ hψ hψ_cs hψ_support =>
        eigenvectorChartVariationalIdentity (I := I) (M := M)
-         g r s i α P₀ hψ hψ_cs hψ_supp }⟩
+         g r s i α P₀ hψ hψ_cs hψ_support }⟩
 
 end TensorSpectral
 end Parabolic

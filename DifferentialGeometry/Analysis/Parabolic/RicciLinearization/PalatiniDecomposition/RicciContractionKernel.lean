@@ -154,7 +154,7 @@ private def backgroundRiemannCommWeightKernel (g₀ : SmoothRiemannianMetric I M
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdBackgroundRTermWeight_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
+private lemma palatiniBackgroundRTermWeight_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
     (D : Tensor0SSpace 2 I x) (m : Fin 4 → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
@@ -194,7 +194,7 @@ private lemma bdBackgroundRTermWeight_toModel (g₀ : SmoothRiemannianMetric I M
       ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)).toSection x) D]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
-    rw [bdSlotExtendIter_two_toModel (I := I) (M := M) g₀
+    rw [palatiniSlotExtendIter_two_toModel (I := I) (M := M) g₀
       (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀) x D
       (fun i => w ((Equiv.swap (1 : Fin 6) 3) i))]
     refine congrArg₂ (· * ·) ?_ ?_
@@ -213,7 +213,7 @@ private lemma bdBackgroundRTermWeight_toModel (g₀ : SmoothRiemannianMetric I M
   rw [cometricDoubleTraceFib_toModel (I := I) g₀ 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₀ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y) m]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [hYval]
@@ -233,7 +233,7 @@ private lemma bdBackgroundRTermWeight_toModel (g₀ : SmoothRiemannianMetric I M
     ContinuousLinearEquiv.symm_apply_apply]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem bdBackgroundRComm_eq_decomposition (g₀ g : SmoothRiemannianMetric I M) :
+private theorem palatiniBackgroundRComm_eq_decomposition (g₀ g : SmoothRiemannianMetric I M) :
     ricciOrderZeroBackgroundCurvatureCoeffField (I := I) (M := M) g₀ g =
       ccOperatorFieldComp (I := I) (M := M) g₀ 2 4 2
         (cometricDoubleTraceCc (I := I) (M := M) g₀ g 2)
@@ -267,7 +267,7 @@ private theorem bdBackgroundRComm_eq_decomposition (g₀ g : SmoothRiemannianMet
   rw [cometricDoubleTraceFib_toModel (I := I) g 2 x]
   rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
         (backgroundRiemannCommWeightKernel (I := I) (M := M) g₀).toSection x) D))
@@ -277,7 +277,7 @@ private theorem bdBackgroundRComm_eq_decomposition (g₀ g : SmoothRiemannianMet
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)
   let v1 : TangentSpace I x :=
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)
-  rw [bdBackgroundRTermWeight_toModel g₀ x D]
+  rw [palatiniBackgroundRTermWeight_toModel g₀ x D]
   change Tensor0SSpace.toModel D
       (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
           (riemannOp (LeviCivita (I := I) g₀) x
@@ -319,7 +319,7 @@ private theorem bdBackgroundRComm_eq_decomposition (g₀ g : SmoothRiemannianMet
       rw [map_sum]
       refine Finset.sum_congr rfl fun e _ => ?_
       rw [map_smul]]
-    have hrep := bdOrthoFrame_center_repr (I := I) (M := M) g₀ x
+    have hrep := palatiniOrthoFrame_center_repr (I := I) (M := M) g₀ x
       (riemannOp (LeviCivita (I := I) g₀) x (smoothOrthoFrame (I := I) g x c x) v0 v1)
     conv_lhs => rw [hrep]
     refine congrArg _ (Finset.sum_congr rfl fun e _ => ?_)
@@ -327,7 +327,7 @@ private theorem bdBackgroundRComm_eq_decomposition (g₀ g : SmoothRiemannianMet
       (riemannOp (LeviCivita (I := I) g₀) x
         (smoothOrthoFrame (I := I) g x c x) v0 v1)]
   rw [hu_exp]
-  rw [bdToModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel D)
+  rw [palatiniToModel_cons_sum_smul (E := E) (Tensor0SSpace.toModel D)
     (Module.finrank ℝ E)
     (fun e => g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x
         (smoothOrthoFrame (I := I) g x c x) v0 v1)
@@ -346,7 +346,7 @@ def palatiniRicciContractionWeightBPerm : Equiv.Perm (Fin 6) :=
    by decide, by decide⟩
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem bdOrthoFrameBasis_at_center (g₀ : SmoothRiemannianMetric I M) (x : M) :
+private theorem palatiniOrthoFrameBasis_at_center (g₀ : SmoothRiemannianMetric I M) (x : M) :
     ∃ bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x),
       ∀ i, bse i = smoothOrthoFrame (I := I) g₀ x i x := by
   classical
@@ -378,13 +378,13 @@ private theorem bdOrthoFrameBasis_at_center (g₀ : SmoothRiemannianMetric I M) 
     fun i => congrFun (coe_basisOfLinearIndependentOfCardEqFinrank he_li hcard) i⟩
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem bdOrthoFrame_expansion_at_center (g₀ : SmoothRiemannianMetric I M)
+private theorem palatiniOrthoFrame_expansion_at_center (g₀ : SmoothRiemannianMetric I M)
     (x : M) (u : TangentSpace I x) :
     u = ∑ i : Fin (Module.finrank ℝ E),
       g₀.inner x u (smoothOrthoFrame (I := I) g₀ x i x) •
         smoothOrthoFrame (I := I) g₀ x i x := by
   classical
-  obtain ⟨bse, hbse⟩ := bdOrthoFrameBasis_at_center (I := I) (M := M) g₀ x
+  obtain ⟨bse, hbse⟩ := palatiniOrthoFrameBasis_at_center (I := I) (M := M) g₀ x
   have horth : ∀ a b : Fin (Module.finrank ℝ E),
       g₀.inner x (smoothOrthoFrame (I := I) g₀ x a x)
         (smoothOrthoFrame (I := I) g₀ x b x) = if a = b then 1 else 0 :=
@@ -410,13 +410,13 @@ private theorem bdOrthoFrame_expansion_at_center (g₀ : SmoothRiemannianMetric 
       rw [hcoeff i, hbse i]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma bdCcTensorBilin_expand_left (g₀ : SmoothRiemannianMetric I M)
+private lemma palatiniCcTensorBilin_expand_left (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (u w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) g₀ S x u w =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x u (smoothOrthoFrame (I := I) g₀ x e x) *
           smoothCcTensorBilinForm (I := I) g₀ S x (smoothOrthoFrame (I := I) g₀ x e x) w := by
-  conv_lhs => rw [bdOrthoFrame_expansion_at_center (I := I) (M := M) g₀ x u]
+  conv_lhs => rw [palatiniOrthoFrame_expansion_at_center (I := I) (M := M) g₀ x u]
   rw [map_sum (smoothCcTensorBilinForm (I := I) g₀ S x) _ Finset.univ,
     sum_apply]
   refine Finset.sum_congr rfl fun e _ => ?_
@@ -424,13 +424,13 @@ private lemma bdCcTensorBilin_expand_left (g₀ : SmoothRiemannianMetric I M)
     smul_eq_mul]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma bdCcTensorBilin_expand_right (g₀ : SmoothRiemannianMetric I M)
+private lemma palatiniCcTensorBilin_expand_right (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (u w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) g₀ S x u w =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x w (smoothOrthoFrame (I := I) g₀ x e x) *
           smoothCcTensorBilinForm (I := I) g₀ S x u (smoothOrthoFrame (I := I) g₀ x e x) := by
-  conv_lhs => rw [bdOrthoFrame_expansion_at_center (I := I) (M := M) g₀ x w]
+  conv_lhs => rw [palatiniOrthoFrame_expansion_at_center (I := I) (M := M) g₀ x w]
   rw [map_sum (smoothCcTensorBilinForm (I := I) g₀ S x u) _ Finset.univ]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [map_smul (smoothCcTensorBilinForm (I := I) g₀ S x u), smul_eq_mul]
@@ -453,7 +453,7 @@ def palatiniRicciContractionWeightB (g₀ : SmoothRiemannianMetric I M)
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdRicciContractionWeight_unitModel_gen (g₀ : SmoothRiemannianMetric I M)
+private lemma palatiniRicciContractionWeight_unitModel_gen (g₀ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 6)) (S : SmoothCcTensor g₀ 0 2) (x : M) (m : Fin 4 → E) :
     unitModel (I := I) (M := M) g₀ 4
         (ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
@@ -525,7 +525,7 @@ private lemma bdRicciContractionWeight_unitModel_gen (g₀ : SmoothRiemannianMet
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 R4).toSection x) Sval) from by
       rw [operatorFieldComposition_toSection]
       rfl]
-    rw [bdSlotExtendIter_two_toModel (I := I) (M := M) g₀ R4 x Sval (fun i => w (σ i))]
+    rw [palatiniSlotExtendIter_two_toModel (I := I) (M := M) g₀ R4 x Sval (fun i => w (σ i))]
     refine congrArg₂ (· * ·) ?_ ?_
     · refine congrArg _ ?_
       funext k
@@ -549,7 +549,7 @@ private lemma bdRicciContractionWeight_unitModel_gen (g₀ : SmoothRiemannianMet
   rw [cometricDoubleTraceFib_toModel (I := I) g₀ 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₀ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y) m]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [hYval]
@@ -557,7 +557,7 @@ private lemma bdRicciContractionWeight_unitModel_gen (g₀ : SmoothRiemannianMet
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdRicciContractionWeights_unitModel_eq_kernel (g₀ : SmoothRiemannianMetric I M)
+private lemma palatiniRicciContractionWeights_unitModel_eq_kernel (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (p q v0 v1 : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4
         (palatiniRicciContractionWeightA (I := I) (M := M) g₀ S +
@@ -567,7 +567,7 @@ private lemma bdRicciContractionWeights_unitModel_eq_kernel (g₀ : SmoothRieman
         smoothCcTensorBilinForm (I := I) g₀ S x q
           (riemannOp (LeviCivita (I := I) g₀) x v0 p v1) := by
   classical
-  rw [bdUnitModel_add (I := I) (M := M) g₀ 4
+  rw [palatiniUnitModel_add (I := I) (M := M) g₀ 4
     (palatiniRicciContractionWeightA (I := I) (M := M) g₀ S)
       (palatiniRicciContractionWeightB (I := I) (M := M) g₀ S) x,
     add_apply]
@@ -580,9 +580,9 @@ private lemma bdRicciContractionWeights_unitModel_eq_kernel (g₀ : SmoothRieman
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)) S)) from rfl]
-    rw [bdRicciContractionWeight_unitModel_gen (I := I) (M := M) g₀ (Equiv.swap (1 : Fin 6) 3) S x
+    rw [palatiniRicciContractionWeight_unitModel_gen (I := I) (M := M) g₀ (Equiv.swap (1 : Fin 6) 3) S x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
-    rw [bdCcTensorBilin_expand_left (I := I) (M := M) g₀ S x
+    rw [palatiniCcTensorBilin_expand_left (I := I) (M := M) g₀ S x
       (riemannOp (LeviCivita (I := I) g₀) x v0 p q) v1]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 2 S x
@@ -664,9 +664,9 @@ private lemma bdRicciContractionWeights_unitModel_eq_kernel (g₀ : SmoothRieman
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
                 (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)) S)) from rfl]
-    rw [bdRicciContractionWeight_unitModel_gen (I := I) (M := M) g₀ palatiniRicciContractionWeightBPerm S x
+    rw [palatiniRicciContractionWeight_unitModel_gen (I := I) (M := M) g₀ palatiniRicciContractionWeightBPerm S x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
-    rw [bdCcTensorBilin_expand_right (I := I) (M := M) g₀ S x q
+    rw [palatiniCcTensorBilin_expand_right (I := I) (M := M) g₀ S x q
       (riemannOp (LeviCivita (I := I) g₀) x v0 p v1)]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 2 S x
@@ -746,7 +746,7 @@ private lemma bdRicciContractionWeights_unitModel_eq_kernel (g₀ : SmoothRieman
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-lemma bdRicciContraction_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
+lemma palatiniRicciContraction_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
     ricciContractionRemainderField (I := I) (M := M) g₀ g₁ S =
       (-(1 / 2) : ℝ) •
@@ -794,7 +794,7 @@ lemma bdRicciContraction_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I 
       rw [SmoothCcTensor.toSection_smul]; rfl]
     rfl
   rw [hRHSsmul, Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
-  rw [bdPairTraceOp_apply_toModel (I := I) (M := M) g₀ g₁
+  rw [palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀ g₁
     (palatiniRicciContractionWeightA (I := I) (M := M) g₀ S + palatiniRicciContractionWeightB (I := I) (M := M) g₀
       S)
     x D v]
@@ -856,7 +856,7 @@ lemma bdRicciContraction_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I 
           (smoothOrthoFrame (I := I) g₁ x b x)
           (riemannOp (LeviCivita (I := I) g₀) x v0
             (smoothOrthoFrame (I := I) g₁ x a x) v1) := by
-    have h := bdRicciContractionWeights_unitModel_eq_kernel g₀ S x
+    have h := palatiniRicciContractionWeights_unitModel_eq_kernel g₀ S x
       (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
       v0 v1
     with_unfolding_all
@@ -866,7 +866,7 @@ lemma bdRicciContraction_eq_decomposition (g₀ g₁ : SmoothRiemannianMetric I 
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdRicciContractionWeights_pair_smul (g₀ : SmoothRiemannianMetric I M)
+private lemma palatiniRicciContractionWeights_pair_smul (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (c : ℝ) :
     palatiniRicciContractionWeightA (I := I) (M := M) g₀ (c • T) +
       palatiniRicciContractionWeightB (I := I) (M := M) g₀ (c • T) =
@@ -881,7 +881,7 @@ private lemma bdRicciContractionWeights_pair_smul (g₀ : SmoothRiemannianMetric
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
-  have hdecomp := bdTensor0S_zero_rank_decomp (I := I) (M := M) x t
+  have hdecomp := tensor0S_zero_rank_eq_smul_unitTensor (I := I) (M := M) x t
   rw [hdecomp, map_smul, map_smul]
   beta_reduce
   rw [Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_smul,
@@ -893,7 +893,7 @@ private lemma bdRicciContractionWeights_pair_smul (g₀ : SmoothRiemannianMetric
     unitModel (I := I) (M := M) g₀ 4
       (c • (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
         palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)) x m
-  rw [bdUnitModel_smul (I := I) (M := M) g₀ 4 c
+  rw [palatiniUnitModel_smul (I := I) (M := M) g₀ 4 c
     (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T + palatiniRicciContractionWeightB (I := I) (M := M) g₀
       T) x]
   rw [smul_apply, smul_eq_mul]
@@ -902,9 +902,9 @@ private lemma bdRicciContractionWeights_pair_smul (g₀ : SmoothRiemannianMetric
     fin_cases k <;> rfl]
   let mt : Fin 4 → TangentSpace I x := fun i =>
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i)
-  have hfoldc := bdRicciContractionWeights_unitModel_eq_kernel g₀ (c • T) x
+  have hfoldc := palatiniRicciContractionWeights_unitModel_eq_kernel g₀ (c • T) x
     (mt 2) (mt 3) (mt 0) (mt 1)
-  have hfold := bdRicciContractionWeights_unitModel_eq_kernel g₀ T x
+  have hfold := palatiniRicciContractionWeights_unitModel_eq_kernel g₀ T x
     (mt 2) (mt 3) (mt 0) (mt 1)
   change unitModel (I := I) (M := M) g₀ 4
       (palatiniRicciContractionWeightA (I := I) (M := M) g₀ (c • T) +
@@ -920,7 +920,7 @@ private lemma bdRicciContractionWeights_pair_smul (g₀ : SmoothRiemannianMetric
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-lemma bdRicciContractionXi_smul (g₀ : SmoothRiemannianMetric I M)
+lemma palatiniRicciContractionXi_smul (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (c : ℝ) :
     rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 termPairTraceSlotPerm6
       (slotExtendIter (I := I) (M := M) g₀ 0 4 2
@@ -931,7 +931,7 @@ lemma bdRicciContractionXi_smul (g₀ : SmoothRiemannianMetric I M)
         (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
           palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)) := by
   classical
-  rw [bdRicciContractionWeights_pair_smul (I := I) (M := M) g₀ T c]
+  rw [palatiniRicciContractionWeights_pair_smul (I := I) (M := M) g₀ T c]
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
@@ -982,20 +982,20 @@ lemma bdRicciContractionXi_smul (g₀ : SmoothRiemannianMetric I M)
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) termPairTraceSlotPerm6
       ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
-    exact bdSlotExtendIter_two_toModel (I := I) (M := M) g₀ X x D
+    exact palatiniSlotExtendIter_two_toModel (I := I) (M := M) g₀ X x D
       (fun i => w (termPairTraceSlotPerm6 i))
   rw [hchain (c • (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
       palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)),
     hchain (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
       palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)]
-  rw [bdUnitModel_smul (I := I) (M := M) g₀ 4 c
+  rw [palatiniUnitModel_smul (I := I) (M := M) g₀ 4 c
     (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
       palatiniRicciContractionWeightB (I := I) (M := M) g₀ T) x]
   rw [smul_apply, smul_eq_mul]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem bdJointTotalSpace0S_smulFun_local {d : ℕ} {S : Set ℝ}
+theorem palatiniJointTotalSpace0S_smulFun_local {d : ℕ} {S : Set ℝ}
     {f : ℝ → ℝ} (hf : ContDiff ℝ ∞ f)
     (A : ∀ p : M × ℝ, Tensor0SSpace d I p.1)
     (hA : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel d ℝ E)) ∞
@@ -1068,7 +1068,7 @@ private lemma connectionDifferenceQuadraticMonomial_chartBasis_eq (g₀ g₁ : S
     smul_eq_mul, houter c]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma bdChartChristoffel_g0_jointContMDiffOn
+private lemma palatiniChartChristoffel_g0_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (α : M) (i j k : Fin (Module.finrank ℝ E)) {S : Set ℝ} :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ => chartChristoffel (I := I) g₀ α i j k (extChartAt I α p.1))
@@ -1163,7 +1163,7 @@ private lemma connectionDifferenceQuadraticCommKernel_metricPerturbationPath_joi
             chartChristoffel (I := I) g₀ α i j c (extChartAt I α p.1))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := fun i j c =>
     (metricPerturbationPath_chartChristoffel_jointContMDiffOn (I := I) g₀ T T' hδ hδ' α i j c).sub
-      (bdChartChristoffel_g0_jointContMDiffOn (I := I) g₀ α i j c)
+      (palatiniChartChristoffel_g0_jointContMDiffOn (I := I) g₀ α i j c)
   have hcomb : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
       (fun p : M × ℝ =>
         (∑ c : Fin (Module.finrank ℝ E),
@@ -1207,7 +1207,7 @@ private lemma connectionDifferenceQuadraticCommKernel_metricPerturbationPath_joi
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α hxgood k u m v]
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma bdAACommBiContrFib_toModel_chartα (g₀ g : SmoothRiemannianMetric I M)
+private lemma palatiniAACommBiContrFib_toModel_chartα (g₀ g : SmoothRiemannianMetric I M)
     (α : M) {x : M}
     (hxbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
@@ -1365,7 +1365,7 @@ private lemma connectionDifferenceQuadraticCommBiContraction_applyY_chartCoord_j
       DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α (σc 1) p.1]
   let vE : Fin 2 → E :=
     fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p.1 (vT i)
-  have h := bdAACommBiContrFib_toModel_chartα (I := I) (M := M) g₀
+  have h := palatiniAACommBiContrFib_toModel_chartα (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) α hxbase (Y p.1) vE
   change Tensor0SSpace.toModel
       (connectionDifferenceAACommBiContrFib (I := I) g₀
@@ -1374,7 +1374,7 @@ private lemma connectionDifferenceQuadraticCommBiContraction_applyY_chartCoord_j
   simpa [vT, vE] using h
 
 omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private lemma bdAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
+private lemma palatiniAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1397,12 +1397,12 @@ private lemma bdAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
   set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
-  have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hαsource : α ∈ (chartAt H α).source := mem_chart_source H α
   have hαbase : α ∈ e.baseSet := by
     rw [he]; exact mem_baseSet_trivializationAt _ _ α
   have hnhd : (chartAt H α).source ×ˢ S ∈ nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S) := by
     refine mem_nhdsWithin.mpr ⟨(chartAt H α).source ×ˢ S,
-      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsrc, hp₀.2⟩, fun q hq => hq.1⟩
+      (chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen, ⟨hαsource, hp₀.2⟩, fun q hq => hq.1⟩
   have hcoordEach : ∀ σc : Fin 2 → Fin (Module.finrank ℝ E),
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ) ∞
         (fun p : M × ℝ => Bcmm.repr
@@ -1411,7 +1411,7 @@ private lemma bdAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
     intro σc
     have hscal := connectionDifferenceQuadraticCommBiContraction_applyY_chartCoord_jointContMDiffOn
       (I := I) (M := M) g₀ T T' hδ hδ' Y α σc
-    have hscalAt := (hscal p₀ ⟨hαsrc, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
+    have hscalAt := (hscal p₀ ⟨hαsource, hp₀.2⟩).mono_of_mem_nhdsWithin hnhd
     have hcoordinates : ∀ {q : M × ℝ}, q.1 ∈ e.baseSet →
         Bcmm.repr (e ⟨q.1, connectionDifferenceAACommBiContrFib (I := I) g₀
             (gfam q.2) q.1 (Y q.1)⟩).2 σc =
@@ -1495,7 +1495,7 @@ theorem connectionDifferenceAACommBiContrFib_metricPerturbationPath_apply_sectio
         (connectionDifferenceAACommBiContrFib (I := I) g₀
           (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ p.2) p.1 (Y p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ)) :=
-  bdAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn (I := I) (M := M) g₀ T 0 hδ hδZ Y
+  palatiniAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn (I := I) (M := M) g₀ T 0 hδ hδZ Y
 
 
 omit [SigmaCompactSpace M] in
@@ -1569,7 +1569,7 @@ theorem ricciOrderZeroBackgroundRCommCoeffField_metricPerturbationPath_covariant
               (cometricDoubleTraceCc (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2)
               (backgroundRiemannCommWeightKernel (I := I) (M := M) g₀)).toSection q.1) (Y q.1) := by
-          rw [bdBackgroundRComm_eq_decomposition (I := I) (M := M) g₀
+          rw [palatiniBackgroundRComm_eq_decomposition (I := I) (M := M) g₀
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2)]
       _ = cometricDoubleTraceFib (I := I)
             (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ q.2) 2 q.1

@@ -173,7 +173,7 @@ theorem param_dens_ge
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrBall_vol_ge
+theorem intrinsicBall_vol_ge
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -185,8 +185,8 @@ theorem intrBall_vol_ge
     (c : IntrinsicBallChart (I := I) g hEnorm p r)
     (hmetric : ∀ z ∈ Metric.ball (0 : E) r, ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-          intrFrameMetric (I := I) g hEnorm p z v v ∧
-        intrFrameMetric (I := I) g hEnorm p z v v ≤
+          intrinsicFrameMetric (I := I) g hEnorm p z v v ∧
+        intrinsicFrameMetric (I := I) g hEnorm p z v v ≤
           2 * ‖v‖ ^ 2) :
     ENNReal.ofReal
         (Real.sqrt
@@ -229,7 +229,7 @@ theorem intrBall_vol_ge
             (mfderiv (modelWithCornersSelf Real E) I c.hom z v) ≤
           2 * ‖v‖ ^ 2
     rw [c.hom_eq hz, hD]
-    simpa only [intrFrameMetric_apply] using hmetric z hz v
+    simpa only [intrinsicFrameMetric_apply] using hmetric z hz v
   have hparam :
       ENNReal.ofReal
           (Real.sqrt
@@ -250,7 +250,7 @@ theorem intrBall_vol_ge
         smallNormalBall (I := I) p r := by
     rintro y ⟨z, hz, rfl⟩
     change c.hom z ∈ smallNormalBall (I := I) p r
-    rw [c.hom_eq hz, intrFrame_apply]
+    rw [c.hom_eq hz, intrinsicFrame_apply]
     apply smallNormalBall_radial_confined (I := I) g hMetricNorm p
     · simpa only [normalFrame_sqrt, Metric.mem_ball, dist_zero_right] using hz
     · exact ⟨zero_le_one, le_rfl⟩

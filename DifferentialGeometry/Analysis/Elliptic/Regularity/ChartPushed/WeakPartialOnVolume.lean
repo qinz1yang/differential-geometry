@@ -643,7 +643,7 @@ private lemma hasWeakPartialDeriv_chartPushedPartial_smooth
       (chartPushedPartial (I := I) (M := M) g α j v)
       (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α v.toFun) Ω := by
   classical
-  intro φ hφ_smooth hφ_supp hφ_sub
+  intro φ hφ_smooth hφ_support hφ_sub
   have h_chartTarget_eqOn := chartPushed_eqOn_chartTarget_smoothChartExt (I := I) (M := M) g α v
   have h_eq_on : Set.EqOn (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α v.toFun)
       (smoothChartExt (I := I) (M := M) g α v) Ω :=
@@ -663,7 +663,7 @@ private lemma hasWeakPartialDeriv_chartPushedPartial_smooth
           (EuclideanSpace.single j 1))
         (smoothChartExt (I := I) (M := M) g α v) Ω :=
     DeGiorgi.HasWeakPartialDeriv.of_contDiff hΩ_open h_smooth_C1
-  have h_identity := h_weak_smooth φ hφ_smooth hφ_supp hφ_sub
+  have h_identity := h_weak_smooth φ hφ_smooth hφ_support hφ_sub
   have h_LHS_eq :
       ∫ x in Ω, chartPushed (I := I) (M := M) (chartAtlasPOU I M) α v.toFun x *
           (fderiv ℝ φ x) (EuclideanSpace.single j 1) =

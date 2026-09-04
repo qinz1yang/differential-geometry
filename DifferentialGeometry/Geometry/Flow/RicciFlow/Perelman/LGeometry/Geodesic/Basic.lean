@@ -110,7 +110,7 @@ theorem IsLGeodesic.mdiffAt
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem IsLGeodesic.velDiffAt
+theorem IsLGeodesic.velocityDiffAt
     {S : SolutionOn (I := I) (M := M) D} {T : Real} {gamma : Real → M}
     {s : Set Real} (hgamma : IsLGeodesic S T gamma s)
     {tau : Real} (htau : tau ∈ s) :
@@ -265,7 +265,7 @@ theorem IsLCritical.isLGeo
       have htau' : tau ∈ tsupport beta :=
         (tsupport_smul_subset_left beta (fun _ : Real => w)) htau
       exact hbetasub htau'
-    obtain ⟨f0, hf0, hf0central, hf0vel, _hf0fix⟩ :=
+    obtain ⟨f0, hf0, hf0central, hf0velocity, _hf0fix⟩ :=
       exists_chartVar (I := I) c gamma V0 hgamma hV0sm hV0c hV0src
     have hcenter0 : f0 0 = gamma := funext hf0central
     let F : Real → Real := fun tau =>
@@ -309,7 +309,7 @@ theorem IsLCritical.isLGeo
             (fun u : Real => fg u tau) 0 (1 : Real)) : E) =
           g tau • ((mfderiv 𝓘(Real, Real) I
             (fun u : Real => f0 u tau) 0 (1 : Real)) : E)
-        rw [hfgvel tau, hf0vel tau]
+        rw [hfgvel tau, hf0velocity tau]
         simp only [Vg, ContinuousLinearMap.map_smul]
         rfl
       have hga : g a = 0 :=
@@ -405,7 +405,7 @@ theorem IsLCritical.isLGeo
     have hfield0 :
         lVelocity (I := I) (fun u : Real => f0 u tau0) 0 = Y := by
       rw [hf0central tau0]
-      simpa only [lVelocity, hf0vel, V0, hbetaone, one_smul, e, c] using hw
+      simpa only [lVelocity, hf0velocity, V0, hbetaone, one_smul, e, c] using hw
     have hFzero : F tau0 = 0 := hzero htau0
     have hpairzero :
         (-2 * Real.sqrt tau0) * lEulerPair S T gamma tau0 Y = 0 := by
@@ -417,7 +417,7 @@ theorem IsLCritical.isLGeo
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def lRegAccel
+noncomputable def lRegularizedAccel
     (S : SolutionOn (I := I) (M := M) D) (T s : Real) (x : M)
     (A : TangentSpace I x) : TangentSpace I x :=
   let g := S.base.metric (T - s ^ 2)
@@ -427,11 +427,11 @@ noncomputable def lRegAccel
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-@[simp] theorem lRegAccel_zero
+@[simp] theorem lRegularizedAccel_zero
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (A : TangentSpace I x) :
-    lRegAccel S T 0 x A = 0 := by
-  simp [lRegAccel]
+    lRegularizedAccel S T 0 x A = 0 := by
+  simp [lRegularizedAccel]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -443,7 +443,7 @@ noncomputable def lPhaseField
   (z.2,
     -DifferentialGeometry.Geometry.Riemannian.Geodesic.chartChristoffelContraction
         (I := I) (S.base.metric (T - s ^ 2)) x0 z.2 z.2 z.1 +
-      trivToE (I := I) x0 x (lRegAccel S T s x A))
+      trivToE (I := I) x0 x (lRegularizedAccel S T s x A))
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -456,7 +456,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E]
   [SigmaCompactSpace M] in
-noncomputable def lPhaseVel (x0 : M) (z : Real → E × E) :
+noncomputable def lPhaseVelocity (x0 : M) (z : Real → E × E) :
     ∀ s, TangentSpace I (lPhaseCurve (I := I) x0 z s) :=
   fun s => trivFromE (I := I) x0 (lPhaseCurve (I := I) x0 z s) (z s).2
 
@@ -470,7 +470,7 @@ omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
     lPhaseField S T x0 0 z =
       DifferentialGeometry.Geometry.Riemannian.Geodesic.chartPhaseVF
         (I := I) (S.base.metric T) x0 z := by
-  simp only [lPhaseField, pow_two, zero_mul, sub_zero, lRegAccel_zero,
+  simp only [lPhaseField, pow_two, zero_mul, sub_zero, lRegularizedAccel_zero,
     map_zero, add_zero,
     DifferentialGeometry.Geometry.Riemannian.Geodesic.chartPhaseVF_apply]
 
@@ -681,7 +681,7 @@ theorem lPhaseField_smoothAt
                 (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x0 j x))
     rw [hric_comp j]
   have haccel_eq :
-      trivToE (I := I) x0 x (lRegAccel S T p.1 x A) =
+      trivToE (I := I) x0 x (lRegularizedAccel S T p.1 x A) =
         (2 * p.1 ^ 2) • gradC p - (4 * p.1) • ricC p := by
     change trivToE (I := I) x0 x
       ((2 * p.1 ^ 2) • gradientFun (I := I) g (S.scalar t) x -
@@ -695,7 +695,7 @@ theorem lPhaseField_smoothAt
   change
     -chartChristoffelContraction (I := I)
         (S.base.metric (T - p.1 ^ 2)) x0 p.2.2 p.2.2 p.2.1 +
-        trivToE (I := I) x0 x (lRegAccel S T p.1 x A) =
+        trivToE (I := I) x0 x (lRegularizedAccel S T p.1 x A) =
       -christ p + ((2 * p.1 ^ 2) • gradC p - (4 * p.1) • ricC p)
   rw [show chartChristoffelContraction (I := I)
       (S.base.metric (T - p.1 ^ 2)) x0 p.2.2 p.2.2 p.2.1 = christ p by
@@ -744,7 +744,7 @@ theorem exists_lPhaseCurve
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem exists_lPhaseSol
+theorem exists_lPhaseSolution
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T : Real) (x0 : M) (z0 : E × E)
@@ -819,7 +819,7 @@ theorem exists_lPhaseSol
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lPhaseSol_unique_at
+theorem lPhaseSolution_unique_at
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T : Real) (x0 : M) (s0 : Real) (z0 : E × E)
@@ -889,7 +889,7 @@ theorem lPhaseSol_unique_at
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lPhaseSol_unique
+theorem lPhaseSolution_unique
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T : Real) (x0 : M) (z0 : E × E)
@@ -902,7 +902,7 @@ theorem lPhaseSol_unique
     (hzsol' : ∀ᶠ s in 𝓝 (0 : Real),
       HasDerivAt z' (lPhaseField S T x0 s (z' s)) s) :
     z =ᶠ[𝓝 (0 : Real)] z' := by
-  exact lPhaseSol_unique_at S hS T x0 0 z0 (by simpa using hT) hz
+  exact lPhaseSolution_unique_at S hS T x0 0 z0 (by simpa using hT) hz
     hz0 hz0' hzsol hzsol'
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
@@ -928,7 +928,7 @@ theorem lPhase_velocity
     (hz : HasDerivAt (fun r : Real => (z r).1) (z s).2 s)
     (hpos : (z s).1 ∈ interior (extChartAt I x0).target) :
     lVelocity (I := I) (lPhaseCurve (I := I) x0 z) s =
-      lPhaseVel (I := I) x0 z s := by
+      lPhaseVelocity (I := I) x0 z s := by
   let alpha : Real → M := lPhaseCurve (I := I) x0 z
   let q : Real → E := fun r => (z r).1
   have hq : HasDerivAt q (z s).2 s := by
@@ -962,16 +962,16 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [FiniteDimensional Real E] [T2Space M] [SigmaCompactSpace M] in
-theorem lPhaseVel_diff
+theorem lPhaseVelocity_diff
     (x0 : M) (z : Real → E × E) (s : Real)
     (hq : DifferentiableAt Real (fun r : Real => (z r).1) s)
     (hv : DifferentiableAt Real (fun r : Real => (z r).2) s)
     (hpos : (z s).1 ∈ interior (extChartAt I x0).target) :
     DifferentiableAt Real
       (chartRepAt (I := I) (lPhaseCurve (I := I) x0 z)
-        (lPhaseVel (I := I) x0 z) s) s := by
+        (lPhaseVelocity (I := I) x0 z) s) s := by
   let alpha : Real → M := lPhaseCurve (I := I) x0 z
-  let A : ∀ r, TangentSpace I (alpha r) := lPhaseVel (I := I) x0 z
+  let A : ∀ r, TangentSpace I (alpha r) := lPhaseVelocity (I := I) x0 z
   let q : Real → E := fun r => (z r).1
   let v : Real → E := fun r => (z r).2
   have htarget : ∀ᶠ r in 𝓝 s, q r ∈ (extChartAt I x0).target :=
@@ -994,7 +994,7 @@ theorem lPhaseVel_diff
         alpha r ∈ (trivializationAt E (TangentSpace I) x0).baseSet := by
       rw [TangentBundle.trivializationAt_baseSet]
       exact hrsrc
-    simp only [chartRepAtBase_apply, A, lPhaseVel, v]
+    simp only [chartRepAtBase_apply, A, lPhaseVelocity, v]
     exact trivToE_trivFromE (I := I) x0 hrbase (z r).2
   have hrep_diff :
       DifferentiableAt Real (chartRepAtBase (I := I) x0 alpha A) s :=
@@ -1012,11 +1012,11 @@ theorem lPhase_accel
     (hz : HasDerivAt z (lPhaseField S T x0 s (z s)) s)
     (hpos : (z s).1 ∈ interior (extChartAt I x0).target) :
     covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-        (lPhaseCurve (I := I) x0 z) (lPhaseVel (I := I) x0 z) s =
-      lRegAccel S T s (lPhaseCurve (I := I) x0 z s)
-        (lPhaseVel (I := I) x0 z s) := by
+        (lPhaseCurve (I := I) x0 z) (lPhaseVelocity (I := I) x0 z) s =
+      lRegularizedAccel S T s (lPhaseCurve (I := I) x0 z s)
+        (lPhaseVelocity (I := I) x0 z s) := by
   let alpha : Real → M := lPhaseCurve (I := I) x0 z
-  let A : ∀ r, TangentSpace I (alpha r) := lPhaseVel (I := I) x0 z
+  let A : ∀ r, TangentSpace I (alpha r) := lPhaseVelocity (I := I) x0 z
   let q : Real → E := fun r => (z r).1
   let v : Real → E := fun r => (z r).2
   let g := S.base.metric (T - s ^ 2)
@@ -1057,7 +1057,7 @@ theorem lPhase_accel
         alpha r ∈ (trivializationAt E (TangentSpace I) x0).baseSet := by
       rw [TangentBundle.trivializationAt_baseSet]
       exact hrsrc
-    simp only [chartRepAtBase_apply, A, lPhaseVel, v]
+    simp only [chartRepAtBase_apply, A, lPhaseVelocity, v]
     exact trivToE_trivFromE (I := I) x0 hrbase (z r).2
   have hrep_diff :
       DifferentiableAt Real (chartRepAtBase (I := I) x0 alpha A) s :=
@@ -1065,7 +1065,7 @@ theorem lPhase_accel
   have hA_diff :
       DifferentiableAt Real (chartRepAt (I := I) alpha A s) s :=
     by
-      simpa only [alpha, A] using lPhaseVel_diff (I := I) x0 z s
+      simpa only [alpha, A] using lPhaseVelocity_diff (I := I) x0 z s
         hq.differentiableAt hv.differentiableAt hpos
   have hcurve_deriv :
       deriv (chartCurve (I := I) x0 alpha) s = (z s).2 := by
@@ -1082,9 +1082,9 @@ theorem lPhase_accel
       chartCovDerivAlong (I := I) g x0 alpha
           (chartRepAtBase (I := I) x0 alpha A) s =
         trivToE (I := I) x0 (alpha s)
-          (lRegAccel S T s (alpha s) (A s)) := by
+          (lRegularizedAccel S T s (alpha s) (A s)) := by
     rw [chartCovDerivAlong_def, hrep_deriv, hcurve_deriv, hrep_s, hcurve_s]
-    simp only [lPhaseField, alpha, A, lPhaseCurve, lPhaseVel, g]
+    simp only [lPhaseField, alpha, A, lPhaseCurve, lPhaseVelocity, g]
     abel
   have hinv :=
     covDeriv_chartAt (I := I) g alpha A s x0 halpha hsource hA_diff
@@ -1096,15 +1096,15 @@ theorem lPhase_accel
               exact hinv.symm
     _ = trivFromE (I := I) x0 (alpha s)
           (trivToE (I := I) x0 (alpha s)
-            (lRegAccel S T s (alpha s) (A s))) := by rw [hchart]
-    _ = lRegAccel S T s (alpha s) (A s) :=
+            (lRegularizedAccel S T s (alpha s) (A s))) := by rw [hchart]
+    _ = lRegularizedAccel S T s (alpha s) (A s) :=
       trivFromE_trivToE (I := I) x0 hbase _
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegCurve_phase
+theorem lRegularizedCurve_phase
     (S : SolutionOn (I := I) (M := M) D)
     (T : Real) (x0 : M) (gamma : Real → M) (s : Real)
     (hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma s)
@@ -1114,7 +1114,7 @@ theorem lRegCurve_phase
         (fun r : Real => lVelocity (I := I) gamma r) s) s)
     (hacc : covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
         (fun r : Real => lVelocity (I := I) gamma r) s =
-      lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s)) :
+      lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s)) :
     HasDerivAt
       (fun r : Real =>
         (chartCurve (I := I) x0 gamma r,
@@ -1152,7 +1152,7 @@ theorem lRegCurve_phase
   have hcovcoord :
       chartCovDerivAlong (I := I) g x0 gamma v s =
         trivToE (I := I) x0 (gamma s)
-          (lRegAccel S T s (gamma s) (X s)) := by
+          (lRegularizedAccel S T s (gamma s) (X s)) := by
     have hinv := covDeriv_chartAt (I := I) g gamma X s x0
       hgamma hsrc hvel
     have hcoord := congrArg
@@ -1170,7 +1170,7 @@ theorem lRegCurve_phase
   have hvcoord : deriv v s =
       -chartChristoffelContraction (I := I) g x0 (v s) (v s) (q s) +
         trivToE (I := I) x0 (gamma s)
-          (lRegAccel S T s (gamma s) (X s)) := by
+          (lRegularizedAccel S T s (gamma s) (X s)) := by
     rw [chartCovDerivAlong_def, hqcoord] at hcovcoord
     rw [← hcovcoord]
     abel
@@ -1179,7 +1179,7 @@ theorem lRegCurve_phase
   have hvderiv : HasDerivAt v
       (-chartChristoffelContraction (I := I) g x0 (v s) (v s) (q s) +
         trivToE (I := I) x0 (gamma s)
-          (lRegAccel S T s (gamma s) (X s))) s :=
+          (lRegularizedAccel S T s (gamma s) (X s))) s :=
     hvdiff.hasDerivAt.congr_deriv hvcoord
   have hleft : (extChartAt I x0).symm (q s) = gamma s := by
     simpa only [q, chartCurve] using (extChartAt I x0).left_inv
@@ -1192,7 +1192,7 @@ theorem lRegCurve_phase
       (v s,
         -chartChristoffelContraction (I := I) g x0 (v s) (v s) (q s) +
           trivToE (I := I) x0 (gamma s)
-            (lRegAccel S T s (gamma s) (X s))) =
+            (lRegularizedAccel S T s (gamma s) (X s))) =
         lPhaseField S T x0 s (q s, v s) := by
     simp only [lPhaseField]
     rw [hleft, hround]
@@ -1202,7 +1202,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRegCurve
+theorem exists_lRegularizedCurve
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x)
@@ -1218,14 +1218,14 @@ theorem exists_lRegCurve
                 (fun r : Real => lVelocity (I := I) alpha r) s) s ∧
             covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
                 (fun r : Real => lVelocity (I := I) alpha r) s =
-              lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
+              lRegularizedAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
   let z0 : E × E :=
     (extChartAt I x x, trivToE (I := I) x x (2 • Z))
   have hz0pos : z0.1 ∈ interior (extChartAt I x).target := by
     apply mem_interior_iff_mem_nhds.mpr
     simpa only [z0] using extChartAt_target_mem_nhds (I := I) x
   obtain ⟨epsilon0, hepsilon0, z, hz0, hsol⟩ :=
-    exists_lPhaseSol S hS T x z0 hT hz0pos
+    exists_lPhaseSolution S hS T x z0 hT hz0pos
   have hzero0 : (0 : Real) ∈ Set.Ioo (-epsilon0) epsilon0 := by
     constructor <;> simpa using hepsilon0
   have hzder0 := hsol 0 hzero0
@@ -1253,7 +1253,7 @@ theorem exists_lRegCurve
   obtain ⟨epsilon, hepsilon, hsmall⟩ :=
     Metric.eventually_nhds_iff.mp hgood
   let alpha : Real → M := lPhaseCurve (I := I) x z
-  let A : ∀ s, TangentSpace I (alpha s) := lPhaseVel (I := I) x z
+  let A : ∀ s, TangentSpace I (alpha s) := lPhaseVelocity (I := I) x z
   have hdata : ∀ s ∈ Set.Ioo (-epsilon) epsilon,
       s ∈ Set.Ioo (-epsilon0) epsilon0 ∧
         (z s).1 ∈ interior (extChartAt I x).target ∧
@@ -1300,7 +1300,7 @@ theorem exists_lRegCurve
         lPhaseCurve_mdiff (I := I) x z s hq.differentiableAt hsdata.2.1
     have hAdiff : DifferentiableAt Real
         (chartRepAt (I := I) alpha A s) s := by
-      simpa only [alpha, A] using lPhaseVel_diff (I := I) x z s
+      simpa only [alpha, A] using lPhaseVelocity_diff (I := I) x z s
         hq.differentiableAt hv.differentiableAt hsdata.2.1
     have hveldiff : DifferentiableAt Real
         (chartRepAt (I := I) alpha
@@ -1314,10 +1314,10 @@ theorem exists_lRegCurve
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha A s :=
           covDerivAlong_congr_of_eventuallyEq
             (I := I) (S.base.metric (T - s ^ 2)) alpha hfield
-      _ = lRegAccel S T s (alpha s) (A s) := by
+      _ = lRegularizedAccel S T s (alpha s) (A s) := by
         simpa only [alpha, A] using
           lPhase_accel S T x z s hzs hsdata.2.1
-      _ = lRegAccel S T s (alpha s)
+      _ = lRegularizedAccel S T s (alpha s)
           (lVelocity (I := I) alpha s) := by
         rw [hfield.eq_of_nhds]
 
@@ -1325,7 +1325,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegCurve_unique_at
+theorem lRegularizedCurve_unique_at
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T s0 : Real) (hT : T - s0 ^ 2 ∈ D.regular)
@@ -1339,7 +1339,7 @@ theorem lRegCurve_unique_at
             (fun r : Real => lVelocity (I := I) gamma r) s) s ∧
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
             (fun r : Real => lVelocity (I := I) gamma r) s =
-          lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s))
+          lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s))
     (heta : ∀ᶠ s in 𝓝 s0,
       MDifferentiableAt 𝓘(Real, Real) I eta s ∧
         DifferentiableAt Real
@@ -1347,7 +1347,7 @@ theorem lRegCurve_unique_at
             (fun r : Real => lVelocity (I := I) eta r) s) s ∧
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) eta
             (fun r : Real => lVelocity (I := I) eta r) s =
-          lRegAccel S T s (eta s) (lVelocity (I := I) eta s)) :
+          lRegularizedAccel S T s (eta s) (lVelocity (I := I) eta s)) :
     gamma =ᶠ[𝓝 s0] eta := by
   let x := gamma s0
   let Xgamma : ∀ s, TangentSpace I (gamma s) :=
@@ -1376,12 +1376,12 @@ theorem lRegCurve_unique_at
     rw [← hpos0, ← hvel0]
   have hgamma0 := hgamma.self_of_nhds
   have heta0 := heta.self_of_nhds
-  have hgamma_src : ∀ᶠ s in 𝓝 s0,
+  have hgamma_source : ∀ᶠ s in 𝓝 s0,
       gamma s ∈ (chartAt H x).source :=
     hgamma0.1.continuousAt.eventually
       ((chartAt H x).open_source.mem_nhds (by
         exact mem_chart_source H (gamma s0)))
-  have heta_src : ∀ᶠ s in 𝓝 s0,
+  have heta_source : ∀ᶠ s in 𝓝 s0,
       eta s ∈ (chartAt H x).source :=
     heta0.1.continuousAt.eventually
       ((chartAt H x).open_source.mem_nhds (by
@@ -1389,17 +1389,17 @@ theorem lRegCurve_unique_at
         exact mem_chart_source H (gamma s0)))
   have hzgamma : ∀ᶠ s in 𝓝 s0,
       HasDerivAt zgamma (lPhaseField S T x s (zgamma s)) s := by
-    filter_upwards [hgamma, hgamma_src] with s hs hsrc
+    filter_upwards [hgamma, hgamma_source] with s hs hsrc
     simpa only [zgamma, Xgamma] using
-      lRegCurve_phase S T x gamma s hs.1 hsrc hs.2.1 hs.2.2
+      lRegularizedCurve_phase S T x gamma s hs.1 hsrc hs.2.1 hs.2.2
   have hzeta : ∀ᶠ s in 𝓝 s0,
       HasDerivAt zeta (lPhaseField S T x s (zeta s)) s := by
-    filter_upwards [heta, heta_src] with s hs hsrc
+    filter_upwards [heta, heta_source] with s hs hsrc
     simpa only [zeta, Xeta] using
-      lRegCurve_phase S T x eta s hs.1 hsrc hs.2.1 hs.2.2
-  have hphase := lPhaseSol_unique_at S hS T x s0 z0 hT hz0pos
+      lRegularizedCurve_phase S T x eta s hs.1 hsrc hs.2.1 hs.2.2
+  have hphase := lPhaseSolution_unique_at S hS T x s0 z0 hT hz0pos
     hzgamma0 hzeta0 hzgamma hzeta
-  filter_upwards [hphase, hgamma_src, heta_src] with s hs hgs hes
+  filter_upwards [hphase, hgamma_source, heta_source] with s hs hgs hes
   apply (extChartAt I x).injOn
   · rwa [extChartAt_source_eq_chartAt_source (I := I)]
   · rwa [extChartAt_source_eq_chartAt_source (I := I)]
@@ -1410,7 +1410,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegCurve_unique
+theorem lRegularizedCurve_unique
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T : Real) (hT : T ∈ D.regular)
@@ -1424,7 +1424,7 @@ theorem lRegCurve_unique
             (fun r : Real => lVelocity (I := I) gamma r) s) s ∧
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
             (fun r : Real => lVelocity (I := I) gamma r) s =
-          lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s))
+          lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s))
     (heta : ∀ᶠ s in 𝓝 (0 : Real),
       MDifferentiableAt 𝓘(Real, Real) I eta s ∧
         DifferentiableAt Real
@@ -1432,19 +1432,19 @@ theorem lRegCurve_unique
             (fun r : Real => lVelocity (I := I) eta r) s) s ∧
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) eta
             (fun r : Real => lVelocity (I := I) eta r) s =
-          lRegAccel S T s (eta s) (lVelocity (I := I) eta s)) :
+          lRegularizedAccel S T s (eta s) (lVelocity (I := I) eta s)) :
     gamma =ᶠ[𝓝 (0 : Real)] eta := by
-  exact lRegCurve_unique_at S hS T 0 (by simpa using hT)
+  exact lRegularizedCurve_unique_at S hS T 0 (by simpa using hT)
     hpos0 hvel0 hgamma heta
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegAccel_inner
+theorem lRegularizedAccel_inner
     (S : SolutionOn (I := I) (M := M) D) (T s : Real) (x : M)
     (A Y : TangentSpace I x) :
-    (S.base.metric (T - s ^ 2)).inner x Y (lRegAccel S T s x A) =
+    (S.base.metric (T - s ^ 2)).inner x Y (lRegularizedAccel S T s x A) =
       2 * s ^ 2 *
           (S.base.metric (T - s ^ 2)).inner x
             (gradientFun (I := I) (S.base.metric (T - s ^ 2))
@@ -1624,7 +1624,7 @@ theorem HasLEquationAt.accel_sq
     covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
         (squareReparametrization gamma)
         (fun r : Real => lVelocity (I := I) (squareReparametrization gamma) r) s =
-      lRegAccel S T s (gamma (s ^ 2))
+      lRegularizedAccel S T s (gamma (s ^ 2))
         (lVelocity (I := I) (squareReparametrization gamma) s) := by
   rw [show gamma (s ^ 2) = squareReparametrization gamma s by rfl]
   let g := S.base.metric (T - s ^ 2)
@@ -1636,7 +1636,7 @@ theorem HasLEquationAt.accel_sq
   rw [g.symm (alpha s)
     (covDerivAlong (I := I) g alpha
       (fun r : Real => lVelocity (I := I) alpha r) s) Y]
-  rw [g.symm (alpha s) (lRegAccel S T s (alpha s) A) Y]
+  rw [g.symm (alpha s) (lRegularizedAccel S T s (alpha s) A) Y]
   have hsq := lEuler_sq S T gamma s Y hs hEq.1 hEq.2.1
   rw [hEq.2.2 Y, mul_zero] at hsq
   calc
@@ -1650,8 +1650,8 @@ theorem HasLEquationAt.accel_sq
           dsimp only [g, alpha, A]
           linarith [hsq]
     _ = g.inner (gamma (s ^ 2)) Y
-        (lRegAccel S T s (gamma (s ^ 2)) A) :=
-      (lRegAccel_inner S T s (gamma (s ^ 2)) A Y).symm
+        (lRegularizedAccel S T s (gamma (s ^ 2)) A) :=
+      (lRegularizedAccel_inner S T s (gamma (s ^ 2)) A Y).symm
 
 end normedSpaceCompatibility
 

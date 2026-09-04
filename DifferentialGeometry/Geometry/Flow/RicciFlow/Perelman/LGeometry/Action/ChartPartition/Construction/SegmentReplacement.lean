@@ -21,12 +21,12 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 
-private theorem fin_seg_left {m : Nat} {i j : Fin m} (hji : j < i) :
+private theorem fin_segment_left {m : Nat} {i j : Fin m} (hji : j < i) :
     j.succ ≤ i.castSucc := by
   change j.val + 1 ≤ i.val
   exact hji
 
-private theorem fin_seg_right {m : Nat} {i j : Fin m} (hij : i < j) :
+private theorem fin_segment_right {m : Nat} {i j : Fin m} (hij : i < j) :
     i.succ ≤ j.castSucc := by
   change i.val + 1 ≤ j.val
   exact hij
@@ -139,10 +139,10 @@ theorem exists_continuous_curve_of_chartH1_segment_replacement
       (hs : s ∈ Icc (t j.castSucc) (t j.succ)) : gammaV s = gamma s := by
     by_cases hsel : s ∈ Icc (t i.castSucc) (t i.succ)
     · rcases lt_or_gt_of_ne hji with hlt | hgt
-      · have hle : t j.succ ≤ t i.castSucc := htmono (fin_seg_left hlt)
+      · have hle : t j.succ ≤ t i.castSucc := htmono (fin_segment_left hlt)
         have heq : s = t i.castSucc := le_antisymm (hs.2.trans hle) hsel.1
         simpa only [heq] using hpiece_left
-      · have hle : t i.succ ≤ t j.castSucc := htmono (fin_seg_right hgt)
+      · have hle : t i.succ ≤ t j.castSucc := htmono (fin_segment_right hgt)
         have heq : s = t i.succ := le_antisymm hsel.2 (hle.trans hs.1)
         simpa only [heq] using hpiece_right
     · exact hpiece_not hsel

@@ -85,7 +85,7 @@ theorem flow_orbit_eventually_mem_chartAt_source
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem hagree_of_chartFderiv_witness
+theorem chartFderiv_eventuallyEq
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (x : M) (v : TangentSpace I x)
     (Q : E →L[ℝ] E) (d : E) (Dchart : ℝ → (E →L[ℝ] E))
     (hcontAt : ContinuousAt (fun s : ℝ => (Φ_fam s : M → M) x) t)
@@ -120,7 +120,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem rawVariationalIdentity_of_chartFderiv_witness
+theorem rawVariationalIdentity_of_chartFderiv_eventuallyEq
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M)
@@ -141,7 +141,7 @@ theorem rawVariationalIdentity_of_chartFderiv_witness
             (mfderiv I I (Φ_fam t : M → M) x v))) :
     RawVariationalIdentity (I := I) g X Φ_fam t x v := by
   have hagree :=
-    hagree_of_chartFderiv_witness (I := I) Φ_fam t x v Q d Dchart hcontAt hwitness
+    chartFderiv_eventuallyEq (I := I) Φ_fam t x v Q d Dchart hcontAt hwitness
   exact rawVariationalIdentity_of_chartFlow_innerCLM (I := I) g X Φ_fam t x v Q d
     hDchart hagree hQinner
 

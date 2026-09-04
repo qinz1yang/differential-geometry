@@ -46,12 +46,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-abbrev hmfState (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ) :
+abbrev harmonicMapFlowState (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ) :
     Set (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorHs
       (I := I) (M := M) g₀ 0 1 ((a : ℝ) + 2)) :=
   lowerStateRS (I := I) (M := M) g₀ 0 1 a R
 
-noncomputable def hmfUnknown
+noncomputable def harmonicMapFlowUnknown
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) :
     ∀ x : M, TangentSpace I x := fun x =>
   inverseMetricSharpFib (I := I) g₀ x
@@ -59,12 +59,12 @@ noncomputable def hmfUnknown
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-theorem hmfUnknown_add
+theorem harmonicMapFlowUnknown_add
     (g₀ : SmoothRiemannianMetric I M) (S T : SmoothCcTensor g₀ 0 1)
     (x : M) :
-  hmfUnknown (I := I) g₀ (S + T) x =
-      hmfUnknown (I := I) g₀ S x + hmfUnknown (I := I) g₀ T x := by
-  simp only [hmfUnknown, unitEvalSection_apply, SmoothCcTensor.toSection_add,
+  harmonicMapFlowUnknown (I := I) g₀ (S + T) x =
+      harmonicMapFlowUnknown (I := I) g₀ S x + harmonicMapFlowUnknown (I := I) g₀ T x := by
+  simp only [harmonicMapFlowUnknown, unitEvalSection_apply, SmoothCcTensor.toSection_add,
     ContMDiffSection.coe_add, Pi.add_apply]
   change inverseMetricSharpFib (I := I) g₀ x
       ((S.toSection x) (unitZeroSec (I := I) (M := M) x) +
@@ -74,34 +74,34 @@ theorem hmfUnknown_add
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-theorem hmfUnknown_smul
+theorem harmonicMapFlowUnknown_smul
     (g₀ : SmoothRiemannianMetric I M) (c : ℝ) (S : SmoothCcTensor g₀ 0 1)
     (x : M) :
-  hmfUnknown (I := I) g₀ (c • S) x =
-      c • hmfUnknown (I := I) g₀ S x := by
-  simp only [hmfUnknown, unitEvalSection_apply, SmoothCcTensor.toSection_smul,
+  harmonicMapFlowUnknown (I := I) g₀ (c • S) x =
+      c • harmonicMapFlowUnknown (I := I) g₀ S x := by
+  simp only [harmonicMapFlowUnknown, unitEvalSection_apply, SmoothCcTensor.toSection_smul,
     ContMDiffSection.coe_smul, Pi.smul_apply]
   change inverseMetricSharpFib (I := I) g₀ x
       (c • (S.toSection x) (unitZeroSec (I := I) (M := M) x)) = _
   rw [map_smul]
 
-noncomputable def hmfUnknownLM
+noncomputable def harmonicMapFlowUnknownLM
     (g₀ : SmoothRiemannianMetric I M) (x : M) :
     SmoothCcTensor g₀ 0 1 →ₗ[ℝ] TangentSpace I x where
-  toFun S := hmfUnknown (I := I) g₀ S x
-  map_add' S T := hmfUnknown_add (I := I) g₀ S T x
-  map_smul' c S := hmfUnknown_smul (I := I) g₀ c S x
+  toFun S := harmonicMapFlowUnknown (I := I) g₀ S x
+  map_add' S T := harmonicMapFlowUnknown_add (I := I) g₀ S T x
+  map_smul' c S := harmonicMapFlowUnknown_smul (I := I) g₀ c S x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [T2Space M] [SigmaCompactSpace M] [BoundarylessManifold I M] in
-@[simp] theorem hmfUnknownLM_apply
+@[simp] theorem harmonicMapFlowUnknownLM_apply
     (g₀ : SmoothRiemannianMetric I M) (x : M) (S : SmoothCcTensor g₀ 0 1) :
-    hmfUnknownLM (I := I) g₀ x S = hmfUnknown (I := I) g₀ S x := rfl
+    harmonicMapFlowUnknownLM (I := I) g₀ x S = harmonicMapFlowUnknown (I := I) g₀ S x := rfl
 
-noncomputable def hmfUnknownSec
+noncomputable def harmonicMapFlowUnknownSec
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ where
-  toFun := hmfUnknown (I := I) g₀ S
+  toFun := harmonicMapFlowUnknown (I := I) g₀ S
   contMDiff_toFun := by
     exact ContMDiff.clm_bundle_apply (𝕜 := ℝ) (n := (∞ : WithTop ℕ∞))
       (F₁ := Tensor0SModel 1 ℝ E) (F₂ := E)
@@ -114,11 +114,11 @@ noncomputable def hmfUnknownSec
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [SigmaCompactSpace M] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
-@[simp] theorem hmfUnknownSec_apply
+@[simp] theorem harmonicMapFlowUnknownSec_apply
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) (x : M) :
-    hmfUnknownSec (I := I) g₀ S x = hmfUnknown (I := I) g₀ S x := rfl
+    harmonicMapFlowUnknownSec (I := I) g₀ S x = harmonicMapFlowUnknown (I := I) g₀ S x := rfl
 
-noncomputable def hmfPrincipal
+noncomputable def harmonicMapFlowPrincipal
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) :
     ∀ x : M, TangentSpace I x := fun x =>
   inverseMetricSharpFib (I := I) g₀ x
@@ -128,10 +128,10 @@ noncomputable def hmfPrincipal
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [CompactSpace M] in
-theorem hmfPrincipal_eq
+theorem harmonicMapFlowPrincipal_eq
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) (x : M) :
-    hmfPrincipal (I := I) g₀ S x =
-      connLaplacianVector (I := I) g₀ (hmfUnknown (I := I) g₀ S) x := by
+    harmonicMapFlowPrincipal (I := I) g₀ S x =
+      connLaplacianVector (I := I) g₀ (harmonicMapFlowUnknown (I := I) g₀ S) x := by
   change inverseMetricSharpFib (I := I) g₀ x
       ((connLaplacianMixed (I := I) (M := M) g₀ 0 1 S.toSection x)
         (unitZeroSec (I := I) (M := M) x)) =
@@ -140,7 +140,7 @@ theorem hmfPrincipal_eq
         (unitEvalSection (I := I) (M := M) g₀ 1 S y)) x
   exact (sharp_connLap (I := I) (M := M) g₀ S x).symm
 
-noncomputable def hmfDiff
+noncomputable def harmonicMapFlowDiff
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     SmoothCcTensor q 0 2 :=
   operatorFieldApply (I := I) (M := M) q 2 2
@@ -148,18 +148,18 @@ noncomputable def hmfDiff
       (metricComparisonDifferenceEndomorphismField (I := I) q h))
     (covGrad (I := I) (M := M) q 0 1 S)
 
-noncomputable def hmfFlux
+noncomputable def harmonicMapFlowFlux
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
     SmoothCcTensor q 0 2 :=
-  covGrad (I := I) (M := M) q 0 1 S + hmfDiff (I := I) (M := M) q h S
+  covGrad (I := I) (M := M) q 0 1 S + harmonicMapFlowDiff (I := I) (M := M) q h S
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfFlux_apply
+theorem harmonicMapFlowFlux_apply
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1)
     (x : M) (m : Fin 2 → E) :
     Tensor0SSpace.toModel
         (unitEvalSection (I := I) (M := M) q 2
-          (hmfFlux (I := I) (M := M) q h S) x) m =
+          (harmonicMapFlowFlux (I := I) (M := M) q h S) x) m =
       Tensor0SSpace.toModel
         (unitEvalSection (I := I) (M := M) q 2
           (covGrad (I := I) (M := M) q 0 1 S) x)
@@ -170,10 +170,10 @@ theorem hmfFlux_apply
       (covGrad (I := I) (M := M) q 0 1 S) x
   have hflux :
       unitEvalSection (I := I) (M := M) q 2
-          (hmfFlux (I := I) (M := M) q h S) x =
+          (harmonicMapFlowFlux (I := I) (M := M) q h S) x =
         D + slotInsertEndoFib (I := I) (M := M) 2 0 x
           (metricComparisonDifferenceEndomorphism (I := I) q h x) D := by
-    rw [hmfFlux, hmfDiff, unitEvalSection_apply, SmoothCcTensor.toSection_add,
+    rw [harmonicMapFlowFlux, harmonicMapFlowDiff, unitEvalSection_apply, SmoothCcTensor.toSection_add,
       ContMDiffSection.coe_add, Pi.add_apply, add_apply]
     rw [operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
       slotInsertEndoCc_toSection]
@@ -203,7 +203,7 @@ theorem hmfFlux_apply
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [SigmaCompactSpace M] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
-private theorem hmfRaised_split
+private theorem harmonicMapFlowRaised_split
     (q h : SmoothRiemannianMetric I M) :
     metricComparisonEndomorphismField (I := I) (M := M) q h =
       metricComparisonDifferenceEndomorphismField (I := I) q h +
@@ -228,7 +228,7 @@ private theorem hmfRaised_split
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [SigmaCompactSpace M] [BoundarylessManifold I M] in
-private theorem hmfSlot_add
+private theorem harmonicMapFlowSlot_add
     (q : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M ↦ TangentSpace I x →L[ℝ] TangentSpace I x)) :
@@ -256,7 +256,7 @@ private theorem hmfSlot_add
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
   [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
-private theorem hmfSlot_self_app
+private theorem harmonicMapFlowSlot_self_app
     (q : SmoothRiemannianMetric I M) (W : SmoothCcTensor q 0 2) :
     operatorFieldApply (I := I) (M := M) q 2 2
         (endoSlotZeroCcTensor (I := I) (M := M) q 1
@@ -280,83 +280,83 @@ private theorem hmfSlot_self_app
   rw [Function.update_eq_self]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfFlux_eq_operatorFieldApply
+theorem harmonicMapFlowFlux_eq_operatorFieldApply
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
-    hmfFlux (I := I) (M := M) q h S =
+    harmonicMapFlowFlux (I := I) (M := M) q h S =
       operatorFieldApply (I := I) (M := M) q 2 2
         (endoSlotZeroCcTensor (I := I) (M := M) q 1
           (metricComparisonEndomorphismField (I := I) (M := M) q h))
         (covGrad (I := I) (M := M) q 0 1 S) := by
-  rw [hmfFlux, hmfDiff, hmfRaised_split (I := I) (M := M) q h,
-    hmfSlot_add (I := I) (M := M) q 1, operatorFieldApplication_add_left,
-    hmfSlot_self_app]
+  rw [harmonicMapFlowFlux, harmonicMapFlowDiff, harmonicMapFlowRaised_split (I := I) (M := M) q h,
+    harmonicMapFlowSlot_add (I := I) (M := M) q 1, operatorFieldApplication_add_left,
+    harmonicMapFlowSlot_self_app]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfFlux_self
+theorem harmonicMapFlowFlux_self
     (q : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
-    hmfFlux (I := I) (M := M) q q S =
+    harmonicMapFlowFlux (I := I) (M := M) q q S =
       covGrad (I := I) (M := M) q 0 1 S := by
-  rw [hmfFlux_eq_operatorFieldApply, hmfSlot_self_app]
+  rw [harmonicMapFlowFlux_eq_operatorFieldApply, harmonicMapFlowSlot_self_app]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfDiff_add
+theorem harmonicMapFlowDiff_add
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
-    hmfDiff (I := I) (M := M) q h (S + T) =
-      hmfDiff (I := I) (M := M) q h S +
-        hmfDiff (I := I) (M := M) q h T := by
-  unfold hmfDiff
+    harmonicMapFlowDiff (I := I) (M := M) q h (S + T) =
+      harmonicMapFlowDiff (I := I) (M := M) q h S +
+        harmonicMapFlowDiff (I := I) (M := M) q h T := by
+  unfold harmonicMapFlowDiff
   rw [covGrad_add, operatorFieldApplication_add_right]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfDiff_smul
+theorem harmonicMapFlowDiff_smul
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S : SmoothCcTensor q 0 1) :
-    hmfDiff (I := I) (M := M) q h (c • S) =
-      c • hmfDiff (I := I) (M := M) q h S := by
-  unfold hmfDiff
+    harmonicMapFlowDiff (I := I) (M := M) q h (c • S) =
+      c • harmonicMapFlowDiff (I := I) (M := M) q h S := by
+  unfold harmonicMapFlowDiff
   rw [covGrad_smul, operatorFieldApplication_smul_right]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfFlux_add
+theorem harmonicMapFlowFlux_add
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
-    hmfFlux (I := I) (M := M) q h (S + T) =
-      hmfFlux (I := I) (M := M) q h S +
-        hmfFlux (I := I) (M := M) q h T := by
-  unfold hmfFlux
-  rw [covGrad_add, hmfDiff_add]
+    harmonicMapFlowFlux (I := I) (M := M) q h (S + T) =
+      harmonicMapFlowFlux (I := I) (M := M) q h S +
+        harmonicMapFlowFlux (I := I) (M := M) q h T := by
+  unfold harmonicMapFlowFlux
+  rw [covGrad_add, harmonicMapFlowDiff_add]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfFlux_smul
+theorem harmonicMapFlowFlux_smul
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S : SmoothCcTensor q 0 1) :
-    hmfFlux (I := I) (M := M) q h (c • S) =
-      c • hmfFlux (I := I) (M := M) q h S := by
-  unfold hmfFlux
-  rw [covGrad_smul, hmfDiff_smul, smul_add]
+    harmonicMapFlowFlux (I := I) (M := M) q h (c • S) =
+      c • harmonicMapFlowFlux (I := I) (M := M) q h S := by
+  unfold harmonicMapFlowFlux
+  rw [covGrad_smul, harmonicMapFlowDiff_smul, smul_add]
 
-noncomputable def hmfMass
+noncomputable def harmonicMapFlowMass
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) : ℝ :=
   ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 1 x (S.toFun x) (T.toFun x)
     ∂(riemannianVolumeMeasure (I := I) (M := M) h)
 
-noncomputable def hmfWeakForm
+noncomputable def harmonicMapFlowWeakForm
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) : ℝ :=
   ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
-      ((hmfFlux (I := I) (M := M) q h S).toFun x)
+      ((harmonicMapFlowFlux (I := I) (M := M) q h S).toFun x)
       ((covGrad (I := I) (M := M) q 0 1 T).toFun x)
     ∂(riemannianVolumeMeasure (I := I) (M := M) h)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfMass_time_cont
+theorem harmonicMapFlowMass_time_cont
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {K : Set ℝ} (hK : IsCompact K)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
       (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
       (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (S T : SmoothCcTensor q 0 1) :
-    ContinuousOn (fun t => hmfMass (I := I) (M := M) q (g t) S T) K := by
-  unfold hmfMass
+    ContinuousOn (fun t => harmonicMapFlowMass (I := I) (M := M) q (g t) S T) K := by
+  unfold harmonicMapFlowMass
   apply integral_family_cont (I := I) (M := M) hK hcont
   exact
     (SmoothCcTensor.continuous_inner_cross (I := I) (M := M) S T).continuousOn.comp
@@ -384,13 +384,13 @@ private theorem functionRegularAt_const_time
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfMass_hasDerivAt
+theorem harmonicMapFlowMass_hasDerivAt
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) (t₀ : ℝ)
     (hg : MetricFamilyRegularAt (I := I) g t₀)
     (S T : SmoothCcTensor q 0 1) :
     HasDerivAt
-      (fun t => hmfMass (I := I) (M := M) q (g t) S T)
+      (fun t => harmonicMapFlowMass (I := I) (M := M) q (g t) S T)
       (∫ x, (1 / 2 : ℝ) * traceTimeDerivMetric (I := I) g t₀ x *
           tensorInnerPointwise (I := I) (M := M) q 0 1 x
             (S.toFun x) (T.toFun x)
@@ -404,7 +404,7 @@ theorem hmfMass_hasDerivAt
   have hvar := volume_variation_formula (I := I) (M := M) hg hreg
   have hderiv : ∀ x : M, deriv (fun _ : ℝ => f x) t₀ = 0 := fun x =>
     (hasDerivAt_const (x := t₀) (c := f x)).deriv
-  simpa only [hmfMass, f, riemannianMeasureFamily_def, hderiv, zero_add] using hvar
+  simpa only [harmonicMapFlowMass, f, riemannianMeasureFamily_def, hderiv, zero_add] using hvar
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
@@ -424,12 +424,12 @@ private lemma hmf_inner_int
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMass_add_left
+theorem harmonicMapFlowMass_add_left
     (q h : SmoothRiemannianMetric I M) (S₁ S₂ T : SmoothCcTensor q 0 1) :
-    hmfMass (I := I) (M := M) q h (S₁ + S₂) T =
-      hmfMass (I := I) (M := M) q h S₁ T +
-        hmfMass (I := I) (M := M) q h S₂ T := by
-  unfold hmfMass
+    harmonicMapFlowMass (I := I) (M := M) q h (S₁ + S₂) T =
+      harmonicMapFlowMass (I := I) (M := M) q h S₁ T +
+        harmonicMapFlowMass (I := I) (M := M) q h S₂ T := by
+  unfold harmonicMapFlowMass
   rw [SmoothCcTensor.toFun_add]
   simp only [Pi.add_apply, tensorInnerPointwise_add_left]
   exact MeasureTheory.integral_add
@@ -438,22 +438,22 @@ theorem hmfMass_add_left
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMass_smul_left
+theorem harmonicMapFlowMass_smul_left
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S T : SmoothCcTensor q 0 1) :
-    hmfMass (I := I) (M := M) q h (c • S) T =
-      c * hmfMass (I := I) (M := M) q h S T := by
-  unfold hmfMass
+    harmonicMapFlowMass (I := I) (M := M) q h (c • S) T =
+      c * harmonicMapFlowMass (I := I) (M := M) q h S T := by
+  unfold harmonicMapFlowMass
   rw [SmoothCcTensor.toFun_smul]
   simp only [Pi.smul_apply, tensorInnerPointwise_smul_left,
     MeasureTheory.integral_const_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMass_symm
+theorem harmonicMapFlowMass_symm
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
-    hmfMass (I := I) (M := M) q h S T =
-      hmfMass (I := I) (M := M) q h T S := by
-  unfold hmfMass
+    harmonicMapFlowMass (I := I) (M := M) q h S T =
+      harmonicMapFlowMass (I := I) (M := M) q h T S := by
+  unfold harmonicMapFlowMass
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall ?_)
   intro x
   exact tensorInnerPointwise_symm (I := I) (M := M) q 0 1 x
@@ -461,57 +461,57 @@ theorem hmfMass_symm
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMass_add_right
+theorem harmonicMapFlowMass_add_right
     (q h : SmoothRiemannianMetric I M) (S T₁ T₂ : SmoothCcTensor q 0 1) :
-    hmfMass (I := I) (M := M) q h S (T₁ + T₂) =
-      hmfMass (I := I) (M := M) q h S T₁ +
-        hmfMass (I := I) (M := M) q h S T₂ := by
-  rw [hmfMass_symm, hmfMass_add_left, hmfMass_symm q h T₁ S,
-    hmfMass_symm q h T₂ S]
+    harmonicMapFlowMass (I := I) (M := M) q h S (T₁ + T₂) =
+      harmonicMapFlowMass (I := I) (M := M) q h S T₁ +
+        harmonicMapFlowMass (I := I) (M := M) q h S T₂ := by
+  rw [harmonicMapFlowMass_symm, harmonicMapFlowMass_add_left, harmonicMapFlowMass_symm q h T₁ S,
+    harmonicMapFlowMass_symm q h T₂ S]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMass_smul_right
+theorem harmonicMapFlowMass_smul_right
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S T : SmoothCcTensor q 0 1) :
-    hmfMass (I := I) (M := M) q h S (c • T) =
-      c * hmfMass (I := I) (M := M) q h S T := by
-  rw [hmfMass_symm, hmfMass_smul_left, hmfMass_symm q h T S]
+    harmonicMapFlowMass (I := I) (M := M) q h S (c • T) =
+      c * harmonicMapFlowMass (I := I) (M := M) q h S T := by
+  rw [harmonicMapFlowMass_symm, harmonicMapFlowMass_smul_left, harmonicMapFlowMass_symm q h T S]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem hmfWeak_add_left
+theorem harmonicMapFlowWeak_add_left
     (q h : SmoothRiemannianMetric I M) (S₁ S₂ T : SmoothCcTensor q 0 1) :
-    hmfWeakForm (I := I) (M := M) q h (S₁ + S₂) T =
-      hmfWeakForm (I := I) (M := M) q h S₁ T +
-        hmfWeakForm (I := I) (M := M) q h S₂ T := by
-  unfold hmfWeakForm
-  rw [hmfFlux_add, SmoothCcTensor.toFun_add]
+    harmonicMapFlowWeakForm (I := I) (M := M) q h (S₁ + S₂) T =
+      harmonicMapFlowWeakForm (I := I) (M := M) q h S₁ T +
+        harmonicMapFlowWeakForm (I := I) (M := M) q h S₂ T := by
+  unfold harmonicMapFlowWeakForm
+  rw [harmonicMapFlowFlux_add, SmoothCcTensor.toFun_add]
   simp only [Pi.add_apply, tensorInnerPointwise_add_left]
   exact MeasureTheory.integral_add
     (hmf_inner_int (I := I) (M := M) q h
-      (hmfFlux (I := I) (M := M) q h S₁)
+      (harmonicMapFlowFlux (I := I) (M := M) q h S₁)
       (covGrad (I := I) (M := M) q 0 1 T))
     (hmf_inner_int (I := I) (M := M) q h
-      (hmfFlux (I := I) (M := M) q h S₂)
+      (harmonicMapFlowFlux (I := I) (M := M) q h S₂)
       (covGrad (I := I) (M := M) q 0 1 T))
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem hmfWeak_smul_left
+theorem harmonicMapFlowWeak_smul_left
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S T : SmoothCcTensor q 0 1) :
-    hmfWeakForm (I := I) (M := M) q h (c • S) T =
-      c * hmfWeakForm (I := I) (M := M) q h S T := by
-  unfold hmfWeakForm
-  rw [hmfFlux_smul, SmoothCcTensor.toFun_smul]
+    harmonicMapFlowWeakForm (I := I) (M := M) q h (c • S) T =
+      c * harmonicMapFlowWeakForm (I := I) (M := M) q h S T := by
+  unfold harmonicMapFlowWeakForm
+  rw [harmonicMapFlowFlux_smul, SmoothCcTensor.toFun_smul]
   simp only [Pi.smul_apply, tensorInnerPointwise_smul_left,
     MeasureTheory.integral_const_mul]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem hmfDiff_pair_symm
+private theorem harmonicMapFlowDiff_pair_symm
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) (x : M) :
     tensorInnerPointwise (I := I) (M := M) q 0 2 x
-        ((hmfDiff (I := I) (M := M) q h S).toFun x)
+        ((harmonicMapFlowDiff (I := I) (M := M) q h S).toFun x)
         ((covGrad (I := I) (M := M) q 0 1 T).toFun x) =
       tensorInnerPointwise (I := I) (M := M) q 0 2 x
-        ((hmfDiff (I := I) (M := M) q h T).toFun x)
+        ((harmonicMapFlowDiff (I := I) (M := M) q h T).toFun x)
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x) := by
   obtain ⟨e, bse, hbse, horth⟩ :=
     exists_orthoFrame_basis_E (I := I) (M := M) q x
@@ -527,53 +527,53 @@ private theorem hmfDiff_pair_symm
     e bse hbse horth
   calc
     tensorInnerPointwise (I := I) (M := M) q 0 2 x
-        ((hmfDiff (I := I) (M := M) q h S).toFun x)
+        ((harmonicMapFlowDiff (I := I) (M := M) q h S).toFun x)
         ((covGrad (I := I) (M := M) q 0 1 T).toFun x) =
       tensorInnerPointwise (I := I) (M := M) q 0 2 x
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
-        ((hmfDiff (I := I) (M := M) q h T).toFun x) := by
-          simpa only [SmoothCcTensor.toFun_apply, hmfDiff,
+        ((harmonicMapFlowDiff (I := I) (M := M) q h T).toFun x) := by
+          simpa only [SmoothCcTensor.toFun_apply, harmonicMapFlowDiff,
             operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
             slotInsertEndoCc_toSection, hfield,
             TensorRSSpace.ofCLM] using hslot
     _ = _ := tensorInnerPointwise_symm (I := I) (M := M) q 0 2 x _ _
 
 omit [BoundarylessManifold I M] in
-theorem hmfWeak_symm
+theorem harmonicMapFlowWeak_symm
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
-    hmfWeakForm (I := I) (M := M) q h S T =
-      hmfWeakForm (I := I) (M := M) q h T S := by
-  unfold hmfWeakForm
+    harmonicMapFlowWeakForm (I := I) (M := M) q h S T =
+      harmonicMapFlowWeakForm (I := I) (M := M) q h T S := by
+  unfold harmonicMapFlowWeakForm
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall ?_)
   intro x
-  simp only [hmfFlux, SmoothCcTensor.toFun_add, Pi.add_apply,
+  simp only [harmonicMapFlowFlux, SmoothCcTensor.toFun_add, Pi.add_apply,
     tensorInnerPointwise_add_left]
   rw [
     tensorInnerPointwise_symm (I := I) (M := M) q 0 2 x
       ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
       ((covGrad (I := I) (M := M) q 0 1 T).toFun x),
-    hmfDiff_pair_symm]
+    harmonicMapFlowDiff_pair_symm]
 
 omit [BoundarylessManifold I M] in
-theorem hmfWeak_add_right
+theorem harmonicMapFlowWeak_add_right
     (q h : SmoothRiemannianMetric I M) (S T₁ T₂ : SmoothCcTensor q 0 1) :
-    hmfWeakForm (I := I) (M := M) q h S (T₁ + T₂) =
-      hmfWeakForm (I := I) (M := M) q h S T₁ +
-        hmfWeakForm (I := I) (M := M) q h S T₂ := by
-  rw [hmfWeak_symm, hmfWeak_add_left, hmfWeak_symm q h T₁ S,
-    hmfWeak_symm q h T₂ S]
+    harmonicMapFlowWeakForm (I := I) (M := M) q h S (T₁ + T₂) =
+      harmonicMapFlowWeakForm (I := I) (M := M) q h S T₁ +
+        harmonicMapFlowWeakForm (I := I) (M := M) q h S T₂ := by
+  rw [harmonicMapFlowWeak_symm, harmonicMapFlowWeak_add_left, harmonicMapFlowWeak_symm q h T₁ S,
+    harmonicMapFlowWeak_symm q h T₂ S]
 
 omit [BoundarylessManifold I M] in
-theorem hmfWeak_smul_right
+theorem harmonicMapFlowWeak_smul_right
     (q h : SmoothRiemannianMetric I M) (c : ℝ) (S T : SmoothCcTensor q 0 1) :
-    hmfWeakForm (I := I) (M := M) q h S (c • T) =
-      c * hmfWeakForm (I := I) (M := M) q h S T := by
-  rw [hmfWeak_symm, hmfWeak_smul_left, hmfWeak_symm q h T S]
+    harmonicMapFlowWeakForm (I := I) (M := M) q h S (c • T) =
+      c * harmonicMapFlowWeakForm (I := I) (M := M) q h S T := by
+  rw [harmonicMapFlowWeak_symm, harmonicMapFlowWeak_smul_left, harmonicMapFlowWeak_symm q h T S]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem hmfWeakForm_eq
+theorem harmonicMapFlowWeakForm_eq
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
-    hmfWeakForm (I := I) (M := M) q h S T =
+    harmonicMapFlowWeakForm (I := I) (M := M) q h S T =
       ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
           ((covGrad (I := I) (M := M) q 0 1 S +
             operatorFieldApply (I := I) (M := M) q 2 2
@@ -584,9 +584,9 @@ theorem hmfWeakForm_eq
         ∂(riemannianVolumeMeasure (I := I) (M := M) h) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem hmfWeakForm_eq_operatorFieldApply
+theorem harmonicMapFlowWeakForm_eq_operatorFieldApply
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
-    hmfWeakForm (I := I) (M := M) q h S T =
+    harmonicMapFlowWeakForm (I := I) (M := M) q h S T =
       ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
           ((operatorFieldApply (I := I) (M := M) q 2 2
             (endoSlotZeroCcTensor (I := I) (M := M) q 1
@@ -594,32 +594,32 @@ theorem hmfWeakForm_eq_operatorFieldApply
             (covGrad (I := I) (M := M) q 0 1 S)).toFun x)
           ((covGrad (I := I) (M := M) q 0 1 T).toFun x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) h) := by
-  rw [hmfWeakForm, hmfFlux_eq_operatorFieldApply]
+  rw [harmonicMapFlowWeakForm, harmonicMapFlowFlux_eq_operatorFieldApply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem hmfWeakForm_self
+theorem harmonicMapFlowWeakForm_self
     (q : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
-    hmfWeakForm (I := I) (M := M) q q S T =
+    harmonicMapFlowWeakForm (I := I) (M := M) q q S T =
       tensorL2Inner (I := I) (M := M) q 0 2
         (covGrad (I := I) (M := M) q 0 1 S).toFun
         (covGrad (I := I) (M := M) q 0 1 T).toFun := by
-  rw [hmfWeakForm, hmfFlux_self]
+  rw [harmonicMapFlowWeakForm, harmonicMapFlowFlux_self]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMass_self
+theorem harmonicMapFlowMass_self
     (q : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
-    hmfMass (I := I) (M := M) q q S T =
+    harmonicMapFlowMass (I := I) (M := M) q q S T =
       tensorL2Inner (I := I) (M := M) q 0 1 S.toFun T.toFun := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-theorem hmfH1_self
+theorem harmonicMapFlowH1_self
     (q : SmoothRiemannianMetric I M) (S T : SmoothCcTensor q 0 1) :
-    hmfMass (I := I) (M := M) q q S T +
-        hmfWeakForm (I := I) (M := M) q q S T =
+    harmonicMapFlowMass (I := I) (M := M) q q S T +
+        harmonicMapFlowWeakForm (I := I) (M := M) q q S T =
       tensorH1Inner (I := I) (M := M) q 0 1 S T := by
-  rw [hmfMass_self, hmfWeakForm_self, tensorH1Inner_def,
+  rw [harmonicMapFlowMass_self, harmonicMapFlowWeakForm_self, tensorH1Inner_def,
     tensorL2Inner_covGrad_eq_integral_tensorCovDerivPointwiseInner]
 
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
@@ -639,7 +639,7 @@ private lemma hmf_integral_le
       rw [MeasureTheory.integral_smul_measure, smul_eq_mul]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem hmfDiff_self_le
+private theorem harmonicMapFlowDiff_self_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -648,7 +648,7 @@ private theorem hmfDiff_self_le
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S : SmoothCcTensor q 0 1) (x : M) :
     tensorInnerPointwise (I := I) (M := M) q 0 2 x
-        ((hmfDiff (I := I) (M := M) q h S).toFun x)
+        ((harmonicMapFlowDiff (I := I) (M := M) q h S).toFun x)
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x) ≤
       (δ / (1 - δ)) *
         tensorInnerPointwise (I := I) (M := M) q 0 2 x
@@ -658,9 +658,9 @@ private theorem hmfDiff_self_le
       metricComparisonDifferenceEndomorphismField (I := I) q h x =
         metricComparisonDifferenceEndomorphism (I := I) q h x := rfl
   rw [tensorInnerPointwise_symm (I := I) (M := M) q 0 2 x
-    ((hmfDiff (I := I) (M := M) q h S).toFun x)
+    ((harmonicMapFlowDiff (I := I) (M := M) q h S).toFun x)
     ((covGrad (I := I) (M := M) q 0 1 S).toFun x)]
-  simpa only [SmoothCcTensor.toFun_apply, hmfDiff,
+  simpa only [SmoothCcTensor.toFun_apply, harmonicMapFlowDiff,
     operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
     slotInsertEndoCc_toSection, hfield,
     TensorRSSpace.ofCLM, gInvDiffSlotApplied] using
@@ -669,7 +669,7 @@ private theorem hmfDiff_self_le
       ((covGrad (I := I) (M := M) q 0 1 S).toSection x))
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem hmfNegDiff_self_le
+private theorem harmonicMapFlowNegDiff_self_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -678,7 +678,7 @@ private theorem hmfNegDiff_self_le
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S : SmoothCcTensor q 0 1) (x : M) :
     -tensorInnerPointwise (I := I) (M := M) q 0 2 x
-        ((hmfDiff (I := I) (M := M) q h S).toFun x)
+        ((harmonicMapFlowDiff (I := I) (M := M) q h S).toFun x)
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x) ≤
       (δ / (1 - δ)) *
         tensorInnerPointwise (I := I) (M := M) q 0 2 x
@@ -692,29 +692,29 @@ private theorem hmfNegDiff_self_le
     ((covGrad (I := I) (M := M) q 0 1 S).toSection x)
   calc
     -tensorInnerPointwise (I := I) (M := M) q 0 2 x
-        ((hmfDiff (I := I) (M := M) q h S).toFun x)
+        ((harmonicMapFlowDiff (I := I) (M := M) q h S).toFun x)
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x) =
       -tensorInnerPointwise (I := I) (M := M) q 0 2 x
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
-        ((hmfDiff (I := I) (M := M) q h S).toFun x) :=
+        ((harmonicMapFlowDiff (I := I) (M := M) q h S).toFun x) :=
       congrArg Neg.neg (tensorInnerPointwise_symm
         (I := I) (M := M) q 0 2 x _ _)
     _ = tensorInnerPointwise (I := I) (M := M) q 0 2 x
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
-        (-((hmfDiff (I := I) (M := M) q h S).toFun x)) := by
+        (-((harmonicMapFlowDiff (I := I) (M := M) q h S).toFun x)) := by
       have hsmul := tensorInnerPointwise_smul_right
         (I := I) (M := M) q 0 2 x (-1)
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
-        ((hmfDiff (I := I) (M := M) q h S).toFun x)
+        ((harmonicMapFlowDiff (I := I) (M := M) q h S).toFun x)
       simpa only [neg_one_smul, neg_one_mul] using hsmul.symm
     _ ≤ _ := by
-      simpa only [SmoothCcTensor.toFun_apply, hmfDiff,
+      simpa only [SmoothCcTensor.toFun_apply, harmonicMapFlowDiff,
         operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
         slotInsertEndoCc_toSection, hfield,
         TensorRSSpace.ofCLM, gInvDiffSlotApplied] using hneg
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfFlux_diag_le
+theorem harmonicMapFlowFlux_diag_le
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -723,19 +723,19 @@ theorem hmfFlux_diag_le
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S : SmoothCcTensor q 0 1) (x : M) :
     tensorInnerPointwise (I := I) (M := M) q 0 2 x
-        ((hmfFlux (I := I) (M := M) q h S).toFun x)
+        ((harmonicMapFlowFlux (I := I) (M := M) q h S).toFun x)
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x) ≤
       (1 + δ / (1 - δ)) *
         tensorInnerPointwise (I := I) (M := M) q 0 2 x
           ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
           ((covGrad (I := I) (M := M) q 0 1 S).toFun x) := by
-  rw [hmfFlux, SmoothCcTensor.toFun_add, Pi.add_apply,
+  rw [harmonicMapFlowFlux, SmoothCcTensor.toFun_add, Pi.add_apply,
     tensorInnerPointwise_add_left]
-  linarith [hmfDiff_self_le (I := I) (M := M)
+  linarith [harmonicMapFlowDiff_self_le (I := I) (M := M)
     q h k htie hδ_lt hδ_nn hδ S x]
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem hmfFlux_diag_ge
+theorem harmonicMapFlowFlux_diag_ge
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -748,24 +748,24 @@ theorem hmfFlux_diag_ge
           ((covGrad (I := I) (M := M) q 0 1 S).toFun x)
           ((covGrad (I := I) (M := M) q 0 1 S).toFun x) ≤
       tensorInnerPointwise (I := I) (M := M) q 0 2 x
-        ((hmfFlux (I := I) (M := M) q h S).toFun x)
+        ((harmonicMapFlowFlux (I := I) (M := M) q h S).toFun x)
         ((covGrad (I := I) (M := M) q 0 1 S).toFun x) := by
-  rw [hmfFlux, SmoothCcTensor.toFun_add, Pi.add_apply,
+  rw [harmonicMapFlowFlux, SmoothCcTensor.toFun_add, Pi.add_apply,
     tensorInnerPointwise_add_left]
-  linarith [hmfNegDiff_self_le (I := I) (M := M)
+  linarith [harmonicMapFlowNegDiff_self_le (I := I) (M := M)
     q h k htie hδ_lt hδ_nn hδ S x]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMass_nonneg
+theorem harmonicMapFlowMass_nonneg
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensor q 0 1) :
-    0 ≤ hmfMass (I := I) (M := M) q h S S := by
-  unfold hmfMass
+    0 ≤ harmonicMapFlowMass (I := I) (M := M) q h S S := by
+  unfold harmonicMapFlowMass
   exact MeasureTheory.integral_nonneg fun x =>
     tensorInnerPointwise_nonneg (I := I) (M := M) q 0 1 x (S.toFun x)
 
 omit [BoundarylessManifold I M] in
-theorem hmfWeak_nonneg
+theorem harmonicMapFlowWeak_nonneg
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -773,50 +773,50 @@ theorem hmfWeak_nonneg
     {δ : ℝ} (hδ_half : δ < 1 / 2) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S : SmoothCcTensor q 0 1) :
-    0 ≤ hmfWeakForm (I := I) (M := M) q h S S := by
+    0 ≤ harmonicMapFlowWeakForm (I := I) (M := M) q h S S := by
   have hδ_lt : δ < 1 := lt_trans hδ_half (by norm_num)
   have hden : 0 < 1 - δ := sub_pos.mpr hδ_lt
   have hκ : 0 ≤ 1 - δ / (1 - δ) := by
     have hfrac : δ / (1 - δ) < 1 := (div_lt_one hden).2 (by linarith)
     linarith
-  unfold hmfWeakForm
+  unfold harmonicMapFlowWeakForm
   refine MeasureTheory.integral_nonneg (fun x => ?_)
   exact (mul_nonneg hκ
     (tensorInnerPointwise_nonneg (I := I) (M := M) q 0 2 x
       ((covGrad (I := I) (M := M) q 0 1 S).toFun x))).trans
-    (hmfFlux_diag_ge (I := I) (M := M)
+    (harmonicMapFlowFlux_diag_ge (I := I) (M := M)
       q h k htie hδ_lt hδ_nn hδ S x)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMass_self_le
+theorem harmonicMapFlowMass_self_le
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
       C • riemannianVolumeMeasure (I := I) (M := M) q)
     (S : SmoothCcTensor q 0 1) :
-    hmfMass (I := I) (M := M) q h S S ≤
-      C.toReal * hmfMass (I := I) (M := M) q q S S := by
+    harmonicMapFlowMass (I := I) (M := M) q h S S ≤
+      C.toReal * harmonicMapFlowMass (I := I) (M := M) q q S S := by
   exact hmf_integral_le (M := M) hC0 hCtop hvol
     (fun x => tensorInnerPointwise_nonneg (I := I) (M := M) q 0 1 x (S.toFun x))
     (hmf_inner_int (I := I) (M := M) q q S S)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMass_self_rev
+theorem harmonicMapFlowMass_self_rev
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) q ≤
       C • riemannianVolumeMeasure (I := I) (M := M) h)
     (S : SmoothCcTensor q 0 1) :
-    hmfMass (I := I) (M := M) q q S S ≤
-      C.toReal * hmfMass (I := I) (M := M) q h S S := by
+    harmonicMapFlowMass (I := I) (M := M) q q S S ≤
+      C.toReal * harmonicMapFlowMass (I := I) (M := M) q h S S := by
   exact hmf_integral_le (M := M) hC0 hCtop hvol
     (fun x => tensorInnerPointwise_nonneg (I := I) (M := M) q 0 1 x (S.toFun x))
     (hmf_inner_int (I := I) (M := M) q h S S)
 
 omit [BoundarylessManifold I M] in
-theorem hmfForm_self_le
+theorem harmonicMapFlowForm_self_le
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -827,26 +827,26 @@ theorem hmfForm_self_le
     {δ : ℝ} (hδ_lt : δ < 1) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S : SmoothCcTensor q 0 1) :
-    hmfWeakForm (I := I) (M := M) q h S S ≤
+    harmonicMapFlowWeakForm (I := I) (M := M) q h S S ≤
       C.toReal * (1 + δ / (1 - δ)) *
-        hmfWeakForm (I := I) (M := M) q q S S := by
+        harmonicMapFlowWeakForm (I := I) (M := M) q q S S := by
   let D := covGrad (I := I) (M := M) q 0 1 S
   have hden : 0 < 1 - δ := sub_pos.mpr hδ_lt
   have hκ0 : 0 ≤ δ / (1 - δ) := div_nonneg hδ_nn hden.le
   have hcoef : 0 ≤ 1 + δ / (1 - δ) := by linarith
-  have hpt : hmfWeakForm (I := I) (M := M) q h S S ≤
+  have hpt : harmonicMapFlowWeakForm (I := I) (M := M) q h S S ≤
       (1 + δ / (1 - δ)) *
         ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
           (D.toFun x) (D.toFun x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) h) := by
-    unfold hmfWeakForm
+    unfold harmonicMapFlowWeakForm
     rw [← MeasureTheory.integral_const_mul]
     exact MeasureTheory.integral_mono
       (hmf_inner_int (I := I) (M := M) q h
-        (hmfFlux (I := I) (M := M) q h S) D)
+        (harmonicMapFlowFlux (I := I) (M := M) q h S) D)
       ((hmf_inner_int (I := I) (M := M) q h D D).const_mul
         (1 + δ / (1 - δ)))
-      (fun x => hmfFlux_diag_le (I := I) (M := M)
+      (fun x => harmonicMapFlowFlux_diag_le (I := I) (M := M)
         q h k htie hδ_lt hδ_nn hδ S x)
   have hmeasure :
       (∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
@@ -860,7 +860,7 @@ theorem hmfForm_self_le
       (fun x => tensorInnerPointwise_nonneg (I := I) (M := M) q 0 2 x (D.toFun x))
       (hmf_inner_int (I := I) (M := M) q q D D)
   calc
-    hmfWeakForm (I := I) (M := M) q h S S ≤ _ := hpt
+    harmonicMapFlowWeakForm (I := I) (M := M) q h S S ≤ _ := hpt
     _ ≤ (1 + δ / (1 - δ)) *
         (C.toReal *
           ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
@@ -868,14 +868,14 @@ theorem hmfForm_self_le
             ∂(riemannianVolumeMeasure (I := I) (M := M) q)) :=
       mul_le_mul_of_nonneg_left hmeasure hcoef
     _ = C.toReal * (1 + δ / (1 - δ)) *
-        hmfWeakForm (I := I) (M := M) q q S S := by
-      rw [hmfWeakForm_self]
+        harmonicMapFlowWeakForm (I := I) (M := M) q q S S := by
+      rw [harmonicMapFlowWeakForm_self]
       unfold tensorL2Inner
       dsimp only [D]
       ring
 
 omit [BoundarylessManifold I M] in
-theorem hmfForm_self_rev
+theorem harmonicMapFlowForm_self_rev
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) q ≤
@@ -886,8 +886,8 @@ theorem hmfForm_self_rev
     {δ : ℝ} (hδ_half : δ < 1 / 2) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S : SmoothCcTensor q 0 1) :
-    (1 - δ / (1 - δ)) * hmfWeakForm (I := I) (M := M) q q S S ≤
-      C.toReal * hmfWeakForm (I := I) (M := M) q h S S := by
+    (1 - δ / (1 - δ)) * harmonicMapFlowWeakForm (I := I) (M := M) q q S S ≤
+      C.toReal * harmonicMapFlowWeakForm (I := I) (M := M) q h S S := by
   let D := covGrad (I := I) (M := M) q 0 1 S
   have hδ_lt : δ < 1 := lt_trans hδ_half (by norm_num)
   have hden : 0 < 1 - δ := sub_pos.mpr hδ_lt
@@ -898,15 +898,15 @@ theorem hmfForm_self_rev
           ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
             (D.toFun x) (D.toFun x)
             ∂(riemannianVolumeMeasure (I := I) (M := M) h) ≤
-        hmfWeakForm (I := I) (M := M) q h S S := by
-    unfold hmfWeakForm
+        harmonicMapFlowWeakForm (I := I) (M := M) q h S S := by
+    unfold harmonicMapFlowWeakForm
     rw [← MeasureTheory.integral_const_mul]
     exact MeasureTheory.integral_mono
       ((hmf_inner_int (I := I) (M := M) q h D D).const_mul
         (1 - δ / (1 - δ)))
       (hmf_inner_int (I := I) (M := M) q h
-        (hmfFlux (I := I) (M := M) q h S) D)
-      (fun x => hmfFlux_diag_ge (I := I) (M := M)
+        (harmonicMapFlowFlux (I := I) (M := M) q h S) D)
+      (fun x => harmonicMapFlowFlux_diag_ge (I := I) (M := M)
         q h k htie hδ_lt hδ_nn hδ S x)
   have hmeasure :
       (∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
@@ -919,7 +919,7 @@ theorem hmfForm_self_rev
     hmf_integral_le (M := M) hC0 hCtop hvol
       (fun x => tensorInnerPointwise_nonneg (I := I) (M := M) q 0 2 x (D.toFun x))
       (hmf_inner_int (I := I) (M := M) q h D D)
-  rw [hmfWeakForm_self]
+  rw [harmonicMapFlowWeakForm_self]
   change (1 - δ / (1 - δ)) *
       (∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
         (D.toFun x) (D.toFun x)
@@ -935,12 +935,12 @@ theorem hmfForm_self_rev
         ∫ x, tensorInnerPointwise (I := I) (M := M) q 0 2 x
           (D.toFun x) (D.toFun x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) h)) := by ring
-    _ ≤ C.toReal * hmfWeakForm (I := I) (M := M) q h S S :=
+    _ ≤ C.toReal * harmonicMapFlowWeakForm (I := I) (M := M) q h S S :=
       mul_le_mul_of_nonneg_left hpt ENNReal.toReal_nonneg
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfVolumeEquiv
+theorem harmonicMapFlowVolumeEquiv
     (q : SmoothRiemannianMetric I M)
     (h : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
@@ -957,120 +957,120 @@ theorem hmfVolumeEquiv
   exact (hcont x₀ i j).mono fun p hp =>
     ⟨⟨hp.1.1, hp.1.2.trans_lt hcb⟩, hp.2⟩
 
-noncomputable def hmfMassH1
+noncomputable def harmonicMapFlowMassH1
     (q h : SmoothRiemannianMetric I M)
     (S T : SmoothCcTensorH1 q 0 1) : ℝ :=
-  hmfMass (I := I) (M := M) q h S.toCcTensor T.toCcTensor
+  harmonicMapFlowMass (I := I) (M := M) q h S.toCcTensor T.toCcTensor
 
-noncomputable def hmfFormH1
+noncomputable def harmonicMapFlowFormH1
     (q h : SmoothRiemannianMetric I M)
     (S T : SmoothCcTensorH1 q 0 1) : ℝ :=
-  hmfWeakForm (I := I) (M := M) q h S.toCcTensor T.toCcTensor
+  harmonicMapFlowWeakForm (I := I) (M := M) q h S.toCcTensor T.toCcTensor
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_add_left
+private theorem harmonicMapFlowMassH1_add_left
     (q h : SmoothRiemannianMetric I M)
     (S₁ S₂ T : SmoothCcTensorH1 q 0 1) :
-    hmfMassH1 (I := I) (M := M) q h (S₁ + S₂) T =
-      hmfMassH1 (I := I) (M := M) q h S₁ T +
-        hmfMassH1 (I := I) (M := M) q h S₂ T := by
-  simp only [hmfMassH1, SmoothCcTensorH1.toCcTensor_add]
-  exact hmfMass_add_left (I := I) (M := M) q h _ _ _
+    harmonicMapFlowMassH1 (I := I) (M := M) q h (S₁ + S₂) T =
+      harmonicMapFlowMassH1 (I := I) (M := M) q h S₁ T +
+        harmonicMapFlowMassH1 (I := I) (M := M) q h S₂ T := by
+  simp only [harmonicMapFlowMassH1, SmoothCcTensorH1.toCcTensor_add]
+  exact harmonicMapFlowMass_add_left (I := I) (M := M) q h _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_smul_left
+private theorem harmonicMapFlowMassH1_smul_left
     (q h : SmoothRiemannianMetric I M) (c : ℝ)
     (S T : SmoothCcTensorH1 q 0 1) :
-    hmfMassH1 (I := I) (M := M) q h (c • S) T =
-      c * hmfMassH1 (I := I) (M := M) q h S T := by
-  simp only [hmfMassH1, SmoothCcTensorH1.toCcTensor_smul]
-  exact hmfMass_smul_left (I := I) (M := M) q h c _ _
+    harmonicMapFlowMassH1 (I := I) (M := M) q h (c • S) T =
+      c * harmonicMapFlowMassH1 (I := I) (M := M) q h S T := by
+  simp only [harmonicMapFlowMassH1, SmoothCcTensorH1.toCcTensor_smul]
+  exact harmonicMapFlowMass_smul_left (I := I) (M := M) q h c _ _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_symm
+private theorem harmonicMapFlowMassH1_symm
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensorH1 q 0 1) :
-    hmfMassH1 (I := I) (M := M) q h S T =
-      hmfMassH1 (I := I) (M := M) q h T S :=
-  hmfMass_symm (I := I) (M := M) q h _ _
+    harmonicMapFlowMassH1 (I := I) (M := M) q h S T =
+      harmonicMapFlowMassH1 (I := I) (M := M) q h T S :=
+  harmonicMapFlowMass_symm (I := I) (M := M) q h _ _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_add_right
+private theorem harmonicMapFlowMassH1_add_right
     (q h : SmoothRiemannianMetric I M)
     (S T₁ T₂ : SmoothCcTensorH1 q 0 1) :
-    hmfMassH1 (I := I) (M := M) q h S (T₁ + T₂) =
-      hmfMassH1 (I := I) (M := M) q h S T₁ +
-        hmfMassH1 (I := I) (M := M) q h S T₂ := by
-  simp only [hmfMassH1, SmoothCcTensorH1.toCcTensor_add]
-  exact hmfMass_add_right (I := I) (M := M) q h _ _ _
+    harmonicMapFlowMassH1 (I := I) (M := M) q h S (T₁ + T₂) =
+      harmonicMapFlowMassH1 (I := I) (M := M) q h S T₁ +
+        harmonicMapFlowMassH1 (I := I) (M := M) q h S T₂ := by
+  simp only [harmonicMapFlowMassH1, SmoothCcTensorH1.toCcTensor_add]
+  exact harmonicMapFlowMass_add_right (I := I) (M := M) q h _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-private theorem hmfMassH1_smul_right
+private theorem harmonicMapFlowMassH1_smul_right
     (q h : SmoothRiemannianMetric I M) (c : ℝ)
     (S T : SmoothCcTensorH1 q 0 1) :
-    hmfMassH1 (I := I) (M := M) q h S (c • T) =
-      c * hmfMassH1 (I := I) (M := M) q h S T := by
-  simp only [hmfMassH1, SmoothCcTensorH1.toCcTensor_smul]
-  exact hmfMass_smul_right (I := I) (M := M) q h c _ _
+    harmonicMapFlowMassH1 (I := I) (M := M) q h S (c • T) =
+      c * harmonicMapFlowMassH1 (I := I) (M := M) q h S T := by
+  simp only [harmonicMapFlowMassH1, SmoothCcTensorH1.toCcTensor_smul]
+  exact harmonicMapFlowMass_smul_right (I := I) (M := M) q h c _ _
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private theorem hmfFormH1_add_left
+private theorem harmonicMapFlowFormH1_add_left
     (q h : SmoothRiemannianMetric I M)
     (S₁ S₂ T : SmoothCcTensorH1 q 0 1) :
-    hmfFormH1 (I := I) (M := M) q h (S₁ + S₂) T =
-      hmfFormH1 (I := I) (M := M) q h S₁ T +
-        hmfFormH1 (I := I) (M := M) q h S₂ T := by
-  simp only [hmfFormH1, SmoothCcTensorH1.toCcTensor_add]
-  exact hmfWeak_add_left (I := I) (M := M) q h _ _ _
+    harmonicMapFlowFormH1 (I := I) (M := M) q h (S₁ + S₂) T =
+      harmonicMapFlowFormH1 (I := I) (M := M) q h S₁ T +
+        harmonicMapFlowFormH1 (I := I) (M := M) q h S₂ T := by
+  simp only [harmonicMapFlowFormH1, SmoothCcTensorH1.toCcTensor_add]
+  exact harmonicMapFlowWeak_add_left (I := I) (M := M) q h _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private theorem hmfFormH1_smul_left
+private theorem harmonicMapFlowFormH1_smul_left
     (q h : SmoothRiemannianMetric I M) (c : ℝ)
     (S T : SmoothCcTensorH1 q 0 1) :
-    hmfFormH1 (I := I) (M := M) q h (c • S) T =
-      c * hmfFormH1 (I := I) (M := M) q h S T := by
-  simp only [hmfFormH1, SmoothCcTensorH1.toCcTensor_smul]
-  exact hmfWeak_smul_left (I := I) (M := M) q h c _ _
+    harmonicMapFlowFormH1 (I := I) (M := M) q h (c • S) T =
+      c * harmonicMapFlowFormH1 (I := I) (M := M) q h S T := by
+  simp only [harmonicMapFlowFormH1, SmoothCcTensorH1.toCcTensor_smul]
+  exact harmonicMapFlowWeak_smul_left (I := I) (M := M) q h c _ _
 
 omit [BoundarylessManifold I M] in
-private theorem hmfFormH1_symm
+private theorem harmonicMapFlowFormH1_symm
     (q h : SmoothRiemannianMetric I M) (S T : SmoothCcTensorH1 q 0 1) :
-    hmfFormH1 (I := I) (M := M) q h S T =
-      hmfFormH1 (I := I) (M := M) q h T S :=
-  hmfWeak_symm (I := I) (M := M) q h _ _
+    harmonicMapFlowFormH1 (I := I) (M := M) q h S T =
+      harmonicMapFlowFormH1 (I := I) (M := M) q h T S :=
+  harmonicMapFlowWeak_symm (I := I) (M := M) q h _ _
 
 omit [BoundarylessManifold I M] in
-private theorem hmfFormH1_add_right
+private theorem harmonicMapFlowFormH1_add_right
     (q h : SmoothRiemannianMetric I M)
     (S T₁ T₂ : SmoothCcTensorH1 q 0 1) :
-    hmfFormH1 (I := I) (M := M) q h S (T₁ + T₂) =
-      hmfFormH1 (I := I) (M := M) q h S T₁ +
-        hmfFormH1 (I := I) (M := M) q h S T₂ := by
-  simp only [hmfFormH1, SmoothCcTensorH1.toCcTensor_add]
-  exact hmfWeak_add_right (I := I) (M := M) q h _ _ _
+    harmonicMapFlowFormH1 (I := I) (M := M) q h S (T₁ + T₂) =
+      harmonicMapFlowFormH1 (I := I) (M := M) q h S T₁ +
+        harmonicMapFlowFormH1 (I := I) (M := M) q h S T₂ := by
+  simp only [harmonicMapFlowFormH1, SmoothCcTensorH1.toCcTensor_add]
+  exact harmonicMapFlowWeak_add_right (I := I) (M := M) q h _ _ _
 
 omit [BoundarylessManifold I M] in
-private theorem hmfFormH1_smul_right
+private theorem harmonicMapFlowFormH1_smul_right
     (q h : SmoothRiemannianMetric I M) (c : ℝ)
     (S T : SmoothCcTensorH1 q 0 1) :
-    hmfFormH1 (I := I) (M := M) q h S (c • T) =
-      c * hmfFormH1 (I := I) (M := M) q h S T := by
-  simp only [hmfFormH1, SmoothCcTensorH1.toCcTensor_smul]
-  exact hmfWeak_smul_right (I := I) (M := M) q h c _ _
+    harmonicMapFlowFormH1 (I := I) (M := M) q h S (c • T) =
+      c * harmonicMapFlowFormH1 (I := I) (M := M) q h S T := by
+  simp only [harmonicMapFlowFormH1, SmoothCcTensorH1.toCcTensor_smul]
+  exact harmonicMapFlowWeak_smul_right (I := I) (M := M) q h c _ _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMassH1_nonneg
+theorem harmonicMapFlowMassH1_nonneg
     (q h : SmoothRiemannianMetric I M) (S : SmoothCcTensorH1 q 0 1) :
-    0 ≤ hmfMassH1 (I := I) (M := M) q h S S :=
-  hmfMass_nonneg (I := I) (M := M) q h S.toCcTensor
+    0 ≤ harmonicMapFlowMassH1 (I := I) (M := M) q h S S :=
+  harmonicMapFlowMass_nonneg (I := I) (M := M) q h S.toCcTensor
 
 omit [BoundarylessManifold I M] in
-theorem hmfFormH1_nonneg
+theorem harmonicMapFlowFormH1_nonneg
     (q h : SmoothRiemannianMetric I M)
     (k : ∀ y : M, TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1078,25 +1078,25 @@ theorem hmfFormH1_nonneg
     {δ : ℝ} (hδ_half : δ < 1 / 2) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S : SmoothCcTensorH1 q 0 1) :
-    0 ≤ hmfFormH1 (I := I) (M := M) q h S S :=
-  hmfWeak_nonneg (I := I) (M := M)
+    0 ≤ harmonicMapFlowFormH1 (I := I) (M := M) q h S S :=
+  harmonicMapFlowWeak_nonneg (I := I) (M := M)
     q h k htie hδ_half hδ_nn hδ S.toCcTensor
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMassH1_diag_le
+theorem harmonicMapFlowMassH1_diag_le
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
       C • riemannianVolumeMeasure (I := I) (M := M) q)
     (S : SmoothCcTensorH1 q 0 1) :
-    hmfMassH1 (I := I) (M := M) q h S S ≤ C.toReal * ‖S‖ ^ 2 := by
+    harmonicMapFlowMassH1 (I := I) (M := M) q h S S ≤ C.toReal * ‖S‖ ^ 2 := by
   calc
-    hmfMassH1 (I := I) (M := M) q h S S ≤
-        C.toReal * hmfMass (I := I) (M := M) q q S.toCcTensor S.toCcTensor :=
-      hmfMass_self_le (I := I) (M := M) q h C hC0 hCtop hvol S.toCcTensor
+    harmonicMapFlowMassH1 (I := I) (M := M) q h S S ≤
+        C.toReal * harmonicMapFlowMass (I := I) (M := M) q q S.toCcTensor S.toCcTensor :=
+      harmonicMapFlowMass_self_le (I := I) (M := M) q h C hC0 hCtop hvol S.toCcTensor
     _ = C.toReal * ‖S.toCcTensor‖ ^ 2 := by
-      rw [hmfMass_self,
+      rw [harmonicMapFlowMass_self,
         ← SmoothCcTensor.norm_sq_eq_inner_self (I := I) (M := M)]
     _ ≤ C.toReal * ‖S‖ ^ 2 :=
       mul_le_mul_of_nonneg_left
@@ -1104,7 +1104,7 @@ theorem hmfMassH1_diag_le
         ENNReal.toReal_nonneg
 
 omit [BoundarylessManifold I M] in
-theorem hmfFormH1_diag_le
+theorem harmonicMapFlowFormH1_diag_le
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1115,24 +1115,24 @@ theorem hmfFormH1_diag_le
     {δ : ℝ} (hδ_lt : δ < 1) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S : SmoothCcTensorH1 q 0 1) :
-    hmfFormH1 (I := I) (M := M) q h S S ≤
+    harmonicMapFlowFormH1 (I := I) (M := M) q h S S ≤
       (C.toReal * (1 + δ / (1 - δ))) * ‖S‖ ^ 2 := by
   have hden : 0 < 1 - δ := sub_pos.mpr hδ_lt
   have hcoef : 0 ≤ C.toReal * (1 + δ / (1 - δ)) := by
     exact mul_nonneg ENNReal.toReal_nonneg
       (by have := div_nonneg hδ_nn hden.le; linarith)
   have hfrozen :
-      hmfWeakForm (I := I) (M := M) q q S.toCcTensor S.toCcTensor ≤ ‖S‖ ^ 2 := by
+      harmonicMapFlowWeakForm (I := I) (M := M) q q S.toCcTensor S.toCcTensor ≤ ‖S‖ ^ 2 := by
     rw [SmoothCcTensorH1.norm_sq_eq_inner_self,
-      ← hmfH1_self (I := I) (M := M) q S.toCcTensor S.toCcTensor]
+      ← harmonicMapFlowH1_self (I := I) (M := M) q S.toCcTensor S.toCcTensor]
     exact le_add_of_nonneg_left
-      (hmfMass_nonneg (I := I) (M := M) q q S.toCcTensor)
-  exact (hmfForm_self_le (I := I) (M := M)
+      (harmonicMapFlowMass_nonneg (I := I) (M := M) q q S.toCcTensor)
+  exact (harmonicMapFlowForm_self_le (I := I) (M := M)
     q h C hC0 hCtop hvol k htie hδ_lt hδ_nn hδ S.toCcTensor).trans
       (mul_le_mul_of_nonneg_left hfrozen hcoef)
 
 omit [BoundarylessManifold I M] in
-theorem hmfH1_coercive
+theorem harmonicMapFlowH1_coercive
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) q ≤
@@ -1144,8 +1144,8 @@ theorem hmfH1_coercive
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S : SmoothCcTensorH1 q 0 1) :
     (1 - δ / (1 - δ)) * ‖S‖ ^ 2 ≤
-      C.toReal * (hmfMassH1 (I := I) (M := M) q h S S +
-        hmfFormH1 (I := I) (M := M) q h S S) := by
+      C.toReal * (harmonicMapFlowMassH1 (I := I) (M := M) q h S S +
+        harmonicMapFlowFormH1 (I := I) (M := M) q h S S) := by
   let α : ℝ := 1 - δ / (1 - δ)
   have hδ_lt : δ < 1 := lt_trans hδ_half (by norm_num)
   have hden : 0 < 1 - δ := sub_pos.mpr hδ_lt
@@ -1153,26 +1153,26 @@ theorem hmfH1_coercive
   have hfrac1 : δ / (1 - δ) < 1 := (div_lt_one hden).2 (by linarith)
   have hα0 : 0 ≤ α := by dsimp [α]; linarith
   have hα1 : α ≤ 1 := by dsimp [α]; linarith
-  have hmassq0 : 0 ≤ hmfMass (I := I) (M := M) q q
+  have hmassq0 : 0 ≤ harmonicMapFlowMass (I := I) (M := M) q q
       S.toCcTensor S.toCcTensor :=
-    hmfMass_nonneg (I := I) (M := M) q q S.toCcTensor
+    harmonicMapFlowMass_nonneg (I := I) (M := M) q q S.toCcTensor
   have hmasspart :
-      α * hmfMass (I := I) (M := M) q q S.toCcTensor S.toCcTensor ≤
-        C.toReal * hmfMassH1 (I := I) (M := M) q h S S := by
+      α * harmonicMapFlowMass (I := I) (M := M) q q S.toCcTensor S.toCcTensor ≤
+        C.toReal * harmonicMapFlowMassH1 (I := I) (M := M) q h S S := by
     exact (mul_le_of_le_one_left hmassq0 hα1).trans
-      (hmfMass_self_rev (I := I) (M := M)
+      (harmonicMapFlowMass_self_rev (I := I) (M := M)
         q h C hC0 hCtop hvol S.toCcTensor)
   have hformpart :
-      α * hmfWeakForm (I := I) (M := M) q q S.toCcTensor S.toCcTensor ≤
-        C.toReal * hmfFormH1 (I := I) (M := M) q h S S := by
-    simpa only [α, hmfFormH1] using
-      (hmfForm_self_rev (I := I) (M := M)
+      α * harmonicMapFlowWeakForm (I := I) (M := M) q q S.toCcTensor S.toCcTensor ≤
+        C.toReal * harmonicMapFlowFormH1 (I := I) (M := M) q h S S := by
+    simpa only [α, harmonicMapFlowFormH1] using
+      (harmonicMapFlowForm_self_rev (I := I) (M := M)
         q h C hC0 hCtop hvol k htie hδ_half hδ_nn hδ S.toCcTensor)
   have hH1 : ‖S‖ ^ 2 =
-      hmfMass (I := I) (M := M) q q S.toCcTensor S.toCcTensor +
-        hmfWeakForm (I := I) (M := M) q q S.toCcTensor S.toCcTensor :=
+      harmonicMapFlowMass (I := I) (M := M) q q S.toCcTensor S.toCcTensor +
+        harmonicMapFlowWeakForm (I := I) (M := M) q q S.toCcTensor S.toCcTensor :=
     (SmoothCcTensorH1.norm_sq_eq_inner_self (I := I) (M := M) S).trans
-      (hmfH1_self (I := I) (M := M) q S.toCcTensor S.toCcTensor).symm
+      (harmonicMapFlowH1_self (I := I) (M := M) q S.toCcTensor S.toCcTensor).symm
   dsimp only [α] at hmasspart hformpart ⊢
   rw [hH1]
   nlinarith [hmasspart, hformpart]
@@ -1278,41 +1278,41 @@ private theorem bilin_abs_le
   exact abs_le_of_sq_le_sq hbound
     (mul_nonneg (mul_nonneg hK (norm_nonneg u)) (norm_nonneg v))
 
-noncomputable def hmfMassSmooth
+noncomputable def harmonicMapFlowMassSmooth
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
       C • riemannianVolumeMeasure (I := I) (M := M) q) :
     SmoothCcTensorH1 q 0 1 →L[ℝ] SmoothCcTensorH1 q 0 1 →L[ℝ] ℝ := by
   refine LinearMap.mkContinuous₂
-    (LinearMap.mk₂ ℝ (hmfMassH1 (I := I) (M := M) q h)
-      (hmfMassH1_add_left (I := I) (M := M) q h)
-      (hmfMassH1_smul_left (I := I) (M := M) q h)
-      (hmfMassH1_add_right (I := I) (M := M) q h)
-      (hmfMassH1_smul_right (I := I) (M := M) q h))
+    (LinearMap.mk₂ ℝ (harmonicMapFlowMassH1 (I := I) (M := M) q h)
+      (harmonicMapFlowMassH1_add_left (I := I) (M := M) q h)
+      (harmonicMapFlowMassH1_smul_left (I := I) (M := M) q h)
+      (harmonicMapFlowMassH1_add_right (I := I) (M := M) q h)
+      (harmonicMapFlowMassH1_smul_right (I := I) (M := M) q h))
     C.toReal ?_
   intro S T
   rw [Real.norm_eq_abs]
-  exact bilin_abs_le (hmfMassH1 (I := I) (M := M) q h)
-    (hmfMassH1_add_left (I := I) (M := M) q h)
-    (hmfMassH1_smul_left (I := I) (M := M) q h)
-    (hmfMassH1_symm (I := I) (M := M) q h)
-    (hmfMassH1_nonneg (I := I) (M := M) q h)
+  exact bilin_abs_le (harmonicMapFlowMassH1 (I := I) (M := M) q h)
+    (harmonicMapFlowMassH1_add_left (I := I) (M := M) q h)
+    (harmonicMapFlowMassH1_smul_left (I := I) (M := M) q h)
+    (harmonicMapFlowMassH1_symm (I := I) (M := M) q h)
+    (harmonicMapFlowMassH1_nonneg (I := I) (M := M) q h)
     ENNReal.toReal_nonneg
-    (hmfMassH1_diag_le (I := I) (M := M) q h C hC0 hCtop hvol) S T
+    (harmonicMapFlowMassH1_diag_le (I := I) (M := M) q h C hC0 hCtop hvol) S T
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [BoundarylessManifold I M] in
-@[simp] theorem hmfMassSm_apply
+@[simp] theorem harmonicMapFlowMassSm_apply
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
       C • riemannianVolumeMeasure (I := I) (M := M) q)
     (S T : SmoothCcTensorH1 q 0 1) :
-    hmfMassSmooth (I := I) (M := M) q h C hC0 hCtop hvol S T =
-      hmfMassH1 (I := I) (M := M) q h S T := rfl
+    harmonicMapFlowMassSmooth (I := I) (M := M) q h C hC0 hCtop hvol S T =
+      harmonicMapFlowMassH1 (I := I) (M := M) q h S T := rfl
 
-noncomputable def hmfFormSmooth
+noncomputable def harmonicMapFlowFormSmooth
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1329,25 +1329,25 @@ noncomputable def hmfFormSmooth
     mul_nonneg ENNReal.toReal_nonneg
       (by have := div_nonneg hδ_nn hden.le; linarith)
   refine LinearMap.mkContinuous₂
-    (LinearMap.mk₂ ℝ (hmfFormH1 (I := I) (M := M) q h)
-      (hmfFormH1_add_left (I := I) (M := M) q h)
-      (hmfFormH1_smul_left (I := I) (M := M) q h)
-      (hmfFormH1_add_right (I := I) (M := M) q h)
-      (hmfFormH1_smul_right (I := I) (M := M) q h))
+    (LinearMap.mk₂ ℝ (harmonicMapFlowFormH1 (I := I) (M := M) q h)
+      (harmonicMapFlowFormH1_add_left (I := I) (M := M) q h)
+      (harmonicMapFlowFormH1_smul_left (I := I) (M := M) q h)
+      (harmonicMapFlowFormH1_add_right (I := I) (M := M) q h)
+      (harmonicMapFlowFormH1_smul_right (I := I) (M := M) q h))
     (C.toReal * (1 + δ / (1 - δ))) ?_
   intro S T
   rw [Real.norm_eq_abs]
-  exact bilin_abs_le (hmfFormH1 (I := I) (M := M) q h)
-    (hmfFormH1_add_left (I := I) (M := M) q h)
-    (hmfFormH1_smul_left (I := I) (M := M) q h)
-    (hmfFormH1_symm (I := I) (M := M) q h)
-    (hmfFormH1_nonneg (I := I) (M := M)
+  exact bilin_abs_le (harmonicMapFlowFormH1 (I := I) (M := M) q h)
+    (harmonicMapFlowFormH1_add_left (I := I) (M := M) q h)
+    (harmonicMapFlowFormH1_smul_left (I := I) (M := M) q h)
+    (harmonicMapFlowFormH1_symm (I := I) (M := M) q h)
+    (harmonicMapFlowFormH1_nonneg (I := I) (M := M)
       q h k htie hδ_half hδ_nn hδ) hK
-    (hmfFormH1_diag_le (I := I) (M := M)
+    (harmonicMapFlowFormH1_diag_le (I := I) (M := M)
       q h C hC0 hCtop hvol k htie hδ_lt hδ_nn hδ) S T
 
 omit [BoundarylessManifold I M] in
-@[simp] theorem hmfFormSm_apply
+@[simp] theorem harmonicMapFlowFormSm_apply
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1358,9 +1358,9 @@ omit [BoundarylessManifold I M] in
     {δ : ℝ} (hδ_half : δ < 1 / 2) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S T : SmoothCcTensorH1 q 0 1) :
-    hmfFormSmooth (I := I) (M := M) q h C hC0 hCtop hvol
+    harmonicMapFlowFormSmooth (I := I) (M := M) q h C hC0 hCtop hvol
         k htie hδ_half hδ_nn hδ S T =
-      hmfFormH1 (I := I) (M := M) q h S T := rfl
+      harmonicMapFlowFormH1 (I := I) (M := M) q h S T := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [BoundarylessManifold I M] in
@@ -1400,7 +1400,7 @@ private local instance smoothCcTensorH1DualComplete
     CompleteSpace (SmoothCcTensorH1 q 0 1 →L[ℝ] ℝ) :=
   ContinuousLinearMap.instCompleteSpace
 
-private noncomputable def hmfExtend
+private noncomputable def harmonicMapFlowExtend
     (q : SmoothRiemannianMetric I M)
     (F : SmoothCcTensorH1 q 0 1 →L[ℝ]
       SmoothCcTensorH1 q 0 1 →L[ℝ] ℝ) :
@@ -1414,15 +1414,15 @@ private noncomputable def hmfExtend
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [BoundarylessManifold I M] in
-private theorem hmfExtend_coe
+private theorem harmonicMapFlowExtend_coe
     (q : SmoothRiemannianMetric I M)
     (F : SmoothCcTensorH1 q 0 1 →L[ℝ]
       SmoothCcTensorH1 q 0 1 →L[ℝ] ℝ)
     (S T : SmoothCcTensorH1 q 0 1) :
-    hmfExtend (I := I) (M := M) q F
+    harmonicMapFlowExtend (I := I) (M := M) q F
         (smoothToTensorH1Compl (I := I) (M := M) q 0 1 S)
         (smoothToTensorH1Compl (I := I) (M := M) q 0 1 T) = F S T := by
-  unfold hmfExtend
+  unfold harmonicMapFlowExtend
   rw [ContinuousLinearMap.flip_apply]
   rw [ContinuousLinearMap.extend_eq
     (ContinuousLinearMap.flip
@@ -1435,30 +1435,30 @@ private theorem hmfExtend_coe
     (e := smoothToTensorH1Compl (I := I) (M := M) q 0 1)
     (hmf_dense (I := I) (M := M) q) (hmf_inducing (I := I) (M := M) q) S)
 
-noncomputable def hmfMassCompl
+noncomputable def harmonicMapFlowMassCompl
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
       C • riemannianVolumeMeasure (I := I) (M := M) q) :
     TensorH1Compl q 0 1 →L[ℝ] TensorH1Compl q 0 1 →L[ℝ] ℝ :=
-  hmfExtend (I := I) (M := M) q
-    (hmfMassSmooth (I := I) (M := M) q h C hC0 hCtop hvol)
+  harmonicMapFlowExtend (I := I) (M := M) q
+    (harmonicMapFlowMassSmooth (I := I) (M := M) q h C hC0 hCtop hvol)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [BoundarylessManifold I M] in
-theorem hmfMassCompl_coe
+theorem harmonicMapFlowMassCompl_coe
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
       C • riemannianVolumeMeasure (I := I) (M := M) q)
     (S T : SmoothCcTensorH1 q 0 1) :
-    hmfMassCompl (I := I) (M := M) q h C hC0 hCtop hvol
+    harmonicMapFlowMassCompl (I := I) (M := M) q h C hC0 hCtop hvol
         (smoothToTensorH1Compl (I := I) (M := M) q 0 1 S)
         (smoothToTensorH1Compl (I := I) (M := M) q 0 1 T) =
-      hmfMassH1 (I := I) (M := M) q h S T := by
-  rw [hmfMassCompl, hmfExtend_coe, hmfMassSm_apply]
+      harmonicMapFlowMassH1 (I := I) (M := M) q h S T := by
+  rw [harmonicMapFlowMassCompl, harmonicMapFlowExtend_coe, harmonicMapFlowMassSm_apply]
 
-noncomputable def hmfFormCompl
+noncomputable def harmonicMapFlowFormCompl
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1469,12 +1469,12 @@ noncomputable def hmfFormCompl
     {δ : ℝ} (hδ_half : δ < 1 / 2) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ) :
     TensorH1Compl q 0 1 →L[ℝ] TensorH1Compl q 0 1 →L[ℝ] ℝ :=
-  hmfExtend (I := I) (M := M) q
-    (hmfFormSmooth (I := I) (M := M) q h C hC0 hCtop hvol
+  harmonicMapFlowExtend (I := I) (M := M) q
+    (harmonicMapFlowFormSmooth (I := I) (M := M) q h C hC0 hCtop hvol
       k htie hδ_half hδ_nn hδ)
 
 omit [BoundarylessManifold I M] in
-theorem hmfFormCompl_coe
+theorem harmonicMapFlowFormCompl_coe
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1485,15 +1485,15 @@ theorem hmfFormCompl_coe
     {δ : ℝ} (hδ_half : δ < 1 / 2) (hδ_nn : 0 ≤ δ)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) q k δ)
     (S T : SmoothCcTensorH1 q 0 1) :
-    hmfFormCompl (I := I) (M := M) q h C hC0 hCtop hvol
+    harmonicMapFlowFormCompl (I := I) (M := M) q h C hC0 hCtop hvol
         k htie hδ_half hδ_nn hδ
         (smoothToTensorH1Compl (I := I) (M := M) q 0 1 S)
         (smoothToTensorH1Compl (I := I) (M := M) q 0 1 T) =
-      hmfFormH1 (I := I) (M := M) q h S T := by
-  rw [hmfFormCompl, hmfExtend_coe, hmfFormSm_apply]
+      harmonicMapFlowFormH1 (I := I) (M := M) q h S T := by
+  rw [harmonicMapFlowFormCompl, harmonicMapFlowExtend_coe, harmonicMapFlowFormSm_apply]
 
 omit [BoundarylessManifold I M] in
-theorem hmfCompl_coercive
+theorem harmonicMapFlowCompl_coercive
     (q h : SmoothRiemannianMetric I M) (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
     (hvol : riemannianVolumeMeasure (I := I) (M := M) h ≤
@@ -1508,11 +1508,11 @@ theorem hmfCompl_coercive
     (u : TensorH1Compl q 0 1) :
     (1 - δ / (1 - δ)) * ‖u‖ ^ 2 ≤
       C.toReal *
-        (hmfMassCompl (I := I) (M := M) q h C hC0 hCtop hvol.1 u u +
-          hmfFormCompl (I := I) (M := M) q h C hC0 hCtop hvol.1
+        (harmonicMapFlowMassCompl (I := I) (M := M) q h C hC0 hCtop hvol.1 u u +
+          harmonicMapFlowFormCompl (I := I) (M := M) q h C hC0 hCtop hvol.1
             k htie hδ_half hδ_nn hδ u u) := by
-  let BM := hmfMassCompl (I := I) (M := M) q h C hC0 hCtop hvol.1
-  let BF := hmfFormCompl (I := I) (M := M) q h C hC0 hCtop hvol.1
+  let BM := harmonicMapFlowMassCompl (I := I) (M := M) q h C hC0 hCtop hvol.1
+  let BF := harmonicMapFlowFormCompl (I := I) (M := M) q h C hC0 hCtop hvol.1
     k htie hδ_half hδ_nn hδ
   have hBM : Continuous (fun v : TensorH1Compl q 0 1 => BM v v) :=
     BM.continuous.clm_apply continuous_id
@@ -1529,13 +1529,13 @@ theorem hmfCompl_coercive
   have hnorm :
       ‖smoothToTensorH1Compl (I := I) (M := M) q 0 1 S‖ = ‖S‖ := by
     rw [smoothToTensorH1Compl_apply, UniformSpace.Completion.norm_coe]
-  rw [hmfMassCompl_coe, hmfFormCompl_coe, hnorm]
-  exact hmfH1_coercive (I := I) (M := M)
+  rw [harmonicMapFlowMassCompl_coe, harmonicMapFlowFormCompl_coe, hnorm]
+  exact harmonicMapFlowH1_coercive (I := I) (M := M)
     q h C hC0 hCtop hvol.2 k htie hδ_half hδ_nn hδ S
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
-theorem hmfEdge_inputs
+theorem harmonicMapFlowEdge_inputs
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (hcont : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
@@ -1554,12 +1554,12 @@ theorem hmfEdge_inputs
   obtain ⟨T, hT, hTb, hop⟩ := metricDifference_smallC0
     (I := I) (M := M) (g := g) (q := q) (a := a) (b := b)
       (δ := (1 / 4 : ℝ)) hab hcont hga (by norm_num)
-  obtain ⟨C, hC0, hCtop, hvol⟩ := hmfVolumeEquiv
+  obtain ⟨C, hC0, hCtop, hvol⟩ := harmonicMapFlowVolumeEquiv
     (I := I) (M := M) q g (c := a + T) hTb hcont
   exact ⟨T, C, hT, hTb, hC0, hCtop, fun t ht => ⟨hvol t ht, hop t ht⟩⟩
 
 omit [BoundarylessManifold I M] in
-theorem hmfEdge_coercive
+theorem harmonicMapFlowEdge_coercive
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {a T : ℝ} (C : ℝ≥0∞)
     (hC0 : C ≠ 0) (hCtop : C ≠ ⊤)
@@ -1581,12 +1581,12 @@ theorem hmfEdge_coercive
       ring
     (1 - (1 / 4 : ℝ) / (1 - (1 / 4 : ℝ))) * ‖u‖ ^ 2 ≤
       C.toReal *
-        (hmfMassCompl (I := I) (M := M) q (g t) C hC0 hCtop
+        (harmonicMapFlowMassCompl (I := I) (M := M) q (g t) C hC0 hCtop
             (hvol t ht).1 u u +
-          hmfFormCompl (I := I) (M := M) q (g t) C hC0 hCtop
+          harmonicMapFlowFormCompl (I := I) (M := M) q (g t) C hC0 hCtop
             (hvol t ht).1 k htie (by norm_num) (by norm_num) (hop t ht) u u) := by
   dsimp only
-  apply hmfCompl_coercive (I := I) (M := M)
+  apply harmonicMapFlowCompl_coercive (I := I) (M := M)
     q (g t) C hC0 hCtop (hvol t ht)
     (ccTensorBilinSymm (I := I) q
       (metricDifferenceCcTensor (I := I) (M := M) q (g t)))

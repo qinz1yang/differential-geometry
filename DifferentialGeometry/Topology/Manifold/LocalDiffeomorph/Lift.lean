@@ -126,15 +126,15 @@ theorem contDiffOn
       ContDiffWithinAt Real 1 ((φ.symm : M → E) ∘ γ)
         (Set.Icc a b) x :=
     (hφsymm.comp_contMDiffWithinAt x (hγ x hx)).contDiffWithinAt
-  have hevSrc : ∀ᶠ y in 𝓝[Set.Icc a b] x, η y ∈ φ.source :=
+  have hevSource : ∀ᶠ y in 𝓝[Set.Icc a b] x, η y ∈ φ.source :=
     (hη.continuousOn x hx).preimage_mem_nhdsWithin
       (φ.open_source.mem_nhds hxφ)
   have heq :
       η =ᶠ[𝓝[Set.Icc a b] x] ((φ.symm : M → E) ∘ γ) := by
-    filter_upwards [hevSrc, self_mem_nhdsWithin] with y hySrc hy
+    filter_upwards [hevSource, self_mem_nhdsWithin] with y hySource hy
     change η y = φ.symm (γ y)
-    rw [← (hη.2.2 y hy).2, hφeq hySrc]
-    exact (φ.left_inv hySrc).symm
+    rw [← (hη.2.2 y hy).2, hφeq hySource]
+    exact (φ.left_inv hySource).symm
   exact hbranch.congr_of_eventuallyEq heq (heq.eq_of_nhdsWithin hx)
 
 omit [IsManifold I ∞ M] in
@@ -274,11 +274,11 @@ theorem exists_of_compact
       obtain ⟨W, hWopen, ht₀W, hWsub⟩ := hpre
       obtain ⟨c, d, ht₀cd, hcdW⟩ :=
         mem_nhds_iff_exists_Ioo_subset.mp (hWopen.mem_nhds ht₀W)
-      have hzψsrc : ∀ᶠ n in atTop, zseq (ψ n) ∈ φ.source :=
+      have hzψsource : ∀ᶠ n in atTop, zseq (ψ n) ∈ φ.source :=
         hzψtend (φ.open_source.mem_nhds hzφ)
       have huψcd : ∀ᶠ n in atTop, u (ψ n) ∈ Set.Ioo c d :=
         huψtend (isOpen_Ioo.mem_nhds ht₀cd)
-      obtain ⟨n, hnz, hnu⟩ := (hzψsrc.and huψcd).exists
+      obtain ⟨n, hnz, hnu⟩ := (hzψsource.and huψcd).exists
       have hun_le : u (ψ n) ≤ t₀ :=
         le_csSup hSbdd (huS (ψ n))
       rcases hun_le.eq_or_lt with hun_eq | hun_lt

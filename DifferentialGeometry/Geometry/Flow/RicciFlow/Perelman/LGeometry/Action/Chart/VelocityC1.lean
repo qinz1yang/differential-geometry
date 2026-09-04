@@ -34,7 +34,7 @@ theorem lChartAction_minimizer_velocity_contDiffOn_one
       (interior (extChartAt I p).target))
     (q0 : Real → E) (hq0 : ContinuousOn q0 (Icc (0 : Real) L))
     (hq0ae : u.deriv =ᵐ[timeMeasure L] q0)
-    (hEuler : ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
+    (hEuler : ∀ v : timeH1 E L, v.initial = 0 → v.toFun L = 0 →
       (∫ r in (0 : Real)..L,
         inner Real (lChartForce (I := I) S T a p u r) (v.toFun r) +
           inner Real
@@ -70,7 +70,7 @@ theorem lChartAction_minimizer_velocity_contDiffOn_one
   have hraw : lChartForce (I := I) S T a p u =ᵐ[timeMeasure L] F0 := by
     simpa only [F0] using
       lChartForce_ae_eq_lChartForceRepresentative (I := I) S hS T a p u q0 hreg hchart hq0ae
-  have hEuler' : ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
+  have hEuler' : ∀ v : timeH1 E L, v.initial = 0 → v.toFun L = 0 →
       2 * inner Real
           (timeOp (fun r ↦ chartGramOp (I := I) S.family p
             (tau r, u.toFun r)) hA C hC u.deriv) v.deriv +

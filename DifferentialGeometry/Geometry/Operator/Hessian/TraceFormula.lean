@@ -126,7 +126,7 @@ lemma chartHessTrace_expand
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chartVossWeylLaplacian_expand_hypBearing
+lemma chartVossWeylLaplacian_expand_hypothesisBearing
     (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ) (x : M)
     (hgrad_diff : ∀ i : Fin (Module.finrank ℝ E),
       DifferentiableAt ℝ
@@ -266,7 +266,7 @@ theorem chartHessTrace_eq_laplacian
   have hD_eq : chartDensityOnE (I := I) g α y₀ = chartDensity (I := I) g α x := by
     unfold chartDensityOnE
     rw [hsymm_y₀]
-  rw [chartVossWeylLaplacian_expand_hypBearing (I := I) g α f x
+  rw [chartVossWeylLaplacian_expand_hypothesisBearing (I := I) g α f x
       hgrad_diff hdens_diff]
   rw [show (∑ i : Fin (Module.finrank ℝ E),
               (gradChartCoeffOnE (I := I) g α f i (extChartAt I α x) *
@@ -664,7 +664,7 @@ theorem trace_hessFun_eq_laplacian
   exact h
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem laplacian_sq_le_dim_mul_frobenius_sq_via_chartContracted
+theorem laplacian_sq_le_dim_mul_frobenius_sq_of_chartContractedChristoffelOn
     [I.Boundaryless] [T2Space M] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (hcc : ∀ j : Fin (Module.finrank ℝ E),
@@ -1161,7 +1161,7 @@ theorem laplacian_sq_le_dim_mul_frobenius_sq_of_orthonormal
       ChartContractedChristoffelOn (I := I) g x (extChartAt I x x) j :=
     fun j => chartContractedChristoffel_holds_of_boundaryless
       (I := I) g x hx_target j
-  exact laplacian_sq_le_dim_mul_frobenius_sq_via_chartContracted
+  exact laplacian_sq_le_dim_mul_frobenius_sq_of_chartContractedChristoffelOn
     (I := I) g hf x hcc h_orth
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1243,7 +1243,7 @@ theorem chartHessTrace_eq_laplacian_pointwise
   have hD_eq : chartDensityOnE (I := I) g α y₀ = chartDensity (I := I) g α x := by
     unfold chartDensityOnE
     rw [hsymm_y₀]
-  rw [chartVossWeylLaplacian_expand_hypBearing (I := I) g α f x
+  rw [chartVossWeylLaplacian_expand_hypothesisBearing (I := I) g α f x
       hgrad_diff hdens_diff]
   rw [show (∑ i : Fin (Module.finrank ℝ E),
               (gradChartCoeffOnE (I := I) g α f i (extChartAt I α x) *

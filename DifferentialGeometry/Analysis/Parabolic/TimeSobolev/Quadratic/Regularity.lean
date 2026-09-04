@@ -22,7 +22,7 @@ theorem mom_primitive
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
     (u : timeH1 X T) (F : timeL2 X T)
-    (hEuler : ∀ v : timeH1 X T, v.init = 0 → v.toFun T = 0 →
+    (hEuler : ∀ v : timeH1 X T, v.initial = 0 → v.toFun T = 0 →
       2 * inner ℝ (timeOp A hA C hC u.deriv) v.deriv +
         inner ℝ F v.toFunL2 = 0) :
     ∃ c : X, (fun t ↦ (2 : ℝ) • A t (u.deriv t))
@@ -47,22 +47,22 @@ theorem mom_primitive
       (Lp.memLp F).integrable (by norm_num)
     exact hFIcc.congr_set_ae Ioo_ae_eq_Icc
   apply weakDeriv_primitive hT hp hF
-  intro φ hφ hφ_comp hφ_supp
+  intro φ hφ hφ_comp hφ_support
   have hφ0 : φ 0 = 0 := by
     by_contra hne
     have hmem : (0 : ℝ) ∈ tsupport φ := subset_tsupport φ hne
-    exact (lt_irrefl (0 : ℝ)) (hφ_supp hmem).1
+    exact (lt_irrefl (0 : ℝ)) (hφ_support hmem).1
   have hφT : φ T = 0 := by
     by_contra hne
     have hmem : T ∈ tsupport φ := subset_tsupport φ hne
-    exact (lt_irrefl T) (hφ_supp hmem).2
+    exact (lt_irrefl T) (hφ_support hmem).2
   apply ext_inner_right ℝ
   intro x
   let fx : ℝ → X := fun t ↦ φ t • x
   have hfx : ContDiff ℝ 1 fx :=
     (hφ.of_le (by norm_num)).smul contDiff_const
   let v : timeH1 X T := timeH1.ofContDiffOn hT.le fx hfx.contDiffOn
-  have hv0 : v.init = 0 := by
+  have hv0 : v.initial = 0 := by
     change fx 0 = 0
     simp only [fx, hφ0, zero_smul]
   have hvT : v.toFun T = 0 := by
@@ -184,7 +184,7 @@ theorem mom_rep_cont
     (C : NNReal)
     (hC : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ (C : ℝ))
     (u : timeH1 X T) (F : timeL2 X T)
-    (hEuler : ∀ v : timeH1 X T, v.init = 0 → v.toFun T = 0 →
+    (hEuler : ∀ v : timeH1 X T, v.initial = 0 → v.toFun T = 0 →
       2 * inner ℝ (timeOp A hA C hC u.deriv) v.deriv +
         inner ℝ F v.toFunL2 = 0) :
     ∃ c : X,

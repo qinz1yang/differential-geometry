@@ -95,14 +95,14 @@ private lemma wkpNorm_eta_target_le_split
   have hIter1_eta_u : ∀ α' : Fin 1 → Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial
           (d := Module.finrank ℝ E) p 1 α' (fun x => η x * u x) Ω =
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) p (α' 0) (fun x => η x * u x) Ω := by
     intro α'
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial_succ]; rfl
   have hIter1_u : ∀ α' : Fin 1 → Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial
           (d := Module.finrank ℝ E) p 1 α' u Ω =
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) p (α' 0) u Ω := by
     intro α'
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial_succ]; rfl
@@ -111,7 +111,7 @@ private lemma wkpNorm_eta_target_le_split
         eLpNorm (fun x => η x * u x) p (volume.restrict Ω) +
         ∑ α' : Fin 1 → Fin (Module.finrank ℝ E),
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) p (α' 0) (fun x => η x * u x) Ω) p
             (volume.restrict Ω) := by
     rw [hLHS_unfold]
@@ -123,7 +123,7 @@ private lemma wkpNorm_eta_target_le_split
         eLpNorm u p (volume.restrict Ω) +
         ∑ α' : Fin 1 → Fin (Module.finrank ℝ E),
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) p (α' 0) u Ω) p
             (volume.restrict Ω) := by
     rw [hRHS_unfold]
@@ -147,25 +147,25 @@ private lemma wkpNorm_eta_target_le_split
     (hη1 x hx).trans (le_max_right _ _)
   have h_chosen_bnd : ∀ i : Fin (Module.finrank ℝ E),
       eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := Module.finrank ℝ E) p i (fun x => η x * u x) Ω) p
           (volume.restrict Ω) ≤
         ENNReal.ofReal C0 *
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) p i u Ω) p (volume.restrict Ω) +
         ENNReal.ofReal C1 * eLpNorm u p (volume.restrict Ω) := by
     intro i
     classical
     have hae :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_smul_smooth_bounded_ae
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_smul_smooth_bounded_ae
       (d := Module.finrank ℝ E) hp_one hΩ_open hη_smooth hη0_max hη1_max hu_W1p i
     have hηcwp_meas : AEStronglyMeasurable
-        (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) p i u Ω x)
         (volume.restrict Ω) :=
       hη_smooth.continuous.aestronglyMeasurable.mul
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
           hu_W1p i).aestronglyMeasurable
     have hderiv_cont : Continuous
         (fun x : EuclN => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ))) :=
@@ -177,10 +177,10 @@ private lemma wkpNorm_eta_target_le_split
       hderiv_cont.aestronglyMeasurable.mul hu.memLp.aestronglyMeasurable
     rw [eLpNorm_congr_ae hae]
     have hSumEq :
-        (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) p i u Ω x +
           (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x) =
-        (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) p i u Ω x) +
         (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x) := by
       funext x
@@ -188,12 +188,12 @@ private lemma wkpNorm_eta_target_le_split
     rw [hSumEq]
     have htriangle :
         eLpNorm
-            ((fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            ((fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) p i u Ω x) +
               fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
             p (volume.restrict Ω)
           ≤ eLpNorm (fun x => η x *
-            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) p i u Ω x) p (volume.restrict Ω) +
             eLpNorm
               (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
@@ -201,15 +201,15 @@ private lemma wkpNorm_eta_target_le_split
       eLpNorm_add_le hηcwp_meas hdηu_meas hp_one
     refine htriangle.trans ?_
     have hbnd1 :
-        eLpNorm (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        eLpNorm (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) p i u Ω x) p (volume.restrict Ω) ≤
           ENNReal.ofReal C0 *
             eLpNorm
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) p i u Ω) p (volume.restrict Ω) :=
       DifferentialGeometry.Analysis.Sobolev.Euclidean.eLpNorm_eta_mul_le
         (d := Module.finrank ℝ E) hΩ_open hη0
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial' p i u Ω)
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero p i u Ω)
     have hbnd2 :
         eLpNorm (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x) p
             (volume.restrict Ω) ≤
@@ -221,13 +221,13 @@ private lemma wkpNorm_eta_target_le_split
   have hGrad_LHS_bnd :
       ∑ α' : Fin 1 → Fin (Module.finrank ℝ E),
         eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := Module.finrank ℝ E) p (α' 0) (fun x => η x * u x) Ω) p
           (volume.restrict Ω) ≤
       ∑ α' : Fin 1 → Fin (Module.finrank ℝ E),
         (ENNReal.ofReal C0 *
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) p (α' 0) u Ω) p (volume.restrict Ω) +
         ENNReal.ofReal C1 * eLpNorm u p (volume.restrict Ω)) :=
     Finset.sum_le_sum (fun α' _ => h_chosen_bnd (α' 0))
@@ -236,13 +236,13 @@ private lemma wkpNorm_eta_target_le_split
       ∑ α' : Fin 1 → Fin (Module.finrank ℝ E),
         (ENNReal.ofReal C0 *
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) p (α' 0) u Ω) p (volume.restrict Ω) +
         ENNReal.ofReal C1 * eLpNorm u p (volume.restrict Ω)) =
         (∑ α' : Fin 1 → Fin (Module.finrank ℝ E),
           ENNReal.ofReal C0 *
             eLpNorm
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) p (α' 0) u Ω) p (volume.restrict Ω)) +
         ∑ _α' : Fin 1 → Fin (Module.finrank ℝ E),
           ENNReal.ofReal C1 * eLpNorm u p (volume.restrict Ω) := Finset.sum_add_distrib
@@ -261,18 +261,18 @@ private lemma wkpNorm_eta_target_le_split
       ∑ α' : Fin 1 → Fin (Module.finrank ℝ E),
         ENNReal.ofReal C0 *
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) p (α' 0) u Ω) p (volume.restrict Ω) =
       ENNReal.ofReal C0 * ∑ α' : Fin 1 → Fin (Module.finrank ℝ E),
         eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := Module.finrank ℝ E) p (α' 0) u Ω) p (volume.restrict Ω) := by
     rw [Finset.mul_sum]
   rw [hSum_factor]
   set Au : ℝ≥0∞ := eLpNorm u p (volume.restrict Ω) with hAu_def
   set SBu : ℝ≥0∞ := ∑ α' : Fin 1 → Fin (Module.finrank ℝ E),
     eLpNorm
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p (α' 0) u Ω) p (volume.restrict Ω) with hSBu_def
   set OC0 : ℝ≥0∞ := ENNReal.ofReal C0 with hOC0_def
   set OC1 : ℝ≥0∞ := ENNReal.ofReal C1 with hOC1_def

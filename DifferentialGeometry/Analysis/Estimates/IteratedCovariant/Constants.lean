@@ -11,7 +11,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped BigOperators
 
@@ -111,5 +111,5 @@ theorem compApproxConst_nonneg
     0 <= compApproxConst C p :=
   le_of_lt (compApproxConst_pos hC p)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -31,7 +31,7 @@ theorem curveAt_add [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
     simpa [Function.comp_def] using hh
   simpa [add_comm] using hmain
 
-theorem curveAt_injective' [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+theorem curveAt_injective [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -89,7 +89,7 @@ theorem exists_uniform_localFlow_on_compact [FiniteDimensional ℝ E] [CompleteS
         ⟨U, hUopen, hyU, T, hT, Ψ, hinit, hsm, hbare⟩
       exact ⟨U, hyU, hUopen, T, hT, Ψ, hinit, by simpa [sub_eq_add_neg] using hsm,
         by simpa [sub_eq_add_neg] using hbare⟩
-  choose U hUmem hUopen T hTpos Ψ hΨinit hΨsm hΨbare using hlocal
+  choose U hUmem hUopen T hTpos Ψ hΨinitial hΨsm hΨbare using hlocal
   by_cases hKempty : K = ∅
   · refine ⟨1, zero_lt_one, ?_⟩
     intro y hy
@@ -115,7 +115,7 @@ theorem exists_uniform_localFlow_on_compact [FiniteDimensional ℝ E] [CompleteS
     intro y hy
     have hycov : y ∈ ⋃ i ∈ sf, U i := hsf hy
     rcases Set.mem_iUnion₂.mp hycov with ⟨i, hi, hyU⟩
-    refine ⟨U i, hyU, hUopen i, Ψ i, hΨinit i, ?_, ?_⟩
+    refine ⟨U i, hyU, hUopen i, Ψ i, hΨinitial i, ?_, ?_⟩
     · exact (hΨsm i).mono (Set.prod_mono
         (by intro t ht; constructor <;> linarith [hεT i hi, ht.1, ht.2]) (subset_rfl))
     · intro p hp t ht
@@ -212,7 +212,7 @@ private lemma contMDiffAt_globalFlow_step [I.Boundaryless] [IsManifold I ∞ M] 
     (hγs : curveAt v hcomplete x₀ s ∈ K)
     {σ : ℝ} (hσ : |σ| < ε) :
     ContMDiffAt I I ∞ (fun x : M => curveAt v hcomplete x (s + σ)) x₀ := by
-  rcases hflow (curveAt v hcomplete x₀ s) hγs with ⟨U, hyU, hUopen, Ψ, hΨinit, hΨsm, hΨbare⟩
+  rcases hflow (curveAt v hcomplete x₀ s) hγs with ⟨U, hyU, hUopen, Ψ, hΨinitial, hΨsm, hΨbare⟩
   have hσmem : σ ∈ Ioo (-ε) ε := by
     constructor
     · exact (abs_lt.mp hσ).1
@@ -227,7 +227,7 @@ private lemma contMDiffAt_globalFlow_step [I.Boundaryless] [IsManifold I ∞ M] 
     have heq := isMIntegralCurveOn_Ioo_eqOn_of_contMDiff_boundaryless (t₀ := 0)
       (a := -ε) (b := ε) ht₀ hv1 (hγOn p) (hΨOn p hp) (by
         rw [curveAt_zero v hcomplete p]
-        exact (hΨinit p hp).symm)
+        exact (hΨinitial p hp).symm)
     exact heq ht
   let z : M → M := fun x => curveAt v hcomplete x s
   have hz₀ : z x₀ = curveAt v hcomplete x₀ s := rfl
@@ -464,7 +464,7 @@ private theorem continuousAt_globalFlow_of_compactSupport_nonneg [FiniteDimensio
   have hγs : curveAt v hcomplete x₀ s ∈ K := by
     dsimp [K, γ]
     exact ⟨s, hs_mem, rfl⟩
-  rcases hflow (curveAt v hcomplete x₀ s) hγs with ⟨U, hyU, hUopen, Ψ, hΨinit, hΨsm, hΨbare⟩
+  rcases hflow (curveAt v hcomplete x₀ s) hγs with ⟨U, hyU, hUopen, Ψ, hΨinitial, hΨsm, hΨbare⟩
   have hv1 : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) :=
     hv.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   have hσmem0 : (0 : ℝ) ∈ Ioo (-ε) ε := by constructor <;> linarith
@@ -477,7 +477,7 @@ private theorem continuousAt_globalFlow_of_compactSupport_nonneg [FiniteDimensio
     have heq := isMIntegralCurveOn_Ioo_eqOn_of_contMDiff_boundaryless (t₀ := 0)
       (a := -ε) (b := ε) hσmem0 hv1 (hγOn) (hΨOn) (by
         rw [curveAt_zero v hcomplete p]
-        exact (hΨinit p hp).symm)
+        exact (hΨinitial p hp).symm)
     exact heq hτ
   have hcont_s : ContinuousAt (fun x : M => curveAt v hcomplete x s) x₀ :=
     (contMDiffAt_globalFlow_of_compactSupport v hv hsupp s x₀).continuousAt
@@ -682,7 +682,7 @@ theorem contMDiffAt_globalFlow_joint_of_compactSupport_nonneg [FiniteDimensional
   have hγs : curveAt v hcomplete x₀ s ∈ K := by
     dsimp [K, γ]
     exact ⟨s, hs_mem, rfl⟩
-  rcases hflow (curveAt v hcomplete x₀ s) hγs with ⟨U, hyU, hUopen, Ψ, hΨinit, hΨsm, hΨbare⟩
+  rcases hflow (curveAt v hcomplete x₀ s) hγs with ⟨U, hyU, hUopen, Ψ, hΨinitial, hΨsm, hΨbare⟩
   have hv1 : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)) :=
     hv.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   have hσmem0 : (0 : ℝ) ∈ Ioo (-ε) ε := by constructor <;> linarith
@@ -695,7 +695,7 @@ theorem contMDiffAt_globalFlow_joint_of_compactSupport_nonneg [FiniteDimensional
     have heq := isMIntegralCurveOn_Ioo_eqOn_of_contMDiff_boundaryless (t₀ := 0)
       (a := -ε) (b := ε) hσmem0 hv1 (hγOn) (hΨOn) (by
         rw [curveAt_zero v hcomplete p]
-        exact (hΨinit p hp).symm)
+        exact (hΨinitial p hp).symm)
     exact heq hτ
   have hcont_s : ContinuousAt (fun x : M => curveAt v hcomplete x s) x₀ :=
     (contMDiffAt_globalFlow_of_compactSupport v hv hsupp s x₀).continuousAt

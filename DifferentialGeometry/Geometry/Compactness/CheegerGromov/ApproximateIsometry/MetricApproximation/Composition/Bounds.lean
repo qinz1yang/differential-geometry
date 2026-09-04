@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -97,5 +97,5 @@ noncomputable def PartialDiffeomorphMetricApproximationBounds.trans
 
 end Composition
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

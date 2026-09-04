@@ -115,10 +115,10 @@ lemma chartFlow_zero_section_eventually_const
       ((extChartAt I p p, (0 : E)) : E × E) ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
     refine ⟨?_, Set.mem_univ _⟩
-    have hx₀_src : p ∈ (extChartAt I p).source :=
+    have hx₀_source : p ∈ (extChartAt I p).source :=
       mem_extChartAt_source (I := I) p
     have hx₀_target : extChartAt I p p ∈ (extChartAt I p).target :=
-      (extChartAt I p).map_source hx₀_src
+      (extChartAt I p).map_source hx₀_source
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) p hx₀_target
   have hc₁_zero : c₁ 0 = ((extChartAt I p p, (0 : E)) : E × E) := by
     have hinit : Φ ((((extChartAt I p p, (0 : E)) : E × E)), 0) =

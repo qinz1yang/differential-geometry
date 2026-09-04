@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology
 open Bundle Manifold
@@ -24,7 +24,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasStageJetDataOn.chart_conv
+theorem HasStageJetDataOn.chart_convergence
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -55,7 +55,7 @@ theorem HasStageJetDataOn.chart_conv
         (chart (Lphi.φ (kn n))
           (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))).hom
         V (Lphi.hatSourceBall inp.decay P R (kn n))) :
-    MapCInfConvOnCompacts V
+    MapCInfConvergenceOnCompacts V
       (fun n z ↦
         let Lphi := L.subseq hphi
         let Yk := X.obj (Lphi.φ (kn n))
@@ -96,7 +96,7 @@ theorem HasStageJetDataOn.chart_conv
   have hsrc := hNs n hnS hzV
   simpa only using (hjet hzInt hsrc).2.2 j hj
 
-theorem HasStageJetDataOn.pb_conv
+theorem HasStageJetDataOn.pb_convergence
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -151,8 +151,8 @@ theorem HasStageJetDataOn.pb_conv
     let B : Nat → E → (E →L[Real] E →L[Real] Real) := fun n ↦
       chart.metric (Lphi.φ (ln n))
         (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
-    MapCInfConvOnCompacts V
-      (fun n z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    MapCInfConvergenceOnCompacts V
+      (fun n z ↦ _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (B n (A n z), fderiv Real (A n) z))
       (gInf alpha) := by
   classical
@@ -188,8 +188,8 @@ theorem HasStageJetDataOn.pb_conv
   let B : Nat → E → (E →L[Real] E →L[Real] Real) := fun n ↦
     chart.metric (Lphi.φ (ln n))
       (seqCenterD inp.decay P Lphi (ln n) (alpha.1 : Nat))
-  change MapCInfConvOnCompacts V
-    (fun n z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+  change MapCInfConvergenceOnCompacts V
+    (fun n z ↦ _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (B n (A n z), fderiv Real (A n) z)) (gInf alpha)
   rcases hstage with ⟨hdata, hmetric, hjets, _hbase⟩
   obtain ⟨_hUopen, _hC0compact, _hC1compact, hC01, hC1U⟩ :=
@@ -206,13 +206,13 @@ theorem HasStageJetDataOn.pb_conv
   have hclosureD : closure V ⊆ D := hVW.trans hWD
   obtain ⟨rho, hrho, hthick⟩ :=
     hVcompact.exists_cthickening_subset_open hDopen hclosureD
-  have hAconvW : MapCInfConvOnCompacts W A id := by
+  have hAconvW : MapCInfConvergenceOnCompacts W A id := by
     simpa only [A, Lphi] using
-      HasStageJetDataOn.chart_conv (I := I) inp P L hr phi hphi
+      HasStageJetDataOn.chart_convergence (I := I) inp P L hr phi hphi
         chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, _hbase⟩ R hRr alpha W hWint
         kn ln hkn hln hsource
-  have hAconv : MapCInfConvOnCompacts V A id := by
+  have hAconv : MapCInfConvergenceOnCompacts V A id := by
     intro K hK hKV p
     exact hAconvW K hK (hKV.trans (subset_closure.trans hVW)) p
   obtain ⟨Nclose, hNclose⟩ :=
@@ -263,14 +263,14 @@ theorem HasStageJetDataOn.pb_conv
   let Ap : Nat → E → E := fun n ↦ if N ≤ n then A n else id
   let Bp : Nat → E → (E →L[Real] E →L[Real] Real) := fun n ↦
     if N ≤ n then B n else gInf alpha
-  have hApconv : MapCInfConvOnCompacts V Ap id := by
+  have hApconv : MapCInfConvergenceOnCompacts V Ap id := by
     apply hAconv.congr_eventually hVopen
     · filter_upwards [eventually_atTop.2 ⟨N, fun n hn ↦ hn⟩] with n hn
       intro z _hz
       simp only [Ap, if_pos hn]
     · exact Set.eqOn_refl id V
-  have hBpconv : MapCInfConvOnCompacts D Bp (gInf alpha) := by
-    have hBsub : MapCInfConvOnCompacts D B (gInf alpha) := by
+  have hBpconv : MapCInfConvergenceOnCompacts D Bp (gInf alpha) := by
+    have hBsub : MapCInfConvergenceOnCompacts D B (gInf alpha) := by
       intro K hK hKD p
       exact (hBconv.comp_tendsto_atTop hln) K hK
         (hKD.trans hDVmetric) p
@@ -296,7 +296,7 @@ theorem HasStageJetDataOn.pb_conv
     · simpa only [Ap, if_pos hn] using (hN n hn).2.1
     · intro z hz
       simpa only [Ap, if_neg hn, id_eq] using hVD hz
-  have hpb := MapCInfConvOnCompacts.pullbackForm_comp_fderiv
+  have hpb := MapCInfConvergenceOnCompacts.pullbackForm_comp_fderiv
     (V := E) (W := E) hVopen hDopen
       hApconv hBpconv hApc
       (contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn
@@ -307,11 +307,11 @@ theorem HasStageJetDataOn.pb_conv
     simp only [Ap, Bp, if_pos hn]
   · intro z _hz
     change gInf alpha z =
-      _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+      _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (gInf alpha z, fderiv Real id z)
     rw [fderiv_id]
     ext v w
     rfl
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

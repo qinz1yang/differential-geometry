@@ -22,7 +22,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Manifold ContDiff ENNReal NNReal
@@ -953,21 +953,21 @@ theorem normal_inv_eq
     have hsnd := congrArg Prod.snd hdiag
     rw [diagExp_snd, ← hbase] at hsnd
     exact hsnd.symm
-  have hInvSrc := expDiffeo_mem_of_lt (I := I) Y.metric
+  have hInvSource := expDiffeo_mem_of_lt (I := I) Y.metric
     (normal_enorm (I := I) Y) pair.1 hsmallInv
   have hInvExp : expMapDiffeo (I := I) Y.metric pair.1 inv.snd = pair.2 :=
     (expDiffeo_eq_intr (I := I) Y.metric (normal_enorm (I := I) Y)
       pair.1 hsmallInv).trans hintr
   have hInvChart :=
-    (expMapDiffeo (I := I) Y.metric pair.1).left_inv' hInvSrc
+    (expMapDiffeo (I := I) Y.metric pair.1).left_inv' hInvSource
   rw [hInvExp] at hInvChart
-  have hTanSrc := expDiffeo_mem_of_lt (I := I) Y.metric
+  have hTanSource := expDiffeo_mem_of_lt (I := I) Y.metric
     (normal_enorm (I := I) Y) pair.1 hsmallTan
   have hTanExp : expMapDiffeo (I := I) Y.metric pair.1 tangent.snd = pair.2 :=
     (expDiffeo_eq_intr (I := I) Y.metric (normal_enorm (I := I) Y)
       pair.1 hsmallTan).trans htanIntr
   have hTanChart :=
-    (expMapDiffeo (I := I) Y.metric pair.1).left_inv' hTanSrc
+    (expMapDiffeo (I := I) Y.metric pair.1).left_inv' hTanSource
   rw [hTanExp] at hTanChart
   refine TotalSpace.ext (hproj.trans hbase) ?_
   exact heq_of_eq (hInvChart.symm.trans hTanChart)
@@ -1563,5 +1563,5 @@ theorem exists_chart_diag_at
       hrQuarter q hq hqWide hqAccel herr
   exact ⟨q, δ, e, hq, by nlinarith [hqWide], hδ, hδeq, hdiag⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

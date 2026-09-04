@@ -17,7 +17,7 @@ open Bundle Set Filter
 open scoped Manifold ContDiff Topology
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Tensor0SBundle
 
@@ -64,7 +64,7 @@ private theorem tensor2_eval_contOn {K : Set ℝ}
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem ricciFlowPDE_Ici_of_soln
+theorem ricciFlowPDE_Ici_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     (hS : IsSolutionOn (I := I) S) :
@@ -108,7 +108,7 @@ theorem ricciFlowPDE_Ici_of_soln
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem hell_of_soln
+theorem hell_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     (hS : IsSolutionOn (I := I) S)
@@ -120,7 +120,7 @@ theorem hell_of_soln
         Λ⁻¹ * (S.base.metric alpha).inner x v v ≤ (S.base.metric s).inner x v v ∧
           (S.base.metric s).inner x v v ≤ Λ * (S.base.metric alpha).inner x v v :=
   metricEquiv_of_ricBound (fun t => S.base.metric t) hαω hK
-    (ricciFlowPDE_Ici_of_soln hS) hric
+    (ricciFlowPDE_Ici_of_solution hS) hric
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -300,7 +300,7 @@ theorem ric_quad_le_of_realizes
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [SigmaCompactSpace M] in
-theorem chartGram_smooth_of_soln
+theorem chartGram_smooth_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     (hS : IsSolutionOn (I := I) S)
@@ -328,7 +328,7 @@ theorem chartGram_smooth_of_soln
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [SigmaCompactSpace M] in
-theorem chartGram_cont_of_soln
+theorem chartGram_cont_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     (hS : IsSolutionOn (I := I) S)
@@ -371,7 +371,7 @@ theorem chartGram_cont_of_soln
   simp [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, SolutionOn.family]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem ric_quad_le_of_soln
+theorem ric_quad_le_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     {Rm04 : ℝ → Tensor04Section (I := I) (M := M)}
@@ -390,7 +390,7 @@ theorem ric_quad_le_of_soln
   rwa [show Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E from rfl] at h
 
 omit [SigmaCompactSpace M] in
-theorem movingShi_of_soln
+theorem movingShi_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     (_hdim : Module.finrank ℝ E = 3)
@@ -401,10 +401,10 @@ theorem movingShi_of_soln
       ∀ ψ ∈ Set.Ico tShi omega,
         MovingShiBoundOn (I := I) Set.univ tShi ψ
           (fun _ t => S.base.metric t) 3 KShi := by
-  exact movingShiBoundSol (I := I) _hdim _hS _hbound
+  exact movingShiBoundSolution (I := I) _hdim _hS _hbound
 
 omit [SigmaCompactSpace M] in
-theorem shiCovBound_of_soln
+theorem shiCovBound_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     (hdim : Module.finrank ℝ E = 3)
@@ -421,7 +421,7 @@ theorem shiCovBound_of_soln
   classical
   obtain ⟨Λ, hΛ, t₁, ht₁, hEquivTail⟩ := hEquiv
   obtain ⟨KShi, hKShi0, tShi, htShi, hShi⟩ :=
-    movingShi_of_soln (I := I) hdim _hS _hbound
+    movingShi_of_solution (I := I) hdim _hS _hbound
   have hmaxω : max t₁ tShi < omega := max_lt ht₁.2 htShi.2
   obtain ⟨t₂, hmaxt₂, ht₂ω⟩ := exists_between hmaxω
   have ht₁t₂ : t₁ ≤ t₂ := le_trans (le_max_left _ _) hmaxt₂.le
@@ -456,8 +456,8 @@ theorem shiCovBound_of_soln
       (fun _ t ht => by
         change t ∈ Set.Ioo alpha omega
         exact ⟨lt_of_lt_of_le hαt₂ ht.1, lt_of_le_of_lt ht.2 hψ.2⟩)
-      (fun _ p hp V x₀ => solnTowerSwap_reg (I := I) gRef S _hS q hDreg p hp V x₀)) i x
-  obtain ⟨initC, hinitC0, hinit⟩ := exists_initC (I := I) (S.base.metric t₂) gRef
+      (fun _ p hp V x₀ => solutionTowerSwap_regularity (I := I) gRef S _hS q hDreg p hp V x₀)) i x
+  obtain ⟨initialC, hinitC0, hinit⟩ := exists_initialC (I := I) (S.base.metric t₂) gRef
   have htime : ∀ t ∈ Set.Ico t₂ omega, |t - t₂| ≤ omega - t₂ := by
     intro t ht
     rw [abs_of_nonneg (sub_nonneg.mpr ht.1)]
@@ -466,7 +466,7 @@ theorem shiCovBound_of_soln
     (K := Set.univ) (U := Set.univ) (t0 := t₂) (omega := omega)
     (gSeq := gSeq) (gRef := gRef)
     isCompact_univ isOpen_univ (subset_refl Set.univ) 3 Λ hΛ KShi hKShi0
-    initC hinitC0 (omega - t₂) (fun _ => Λ) hequivWindow
+    initialC hinitC0 (omega - t₂) (fun _ => Λ) hequivWindow
     (fun _ _ => le_rfl) hShiWindow hevWindow
     (fun q _ _ _i x _hx => hinit q x) htime
   obtain ⟨C₁, hC₁⟩ := hpos 1 (by omega) (by omega)
@@ -504,7 +504,7 @@ theorem shiCovBound_of_soln
       (le_trans (le_max_right _ _) (le_max_right _ _))
 
 omit [SigmaCompactSpace M] in
-theorem extendInputs_of_soln
+theorem extendInputs_of_solution
     {alpha omega : ℝ} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen alpha omega hαω)}
     (hdim : Module.finrank ℝ E = 3)
@@ -521,7 +521,7 @@ theorem extendInputs_of_soln
     (∃ C : ℝ, 1 ≤ C ∧ ∃ t₂ ∈ Set.Ico alpha omega, ∀ s ∈ Set.Ico t₂ omega,
       ∀ a : ℕ, a ≤ 3 →
         MetricCovDerivOrderBoundOn Set.univ a (S.base.metric s) (S.base.metric alpha) C) := by
-  have hEquiv := hell_of_soln hS hK hric
-  exact ⟨hEquiv, shiCovBound_of_soln hdim hS hbound hEquiv⟩
+  have hEquiv := hell_of_solution hS hK hric
+  exact ⟨hEquiv, shiCovBound_of_solution hdim hS hbound hEquiv⟩
 
 end DifferentialGeometry.PDE.RicciFlow

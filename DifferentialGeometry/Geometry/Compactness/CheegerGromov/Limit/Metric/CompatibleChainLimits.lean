@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 open Set Topology TopologicalSpace
@@ -177,7 +177,7 @@ theorem exists_chain_pullback_metric_limit
     let hU := chain_ball_source (I := I) b Ψ g D0
     let gSeq := chainPullbackSeq (I := I) Ψ g U hU
     ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ gInf : SmoothRiemannianMetric I U,
-      MetricCInfConvOnCompacts (I := I) (fun k => gSeq (φ k)) gInf
+      MetricCInfConvergenceOnCompacts (I := I) (fun k => gSeq (φ k)) gInf
         ((g j).restrictOpen (I := I) U) := by
   classical
   let U := ballOpen b (fun n => (2 : ℝ) ^ n) j
@@ -264,7 +264,7 @@ theorem exists_chain_pullback_metric_limits
             ∀ n,
               letI : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
                 (Geometry.isSigmaCompact_of_isOpen I (U n).isOpen)
-              MetricCInfConvOnCompacts (I := I)
+              MetricCInfConvergenceOnCompacts (I := I)
                 (fun k => chainPullbackSeq (I := I) Ψ g (U n) (hU n)
                   (φ k - (j₀ + n)))
                 (gInf n) ((g (j₀ + n)).restrictOpen (I := I) (U n)) := by
@@ -302,15 +302,15 @@ theorem exists_chain_pullback_metric_limits
     letI : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen I (U n).isOpen)
     ∃ gInf : SmoothRiemannianMetric I (U n),
-      MetricCInfConvOnCompacts (I := I)
+      MetricCInfConvergenceOnCompacts (I := I)
         (fun k => gSeq n (ξ k - (j₀ + n))) gInf
         ((g (j₀ + n)).restrictOpen (I := I) (U n))
   have metric_subseq : ∀ {N : Type u} [TopologicalSpace N] [ChartedSpace H N]
       [T2Space N] [IsManifold I ∞ N] [SigmaCompactSpace N]
       {gS : ℕ → SmoothRiemannianMetric I N} {gLim gBase : SmoothRiemannianMetric I N},
-      MetricCInfConvOnCompacts (I := I) gS gLim gBase →
+      MetricCInfConvergenceOnCompacts (I := I) gS gLim gBase →
       ∀ {ρ : ℕ → ℕ}, StrictMono ρ →
-        MetricCInfConvOnCompacts (I := I) (fun k => gS (ρ k)) gLim gBase := by
+        MetricCInfConvergenceOnCompacts (I := I) (fun k => gS (ρ k)) gLim gBase := by
     intro N _ _ _ _ _ gS gLim gBase hconv ρ hρ K hK p ε hε
     obtain ⟨k₀, hk₀⟩ := hconv K hK p ε hε
     exact ⟨k₀, fun k hk => hk₀ (ρ k) (le_trans hk hρ.le_apply)⟩
@@ -318,8 +318,8 @@ theorem exists_chain_pullback_metric_limits
       [T2Space N] [IsManifold I ∞ N] [SigmaCompactSpace N]
       {gS : ℕ → SmoothRiemannianMetric I N} {gLim gBase : SmoothRiemannianMetric I N},
       ∀ m : ℕ,
-        MetricCInfConvOnCompacts (I := I) (fun k => gS (k + m)) gLim gBase →
-        MetricCInfConvOnCompacts (I := I) gS gLim gBase := by
+        MetricCInfConvergenceOnCompacts (I := I) (fun k => gS (k + m)) gLim gBase →
+        MetricCInfConvergenceOnCompacts (I := I) gS gLim gBase := by
     intro N _ _ _ _ _ gS gLim gBase m hconv K hK p ε hε
     obtain ⟨k₀, hk₀⟩ := hconv K hK p ε hε
     refine ⟨k₀ + m, fun k hk => ?_⟩
@@ -400,7 +400,7 @@ theorem exists_compatible_chain_pullback_metric_limits
             (∀ n,
               letI : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
                 (Geometry.isSigmaCompact_of_isOpen I (U n).isOpen)
-              MetricCInfConvOnCompacts (I := I)
+              MetricCInfConvergenceOnCompacts (I := I)
                 (fun k => chainPullbackSeq (I := I) Ψ g (U n) (hU n)
                   (φ k - (j₀ + n)))
                 (gInf n) ((g (j₀ + n)).restrictOpen (I := I) (U n))) ∧
@@ -461,7 +461,7 @@ theorem exists_compatible_chain_pullback_metric_limits
           ((g (j₀ + n)).restrictOpen (I := I) (U n))
           ((g (j₀ + n)).restrictOpen (I := I) (U n)) y ≤ δ := by
       intro y _ a hap
-      exact MetricCInfConvOnCompacts.metric_deriv_norm_le (I := I)
+      exact MetricCInfConvergenceOnCompacts.metric_deriv_norm_le (I := I)
         (fun k => chainPullbackSeq (I := I) Ψ g (U n) (hU n)
           (φ k - (j₀ + n)))
         (gInf n) ((g (j₀ + n)).restrictOpen (I := I) (U n))
@@ -504,5 +504,5 @@ theorem exists_compatible_chain_pullback_metric_limits
 
 end ApproxData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

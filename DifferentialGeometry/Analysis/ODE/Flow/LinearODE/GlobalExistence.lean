@@ -159,7 +159,7 @@ private theorem exists_linearODE_solution_right_iterated
       have : ((k : ℝ) + 1) * T = (k : ℝ) * T + T := by ring
       push_cast at hkT
       linarith [hT_pos]
-    obtain ⟨Z_k, hZ_k_init, hZ_k_deriv⟩ := ih hkT_prev
+    obtain ⟨Z_k, hZ_k_initial, hZ_k_deriv⟩ := ih hkT_prev
     set c : ℝ := h₀ + (k : ℝ) * T + T with hc_def
     have hsub_picard : Icc (c - T) (c + T) ⊆ Icc (h₀ - T) (h₀ + B + T) := by
       intro s hs
@@ -195,7 +195,7 @@ private theorem exists_linearODE_solution_right_iterated
     have hA_cont_picard' : ContinuousOn A (Icc (t₁ - T) (t₁ + T)) := hA_cont.mono h_picard_sub
     have hA_bd_picard' : ∀ t ∈ Icc (t₁ - T) (t₁ + T), ‖A t‖ ≤ M :=
       fun t ht => hA_bd t (h_picard_sub ht)
-    obtain ⟨Z_pic, hZ_pic_init, hZ_pic_deriv⟩ :=
+    obtain ⟨Z_pic, hZ_pic_initial, hZ_pic_deriv⟩ :=
       exists_linearODE_solution_of_short_at hT_pos hM_nn hMT hA_cont_picard' hA_bd_picard' Y_c
     have h_pic_right : ∀ t ∈ Icc t₁ (t₁ + T),
         HasDerivWithinAt Z_pic (A t (Z_pic t)) (Icc t₁ (t₁ + T)) t := by
@@ -206,7 +206,7 @@ private theorem exists_linearODE_solution_right_iterated
         hZ_pic_deriv t ht_in_picard
       exact hd.mono (Icc_subset_Icc_left (by linarith [hT_pos]))
     have h_match : Z_k t₁ = Z_pic t₁ := by
-      rw [hZ_pic_init]
+      rw [hZ_pic_initial]
     have h_prev_deriv : ∀ t ∈ Icc h₀ t₁,
         HasDerivWithinAt Z_k (A t (Z_k t)) (Icc h₀ t₁) t := by
       intro t ht
@@ -222,11 +222,11 @@ private theorem exists_linearODE_solution_right_iterated
         h_prev_deriv h_pic_right h_match
     set Z : ℝ → G := fun t => if t ≤ t₁ then Z_k t else Z_pic t with hZ_def
     obtain ⟨hZ_t1, hZ_deriv⟩ := h_glued
-    have hZ_init : Z h₀ = Y₀ := by
-      simp [Z, h_h0_le_t1, hZ_k_init]
+    have hZ_initial : Z h₀ = Y₀ := by
+      simp [Z, h_h0_le_t1, hZ_k_initial]
     have h_dom_eq : h₀ + ((k : ℝ) + 1) * T = t₁ + T := by
       rw [ht₁_def]; ring
-    refine ⟨Z, hZ_init, fun t ht => ?_⟩
+    refine ⟨Z, hZ_initial, fun t ht => ?_⟩
     have h_dom_eq' : h₀ + ((k : ℕ) + 1 : ℝ) * T = t₁ + T := by
       change h₀ + ((k : ℝ) + 1) * T = (h₀ + (k : ℝ) * T) + T; ring
     have h_dom_cast : h₀ + (↑(k + 1) : ℝ) * T = t₁ + T := by
@@ -271,7 +271,7 @@ private theorem exists_linearODE_solution_left_iterated
       have : ((k : ℝ) + 1) * T = (k : ℝ) * T + T := by ring
       push_cast at hkT
       linarith [hT_pos]
-    obtain ⟨Z_k, hZ_k_init, hZ_k_deriv⟩ := ih hkT_prev
+    obtain ⟨Z_k, hZ_k_initial, hZ_k_deriv⟩ := ih hkT_prev
     set t₁ : ℝ := h₀ - (k : ℝ) * T with ht₁_def
     have h_picard_sub : Icc (t₁ - T) (t₁ + T) ⊆ Icc (h₀ - B - T) (h₀ + T) := by
       intro s hs
@@ -289,7 +289,7 @@ private theorem exists_linearODE_solution_left_iterated
     have hA_bd_picard' : ∀ t ∈ Icc (t₁ - T) (t₁ + T), ‖A t‖ ≤ M :=
       fun t ht => hA_bd t (h_picard_sub ht)
     set Y_c : G := Z_k t₁ with hY_c_def
-    obtain ⟨Z_pic, hZ_pic_init, hZ_pic_deriv⟩ :=
+    obtain ⟨Z_pic, hZ_pic_initial, hZ_pic_deriv⟩ :=
       exists_linearODE_solution_of_short_at hT_pos hM_nn hMT hA_cont_picard' hA_bd_picard' Y_c
     have h_pic_left : ∀ t ∈ Icc (t₁ - T) t₁,
         HasDerivWithinAt Z_pic (A t (Z_pic t)) (Icc (t₁ - T) t₁) t := by
@@ -299,7 +299,7 @@ private theorem exists_linearODE_solution_left_iterated
       have hd : HasDerivWithinAt Z_pic (A t (Z_pic t)) (Icc (t₁ - T) (t₁ + T)) t :=
         hZ_pic_deriv t ht_in_picard
       exact hd.mono (Icc_subset_Icc_right (by linarith [hT_pos]))
-    have h_match : Z_pic t₁ = Z_k t₁ := hZ_pic_init
+    have h_match : Z_pic t₁ = Z_k t₁ := hZ_pic_initial
     have h_next_deriv : ∀ t ∈ Icc t₁ h₀,
         HasDerivWithinAt Z_k (A t (Z_k t)) (Icc t₁ h₀) t := by
       intro t ht
@@ -315,18 +315,18 @@ private theorem exists_linearODE_solution_left_iterated
         h_pic_left h_next_deriv h_match
     set Z : ℝ → G := fun t => if t ≤ t₁ then Z_pic t else Z_k t with hZ_def
     obtain ⟨hZ_t1, hZ_deriv⟩ := h_glued
-    have hZ_init : Z h₀ = Y₀ := by
+    have hZ_initial : Z h₀ = Y₀ := by
       by_cases h : h₀ ≤ t₁
       · have h_eq : h₀ = t₁ := le_antisymm h h_t1_le_h0
-        have h_match' : Z_pic t₁ = Y₀ := by rw [hY_c_def] at hZ_pic_init
-                                            rw [hZ_pic_init, ← h_eq, hZ_k_init]
+        have h_match' : Z_pic t₁ = Y₀ := by rw [hY_c_def] at hZ_pic_initial
+                                            rw [hZ_pic_initial, ← h_eq, hZ_k_initial]
         simp only [Z, h, ↓reduceIte]
         rw [h_eq]; exact h_match'
       · rw [not_le] at h
-        simp only [Z, not_le.mpr h, ↓reduceIte, hZ_k_init]
+        simp only [Z, not_le.mpr h, ↓reduceIte, hZ_k_initial]
     have h_dom_cast : h₀ - (↑(k + 1) : ℝ) * T = t₁ - T := by
       rw [ht₁_def]; push_cast; ring
-    refine ⟨Z, hZ_init, fun t ht => ?_⟩
+    refine ⟨Z, hZ_initial, fun t ht => ?_⟩
     have ht_cast : t ∈ Icc (t₁ - T) h₀ := by
       rcases ht with ⟨h1, h2⟩
       refine ⟨?_, h2⟩
@@ -453,7 +453,7 @@ private theorem exists_linearODE_solution_on_Icc_subset
     hcont'.mono h_R_sub_α'β''
   have hA_bd_R : ∀ t ∈ Icc (h₀ - T') (h₀ + (n_R : ℝ) * T' + T'), ‖A t‖ ≤ M :=
     fun t ht => hM_bd t (h_R_sub_α'β'' ht)
-  obtain ⟨Z_R, hZ_R_init, hZ_R_deriv⟩ :=
+  obtain ⟨Z_R, hZ_R_initial, hZ_R_deriv⟩ :=
     exists_linearODE_solution_right_iterated (A := A) (h₀ := h₀) (M := M) (T := T')
       (B := (n_R : ℝ) * T') hT'_pos hM_nn hMT' hA_cont_R hA_bd_R Y₀ n_R le_rfl
   have h_L_sub_α'β'' : Icc (h₀ - (n_L : ℝ) * T' - T') (h₀ + T') ⊆ Icc α'' β'' := by
@@ -470,10 +470,10 @@ private theorem exists_linearODE_solution_on_Icc_subset
     hcont'.mono h_L_sub_α'β''
   have hA_bd_L : ∀ t ∈ Icc (h₀ - (n_L : ℝ) * T' - T') (h₀ + T'), ‖A t‖ ≤ M :=
     fun t ht => hM_bd t (h_L_sub_α'β'' ht)
-  obtain ⟨Z_L, hZ_L_init, hZ_L_deriv⟩ :=
+  obtain ⟨Z_L, hZ_L_initial, hZ_L_deriv⟩ :=
     exists_linearODE_solution_left_iterated (A := A) (h₀ := h₀) (M := M) (T := T')
       (B := (n_L : ℝ) * T') hT'_pos hM_nn hMT' hA_cont_L hA_bd_L Y₀ n_L le_rfl
-  have h_match : Z_L h₀ = Z_R h₀ := by rw [hZ_L_init, hZ_R_init]
+  have h_match : Z_L h₀ = Z_R h₀ := by rw [hZ_L_initial, hZ_R_initial]
   have h_α_ge_L : h₀ - (n_L : ℝ) * T' ≤ h₀ := by
     have h : (0 : ℝ) ≤ (n_L : ℝ) * T' := by positivity
     linarith
@@ -486,9 +486,9 @@ private theorem exists_linearODE_solution_on_Icc_subset
     h_α_ge_L h_R_ge_β hZ_L_deriv hZ_R_deriv h_match
   set Z : ℝ → G := fun t => if t ≤ h₀ then Z_L t else Z_R t with hZ_def
   obtain ⟨hZ_h0, hZ_LR_deriv⟩ := h_glued
-  have hZ_init : Z h₀ = Y₀ := by
-    simp only [Z, le_refl, ↓reduceIte, hZ_L_init]
-  refine ⟨Z, hZ_init, ?_⟩
+  have hZ_initial : Z h₀ = Y₀ := by
+    simp only [Z, le_refl, ↓reduceIte, hZ_L_initial]
+  refine ⟨Z, hZ_initial, ?_⟩
   have h_α_lb : h₀ - (n_L : ℝ) * T' ≤ α := by
     have : (n_L : ℝ) * T' ≥ B_L := hn_L_bound
     have hα_eq : h₀ - B_L = α := by rw [hB_L_def]; ring
@@ -554,7 +554,7 @@ theorem hasLinearODESolution_of_continuousOn
       ∀ t ∈ Icc (α n) (β n), HasDerivWithinAt Z (A x t (Z t)) (Icc (α n) (β n)) t :=
     fun n => exists_linearODE_solution_on_Icc_subset
       (hα_lt_a n) (hβ_lt_b n) (hα_le_h0 n) (hh0_le_β n) hA_x_cont (Z₀ x)
-  choose Zn hZn_init hZn_deriv using h_exists
+  choose Zn hZn_initial hZn_deriv using h_exists
   have hα_mono : ∀ k₁ k₂, k₁ ≤ k₂ → α k₂ ≤ α k₁ := by
     intro k₁ k₂ hk
     change a + (h₀ - a) / ((k₂ : ℝ) + 2) ≤ a + (h₀ - a) / ((k₁ : ℝ) + 2)
@@ -621,7 +621,7 @@ theorem hasLinearODESolution_of_continuousOn
       have hd := hZn_deriv m u (h_subset_m hu)
       exact hd.hasDerivAt
         (Icc_mem_nhds (lt_of_le_of_lt hαm_le hu.1) (lt_of_lt_of_le hu.2 hβm_ge))
-    have h_match : Zn n h₀ = Zn m h₀ := by rw [hZn_init, hZn_init]
+    have h_match : Zn n h₀ = Zn m h₀ := by rw [hZn_initial, hZn_initial]
     exact linearODE_unique_on_Ioo (A := A x) h_h0_in_N hA_cont_N
       h_Zn_deriv_open h_Zm_deriv_open h_match hs_min
   have h_exhaust : ∀ t ∈ Ioo a b, ∃ n : ℕ, t ∈ Ioo (α n) (β n) := by
@@ -672,7 +672,7 @@ theorem hasLinearODESolution_of_continuousOn
         linarith
     change (if h : ∃ n, h₀ ∈ Ioo (α n) (β n) then Zn (Nat.find h) h₀ else Z₀ x) = Z₀ x
     rw [dif_pos h_h0_mem]
-    exact hZn_init _
+    exact hZn_initial _
   · intro t ht
     obtain ⟨N, hN⟩ := h_exhaust t ht
     have h_ex_t : ∃ n, t ∈ Ioo (α n) (β n) := ⟨N, hN⟩

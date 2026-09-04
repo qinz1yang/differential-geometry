@@ -61,7 +61,7 @@ theorem spherical_space_form_admits_constant_positive_sectional_curvature
     rw [finrank_euclideanSpace_fin]; infer_instance
   obtain ⟨c, hc, hsec⟩ := S.data.gQuot_constPosSec
   refine ⟨Diffeomorph.pullbackMetricCross S.data.gQuot S.equiv, c, hc, fun x X Y => ?_⟩
-  rw [metricRm04Std_pullbackCross S.data.gQuot S.equiv x X Y Y X, hsec,
+  rw [metricRm04Standard_pullbackCross S.data.gQuot S.equiv x X Y Y X, hsec,
     ← Diffeomorph.pullbackMetricCross_inner S.data.gQuot S.equiv x X X,
     ← Diffeomorph.pullbackMetricCross_inner S.data.gQuot S.equiv x Y Y,
     ← Diffeomorph.pullbackMetricCross_inner S.data.gQuot S.equiv x X Y]

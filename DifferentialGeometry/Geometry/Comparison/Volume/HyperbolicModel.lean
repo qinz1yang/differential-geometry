@@ -14,98 +14,98 @@ namespace Geometry
 namespace Riemannian
 namespace VolumeComparison
 
-def hypSn (q r : ℝ) : ℝ :=
+def hyperbolicSn (q r : ℝ) : ℝ :=
   if q = 0 then r else Real.sinh (q * r) / q
 
-def hypSnDeriv (q r : ℝ) : ℝ :=
+def hyperbolicSnDeriv (q r : ℝ) : ℝ :=
   if q = 0 then 1 else Real.cosh (q * r)
 
-theorem hasDerivAt_hypSn (q r : ℝ) :
-    HasDerivAt (hypSn q) (hypSnDeriv q r) r := by
+theorem hasDerivAt_hyperbolicSn (q r : ℝ) :
+    HasDerivAt (hyperbolicSn q) (hyperbolicSnDeriv q r) r := by
   by_cases hq : q = 0
   · subst q
-    have hfun : hypSn 0 = fun x : ℝ => x := by
+    have hfun : hyperbolicSn 0 = fun x : ℝ => x := by
       funext x
-      simp [hypSn]
+      simp [hyperbolicSn]
     rw [hfun]
-    simp only [hypSnDeriv]
+    simp only [hyperbolicSnDeriv]
     exact hasDerivAt_id r
   · have h := ((hasDerivAt_id r).const_mul q).sinh.div_const q
-    have hfun : hypSn q = fun x : ℝ => Real.sinh (q * x) / q := by
+    have hfun : hyperbolicSn q = fun x : ℝ => Real.sinh (q * x) / q := by
       funext x
-      simp [hypSn, hq]
+      simp [hyperbolicSn, hq]
     rw [hfun]
-    simpa [hypSnDeriv, hq] using h
+    simpa [hyperbolicSnDeriv, hq] using h
 
-theorem hasDerivAt_hypSnD (q r : ℝ) :
-    HasDerivAt (hypSnDeriv q) (q ^ 2 * hypSn q r) r := by
+theorem hasDerivAt_hyperbolicSnD (q r : ℝ) :
+    HasDerivAt (hyperbolicSnDeriv q) (q ^ 2 * hyperbolicSn q r) r := by
   by_cases hq : q = 0
   · subst q
-    have hfun : hypSnDeriv 0 = fun _ : ℝ => 1 := by
+    have hfun : hyperbolicSnDeriv 0 = fun _ : ℝ => 1 := by
       funext x
-      simp [hypSnDeriv]
+      simp [hyperbolicSnDeriv]
     rw [hfun]
-    simpa [hypSn] using
+    simpa [hyperbolicSn] using
       (hasDerivAt_const (x := r) (c := (1 : ℝ)))
   · have h := ((hasDerivAt_id r).const_mul q).cosh
-    have hfun : hypSnDeriv q = fun x : ℝ => Real.cosh (q * x) := by
+    have hfun : hyperbolicSnDeriv q = fun x : ℝ => Real.cosh (q * x) := by
       funext x
-      simp [hypSnDeriv, hq]
-    have hderiv : Real.sinh (q * r) * q = q ^ 2 * hypSn q r := by
-      rw [hypSn, if_neg hq]
+      simp [hyperbolicSnDeriv, hq]
+    have hderiv : Real.sinh (q * r) * q = q ^ 2 * hyperbolicSn q r := by
+      rw [hyperbolicSn, if_neg hq]
       field_simp
-    have hderiv' : Real.sinh (q * id r) * (q * 1) = q ^ 2 * hypSn q r := by
+    have hderiv' : Real.sinh (q * id r) * (q * 1) = q ^ 2 * hyperbolicSn q r := by
       simpa only [id_eq, mul_one] using hderiv
     rw [hfun]
     simpa only [id_eq, mul_one] using h.congr_deriv hderiv'
 
-theorem hypSn_energy (q r : ℝ) :
-    hypSnDeriv q r ^ 2 - q ^ 2 * hypSn q r ^ 2 = 1 := by
+theorem hyperbolicSn_energy (q r : ℝ) :
+    hyperbolicSnDeriv q r ^ 2 - q ^ 2 * hyperbolicSn q r ^ 2 = 1 := by
   by_cases hq : q = 0
   · subst q
-    simp [hypSnDeriv, hypSn]
-  · rw [hypSnDeriv, if_neg hq, hypSn, if_neg hq]
+    simp [hyperbolicSnDeriv, hyperbolicSn]
+  · rw [hyperbolicSnDeriv, if_neg hq, hyperbolicSn, if_neg hq]
     calc
       Real.cosh (q * r) ^ 2 - q ^ 2 * (Real.sinh (q * r) / q) ^ 2 =
           Real.cosh (q * r) ^ 2 - Real.sinh (q * r) ^ 2 := by
         field_simp
       _ = 1 := Real.cosh_sq_sub_sinh_sq (q * r)
 
-theorem hypSn_continuous (q : ℝ) : Continuous (hypSn q) :=
-  continuous_iff_continuousAt.mpr fun r => (hasDerivAt_hypSn q r).continuousAt
+theorem hyperbolicSn_continuous (q : ℝ) : Continuous (hyperbolicSn q) :=
+  continuous_iff_continuousAt.mpr fun r => (hasDerivAt_hyperbolicSn q r).continuousAt
 
-theorem hypSn_pos {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) :
-    0 < hypSn q r := by
+theorem hyperbolicSn_pos {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) :
+    0 < hyperbolicSn q r := by
   by_cases hq0 : q = 0
-  · simpa [hypSn, hq0] using hr
+  · simpa [hyperbolicSn, hq0] using hr
   · have hqpos : 0 < q := lt_of_le_of_ne hq (Ne.symm hq0)
-    rw [hypSn, if_neg hq0]
+    rw [hyperbolicSn, if_neg hq0]
     exact div_pos (Real.sinh_pos_iff.mpr (mul_pos hqpos hr)) hqpos
 
-def hypDensity (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
-  hypSn q r ^ d
+def hyperbolicDensity (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
+  hyperbolicSn q r ^ d
 
-def hypDensityDeriv (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
-  (d : ℝ) * hypSn q r ^ (d - 1) * hypSnDeriv q r
+def hyperbolicDensityDeriv (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
+  (d : ℝ) * hyperbolicSn q r ^ (d - 1) * hyperbolicSnDeriv q r
 
-theorem hasDerivAt_hypDen (q : ℝ) (d : ℕ) (r : ℝ) :
-    HasDerivAt (hypDensity q d) (hypDensityDeriv q d r) r := by
-  change HasDerivAt (hypSn q ^ d)
-    ((d : ℝ) * hypSn q r ^ (d - 1) * hypSnDeriv q r) r
-  exact (hasDerivAt_hypSn q r).pow d
+theorem hasDerivAt_hyperbolicDen (q : ℝ) (d : ℕ) (r : ℝ) :
+    HasDerivAt (hyperbolicDensity q d) (hyperbolicDensityDeriv q d r) r := by
+  change HasDerivAt (hyperbolicSn q ^ d)
+    ((d : ℝ) * hyperbolicSn q r ^ (d - 1) * hyperbolicSnDeriv q r) r
+  exact (hasDerivAt_hyperbolicSn q r).pow d
 
-theorem hypDen_continuous (q : ℝ) (d : ℕ) : Continuous (hypDensity q d) :=
-  continuous_iff_continuousAt.mpr fun r => (hasDerivAt_hypDen q d r).continuousAt
+theorem hyperbolicDen_continuous (q : ℝ) (d : ℕ) : Continuous (hyperbolicDensity q d) :=
+  continuous_iff_continuousAt.mpr fun r => (hasDerivAt_hyperbolicDen q d r).continuousAt
 
-def hypMeanCurv (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
-  (d : ℝ) * hypSnDeriv q r / hypSn q r
+def hyperbolicMeanCurv (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
+  (d : ℝ) * hyperbolicSnDeriv q r / hyperbolicSn q r
 
-theorem hypMeanCurv_le
+theorem hyperbolicMeanCurv_le
     {q r : ℝ} (d : ℕ) (hq : 0 ≤ q) (hr : 0 < r) :
-    hypMeanCurv q d r ≤ (d : ℝ) / r + (d : ℝ) * q := by
+    hyperbolicMeanCurv q d r ≤ (d : ℝ) / r + (d : ℝ) * q := by
   by_cases hq0 : q = 0
   · subst q
-    simp [hypMeanCurv, hypSnDeriv, hypSn]
+    simp [hyperbolicMeanCurv, hyperbolicSnDeriv, hyperbolicSn]
   · have hqpos : 0 < q := lt_of_le_of_ne hq (Ne.symm hq0)
     have hqr : 0 < q * r := mul_pos hqpos hr
     have hsinh : 0 < Real.sinh (q * r) :=
@@ -144,7 +144,7 @@ theorem hypMeanCurv_le
     have hratio :
         Real.cosh (q * r) / (Real.sinh (q * r) / q) ≤ 1 / r + q :=
       (div_le_iff₀ (div_pos hsinh hqpos)).mpr hmodel
-    rw [hypMeanCurv, hypSnDeriv, if_neg hq0, hypSn, if_neg hq0]
+    rw [hyperbolicMeanCurv, hyperbolicSnDeriv, if_neg hq0, hyperbolicSn, if_neg hq0]
     calc
       (d : ℝ) * Real.cosh (q * r) / (Real.sinh (q * r) / q) =
           (d : ℝ) * (Real.cosh (q * r) /
@@ -153,47 +153,47 @@ theorem hypMeanCurv_le
         mul_le_mul_of_nonneg_left hratio (Nat.cast_nonneg d)
       _ = (d : ℝ) / r + (d : ℝ) * q := by ring
 
-theorem hasDerivAt_hypMean
+theorem hasDerivAt_hyperbolicMean
     {q r : ℝ} {d : ℕ} (hq : 0 ≤ q) (hr : 0 < r) (hd : 0 < d) :
-    HasDerivAt (hypMeanCurv q d)
-      ((d : ℝ) * q ^ 2 - hypMeanCurv q d r ^ 2 / (d : ℝ)) r := by
-  have hsn : hypSn q r ≠ 0 := ne_of_gt (hypSn_pos hq hr)
+    HasDerivAt (hyperbolicMeanCurv q d)
+      ((d : ℝ) * q ^ 2 - hyperbolicMeanCurv q d r ^ 2 / (d : ℝ)) r := by
+  have hsn : hyperbolicSn q r ≠ 0 := ne_of_gt (hyperbolicSn_pos hq hr)
   have hdR : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt hd)
-  have h := ((hasDerivAt_hypSnD q r).const_mul (d : ℝ)).fun_div
-    (hasDerivAt_hypSn q r) hsn
+  have h := ((hasDerivAt_hyperbolicSnD q r).const_mul (d : ℝ)).fun_div
+    (hasDerivAt_hyperbolicSn q r) hsn
   refine h.congr_deriv ?_
-  simp only [hypMeanCurv]
+  simp only [hyperbolicMeanCurv]
   field_simp
 
-theorem hasDerivAt_hypLog
+theorem hasDerivAt_hyperbolicLog
     {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) :
-    HasDerivAt (fun x => hypSnDeriv q x / hypSn q x)
-      (-1 / hypSn q r ^ 2) r := by
-  have hsn : hypSn q r ≠ 0 := ne_of_gt (hypSn_pos hq hr)
-  have h := (hasDerivAt_hypSnD q r).fun_div (hasDerivAt_hypSn q r) hsn
+    HasDerivAt (fun x => hyperbolicSnDeriv q x / hyperbolicSn q x)
+      (-1 / hyperbolicSn q r ^ 2) r := by
+  have hsn : hyperbolicSn q r ≠ 0 := ne_of_gt (hyperbolicSn_pos hq hr)
+  have h := (hasDerivAt_hyperbolicSnD q r).fun_div (hasDerivAt_hyperbolicSn q r) hsn
   refine h.congr_deriv ?_
-  have henergy := hypSn_energy q r
+  have henergy := hyperbolicSn_energy q r
   field_simp [hsn]
   nlinarith
 
-theorem hypLog_tendsto {q : ℝ} (hq : 0 ≤ q) :
-    Tendsto (fun r => hypSnDeriv q r / hypSn q r)
+theorem hyperbolicLog_tendsto {q : ℝ} (hq : 0 ≤ q) :
+    Tendsto (fun r => hyperbolicSnDeriv q r / hyperbolicSn q r)
       (𝓝[>] (0 : ℝ)) atTop := by
-  have hsn : Tendsto (hypSn q) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
+  have hsn : Tendsto (hyperbolicSn q) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
     apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
-    · have hsn0 : Tendsto (hypSn q) (𝓝 (0 : ℝ)) (𝓝 (hypSn q 0)) :=
-        (hypSn_continuous q).continuousAt
-      rw [show hypSn q 0 = 0 by simp [hypSn]] at hsn0
-      change Tendsto (hypSn q) (𝓝 (0 : ℝ) ⊓ 𝓟 (Set.Ioi 0)) (𝓝 0)
+    · have hsn0 : Tendsto (hyperbolicSn q) (𝓝 (0 : ℝ)) (𝓝 (hyperbolicSn q 0)) :=
+        (hyperbolicSn_continuous q).continuousAt
+      rw [show hyperbolicSn q 0 = 0 by simp [hyperbolicSn]] at hsn0
+      change Tendsto (hyperbolicSn q) (𝓝 (0 : ℝ) ⊓ 𝓟 (Set.Ioi 0)) (𝓝 0)
       exact hsn0.mono_left inf_le_left
     · filter_upwards [self_mem_nhdsWithin] with r hr
-      exact hypSn_pos hq hr
-  have hsd : Tendsto (hypSnDeriv q) (𝓝[>] (0 : ℝ)) (𝓝 (1 : ℝ)) := by
+      exact hyperbolicSn_pos hq hr
+  have hsd : Tendsto (hyperbolicSnDeriv q) (𝓝[>] (0 : ℝ)) (𝓝 (1 : ℝ)) := by
     by_cases hq0 : q = 0
     · subst q
-      have hfun : hypSnDeriv 0 = fun _ : ℝ => 1 := by
+      have hfun : hyperbolicSnDeriv 0 = fun _ : ℝ => 1 := by
         funext r
-        simp [hypSnDeriv]
+        simp [hyperbolicSnDeriv]
       rw [hfun]
       exact tendsto_const_nhds
     · have hc : Continuous (fun r : ℝ => Real.cosh (q * r)) :=
@@ -202,58 +202,58 @@ theorem hypLog_tendsto {q : ℝ} (hq : 0 ≤ q) :
         simpa only [mul_zero, Real.cosh_zero] using (hc.continuousAt.tendsto :
           Tendsto (fun r : ℝ => Real.cosh (q * r)) (𝓝 0)
             (𝓝 (Real.cosh (q * 0))))
-      have hfun : hypSnDeriv q = fun r : ℝ => Real.cosh (q * r) := by
+      have hfun : hyperbolicSnDeriv q = fun r : ℝ => Real.cosh (q * r) := by
         funext r
-        simp [hypSnDeriv, hq0]
+        simp [hyperbolicSnDeriv, hq0]
       rw [hfun]
       exact hc0.mono_left inf_le_left
   convert hsn.inv_tendsto_nhdsGT_zero.atTop_mul_pos zero_lt_one hsd using 1
   simp only [Pi.inv_apply, inv_mul_eq_div]
 
-theorem hypSnRatio_tendsto (q : ℝ) :
-    Tendsto (fun r => hypSn q r / r) (𝓝[>] (0 : ℝ)) (𝓝 1) := by
-  have h := (hasDerivAt_hypSn q 0).tendsto_slope_zero_right
+theorem hyperbolicSnRatio_tendsto (q : ℝ) :
+    Tendsto (fun r => hyperbolicSn q r / r) (𝓝[>] (0 : ℝ)) (𝓝 1) := by
+  have h := (hasDerivAt_hyperbolicSn q 0).tendsto_slope_zero_right
   convert h using 1
   · funext r
-    simp [hypSn, div_eq_inv_mul, smul_eq_mul]
-  · simp [hypSnDeriv]
+    simp [hyperbolicSn, div_eq_inv_mul, smul_eq_mul]
+  · simp [hyperbolicSnDeriv]
 
-theorem hypSn_le_two (q : ℝ) :
-    ∀ᶠ r in 𝓝[>] (0 : ℝ), hypSn q r ≤ 2 * r := by
-  have hratio := (hypSnRatio_tendsto q).eventually
+theorem hyperbolicSn_le_two (q : ℝ) :
+    ∀ᶠ r in 𝓝[>] (0 : ℝ), hyperbolicSn q r ≤ 2 * r := by
+  have hratio := (hyperbolicSnRatio_tendsto q).eventually
     (Iio_mem_nhds (by norm_num : (1 : ℝ) < 2))
   filter_upwards [hratio, self_mem_nhdsWithin] with r hratio hr
   change 0 < r at hr
   calc
-    hypSn q r = (hypSn q r / r) * r := (div_mul_cancel₀ _ hr.ne').symm
+    hyperbolicSn q r = (hyperbolicSn q r / r) * r := (div_mul_cancel₀ _ hr.ne').symm
     _ ≤ 2 * r := mul_le_mul_of_nonneg_right hratio.le hr.le
 
-theorem hypDenDeriv_eq_mean
+theorem hyperbolicDenDeriv_eq_mean
     {q r : ℝ} {d : ℕ} (hq : 0 ≤ q) (hr : 0 < r) :
-    hypDensityDeriv q d r = hypMeanCurv q d r * hypDensity q d r := by
-  have hsn : hypSn q r ≠ 0 := ne_of_gt (hypSn_pos hq hr)
+    hyperbolicDensityDeriv q d r = hyperbolicMeanCurv q d r * hyperbolicDensity q d r := by
+  have hsn : hyperbolicSn q r ≠ 0 := ne_of_gt (hyperbolicSn_pos hq hr)
   cases d with
-  | zero => simp [hypDensityDeriv, hypMeanCurv, hypDensity]
+  | zero => simp [hyperbolicDensityDeriv, hyperbolicMeanCurv, hyperbolicDensity]
   | succ d =>
-      simp only [hypDensityDeriv, hypMeanCurv, hypDensity, Nat.cast_succ,
+      simp only [hyperbolicDensityDeriv, hyperbolicMeanCurv, hyperbolicDensity, Nat.cast_succ,
         Nat.succ_sub_one, pow_succ]
       field_simp
 
-theorem hypDensity_pos {q r : ℝ} {d : ℕ} (hq : 0 ≤ q) (hr : 0 < r) :
-    0 < hypDensity q d r := by
-  exact pow_pos (hypSn_pos hq hr) d
+theorem hyperbolicDensity_pos {q r : ℝ} {d : ℕ} (hq : 0 ≤ q) (hr : 0 < r) :
+    0 < hyperbolicDensity q d r := by
+  exact pow_pos (hyperbolicSn_pos hq hr) d
 
-theorem hasDerivAt_hypRatio
+theorem hasDerivAt_hyperbolicRatio
     {j j' m : ℝ → ℝ} {q r : ℝ} {d : ℕ}
     (hq : 0 ≤ q) (hr : 0 < r)
     (hj : HasDerivAt j (j' r) r)
     (hj' : j' r = m r * j r) :
-    HasDerivAt (fun x => j x / hypDensity q d x)
-      ((j r / hypDensity q d r) * (m r - hypMeanCurv q d r)) r := by
-  have hden : hypDensity q d r ≠ 0 := ne_of_gt (hypDensity_pos hq hr)
-  have h := hj.fun_div (hasDerivAt_hypDen q d r) hden
+    HasDerivAt (fun x => j x / hyperbolicDensity q d x)
+      ((j r / hyperbolicDensity q d r) * (m r - hyperbolicMeanCurv q d r)) r := by
+  have hden : hyperbolicDensity q d r ≠ 0 := ne_of_gt (hyperbolicDensity_pos hq hr)
+  have h := hj.fun_div (hasDerivAt_hyperbolicDen q d r) hden
   refine h.congr_deriv ?_
-  rw [hj', hypDenDeriv_eq_mean hq hr]
+  rw [hj', hyperbolicDenDeriv_eq_mean hq hr]
   field_simp [hden]
 
 theorem weightedMean_anti
@@ -263,33 +263,33 @@ theorem weightedMean_anti
     (hmle : ∀ r ∈ Ioo (0 : ℝ) b,
       m' r ≤ (d : ℝ) * q ^ 2 - m r ^ 2 / (d : ℝ)) :
     AntitoneOn
-      (fun r => hypSn q r ^ 2 * (m r - hypMeanCurv q d r))
+      (fun r => hyperbolicSn q r ^ 2 * (m r - hyperbolicMeanCurv q d r))
       (Ioo (0 : ℝ) b) := by
   have hdR : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hd
   let F : ℝ → ℝ := fun r =>
-    hypSn q r ^ 2 * (m r - hypMeanCurv q d r)
+    hyperbolicSn q r ^ 2 * (m r - hyperbolicMeanCurv q d r)
   let F' : ℝ → ℝ := fun r =>
-    2 * hypSn q r * hypSnDeriv q r * (m r - hypMeanCurv q d r) +
-      hypSn q r ^ 2 *
-        (m' r - ((d : ℝ) * q ^ 2 - hypMeanCurv q d r ^ 2 / (d : ℝ)))
+    2 * hyperbolicSn q r * hyperbolicSnDeriv q r * (m r - hyperbolicMeanCurv q d r) +
+      hyperbolicSn q r ^ 2 *
+        (m' r - ((d : ℝ) * q ^ 2 - hyperbolicMeanCurv q d r ^ 2 / (d : ℝ)))
   have hF (r : ℝ) (hr : r ∈ Ioo (0 : ℝ) b) : HasDerivAt F (F' r) r := by
-    have hs := (hasDerivAt_hypSn q r).pow 2
-    have hz := (hm r hr).sub (hasDerivAt_hypMean hq hr.1 hd)
+    have hs := (hasDerivAt_hyperbolicSn q r).pow 2
+    have hz := (hm r hr).sub (hasDerivAt_hyperbolicMean hq hr.1 hd)
     refine (hs.mul hz).congr_deriv ?_
     simp only [F', Nat.cast_ofNat, Nat.reduceSub, pow_one, Pi.sub_apply, Pi.pow_apply]
   have hFle (r : ℝ) (hr : r ∈ Ioo (0 : ℝ) b) : F' r ≤ 0 := by
     let D : ℝ := d
-    let S : ℝ := hypSn q r
-    let SD : ℝ := hypSnDeriv q r
+    let S : ℝ := hyperbolicSn q r
+    let SD : ℝ := hyperbolicSnDeriv q r
     let mm : ℝ := m r
-    let hh : ℝ := hypMeanCurv q d r
+    let hh : ℝ := hyperbolicMeanCurv q d r
     let mp : ℝ := m' r
     let hp : ℝ := D * q ^ 2 - hh ^ 2 / D
     have hD : 0 < D := by simpa only [D] using hdR
-    have hS : 0 < S := by simpa only [S] using hypSn_pos hq hr.1
+    have hS : 0 < S := by simpa only [S] using hyperbolicSn_pos hq hr.1
     have hweight : D * (2 * S * SD) = 2 * S ^ 2 * hh := by
       dsimp only [D, S, SD, hh]
-      rw [hypMeanCurv]
+      rw [hyperbolicMeanCurv]
       field_simp [ne_of_gt hS]
     have hmp : mp ≤ D * q ^ 2 - mm ^ 2 / D := by
       simpa only [mp, D, mm] using hmle r hr
@@ -336,70 +336,70 @@ theorem weightedMean_anti
       exact hFle r hr'
   simpa only [F] using hanti
 
-theorem mean_le_hyp
+theorem mean_le_hyperbolic
     {m m' : ℝ → ℝ} {q b : ℝ} {d : ℕ}
     (hq : 0 ≤ q) (hd : 0 < d)
     (hm : ∀ r ∈ Ioo (0 : ℝ) b, HasDerivAt m (m' r) r)
     (hmle : ∀ r ∈ Ioo (0 : ℝ) b,
       m' r ≤ (d : ℝ) * q ^ 2 - m r ^ 2 / (d : ℝ))
     (hlim : Tendsto
-      (fun r => hypSn q r ^ 2 * (m r - hypMeanCurv q d r))
+      (fun r => hyperbolicSn q r ^ 2 * (m r - hyperbolicMeanCurv q d r))
       (𝓝[>] (0 : ℝ)) (𝓝 0)) :
-    ∀ r ∈ Ioo (0 : ℝ) b, m r ≤ hypMeanCurv q d r := by
+    ∀ r ∈ Ioo (0 : ℝ) b, m r ≤ hyperbolicMeanCurv q d r := by
   have hanti := weightedMean_anti hq hd hm hmle
   intro r hr
   have hFr :
-      hypSn q r ^ 2 * (m r - hypMeanCurv q d r) ≤ 0 := by
+      hyperbolicSn q r ^ 2 * (m r - hyperbolicMeanCurv q d r) ≤ 0 := by
     apply ge_of_tendsto hlim
     filter_upwards [Ioo_mem_nhdsGT hr.1] with x hx
     have hxb : x ∈ Ioo (0 : ℝ) b := ⟨hx.1, hx.2.trans hr.2⟩
     exact hanti hxb hr hx.2.le
-  have hSpos : 0 < hypSn q r ^ 2 := sq_pos_of_pos (hypSn_pos hq hr.1)
+  have hSpos : 0 < hyperbolicSn q r ^ 2 := sq_pos_of_pos (hyperbolicSn_pos hq hr.1)
   nlinarith
 
-theorem mean_le_hyp_of_ratio
+theorem mean_le_hyperbolic_of_ratio
     {m m' R : ℝ → ℝ} {q b : ℝ} {d : ℕ}
     (hq : 0 ≤ q) (hd : 0 < d)
     (hm : ∀ r ∈ Ioo (0 : ℝ) b, HasDerivAt m (m' r) r)
     (hmle : ∀ r ∈ Ioo (0 : ℝ) b,
       m' r ≤ (d : ℝ) * q ^ 2 - m r ^ 2 / (d : ℝ))
     (hR : ∀ r ∈ Ioo (0 : ℝ) b,
-      HasDerivAt R (R r * (m r - hypMeanCurv q d r)) r)
+      HasDerivAt R (R r * (m r - hyperbolicMeanCurv q d r)) r)
     (hRpos : ∀ r ∈ Ioo (0 : ℝ) b, 0 < R r)
     (hRlower : ∃ C : ℝ, 0 < C ∧
       ∀ᶠ r in 𝓝[>] (0 : ℝ), C ≤ R r) :
-    ∀ r ∈ Ioo (0 : ℝ) b, m r ≤ hypMeanCurv q d r := by
+    ∀ r ∈ Ioo (0 : ℝ) b, m r ≤ hyperbolicMeanCurv q d r := by
   have hanti := weightedMean_anti hq hd hm hmle
   intro r hr
   by_contra hle
-  have hdiff : 0 < m r - hypMeanCurv q d r := sub_pos.mpr (lt_of_not_ge hle)
-  let c : ℝ := hypSn q r ^ 2 * (m r - hypMeanCurv q d r)
-  have hc : 0 < c := mul_pos (sq_pos_of_pos (hypSn_pos hq hr.1)) hdiff
+  have hdiff : 0 < m r - hyperbolicMeanCurv q d r := sub_pos.mpr (lt_of_not_ge hle)
+  let c : ℝ := hyperbolicSn q r ^ 2 * (m r - hyperbolicMeanCurv q d r)
+  have hc : 0 < c := mul_pos (sq_pos_of_pos (hyperbolicSn_pos hq hr.1)) hdiff
   have hweighted (x : ℝ) (hx : x ∈ Ioo (0 : ℝ) r) :
-      c ≤ hypSn q x ^ 2 * (m x - hypMeanCurv q d x) := by
+      c ≤ hyperbolicSn q x ^ 2 * (m x - hyperbolicMeanCurv q d x) := by
     dsimp only [c]
     have hxb : x ∈ Ioo (0 : ℝ) b := ⟨hx.1, hx.2.trans hr.2⟩
     exact hanti hxb hr hx.2.le
-  let W : ℝ → ℝ := fun x => hypSnDeriv q x / hypSn q x
+  let W : ℝ → ℝ := fun x => hyperbolicSnDeriv q x / hyperbolicSn q x
   let G : ℝ → ℝ := fun x => R x * Real.exp (c * W x)
   let G' : ℝ → ℝ := fun x =>
-    R x * (m x - hypMeanCurv q d x) * Real.exp (c * W x) +
-      R x * (Real.exp (c * W x) * (c * (-1 / hypSn q x ^ 2)))
+    R x * (m x - hyperbolicMeanCurv q d x) * Real.exp (c * W x) +
+      R x * (Real.exp (c * W x) * (c * (-1 / hyperbolicSn q x ^ 2)))
   have hG (x : ℝ) (hx : x ∈ Ioo (0 : ℝ) r) : HasDerivAt G (G' x) x := by
     have hxb : x ∈ Ioo (0 : ℝ) b := ⟨hx.1, hx.2.trans hr.2⟩
-    have hW := hasDerivAt_hypLog hq hx.1
+    have hW := hasDerivAt_hyperbolicLog hq hx.1
     have hExp := (hW.const_mul c).exp
     refine ((hR x hxb).mul hExp).congr_deriv ?_
     simp only [G', W]
   have hGnonneg (x : ℝ) (hx : x ∈ Ioo (0 : ℝ) r) : 0 ≤ G' x := by
     have hxb : x ∈ Ioo (0 : ℝ) b := ⟨hx.1, hx.2.trans hr.2⟩
-    have hS : 0 < hypSn q x ^ 2 := sq_pos_of_pos (hypSn_pos hq hx.1)
-    have hquot : c / hypSn q x ^ 2 ≤ m x - hypMeanCurv q d x := by
+    have hS : 0 < hyperbolicSn q x ^ 2 := sq_pos_of_pos (hyperbolicSn_pos hq hx.1)
+    have hquot : c / hyperbolicSn q x ^ 2 ≤ m x - hyperbolicMeanCurv q d x := by
       rw [div_le_iff₀ hS]
       simpa only [mul_comm] using hweighted x hx
     have heq : G' x =
         R x * Real.exp (c * W x) *
-          ((m x - hypMeanCurv q d x) - c / hypSn q x ^ 2) := by
+          ((m x - hyperbolicMeanCurv q d x) - c / hyperbolicSn q x ^ 2) := by
       dsimp only [G']
       ring
     rw [heq]
@@ -426,7 +426,7 @@ theorem mean_le_hyp_of_ratio
     exact hGmono hxr hy hx.2.le
   obtain ⟨C, hC, hClower⟩ := hRlower
   have hWtop : Tendsto W (𝓝[>] (0 : ℝ)) atTop := by
-    simpa only [W] using hypLog_tendsto hq
+    simpa only [W] using hyperbolicLog_tendsto hq
   have hExpTop : Tendsto (fun x => Real.exp (c * W x))
       (𝓝[>] (0 : ℝ)) atTop :=
     Real.tendsto_exp_atTop.comp (hWtop.const_mul_atTop hc)
@@ -446,32 +446,32 @@ theorem mean_le_hyp_of_ratio
     linarith
   exact hfalse.exists.elim fun _ hx => hx
 
-theorem hypRatio_anti
+theorem hyperbolicRatio_anti
     {j j' : ℝ → ℝ} {q a b : ℝ} {d : ℕ}
     (hq : 0 ≤ q) (ha : 0 ≤ a)
     (hj : ∀ r ∈ Ioo a b, HasDerivAt j (j' r) r)
     (hcross : ∀ r ∈ Ioo a b,
-      j' r * hypDensity q d r ≤ j r * hypDensityDeriv q d r) :
-    AntitoneOn (fun r => j r / hypDensity q d r) (Ioo a b) := by
+      j' r * hyperbolicDensity q d r ≤ j r * hyperbolicDensityDeriv q d r) :
+    AntitoneOn (fun r => j r / hyperbolicDensity q d r) (Ioo a b) := by
   refine ratio_anti_of_cross hj
-    (fun r _hr => hasDerivAt_hypDen q d r) ?_ hcross
+    (fun r _hr => hasDerivAt_hyperbolicDen q d r) ?_ hcross
   intro r hr
-  exact hypDensity_pos hq (lt_of_le_of_lt ha hr.1)
+  exact hyperbolicDensity_pos hq (lt_of_le_of_lt ha hr.1)
 
-theorem hypVolumeRatio_anti
+theorem hyperbolicVolumeRatio_anti
     {j j' : ℝ → ℝ} {q b : ℝ} {d : ℕ}
     (hq : 0 ≤ q)
     (hjcont : Continuous j)
     (hj : ∀ r ∈ Ioo (0 : ℝ) b, HasDerivAt j (j' r) r)
     (hcross : ∀ r ∈ Ioo (0 : ℝ) b,
-      j' r * hypDensity q d r ≤ j r * hypDensityDeriv q d r) :
+      j' r * hyperbolicDensity q d r ≤ j r * hyperbolicDensityDeriv q d r) :
     AntitoneOn
-      (fun r => (∫ x in 0..r, j x) / ∫ x in 0..r, hypDensity q d x)
+      (fun r => (∫ x in 0..r, j x) / ∫ x in 0..r, hyperbolicDensity q d x)
       (Ioo (0 : ℝ) b) := by
-  refine integralRatio_anti hjcont (hypDen_continuous q d) ?_ ?_
+  refine integralRatio_anti hjcont (hyperbolicDen_continuous q d) ?_ ?_
   · intro r hr
-    exact hypDensity_pos hq hr.1
-  · exact hypRatio_anti hq le_rfl hj hcross
+    exact hyperbolicDensity_pos hq hr.1
+  · exact hyperbolicRatio_anti hq le_rfl hj hcross
 
 end VolumeComparison
 end Riemannian

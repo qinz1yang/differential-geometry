@@ -76,8 +76,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicciCovariantJetJointSmoothness_add_smul linearizedRicciCovariantJetJointSmoothness_smul_add
   exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
   linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
-  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
-  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
@@ -2061,7 +2061,7 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
           linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2 C0f (δ := δ) (δ' := δ) ∧
           linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 4 C2f (δ := δ) (δ' := δ) ∧
           linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g₀ 2
-            (fun s => linearizedRicciOrderZeroCorrField (I := I) g₀ T 0 hδ hδZ s
+            (fun s => linearizedRicciOrderZeroCorrectionField (I := I) g₀ T 0 hδ hδZ s
               + (3 / 2 : ℝ) •
                 DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                   (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
@@ -2123,7 +2123,7 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
     ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact linearizedRicciCovariantJetJointSmoothness_add (I := I) (M := M) g₀ 2 C0ra C0lc hjC0ra hjC0lc
   · exact linearizedRicciCovariantJetJointSmoothness_add (I := I) (M := M) g₀ 4 C2ra C2lc hjC2ra hjC2lc
-  · have hfun : (fun s => linearizedRicciOrderZeroCorrField (I := I) g₀ T 0 hδ hδZ s
+  · have hfun : (fun s => linearizedRicciOrderZeroCorrectionField (I := I) g₀ T 0 hδ hδZ s
         + (3 / 2 : ℝ) •
           DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
             (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
@@ -2136,7 +2136,7 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
       funext s
       rw [show linearizedRicciOrderZeroField (I := I) g₀ T 0 hδ hδZ s =
           linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T 0 hδ hδZ s
-            + linearizedRicciOrderZeroCorrField (I := I) g₀ T 0 hδ hδZ s from rfl]
+            + linearizedRicciOrderZeroCorrectionField (I := I) g₀ T 0 hδ hδZ s from rfl]
       rw [show linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T 0 hδ hδZ s =
           DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
               (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
@@ -2347,7 +2347,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     exists_riemannLieDerivativeCorrection_curvatureDecomposition_data (I := I) (M := M) g₀ g_bg a
       ha_super hR_nn h13 (by norm_num : (1 : ℝ) / 3 ≤ 1 / 2)
   obtain ⟨Kcb, hKcb_nn, ε, hε_nn, hε_cap, hKcb⟩ :=
-    linearizedRicciOrderZeroCorrField_allOrder_tameEnvelope_interface (I := I) (M := M) g₀ a
+    linearizedRicciOrderZeroCorrectionField_allOrder_tameEnvelope_interface (I := I) (M := M) g₀ a
       ha_super hR_nn h13 (by norm_num : (1 : ℝ) / 3 ≤ 1 / 2)
   have hε₀_cap : 3 * Real.sqrt (Module.finrank ℝ E) * (3 * ε) ≤
       32 * deTurckTermFibreConst (Module.finrank ℝ E) ^ 3 -
@@ -2436,7 +2436,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     jointContMDiff_toModel_continuous_slice (I := I) g₀ 2 2 Ψ₀
       (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hj0 x
   set Φ₀ : ℝ → SmoothCcTensor g₀ 2 2 := fun s =>
-    (-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+    (-2 : ℝ) • (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
           hδT hδZ s
         + (3 / 2 : ℝ) •
           DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2471,7 +2471,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     unfold deTurckPhiZeroPathIntegral
     congr 1
   have halg : ∀ s : ℝ, Ψ₀ s =
-      (-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+      (-2 : ℝ) • (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
             hδT hδZ s
           + (3 / 2 : ℝ) •
             DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2491,7 +2491,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     simp only [hΨ₀def]
     rw [show linearizedRicciOrderZeroField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s =
         linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
-          + linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+          + linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
               hδT hδZ s from rfl]
     rw [show linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
           hδT hδZ s =
@@ -2550,7 +2550,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
       refine Real.sqrt_le_sqrt ?_
       have hΛrl_sq : (0 : ℝ) ≤ Λrl ^ 2 := sq_nonneg _
       have hadd1 := lieCorrectionZero_riemannianFiberNormSq_toSection_add_le (I := I) (M := M) g₀ 2 2
-        ((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+        ((-2 : ℝ) • (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
             hδT hδZ t
           + (3 / 2 : ℝ) •
             DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2561,7 +2561,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
               (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)))
         (C0f t) x
       have hsm : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-          (((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
+          (((-2 : ℝ) • (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
             + (3 / 2 : ℝ) •
               DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2572,7 +2572,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t))).toSection
             x) =
           4 * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-            ((linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
+            ((linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
               + (3 / 2 : ℝ) •
                 DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2582,7 +2582,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
                   (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t)).toSection
               x) := by
-        rw [show (((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
+        rw [show (((-2 : ℝ) • (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
             + (3 / 2 : ℝ) •
               DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2592,7 +2592,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
                 (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t))).toSection
               x) =
-            (-2 : ℝ) • ((linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
+            (-2 : ℝ) • ((linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
               + (3 / 2 : ℝ) •
                 DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2605,7 +2605,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
           rw [SmoothCcTensor.toSection_smul]; rfl]
         rw [riemannianFiberNormSq_smul_value_tame]
         norm_num
-      have hcombo_eq : linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
+      have hcombo_eq : linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀
             (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
           + (3 / 2 : ℝ) •
             DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2623,7 +2623,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
               hδT hδZ t =
             linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
                 hδT hδZ t
-              + linearizedRicciOrderZeroCorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
+              + linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
                 hδT hδZ t from rfl]
         rw [show linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
               hδT hδZ t =
@@ -2635,7 +2635,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
                 (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t) from rfl]
         module
       have hcombo_split : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
-          ((linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
+          ((linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ t
             + (3 / 2 : ℝ) •
               DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2783,7 +2783,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
           (mul_le_mul_of_nonneg_left (hwin q hq_le) (hKrl_nn q))
         have h1 : ‖iteratedCovGrad (I := I) g₀ 2 2 q (Φ₀ s)‖ ^ 2 ≤
             2 * ‖iteratedCovGrad (I := I) g₀ 2 2 q
-              ((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
+              ((-2 : ℝ) • (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
                 + (3 / 2 : ℝ) •
                   DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2796,7 +2796,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
           simp only [hΦ₀def]
           exact lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) g₀ 2 2 q _ _
         have h2 : ‖iteratedCovGrad (I := I) g₀ 2 2 q
-            ((-2 : ℝ) • (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
+            ((-2 : ℝ) • (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
               + (3 / 2 : ℝ) •
                 DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2806,7 +2806,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
                   (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)))‖ ^ 2 =
             4 * ‖iteratedCovGrad (I := I) g₀ 2 2 q
-              (linearizedRicciOrderZeroCorrField (I := I) g₀ T₀
+              (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T₀
                   (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s
                 + (3 / 2 : ℝ) •
                   DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
@@ -2996,7 +2996,7 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
     deTurckLieFirstOrderCoeff_metricPerturbationPath_allOrder_tameEnvelope (I := I) (M := M) g₀ g_bg a
       ha_super hR_nn h13
   obtain ⟨KC, hKC_nn, hKC⟩ :=
-    linearizedRicciFirstOrderCorrField_allOrder_tameEnvelope_interface (I := I) (M := M) g₀ a
+    linearizedRicciFirstOrderCorrectionField_allOrder_tameEnvelope_interface (I := I) (M := M) g₀ a
       ha_super hR_nn h13
   refine ⟨Real.sqrt (8 * ΛCr ^ 2 + 2 * ΛL1), Real.sqrt_nonneg _,
     fun i => ∑ q ∈ Finset.range (i + 1), (16 * KB q + 16 * KC q + 2 * KL q),
@@ -3190,13 +3190,13 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
               (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)‖ ^ 2 +
             2 * ‖iteratedCovGrad (I := I) g₀ 3 2 q
-              (linearizedRicciFirstOrderCorrField (I := I) g₀ T₀
+              (linearizedRicciFirstOrderCorrectionField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s)‖ ^ 2 := by
           rw [show linearizedRicciFirstOrderField (I := I) g₀ T₀
               (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s =
               linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s +
-              linearizedRicciFirstOrderCorrField (I := I) g₀ T₀
+              linearizedRicciFirstOrderCorrectionField (I := I) g₀ T₀
                 (0 : SmoothCcTensor g₀ 0 2) hδT hδZ s from rfl]
           exact lieCorrectionZero_normSq_iteratedCovGrad_add_le (I := I) g₀ 3 2 q _ _
         have hexp : (16 * KB q + 16 * KC q + 2 * KL q) *

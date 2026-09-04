@@ -190,12 +190,12 @@ theorem covGrad_homTensorRSFieldApply_eq (g : SmoothRiemannianMetric I M) (r a c
           (covGrad (I := I) (M := M) g r a W) :=
   covGrad_homTensorRSApply_eq (I := I) (M := M) g r a c (fun x : M => Q x) Q.contMDiff W
 
-def castHomTensorRSFieldTgt {c c' : ℕ} (r a : ℕ) (h : c = c')
+def castHomTensorRSFieldTargetRank {c c' : ℕ} (r a : ℕ) (h : c = c')
     (Q : HomTensorRSField (E := E) (M := M) r a c I) :
     HomTensorRSField (E := E) (M := M) r a c' I :=
   h ▸ Q
 
-def castHomTensorRSFieldSrc {a a' : ℕ} (r c : ℕ) (h : a = a')
+def castHomTensorRSFieldSourceRank {a a' : ℕ} (r c : ℕ) (h : a = a')
     (Q : HomTensorRSField (E := E) (M := M) r a c I) :
     HomTensorRSField (E := E) (M := M) r a' c I :=
   h ▸ Q
@@ -207,8 +207,8 @@ theorem homTensorRSFieldApply_castCcTensorRank {a a' c c' : ℕ} (g : SmoothRiem
     (Q : HomTensorRSField (E := E) (M := M) r a c I) (V : SmoothCcTensor g r a) :
     castCcTensorRank g r hc (homTensorRSFieldApply (I := I) (M := M) g r a c Q V) =
       homTensorRSFieldApply (I := I) (M := M) g r a' c'
-        (castHomTensorRSFieldSrc (E := E) (M := M) r c' ha
-        (castHomTensorRSFieldTgt (E := E) (M := M) r a hc Q)) (castCcTensorRank g r ha V) := by
+        (castHomTensorRSFieldSourceRank (E := E) (M := M) r c' ha
+        (castHomTensorRSFieldTargetRank (E := E) (M := M) r a hc Q)) (castCcTensorRank g r ha V) := by
   subst ha; subst hc; rfl
 end Connection
 end Geometry

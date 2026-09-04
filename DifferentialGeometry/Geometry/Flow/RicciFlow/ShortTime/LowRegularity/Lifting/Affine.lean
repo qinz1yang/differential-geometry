@@ -113,7 +113,7 @@ abbrev LowA1CorePair (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
 variable {g}
 
 
-theorem lowerScaleFirstOrderActionSecondToFirstOrder_core {hρ : 0 ≤ ρ} {hδ0 : 0 ≤ δ} {hδ_le : δ ≤ 1 / 3}
+theorem lowerScaleFirstOrderActionSecondToFirstOrder_apply_ccToHsLin {hρ : 0 ≤ ρ} {hδ0 : 0 ≤ δ} {hδ_le : δ ≤ 1 / 3}
     {hreal : ∀ S : SmoothCcTensor g 0 2,
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) S‖ ≤ ρ →
         gFibreOpBound (I := I) (M := M) g
@@ -428,10 +428,10 @@ theorem deTurckRemainderOnLowerState_affine
                   (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
                   (ccToHsLin (I := I) (M := M) g₀ 2 (3 : ℝ) S))) from rfl,
         e1,
-        lowRadialH3_core (I := I) (M := M) g₀ hρ S,
-        lowRadialHs_core (I := I) (M := M) g₀ hρ.le S,
+        lowRadialH3_apply_ccToHsLin (I := I) (M := M) g₀ hρ S,
+        lowRadialHs_apply_ccToHsLin (I := I) (M := M) g₀ hρ.le S,
         hA2core S, ← hF, ← hS', e6, e7,
-        lowerScaleForce_core (I := I) (M := M) g₀,
+        lowerScaleForce_eq_ccTensorToHs (I := I) (M := M) g₀,
         ← ccTensorToHs_add, ← ccTensorToHs_add]
       refine congrArg (ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)) ?_
       have hz0 := deTurckRem_zero (I := I) (M := M) g₀ g₀

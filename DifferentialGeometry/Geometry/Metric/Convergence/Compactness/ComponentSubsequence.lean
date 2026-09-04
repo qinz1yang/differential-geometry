@@ -9,7 +9,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 
@@ -33,7 +33,7 @@ theorem exists_cInf_subseq_finiteFamily
     (hbdd : ∀ p ∈ s, ∀ r : ℕ, ∀ K : Set E, IsCompact K →
         ∃ Mr : Real, ∀ k, ∀ x ∈ K, ‖iteratedFDeriv Real r (Φ p k) x‖ ≤ Mr) :
     ∃ (φ : ℕ → ℕ), StrictMono φ ∧ ∀ p ∈ s,
-      ∃ Φinf : E → F, MapCInfConvOnCompacts (Set.univ : Set E) (fun k => Φ p (φ k)) Φinf := by
+      ∃ Φinf : E → F, MapCInfConvergenceOnCompacts (Set.univ : Set E) (fun k => Φ p (φ k)) Φinf := by
   classical
   revert hΦ hbdd
   induction s using Finset.induction with
@@ -69,7 +69,7 @@ theorem exists_framePairs_diag
       tsupport χ ⊆ (extChartAt I x₀).target ∧
       (∀ y ∈ K₀, χ (extChartAt I x₀ y) = 1) ∧
       ∀ (i j : Fin (Module.finrank Real E)), ∃ Φinf : E → Real,
-        MapCInfConvOnCompacts (Set.univ : Set E)
+        MapCInfConvergenceOnCompacts (Set.univ : Set E)
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef
               (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k)))) 0) w
@@ -115,7 +115,7 @@ theorem exists_pairs_refs
       tsupport χ ⊆ (extChartAt I x₀).target ∧
       (∀ y ∈ K₀, χ (extChartAt I x₀ y) = 1) ∧
       ∀ (i j : Fin (Module.finrank Real E)), ∃ Φinf : E → Real,
-        MapCInfConvOnCompacts (Set.univ : Set E)
+        MapCInfConvergenceOnCompacts (Set.univ : Set E)
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gBase
               (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k)))) 0) w
@@ -164,7 +164,7 @@ theorem framePairs_pinned
       tsupport χ ⊆ (extChartAt I x₀).target ∧
       (∀ y ∈ K₀, χ (extChartAt I x₀ y) = 1) ∧
       ∀ (i j : Fin (Module.finrank Real E)),
-        MapCInfConvOnCompacts (Set.univ : Set E)
+        MapCInfConvergenceOnCompacts (Set.univ : Set E)
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef
               (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k)))) 0) w
@@ -245,7 +245,7 @@ theorem pairs_pinned_refs
       tsupport χ ⊆ (extChartAt I x₀).target ∧
       (∀ y ∈ K₀, χ (extChartAt I x₀ y) = 1) ∧
       ∀ (i j : Fin (Module.finrank Real E)),
-        MapCInfConvOnCompacts (Set.univ : Set E)
+        MapCInfConvergenceOnCompacts (Set.univ : Set E)
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gBase
               (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k)))) 0) w
@@ -309,7 +309,7 @@ theorem pairs_pinned_refs
   rw [hpin] at hΦinf
   exact hΦinf
 
-theorem exists_tower_conv
+theorem exists_tower_convergence
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
       metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C)
@@ -322,7 +322,7 @@ theorem exists_tower_conv
       (extChartAt I x₀ '' interior K₀ ⊆ U) ∧ Set.EqOn χ 1 U ∧
       ∀ (a : ℕ) (V : Fin (a + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
           (TangentSpace I : M → Type _)),
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef
               (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k)))) a) w
@@ -347,15 +347,15 @@ theorem exists_tower_conv
     have hzK₀ : (extChartAt I x₀).symm z ∈ K₀ := hUKc z hz
     have := hχ1 ((extChartAt I x₀).symm z) hzK₀
     rwa [(extChartAt I x₀).right_inv hz.1] at this
-  have hImg : extChartAt I x₀ '' interior K₀ ⊆ U := by
+  have hImage : extChartAt I x₀ '' interior K₀ ⊆ U := by
     rintro z ⟨y, hy, rfl⟩
     have hysrc : y ∈ (extChartAt I x₀).source := by
       rw [extChartAt_source]; exact hK₀chart (interior_subset hy)
     exact ⟨(extChartAt I x₀).map_source hysrc, by
       rw [Set.mem_preimage, (extChartAt I x₀).left_inv hysrc]; exact hy⟩
-  refine ⟨ψ, χ, U, hψ, hUopen, hImg, hχU, fun a V => ?_⟩
+  refine ⟨ψ, χ, U, hψ, hUopen, hImage, hχU, fun a V => ?_⟩
   have hpairsU : ∀ (i j : Fin (Module.finrank Real E)),
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
           (fun w : M => (covDerivOfField (I := I) gRef
             (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k)))) 0) w
@@ -389,7 +389,7 @@ theorem exists_tower_refs
       (extChartAt I x₀ '' interior K₀ ⊆ U) ∧ Set.EqOn χ 1 U ∧
       ∀ (a : ℕ) (V : Fin (a + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
           (TangentSpace I : M → Type _)),
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gBase
               (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k)))) a) w
@@ -416,7 +416,7 @@ theorem exists_tower_refs
     have hzK₀ : (extChartAt I x₀).symm z ∈ K₀ := hUKc z hz
     have := hχ1 ((extChartAt I x₀).symm z) hzK₀
     rwa [(extChartAt I x₀).right_inv hz.1] at this
-  have hImg : extChartAt I x₀ '' interior K₀ ⊆ U := by
+  have hImage : extChartAt I x₀ '' interior K₀ ⊆ U := by
     rintro z ⟨y, hy, rfl⟩
     have hysrc : y ∈ (extChartAt I x₀).source := by
       rw [extChartAt_source]
@@ -424,9 +424,9 @@ theorem exists_tower_refs
     exact ⟨(extChartAt I x₀).map_source hysrc, by
       rw [Set.mem_preimage, (extChartAt I x₀).left_inv hysrc]
       exact hy⟩
-  refine ⟨ψ, χ, U, hψ, hUopen, hImg, hχU, fun a V => ?_⟩
+  refine ⟨ψ, χ, U, hψ, hUopen, hImage, hχU, fun a V => ?_⟩
   have hpairsU : ∀ (i j : Fin (Module.finrank Real E)),
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
           (fun w : M => (covDerivOfField (I := I) gBase
             (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k)))) 0) w
@@ -445,7 +445,7 @@ theorem exists_tower_refs
       (Tensor0SBundle.metricTensorField (I := I) gInf) x₀ hχcd htsupp hUopen hχU
       hUKc Finset.univ frame hspan hpairsU V) a V
 
-theorem componentConv_covDeriv_of_chartCInf
+theorem componentConvergence_covDeriv_of_chartCInf
     (gRef : SmoothRiemannianMetric I M) (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
       metricCovDerivNorm (I := I) q (gSeq k) gRef z ≤ C)
@@ -463,12 +463,12 @@ theorem componentConv_covDeriv_of_chartCInf
   classical
   have : LocallyCompactSpace H := I.locallyCompactSpace
   have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
-  obtain ⟨K₀, hK₀cpt, hxint, hK₀src⟩ :=
+  obtain ⟨K₀, hK₀compact, hxint, hK₀source⟩ :=
     exists_compact_subset (chartAt H x).open_source (mem_chart_source H x)
-  obtain ⟨ψ, χ, U, hψ, hUopen, hImg, hχU, htower⟩ :=
-    exists_tower_conv (I := I) gRef gSeq hbdd x hK₀cpt hK₀src φ gInf hconv
+  obtain ⟨ψ, χ, U, hψ, hUopen, hImage, hχU, htower⟩ :=
+    exists_tower_convergence (I := I) gRef gSeq hbdd x hK₀compact hK₀source φ gInf hconv
   refine ⟨ψ, hψ, ?_⟩
-  have hxU : extChartAt I x x ∈ U := hImg ⟨x, hxint, rfl⟩
+  have hxU : extChartAt I x x ∈ U := hImage ⟨x, hxint, rfl⟩
   set V : Fin (a + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
     fun q => (ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞)) x (b (I0 q))).choose
     with hVdef
@@ -567,7 +567,7 @@ private def TowerExtractor
         (extChartAt I x₀ '' interior K₀ ⊆ U) ∧ Set.EqOn χ 1 U ∧
         ∀ (a : ℕ) (V : Fin (a + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
             (TangentSpace I : M → Type _)),
-          MapCInfConvOnCompacts U
+          MapCInfConvergenceOnCompacts U
             (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
               (fun w : M => (covDerivOfField (I := I) gRef
                 (Tensor0SBundle.metricTensorField (I := I) (gSeq (φ (ψ k)))) a) w
@@ -592,10 +592,10 @@ private theorem exists_patch_core
   classical
   have : LocallyCompactSpace H := I.locallyCompactSpace
   have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
-  obtain ⟨K₀, hK₀cpt, hxK₀int, hK₀src⟩ :=
+  obtain ⟨K₀, hK₀compact, hxK₀int, hK₀source⟩ :=
     exists_compact_subset (chartAt H x).open_source (mem_chart_source H x)
   choose frame hframeσ using
-    (fun i => exists_section_eqOn_compact (I := I) x (Module.finBasis Real E i) hK₀cpt hK₀src)
+    (fun i => exists_section_eqOn_compact (I := I) x (Module.finBasis Real E i) hK₀compact hK₀source)
   obtain ⟨basisE, u', εgf, hu'open, hxu', hu'sub, -, -, -, -, -, hrev⟩ :=
     exists_goodFrame_compBound (I := I) gRef x
   obtain ⟨C, hCcpt, hxCint, hCsub⟩ :=
@@ -603,19 +603,19 @@ private theorem exists_patch_core
   refine ⟨interior C, C, isOpen_interior, hxCint, hCcpt, interior_subset, fun ρ hρ => ?_⟩
   have hconv' : ∀ y : M, Filter.Tendsto (fun m => (gSeq ((φ₀ ∘ ρ) m)).inner y) Filter.atTop
       (nhds (gInf.inner y)) := fun y => (hconv y).comp hρ.tendsto_atTop
-  obtain ⟨ψ, χ, U, hψ, hUopen, hImg, hχU, htower⟩ :=
-    hTower x K₀ hK₀cpt hK₀src (φ₀ ∘ ρ) gInf hconv'
+  obtain ⟨ψ, χ, U, hψ, hUopen, hImage, hχU, htower⟩ :=
+    hTower x K₀ hK₀compact hK₀source (φ₀ ∘ ρ) gInf hconv'
   refine ⟨ψ, hψ, fun p ε hε => ?_⟩
   have hCu' : C ⊆ u' := fun z hz => (hCsub hz).1
   have hCK₀ : C ⊆ interior K₀ := fun z hz => (hCsub hz).2
   have hCbase : C ⊆ (trivializationAt E (TangentSpace I : M → Type _) x).baseSet :=
     fun z hz => hu'sub (hCu' hz)
   have hCsrc : C ⊆ (extChartAt I x).source := by
-    rw [extChartAt_source]; exact fun z hz => hK₀src (interior_subset (hCK₀ hz))
+    rw [extChartAt_source]; exact fun z hz => hK₀source (interior_subset (hCK₀ hz))
   have hEcC : IsCompact (extChartAt I x '' C) :=
     hCcpt.image_of_continuousOn ((continuousOn_extChartAt (I := I) x).mono hCsrc)
   have hEcCU : extChartAt I x '' C ⊆ U := by
-    rintro w ⟨z, hz, rfl⟩; exact hImg ⟨z, hCK₀ hz, rfl⟩
+    rintro w ⟨z, hz, rfl⟩; exact hImage ⟨z, hCK₀ hz, rfl⟩
   set Vfun : (a : ℕ) → (Fin (a + 2) → Fin (Module.finrank Real E)) →
       Fin (a + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
     fun a I0 q => ∑ j : Fin (Module.finrank Real E),
@@ -724,7 +724,7 @@ theorem exists_uniform_patch
           ∀ z ∈ C, metricDerivNorm (I := I) a (gSeq (φ₀ (ρ (ψ k)))) gInf gRef z < ε := by
   apply exists_patch_core (I := I) gRef gSeq ?_ φ₀ gInf hconv x
   intro x₀ K₀ hK₀ hK₀chart φ gLim hLim
-  exact exists_tower_conv (I := I) gRef gSeq hbdd x₀ hK₀ hK₀chart φ gLim hLim
+  exact exists_tower_convergence (I := I) gRef gSeq hbdd x₀ hK₀ hK₀chart φ gLim hLim
 
 theorem exists_patch_refs
     (gBase : SmoothRiemannianMetric I M)
@@ -751,7 +751,7 @@ theorem metricPreconvInf (hne : Nonempty M)
     (hlow : ∃ c : Real, 0 < c ∧ ∀ (k : ℕ) (x : M) (v : TangentSpace I x),
       c * gRef.inner x v v ≤ (gSeq k).inner x v v) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ gInf : SmoothRiemannianMetric I M,
-      MetricCInfConvOnCompacts (I := I) (fun k => gSeq (φ k)) gInf gRef := by
+      MetricCInfConvergenceOnCompacts (I := I) (fun k => gSeq (φ k)) gInf gRef := by
   classical
   obtain ⟨φ₀, hφ₀, gInf, hconv⟩ := metricPreconv_gInf (I := I) hne gRef gSeq hbdd hlow
   choose W C hWopen hxW hCcpt hWC hpatch using
@@ -788,7 +788,7 @@ theorem metricPreconvInf (hne : Nonempty M)
       simp only [Nat.sub_add_cancel (show m ≤ k by omega)] at hval
       exact hval)
   refine ⟨φ₀ ∘ φd, hφ₀.comp hφd, gInf,
-    metricCInfConvOnCompacts_of_normConv (I := I) (fun k => gSeq ((φ₀ ∘ φd) k)) gInf gRef ?_⟩
+    metricCInfConvergenceOnCompacts_of_normConvergence (I := I) (fun k => gSeq ((φ₀ ∘ φd) k)) gInf gRef ?_⟩
   intro p K hK ε hε
   obtain ⟨F, hF⟩ := hK.elim_finite_subcover (fun n => W (e n)) (fun n => hWopen (e n))
     (fun z hz => hcovN (Set.mem_univ z))
@@ -811,7 +811,7 @@ theorem metricCInf_refs (hne : Nonempty M)
     (hlow : ∃ c : Real, 0 < c ∧ ∀ (k : ℕ) (x : M) (v : TangentSpace I x),
       c * gBase.inner x v v ≤ (gSeq k).inner x v v) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ gInf : SmoothRiemannianMetric I M,
-      MetricCInfConvOnCompacts (I := I) (fun k => gSeq (φ k)) gInf gBase := by
+      MetricCInfConvergenceOnCompacts (I := I) (fun k => gSeq (φ k)) gInf gBase := by
   classical
   obtain ⟨φ₀, hφ₀, gInf, hconv⟩ :=
     metricPreconv_refs (I := I) hne gBase gRef gSeq hbdd hlow
@@ -851,7 +851,7 @@ theorem metricCInf_refs (hne : Nonempty M)
       simp only [Nat.sub_add_cancel (show m ≤ k by omega)] at hval
       exact hval)
   refine ⟨φ₀ ∘ φd, hφ₀.comp hφd, gInf,
-    metricCInfConvOnCompacts_of_normConv (I := I)
+    metricCInfConvergenceOnCompacts_of_normConvergence (I := I)
       (fun k => gSeq ((φ₀ ∘ φd) k)) gInf gBase ?_⟩
   intro p K hK ε hε
   obtain ⟨F, hF⟩ := hK.elim_finite_subcover (fun n => W (e n)) (fun n => hWopen (e n))
@@ -867,5 +867,5 @@ theorem metricCInf_refs (hne : Nonempty M)
     hk0fn n hn k (le_trans (Finset.le_sup (f := fun n => k0fn n.1 n.2)
       (Finset.mem_attach F ⟨n, hn⟩)) hk) a ha z (hWC (e n) hzw)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

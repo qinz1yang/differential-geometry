@@ -379,10 +379,10 @@ private lemma tensorChartComponentRawEuclidPull_contDiffOn
       (chartTargetEuclid (I := I) (M := M) α)
       (extChartAt I α).target := by
     intro y hy
-    rcases hy with ⟨z, hz_tgt, hz_eq⟩
+    rcases hy with ⟨z, hz_target, hz_eq⟩
     have h_eq : (toEuclidean (E := E)).symm y = z := by
       rw [← hz_eq]; exact (toEuclidean (E := E)).symm_apply_apply z
-    rw [h_eq]; exact hz_tgt
+    rw [h_eq]; exact hz_target
   exact h_raw_pull_contDiffOn.comp
     h_toEucl_symm_smooth.contDiffOn h_maps
 
@@ -627,7 +627,7 @@ theorem tensorPouSobolevHsNorm_neg
   rw [h_abs, ENNReal.ofReal_one, one_mul]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tensorPouSobolevHsNorm_inner_integral_lt_top'
+theorem tensorPouSobolevHsNorm_chartComponent_integral_lt_top
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -751,12 +751,12 @@ theorem tensorPouSobolevHsNorm_inner_integral_lt_top'
         refine hSymmCont.comp h_toEucl_cont.continuousOn ?_
         intro y hy
         unfold chartTargetEuclid at hy
-        obtain ⟨z, hz_tgt, hz_eq⟩ := hy
+        obtain ⟨z, hz_target, hz_eq⟩ := hy
         rw [← hz_eq]
         change (toEuclidean (E := E)).symm
             ((toEuclidean (E := E)) z) ∈ (extChartAt I α).target
         rw [(toEuclidean (E := E)).symm_apply_apply]
-        exact hz_tgt
+        exact hz_target
       exact hPOU_cont.comp_continuousOn' h_inner
     have h_iter_contOn : ContinuousOn
         (iteratedFDeriv ℝ j
@@ -928,7 +928,7 @@ theorem tensorPouSobolevHsNorm_lt_top
   intro j _
   refine ENNReal.sum_lt_top.mpr ?_
   intro basisIdx _
-  exact tensorPouSobolevHsNorm_inner_integral_lt_top'
+  exact tensorPouSobolevHsNorm_chartComponent_integral_lt_top
     (I := I) (M := M) g r s T α IJ.1 IJ.2 j basisIdx
 
 noncomputable def tensorPouSobolevHsNormSq

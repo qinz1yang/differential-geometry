@@ -27,27 +27,27 @@ variable {D : RealTimeInterval}
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_lRegCurve_adaptedFrame
+theorem exists_lRegularizedCurve_adaptedFrame
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {b : Real}
-    (hb : 0 < b) (hbdom : b ∈ lRegDomain S T x Z) :
+    (hb : 0 < b) (hbdom : b ∈ lRegularizedDomain S T x Z) :
     ∃ (P : Fin (Module.finrank Real E) →
-          ∀ s, TangentSpace I (lRegCurve S T x Z s))
+          ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
         (Ω : Set Real),
       IsOpen Ω ∧ Set.Icc (0 : Real) b ⊆ Ω ∧
       (∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
         (fun s : Real ↦
           (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-            (lRegCurve S T x Z s) (P i s) : TangentBundle I M)) Ω) ∧
-      (∀ i, IsLAdapted S T (lRegCurve S T x Z) (P i) Ω) ∧
+            (lRegularizedCurve S T x Z s) (P i s) : TangentBundle I M)) Ω) ∧
+      (∀ i, IsLAdapted S T (lRegularizedCurve S T x Z) (P i) Ω) ∧
       ∀ i j,
-        (S.base.metric (T - b ^ 2)).inner (lRegCurve S T x Z b)
+        (S.base.metric (T - b ^ 2)).inner (lRegularizedCurve S T x Z b)
             (P i b) (P j b) = if i = j then 1 else 0 := by
   classical
   obtain ⟨rho, a, d, ha, hbd, hrho, hrho_id, _hrho_deriv, hrho_dom⟩ :=
-    exists_lRegDomain_smoothGerm S T x Z hb hbdom
-  let alpha : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
+    exists_lRegularizedDomain_smoothGerm S T x Z hb hbdom
+  let alpha : Real → M := fun s ↦ lRegularizedCurve S T x Z (rho s)
   have hrho_m : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞ rho :=
     contMDiff_iff_contDiff.mpr hrho
@@ -58,14 +58,14 @@ theorem exists_lRegCurve_adaptedFrame
     contMDiff_const.prodMk hrho_m
   have halpha : ContMDiff (modelWithCornersSelf Real Real) I ∞ alpha := by
     rw [← contMDiffOn_univ]
-    exact (lRegCurve_smoothOn S hS T x).comp hpair.contMDiffOn
+    exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
       (fun s _hs ↦ by
-        change rho s ∈ lRegDomain S T x Z
+        change rho s ∈ lRegularizedDomain S T x Z
         exact hrho_dom s)
   have hreg : ∀ s ∈ Set.Ioo a d, T - s ^ 2 ∈ D.regular := by
     intro s hs
     have hsIcc : s ∈ Set.Icc a d := ⟨hs.1.le, hs.2.le⟩
-    have hsreg := lRegDomain_reg S T x Z (hrho_dom s)
+    have hsreg := lRegularizedDomain_regularity S T x Z (hrho_dom s)
     simpa only [hrho_id hsIcc, id_eq] using hsreg
   let q := S.base.metric (T - b ^ 2)
   obtain ⟨basis, hbasis⟩ :=
@@ -82,7 +82,7 @@ theorem exists_lRegCurve_adaptedFrame
     exact hseg_i i hs
   have hΩsub (s : Real) (hs : s ∈ Ω) : s ∈ Set.Ioo a d := by
     exact hsub_i 0 ((Set.mem_iInter.mp hs) 0)
-  let gamma : Real → M := lRegCurve S T x Z
+  let gamma : Real → M := lRegularizedCurve S T x Z
   let P : Fin (Module.finrank Real E) → ∀ s, TangentSpace I (gamma s) :=
     fun i s ↦ (R i s : E)
   have hbase (s : Real) (hs : s ∈ Ω) : alpha s = gamma s := by

@@ -296,31 +296,31 @@ theorem framedRatio_anti
         r ^ d * normalChartDensity (I := I) g p
             (r • tangentSpaceModelContinuousLinearEquiv (I := I) p
               (normalFrame (I := I) g p u)) /
-          hypDensity q d r)
+          hyperbolicDensity q d r)
       (Ioo (0 : Real) b)) :
     AntitoneOn
       (fun r =>
         r ^ d * paramDensity (I := I) g (framedExpDiffeo (I := I) g p)
             (r • u) /
-          hypDensity q d r)
+          hyperbolicDensity q d r)
       (Ioo (0 : Real) b) := by
   obtain ⟨c, hc, hdensity⟩ := exists_framed_den (I := I) g p
   intro r hr s hs hrs
   calc
     s ^ d * paramDensity (I := I) g (framedExpDiffeo (I := I) g p) (s • u) /
-          hypDensity q d s =
+          hyperbolicDensity q d s =
         c * (s ^ d * normalChartDensity (I := I) g p
             (s • tangentSpaceModelContinuousLinearEquiv (I := I) p
-              (normalFrame (I := I) g p u)) / hypDensity q d s) := by
+              (normalFrame (I := I) g p u)) / hyperbolicDensity q d s) := by
       rw [hdensity (s • u) (hsrc hs), map_smul,
         (tangentSpaceModelContinuousLinearEquiv (I := I) p).map_smul]
       ring
     _ ≤ c * (r ^ d * normalChartDensity (I := I) g p
             (r • tangentSpaceModelContinuousLinearEquiv (I := I) p
-              (normalFrame (I := I) g p u)) / hypDensity q d r) :=
+              (normalFrame (I := I) g p u)) / hyperbolicDensity q d r) :=
       mul_le_mul_of_nonneg_left (hnormal hr hs hrs) hc.le
     _ = r ^ d * paramDensity (I := I) g
-          (framedExpDiffeo (I := I) g p) (r • u) / hypDensity q d r := by
+          (framedExpDiffeo (I := I) g p) (r • u) / hyperbolicDensity q d r := by
       rw [hdensity (r • u) (hsrc hr), map_smul,
         (tangentSpaceModelContinuousLinearEquiv (I := I) p).map_smul]
       ring

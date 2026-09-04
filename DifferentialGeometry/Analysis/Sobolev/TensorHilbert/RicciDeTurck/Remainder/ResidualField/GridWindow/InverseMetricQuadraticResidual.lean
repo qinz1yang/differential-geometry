@@ -350,7 +350,7 @@ private lemma cometricDoubleTraceFib_toModel_center (p : ℕ) (x : M)
   rw [modelDoubleTrace_apply (E := E) p (cometricLmodel (I := I) g₀ x)
     (Tensor0SSpace.toModel D) m]
   exact cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ (s := p) x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel D) m
 
 omit [I.Boundaryless] in

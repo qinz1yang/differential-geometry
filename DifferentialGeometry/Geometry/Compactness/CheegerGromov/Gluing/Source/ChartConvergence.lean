@@ -14,7 +14,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -36,7 +36,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 
 omit [Module.Finite ℝ E] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank Real E)] in
-theorem chartSymmUnif
+theorem chartSymmUniform
     [FiniteDimensional Real E]
     (g : SmoothRiemannianMetric I M) (p : M) {K : Set E}
     (hK : IsCompact K)
@@ -61,7 +61,7 @@ theorem chartSymmUnif
 omit [Module.Finite ℝ E] in
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartSymmIdConv
+theorem chartSymmIdConvergence
     [FiniteDimensional Real E]
     (g : SmoothRiemannianMetric I M) (p : M) {K : Set E}
     (hK : IsCompact K)
@@ -94,7 +94,7 @@ theorem chartSymmIdConv
   have huc :
       UniformContinuousOn
         (fun v : E => ψ.symm v) K' :=
-    chartSymmUnif (I := I) g p hK' hK'target
+    chartSymmUniform (I := I) g p hK' hK'target
   rw [Metric.uniformContinuousOn_iff] at huc
   intro ε hε
   obtain ⟨δ, hδpos, hδ⟩ := huc ε hε
@@ -113,7 +113,7 @@ theorem chartSymmIdConv
 omit [Module.Finite ℝ E] in
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartPtsConv
+theorem chartPointsConvergence
     [FiniteDimensional Real E]
     (g : SmoothRiemannianMetric I M) (p : M)
     {S : Set M} {K : Set E} (hK : IsCompact K)
@@ -146,7 +146,7 @@ theorem chartPtsConv
         ∀ a : Nat, a ≥ N → ∀ b : Nat, b ≥ N → ∀ v : E, v ∈ K →
           dist (ψ.symm v) (ψ.symm (F a b v)) < ε := by
     simpa [ψ] using
-      chartSymmIdConv (I := I) g p hK hKtarget F hclose
+      chartSymmIdConvergence (I := I) g p hK hKtarget F hclose
   intro ε hε
   obtain ⟨N, hN⟩ := hdecoded ε hε
   refine ⟨N, fun a ha b hb x hx => ?_⟩
@@ -164,7 +164,7 @@ theorem chartPtsConv
 omit [Module.Finite ℝ E] in
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartPtsSrcK
+theorem chart_points_converge_on_source_compact
     [FiniteDimensional Real E]
     (g : SmoothRiemannianMetric I M) (p : M)
     {S Ksrc : Set M} (hKsrc : IsCompact Ksrc) (hSsub : S ⊆ Ksrc)
@@ -202,11 +202,11 @@ theorem chartPtsSrcK
     intro x hx
     exact ⟨x, hSsub hx, rfl⟩
   simpa [ψ] using
-    chartPtsConv (I := I) (g := g) (p := p) (S := S) (K := ψ '' Ksrc)
+    chartPointsConvergence (I := I) (g := g) (p := p) (S := S) (K := ψ '' Ksrc)
       hK hKtarget hSsource hScoord F hclose
 
 omit [Module.Finite ℝ E] in
-theorem properBallSrcOfRad
+theorem closedBall_subset_normalChartAt_source_of_radius
     [FiniteDimensional Real E]
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (P : ProperMetricOn (I := I) Y) {c : Y.M} {R : Real}
@@ -257,7 +257,7 @@ theorem properBallSrcOfRad
   have hsmall : (riemannianEDist I c y).toReal < metricCoerciveExpRadius (I := I) Y.metric c := by
     rw [hed, ENNReal.toReal_ofReal (dist_nonneg : 0 ≤ dist c y)]
     exact lt_of_le_of_lt hdist_le hR
-  exact memNChartSrcOfDist (I := I) Y.metric c hEnorm hfin hsmall
+  exact mem_normalChartAt_source_of_dist (I := I) Y.metric c hEnorm hfin hsmall
 
 omit [Module.Finite ℝ E] in
 theorem properBallNormal
@@ -372,5 +372,5 @@ theorem properExpDist
     exact hed
   exact (ENNReal.ofReal_eq_ofReal_iff dist_nonneg (Real.sqrt_nonneg _)).mp hofReal
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

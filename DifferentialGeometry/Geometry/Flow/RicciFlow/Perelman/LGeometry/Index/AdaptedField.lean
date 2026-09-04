@@ -30,16 +30,16 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
-theorem lRegIndexIntegrand_smul_function_self_of_isLAdaptedAt
+theorem lRegularizedIndexIntegrand_smul_function_self_of_isLAdaptedAt
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (P : ∀ s, TangentSpace I (alpha s))
     (f : Real → Real) (s : Real)
     (hf : DifferentiableAt Real f s)
     (hP : DifferentiableAt Real (chartRepAt (I := I) alpha P s) s)
     (hDP : IsLAdaptedAt S T alpha P s) :
-    lRegIndexIntegrand S T alpha (fun r ↦ f r • P r)
+    lRegularizedIndexIntegrand S T alpha (fun r ↦ f r • P r)
         (fun r ↦ f r • P r) s =
-      (f s) ^ 2 * lRegIndexIntegrand S T alpha P P s +
+      (f s) ^ 2 * lRegularizedIndexIntegrand S T alpha P P s +
         (1 / 2 : Real) * (deriv f s) ^ 2 *
           (S.base.metric (T - s ^ 2)).inner (alpha s) (P s) (P s) -
         2 * s * f s * deriv f s *
@@ -55,19 +55,19 @@ theorem lRegIndexIntegrand_smul_function_self_of_isLAdaptedAt
   have hcovQ : covDerivAlong (I := I) g alpha Q s =
       c • covDerivAlong (I := I) g alpha P s := by
     exact covDerivAlong_smul (I := I) g alpha c P s
-  have hQ : lRegIndexIntegrand S T alpha Q Q s =
-      c ^ 2 * lRegIndexIntegrand S T alpha P P s := by
+  have hQ : lRegularizedIndexIntegrand S T alpha Q Q s =
+      c ^ 2 * lRegularizedIndexIntegrand S T alpha P P s := by
     calc
-      lRegIndexIntegrand S T alpha Q Q s =
-          c * lRegIndexIntegrand S T alpha P Q s :=
-        lRegIndexIntegrand_smul (I := I) S T c alpha P Q s
-      _ = c * lRegIndexIntegrand S T alpha Q P s := by
-        rw [lRegIndexIntegrand_symm (I := I) S T alpha P Q s]
-      _ = c * (c * lRegIndexIntegrand S T alpha P P s) := by
-        rw [lRegIndexIntegrand_smul (I := I) S T c alpha P P s]
-      _ = c ^ 2 * lRegIndexIntegrand S T alpha P P s := by ring
-  have hWQ : lRegIndexIntegrand S T alpha W W s =
-      lRegIndexIntegrand S T alpha Q Q s +
+      lRegularizedIndexIntegrand S T alpha Q Q s =
+          c * lRegularizedIndexIntegrand S T alpha P Q s :=
+        lRegularizedIndexIntegrand_smul (I := I) S T c alpha P Q s
+      _ = c * lRegularizedIndexIntegrand S T alpha Q P s := by
+        rw [lRegularizedIndexIntegrand_symm (I := I) S T alpha P Q s]
+      _ = c * (c * lRegularizedIndexIntegrand S T alpha P P s) := by
+        rw [lRegularizedIndexIntegrand_smul (I := I) S T c alpha P P s]
+      _ = c ^ 2 * lRegularizedIndexIntegrand S T alpha P P s := by ring
+  have hWQ : lRegularizedIndexIntegrand S T alpha W W s =
+      lRegularizedIndexIntegrand S T alpha Q Q s +
         (1 / 2 : Real) *
           (g.inner (alpha s)
               (q • P s + c • covDerivAlong (I := I) g alpha P s)
@@ -75,7 +75,7 @@ theorem lRegIndexIntegrand_smul_function_self_of_isLAdaptedAt
             g.inner (alpha s)
               (c • covDerivAlong (I := I) g alpha P s)
               (c • covDerivAlong (I := I) g alpha P s)) := by
-    simp only [lRegIndexIntegrand]
+    simp only [lRegularizedIndexIntegrand]
     rw [hcovW, hcovQ]
     have hWval : W s = Q s := by rfl
     rw [hWval]
@@ -90,15 +90,15 @@ theorem lRegIndexIntegrand_smul_function_self_of_isLAdaptedAt
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
-theorem lRegIndexIntegrand_linear_cutoff_self_of_isLAdaptedAt
+theorem lRegularizedIndexIntegrand_linear_cutoff_self_of_isLAdaptedAt
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (P : ∀ s, TangentSpace I (alpha s))
     (b s : Real) (hb : b ≠ 0)
     (hP : DifferentiableAt Real (chartRepAt (I := I) alpha P s) s)
     (hDP : IsLAdaptedAt S T alpha P s) :
-    lRegIndexIntegrand S T alpha (fun r ↦ (r / b) • P r)
+    lRegularizedIndexIntegrand S T alpha (fun r ↦ (r / b) • P r)
         (fun r ↦ (r / b) • P r) s =
-      (s / b) ^ 2 * lRegIndexIntegrand S T alpha P P s +
+      (s / b) ^ 2 * lRegularizedIndexIntegrand S T alpha P P s +
         (1 / (2 * b ^ 2)) *
           (S.base.metric (T - s ^ 2)).inner (alpha s) (P s) (P s) -
         (2 * s ^ 2 / b ^ 2) *
@@ -119,19 +119,19 @@ theorem lRegIndexIntegrand_linear_cutoff_self_of_isLAdaptedAt
   have hcovQ : covDerivAlong (I := I) g alpha Q s =
       c • covDerivAlong (I := I) g alpha P s := by
     exact covDerivAlong_smul (I := I) g alpha c P s
-  have hQ : lRegIndexIntegrand S T alpha Q Q s =
-      c ^ 2 * lRegIndexIntegrand S T alpha P P s := by
+  have hQ : lRegularizedIndexIntegrand S T alpha Q Q s =
+      c ^ 2 * lRegularizedIndexIntegrand S T alpha P P s := by
     calc
-      lRegIndexIntegrand S T alpha Q Q s =
-          c * lRegIndexIntegrand S T alpha P Q s :=
-        lRegIndexIntegrand_smul (I := I) S T c alpha P Q s
-      _ = c * lRegIndexIntegrand S T alpha Q P s := by
-        rw [lRegIndexIntegrand_symm (I := I) S T alpha P Q s]
-      _ = c * (c * lRegIndexIntegrand S T alpha P P s) := by
-        rw [lRegIndexIntegrand_smul (I := I) S T c alpha P P s]
-      _ = c ^ 2 * lRegIndexIntegrand S T alpha P P s := by ring
-  have hWQ : lRegIndexIntegrand S T alpha W W s =
-      lRegIndexIntegrand S T alpha Q Q s +
+      lRegularizedIndexIntegrand S T alpha Q Q s =
+          c * lRegularizedIndexIntegrand S T alpha P Q s :=
+        lRegularizedIndexIntegrand_smul (I := I) S T c alpha P Q s
+      _ = c * lRegularizedIndexIntegrand S T alpha Q P s := by
+        rw [lRegularizedIndexIntegrand_symm (I := I) S T alpha P Q s]
+      _ = c * (c * lRegularizedIndexIntegrand S T alpha P P s) := by
+        rw [lRegularizedIndexIntegrand_smul (I := I) S T c alpha P P s]
+      _ = c ^ 2 * lRegularizedIndexIntegrand S T alpha P P s := by ring
+  have hWQ : lRegularizedIndexIntegrand S T alpha W W s =
+      lRegularizedIndexIntegrand S T alpha Q Q s +
         (1 / 2 : Real) *
           (g.inner (alpha s)
               (q • P s + c • covDerivAlong (I := I) g alpha P s)
@@ -139,7 +139,7 @@ theorem lRegIndexIntegrand_linear_cutoff_self_of_isLAdaptedAt
             g.inner (alpha s)
               (c • covDerivAlong (I := I) g alpha P s)
               (c • covDerivAlong (I := I) g alpha P s)) := by
-    simp only [lRegIndexIntegrand]
+    simp only [lRegularizedIndexIntegrand]
     rw [hcovW, hcovQ]
     have hWval : W s = Q s := by rfl
     rw [hWval]
@@ -155,7 +155,7 @@ theorem lRegIndexIntegrand_linear_cutoff_self_of_isLAdaptedAt
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
-theorem lRegIndex_linear_cutoff_self_of_isLAdapted
+theorem lRegularizedIndex_linear_cutoff_self_of_isLAdapted
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (alpha : Real → M) (P : ∀ s, TangentSpace I (alpha s))
@@ -167,22 +167,22 @@ theorem lRegIndex_linear_cutoff_self_of_isLAdapted
       DifferentiableAt Real (chartRepAt (I := I) alpha P s) s)
     (hDP : IsLAdapted S T alpha P (Set.Icc (0 : Real) b))
     (hIint : IntervalIntegrable
-      (fun s : Real ↦ (s / b) ^ 2 * lRegIndexIntegrand S T alpha P P s)
+      (fun s : Real ↦ (s / b) ^ 2 * lRegularizedIndexIntegrand S T alpha P P s)
       MeasureTheory.volume 0 b)
     (hRint : IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / b ^ 2) *
         S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P s) (P s)))
       MeasureTheory.volume 0 b) :
-    lRegIndex S T alpha (fun s ↦ (s / b) • P s)
+    lRegularizedIndex S T alpha (fun s ↦ (s / b) • P s)
         (fun s ↦ (s / b) • P s) 0 b =
       (1 / (2 * b)) *
           (S.base.metric (T - b ^ 2)).inner (alpha b) (P b) (P b) +
         ∫ s in (0 : Real)..b,
-          ((s / b) ^ 2 * lRegIndexIntegrand S T alpha P P s -
+          ((s / b) ^ 2 * lRegularizedIndexIntegrand S T alpha P P s -
             (2 * s ^ 2 / b ^ 2) *
               S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P s) (P s))) := by
   let F : Real → Real := fun s ↦
-    (s / b) ^ 2 * lRegIndexIntegrand S T alpha P P s
+    (s / b) ^ 2 * lRegularizedIndexIntegrand S T alpha P P s
   let N : Real → Real := fun s ↦
     (1 / (2 * b ^ 2)) *
       (S.base.metric (T - s ^ 2)).inner (alpha s) (P s) (P s)
@@ -190,13 +190,13 @@ theorem lRegIndex_linear_cutoff_self_of_isLAdapted
     (2 * s ^ 2 / b ^ 2) *
       S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P s) (P s))
   have hpt : ∀ s ∈ Set.uIcc (0 : Real) b,
-      lRegIndexIntegrand S T alpha (fun r ↦ (r / b) • P r)
+      lRegularizedIndexIntegrand S T alpha (fun r ↦ (r / b) • P r)
           (fun r ↦ (r / b) • P r) s = F s + N s - R s := by
     intro s hs
     have hs' : s ∈ Set.Icc (0 : Real) b := by
       simpa only [Set.uIcc_of_le hb.le] using hs
     simpa only [F, N, R] using
-      lRegIndexIntegrand_linear_cutoff_self_of_isLAdaptedAt
+      lRegularizedIndexIntegrand_linear_cutoff_self_of_isLAdaptedAt
         (I := I) S T alpha P b s hb.ne' (hP s hs') (hDP s hs')
   have hNconst : ∀ s ∈ Set.uIcc (0 : Real) b, N s = N b := by
     intro s hs
@@ -227,7 +227,7 @@ theorem lRegIndex_linear_cutoff_self_of_isLAdapted
           (S.base.metric (T - b ^ 2)).inner (alpha b) (P b) (P b) := by
         simp only [intervalIntegral.integral_const, sub_zero, smul_eq_mul, N]
         field_simp [hb.ne']
-  unfold lRegIndex
+  unfold lRegularizedIndex
   rw [intervalIntegral.integral_congr hpt]
   rw [intervalIntegral.integral_sub (hIint.add hNint) hRint,
     intervalIntegral.integral_add hIint hNint,

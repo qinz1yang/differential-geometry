@@ -88,14 +88,14 @@ private lemma chartPushed_u_h_ae_zero_off_Kα
     (I := I) (M := M) α _ hy.1 hy.2
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-private lemma chosenWeakPartial'_ae_zero_on_open_sub_of_ae_zero
+private lemma chosenWeakPartialOrZero_ae_zero_on_open_sub_of_ae_zero
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω V : Set EuclN}
     (_hΩ : IsOpen Ω) (hV : IsOpen V) (hV_sub : V ⊆ Ω)
     {u : EuclN → ℝ}
     (hu : DeGiorgi.MemW1p (d := Module.finrank ℝ E) p u Ω)
     (hu_ae_zero_V : u =ᵐ[(volume : Measure EuclN).restrict V] (fun _ => (0 : ℝ)))
     (i : Fin (Module.finrank ℝ E)) :
-    chosenWeakPartial' (d := Module.finrank ℝ E) p i u Ω
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u Ω
       =ᵐ[(volume : Measure EuclN).restrict V] (fun _ : EuclN => (0 : ℝ)) := by
   classical
   have hu_V : DeGiorgi.MemW1p (d := Module.finrank ℝ E) p u V := by
@@ -109,42 +109,42 @@ private lemma chosenWeakPartial'_ae_zero_on_open_sub_of_ae_zero
           (MeasureTheory.Measure.restrict_mono_set _ hV_sub)
       · exact DeGiorgi.HasWeakPartialDeriv.restrict hV hV_sub hg_weak
   have h_partial_V : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-      (chosenWeakPartial' (d := Module.finrank ℝ E) p i u V) u V :=
-    chosenWeakPartial'_isWeakPartial_of_mem hu_V i
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u V) u V :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hu_V i
   have h_partial_Ω : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-      (chosenWeakPartial' (d := Module.finrank ℝ E) p i u Ω) u Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem hu i
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u Ω) u Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hu i
   have h_partial_Ω_V : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-      (chosenWeakPartial' (d := Module.finrank ℝ E) p i u Ω) u V :=
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u Ω) u V :=
     DeGiorgi.HasWeakPartialDeriv.restrict hV hV_sub h_partial_Ω
   have h_chosen_V_zero :
-      chosenWeakPartial' (d := Module.finrank ℝ E) p i u V
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u V
         =ᵐ[(volume : Measure EuclN).restrict V] (fun _ : EuclN => (0 : ℝ)) :=
-    chosenWeakPartial'_ae_zero_of_ae_zero (d := Module.finrank ℝ E)
+    chosenWeakPartialOrZero_ae_zero_of_ae_zero (d := Module.finrank ℝ E)
       hp hV hu_ae_zero_V i
-  have hg_lp_Ω : MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) p i u Ω) p
+  have hg_lp_Ω : MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u Ω) p
       ((volume : Measure EuclN).restrict Ω) :=
-    chosenWeakPartial'_memLp_of_mem hu i
-  have hg_lp_Ω_V : MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) p i u Ω) p
+    chosenWeakPartialOrZero_memLp_of_mem hu i
+  have hg_lp_Ω_V : MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u Ω) p
       ((volume : Measure EuclN).restrict V) :=
     hg_lp_Ω.mono_measure (MeasureTheory.Measure.restrict_mono_set _ hV_sub)
-  have hg_loc_Ω_V : LocallyIntegrable
-      (chosenWeakPartial' (d := Module.finrank ℝ E) p i u Ω)
+  have hg_local_Ω_V : LocallyIntegrable
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u Ω)
       ((volume : Measure EuclN).restrict V) :=
     hg_lp_Ω_V.locallyIntegrable hp
-  have hgV_lp : MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) p i u V) p
+  have hgV_lp : MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u V) p
       ((volume : Measure EuclN).restrict V) :=
-    chosenWeakPartial'_memLp_of_mem hu_V i
-  have hgV_loc : LocallyIntegrable
-      (chosenWeakPartial' (d := Module.finrank ℝ E) p i u V)
+    chosenWeakPartialOrZero_memLp_of_mem hu_V i
+  have hgV_local : LocallyIntegrable
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u V)
       ((volume : Measure EuclN).restrict V) :=
     hgV_lp.locallyIntegrable hp
   have h_unique :
-      chosenWeakPartial' (d := Module.finrank ℝ E) p i u Ω
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u Ω
         =ᵐ[(volume : Measure EuclN).restrict V]
-        chosenWeakPartial' (d := Module.finrank ℝ E) p i u V :=
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) p i u V :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq hV h_partial_Ω_V h_partial_V
-      hg_loc_Ω_V hgV_loc
+      hg_local_Ω_V hgV_local
   exact h_unique.trans h_chosen_V_zero
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -197,7 +197,7 @@ lemma chosenMthMixed_ae_zero_off_Kα
       have h_diff_subset : Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α ⊆
           Ωα (I := I) (M := M) α := fun _ hy => hy.1
       have h_step :=
-        chosenWeakPartial'_ae_zero_on_open_sub_of_ae_zero
+        chosenWeakPartialOrZero_ae_zero_on_open_sub_of_ae_zero
           (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
           (Ωα_isOpen (I := I) (M := M) α)
           h_diff_open h_diff_subset
@@ -668,15 +668,15 @@ private lemma layer_D_memWkp
     (g : SmoothRiemannianMetric I M) (α : M)
     (K : ℕ)
     (l : Fin (Module.finrank ℝ E))
-    (prev_fChartEff : EuclN → ℝ)
+    (prev_fChartEffective : EuclN → ℝ)
     (h_prev_memWkp_K :
-      MemWkp (d := Module.finrank ℝ E) K 2 prev_fChartEff
+      MemWkp (d := Module.finrank ℝ E) K 2 prev_fChartEffective
         (Ωα (I := I) (M := M) α))
-    (h_prev_ae_zero : prev_fChartEff =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : prev_fChartEffective =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     MemWkp (d := Module.finrank ℝ E) K 2
-      (fun y => densityDerivOnEuclid (I := I) g α l y * prev_fChartEff y)
+      (fun y => densityDerivOnEuclid (I := I) g α l y * prev_fChartEffective y)
       (Ωα (I := I) (M := M) α) := by
   have h_coef_smooth :
       ContDiffOn ℝ (⊤ : ℕ∞) (densityDerivOnEuclid (I := I) g α l)
@@ -690,17 +690,17 @@ private lemma layer_E_memWkp
     (g : SmoothRiemannianMetric I M) (α : M)
     (K : ℕ)
     (l : Fin (Module.finrank ℝ E))
-    (prev_fChartEff : EuclN → ℝ)
+    (prev_fChartEffective : EuclN → ℝ)
     (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 prev_fChartEff
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 prev_fChartEffective
         (Ωα (I := I) (M := M) α))
-    (h_prev_ae_zero : prev_fChartEff =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : prev_fChartEffective =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     MemWkp (d := Module.finrank ℝ E) K 2
       (fun y =>
         densityOnEuclid (I := I) g α y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l prev_fChartEff
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l prev_fChartEffective
           (Ωα (I := I) (M := M) α) y)
       (Ωα (I := I) (M := M) α) := by
   have h_coef_smooth :
@@ -709,13 +709,13 @@ private lemma layer_E_memWkp
     densityOnEuclid_contDiffOn (I := I) g α
   have h_factor_memWkp :
       MemWkp (d := Module.finrank ℝ E) K 2
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 l prev_fChartEff
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l prev_fChartEffective
           (Ωα (I := I) (M := M) α))
         (Ωα (I := I) (M := M) α) :=
     h_prev_memWkp_succ.chosenWeakPartial_mem l
   have h_prev_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      prev_fChartEff (Ωα (I := I) (M := M) α) := by
-    have h_prev_memWkp_1 : MemWkp (d := Module.finrank ℝ E) 1 2 prev_fChartEff
+      prev_fChartEffective (Ωα (I := I) (M := M) α) := by
+    have h_prev_memWkp_1 : MemWkp (d := Module.finrank ℝ E) 1 2 prev_fChartEffective
         (Ωα (I := I) (M := M) α) := h_prev_memWkp_succ.le_of_le (by omega)
     rw [MemWkp.one_iff_memW1p] at h_prev_memWkp_1
     exact h_prev_memWkp_1
@@ -727,12 +727,12 @@ private lemma layer_E_memWkp
       Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α ⊆
         Ωα (I := I) (M := M) α := fun _ hy => hy.1
   have h_factor_ae_zero :
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l prev_fChartEff
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l prev_fChartEffective
         (Ωα (I := I) (M := M) α)
         =ᵐ[(volume : Measure EuclN).restrict
           (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)) :=
-    chosenWeakPartial'_ae_zero_on_open_sub_of_ae_zero
+    chosenWeakPartialOrZero_ae_zero_on_open_sub_of_ae_zero
       (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       (Ωα_isOpen (I := I) (M := M) α) h_diff_open h_diff_subset
       h_prev_memW1p h_prev_ae_zero l
@@ -740,16 +740,16 @@ private lemma layer_E_memWkp
     h_factor_memWkp h_factor_ae_zero
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma fChartEffStepNumerator_memWkp
+private lemma fChartEffectiveStepNumerator_memWkp
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m K : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (prev_fChartEff : EuclN → ℝ)
+    (prev_fChartEffective : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E))
     (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 prev_fChartEff
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 prev_fChartEffective
         (Ωα (I := I) (M := M) α))
-    (h_prev_ae_zero : prev_fChartEff =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : prev_fChartEffective =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)))
     (h_chart_H_u : MemWkp (d := Module.finrank ℝ E) (m + 2 + K) 2
@@ -757,8 +757,8 @@ private lemma fChartEffStepNumerator_memWkp
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
       (Ωα (I := I) (M := M) α)) :
     MemWkp (d := Module.finrank ℝ E) K 2
-      (fChartEffStepNumerator (I := I) (M := M)
-        g α u_h m dirs prev_fChartEff l)
+      (fChartEffectiveStepNumerator (I := I) (M := M)
+        g α u_h m dirs prev_fChartEffective l)
       (Ωα (I := I) (M := M) α) := by
   classical
   have h_open : IsOpen (Ωα (I := I) (M := M) α) := Ωα_isOpen (I := I) (M := M) α
@@ -783,11 +783,11 @@ private lemma fChartEffStepNumerator_memWkp
     h_chart_H_u
   have hC := layer_C_memWkp (I := I) (M := M) g α u_h m K dirs l
     h_chart_H_m_K h_parent_m
-  have h_prev_memWkp_K : MemWkp (d := Module.finrank ℝ E) K 2 prev_fChartEff
+  have h_prev_memWkp_K : MemWkp (d := Module.finrank ℝ E) K 2 prev_fChartEffective
       (Ωα (I := I) (M := M) α) := h_prev_memWkp_succ.le_of_le (by omega)
-  have hD := layer_D_memWkp (I := I) (M := M) g α K l prev_fChartEff
+  have hD := layer_D_memWkp (I := I) (M := M) g α K l prev_fChartEffective
     h_prev_memWkp_K h_prev_ae_zero
-  have hE := layer_E_memWkp (I := I) (M := M) g α K l prev_fChartEff
+  have hE := layer_E_memWkp (I := I) (M := M) g α K l prev_fChartEffective
     h_prev_memWkp_succ h_prev_ae_zero
   have h_step1 := MemWkp.add (d := Module.finrank ℝ E)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) h_open hA hB
@@ -797,19 +797,19 @@ private lemma fChartEffStepNumerator_memWkp
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) h_open h_step2 hD
   have h_step4 := MemWkp.add (d := Module.finrank ℝ E)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) h_open h_step3 hE
-  unfold fChartEffStepNumerator
+  unfold fChartEffectiveStepNumerator
   convert h_step4 using 2 with y
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma fChartEffStepNumerator_ae_zero_off_Kα
+private lemma fChartEffectiveStepNumerator_ae_zero_off_Kα
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (prev_fChartEff : EuclN → ℝ)
+    (prev_fChartEffective : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E))
     (h_prev_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      prev_fChartEff (Ωα (I := I) (M := M) α))
-    (h_prev_ae_zero : prev_fChartEff =ᵐ[(volume : Measure EuclN).restrict
+      prev_fChartEffective (Ωα (I := I) (M := M) α))
+    (h_prev_ae_zero : prev_fChartEffective =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)))
     (h_chart_H_m_plus_2 :
@@ -817,7 +817,7 @@ private lemma fChartEffStepNumerator_ae_zero_off_Kα
         (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
         (Ωα (I := I) (M := M) α)) :
-    fChartEffStepNumerator (I := I) (M := M) g α u_h m dirs prev_fChartEff l
+    fChartEffectiveStepNumerator (I := I) (M := M) g α u_h m dirs prev_fChartEffective l
       =ᵐ[(volume : Measure EuclN).restrict
         (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ : EuclN => (0 : ℝ)) := by
@@ -863,16 +863,16 @@ private lemma fChartEffStepNumerator_ae_zero_off_Kα
       Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α ⊆
         Ωα (I := I) (M := M) α := fun _ hy => hy.1
   have hE_ae :
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l prev_fChartEff
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l prev_fChartEffective
         (Ωα (I := I) (M := M) α)
         =ᵐ[(volume : Measure EuclN).restrict
           (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)) :=
-    chosenWeakPartial'_ae_zero_on_open_sub_of_ae_zero
+    chosenWeakPartialOrZero_ae_zero_on_open_sub_of_ae_zero
       (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       (Ωα_isOpen (I := I) (M := M) α) h_diff_open h_diff_subset
       h_prev_memW1p h_prev_ae_zero l
-  unfold fChartEffStepNumerator
+  unfold fChartEffectiveStepNumerator
   have hA_sum_ae : (fun y => ∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
         (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
@@ -944,22 +944,22 @@ private lemma fChartEffStepNumerator_ae_zero_off_Kα
         (I := I) (M := M) g α u_h m dirs y = 0
     rw [hy]; ring
   have hD_term_ae : (fun y => densityDerivOnEuclid (I := I) g α l y *
-      prev_fChartEff y)
+      prev_fChartEffective y)
       =ᵐ[(volume : Measure EuclN).restrict
         (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)) := by
     filter_upwards [h_prev_ae_zero] with y hy
-    show densityDerivOnEuclid (I := I) g α l y * prev_fChartEff y = 0
+    show densityDerivOnEuclid (I := I) g α l y * prev_fChartEffective y = 0
     rw [hy]; ring
   have hE_term_ae : (fun y => densityOnEuclid (I := I) g α y *
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l prev_fChartEff
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l prev_fChartEffective
         (Ωα (I := I) (M := M) α) y)
       =ᵐ[(volume : Measure EuclN).restrict
         (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)) := by
     filter_upwards [hE_ae] with y hy
     show densityOnEuclid (I := I) g α y *
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l prev_fChartEff
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l prev_fChartEffective
         (Ωα (I := I) (M := M) α) y = 0
     rw [hy]; ring
   filter_upwards [hA_sum_ae, hB_sum_ae, hC_term_ae, hD_term_ae, hE_term_ae]
@@ -979,23 +979,23 @@ private lemma fChartEffStepNumerator_ae_zero_off_Kα
       densityDerivOnEuclid (I := I) g α l y *
         chosenMthMixedPartialChartPushedU
           (I := I) (M := M) g α u_h m dirs y +
-      densityDerivOnEuclid (I := I) g α l y * prev_fChartEff y +
+      densityDerivOnEuclid (I := I) g α l y * prev_fChartEffective y +
       densityOnEuclid (I := I) g α y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l prev_fChartEff
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l prev_fChartEffective
           (Ωα (I := I) (M := M) α) y) = 0
   rw [hA, hB, hC, hD, hE]; ring
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma fChartEffStepNumerator_div_density_memWkp
+private lemma fChartEffectiveStepNumerator_div_density_memWkp
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m K : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (prev_fChartEff : EuclN → ℝ)
+    (prev_fChartEffective : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E))
     (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 prev_fChartEff
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 prev_fChartEffective
         (Ωα (I := I) (M := M) α))
-    (h_prev_ae_zero : prev_fChartEff =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : prev_fChartEffective =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)))
     (h_chart_H_u : MemWkp (d := Module.finrank ℝ E) (m + 2 + K) 2
@@ -1004,27 +1004,27 @@ private lemma fChartEffStepNumerator_div_density_memWkp
       (Ωα (I := I) (M := M) α)) :
     MemWkp (d := Module.finrank ℝ E) K 2
       (fun y =>
-        fChartEffStepNumerator (I := I) (M := M) g α u_h m dirs
-          prev_fChartEff l y /
+        fChartEffectiveStepNumerator (I := I) (M := M) g α u_h m dirs
+          prev_fChartEffective l y /
         densityOnEuclid (I := I) g α y)
       (Ωα (I := I) (M := M) α) := by
   classical
   have h_eq : (fun y =>
-      fChartEffStepNumerator (I := I) (M := M) g α u_h m dirs
-        prev_fChartEff l y /
+      fChartEffectiveStepNumerator (I := I) (M := M) g α u_h m dirs
+        prev_fChartEffective l y /
       densityOnEuclid (I := I) g α y) =
       (fun y => (1 / densityOnEuclid (I := I) g α y) *
-        fChartEffStepNumerator (I := I) (M := M) g α u_h m dirs
-          prev_fChartEff l y) := by
+        fChartEffectiveStepNumerator (I := I) (M := M) g α u_h m dirs
+          prev_fChartEffective l y) := by
     funext y
     rw [one_div, mul_comm, ← div_eq_mul_inv]
   rw [h_eq]
   have h_num_memWkp :=
-    fChartEffStepNumerator_memWkp (I := I) (M := M) g α u_h m K dirs
-      prev_fChartEff l h_prev_memWkp_succ h_prev_ae_zero h_chart_H_u
+    fChartEffectiveStepNumerator_memWkp (I := I) (M := M) g α u_h m K dirs
+      prev_fChartEffective l h_prev_memWkp_succ h_prev_ae_zero h_chart_H_u
   have h_prev_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      prev_fChartEff (Ωα (I := I) (M := M) α) := by
-    have h_prev_memWkp_1 : MemWkp (d := Module.finrank ℝ E) 1 2 prev_fChartEff
+      prev_fChartEffective (Ωα (I := I) (M := M) α) := by
+    have h_prev_memWkp_1 : MemWkp (d := Module.finrank ℝ E) 1 2 prev_fChartEffective
         (Ωα (I := I) (M := M) α) := h_prev_memWkp_succ.le_of_le (by omega)
     rw [MemWkp.one_iff_memW1p] at h_prev_memWkp_1
     exact h_prev_memWkp_1
@@ -1035,23 +1035,23 @@ private lemma fChartEffStepNumerator_div_density_memWkp
         (Ωα (I := I) (M := M) α) :=
     h_chart_H_u.le_of_le (by omega)
   have h_num_ae_zero :=
-    fChartEffStepNumerator_ae_zero_off_Kα (I := I) (M := M) g α u_h m dirs
-      prev_fChartEff l h_prev_memW1p h_prev_ae_zero h_chart_H_m_plus_2
+    fChartEffectiveStepNumerator_ae_zero_off_Kα (I := I) (M := M) g α u_h m dirs
+      prev_fChartEffective l h_prev_memW1p h_prev_ae_zero h_chart_H_m_plus_2
   exact memWkp_coef_mul_factor (I := I) (M := M) α K
     (one_div_densityOnEuclid_contDiffOn (I := I) (M := M) g α)
     h_num_memWkp h_num_ae_zero
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fChartEffStep_memWkp_K_two
+theorem fChartEffectiveStep_memWkp_K_two
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m K : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (prev_fChartEff : EuclN → ℝ)
+    (prev_fChartEffective : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E))
     (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 prev_fChartEff
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 prev_fChartEffective
         (chartTargetEuclid (I := I) (M := M) α))
-    (h_prev_ae_zero : prev_fChartEff =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : prev_fChartEffective =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \
         chartImagePOUTsupport (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)))
@@ -1060,20 +1060,20 @@ theorem fChartEffStep_memWkp_K_two
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
       (chartTargetEuclid (I := I) (M := M) α)) :
     MemWkp (d := Module.finrank ℝ E) K 2
-      (fChartEffStep (I := I) (M := M) g α u_h m dirs prev_fChartEff l)
+      (fChartEffectiveStep (I := I) (M := M) g α u_h m dirs prev_fChartEffective l)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   set Q : EuclN → ℝ := fun y =>
-    fChartEffStepNumerator (I := I) (M := M) g α u_h m dirs
-      prev_fChartEff l y /
+    fChartEffectiveStepNumerator (I := I) (M := M) g α u_h m dirs
+      prev_fChartEffective l y /
     densityOnEuclid (I := I) g α y with hQ_def
   have hQ_memWkp : MemWkp (d := Module.finrank ℝ E) K 2 Q
       (Ωα (I := I) (M := M) α) :=
-    fChartEffStepNumerator_div_density_memWkp (I := I) (M := M) g α u_h m K dirs
-      prev_fChartEff l h_prev_memWkp_succ h_prev_ae_zero h_chart_H_u
+    fChartEffectiveStepNumerator_div_density_memWkp (I := I) (M := M) g α u_h m K dirs
+      prev_fChartEffective l h_prev_memWkp_succ h_prev_ae_zero h_chart_H_u
   have h_prev_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      prev_fChartEff (Ωα (I := I) (M := M) α) := by
-    have h_prev_memWkp_1 : MemWkp (d := Module.finrank ℝ E) 1 2 prev_fChartEff
+      prev_fChartEffective (Ωα (I := I) (M := M) α) := by
+    have h_prev_memWkp_1 : MemWkp (d := Module.finrank ℝ E) 1 2 prev_fChartEffective
         (Ωα (I := I) (M := M) α) := h_prev_memWkp_succ.le_of_le (by omega)
     rw [MemWkp.one_iff_memW1p] at h_prev_memWkp_1
     exact h_prev_memWkp_1
@@ -1084,17 +1084,17 @@ theorem fChartEffStep_memWkp_K_two
         (Ωα (I := I) (M := M) α) :=
     h_chart_H_u.le_of_le (by omega)
   have h_num_ae_zero :=
-    fChartEffStepNumerator_ae_zero_off_Kα (I := I) (M := M) g α u_h m dirs
-      prev_fChartEff l h_prev_memW1p h_prev_ae_zero h_chart_H_m_plus_2
+    fChartEffectiveStepNumerator_ae_zero_off_Kα (I := I) (M := M) g α u_h m dirs
+      prev_fChartEffective l h_prev_memW1p h_prev_ae_zero h_chart_H_m_plus_2
   have hQ_ae_zero : Q =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)) := by
     filter_upwards [h_num_ae_zero] with y hy
-    change fChartEffStepNumerator (I := I) (M := M) g α u_h m dirs
-        prev_fChartEff l y / densityOnEuclid (I := I) g α y = 0
+    change fChartEffectiveStepNumerator (I := I) (M := M) g α u_h m dirs
+        prev_fChartEffective l y / densityOnEuclid (I := I) g α y = 0
     rw [hy]; simp
   have h_fStep_ae_eq_Q :
-      fChartEffStep (I := I) (M := M) g α u_h m dirs prev_fChartEff l =ᵐ[
+      fChartEffectiveStep (I := I) (M := M) g α u_h m dirs prev_fChartEffective l =ᵐ[
         (volume : Measure EuclN).restrict (Ωα (I := I) (M := M) α)] Q := by
     set Ω : Set EuclN := Ωα (I := I) (M := M) α with hΩ_def
     have hΩ_meas : MeasurableSet Ω :=
@@ -1103,31 +1103,31 @@ theorem fChartEffStep_memWkp_K_two
       Kα_meas (I := I) (M := M) α
     have hKα_sub_Ω : Kα (I := I) (M := M) α ⊆ Ω :=
       Kα_subset_Ωα (I := I) (M := M) α
-    have h_eq_on_Kα : fChartEffStep (I := I) (M := M) g α u_h m dirs
-        prev_fChartEff l =ᵐ[(volume : Measure EuclN).restrict
+    have h_eq_on_Kα : fChartEffectiveStep (I := I) (M := M) g α u_h m dirs
+        prev_fChartEffective l =ᵐ[(volume : Measure EuclN).restrict
           (Kα (I := I) (M := M) α)] Q := by
       refine (ae_restrict_iff' hKα_meas).mpr ?_
       refine Filter.Eventually.of_forall fun y hy => ?_
-      unfold fChartEffStep
+      unfold fChartEffectiveStep
       rw [Set.indicator_of_mem hy]
     have h_diff_meas : MeasurableSet (Ω \ Kα (I := I) (M := M) α) :=
       hΩ_meas.diff hKα_meas
-    have h_fStep_ae_zero : fChartEffStep (I := I) (M := M) g α u_h m dirs
-        prev_fChartEff l =ᵐ[(volume : Measure EuclN).restrict
+    have h_fStep_ae_zero : fChartEffectiveStep (I := I) (M := M) g α u_h m dirs
+        prev_fChartEffective l =ᵐ[(volume : Measure EuclN).restrict
           (Ω \ Kα (I := I) (M := M) α)] (fun _ => (0 : ℝ)) := by
       refine (ae_restrict_iff' h_diff_meas).mpr ?_
       refine Filter.Eventually.of_forall fun y hy => ?_
-      unfold fChartEffStep
+      unfold fChartEffectiveStep
       exact Set.indicator_of_notMem hy.2 _
-    have h_eq_on_diff : fChartEffStep (I := I) (M := M) g α u_h m dirs
-        prev_fChartEff l =ᵐ[(volume : Measure EuclN).restrict
+    have h_eq_on_diff : fChartEffectiveStep (I := I) (M := M) g α u_h m dirs
+        prev_fChartEffective l =ᵐ[(volume : Measure EuclN).restrict
           (Ω \ Kα (I := I) (M := M) α)] Q := by
       filter_upwards [h_fStep_ae_zero, hQ_ae_zero] with y h0 hQ
       rw [h0, hQ]
     have hKα_inter_Ω : Kα (I := I) (M := M) α = Ω ∩ Kα (I := I) (M := M) α := by
       rw [Set.inter_eq_self_of_subset_right hKα_sub_Ω]
-    have h_eq_on_inter : fChartEffStep (I := I) (M := M) g α u_h m dirs
-        prev_fChartEff l =ᵐ[(volume : Measure EuclN).restrict
+    have h_eq_on_inter : fChartEffectiveStep (I := I) (M := M) g α u_h m dirs
+        prev_fChartEffective l =ᵐ[(volume : Measure EuclN).restrict
           (Ω ∩ Kα (I := I) (M := M) α)] Q := by
       rw [← hKα_inter_Ω]
       exact h_eq_on_Kα
@@ -1154,16 +1154,16 @@ theorem fChartEffStep_memWkp_K_two
     h_fStep_ae_eq_Q).mpr hQ_memWkp
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fChartEffStep_memW1p_two
+theorem fChartEffectiveStep_memW1p_two
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (prev_fChartEff : EuclN → ℝ)
+    (prev_fChartEffective : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E))
     (h_prev_memWkp_two :
-      MemWkp (d := Module.finrank ℝ E) 2 2 prev_fChartEff
+      MemWkp (d := Module.finrank ℝ E) 2 2 prev_fChartEffective
         (chartTargetEuclid (I := I) (M := M) α))
-    (h_prev_ae_zero : prev_fChartEff =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : prev_fChartEffective =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \
         chartImagePOUTsupport (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)))
@@ -1172,10 +1172,10 @@ theorem fChartEffStep_memW1p_two
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
       (chartTargetEuclid (I := I) (M := M) α)) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      (fChartEffStep (I := I) (M := M) g α u_h m dirs prev_fChartEff l)
+      (fChartEffectiveStep (I := I) (M := M) g α u_h m dirs prev_fChartEffective l)
       (chartTargetEuclid (I := I) (M := M) α) := by
   have h_prev_memWkp_succ : MemWkp (d := Module.finrank ℝ E) (1 + 1) 2
-      prev_fChartEff (chartTargetEuclid (I := I) (M := M) α) := by
+      prev_fChartEffective (chartTargetEuclid (I := I) (M := M) α) := by
     have h_eq : (1 + 1 : ℕ) = 2 := by norm_num
     rw [h_eq]; exact h_prev_memWkp_two
   have h_chart_H_u' : MemWkp (d := Module.finrank ℝ E) (m + 2 + 1) 2
@@ -1184,8 +1184,8 @@ theorem fChartEffStep_memW1p_two
       (chartTargetEuclid (I := I) (M := M) α) := by
     have h_eq : m + 2 + 1 = m + 3 := by ring
     rw [h_eq]; exact h_chart_H_u
-  have h_mem := fChartEffStep_memWkp_K_two (I := I) (M := M) g α u_h m 1 dirs
-    prev_fChartEff l h_prev_memWkp_succ h_prev_ae_zero h_chart_H_u'
+  have h_mem := fChartEffectiveStep_memWkp_K_two (I := I) (M := M) g α u_h m 1 dirs
+    prev_fChartEffective l h_prev_memWkp_succ h_prev_ae_zero h_chart_H_u'
   rw [MemWkp.one_iff_memW1p] at h_mem
   exact h_mem
 

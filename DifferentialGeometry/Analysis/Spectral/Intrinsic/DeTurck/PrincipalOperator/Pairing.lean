@@ -119,7 +119,7 @@ private theorem hessianH1_core
         (iteratedCovGrad (I := I) g 0 2 2 U) := by
   unfold secondCovariantDerivativeH3ToH1
   rw [ContinuousLinearMap.comp_apply]
-  convert iterCovGradHs_core (I := I) (M := M) g 2 2 1 U using 1
+  convert iterCovGradHs_apply_ccTensorToHs (I := I) (M := M) g 2 2 1 U using 1
   congr 1
 
 private theorem traceH1_core
@@ -129,7 +129,7 @@ private theorem traceH1_core
       ccTensorToHs (I := I) (M := M) g 2 ((1 : ℕ) : ℝ)
         (operatorFieldApply (I := I) (M := M) g 4 2
           (cometricDoubleTraceField (I := I) g 2) V) := by
-  exact appHs_core (I := I) (M := M) g 4 2 1
+  exact appHs_apply_ccTensorToHs (I := I) (M := M) g 4 2 1
     (cometricDoubleTraceField (I := I) g 2) V
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -778,7 +778,7 @@ private theorem hessian_comm
         funext W
         simp only [Function.comp_apply, ι, ccToHsLin_apply, inc421, inc43,
           ContinuousLinearMap.comp_apply]
-        rw [hessianH2_core (I := I) (M := M) g W,
+        rw [secondCovariantDerivativeH4ToH2_apply_ccTensorToHs (I := I) (M := M) g W,
           incl_core (I := I) (M := M) g
             (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ)),
           incl_core (I := I) (M := M) g
@@ -805,7 +805,7 @@ private theorem trace_comm
         funext W
         simp only [Function.comp_apply, ι, ccToHsLin_apply, inc21, inc421,
           ContinuousLinearMap.comp_apply]
-        rw [traceH2_core (I := I) (M := M) g W,
+        rw [cometricDoubleTraceH2_apply_ccTensorToHs (I := I) (M := M) g W,
           incl_core (I := I) (M := M) g
             (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ)),
           incl_core (I := I) (M := M) g
@@ -865,7 +865,7 @@ private theorem perturb_comm
                   (operatorFieldApply (I := I) (M := M) g 4 4
                     (metricPerturbationCoefficientH2 (I := I) (M := M) g S₀) W) := by
             simpa only [Nat.cast_ofNat] using
-              appHs_core (I := I) (M := M) g 4 4 2
+              appHs_apply_ccTensorToHs (I := I) (M := M) g 4 4 2
                 (metricPerturbationCoefficientH2 (I := I) (M := M) g S₀) W
           simp only [Function.comp_apply, ι, ccToHsLin_apply, L, R, J, inc421,
             ContinuousLinearMap.comp_apply, ContinuousLinearMap.compL_apply,
@@ -890,7 +890,7 @@ private theorem perturb_comm
                   (metricPerturbationCoefficientH2 (I := I) (M := M) g S₀) W) :=
               incl_core (I := I) (M := M) g
                 (by norm_num : ((1 : ℕ) : ℝ) ≤ (2 : ℝ)) _
-            _ = _ := (appHs_core (I := I) (M := M) g 4 4 1
+            _ = _ := (appHs_apply_ccTensorToHs (I := I) (M := M) g 4 4 1
               (metricPerturbationCoefficientH2 (I := I) (M := M) g S₀) W).symm)
       exact congrFun hV V)
     exact congrFun hfun S

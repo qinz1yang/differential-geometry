@@ -121,7 +121,7 @@ theorem chartGramOp_cont {D : RealTimeInterval}
       continuousOn_finsetSum _ fun k _ => (hentry j k).smul continuousOn_const
   exact (IsCoercive.gramCLM (F := E)).continuous.comp_continuousOn hbilin
 
-theorem chartGramOp_unif {D : RealTimeInterval}
+theorem chartGramOp_uniform {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     {J : Set Real} (hJreg : J ⊆ D.regular) (hJc : IsCompact J)

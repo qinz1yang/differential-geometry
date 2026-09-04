@@ -724,7 +724,7 @@ theorem cc_energy_diss
     dsimp only [A]
     apply eq_of_heq
     exact HEq.trans
-      (iteratedCovGrad_covGrad_comm_heq' (I := I) (M := M) q 0 0 n U)
+      (iteratedCovGrad_covGrad_comm_heq (I := I) (M := M) q 0 0 n U)
       (castCcTensorRank_heq (I := I) (M := M) q 0
         (by omega : 0 + (n + 1) = 1 + n)
         (iteratedCovGrad (I := I) q 0 0 (n + 1) U)).symm

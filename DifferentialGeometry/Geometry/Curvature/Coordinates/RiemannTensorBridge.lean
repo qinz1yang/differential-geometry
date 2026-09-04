@@ -20,11 +20,11 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [I.Boundar
 omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem metricRm04StdAt_eq_chartRiemannCLM
+theorem metricRm04StandardAt_eq_chartRiemannCLM
     (g : SmoothRiemannianMetric I M) (x : M) (X Y Z W : TangentSpace I x) :
-    metricRm04StdAt (I := I) g x X Y Z W
+    metricRm04StandardAt (I := I) g x X Y Z W
       = g.inner x W (chartRiemannCLM (I := I) g x X Y Z) := by
-  rw [metricRm04StdAt_apply,
+  rw [metricRm04StandardAt_apply,
     show metricRm04At (I := I) g x
         = riemannCurvature04At g (metricCov (I := I) g) (metricCov_smooth (I := I) g) x from rfl,
     riemannCurvature04At_apply_const]
@@ -41,9 +41,9 @@ omit [SigmaCompactSpace M] in
 theorem rm04_eq_inner_riem
     (g : SmoothRiemannianMetric I M) (x : M)
     (X Y Z W : TangentSpace I x) :
-    metricRm04StdAt (I := I) g x X Y Z W =
+    metricRm04StandardAt (I := I) g x X Y Z W =
       g.inner x W (riemannOp (cov := LeviCivita (I := I) g) x X Y Z) := by
-  rw [metricRm04StdAt_eq_chartRiemannCLM,
+  rw [metricRm04StandardAt_eq_chartRiemannCLM,
     riemannOp_eq_chartRiemannCLM_apply]
 
 end DifferentialGeometry

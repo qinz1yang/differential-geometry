@@ -138,7 +138,7 @@ theorem closed_convex_heat_reaction_mem_of_supporting_normal
       have : d q₀ = 0 := by
         simp [d, hzero, Metric.infDist_zero_of_mem (hinit q₀.2)]
       linarith
-    have hq₀reg : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).regular := by
+    have hq₀regularity : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).regular := by
       change q₀.1 ∈ Set.Ioo 0 T
       exact ⟨hq₀tpos, lt_of_le_of_lt hq₀Q.1.2 ht.2⟩
     obtain ⟨p, hpC, hpmin⟩ :=
@@ -191,7 +191,7 @@ theorem closed_convex_heat_reaction_mem_of_supporting_normal
       exact Filter.Eventually.of_forall (fun y ↦
         hzmax (q₀.1, y) ⟨hq₀Q.1, mem_univ y⟩)
     have hq₀carrier : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).carrier :=
-      (RealTimeInterval.closed 0 T hT).regular_subset hq₀reg
+      (RealTimeInterval.closed 0 T hT).regular_subset hq₀regularity
     have hzslice : ContMDiff I 𝓘(Real, Real) ∞ (z q₀.1) := by
       have hfun : z q₀.1 =
           (fun _ : M => Real.exp (-K * q₀.1)) *
@@ -207,7 +207,7 @@ theorem closed_convex_heat_reaction_mem_of_supporting_normal
     have hztimeMax : IsMaxOn (fun s ↦ z s q₀.2) (Set.Icc 0 q₀.1) q₀.1 := by
       intro s hs
       exact hzmax (s, q₀.2) ⟨⟨hs.1, hs.2.trans hq₀Q.1.2⟩, mem_univ q₀.2⟩
-    have hscalarEq := hsol.equation ν q₀.1 hq₀reg q₀.2
+    have hscalarEq := hsol.equation ν q₀.1 hq₀regularity q₀.2
     have hexpDeriv : HasDerivAt (fun s : Real ↦ Real.exp (-K * s))
         (Real.exp (-K * q₀.1) * (-K)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -K * s) (-K) q₀.1 := by
@@ -265,8 +265,8 @@ theorem closed_convex_heat_reaction_mem_of_supporting_normal
         real_inner_self_eq_norm_sq] at hztime
       nlinarith [Real.exp_pos (-K * q₀.1)]
     have hreactionp : inner Real ν (reaction q₀.1 q₀.2 p) ≤ 0 :=
-      hreaction q₀.1 hq₀reg q₀.2 p hpC ν hnormal
-    have hLip := (hL q₀.1 hq₀reg q₀.2).norm_sub_le
+      hreaction q₀.1 hq₀regularity q₀.2 p hpC ν hnormal
+    have hLip := (hL q₀.1 hq₀regularity q₀.2).norm_sub_le
       (u q₀.1 q₀.2) p
     have hinnerLip : inner Real ν
         (reaction q₀.1 q₀.2 (u q₀.1 q₀.2) - reaction q₀.1 q₀.2 p) ≤
@@ -600,7 +600,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
           exact ⟨⟨le_rfl, hT⟩, by simpa [u'] using hinit q₀.2⟩
         simp [d, hzero, Metric.infDist_zero_of_mem hinit']
       linarith
-    have hq₀reg : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).regular := by
+    have hq₀regularity : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).regular := by
       change q₀.1 ∈ Set.Ioo 0 T
       exact ⟨hq₀tpos, lt_of_le_of_lt hq₀Q.1.2 ht.2⟩
     obtain ⟨p, hpK, hpmin⟩ :=
@@ -662,7 +662,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
       exact Filter.Eventually.of_forall (fun y ↦
         hzmax (q₀.1, y) ⟨hq₀Q.1, mem_univ y⟩)
     have hq₀carrier : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).carrier :=
-      (RealTimeInterval.closed 0 T hT).regular_subset hq₀reg
+      (RealTimeInterval.closed 0 T hT).regular_subset hq₀regularity
     have hzslice : ContMDiff I 𝓘(Real, Real) ∞ (z q₀.1) := by
       have hfun : z q₀.1 =
           (fun _ : M => Real.exp (-KK * q₀.1)) *
@@ -679,7 +679,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
     have hztimeMax : IsMaxOn (fun s ↦ z s q₀.2) (Set.Icc 0 q₀.1) q₀.1 := by
       intro s hs
       exact hzmax (s, q₀.2) ⟨⟨hs.1, hs.2.trans hq₀Q.1.2⟩, mem_univ q₀.2⟩
-    have hscalarEq := hsol'.equation ν' q₀.1 hq₀reg q₀.2
+    have hscalarEq := hsol'.equation ν' q₀.1 hq₀regularity q₀.2
     have hexpDeriv : HasDerivAt (fun s : Real ↦ Real.exp (-KK * s))
         (Real.exp (-KK * q₀.1) * (-KK)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -KK * s) (-KK) q₀.1 := by
@@ -822,10 +822,10 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
           change inner ℝ (WithLp.ofLp ν').1 (reaction (WithLp.ofLp p).2 q₀.2 (WithLp.ofLp p).1) +
               (WithLp.ofLp ν').2 * 1 ≤ 0
           rw [hp2eq]
-          have hq0lt : q₀.1 - T < 0 := sub_neg.mpr hq₀reg.2
+          have hq0lt : q₀.1 - T < 0 := sub_neg.mpr hq₀regularity.2
           nlinarith [hreacf, hν2, hq0lt]
         exact hmain
-    have hLip := (hL' q₀.1 hq₀reg q₀.2).norm_sub_le
+    have hLip := (hL' q₀.1 hq₀regularity q₀.2).norm_sub_le
       (u' q₀.1 q₀.2) p
     have hinnerLip : inner ℝ ν'
         (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2) - reac' q₀.1 q₀.2 p) ≤
@@ -1067,7 +1067,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
           exact ⟨⟨le_rfl, hT⟩, by simpa [u'] using hinit q₀.2⟩
         simp [d, hzero, Metric.infDist_zero_of_mem hinit']
       linarith
-    have hq₀reg : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).regular := by
+    have hq₀regularity : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).regular := by
       change q₀.1 ∈ Set.Ioo 0 T
       exact ⟨hq₀tpos, lt_of_le_of_lt hq₀Q.1.2 ht.2⟩
     obtain ⟨p, hpK, hpmin⟩ :=
@@ -1129,7 +1129,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
       exact Filter.Eventually.of_forall (fun y ↦
         hzmax (q₀.1, y) ⟨hq₀Q.1, mem_univ y⟩)
     have hq₀carrier : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).carrier :=
-      (RealTimeInterval.closed 0 T hT).regular_subset hq₀reg
+      (RealTimeInterval.closed 0 T hT).regular_subset hq₀regularity
     have hzslice : ContMDiff I 𝓘(Real, Real) ∞ (z q₀.1) := by
       have hfun : z q₀.1 =
           (fun _ : M => Real.exp (-KK * q₀.1)) *
@@ -1146,7 +1146,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
     have hztimeMax : IsMaxOn (fun s ↦ z s q₀.2) (Set.Icc 0 q₀.1) q₀.1 := by
       intro s hs
       exact hzmax (s, q₀.2) ⟨⟨hs.1, hs.2.trans hq₀Q.1.2⟩, mem_univ q₀.2⟩
-    have hscalarEq := hsol'.equation ν' q₀.1 hq₀reg q₀.2
+    have hscalarEq := hsol'.equation ν' q₀.1 hq₀regularity q₀.2
     have hexpDeriv : HasDerivAt (fun s : Real ↦ Real.exp (-KK * s))
         (Real.exp (-KK * q₀.1) * (-KK)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -KK * s) (-KK) q₀.1 := by
@@ -1289,7 +1289,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
           change inner ℝ (WithLp.ofLp ν').1 (reaction (WithLp.ofLp p).2 q₀.2 (WithLp.ofLp p).1) +
               (WithLp.ofLp ν').2 * 1 ≤ 0
           rw [hp2eq]
-          have hq0lt : q₀.1 - T < 0 := sub_neg.mpr hq₀reg.2
+          have hq0lt : q₀.1 - T < 0 := sub_neg.mpr hq₀regularity.2
           nlinarith [hreacf, hν2, hq0lt]
         exact hmain
     have hu'bound : ‖u' q₀.1 q₀.2‖ ≤ R₀ := hR₀bound (q₀.1, q₀.2) hq₀Q
@@ -1331,7 +1331,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
     have hp'mem : p ∈ Metric.closedBall 0 (2 * R₀) := by
       rw [mem_closedBall_zero_iff]
       exact hp'bound
-    have hLip := (hLipAll q₀.1 hq₀reg q₀.2).norm_sub_le hu'mem hp'mem
+    have hLip := (hLipAll q₀.1 hq₀regularity q₀.2).norm_sub_le hu'mem hp'mem
     have hinnerLip : inner ℝ ν'
         (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2) - reac' q₀.1 q₀.2 p) ≤
           (L : Real) * ‖ν'‖ ^ 2 := by

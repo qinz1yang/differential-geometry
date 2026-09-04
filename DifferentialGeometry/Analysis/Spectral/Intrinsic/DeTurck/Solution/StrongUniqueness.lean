@@ -52,10 +52,10 @@ theorem mixForce_unique
     {force₁ force₂ : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T}
     (hball₁ : ‖force₁‖ ≤ ρ) (hball₂ : ‖force₂‖ ≤ ρ)
     (hfix₁ : force₁ = nemytskii (I := I) (M := M) hLip
-      (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
         (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) force₁))
     (hfix₂ : force₂ = nemytskii (I := I) (M := M) hLip
-      (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
         (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) force₂)) :
     force₁ = force₂ := by
   have hdist := nemytskiiMixedForcingMap_dist_le (I := I) (M := M)
@@ -130,21 +130,21 @@ theorem deTurckStrong_unique
   have hforces : force₁ = force₂ :=
     mixForce_unique (I := I) (M := M) g₀ a hLip hsingle hT hT1 hρ hsmall
       hball₁ hball₂ hfix₁ hfix₂
-  rcases strongPair_eq_duh (I := I) (M := M) hT hcompact
+  rcases strongPair_eq_duhamel (I := I) (M := M) hT hcompact
       u₀ force₁ u₁ field₁ htrace₁' hlink₁ heq₁ with ⟨hfield₁, hu₁⟩
-  rcases strongPair_eq_duh (I := I) (M := M) hT hcompact
+  rcases strongPair_eq_duhamel (I := I) (M := M) hT hcompact
       u₀ force₂ u₂ field₂ htrace₂' hlink₂ heq₂ with ⟨hfield₂, hu₂⟩
   refine ⟨hforces, ?_, ?_⟩
   · calc
-      field₁ = maxRegDuhamelSolField (I := I) (M := M)
+      field₁ = maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (a : ℝ) hT u₀ force₁ := hfield₁
-      _ = maxRegDuhamelSolField (I := I) (M := M)
+      _ = maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (a : ℝ) hT u₀ force₂ := by rw [hforces]
       _ = field₂ := hfield₂.symm
   · calc
-      u₁ = maxRegDuhamelMap (I := I) (M := M)
+      u₁ = maximalRegularityDuhamelMap (I := I) (M := M)
           (a : ℝ) hT u₀ force₁ := hu₁
-      _ = maxRegDuhamelMap (I := I) (M := M)
+      _ = maximalRegularityDuhamelMap (I := I) (M := M)
           (a : ℝ) hT u₀ force₂ := by rw [hforces]
       _ = u₂ := hu₂.symm
 

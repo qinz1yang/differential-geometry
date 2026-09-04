@@ -421,7 +421,7 @@ theorem intrinsicGeodesic_speedSq_eq
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem intrGeo_vel_ne
+theorem intrinsicGeo_velocity_ne
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -736,8 +736,8 @@ theorem expDiffeo_eq_intr
       Classical.choose
         (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p) :=
     lt_of_lt_of_le hv (min_le_left _ _)
-  have hvSrc := expDiffeo_mem_of_lt (I := I) g hEnorm p hv
-  rw [NormalCoordinates.expMapDiffeo_apply_eq (I := I) g p hvSrc]
+  have hvSource := expDiffeo_mem_of_lt (I := I) g hEnorm p hv
+  rw [NormalCoordinates.expMapDiffeo_apply_eq (I := I) g p hvSource]
   exact ((Classical.choose_spec
     (exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p)).2 hvAgree).symm
 
@@ -800,7 +800,7 @@ theorem radial_riemannianEDist_eq_of_small
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem radial_riemannianEDist_eq_of_small'
+theorem riemannianEDist_expMapIntrinsic_eq_norm_of_small
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -855,9 +855,9 @@ theorem expMapIntrinsic_local_surjective
   obtain ⟨ρ₁, hρ₁_pos, hagree⟩ :=
     exists_expMapIntrinsic_eq_expMap_radius (I := I) g hEnorm p
   obtain ⟨ρ₂, hρ₂_pos, hdist⟩ :=
-    radial_riemannianEDist_eq_of_small' (I := I) g hEnorm p
+    riemannianEDist_expMapIntrinsic_eq_norm_of_small (I := I) g hEnorm p
   refine ⟨min ρ₁ ρ₂, lt_min hρ₁_pos hρ₂_pos, ?_⟩
-  intro q hq_src hsmall
+  intro q hq_source hsmall
   set ψ := NormalCoordinates.normalChartAt (I := I) g p with hψ_def
   set w : E := ψ q with hw_def
   have hw_lt1 : Real.sqrt (g.inner p (w : E) (w : E)) < ρ₁ :=
@@ -865,10 +865,10 @@ theorem expMapIntrinsic_local_surjective
   have hw_lt2 : Real.sqrt (g.inner p (w : E) (w : E)) < ρ₂ :=
     lt_of_lt_of_le hsmall (min_le_right _ _)
   have hw_target : w ∈ ψ.target := by
-    rw [hw_def]; exact ψ.map_source hq_src
+    rw [hw_def]; exact ψ.map_source hq_source
   have hexp_eq_q : expMap (I := I) g p (show TangentSpace I p from w) = q := by
     have hround : ψ.symm (ψ q) = q :=
-      NormalCoordinates.normalChartAt_left_inv (I := I) g p hq_src
+      NormalCoordinates.normalChartAt_left_inv (I := I) g p hq_source
     have hsymm : ψ.symm w = expMap (I := I) g p (show TangentSpace I p from w) :=
       NormalCoordinates.normalChartAt_symm_apply (I := I) g p
         (show w ∈ ψ.symm.source from hw_target)
@@ -902,14 +902,14 @@ theorem chartCurve_contDiffAt_top_of_isGeodesicOn
   set α : M := γ t with hα_def
   set u : ℝ → E := DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve
     (I := I) α γ with hu_def
-  have hα_src : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hα_source : α ∈ (chartAt H α).source := mem_chart_source H α
   have hcontAt_t : ContinuousAt γ t := hcont.continuousAt (hs.mem_nhds ht)
   have hsrc_nhds : (fun s' => γ s') ⁻¹' (chartAt H α).source ∈ 𝓝 t :=
-    hcontAt_t.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hα_src)
+    hcontAt_t.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hα_source)
   have hW_nhds : (fun s' => γ s') ⁻¹' (chartAt H α).source ∩ s ∈ 𝓝 t :=
     Filter.inter_mem hsrc_nhds (hs.mem_nhds ht)
   obtain ⟨W', hW'_sub, hW'_open, htW'⟩ := mem_nhds_iff.mp hW_nhds
-  have hW'_src : ∀ r ∈ W', γ r ∈ (chartAt H α).source := fun r hr => (hW'_sub hr).1
+  have hW'_source : ∀ r ∈ W', γ r ∈ (chartAt H α).source := fun r hr => (hW'_sub hr).1
   have hW'_geo : ∀ r ∈ W',
       DifferentialGeometry.Geometry.Riemannian.Geodesic.HasGeodesicEquationAt
         (I := I) g γ r := fun r hr => hγ r (hW'_sub hr).2
@@ -924,7 +924,7 @@ theorem chartCurve_contDiffAt_top_of_isGeodesicOn
     have hu_d : HasDerivAt u (deriv u r) r := by
       have hev :=
         DifferentialGeometry.Geometry.Riemannian.Geodesic.hasGeodesicEquationAt_fixedChart_eventually_hasDerivAt
-          (I := I) g α (γ := γ) (t := r) (hW'_contAt r hr) (hW'_src r hr)
+          (I := I) g α (γ := γ) (t := r) (hW'_contAt r hr) (hW'_source r hr)
           (hW'_geo r hr)
       simpa [hu_def] using hev.self_of_nhds
     have hdu_d : HasDerivAt (deriv u)
@@ -932,7 +932,7 @@ theorem chartCurve_contDiffAt_top_of_isGeodesicOn
             (I := I) g α (deriv u r) (deriv u r) (u r)) r := by
       simpa [hu_def] using
         DifferentialGeometry.Geometry.Riemannian.Geodesic.hasGeodesicEquationAt_fixedChart_hasDerivAt_velocity
-          (I := I) g α (γ := γ) (t := r) (hW'_contAt r hr) (hW'_src r hr)
+          (I := I) g α (γ := γ) (t := r) (hW'_contAt r hr) (hW'_source r hr)
           (hW'_geo r hr)
     have hprod : HasDerivAt Z
         (deriv u r,
@@ -949,7 +949,7 @@ theorem chartCurve_contDiffAt_top_of_isGeodesicOn
     rw [hur]
     exact DifferentialGeometry.Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
       (I := I) α
-      ((extChartAt I α).map_source (by rw [extChartAt_source]; exact hW'_src r hr))
+      ((extChartAt I α).map_source (by rw [extChartAt_source]; exact hW'_source r hr))
   obtain ⟨ε, hε_pos, hball⟩ := Metric.isOpen_iff.mp hW'_open t htW'
   set a : ℝ := t - ε / 2 with ha_def
   set b : ℝ := t + ε / 2 with hb_def
@@ -1011,19 +1011,19 @@ theorem isGeodesicOn_contMDiffAt_top
   have hu_cd : ContDiffAt ℝ ∞ u t :=
     chartCurve_contDiffAt_top_of_isGeodesicOn (I := I) g hs ht hγ hcont
   have hu_cmd : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ u t := hu_cd.contMDiffAt
-  have hα_src : α ∈ (chartAt H α).source := mem_chart_source H α
-  have hα_ext_src : α ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hα_src
+  have hα_source : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hα_ext_source : α ∈ (extChartAt I α).source := by
+    rw [extChartAt_source]; exact hα_source
   have hut_eq : u t = extChartAt I α α := by
     rw [hu_def,
       DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve_def, hα_def]
   have hut_target : u t ∈ (extChartAt I α).target := by
-    rw [hut_eq]; exact (extChartAt I α).map_source hα_ext_src
+    rw [hut_eq]; exact (extChartAt I α).map_source hα_ext_source
   have htarget_nhds : (extChartAt I α).target ∈ 𝓝 (u t) := by
     have hut_int : u t ∈ interior (extChartAt I α).target := by
       rw [hut_eq]
       exact DifferentialGeometry.Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
-        (I := I) α ((extChartAt I α).map_source hα_ext_src)
+        (I := I) α ((extChartAt I α).map_source hα_ext_source)
     exact mem_nhds_iff.mpr ⟨interior (extChartAt I α).target, interior_subset,
       isOpen_interior, hut_int⟩
   have hsymm_within : ContMDiffWithinAt 𝓘(ℝ, E) I ∞
@@ -1035,7 +1035,7 @@ theorem isGeodesicOn_contMDiffAt_top
     hsymm_at.comp t hu_cmd
   have hcontAt_t : ContinuousAt γ t := hcont.continuousAt (hs.mem_nhds ht)
   have hsrc_nhds : (fun s' => γ s') ⁻¹' (chartAt H α).source ∈ 𝓝 t :=
-    hcontAt_t.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hα_src)
+    hcontAt_t.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hα_source)
   have heq : ((extChartAt I α).symm ∘ u) =ᶠ[𝓝 t] γ := by
     filter_upwards [hsrc_nhds] with s' hs'
     have hs'_ext : γ s' ∈ (extChartAt I α).source := by
@@ -1603,18 +1603,18 @@ private lemma exists_broken_bump
     have : fe ∈ W := hβtsupp this
     exact this.2 rfl
   have hβIcc : ∀ t, βf t ∈ Set.Icc (0 : ℝ) 1 := fun t => hβrange ⟨t, rfl⟩
-  have hξimg_compact : IsCompact (ξ '' tsupport βf) := hβcompact.image hξsmooth.continuous
-  have hξimg_sub : ξ '' tsupport βf ⊆ (extChartAt I c).source := by
+  have hξimage_compact : IsCompact (ξ '' tsupport βf) := hβcompact.image hξsmooth.continuous
+  have hξimage_sub : ξ '' tsupport βf ⊆ (extChartAt I c).source := by
     rintro x ⟨t, ht, rfl⟩; rw [extChartAt_source]; exact hWsub t (hβtsupp ht)
-  have hcompact_img : IsCompact (extChartAt I c '' (ξ '' tsupport βf)) :=
-    hξimg_compact.image_of_continuousOn ((continuousOn_extChartAt c).mono hξimg_sub)
+  have hcompact_image : IsCompact (extChartAt I c '' (ξ '' tsupport βf)) :=
+    hξimage_compact.image_of_continuousOn ((continuousOn_extChartAt c).mono hξimage_sub)
   have hsub_target : extChartAt I c '' (ξ '' tsupport βf) ⊆ (extChartAt I c).target := by
     rintro y ⟨x, ⟨t, ht, rfl⟩, rfl⟩
     apply (extChartAt I c).map_source
     rw [extChartAt_source]; exact hWsub t (hβtsupp ht)
   have htarget_open : IsOpen (extChartAt I c).target := isOpen_extChartAt_target c
   obtain ⟨r, hr_pos, hr_thick⟩ :=
-    hcompact_img.exists_thickening_subset_open htarget_open hsub_target
+    hcompact_image.exists_thickening_subset_open htarget_open hsub_target
   refine ⟨βf, W, r, hr_pos, hWopen, hWsub, hβtsupp, hβsmooth, hβjt, hβfe, hβIcc, ?_, ?_, ?_⟩
   · intro hc; exact (hβtsupp hc).2 rfl
   · intro t ht
@@ -1660,11 +1660,11 @@ theorem broken_minimizer_velocity_match
       (trivializationAt E (TangentSpace I) c).symmL_continuousLinearMapAt
         (FiberBundle.mem_baseSet_trivializationAt' c) δ
     have hσ0c : σ 0 = c := hjunc.symm
-    obtain ⟨βγ, Wγ, rγ, hrγ, hWγopen, hWγsub, hβγsupp, hβγsmooth, hβγjt, hβγfe,
+    obtain ⟨βγ, Wγ, rγ, hrγ, hWγopen, hWγsub, hβγsupport, hβγsmooth, hβγjt, hβγfe,
         hβγIcc, hβγfenot, hβγtarget, hβγmargin⟩ :=
       exists_broken_bump (I := I) c (ξ := γ) (jt := ℓ₁) (fe := 0)
         (ne_of_gt hℓ₁) hc_def.symm hγsmooth
-    obtain ⟨βσ, Wσ, rσ, hrσ, hWσopen, hWσsub, hβσsupp, hβσsmooth, hβσjt, hβσfe,
+    obtain ⟨βσ, Wσ, rσ, hrσ, hWσopen, hWσsub, hβσsupport, hβσsmooth, hβσjt, hβσfe,
         hβσIcc, hβσfenot, hβσtarget, hβσmargin⟩ :=
       exists_broken_bump (I := I) c (ξ := σ) (jt := 0) (fe := ℓ₂)
         (ne_of_lt hℓ₂) hσ0c hσsmooth
@@ -1772,11 +1772,11 @@ theorem broken_minimizer_velocity_match
       · rw [if_neg htW]
     obtain ⟨hbdryγ, harcγ, hedistγ⟩ :=
       broken_piece_firstVariation (I := I) g hEnorm c w hℓ₁ hγsmooth hγgeo hγunit
-        ηf βγ hη_smooth hη0 hη'0 hβγsmooth Wγ hWγopen hWγsub hβγsupp
+        ηf βγ hη_smooth hη0 hη'0 hβγsmooth Wγ hWγopen hWγsub hβγsupport
         (fun s t hsrc => hmemγ s t hsrc) Fγ hFγ_in hFγ_out
     obtain ⟨hbdryσ, harcσ, hedistσ⟩ :=
       broken_piece_firstVariation (I := I) g hEnorm c w hℓ₂ hσsmooth hσgeo hσunit
-        ηf βσ hη_smooth hη0 hη'0 hβσsmooth Wσ hWσopen hWσsub hβσsupp
+        ηf βσ hη_smooth hη0 hη'0 hβσsmooth Wσ hWσopen hWσsub hβσsupport
         (fun s t hsrc => hmemσ s t hsrc) Fσ hFσ_in hFσ_out
     have hsymm1 : (trivializationAt E (TangentSpace I) c).symmL ℝ c (βγ ℓ₁ • w) = δ := by
       rw [hβγjt, one_smul]; exact hsymmLw
@@ -1828,14 +1828,14 @@ theorem broken_minimizer_velocity_match
       · rw [hFγ_in 0 t ht, hη0, zero_smul, add_zero]
         apply PartialEquiv.left_inv
         rw [extChartAt_source]; exact hWγsub t ht
-      · exact hFγ_out 0 t (fun hc => ht (hβγsupp hc))
+      · exact hFγ_out 0 t (fun hc => ht (hβγsupport hc))
     have hFσ0 : ∀ t, Fσ 0 t = σ t := by
       intro t
       by_cases ht : t ∈ Wσ
       · rw [hFσ_in 0 t ht, hη0, zero_smul, add_zero]
         apply PartialEquiv.left_inv
         rw [extChartAt_source]; exact hWσsub t ht
-      · exact hFσ_out 0 t (fun hc => ht (hβσsupp hc))
+      · exact hFσ_out 0 t (fun hc => ht (hβσsupport hc))
     have hL0 : Lfun 0 = ℓ₁ + ℓ₂ := by
       rw [hLfun_def]
       simp only
@@ -1846,9 +1846,9 @@ theorem broken_minimizer_velocity_match
     have hFσfix : ∀ s, Fσ s ℓ₂ = σ ℓ₂ := fun s => hFσ_out s ℓ₂ hβσfenot
     have hjunction : ∀ s, Fγ s ℓ₁ = Fσ s 0 := by
       intro s
-      have hℓ₁W : ℓ₁ ∈ Wγ := hβγsupp (subset_tsupport _ (by
+      have hℓ₁W : ℓ₁ ∈ Wγ := hβγsupport (subset_tsupport _ (by
         simp only [Function.mem_support, hβγjt]; exact one_ne_zero))
-      have h0W : (0 : ℝ) ∈ Wσ := hβσsupp (subset_tsupport _ (by
+      have h0W : (0 : ℝ) ∈ Wσ := hβσsupport (subset_tsupport _ (by
         simp only [Function.mem_support, hβσjt]; exact one_ne_zero))
       rw [hFγ_in s ℓ₁ hℓ₁W, hFσ_in s 0 h0W, hβγjt, hβσjt, ← hc_def, hσ0c]
     have hLmin : ∀ s, ℓ₁ + ℓ₂ ≤ Lfun s := by
@@ -1975,7 +1975,7 @@ theorem intrinsicGeodesic_continuation
   have hmdiff_γ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ t₀ :=
     ((intrinsicGeodesic_contMDiffOn (I := I) g hEnorm p u).contMDiffAt
       (Filter.univ_mem)).mdifferentiableAt (by norm_num)
-  have hη_vel : (mfderiv 𝓘(ℝ, ℝ) I η 0 (1 : ℝ) : E) = (w₂ : E) := by
+  have hη_velocity : (mfderiv 𝓘(ℝ, ℝ) I η 0 (1 : ℝ) : E) = (w₂ : E) := by
     have hshift : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => s + t₀)
         (0 : ℝ) (ContinuousLinearMap.id ℝ ℝ) := by
       apply hasMFDerivAt_iff_hasFDerivAt.mpr
@@ -1991,12 +1991,12 @@ theorem intrinsicGeodesic_continuation
         rw [hη_mfderiv]; rfl
       rw [h1, ContinuousLinearMap.id_apply, zero_add]
     rw [happ]
-  have hψ_vel : (mfderiv 𝓘(ℝ, ℝ) I (intrinsicGeodesic (I := I) g hEnorm c w₂) 0 (1 : ℝ) : E)
+  have hψ_velocity : (mfderiv 𝓘(ℝ, ℝ) I (intrinsicGeodesic (I := I) g hEnorm c w₂) 0 (1 : ℝ) : E)
       = (w₂ : E) :=
     intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm c w₂
   have hvel : (mfderiv 𝓘(ℝ, ℝ) I η 0 (1 : ℝ) : E)
       = (mfderiv 𝓘(ℝ, ℝ) I (intrinsicGeodesic (I := I) g hEnorm c w₂) 0 (1 : ℝ) : E) := by
-    rw [hη_vel, hψ_vel]
+    rw [hη_velocity, hψ_velocity]
   exact isGeodesic_eq_of_initial (I := I) g hη_geo hψ_geo hη_cont hψ_cont hfoot hvel
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -2148,11 +2148,11 @@ theorem minExp_of_ne_top
         broken_minimizer_velocity_match (I := I) g hEnorm ht₀_pos hδ'_pos
           (hΓu_geo.isGeodesicOn (Set.Icc 0 t₀)) (hσ_geo.isGeodesicOn (Set.Icc 0 δ'))
           hΓu_smooth hσ_smooth (fun t _ => hΓu_unit t) (fun t _ => hσ_unit t) hjunc hmin
-      have hσ_vel : mfderiv 𝓘(ℝ, ℝ) I σ 0 (1 : ℝ) = w₂ := by
+      have hσ_velocity : mfderiv 𝓘(ℝ, ℝ) I σ 0 (1 : ℝ) = w₂ := by
         have : (mfderiv 𝓘(ℝ, ℝ) I σ 0 (1 : ℝ) : E) = (w₂ : E) :=
           intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm c w₂
         exact this
-      have hvel_w₂ : mfderiv 𝓘(ℝ, ℝ) I Γu t₀ (1 : ℝ) = w₂ := by rw [hvmatch, hσ_vel]
+      have hvel_w₂ : mfderiv 𝓘(ℝ, ℝ) I Γu t₀ (1 : ℝ) = w₂ := by rw [hvmatch, hσ_velocity]
       have hcont' : (fun s => Γu (s + t₀)) = σ := by
         have hcont := intrinsicGeodesic_continuation (I := I) g hEnorm p u t₀
         rw [hvel_w₂] at hcont

@@ -15,7 +15,7 @@ namespace DifferentialGeometry
 namespace PDE
 namespace RicciFlow
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection

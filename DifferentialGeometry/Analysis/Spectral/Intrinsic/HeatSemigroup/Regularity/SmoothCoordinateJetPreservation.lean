@@ -47,7 +47,7 @@ theorem contDiffOn_Icc_scalar_globalExtend
     ∃ ψ : ℝ → ℝ, ContDiff ℝ ∞ ψ ∧ Set.EqOn φ ψ (Set.Icc (0 : ℝ) T) := by
   classical
   set K : Set ℝ := Metric.closedBall (0 : ℝ) 1 with hK_def
-  have hK_cpt : IsCompact K := isCompact_closedBall (0 : ℝ) 1
+  have hK_compact : IsCompact K := isCompact_closedBall (0 : ℝ) 1
   have hz₀ : (0 : ℝ) ∈ interior K := by
     rw [hK_def, interior_closedBall' (0 : ℝ) 1]
     exact Metric.mem_ball_self (by norm_num)
@@ -99,11 +99,11 @@ theorem deTurckRealizabilityRadius_pos
 
 theorem per_mode_convolution_sq_le_time_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
     {c : ℝ → ℝ} (hc : Continuous c) {t : ℝ} (ht : 0 ≤ t) :
-    (perModeConv lam c t) ^ 2 ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 := by
+    (perModeConvolution lam c t) ^ 2 ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 := by
   set k : ℝ → ℝ := fun s => Real.exp (-(lam * (t - s))) * c s with hk_def
   have hk_cont : Continuous k := by fun_prop
-  have hconv_eq : perModeConv lam c t = ∫ s in (0 : ℝ)..t, k s := by
-    rw [perModeConv]
+  have hconv_eq : perModeConvolution lam c t = ∫ s in (0 : ℝ)..t, k s := by
+    rw [perModeConvolution]
   have hCS : (∫ s in (0 : ℝ)..t, (1 : ℝ) * k s) ^ 2
       ≤ (∫ s in (0 : ℝ)..t, (1 : ℝ)) * ∫ s in (0 : ℝ)..t, (1 : ℝ) * (k s) ^ 2 :=
     weighted_cauchy_schwarz ht continuous_const hk_cont (fun _ _ => zero_le_one)
@@ -123,7 +123,7 @@ theorem per_mode_convolution_sq_le_time_mul_integral (lam : ℝ) (hlam : 0 ≤ l
     · exact (hk_cont.pow 2).intervalIntegrable 0 t
     · exact (hc.pow 2).intervalIntegrable 0 t
     · exact hk_sq_le
-  calc (perModeConv lam c t) ^ 2
+  calc (perModeConvolution lam c t) ^ 2
       = (∫ s in (0 : ℝ)..t, k s) ^ 2 := by rw [hconv_eq]
     _ ≤ t * ∫ s in (0 : ℝ)..t, (k s) ^ 2 := hCS
     _ ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 :=

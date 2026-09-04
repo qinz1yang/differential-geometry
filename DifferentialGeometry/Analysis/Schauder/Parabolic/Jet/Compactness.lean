@@ -88,11 +88,11 @@ theorem exists_parabolic_jet_subseq_of_locally_holderOnWith
         ((hd2 n).trans (le_max_right Md Md2))).trans
           (le_max_right (max Mu Mt) (max Md Md2)))
   rcases arzela_ascoli_subseq_tendsto_locally_uniformly_of_locally_holderOnWith
-      jetApprox hr hjetHolder hjetBound with ⟨phi, g, hphi, hg, hgunif⟩
+      jetApprox hr hjetHolder hjetBound with ⟨phi, g, hphi, hg, hguniform⟩
   have hgloc : TendstoLocallyUniformly (fun n => jetApprox (phi n)) g atTop := by
     intro V hV p
     rcases exists_compact_mem_nhds p with ⟨K, hK, hKmem⟩
-    exact ⟨K, hKmem, hgunif K hK V hV⟩
+    exact ⟨K, hKmem, hguniform K hK V hV⟩
   have hleft : TendstoLocallyUniformly
       (fun n p => (jetApprox (phi n) p).1) (fun p => (g p).1) atTop := by
     have hraw := uniformContinuous_fst.comp_tendstoLocallyUniformly hgloc

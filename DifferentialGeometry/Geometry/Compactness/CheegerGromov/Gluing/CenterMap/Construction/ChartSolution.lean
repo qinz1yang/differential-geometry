@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold NNReal Topology
@@ -25,14 +25,14 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-def HasChartCmSol
+def HasChartCenterOfMassSolution
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
     (p : Y.M) (c : NormalChartAt (I := I) Y p)
     {q : NNReal} {delta : Real}
     {ι : Type} [Fintype ι]
-    (mu : ι → Real) (pts : ι → Y.M)
+    (mu : ι → Real) (points : ι → Y.M)
     (join : Y.M → Y.M → Real → Y.M) (x : Y.M) (rad : Real)
     (hcm :
       letI : TopologicalSpace Y.M := Y.topology
@@ -58,7 +58,7 @@ def HasChartCmSol
         MetricComplete.complete (I := I) Y hcomplete
       letI : MetricSpace Y.M :=
         HopfRinow.riemMetricSpace (I := I) (M := Y.M)
-      CenterInput (I := I) Y.metric mu pts join x rad) : Prop :=
+      CenterInput (I := I) Y.metric mu points join x rad) : Prop :=
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
@@ -87,12 +87,12 @@ def HasChartCmSol
       (he : IsNormalDiag (I := I) Y hcomplete hconn p q delta e (c := c)),
     NormalDiagFence (I := I) Y p q e (c := c) ∧
       let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn p hq he
-      let y := centerOfMass (I := I) Y.metric mu pts join x rad hcm
+      let y := centerOfMass (I := I) Y.metric mu points join x rad hcm
       let z := c.inv y
-      let xi : ι → E := fun i ↦ c.inv (pts i)
+      let xi : ι → E := fun i ↦ c.inv (points i)
       y ∈ c.restrictBall.target ∧
-        HasCmSolC (I := I) Y.metric (normal_enorm (I := I) Y)
+        HasCenterOfMassChartSolution (I := I) Y.metric (normal_enorm (I := I) Y)
           p c B z (mu, xi)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

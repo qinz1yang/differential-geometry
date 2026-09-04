@@ -72,14 +72,14 @@ theorem family_vol_low
                 (mfderiv 𝓘(Real, E) I (Ψ a) w v)) ≤ L * ‖v‖ := by
     intro a
     simpa only [Ψ] using exists_param_ctrl (I := I) h0omega g_fam _hG a
-  choose tauLoc RLoc cLoc LLoc htau_pos htau_lt hR_pos hc_pos hL_one hsource hctrl
+  choose tauLocal RLocal cLocal LLocal htau_pos htau_lt hR_pos hc_pos hL_one hsource hctrl
     using hlocal
-  let U : M → Set M := fun a => (Ψ a) '' Metric.ball (0 : E) (RLoc a)
+  let U : M → Set M := fun a => (Ψ a) '' Metric.ball (0 : E) (RLocal a)
   have hball_source : ∀ a : M,
-      Metric.ball (0 : E) (RLoc a) ⊆ (Ψ a).source := by
+      Metric.ball (0 : E) (RLocal a) ⊆ (Ψ a).source := by
     intro a w hw
     apply hsource a
-    have hwR : ‖w‖ < RLoc a := by
+    have hwR : ‖w‖ < RLocal a := by
       simpa only [Metric.mem_ball, dist_zero_right] using hw
     simp only [Metric.mem_closedBall, dist_zero_right]
     linarith [hR_pos a]
@@ -111,35 +111,35 @@ theorem family_vol_low
     exact ENNReal.toReal_pos
       (Metric.measure_ball_pos (modelHaar (E := E)) (0 : E) one_pos).ne'
       measure_ball_lt_top.ne
-  let kLoc : M → Real :=
-    fun a => cLoc a * (LLoc a)⁻¹ ^ Module.finrank Real E * unitVol
-  have hkLoc_pos : ∀ a : M, 0 < kLoc a := by
+  let kLocal : M → Real :=
+    fun a => cLocal a * (LLocal a)⁻¹ ^ Module.finrank Real E * unitVol
+  have hkLocal_pos : ∀ a : M, 0 < kLocal a := by
     intro a
-    dsimp only [kLoc]
+    dsimp only [kLocal]
     exact mul_pos
       (mul_pos (hc_pos a) (pow_pos (inv_pos.mpr (zero_lt_one.trans_le (hL_one a))) _))
       hunit_pos
   let tau : Real :=
-    s.inf' hs_ne (fun a => min (tauLoc a) ((RLoc a) ^ 2))
-  let kappa : Real := s.inf' hs_ne kLoc
+    s.inf' hs_ne (fun a => min (tauLocal a) ((RLocal a) ^ 2))
+  let kappa : Real := s.inf' hs_ne kLocal
   have htau_pos' : 0 < tau := by
     rw [show tau = s.inf' hs_ne
-      (fun a => min (tauLoc a) ((RLoc a) ^ 2)) from rfl,
+      (fun a => min (tauLocal a) ((RLocal a) ^ 2)) from rfl,
       Finset.lt_inf'_iff]
     intro a _ha
     exact lt_min (htau_pos a) (sq_pos_of_pos (hR_pos a))
-  have htau_le : ∀ a ∈ s, tau ≤ min (tauLoc a) ((RLoc a) ^ 2) := by
+  have htau_le : ∀ a ∈ s, tau ≤ min (tauLocal a) ((RLocal a) ^ 2) := by
     intro a ha
     exact Finset.inf'_le _ ha
   have htau_lt' : tau < omega := by
     obtain ⟨a, ha⟩ := hs_ne
     exact (htau_le a ha).trans_lt <|
-      (min_le_left (tauLoc a) ((RLoc a) ^ 2)).trans_lt (htau_lt a)
+      (min_le_left (tauLocal a) ((RLocal a) ^ 2)).trans_lt (htau_lt a)
   have hkappa_pos : 0 < kappa := by
-    rw [show kappa = s.inf' hs_ne kLoc from rfl, Finset.lt_inf'_iff]
+    rw [show kappa = s.inf' hs_ne kLocal from rfl, Finset.lt_inf'_iff]
     intro a _ha
-    exact hkLoc_pos a
-  have hkappa_le : ∀ a ∈ s, kappa ≤ kLoc a := by
+    exact hkLocal_pos a
+  have hkappa_le : ∀ a ∈ s, kappa ≤ kLocal a := by
     intro a ha
     exact Finset.inf'_le _ ha
   refine ⟨tau, kappa, htau_pos', htau_lt', hkappa_pos, ?_⟩
@@ -147,43 +147,43 @@ theorem family_vol_low
   have hp : p ∈ ⋃ i ∈ s, U i := hs_cover (Set.mem_univ p)
   rw [Set.mem_iUnion₂] at hp
   obtain ⟨a, ha, w, hw, hwp⟩ := hp
-  have htau_a : tau ≤ tauLoc a :=
+  have htau_a : tau ≤ tauLocal a :=
     (htau_le a ha).trans (min_le_left _ _)
-  have hR_sq : tau ≤ (RLoc a) ^ 2 :=
+  have hR_sq : tau ≤ (RLocal a) ^ 2 :=
     (htau_le a ha).trans (min_le_right _ _)
-  have hrR : r ≤ RLoc a := by
+  have hrR : r ≤ RLocal a := by
     nlinarith [hR_pos a]
-  let B : Set E := Metric.ball w (r / LLoc a)
-  have hL_pos : 0 < LLoc a := zero_lt_one.trans_le (hL_one a)
-  have hrad_pos : 0 < r / LLoc a := div_pos hr hL_pos
-  have hw_norm : ‖w‖ < RLoc a := by
+  let B : Set E := Metric.ball w (r / LLocal a)
+  have hL_pos : 0 < LLocal a := zero_lt_one.trans_le (hL_one a)
+  have hrad_pos : 0 < r / LLocal a := div_pos hr hL_pos
+  have hw_norm : ‖w‖ < RLocal a := by
     simpa only [Metric.mem_ball, dist_zero_right] using hw
-  have hB_closed : B ⊆ Metric.closedBall (0 : E) (2 * RLoc a) := by
+  have hB_closed : B ⊆ Metric.closedBall (0 : E) (2 * RLocal a) := by
     intro z hz
-    have hzw : dist z w < r / LLoc a := by
+    have hzw : dist z w < r / LLocal a := by
       simpa only [B, Metric.mem_ball] using hz
-    have hdiv_le : r / LLoc a ≤ r := by
+    have hdiv_le : r / LLocal a ≤ r := by
       exact (div_le_iff₀ hL_pos).2 <| by nlinarith [hL_one a, hr]
     simp only [Metric.mem_closedBall, dist_zero_right]
     calc
       ‖z‖ ≤ ‖w‖ + ‖z - w‖ := norm_le_norm_add_norm_sub' z w
       _ = ‖w‖ + dist z w := by rw [dist_eq_norm]
-      _ ≤ 2 * RLoc a := by linarith
+      _ ≤ 2 * RLocal a := by linarith
   have hB_source : B ⊆ (Ψ a).source :=
     hB_closed.trans (hsource a)
   have hseg : ∀ z ∈ B,
-      segment Real w z ⊆ Metric.closedBall (0 : E) (2 * RLoc a) := by
+      segment Real w z ⊆ Metric.closedBall (0 : E) (2 * RLocal a) := by
     intro z hz
-    apply (convex_closedBall (0 : E) (2 * RLoc a)).segment_subset
+    apply (convex_closedBall (0 : E) (2 * RLocal a)).segment_subset
     · simp only [Metric.mem_closedBall, dist_zero_right]
       linarith [hw_norm, hR_pos a]
     · exact hB_closed hz
   have hctrl_t := hctrl a t (ht.trans htau_a)
   let : Bundle.RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨(g_fam (t : Real)).toRiemannianMetric⟩
-  have hspd : ∀ q ∈ Metric.closedBall (0 : E) (2 * RLoc a), ∀ ξ : E,
+  have hspd : ∀ q ∈ Metric.closedBall (0 : E) (2 * RLocal a), ∀ ξ : E,
       ‖mfderiv 𝓘(Real, E) I (Ψ a) q ξ‖ₑ ≤
-        ENNReal.ofReal (LLoc a * ‖ξ‖) := by
+        ENNReal.ofReal (LLocal a * ‖ξ‖) := by
     intro q hq ξ
     rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     change ENNReal.ofReal
@@ -191,7 +191,7 @@ theorem family_vol_low
         ((g_fam (t : Real)).inner ((Ψ a) q)
           (mfderiv 𝓘(Real, E) I (Ψ a) q ξ)
           (mfderiv 𝓘(Real, E) I (Ψ a) q ξ))) ≤
-        ENNReal.ofReal (LLoc a * ‖ξ‖)
+        ENNReal.ofReal (LLocal a * ‖ξ‖)
     exact ENNReal.ofReal_le_ofReal ((hctrl_t q hq).2 ξ)
   have himage : (Ψ a) '' B ⊆
       {x : M | riemannianEDistOf (I := I) (g_fam (t : Real)) p x <
@@ -202,16 +202,16 @@ theorem family_vol_low
       (hsource a) hspd (hseg z hz)
     rw [← hwp]
     refine lt_of_le_of_lt hdist ?_
-    have hzw : dist w z < r / LLoc a := by
+    have hzw : dist w z < r / LLocal a := by
       simpa only [B, Metric.mem_ball, dist_comm] using hz
-    have hmul : LLoc a * dist w z < r := by
+    have hmul : LLocal a * dist w z < r := by
       calc
-        LLoc a * dist w z < LLoc a * (r / LLoc a) :=
+        LLocal a * dist w z < LLocal a * (r / LLocal a) :=
           mul_lt_mul_of_pos_left hzw hL_pos
         _ = r := by field_simp
     exact (ENNReal.ofReal_lt_ofReal_iff hr).2 hmul
   have hparam :
-      ENNReal.ofReal (cLoc a) * (modelHaar (E := E)) B ≤
+      ENNReal.ofReal (cLocal a) * (modelHaar (E := E)) B ≤
         riemannianVolumeMeasure (I := I) (M := M) (g_fam (t : Real))
           ((Ψ a) '' B) := by
     apply param_vol_ge (I := I) (g_fam (t : Real)) (Ψ a)
@@ -227,21 +227,21 @@ theorem family_vol_low
     measure_mono himage
   have hball :
       (modelHaar (E := E)) B =
-        ENNReal.ofReal ((r / LLoc a) ^ Module.finrank Real E) *
+        ENNReal.ofReal ((r / LLocal a) ^ Module.finrank Real E) *
           (modelHaar (E := E)) (Metric.ball (0 : E) 1) := by
     simpa only [B] using
       (MeasureTheory.Measure.addHaar_ball_of_pos
         (μ := modelHaar (E := E)) (x := w) hrad_pos)
   have hkappa_ofReal :
-      ENNReal.ofReal kappa ≤ ENNReal.ofReal (kLoc a) :=
+      ENNReal.ofReal kappa ≤ ENNReal.ofReal (kLocal a) :=
     ENNReal.ofReal_le_ofReal (hkappa_le a ha)
   calc
     ENNReal.ofReal kappa * ENNReal.ofReal r ^ Module.finrank Real E
-        ≤ ENNReal.ofReal (kLoc a) *
+        ≤ ENNReal.ofReal (kLocal a) *
             ENNReal.ofReal r ^ Module.finrank Real E := by gcongr
-    _ = ENNReal.ofReal (cLoc a) * (modelHaar (E := E)) B := by
+    _ = ENNReal.ofReal (cLocal a) * (modelHaar (E := E)) B := by
       rw [hball]
-      dsimp only [kLoc, unitVol]
+      dsimp only [kLocal, unitVol]
       rw [ENNReal.ofReal_mul (mul_nonneg (hc_pos a).le
           (pow_nonneg (inv_nonneg.mpr hL_pos.le) _)),
         ENNReal.ofReal_mul (hc_pos a).le,

@@ -448,7 +448,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covar
           (B0 R + B1 R * A) ^ 2 := by
   classical
   obtain ⟨C, hC, hpt⟩ :=
-    bdEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+    palatiniEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨B0, B1, hB0, hB1, hgrid⟩ :=
     covariantJetGrid_h1_tame_bound (I := I) (M := M) (r := 2) (s := 2) hDim g₀ C hC
   refine ⟨B0, B1, hB0, hB1, ?_⟩

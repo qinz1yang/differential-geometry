@@ -4217,10 +4217,10 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
   let G₁ : ℝ → ℝ := fun τ => -(ν 0 * Xs τ)
   let G₂ : ℝ → ℝ := fun τ =>
     scalarSectionalLowerBarrier3 K τ * ν 0 + X₂ τ * (2 * ν 0 - ν 1 - ν 2)
-  let supp : ℝ → ℝ := fun τ =>
+  let support : ℝ → ℝ := fun τ =>
     hamiltonIveyConvexMatrixRegionSupportEuclidean K τ (matrixToEuclidean (Matrix.diagonal ν))
   have hτ0_nhd : ∀ᶠ τ in 𝓝 τ₀, 0 ≤ τ := Ici_mem_nhds hτ₀
-  have hsupp_eq : ∀ᶠ τ in 𝓝 τ₀, supp τ = (if X₂ τ ≤ Xs τ then G₁ τ else G₂ τ) := by
+  have hsupp_eq : ∀ᶠ τ in 𝓝 τ₀, support τ = (if X₂ τ ≤ Xs τ then G₁ τ else G₂ τ) := by
     filter_upwards [hτ0_nhd] with τ hτ
     exact support_formula_eq_kink_or_star (K := K) (τ := τ) hK hτ hν hν0
   have hX₂cont : ContinuousAt X₂ τ₀ := by
@@ -4254,13 +4254,13 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
       have hcont : ContinuousAt (fun τ : ℝ => X₂ τ - Xs τ) τ₀ := hX₂cont.sub hXscont
       have hev : ∀ᶠ τ in 𝓝 τ₀, dist (X₂ τ - Xs τ) (X₂ τ₀ - Xs τ₀) < -(X₂ τ₀ - Xs τ₀) :=
         (Metric.tendsto_nhds.mp hcont.tendsto) (-(X₂ τ₀ - Xs τ₀)) hgap
-      have hnhd : ∀ᶠ τ in 𝓝 τ₀, supp τ = G₁ τ := by
+      have hnhd : ∀ᶠ τ in 𝓝 τ₀, support τ = G₁ τ := by
         filter_upwards [hev, hsupp_eq] with τ hd hform
         have h1 : X₂ τ - Xs τ - (X₂ τ₀ - Xs τ₀) < -(X₂ τ₀ - Xs τ₀) :=
           (abs_lt.mp (by simpa [dist_eq_norm, Real.norm_eq_abs] using hd)).2
         have hltτ : X₂ τ < Xs τ := by linarith
         rw [hform, if_pos (le_of_lt hltτ)]
-      have hmain : HasDerivAt supp
+      have hmain : HasDerivAt support
           (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ :=
         hG₁deriv.congr_of_eventuallyEq hnhd
       simpa [X₂, Xs, hle] using hmain
@@ -4277,7 +4277,7 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
           -(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2))) :=
         hamiltonIveyKinkStarDerivatives_eq_of_crossing hK hτ₀ hν0
           (by simpa [X₂, Xs] using hcross)
-      have hchoice : ∀ᶠ τ in 𝓝[≠] τ₀, supp τ = G₁ τ ∨ supp τ = G₂ τ := by
+      have hchoice : ∀ᶠ τ in 𝓝[≠] τ₀, support τ = G₁ τ ∨ support τ = G₂ τ := by
         rw [eventually_nhdsWithin_iff]
         filter_upwards [hsupp_eq] with τ hform
         intro hτne
@@ -4286,7 +4286,7 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
           rw [hform, if_pos h]
         · right
           rw [hform, if_neg h]
-      have hsupp₀ : supp τ₀ = G₁ τ₀ := by
+      have hsupp₀ : support τ₀ = G₁ τ₀ := by
         change hamiltonIveyConvexMatrixRegionSupportEuclidean K τ₀ (matrixToEuclidean (Matrix.diagonal ν)) = G₁ τ₀
         rw [support_formula_eq_kink_or_star hK hτ₀.le hν hν0]
         have hle' : hamiltonIveyKinkPoint hK τ₀ ≤ K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) := by
@@ -4295,7 +4295,7 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
       have hG₂deriv' : HasDerivAt G₂
           (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ :=
         hG₂deriv.congr_deriv hderiv_eq
-      have hmain : HasDerivAt supp
+      have hmain : HasDerivAt support
           (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ :=
         hasDerivAt_of_eventually_or hG₁deriv hG₂deriv' hval hsupp₀ hchoice
       simpa [X₂, Xs, hle] using hmain
@@ -4304,13 +4304,13 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
     have hcont : ContinuousAt (fun τ : ℝ => X₂ τ - Xs τ) τ₀ := hX₂cont.sub hXscont
     have hev : ∀ᶠ τ in 𝓝 τ₀, dist (X₂ τ - Xs τ) (X₂ τ₀ - Xs τ₀) < X₂ τ₀ - Xs τ₀ :=
       (Metric.tendsto_nhds.mp hcont.tendsto) (X₂ τ₀ - Xs τ₀) hpos
-    have hnhd : ∀ᶠ τ in 𝓝 τ₀, supp τ = G₂ τ := by
+    have hnhd : ∀ᶠ τ in 𝓝 τ₀, support τ = G₂ τ := by
       filter_upwards [hev, hsupp_eq] with τ hd hform
       have h1 : -(X₂ τ₀ - Xs τ₀) < X₂ τ - Xs τ - (X₂ τ₀ - Xs τ₀) :=
         (abs_lt.mp (by simpa [dist_eq_norm, Real.norm_eq_abs] using hd)).1
       have hgtτ : Xs τ < X₂ τ := by linarith
       rw [hform, if_neg (not_le_of_gt hgtτ)]
-    have hmain : HasDerivAt supp
+    have hmain : HasDerivAt support
         (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
           ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
             hamiltonIveyKinkPoint hK τ₀ * (2 * K) / (1 + 2 * K * τ₀)) /

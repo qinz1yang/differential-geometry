@@ -154,7 +154,7 @@ theorem exists_sobolev_pointwise_bound_zero_order (g₀ : SmoothRiemannianMetric
   have h0' : ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ≤ Csob * R := h0
   have hb : riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x (T.toSection x) =
       ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 :=
-    riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 2 x (T.toSection x)
+    riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 2 x (T.toSection x)
   have hnn : (0 : ℝ) ≤ ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ :=
     norm_nonneg _
   nlinarith only [h0', hb, hnn, mul_nonneg hCsob_nn hR]
@@ -207,7 +207,7 @@ theorem exists_sobolev_pointwise_bound_first_order (g₀ : SmoothRiemannianMetri
       ((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x) =
       ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
         Tensor0SBundle.TensorRSSpace 0 (2 + 1) I x)‖ ^ 2 :=
-    riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 (2 + 1) x _
+    riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 (2 + 1) x _
   have hnn : (0 : ℝ) ≤ ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 (2 + 1) I x)‖ := norm_nonneg _
   nlinarith only [h1', hb, hnn, mul_nonneg hCsob_nn hR]
@@ -227,9 +227,9 @@ private theorem riemannCurvatureCoefficientFieldGridWindow (g₀ : SmoothRiemann
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection x)) K (w + 2) := by
   classical
-  obtain ⟨cW1, hcW1_nn, hcW1⟩ := bdExists_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ 2 4
+  obtain ⟨cW1, hcW1_nn, hcW1⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 2 4
     (riemannLoweredContractionA (I := I) (M := M) g₀)
-  obtain ⟨cW2, hcW2_nn, hcW2⟩ := bdExists_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ 2 4
+  obtain ⟨cW2, hcW2_nn, hcW2⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 2 4
     (riemannLoweredContractionB (I := I) (M := M) g₀)
   refine ⟨fun w => 2 * (diagonalGridGrowthFactor (E := E) w * ∑ i' ∈ Finset.range (w + 1),
       cW1 i' * (((w + 1 - i' : ℕ) : ℝ) * (Λ0 + 1)))
@@ -320,7 +320,7 @@ private theorem riemannCurvatureCoefficientFieldGridWindow (g₀ : SmoothRiemann
                 (riemannLoweredContractionB (I := I) (M := M) g₀)
                 T)).toSection x) := by
     rw [riemannCurvatureCoefficientField]
-    exact bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w _ _ x
+    exact palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w _ _ x
   refine le_trans hsplit ?_
   have h1 := hpart (riemannLoweredContractionA (I := I) (M := M) g₀) cW1 hcW1_nn hcW1
   have h2 := hpart (riemannLoweredContractionB (I := I) (M := M) g₀) cW2 hcW2_nn hcW2
@@ -344,7 +344,7 @@ private theorem lrOmegaHat_gridWindow (g₀ : SmoothRiemannianMetric I M)
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (l + 2) := by
   classical
-  obtain ⟨CΩ, hCΩ_nn, hCΩ⟩ := bdOmRecover_gridWindow (I := I) (M := M) g₀
+  obtain ⟨CΩ, hCΩ_nn, hCΩ⟩ := palatiniOmRecover_gridWindow (I := I) (M := M) g₀
   obtain ⟨CA, hCA_nn, hCA⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid (I := I) (M := M) g₀ hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
@@ -380,7 +380,7 @@ private theorem lrOmegaHat_gridWindow (g₀ : SmoothRiemannianMetric I M)
     intro i'
     refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 2
       (metricComparisonEndomorphismField (I := I) (M := M) g₁ g₀) i' x) ?_
-    rw [bdSlotInsertZero_fullRaisedRev_eq_omRecover (I := I) (M := M) g₀ g₁]
+    rw [palatiniSlotInsertZero_fullRaisedRev_eq_omRecover (I := I) (M := M) g₀ g₁]
     rw [mul_assoc]
     exact mul_le_mul_of_nonneg_left (hCΩ g₁ P htie hδ_le hδ0 hbound i' x) (by positivity)
   have hsec : ∀ l' : ℕ,
@@ -392,7 +392,7 @@ private theorem lrOmegaHat_gridWindow (g₀ : SmoothRiemannianMetric I M)
     intro l'
     rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
       (finRotate 3) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) l' x]
-    rw [bdRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ l' x]
+    rw [palatiniRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ l' x]
     have h := hCA g₁ P htie hδ_le hδ0 hbound l' x
     rwa [show (∑ k ∈ Finset.range (l' + 2), Combinatorics.antidiagonalTupleGrid b k) =
       Combinatorics.antidiagonalTupleGridWindow b (l' + 2) from rfl] at h
@@ -553,7 +553,7 @@ private theorem connectionDifferenceQuadraticCurvatureTermGridWindow (g₀ : Smo
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 2
               (connectionDifferenceEndomorphism (I := I) (M := M) g₀ g₁))).toSection x) ≤
           (fr ^ 2 * CA u') * Combinatorics.antidiagonalTupleGridWindow b (u' + 2) := by
-        refine le_trans (bdTermSlot2_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ u' x) ?_
+        refine le_trans (palatiniTermSlot2_riemannianFiberNormSq_le (I := I) (M := M) g₀ g₁ u' x) ?_
         rw [← hfr_def, mul_assoc]
         refine mul_le_mul_of_nonneg_left ?_ (by positivity)
         have h2 := hCA g₁ P htie hδ_le hδ0 hbound u' x
@@ -705,11 +705,11 @@ private theorem connectionDifferenceQuadraticCurvatureTermGridWindow (g₀ : Smo
         ((iteratedCovGrad (I := I) g₀ 0 4 w
           (F1 + F2 + F3 + F4 + F5 + F6)).toSection x) ≤ 94 * (CQ w * W) := by
     intro F1 F2 F3 F4 F5 F6 h1 h2 h3 h4 h5 h6
-    have ha1 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w (F1 + F2 + F3 + F4 + F5) F6 x
-    have ha2 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w (F1 + F2 + F3 + F4) F5 x
-    have ha3 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w (F1 + F2 + F3) F4 x
-    have ha4 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w (F1 + F2) F3 x
-    have ha5 := bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w F1 F2 x
+    have ha1 := palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w (F1 + F2 + F3 + F4 + F5) F6 x
+    have ha2 := palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w (F1 + F2 + F3 + F4) F5 x
+    have ha3 := palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w (F1 + F2 + F3) F4 x
+    have ha4 := palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w (F1 + F2) F3 x
+    have ha5 := palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 4 w F1 F2 x
     have hnn : (0 : ℝ) ≤ CQ w * W := mul_nonneg (hCQ_nn w) hW_nn
     nlinarith only [ha1, ha2, ha3, ha4, ha5, h1, h2, h3, h4, h5, h6,
       riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (4 + w) x
@@ -823,7 +823,7 @@ private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetr
               (connectionDifferenceQuadraticCurvatureTerm (I := I) (M := M) g₀
                 (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s))).toSection x) := by
     rw [deTurckLieCovariantDerivativeRemainderTensor]
-    exact bdRiemannianFiberNormSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 0 4 w _ _ x
+    exact palatiniRiemannianFiberNormSq_iteratedCovGrad_sub_le (I := I) (M := M) g₀ 0 4 w _ _ x
   have hA : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
       ((iteratedCovGrad (I := I) g₀ 0 4 w
         ((-(s / 2) : ℝ) • riemannCurvatureCoefficientField (I := I) (M := M) g₀ T)).toSection x) ≤
@@ -891,7 +891,7 @@ theorem deTurckLieCovariantDerivativeTermDifferenceGridWindow (g₀ : SmoothRiem
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' T).toSection x)) (i + 1) (i + 3) := by
   classical
-  obtain ⟨CP, hCP_nn, hCP⟩ := bdPairTraceOp_tgrid (I := I) (M := M) g₀ hδ₀
+  obtain ⟨CP, hCP_nn, hCP⟩ := palatiniPairTraceOp_tgrid (I := I) (M := M) g₀ hδ₀
   obtain ⟨CR, hCR_nn, hCR⟩ := riemannCurvatureRemainderGridWindow (I := I) (M := M) g₀ Λ0 hΛ0 hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _

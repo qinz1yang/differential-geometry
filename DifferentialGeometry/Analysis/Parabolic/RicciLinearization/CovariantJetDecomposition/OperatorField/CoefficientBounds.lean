@@ -371,7 +371,7 @@ theorem exists_riemannTerm0_curvCoeff_metricPerturbationPath_riemannianFiberNorm
   refine hΛcurv T T' hδ_le hδ hδ'_le hδ' s hs x ?_
   exact hCsob T T' hR hTball hT'ball s hs x
 
-noncomputable def corrFieldChristoffelBound (g₀ : SmoothRiemannianMetric I M)
+noncomputable def correctionFieldChristoffelBound (g₀ : SmoothRiemannianMetric I M)
     (a : ℕ) (R δ₀ : ℝ) : ℝ :=
   if h : 2 * Module.finrank ℝ E + 10 ≤ a ∧ (0 : ℝ) ≤ R ∧ δ₀ < 1 then
     Classical.choose
@@ -387,9 +387,9 @@ noncomputable def corrFieldChristoffelBound (g₀ : SmoothRiemannianMetric I M)
         (I := I) (M := M) g₀ a h.1 h.2.1 h.2.2))
   else 0
 
-theorem corrFieldChristoffelBound_nonneg (g₀ : SmoothRiemannianMetric I M)
-    (a : ℕ) (R δ₀ : ℝ) : 0 ≤ corrFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ := by
-  unfold corrFieldChristoffelBound
+theorem correctionFieldChristoffelBound_nonneg (g₀ : SmoothRiemannianMetric I M)
+    (a : ℕ) (R δ₀ : ℝ) : 0 ≤ correctionFieldChristoffelBound (I := I) (M := M) g₀ a R δ₀ := by
+  unfold correctionFieldChristoffelBound
   split
   next h =>
     have hΛ := (Classical.choose_spec
@@ -404,24 +404,24 @@ theorem corrFieldChristoffelBound_nonneg (g₀ : SmoothRiemannianMetric I M)
     linarith
   next => exact le_refl 0
 
-noncomputable def corrFieldTameJetBound (g₀ : SmoothRiemannianMetric I M)
+noncomputable def correctionFieldTameJetBound (g₀ : SmoothRiemannianMetric I M)
     (a : ℕ) (R δ₀ : ℝ) (i : ℕ) : ℝ :=
   if h : 2 * Module.finrank ℝ E + 10 ≤ a ∧ (0 : ℝ) ≤ R ∧ δ₀ < 1 then
-    2 * Classical.choose (exists_corrTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
+    2 * Classical.choose (exists_correctionTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
         (I := I) (M := M) g₀ a h.1 h.2.1 h.2.2) i
-      + 2 * Classical.choose (exists_corrTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
+      + 2 * Classical.choose (exists_correctionTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
         (I := I) (M := M) g₀ a h.1 h.2.1 h.2.2) i
   else 0
 
-theorem corrFieldTameJetBound_nonneg (g₀ : SmoothRiemannianMetric I M)
+theorem correctionFieldTameJetBound_nonneg (g₀ : SmoothRiemannianMetric I M)
     (a : ℕ) (R δ₀ : ℝ) (i : ℕ) :
-    0 ≤ corrFieldTameJetBound (I := I) (M := M) g₀ a R δ₀ i := by
-  unfold corrFieldTameJetBound
+    0 ≤ correctionFieldTameJetBound (I := I) (M := M) g₀ a R δ₀ i := by
+  unfold correctionFieldTameJetBound
   split
   next h =>
-    have h0 := (Classical.choose_spec (exists_corrTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
+    have h0 := (Classical.choose_spec (exists_correctionTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
         (I := I) (M := M) g₀ a h.1 h.2.1 h.2.2)).1 i
-    have h1 := (Classical.choose_spec (exists_corrTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
+    have h1 := (Classical.choose_spec (exists_correctionTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
         (I := I) (M := M) g₀ a h.1 h.2.1 h.2.2)).1 i
     linarith
   next => exact le_refl 0

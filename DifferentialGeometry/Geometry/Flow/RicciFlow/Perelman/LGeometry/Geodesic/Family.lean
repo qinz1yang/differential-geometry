@@ -30,7 +30,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRegGeodesicFamily
+theorem exists_lRegularizedGeodesicFamily
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T s0 : Real) (x : M) (A0 : TangentSpace I x)
@@ -43,7 +43,7 @@ theorem exists_lRegGeodesicFamily
             ∀ A ∈ V,
               alpha (A, s0) = x ∧
                 lVelocity (I := I) (fun s ↦ alpha (A, s)) s0 = A ∧
-                IsLRegGeodesicOn S T (fun s ↦ alpha (A, s))
+                IsLRegularizedGeodesicOn S T (fun s ↦ alpha (A, s))
                   (Ioo (s0 - epsilon) (s0 + epsilon)) := by
   let seed : E → E × E := fun A ↦
     (extChartAt I x x, A)
@@ -98,7 +98,7 @@ theorem exists_lRegGeodesicFamily
   intro A hA
   let z : Real → E × E := fun s ↦ phase (A, s)
   let gamma : Real → M := lPhaseCurve (I := I) x z
-  let W : ∀ s, TangentSpace I (gamma s) := lPhaseVel (I := I) x z
+  let W : ∀ s, TangentSpace I (gamma s) := lPhaseVelocity (I := I) x z
   have hzU : seed A ∈ U := by
     exact hA
   have hsol : ∀ s ∈ Ioo (s0 - epsilon) (s0 + epsilon),
@@ -162,7 +162,7 @@ theorem exists_lRegGeodesicFamily
       lPhaseCurve_mdiff (I := I) x z s hq.differentiableAt hsdata.2
   have hWdiff : DifferentiableAt Real
       (chartRepAt (I := I) gamma W s) s := by
-    simpa only [gamma, W] using lPhaseVel_diff (I := I) x z s
+    simpa only [gamma, W] using lPhaseVelocity_diff (I := I) x z s
       hq.differentiableAt hv.differentiableAt hsdata.2
   have hveldiff : DifferentiableAt Real
       (chartRepAt (I := I) gamma
@@ -176,10 +176,10 @@ theorem exists_lRegGeodesicFamily
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma W s :=
         covDerivAlong_congr_of_eventuallyEq
           (I := I) (S.base.metric (T - s ^ 2)) gamma hfield
-    _ = lRegAccel S T s (gamma s) (W s) := by
+    _ = lRegularizedAccel S T s (gamma s) (W s) := by
       simpa only [gamma, W] using
         lPhase_accel S T x z s hzs hsdata.2
-    _ = lRegAccel S T s (gamma s)
+    _ = lRegularizedAccel S T s (gamma s)
         (lVelocity (I := I) gamma s) := by
       rw [hfield.eq_of_nhds]
 
@@ -220,7 +220,7 @@ private theorem contDiffAt_time_fderiv_family
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M] in
-private theorem contDiffAt_lRegGeodesicFamily_seed
+private theorem contDiffAt_lRegularizedGeodesicFamily_seed
     {alpha : E × Real → M} {A0 : E} {s0 : Real} (x0 : M)
     (hsrc : alpha (A0, s0) ∈ (chartAt H x0).source)
     (halpha : ContMDiffAt
@@ -257,7 +257,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem extend_lRegGeodesicFamily_of_phaseFlow
+private theorem extend_lRegularizedGeodesicFamily_of_phaseFlow
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     {alpha : E × Real → M} {V : Set E} {J : Set Real}
@@ -270,7 +270,7 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
     (hcurves : ∀ A ∈ V,
       alpha (A, s0) = x ∧
         lVelocity (I := I) (fun r ↦ alpha (A, r)) s0 = A ∧
-        IsLRegGeodesicOn S T (fun r ↦ alpha (A, r)) J)
+        IsLRegularizedGeodesicOn S T (fun r ↦ alpha (A, r)) J)
     (hsrc : alpha (A0, t) ∈ (chartAt H x0).source)
     (epsilon : Real) (hepsilon : 0 < epsilon)
     {U : Set (E × E)} (hUopen : IsOpen U)
@@ -298,7 +298,7 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
             ∀ A ∈ W,
               beta (A, s0) = x ∧
                 lVelocity (I := I) (fun r ↦ beta (A, r)) s0 = A ∧
-                IsLRegGeodesicOn S T (fun r ↦ beta (A, r))
+                IsLRegularizedGeodesicOn S T (fun r ↦ beta (A, r))
                   (J ∪ Ioo (t - epsilon) (t + epsilon)) := by
   classical
   let pos : E → M := fun A ↦ alpha (A, t)
@@ -328,7 +328,7 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
         (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha (A, t) :=
       (halpha (A, t) ⟨hA.1, htJ⟩).contMDiffAt
         (hprodOpen.mem_nhds ⟨hA.1, htJ⟩)
-    exact (contDiffAt_lRegGeodesicFamily_seed (I := I) x0 hA.2 halphaAt).contDiffWithinAt
+    exact (contDiffAt_lRegularizedGeodesicFamily_seed (I := I) x0 hA.2 halphaAt).contDiffWithinAt
   let W : Set E := V0 ∩ seed ⁻¹' U
   have hWopen : IsOpen W :=
     hseed.continuousOn.isOpen_inter_preimage hV0open hUopen
@@ -366,7 +366,7 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
     rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at hphaseMD
     exact (contMDiffOn_extChartAt_symm (I := I) (n := ∞) x0).comp
       hphaseMD hphaseMap
-  have hetaReg : ∀ A ∈ W, ∀ r ∈ K,
+  have hetaRegularity : ∀ A ∈ W, ∀ r ∈ K,
       T - r ^ 2 ∈ D.regular ∧
         MDifferentiableAt 𝓘(Real, Real) I (fun q ↦ eta (A, q)) r ∧
         DifferentiableAt Real
@@ -375,12 +375,12 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
         covDerivAlong (I := I) (S.base.metric (T - r ^ 2))
             (fun q ↦ eta (A, q))
             (fun q : Real ↦ lVelocity (I := I) (fun z ↦ eta (A, z)) q) r =
-          lRegAccel S T r (eta (A, r))
+          lRegularizedAccel S T r (eta (A, r))
             (lVelocity (I := I) (fun q ↦ eta (A, q)) r) := by
     intro A hA
     let z : Real → E × E := fun r ↦ phase (A, r)
     let gamma : Real → M := lPhaseCurve (I := I) x0 z
-    let B : ∀ r, TangentSpace I (gamma r) := lPhaseVel (I := I) x0 z
+    let B : ∀ r, TangentSpace I (gamma r) := lPhaseVelocity (I := I) x0 z
     have hzU : seed A ∈ U := hA.2
     have hsol : ∀ r ∈ K,
         HasDerivAt z (lPhaseField S T x0 r (z r)) r := by
@@ -419,7 +419,7 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
       simpa only [gamma] using
         lPhaseCurve_mdiff (I := I) x0 z r hq.differentiableAt hrdata.2
     have hBdiff : DifferentiableAt Real (chartRepAt (I := I) gamma B r) r := by
-      simpa only [gamma, B] using lPhaseVel_diff (I := I) x0 z r
+      simpa only [gamma, B] using lPhaseVelocity_diff (I := I) x0 z r
         hq.differentiableAt hv.differentiableAt hrdata.2
     have hveldiff : DifferentiableAt Real
         (chartRepAt (I := I) gamma
@@ -428,16 +428,16 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
         (chartRepAt_eventuallyEq_of_eventuallyEq (I := I) gamma hfield)
     have hacc : covDerivAlong (I := I) (S.base.metric (T - r ^ 2)) gamma
           (fun w : Real ↦ lVelocity (I := I) gamma w) r =
-        lRegAccel S T r (gamma r) (lVelocity (I := I) gamma r) := by
+        lRegularizedAccel S T r (gamma r) (lVelocity (I := I) gamma r) := by
       calc
         covDerivAlong (I := I) (S.base.metric (T - r ^ 2)) gamma
             (fun w : Real ↦ lVelocity (I := I) gamma w) r =
           covDerivAlong (I := I) (S.base.metric (T - r ^ 2)) gamma B r :=
             covDerivAlong_congr_of_eventuallyEq
               (I := I) (S.base.metric (T - r ^ 2)) gamma hfield
-        _ = lRegAccel S T r (gamma r) (B r) := by
+        _ = lRegularizedAccel S T r (gamma r) (B r) := by
           simpa only [gamma, B] using lPhase_accel S T x0 z r hzr hrdata.2
-        _ = lRegAccel S T r (gamma r)
+        _ = lRegularizedAccel S T r (gamma r)
             (lVelocity (I := I) gamma r) := by rw [hfield.eq_of_nhds]
     simpa only [eta, gamma, lPhaseCurve, z] using
       ⟨hrdata.1, hgamma, hveldiff, hacc⟩
@@ -450,7 +450,7 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
     apply (extChartAt I x0).left_inv
     rw [extChartAt_source]
     exact hA.1.2
-  have hetaVel : ∀ A ∈ W,
+  have hetaVelocity : ∀ A ∈ W,
       lVelocity (I := I) (fun r ↦ eta (A, r)) t =
         lVelocity (I := I) (fun r ↦ alpha (A, r)) t := by
     intro A hA
@@ -462,7 +462,7 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
     have hq : HasDerivAt (fun r : Real ↦ (z r).1) (z t).2 t := by
       have h := hasFDerivAt_fst.comp_hasDerivAt t hsol
       simpa [z, phase, input, lPhaseField, Function.comp_def] using h
-    have hphaseVel := lPhase_velocity (I := I) x0 z t hq
+    have hphaseVelocity := lPhase_velocity (I := I) x0 z t hq
       (hPhiMap (show ((seed A, t) : (E × E) × Real) ∈ U ×ˢ K from
         ⟨hA.2, htK⟩)).2
     have hsrcA : alpha (A, t) ∈ (chartAt H x0).source := hA.1.2
@@ -470,27 +470,27 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
         (trivializationAt E (TangentSpace I) x0).baseSet := by
       rw [TangentBundle.trivializationAt_baseSet]
       exact hsrcA
-    have hseedVel : (seed A).2 =
+    have hseedVelocity : (seed A).2 =
         trivToE (I := I) x0 (alpha (A, t))
           (lVelocity (I := I) (fun r ↦ alpha (A, r)) t) :=
-      lPhaseSeed_vel (I := I) x0 ((hcurves A (hWV hA)).2.2 t htJ).2.1 hsrcA
+      lPhaseSeed_velocity (I := I) x0 ((hcurves A (hWV hA)).2.2 t htJ).2.1 hsrcA
     have hetaGamma : (fun r ↦ eta (A, r)) = gamma := by rfl
     have hgamma0 : gamma t = alpha (A, t) := by
       rw [← hetaGamma]
       exact heta0 A hA
     rw [hetaGamma]
     change lVelocity (I := I) gamma t =
-      trivFromE (I := I) x0 (gamma t) (z t).2 at hphaseVel
-    rw [hgamma0, hzt] at hphaseVel
-    exact hphaseVel.trans (by
-      rw [hseedVel]
+      trivFromE (I := I) x0 (gamma t) (z t).2 at hphaseVelocity
+    rw [hgamma0, hzt] at hphaseVelocity
+    exact hphaseVelocity.trans (by
+      rw [hseedVelocity]
       exact trivFromE_trivToE (I := I) x0 hbase _)
   have hmatch : ∀ A ∈ W,
       Set.EqOn (fun r ↦ alpha (A, r)) (fun r ↦ eta (A, r)) (J ∩ K) := by
     intro A hA
-    exact lRegSol_eqOn S hS T hJopen hJconn htJ isOpen_Ioo
-      isPreconnected_Ioo htK (hcurves A (hWV hA)).2.2 (hetaReg A hA)
-      (heta0 A hA).symm (hetaVel A hA).symm
+    exact lRegularizedSolution_eqOn S hS T hJopen hJconn htJ isOpen_Ioo
+      isPreconnected_Ioo htK (hcurves A (hWV hA)).2.2 (hetaRegularity A hA)
+      (heta0 A hA).symm (hetaVelocity A hA).symm
   let beta : E × Real → M := fun p ↦ if p.2 ∈ J then alpha p else eta p
   have hbetaSmooth : ContMDiffOn
       (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ beta (W ×ˢ (J ∪ K)) := by
@@ -540,23 +540,23 @@ private theorem extend_lRegGeodesicFamily_of_phaseFlow
     · rw [if_neg hqJ]
   have hbeta0 : beta (A, s0) = x := by
     simpa only [beta, if_pos hs0J] using (hcurves A (hWV hA)).1
-  have hbetaVel : lVelocity (I := I) (fun r ↦ beta (A, r)) s0 = A := by
+  have hbetaVelocity : lVelocity (I := I) (fun r ↦ beta (A, r)) s0 = A := by
     have heq := hbetaAlpha s0 hs0J
     have hvel := congrArg (fun L ↦ L (1 : Real))
       (heq.mfderiv_eq (I := 𝓘(Real, Real)) (I' := I))
     simpa only [lVelocity] using hvel.trans (hcurves A (hWV hA)).2.1
-  refine ⟨hbeta0, hbetaVel, ?_⟩
+  refine ⟨hbeta0, hbetaVelocity, ?_⟩
   intro r hr
   rcases hr with hrJ | hrK
-  · exact lRegData_congr S T r (hbetaAlpha r hrJ)
+  · exact lRegularizedData_congr S T r (hbetaAlpha r hrJ)
       ((hcurves A (hWV hA)).2.2 r hrJ)
-  · exact lRegData_congr S T r (hbetaEta r hrK) (hetaReg A hA r hrK)
+  · exact lRegularizedData_congr S T r (hbetaEta r hrK) (hetaRegularity A hA r hrK)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem exists_lRegGeodesicFamily_extension
+private theorem exists_lRegularizedGeodesicFamily_extension
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     {alpha : E × Real → M} {V : Set E} {J : Set Real}
@@ -569,7 +569,7 @@ private theorem exists_lRegGeodesicFamily_extension
     (hcurves : ∀ A ∈ V,
       alpha (A, s0) = x ∧
         lVelocity (I := I) (fun r ↦ alpha (A, r)) s0 = A ∧
-        IsLRegGeodesicOn S T (fun r ↦ alpha (A, r)) J) :
+        IsLRegularizedGeodesicOn S T (fun r ↦ alpha (A, r)) J) :
     ∃ epsilon : Real, 0 < epsilon ∧
       ∃ W : Set E, IsOpen W ∧ A0 ∈ W ∧ W ⊆ V ∧
         ∃ beta : E × Real → M,
@@ -578,7 +578,7 @@ private theorem exists_lRegGeodesicFamily_extension
             ∀ A ∈ W,
               beta (A, s0) = x ∧
                 lVelocity (I := I) (fun r ↦ beta (A, r)) s0 = A ∧
-                IsLRegGeodesicOn S T (fun r ↦ beta (A, r))
+                IsLRegularizedGeodesicOn S T (fun r ↦ beta (A, r))
                   (J ∪ Ioo (t - epsilon) (t + epsilon)) := by
   let x0 : M := alpha (A0, t)
   let z0 : E × E :=
@@ -597,7 +597,7 @@ private theorem exists_lRegGeodesicFamily_extension
       hPhi0, hPhiSmooth, hPhiDeriv, hPhiMap⟩ :=
     exists_lPhaseAt S hS T x0 t z0 hreg hz0
   obtain ⟨W, hWopen, hA0W, hWV, beta, hbeta, hcurves'⟩ :=
-    extend_lRegGeodesicFamily_of_phaseFlow S hS T x x0 hVopen hA0V hJopen hJconn
+    extend_lRegularizedGeodesicFamily_of_phaseFlow S hS T x x0 hVopen hA0V hJopen hJconn
       hs0J htJ halpha hcurves hsrc epsilon hepsilon hUopen
       (by simpa only [z0] using hz0U) Phi hPhi0 hPhiSmooth hPhiDeriv hPhiMap
   exact ⟨epsilon, hepsilon, W, hWopen, hA0W, hWV, beta, hbeta, hcurves'⟩
@@ -606,7 +606,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRegGeodesicFamily_to_time
+theorem exists_lRegularizedGeodesicFamily_to_time
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     {gamma : Real → M} {J : Set Real} {x : M}
@@ -615,7 +615,7 @@ theorem exists_lRegGeodesicFamily_to_time
     (hs0J : s0 ∈ J) (hbJ : b ∈ J)
     (hstart : gamma s0 = x)
     (hvel : lVelocity (I := I) gamma s0 = A0)
-    (hgamma : IsLRegGeodesicOn S T gamma J) :
+    (hgamma : IsLRegularizedGeodesicOn S T gamma J) :
     ∃ V : Set E, IsOpen V ∧ A0 ∈ V ∧
       ∃ K : Set Real, IsOpen K ∧ IsPreconnected K ∧
         s0 ∈ K ∧ b ∈ K ∧
@@ -625,7 +625,7 @@ theorem exists_lRegGeodesicFamily_to_time
             ∀ A ∈ V,
               alpha (A, s0) = x ∧
                 lVelocity (I := I) (fun r ↦ alpha (A, r)) s0 = A ∧
-                IsLRegGeodesicOn S T (fun r ↦ alpha (A, r)) K := by
+                IsLRegularizedGeodesicOn S T (fun r ↦ alpha (A, r)) K := by
   classical
   let Good : Set Real := {r | ∃ V : Set E, IsOpen V ∧ A0 ∈ V ∧
     ∃ K : Set Real, IsOpen K ∧ IsPreconnected K ∧
@@ -636,10 +636,10 @@ theorem exists_lRegGeodesicFamily_to_time
           ∀ A ∈ V,
             alpha (A, s0) = x ∧
               lVelocity (I := I) (fun q ↦ alpha (A, q)) s0 = A ∧
-              IsLRegGeodesicOn S T (fun q ↦ alpha (A, q)) K}
+              IsLRegularizedGeodesicOn S T (fun q ↦ alpha (A, q)) K}
   have hGood0 : s0 ∈ Good := by
     obtain ⟨epsilon, hepsilon, V, hVopen, hA0V, alpha, halpha, hcurves⟩ :=
-      exists_lRegGeodesicFamily S hS T s0 x A0 (hgamma s0 hs0J).1
+      exists_lRegularizedGeodesicFamily S hS T s0 x A0 (hgamma s0 hs0J).1
     have hs0I : s0 ∈ Ioo (s0 - epsilon) (s0 + epsilon) :=
       ⟨by linarith, by linarith⟩
     exact ⟨V, hVopen, hA0V, Ioo (s0 - epsilon) (s0 + epsilon),
@@ -651,7 +651,7 @@ theorem exists_lRegGeodesicFamily_to_time
       alpha, halpha, hcurves⟩ := hr
     obtain ⟨epsilon, hepsilon, W, hWopen, hA0W, _hWV,
       beta, hbeta, hcurves'⟩ :=
-      exists_lRegGeodesicFamily_extension S hS T x hVopen hA0V hKopen hKconn hs0K hrK
+      exists_lRegularizedGeodesicFamily_extension S hS T x hVopen hA0V hKopen hKconn hs0K hrK
         halpha hcurves
     have hrI : r ∈ Ioo (r - epsilon) (r + epsilon) :=
       ⟨by linarith, by linarith⟩
@@ -694,7 +694,7 @@ theorem exists_lRegGeodesicFamily_to_time
       intro r hr
       have hrlocal : r ∈ J ∩ gamma ⁻¹' (chartAt H x0).source := hQsub hr
       have hrdata := hgamma r hrlocal.1
-      have hphase := lRegCurve_phase S T x0 gamma r hrdata.2.1
+      have hphase := lRegularizedCurve_phase S T x0 gamma r hrdata.2.1
         hrlocal.2 hrdata.2.2.1 hrdata.2.2.2
       simpa only [zref, X] using hphase.continuousAt.continuousWithinAt
     let C : Set (Real × (E × E)) := (fun r ↦ (r, zref r)) '' Q
@@ -724,7 +724,7 @@ theorem exists_lRegGeodesicFamily_to_time
       alpha, halpha, hcurves⟩ := htGood
     have htlocal : t ∈ J ∩ gamma ⁻¹' (chartAt H x0).source := hQsub htQ
     have hEq : Set.EqOn (fun r ↦ alpha (A0, r)) gamma (K ∩ J) :=
-      lRegSol_eqOn S hS T hKopen hKconn hs0K hJopen hJconn hs0J
+      lRegularizedSolution_eqOn S hS T hKopen hKconn hs0K hJopen hJconn hs0J
         (hcurves A0 hA0V).2.2 hgamma
         (by rw [(hcurves A0 hA0V).1, hstart])
         (by rw [(hcurves A0 hA0V).2.1, hvel])
@@ -741,7 +741,7 @@ theorem exists_lRegGeodesicFamily_to_time
     obtain ⟨U, hUopen, hzrefU, Phi,
       hPhi0, hPhiSmooth, hPhiDeriv, hPhiMap⟩ :=
       hphaseLocal (t, zref t) hptC
-    have halphaSrc : alpha (A0, t) ∈ (chartAt H x0).source := by
+    have halphaSource : alpha (A0, t) ∈ (chartAt H x0).source := by
       rw [hpos]
       exact htlocal.2
     have hseedEq :
@@ -752,20 +752,20 @@ theorem exists_lRegGeodesicFamily_to_time
       apply Prod.ext
       · simp only [zref, chartCurve]
         rw [hpos]
-      · have hseedVel := lPhaseSeed_vel (I := I) x0
-          ((hcurves A0 hA0V).2.2 t htK).2.1 halphaSrc
+      · have hseedVelocity := lPhaseSeed_velocity (I := I) x0
+          ((hcurves A0 hA0V).2.2 t htK).2.1 halphaSource
         calc
           fderiv Real
               (fun r : Real ↦ extChartAt I x0 (alpha (A0, r))) t
               (1 : Real) =
             trivToE (I := I) x0 (alpha (A0, t))
-              (lVelocity (I := I) (fun r ↦ alpha (A0, r)) t) := hseedVel
+              (lVelocity (I := I) (fun r ↦ alpha (A0, r)) t) := hseedVelocity
           _ = trivToE (I := I) x0 (gamma t)
               (lVelocity (I := I) gamma t) := by rw [hpos, hvelEq]
           _ = (zref t).2 := by rfl
     obtain ⟨W, hWopen, hA0W, _hWV, beta, hbeta, hcurves'⟩ :=
-      extend_lRegGeodesicFamily_of_phaseFlow S hS T x x0 hVopen hA0V hKopen hKconn
-        hs0K htK halpha hcurves halphaSrc epsilon hepsilon hUopen
+      extend_lRegularizedGeodesicFamily_of_phaseFlow S hS T x x0 hVopen hA0V hKopen hKconn
+        hs0K htK halpha hcurves halphaSource epsilon hepsilon hUopen
         (by rw [hseedEq]; exact hzrefU) Phi hPhi0 hPhiSmooth hPhiDeriv hPhiMap
     have hsNew : s ∈ K ∪ Ioo (t - epsilon) (t + epsilon) := by
       right
@@ -783,7 +783,7 @@ theorem exists_lRegGeodesicFamily_to_time
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem isLRegJacobi_affine_parameter
+theorem isLRegularizedJacobi_affine_parameter
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     {alpha : E × Real → M} {V : Set E} {K : Set Real}
     {A0 B : E} {s0 : Real} (x : M)
@@ -797,9 +797,9 @@ theorem isLRegJacobi_affine_parameter
           (fun r ↦ alpha (A, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun q ↦ alpha (A, q)) r) s =
-        lRegAccel S T s (alpha (A, s))
+        lRegularizedAccel S T s (alpha (A, s))
           (lVelocity (I := I) (fun r ↦ alpha (A, r)) s)) :
-    IsLRegJacobi S T (fun s ↦ alpha (A0, s))
+    IsLRegularizedJacobi S T (fun s ↦ alpha (A0, s))
         (fun s ↦ lVelocity (I := I)
           (fun u : Real ↦ alpha (A0 + u • B, s)) 0) K ∧
       lVelocity (I := I)
@@ -859,10 +859,10 @@ theorem isLRegJacobi_affine_parameter
     have hgeoNear : ∀ᶠ u in nhds (0 : Real),
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) (f u)
             (fun r ↦ lVelocity (I := I) (f u) r) s =
-          lRegAccel S T s (f u s) (lVelocity (I := I) (f u) s) := by
+          lRegularizedAccel S T s (f u s) (lVelocity (I := I) (f u) s) := by
       filter_upwards [hnear] with u hu
       simpa only [f] using hgeo (line u) hu s hs
-    have hraw := lRegVar_jacobiAt (I := I) S T f s hf hgeoNear
+    have hraw := lRegularizedVar_jacobiAt (I := I) S T f s hf hgeoNear
     have hcurve : (fun r ↦ f 0 r) = (fun r ↦ alpha (A0, r)) := by
       funext r
       simp only [f, line, zero_smul, add_zero]
@@ -888,7 +888,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem extend_lRegGeodesicFamily_to_time
+private theorem extend_lRegularizedGeodesicFamily_to_time
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     {gamma : Real → M} {J : Set Real} {x : M}
@@ -898,7 +898,7 @@ private theorem extend_lRegGeodesicFamily_to_time
     (hs0J : s0 ∈ J) (hbJ : b ∈ J)
     (hstart : gamma s0 = x)
     (hvel : lVelocity (I := I) gamma s0 = A0)
-    (hgamma : IsLRegGeodesicOn S T gamma J)
+    (hgamma : IsLRegularizedGeodesicOn S T gamma J)
     (hV0open : IsOpen V0) (hA0V0 : A0 ∈ V0)
     (hK0open : IsOpen K0) (hK0conn : IsPreconnected K0)
     (hs0K0 : s0 ∈ K0)
@@ -907,7 +907,7 @@ private theorem extend_lRegGeodesicFamily_to_time
     (hcurves0 : ∀ A ∈ V0,
       alpha0 (A, s0) = x ∧
         lVelocity (I := I) (fun r ↦ alpha0 (A, r)) s0 = A ∧
-        IsLRegGeodesicOn S T (fun r ↦ alpha0 (A, r)) K0) :
+        IsLRegularizedGeodesicOn S T (fun r ↦ alpha0 (A, r)) K0) :
     ∃ V : Set E, IsOpen V ∧ A0 ∈ V ∧
       ∃ K : Set Real, IsOpen K ∧ IsPreconnected K ∧ K0 ⊆ K ∧
         s0 ∈ K ∧ b ∈ K ∧
@@ -917,7 +917,7 @@ private theorem extend_lRegGeodesicFamily_to_time
             ∀ A ∈ V,
               alpha (A, s0) = x ∧
                 lVelocity (I := I) (fun r ↦ alpha (A, r)) s0 = A ∧
-                IsLRegGeodesicOn S T (fun r ↦ alpha (A, r)) K := by
+                IsLRegularizedGeodesicOn S T (fun r ↦ alpha (A, r)) K := by
   classical
   let Good : Set Real := {r | ∃ V : Set E, IsOpen V ∧ A0 ∈ V ∧
     ∃ K : Set Real, IsOpen K ∧ IsPreconnected K ∧ K0 ⊆ K ∧
@@ -928,7 +928,7 @@ private theorem extend_lRegGeodesicFamily_to_time
           ∀ A ∈ V,
             alpha (A, s0) = x ∧
               lVelocity (I := I) (fun q ↦ alpha (A, q)) s0 = A ∧
-              IsLRegGeodesicOn S T (fun q ↦ alpha (A, q)) K}
+              IsLRegularizedGeodesicOn S T (fun q ↦ alpha (A, q)) K}
   have hGood0 : s0 ∈ Good := by
     exact ⟨V0, hV0open, hA0V0, K0, hK0open, hK0conn, Subset.rfl,
       hs0K0, hs0K0, alpha0, halpha0, hcurves0⟩
@@ -939,7 +939,7 @@ private theorem extend_lRegGeodesicFamily_to_time
       alpha, halpha, hcurves⟩ := hr
     obtain ⟨epsilon, hepsilon, W, hWopen, hA0W, _hWV,
       beta, hbeta, hcurves'⟩ :=
-      exists_lRegGeodesicFamily_extension S hS T x hVopen hA0V hKopen hKconn hs0K hrK
+      exists_lRegularizedGeodesicFamily_extension S hS T x hVopen hA0V hKopen hKconn hs0K hrK
         halpha hcurves
     have hrI : r ∈ Ioo (r - epsilon) (r + epsilon) :=
       ⟨by linarith, by linarith⟩
@@ -982,7 +982,7 @@ private theorem extend_lRegGeodesicFamily_to_time
       intro r hr
       have hrlocal : r ∈ J ∩ gamma ⁻¹' (chartAt H x0).source := hQsub hr
       have hrdata := hgamma r hrlocal.1
-      have hphase := lRegCurve_phase S T x0 gamma r hrdata.2.1
+      have hphase := lRegularizedCurve_phase S T x0 gamma r hrdata.2.1
         hrlocal.2 hrdata.2.2.1 hrdata.2.2.2
       simpa only [zref, X] using hphase.continuousAt.continuousWithinAt
     let C : Set (Real × (E × E)) := (fun r ↦ (r, zref r)) '' Q
@@ -1012,7 +1012,7 @@ private theorem extend_lRegGeodesicFamily_to_time
       alpha, halpha, hcurves⟩ := htGood
     have htlocal : t ∈ J ∩ gamma ⁻¹' (chartAt H x0).source := hQsub htQ
     have hEq : Set.EqOn (fun r ↦ alpha (A0, r)) gamma (K ∩ J) :=
-      lRegSol_eqOn S hS T hKopen hKconn hs0K hJopen hJconn hs0J
+      lRegularizedSolution_eqOn S hS T hKopen hKconn hs0K hJopen hJconn hs0J
         (hcurves A0 hA0V).2.2 hgamma
         (by rw [(hcurves A0 hA0V).1, hstart])
         (by rw [(hcurves A0 hA0V).2.1, hvel])
@@ -1029,7 +1029,7 @@ private theorem extend_lRegGeodesicFamily_to_time
     obtain ⟨U, hUopen, hzrefU, Phi,
       hPhi0, hPhiSmooth, hPhiDeriv, hPhiMap⟩ :=
       hphaseLocal (t, zref t) hptC
-    have halphaSrc : alpha (A0, t) ∈ (chartAt H x0).source := by
+    have halphaSource : alpha (A0, t) ∈ (chartAt H x0).source := by
       rw [hpos]
       exact htlocal.2
     have hseedEq :
@@ -1040,20 +1040,20 @@ private theorem extend_lRegGeodesicFamily_to_time
       apply Prod.ext
       · simp only [zref, chartCurve]
         rw [hpos]
-      · have hseedVel := lPhaseSeed_vel (I := I) x0
-          ((hcurves A0 hA0V).2.2 t htK).2.1 halphaSrc
+      · have hseedVelocity := lPhaseSeed_velocity (I := I) x0
+          ((hcurves A0 hA0V).2.2 t htK).2.1 halphaSource
         calc
           fderiv Real
               (fun r : Real ↦ extChartAt I x0 (alpha (A0, r))) t
               (1 : Real) =
             trivToE (I := I) x0 (alpha (A0, t))
-              (lVelocity (I := I) (fun r ↦ alpha (A0, r)) t) := hseedVel
+              (lVelocity (I := I) (fun r ↦ alpha (A0, r)) t) := hseedVelocity
           _ = trivToE (I := I) x0 (gamma t)
               (lVelocity (I := I) gamma t) := by rw [hpos, hvelEq]
           _ = (zref t).2 := by rfl
     obtain ⟨W, hWopen, hA0W, _hWV, beta, hbeta, hcurves'⟩ :=
-      extend_lRegGeodesicFamily_of_phaseFlow S hS T x x0 hVopen hA0V hKopen hKconn
-        hs0K htK halpha hcurves halphaSrc epsilon hepsilon hUopen
+      extend_lRegularizedGeodesicFamily_of_phaseFlow S hS T x x0 hVopen hA0V hKopen hKconn
+        hs0K htK halpha hcurves halphaSource epsilon hepsilon hUopen
         (by rw [hseedEq]; exact hzrefU) Phi hPhi0 hPhiSmooth hPhiDeriv hPhiMap
     have hsNew : s ∈ K ∪ Ioo (t - epsilon) (t + epsilon) := by
       right
@@ -1074,7 +1074,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRegGeodesicFamily_to_time_containing_zero
+theorem exists_lRegularizedGeodesicFamily_to_time_containing_zero
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     {gamma : Real → M} {J : Set Real} {x : M}
@@ -1083,7 +1083,7 @@ theorem exists_lRegGeodesicFamily_to_time_containing_zero
     (h0J : 0 ∈ J) (hs0J : s0 ∈ J) (hbJ : b ∈ J)
     (hstart : gamma s0 = x)
     (hvel : lVelocity (I := I) gamma s0 = A0)
-    (hgamma : IsLRegGeodesicOn S T gamma J) :
+    (hgamma : IsLRegularizedGeodesicOn S T gamma J) :
     ∃ V : Set E, IsOpen V ∧ A0 ∈ V ∧
       ∃ K : Set Real, IsOpen K ∧ IsPreconnected K ∧
         0 ∈ K ∧ s0 ∈ K ∧ b ∈ K ∧
@@ -1093,13 +1093,13 @@ theorem exists_lRegGeodesicFamily_to_time_containing_zero
             ∀ A ∈ V,
               alpha (A, s0) = x ∧
                 lVelocity (I := I) (fun r ↦ alpha (A, r)) s0 = A ∧
-                IsLRegGeodesicOn S T (fun r ↦ alpha (A, r)) K := by
+                IsLRegularizedGeodesicOn S T (fun r ↦ alpha (A, r)) K := by
   obtain ⟨V0, hV0open, hA0V0, K0, hK0open, hK0conn, hs0K0, h0K0,
       alpha0, halpha0, hcurves0⟩ :=
-    exists_lRegGeodesicFamily_to_time S hS T hJopen hJconn hs0J h0J hstart hvel hgamma
+    exists_lRegularizedGeodesicFamily_to_time S hS T hJopen hJconn hs0J h0J hstart hvel hgamma
   obtain ⟨V, hVopen, hA0V, K, hKopen, hKconn, hK0K, hs0K, hbK,
       alpha, halpha, hcurves⟩ :=
-    extend_lRegGeodesicFamily_to_time S hS T hJopen hJconn hs0J hbJ hstart hvel hgamma
+    extend_lRegularizedGeodesicFamily_to_time S hS T hJopen hJconn hs0J hbJ hstart hvel hgamma
       hV0open hA0V0 hK0open hK0conn hs0K0 halpha0 hcurves0
   exact ⟨V, hVopen, hA0V, K, hKopen, hKconn, hK0K h0K0, hs0K, hbK,
     alpha, halpha, hcurves⟩

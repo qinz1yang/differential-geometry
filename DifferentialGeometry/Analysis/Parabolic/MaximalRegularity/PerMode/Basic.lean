@@ -14,17 +14,17 @@ namespace Analysis
 namespace Parabolic
 namespace MaximalRegularity
 
-def perModeConv (lam : ℝ) (f : ℝ → ℝ) (t : ℝ) : ℝ :=
+def perModeConvolution (lam : ℝ) (f : ℝ → ℝ) (t : ℝ) : ℝ :=
   ∫ s in (0 : ℝ)..t, Real.exp (-(lam * (t - s))) * f s
 
-theorem perModeConv_def (lam : ℝ) (f : ℝ → ℝ) (t : ℝ) :
-    perModeConv lam f t = ∫ s in (0 : ℝ)..t, Real.exp (-(lam * (t - s))) * f s :=
+theorem perModeConvolution_def (lam : ℝ) (f : ℝ → ℝ) (t : ℝ) :
+    perModeConvolution lam f t = ∫ s in (0 : ℝ)..t, Real.exp (-(lam * (t - s))) * f s :=
   rfl
 
 @[simp]
-theorem perModeConv_zero_left (lam : ℝ) (f : ℝ → ℝ) :
-    perModeConv lam f 0 = 0 := by
-  simp [perModeConv]
+theorem perModeConvolution_zero_left (lam : ℝ) (f : ℝ → ℝ) :
+    perModeConvolution lam f 0 = 0 := by
+  simp [perModeConvolution]
 
 private theorem kernel_factor (lam t s : ℝ) :
     Real.exp (-(lam * (t - s))) = Real.exp (-(lam * t)) * Real.exp (lam * s) := by
@@ -43,13 +43,13 @@ theorem intervalIntegrable_kernel_mul (lam t : ℝ) (hf : Continuous f) (a b : �
     IntervalIntegrable (fun s => Real.exp (-(lam * (t - s))) * f s) volume a b :=
   (continuous_kernel_mul lam t hf).intervalIntegrable a b
 
-theorem continuous_perModeConv (lam : ℝ) (hf : Continuous f) :
-    Continuous (perModeConv lam f) := by
-  have hsplit : perModeConv lam f
+theorem continuous_perModeConvolution (lam : ℝ) (hf : Continuous f) :
+    Continuous (perModeConvolution lam f) := by
+  have hsplit : perModeConvolution lam f
       = fun t => Real.exp (-(lam * t)) *
           ∫ s in (0 : ℝ)..t, Real.exp (lam * s) * f s := by
     funext t
-    rw [perModeConv, ← intervalIntegral.integral_const_mul]
+    rw [perModeConvolution, ← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr (fun s _ => ?_)
     rw [kernel_factor, mul_assoc]
   rw [hsplit]
@@ -58,9 +58,9 @@ theorem continuous_perModeConv (lam : ℝ) (hf : Continuous f) :
     continuous_primitive (fun a b => (hg.intervalIntegrable a b)) 0
   fun_prop
 
-theorem continuousOn_perModeConv (lam T : ℝ) (hf : Continuous f) :
-    ContinuousOn (perModeConv lam f) (Set.Icc (0 : ℝ) T) :=
-  (continuous_perModeConv lam hf).continuousOn
+theorem continuousOn_perModeConvolution (lam T : ℝ) (hf : Continuous f) :
+    ContinuousOn (perModeConvolution lam f) (Set.Icc (0 : ℝ) T) :=
+  (continuous_perModeConvolution lam hf).continuousOn
 
 end Continuity
 
@@ -200,17 +200,17 @@ section Estimate
 
 variable {f : ℝ → ℝ}
 
-theorem perModeConv_sq_le_kernel_integral (lam : ℝ) (hlam : 0 ≤ lam)
+theorem perModeConvolution_sq_le_kernel_integral (lam : ℝ) (hlam : 0 ≤ lam)
     (hf : Continuous f) {t : ℝ} (ht : 0 ≤ t) :
-    (lam * perModeConv lam f t) ^ 2
+    (lam * perModeConvolution lam f t) ^ 2
       ≤ ∫ s in (0 : ℝ)..t, lam * Real.exp (-(lam * (t - s))) * f s ^ 2 := by
   set w : ℝ → ℝ := fun s => lam * Real.exp (-(lam * (t - s))) with hw_def
   have hw_cont : Continuous w := by fun_prop
   have hw_nonneg : ∀ x ∈ Set.Icc (0 : ℝ) t, 0 ≤ w x := by
     intro x _
     exact mul_nonneg hlam (Real.exp_pos _).le
-  have hlamphi : lam * perModeConv lam f t = ∫ s in (0 : ℝ)..t, w s * f s := by
-    rw [perModeConv, ← intervalIntegral.integral_const_mul]
+  have hlamphi : lam * perModeConvolution lam f t = ∫ s in (0 : ℝ)..t, w s * f s := by
+    rw [perModeConvolution, ← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr (fun s _ => ?_)
     simp only [hw_def]
     ring
@@ -226,7 +226,7 @@ theorem perModeConv_sq_le_kernel_integral (lam : ℝ) (hlam : 0 ≤ lam)
   have hwf2_nonneg : 0 ≤ ∫ s in (0 : ℝ)..t, w s * f s ^ 2 := by
     refine intervalIntegral.integral_nonneg ht (fun s hs => ?_)
     exact mul_nonneg (hw_nonneg s hs) (sq_nonneg _)
-  calc (lam * perModeConv lam f t) ^ 2
+  calc (lam * perModeConvolution lam f t) ^ 2
       = (∫ s in (0 : ℝ)..t, w s * f s) ^ 2 := by rw [hlamphi]
     _ ≤ (∫ s in (0 : ℝ)..t, w s) * ∫ s in (0 : ℝ)..t, w s * f s ^ 2 := hCS
     _ ≤ 1 * ∫ s in (0 : ℝ)..t, w s * f s ^ 2 :=
@@ -373,17 +373,17 @@ private theorem integrable_uncurry_schurIntegrand (lam : ℝ) (hlam : 0 ≤ lam)
   · rw [Function.uncurry_apply_pair, schurIntegrand_of_not_le lam f hp]
     exact hCbound_nonneg
 
-theorem perModeConv_sq_integral_le (lam : ℝ) (hlam : 0 ≤ lam)
+theorem perModeConvolution_sq_integral_le (lam : ℝ) (hlam : 0 ≤ lam)
     (hf : Continuous f) {T : ℝ} (hT : 0 ≤ T) :
-    ∫ t in (0 : ℝ)..T, (lam * perModeConv lam f t) ^ 2
+    ∫ t in (0 : ℝ)..T, (lam * perModeConvolution lam f t) ^ 2
       ≤ ∫ t in (0 : ℝ)..T, f t ^ 2 := by
   let : MeasurableSpace ℝ := borel ℝ
   have : BorelSpace ℝ := ⟨rfl⟩
-  have hstep1 : ∫ t in (0 : ℝ)..T, (lam * perModeConv lam f t) ^ 2
+  have hstep1 : ∫ t in (0 : ℝ)..T, (lam * perModeConvolution lam f t) ^ 2
       ≤ ∫ t in (0 : ℝ)..T,
           ∫ s in (0 : ℝ)..t, lam * Real.exp (-(lam * (t - s))) * f s ^ 2 := by
     refine intervalIntegral.integral_mono_on hT ?_ ?_ ?_
-    · exact ((continuous_const.mul (continuous_perModeConv lam hf)).pow 2).intervalIntegrable 0 T
+    · exact ((continuous_const.mul (continuous_perModeConvolution lam hf)).pow 2).intervalIntegrable 0 T
     · have heq : (fun t => ∫ s in (0 : ℝ)..t,
             lam * Real.exp (-(lam * (t - s))) * f s ^ 2)
           = fun t => Real.exp (-(lam * t)) *
@@ -402,7 +402,7 @@ theorem perModeConv_sq_integral_le (lam : ℝ) (hlam : 0 ≤ lam)
       have hpre : Continuous (fun t : ℝ => Real.exp (-(lam * t))) := by fun_prop
       exact (hpre.mul hcont).intervalIntegrable 0 T
     · intro t ht
-      exact perModeConv_sq_le_kernel_integral lam hlam hf ht.1
+      exact perModeConvolution_sq_le_kernel_integral lam hlam hf ht.1
   have hT_eq_inner : ∀ t ∈ Set.Icc (0 : ℝ) T,
       (∫ s in (0 : ℝ)..t, lam * Real.exp (-(lam * (t - s))) * f s ^ 2)
         = ∫ s in Set.Icc (0 : ℝ) T, schurIntegrand lam f t s :=
@@ -443,7 +443,7 @@ theorem perModeConv_sq_integral_le (lam : ℝ) (hlam : 0 ≤ lam)
       calc f s ^ 2 * (1 - Real.exp (-(lam * (T - s))))
           ≤ f s ^ 2 * 1 := mul_le_mul_of_nonneg_left hmass (sq_nonneg _)
         _ = f s ^ 2 := mul_one _
-  calc ∫ t in (0 : ℝ)..T, (lam * perModeConv lam f t) ^ 2
+  calc ∫ t in (0 : ℝ)..T, (lam * perModeConvolution lam f t) ^ 2
       ≤ ∫ t in (0 : ℝ)..T,
           ∫ s in (0 : ℝ)..t, lam * Real.exp (-(lam * (t - s))) * f s ^ 2 := hstep1
     _ = ∫ t in Set.Icc (0 : ℝ) T,
@@ -459,14 +459,14 @@ section Derivative
 
 variable {f : ℝ → ℝ}
 
-theorem perModeConv_hasDerivAt (lam : ℝ) (hf : Continuous f) (t : ℝ) :
-    HasDerivAt (perModeConv lam f)
-      (f t - lam * perModeConv lam f t) t := by
+theorem perModeConvolution_hasDerivAt (lam : ℝ) (hf : Continuous f) (t : ℝ) :
+    HasDerivAt (perModeConvolution lam f)
+      (f t - lam * perModeConvolution lam f t) t := by
   set ψ : ℝ → ℝ := fun t => ∫ s in (0 : ℝ)..t, Real.exp (lam * s) * f s with hψ_def
   have hg : Continuous (fun s => Real.exp (lam * s) * f s) := by fun_prop
-  have hsplit : perModeConv lam f = fun t => Real.exp (-(lam * t)) * ψ t := by
+  have hsplit : perModeConvolution lam f = fun t => Real.exp (-(lam * t)) * ψ t := by
     funext t
-    rw [perModeConv, hψ_def, ← intervalIntegral.integral_const_mul]
+    rw [perModeConvolution, hψ_def, ← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr (fun s _ => ?_)
     rw [kernel_factor, mul_assoc]
   have hψ_deriv : HasDerivAt ψ (Real.exp (lam * t) * f t) t :=
@@ -499,53 +499,53 @@ theorem perModeConv_hasDerivAt (lam : ℝ) (hf : Continuous f) (t : ℝ) :
   rw [hderiv_eq] at hprod
   exact hprod
 
-theorem perModeConv_hasDerivWithinAt (lam : ℝ) (hf : Continuous f) (T t : ℝ) :
-    HasDerivWithinAt (perModeConv lam f)
-      (f t - lam * perModeConv lam f t) (Set.Icc (0 : ℝ) T) t :=
-  (perModeConv_hasDerivAt lam hf t).hasDerivWithinAt
+theorem perModeConvolution_hasDerivWithinAt (lam : ℝ) (hf : Continuous f) (T t : ℝ) :
+    HasDerivWithinAt (perModeConvolution lam f)
+      (f t - lam * perModeConvolution lam f t) (Set.Icc (0 : ℝ) T) t :=
+  (perModeConvolution_hasDerivAt lam hf t).hasDerivWithinAt
 
-theorem continuous_perModeConv_deriv (lam : ℝ) (hf : Continuous f) :
-    Continuous (fun t => f t - lam * perModeConv lam f t) :=
-  hf.sub (continuous_const.mul (continuous_perModeConv lam hf))
+theorem continuous_perModeConvolution_deriv (lam : ℝ) (hf : Continuous f) :
+    Continuous (fun t => f t - lam * perModeConvolution lam f t) :=
+  hf.sub (continuous_const.mul (continuous_perModeConvolution lam hf))
 
-theorem perModeConv_deriv_sq_integral_le (lam : ℝ) (hlam : 0 ≤ lam)
+theorem perModeConvolution_deriv_sq_integral_le (lam : ℝ) (hlam : 0 ≤ lam)
     (hf : Continuous f) {T : ℝ} (hT : 0 ≤ T) :
-    ∫ t in (0 : ℝ)..T, (f t - lam * perModeConv lam f t) ^ 2
+    ∫ t in (0 : ℝ)..T, (f t - lam * perModeConvolution lam f t) ^ 2
       ≤ 4 * ∫ t in (0 : ℝ)..T, f t ^ 2 := by
-  have hpoint : ∀ t : ℝ, (f t - lam * perModeConv lam f t) ^ 2
-      ≤ 2 * f t ^ 2 + 2 * (lam * perModeConv lam f t) ^ 2 := by
+  have hpoint : ∀ t : ℝ, (f t - lam * perModeConvolution lam f t) ^ 2
+      ≤ 2 * f t ^ 2 + 2 * (lam * perModeConvolution lam f t) ^ 2 := by
     intro t
-    nlinarith [sq_nonneg (f t + lam * perModeConv lam f t),
-      sq_nonneg (f t - lam * perModeConv lam f t)]
+    nlinarith [sq_nonneg (f t + lam * perModeConvolution lam f t),
+      sq_nonneg (f t - lam * perModeConvolution lam f t)]
   have hi_deriv : IntervalIntegrable
-      (fun t => (f t - lam * perModeConv lam f t) ^ 2) volume 0 T :=
-    ((continuous_perModeConv_deriv lam hf).pow 2).intervalIntegrable 0 T
+      (fun t => (f t - lam * perModeConvolution lam f t) ^ 2) volume 0 T :=
+    ((continuous_perModeConvolution_deriv lam hf).pow 2).intervalIntegrable 0 T
   have hi_f2 : IntervalIntegrable (fun t => f t ^ 2) volume 0 T :=
     ((hf.pow 2)).intervalIntegrable 0 T
   have hi_lamphi2 : IntervalIntegrable
-      (fun t => (lam * perModeConv lam f t) ^ 2) volume 0 T :=
-    (((continuous_const.mul (continuous_perModeConv lam hf))).pow 2).intervalIntegrable 0 T
-  have hmono : ∫ t in (0 : ℝ)..T, (f t - lam * perModeConv lam f t) ^ 2
+      (fun t => (lam * perModeConvolution lam f t) ^ 2) volume 0 T :=
+    (((continuous_const.mul (continuous_perModeConvolution lam hf))).pow 2).intervalIntegrable 0 T
+  have hmono : ∫ t in (0 : ℝ)..T, (f t - lam * perModeConvolution lam f t) ^ 2
       ≤ ∫ t in (0 : ℝ)..T,
-          (2 * f t ^ 2 + 2 * (lam * perModeConv lam f t) ^ 2) := by
+          (2 * f t ^ 2 + 2 * (lam * perModeConvolution lam f t) ^ 2) := by
     refine intervalIntegral.integral_mono_on hT hi_deriv ?_ (fun t _ => hpoint t)
     exact (hi_f2.const_mul 2).add (hi_lamphi2.const_mul 2)
   have hsplit : ∫ t in (0 : ℝ)..T,
-        (2 * f t ^ 2 + 2 * (lam * perModeConv lam f t) ^ 2)
+        (2 * f t ^ 2 + 2 * (lam * perModeConvolution lam f t) ^ 2)
       = 2 * (∫ t in (0 : ℝ)..T, f t ^ 2)
-        + 2 * ∫ t in (0 : ℝ)..T, (lam * perModeConv lam f t) ^ 2 := by
+        + 2 * ∫ t in (0 : ℝ)..T, (lam * perModeConvolution lam f t) ^ 2 := by
     rw [intervalIntegral.integral_add (hi_f2.const_mul 2) (hi_lamphi2.const_mul 2),
       intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
-  have hreg : ∫ t in (0 : ℝ)..T, (lam * perModeConv lam f t) ^ 2
+  have hreg : ∫ t in (0 : ℝ)..T, (lam * perModeConvolution lam f t) ^ 2
       ≤ ∫ t in (0 : ℝ)..T, f t ^ 2 :=
-    perModeConv_sq_integral_le lam hlam hf hT
+    perModeConvolution_sq_integral_le lam hlam hf hT
   have hf2_nonneg : 0 ≤ ∫ t in (0 : ℝ)..T, f t ^ 2 :=
     intervalIntegral.integral_nonneg hT (fun t _ => sq_nonneg _)
-  calc ∫ t in (0 : ℝ)..T, (f t - lam * perModeConv lam f t) ^ 2
+  calc ∫ t in (0 : ℝ)..T, (f t - lam * perModeConvolution lam f t) ^ 2
       ≤ ∫ t in (0 : ℝ)..T,
-          (2 * f t ^ 2 + 2 * (lam * perModeConv lam f t) ^ 2) := hmono
+          (2 * f t ^ 2 + 2 * (lam * perModeConvolution lam f t) ^ 2) := hmono
     _ = 2 * (∫ t in (0 : ℝ)..T, f t ^ 2)
-          + 2 * ∫ t in (0 : ℝ)..T, (lam * perModeConv lam f t) ^ 2 := hsplit
+          + 2 * ∫ t in (0 : ℝ)..T, (lam * perModeConvolution lam f t) ^ 2 := hsplit
     _ ≤ 2 * (∫ t in (0 : ℝ)..T, f t ^ 2)
           + 2 * ∫ t in (0 : ℝ)..T, f t ^ 2 := by gcongr
     _ = 4 * ∫ t in (0 : ℝ)..T, f t ^ 2 := by ring
@@ -554,43 +554,43 @@ end Derivative
 
 section Smoothness
 
-private theorem perModeConv_contDiff_natCast (lam : ℝ) :
+private theorem perModeConvolution_contDiff_natCast (lam : ℝ) :
     ∀ (k : ℕ) (f : ℝ → ℝ), ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) f →
-      ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) (perModeConv lam f) := by
+      ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) (perModeConvolution lam f) := by
   intro k
   induction k with
   | zero =>
       intro f hf
       rw [Nat.cast_zero, contDiff_zero] at hf ⊢
-      exact continuous_perModeConv lam hf
+      exact continuous_perModeConvolution lam hf
   | succ k ih =>
       intro f hf
       have hfcont : Continuous f := hf.continuous
       have hf_low : ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) f :=
         hf.of_le (by rw [Nat.cast_succ]; exact le_self_add)
-      have hphi_low : ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) (perModeConv lam f) :=
+      have hphi_low : ContDiff ℝ ((k : ℕ) : WithTop ℕ∞) (perModeConvolution lam f) :=
         ih f hf_low
-      have hderiv_eq : deriv (perModeConv lam f)
-          = fun t => f t - lam * perModeConv lam f t :=
-        deriv_eq (fun t => perModeConv_hasDerivAt lam hfcont t)
-      have hdiff : Differentiable ℝ (perModeConv lam f) :=
-        fun t => (perModeConv_hasDerivAt lam hfcont t).differentiableAt
+      have hderiv_eq : deriv (perModeConvolution lam f)
+          = fun t => f t - lam * perModeConvolution lam f t :=
+        deriv_eq (fun t => perModeConvolution_hasDerivAt lam hfcont t)
+      have hdiff : Differentiable ℝ (perModeConvolution lam f) :=
+        fun t => (perModeConvolution_hasDerivAt lam hfcont t).differentiableAt
       rw [Nat.cast_succ, contDiff_succ_iff_deriv]
       refine ⟨hdiff, fun hω => absurd hω (by simp), ?_⟩
       rw [hderiv_eq]
       exact hf_low.sub (contDiff_const.mul hphi_low)
 
-theorem perModeConv_contDiff_of_contDiff (n : ℕ∞) (lam : ℝ) (f : ℝ → ℝ)
-    (hf : ContDiff ℝ n f) : ContDiff ℝ n (perModeConv lam f) := by
+theorem perModeConvolution_contDiff_of_contDiff (n : ℕ∞) (lam : ℝ) (f : ℝ → ℝ)
+    (hf : ContDiff ℝ n f) : ContDiff ℝ n (perModeConvolution lam f) := by
   induction n using ENat.recTopCoe with
   | top =>
       rw [show ((⊤ : ℕ∞) : WithTop ℕ∞) = ∞ from rfl, contDiff_infty] at hf ⊢
-      exact fun k => perModeConv_contDiff_natCast lam k f (hf k)
-  | coe k => exact perModeConv_contDiff_natCast lam k f hf
+      exact fun k => perModeConvolution_contDiff_natCast lam k f (hf k)
+  | coe k => exact perModeConvolution_contDiff_natCast lam k f hf
 
-theorem perModeConv_contDiff_top (lam : ℝ) (f : ℝ → ℝ)
-    (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (perModeConv lam f) :=
-  perModeConv_contDiff_of_contDiff ⊤ lam f hf
+theorem perModeConvolution_contDiff_top (lam : ℝ) (f : ℝ → ℝ)
+    (hf : ContDiff ℝ ∞ f) : ContDiff ℝ ∞ (perModeConvolution lam f) :=
+  perModeConvolution_contDiff_of_contDiff ⊤ lam f hf
 
 end Smoothness
 

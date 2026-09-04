@@ -36,8 +36,8 @@ theorem lAction_chart_lsc
     (hE : ∀ n, IntegrableOn
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
         (lVelocity (I := I) (alpha n) s)) (Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
-    (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
+    (hLag : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b)
+    (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A)
     (x y : M) (hfixa : ∀ n, alpha n a = x)
     (hfixb : ∀ n, alpha n b = y)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
@@ -61,7 +61,7 @@ theorem lAction_chart_lsc
             ((uLim i).deriv r)) ((uLim i).deriv r)) +
         (∫ s in t i.castSucc..t i.succ,
           2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s)))) ≤
-        liminf (fun n ↦ lRegAction S T (alpha (chi n)) a b) atTop := by
+        liminf (fun n ↦ lRegularizedAction S T (alpha (chi n)) a b) atTop := by
   have hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric :=
     hS.smoothMetric
   have hSc : ScalarSTContOn (I := I) (M := M) S :=
@@ -105,12 +105,12 @@ theorem lAction_chart_lsc
   let beta : Nat → Real → M := fun n ↦ alpha (phi0 (n + N))
   have hbeta : ∀ n, ContMDiffOn 𝓘(Real, Real) I 1 (beta n) (Icc a b) :=
     fun n ↦ halpha _
-  have hLagBeta : ∀ n, IntervalIntegrable (lRegLagrangian S T (beta n)) volume a b :=
+  have hLagBeta : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (beta n)) volume a b :=
     fun n ↦ hLag _
-  have hactBeta : ∀ n, lRegAction S T (beta n) a b ≤ A :=
+  have hactBeta : ∀ n, lRegularizedAction S T (beta n) a b ≤ A :=
     fun n ↦ hact _
   obtain ⟨psi, uLim, hpsi, hdu, hu⟩ :=
-    exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le S hMet hSc T a b t htmono ht0 htlast p beta hbeta hLagBeta
+    exists_chartH1_weakly_convergent_subsequence_of_lRegularizedAction_le S hMet hSc T a b t htmono ht0 htlast p beta hbeta hLagBeta
       u (fun i n ↦ by simpa only [beta, Nat.add_comm] using hsrc i n)
       (fun i n ↦ by simpa only [beta, Nat.add_comm] using hrep i n)
       K hKc' hKchart (fun i n r ↦ by
@@ -138,7 +138,7 @@ theorem lAction_chart_lsc
   have huK' (i : Fin m) (n : Nat) (r : Icc (0 : Real) (partitionIntervalLength t i)) :
       (u i (psi n)).toFun r.1 ∈ K i := by
     simpa only [beta, Nat.add_comm] using huK i (psi n) r
-  have hgammaSrc (i : Fin m) : MapsTo gamma
+  have hgammaSource (i : Fin m) : MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source :=
     (hgammaK i).mono_right (interior_subset.trans (hKsrc i))
   have hdiff (i : Fin m) (n : Nat) :
@@ -188,13 +188,13 @@ theorem lAction_chart_lsc
       change r ∈ Icc (0 : Real) (t i.succ - t i.castSucc) at hr
       exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
     let rsub : Icc (0 : Real) (partitionIntervalLength t i) := ⟨r, hr⟩
-    have hExtSrc : gamma (t i.castSucc + r) ∈ (extChartAt I (p i)).source := by
+    have hExtSource : gamma (t i.castSucc + r) ∈ (extChartAt I (p i)).source := by
       rw [extChartAt_source]
-      exact hgammaSrc i hrpiece
+      exact hgammaSource i hrpiece
     have hchart : Tendsto (fun n ↦
         extChartAt I (p i) (alpha (chi n) (t i.castSucc + r))) atTop
         (nhds (extChartAt I (p i) (gamma (t i.castSucc + r)))) := by
-      apply (continuousAt_extChartAt' (I := I) hExtSrc).tendsto.comp hpoint
+      apply (continuousAt_extChartAt' (I := I) hExtSource).tendsto.comp hpoint
     have huPoint := (hu i).tendsto_at rsub
     have huChart : Tendsto (fun n ↦
         extChartAt I (p i) (alpha (chi n) (t i.castSucc + r))) atTop
@@ -204,9 +204,9 @@ theorem lAction_chart_lsc
       exact hrep' i n rsub.2
     exact tendsto_nhds_unique huChart hchart
   have hactBound : IsBoundedUnder (· ≤ ·) atTop
-      (fun n ↦ lRegAction S T (alpha (chi n)) a b) :=
+      (fun n ↦ lRegularizedAction S T (alpha (chi n)) a b) :=
     isBoundedUnder_of_eventually_le (Eventually.of_forall fun n ↦ hact (chi n))
-  have hlsc := lRegAction_fin_lsc S hMet hSc T a b t htmono ht0 htlast p
+  have hlsc := lRegularizedAction_fin_lsc S hMet hSc T a b t htmono ht0 htlast p
     (fun n ↦ alpha (chi n)) gamma (fun i n ↦ u i (psi n))
     hsrc' hrep' hdiff K hKc' hKchart huK' uLim
     (fun i ↦ by
@@ -215,7 +215,7 @@ theorem lAction_chart_lsc
     (fun i z ↦ by simpa only using hdu i z)
     hconv hactBound hreg
   exact ⟨m, t, p, chi, gamma, uLim, hchi, hgamma, hga', hgb', hconv,
-    htmono, ht0, htlast, hgammaSrc, hlimRep, hlsc⟩
+    htmono, ht0, htlast, hgammaSource, hlimRep, hlsc⟩
 
 omit [NeZero (Module.finrank Real E)] in
 theorem lAction_liminf
@@ -229,8 +229,8 @@ theorem lAction_liminf
     (hE : ∀ n, IntegrableOn
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
         (lVelocity (I := I) (alpha n) s)) (Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
-    (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
+    (hLag : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b)
+    (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A)
     (x y : M) (hfixa : ∀ n, alpha n a = x)
     (hfixb : ∀ n, alpha n b = y)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
@@ -239,8 +239,8 @@ theorem lAction_liminf
       TendstoUniformly
         (fun n (s : Icc a b) ↦ alpha (chi n) s.1)
         (fun s ↦ gamma s.1) atTop ∧
-      lRegAction S T gamma a b ≤
-        liminf (fun n ↦ lRegAction S T (alpha (chi n)) a b) atTop := by
+      lRegularizedAction S T gamma a b ≤
+        liminf (fun n ↦ lRegularizedAction S T (alpha (chi n)) a b) atTop := by
   obtain ⟨m, t, p, chi, gamma, uLim, hchi, hgamma, hga, hgb, hconv,
       htmono, ht0, htlast, hsrc, hrep, hchart⟩ :=
     lAction_chart_lsc (I := I) S hS T t0 t1 gRef a b A hab htime hback
@@ -250,7 +250,7 @@ theorem lAction_liminf
   have hSc : ScalarSTContOn (I := I) (M := M) S :=
     ⟨hS.scalarCont⟩
   refine ⟨chi, gamma, hchi, hgamma, hga, hgb, hconv, ?_⟩
-  rw [lRegAction_chart S hMet hSc T a b t htmono ht0 htlast p gamma uLim
+  rw [lRegularizedAction_chart S hMet hSc T a b t htmono ht0 htlast p gamma uLim
     hsrc hrep hreg]
   exact hchart
 

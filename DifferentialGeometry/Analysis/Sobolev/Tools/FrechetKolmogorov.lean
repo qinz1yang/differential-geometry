@@ -75,14 +75,14 @@ private lemma convolution_sub_eq_integral
     {η u : E → ℝ}
     (hη_cont : Continuous η) (hη_compact : HasCompactSupport η)
     (hη_int_eq_one : ∫ s, η s ∂(volume : Measure E) = 1)
-    (hu_loc : LocallyIntegrable u volume) (x : E) :
+    (hu_local : LocallyIntegrable u volume) (x : E) :
     (η ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] u) x - u x =
       ∫ s, η s • (u (x - s) - u x) ∂(volume : Measure E) := by
   have hη_int : Integrable η volume :=
     hη_cont.integrable_of_hasCompactSupport hη_compact
   have hCe : ConvolutionExistsAt η u x (ContinuousLinearMap.lsmul ℝ ℝ) volume :=
     hη_compact.convolutionExists_left
-      (L := ContinuousLinearMap.lsmul ℝ ℝ) hη_cont hu_loc x
+      (L := ContinuousLinearMap.lsmul ℝ ℝ) hη_cont hu_local x
   have hint_etaUsmul :
       Integrable (fun s : E => η s • u (x - s)) volume := by
     refine hCe.congr ?_
@@ -108,13 +108,13 @@ omit [NeZero d] in
 private lemma integrable_eta_smul_translate_sub
     {η u : E → ℝ}
     (hη_cont : Continuous η) (hη_compact : HasCompactSupport η)
-    (hu_loc : LocallyIntegrable u volume) (x : E) :
+    (hu_local : LocallyIntegrable u volume) (x : E) :
     Integrable (fun s : E => η s • (u (x - s) - u x)) volume := by
   have hη_int : Integrable η volume :=
     hη_cont.integrable_of_hasCompactSupport hη_compact
   have hCe : ConvolutionExistsAt η u x (ContinuousLinearMap.lsmul ℝ ℝ) volume :=
     hη_compact.convolutionExists_left
-      (L := ContinuousLinearMap.lsmul ℝ ℝ) hη_cont hu_loc x
+      (L := ContinuousLinearMap.lsmul ℝ ℝ) hη_cont hu_local x
   have hint_etaUsmul :
       Integrable (fun s : E => η s • u (x - s)) volume := by
     refine hCe.congr ?_
@@ -140,15 +140,15 @@ private lemma enorm_convolution_sub_le_lintegral
     (hη_cont : Continuous η) (hη_compact : HasCompactSupport η)
     (hη_nonneg : ∀ y, 0 ≤ η y)
     (hη_int_eq_one : ∫ s, η s ∂(volume : Measure E) = 1)
-    (hu_loc : LocallyIntegrable u volume) (x : E) :
+    (hu_local : LocallyIntegrable u volume) (x : E) :
     (‖(η ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] u) x - u x‖ₑ : ℝ≥0∞) ≤
       ∫⁻ s, ENNReal.ofReal (η s) * (‖u (x - s) - u x‖ₑ : ℝ≥0∞) ∂volume := by
   classical
   have hf_eq :=
-    convolution_sub_eq_integral hη_cont hη_compact hη_int_eq_one hu_loc x
+    convolution_sub_eq_integral hη_cont hη_compact hη_int_eq_one hu_local x
   have hint_diff_vol :
       Integrable (fun s : E => η s • (u (x - s) - u x)) volume :=
-    integrable_eta_smul_translate_sub hη_cont hη_compact hu_loc x
+    integrable_eta_smul_translate_sub hη_cont hη_compact hu_local x
   rw [hf_eq]
   have hReal_norm_le :
       ‖∫ s, η s • (u (x - s) - u x) ∂volume‖ ≤
@@ -184,7 +184,7 @@ theorem lintegral_rpow_convolution_sub_le_translationAverage
     (hη_int_eq_one : ∫ s, η s ∂(volume : Measure E) = 1)
     {u : E → ℝ}
     (hu_meas : Measurable u)
-    (hu_loc : LocallyIntegrable u volume) :
+    (hu_local : LocallyIntegrable u volume) :
     ∫⁻ x, (‖(η ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] u) x - u x‖ₑ : ℝ≥0∞) ^
         pr ∂volume ≤
       ∫⁻ s, ENNReal.ofReal (η s) *
@@ -209,7 +209,7 @@ theorem lintegral_rpow_convolution_sub_le_translationAverage
         ∫⁻ s, ρ s * (‖u (x - s) - u x‖ₑ : ℝ≥0∞) ∂volume :=
     fun x =>
       enorm_convolution_sub_le_lintegral (d := d) hη_cont hη_compact hη_nonneg
-        hη_int_eq_one hu_loc x
+        hη_int_eq_one hu_local x
   have hPt_e_pow : ∀ x : E,
       (‖(η ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] u) x - u x‖ₑ : ℝ≥0∞) ^ pr ≤
         (∫⁻ s, ρ s * (‖u (x - s) - u x‖ₑ : ℝ≥0∞) ∂volume) ^ pr := fun x =>
@@ -290,7 +290,7 @@ theorem eLpNorm_convolution_sub_le_of_ae_translation_bound
     (hη_int_eq_one : ∫ s, η s ∂(volume : Measure E) = 1)
     {u : E → ℝ}
     (hu_meas : Measurable u)
-    (hu_loc : LocallyIntegrable u volume)
+    (hu_local : LocallyIntegrable u volume)
     {T : ℝ≥0∞}
     (hT_le : ∀ᵐ s ∂(volume : Measure E),
       η s ≠ 0 → eLpNorm (fun x => u (x - s) - u x) p volume ≤ T) :
@@ -326,7 +326,7 @@ theorem eLpNorm_convolution_sub_le_of_ae_translation_bound
     simp [hpr_toReal]
   rw [hLHS_eq]
   have hcore := lintegral_rpow_convolution_sub_le_translationAverage hpr_ge_one
-      hη_cont hη_compact hη_nonneg hη_int_eq_one hu_meas hu_loc
+      hη_cont hη_compact hη_nonneg hη_int_eq_one hu_meas hu_local
   have hT_pow : ∀ᵐ s ∂(volume : Measure E),
       η s ≠ 0 →
         ∫⁻ x, (‖u (x - s) - u x‖ₑ : ℝ≥0∞) ^ pr ∂volume ≤ T ^ pr := by
@@ -390,11 +390,11 @@ private lemma memLp_of_continuous_of_support_subset
     {p : ℝ≥0∞}
     {K : Set E} (hK_compact : IsCompact K)
     {g : E → ℝ} (hg_cont : Continuous g)
-    (hg_supp : ∀ x, x ∉ K → g x = 0) :
+    (hg_support : ∀ x, x ∉ K → g x = 0) :
     MemLp g p volume := by
   have hg_compact : HasCompactSupport g := by
     refine HasCompactSupport.intro hK_compact (fun x hx => ?_)
-    exact hg_supp x hx
+    exact hg_support x hx
   exact hg_cont.memLp_of_hasCompactSupport (μ := volume) hg_compact
 
 omit [NeZero d] in
@@ -411,9 +411,9 @@ theorem tendsto_lp_of_tendstoUniformlyOn_compact
     {g_lim : E → ℝ}
     (hg_cont : ∀ n, Continuous (g n))
     (hg_lim_cont : Continuous g_lim)
-    (hg_supp : ∀ n, ∀ x, x ∉ K → g n x = 0)
-    (hg_lim_supp : ∀ x, x ∉ K → g_lim x = 0)
-    (hg_unif : TendstoUniformlyOn g g_lim Filter.atTop K) :
+    (hg_support : ∀ n, ∀ x, x ∉ K → g n x = 0)
+    (hg_lim_support : ∀ x, x ∉ K → g_lim x = 0)
+    (hg_uniform : TendstoUniformlyOn g g_lim Filter.atTop K) :
     Filter.Tendsto
       (fun k => eLpNorm (fun x => g k x - g_lim x) p volume) Filter.atTop (𝓝 0) := by
   classical
@@ -426,14 +426,14 @@ theorem tendsto_lp_of_tendstoUniformlyOn_compact
     volume_lt_top_of_compact (d := d) hK_compact
   set vK : ℝ≥0∞ := (volume : Measure E) K with hvK_def
   have hp_toReal_pos : 0 < p.toReal := ENNReal.toReal_pos hp_ne hp_top
-  have h_diff_supp : ∀ k, ∀ x, x ∉ K → (g k x - g_lim x) = 0 := by
+  have h_diff_support : ∀ k, ∀ x, x ∉ K → (g k x - g_lim x) = 0 := by
     intro k x hx
-    rw [hg_supp k x hx, hg_lim_supp x hx, sub_zero]
+    rw [hg_support k x hx, hg_lim_support x hx, sub_zero]
   have h_diff_cont : ∀ k, Continuous (fun x => g k x - g_lim x) := fun k =>
     (hg_cont k).sub hg_lim_cont
-  have hg_unif_metric :
+  have hg_uniform_metric :
       ∀ ε > 0, ∀ᶠ k in atTop, ∀ x ∈ K, dist (g_lim x) (g k x) < ε :=
-    Metric.tendstoUniformlyOn_iff.mp hg_unif
+    Metric.tendstoUniformlyOn_iff.mp hg_uniform
   have h_eLp_le : ∀ k, ∀ ε : ℝ, 0 < ε →
       (∀ x, ‖g k x - g_lim x‖ ≤ ε) →
         eLpNorm (fun x => g k x - g_lim x) p volume ≤
@@ -444,7 +444,7 @@ theorem tendsto_lp_of_tendstoUniformlyOn_compact
       funext x
       by_cases hx : x ∈ K
       · simp [hx]
-      · simp [hx, h_diff_supp k x hx]
+      · simp [hx, h_diff_support k x hx]
     rw [hindicator]
     rw [eLpNorm_indicator_eq_eLpNorm_restrict hK_meas]
     have hbnd_ae : ∀ᵐ x ∂(volume.restrict K), ‖g k x - g_lim x‖ ≤ ε :=
@@ -457,7 +457,7 @@ theorem tendsto_lp_of_tendstoUniformlyOn_compact
     exact h_le
   have hsup : ∀ ε > 0, ∀ᶠ k in atTop, ∀ x, ‖g k x - g_lim x‖ ≤ ε := by
     intro ε hε
-    have hev := hg_unif_metric ε hε
+    have hev := hg_uniform_metric ε hε
     filter_upwards [hev] with k hk x
     by_cases hx : x ∈ K
     · have hd := hk x hx
@@ -469,7 +469,7 @@ theorem tendsto_lp_of_tendstoUniformlyOn_compact
         rw [show g k x - g_lim x = -(g_lim x - g k x) from by ring, norm_neg]
       rw [heq]
       exact this.le
-    · rw [h_diff_supp k x hx]
+    · rw [h_diff_support k x hx]
       simpa using hε.le
   set M : ℝ≥0∞ := vK ^ (p.toReal⁻¹) with hM_def
   have hM_lt_top : M < ∞ := by
@@ -519,25 +519,25 @@ theorem tendsto_lp_of_tendstoUniformlyOn_compact
       exact this
 
 omit [NeZero d] in
-private lemma integrable_of_memLp_compactSupp
+private lemma integrable_of_memLp_compactSupport
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {K : Set E} (hK_compact : IsCompact K)
     {u : E → ℝ} (hu_memLp : MemLp u p volume)
-    (hu_supp : ∀ x, x ∉ K → u x = 0) :
+    (hu_support : ∀ x, x ∉ K → u x = 0) :
     Integrable u volume := by
   classical
   have hK_meas : MeasurableSet K := hK_compact.isClosed.measurableSet
   have hK_vol : volume K ≠ ∞ := hK_compact.measure_lt_top.ne
   have hu_memLp_one : MemLp u 1 volume :=
-    hu_memLp.mono_exponent_of_measure_support_ne_top hu_supp hK_vol hp_one
+    hu_memLp.mono_exponent_of_measure_support_ne_top hu_support hK_vol hp_one
   exact (memLp_one_iff_integrable.mp hu_memLp_one)
 
 omit [NeZero d] in
 private lemma convolution_support_subset_cthickening
     {ε : ℝ} (_hε : 0 ≤ ε)
     {K : Set E} {u η : E → ℝ}
-    (hu_supp : ∀ x, x ∉ K → u x = 0)
-    (hη_supp : Function.support η ⊆ Metric.closedBall (0 : E) ε) (x : E)
+    (hu_support : ∀ x, x ∉ K → u x = 0)
+    (hη_support : Function.support η ⊆ Metric.closedBall (0 : E) ε) (x : E)
     (hx : x ∉ Metric.cthickening ε K) :
     (u ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] η) x = 0 := by
   classical
@@ -551,9 +551,9 @@ private lemma convolution_support_subset_cthickening
     exfalso
     have ht_K : t ∈ K := by
       by_contra h
-      exact hut (hu_supp t h)
-    have h_xmt_supp : (x - t) ∈ Function.support η := Function.mem_support.mpr hη_xmt
-    have h_ht : (x - t) ∈ Metric.closedBall (0 : E) ε := hη_supp h_xmt_supp
+      exact hut (hu_support t h)
+    have h_xmt_support : (x - t) ∈ Function.support η := Function.mem_support.mpr hη_xmt
+    have h_ht : (x - t) ∈ Metric.closedBall (0 : E) ε := hη_support h_xmt_support
     have h_dist : dist x t ≤ ε := by
       have hmem : (x - t) ∈ Metric.closedBall (0 : E) ε := h_ht
       rw [Metric.mem_closedBall, dist_zero_right] at hmem
@@ -564,12 +564,12 @@ private lemma convolution_support_subset_cthickening
   simp [h_zero_integrand]
 
 omit [NeZero d] in
-private lemma cauchy_lp_of_uniformly_cauchy_on_compact_supp
+private lemma cauchy_lp_of_uniformly_cauchy_on_compact_support
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ∞)
     {K : Set E} (hK_compact : IsCompact K)
     {g : ℕ → E → ℝ}
     (_hg_cont : ∀ n, Continuous (g n))
-    (hg_supp : ∀ n, ∀ x, x ∉ K → g n x = 0)
+    (hg_support : ∀ n, ∀ x, x ∉ K → g n x = 0)
     (hg_uCauchy : ∀ ε > 0, ∃ J : ℕ, ∀ j ≥ J, ∀ l ≥ J, ∀ x ∈ K,
       dist (g j x) (g l x) < ε) :
     ∀ ε : ℝ, 0 < ε → ∃ J : ℕ, ∀ j ≥ J, ∀ l ≥ J,
@@ -590,15 +590,15 @@ private lemma cauchy_lp_of_uniformly_cauchy_on_compact_supp
       (∀ x, ‖g j x - g l x‖ ≤ η) →
         eLpNorm (fun x => g j x - g l x) p volume ≤ M * ENNReal.ofReal η := by
     intro j l η hη hbnd
-    have h_diff_supp : ∀ x, x ∉ K → g j x - g l x = 0 := by
+    have h_diff_support : ∀ x, x ∉ K → g j x - g l x = 0 := by
       intro x hx
-      rw [hg_supp j x hx, hg_supp l x hx, sub_zero]
+      rw [hg_support j x hx, hg_support l x hx, sub_zero]
     have h_indicator : (fun x => g j x - g l x) =
         K.indicator (fun x => g j x - g l x) := by
       funext x
       by_cases hx : x ∈ K
       · simp [hx]
-      · simp [hx, h_diff_supp x hx]
+      · simp [hx, h_diff_support x hx]
     rw [h_indicator, eLpNorm_indicator_eq_eLpNorm_restrict hK_meas]
     have hbnd_ae : ∀ᵐ x ∂(volume.restrict K), ‖g j x - g l x‖ ≤ η :=
       Filter.Eventually.of_forall hbnd
@@ -618,7 +618,7 @@ private lemma cauchy_lp_of_uniformly_cauchy_on_compact_supp
         rw [Real.dist_eq] at hd
         rw [Real.norm_eq_abs]
         exact hd.le
-      · rw [hg_supp j x hx, hg_supp l x hx, sub_zero, norm_zero]
+      · rw [hg_support j x hx, hg_support l x hx, sub_zero, norm_zero]
         norm_num
     have h := h_eLp_le j l 1 (by norm_num) hbnd
     rw [hM_zero, zero_mul] at h
@@ -643,7 +643,7 @@ private lemma cauchy_lp_of_uniformly_cauchy_on_compact_supp
         rw [Real.dist_eq] at hd
         rw [Real.norm_eq_abs]
         exact hd.le
-      · rw [hg_supp j x hx, hg_supp l x hx, sub_zero, norm_zero]
+      · rw [hg_support j x hx, hg_support l x hx, sub_zero, norm_zero]
         exact hη_real_pos.le
     have h := h_eLp_le j l η_real hη_real_pos hbnd
     rw [h_M_eta] at h
@@ -669,7 +669,7 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
     {K : Set E} (hK_compact : IsCompact K)
     {u : ℕ → E → ℝ}
     (hu_mem : ∀ n, MeasureTheory.MemLp (u n) p volume)
-    (hu_supp : ∀ n, ∀ x, x ∉ K → u n x = 0)
+    (hu_support : ∀ n, ∀ x, x ∉ K → u n x = 0)
     {R : ℝ}
     (hu_bdd : ∀ n, eLpNorm (u n) p volume ≤ ENNReal.ofReal R)
     (hu_translation :
@@ -696,7 +696,7 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
     intro n
     refine Measurable.indicator ?_ hK_meas
     exact (hu_mem n).aestronglyMeasurable.measurable_mk
-  have hv_supp : ∀ n, ∀ x, x ∉ K → vFn n x = 0 := by
+  have hv_support : ∀ n, ∀ x, x ∉ K → vFn n x = 0 := by
     intro n x hx
     simp [vFn, hx]
   have hv_aeEq_u : ∀ n, vFn n =ᵐ[volume] u n := by
@@ -707,7 +707,7 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
       funext x
       by_cases hxK : x ∈ K
       · simp [hxK]
-      · rw [Set.indicator_of_notMem hxK, hu_supp n x hxK]
+      · rw [Set.indicator_of_notMem hxK, hu_support n x hxK]
     have h2 : vFn n =ᵐ[volume] K.indicator (u n) := by
       simp only [vFn]
       filter_upwards [h1] with x hx
@@ -751,8 +751,8 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
     rw [eLpNorm_congr_ae hEq]
     exact hδ_bnd n h hh
   have hv_int : ∀ n, Integrable (vFn n) volume := fun n =>
-    integrable_of_memLp_compactSupp (d := d) hp_one hK_compact (hv_memLp n) (hv_supp n)
-  have hv_loc : ∀ n, LocallyIntegrable (vFn n) volume := fun n =>
+    integrable_of_memLp_compactSupport (d := d) hp_one hK_compact (hv_memLp n) (hv_support n)
+  have hv_local : ∀ n, LocallyIntegrable (vFn n) volume := fun n =>
     (hv_int n).locallyIntegrable
   set εFn : ℕ → ℝ := fun k => (1 : ℝ) / ((k : ℝ) + 1) with hεFn_def
   have hε_pos : ∀ k, 0 < εFn k := fun k => by
@@ -778,22 +778,22 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
     mollifierEps_nonneg (hε_pos k) y
   have hη_int_eq_one : ∀ k, ∫ s, (ηFn k) s ∂(volume : Measure E) = 1 := fun k =>
     mollifierEps_integral_eq_one (hε_pos k)
-  have hη_supp_subset_eps_ball : ∀ k,
+  have hη_support_subset_eps_ball : ∀ k,
       Function.support (ηFn k) ⊆ Metric.closedBall (0 : E) (εFn k) := fun k =>
     mollifierEps_support_subset_closedBall_eps (hε_pos k)
-  have hη_supp_subset_one_ball : ∀ k,
+  have hη_support_subset_one_ball : ∀ k,
       Function.support (ηFn k) ⊆ Metric.closedBall (0 : E) 1 := by
     intro k
-    refine (hη_supp_subset_eps_ball k).trans ?_
+    refine (hη_support_subset_eps_ball k).trans ?_
     exact Metric.closedBall_subset_closedBall (hε_le_one k)
-  set fConv : ℕ → ℕ → E → ℝ := fun k n =>
-    ((ηFn k) ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] (vFn n)) with hfConv_def
-  have hfConv_cont : ∀ k n, Continuous (fConv k n) := fun k n => by
+  set fConvergence : ℕ → ℕ → E → ℝ := fun k n =>
+    ((ηFn k) ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] (vFn n)) with hfConvergence_def
+  have hfConvergence_cont : ∀ k n, Continuous (fConvergence k n) := fun k n => by
     refine HasCompactSupport.continuous_convolution_left
-      (L := ContinuousLinearMap.lsmul ℝ ℝ) (hη_compact k) ?_ (hv_loc n)
+      (L := ContinuousLinearMap.lsmul ℝ ℝ) (hη_compact k) ?_ (hv_local n)
     exact hη_cont k
-  have hfConv_alt : ∀ k n,
-      fConv k n = (vFn n) ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] (ηFn k) := by
+  have hfConvergence_alt : ∀ k n,
+      fConvergence k n = (vFn n) ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] (ηFn k) := by
     intro k n
     funext x
     change (ηFn k ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] vFn n) x =
@@ -815,13 +815,13 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
       rw [sub_sub_cancel]
       simp [ContinuousLinearMap.lsmul_apply, mul_comm]
     rw [h_eqfn]
-  have hfConv_supp : ∀ k n, ∀ x, x ∉ K' → (fConv k n) x = 0 := by
+  have hfConvergence_support : ∀ k n, ∀ x, x ∉ K' → (fConvergence k n) x = 0 := by
     intro k n x hx
-    rw [hfConv_alt k n]
-    refine convolution_support_subset_cthickening (d := d) (zero_le_one) (hv_supp n)
-      (hη_supp_subset_one_ball k) x hx
-  have hConvSub_bnd : ∀ ε : ℝ, 0 < ε → ∃ K0 : ℕ, ∀ k ≥ K0, ∀ n,
-      eLpNorm (fun x => (fConv k n) x - vFn n x) p volume ≤
+    rw [hfConvergence_alt k n]
+    refine convolution_support_subset_cthickening (d := d) (zero_le_one) (hv_support n)
+      (hη_support_subset_one_ball k) x hx
+  have hConvergenceSub_bnd : ∀ ε : ℝ, 0 < ε → ∃ K0 : ℕ, ∀ k ≥ K0, ∀ n,
+      eLpNorm (fun x => (fConvergence k n) x - vFn n x) p volume ≤
         ENNReal.ofReal ε := by
     intro ε hε
     rcases hv_translation ε hε with ⟨δ, hδ_pos, hδ_bnd⟩
@@ -836,11 +836,11 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
       exact hd
     refine eLpNorm_convolution_sub_le_of_ae_translation_bound
       hp_one hp_top (hη_cont k) (hη_compact k) (hη_nonneg k) (hη_int_eq_one k)
-      (hv_meas n) (hv_loc n) ?_
+      (hv_meas n) (hv_local n) ?_
     filter_upwards with s hs
-    have hs_supp : s ∈ Function.support (ηFn k) := Function.mem_support.mpr hs
+    have hs_support : s ∈ Function.support (ηFn k) := Function.mem_support.mpr hs
     have hs_in_ball : s ∈ Metric.closedBall (0 : E) (εFn k) :=
-      hη_supp_subset_eps_ball k hs_supp
+      hη_support_subset_eps_ball k hs_support
     have hs_norm_le : ‖s‖ ≤ εFn k := by
       rw [Metric.mem_closedBall, dist_zero_right] at hs_in_ball
       exact hs_in_ball
@@ -865,14 +865,14 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
       funext x
       by_cases hxK : x ∈ K
       · simp [hxK]
-      · rw [Set.indicator_of_notMem hxK, hv_supp n x hxK, norm_zero]
+      · rw [Set.indicator_of_notMem hxK, hv_support n x hxK, norm_zero]
     have h_eLp1_eq :
         eLpNorm (vFn n) 1 volume = eLpNorm (vFn n) 1 (volume.restrict K) := by
       have h_ind_eq : (vFn n) = K.indicator (vFn n) := by
         funext x
         by_cases hxK : x ∈ K
         · simp [hxK]
-        · rw [Set.indicator_of_notMem hxK, hv_supp n x hxK]
+        · rw [Set.indicator_of_notMem hxK, hv_support n x hxK]
       conv_lhs => rw [h_ind_eq]
       exact MeasureTheory.eLpNorm_indicator_eq_eLpNorm_restrict (μ := volume)
         (s := K) (p := 1) (f := vFn n) hK_meas
@@ -882,7 +882,7 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
         funext x
         by_cases hxK : x ∈ K
         · simp [hxK]
-        · rw [Set.indicator_of_notMem hxK, hv_supp n x hxK]
+        · rw [Set.indicator_of_notMem hxK, hv_support n x hxK]
       conv_lhs => rw [h_ind_eq]
       exact MeasureTheory.eLpNorm_indicator_eq_eLpNorm_restrict (μ := volume)
         (s := K) (p := p) (f := vFn n) hK_meas
@@ -929,14 +929,14 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
     linarith
   set Sbound : ℝ := (ENNReal.ofReal R * vK ^ ((1 : ℝ) - p.toReal⁻¹)).toReal with hSbound_def
   have hSbound_nn : 0 ≤ Sbound := ENNReal.toReal_nonneg
-  have h_fConv_supnorm_unif : ∀ k, ∃ C_k : ℝ, 0 < C_k ∧
-      ∀ n, ∀ x, |fConv k n x| ≤ C_k := by
+  have h_fConvergence_supnorm_uniform : ∀ k, ∃ C_k : ℝ, 0 < C_k ∧
+      ∀ n, ∀ x, |fConvergence k n x| ≤ C_k := by
     intro k
     rcases h_supnorm_bound k with ⟨M_k, hM_k_nn, hM_k⟩
     refine ⟨M_k * Sbound + 1, by linarith [mul_nonneg hM_k_nn hSbound_nn], ?_⟩
     intro n x
-    rw [show fConv k n = vFn n ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] ηFn k from
-      hfConv_alt k n]
+    rw [show fConvergence k n = vFn n ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] ηFn k from
+      hfConvergence_alt k n]
     have hbnd := convolution_sup_le_holder (d := d)
       (hv_int n) (hη_cont k).aestronglyMeasurable hM_k x
     have hbnd2 := hbnd.trans (mul_le_mul_of_nonneg_left (h_int_norm_bound n) hM_k_nn)
@@ -944,14 +944,14 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
         |(vFn n ⋆[ContinuousLinearMap.lsmul ℝ ℝ, volume] ηFn k) x| := Real.norm_eq_abs _
     rw [← h_norm_eq_abs]
     linarith
-  have h_fConv_lip_unif : ∀ k, ∃ L_k : ℝ, ∃ hL_k_nn : 0 ≤ L_k,
-      ∀ n, LipschitzWith ⟨L_k, hL_k_nn⟩ (fConv k n) := by
+  have h_fConvergence_lip_uniform : ∀ k, ∃ L_k : ℝ, ∃ hL_k_nn : 0 ≤ L_k,
+      ∀ n, LipschitzWith ⟨L_k, hL_k_nn⟩ (fConvergence k n) := by
     intro k
     rcases h_lip_bound k with ⟨L_eta_k, hL_eta_k_nn, hL_eta_k⟩
     refine ⟨L_eta_k * Sbound, mul_nonneg hL_eta_k_nn hSbound_nn, ?_⟩
     intro n
-    have hConvAlt := hfConv_alt k n
-    rw [hConvAlt]
+    have hConvergenceAlt := hfConvergence_alt k n
+    rw [hConvergenceAlt]
     refine LipschitzWith.of_dist_le_mul fun x y => ?_
     have h := convolution_lipschitz_with (d := d) (hv_int n) (hη_cont k)
       (hη_compact k) hL_eta_k x y
@@ -968,16 +968,16 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
   have hExtract : ∀ (k : ℕ) (σ : ℕ → ℕ) (_hσ : StrictMono σ),
       ∃ τ : ℕ → ℕ, StrictMono τ ∧ ∃ v_k : E → ℝ,
         Continuous v_k ∧
-        TendstoUniformlyOn (fun j => fConv k (σ (τ j))) v_k atTop K' := by
+        TendstoUniformlyOn (fun j => fConvergence k (σ (τ j))) v_k atTop K' := by
     intro k σ _hσ
-    rcases h_fConv_supnorm_unif k with ⟨C_k, hC_k_pos, hC_k_bd⟩
-    rcases h_fConv_lip_unif k with ⟨L_k, hL_k_nn, hL_k_lip⟩
+    rcases h_fConvergence_supnorm_uniform k with ⟨C_k, hC_k_pos, hC_k_bd⟩
+    rcases h_fConvergence_lip_uniform k with ⟨L_k, hL_k_nn, hL_k_lip⟩
     rcases tendsto_subseq_of_uniformly_lipschitz_uniformly_bounded (d := d)
-      hK'_compact (f := fun j => fConv k (σ j))
-      (fun j => hfConv_cont k (σ j)) hC_k_pos
+      hK'_compact (f := fun j => fConvergence k (σ j))
+      (fun j => hfConvergence_cont k (σ j)) hC_k_pos
       (fun j x => hC_k_bd (σ j) x) hL_k_nn (fun j => hL_k_lip (σ j)) with
-      ⟨τ, hτ_mono, v_k, hv_k_cont, hv_k_unif⟩
-    exact ⟨τ, hτ_mono, v_k, hv_k_cont, hv_k_unif⟩
+      ⟨τ, hτ_mono, v_k, hv_k_cont, hv_k_uniform⟩
+    exact ⟨τ, hτ_mono, v_k, hv_k_cont, hv_k_uniform⟩
   let StateType := { σ : ℕ → ℕ // StrictMono σ }
   let stateRec : ℕ → StateType := fun k => Nat.rec
     (motive := fun _ => StateType)
@@ -1028,27 +1028,27 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
       ext n
       simp [Function.comp]
   have hLimSeq : ∀ k, ∃ wSeq_k : E → ℝ, Continuous wSeq_k ∧
-      TendstoUniformlyOn (fun j => fConv (k + 1) ((stateRec (k + 1)).val j)) wSeq_k atTop K' := by
+      TendstoUniformlyOn (fun j => fConvergence (k + 1) ((stateRec (k + 1)).val j)) wSeq_k atTop K' := by
     intro k
     let τStep_k := Classical.choose (hExtract (k + 1) (stateRec k).val (stateRec k).property)
     have hτStep_k_spec :=
       Classical.choose_spec (hExtract (k + 1) (stateRec k).val (stateRec k).property)
-    obtain ⟨_, v_k, hv_k_cont, hv_k_unif⟩ := hτStep_k_spec
+    obtain ⟨_, v_k, hv_k_cont, hv_k_uniform⟩ := hτStep_k_spec
     have h_eq : (stateRec (k + 1)).val = (stateRec k).val ∘ τStep_k := rfl
     refine ⟨v_k, hv_k_cont, ?_⟩
-    rw [show (fun j => fConv (k + 1) ((stateRec (k + 1)).val j)) =
-      (fun j => fConv (k + 1) ((stateRec k).val (τStep_k j))) from by
+    rw [show (fun j => fConvergence (k + 1) ((stateRec (k + 1)).val j)) =
+      (fun j => fConvergence (k + 1) ((stateRec k).val (τStep_k j))) from by
         funext j; rw [h_eq]; rfl]
-    exact hv_k_unif
+    exact hv_k_uniform
   have hDiagCv : ∀ k, ∃ wSeq_k : E → ℝ, Continuous wSeq_k ∧
       ∀ ε > 0, ∃ J : ℕ, ∀ j ≥ J, ∀ x ∈ K',
-        dist (wSeq_k x) (fConv (k + 1) (φAux j) x) < ε := by
+        dist (wSeq_k x) (fConvergence (k + 1) (φAux j) x) < ε := by
     intro k
-    rcases hLimSeq k with ⟨wSeq_k, hwSeq_k_cont, hwSeq_k_unif⟩
+    rcases hLimSeq k with ⟨wSeq_k, hwSeq_k_cont, hwSeq_k_uniform⟩
     refine ⟨wSeq_k, hwSeq_k_cont, ?_⟩
     intro ε hε
-    rw [Metric.tendstoUniformlyOn_iff] at hwSeq_k_unif
-    have hJ_ev := hwSeq_k_unif ε hε
+    rw [Metric.tendstoUniformlyOn_iff] at hwSeq_k_uniform
+    have hJ_ev := hwSeq_k_uniform ε hε
     rw [Filter.eventually_atTop] at hJ_ev
     rcases hJ_ev with ⟨J0, hJ0⟩
     refine ⟨max (k + 1) J0, fun j hj x hxK' => ?_⟩
@@ -1061,31 +1061,31 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
     rw [hφAux_eq]
     have hτ_ge : J0 ≤ τ j := le_trans hjJ0 (hτ_mono.id_le j)
     exact hJ0 (τ j) hτ_ge x hxK'
-  have hUnifCauchy : ∀ k, ∀ ε : ℝ, 0 < ε → ∃ J : ℕ, ∀ j ≥ J, ∀ l ≥ J, ∀ x ∈ K',
-      dist (fConv (k + 1) (φAux j) x) (fConv (k + 1) (φAux l) x) < ε := by
+  have hUniformCauchy : ∀ k, ∀ ε : ℝ, 0 < ε → ∃ J : ℕ, ∀ j ≥ J, ∀ l ≥ J, ∀ x ∈ K',
+      dist (fConvergence (k + 1) (φAux j) x) (fConvergence (k + 1) (φAux l) x) < ε := by
     intro k ε hε
-    rcases hDiagCv k with ⟨wSeq_k, _, hwSeq_k_unif⟩
-    rcases hwSeq_k_unif (ε / 2) (by linarith) with ⟨J, hJ⟩
+    rcases hDiagCv k with ⟨wSeq_k, _, hwSeq_k_uniform⟩
+    rcases hwSeq_k_uniform (ε / 2) (by linarith) with ⟨J, hJ⟩
     refine ⟨J, fun j hj l hl x hxK' => ?_⟩
     have hjJ := hJ j hj x hxK'
     have hlJ := hJ l hl x hxK'
-    have hTri := dist_triangle (fConv (k + 1) (φAux j) x) (wSeq_k x)
-      (fConv (k + 1) (φAux l) x)
-    have h2 : dist (fConv (k + 1) (φAux j) x) (wSeq_k x) < ε / 2 := by
+    have hTri := dist_triangle (fConvergence (k + 1) (φAux j) x) (wSeq_k x)
+      (fConvergence (k + 1) (φAux l) x)
+    have h2 : dist (fConvergence (k + 1) (φAux j) x) (wSeq_k x) < ε / 2 := by
       rw [dist_comm]
       exact hjJ
-    have h3 : dist (wSeq_k x) (fConv (k + 1) (φAux l) x) < ε / 2 := hlJ
+    have h3 : dist (wSeq_k x) (fConvergence (k + 1) (φAux l) x) < ε / 2 := hlJ
     linarith
   have hLp_cauchy_at_level : ∀ k, ∀ ε : ℝ, 0 < ε → ∃ J : ℕ, ∀ j ≥ J, ∀ l ≥ J,
-      eLpNorm (fun x => fConv (k + 1) (φAux j) x - fConv (k + 1) (φAux l) x) p volume ≤
+      eLpNorm (fun x => fConvergence (k + 1) (φAux j) x - fConvergence (k + 1) (φAux l) x) p volume ≤
         ENNReal.ofReal ε := by
     intro k ε hε
     have h_helper :=
-      cauchy_lp_of_uniformly_cauchy_on_compact_supp (d := d) hp_one hp_top
-        hK'_compact (g := fun j => fConv (k + 1) (φAux j))
-        (fun j => hfConv_cont (k + 1) (φAux j))
-        (fun j x hx => hfConv_supp (k + 1) (φAux j) x hx)
-        (hUnifCauchy k)
+      cauchy_lp_of_uniformly_cauchy_on_compact_support (d := d) hp_one hp_top
+        hK'_compact (g := fun j => fConvergence (k + 1) (φAux j))
+        (fun j => hfConvergence_cont (k + 1) (φAux j))
+        (fun j x hx => hfConvergence_support (k + 1) (φAux j) x hx)
+        (hUniformCauchy k)
     exact h_helper ε hε
   have hVfnCauchy : ∀ ε : ℝ, 0 < ε → ∃ J : ℕ, ∀ j ≥ J, ∀ l ≥ J,
       eLpNorm (fun x => vFn (φAux j) x - vFn (φAux l) x) p volume ≤
@@ -1093,39 +1093,39 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
     intro ε hε
     set ε' : ℝ := ε / 3 with hε'_def
     have hε'_pos : 0 < ε' := by rw [hε'_def]; linarith
-    rcases hConvSub_bnd ε' hε'_pos with ⟨K0, hK0⟩
+    rcases hConvergenceSub_bnd ε' hε'_pos with ⟨K0, hK0⟩
     rcases hLp_cauchy_at_level K0 ε' hε'_pos with ⟨J, hJ⟩
     refine ⟨J, fun j hj l hl => ?_⟩
-    have hT1 : eLpNorm (fun x => vFn (φAux j) x - fConv (K0 + 1) (φAux j) x) p volume ≤
+    have hT1 : eLpNorm (fun x => vFn (φAux j) x - fConvergence (K0 + 1) (φAux j) x) p volume ≤
         ENNReal.ofReal ε' := by
-      rw [show (fun x => vFn (φAux j) x - fConv (K0 + 1) (φAux j) x) =
-        -(fun x => fConv (K0 + 1) (φAux j) x - vFn (φAux j) x) from by
+      rw [show (fun x => vFn (φAux j) x - fConvergence (K0 + 1) (φAux j) x) =
+        -(fun x => fConvergence (K0 + 1) (φAux j) x - vFn (φAux j) x) from by
           funext x; simp [neg_sub]]
       rw [eLpNorm_neg]
       exact hK0 (K0 + 1) (Nat.le_succ K0) (φAux j)
     have hT2 : eLpNorm
-        (fun x => fConv (K0 + 1) (φAux j) x - fConv (K0 + 1) (φAux l) x) p volume ≤
+        (fun x => fConvergence (K0 + 1) (φAux j) x - fConvergence (K0 + 1) (φAux l) x) p volume ≤
         ENNReal.ofReal ε' := hJ j hj l hl
-    have hT3 : eLpNorm (fun x => fConv (K0 + 1) (φAux l) x - vFn (φAux l) x) p volume ≤
+    have hT3 : eLpNorm (fun x => fConvergence (K0 + 1) (φAux l) x - vFn (φAux l) x) p volume ≤
         ENNReal.ofReal ε' := hK0 (K0 + 1) (Nat.le_succ K0) (φAux l)
     have hAesm1 : AEStronglyMeasurable
-        (fun x => vFn (φAux j) x - fConv (K0 + 1) (φAux j) x) volume :=
-      ((hv_meas (φAux j)).sub (hfConv_cont (K0 + 1) (φAux j)).measurable).aestronglyMeasurable
+        (fun x => vFn (φAux j) x - fConvergence (K0 + 1) (φAux j) x) volume :=
+      ((hv_meas (φAux j)).sub (hfConvergence_cont (K0 + 1) (φAux j)).measurable).aestronglyMeasurable
     have hAesm2 : AEStronglyMeasurable
-        (fun x => fConv (K0 + 1) (φAux j) x - fConv (K0 + 1) (φAux l) x) volume :=
-      ((hfConv_cont (K0 + 1) (φAux j)).sub
-        (hfConv_cont (K0 + 1) (φAux l))).measurable.aestronglyMeasurable
+        (fun x => fConvergence (K0 + 1) (φAux j) x - fConvergence (K0 + 1) (φAux l) x) volume :=
+      ((hfConvergence_cont (K0 + 1) (φAux j)).sub
+        (hfConvergence_cont (K0 + 1) (φAux l))).measurable.aestronglyMeasurable
     have hAesm3 : AEStronglyMeasurable
-        (fun x => fConv (K0 + 1) (φAux l) x - vFn (φAux l) x) volume :=
-      ((hfConv_cont (K0 + 1) (φAux l)).measurable.sub (hv_meas (φAux l))).aestronglyMeasurable
+        (fun x => fConvergence (K0 + 1) (φAux l) x - vFn (φAux l) x) volume :=
+      ((hfConvergence_cont (K0 + 1) (φAux l)).measurable.sub (hv_meas (φAux l))).aestronglyMeasurable
     have hSplit : (fun x => vFn (φAux j) x - vFn (φAux l) x) =
-        (fun x => vFn (φAux j) x - fConv (K0 + 1) (φAux j) x) +
-          ((fun x => fConv (K0 + 1) (φAux j) x - fConv (K0 + 1) (φAux l) x) +
-            (fun x => fConv (K0 + 1) (φAux l) x - vFn (φAux l) x)) := by
+        (fun x => vFn (φAux j) x - fConvergence (K0 + 1) (φAux j) x) +
+          ((fun x => fConvergence (K0 + 1) (φAux j) x - fConvergence (K0 + 1) (φAux l) x) +
+            (fun x => fConvergence (K0 + 1) (φAux l) x - vFn (φAux l) x)) := by
       funext x
-      change _ = (vFn (φAux j) x - fConv (K0 + 1) (φAux j) x) +
-        ((fConv (K0 + 1) (φAux j) x - fConv (K0 + 1) (φAux l) x) +
-          (fConv (K0 + 1) (φAux l) x - vFn (φAux l) x))
+      change _ = (vFn (φAux j) x - fConvergence (K0 + 1) (φAux j) x) +
+        ((fConvergence (K0 + 1) (φAux j) x - fConvergence (K0 + 1) (φAux l) x) +
+          (fConvergence (K0 + 1) (φAux l) x - vFn (φAux l) x))
       ring
     rw [hSplit]
     have h_step1 := eLpNorm_add_le hAesm1 (hAesm2.add hAesm3) hp_one

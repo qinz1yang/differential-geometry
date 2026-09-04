@@ -377,7 +377,7 @@ private lemma connectionDifference_metricPerturbationPath_inner_koszul
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
               (fun b => A b) (fun b => B b) (fun b => C b) x := by
     intro A B C
-    have h := covGrad02_unitModel_eval_eq_metricDiffCovDeriv' (I := I) (M := M)
+    have h := covGrad02_unitModel_eval_eq_metricDiffCovDeriv_sub (I := I) (M := M)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀)
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)
       (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ')

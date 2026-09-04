@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff BigOperators
@@ -123,5 +123,5 @@ def connectionDifferenceCoeff (eps : Real) : Real :=
 
 end FixedDomain
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

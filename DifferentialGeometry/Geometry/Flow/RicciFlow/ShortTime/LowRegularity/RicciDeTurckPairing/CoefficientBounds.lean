@@ -3678,7 +3678,7 @@ theorem sharpFlatEndoCc_eq_slotInsertEndoCc_zero
           (metricComparisonEndomorphismField (I := I) (M := M) g gm)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g gm x) om from rfl]
-  rw [cotangentToDual_slotInsertEndoFib' (I := I) (M := M) x
+  rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g gm x) om w]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (sharpFlatEndoCc (I := I) g gm).toSection x) om =

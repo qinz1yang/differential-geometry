@@ -62,15 +62,15 @@ theorem bumpExtend_complete
     (gU : SmoothRiemannianMetric I U) (χ : M → Real)
     (hχ : ContMDiff I 𝓘(Real, Real) ∞ χ)
     (hχ01 : ∀ x, χ x ∈ Set.Icc (0 : Real) 1)
-    (hχsupp : tsupport χ ⊆ (U : Set M))
+    (hχsupport : tsupport χ ⊆ (U : Set M))
     (hχcomp : IsCompact (tsupport χ)) :
     RiemannianMetricComplete (I := I)
-      (R.bumpExtendOpen (I := I) U gU χ hχ hχ01 hχsupp) := by
+      (R.bumpExtendOpen (I := I) U gU χ hχ hχ01 hχsupport) := by
   apply of_eq_off_compact hR hχcomp
   intro x hx
   ext v w
   exact bumpExtendOpen_inner_of_notMem_tsupport
-    (I := I) R U gU χ hχ hχ01 hχsupp x hx v w
+    (I := I) R U gU χ hχ hχ01 hχsupport x hx v w
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

@@ -32,33 +32,33 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem lRegIndex_nonneg_of_variation_isLocalMin
+theorem lRegularizedIndex_nonneg_of_variation_isLocalMin
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real) (x : M) (Z : TangentSpace I x)
-    (hgeo : IsLRegCurveOn S T (f 0) (Set.uIcc a b) x Z)
+    (hgeo : IsLRegularizedCurveOn S T (f 0) (Set.uIcc a b) x Z)
     (hfixa : ∀ u : Real, f u a = f 0 a)
     (hfixb : ∀ u : Real, f u b = f 0 b)
-    (hmin : IsLocalMin (fun u : Real ↦ lRegAction S T (f u) a b) 0) :
-    0 ≤ lRegIndex S T (f 0)
+    (hmin : IsLocalMin (fun u : Real ↦ lRegularizedAction S T (f u) a b) 0) :
+    0 ≤ lRegularizedIndex S T (f 0)
       (fun s : Real ↦ lVelocity (I := I) (fun u : Real ↦ f u s) 0)
       (fun s : Real ↦ lVelocity (I := I) (fun u : Real ↦ f u s) 0) a b := by
   have ht : ∀ s ∈ Set.uIcc a b, T - s ^ 2 ∈ D.regular :=
     fun s hs ↦ (hgeo.2.2 s hs).1
-  have hfirst := hasDerivAt_lRegAction (I := I) S hS T f hf a b ht
+  have hfirst := hasDerivAt_lRegularizedAction (I := I) S hS T f hf a b ht
   have hfirst_zero := hmin.hasDerivAt_eq_zero hfirst
   have hfirst' := hfirst.congr_deriv hfirst_zero
-  have hsecond := lRegAction_second_variation (I := I) S hS T f hf a b x Z hgeo hfixa hfixb
+  have hsecond := lRegularizedAction_second_variation (I := I) S hS T f hf a b x Z hgeo hfixa hfixb
   have hnonneg := second_deriv_nonneg_of_isLocalMin hmin hfirst' hsecond
   linarith
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem lRegIndex_nonneg
+theorem lRegularizedIndex_nonneg
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (gamma : Real → M) (a b : Real) (x : M)
     (Z : TangentSpace I x)
-    (hgeo : IsLRegCurveOn S T gamma (Set.uIcc a b) x Z)
+    (hgeo : IsLRegularizedCurveOn S T gamma (Set.uIcc a b) x Z)
     (Y : Real → E)
     (hY : ContMDiff 𝓘(Real, Real) I.tangent (8 : Nat)
       (fun s => (⟨gamma s, Y s⟩ : TangentBundle I M)))
@@ -67,20 +67,20 @@ theorem lRegIndex_nonneg
       (∀ s, f 0 s = gamma s) →
       (∀ u, f u a = gamma a) →
       (∀ u, f u b = gamma b) →
-      IsLocalMin (fun u => lRegAction S T (f u) a b) 0) :
-    0 ≤ lRegIndex S T gamma Y Y a b := by
+      IsLocalMin (fun u => lRegularizedAction S T (f u) a b) 0) :
+    0 ≤ lRegularizedIndex S T gamma Y Y a b := by
   obtain ⟨f, hf, hfzero, hfield, hfixa, hfixb⟩ :=
     exists_var_fix_ends (I := I) (S.base.metric T) gamma Y a b hY hYa hYb
   have hcenter : f 0 = gamma := funext hfzero
   subst gamma
-  have hnonneg := lRegIndex_nonneg_of_variation_isLocalMin (I := I) S hS T f hf a b x Z hgeo
+  have hnonneg := lRegularizedIndex_nonneg_of_variation_isLocalMin (I := I) S hS T f hf a b x Z hgeo
     hfixa hfixb (hmin f hf (fun _ => rfl) hfixa hfixb)
   have hEq : Set.EqOn
       (fun s : Real => lVelocity (I := I) (fun u : Real => f u s) 0)
       Y (Set.uIoo a b) := by
     intro s hs
     with_unfolding_all exact hfield s (Set.uIoo_subset_uIcc_self hs)
-  rw [lRegIndex_congr_of_eqOn (I := I) S T (f 0)
+  rw [lRegularizedIndex_congr_of_eqOn (I := I) S T (f 0)
     (fun s : Real => lVelocity (I := I) (fun u : Real => f u s) 0)
     (fun s : Real => lVelocity (I := I) (fun u : Real => f u s) 0)
     Y Y a b hEq hEq] at hnonneg

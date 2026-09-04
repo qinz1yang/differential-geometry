@@ -339,7 +339,7 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
     (nabla3Rm04Field_realizes (I := I) S (t : Real)).eval_smooth_slots X Wbc x₀
   have hcb :=
     (nabla3Rm04Field_realizes (I := I) S (t : Real)).eval_smooth_slots X Wcb x₀
-  have hbc_corr :
+  have hbc_correction :
       (∑ a : Fin 6,
           nabla2Rm04Field (I := I) S (t : Real) x₀
             (Function.update (fun b : Fin 6 => Wbc b x₀) a
@@ -347,7 +347,7 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
     refine Finset.sum_eq_zero fun a _ => ?_
     rw [hWbc_cov a]
     exact (nabla2Rm04Field (I := I) S (t : Real) x₀).map_update_zero _ a
-  have hcb_corr :
+  have hcb_correction :
       (∑ a : Fin 6,
           nabla2Rm04Field (I := I) S (t : Real) x₀
             (Function.update (fun b : Fin 6 => Wcb b x₀) a
@@ -361,8 +361,8 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
   have hWcb_x : (fun a : Fin 6 => Wcb a x₀) =
       metricTraceInput (I := I) (Vc x₀) (Vb x₀) (fun i : Fin 4 => Vm i x₀) :=
     nabla2SlotSections_apply (I := I) Vc Vb Vm x₀
-  rw [hbc_corr, sub_zero] at hbc
-  rw [hcb_corr, sub_zero] at hcb
+  rw [hbc_correction, sub_zero] at hbc
+  rw [hcb_correction, sub_zero] at hcb
   rw [hWbc_x] at hbc
   rw [hWcb_x] at hcb
   rw [hbc, hcb]

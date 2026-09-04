@@ -65,8 +65,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
   exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
   linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
-  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
-  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
@@ -301,7 +301,7 @@ private lemma combine_three_component_bounds
       6 * (cBound₁ + cBound₂) := by
   linarith
 
-private theorem linearizedRicciOrderZeroCorrField_perOrder_riemannianFiberNormSq_ballUniform
+private theorem linearizedRicciOrderZeroCorrectionField_perOrder_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -315,7 +315,7 @@ private theorem linearizedRicciOrderZeroCorrField_perOrder_riemannianFiberNormSq
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (linearizedRicciOrderZeroCorrField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
+              (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
   classical
   obtain ⟨KR, hKR_nn, hKR⟩ :=
     ricciOrderZeroRiemannCoeff_backgroundDifference_perOrder_l2_ballUniform
@@ -324,7 +324,7 @@ private theorem linearizedRicciOrderZeroCorrField_perOrder_riemannianFiberNormSq
     ricciOrderZeroCurvCoeff_backgroundDifference_perOrder_l2_ballUniform
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   refine ⟨fun i =>
-    3 * (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound
+    3 * (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.correctionFieldTameJetBound
         (I := I) (M := M) g₀ a R δ₀ i * (1 + 2 * ((a : ℝ) + 2) * R ^ 2)) +
       27 / 2 * (KR i +
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
@@ -336,7 +336,7 @@ private theorem linearizedRicciOrderZeroCorrField_perOrder_riemannianFiberNormSq
             (I := I) (M := M) g₀ g₀)‖ ^ 2),
     fun i => ?_, ?_⟩
   · have h1 :=
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound_nonneg
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.correctionFieldTameJetBound_nonneg
         (I := I) (M := M) g₀ a R δ₀ i
     have h2 : (0 : ℝ) ≤ 1 + 2 * ((a : ℝ) + 2) * R ^ 2 := by positivity
     have h3 := hKR_nn i
@@ -419,7 +419,7 @@ private theorem linearizedRicciOrderZeroCorrField_perOrder_riemannianFiberNormSq
       (DifferentialGeometry.PDE.DeTurck.RicciLinearization.convexPerturbation
         (I := I) g₀ T T' s) hδP_le hδP htie hPball i hi
     obtain ⟨_, _, hbound, _⟩ :=
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
         (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
     have hjet := ((hbound ha_super hR hδ₀ hδ_le hδ'_le hTball hT'ball).2 i hi s hs).1
     have hwin : ∑ j ∈ Finset.range (i + 2),
@@ -455,14 +455,14 @@ private theorem linearizedRicciOrderZeroCorrField_perOrder_riemannianFiberNormSq
           ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2) ≤
         1 + 2 * ((a : ℝ) + 2) * R ^ 2 := by linarith
     have hK_nn :=
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound_nonneg
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.correctionFieldTameJetBound_nonneg
         (I := I) (M := M) g₀ a R δ₀ i
     have hZraw := le_trans hjet (mul_le_mul_of_nonneg_left hone hK_nn)
-    rw [show linearizedRicciOrderZeroCorrField (I := I) g₀ T T' hδ hδ' =
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
+    rw [show linearizedRicciOrderZeroCorrectionField (I := I) g₀ T T' hδ hδ' =
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
           (I := I) g₀ T T' hδ hδ').choose from rfl]
     set Cf :=
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
         (I := I) g₀ T T' hδ hδ').choose s with hCf_def
     set Rmf := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
         (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) with hRmf_def
@@ -553,7 +553,7 @@ private theorem linearizedRicciFirstOrderBaseCoeff_perOrder_riemannianFiberNormS
   linearizedRicciFirstOrderBaseCoeff_metricPerturbationPath_jetL2_perOrder_ballUniform
     (I := I) (M := M) g₀ a ha_super hR hδ₀
 
-private theorem linearizedRicciFirstOrderCorrField_perOrder_riemannianFiberNormSq_ballUniform
+private theorem linearizedRicciFirstOrderCorrectionField_perOrder_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -567,19 +567,19 @@ private theorem linearizedRicciFirstOrderCorrField_perOrder_riemannianFiberNormS
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (i : ℕ), i ≤ a → ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 3 2 i
-              (linearizedRicciFirstOrderCorrField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
+              (linearizedRicciFirstOrderCorrectionField (I := I) g₀ T T' hδ hδ' s)‖ ^ 2 ≤ P i := by
   classical
   refine ⟨fun i =>
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.correctionFieldTameJetBound
         (I := I) (M := M) g₀ a R δ₀ i * (1 + 2 * ((a : ℝ) + 2) * R ^ 2),
     fun i =>
       mul_nonneg
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound_nonneg
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.correctionFieldTameJetBound_nonneg
           (I := I) (M := M) g₀ a R δ₀ i)
         (by positivity), ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i hi s hs
   obtain ⟨_, _, hbound, _⟩ :=
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
       (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
   have hjet := ((hbound ha_super hR hδ₀ hδ_le hδ'_le hTball hT'ball).2 i hi s hs).2
   have hwin : ∑ j ∈ Finset.range (i + 2),
@@ -615,10 +615,10 @@ private theorem linearizedRicciFirstOrderCorrField_perOrder_riemannianFiberNormS
         ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ^ 2) ≤
       1 + 2 * ((a : ℝ) + 2) * R ^ 2 := by linarith
   have hK_nn :=
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.corrFieldTameJetBound_nonneg
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.correctionFieldTameJetBound_nonneg
       (I := I) (M := M) g₀ a R δ₀ i
-  rw [show linearizedRicciFirstOrderCorrField (I := I) g₀ T T' hδ hδ' =
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
+  rw [show linearizedRicciFirstOrderCorrectionField (I := I) g₀ T T' hδ hδ' =
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
         (I := I) g₀ T T' hδ hδ').choose_spec.choose from rfl]
   exact le_trans hjet (mul_le_mul_of_nonneg_left hone hK_nn)
 
@@ -766,11 +766,11 @@ private theorem linearizedRicciCovariantTerm_concreteField_perOrder_riemannianFi
   obtain ⟨P0b, hP0b_nn, hP0b⟩ :=
     linearizedRicciOrderZeroBaseCoeff_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨P0c, hP0c_nn, hP0c⟩ :=
-    linearizedRicciOrderZeroCorrField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
+    linearizedRicciOrderZeroCorrectionField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨P1b, hP1b_nn, hP1b⟩ :=
     linearizedRicciFirstOrderBaseCoeff_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨P1c, hP1c_nn, hP1c⟩ :=
-    linearizedRicciFirstOrderCorrField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
+    linearizedRicciFirstOrderCorrectionField_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨Pp, hPp_nn, hPp⟩ :=
     ricciDeTurckPrincipalCoefficient_metricPerturbationPath_perOrder_riemannianFiberNormSq_ballUniform (I := I) g₀ a ha_super hR hδ₀
   obtain ⟨Ph, hPh_nn, hPh⟩ :=
@@ -791,12 +791,12 @@ private theorem linearizedRicciCovariantTerm_concreteField_perOrder_riemannianFi
     · rw [linearizedRicciOrderZeroField]
       exact (normSq_iteratedCovGrad_add_le_tame (I := I) g₀ 2 2 i
         (linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s)
-        (linearizedRicciOrderZeroCorrField (I := I) g₀ T T' hδ hδ' s) (P0b i) (P0c i) hb0 hc0).trans
+        (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T T' hδ hδ' s) (P0b i) (P0c i) hb0 hc0).trans
         (le_max_left _ _)
     · rw [linearizedRicciFirstOrderField]
       refine (normSq_iteratedCovGrad_add_le_tame (I := I) g₀ 3 2 i
         (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s)
-        (linearizedRicciFirstOrderCorrField (I := I) g₀ T T' hδ hδ' s) (P1b i) (P1c i) hb1 hc1).trans ?_
+        (linearizedRicciFirstOrderCorrectionField (I := I) g₀ T T' hδ hδ' s) (P1b i) (P1c i) hb1 hc1).trans ?_
       exact le_max_of_le_right (le_max_left _ _)
     · rw [linearizedRicciSecondOrderFieldLichnerowicz]
       refine (normSq_iteratedCovGrad_sub_smul_le_tame (I := I) g₀ 4 2 i
@@ -950,7 +950,7 @@ private theorem uniform_riemannianFiberNormSq_bound_lichnerowicz_coeffFields
       (linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth (I := I) g₀ T T' hδ hδ')
   · intro s hs x v
     obtain ⟨_, _, _, hident, _, _⟩ :=
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
+      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
         (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
     exact hident hTsymm hT'symm s hs x v hδ_lt hδ'_lt
   · intro s hs x

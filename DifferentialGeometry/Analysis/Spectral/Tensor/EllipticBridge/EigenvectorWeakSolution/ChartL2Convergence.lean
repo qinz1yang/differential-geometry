@@ -167,7 +167,7 @@ lemma tendsto_bdd_mul
     _ = ε := by field_simp
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-lemma tensorChartComponent_contDiff'
+lemma tensorChartComponent_contDiff_top
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -197,13 +197,13 @@ lemma tensorChartComponent_tsupport_subset_chartPouKernel
     (chartPouKernel_isCompact (I := I) (M := M) α).isClosed
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-lemma chosenWeakPartial'_tensorChartComponent_ae_eq
+lemma chosenWeakPartialOrZero_tensorChartComponent_ae_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
     (k : Fin (Module.finrank ℝ E)) :
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (tensorChartComponent (I := I) (M := M) g r s S α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α)
       =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
@@ -213,8 +213,8 @@ lemma chosenWeakPartial'_tensorChartComponent_ae_eq
   set u : EuclN → ℝ :=
     tensorChartComponent (I := I) (M := M) g r s S α Idx Jdx with hu_def
   have hu_smooth : ContDiff ℝ (⊤ : ℕ∞) u :=
-    tensorChartComponent_contDiff' (I := I) (M := M) g r s S α Idx Jdx
-  have hu_cpt : HasCompactSupport u :=
+    tensorChartComponent_contDiff_top (I := I) (M := M) g r s S α Idx Jdx
+  have hu_compact : HasCompactSupport u :=
     tensorChartComponent_hasCompactSupport (I := I) (M := M) g r s S α Idx Jdx
   have hu_tsupp : tsupport u ⊆ chartTargetEuclid (I := I) (M := M) α :=
     (tensorChartComponent_tsupport_subset_chartPouKernel
@@ -227,7 +227,7 @@ lemma chosenWeakPartial'_tensorChartComponent_ae_eq
   have hu_W1 : MemWkp (d := Module.finrank ℝ E) 1 2 u
       (chartTargetEuclid (I := I) (M := M) α) :=
     MemWkp_of_smooth_compactSupport (d := Module.finrank ℝ E) hΩ_open
-      hu_smooth hu_cpt hu_tsupp hp_one 1
+      hu_smooth hu_compact hu_tsupp hp_one 1
   have hu_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 u
       (chartTargetEuclid (I := I) (M := M) α) :=
     MemWkp.one_iff_memW1p.mp hu_W1
@@ -502,7 +502,7 @@ lemma differentiableAt_tensorChartComponent
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) (y : EuclN) :
     DifferentiableAt ℝ
       (tensorChartComponent (I := I) (M := M) g r s S α Idx Jdx) y :=
-  ((tensorChartComponent_contDiff' (I := I) (M := M) g r s S α Idx Jdx).differentiable
+  ((tensorChartComponent_contDiff_top (I := I) (M := M) g r s S α Idx Jdx).differentiable
     (by simp)).differentiableAt
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]

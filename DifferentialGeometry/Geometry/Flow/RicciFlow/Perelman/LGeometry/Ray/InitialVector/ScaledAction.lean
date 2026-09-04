@@ -28,15 +28,15 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] in
-theorem isBounded_range_initialVector_of_lRegAction_le_mul_parameter
+theorem isBounded_range_initialVector_of_lRegularizedAction_le_mul_parameter
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (Z : Nat → TangentSpace I x) (B : Nat → Real)
     (R A : Real) (hB : ∀ n, 0 < B n) (hBR : ∀ n, B n ≤ R)
     (hslab : Set.Icc (T - R ^ 2) T ⊆ D.regular)
-    (hdom : ∀ n, B n ∈ lRegDomain S T x (Z n))
+    (hdom : ∀ n, B n ∈ lRegularizedDomain S T x (Z n))
     (hact : ∀ n,
-      lRegAction S T (lRegCurve S T x (Z n)) 0 (B n) ≤ A * B n) :
+      lRegularizedAction S T (lRegularizedCurve S T x (Z n)) 0 (B n) ≤ A * B n) :
     Bornology.IsBounded (Set.range Z) := by
   have hR : 0 ≤ R := (hB 0).le.trans (hBR 0)
   obtain ⟨Cg, hCg, hgrad⟩ := lGrad_bound (I := I) S hS hslab
@@ -44,7 +44,7 @@ theorem isBounded_range_initialVector_of_lRegAction_le_mul_parameter
   let C : Real := max Cg Cr
   have hC : 0 ≤ C := hCg.trans (le_max_left Cg Cr)
   let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
-  obtain ⟨Cp, hpot⟩ := exists_uniform_lower_bound_lRegPotential (I := I) S hSc T 0 R (by
+  obtain ⟨Cp, hpot⟩ := exists_uniform_lower_bound_lRegularizedPotential (I := I) S hSc T 0 R (by
     intro s hs
     have hsI : s ∈ Set.Icc (0 : Real) R := by
       simpa only [Set.uIcc_of_le hR] using hs
@@ -62,12 +62,12 @@ theorem isBounded_range_initialVector_of_lRegAction_le_mul_parameter
       4 * (S.base.metric T).inner x (Z n) (Z n) ≤ e * c := by
     intro n
     let b : Real := B n
-    let alpha : Real → M := lRegCurve S T x (Z n)
+    let alpha : Real → M := lRegularizedCurve S T x (Z n)
     have hb : 0 < b := hB n
     have hbR : b ≤ R := hBR n
-    have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) b) x (Z n) := by
+    have halpha : IsLRegularizedCurveOn S T alpha (Set.Icc (0 : Real) b) x (Z n) := by
       simpa only [alpha, Set.uIcc_of_le hb.le] using
-        lRegCurve_isLRegCurveOn (I := I) S hS T x (Z n) hb (hdom n)
+        lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x (Z n) hb (hdom n)
     have hback : ∀ s ∈ Set.Icc (0 : Real) b,
         T - s ^ 2 ∈ Set.Icc (T - R ^ 2) T := by
       intro s hs
@@ -77,25 +77,25 @@ theorem isBounded_range_initialVector_of_lRegAction_le_mul_parameter
         sub_le_self T (sq_nonneg s)⟩
     have hreg : ∀ s ∈ Set.Icc (0 : Real) b, T - s ^ 2 ∈ D.regular :=
       fun s hs ↦ hslab (hback s hs)
-    have hkinInt := intervalIntegrable_lRegSpeedSq_lRegCurve
+    have hkinInt := intervalIntegrable_lRegularizedSpeedSq_lRegularizedCurve
       (I := I) S hS T x (Z n) hb (hdom n)
-    have hlagInt := intervalIntegrable_lRegLagrangian_lRegCurve
+    have hlagInt := intervalIntegrable_lRegularizedLagrangian_lRegularizedCurve
       (I := I) S hS T x (Z n) hb (hdom n)
     have hkin :
-        (∫ s in 0..b, lRegSpeedSq S T alpha s) ≤
+        (∫ s in 0..b, lRegularizedSpeedSq S T alpha s) ≤
           2 * (A + |Cp|) * b := by
-      have hraw := lRegKinetic_le (I := I) S T alpha 0 b (A * b) Cp hb.le
+      have hraw := lRegularizedKinetic_le (I := I) S T alpha 0 b (A * b) Cp hb.le
         (fun s hs ↦ hpot s (by
           rw [Set.uIcc_of_le hR]
           exact ⟨hs.1, hs.2.trans hbR⟩) (alpha s))
         hkinInt hlagInt (by simpa only [alpha, b] using hact n)
       calc
-        (∫ s in 0..b, lRegSpeedSq S T alpha s) ≤
+        (∫ s in 0..b, lRegularizedSpeedSq S T alpha s) ≤
             2 * (A * b - Cp * (b - 0)) := hraw
         _ ≤ 2 * (A + |Cp|) * b := by
           have hCp : -Cp ≤ |Cp| := neg_le_abs Cp
           nlinarith
-    have hinit := lRegInitialVector_inner_le_of_integral_speedSq_le (I := I) S hS T b b C b
+    have hinit := lRegularizedInitialVector_inner_le_of_integral_speedSq_le (I := I) S hS T b b C b
       (2 * (A + |Cp|) * b) hb le_rfl le_rfl hC halpha
       (fun s hs ↦ by
         have h := hgrad (T - s ^ 2) (hback s hs) (alpha s)
@@ -106,7 +106,7 @@ theorem isBounded_range_initialVector_of_lRegAction_le_mul_parameter
         have h := hric (T - s ^ 2) (hback s hs) (alpha s)
             (lVelocity (I := I) alpha s)
         exact h.trans (mul_le_mul_of_nonneg_right (le_max_right Cg Cr)
-          (lRegSpeedSq_nonneg (I := I) S T alpha s))) hkin
+          (lRegularizedSpeedSq_nonneg (I := I) S T alpha s))) hkin
     let d : Real := 1 + 2 * C * b ^ 2
     let k : Real := d + 4 * C * b
     have hd : 0 < d := by

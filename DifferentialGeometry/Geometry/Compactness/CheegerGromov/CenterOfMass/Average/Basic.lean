@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH uX uY
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -41,74 +41,74 @@ theorem metricEnorm (g : SmoothRiemannianMetric I M) :
 
 noncomputable def centerAverage (g : SmoothRiemannianMetric I M)
     {X : Type uX} {ι : Type} [Fintype ι] (μ : X → ι → ℝ)
-    (pts : X → ι → M) (join : M → M → ℝ → M) (p : X → M) (r : X → ℝ)
-    (h : ∀ x : X, CenterInput (I := I) g (μ x) (pts x) join (p x) (r x))
+    (points : X → ι → M) (join : M → M → ℝ → M) (p : X → M) (r : X → ℝ)
+    (h : ∀ x : X, CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
     (x : X) : M :=
-  centerOfMass (I := I) g (μ x) (pts x) join (p x) (r x) (h x)
+  centerOfMass (I := I) g (μ x) (points x) join (p x) (r x) (h x)
 
 noncomputable def centerAverageOn (g : SmoothRiemannianMetric I M)
     {X : Type uX} {ι : Type} [Fintype ι] (s : Set X) (μ : X → ι → ℝ)
-    (pts : X → ι → M) (join : M → M → ℝ → M) (p : X → M) (r : X → ℝ)
+    (points : X → ι → M) (join : M → M → ℝ → M) (p : X → M) (r : X → ℝ)
     (qstar : X → M)
-    (h : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (pts x) join (p x) (r x))
+    (h : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
     (x : X) : M :=
   by
     classical
     exact
       if hx : x ∈ s then
-        centerOfMass (I := I) g (μ x) (pts x) join (p x) (r x) (h x hx)
+        centerOfMass (I := I) g (μ x) (points x) join (p x) (r x) (h x hx)
       else qstar x
 
 namespace centerAverage
 
 variable {g : SmoothRiemannianMetric I M} {X : Type uX} {ι : Type}
 
-noncomputable def activeFill (μ : X → ι → ℝ) (pts : X → ι → M)
+noncomputable def activeFill (μ : X → ι → ℝ) (points : X → ι → M)
     (qstar : X → M) : X → ι → M := by
   classical
-  exact fun x i => if μ x i = 0 then qstar x else pts x i
+  exact fun x i => if μ x i = 0 then qstar x else points x i
 
 omit [T3Space M] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M] [ConnectedSpace M] in
 theorem energy_activeFill [Fintype ι] (g : SmoothRiemannianMetric I M)
-    (μ : X → ι → ℝ) (pts : X → ι → M) (qstar : X → M)
+    (μ : X → ι → ℝ) (points : X → ι → M) (qstar : X → M)
     (x : X) (q : M) :
-    CenterOfMass.centerEnergy (I := I) g (μ x) (activeFill μ pts qstar x) q =
-      CenterOfMass.centerEnergy (I := I) g (μ x) (pts x) q := by
+    CenterOfMass.centerEnergy (I := I) g (μ x) (activeFill μ points qstar x) q =
+      CenterOfMass.centerEnergy (I := I) g (μ x) (points x) q := by
   apply CenterOfMass.centerEnergy_congr
   intro i hi
   simp only [activeFill, hi, ↓reduceIte]
 
 theorem uniqueMin_activeFill [Fintype ι] (g : SmoothRiemannianMetric I M)
-    (μ : X → ι → ℝ) (pts : X → ι → M) (qstar : X → M)
+    (μ : X → ι → ℝ) (points : X → ι → M) (qstar : X → M)
     (join : M → M → ℝ → M) (p : X → M) (r : X → ℝ)
     (x : X) (h : CenterInput (I := I) g (μ x)
-      (activeFill μ pts qstar x) join (p x) (r x)) :
+      (activeFill μ points qstar x) join (p x) (r x)) :
     ∃! y : M, ∀ z : M,
-      CenterOfMass.centerEnergy (I := I) g (μ x) (pts x) y ≤
-        CenterOfMass.centerEnergy (I := I) g (μ x) (pts x) z := by
+      CenterOfMass.centerEnergy (I := I) g (μ x) (points x) y ≤
+        CenterOfMass.centerEnergy (I := I) g (μ x) (points x) z := by
   let : RiemannianBundle (fun y : M => TangentSpace I y) :=
     ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  obtain ⟨y, _hy, hmin, huniq⟩ := h.exists_cm
+  obtain ⟨y, _hy, hmin, huniq⟩ := h.exists_unique_minimizer
   refine ⟨y, ?_, ?_⟩
   · intro z
-    rw [← energy_activeFill g μ pts qstar x y,
-      ← energy_activeFill g μ pts qstar x z]
+    rw [← energy_activeFill g μ points qstar x y,
+      ← energy_activeFill g μ points qstar x z]
     exact hmin z
   · intro y' hy'
     apply huniq y'
     intro z
-    rw [energy_activeFill g μ pts qstar x y',
-      energy_activeFill g μ pts qstar x z]
+    rw [energy_activeFill g μ points qstar x y',
+      energy_activeFill g μ points qstar x z]
     exact hy' z
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
-theorem activeFill_close {μ : X → ι → ℝ} {pts : X → ι → M} {qstar : X → M}
+theorem activeFill_close {μ : X → ι → ℝ} {points : X → ι → M} {qstar : X → M}
     {x : X} {ε : ℝ} (hε : 0 < ε)
     (hactive :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -116,13 +116,13 @@ theorem activeFill_close {μ : X → ι → ℝ} {pts : X → ι → M} {qstar :
       letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
         ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-      ∀ i : ι, μ x i ≠ 0 → dist (qstar x) (pts x i) < ε) :
+      ∀ i : ι, μ x i ≠ 0 → dist (qstar x) (points x i) < ε) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
       ⟨g.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-    ∀ i : ι, dist (qstar x) (activeFill μ pts qstar x i) < ε := by
+    ∀ i : ι, dist (qstar x) (activeFill μ points qstar x i) < ε := by
   let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
@@ -139,23 +139,23 @@ omit [Fintype ι] in
 theorem exists_active_radius {Y : Type uY} [PseudoMetricSpace Y] {s : Set X}
     [Finite ι]
     {target : X → Y} {μSeq : ℕ → ℕ → X → ι → ℝ}
-    {ptsSeq : ℕ → ℕ → X → ι → Y}
+    {pointsSeq : ℕ → ℕ → X → ι → Y}
     (hpts : ∀ i : ι, ∀ ε > 0, ∃ N : ℕ, ∀ a ≥ N, ∀ b ≥ N, ∀ x ∈ s,
-      μSeq a b x i ≠ 0 → dist (target x) (ptsSeq a b x i) < ε) :
+      μSeq a b x i ≠ 0 → dist (target x) (pointsSeq a b x i) < ε) :
     ∃ radSeq : ℕ → ℕ → X → ℝ,
       (∀ a b x, 0 < radSeq a b x) ∧
       (∀ a b x, x ∈ s → ∀ i : ι, μSeq a b x i ≠ 0 →
-        dist (target x) (ptsSeq a b x i) < radSeq a b x) ∧
+        dist (target x) (pointsSeq a b x i) < radSeq a b x) ∧
       ∀ ε > 0, ∃ N : ℕ, ∀ a ≥ N, ∀ b ≥ N, ∀ x ∈ s, radSeq a b x < ε := by
   classical
   let := Fintype.ofFinite ι
   let radSeq : ℕ → ℕ → X → ℝ := fun a b x =>
-    (∑ i : ι, if μSeq a b x i = 0 then 0 else dist (target x) (ptsSeq a b x i)) +
+    (∑ i : ι, if μSeq a b x i = 0 then 0 else dist (target x) (pointsSeq a b x i)) +
       1 / ((a : ℝ) + 1)
   refine ⟨radSeq, ?_, ?_, ?_⟩
   · intro a b x
     have hsum : 0 ≤
-        ∑ i : ι, if μSeq a b x i = 0 then 0 else dist (target x) (ptsSeq a b x i) := by
+        ∑ i : ι, if μSeq a b x i = 0 then 0 else dist (target x) (pointsSeq a b x i) := by
       exact Finset.sum_nonneg fun i _ => by
         split_ifs
         · exact le_rfl
@@ -163,21 +163,21 @@ theorem exists_active_radius {Y : Type uY} [PseudoMetricSpace Y] {s : Set X}
     have htail : 0 < 1 / ((a : ℝ) + 1) := by positivity
     exact add_pos_of_nonneg_of_pos hsum htail
   · intro a b x hx i hi
-    have hle : dist (target x) (ptsSeq a b x i) ≤
-        ∑ j : ι, if μSeq a b x j = 0 then 0 else dist (target x) (ptsSeq a b x j) := by
+    have hle : dist (target x) (pointsSeq a b x i) ≤
+        ∑ j : ι, if μSeq a b x j = 0 then 0 else dist (target x) (pointsSeq a b x j) := by
       calc
-        dist (target x) (ptsSeq a b x i) =
-            (if μSeq a b x i = 0 then 0 else dist (target x) (ptsSeq a b x i)) := by
+        dist (target x) (pointsSeq a b x i) =
+            (if μSeq a b x i = 0 then 0 else dist (target x) (pointsSeq a b x i)) := by
               simp [hi]
         _ ≤ ∑ j : ι,
-            if μSeq a b x j = 0 then 0 else dist (target x) (ptsSeq a b x j) := by
+            if μSeq a b x j = 0 then 0 else dist (target x) (pointsSeq a b x j) := by
               refine Finset.single_le_sum (s := Finset.univ)
                 (f := fun j : ι =>
-                  if μSeq a b x j = 0 then (0 : ℝ) else dist (target x) (ptsSeq a b x j))
+                  if μSeq a b x j = 0 then (0 : ℝ) else dist (target x) (pointsSeq a b x j))
                 ?_ (Finset.mem_univ i)
               intro j _
               change 0 ≤ if μSeq a b x j = 0 then (0 : ℝ) else
-                dist (target x) (ptsSeq a b x j)
+                dist (target x) (pointsSeq a b x j)
               by_cases hj : μSeq a b x j = 0
               · simp [hj]
               · simp [hj, dist_nonneg]
@@ -200,7 +200,7 @@ theorem exists_active_radius {Y : Type uY} [PseudoMetricSpace Y] {s : Set X}
     have hb_max : Nmax ≤ b := le_trans (le_max_left _ _) hb
     have hsum_le :
         (∑ i : ι,
-          if μSeq a b x i = 0 then 0 else dist (target x) (ptsSeq a b x i)) ≤
+          if μSeq a b x i = 0 then 0 else dist (target x) (pointsSeq a b x i)) ≤
           ∑ _i : ι, δ := by
       refine Finset.sum_le_sum fun i _ => ?_
       by_cases hi : μSeq a b x i = 0
@@ -220,7 +220,7 @@ theorem exists_active_radius {Y : Type uY} [PseudoMetricSpace Y] {s : Set X}
       nlinarith
     have hsum_lt :
         (∑ i : ι,
-          if μSeq a b x i = 0 then 0 else dist (target x) (ptsSeq a b x i)) <
+          if μSeq a b x i = 0 then 0 else dist (target x) (pointsSeq a b x i)) <
           ε / 2 :=
       lt_of_le_of_lt hsum_le (hcard ▸ hcard_lt)
     simpa [radSeq] using add_lt_add_of_lt_of_lt hsum_lt (hNtail a ha_tail)
@@ -251,15 +251,15 @@ theorem WeightDataOn.data {s : Set X} {U : ι → Set X} {μ : X → ι → ℝ}
       ∀ i : ι, μ x i ≠ 0 → x ∈ U i := by
   exact ⟨⟨h.nonneg x hx, h.pos x hx, h.sum_one x hx⟩, h.active_mem x hx⟩
 
-variable {μ : X → ι → ℝ} {pts : X → ι → M} {join : M → M → ℝ → M}
+variable {μ : X → ι → ℝ} {points : X → ι → M} {join : M → M → ℝ → M}
   {p : X → M} {r : X → ℝ}
-  (h : ∀ x : X, CenterInput (I := I) g (μ x) (pts x) join (p x) (r x))
+  (h : ∀ x : X, CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
 
 theorem on_eq {s : Set X} {qstar : X → M}
-    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (pts x) join (p x) (r x))
+    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
     {x : X} (hx : x ∈ s) :
-    centerAverageOn (I := I) g s μ pts join p r qstar hOn x =
-      centerOfMass (I := I) g (μ x) (pts x) join (p x) (r x) (hOn x hx) := by
+    centerAverageOn (I := I) g s μ points join p r qstar hOn x =
+      centerOfMass (I := I) g (μ x) (points x) join (p x) (r x) (hOn x hx) := by
   simp [centerAverageOn, hx]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
@@ -286,12 +286,12 @@ theorem inputOfFill {qstar : X → M} (x : X)
       letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
         ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-      ∀ i : ι, μ x i ≠ 0 → dist (p x) (pts x i) < r x)
+      ∀ i : ι, μ x i ≠ 0 → dist (p x) (points x i) < r x)
     (hμ_nonneg : ∀ i : ι, 0 ≤ μ x i)
     (hμ_pos : ∃ i : ι, 0 < μ x i)
     (hstrict :
-      StrictDistInput (I := I) g (activeFill μ pts qstar x) join (p x) (r x)) :
-    CenterInput (I := I) g (μ x) (activeFill μ pts qstar x) join (p x) (r x) := by
+      StrictDistInput (I := I) g (activeFill μ points qstar x) join (p x) (r x)) :
+    CenterInput (I := I) g (μ x) (activeFill μ points qstar x) join (p x) (r x) := by
   let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
@@ -301,7 +301,7 @@ theorem inputOfFill {qstar : X → M} (x : X)
     { complete := hcomplete
       enorm := metricEnorm (I := I) g
       r_pos := hr
-      pts_mem := ?_
+      points_mem := ?_
       μ_nonneg := hμ_nonneg
       μ_pos := hμ_pos
       strict := hstrict }
@@ -327,19 +327,19 @@ theorem inputOfFillSelf {qstar : X -> M} (x : X)
       letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
         ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-      forall i : ι, μ x i ≠ 0 -> dist (qstar x) (pts x i) < r x)
+      forall i : ι, μ x i ≠ 0 -> dist (qstar x) (points x i) < r x)
     (hμ_nonneg : forall i : ι, 0 ≤ μ x i)
     (hμ_pos : exists i : ι, 0 < μ x i)
     (hstrict :
-      StrictDistInput (I := I) g (activeFill μ pts qstar x) join (qstar x) (r x)) :
-    CenterInput (I := I) g (μ x) (activeFill μ pts qstar x) join (qstar x)
+      StrictDistInput (I := I) g (activeFill μ points qstar x) join (qstar x) (r x)) :
+    CenterInput (I := I) g (μ x) (activeFill μ points qstar x) join (qstar x)
       (r x) := by
   let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  refine inputOfFill (I := I) (g := g) (μ := μ) (pts := pts) (join := join)
+  refine inputOfFill (I := I) (g := g) (μ := μ) (points := points) (join := join)
     (p := qstar) (r := r) (qstar := qstar) x hcomplete hr ?_ hactive
     hμ_nonneg hμ_pos hstrict
   simpa using hr
@@ -350,52 +350,52 @@ theorem mem (x : X) :
     letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-    centerAverage (I := I) g μ pts join p r h x ∈ Metric.closedBall (p x) (2 * r x) := by
+    centerAverage (I := I) g μ points join p r h x ∈ Metric.closedBall (p x) (2 * r x) := by
   simpa [centerAverage] using
-    centerOfMass.mem (I := I) (g := g) (μ := μ x) (pts := pts x) (join := join)
+    centerOfMass.mem (I := I) (g := g) (μ := μ x) (points := points x) (join := join)
       (p := p x) (r := r x) (h x)
 
 theorem mem_on {s : Set X} {qstar : X → M}
-    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (pts x) join (p x) (r x))
+    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
     {x : X} (hx : x ∈ s) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
       ⟨g.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-    centerAverageOn (I := I) g s μ pts join p r qstar hOn x ∈
+    centerAverageOn (I := I) g s μ points join p r qstar hOn x ∈
       Metric.closedBall (p x) (2 * r x) := by
   let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  rw [on_eq (I := I) (g := g) (μ := μ) (pts := pts) (join := join) (p := p)
+  rw [on_eq (I := I) (g := g) (μ := μ) (points := points) (join := join) (p := p)
     (r := r) hOn hx]
-  exact centerOfMass.mem (I := I) (g := g) (μ := μ x) (pts := pts x)
+  exact centerOfMass.mem (I := I) (g := g) (μ := μ x) (points := points x)
     (join := join) (p := p x) (r := r x) (hOn x hx)
 
 theorem eq_of_all_eq {qstar : X → M} (x : X)
-    (hpts : ∀ i : ι, pts x i = qstar x) :
+    (hpts : ∀ i : ι, points x i = qstar x) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
       ⟨g.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-    centerAverage (I := I) g μ pts join p r h x = qstar x := by
+    centerAverage (I := I) g μ points join p r h x = qstar x := by
   let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  have hnear : ∀ i : ι, dist (qstar x) (pts x i) ≤ (0 : ℝ) := by
+  have hnear : ∀ i : ι, dist (qstar x) (points x i) ≤ (0 : ℝ) := by
     intro i
     rw [hpts i, dist_self]
   have hdist :
-      dist (centerAverage (I := I) g μ pts join p r h x) (qstar x) ≤ 0 :=
+      dist (centerAverage (I := I) g μ points join p r h x) (qstar x) ≤ 0 :=
     by
       simpa [centerAverage] using
-        centerOfMass.dist_le (I := I) (g := g) (μ := μ x) (pts := pts x)
+        centerOfMass.dist_le (I := I) (g := g) (μ := μ x) (points := points x)
           (join := join) (p := p x) (r := r x) (h x) (qstar := qstar x)
           (by norm_num) hnear
   exact dist_eq_zero.mp (le_antisymm hdist dist_nonneg)
@@ -407,19 +407,19 @@ theorem dist_le {qstar : X → M} {ε : ℝ} (x : X) (hε : 0 ≤ ε)
       letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
         ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-      ∀ i : ι, dist (qstar x) (pts x i) ≤ ε) :
+      ∀ i : ι, dist (qstar x) (points x i) ≤ ε) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
       ⟨g.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-    dist (centerAverage (I := I) g μ pts join p r h x) (qstar x) ≤ 2 * ε := by
+    dist (centerAverage (I := I) g μ points join p r h x) (qstar x) ≤ 2 * ε := by
   simpa [centerAverage] using
-    centerOfMass.dist_le (I := I) (g := g) (μ := μ x) (pts := pts x)
+    centerOfMass.dist_le (I := I) (g := g) (μ := μ x) (points := points x)
       (join := join) (p := p x) (r := r x) (h x) (qstar := qstar x) hε hnear
 
 theorem dist_le_on {s : Set X} {default target : X → M} {ε : ℝ}
-    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (pts x) join (p x) (r x))
+    (hOn : ∀ x : X, x ∈ s → CenterInput (I := I) g (μ x) (points x) join (p x) (r x))
     {x : X} (hx : x ∈ s) (hε : 0 ≤ ε)
     (hnear :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -427,24 +427,24 @@ theorem dist_le_on {s : Set X} {default target : X → M} {ε : ℝ}
       letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
         ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
       letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-      ∀ i : ι, dist (target x) (pts x i) ≤ ε) :
+      ∀ i : ι, dist (target x) (points x i) ≤ ε) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
       ⟨g.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-    dist (centerAverageOn (I := I) g s μ pts join p r default hOn x) (target x) ≤
+    dist (centerAverageOn (I := I) g s μ points join p r default hOn x) (target x) ≤
       2 * ε := by
   let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  rw [on_eq (I := I) (g := g) (μ := μ) (pts := pts) (join := join) (p := p)
+  rw [on_eq (I := I) (g := g) (μ := μ) (points := points) (join := join) (p := p)
     (r := r) hOn hx]
-  exact centerOfMass.dist_le (I := I) (g := g) (μ := μ x) (pts := pts x)
+  exact centerOfMass.dist_le (I := I) (g := g) (μ := μ x) (points := points x)
     (join := join) (p := p x) (r := r x) (hOn x hx) (qstar := target x) hε hnear
 
 end centerAverage
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

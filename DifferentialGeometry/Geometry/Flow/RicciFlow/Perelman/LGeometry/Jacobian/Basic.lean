@@ -69,7 +69,7 @@ noncomputable def lGramDeriv
         (covDerivAlong (I := I) (S.base.metric (T - tau)) gamma (Y j) tau) +
       2 * S.ricciAt (T - tau) (gamma tau) (vec2 (Y i tau) (Y j tau))
 
-noncomputable def lJacDensity
+noncomputable def lJacobianDensity
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (gamma : Real → M) (Y : ι → ∀ tau, TangentSpace I (gamma tau))
     (tau : Real) : Real :=
@@ -93,7 +93,7 @@ theorem lGram_hasDeriv
 
 omit [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lJacDen_hasDeriv
+theorem lJacobianDen_hasDeriv
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (gamma : Real → M)
     (Y : ι → ∀ tau, TangentSpace I (gamma tau)) (tau : Real)
@@ -102,10 +102,10 @@ theorem lJacDen_hasDeriv
     (hY : ∀ i, DifferentiableAt Real
       (chartRepAt (I := I) gamma (Y i) tau) tau)
     (hpos : 0 < (lGram S T gamma Y tau).det) :
-    HasDerivAt (lJacDensity S T gamma Y)
+    HasDerivAt (lJacobianDensity S T gamma Y)
       ((1 / 2) * trace
           ((lGram S T gamma Y tau)⁻¹ * lGramDeriv S T gamma Y tau) *
-        lJacDensity S T gamma Y tau) tau := by
+        lJacobianDensity S T gamma Y tau) tau := by
   with_unfolding_all
     exact DifferentialGeometry.Integral.Measure.hasDerivAt_sqrt_det_eq_half_trace_inv_mul
       (lGram S T gamma Y) (lGramDeriv S T gamma Y tau) tau
@@ -127,11 +127,11 @@ theorem lGram_det_pos
 omit [NeZero (Module.finrank Real E)]
   [FiniteDimensional Real E] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-theorem lJacDensity_pos
+theorem lJacobianDensity_pos
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (gamma : Real → M) (Y : ι → ∀ tau, TangentSpace I (gamma tau))
     (tau : Real) (hY : LinearIndependent Real fun i => Y i tau) :
-    0 < lJacDensity S T gamma Y tau := by
+    0 < lJacobianDensity S T gamma Y tau := by
   exact Real.sqrt_pos.mpr (lGram_det_pos S T gamma Y tau hY)
 
 end Gram
@@ -151,21 +151,21 @@ noncomputable def lExpField
     TangentSpace I (lExp S T x Z tau) :=
   mfderiv 𝓘(Real, E) I (fun W : E => lExp S T x W tau) Z V
 
-noncomputable def lRegFieldVel
+noncomputable def lRegularizedFieldVelocity
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z V : TangentSpace I x) (tau : Real) :
-    TangentSpace I (lRegCurve S T x Z (Real.sqrt tau)) :=
+    TangentSpace I (lRegularizedCurve S T x Z (Real.sqrt tau)) :=
   covDerivAlong (I := I) (S.base.metric (T - tau))
-    (lRegCurve S T x Z) (lRegJacobiField S T x Z V) (Real.sqrt tau)
+    (lRegularizedCurve S T x Z) (lRegularizedJacobiField S T x Z V) (Real.sqrt tau)
 
-noncomputable def lExpFieldVel
+noncomputable def lExpFieldVelocity
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z V : TangentSpace I x) (tau : Real) :
     TangentSpace I (lExp S T x Z tau) :=
   lJacobiVelocity S T (fun q => lExp S T x Z q)
     (fun q => lExpField S T x Z V q) tau
 
-noncomputable def lExpSqVel
+noncomputable def lExpSqVelocity
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z V : TangentSpace I x) (tau : Real) :
     TangentSpace I (lExp S T x Z ((Real.sqrt tau) ^ 2)) :=
@@ -176,16 +176,16 @@ noncomputable def lExpSqVel
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lRegSq_pair
+theorem lRegularizedSq_pair
     (S : SolutionOn (I := I) (M := M) D)
     (T : Real) (x : M)
     (Z V : TangentSpace I x) (tau : Real)
     (htau : 0 < tau)
     (Q : TangentSpace I (lExp S T x Z tau)) :
     (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-      (lRegFieldVel S T x Z V tau : E) (Q : E) =
+      (lRegularizedFieldVelocity S T x Z V tau : E) (Q : E) =
       (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-        (lExpSqVel S T x Z V tau : E) (Q : E) := by
+        (lExpSqVelocity S T x Z V tau : E) (Q : E) := by
   let b : Real := Real.sqrt tau
   let gamma : Real → M := fun q => lExp S T x Z q
   let Y : ∀ q, TangentSpace I (gamma q) := fun q =>
@@ -193,30 +193,30 @@ theorem lRegSq_pair
   have hb : 0 < b := by
     exact Real.sqrt_pos.2 htau
   have hcurve : (fun r : Real => gamma (r ^ 2)) =ᶠ[nhds b]
-      lRegCurve S T x Z := by
+      lRegularizedCurve S T x Z := by
     filter_upwards [Ioi_mem_nhds hb] with r hr
     simp only [gamma, lExp]
     rw [Real.sqrt_sq hr.le]
   have hfield : ∀ᶠ r in nhds b,
-      (Y (r ^ 2) : E) = (lRegJacobiField S T x Z V r : E) := by
+      (Y (r ^ 2) : E) = (lRegularizedJacobiField S T x Z V r : E) := by
     filter_upwards [Ioi_mem_nhds hb] with r hr
     simp only [Y, lExpField, lExpJacobi_eq]
     rw [Real.sqrt_sq hr.le]
   have hcongr :=
     DifferentialGeometry.Geometry.Riemannian.covDerivAlong_congr_curve
       (I := I) (S.base.metric (T - tau))
-      (fun r : Real => Y (r ^ 2)) (lRegJacobiField S T x Z V)
+      (fun r : Real => Y (r ^ 2)) (lRegularizedJacobiField S T x Z V)
       hcurve hfield
   have hleft := congrArg
     (fun W : E => (S.base.metric (T - tau)).inner
       (lExp S T x Z tau) W Q) hcongr.symm
-  simpa only [lRegFieldVel, lExpSqVel, b, gamma, Y] using hleft
+  simpa only [lRegularizedFieldVelocity, lExpSqVelocity, b, gamma, Y] using hleft
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space M] [CompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem sqVel_pair
+private theorem sqVelocity_pair
     (g : SmoothRiemannianMetric I M)
     (gamma : Real → M) (Y : ∀ q, TangentSpace I (gamma q))
     (tau : Real) (htau : 0 < tau)
@@ -267,41 +267,41 @@ theorem lExpSq_pair
     (hpos : (Z, tau) ∈ lExpPosDom (E := E) (I := I) S T x)
     (Q : TangentSpace I (lExp S T x Z tau)) :
     (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-        (lExpSqVel S T x Z V tau : E) (Q : E) =
+        (lExpSqVelocity S T x Z V tau : E) (Q : E) =
       (2 * Real.sqrt tau) *
         (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-          (lExpFieldVel S T x Z V tau : E) (Q : E) := by
+          (lExpFieldVelocity S T x Z V tau : E) (Q : E) := by
   let gamma : Real → M := fun q => lExp S T x Z q
   let Y : ∀ q, TangentSpace I (gamma q) := fun q =>
     lExpField S T x Z V q
-  have hJac : HasLJacobiAt S T gamma Y tau := by
+  have hJacobian : HasLJacobiAt S T gamma Y tau := by
     simpa only [gamma, Y, lExpField] using
       hasLJacobiAt_lExp S hS T x Z V tau hpos
   with_unfolding_all
-    exact sqVel_pair (I := I) (S.base.metric (T - tau)) gamma Y tau
-      ((mem_lExpPosDom S T x Z tau).1 hpos).1 hJac.1 hJac.2.1 Q
+    exact sqVelocity_pair (I := I) (S.base.metric (T - tau)) gamma Y tau
+      ((mem_lExpPosDom S T x Z tau).1 hpos).1 hJacobian.1 hJacobian.2.1 Q
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-theorem lRegJacobi_pair
+theorem lRegularizedJacobi_pair
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (Z V : TangentSpace I x) (tau : Real)
     (hpos : (Z, tau) ∈ lExpPosDom (E := E) (I := I) S T x)
     (Q : TangentSpace I (lExp S T x Z tau)) :
     (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-      (lRegFieldVel S T x Z V tau : E) (Q : E) =
+      (lRegularizedFieldVelocity S T x Z V tau : E) (Q : E) =
       (2 * Real.sqrt tau) *
         (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-          (lExpFieldVel S T x Z V tau : E) (Q : E) := by
-  exact (lRegSq_pair S T x Z V tau
+          (lExpFieldVelocity S T x Z V tau : E) (Q : E) := by
+  exact (lRegularizedSq_pair S T x Z V tau
     ((mem_lExpPosDom S T x Z tau).1 hpos).1 Q).trans
       (lExpSq_pair S hS T x Z V tau hpos Q)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem redHess_lJac
+theorem redHess_lJacobian
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau : Real}
@@ -313,7 +313,7 @@ theorem redHess_lJac
         (lExp S T x Z tau) (lExpField S T x Z V tau)
           (lExpField S T x Z W tau) =
       (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-        (lExpFieldVel S T x Z V tau)
+        (lExpFieldVelocity S T x Z V tau)
           (lExpField S T x Z W tau) := by
   let zE : E := show E from Z
   let : NormedAddCommGroup (TangentSpace 𝓘(Real, E) zE) :=
@@ -328,11 +328,11 @@ theorem redHess_lJac
     lMinDomain_down S hS T x Z hmin htau hsigma.le
   have hdom : (Z, tau) ∈ lExpPosDom S T x :=
     ((mem_lMinDomain S T x Z tau).1 hminTau).1
-  have hconj : ¬ IsLConj S T x Z tau :=
-    lMinVec_nconj_lt S hS T x hmin hsigma
+  have hconj : ¬ IsLConjugate S T x Z tau :=
+    lMinimizingVector_nconj_lt S hS T x hmin hsigma
   have hdomE : (zE, tau) ∈ lExpPosDom S T x := by
     exact hdom
-  have hconjE : ¬ IsLConj S T x zE tau := by
+  have hconjE : ¬ IsLConjugate S T x zE tau := by
     exact hconj
   let y : M := lExp S T x Z tau
   let g := S.base.metric (T - tau)
@@ -357,9 +357,9 @@ theorem redHess_lJac
   have hbranch :
       hessFun (I := I) g
           (lActBranch S hS T x Z tau hdom hconj) y YV YW =
-        g.inner y (lRegFieldVel S T x Z V tau) YW := by
+        g.inner y (lRegularizedFieldVelocity S T x Z V tau) YW := by
     have hout := lActBranch_hess S hS T x Z tau hdom hconj YV YW
-    simpa only [y, g, YV, YW, hloc, hInv, lRegFieldVel] using hout
+    simpa only [y, g, YV, YW, hloc, hInv, lRegularizedFieldVelocity] using hout
   let c : Real := (2 * Real.sqrt tau)⁻¹
   have hfun :
       (fun q : M => redLength S T x q tau) =
@@ -369,9 +369,9 @@ theorem redHess_lJac
     ring
   rw [hfun, hessFun_smul]
   change c * hessFun (I := I) g (fun q : M => lCost S T x q tau)
-      y YV YW = g.inner y (lExpFieldVel S T x Z V tau) YW
+      y YV YW = g.inner y (lExpFieldVelocity S T x Z V tau) YW
   rw [hcostBranch, hbranch]
-  rw [lRegJacobi_pair S hS T x Z V tau hdom YW]
+  rw [lRegularizedJacobi_pair S hS T x Z V tau hdom YW]
   have hb : 2 * Real.sqrt tau ≠ 0 :=
     mul_ne_zero (by norm_num) (Real.sqrt_pos.2 htau).ne'
   dsimp only [c]
@@ -465,26 +465,26 @@ noncomputable def lExpRicci
         (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
         (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) tau))
 
-noncomputable def lExpVelGram
+noncomputable def lExpVelocityGram
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real) :
     Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
   Matrix.of fun i j =>
     (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-      (lExpFieldVel S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
+      (lExpFieldVelocity S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
       (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) tau)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lExpVel_eq_hess
+theorem lExpVelocity_eq_hess
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
-    lExpVelGram S T x Z tau = lExpHess S T x Z tau := by
+    lExpVelocityGram S T x Z tau = lExpHess S T x Z tau := by
   ext i j
-  exact (redHess_lJac S hS T x htau hZ
+  exact (redHess_lJacobian S hS T x htau hZ
     ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)).symm
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] in
@@ -492,12 +492,12 @@ theorem lExpGramDeriv_eq
     (S : SolutionOn (I := I) (M := M) D)
     (T : Real) (x : M) (Z : TangentSpace I x) (tau : Real) :
     lExpGramDeriv S T x Z tau =
-      lExpVelGram S T x Z tau + (lExpVelGram S T x Z tau).transpose +
+      lExpVelocityGram S T x Z tau + (lExpVelocityGram S T x Z tau).transpose +
         2 • lExpRicci S T x Z tau := by
   ext i j
-  simp only [lExpGramDeriv, lGramDeriv, lExpVelGram, lExpRicci,
+  simp only [lExpGramDeriv, lGramDeriv, lExpVelocityGram, lExpRicci,
     Matrix.of_apply, Matrix.add_apply, Matrix.transpose_apply,
-    Matrix.smul_apply, lExpFieldVel, lJacobiVelocity]
+    Matrix.smul_apply, lExpFieldVelocity, lJacobiVelocity]
   rw [(S.base.metric (T - tau)).symm (lExp S T x Z tau)
     (lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau)
     (covDerivAlong (I := I) (S.base.metric (T - tau))
@@ -510,20 +510,20 @@ noncomputable def lExpDensity
     (Z : TangentSpace I x) (tau : Real) : Real :=
   Real.sqrt (lExpGram S T x Z tau).det
 
-noncomputable def lSrcGram
+noncomputable def lSourceGram
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) :
     Matrix (Fin (Module.finrank Real E)) (Fin (Module.finrank Real E)) Real :=
   Matrix.of fun i j =>
     (S.base.metric T).inner x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
 
-noncomputable def lSrcDensity
+noncomputable def lSourceDensity
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) : Real :=
-  Real.sqrt (lSrcGram S T x).det
+  Real.sqrt (lSourceGram S T x).det
 
-noncomputable def lExpJac
+noncomputable def lExpJacobian
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real) : Real :=
-  lExpDensity S T x Z tau / lSrcDensity S T x
+  lExpDensity S T x Z tau / lSourceDensity S T x
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -698,7 +698,7 @@ theorem lExpTrace_eq
     simpa only [star_trivial] using hGherm.inv.apply j i
   have htrans : trace (G⁻¹ * Hm.transpose) = trace (G⁻¹ * Hm) :=
     trace_mul_trans G⁻¹ Hm hGinv
-  rw [lExpGramDeriv_eq, lExpVel_eq_hess S hS T x htau hZ]
+  rw [lExpGramDeriv_eq, lExpVelocity_eq_hess S hS T x htau hZ]
   change (1 / 2) * trace (G⁻¹ * (Hm + Hm.transpose +
     2 • lExpRicci S T x Z tau)) = _
   simp only [Matrix.mul_add, Matrix.trace_add, Matrix.mul_smul,
@@ -721,9 +721,9 @@ theorem lExpDensity_pos
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [CompactSpace M] in
-theorem lSrcDensity_pos
+theorem lSourceDensity_pos
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) :
-    0 < lSrcDensity S T x := by
+    0 < lSourceDensity S T x := by
   let gamma : Real → M := fun _ => x
   let V : Fin (Module.finrank Real E) →
       ∀ _ : Real, TangentSpace I x := fun i _ => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
@@ -737,22 +737,22 @@ theorem lSrcDensity_pos
       (I := I) (S.base.metric T) gamma V 0
         hLI
   exact Real.sqrt_pos.mpr (by
-    simpa only [lSrcGram,
+    simpa only [lSourceGram,
       DifferentialGeometry.Geometry.Riemannian.Variation.curveGram,
       Matrix.of_apply, gamma, V] using hdet)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lExpJac_pos
+theorem lExpJacobian_pos
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
-    0 < lExpJac S T x Z tau := by
+    0 < lExpJacobian S T x Z tau := by
   exact div_pos (lExpDensity_pos S hS T x htau hZ)
-    (lSrcDensity_pos S T x)
+    (lSourceDensity_pos S T x)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -773,7 +773,7 @@ theorem lExpDen_hasDeriv
   have hdom : (Z, tau) ∈ lExpPosDom S T x :=
     ((mem_lMinDomain S T x Z tau).1 hminTau).1
   have ht : T - tau ∈ D.regular := by
-    have hreg := lExpPosDom_reg S T x Z hdom
+    have hreg := lExpPosDom_regularity S T x Z hdom
       (show Real.sqrt tau ∈ Set.Icc (0 : Real) (Real.sqrt tau) from
         ⟨Real.sqrt_nonneg tau, le_rfl⟩)
     simpa only [Real.sq_sqrt htau.le] using hreg
@@ -781,15 +781,15 @@ theorem lExpDen_hasDeriv
   let Y : Fin (Module.finrank Real E) →
       ∀ q, TangentSpace I (gamma q) := fun i q =>
     lExpField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) q
-  have hJac (i : Fin (Module.finrank Real E)) :
+  have hJacobian (i : Fin (Module.finrank Real E)) :
       HasLJacobiAt S T gamma (Y i) tau := by
     simpa only [gamma, Y, lExpField] using
       hasLJacobiAt_lExp S hS T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) tau hdom
   have hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma tau :=
-    (hJac (Classical.choice inferInstance)).1
+    (hJacobian (Classical.choice inferInstance)).1
   have hY : ∀ i, DifferentiableAt Real
-      (chartRepAt (I := I) gamma (Y i) tau) tau := fun i => (hJac i).2.1
-  have hout := lJacDen_hasDeriv S hS T gamma Y tau ht hgamma hY
+      (chartRepAt (I := I) gamma (Y i) tau) tau := fun i => (hJacobian i).2.1
+  have hout := lJacobianDen_hasDeriv S hS T gamma Y tau ht hgamma hY
     (by simpa only [lExpGram, gamma, Y] using
       lExpGram_pos S hS T x htau hZinj)
   with_unfolding_all
@@ -797,37 +797,37 @@ theorem lExpDen_hasDeriv
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lExpJac_hasDeriv
+theorem lExpJacobian_hasDeriv
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
-    HasDerivAt (lExpJac S T x Z)
+    HasDerivAt (lExpJacobian S T x Z)
       ((laplacian (I := I) (LeviCivita (I := I)
           (S.base.metric (T - tau))) (S.base.metric (T - tau))
           (fun y : M => redLength S T x y tau) (lExp S T x Z tau) +
         S.scalar (T - tau) (lExp S T x Z tau)) *
-        lExpJac S T x Z tau) tau := by
+        lExpJacobian S T x Z tau) tau := by
   have hout :=
-    (lExpDen_hasDeriv S hS T x htau hZ).div_const (lSrcDensity S T x)
+    (lExpDen_hasDeriv S hS T x htau hZ).div_const (lSourceDensity S T x)
   rw [lExpTrace_eq S hS T x htau hZ] at hout
   have hfun :
-      (fun q => lExpDensity S T x Z q / lSrcDensity S T x) =
-        lExpJac S T x Z := rfl
+      (fun q => lExpDensity S T x Z q / lSourceDensity S T x) =
+        lExpJacobian S T x Z := rfl
   rw [hfun] at hout
   have hcoef :
       ((laplacian (I := I) (LeviCivita (I := I)
           (S.base.metric (T - tau))) (S.base.metric (T - tau))
           (fun y : M => redLength S T x y tau) (lExp S T x Z tau) +
         S.scalar (T - tau) (lExp S T x Z tau)) *
-        lExpDensity S T x Z tau / lSrcDensity S T x) =
+        lExpDensity S T x Z tau / lSourceDensity S T x) =
       ((laplacian (I := I) (LeviCivita (I := I)
           (S.base.metric (T - tau))) (S.base.metric (T - tau))
           (fun y : M => redLength S T x y tau) (lExp S T x Z tau) +
         S.scalar (T - tau) (lExp S T x Z tau)) *
-        lExpJac S T x Z tau) := by
-    rw [lExpJac]
+        lExpJacobian S T x Z tau) := by
+    rw [lExpJacobian]
     ring
   rw [hcoef] at hout
   with_unfolding_all exact hout
@@ -840,13 +840,13 @@ theorem lExpLog_hasDeriv
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
-    HasDerivAt (fun q => Real.log (lExpJac S T x Z q))
+    HasDerivAt (fun q => Real.log (lExpJacobian S T x Z q))
       (laplacian (I := I) (LeviCivita (I := I)
           (S.base.metric (T - tau))) (S.base.metric (T - tau))
           (fun y : M => redLength S T x y tau) (lExp S T x Z tau) +
         S.scalar (T - tau) (lExp S T x Z tau)) tau := by
-  have hpos := lExpJac_pos S hS T x htau hZ
-  have hout := (lExpJac_hasDeriv S hS T x htau hZ).log hpos.ne'
+  have hpos := lExpJacobian_pos S hS T x htau hZ
+  have hout := (lExpJacobian_hasDeriv S hS T x htau hZ).log hpos.ne'
   convert hout using 1
   field_simp
 
@@ -859,51 +859,51 @@ theorem lExpLog_deriv_le
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     {Ω : Set Real} (hΩ : IsOpen Ω)
-    (hΩseg : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
+    (hΩsegment : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
     (hW : ∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent
       (8 : Nat)
       (fun s : Real ↦ (TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _))
-        (lRegCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
+        (lRegularizedCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
           TangentBundle I M)) Ω)
     (hP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
       (S.base.metric (T - tau)).inner (lExp S T x Z tau)
           (P i (Real.sqrt tau)) (P j (Real.sqrt tau)) =
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
-        S.ricciAt (T - s ^ 2) (lRegCurve S T x Z s)
+        S.ricciAt (T - s ^ 2) (lRegularizedCurve S T x Z s)
           (vec2 (P i s) (P i s)))
       MeasureTheory.volume 0 (Real.sqrt tau)) :
-    deriv (fun q ↦ Real.log (lExpJac S T x Z q)) tau ≤
+    deriv (fun q ↦ Real.log (lExpJacobian S T x Z q)) tau ≤
       (Module.finrank Real E : Real) / (2 * tau) -
-        lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+        lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
           (2 * tau * Real.sqrt tau) := by
   rw [(lExpLog_hasDeriv S hS T x htau hZ).deriv]
   calc
     _ ≤ ((Module.finrank Real E : Real) / (2 * tau) -
           S.scalar (T - tau) (lExp S T x Z tau) -
-          lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+          lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
             (2 * tau * Real.sqrt tau)) +
         S.scalar (T - tau) (lExp S T x Z tau) :=
       by
         simpa only [add_comm] using
           add_le_add_right
-            (redLength_lap_K S hS T x htau hZ P hΩ hΩseg hW hP hDP
+            (redLength_lap_K S hS T x htau hZ P hΩ hΩsegment hW hP hDP
               hON hIint hRint)
             (S.scalar (T - tau) (lExp S T x Z tau))
     _ = _ := by ring

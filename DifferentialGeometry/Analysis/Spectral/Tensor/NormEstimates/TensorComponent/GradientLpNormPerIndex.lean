@@ -288,7 +288,7 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
       (I := I) (M := M) g r s α
   set M_F : ℝ := max M_F_in M_F_out with hM_F_def
   have hM_F_nn : 0 ≤ M_F := le_max_of_le_left hM_F_in_nn
-  have hK_cpt : IsCompact (tsupport (fun x : M =>
+  have hK_compact : IsCompact (tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     pouTsupport_isCompact (I := I) (M := M) α
   have hK_sub : tsupport (fun x : M =>
@@ -296,7 +296,7 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
     fun x hx => chartAtlasPOU_isSubordinate (I := I) (M := M) α hx
   obtain ⟨Cto, hCto_pos, hCto_bound⟩ :=
     tensorRSChartFiberToModel_opNorm_isBounded_on_compact
-      (I := I) (M := M) g r s α hK_cpt hK_sub
+      (I := I) (M := M) g r s α hK_compact hK_sub
   have hCto_nn : 0 ≤ Cto := le_of_lt hCto_pos
   refine ⟨Cto ^ 2 * (2 * ((r : ℝ) + (s : ℝ))) * (n : ℝ) *
       ((r : ℝ) + (s : ℝ)) * M_F ^ 2, by positivity, ?_⟩
@@ -515,7 +515,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
     exact ENNReal.ofReal_le_ofReal (h_ptbound b)
   have h_sq_to_lint : (eLpNorm TinnerSqrt 2 μ) ^ 2 =
       ∫⁻ b, (‖TinnerSqrt b‖ₑ : ℝ≥0∞) ^ 2 ∂μ :=
-    sq_eLpNorm_two_eq_lintegral_enorm_sq μ TinnerSqrt
+    DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq TinnerSqrt
   have h_sq_bound : (eLpNorm TinnerSqrt 2 μ) ^ 2 ≤
       ENNReal.ofReal (C_sq * ‖S‖ ^ 2) := by
     rw [h_sq_to_lint]
@@ -730,7 +730,8 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
       have h_G4_sq_lint :
           ∫⁻ b, (‖rawInd b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
             ENNReal.ofReal (C₄ ^ 2 * ‖S‖ ^ 2) := by
-        rw [← sq_eLpNorm_two_eq_lintegral_enorm_sq μ rawInd]; exact h_G4_sq
+        rw [← DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq];
+        exact h_G4_sq
       calc ∫⁻ b, f1 b ∂μ
           = ENNReal.ofReal A * ∫⁻ b, (‖rawInd b‖ₑ : ℝ≥0∞) ^ 2 ∂μ := h_int_eq
         _ ≤ ENNReal.ofReal A * ENNReal.ofReal (C₄ ^ 2 * ‖S‖ ^ 2) :=
@@ -786,7 +787,8 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
       have h_G2_sq_lint :
           ∫⁻ b, (‖h2 b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
             ENNReal.ofReal (C₂ ^ 2 * ‖S‖ ^ 2) := by
-        rw [← sq_eLpNorm_two_eq_lintegral_enorm_sq μ h2]; exact h_G2_sq
+        rw [← DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq];
+        exact h_G2_sq
       calc ∫⁻ b, f2 b ∂μ
           = ENNReal.ofReal B * ∫⁻ b, (‖h2 b‖ₑ : ℝ≥0∞) ^ 2 ∂μ := h_int_eq
         _ ≤ ENNReal.ofReal B * ENNReal.ofReal (C₂ ^ 2 * ‖S‖ ^ 2) :=

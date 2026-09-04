@@ -360,13 +360,13 @@ theorem wkpNormChart_lt_top_of_memWkpChart
       (chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
       (chartTargetEuclid (I := I) (M := M) α) with hf_def
-  have hPOU_locFin : LocallyFinite
+  have hPOU_localFin : LocallyFinite
       (fun α : M => Function.support
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ)) :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M).locallyFinite
   have hSupport_finite : {α : M | (Function.support
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ)).Nonempty}.Finite :=
-    hPOU_locFin.finite_nonempty_of_compact
+    hPOU_localFin.finite_nonempty_of_compact
   have hf_zero_off : ∀ α : M, (Function.support
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ)) = ∅ →
         f α = 0 := by
@@ -399,7 +399,7 @@ theorem wkpNormChart_lt_top_of_memWkpChart
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ)).Nonempty}
       with hS_def
   have hS_finite : S.Finite := hSupport_finite
-  have hf_supp_S : Function.support f ⊆ S := by
+  have hf_support_S : Function.support f ⊆ S := by
     intro α hα
     by_contra hαS
     apply hα

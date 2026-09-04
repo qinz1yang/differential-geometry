@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Comparison.PathLength
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold
 open scoped Manifold ContDiff ENNReal
@@ -113,5 +113,5 @@ theorem MapMetricApproximationOn.image_eball_subset_closedEBall
 
 end BallImage
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

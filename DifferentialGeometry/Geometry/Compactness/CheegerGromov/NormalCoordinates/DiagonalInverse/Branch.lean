@@ -15,7 +15,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold Topology
@@ -398,7 +398,7 @@ theorem chart_mem_norm_le
       (normal_enorm (I := I) (X.obj k)) hdist.1 hdist.2
   have hyRawSource :
       y ∈ (NormalCoordinates.normalChartAt (I := I) (X.obj k).metric c).source :=
-    memNChartSrcOfDist (I := I) (X.obj k).metric c
+    mem_normalChartAt_source_of_dist (I := I) (X.obj k).metric c
       (normal_enorm (I := I) (X.obj k)) hdist.1 hdist.2
   have hySource :
       y ∈ (NormalCoordinates.framedChartAt (I := I) (X.obj k).metric c).source := by
@@ -493,7 +493,7 @@ theorem raw_chart_mem_norm_le
       (normal_enorm (I := I) (X.obj k)) hdist.1 hdist.2
   have hySource :
       y ∈ (NormalCoordinates.normalChartAt (I := I) (X.obj k).metric c).source :=
-    memNChartSrcOfDist (I := I) (X.obj k).metric c
+    mem_normalChartAt_source_of_dist (I := I) (X.obj k).metric c
       (normal_enorm (I := I) (X.obj k)) hdist.1 hdist.2
   have hchart :
       NormalCoordinates.normalChartAt (I := I) (X.obj k).metric c y = v := by
@@ -2366,5 +2366,5 @@ theorem exists_common_dom
 
 end BoundedGeometryNormalChartData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -178,7 +178,7 @@ def ConnectionLocallySmoothOn
       (S.family.connection (t : Real)) (1 : WithTop ℕ∞)
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connSmoothOfSol
+theorem connSmoothOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (s : Real) :
@@ -189,7 +189,7 @@ theorem connSmoothOfSol
       (I := I) (M := M) (S.base.metric s)
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connCurvOfSol
+theorem connCurvOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M) (s : Real) :
@@ -204,7 +204,7 @@ theorem connCurvOfSol
     (I := I) (S.family.connection s) htop x₀
 
 omit [SigmaCompactSpace M] in
-theorem rm13OfSol
+theorem rm13OfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (s : Real) :
     DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
@@ -219,7 +219,7 @@ theorem rm13OfSol
   exact h
 
 omit [SigmaCompactSpace M] in
-theorem ricciTraceOfSol
+theorem ricciTraceOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (s : Real) :
     DifferentialGeometry.Geometry.Curvature.ricciTensorRealizesRm13Trace (I := I)
@@ -291,7 +291,7 @@ theorem rm04OutputSkew_regular
   intro t x
   exact DifferentialGeometry.Geometry.Connection.rm04OutputSkew_ofMC
     (I := I) (S.family.metric (t : Real)) (S.family.connection (t : Real))
-    (connSmoothOfSol (I := I) S (t : Real))
+    (connSmoothOfSolution (I := I) S (t : Real))
     (DifferentialGeometry.Geometry.Connection.metricCompatible_of_isLeviCivita
       (I := I) (lcAt_regular (I := I) S t))
     (Rm04 (t : Real))
@@ -316,7 +316,7 @@ theorem rm04FirstBianchi_regular
   intro t x
   exact DifferentialGeometry.Geometry.Connection.firstBianchi_ofTF
     (I := I) (S.family.metric (t : Real)) (S.family.connection (t : Real))
-    (connSmoothOfSol (I := I) S (t : Real))
+    (connSmoothOfSolution (I := I) S (t : Real))
     (DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
       (I := I) (lcAt_regular (I := I) S t))
     (Rm04 (t : Real))
@@ -343,7 +343,7 @@ theorem rm04PairSymm_regular
   intro t x
   exact DifferentialGeometry.Geometry.Connection.rm04PairSymm_ofLC
     (I := I) (S.family.metric (t : Real)) (S.family.connection (t : Real))
-    (connSmoothOfSol (I := I) S (t : Real))
+    (connSmoothOfSolution (I := I) S (t : Real))
     (lcAt_regular (I := I) S t) (Rm04 (t : Real))
     (rm04Realizes_regular (I := I) S Rm13 Rm04 hRm13 hLower t)
 

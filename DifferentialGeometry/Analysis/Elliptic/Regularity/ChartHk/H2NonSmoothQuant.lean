@@ -36,7 +36,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 theorem exists_weak_second_partial_bound_by_geometric_constant
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set EuclN} (hΩ' : IsOpen Ω')
@@ -44,7 +44,7 @@ theorem exists_weak_second_partial_bound_by_geometric_constant
     (hΩ'_compact : IsCompact (closure Ω'))
     (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_open : IsOpen Ω'') (hΩ''_compact_closure : IsCompact (closure Ω''))
@@ -71,8 +71,8 @@ theorem exists_weak_second_partial_bound_by_geometric_constant
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
     uniform_diffQuot_weakPartial_bound_quantitative
       (I := I) (M := M) (E := E) (H := H) (g := g) (α := α)
-      hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_chart hΩ'_compact
-      hη_in_Ω' hR₀_pos hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_open.measurableSet
+      hη hη_support hη_range hN h_fderiv_eta hΩ' hΩ'_chart hΩ'_compact
+      hη_in_Ω' hR₀_pos hh_support_in_Ω' hη_one_on_Ω'' hΩ''_open.measurableSet
   refine ⟨C_geom, hC_geom_nn, fun D i k => ?_⟩
   obtain ⟨g_ik, hg_ik_memLp, hg_ik_partial, hg_ik_norm⟩ :=
     exists_weak_second_partial_of_uniform_diffQuot_bound (I := I) (M := M) (g := g) (α := α)

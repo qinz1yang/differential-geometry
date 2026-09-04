@@ -556,9 +556,9 @@ theorem cutoffSmoothTensorPairingChart_memLp_two
   classical
   have h_cont : Continuous (cutoffSmoothTensorPairingChart (I := I) (M := M) g α φ v) :=
     cutoffSmoothTensorPairingChart_continuous (I := I) (M := M) g α φ v
-  have h_supp : HasCompactSupport (cutoffSmoothTensorPairingChart (I := I) (M := M) g α φ v) :=
+  have h_support : HasCompactSupport (cutoffSmoothTensorPairingChart (I := I) (M := M) g α φ v) :=
     cutoffSmoothTensorPairingChart_hasCompactSupport (I := I) (M := M) g α φ v
-  exact h_cont.memLp_of_hasCompactSupport h_supp
+  exact h_cont.memLp_of_hasCompactSupport h_support
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem cutoffHessianV_eq_chartHessianVOnEuclid_on_kernel

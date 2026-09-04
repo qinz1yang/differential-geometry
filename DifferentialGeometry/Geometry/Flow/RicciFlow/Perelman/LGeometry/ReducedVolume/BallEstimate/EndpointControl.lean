@@ -22,7 +22,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Analysis.Parabolic.Euclidean
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 universe u uE uH
 
@@ -62,7 +62,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
-theorem lRegRicci_le
+theorem lRegularizedRicci_le
     (S : SolutionOn (I := I) (M := M) D)
     (time : RealTimeInterval.FlowTime D) (B : FlowMetricBall S time)
     (hB : B.IsRmControlled) {alpha : Real → M} {s : Real}
@@ -74,7 +74,7 @@ theorem lRegRicci_le
           (lVelocity (I := I) alpha s))| ≤
       (Module.finrank Real E : Real) ^ 2 *
         Real.sqrt (1 / B.radius ^ 4) *
-          lRegSpeedSq S (time : Real) alpha s := by
+          lRegularizedSpeedSq S (time : Real) alpha s := by
   have hcurv : FlowMetricBall.rmNormSq S ((time : Real) - s ^ 2) (alpha s) ≤
       1 / B.radius ^ 4 := by
     apply (le_div_iff₀ (pow_pos B.radius_pos 4)).2
@@ -84,13 +84,13 @@ theorem lRegRicci_le
     (I := I) S (alpha s)
     (lVelocity (I := I) alpha s) hcurv
   rw [← metricRicciAt_apply_eq_ricciTensor] at hquad
-  simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt, lRegSpeedSq] using hquad
+  simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt, lRegularizedSpeedSq] using hquad
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
-theorem lRegSpeed_ball [CompactSpace M]
+theorem lRegularizedSpeed_ball [CompactSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (time : RealTimeInterval.FlowTime D) (B : FlowMetricBall S time)
     (hB : B.IsRmControlled) {rho t₀ t₁ : Real}
@@ -98,7 +98,7 @@ theorem lRegSpeed_ball [CompactSpace M]
     (hreg : Icc t₀ t₁ ⊆ D.regular)
     {alpha : Real → M} {J : Set Real}
     {Z : TangentSpace I B.center}
-    (halpha : IsLRegCurveOn S (time : Real) alpha J B.center Z)
+    (halpha : IsLRegularizedCurveOn S (time : Real) alpha J B.center Z)
     (a b R : Real) (hR : 0 ≤ R) (hJ : uIcc a b ⊆ J)
     (hsR : ∀ s ∈ uIcc a b, |s| ≤ R)
     (htime : ∀ s ∈ uIcc a b,
@@ -107,9 +107,9 @@ theorem lRegSpeed_ball [CompactSpace M]
     (hpoint : ∀ s ∈ uIcc a b,
       alpha s ∈ B.setAt ((time : Real) - s ^ 2)) :
     ∃ C : Real, 0 ≤ C ∧
-      lRegSpeedSq S (time : Real) alpha b ≤
+      lRegularizedSpeedSq S (time : Real) alpha b ≤
         Real.exp ((1 + 2 * C * R ^ 2 + 4 * C * R) * |b - a|) *
-          (lRegSpeedSq S (time : Real) alpha a +
+          (lRegularizedSpeedSq S (time : Real) alpha a +
             (1 + 2 * C * R ^ 2) /
               (1 + 2 * C * R ^ 2 + 4 * C * R)) := by
   obtain ⟨A, hA, hgradA⟩ := lGrad_scale (I := I) S hS hreg hrho
@@ -123,7 +123,7 @@ theorem lRegSpeed_ball [CompactSpace M]
     exact mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg _)
   have hC : 0 ≤ C := le_max_of_le_left hCgrad
   refine ⟨C, hC, ?_⟩
-  apply lRegSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS (time : Real) halpha
+  apply lRegularizedSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS (time : Real) halpha
     a b C R hC hR hJ hsR
   · intro s hs
     have hgrad := hgradA B.radius B.radius_pos hBrho
@@ -132,11 +132,11 @@ theorem lRegSpeed_ball [CompactSpace M]
     exact hgrad.trans (mul_le_mul_of_nonneg_right
       (le_max_left Cgrad Cric) (Real.sqrt_nonneg _))
   · intro s hs
-    have hric := lRegRicci_le (I := I) S time B hB
+    have hric := lRegularizedRicci_le (I := I) S time B hB
       (htime s hs).2 (hpoint s hs)
     exact hric.trans (mul_le_mul_of_nonneg_right
       (le_max_right Cgrad Cric)
-      (lRegSpeedSq_nonneg (I := I) S (time : Real) alpha s))
+      (lRegularizedSpeedSq_nonneg (I := I) S (time : Real) alpha s))
 
 private theorem speedDeriv_two
     {s R G K U P Q : Real} (hs : |s| ≤ R) (hR : 0 ≤ R)
@@ -168,10 +168,10 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-private theorem lRegSpeed_two
+private theorem lRegularizedSpeed_two
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {alpha : Real → M} {J : Set Real} {x : M}
-    {Z : TangentSpace I x} (halpha : IsLRegCurveOn S T alpha J x Z)
+    {Z : TangentSpace I x} (halpha : IsLRegularizedCurveOn S T alpha J x Z)
     (a b G K R : Real) (hG : 0 ≤ G) (hK : 0 ≤ K) (hR : 0 ≤ R)
     (hJ : Set.uIcc a b ⊆ J)
     (hsR : ∀ s ∈ Set.uIcc a b, |s| ≤ R)
@@ -180,18 +180,18 @@ private theorem lRegSpeed_two
           (gradientFun (I := I) (S.base.metric (T - s ^ 2))
             (S.scalar (T - s ^ 2)) (alpha s))
           (lVelocity (I := I) alpha s)| ≤
-        G * Real.sqrt (lRegSpeedSq S T alpha s))
+        G * Real.sqrt (lRegularizedSpeedSq S T alpha s))
     (hric : ∀ s ∈ Set.uIcc a b,
       |S.ricciAt (T - s ^ 2) (alpha s)
           (vec2 (lVelocity (I := I) alpha s)
             (lVelocity (I := I) alpha s))| ≤
-        K * lRegSpeedSq S T alpha s) :
-    lRegSpeedSq S T alpha b ≤
+        K * lRegularizedSpeedSq S T alpha s) :
+    lRegularizedSpeedSq S T alpha b ≤
       Real.exp ((1 + 2 * G * R ^ 2 + 4 * K * R) * |b - a|) *
-        (lRegSpeedSq S T alpha a +
+        (lRegularizedSpeedSq S T alpha a +
           (1 + 2 * G * R ^ 2) /
             (1 + 2 * G * R ^ 2 + 4 * K * R)) := by
-  let U : Real → Real := lRegSpeedSq S T alpha
+  let U : Real → Real := lRegularizedSpeedSq S T alpha
   let U' : Real → Real := fun s ↦
     4 * s ^ 2 *
         (S.base.metric (T - s ^ 2)).inner (alpha s)
@@ -205,16 +205,16 @@ private theorem lRegSpeed_two
     nlinarith [mul_nonneg hG (sq_nonneg R), mul_nonneg hK hR]
   have hd : 0 < 1 + 2 * G * R ^ 2 := by
     nlinarith [mul_nonneg hG (sq_nonneg R)]
-  apply DifferentialGeometry.HCGCompactness.affineGronwall_of_abs_deriv_le
+  apply DifferentialGeometry.CheegerGromovCompactness.affineGronwall_of_abs_deriv_le
     U U' hk hd
   · intro s hs
-    exact lRegSpeedSq_nonneg (I := I) S T alpha s
+    exact lRegularizedSpeedSq_nonneg (I := I) S T alpha s
   · intro s hs
     simpa only [U, U'] using
-      hasDerivAt_lRegSpeedSq (I := I) S hS T halpha (hJ hs)
+      hasDerivAt_lRegularizedSpeedSq (I := I) S hS T halpha (hJ hs)
   · intro s hs
     apply speedDeriv_two (hsR s hs) hR hG
-      (lRegSpeedSq_nonneg (I := I) S T alpha s)
+      (lRegularizedSpeedSq_nonneg (I := I) S T alpha s)
       (hgrad s hs) (hric s hs)
 
 private theorem scale_ric_eq (n : Nat) {r : Real} (hr : 0 < r) :
@@ -232,7 +232,7 @@ private theorem div_one_sub_le {x : Real} (hx : x ≤ 1 / 4) :
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem lRegSpeed_fixed
+private theorem lRegularizedSpeed_fixed
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
     {G : Type uH} [TopologicalSpace G]
@@ -259,10 +259,10 @@ private theorem lRegSpeed_fixed
       1 / (8 * Real.sqrt eps)) {s : Real}
     (hs : s ∈ Icc (0 : Real) (Real.sqrt eps * B.radius))
     (hpoint : ∀ q ∈ Icc (0 : Real) s,
-      lRegCurve S (time : Real) B.center Z q ∈
+      lRegularizedCurve S (time : Real) B.center Z q ∈
         B.setAt ((time : Real) - q ^ 2)) :
-    lRegSpeedSq S (time : Real)
-      (lRegCurve S (time : Real) B.center Z) s ≤ 1 / (8 * eps) := by
+    lRegularizedSpeedSq S (time : Real)
+      (lRegularizedCurve S (time : Real) B.center Z) s ≤ 1 / (8 * eps) := by
   let n : Real := Module.finrank Real F
   let C : Real := rho + 2 * A + 4 * n ^ 2 + 1
   let b : Real := Real.sqrt eps * B.radius
@@ -292,13 +292,13 @@ private theorem lRegSpeed_fixed
         (sq_le_sq₀ hbpos.le hrho.le).2 hbRho
       linarith [ht.1]
     · exact ht.2
-  have hbdom : b ∈ lRegDomain S (time : Real) B.center Z :=
-    mem_lRegDomain_of_time_slab S hS (time : Real) B.center Z b hbpos.le hslab
-  have halpha : IsLRegCurveOn S (time : Real)
-      (lRegCurve S (time : Real) B.center Z) (Icc (0 : Real) b)
+  have hbdom : b ∈ lRegularizedDomain S (time : Real) B.center Z :=
+    mem_lRegularizedDomain_of_time_slab S hS (time : Real) B.center Z b hbpos.le hslab
+  have halpha : IsLRegularizedCurveOn S (time : Real)
+      (lRegularizedCurve S (time : Real) B.center Z) (Icc (0 : Real) b)
       B.center Z := by
     simpa only [Set.uIcc_of_le hbpos.le] using
-      lRegCurve_isLRegCurveOn (I := J) S hS (time : Real) B.center Z hbpos hbdom
+      lRegularizedCurve_isLRegularizedCurveOn (I := J) S hS (time : Real) B.center Z hbpos hbdom
   let a : Real := A / B.radius ^ 3
   let K : Real := n ^ 2 * Real.sqrt (1 / B.radius ^ 4)
   have ha : 0 ≤ a := div_nonneg hA (pow_nonneg B.radius_pos.le 3)
@@ -323,7 +323,7 @@ private theorem lRegSpeed_fixed
       (sq_le_sq₀ hbpos.le hrho.le).2 hbRho
     exact ⟨⟨by linarith, by nlinarith [sq_nonneg q]⟩,
       ⟨by linarith, by nlinarith [sq_nonneg q]⟩⟩
-  have hgr := lRegSpeed_two (I := J) S hS (time : Real) halpha
+  have hgr := lRegularizedSpeed_two (I := J) S hS (time : Real) halpha
     0 s a K b ha hK hbpos.le (fun _ hq ↦ hsub hq)
     (fun q hq ↦ by
       have hqI := hsub hq
@@ -331,22 +331,22 @@ private theorem lRegSpeed_fixed
       exact hqI.2)
     (fun q hq ↦ by
       have hqI := hsub hq
-      simpa only [a, lRegSpeedSq] using hgrad B.radius B.radius_pos hBrho
+      simpa only [a, lRegularizedSpeedSq] using hgrad B.radius B.radius_pos hBrho
         ((time : Real) - q ^ 2) (htime q hqI).1
-        (lRegCurve S (time : Real) B.center Z q)
-        (lVelocity (I := J) (lRegCurve S (time : Real) B.center Z) q))
+        (lRegularizedCurve S (time : Real) B.center Z q)
+        (lVelocity (I := J) (lRegularizedCurve S (time : Real) B.center Z) q))
     (fun q hq ↦ by
       have hqS : q ∈ Icc (0 : Real) s := by
         simpa only [Set.uIcc_of_le hs.1] using hq
       have hqI := hsub hq
-      simpa only [K, n] using lRegRicci_le (I := J) S time B hB
+      simpa only [K, n] using lRegularizedRicci_le (I := J) S time B hB
         (htime q hqI).2 (hpoint q hqS))
-  have hU0 : lRegSpeedSq S (time : Real)
-      (lRegCurve S (time : Real) B.center Z) 0 =
+  have hU0 : lRegularizedSpeedSq S (time : Real)
+      (lRegularizedCurve S (time : Real) B.center Z) 0 =
         4 * (S.base.metric (time : Real)).inner B.center Z Z := by
-    dsimp only [lRegSpeedSq]
+    dsimp only [lRegularizedSpeedSq]
     norm_num only [zero_pow, sub_zero]
-    rw [lRegCurve_zero, lRegCurve_vel_zero S hS (time : Real) B.center Z
+    rw [lRegularizedCurve_zero, lRegularizedCurve_velocity_zero S hS (time : Real) B.center Z
       (hreg ⟨by nlinarith [sq_nonneg rho], le_rfl⟩)]
     calc
       (S.base.metric (time : Real)).inner B.center ((2 : Real) • Z)
@@ -365,8 +365,8 @@ private theorem lRegSpeed_fixed
       · exact ((S.base.metric (time : Real)).pos B.center Z hzero).le
     rw [← Real.sq_sqrt hq0]
     exact (sq_le_sq₀ (Real.sqrt_nonneg _) (by positivity)).2 hZ
-  have hU0le : lRegSpeedSq S (time : Real)
-      (lRegCurve S (time : Real) B.center Z) 0 ≤ 1 / (16 * eps) := by
+  have hU0le : lRegularizedSpeedSq S (time : Real)
+      (lRegularizedCurve S (time : Real) B.center Z) 0 ≤ 1 / (16 * eps) := by
     rw [hU0]
     calc
       4 * (S.base.metric (time : Real)).inner B.center Z Z ≤
@@ -450,20 +450,20 @@ private theorem lRegSpeed_fixed
       Real.exp (k * |s - 0|) ≤ 1 / (1 - k * |s - 0|) :=
         Real.exp_bound_div_one_sub_of_interval harg0 (by linarith [hexpArg])
       _ ≤ 4 / 3 := div_one_sub_le hexpArg
-  have hterm : 0 ≤ lRegSpeedSq S (time : Real)
-        (lRegCurve S (time : Real) B.center Z) 0 + d₁ / k :=
-    add_nonneg (lRegSpeedSq_nonneg (I := J) S (time : Real)
-      (lRegCurve S (time : Real) B.center Z) 0) (div_nonneg hd₁.le hk.le)
+  have hterm : 0 ≤ lRegularizedSpeedSq S (time : Real)
+        (lRegularizedCurve S (time : Real) B.center Z) 0 + d₁ / k :=
+    add_nonneg (lRegularizedSpeedSq_nonneg (I := J) S (time : Real)
+      (lRegularizedCurve S (time : Real) B.center Z) 0) (div_nonneg hd₁.le hk.le)
   calc
-    lRegSpeedSq S (time : Real)
-        (lRegCurve S (time : Real) B.center Z) s ≤
+    lRegularizedSpeedSq S (time : Real)
+        (lRegularizedCurve S (time : Real) B.center Z) s ≤
       Real.exp (k * |s - 0|) *
-        (lRegSpeedSq S (time : Real)
-          (lRegCurve S (time : Real) B.center Z) 0 + d₁ / k) := by
+        (lRegularizedSpeedSq S (time : Real)
+          (lRegularizedCurve S (time : Real) B.center Z) 0 + d₁ / k) := by
         simpa only [k, d₁] using hgr
     _ ≤ (4 / 3 : Real) *
-        (lRegSpeedSq S (time : Real)
-          (lRegCurve S (time : Real) B.center Z) 0 + d₁ / k) :=
+        (lRegularizedSpeedSq S (time : Real)
+          (lRegularizedCurve S (time : Real) B.center Z) 0 + d₁ / k) :=
       mul_le_mul_of_nonneg_right hexp hterm
     _ ≤ (4 / 3 : Real) * (1 / (16 * eps) + 1) := by
       apply mul_le_mul_of_nonneg_left _ (by norm_num)
@@ -474,7 +474,7 @@ private theorem lRegSpeed_fixed
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lRegSpeed_scale
+theorem lRegularizedSpeed_scale
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
     {G : Type uH} [TopologicalSpace G]
@@ -494,10 +494,10 @@ theorem lRegSpeed_scale
               let b := Real.sqrt eps * B.radius
               ∀ s ∈ Icc (0 : Real) b,
                 (∀ q ∈ Icc (0 : Real) s,
-                  lRegCurve S (time : Real) B.center Z q ∈
+                  lRegularizedCurve S (time : Real) B.center Z q ∈
                     B.setAt ((time : Real) - q ^ 2)) →
-                lRegSpeedSq S (time : Real)
-                  (lRegCurve S (time : Real) B.center Z) s ≤ 1 / (8 * eps) := by
+                lRegularizedSpeedSq S (time : Real)
+                  (lRegularizedCurve S (time : Real) B.center Z) s ≤ 1 / (8 * eps) := by
   obtain ⟨A, hA, hgrad⟩ := lGrad_scale (I := J) S hS hreg hrho
   let n : Real := Module.finrank Real F
   let C : Real := rho + 2 * A + 4 * n ^ 2 + 1
@@ -526,7 +526,7 @@ theorem lRegSpeed_scale
       _ = 1 / 4 := by
         dsimp only [d]
         field_simp [hC.ne']
-  exact lRegSpeed_fixed S hS time hrho hreg A hA hgrad heps heps32
+  exact lRegularizedSpeed_fixed S hS time hrho hreg A hA hgrad heps heps32
     (by simpa only [C, n] using hsqrtC) B hBrho hB Z hZ hs hpoint
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -570,19 +570,19 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem lRegTerm_int
+private theorem lRegularizedTerm_int
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {b : Real}
-    (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z) :
+    (hb0 : 0 < b) (hb : b ∈ lRegularizedDomain S T x Z) :
     IntegrableOn (fun s ↦
-      (S.base.metric T).inner (lRegCurve S T x Z s)
-        (lVelocity (I := I) (lRegCurve S T x Z) s)
-        (lVelocity (I := I) (lRegCurve S T x Z) s)) (Icc 0 b) := by
+      (S.base.metric T).inner (lRegularizedCurve S T x Z s)
+        (lVelocity (I := I) (lRegularizedCurve S T x Z) s)
+        (lVelocity (I := I) (lRegularizedCurve S T x Z) s)) (Icc 0 b) := by
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lRegDomain_smoothClamp S T x Z hb0 hb
+    exists_lRegularizedDomain_smoothClamp S T x Z hb0 hb
   let z : E := Z
-  let gamma : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
+  let gamma : Real → M := fun s ↦ lRegularizedCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞ rho :=
     contMDiff_iff_contDiff.mpr hrho
@@ -594,11 +594,11 @@ private theorem lRegTerm_int
   have hgammaInf : ContMDiff (modelWithCornersSelf Real Real) I ∞ gamma := by
     rw [← contMDiffOn_univ]
     change ContMDiffOn (modelWithCornersSelf Real Real) I ∞
-      ((fun q : E × Real ↦ lRegCurve S T x q.1 q.2) ∘
+      ((fun q : E × Real ↦ lRegularizedCurve S T x q.1 q.2) ∘
         fun s : Real ↦ (z, rho s)) Set.univ
-    exact (lRegCurve_smoothOn S hS T x).comp hpair.contMDiffOn
+    exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
       (fun s _hs ↦ by
-        change rho s ∈ lRegDomain S T x Z
+        change rho s ∈ lRegularizedDomain S T x Z
         exact hrho_range s)
   have hgamma : ContMDiff (modelWithCornersSelf Real Real) I 1 gamma :=
     hgammaInf.of_le (by norm_num)
@@ -606,9 +606,9 @@ private theorem lRegTerm_int
   apply hg.congr_fun_ae
   rw [← Measure.restrict_congr_set Ioo_ae_eq_Icc]
   filter_upwards [ae_restrict_mem measurableSet_Ioo] with s hs
-  have heq : gamma =ᶠ[nhds s] lRegCurve S T x Z := by
+  have heq : gamma =ᶠ[nhds s] lRegularizedCurve S T x Z := by
     filter_upwards [isOpen_Ioo.mem_nhds hs] with q hq
-    exact congrArg (lRegCurve S T x Z)
+    exact congrArg (lRegularizedCurve S T x Z)
       (hrho_id ⟨hq.1.le, hq.2.le⟩)
   have hvel := Filter.EventuallyEq.mfderiv_eq
     (I := modelWithCornersSelf Real Real) (I' := I) heq
@@ -763,29 +763,29 @@ theorem lExp_edist_le
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau C : Real)
-    (hdom : Real.sqrt tau ∈ lRegDomain S T x Z)
+    (hdom : Real.sqrt tau ∈ lRegularizedDomain S T x Z)
     (hE : IntegrableOn (fun s ↦
-      (S.base.metric T).inner (lRegCurve S T x Z s)
-        (lVelocity (I := I) (lRegCurve S T x Z) s)
-        (lVelocity (I := I) (lRegCurve S T x Z) s))
+      (S.base.metric T).inner (lRegularizedCurve S T x Z s)
+        (lVelocity (I := I) (lRegularizedCurve S T x Z) s)
+        (lVelocity (I := I) (lRegularizedCurve S T x Z) s))
       (Icc 0 (Real.sqrt tau)))
     (hEC : curveEnergy (I := I) (S.base.metric T)
-      (lRegCurve S T x Z) 0 (Real.sqrt tau) ≤ C) :
+      (lRegularizedCurve S T x Z) 0 (Real.sqrt tau) ≤ C) :
     riemannianEDistOf (I := I) (S.base.metric T) x
         (lExp S T x Z tau) ≤
       ENNReal.ofReal (Real.sqrt (Real.sqrt tau) * Real.sqrt C) := by
   have hsqrt : (0 : Real) ≤ Real.sqrt tau := Real.sqrt_nonneg tau
   have hE' : IntegrableOn (fun s ↦
-      (S.base.metric T).inner (lRegCurve S T x Z s)
+      (S.base.metric T).inner (lRegularizedCurve S T x Z s)
         (mfderiv (modelWithCornersSelf Real Real) I
-          (lRegCurve S T x Z) s (1 : Real))
+          (lRegularizedCurve S T x Z) s (1 : Real))
         (mfderiv (modelWithCornersSelf Real Real) I
-          (lRegCurve S T x Z) s (1 : Real)))
+          (lRegularizedCurve S T x Z) s (1 : Real)))
       (Icc 0 (Real.sqrt tau)) := by
     simpa only [lVelocity] using hE
   have hdist := edistOf_le_budget (I := I) (S.base.metric T) hsqrt
-    (lRegCurve_c1On S hS T x Z hdom) hE' hEC
-  simpa only [lRegCurve_zero, lExp, sub_zero] using hdist
+    (lRegularizedCurve_c1On S hS T x Z hdom) hE' hEC
+  simpa only [lRegularizedCurve_zero, lExp, sub_zero] using hdist
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -796,15 +796,15 @@ theorem lExp_mem_ball
     (hS : IsSolutionOn (I := I) S)
     (time : RealTimeInterval.FlowTime D) (B : FlowMetricBall S time)
     (Z : TangentSpace I B.center) (tau C : Real)
-    (hdom : Real.sqrt tau ∈ lRegDomain S (time : Real) B.center Z)
+    (hdom : Real.sqrt tau ∈ lRegularizedDomain S (time : Real) B.center Z)
     (hE : IntegrableOn (fun s ↦
       (S.base.metric (time : Real)).inner
-        (lRegCurve S (time : Real) B.center Z s)
-        (lVelocity (I := I) (lRegCurve S (time : Real) B.center Z) s)
-        (lVelocity (I := I) (lRegCurve S (time : Real) B.center Z) s))
+        (lRegularizedCurve S (time : Real) B.center Z s)
+        (lVelocity (I := I) (lRegularizedCurve S (time : Real) B.center Z) s)
+        (lVelocity (I := I) (lRegularizedCurve S (time : Real) B.center Z) s))
       (Icc 0 (Real.sqrt tau)))
     (hEC : curveEnergy (I := I) (S.base.metric (time : Real))
-      (lRegCurve S (time : Real) B.center Z) 0 (Real.sqrt tau) ≤ C)
+      (lRegularizedCurve S (time : Real) B.center Z) 0 (Real.sqrt tau) ≤ C)
     (hreach : Real.sqrt (Real.sqrt tau) * Real.sqrt C < B.radius) :
     lExp S (time : Real) B.center Z tau ∈ B.set := by
   have hdist := lExp_edist_le (I := I) S hS (time : Real) B.center Z tau C
@@ -813,7 +813,7 @@ theorem lExp_mem_ball
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lRegRange_scale
+theorem lRegularizedRange_scale
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
     {G : Type uH} [TopologicalSpace G]
@@ -833,12 +833,12 @@ theorem lRegRange_scale
               let b := Real.sqrt eps * B.radius
               ∀ s ∈ Icc (0 : Real) b,
                 riemannianEDistOf (I := J) (S.base.metric (time : Real))
-                    B.center (lRegCurve S (time : Real) B.center Z s) ≤
+                    B.center (lRegularizedCurve S (time : Real) B.center Z s) ≤
                     ENNReal.ofReal (B.radius / 2) ∧
-                  lRegCurve S (time : Real) B.center Z s ∈
+                  lRegularizedCurve S (time : Real) B.center Z s ∈
                     B.setAt ((time : Real) - s ^ 2) := by
   obtain ⟨epsS, hepsS, hspeed⟩ :=
-    lRegSpeed_scale (J := J) S hS time hrho hreg
+    lRegularizedSpeed_scale (J := J) S hS time hrho hreg
   obtain ⟨A, hA, hmetric⟩ :=
     lMetric_scale (I := J) S hS (time : Real) hrho hreg
   let epsM : Real := 1 / (8 * (A * rho ^ 2 + 1))
@@ -874,12 +874,12 @@ theorem lRegRange_scale
     apply hreg
     rw [hbSq] at ht
     exact ⟨by linarith [ht.1, hepsr], ht.2⟩
-  have hbdom : b ∈ lRegDomain S (time : Real) B.center Z :=
-    mem_lRegDomain_of_time_slab S hS (time : Real) B.center Z b hbpos.le hslab
-  let alpha : Real → N := lRegCurve S (time : Real) B.center Z
+  have hbdom : b ∈ lRegularizedDomain S (time : Real) B.center Z :=
+    mem_lRegularizedDomain_of_time_slab S hS (time : Real) B.center Z b hbpos.le hslab
+  let alpha : Real → N := lRegularizedCurve S (time : Real) B.center Z
   have halpha : ContinuousOn alpha (Icc (0 : Real) b) := by
     simpa only [alpha] using
-      (lRegCurve_c1On S hS (time : Real) B.center Z hbdom).continuousOn
+      (lRegularizedCurve_c1On S hS (time : Real) B.center Z hbdom).continuousOn
   let Q : Real := Real.exp (2 * A * eps * B.radius ^ 2)
   have harg0 : 0 ≤ 2 * A * eps * B.radius ^ 2 := by positivity
   have harg : 2 * A * eps * B.radius ^ 2 ≤ 1 / 4 := by
@@ -993,10 +993,10 @@ theorem lRegRange_scale
     have hsne : s ≠ 0 := by
       intro hs0
       apply hsK
-      simpa only [hs0, alpha, lRegCurve_zero] using interior_subset hcenterK
+      simpa only [hs0, alpha, lRegularizedCurve_zero] using interior_subset hcenterK
     have hspos : 0 < s := lt_of_le_of_ne hs.1 (Ne.symm hsne)
     have halpha0 : alpha 0 ∈ interior K := by
-      simpa only [alpha, lRegCurve_zero] using hcenterK
+      simpa only [alpha, lRegularizedCurve_zero] using hcenterK
     have halphaS : ContinuousOn alpha (Icc (0 : Real) s) :=
       halpha.mono fun q hq ↦ ⟨hq.1, hq.2.trans hs.2⟩
     obtain ⟨t, ht, hstay, hfront⟩ :=
@@ -1008,7 +1008,7 @@ theorem lRegRange_scale
         alpha q ∈ B.setAt ((time : Real) - q ^ 2) := by
       intro q hq
       exact hKmove q ⟨hq.1, hq.2.trans (ht.2.trans hs.2)⟩ (hstay q hq)
-    have htDom : t ∈ lRegDomain S (time : Real) B.center Z := by
+    have htDom : t ∈ lRegularizedDomain S (time : Real) B.center Z := by
       have htslab : Icc ((time : Real) - t ^ 2) (time : Real) ⊆ D'.regular := by
         intro q hq
         apply hslab
@@ -1017,8 +1017,8 @@ theorem lRegRange_scale
             (sq_le_sq₀ ht.1.le hbpos.le).2 (ht.2.trans hs.2)
           linarith [hq.1]
         · exact hq.2
-      exact mem_lRegDomain_of_time_slab S hS (time : Real) B.center Z t ht.1.le htslab
-    have hE := lRegTerm_int (I := J) S hS (time : Real) B.center Z ht.1 htDom
+      exact mem_lRegularizedDomain_of_time_slab S hS (time : Real) B.center Z t ht.1.le htslab
+    have hE := lRegularizedTerm_int (I := J) S hS (time : Real) B.center Z ht.1 htDom
     have hterm : ∀ q ∈ Icc (0 : Real) t,
         (S.base.metric (time : Real)).inner (alpha q)
           (lVelocity (I := J) alpha q) (lVelocity (I := J) alpha q) ≤
@@ -1049,7 +1049,7 @@ theorem lRegRange_scale
             (lVelocity (I := J) alpha q) (lVelocity (I := J) alpha q) := hquad
         _ ≤ Q * (1 / (8 * eps)) :=
           mul_le_mul_of_nonneg_left (by
-            simpa only [alpha, lRegSpeedSq] using hqSpeed) hQpos.le
+            simpa only [alpha, lRegularizedSpeedSq] using hqSpeed) hQpos.le
         _ ≤ (4 / 3 : Real) * (1 / (8 * eps)) :=
           mul_le_mul_of_nonneg_right hQle (by positivity)
         _ = 1 / (6 * eps) := by
@@ -1107,7 +1107,7 @@ theorem lRegRange_scale
     exact hfrontNot ((interior_maximal hOK hOopen) (hhalfO halphaHalf))
   constructor
   · change riemannianEDistOf (I := J) (S.base.metric (time : Real)) B.center
-        (lRegCurve S (time : Real) B.center Z s) ≤
+        (lRegularizedCurve S (time : Real) B.center Z s) ≤
       ENNReal.ofReal (B.radius / 2) at hsK ⊢
     exact hsK
   · simpa only [alpha] using hKmove s hs hsK
@@ -1133,7 +1133,7 @@ theorem lExp_scale_ball
                 1 / (8 * Real.sqrt eps) →
               lExp S (time : Real) B.center Z (eps * B.radius ^ 2) ∈ B.set := by
   obtain ⟨eps₀, heps₀, hrange⟩ :=
-    lRegRange_scale (J := J) S hS time hrho hreg
+    lRegularizedRange_scale (J := J) S hS time hrho hreg
   refine ⟨eps₀, heps₀, ?_⟩
   intro eps heps heps₀ B hBrho hB Z hZ
   let b : Real := Real.sqrt eps * B.radius
@@ -1153,7 +1153,7 @@ theorem lExp_scale_ball
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lReg_small_ball
+theorem lRegularized_small_ball
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
     {G : Type uH} [TopologicalSpace G]
@@ -1169,18 +1169,18 @@ theorem lReg_small_ball
       ∀ Z : TangentSpace J B.center,
         Real.sqrt ((S.base.metric (time : Real)).inner B.center Z Z) ≤ R →
         ∀ b : Real, |b| < eps →
-          b ∈ lRegDomain S (time : Real) B.center Z ∧
-            lRegCurve S (time : Real) B.center Z b ∈ B.set := by
+          b ∈ lRegularizedDomain S (time : Real) B.center Z ∧
+            lRegularizedCurve S (time : Real) B.center Z b ∈ B.set := by
   classical
-  let A := lSrcGram S (time : Real) B.center
-  let L := spdSqrtEquiv A (lSrcGram_pd S (time : Real) B.center)
+  let A := lSourceGram S (time : Real) B.center
+  let L := spdSqrtEquiv A (lSourceGram_posDef S (time : Real) B.center)
   let K : Set F :=
     (fun y ↦ (toEuclidean (E := F)).symm (L.symm y)) ''
       Metric.closedBall 0 R
   let curve : F × Real → N := fun p ↦
-    lRegCurve S (time : Real) B.center p.1 p.2
+    lRegularizedCurve S (time : Real) B.center p.1 p.2
   let U : Set (F × Real) :=
-    lRegJointDom S (time : Real) B.center ∩ curve ⁻¹' B.set
+    lRegularizedJointDom S (time : Real) B.center ∩ curve ⁻¹' B.set
   have hKcpt : IsCompact K := by
     exact (isCompact_closedBall (0 : EuclideanSpace Real
       (Fin (Module.finrank Real F))) R).image
@@ -1198,33 +1198,33 @@ theorem lReg_small_ball
     exact isOpen_lt
       (continuous_riemannianEDist (S.base.metric (time : Real)) B.center)
       continuous_const
-  have hFcont : ContinuousOn curve (lRegJointDom S (time : Real) B.center) := by
+  have hFcont : ContinuousOn curve (lRegularizedJointDom S (time : Real) B.center) := by
     simpa only [curve] using
-      (lRegCurve_smoothOn S hS (time : Real) B.center).continuousOn
+      (lRegularizedCurve_smoothOn S hS (time : Real) B.center).continuousOn
   have hUopen : IsOpen U := by
     exact hFcont.isOpen_inter_preimage
-      (lRegJointDom_open S hS (time : Real) B.center) hBopen
+      (lRegularizedJointDom_open S hS (time : Real) B.center) hBopen
   have hK0 : K ×ˢ ({0} : Set Real) ⊆ U := by
     rintro ⟨Z, _⟩ ⟨hZ, rfl⟩
     change TangentSpace J B.center at Z
-    refine ⟨zero_mem_lRegDomain S hS (time : Real) B.center Z hT, ?_⟩
-    simpa only [curve, Set.mem_preimage, lRegCurve_zero] using
+    refine ⟨zero_mem_lRegularizedDomain S hS (time : Real) B.center Z hT, ?_⟩
+    simpa only [curve, Set.mem_preimage, lRegularizedCurve_zero] using
       (show B.center ∈ B.set by
         change riemannianEDistOf (I := J) (S.base.metric (time : Real))
           B.center B.center < ENNReal.ofReal B.radius
         simpa only [riemannianEDistOf_self] using
           ENNReal.ofReal_pos.2 B.radius_pos)
-  have hK0cpt : IsCompact (K ×ˢ ({0} : Set Real)) :=
+  have hK0compact : IsCompact (K ×ˢ ({0} : Set Real)) :=
     hKcpt.prod isCompact_singleton
   obtain ⟨eps, heps, hepsU⟩ :=
-    hK0cpt.exists_thickening_subset_open hUopen hK0
+    hK0compact.exists_thickening_subset_open hUopen hK0
   refine ⟨eps, heps, ?_⟩
   intro Z hZR b hb
   change F at Z
   have hnorm : ‖L (toEuclidean Z)‖ =
       Real.sqrt ((S.base.metric (time : Real)).inner B.center Z Z) := by
     rw [← Real.sqrt_sq (norm_nonneg _), spdSqrt_norm_sq]
-    exact congrArg Real.sqrt (lSrcGram_quad S (time : Real) B.center Z)
+    exact congrArg Real.sqrt (lSourceGram_quadraticForm S (time : Real) B.center Z)
   have hZK : Z ∈ K := by
     refine ⟨L (toEuclidean Z), ?_, ?_⟩
     · rw [Metric.mem_closedBall, dist_zero_right, hnorm]
@@ -1238,10 +1238,10 @@ theorem lReg_small_ball
       dist (Z, b) (Z, (0 : Real)) = dist b 0 := dist_prod_same_left
       _ = |b| := by rw [Real.dist_eq, sub_zero]
       _ < eps := hb
-  change (Z, b) ∈ lRegJointDom S (time : Real) B.center ∧
-    lRegCurve S (time : Real) B.center Z b ∈ B.set at hUb
-  change b ∈ lRegDomain S (time : Real) B.center Z ∧
-    lRegCurve S (time : Real) B.center Z b ∈ B.set
+  change (Z, b) ∈ lRegularizedJointDom S (time : Real) B.center ∧
+    lRegularizedCurve S (time : Real) B.center Z b ∈ B.set at hUb
+  change b ∈ lRegularizedDomain S (time : Real) B.center Z ∧
+    lRegularizedCurve S (time : Real) B.center Z b ∈ B.set
   exact hUb
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -1264,7 +1264,7 @@ theorem lExp_small_ball
         ∀ tau : Real, Real.sqrt tau < eps →
           lExp S (time : Real) B.center Z tau ∈ B.set := by
   obtain ⟨eps, heps, hmem⟩ :=
-    lReg_small_ball (J := J) S hS time B R hT
+    lRegularized_small_ball (J := J) S hS time B R hT
   refine ⟨eps, heps, ?_⟩
   intro Z hZR tau htau
   exact (hmem Z hZR (Real.sqrt tau) (by

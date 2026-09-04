@@ -36,7 +36,7 @@ theorem mem_lCutDomain_of_distinct_minimizer_same_endpoint
   have hZmin : ((Z : E), tau) ∈ lMinDomain S T x :=
     ((mem_lCutDomain S T x tau (Z : E)).1 hcut).1
   have hZW : Z = W :=
-    lMinVec_unique_lt S hS T x (Z := W) (W := Z)
+    lMinimizingVector_unique_lt S hS T x (Z := W) (W := Z)
       hWsigma htau htauSigma hZmin hend.symm
   exact hWne hZW.symm
 

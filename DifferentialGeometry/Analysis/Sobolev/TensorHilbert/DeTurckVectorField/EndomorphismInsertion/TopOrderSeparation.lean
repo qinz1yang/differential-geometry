@@ -94,7 +94,7 @@ theorem connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise (g₀ g₁
           (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref x) om from rfl]
-  rw [cotangentToDual_slotInsertEndoFib' (I := I) (M := M) x
+  rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref x) om w]
   rw [deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_unitModel_apply (I := I) (M := M) g₀ g₁ g_ref x
     (inverseMetricSharpFib (I := I) g₀ x om) w]

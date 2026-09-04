@@ -89,12 +89,12 @@ noncomputable def inhomogLinearODESolution
       (fun y => (Z₀ y, (1 : ℝ))) x t).1
 
 omit [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace G] in
-theorem inhomogLinearODESolution_init
+theorem inhomogLinearODESolution_initial
     (A : F → ℝ → (G →L[ℝ] G)) (b : F → ℝ → G)
     (a b' h₀ : ℝ) (Z₀ : F → G) (x : F) :
     inhomogLinearODESolution A b a b' h₀ Z₀ x h₀ = Z₀ x := by
   unfold inhomogLinearODESolution
-  rw [linearODESolution_init]
+  rw [linearODESolution_initial]
 
 omit [NormedSpace ℝ F] in
 private theorem inhomogLinearODESolution_second_eq_one
@@ -115,11 +115,11 @@ private theorem inhomogLinearODESolution_second_eq_one
   have hZHat_deriv : ∀ s ∈ Set.Ioo a b',
       HasDerivAt ZHat (AHat x s (ZHat s)) s :=
     fun s hs => linearODESolution_hasDerivAt h₀_mem hAHat_cont hx hs
-  have hZHat_init : ZHat h₀ = (Z₀ x, (1 : ℝ)) := linearODESolution_init _ _ _ _ _ _
+  have hZHat_initial : ZHat h₀ = (Z₀ x, (1 : ℝ)) := linearODESolution_initial _ _ _ _ _ _
   set w : ℝ → ℝ := fun s => (ZHat s).2 with hw_def
-  have hw_init : w h₀ = 1 := by
+  have hw_initial : w h₀ = 1 := by
     change (ZHat h₀).2 = 1
-    rw [hZHat_init]
+    rw [hZHat_initial]
   have hw_deriv : ∀ s ∈ Set.Ioo a b', HasDerivAt w 0 s := by
     intro s hs
     have hd : HasDerivAt ZHat (AHat x s (ZHat s)) s := hZHat_deriv s hs
@@ -145,7 +145,7 @@ private theorem inhomogLinearODESolution_second_eq_one
   have h_preconn : IsPreconnected (Set.Ioo a b' : Set ℝ) := isPreconnected_Ioo
   have h_const := h_open.is_const_of_deriv_eq_zero h_preconn h_diff h_deriv_zero ht h₀_mem
   change w t = 1
-  rw [h_const, hw_init]
+  rw [h_const, hw_initial]
 
 omit [NormedSpace ℝ F] in
 theorem inhomogLinearODESolution_hasDerivAt

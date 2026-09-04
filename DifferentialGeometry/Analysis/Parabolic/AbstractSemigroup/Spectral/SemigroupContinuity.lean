@@ -19,7 +19,7 @@ theorem abstractSpectralSemigroup_continuous_at_zero (b : HilbertBasis ι ℝ X)
       (𝓝[Set.Ici (0 : ℝ)] 0) (𝓝 v) := by
   rw [Metric.tendsto_nhds]
   intro ε hε
-  have h_summable_sq := summable_basis_coeff_sq' b v
+  have h_summable_sq := summable_basis_real_inner_sq b v
   have hε16_pos : (0 : ℝ) < ε ^ 2 / 16 := by positivity
   obtain ⟨T_fin, hT_fin⟩ : ∃ T_fin : Finset ι,
       ∑' i : { i : ι // i ∉ T_fin },

@@ -493,7 +493,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
                   (fromBase := ContinuousMap.mk (adjunctionLower (i := cellBoundaryInclusion k) φc)
                     (continuous_adjunctionLower (i := cellBoundaryInclusion k) φc))) := by
   rcases morse_lemma I f hf p k hk hnd hindex with
-    ⟨R, hRpos, χ, hχ0src, hχ0tgt, hχ0val, hχsrc, hnorm0, hχmd, hχsmd,
+    ⟨R, hRpos, χ, hχ0src, hχ0tgt, hχ0val, hχsource, hnorm0, hχmd, hχsmd,
       R', hR'pos, hχon, hχsymmOn⟩
   have hnorm : ∀ y : MorseModel (m + 1), morseNorm (m + 1) y ≤ R → f (χ y) = morseNormalForm hk c y := by
     intro y hy
@@ -561,7 +561,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
   have hgmd : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) g := by
     dsimp [g]
     exact contMDiff_morseModifiedFunction (H := H) (M := M) hk c ε₀ δ₀ R R' hε₀ hδ₀
-      hR' hΦr hRpos hR'pos I f hf χ hnorm hχsrc hχsymmOn
+      hR' hΦr hRpos hR'pos I f hf χ hnorm hχsource hχsymmOn
   have hg : Continuous g := hgmd.continuous
   have hg_le : ∀ x : M, g x ≤ f x := by
     intro x
@@ -580,7 +580,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
     intro x hx
     dsimp [g] at hx ⊢
     exact no_critical_point_morseModifiedFunction (H := H) (M := M) hk c ε₀ δ₀ R R' a hε₀ hδ₀ hδε
-      hR' hΦr hRpos hR'pos hεa I f p χ hχ0val hnorm hχsrc hχsymmOn hχon hunique hx
+      hR' hΦr hRpos hR'pos hεa I f p χ hχ0val hnorm hχsource hχsymmOn hχon hunique hx
   have hreg_low : ∀ x : M, g x = c - ε₀ → ¬ IsCriticalPointAt I g x := by
     intro x hx
     exact hregularG x (by
@@ -632,7 +632,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
     exact le_of_sq_le_sq hsq (le_of_lt hRpos)
   let data : MorseChart (m + 1) k hk c I f :=
     { p := p, R := R, R' := R', ε := ε₀, χ := χ, hχ0 := hχ0val, hRpos := hRpos,
-      hR'pos := hR'pos, hεpos := hε₀, hεR := hεR, hnorm := hnorm, hχsrc := hχsrc,
+      hR'pos := hR'pos, hεpos := hε₀, hεR := hεR, hnorm := hnorm, hχsource := hχsource,
       hχon := hχon, hχsymmOn := hχsymmOn }
   let φ : AttachingRegion k (m + 1 - k) → SublevelSpace f (c - ε₀) :=
     fun p => ⟨(cocoreAttachingEmbedding hk c ε₀ r₀ data hε₀ hεr₀ p).1,
@@ -675,7 +675,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
       intro y hy
       rcases hy with ⟨p, hp⟩
       rw [← hp]
-      exact data.hχsrc (cocoreModelPoint hk ε₀ r₀ p)
+      exact data.hχsource (cocoreModelPoint hk ε₀ r₀ p)
         (le_trans (cocoreModelPoint_norm_le hk ε₀ r₀ (le_of_lt hε₀) p) hεr₀)
     have hmap : Set.MapsTo (fun p : AttachingRegion k (m + 1 - k) =>
         cocoreModelPoint hk ε₀ r₀ p) Set.univ
@@ -760,7 +760,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
       (fromBase := sublevelUnionInclusion (c - ε₀) (χ '' (Set.range (fun z : ClosedCell k =>
         cellMap (Real.sqrt (2 * ε₀)) (z : EuclideanSpace ℝ (Fin k)))))) :=
     morseModifiedLowerSublevelHomotopyEquivUnder (M := M) hk c ε₀ δ₀ R hε₀ hδ₀ hR'
-      hεR χ f hg hnorm hχsrc
+      hεR χ f hg hnorm hχsource
   have hcell : cellImage hk c data = χ '' (Set.range (fun z : ClosedCell k =>
       cellMap (Real.sqrt (2 * ε₀)) (z : EuclideanSpace ℝ (Fin k)))) := by
     change Set.range (fun z : ClosedCell k =>
@@ -774,7 +774,7 @@ private theorem morse_smooth_handle_attachment_relative {m : ℕ} {H : Type} [To
     intro x hx
     dsimp [g]
     exact lowerUnionCellImage_subset_modifiedSublevel (M := M) hk c ε₀ δ₀ R hε₀ hδ₀ hεR
-      χ f hnorm hχsrc hx
+      χ f hnorm hχsource hx
   have hlow_invFun_val : ∀ z : {x : M // x ∈ sublevel f (c - ε₀) ∪ χ '' (Set.range (fun z : ClosedCell k =>
       cellMap (Real.sqrt (2 * ε₀)) (z : EuclideanSpace ℝ (Fin k))))}, (hlow0.invFun z).1 = z.1 := by
     intro z

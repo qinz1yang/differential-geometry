@@ -47,7 +47,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ)
+    (fChartEffectivePrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ)
     (h_iter : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
         (a : Fin (Module.finrank ℝ E)),
       MemWkp (d := Module.finrank ℝ E) 2 2
@@ -67,7 +67,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le_uniform
             (chartPouKernel (I := I) (M := M) α))
           ≤ ENNReal.ofReal C *
             diffNumeratorAggregate (I := I) (M := M)
-              g r s i α P₀ m l (fChartEffPrev i) := by
+              g r s i α P₀ m l (fChartEffectivePrev i) := by
   classical
   set μ : Measure EuclN := (volume : Measure EuclN).restrict
     (chartPouKernel (I := I) (M := M) α) with hμ_def
@@ -120,7 +120,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le_uniform
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
           (chartTargetEuclid (I := I) (M := M) α) ≤
         diffNumeratorAggregate (I := I) (M := M)
-          g r s i α P₀ m l (fChartEffPrev i) := by
+          g r s i α P₀ m l (fChartEffectivePrev i) := by
     intro i a
     rw [diffNumeratorAggregate]
     refine le_trans (Finset.single_le_sum (f := fun a =>
@@ -140,7 +140,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le_uniform
         eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)) y)
     (fun i => diffNumeratorAggregate (I := I) (M := M)
-      g r s i α P₀ m l (fChartEffPrev i)) ?_ ?_
+      g r s i α P₀ m l (fChartEffectivePrev i)) ?_ ?_
   · intro a i
     refine memLp_finsetSum _ (fun b _ => ?_)
     exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
@@ -156,7 +156,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le_uniform
           eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)) y)
       (fun i => diffNumeratorAggregate (I := I) (M := M)
-        g r s i α P₀ m l (fChartEffPrev i)) ?_ ?_
+        g r s i α P₀ m l (fChartEffectivePrev i)) ?_ ?_
     · intro b i
       exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
         (h_coeff a b) hK_compact hK_meas hK_in (h_atom_mem i a)
@@ -175,7 +175,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ)
+    (fChartEffectivePrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ)
     (h_iter : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
         (a : Fin (Module.finrank ℝ E)),
       MemWkp (d := Module.finrank ℝ E) 2 2
@@ -187,7 +187,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_uniform
         eLpNorm (fun y => ∑ a : Fin (Module.finrank ℝ E),
             ∑ b : Fin (Module.finrank ℝ E),
               weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-                chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+                chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
                   (eigenvectorChartIteratedPartial (I := I) (M := M)
                     g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
                   (chartTargetEuclid (I := I) (M := M) α) y) 2
@@ -195,7 +195,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_uniform
             (chartPouKernel (I := I) (M := M) α))
           ≤ ENNReal.ofReal C *
             diffNumeratorAggregate (I := I) (M := M)
-              g r s i α P₀ m l (fChartEffPrev i) := by
+              g r s i α P₀ m l (fChartEffectivePrev i) := by
   classical
   set μ : Measure EuclN := (volume : Measure EuclN).restrict
     (chartPouKernel (I := I) (M := M) α) with hμ_def
@@ -212,7 +212,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_uniform
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω ≤
         diffNumeratorAggregate (I := I) (M := M)
-          g r s i α P₀ m l (fChartEffPrev i) := by
+          g r s i α P₀ m l (fChartEffectivePrev i) := by
     intro i a
     rw [diffNumeratorAggregate, ← hΩ_def]
     refine le_trans (Finset.single_le_sum (f := fun a =>
@@ -223,12 +223,12 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_uniform
     exact le_trans le_self_add (le_trans le_self_add le_self_add)
   have h_chosen_mem : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
       (a b : Fin (Module.finrank ℝ E)),
-      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+      MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω) 2 μ := by
     intro i a b
     have h1 : MemWkp (d := Module.finrank ℝ E) 1 2
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω) Ω :=
       (h_iter i a).chosenWeakPartial_mem b
@@ -245,11 +245,11 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_uniform
     (ν := TensorEigenIdx (I := I) (M := M) g r s)
     (fun a => fun i => fun y => ∑ b : Fin (Module.finrank ℝ E),
       weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω y)
     (fun i => diffNumeratorAggregate (I := I) (M := M)
-      g r s i α P₀ m l (fChartEffPrev i)) ?_ ?_
+      g r s i α P₀ m l (fChartEffectivePrev i)) ?_ ?_
   · intro a i
     refine memLp_finsetSum _ (fun b _ => ?_)
     exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
@@ -261,11 +261,11 @@ private lemma eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_uniform
       (ν := TensorEigenIdx (I := I) (M := M) g r s)
       (fun b => fun i => fun y =>
         weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
             (eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) Ω y)
       (fun i => diffNumeratorAggregate (I := I) (M := M)
-        g r s i α P₀ m l (fChartEffPrev i)) ?_ ?_
+        g r s i α P₀ m l (fChartEffectivePrev i)) ?_ ?_
     · intro b i
       exact memLp_volume_compact_contDiffOn_mul (I := I) (M := M) α
         (weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α a b
@@ -289,7 +289,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerC_eLpNorm_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ) :
+    (fChartEffectivePrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm (fun y =>
@@ -300,7 +300,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerC_eLpNorm_le_uniform
             (chartPouKernel (I := I) (M := M) α))
           ≤ ENNReal.ofReal C *
             diffNumeratorAggregate (I := I) (M := M)
-              g r s i α P₀ m l (fChartEffPrev i) := by
+              g r s i α P₀ m l (fChartEffectivePrev i) := by
   classical
   set μ : Measure EuclN := (volume : Measure EuclN).restrict
     (chartPouKernel (I := I) (M := M) α) with hμ_def
@@ -317,7 +317,7 @@ private lemma eigenvectorChartRHSDiffNumerator_layerC_eLpNorm_le_uniform
             g r s i α P₀ m (Fin.init l))
           (chartTargetEuclid (I := I) (M := M) α) ≤
         diffNumeratorAggregate (I := I) (M := M)
-          g r s i α P₀ m l (fChartEffPrev i) := by
+          g r s i α P₀ m l (fChartEffectivePrev i) := by
     intro i
     rw [diffNumeratorAggregate]
     exact le_trans le_add_self (le_trans le_self_add le_self_add)
@@ -336,17 +336,17 @@ private lemma eigenvectorChartRHSDiffNumerator_layerD_eLpNorm_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ) :
+    (fChartEffectivePrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm (fun y =>
             densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y *
-              fChartEffPrev i y) 2
+              fChartEffectivePrev i y) 2
           ((volume : Measure EuclN).restrict
             (chartPouKernel (I := I) (M := M) α))
           ≤ ENNReal.ofReal C *
             diffNumeratorAggregate (I := I) (M := M)
-              g r s i α P₀ m l (fChartEffPrev i) := by
+              g r s i α P₀ m l (fChartEffectivePrev i) := by
   classical
   set μ : Measure EuclN := (volume : Measure EuclN).restrict
     (chartPouKernel (I := I) (M := M) α) with hμ_def
@@ -358,9 +358,9 @@ private lemma eigenvectorChartRHSDiffNumerator_layerD_eLpNorm_le_uniform
       chartTargetEuclid (I := I) (M := M) α :=
     chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α
   have h_atom_le : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
-      eLpNorm (fChartEffPrev i) 2 μ ≤
+      eLpNorm (fChartEffectivePrev i) 2 μ ≤
         diffNumeratorAggregate (I := I) (M := M)
-          g r s i α P₀ m l (fChartEffPrev i) := by
+          g r s i α P₀ m l (fChartEffectivePrev i) := by
     intro i
     rw [diffNumeratorAggregate, ← hμ_def]
     exact le_add_self
@@ -378,18 +378,18 @@ private lemma eigenvectorChartRHSDiffNumerator_layerE_eLpNorm_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ) :
+    (fChartEffectivePrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm (fun y =>
             densityOnEuclid (I := I) g α y *
-              chosenWeakPartial' (d := Module.finrank ℝ E) 2 (l (Fin.last m))
-                (fChartEffPrev i) (chartTargetEuclid (I := I) (M := M) α) y) 2
+              chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (l (Fin.last m))
+                (fChartEffectivePrev i) (chartTargetEuclid (I := I) (M := M) α) y) 2
           ((volume : Measure EuclN).restrict
             (chartPouKernel (I := I) (M := M) α))
           ≤ ENNReal.ofReal C *
             diffNumeratorAggregate (I := I) (M := M)
-              g r s i α P₀ m l (fChartEffPrev i) := by
+              g r s i α P₀ m l (fChartEffectivePrev i) := by
   classical
   set μ : Measure EuclN := (volume : Measure EuclN).restrict
     (chartPouKernel (I := I) (M := M) α) with hμ_def
@@ -400,9 +400,9 @@ private lemma eigenvectorChartRHSDiffNumerator_layerE_eLpNorm_le_uniform
   have hK_in : chartPouKernel (I := I) (M := M) α ⊆ Ω :=
     chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α
   have h_atom_le : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
-      iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 1 2 (fChartEffPrev i) Ω ≤
+      iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 1 2 (fChartEffectivePrev i) Ω ≤
         diffNumeratorAggregate (I := I) (M := M)
-          g r s i α P₀ m l (fChartEffPrev i) := by
+          g r s i α P₀ m l (fChartEffectivePrev i) := by
     intro i
     rw [diffNumeratorAggregate, ← hΩ_def]
     exact le_trans le_add_self le_self_add
@@ -429,7 +429,7 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ)
+    (fChartEffectivePrev : TensorEigenIdx (I := I) (M := M) g r s → EuclN → ℝ)
     (h_iter : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
         (j : ℕ) (idx : Fin j → Fin (Module.finrank ℝ E)),
       MemWkp (d := Module.finrank ℝ E) 2 2
@@ -437,41 +437,41 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_uniform
           g r s i α P₀ j idx)
         (chartTargetEuclid (I := I) (M := M) α))
     (h_prev : ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
-      MemWkp (d := Module.finrank ℝ E) 1 2 (fChartEffPrev i)
+      MemWkp (d := Module.finrank ℝ E) 1 2 (fChartEffectivePrev i)
         (chartTargetEuclid (I := I) (M := M) α))
     :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ i : TensorEigenIdx (I := I) (M := M) g r s,
         eLpNorm (fun y => eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-            g r s i α P₀ m l (fChartEffPrev i) y) 2
+            g r s i α P₀ m l (fChartEffectivePrev i) y) 2
           ((volume : Measure EuclN).restrict
             (chartPouKernel (I := I) (M := M) α))
           ≤ ENNReal.ofReal C *
             diffNumeratorAggregate (I := I) (M := M)
-              g r s i α P₀ m l (fChartEffPrev i) := by
+              g r s i α P₀ m l (fChartEffectivePrev i) := by
   classical
   obtain ⟨CA, hCA_nn, hCA⟩ :=
     eigenvectorChartRHSDiffNumerator_layerA_eLpNorm_le_uniform
-      (I := I) (M := M) g r s α P₀ m l fChartEffPrev
+      (I := I) (M := M) g r s α P₀ m l fChartEffectivePrev
       (fun i a => h_iter i (m + 1) (Fin.cons a (Fin.init l)))
   obtain ⟨CB, hCB_nn, hCB⟩ :=
     eigenvectorChartRHSDiffNumerator_layerB_eLpNorm_le_uniform
-      (I := I) (M := M) g r s α P₀ m l fChartEffPrev
+      (I := I) (M := M) g r s α P₀ m l fChartEffectivePrev
       (fun i a => h_iter i (m + 1) (Fin.cons a (Fin.init l)))
   obtain ⟨CC, hCC_nn, hCC⟩ :=
     eigenvectorChartRHSDiffNumerator_layerC_eLpNorm_le_uniform
-      (I := I) (M := M) g r s α P₀ m l fChartEffPrev
+      (I := I) (M := M) g r s α P₀ m l fChartEffectivePrev
   obtain ⟨CD, hCD_nn, hCD⟩ :=
     eigenvectorChartRHSDiffNumerator_layerD_eLpNorm_le_uniform
-      (I := I) (M := M) g r s α P₀ m l fChartEffPrev
+      (I := I) (M := M) g r s α P₀ m l fChartEffectivePrev
   obtain ⟨CE, hCE_nn, hCE⟩ :=
     eigenvectorChartRHSDiffNumerator_layerE_eLpNorm_le_uniform
-      (I := I) (M := M) g r s α P₀ m l fChartEffPrev
+      (I := I) (M := M) g r s α P₀ m l fChartEffectivePrev
   refine ⟨CA + CB + CC + CD + CE, by positivity, fun i => ?_⟩
   set μ : Measure EuclN := (volume : Measure EuclN).restrict
     (chartPouKernel (I := I) (M := M) α) with hμ_def
   set A := diffNumeratorAggregate (I := I) (M := M)
-    g r s i α P₀ m l (fChartEffPrev i) with hA_def
+    g r s i α P₀ m l (fChartEffectivePrev i) with hA_def
   set K : Set EuclN := chartPouKernel (I := I) (M := M) α with hK_def
   have hK_compact : IsCompact K := chartPouKernel_isCompact (I := I) (M := M) α
   have hK_meas : MeasurableSet K :=
@@ -488,7 +488,7 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_uniform
   set layerB : EuclN → ℝ := fun y => ∑ a : Fin (Module.finrank ℝ E),
     ∑ b : Fin (Module.finrank ℝ E),
       weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
           (chartTargetEuclid (I := I) (M := M) α) y with hlayerB_def
@@ -498,14 +498,14 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_uniform
         g r s i α P₀ m (Fin.init l) y with hlayerC_def
   set layerD : EuclN → ℝ := fun y =>
     densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y *
-      fChartEffPrev i y with hlayerD_def
+      fChartEffectivePrev i y with hlayerD_def
   set layerE : EuclN → ℝ := fun y =>
     densityOnEuclid (I := I) g α y *
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 (l (Fin.last m))
-        (fChartEffPrev i) (chartTargetEuclid (I := I) (M := M) α) y
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (l (Fin.last m))
+        (fChartEffectivePrev i) (chartTargetEuclid (I := I) (M := M) α) y
     with hlayerE_def
   have h_num_eq : (fun y => eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-      g r s i α P₀ m l (fChartEffPrev i) y) =
+      g r s i α P₀ m l (fChartEffectivePrev i) y) =
       fun y => layerA y + layerB y - layerC y + layerD y + layerE y := by
     funext y
     rw [eigenvectorChartRHSDiffNumerator]
@@ -548,7 +548,7 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_uniform
   have hB_mem : MemLp layerB 2 μ := by
     rw [hlayerB_def]
     refine memLp_finsetSum _ (fun a _ => memLp_finsetSum _ (fun b _ => ?_))
-    have h_chosen_mem : MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+    have h_chosen_mem : MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
         (chartTargetEuclid (I := I) (M := M) α)) 2 μ := by
@@ -582,7 +582,7 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_uniform
       hK_compact hK_meas hK_in h_atom_mem
   have hD_mem : MemLp layerD 2 μ := by
     rw [hlayerD_def]
-    have h_prev_mem : MemLp (fChartEffPrev i) 2 μ := by
+    have h_prev_mem : MemLp (fChartEffectivePrev i) 2 μ := by
       have h0 := (h_prev i).le_of_le (Nat.zero_le 1)
       rw [MemWkp_zero] at h0
       have h_eq : μ = ((volume : Measure EuclN).restrict
@@ -596,8 +596,8 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_uniform
       hK_compact hK_meas hK_in h_prev_mem
   have hE_mem : MemLp layerE 2 μ := by
     rw [hlayerE_def]
-    have h_chosen_mem : MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2
-        (l (Fin.last m)) (fChartEffPrev i)
+    have h_chosen_mem : MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
+        (l (Fin.last m)) (fChartEffectivePrev i)
         (chartTargetEuclid (I := I) (M := M) α)) 2 μ := by
       have h1 := (h_prev i).chosenWeakPartial_mem (l (Fin.last m))
       rw [MemWkp_zero] at h1

@@ -34,7 +34,7 @@ omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [CompleteSpace E] [I.Boundaryless]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)] in
-private theorem curveVel_affine
+private theorem curveVelocity_affine
     (γ : ℝ → M) (c d t : ℝ)
     (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ (c * t + d)) :
     curveVelocity (I := I) (fun s => γ (c * s + d)) t =
@@ -126,7 +126,7 @@ private theorem tailCurve_eq
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem tailVel_one
+private theorem tailVelocity_one
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -152,7 +152,7 @@ private theorem tailVel_one
       MDifferentiableAt 𝓘(ℝ, ℝ) I γ ((1 - s₀) * 1 + s₀) :=
     ((intrinsicGeodesic_contMDiffOn (I := I) g hEnorm O v).contMDiffAt
       Filter.univ_mem).mdifferentiableAt (by norm_num)
-  have hvel := curveVel_affine (I := I) γ (1 - s₀) s₀ 1 hγdiff
+  have hvel := curveVelocity_affine (I := I) γ (1 - s₀) s₀ 1 hγdiff
   have htime : (1 - s₀) * 1 + s₀ = 1 := by ring
   rw [htime] at hvel
   change (curveVelocity (I := I) δ 1 : E) =
@@ -164,7 +164,7 @@ omit [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem minSeg_edist
+theorem minSegment_edist
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -254,7 +254,7 @@ private theorem minTail_edist
   have hleft :
       riemannianEDist I O (γ s) = ENNReal.ofReal (s * r) := by
     simpa only [γ] using
-      minSeg_edist (I := I) g hEnorm v hexp hlen hr_def hfin hs
+      minSegment_edist (I := I) g hEnorm v hexp hlen hr_def hfin hs
   have hγ_one : γ 1 = x := by
     simpa only [γ, expMapIntrinsic_def] using hexp
   have hright :
@@ -411,11 +411,11 @@ theorem tail_not_conj_of_min
     change γ ((1 - s₀) * 1 + s₀) = γ 1
     congr 1
     ring
-  have htail_vel :
+  have htail_velocity :
       ((intrinsicVelocityLift (I := I) g hEnorm z.proj uTail 1).snd : E) =
         (1 - s₀) • (z₁.snd : E) := by
     simpa only [z, uTail, z₁] using
-      tailVel_one (I := I) g hEnorm O v s₀
+      tailVelocity_one (I := I) g hEnorm O v s₀
   have hvec :
       -((intrinsicVelocityLift (I := I) g hEnorm z.proj uTail 1).snd : E) =
         ell • (eRev : E) := by
@@ -424,7 +424,7 @@ theorem tail_not_conj_of_min
     have hneg :
         -((intrinsicVelocityLift (I := I) g hEnorm z.proj uTail 1).snd : E) =
           -((1 - s₀) • (z₁.snd : E)) :=
-      congrArg (fun y : E => -y) htail_vel
+      congrArg (fun y : E => -y) htail_velocity
     have hscalar :
         -((1 - s₀) • (z₁.snd : E)) =
           ((1 - s₀) * r * -r⁻¹) • (z₁.snd : E) := by

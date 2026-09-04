@@ -16,7 +16,7 @@ attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddC
   DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -210,5 +210,5 @@ theorem exp_sigma_maps
     _ ≤ 2 * ‖z‖ := hrootNorm
     _ < 16 * lam := by nlinarith
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -15,7 +15,7 @@ variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
 
-theorem nablaRS_reg (r s : ℕ)
+theorem nablaRS_regularity (r s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
@@ -120,7 +120,7 @@ theorem nablaRS_reg (r s : ℕ)
                 (localCovariantDerivTensor0SAt
                   (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X βsec p))
                 (fun a : Fin s => V a p)) x₀ := by
-        have hβcorr :
+        have hβcorrection :
             ContMDiffAt I (I.prod 𝓘(𝕜, Tensor0SModel r 𝕜 E))
               (∞ : WithTop ℕ∞)
               (fun p : M =>
@@ -137,7 +137,7 @@ theorem nablaRS_reg (r s : ℕ)
           (β := fun p : M =>
             localCovariantDerivTensor0SAt
               (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X βsec p)
-          (V := V) x₀ hT hβcorr hV
+          (V := V) x₀ hT hβcorrection hV
       have houtput :
           ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
             (fun p : M =>

@@ -366,7 +366,7 @@ theorem perp_to_velocity_preserved_of_parallel
     ∀ t ∈ Set.Icc (0 : ℝ) L,
       g.inner (γ t) (V t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ) : E) = 0 := by
   classical
-  set vel : ℝ → ∀ s, TangentSpace I (γ s) :=
+  set velocity : ℝ → ∀ s, TangentSpace I (γ s) :=
     fun _ s => (mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ) : E) with hvel_def
   set f : ℝ → ℝ := fun t => g.inner (γ t) (V t)
     (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ) : E) with hf_def
@@ -776,7 +776,7 @@ theorem exists_time_clip {L lam : ℝ} (hL : 0 ≤ L) (hlam : L < lam) :
   set delta : ℝ := (lam - L) / 2 with hdelta_def
   have hdelta_pos : 0 < delta := by rw [hdelta_def]; linarith
   have hlam_pos : 0 < lam := lt_of_le_of_lt hL hlam
-  obtain ⟨chi, hchi_cd, hchi_one, hchi_supp, hchi_range⟩ :=
+  obtain ⟨chi, hchi_cd, hchi_one, hchi_support, hchi_range⟩ :=
     exists_cutoff_one_on_Icc_supported_Ioo (L := L) hdelta_pos
   refine ⟨fun t => chi t * t, hchi_cd.mul contDiff_id, ?_, ?_⟩
   · intro t ht
@@ -800,7 +800,7 @@ theorem exists_time_clip {L lam : ℝ} (hL : 0 ≤ L) (hlam : L < lam) :
           mul_le_mul hchi_abs (le_of_lt ht_abs) (abs_nonneg _) (by norm_num)
         _ = L + delta := one_mul _
         _ < lam := by rw [hdelta_def]; linarith)
-    · have hnot_tsupport : t ∉ tsupport chi := fun h => htΩ (hchi_supp h)
+    · have hnot_tsupport : t ∉ tsupport chi := fun h => htΩ (hchi_support h)
       have hchi_zero : chi t = 0 := by
         have hnot_support : t ∉ Function.support chi := fun h =>
           hnot_tsupport (subset_closure h)
@@ -1025,7 +1025,7 @@ theorem exists_perp_par_pos
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) {L : ℝ} (hL : 0 < L)
     (hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))
-    (hVel0 : 0 < g.inner (γ 0) (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ))
+    (hVelocity0 : 0 < g.inner (γ 0) (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ))
       (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ))) :
     ∃ e : Fin (Module.finrank ℝ E - 1) → SectionAlongCurve I M γ,
       (∀ i, ∀ t ∈ Set.Icc (0 : ℝ) L,
@@ -1045,7 +1045,7 @@ theorem exists_perp_par_pos
   have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set u₀ : E := (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ) : E) with hu₀_def
   obtain ⟨seed, hseed_ON, hseed_perp⟩ :=
-    exists_perp_pos (I := I) g (γ 0) u₀ hVel0
+    exists_perp_pos (I := I) g (γ 0) u₀ hVelocity0
   have htransport : ∀ i, ∃ (δ : ℝ) (_ : 0 < δ) (V : ∀ t, TangentSpace I (γ t)),
       V 0 = seed i ∧
       (∀ t ∈ Set.Ioo (-δ) (L + δ), DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t) ∧
@@ -1097,7 +1097,7 @@ theorem exists_perp_par_pos
       DifferentiableAt ℝ
         (chartRepAt (I := I) γ (fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ) : E)) t) t :=
     fun t _ => velocity_chartRepAt_differentiableAt (I := I) γ hγ t
-  have hVel : ∀ t ∈ Set.Icc (0 : ℝ) L,
+  have hVelocity : ∀ t ∈ Set.Icc (0 : ℝ) L,
       0 < g.inner (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ) : E)
         (mfderiv 𝓘(ℝ, ℝ) I γ t (1 : ℝ) : E) := by
     intro t ht
@@ -1107,7 +1107,7 @@ theorem exists_perp_par_pos
         (fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ) : E))
         (fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ) : E))
         hvel_diff hvel_diff hvel_par hvel_par t ht
-    rw [hconst]; exact hVel0
+    rw [hconst]; exact hVelocity0
   refine ⟨fun i => ⟨fun t => χ i t • Vfun i t⟩, ?_, ?_, ?_, ?_, ?_⟩
   · intro i t ht
     change DifferentiableAt ℝ (chartRepAt (I := I) γ (fun s => χ i s • Vfun i s) t) t

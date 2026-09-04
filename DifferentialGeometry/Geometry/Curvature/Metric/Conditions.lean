@@ -27,7 +27,7 @@ def constantPositiveSectionalCurvatureMetric
     (g : SmoothRiemannianMetric I M) : Prop :=
   ∃ c : ℝ, 0 < c ∧
     ∀ x : M, ∀ X Y : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y - g.inner x X Y * g.inner x X Y)
 
 def admitsConstantPositiveSectionalCurvature : Prop :=

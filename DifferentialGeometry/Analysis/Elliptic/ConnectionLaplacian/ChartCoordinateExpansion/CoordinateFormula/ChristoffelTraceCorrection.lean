@@ -246,12 +246,12 @@ private lemma christoffelTrace_proj_eq_wCoord_sum
   classical
   set y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
     (toEuclidean (E := E)) ((extChartAt I α) b) with hy_def
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hsymm_te : (toEuclidean (E := E)).symm y = (extChartAt I α) b := by
     rw [hy_def]; exact (toEuclidean (E := E)).symm_apply_apply _
   have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   have hb_eq : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) = b := by
     rw [hsymm_te, hleft_inv]
   set L : TensorRSSpace r s I b →L[ℝ] ℝ :=
@@ -360,17 +360,17 @@ private lemma chartα_proj_covRS_chartBasis_eq_euclidPartial_plus_lower
   classical
   set y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
     (toEuclidean (E := E)) ((extChartAt I α) b) with hy_def
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
-  have hb_tgt : (extChartAt I α) b ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb_src
+  have hb_target : (extChartAt I α) b ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hb_source
   have hy_mem : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid (I := I) (M := M)
     α :=
-    ⟨(extChartAt I α) b, hb_tgt, rfl⟩
+    ⟨(extChartAt I α) b, hb_target, rfl⟩
   have hsymm_te : (toEuclidean (E := E)).symm y = (extChartAt I α) b := by
     rw [hy_def]; exact (toEuclidean (E := E)).symm_apply_apply _
   have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   have hb_eq : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) = b := by
     rw [hsymm_te, hleft_inv]
   have hLHS_eq :
@@ -506,12 +506,12 @@ theorem christoffelTrace_correction_eq_T₀_linear
   · intro T₀ b hb
     set y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
       (toEuclidean (E := E)) ((extChartAt I α) b) with hy_def
-    have hb_src : b ∈ (extChartAt I α).source :=
+    have hb_source : b ∈ (extChartAt I α).source :=
       chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
-    have hb_tgt : (extChartAt I α) b ∈ (extChartAt I α).target :=
-      (extChartAt I α).map_source hb_src
+    have hb_target : (extChartAt I α) b ∈ (extChartAt I α).target :=
+      (extChartAt I α).map_source hb_source
     have hy_mem : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
-        (I := I) (M := M) α := ⟨(extChartAt I α) b, hb_tgt, rfl⟩
+        (I := I) (M := M) α := ⟨(extChartAt I α) b, hb_target, rfl⟩
     rw [christoffelTrace_proj_eq_wCoord_sum (I := I) (M := M) g r s α T₀ Idx Jdx hb]
     have hStep2 :
         (∑ m : Fin (Module.finrank ℝ E),

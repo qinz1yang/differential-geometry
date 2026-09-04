@@ -69,7 +69,7 @@ private theorem rawTensorConnLapSmooth_ccTensor02Symm
     rw [ccTensor02Symm, ← hLV]
   rw [hgoal, smul_add, hhalf]
 
-theorem deTurckRicci_solution_with_jointReg
+theorem deTurckRicci_solution_with_jointRegularity
     (g₀ g_bg : SmoothRiemannianMetric I M) :
     ∃ T : ℝ, ∃ g_DT : ℝ → SmoothRiemannianMetric I M,
       IsQuasilinearMetricParabolicSolution (I := I)
@@ -175,7 +175,7 @@ theorem deturck_ricci_flow_parabolic_short_time_existence
             (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I) (g_DT q.1) α i j)
             (extChartAt I α q.2))
           (Set.Icc 0 T ×ˢ chartLeviCivitaGoodSet (I := I) α)) := by
-  obtain ⟨T, g_DT, hsol, hJ⟩ := deTurckRicci_solution_with_jointReg (I := I) g₀ g_bg
+  obtain ⟨T, g_DT, hsol, hJ⟩ := deTurckRicci_solution_with_jointRegularity (I := I) g₀ g_bg
   obtain ⟨h2, h3, h4, h5, h6, h7⟩ :=
     deTurckRicci_chartRegularity_of_jointChartGramSmooth (I := I) g_bg T g_DT hJ
   exact ⟨T, g_DT, hsol, h2, h3, h4, h5, h6, h7⟩

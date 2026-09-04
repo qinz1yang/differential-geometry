@@ -28,14 +28,14 @@ variable {M : Type u} [UniformSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 variable {D : RealTimeInterval}
 
-theorem intervalIntegrable_lRegLagrangian_of_contMDiffOn_one
+theorem intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
     (T a b : Real) (hab : a ≤ b) (alpha : Real → M)
     (halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 1 alpha (Icc a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    IntervalIntegrable (lRegLagrangian S T alpha) volume a b := by
+    IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b := by
   classical
   obtain ⟨t, ht0, htmono, ⟨m, hm⟩, hchart⟩ :=
     DifferentialGeometry.Geometry.exists_chart_subdivision (H := H) hab halpha.continuousOn
@@ -61,19 +61,19 @@ theorem intervalIntegrable_lRegLagrangian_of_contMDiffOn_one
         (fun r : Real ↦ alpha ((t n : Real) + r))
         (Icc (0 : Real) ((t (n + 1) : Real) - t n)) :=
       halpha.comp (contMDiff_const.add contMDiff_id).contMDiffOn hshift
-    have hlocalSrc : MapsTo (fun r : Real ↦ alpha ((t n : Real) + r))
+    have hlocalSource : MapsTo (fun r : Real ↦ alpha ((t n : Real) + r))
         (Icc (0 : Real) ((t (n + 1) : Real) - t n))
         (chartAt H p).source :=
       hsrc.comp hshiftPiece
     let us : timeH1 E ((t (n + 1) : Real) - t n) :=
       chartTimeH1 I (sub_nonneg.mpr (hseg n)) p
-        (fun r : Real ↦ alpha ((t n : Real) + r)) hlocalMD hlocalSrc
+        (fun r : Real ↦ alpha ((t n : Real) + r)) hlocalMD hlocalSource
     have hrep : EqOn us.toFun
         (fun r ↦ extChartAt I p (alpha ((t n : Real) + r)))
         (Icc (0 : Real) ((t (n + 1) : Real) - t n)) := by
       with_unfolding_all
         exact chartTimeH1_toFun I (sub_nonneg.mpr (hseg n)) p
-          (fun r : Real ↦ alpha ((t n : Real) + r)) hlocalMD hlocalSrc
+          (fun r : Real ↦ alpha ((t n : Real) + r)) hlocalMD hlocalSource
     have hdiff : ∀ᵐ r ∂timeMeasure ((t (n + 1) : Real) - t n),
         MDifferentiableAt (modelWithCornersSelf Real Real) I alpha ((t n : Real) + r) :=
       curve_mdiff_local I p alpha us (hseg n) hsrc hrep
@@ -103,15 +103,15 @@ theorem intervalIntegrable_lRegLagrangian_of_contMDiffOn_one
       simpa only [uIcc_of_le hab] using halpha.continuousOn)
   with_unfolding_all exact hkin.add hpot
 
-theorem intervalIntegrable_lRegSpeedSq_of_contMDiffOn_one
+theorem intervalIntegrable_lRegularizedSpeedSq_of_contMDiffOn_one
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
     (T a b : Real) (hab : a ≤ b) (alpha : Real → M)
     (halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 1 alpha (Icc a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    IntervalIntegrable (lRegSpeedSq S T alpha) volume a b := by
-  have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one
+    IntervalIntegrable (lRegularizedSpeedSq S T alpha) volume a b := by
+  have hLag := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one
     (I := I) S hMet hSc T a b hab alpha halpha hreg
   have hcarrier : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.carrier := by
     intro s hs
@@ -121,17 +121,17 @@ theorem intervalIntegrable_lRegSpeedSq_of_contMDiffOn_one
     lScalar_int (I := I) S hSc T a b alpha hcarrier (by
       simpa only [uIcc_of_le hab] using halpha.continuousOn)
   have hhalf : IntervalIntegrable
-      (fun s ↦ (1 / 2 : Real) * lRegSpeedSq S T alpha s) volume a b := by
+      (fun s ↦ (1 / 2 : Real) * lRegularizedSpeedSq S T alpha s) volume a b := by
     change IntervalIntegrable (fun s ↦ (1 / 2 : Real) *
       (S.base.metric (T - s ^ 2)).inner (alpha s)
         (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) volume a b
     rw [show (fun s ↦ (1 / 2 : Real) *
         (S.base.metric (T - s ^ 2)).inner (alpha s)
           (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) =
-      (fun s ↦ lRegLagrangian S T alpha s -
+      (fun s ↦ lRegularizedLagrangian S T alpha s -
         2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s)) by
       funext s
-      simp only [lRegLagrangian]
+      simp only [lRegularizedLagrangian]
       ring]
     exact hLag.sub hpot
   have htwice := hhalf.const_mul 2

@@ -84,7 +84,7 @@ theorem secondCovDeriv_gradTensor_antisymm_eq_riemannOp
         ((covGrad (I := I) (M := M) g 0 2 T₀).toSection x) :=
   tensorSecondCovDeriv_antisymm_eq_riemannOp (I := I) g 0 3
     (T := fun y : M => (covGrad (I := I) (M := M) g 0 2 T₀).toSection y)
-    hX hY (covGrad_contMDiff_mk' (I := I) (M := M) g T₀)
+    hX hY (covGrad_contMDiff_totalSpaceMk (I := I) (M := M) g T₀)
 
 end DifferentialIdentities
 

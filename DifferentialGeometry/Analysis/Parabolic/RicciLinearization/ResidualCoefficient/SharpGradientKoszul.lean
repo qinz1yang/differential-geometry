@@ -813,9 +813,9 @@ def sharpGradKoszulBiContrFib (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] [SigmaCompactSpace M] in
-theorem sharpGradKoszulBiContrFib_eq_fixedFrame_on_nbhd
+theorem sharpGradKoszulBiContrFib_eq_fixedFrame_on_neighborhood
     (g₀ g₁ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) (x₀ : M)
-    {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     sharpGradKoszulBiContrFib (I := I) g₀ g₁ S y =
       sharpGradKoszulBiContrFibFixedFrame (I := I) g₀ g₁ S
         (smoothOrthoFrame (I := I) g₁ x₀) y := by
@@ -904,11 +904,11 @@ theorem sharpGradKoszulBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric 
       (smoothOrthoFrame (I := I) g₁ x₀)
       (fun i => smoothOrthoFrame_smooth (I := I) g₁ x₀ i) x₀
   refine h_fixed.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
     (E := fun z : M => TensorRSSpace 2 2 I z) y)
     (congrArg TensorRSSpace.ofCLM
-      (sharpGradKoszulBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₀ g₁ S x₀ hy))
+      (sharpGradKoszulBiContrFib_eq_fixedFrame_on_neighborhood (I := I) g₀ g₁ S x₀ hy))
 
 def ricciCovariantTermSharpGradKoszulResidualField (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 2 2 where

@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -62,7 +62,7 @@ theorem BoundedGeometryNormalChartData.inj_tail
   have hstage0 := hstage
   rcases hstage with ⟨hdata, _hmetric, hjets, _hbase⟩
   have hraw := hdata
-  dsimp only [HasSuppConvDataOn] at hraw
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hraw
   rcases hraw with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, hconvex, _hzero,
       _hbuffer, _hcore, _hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
@@ -253,5 +253,5 @@ theorem BoundedGeometryNormalChartData.inj_tail
     _ = chiK.hom zy := congrArg chiK.hom hzyeq
     _ = y := hzyEq
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

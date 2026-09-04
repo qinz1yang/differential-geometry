@@ -545,7 +545,7 @@ theorem metricTraceCov_eq_deriv
     metricTraceCovAt gInv metricCovDerivDt x0 j =
       scalarCoordDerivAt (I := I) metricTrace x0 j := by
   classical
-  let corr :
+  let correction :
       CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun p l =>
       (∑ a : CoordinateIdx (𝕜 := Real) E,
@@ -558,8 +558,8 @@ theorem metricTraceCov_eq_deriv
     metricTraceCovAt gInv metricCovDerivDt x0 j =
         ∑ p : CoordinateIdx (𝕜 := Real) E,
           ∑ l : CoordinateIdx (𝕜 := Real) E,
-            gInv x0 p l * (metricDotDeriv p l - corr p l) := by
-          unfold metricTraceCovAt corr
+            gInv x0 p l * (metricDotDeriv p l - correction p l) := by
+          unfold metricTraceCovAt correction
           refine Finset.sum_congr rfl fun p _ => ?_
           refine Finset.sum_congr rfl fun l _ => ?_
           rw [hmetricCov p l]
@@ -570,7 +570,7 @@ theorem metricTraceCov_eq_deriv
             gInv x0 p l * metricDotDeriv p l) -
         (∑ p : CoordinateIdx (𝕜 := Real) E,
           ∑ l : CoordinateIdx (𝕜 := Real) E,
-            gInv x0 p l * corr p l) := by
+            gInv x0 p l * correction p l) := by
           rw [← Finset.sum_sub_distrib]
           refine Finset.sum_congr rfl fun p _ => ?_
           rw [← Finset.sum_sub_distrib]
@@ -584,7 +584,7 @@ theorem metricTraceCov_eq_deriv
           ∑ l : CoordinateIdx (𝕜 := Real) E,
             gInvDeriv p l * metricDot x0 p l) := by
           rw [hinv_contract]
-          unfold corr
+          unfold correction
           ring
     _ = scalarCoordDerivAt (I := I) metricTrace x0 j := by
           rw [htrace_deriv]

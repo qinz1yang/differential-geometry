@@ -11,7 +11,7 @@ open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -42,7 +42,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_all_order_weighted
             MetricUniformEquivalentOn (I := I) Set.univ gBase g Λ →
             (∀ a : ℕ, a ≤ 3 →
               MetricCovDerivOrderBoundOn (I := I) Set.univ a g gBase Λ) →
-            ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
+            ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M)
                 ((1 : ℕ) : ℝ) T)
               (gforce : timeL2
                 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
@@ -51,12 +51,12 @@ theorem exists_uniform_background_lowRegularity_solution_with_all_order_weighted
                 ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
                   Summable (fun i =>
                     tensorSobolevWeight (I := I) (M := M) i σ *
-                      (perModeConv
+                      (perModeConvolution
                         (TensorEigenIdx.lambda (I := I) (M := M) i)
                         (fun s => (timeModeCoeff (I := I) (M := M)
                           gforce i) s) t) ^ 2) ∧
                   ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-                    (perModeConv
+                    (perModeConvolution
                       (TensorEigenIdx.lambda (I := I) (M := M) i)
                       (fun s => (timeModeCoeff (I := I) (M := M)
                         gforce i) s) t) ^ 2 ≤ Cσ := by
@@ -71,7 +71,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_all_order_weighted
   let Rcap : ℝ := min ρarm q
   have hδcap : 0 < δcap := lt_min (by norm_num) hq
   have hRcap : 0 < Rcap := lt_min hρarm hq
-  obtain ⟨K, hKunif, hKδcap, hKRcap, T, hT, hT1, hsolve⟩ :=
+  obtain ⟨K, hKuniform, hKδcap, hKRcap, T, hT, hT1, hsolve⟩ :=
     exists_uniform_background_lowRegularity_solution_with_galerkin_energy_four_bound_and_parameter_caps (I := I) (M := M) hDim gBase hΛ hδcap hRcap
   have hδquarter : K.threshold ≤ 1 / 4 :=
     hKδcap.trans (min_le_left _ _)
@@ -90,7 +90,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_all_order_weighted
         dsimp only [q]
         field_simp
       _ < 1 / 4 := (div_lt_iff₀ hdenK).2 (by nlinarith)
-  refine ⟨K, hKunif, T, hT, hT1, ?_⟩
+  refine ⟨K, hKuniform, T, hT, hT1, ?_⟩
   intro g hEq hjet
   obtain ⟨u, gforce, fseq, _Φ3, Φ4, Φ5, hK, hsolveAt, hconv,
       hderiv, _hE3, hE4, hE5⟩ := hsolve g hEq hjet
@@ -99,7 +99,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_all_order_weighted
   have hfrac : K.threshold / (1 - K.threshold) ^ 2 ≤ 2 * K.threshold := by
     apply (div_le_iff₀ hdenpos).2
     have hfactor : 0 ≤ 2 * (1 - K.threshold) ^ 2 - 1 := by linarith
-    have hmul := mul_nonneg hsolveAt.hδ0 hfactor
+    have hmul := mul_nonneg hsolveAt.threshold_nonneg hfactor
     nlinarith
   have hsum : K.threshold / (1 - K.threshold) ^ 2 +
       lowRegularityStateRadius K.top K.slope K.outer K.realize ≤ 3 * q := by
@@ -115,9 +115,9 @@ theorem exists_uniform_background_lowRegularity_solution_with_all_order_weighted
         (ccTensorBilinSymm (I := I) g S) K.threshold :=
     lowRegularityMetricRealization (I := I) (M := M) g
       (Ctop := K.top) (B1 := K.slope) (ρ := K.outer)
-      K.realize_pos.le hK.hreal
+      K.realize_pos.le hK.metric_realization
   obtain ⟨Ca2, Ca1, _hCa2, _hCa1, hmass⟩ :=
-    harm (δ := K.threshold) hsolveAt.hδ3 hsolveAt.hδ0
+    harm (δ := K.threshold) hsolveAt.threshold_le_third hsolveAt.threshold_nonneg
       (R := lowRegularityStateRadius K.top K.slope K.outer K.realize) hRpos.le hRρ
       g hEq hjet hreal
   have hUcont : ∀ N, ∀ i ∈ eigenIdxFinset (I := I) (M := M) g N,
@@ -140,7 +140,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_all_order_weighted
                 K.outer_pos K.realize_pos).le K.threshold_lt
               (lowRegularityMetricRealization (I := I) (M := M) g
                 (Ctop := K.top) (B1 := K.slope) (ρ := K.outer)
-                K.realize_pos.le hsolveAt.hreal) F c =
+                K.realize_pos.le hsolveAt.metric_realization) F c =
             galerkinActionVectorBackground (I := I) (M := M) g gBase hRpos.le
               K.threshold_lt hreal F c := by
         rfl

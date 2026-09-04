@@ -87,7 +87,7 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
     rw [cometricDoubleTraceFib_toModel (I := I) g₁ s x Z]
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) g₁ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) (Tensor0SSpace.toModel Z) mm]
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x) (Tensor0SSpace.toModel Z) mm]
   rw [hLHS]
   have hRHS : Tensor0SSpace.toModel
       ((show Tensor0SSpace (s + 2) I x →L[ℝ] Tensor0SSpace s I x from
@@ -115,7 +115,7 @@ private lemma pureDeTurckTrace_eq_metricComparisonTrace (g₀ g₁ : SmoothRiema
     rw [cometricDoubleTraceFib_toModel (I := I) g₀ s x]
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) g₀ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
         (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z)) mm]
@@ -281,14 +281,14 @@ private lemma deTurckLieConnectionDifferenceDerivativePairTraceOperator_toModel 
   rw [cometricDoubleTraceFib_toModel (I := I) gm 2 x]
   rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) gm x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) gm x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) gm 4 x Y))
     (fun j => (v j : E))]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [cometricDoubleTraceFib_toModel (I := I) gm 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) gm x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) gm x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y)
     (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
         (smoothOrthoFrame (I := I) gm x b x))

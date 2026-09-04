@@ -40,7 +40,7 @@ lemma exists_uniform_orbit_in_inner_ball
     {Φ : (E × E) × ℝ → E × E}
     (hΦ_cd : ContDiffOn ℝ 1 Φ
       ((Metric.ball ((x₀, (0 : E)) : E × E) ρ_V4) ×ˢ Set.Ioo (-T_V4) T_V4))
-    (hΦ_init0 : Φ (((x₀, (0 : E)) : E × E), 0) = (x₀, (0 : E))) :
+    (hΦ_initial0 : Φ (((x₀, (0 : E)) : E × E), 0) = (x₀, (0 : E))) :
     ∃ (ρ T : ℝ), 0 < ρ ∧ 0 < T ∧ ρ ≤ ρ_V4 ∧ T < T_V4 ∧
       ∀ v ∈ Metric.ball (0 : E) ρ, ∀ s ∈ Set.Icc (-T) T,
         Φ (((x₀, v) : E × E), s) ∈ Metric.ball ((x₀, (0 : E)) : E × E) b.rIn := by
@@ -77,7 +77,7 @@ lemma exists_uniform_orbit_in_inner_ball
   have h_preim : (fun w : E × ℝ => Φ (((x₀, w.1) : E × E), w.2)) ⁻¹'
       (Metric.ball ((x₀, (0 : E)) : E × E) b.rIn) ∈ 𝓝 ((0 : E), (0 : ℝ)) := by
     apply hΨ_cont.preimage_mem_nhds
-    simp only [hΦ_init0]
+    simp only [hΦ_initial0]
     exact Metric.ball_mem_nhds _ b.rIn_pos
   obtain ⟨U, V, hU_open, hU_mem, hV_open, hV_mem, h_subset⟩ :=
     mem_nhds_prod_iff'.mp h_preim
@@ -157,22 +157,22 @@ theorem exists_chartFlow_uniform_orbit
           Metric.ball (((extChartAt I p p, (0 : E)) : E × E)) b.rIn) := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
-  have hx₀_src : p ∈ (extChartAt I p).source :=
+  have hx₀_source : p ∈ (extChartAt I p).source :=
     mem_extChartAt_source (I := I) p
   have hx₀_target : x₀ ∈ (extChartAt I p).target :=
-    (extChartAt I p).map_source hx₀_src
+    (extChartAt I p).map_source hx₀_source
   have hx₀_interior : x₀ ∈ interior (extChartAt I p).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) p hx₀_target
   obtain ⟨b, r, ε, ρ_V4, T_V4, Φ, hr, hε, hρ_V4_pos, hT_V4_pos, hb_sub, hΦ_ILF,
-    hΦ_cd, hΦ_init0⟩ :=
+    hΦ_cd, hΦ_initial0⟩ :=
     Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined
       (I := I) (g := g) (α := p) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   obtain ⟨ρ, T, hρ_pos, hT_pos, _hρ_le_V4, _hT_lt_V4, h_orbit_in⟩ :=
     exists_uniform_orbit_in_inner_ball
       (x₀ := x₀)
       (b := b) (ρ_V4 := ρ_V4) (T_V4 := T_V4) hρ_V4_pos hT_V4_pos
-      (Φ := Φ) hΦ_cd hΦ_init0
-  exact ⟨b, r, ε, ρ, T, Φ, hr, hε, hρ_pos, hT_pos, hb_sub, hΦ_ILF, hΦ_init0,
+      (Φ := Φ) hΦ_cd hΦ_initial0
+  exact ⟨b, r, ε, ρ, T, Φ, hr, hε, hρ_pos, hT_pos, hb_sub, hΦ_ILF, hΦ_initial0,
     h_orbit_in⟩
 
 end UniformChartCoordExistence
@@ -267,7 +267,7 @@ theorem exists_uniform_orbit_hasDerivAt_chartPhaseVF
             (Φ (((extChartAt I p p, v) : E × E), s))) s) := by
   classical
   obtain ⟨b, r, ε, ρ₀, T₀, Φ, hr, hε, hρ₀_pos, hT₀_pos, hb_sub, hΦ_ILF,
-    _hΦ_init, h_orbit_in⟩ :=
+    _hΦ_initial, h_orbit_in⟩ :=
     exists_chartFlow_uniform_orbit (I := I) (g := g) (p := p)
   set ρ : ℝ := min ρ₀ ((r : ℝ) / 2) with hρ_def
   have hρ_pos : 0 < ρ := by
@@ -348,7 +348,7 @@ lemma per_v_orbit_proj_eq_lift_proj_eventually
     (g : SmoothRiemannianMetric I M) (p : M) (v : E)
     {x₀ : E} (hx₀_def : x₀ = extChartAt I p p)
     {Φ : (E × E) × ℝ → E × E}
-    (hΦ_init_v : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E))
+    (hΦ_initial_v : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E))
     (hΦ_chart_phase : ∀ᶠ s in 𝓝 (0 : ℝ),
       HasDerivAt (fun s' : ℝ => Φ (((x₀, v) : E × E), s'))
         (chartPhaseVF (I := I) g p (Φ (((x₀, v) : E × E), s))) s ∧
@@ -374,18 +374,18 @@ lemma per_v_orbit_proj_eq_lift_proj_eventually
     have hproj0 : (f 0).proj = p := hf0_proj
     have hfiber0 : chartFiberCoord (I := I) p (f 0) = v := by
       rw [hf0]
-      have hp_src : p ∈ (chartAt H p).source := mem_chart_source H p
+      have hp_source : p ∈ (chartAt H p).source := mem_chart_source H p
       have hbase : p ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
-        rw [TangentBundle.trivializationAt_baseSet]; exact hp_src
+        rw [TangentBundle.trivializationAt_baseSet]; exact hp_source
       have hp_extsrc : p ∈ (extChartAt I p).source := by
-        rw [extChartAt_source]; exact hp_src
+        rw [extChartAt_source]; exact hp_source
       change (trivializationAt E (TangentSpace I) p
           (⟨p, v⟩ : TangentBundle I M)).2 = v
       have hcore :
           (trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ p =
           (tangentBundleCore I M).coordChange (achart H p) (achart H p) p :=
         TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (𝕜 := ℝ)
-          (b₀ := p) (b := p) hp_src
+          (b₀ := p) (b := p) hp_source
       have hself : ∀ w : E, tangentCoordChange I p p p w = w :=
         fun w => tangentCoordChange_self (I := I) (x := p) (z := p) (v := w) hp_extsrc
       have hcore_at :
@@ -403,7 +403,7 @@ lemma per_v_orbit_proj_eq_lift_proj_eventually
       rw [← happly, hcore_at]
     rw [hproj0, hfiber0, hx₀_def]
   have hΦorbit_zero :
-      (fun s' : ℝ => Φ (((x₀, v) : E × E), s')) 0 = ((x₀, v) : E × E) := hΦ_init_v
+      (fun s' : ℝ => Φ (((x₀, v) : E × E), s')) 0 = ((x₀, v) : E × E) := hΦ_initial_v
   have hbase_interior : ((x₀, v) : E × E) ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
     have hp_extsrc : p ∈ (extChartAt I p).source := by
@@ -431,17 +431,17 @@ lemma per_v_orbit_proj_eq_lift_proj_eventually
       𝓝 (0 : ℝ) := by
     apply hcomp0.preimage_mem_nhds
     rw [hf0_proj]; exact hp_nhds
-  filter_upwards [hcd_eq, hsrc_nhds] with s hs_eq hs_src
+  filter_upwards [hcd_eq, hsrc_nhds] with s hs_eq hs_source
   have h_fst_eq :
       extChartAt I p (f s).proj = (Φ (((x₀, v) : E × E), s)).1 := by
     have hpair := chartPushLift_fst (I := I) (f := f) 0 s (by
-      rw [hf0_proj]; exact hs_src)
+      rw [hf0_proj]; exact hs_source)
     rw [hf0_proj] at hpair
     have := congrArg Prod.fst hs_eq
     rw [hpair] at this
     exact this
   have hf_extsrc : (f s).proj ∈ (extChartAt I p).source := by
-    rw [extChartAt_source]; exact hs_src
+    rw [extChartAt_source]; exact hs_source
   have h_inv :
       (extChartAt I p).symm (extChartAt I p (f s).proj) = (f s).proj :=
     (extChartAt I p).left_inv hf_extsrc
@@ -480,7 +480,7 @@ theorem exists_uniform_existence_interval
               (extChartAt I p).symm
                 (Φ (((extChartAt I p p, v) : E × E), s)).1) := by
   classical
-  obtain ⟨b, ρ, T, Φ, hρ_pos, hT_pos, hb_sub, hΦ_init, h_orbit_in, h_orbit_phase⟩ :=
+  obtain ⟨b, ρ, T, Φ, hρ_pos, hT_pos, hb_sub, hΦ_initial, h_orbit_in, h_orbit_phase⟩ :=
     exists_uniform_orbit_hasDerivAt_chartPhaseVF (I := I) (g := g) (p := p)
   have h_orbit_target : ∀ v ∈ Metric.ball (0 : E) ρ, ∀ s ∈ Set.Icc (-T) T,
       Φ (((extChartAt I p p, v) : E × E), s) ∈
@@ -498,12 +498,12 @@ theorem exists_uniform_existence_interval
       Metric.closedBall_subset_closedBall h_inner_le_outer h_in_closed
     exact hb_sub h_in_outer
   refine ⟨ρ, T, Φ, hρ_pos, hT_pos, ?_, ?_, ?_, ?_⟩
-  · exact hΦ_init
+  · exact hΦ_initial
   · intro v hv s hs; exact h_orbit_target v hv s hs
   · exact h_orbit_phase
   · intro v hv
-    have hΦ_init_v : Φ (((extChartAt I p p, v) : E × E), 0) =
-        ((extChartAt I p p, v) : E × E) := hΦ_init v hv
+    have hΦ_initial_v : Φ (((extChartAt I p p, v) : E × E), 0) =
+        ((extChartAt I p p, v) : E × E) := hΦ_initial v hv
     have hΦ_chart_phase : ∀ᶠ s in 𝓝 (0 : ℝ),
         HasDerivAt (fun s' : ℝ => Φ (((extChartAt I p p, v) : E × E), s'))
           (chartPhaseVF (I := I) g p
@@ -517,7 +517,7 @@ theorem exists_uniform_existence_interval
       exact h_orbit_target v hv s (Set.Ioo_subset_Icc_self hs)
     exact per_v_orbit_proj_eq_lift_proj_eventually (I := I) (g := g) (p := p)
       (v := v) (x₀ := extChartAt I p p) rfl
-      (Φ := Φ) hΦ_init_v hΦ_chart_phase
+      (Φ := Φ) hΦ_initial_v hΦ_chart_phase
 
 end HeadlineUniformExistence
 

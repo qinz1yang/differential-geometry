@@ -751,7 +751,7 @@ private theorem covDerivCrossLeft_weight_bound
     _ = (4 * A ^ 2) * c * (((k : ℝ) - 1) ^ 2 * (b ^ (k - 1) * b ^ (k - 1))) := by rw [hb_core]
     _ = ((k : ℝ) - 1) ^ 2 * (4 * A ^ 2) * (b ^ (k - 1) * b ^ (k - 1)) * c := by ring
 
-private theorem weightedCovIBP_lpFiberJet_fin_regIneq
+private theorem weightedCovIBP_lpFiberJet_fin_regularityIneq
     (g : SmoothRiemannianMetric I M) (k m i : ℕ) (_hk : 1 ≤ k) (_hi : 1 ≤ i) (_hik : i + 1 < k)
     (w : Integral.L2.SmoothCcTensor g 0 m) (ε : ℝ) (_hε : 0 < ε) :
     (∫ x, (riemannianFiberNormSq (I := I) (M := M) g 0 (m + 1) x
@@ -1137,7 +1137,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem weightedCovIBP_lpFiberJet_fin_regLimit
+private theorem weightedCovIBP_lpFiberJet_fin_regularityLimit
     (g : SmoothRiemannianMetric I M) (k m i : ℕ) (_hk : 1 ≤ k) (_hi : 1 ≤ i) (_hik : i + 1 < k)
     (w : Integral.L2.SmoothCcTensor g 0 m) :
     Filter.Tendsto
@@ -1288,7 +1288,7 @@ private theorem weightedCovIBP_lpFiberJet_fin
           ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
   set D' : ℝ := 2 * ((k : ℝ) / (i + 1) - 1) + Real.sqrt (Module.finrank ℝ E : ℝ) with hD'
   obtain ⟨hLlim, hRlim⟩ :=
-    weightedCovIBP_lpFiberJet_fin_regLimit (I := I) (M := M) g k m i _hk _hi _hik w
+    weightedCovIBP_lpFiberJet_fin_regularityLimit (I := I) (M := M) g k m i _hk _hi _hik w
   have hreg : ∀ n : ℕ, (∫ x, (riemannianFiberNormSq (I := I) (M := M) g 0 (m + 1) x
               ((covGrad (I := I) (M := M) g 0 m w).toSection x)) *
             ((riemannianFiberNormSq (I := I) (M := M) g 0 (m + 1) x
@@ -1305,7 +1305,7 @@ private theorem weightedCovIBP_lpFiberJet_fin
           ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
     intro n
     have hεpos : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
-    exact weightedCovIBP_lpFiberJet_fin_regIneq (I := I) (M := M) g k m i _hk _hi _hik w
+    exact weightedCovIBP_lpFiberJet_fin_regularityIneq (I := I) (M := M) g k m i _hk _hi _hik w
       (1 / ((n : ℝ) + 1)) hεpos
   exact le_of_tendsto_of_tendsto' hLlim (hRlim.const_mul D') hreg
 

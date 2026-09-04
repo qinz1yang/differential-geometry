@@ -21,7 +21,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 
@@ -701,7 +701,7 @@ private theorem sharp_eq_insert
         (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g₀ g₁ x) om from rfl]
-  rw [cotangentToDual_slotInsertEndoFib' (I := I) (M := M) x
+  rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g₀ g₁ x) om w]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (sharpFlatEndoCc (I := I) g₀ g₁).toSection x) om =
@@ -962,7 +962,7 @@ private theorem psi_h2_tame
   rw [← hfactor]
   exact hOut
 
-private theorem psi_h2_unif
+private theorem psi_h2_uniform
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1570,7 +1570,7 @@ theorem deTurckLieFirstOrder_h2_uniform_bound
   obtain ⟨Bc0, Bc1, hBc0, hBc1, hconn⟩ :=
     connLow_tame_uniform (I := I) (M := M) hDim gBase hΛ0 hδ₀
   obtain ⟨Bp0, Bp1, hBp0, hBp1, hpsi⟩ :=
-    psi_h2_unif (I := I) (M := M) hDim gBase hΛ hδ₀
+    psi_h2_uniform (I := I) (M := M) hDim gBase hΛ hδ₀
   obtain ⟨C, hC, hpiece⟩ :=
     piece_h2_uniform (I := I) (M := M) hDim gBase hΛ
   obtain ⟨F, hF, hfix⟩ :=

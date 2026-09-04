@@ -562,7 +562,7 @@ theorem tensorChartComponent_contMDiff
     g r s S α Idx Jdx with hf_def
   have hf_smooth : ContMDiff I (𝓘(ℝ, ℝ)) ∞ f :=
     tensorChartComponentPou_contMDiff (I := I) (M := M) g r s S α Idx Jdx
-  have hf_supp : tsupport f ⊆ (chartAt H α).source :=
+  have hf_support : tsupport f ⊆ (chartAt H α).source :=
     tensorChartComponentPou_support_subset_chart_source
       (I := I) (M := M) g r s S α Idx Jdx
   set K : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
@@ -572,7 +572,7 @@ theorem tensorChartComponent_contMDiff
   have hsub_target : tsupport f ⊆ (extChartAt I α).source := by
     intro x hx
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hf_supp hx
+    exact hf_support hx
   have hcont_chart : ContinuousOn (extChartAt I α) (tsupport f) :=
     (continuousOn_extChartAt α).mono hsub_target
   have hK_compact_M : IsCompact ((extChartAt I α) '' (tsupport f)) :=
@@ -632,10 +632,10 @@ theorem tensorChartComponent_contMDiff
         K ⊆ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α := by
       intro z hz_carrier
-      rcases hz_carrier with ⟨w, ⟨x, hx_supp, hxw⟩, hwz⟩
-      have hx_src : x ∈ (extChartAt I α).source := hsub_target hx_supp
+      rcases hz_carrier with ⟨w, ⟨x, hx_support, hxw⟩, hwz⟩
+      have hx_source : x ∈ (extChartAt I α).source := hsub_target hx_support
       have hw_target : w ∈ (extChartAt I α).target := by
-        rw [← hxw]; exact (extChartAt I α).map_source hx_src
+        rw [← hxw]; exact (extChartAt I α).map_source hx_source
       exact ⟨w, hw_target, hwz⟩
     have hy_off : y ∉ K := fun hy_in =>
       hy_target (hcarrier_subset_target hy_in)
@@ -659,12 +659,12 @@ theorem tensorChartComponent_contMDiff
       rw [tensorChartComponent_def, h_apply]
       by_contra hne_f
       apply hz
-      have hin_supp : (extChartAt I α).symm ((toEuclidean (E := E)).symm z) ∈
+      have hin_support : (extChartAt I α).symm ((toEuclidean (E := E)).symm z) ∈
           tsupport f := subset_tsupport _ hne_f
-      rw [h_eq] at hin_supp
+      rw [h_eq] at hin_support
       have hext_right : (extChartAt I α) ((extChartAt I α).symm w) = w :=
         (extChartAt I α).right_inv hw_target
-      refine ⟨w, ⟨(extChartAt I α).symm w, hin_supp, hext_right⟩, hwz⟩
+      refine ⟨w, ⟨(extChartAt I α).symm w, hin_support, hext_right⟩, hwz⟩
     · rw [tensorChartComponent_def]
       exact DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_notMem
         (I := I) (M := M) α f hz_target
@@ -680,27 +680,27 @@ theorem tensorChartComponent_hasCompactSupport
   classical
   set f : M → ℝ := tensorChartComponentPou (I := I) (M := M)
     g r s S α Idx Jdx with hf_def
-  have hf_supp : tsupport f ⊆ (chartAt H α).source :=
+  have hf_support : tsupport f ⊆ (chartAt H α).source :=
     tensorChartComponentPou_support_subset_chart_source
       (I := I) (M := M) g r s S α Idx Jdx
   set K : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :=
     (toEuclidean (E := E)) ''
       ((extChartAt I α) '' (tsupport f)) with hK_def
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
-  have hsub_src : tsupport f ⊆ (extChartAt I α).source := by
+  have hsub_source : tsupport f ⊆ (extChartAt I α).source := by
     intro x hx
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hf_supp hx
+    exact hf_support hx
   have hcont_chart : ContinuousOn (extChartAt I α) (tsupport f) :=
-    (continuousOn_extChartAt α).mono hsub_src
+    (continuousOn_extChartAt α).mono hsub_source
   have hK_compact_M : IsCompact ((extChartAt I α) '' (tsupport f)) :=
     hf_compact.image_of_continuousOn hcont_chart
   have hK_compact : IsCompact K :=
     hK_compact_M.image (toEuclidean (E := E)).continuous
   apply HasCompactSupport.of_support_subset_isCompact hK_compact
-  intro y hy_supp
+  intro y hy_support
   by_contra hyK
-  apply hy_supp
+  apply hy_support
   by_cases hy_target :
       y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α
@@ -712,14 +712,14 @@ theorem tensorChartComponent_hasCompactSupport
       (I := I) (M := M) α f ⟨w, hw_target, hwy⟩]
     by_contra hne_f
     apply hyK
-    have hin_supp : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+    have hin_support : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         tsupport f := by
       apply subset_tsupport
       exact hne_f
-    rw [h_eq] at hin_supp
+    rw [h_eq] at hin_support
     have hext_right : (extChartAt I α) ((extChartAt I α).symm w) = w :=
       (extChartAt I α).right_inv hw_target
-    exact ⟨w, ⟨(extChartAt I α).symm w, hin_supp, hext_right⟩, hwy⟩
+    exact ⟨w, ⟨(extChartAt I α).symm w, hin_support, hext_right⟩, hwy⟩
   · rw [tensorChartComponent_def]
     exact DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_notMem
       (I := I) (M := M) α f hy_target

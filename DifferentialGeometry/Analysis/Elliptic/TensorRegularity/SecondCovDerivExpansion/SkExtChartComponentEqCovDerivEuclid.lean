@@ -99,12 +99,12 @@ private lemma toEuclidean_extChartAt_mem_euclidNeighbourhood
       euclidNeighbourhood (I := I) (M := M) α U := by
   classical
   have hb₀_good : b₀ ∈ chartLeviCivitaGoodSet (I := I) α := hU_sub_good hb₀_U
-  have hb₀_src : b₀ ∈ (extChartAt I α).source :=
+  have hb₀_source : b₀ ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb₀_good
-  have hb₀_tgt : (extChartAt I α) b₀ ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb₀_src
+  have hb₀_target : (extChartAt I α) b₀ ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hb₀_source
   refine ⟨?_, ?_⟩
-  · exact ⟨(extChartAt I α) b₀, hb₀_tgt, rfl⟩
+  · exact ⟨(extChartAt I α) b₀, hb₀_target, rfl⟩
   · change (extChartAt I α).symm
         ((toEuclidean (E := E)).symm (toEuclidean ((extChartAt I α) b₀))) ∈ U
     have hsymm_te : (toEuclidean (E := E)).symm
@@ -113,7 +113,7 @@ private lemma toEuclidean_extChartAt_mem_euclidNeighbourhood
       (toEuclidean (E := E)).symm_apply_apply _
     rw [hsymm_te]
     have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b₀) = b₀ :=
-      (extChartAt I α).left_inv hb₀_src
+      (extChartAt I α).left_inv hb₀_source
     rw [hleft_inv]
     exact hb₀_U
 

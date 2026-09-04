@@ -150,7 +150,7 @@ theorem nabla2Trace02
     let HessTrace := hessianSec (I := I) cov hcov traceA htrace
     let nablaA :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        2 cov A (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        2 cov A (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov hcov A)
     let nabla2A :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -165,7 +165,7 @@ theorem nabla2Trace02
   let HessTrace := hessianSec (I := I) cov hcov traceA htrace
   let nablaA :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      2 cov A (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      2 cov A (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         2 cov hcov A)
   let nabla2A :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -185,7 +185,7 @@ theorem nabla2Trace02
     simpa [nablaA] using
       (totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         2 cov A
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov hcov A))
   have hB_eq_nabla (p : M) :
       B p =

@@ -13,7 +13,7 @@ import Mathlib.Topology.UniformSpace.Real
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Topology
 open scoped Topology
@@ -217,7 +217,7 @@ theorem arzelaAscoli_subseq_vec
 
 end VectorTarget
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 namespace DifferentialGeometry.Analysis
@@ -225,7 +225,7 @@ namespace DifferentialGeometry.Analysis
 open Filter Set Topology
 open scoped Topology BoundedContinuousFunction
 
-theorem arzela_subseq_cpt
+theorem arzela_subseq_compact
     {X Y : Type*} [TopologicalSpace X] [CompactSpace X]
     [PseudoMetricSpace Y] [T2Space Y]
     (K : Set Y) (hK : IsCompact K) (f : Nat -> C(X, Y))
@@ -261,17 +261,17 @@ theorem arzela_subseq_cpt
   rcases hcompact.tendsto_subseq hmem with
     ⟨g, _hg, phi, hphi, htendsto⟩
   refine ⟨phi, g.toContinuousMap, hphi, ?_⟩
-  have hunif : TendstoUniformly (fun n => fb (phi n)) g atTop :=
+  have huniform : TendstoUniformly (fun n => fb (phi n)) g atTop :=
     BoundedContinuousFunction.tendsto_iff_tendstoUniformly.mp
       (by simpa only [Function.comp_def] using htendsto)
   change TendstoUniformly (fun n x => f (phi n) x) (fun x => g x) atTop
-  change TendstoUniformly (fun n x => fb (phi n) x) (fun x => g x) atTop at hunif
-  simpa only [fb, BoundedContinuousFunction.mkOfCompact_apply] using hunif
+  change TendstoUniformly (fun n x => fb (phi n) x) (fun x => g x) atTop at huniform
+  simpa only [fb, BoundedContinuousFunction.mkOfCompact_apply] using huniform
 
 alias arzela_ascoli_isCompact_closure :=
-  HCGCompactness.arzelaAscoli_isCompact_closure
+  CheegerGromovCompactness.arzelaAscoli_isCompact_closure
 
 alias arzela_ascoli_subseq_tendsto_locally_uniformly :=
-  HCGCompactness.arzelaAscoli_subseq_vec
+  CheegerGromovCompactness.arzelaAscoli_subseq_vec
 
 end DifferentialGeometry.Analysis

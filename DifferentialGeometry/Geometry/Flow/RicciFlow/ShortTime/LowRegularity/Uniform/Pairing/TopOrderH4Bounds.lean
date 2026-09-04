@@ -15,7 +15,7 @@ open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -176,7 +176,7 @@ private theorem hs_two_norm_le_of_low_jet
       simp only [C]
       ring
 
-theorem rhs_self_bg_corr_action_h2
+theorem rhs_self_bg_correction_action_h2
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M)
     (Rcap : ℝ) (hRcap : 0 ≤ Rcap) :

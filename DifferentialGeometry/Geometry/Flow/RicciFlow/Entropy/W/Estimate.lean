@@ -106,7 +106,7 @@ theorem w_form_upper
     exact hx (by norm_num [hvx])
   have hent_le :
       -(∫ x, v x ^ 2 * Real.log (v x ^ 2) ∂μ) ≤ Real.log (μ U).toReal :=
-    DifferentialGeometry.Analysis.Integration.entropy_supp_le μ
+    DifferentialGeometry.Analysis.Integration.entropy_support_le μ
       (hvmeas.pow_const 2) hv2i (fun x => sq_nonneg (v x)) hmass hent hsupp2
   have hscalar : (∫ x, R x * v x ^ 2 ∂μ) ≤ K := by
     calc

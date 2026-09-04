@@ -324,7 +324,7 @@ theorem exists_calabiTail
   have hleft :
       riemannianEDist I O z.proj = ENNReal.ofReal left := by
     simpa only [z, velocityLift_proj, left] using
-      Geometry.Riemannian.Variation.minSeg_edist
+      Geometry.Riemannian.Variation.minSegment_edist
         (I := I) g hEnorm v hexp hlen hr_def hfin hs₀_closed
   have hleftPos : 0 < left := by
     dsimp [left, s₀]

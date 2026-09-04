@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -48,7 +48,7 @@ def HasCompactCover {Y J : Type*} [TopologicalSpace Y]
   ∃ K : J → Set Y, (∀ j, IsCompact (K j)) ∧
     (∀ j, K j ⊆ sourcePatch j) ∧ sourceBall = ⋃ j, K j
 
-def HasSuppConvData
+def HasSupportedCenterMapConvergence
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -149,13 +149,13 @@ def HasSuppConvData
         (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))) ∧
     ContinuousOn (Jbarinf alpha target)
         (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))) ∧
-    MapCInfConvOnCompacts
+    MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
       (fun k => (c2RadiusNormalChartFamily (I := I) X).transition (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
         (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)))
       (Jinf alpha target) ∧
-    MapCInfConvOnCompacts
+    MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
       (fun k => (c2RadiusNormalChartFamily (I := I) X).transition (L.φ (phi k))
         (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat))
@@ -182,7 +182,7 @@ def HasSuppConvData
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)))
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
 
-theorem HasSuppConvData.weight_on
+theorem HasSupportedCenterMapConvergence.weight_on
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -196,7 +196,7 @@ theorem HasSuppConvData.weight_on
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (h : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (alpha : LiveSlot L inp.pack r) :
     let i0 := baseIndex inp.decay inp.realizes inp.pack hr
@@ -206,7 +206,7 @@ theorem HasSuppConvData.weight_on
       centerAverage.WeightDataOn (U alpha)
         (fun _ : Fin (inp.pack.A r) => Set.univ) weightInf := by
   dsimp only
-  dsimp only [HasSuppConvData] at h
+  dsimp only [HasSupportedCenterMapConvergence] at h
   rcases h with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, _hcover,
@@ -214,11 +214,11 @@ theorem HasSuppConvData.weight_on
   have hlim0 := hlim alpha
   dsimp only [HasAtomWeightLim] at hlim0
   rcases hlim0 with
-    ⟨_hdead, _hatomC, _hatomInfC, _hatomConv, _hweightC,
-      hweightInfC, _hweightConv⟩
+    ⟨_hdead, _hatomC, _hatomInfC, _hatomConvergence, _hweightC,
+      hweightInfC, _hweightConvergence⟩
   exact ⟨hweightInfC, hweight alpha⟩
 
-theorem HasSuppConvData.core_on
+theorem HasSupportedCenterMapConvergence.core_on
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -232,19 +232,19 @@ theorem HasSuppConvData.core_on
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (h : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (alpha : LiveSlot L inp.pack r) :
     IsOpen (U alpha) ∧ IsCompact (C0 alpha) ∧ IsCompact (C1 alpha) ∧
       C0 alpha ⊆ interior (C1 alpha) ∧ C1 alpha ⊆ U alpha := by
-  dsimp only [HasSuppConvData] at h
+  dsimp only [HasSupportedCenterMapConvergence] at h
   rcases h with
     ⟨hU, _hU8, hC0, hC1, hC01, hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, _hcover,
       _hlim, _hweight, _htrans, _hsmooth⟩
   exact ⟨hU alpha, hC0 alpha, hC1 alpha, hC01 alpha, hC1U alpha⟩
 
-theorem HasSuppConvData.core_shape
+theorem HasSupportedCenterMapConvergence.core_shape
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -258,17 +258,17 @@ theorem HasSuppConvData.core_shape
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (h : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (alpha : LiveSlot L inp.pack r) :
     Convex Real (C0 alpha) ∧ (0 : E) ∈ C0 alpha := by
-  dsimp only [HasSuppConvData] at h
+  dsimp only [HasSupportedCenterMapConvergence] at h
   rcases h with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, hconvex, hzero,
       _hbuffer, _hcore, _hcover, _hlim, _hweight, _htrans, _hsmooth⟩
   exact ⟨hconvex alpha, hzero alpha⟩
 
-theorem HasSuppConvData.buffer_cover
+theorem HasSupportedCenterMapConvergence.buffer_cover
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -282,7 +282,7 @@ theorem HasSuppConvData.buffer_cover
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (h : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf) :
     let Lphi := L.subseq hphi
     ∃ eta : LiveSlot L inp.pack r → Real,
@@ -300,13 +300,13 @@ theorem HasSuppConvData.buffer_cover
             expMapDiffeo (I := I) Y.metric
                 (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) z = y ∧
               Metric.closedBall z (eta alpha) ⊆ interior (C0 alpha) := by
-  dsimp only [HasSuppConvData] at h
+  dsimp only [HasSupportedCenterMapConvergence] at h
   rcases h with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       hbuffer, _hcore, _hcover, _hlim, _hweight, _htrans, _hsmooth⟩
   exact hbuffer
 
-theorem HasSuppConvData.source_cover
+theorem HasSupportedCenterMapConvergence.source_cover
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -320,7 +320,7 @@ theorem HasSuppConvData.source_cover
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (h : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (k : Nat) :
     let Lphi := L.subseq hphi
@@ -336,14 +336,14 @@ theorem HasSuppConvData.source_cover
         (fun z => expMapDiffeo (I := I) Y.metric
           (seqCenterD inp.decay P Lphi k (alpha.1 : Nat)) z) ''
             interior (C0 alpha) := by
-  dsimp only [HasSuppConvData] at h
+  dsimp only [HasSupportedCenterMapConvergence] at h
   rcases h with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, hcore, _hcover,
       _hlim, _hweight, _htrans, _hsmooth⟩
   exact hcore k
 
-theorem HasSuppConvData.geom_on
+theorem HasSupportedCenterMapConvergence.geom_on
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -357,7 +357,7 @@ theorem HasSuppConvData.geom_on
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (h : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (k : Nat) (alpha : LiveSlot L inp.pack r) :
     let Y := X.obj (L.φ (phi k))
@@ -380,14 +380,14 @@ theorem HasSuppConvData.geom_on
         (L.hatBall inp.decay inp.D P inp.pack r (phi k) alpha.1 ∩
           ⋃ gamma : Fin (inp.pack.A r),
             L.innerBall inp.decay inp.D P inp.pack r (phi k) gamma) := by
-  dsimp only [HasSuppConvData] at h
+  dsimp only [HasSupportedCenterMapConvergence] at h
   rcases h with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, hgeom,
       _hlim, _hweight, _htrans, _hsmooth⟩
   exact (hgeom k).1 alpha
 
-theorem HasSuppConvData.subseq
+theorem HasSupportedCenterMapConvergence.subseq
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -401,12 +401,12 @@ theorem HasSuppConvData.subseq
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (h : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) :
-    HasSuppConvData (I := I) inp P L r hr (phi ∘ ψ) (hphi.comp hψ)
+    HasSupportedCenterMapConvergence (I := I) inp P L r hr (phi ∘ ψ) (hphi.comp hψ)
       U C0 C1 aInf Jinf Jbarinf := by
-  dsimp only [HasSuppConvData] at h ⊢
+  dsimp only [HasSupportedCenterMapConvergence] at h ⊢
   rcases h with
     ⟨hU, hU8, hC0, hC1, hC01, hC1U, hconvex, hzero,
       hbuffer, hcore, hcover, hweight,
@@ -439,7 +439,7 @@ theorem HasSuppConvData.subseq
   · intro alpha target k
     simpa only [Function.comp_apply] using hsmooth alpha target (ψ k)
 
-theorem MetricCompactnessInputs.exists_supp_pts_fin
+theorem MetricCompactnessInputs.exists_support_points_fin
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
@@ -474,7 +474,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
             (aInf alpha (baseIndex inp.decay inp.realizes inp.pack hr))
             (aInf alpha) (baseIndex inp.decay inp.realizes inp.pack hr))
           z gamma
-      HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+      HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
         aInf Jinf Jbarinf ∧
       ∀ᶠ n in Filter.atTop,
         let Y := X.obj (Lphi.φ n)
@@ -502,7 +502,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
         let localWeight := fun (alpha : LiveSlot L inp.pack r)
             (x : Y.M) (gamma : Fin (inp.pack.A r)) =>
           weightInf alpha (chi alpha x) gamma
-        let pairPts : (alpha : LiveSlot L inp.pack r) →
+        let pairPoints : (alpha : LiveSlot L inp.pack r) →
             InterSlot L inp.pack r alpha → Nat → Nat → Y.M → Y.M :=
           fun alpha target a b x =>
             (chi alpha).symm
@@ -510,8 +510,8 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
                 (beta b target.1) (beta b alpha)
                 (normalTransition (I := I) (X.obj (Lphi.φ a))
                   (beta a alpha) (beta a target.1) (chi alpha x)))
-        let pts := fun (alpha : LiveSlot L inp.pack r) =>
-          totalPts (X := X) pairPts alpha
+        let points := fun (alpha : LiveSlot L inp.pack r) =>
+          totalPoints (X := X) pairPoints alpha
         HasCompactCover (Lphi.hatSourceBall inp.decay P r n) sourcePatch ∧
           Lphi.hatSourceBall inp.decay P r n ⊆
             ⋃ alpha : LiveSlot L inp.pack r, sourcePatch alpha ∧
@@ -526,13 +526,13 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
             ∃ N : Nat, ∀ a ≥ N, ∀ b ≥ N,
               ∀ x ∈ sourcePatch alpha,
                 localWeight alpha x gamma ≠ 0 →
-                  dist x (pts alpha a b x gamma) < epsilon := by
+                  dist x (points alpha a b x gamma) < epsilon := by
   classical
   obtain ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, hUopen, hU8,
       hC0, hC1, hC01, hC1U, hC0convex, hC0zero,
       hbuffer, hcore, hgeom, hlim, htrans, hstage,
       hsupp⟩ :=
-    inp.exists_atom_supp_fin h8 hradRatio P L hstable r hr
+    inp.exists_atom_support_fin h8 hradRatio P L hstable r hr
   obtain ⟨hgp0, _hrad⟩ := inp.exponential_scale_tails h8 hradRatio P L r
   have hgpPhi : ExponentialRadiusScaleTail (I := I) inp.decay inp.D P
       (L.subseq hphi) inp.pack r :=
@@ -724,7 +724,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
           (aInf alpha (baseIndex inp.decay inp.realizes inp.pack hr))
           (aInf alpha) (baseIndex inp.decay inp.realizes inp.pack hr))
         (chi alpha x) gamma
-    let pairPts : (alpha : LiveSlot L inp.pack r) →
+    let pairPoints : (alpha : LiveSlot L inp.pack r) →
         InterSlot L inp.pack r alpha → Nat → Nat → Y.M → Y.M :=
       fun alpha target a b x =>
         (chi alpha).symm
@@ -737,18 +737,18 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
               (seqCenterD inp.decay P (L.subseq hphi) a
                 (target.1.1 : Nat))
               (chi alpha x)))
-    let pts := fun (alpha : LiveSlot L inp.pack r) =>
-      totalPts (X := X) pairPts alpha
+    let points := fun (alpha : LiveSlot L inp.pack r) =>
+      totalPoints (X := X) pairPoints alpha
     change ∀ alpha gamma epsilon, 0 < epsilon →
       ∃ N : Nat, ∀ a ≥ N, ∀ b ≥ N, ∀ x ∈ sourcePatch alpha,
         localWeight alpha x gamma ≠ 0 →
-          dist x (pts alpha a b x gamma) < epsilon
+          dist x (points alpha a b x gamma) < epsilon
     have hpair (alpha : LiveSlot L inp.pack r) :
         ∀ target : InterSlot L inp.pack r alpha, ∀ epsilon : Real,
           0 < epsilon → ∃ N : Nat, ∀ a ≥ N, ∀ b ≥ N,
             ∀ x ∈ sourcePatch alpha,
               localWeight alpha x target.1.1 ≠ 0 →
-                dist x (pairPts alpha target a b x) < epsilon := by
+                dist x (pairPoints alpha target a b x) < epsilon := by
       let centerAll : Fin (inp.pack.A r) → Y.M := fun gamma =>
         seqCenterD inp.decay P (L.subseq hphi) n (gamma : Nat)
       let pairWeight : Y.M → InterSlot L inp.pack r alpha → Real :=
@@ -781,7 +781,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
         simpa only [sourceCage] using
           NetLimitData.hatCageCompact (I := I) (X := X) inp.decay P
             (L.subseq hphi) inp.pack r n alpha.1
-      have hSuppCage : ∀ target : InterSlot L inp.pack r alpha,
+      have hSupportCage : ∀ target : InterSlot L inp.pack r alpha,
           ∀ x : Y.M, x ∈ sourcePatch alpha → pairWeight x target ≠ 0 →
             x ∈ sourceCage target := by
         intro target x hx _hne
@@ -814,7 +814,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
           sourceCage target ⊆ (chi alpha).source := by
         intro target
         simpa only [sourceCage, chi, centerAll] using
-          NetLimitData.hatCageSrcOfRad (I := I) (X := X) inp.decay P
+          NetLimitData.hat_source_cage_subset_normalChartAt_source_of_radius (I := I) (X := X) inp.decay P
             (L.subseq hphi) inp.pack r n centerAll alpha.1
             (hcenterN alpha) hR
       have hBcont : ∀ target : InterSlot L inp.pack r alpha,
@@ -866,11 +866,11 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
           (chi alpha) '' sourceCage target ⊆ U8 target := by
         intro target
         simpa only [chi, sourceCage, U8, centerAll] using
-          hatCageImg' (I := I) (X := X) inp.decay P (L.subseq hphi)
+          normalChart_image_hatSourceCage_subset_ball_of_coercive_bound (I := I) (X := X) inp.decay P (L.subseq hphi)
             inp.pack r n centerAll alpha.1
             (fun gamma => 8 * L.lamInf (gamma : Nat))
             (hcenterN alpha) hR hsigma
-      have hSuppV : ∀ target : InterSlot L inp.pack r alpha,
+      have hSupportV : ∀ target : InterSlot L inp.pack r alpha,
           ∀ x : Y.M, x ∈ sourcePatch alpha → pairWeight x target ≠ 0 →
             Jinf alpha target (chi alpha x) ∈ V6 target := by
         intro target x hx hne
@@ -882,11 +882,11 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
           apply Subtype.ext
           exact hslot
         simpa only [V6, htarget] using hmem
-      obtain ⟨sourceK, hK, hSuppK, hsrcK, hKU_K, hKV6⟩ :=
-        NetLimitData.hatSuppCageData (I := I) (X := X) inp.decay P
+      obtain ⟨sourceK, hK, hSupportK, hsrcK, hKU_K, hKV6⟩ :=
+        NetLimitData.hatSupportCageData (I := I) (X := X) inp.decay P
           (L.subseq hphi) n (s := sourcePatch alpha)
           pairWeight centerPair sourceCage U8 V6 (Jinf alpha)
-          hCageCompact hSuppCage (by
+          hCageCompact hSupportCage (by
             intro target
             simpa only [centerPair] using hsrc target)
           hBcont (by
@@ -894,7 +894,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
             simpa only [centerPair] using hKU target)
           (fun _ => Metric.isClosed_closedBall) (by
             intro target x hx hne
-            simpa only [centerPair] using hSuppV target x hx hne)
+            simpa only [centerPair] using hSupportV target x hx hne)
       have hKV8 : ∀ target : InterSlot L inp.pack r alpha, ∀ v : E,
           v ∈ (chi alpha) '' sourceK target →
             Jinf alpha target v ∈ V8 target := by
@@ -910,10 +910,10 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
         have hlam : 0 < L.lamInf (target.1.1 : Nat) :=
           inp.decay.lambda_pos inp.hD (L.rInf (target.1.1 : Nat))
         nlinarith
-      have hpoints := NetLimitData.hatSuppPtsOfComp (I := I) (X := X)
+      have hpoints := NetLimitData.hatSupportPointsOfComp (I := I) (X := X)
         inp.decay P (L.subseq hphi) n (s := sourcePatch alpha)
         pairWeight centerPair sourceK U8 V8 B (Jinf alpha) A (Jbarinf alpha)
-        (hconn ((L.subseq hphi).φ n)) hK hSuppK hsrcK
+        (hconn ((L.subseq hphi).φ n)) hK hSupportK hsrcK
         (fun _ => Metric.isOpen_ball)
         (fun target => by simpa only [B, U8] using
           (htrans alpha target).2.2.2.2.1)
@@ -929,7 +929,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
           simpa only [centerPair] using hKV8 target v (by
             simpa only [centerPair] using hv))
       intro target epsilon hepsilon
-      simpa only [pairWeight, centerPair, B, A, pairPts, chi] using
+      simpa only [pairWeight, centerPair, B, A, pairPoints, chi] using
         hpoints target epsilon hepsilon
     intro alpha gamma epsilon hepsilon
     by_cases htarget : ∃ target : InterSlot L inp.pack r alpha,
@@ -947,14 +947,14 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
           congr 1
         next h =>
           exact (h htarget).elim
-      simpa only [pts, totalPts, hlookup] using hp
+      simpa only [points, totalPoints, hlookup] using hp
     · refine ⟨0, ?_⟩
       intro a _ha b _hb x hx hne
       exfalso
       obtain ⟨target, hslot, _hmem⟩ := hsupp alpha (chi alpha x) hx.2 gamma hne
       exact htarget ⟨target, hslot⟩
 
-def HasSuppConvDataOn
+def HasSupportedCenterMapConvergenceOn
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -1053,14 +1053,14 @@ def HasSuppConvDataOn
         (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))) ∧
     ContinuousOn (Jbarinf alpha target)
         (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))) ∧
-    MapCInfConvOnCompacts
+    MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
       (fun k =>
         chart.transition (L.φ (phi k))
           (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
           (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)))
       (Jinf alpha target) ∧
-    MapCInfConvOnCompacts
+    MapCInfConvergenceOnCompacts
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
       (fun k =>
         chart.transition (L.φ (phi k))
@@ -1088,7 +1088,7 @@ def HasSuppConvDataOn
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat)))
       (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
 
-theorem HasSuppConvData.to_on_c2_radius_normal_chart_family
+theorem HasSupportedCenterMapConvergence.to_on_c2_radius_normal_chart_family
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -1102,12 +1102,12 @@ theorem HasSuppConvData.to_on_c2_radius_normal_chart_family
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (h : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf) :
-    HasSuppConvDataOn (I := I) inp P L r hr phi hphi
+    HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi
       (c2RadiusNormalChartFamily (I := I) X) U C0 C1 aInf Jinf Jbarinf := by
-  dsimp only [HasSuppConvData] at h
-  dsimp only [HasSuppConvDataOn, MetricCompactnessInputs.toCore]
+  dsimp only [HasSupportedCenterMapConvergence] at h
+  dsimp only [HasSupportedCenterMapConvergenceOn, MetricCompactnessInputs.toCore]
   rcases h with
     ⟨hUopen, hUball, hC0, hC1, hC01, hC1U, hconv, hzero,
       heta, hcover, hsource, hatom, hweight, htrans, hsmooth⟩
@@ -1184,7 +1184,7 @@ theorem HasSuppConvData.to_on_c2_radius_normal_chart_family
       seqCenterD_subseq] using hsmooth alpha target k
 
 omit [CompleteSpace E] in
-theorem HasSuppConvDataOn.weight_on
+theorem HasSupportedCenterMapConvergenceOn.weight_on
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -1199,7 +1199,7 @@ theorem HasSuppConvDataOn.weight_on
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
+    (h : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf)
     (alpha : LiveSlot L inp.pack r) :
     let i0 := baseIndex inp.decay inp.realizes inp.pack hr
@@ -1209,7 +1209,7 @@ theorem HasSuppConvDataOn.weight_on
       centerAverage.WeightDataOn (U alpha)
         (fun _ : Fin (inp.pack.A r) => Set.univ) weightInf := by
   dsimp only
-  dsimp only [HasSuppConvDataOn] at h
+  dsimp only [HasSupportedCenterMapConvergenceOn] at h
   rcases h with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, _hcover,
@@ -1217,12 +1217,12 @@ theorem HasSuppConvDataOn.weight_on
   have hlim0 := hlim alpha
   dsimp only [HasAtomWeightLimOn] at hlim0
   rcases hlim0 with
-    ⟨_hdead, _hatomC, _hatomInfC, _hatomConv, _hweightC,
-      hweightInfC, _hweightConv⟩
+    ⟨_hdead, _hatomC, _hatomInfC, _hatomConvergence, _hweightC,
+      hweightInfC, _hweightConvergence⟩
   exact ⟨hweightInfC, hweight alpha⟩
 
 omit [CompleteSpace E] in
-theorem HasSuppConvDataOn.core_on
+theorem HasSupportedCenterMapConvergenceOn.core_on
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -1237,12 +1237,12 @@ theorem HasSuppConvDataOn.core_on
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
+    (h : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf)
     (alpha : LiveSlot L inp.pack r) :
     IsOpen (U alpha) ∧ IsCompact (C0 alpha) ∧ IsCompact (C1 alpha) ∧
       C0 alpha ⊆ interior (C1 alpha) ∧ C1 alpha ⊆ U alpha := by
-  dsimp only [HasSuppConvDataOn] at h
+  dsimp only [HasSupportedCenterMapConvergenceOn] at h
   rcases h with
     ⟨hU, _hU8, hC0, hC1, hC01, hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, _hcover,
@@ -1250,7 +1250,7 @@ theorem HasSuppConvDataOn.core_on
   exact ⟨hU alpha, hC0 alpha, hC1 alpha, hC01 alpha, hC1U alpha⟩
 
 omit [CompleteSpace E] in
-theorem HasSuppConvDataOn.geom_on
+theorem HasSupportedCenterMapConvergenceOn.geom_on
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -1265,7 +1265,7 @@ theorem HasSuppConvDataOn.geom_on
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
+    (h : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf)
     (k : Nat) (alpha : LiveSlot L inp.pack r) :
     let Y := X.obj (L.φ (phi k))
@@ -1285,7 +1285,7 @@ theorem HasSuppConvDataOn.geom_on
         (L.hatBall inp.decay inp.D P inp.pack r (phi k) alpha.1 ∩
           ⋃ gamma : Fin (inp.pack.A r),
             L.innerBall inp.decay inp.D P inp.pack r (phi k) gamma) := by
-  dsimp only [HasSuppConvDataOn] at h
+  dsimp only [HasSupportedCenterMapConvergenceOn] at h
   rcases h with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       _hbuffer, _hcore, hgeom,
@@ -1293,7 +1293,7 @@ theorem HasSuppConvDataOn.geom_on
   exact (hgeom k).1 alpha
 
 omit [CompleteSpace E] in
-theorem HasSuppConvDataOn.subseq
+theorem HasSupportedCenterMapConvergenceOn.subseq
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -1308,12 +1308,12 @@ theorem HasSuppConvDataOn.subseq
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvDataOn (I := I) inp P L r hr phi hphi chart
+    (h : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi chart
       U C0 C1 aInf Jinf Jbarinf)
     {ψ : Nat → Nat} (hψ : StrictMono ψ) :
-    HasSuppConvDataOn (I := I) inp P L r hr
+    HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr
       (phi ∘ ψ) (hphi.comp hψ) chart U C0 C1 aInf Jinf Jbarinf := by
-  dsimp only [HasSuppConvDataOn] at h ⊢
+  dsimp only [HasSupportedCenterMapConvergenceOn] at h ⊢
   rcases h with
     ⟨hU, hU8, hC0, hC1, hC01, hC1U, hconvex, hzero,
       hbuffer, hcore, hcover, hweight,
@@ -1346,5 +1346,5 @@ theorem HasSuppConvDataOn.subseq
   · intro alpha target k
     simpa only [Function.comp_apply] using hsmooth alpha target (ψ k)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

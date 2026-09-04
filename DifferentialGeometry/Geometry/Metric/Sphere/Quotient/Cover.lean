@@ -169,7 +169,7 @@ noncomputable def roundQuotientUC
         (UniversalCover.proj_contMDiff (I := 𝓡 n) (M := Q)).comp d.contMDiff
       proj_smul := ?_
       proj_eq_imp := ?_
-      sectionAt := fun x => SectionWitness.ofLocal hsurj hloc x }
+      sectionAt := fun x => LocalSmoothSection.ofLocal hsurj hloc x }
   · intro a x
     rw [hρ a]
     simp only [proj, Function.comp_apply]

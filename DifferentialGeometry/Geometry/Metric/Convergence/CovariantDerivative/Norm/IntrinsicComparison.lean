@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 open DifferentialGeometry.Tensor0SBundle
@@ -89,5 +89,5 @@ theorem covariant_derivative_norm_comparison_of_intrinsic_metric_equivalence
     nlinarith [hlead, hmulsum, hFr0, hsum0]
   exact le_trans (hF3 r hr0 hrp) hrhs
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

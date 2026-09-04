@@ -86,7 +86,7 @@ theorem exists_redMin_vec [ConnectedSpace M]
         (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
           (I := I) x y)
     obtain ⟨path, hpath, _hlen⟩ :=
-      DifferentialGeometry.Geometry.Riemannian.CGT.exists_flat_path
+      DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor.exists_flat_path
         (I := I) hxy
     let alpha0 : Real → M := fun s ↦ path.extend (s / b)
     have halpha0 : ContMDiff 𝓘(Real, Real) I 1 alpha0 := by
@@ -97,7 +97,7 @@ theorem exists_redMin_vec [ConnectedSpace M]
     · simp only [alpha0, zero_div, Path.extend_zero]
     · simp only [alpha0, b, div_self hb.ne', Path.extend_one]
   obtain ⟨Z, hZmin, hZend⟩ :=
-    exists_lMinVec_rm (I := I) S hS K T hg tau htau hreg hRm
+    exists_lMinimizingVector_rm (I := I) S hS K T hg tau htau hreg hRm
       x y alpha0 halpha0 halpha00 halpha0b
   exact ⟨y, Z, hZmin, hZend, redMinVal_eq S T x y tau hy, hy⟩
 
@@ -112,16 +112,16 @@ theorem redMinAct_eq
     (hZend : lExp S T x Z (b ^ 2) = y)
     (hmin : ∀ z : M,
       redLength S T x y (b ^ 2) ≤ redLength S T x z (b ^ 2)) :
-    lRegAction S T (lRegCurve S T x Z) 0 b = redMinAct S T x b := by
-  have hlen : lRegAction S T (lRegCurve S T x Z) 0 b =
+    lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b = redMinAct S T x b := by
+  have hlen : lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b =
       lLength S T (fun r : Real ↦ lExp S T x Z r) 0 (b ^ 2) := by
-    change lRegAction S T (lRegCurve S T x Z) 0 b =
-      lLength S T (squareRootReparametrization (lRegCurve S T x Z)) 0 (b ^ 2)
+    change lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b =
+      lLength S T (squareRootReparametrization (lRegularizedCurve S T x Z)) 0 (b ^ 2)
     simpa only [Real.sqrt_sq hb.le] using
-      (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x Z)
+      (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T (lRegularizedCurve S T x Z)
         (b ^ 2) (sq_nonneg b)).symm
   have hcost := ((mem_lMinDomain S T x Z (b ^ 2)).1 hZmin).2
-  have hact : lRegAction S T (lRegCurve S T x Z) 0 b =
+  have hact : lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b =
       lCost S T x y (b ^ 2) := by
     rw [hlen, hcost, hZend]
   rw [redMinAct, redMinVal_eq S T x y (b ^ 2) hmin, redLength,
@@ -168,14 +168,14 @@ private theorem scalar_abs_rm
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
-private theorem lRegLag_ge_rm
+private theorem lRegularizedLag_ge_rm
     (S : SolutionOn (I := I) (M := M) D) (K T sigma : Real)
     (hsigma : 0 ≤ sigma)
     (hRm : ∀ q ∈ Icc (T - sigma) T, ∀ z : M,
       normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
     (alpha : Real → M) (s : Real)
     (hs : s ∈ Icc (0 : Real) (Real.sqrt sigma)) :
-    -redPotBound E K sigma ≤ lRegLagrangian S T alpha s := by
+    -redPotBound E K sigma ≤ lRegularizedLagrangian S T alpha s := by
   let F : Real := (Module.finrank Real E : Real) ^ 2 * Real.sqrt K
   have hF : 0 ≤ F := mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg K)
   have hs2 : s ^ 2 ≤ sigma := by
@@ -194,8 +194,8 @@ private theorem lRegLag_ge_rm
         (mul_le_mul_of_nonneg_left hs2 (by norm_num)) hF
     dsimp only [redPotBound, F]
     linarith
-  have hspeed := lRegSpeedSq_nonneg (I := I) S T alpha s
-  dsimp only [lRegLagrangian]
+  have hspeed := lRegularizedSpeedSq_nonneg (I := I) S T alpha s
+  dsimp only [lRegularizedLagrangian]
   change 0 ≤ (S.base.metric (T - s ^ 2)).inner (alpha s)
     (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s) at hspeed
   linarith
@@ -203,14 +203,14 @@ private theorem lRegLag_ge_rm
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
-private theorem lRegLag_const_le
+private theorem lRegularizedLag_const_le
     (S : SolutionOn (I := I) (M := M) D) (K T sigma : Real)
     (hsigma : 0 ≤ sigma)
     (hRm : ∀ q ∈ Icc (T - sigma) T, ∀ z : M,
       normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
     (y : M) (s : Real)
     (hs : s ∈ Icc (0 : Real) (Real.sqrt sigma)) :
-    lRegLagrangian S T (fun _ : Real ↦ y) s ≤ redPotBound E K sigma := by
+    lRegularizedLagrangian S T (fun _ : Real ↦ y) s ≤ redPotBound E K sigma := by
   let F : Real := (Module.finrank Real E : Real) ^ 2 * Real.sqrt K
   have hF : 0 ≤ F := mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg K)
   have hs2 : s ^ 2 ≤ sigma := by
@@ -227,7 +227,7 @@ private theorem lRegLag_const_le
       mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left hs2 (by norm_num)) hF
     exact hmul.trans (by simpa only [redPotBound, F] using hsq)
-  dsimp only [lRegLagrangian, redPotBound]
+  dsimp only [lRegularizedLagrangian, redPotBound]
   have hvel : lVelocity (I := I) (fun _ : Real ↦ y) s = 0 := by
     simp only [lVelocity, mfderiv_const]
     rfl
@@ -238,7 +238,7 @@ private theorem lRegLag_const_le
 omit [NeZero (Module.finrank Real E)]
   [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
-private theorem lRegAct_const_le
+private theorem lRegularizedAct_const_le
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T sigma b c : Real) (hsigma : 0 ≤ sigma)
     (hb : 0 ≤ b) (hbc : b ≤ c) (hc : c ≤ Real.sqrt sigma)
@@ -246,7 +246,7 @@ private theorem lRegAct_const_le
     (hRm : ∀ q ∈ Icc (T - sigma) T, ∀ z : M,
       normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
     (y : M) :
-    lRegAction S T (fun _ : Real ↦ y) b c ≤
+    lRegularizedAction S T (fun _ : Real ↦ y) b c ≤
       redPotBound E K sigma * (c - b) := by
   have hseg : Icc b c ⊆ Icc (0 : Real) (Real.sqrt sigma) := by
     intro s hs
@@ -259,20 +259,20 @@ private theorem lRegAct_const_le
       rw [← Real.sq_sqrt hsigma]
       exact (sq_le_sq₀ hs'.1 (Real.sqrt_nonneg sigma)).2 hs'.2
     constructor <;> linarith [sq_nonneg s]
-  have hint := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+  have hint := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T b c hbc (fun _ : Real ↦ y)
       contMDiff_const.contMDiffOn hregBack
-  have hmono : lRegAction S T (fun _ : Real ↦ y) b c ≤
+  have hmono : lRegularizedAction S T (fun _ : Real ↦ y) b c ≤
       ∫ _s in b..c, redPotBound E K sigma := by
     exact intervalIntegral.integral_mono_on hbc hint intervalIntegrable_const
-      (fun s hs ↦ lRegLag_const_le (I := I) S K T sigma hsigma hRm y s (hseg hs))
-  simpa only [intervalIntegral.integral_const, smul_eq_mul, lRegAction,
+      (fun s hs ↦ lRegularizedLag_const_le (I := I) S K T sigma hsigma hRm y s (hseg hs))
+  simpa only [intervalIntegral.integral_const, smul_eq_mul, lRegularizedAction,
     mul_comm] using hmono
 
 omit [NeZero (Module.finrank Real E)]
   [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
-private theorem lRegAct_tail_ge
+private theorem lRegularizedAct_tail_ge
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T sigma b c : Real) (hsigma : 0 ≤ sigma)
     (hb : 0 ≤ b) (hbc : b ≤ c) (hc : c ≤ Real.sqrt sigma)
@@ -281,7 +281,7 @@ private theorem lRegAct_tail_ge
       normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
     (alpha : Real → M)
     (halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 1 alpha (Icc b c)) :
-    -redPotBound E K sigma * (c - b) ≤ lRegAction S T alpha b c := by
+    -redPotBound E K sigma * (c - b) ≤ lRegularizedAction S T alpha b c := by
   have hseg : Icc b c ⊆ Icc (0 : Real) (Real.sqrt sigma) := by
     intro s hs
     exact ⟨hb.trans hs.1, hs.2.trans hc⟩
@@ -293,13 +293,13 @@ private theorem lRegAct_tail_ge
       rw [← Real.sq_sqrt hsigma]
       exact (sq_le_sq₀ hs'.1 (Real.sqrt_nonneg sigma)).2 hs'.2
     constructor <;> linarith [sq_nonneg s]
-  have hint := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+  have hint := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T b c hbc alpha halpha hregBack
   have hmono : (∫ _s in b..c, -redPotBound E K sigma) ≤
-      lRegAction S T alpha b c := by
+      lRegularizedAction S T alpha b c := by
     exact intervalIntegral.integral_mono_on hbc intervalIntegrable_const hint
-      (fun s hs ↦ lRegLag_ge_rm (I := I) S K T sigma hsigma hRm alpha s (hseg hs))
-  simpa only [intervalIntegral.integral_const, smul_eq_mul, lRegAction,
+      (fun s hs ↦ lRegularizedLag_ge_rm (I := I) S K T sigma hsigma hRm alpha s (hseg hs))
+  simpa only [intervalIntegral.integral_const, smul_eq_mul, lRegularizedAction,
     mul_comm] using hmono
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -342,20 +342,20 @@ private theorem redMinAct_ord [ConnectedSpace M]
   obtain ⟨yb, Zb, hZbMin, hZbEnd, hvalB, hminB⟩ :=
     exists_redMin_vec (I := I) S hS K T hg (b ^ 2) (sq_pos_of_pos hb0)
       hregB hRmB x
-  have hZaDom : a ∈ lRegDomain S T x Za := by
+  have hZaDom : a ∈ lRegularizedDomain S T x Za := by
     have hdom := (((mem_lExpPosDom S T x Za (a ^ 2)).1
       ((mem_lMinDomain S T x Za (a ^ 2)).1 hZaMin).1).2).2
     simpa only [lExpDomain, Real.sqrt_sq_eq_abs, abs_of_pos ha] using hdom
-  have hZbDom : b ∈ lRegDomain S T x Zb := by
+  have hZbDom : b ∈ lRegularizedDomain S T x Zb := by
     have hdom := (((mem_lExpPosDom S T x Zb (b ^ 2)).1
       ((mem_lMinDomain S T x Zb (b ^ 2)).1 hZbMin).1).2).2
     simpa only [lExpDomain, Real.sqrt_sq_eq_abs, abs_of_pos hb0] using hdom
-  have hcurveA : lRegCurve S T x Za a = ya := by
+  have hcurveA : lRegularizedCurve S T x Za a = ya := by
     simpa only [lExp, Real.sqrt_sq ha.le] using hZaEnd
-  have hactA : lRegAction S T (lRegCurve S T x Za) 0 a =
+  have hactA : lRegularizedAction S T (lRegularizedCurve S T x Za) 0 a =
       redMinAct S T x a :=
     redMinAct_eq (I := I) S T x ya a ha Za hZaMin hZaEnd hminA
-  have hactB : lRegAction S T (lRegCurve S T x Zb) 0 b =
+  have hactB : lRegularizedAction S T (lRegularizedCurve S T x Zb) 0 b =
       redMinAct S T x b :=
     redMinAct_eq (I := I) S T x yb b hb0 Zb hZbMin hZbEnd hminB
   have hregBackB : ∀ s ∈ Icc (0 : Real) b,
@@ -365,14 +365,14 @@ private theorem redMinAct_ord [ConnectedSpace M]
     have hs2 : s ^ 2 ≤ b ^ 2 :=
       (sq_le_sq₀ hs.1 hb0.le).2 hs.2
     exact ⟨by linarith, by nlinarith [sq_nonneg s]⟩
-  have hbdd := lRegCosts_bdd_rm (I := I) S hS K T 0 b le_rfl hb0.le
+  have hbdd := lRegularizedCosts_bdd_rm (I := I) S hS K T 0 b le_rfl hb0.le
     hregB hRmB x ya
   have hjoin := lCost_le_join_bdd (I := I) S hS T b hb0 x ya
-    ha hab hbdd hregBackB (lRegCurve S T x Za) (fun _ : Real ↦ ya)
-    (lRegCurve_c1On (I := I) S hS T x Za hZaDom)
+    ha hab hbdd hregBackB (lRegularizedCurve S T x Za) (fun _ : Real ↦ ya)
+    (lRegularizedCurve_c1On (I := I) S hS T x Za hZaDom)
     contMDiff_const.contMDiffOn hcurveA
-    (by simp only [lRegCurve_zero]) rfl
-  have hconst := lRegAct_const_le (I := I) S hS K T sigma a b hsigma.le
+    (by simp only [lRegularizedCurve_zero]) rfl
+  have hconst := lRegularizedAct_const_le (I := I) S hS K T sigma a b hsigma.le
     ha.le hab.le hb.le hreg hRm ya
   have hminCostB : redMinAct S T x b ≤ lCost S T x ya (b ^ 2) := by
     calc
@@ -388,47 +388,47 @@ private theorem redMinAct_ord [ConnectedSpace M]
       redMinAct S T x a + redPotBound E K sigma * (b - a) := by
     calc
       redMinAct S T x b ≤ lCost S T x ya (b ^ 2) := hminCostB
-      _ ≤ lRegAction S T (lRegCurve S T x Za) 0 a +
-          lRegAction S T (fun _ : Real ↦ ya) a b := hjoin
+      _ ≤ lRegularizedAction S T (lRegularizedCurve S T x Za) 0 a +
+          lRegularizedAction S T (fun _ : Real ↦ ya) a b := hjoin
       _ ≤ redMinAct S T x a + redPotBound E K sigma * (b - a) := by
         rw [hactA]
         simpa only [add_comm] using add_le_add_left hconst (redMinAct S T x a)
-  have hZbA : a ∈ lRegDomain S T x Zb :=
-    lRegDomain_seg S T x Zb hZbDom ha.le hab.le
-  have hcurveB := lRegCurve_c1On (I := I) S hS T x Zb hZbDom
+  have hZbA : a ∈ lRegularizedDomain S T x Zb :=
+    lRegularizedDomain_segment S T x Zb hZbDom ha.le hab.le
+  have hcurveB := lRegularizedCurve_c1On (I := I) S hS T x Zb hZbDom
   have hcurveHead : ContMDiffOn (modelWithCornersSelf Real Real) I 1
-      (lRegCurve S T x Zb) (Icc (0 : Real) a) :=
+      (lRegularizedCurve S T x Zb) (Icc (0 : Real) a) :=
     hcurveB.mono fun s hs ↦ ⟨hs.1, hs.2.trans hab.le⟩
   have hcurveTail : ContMDiffOn (modelWithCornersSelf Real Real) I 1
-      (lRegCurve S T x Zb) (Icc a b) :=
+      (lRegularizedCurve S T x Zb) (Icc a b) :=
     hcurveB.mono fun s hs ↦ ⟨ha.le.trans hs.1, hs.2⟩
-  have hheadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
-    ⟨hS.scalarCont⟩ T 0 a ha.le (lRegCurve S T x Zb) hcurveHead
-      (fun s hs ↦ lRegDomain_reg S T x Zb
-        (lRegDomain_seg S T x Zb hZbDom hs.1 (hs.2.trans hab.le)))
-  have htailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
-    ⟨hS.scalarCont⟩ T a b hab.le (lRegCurve S T x Zb) hcurveTail
-      (fun s hs ↦ lRegDomain_reg S T x Zb
-        (lRegDomain_seg S T x Zb hZbDom (ha.le.trans hs.1) hs.2))
-  have hadd := lRegAction_add (I := I) S T (lRegCurve S T x Zb) 0 a b
+  have hheadInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+    ⟨hS.scalarCont⟩ T 0 a ha.le (lRegularizedCurve S T x Zb) hcurveHead
+      (fun s hs ↦ lRegularizedDomain_regularity S T x Zb
+        (lRegularizedDomain_segment S T x Zb hZbDom hs.1 (hs.2.trans hab.le)))
+  have htailInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+    ⟨hS.scalarCont⟩ T a b hab.le (lRegularizedCurve S T x Zb) hcurveTail
+      (fun s hs ↦ lRegularizedDomain_regularity S T x Zb
+        (lRegularizedDomain_segment S T x Zb hZbDom (ha.le.trans hs.1) hs.2))
+  have hadd := lRegularizedAction_add (I := I) S T (lRegularizedCurve S T x Zb) 0 a b
     hheadInt htailInt
-  have htail := lRegAct_tail_ge (I := I) S hS K T sigma a b hsigma.le
-    ha.le hab.le hb.le hreg hRm (lRegCurve S T x Zb) hcurveTail
+  have htail := lRegularizedAct_tail_ge (I := I) S hS K T sigma a b hsigma.le
+    ha.le hab.le hb.le hreg hRm (lRegularizedCurve S T x Zb) hcurveTail
   have hminCostA : redMinAct S T x a ≤
-      lCost S T x (lRegCurve S T x Zb a) (a ^ 2) := by
+      lCost S T x (lRegularizedCurve S T x Zb a) (a ^ 2) := by
     calc
       redMinAct S T x a = 2 * a * redLength S T x ya (a ^ 2) := by
         rw [redMinAct, hvalA]
-      _ ≤ 2 * a * redLength S T x (lRegCurve S T x Zb a) (a ^ 2) :=
-        mul_le_mul_of_nonneg_left (hminA (lRegCurve S T x Zb a))
+      _ ≤ 2 * a * redLength S T x (lRegularizedCurve S T x Zb a) (a ^ 2) :=
+        mul_le_mul_of_nonneg_left (hminA (lRegularizedCurve S T x Zb a))
           (mul_nonneg (by norm_num) ha.le)
-      _ = lCost S T x (lRegCurve S T x Zb a) (a ^ 2) := by
+      _ = lCost S T x (lRegularizedCurve S T x Zb a) (a ^ 2) := by
         rw [redLength, Real.sqrt_sq ha.le]
         field_simp [ha.ne']
-  have hbddA := lRegCosts_bdd_rm (I := I) S hS K T 0 a le_rfl ha.le
-    hregA hRmA x (lRegCurve S T x Zb a)
+  have hbddA := lRegularizedCosts_bdd_rm (I := I) S hS K T 0 a le_rfl ha.le
+    hregA hRmA x (lRegularizedCurve S T x Zb a)
   have hcostRayA := lCost_le_ray_bdd (I := I) S hS T x Zb a ha hZbA hbddA
-  have hheadLe : lRegAction S T (lRegCurve S T x Zb) 0 a ≤
+  have hheadLe : lRegularizedAction S T (lRegularizedCurve S T x Zb) 0 a ≤
       redMinAct S T x b + redPotBound E K sigma * (b - a) := by
     rw [← hactB, ← hadd]
     linarith
@@ -436,8 +436,8 @@ private theorem redMinAct_ord [ConnectedSpace M]
       redMinAct S T x b + redPotBound E K sigma * (b - a) := by
     calc
       redMinAct S T x a ≤
-          lCost S T x (lRegCurve S T x Zb a) (a ^ 2) := hminCostA
-      _ ≤ lRegAction S T (lRegCurve S T x Zb) 0 a := hcostRayA
+          lCost S T x (lRegularizedCurve S T x Zb a) (a ^ 2) := hminCostA
+      _ ≤ lRegularizedAction S T (lRegularizedCurve S T x Zb) 0 a := hcostRayA
       _ ≤ redMinAct S T x b + redPotBound E K sigma * (b - a) := hheadLe
   rw [abs_le]
   constructor <;> linarith

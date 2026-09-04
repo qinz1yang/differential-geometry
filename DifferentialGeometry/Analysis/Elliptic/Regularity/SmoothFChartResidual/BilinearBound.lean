@@ -64,26 +64,26 @@ private lemma wkpNorm_chartPushedRaw_lapPiece_le_etaTimesV
             (etaTimesV (I := I) (M := M) α v.toFun))
           (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  obtain ⟨b, hb_smooth, _, hb_one_on_tsupp, hb_supp⟩ :=
+  obtain ⟨b, hb_smooth, _, hb_one_on_tsupp, hb_support⟩ :=
     exists_chart_cutoff_M (I := I) (M := M) α
   set bΔρα : M → ℝ := fun x : M =>
     b x * (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x with hbΔρα_def
   have hbΔρα_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ bΔρα :=
     hb_smooth.mul (laplacianOfChartPOU (I := I) (M := M) g α).contMDiff
-  have hbΔρα_supp : tsupport bΔρα ⊆ (chartAt H α).source := by
+  have hbΔρα_support : tsupport bΔρα ⊆ (chartAt H α).source := by
     have h_eq : bΔρα = (fun x : M => b x •
       (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x) := by
       funext x; rfl
     rw [h_eq]
     exact (tsupport_smul_subset_left (f := b)
       (g := ((laplacianOfChartPOU (I := I) (M := M) g α : C^∞⟮I, M; ℝ⟯) : M → ℝ))).trans
-      hb_supp
+      hb_support
   obtain ⟨C, hC_nn, hC_bound⟩ :=
     smoothExtensionScalar_iteratedFDeriv_bound (I := I) (M := M) α
-      hbΔρα_smooth hbΔρα_supp 1
+      hbΔρα_smooth hbΔρα_support 1
   set Λ : EuclN → ℝ := smoothExtensionScalar (I := I) (M := M) α bΔρα with hΛ_def
   have hΛ_smooth : ContDiff ℝ (⊤ : ℕ∞) Λ :=
-    contDiff_smoothExtensionScalar (I := I) (M := M) α hbΔρα_smooth hbΔρα_supp
+    contDiff_smoothExtensionScalar (I := I) (M := M) α hbΔρα_smooth hbΔρα_support
   have hΛ_bound : ∀ j ≤ 1, ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
       ‖iteratedFDeriv ℝ j Λ y‖ ≤ C := fun j hj y _ => hC_bound j hj y
   obtain ⟨K, hK_pos, hK_bound⟩ :=
@@ -126,7 +126,7 @@ private lemma wkpNorm_chartPushedRaw_lapPiece_le_etaTimesV
     have h_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
         (etaTimesV (I := I) (M := M) α v.toFun) :=
       etaTimesV_smooth (I := I) (M := M) α v.smooth
-    have h_supp : tsupport (etaTimesV (I := I) (M := M) α v.toFun) ⊆
+    have h_support : tsupport (etaTimesV (I := I) (M := M) α v.toFun) ⊆
         (chartAt H α).source :=
       tsupport_etaTimesV_subset (I := I) (M := M) α v.toFun
     have h_w1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
@@ -134,7 +134,7 @@ private lemma wkpNorm_chartPushedRaw_lapPiece_le_etaTimesV
           (etaTimesV (I := I) (M := M) α v.toFun))
         (chartTargetEuclid (I := I) (M := M) α) :=
       memW1p_chartPushedRaw_of_contMDiff_tsupport
-        (I := I) (M := M) (α := α) h_smooth h_supp 2
+        (I := I) (M := M) (α := α) h_smooth h_support 2
     exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p).mpr h_w1p
   exact hK_bound hH_W12
 
@@ -147,14 +147,14 @@ private lemma Λgrad_apply_of_mem
       gradInnerCoefIM (I := I) (M := M) g α i
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := by
   unfold Λgrad
-  have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
+  have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
     rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy; exact hy
   classical
   change (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
       gradInnerCoefIM (I := I) (M := M) g α i
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
     else 0) = _
-  rw [if_pos h_tgt]
+  rw [if_pos h_target]
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma Λgrad_iteratedFDeriv_bound
@@ -182,18 +182,18 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
     (gradInnerPiece (I := I) (M := M) g α v.toFun) hy]
   set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hx_def
   rw [gradInnerPiece_apply]
-  have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
+  have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
     rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy; exact hy
-  have hx_src : x ∈ (chartAt H α).source := by
-    have hsrc : x ∈ (extChartAt I α).source := (extChartAt I α).map_target h_tgt
+  have hx_source : x ∈ (chartAt H α).source := by
+    have hsrc : x ∈ (extChartAt I α).source := (extChartAt I α).map_target h_target
     rwa [extChartAt_source_eq_chartAt_source (I := I)] at hsrc
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_src
+    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_source
   have hx_int : extChartAt I α x ∈ interior (extChartAt I α).target := by
     have h_φx : extChartAt I α x = (toEuclidean (E := E)).symm y := by
-      rw [hx_def]; exact (extChartAt I α).right_inv h_tgt
+      rw [hx_def]; exact (extChartAt I α).right_inv h_target
     rw [h_φx]
-    exact extChartAt_target_subset_interior_of_boundaryless (I := I) α h_tgt
+    exact extChartAt_target_subset_interior_of_boundaryless (I := I) α h_target
   have hηv_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (etaTimesV (I := I) (M := M) α v.toFun) :=
     etaTimesV_smooth (I := I) (M := M) α v.smooth
@@ -218,7 +218,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
         (scalarOnE (I := I) α (etaTimesV (I := I) (M := M) α v.toFun))
         (extChartAt I α x) := fun i =>
-    mfderiv_chartBasisVecFiber (I := I) (α := α) hηv_smooth hx_src hx_int i
+    mfderiv_chartBasisVecFiber (I := I) (α := α) hηv_smooth hx_source hx_int i
   have h_inner_eq :
       g.inner x (gradFun (I := I) g
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
@@ -283,7 +283,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
           (extChartAt I α x) := by
     intro i
     have hφx_eq : extChartAt I α x = (toEuclidean (E := E)).symm y := by
-      rw [hx_def]; exact (extChartAt I α).right_inv h_tgt
+      rw [hx_def]; exact (extChartAt I α).right_inv h_target
     rw [hφx_eq]; rfl
   simp_rw [hΛ_apply, h_partialDerivOnEuclid_apply]
   have h_sum_eq :
@@ -306,7 +306,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
     by_cases h_grad_zero : gradChartCoeff (I := I) g α
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) i x = 0
     · rw [h_grad_zero]; ring
-    · have hx_supp : x ∈ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
+    · have hx_support : x ∈ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
         by_contra hx_off
         apply h_grad_zero
         have h_open : IsOpen
@@ -325,24 +325,24 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
           have h_target_open : IsOpen ((extChartAt I α).target) :=
             isOpen_extChartAt_target (I := I) α
           have h_open_target : (extChartAt I α).target ∈ 𝓝 (extChartAt I α x) := by
-            have h_ext_src : x ∈ (extChartAt I α).source := by
-              rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_src
-            exact h_target_open.mem_nhds ((extChartAt I α).map_source h_ext_src)
+            have h_ext_source : x ∈ (extChartAt I α).source := by
+              rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_source
+            exact h_target_open.mem_nhds ((extChartAt I α).map_source h_ext_source)
           have h_symm_cont : ContinuousAt (extChartAt I α).symm (extChartAt I α x) := by
             have h_continuousOn := continuousOn_extChartAt_symm (I := I) α
             have h_target_mem : extChartAt I α x ∈ (extChartAt I α).target := by
-              have h_ext_src : x ∈ (extChartAt I α).source := by
-                rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_src
-              exact (extChartAt I α).map_source h_ext_src
+              have h_ext_source : x ∈ (extChartAt I α).source := by
+                rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_source
+              exact (extChartAt I α).map_source h_ext_source
             exact (h_continuousOn _ h_target_mem).continuousAt h_open_target
           have h_left_inv : ∀ᶠ z in 𝓝 (extChartAt I α x),
               (extChartAt I α) ((extChartAt I α).symm z) = z := by
             filter_upwards [h_open_target] with z hz
             exact (extChartAt I α).right_inv hz
           have h_symm_x : (extChartAt I α).symm (extChartAt I α x) = x := by
-            have h_ext_src : x ∈ (extChartAt I α).source := by
-              rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_src
-            exact (extChartAt I α).left_inv h_ext_src
+            have h_ext_source : x ∈ (extChartAt I α).source := by
+              rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_source
+            exact (extChartAt I α).left_inv h_ext_source
           have h_ev_through_symm : ∀ᶠ z in 𝓝 (extChartAt I α x),
               ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
                 ((extChartAt I α).symm z) = 0 := by
@@ -362,7 +362,7 @@ lemma chartPushedRaw_gradInnerPiece_eq_sum
           simp
         rw [h_partial_zero]; ring
       have h_cut : chartStrictCutoff (I := I) (M := M) α x = 1 :=
-        chartStrictCutoff_eq_one_on_tsupport_chartAtlasPOU (I := I) (M := M) α hx_supp
+        chartStrictCutoff_eq_one_on_tsupport_chartAtlasPOU (I := I) (M := M) α hx_support
       rw [h_cut]; ring
   rw [h_sum_eq]
 
@@ -382,7 +382,7 @@ lemma tsupport_smoothRep_subset_source
     tsupport (smoothRep (I := I) (M := M) g α v) ⊆ (chartAt H α).source := by
   classical
   have h_eq := smoothRep_eq_pieces (I := I) (M := M) g α v
-  have h_supp_sub : Function.support (smoothRep (I := I) (M := M) g α v) ⊆
+  have h_support_sub : Function.support (smoothRep (I := I) (M := M) g α v) ⊆
       tsupport (gradInnerPiece (I := I) (M := M) g α v.toFun) ∪
         tsupport (lapPiece (I := I) (M := M) g α v.toFun) := by
     intro x hx
@@ -406,7 +406,7 @@ lemma tsupport_smoothRep_subset_source
   have h_tsupp_sub : tsupport (smoothRep (I := I) (M := M) g α v) ⊆
       tsupport (gradInnerPiece (I := I) (M := M) g α v.toFun) ∪
         tsupport (lapPiece (I := I) (M := M) g α v.toFun) :=
-    closure_minimal h_supp_sub
+    closure_minimal h_support_sub
       ((isClosed_tsupport _).union (isClosed_tsupport _))
   refine h_tsupp_sub.trans (Set.union_subset ?_ ?_)
   · exact tsupport_gradInnerPiece_subset_source (I := I) (M := M) g α v.toFun
@@ -538,25 +538,25 @@ private lemma memWkp_chartPushedRaw_etaTimesV
   have hηv_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (etaTimesV (I := I) (M := M) α v.toFun) :=
     etaTimesV_smooth (I := I) (M := M) α v.smooth
-  have hηv_supp : tsupport (etaTimesV (I := I) (M := M) α v.toFun) ⊆
+  have hηv_support : tsupport (etaTimesV (I := I) (M := M) α v.toFun) ⊆
       (chartAt H α).source :=
     tsupport_etaTimesV_subset (I := I) (M := M) α v.toFun
   have hCP_smooth : ContDiff ℝ ∞
       (chartPushedRaw (I := I) (M := M) α
         (etaTimesV (I := I) (M := M) α v.toFun)) :=
-    chartPushedRaw_contDiff (I := I) (M := M) hηv_smooth hηv_supp
-  have hCP_cpt : HasCompactSupport
+    chartPushedRaw_contDiff (I := I) (M := M) hηv_smooth hηv_support
+  have hCP_compact : HasCompactSupport
       (chartPushedRaw (I := I) (M := M) α
         (etaTimesV (I := I) (M := M) α v.toFun)) :=
-    chartPushedRaw_smooth_hasCompactSupport_local (I := I) (M := M) hηv_supp
+    chartPushedRaw_smooth_hasCompactSupport_local (I := I) (M := M) hηv_support
   have hCP_tsupp : tsupport (chartPushedRaw (I := I) (M := M) α
         (etaTimesV (I := I) (M := M) α v.toFun)) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-    tsupport_chartPushedRaw_subset_chartTargetEuclid (I := I) (M := M) hηv_supp
+    tsupport_chartPushedRaw_subset_chartTargetEuclid (I := I) (M := M) hηv_support
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
     (d := Module.finrank ℝ E)
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
-    (by exact hCP_smooth) hCP_cpt hCP_tsupp (by norm_num : (1 : ℝ≥0∞) ≤ 2) 2
+    (by exact hCP_smooth) hCP_compact hCP_tsupp (by norm_num : (1 : ℝ≥0∞) ≤ 2) 2
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -571,14 +571,14 @@ private lemma memWkp_partialDerivOnEuclid_etaTimesV
   have hηv_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (etaTimesV (I := I) (M := M) α v.toFun) :=
     etaTimesV_smooth (I := I) (M := M) α v.smooth
-  have hηv_supp : tsupport (etaTimesV (I := I) (M := M) α v.toFun) ⊆
+  have hηv_support : tsupport (etaTimesV (I := I) (M := M) α v.toFun) ⊆
       (chartAt H α).source :=
     tsupport_etaTimesV_subset (I := I) (M := M) α v.toFun
   have h_chartPushed_W22 := memWkp_chartPushedRaw_etaTimesV (I := I) (M := M) g α v
   have h_chosen_mem :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 1 2
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 i
           (chartPushedRaw (I := I) (M := M) α
             (etaTimesV (I := I) (M := M) α v.toFun))
@@ -587,7 +587,7 @@ private lemma memWkp_partialDerivOnEuclid_etaTimesV
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.chosenWeakPartial_mem
       h_chartPushed_W22 i
   have h_ae := partialDerivOnEuclid_ae_eq_chosenWeakPartial
-    (I := I) (M := M) (α := α) (i := i) hηv_smooth hηv_supp
+    (I := I) (M := M) (α := α) (i := i) hηv_smooth hηv_support
     (p := (2 : ℝ≥0∞)) (by norm_num)
   exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
     (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
@@ -673,10 +673,10 @@ private lemma wkpNorm_partialDerivOnEuclid_etaTimesV_le
   have hηv_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (etaTimesV (I := I) (M := M) α v.toFun) :=
     etaTimesV_smooth (I := I) (M := M) α v.smooth
-  have hηv_supp : tsupport (etaTimesV (I := I) (M := M) α v.toFun) ⊆
+  have hηv_support : tsupport (etaTimesV (I := I) (M := M) α v.toFun) ⊆
       (chartAt H α).source :=
     tsupport_etaTimesV_subset (I := I) (M := M) α v.toFun
-  have h_partial_bound := hCp_bound i hηv_smooth hηv_supp
+  have h_partial_bound := hCp_bound i hηv_smooth hηv_support
   have h_strict_bound := hC_strict_bound v
   calc DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) 1 2

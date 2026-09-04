@@ -113,7 +113,7 @@ private theorem exists_cost_curve
     ∃ alpha : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
         alpha 0 = x ∧ alpha (Real.sqrt tau) = y ∧
-          lRegAction S T alpha 0 (Real.sqrt tau) < A := by
+          lRegularizedAction S T alpha 0 (Real.sqrt tau) < A := by
   let g := S.base.metric T
   let : RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
@@ -125,7 +125,7 @@ private theorem exists_cost_curve
       (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
         (I := I) x y)
   obtain ⟨p, hp, _hlen⟩ :=
-    DifferentialGeometry.Geometry.Riemannian.CGT.exists_flat_path
+    DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor.exists_flat_path
       (I := I) hxy
   let b : Real := Real.sqrt tau
   have hb : 0 < b := by simpa only [b] using Real.sqrt_pos.2 htau
@@ -145,13 +145,13 @@ private theorem exists_cost_curve
     fun _ hr ↦ D.regular_subset (hslab hr)
   obtain ⟨gamma, _m, _t, _p, _uLim, beta, _u, _hgamma, _hga, _hgb,
       heq, _hmin, _htmono, _ht0, _htlast, _hsrc, _hrep, hbeta,
-      hbetaa, hbetab, _hsrcBeta, _hrepBeta, _hu, _hunifBeta, hbetaAct⟩ :=
-    exists_lRegMinC1 (I := I) S hS T (T - tau) T 0 b hb.le htime hback
+      hbetaa, hbetab, _hsrcBeta, _hrepBeta, _hu, _huniformBeta, hbetaAct⟩ :=
+    exists_lRegularizedMinC1 (I := I) S hS T (T - tau) T 0 b hb.le htime hback
       x y alpha₀ halpha₀ ha₀ hb₀ (fun s hs ↦ hslab (hback s hs))
-  have hgammaA : lRegAction S T gamma 0 b < A := by
-    rw [heq, ← lCost_eq_reg (I := I) S T x y tau htau.le]
+  have hgammaA : lRegularizedAction S T gamma 0 b < A := by
+    rw [heq, ← lCost_eq_regularity (I := I) S T x y tau htau.le]
     exact hA
-  have hev : ∀ᶠ n in atTop, lRegAction S T (beta n) 0 b < A :=
+  have hev : ∀ᶠ n in atTop, lRegularizedAction S T (beta n) 0 b < A :=
     hbetaAct.eventually (Iio_mem_nhds hgammaA)
   obtain ⟨n, hn⟩ := hev.exists
   exact ⟨beta n, hbeta n, hbetaa n, by simpa only [b] using hbetab n,
@@ -480,7 +480,7 @@ private theorem slab_eventually
     apply hslab
     apply sqrt_back_mem htau.le s
     simpa only [uIcc_of_le (Real.sqrt_nonneg tau)] using hs
-  filter_upwards [lRegTime_nhds D T 0 (Real.sqrt tau) hreg] with R hback
+  filter_upwards [lRegularizedTime_nhds D T 0 (Real.sqrt tau) hreg] with R hback
   apply back_slab
   intro s hs
   apply hback s

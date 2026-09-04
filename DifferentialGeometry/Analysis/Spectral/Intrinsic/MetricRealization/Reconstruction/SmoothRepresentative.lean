@@ -39,7 +39,7 @@ def MemAllTensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ)
           (tensorResolventL2_isCompactOperator
             (I := I) (M := M) g r s) hσ v = u
 
-theorem gateWitness_coeff_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
+theorem tensorHs_coeff_eq_spectralCoeff_of_toL2_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) {σ : ℝ} (hσ : 0 ≤ σ)
     (v : TensorHs (I := I) (M := M) g r s σ)
     (hv : tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
@@ -70,15 +70,15 @@ theorem spectralWeighted_summable_of_mem (g : SmoothRiemannianMetric I M)
       (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
         (spectralCoeff (I := I) (M := M) g r s u i) ^ 2) := by
     funext i
-    rw [gateWitness_coeff_eq (I := I) (M := M) g r s u hσ v hv i]
+    rw [tensorHs_coeff_eq_spectralCoeff_of_toL2_eq (I := I) (M := M) g r s u hσ v hv i]
   rwa [h_eq] at hsumm
 
-theorem gateWitness_zero_coeff_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
+theorem chosenTensorHs_zero_coeff_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (h_mem : MemAllTensorHs (I := I) (M := M) g r s u)
     (i : TensorSpectral.TensorEigenIdx (I := I) (M := M) g r s) :
     (Classical.choose (h_mem 0 (le_refl (0 : ℝ)))).coeff i =
       spectralCoeff (I := I) (M := M) g r s u i :=
-  gateWitness_coeff_eq (I := I) (M := M) g r s u (le_refl (0 : ℝ))
+  tensorHs_coeff_eq_spectralCoeff_of_toL2_eq (I := I) (M := M) g r s u (le_refl (0 : ℝ))
     (Classical.choose (h_mem 0 (le_refl (0 : ℝ))))
     (Classical.choose_spec (h_mem 0 (le_refl (0 : ℝ)))) i
 
@@ -90,7 +90,7 @@ theorem spectral_smooth_realizes_as_smooth_of_mem_all_and_finite_support
   obtain ⟨v₀, hv₀⟩ := h_mem 0 (le_refl (0 : ℝ))
   have h_coeff : v₀.coeff = spectralCoeff (I := I) (M := M) g r s u := by
     funext i
-    exact gateWitness_coeff_eq (I := I) (M := M) g r s u (le_refl (0 : ℝ)) v₀ hv₀ i
+    exact tensorHs_coeff_eq_spectralCoeff_of_toL2_eq (I := I) (M := M) g r s u (le_refl (0 : ℝ)) v₀ hv₀ i
   have hv₀_fs : (Function.support v₀.coeff).Finite := by
     rw [h_coeff]; exact hu_fs
   refine ⟨tensorHsSmoothRepr (I := I) (M := M) v₀ hv₀_fs, ?_⟩
@@ -211,12 +211,12 @@ def SpectralChartRegularity (g : SmoothRiemannianMetric I M) (r s : ℕ) : Prop 
 
 theorem spectralSmooth_realizesAsSmooth_of_reduction
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (h_reg : SpectralChartRegularity (I := I) (M := M) g r s)
+    (h_regularity : SpectralChartRegularity (I := I) (M := M) g r s)
     (h_recon : TensorSuperCriticalReconstruct (I := I) (M := M) g r s) :
     SpectralSmoothRealizesAsSmooth (I := I) (M := M) g r s := by
   intro u h_mem
   have h_memAll : MemAllTensorHs (I := I) (M := M) g r s u := h_mem
-  exact h_recon u (fun k α P₀ => h_reg u h_memAll k α P₀)
+  exact h_recon u (fun k α P₀ => h_regularity u h_memAll k α P₀)
 
 end MetricRealization
 end Spectral

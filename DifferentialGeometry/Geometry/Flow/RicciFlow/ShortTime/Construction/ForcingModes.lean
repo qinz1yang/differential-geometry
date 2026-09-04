@@ -51,7 +51,7 @@ theorem forcing_continuous_interior
 open MeasureTheory in
 theorem permode_sum_hasderivat
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
-    (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
+    (u : MaximalRegularitySolutionSpace (I := I) (M := M) (a : ℝ) T)
     (u₂ : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
     (u₁ : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 1))
     (hderiv_ae : (u.deriv : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
@@ -104,7 +104,7 @@ theorem permode_sum_hasderivat
   have hconst : HasDerivAt
       (fun r => (timeH1.toFun u r : TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)))
       (RHS s) s := by
-    have h := hftc_u.const_add u.init
+    have h := hftc_u.const_add u.initial
     refine h.congr_of_eventuallyEq ?_
     filter_upwards with r
     rw [timeH1.toFun_apply]

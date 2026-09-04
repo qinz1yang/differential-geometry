@@ -89,7 +89,7 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
       RicciBoundedBelow (I := I) gLift (((Module.finrank ℝ E : ℝ) - 1) * K) :=
     Geometry.Riemannian.Topology.UniversalCover.ricciBoundedBelow_liftedMetric_of_base
       (I := I) (g := g) hRic hBasisLift hBasisBase
-  have hRegUC :
+  have hRegularityUC :
       RegularSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.uc_regularSpace

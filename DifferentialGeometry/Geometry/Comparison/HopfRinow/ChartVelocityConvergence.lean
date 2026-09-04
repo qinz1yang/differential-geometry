@@ -321,11 +321,11 @@ private lemma chartGramQuad_pos
   classical
   rw [chartGramQuad_eq_inner (I := I) g y hz V]
   set x : M := (extChartAt I y).symm z with hx_def
-  have hx_src : x ∈ (chartAt H y).source := by
+  have hx_source : x ∈ (chartAt H y).source := by
     rw [hx_def, ← extChartAt_source_eq_chartAt_source (I := I)]
     exact (extChartAt I y).map_target hz
   have hbase : x ∈ (trivializationAt E (TangentSpace I) y).baseSet := by
-    rw [TangentBundle.trivializationAt_baseSet]; exact hx_src
+    rw [TangentBundle.trivializationAt_baseSet]; exact hx_source
   have hsymm_ne : (trivializationAt E (TangentSpace I) y).symmL ℝ x V ≠ 0 := by
     intro hzero
     apply hV
@@ -451,11 +451,11 @@ theorem chartVelocity_bound_near_limit
         ‖deriv (chartCurve (I := I) y γ) s‖ ≤ K ∧
           chartCurve (I := I) y γ s ∈ S) := by
   classical
-  have hy_src : y ∈ (chartAt H y).source := mem_chart_source H y
-  have hy_ext_src : y ∈ (extChartAt I y).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hy_src
+  have hy_source : y ∈ (chartAt H y).source := mem_chart_source H y
+  have hy_ext_source : y ∈ (extChartAt I y).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hy_source
   have hy_target : extChartAt I y y ∈ (extChartAt I y).target :=
-    (extChartAt I y).map_source hy_ext_src
+    (extChartAt I y).map_source hy_ext_source
   have hy_interior : extChartAt I y y ∈ interior (extChartAt I y).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) y hy_target
   obtain ⟨ρ, hρ_pos, hρ_sub⟩ :=
@@ -487,7 +487,7 @@ theorem chartVelocity_bound_near_limit
     exact hu_lim hball_nhds
   have hsrc_ev : ∀ᶠ s in 𝓝[<] b, γ s ∈ (chartAt H y).source := by
     have hsrc_nhds : (chartAt H y).source ∈ 𝓝 y :=
-      (chartAt H y).open_source.mem_nhds hy_src
+      (chartAt H y).open_source.mem_nhds hy_source
     exact hy_lim hsrc_nhds
   obtain ⟨U, hU_nhds, hU_sub⟩ :=
     mem_nhdsWithin_iff_exists_mem_nhds_inter.mp
@@ -507,7 +507,7 @@ theorem chartVelocity_bound_near_limit
   have hs_Iio : s ∈ Set.Iio b := hs.2
   have hs_both : chartCurve (I := I) y γ s ∈ S ∧ γ s ∈ (chartAt H y).source :=
     hU_sub ⟨hδ₀_sub hs_ball, hs_Iio⟩
-  obtain ⟨hu_memS, hγ_src⟩ := hs_both
+  obtain ⟨hu_memS, hγ_source⟩ := hs_both
   refine ⟨?_, hu_memS⟩
   set V : E := deriv (chartCurve (I := I) y γ) s with hV_def
   have hVeq : (fderiv ℝ ((extChartAt I y) ∘ γ) s : ℝ →L[ℝ] E) (1 : ℝ) = V := by
@@ -515,14 +515,14 @@ theorem chartVelocity_bound_near_limit
   have hγ_s : MDifferentiableAt 𝓘(ℝ, ℝ) I γ s :=
     (hγ_mdiff s hs_Ioo).mdifferentiableAt (isOpen_Ioo.mem_nhds hs_Ioo)
   have hraw := raw_mfderiv_eq_symmL_fderiv_at (I := I) (γ := γ) (α := y)
-    (s := s) hγ_s hγ_src
+    (s := s) hγ_s hγ_source
   rw [hVeq] at hraw
   have hu_target : chartCurve (I := I) y γ s ∈ (extChartAt I y).target :=
     interior_subset (hS_sub hu_memS)
   have hinv : (extChartAt I y).symm (chartCurve (I := I) y γ s) = γ s := by
     rw [chartCurve_def]
     exact (extChartAt I y).left_inv (by
-      rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hγ_src)
+      rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hγ_source)
   have hspeed_eq :
       chartGramQuad (I := I) g y (chartCurve (I := I) y γ s) V =
         (g.inner (γ s)) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) := by

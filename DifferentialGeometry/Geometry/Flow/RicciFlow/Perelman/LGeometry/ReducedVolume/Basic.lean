@@ -146,24 +146,24 @@ theorem lExpPartial_density
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRedJac_eq
+theorem lReducedJacobian_eq
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
-    lRedJac S T x Z tau =
-      lExpJac S T x Z tau *
+    lReducedJacobian S T x Z tau =
+      lExpJacobian S T x Z tau *
         redDensity S T x (lExp S T x Z tau) tau := by
-  have hJ : 0 < lExpJac S T x Z tau :=
-    lExpJac_pos S hS T x htau hZ
-  rw [lRedJac, lRedLog, redDensity]
+  have hJ : 0 < lExpJacobian S T x Z tau :=
+    lExpJacobian_pos S hS T x htau hZ
+  rw [lReducedJacobian, lRedLog, redDensity]
   have hexp :
-      Real.log (lExpJac S T x Z tau) -
+      Real.log (lExpJacobian S T x Z tau) -
           redLength S T x (lExp S T x Z tau) tau -
           ((Module.finrank Real E : Real) / 2) * Real.log tau -
           ((Module.finrank Real E : Real) / 2) * Real.log (4 * Real.pi) =
-        Real.log (lExpJac S T x Z tau) +
+        Real.log (lExpJacobian S T x Z tau) +
           (-redLength S T x (lExp S T x Z tau) tau -
             ((Module.finrank Real E : Real) / 2) * Real.log tau -
             ((Module.finrank Real E : Real) / 2) * Real.log (4 * Real.pi)) := by
@@ -173,17 +173,17 @@ theorem lRedJac_eq
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRedJac_mul_src
+theorem lReducedJacobian_mul_source
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
-    lRedJac S T x Z tau * lSrcDensity S T x =
+    lReducedJacobian S T x Z tau * lSourceDensity S T x =
       lExpDensity S T x Z tau *
         redDensity S T x (lExp S T x Z tau) tau := by
-  rw [lRedJac_eq S hS T x htau hZ, lExpJac]
-  field_simp [ne_of_gt (lSrcDensity_pos S T x)]
+  rw [lReducedJacobian_eq S hS T x htau hZ, lExpJacobian]
+  field_simp [ne_of_gt (lSourceDensity_pos S T x)]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -206,7 +206,7 @@ private theorem exists_lMin_slab
       (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
         (I := I) x y)
   obtain ⟨p, hp, _hlen⟩ :=
-    DifferentialGeometry.Geometry.Riemannian.CGT.exists_flat_path
+    DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor.exists_flat_path
       (I := I) hxy
   let b : Real := Real.sqrt tau
   have hb : 0 < b := by
@@ -230,7 +230,7 @@ private theorem exists_lMin_slab
             simpa only [b] using hs.2)
         _ = tau := Real.sq_sqrt htau.le
     exact ⟨by linarith, by nlinarith [sq_nonneg s]⟩
-  exact exists_lMinVec (I := I) S hS T (T - tau) T tau htau
+  exact exists_lMinimizingVector (I := I) S hS T (T - tau) T tau htau
     (fun r hr ↦ D.regular_subset (hslab hr))
     hback x y alpha halpha ha0 hab (fun s hs ↦ hslab (hback s hs))
 
@@ -276,7 +276,7 @@ theorem redVolume_lint
     (hslab : Set.Icc (T - tau) T ⊆ D.regular) :
     redVolume S T x tau =
       ∫⁻ Z in lInjDomain S T x tau,
-        ENNReal.ofReal (lRedJac S T x Z tau * lSrcDensity S T x)
+        ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
         ∂modelHaar (E := E) := by
   let U : Set E := lInjDomain S T x tau
   let Ψ := lExpPartial S hS T x tau htau
@@ -310,7 +310,7 @@ theorem redVolume_lint
         (fun y ↦ ENNReal.ofReal (redDensity S T x y tau))
         hUmeas hUsource
     _ = ∫⁻ Z in U,
-        ENNReal.ofReal (lRedJac S T x Z tau * lSrcDensity S T x)
+        ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
         ∂modelHaar (E := E) := by
       refine MeasureTheory.setLIntegral_congr_fun hUmeas ?_
       intro Z hZ
@@ -319,9 +319,9 @@ theorem redVolume_lint
         lExpPartial_apply S hS T x tau htau hZ]
       rw [← ENNReal.ofReal_mul (lExpDensity_pos S hS T x htau hZ).le]
       exact congrArg ENNReal.ofReal
-        (lRedJac_mul_src S hS T x htau hZ).symm
+        (lReducedJacobian_mul_source S hS T x htau hZ).symm
     _ = ∫⁻ Z in lInjDomain S T x tau,
-        ENNReal.ofReal (lRedJac S T x Z tau * lSrcDensity S T x)
+        ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
         ∂modelHaar (E := E) := by
       rfl
 
@@ -346,20 +346,20 @@ theorem redVolume_anti
     redVolume_lint S hS T x tau₁ htau₁ hslab₁]
   calc
     (∫⁻ Z in lInjDomain S T x tau₂,
-        ENNReal.ofReal (lRedJac S T x Z tau₂ * lSrcDensity S T x)
+        ENNReal.ofReal (lReducedJacobian S T x Z tau₂ * lSourceDensity S T x)
         ∂modelHaar (E := E)) ≤
         ∫⁻ Z in lInjDomain S T x tau₂,
-          ENNReal.ofReal (lRedJac S T x Z tau₁ * lSrcDensity S T x)
+          ENNReal.ofReal (lReducedJacobian S T x Z tau₁ * lSourceDensity S T x)
           ∂modelHaar (E := E) := by
       refine MeasureTheory.setLIntegral_mono'
         (lInj_isOpen S hS T x tau₂).measurableSet ?_
       intro Z hZ
       exact ENNReal.ofReal_le_ofReal
         (mul_le_mul_of_nonneg_right
-          (lRedJac_anti S hS T x htau₁ h12 hZ)
-          (lSrcDensity_pos S T x).le)
+          (lReducedJacobian_anti S hS T x htau₁ h12 hZ)
+          (lSourceDensity_pos S T x).le)
     _ ≤ ∫⁻ Z in lInjDomain S T x tau₁,
-        ENNReal.ofReal (lRedJac S T x Z tau₁ * lSrcDensity S T x)
+        ENNReal.ofReal (lReducedJacobian S T x Z tau₁ * lSourceDensity S T x)
         ∂modelHaar (E := E) :=
       MeasureTheory.lintegral_mono_set hdomain
 

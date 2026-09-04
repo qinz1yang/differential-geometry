@@ -41,7 +41,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorCovDerivPointwiseInner_integral_chart_pull
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S T : SmoothCcTensor g r s) (α : M)
-    (hS_supp : tsupport S.toFun ⊆ (chartAt H α).source) :
+    (hS_support : tsupport S.toFun ⊆ (chartAt H α).source) :
     ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s S T x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -59,7 +59,7 @@ theorem tensorCovDerivPointwiseInner_integral_chart_pull
       (tensorCovDerivPointwiseInner (I := I) (M := M) g r s S T) ⊆
       (chartAt H α).source :=
     (tensorCovDerivPointwiseInner_tsupport_subset_left
-      (I := I) (M := M) g r s S T).trans hS_supp
+      (I := I) (M := M) g r s S T).trans hS_support
   rw [integral_riemannianVolumeMeasure_eq_euclidean_chartTarget
     (I := I) (M := M) g α hcont hsupp]
   have hctE_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=

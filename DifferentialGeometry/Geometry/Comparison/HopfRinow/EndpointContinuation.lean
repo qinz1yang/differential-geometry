@@ -126,11 +126,11 @@ theorem endpointCont_of_lim
     tendsto_nhds_of_tendsto_metric_nhds (I := I) (l := 𝓝[<] b) (f := γ) (p := y)
       hy_metric
   set u : ℝ → E := chartCurve (I := I) y γ with hu_def
-  have hy_src : y ∈ (chartAt H y).source := mem_chart_source H y
-  have hy_ext_src : y ∈ (extChartAt I y).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hy_src
+  have hy_source : y ∈ (chartAt H y).source := mem_chart_source H y
+  have hy_ext_source : y ∈ (extChartAt I y).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hy_source
   have hy_target : extChartAt I y y ∈ (extChartAt I y).target :=
-    (extChartAt I y).map_source hy_ext_src
+    (extChartAt I y).map_source hy_ext_source
   have hy_interior : extChartAt I y y ∈ interior (extChartAt I y).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) y hy_target
   have hu_lim : Tendsto u (𝓝[<] b) (𝓝 (extChartAt I y y)) := by
@@ -142,11 +142,11 @@ theorem endpointCont_of_lim
     rw [hu_def]
     exact this
   have hsrc_ev : ∀ᶠ s in 𝓝[<] b, γ s ∈ (chartAt H y).source :=
-    hy_mfld ((chartAt H y).open_source.mem_nhds hy_src)
+    hy_mfld ((chartAt H y).open_source.mem_nhds hy_source)
   obtain ⟨ε, K₁, S, hε, hS_compact, hS_sub, hbound⟩ :=
     chartVelocity_bound_near_limit (I := I) g y (γ := γ) (a := aL) (b := b) (c := c)
       haLb hc_nonneg hγ_mdiff_on hy_mfld hSpeedSq
-  obtain ⟨a₀, ha₀_lt, ha₀_src⟩ :
+  obtain ⟨a₀, ha₀_lt, ha₀_source⟩ :
       ∃ a₀ < b, ∀ s ∈ Set.Ioo a₀ b, γ s ∈ (chartAt H y).source := by
     obtain ⟨U, hU_nhds, hU_sub⟩ :=
       mem_nhdsWithin_iff_exists_mem_nhds_inter.mp hsrc_ev
@@ -164,7 +164,7 @@ theorem endpointCont_of_lim
   have hsub_aL : Set.Ioo a b ⊆ Set.Ioo aL b :=
     fun s hs => ⟨lt_of_le_of_lt ha_ge_aL hs.1, hs.2⟩
   have hsrc_on : ∀ s ∈ Set.Ioo a b, γ s ∈ (chartAt H y).source :=
-    fun s hs => ha₀_src s ⟨lt_of_le_of_lt ha_ge_a₀ hs.1, hs.2⟩
+    fun s hs => ha₀_source s ⟨lt_of_le_of_lt ha_ge_a₀ hs.1, hs.2⟩
   have hbound_on : ∀ s ∈ Set.Ioo a b,
       ‖deriv u s‖ ≤ K₁ ∧ u s ∈ S := by
     intro s hs
@@ -208,23 +208,23 @@ theorem endpointCont_of_lim
       (fun s hs => (hbound_on s hs).2)
   set w : TangentSpace I y :=
     (trivializationAt E (TangentSpace I) y).symmL ℝ y wγ with hw_def
-  obtain ⟨η, δ, hδ, hη0, hηcont, hη_mfd, hη_mdiffOn, hη_srcOn, hη_geo⟩ :=
+  obtain ⟨η, δ, hδ, hη0, hηcont, hη_mfd, hη_mdiffOn, hη_sourceOn, hη_geo⟩ :=
     exists_isGeodesicOn_Ioo_at_velocity (I := I) g y w
   refine ⟨η, δ, hδ, hη_geo, hη_mdiffOn, ?_⟩
   have hδ_mem0 : (0 : ℝ) ∈ Set.Ioo (-δ) δ := ⟨by linarith, hδ⟩
-  have hη_chartVel0 : deriv (chartCurve (I := I) y η) 0 = wγ := by
-    have hη0_src : η 0 ∈ (chartAt H y).source := by rw [hη0]; exact hy_src
+  have hη_chartVelocity0 : deriv (chartCurve (I := I) y η) 0 = wγ := by
+    have hη0_source : η 0 ∈ (chartAt H y).source := by rw [hη0]; exact hy_source
     have hη_mdiff0 : MDifferentiableAt 𝓘(ℝ, ℝ) I η 0 := hη_mdiffOn 0 hδ_mem0
     have hCC := chartCoord_mfderiv_eq_fderiv_at (I := I) (γ := η) (α := y)
-      (s := 0) hη_mdiff0 hη0_src
+      (s := 0) hη_mdiff0 hη0_source
     have hbase : (η 0) ∈ (trivializationAt E (TangentSpace I) y).baseSet := by
-      rw [TangentBundle.trivializationAt_baseSet]; exact hη0_src
+      rw [TangentBundle.trivializationAt_baseSet]; exact hη0_source
     have hround :
         ((trivializationAt E (TangentSpace I) y).continuousLinearMapAt ℝ (η 0))
             ((mfderiv 𝓘(ℝ, ℝ) I η 0 : ℝ →L[ℝ] _) (1 : ℝ)) = wγ := by
       rw [hη_mfd, hw_def, hη0]
       exact (trivializationAt E (TangentSpace I) y).continuousLinearMapAt_symmL
-        (R := ℝ) (by rw [TangentBundle.trivializationAt_baseSet]; exact hy_src) wγ
+        (R := ℝ) (by rw [TangentBundle.trivializationAt_baseSet]; exact hy_source) wγ
     have hderiv_eq : deriv (chartCurve (I := I) y η) 0 =
         (fderiv ℝ ((extChartAt I y) ∘ η) 0 : ℝ →L[ℝ] E) (1 : ℝ) := by
       rw [deriv]; rfl
@@ -235,7 +235,7 @@ theorem endpointCont_of_lim
   have hDeriv_η : ∀ t ∈ Set.Ioo (-δ) δ, HasDerivAt uη (deriv uη t) t := by
     intro t ht
     have hφ_mdiff : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I y) (η t) :=
-      mdifferentiableAt_extChartAt (I := I) (x := y) (hη_srcOn t ht)
+      mdifferentiableAt_extChartAt (I := I) (x := y) (hη_sourceOn t ht)
     have hcomp : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ((extChartAt I y) ∘ η) t :=
       hφ_mdiff.comp t (hη_mdiffOn t ht)
     have hdiff : DifferentiableAt ℝ ((extChartAt I y) ∘ η) t :=
@@ -251,7 +251,7 @@ theorem endpointCont_of_lim
     intro t ht
     simpa [huη_def] using
       hasGeodesicEquationAt_fixedChart_hasDerivAt_velocity (I := I) g y
-        (γ := η) (t := t) (hη_contOn t ht) (hη_srcOn t ht) (hη_geo t ht)
+        (γ := η) (t := t) (hη_contOn t ht) (hη_sourceOn t ht) (hη_geo t ht)
   have huη0 : uη 0 = extChartAt I y y := by rw [huη_def, chartCurve_def, hη0]
   have hS_closed : IsClosed S := hS_compact.isClosed
   have hφy_in_S : extChartAt I y y ∈ S := by
@@ -384,7 +384,7 @@ theorem endpointCont_of_lim
       rwa [huη0] at this
     have hdu0 : Tendsto (fun s => deriv uη (s - b)) (𝓝[<] b) (𝓝 wγ) := by
       have := hduη_contAt0.tendsto.comp hshift0
-      rwa [hη_chartVel0] at this
+      rwa [hη_chartVelocity0] at this
     exact hu0.prodMk_nhds hdu0
   have hev_all : ∀ᶠ s in 𝓝[<] b,
       cγ s ∈ Kset ∧ cη s ∈ Kset ∧ (s - b) ∈ Set.Ioo (-δ) δ := by
@@ -435,7 +435,7 @@ theorem endpointCont_of_lim
       HasDerivAt cη (chartPhaseVF (I := I) g y (cη s)) s :=
     fun s hs => hcη_deriv_at s (ha'_all s (hsub_a''' hs)).2.2
   have hcη_b : cη b = (extChartAt I y y, wγ) := by
-    simp only [hcη_def, sub_self, huη0, hη_chartVel0]
+    simp only [hcη_def, sub_self, huη0, hη_chartVelocity0]
   have h_eq_at_b : cγ b = cη b := by rw [hcγ_b, hcη_b]
   have hcγ_deriv_Ioc : ∀ s ∈ Set.Ioc a'' b,
       HasDerivWithinAt cγ (chartPhaseVF (I := I) g y (cγ s)) (Set.Iic s) s := by
@@ -496,17 +496,17 @@ theorem endpointCont_of_lim
   have hfst : u s = uη (s - b) := by
     have : (cγ s).1 = (cη s).1 := by rw [hpair_eq]
     rwa [hcγ_lt s hs.2, hcη_def] at this
-  have hγ_src_s : γ s ∈ (chartAt H y).source := hsrc_on s (hsub_a'' hs)
-  have hη_src_s : η (s - b) ∈ (chartAt H y).source :=
-    hη_srcOn (s - b) (ha'_all s (hsub_a''' hs)).2.2
-  have hγ_ext_src : γ s ∈ (extChartAt I y).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hγ_src_s
-  have hη_ext_src : η (s - b) ∈ (extChartAt I y).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hη_src_s
+  have hγ_source_s : γ s ∈ (chartAt H y).source := hsrc_on s (hsub_a'' hs)
+  have hη_source_s : η (s - b) ∈ (chartAt H y).source :=
+    hη_sourceOn (s - b) (ha'_all s (hsub_a''' hs)).2.2
+  have hγ_ext_source : γ s ∈ (extChartAt I y).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hγ_source_s
+  have hη_ext_source : η (s - b) ∈ (extChartAt I y).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hη_source_s
   have hround_γ : (extChartAt I y).symm (extChartAt I y (γ s)) = γ s :=
-    (extChartAt I y).left_inv hγ_ext_src
+    (extChartAt I y).left_inv hγ_ext_source
   have hround_η : (extChartAt I y).symm (extChartAt I y (η (s - b))) = η (s - b) :=
-    (extChartAt I y).left_inv hη_ext_src
+    (extChartAt I y).left_inv hη_ext_source
   have hu_s : u s = extChartAt I y (γ s) := by rw [hu_def, chartCurve_def]
   have huη_s : uη (s - b) = extChartAt I y (η (s - b)) := by rw [huη_def, chartCurve_def]
   calc γ s = (extChartAt I y).symm (extChartAt I y (γ s)) := hround_γ.symm

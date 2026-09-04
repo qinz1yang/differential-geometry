@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -690,5 +690,5 @@ theorem metric_source_compact_set_is_compact
 
 end MetricCompactnessCore
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

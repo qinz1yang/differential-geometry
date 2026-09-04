@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -47,7 +47,7 @@ noncomputable def metricDerivNormSupOn
       exists x : M, x ∈ K ∧
         metricDerivNorm (I := I) a gk gInf gRef x = r}
 
-def MetricCPConvOn
+def MetricCPConvergenceOn
     (K : Set M) (p : Nat)
     (gSeq : Nat -> SmoothRiemannianMetric I M)
     (gInf gRef : SmoothRiemannianMetric I M) : Prop :=
@@ -55,19 +55,19 @@ def MetricCPConvOn
     exists k0 : Nat, forall k : Nat, k0 <= k ->
       metricDerivNormSupOn (I := I) K p (gSeq k) gInf gRef < ε
 
-def MetricCInfConvOn
+def MetricCInfConvergenceOn
     (K : Set M)
     (gSeq : Nat -> SmoothRiemannianMetric I M)
     (gInf gRef : SmoothRiemannianMetric I M) : Prop :=
-  forall p : Nat, MetricCPConvOn (I := I) K p gSeq gInf gRef
+  forall p : Nat, MetricCPConvergenceOn (I := I) K p gSeq gInf gRef
 
-def MetricCInfConvOnCompacts
+def MetricCInfConvergenceOnCompacts
     (gSeq : Nat -> SmoothRiemannianMetric I M)
     (gInf gRef : SmoothRiemannianMetric I M) : Prop :=
   forall K : Set M, forall _hK : IsCompact K,
-    MetricCInfConvOn (I := I) K gSeq gInf gRef
+    MetricCInfConvergenceOn (I := I) K gSeq gInf gRef
 
-structure MetricCInfConvData
+structure MetricCInfConvergence
     (I : ModelWithCorners Real E H) (M : Type*)
     [TopologicalSpace M] [ChartedSpace H M]
     [T2Space M] [IsManifold I ∞ M]
@@ -75,7 +75,7 @@ structure MetricCInfConvData
   gSeq : Nat -> SmoothRiemannianMetric I M
   gInf : SmoothRiemannianMetric I M
   gRef : SmoothRiemannianMetric I M
-  converges : MetricCInfConvOnCompacts (I := I) gSeq gInf gRef
+  converges : MetricCInfConvergenceOnCompacts (I := I) gSeq gInf gRef
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

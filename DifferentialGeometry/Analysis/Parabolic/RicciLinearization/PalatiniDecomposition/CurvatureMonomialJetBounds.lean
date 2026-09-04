@@ -253,14 +253,14 @@ private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁
     rw [cometricDoubleTraceFib_toModel (I := I) g₁ 2 x]
     rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g₁ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₁ 4 x Y))
       (fun j => (v j : E))]
     refine Finset.sum_congr rfl fun b _ => ?_
     rw [cometricDoubleTraceFib_toModel (I := I) g₁ 4 x Y]
     rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₁ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel Y)
       (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
           (smoothOrthoFrame (I := I) g₁ x b x))
@@ -299,7 +299,7 @@ private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁
     funext j
     fin_cases j <;> rfl
 
-lemma bdGridWindow_mono_of_le (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
+lemma antidiagonalTupleGridWindow_mono (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
     (hbb : ∀ j, b j ≤ b' j) (w : ℕ) :
     Combinatorics.antidiagonalTupleGridWindow b w ≤
       Combinatorics.antidiagonalTupleGridWindow b' w := by
@@ -310,7 +310,7 @@ lemma bdGridWindow_mono_of_le (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
   refine Finset.sum_le_sum fun e _ => ?_
   exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
-lemma bdSingle_b_le_grid (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (q : ℕ) (hq : 1 ≤ q) :
+lemma le_antidiagonalTupleGrid (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (q : ℕ) (hq : 1 ≤ q) :
     b q ≤ Combinatorics.antidiagonalTupleGrid b q := by
   have h := Combinatorics.single_factor_mul_antidiagonalTupleGrid_le b hb 0 q hq
   rw [Combinatorics.antidiagonalTupleGrid_zero, mul_one] at h
@@ -345,7 +345,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' S).toSection x)) (i + 2) := by
   classical
-  obtain ⟨CP, hCP_nn, hCP⟩ := bdPairTraceOp_tgrid (I := I) (M := M) g₀ hδ₀
+  obtain ⟨CP, hCP_nn, hCP⟩ := palatiniPairTraceOp_tgrid (I := I) (M := M) g₀ hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
   set CS : ℕ → ℝ := fun l => if l = 0 then fr ^ 2 * δ₀ ^ 2 else 1 with hCS_def
@@ -466,9 +466,9 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
         refine le_trans hstep ?_
         have hcs_nn : (0 : ℝ) ≤ fr ^ 2 * δ₀ ^ 2 := by positivity
         nlinarith [mul_le_mul_of_nonneg_left hone hcs_nn]
-      · have hsymm := bdRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ S l x
+      · have hsymm := palatiniRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ S l x
         have hsingle : b l ≤ Combinatorics.antidiagonalTupleGrid b l :=
-          bdSingle_b_le_grid b hb l hl1
+          le_antidiagonalTupleGrid b hb l hl1
         have hgw : Combinatorics.antidiagonalTupleGrid b l ≤
             Combinatorics.antidiagonalTupleGridWindow b (l + 2) :=
           Combinatorics.antidiagonalTupleGrid_le_window b hb (by omega)
@@ -552,7 +552,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
         CP i' * Combinatorics.antidiagonalTupleGridWindow b (i' + 1) := by
       refine le_trans (hCP g₁ P htie hδ_le hδ0 hboundP i' x) ?_
       exact mul_le_mul_of_nonneg_left
-        (bdGridWindow_mono_of_le bP b hbP hbPb (i' + 1)) (hCP_nn i')
+        (antidiagonalTupleGridWindow_mono bP b hbP hbPb (i' + 1)) (hCP_nn i')
     have hA2 : (∑ l ∈ Finset.range (i + 1 - i'),
         riemannianFiberNormSq (I := I) (M := M) g₀ 4 (6 + l) x
           ((iteratedCovGrad (I := I) g₀ 4 6 l
@@ -749,7 +749,7 @@ theorem exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPer
       ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 := by positivity
   by_cases hM : Nonempty M
   · obtain ⟨x₀⟩ := hM
-    have hδ0 : 0 ≤ δ := bdDelta_nonneg (I := I) (M := M) g₀ x₀ T hδ
+    have hδ0 : 0 ≤ δ := metricCauchySchwarzBound_nonneg (I := I) (M := M) g₀ x₀ T hδ
     have hδ_le' : δ ≤ δ₁ := le_trans hδ_le (le_max_left _ _)
     have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le hδ₀
     have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
@@ -804,7 +804,7 @@ theorem exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPer
           (ccTensorUnitValueSection (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T))
           (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
             (ccTensor02Symm (I := I) (M := M) g₀ T)) σ)‖ = 0 :=
-      bdNorm_zero_of_isEmpty (I := I) (M := M) g₀ 4 (2 + i) _
+      smoothCcTensor_norm_eq_zero_of_isEmpty (I := I) (M := M) g₀ 4 (2 + i) _
     rw [hz]
     have hK_nn : 0 ≤ C i * ∑ k ∈ Finset.range (i + 2), Kg k :=
       mul_nonneg (hC_nn i) (Finset.sum_nonneg fun k _ => hKg_nn k)

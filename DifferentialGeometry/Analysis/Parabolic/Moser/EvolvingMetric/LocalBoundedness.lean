@@ -125,7 +125,7 @@ theorem moserLocalizedMass_le_toReal_mul_evolvingMoserLocalizedMass
       continuous_snd).pow 2 |>.mul
         (hu.continuous.rpow_const (fun z => Or.inl (hpos z.1 z.2).ne'))
   have hfixed_cont : ContinuousOn fixed (Icc lower t₁) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc lower t₁)
       (riemannianVolumeMeasure (I := I) (M := M) q)
       (fun t x => (spatialMoserCutoff rho (2 * k)).toFun x ^ 2 * u t x ^ p)
@@ -213,7 +213,7 @@ theorem evolvingMoserLocalizedMass_le_toReal_mul_moserLocalizedMass
       continuous_snd).pow 2 |>.mul
         (hu.continuous.rpow_const (fun z => Or.inl (hpos z.1 z.2).ne'))
   have hfixed_cont : ContinuousOn fixed (Icc lower t₁) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc lower t₁)
       (riemannianVolumeMeasure (I := I) (M := M) q)
       (fun t x => (spatialMoserCutoff rho (2 * k)).toFun x ^ 2 * u t x ^ p)

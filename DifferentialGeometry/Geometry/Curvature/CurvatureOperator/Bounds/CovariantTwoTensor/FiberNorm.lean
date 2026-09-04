@@ -199,7 +199,7 @@ theorem exists_Cx_riemannianFiberNormSq_riemannOp_tensorCov_le
             riemannianFiberNormSq (I := I) (M := M) g 0 2 x T := by
   classical
   obtain ⟨n, e, bse, _hn, hbse, horth, hpars, hexpand, hrepr⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g x
   set R := riemannOp (tensorCov (I := I) g 0 2) x with hR_def
   set Cx : ℝ :=
     ∑ i : Fin n, ∑ j : Fin n, ∑ a : Fin n, ∑ b : Fin n,

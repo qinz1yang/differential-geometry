@@ -489,7 +489,7 @@ private theorem memLp_tame
   rw [hu, Real.norm_eq_abs, abs_of_nonneg hmajor0]
   exact hn
 
-theorem partial_sol_tame
+theorem partial_solution_tame
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R : ℝ} (hR : 0 < R)
     (Nfun : lowerState (I := I) (M := M) g₀ a R →
       TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ))
@@ -514,11 +514,11 @@ theorem partial_sol_tame
       T₀ = min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
         ((((R / 4) / (2 * (D + 1))) ^ 2))) ∧
       0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀),
-      ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
+      ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) (a : ℝ) T)
         (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T),
-        let field := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        let field := maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce
-        u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
+        u = maximalRegularityDuhamelMap (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce ∧
           (∀ᵐ t ∂(timeMeasure T),
             field t ∈ lowerState (I := I) (M := M) g₀ a R) ∧
@@ -622,7 +622,7 @@ theorem partial_sol_tame
     recenteredBallRetraction_lipschitzWith_one hρ.le z₀
   set field : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T →
       timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T :=
-    fun F => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+    fun F => maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F)
     with hfielddef
   have hstate : ∀ F, ∀ᵐ t ∂(timeMeasure T),
@@ -649,7 +649,7 @@ theorem partial_sol_tame
     intro F F'
     have hfield_dist : ‖field F - field F'‖ ≤
         (1 + T) * ‖ρt F - ρt F'‖ := by
-      exact maxRegDuhamelSolField_dist_le (I := I) (M := M) (h_compact := h_compact)
+      exact maximalRegularityDuhamelSolutionField_dist_le (I := I) (M := M) (h_compact := h_compact)
         (a := (a : ℝ)) hT
         (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) (ρt F')
     have hincl_dist :
@@ -659,17 +659,17 @@ theorem partial_sol_tame
       change
         ‖timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             ha12
-            (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
                 (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) -
-              maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+              maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
                 (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F'))‖ ≤
           2 * Real.sqrt T * ‖ρt F - ρt F'‖
       rw [map_sub,
-        timeL2Inclusion_maxRegDuhamelSolField (I := I) (M := M) hT hT1
+        timeL2Inclusion_maximalRegularityDuhamelSolutionField (I := I) (M := M) hT hT1
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F),
-        timeL2Inclusion_maxRegDuhamelSolField (I := I) (M := M) hT hT1
+        timeL2Inclusion_maximalRegularityDuhamelSolutionField (I := I) (M := M) hT hT1
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F')]
-      exact maxRegDuhamelSolFieldHa1_dist_le (I := I) (M := M) (h_compact := h_compact)
+      exact maximalRegularityDuhamelSolutionFieldHa1_dist_le (I := I) (M := M) (h_compact := h_compact)
         (a := (a : ℝ)) hT hT1
         (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) (ρt F')
     have hfield_norm : ∀ G, ‖field G‖ ≤ (1 + T) * ρ := by
@@ -677,31 +677,31 @@ theorem partial_sol_tame
       calc
         ‖field G‖ ≤ (1 + T) * ‖ρt G‖ := by
           simpa only [hfielddef] using
-            norm_maxRegDuhamelSolField_zero_le (I := I) (M := M) (g₀ := g₀)
+            norm_maximalRegularityDuhamelSolutionField_zero_le (I := I) (M := M) (g₀ := g₀)
               hT (ρt G)
         _ ≤ (1 + T) * ρ :=
           mul_le_mul_of_nonneg_left (hρt_norm G) (by linarith)
     have hfield_sub : field F - field F' =
-        maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
           (ρt F - ρt F') := by
       change
-        maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
               (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) -
-            maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+            maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
               (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F') =
-          maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
             (ρt F - ρt F')
-      have hsub := maxRegDuhamelSolField_sub (I := I) (M := M)
+      have hsub := maximalRegularityDuhamelSolutionField_sub (I := I) (M := M)
         (h_compact := h_compact) (a := (a : ℝ)) hT
         (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt F) (ρt F')
-      have hdiffzero := maxRegDuhamelSolField_sub (I := I) (M := M)
+      have hdiffzero := maximalRegularityDuhamelSolutionField_sub (I := I) (M := M)
         (h_compact := h_compact) (a := (a : ℝ)) hT
         (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))
         (ρt F - ρt F') 0
       rw [sub_zero,
-        maxRegDuhamelSolField_zero_zero (I := I) (M := M) (g₀ := g₀) hT,
+        maximalRegularityDuhamelSolutionField_zero_zero (I := I) (M := M) (g₀ := g₀) hT,
         sub_zero] at hdiffzero
       exact hsub.trans hdiffzero.symm
     have hpoint : ∀ᵐ t ∂(timeMeasure T),
@@ -710,7 +710,7 @@ theorem partial_sol_tame
           (field F - field F')) t‖ ≤
             Real.sqrt (1 + T) * ‖ρt F - ρt F'‖ := by
       rw [hfield_sub]
-      exact maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
+      exact maximalRegularityDuhamelSolutionField_inclusion_Ha1_ae_pointwise_le
         (I := I) (M := M) (g₀ := g₀) hT (ρt F - ρt F')
     let S : ℝ := Real.sqrt (1 + T) * ‖ρt F - ρt F'‖
     have hS : 0 ≤ S := by dsimp only [S]; positivity
@@ -875,10 +875,10 @@ theorem partial_sol_tame
   have hρt0 : ρt z₀ = z₀ :=
     recenteredBallRetraction_eq_self_of_mem (Metric.mem_closedBall_self hρ.le)
   have hfield0 : field z₀ = 0 := by
-    change maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+    change maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt z₀) = 0
     rw [hρt0, hz₀]
-    exact maxRegDuhamelSolField_zero_zero (I := I) (M := M) (g₀ := g₀) hT
+    exact maximalRegularityDuhamelSolutionField_zero_zero (I := I) (M := M) (g₀ := g₀) hT
   have hΨ0 : ‖Ψ z₀‖ ≤ Real.sqrt T *
       ‖Nfun ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ a hR.le⟩‖ := by
     refine timeL2_norm_le_of_ae_bound _ (norm_nonneg _) ?_
@@ -935,10 +935,10 @@ theorem partial_sol_tame
     recenteredBallRetraction_eq_self_of_mem (by
       rw [Metric.mem_closedBall, hz₀, dist_zero_right]
       exact hFstar)
-  set trueField := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+  set trueField := maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
     (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar with htrueField
   have hfieldstar : field Fstar = trueField := by
-    change maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+    change maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (ρt Fstar) = trueField
     rw [hρtstar, htrueField]
   have hstateStar : ∀ᵐ t ∂(timeMeasure T),
@@ -959,14 +959,14 @@ theorem partial_sol_tame
   have hforceAe : ⇑Fstar =ᵐ[timeMeasure T]
       fun t => Nfun (aeSetLift hz trueField t) := by
     simpa only [hfieldstar] using hforceAe₀
-  refine ⟨maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
+  refine ⟨maximalRegularityDuhamelMap (I := I) (M := M) (a : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar,
     Fstar, ?_⟩
   dsimp only
   refine ⟨rfl, hstateStar, hforceAe, ?_, ?_, ?_⟩
-  · rw [maxRegDuhamelMap_trace0 (I := I) (M := M) (a := (a : ℝ)) (T := T) hT
+  · rw [maximalRegularityDuhamelMap_trace0 (I := I) (M := M) (a := (a : ℝ)) (T := T) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar, map_zero]
-  · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M) (h_compact := h_compact)
+  · rw [maximalRegularityDuhamelMap_timeDeriv_eq (I := I) (M := M) (h_compact := h_compact)
       (a := (a : ℝ)) (T := T) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) Fstar]
   · simpa only [hρdef] using hFstar
@@ -993,18 +993,18 @@ theorem tameMap_dist_le
     (F F' : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (hFb : ‖F‖ ≤ ρ) (hFb' : ‖F'‖ ≤ ρ)
     (hF : ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F t ∈
         lowerState (I := I) (M := M) g₀ a R)
     (hF' : ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F' t ∈
         lowerState (I := I) (M := M) g₀ a R) :
     ‖nemytskiiTame (I := I) (M := M) g₀ a hR hcont hsingle
-          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F) hF -
         nemytskiiTame (I := I) (M := M) g₀ a hR hcont hsingle
-          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F') hF'‖ ≤
       ((A : ℝ) * R * (1 + T) + (B : ℝ) * (2 * Real.sqrt T) +
           2 * (C : ℝ) * ρ * Real.sqrt (1 + T) * (1 + T)) * ‖F - F'‖ := by
@@ -1013,10 +1013,10 @@ theorem tameMap_dist_le
   set hz := zero_mem_lowerState (I := I) (M := M) g₀ a hR with hzdef
   set fld : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T →
       timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) T :=
-    fun G => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+    fun G => maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) G with hflddef
   have hfield_dist : ‖fld F - fld F'‖ ≤ (1 + T) * ‖F - F'‖ :=
-    maxRegDuhamelSolField_dist_le (I := I) (M := M) (h_compact := h_compact)
+    maximalRegularityDuhamelSolutionField_dist_le (I := I) (M := M) (h_compact := h_compact)
       (a := (a : ℝ)) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F F'
   have hincl_dist :
@@ -1025,37 +1025,37 @@ theorem tameMap_dist_le
     rw [hflddef]
     dsimp only
     rw [map_sub,
-      timeL2Inclusion_maxRegDuhamelSolField (I := I) (M := M) hT hT1
+      timeL2Inclusion_maximalRegularityDuhamelSolutionField (I := I) (M := M) hT hT1
         (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F,
-      timeL2Inclusion_maxRegDuhamelSolField (I := I) (M := M) hT hT1
+      timeL2Inclusion_maximalRegularityDuhamelSolutionField (I := I) (M := M) hT hT1
         (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F']
-    exact maxRegDuhamelSolFieldHa1_dist_le (I := I) (M := M)
+    exact maximalRegularityDuhamelSolutionFieldHa1_dist_le (I := I) (M := M)
       (h_compact := h_compact) (a := (a : ℝ)) hT hT1
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F F'
   have hfield_norm : ∀ G, ‖G‖ ≤ ρ → ‖fld G‖ ≤ (1 + T) * ρ := by
     intro G hG
     calc
       ‖fld G‖ ≤ (1 + T) * ‖G‖ :=
-        norm_maxRegDuhamelSolField_zero_le (I := I) (M := M) (g₀ := g₀) hT G
+        norm_maximalRegularityDuhamelSolutionField_zero_le (I := I) (M := M) (g₀ := g₀) hT G
       _ ≤ (1 + T) * ρ := mul_le_mul_of_nonneg_left hG (by linarith)
   have hfield_sub : fld F - fld F' = fld (F - F') := by
     rw [hflddef]
     dsimp only
-    have hsub := maxRegDuhamelSolField_sub (I := I) (M := M)
+    have hsub := maximalRegularityDuhamelSolutionField_sub (I := I) (M := M)
       (h_compact := h_compact) (a := (a : ℝ)) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) F F'
-    have hdiffzero := maxRegDuhamelSolField_sub (I := I) (M := M)
+    have hdiffzero := maximalRegularityDuhamelSolutionField_sub (I := I) (M := M)
       (h_compact := h_compact) (a := (a : ℝ)) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) (F - F') 0
     rw [sub_zero,
-      maxRegDuhamelSolField_zero_zero (I := I) (M := M) (g₀ := g₀) hT,
+      maximalRegularityDuhamelSolutionField_zero_zero (I := I) (M := M) (g₀ := g₀) hT,
       sub_zero] at hdiffzero
     exact hsub.trans hdiffzero.symm
   have hpoint : ∀ᵐ t ∂(timeMeasure T),
       ‖(timeL2Inclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         ha12 (fld F - fld F')) t‖ ≤ Real.sqrt (1 + T) * ‖F - F'‖ := by
     rw [hfield_sub, hflddef]
-    exact maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
+    exact maximalRegularityDuhamelSolutionField_inclusion_Ha1_ae_pointwise_le
       (I := I) (M := M) (g₀ := g₀) hT (F - F')
   set Sq : ℝ := Real.sqrt (1 + T) * ‖F - F'‖ with hSqdef
   have hSq : 0 ≤ Sq := by rw [hSqdef]; positivity

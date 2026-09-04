@@ -81,8 +81,8 @@ private lemma interior_union_compl_tsupport_eq_univ
   by_cases hx : x ∈ I.interior M
   · exact Or.inl hx
   · refine Or.inr ?_
-    intro hx_supp
-    exact hx (hf_int hx_supp)
+    intro hx_support
+    exact hx (hf_int hx_support)
 
 def gradGWithBoundarySection (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -195,13 +195,13 @@ theorem Δ_g_with_boundary_continuous [T2Space M]
     (hf_int : tsupport f ⊆ I.interior M) :
     Continuous (ΔGWithBoundary (I := I) g hf hf_int) := by
   classical
-  have hΔ_supp_int : tsupport (ΔGWithBoundary (I := I) g hf hf_int) ⊆
+  have hΔ_support_int : tsupport (ΔGWithBoundary (I := I) g hf hf_int) ⊆
       I.interior M :=
     (tsupport_Δ_g_with_boundary_subset (I := I) g hf hf_int).trans hf_int
   rw [continuous_iff_continuousAt]
   intro x
-  by_cases hx_supp : x ∈ tsupport (ΔGWithBoundary (I := I) g hf hf_int)
-  · have hx_int : x ∈ I.interior M := hΔ_supp_int hx_supp
+  by_cases hx_support : x ∈ tsupport (ΔGWithBoundary (I := I) g hf hf_int)
+  · have hx_int : x ∈ I.interior M := hΔ_support_int hx_support
     have hcont_int : ContinuousOn (ΔGWithBoundary (I := I) g hf hf_int)
         (I.interior M) :=
       (Δ_g_with_boundary_contMDiffOn_interior (I := I) g hf hf_int).continuousOn
@@ -210,7 +210,7 @@ theorem Δ_g_with_boundary_continuous [T2Space M]
       (isClosed_tsupport _).isOpen_compl
     have hev_zero : (ΔGWithBoundary (I := I) g hf hf_int) =ᶠ[𝓝 x]
         (fun _ => (0 : ℝ)) := by
-      filter_upwards [h_open.mem_nhds hx_supp] with y hy
+      filter_upwards [h_open.mem_nhds hx_support] with y hy
       by_contra hne
       exact hy (subset_tsupport _ hne)
     exact (continuous_const.continuousAt.congr hev_zero.symm)

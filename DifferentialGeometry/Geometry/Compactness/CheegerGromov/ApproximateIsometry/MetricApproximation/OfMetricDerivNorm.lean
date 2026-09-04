@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -47,5 +47,5 @@ noncomputable def MapMetricApproximationOn.ofMetricDerivNorm
       (I := I) G g a ha x]
     exact hderiv a hap x hx
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -39,7 +39,7 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hf_int : tsupport f ⊆ I.interior M) (hh_int : tsupport h ⊆ I.interior M)
-    (hh_supp : HasCompactSupport h) :
+    (hh_support : HasCompactSupport h) :
     ∫ x, g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       -∫ x, f x * ΔGWithBoundary (I := I) g hh hh_int x
@@ -48,7 +48,7 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
   set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     gradGWithBoundarySection (I := I) g hh hh_int with hX_def
   have hX_cs : HasCompactSupport X :=
-    hasCompactSupport_grad_g_with_boundary_section (I := I) g hh hh_int hh_supp
+    hasCompactSupport_grad_g_with_boundary_section (I := I) g hh hh_int hh_support
   have hX_int : tsupport (X : ∀ x, TangentSpace I x) ⊆ I.interior M :=
     tsupport_grad_g_with_boundary_section_subset_interior (I := I) g hh hh_int
   have h_ibp :=
@@ -83,7 +83,7 @@ private theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hf_int : tsupport f ⊆ I.interior M) (hh_int : tsupport h ⊆ I.interior M)
-    (hf_supp : HasCompactSupport f) :
+    (hf_support : HasCompactSupport f) :
     ∫ x, g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g h x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       -∫ x, h x * ΔGWithBoundary (I := I) g hf hf_int x
@@ -92,7 +92,7 @@ private theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
   set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     gradGWithBoundarySection (I := I) g hf hf_int with hX_def
   have hX_cs : HasCompactSupport X :=
-    hasCompactSupport_grad_g_with_boundary_section (I := I) g hf hf_int hf_supp
+    hasCompactSupport_grad_g_with_boundary_section (I := I) g hf hf_int hf_support
   have hX_int : tsupport (X : ∀ x, TangentSpace I x) ⊆ I.interior M :=
     tsupport_grad_g_with_boundary_section_subset_interior (I := I) g hf hf_int
   have h_ibp :=

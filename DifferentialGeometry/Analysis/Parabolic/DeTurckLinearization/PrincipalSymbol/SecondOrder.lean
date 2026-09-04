@@ -93,7 +93,7 @@ lemma chartLinearizedChristoffelPrincipal_differentiableAt
 
 end Differentiability
 
-def chartDeTurckCorrSecondOrderPart (g : SmoothRiemannianMetric I M) (α : M)
+def chartDeTurckCorrectionSecondOrderPart (g : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) (y : E) : ℝ :=
   (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α k j y *
@@ -105,10 +105,10 @@ def chartDeTurckCorrSecondOrderPart (g : SmoothRiemannianMetric I M) (α : M)
           (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α h k y') y)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma chartDeTurckCorrSecondOrderPart_def
+@[simp] lemma chartDeTurckCorrectionSecondOrderPart_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    chartDeTurckCorrSecondOrderPart (I := I) g α h i j y =
+    chartDeTurckCorrectionSecondOrderPart (I := I) g α h i j y =
       (∑ k : Fin (Module.finrank ℝ E),
           chartGramOnE (I := I) g α k j y *
             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
@@ -167,13 +167,13 @@ lemma partialDeriv_chartLinearizedDeTurckVFPrincipal
         (hG_diff a b) (hΓ_diff a b)]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem chartDeTurckCorrSecondOrderPart_zero
+theorem chartDeTurckCorrectionSecondOrderPart_zero
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    chartDeTurckCorrSecondOrderPart (I := I) g α
+    chartDeTurckCorrectionSecondOrderPart (I := I) g α
       (0 : ChartMetricPerturbation E) i j y = 0 := by
   classical
-  rw [chartDeTurckCorrSecondOrderPart_def]
+  rw [chartDeTurckCorrectionSecondOrderPart_def]
   have hpd : ∀ (d k : Fin (Module.finrank ℝ E)),
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α
@@ -201,16 +201,16 @@ theorem chartDeTurckCorrSecondOrderPart_zero
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartDeTurckCorrSecondOrderPart_add
+theorem chartDeTurckCorrectionSecondOrderPart_add
     (g : SmoothRiemannianMetric I M) (α : M)
     (h₁ h₂ : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    chartDeTurckCorrSecondOrderPart (I := I) g α (h₁ + h₂) i j y =
-      chartDeTurckCorrSecondOrderPart (I := I) g α h₁ i j y +
-        chartDeTurckCorrSecondOrderPart (I := I) g α h₂ i j y := by
+    chartDeTurckCorrectionSecondOrderPart (I := I) g α (h₁ + h₂) i j y =
+      chartDeTurckCorrectionSecondOrderPart (I := I) g α h₁ i j y +
+        chartDeTurckCorrectionSecondOrderPart (I := I) g α h₂ i j y := by
   classical
-  rw [chartDeTurckCorrSecondOrderPart_def, chartDeTurckCorrSecondOrderPart_def,
-    chartDeTurckCorrSecondOrderPart_def]
+  rw [chartDeTurckCorrectionSecondOrderPart_def, chartDeTurckCorrectionSecondOrderPart_def,
+    chartDeTurckCorrectionSecondOrderPart_def]
   have hadd : ∀ (d k : Fin (Module.finrank ℝ E)),
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
           (fun y' => chartLinearizedDeTurckVFPrincipal (I := I) g α (h₁ + h₂) k y')
@@ -267,14 +267,14 @@ theorem chartDeTurckCorrSecondOrderPart_add
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartDeTurckCorrSecondOrderPart_smul
+theorem chartDeTurckCorrectionSecondOrderPart_smul
     (g : SmoothRiemannianMetric I M) (α : M) (c : ℝ)
     (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E)) {y : E}
     (hy : y ∈ interior (extChartAt I α).target) :
-    chartDeTurckCorrSecondOrderPart (I := I) g α (c • h) i j y =
-      c • chartDeTurckCorrSecondOrderPart (I := I) g α h i j y := by
+    chartDeTurckCorrectionSecondOrderPart (I := I) g α (c • h) i j y =
+      c • chartDeTurckCorrectionSecondOrderPart (I := I) g α h i j y := by
   classical
-  rw [chartDeTurckCorrSecondOrderPart_def, chartDeTurckCorrSecondOrderPart_def,
+  rw [chartDeTurckCorrectionSecondOrderPart_def, chartDeTurckCorrectionSecondOrderPart_def,
     smul_eq_mul]
   have hsmul : ∀ (d k : Fin (Module.finrank ℝ E)),
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d

@@ -71,7 +71,7 @@ private def connectionDifferenceOutAt (g : SmoothRiemannianMetric I M)
       (TensorRSSpace.toModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (connectionDifferenceTensorAt (I := I) cov cov' x)))
 
-private def connectionDifferenceStdPerm : Equiv.Perm (Fin 3) where
+private def connectionDifferenceStandardPerm : Equiv.Perm (Fin 3) where
   toFun i := if i = 0 then 2 else if i = 1 then 0 else 1
   invFun i := if i = 0 then 1 else if i = 1 then 2 else 0
   left_inv i := by fin_cases i <;> simp
@@ -113,7 +113,7 @@ private theorem connectionDifferenceOutAt_apply (g : SmoothRiemannianMetric I M)
 
 def connectionDifferenceLowAt (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 3 I x :=
-  ContinuousMultilinearMap.domDomCongr connectionDifferenceStdPerm
+  ContinuousMultilinearMap.domDomCongr connectionDifferenceStandardPerm
     (connectionDifferenceOutAt (I := I) g₁ (metricCov (I := I) g₁) (metricCov (I := I) g₂) x)
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -129,7 +129,7 @@ theorem connectionDifferenceLowAt_apply (g₁ g₂ : SmoothRiemannianMetric I M)
         (CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
           (v 1) (v 0)) :=
     connectionDifferenceOutAt_apply (I := I) g₁ (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
-      (fun i : Fin 3 => v (connectionDifferenceStdPerm i))
+      (fun i : Fin 3 => v (connectionDifferenceStandardPerm i))
   rw [h]
   exact g₁.symm x (v 2)
     (CovariantDerivative.difference (metricCov (I := I) g₁) (metricCov (I := I) g₂) x
@@ -163,7 +163,7 @@ theorem rmDiffLowAt_apply (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
   Tensor0SSpace.sub_apply (I := I) 4 x _ _ v
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem rmDiffLowAt_std (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
+theorem rmDiffLowAt_standard (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     (X Y Z W : TangentSpace I x) :
     rmDiffLowAt (I := I) g₁ g₂ x
         (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Z W) =

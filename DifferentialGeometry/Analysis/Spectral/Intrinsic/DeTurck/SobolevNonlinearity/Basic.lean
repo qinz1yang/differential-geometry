@@ -223,7 +223,7 @@ theorem smoothRemainderDiff_ballLipschitz_sobolev
   have hNdist_nn : 0 ≤ Ndist := norm_nonneg _
   have hNdist_eq : Ndist = ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) W‖ := by
     rw [hNdist_def, hW_def, smoothCcToTensorHs_sub]
-  have hball_conv : ∀ (S : SmoothCcTensor g₀ 0 2),
+  have hball_convergence : ∀ (S : SmoothCcTensor g₀ 0 2),
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S‖ ≤ R →
       ∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j S‖ ≤ Cb * R := by
     intro S hSball j hj
@@ -239,9 +239,9 @@ theorem smoothRemainderDiff_ballLipschitz_sobolev
       _ ≤ Cb * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S‖ := hsum
       _ ≤ Cb * R := mul_le_mul_of_nonneg_left hSball hCb_nn
   have hTcov : ∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ Cb * R :=
-    hball_conv T hTball
+    hball_convergence T hTball
   have hT'cov : ∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ Cb * R :=
-    hball_conv T' hT'ball
+    hball_convergence T' hT'ball
   have hcol := hCcol T T' hδ_le hδ hδ'_le hδ' hTcov hT'cov
   rw [← hD_def] at hcol
   have hWsum := hCb W
@@ -464,7 +464,7 @@ theorem smoothRemainderDiff_ballLipschitz_sobolev_dataWeighted_of_symm
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 1) T'‖
       * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (T - T')‖ +
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 1) (T - T')‖ with hrhs_def
-  have hball_conv : ∀ (S : SmoothCcTensor g₀ 0 2),
+  have hball_convergence : ∀ (S : SmoothCcTensor g₀ 0 2),
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S‖ ≤ R →
       ∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j S‖ ≤ Cb * R := by
     intro S hSball j hj
@@ -480,9 +480,9 @@ theorem smoothRemainderDiff_ballLipschitz_sobolev_dataWeighted_of_symm
       _ ≤ Cb * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) S‖ := hsum
       _ ≤ Cb * R := mul_le_mul_of_nonneg_left hSball hCb_nn
   have hTcov : ∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ≤ Cb * R :=
-    hball_conv T hTball
+    hball_convergence T hTball
   have hT'cov : ∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ Cb * R :=
-    hball_conv T' hT'ball
+    hball_convergence T' hT'ball
   have hcol := hCcol T T' hδ_le hδ hδ'_le hδ' hTsymm hT'symm hTcov hT'cov
   set Dsum : ℝ := ∑ q ∈ Finset.range (a + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 q D‖ with hDsum_def
   have hDsum_nn : 0 ≤ Dsum := Finset.sum_nonneg fun q _ => norm_nonneg _

@@ -107,14 +107,14 @@ theorem lowerScaleFirstOrderActionSecondToFirstOrder_ball_bound
           F (j S) =
             (lowCoreActionCoefficients (I := I) (M := M) g
               hρ hδ0 hδ_le hreal S).firstOrderActionSecondToFirstOrder (I := I) (M := M) := by
-        exact lowerScaleFirstOrderActionSecondToFirstOrder_core (I := I) (M := M) hpair S
+        exact lowerScaleFirstOrderActionSecondToFirstOrder_apply_ccToHsLin (I := I) (M := M) hpair S
       have hcore0 :
           F 0 =
             (lowCoreActionCoefficients (I := I) (M := M) g
               hρ hδ0 hδ_le hreal
               (0 : SmoothCcTensor g 0 2)).firstOrderActionSecondToFirstOrder (I := I) (M := M) := by
         simpa only [map_zero] using
-          (lowerScaleFirstOrderActionSecondToFirstOrder_core (I := I) (M := M) hpair
+          (lowerScaleFirstOrderActionSecondToFirstOrder_apply_ccToHsLin (I := I) (M := M) hpair
             (0 : SmoothCcTensor g 0 2))
       rw [← hcoreS, ← hcore0] at hdiff
       have hdiff0 :

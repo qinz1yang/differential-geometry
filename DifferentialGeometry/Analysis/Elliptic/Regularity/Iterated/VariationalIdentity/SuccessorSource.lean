@@ -80,7 +80,7 @@ theorem per_pair_ibp_chosenMthMixed
         (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆
+    (hψ_support : tsupport ψ ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α)
     (l : Fin (Module.finrank ℝ E)) :
@@ -120,28 +120,28 @@ theorem per_pair_ibp_chosenMthMixed
     chosenMthMixedPartialChartPushedU_memW1p_two
       (I := I) (M := M) g α u_h m h_chart_regularity dirs
   have h_w_eq : ∀ j : Fin (Module.finrank ℝ E),
-      w j = DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      w j = DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 j v Ω := by
     intro j
     change chosenMthMixedPartialChartPushedU
         (I := I) (M := M) g α u_h (m + 1) (Fin.snoc dirs j) =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 j v Ω
     rw [chosenMthMixedPartialChartPushedU_succ]
     have h_last : Fin.snoc (α := fun _ => Fin (Module.finrank ℝ E)) dirs j
         (Fin.last m) = j := by simp
-    have h_init : Fin.init (Fin.snoc (α := fun _ => Fin (Module.finrank ℝ E))
+    have h_initial : Fin.init (Fin.snoc (α := fun _ => Fin (Module.finrank ℝ E))
         dirs j) = dirs := by simp
-    rw [h_last, h_init]
+    rw [h_last, h_initial]
   have hw_isWeakPartial : ∀ j : Fin (Module.finrank ℝ E),
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j (w j) v Ω := by
     intro j
     rw [h_w_eq j]
-    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       h_v_memW1p j
   have hv_global_memLp : MemLp v 2 ((volume : Measure EuclN).restrict Ω) :=
     h_v_memW1p.1
-  have hv_locMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
+  have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
     have hK'_meas : MeasurableSet K' := hK'_compact.isClosed.measurableSet
@@ -156,9 +156,9 @@ theorem per_pair_ibp_chosenMthMixed
       MemLp (w j) 2 ((volume : Measure EuclN).restrict Ω) := by
     intro j
     rw [h_w_eq j]
-    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       h_v_memW1p j
-  have hw_locMemLp : ∀ (j : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
+  have hw_localMemLp : ∀ (j : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
       IsCompact K' → K' ⊆ Ω →
       MemLp (w j) 2 ((volume : Measure EuclN).restrict K') := by
     intro j K' hK'_compact hK'_in
@@ -172,7 +172,7 @@ theorem per_pair_ibp_chosenMthMixed
     exact (hw_global_memLp j).restrict K'
   set K : Set EuclN := tsupport ψ with hK_def
   have hK_compact : IsCompact K := hψ_cs
-  have hK_in : K ⊆ Ω := hψ_supp
+  have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
     exists_smooth_global_extension
       (I := I) (M := M) (φ := φ) α hφ_chart hK_compact hK_in
@@ -180,8 +180,8 @@ theorem per_pair_ibp_chosenMthMixed
     DifferentialGeometry.Analysis.Sobolev.Euclidean.integral_smul_weak_partial_eq
       (d := Module.finrank ℝ E) (Ω := Ω) hΩ_open
       (φ := φExt) hφExt_smooth (v := v) (w := w)
-      hv_locMemLp hw_locMemLp hw_isWeakPartial l
-      (ψ := ψ) hψ_smooth hψ_cs hψ_supp
+      hv_localMemLp hw_localMemLp hw_isWeakPartial l
+      (ψ := ψ) hψ_smooth hψ_cs hψ_support
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   have hcthick_subset : Metric.cthickening δ K ⊆ Ω := hδ_subset
   have hK_in_thickening : K ⊆ Metric.cthickening δ K :=
@@ -190,12 +190,12 @@ theorem per_pair_ibp_chosenMthMixed
     intro x hx
     have h_compl_open : IsOpen (Kᶜ) := (isClosed_tsupport _).isOpen_compl
     have hx_in_compl : x ∈ Kᶜ := hx
-    have hψ_zero_nbhd : ∀ᶠ y in 𝓝 x, ψ y = 0 := by
+    have hψ_zero_neighborhood : ∀ᶠ y in 𝓝 x, ψ y = 0 := by
       filter_upwards [h_compl_open.mem_nhds hx_in_compl] with y hy
       exact image_eq_zero_of_notMem_tsupport hy
     have hψ_const_zero : fderiv ℝ ψ x = fderiv ℝ (fun _ : EuclN => (0 : ℝ)) x := by
       apply Filter.EventuallyEq.fderiv_eq
-      filter_upwards [hψ_zero_nbhd] with y hy
+      filter_upwards [hψ_zero_neighborhood] with y hy
       rw [hy]
     rw [hψ_const_zero]; simp
   have hLHS_eq :
@@ -218,14 +218,14 @@ theorem per_pair_ibp_chosenMthMixed
       refine ⟨y, hy_K, ?_⟩
       simp [hδ_pos]
     have h_thick_open : IsOpen (Metric.thickening δ K) := Metric.isOpen_thickening
-    have h_nbhd : Metric.thickening δ K ∈ 𝓝 y := h_thick_open.mem_nhds hy_thick_open
+    have h_neighborhood : Metric.thickening δ K ∈ 𝓝 y := h_thick_open.mem_nhds hy_thick_open
     have h_thick_sub : Metric.thickening δ K ⊆ Metric.cthickening δ K :=
       Metric.thickening_subset_cthickening _ _
-    have h_eq_nbhd : φExt =ᶠ[𝓝 y] φ := by
-      filter_upwards [h_nbhd] with z hz
+    have h_eq_neighborhood : φExt =ᶠ[𝓝 y] φ := by
+      filter_upwards [h_neighborhood] with z hz
       exact hφExt_eq z (h_thick_sub hz)
     have h_fderiv_eq : fderiv ℝ φExt y = fderiv ℝ φ y :=
-      Filter.EventuallyEq.fderiv_eq h_eq_nbhd
+      Filter.EventuallyEq.fderiv_eq h_eq_neighborhood
     rw [h_fderiv_eq]
   have hLeibniz1_eq :
       ∫ y in Ω, (fderiv ℝ φExt y) (EuclideanSpace.single l 1) * v y * ψ y
@@ -248,11 +248,11 @@ theorem per_pair_ibp_chosenMthMixed
   rw [← hLHS_eq, ← hLeibniz1_eq, ← hLeibniz2_eq]
   exact h_ibp_ext
 
-noncomputable def fChartEffStepNumerator
+noncomputable def fChartEffectiveStepNumerator
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : EuclN → ℝ)
+    (fChartEffectivePrev : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E))
     (y : EuclN) : ℝ :=
   (∑ i : Fin (Module.finrank ℝ E),
@@ -270,55 +270,55 @@ noncomputable def fChartEffStepNumerator
   - densityDerivOnEuclid (I := I) g α l y *
       chosenMthMixedPartialChartPushedU
         (I := I) (M := M) g α u_h m dirs y
-  + densityDerivOnEuclid (I := I) g α l y * fChartEffPrev y
+  + densityDerivOnEuclid (I := I) g α l y * fChartEffectivePrev y
   + densityOnEuclid (I := I) g α y *
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-        (d := Module.finrank ℝ E) 2 l fChartEffPrev
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
+        (d := Module.finrank ℝ E) 2 l fChartEffectivePrev
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α) y
 
-noncomputable def fChartEffStep
+noncomputable def fChartEffectiveStep
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : EuclN → ℝ)
+    (fChartEffectivePrev : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   Set.indicator (chartImagePOUTsupport (I := I) (M := M) α)
-    (fun y => fChartEffStepNumerator
-        (I := I) (M := M) g α u_h m dirs fChartEffPrev l y /
+    (fun y => fChartEffectiveStepNumerator
+        (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l y /
       densityOnEuclid (I := I) g α y)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fChartEffStep_apply
+theorem fChartEffectiveStep_apply
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : EuclN → ℝ)
+    (fChartEffectivePrev : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E))
     (y : EuclN) :
-    fChartEffStep (I := I) (M := M) g α u_h m dirs fChartEffPrev l y =
+    fChartEffectiveStep (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l y =
       Set.indicator (chartImagePOUTsupport (I := I) (M := M) α)
-        (fun z => fChartEffStepNumerator
-          (I := I) (M := M) g α u_h m dirs fChartEffPrev l z /
+        (fun z => fChartEffectiveStepNumerator
+          (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l z /
           densityOnEuclid (I := I) g α z) y := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem density_mul_fChartEffStep_eq_indicator_numerator
+theorem density_mul_fChartEffectiveStep_eq_indicator_numerator
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : EuclN → ℝ)
+    (fChartEffectivePrev : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E))
     (y : EuclN)
     (hy : y ∈ DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
       (I := I) (M := M) α) :
     densityOnEuclid (I := I) g α y *
-        fChartEffStep (I := I) (M := M) g α u_h m dirs fChartEffPrev l y =
+        fChartEffectiveStep (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l y =
       Set.indicator (chartImagePOUTsupport (I := I) (M := M) α)
-        (fun z => fChartEffStepNumerator
-          (I := I) (M := M) g α u_h m dirs fChartEffPrev l z) y := by
+        (fun z => fChartEffectiveStepNumerator
+          (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l z) y := by
   classical
-  rw [fChartEffStep_apply]
+  rw [fChartEffectiveStep_apply]
   by_cases hy_K : y ∈ chartImagePOUTsupport (I := I) (M := M) α
   · rw [Set.indicator_of_mem hy_K, Set.indicator_of_mem hy_K]
     have h_pos : 0 < densityOnEuclid (I := I) g α y :=
@@ -327,16 +327,16 @@ theorem density_mul_fChartEffStep_eq_indicator_numerator
   · rw [Set.indicator_of_notMem hy_K, Set.indicator_of_notMem hy_K, mul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fChartEffStep_supported_in_chartImagePOUTsupport
+theorem fChartEffectiveStep_supported_in_chartImagePOUTsupport
     {g : SmoothRiemannianMetric I M} {α : M}
     {u_h : H1Compl (I := I) (M := M) g} {m : ℕ}
     {dirs : Fin m → Fin (Module.finrank ℝ E)}
-    {fChartEffPrev : EuclN → ℝ}
+    {fChartEffectivePrev : EuclN → ℝ}
     {l : Fin (Module.finrank ℝ E)} :
     Function.support
-        (fChartEffStep (I := I) (M := M) g α u_h m dirs fChartEffPrev l) ⊆
+        (fChartEffectiveStep (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l) ⊆
       chartImagePOUTsupport (I := I) (M := M) α := by
-  unfold fChartEffStep
+  unfold fChartEffectiveStep
   exact Set.support_indicator_subset
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -635,19 +635,19 @@ private lemma termC_memLp_vol_K
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma termD_memLp_vol_K
     {g : SmoothRiemannianMetric I M} {α : M}
-    (fChartEffPrev : EuclN → ℝ)
+    (fChartEffectivePrev : EuclN → ℝ)
     (h_prev_memLp_weighted :
-      MemLp fChartEffPrev 2
+      MemLp fChartEffectivePrev 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)))
     (l : Fin (Module.finrank ℝ E)) :
     MemLp (fun y =>
-        densityDerivOnEuclid (I := I) g α l y * fChartEffPrev y) 2
+        densityDerivOnEuclid (I := I) g α l y * fChartEffectivePrev y) 2
       ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
   classical
   have h_prev_vol_K :
-      MemLp fChartEffPrev 2
+      MemLp fChartEffectivePrev 2
         ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure
       (I := I) (M := M) (g := g) (α := α) h_prev_memLp_weighted
@@ -660,33 +660,33 @@ private lemma termD_memLp_vol_K
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma termE_memLp_vol_K
     (g : SmoothRiemannianMetric I M) (α : M)
-    (fChartEffPrev : EuclN → ℝ)
+    (fChartEffectivePrev : EuclN → ℝ)
     (l : Fin (Module.finrank ℝ E)) :
     MemLp (fun y =>
         densityOnEuclid (I := I) g α y *
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          (d := Module.finrank ℝ E) 2 l fChartEffPrev
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
+          (d := Module.finrank ℝ E) 2 l fChartEffectivePrev
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α) y) 2
       ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
   classical
   by_cases h_memW1p :
-      DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 fChartEffPrev
+      DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 fChartEffectivePrev
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α)
   · have h_global :
-        MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          (d := Module.finrank ℝ E) 2 l fChartEffPrev
+        MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
+          (d := Module.finrank ℝ E) 2 l fChartEffectivePrev
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)) 2
           ((volume : Measure EuclN).restrict
             (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
               (I := I) (M := M) α)) :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_memW1p l
     have h_K :
-        MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          (d := Module.finrank ℝ E) 2 l fChartEffPrev
+        MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
+          (d := Module.finrank ℝ E) 2 l fChartEffectivePrev
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)) 2
           ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) :=
@@ -694,15 +694,15 @@ private lemma termE_memLp_vol_K
     exact memLp_two_continuousOn_mul_on_Kα (α := α)
       (densityOnEuclid_continuousOn (I := I) g α) h_K
   · have h_zero :
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          (d := Module.finrank ℝ E) 2 l fChartEffPrev
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
+          (d := Module.finrank ℝ E) 2 l fChartEffectivePrev
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α) = 0 :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_of_not_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_of_not_mem
         h_memW1p l
     have : (fun y => densityOnEuclid (I := I) g α y *
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          (d := Module.finrank ℝ E) 2 l fChartEffPrev
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
+          (d := Module.finrank ℝ E) 2 l fChartEffectivePrev
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α) y) = (fun _ => 0) := by
       funext y
@@ -711,7 +711,7 @@ private lemma termE_memLp_vol_K
     exact MemLp.zero
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma fChartEffStepNumerator_memLp_vol_K
+private lemma fChartEffectiveStepNumerator_memLp_vol_K
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
@@ -731,15 +731,15 @@ private lemma fChartEffStepNumerator_memLp_vol_K
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α))
-    (fChartEffPrev : EuclN → ℝ)
+    (fChartEffectivePrev : EuclN → ℝ)
     (h_prev_memLp_weighted :
-      MemLp fChartEffPrev 2
+      MemLp fChartEffectivePrev 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)))
     (l : Fin (Module.finrank ℝ E)) :
-    MemLp (fChartEffStepNumerator (I := I) (M := M)
-        g α u_h m dirs fChartEffPrev l) 2
+    MemLp (fChartEffectiveStepNumerator (I := I) (M := M)
+        g α u_h m dirs fChartEffectivePrev l) 2
       ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
   classical
   have hA : MemLp (fun y => (∑ i : Fin (Module.finrank ℝ E),
@@ -771,14 +771,14 @@ private lemma fChartEffStepNumerator_memLp_vol_K
   have hC := termC_memLp_vol_K (I := I) (M := M) g α m dirs
     h_chart_regularity_1 l
   have hD := termD_memLp_vol_K (I := I) (M := M) (g := g) (α := α)
-    fChartEffPrev h_prev_memLp_weighted l
+    fChartEffectivePrev h_prev_memLp_weighted l
   have hE := termE_memLp_vol_K (I := I) (M := M) g α
-    fChartEffPrev l
+    fChartEffectivePrev l
   have h_step1 := hA.add hB
   have h_step2 := h_step1.sub hC
   have h_step3 := h_step2.add hD
   have h_step4 := h_step3.add hE
-  unfold fChartEffStepNumerator
+  unfold fChartEffectiveStepNumerator
   convert h_step4 using 2 with y
   simp only [Pi.add_apply, Pi.sub_apply]
 
@@ -799,7 +799,7 @@ private lemma one_div_densityOnEuclid_continuousOn
   exact h_inv
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma fChartEffStepNumerator_div_density_memLp_vol_K
+private lemma fChartEffectiveStepNumerator_div_density_memLp_vol_K
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
     (dirs : Fin m → Fin (Module.finrank ℝ E))
@@ -819,28 +819,28 @@ private lemma fChartEffStepNumerator_div_density_memLp_vol_K
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α))
-    (fChartEffPrev : EuclN → ℝ)
+    (fChartEffectivePrev : EuclN → ℝ)
     (h_prev_memLp_weighted :
-      MemLp fChartEffPrev 2
+      MemLp fChartEffectivePrev 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)))
     (l : Fin (Module.finrank ℝ E)) :
-    MemLp (fun y => fChartEffStepNumerator
-        (I := I) (M := M) g α u_h m dirs fChartEffPrev l y /
+    MemLp (fun y => fChartEffectiveStepNumerator
+        (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l y /
         densityOnEuclid (I := I) g α y) 2
       ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
   classical
-  have h_num := fChartEffStepNumerator_memLp_vol_K
+  have h_num := fChartEffectiveStepNumerator_memLp_vol_K
     (I := I) (M := M) g α u_h m dirs
-    h_chart_regularity_1 h_chart_regularity_2 fChartEffPrev
+    h_chart_regularity_1 h_chart_regularity_2 fChartEffectivePrev
     h_prev_memLp_weighted l
-  have h_eq : (fun y => fChartEffStepNumerator
-      (I := I) (M := M) g α u_h m dirs fChartEffPrev l y /
+  have h_eq : (fun y => fChartEffectiveStepNumerator
+      (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l y /
       densityOnEuclid (I := I) g α y) =
       fun y => (1 / densityOnEuclid (I := I) g α y) *
-        fChartEffStepNumerator
-          (I := I) (M := M) g α u_h m dirs fChartEffPrev l y := by
+        fChartEffectiveStepNumerator
+          (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l y := by
     funext y
     rw [one_div, mul_comm, ← div_eq_mul_inv]
   rw [h_eq]
@@ -848,7 +848,7 @@ private lemma fChartEffStepNumerator_div_density_memLp_vol_K
     (one_div_densityOnEuclid_continuousOn (I := I) (M := M) g α) h_num
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fChartEffStep_memLp_two_weighted
+theorem fChartEffectiveStep_memLp_two_weighted
     {g : SmoothRiemannianMetric I M} {α : M}
     {u_h : H1Compl (I := I) (M := M) g} {m : ℕ}
     {dirs : Fin m → Fin (Module.finrank ℝ E)}
@@ -868,27 +868,27 @@ theorem fChartEffStep_memLp_two_weighted
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α))
-    {fChartEffPrev : EuclN → ℝ}
+    {fChartEffectivePrev : EuclN → ℝ}
     (h_prev_memLp_weighted :
-      MemLp fChartEffPrev 2
+      MemLp fChartEffectivePrev 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)))
     {l : Fin (Module.finrank ℝ E)} :
-    MemLp (fChartEffStep (I := I) (M := M) g α
-        u_h m dirs fChartEffPrev l) 2
+    MemLp (fChartEffectiveStep (I := I) (M := M) g α
+        u_h m dirs fChartEffectivePrev l) 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α)) := by
   classical
   set K : Set EuclN := Kα (I := I) (M := M) α with hK_def
   set f : EuclN → ℝ := fun y =>
-    fChartEffStepNumerator
-      (I := I) (M := M) g α u_h m dirs fChartEffPrev l y /
+    fChartEffectiveStepNumerator
+      (I := I) (M := M) g α u_h m dirs fChartEffectivePrev l y /
       densityOnEuclid (I := I) g α y with hf_def
   have h_indicator_eq :
-      fChartEffStep (I := I) (M := M) g α
-          u_h m dirs fChartEffPrev l =
+      fChartEffectiveStep (I := I) (M := M) g α
+          u_h m dirs fChartEffectivePrev l =
         Set.indicator K f := by
     rfl
   rw [h_indicator_eq]
@@ -914,9 +914,9 @@ theorem fChartEffStep_memLp_two_weighted
   rw [h_double_restrict]
   refine memLp_chartPulledWeighted_restrict_of_volume_restrict
     (g := g) (α := α) hK_compact hK_meas hK_in ?_
-  exact fChartEffStepNumerator_div_density_memLp_vol_K
+  exact fChartEffectiveStepNumerator_div_density_memLp_vol_K
     (I := I) (M := M) g α u_h m dirs
-    h_chart_regularity_1 h_chart_regularity_2 fChartEffPrev
+    h_chart_regularity_1 h_chart_regularity_2 fChartEffectivePrev
     h_prev_memLp_weighted l
 
 end IteratedVariationalIdentityStepScaffold

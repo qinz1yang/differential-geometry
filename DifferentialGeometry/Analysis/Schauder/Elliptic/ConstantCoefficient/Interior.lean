@@ -106,7 +106,7 @@ theorem exists_interior_laplacian_schauder_bound
     · exact fun x ↦ by simpa using du.norm_coe_le_norm x
     · exact fun x ↦ by simpa using d2u.norm_coe_le_norm x
   obtain ⟨U, chi, dchi, d2chi, Kchi, Kdchi, Klapchi,
-    hU, hKU, hchiOne, hchiSupp, hchiRange,
+    hU, hKU, hchiOne, hchiSupport, hchiRange,
     hchi, hdchi, hchiHolder, hdchiHolder, hlapchiHolder⟩ :=
       exists_schauder_cutoff hK hOmega hKOmega halpha0.le halpha1.le
   let C := interiorLaplacianSchauderConst

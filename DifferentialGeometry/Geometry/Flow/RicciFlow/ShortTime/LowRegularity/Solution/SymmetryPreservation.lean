@@ -254,7 +254,7 @@ theorem symmHs_coeff {σ : ℝ} (hσ : 0 ≤ σ)
   · refine continuous_finsetSum _ (fun j _ => ?_)
     exact (tensorHsCoeffL (I := I) (M := M) (a := σ) j).continuous.const_mul _
   · intro X
-    rw [symmHs_core (I := I) (M := M) g hσ X]
+    rw [symmHs_apply_ccToHsLin (I := I) (M := M) g hσ X]
     simp only [ccToHsLin_apply, ccTensorToHs_coeff]
     exact ccTensor02Symm_toL2_coeff (I := I) (M := M) g X i
 
@@ -273,7 +273,7 @@ theorem symmHs_smoothCc_eq_self {σ : ℝ} (hσ : 0 ≤ σ) (X : SmoothCcTensor 
     apply TensorHs.ext
     funext i
     rfl
-  rw [hEq, symmHs_core (I := I) (M := M) g hσ X, hX]
+  rw [hEq, symmHs_apply_ccToHsLin (I := I) (M := M) g hσ X, hX]
 
 def symmTimeL2 {σ : ℝ} (hσ : 0 ≤ σ) (T : ℝ) :
     timeL2 (TensorHs (I := I) (M := M) g 0 2 σ) T →L[ℝ]
@@ -351,9 +351,9 @@ private lemma homModeCoeff_coeFn {a T : ℝ}
         u₀.coeff j :=
   coeFn_ofContinuousOn _
 
-private lemma perModeConv_congr {lam lam' T : ℝ} (h : lam = lam')
+private lemma perModeConvolution_congr {lam lam' T : ℝ} (h : lam = lam')
     (hlam : 0 ≤ lam) (hlam' : 0 ≤ lam') (hT : 0 ≤ T) (f : timeL2 ℝ T) :
-    perModeConvL2 lam hlam hT f = perModeConvL2 lam' hlam' hT f := by
+    perModeConvolutionL2 lam hlam hT f = perModeConvolutionL2 lam' hlam' hT f := by
   subst h
   rfl
 
@@ -385,20 +385,20 @@ theorem symmHs_homModeCoeff {a T : ℝ} (h2 : (0 : ℝ) ≤ a + 2)
   rw [ht3 j hj, lambda_of_mem_eigenBlock (I := I) (M := M) g hj]
   ring
 
-theorem symmHs_solModeCoeff {a T : ℝ} (ha : (0 : ℝ) ≤ a) (hT : 0 ≤ T)
+theorem symmHs_solutionModeCoeff {a T : ℝ} (ha : (0 : ℝ) ≤ a) (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T)
     (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
       (I := I) (M := M) g 0 2) :
-    solModeCoeff (I := I) (M := M) (a := a) hT
+    solutionModeCoeff (I := I) (M := M) (a := a) hT
         (symmTimeL2 (I := I) (M := M) g ha T f) i =
       ∑ j ∈ eigenBlock (I := I) (M := M) g i,
         symmMat (I := I) (M := M) g i j •
-          solModeCoeff (I := I) (M := M) (a := a) hT f j := by
-  rw [solModeCoeff, timeModeCoeff_symmTimeL2 (I := I) (M := M) g ha f i, map_sum]
+          solutionModeCoeff (I := I) (M := M) (a := a) hT f j := by
+  rw [solutionModeCoeff, timeModeCoeff_symmTimeL2 (I := I) (M := M) g ha f i, map_sum]
   refine Finset.sum_congr rfl (fun j hj => ?_)
-  rw [map_smul, solModeCoeff]
+  rw [map_smul, solutionModeCoeff]
   refine congrArg (fun z => symmMat (I := I) (M := M) g i j • z) ?_
-  exact (perModeConv_congr
+  exact (perModeConvolution_congr
     (lambda_of_mem_eigenBlock (I := I) (M := M) g hj)
     (tensor_lambda_nonneg (I := I) (M := M) j)
     (tensor_lambda_nonneg (I := I) (M := M) i) hT
@@ -407,35 +407,35 @@ theorem symmHs_solModeCoeff {a T : ℝ} (ha : (0 : ℝ) ≤ a) (hT : 0 ≤ T)
 theorem symmHs_homField_comm {a T : ℝ} (h2 : (0 : ℝ) ≤ a + 2) (hT : 0 ≤ T)
     (u₀ : TensorHs (I := I) (M := M) g 0 2 (a + 2)) :
     symmTimeL2 (I := I) (M := M) g h2 T
-        (maxRegHomogeneousSolField (I := I) (M := M) a T u₀) =
-      maxRegHomogeneousSolField (I := I) (M := M) a T
+        (maximalRegularityHomogeneousSolutionField (I := I) (M := M) a T u₀) =
+      maximalRegularityHomogeneousSolutionField (I := I) (M := M) a T
         (symmHs (I := I) (M := M) g h2 u₀) := by
   refine timeModeCoeff_injective (I := I) (M := M)
     (hCompact (I := I) (M := M) g) (fun i => ?_)
   rw [timeModeCoeff_symmTimeL2 (I := I) (M := M) g h2 _ i,
-    maxRegHomogeneousSolField_timeModeCoeff (I := I) (M := M) (a := a) (T := T)
+    maximalRegularityHomogeneousSolutionField_timeModeCoeff (I := I) (M := M) (a := a) (T := T)
       hT (symmHs (I := I) (M := M) g h2 u₀) i,
     symmHs_homModeCoeff (I := I) (M := M) (a := a) (T := T) g h2 u₀ i]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [maxRegHomogeneousSolField_timeModeCoeff (I := I) (M := M) (a := a) (T := T)
+  rw [maximalRegularityHomogeneousSolutionField_timeModeCoeff (I := I) (M := M) (a := a) (T := T)
     hT u₀ j]
 
-theorem symmHs_solField_comm {a T : ℝ} (ha : (0 : ℝ) ≤ a)
+theorem symmHs_solutionField_comm {a T : ℝ} (ha : (0 : ℝ) ≤ a)
     (h2 : (0 : ℝ) ≤ a + 2) (hT : 0 ≤ T)
     (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T) :
     symmTimeL2 (I := I) (M := M) g h2 T
-        (maximalRegularitySolField (I := I) (M := M) a hT f) =
-      maximalRegularitySolField (I := I) (M := M) a hT
+        (maximalRegularitySolutionField (I := I) (M := M) a hT f) =
+      maximalRegularitySolutionField (I := I) (M := M) a hT
         (symmTimeL2 (I := I) (M := M) g ha T f) := by
   refine timeModeCoeff_injective (I := I) (M := M)
     (hCompact (I := I) (M := M) g) (fun i => ?_)
   rw [timeModeCoeff_symmTimeL2 (I := I) (M := M) g h2 _ i,
-    maximalRegularitySolField_timeModeCoeff (I := I) (M := M) (a := a)
+    maximalRegularitySolutionField_timeModeCoeff (I := I) (M := M) (a := a)
       hT (hCompact (I := I) (M := M) g)
       (symmTimeL2 (I := I) (M := M) g ha T f) i,
-    symmHs_solModeCoeff (I := I) (M := M) g ha hT f i]
+    symmHs_solutionModeCoeff (I := I) (M := M) g ha hT f i]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [maximalRegularitySolField_timeModeCoeff (I := I) (M := M) (a := a)
+  rw [maximalRegularitySolutionField_timeModeCoeff (I := I) (M := M) (a := a)
     hT (hCompact (I := I) (M := M) g) f j]
 
 theorem symmHs_duhamel_comm {a T : ℝ} (ha : (0 : ℝ) ≤ a)
@@ -443,13 +443,13 @@ theorem symmHs_duhamel_comm {a T : ℝ} (ha : (0 : ℝ) ≤ a)
     (u₀ : TensorHs (I := I) (M := M) g 0 2 (a + 2))
     (f : timeL2 (TensorHs (I := I) (M := M) g 0 2 a) T) :
     symmTimeL2 (I := I) (M := M) g h2 T
-        (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f) =
-      maxRegDuhamelSolField (I := I) (M := M) a hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ f) =
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT
         (symmHs (I := I) (M := M) g h2 u₀)
         (symmTimeL2 (I := I) (M := M) g ha T f) := by
-  rw [maxRegDuhamelSolField, maxRegDuhamelSolField, map_add,
+  rw [maximalRegularityDuhamelSolutionField, maximalRegularityDuhamelSolutionField, map_add,
     symmHs_homField_comm (I := I) (M := M) g h2 hT.le u₀,
-    symmHs_solField_comm (I := I) (M := M) g ha h2 hT.le f]
+    symmHs_solutionField_comm (I := I) (M := M) g ha h2 hT.le f]
 
 theorem duhamel_symm_ae {a T : ℝ} (ha : (0 : ℝ) ≤ a) (h2 : (0 : ℝ) ≤ a + 2)
     (hT : 0 < T)
@@ -460,8 +460,8 @@ theorem duhamel_symm_ae {a T : ℝ} (ha : (0 : ℝ) ≤ a) (h2 : (0 : ℝ) ≤ a
       symmHs (I := I) (M := M) g ha (f t) = f t) :
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g h2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f t) =
-        maxRegDuhamelSolField (I := I) (M := M) a hT u₀ f t := by
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ f t) =
+        maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ f t := by
   have hfL : symmTimeL2 (I := I) (M := M) g ha T f = f :=
     (symmTimeL2_eq_self_iff (I := I) (M := M) g ha f).2 hf
   refine (symmTimeL2_eq_self_iff (I := I) (M := M) g h2 _).1 ?_
@@ -474,9 +474,9 @@ theorem duhamel_solution_symmetric_ae {a T : ℝ} (ha : (0 : ℝ) ≤ a) (h2 : (
       symmHs (I := I) (M := M) g ha (f t) = f t) :
     ∀ᵐ t ∂timeMeasure T,
       symmHs (I := I) (M := M) g h2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT
             (0 : TensorHs (I := I) (M := M) g 0 2 (a + 2)) f t) =
-        maxRegDuhamelSolField (I := I) (M := M) a hT
+        maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT
           (0 : TensorHs (I := I) (M := M) g 0 2 (a + 2)) f t :=
   duhamel_symm_ae (I := I) (M := M) g ha h2 hT 0 f (map_zero _) hf
 

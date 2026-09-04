@@ -23,7 +23,7 @@ def paramTangentVF
     ℝ → (X × (P →L[ℝ] X)) → X × (P →L[ℝ] X) :=
   fun t z => (v t z.1, (fderiv ℝ (v t) z.1).comp z.2)
 
-def paramTangentInit
+def paramTangentInitial
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
     [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -37,13 +37,13 @@ def paramTangentCurve
     (γ : P → ℝ → X) (p : P) (t : ℝ) : X × (P →L[ℝ] X) :=
   (γ p t, fderiv ℝ (fun q => γ q t) p)
 
-theorem paramTangentInit_contDiffOn
+theorem paramTangentInitial_contDiffOn
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
     [NormedAddCommGroup X] [NormedSpace ℝ X]
     {A : Set P} (hA : IsOpen A) {a : P → X}
     (ha : ContDiffOn ℝ ∞ a A) :
-    ContDiffOn ℝ ∞ (paramTangentInit a) A := by
+    ContDiffOn ℝ ∞ (paramTangentInitial a) A := by
   have hDa : ContDiffOn ℝ ∞ (fun p => fderiv ℝ a p) A :=
     ha.fderiv_of_isOpen hA (by exact_mod_cast le_top)
   exact ha.prodMk hDa
@@ -103,10 +103,10 @@ theorem paramTangentCurve_initial
     {A : Set P} (hA : IsOpen A) {t₀ : ℝ}
     {a : P → X} {γ : P → ℝ → X}
     (hγ : ∀ p ∈ A, γ p t₀ = a p) {p : P} (hp : p ∈ A) :
-    paramTangentCurve γ p t₀ = paramTangentInit a p := by
+    paramTangentCurve γ p t₀ = paramTangentInitial a p := by
   have heq : (fun q => γ q t₀) =ᶠ[nhds p] a :=
     Filter.eventuallyEq_of_mem (hA.mem_nhds hp) hγ
-  simp only [paramTangentCurve, paramTangentInit, hγ p hp, heq.fderiv_eq]
+  simp only [paramTangentCurve, paramTangentInitial, hγ p hp, heq.fderiv_eq]
 
 theorem paramTangentCurve_initial_isIntegralCurveOn
     {P X : Type*}
@@ -124,7 +124,7 @@ theorem paramTangentCurve_initial_isIntegralCurveOn
       γ p t₀ = a p ∧ IsIntegralCurveOn (γ p) v (Icc t₀ t₁))
     (hstay : ∀ p ∈ A, ∀ t ∈ Icc t₀ t₁, γ p t ∈ V) :
     ∀ p ∈ A,
-      paramTangentCurve γ p t₀ = paramTangentInit a p ∧
+      paramTangentCurve γ p t₀ = paramTangentInitial a p ∧
       IsIntegralCurveOn (paramTangentCurve γ p) (paramTangentVF P v)
         (Icc t₀ t₁) := by
   have hγjoint : ContDiffOn ℝ ∞ (uncurry γ) (A ×ˢ Icc t₀ t₁) :=
@@ -215,10 +215,10 @@ end Flow
 end ODE
 end Analysis
 
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 
-theorem MapCInfConvOnCompacts.paramTangentInit
+theorem MapCInfConvergenceOnCompacts.paramTangentInitial
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P]
     [NormedAddCommGroup X] [NormedSpace ℝ X]
@@ -226,22 +226,22 @@ theorem MapCInfConvOnCompacts.paramTangentInit
     {a : ℕ → P → X} {aInf : P → X}
     (ha_cd : ∀ n, ContDiffOn ℝ ∞ (a n) A)
     (haInf_cd : ContDiffOn ℝ ∞ aInf A)
-    (ha_conv : MapCInfConvOnCompacts A a aInf) :
-    MapCInfConvOnCompacts A
-      (fun n p => Analysis.ODE.Flow.paramTangentInit (a n) p)
-      (fun p => Analysis.ODE.Flow.paramTangentInit aInf p) := by
-  have hderiv_conv : MapCInfConvOnCompacts A
+    (ha_convergence : MapCInfConvergenceOnCompacts A a aInf) :
+    MapCInfConvergenceOnCompacts A
+      (fun n p => Analysis.ODE.Flow.paramTangentInitial (a n) p)
+      (fun p => Analysis.ODE.Flow.paramTangentInitial aInf p) := by
+  have hderiv_convergence : MapCInfConvergenceOnCompacts A
       (fun n p => fderiv ℝ (a n) p) (fun p => fderiv ℝ aInf p) :=
-    MapCInfConvOnCompacts.fderivOn hA ha_conv ha_cd haInf_cd
+    MapCInfConvergenceOnCompacts.fderivOn hA ha_convergence ha_cd haInf_cd
   have hderiv_cd : ∀ n, ContDiffOn ℝ ∞ (fun p => fderiv ℝ (a n) p) A :=
     fun n => (ha_cd n).fderiv_of_isOpen hA (by exact_mod_cast le_top)
   have hderivInf_cd : ContDiffOn ℝ ∞ (fun p => fderiv ℝ aInf p) A :=
     haInf_cd.fderiv_of_isOpen hA (by exact_mod_cast le_top)
-  simpa only [Analysis.ODE.Flow.paramTangentInit] using
-    mapCInfConv_prodMk hA ha_conv hderiv_conv ha_cd haInf_cd
+  simpa only [Analysis.ODE.Flow.paramTangentInitial] using
+    mapCInfConvergence_prodMk hA ha_convergence hderiv_convergence ha_cd haInf_cd
       hderiv_cd hderivInf_cd
 
-theorem MapCInfConvOnCompacts.paramTangentVF
+theorem MapCInfConvergenceOnCompacts.paramTangentVF
     {P X : Type*}
     [NormedAddCommGroup P] [NormedSpace ℝ P] [FiniteDimensional ℝ P]
     [NormedAddCommGroup X] [NormedSpace ℝ X] [FiniteDimensional ℝ X]
@@ -249,9 +249,9 @@ theorem MapCInfConvOnCompacts.paramTangentVF
     {v : ℕ → ℝ → X → X} {vInf : ℝ → X → X}
     (hv_cd : ∀ n, ContDiffOn ℝ ∞ (uncurry (v n)) (J ×ˢ V))
     (hvInf_cd : ContDiffOn ℝ ∞ (uncurry vInf) (J ×ˢ V))
-    (hv_conv : MapCInfConvOnCompacts (J ×ˢ V)
+    (hv_convergence : MapCInfConvergenceOnCompacts (J ×ˢ V)
       (fun n q => v n q.1 q.2) (fun q => vInf q.1 q.2)) :
-    MapCInfConvOnCompacts
+    MapCInfConvergenceOnCompacts
       (J ×ˢ (V ×ˢ (Set.univ : Set (P →L[ℝ] X))))
       (fun n q => Analysis.ODE.Flow.paramTangentVF P (v n) q.1 q.2)
       (fun q => Analysis.ODE.Flow.paramTangentVF P vInf q.1 q.2) := by
@@ -264,20 +264,20 @@ theorem MapCInfConvOnCompacts.paramTangentVF
   have hproj_cd : ContDiffOn ℝ ∞ proj D :=
     contDiff_fst.prodMk (contDiff_fst.comp contDiff_snd) |>.contDiffOn
   have hprojMap : MapsTo proj D Ω := fun _ hq => ⟨hq.1, hq.2.1⟩
-  have hproj_conv : MapCInfConvOnCompacts D (fun _ : ℕ => proj) proj :=
-    mapCInfConv_const proj
-  have hfirst_conv : MapCInfConvOnCompacts D
+  have hproj_convergence : MapCInfConvergenceOnCompacts D (fun _ : ℕ => proj) proj :=
+    mapCInfConvergence_const proj
+  have hfirst_convergence : MapCInfConvergenceOnCompacts D
       (fun n q => v n q.1 q.2.1) (fun q => vInf q.1 q.2.1) := by
     simpa only [proj] using
-      (MapCInfConvOnCompacts.comp
+      (MapCInfConvergenceOnCompacts.comp
         (U := D) (V := Ω) (B := fun _ : ℕ => proj) (Binf := proj)
         (A := fun n q => v n q.1 q.2) (Ainf := fun q => vInf q.1 q.2)
-        hD hΩ hproj_conv hv_conv (fun _ => hproj_cd) hproj_cd
+        hD hΩ hproj_convergence hv_convergence (fun _ => hproj_cd) hproj_cd
         hv_cd hvInf_cd hprojMap (fun _ => hprojMap))
-  have hraw_conv : MapCInfConvOnCompacts Ω
+  have hraw_convergence : MapCInfConvergenceOnCompacts Ω
       (fun n q => fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) q)
       (fun q => fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) q) :=
-    MapCInfConvOnCompacts.fderivOn hΩ hv_conv hv_cd hvInf_cd
+    MapCInfConvergenceOnCompacts.fderivOn hΩ hv_convergence hv_cd hvInf_cd
   have hraw_cd : ∀ n, ContDiffOn ℝ ∞
       (fun q => fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) q) Ω := by
     intro n
@@ -288,39 +288,39 @@ theorem MapCInfConvOnCompacts.paramTangentVF
   let postL : ((ℝ × X) →L[ℝ] X) →L[ℝ] (X →L[ℝ] X) :=
     (ContinuousLinearMap.compL ℝ X (ℝ × X) X).flip
       (ContinuousLinearMap.inr ℝ ℝ X)
-  have hpartial_conv : MapCInfConvOnCompacts Ω
+  have hpartial_convergence : MapCInfConvergenceOnCompacts Ω
       (fun n q => postL (fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) q))
       (fun q => postL (fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) q)) :=
-    mapCInfConv_clm hΩ postL hraw_conv hraw_cd hrawInf_cd
+    mapCInfConvergence_clm hΩ postL hraw_convergence hraw_cd hrawInf_cd
   have hpartial_cd : ∀ n, ContDiffOn ℝ ∞
       (fun q => postL (fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) q)) Ω :=
     fun n => (hraw_cd n).continuousLinearMap_comp postL
   have hpartialInf_cd : ContDiffOn ℝ ∞
       (fun q => postL (fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) q)) Ω :=
     hrawInf_cd.continuousLinearMap_comp postL
-  have hpartial_proj_conv : MapCInfConvOnCompacts D
+  have hpartial_proj_convergence : MapCInfConvergenceOnCompacts D
       (fun n q => postL (fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) (proj q)))
       (fun q => postL (fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) (proj q))) := by
     simpa only using
-      (MapCInfConvOnCompacts.comp
+      (MapCInfConvergenceOnCompacts.comp
         (U := D) (V := Ω) (B := fun _ : ℕ => proj) (Binf := proj)
         (A := fun n q => postL
           (fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) q))
         (Ainf := fun q => postL
           (fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) q))
-        hD hΩ hproj_conv hpartial_conv (fun _ => hproj_cd) hproj_cd
+        hD hΩ hproj_convergence hpartial_convergence (fun _ => hproj_cd) hproj_cd
         hpartial_cd hpartialInf_cd hprojMap (fun _ => hprojMap))
   let zproj : ℝ × (X × (P →L[ℝ] X)) → (P →L[ℝ] X) := fun q => q.2.2
   have hz_cd : ContDiffOn ℝ ∞ zproj D :=
     (contDiff_snd.comp contDiff_snd).contDiffOn
-  have hz_conv : MapCInfConvOnCompacts D (fun _ : ℕ => zproj) zproj :=
-    mapCInfConv_const zproj
-  have hpair_conv : MapCInfConvOnCompacts D
+  have hz_convergence : MapCInfConvergenceOnCompacts D (fun _ : ℕ => zproj) zproj :=
+    mapCInfConvergence_const zproj
+  have hpair_convergence : MapCInfConvergenceOnCompacts D
       (fun n q =>
         (postL (fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) (proj q)), zproj q))
       (fun q =>
         (postL (fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) (proj q)), zproj q)) := by
-    apply mapCInfConv_prodMk hD hpartial_proj_conv hz_conv
+    apply mapCInfConvergence_prodMk hD hpartial_proj_convergence hz_convergence
     · exact fun n => (hpartial_cd n).comp hproj_cd hprojMap
     · exact hpartialInf_cd.comp hproj_cd hprojMap
     · exact fun _ => hz_cd
@@ -329,25 +329,25 @@ theorem MapCInfConvOnCompacts.paramTangentVF
     fun q => q.1.comp q.2
   have hcomp_cd : ContDiff ℝ ∞ compMap :=
     (isBoundedBilinearMap_comp (𝕜 := ℝ) (E := P) (F := X) (G := X)).contDiff
-  have hsecond_conv : MapCInfConvOnCompacts D
+  have hsecond_convergence : MapCInfConvergenceOnCompacts D
       (fun n q => compMap
         (postL (fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) (proj q)), zproj q))
       (fun q => compMap
         (postL (fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) (proj q)), zproj q)) := by
     simpa only using
-      (MapCInfConvOnCompacts.comp
+      (MapCInfConvergenceOnCompacts.comp
         (U := D) (V := (Set.univ : Set ((X →L[ℝ] X) × (P →L[ℝ] X))))
         (B := fun n q =>
           (postL (fderiv ℝ (fun z : ℝ × X => v n z.1 z.2) (proj q)), zproj q))
         (Binf := fun q =>
           (postL (fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) (proj q)), zproj q))
         (A := fun _ : ℕ => compMap) (Ainf := compMap)
-        hD isOpen_univ hpair_conv (mapCInfConv_const compMap)
+        hD isOpen_univ hpair_convergence (mapCInfConvergence_const compMap)
         (fun n => ((hpartial_cd n).comp hproj_cd hprojMap).prodMk hz_cd)
         ((hpartialInf_cd.comp hproj_cd hprojMap).prodMk hz_cd)
         (fun _ => hcomp_cd.contDiffOn) hcomp_cd.contDiffOn
         (fun _ _ => mem_univ _) (fun _ _ _ => mem_univ _))
-  have hfinal : MapCInfConvOnCompacts D
+  have hfinal : MapCInfConvergenceOnCompacts D
       (fun n q =>
         (v n q.1 q.2.1,
           compMap
@@ -356,7 +356,7 @@ theorem MapCInfConvOnCompacts.paramTangentVF
         (vInf q.1 q.2.1,
           compMap
             (postL (fderiv ℝ (fun z : ℝ × X => vInf z.1 z.2) (proj q)), zproj q))) := by
-    apply mapCInfConv_prodMk hD hfirst_conv hsecond_conv
+    apply mapCInfConvergence_prodMk hD hfirst_convergence hsecond_convergence
     · intro n
       exact (hv_cd n).comp hproj_cd hprojMap
     · exact hvInf_cd.comp hproj_cd hprojMap
@@ -393,5 +393,5 @@ theorem MapCInfConvOnCompacts.paramTangentVF
     rw [hpartial]
     rfl
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

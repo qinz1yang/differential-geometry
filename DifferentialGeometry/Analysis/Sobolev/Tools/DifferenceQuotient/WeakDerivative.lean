@@ -79,12 +79,12 @@ private theorem hasWeakPartialDeriv_translate_neg
     (hwp : DeGiorgi.HasWeakPartialDeriv (d := d) j g f Set.univ) :
     DeGiorgi.HasWeakPartialDeriv (d := d) j
       (translate k (-h) g) (translate k (-h) f) Set.univ := by
-  intro φ hφ_smooth hφ_supp _hφ_sub
+  intro φ hφ_smooth hφ_support _hφ_sub
   set ψ : E → ℝ := translate k h φ with hψ_def
   have hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ :=
     contDiff_translate (d := d) k h hφ_smooth
   have hψ_cs : HasCompactSupport ψ :=
-    hasCompactSupport_translate_of_hasCompactSupport (d := d) hφ_supp k h
+    hasCompactSupport_translate_of_hasCompactSupport (d := d) hφ_support k h
   have h_test :=
     hwp ψ hψ_smooth hψ_cs (tsupport_subset_univ ψ)
   rw [setIntegral_univ, setIntegral_univ] at h_test
@@ -171,9 +171,9 @@ private lemma locallyIntegrable_translate_restrict_univ
 omit [NeZero d] in
 theorem hasWeakPartialDeriv_diffQuot
     (k j : Fin d) (h : ℝ) {u g_j : E → ℝ}
-    (hu_locInt :
+    (hu_localInt :
       LocallyIntegrable u ((volume : Measure E).restrict Set.univ))
-    (hg_j_locInt :
+    (hg_j_localInt :
       LocallyIntegrable g_j ((volume : Measure E).restrict Set.univ))
     (hwp : DeGiorgi.HasWeakPartialDeriv (d := d) j g_j u Set.univ) :
     DeGiorgi.HasWeakPartialDeriv (d := d) j
@@ -207,14 +207,14 @@ theorem hasWeakPartialDeriv_diffQuot
         DeGiorgi.HasWeakPartialDeriv (d := d) j
           (translate k h g_j) (translate k h u) Set.univ := by
       exact hasWeakPartialDeriv_translate (d := d) k j h hwp
-    have h_translate_u_locInt :
+    have h_translate_u_localInt :
         LocallyIntegrable (translate k h u)
           ((volume : Measure E).restrict Set.univ) :=
-      locallyIntegrable_translate_restrict_univ (d := d) k h hu_locInt
-    have h_translate_g_locInt :
+      locallyIntegrable_translate_restrict_univ (d := d) k h hu_localInt
+    have h_translate_g_localInt :
         LocallyIntegrable (translate k h g_j)
           ((volume : Measure E).restrict Set.univ) :=
-      locallyIntegrable_translate_restrict_univ (d := d) k h hg_j_locInt
+      locallyIntegrable_translate_restrict_univ (d := d) k h hg_j_localInt
     have h_smul_translate :
         DeGiorgi.HasWeakPartialDeriv (d := d) j
           (fun x => h⁻¹ * translate k h g_j x)
@@ -225,41 +225,41 @@ theorem hasWeakPartialDeriv_diffQuot
           (fun x => (-h⁻¹) * g_j x)
           (fun x => (-h⁻¹) * u x) Set.univ :=
       hwp.const_smul (-h⁻¹)
-    have h_smul_translate_u_locInt :
+    have h_smul_translate_u_localInt :
         LocallyIntegrable (fun x : E => h⁻¹ * translate k h u x)
           ((volume : Measure E).restrict Set.univ) := by
       have h_eq : (fun x : E => h⁻¹ * translate k h u x) =
           h⁻¹ • translate k h u := by
         funext x; rw [Pi.smul_apply, smul_eq_mul]
       rw [h_eq]
-      exact h_translate_u_locInt.smul h⁻¹
-    have h_smul_translate_g_locInt :
+      exact h_translate_u_localInt.smul h⁻¹
+    have h_smul_translate_g_localInt :
         LocallyIntegrable (fun x : E => h⁻¹ * translate k h g_j x)
           ((volume : Measure E).restrict Set.univ) := by
       have h_eq : (fun x : E => h⁻¹ * translate k h g_j x) =
           h⁻¹ • translate k h g_j := by
         funext x; rw [Pi.smul_apply, smul_eq_mul]
       rw [h_eq]
-      exact h_translate_g_locInt.smul h⁻¹
-    have h_smul_orig_u_locInt :
+      exact h_translate_g_localInt.smul h⁻¹
+    have h_smul_orig_u_localInt :
         LocallyIntegrable (fun x : E => (-h⁻¹) * u x)
           ((volume : Measure E).restrict Set.univ) := by
       have h_eq : (fun x : E => (-h⁻¹) * u x) =
           (-h⁻¹) • u := by
         funext x; rw [Pi.smul_apply, smul_eq_mul]
       rw [h_eq]
-      exact hu_locInt.smul (-h⁻¹)
-    have h_smul_orig_g_locInt :
+      exact hu_localInt.smul (-h⁻¹)
+    have h_smul_orig_g_localInt :
         LocallyIntegrable (fun x : E => (-h⁻¹) * g_j x)
           ((volume : Measure E).restrict Set.univ) := by
       have h_eq : (fun x : E => (-h⁻¹) * g_j x) =
           (-h⁻¹) • g_j := by
         funext x; rw [Pi.smul_apply, smul_eq_mul]
       rw [h_eq]
-      exact hg_j_locInt.smul (-h⁻¹)
+      exact hg_j_localInt.smul (-h⁻¹)
     have h_add := h_smul_translate.add h_smul_orig
-      h_smul_translate_u_locInt h_smul_orig_u_locInt
-      h_smul_translate_g_locInt h_smul_orig_g_locInt
+      h_smul_translate_u_localInt h_smul_orig_u_localInt
+      h_smul_translate_g_localInt h_smul_orig_g_localInt
     exact h_add
 
 

@@ -16,12 +16,12 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin d)
 omit [NeZero d] in
 private lemma locallyIntegrable_continuous_mul
     {η f : EuclN → ℝ} (hη : Continuous η)
-    (hf_locInt : LocallyIntegrable f (volume : Measure EuclN)) :
+    (hf_localInt : LocallyIntegrable f (volume : Measure EuclN)) :
     LocallyIntegrable (fun x => η x * f x) (volume : Measure EuclN) := by
-  rw [← locallyIntegrableOn_univ] at hf_locInt ⊢
+  rw [← locallyIntegrableOn_univ] at hf_localInt ⊢
   have hcl : IsLocallyClosed (Set.univ : Set EuclN) :=
     isClosed_univ.isLocallyClosed
-  exact LocallyIntegrableOn.continuousOn_mul hf_locInt hη.continuousOn hcl
+  exact LocallyIntegrableOn.continuousOn_mul hf_localInt hη.continuousOn hcl
 
 omit [NeZero d] in
 private lemma locallyIntegrable_of_restrict_univ
@@ -40,9 +40,9 @@ omit [NeZero d] in
 theorem hasWeakPartialDeriv_nirenbergTestFunction
     (k j : Fin d) (h : ℝ) {η u g_j : EuclN → ℝ}
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hu_locInt :
+    (hu_localInt :
       LocallyIntegrable u ((volume : Measure EuclN).restrict Set.univ))
-    (hg_j_locInt :
+    (hg_j_localInt :
       LocallyIntegrable g_j ((volume : Measure EuclN).restrict Set.univ))
     (hwp : DeGiorgi.HasWeakPartialDeriv (d := d) j g_j u Set.univ) :
     DeGiorgi.HasWeakPartialDeriv (d := d) j
@@ -61,43 +61,43 @@ theorem hasWeakPartialDeriv_nirenbergTestFunction
   have h_2η_partial_cont : Continuous
       (fun y : EuclN => 2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1)) :=
     (continuous_const.mul hη_cont).mul hpartial_η_cont
-  have hu_locInt' : LocallyIntegrable u (volume : Measure EuclN) :=
-    locallyIntegrable_of_restrict_univ (d := d) hu_locInt
-  have hg_j_locInt' : LocallyIntegrable g_j (volume : Measure EuclN) :=
-    locallyIntegrable_of_restrict_univ (d := d) hg_j_locInt
-  have h_dq_u_locInt : LocallyIntegrable (diffQuot k h u)
+  have hu_localInt' : LocallyIntegrable u (volume : Measure EuclN) :=
+    locallyIntegrable_of_restrict_univ (d := d) hu_localInt
+  have hg_j_localInt' : LocallyIntegrable g_j (volume : Measure EuclN) :=
+    locallyIntegrable_of_restrict_univ (d := d) hg_j_localInt
+  have h_dq_u_localInt : LocallyIntegrable (diffQuot k h u)
       (volume : Measure EuclN) :=
-    locallyIntegrable_diffQuot (d := d) k h hu_locInt'
-  have h_dq_g_locInt : LocallyIntegrable (diffQuot k h g_j)
+    locallyIntegrable_diffQuot (d := d) k h hu_localInt'
+  have h_dq_g_localInt : LocallyIntegrable (diffQuot k h g_j)
       (volume : Measure EuclN) :=
-    locallyIntegrable_diffQuot (d := d) k h hg_j_locInt'
-  have h_F_locInt : LocallyIntegrable
+    locallyIntegrable_diffQuot (d := d) k h hg_j_localInt'
+  have h_F_localInt : LocallyIntegrable
       (fun y => (η y)^2 * diffQuot k h u y) (volume : Measure EuclN) :=
-    locallyIntegrable_continuous_mul (d := d) hη_sq_cont h_dq_u_locInt
-  have h_F_locInt_restrict : LocallyIntegrable
+    locallyIntegrable_continuous_mul (d := d) hη_sq_cont h_dq_u_localInt
+  have h_F_localInt_restrict : LocallyIntegrable
       (fun y => (η y)^2 * diffQuot k h u y)
       ((volume : Measure EuclN).restrict Set.univ) :=
-    locallyIntegrable_to_restrict_univ (d := d) h_F_locInt
-  have h_term1_locInt : LocallyIntegrable
+    locallyIntegrable_to_restrict_univ (d := d) h_F_localInt
+  have h_term1_localInt : LocallyIntegrable
       (fun y => (η y)^2 * diffQuot k h g_j y) (volume : Measure EuclN) :=
-    locallyIntegrable_continuous_mul (d := d) hη_sq_cont h_dq_g_locInt
-  have h_term2_locInt : LocallyIntegrable
+    locallyIntegrable_continuous_mul (d := d) hη_sq_cont h_dq_g_localInt
+  have h_term2_localInt : LocallyIntegrable
       (fun y => 2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
           diffQuot k h u y)
       (volume : Measure EuclN) :=
-    locallyIntegrable_continuous_mul (d := d) h_2η_partial_cont h_dq_u_locInt
-  have h_partial_locInt : LocallyIntegrable
+    locallyIntegrable_continuous_mul (d := d) h_2η_partial_cont h_dq_u_localInt
+  have h_partial_localInt : LocallyIntegrable
       (fun y => (η y)^2 * diffQuot k h g_j y +
         2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
           diffQuot k h u y)
       (volume : Measure EuclN) :=
-    h_term1_locInt.add h_term2_locInt
-  have h_partial_locInt_restrict : LocallyIntegrable
+    h_term1_localInt.add h_term2_localInt
+  have h_partial_localInt_restrict : LocallyIntegrable
       (fun y => (η y)^2 * diffQuot k h g_j y +
         2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
           diffQuot k h u y)
       ((volume : Measure EuclN).restrict Set.univ) :=
-    locallyIntegrable_to_restrict_univ (d := d) h_partial_locInt
+    locallyIntegrable_to_restrict_univ (d := d) h_partial_localInt
   have h_inner_wp :
       DeGiorgi.HasWeakPartialDeriv (d := d) j
         (fun y => (η y)^2 * diffQuot k h g_j y +
@@ -105,7 +105,7 @@ theorem hasWeakPartialDeriv_nirenbergTestFunction
             diffQuot k h u y)
         (fun y => (η y)^2 * diffQuot k h u y) Set.univ :=
     hasWeakPartialDeriv_cutoff_sq_mul_diffQuot (d := d) k j h hη
-      hu_locInt hg_j_locInt hwp
+      hu_localInt hg_j_localInt hwp
   have h_eq :
       (fun y : EuclN =>
         (η y)^2 * diffQuot k h g_j y +
@@ -126,7 +126,7 @@ theorem hasWeakPartialDeriv_nirenbergTestFunction
   rw [h_eq] at h_inner_wp
   unfold nirenbergTestFunction
   exact hasWeakPartialDeriv_diffQuot (d := d) k j (-h)
-    h_F_locInt_restrict h_partial_locInt_restrict h_inner_wp
+    h_F_localInt_restrict h_partial_localInt_restrict h_inner_wp
 
 omit [NeZero d] in
 private lemma eLpNorm_const_mul

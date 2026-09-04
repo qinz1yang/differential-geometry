@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -455,5 +455,5 @@ theorem MetricCompactBase.exists_stage_diag
       L0 hconn
   exact ⟨inp, L0, hseed, psi, hpsi, htail⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

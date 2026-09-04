@@ -80,8 +80,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero linearizedRicciCovariantJetJointSmoothness_smul_add
   exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
   linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
-  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
-  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
@@ -831,7 +831,7 @@ theorem deTurckRHSCovariantTermDifference_eq_pathIntegralCoeff_triple_of_symm
               (linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ' s)
               (iteratedCovGrad (I := I) g₀ 0 2 2 (T - T'))) x v := by
       obtain ⟨_, _, _, hident, _, _⟩ :=
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
           (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
       exact hident hTsymm hT'symm s hsIoo x v hδ_lt hδ'_lt
     have hLid := linearizedDeTurckLieAt_eq_covariantJet_of_symm (I := I) (M := M)

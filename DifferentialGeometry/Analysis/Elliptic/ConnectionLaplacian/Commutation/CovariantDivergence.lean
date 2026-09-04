@@ -193,7 +193,7 @@ theorem rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace_o
   exact
     (cometric_dualTrace_eq_orthoFrame_diag
     (I := I) g₀ (s := t) x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (unitModel (I := I) (M := M) g₀ (t + 2) (iteratedCovGrad (I := I) g₀ 0 t 2 W) x) v).symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -239,7 +239,7 @@ theorem covDivergence_eq_cometricDoubleTrace_apply_covGrad
                 (smoothOrthoFrame (I := I) g₀ x i x)) v)) from
     cometric_dualTrace_eq_orthoFrame_diag
       (I := I) g₀ (s := s) x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (unitModel (I := I) (M := M) g₀ (s + 2) (covGrad (I := I) (M := M) g₀ 0 (s + 1) V) x) v]
   rw [unitModel_eq_toModel_unitEval_gen]
   have hsec : (covDivergence (I := I) (M := M) g₀ s V).toSection x =

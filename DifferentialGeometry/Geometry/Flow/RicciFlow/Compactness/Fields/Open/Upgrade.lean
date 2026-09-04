@@ -12,7 +12,7 @@ open Set Function Filter Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -25,7 +25,7 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
     (Phi : PointedCGHMaps (I := I) X mc.limit mc.subseq)
     (bf : BumpFamily (I := I) Phi)
-    (hsrc : SrcSigma (I := I) Phi) (htgt : TgtSigma (I := I) Phi)
+    (hsrc : SourceIsSigmaCompact (I := I) Phi) (htgt : TargetIsSigmaCompact (I := I) Phi)
     {a b : Real} (hzero_mem : (0 : Real) ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b 0 hzero_mem)
     (cLow : Nat -> Real) (hcLow : forall n, 0 < cLow n)
@@ -47,7 +47,7 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
               sourceDomCharted (I := I) Phi k
             letI : IsManifold I ∞ (SourceDomain (I := I) Phi k) :=
               sourceDomSmooth (I := I) Phi k
-            (srcMetric (I := I) Phi hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Phi hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace mc.limit.M := mc.limit.topology
         letI : ChartedSpace H mc.limit.M := mc.limit.charted
         letI : T2Space mc.limit.M := mc.limit.t2
@@ -73,7 +73,7 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
               (gSeqExt (I := I) Phi mc.limit.metric bf hsrc htgt k s)
               (gSeqExt (I := I) Phi mc.limit.metric bf hsrc htgt k t)
               mc.limit.metric z <= Lt * |s - t|)
-    (hlipSrc : letI : TopologicalSpace mc.limit.M := mc.limit.topology
+    (hlipSource : letI : TopologicalSpace mc.limit.M := mc.limit.topology
         letI : ChartedSpace H mc.limit.M := mc.limit.charted
         letI : T2Space mc.limit.M := mc.limit.t2
         letI : IsManifold I ∞ mc.limit.M := mc.limit.smooth
@@ -100,9 +100,9 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
               forall q : Nat, q <= p ->
                 forall y : SourceDomain (I := I) Phi k, y ∈ C ->
                   metricDerivNorm (I := I) q
-                    (srcMetric (I := I) Phi hsrc htgt k s)
-                    (srcMetric (I := I) Phi hsrc htgt k t)
-                    (refRes (I := I) Phi mc.limit.metric k) y <=
+                    (sourceMetric (I := I) Phi hsrc htgt k s)
+                    (sourceMetric (I := I) Phi hsrc htgt k t)
+                    (sourceMetricRestriction (I := I) Phi mc.limit.metric k) y <=
                       Ls * |s - t|)
     (hcp : letI : TopologicalSpace mc.limit.M := mc.limit.topology
         letI : ChartedSpace H mc.limit.M := mc.limit.charted
@@ -121,9 +121,9 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
            letI : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
               sourceDomSigmaOf (I := I) Phi k (hsrc k)
            metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Phi k K) 0
-             (srcMetric (I := I) Phi hsrc htgt k 0)
-             (resSrc (I := I) Phi k mc.limit.metric)
-             (refRes (I := I) Phi mc.limit.metric k) < eps)) :
+             (sourceMetric (I := I) Phi hsrc htgt k 0)
+             (sourceMetricRestriction (I := I) Phi (k := k) mc.limit.metric)
+             (sourceMetricRestriction (I := I) Phi mc.limit.metric k) < eps)) :
     exists d : FlowUpgrade (I := I) X mc,
       forall t : Real, t ∈ X.D.carrier ->
         MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by
@@ -140,7 +140,7 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
     infer_instance
   obtain ⟨co⟩ := exists_openMetricConvergenceData_of_bounds (I := I) (Φ := Phi)
     (R := mc.limit.metric) (bf := bf) (hsrc := hsrc) (htgt := htgt)
-    hzero_mem cLow hcLow hbound hcovTail hlipTail hlipSrc
+    hzero_mem cLow hcLow hbound hcovTail hlipTail hlipSource
   have hsol := OpenMetricConvergenceData.isSolution (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
   have hzero : co.gInf 0 = mc.limit.metric :=
@@ -150,9 +150,9 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
   let L := flowOfMetric (I := I) X.D mc.limit co.gInf hsol
   have hL0 : L.atTime (I := I) 0 = mc.limit :=
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
-  have hscalarRaw := OpenMetricConvergenceData.scalar_conv (I := I) (Φ := Phi)
+  have hscalarRaw := OpenMetricConvergenceData.scalar_convergence (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
-  have hricRaw := OpenMetricConvergenceData.ricNorm_conv (I := I) (Φ := Phi)
+  have hricRaw := OpenMetricConvergenceData.ricNorm_convergence (I := I) (Φ := Phi)
     hzero_mem hD co cLow hcLow hbound hcovTail
   have map_cast {P Q : PointedRiemannianManifold (I := I)}
       {s : Nat -> Nat} (h : P = Q) (maps : PointedCGHMaps (I := I) X Q s)
@@ -260,7 +260,7 @@ theorem exists_complete_flowUpgrade_of_open_metric_bounds
     ({ mc.limit with metric := co.gInf t } : PointedRiemannianManifold (I := I))
   exact hcomplete
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

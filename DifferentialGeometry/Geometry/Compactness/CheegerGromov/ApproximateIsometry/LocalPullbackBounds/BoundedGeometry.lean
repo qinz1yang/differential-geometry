@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology
 open Bundle Manifold
@@ -36,7 +36,7 @@ theorem BoundedGeometryNormalChartData.source_stay
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvDataOn (I := I) inp P L r hr phi hphi d.chart
+    (hdata : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi d.chart
       U C0 C1 aInf Jinf Jbarinf)
     (alpha : LiveSlot L inp.pack r) {R S eta : Real}
     (hRS : R < S) (heta : 0 < eta)
@@ -164,5 +164,5 @@ theorem BoundedGeometryNormalChartData.source_stay
     change dist (chiK.hom w) Yk.basepoint ≤ S
     exact hdist.le
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

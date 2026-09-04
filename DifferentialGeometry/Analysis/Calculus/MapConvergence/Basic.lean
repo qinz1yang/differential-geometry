@@ -12,7 +12,7 @@ import Mathlib.Topology.MetricSpace.Pseudo.Basic
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 
@@ -29,49 +29,49 @@ theorem mapDerivNorm_nonneg (r : ℕ) (Φk Φinf : E → F) (x : E) :
     0 ≤ mapDerivNorm r Φk Φinf x :=
   norm_nonneg _
 
-def MapCPConvOn (K : Set E) (p : ℕ) (Φ : ℕ → E → F) (Φinf : E → F) : Prop :=
+def MapCPConvergenceOn (K : Set E) (p : ℕ) (Φ : ℕ → E → F) (Φinf : E → F) : Prop :=
   ∀ ε : ℝ, 0 < ε → ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k →
     ∀ r : ℕ, r ≤ p → ∀ x ∈ K, mapDerivNorm r (Φ k) Φinf x ≤ ε
 
-def MapCInfConvOnCompacts (U : Set E) (Φ : ℕ → E → F) (Φinf : E → F) : Prop :=
-  ∀ K : Set E, IsCompact K → K ⊆ U → ∀ p : ℕ, MapCPConvOn K p Φ Φinf
+def MapCInfConvergenceOnCompacts (U : Set E) (Φ : ℕ → E → F) (Φinf : E → F) : Prop :=
+  ∀ K : Set E, IsCompact K → K ⊆ U → ∀ p : ℕ, MapCPConvergenceOn K p Φ Φinf
 
-theorem MapCPConvOn.mono_order {K : Set E} {p p' : ℕ} (hp : p' ≤ p)
-    {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCPConvOn K p Φ Φinf) :
-    MapCPConvOn K p' Φ Φinf := by
+theorem MapCPConvergenceOn.mono_order {K : Set E} {p p' : ℕ} (hp : p' ≤ p)
+    {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCPConvergenceOn K p Φ Φinf) :
+    MapCPConvergenceOn K p' Φ Φinf := by
   intro ε hε
   obtain ⟨k0, hk0⟩ := h ε hε
   exact ⟨k0, fun k hk r hr x hx => hk0 k hk r (hr.trans hp) x hx⟩
 
 
-theorem MapCPConvOn.mono_set {K K' : Set E} (hK : K' ⊆ K) {p : ℕ}
-    {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCPConvOn K p Φ Φinf) :
-    MapCPConvOn K' p Φ Φinf := by
+theorem MapCPConvergenceOn.mono_set {K K' : Set E} (hK : K' ⊆ K) {p : ℕ}
+    {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCPConvergenceOn K p Φ Φinf) :
+    MapCPConvergenceOn K' p Φ Φinf := by
   intro ε hε
   obtain ⟨k0, hk0⟩ := h ε hε
   exact ⟨k0, fun k hk r hr x hx => hk0 k hk r hr x (hK hx)⟩
 
-theorem MapCInfConvOnCompacts.cPConvOn {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
-    (h : MapCInfConvOnCompacts U Φ Φinf) {K : Set E} (hK : IsCompact K)
-    (hKU : K ⊆ U) (p : ℕ) : MapCPConvOn K p Φ Φinf :=
+theorem MapCInfConvergenceOnCompacts.cPConvergenceOn {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
+    (h : MapCInfConvergenceOnCompacts U Φ Φinf) {K : Set E} (hK : IsCompact K)
+    (hKU : K ⊆ U) (p : ℕ) : MapCPConvergenceOn K p Φ Φinf :=
   h K hK hKU p
 
 
-theorem MapCPConvOn.comp_subseq {K : Set E} {p : ℕ} {Φ : ℕ → E → F} {Φinf : E → F}
-    (h : MapCPConvOn K p Φ Φinf) {φ : ℕ → ℕ} (hφ : StrictMono φ) :
-    MapCPConvOn K p (fun k => Φ (φ k)) Φinf := by
+theorem MapCPConvergenceOn.comp_subseq {K : Set E} {p : ℕ} {Φ : ℕ → E → F} {Φinf : E → F}
+    (h : MapCPConvergenceOn K p Φ Φinf) {φ : ℕ → ℕ} (hφ : StrictMono φ) :
+    MapCPConvergenceOn K p (fun k => Φ (φ k)) Φinf := by
   intro ε hε
   obtain ⟨k0, hk0⟩ := h ε hε
   exact ⟨k0, fun k hk r hr x hx => hk0 (φ k) (le_trans hk (hφ.id_le k)) r hr x hx⟩
 
 
-theorem MapCInfConvOnCompacts.comp_subseq {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
-    (h : MapCInfConvOnCompacts U Φ Φinf) {φ : ℕ → ℕ} (hφ : StrictMono φ) :
-    MapCInfConvOnCompacts U (fun k => Φ (φ k)) Φinf :=
+theorem MapCInfConvergenceOnCompacts.comp_subseq {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
+    (h : MapCInfConvergenceOnCompacts U Φ Φinf) {φ : ℕ → ℕ} (hφ : StrictMono φ) :
+    MapCInfConvergenceOnCompacts U (fun k => Φ (φ k)) Φinf :=
   fun K hK hKU p => (h K hK hKU p).comp_subseq hφ
 
-theorem tendstoUniformlyOn_of_cPConv {K : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
-    (h : MapCPConvOn K 0 Φ Φinf) : TendstoUniformlyOn Φ Φinf atTop K := by
+theorem tendstoUniformlyOn_of_cPConvergence {K : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
+    (h : MapCPConvergenceOn K 0 Φ Φinf) : TendstoUniformlyOn Φ Φinf atTop K := by
   rw [Metric.tendstoUniformlyOn_iff]
   intro ε hε
   obtain ⟨k0, hk0⟩ := h (ε / 2) (by positivity)
@@ -83,7 +83,7 @@ theorem tendstoUniformlyOn_of_cPConv {K : Set E} {Φ : ℕ → E → F} {Φinf :
   exact lt_of_le_of_lt hb (by linarith)
 
 theorem tendsto_of_cInf {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
-    (h : MapCInfConvOnCompacts U Φ Φinf) {x : E} (hx : x ∈ U) :
+    (h : MapCInfConvergenceOnCompacts U Φ Φinf) {x : E} (hx : x ∈ U) :
     Tendsto (fun k => Φ k x) atTop (𝓝 (Φinf x)) := by
   rw [Metric.tendsto_atTop]
   intro ε hε
@@ -95,13 +95,13 @@ theorem tendsto_of_cInf {U : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
   rw [dist_eq_norm]
   exact lt_of_le_of_lt hb (by linarith)
 
-theorem mapCPConvOn_of_tendstoUniformly {K : Set E} {p : ℕ}
+theorem mapCPConvergenceOn_of_tendstoUniformly {K : Set E} {p : ℕ}
     {Φ : ℕ → E → F} {Φinf : E → F}
     (hΦ : ∀ k, ContDiff ℝ (p : ℕ∞) (Φ k)) (hΦinf : ContDiff ℝ (p : ℕ∞) Φinf)
     (htu : ∀ r : ℕ, r ≤ p →
       TendstoUniformlyOn (fun k x => iteratedFDeriv ℝ r (Φ k) x)
         (fun x => iteratedFDeriv ℝ r Φinf x) atTop K) :
-    MapCPConvOn K p Φ Φinf := by
+    MapCPConvergenceOn K p Φ Φinf := by
   intro ε hε
   have key : ∀ r : ℕ, r ≤ p →
       ∀ᶠ k in atTop, ∀ x ∈ K, mapDerivNorm r (Φ k) Φinf x ≤ ε := by
@@ -125,5 +125,5 @@ theorem mapCPConvOn_of_tendstoUniformly {K : Set E} {p : ℕ}
 
 end MapConvergence
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

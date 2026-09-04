@@ -31,7 +31,7 @@ private theorem maximalGeodesic_rescaled_eq_orbit_proj
     (g : SmoothRiemannianMetric I M) (p : M) (v : E)
     {T t' : ℝ} (ht'_pos : 0 < t')
     {Φ : (E × E) × ℝ → E × E}
-    (hΦ_init : Φ (((extChartAt I p p, v) : E × E), 0) =
+    (hΦ_initial : Φ (((extChartAt I p p, v) : E × E), 0) =
       ((extChartAt I p p, v) : E × E))
     (hΦ_target : ∀ s ∈ Set.Icc (-T) T,
       Φ (((extChartAt I p p, v) : E × E), s) ∈
@@ -47,7 +47,7 @@ private theorem maximalGeodesic_rescaled_eq_orbit_proj
   have h_proj_eq :=
     chartFlowOrbitLiftRescaled_proj_eq_maximalGeodesic_on_Ioo (I := I)
       (g := g) (p := p) (v := v) (T := T) (t' := t') ht'_pos
-      (Φ := Φ) hΦ_init hΦ_target hΦ_phase hs
+      (Φ := Φ) hΦ_initial hΦ_target hΦ_phase hs
   have hts_Ioo : t' * s ∈ Set.Ioo (-T) T :=
     mul_mem_Ioo_of_pos_of_lt ht'_pos hs
   have hΦ_target_ts := hΦ_target (t' * s) (Set.Ioo_subset_Icc_self hts_Ioo)
@@ -63,7 +63,7 @@ theorem foot_in_source_throughout
         ∀ t ∈ Set.Icc (0 : ℝ) 1,
           maximalGeodesic (I := I) g p v t ∈ (chartAt H p).source := by
   classical
-  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, _hF⟩ :=
+  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, _hF⟩ :=
     exists_uniform_existence_interval (I := I) (g := g) (p := p)
   set t' : ℝ := T / 2 with ht'_def
   have ht'_pos : 0 < t' := by rw [ht'_def]; linarith
@@ -95,7 +95,7 @@ theorem foot_in_source_throughout
           (Φ (((extChartAt I p p, vb) : E × E), t' * t)).1 := by
     have h := maximalGeodesic_rescaled_eq_orbit_proj (I := I) (g := g) (p := p)
       (v := vb) (T := T) (t' := t') ht'_pos
-      (hΦ_init vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball)
+      (hΦ_initial vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball)
       (s := t) ht_Ioo
     rw [show (t' • vb : TangentSpace I p) = v from hvb_resc] at h
     exact h
@@ -121,7 +121,7 @@ theorem maximalGeodesic_rescale_at_one_of_small
           maximalGeodesic (I := I) g p (t • v) 1 =
             maximalGeodesic (I := I) g p v t := by
   classical
-  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, _hF⟩ :=
+  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, _hF⟩ :=
     exists_uniform_existence_interval (I := I) (g := g) (p := p)
   set t' : ℝ := T / 2 with ht'_def
   have ht'_pos : 0 < t' := by rw [ht'_def]; linarith
@@ -147,12 +147,12 @@ theorem maximalGeodesic_rescale_at_one_of_small
     rw [zero_smul, maximalGeodesic_zero (I := I) g p v]
     have h1 : (1 : ℝ) ∈ maximalGeodesicInterval (I := I) g p
         (0 : TangentSpace I p) :=
-      maximalGeodesicWitness_zero_all_times (I := I) g p 1
+      hasGeodesicAt_zero_all_times (I := I) g p 1
     rw [maximalGeodesic_of_mem (I := I) (g := g) (p := p)
       (v := (0 : TangentSpace I p)) h1]
     obtain ⟨J, hJ_open, hJ_conn, h0J, h1J, hγ⟩ :=
       maximalGeodesicChosenCurve_spec (I := I) g p (0 : TangentSpace I p) h1
-    exact maximalGeodesicWitness_zero_curve_eq_p (I := I)
+    exact hasGeodesicAt_zero_curve_eq_p (I := I)
       hJ_open hJ_conn h0J hγ 1 h1J
   · have ht_Ioo : t ∈ Set.Ioo (-T / t') (T / t') := by
       rw [neg_div, hT_div]; exact ⟨by linarith, by linarith⟩
@@ -162,7 +162,7 @@ theorem maximalGeodesic_rescale_at_one_of_small
             (Φ (((extChartAt I p p, vb) : E × E), t' * t)).1 := by
       have h := maximalGeodesic_rescaled_eq_orbit_proj (I := I) (g := g) (p := p)
         (v := vb) (T := T) (t' := t') ht'_pos
-        (hΦ_init vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball)
+        (hΦ_initial vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball)
         (s := t) ht_Ioo
       rw [show (t' • vb : TangentSpace I p) = v from hvb_resc] at h
       exact h
@@ -184,7 +184,7 @@ theorem maximalGeodesic_rescale_at_one_of_small
             (Φ (((extChartAt I p p, vb) : E × E), t'' * 1)).1 := by
       have h := maximalGeodesic_rescaled_eq_orbit_proj (I := I) (g := g) (p := p)
         (v := vb) (T := T) (t' := t'') ht''_pos
-        (hΦ_init vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball)
+        (hΦ_initial vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball)
         (s := (1 : ℝ)) hone_Ioo
       rw [show (t'' • vb : TangentSpace I p) = t • v from h_tv.symm] at h
       exact h
@@ -198,7 +198,7 @@ theorem maximalGeodesic_continuousOn_Icc_of_norm_lt
       ∀ {v₀ : TangentSpace I p}, ‖(v₀ : E)‖ < ρ →
         ContinuousOn (maximalGeodesic (I := I) g p v₀) (Set.Icc (0 : ℝ) 1) := by
   classical
-  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, _hF⟩ :=
+  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, _hF⟩ :=
     exists_uniform_existence_interval (I := I) (g := g) (p := p)
   set t' : ℝ := T / 2 with ht'_def
   have ht'_pos : 0 < t' := by rw [ht'_def]; linarith
@@ -228,7 +228,7 @@ theorem maximalGeodesic_continuousOn_Icc_of_norm_lt
       exact ⟨by linarith, by linarith⟩
     have h := maximalGeodesic_rescaled_eq_orbit_proj (I := I) (g := g) (p := p)
       (v := vb) (T := T) (t' := t') ht'_pos
-      (hΦ_init vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball)
+      (hΦ_initial vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball)
       (s := t) ht_Ioo
     rw [show (t' • vb : TangentSpace I p) = v₀ from hvb_resc] at h
     exact h

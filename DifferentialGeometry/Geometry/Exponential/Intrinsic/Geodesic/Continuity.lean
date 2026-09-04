@@ -135,29 +135,29 @@ theorem intrinsicGeodesic_hasGeodesicEquationAt_to_lift
   set v : E := deriv
     (DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) y γ) t
     with hv_def
-  obtain ⟨f₁, hf₁_init, hf₁⟩ := exists_chartCenteredLift_at (I := I) g y v t
-  have hf₁_proj_t : (f₁ t).proj = y := by rw [hf₁_init]
+  obtain ⟨f₁, hf₁_initial, hf₁⟩ := exists_chartCenteredLift_at (I := I) g y v t
+  have hf₁_proj_t : (f₁ t).proj = y := by rw [hf₁_initial]
   refine ⟨f₁, by rw [hf₁_proj_t], by rw [hy_def] at hf₁ ⊢; exact hf₁, ?_⟩
   set w : ℝ → E :=
     DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) y γ with hw_def
   set c₁ : ℝ → E × E := fun s => (w s, deriv w s) with hc₁_def
-  have hy_src : y ∈ (chartAt H y).source := mem_chart_source H y
-  have hγ_src_ev : ∀ᶠ s in 𝓝 t, γ s ∈ (chartAt H y).source := by
+  have hy_source : y ∈ (chartAt H y).source := mem_chart_source H y
+  have hγ_source_ev : ∀ᶠ s in 𝓝 t, γ s ∈ (chartAt H y).source := by
     apply hγ_cont.continuousAt.preimage_mem_nhds
-    exact (chartAt H y).open_source.mem_nhds (by rw [hy_def]; exact hy_src)
+    exact (chartAt H y).open_source.mem_nhds (by rw [hy_def]; exact hy_source)
   have hev_first : ∀ᶠ s in 𝓝 t, HasDerivAt w (deriv w s) s :=
     hasGeodesicEquationAt_fixedChart_eventually_hasDerivAt (I := I) g y
-      hγ_cont.continuousAt (by rw [hy_def]; exact hy_src) (hγ t)
+      hγ_cont.continuousAt (by rw [hy_def]; exact hy_source) (hγ t)
   have hev_second : ∀ᶠ s in 𝓝 t,
       HasDerivAt (deriv w)
         (- chartChristoffelContraction (I := I) g y (deriv w s) (deriv w s) (w s)) s := by
-    filter_upwards [hγ_src_ev] with s hs
+    filter_upwards [hγ_source_ev] with s hs
     exact hasGeodesicEquationAt_fixedChart_hasDerivAt_velocity (I := I) g y
       hγ_cont.continuousAt hs (hγ s)
   have hc₁_phase : ∀ᶠ s in 𝓝 t,
       HasDerivAt c₁ (chartPhaseVF (I := I) g y (c₁ s)) s ∧
         c₁ s ∈ (interior (extChartAt I y).target) ×ˢ (Set.univ : Set E) := by
-    filter_upwards [hev_first, hev_second, hγ_src_ev] with s hf hsd hsrc
+    filter_upwards [hev_first, hev_second, hγ_source_ev] with s hf hsd hsrc
     refine ⟨?_, ?_⟩
     · have hpair : HasDerivAt c₁
           ((deriv w s,
@@ -169,10 +169,10 @@ theorem intrinsicGeodesic_hasGeodesicEquationAt_to_lift
         simp only [hc₁_def, chartPhaseVF_apply]
       rw [hrhs]; exact hpair
     · refine ⟨?_, Set.mem_univ _⟩
-      have hp_ext_src : γ s ∈ (extChartAt I y).source := by
+      have hp_ext_source : γ s ∈ (extChartAt I y).source := by
         rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hsrc
       have hp_target : extChartAt I y (γ s) ∈ (extChartAt I y).target :=
-        (extChartAt I y).map_source hp_ext_src
+        (extChartAt I y).map_source hp_ext_source
       have : (c₁ s).1 = extChartAt I y (γ s) := by simp [hc₁_def, hw_def]
       rw [this]
       exact
@@ -183,9 +183,9 @@ theorem intrinsicGeodesic_hasGeodesicEquationAt_to_lift
     FiberBundle.continuous_proj E (TangentSpace I)
   have hproj_contAt : ContinuousAt (fun s => (f₁ s).proj) t :=
     hπ_cont.continuousAt.comp hf₁.continuousAt
-  have hf_src_ev : ∀ᶠ s in 𝓝 t, (f₁ s).proj ∈ (chartAt H y).source := by
+  have hf_source_ev : ∀ᶠ s in 𝓝 t, (f₁ s).proj ∈ (chartAt H y).source := by
     apply hproj_contAt.preimage_mem_nhds
-    rw [hf₁_proj_t]; exact (chartAt H y).open_source.mem_nhds hy_src
+    rw [hf₁_proj_t]; exact (chartAt H y).open_source.mem_nhds hy_source
   have hc₂_deriv : ∀ᶠ s in 𝓝 t, HasDerivAt (chartPushLift (I := I) f₁ t)
       (chartPushVF (I := I) g y f₁ t s) s := by
     have hf₁' : IsMIntegralCurveAt f₁ (geodesicVectorFieldChart (I := I) g y) t := hf₁
@@ -194,7 +194,7 @@ theorem intrinsicGeodesic_hasGeodesicEquationAt_to_lift
   have hc₂_phase : ∀ᶠ s in 𝓝 t,
       HasDerivAt c₂ (chartPhaseVF (I := I) g y (c₂ s)) s ∧
         c₂ s ∈ (interior (extChartAt I y).target) ×ˢ (Set.univ : Set E) := by
-    filter_upwards [hc₂_deriv, hf_src_ev] with s hd hs
+    filter_upwards [hc₂_deriv, hf_source_ev] with s hd hs
     refine ⟨?_, ?_⟩
     · have heq := chartPushVF_eq_chartPhaseVF_at (I := I) g y (f := f₁) (t₀ := t)
         hf₁_proj_t s hs
@@ -202,10 +202,10 @@ theorem intrinsicGeodesic_hasGeodesicEquationAt_to_lift
     · rw [hc₂_def, chartPushLift_eq_pair (I := I) t s (by rw [hf₁_proj_t]; exact hs)]
       refine ⟨?_, Set.mem_univ _⟩
       rw [hf₁_proj_t]
-      have hp_ext_src : (f₁ s).proj ∈ (extChartAt I y).source := by
+      have hp_ext_source : (f₁ s).proj ∈ (extChartAt I y).source := by
         rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hs
       have hp_target : extChartAt I y (f₁ s).proj ∈ (extChartAt I y).target :=
-        (extChartAt I y).map_source hp_ext_src
+        (extChartAt I y).map_source hp_ext_source
       exact
         Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
         (I := I) y hp_target
@@ -216,16 +216,16 @@ theorem intrinsicGeodesic_hasGeodesicEquationAt_to_lift
   have hc₂_t : c₂ t = (extChartAt I y y, v) := by
     rw [hc₂_def, chartPushLift_self_pair (I := I) f₁ t, hf₁_proj_t]
     have hfib : chartFiberCoord (I := I) y (f₁ t) = v := by
-      rw [show f₁ t = (⟨y, v⟩ : TangentBundle I M) from hf₁_init]
+      rw [show f₁ t = (⟨y, v⟩ : TangentBundle I M) from hf₁_initial]
       exact chartFiberCoord_mk_self (I := I) y v
     rw [hfib]
   have hz₀_int : (extChartAt I y y, v) ∈
       (interior (extChartAt I y).target) ×ˢ (Set.univ : Set E) := by
     refine ⟨?_, Set.mem_univ _⟩
-    have hp_ext_src : y ∈ (extChartAt I y).source := by
-      rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hy_src
+    have hp_ext_source : y ∈ (extChartAt I y).source := by
+      rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hy_source
     have hp_target : extChartAt I y y ∈ (extChartAt I y).target :=
-      (extChartAt I y).map_source hp_ext_src
+      (extChartAt I y).map_source hp_ext_source
     exact
       Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
       (I := I) y hp_target
@@ -233,13 +233,13 @@ theorem intrinsicGeodesic_hasGeodesicEquationAt_to_lift
     chartPhaseVF_orbit_uniqueness_at (I := I) (g := g) (q := y)
       hz₀_int hc₁_t hc₂_t hc₁_phase hc₂_phase
   have hfst : ∀ᶠ s in 𝓝 t, extChartAt I y (γ s) = extChartAt I y (f₁ s).proj := by
-    filter_upwards [hceq, hf_src_ev] with s hs hsrc
+    filter_upwards [hceq, hf_source_ev] with s hs hsrc
     have h1 : (c₁ s).1 = extChartAt I y (γ s) := by simp [hc₁_def, hw_def]
     have h2 : (c₂ s).1 = extChartAt I y (f₁ s).proj := by
       rw [hc₂_def, chartPushLift_eq_pair (I := I) t s (by rw [hf₁_proj_t]; exact hsrc)]
       rw [hf₁_proj_t]
     rw [← h1, ← h2, hs]
-  filter_upwards [hγ_src_ev, hf_src_ev, hfst] with s hγs hfs heq
+  filter_upwards [hγ_source_ev, hf_source_ev, hfst] with s hγs hfs heq
   have hγ_es : γ s ∈ (extChartAt I y).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hγs
   have hf_es : (f₁ s).proj ∈ (extChartAt I y).source := by
@@ -502,7 +502,7 @@ private theorem flowOrbit_speed_confined_uniform
     (hMpos : 0 < Mb) (hRρ : ρ < R) (hT_f : 0 < T_f)
     (hRMT : R - ρ < Mb * T_f)
     (hz_ball : ∀ v ∈ S, dist (z v) z₀ ≤ ρ)
-    (hΦinit : ∀ v ∈ S, Φ (z v, 0) = z v)
+    (hΦinitial : ∀ v ∈ S, Φ (z v, 0) = z v)
     (hΦ_phase : ∀ v ∈ S, ∀ s ∈ Set.Ioo (-T_f) T_f,
       HasDerivAt (fun τ => Φ (z v, τ)) (chartPhaseVF (I := I) g α (Φ (z v, s))) s)
     (hM : ∀ x ∈ Metric.closedBall z₀ R, ‖chartPhaseVF (I := I) g α x‖ ≤ Mb) :
@@ -513,7 +513,7 @@ private theorem flowOrbit_speed_confined_uniform
   have hmin : min T_f ((R - ρ) / Mb) = (R - ρ) / Mb := min_eq_right (le_of_lt hdivlt)
   have hconf := orbit_speed_confined g α (c := fun τ => Φ (z v, τ)) (z₀ := z₀)
     (R := R) (ρ := ρ) (T_f := T_f) hMpos hRρ hT_f
-    (by rw [hΦinit v hv]; exact hz_ball v hv)
+    (by rw [hΦinitial v hv]; exact hz_ball v hv)
     (fun s' hs' => by
       rw [hmin] at hs'
       have hs'_Ioo : s' ∈ Set.Ioo (-T_f) T_f :=
@@ -725,7 +725,7 @@ private theorem geodesic_chartPhaseVF_on_open
     {g : SmoothRiemannianMetric I M} {α : M} {γ : ℝ → M}
     (hγ : IsGeodesic (I := I) g γ) (hγ_cont : Continuous γ)
     {U : Set ℝ} (hU_open : IsOpen U)
-    (hγ_src : ∀ s ∈ U, γ s ∈ (chartAt H α).source) :
+    (hγ_source : ∀ s ∈ U, γ s ∈ (chartAt H α).source) :
     ∀ s ∈ U,
       HasDerivAt
         (fun r : ℝ =>
@@ -746,15 +746,15 @@ private theorem geodesic_chartPhaseVF_on_open
     with hw_def
   intro s hs
   have hsU_nhds : U ∈ 𝓝 s := hU_open.mem_nhds hs
-  have hs_src : γ s ∈ (chartAt H α).source := hγ_src s hs
+  have hs_source : γ s ∈ (chartAt H α).source := hγ_source s hs
   have hev_first : ∀ᶠ r in 𝓝 s, HasDerivAt w (deriv w r) r :=
     hasGeodesicEquationAt_fixedChart_eventually_hasDerivAt
-      (I := I) g α hγ_cont.continuousAt hs_src (hγ s)
+      (I := I) g α hγ_cont.continuousAt hs_source (hγ s)
   have hfirst : HasDerivAt w (deriv w s) s := hev_first.self_of_nhds
   have hsecond : HasDerivAt (deriv w)
       (- chartChristoffelContraction (I := I) g α (deriv w s) (deriv w s) (w s)) s :=
     hasGeodesicEquationAt_fixedChart_hasDerivAt_velocity
-      (I := I) g α hγ_cont.continuousAt hs_src (hγ s)
+      (I := I) g α hγ_cont.continuousAt hs_source (hγ s)
   refine ⟨?_, ?_⟩
   · have hpair : HasDerivAt
         (fun r : ℝ => (w r, deriv w r))
@@ -766,10 +766,10 @@ private theorem geodesic_chartPhaseVF_on_open
           - chartChristoffelContraction (I := I) g α (deriv w s) (deriv w s) (w s)) := by
       simp only [chartPhaseVF_apply]
     rw [hrhs]; exact hpair
-  · have hp_ext_src : γ s ∈ (extChartAt I α).source := by
-      rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hs_src
+  · have hp_ext_source : γ s ∈ (extChartAt I α).source := by
+      rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hs_source
     have hp_target : extChartAt I α (γ s) ∈ (extChartAt I α).target :=
-      (extChartAt I α).map_source hp_ext_src
+      (extChartAt I α).map_source hp_ext_source
     have hval : w s = extChartAt I α (γ s) := by simp [hw_def]
     rw [hval]
     exact
@@ -797,7 +797,7 @@ private theorem perJunction_flowIdentification
         (chartPhaseVF (I := I) g α (Φ (z v, s))) s)
     (hΦ_in : ∀ v ∈ Metric.ball v₀ r, ∀ s ∈ Set.Ioo (-T') T',
       Φ (z v, s) ∈ Metric.closedBall z₀ R)
-    (hgeo_src : ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
+    (hgeo_source : ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
       intrinsicGeodesic (I := I) g hEnorm p v t ∈ (chartAt H α).source)
     (hgeo_in : ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
@@ -810,7 +810,7 @@ private theorem perJunction_flowIdentification
           (intrinsicGeodesic (I := I) g hEnorm p v) tₖ,
         deriv (DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v)) tₖ) : E × E) = z v)
-    (hΦinit : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v) :
+    (hΦinitial : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v) :
     ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
       intrinsicGeodesic (I := I) g hEnorm p v t =
         flowProj (I := I) α Φ (z v) (t - tₖ) := by
@@ -828,7 +828,7 @@ private theorem perJunction_flowIdentification
   set U : Set ℝ := Set.Ioo (tₖ - T') (tₖ + T') with hU_def
   have hU_open : IsOpen U := isOpen_Ioo
   have hsrc_U : ∀ s ∈ U, γ s ∈ (chartAt H α).source := by
-    intro s hsU; exact hgeo_src v hv s hsU
+    intro s hsU; exact hgeo_source v hv s hsU
   have hgeo_phase := geodesic_chartPhaseVF_on_open (I := I) (g := g) (α := α) (γ := γ)
     hγ_geo hγ_cont hU_open hsrc_U
   have hc₁_phase : ∀ s ∈ Set.Ioo (-T') T',
@@ -861,7 +861,7 @@ private theorem perJunction_flowIdentification
     intro s hs; exact hΦ_in v hv s hs
   have hc₁_zero : c₁ 0 = z v := by
     rw [hc₁_def]; simp only [add_zero]; exact hinit v hv
-  have hc₂_zero : c₂ 0 = z v := by rw [hc₂_def]; exact hΦinit v hv
+  have hc₂_zero : c₂ 0 = z v := by rw [hc₂_def]; exact hΦinitial v hv
   have hmatch : c₁ 0 = c₂ 0 := by rw [hc₁_zero, hc₂_zero]
   have heq : ∀ s ∈ Set.Ioo (-T') T', c₁ s = c₂ s :=
     chartPhaseVF_orbit_uniqueness_uniform_Ioo_closedBall (I := I) g α
@@ -907,7 +907,7 @@ private theorem perJunction_phaseIdentification
         (chartPhaseVF (I := I) g α (Φ (z v, s))) s)
     (hΦ_in : ∀ v ∈ Metric.ball v₀ r, ∀ s ∈ Set.Ioo (-T') T',
       Φ (z v, s) ∈ Metric.closedBall z₀ R)
-    (hgeo_src : ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
+    (hgeo_source : ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
       intrinsicGeodesic (I := I) g hEnorm p v t ∈ (chartAt H α).source)
     (hgeo_in : ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
@@ -920,7 +920,7 @@ private theorem perJunction_phaseIdentification
           (intrinsicGeodesic (I := I) g hEnorm p v) tₖ,
         deriv (DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v)) tₖ) : E × E) = z v)
-    (hΦinit : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v) :
+    (hΦinitial : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v) :
     ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v) t,
@@ -941,7 +941,7 @@ private theorem perJunction_phaseIdentification
   set U : Set ℝ := Set.Ioo (tₖ - T') (tₖ + T') with hU_def
   have hU_open : IsOpen U := isOpen_Ioo
   have hsrc_U : ∀ s ∈ U, γ s ∈ (chartAt H α).source := by
-    intro s hsU; exact hgeo_src v hv s hsU
+    intro s hsU; exact hgeo_source v hv s hsU
   have hgeo_phase := geodesic_chartPhaseVF_on_open (I := I) (g := g) (α := α) (γ := γ)
     hγ_geo hγ_cont hU_open hsrc_U
   have hc₁_phase : ∀ s ∈ Set.Ioo (-T') T',
@@ -974,7 +974,7 @@ private theorem perJunction_phaseIdentification
     intro s hs; exact hΦ_in v hv s hs
   have hc₁_zero : c₁ 0 = z v := by
     rw [hc₁_def]; simp only [add_zero]; exact hinit v hv
-  have hc₂_zero : c₂ 0 = z v := by rw [hc₂_def]; exact hΦinit v hv
+  have hc₂_zero : c₂ 0 = z v := by rw [hc₂_def]; exact hΦinitial v hv
   have hmatch : c₁ 0 = c₂ 0 := by rw [hc₁_zero, hc₂_zero]
   have heq : ∀ s ∈ Set.Ioo (-T') T', c₁ s = c₂ s :=
     chartPhaseVF_orbit_uniqueness_uniform_Ioo_closedBall (I := I) g α
@@ -1034,8 +1034,8 @@ private theorem intrinsicGeodesic_window_of_junction_data
           intrinsicGeodesic (I := I) g hEnorm p vt.1 vt.2)
         ((Metric.ball v₀ r) ×ˢ Set.Ioo (tₖ - ε) (tₖ + ε)) := by
   classical
-  obtain ⟨b, rPL, εPL, ρΦ, TΦ, Φ, hrPL, hεPL, hρΦ, hTΦ, hb_sub, hΦ_loc, hΦ_C1,
-      hΦ_init0⟩ :=
+  obtain ⟨b, rPL, εPL, ρΦ, TΦ, Φ, hrPL, hεPL, hρΦ, hTΦ, hb_sub, hΦ_local, hΦ_C1,
+      hΦ_initial0⟩ :=
     Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined (I := I) (M := M)
       (g := g) (α := α) (x₀ := x₀) (v₀ := w₀) hx₀
   have hΦ_cont : ContinuousOn Φ
@@ -1061,7 +1061,7 @@ private theorem intrinsicGeodesic_window_of_junction_data
   obtain ⟨S, T', hS_open, hv₀_S, hT'_pos, hT'_lt_Tcap, hz_ball_S, horbit_in⟩ :=
     flowOrbit_uniform_confinement (Φ := Φ) (z₀ := (x₀, w₀)) (ρ_f := ρf) (T_f := Tcap)
       (z := z) (v₀ := v₀) (W := Metric.ball ((x₀, w₀) : E × E) b.rIn)
-      hρf_pos hTcap_pos hΦ_cont' hΦ_init0 hz_contAt hz0 hW_nhds
+      hρf_pos hTcap_pos hΦ_cont' hΦ_initial0 hz_contAt hz0 hW_nhds
   obtain ⟨r₀, hr₀_pos, hr₀_sub⟩ := Metric.isOpen_iff.mp hS_open v₀ hv₀_S
   set r : ℝ := min r₀ rz with hr_def
   have hr_pos : 0 < r := lt_min hr₀_pos hrz
@@ -1084,9 +1084,9 @@ private theorem intrinsicGeodesic_window_of_junction_data
     rw [Metric.mem_ball] at this
     rw [Metric.mem_closedBall]
     exact le_of_lt (lt_of_lt_of_le this hρf_le_rPL)
-  have hΦinit : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v := by
+  have hΦinitial : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v := by
     intro v hv
-    exact hΦ_loc.apply_initial (z v) (hz_PL v hv)
+    exact hΦ_local.apply_initial (z v) (hz_PL v hv)
   have hΦ_in : ∀ v ∈ Metric.ball v₀ r, ∀ s ∈ Set.Ioo (-T') T',
       Φ (z v, s) ∈ Metric.closedBall ((x₀, w₀) : E × E) b.rIn := by
     intro v hv s hs
@@ -1096,7 +1096,7 @@ private theorem intrinsicGeodesic_window_of_junction_data
     intro v hv
     have h0 : (0 : ℝ) ∈ Set.Ioo (-T') T' := ⟨by linarith, hT'_pos⟩
     have := horbit_in v (hr_sub hv) 0 h0
-    rwa [hΦinit v hv] at this
+    rwa [hΦinitial v hv] at this
   have hT'_le_εPL : T' ≤ εPL := le_of_lt (lt_of_lt_of_le hT'_lt_Tcap hTcap_le_εPL)
   have hΦ_phase : ∀ v ∈ Metric.ball v₀ r, ∀ s ∈ Set.Ioo (-T') T',
       HasDerivAt (fun τ => Φ (z v, τ))
@@ -1105,7 +1105,7 @@ private theorem intrinsicGeodesic_window_of_junction_data
     have hs_Icc : s ∈ Set.Icc (-εPL) εPL := by
       rw [Set.mem_Icc]
       exact ⟨by linarith [hs.1, hT'_le_εPL], by linarith [hs.2, hT'_le_εPL]⟩
-    have hd := hΦ_loc.hasDerivWithinAt (z v) (hz_PL v hv) s hs_Icc
+    have hd := hΦ_local.hasDerivWithinAt (z v) (hz_PL v hv) s hs_Icc
     have hIoo_nhds : Set.Ioo (-εPL) εPL ∈ 𝓝 s := by
       apply isOpen_Ioo.mem_nhds
       rw [Set.mem_Ioo]
@@ -1123,7 +1123,7 @@ private theorem intrinsicGeodesic_window_of_junction_data
       rw [chartPhaseVFTime_apply]
       exact chartPhaseVFCutoff_eq_of_mem_closedBall (I := I) g α (x₀, w₀) b horbit_inner
     rwa [hcutoff_eq] at hd'
-  obtain ⟨rgeo, εgeo, hrgeo_pos, hεgeo_pos, _hrgeo_le, _hz_geo, hgeo_src0, hgeo_in0,
+  obtain ⟨rgeo, εgeo, hrgeo_pos, hεgeo_pos, _hrgeo_le, _hz_geo, hgeo_source0, hgeo_in0,
       hinit0⟩ := hgeo b hb_sub
   set rfin : ℝ := min r rgeo with hrfin_def
   have hrfin_pos : 0 < rfin := lt_min hr_pos hrgeo_pos
@@ -1150,9 +1150,9 @@ private theorem intrinsicGeodesic_window_of_junction_data
   have hΦ_in' : ∀ v ∈ Metric.ball v₀ rfin, ∀ s ∈ Set.Ioo (-Tfin) Tfin,
       Φ (z v, s) ∈ Metric.closedBall ((x₀, w₀) : E × E) b.rIn :=
     fun v hv s hs => hΦ_in v (hball_sub hv) s (hIoo_sub hs)
-  have hgeo_src : ∀ v ∈ Metric.ball v₀ rfin, ∀ s ∈ Set.Ioo (tₖ - Tfin) (tₖ + Tfin),
+  have hgeo_source : ∀ v ∈ Metric.ball v₀ rfin, ∀ s ∈ Set.Ioo (tₖ - Tfin) (tₖ + Tfin),
       intrinsicGeodesic (I := I) g hEnorm p v s ∈ (chartAt H α).source :=
-    fun v hv s hs => hgeo_src0 v (hball_sub_geo hv) s (hIoo_sub_geo s hs)
+    fun v hv s hs => hgeo_source0 v (hball_sub_geo hv) s (hIoo_sub_geo s hs)
   have hgeo_in : ∀ v ∈ Metric.ball v₀ rfin, ∀ s ∈ Set.Ioo (tₖ - Tfin) (tₖ + Tfin),
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v) s,
@@ -1166,12 +1166,12 @@ private theorem intrinsicGeodesic_window_of_junction_data
         deriv (DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v)) tₖ) : E × E) = z v :=
     fun v hv => hinit0 v (hball_sub_geo hv)
-  have hΦinit' : ∀ v ∈ Metric.ball v₀ rfin, Φ (z v, 0) = z v :=
-    fun v hv => hΦinit v (hball_sub hv)
+  have hΦinitial' : ∀ v ∈ Metric.ball v₀ rfin, Φ (z v, 0) = z v :=
+    fun v hv => hΦinitial v (hball_sub hv)
   have hident := perJunction_flowIdentification (I := I) g hEnorm p v₀
     (α := α) (Φ := Φ) (z₀ := (x₀, w₀)) (z := z) (tₖ := tₖ) (r := rfin) (R := b.rIn)
-    (T' := Tfin) hTfin_pos hballIn_sub_target hΦ_phase' hΦ_in' hgeo_src hgeo_in hinit
-    hΦinit'
+    (T' := Tfin) hTfin_pos hballIn_sub_target hΦ_phase' hΦ_in' hgeo_source hgeo_in hinit
+    hΦinitial'
   refine ⟨rfin, Tfin, hrfin_pos, hTfin_pos, ?_⟩
   have htgt : ∀ v ∈ Metric.ball v₀ rfin, ∀ τ ∈ Set.Ioo (-Tfin) Tfin,
       (Φ (z v, τ)).1 ∈ (extChartAt I α).target := by
@@ -1330,8 +1330,8 @@ private theorem intrinsicVelocityLift_window_of_junction_data
           intrinsicVelocityLift (I := I) g hEnorm p vt.1 vt.2)
         ((Metric.ball v₀ r) ×ˢ Set.Ioo (tₖ - ε) (tₖ + ε)) := by
   classical
-  obtain ⟨b, rPL, εPL, ρΦ, TΦ, Φ, hrPL, hεPL, hρΦ, hTΦ, hb_sub, hΦ_loc, hΦ_C1,
-      hΦ_init0⟩ :=
+  obtain ⟨b, rPL, εPL, ρΦ, TΦ, Φ, hrPL, hεPL, hρΦ, hTΦ, hb_sub, hΦ_local, hΦ_C1,
+      hΦ_initial0⟩ :=
     Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined (I := I) (M := M)
       (g := g) (α := α) (x₀ := x₀) (v₀ := w₀) hx₀
   have hΦ_cont : ContinuousOn Φ
@@ -1357,7 +1357,7 @@ private theorem intrinsicVelocityLift_window_of_junction_data
   obtain ⟨S, T', hS_open, hv₀_S, hT'_pos, hT'_lt_Tcap, hz_ball_S, horbit_in⟩ :=
     flowOrbit_uniform_confinement (Φ := Φ) (z₀ := (x₀, w₀)) (ρ_f := ρf) (T_f := Tcap)
       (z := z) (v₀ := v₀) (W := Metric.ball ((x₀, w₀) : E × E) b.rIn)
-      hρf_pos hTcap_pos hΦ_cont' hΦ_init0 hz_contAt hz0 hW_nhds
+      hρf_pos hTcap_pos hΦ_cont' hΦ_initial0 hz_contAt hz0 hW_nhds
   obtain ⟨r₀, hr₀_pos, hr₀_sub⟩ := Metric.isOpen_iff.mp hS_open v₀ hv₀_S
   set r : ℝ := min r₀ rz with hr_def
   have hr_pos : 0 < r := lt_min hr₀_pos hrz
@@ -1380,9 +1380,9 @@ private theorem intrinsicVelocityLift_window_of_junction_data
     rw [Metric.mem_ball] at this
     rw [Metric.mem_closedBall]
     exact le_of_lt (lt_of_lt_of_le this hρf_le_rPL)
-  have hΦinit : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v := by
+  have hΦinitial : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v := by
     intro v hv
-    exact hΦ_loc.apply_initial (z v) (hz_PL v hv)
+    exact hΦ_local.apply_initial (z v) (hz_PL v hv)
   have hΦ_in : ∀ v ∈ Metric.ball v₀ r, ∀ s ∈ Set.Ioo (-T') T',
       Φ (z v, s) ∈ Metric.closedBall ((x₀, w₀) : E × E) b.rIn := by
     intro v hv s hs
@@ -1392,7 +1392,7 @@ private theorem intrinsicVelocityLift_window_of_junction_data
     intro v hv
     have h0 : (0 : ℝ) ∈ Set.Ioo (-T') T' := ⟨by linarith, hT'_pos⟩
     have := horbit_in v (hr_sub hv) 0 h0
-    rwa [hΦinit v hv] at this
+    rwa [hΦinitial v hv] at this
   have hT'_le_εPL : T' ≤ εPL := le_of_lt (lt_of_lt_of_le hT'_lt_Tcap hTcap_le_εPL)
   have hΦ_phase : ∀ v ∈ Metric.ball v₀ r, ∀ s ∈ Set.Ioo (-T') T',
       HasDerivAt (fun τ => Φ (z v, τ))
@@ -1401,7 +1401,7 @@ private theorem intrinsicVelocityLift_window_of_junction_data
     have hs_Icc : s ∈ Set.Icc (-εPL) εPL := by
       rw [Set.mem_Icc]
       exact ⟨by linarith [hs.1, hT'_le_εPL], by linarith [hs.2, hT'_le_εPL]⟩
-    have hd := hΦ_loc.hasDerivWithinAt (z v) (hz_PL v hv) s hs_Icc
+    have hd := hΦ_local.hasDerivWithinAt (z v) (hz_PL v hv) s hs_Icc
     have hIoo_nhds : Set.Ioo (-εPL) εPL ∈ 𝓝 s := by
       apply isOpen_Ioo.mem_nhds
       rw [Set.mem_Ioo]
@@ -1419,7 +1419,7 @@ private theorem intrinsicVelocityLift_window_of_junction_data
       rw [chartPhaseVFTime_apply]
       exact chartPhaseVFCutoff_eq_of_mem_closedBall (I := I) g α (x₀, w₀) b horbit_inner
     rwa [hcutoff_eq] at hd'
-  obtain ⟨rgeo, εgeo, hrgeo_pos, hεgeo_pos, _hrgeo_le, _hz_geo, hgeo_src0, hgeo_in0,
+  obtain ⟨rgeo, εgeo, hrgeo_pos, hεgeo_pos, _hrgeo_le, _hz_geo, hgeo_source0, hgeo_in0,
       hinit0⟩ := hgeo b hb_sub
   set rfin : ℝ := min r rgeo with hrfin_def
   have hrfin_pos : 0 < rfin := lt_min hr_pos hrgeo_pos
@@ -1446,9 +1446,9 @@ private theorem intrinsicVelocityLift_window_of_junction_data
   have hΦ_in' : ∀ v ∈ Metric.ball v₀ rfin, ∀ s ∈ Set.Ioo (-Tfin) Tfin,
       Φ (z v, s) ∈ Metric.closedBall ((x₀, w₀) : E × E) b.rIn :=
     fun v hv s hs => hΦ_in v (hball_sub hv) s (hIoo_sub hs)
-  have hgeo_src : ∀ v ∈ Metric.ball v₀ rfin, ∀ s ∈ Set.Ioo (tₖ - Tfin) (tₖ + Tfin),
+  have hgeo_source : ∀ v ∈ Metric.ball v₀ rfin, ∀ s ∈ Set.Ioo (tₖ - Tfin) (tₖ + Tfin),
       intrinsicGeodesic (I := I) g hEnorm p v s ∈ (chartAt H α).source :=
-    fun v hv s hs => hgeo_src0 v (hball_sub_geo hv) s (hIoo_sub_geo s hs)
+    fun v hv s hs => hgeo_source0 v (hball_sub_geo hv) s (hIoo_sub_geo s hs)
   have hgeo_in : ∀ v ∈ Metric.ball v₀ rfin, ∀ s ∈ Set.Ioo (tₖ - Tfin) (tₖ + Tfin),
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v) s,
@@ -1462,12 +1462,12 @@ private theorem intrinsicVelocityLift_window_of_junction_data
         deriv (DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v)) tₖ) : E × E) = z v :=
     fun v hv => hinit0 v (hball_sub_geo hv)
-  have hΦinit' : ∀ v ∈ Metric.ball v₀ rfin, Φ (z v, 0) = z v :=
-    fun v hv => hΦinit v (hball_sub hv)
+  have hΦinitial' : ∀ v ∈ Metric.ball v₀ rfin, Φ (z v, 0) = z v :=
+    fun v hv => hΦinitial v (hball_sub hv)
   have hpair_ident := perJunction_phaseIdentification (I := I) g hEnorm p v₀
     (α := α) (Φ := Φ) (z₀ := (x₀, w₀)) (z := z) (tₖ := tₖ) (r := rfin) (R := b.rIn)
-    (T' := Tfin) hTfin_pos hballIn_sub_target hΦ_phase' hΦ_in' hgeo_src hgeo_in hinit
-    hΦinit'
+    (T' := Tfin) hTfin_pos hballIn_sub_target hΦ_phase' hΦ_in' hgeo_source hgeo_in hinit
+    hΦinitial'
   refine ⟨rfin, Tfin, hrfin_pos, hTfin_pos, ?_⟩
   have htgt : ∀ v ∈ Metric.ball v₀ rfin, ∀ τ ∈ Set.Ioo (-Tfin) Tfin,
       Φ (z v, τ) ∈ (interior (extChartAt I α).target) ×ˢ (Set.univ : Set E) := by
@@ -1531,8 +1531,8 @@ private theorem intrinsicVelocityLift_window_of_junction_data
     hlift_orbit_cont.comp hshift_cont hshift_maps
   apply hcomp_cont.congr
   rintro ⟨v, s⟩ ⟨hv, hs⟩
-  have hgeo_src_s : intrinsicGeodesic (I := I) g hEnorm p v s ∈ (chartAt H α).source :=
-    hgeo_src v hv s hs
+  have hgeo_source_s : intrinsicGeodesic (I := I) g hEnorm p v s ∈ (chartAt H α).source :=
+    hgeo_source v hv s hs
   have hphase :
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v) s,
@@ -1540,7 +1540,7 @@ private theorem intrinsicVelocityLift_window_of_junction_data
           (intrinsicGeodesic (I := I) g hEnorm p v)) s) : E × E) =
         Φ (z v, s - tₖ) := hpair_ident v hv s hs
   have hbridge := phasePoint_eq_extChartAt_tangent_intrinsicVelocityLift
-    (I := I) g hEnorm p v α s hgeo_src_s
+    (I := I) g hEnorm p v α s hgeo_source_s
   have hread : extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)
       (intrinsicVelocityLift (I := I) g hEnorm p v s) = Φ (z v, s - tₖ) := by
     rw [← hbridge]; exact hphase
@@ -1550,7 +1550,7 @@ private theorem intrinsicVelocityLift_window_of_junction_data
     rw [TangentBundle.mem_chart_source_iff (I := I) (M := M)
       (intrinsicVelocityLift (I := I) g hEnorm p v s)
       (⟨α, (0 : E)⟩ : TangentBundle I M)]
-    exact hgeo_src_s
+    exact hgeo_source_s
   calc intrinsicVelocityLift (I := I) g hEnorm p v s
       = (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).symm
           (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)
@@ -1630,7 +1630,7 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v₀ : TangentSpace I p) (t : ℝ)
     {α : M}
-    (hα_src : intrinsicGeodesic (I := I) g hEnorm p v₀ t ∈ (chartAt H α).source)
+    (hα_source : intrinsicGeodesic (I := I) g hEnorm p v₀ t ∈ (chartAt H α).source)
     {z : TangentSpace I p → E × E}
     (hz : z = fun v =>
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
@@ -1682,10 +1682,10 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
   have hpt_preim : ((v₀, t) : TangentSpace I p × ℝ) ∈
       W ∩ (fun vs : TangentSpace I p × ℝ => (L vs).proj) ⁻¹' (chartAt H α).source := by
     refine ⟨hpt_W, ?_⟩
-    rw [Set.mem_preimage, hfoot_v₀t]; exact hα_src
-  obtain ⟨rsrc, εsrc, hrsrc_pos, hεsrc_pos, hsrc_sub⟩ :
-      ∃ rsrc εsrc : ℝ, 0 < rsrc ∧ 0 < εsrc ∧
-        (Metric.ball v₀ rsrc) ×ˢ Set.Ioo (t - εsrc) (t + εsrc) ⊆
+    rw [Set.mem_preimage, hfoot_v₀t]; exact hα_source
+  obtain ⟨rsrc, εsource, hrsrc_pos, hεsource_pos, hsrc_sub⟩ :
+      ∃ rsrc εsource : ℝ, 0 < rsrc ∧ 0 < εsource ∧
+        (Metric.ball v₀ rsrc) ×ˢ Set.Ioo (t - εsource) (t + εsource) ⊆
           W ∩ (fun vs : TangentSpace I p × ℝ => (L vs).proj) ⁻¹' (chartAt H α).source := by
     rw [Metric.isOpen_iff] at hpreim_open
     obtain ⟨δ, hδ_pos, hδ_sub⟩ := hpreim_open ((v₀, t) : TangentSpace I p × ℝ) hpt_preim
@@ -1699,12 +1699,12 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
       rw [Real.dist_eq, abs_lt]; constructor <;> linarith [hs.1, hs.2]
     calc max (dist v v₀) (dist s t) < δ / 2 := max_lt hv hsdist
       _ < δ := by linarith
-  have hsrc_mem : ∀ v ∈ Metric.ball v₀ rsrc, ∀ s ∈ Set.Ioo (t - εsrc) (t + εsrc),
+  have hsrc_mem : ∀ v ∈ Metric.ball v₀ rsrc, ∀ s ∈ Set.Ioo (t - εsource) (t + εsource),
       intrinsicGeodesic (I := I) g hEnorm p v s ∈ (chartAt H α).source := by
     intro v hv s hs
     have := hsrc_sub (Set.mk_mem_prod hv hs)
     exact this.2
-  have hsubW : ∀ v ∈ Metric.ball v₀ rsrc, ∀ s ∈ Set.Ioo (t - εsrc) (t + εsrc),
+  have hsubW : ∀ v ∈ Metric.ball v₀ rsrc, ∀ s ∈ Set.Ioo (t - εsource) (t + εsource),
       ((v, s) : TangentSpace I p × ℝ) ∈ W := by
     intro v hv s hs
     exact (hsrc_sub (Set.mk_mem_prod hv hs)).1
@@ -1712,13 +1712,13 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
     fun vs => extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M) (L vs)
     with hphaseRead_def
   set Wsub : Set (TangentSpace I p × ℝ) :=
-    (Metric.ball v₀ rsrc) ×ˢ Set.Ioo (t - εsrc) (t + εsrc) with hWsub_def
+    (Metric.ball v₀ rsrc) ×ˢ Set.Ioo (t - εsource) (t + εsource) with hWsub_def
   have hWsub_sub_W : Wsub ⊆ W := by
     rintro ⟨v, s⟩ ⟨hv, hs⟩; exact hsubW v hv s hs
   have hext_cont : ContinuousOn (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M))
       (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).source :=
     continuousOn_extChartAt (I := I.tangent) (⟨α, (0 : E)⟩ : TangentBundle I M)
-  have hL_mem_src : ∀ vs ∈ Wsub,
+  have hL_mem_source : ∀ vs ∈ Wsub,
       L vs ∈ (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).source := by
     rintro ⟨v, s⟩ hvs
     rw [extChartAt_source]
@@ -1728,8 +1728,8 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
     exact hsrc_mem v hv s hs
   have hphaseRead_cont : ContinuousOn phaseRead Wsub := by
     refine hext_cont.comp (hlift_cont.mono hWsub_sub_W) ?_
-    exact hL_mem_src
-  have hphase_eq : ∀ v ∈ Metric.ball v₀ rsrc, ∀ s ∈ Set.Ioo (t - εsrc) (t + εsrc),
+    exact hL_mem_source
+  have hphase_eq : ∀ v ∈ Metric.ball v₀ rsrc, ∀ s ∈ Set.Ioo (t - εsource) (t + εsource),
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v) s,
         deriv (DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
@@ -1737,16 +1737,16 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
     intro v hv s hs
     exact phasePoint_eq_extChartAt_tangent_intrinsicVelocityLift (I := I) g hEnorm p v α s
       (hsrc_mem v hv s hs)
-  have ht_mem_εsrc : t ∈ Set.Ioo (t - εsrc) (t + εsrc) := ⟨by linarith, by linarith⟩
+  have ht_mem_εsource : t ∈ Set.Ioo (t - εsource) (t + εsource) := ⟨by linarith, by linarith⟩
   have hz_slice : ∀ v ∈ Metric.ball v₀ rsrc, z v = phaseRead (v, t) := by
     intro v hv
-    rw [hz]; exact hphase_eq v hv t ht_mem_εsrc
+    rw [hz]; exact hphase_eq v hv t ht_mem_εsource
   have hslice_cont : ContinuousOn (fun v : TangentSpace I p => ((v, t) : TangentSpace I p × ℝ))
       (Metric.ball v₀ rsrc) :=
     continuousOn_id.prodMk continuousOn_const
   have hslice_maps : Set.MapsTo (fun v : TangentSpace I p => ((v, t) : TangentSpace I p × ℝ))
       (Metric.ball v₀ rsrc) Wsub :=
-    fun v hv => ⟨hv, ht_mem_εsrc⟩
+    fun v hv => ⟨hv, ht_mem_εsource⟩
   have hz_cont_rsrc : ContinuousOn z (Metric.ball v₀ rsrc) := by
     apply ContinuousOn.congr (hphaseRead_cont.comp hslice_cont hslice_maps)
     intro v hv; exact hz_slice v hv
@@ -1755,10 +1755,10 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
   refine ⟨rsrc, hrsrc_pos, hz_cont_rsrc, ?_⟩
   intro b _hb_sub
   have hphaseRead_contAt : ContinuousWithinAt phaseRead Wsub ((v₀, t) : TangentSpace I p × ℝ) :=
-    hphaseRead_cont _ ⟨Metric.mem_ball_self hrsrc_pos, ht_mem_εsrc⟩
+    hphaseRead_cont _ ⟨Metric.mem_ball_self hrsrc_pos, ht_mem_εsource⟩
   have hWsub_open : IsOpen Wsub := Metric.isOpen_ball.prod isOpen_Ioo
   have hWsub_nhds : Wsub ∈ 𝓝 ((v₀, t) : TangentSpace I p × ℝ) :=
-    hWsub_open.mem_nhds ⟨Metric.mem_ball_self hrsrc_pos, ht_mem_εsrc⟩
+    hWsub_open.mem_nhds ⟨Metric.mem_ball_self hrsrc_pos, ht_mem_εsource⟩
   have hphaseRead_contAt' : ContinuousAt phaseRead ((v₀, t) : TangentSpace I p × ℝ) :=
     hphaseRead_contAt.continuousAt hWsub_nhds
   have hpreim_nhds : phaseRead ⁻¹' (Metric.ball ((x₀, w₀) : E × E) b.rIn) ∈
@@ -1773,11 +1773,11 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
   rw [Metric.isOpen_iff] at hO_open
   obtain ⟨δ, hδ_pos, hδ_sub⟩ := hO_open ((v₀, t) : TangentSpace I p × ℝ) hO_mem
   set rgeo : ℝ := min (δ / 2) rsrc with hrgeo_def
-  set εgeo : ℝ := min (δ / 2) εsrc with hεgeo_def
+  set εgeo : ℝ := min (δ / 2) εsource with hεgeo_def
   have hrgeo_pos : 0 < rgeo := lt_min (by linarith) hrsrc_pos
-  have hεgeo_pos : 0 < εgeo := lt_min (by linarith) hεsrc_pos
+  have hεgeo_pos : 0 < εgeo := lt_min (by linarith) hεsource_pos
   have hrgeo_le_rsrc : rgeo ≤ rsrc := min_le_right _ _
-  have hεgeo_le_εsrc : εgeo ≤ εsrc := min_le_right _ _
+  have hεgeo_le_εsource : εgeo ≤ εsource := min_le_right _ _
   have hwindow_sub : ∀ v ∈ Metric.ball v₀ rgeo, ∀ s ∈ Set.Ioo (t - εgeo) (t + εgeo),
       ((v, s) : TangentSpace I p × ℝ) ∈ O := by
     intro v hv s hs
@@ -1795,12 +1795,12 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
       phaseRead (v, s) ∈ Metric.ball ((x₀, w₀) : E × E) b.rIn := by
     intro v hv s hs
     exact (hO_sub (hwindow_sub v hv s hs)).1
-  have hwindow_src : ∀ v ∈ Metric.ball v₀ rgeo, ∀ s ∈ Set.Ioo (t - εgeo) (t + εgeo),
+  have hwindow_source : ∀ v ∈ Metric.ball v₀ rgeo, ∀ s ∈ Set.Ioo (t - εgeo) (t + εgeo),
       intrinsicGeodesic (I := I) g hEnorm p v s ∈ (chartAt H α).source := by
     intro v hv s hs
     exact hsrc_mem v (Metric.ball_subset_ball hrgeo_le_rsrc hv) s
-      (Set.Ioo_subset_Ioo (by linarith [hεgeo_le_εsrc]) (by linarith [hεgeo_le_εsrc]) hs)
-  refine ⟨rgeo, εgeo, hrgeo_pos, hεgeo_pos, hrgeo_le_rsrc, ?_, hwindow_src, ?_, ?_⟩
+      (Set.Ioo_subset_Ioo (by linarith [hεgeo_le_εsource]) (by linarith [hεgeo_le_εsource]) hs)
+  refine ⟨rgeo, εgeo, hrgeo_pos, hεgeo_pos, hrgeo_le_rsrc, ?_, hwindow_source, ?_, ?_⟩
   · intro v hv
     have ht_geo : t ∈ Set.Ioo (t - εgeo) (t + εgeo) := ⟨by linarith, by linarith⟩
     have hread := hwindow_inner v hv t ht_geo
@@ -1808,7 +1808,7 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
   · intro v hv s hs
     have hread := hwindow_inner v hv s hs
     rw [← hphase_eq v (Metric.ball_subset_ball hrgeo_le_rsrc hv) s
-      (Set.Ioo_subset_Ioo (by linarith [hεgeo_le_εsrc]) (by linarith [hεgeo_le_εsrc]) hs)] at hread
+      (Set.Ioo_subset_Ioo (by linarith [hεgeo_le_εsource]) (by linarith [hεgeo_le_εsource]) hs)] at hread
     exact Metric.ball_subset_closedBall hread
   · intro v hv
     rw [hz]
@@ -1857,11 +1857,11 @@ private theorem intrinsicVelocityLift_continuousOn_step
       Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
       (I := I) α htgt
   have hz0 : z v₀ = (x₀, w₀) := by rw [hx₀_def, hw₀_def]
-  have hα_src : intrinsicGeodesic (I := I) g hEnorm p v₀ τ ∈ (chartAt H α).source := by
+  have hα_source : intrinsicGeodesic (I := I) g hEnorm p v₀ τ ∈ (chartAt H α).source := by
     rw [← hα_def]; exact mem_chart_source H α
   obtain ⟨rz, hrz, hz_cont, hgeo⟩ :=
     intrinsicGeodesic_junctionData_of_lift_continuousOn (I := I) g hEnorm p v₀ τ
-      (α := α) hα_src (z := z) hz_def (x₀ := x₀) (w₀ := w₀) hx₀_def hw₀_def hx₀ hz0
+      (α := α) hα_source (z := z) hz_def (x₀ := x₀) (w₀ := w₀) hx₀_def hw₀_def hx₀ hz0
       hr₀ hτ_mem hlift_cont
   exact intrinsicVelocityLift_window_of_junction_data (I := I) g hEnorm p v₀ α
     (x₀ := x₀) (w₀ := w₀) hx₀ (z := z) (tₖ := τ) (rz := rz) hrz hz_cont hz0 hgeo
@@ -1930,7 +1930,7 @@ private theorem intrinsicGeodesic_window_of_flowData
         (chartPhaseVF (I := I) g α (Φ (z v, s))) s)
     (hΦ_in : ∀ v ∈ Metric.ball v₀ r, ∀ s ∈ Set.Ioo (-T') T',
       Φ (z v, s) ∈ Metric.closedBall z₀ R)
-    (hgeo_src : ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
+    (hgeo_source : ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
       intrinsicGeodesic (I := I) g hEnorm p v t ∈ (chartAt H α).source)
     (hgeo_in : ∀ v ∈ Metric.ball v₀ r, ∀ t ∈ Set.Ioo (tₖ - T') (tₖ + T'),
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
@@ -1943,7 +1943,7 @@ private theorem intrinsicGeodesic_window_of_flowData
           (intrinsicGeodesic (I := I) g hEnorm p v) tₖ,
         deriv (DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v)) tₖ) : E × E) = z v)
-    (hΦinit : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v)
+    (hΦinitial : ∀ v ∈ Metric.ball v₀ r, Φ (z v, 0) = z v)
     (hz_cont : ContinuousOn z (Metric.ball v₀ r))
     (hz_ball : ∀ v ∈ Metric.ball v₀ r, z v ∈ Metric.ball z₀ ρ) :
     ContinuousOn
@@ -1952,7 +1952,7 @@ private theorem intrinsicGeodesic_window_of_flowData
       ((Metric.ball v₀ r) ×ˢ Set.Ioo (tₖ - T') (tₖ + T')) := by
   have hident := perJunction_flowIdentification (I := I) g hEnorm p v₀
     (α := α) (Φ := Φ) (z₀ := z₀) (z := z) (tₖ := tₖ) (r := r) (R := R) (T' := T')
-    hT'_pos hball hΦ_phase hΦ_in hgeo_src hgeo_in hinit hΦinit
+    hT'_pos hball hΦ_phase hΦ_in hgeo_source hgeo_in hinit hΦinitial
   have htgt : ∀ v ∈ Metric.ball v₀ r, ∀ τ ∈ Set.Ioo (-T') T',
       (Φ (z v, τ)).1 ∈ (extChartAt I α).target := by
     intro v hv τ hτ
@@ -1984,7 +1984,7 @@ private theorem exists_chartFlowData_of_zContinuousAt
       (∀ v ∈ S, Φ (z v, 0) = z v) ∧
       (∀ v ∈ S, z v ∈ Metric.ball z₀ ρ) := by
   classical
-  obtain ⟨b, rN, εN, ρ, T, Φ, hrN, hεN, hρ_pos, hT_pos, hb_sub, hflow, hΦ_C1, hΦ_init⟩ :=
+  obtain ⟨b, rN, εN, ρ, T, Φ, hrN, hεN, hρ_pos, hT_pos, hb_sub, hflow, hΦ_C1, hΦ_initial⟩ :=
     exists_chartPhase_contDiffOn_isLocalFlow_combined (I := I) g α
       (x₀ := (z₀).1) (v₀ := (z₀).2) hx₀
   set ρ_f : ℝ := min ρ (rN : ℝ) with hρf_def
@@ -1995,7 +1995,7 @@ private theorem exists_chartFlowData_of_zContinuousAt
   have hΦ_cont_f : ContinuousOn Φ ((Metric.ball z₀ ρ_f) ×ˢ Set.Ioo (-T_f) T_f) :=
     hΦ_C1.continuousOn.mono (Set.prod_mono (Metric.ball_subset_ball (min_le_left _ _))
       (Set.Ioo_subset_Ioo (by linarith [min_le_left T εN]) (min_le_left _ _)))
-  have hΦ0 : Φ (z₀, 0) = z₀ := hΦ_init
+  have hΦ0 : Φ (z₀, 0) = z₀ := hΦ_initial
   have hW_nhds : Metric.ball z₀ b.rIn ∈ nhds z₀ :=
     Metric.isOpen_ball.mem_nhds (Metric.mem_ball_self b.rIn_pos)
   obtain ⟨S, T'c, hS_open, hv₀_S, hT'c_pos, hT'c_lt, hzS_ball, horbit_in⟩ :=
@@ -2056,7 +2056,7 @@ private theorem exists_chartFlow_confined
         Φ (w, s) ∈ Metric.closedBall z₀ b.rIn) ∧
       (∀ w ∈ Metric.ball z₀ ρ, Φ (w, 0) = w) := by
   classical
-  obtain ⟨b, rN, εN, ρ, T, Φ, hrN, hεN, hρ_pos, hT_pos, hb_sub, hflow, hΦ_C1, hΦ_init⟩ :=
+  obtain ⟨b, rN, εN, ρ, T, Φ, hrN, hεN, hρ_pos, hT_pos, hb_sub, hflow, hΦ_C1, hΦ_initial⟩ :=
     exists_chartPhase_contDiffOn_isLocalFlow_combined (I := I) g α
       (x₀ := (z₀).1) (v₀ := (z₀).2) hx₀
   have hbcenter : ((z₀).1, (z₀).2) = z₀ := rfl
@@ -2139,7 +2139,7 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (v : TangentSpace I p) {α : M} {φ : ℝ → E × E} {tₖ T' : ℝ}
-    (hφ_tgt : ∀ s ∈ Set.Ioo (-T') T',
+    (hφ_target : ∀ s ∈ Set.Ioo (-T') T',
       (φ s).1 ∈ interior (extChartAt I α).target)
     (hφ_phase : ∀ s ∈ Set.Ioo (-T') T',
       HasDerivAt φ (chartPhaseVF (I := I) g α (φ s)) s)
@@ -2174,16 +2174,16 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
     change HasDerivAt (φ ∘ fun x : ℝ => x - tₖ)
       (chartPhaseVF (I := I) g α (φ (t - tₖ))) t
     simpa [Function.comp_def] using hd
-  have hphiS_tgt : ∀ t ∈ K, (phiS t).1 ∈ interior (extChartAt I α).target := by
+  have hphiS_target : ∀ t ∈ K, (phiS t).1 ∈ interior (extChartAt I α).target := by
     intro t ht
     have hts : t - tₖ ∈ Set.Ioo (-T') T' := by
       rw [hK_def, Set.mem_Ioo] at ht
       exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
-    exact hφ_tgt (t - tₖ) hts
+    exact hφ_target (t - tₖ) hts
   set psiS : ℝ → M := fun t => (extChartAt I α).symm (phiS t).1 with hpsiS_def
-  have hpsiS_src : ∀ t ∈ K, psiS t ∈ (chartAt H α).source := by
+  have hpsiS_source : ∀ t ∈ K, psiS t ∈ (chartAt H α).source := by
     intro t ht
-    have h1 : (phiS t).1 ∈ (extChartAt I α).target := interior_subset (hphiS_tgt t ht)
+    have h1 : (phiS t).1 ∈ (extChartAt I α).target := interior_subset (hphiS_target t ht)
     have h2 := (extChartAt I α).map_target h1
     rwa [extChartAt_source (I := I) α] at h2
   have hphiS_cont : ContinuousOn phiS K :=
@@ -2192,7 +2192,7 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
     have h1 : ContinuousOn (fun t => (phiS t).1) K := hphiS_cont.fst
     have h2 : ContinuousOn (extChartAt I α).symm (extChartAt I α).target :=
       continuousOn_extChartAt_symm (I := I) α
-    exact h2.comp h1 (fun t ht => interior_subset (hphiS_tgt t ht))
+    exact h2.comp h1 (fun t ht => interior_subset (hphiS_target t ht))
   have hpos_of_phase : ∀ t ∈ K, γ t ∈ (chartAt H α).source → cγ t = phiS t →
       γ t = psiS t := by
     intro t ht hsrc hphase
@@ -2219,12 +2219,12 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
   have hK_conn : IsPreconnected K := isPreconnected_Ioo
   have hA_rel_open : ∀ t ∈ A, ∃ U : Set ℝ, IsOpen U ∧ t ∈ U ∧ U ∩ K ⊆ A := by
     intro t₀ ht₀A
-    obtain ⟨ht₀K, ht₀src, ht₀phase⟩ := ht₀A
+    obtain ⟨ht₀K, ht₀source, ht₀phase⟩ := ht₀A
     have hVsrc_open : IsOpen (γ ⁻¹' (chartAt H α).source) :=
       (chartAt H α).open_source.preimage hγ_cont
     set W : Set ℝ := (γ ⁻¹' (chartAt H α).source) ∩ K with hW_def
     have hW_open : IsOpen W := hVsrc_open.inter hK_open
-    have ht₀_W : t₀ ∈ W := ⟨ht₀src, ht₀K⟩
+    have ht₀_W : t₀ ∈ W := ⟨ht₀source, ht₀K⟩
     have hgeo := geodesic_chartPhaseVF_on_open (I := I) hγ_geo hγ_cont hW_open
       (fun s hs => hs.1)
     set c₁ : ℝ → E × E := fun r => cγ (t₀ + r) with hc₁_def
@@ -2267,7 +2267,7 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
           (chartPhaseVF (I := I) g α (phiS (t₀ + r))) r
         simpa [Function.comp_def, one_smul] using
           (hphiS_phase (t₀ + r) hr).scomp r hsd
-      · simpa [hc₂_def] using hphiS_tgt (t₀ + r) hr
+      · simpa [hc₂_def] using hphiS_target (t₀ + r) hr
     have huniq : c₁ =ᶠ[nhds (0:ℝ)] c₂ :=
       chartPhaseVF_orbit_uniqueness (I := I) hz₀_mem hc₁0 hc₂0 hd1 hd2
     have heq_t₀ : ∀ᶠ t in nhds t₀, cγ t = phiS t := by
@@ -2279,7 +2279,7 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
       simp only [hc₁_def, hc₂_def] at ht
       rwa [show t₀ + (t - t₀) = t from by ring] at ht
     have hcomb : ∀ᶠ t in nhds t₀, γ t ∈ (chartAt H α).source ∧ cγ t = phiS t := by
-      filter_upwards [hVsrc_open.mem_nhds ht₀src, heq_t₀] with t hs he using ⟨hs, he⟩
+      filter_upwards [hVsrc_open.mem_nhds ht₀source, heq_t₀] with t hs he using ⟨hs, he⟩
     obtain ⟨U, hU_sub, hU_open, ht₀U⟩ := _root_.mem_nhds_iff.mp hcomb
     exact ⟨U, hU_open, ht₀U, fun x hx => ⟨hx.2, (hU_sub hx.1).1, (hU_sub hx.1).2⟩⟩
   have hA_closed : closure A ∩ K ⊆ A := by
@@ -2298,13 +2298,13 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
     have hγt₀ : γ t₀ = psiS t₀ := by
       rw [hγψ] at hlim_γ
       exact tendsto_nhds_unique hlim_γ hlim_ψ
-    have ht₀src : γ t₀ ∈ (chartAt H α).source := by rw [hγt₀]; exact hpsiS_src t₀ ht₀K
+    have ht₀source : γ t₀ ∈ (chartAt H α).source := by rw [hγt₀]; exact hpsiS_source t₀ ht₀K
     set W₀ : Set ℝ := (γ ⁻¹' (chartAt H α).source) ∩ K with hW₀_def
     have hW₀_open : IsOpen W₀ :=
       ((chartAt H α).open_source.preimage hγ_cont).inter hK_open
     have hgeo0 := geodesic_chartPhaseVF_on_open (I := I) hγ_geo hγ_cont hW₀_open
       (fun s hs => hs.1)
-    have hcγ_cont : ContinuousAt cγ t₀ := (hgeo0 t₀ ⟨ht₀src, ht₀K⟩).1.continuousAt
+    have hcγ_cont : ContinuousAt cγ t₀ := (hgeo0 t₀ ⟨ht₀source, ht₀K⟩).1.continuousAt
     have hlim_cγ : Filter.Tendsto (fun n => cγ (u n)) Filter.atTop (nhds (cγ t₀)) :=
       hcγ_cont.tendsto.comp hu_lim
     have hlim_phiS : Filter.Tendsto (fun n => phiS (u n)) Filter.atTop (nhds (phiS t₀)) :=
@@ -2314,7 +2314,7 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
     have hcγt₀ : cγ t₀ = phiS t₀ := by
       rw [hcφ] at hlim_cγ
       exact tendsto_nhds_unique hlim_cγ hlim_phiS
-    exact ⟨ht₀K, ht₀src, hcγt₀⟩
+    exact ⟨ht₀K, ht₀source, hcγt₀⟩
   have hKnA_rel_open : ∀ t ∈ K \ A, ∃ U : Set ℝ, IsOpen U ∧ t ∈ U ∧ U ∩ K ⊆ K \ A := by
     intro t₀ ht₀
     obtain ⟨ht₀K, ht₀nA⟩ := ht₀
@@ -2398,7 +2398,7 @@ private theorem intrinsicVelocityLift_window_of_flow
       HasDerivAt (fun τ => Φ (w, τ)) (chartPhaseVF (I := I) g α (Φ (w, s))) s)
     (hΦ_in : ∀ w ∈ Metric.ball z₀ ρ, ∀ s ∈ Set.Ioo (-T') T',
       Φ (w, s) ∈ Metric.closedBall z₀ b.rIn)
-    (hΦinit : ∀ w ∈ Metric.ball z₀ ρ, Φ (w, 0) = w)
+    (hΦinitial : ∀ w ∈ Metric.ball z₀ ρ, Φ (w, 0) = w)
     {z : TangentSpace I p → E × E} {tₖ : ℝ} {rz : ℝ} (hrz : 0 < rz)
     (hz_cont : ContinuousOn z (Metric.ball v₀ rz)) (hz0 : z v₀ ∈ Metric.ball z₀ ρ)
     (hzmatch : ∀ v ∈ Metric.ball v₀ rz,
@@ -2439,7 +2439,7 @@ private theorem intrinsicVelocityLift_window_of_flow
       (φ := fun s => Φ (z v, s)) (tₖ := tₖ) (T' := T')
       (fun s' hs' => (hballIn_sub (hΦ_in (z v) (hz_ballρ v hv) s' hs')).1)
       (fun s' hs' => hΦ_phase (z v) (hz_ballρ v hv) s' hs')
-      ((hzmatch v hvz).trans (hΦinit (z v) (hz_ballρ v hv)).symm)
+      ((hzmatch v hvz).trans (hΦinitial (z v) (hz_ballρ v hv)).symm)
       (hsrc v hvz) s hs
   refine ⟨rfin, hrfin_pos, ?_⟩
   have htgt : ∀ v ∈ Metric.ball v₀ rfin, ∀ τ ∈ Set.Ioo (-T') T',
@@ -2501,7 +2501,7 @@ private theorem intrinsicVelocityLift_window_of_flow
     exact ⟨by linarith [hs.1], by linarith [hs.2]⟩
   have hB2vs := hB2 v hv (s - tₖ) hs'
   rw [show tₖ + (s - tₖ) = s from by ring] at hB2vs
-  have hgeo_src_s : intrinsicGeodesic (I := I) g hEnorm p v s ∈ (chartAt H α).source :=
+  have hgeo_source_s : intrinsicGeodesic (I := I) g hEnorm p v s ∈ (chartAt H α).source :=
     hB2vs.1
   have hphase :
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
@@ -2510,7 +2510,7 @@ private theorem intrinsicVelocityLift_window_of_flow
           (intrinsicGeodesic (I := I) g hEnorm p v)) s) : E × E) =
         Φ (z v, s - tₖ) := hB2vs.2
   have hbridge := phasePoint_eq_extChartAt_tangent_intrinsicVelocityLift
-    (I := I) g hEnorm p v α s hgeo_src_s
+    (I := I) g hEnorm p v α s hgeo_source_s
   have hread : extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)
       (intrinsicVelocityLift (I := I) g hEnorm p v s) = Φ (z v, s - tₖ) := by
     rw [← hbridge]; exact hphase
@@ -2520,7 +2520,7 @@ private theorem intrinsicVelocityLift_window_of_flow
     rw [TangentBundle.mem_chart_source_iff (I := I) (M := M)
       (intrinsicVelocityLift (I := I) g hEnorm p v s)
       (⟨α, (0 : E)⟩ : TangentBundle I M)]
-    exact hgeo_src_s
+    exact hgeo_source_s
   calc intrinsicVelocityLift (I := I) g hEnorm p v s
       = (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).symm
           (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)
@@ -2575,7 +2575,7 @@ private theorem intrinsicGeodesic_window_of_zContinuousOn
       (I := I) α ((extChartAt I α).map_source (mem_extChartAt_source (I := I) α))
   have hzca : ContinuousAt z v₀ := hz_cont.continuousAt (Metric.ball_mem_nhds v₀ hr₀)
   obtain ⟨Φ, S, T', R, ρ, hS_open, hv₀_S, hT'_pos, hR_pos, hρ_pos,
-      hball, hΦ_cont, hΦ_phase, hΦ_in, hΦinit, hz_ball⟩ :=
+      hball, hΦ_cont, hΦ_phase, hΦ_in, hΦinitial, hz_ball⟩ :=
     exists_chartFlowData_of_zContinuousAt (I := I) g α hx₀ hzca rfl
   obtain ⟨rS, hrS_pos, hrS_sub⟩ := Metric.isOpen_iff.mp hS_open v₀ hv₀_S
   set r : ℝ := min rS r₀ with hr_def
@@ -2593,7 +2593,7 @@ private theorem intrinsicGeodesic_window_of_zContinuousOn
       (φ := fun s => Φ (z v, s)) (tₖ := tₖ) (T' := T')
       (fun s' hs' => (hball (hΦ_in v (hr_S hv) s' hs')).1)
       (fun s' hs' => hΦ_phase v (hr_S hv) s' hs')
-      (hΦinit v (hr_S hv)).symm
+      (hΦinitial v (hr_S hv)).symm
       (hfootsrc v (Metric.ball_subset_ball (min_le_right _ _) hv)) s hs
   refine ⟨r, T', hr_pos, hT'_pos, ?_⟩
   exact intrinsicGeodesic_window_of_flowData (I := I) g hEnorm p v₀
@@ -2613,7 +2613,7 @@ private theorem intrinsicGeodesic_window_of_zContinuousOn
       rw [show tₖ + (t - tₖ) = t from by ring] at h
       rw [h]; exact hΦ_in v (hr_S hv) (t - tₖ) hs')
     (fun v _ => rfl)
-    (fun v hv => hΦinit v (hr_S hv))
+    (fun v hv => hΦinitial v (hr_S hv))
     (hz_cont.mono (Metric.ball_subset_ball (min_le_right _ _)))
     (fun v hv => hz_ball v (hr_S hv))
 
@@ -2673,7 +2673,7 @@ private theorem intrinsicVelocityLift_window_base
             (intrinsicGeodesic (I := I) g hEnorm p v)) 0) : E × E) = z v) := by
     intro b hb_sub
     obtain ⟨Φ, S, T', R, ρ, hS_open, hv₀_S, hT'_pos, hR_pos, hρ_pos,
-        hball, hΦ_cont, hΦ_phase, hΦ_in, hΦinit, hz_ball⟩ :=
+        hball, hΦ_cont, hΦ_phase, hΦ_in, hΦinitial, hz_ball⟩ :=
       exists_chartFlowData_of_zContinuousAt (I := I) g p hx₀ hz_cont_all.continuousAt rfl
     obtain ⟨rS, hrS_pos, hrS_sub⟩ := Metric.isOpen_iff.mp hS_open v₀ hv₀_S
     have hB2 : ∀ v ∈ Metric.ball v₀ rS, ∀ s ∈ Set.Ioo (-T') T',
@@ -2687,7 +2687,7 @@ private theorem intrinsicVelocityLift_window_base
         (φ := fun s => Φ (z v, s)) (tₖ := 0) (T' := T')
         (fun s' hs' => (hball (hΦ_in v (hrS_sub hv) s' hs')).1)
         (fun s' hs' => hΦ_phase v (hrS_sub hv) s' hs')
-        (hΦinit v (hrS_sub hv)).symm
+        (hΦinitial v (hrS_sub hv)).symm
         (by rw [intrinsicGeodesic_zero (I := I) g hEnorm p v]; exact mem_chart_source H p)
         s hs
     set W : Set (TangentSpace I p × ℝ) :=
@@ -2700,7 +2700,7 @@ private theorem intrinsicVelocityLift_window_base
           ((Metric.ball (z v₀) ρ) ×ˢ Set.Ioo (-T') T') :=
         fun vs hvs => ⟨hz_ball vs.1 (hrS_sub hvs.1), hvs.2⟩
       exact hΦ_cont.comp h1 hmaps
-    have hF_v₀0 : Φ (z v₀, 0) = ((x₀, w₀) : E × E) := by rw [hΦinit v₀ hv₀_S, hz0]
+    have hF_v₀0 : Φ (z v₀, 0) = ((x₀, w₀) : E × E) := by rw [hΦinitial v₀ hv₀_S, hz0]
     have hpre_open : IsOpen (W ∩ (fun vs : TangentSpace I p × ℝ => Φ (z vs.1, vs.2)) ⁻¹'
         Metric.ball ((x₀, w₀) : E × E) b.rIn) :=
       hF_cont.isOpen_inter_preimage hW_open Metric.isOpen_ball
@@ -2776,8 +2776,8 @@ private theorem intrinsicVelocityLift_step_uniformWidth
       HasDerivAt (fun τ' => Φ (w, τ')) (chartPhaseVF (I := I) g α (Φ (w, s))) s)
     (hΦ_in : ∀ w ∈ Metric.ball z₀ ρ, ∀ s ∈ Set.Ioo (-T') T',
       Φ (w, s) ∈ Metric.closedBall z₀ b.rIn)
-    (hΦinit : ∀ w ∈ Metric.ball z₀ ρ, Φ (w, 0) = w)
-    (hα_src : intrinsicGeodesic (I := I) g hEnorm p v₀ τ ∈ (chartAt H α).source)
+    (hΦinitial : ∀ w ∈ Metric.ball z₀ ρ, Φ (w, 0) = w)
+    (hα_source : intrinsicGeodesic (I := I) g hEnorm p v₀ τ ∈ (chartAt H α).source)
     (hphase_near :
       ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) α
           (intrinsicGeodesic (I := I) g hEnorm p v₀) τ,
@@ -2809,14 +2809,14 @@ private theorem intrinsicVelocityLift_step_uniformWidth
   have hx₀ : x₀ ∈ interior (extChartAt I α).target := by
     rw [hx₀_eq]
     have hsrc' : intrinsicGeodesic (I := I) g hEnorm p v₀ τ ∈ (extChartAt I α).source := by
-      rw [extChartAt_source]; exact hα_src
+      rw [extChartAt_source]; exact hα_source
     exact
       Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
       (I := I) α ((extChartAt I α).map_source hsrc')
   have hz0 : z v₀ = (x₀, w₀) := by rw [hx₀_def, hw₀_def]
   obtain ⟨rz, hrz, hz_cont, _hgeo⟩ :=
     intrinsicGeodesic_junctionData_of_lift_continuousOn (I := I) g hEnorm p v₀ τ
-      (α := α) hα_src (z := z) hz_def (x₀ := x₀) (w₀ := w₀) hx₀_def hw₀_def hx₀ hz0
+      (α := α) hα_source (z := z) hz_def (x₀ := x₀) (w₀ := w₀) hx₀_def hw₀_def hx₀ hz0
       hr₀ hτ_mem hlift_cont
   set L : TangentSpace I p × ℝ → TangentBundle I M :=
     fun vs => intrinsicVelocityLift (I := I) g hEnorm p vs.1 vs.2 with hL_def
@@ -2832,7 +2832,7 @@ private theorem intrinsicVelocityLift_step_uniformWidth
       ((Metric.ball v₀ r₀) ×ˢ Set.Ioo a c) ∩
         (fun vs : TangentSpace I p × ℝ => (L vs).proj) ⁻¹' (chartAt H α).source := by
     refine ⟨⟨Metric.mem_ball_self hr₀, hτ_mem⟩, ?_⟩
-    rw [Set.mem_preimage]; exact hα_src
+    rw [Set.mem_preimage]; exact hα_source
   obtain ⟨δ, hδ_pos, hδ_sub⟩ := Metric.isOpen_iff.mp hpreim_open _ hpt_preim
   have hsrc : ∀ v ∈ Metric.ball v₀ δ,
       intrinsicGeodesic (I := I) g hEnorm p v τ ∈ (chartAt H α).source := by
@@ -2844,7 +2844,7 @@ private theorem intrinsicVelocityLift_step_uniformWidth
     exact (hδ_sub hvτ).2
   refine intrinsicVelocityLift_window_of_flow (I := I) g hEnorm p v₀ α
     (z₀ := z₀) (Φ := Φ) (b := b) (T' := T') (ρ := ρ) hballOut
-    hΦ_cont hΦ_phase hΦ_in hΦinit
+    hΦ_cont hΦ_phase hΦ_in hΦinitial
     (z := z) (tₖ := τ) (rz := min rz δ) (lt_min hrz hδ_pos)
     (hz_cont.mono (Metric.ball_subset_ball (min_le_left _ _)))
     ?_ ?_ ?_
@@ -2904,7 +2904,7 @@ theorem intrinsicGeodesic_jointContinuity
         exact
           Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
           (I := I) αS ((extChartAt I αS).map_source (mem_extChartAt_source (I := I) αS))
-      obtain ⟨Φ, b, T', ρ, hT'_pos, hρ_pos, hballOut, hΦ_cont, hΦ_phase, hΦ_in, hΦinit⟩ :=
+      obtain ⟨Φ, b, T', ρ, hT'_pos, hρ_pos, hballOut, hΦ_cont, hΦ_phase, hΦ_in, hΦinitial⟩ :=
         exists_chartFlow_confined (I := I) g αS
           (z₀ := ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) αS
               (intrinsicGeodesic (I := I) g hEnorm p v₀) S,
@@ -2912,10 +2912,10 @@ theorem intrinsicGeodesic_jointContinuity
               (intrinsicGeodesic (I := I) g hEnorm p v₀)) S) : E × E)) hzc1_int
       have hγcont : Continuous (intrinsicGeodesic (I := I) g hEnorm p v₀) :=
         intrinsicGeodesic_continuous (I := I) g hEnorm p v₀
-      have hαS_src : intrinsicGeodesic (I := I) g hEnorm p v₀ S ∈ (chartAt H αS).source := by
+      have hαS_source : intrinsicGeodesic (I := I) g hEnorm p v₀ S ∈ (chartAt H αS).source := by
         rw [← hαS_def]; exact mem_chart_source H αS
       have hUpre : (intrinsicGeodesic (I := I) g hEnorm p v₀) ⁻¹' (chartAt H αS).source ∈ 𝓝 S :=
-        hγcont.continuousAt.preimage_mem_nhds ((chartAt H αS).open_source.mem_nhds hαS_src)
+        hγcont.continuousAt.preimage_mem_nhds ((chartAt H αS).open_source.mem_nhds hαS_source)
       obtain ⟨U, hU_sub, hU_open, hSU⟩ := _root_.mem_nhds_iff.mp hUpre
       have hζ_contAt : ContinuousAt
           (fun t : ℝ => ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) αS
@@ -2961,7 +2961,7 @@ theorem intrinsicGeodesic_jointContinuity
         · rw [hτ_def]; linarith
         · rw [hτ_def]; linarith
       have hτ_inter := hδS_sub hτ_ball
-      have hα_src_τ : intrinsicGeodesic (I := I) g hEnorm p v₀ τ ∈ (chartAt H αS).source :=
+      have hα_source_τ : intrinsicGeodesic (I := I) g hEnorm p v₀ τ ∈ (chartAt H αS).source :=
         hτ_inter.2
       have hphase_near :
           ((DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) αS
@@ -2980,7 +2980,7 @@ theorem intrinsicGeodesic_jointContinuity
             deriv (DifferentialGeometry.Geometry.Riemannian.AlongCurve.chartCurve (I := I) αS
               (intrinsicGeodesic (I := I) g hEnorm p v₀)) S) : E × E))
           (Φ := Φ) (b := b) (T' := T') (ρ := ρ) hballOut
-          hΦ_cont hΦ_phase hΦ_in hΦinit hα_src_τ hphase_near
+          hΦ_cont hΦ_phase hΦ_in hΦinitial hα_source_τ hphase_near
           (r₀ := r') (a := a') (c := c') hr' hτ_mem hcont'
       set rg : ℝ := min r' r'' with hrg_def
       set cg : ℝ := max c' (τ + T') with hcg_def
@@ -3070,10 +3070,10 @@ theorem intrinsicGeodesic_jointContinuity
           ContinuousOn (fun vs : TangentSpace I p × ℝ =>
             intrinsicVelocityLift (I := I) g hEnorm p vs.1 vs.2)
             ((Metric.ball v₀ r₀) ×ˢ Set.Ioo a c) := key t ht
-    have hα_src : intrinsicGeodesic (I := I) g hEnorm p v₀ t ∈ (chartAt H α).source := by
+    have hα_source : intrinsicGeodesic (I := I) g hEnorm p v₀ t ∈ (chartAt H α).source := by
       rw [hα_foot]; exact mem_chart_source H α
     exact intrinsicGeodesic_junctionData_of_lift_continuousOn (I := I) g hEnorm p v₀ t
-      (α := α) hα_src (z := z) hz_def (x₀ := x₀) (w₀ := w₀) hx₀_def hw₀_def hx₀ hz0
+      (α := α) hα_source (z := z) hz_def (x₀ := x₀) (w₀ := w₀) hx₀_def hw₀_def hx₀ hz0
       hr₀ ht_mem hlift
   exact intrinsicGeodesic_window_of_junction_data (I := I) g hEnorm p v₀ α
     (x₀ := x₀) (w₀ := w₀) hx₀ (z := z) (tₖ := t) (rz := rz) hrz hz_cont hz0 hgeo

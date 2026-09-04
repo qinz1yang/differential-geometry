@@ -41,7 +41,7 @@ theorem tensorInnerPointwise_succ_eq_sum_slot0Curry
               (slot0Curry (I := I) (M := M) g x s e K₀ B a)) := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, _hparseval, _hexp, _hrepr⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g s x
+    exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g s x
   have hn' : n = Module.finrank ℝ E := hn
   refine ⟨n, e, fun k => k.elim0, hn, ?_⟩
   set K₀ : Fin 0 → Fin n := fun k => k.elim0 with hK₀

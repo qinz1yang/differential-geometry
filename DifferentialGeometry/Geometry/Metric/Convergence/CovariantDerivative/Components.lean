@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 open scoped Manifold ContDiff BigOperators
 
@@ -81,7 +81,7 @@ theorem iterCov_realizes
   exact totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (r + a) (leviCivitaConnectionOfMetric (I := I) gRef)
     (iterCov (I := I) gRef r T a)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M) (r + a)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M) (r + a)
       (leviCivitaConnectionOfMetric (I := I) gRef) hcov
       (iterCov (I := I) gRef r T a))
     X x slots

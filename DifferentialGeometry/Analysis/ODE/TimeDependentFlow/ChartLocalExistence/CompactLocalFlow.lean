@@ -147,7 +147,7 @@ theorem time_dependent_vf_compact_local_flow_with_chart_bounds
     fun x => hflowα (αRep x) (extChartAt I (αRep x) x) (hxinit x)
   have hxsrc_ext : ∀ x : M, x ∈ (extChartAt I (αRep x)).source := by
     intro x; rw [extChartAt_source]; exact hxsrc x
-  have hΦ0_init : ∀ x : M, Φ0 0 x = x := by
+  have hΦ0_initial : ∀ x : M, Φ0 0 x = x := by
     intro x
     change (extChartAt I (αRep x)).symm (flowα (αRep x) (extChartAt I (αRep x) x) 0) = x
     rw [(hspec x).1]
@@ -175,7 +175,7 @@ theorem time_dependent_vf_compact_local_flow_with_chart_bounds
       hsymm_cont.comp_continuousWithinAt hg_cont
     refine hcomp.mono_of_mem_nhdsWithin ?_
     exact Filter.mem_of_superset (Ico_mem_nhdsGE (hTα (αRep x))) Set.Ico_subset_Icc_self
-  refine ⟨σ, hσ_pos, Φ0, hΦ0_init, ?_, ?_, horbit_cont⟩
+  refine ⟨σ, hσ_pos, Φ0, hΦ0_initial, ?_, ?_, horbit_cont⟩
   · intro t ht x
     have hIoo_sub : Set.Ioo (0 : ℝ) σ ⊆ Set.Icc (0 : ℝ) (Tα (αRep x)) := fun s hs =>
       ⟨hs.1.le, (lt_of_lt_of_le hs.2 (hσ_le x)).le⟩
@@ -202,10 +202,10 @@ theorem time_dependent_vf_compact_local_flow_with_chart_bounds
     have hext_round : ∀ u ∈ Set.Icc (0 : ℝ) (Tα α), ext ((ext).symm (g u)) = g u := fun u hu =>
       (ext).right_inv (hconf x u hu)
     have hΦ0_eq : ∀ u : ℝ, Φ0 u x = (ext).symm (g u) := fun u => rfl
-    have hΦ0s_src : Φ0 s x ∈ (chartAt H α).source := by
+    have hΦ0s_source : Φ0 s x ∈ (chartAt H α).source := by
       rw [hΦ0_eq s, ← extChartAt_source (I := I) α]
       exact (ext).map_target hgs_target
-    refine ⟨hΦ0s_src, ?_, ?_⟩
+    refine ⟨hΦ0s_source, ?_, ?_⟩
     · have hg'_full : ∀ u ∈ Set.Icc (0 : ℝ) (Tα α),
           HasDerivWithinAt g (chartTrivRepr (I := I) α (X u) (g u)) (Set.Icc (0 : ℝ) (Tα α)) u :=
         fun u hu => ((hspec x).2 u hu).1

@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold NNReal Topology
@@ -45,7 +45,7 @@ theorem strict_dist_input
     (hfull : HasControlledNormalBranch (I := I) (X.obj k) hcomplete hconn x q δ ρ)
     (hqAcc : 3 * hb.metricC 1 * (2 * (q : Real)) ^ 2 ≤
       (2 / 3 : Real) * (q : Real))
-    {ι : Type} [Fintype ι] (pts : ι → (X.obj k).M)
+    {ι : Type} [Fintype ι] (points : ι → (X.obj k).M)
     (p : (X.obj k).M) (r R : Real) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -80,9 +80,9 @@ theorem strict_dist_input
       ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       0 < r →
       dist x p ≤ R →
-      (∀ i, dist p (pts i) < r) →
+      (∀ i, dist p (points i) < r) →
       ENNReal.ofReal (R + 6 * r) < ENNReal.ofReal (ρ / 2) →
-      StrictDistInput (I := I) (X.obj k).metric pts
+      StrictDistInput (I := I) (X.obj k).metric points
         (minJoin (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k))) p r := by
   classical
@@ -181,9 +181,9 @@ theorem strict_dist_input
         exact (ENNReal.ofReal_lt_ofReal_iff hR6pos).2 hpt
       exact hptEd.trans hcage
   have hpCage : dist x p < R + 6 * r := by linarith
-  have hptsCage (i : ι) : dist x (pts i) < R + 6 * r := by
+  have hptsCage (i : ι) : dist x (points i) < R + 6 * r := by
     calc
-      dist x (pts i) ≤ dist x p + dist p (pts i) := dist_triangle _ _ _
+      dist x (points i) ≤ dist x p + dist p (points i) := dist_triangle _ _ _
       _ < R + r := add_lt_add_of_le_of_lt hxp (hpts i)
       _ < R + 6 * r := by nlinarith
   have hstrict_pt (pt : (X.obj k).M) (hpt : dist x pt < R + 6 * r)
@@ -271,7 +271,7 @@ theorem strict_dist_input
       ((CenterOfMass.halfSqDist pt) ∘ γ)
     exact strictConvex_geo (I := I) (X.obj k).metric hSopen hsmooth hγsmooth hgeo
       (convex_Icc (0 : Real) 1) hcont hmem hpos
-  change StrictDistInput (I := I) (X.obj k).metric pts join p r
+  change StrictDistInput (I := I) (X.obj k).metric points join p r
   refine ⟨?_, ?_, ?_, ?_⟩
   · intro a ha b hbmem hab
     have hstrictP := hstrict_pt p hpCage a ha b hbmem hab
@@ -303,9 +303,9 @@ theorem strict_dist_input
   · intro a _ha b _hb
     exact minJoin_one (I := I) (X.obj k).metric hEnorm a b
   · intro i a ha b hbmem hab
-    exact hstrict_pt (pts i) (hptsCage i) a ha b hbmem hab
+    exact hstrict_pt (points i) (hptsCage i) a ha b hbmem hab
 
 end HasControlledNormalBranch
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

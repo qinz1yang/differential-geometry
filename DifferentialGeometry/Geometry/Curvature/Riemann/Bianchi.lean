@@ -405,10 +405,10 @@ theorem connectionRiemannCurvatureField_tangentConst_first_bianchi_of_torsionFre
   rw [tangentConst_torsion_bracket_eq_add (I := I) cov htf x Y Z X]
   rw [tangentConst_torsion_bracket_eq_add (I := I) cov htf x Z X Y]
   rw [tangentConst_torsion_bracket_eq_add (I := I) cov htf x X Y Z]
-  have hJac := tangentConst_mlieBracket_jacobi_cyclic (I := I) x X Y Z
-  dsimp only at hJac
+  have hJacobian := tangentConst_mlieBracket_jacobi_cyclic (I := I) x X Y Z
+  dsimp only at hJacobian
   abel_nf
-  simpa [add_assoc] using hJac
+  simpa [add_assoc] using hJacobian
 
 def curvCovDerivOpAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -832,8 +832,8 @@ private theorem curvJacobiAt
         (fun p : M =>
           VectorField.mlieBracket I (fun q : M => X q) (fun q : M => Y q) p)
         (fun p : M => W p) x = 0 := by
-  have hJac := mlieBracket_jacobi_cyclic (I := I) X Y Z x
-  have hJacCov :
+  have hJacobian := mlieBracket_jacobi_cyclic (I := I) X Y Z x
+  have hJacobianCov :
       (cov (fun p : M => W p) x)
           (VectorField.mlieBracket I (fun p : M => X p)
             (fun p : M =>
@@ -848,17 +848,17 @@ private theorem curvJacobiAt
                 VectorField.mlieBracket I (fun q : M => X q) (fun q : M => Y q) p) x) =
         0 := by
     have h :=
-      congrArg (fun V : TangentSpace I x => (cov (fun p : M => W p) x) V) hJac
+      congrArg (fun V : TangentSpace I x => (cov (fun p : M => W p) x) V) hJacobian
     simpa using h
   unfold curvCommAt
   rw [covCurvExpand (I := I) cov hcov X Y Z W x]
   rw [covCurvExpand (I := I) cov hcov Y Z X W x]
   rw [covCurvExpand (I := I) cov hcov Z X Y W x]
-  have hJacCovNeg := congrArg Neg.neg hJacCov
+  have hJacobianCovNeg := congrArg Neg.neg hJacobianCov
   simp only [DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField,
     DifferentialGeometry.Geometry.Curvature.connectionRiemannCurvatureField]
-  abel_nf at hJacCovNeg ⊢
-  exact hJacCovNeg
+  abel_nf at hJacobianCovNeg ⊢
+  exact hJacobianCovNeg
 
 theorem curvSecondBianchi
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))

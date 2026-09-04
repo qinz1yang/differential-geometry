@@ -101,13 +101,13 @@ private lemma tensorChartComponentScalar_eventuallyEq_zero_of_notMem_pouTsupport
   refine Filter.eventually_of_mem h_mem ?_
   intro y hy
   have hy_notin : y ∉ K := hy
-  have hy_notin_supp : y ∉ Function.support
+  have hy_notin_support : y ∉ Function.support
       (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) := by
     intro h_in
     exact hy_notin (subset_tsupport _ h_in)
   have h_rho_zero : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) y = 0 := by
     by_contra h_ne
-    exact hy_notin_supp h_ne
+    exact hy_notin_support h_ne
   change tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx y = 0
   unfold tensorChartComponentScalar tensorChartComponentPou
   rw [h_rho_zero, zero_mul]
@@ -301,10 +301,10 @@ theorem partialDeriv_scalarOnE_tensorChartComponentScalar_leibniz
   set raw : M → ℝ :=
     tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx with hraw_def
   set z : E := extChartAt I α b with hz_def
-  have hb_src : b ∈ (extChartAt I α).source := by
+  have hb_source : b ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hb
   have hz_target : z ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb_src
+    (extChartAt I α).map_source hb_source
   have h_scalar_eq :
       tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx =
         (fun x : M => ρ x * raw x) := by
@@ -411,21 +411,21 @@ theorem exists_sum_sq_partialDeriv_scalarOnE_chartAtlasPOU_sup
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hK_def
   have hK_compact : IsCompact K :=
     tsupport_chartAtlasPOU_isCompact (I := I) (M := M) α
-  have hK_subset_chartSrc : K ⊆ (chartAt H α).source :=
+  have hK_subset_chartSource : K ⊆ (chartAt H α).source :=
     tsupport_chartAtlasPOU_subset_chartSource (I := I) (M := M) α
-  have hK_subset_extSrc : K ⊆ (extChartAt I α).source := by
+  have hK_subset_extSource : K ⊆ (extChartAt I α).source := by
     intro x hx
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hK_subset_chartSrc hx
+    exact hK_subset_chartSource hx
   have h_ext_cont_on_K : ContinuousOn (extChartAt I α) K :=
-    (continuousOn_extChartAt (I := I) α).mono hK_subset_extSrc
+    (continuousOn_extChartAt (I := I) α).mono hK_subset_extSource
   set K' : Set E := (extChartAt I α) '' K with hK'_def
   have hK'_compact : IsCompact K' :=
     hK_compact.image_of_continuousOn h_ext_cont_on_K
   have hK'_subset_target : K' ⊆ (extChartAt I α).target := by
     rintro y ⟨x, hx_in_K, hx_eq⟩
     rw [← hx_eq]
-    exact (extChartAt I α).map_source (hK_subset_extSrc hx_in_K)
+    exact (extChartAt I α).map_source (hK_subset_extSource hx_in_K)
   have h_cont_on_K' : ContinuousOn (fun y : E =>
         ∑ k : Fin (Module.finrank ℝ E),
           (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k
@@ -520,12 +520,12 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
   refine ⟨C, hC_nn, ?_⟩
   intro S Idx Jdx b hb
   set z : E := extChartAt I α b with hz_def
-  have hb_chart_src : b ∈ (chartAt H α).source :=
+  have hb_chart_source : b ∈ (chartAt H α).source :=
     tsupport_chartAtlasPOU_subset_chartSource (I := I) (M := M) α hb
   have hb_goodSet : b ∈ chartLeviCivitaGoodSet (I := I) α := by
     rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α,
         extChartAt_source_eq_chartAt_source (I := I)]
-    exact hb_chart_src
+    exact hb_chart_source
   have hu_mdiff_at : MDifferentiableAt I 𝓘(ℝ, ℝ)
       (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx) b :=
     ((tensorChartComponentScalar_contMDiff (I := I) (M := M)
@@ -586,7 +586,7 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
     have := g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials
       (I := I) (M := M) g α
       (f := tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx)
-      (x := b) hu_mdiff_at hb_chart_src
+      (x := b) hu_mdiff_at hb_chart_source
     rw [hz_def]
     exact this
   have h_l1Sum_le : chartInvGramMatrixL1Sum (I := I) (M := M) g α b ≤ M_Ginv :=
@@ -603,7 +603,7 @@ private theorem g_inner_gradFun_tensorChartComponentScalar_le_const_on_pouTsuppo
               g r s S α Idx Jdx)) z := by
     intro k
     have h := partialDeriv_scalarOnE_tensorChartComponentScalar_leibniz
-      (I := I) (M := M) g r s S α Idx Jdx hb_chart_src k
+      (I := I) (M := M) g r s S α Idx Jdx hb_chart_source k
     rw [hraw_z_def, hρ_z_def, hz_def]
     exact h
   have h_sq_le : ∀ k : Fin (Module.finrank ℝ E),

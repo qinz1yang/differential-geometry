@@ -53,7 +53,7 @@ theorem mildForcingCoeff_continuous
     (E := Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
     (resolventHilbertEigenbasisSigma (I := I) (M := M) g i)).continuous.comp hf
 
-theorem summable_one_add_lambda_pow_succ_mildForcingConv
+theorem summable_one_add_lambda_pow_succ_mildForcingConvolution
     (g : SmoothRiemannianMetric I M)
     {f : ℝ → Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
     (hf : Continuous f) {t : ℝ} (ht : 0 < t)
@@ -62,7 +62,7 @@ theorem summable_one_add_lambda_pow_succ_mildForcingConv
     (k : ℕ) :
     Summable (fun i : EigenIdx (I := I) (M := M) g =>
       (1 + EigenIdx.lambda (I := I) (M := M) i) ^ (k + 1) *
-        (perModeConv (EigenIdx.lambda (I := I) (M := M) i)
+        (perModeConvolution (EigenIdx.lambda (I := I) (M := M) i)
           (mildForcingCoeff (I := I) (M := M) g f i) t) ^ 2) := by
   refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_)
     ((hmass k).mul_left (t + 1 / 2))
@@ -70,7 +70,7 @@ theorem summable_one_add_lambda_pow_succ_mildForcingConv
         linarith [lambda_nonneg (I := I) (M := M) i]) _)
       (sq_nonneg _)
   · have hgain :=
-      DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.one_add_lambda_mul_perModeConv_endpoint_sq_le
+      DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.one_add_lambda_mul_perModeConvolution_endpoint_sq_le
         (f := mildForcingCoeff (I := I) (M := M) g f i)
         (EigenIdx.lambda (I := I) (M := M) i)
         (lambda_nonneg (I := I) (M := M) i)
@@ -80,11 +80,11 @@ theorem summable_one_add_lambda_pow_succ_mildForcingConv
       pow_nonneg (by linarith [lambda_nonneg (I := I) (M := M) i]) _
     calc
       (1 + EigenIdx.lambda (I := I) (M := M) i) ^ (k + 1) *
-          (perModeConv (EigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (EigenIdx.lambda (I := I) (M := M) i)
             (mildForcingCoeff (I := I) (M := M) g f i) t) ^ 2 =
           (1 + EigenIdx.lambda (I := I) (M := M) i) ^ k *
             ((1 + EigenIdx.lambda (I := I) (M := M) i) *
-              (perModeConv (EigenIdx.lambda (I := I) (M := M) i)
+              (perModeConvolution (EigenIdx.lambda (I := I) (M := M) i)
                 (mildForcingCoeff (I := I) (M := M) g f i) t) ^ 2) := by
             rw [pow_succ]
             ring
@@ -104,10 +104,10 @@ theorem mildSolution_zero_initial_inner_basis
     (i : EigenIdx (I := I) (M := M) g) :
     ⟪resolventHilbertEigenbasisSigma (I := I) (M := M) g i,
       mildSolution (I := I) (M := M) g 0 f t⟫_ℝ =
-      perModeConv (EigenIdx.lambda (I := I) (M := M) i)
+      perModeConvolution (EigenIdx.lambda (I := I) (M := M) i)
         (mildForcingCoeff (I := I) (M := M) g f i) t := by
   rw [mildSolution_inner_basis (I := I) (M := M) g 0 hf ht i]
-  simp only [inner_zero_right, mul_zero, zero_add, mildForcingCoeff, perModeConv]
+  simp only [inner_zero_right, mul_zero, zero_add, mildForcingCoeff, perModeConvolution]
   ring_nf
 
 theorem mildSolution_zero_initial_weighted_coeff_summable
@@ -121,7 +121,7 @@ theorem mildSolution_zero_initial_weighted_coeff_summable
       (1 + EigenIdx.lambda (I := I) (M := M) i) ^ (2 * k) *
         ⟪resolventHilbertEigenbasisSigma (I := I) (M := M) g i,
           mildSolution (I := I) (M := M) g 0 f t⟫_ℝ ^ 2) := by
-  have htop := summable_one_add_lambda_pow_succ_mildForcingConv
+  have htop := summable_one_add_lambda_pow_succ_mildForcingConvolution
     (I := I) (M := M) g hf ht hmass (2 * k)
   refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_) htop
   · exact mul_nonneg (pow_nonneg (by

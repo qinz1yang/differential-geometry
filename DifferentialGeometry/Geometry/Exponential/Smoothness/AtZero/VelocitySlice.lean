@@ -121,10 +121,10 @@ lemma extChartAt_chartFlowSlice_eventually_eq_at_zero_initial_time
     hcd_slice_fst.continuousAt
   have hval0 : (Φ (((x₀, (0 : E)) : E × E), (0 : ℝ))).1 = x₀ := by
     rw [hinit]
-  have hx₀_src : p ∈ (extChartAt I p).source :=
+  have hx₀_source : p ∈ (extChartAt I p).source :=
     mem_extChartAt_source (I := I) p
   have hx₀_target : x₀ ∈ (extChartAt I p).target :=
-    (extChartAt I p).map_source hx₀_src
+    (extChartAt I p).map_source hx₀_source
   have hx₀_target_open : x₀ ∈ interior (extChartAt I p).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) p hx₀_target
   have htarget_nhds : (extChartAt I p).target ∈ 𝓝 x₀ :=
@@ -184,10 +184,10 @@ theorem exists_chartFlow_slice_contDiffAt_zero
           (0 : E)) := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
-  have hx₀_src : p ∈ (extChartAt I p).source :=
+  have hx₀_source : p ∈ (extChartAt I p).source :=
     mem_extChartAt_source (I := I) p
   have hx₀_target : x₀ ∈ (extChartAt I p).target :=
-    (extChartAt I p).map_source hx₀_src
+    (extChartAt I p).map_source hx₀_source
   have hx₀_interior : x₀ ∈ interior (extChartAt I p).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) p hx₀_target
   obtain ⟨_b, ρ, T, Φ, hρ_pos, hT_pos, _hb_sub, hcd, hinit⟩ :=

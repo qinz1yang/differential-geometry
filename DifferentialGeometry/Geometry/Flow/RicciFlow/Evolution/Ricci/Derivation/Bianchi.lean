@@ -41,7 +41,7 @@ def Nabla2RicciTensorComponentsInFrameOn
     nabla2Ric t x d a i j =
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (nabla2RicTensor t) frame x d a i j
 
-def Nab2RicLoc
+def Nab2RicLocal
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (u : Set M)
     (nabla2RicTensor : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I)
@@ -232,7 +232,7 @@ def DifferentiatedContractedBianchiInFrameOnLocal
           scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
             (t : Real) x i j
 
-def HessSymmLoc
+def HessSymmLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
@@ -246,14 +246,14 @@ def HessSymmLoc
           (t : Real) x j i
 
 omit [TopologicalSpace M] [SigmaCompactSpace M] [T2Space M] [DecidableEq Idx] in
-theorem traceRightNatLoc
+theorem traceRightNatLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx)
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (u : Set M)
     (hbianchi : DifferentiatedContractedBianchiInFrameOnLocal
       (D := D) (M := M) gInv nabla2Ric u)
-    (hHess : HessSymmLoc (D := D) (M := M) gInv nabla2Ric u)
+    (hHess : HessSymmLocal (D := D) (M := M) gInv nabla2Ric u)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M)
       (hx : x ∈ u)
     (i j : Idx) :
@@ -488,7 +488,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
   have hB_deriv :=
     ricci_mvfderiv_congr_eventually (I := I) (x := x)
       (v := frame i x) hB_event
-  have hA_corr :
+  have hA_correction :
       (∑ a : Idx, Γj a *
         (∑ k : Idx, ∑ l : Idx,
           gInv (t : Real) x k l * nablaRic (t : Real) x k a l)) =
@@ -497,7 +497,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
             gInv (t : Real) x k l * nablaRic (t : Real) x a k l)) := by
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [(hbianchi t x hx a).1]
-  have hB_corr :
+  have hB_correction :
       (∑ a : Idx, Γj a *
         (∑ k : Idx, ∑ l : Idx,
           gInv (t : Real) x k l * nablaRic (t : Real) x l k a)) =
@@ -513,7 +513,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
           scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
             (t : Real) x i j := by
     rw [htraceA_eval, hscalar_eval]
-    rw [hA_deriv, hA_corr, hhalf_deriv]
+    rw [hA_deriv, hA_correction, hhalf_deriv]
     have hsum_scale :
         (∑ a : Idx, Γj a * ((1 / 2 : Real) *
           (∑ k : Idx, ∑ l : Idx,
@@ -534,7 +534,7 @@ theorem differentiatedContractedBianchiInFrameOnLocal_of_regular
           scalarHessianFromNabla2RicInFrame (M := M) gInv nabla2Ric
             (t : Real) x i j := by
     rw [htraceB_eval, hscalar_eval]
-    rw [hB_deriv, hB_corr, hhalf_deriv]
+    rw [hB_deriv, hB_correction, hhalf_deriv]
     have hsum_scale :
         (∑ a : Idx, Γj a * ((1 / 2 : Real) *
           (∑ k : Idx, ∑ l : Idx,
@@ -573,7 +573,7 @@ def RicciSecondDerivativeCommutatorsInFrame
           (t : Real) x i j +
         ricciQuadraticCompInFrame (I := I) S gInv frame (t : Real) x i j
 
-def RicciSecCommLoc
+def RicciSecCommLocal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))

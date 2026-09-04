@@ -169,12 +169,12 @@ theorem lAction_chart_lim
     (hdu : ∀ i, Tendsto (fun n ↦ (u i n).deriv) atTop
       (nhds (uLim i).deriv))
     (halpha : ∀ n, ContinuousOn (alpha n) (Icc a b))
-    (hunif : TendstoUniformly
+    (huniform : TendstoUniformly
       (fun n (s : Icc a b) ↦ alpha n s.1)
       (fun s ↦ gamma s.1) atTop)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    Tendsto (fun n ↦ lRegAction S T (alpha n) a b) atTop
-      (nhds (lRegAction S T gamma a b)) := by
+    Tendsto (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop
+      (nhds (lRegularizedAction S T gamma a b)) := by
   classical
   have hab : a ≤ b := by
     rw [← ht0, ← htlast]
@@ -234,7 +234,7 @@ theorem lAction_chart_lim
         (fun s ↦ gamma s.1) atTop := by
       let incl : Icc (t i.castSucc) (t i.succ) → Icc a b :=
         fun s ↦ ⟨s.1, hpieceSub i s.2⟩
-      convert hunif.comp incl using 1
+      convert huniform.comp incl using 1
       · funext n s
         rfl
       · funext s
@@ -260,24 +260,24 @@ theorem lAction_chart_lim
         rw [extChartAt_source]
         exact hsrc i n hs
     simpa only [pot, potLim] using
-      lScalar_tendsto_cpt (I := I) S hSc T (t i.castSucc) (t i.succ)
+      lScalar_tendsto_compact (I := I) S hSc T (t i.castSucc) (t i.succ)
         (hseg i) hcarrier Q hQc alpha gamma
         (fun n ↦ (halpha n).mono (hpieceSub i)) hval hconv
   have hsum : Tendsto
       (fun n ↦ ∑ i : Fin m, (kin i n + pot i n)) atTop
       (nhds (∑ i : Fin m, (kinLim i + potLim i))) := by
     exact tendsto_finsetSum Finset.univ fun i _ ↦ (hkin i).add (hpot i)
-  have hact (n : Nat) : lRegAction S T (alpha n) a b =
+  have hact (n : Nat) : lRegularizedAction S T (alpha n) a b =
       ∑ i : Fin m, (kin i n + pot i n) := by
     simpa only [kin, pot] using
-      lRegAction_chart S hMet hSc T a b t htmono ht0 htlast p (alpha n)
+      lRegularizedAction_chart S hMet hSc T a b t htmono ht0 htlast p (alpha n)
         (fun i ↦ u i n) (fun i ↦ hsrc i n) (fun i ↦ hrep i n) hreg
-  have hlim : lRegAction S T gamma a b =
+  have hlim : lRegularizedAction S T gamma a b =
       ∑ i : Fin m, (kinLim i + potLim i) := by
     simpa only [kinLim, potLim] using
-      lRegAction_chart S hMet hSc T a b t htmono ht0 htlast p gamma uLim
+      lRegularizedAction_chart S hMet hSc T a b t htmono ht0 htlast p gamma uLim
         hsrcLim hrepLim hreg
-  rw [show (fun n ↦ lRegAction S T (alpha n) a b) =
+  rw [show (fun n ↦ lRegularizedAction S T (alpha n) a b) =
       (fun n ↦ ∑ i : Fin m, (kin i n + pot i n)) by
         funext n
         exact hact n,
@@ -313,17 +313,17 @@ theorem lAction_h1_lim
       (uLim i).toFun r.1 ∈ K i)
     (hu : ∀ i, Tendsto (u i) atTop (nhds (uLim i)))
     (halpha : ∀ n, ContinuousOn (alpha n) (Icc a b))
-    (hunif : TendstoUniformly
+    (huniform : TendstoUniformly
       (fun n (s : Icc a b) ↦ alpha n s.1)
       (fun s ↦ gamma s.1) atTop)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    Tendsto (fun n ↦ lRegAction S T (alpha n) a b) atTop
-      (nhds (lRegAction S T gamma a b)) := by
+    Tendsto (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop
+      (nhds (lRegularizedAction S T gamma a b)) := by
   exact lAction_chart_lim S hMet hSc T a b t htmono ht0 htlast p alpha gamma
     u uLim hsrc hrep hsrcLim hrepLim K hKc hKchart huK huLimK
     (fun i ↦ timeH1_uniform (u i) (uLim i) (hu i))
     (fun i ↦ timeH1_deriv_lim (u i) (uLim i) (hu i))
-    halpha hunif hreg
+    halpha huniform hreg
 
 omit [CompactSpace M] in
 theorem lAction_c1_dense
@@ -355,8 +355,8 @@ theorem lAction_c1_dense
           TendstoUniformly
             (fun n (s : Icc a b) ↦ alpha n s.1)
             (fun s ↦ gamma s.1) atTop ∧
-          Tendsto (fun n ↦ lRegAction S T (alpha n) a b) atTop
-            (nhds (lRegAction S T gamma a b)) := by
+          Tendsto (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop
+            (nhds (lRegularizedAction S T gamma a b)) := by
   classical
   have hseg (i : Fin m) : 0 ≤ partitionIntervalLength t i :=
     sub_nonneg.mpr (htmono Fin.castSucc_lt_succ.le)
@@ -410,7 +410,7 @@ theorem lAction_c1_dense
       (fun r ↦ (uLim i).toFun r.1) atTop := by
     intro U hU
     exact (tendsto_add_atTop_nat N).eventually (hvlim i U hU)
-  obtain ⟨alpha, halpha, halpha0, halphaL, hrepV, hsrc, hunif⟩ :=
+  obtain ⟨alpha, halpha, halpha0, halphaL, hrepV, hsrc, huniform⟩ :=
     exists_c1_of_flat a b t htmono ht0 htlast p gamma uLim hsrcLim hrepLim
       K hKc hKtar (fun i n ↦ v i (n + N))
       (fun i n ↦ hvC1 i (n + N))
@@ -432,12 +432,12 @@ theorem lAction_c1_dense
     exact hvK i n r
   have hulim (i : Fin m) : Tendsto (u i) atTop (nhds (uLim i)) := by
     exact (hw i).comp (tendsto_add_atTop_nat N)
-  have hact : Tendsto (fun n ↦ lRegAction S T (alpha n) a b) atTop
-      (nhds (lRegAction S T gamma a b)) :=
+  have hact : Tendsto (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop
+      (nhds (lRegularizedAction S T gamma a b)) :=
     lAction_h1_lim S hMet hSc T a b t htmono ht0 htlast p alpha gamma
       u uLim hsrc hrep hsrcLim hrepLim K hKc hKchart huK huLimK hulim
-      (fun n ↦ (halpha n).continuous.continuousOn) hunif hreg
-  exact ⟨alpha, u, halpha, halpha0, halphaL, hsrc, hrep, hulim, hunif, hact⟩
+      (fun n ↦ (halpha n).continuous.continuousOn) huniform hreg
+  exact ⟨alpha, u, halpha, halpha0, halphaL, hsrc, hrep, hulim, huniform, hact⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

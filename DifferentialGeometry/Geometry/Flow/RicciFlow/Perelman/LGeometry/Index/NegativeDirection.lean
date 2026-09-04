@@ -33,16 +33,16 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem exists_lRegIndex_split_lt_zero_of_isLConj
+theorem exists_lRegularizedIndex_split_lt_zero_of_isLConjugate
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {sigma tau : Real}
     (htau : (Z, tau) ∈ lExpPosDom S T x)
-    (hlt : sigma < tau) (hconj : IsLConj S T x Z sigma) :
+    (hlt : sigma < tau) (hconj : IsLConjugate S T x Z sigma) :
     ∃ gamma : Real → M, ∃ Y0 Y1 : Real → E,
-      Set.EqOn gamma (lRegCurve S T x Z)
+      Set.EqOn gamma (lRegularizedCurve S T x Z)
         (Set.Icc 0 (Real.sqrt tau)) ∧
-      IsLRegCurveOn S T gamma
+      IsLRegularizedCurveOn S T gamma
         (Set.uIcc 0 (Real.sqrt tau)) x Z ∧
       ContMDiff (modelWithCornersSelf Real Real) I.tangent (8 : Nat)
         (fun s : Real ↦
@@ -54,14 +54,14 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
             (gamma s) (Y1 s) : TangentBundle I M)) ∧
       Y0 0 = 0 ∧ Y1 (Real.sqrt tau) = 0 ∧
       Y0 (Real.sqrt sigma) = Y1 (Real.sqrt sigma) ∧
-      lRegIndex S T gamma Y0 Y0 0 (Real.sqrt sigma) +
-        lRegIndex S T gamma Y1 Y1
+      lRegularizedIndex S T gamma Y0 Y0 0 (Real.sqrt sigma) +
+        lRegularizedIndex S T gamma Y1 Y1
           (Real.sqrt sigma) (Real.sqrt tau) < 0 := by
-  let alpha : Real → M := lRegCurve S T x Z
+  let alpha : Real → M := lRegularizedCurve S T x Z
   let c : Real := Real.sqrt sigma
   let b : Real := Real.sqrt tau
   obtain ⟨hsdom, V, hVne, hJc⟩ :=
-    (isLConj_iff_jac (I := I) S T x Z sigma).1 hconj
+    (isLConjugate_iff_jacobian (I := I) S T x Z sigma).1 hconj
   have hspos : 0 < sigma :=
     ((mem_lExpPosDom (I := I) S T x Z sigma).1 hsdom).1
   have htpos : 0 < tau :=
@@ -72,23 +72,23 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
     simpa only [b] using Real.sqrt_pos.2 htpos
   have hcb : c < b := by
     simpa only [c, b] using Real.sqrt_lt_sqrt hspos.le hlt
-  have hcdom : c ∈ lRegDomain S T x Z := by
+  have hcdom : c ∈ lRegularizedDomain S T x Z := by
     simpa only [c] using
       ((mem_lExpPosDom (I := I) S T x Z sigma).1 hsdom).2.2
-  have hbdom : b ∈ lRegDomain S T x Z := by
+  have hbdom : b ∈ lRegularizedDomain S T x Z := by
     simpa only [b] using
       ((mem_lExpPosDom (I := I) S T x Z tau).1 htau).2.2
   let J : (s : Real) → TangentSpace I (alpha s) :=
-    lRegJacobiField S T x Z V
+    lRegularizedJacobiField S T x Z V
   let P : TangentSpace I (alpha c) :=
     covDerivAlong (I := I) (S.base.metric (T - c ^ 2)) alpha J c
   have hPne : P ≠ 0 := by
     simpa only [P, alpha, J] using
-      covDerivAlong_lRegJacobiField_ne_zero (I := I) S hS T x Z V hc0 hcdom hVne
+      covDerivAlong_lRegularizedJacobiField_ne_zero (I := I) S hS T x Z V hc0 hcdom hVne
         (by simpa only [c] using hJc)
   obtain ⟨rho, a, d, ha0, hbd, hrho, hrhoEq, _hrhoDeriv,
       _hrhoRange, hJgSmooth, _hpairEq⟩ :=
-    exists_lRegJacobiField_smoothGerm (I := I) S hS T x Z V hb0 hbdom
+    exists_lRegularizedJacobiField_smoothGerm (I := I) S hS T x Z V hb0 hbdom
   let gamma : Real → M := fun s ↦ alpha (rho s)
   let Jg : (s : Real) → TangentSpace I (gamma s) := fun s ↦ J (rho s)
   have hseg : Set.Icc (0 : Real) b ⊆ Set.Ioo a d := by
@@ -123,8 +123,8 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
   have hgammaSmooth : ContMDiff (modelWithCornersSelf Real Real) I ∞ gamma := by
     intro s
     exact (Bundle.contMDiffAt_totalSpace.mp hJgSmooth'.contMDiffAt).1
-  have hgeoRaw := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb0 hbdom
-  have hgeo : IsLRegCurveOn S T gamma (Set.uIcc (0 : Real) b) x Z := by
+  have hgeoRaw := lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hb0 hbdom
+  have hgeo : IsLRegularizedCurveOn S T gamma (Set.uIcc (0 : Real) b) x Z := by
     have h0Icc : (0 : Real) ∈ Set.Icc (0 : Real) b := ⟨le_rfl, hb0.le⟩
     have h0germ := hgammaGerm 0 h0Icc
     refine ⟨?_, ?_, ?_⟩
@@ -138,7 +138,7 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
     · intro s hs
       have hsIcc : s ∈ Set.Icc (0 : Real) b := by
         simpa only [Set.uIcc_of_le hb0.le] using hs
-      exact lRegData_congr S T s (hgammaGerm s hsIcc)
+      exact lRegularizedData_congr S T s (hgammaGerm s hsIcc)
         (hgeoRaw.2.2 s hs)
   obtain ⟨W, hWsmooth, hW0, hWb, hWc⟩ :=
     DifferentialGeometry.Geometry.Riemannian.exists_contMDiff_vectorFieldAlong_zero_endpoints
@@ -173,13 +173,13 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
           (gamma s) (W s) : TangentBundle I M)) :=
     hWsmooth.of_le (by decide :
       (2 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
-  have hJJgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 c gamma Jg Jg
+  have hJJgInt := intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiff (I := I) S hS T 0 c gamma Jg Jg
     hJ2 hJ2 hreg0c
-  have hJWgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 c gamma Jg W
+  have hJWgInt := intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiff (I := I) S hS T 0 c gamma Jg W
     hJ2 hW2 hreg0c
-  have hWW0c := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T 0 c gamma W W
+  have hWW0c := intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiff (I := I) S hS T 0 c gamma W W
     hW2 hW2 hreg0c
-  have hWWcb := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T c b gamma W W
+  have hWWcb := intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiff (I := I) S hS T c b gamma W W
     hW2 hW2 hregcb
   have hprefixIcc : Set.Icc (0 : Real) c ⊆ Set.Icc (0 : Real) b := by
     intro s hs
@@ -196,13 +196,13 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
   have hWGerm : ∀ s ∈ Set.Ioo (0 : Real) c,
       ∀ᶠ r in nhds s, (W r : E) = (W r : E) :=
     fun _ _ ↦ Eventually.of_forall fun _ ↦ rfl
-  have hJJInt : IntervalIntegrable (lRegIndexIntegrand S T alpha J J)
+  have hJJInt : IntervalIntegrable (lRegularizedIndexIntegrand S T alpha J J)
       MeasureTheory.volume 0 c :=
-    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J J Jg Jg 0 c hc0.le
+    (intervalIntegrable_lRegularizedIndexIntegrand_congr_of_eventuallyEq (I := I) S T J J Jg Jg 0 c hc0.le
       hAlphaGerm hJGerm hJGerm).2 hJJgInt
-  have hJWInt : IntervalIntegrable (lRegIndexIntegrand S T alpha J W)
+  have hJWInt : IntervalIntegrable (lRegularizedIndexIntegrand S T alpha J W)
       MeasureTheory.volume 0 c :=
-    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J W Jg W 0 c hc0.le
+    (intervalIntegrable_lRegularizedIndexIntegrand_congr_of_eventuallyEq (I := I) S T J W Jg W 0 c hc0.le
       hAlphaGerm hJGerm hWGerm).2 hJWgInt
   have hAlphaMdiff : ∀ s ∈ Set.uIcc (0 : Real) c,
       ∀ᶠ r in nhds s,
@@ -210,9 +210,9 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
     intro s hs
     have hsIcc : s ∈ Set.Icc (0 : Real) c := by
       simpa only [Set.uIcc_of_le hc0.le] using hs
-    have hsdom : s ∈ lRegDomain S T x Z :=
-      lRegDomain_seg S T x Z hcdom hsIcc.1 hsIcc.2
-    filter_upwards [(lRegDomain_isOpen S T x Z).mem_nhds hsdom] with r hr
+    have hsdom : s ∈ lRegularizedDomain S T x Z :=
+      lRegularizedDomain_segment S T x Z hcdom hsIcc.1 hsIcc.2
+    filter_upwards [(lRegularizedDomain_isOpen S T x Z).mem_nhds hsdom] with r hr
     let z : E := Z
     have hpair : ContMDiffAt 𝓘(Real, Real)
         (𝓘(Real, E).prod 𝓘(Real, Real)) ∞
@@ -220,7 +220,7 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
       (contMDiff_const.prodMk contMDiff_id).contMDiffAt
     have hcurve : ContMDiffAt 𝓘(Real, Real) I ∞ alpha r := by
       with_unfolding_all exact
-        (lRegCurve_smooth S hS T x hr).comp r hpair
+        (lRegularizedCurve_smooth S hS T x hr).comp r hpair
     exact hcurve.mdifferentiableAt (by simp)
   have hA : ∀ s ∈ Set.uIcc (0 : Real) c, DifferentiableAt Real
       (chartRepAt (I := I) alpha
@@ -232,16 +232,16 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
       rw [Set.uIcc_of_le hb0.le]
       exact ⟨hs'.1, hs'.2.trans hcb.le⟩
     simpa only [alpha] using (hgeoRaw.2.2 s hsBig).2.2.1
-  have hJac : IsLRegJacobi S T alpha J (Set.uIcc (0 : Real) c) := by
-    simpa only [alpha, J] using lRegCurve_jacobi S hS T x Z V
+  have hJacobian : IsLRegularizedJacobi S T alpha J (Set.uIcc (0 : Real) c) := by
+    simpa only [alpha, J] using lRegularizedCurve_jacobi S hS T x Z V
       (Set.uIcc (0 : Real) c) (fun s hs ↦ by
         have hs' : s ∈ Set.Icc (0 : Real) c := by
           simpa only [Set.uIcc_of_le hc0.le] using hs
-        exact lRegDomain_seg S T x Z hcdom hs'.1 hs'.2)
+        exact lRegularizedDomain_segment S T x Z hcdom hs'.1 hs'.2)
   have hJdiff : ∀ s ∈ Set.uIcc (0 : Real) c,
       DifferentiableAt Real (chartRepAt (I := I) alpha J s) s := by
     intro s hs
-    exact (hJac s hs).2.1
+    exact (hJacobian s hs).2.1
   have hWdiff : ∀ s ∈ Set.uIcc (0 : Real) c,
       DifferentiableAt Real (chartRepAt (I := I) alpha W s) s := by
     intro s hs
@@ -253,12 +253,12 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
           (Eventually.of_forall fun _ ↦ rfl)
     exact hrep.differentiableAt_iff.mpr
       (chartRep_diff (I := I) gamma W hWsmooth s)
-  have hYY : lRegIndex S T alpha J J 0 c = 0 := by
-    have hgreen := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T alpha J J 0 c
-      hreg0c hAlphaMdiff hA hJac hJdiff hJJInt
+  have hYY : lRegularizedIndex S T alpha J J 0 c = 0 := by
+    have hgreen := lRegularizedIndex_eq_half_boundary_of_isLRegularizedJacobi (I := I) S hS T alpha J J 0 c
+      hreg0c hAlphaMdiff hA hJacobian hJdiff hJJInt
     rw [hgreen]
     have hJ0 : J 0 = 0 := by
-      simpa only [J, alpha] using lRegJacobi_zero S T x Z V
+      simpa only [J, alpha] using lRegularizedJacobi_zero S T x Z V
     have hJc' : J c = 0 := by
       simpa only [J, c] using hJc
     rw [hJ0, hJc']
@@ -266,13 +266,13 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
   have hWc' : W c = (c * (b - c)) • P := by
     rw [sub_zero] at hWc
     with_unfolding_all exact hWc
-  have hYW : 0 < lRegIndex S T alpha J W 0 c :=
-    lRegIndex_cross_pos_of_isLRegJacobi (I := I) S hS T alpha J W c b hc0 hcb
-      hreg0c hAlphaMdiff hA hJac hWdiff hJWInt hW0
+  have hYW : 0 < lRegularizedIndex S T alpha J W 0 c :=
+    lRegularizedIndex_cross_pos_of_isLRegularizedJacobi (I := I) S hS T alpha J W c b hc0 hcb
+      hreg0c hAlphaMdiff hA hJacobian hWdiff hJWInt hW0
       (by with_unfolding_all exact hWc') hPne
-  have hYYeq : lRegIndex S T alpha J J 0 c =
-      lRegIndex S T gamma Jg Jg 0 c := by
-    apply lRegIndex_congr_of_eventuallyEq (I := I) S T J J Jg Jg
+  have hYYeq : lRegularizedIndex S T alpha J J 0 c =
+      lRegularizedIndex S T gamma Jg Jg 0 c := by
+    apply lRegularizedIndex_congr_of_eventuallyEq (I := I) S T J J Jg Jg
     · intro s hs
       have hs' : s ∈ Set.Ioo (0 : Real) c := by
         simpa only [Set.uIoo_of_le hc0.le] using hs
@@ -285,9 +285,9 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
       have hs' : s ∈ Set.Ioo (0 : Real) c := by
         simpa only [Set.uIoo_of_le hc0.le] using hs
       exact hJGerm s hs'
-  have hYWeq : lRegIndex S T alpha J W 0 c =
-      lRegIndex S T gamma Jg W 0 c := by
-    apply lRegIndex_congr_of_eventuallyEq (I := I) S T J W Jg W
+  have hYWeq : lRegularizedIndex S T alpha J W 0 c =
+      lRegularizedIndex S T gamma Jg W 0 c := by
+    apply lRegularizedIndex_congr_of_eventuallyEq (I := I) S T J W Jg W
     · intro s hs
       have hs' : s ∈ Set.Ioo (0 : Real) c := by
         simpa only [Set.uIoo_of_le hc0.le] using hs
@@ -304,7 +304,7 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
   have hWgdiff : ∀ s ∈ Set.uIcc (0 : Real) c,
       DifferentiableAt Real (chartRepAt (I := I) gamma W s) s :=
     fun s _ ↦ chartRep_diff (I := I) gamma W hWsmooth s
-  obtain ⟨k, hk⟩ := exists_lRegIndex_split_lt_zero_of_cross_pos
+  obtain ⟨k, hk⟩ := exists_lRegularizedIndex_split_lt_zero_of_cross_pos
     (I := I) S T gamma Jg W 0 c b
     hJgdiff hWgdiff hJJgInt hJWgInt hWW0c hWWcb
     (hYYeq ▸ hYY) (hYWeq ▸ hYW)
@@ -325,7 +325,7 @@ theorem exists_lRegIndex_split_lt_zero_of_isLConj
   have hJg0 : Jg 0 = 0 := by
     have h0 : (0 : Real) ∈ Set.Icc (0 : Real) b := ⟨le_rfl, hb0.le⟩
     rw [(hJgGerm 0 h0).self_of_nhds]
-    exact lRegJacobi_zero S T x Z V
+    exact lRegularizedJacobi_zero S T x Z V
   have hJgc : Jg c = 0 := by
     rw [(hJgGerm c (hprefixIcc ⟨hc0.le, le_rfl⟩)).self_of_nhds]
     with_unfolding_all exact hJc

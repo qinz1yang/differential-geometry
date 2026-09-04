@@ -49,11 +49,11 @@ lemma chartTransitionMap_apply_extChartAt
     (α β : M) {x : M} (hx_α : x ∈ (chartAt H α).source) :
     chartTransitionMap (I := I) α β ((extChartAt I α) x) = extChartAt I β x := by
   unfold chartTransitionMap
-  have hx_src : x ∈ (extChartAt I α).source := by
+  have hx_source : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source (I := I)]
     exact hx_α
   change extChartAt I β ((extChartAt I α).symm ((extChartAt I α) x)) = extChartAt I β x
-  rw [(extChartAt I α).left_inv hx_src]
+  rw [(extChartAt I α).left_inv hx_source]
 
 omit [Module.Finite ℝ E] in
 theorem chartTransitionMap_contDiffOn (α β : M) :
@@ -69,17 +69,17 @@ lemma extChartAt_mem_chartTransitionSource
     (hx_α : x ∈ (chartAt H α).source) (hx_β : x ∈ (chartAt H β).source) :
     (extChartAt I α) x ∈ chartTransitionSource (I := I) α β := by
   unfold chartTransitionSource
-  have hx_α_src : x ∈ (extChartAt I α).source := by
+  have hx_α_source : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source (I := I)]; exact hx_α
-  have hx_β_src : x ∈ (extChartAt I β).source := by
+  have hx_β_source : x ∈ (extChartAt I β).source := by
     rw [extChartAt_source (I := I)]; exact hx_β
   refine ⟨?_, ?_⟩
-  · exact (extChartAt I α).map_source hx_α_src
+  · exact (extChartAt I α).map_source hx_α_source
   · have h_inv : (extChartAt I α).symm ((extChartAt I α) x) = x :=
-      (extChartAt I α).left_inv hx_α_src
+      (extChartAt I α).left_inv hx_α_source
     change (extChartAt I α).symm ((extChartAt I α) x) ∈ (extChartAt I β).source
     rw [h_inv]
-    exact hx_β_src
+    exact hx_β_source
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 theorem chartTransitionSource_isOpen [I.Boundaryless] (α β : M) :
@@ -199,12 +199,12 @@ omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma chartTransitionMap_comp_self_of_mem_source
     (α β : M) {y : E} (hy : y ∈ chartTransitionSource (I := I) α β) :
     chartTransitionMap (I := I) β α (chartTransitionMap (I := I) α β y) = y := by
-  obtain ⟨hy_tgt, hy_pre⟩ := hy
+  obtain ⟨hy_target, hy_pre⟩ := hy
   have hy_pre' : (extChartAt I α).symm y ∈ (extChartAt I β).source := hy_pre
   change extChartAt I α
       ((extChartAt I β).symm (extChartAt I β ((extChartAt I α).symm y))) = y
   rw [(extChartAt I β).left_inv hy_pre']
-  exact (extChartAt I α).right_inv hy_tgt
+  exact (extChartAt I α).right_inv hy_target
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma chartTransitionMap_mapsTo_source
@@ -213,7 +213,7 @@ lemma chartTransitionMap_mapsTo_source
       (chartTransitionSource (I := I) α β)
       (chartTransitionSource (I := I) β α) := by
   intro y hy
-  obtain ⟨hy_tgt, hy_pre⟩ := hy
+  obtain ⟨hy_target, hy_pre⟩ := hy
   have hy_pre' : (extChartAt I α).symm y ∈ (extChartAt I β).source := hy_pre
   refine ⟨?_, ?_⟩
   · change extChartAt I β ((extChartAt I α).symm y) ∈ (extChartAt I β).target
@@ -221,7 +221,7 @@ lemma chartTransitionMap_mapsTo_source
   · change (extChartAt I β).symm
         (extChartAt I β ((extChartAt I α).symm y)) ∈ (extChartAt I α).source
     rw [(extChartAt I β).left_inv hy_pre']
-    exact (extChartAt I α).map_target hy_tgt
+    exact (extChartAt I α).map_target hy_target
 
 omit [Module.Finite ℝ E] in
 theorem chartTransitionAt_comp_chartTransitionAt [I.Boundaryless]
@@ -262,7 +262,7 @@ theorem chartTransitionAt_comp_chartTransitionAt [I.Boundaryless]
   rw [← h_fderiv_comp, h_chain]
 
 omit [Module.Finite ℝ E] in
-theorem chartTransitionAt_comp_chartTransitionAt' [I.Boundaryless]
+theorem chartTransitionAt_reverse_comp [I.Boundaryless]
     (α β : M) {y : E} (hy : y ∈ chartTransitionSource (I := I) α β) :
     (chartTransitionAt (I := I) α β y).comp
         (chartTransitionAt (I := I) β α (chartTransitionMap (I := I) α β y)) =

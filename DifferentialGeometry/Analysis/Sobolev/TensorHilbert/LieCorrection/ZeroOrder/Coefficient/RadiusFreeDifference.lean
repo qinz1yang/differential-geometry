@@ -816,7 +816,7 @@ private lemma b4_trace_center (g : SmoothRiemannianMetric I M) (x : M)
   rw [modelDoubleTrace_apply (E := E) 3 (cometricLmodel (I := I) g x)
     (Tensor0SSpace.toModel D) m]
   exact cometric_dualTrace_eq_orthoFrame_diag (I := I) g (s := 3) x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel D) m
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in

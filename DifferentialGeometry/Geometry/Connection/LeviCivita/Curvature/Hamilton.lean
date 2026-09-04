@@ -557,7 +557,7 @@ theorem canRmRicci
       CovariantDerivative.rm04Section (I := I) g cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -573,7 +573,7 @@ theorem canRmRicci
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -607,7 +607,7 @@ theorem canRmHessComm
       CovariantDerivative.rm04Section (I := I) g cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -637,7 +637,7 @@ theorem canRmHessComm
     CovariantDerivative.rm04Section (I := I) g cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -700,14 +700,14 @@ theorem canRicHessSum
       CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         5 cov nablaRm04 x
     let nablaRic :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov hcov Ric)
     let nabla2Ric :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -744,14 +744,14 @@ theorem canRicHessSum
     CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       5 cov nablaRm04 x
   let nablaRic :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         2 cov hcov Ric)
   let nabla2Ric :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -810,14 +810,14 @@ theorem hamiltonRm04Id
       CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
     let nablaRm04 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         5 cov nablaRm04 x
     let nablaRic :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           2 cov hcov Ric)
     let nabla2Ric :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -860,14 +860,14 @@ theorem hamiltonRm04Id
     CovariantDerivative.ricciSection (I := I) (M := M) cov hcov
   let nablaRm04 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      4 cov Rm04 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      4 cov Rm04 (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       5 cov nablaRm04 x
   let nablaRic :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      2 cov Ric (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      2 cov Ric (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         2 cov hcov Ric)
   let nabla2Ric :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

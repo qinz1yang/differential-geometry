@@ -29,7 +29,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_vol_cont [RiemannianBundle (fun x : M => TangentSpace I x)]
+theorem segmentBall_vol_cont [RiemannianBundle (fun x : M => TangentSpace I x)]
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -45,10 +45,10 @@ theorem segBall_vol_cont [RiemannianBundle (fun x : M => TangentSpace I x)]
   let q : E → Real := fun v =>
     Real.sqrt (g.inner x (show TangentSpace I x from v)
       (show TangentSpace I x from v))
-  let S : Set E := SegInt (I := I) g hEnorm x
+  let S : Set E := SegmentInt (I := I) g hEnorm x
   let A : Real → Set E := fun r => S ∩ {v | q v < r}
   let D : E → ENNReal := fun v =>
-    ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+    ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
   let F : Real → E → ENNReal := fun r => (A r).indicator D
   have hq_cont : Continuous q := by
     have hquad := (continuous_gInner_self (I := I) g x).comp
@@ -63,11 +63,11 @@ theorem segBall_vol_cont [RiemannianBundle (fun x : M => TangentSpace I x)]
     rw [hfun] at hsqrt
     exact hsqrt
   have hA_meas (r : Real) : MeasurableSet (A r) := by
-    exact (measurableSet_segInt (I := I) g hEnorm x).inter
+    exact (measurableSet_segmentInt (I := I) g hEnorm x).inter
       (isOpen_lt hq_cont continuous_const).measurableSet
   have hD_meas : Measurable D := by
     exact ENNReal.continuous_ofReal.comp
-      (expJacDensity_continuous (I := I) g hEnorm x) |>.measurable
+      (expJacobianDensity_continuous (I := I) g hEnorm x) |>.measurable
   have hF_meas (r : Real) : Measurable (F r) :=
     hD_meas.indicator (hA_meas r)
   let L : E ≃L[Real] E := normalFrame (I := I) (E := E) g x
@@ -129,15 +129,15 @@ theorem segBall_vol_cont [RiemannianBundle (fun x : M => TangentSpace I x)]
     rw [show (∫⁻ v, G v ∂modelHaar (E := E)) =
         ∫⁻ v in A (R + 1), D v ∂modelHaar (E := E) by
       exact lintegral_indicator (hA_meas (R + 1)) D]
-    have harea := segBall_area_eq (I := I) g hEnorm x hR1
-    have hvol_fin := segBall_vol_fin (I := I) g hEnorm x (R := R + 1)
+    have harea := segmentBall_area_eq (I := I) g hEnorm x hR1
+    have hvol_fin := segmentBall_vol_fin (I := I) g hEnorm x (R := R + 1)
     have hset : A (R + 1) =
-        SegInt (I := I) g hEnorm x ∩ gBall (I := I) g x (R + 1) := by
+        SegmentInt (I := I) g hEnorm x ∩ gBall (I := I) g x (R + 1) := by
       rfl
     rw [hset]
     apply ne_of_lt
     calc
-      (∫⁻ v in SegInt (I := I) g hEnorm x ∩
+      (∫⁻ v in SegmentInt (I := I) g hEnorm x ∩
           gBall (I := I) g x (R + 1), D v ∂modelHaar (E := E)) =
           riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I x y < ENNReal.ofReal (R + 1)} := by
@@ -186,14 +186,14 @@ theorem segBall_vol_cont [RiemannianBundle (fun x : M => TangentSpace I x)]
         riemannianVolumeMeasure (I := I) (M := M) g
           {y : M | riemannianEDist I x y < ENNReal.ofReal R} := by
     rw [lintegral_indicator (hA_meas R)]
-    have harea := segBall_area_eq (I := I) g hEnorm x hR
+    have harea := segmentBall_area_eq (I := I) g hEnorm x hR
     dsimp only [F, A, D, q, S]
     with_unfolding_all exact harea.symm
   rw [hR_integral] at hDCT
   apply hDCT.congr'
   filter_upwards [Ioi_mem_nhds hR] with r hr
   rw [lintegral_indicator (hA_meas r)]
-  have harea := segBall_area_eq (I := I) g hEnorm x hr
+  have harea := segmentBall_area_eq (I := I) g hEnorm x hr
   dsimp only [F, A, D, q, S]
   with_unfolding_all exact harea.symm
 

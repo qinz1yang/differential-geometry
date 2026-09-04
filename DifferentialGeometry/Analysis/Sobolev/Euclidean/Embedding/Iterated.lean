@@ -44,7 +44,7 @@ private theorem exists_cutoff_ball
       (t := Metric.closedBall x₀ R)
       hopen_thick hclosed hsub with
     ⟨χ, hχ_smooth, hχ_range, hχ_support, hχ_one_iff⟩
-  have h_supp_in_closedBall :
+  have h_support_in_closedBall :
       tsupport χ ⊆ Metric.closedBall x₀ (3 * R / 2) := by
     have h_closed : IsClosed (Metric.closedBall x₀ (3 * R / 2)) :=
       Metric.isClosed_closedBall
@@ -60,10 +60,10 @@ private theorem exists_cutoff_ball
           linarith
       _ ≤ 3 * R / 2 := by linarith
   refine ⟨χ, contMDiff_iff_contDiff.mp hχ_smooth, ?_, hχ_range, ?_,
-    h_supp_in_closedBall⟩
+    h_support_in_closedBall⟩
   · refine HasCompactSupport.of_support_subset_isCompact
       (isCompact_closedBall (x := x₀) (3 * R / 2)) ?_
-    exact (subset_tsupport _).trans h_supp_in_closedBall
+    exact (subset_tsupport _).trans h_support_in_closedBall
   · intro x hx
     exact (hχ_one_iff x).1 hx
 
@@ -78,9 +78,9 @@ private lemma exists_uniform_iteratedFDeriv_bound
     intro j
     have h_cont : Continuous (fun x : EuN => iteratedFDeriv ℝ j χ x) :=
       hχ.continuous_iteratedFDeriv (by exact_mod_cast le_top)
-    have h_supp : HasCompactSupport (fun x : EuN => iteratedFDeriv ℝ j χ x) :=
+    have h_support : HasCompactSupport (fun x : EuN => iteratedFDeriv ℝ j χ x) :=
       hχ_compact.iteratedFDeriv (𝕜 := ℝ) j
-    obtain ⟨Mj, hMj⟩ := h_supp.exists_bound_of_continuous h_cont
+    obtain ⟨Mj, hMj⟩ := h_support.exists_bound_of_continuous h_cont
     exact ⟨max 0 Mj, le_max_left _ _, fun x => (hMj x).trans (le_max_right _ _)⟩
   let Cj : ℕ → ℝ := fun j => Classical.choose (h_per_j j)
   have hCj_nn : ∀ j, 0 ≤ Cj j := fun j => (Classical.choose_spec (h_per_j j)).1
@@ -128,14 +128,14 @@ private theorem tower_to_supercritical
   intro s
   induction s with
   | zero =>
-      intro p hp_one _hreg hkp f _hf_cpt _hf_supp hf
+      intro p hp_one _hreg hkp f _hf_compact _hf_support hf
       have hp_dim : (d : ℝ) < p := by
         have : ((0 + 1 : ℕ) : ℝ) = 1 := by norm_num
         rw [this, one_mul] at hkp
         exact hkp
       exact ⟨p, hp_one, hp_dim, by simpa using hf⟩
   | succ s ih =>
-      intro p hp_one hreg hkp f hf_cpt hf_supp hf
+      intro p hp_one hreg hkp f hf_compact hf_support hf
       have hp_ne_d : p ≠ (d : ℝ) := hreg.p_ne_n_of_one_le (by omega)
       rcases lt_or_gt_of_ne hp_ne_d with hp_lt | hp_gt
       · have hp_pos : 0 < p := by linarith
@@ -145,7 +145,7 @@ private theorem tower_to_supercritical
           exact hf
         obtain ⟨h_mem_p1, _h_norm_p1⟩ :=
           TowerStep.MemWkp_subcritical_iterated (d := d) (m + 1 + s)
-            hp_one hp_lt hΩ_open hf_cpt hf_supp hf'
+            hp_one hp_lt hΩ_open hf_compact hf_support hf'
         set p_1 : ℝ := (d : ℝ) * p / ((d : ℝ) - p) with hp_1_def
         have hd_pos : 0 < (d : ℝ) := by exact_mod_cast NeZero.pos d
         have hd_p_pos : 0 < (d : ℝ) - p := by linarith
@@ -168,7 +168,7 @@ private theorem tower_to_supercritical
           exact hreg.tower_step hp_one hp_lt
         have h_mem_p1' : MemWkp (d := d) (m + 1 + s) (ENNReal.ofReal p_1) f Ω := by
           rw [hp_1_def]; exact h_mem_p1
-        exact ih hp_1_one hreg_p_1 hkp_next hf_cpt hf_supp h_mem_p1'
+        exact ih hp_1_one hreg_p_1 hkp_next hf_compact hf_support h_mem_p1'
       · exact ⟨p, hp_one, hp_gt, MemWkp.le_of_le (by omega) hf⟩
 
 private theorem exists_contDiff_m_rep_ball
@@ -184,32 +184,32 @@ private theorem exists_contDiff_m_rep_ball
   have hball_open : IsOpen (Metric.ball x₀ (2 * R)) := Metric.isOpen_ball
   have hd_pos : 0 < d := NeZero.pos d
   have hd_real_pos : (0 : ℝ) < (d : ℝ) := by exact_mod_cast hd_pos
-  obtain ⟨χ, hχ_smooth, hχ_cpt, _hχ_range, hχ_one, hχ_supp⟩ :=
+  obtain ⟨χ, hχ_smooth, hχ_compact, _hχ_range, hχ_one, hχ_support⟩ :=
     exists_cutoff_ball (d := d) hR
   set v : EuN → ℝ := fun x => χ x * u x with hv_def
   have hv_memWkp : ∀ k : ℕ,
       MemWkp (d := d) k 2 v (Metric.ball x₀ (2 * R)) := fun k =>
-    cutoff_memWkp_two (d := d) hR hχ_smooth hχ_cpt hball hu k
-  have h_supp_subset : Function.support v ⊆ Function.support χ := by
+    cutoff_memWkp_two (d := d) hR hχ_smooth hχ_compact hball hu k
+  have h_support_subset : Function.support v ⊆ Function.support χ := by
     intro x hx
     have hvx : v x ≠ 0 := hx
     intro hχx
     exact hvx (by simp [hv_def, hχx])
-  have hv_supp_subset_χ : tsupport v ⊆ tsupport χ := closure_mono h_supp_subset
-  have hv_supp_closed : tsupport v ⊆ Metric.closedBall x₀ (3 * R / 2) :=
-    hv_supp_subset_χ.trans hχ_supp
+  have hv_support_subset_χ : tsupport v ⊆ tsupport χ := closure_mono h_support_subset
+  have hv_support_closed : tsupport v ⊆ Metric.closedBall x₀ (3 * R / 2) :=
+    hv_support_subset_χ.trans hχ_support
   have hcball_subset_ball :
       Metric.closedBall x₀ (3 * R / 2) ⊆ Metric.ball x₀ (2 * R) := by
     intro y hy
     rw [Metric.mem_closedBall] at hy
     rw [Metric.mem_ball]
     linarith
-  have hv_supp_ball : tsupport v ⊆ Metric.ball x₀ (2 * R) :=
-    hv_supp_closed.trans hcball_subset_ball
-  have hv_cpt : HasCompactSupport v :=
+  have hv_support_ball : tsupport v ⊆ Metric.ball x₀ (2 * R) :=
+    hv_support_closed.trans hcball_subset_ball
+  have hv_compact : HasCompactSupport v :=
     HasCompactSupport.of_support_subset_isCompact
       (isCompact_closedBall (x := x₀) (3 * R / 2))
-      ((subset_tsupport _).trans hv_supp_closed)
+      ((subset_tsupport _).trans hv_support_closed)
   have hs_max_succ_pos : 1 ≤ d + 1 := by omega
   have hp_2_strict : (1 : ℝ) < 2 := by norm_num
   have h_d_lt_kp_2 : (d : ℝ) < ((d + 1 : ℕ) : ℝ) * 2 := by
@@ -219,7 +219,7 @@ private theorem exists_contDiff_m_rep_ball
     have : (d : ℝ) < (2 * (d + 1) : ℕ) := by
       push_cast; linarith [show (0 : ℝ) ≤ (d : ℝ) from Nat.cast_nonneg d]
     exact this
-  obtain ⟨p₀, hp₀_one, hp₀_lt, h_d_lt_kp₀, hp₀_reg⟩ :=
+  obtain ⟨p₀, hp₀_one, hp₀_lt, h_d_lt_kp₀, hp₀_regularity⟩ :=
     RegularExponent.exists_regular_exponent_below
       (d : ℝ) (d + 1) hs_max_succ_pos hp_2_strict h_d_lt_kp_2
   have hv_mem_two : MemWkp (d := d) (m + 1 + d) 2 v
@@ -236,10 +236,10 @@ private theorem exists_contDiff_m_rep_ball
     EuclideanIteratedMonoExp.memWkp_mono_exponent_of_tsupport_subset (d := d)
       (m + 1 + d) hball_open Metric.isClosed_closedBall
       ((measure_closedBall_lt_top (x := x₀) (r := 3 * R / 2)).ne)
-      hp₀_one_enn hp₀_le_two_enn hv_supp_closed hv_mem_two
+      hp₀_one_enn hp₀_le_two_enn hv_support_closed hv_mem_two
   obtain ⟨q, _hq_one, hq_dim, hv_mem_q⟩ :=
-    tower_to_supercritical (d := d) hball_open m d hp₀_one hp₀_reg
-      h_d_lt_kp₀ hv_cpt hv_supp_ball hv_mem_p₀
+    tower_to_supercritical (d := d) hball_open m d hp₀_one hp₀_regularity
+      h_d_lt_kp₀ hv_compact hv_support_ball hv_mem_p₀
   obtain ⟨f, hf_cdiff, hf_ae⟩ :=
     EuclideanMorrey.morrey_iteratedFDeriv_representative (d := d) (p := q)
       (x₀ := x₀) (R := 2 * R) (u := v) hq_dim h2R_pos m hv_mem_q

@@ -78,10 +78,10 @@ lemma normalGram_contAt
     dsimp only [U]
     exact Ψ.contMDiffOn_toFun.continuousOn.isOpen_inter_preimage
       Ψ.open_source (trivializationAt E (TangentSpace I) p).open_baseSet
-  have hzero_src : (0 : E) ∈ Ψ.source := by
+  have hzero_source : (0 : E) ∈ Ψ.source := by
     simpa only [Ψ] using zero_mem_expMapDiffeo_source (I := I) g p
   have hzeroU : (0 : E) ∈ U := by
-    refine ⟨hzero_src, ?_⟩
+    refine ⟨hzero_source, ?_⟩
     change Ψ (0 : E) ∈ (trivializationAt E (TangentSpace I) p).baseSet
     rw [show Ψ (0 : E) = p by
       simpa only [Ψ] using expMapDiffeo_zero (I := I) g p]

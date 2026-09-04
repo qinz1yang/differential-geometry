@@ -78,15 +78,15 @@ private lemma exists_densityMul_sourcePairingCoeff_wkpNorm_le
     exists_wkpNorm_chartCoeffSum_bddBy (I := I) (M := M) α hK hK_target m
       Finset.univ cF hcF_cd
   refine ⟨Kc, hKc_nn, ?_⟩
-  intro F hF_supp hF_K Ω'' hΩ''_open hΩ''_target
+  intro F hF_support hF_K Ω'' hΩ''_open hΩ''_target
   set vF : CompIdx E r s × CompIdx E r s → EuclN → ℝ :=
     fun a => tensorComponentEuclid (I := I) (M := M) g r s F α a.2 with hvF_def
   have hvF_cd : ∀ a ∈ (Finset.univ : Finset (CompIdx E r s × CompIdx E r s)),
       ContDiff ℝ ∞ (vF a) := fun a _ =>
-    tensorComponentEuclid_contDiff (I := I) (M := M) g r s F α a.2 hF_supp
-  have hvF_cpt : ∀ a ∈ (Finset.univ : Finset (CompIdx E r s × CompIdx E r s)),
+    tensorComponentEuclid_contDiff (I := I) (M := M) g r s F α a.2 hF_support
+  have hvF_compact : ∀ a ∈ (Finset.univ : Finset (CompIdx E r s × CompIdx E r s)),
       HasCompactSupport (vF a) := fun a _ =>
-    tensorComponentEuclid_hasCompactSupport (I := I) (M := M) g r s F α a.2 hF_supp
+    tensorComponentEuclid_hasCompactSupport (I := I) (M := M) g r s F α a.2 hF_support
   have hvF_K : ∀ a ∈ (Finset.univ : Finset (CompIdx E r s × CompIdx E r s)),
       tsupport (vF a) ⊆ K := fun a _ => hF_K a.2
   have hvF_bd : ∀ a ∈ (Finset.univ : Finset (CompIdx E r s × CompIdx E r s)),
@@ -99,7 +99,7 @@ private lemma exists_densityMul_sourcePairingCoeff_wkpNorm_le
         (tensorComponentEuclid (I := I) (M := M) g r s F α P) Ω'')
       (fun P _ => zero_le) (Finset.mem_univ a.2)
   obtain ⟨h_sum_mem, h_sum_le⟩ :=
-    hKc hvF_cd hvF_cpt hvF_K hΩ''_open hΩ''_target hvF_bd
+    hKc hvF_cd hvF_compact hvF_K hΩ''_open hΩ''_target hvF_bd
   have h_eqOn : Set.EqOn
       (fun y => densityOnEuclid (I := I) g α y *
         sourcePairingCoeff (I := I) (M := M) g r s F α P₀ y)
@@ -171,16 +171,16 @@ private lemma exists_densityMul_covPrincipalRotationCoeff_wkpNorm_le
     exists_wkpNorm_chartCoeffSum_bddBy (I := I) (M := M) α hK hK_target m
       Finset.univ cT hcT_cd
   refine ⟨Kc, hKc_nn, ?_⟩
-  intro T hT_supp hT_K Ω'' hΩ''_open hΩ''_target
+  intro T hT_support hT_K Ω'' hΩ''_open hΩ''_target
   set vT : Idx → EuclN → ℝ :=
     fun a => euclidPartial (E := E) a.2.2.1
       (tensorComponentEuclid (I := I) (M := M) g r s T α a.1) with hvT_def
   have hT_comp_cd : ∀ P : CompIdx E r s,
       ContDiff ℝ ∞ (tensorComponentEuclid (I := I) (M := M) g r s T α P) :=
-    fun P => tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P hT_supp
+    fun P => tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P hT_support
   have hvT_cd : ∀ a ∈ (Finset.univ : Finset Idx), ContDiff ℝ ∞ (vT a) :=
     fun a _ => euclidPartial_contDiff (E := E) (hT_comp_cd a.1) a.2.2.1
-  have hvT_cpt : ∀ a ∈ (Finset.univ : Finset Idx), HasCompactSupport (vT a) :=
+  have hvT_compact : ∀ a ∈ (Finset.univ : Finset Idx), HasCompactSupport (vT a) :=
     fun a _ => euclidPartial_hasCompactSupport (E := E) hK (hT_K a.1) a.2.2.1
   have hvT_K : ∀ a ∈ (Finset.univ : Finset Idx), tsupport (vT a) ⊆ K :=
     fun a _ => (euclidPartial_tsupport_subset (E := E) a.2.2.1).trans (hT_K a.1)
@@ -194,7 +194,7 @@ private lemma exists_densityMul_covPrincipalRotationCoeff_wkpNorm_le
       memWkp_of_smooth_compactSupport_anyOpen (d := dimE) hΩ''_open
         (by simpa using hT_comp_cd a.1)
         (tensorComponentEuclid_hasCompactSupport (I := I) (M := M)
-          g r s T α a.1 hT_supp) (by norm_num : (1 : ℝ≥0∞) ≤ 2) (m + 1)
+          g r s T α a.1 hT_support) (by norm_num : (1 : ℝ≥0∞) ≤ 2) (m + 1)
     refine (wkpNorm_euclidPartial_le (E := E) hΩ''_open
       (hT_comp_cd a.1) h_mem_succ a.2.2.1).trans ?_
     exact Finset.single_le_sum
@@ -202,7 +202,7 @@ private lemma exists_densityMul_covPrincipalRotationCoeff_wkpNorm_le
         (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'')
       (fun P _ => zero_le) (Finset.mem_univ a.1)
   obtain ⟨h_sum_mem, h_sum_le⟩ :=
-    hKc hvT_cd hvT_cpt hvT_K hΩ''_open hΩ''_target hvT_bd
+    hKc hvT_cd hvT_compact hvT_K hΩ''_open hΩ''_target hvT_bd
   have h_eqOn : Set.EqOn
       (fun y => densityOnEuclid (I := I) g α y *
         covPrincipalRotationCoeff (I := I) (M := M) g r s T α P₀ y)
@@ -306,22 +306,22 @@ private lemma exists_densityMul_covLowerOrderRotationValueCoeff_wkpNorm_le
     exists_wkpNorm_chartCoeffSum_bddBy (I := I) (M := M) α hK hK_target m
       Finset.univ cBC hcBC_cd
   refine ⟨KcA + KcBC, by positivity, ?_⟩
-  intro T hT_supp hT_K Ω'' hΩ''_open hΩ''_target
+  intro T hT_support hT_K Ω'' hΩ''_open hΩ''_target
   have hT_comp_cd : ∀ P : CompIdx E r s,
       ContDiff ℝ ∞ (tensorComponentEuclid (I := I) (M := M) g r s T α P) :=
-    fun P => tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P hT_supp
+    fun P => tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P hT_support
   have hT_comp_succ : ∀ P : CompIdx E r s, MemWkp (d := dimE) (m + 1) 2
       (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'' :=
     fun P => memWkp_of_smooth_compactSupport_anyOpen (d := dimE) hΩ''_open
       (by simpa using hT_comp_cd P)
       (tensorComponentEuclid_hasCompactSupport (I := I) (M := M)
-        g r s T α P hT_supp) (by norm_num : (1 : ℝ≥0∞) ≤ 2) (m + 1)
+        g r s T α P hT_support) (by norm_num : (1 : ℝ≥0∞) ≤ 2) (m + 1)
   set vA : IdxA → EuclN → ℝ :=
     fun a => euclidPartial (E := E) a.2.2.1
       (tensorComponentEuclid (I := I) (M := M) g r s T α a.1) with hvA_def
   have hvA_cd : ∀ a ∈ (Finset.univ : Finset IdxA), ContDiff ℝ ∞ (vA a) :=
     fun a _ => euclidPartial_contDiff (E := E) (hT_comp_cd a.1) a.2.2.1
-  have hvA_cpt : ∀ a ∈ (Finset.univ : Finset IdxA), HasCompactSupport (vA a) :=
+  have hvA_compact : ∀ a ∈ (Finset.univ : Finset IdxA), HasCompactSupport (vA a) :=
     fun a _ => euclidPartial_hasCompactSupport (E := E) hK (hT_K a.1) a.2.2.1
   have hvA_K : ∀ a ∈ (Finset.univ : Finset IdxA), tsupport (vA a) ⊆ K :=
     fun a _ => (euclidPartial_tsupport_subset (E := E) a.2.2.1).trans (hT_K a.1)
@@ -341,10 +341,10 @@ private lemma exists_densityMul_covLowerOrderRotationValueCoeff_wkpNorm_le
       with hvBC_def
   have hvBC_cd : ∀ a ∈ (Finset.univ : Finset IdxBC), ContDiff ℝ ∞ (vBC a) :=
     fun a _ => hT_comp_cd a.2.2.2.2
-  have hvBC_cpt : ∀ a ∈ (Finset.univ : Finset IdxBC),
+  have hvBC_compact : ∀ a ∈ (Finset.univ : Finset IdxBC),
       HasCompactSupport (vBC a) := fun a _ =>
     tensorComponentEuclid_hasCompactSupport (I := I) (M := M)
-      g r s T α a.2.2.2.2 hT_supp
+      g r s T α a.2.2.2.2 hT_support
   have hvBC_K : ∀ a ∈ (Finset.univ : Finset IdxBC),
       tsupport (vBC a) ⊆ K := fun a _ => hT_K a.2.2.2.2
   have hvBC_bd : ∀ a ∈ (Finset.univ : Finset IdxBC),
@@ -358,9 +358,9 @@ private lemma exists_densityMul_covLowerOrderRotationValueCoeff_wkpNorm_le
         (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'')
       (fun P _ => zero_le) (Finset.mem_univ a.2.2.2.2)
   obtain ⟨hA_mem, hA_le⟩ :=
-    hKcA hvA_cd hvA_cpt hvA_K hΩ''_open hΩ''_target hvA_bd
+    hKcA hvA_cd hvA_compact hvA_K hΩ''_open hΩ''_target hvA_bd
   obtain ⟨hBC_mem, hBC_le⟩ :=
-    hKcBC hvBC_cd hvBC_cpt hvBC_K hΩ''_open hΩ''_target hvBC_bd
+    hKcBC hvBC_cd hvBC_compact hvBC_K hΩ''_open hΩ''_target hvBC_bd
   have h_eqOn : Set.EqOn
       (fun y => densityOnEuclid (I := I) g α y *
         covLowerOrderRotationValueCoeff (I := I) (M := M) g r s T α P₀ y)
@@ -563,14 +563,14 @@ private lemma exists_gradientGroup_wkpNorm_le
         g r s α P₀ l a)
   choose Kl hKl_nn hKl using hper
   refine ⟨∑ l : Fin dimE, Kl l, Finset.sum_nonneg (fun l _ => hKl_nn l), ?_⟩
-  intro T hT_supp hT_K Ω'' hΩ''_open hΩ''_target
+  intro T hT_support hT_K Ω'' hΩ''_open hΩ''_target
   have hT_comp_cd : ∀ P : CompIdx E r s,
       ContDiff ℝ ∞ (tensorComponentEuclid (I := I) (M := M) g r s T α P) :=
-    fun P => tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P hT_supp
-  have hT_comp_cpt : ∀ P : CompIdx E r s,
+    fun P => tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P hT_support
+  have hT_comp_compact : ∀ P : CompIdx E r s,
       HasCompactSupport (tensorComponentEuclid (I := I) (M := M) g r s T α P) :=
     fun P => tensorComponentEuclid_hasCompactSupport (I := I) (M := M)
-      g r s T α P hT_supp
+      g r s T α P hT_support
   set Wext : Fin dimE → EuclN → ℝ :=
     fun l y => ∑ a : CompIdx E r s × CompIdx E r s × Fin dimE × CompIdx E r s,
       weightedGradChartCoeff (I := I) (M := M) g r s α P₀ l a y *
@@ -580,10 +580,10 @@ private lemma exists_gradientGroup_wkpNorm_le
       Fin dimE × CompIdx E r s) (_ : a ∈ (Finset.univ : Finset _)),
       ContDiff ℝ ∞ (fun y => tensorComponentEuclid (I := I) (M := M)
         g r s T α a.2.2.2 y) := fun l a _ => hT_comp_cd a.2.2.2
-  have h_comp_cpt : ∀ (l : Fin dimE) (a : CompIdx E r s × CompIdx E r s ×
+  have h_comp_compact : ∀ (l : Fin dimE) (a : CompIdx E r s × CompIdx E r s ×
       Fin dimE × CompIdx E r s) (_ : a ∈ (Finset.univ : Finset _)),
       HasCompactSupport (fun y => tensorComponentEuclid (I := I) (M := M)
-        g r s T α a.2.2.2 y) := fun l a _ => hT_comp_cpt a.2.2.2
+        g r s T α a.2.2.2 y) := fun l a _ => hT_comp_compact a.2.2.2
   have h_comp_K : ∀ (l : Fin dimE) (a : CompIdx E r s × CompIdx E r s ×
       Fin dimE × CompIdx E r s) (_ : a ∈ (Finset.univ : Finset _)),
       tsupport (fun y => tensorComponentEuclid (I := I) (M := M)
@@ -596,7 +596,7 @@ private lemma exists_gradientGroup_wkpNorm_le
       (fun a _ => weightedGradChartCoeff_contDiffOn (I := I) (M := M)
         g r s α P₀ l a)
       (h_comp_cd l) (h_comp_K l)
-  have hWext_cpt : ∀ l : Fin dimE, HasCompactSupport (Wext l) := by
+  have hWext_compact : ∀ l : Fin dimE, HasCompactSupport (Wext l) := by
     intro l
     rw [hWext_def]
     exact chartCoeffSum_hasCompactSupport hK Finset.univ
@@ -604,7 +604,7 @@ private lemma exists_gradientGroup_wkpNorm_le
   have hWext_mem : ∀ l : Fin dimE,
       MemWkp (d := dimE) (m + 1) 2 (Wext l) Ω'' := fun l =>
     memWkp_of_smooth_compactSupport_anyOpen (d := dimE) hΩ''_open
-      (by simpa using hWext_cd l) (hWext_cpt l)
+      (by simpa using hWext_cd l) (hWext_compact l)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) (m + 1)
   have h_comp_bd : ∀ (l : Fin dimE) (a : CompIdx E r s × CompIdx E r s ×
       Fin dimE × CompIdx E r s) (_ : a ∈ (Finset.univ : Finset _)),
@@ -622,7 +622,7 @@ private lemma exists_gradientGroup_wkpNorm_le
         ENNReal.ofReal (Kl l) *
           ∑ P : CompIdx E r s, iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
             (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'' :=
-    fun l => (hKl l (h_comp_cd l) (h_comp_cpt l) (h_comp_K l)
+    fun l => (hKl l (h_comp_cd l) (h_comp_compact l) (h_comp_K l)
       hΩ''_open hΩ''_target (h_comp_bd l)).2
   have h_partial_eqOn : ∀ l : Fin dimE, Set.EqOn
       (euclidPartial (E := E) l
@@ -709,7 +709,7 @@ theorem tensorComponentWeakRHS_wkpNorm_le
     exists_gradientGroup_wkpNorm_le (I := I) (M := M)
       g r s α hK hK_target m P₀
   refine ⟨Kc1 + Kc2 + Kc3 + Kc4, by positivity, ?_⟩
-  intro T F hT_supp hF_supp hT_K hF_K Ω'' hΩ''_open hΩ''_target
+  intro T F hT_support hF_support hT_K hF_K Ω'' hΩ''_open hΩ''_target
   set G1 : EuclN → ℝ := fun y => densityOnEuclid (I := I) g α y *
     sourcePairingCoeff (I := I) (M := M) g r s F α P₀ y with hG1_def
   set G2 : EuclN → ℝ := fun y => densityOnEuclid (I := I) g α y *
@@ -719,10 +719,10 @@ theorem tensorComponentWeakRHS_wkpNorm_le
     with hG3_def
   set G4 : EuclN → ℝ := fun y => ∑ l : Fin dimE, euclidPartial (E := E) l
     (weightedGradCoeff (I := I) (M := M) g r s T α P₀ l) y with hG4_def
-  obtain ⟨hG1_mem, hG1_le⟩ := hKc1 hF_supp hF_K hΩ''_open hΩ''_target
-  obtain ⟨hG2_mem, hG2_le⟩ := hKc2 hT_supp hT_K hΩ''_open hΩ''_target
-  obtain ⟨hG3_mem, hG3_le⟩ := hKc3 hT_supp hT_K hΩ''_open hΩ''_target
-  obtain ⟨hG4_mem, hG4_le⟩ := hKc4 hT_supp hT_K hΩ''_open hΩ''_target
+  obtain ⟨hG1_mem, hG1_le⟩ := hKc1 hF_support hF_K hΩ''_open hΩ''_target
+  obtain ⟨hG2_mem, hG2_le⟩ := hKc2 hT_support hT_K hΩ''_open hΩ''_target
+  obtain ⟨hG3_mem, hG3_le⟩ := hKc3 hT_support hT_K hΩ''_open hΩ''_target
+  obtain ⟨hG4_mem, hG4_le⟩ := hKc4 hT_support hT_K hΩ''_open hΩ''_target
   have h_eqOn : Set.EqOn
       (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀)
       (fun y => G1 y + (-G2 y) + (-G3 y) + G4 y)

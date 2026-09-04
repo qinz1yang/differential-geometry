@@ -170,7 +170,7 @@ open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
   euclidPartial_def covDerivComponent_lowerOrder_contDiffOn euclidPartial_chartPushedRaw_contDiffOn
   chartPushedRaw_tensorChartComponentRaw_contDiffOn)
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-  (chartDeTurckCorrPrincipalSymbolExprRaw chartDeTurckCorrHessBlockRaw)
+  (chartDeTurckCorrectionPrincipalSymbolExprRaw chartDeTurckCorrectionHessBlockRaw)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -386,17 +386,17 @@ private lemma lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv
   classical
   have hev := realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x c d
-  have hx_src : x ∈ (extChartAt I x).source := by
+  have hx_source : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
   have htarget : extChartAt I x x ∈ (extChartAt I x).target :=
-    (extChartAt I x).map_source hx_src
+    (extChartAt I x).map_source hx_source
   have htarget_open : IsOpen ((extChartAt I x).target : Set E) :=
     isOpen_extChartAt_target (I := I) x
-  filter_upwards [htarget_open.mem_nhds htarget, hev] with y hy_tgt hev_y
+  filter_upwards [htarget_open.mem_nhds htarget, hev] with y hy_target hev_y
   rw [hev_y]
   have hb : (extChartAt I x).symm y ∈ (chartAt H x).source := by
     rw [← extChartAt_source (I := I)]
-    exact (extChartAt I x).map_target hy_tgt
+    exact (extChartAt I x).map_target hy_target
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
   rw [lieTerm_ccTensor02Symm_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def,
@@ -522,9 +522,9 @@ private lemma lieTerm_chartInvGramOnE_center (g : SmoothRiemannianMetric I M) (x
         (extChartAt I x x) =
       chartInvGramMatrix (I := I) g x x a b := by
   rw [DifferentialGeometry.Geometry.Operator.chartInvGramOnE_def]
-  have hx_src : x ∈ (extChartAt I x).source := by
+  have hx_source : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
-  rw [(extChartAt I x).left_inv hx_src]
+  rw [(extChartAt I x).left_inv hx_source]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -534,9 +534,9 @@ private lemma lieTerm_chartGramOnE_center (g : SmoothRiemannianMetric I M) (x : 
         (extChartAt I x x) =
       DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g x x a b := by
   rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def]
-  have hx_src : x ∈ (extChartAt I x).source := by
+  have hx_source : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
-  rw [(extChartAt I x).left_inv hx_src]
+  rw [(extChartAt I x).left_inv hx_source]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -618,7 +618,7 @@ private lemma lieTerm_P2_halfCollapse
         chartGramOnE (I := I) g₁ x k e (extChartAt I x x) *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₁ x a b (extChartAt I x x) *
-              chartDeTurckCorrHessBlockRaw (I := I) g₁ x
+              chartDeTurckCorrectionHessBlockRaw (I := I) g₁ x
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) d a b k
                 (extChartAt I x x)) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -644,13 +644,13 @@ private lemma lieTerm_P2_halfCollapse
   set CGM : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun a b =>
     DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g₁ x x a b with hCGM
   have hHB : ∀ k a b : Fin (Module.finrank ℝ E),
-      chartDeTurckCorrHessBlockRaw (I := I) g₁ x
+      chartDeTurckCorrectionHessBlockRaw (I := I) g₁ x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) d a b k
           (extChartAt I x x) =
         (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
           CIM k l * (pd2 d a l b + pd2 d b l a - pd2 d l a b) := by
     intro k a b
-    rw [chartDeTurckCorrHessBlockRaw]
+    rw [chartDeTurckCorrectionHessBlockRaw]
     refine congrArg (fun t : ℝ => (1 / 2 : ℝ) * t) ?_
     refine Finset.sum_congr rfl (fun l _ => ?_)
     rw [lieTerm_chartInvGramOnE_center (I := I) g₁ x k l]
@@ -658,7 +658,7 @@ private lemma lieTerm_P2_halfCollapse
       chartGramOnE (I := I) g₁ x k e (extChartAt I x x) *
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g₁ x a b (extChartAt I x x) *
-            chartDeTurckCorrHessBlockRaw (I := I) g₁ x
+            chartDeTurckCorrectionHessBlockRaw (I := I) g₁ x
               (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) d a b k
               (extChartAt I x x)) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E), ∑ l : Fin
@@ -670,7 +670,7 @@ private lemma lieTerm_P2_halfCollapse
         chartGramOnE (I := I) g₁ x k e (extChartAt I x x) *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₁ x a b (extChartAt I x x) *
-              chartDeTurckCorrHessBlockRaw (I := I) g₁ x
+              chartDeTurckCorrectionHessBlockRaw (I := I) g₁ x
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) d a b k
                 (extChartAt I x x)) =
       ∑ k : Fin (Module.finrank ℝ E),
@@ -779,7 +779,7 @@ theorem lieTop_cov_eq_principalSymbolExprRaw_add_tail
           (deTurckLieSecondOrderPrincipalCoeff (I := I) g₀ g₁)
           (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))) x
         ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] =
-      chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g₁ x
+      chartDeTurckCorrectionPrincipalSymbolExprRaw (I := I) g₁ x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j (extChartAt I x x)
         + lieTopTail (I := I) g₀ T T' g₁ x i j := by
   classical
@@ -837,20 +837,20 @@ theorem lieTop_cov_eq_principalSymbolExprRaw_add_tail
     ring
   rw [hsplit]
   refine congrArg (fun t : ℝ => t + _) ?_
-  rw [show chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g₁ x
+  rw [show chartDeTurckCorrectionPrincipalSymbolExprRaw (I := I) g₁ x
       (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j (extChartAt I x x) =
     (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g₁ x k j (extChartAt I x x) *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₁ x a b (extChartAt I x x) *
-              chartDeTurckCorrHessBlockRaw (I := I) g₁ x
+              chartDeTurckCorrectionHessBlockRaw (I := I) g₁ x
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i a b k
                 (extChartAt I x x)) +
     (∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g₁ x i k (extChartAt I x x) *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₁ x a b (extChartAt I x x) *
-              chartDeTurckCorrHessBlockRaw (I := I) g₁ x
+              chartDeTurckCorrectionHessBlockRaw (I := I) g₁ x
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) j a b k
                 (extChartAt I x x)) from rfl]
   rw [Finset.sum_congr rfl (fun k _ => by
@@ -860,13 +860,13 @@ theorem lieTop_cov_eq_principalSymbolExprRaw_add_tail
       chartGramOnE (I := I) g₁ x i k (extChartAt I x x) *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₁ x a b (extChartAt I x x) *
-              chartDeTurckCorrHessBlockRaw (I := I) g₁ x
+              chartDeTurckCorrectionHessBlockRaw (I := I) g₁ x
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) j a b k
                 (extChartAt I x x) =
       chartGramOnE (I := I) g₁ x k i (extChartAt I x x) *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₁ x a b (extChartAt I x x) *
-              chartDeTurckCorrHessBlockRaw (I := I) g₁ x
+              chartDeTurckCorrectionHessBlockRaw (I := I) g₁ x
                 (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) j a b k
                 (extChartAt I x x))]
   rw [lieTerm_P2_halfCollapse (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g₁ x i j,

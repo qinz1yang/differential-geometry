@@ -133,14 +133,14 @@ theorem rawTensorConnLap_add
   classical
   set cov := TensorRSNabla.tensorRSCovariantDerivative I M r s
     (LeviCivita (I := I) g) with hcov_def
-  have hcov_loc := cov.isCovariantDerivativeOn (s := (Set.univ : Set M))
+  have hcov_local := cov.isCovariantDerivativeOn (s := (Set.univ : Set M))
   unfold rawTensorConnLap
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl ?_
   intro i _
   have h_addT : cov.toFun (fun y => T y + T' y) x =
       cov.toFun T x + cov.toFun T' x := by
-    have h_add := hcov_loc.add (σ := T) (σ' := T') (hT x) (hT' x)
+    have h_add := hcov_local.add (σ := T) (σ' := T') (hT x) (hT' x)
     have heq : (fun y => T y + T' y) = T + T' := by
       funext y
       rfl
@@ -154,7 +154,7 @@ theorem rawTensorConnLap_add
     have h_add_at_y : cov.toFun (fun y => T y + T' y) y =
         cov.toFun T y + cov.toFun T' y := by
       change cov.toFun (T + T') y = cov.toFun T y + cov.toFun T' y
-      exact hcov_loc.add (σ := T) (σ' := T') (hT y) (hT' y)
+      exact hcov_local.add (σ := T) (σ' := T') (hT y) (hT' y)
     change cov.toFun (fun y => T y + T' y) y (smoothOrthoFrame (I := I) g x i y) =
       covApply cov (smoothOrthoFrame (I := I) g x i) T y +
         covApply cov (smoothOrthoFrame (I := I) g x i) T' y
@@ -165,7 +165,7 @@ theorem rawTensorConnLap_add
       cov.toFun (covApply cov (smoothOrthoFrame (I := I) g x i) T) x +
         cov.toFun (covApply cov (smoothOrthoFrame (I := I) g x i) T') x := by
     rw [h_covApply_add]
-    exact hcov_loc.add (σ := covApply cov (smoothOrthoFrame (I := I) g x i) T)
+    exact hcov_local.add (σ := covApply cov (smoothOrthoFrame (I := I) g x i) T)
       (σ' := covApply cov (smoothOrthoFrame (I := I) g x i) T')
       (hcovT x i) (hcovT' x i)
   change
@@ -212,21 +212,21 @@ theorem rawTensorConnLap_smul
   classical
   set cov := TensorRSNabla.tensorRSCovariantDerivative I M r s
     (LeviCivita (I := I) g) with hcov_def
-  have hcov_loc := cov.isCovariantDerivativeOn (s := (Set.univ : Set M))
+  have hcov_local := cov.isCovariantDerivativeOn (s := (Set.univ : Set M))
   unfold rawTensorConnLap
   rw [Finset.smul_sum]
   refine Finset.sum_congr rfl ?_
   intro i _
   have h_smulT : cov.toFun (fun y => c • T y) x = c • cov.toFun T x := by
     change cov.toFun (c • T) x = c • cov.toFun T x
-    exact hcov_loc.smul_const (σ := T) c (hT x)
+    exact hcov_local.smul_const (σ := T) c (hT x)
   have h_covApply_smul : covApply cov (smoothOrthoFrame (I := I) g x i)
       (fun y => c • T y) =
       fun y => c • covApply cov (smoothOrthoFrame (I := I) g x i) T y := by
     funext y
     have h_smul_at_y : cov.toFun (fun y => c • T y) y = c • cov.toFun T y := by
       change cov.toFun (c • T) y = c • cov.toFun T y
-      exact hcov_loc.smul_const (σ := T) c (hT y)
+      exact hcov_local.smul_const (σ := T) c (hT y)
     change cov.toFun (fun y => c • T y) y (smoothOrthoFrame (I := I) g x i y) =
       c • covApply cov (smoothOrthoFrame (I := I) g x i) T y
     rw [h_smul_at_y]
@@ -235,7 +235,7 @@ theorem rawTensorConnLap_smul
       (covApply cov (smoothOrthoFrame (I := I) g x i) (fun y => c • T y)) x =
       c • cov.toFun (covApply cov (smoothOrthoFrame (I := I) g x i) T) x := by
     rw [h_covApply_smul]
-    exact hcov_loc.smul_const
+    exact hcov_local.smul_const
       (σ := covApply cov (smoothOrthoFrame (I := I) g x i) T) c (hcovT x i)
   change
     (cov.toFun (covApply cov (smoothOrthoFrame (I := I) g x i)
@@ -1399,14 +1399,14 @@ theorem rawTensorConnLap_eq_fixedFrame_of_orthonormal
   rfl
 
 omit [CompleteSpace E] in
-private theorem rawTensorConnLap_eq_fixedFrame_smoothOrthoFrame_on_nbhd
+private theorem rawTensorConnLap_eq_fixedFrame_smoothOrthoFrame_on_neighborhood
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b)
     (hT_total : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) y (T y)))
     (x₀ : M)
-    {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     rawTensorConnLap (I := I) g r s T y =
       rawTensorConnLapFixedFrame (I := I) g r s
         (smoothOrthoFrame (I := I) g x₀) T y :=
@@ -1449,11 +1449,11 @@ theorem rawTensorConnLap_contMDiff
         (E := fun z : M => TensorRSSpace r s I z) y
         (rawTensorConnLapFixedFrame (I := I) g r s
           (smoothOrthoFrame (I := I) g x₀) T y)) := by
-    filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+    filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
     have h_fib : rawTensorConnLap (I := I) g r s T y =
         rawTensorConnLapFixedFrame (I := I) g r s
           (smoothOrthoFrame (I := I) g x₀) T y :=
-      rawTensorConnLap_eq_fixedFrame_smoothOrthoFrame_on_nbhd (I := I)
+      rawTensorConnLap_eq_fixedFrame_smoothOrthoFrame_on_neighborhood (I := I)
         g r s T hT_total x₀ hy
     exact congrArg (TotalSpace.mk' (TensorRSModel r s ℝ E)
       (E := fun z : M => TensorRSSpace r s I z) y) h_fib

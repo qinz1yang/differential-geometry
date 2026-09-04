@@ -72,7 +72,7 @@ private lemma tensor0S_trivialization_symmL_apply
       (fun y : M => Tensor0SSpace r I y) α).baseSet := by
     change b ∈ (trivializationAt E (TangentSpace I) α).baseSet
     exact hb
-  have h := _root_.Pretrivialization.continuousMultilinearMap_symm_apply'
+  have h := _root_.Pretrivialization.continuousMultilinearMap_symm_apply_of_mem
     (𝕜 := ℝ) (s := r) (F := E) (E := (TangentSpace I : M → Type _))
     (e := trivializationAt E (TangentSpace I) α) (b := b) hb V
   rw [(trivializationAt (Tensor0SModel r ℝ E)

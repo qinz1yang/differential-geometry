@@ -472,7 +472,7 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
     simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow]
     refine mul_nonneg ?_ (mul_nonneg hρ_nn hRHS_nn)
     positivity
-  have hb_chart_src : b ∈ (chartAt H α).source := by
+  have hb_chart_source : b ∈ (chartAt H α).source := by
     rw [hb_def]
     have h_in_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
       rw [chartTargetEuclid_eq_preimage_symm] at hy
@@ -480,11 +480,11 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
     have h_ext : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         (extChartAt I α).source := (extChartAt I α).map_target h_in_target
     rwa [extChartAt_source] at h_ext
-  have hb_extSrc : b ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hb_chart_src
+  have hb_extSource : b ∈ (extChartAt I α).source := by
+    rw [extChartAt_source]; exact hb_chart_source
   have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α := by
     rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α]
-    exact hb_extSrc
+    exact hb_extSource
   have h_lhs_eq :
       tensorChartComp (I := I) (M := M) g r s
           (rawTensorConnLapSmooth (I := I) g r s T) α Idx Jdx y =
@@ -501,10 +501,10 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
           (tensorChartComponentRaw (I := I) (M := M) g r s
               (rawTensorConnLapSmooth (I := I) g r s T) α Idx Jdx b) ^ 2 := by
     rw [h_lhs_eq, mul_pow]
-  by_cases hb_supp : b ∈ tsupport
+  by_cases hb_support : b ∈ tsupport
       (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
   swap
-  · have hρ_zero : ρ = 0 := image_eq_zero_of_notMem_tsupport hb_supp
+  · have hρ_zero : ρ = 0 := image_eq_zero_of_notMem_tsupport hb_support
     have h_LHS_zero :
         (tensorChartComp (I := I) (M := M) g r s
             (rawTensorConnLapSmooth (I := I) g r s T) α Idx Jdx y) ^ 2 = 0 := by
@@ -514,7 +514,7 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
     positivity
   have hb_inter : b ∈ tsupport
         (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
-        chartLeviCivitaGoodSet (I := I) α := ⟨hb_supp, hb_good⟩
+        chartLeviCivitaGoodSet (I := I) α := ⟨hb_support, hb_good⟩
   have h_raw_sq_bound := hK_pt_le Idx Jdx T b hb_inter
   have h_extAt_b : (extChartAt I α) b = (toEuclidean (E := E)).symm y := by
     rw [hb_def]
@@ -554,7 +554,7 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
           ((tensorChartComponentRaw (I := I) (M := M) g r s
               T α Idx' Jdx') ∘ (extChartAt I α).symm)
           (extChartAt I α).target := by
-      have hraw_src : ContMDiffOn I 𝓘(ℝ) ∞
+      have hraw_source : ContMDiffOn I 𝓘(ℝ) ∞
           (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx' Jdx')
           ((chartAt H α).source) :=
         tensorChartComponentRaw_contMDiffOn_chart_source (I := I) (M := M)
@@ -562,7 +562,7 @@ theorem tensorChartComp_rawConnLap_sq_le_pou_pouSobolev_summand
       have hraw_extsrc : ContMDiffOn I 𝓘(ℝ) ∞
           (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx' Jdx')
           ((extChartAt I α).source) := by
-        rw [extChartAt_source]; exact hraw_src
+        rw [extChartAt_source]; exact hraw_source
       have hsymm : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm
           (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
       have hmaps : Set.MapsTo (extChartAt I α).symm (extChartAt I α).target

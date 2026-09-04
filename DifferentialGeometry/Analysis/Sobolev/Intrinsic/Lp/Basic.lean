@@ -920,10 +920,10 @@ theorem HasWeakRiemannianGradLp.pairing_diff_smooth_aeEq_zero
     h_int_G.sub h_int_G'
   refine ae_eq_zero_of_integral_contMDiff_smul_eq_zero (I := I)
     hf_int.locallyIntegrable ?_
-  intro φ hφ_smooth hφ_supp
+  intro φ hφ_smooth hφ_support
   set φσ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     smoothSmul (I := I) φ hφ_smooth σ with hφσ_def
-  have hφσ_supp : HasCompactSupport (fun x : M => (φσ x : E)) := by
+  have hφσ_support : HasCompactSupport (fun x : M => (φσ x : E)) := by
     have hsupp_sub : Function.support (fun x : M => (φσ x : E)) ⊆
         Function.support φ := by
       intro x hx
@@ -933,16 +933,16 @@ theorem HasWeakRiemannianGradLp.pairing_diff_smooth_aeEq_zero
       apply hx
       rw [h0]; exact zero_smul _ _
     refine HasCompactSupport.of_support_subset_isCompact (K := tsupport φ)
-      hφ_supp ?_
+      hφ_support ?_
     exact hsupp_sub.trans (subset_tsupport _)
   have h_pair_G : ∫ x, g.inner x (G x) (φσ x)
         ∂(riemannianVolumeMeasure I M g) =
       -∫ x, u x * divergenceG (I := I) g φσ x
-        ∂(riemannianVolumeMeasure I M g) := h₁.pairing_eq φσ hφσ_supp
+        ∂(riemannianVolumeMeasure I M g) := h₁.pairing_eq φσ hφσ_support
   have h_pair_G' : ∫ x, g.inner x (G' x) (φσ x)
         ∂(riemannianVolumeMeasure I M g) =
       -∫ x, u x * divergenceG (I := I) g φσ x
-        ∂(riemannianVolumeMeasure I M g) := h₂.pairing_eq φσ hφσ_supp
+        ∂(riemannianVolumeMeasure I M g) := h₂.pairing_eq φσ hφσ_support
   have h_diff_eq : ∫ x, (g.inner x (G x) (φσ x) - g.inner x (G' x) (φσ x))
         ∂(riemannianVolumeMeasure I M g) = 0 := by
     have h_int_G_φσ : Integrable (fun x : M => g.inner x (G x) (φσ x))

@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -115,5 +115,5 @@ theorem higher_regularity_canonical_metric_compactness_connected
     b.toSeed.higher_regularity_canonical_metric_compactness_connected d hcomplete hconn
 
 end MetricCompactBase
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

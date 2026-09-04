@@ -427,11 +427,11 @@ theorem divergence_g_with_boundary_add
         chartCoeffOnE (I := I) x (X + Y) i y =
           chartCoeffOnE (I := I) x X i y + chartCoeffOnE (I := I) x Y i y := by
     intro y hy i
-    have hsymm_src : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
+    have hsymm_source : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
       (extChartAt I x).map_target hy
     have hsymm_chart : (extChartAt I x).symm y ∈ (chartAt H x).source := by
-      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
-      exact hsymm_src
+      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_source
+      exact hsymm_source
     have hsymm_base : (extChartAt I x).symm y ∈
         (trivializationAt E (TangentSpace I) x).baseSet := by
       rw [trivializationAt_baseSet_eq_chartAt_source]
@@ -521,11 +521,11 @@ theorem divergence_g_with_boundary_zero
         chartCoeffOnE (I := I) x
           (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) i y = 0 := by
     intro y hy i
-    have hsymm_src : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
+    have hsymm_source : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
       (extChartAt I x).map_target hy
     have hsymm_chart : (extChartAt I x).symm y ∈ (chartAt H x).source := by
-      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
-      exact hsymm_src
+      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_source
+      exact hsymm_source
     have hsymm_base : (extChartAt I x).symm y ∈
         (trivializationAt E (TangentSpace I) x).baseSet := by
       rw [trivializationAt_baseSet_eq_chartAt_source]

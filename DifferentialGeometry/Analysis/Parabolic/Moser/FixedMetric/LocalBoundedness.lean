@@ -337,13 +337,13 @@ theorem moserLocalizedMass_succ_le
     dsimp only [lower]
     exact (moserTimeLevel_lt haτ (k + 1)).le.trans hτt₁
   have hleft_cont : ContinuousOn left (Icc lower t₁) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc lower t₁) μ
       (fun t x => (spatialMoserCutoff rho (2 * (k + 1))).toFun x ^ 2 * u t x ^ p)
       isCompact_Icc hleft_joint.continuousOn
     simpa only [left] using h
   have hright_cont : ContinuousOn right (Icc lower t₁) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc lower t₁) μ
       (fun t x => |(spatialMoserCutoff rho (2 * k + 1)).toFun x *
         u t x ^ (parabolicMoserExponent n p₀ k / 2)| ^ critical)

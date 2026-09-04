@@ -35,9 +35,9 @@ theorem rm04_localPull
     (g : SmoothRiemannianMetric J N) (f : M → N)
     (hf : IsLocalDiffeomorph I J ∞ f)
     (x : M) (X Y Z W : TangentSpace I x) :
-    metricRm04StdAt (I := I) (M := M)
+    metricRm04StandardAt (I := I) (M := M)
         (localPullMetric (I := I) (J := J) g f hf) x X Y Z W =
-      metricRm04StdAt (I := J) (M := N) g (f x)
+      metricRm04StandardAt (I := J) (M := N) g (f x)
         (mfderiv I J f x X) (mfderiv I J f x Y)
         (mfderiv I J f x Z) (mfderiv I J f x W) := by
   let Φ : PartialDiffeomorph I J M N ∞ := Classical.choose (hf x)
@@ -132,26 +132,26 @@ theorem rm04_localPull
         (Diffeomorph.pullbackMetricCross_inner
           (I := I) (J := J) (g.restrictOpen (I := J) V) Ψ y v w).symm
   calc
-    metricRm04StdAt (I := I) (M := M)
+    metricRm04StandardAt (I := I) (M := M)
         (localPullMetric (I := I) (J := J) g f hf) x X Y Z W =
-        metricRm04StdAt (I := I) (M := U)
+        metricRm04StandardAt (I := I) (M := U)
           ((localPullMetric (I := I) (J := J) g f hf).restrictOpen (I := I) U)
           xu (toU X) (toU Y) (toU Z) (toU W) := by
-            rw [metricRm04StdAt_restrictOpen, htoU, htoU, htoU, htoU]
-    _ = metricRm04StdAt (I := I) (M := U)
+            rw [metricRm04StandardAt_restrictOpen, htoU, htoU, htoU, htoU]
+    _ = metricRm04StandardAt (I := I) (M := U)
           (Diffeomorph.pullbackMetricCross (I := I) (J := J)
             (g.restrictOpen (I := J) V) Ψ)
           xu (toU X) (toU Y) (toU Z) (toU W) := by rw [hmetric]
-    _ = metricRm04StdAt (I := J) (M := V)
+    _ = metricRm04StandardAt (I := J) (M := V)
           (g.restrictOpen (I := J) V) (Ψ xu)
           (mfderiv I J (Ψ : U → V) xu (toU X))
           (mfderiv I J (Ψ : U → V) xu (toU Y))
           (mfderiv I J (Ψ : U → V) xu (toU Z))
           (mfderiv I J (Ψ : U → V) xu (toU W)) :=
-      metricRm04Std_pullbackCross
+      metricRm04Standard_pullbackCross
         (I := I) (J := J) (g.restrictOpen (I := J) V) Ψ xu
           (toU X) (toU Y) (toU Z) (toU W)
-    _ = metricRm04StdAt (I := J) (M := N) g ((Ψ xu : V) : N)
+    _ = metricRm04StandardAt (I := J) (M := N) g ((Ψ xu : V) : N)
           (mfderiv J J (Subtype.val : V → N) (Ψ xu)
             (mfderiv I J (Ψ : U → V) xu (toU X)))
           (mfderiv J J (Subtype.val : V → N) (Ψ xu)
@@ -160,18 +160,18 @@ theorem rm04_localPull
             (mfderiv I J (Ψ : U → V) xu (toU Z)))
           (mfderiv J J (Subtype.val : V → N) (Ψ xu)
             (mfderiv I J (Ψ : U → V) xu (toU W))) :=
-      metricRm04StdAt_restrictOpen
+      metricRm04StandardAt_restrictOpen
         (I := J) g V (Ψ xu)
           (mfderiv I J (Ψ : U → V) xu (toU X))
           (mfderiv I J (Ψ : U → V) xu (toU Y))
           (mfderiv I J (Ψ : U → V) xu (toU Z))
           (mfderiv I J (Ψ : U → V) xu (toU W))
-    _ = metricRm04StdAt (I := J) (M := N) g (f x)
+    _ = metricRm04StandardAt (I := J) (M := N) g (f x)
           (mfderiv I J f x X) (mfderiv I J f x Y)
           (mfderiv I J f x Z) (mfderiv I J f x W) := by
       rw [hΨdAmbient, hΨdAmbient, hΨdAmbient, hΨdAmbient,
         htoU, htoU, htoU, htoU, hΨval, ← hdf]
-      change metricRm04StdAt (I := J) (M := N) g ((Φ : M → N) x)
+      change metricRm04StandardAt (I := J) (M := N) g ((Φ : M → N) x)
           (mfderiv I J f x X) (mfderiv I J f x Y)
           (mfderiv I J f x Z) (mfderiv I J f x W) = _
       rw [← hEq hxΦ]

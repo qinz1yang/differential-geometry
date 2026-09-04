@@ -39,24 +39,24 @@ def spectralCoeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
         u₀ i := rfl
 
-theorem heatHsWitness_support_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
+theorem tensorHeatSemigroupHs_support_eq (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : ℝ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g) :
-    Function.support (heatHsWitness (I := I) (M := M) g r s σ ht u₀).coeff =
+    Function.support (tensorHeatSemigroupHs (I := I) (M := M) g r s σ ht u₀).coeff =
       Function.support (spectralCoeff (I := I) (M := M) g r s u₀) := by
   apply Set.ext
   intro i
   have hexp : Real.exp (-(TensorEigenIdx.lambda (I := I) (M := M) i) * t) ≠ 0 :=
     ne_of_gt (Real.exp_pos _)
-  rw [Function.mem_support, Function.mem_support, heatHsWitness_coeff,
+  rw [Function.mem_support, Function.mem_support, tensorHeatSemigroupHs_coeff,
     spectralCoeff_apply]
   exact mul_ne_zero_iff_left hexp
 
-theorem heatHsWitness_finite_support_of_finite
+theorem tensorHeatSemigroupHs_finite_support_of_finite
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : ℝ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)
     (hu₀_fs : (Function.support (spectralCoeff (I := I) (M := M) g r s u₀)).Finite) :
-    (Function.support (heatHsWitness (I := I) (M := M) g r s σ ht u₀).coeff).Finite := by
-  rw [heatHsWitness_support_eq (I := I) (M := M) g r s σ ht u₀]
+    (Function.support (tensorHeatSemigroupHs (I := I) (M := M) g r s σ ht u₀).coeff).Finite := by
+  rw [tensorHeatSemigroupHs_support_eq (I := I) (M := M) g r s σ ht u₀]
   exact hu₀_fs
 
 def heatOutputSmoothRepr (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -64,8 +64,8 @@ def heatOutputSmoothRepr (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (hu₀_fs : (Function.support (spectralCoeff (I := I) (M := M) g r s u₀)).Finite) :
     SmoothCcTensor g r s :=
   tensorHsSmoothRepr (I := I) (M := M)
-    (heatHsWitness (I := I) (M := M) g r s 0 ht u₀)
-    (heatHsWitness_finite_support_of_finite (I := I) (M := M) g r s 0 ht u₀ hu₀_fs)
+    (tensorHeatSemigroupHs (I := I) (M := M) g r s 0 ht u₀)
+    (tensorHeatSemigroupHs_finite_support_of_finite (I := I) (M := M) g r s 0 ht u₀ hu₀_fs)
 
 theorem heatOutputSmoothRepr_toL2 (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)
@@ -75,8 +75,8 @@ theorem heatOutputSmoothRepr_toL2 (g : SmoothRiemannianMetric I M) (r s : ℕ)
       tensorHeatSemigroup (I := I) (M := M) g r s t u₀ := by
   unfold heatOutputSmoothRepr
   rw [tensorHsSmoothRepr_toL2 (I := I) (M := M) (le_refl (0 : ℝ))
-    (heatHsWitness (I := I) (M := M) g r s 0 ht u₀)
-    (heatHsWitness_finite_support_of_finite (I := I) (M := M) g r s 0 ht u₀ hu₀_fs)]
+    (tensorHeatSemigroupHs (I := I) (M := M) g r s 0 ht u₀)
+    (tensorHeatSemigroupHs_finite_support_of_finite (I := I) (M := M) g r s 0 ht u₀ hu₀_fs)]
   exact heat_semigroup_into_tensorHs (I := I) (M := M) g r s (le_refl (0 : ℝ)) ht u₀
 
 theorem heatOutputSmoothRepr_memWtwokTwo (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -86,8 +86,8 @@ theorem heatOutputSmoothRepr_memWtwokTwo (g : SmoothRiemannianMetric I M) (r s :
     MemWtwokTwo (I := I) (M := M) g k
       (heatOutputSmoothRepr (I := I) (M := M) g r s ht u₀ hu₀_fs) :=
   tensorHsSmoothRepr_memWtwokTwo (I := I) (M := M)
-    (heatHsWitness (I := I) (M := M) g r s 0 ht u₀)
-    (heatHsWitness_finite_support_of_finite (I := I) (M := M) g r s 0 ht u₀ hu₀_fs) k
+    (tensorHeatSemigroupHs (I := I) (M := M) g r s 0 ht u₀)
+    (tensorHeatSemigroupHs_finite_support_of_finite (I := I) (M := M) g r s 0 ht u₀ hu₀_fs) k
 
 theorem exists_smooth_heatOutput_representative (g : SmoothRiemannianMetric I M)
     (r s : ℕ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)

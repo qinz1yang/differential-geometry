@@ -23,9 +23,9 @@ private lemma mpullbackWithin_extChartAt_symm_eq_chartE_repr_symm
       (chartESectionRepr (I := I) x V ∘ (extChartAt I x).symm) y := by
   classical
   set φ := extChartAt I x with hφ
-  have hsymm_src : φ.symm y ∈ φ.source := φ.map_target hy
+  have hsymm_source : φ.symm y ∈ φ.source := φ.map_target hy
   have hsymm_chart : φ.symm y ∈ (chartAt H x).source := by
-    rw [← extChartAt_source (I := I) (x := x)]; exact hsymm_src
+    rw [← extChartAt_source (I := I) (x := x)]; exact hsymm_source
   have hAB :
       (mfderiv I 𝓘(ℝ, E) φ (φ.symm y)).comp
           (mfderivWithin 𝓘(ℝ, E) I φ.symm (range I) y) = ContinuousLinearMap.id ℝ _ :=
@@ -135,7 +135,7 @@ theorem mlieBracket_eq_chart_fderiv_diff_at_center
 
 theorem mlieBracket_eq_chart_fderiv_diff
     (α x : M) (X Y : Π y : M, TangentSpace I y)
-    (hx_src : x ∈ (extChartAt I α).source)
+    (hx_source : x ∈ (extChartAt I α).source)
     (hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E))
     (hX : MDiffAt (T% X) x) (hY : MDiffAt (T% Y) x) :
@@ -149,15 +149,15 @@ theorem mlieBracket_eq_chart_fderiv_diff
   set φ := extChartAt I α with hφ
   set y₀ : E := φ x with hy₀
   have hxsrc_chart : x ∈ (chartAt H α).source := by
-    have := hx_src; rwa [extChartAt_source] at this
-  have hxsymm : φ.symm y₀ = x := φ.left_inv hx_src
+    have := hx_source; rwa [extChartAt_source] at this
+  have hxsymm : φ.symm y₀ = x := φ.left_inv hx_source
   have hint_open : IsOpen (interior ((extChartAt I α).target : Set E)) := isOpen_interior
   have hrange_nhds : range I ∈ 𝓝 y₀ := by
     have hsubset : (extChartAt I α).target ⊆ range I := extChartAt_target_subset_range α
     exact Filter.mem_of_superset
       (Filter.mem_of_superset (hint_open.mem_nhds hx_int) interior_subset)
       hsubset
-  have hytarget : y₀ ∈ φ.target := φ.map_source hx_src
+  have hytarget : y₀ ∈ φ.target := φ.map_source hx_source
   have hsymm_cmd_inf : ContMDiffOn 𝓘(ℝ, E) I (∞ : WithTop ℕ∞) φ.symm φ.target :=
     contMDiffOn_extChartAt_symm (I := I) (n := ∞) (x := α)
   have htgt_nhds : φ.target ∈ 𝓝 y₀ :=
@@ -312,7 +312,7 @@ private lemma mfderiv_scalar_along_eventuallyEq_chart_fderiv
   have hint_open : IsOpen (interior ((extChartAt I x).target : Set E)) := isOpen_interior
   have hsrc_extChart : x ∈ φ.source := mem_extChartAt_source x
   have hsrc_chart : x ∈ (chartAt H x).source := mem_chart_source H x
-  have hφsrc_nhds : φ.source ∈ 𝓝 x :=
+  have hφsource_nhds : φ.source ∈ 𝓝 x :=
     extChartAt_source_mem_nhds' (I := I) hsrc_extChart
   have hφ_cont : ContinuousAt φ x := by
     apply (continuousAt_extChartAt' (I := I) (x := x) hsrc_extChart)
@@ -324,14 +324,14 @@ private lemma mfderiv_scalar_along_eventuallyEq_chart_fderiv
   have hf_eventually_mdiff : ∀ᶠ b in 𝓝 x, MDiffAt f b := by
     filter_upwards [hf_eventually_cmd] with b hb
     exact hb.mdifferentiableAt (by simp)
-  filter_upwards [hφsrc_nhds, hφ_pre_nhds, hf_eventually_mdiff] with b hb_src hb_int hb_mdiff
-  have hb_src_chart : b ∈ (chartAt H x).source := by
-    rwa [extChartAt_source] at hb_src
+  filter_upwards [hφsource_nhds, hφ_pre_nhds, hf_eventually_mdiff] with b hb_source hb_int hb_mdiff
+  have hb_source_chart : b ∈ (chartAt H x).source := by
+    rwa [extChartAt_source] at hb_source
   change mvfderiv (I := I) f b (Y b) =
     fderiv ℝ (f ∘ φ.symm) (φ b) (chartESectionRepr (I := I) x Y (φ.symm (φ b)))
-  rw [show φ.symm (φ b) = b from φ.left_inv hb_src]
+  rw [show φ.symm (φ b) = b from φ.left_inv hb_source]
   rw [mfderiv_scalar_eq_chart_fderiv (I := I) (α := x) (f := f) (x := b)
-      hb_src_chart hb_int hb_mdiff (Y b)]
+      hb_source_chart hb_int hb_mdiff (Y b)]
   rfl
 
 omit [FiniteDimensional ℝ E] in

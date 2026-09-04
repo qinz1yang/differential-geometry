@@ -64,9 +64,9 @@ theorem crossChartJointK
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M γ hx.2
   by_cases hKM_empty : K_M = ∅
   · refine ⟨1, one_pos, ?_⟩
-    intro v _hv_mem hv_supp
+    intro v _hv_mem hv_support
     have h_pushed_zero := chartPushed_chartPullback_zero_of_K_M_empty
-      (I := I) (M := M) γ α hK_α_in_α hKM_empty hv_supp
+      (I := I) (M := M) γ α hK_α_in_α hKM_empty hv_support
     rw [h_pushed_zero]
     refine ⟨DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_zero_fun
       (d := Module.finrank ℝ E) hp_one
@@ -142,36 +142,36 @@ theorem crossChartJointK
     hΩγα_open.inter (chartTargetEuclid_isOpen (I := I) (M := M) γ)
   have hKEγ_in_Uγ : K_E_γ ⊆ Uγ :=
     Set.subset_inter hKM_image_in_Ωγα hKEγ_subset_target
-  obtain ⟨δ_γ, η_γ_loc, _hδ_γ_pos, _hδγ_subset, hη_γ_loc_smooth, hη_γ_loc_cpt,
-    hη_γ_loc_range, hη_γ_loc_one, hη_γ_loc_supp⟩ :=
+  obtain ⟨δ_γ, η_γ_local, _hδ_γ_pos, _hδγ_subset, hη_γ_local_smooth, hη_γ_local_compact,
+    hη_γ_local_range, hη_γ_local_one, hη_γ_local_support⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E) hKEγ_compact hUγ_open hKEγ_in_Uγ
-  have hη_γ_loc_supp_Ωγα : tsupport η_γ_loc ⊆ Ω_γα :=
-    fun y hy => (hη_γ_loc_supp hy).1
-  have hη_γ_loc_supp_target : tsupport η_γ_loc ⊆ chartTargetEuclid (I := I) (M := M) γ :=
-    fun y hy => (hη_γ_loc_supp hy).2
+  have hη_γ_local_support_Ωγα : tsupport η_γ_local ⊆ Ω_γα :=
+    fun y hy => (hη_γ_local_support hy).1
+  have hη_γ_local_support_target : tsupport η_γ_local ⊆ chartTargetEuclid (I := I) (M := M) γ :=
+    fun y hy => (hη_γ_local_support hy).2
   set Uα : Set EuclN := Ω_αγ ∩ chartTargetEuclid (I := I) (M := M) α with hUα_def
   have hUα_open : IsOpen Uα :=
     hΩαγ_open.inter (chartTargetEuclid_isOpen (I := I) (M := M) α)
   have hKEα_in_Uα : K_E_α ⊆ Uα :=
     Set.subset_inter hKEα_in_Ωαγ hKEα_subset_target
-  obtain ⟨_δ_α, η_α_loc, _hδ_α_pos, _hδα_subset, hη_α_loc_smooth, hη_α_loc_cpt,
-    hη_α_loc_range, hη_α_loc_one, hη_α_loc_supp⟩ :=
+  obtain ⟨_δ_α, η_α_local, _hδ_α_pos, _hδα_subset, hη_α_local_smooth, hη_α_local_compact,
+    hη_α_local_range, hη_α_local_one, hη_α_local_support⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E) hKEα_compact hUα_open hKEα_in_Uα
-  have hη_α_loc_supp_Ωαγ : tsupport η_α_loc ⊆ Ω_αγ :=
-    fun y hy => (hη_α_loc_supp hy).1
-  have hη_α_loc_supp_target : tsupport η_α_loc ⊆ chartTargetEuclid (I := I) (M := M) α :=
-    fun y hy => (hη_α_loc_supp hy).2
+  have hη_α_local_support_Ωαγ : tsupport η_α_local ⊆ Ω_αγ :=
+    fun y hy => (hη_α_local_support hy).1
+  have hη_α_local_support_target : tsupport η_α_local ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    fun y hy => (hη_α_local_support hy).2
   set ρ_γ_M : M → ℝ :=
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M γ
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hρ_γ_M_def
   have hρ_γ_M_smooth : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ ρ_γ_M :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M γ
       : C^∞⟮I, M; ℝ⟯).contMDiff
-  have hρ_γ_M_supp_in_chart : tsupport ρ_γ_M ⊆ (chartAt H γ).source :=
+  have hρ_γ_M_support_in_chart : tsupport ρ_γ_M ⊆ (chartAt H γ).source :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M γ
-  have hρ_γ_M_cpt : HasCompactSupport ρ_γ_M :=
+  have hρ_γ_M_compact : HasCompactSupport ρ_γ_M :=
     (isClosed_tsupport _).isCompact
   have hρ_γ_M_range : Set.range ρ_γ_M ⊆ Set.Icc (0 : ℝ) 1 := by
     rintro _ ⟨x, rfl⟩
@@ -179,34 +179,34 @@ theorem crossChartJointK
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M).le_one γ x⟩
   set ργE : EuclN → ℝ := chartCutoffEuclidean (I := I) (M := M) γ ρ_γ_M with hργE_def
   have hργE_smooth : ContDiff ℝ (⊤ : ℕ∞) ργE :=
-    contDiff_etaEuclid (I := I) (M := M) γ ρ_γ_M hρ_γ_M_smooth hρ_γ_M_cpt
-      hρ_γ_M_supp_in_chart
-  have hργE_cpt : HasCompactSupport ργE :=
-    hasCompactSupport_etaEuclid (I := I) (M := M) γ ρ_γ_M hρ_γ_M_cpt
-      hρ_γ_M_supp_in_chart
-  set η_combined : EuclN → ℝ := fun y => η_γ_loc y * ργE y with hη_combined_def
+    contDiff_etaEuclid (I := I) (M := M) γ ρ_γ_M hρ_γ_M_smooth hρ_γ_M_compact
+      hρ_γ_M_support_in_chart
+  have hργE_compact : HasCompactSupport ργE :=
+    hasCompactSupport_etaEuclid (I := I) (M := M) γ ρ_γ_M hρ_γ_M_compact
+      hρ_γ_M_support_in_chart
+  set η_combined : EuclN → ℝ := fun y => η_γ_local y * ργE y with hη_combined_def
   have hη_combined_smooth : ContDiff ℝ (⊤ : ℕ∞) η_combined :=
-    hη_γ_loc_smooth.mul hργE_smooth
-  have hη_combined_cpt : HasCompactSupport η_combined := by
-    refine hη_γ_loc_cpt.of_isClosed_subset (isClosed_tsupport _) ?_
+    hη_γ_local_smooth.mul hργE_smooth
+  have hη_combined_compact : HasCompactSupport η_combined := by
+    refine hη_γ_local_compact.of_isClosed_subset (isClosed_tsupport _) ?_
     refine closure_mono ?_
     intro y hy
     simp only [hη_combined_def, Function.mem_support, ne_eq] at hy
-    have hη_ne : η_γ_loc y ≠ 0 := by intro h0; apply hy; rw [h0]; ring
+    have hη_ne : η_γ_local y ≠ 0 := by intro h0; apply hy; rw [h0]; ring
     exact Function.mem_support.mpr hη_ne
-  have hη_combined_supp_Ωγα : tsupport η_combined ⊆ Ω_γα := by
-    refine Set.Subset.trans ?_ hη_γ_loc_supp_Ωγα
+  have hη_combined_support_Ωγα : tsupport η_combined ⊆ Ω_γα := by
+    refine Set.Subset.trans ?_ hη_γ_local_support_Ωγα
     refine closure_mono ?_
     intro y hy
     simp only [hη_combined_def, Function.mem_support, ne_eq] at hy
-    have hη_ne : η_γ_loc y ≠ 0 := by intro h0; apply hy; rw [h0]; ring
+    have hη_ne : η_γ_local y ≠ 0 := by intro h0; apply hy; rw [h0]; ring
     exact Function.mem_support.mpr hη_ne
   obtain ⟨C_combined, hC_combined_nn, hC_combined_bound⟩ :=
     Analysis.Sobolev.Euclidean.exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
-      hη_combined_smooth hη_combined_cpt k
+      hη_combined_smooth hη_combined_compact k
   obtain ⟨C_α, hC_α_nn, hC_α_bound⟩ :=
     Analysis.Sobolev.Euclidean.exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
-      hη_α_loc_smooth hη_α_loc_cpt k
+      hη_α_local_smooth hη_α_local_compact k
   set Ωγ_target : Set EuclN := chartTargetEuclid (I := I) (M := M) γ with hΩγ_target_def
   set Ωα_target : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩα_target_def
   have hΩγ_target_open : IsOpen Ωγ_target := chartTargetEuclid_isOpen (I := I) (M := M) γ
@@ -218,13 +218,13 @@ theorem crossChartJointK
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_smul_smooth_bounded_le
       k hp_one hp_top hΩγα_open hη_combined_smooth hC_combined_nn
       hη_combined_iter_bound
-  have hη_α_loc_iter_bound :
-      ∀ j ≤ k, ∀ y ∈ Ωα_target, ‖iteratedFDeriv ℝ j η_α_loc y‖ ≤ C_α := by
+  have hη_α_local_iter_bound :
+      ∀ j ≤ k, ∀ y ∈ Ωα_target, ‖iteratedFDeriv ℝ j η_α_local y‖ ≤ C_α := by
     intro j hj y _; exact hC_α_bound y j hj
   obtain ⟨K_leib_α, hK_leib_α_pos, hK_leib_α_bound⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_smul_smooth_bounded_le
-      k hp_one hp_top hΩα_target_open hη_α_loc_smooth hC_α_nn
-      hη_α_loc_iter_bound
+      k hp_one hp_top hΩα_target_open hη_α_local_smooth hC_α_nn
+      hη_α_local_iter_bound
   set K_chain : ℝ := Φ.wkpCompConst' k p with hK_chain_def
   have hK_chain_pos : 0 < K_chain := by
     have hp_zero : p ≠ 0 := by
@@ -258,51 +258,51 @@ theorem crossChartJointK
   set K : ℝ := K_leib * K_chain * K_leib_α with hK_def
   have hK_pos : 0 < K := mul_pos (mul_pos hK_leib_pos hK_chain_pos) hK_leib_α_pos
   refine ⟨K, hK_pos, ?_⟩
-  intro v hv_mem hv_supp
-  set χ_loc : EuclN → ℝ := fun y => η_α_loc y * v y with hχ_loc_def
-  have hχ_loc_supp_in_η_α : tsupport χ_loc ⊆ tsupport η_α_loc := by
+  intro v hv_mem hv_support
+  set χ_local : EuclN → ℝ := fun y => η_α_local y * v y with hχ_local_def
+  have hχ_local_support_in_η_α : tsupport χ_local ⊆ tsupport η_α_local := by
     refine closure_mono ?_
     intro y hy
     simp only [Function.mem_support, ne_eq] at hy
-    have h_η_ne : η_α_loc y ≠ 0 := by
-      intro h0; apply hy; change η_α_loc y * v y = 0; rw [h0]; ring
+    have h_η_ne : η_α_local y ≠ 0 := by
+      intro h0; apply hy; change η_α_local y * v y = 0; rw [h0]; ring
     exact Function.mem_support.mpr h_η_ne
-  have hχ_loc_supp_in_Ωαγ : tsupport χ_loc ⊆ Ω_αγ :=
-    hχ_loc_supp_in_η_α.trans hη_α_loc_supp_Ωαγ
-  have hχ_loc_supp_in_Ωα_target : tsupport χ_loc ⊆ Ωα_target :=
-    hχ_loc_supp_in_η_α.trans hη_α_loc_supp_target
-  have hχ_loc_cpt : HasCompactSupport χ_loc :=
-    hη_α_loc_cpt.of_isClosed_subset (isClosed_tsupport _) hχ_loc_supp_in_η_α
-  have hχ_loc_mem_Ωα_target : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) k p χ_loc Ωα_target := by
+  have hχ_local_support_in_Ωαγ : tsupport χ_local ⊆ Ω_αγ :=
+    hχ_local_support_in_η_α.trans hη_α_local_support_Ωαγ
+  have hχ_local_support_in_Ωα_target : tsupport χ_local ⊆ Ωα_target :=
+    hχ_local_support_in_η_α.trans hη_α_local_support_target
+  have hχ_local_compact : HasCompactSupport χ_local :=
+    hη_α_local_compact.of_isClosed_subset (isClosed_tsupport _) hχ_local_support_in_η_α
+  have hχ_local_mem_Ωα_target : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+      (d := Module.finrank ℝ E) k p χ_local Ωα_target := by
     have h_bound : ∀ j ≤ k, ∀ x ∈ Ωα_target,
-        ‖iteratedFDeriv ℝ j η_α_loc x‖ ≤ C_α := hη_α_loc_iter_bound
+        ‖iteratedFDeriv ℝ j η_α_local x‖ ≤ C_α := hη_α_local_iter_bound
     exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.smul_smooth_bounded
-      (d := Module.finrank ℝ E) k hp_one hΩα_target_open hη_α_loc_smooth h_bound hv_mem
-  have hχ_loc_pair_target_Ωαγ :=
+      (d := Module.finrank ℝ E) k hp_one hΩα_target_open hη_α_local_smooth h_bound hv_mem
+  have hχ_local_pair_target_Ωαγ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_eq_of_tsupport_subset
       (d := Module.finrank ℝ E) k hp_one hΩα_target_open hΩαγ_open
-      hΩαγ_subset_target hχ_loc_mem_Ωα_target hχ_loc_supp_in_Ωαγ
-  have hχ_loc_mem_Ωαγ : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) k p χ_loc Ω_αγ := hχ_loc_pair_target_Ωαγ.1
-  have hχ_loc_norm_target_eq_Ωαγ :
+      hΩαγ_subset_target hχ_local_mem_Ωα_target hχ_local_support_in_Ωαγ
+  have hχ_local_mem_Ωαγ : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+      (d := Module.finrank ℝ E) k p χ_local Ω_αγ := hχ_local_pair_target_Ωαγ.1
+  have hχ_local_norm_target_eq_Ωαγ :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-        (d := Module.finrank ℝ E) k p χ_loc Ωα_target =
+        (d := Module.finrank ℝ E) k p χ_local Ωα_target =
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-        (d := Module.finrank ℝ E) k p χ_loc Ω_αγ := hχ_loc_pair_target_Ωαγ.2
-  set ψ_total : EuclN → ℝ := fun y => η_combined y * χ_loc (Φ.toFun y) with hψ_total_def
-  have hψ_total_supp_in_η_combined : tsupport ψ_total ⊆ tsupport η_combined := by
+        (d := Module.finrank ℝ E) k p χ_local Ω_αγ := hχ_local_pair_target_Ωαγ.2
+  set ψ_total : EuclN → ℝ := fun y => η_combined y * χ_local (Φ.toFun y) with hψ_total_def
+  have hψ_total_support_in_η_combined : tsupport ψ_total ⊆ tsupport η_combined := by
     refine closure_mono ?_
     intro y hy
     simp only [Function.mem_support, ne_eq] at hy
     have h_η_ne : η_combined y ≠ 0 := by
-      intro h0; apply hy; change η_combined y * χ_loc (Φ.toFun y) = 0; rw [h0]; ring
+      intro h0; apply hy; change η_combined y * χ_local (Φ.toFun y) = 0; rw [h0]; ring
     exact Function.mem_support.mpr h_η_ne
-  have hψ_total_supp_Ωγα : tsupport ψ_total ⊆ Ω_γα :=
-    hψ_total_supp_in_η_combined.trans hη_combined_supp_Ωγα
-  have hψ_total_cpt : HasCompactSupport ψ_total :=
-    hη_combined_cpt.of_isClosed_subset (isClosed_tsupport _)
-      hψ_total_supp_in_η_combined
+  have hψ_total_support_Ωγα : tsupport ψ_total ⊆ Ω_γα :=
+    hψ_total_support_in_η_combined.trans hη_combined_support_Ωγα
+  have hψ_total_compact : HasCompactSupport ψ_total :=
+    hη_combined_compact.of_isClosed_subset (isClosed_tsupport _)
+      hψ_total_support_in_η_combined
   have h_pointwise_eq : ∀ y ∈ Ωγ_target,
       chartPushed (I := I) (M := M)
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ
@@ -329,10 +329,10 @@ theorem crossChartJointK
     have hργE_y : ργE y = ρ_γ_M z := by
       rw [hργE_def]
       exact etaEuclid_apply_of_mem (I := I) (M := M) γ ρ_γ_M hy_target
-    have hψ_total_y : ψ_total y = η_γ_loc y * ργE y * χ_loc (Φ.toFun y) := rfl
+    have hψ_total_y : ψ_total y = η_γ_local y * ργE y * χ_local (Φ.toFun y) := rfl
     rw [hψ_total_y]
-    by_cases h_y_in_supp_η_γ : y ∈ tsupport η_γ_loc
-    · have hy_in_Ωγα : y ∈ Ω_γα := hη_γ_loc_supp_Ωγα h_y_in_supp_η_γ
+    by_cases h_y_in_support_η_γ : y ∈ tsupport η_γ_local
+    · have hy_in_Ωγα : y ∈ Ω_γα := hη_γ_local_support_Ωγα h_y_in_support_η_γ
       by_cases hρ_zero : ρ_γ_M z = 0
       · rw [hρ_zero, hργE_y, hρ_zero]; ring
       · have hz_in_tsupp_ρ : z ∈ tsupport ρ_γ_M := by
@@ -350,8 +350,8 @@ theorem crossChartJointK
                 (extChartAt I γ).right_inv hsymm_target
               rw [h_z_chart]
               exact (toEuclidean (E := E)).apply_symm_apply y
-            have hη_γ_loc_y : η_γ_loc y = 1 := by
-              apply hη_γ_loc_one
+            have hη_γ_local_y : η_γ_local y = 1 := by
+              apply hη_γ_local_one
               exact Metric.self_subset_cthickening K_E_γ hy_in_KEγ
             have hΦ_y : Φ.toFun y = (toEuclidean (E := E)) (extChartAt I α z) := by
               have h := hΦ_eq_KM z hz_in_KM
@@ -365,18 +365,18 @@ theorem crossChartJointK
             rw [hΦ_y]
             have h_Φy_in_KEα : (toEuclidean (E := E)) (extChartAt I α z) ∈ K_E_α :=
               ⟨z, hz_in_KM, rfl⟩
-            have hη_α_loc_Φy : η_α_loc ((toEuclidean (E := E)) (extChartAt I α z)) = 1 := by
-              apply hη_α_loc_one
+            have hη_α_local_Φy : η_α_local ((toEuclidean (E := E)) (extChartAt I α z)) = 1 := by
+              apply hη_α_local_one
               exact Metric.self_subset_cthickening K_E_α h_Φy_in_KEα
-            have hχ_loc_Φy : χ_loc ((toEuclidean (E := E)) (extChartAt I α z)) =
+            have hχ_local_Φy : χ_local ((toEuclidean (E := E)) (extChartAt I α z)) =
                 v ((toEuclidean (E := E)) (extChartAt I α z)) := by
-              change η_α_loc _ * v _ = v _
-              rw [hη_α_loc_Φy]; ring
-            rw [hχ_loc_Φy, hη_γ_loc_y, hργE_y]
+              change η_α_local _ * v _ = v _
+              rw [hη_α_local_Φy]; ring
+            rw [hχ_local_Φy, hη_γ_local_y, hργE_y]
             ring
           · have hvα_z_eq : (toEuclidean (E := E)) (extChartAt I α z) ∉ tsupport v := by
               intro hin
-              have := hv_supp hin
+              have := hv_support hin
               rcases this with ⟨x', hx'_K, hx'_eq⟩
               have hx'_chart : x' ∈ (chartAt H α).source := hK_α_in_α hx'_K
               have h_eq_chart_α : extChartAt I α x' = extChartAt I α z := by
@@ -405,10 +405,10 @@ theorem crossChartJointK
                 exact (toEuclidean (E := E)).apply_symm_apply y
               rw [← hy_eq]
               exact chartTransitionEuclid_eq_chartα_image (I := I) (M := M) γ α hz_chartγ
-            have hχ_loc_zero : χ_loc ((toEuclidean (E := E)) (extChartAt I α z)) = 0 := by
-              change η_α_loc _ * v _ = 0
+            have hχ_local_zero : χ_local ((toEuclidean (E := E)) (extChartAt I α z)) = 0 := by
+              change η_α_local _ * v _ = 0
               rw [hv_z]; ring
-            rw [hΦ_y, hχ_loc_zero, hv_z]; ring
+            rw [hΦ_y, hχ_local_zero, hv_z]; ring
         · rw [chartPullback_apply_of_notMem (I := I) (M := M) α v hz_in_α]
           exfalso
           have hy_in_overlap : y ∈ chartOverlapEuclid (I := I) (M := M) γ α :=
@@ -427,7 +427,7 @@ theorem crossChartJointK
             exact (extChartAt I γ).left_inv h_w_chart_γ
           rw [h_z_eq_w] at hz_in_α
           exact hz_in_α hw_inter.2
-    · have h_zero : η_γ_loc y = 0 := image_eq_zero_of_notMem_tsupport h_y_in_supp_η_γ
+    · have h_zero : η_γ_local y = 0 := image_eq_zero_of_notMem_tsupport h_y_in_support_η_γ
       rw [h_zero]; simp only [zero_mul]
       by_cases hρ_zero : ρ_γ_M z = 0
       · rw [hρ_zero]; ring
@@ -449,7 +449,7 @@ theorem crossChartJointK
             exact subset_tsupport _ this
           have h_arg_in_image_K_α : (toEuclidean (E := E)) (extChartAt I α z) ∈
               (fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) '' K_α :=
-            hv_supp h_arg_in_tsupp_v
+            hv_support h_arg_in_tsupp_v
           obtain ⟨x', hx'_K_α, hx'_eq⟩ := h_arg_in_image_K_α
           have hx'_chart : x' ∈ (chartAt H α).source := hK_α_in_α hx'_K_α
           have h_eq_chart : extChartAt I α x' = extChartAt I α z := by
@@ -474,23 +474,23 @@ theorem crossChartJointK
             exact (toEuclidean (E := E)).apply_symm_apply y
           have hy_in_cthick : y ∈ Metric.cthickening δ_γ K_E_γ :=
             Metric.self_subset_cthickening K_E_γ hy_in_KEγ
-          have h_η_y_one : η_γ_loc y = 1 := hη_γ_loc_one y hy_in_cthick
-          have h_ne_zero : η_γ_loc y ≠ 0 := by linarith
-          have hy_in_supp : y ∈ Function.support η_γ_loc := by
+          have h_η_y_one : η_γ_local y = 1 := hη_γ_local_one y hy_in_cthick
+          have h_ne_zero : η_γ_local y ≠ 0 := by linarith
+          have hy_in_support : y ∈ Function.support η_γ_local := by
             simp only [Function.mem_support, ne_eq, h_ne_zero, not_false_eq_true]
-          exact h_y_in_supp_η_γ (subset_tsupport _ hy_in_supp)
+          exact h_y_in_support_η_γ (subset_tsupport _ hy_in_support)
   have h_ae_eq : (chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ
         (chartPullback I α v)) =ᵐ[volume.restrict Ωγ_target] ψ_total := by
     refine (ae_restrict_iff' hΩγ_target_open.measurableSet).mpr ?_
     refine Filter.Eventually.of_forall ?_
     intro y hy; exact h_pointwise_eq y hy
-  have h_χ_loc_comp_mem :
+  have h_χ_local_comp_mem :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-        (d := Module.finrank ℝ E) k p (fun y => χ_loc (Φ.toFun y)) Ω_γα :=
+        (d := Module.finrank ℝ E) k p (fun y => χ_local (Φ.toFun y)) Ω_γα :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.comp_smoothDiffeoBoundedAtOrder
       (d := Module.finrank ℝ E) k (le_refl k) hp_one hp_top hΩγα_open hΩαγ_open Φ
-      hχ_loc_mem_Ωαγ hχ_loc_cpt hχ_loc_supp_in_Ωαγ
+      hχ_local_mem_Ωαγ hχ_local_compact hχ_local_support_in_Ωαγ
   have hψ_total_mem_Ωγα :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p ψ_total Ω_γα := by
@@ -498,13 +498,13 @@ theorem crossChartJointK
       hη_combined_iter_bound
     exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.smul_smooth_bounded
       (d := Module.finrank ℝ E) k hp_one hΩγα_open hη_combined_smooth h_bound
-      h_χ_loc_comp_mem
+      h_χ_local_comp_mem
   have hψ_total_mem_target :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p ψ_total Ωγ_target :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.extend_zero
       (d := Module.finrank ℝ E) hp_one hΩγα_open hΩγ_target_open
-      hΩγα_subset_target hψ_total_mem_Ωγα hψ_total_supp_Ωγα hψ_total_cpt
+      hΩγα_subset_target hψ_total_mem_Ωγα hψ_total_support_Ωγα hψ_total_compact
   have h_pushed_mem :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) k p
@@ -524,42 +524,42 @@ theorem crossChartJointK
         (d := Module.finrank ℝ E) k p ψ_total Ω_γα :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_le_of_tsupport_subset_mem_small
       (d := Module.finrank ℝ E) k hp_one hΩγ_target_open hΩγα_open
-      hΩγα_subset_target hψ_total_mem_Ωγα hψ_total_supp_Ωγα
+      hΩγα_subset_target hψ_total_mem_Ωγα hψ_total_support_Ωγα
   refine h_bridge_γ.trans ?_
   have h_leib_step : DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
       (d := Module.finrank ℝ E) k p ψ_total Ω_γα ≤
       ENNReal.ofReal K_leib *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-          (d := Module.finrank ℝ E) k p (fun y => χ_loc (Φ.toFun y)) Ω_γα :=
-    hK_leib_bound h_χ_loc_comp_mem
+          (d := Module.finrank ℝ E) k p (fun y => χ_local (Φ.toFun y)) Ω_γα :=
+    hK_leib_bound h_χ_local_comp_mem
   refine h_leib_step.trans ?_
   have h_chain_step :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-        (d := Module.finrank ℝ E) k p (fun y => χ_loc (Φ.toFun y)) Ω_γα ≤
+        (d := Module.finrank ℝ E) k p (fun y => χ_local (Φ.toFun y)) Ω_γα ≤
       ENNReal.ofReal K_chain *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-          (d := Module.finrank ℝ E) k p χ_loc Ω_αγ :=
+          (d := Module.finrank ℝ E) k p χ_local Ω_αγ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
       hp_one hp_top hΩγα_open hΩαγ_open Φ k (le_refl k)
-      hχ_loc_mem_Ωαγ hχ_loc_cpt hχ_loc_supp_in_Ωαγ
+      hχ_local_mem_Ωαγ hχ_local_compact hχ_local_support_in_Ωαγ
   have h_chain_step_target :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-        (d := Module.finrank ℝ E) k p (fun y => χ_loc (Φ.toFun y)) Ω_γα ≤
+        (d := Module.finrank ℝ E) k p (fun y => χ_local (Φ.toFun y)) Ω_γα ≤
       ENNReal.ofReal K_chain *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-          (d := Module.finrank ℝ E) k p χ_loc Ωα_target := by
+          (d := Module.finrank ℝ E) k p χ_local Ωα_target := by
     refine h_chain_step.trans ?_
-    rw [hχ_loc_norm_target_eq_Ωαγ]
+    rw [hχ_local_norm_target_eq_Ωαγ]
   have h_leib_α_step : DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-      (d := Module.finrank ℝ E) k p χ_loc Ωα_target ≤
+      (d := Module.finrank ℝ E) k p χ_local Ωα_target ≤
       ENNReal.ofReal K_leib_α *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) k p v Ωα_target := by
-    have h_eq : χ_loc = (fun y => η_α_loc y * v y) := rfl
+    have h_eq : χ_local = (fun y => η_α_local y * v y) := rfl
     rw [h_eq]
     exact hK_leib_α_bound hv_mem
   have h_chain_combined : DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-      (d := Module.finrank ℝ E) k p (fun y => χ_loc (Φ.toFun y)) Ω_γα ≤
+      (d := Module.finrank ℝ E) k p (fun y => χ_local (Φ.toFun y)) Ω_γα ≤
       ENNReal.ofReal K_chain *
         (ENNReal.ofReal K_leib_α *
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -606,8 +606,8 @@ theorem cross_chart_bound_strict_strong_memWkp_k
   obtain ⟨K, hK, hjoint⟩ := crossChartJointK (I := I) (M := M)
     k hp_one hp_top γ α hK_compact hK_α_in_α
   refine ⟨K, hK, ?_⟩
-  intro v hv hv_supp
-  exact (hjoint hv hv_supp).2
+  intro v hv hv_support
+  exact (hjoint hv hv_support).2
 
 end Chart
 end Sobolev

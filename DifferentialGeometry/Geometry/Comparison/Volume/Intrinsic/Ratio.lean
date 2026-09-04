@@ -42,7 +42,7 @@ variable [pseudoEMetricSpace : PseudoEMetricSpace M]
     IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
 omit [CompleteSpace E] in
-theorem intrCross_anti
+theorem intrinsicCross_anti
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (q b : Real)
@@ -62,22 +62,22 @@ theorem intrCross_anti
       let ell := Real.sqrt (g.inner p u u)
       ∀ s t, s ∈ Set.Ioo (0 : Real) b → t ∈ Set.Ioo (0 : Real) b → s ≤ t →
         curveDensity (I := I) g γ V t *
-            hypDensity (q * ell) (Module.finrank Real E - 1) s ≤
+            hyperbolicDensity (q * ell) (Module.finrank Real E - 1) s ≤
           curveDensity (I := I) g γ V s *
-            hypDensity (q * ell) (Module.finrank Real E - 1) t := by
+            hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t := by
   obtain ⟨v, hv, hperp, hanti⟩ :=
     exists_intrRatio (I := I) g hEnorm p u q b hq hd hu hno hRic
   refine ⟨v, hv, hperp, ?_⟩
   intro γ V ell s t hs ht hst
   have hqell : 0 ≤ q * ell := mul_nonneg hq (Real.sqrt_nonneg _)
-  have hps : 0 < hypDensity (q * ell) (Module.finrank Real E - 1) s :=
-    hypDensity_pos hqell hs.1
-  have hpt : 0 < hypDensity (q * ell) (Module.finrank Real E - 1) t :=
-    hypDensity_pos hqell ht.1
+  have hps : 0 < hyperbolicDensity (q * ell) (Module.finrank Real E - 1) s :=
+    hyperbolicDensity_pos hqell hs.1
+  have hpt : 0 < hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t :=
+    hyperbolicDensity_pos hqell ht.1
   have hR : curveDensity (I := I) g γ V t /
-        hypDensity (q * ell) (Module.finrank Real E - 1) t ≤
+        hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t ≤
       curveDensity (I := I) g γ V s /
-        hypDensity (q * ell) (Module.finrank Real E - 1) s :=
+        hyperbolicDensity (q * ell) (Module.finrank Real E - 1) s :=
     hanti hs ht hst
   rw [div_le_div_iff₀ hpt hps] at hR
   exact hR
@@ -100,23 +100,23 @@ theorem densUB_of_pole
     (V : ι → ∀ t, TangentSpace I (γ t)) {q' : Real} {d : ℕ} {b N : Real}
     (hq' : 0 ≤ q')
     (hanti : AntitoneOn
-      (fun t => curveDensity (I := I) g γ V t / hypDensity q' d t)
+      (fun t => curveDensity (I := I) g γ V t / hyperbolicDensity q' d t)
       (Set.Ioo (0 : Real) b))
     (hcap : ∀ᶠ t in 𝓝[>] (0 : Real),
-      curveDensity (I := I) g γ V t / hypDensity q' d t ≤ N) :
+      curveDensity (I := I) g γ V t / hyperbolicDensity q' d t ≤ N) :
     ∀ t ∈ Set.Ioo (0 : Real) b,
-      curveDensity (I := I) g γ V t ≤ N * hypDensity q' d t := by
+      curveDensity (I := I) g γ V t ≤ N * hyperbolicDensity q' d t := by
   intro t ht
   have hev : ∀ᶠ s in 𝓝[>] (0 : Real),
-      curveDensity (I := I) g γ V s / hypDensity q' d s ≤ N ∧
+      curveDensity (I := I) g γ V s / hyperbolicDensity q' d s ≤ N ∧
         s ∈ Set.Ioo (0 : Real) t := by
     filter_upwards [hcap, Ioo_mem_nhdsGT ht.1] with s hsN hsIoo
     exact ⟨hsN, hsIoo⟩
   obtain ⟨s, hsN, hs⟩ := hev.exists
   have hsb : s ∈ Set.Ioo (0 : Real) b := ⟨hs.1, hs.2.trans ht.2⟩
-  have hRt : curveDensity (I := I) g γ V t / hypDensity q' d t ≤ N :=
+  have hRt : curveDensity (I := I) g γ V t / hyperbolicDensity q' d t ≤ N :=
     le_trans (hanti hsb ht hs.2.le) hsN
-  have hpt : 0 < hypDensity q' d t := hypDensity_pos hq' ht.1
+  have hpt : 0 < hyperbolicDensity q' d t := hyperbolicDensity_pos hq' ht.1
   rwa [div_le_iff₀ hpt] at hRt
 
 omit [NeZero (Module.finrank ℝ E)]
@@ -169,21 +169,21 @@ theorem exists_perp_basis
   · exact hb none
   · intro i; exact hb (some i)
 
-private lemma hypSn_ge_id {q : Real} (hq : 0 ≤ q) {t : Real} (ht : 0 ≤ t) :
-    t ≤ hypSn q t := by
+private lemma hyperbolicSn_ge_id {q : Real} (hq : 0 ≤ q) {t : Real} (ht : 0 ≤ t) :
+    t ≤ hyperbolicSn q t := by
   by_cases hq0 : q = 0
-  · simp [hypSn, hq0]
+  · simp [hyperbolicSn, hq0]
   · have hqpos : 0 < q := lt_of_le_of_ne hq (Ne.symm hq0)
-    rw [hypSn, if_neg hq0, le_div_iff₀ hqpos]
+    rw [hyperbolicSn, if_neg hq0, le_div_iff₀ hqpos]
     calc t * q = q * t := mul_comm _ _
       _ ≤ Real.sinh (q * t) := Real.self_le_sinh_iff.mpr (mul_nonneg hq ht)
 
-private lemma hypDens_ge_pow {q : Real} (hq : 0 ≤ q) {d : ℕ} {t : Real}
-    (ht : 0 ≤ t) : t ^ d ≤ hypDensity q d t := by
-  rw [hypDensity]
-  exact pow_le_pow_left₀ ht (hypSn_ge_id hq ht) d
+private lemma hyperbolicDens_ge_pow {q : Real} (hq : 0 ≤ q) {d : ℕ} {t : Real}
+    (ht : 0 ≤ t) : t ^ d ≤ hyperbolicDensity q d t := by
+  rw [hyperbolicDensity]
+  exact pow_le_pow_left₀ ht (hyperbolicSn_ge_id hq ht) d
 
-private theorem intrPoleCap
+private theorem intrinsicPoleCap
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (q : Real) (hq : 0 ≤ q)
@@ -194,7 +194,7 @@ private theorem intrPoleCap
     ∃ N : Real, 0 < N ∧ ∀ᶠ t in 𝓝[>] (0 : Real),
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm p u)
           (fun i => intrinsicJacobi (I := I) g hEnorm p u (v i)) t /
-        hypDensity (q * Real.sqrt (g.inner p u u))
+        hyperbolicDensity (q * Real.sqrt (g.inner p u u))
           (Module.finrank Real E - 1) t ≤ N := by
   classical
   obtain ⟨B, hBnone, hBsome⟩ := exists_perp_basis (I := I) g p u v hv hperp hu
@@ -293,11 +293,11 @@ private theorem intrPoleCap
       normalChartDensity (I := I) g p (t • ue) = c * CDr := by
     have := hdensity t htwin
     rwa [Fintype.card_fin] at this
-  have hHDpos : 0 < hypDensity (q * ell) (Module.finrank Real E - 1) t :=
-    hypDensity_pos hqell ht0
+  have hHDpos : 0 < hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t :=
+    hyperbolicDensity_pos hqell ht0
   have hHDge : t ^ (Module.finrank Real E - 1) ≤
-      hypDensity (q * ell) (Module.finrank Real E - 1) t :=
-    hypDens_ge_pow hqell ht0.le
+      hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t :=
+    hyperbolicDens_ge_pow hqell ht0.le
   rw [hcurvet, div_le_div_iff₀ hHDpos hc]
   have hCDrc : CDr * c = t ^ (Module.finrank Real E - 1) *
       normalChartDensity (I := I) g p (t • ue) := by
@@ -308,10 +308,10 @@ private theorem intrPoleCap
       ≤ t ^ (Module.finrank Real E - 1) * M₀ :=
         mul_le_mul_of_nonneg_left hncdt.le (pow_nonneg ht0.le _)
     _ = M₀ * t ^ (Module.finrank Real E - 1) := by ring
-    _ ≤ M₀ * hypDensity (q * ell) (Module.finrank Real E - 1) t :=
+    _ ≤ M₀ * hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t :=
         mul_le_mul_of_nonneg_left hHDge hM₀pos.le
 
-theorem intrDens_le_hyp
+theorem intrinsicDens_le_hyperbolic
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u : TangentSpace I p) (q b : Real)
@@ -331,16 +331,16 @@ theorem intrDens_le_hyp
       let ell := Real.sqrt (g.inner p u u)
       ∃ N : Real, 0 < N ∧ ∀ t ∈ Set.Ioo (0 : Real) b,
         curveDensity (I := I) g γ V t ≤
-          N * hypDensity (q * ell) (Module.finrank Real E - 1) t := by
+          N * hyperbolicDensity (q * ell) (Module.finrank Real E - 1) t := by
   obtain ⟨v, hv, hperp, hanti⟩ :=
     exists_intrRatio (I := I) g hEnorm p u q b hq hd hu hno hRic
   refine ⟨v, hv, hperp, ?_⟩
   intro γ V ell
-  obtain ⟨N, hN, hcap⟩ := intrPoleCap (I := I) g hEnorm p u q hq v hv hperp hu
+  obtain ⟨N, hN, hcap⟩ := intrinsicPoleCap (I := I) g hEnorm p u q hq v hv hperp hu
   exact ⟨N, hN,
     densUB_of_pole (I := I) g γ V (mul_nonneg hq (Real.sqrt_nonneg _)) hanti hcap⟩
 
-theorem intrNoConj_min
+theorem intrinsicNoConj_min
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {O x : M} (v : TangentSpace I O)

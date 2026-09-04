@@ -137,7 +137,7 @@ lemma chartTargetUnitSqSumSupOnPouTsupport_nonneg
       apply continuousOn_finsetSum
       intro i _
       exact (g_inner_chartTargetUnit_continuousOn (I := I) g α i).mono hKα_base
-    set hImg :=
+    set hImage :=
       (hKα_compact.image_of_continuousOn h_cont).bddAbove
     obtain ⟨x₀, hx₀⟩ := hKα_ne
     have h_val_nn : (0 : ℝ) ≤
@@ -164,7 +164,7 @@ lemma chartTargetUnitSqSumSupOnPouTsupport_nonneg
             (chartTargetUnitFiber (I := I) α i x)
             (chartTargetUnitFiber (I := I) α i x)) '' Kα :=
       ⟨x₀, hx₀, rfl⟩
-    have h_le := hImg.choose_spec hx₀_val
+    have h_le := hImage.choose_spec hx₀_val
     exact le_trans h_val_nn h_le
   · rw [dif_neg hKα_ne]
 
@@ -202,9 +202,9 @@ lemma chartTargetUnitSqSum_le_sup
     apply continuousOn_finsetSum
     intro i _
     exact (g_inner_chartTargetUnit_continuousOn (I := I) g α i).mono hKα_base
-  set hImg :=
+  set hImage :=
     (hKα_compact.image_of_continuousOn h_cont).bddAbove
-  exact hImg.choose_spec ⟨x, hx, rfl⟩
+  exact hImage.choose_spec ⟨x, hx, rfl⟩
 
 end EquivalenceReverse
 end Sobolev

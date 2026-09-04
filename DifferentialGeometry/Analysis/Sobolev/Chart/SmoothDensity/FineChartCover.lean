@@ -46,7 +46,7 @@ def chartClosedBall (e : PartialEquiv M E) (z : E) (r : ℝ) : Set M :=
   e.symm '' Metric.closedBall z r
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem chartClosedBall_cpt_of_continuousOn
+theorem chartClosedBall_compact_of_continuousOn
     (e : PartialEquiv M E) (z : E) (r : ℝ)
     (he : ContinuousOn e.symm e.target)
     (hball : Metric.closedBall z r ⊆ e.target) :
@@ -55,15 +55,15 @@ theorem chartClosedBall_cpt_of_continuousOn
     (he.mono hball)
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem chartClosedBall_cpt (e : OpenPartialHomeomorph M E) (z : E) (r : ℝ)
+theorem chartClosedBall_compact (e : OpenPartialHomeomorph M E) (z : E) (r : ℝ)
     (hball : Metric.closedBall z r ⊆ e.target) :
     IsCompact (chartClosedBall e.toPartialEquiv z r) :=
-  chartClosedBall_cpt_of_continuousOn e.toPartialEquiv z r
+  chartClosedBall_compact_of_continuousOn e.toPartialEquiv z r
     e.continuousOn_symm hball
 
 omit [NormedSpace ℝ E] [FiniteDimensional ℝ E] [TopologicalSpace M]
   [T2Space M] [SigmaCompactSpace M] in
-theorem chartClosedBall_src (e : PartialEquiv M E) (z : E) (r : ℝ)
+theorem chartClosedBall_source (e : PartialEquiv M E) (z : E) (r : ℝ)
     (hball : Metric.closedBall z r ⊆ e.target) :
     chartClosedBall e z r ⊆ e.source := by
   rintro x ⟨y, hy, rfl⟩
@@ -83,7 +83,7 @@ def chartBuffer (e : PartialEquiv M E) (K : Set M) (r : ℝ) : Set M :=
   e.symm '' Metric.cthickening r (e '' K)
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem chartBuffer_cpt_of_continuousOn
+theorem chartBuffer_compact_of_continuousOn
     (e : PartialEquiv M E) {K : Set M} (r : ℝ)
     (he : ContinuousOn e e.source)
     (he_symm : ContinuousOn e.symm e.target)
@@ -96,16 +96,16 @@ theorem chartBuffer_cpt_of_continuousOn
     (he_symm.mono hbuffer)
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem chartBuffer_cpt (e : OpenPartialHomeomorph M E) {K : Set M} (r : ℝ)
+theorem chartBuffer_compact (e : OpenPartialHomeomorph M E) {K : Set M} (r : ℝ)
     (hK : IsCompact K) (hKsrc : K ⊆ e.source)
     (hbuffer : Metric.cthickening r (e '' K) ⊆ e.target) :
     IsCompact (chartBuffer e.toPartialEquiv K r) :=
-  chartBuffer_cpt_of_continuousOn e.toPartialEquiv r e.continuousOn
+  chartBuffer_compact_of_continuousOn e.toPartialEquiv r e.continuousOn
     e.continuousOn_symm hK hKsrc hbuffer
 
 omit [NormedSpace ℝ E] [FiniteDimensional ℝ E] [TopologicalSpace M]
   [T2Space M] [SigmaCompactSpace M] in
-theorem chartBuffer_src (e : PartialEquiv M E) (K : Set M) (r : ℝ)
+theorem chartBuffer_source (e : PartialEquiv M E) (K : Set M) (r : ℝ)
     (hbuffer : Metric.cthickening r (e '' K) ⊆ e.target) :
     chartBuffer e K r ⊆ e.source := by
   rintro x ⟨y, hy, rfl⟩
@@ -130,8 +130,8 @@ theorem exists_chartBuffer_of_continuousOn
   obtain ⟨r₀, hr₀, hbuffer⟩ :=
     hKimage.exists_cthickening_subset_open he_target hKimage_target
   exact ⟨r₀, hr₀, hbuffer,
-    chartBuffer_cpt_of_continuousOn e r₀ he he_symm hK hKsrc hbuffer,
-    chartBuffer_src e K r₀ hbuffer⟩
+    chartBuffer_compact_of_continuousOn e r₀ he he_symm hK hKsrc hbuffer,
+    chartBuffer_source e K r₀ hbuffer⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem exists_chartBuffer
@@ -237,14 +237,14 @@ theorem exists_fine_cutoffs [NormalSpace M]
         chartBall e (e (z.1 : K)) (2 * ε) := by
     intro z
     exact chartBall_mono e (e (z.1 : K)) (by linarith)
-  obtain ⟨χ, hχsmooth, hχone, hχrange, hχzero, hχsupp⟩ :=
+  obtain ⟨χ, hχsmooth, hχone, hχrange, hχzero, hχsupport⟩ :=
     exists_pou_cutoff (I := I) ρ
       (fun z : S => chartBall e (e (z.1 : K)) ε)
       (fun z : S => chartBall e (e (z.1 : K)) (2 * ε))
       hρ hinnerOuter
       (fun z => isOpen_chartBall e (e (z.1 : K)) (2 * ε))
   exact ⟨ε, hε, hεr, S, ρ, χ, hρ, houter, hχsmooth, hχone,
-    hχrange, hχzero, hχsupp⟩
+    hχrange, hχzero, hχsupport⟩
 
 omit [I.Boundaryless] in
 theorem exists_fine_tricut [NormalSpace M]
@@ -274,7 +274,7 @@ theorem exists_fine_tricut [NormalSpace M]
               chartBall e (e (z.1 : K)) (2 * ε) := by
   classical
   obtain ⟨ε, hε, hεr, S, ρ, χ, hρ, houter, hχsmooth, hχone,
-    hχrange, _hχzero, hχsupp⟩ :=
+    hχrange, _hχzero, hχsupport⟩ :=
     exists_fine_cutoffs (I := I) e hK hKsrc hr
   have hψ : ∀ z : S, ∃ ψz : M → ℝ,
       ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ ψz ∧
@@ -286,7 +286,7 @@ theorem exists_fine_tricut [NormalSpace M]
     intro z
     exact exists_strict_cutoff (I := I) (χ z)
       (chartBall e (e (z.1 : K)) (2 * ε))
-      (isOpen_chartBall e (e (z.1 : K)) (2 * ε)) (hχsupp z)
+      (isOpen_chartBall e (e (z.1 : K)) (2 * ε)) (hχsupport z)
   let ψ : S → M → ℝ := fun z => Classical.choose (hψ z)
   have hψspec : ∀ z : S,
       ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ (ψ z) ∧
@@ -297,7 +297,7 @@ theorem exists_fine_tricut [NormalSpace M]
       tsupport (ψ z) ⊆ chartBall e (e (z.1 : K)) (2 * ε) :=
     fun z => Classical.choose_spec (hψ z)
   refine ⟨ε, hε, hεr, S, ρ, χ, ψ, hρ, houter, hχsmooth,
-    hχone, hχrange, hχsupp, ?_, ?_, ?_, ?_, ?_⟩
+    hχone, hχrange, hχsupport, ?_, ?_, ?_, ?_, ?_⟩
   · exact fun z => (hψspec z).1
   · exact fun z => (hψspec z).2.1
   · exact fun z => (hψspec z).2.2.1
@@ -322,7 +322,7 @@ structure FineChartData
       ((chi z : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1
   chi_range : ∀ z : S, ∀ x,
     ((chi z : C^∞⟮I, M; ℝ⟯) : M → ℝ) x ∈ Set.Icc (0 : ℝ) 1
-  chi_supp : ∀ z : S, tsupport
+  chi_support : ∀ z : S, tsupport
     (((chi z : C^∞⟮I, M; ℝ⟯) : M → ℝ)) ⊆
       chartBall e (e (z.1 : K)) (2 * ε)
   psi_one : ∀ z : S, ∀ᶠ x in 𝓝ˢ
@@ -333,7 +333,7 @@ structure FineChartData
   psi_zero : ∀ z : S, ∀ᶠ x in 𝓝ˢ
     ((chartBall e (e (z.1 : K)) (2 * ε))ᶜ),
       ((psi z : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0
-  psi_supp : ∀ z : S, tsupport
+  psi_support : ∀ z : S, tsupport
     (((psi z : C^∞⟮I, M; ℝ⟯) : M → ℝ)) ⊆
       chartBall e (e (z.1 : K)) (2 * ε)
 
@@ -353,7 +353,7 @@ theorem existsFineChart [NormalSpace M]
     Nonempty (FineChartData (I := I) e K r) := by
   classical
   obtain ⟨ε, hε, hεr, S, ρ, χ, ψ, hρ, houter, hχsmooth,
-    hχone, hχrange, hχsupp, hψsmooth, hψone, hψrange, hψzero, hψsupp⟩ :=
+    hχone, hχrange, hχsupport, hψsmooth, hψone, hψrange, hψzero, hψsupport⟩ :=
     exists_fine_tricut (I := I) e hK hKsrc hr
   let χb : S → C^∞⟮I, M; ℝ⟯ := fun z => ⟨χ z, hχsmooth z⟩
   let ψb : S → C^∞⟮I, M; ℝ⟯ := fun z => ⟨ψ z, hψsmooth z⟩
@@ -369,17 +369,17 @@ theorem existsFineChart [NormalSpace M]
     outer := houter
     chi_one := ?_
     chi_range := ?_
-    chi_supp := ?_
+    chi_support := ?_
     psi_one := ?_
     psi_range := ?_
     psi_zero := ?_
-    psi_supp := ?_ }⟩
+    psi_support := ?_ }⟩
   · intro z
     simpa only [χb, ContMDiffMap.coeFn_mk] using hχone z
   · intro z x
     simpa only [χb, ContMDiffMap.coeFn_mk] using hχrange z x
   · intro z
-    simpa only [χb, ContMDiffMap.coeFn_mk] using hχsupp z
+    simpa only [χb, ContMDiffMap.coeFn_mk] using hχsupport z
   · intro z
     simpa only [χb, ψb, ContMDiffMap.coeFn_mk] using hψone z
   · intro z x
@@ -387,7 +387,7 @@ theorem existsFineChart [NormalSpace M]
   · intro z
     simpa only [ψb, ContMDiffMap.coeFn_mk] using hψzero z
   · intro z
-    simpa only [ψb, ContMDiffMap.coeFn_mk] using hψsupp z
+    simpa only [ψb, ContMDiffMap.coeFn_mk] using hψsupport z
 
 end Chart
 end Sobolev

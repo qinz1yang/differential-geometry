@@ -47,7 +47,7 @@ theorem chartLeviCivita_torsion_free_on (g : SmoothRiemannianMetric I M) (α : M
         VectorField.mlieBracket I X Y x := by
   intro X Y x hX hY hx
   classical
-  have hx_src : x ∈ (extChartAt I α).source :=
+  have hx_source : x ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
@@ -85,7 +85,7 @@ theorem chartLeviCivita_torsion_free_on (g : SmoothRiemannianMetric I M) (α : M
     abel
   rw [hreorg]
   exact (mlieBracket_eq_chart_fderiv_diff (I := I) α x X Y
-    hx_src hx_base hx_int hX hY).symm
+    hx_source hx_base hx_int hX hY).symm
 
 end Connection
 end Geometry

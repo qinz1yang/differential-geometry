@@ -863,7 +863,7 @@ private theorem smooth_linear_tangentSection_pointwise
       ∀ (δ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _))
         {U : Set M}, IsOpen U → x ∈ U → (∀ y ∈ U, δ y = 0) → Φ δ = 0 := by
     intro δ U hU hxU hδU
-    obtain ⟨ψ, -, hψsupp⟩ :=
+    obtain ⟨ψ, -, hψsupport⟩ :=
       (SmoothBumpFunction.nhds_basis_tsupport (I := I) x).mem_iff.mp
         (hU.mem_nhds hxU)
     let ψ' : C^∞⟮I, M; Real⟯ :=
@@ -873,7 +873,7 @@ private theorem smooth_linear_tangentSection_pointwise
       simp only [ContMDiffSection.coe_smulContMDiffMap,
         ContMDiffSection.coe_zero, Pi.zero_apply]
       by_cases hy : y ∈ Function.support (ψ : M → Real)
-      · exact smul_eq_zero_of_right _ (hδU y (hψsupp (subset_closure hy)))
+      · exact smul_eq_zero_of_right _ (hδU y (hψsupport (subset_closure hy)))
       · simp only [Function.mem_support, not_not] at hy
         exact smul_eq_zero_of_left hy _
     have h := hsmul ψ' δ
@@ -893,7 +893,7 @@ private theorem smooth_linear_tangentSection_pointwise
   have he : x ∈ e.baseSet := mem_baseSet_trivializationAt E (TangentSpace I) x
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (∞ : WithTop ℕ∞) b
   obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
-  obtain ⟨χ, -, hχsupp⟩ :=
+  obtain ⟨χ, -, hχsupport⟩ :=
     (SmoothBumpFunction.nhds_basis_tsupport (I := I) x).mem_iff.mp
       (e.open_baseSet.mem_nhds he)
   have hcoeff_smooth : ∀ i, ContMDiff I 𝓘(Real) (∞ : WithTop ℕ∞)
@@ -903,11 +903,11 @@ private theorem smooth_linear_tangentSection_pointwise
     · have hcoeff :
           ContMDiffAt I 𝓘(Real) (∞ : WithTop ℕ∞)
             (fun y : M => e.localFrameCoeff I b i y (δ y)) y :=
-        contMDiffAt_localFrameCoeff b (hχsupp hy) δ.contMDiff.contMDiffAt i
+        contMDiffAt_localFrameCoeff b (hχsupport hy) δ.contMDiff.contMDiffAt i
       have hχy : ContMDiffAt I 𝓘(Real) (∞ : WithTop ℕ∞) (χ : M → Real) y :=
         χ.contMDiff.contMDiffAt
       refine (hχy.smul hcoeff).congr_of_eventuallyEq ?_
-      filter_upwards [((e.open_baseSet).mem_nhds (hχsupp hy))] with z hz
+      filter_upwards [((e.open_baseSet).mem_nhds (hχsupport hy))] with z hz
       have hbasis : e.basisAt b hz = hframe.toBasisAt hz := by
         ext j
         simp [IsLocalFrameOn.toBasisAt, Trivialization.localFrame,

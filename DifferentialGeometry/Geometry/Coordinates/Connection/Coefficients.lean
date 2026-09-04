@@ -29,10 +29,10 @@ theorem tangentConstInChart_eq_coordinateFrame_eventually
   filter_upwards
     [((coordinateTrivializationAt (I := I) x₀).open_baseSet.mem_nhds
       (coordinateFrameAt_mem (I := I) x₀))] with x hx
-  have hx_src : x ∈ (chartAt H x₀).source := by
+  have hx_source : x ∈ (chartAt H x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt] using hx
   rw [tangentConstInChart_apply]
-  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+  rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_source]
   rw [coordinateFrameAt_apply_of_mem (I := I) (x₀ := x₀) (x := x) hx i]
   rfl
 

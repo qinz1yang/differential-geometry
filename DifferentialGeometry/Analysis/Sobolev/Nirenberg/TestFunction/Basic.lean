@@ -90,23 +90,23 @@ theorem nirenbergTestFunction_tsupport_subset
 
 omit [NeZero d] in
 theorem hasCompactSupport_nirenbergTestFunction
-    {η u : E → ℝ} (hη_supp : HasCompactSupport η)
+    {η u : E → ℝ} (hη_support : HasCompactSupport η)
     (k : Fin d) (h : ℝ) :
     HasCompactSupport (nirenbergTestFunction k h η u) := by
   unfold nirenbergTestFunction
-  have h_eta_sq_supp : HasCompactSupport (fun y : E => η y ^ 2) := by
+  have h_eta_sq_support : HasCompactSupport (fun y : E => η y ^ 2) := by
     have heq : (fun y : E => η y ^ 2) = (fun y : E => η y * η y) := by
       funext y
       ring
     rw [heq]
-    exact hη_supp.mul_right
-  have h_prod_supp :
+    exact hη_support.mul_right
+  have h_prod_support :
       HasCompactSupport
         (fun y : E => η y ^ 2 *
           DifferentialGeometry.Analysis.Sobolev.diffQuot k h u y) :=
-    h_eta_sq_supp.mul_right
+    h_eta_sq_support.mul_right
   exact hasCompactSupport_diffQuot_of_hasCompactSupport
-    (d := d) h_prod_supp k (-h)
+    (d := d) h_prod_support k (-h)
 
 omit [NeZero d] in
 private lemma support_eta_sq_subset
@@ -179,7 +179,7 @@ theorem tsupport_nirenbergTestFunction_subset
       rw [this, norm_neg]
     rw [hdist_eq]
     rw [norm_smul, hsing_norm, mul_one, Real.norm_eq_abs, abs_neg]
-  have h_supp_subset :
+  have h_support_subset :
       Function.support
           (DifferentialGeometry.Analysis.Sobolev.diffQuot k (-h) g) ⊆
         Metric.cthickening |h| (tsupport η) := by
@@ -214,15 +214,15 @@ theorem tsupport_nirenbergTestFunction_subset
         rw [hb1', hb2', sub_zero]
       cases h_or with
       | inl h1 =>
-        have h_in_supp_g :
+        have h_in_support_g :
             x + (-h) • EuclideanSpace.single k 1 ∈ Function.support g :=
           h1
-        have h_in_supp_η :
+        have h_in_support_η :
             x + (-h) • EuclideanSpace.single k 1 ∈ Function.support η :=
-          support_eta_sq_diffQuot_subset (d := d) η u k h h_in_supp_g
+          support_eta_sq_diffQuot_subset (d := d) η u k h h_in_support_g
         have h_in_tsupp_η :
             x + (-h) • EuclideanSpace.single k 1 ∈ tsupport η :=
-          subset_closure h_in_supp_η
+          subset_closure h_in_support_η
         have h_x_eq :
             x =
               (x + (-h) • EuclideanSpace.single k 1) -
@@ -231,12 +231,12 @@ theorem tsupport_nirenbergTestFunction_subset
         rw [h_x_eq]
         exact h_shift_in_thick _ h_in_tsupp_η
       | inr h2 =>
-        have h_in_supp_g : x ∈ Function.support g := h2
-        have h_in_supp_η : x ∈ Function.support η :=
-          support_eta_sq_diffQuot_subset (d := d) η u k h h_in_supp_g
-        have h_in_tsupp_η : x ∈ tsupport η := subset_closure h_in_supp_η
+        have h_in_support_g : x ∈ Function.support g := h2
+        have h_in_support_η : x ∈ Function.support η :=
+          support_eta_sq_diffQuot_subset (d := d) η u k h h_in_support_g
+        have h_in_tsupp_η : x ∈ tsupport η := subset_closure h_in_support_η
         exact h_self_subset_thick h_in_tsupp_η
-  exact (closure_minimal h_supp_subset h_thick_closed)
+  exact (closure_minimal h_support_subset h_thick_closed)
 
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction

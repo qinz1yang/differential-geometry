@@ -520,11 +520,11 @@ private lemma eLpNorm_chartPushedRaw_sqrtPou_le_uniform
     g r s S α Idx Jdx with hw_def
   have hw_meas : Measurable w :=
     measurable_tensorChartComponentSqrtPou (I := I) (M := M) g r s S α Idx Jdx
-  have hw_supp : tsupport w ⊆ Kα :=
+  have hw_support : tsupport w ⊆ Kα :=
     tsupport_tensorChartComponentSqrtPou_subset (I := I) (M := M)
       g r s S α Idx Jdx
   have h_bridge :=
-    hC_bound (u := w) hw_meas hw_supp
+    hC_bound (u := w) hw_meas hw_support
   rw [show DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)
         = DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g

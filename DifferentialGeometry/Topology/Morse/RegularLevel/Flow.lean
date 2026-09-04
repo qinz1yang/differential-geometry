@@ -420,7 +420,7 @@ theorem sublevel_transport_outside_of_unitSpeedVectorField [I.Boundaryless]
     exact curveAt_eq_self_of_not_mem_tsupport v hv hcomplete (hfix x hx) s
   have hinj : ∀ s : ℝ, Function.Injective (Φ s) := by
     intro s
-    exact curveAt_injective' v hv1 hcomplete s
+    exact curveAt_injective v hv1 hcomplete s
   have houtside : ∀ x : M, x ∉ B → ∀ s : ℝ, Φ s x ∉ B := by
     intro x hx s hmem
     apply hx

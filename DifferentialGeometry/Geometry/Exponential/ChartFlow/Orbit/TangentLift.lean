@@ -61,9 +61,9 @@ lemma mem_extChartAt_tangent_zero_target
   · exact interior_subset hz1
   · rw [Set.mem_preimage, TangentBundle.trivializationAt_baseSet]
     have hz1_target : z.1 ∈ (extChartAt I p).target := interior_subset hz1
-    have hz1_src : (extChartAt I p).symm z.1 ∈ (extChartAt I p).source :=
+    have hz1_source : (extChartAt I p).symm z.1 ∈ (extChartAt I p).source :=
       (extChartAt I p).map_target hz1_target
-    rwa [extChartAt_source] at hz1_src
+    rwa [extChartAt_source] at hz1_source
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma extChartAt_tangent_zero_symm_proj
@@ -136,30 +136,30 @@ omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem chartFlowOrbitLift_zero
     (p : M) (v : E) {Φ : (E × E) × ℝ → E × E}
-    (hΦ_init : Φ (((extChartAt I p p, v) : E × E), 0) =
+    (hΦ_initial : Φ (((extChartAt I p p, v) : E × E), 0) =
       ((extChartAt I p p, v) : E × E)) :
     chartFlowOrbitLift (I := I) Φ p v 0 = (⟨p, v⟩ : TangentBundle I M) := by
   classical
   unfold chartFlowOrbitLift
-  rw [hΦ_init]
+  rw [hΦ_initial]
   set q : TangentBundle I M := (⟨p, v⟩ : TangentBundle I M) with hq_def
-  have hp_src : p ∈ (chartAt H p).source := mem_chart_source H p
-  have hq_proj_src : q.proj ∈ (chartAt H p).source := hp_src
+  have hp_source : p ∈ (chartAt H p).source := mem_chart_source H p
+  have hq_proj_source : q.proj ∈ (chartAt H p).source := hp_source
   have hch :=
-    extChartAt_tangent_zero_apply_chartFiber (I := I) p (p := q) hq_proj_src
+    extChartAt_tangent_zero_apply_chartFiber (I := I) p (p := q) hq_proj_source
   have hfiber : chartFiberCoord (I := I) p q = v := by
     rw [hq_def]
     change (trivializationAt E (TangentSpace I) p
         (⟨p, v⟩ : TangentBundle I M)).2 = v
     have hbase : p ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
-      rw [TangentBundle.trivializationAt_baseSet]; exact hp_src
+      rw [TangentBundle.trivializationAt_baseSet]; exact hp_source
     have hp_extsrc : p ∈ (extChartAt I p).source := by
-      rw [extChartAt_source]; exact hp_src
+      rw [extChartAt_source]; exact hp_source
     have hcore :
         (trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ p =
         (tangentBundleCore I M).coordChange (achart H p) (achart H p) p :=
       TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (𝕜 := ℝ)
-        (b₀ := p) (b := p) hp_src
+        (b₀ := p) (b := p) hp_source
     have hself : ∀ w : E, tangentCoordChange I p p p w = w :=
       fun w =>
         tangentCoordChange_self (I := I) (x := p) (z := p) (v := w) hp_extsrc
@@ -181,7 +181,7 @@ theorem chartFlowOrbitLift_zero
   have hq_chsrc : q ∈ (chartAt (ModelProd H E)
       (⟨p, (0 : E)⟩ : TangentBundle I M)).source := by
     rw [mem_chartAt_modelProd_zero_source_iff (I := I) p q]
-    exact hq_proj_src
+    exact hq_proj_source
   have hq_extsrc : q ∈
       (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)).source := by
     rw [extChartAt_source]; exact hq_chsrc
@@ -227,7 +227,7 @@ omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem chartFlowOrbitLift_chartPushLift_eq
     (p : M) (v : E) {Φ : (E × E) × ℝ → E × E} (s : ℝ)
-    (hΦ_init : Φ (((extChartAt I p p, v) : E × E), 0) =
+    (hΦ_initial : Φ (((extChartAt I p p, v) : E × E), 0) =
       ((extChartAt I p p, v) : E × E))
     (hΦ_target : Φ (((extChartAt I p p, v) : E × E), s) ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E)) :
@@ -235,7 +235,7 @@ theorem chartFlowOrbitLift_chartPushLift_eq
       Φ (((extChartAt I p p, v) : E × E), s) := by
   classical
   have hF0 : chartFlowOrbitLift (I := I) Φ p v 0 = (⟨p, v⟩ : TangentBundle I M) :=
-    chartFlowOrbitLift_zero (I := I) p v hΦ_init
+    chartFlowOrbitLift_zero (I := I) p v hΦ_initial
   have hchart_eq :
       extChartAt I.tangent (chartFlowOrbitLift (I := I) Φ p v 0) =
         extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M) := by
@@ -286,7 +286,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_chartFlowOrbitLift_eventuallyEq_isMIntegralCurveAt_zero
     (g : SmoothRiemannianMetric I M) (p : M) (v : E)
     {Φ : (E × E) × ℝ → E × E}
-    (hΦ_init : Φ (((extChartAt I p p, v) : E × E), 0) =
+    (hΦ_initial : Φ (((extChartAt I p p, v) : E × E), 0) =
       ((extChartAt I p p, v) : E × E))
     (hΦ_chart_phase : ∀ᶠ s in 𝓝 (0 : ℝ),
       HasDerivAt (fun s' : ℝ => Φ (((extChartAt I p p, v) : E × E), s'))
@@ -304,7 +304,7 @@ theorem exists_chartFlowOrbitLift_eventuallyEq_isMIntegralCurveAt_zero
       (I := I) (g := g) (p := p) (v := v)
   refine ⟨g_v, hg0, hg_int, ?_⟩
   have hF0 : chartFlowOrbitLift (I := I) Φ p v 0 = (⟨p, v⟩ : TangentBundle I M) :=
-    chartFlowOrbitLift_zero (I := I) p v hΦ_init
+    chartFlowOrbitLift_zero (I := I) p v hΦ_initial
   have hg_proj0 : (g_v 0).proj = p := by rw [hg0]
   have hd_g_phase :=
     chartPushLift_eventually_hasDerivAt_chartPhaseVF_and_target_interior
@@ -318,16 +318,16 @@ theorem exists_chartFlowOrbitLift_eventuallyEq_isMIntegralCurveAt_zero
       rw [hg0]
       change (trivializationAt E (TangentSpace I) p
           (⟨p, v⟩ : TangentBundle I M)).2 = v
-      have hp_src : p ∈ (chartAt H p).source := mem_chart_source H p
+      have hp_source : p ∈ (chartAt H p).source := mem_chart_source H p
       have hbase : p ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
-        rw [TangentBundle.trivializationAt_baseSet]; exact hp_src
+        rw [TangentBundle.trivializationAt_baseSet]; exact hp_source
       have hp_extsrc : p ∈ (extChartAt I p).source := by
-        rw [extChartAt_source]; exact hp_src
+        rw [extChartAt_source]; exact hp_source
       have hcore :
           (trivializationAt E (TangentSpace I) p).continuousLinearMapAt ℝ p =
           (tangentBundleCore I M).coordChange (achart H p) (achart H p) p :=
         TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (𝕜 := ℝ)
-          (b₀ := p) (b := p) hp_src
+          (b₀ := p) (b := p) hp_source
       have hself : ∀ w : E, tangentCoordChange I p p p w = w :=
         fun w => tangentCoordChange_self (I := I) (x := p) (z := p) (v := w) hp_extsrc
       have hcore_at :
@@ -346,7 +346,7 @@ theorem exists_chartFlowOrbitLift_eventuallyEq_isMIntegralCurveAt_zero
     rw [hfiber0]
   have hΦorbit_zero :
       (fun s' : ℝ => Φ (((extChartAt I p p, v) : E × E), s')) 0 =
-        ((extChartAt I p p, v) : E × E) := hΦ_init
+        ((extChartAt I p p, v) : E × E) := hΦ_initial
   have hbase_interior : ((extChartAt I p p, v) : E × E) ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
     have hp_extsrc : p ∈ (extChartAt I p).source := by
@@ -377,15 +377,15 @@ theorem exists_chartFlowOrbitLift_eventuallyEq_isMIntegralCurveAt_zero
       𝓝 (0 : ℝ) := by
     apply hcomp0.preimage_mem_nhds
     rw [hg_proj0]; exact hp_nhds
-  filter_upwards [hcd_eq, hsrc_nhds] with s hs_eq hs_src
+  filter_upwards [hcd_eq, hsrc_nhds] with s hs_eq hs_source
   unfold chartPushLift at hs_eq
   rw [hchart_eq] at hs_eq
-  have hg_src : g_v s ∈ (chartAt (ModelProd H E)
+  have hg_source : g_v s ∈ (chartAt (ModelProd H E)
       (⟨p, (0 : E)⟩ : TangentBundle I M)).source :=
-    (mem_chartAt_modelProd_zero_source_iff (I := I) p (g_v s)).mpr hs_src
+    (mem_chartAt_modelProd_zero_source_iff (I := I) p (g_v s)).mpr hs_source
   have hg_extsrc : g_v s ∈
       (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)).source := by
-    rw [extChartAt_source]; exact hg_src
+    rw [extChartAt_source]; exact hg_source
   have hleft :
       (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)).symm
         (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M) (g_v s)) = g_v s :=
@@ -399,7 +399,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem chartFlowOrbitLift_isMIntegralCurveAt_zero
     (g : SmoothRiemannianMetric I M) (p : M) (v : E)
     {Φ : (E × E) × ℝ → E × E}
-    (hΦ_init : Φ (((extChartAt I p p, v) : E × E), 0) =
+    (hΦ_initial : Φ (((extChartAt I p p, v) : E × E), 0) =
       ((extChartAt I p p, v) : E × E))
     (hΦ_chart_phase : ∀ᶠ s in 𝓝 (0 : ℝ),
       HasDerivAt (fun s' : ℝ => Φ (((extChartAt I p p, v) : E × E), s'))
@@ -412,7 +412,7 @@ theorem chartFlowOrbitLift_isMIntegralCurveAt_zero
   classical
   obtain ⟨g_v, _hg0, hg_int, hg_eq⟩ :=
     exists_chartFlowOrbitLift_eventuallyEq_isMIntegralCurveAt_zero
-      (I := I) (g := g) (p := p) (v := v) (Φ := Φ) hΦ_init hΦ_chart_phase
+      (I := I) (g := g) (p := p) (v := v) (Φ := Φ) hΦ_initial hΦ_chart_phase
   rw [IsMIntegralCurveAt] at hg_int ⊢
   filter_upwards [hg_int, hg_eq, hg_eq.eventually_nhds] with s hs_int hs_eq hs_eq_nhds
   rw [← hs_eq]
@@ -456,16 +456,16 @@ theorem exists_chartFlowOrbitLift_data_uniform
         IsMIntegralCurveAt (chartFlowOrbitLift (I := I) Φ p v)
           (geodesicVectorFieldChart (I := I) g p) 0) := by
   classical
-  obtain ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, _hF_data⟩ :=
+  obtain ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, _hF_data⟩ :=
     exists_uniform_existence_interval (I := I) (g := g) (p := p)
-  refine ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, ?_, ?_, ?_, ?_⟩
+  refine ⟨ρ, T, Φ, hρ_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, ?_, ?_, ?_, ?_⟩
   · intro v hv
-    exact chartFlowOrbitLift_zero (I := I) p v (hΦ_init v hv)
+    exact chartFlowOrbitLift_zero (I := I) p v (hΦ_initial v hv)
   · intro v hv s hs
     exact chartFlowOrbitLift_proj (I := I) p v s (hΦ_target v hv s hs)
   · intro v hv s hs
     exact chartFlowOrbitLift_chartPushLift_eq (I := I) p v s
-      (hΦ_init v hv) (hΦ_target v hv s hs)
+      (hΦ_initial v hv) (hΦ_target v hv s hs)
   · intro v hv
     have hΦ_phase_ev : ∀ᶠ s in 𝓝 (0 : ℝ),
         HasDerivAt (fun s' : ℝ => Φ (((extChartAt I p p, v) : E × E), s'))
@@ -479,7 +479,7 @@ theorem exists_chartFlowOrbitLift_data_uniform
       refine ⟨hΦ_phase v hv s hs, ?_⟩
       exact hΦ_target v hv s (Set.Ioo_subset_Icc_self hs)
     exact chartFlowOrbitLift_isMIntegralCurveAt_zero (I := I) (g := g) (p := p)
-      (v := v) (Φ := Φ) (hΦ_init v hv) hΦ_phase_ev
+      (v := v) (Φ := Φ) (hΦ_initial v hv) hΦ_phase_ev
 
 end HeadlineUniform
 

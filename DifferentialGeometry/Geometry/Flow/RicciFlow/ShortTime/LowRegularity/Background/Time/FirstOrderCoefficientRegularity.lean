@@ -279,7 +279,7 @@ private theorem firstOrderCoefficient_core_pairing
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) S‖ ≤ r0 := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simpa only [S, ccToHsLin_apply] using hrad.trans hTr0
   have hincl :
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T -
@@ -536,7 +536,7 @@ private theorem firstOrderCoefficient_core_affine
         ‖ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T‖ := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simpa only [S, ccToHsLin_apply] using hrad
   have hR : 0 ≤ R := by
     simp only [R]

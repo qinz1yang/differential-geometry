@@ -224,11 +224,11 @@ theorem christoffelSymbolEvolution_from_equation
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (rhs : Time -> M -> Idx -> Idx -> Idx -> 𝕜)
-    (h_evol : ChristoffelSymbolEvolutionEquationInFrame td covFam frame hframe rhs)
+    (h_evolution : ChristoffelSymbolEvolutionEquationInFrame td covFam frame hframe rhs)
     (t : Time) (x : M) (i j k : Idx) :
     christoffelSymbolTimeDerivativeInFrame td covFam frame hframe t x i j k =
       rhs t x i j k :=
-  h_evol t x i j k
+  h_evolution t x i j k
 
 def ricciFlowChristoffelEvolutionRHSInFrame
     (nablaRicLastRaised nablaRicDirectionRaised : Time -> M -> Idx -> Idx -> Idx -> 𝕜)
@@ -255,7 +255,7 @@ theorem ricciFlow_christoffelSymbolEvolution_from_equation
     (hframe : IsLocalFrameOn I E 1 frame u)
     (nablaRicLastRaised nablaRicDirectionRaised :
       Time -> M -> Idx -> Idx -> Idx -> 𝕜)
-    (h_evol : RicciFlowChristoffelSymbolEvolutionEquationInFrame
+    (h_evolution : RicciFlowChristoffelSymbolEvolutionEquationInFrame
       td covFam frame hframe nablaRicLastRaised nablaRicDirectionRaised)
     (t : Time) (x : M) (i j k : Idx) :
     christoffelSymbolTimeDerivativeInFrame td covFam frame hframe t x i j k =
@@ -264,7 +264,7 @@ theorem ricciFlow_christoffelSymbolEvolution_from_equation
         nablaRicDirectionRaised t x i j k := by
   simpa [RicciFlowChristoffelSymbolEvolutionEquationInFrame,
     ChristoffelSymbolEvolutionEquationInFrame, ricciFlowChristoffelEvolutionRHSInFrame]
-    using h_evol t x i j k
+    using h_evolution t x i j k
 
 end TimeDerivative
 

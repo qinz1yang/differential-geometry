@@ -56,7 +56,7 @@ theorem hamilton_finite_time_flow_exists_on_closed_open
   let P : HamiltonFiniteTimeFlow (I := I) (M := M) g0 :=
     { D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω
       S := Smax
-      isSmooth := smoothOfSol (I := I) Smax hSmax
+      isSmooth := smoothOfSolution (I := I) Smax hSmax
       startsAt := by
         rw [show (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
           0 omega h0ω).initial = 0 by rfl]
@@ -97,11 +97,11 @@ theorem hamilton_scalar_weak_maximum_principle_regularity_on_interval
     (hsubset : ∀ t : Real, t ∈ Set.Icc 0 T -> t ∈ P.D.carrier)
     (hden : ∀ t : Real, t ∈ Set.Icc 0 T ->
       1 - (2 / (3 : Real)) * c0 * t ≠ 0) :
-    DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWMPRegularity
+    DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWeakMaximumPrincipleRegularity
       (I := I) (hamiltonMetricConnectionFamily (I := I) P) T 3 c0
       (hamiltonScalar (I := I) P) (K T) := by
   simpa [hamiltonScalar, hamiltonSolution] using
-    (DifferentialGeometry.PDE.RicciFlow.scalarRegOfSmooth (I := I) (M := M)
+    (DifferentialGeometry.PDE.RicciFlow.scalarRegularityOfSmooth (I := I) (M := M)
       P.S P.isSmooth (hamiltonMetricConnectionFamily (I := I) P) T 3 c0 (K T)
       hsubset
       (by
@@ -164,7 +164,7 @@ theorem hamilton_initial_ricci_positive
     (hpos : positiveRicciMetric (I := I) (M := M) g0)
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
-    DifferentialGeometry.PDE.RicciFlow.RicciPosInit (I := I) (M := M)
+    DifferentialGeometry.PDE.RicciFlow.RicciPosInitial (I := I) (M := M)
       (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M)
         P.S.ricci) := by
   intro x v hv
@@ -340,7 +340,7 @@ theorem hamilton_scalar_weak_maximum_principle_regularity
     (c0 : Real) (hc0 : 0 < c0) (K : Real -> NNReal) :
     forall T : Real, T < omega ->
       T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
-        DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWMPRegularity
+        DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWeakMaximumPrincipleRegularity
           (I := I) (hamiltonMetricConnectionFamily (I := I) P) T 3 c0
           (hamiltonScalar (I := I) P) (K T) := by
   intro T hTω hPole
@@ -499,7 +499,7 @@ theorem hamilton_scalar_evolution_data
             (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T)) /\
         (forall T : Real, 0 < T -> T < omega ->
           T < DifferentialGeometry.PDE.RicciFlow.scalarBlowupTime 3 c0 ->
-            DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWMPRegularity
+            DifferentialGeometry.PDE.RicciFlow.ScalarLowerBoundWeakMaximumPrincipleRegularity
               (I := I) G T 3 c0 scalar (K T)) /\
         DifferentialGeometry.PDE.RicciFlow.ScalarEvolutionEquationOn
           (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)

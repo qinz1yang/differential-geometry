@@ -133,7 +133,7 @@ theorem not_conj_of_min_len
     simpa only [γ, J, DJ] using
       variationField_covDeriv_chartRep_differentiableAt
         (I := I) g f hf_smooth t
-  have hJac : IsJacobiAlong (I := I) g γ J := by
+  have hJacobian : IsJacobiAlong (I := I) g γ J := by
     rw [hγ]
     simpa only [J, f] using
       intrinsic_jacobi (I := I) g hEnorm p u z
@@ -145,7 +145,7 @@ theorem not_conj_of_min_len
   have hJperp :
       ∀ t, g.inner (γ t) (J t) (curveVelocity (I := I) γ t) = 0 :=
     jacobi_perp_of_ends (I := I) g γ J hc.1.ne'
-      hγ_smooth hgeo hJdiff hDJdiff hJac hJ0 hJc
+      hγ_smooth hgeo hJdiff hDJdiff hJacobian hJ0 hJc
   have hunit0 :
       g.inner (γ 0) (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ))
         (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) = 1 := by
@@ -201,10 +201,10 @@ theorem not_conj_of_min_len
         (fun i => hFdiff i t ht)
         (hJdiff t) (hDJdiff t)
         (fun i => hFpar i t ht)
-        (hJac t) (by simp) (hspeed t)
+        (hJacobian t) (by simp) (hspeed t)
         (fun i => hFperp t ht i)
         (hJperp t) (fun i j => hON t ht i j)
-  have hsol : IsJacobiSolOn R 0 L y v :=
+  have hsol : IsJacobiFieldOn R 0 L y v :=
     { deriv_fst := fun t ht => (hode t ht).1.hasDerivWithinAt
       deriv_snd := fun t ht => (hode t ht).2.hasDerivWithinAt }
   have hR_smooth : ContDiff ℝ ∞ R := by

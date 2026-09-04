@@ -194,7 +194,7 @@ theorem exists_chartH1_join
       simpa only [partitionIntervalLength] using hr.2
     exact ⟨(ht0mem j.castSucc).1.trans (le_add_of_nonneg_right hr.1),
       (by linarith [(ht0mem j.succ).2, hr'])⟩
-  have hshift0_seg (j : Fin m0) : MapsTo
+  have hshift0_segment (j : Fin m0) : MapsTo
       (fun r : Real ↦ t0 j.castSucc + r)
       (Icc (0 : Real) (partitionIntervalLength t0 j))
       (Icc (t0 j.castSucc) (t0 j.succ)) := by
@@ -210,7 +210,7 @@ theorem exists_chartH1_join
   have hsrc0_shift (j : Fin m0) : MapsTo
       (fun r : Real ↦ gamma0 (t0 j.castSucc + r))
       (Icc (0 : Real) (partitionIntervalLength t0 j)) (chartAt H (p0 j)).source :=
-    (hsrc0 j).comp (hshift0_seg j)
+    (hsrc0 j).comp (hshift0_segment j)
   let v0 (j : Fin m0) : timeH1 E (partitionIntervalLength t0 j) :=
     chartTimeH1 I (hlen0_nonneg j) (p0 j)
       (fun r ↦ gamma0 (t0 j.castSucc + r))
@@ -243,7 +243,7 @@ theorem exists_chartH1_join
       simpa only [partitionIntervalLength] using hr.2
     exact ⟨(ht1mem j.castSucc).1.trans (le_add_of_nonneg_right hr.1),
       (by linarith [(ht1mem j.succ).2, hr'])⟩
-  have hshift1_seg (j : Fin m1) : MapsTo
+  have hshift1_segment (j : Fin m1) : MapsTo
       (fun r : Real ↦ t1 j.castSucc + r)
       (Icc (0 : Real) (partitionIntervalLength t1 j))
       (Icc (t1 j.castSucc) (t1 j.succ)) := by
@@ -259,7 +259,7 @@ theorem exists_chartH1_join
   have hsrc1_shift (j : Fin m1) : MapsTo
       (fun r : Real ↦ gamma1 (t1 j.castSucc + r))
       (Icc (0 : Real) (partitionIntervalLength t1 j)) (chartAt H (p1 j)).source :=
-    (hsrc1 j).comp (hshift1_seg j)
+    (hsrc1 j).comp (hshift1_segment j)
   let v1 (j : Fin m1) : timeH1 E (partitionIntervalLength t1 j) :=
     chartTimeH1 I (hlen1_nonneg j) (p1 j)
       (fun r ↦ gamma1 (t1 j.castSucc + r))
@@ -459,7 +459,7 @@ theorem exists_chartH1_join
         (hgamma1_eq (hshift1 i1 hr')).symm
 
 omit [CompactSpace M] in
-theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
+theorem exists_contMDiff_one_lRegularizedAction_approximation_of_compatible_chartH1_pair
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -496,8 +496,8 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
           TendstoUniformly
             (fun n (s : Icc (t 0) (t (Fin.last 2))) ↦ alpha n s.1)
             (fun s ↦ gamma s.1) atTop ∧
-          Tendsto (fun n ↦ lRegAction S T (alpha n) (t 0) (t (Fin.last 2)))
-            atTop (nhds (lRegAction S T gamma (t 0) (t (Fin.last 2)))) := by
+          Tendsto (fun n ↦ lRegularizedAction S T (alpha n) (t 0) (t (Fin.last 2)))
+            atTop (nhds (lRegularizedAction S T gamma (t 0) (t (Fin.last 2)))) := by
   classical
   have hseg (i : Fin 2) : t i.castSucc ≤ t i.succ :=
     htmono Fin.castSucc_lt_succ.le
@@ -624,11 +624,11 @@ theorem exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair
       · simp)]
     congr 2
   obtain ⟨alpha, w, halpha, halpha0, halphaL, hsrcA, hrepA, hw,
-      hunif, hact⟩ :=
+      huniform, hact⟩ :=
     lAction_c1_dense S hMet hSc T (t 0) (t (Fin.last 2)) t htmono rfl rfl
       p gamma v hsrc hrep hreg
   exact ⟨gamma, hgamma, hsrc, hrep, hgamma_left, hgamma_right, alpha, w,
-    halpha, halpha0, halphaL, hsrcA, hrepA, hw, hunif, hact⟩
+    halpha, halpha0, halphaL, hsrcA, hrepA, hw, huniform, hact⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

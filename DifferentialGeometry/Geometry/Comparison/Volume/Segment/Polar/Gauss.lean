@@ -31,7 +31,7 @@ variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
 
-def velJacFrame
+def velocityJacobianFrame
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) (u : TangentSpace I x) {d : ℕ} (w : Fin d → TangentSpace I x) :
@@ -40,43 +40,43 @@ def velJacFrame
   | none => fun t => curveVelocity (I := I) (intrinsicGeodesic (I := I) g hEnorm x u) t
   | some i => fun t => intrinsicJacobi (I := I) g hEnorm x u (w i) t
 
-@[simp] theorem velJacFrame_none
+@[simp] theorem velocityJacobianFrame_none
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) (u : TangentSpace I x) {d : ℕ} (w : Fin d → TangentSpace I x) :
-    velJacFrame (I := I) g hEnorm x u w none =
+    velocityJacobianFrame (I := I) g hEnorm x u w none =
       fun t => curveVelocity (I := I) (intrinsicGeodesic (I := I) g hEnorm x u) t :=
   rfl
 
-@[simp] theorem velJacFrame_some
+@[simp] theorem velocityJacobianFrame_some
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) (u : TangentSpace I x) {d : ℕ} (w : Fin d → TangentSpace I x)
     (i : Fin d) :
-    velJacFrame (I := I) g hEnorm x u w (some i) =
+    velocityJacobianFrame (I := I) g hEnorm x u w (some i) =
       fun t => intrinsicJacobi (I := I) g hEnorm x u (w i) t :=
   rfl
 
-theorem velJac_gram_split
+theorem velocityJacobian_gram_split
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) (u : TangentSpace I x) {d : ℕ} (w : Fin d → TangentSpace I x)
     (hperp : ∀ i, g.inner x u (w i) = 0) :
     (curveGram (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
-        (velJacFrame (I := I) g hEnorm x u w) 1).det
+        (velocityJacobianFrame (I := I) g hEnorm x u w) 1).det
       = g.inner x u u *
         (curveGram (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
           (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) 1).det := by
   classical
   set γ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm x u with hγ
-  set vel : TangentSpace I (γ 1) := curveVelocity (I := I) γ 1 with hvel
+  set velocity : TangentSpace I (γ 1) := curveVelocity (I := I) γ 1 with hvel
   set T : Matrix (Fin d) (Fin d) ℝ :=
     curveGram (I := I) g γ (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) 1
       with hT
-  have hdiag : g.inner (γ 1) vel vel = g.inner x u u := by
+  have hdiag : g.inner (γ 1) velocity velocity = g.inner x u u := by
     convert intrinsicGeodesic_speedSq_eq (I := I) g hEnorm x u 1 using 1
     all_goals rfl
-  have hcross : ∀ i, g.inner (γ 1) vel
+  have hcross : ∀ i, g.inner (γ 1) velocity
       (intrinsicJacobi (I := I) g hEnorm x u (w i) 1) = 0 := by
     intro i
     have hp := intrinsicJacobi_perp (I := I) g hEnorm x u (w i)
@@ -87,19 +87,19 @@ theorem velJac_gram_split
   let D : Matrix PUnit.{1} PUnit.{1} ℝ := Matrix.of fun _ _ => g.inner x u u
   have hblock :
       Matrix.reindex e e
-          (curveGram (I := I) g γ (velJacFrame (I := I) g hEnorm x u w) 1) =
+          (curveGram (I := I) g γ (velocityJacobianFrame (I := I) g hEnorm x u w) 1) =
         Matrix.fromBlocks T 0 0 D := by
     ext a b
     rcases a with i | a
     · rcases b with j | b
       · simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
           Equiv.optionEquivSumPUnit_symm_inl, Matrix.fromBlocks_apply₁₁,
-          curveGram, Matrix.of_apply, velJacFrame_some, hT]
+          curveGram, Matrix.of_apply, velocityJacobianFrame_some, hT]
       · cases b
         simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
           Equiv.optionEquivSumPUnit_symm_inl,
           Equiv.optionEquivSumPUnit_symm_inr, Matrix.fromBlocks_apply₁₂,
-          curveGram, Matrix.of_apply, velJacFrame_some, velJacFrame_none]
+          curveGram, Matrix.of_apply, velocityJacobianFrame_some, velocityJacobianFrame_none]
         rw [g.symm]
         exact hcross i
     · cases a
@@ -107,33 +107,33 @@ theorem velJac_gram_split
       · simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
           Equiv.optionEquivSumPUnit_symm_inr,
           Equiv.optionEquivSumPUnit_symm_inl, Matrix.fromBlocks_apply₂₁,
-          curveGram, Matrix.of_apply, velJacFrame_some, velJacFrame_none]
+          curveGram, Matrix.of_apply, velocityJacobianFrame_some, velocityJacobianFrame_none]
         exact hcross j
       · cases b
         simp only [e, Matrix.reindex_apply, Matrix.submatrix_apply,
           Equiv.optionEquivSumPUnit_symm_inr, Matrix.fromBlocks_apply₂₂,
-          curveGram, Matrix.of_apply, velJacFrame_none, D]
+          curveGram, Matrix.of_apply, velocityJacobianFrame_none, D]
         exact hdiag
   have hreindexDet :
       (Matrix.reindex e e
-          (curveGram (I := I) g γ (velJacFrame (I := I) g hEnorm x u w) 1)).det =
-        (curveGram (I := I) g γ (velJacFrame (I := I) g hEnorm x u w) 1).det :=
+          (curveGram (I := I) g γ (velocityJacobianFrame (I := I) g hEnorm x u w) 1)).det =
+        (curveGram (I := I) g γ (velocityJacobianFrame (I := I) g hEnorm x u w) 1).det :=
     Matrix.det_reindex_self e _
   have hDdet : D.det = g.inner x u u := by
     rw [Matrix.det_unique]; rfl
   have hdet :
-      (curveGram (I := I) g γ (velJacFrame (I := I) g hEnorm x u w) 1).det =
+      (curveGram (I := I) g γ (velocityJacobianFrame (I := I) g hEnorm x u w) 1).det =
         T.det * D.det := by
     rw [← hreindexDet, hblock, Matrix.det_fromBlocks_zero₂₁]
   rw [hdet, hDdet, hT, mul_comm]
 
-theorem velJac_density_split
+theorem velocityJacobian_density_split
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) (u : TangentSpace I x) {d : ℕ} (w : Fin d → TangentSpace I x)
     (hperp : ∀ i, g.inner x u (w i) = 0) :
     curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
-        (velJacFrame (I := I) g hEnorm x u w) 1
+        (velocityJacobianFrame (I := I) g hEnorm x u w) 1
       = Real.sqrt (g.inner x u u) *
         curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
           (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) 1 := by
@@ -141,7 +141,7 @@ theorem velJac_density_split
     rcases eq_or_ne u 0 with hu | hu
     · simp [hu]
     · exact (g.pos x u hu).le
-  rw [curveDensity, curveDensity, velJac_gram_split (I := I) g hEnorm x u w hperp,
+  rw [curveDensity, curveDensity, velocityJacobian_gram_split (I := I) g hEnorm x u w hperp,
     Real.sqrt_mul hnn]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -214,7 +214,7 @@ theorem curveDensity_recomb
         = C.det ^ 2 * (curveGram (I := I) g γ V t).det from by ring,
     Real.sqrt_mul (sq_nonneg C.det), Real.sqrt_sq_eq_abs]
 
-theorem jacDens_basis
+theorem jacobianDens_basis
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (v : TangentSpace I y),
@@ -348,7 +348,7 @@ theorem transDens_scale
     omega
   rw [hpow, Real.sqrt_mul (sq_nonneg (t ^ d)), Real.sqrt_sq_eq_abs, abs_pow]
 
-theorem radialJac_eq_vel
+theorem radialJacobian_eq_velocity
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) (u : TangentSpace I x) :

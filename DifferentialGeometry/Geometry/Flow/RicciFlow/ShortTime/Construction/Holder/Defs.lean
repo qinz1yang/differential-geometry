@@ -15,7 +15,7 @@ open scoped Manifold Topology ContDiff NNReal ENNReal BigOperators
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 

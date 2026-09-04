@@ -41,9 +41,9 @@ private lemma exists_bound_of_contDiff_compactSupport
     {η : EuclN → ℝ} (hη_cont : Continuous η) (hη_cs : HasCompactSupport η) :
     ∃ M_η : ℝ, 0 ≤ M_η ∧ ∀ x, |η x| ≤ M_η := by
   classical
-  by_cases hSupp_empty : (tsupport η).Nonempty
+  by_cases hSupport_empty : (tsupport η).Nonempty
   · obtain ⟨xMax, _hxMax_in, hxMax_max⟩ :=
-      hη_cs.exists_isMaxOn hSupp_empty hη_cont.abs.continuousOn
+      hη_cs.exists_isMaxOn hSupport_empty hη_cont.abs.continuousOn
     refine ⟨|η xMax|, abs_nonneg _, ?_⟩
     intro x
     by_cases hx : x ∈ tsupport η
@@ -53,7 +53,7 @@ private lemma exists_bound_of_contDiff_compactSupport
   · refine ⟨0, le_refl _, ?_⟩
     intro x
     by_cases hx : x ∈ tsupport η
-    · exact absurd ⟨x, hx⟩ hSupp_empty
+    · exact absurd ⟨x, hx⟩ hSupport_empty
     · have hηx : η x = 0 := image_eq_zero_of_notMem_tsupport hx
       rw [hηx, abs_zero]
 
@@ -278,7 +278,7 @@ private lemma testFactorExtended_memLp_two
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
@@ -289,9 +289,9 @@ private lemma testFactorExtended_memLp_two
   classical
   have hη_cont : Continuous η := hη.continuous
   obtain ⟨M_η, hM_η_nn, hM_η_bd⟩ :=
-    exists_bound_of_contDiff_compactSupport hη_cont hη_supp
+    exists_bound_of_contDiff_compactSupport hη_cont hη_support
   obtain ⟨M_dη, hM_dη_nn, hM_dη_bd⟩ :=
-    exists_bound_partial_eta hη hη_supp j
+    exists_bound_partial_eta hη hη_support j
   have h_top_ne_zero : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by decide
   have h_partial_eta_cont : Continuous
       (fun z : EuclN => (fderiv ℝ η z) (EuclideanSpace.single j 1)) :=
@@ -419,7 +419,7 @@ private lemma testFactor_eq_testFactorExtended_on_tsupport
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN}
     {η : EuclN → ℝ} {h : ℝ}
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     (j : Fin (Module.finrank ℝ E))
     {z : EuclN} (hz : z ∈ tsupport η) :
@@ -428,7 +428,7 @@ private lemma testFactor_eq_testFactorExtended_on_tsupport
   classical
   have h_K_0_thick : K_0 ⊆ Metric.cthickening |h| K_0 :=
     Metric.self_subset_cthickening _
-  have hz_K_0 : z ∈ K_0 := hη_supp_in_K_0 hz
+  have hz_K_0 : z ∈ K_0 := hη_support_in_K_0 hz
   have hz_thick : z ∈ Metric.cthickening |h| K_0 := h_K_0_thick hz_K_0
   have hz_shift : z + h • EuclideanSpace.single k 1 ∈ Metric.cthickening |h| K_0 := by
     refine Metric.mem_cthickening_of_dist_le _ _ |h| K_0 hz_K_0 ?_
@@ -504,7 +504,7 @@ private lemma testFactor_eq_testFactorExtended
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN}
     {η : EuclN → ℝ}
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E)) {h : ℝ}
     (j : Fin (Module.finrank ℝ E)) :
     testFactor (I := I) (M := M) D η k h j =
@@ -512,7 +512,7 @@ private lemma testFactor_eq_testFactorExtended
   funext z
   by_cases hz : z ∈ tsupport η
   · exact testFactor_eq_testFactorExtended_on_tsupport (I := I) (M := M) D
-      hη_supp_in_K_0 k j hz
+      hη_support_in_K_0 k j hz
   · rw [testFactor_eq_zero_outside_tsupport (I := I) (M := M) D k h j hz,
       testFactorExtended_eq_zero_outside_tsupport (I := I) (M := M) D k K_0 j hz]
 
@@ -522,8 +522,8 @@ private lemma testFactor_memLp_two
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
@@ -532,8 +532,8 @@ private lemma testFactor_memLp_two
     MemLp (testFactor (I := I) (M := M) D η k h j) 2
       (volume : Measure EuclN) := by
   rw [testFactor_eq_testFactorExtended (I := I) (M := M) D
-    hη_supp_in_K_0 k (h := h) j]
-  exact testFactorExtended_memLp_two (I := I) (M := M) D hK_0_compact hη hη_supp
+    hη_support_in_K_0 k (h := h) j]
+  exact testFactorExtended_memLp_two (I := I) (M := M) D hK_0_compact hη hη_support
     k hh h_thick j
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -542,8 +542,8 @@ theorem chartBilinear_factor_integrable
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
@@ -569,8 +569,8 @@ theorem chartBilinear_factor_integrable
   have h_test_lp_global :
       MemLp (testFactor (I := I) (M := M) D η k h j) 2
         (volume : Measure EuclN) :=
-    testFactor_memLp_two (I := I) (M := M) D hK_0_compact hη hη_supp
-      hη_supp_in_K_0 k hh h_thick j
+    testFactor_memLp_two (I := I) (M := M) D hK_0_compact hη hη_support
+      hη_support_in_K_0 k hh h_thick j
   have hnh : (-h) ≠ 0 := neg_ne_zero.mpr hh
   have h_dq_test_lp_global :
       MemLp (DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -626,8 +626,8 @@ theorem chartBilinear_factor_integrable_after
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
@@ -657,8 +657,8 @@ theorem chartBilinear_factor_integrable_after
     memLp_diffQuot_of_memLp hF_ext_lp k hh
   have h_test_lp : MemLp (testFactor (I := I) (M := M) D η k h j) 2
       (volume : Measure EuclN) :=
-    testFactor_memLp_two (I := I) (M := M) D hK_0_compact hη hη_supp
-      hη_supp_in_K_0 k hh h_thick j
+    testFactor_memLp_two (I := I) (M := M) D hK_0_compact hη hη_support
+      hη_support_in_K_0 k hh h_thick j
   have h_int_prod_global : Integrable (fun y =>
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
@@ -702,7 +702,7 @@ theorem chartBilinear_factor_integrable_after
     by_cases hy : y ∈ tsupport η
     · have h_K_0_thick : K_0 ⊆ Metric.cthickening |h| K_0 :=
         Metric.self_subset_cthickening _
-      have hy_K_0 : y ∈ K_0 := hη_supp_in_K_0 hy
+      have hy_K_0 : y ∈ K_0 := hη_support_in_K_0 hy
       have hy_thick : y ∈ Metric.cthickening |h| K_0 := h_K_0_thick hy_K_0
       have hy_shift : y + h • EuclideanSpace.single k 1 ∈ Metric.cthickening |h| K_0 := by
         refine Metric.mem_cthickening_of_dist_le _ _ |h| K_0 hy_K_0 ?_
@@ -751,7 +751,7 @@ private lemma diffQuot_testFactor_support_subset
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN}
-    {η : EuclN → ℝ} (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ}
     (j : Fin (Module.finrank ℝ E)) :
@@ -791,12 +791,12 @@ private lemma diffQuot_testFactor_support_subset
       apply h_num_ne
       rw [h1, h2, sub_self]
     rcases h_or with h_shift | h_at
-    · have h_in_supp : y + (-h) • EuclideanSpace.single k 1 ∈ tsupport η := by
+    · have h_in_support : y + (-h) • EuclideanSpace.single k 1 ∈ tsupport η := by
         by_contra hnot
         exact h_shift
           (testFactor_eq_zero_outside_tsupport (I := I) (M := M) D k h j hnot)
       have h_in_K_0 : y + (-h) • EuclideanSpace.single k 1 ∈ K_0 :=
-        hη_supp_in_K_0 h_in_supp
+        hη_support_in_K_0 h_in_support
       refine Metric.mem_cthickening_of_dist_le _ _ |h| K_0 h_in_K_0 ?_
       rw [dist_eq_norm]
       have hcalc : y - (y + (-h) • EuclideanSpace.single k 1) =
@@ -804,10 +804,10 @@ private lemma diffQuot_testFactor_support_subset
         rw [sub_add_eq_sub_sub, sub_self, zero_sub, ← neg_smul, neg_neg]
       rw [hcalc, norm_smul]
       simp [Real.norm_eq_abs]
-    · have h_in_supp : y ∈ tsupport η := by
+    · have h_in_support : y ∈ tsupport η := by
         by_contra hnot
         exact h_at (testFactor_eq_zero_outside_tsupport (I := I) (M := M) D k h j hnot)
-      exact Metric.self_subset_cthickening _ (hη_supp_in_K_0 h_in_supp)
+      exact Metric.self_subset_cthickening _ (hη_support_in_K_0 h_in_support)
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma diffQuot_testFactor_eq_zero_outside_cthickening
@@ -815,7 +815,7 @@ private lemma diffQuot_testFactor_eq_zero_outside_cthickening
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN}
-    {η : EuclN → ℝ} (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ}
     (j : Fin (Module.finrank ℝ E))
@@ -825,7 +825,7 @@ private lemma diffQuot_testFactor_eq_zero_outside_cthickening
       (testFactor (I := I) (M := M) D η k h j) y = 0 := by
   by_contra hne
   exact hy (diffQuot_testFactor_support_subset (I := I) (M := M) D
-    hη_supp_in_K_0 k j hne)
+    hη_support_in_K_0 k j hne)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartBilinear_diffQuot_ibp_per_ij
@@ -833,8 +833,8 @@ theorem chartBilinear_diffQuot_ibp_per_ij
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
@@ -874,8 +874,8 @@ theorem chartBilinear_diffQuot_ibp_per_ij
     F_ij_extended_memLp (I := I) (M := M) D hK_0_compact h_thick i j
   have h_test_lp : MemLp (testFactor (I := I) (M := M) D η k h j) 2
       (volume : Measure EuclN) :=
-    testFactor_memLp_two (I := I) (M := M) D hK_0_compact hη hη_supp
-      hη_supp_in_K_0 k hh h_thick j
+    testFactor_memLp_two (I := I) (M := M) D hK_0_compact hη hη_support
+      hη_support_in_K_0 k hh h_thick j
   have h_global_ibp :
       ∫ y, DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
@@ -921,7 +921,7 @@ theorem chartBilinear_diffQuot_ibp_per_ij
       have hy_not_K_0 : y ∉ K_0 := fun h_in =>
         hy_compl (Metric.self_subset_cthickening _ h_in)
       have hy_not_tsupp : y ∉ tsupport η := fun h_in =>
-        hy_not_K_0 (hη_supp_in_K_0 h_in)
+        hy_not_K_0 (hη_support_in_K_0 h_in)
       have h_test_zero : testFactor (I := I) (M := M) D η k h j y = 0 :=
         testFactor_eq_zero_outside_tsupport (I := I) (M := M) D k h j hy_not_tsupp
       rw [h_test_zero, mul_zero]
@@ -931,7 +931,7 @@ theorem chartBilinear_diffQuot_ibp_per_ij
     refine Filter.Eventually.of_forall ?_
     intro y hy
     by_cases hy_tsupp : y ∈ tsupport η
-    · have hy_K_0 : y ∈ K_0 := hη_supp_in_K_0 hy_tsupp
+    · have hy_K_0 : y ∈ K_0 := hη_support_in_K_0 hy_tsupp
       have hy_thick : y ∈ Metric.cthickening |h| K_0 :=
         Metric.self_subset_cthickening _ hy_K_0
       have hy_shift : y + h • EuclideanSpace.single k 1 ∈ Metric.cthickening |h| K_0 := by
@@ -1076,8 +1076,8 @@ theorem variational_identity_after_ibp_of_compact_support
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
@@ -1156,7 +1156,7 @@ theorem variational_identity_after_ibp_of_compact_support
         ∂(volume : Measure EuclN) := by
     intro i j
     exact chartBilinear_diffQuot_ibp_per_ij (I := I) (M := M) D
-      hK_0_compact hη hη_supp hη_supp_in_K_0 k hh h_thick i j
+      hK_0_compact hη hη_support hη_support_in_K_0 k hh h_thick i j
   have h_principal_integrable : ∀ i j : Fin (Module.finrank ℝ E),
       Integrable (fun y =>
         weightedInvGramOnEuclid (I := I) g α i j y *
@@ -1172,7 +1172,7 @@ theorem variational_identity_after_ibp_of_compact_support
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) := by
     intro i j
     exact chartBilinear_factor_integrable (I := I) (M := M) D
-      hK_0_compact hη hη_supp hη_supp_in_K_0 k hh h_thick i j
+      hK_0_compact hη hη_support hη_support_in_K_0 k hh h_thick i j
   have h_principal_integrable_after : ∀ i j : Fin (Module.finrank ℝ E),
       Integrable (fun y =>
         DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -1188,7 +1188,7 @@ theorem variational_identity_after_ibp_of_compact_support
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) := by
     intro i j
     exact chartBilinear_factor_integrable_after (I := I) (M := M) D
-      hK_0_compact hη hη_supp hη_supp_in_K_0 k hh h_thick i j
+      hK_0_compact hη hη_support hη_support_in_K_0 k hh h_thick i j
   exact variational_identity_after_ibp (I := I) (M := M) D
     k h_expanded h_ibp_per_ij h_principal_integrable h_principal_integrable_after
 

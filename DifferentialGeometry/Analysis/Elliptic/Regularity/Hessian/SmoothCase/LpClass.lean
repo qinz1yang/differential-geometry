@@ -75,17 +75,17 @@ theorem perChartAeTransferable_smoothCase
   refine MeasureTheory.measure_mono_null ?_ hpre_null
   intro x hx
   simp only [Set.mem_ofPred_eq] at hx
-  by_cases hx_src : x ∈ (chartAt H α).source
-  · refine ⟨hx_src, ?_⟩
+  by_cases hx_source : x ∈ (chartAt H α).source
+  · refine ⟨hx_source, ?_⟩
     simp only [Set.mem_ofPred_eq]
     by_contra h_not_in_N
     have h_y_in_target :
         (toEuclidean (E := E)) ((extChartAt I α) x) ∈
           chartTargetEuclid (I := I) (M := M) α := by
       refine ⟨(extChartAt I α) x, ?_, rfl⟩
-      have h_src_ext : x ∈ (extChartAt I α).source := by
+      have h_source_ext : x ∈ (extChartAt I α).source := by
         rwa [extChartAt_source_eq_chartAt_source]
-      exact (extChartAt I α).map_source h_src_ext
+      exact (extChartAt I α).map_source h_source_ext
     have h_y_not_bad :
         (toEuclidean (E := E)) ((extChartAt I α) x) ∉ badSet := fun hyb =>
       h_not_in_N (h_bad_sub_N hyb)
@@ -104,13 +104,13 @@ theorem perChartAeTransferable_smoothCase
   · exfalso
     apply hx
     rw [hessPairingMChartContribution_zero_off_source (I := I) (M := M) g φ α
-      (u_h := smoothToH1Compl (I := I) (M := M) g v) hx_src]
+      (u_h := smoothToH1Compl (I := I) (M := M) g v) hx_source]
     have h_pou_subord :
         tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆
           (chartAt H α).source :=
       DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
     have hx_notsupp : x ∉ tsupport
-        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := fun h => hx_src (h_pou_subord h)
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := fun h => hx_source (h_pou_subord h)
     have hρ_zero : (chartAtlasPOU I M α : M → ℝ) x = 0 :=
       image_eq_zero_of_notMem_tsupport hx_notsupp
     rw [hρ_zero]

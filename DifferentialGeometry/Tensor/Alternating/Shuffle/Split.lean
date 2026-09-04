@@ -61,7 +61,7 @@ theorem preimage_inl_none_side_well_defined
           Equiv.Perm.sumCongr_inv, Equiv.sumCongr_apply, h, Sum.map_inr]
       rw [hk] at this; exact absurd this (by simp)
 
-theorem preimage_inl_none_side_well_defined'
+theorem preimage_inl_none_side_well_defined_of_mem_range
     {σ : Equiv.Perm (Option α₀ ⊕ β)}
     (τ : (Equiv.Perm.sumCongrHom (Option α₀) β).range) :
     (∃ k, σ⁻¹ (Sum.inl none) = Sum.inl k) ↔

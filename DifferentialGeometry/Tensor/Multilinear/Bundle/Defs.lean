@@ -127,7 +127,7 @@ theorem continuousMultilinearMap_symm_apply (p : B × MLF) :
     (Pretrivialization.continuousMultilinearMap 𝕜 s e).baseSet = e.baseSet :=
   rfl
 
-theorem continuousMultilinearMap_symm_apply' {b : B} (hb : b ∈ e.baseSet) (L : MLF) :
+theorem continuousMultilinearMap_symm_apply_of_mem {b : B} (hb : b ∈ e.baseSet) (L : MLF) :
     (continuousMultilinearMap 𝕜 s e).symm b L =
     L.compContinuousLinearMap (fun _ => e.continuousLinearMapAt 𝕜 b) := by
   rw [Bundle.Pretrivialization.symm_apply]
@@ -143,7 +143,7 @@ theorem continuousMultilinearMapCoordChange_apply (b : B)
   simp only [continuousMultilinearMapCoordChange,
     ContinuousMultilinearMap.compContinuousLinearMapL_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply,
-    continuousMultilinearMap_apply, continuousMultilinearMap_symm_apply' _ _ _ hb.1]
+    continuousMultilinearMap_apply, continuousMultilinearMap_symm_apply_of_mem _ _ _ hb.1]
   congr 1; funext i
   erw [Trivialization.coordChangeL_apply (R := 𝕜) e' e ⟨hb.2, hb.1⟩]
   have hs : e'.symmL 𝕜 b (v i) = e'.symm b (v i) := by

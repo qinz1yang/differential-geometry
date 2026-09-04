@@ -262,7 +262,7 @@ theorem conj_heat_mass_deriv
     (scalar u : Real → M → Real) {t : Real}
     (hg : MetricFamilyRegularAt (I := I)
       (metricFamilyForMeasure (I := I) (M := M) G) t)
-    (huReg : FunctionRegularAt u t)
+    (huRegularity : FunctionRegularAt u t)
     (huSmooth : ContMDiff I 𝓘(Real, Real) ∞ (u t))
     (htrace : ∀ x : M, traceTimeDerivMetricAt (I := I) G t x =
       (-2 : Real) * scalar t x)
@@ -274,7 +274,7 @@ theorem conj_heat_mass_deriv
         ∫ x, u s x ∂(volumeMeasureFamily (I := I) (M := M) G s))
       0 t := by
   have hvariation :=
-    volume_variation_ricciFlow_at (I := I) (M := M) G scalar hg huReg htrace
+    volume_variation_ricciFlow_at (I := I) (M := M) G scalar hg huRegularity htrace
   have hgreen :=
     integral_smul_laplacian_sub_eq_zero_family
       (I := I) (M := M) (fun s : Real => G.metric s)
@@ -314,7 +314,7 @@ theorem conj_heat_mass_eq
     (scalar u : Real → M → Real) {a b : Real} (hab : a ≤ b)
     (hg : MetricFamilyRegularAt (I := I)
       (metricFamilyForMeasure (I := I) (M := M) G) a)
-    (huReg : FunctionRegularAt u a)
+    (huRegularity : FunctionRegularAt u a)
     (huSmooth : ∀ t ∈ Set.Icc a b,
       ContMDiff I 𝓘(Real, Real) ∞ (u t))
     (htrace : ∀ t ∈ Set.Icc a b, ∀ x : M,
@@ -327,15 +327,15 @@ theorem conj_heat_mass_eq
       ∫ x, u a x ∂(volumeMeasureFamily (I := I) (M := M) G a) := by
   let mass : Real → Real := fun t =>
     ∫ x, u t x ∂(volumeMeasureFamily (I := I) (M := M) G t)
-  have huRegAt : ∀ t : Real, FunctionRegularAt u t := fun _ =>
-    { hasDerivAt_time := huReg.hasDerivAt_time
-      continuous_joint := huReg.continuous_joint
-      continuous_deriv_joint := huReg.continuous_deriv_joint }
+  have huRegularityAt : ∀ t : Real, FunctionRegularAt u t := fun _ =>
+    { hasDerivAt_time := huRegularity.hasDerivAt_time
+      continuous_joint := huRegularity.continuous_joint
+      continuous_deriv_joint := huRegularity.continuous_deriv_joint }
   have hderiv : ∀ t ∈ Set.Icc a b, HasDerivAt mass 0 t := by
     intro t ht
     simpa only [mass] using
       conj_heat_mass_deriv (I := I) (M := M) G scalar u (t := t)
-        (hg.at_any t) (huRegAt t) (huSmooth t ht) (htrace t ht)
+        (hg.at_any t) (huRegularityAt t) (huSmooth t ht) (htrace t ht)
         (hconj t ht)
   have hdiff : DifferentiableOn Real mass (Set.Icc a b) := by
     intro t ht
@@ -352,7 +352,7 @@ theorem conj_heat_mass_one
     (scalar u : Real → M → Real) {a b : Real}
     (hg : MetricFamilyRegularAt (I := I)
       (metricFamilyForMeasure (I := I) (M := M) G) a)
-    (huReg : FunctionRegularAt u a)
+    (huRegularity : FunctionRegularAt u a)
     (huSmooth : ∀ t ∈ Set.Icc a b,
       ContMDiff I 𝓘(Real, Real) ∞ (u t))
     (htrace : ∀ t ∈ Set.Icc a b, ∀ x : M,
@@ -365,13 +365,13 @@ theorem conj_heat_mass_one
     ∀ t ∈ Set.Icc a b,
       (∫ x, u t x ∂(volumeMeasureFamily (I := I) (M := M) G t)) = 1 := by
   intro t ht
-  have huRegAt : FunctionRegularAt u t :=
-    { hasDerivAt_time := huReg.hasDerivAt_time
-      continuous_joint := huReg.continuous_joint
-      continuous_deriv_joint := huReg.continuous_deriv_joint }
+  have huRegularityAt : FunctionRegularAt u t :=
+    { hasDerivAt_time := huRegularity.hasDerivAt_time
+      continuous_joint := huRegularity.continuous_joint
+      continuous_deriv_joint := huRegularity.continuous_deriv_joint }
   have hmass_eq :=
     conj_heat_mass_eq (I := I) (M := M) G scalar u ht.2
-      (hg.at_any t) huRegAt
+      (hg.at_any t) huRegularityAt
       (fun s hs => huSmooth s ⟨ht.1.trans hs.1, hs.2⟩)
       (fun s hs x => htrace s ⟨ht.1.trans hs.1, hs.2⟩ x)
       (fun s hs x => by

@@ -15,7 +15,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -291,5 +291,5 @@ theorem rm04Bound_of_seq
       (I := I) (M := (X.obj i).M) (X.obj i).metric (hX.C 0) :=
   rm04Bound_of_curv0 (I := I) (X.obj i) (hX.bound i 0)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

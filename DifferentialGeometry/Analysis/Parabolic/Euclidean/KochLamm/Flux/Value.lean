@@ -17,37 +17,37 @@ variable {V F : Type*}
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-def klHeat1 (t : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
-  heatEarly1 t w f x + klFluxPotential (Real.sqrt t) w f x
+def kochLammHeat1 (t : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
+  heatEarly1 t w f x + kochLammFluxPotential (Real.sqrt t) w f x
 
 omit [CompleteSpace F] in
-theorem klEarly1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem kochLammEarly1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
-    (h : KLSource1 T A₂ Aₚ f) :
+    (h : KochLammSourceOne T A₂ Aₚ f) :
     IntegrableOn
       (fun z : ℝ × V ↦ heatD1 (t - z.1) w (x - z.2) • f z)
       (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V))
-      (stVolume : Measure (ℝ × V)) := by
+      (spaceTimeVolume : Measure (ℝ × V)) := by
   let q : ℝ × V → ℝ≥0∞ := fun z ↦
     ‖heatD1 (t - z.1) w (x - z.2) • f z‖ₑ
-  have hsrc := kl1_to_gradCarl (V := V) h
+  have hsrc := kochLammSourceOne_gradientCarlesonBound (V := V) h
   have hsqrt :
       (((A₂ : ℝ≥0∞) ^ 2) ^ ((1 : ℝ) / 2)) = (A₂ : ℝ≥0∞) := by
     rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
     norm_num
   have hmass :
       (∫⁻ z in (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)), q z
-          ∂(stVolume : Measure (ℝ × V))) ≤
+          ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
         ENNReal.ofReal ‖w‖ * earlyFluxC V * (A₂ : ℝ≥0∞) *
           fluxShellSeries (Module.finrank ℝ V) := by
     calc
       (∫⁻ z in (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)), q z
-          ∂(stVolume : Measure (ℝ × V))) ≤
-          ∫⁻ z in (⋃ k : ℕ, fluxShellCyl t x k), q z
-            ∂(stVolume : Measure (ℝ × V)) :=
+          ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
+          ∫⁻ z in (⋃ k : ℕ, fluxShellCylinder t x k), q z
+            ∂(spaceTimeVolume : Measure (ℝ × V)) :=
         lintegral_mono_set (earlyFluxSlab_sub ht x)
-      _ ≤ ∑' k : ℕ, ∫⁻ z in fluxShellCyl t x k, q z
-          ∂(stVolume : Measure (ℝ × V)) :=
+      _ ≤ ∑' k : ℕ, ∫⁻ z in fluxShellCylinder t x k, q z
+          ∂(spaceTimeVolume : Measure (ℝ × V)) :=
         lintegral_iUnion_le _ _
       _ = ∑' k : ℕ, fluxShellMass t w f x k := by rfl
       _ ≤ ∑' k : ℕ,
@@ -80,7 +80,7 @@ theorem klEarly1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
       (fluxShellSeries_ne_top (Module.finrank ℝ V))
   have hfinite :
       (∫⁻ z in (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)), q z
-          ∂(stVolume : Measure (ℝ × V))) < ∞ :=
+          ∂(spaceTimeVolume : Measure (ℝ × V))) < ∞ :=
     hmass.trans_lt (lt_top_iff_ne_top.2 hbound_ne)
   have hk : Measurable
       (fun z : ℝ × V ↦ heatD1 (t - z.1) w (x - z.2)) := by
@@ -88,7 +88,7 @@ theorem klEarly1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     fun_prop
   have hmeas : AEStronglyMeasurable
       (fun z : ℝ × V ↦ heatD1 (t - z.1) w (x - z.2) • f z)
-      ((stVolume : Measure (ℝ × V)).restrict
+      ((spaceTimeVolume : Measure (ℝ × V)).restrict
         (Ioc 0 (t / 2) ×ˢ (Set.univ : Set V))) :=
     (hk.aestronglyMeasurable.mono_measure Measure.restrict_le_self).smul
       (h.ae.mono_measure Measure.restrict_le_self)
@@ -96,33 +96,33 @@ theorem klEarly1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
   simpa only [q] using hfinite
 
 omit [CompleteSpace F] in
-theorem klLate1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem kochLammLate1_int {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
-    (h : KLSource1 T A₂ Aₚ f) :
-    Integrable (fun z : ℝ × V ↦ klFluxKernel t w x z • f z)
-      (klTermMeasure (V := V) t) := by
+    (h : KochLammSourceOne T A₂ Aₚ f) :
+    Integrable (fun z : ℝ × V ↦ kochLammFluxKernel t w x z • f z)
+      (kochLammTermMeasure (V := V) t) := by
   classical
   have hsqrt : 0 < Real.sqrt t := Real.sqrt_pos.2 ht
   choose s hcard hcover using
     fun k : ℕ ↦ exists_shell_cover (V := V) x hsqrt k
-  have hi := klFluxKernel_smul_integrable (V := V) h w x hsqrt (by
+  have hi := kochLammFluxKernel_smul_integrable (V := V) h w x hsqrt (by
     simpa only [Real.sq_sqrt ht.le] using htT) s hcard hcover
   simpa only [Real.sq_sqrt ht.le] using hi
 
 omit [CompleteSpace F] in
-theorem klHeat1_eq_heatPot {T t : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem kochLammHeat1_eq_heatPot {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
-    (h : KLSource1 T A₂ Aₚ f) :
-    klHeat1 t w f x = heatPot1 t w f x := by
+    (h : KochLammSourceOne T A₂ Aₚ f) :
+    kochLammHeat1 t w f x = heatPot1 t w f x := by
   let g : ℝ × V → F := fun z ↦
     heatD1 (t - z.1) w (x - z.2) • f z
   let E : Set (ℝ × V) := Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)
   let L : Set (ℝ × V) := Ioc (t / 2) t ×ˢ (Set.univ : Set V)
-  have hearly : IntegrableOn g E (stVolume : Measure (ℝ × V)) := by
-    simpa only [g, E] using klEarly1_int (V := V) ht htT w f x h
-  have hlateM := klLate1_int (V := V) ht htT w f x h
-  have hlate : IntegrableOn g L (stVolume : Measure (ℝ × V)) := by
-    simpa only [IntegrableOn, g, L, klFluxKernel, klTermMeasure, stVolume,
+  have hearly : IntegrableOn g E (spaceTimeVolume : Measure (ℝ × V)) := by
+    simpa only [g, E] using kochLammEarly1_int (V := V) ht htT w f x h
+  have hlateM := kochLammLate1_int (V := V) ht htT w f x h
+  have hlate : IntegrableOn g L (spaceTimeVolume : Measure (ℝ × V)) := by
+    simpa only [IntegrableOn, g, L, kochLammFluxKernel, kochLammTermMeasure, spaceTimeVolume,
       Measure.restrict_prod_eq_prod_univ] using hlateM
   have hdisj : Disjoint E L := by
     exact (Ioc_disjoint_Ioc_of_le (a := 0) (d := t) le_rfl).set_prod_left
@@ -138,62 +138,62 @@ theorem klHeat1_eq_heatPot {T t : ℝ} {A₂ Aₚ : ℝ≥0}
   rw [hEL] at hsplit
   have hfull : IntegrableOn g
       (Ioc 0 t ×ˢ (Set.univ : Set V))
-      (stVolume : Measure (ℝ × V)) := by
+      (spaceTimeVolume : Measure (ℝ × V)) := by
     rw [← hEL]
     exact hearly.union hlate
   have hprod :
       (∫ z in Ioc 0 t ×ˢ (Set.univ : Set V), g z
-          ∂(stVolume : Measure (ℝ × V))) =
+          ∂(spaceTimeVolume : Measure (ℝ × V))) =
         ∫ s in Ioc 0 t, ∫ y : V, g (s, y) := by
-    unfold stVolume at hfull ⊢
+    unfold spaceTimeVolume at hfull ⊢
     simpa only [setIntegral_univ] using
       (setIntegral_prod (f := g) hfull)
   have hlateEq :
-      (∫ z in L, g z ∂(stVolume : Measure (ℝ × V))) =
-        klFluxPotential (V := V) (Real.sqrt t) w f x := by
-    unfold L g klFluxPotential klFluxKernel klTermMeasure stVolume
+      (∫ z in L, g z ∂(spaceTimeVolume : Measure (ℝ × V))) =
+        kochLammFluxPotential (V := V) (Real.sqrt t) w f x := by
+    unfold L g kochLammFluxPotential kochLammFluxKernel kochLammTermMeasure spaceTimeVolume
     rw [Real.sq_sqrt ht.le, Measure.restrict_prod_eq_prod_univ]
   change
-    (∫ z in E, g z ∂(stVolume : Measure (ℝ × V))) +
-        klFluxPotential (V := V) (Real.sqrt t) w f x =
+    (∫ z in E, g z ∂(spaceTimeVolume : Measure (ℝ × V))) +
+        kochLammFluxPotential (V := V) (Real.sqrt t) w f x =
       ∫ s in 0..t, ∫ y : V, g (s, y)
   rw [intervalIntegral.integral_of_le ht.le, ← hprod, hsplit, hlateEq]
 
 omit [CompleteSpace F] in
-theorem klHeat1_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem kochLammHeat1_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
-    (h : KLSource1 T A₂ Aₚ f) :
-    (↑‖klHeat1 t w f x‖₊ : ℝ≥0∞) ≤
+    (h : KochLammSourceOne T A₂ Aₚ f) :
+    (↑‖kochLammHeat1 t w f x‖₊ : ℝ≥0∞) ≤
       ENNReal.ofReal ‖w‖ * earlyFluxC V * (A₂ : ℝ≥0∞) *
           fluxShellSeries (Module.finrank ℝ V) +
         ENNReal.ofReal
-          (klFluxSeries (Module.finrank ℝ V) *
-            (‖w‖ * (klFluxTailC V * (Aₚ : ℝ)))) := by
+          (kochLammFluxSeries (Module.finrank ℝ V) *
+            (‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ)))) := by
   have hsqrt : 0 < Real.sqrt t := Real.sqrt_pos.2 ht
   have hlate := norm_klFluxPotential_le (V := V) h w x hsqrt (by
     simpa only [Real.sq_sqrt ht.le] using htT)
   have hlateE :
-      (↑‖klFluxPotential (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) ≤
+      (↑‖kochLammFluxPotential (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) ≤
         ENNReal.ofReal
-          (klFluxSeries (Module.finrank ℝ V) *
-            (‖w‖ * (klFluxTailC V * (Aₚ : ℝ)))) := by
+          (kochLammFluxSeries (Module.finrank ℝ V) *
+            (‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ)))) := by
     simpa only [ofReal_norm, enorm_eq_nnnorm] using
       ENNReal.ofReal_le_ofReal hlate
-  have hearly := kl1_early_norm (V := V) ht htT w f x h
-  unfold klHeat1
+  have hearly := KochLammSourceOne.earlyFlux_norm (V := V) ht htT w f x h
+  unfold kochLammHeat1
   calc
     (↑‖heatEarly1 t w f x +
-        klFluxPotential (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) ≤
+        kochLammFluxPotential (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) ≤
         (↑‖heatEarly1 t w f x‖₊ : ℝ≥0∞) +
-          (↑‖klFluxPotential (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) := by
+          (↑‖kochLammFluxPotential (V := V) (Real.sqrt t) w f x‖₊ : ℝ≥0∞) := by
       simpa only [enorm_eq_nnnorm] using
         enorm_add_le (heatEarly1 t w f x)
-          (klFluxPotential (V := V) (Real.sqrt t) w f x)
+          (kochLammFluxPotential (V := V) (Real.sqrt t) w f x)
     _ ≤ ENNReal.ofReal ‖w‖ * earlyFluxC V * (A₂ : ℝ≥0∞) *
           fluxShellSeries (Module.finrank ℝ V) +
         ENNReal.ofReal
-          (klFluxSeries (Module.finrank ℝ V) *
-            (‖w‖ * (klFluxTailC V * (Aₚ : ℝ)))) :=
+          (kochLammFluxSeries (Module.finrank ℝ V) *
+            (‖w‖ * (kochLammFluxTailC V * (Aₚ : ℝ)))) :=
       add_le_add hearly hlateE
 
 end Euclidean

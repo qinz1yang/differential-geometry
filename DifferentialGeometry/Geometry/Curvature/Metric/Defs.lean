@@ -120,10 +120,10 @@ noncomputable def metricRm13 (g : SmoothRiemannianMetric I M) :
     (I := I) (M := M) (metricCov (I := I) (M := M) g)
     (metricCov_smooth (I := I) (M := M) g)
 
-noncomputable def metricRm04StdAt
+noncomputable def metricRm04StandardAt
     (g : SmoothRiemannianMetric I M) (x : M)
     (X Y Z W : TangentSpace I x) : Real :=
-  tensor04StdAt (I := I) (M := M)
+  tensor04StandardAt (I := I) (M := M)
     (metricRm04At (I := I) (M := M) g x) X Y Z W
 
 
@@ -141,10 +141,10 @@ omit [SigmaCompactSpace M] in
   simp [metricRm04, metricRm04At]
 
 omit [SigmaCompactSpace M] [T2Space M] in
-@[simp] theorem metricRm04StdAt_apply
+@[simp] theorem metricRm04StandardAt_apply
     (g : SmoothRiemannianMetric I M) (x : M)
     (X Y Z W : TangentSpace I x) :
-    metricRm04StdAt (I := I) (M := M) g x X Y Z W =
+    metricRm04StandardAt (I := I) (M := M) g x X Y Z W =
       metricRm04At (I := I) (M := M) g x (vec4 X Y Z W) := by
   rfl
 
@@ -152,7 +152,7 @@ noncomputable def metricRm04LastDualAt
     (g : SmoothRiemannianMetric I M) (x : M)
     (X Y Z : TangentSpace I x) :
     Module.Dual Real (TangentSpace I x) where
-  toFun W := metricRm04StdAt (I := I) (M := M) g x X Y Z W
+  toFun W := metricRm04StandardAt (I := I) (M := M) g x X Y Z W
   map_add' W W' := by
     have h :=
       (metricRm04At (I := I) (M := M) g x).map_update_add
@@ -193,7 +193,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
     (g : SmoothRiemannianMetric I M) (x : M)
     (X Y Z W : TangentSpace I x) :
     metricRm04LastDualAt (I := I) (M := M) g x X Y Z W =
-      metricRm04StdAt (I := I) (M := M) g x X Y Z W := by
+      metricRm04StandardAt (I := I) (M := M) g x X Y Z W := by
   rfl
 
 omit [SigmaCompactSpace M] in
@@ -675,7 +675,7 @@ theorem metricRicci_velocity_eq_sum_rm04_frame
     (h0 : basis 0 = T)
     (hSucc : forall i : Fin m, basis i.succ = E i) :
     metricRicci (I := I) (M := M) g x (vec2 (I := I) T T) =
-      ∑ i, metricRm04StdAt (I := I) (M := M) g x (E i) T T (E i) := by
+      ∑ i, metricRm04StandardAt (I := I) (M := M) g x (E i) T T (E i) := by
   classical
   let K := metricCurvData (I := I) (M := M) g
   have hLower :
@@ -738,7 +738,7 @@ theorem metricRicci_velocity_eq_sum_rm04_frame
     simpa [metricRm04_apply] using hzeroAt
   have hTail := hTraceSplit
   rw [hzero, zero_add] at hTail
-  simpa [h0, hSucc, metricRm04_apply, metricRm04StdAt_apply,
+  simpa [h0, hSucc, metricRm04_apply, metricRm04StandardAt_apply,
     vec2, vec4, DifferentialGeometry.Geometry.Curvature.vec2,
       DifferentialGeometry.Geometry.Curvature.vec4] using hTail
 

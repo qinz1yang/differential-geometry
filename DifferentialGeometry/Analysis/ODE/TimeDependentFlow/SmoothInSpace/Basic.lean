@@ -36,7 +36,7 @@ theorem time_dependent_vf_flow_smooth_in_space
     (flow := flow) (ρ := ρ) (hρ := hρ_pos) (hρ_le := le_refl ρ)
     (hflow_smooth := hflow_smooth) (Φ := Φ) (hΦ_eq := hΦ_eq)
     (ht := ht_mem)
-    (hx_src := mem_chart_source H x)
+    (hx_source := mem_chart_source H x)
     (hx_ball := Metric.mem_ball_self hρ_pos)
     (hflow_in_target := hflow_target t ht_mem)
 

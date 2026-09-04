@@ -681,7 +681,7 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
     let speedSq : ℝ → ℝ := fun _ => (d / (b - a)) ^ 2
     let derivative : ℝ → ℝ := fun t => deriv (fun s => u s (τ s)) t
     have hhu : ∀ t ∈ Icc a b, 0 < u t (τ t) := fun t ht => hpos t (D.regular_subset (hreg ht)) (τ t)
-    have huc_reg : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun s : ℝ => u s (τ s)) D.regular := by
+    have huc_regularity : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun s : ℝ => u s (τ s)) D.regular := by
       have hJ : ContMDiffOn 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) ∞
           (fun s : ℝ => (s, τ s)) D.regular := by
         have hJ0 : ContMDiffOn 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) ∞
@@ -691,12 +691,12 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
         exact hJ0.mono (by intro s hs; trivial)
       exact hu.jointSmooth.comp hJ (by intro s hs; exact ⟨hs, trivial⟩)
     have huc_cd : ContDiffOn ℝ ∞ (fun s : ℝ => u s (τ s)) D.regular :=
-      contMDiffOn_iff_contDiffOn.mp huc_reg
+      contMDiffOn_iff_contDiffOn.mp huc_regularity
     have hderiv_cont : ContinuousOn derivative (Icc a b) := by
-      have hcont_reg : ContinuousOn
+      have hcont_regularity : ContinuousOn
           (iteratedDerivWithin 1 (fun s : ℝ => u s (τ s)) D.regular) D.regular :=
         huc_cd.continuousOn_iteratedDerivWithin (by norm_num) (D.regular_isOpen.uniqueDiffOn)
-      refine (hcont_reg.mono (by intro t ht; exact hreg ht)).congr ?_
+      refine (hcont_regularity.mono (by intro t ht; exact hreg ht)).congr ?_
       intro t ht
       rw [iteratedDerivWithin_one]
       simpa [derivative] using (derivWithin_of_mem_nhds (D.regular_isOpen.mem_nhds (hreg ht))).symm

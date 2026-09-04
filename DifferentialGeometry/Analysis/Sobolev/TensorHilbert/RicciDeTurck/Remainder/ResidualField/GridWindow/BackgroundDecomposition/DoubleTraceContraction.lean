@@ -162,7 +162,7 @@ private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
     rw [cometricDoubleTraceFib_toModel (I := I) g₁ s x Z]
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) g₁ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) (Tensor0SSpace.toModel Z) mm]
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x) (Tensor0SSpace.toModel Z) mm]
     with_unfolding_all rfl
   rw [hLHS]
   have hRHS : Tensor0SSpace.toModel
@@ -189,7 +189,7 @@ private lemma movingMetricDoubleTraceField_eq_trace_fullRaised (s : ℕ) :
     rw [cometricDoubleTraceFib_toModel (I := I) g₀ s x]
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) g₀ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
         (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁ x) Z)) mm]
@@ -361,7 +361,7 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
   rw [cometricDoubleTraceFib_toModel (I := I) g₁ 2 x]
   rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g₁ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₁ 4 x Y))
     (fun j => (v j : E))]
   refine Finset.sum_congr rfl fun b _ => ?_
@@ -369,7 +369,7 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₁ x)]
   with_unfolding_all
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel Y)
       (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
           (smoothOrthoFrame (I := I) g₁ x b x))
@@ -443,7 +443,7 @@ lemma bgRTermWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
   rw [cometricDoubleTraceFib_toModel (I := I) g₀ 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₀ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y) (fun j => (m j : E))]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [hYval]

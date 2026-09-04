@@ -17,7 +17,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor.RicciIdentity
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable [FiniteDimensional ℝ E]
@@ -56,7 +56,7 @@ theorem field1_eq_mcd1
     (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
         (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
         (Tensor0SBundle.metricTensorField (I := I) g₁)
-        (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂))
+        (DifferentialGeometry.Geometry.Connection.metricField_totalRegularized (I := I) g₁ g₂))
       = metricCovDeriv (I := I) g₁ g₂ 1 := by
   let _ := hContMDiffBundle
   have : IsManifold I 1 M :=
@@ -78,8 +78,8 @@ theorem field2_eq_mcd2
         (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
           (Tensor0SBundle.metricTensorField (I := I) g₁)
-          (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂))
-        (DifferentialGeometry.Integral.Connection.metricField_totalReg2 (I := I) g₁ g₂))
+          (DifferentialGeometry.Geometry.Connection.metricField_totalRegularized (I := I) g₁ g₂))
+        (DifferentialGeometry.Integral.Connection.metricField_totalRegularized2 (I := I) g₁ g₂))
       = metricCovDeriv (I := I) g₁ g₂ 2 := by
   have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
@@ -101,7 +101,7 @@ theorem nabla3_eq_mcd2
         (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
           (Tensor0SBundle.metricTensorField (I := I) g₁)
-          (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂)) x slots
+          (DifferentialGeometry.Geometry.Connection.metricField_totalRegularized (I := I) g₁ g₂)) x slots
       = metricCovDeriv (I := I) g₁ g₂ 2 x (Fin.cons (W x) slots) := by
   rw [field1_eq_mcd1 (I := I) g₁ g₂,
     show metricCovDeriv (I := I) g₁ g₂ 2
@@ -125,8 +125,8 @@ theorem nabla4_eq_mcd3
           (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
             (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
             (Tensor0SBundle.metricTensorField (I := I) g₁)
-            (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂))
-          (DifferentialGeometry.Integral.Connection.metricField_totalReg2 (I := I) g₁ g₂)) x slots
+            (DifferentialGeometry.Geometry.Connection.metricField_totalRegularized (I := I) g₁ g₂))
+          (DifferentialGeometry.Integral.Connection.metricField_totalRegularized2 (I := I) g₁ g₂)) x slots
       = metricCovDeriv (I := I) g₁ g₂ 3 x (Fin.cons (V x) slots) := by
   rw [field2_eq_mcd2 (I := I) g₁ g₂,
     show metricCovDeriv (I := I) g₁ g₂ 3
@@ -2804,7 +2804,7 @@ theorem covStepDiff2_exists_const
     exact le_max_left _ _
   · exact covStepDiff2_le (I := I) g₁ g₂ s hEq hJet1 hJet2 hJet3 hJet1'
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

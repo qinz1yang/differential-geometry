@@ -153,7 +153,7 @@ private theorem connLower_unit
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 2)) := by
-  have h := connectionDifferenceLoweredCc_unitModel_apply' (I := I) (M := M) g gm x
+  have h := connectionDifferenceLoweredCc_unitModel_apply (I := I) (M := M) g gm x
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
   simpa only [ContinuousLinearEquiv.apply_symm_apply] using h
 
@@ -5384,7 +5384,7 @@ private theorem sharp_eq_slot0
           (metricComparisonEndomorphismField (I := I) (M := M) g g₁)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g g₁ x) om from rfl]
-  rw [cotangentToDual_slotInsertEndoFib' (I := I) (M := M) x
+  rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g g₁ x) om w]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (sharpFlatEndoCc (I := I) g g₁).toSection x) om =
@@ -6528,7 +6528,7 @@ private theorem curvMono_pair
       (cometricLmodel (I := I) g₁ x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag
       (I := I) g₁ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
         (cometricDoubleTraceFib (I := I) g₁ 4 x Y))
       (fun j => (v j : E))]
@@ -6538,7 +6538,7 @@ private theorem curvMono_pair
       (cometricLmodel (I := I) g₁ x)]
     exact cometric_dualTrace_eq_orthoFrame_diag
       (I := I) g₁ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel Y)
       (Fin.cons
         ((smoothOrthoFrame (I := I) g₁ x b x :

@@ -63,7 +63,7 @@ private theorem connSmoothInf
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] [T2Space M] in
-private theorem isMetricCompatibleSol
+private theorem isMetricCompatibleSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
@@ -79,7 +79,7 @@ private def nablaRicField
       (n := (∞ : WithTop ℕ∞)) 3 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     2 (S.family.connection t) (S.ricci t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       2 (S.family.connection t) (connSmoothInf (I := I) S t) (S.ricci t))
 
 private def nabla2RicField
@@ -171,7 +171,7 @@ theorem coordNab2Ric_eq_nabla2RicField
         fin_cases q <;> simp [V, slot, DifferentialGeometry.Geometry.Curvature.vec3]
       rw [this, hnablaA_eval p]
     rw [heq]
-    exact coordNablaReg (I := I) S x₀ t a i j
+    exact coordNablaRegularity (I := I) S x₀ t a i j
   have hraw := Tensor0SBundle.nabla0SFun_eval_coordFrame_moving
     (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (s := 3) cov Dsec V nablaA x₀ hpair hV hVmodel hcoord
@@ -318,7 +318,7 @@ theorem scalarLaplacianTraceInFrame_coord_eq_laplacianAt
   have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov (∞ : WithTop ℕ∞) :=
     connSmoothInf (I := I) S (t : Real)
   have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g :=
-    isMetricCompatibleSol (I := I) S (t : Real)
+    isMetricCompatibleSolution (I := I) S (t : Real)
   have hinv :
       Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) g x₀ basis gInv := by
     simpa [hg_def, hbasis_def, hgInv_def] using coordInvReal (I := I) S x₀ (t : Real)
@@ -463,7 +463,7 @@ private theorem coordScalarRmTrace_center
         DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
           (S.family.connection (τ : Real)) (S.base.rm13 (τ : Real)) := by
     intro τ
-    exact rm13OfSol (I := I) S (τ : Real)
+    exact rm13OfSolution (I := I) S (τ : Real)
   have hLower :
       ∀ (τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (y : M),
         DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I)
@@ -485,7 +485,7 @@ private theorem coordScalarRmTrace_center
     DifferentialGeometry.Geometry.Curvature.ricciFirstTraceAt_of_rm13_section
       (I := I) (S.family.metric (t : Real)) basis gInv hinvAt
       (S.ricci (t : Real)) (S.base.rm13 (t : Real)) (S.base.rm04 (t : Real))
-      (ricciTraceOfSol (I := I) S (t : Real))
+      (ricciTraceOfSolution (I := I) S (t : Real))
       (hLower t x₀)
   have hOutput :
       DifferentialGeometry.Geometry.Curvature.Rm04OutputSkewAt (I := I)
@@ -621,12 +621,12 @@ private theorem coordScalarTrace_hasDerivWithinAt_center
   classical
   set frame := coordinateFrameAt (I := I) x₀ with hframe_def
   set gInv := coordInv (I := I) S x₀ with hgInv_def
-  have hInvEvol :=
-    coordInvEvol (I := I) S hS x₀
-  have hRicEvol :=
+  have hInvEvolution :=
+    coordInvEvolution (I := I) S hS x₀
+  have hRicEvolution :=
     fun (τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
         (i j : CoordinateIdx (𝕜 := Real) E) =>
-      coordRicciEvol (I := I) S hS x₀ τ i j
+      coordRicciEvolution (I := I) S hS x₀ τ i j
   have hbase :
       HasDerivWithinAt
         (fun s : Real =>
@@ -672,8 +672,8 @@ private theorem coordScalarTrace_hasDerivWithinAt_center
                 (fun j _hj =>
                   by
                     have hInv :=
-                      hInvEvol t x₀ (coordinateFrameAt_mem (I := I) x₀) i j
-                    have hRic := hRicEvol t i j
+                      hInvEvolution t x₀ (coordinateFrameAt_mem (I := I) x₀) i j
+                    have hRic := hRicEvolution t i j
                     exact hInv.mul hRic))))
   refine hbase.congr_deriv ?_
   exact coordScalarTraceDerivRHS_center (I := I) S x₀ t

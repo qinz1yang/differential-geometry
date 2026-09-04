@@ -406,7 +406,7 @@ theorem nablaKRmChartJoint
     ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M =>
         nablaKRm04Field (I := I)
-          (solOfMetric (I := I)
+          (solutionOfMetric (I := I)
             (D := RealTimeInterval.univ 0) g) p.1 k p.2
           (fun a : Fin (4 + k) =>
             chartBasisVecFiber (I := I) x₀ (K a) p.2))
@@ -418,7 +418,7 @@ theorem nablaKRmChartJoint
     (chartModelBasis E)
   let hframe₁ := e.isLocalFrameOn_localFrame_baseSet I (1 : WithTop ℕ∞)
     (chartModelBasis E)
-  let S := solOfMetric (I := I) (D := RealTimeInterval.univ 0) g
+  let S := solutionOfMetric (I := I) (D := RealTimeInterval.univ 0) g
   let chr : Real → M → Fin (Module.finrank Real E) →
       Fin (Module.finrank Real E) → Fin (Module.finrank Real E) → Real :=
     fun s y => christoffelSymbolInFrame (S.family.connection s) frame hframe₁ y
@@ -475,12 +475,12 @@ theorem nablaKRmChartJoint
       (Set.prod_mono (Set.Subset.refl J) (Set.subset_univ e.baseSet))
     apply hrm'.congr
     · intro p hp
-      simp only [base, frameComp0S, S, solOfMetric, SolutionFamily.rm04,
+      simp only [base, frameComp0S, S, solutionOfMetric, SolutionFamily.rm04,
         metricRm04_apply]
       congr 1
       funext a
       exact local_frame_eq_chart (I := I) x₀ hp.2 (m a)
-    · simp only [base, frameComp0S, S, solOfMetric, SolutionFamily.rm04,
+    · simp only [base, frameComp0S, S, solutionOfMetric, SolutionFamily.rm04,
         metricRm04_apply]
       congr 1
       funext a

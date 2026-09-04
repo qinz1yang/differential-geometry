@@ -71,10 +71,10 @@ theorem redLen_slice_bound
       ∀ {T : Real}, a ≤ T → T < omega →
         ∀ {x : M} {W : TangentSpace I x},
           Icc a₀ T ⊆ D.regular →
-          Real.sqrt (T - a₀) ∈ lRegDomain S T x W →
+          Real.sqrt (T - a₀) ∈ lRegularizedDomain S T x W →
           (W, T - a₁) ∈ lMinDomain S T x →
           redLength S T x
-              (lRegCurve S T x W (Real.sqrt (T - a₁))) (T - a₁) ≤ l₀ →
+              (lRegularizedCurve S T x W (Real.sqrt (T - a₁))) (T - a₁) ≤ l₀ →
           ∃ A : Set M,
             MeasurableSet A ∧
               v ≤ riemannianVolumeMeasure (I := I) (M := M)
@@ -132,7 +132,7 @@ theorem redLen_slice_bound
   have hmin' : (W, c ^ 2) ∈ lMinDomain S T x := by
     rw [hcsq]
     exact hmin
-  have hred' : redLength S T x (lRegCurve S T x W c) (c ^ 2) ≤ l₀ := by
+  have hred' : redLength S T x (lRegularizedCurve S T x W c) (c ^ 2) ≤ l₀ := by
     rw [hcsq]
     exact hred
   obtain ⟨A, hAmeas, hAvol, hAlen⟩ :=

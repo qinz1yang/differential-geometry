@@ -48,7 +48,7 @@ private lemma chartPouKernel_eq_empty_of_pou_zero {α : M}
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0) :
     chartPouKernel (I := I) (M := M) α = (∅ : Set EuclN) := by
   classical
-  have h_supp_empty :
+  have h_support_empty :
       Function.support (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = ∅ := by
     ext x
@@ -57,7 +57,7 @@ private lemma chartPouKernel_eq_empty_of_pou_zero {α : M}
       tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = ∅ := by
     unfold tsupport
-    rw [h_supp_empty]
+    rw [h_support_empty]
     exact closure_empty
   unfold chartPouKernel
   rw [h_tsupp_empty]

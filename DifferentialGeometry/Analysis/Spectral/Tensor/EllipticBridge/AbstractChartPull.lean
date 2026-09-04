@@ -288,11 +288,11 @@ private lemma tensorL2Inner_pouSmul_smooth_chart_pull
                 y)
         ∂(volume : Measure EuclN) := by
   classical
-  have hpou_supp : tsupport (pouSmul (I := I) (M := M) g r s α Sg).toFun ⊆
+  have hpou_support : tsupport (pouSmul (I := I) (M := M) g r s α Sg).toFun ⊆
       (chartAt H α).source :=
     pouSmul_tsupport_subset_chartSource (I := I) (M := M) g r s α Sg
   rw [tensorL2Inner_chartSupported_chart_pull (I := I) (M := M) g r s
-    (pouSmul (I := I) (M := M) g r s α Sg) T α hpou_supp]
+    (pouSmul (I := I) (M := M) g r s α Sg) T α hpou_support]
   have hctE_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
     (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
       (I := I) (M := M) α).measurableSet

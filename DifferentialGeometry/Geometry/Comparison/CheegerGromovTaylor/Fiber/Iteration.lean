@@ -11,7 +11,7 @@ open scoped ContDiff ENNReal Manifold Topology
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
-namespace CGT
+namespace CheegerGromovTaylor
 
 open Exponential NormalCoordinates Variation
 
@@ -30,10 +30,10 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
 noncomputable local instance {R : Real} :
-    SigmaCompactSpace (intrPullBall (E := E) R) :=
+    SigmaCompactSpace (intrinsicPullBall (E := E) R) :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen
-      𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
+      𝓘(Real, E) (intrinsicPullBall (E := E) R).isOpen)
 
 noncomputable def loopRadial
     (g : SmoothRiemannianMetric I M)
@@ -92,10 +92,10 @@ theorem loopLift_exists
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (z : intrPullBall (E := E) R)
-    (hz : z ∈ intrCore (E := E) R a) :
+    (z : intrinsicPullBall (E := E) R)
+    (hz : z ∈ intrinsicCore (E := E) R a) :
     Nonempty
-      (IntrFrameLift (I := I) g hEnorm p
+      (IntrinsicFrameLift (I := I) g hEnorm p
         (loopRadial (I := I) g hEnorm p c (z : E)).extend 0 1) := by
   have hR : 0 < R := (add_nonneg hL ha).trans_lt hfit
   have hlenLa :=
@@ -121,9 +121,9 @@ noncomputable def loopTransportLift
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (z : intrPullBall (E := E) R)
-    (hz : z ∈ intrCore (E := E) R a) :
-    IntrFrameLift (I := I) g hEnorm p
+    (z : intrinsicPullBall (E := E) R)
+    (hz : z ∈ intrinsicCore (E := E) R a) :
+    IntrinsicFrameLift (I := I) g hEnorm p
       (loopRadial (I := I) g hEnorm p c (z : E)).extend 0 1 :=
   Classical.choice
     (loopLift_exists (I := I) g hEnorm p hL ha hfit hloc c hc hcLen z hz)
@@ -140,9 +140,9 @@ noncomputable def loopTransport
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (z : intrPullBall (E := E) R)
-    (hz : z ∈ intrCore (E := E) R a) :
-    intrPullBall (E := E) R := by
+    (z : intrinsicPullBall (E := E) R)
+    (hz : z ∈ intrinsicCore (E := E) R a) :
+    intrinsicPullBall (E := E) R := by
   let P :=
     loopTransportLift (I := I) g hEnorm p hL ha hfit hloc c hc hcLen z hz
   refine ⟨P.toFun 1, ?_⟩
@@ -169,11 +169,11 @@ noncomputable def loopTransportExt
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (z : intrPullBall (E := E) R) :
-    intrPullBall (E := E) R := by
+    (z : intrinsicPullBall (E := E) R) :
+    intrinsicPullBall (E := E) R := by
   classical
   exact
-    if hz : z ∈ intrCore (E := E) R a then
+    if hz : z ∈ intrinsicCore (E := E) R a then
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
         c hc hcLen z hz
     else z
@@ -190,8 +190,8 @@ theorem loopTransportExt_eq
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (z : intrPullBall (E := E) R)
-    (hz : z ∈ intrCore (E := E) R a) :
+    (z : intrinsicPullBall (E := E) R)
+    (hz : z ∈ intrinsicCore (E := E) R a) :
     loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
         c hc hcLen z =
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
@@ -210,8 +210,8 @@ theorem loopTransport_exp
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (z : intrPullBall (E := E) R)
-    (hz : z ∈ intrCore (E := E) R a) :
+    (z : intrinsicPullBall (E := E) R)
+    (hz : z ∈ intrinsicCore (E := E) R a) :
     intrinsicFramedExp (I := I) g hEnorm p
         (loopTransport (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen z hz : E) =
@@ -234,13 +234,13 @@ theorem loopTransportExt_exp
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (z : intrPullBall (E := E) R) :
+    (z : intrinsicPullBall (E := E) R) :
     intrinsicFramedExp (I := I) g hEnorm p
         (loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen z : E) =
       intrinsicFramedExp (I := I) g hEnorm p (z : E) := by
   classical
-  by_cases hz : z ∈ intrCore (E := E) R a
+  by_cases hz : z ∈ intrinsicCore (E := E) R a
   · rw [loopTransportExt_eq (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen z hz]
     exact loopTransport_exp (I := I) g hEnorm p hL ha hfit hloc
@@ -259,7 +259,7 @@ theorem loopIter_exp
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (n : Nat) (z : intrPullBall (E := E) R) :
+    (n : Nat) (z : intrinsicPullBall (E := E) R) :
     intrinsicFramedExp (I := I) g hEnorm p
         (((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen)^[n]) z : E) =
@@ -275,7 +275,7 @@ theorem loopIter_exp
           (((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
             c hc hcLen)^[n]) z)).trans ih
 
-theorem intrIter_exp
+theorem intrinsicIter_exp
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -290,18 +290,18 @@ theorem intrIter_exp
     (n : Nat) :
     intrinsicFramedExp (I := I) g hEnorm p
         (((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen)^[n]) (intrZero (E := E) hR) : E) =
+          c hc hcLen)^[n]) (intrinsicZero (E := E) hR) : E) =
       p := by
   calc
     intrinsicFramedExp (I := I) g hEnorm p
         (((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen)^[n]) (intrZero (E := E) hR) : E) =
+          c hc hcLen)^[n]) (intrinsicZero (E := E) hR) : E) =
         intrinsicFramedExp (I := I) g hEnorm p
-          (intrZero (E := E) hR : E) :=
+          (intrinsicZero (E := E) hR : E) :=
       loopIter_exp (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen n (intrZero (E := E) hR)
+        c hc hcLen n (intrinsicZero (E := E) hR)
     _ = p := by
-      rw [intrFrame_apply, intrZero, map_zero,
+      rw [intrinsicFrame_apply, intrinsicZero, map_zero,
         expMapIntrinsic_zero (I := I) g hEnorm p]
 
 theorem loopTransport_norm
@@ -316,8 +316,8 @@ theorem loopTransport_norm
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (z : intrPullBall (E := E) R)
-    (hz : z ∈ intrCore (E := E) R a) :
+    (z : intrinsicPullBall (E := E) R)
+    (hz : z ∈ intrinsicCore (E := E) R a) :
     ‖(loopTransport (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen z hz : E)‖ < L + ‖(z : E)‖ := by
   let P :=
@@ -353,8 +353,8 @@ theorem loopTransport_bound
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (z : intrPullBall (E := E) R)
-    (hz : z ∈ intrCore (E := E) R a) :
+    (z : intrinsicPullBall (E := E) R)
+    (hz : z ∈ intrinsicCore (E := E) R a) :
     ‖(loopTransport (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen z hz : E)‖ < L + a := by
   let P :=
@@ -369,7 +369,7 @@ theorem loopTransport_bound
     P.norm_lt hLa hlen
       (show (1 : Real) ∈ Set.Icc 0 1 by exact ⟨zero_le_one, le_rfl⟩)
 
-theorem intrIter_norm
+theorem intrinsicIter_norm
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -383,17 +383,17 @@ theorem intrIter_norm
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
     (n : Nat) (hna : (n : Real) * L < a) :
     ‖(((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-      c hc hcLen)^[n]) (intrZero (E := E) hR) : E)‖ ≤
+      c hc hcLen)^[n]) (intrinsicZero (E := E) hR) : E)‖ ≤
       (n : Real) * L := by
-  let T : intrPullBall (E := E) R → intrPullBall (E := E) R :=
+  let T : intrinsicPullBall (E := E) R → intrinsicPullBall (E := E) R :=
     loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen
-  let z₀ := intrZero (E := E) hR
+  let z₀ := intrinsicZero (E := E) hR
   change ‖((T^[n]) z₀ : E)‖ ≤ (n : Real) * L
   induction n with
   | zero =>
       simp only [Function.iterate_zero_apply, Nat.cast_zero, zero_mul,
-        z₀, intrZero, norm_zero, le_rfl]
+        z₀, intrinsicZero, norm_zero, le_rfl]
   | succ n ih =>
       have hnCast : (n : Real) ≤ (n.succ : Nat) := by
         exact_mod_cast Nat.le_succ n
@@ -404,7 +404,7 @@ theorem intrIter_norm
       have hnNorm : ‖((T^[n]) z₀ : E)‖ ≤ (n : Real) * L :=
         ih hna'
       let z := (T^[n]) z₀
-      have hz : z ∈ intrCore (E := E) R a := by
+      have hz : z ∈ intrinsicCore (E := E) R a := by
         rw [mem_intrCore]
         exact hnNorm.trans (le_of_lt hna')
       rw [Function.iterate_succ_apply']
@@ -441,11 +441,11 @@ theorem loopTransport_maps
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L) :
     MapsTo
-      (fun z : {z : intrPullBall (E := E) R //
-          z ∈ intrCore (E := E) R a} =>
+      (fun z : {z : intrinsicPullBall (E := E) R //
+          z ∈ intrinsicCore (E := E) R a} =>
         loopTransport (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen z.1 z.2)
-      Set.univ (intrCore (E := E) R (L + a)) := by
+      Set.univ (intrinsicCore (E := E) R (L + a)) := by
   intro z _
   rw [mem_intrCore]
   exact (loopTransport_bound (I := I) g hEnorm p hL ha hfit hloc
@@ -464,12 +464,12 @@ theorem loopTransport_cont
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L) :
     Continuous
-      (fun z : {z : intrPullBall (E := E) R //
-          z ∈ intrCore (E := E) R a} =>
+      (fun z : {z : intrinsicPullBall (E := E) R //
+          z ∈ intrinsicCore (E := E) R a} =>
         loopTransport (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen z.1 z.2) := by
   let Core :=
-    {z : intrPullBall (E := E) R // z ∈ intrCore (E := E) R a}
+    {z : intrinsicPullBall (E := E) R // z ∈ intrinsicCore (E := E) R a}
   let Uo : TopologicalSpace.Opens E :=
     ⟨Metric.ball (0 : E) R, Metric.isOpen_ball⟩
   let fU : Uo → M :=
@@ -504,7 +504,7 @@ theorem loopTransport_cont
           intrinsicFramedExp (I := I) g hEnorm p
             (Real.smoothTransition (3 * (zt.2 : Real) - 1) •
               (zt.1.1 : E)))
-    apply (intrFrame_smooth (I := I) g hEnorm p).continuous.comp
+    apply (intrinsicFrame_smooth (I := I) g hEnorm p).continuous.comp
     have ht :
         Continuous
           (fun zt : Core × unitInterval =>
@@ -603,36 +603,36 @@ theorem loopTransport_curve
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    {γ : Real → intrPullBall (E := E) R} {s t : Real}
+    {γ : Real → intrinsicPullBall (E := E) R} {s t : Real}
     (hγ :
       ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 γ (Set.Icc s t))
-    (hγcore : ∀ u : Real, γ u ∈ intrCore (E := E) R a) :
+    (hγcore : ∀ u : Real, γ u ∈ intrinsicCore (E := E) R a) :
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
-      ⟨(intrPullMetric (I := I) g hEnorm p hloc).toRiemannianMetric⟩
-    let η : Real → intrPullBall (E := E) R :=
+      ⟨(intrinsicPullMetric (I := I) g hEnorm p hloc).toRiemannianMetric⟩
+    let η : Real → intrinsicPullBall (E := E) R :=
       fun u =>
         loopTransport (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen (γ u) (hγcore u)
     ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 η (Set.Icc s t) ∧
       Manifold.pathELength 𝓘(Real, E) η s t =
         Manifold.pathELength 𝓘(Real, E) γ s t := by
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  let pullNormedAdd (z : intrPullBall (E := E) R) :
+  let pullNormedAdd (z : intrinsicPullBall (E := E) R) :
       NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) := inferInstance
-  let pullNormed (z : intrPullBall (E := E) R) :
+  let pullNormed (z : intrinsicPullBall (E := E) R) :
       NormedSpace Real (TangentSpace 𝓘(Real, E) z) := inferInstance
-  let pullENormSmul : ∀ z : intrPullBall (E := E) R,
+  let pullENormSmul : ∀ z : intrinsicPullBall (E := E) R,
       ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
     fun _ => inferInstance
   let Core :=
-    {z : intrPullBall (E := E) R // z ∈ intrCore (E := E) R a}
-  let η : Real → intrPullBall (E := E) R :=
+    {z : intrinsicPullBall (E := E) R // z ∈ intrinsicCore (E := E) R a}
+  let η : Real → intrinsicPullBall (E := E) R :=
     fun u =>
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
         c hc hcLen (γ u) (hγcore u)
@@ -660,13 +660,13 @@ theorem loopTransport_curve
     exact
       ((contMDiff_subtype_val (n := (⊤ : WithTop ℕ∞))
         (I := 𝓘(Real, E))
-        (U := intrPullBall (E := E) R)).of_le
+        (U := intrinsicPullBall (E := E) R)).of_le
           (show (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞) from le_top)
         ).comp_contMDiffOn hγ
   have hβ :
       ContMDiffOn 𝓘(Real, Real) I 1 β (Set.Icc s t) := by
     exact
-      ((intrFrame_smooth (I := I) g hEnorm p).of_le
+      ((intrinsicFrame_smooth (I := I) g hEnorm p).of_le
         (by norm_num)
         ).comp_contMDiffOn hγE
   have hηLift :
@@ -695,13 +695,13 @@ theorem loopTransport_curve
     · convert hdiff using 2
       with_unfolding_all rfl
   have hηlen :=
-    intrPull_pathLen (I := I) g hEnorm p hloc hη
+    intrinsicPull_pathLen (I := I) g hEnorm p hloc hη
   have hγlen :=
-    intrPull_pathLen (I := I) g hEnorm p hloc hγ
+    intrinsicPull_pathLen (I := I) g hEnorm p hloc hγ
   have hproj :
       Set.EqOn
-        (intrExpOn (I := I) g hEnorm p R ∘ η)
-        (intrExpOn (I := I) g hEnorm p R ∘ γ)
+        (intrinsicExpOn (I := I) g hEnorm p R ∘ η)
+        (intrinsicExpOn (I := I) g hEnorm p R ∘ γ)
         (Set.Icc s t) := by
     intro u hu
     exact
@@ -714,9 +714,9 @@ theorem loopTransport_curve
   calc
     Manifold.pathELength 𝓘(Real, E) η s t =
         Manifold.pathELength I
-          (intrExpOn (I := I) g hEnorm p R ∘ η) s t := hηlen.symm
+          (intrinsicExpOn (I := I) g hEnorm p R ∘ η) s t := hηlen.symm
     _ = Manifold.pathELength I
-        (intrExpOn (I := I) g hEnorm p R ∘ γ) s t :=
+        (intrinsicExpOn (I := I) g hEnorm p R ∘ γ) s t :=
       Manifold.pathELength_congr hproj
     _ = Manifold.pathELength 𝓘(Real, E) γ s t := hγlen
 
@@ -732,14 +732,14 @@ theorem loopTransport_len
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    {γ : Real → intrPullBall (E := E) R} {s t : Real}
+    {γ : Real → intrinsicPullBall (E := E) R} {s t : Real}
     (hγ :
       ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 γ (Set.Icc s t))
-    (hγcore : ∀ u : Real, γ u ∈ intrCore (E := E) R a) :
+    (hγcore : ∀ u : Real, γ u ∈ intrinsicCore (E := E) R a) :
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
-      ⟨(intrPullMetric (I := I) g hEnorm p hloc).toRiemannianMetric⟩
+      ⟨(intrinsicPullMetric (I := I) g hEnorm p hloc).toRiemannianMetric⟩
     Manifold.pathELength 𝓘(Real, E)
         (fun u =>
           loopTransport (I := I) g hEnorm p hL ha hfit hloc
@@ -770,23 +770,23 @@ theorem loopTransport_nonexp
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    {x y : intrPullBall (E := E) R}
-    (hx : x ∈ intrCore (E := E) R a)
-    (hy : y ∈ intrCore (E := E) R a) :
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    {x y : intrinsicPullBall (E := E) R}
+    (hx : x ∈ intrinsicCore (E := E) R a)
+    (hy : y ∈ intrinsicCore (E := E) R a) :
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-    letI : ConnectedSpace (intrPullBall (E := E) R) :=
+    letI : ConnectedSpace (intrinsicPullBall (E := E) R) :=
       Subtype.connectedSpace (isConnected_ball hR)
-    letI : MetricSpace (intrPullBall (E := E) R) :=
+    letI : MetricSpace (intrinsicPullBall (E := E) R) :=
       HopfRinow.riemMetricSpace
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
     dist
         (loopTransport (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen x hx)
@@ -794,29 +794,29 @@ theorem loopTransport_nonexp
           c hc hcLen y hy) ≤
       dist x y := by
   classical
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  let pullNormedAdd (z : intrPullBall (E := E) R) :
+  let pullNormedAdd (z : intrinsicPullBall (E := E) R) :
       NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) := inferInstance
-  let pullNormed (z : intrPullBall (E := E) R) :
+  let pullNormed (z : intrinsicPullBall (E := E) R) :
       NormedSpace Real (TangentSpace 𝓘(Real, E) z) := inferInstance
-  let pullENormSmul : ∀ z : intrPullBall (E := E) R,
+  let pullENormSmul : ∀ z : intrinsicPullBall (E := E) R,
       ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
     fun _ => inferInstance
   let : IsContinuousRiemannianBundle E
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrinsicPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  let : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
-      (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+      (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
   obtain ⟨join, hjoin, _⟩ :=
-    intrCore_jensen_min (I := I) g hEnorm p hR h4aR hloc
+    intrinsicCore_jensen_min (I := I) g hEnorm p hR h4aR hloc
       hK hsmall hRm
   have hspec := hjoin x hx y hy
   let γp : Path x y := {
@@ -824,7 +824,7 @@ theorem loopTransport_nonexp
     continuous_toFun := hspec.1.continuous.comp continuous_subtype_val
     source' := hspec.2.2.1
     target' := hspec.2.2.2.1 }
-  let γ : Real → intrPullBall (E := E) R := γp.extend
+  let γ : Real → intrinsicPullBall (E := E) R := γp.extend
   have hγC1 :
       ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 γ
         (Set.Icc (0 : Real) 1) := by
@@ -832,15 +832,15 @@ theorem loopTransport_nonexp
     intro t ht
     with_unfolding_all exact γp.extend_apply ht
   have hγcore :
-      ∀ t : Real, γ t ∈ intrCore (E := E) R a := by
+      ∀ t : Real, γ t ∈ intrinsicCore (E := E) R a := by
     intro t
     have htRange : γp.extend t ∈ Set.range γp.extend := ⟨t, rfl⟩
     rw [γp.extend_range] at htRange
     obtain ⟨u, hu⟩ := htRange
-    change γp.extend t ∈ intrCore (E := E) R a
+    change γp.extend t ∈ intrinsicCore (E := E) R a
     rw [← hu]
     exact hspec.2.2.2.2.2.2 u u.property
-  let η : Real → intrPullBall (E := E) R :=
+  let η : Real → intrinsicPullBall (E := E) R :=
     fun t =>
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
         c hc hcLen (γ t) (hγcore t)
@@ -866,7 +866,7 @@ theorem loopTransport_nonexp
       riemannianEDist 𝓘(Real, E) (η 0) (η 1) ≤
         Manifold.pathELength 𝓘(Real, E) η 0 1 :=
     @Manifold.riemannianEDist_le_pathELength
-      E _ _ E _ 𝓘(Real, E) (intrPullBall (E := E) R)
+      E _ _ E _ 𝓘(Real, E) (intrinsicPullBall (E := E) R)
       _ _ _ pullENormSmul (η 0) (η 1) 0 1 η
       hcurve.1 rfl rfl zero_le_one
   have hγlen :
@@ -914,11 +914,11 @@ theorem loopTransport_nonexp
           (loopTransport (I := I) g hEnorm p hL ha hfit hloc
             c hc hcLen y hy)).toReal :=
       HopfRinow.riemMetric_dist_eq
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R) _ _
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R) _ _
     _ ≤ (riemannianEDist 𝓘(Real, E) x y).toReal := hedReal
     _ = dist x y :=
       (HopfRinow.riemMetric_dist_eq
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R) x y).symm
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R) x y).symm
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
 theorem loopIter_nonexp
@@ -942,50 +942,50 @@ theorem loopIter_nonexp
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (n : Nat) {x y : intrPullBall (E := E) R}
+    (n : Nat) {x y : intrinsicPullBall (E := E) R}
     (hx :
       ∀ k < n,
         ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen)^[k]) x ∈ intrCore (E := E) R a)
+          c hc hcLen)^[k]) x ∈ intrinsicCore (E := E) R a)
     (hy :
       ∀ k < n,
         ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen)^[k]) y ∈ intrCore (E := E) R a) :
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+          c hc hcLen)^[k]) y ∈ intrinsicCore (E := E) R a) :
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-    letI : ConnectedSpace (intrPullBall (E := E) R) :=
+    letI : ConnectedSpace (intrinsicPullBall (E := E) R) :=
       Subtype.connectedSpace (isConnected_ball hR)
-    letI : MetricSpace (intrPullBall (E := E) R) :=
+    letI : MetricSpace (intrinsicPullBall (E := E) R) :=
       HopfRinow.riemMetricSpace
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
     dist
         (((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen)^[n]) x)
         (((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen)^[n]) y) ≤
       dist x y := by
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrinsicPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  let : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
-      (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
-  let T : intrPullBall (E := E) R → intrPullBall (E := E) R :=
+      (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
+  let T : intrinsicPullBall (E := E) R → intrinsicPullBall (E := E) R :=
     loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen
   change dist ((T^[n]) x) ((T^[n]) y) ≤ dist x y
@@ -993,9 +993,9 @@ theorem loopIter_nonexp
   | zero =>
       simp
   | succ n ih =>
-      have hxn : (T^[n]) x ∈ intrCore (E := E) R a :=
+      have hxn : (T^[n]) x ∈ intrinsicCore (E := E) R a :=
         hx n (Nat.lt_succ_self n)
-      have hyn : (T^[n]) y ∈ intrCore (E := E) R a :=
+      have hyn : (T^[n]) y ∈ intrinsicCore (E := E) R a :=
         hy n (Nat.lt_succ_self n)
       rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
       calc
@@ -1029,10 +1029,10 @@ theorem loopTransport_ne
         (Metric.ball (0 : E) R))
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
-    (z : intrPullBall (E := E) R)
-    (hz : z ∈ intrCore (E := E) R a) :
+    (z : intrinsicPullBall (E := E) R)
+    (hz : z ∈ intrinsicCore (E := E) R a) :
     loopTransport (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen z hz ≠ z := by
   intro hfix
@@ -1040,7 +1040,7 @@ theorem loopTransport_ne
     radialFlat (I := I) g hEnorm p (z : E)
   let P :=
     loopTransportLift (I := I) g hEnorm p hL ha hfit hloc c hc hcLen z hz
-  let B : IntrFrameLift (I := I) g hEnorm p r.extend 0 1 :=
+  let B : IntrinsicFrameLift (I := I) g hEnorm p r.extend 0 1 :=
     radialFlatLift (I := I) g hEnorm p (z : E)
   have hR : 0 < R := (add_nonneg hL ha).trans_lt hfit
   have hLR : L < R := by linarith
@@ -1113,7 +1113,7 @@ theorem loopTransport_ne
   exact hA (hmid.symm.trans (hhalf.trans hBhalf))
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
-theorem intrCore_center
+theorem intrinsicCore_center
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1132,73 +1132,73 @@ theorem intrCore_center
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     {ι : Type*} [Fintype ι] [Nonempty ι]
-    (pts : ι → intrPullBall (E := E) R)
+    (points : ι → intrinsicPullBall (E := E) R)
     (hr : 0 < r) (h2ra : 2 * r < a)
-    (hpts : ∀ i : ι, ‖(pts i : E)‖ < r) :
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    (hpts : ∀ i : ι, ‖(points i : E)‖ < r) :
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-    letI : ConnectedSpace (intrPullBall (E := E) R) :=
+    letI : ConnectedSpace (intrinsicPullBall (E := E) R) :=
       Subtype.connectedSpace (isConnected_ball hR)
-    letI : MetricSpace (intrPullBall (E := E) R) :=
+    letI : MetricSpace (intrinsicPullBall (E := E) R) :=
       HopfRinow.riemMetricSpace
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
-    ∃ c ∈ intrCore (E := E) R a,
-      (∀ z : intrPullBall (E := E) R,
-        CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts c ≤
-          CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts z) ∧
-      ∀ y : intrPullBall (E := E) R,
-        (∀ z : intrPullBall (E := E) R,
-          CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts y ≤
-            CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts z) →
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
+    ∃ c ∈ intrinsicCore (E := E) R a,
+      (∀ z : intrinsicPullBall (E := E) R,
+        CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points c ≤
+          CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points z) ∧
+      ∀ y : intrinsicPullBall (E := E) R,
+        (∀ z : intrinsicPullBall (E := E) R,
+          CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points y ≤
+            CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points z) →
         y = c := by
   classical
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrinsicPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  let : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
-      (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
-  let z₀ := intrZero (E := E) hR
+      (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
+  let z₀ := intrinsicZero (E := E) hR
   have ha : 0 < a := by linarith
   have haR : a < R := by linarith
   have hra : r < a := by linarith
   have hzeroDist :
-      ∀ q : intrPullBall (E := E) R, dist z₀ q = ‖(q : E)‖ := by
+      ∀ q : intrinsicPullBall (E := E) R, dist z₀ q = ‖(q : E)‖ := by
     intro q
     calc
       dist z₀ q =
           (riemannianEDist 𝓘(Real, E) z₀ q).toReal :=
         HopfRinow.riemMetric_dist_eq
           (I := 𝓘(Real, E))
-          (M := intrPullBall (E := E) R) z₀ q
+          (M := intrinsicPullBall (E := E) R) z₀ q
       _ = (riemannianEDistOf
           (I := 𝓘(Real, E)) gPull z₀ q).toReal := rfl
       _ = (ENNReal.ofReal ‖(q : E)‖).toReal := by
-        rw [intrPull_dist_zero (I := I) g hEnorm p hR hloc q]
+        rw [intrinsicPull_dist_zero (I := I) g hEnorm p hR hloc q]
       _ = ‖(q : E)‖ := ENNReal.toReal_ofReal (norm_nonneg _)
-  have hptsCore : ∀ i : ι, pts i ∈ intrCore (E := E) R a := by
+  have hptsCore : ∀ i : ι, points i ∈ intrinsicCore (E := E) R a := by
     intro i
     exact (hpts i).le.trans hra.le
   obtain ⟨join, hjensen⟩ :=
-    intrCore_jensen (I := I) g hEnorm p hR h4aR hloc hK hsmall hRm
+    intrinsicCore_jensen (I := I) g hEnorm p hR h4aR hloc hK hsmall hRm
   have hfar :
-      ∀ q : intrPullBall (E := E) R,
-        q ∉ intrCore (E := E) R a → 2 * r ≤ dist z₀ q := by
+      ∀ q : intrinsicPullBall (E := E) R,
+        q ∉ intrinsicCore (E := E) R a → 2 * r ≤ dist z₀ q := by
     intro q hq
     have haq : a < ‖(q : E)‖ := by
       rw [mem_intrCore] at hq
@@ -1207,17 +1207,17 @@ theorem intrCore_center
     linarith
   let i₀ : ι := Classical.choice inferInstance
   exact CenterOfMass.exists_unique_global
-    (fun _ : ι => (1 : Real)) pts
-    (intrCore_compact (E := E) haR)
-    (intrZero_mem (E := E) hR ha.le) hr
+    (fun _ : ι => (1 : Real)) points
+    (intrinsicCore_compact (E := E) haR)
+    (intrinsicZero_mem (E := E) hR ha.le) hr
     (fun i => by
-      rw [hzeroDist (pts i)]
+      rw [hzeroDist (points i)]
       exact hpts i)
     hfar (fun _ => by norm_num) ⟨i₀, by norm_num⟩
-    (fun i => hjensen (pts i) (hptsCore i))
+    (fun i => hjensen (points i) (hptsCore i))
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
-theorem intrCycle_center
+theorem intrinsicCycle_center
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1237,70 +1237,70 @@ theorem intrCycle_center
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     {n : Nat} [NeZero n]
-    (pts : Fin n → intrPullBall (E := E) R)
-    (hptsCore : ∀ i, pts i ∈ intrCore (E := E) R a) :
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    (points : Fin n → intrinsicPullBall (E := E) R)
+    (hptsCore : ∀ i, points i ∈ intrinsicCore (E := E) R a) :
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-    letI : ConnectedSpace (intrPullBall (E := E) R) :=
+    letI : ConnectedSpace (intrinsicPullBall (E := E) R) :=
       Subtype.connectedSpace (isConnected_ball hR)
-    letI : MetricSpace (intrPullBall (E := E) R) :=
+    letI : MetricSpace (intrinsicPullBall (E := E) R) :=
       HopfRinow.riemMetricSpace
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
     ∀ (_ :
-        ∀ i, dist (pts 0) (pts i) ≤ (i.val : Real) * L)
+        ∀ i, dist (points 0) (points i) ≤ (i.val : Real) * L)
       (_ :
-        ∀ q : intrPullBall (E := E) R,
-          q ∉ intrCore (E := E) R a →
-            (n : Real) * L < dist (pts 0) q),
-      ∃ c ∈ intrCore (E := E) R a,
-      (∀ z : intrPullBall (E := E) R,
-        CenterOfMass.metricEnergy (fun _ : Fin n => (1 : Real)) pts c ≤
-          CenterOfMass.metricEnergy (fun _ : Fin n => (1 : Real)) pts z) ∧
-      ∀ y : intrPullBall (E := E) R,
-        (∀ z : intrPullBall (E := E) R,
-          CenterOfMass.metricEnergy (fun _ : Fin n => (1 : Real)) pts y ≤
-            CenterOfMass.metricEnergy (fun _ : Fin n => (1 : Real)) pts z) →
+        ∀ q : intrinsicPullBall (E := E) R,
+          q ∉ intrinsicCore (E := E) R a →
+            (n : Real) * L < dist (points 0) q),
+      ∃ c ∈ intrinsicCore (E := E) R a,
+      (∀ z : intrinsicPullBall (E := E) R,
+        CenterOfMass.metricEnergy (fun _ : Fin n => (1 : Real)) points c ≤
+          CenterOfMass.metricEnergy (fun _ : Fin n => (1 : Real)) points z) ∧
+      ∀ y : intrinsicPullBall (E := E) R,
+        (∀ z : intrinsicPullBall (E := E) R,
+          CenterOfMass.metricEnergy (fun _ : Fin n => (1 : Real)) points y ≤
+            CenterOfMass.metricEnergy (fun _ : Fin n => (1 : Real)) points z) →
         y = c := by
   classical
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrinsicPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  let : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
-      (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+      (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
   dsimp only
   intro hgraded hfar
   have haR : a < R := by
     linarith
   obtain ⟨join, hjensen⟩ :=
-    intrCore_jensen (I := I) g hEnorm p hR h4aR hloc hK hsmall hRm
+    intrinsicCore_jensen (I := I) g hEnorm p hR h4aR hloc hK hsmall hRm
   have henergy :
-      ∀ q : intrPullBall (E := E) R,
-        q ∉ intrCore (E := E) R a →
+      ∀ q : intrinsicPullBall (E := E) R,
+        q ∉ intrinsicCore (E := E) R a →
           CenterOfMass.metricEnergy
-              (fun _ : Fin n => (1 : Real)) pts (pts 0) <
+              (fun _ : Fin n => (1 : Real)) points (points 0) <
             CenterOfMass.metricEnergy
-              (fun _ : Fin n => (1 : Real)) pts q := by
+              (fun _ : Fin n => (1 : Real)) points q := by
     intro q hq
     have hterm :
         ∀ i : Fin n,
-          dist (pts 0) (pts i) ^ 2 <
-            dist q (pts i.rev) ^ 2 := by
+          dist (points 0) (points i) ^ 2 <
+            dist q (points i.rev) ^ 2 := by
       intro i
       have hval :
           i.val + i.rev.val + 1 = n := by
@@ -1314,48 +1314,48 @@ theorem intrCycle_center
           exact_mod_cast hval
         nlinarith
       have htri :
-          dist (pts 0) q ≤
-            dist (pts 0) (pts i.rev) + dist (pts i.rev) q :=
+          dist (points 0) q ≤
+            dist (points 0) (points i.rev) + dist (points i.rev) q :=
         dist_triangle _ _ _
       have hdist :
-          dist (pts 0) (pts i) < dist q (pts i.rev) := by
+          dist (points 0) (points i) < dist q (points i.rev) := by
         have hqfar := hfar q hq
         have hi := hgraded i
         have hirev := hgraded i.rev
-        rw [dist_comm (pts i.rev) q] at htri
+        rw [dist_comm (points i.rev) q] at htri
         have hsum :
             (i.val : Real) * L + (i.rev.val : Real) * L <
-              dist (pts 0) (pts i.rev) + dist q (pts i.rev) :=
+              dist (points 0) (points i.rev) + dist q (points i.rev) :=
           (hpair.trans hqfar).trans_le htri
         have hiright :
-            (i.val : Real) * L < dist q (pts i.rev) := by
+            (i.val : Real) * L < dist q (points i.rev) := by
           linarith
         exact hi.trans_lt hiright
       exact (sq_lt_sq₀ dist_nonneg dist_nonneg).mpr hdist
     have hsum :
-        (∑ i : Fin n, dist (pts 0) (pts i) ^ 2) <
-          ∑ i : Fin n, dist q (pts i.rev) ^ 2 := by
+        (∑ i : Fin n, dist (points 0) (points i) ^ 2) <
+          ∑ i : Fin n, dist q (points i.rev) ^ 2 := by
       apply Finset.sum_lt_sum
       · intro i _
         exact (hterm i).le
       · exact ⟨0, Finset.mem_univ _, hterm 0⟩
     have hrev :
-        (∑ i : Fin n, dist q (pts i.rev) ^ 2) =
-          ∑ i : Fin n, dist q (pts i) ^ 2 := by
+        (∑ i : Fin n, dist q (points i.rev) ^ 2) =
+          ∑ i : Fin n, dist q (points i) ^ 2 := by
       simpa only [Fin.revPerm_apply] using
         (Equiv.sum_comp (Fin.revPerm : Equiv.Perm (Fin n))
-          (fun i : Fin n => dist q (pts i) ^ 2))
+          (fun i : Fin n => dist q (points i) ^ 2))
     unfold CenterOfMass.metricEnergy
     apply mul_lt_mul_of_pos_left _ (by norm_num)
     simpa only [one_mul] using hsum.trans_eq hrev
   exact CenterOfMass.exists_global_of_lt
-    (fun _ : Fin n => (1 : Real)) pts
-    (intrCore_compact (E := E) haR) (hptsCore 0)
+    (fun _ : Fin n => (1 : Real)) points
+    (intrinsicCore_compact (E := E) haR) (hptsCore 0)
     henergy (fun _ => by norm_num) ⟨0, by norm_num⟩
-    (fun i => hjensen (pts i) (hptsCore i))
+    (fun i => hjensen (points i) (hptsCore i))
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
-theorem intrCycle_not_fin
+theorem intrinsicCycle_not_fin
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1377,67 +1377,67 @@ theorem intrCycle_not_fin
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     {n : Nat} [NeZero n]
-    (pts : Fin n → intrPullBall (E := E) R)
-    (hptsCore : ∀ i, pts i ∈ intrCore (E := E) R a) :
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    (points : Fin n → intrinsicPullBall (E := E) R)
+    (hptsCore : ∀ i, points i ∈ intrinsicCore (E := E) R a) :
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-    letI : ConnectedSpace (intrPullBall (E := E) R) :=
+    letI : ConnectedSpace (intrinsicPullBall (E := E) R) :=
       Subtype.connectedSpace (isConnected_ball hR)
-    letI : MetricSpace (intrPullBall (E := E) R) :=
+    letI : MetricSpace (intrinsicPullBall (E := E) R) :=
       HopfRinow.riemMetricSpace
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
     ∀ (_ :
-        ∀ i, dist (pts 0) (pts i) ≤ (i.val : Real) * L)
+        ∀ i, dist (points 0) (points i) ≤ (i.val : Real) * L)
       (_ :
-        ∀ q : intrPullBall (E := E) R,
-          q ∉ intrCore (E := E) R a →
-            (n : Real) * L < dist (pts 0) q)
+        ∀ q : intrinsicPullBall (E := E) R,
+          q ∉ intrinsicCore (E := E) R a →
+            (n : Real) * L < dist (points 0) q)
       (e : Equiv.Perm (Fin n)),
       ¬ ∀ i : Fin n,
         loopTransport (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen (pts i) (hptsCore i) = pts (e i) := by
+          c hc hcLen (points i) (hptsCore i) = points (e i) := by
   classical
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrinsicPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  let : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
-      (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+      (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
   dsimp only
   intro hgraded hfar e hperm
   obtain ⟨z, hz, hzmin, hzuniq⟩ :=
-    intrCycle_center (I := I) g hEnorm p hR h4aR hLpos
-      hloc hK hsmall hRm pts hptsCore hgraded hfar
-  let T : intrPullBall (E := E) R → intrPullBall (E := E) R :=
+    intrinsicCycle_center (I := I) g hEnorm p hR h4aR hLpos
+      hloc hK hsmall hRm points hptsCore hgraded hfar
+  let T : intrinsicPullBall (E := E) R → intrinsicPullBall (E := E) R :=
     fun q =>
-      if hq : q ∈ intrCore (E := E) R a then
+      if hq : q ∈ intrinsicCore (E := E) R a then
         loopTransport (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen q hq
       else q
-  have hTpts : ∀ i : Fin n, T (pts i) = pts (e i) := by
+  have hTpts : ∀ i : Fin n, T (points i) = points (e i) := by
     intro i
     simp only [T, dif_pos (hptsCore i)]
     exact hperm i
   have hTdist :
-      ∀ i : Fin n, dist (T z) (T (pts i)) ≤ dist z (pts i) := by
+      ∀ i : Fin n, dist (T z) (T (points i)) ≤ dist z (points i) := by
     intro i
     simp only [T, dif_pos hz, dif_pos (hptsCore i)]
     exact
@@ -1445,7 +1445,7 @@ theorem intrCycle_not_fin
         hL ha hfit hloc hK hsmall hRm c hc hcLen hz (hptsCore i)
   have hfixT : T z = z :=
     CenterOfMass.fixed_of_nonexp
-      (fun _ : Fin n => (1 : Real)) pts T e z hzmin hzuniq
+      (fun _ : Fin n => (1 : Real)) points T e z hzmin hzuniq
       (fun _ => by norm_num) (fun _ => rfl) hTpts hTdist
   have hfix :
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
@@ -1456,7 +1456,7 @@ theorem intrCycle_not_fin
       c hc hcLen A hA z hz) hfix
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
-theorem intrOrbit_not_finite
+theorem intrinsicOrbit_not_finite
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1477,72 +1477,72 @@ theorem intrOrbit_not_finite
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     {ι : Type*} [Finite ι] [Nonempty ι]
-    (pts : ι → intrPullBall (E := E) R)
+    (points : ι → intrinsicPullBall (E := E) R)
     (hr : 0 < r) (h2ra : 2 * r < a)
-    (hpts : ∀ i : ι, ‖(pts i : E)‖ < r)
+    (hpts : ∀ i : ι, ‖(points i : E)‖ < r)
     (e : ι ≃ ι) :
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-    letI : ConnectedSpace (intrPullBall (E := E) R) :=
+    letI : ConnectedSpace (intrinsicPullBall (E := E) R) :=
       Subtype.connectedSpace (isConnected_ball hR)
-    letI : MetricSpace (intrPullBall (E := E) R) :=
+    letI : MetricSpace (intrinsicPullBall (E := E) R) :=
       HopfRinow.riemMetricSpace
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
-    ¬ ∀ i : ι, ∀ hi : pts i ∈ intrCore (E := E) R a,
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
+    ¬ ∀ i : ι, ∀ hi : points i ∈ intrinsicCore (E := E) R a,
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen (pts i) hi = pts (e i) := by
+        c hc hcLen (points i) hi = points (e i) := by
   classical
   let : Fintype ι := Fintype.ofFinite ι
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrinsicPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  let : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
-      (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+      (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
   change
-    ¬ ∀ i : ι, ∀ hi : pts i ∈ intrCore (E := E) R a,
+    ¬ ∀ i : ι, ∀ hi : points i ∈ intrinsicCore (E := E) R a,
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen (pts i) hi = pts (e i)
+        c hc hcLen (points i) hi = points (e i)
   intro hperm
   have hra : r < a := by linarith
   have hptsCore :
-      ∀ i : ι, pts i ∈ intrCore (E := E) R a := by
+      ∀ i : ι, points i ∈ intrinsicCore (E := E) R a := by
     intro i
     exact (hpts i).le.trans hra.le
   obtain ⟨z, hz, hzmin, hzuniq⟩ :=
-    intrCore_center (I := I) g hEnorm p hR h4aR hloc
-      hK hsmall hRm pts hr h2ra hpts
-  let T : intrPullBall (E := E) R → intrPullBall (E := E) R :=
+    intrinsicCore_center (I := I) g hEnorm p hR h4aR hloc
+      hK hsmall hRm points hr h2ra hpts
+  let T : intrinsicPullBall (E := E) R → intrinsicPullBall (E := E) R :=
     fun q =>
-      if hq : q ∈ intrCore (E := E) R a then
+      if hq : q ∈ intrinsicCore (E := E) R a then
         loopTransport (I := I) g hEnorm p hL ha hfit hloc
           c hc hcLen q hq
       else q
   have hTpts :
-      ∀ i : ι, T (pts i) = pts (e i) := by
+      ∀ i : ι, T (points i) = points (e i) := by
     intro i
     simp only [T, dif_pos (hptsCore i)]
     exact hperm i (hptsCore i)
   have hTdist :
-      ∀ i : ι, dist (T z) (T (pts i)) ≤ dist z (pts i) := by
+      ∀ i : ι, dist (T z) (T (points i)) ≤ dist z (points i) := by
     intro i
     simp only [T, dif_pos hz, dif_pos (hptsCore i)]
     exact
@@ -1550,7 +1550,7 @@ theorem intrOrbit_not_finite
         hL ha hfit hloc hK hsmall hRm c hc hcLen hz (hptsCore i)
   have hfixT : T z = z :=
     CenterOfMass.fixed_of_nonexp
-      (fun _ : ι => (1 : Real)) pts T e z hzmin hzuniq
+      (fun _ : ι => (1 : Real)) points T e z hzmin hzuniq
       (fun _ => by norm_num) (fun _ => rfl) hTpts hTdist
   have hfix :
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
@@ -1560,7 +1560,7 @@ theorem intrOrbit_not_finite
     (loopTransport_ne (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen A hA z hz) hfix
 
-theorem intrIter_ne
+theorem intrinsicIter_ne
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1581,11 +1581,11 @@ theorem intrIter_ne
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     {n : Nat} [NeZero n]
     (hr : 0 < r) (h2ra : 2 * r < a)
-    (q : intrPullBall (E := E) R)
+    (q : intrinsicPullBall (E := E) R)
     (hiter :
       ∀ j < n,
         ‖(((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
@@ -1593,31 +1593,31 @@ theorem intrIter_ne
     ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen)^[n]) q ≠ q := by
   classical
-  let T : intrPullBall (E := E) R → intrPullBall (E := E) R :=
+  let T : intrinsicPullBall (E := E) R → intrinsicPullBall (E := E) R :=
     loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen
   change (T^[n]) q ≠ q
   intro hperiod
-  let pts : ZMod n → intrPullBall (E := E) R :=
+  let points : ZMod n → intrinsicPullBall (E := E) R :=
     fun i => (T^[i.val]) q
   have hpts :
-      ∀ i : ZMod n, ‖(pts i : E)‖ < r := by
+      ∀ i : ZMod n, ‖(points i : E)‖ < r := by
     intro i
     exact hiter i.val (ZMod.val_lt i)
   have hnot :
       ¬ ∀ i : ZMod n,
-        ∀ hi : pts i ∈ intrCore (E := E) R a,
+        ∀ hi : points i ∈ intrinsicCore (E := E) R a,
           loopTransport (I := I) g hEnorm p hL ha hfit hloc
-            c hc hcLen (pts i) hi =
-              pts ((Equiv.addRight (1 : ZMod n)) i) := by
+            c hc hcLen (points i) hi =
+              points ((Equiv.addRight (1 : ZMod n)) i) := by
     simpa only using
-      (intrOrbit_not_finite (I := I) g hEnorm p hR h4aR
+      (intrinsicOrbit_not_finite (I := I) g hEnorm p hR h4aR
         hL ha hfit hloc hK hsmall hRm c hc hcLen A hA
-        pts hr h2ra hpts (Equiv.addRight (1 : ZMod n)))
+        points hr h2ra hpts (Equiv.addRight (1 : ZMod n)))
   apply hnot
   intro i hi
   rw [← loopTransportExt_eq (I := I) g hEnorm p hL ha hfit hloc
-    c hc hcLen (pts i) hi]
+    c hc hcLen (points i) hi]
   change T ((T^[i.val]) q) =
     (T^[((Equiv.addRight (1 : ZMod n)) i).val]) q
   rw [← Function.iterate_succ_apply' T i.val q]
@@ -1649,7 +1649,7 @@ theorem intrIter_ne
       omega
     rw [hiSucc, hperiod]
 
-theorem intrIter_ne_of_lt
+theorem intrinsicIter_ne_of_lt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1670,11 +1670,11 @@ theorem intrIter_ne_of_lt
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     {i j : Nat} (hij : i < j)
     (hr : 0 < r) (h2ra : 2 * r < a)
-    (q : intrPullBall (E := E) R)
+    (q : intrinsicPullBall (E := E) R)
     (hiter :
       ∀ k < j,
         ‖(((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
@@ -1683,7 +1683,7 @@ theorem intrIter_ne_of_lt
       c hc hcLen)^[i]) q ≠
       ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
         c hc hcLen)^[j]) q := by
-  let T : intrPullBall (E := E) R → intrPullBall (E := E) R :=
+  let T : intrinsicPullBall (E := E) R → intrinsicPullBall (E := E) R :=
     loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen
   change (T^[i]) q ≠ (T^[j]) q
@@ -1703,11 +1703,11 @@ theorem intrIter_ne_of_lt
     rw [← Function.iterate_add_apply, Nat.sub_add_cancel hij.le]
     exact heq.symm
   exact
-    (intrIter_ne (I := I) g hEnorm p hR h4aR hL ha hfit hloc
+    (intrinsicIter_ne (I := I) g hEnorm p hR h4aR hL ha hfit hloc
       hK hsmall hRm c hc hcLen A hA (n := j - i)
       hr h2ra ((T^[i]) q) hsub) hcycle
 
-theorem intrIter_injective
+theorem intrinsicIter_injective
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1728,20 +1728,20 @@ theorem intrIter_injective
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hr : 0 < r) (h2ra : 2 * r < a)
     (hNL : (N : Real) * L < r) :
     Function.Injective
       (fun i : Fin (N + 1) =>
         ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen)^[i.val]) (intrZero (E := E) hR)) := by
+          c hc hcLen)^[i.val]) (intrinsicZero (E := E) hR)) := by
   have hra : r < a := by
     linarith
   have hbound :
       ∀ k ≤ N,
         ‖(((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen)^[k]) (intrZero (E := E) hR) : E)‖ < r := by
+          c hc hcLen)^[k]) (intrinsicZero (E := E) hR) : E)‖ < r := by
     intro k hk
     have hkCast : (k : Real) ≤ (N : Real) := by
       exact_mod_cast hk
@@ -1750,29 +1750,29 @@ theorem intrIter_injective
     have hka : (k : Real) * L < a :=
       (hkMul.trans_lt hNL).trans hra
     exact
-      (intrIter_norm (I := I) g hEnorm p hR hL ha hfit hloc
+      (intrinsicIter_norm (I := I) g hEnorm p hR hL ha hfit hloc
         c hc hcLen k hka).trans_lt (hkMul.trans_lt hNL)
   intro i j heq
   apply Fin.ext
   by_contra hne
   rcases Nat.lt_or_gt_of_ne hne with hij | hji
   · exact
-      (intrIter_ne_of_lt (I := I) g hEnorm p hR h4aR
+      (intrinsicIter_ne_of_lt (I := I) g hEnorm p hR h4aR
         hL ha hfit hloc hK hsmall hRm c hc hcLen A hA
-        hij hr h2ra (intrZero (E := E) hR)
+        hij hr h2ra (intrinsicZero (E := E) hR)
         (fun k hk =>
           hbound k
             (hk.le.trans (Nat.lt_succ_iff.mp j.isLt)))) heq
   · exact
-      (intrIter_ne_of_lt (I := I) g hEnorm p hR h4aR
+      (intrinsicIter_ne_of_lt (I := I) g hEnorm p hR h4aR
         hL ha hfit hloc hK hsmall hRm c hc hcLen A hA
-        hji hr h2ra (intrZero (E := E) hR)
+        hji hr h2ra (intrinsicZero (E := E) hR)
         (fun k hk =>
           hbound k
             (hk.le.trans (Nat.lt_succ_iff.mp i.isLt)))) heq.symm
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
-theorem intrIter_inj_core
+theorem intrinsicIter_injective_of_nonzero_frameLift
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1793,47 +1793,47 @@ theorem intrIter_inj_core
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hNLa : (N : Real) * L < a) :
     Function.Injective
       (fun i : Fin (N + 1) =>
         ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen)^[i.val]) (intrZero (E := E) hR)) := by
+          c hc hcLen)^[i.val]) (intrinsicZero (E := E) hR)) := by
   classical
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrinsicPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  let : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
-      (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
-  let z₀ := intrZero (E := E) hR
-  let T : intrPullBall (E := E) R → intrPullBall (E := E) R :=
+      (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
+  let z₀ := intrinsicZero (E := E) hR
+  let T : intrinsicPullBall (E := E) R → intrinsicPullBall (E := E) R :=
     loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
       c hc hcLen
   have hLpos : 0 < L := by
     exact ENNReal.ofReal_pos.mp (lt_of_le_of_lt bot_le hcLen)
   have hzeroDist :
-      ∀ q : intrPullBall (E := E) R, dist z₀ q = ‖(q : E)‖ := by
+      ∀ q : intrinsicPullBall (E := E) R, dist z₀ q = ‖(q : E)‖ := by
     intro q
     calc
       dist z₀ q =
           (riemannianEDist 𝓘(Real, E) z₀ q).toReal :=
         HopfRinow.riemMetric_dist_eq
           (I := 𝓘(Real, E))
-          (M := intrPullBall (E := E) R) z₀ q
+          (M := intrinsicPullBall (E := E) R) z₀ q
       _ = (riemannianEDistOf
           (I := 𝓘(Real, E)) gPull z₀ q).toReal := rfl
       _ = (ENNReal.ofReal ‖(q : E)‖).toReal := by
-        rw [intrPull_dist_zero (I := I) g hEnorm p hR hloc q]
+        rw [intrinsicPull_dist_zero (I := I) g hEnorm p hR hloc q]
       _ = ‖(q : E)‖ := ENNReal.toReal_ofReal (norm_nonneg _)
   have hbound :
       ∀ k ≤ N, ‖((T^[k]) z₀ : E)‖ ≤ (k : Real) * L := by
@@ -1843,10 +1843,10 @@ theorem intrIter_inj_core
     have hkMul : (k : Real) * L ≤ (N : Real) * L :=
       mul_le_mul_of_nonneg_right hkCast hL
     exact
-      intrIter_norm (I := I) g hEnorm p hR hL ha hfit hloc
+      intrinsicIter_norm (I := I) g hEnorm p hR hL ha hfit hloc
         c hc hcLen k (hkMul.trans_lt hNLa)
   have hcore :
-      ∀ k ≤ N, (T^[k]) z₀ ∈ intrCore (E := E) R a := by
+      ∀ k ≤ N, (T^[k]) z₀ ∈ intrinsicCore (E := E) R a := by
     intro k hk
     rw [mem_intrCore]
     exact (hbound k hk).trans (by
@@ -1863,10 +1863,10 @@ theorem intrIter_inj_core
       dsimp only [n]
       exact Nat.sub_pos_of_lt hij
     let : NeZero n := ⟨Nat.ne_of_gt hnPos⟩
-    let pts : Fin n → intrPullBall (E := E) R :=
+    let points : Fin n → intrinsicPullBall (E := E) R :=
       fun k => (T^[i + k.val]) z₀
     have hptsCore :
-        ∀ k : Fin n, pts k ∈ intrCore (E := E) R a := by
+        ∀ k : Fin n, points k ∈ intrinsicCore (E := E) R a := by
       intro k
       have hikj : i + k.val < j := by
         dsimp only [n] at k
@@ -1874,7 +1874,7 @@ theorem intrIter_inj_core
       exact hcore (i + k.val) (hikj.le.trans hjN)
     have hgraded :
         ∀ k : Fin n,
-          dist (pts 0) (pts k) ≤ (k.val : Real) * L := by
+          dist (points 0) (points k) ≤ (k.val : Real) * L := by
       intro k
       have hiN : i ≤ N := hij.le.trans hjN
       have hkN : k.val ≤ N := by
@@ -1883,13 +1883,13 @@ theorem intrIter_inj_core
           omega
         omega
       have hxCore :
-          ∀ m < i, (T^[m]) z₀ ∈ intrCore (E := E) R a := by
+          ∀ m < i, (T^[m]) z₀ ∈ intrinsicCore (E := E) R a := by
         intro m hm
         exact hcore m (hm.le.trans hiN)
       have hyCore :
           ∀ m < i,
             (T^[m]) ((T^[k.val]) z₀) ∈
-              intrCore (E := E) R a := by
+              intrinsicCore (E := E) R a := by
         intro m hm
         rw [← Function.iterate_add_apply]
         have hmkj : m + k.val < j := by
@@ -1910,16 +1910,16 @@ theorem intrIter_inj_core
       rw [Nat.add_zero, Function.iterate_add_apply]
       exact hnonexp.trans ((hzeroDist _).trans_le (hbound k.val hkN))
     have hfar :
-        ∀ q : intrPullBall (E := E) R,
-          q ∉ intrCore (E := E) R a →
-            (n : Real) * L < dist (pts 0) q := by
+        ∀ q : intrinsicPullBall (E := E) R,
+          q ∉ intrinsicCore (E := E) R a →
+            (n : Real) * L < dist (points 0) q := by
       intro q hq
       have haq : a < ‖(q : E)‖ := by
         rw [mem_intrCore] at hq
         exact lt_of_not_ge hq
       have hiN : i ≤ N := hij.le.trans hjN
       have hiDist :
-          dist z₀ (pts 0) ≤ (i : Real) * L := by
+          dist z₀ (points 0) ≤ (i : Real) * L := by
         change dist z₀ ((T^[i + 0]) z₀) ≤ (i : Real) * L
         rw [Nat.add_zero, hzeroDist]
         exact hbound i hiN
@@ -1936,7 +1936,7 @@ theorem intrIter_inj_core
           (n : Real) * L + (i : Real) * L = (j : Real) * L := by
         nlinarith
       have htri :
-          dist z₀ q ≤ dist z₀ (pts 0) + dist (pts 0) q :=
+          dist z₀ q ≤ dist z₀ (points 0) + dist (points 0) q :=
         dist_triangle _ _ _
       rw [hzeroDist q] at htri
       linarith
@@ -1944,15 +1944,15 @@ theorem intrIter_inj_core
     have hnot :
         ¬ ∀ k : Fin n,
           loopTransport (I := I) g hEnorm p hL ha hfit hloc
-            c hc hcLen (pts k) (hptsCore k) = pts (e k) := by
+            c hc hcLen (points k) (hptsCore k) = points (e k) := by
       simpa only using
-        (intrCycle_not_fin (I := I) g hEnorm p hR h4aR
+        (intrinsicCycle_not_fin (I := I) g hEnorm p hR h4aR
           hL hLpos ha hfit hloc hK hsmall hRm c hc hcLen A hA
-          pts hptsCore hgraded hfar e)
+          points hptsCore hgraded hfar e)
     apply hnot
     intro k
     rw [← loopTransportExt_eq (I := I) g hEnorm p hL ha hfit hloc
-      c hc hcLen (pts k) (hptsCore k)]
+      c hc hcLen (points k) (hptsCore k)]
     change T ((T^[i + k.val]) z₀) =
       (T^[i + (e k).val]) z₀
     rw [← Function.iterate_succ_apply' T (i + k.val) z₀]
@@ -1986,7 +1986,7 @@ theorem intrIter_inj_core
   · exact
       (hdistinct hji (Nat.lt_succ_iff.mp i.isLt)) heq.symm
 
-theorem intrIter_family
+theorem intrinsicIter_family
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -2007,23 +2007,23 @@ theorem intrIter_family
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hr : 0 < r) (h2ra : 2 * r < a)
     (hNL : (N : Real) * L < r) :
-    let pts : Fin (N + 1) → intrPullBall (E := E) R :=
+    let points : Fin (N + 1) → intrinsicPullBall (E := E) R :=
       fun i =>
         ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen)^[i.val]) (intrZero (E := E) hR)
-    Function.Injective pts ∧
-      (∀ i, intrinsicFramedExp (I := I) g hEnorm p (pts i : E) = p) ∧
-      ∀ i, ‖(pts i : E)‖ ≤ (i.val : Real) * L := by
+          c hc hcLen)^[i.val]) (intrinsicZero (E := E) hR)
+    Function.Injective points ∧
+      (∀ i, intrinsicFramedExp (I := I) g hEnorm p (points i : E) = p) ∧
+      ∀ i, ‖(points i : E)‖ ≤ (i.val : Real) * L := by
   dsimp only
-  refine ⟨intrIter_injective (I := I) g hEnorm p hR h4aR
+  refine ⟨intrinsicIter_injective (I := I) g hEnorm p hR h4aR
     hL ha hfit hloc hK hsmall hRm c hc hcLen A hA N hr h2ra hNL,
     ?_, ?_⟩
   · intro i
-    exact intrIter_exp (I := I) g hEnorm p hR hL ha hfit hloc
+    exact intrinsicIter_exp (I := I) g hEnorm p hR hL ha hfit hloc
       c hc hcLen i.val
   · intro i
     have hiN : i.val ≤ N := Nat.lt_succ_iff.mp i.isLt
@@ -2035,10 +2035,10 @@ theorem intrIter_family
       linarith
     have hia : (i.val : Real) * L < a :=
       (hiMul.trans_lt hNL).trans hra
-    exact intrIter_norm (I := I) g hEnorm p hR hL ha hfit hloc
+    exact intrinsicIter_norm (I := I) g hEnorm p hR hL ha hfit hloc
       c hc hcLen i.val hia
 
-theorem intrIter_family_core
+theorem intrinsicIter_family_of_nonzero_frameLift
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -2059,22 +2059,22 @@ theorem intrIter_family_core
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hNLa : (N : Real) * L < a) :
-    let pts : Fin (N + 1) → intrPullBall (E := E) R :=
+    let points : Fin (N + 1) → intrinsicPullBall (E := E) R :=
       fun i =>
         ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-          c hc hcLen)^[i.val]) (intrZero (E := E) hR)
-    Function.Injective pts ∧
-      (∀ i, intrinsicFramedExp (I := I) g hEnorm p (pts i : E) = p) ∧
-      ∀ i, ‖(pts i : E)‖ ≤ (i.val : Real) * L := by
+          c hc hcLen)^[i.val]) (intrinsicZero (E := E) hR)
+    Function.Injective points ∧
+      (∀ i, intrinsicFramedExp (I := I) g hEnorm p (points i : E) = p) ∧
+      ∀ i, ‖(points i : E)‖ ≤ (i.val : Real) * L := by
   dsimp only
-  refine ⟨intrIter_inj_core (I := I) g hEnorm p hR h4aR
+  refine ⟨intrinsicIter_injective_of_nonzero_frameLift (I := I) g hEnorm p hR h4aR
     hL ha hfit hloc hK hsmall hRm c hc hcLen A hA N hNLa,
     ?_, ?_⟩
   · intro i
-    exact intrIter_exp (I := I) g hEnorm p hR hL ha hfit hloc
+    exact intrinsicIter_exp (I := I) g hEnorm p hR hL ha hfit hloc
       c hc hcLen i.val
   · intro i
     have hiN : i.val ≤ N := Nat.lt_succ_iff.mp i.isLt
@@ -2082,10 +2082,10 @@ theorem intrIter_family_core
       exact_mod_cast hiN
     have hiMul : (i.val : Real) * L ≤ (N : Real) * L :=
       mul_le_mul_of_nonneg_right hiCast hL
-    exact intrIter_norm (I := I) g hEnorm p hR hL ha hfit hloc
+    exact intrinsicIter_norm (I := I) g hEnorm p hR hL ha hfit hloc
       c hc hcLen i.val (hiMul.trans_lt hNLa)
 
-theorem intrFiber_card_core
+theorem intrinsicFiber_encard_ge_of_nonzero_frameLift
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -2106,31 +2106,31 @@ theorem intrFiber_card_core
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hNLa : (N : Real) * L < a) :
     (N + 1 : ENat) ≤
-      (intrFiber (I := I) g hEnorm p p a).encard := by
-  let pts : Fin (N + 1) → intrPullBall (E := E) R :=
+      (intrinsicFiber (I := I) g hEnorm p p a).encard := by
+  let points : Fin (N + 1) → intrinsicPullBall (E := E) R :=
     fun i =>
       ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen)^[i.val]) (intrZero (E := E) hR)
+        c hc hcLen)^[i.val]) (intrinsicZero (E := E) hR)
   have hfamily :
-      Function.Injective pts ∧
-        (∀ i, intrinsicFramedExp (I := I) g hEnorm p (pts i : E) = p) ∧
-        ∀ i, ‖(pts i : E)‖ ≤ (i.val : Real) * L := by
-    simpa only [pts] using
-      (intrIter_family_core (I := I) g hEnorm p hR h4aR
+      Function.Injective points ∧
+        (∀ i, intrinsicFramedExp (I := I) g hEnorm p (points i : E) = p) ∧
+        ∀ i, ‖(points i : E)‖ ≤ (i.val : Real) * L := by
+    simpa only [points] using
+      (intrinsicIter_family_of_nonzero_frameLift (I := I) g hEnorm p hR h4aR
         hL ha hfit hloc hK hsmall hRm c hc hcLen A hA
         N hNLa)
-  let ptsE : Fin (N + 1) → E := fun i => (pts i : E)
-  have hinjE : Function.Injective ptsE := by
+  let pointsE : Fin (N + 1) → E := fun i => (points i : E)
+  have hinjE : Function.Injective pointsE := by
     intro i j hij
     apply hfamily.1
     apply Subtype.ext
     exact hij
   have hrange :
-      Set.range ptsE ⊆ intrFiber (I := I) g hEnorm p p a := by
+      Set.range pointsE ⊆ intrinsicFiber (I := I) g hEnorm p p a := by
     rintro z ⟨i, rfl⟩
     constructor
     · rw [Metric.mem_ball, dist_zero_right]
@@ -2145,11 +2145,11 @@ theorem intrFiber_card_core
     (N + 1 : ENat) = ENat.card (Fin (N + 1)) := by
       rw [ENat.card_eq_coe_fintype_card, Fintype.card_fin]
       norm_num
-    _ ≤ (Set.range ptsE).encard := hinjE.encard_range
-    _ ≤ (intrFiber (I := I) g hEnorm p p a).encard :=
+    _ ≤ (Set.range pointsE).encard := hinjE.encard_range
+    _ ≤ (intrinsicFiber (I := I) g hEnorm p p a).encard :=
       Set.encard_le_encard hrange
 
-theorem intrFiber_count_core
+theorem intrinsicFiber_encard_ge_of_riemannianEDist_lt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -2170,25 +2170,25 @@ theorem intrFiber_count_core
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hNLa : (N : Real) * L < a)
     {q : M} {s : Real} (hs : 0 < s)
     (has : a + s < R)
     (hqs : riemannianEDist I p q < ENNReal.ofReal s) :
     (N + 1 : ENat) ≤
-      (intrFiber (I := I) g hEnorm p q (a + s)).encard := by
+      (intrinsicFiber (I := I) g hEnorm p q (a + s)).encard := by
   have haPos : 0 < a := by
     have hNLnonneg : 0 ≤ (N : Real) * L :=
       mul_nonneg (Nat.cast_nonneg _) hL
     linarith
   exact
-    (intrFiber_card_core (I := I) g hEnorm p hR h4aR
+    (intrinsicFiber_encard_ge_of_nonzero_frameLift (I := I) g hEnorm p hR h4aR
       hL ha hfit hloc hK hsmall hRm c hc hcLen A hA
       N hNLa).trans
       (fiber_encard_le (I := I) g hEnorm haPos hs hqs has hloc)
 
-theorem intrFiber_encard_ge
+theorem intrinsicFiber_encard_ge
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -2209,32 +2209,32 @@ theorem intrFiber_encard_ge
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hr : 0 < r) (h2ra : 2 * r < a)
     (hNL : (N : Real) * L < r) :
     (N + 1 : ENat) ≤
-      (intrFiber (I := I) g hEnorm p p r).encard := by
-  let pts : Fin (N + 1) → intrPullBall (E := E) R :=
+      (intrinsicFiber (I := I) g hEnorm p p r).encard := by
+  let points : Fin (N + 1) → intrinsicPullBall (E := E) R :=
     fun i =>
       ((loopTransportExt (I := I) g hEnorm p hL ha hfit hloc
-        c hc hcLen)^[i.val]) (intrZero (E := E) hR)
+        c hc hcLen)^[i.val]) (intrinsicZero (E := E) hR)
   have hfamily :
-      Function.Injective pts ∧
-        (∀ i, intrinsicFramedExp (I := I) g hEnorm p (pts i : E) = p) ∧
-        ∀ i, ‖(pts i : E)‖ ≤ (i.val : Real) * L := by
-    simpa only [pts] using
-      (intrIter_family (I := I) g hEnorm p hR h4aR
+      Function.Injective points ∧
+        (∀ i, intrinsicFramedExp (I := I) g hEnorm p (points i : E) = p) ∧
+        ∀ i, ‖(points i : E)‖ ≤ (i.val : Real) * L := by
+    simpa only [points] using
+      (intrinsicIter_family (I := I) g hEnorm p hR h4aR
         hL ha hfit hloc hK hsmall hRm c hc hcLen A hA
         N hr h2ra hNL)
-  let ptsE : Fin (N + 1) → E := fun i => (pts i : E)
-  have hinjE : Function.Injective ptsE := by
+  let pointsE : Fin (N + 1) → E := fun i => (points i : E)
+  have hinjE : Function.Injective pointsE := by
     intro i j hij
     apply hfamily.1
     apply Subtype.ext
     exact hij
   have hrange :
-      Set.range ptsE ⊆ intrFiber (I := I) g hEnorm p p r := by
+      Set.range pointsE ⊆ intrinsicFiber (I := I) g hEnorm p p r := by
     rintro z ⟨i, rfl⟩
     constructor
     · rw [Metric.mem_ball, dist_zero_right]
@@ -2249,11 +2249,11 @@ theorem intrFiber_encard_ge
     (N + 1 : ENat) = ENat.card (Fin (N + 1)) := by
       rw [ENat.card_eq_coe_fintype_card, Fintype.card_fin]
       norm_num
-    _ ≤ (Set.range ptsE).encard := hinjE.encard_range
-    _ ≤ (intrFiber (I := I) g hEnorm p p r).encard :=
+    _ ≤ (Set.range pointsE).encard := hinjE.encard_range
+    _ ≤ (intrinsicFiber (I := I) g hEnorm p p r).encard :=
       Set.encard_le_encard hrange
 
-theorem intrFiber_count_ge
+theorem intrinsicFiber_count_ge
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -2274,7 +2274,7 @@ theorem intrFiber_count_ge
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hcLen : pathLen (I := I) c < ENNReal.ofReal L)
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0)
     (N : Nat) (hr : 0 < r) (h2ra : 2 * r < a)
     (hNL : (N : Real) * L < r)
@@ -2282,14 +2282,14 @@ theorem intrFiber_count_ge
     (hrs : r + s < R)
     (hqs : riemannianEDist I p q < ENNReal.ofReal s) :
     (N + 1 : ENat) ≤
-      (intrFiber (I := I) g hEnorm p q (r + s)).encard :=
-  (intrFiber_encard_ge (I := I) g hEnorm p hR h4aR
+      (intrinsicFiber (I := I) g hEnorm p q (r + s)).encard :=
+  (intrinsicFiber_encard_ge (I := I) g hEnorm p hR h4aR
     hL ha hfit hloc hK hsmall hRm c hc hcLen A hA
     N hr h2ra hNL).trans
     (fiber_encard_le (I := I) g hEnorm hr hs hqs hrs hloc)
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
-theorem intrCore_center_fix
+theorem intrinsicCore_center_fix
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -2308,97 +2308,97 @@ theorem intrCore_center_fix
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     {ι : Type*} [Fintype ι] [Nonempty ι]
-    (pts : ι → intrPullBall (E := E) R)
-    (hptsS : ∀ i : ι, pts i ∈ intrCore (E := E) R a)
-    (T : intrPullBall (E := E) R → intrPullBall (E := E) R)
+    (points : ι → intrinsicPullBall (E := E) R)
+    (hptsS : ∀ i : ι, points i ∈ intrinsicCore (E := E) R a)
+    (T : intrinsicPullBall (E := E) R → intrinsicPullBall (E := E) R)
     (e : ι ≃ ι)
-    (hmap : MapsTo T (intrCore (E := E) R a)
-      (intrCore (E := E) R a))
-    (hperm : ∀ i : ι, T (pts i) = pts (e i)) :
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    (hmap : MapsTo T (intrinsicCore (E := E) R a)
+      (intrinsicCore (E := E) R a))
+    (hperm : ∀ i : ι, T (points i) = points (e i)) :
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-    letI : ConnectedSpace (intrPullBall (E := E) R) :=
+    letI : ConnectedSpace (intrinsicPullBall (E := E) R) :=
       Subtype.connectedSpace (isConnected_ball hR)
-    letI : MetricSpace (intrPullBall (E := E) R) :=
+    letI : MetricSpace (intrinsicPullBall (E := E) R) :=
       HopfRinow.riemMetricSpace
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
-    (∀ x ∈ intrCore (E := E) R a,
-      ∀ y ∈ intrCore (E := E) R a,
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
+    (∀ x ∈ intrinsicCore (E := E) R a,
+      ∀ y ∈ intrinsicCore (E := E) R a,
         dist (T x) (T y) = dist x y) →
-      ∃! c : intrPullBall (E := E) R,
-        c ∈ intrCore (E := E) R a ∧
-          (∀ z ∈ intrCore (E := E) R a,
-            CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts c ≤
-              CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts z) ∧
+      ∃! c : intrinsicPullBall (E := E) R,
+        c ∈ intrinsicCore (E := E) R a ∧
+          (∀ z ∈ intrinsicCore (E := E) R a,
+            CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points c ≤
+              CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points z) ∧
           T c = c := by
   classical
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrinsicPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
   let i₀ : ι := Classical.choice inferInstance
   have ha : 0 ≤ a :=
-    (norm_nonneg (pts i₀ : E)).trans (hptsS i₀)
+    (norm_nonneg (points i₀ : E)).trans (hptsS i₀)
   have haR : a < R := by linarith
   obtain ⟨c, hcS, hcminCE⟩ :=
     CenterOfMass.exists_minOn_compact
-      (I := 𝓘(Real, E)) gPull (fun _ : ι => (1 : Real)) pts
-      (intrCore_compact (E := E) haR) ⟨pts i₀, hptsS i₀⟩
-  let : MetricSpace (intrPullBall (E := E) R) :=
+      (I := 𝓘(Real, E)) gPull (fun _ : ι => (1 : Real)) points
+      (intrinsicCore_compact (E := E) haR) ⟨points i₀, hptsS i₀⟩
+  let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
-      (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+      (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
   change
-    (∀ x ∈ intrCore (E := E) R a,
-      ∀ y ∈ intrCore (E := E) R a,
+    (∀ x ∈ intrinsicCore (E := E) R a,
+      ∀ y ∈ intrinsicCore (E := E) R a,
         dist (T x) (T y) = dist x y) →
-      ∃! c : intrPullBall (E := E) R,
-        c ∈ intrCore (E := E) R a ∧
-          (∀ z ∈ intrCore (E := E) R a,
-            CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts c ≤
-              CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts z) ∧
+      ∃! c : intrinsicPullBall (E := E) R,
+        c ∈ intrinsicCore (E := E) R a ∧
+          (∀ z ∈ intrinsicCore (E := E) R a,
+            CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points c ≤
+              CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points z) ∧
           T c = c
   intro hdist
   obtain ⟨join, hjensen⟩ :=
-    intrCore_jensen (I := I) g hEnorm p hR h4aR hloc hK hsmall hRm
+    intrinsicCore_jensen (I := I) g hEnorm p hR h4aR hloc hK hsmall hRm
   have hcmin :
-      ∀ z ∈ intrCore (E := E) R a,
-        CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts c ≤
-          CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts z := by
+      ∀ z ∈ intrinsicCore (E := E) R a,
+        CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points c ≤
+          CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points z := by
     intro z hz
     rw [← CenterOfMass.centerEnergy_eq_dist
-      (I := 𝓘(Real, E)) gPull (fun _ : ι => (1 : Real)) pts c,
+      (I := 𝓘(Real, E)) gPull (fun _ : ι => (1 : Real)) points c,
       ← CenterOfMass.centerEnergy_eq_dist
-        (I := 𝓘(Real, E)) gPull (fun _ : ι => (1 : Real)) pts z]
+        (I := 𝓘(Real, E)) gPull (fun _ : ι => (1 : Real)) points z]
     exact hcminCE z hz
   have hstrict :
-      CenterOfMass.StrictMidConvexOn join (intrCore (E := E) R a)
-        (CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts) :=
+      CenterOfMass.StrictMidConvexOn join (intrinsicCore (E := E) R a)
+        (CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points) :=
     CenterOfMass.metricEnergy_strict
-      (fun _ : ι => (1 : Real)) pts
+      (fun _ : ι => (1 : Real)) points
       (fun _ => by norm_num) ⟨i₀, by norm_num⟩
-      (fun i => hjensen (pts i) (hptsS i))
-  have hTcS : T c ∈ intrCore (E := E) R a := hmap hcS
+      (fun i => hjensen (points i) (hptsS i))
+  have hTcS : T c ∈ intrinsicCore (E := E) R a := hmap hcS
   have hTcmin :
-      ∀ z ∈ intrCore (E := E) R a,
-        CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts (T c) ≤
-          CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) pts z := by
+      ∀ z ∈ intrinsicCore (E := E) R a,
+        CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points (T c) ≤
+          CenterOfMass.metricEnergy (fun _ : ι => (1 : Real)) points z := by
     intro z hz
     rw [CenterOfMass.metricEnergy_perm
-      (fun _ : ι => (1 : Real)) pts T e
+      (fun _ : ι => (1 : Real)) points T e
       (fun _ => rfl) hperm hptsS hdist hcS]
     exact hcmin z hz
   have hfix : T c = c :=
@@ -2408,7 +2408,7 @@ theorem intrCore_center_fix
   exact CenterOfMass.min_unique_of_mid
     hstrict hy.1 hcS hy.2.1 hcmin
 
-end CGT
+end CheegerGromovTaylor
 end Riemannian
 end Geometry
 end DifferentialGeometry

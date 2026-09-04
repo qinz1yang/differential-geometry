@@ -43,7 +43,7 @@ theorem green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
-    (hh_supp : HasCompactSupport h) :
+    (hh_support : HasCompactSupport h) :
     ∫ x, g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ((gradG (I := I) g ⟨_, hh⟩ :
@@ -53,7 +53,7 @@ theorem green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g ⟨_, hh⟩ with hX_def
-  have hX_cs : HasCompactSupport X := hasCompactSupport_grad_g (I := I) g ⟨_, hh⟩ hh_supp
+  have hX_cs : HasCompactSupport X := hasCompactSupport_grad_g (I := I) g ⟨_, hh⟩ hh_support
   have h_ibp := integral_tangentSectionAction_eq_neg_integral_smul_divergence
     (I := I) g hf X hX_cs
   have hLHS_eq : ∀ x : M,
@@ -94,7 +94,7 @@ private theorem integral_inner_grad_eq_neg_integral_smul_laplacian'
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
-    (hf_supp : HasCompactSupport f) :
+    (hf_support : HasCompactSupport f) :
     ∫ x, g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ((gradG (I := I) g ⟨_, hh⟩ :
@@ -104,7 +104,7 @@ private theorem integral_inner_grad_eq_neg_integral_smul_laplacian'
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g ⟨_, hf⟩ with hX_def
-  have hX_cs : HasCompactSupport X := hasCompactSupport_grad_g (I := I) g ⟨_, hf⟩ hf_supp
+  have hX_cs : HasCompactSupport X := hasCompactSupport_grad_g (I := I) g ⟨_, hf⟩ hf_support
   have h_ibp := integral_tangentSectionAction_eq_neg_integral_smul_divergence
     (I := I) g hh X hX_cs
   have hLHS_eq : ∀ x : M,

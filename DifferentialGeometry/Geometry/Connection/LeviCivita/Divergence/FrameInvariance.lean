@@ -113,10 +113,10 @@ theorem metricTracePair0SAt_nablaCov_eq_divergence
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x := self_mem_goodSet (I := I) x
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx_good
-  have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
+  have hx_source : x ∈ (chartAt H x).source := mem_chart_source H x
   rw [metricTracePair0SAt_nablaCov_eq_chartSum (I := I) g x Z hx_base]
   rw [metricTrace_eq_coord_covariant_divergence (I := I) g x Z hx_good]
-  rw [voss_weyl_divergence_formula (I := I) g x Z hx_src]
+  rw [voss_weyl_divergence_formula (I := I) g x Z hx_source]
   rw [localDivergence_eq_coord_covariant_divergence (I := I) g x Z hx_good]
   rw [Finset.sum_add_distrib]
   congr 1

@@ -36,16 +36,16 @@ theorem metricRm_scale
     smul_eq_mul]
 
 omit [SigmaCompactSpace M] in
-theorem metricRmStd_scale
+theorem metricRmStandard_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M) (x : M)
     (X Y Z W : TangentSpace I x) :
-    metricRm04StdAt (I := I) (M := M) (scaleMetric (I := I) c hc g)
+    metricRm04StandardAt (I := I) (M := M) (scaleMetric (I := I) c hc g)
         x X Y Z W =
-      c * metricRm04StdAt (I := I) (M := M) g x X Y Z W := by
+      c * metricRm04StandardAt (I := I) (M := M) g x X Y Z W := by
   have h := congrArg
     (fun Rm : Tensor04At (I := I) (M := M) x =>
       Rm (vec4 (I := I) X Y Z W))
     (metricRm_scale (I := I) c hc g x)
-  simpa [metricRm04_apply, metricRm04StdAt_apply, smul_eq_mul] using h
+  simpa [metricRm04_apply, metricRm04StandardAt_apply, smul_eq_mul] using h
 
 end DifferentialGeometry.Geometry.Curvature

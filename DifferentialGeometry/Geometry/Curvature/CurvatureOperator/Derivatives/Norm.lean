@@ -14,7 +14,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -44,7 +44,7 @@ noncomputable def curvCovDerivStep
   let cov := DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := M) g
   let hcov := DifferentialGeometry.Geometry.Curvature.metricCov_smooth (I := I) (M := M) g
   let hreg :=
-    Tensor0SBundle.totalNabla0S_reg (E := E) (H := H)
+    Tensor0SBundle.totalNabla0S_regularity (E := E) (H := H)
       (I := I) (M := M) (a + 4) cov hcov A
   simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm, cov, hcov, hreg]
     using
@@ -157,5 +157,5 @@ theorem curv_apply_le
     (Tensor0SBundle.abs_apply_le_norm0S (I := I) g x (k + 4)
       (curvCovDeriv (I := I) (M := M) g k x) v)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -1831,7 +1831,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covar
           (B A) ^ 2 := by
   classical
   obtain ⟨C, hC, hpt⟩ :=
-    bdEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+    palatiniEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨K, hK, hgrid⟩ := h3_grid_int (I := I) (M := M) hDim g₀
   let Q : ℝ → ℝ := fun A => ∑ i ∈ Finset.range 2,
     C i * ∑ k ∈ Finset.range (i + 3), K A k

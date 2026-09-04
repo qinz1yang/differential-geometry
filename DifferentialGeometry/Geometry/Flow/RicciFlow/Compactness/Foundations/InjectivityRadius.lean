@@ -6,7 +6,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type uE} [NormedAddCommGroup E]
 variable [InnerProductSpace Real E] [FiniteDimensional Real E]
@@ -15,9 +15,9 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-abbrev FlowerScaleInjBound
+abbrev FlowScaleInjectivityBound
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) :=
   BaseInjBound (I := I) (X.atZero (I := I))
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

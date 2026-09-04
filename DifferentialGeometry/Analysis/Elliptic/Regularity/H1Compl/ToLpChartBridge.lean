@@ -73,7 +73,7 @@ private lemma tsupport_pou_mul_subset_chartSource (α : M) (u : M → ℝ) :
     tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x) ⊆
       (chartAt H α).source := by
   classical
-  have h_supp_sub : Function.support
+  have h_support_sub : Function.support
       (fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x) ⊆
         Function.support fun x : M => (chartAtlasPOU I M α : M → ℝ) x := by
     intro x hx
@@ -84,7 +84,7 @@ private lemma tsupport_pou_mul_subset_chartSource (α : M) (u : M → ℝ) :
     rw [hρ_zero]; ring
   have h_tsupp_sub : tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x) ⊆
       tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
-    closure_mono h_supp_sub
+    closure_mono h_support_sub
   exact h_tsupp_sub.trans
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α)
 
@@ -93,7 +93,7 @@ private lemma tsupport_pou_mul_subset_tsupport_pou (α : M) (u : M → ℝ) :
     tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x) ⊆
       tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x := by
   classical
-  have h_supp_sub : Function.support
+  have h_support_sub : Function.support
       (fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x) ⊆
         Function.support fun x : M => (chartAtlasPOU I M α : M → ℝ) x := by
     intro x hx
@@ -102,7 +102,7 @@ private lemma tsupport_pou_mul_subset_tsupport_pou (α : M) (u : M → ℝ) :
     apply hx
     simp only [Function.mem_support, not_not] at hρ_zero
     rw [hρ_zero]; ring
-  exact closure_mono h_supp_sub
+  exact closure_mono h_support_sub
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushed_eq_chartPushedRaw_on_chartTarget
@@ -130,16 +130,16 @@ private lemma kαCompact_isCompact (α : M) :
   have h_tsupp_compact : IsCompact (tsupport
       fun x : M => (chartAtlasPOU I M α : M → ℝ) x) :=
     isClosed_tsupport _ |>.isCompact
-  have h_tsupp_sub_src : tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) ⊆
+  have h_tsupp_sub_source : tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) ⊆
       (chartAt H α).source :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α
   have h_ext_cont : ContinuousOn (extChartAt I α)
       (tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x) := by
-    have h_src_eq : (chartAt H α).source = (extChartAt I α).source :=
+    have h_source_eq : (chartAt H α).source = (extChartAt I α).source :=
       (DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M) α).symm
     refine (continuousOn_extChartAt (I := I) α).mono ?_
-    rw [← h_src_eq]; exact h_tsupp_sub_src
+    rw [← h_source_eq]; exact h_tsupp_sub_source
   have h_ext_image_compact : IsCompact ((extChartAt I α) '' (tsupport
       fun x : M => (chartAtlasPOU I M α : M → ℝ) x)) :=
     h_tsupp_compact.image_of_continuousOn h_ext_cont
@@ -153,13 +153,13 @@ private lemma kαCompact_subset_chartTargetEuclid (α : M) :
   intro y hy
   rcases hy with ⟨z, hz, hzy⟩
   rcases hz with ⟨x, hx, hxz⟩
-  have h_tsupp_sub_src : tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) ⊆
+  have h_tsupp_sub_source : tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) ⊆
       (chartAt H α).source :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α
   have hxsrc : x ∈ (extChartAt I α).source := by
     rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
       (I := I) (M := M)]
-    exact h_tsupp_sub_src hx
+    exact h_tsupp_sub_source hx
   have hz_target : z ∈ (extChartAt I α).target := by
     rw [← hxz]; exact (extChartAt I α).map_source hxsrc
   refine ⟨z, hz_target, hzy⟩
@@ -185,11 +185,11 @@ private lemma chartPushedRaw_pou_mul_support_subset_kα
       intro h_ρ_zero
       apply hy_ne
       rw [h_ρ_zero]; ring
-    have hp_in_supp_ρα : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+    have hp_in_support_ρα : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         Function.support (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) := hρα_ne
     have hp_in_tsupp : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
-      subset_tsupport _ hp_in_supp_ρα
+      subset_tsupport _ hp_in_support_ρα
     rcases hy_in with ⟨z, hz_target, hzy⟩
     have hyz_symm : (toEuclidean (E := E)).symm y = z := by
       rw [← hzy]; exact (toEuclidean (E := E)).symm_apply_apply z
@@ -245,7 +245,7 @@ private lemma eLpNorm_chartPulledWeighted_le_density_volume_on_kα
     (M_sup : ℝ) (hM_sup_pos : 0 < M_sup)
     (hM_sup_bd : ∀ y ∈ kαCompact (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y ≤ M_sup)
-    {f : EuclN → ℝ} (hf_supp : tsupport f ⊆ kαCompact (I := I) (M := M) α)
+    {f : EuclN → ℝ} (hf_support : tsupport f ⊆ kαCompact (I := I) (M := M) α)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤) :
     eLpNorm f p
         ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -291,7 +291,7 @@ private lemma eLpNorm_chartPulledWeighted_le_density_volume_on_kα
     refine Filter.Eventually.of_forall (fun y => ?_)
     by_cases hfy : f y = 0
     · simp [hfy, ENNReal.zero_rpow_of_pos hp_toReal_pos]
-    · have hy_in : y ∈ kαCompact (I := I) (M := M) α := hf_supp (subset_tsupport _ hfy)
+    · have hy_in : y ∈ kαCompact (I := I) (M := M) α := hf_support (subset_tsupport _ hfy)
       have h_dens_le : densityOnEuclid (I := I) g α y ≤ M_sup := hM_sup_bd y hy_in
       have h_ofReal_le :
           ENNReal.ofReal (densityOnEuclid (I := I) g α y) ≤ ENNReal.ofReal M_sup :=
@@ -352,16 +352,16 @@ theorem eLpNorm_chartPushed_chartPulledWeightedMeasure_restrict_le
     set v : M → ℝ := fun x : M => (chartAtlasPOU I M α : M → ℝ) x * u x with hv_def
     have hv_meas : Measurable v :=
       (chartAtlasPOU_measurable (I := I) (M := M) α).mul hu_meas
-    have hv_supp : tsupport v ⊆ (chartAt H α).source :=
+    have hv_support : tsupport v ⊆ (chartAt H α).source :=
       tsupport_pou_mul_subset_chartSource (I := I) (M := M) α u
     have hv_image_sub_K_E : (extChartAt I α) '' (tsupport v) ⊆ K_E := by
       intro z hz
-      rcases hz with ⟨x, hx_supp_v, hxz⟩
-      have hx_supp_ρα : x ∈ tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
-        tsupport_pou_mul_subset_tsupport_pou (I := I) (M := M) α u hx_supp_v
+      rcases hz with ⟨x, hx_support_v, hxz⟩
+      have hx_support_ρα : x ∈ tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
+        tsupport_pou_mul_subset_tsupport_pou (I := I) (M := M) α u hx_support_v
       have h_toEz_in_Kα : (toEuclidean (E := E)) z ∈ kαCompact (I := I) (M := M) α := by
         unfold kαCompact
-        exact ⟨z, ⟨x, hx_supp_ρα, hxz⟩, rfl⟩
+        exact ⟨z, ⟨x, hx_support_ρα, hxz⟩, rfl⟩
       refine ⟨(toEuclidean (E := E)) z, h_toEz_in_Kα, ?_⟩
       simp
     have h_aeeq :
@@ -394,7 +394,7 @@ theorem eLpNorm_chartPushed_chartPulledWeightedMeasure_restrict_le
         (f := DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α v)
         (chartPushedRaw_pou_mul_tsupport_subset_kα (I := I) (M := M) α u)
         hp_one hp_top
-    have h_step2_raw := hC_K_bnd hv_meas hv_supp hv_image_sub_K_E
+    have h_step2_raw := hC_K_bnd hv_meas hv_support hv_image_sub_K_E
     have h_step2 : eLpNorm
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α v) p
           ((volume : Measure EuclN).restrict
@@ -432,7 +432,7 @@ theorem eLpNorm_chartPushed_chartPulledWeightedMeasure_restrict_le
     rw [Set.not_nonempty_iff_eq_empty] at hKne
     have hρα_zero : ∀ x : M, (chartAtlasPOU I M α : M → ℝ) x = 0 := by
       intro x
-      have h_supp_empty : Function.support
+      have h_support_empty : Function.support
           (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) = ∅ := by
         by_contra h_ne
         have h_ne' : Function.support (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) ≠ ∅ := h_ne
@@ -440,10 +440,10 @@ theorem eLpNorm_chartPushed_chartPulledWeightedMeasure_restrict_le
           rw [Set.nonempty_iff_ne_empty]
           intro h_tsupp_empty
           apply h_ne'
-          have h_supp_sub : Function.support (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) ⊆
+          have h_support_sub : Function.support (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) ⊆
               tsupport (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) := subset_tsupport _
-          rw [h_tsupp_empty] at h_supp_sub
-          exact Set.subset_eq_empty h_supp_sub rfl
+          rw [h_tsupp_empty] at h_support_sub
+          exact Set.subset_eq_empty h_support_sub rfl
         have hKα_ne : (kαCompact (I := I) (M := M) α).Nonempty := by
           obtain ⟨x, hx⟩ := h_tsupp_ne
           refine ⟨(toEuclidean (E := E)) ((extChartAt I α) x), ?_⟩
@@ -452,7 +452,7 @@ theorem eLpNorm_chartPushed_chartPulledWeightedMeasure_restrict_le
         rw [hKne] at hKα_ne
         exact absurd hKα_ne (Set.not_nonempty_empty)
       have hxn : x ∉ Function.support (fun x : M => (chartAtlasPOU I M α : M → ℝ) x) := by
-        rw [h_supp_empty]; exact Set.notMem_empty x
+        rw [h_support_empty]; exact Set.notMem_empty x
       exact Function.notMem_support.mp hxn
     have h_chartPushed_zero :
         DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)

@@ -179,17 +179,17 @@ theorem lapDiffCore_norm
       ∀ (h : SmoothRiemannianMetric I M)
         (v : ScalarH2Core (I := I) (M := M) g),
         (Module.finrank Real E : Real) *
-            HCGCompactness.metricDerivNormSupOn
+            CheegerGromovCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h g g <= (1 / 2 : Real) →
           ‖lapDiffCore (I := I) (M := M) g h v‖ <=
             Real.sqrt C *
-              |HCGCompactness.metricDerivNormSupOn
+              |CheegerGromovCompactness.metricDerivNormSupOn
                 (I := I) Set.univ 1 h g g| * ‖v‖ := by
   obtain ⟨C, hC, henergy⟩ := lapDiff_energy_le (I := I) (M := M) g
   refine ⟨C, hC, ?_⟩
   intro h v hsmall
   let rho : Real :=
-    HCGCompactness.metricDerivNormSupOn
+    CheegerGromovCompactness.metricDerivNormSupOn
       (I := I) Set.univ 1 h g g
   have hsq :
       ‖lapDiffCore (I := I) (M := M) g h v‖ ^ 2 <=
@@ -211,17 +211,17 @@ noncomputable def lapDiffOp
   (lapDiffCore (I := I) (M := M) g h).extendOfNorm
     (ScalarH2Core (I := I) (M := M) g).subtype
 
-theorem lapDiffOp_core
+theorem lapDiffOp_apply_scalarH2Core
     (g h : SmoothRiemannianMetric I M)
     (v : ScalarH2Core (I := I) (M := M) g)
     (hsmall : (Module.finrank Real E : Real) *
-        HCGCompactness.metricDerivNormSupOn
+        CheegerGromovCompactness.metricDerivNormSupOn
           (I := I) Set.univ 1 h g g <= (1 / 2 : Real)) :
     lapDiffOp (I := I) (M := M) g h v.1 =
       lapDiffCore (I := I) (M := M) g h v := by
   obtain ⟨C, hC, hbound⟩ := lapDiffCore_norm (I := I) (M := M) g
   let B : Real := Real.sqrt C *
-    |HCGCompactness.metricDerivNormSupOn
+    |CheegerGromovCompactness.metricDerivNormSupOn
       (I := I) Set.univ 1 h g g|
   have hdense :
       DenseRange (ScalarH2Core (I := I) (M := M) g).subtype :=
@@ -237,17 +237,17 @@ theorem lapDiffOp_norm
     ∃ C : Real, 0 <= C ∧
       ∀ (h : SmoothRiemannianMetric I M),
         (Module.finrank Real E : Real) *
-            HCGCompactness.metricDerivNormSupOn
+            CheegerGromovCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h g g <= (1 / 2 : Real) →
           ‖lapDiffOp (I := I) (M := M) g h‖ <=
             Real.sqrt C *
-              |HCGCompactness.metricDerivNormSupOn
+              |CheegerGromovCompactness.metricDerivNormSupOn
                 (I := I) Set.univ 1 h g g| := by
   obtain ⟨C, hC, hbound⟩ := lapDiffCore_norm (I := I) (M := M) g
   refine ⟨C, hC, ?_⟩
   intro h hsmall
   let B : Real := Real.sqrt C *
-    |HCGCompactness.metricDerivNormSupOn
+    |CheegerGromovCompactness.metricDerivNormSupOn
       (I := I) Set.univ 1 h g g|
   have hB : 0 <= B := by positivity
   have hdense :

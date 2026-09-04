@@ -33,34 +33,34 @@ theorem redLength_lap_K
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau) (hZ : Z ∈ lInjDomain S T x tau)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     {Ω : Set Real} (hΩ : IsOpen Ω)
-    (hΩseg : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
+    (hΩsegment : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
     (hW : ∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent
       (8 : Nat)
       (fun s : Real ↦ (TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _))
-        (lRegCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
+        (lRegularizedCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
           TangentBundle I M)) Ω)
     (hP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
       (S.base.metric (T - tau)).inner (lExp S T x Z tau)
           (P i (Real.sqrt tau)) (P j (Real.sqrt tau)) =
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
-        S.ricciAt (T - s ^ 2) (lRegCurve S T x Z s)
+        S.ricciAt (T - s ^ 2) (lRegularizedCurve S T x Z s)
           (vec2 (P i s) (P i s)))
       MeasureTheory.volume 0 (Real.sqrt tau)) :
     laplacian (I := I) (LeviCivita (I := I)
@@ -68,7 +68,7 @@ theorem redLength_lap_K
         (fun y : M ↦ redLength S T x y tau) (lExp S T x Z tau) ≤
       (Module.finrank Real E : Real) / (2 * tau) -
         S.scalar (T - tau) (lExp S T x Z tau) -
-        lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+        lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
           (2 * tau * Real.sqrt tau) := by
   let b : Real := Real.sqrt tau
   have hb : 0 < b := by
@@ -81,10 +81,10 @@ theorem redLength_lap_K
     lMinDomain_down S hS T x Z hmin htau hsigma.le
   have hdom : (Z, tau) ∈ lExpPosDom S T x :=
     ((mem_lMinDomain S T x Z tau).1 hminTau).1
-  have hbdom : b ∈ lRegDomain S T x Z := by
+  have hbdom : b ∈ lRegularizedDomain S T x Z := by
     simpa only [b] using ((mem_lExpPosDom S T x Z tau).1 hdom).2.2
   have hONb : ∀ i j,
-      (S.base.metric (T - b ^ 2)).inner (lRegCurve S T x Z b)
+      (S.base.metric (T - b ^ 2)).inner (lRegularizedCurve S T x Z b)
           (P i b) (P j b) = if i = j then 1 else 0 := by
     intro i j
     rw [hb_sq]
@@ -93,14 +93,14 @@ theorem redLength_lap_K
     exact hON i j
   have hIintb : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 b := by
     simpa only [b] using hIint
   have htrace := lTraceInt_eq (I := I) S hS T x Z hb hbdom P
     (by simpa only [b] using hP)
     (by simpa only [b] using hDP) hONb hIintb
   have hlap := redLength_lap_le (I := I) S hS T x htau hZinj P
-    hΩ hΩseg hW hP hDP hON hIint hRint
+    hΩ hΩsegment hW hP hDP hON hIint hRint
   calc
     laplacian (I := I) (LeviCivita (I := I)
         (S.base.metric (T - tau))) (S.base.metric (T - tau))
@@ -109,13 +109,13 @@ theorem redLength_lap_K
         (1 / b) *
           ∫ s in (0 : Real)..b,
             ((s / b) ^ 2 * ∑ i : Fin (Module.finrank Real E),
-                lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
+                lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s) -
               (2 * s ^ 2 / b ^ 2) *
-                S.scalar (T - s ^ 2) (lRegCurve S T x Z s) := by
+                S.scalar (T - s ^ 2) (lRegularizedCurve S T x Z s) := by
         simpa only [b] using hlap
     _ = (Module.finrank Real E : Real) / (2 * tau) -
         S.scalar (T - tau) (lExp S T x Z tau) -
-        lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+        lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
           (2 * tau * Real.sqrt tau) := by
       rw [htrace]
       simp only [b, hb_sq, lExp]
@@ -132,17 +132,17 @@ variable [SigmaCompactSpace M]
 omit [SigmaCompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem laplacian_lRegAction_endpointBranch_le_hamilton
+theorem laplacian_lRegularizedAction_endpointBranch_le_hamilton
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (ha0 : 0 < a) (hab : a < b)
     (x : M) (Z : TangentSpace I x)
-    (hbdom : b ∈ lRegDomain S T x Z)
+    (hbdom : b ∈ lRegularizedDomain S T x Z)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
-      delta 0 = lRegCurve S T x Z 0 →
-      delta b = lRegCurve S T x Z b →
-      lRegAction S T (lRegCurve S T x Z) 0 b ≤
-        lRegAction S T delta 0 b)
+      delta 0 = lRegularizedCurve S T x Z 0 →
+      delta b = lRegularizedCurve S T x Z b →
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b ≤
+        lRegularizedAction S T delta 0 b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
     (hVopen : IsOpen V) (hA0V : A0 ∈ V)
     (hKopen : IsOpen K) (hKconn : IsPreconnected K)
@@ -157,17 +157,17 @@ theorem laplacian_lRegAction_endpointBranch_le_hamilton
           (fun r : Real ↦ alpha (A, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A, z)) r) s =
-        lRegAccel S T s (alpha (A, s))
+        lRegularizedAccel S T s (alpha (A, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A, r)) s))
     (hcenter : ∀ s ∈ Icc (0 : Real) b,
-      (fun r ↦ alpha (A0, r)) =ᶠ[nhds s] lRegCurve S T x Z)
+      (fun r ↦ alpha (A0, r)) =ᶠ[nhds s] lRegularizedCurve S T x Z)
     (hinj : Function.Injective fun B : E ↦
       mfderiv (modelWithCornersSelf Real E) I
         (fun A : E ↦ alpha (A, b)) A0 B)
     (P : Fin (Module.finrank Real E) →
       ∀ s, TangentSpace I (alpha (A0, s)))
     {Omega : Set Real} (hOmega : IsOpen Omega)
-    (hOmegaSeg : Icc (0 : Real) b ⊆ Omega)
+    (hOmegaSegment : Icc (0 : Real) b ⊆ Omega)
     (hPsm : ∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent
       (8 : Nat)
       (fun s : Real ↦
@@ -183,7 +183,7 @@ theorem laplacian_lRegAction_endpointBranch_le_hamilton
           (P i b) (P j b) = if i = j then 1 else 0) :
     let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let branch : M → Real := fun y ↦
-      lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
+      lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
     laplacian (I := I) (LeviCivita (I := I)
         (S.base.metric (T - b ^ 2))) (S.base.metric (T - b ^ 2))
         branch (alpha (A0, b)) ≤
@@ -193,7 +193,7 @@ theorem laplacian_lRegAction_endpointBranch_le_hamilton
   classical
   dsimp only
   let beta : Real → M := fun s ↦ alpha (A0, s)
-  let gamma : Real → M := lRegCurve S T x Z
+  let gamma : Real → M := lRegularizedCurve S T x Z
   let c : Real → Real := fun s ↦ (s - a) / (b - a)
   let Pc : Fin (Module.finrank Real E) →
       ∀ s, TangentSpace I (gamma s) := fun i ↦
@@ -216,9 +216,9 @@ theorem laplacian_lRegAction_endpointBranch_le_hamilton
       (hs : s ∈ Icc a b) :
       DifferentiableAt Real (chartRepAt (I := I) beta (P i) s) s := by
     apply differentiableAt_chartRepAt_of_contMDiffAt_two
-    exact (((hPsm i s (hOmegaSeg ⟨ha0.le.trans hs.1,
+    exact (((hPsm i s (hOmegaSegment ⟨ha0.le.trans hs.1,
       hs.2⟩)).contMDiffAt
-        (hOmega.mem_nhds (hOmegaSeg ⟨ha0.le.trans hs.1,
+        (hOmega.mem_nhds (hOmegaSegment ⟨ha0.le.trans hs.1,
           hs.2⟩))).of_le (by decide :
             (2 : WithTop ℕ∞) ≤ (8 : WithTop ℕ∞)))
   have hPcanDiff (i : Fin (Module.finrank Real E)) (s : Real)
@@ -271,28 +271,28 @@ theorem laplacian_lRegAction_endpointBranch_le_hamilton
     (hPsm i).of_le (by decide :
       (2 : WithTop ℕ∞) ≤ (8 : WithTop ℕ∞))
   have hraw (i : Fin (Module.finrank Real E)) :
-      IntervalIntegrable (lRegIndexIntegrand S T beta (P i) (P i))
+      IntervalIntegrable (lRegularizedIndexIntegrand S T beta (P i) (P i))
         MeasureTheory.volume a b := by
     have hsegOmega : uIcc a b ⊆ Omega := by
       intro s hs
       have hs' : s ∈ Icc a b := by
         simpa only [uIcc_of_le hab.le] using hs
-      exact hOmegaSeg ⟨ha0.le.trans hs'.1, hs'.2⟩
-    exact intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn S hS T a b beta (P i) (P i) hOmega hsegOmega
+      exact hOmegaSegment ⟨ha0.le.trans hs'.1, hs'.2⟩
+    exact intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiffOn S hS T a b beta (P i) (P i) hOmega hsegOmega
       (hPtwo i) (hPtwo i) (by
         intro s hs
         exact hregIcc s (by simpa only [uIcc_of_le hab.le] using hs))
   have hrawCan (i : Fin (Module.finrank Real E)) :
-      IntervalIntegrable (lRegIndexIntegrand S T gamma (Pc i) (Pc i))
+      IntervalIntegrable (lRegularizedIndexIntegrand S T gamma (Pc i) (Pc i))
         MeasureTheory.volume a b := by
-    apply (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T (P i) (P i) (Pc i) (Pc i)
+    apply (intervalIntegrable_lRegularizedIndexIntegrand_congr_of_eventuallyEq (I := I) S T (P i) (P i) (Pc i) (Pc i)
       a b hab.le
       (fun s hs ↦ hcurve s ⟨hs.1.le, hs.2.le⟩)
       (fun s hs ↦ hPcGerm i s ⟨hs.1.le, hs.2.le⟩)
       (fun s hs ↦ hPcGerm i s ⟨hs.1.le, hs.2.le⟩)).mp
     exact hraw i
   have hIintCan (i : Fin (Module.finrank Real E)) : IntervalIntegrable
-      (fun s : Real ↦ c s ^ 2 * lRegIndexIntegrand S T gamma (Pc i) (Pc i) s)
+      (fun s : Real ↦ c s ^ 2 * lRegularizedIndexIntegrand S T gamma (Pc i) (Pc i) s)
       MeasureTheory.volume a b :=
     (hrawCan i).continuousOn_mul
       (((continuous_id.sub continuous_const).div_const (b - a)).pow 2).continuousOn
@@ -305,7 +305,7 @@ theorem laplacian_lRegAction_endpointBranch_le_hamilton
         (TotalSpace.mk' E (beta u) (P i u) : TangentBundle I M)) := by
       simpa only [L, beta] using
         ((hPsm i).continuousOn.mono (fun s hs ↦
-          hOmegaSeg ⟨ha0.le.trans hs.1, hs.2⟩)).domRestrict
+          hOmegaSegment ⟨ha0.le.trans hs.1, hs.2⟩)).domRestrict
     have hbase : Continuous (fun u : L ↦ beta u) :=
       (FiberBundle.continuous_proj E (TangentSpace I)).comp hsec
     have htime : Continuous (fun u : L ↦ T - (u : Real) ^ 2) :=
@@ -362,17 +362,17 @@ theorem laplacian_lRegAction_endpointBranch_le_hamilton
             S.ricciAt (T - s ^ 2) (beta s) (vec2 (P i s) (P i s))
         rw [← hbase, ← hfield'])]
     exact hRintBeta i
-  have htrace := lRegIndex_trace_linear_cutoff (I := I) S hS T gamma Pc a b hab
+  have htrace := lRegularizedIndex_trace_linear_cutoff (I := I) S hS T gamma Pc a b hab
     (by
       intro s hs
-      exact lRegDomain_reg S T x Z
-        (lRegDomain_seg S T x Z hbdom (ha0.le.trans hs.1) hs.2))
+      exact lRegularizedDomain_regularity S T x Z
+        (lRegularizedDomain_segment S T x Z hbdom (ha0.le.trans hs.1) hs.2))
     (by
       intro s hs
       have hs' : s ∈ uIcc (0 : Real) b := by
         simpa only [uIcc_of_le hb0.le] using
           (show s ∈ Icc (0 : Real) b from ⟨ha0.le.trans hs.1, hs.2⟩)
-      exact (lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb0 hbdom).2.2 s hs' |>.2.1)
+      exact (lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hb0 hbdom).2.2 s hs' |>.2.1)
     hPcanDiff hDPcan hONcan
     (by simpa only [c] using hIintCan) hRintCan
   have htraceInt := lTraceInt_pos (I := I) S hS T x Z ha0 hab hbdom Pc
@@ -399,22 +399,22 @@ theorem laplacian_lRegAction_endpointBranch_le_hamilton
     filter_upwards [he] with r hr
     change (e ⟨beta r, c r • P i r⟩).2 = c r • (e ⟨beta r, P i r⟩).2
     exact (e.linear Real hr).map_smul (c r) (P i r)
-  have hgeo : IsLRegCurveOn S T gamma (uIcc (0 : Real) b) x Z := by
-    simpa only [gamma] using lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb0 hbdom
-  have hlap := laplacian_lRegAction_endpointBranch_le_index_sum
+  have hgeo : IsLRegularizedCurveOn S T gamma (uIcc (0 : Real) b) x Z := by
+    simpa only [gamma] using lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hb0 hbdom
+  have hlap := laplacian_lRegularizedAction_endpointBranch_le_index_sum
     (I := I) S hS T a b ha0 hab hgeo
     (by simpa only [gamma] using hmin) hVopen hA0V hKopen hKconn h0K hbK
     hstart halpha hreg hEuler (by simpa only [beta, gamma] using hcenter)
-    hinj P hOmega hOmegaSeg (by simpa only [beta, c] using hW) hON
+    hinj P hOmega hOmegaSegment (by simpa only [beta, c] using hW) hON
   have hsum :
       (∑ i : Fin (Module.finrank Real E),
-        lRegIndex S T beta (fun s ↦ c s • P i s)
+        lRegularizedIndex S T beta (fun s ↦ c s • P i s)
           (fun s ↦ c s • P i s) a b) =
       ∑ i : Fin (Module.finrank Real E),
-        lRegIndex S T gamma (fun s ↦ c s • Pc i s)
+        lRegularizedIndex S T gamma (fun s ↦ c s • Pc i s)
           (fun s ↦ c s • Pc i s) a b := by
     refine Finset.sum_congr rfl fun i _ ↦ ?_
-    apply lRegIndex_congr_of_eventuallyEq (I := I) S T _ _ _ _ a b
+    apply lRegularizedIndex_congr_of_eventuallyEq (I := I) S T _ _ _ _ a b
     · intro s hs
       have hs' : s ∈ Ioo a b := by simpa only [uIoo_of_le hab.le] using hs
       exact hcurve s ⟨hs'.1.le, hs'.2.le⟩
@@ -453,24 +453,24 @@ theorem laplacian_lRegAction_endpointBranch_le_hamilton
     dsimp only
     rw [hpt] at hvel ⊢
     rw [hvel]
-  have hbaseB' : alpha (A0, b) = lRegCurve S T x Z b := by
+  have hbaseB' : alpha (A0, b) = lRegularizedCurve S T x Z b := by
     simpa only [beta, gamma] using hbaseB
   have hK' : lKTail S T beta a b =
-      lKTail S T (lRegCurve S T x Z) a b := by
+      lKTail S T (lRegularizedCurve S T x Z) a b := by
     simpa only [gamma] using hK
   calc
     laplacian (I := I) (LeviCivita (I := I)
         (S.base.metric (T - b ^ 2))) (S.base.metric (T - b ^ 2))
-        (fun y ↦ lRegAction S T
+        (fun y ↦ lRegularizedAction S T
           (fun s ↦ alpha
             ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse y, s))
           a b) (alpha (A0, b)) ≤
       2 * ∑ i : Fin (Module.finrank Real E),
-        lRegIndex S T beta (fun s ↦ c s • P i s)
+        lRegularizedIndex S T beta (fun s ↦ c s • P i s)
           (fun s ↦ c s • P i s) a b := by
       simpa only [beta, c] using hlap
     _ = 2 * ∑ i : Fin (Module.finrank Real E),
-        lRegIndex S T gamma (fun s ↦ c s • Pc i s)
+        lRegularizedIndex S T gamma (fun s ↦ c s • Pc i s)
           (fun s ↦ c s • Pc i s) a b := by rw [hsum]
     _ = (Module.finrank Real E : Real) / (b - a) -
         2 * b * S.scalar (T - b ^ 2) (alpha (A0, b)) -

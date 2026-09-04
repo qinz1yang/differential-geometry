@@ -188,7 +188,7 @@ theorem secCompErr_mem
       h_cauchy β Q.1 Q.2)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem secCompErr_supp
+theorem secCompErr_support
     (r s k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
     (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
     (h_cauchy : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ m n : ℕ,
@@ -418,7 +418,7 @@ theorem targetErr_tendsto
       β α P Q).choose_spec.2
         (secCompErr_mem (I := I) (M := M) r s k hp hp_top u
           h_cauchy n β Q)
-        (secCompErr_supp (I := I) (M := M) r s k hp u
+        (secCompErr_support (I := I) (M := M) r s k hp u
           h_cauchy n β Q)
   have h_bound : ∀ n,
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p

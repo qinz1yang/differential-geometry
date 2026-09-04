@@ -44,8 +44,8 @@ lemma chartLeviCivitaGoodSet_image_isOpen (α : M) :
       exact hxS
     · rintro ⟨hy_int, hy_pre⟩
       refine ⟨(extChartAt I α).symm y, hy_pre, ?_⟩
-      have hy_tgt : y ∈ (extChartAt I α).target := interior_subset hy_int
-      exact (extChartAt I α).right_inv hy_tgt
+      have hy_target : y ∈ (extChartAt I α).target := interior_subset hy_int
+      exact (extChartAt I α).right_inv hy_target
   rw [heq]
   have hS_open : IsOpen S := chartLeviCivitaGoodSet_isOpen (I := I) α
   have hsymm_cont : ContinuousOn (extChartAt I α).symm
@@ -138,7 +138,7 @@ lemma chartE_pullback_contDiffOn_goodSet
     chartLeviCivitaGoodSet_isOpen (I := I) α
   intro y hy
   rcases hy with ⟨x, hxS, rfl⟩
-  have hx_src : x ∈ (chartAt H α).source :=
+  have hx_source : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hxS
   have hx_base :
       x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
@@ -149,14 +149,14 @@ lemma chartE_pullback_contDiffOn_goodSet
       hσ.contMDiffAt (hgood_open.mem_nhds hxS)
     exact (contMDiffAt_section_iff_chartE I α σ (k := (⊤ : ℕ∞)) hx_base).mp hσ_at
   set φ := extChartAt I α
-  have hxφ_src : x ∈ φ.source := by
-    rw [extChartAt_source]; exact hx_src
-  have hxφ_tgt : φ x ∈ φ.target := φ.map_source hxφ_src
-  have hxφ_inv : φ.symm (φ x) = x := φ.left_inv hxφ_src
+  have hxφ_source : x ∈ φ.source := by
+    rw [extChartAt_source]; exact hx_source
+  have hxφ_target : φ x ∈ φ.target := φ.map_source hxφ_source
+  have hxφ_inv : φ.symm (φ x) = x := φ.left_inv hxφ_source
   have hsymm_at : ContMDiffWithinAt 𝓘(ℝ, E) I (∞ : WithTop ℕ∞) φ.symm φ.target (φ x) := by
     have hsymm_on : ContMDiffOn 𝓘(ℝ, E) I (∞ : WithTop ℕ∞) φ.symm φ.target :=
       contMDiffOn_extChartAt_symm (I := I) (n := ∞) (x := α)
-    exact hsymm_on (φ x) hxφ_tgt
+    exact hsymm_on (φ x) hxφ_target
   have hcomp_at : ContMDiffWithinAt 𝓘(ℝ, E) 𝓘(ℝ, E) ∞
       (chartESectionRepr (I := I) α σ ∘ φ.symm) φ.target (φ x) := by
     have hfE_at' : ContMDiffAt I 𝓘(ℝ, E) ∞
@@ -221,10 +221,10 @@ lemma chartChristoffel_contMDiffOn_goodSet
       (chartLeviCivitaGoodSet (I := I) α) := by
   classical
   intro x hx
-  have hx_src : x ∈ (chartAt H α).source :=
+  have hx_source : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx
   have hφ_at : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I α) x :=
-    contMDiffAt_extChartAt' (I := I) (n := ∞) hx_src
+    contMDiffAt_extChartAt' (I := I) (n := ∞) hx_source
   have hΓ_chart : ContDiffAt ℝ ∞ (chartChristoffel (I := I) g α i j k)
       (extChartAt I α x) := by
     have hΓ_on : ContDiffOn ℝ ∞ (chartChristoffel (I := I) g α i j k)
@@ -298,10 +298,10 @@ lemma fderiv_chartE_pullback_contMDiffOn
   have h_fd_on := fderiv_chartE_pullback_contDiffOn_goodSet (I := I) α hσ
   have himg_open := chartLeviCivitaGoodSet_image_isOpen (I := I) α
   intro x hx
-  have hx_src : x ∈ (chartAt H α).source :=
+  have hx_source : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx
   have hφ_at : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I α) x :=
-    contMDiffAt_extChartAt' (I := I) (n := ∞) hx_src
+    contMDiffAt_extChartAt' (I := I) (n := ∞) hx_source
   have hfd_chart : ContDiffAt ℝ ∞
       (fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm))
       (extChartAt I α x) :=

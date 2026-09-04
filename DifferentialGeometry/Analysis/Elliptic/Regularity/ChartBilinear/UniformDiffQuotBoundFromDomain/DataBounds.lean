@@ -135,22 +135,22 @@ theorem cutoff_energy_le_data_eLpNorm_sq
     {Ω' : Set EuclN}
     (hΩ'_closure_compact : IsCompact (closure Ω'))
     (hΩ'_closure_in : closure Ω' ⊆ chartTargetEuclid (I := I) (M := M) α)
-    {fSrc : EuclN → ℝ}
-    (hfSrc : MemLp fSrc 2 ((volume : Measure EuclN).restrict (closure Ω')))
+    {fSource : EuclN → ℝ}
+    (hfSource : MemLp fSource 2 ((volume : Measure EuclN).restrict (closure Ω')))
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α) :
     (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E),
         ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
           χ x * D.weakPartial l x) ^ 2
       ∂(volume : Measure EuclN)) +
     (∫ x in Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN)) +
-    (∫ x in Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
+    (∫ x in Ω', (χ x * fSource x) ^ 2 ∂(volume : Measure EuclN)) ≤
       (2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_χ ^ 2 + M_dχ ^ 2 + 1)) *
         ((∑ l : Fin (Module.finrank ℝ E),
             (eLpNorm (D.weakPartial l) 2
               ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2) +
           (eLpNorm D.uChart 2
             ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 +
-          (eLpNorm fSrc 2
+          (eLpNorm fSource 2
             ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2) := by
   classical
   have hχ_cont : Continuous χ := hχ_smooth.continuous
@@ -171,8 +171,8 @@ theorem cutoff_energy_le_data_eLpNorm_sq
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
       D.u_chart_memLp_weighted hΩ'_closure_compact hΩ'_closure_meas hΩ'_closure_in
-  have hf_l2 : MemLp fSrc 2
-      ((volume : Measure EuclN).restrict (closure Ω')) := hfSrc
+  have hf_l2 : MemLp fSource 2
+      ((volume : Measure EuclN).restrict (closure Ω')) := hfSource
   have hwp_l2 : ∀ l : Fin (Module.finrank ℝ E), MemLp (D.weakPartial l) 2
       ((volume : Measure EuclN).restrict (closure Ω')) := fun l =>
     D.weak_partial_locally_memLp l (closure Ω') hΩ'_closure_compact hΩ'_closure_in
@@ -186,7 +186,7 @@ theorem cutoff_energy_le_data_eLpNorm_sq
         ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 with hSw_def
   set Su : ℝ := (eLpNorm D.uChart 2
       ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 with hSu_def
-  set Sf : ℝ := (eLpNorm fSrc 2
+  set Sf : ℝ := (eLpNorm fSource 2
       ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 with hSf_def
   have hSw_nn : 0 ≤ Sw := by
     rw [hSw_def]; exact Finset.sum_nonneg (fun _ _ => sq_nonneg _)
@@ -197,7 +197,7 @@ theorem cutoff_energy_le_data_eLpNorm_sq
     rw [hSu_def]
     exact integral_sq_eq_eLpNorm_two_toReal_sq hu_l2
   have hf_int_closure :
-      ∫ x in closure Ω', (fSrc x) ^ 2 ∂(volume : Measure EuclN) = Sf := by
+      ∫ x in closure Ω', (fSource x) ^ 2 ∂(volume : Measure EuclN) = Sf := by
     rw [hSf_def]
     exact integral_sq_eq_eLpNorm_two_toReal_sq hf_l2
   have hwp_int_closure : ∀ l : Fin (Module.finrank ℝ E),
@@ -208,7 +208,7 @@ theorem cutoff_energy_le_data_eLpNorm_sq
   have hug_l2 : MemLp (fun x => χ x * D.uChart x) 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     memLp_cutoff_mul hM_χ_nn hM_χ_bd hχ_aesm hu_l2
-  have hfg_l2 : MemLp (fun x => χ x * fSrc x) 2
+  have hfg_l2 : MemLp (fun x => χ x * fSource x) 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     memLp_cutoff_mul hM_χ_nn hM_χ_bd hχ_aesm hf_l2
   have hgg_l2 : ∀ l : Fin (Module.finrank ℝ E), MemLp (fun x =>
@@ -250,7 +250,7 @@ theorem cutoff_energy_le_data_eLpNorm_sq
       (closure Ω') (volume : Measure EuclN) := by
     have := hug_l2.integrable_sq
     simpa [IntegrableOn, pow_two] using this
-  have h_fg_sq_int : IntegrableOn (fun x => (χ x * fSrc x) ^ 2)
+  have h_fg_sq_int : IntegrableOn (fun x => (χ x * fSource x) ^ 2)
       (closure Ω') (volume : Measure EuclN) := by
     have := hfg_l2.integrable_sq
     simpa [IntegrableOn, pow_two] using this
@@ -272,8 +272,8 @@ theorem cutoff_energy_le_data_eLpNorm_sq
       (Filter.Eventually.of_forall (fun x => sq_nonneg _))
       (Filter.Eventually.of_forall subset_closure)
   have h_fg_mono :
-      (∫ x in Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
-      ∫ x in closure Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN) :=
+      (∫ x in Ω', (χ x * fSource x) ^ 2 ∂(volume : Measure EuclN)) ≤
+      ∫ x in closure Ω', (χ x * fSource x) ^ 2 ∂(volume : Measure EuclN) :=
     setIntegral_mono_set h_fg_sq_int
       (Filter.Eventually.of_forall (fun x => sq_nonneg _))
       (Filter.Eventually.of_forall subset_closure)
@@ -310,7 +310,7 @@ theorem cutoff_energy_le_data_eLpNorm_sq
       (closure Ω') (volume : Measure EuclN) := by
     have := hu_l2.integrable_sq
     simpa [IntegrableOn, pow_two] using this
-  have h_f_sq_int : IntegrableOn (fun x => (fSrc x) ^ 2)
+  have h_f_sq_int : IntegrableOn (fun x => (fSource x) ^ 2)
       (closure Ω') (volume : Measure EuclN) := by
     have := hf_l2.integrable_sq
     simpa [IntegrableOn, pow_two] using this
@@ -406,29 +406,29 @@ theorem cutoff_energy_le_data_eLpNorm_sq
         (Filter.Eventually.of_forall (fun x => h_χmul_pt D.uChart x))
     rwa [integral_const_mul, hu_int_closure] at h_int_le
   have h_fg_closure_le :
-      (∫ x in closure Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
+      (∫ x in closure Ω', (χ x * fSource x) ^ 2 ∂(volume : Measure EuclN)) ≤
       M_χ ^ 2 * Sf := by
     have h_int_le :
-        (∫ x in closure Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
-        ∫ x in closure Ω', M_χ ^ 2 * (fSrc x) ^ 2
+        (∫ x in closure Ω', (χ x * fSource x) ^ 2 ∂(volume : Measure EuclN)) ≤
+        ∫ x in closure Ω', M_χ ^ 2 * (fSource x) ^ 2
           ∂(volume : Measure EuclN) :=
       integral_mono_of_nonneg
         (Filter.Eventually.of_forall (fun x => sq_nonneg _))
         (h_f_sq_int.integrable.const_mul (M_χ ^ 2))
-        (Filter.Eventually.of_forall (fun x => h_χmul_pt fSrc x))
+        (Filter.Eventually.of_forall (fun x => h_χmul_pt fSource x))
     rwa [integral_const_mul, hf_int_closure] at h_int_le
   have h_ug_final :
       (∫ x in Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN)) ≤
       M_χ ^ 2 * Su := le_trans h_ug_mono h_ug_closure_le
   have h_fg_final :
-      (∫ x in Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
+      (∫ x in Ω', (χ x * fSource x) ^ 2 ∂(volume : Measure EuclN)) ≤
       M_χ ^ 2 * Sf := le_trans h_fg_mono h_fg_closure_le
   have h_sum_bound :
       (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E),
           ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
             χ x * D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN)) +
       (∫ x in Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN)) +
-      (∫ x in Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
+      (∫ x in Ω', (χ x * fSource x) ^ 2 ∂(volume : Measure EuclN)) ≤
       (2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * Su + 2 * M_χ ^ 2 * Sw) +
         M_χ ^ 2 * Su + M_χ ^ 2 * Sf := by
     have := add_le_add (add_le_add h_principal_final h_ug_final) h_fg_final

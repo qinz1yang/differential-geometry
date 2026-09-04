@@ -60,12 +60,12 @@ theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
   rw [cometricDoubleTraceFib_toModel (I := I) h 0 x D]
   rw [modelDoubleTrace_apply (E := E) 0 (cometricLmodel (I := I) h x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) h x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel D) mm]
   rw [cometricDoubleTraceFib_toModel (I := I) q 0 x]
   rw [modelDoubleTrace_apply (E := E) 0 (cometricLmodel (I := I) q x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) q x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel
       (slotExtendPointwise (I := I) (M := M) 1 1 x
         ((g0FlatCLM (I := I) q x).comp (inverseMetricSharpFib (I := I) h x)) D)) mm]

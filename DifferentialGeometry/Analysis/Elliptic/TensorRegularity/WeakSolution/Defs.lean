@@ -135,11 +135,11 @@ private lemma tensorChartComponentRaw_tsupport_subset_chart_source
     (T : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source) :
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source) :
     tsupport (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx) ⊆
       (chartAt H α).source :=
   (tensorChartComponentRaw_tsupport_subset (I := I) (M := M) g r s T α Idx Jdx).trans
-    hT_supp
+    hT_support
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
@@ -147,14 +147,14 @@ theorem tensorComponentEuclid_contDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source) :
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source) :
     ContDiff ℝ ∞ (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) := by
   classical
-  have hraw_supp : tsupport
+  have hraw_support : tsupport
       (tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2) ⊆
       (chartAt H α).source :=
     tensorChartComponentRaw_tsupport_subset_chart_source
-      (I := I) (M := M) g r s T α P₀.1 P₀.2 hT_supp
+      (I := I) (M := M) g r s T α P₀.1 P₀.2 hT_support
   have hopen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen (I := I) (M := M) α
   set K : Set EuclN :=
@@ -165,12 +165,12 @@ theorem tensorComponentEuclid_contDiff
     image_toEuclidean_extChartAt_tsupport_compact
       (I := I) (M := M)
       (u := tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2)
-      (α := α) hraw_supp
+      (α := α) hraw_support
   have hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α :=
     image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
       (I := I) (M := M)
       (u := tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2)
-      (α := α) hraw_supp
+      (α := α) hraw_support
   rw [contDiff_iff_contDiffAt]
   intro y
   by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) α
@@ -194,15 +194,15 @@ theorem tensorComponentEuclid_tsupport_subset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source) :
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source) :
     tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) ⊆
       chartTargetEuclid (I := I) (M := M) α := by
   classical
-  have hraw_supp : tsupport
+  have hraw_support : tsupport
       (tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2) ⊆
       (chartAt H α).source :=
     tensorChartComponentRaw_tsupport_subset_chart_source
-      (I := I) (M := M) g r s T α P₀.1 P₀.2 hT_supp
+      (I := I) (M := M) g r s T α P₀.1 P₀.2 hT_support
   set K : Set EuclN :=
     toEuclidean '' ((extChartAt I α) ''
       (tsupport (tensorChartComponentRaw (I := I) (M := M)
@@ -211,12 +211,12 @@ theorem tensorComponentEuclid_tsupport_subset
     image_toEuclidean_extChartAt_tsupport_compact
       (I := I) (M := M)
       (u := tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2)
-      (α := α) hraw_supp
+      (α := α) hraw_support
   have hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α :=
     image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
       (I := I) (M := M)
       (u := tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2)
-      (α := α) hraw_supp
+      (α := α) hraw_support
   have hsupp : Function.support
       (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) ⊆ K := by
     intro y hy
@@ -237,14 +237,14 @@ theorem tensorComponentEuclid_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source) :
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source) :
     HasCompactSupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) := by
   classical
-  have hraw_supp : tsupport
+  have hraw_support : tsupport
       (tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2) ⊆
       (chartAt H α).source :=
     tensorChartComponentRaw_tsupport_subset_chart_source
-      (I := I) (M := M) g r s T α P₀.1 P₀.2 hT_supp
+      (I := I) (M := M) g r s T α P₀.1 P₀.2 hT_support
   set K : Set EuclN :=
     toEuclidean '' ((extChartAt I α) ''
       (tsupport (tensorChartComponentRaw (I := I) (M := M)
@@ -253,12 +253,12 @@ theorem tensorComponentEuclid_hasCompactSupport
     image_toEuclidean_extChartAt_tsupport_compact
       (I := I) (M := M)
       (u := tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2)
-      (α := α) hraw_supp
+      (α := α) hraw_support
   have hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α :=
     image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
       (I := I) (M := M)
       (u := tensorChartComponentRaw (I := I) (M := M) g r s T α P₀.1 P₀.2)
-      (α := α) hraw_supp
+      (α := α) hraw_support
   have hsupp : Function.support
       (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) ⊆ K := by
     intro y hy
@@ -281,7 +281,7 @@ theorem tensorComponent_isSmoothWeakSolution_of_chartIdentity
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source)
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source)
     (f : EuclN → ℝ)
     (hbilin :
       ∀ φ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
@@ -292,9 +292,9 @@ theorem tensorComponent_isSmoothWeakSolution_of_chartIdentity
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).IsSmoothWeakSolution
       (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) f := by
   classical
-  refine ⟨tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_supp, ?_⟩
-  intro φ hφ hφ_cs hφ_supp
-  exact hbilin φ hφ hφ_cs hφ_supp
+  refine ⟨tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_support, ?_⟩
+  intro φ hφ hφ_cs hφ_support
+  exact hbilin φ hφ hφ_cs hφ_support
 
 end TensorRegularity
 end Laplacian

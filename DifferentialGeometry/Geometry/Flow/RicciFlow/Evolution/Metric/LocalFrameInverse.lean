@@ -147,7 +147,7 @@ noncomputable def localFrameInvDt
     D.carrier t
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem localFrameTimeReg
+theorem localFrameTimeRegularity
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (frame : Idx → (x : M) → TangentSpace I x)

@@ -17,7 +17,7 @@ theorem HasWeakPartialDeriv.congr_ae
     (hf : f =ᵐ[(volume : Measure E).restrict Ω] f')
     (hg : g =ᵐ[(volume : Measure E).restrict Ω] g') :
     HasWeakPartialDeriv (d := d) j g' f' Ω := by
-  intro φ hφ hφ_supp hφ_sub
+  intro φ hφ hφ_support hφ_sub
   have h_lhs :
       ∫ x in Ω, f' x * (fderiv ℝ φ x) (EuclideanSpace.single j 1) =
         ∫ x in Ω, f x * (fderiv ℝ φ x) (EuclideanSpace.single j 1) := by
@@ -30,7 +30,7 @@ theorem HasWeakPartialDeriv.congr_ae
     filter_upwards [hg] with x hx
     rw [hx]
   rw [h_lhs, h_rhs]
-  exact h φ hφ hφ_supp hφ_sub
+  exact h φ hφ hφ_support hφ_sub
 
 omit [NeZero d] in
 theorem HasWeakPartialDeriv.const_smul
@@ -38,8 +38,8 @@ theorem HasWeakPartialDeriv.const_smul
     (h : HasWeakPartialDeriv (d := d) j g f Ω) (c : ℝ) :
     HasWeakPartialDeriv (d := d) j
       (fun x => c • g x) (fun x => c • f x) Ω := by
-  intro φ hφ hφ_supp hφ_sub
-  have h_base := h φ hφ hφ_supp hφ_sub
+  intro φ hφ hφ_support hφ_sub
+  have h_base := h φ hφ hφ_support hφ_sub
   have h_lhs :
       ∫ x in Ω, (c • f x) * (fderiv ℝ φ x) (EuclideanSpace.single j 1) =
         c * ∫ x in Ω, f x * (fderiv ℝ φ x) (EuclideanSpace.single j 1) := by
@@ -65,16 +65,16 @@ theorem HasWeakPartialDeriv.add
     (hg₁ : LocallyIntegrable g₁ ((volume : Measure E).restrict Ω))
     (hg₂ : LocallyIntegrable g₂ ((volume : Measure E).restrict Ω)) :
     HasWeakPartialDeriv (d := d) j (g₁ + g₂) (f₁ + f₂) Ω := by
-  intro φ hφ_smooth hφ_supp hφ_sub
-  have heq₁ := h₁ φ hφ_smooth hφ_supp hφ_sub
-  have heq₂ := h₂ φ hφ_smooth hφ_supp hφ_sub
+  intro φ hφ_smooth hφ_support hφ_sub
+  have heq₁ := h₁ φ hφ_smooth hφ_support hφ_sub
+  have heq₂ := h₂ φ hφ_smooth hφ_support hφ_sub
   have hint_f₁ : Integrable
       (fun x => f₁ x * (fderiv ℝ φ x) (EuclideanSpace.single j 1))
       ((volume : Measure E).restrict Ω) := by
     have h := hf₁.integrable_smul_right_of_hasCompactSupport
       (hg := (hφ_smooth.continuous_fderiv (by simp)).clm_apply
         continuous_const)
-      (h'g := hφ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1))
+      (h'g := hφ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1))
     simpa [smul_eq_mul] using h
   have hint_f₂ : Integrable
       (fun x => f₂ x * (fderiv ℝ φ x) (EuclideanSpace.single j 1))
@@ -82,17 +82,17 @@ theorem HasWeakPartialDeriv.add
     have h := hf₂.integrable_smul_right_of_hasCompactSupport
       (hg := (hφ_smooth.continuous_fderiv (by simp)).clm_apply
         continuous_const)
-      (h'g := hφ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1))
+      (h'g := hφ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1))
     simpa [smul_eq_mul] using h
   have hint_g₁ : Integrable (fun x => g₁ x * φ x)
       ((volume : Measure E).restrict Ω) := by
     have h := hg₁.integrable_smul_right_of_hasCompactSupport
-      (hg := hφ_smooth.continuous) (h'g := hφ_supp)
+      (hg := hφ_smooth.continuous) (h'g := hφ_support)
     simpa [smul_eq_mul] using h
   have hint_g₂ : Integrable (fun x => g₂ x * φ x)
       ((volume : Measure E).restrict Ω) := by
     have h := hg₂.integrable_smul_right_of_hasCompactSupport
-      (hg := hφ_smooth.continuous) (h'g := hφ_supp)
+      (hg := hφ_smooth.continuous) (h'g := hφ_support)
     simpa [smul_eq_mul] using h
   have h_lhs :
       ∫ x in Ω, (f₁ + f₂) x * (fderiv ℝ φ x) (EuclideanSpace.single j 1) =

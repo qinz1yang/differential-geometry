@@ -144,7 +144,7 @@ lemma exists_sup_chartDensity_on_pou_tsupport_image
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M)
-    (h_supp_ne : (tsupport
+    (h_support_ne : (tsupport
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) : M → ℝ)).Nonempty) :
     ∃ M_sup : ℝ, 0 < M_sup ∧
@@ -166,7 +166,7 @@ lemma exists_sup_chartDensity_on_pou_tsupport_image
   obtain ⟨hK_compact, hK_sub_target⟩ := hK_decomp
   have hK_ne : ((extChartAt I α) '' (tsupport
       ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
-        : C^∞⟮I, M; ℝ⟯) : M → ℝ))).Nonempty := h_supp_ne.image _
+        : C^∞⟮I, M; ℝ⟯) : M → ℝ))).Nonempty := h_support_ne.image _
   exact exists_sup_chartDensity_on_compact_pos (I := I) (M := M)
     g α hK_compact hK_ne hK_sub_target
 
@@ -196,13 +196,13 @@ lemma eLpNorm_pou_mul_riemannianMeasure_le_const_mul_eLpNorm_chartPushed_per_u
     pou_measurable (I := I) (M := M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
   have hρu_meas : Measurable ρu := hρα_meas.mul hu_meas
-  have hρu_supp : tsupport ρu ⊆ (chartAt H α).source :=
+  have hρu_support : tsupport ρu ⊆ (chartAt H α).source :=
     tsupport_pou_mul_fun_subset_chartAt_source (I := I) (M := M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α u
   obtain ⟨C, hC_pos, hbnd⟩ :=
     eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw
-      (I := I) (M := M) g α hp_one hp_top hρu_meas hρu_supp
+      (I := I) (M := M) g α hp_one hp_top hρu_meas hρu_support
   refine ⟨C, hC_pos, ?_⟩
   refine hbnd.trans ?_
   have h_eq :=

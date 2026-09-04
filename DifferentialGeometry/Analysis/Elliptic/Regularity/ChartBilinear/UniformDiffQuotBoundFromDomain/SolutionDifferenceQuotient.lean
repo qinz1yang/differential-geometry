@@ -46,12 +46,12 @@ theorem integral_sq_diffQuot_uChart_le
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
-    {η : EuclN → ℝ} (hη_supp : HasCompactSupport η)
+    {η : EuclN → ℝ} (hη_support : HasCompactSupport η)
     {Ω' : Set EuclN}
     (hΩ'_chart : closure Ω' ⊆ chartTargetEuclid (I := I) (M := M) α)
     (hΩ'_compact_closure : IsCompact (closure Ω'))
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω') :
     ∀ (k : Fin (Module.finrank ℝ E)),
     ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -63,11 +63,11 @@ theorem integral_sq_diffQuot_uChart_le
           ((D.weakPartial l) x) ^ 2
         ∂(volume : Measure EuclN) := by
   classical
-  have hη_tsupp_compact : IsCompact (tsupport η) := hη_supp
+  have hη_tsupp_compact : IsCompact (tsupport η) := hη_support
   have h_cthickR0_compact : IsCompact (Metric.cthickening R₀ (tsupport η)) :=
     hη_tsupp_compact.cthickening
   have h_cthickR0_in_Ω' : Metric.cthickening R₀ (tsupport η) ⊆ Ω' := by
-    have h := hh_supp_in_Ω' (h := R₀) (by rw [abs_of_pos hR₀_pos])
+    have h := hh_support_in_Ω' (h := R₀) (by rw [abs_of_pos hR₀_pos])
     rw [abs_of_pos hR₀_pos] at h
     exact h
   have h_cthickR0_in_chart :
@@ -241,7 +241,7 @@ theorem integral_sq_diffQuot_uChart_le
     have h_eq := hG_eq_on_cthick_h x (by rw [hΩ'_fk_def] at hx; exact hx)
     exact congrArg (· ^ 2) h_eq
   have h_cthick_h_subset_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' :=
-    hh_supp_in_Ω' hh_le
+    hh_support_in_Ω' hh_le
   have h_closure_Ω'_meas : MeasurableSet (closure Ω') :=
     isClosed_closure.measurableSet
   have h_wp_k_l2_closure_Ω' : MemLp (D.weakPartial k) 2

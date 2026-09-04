@@ -20,7 +20,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 namespace DifferentialGeometry
 namespace PDE

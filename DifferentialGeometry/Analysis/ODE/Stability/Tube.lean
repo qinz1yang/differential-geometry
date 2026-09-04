@@ -134,7 +134,7 @@ theorem integralCurve_tendstoUniformlyOn_of_limit_tube
   obtain ⟨L, hLip⟩ := hLip
   obtain ⟨θ, hθ, hθR, hgb⟩ :=
     exists_pos_gronwallBound_lt (L : ℝ) (t₁ - t₀) R hR
-  filter_upwards [hinit θ hθ, hfield θ hθ, hLip] with n hnInit hnField hnLip
+  filter_upwards [hinit θ hθ, hfield θ hθ, hLip] with n hnInitial hnField hnLip
   intro q hq
   obtain ⟨hp, ht⟩ := hq
   let d : ℝ → ℝ := fun t => dist (γ n q.1 t) (γInf q.1 t)
@@ -145,17 +145,17 @@ theorem integralCurve_tendstoUniformlyOn_of_limit_tube
   have hdCont : ContinuousOn d (Icc t₀ t₁) := by
     dsimp [d]
     exact continuous_dist.comp_continuousOn (hstageCont.prodMk hlimitCont)
-  have hdInit : d t₀ < R := by
+  have hdInitial : d t₀ < R := by
     dsimp [d]
     rw [dist_comm]
-    exact (hnInit q.1 hp).trans hθR
+    exact (hnInitial q.1 hp).trans hθR
   have hdLt : ∀ t ∈ Icc t₀ t₁, d t < R := by
     intro t ht'
     by_contra hnot
     have hcross : ∃ s ∈ Icc t₀ t₁, R ≤ d s :=
       ⟨t, ht', le_of_not_gt hnot⟩
     obtain ⟨τ, hτ, hτeq, hτbefore⟩ :=
-      exists_first_hit_Icc ht₀₁ hdCont hdInit hcross
+      exists_first_hit_Icc ht₀₁ hdCont hdInitial hcross
     have hstageContτ : ContinuousOn (γ n q.1) (Icc t₀ τ) :=
       hstageCont.mono (fun _ hs => ⟨hs.1, hs.2.trans hτ.2⟩)
     have hlimitContτ : ContinuousOn (γInf q.1) (Icc t₀ τ) :=
@@ -198,7 +198,7 @@ theorem integralCurve_tendstoUniformlyOn_of_limit_tube
       exact hr.le
     have hinitial : dist (γ n q.1 t₀) (γInf q.1 t₀) ≤ θ := by
       rw [dist_comm]
-      exact (hnInit q.1 hp).le
+      exact (hnInitial q.1 hp).le
     have hcompare :=
       dist_le_of_approx_trajectories_ODE_of_mem
         (v := v n) (s := fun s => closedBall (γInf q.1 s) r)

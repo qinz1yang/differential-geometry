@@ -37,7 +37,7 @@ theorem weakDeriv_primitive
         tsupport φ ⊆ Ioo a b →
         ∫ t in Ioo a b, L i (p t) * deriv φ t =
           -∫ t in Ioo a b, L i (q t) * φ t := by
-    intro φ hφ hφ_comp hφ_supp
+    intro φ hφ hφ_comp hφ_support
     have hpφ : Integrable (fun t ↦ deriv φ t • p t)
         (volume.restrict (Ioo a b)) :=
       (show Integrable p (volume.restrict (Ioo a b)) from hp).locallyIntegrable
@@ -48,7 +48,7 @@ theorem weakDeriv_primitive
       (show Integrable q (volume.restrict (Ioo a b)) from hq).locallyIntegrable
         |>.integrable_smul_left_of_hasCompactSupport
         hφ.continuous hφ_comp
-    have h := congrArg (L i) (hweak φ hφ hφ_comp hφ_supp)
+    have h := congrArg (L i) (hweak φ hφ hφ_comp hφ_support)
     rw [← (L i).integral_comp_comm hpφ, map_neg,
       ← (L i).integral_comp_comm hqφ] at h
     simpa only [map_smul, smul_eq_mul, mul_comm] using h

@@ -1755,7 +1755,7 @@ theorem exists_unitSpeedFamilyVectorField_on_compact
     have hVdef : (NormedSpace.fromTangentSpace (F y.1 y.2)) ((mfderiv I 𝓘(ℝ, ℝ) (fun x : M => F x y.2) y.1) (V y.1 y.2)) = L (V y.1 y.2) := by
       simp [L]
     rw [hVdef]
-    have hfinSuppρ : Function.HasFiniteSupport (fun x : K => ρ x y) := by
+    have hfinSupportρ : Function.HasFiniteSupport (fun x : K => ρ x y) := by
       have hlf : LocallyFinite (fun x : K => {z : M × ℝ | ρ x z ≠ 0}) := ρ.locallyFinite
       have hlfy := hlf y
       rcases hlfy with ⟨N, hN, hfinN⟩
@@ -1765,11 +1765,11 @@ theorem exists_unitSpeedFamilyVectorField_on_compact
         rw [Function.support] at hx
         exact ⟨y, ⟨hx, mem_of_mem_nhds hN⟩⟩
       exact Set.Finite.subset hfinN hsub
-    have hfinSupp : Function.HasFiniteSupport (fun x : K => ρ x y • W x y.1 y.2) := by
-      exact Set.Finite.subset hfinSuppρ (by intro x hx; exact fun hρ0 => hx (by simp [hρ0]))
+    have hfinSupport : Function.HasFiniteSupport (fun x : K => ρ x y • W x y.1 y.2) := by
+      exact Set.Finite.subset hfinSupportρ (by intro x hx; exact fun hρ0 => hx (by simp [hρ0]))
     have hlin : L (V y.1 y.2) = ∑ᶠ x : K, L (ρ x y • W x y.1 y.2) := by
       dsimp [V]
-      have hmap := (AddMonoidHom.map_finsum (g := (L : TangentSpace I y.1 →+ ℝ)) (hf := hfinSupp))
+      have hmap := (AddMonoidHom.map_finsum (g := (L : TangentSpace I y.1 →+ ℝ)) (hf := hfinSupport))
       simpa using hmap
     rw [hlin]
     have hterm : ∀ x : K, L (ρ x y • W x y.1 y.2) = ρ x y • L (W x y.1 y.2) := by
@@ -1794,7 +1794,7 @@ theorem exists_unitSpeedFamilyVectorField_on_compact
     rw [hrew]
     have hsum : (∑ᶠ x : K, ρ x y • (-1 : ℝ)) = -(∑ᶠ x : K, (ρ x y : ℝ)) := by
       have hsmul' : (∑ᶠ x : K, ρ x y • (-1 : ℝ)) = (∑ᶠ x : K, ρ x y) • (-1 : ℝ) := by
-        exact (finsum_smul' hfinSuppρ (-1 : ℝ)).symm
+        exact (finsum_smul' hfinSupportρ (-1 : ℝ)).symm
       rw [hsmul']
       simp
     exact hsum
@@ -2065,7 +2065,7 @@ private lemma exists_scalar_flow_smooth_cutoff
     {ρ : M × ℝ → ℝ} {χt : ℝ → ℝ}
     (hρ_sm : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) ρ)
     (hχt_sm : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) χt)
-    (hχt_supp : IsCompact (tsupport χt))
+    (hχt_support : IsCompact (tsupport χt))
     (x : M) (s₀ : ℝ) : ∃ τ : ℝ → ℝ, τ 0 = s₀ ∧
       IsMIntegralCurve (I := 𝓘(ℝ, ℝ)) (M := ℝ) (E := ℝ) (H := ℝ) τ
         (fun s : ℝ => (ρ (x, s) * χt s : TangentSpace 𝓘(ℝ, ℝ) s)) := by
@@ -2097,7 +2097,7 @@ private lemma exists_scalar_flow_smooth_cutoff
       exact hs (by rw [hχt0']; norm_num)
     have hts : tsupport (fun s : ℝ => (ρ (x, s) * χt s : TangentSpace 𝓘(ℝ, ℝ) s)) ⊆ tsupport χt :=
       closure_mono hsub
-    exact hχt_supp.of_isClosed_subset (isClosed_tsupport _) hts
+    exact hχt_support.of_isClosed_subset (isClosed_tsupport _) hts
   rcases exists_globalIntegralCurve_of_compactSupport (E := ℝ) (I := 𝓘(ℝ, ℝ)) (M := ℝ)
     (v := fun s : ℝ => (ρ (x, s) * χt s : TangentSpace 𝓘(ℝ, ℝ) s)) hsec hsupp s₀ with ⟨τ, hτ0, hτIs⟩
   exact ⟨τ, hτ0, hτIs⟩
@@ -2284,10 +2284,10 @@ private lemma orbit_spatial_mem_projection
     {χs : M × ℝ → ℝ} {ρ : M × ℝ → ℝ} {χt : ℝ → ℝ}
     {w : (x : M) → (s : ℝ) → TangentSpace I x}
     (hχs_sm : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) χs)
-    (hχs_supp : IsCompact (tsupport χs))
+    (hχs_support : IsCompact (tsupport χs))
     (hρ_sm : ContMDiff (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) ρ)
     (hχt_sm : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) χt)
-    (hχt_supp : IsCompact (tsupport χt))
+    (hχt_support : IsCompact (tsupport χt))
     (Vsusp : (q : M × ℝ) → TangentSpace (I.prod 𝓘(ℝ, ℝ)) q)
     (hVsusp : Vsusp = fun q : M × ℝ => (show TangentSpace (I.prod 𝓘(ℝ, ℝ)) q from
       (χs q • w q.1 q.2, ρ q * χt q.2)))
@@ -2300,7 +2300,7 @@ private lemma orbit_spatial_mem_projection
     (∀ t : ℝ, t ∈ Set.Icc (-1) 0 → (curveAt Vsusp hcomplete (x₀, s₀) t).1 ∈ Prod.fst '' tsupport χs) := by
   classical
   let A : Set M := Prod.fst '' tsupport χs
-  have hAcl : IsClosed A := (hχs_supp.image continuous_fst).isClosed
+  have hAcl : IsClosed A := (hχs_support.image continuous_fst).isClosed
   have hχs_out : ∀ q : M × ℝ, q.1 ∉ A → χs q = 0 := by
     intro q hq
     by_contra h
@@ -2319,7 +2319,7 @@ private lemma orbit_spatial_mem_projection
       ∀ t : ℝ, (curveAt Vsusp hcomplete (y, t₀) t).1 = y := by
     intro y t₀ hyA hycl t
     rcases exists_scalar_flow_smooth_cutoff (I := I) (ρ := ρ) (χt := χt)
-      hρ_sm hχt_sm hχt_supp y t₀ with ⟨τ, hτ0, hτIs⟩
+      hρ_sm hχt_sm hχt_support y t₀ with ⟨τ, hτ0, hτIs⟩
     let c : ℝ → M × ℝ := fun u => (y, τ u)
     have hcIs : IsMIntegralCurve c Vsusp := by
       exact pairFlow_aux_curve_integral (I := I) (Vsusp := Vsusp) (hVsusp := hVsusp)
@@ -2670,7 +2670,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       simp
     rw [hfin, hρ1] at hsum
     linarith
-  have hχs_supp : IsCompact (tsupport χs) := by
+  have hχs_support : IsCompact (tsupport χs) := by
     have hts : tsupport χs ⊆ closure U₀ := by
       exact (hρspsub 0).trans subset_closure
     exact hU₀compact.of_isClosed_subset (isClosed_tsupport χs) hts
@@ -2704,7 +2704,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
     dsimp [χt]
     exact mul_le_one₀ (Real.smoothTransition.le_one _) (Real.smoothTransition.nonneg _)
       (Real.smoothTransition.le_one _)
-  have hχt_supp : IsCompact (tsupport χt) := by
+  have hχt_support : IsCompact (tsupport χt) := by
     have hsupp0 : Function.support χt ⊆ Set.Icc (-1) 2 := by
       intro s hs
       dsimp [Function.support] at hs
@@ -2730,7 +2730,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       simpa [isClosed_Icc.closure_eq] using hcl
     exact isCompact_Icc.of_isClosed_subset (isClosed_tsupport χt) hts
   let A : Set M := Prod.fst '' tsupport χs
-  have hAcompact : IsCompact A := hχs_supp.image continuous_fst
+  have hAcompact : IsCompact A := hχs_support.image continuous_fst
   have hAcl : IsClosed A := hAcompact.isClosed
   have hχs_out : ∀ q : M × ℝ, q.1 ∉ A → χs q = 0 := by
     intro q hq
@@ -2798,7 +2798,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       simp
     rw [hfin, hρM1] at hsum
     linarith
-  have hρ_supp : IsCompact (tsupport ρ) := by
+  have hρ_support : IsCompact (tsupport ρ) := by
     have hts : tsupport ρ ⊆ closure W := by
       exact (hρMsub 0).trans subset_closure
     exact hWcompact.of_isClosed_subset (isClosed_tsupport ρ) hts
@@ -2886,8 +2886,8 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       have hcl : IsClosed (tsupport ρ ∩ ((Set.univ : Set M) ×ˢ tsupport χt)) := by
         rw [hpre]
         exact (isClosed_tsupport ρ).inter (IsClosed.preimage continuous_snd (isClosed_tsupport χt))
-      exact hρ_supp.of_isClosed_subset hcl (by intro q hq; exact hq.1)
-    exact (hχs_supp.union htsupp2).of_isClosed_subset (isClosed_tsupport Vsusp) hts
+      exact hρ_support.of_isClosed_subset hcl (by intro q hq; exact hq.1)
+    exact (hχs_support.union htsupp2).of_isClosed_subset (isClosed_tsupport Vsusp) hts
   have hcomplete : ∀ p : M × ℝ, ∃ γ : ℝ → M × ℝ, γ 0 = p ∧ IsMIntegralCurve γ Vsusp :=
     exists_globalIntegralCurve_of_compactSupport Vsusp hVsuspsec hVsuspsupp
   have hflowsm : ContMDiff (𝓘(ℝ, ℝ).prod (I.prod 𝓘(ℝ, ℝ))) (I.prod 𝓘(ℝ, ℝ)) (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -2965,15 +2965,15 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       (curveAt Vsusp hcomplete (x, 0) t).1 ∈ A := by
     intro x hxA t ht
     exact (orbit_spatial_mem_projection (I := I) (χs := χs) (ρ := ρ) (χt := χt) (w := w)
-      (Vsusp := Vsusp) (hχs_sm := hχs_sm) (hχs_supp := hχs_supp) (hρ_sm := hρ_sm)
-      (hχt_sm := hχt_sm) (hχt_supp := hχt_supp) (hVsusp := hVsusp) (hVsuspsec := hVsuspsec)
+      (Vsusp := Vsusp) (hχs_sm := hχs_sm) (hχs_support := hχs_support) (hρ_sm := hρ_sm)
+      (hχt_sm := hχt_sm) (hχt_support := hχt_support) (hVsusp := hVsusp) (hVsuspsec := hVsuspsec)
       (hcomplete := hcomplete) x 0 hxA).1 t ht
   have hA_inv_back : ∀ (y : M), y ∈ A → ∀ t : ℝ, t ∈ Set.Icc (-1) 0 →
       (curveAt Vsusp hcomplete (y, 1) t).1 ∈ A := by
     intro y hyA t ht
     exact (orbit_spatial_mem_projection (I := I) (χs := χs) (ρ := ρ) (χt := χt) (w := w)
-      (Vsusp := Vsusp) (hχs_sm := hχs_sm) (hχs_supp := hχs_supp) (hρ_sm := hρ_sm)
-      (hχt_sm := hχt_sm) (hχt_supp := hχt_supp) (hVsusp := hVsusp) (hVsuspsec := hVsuspsec)
+      (Vsusp := Vsusp) (hχs_sm := hχs_sm) (hχs_support := hχs_support) (hρ_sm := hρ_sm)
+      (hχt_sm := hχt_sm) (hχt_support := hχt_support) (hVsusp := hVsusp) (hVsuspsec := hVsuspsec)
       (hcomplete := hcomplete) y 1 hyA).2 t ht
   have hΦsm : ContMDiff I I (↑(⊤ : ℕ∞) : WithTop ℕ∞) Φ := by
     intro x₀
@@ -3059,7 +3059,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       ∀ t : ℝ, (curveAt Vsusp hcomplete (x, s₀) t).1 = x := by
     intro x hxD s₀ hs₀ t
     rcases exists_scalar_flow_smooth_cutoff (I := I) (ρ := ρ) (χt := χt)
-      hρ_sm hχt_sm hχt_supp x s₀ with ⟨τ, hτ0, hτIs⟩
+      hρ_sm hχt_sm hχt_support x s₀ with ⟨τ, hτ0, hτIs⟩
     have hτIs' : IsMIntegralCurve (I := 𝓘(ℝ, ℝ)) (M := ℝ) (E := ℝ) (H := ℝ) τ
         (fun s : ℝ => (ρ (x, s) * Real.smoothTransition (2 - s) * Real.smoothTransition (s + 1) :
           TangentSpace 𝓘(ℝ, ℝ) s)) := by
@@ -3202,7 +3202,7 @@ theorem exists_relDiffeomorph_sublevel_of_regularFamily
       (curveAt Vsusp hcomplete (x, s₀) t).1 = x := by
     intro x hxA s₀ t
     rcases exists_scalar_flow_smooth_cutoff (I := I) (ρ := ρ) (χt := χt)
-      hρ_sm hχt_sm hχt_supp x s₀ with ⟨τ, hτ0, hτIs⟩
+      hρ_sm hχt_sm hχt_support x s₀ with ⟨τ, hτ0, hτIs⟩
     let c : ℝ → M × ℝ := fun u => (x, τ u)
     have hcIs : IsMIntegralCurve c Vsusp := by
       exact pairFlow_aux_curve_integral (I := I) (Vsusp := Vsusp) (hVsusp := hVsusp)

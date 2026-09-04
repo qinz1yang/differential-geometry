@@ -413,7 +413,7 @@ theorem nablaRicci_eq_frame_trace_nablaCurvSec
   have hWX : MDiffAt (T% W) x := (hW x).mdifferentiableAt (by simp)
   have hnbhd : (fun b => ricciTensor (I := I) g b (V b) (W b)) =ᶠ[𝓝 x]
       (fun b => ∑ i, g.inner b (S i b) (B i b)) := by
-    filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x] with b hb
+    filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x] with b hb
     rw [ricciTensor_eq_orthonormal_trace (I := I) g b (V b) (W b)
       (fun i => B i b) (fun i j => smoothOrthoFrame_orthonormal (I := I) g x hb i j)]
     refine Finset.sum_congr rfl ?_
@@ -615,7 +615,7 @@ theorem nablaScalar_eq_frame_trace_nablaRicci
     fun i => ((hRicpair i) x).mdifferentiableAt (by simp)
   have hnbhd : scalarCurv (I := I) g =ᶠ[𝓝 x]
       (fun b => ∑ i, ricciTensor (I := I) g b (B i b) (B i b)) := by
-    filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x] with b hb
+    filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x] with b hb
     exact scalarCurv_eq_orthonormal_trace (I := I) g b (fun i => B i b)
       (fun i j => smoothOrthoFrame_orthonormal (I := I) g x hb i j)
   rw [nablaScalar_def]

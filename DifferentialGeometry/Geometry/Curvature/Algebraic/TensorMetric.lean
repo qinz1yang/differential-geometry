@@ -93,15 +93,15 @@ theorem metricRm04At_mem_algebraicCurvatureTensorSubmodule
   apply mem_algebraicCurvatureTensorSubmodule_iff_symmetries.mpr
   refine ⟨?_, ?_, ?_⟩
   · intro X Y Z W
-    simpa [metricRm04StdAt_apply, metricRm04_apply] using
+    simpa [metricRm04StandardAt_apply, metricRm04_apply] using
       (rm04InputSkewAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes Y X Z W)
   · intro X Y Z W
-    simpa [metricRm04StdAt_apply, metricRm04_apply] using
+    simpa [metricRm04StandardAt_apply, metricRm04_apply] using
       (rm04OutputSkewAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
   · intro X Y Z W
-    simpa [metricRm04StdAt_apply, metricRm04_apply] using
+    simpa [metricRm04StandardAt_apply, metricRm04_apply] using
       (firstBianchiAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
 

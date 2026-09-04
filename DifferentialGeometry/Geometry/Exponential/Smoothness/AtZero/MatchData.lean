@@ -46,7 +46,7 @@ section ZeroSectionWitness
 variable [I.Boundaryless] [CompleteSpace E]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_chartFlow_combined_witness
+theorem exists_chartFlow_fixed_zero_section_near_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
     ∃ (Φ : (E × E) × ℝ → E × E) (ρ T T_match : ℝ),
       0 < ρ ∧ 0 < T ∧ 0 < T_match ∧ T_match ≤ T ∧
@@ -62,13 +62,13 @@ theorem exists_chartFlow_combined_witness
   set x₀ : E := extChartAt I p p with hx₀_def
   have hx₀_interior : x₀ ∈ interior (extChartAt I p).target :=
     extChartAt_self_mem_interior_target (I := I) p
-  obtain ⟨b, r, ε, ρ, T, Φ, hr, hε, hρ_pos, hT_pos, hb_sub, hΦ_loc, hcd, hinit⟩ :=
+  obtain ⟨b, r, ε, ρ, T, Φ, hr, hε, hρ_pos, hT_pos, hb_sub, hΦ_local, hcd, hinit⟩ :=
     exists_chartPhase_contDiffOn_isLocalFlow_combined
       (I := I) (M := M) (g := g) (α := p)
       (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   have hconst :=
     chartFlow_zero_section_eventually_const (I := I) (g := g) (p := p)
-      (Φ := Φ) (b := b) (r := r) (ε := ε) hΦ_loc hb_sub hr hε
+      (Φ := Φ) (b := b) (r := r) (ε := ε) hΦ_local hb_sub hr hε
   rcases Filter.eventually_iff_exists_mem.mp hconst with ⟨U, hU_nhds, hU⟩
   rcases _root_.mem_nhds_iff.mp hU_nhds with ⟨V, hVU, hV_open, hV_mem_zero⟩
   rcases (Metric.isOpen_iff.mp hV_open) (0 : ℝ) hV_mem_zero with ⟨δ_match, hδ_match_pos, hδ_sub⟩
@@ -97,7 +97,7 @@ section HasMatchData
 variable [I.Boundaryless] [CompleteSpace E]
   [T2Space (TangentBundle I M)]
 
-def HasChartFlowGeodesicMatchData (g : SmoothRiemannianMetric I M) (p : M) : Prop :=
+def HasChartFlowGeodesicMatchAtZero (g : SmoothRiemannianMetric I M) (p : M) : Prop :=
   ∃ (Φ : (E × E) × ℝ → E × E) (ρ T t' ρ' : ℝ),
     0 < ρ ∧ 0 < T ∧ 0 < t' ∧ t' ∈ Set.Ioo (-T) T ∧ 0 < ρ' ∧
     ContDiffOn ℝ 1 Φ
@@ -132,7 +132,7 @@ theorem hasChartFlowGeodesicMatchData_of_match
         Φ (((extChartAt I p p, (0 : E)) : E × E), s) =
           ((extChartAt I p p, (0 : E)) : E × E)) ∧
       ChartFlowGeodesicMatchAt (I := I) g p Φ t' ρ') :
-    HasChartFlowGeodesicMatchData (I := I) g p := by
+    HasChartFlowGeodesicMatchAtZero (I := I) g p := by
   classical
   obtain ⟨Φ, ρ, T, T_match, t', ρ', hρ, hT, hT_match, hT_match_le, ht'_pos, hρ'_pos,
     ht'_lt, hcd, _hinit, hconst, hmatch⟩ := h
@@ -144,17 +144,17 @@ theorem hasChartFlowGeodesicMatchData_of_match
   have hval0_fst : (Φ (((extChartAt I p p, (0 : E)) : E × E), t')).1 =
       extChartAt I p p := by
     rw [hval0]
-  have hx₀_src : p ∈ (extChartAt I p).source :=
+  have hx₀_source : p ∈ (extChartAt I p).source :=
     mem_extChartAt_source (I := I) p
   have hx₀_target : extChartAt I p p ∈ (extChartAt I p).target :=
-    (extChartAt I p).map_source hx₀_src
+    (extChartAt I p).map_source hx₀_source
   have hval_target : (Φ (((extChartAt I p p, (0 : E)) : E × E), t')).1 ∈
       (extChartAt I p).target := by
     rw [hval0_fst]; exact hx₀_target
   have hval_symm : (extChartAt I p).symm
       (Φ (((extChartAt I p p, (0 : E)) : E × E), t')).1 = p := by
     rw [hval0_fst]
-    exact (extChartAt I p).left_inv hx₀_src
+    exact (extChartAt I p).left_inv hx₀_source
   have ht'_in : t' ∈ Set.Ioo (-T) T := by
     refine ⟨?_, ?_⟩
     · linarith
@@ -173,7 +173,7 @@ omit [T2Space (TangentBundle I M)] in
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem expMap_contMDiffAt_zero_of_chartFlowGeodesicMatchData
     (g : SmoothRiemannianMetric I M) (p : M)
-    (h : HasChartFlowGeodesicMatchData (I := I) g p) :
+    (h : HasChartFlowGeodesicMatchAtZero (I := I) g p) :
     ContMDiffAt 𝓘(ℝ, E) I 1
       (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M))
       (0 : E) :=

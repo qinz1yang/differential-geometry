@@ -93,7 +93,7 @@ lemma curriedSection_covApply_unitGradField_eq
   funext y
   rw [curriedSection_apply]
   rw [covApply_apply]
-  exact curry_abstract_covDeriv_unitGrad_unfold' (I := I) (M := M) g T₀ hX hY
+  exact curry_abstract_covDeriv_unitGrad_unfold_of_contMDiff (I := I) (M := M) g T₀ hX hY
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 lemma curry_abstract_covDeriv_covApply_unitGrad_unfold

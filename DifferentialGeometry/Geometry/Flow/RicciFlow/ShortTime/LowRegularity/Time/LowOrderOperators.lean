@@ -278,7 +278,7 @@ noncomputable def symmHs
       rw [show L u = symmFun (I := I) (M := M) g hσ u by rfl, one_mul]
       exact h)
 
-theorem symmHs_core
+theorem symmHs_apply_ccToHsLin
     (g : SmoothRiemannianMetric I M) {σ : ℝ} (hσ : 0 ≤ σ)
     (T : SmoothCcTensor g 0 2) :
     symmHs (I := I) (M := M) g hσ
@@ -331,10 +331,10 @@ theorem symmHs_incl
         (r := 0) (s := 2) hτσ).continuous
   · intro T
     simp only [ContinuousLinearMap.comp_apply]
-    rw [symmHs_core (I := I) (M := M) g hσ,
+    rw [symmHs_apply_ccToHsLin (I := I) (M := M) g hσ,
       hsIncl_core (I := I) (M := M) g hτσ,
       hsIncl_core (I := I) (M := M) g hτσ,
-      symmHs_core (I := I) (M := M) g hτ]
+      symmHs_apply_ccToHsLin (I := I) (M := M) g hτ]
 
 noncomputable def radialScale
     (g : SmoothRiemannianMetric I M) (ρ : ℝ)
@@ -884,7 +884,7 @@ theorem lowRadialH3_cont
     (radialHighCore (I := I) (M := M) g ρ) 0
     (radialHigh_balls (I := I) (M := M) g hρ)
 
-theorem lowRadialH3_core
+theorem lowRadialH3_apply_ccToHsLin
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 < ρ)
     (T : SmoothCcTensor g 0 2) :
     lowRadialH3 (I := I) (M := M) g ρ
@@ -906,7 +906,7 @@ theorem lowRadialH3_core
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 < ρ) :
     lowRadialH3 (I := I) (M := M) g ρ 0 = 0 := by
   simpa only [map_zero, lowRadial_zero] using
-    lowRadialH3_core (I := I) (M := M) g hρ
+    lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ
       (0 : SmoothCcTensor g 0 2)
 
 theorem lowRadialH3_le
@@ -926,7 +926,7 @@ theorem lowRadialH3_le
       ‖lowRadialH3 (I := I) (M := M) g ρ
           (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)‖ ≤
         ‖ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T‖
-    rw [lowRadialH3_core (I := I) (M := M) g hρ]
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ]
     simp only [ccToHsLin_apply]
     rw [lowRadial_h3_eq (I := I) (M := M), lowScaleCutoff, norm_smul]
     let q : ℝ :=
@@ -1021,8 +1021,8 @@ theorem lowRadialH3_sub
         (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T,
           ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) U)
     dsimp only [lhs, rhs]
-    rw [lowRadialH3_core (I := I) (M := M) g hρ,
-      lowRadialH3_core (I := I) (M := M) g hρ]
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ,
+      lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ]
     simpa only [ccToHsLin_apply, incl32_ccToHs] using
       lowRadial_h3_sub (I := I) (M := M) g hρ T U
   have hD : Dense D :=
@@ -1125,7 +1125,7 @@ theorem lowRadialHs_aemeas
       (fun t => lowRadialHs (I := I) (M := M) g ρ (u t)) μ :=
   (lowRadialHs_cont (I := I) (M := M) g hρ).comp_aestronglyMeasurable hu
 
-theorem lowRadialHs_core
+theorem lowRadialHs_apply_ccToHsLin
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 ≤ ρ)
     (T : SmoothCcTensor g 0 2) :
     lowRadialHs (I := I) (M := M) g ρ
@@ -1147,7 +1147,7 @@ theorem lowRadialHs_core
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 ≤ ρ) :
     lowRadialHs (I := I) (M := M) g ρ 0 = 0 := by
   simpa only [map_zero, lowRadial_zero] using
-    lowRadialHs_core (I := I) (M := M) g hρ
+    lowRadialHs_apply_ccToHsLin (I := I) (M := M) g hρ
       (0 : SmoothCcTensor g 0 2)
 
 theorem lowRadialH3_incl
@@ -1166,10 +1166,10 @@ theorem lowRadialH3_incl
   · exact (lowRadialHs_cont (I := I) (M := M) g hρ.le).comp
       (incl32 (I := I) (M := M) g).continuous
   · intro T
-    rw [lowRadialH3_core (I := I) (M := M) g hρ]
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ]
     simp only [ccToHsLin_apply, incl32_ccToHs]
     simpa only [ccToHsLin_apply] using
-      (lowRadialHs_core (I := I) (M := M) g hρ.le T).symm
+      (lowRadialHs_apply_ccToHsLin (I := I) (M := M) g hρ.le T).symm
 
 theorem lowRadialH3_eq
     (g : SmoothRiemannianMetric I M) {ρ : ℝ} (hρ : 0 < ρ)
@@ -1188,10 +1188,10 @@ theorem lowRadialH3_eq
           (r := 0) (s := 2) (by norm_num)) hρ).comp
         (symmHs (I := I) (M := M) g (by norm_num)).continuous
   · intro T
-    rw [lowRadialH3_core (I := I) (M := M) g hρ]
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ]
     simp only [ccToHsLin_apply]
     rw [lowRadial_h3_eq (I := I) (M := M)]
-    have hs := symmHs_core (I := I) (M := M)
+    have hs := symmHs_apply_ccToHsLin (I := I) (M := M)
       (σ := (3 : ℝ)) g (by norm_num) T
     simp only [ccToHsLin_apply] at hs
     rw [hs]
@@ -1226,8 +1226,8 @@ theorem lowRadialHs_eq
   · exact (lipschitzWith_one_ballRetraction hρ).continuous.comp
       (symmHs (I := I) (M := M) g (by norm_num)).continuous
   · intro T
-    rw [lowRadialHs_core (I := I) (M := M) g hρ,
-      symmHs_core (I := I) (M := M)]
+    rw [lowRadialHs_apply_ccToHsLin (I := I) (M := M) g hρ,
+      symmHs_apply_ccToHsLin (I := I) (M := M)]
     simp only [ccToHsLin_apply, lowRadial, ballRetraction,
       ccTensorToHs_smul]
 
@@ -1264,7 +1264,7 @@ theorem lowRadialHs_norm
     rintro v ⟨T, rfl⟩
     change ‖lowRadialHs (I := I) (M := M) g ρ
       (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T)‖ ≤ ρ
-    rw [lowRadialHs_core (I := I) (M := M) g hρ]
+    rw [lowRadialHs_apply_ccToHsLin (I := I) (M := M) g hρ]
     simpa only [ccToHsLin_apply] using
       lowRadial_norm (I := I) (M := M) g hρ T
   have hD : Dense D :=

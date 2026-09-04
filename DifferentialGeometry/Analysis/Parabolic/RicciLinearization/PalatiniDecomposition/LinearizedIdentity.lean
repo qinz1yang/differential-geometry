@@ -509,7 +509,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceRe
       (covariantDerivativeTermField_metricPerturbationPath_covariantJetJointSmoothness (I := I) (M := M) g₀ T hδ hδZ g₀)
       (lrFamily_covariantJetJointSmoothness (I := I) (M := M) g₀ T hδ hδZ)
   · intro s hs x
-    have hδ0 : 0 ≤ δ := bdDelta_nonneg (I := I) (M := M) g₀ x T hδ
+    have hδ0 : 0 ≤ δ := metricCauchySchwarzBound_nonneg (I := I) (M := M) g₀ x T hδ
     have h0 := hpt T hTsymm hT0 hδ_le' hδ0 hδ hδZ hs 0 x
     rw [iteratedCovGrad_zero] at h0
     refine le_trans h0 ?_
@@ -528,7 +528,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceRe
         ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 := by positivity
     by_cases hM : Nonempty M
     · obtain ⟨x₀⟩ := hM
-      have hδ0 : 0 ≤ δ := bdDelta_nonneg (I := I) (M := M) g₀ x₀ T hδ
+      have hδ0 : 0 ≤ δ := metricCauchySchwarzBound_nonneg (I := I) (M := M) g₀ x₀ T hδ
       have hptx : ∀ x : M,
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
               ((iteratedCovGrad (I := I) g₀ 2 2 i
@@ -574,7 +574,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_pairTraceRe
                   Equiv.swap (0 : Fin 4) 1,
                 Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3]
               ![(-1 : ℝ), -1, 1] s)‖ = 0 :=
-        bdNorm_zero_of_isEmpty (I := I) (M := M) g₀ 2 (2 + i) _
+        smoothCcTensor_norm_eq_zero_of_isEmpty (I := I) (M := M) g₀ 2 (2 + i) _
       rw [hz]
       have hK_nn : 0 ≤ C i * Kflat i := mul_nonneg (hC_nn i) (hKflat_nn i)
       nlinarith [hwin_nn, hK_nn]
@@ -637,7 +637,7 @@ theorem exists_deTurckLieCovariantDerivativeTerm_basepointBackground_decompositi
   beta_reduce
   simp only [iteratedCovGrad_zero]
   rw [operatorFieldApplication_sub_left,
-    bdLiePairTraceFamily_operatorFieldApplication_eq_familySecondGradient (I := I) (M := M) g₀ T hδ hδZ
+    palatiniLiePairTraceFamily_operatorFieldApplication_eq_familySecondGradient (I := I) (M := M) g₀ T hδ hδZ
       ![Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2,
         Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 * Equiv.swap (0 : Fin 4) 1,
         Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3]

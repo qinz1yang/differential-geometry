@@ -1519,14 +1519,14 @@ theorem convex_hamiltonIveyConvexMatrixRegion
     have hB' : B.transpose = B := by simpa [Matrix.IsHermitian] using hBh
     change (a • A + b • B).conjTranspose = a • A + b • B
     simp [hA', hB']
-  have hx_conv : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 ≤
+  have hx_convergence : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 ≤
       a * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0 + b * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0 := by
     have hconv :=
       (DifferentialGeometry.Analysis.Convex.convex_neg_part_minimumRayleighQuotient3.2)
         (x := A) (y := B)
       (by trivial) (by trivial) (a := a) (b := b) ha.le hb.le hab
     simpa [C, smul_eq_mul] using hconv
-  have hbar_conv : hamiltonIveyConvexBarrier K τ
+  have hbar_convergence : hamiltonIveyConvexBarrier K τ
       (a * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0 + b * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0) ≤ C.trace := by
     have hbarA : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0) ≤ A.trace := by
       simpa [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hAh] using hAbar
@@ -1549,8 +1549,8 @@ theorem convex_hamiltonIveyConvexMatrixRegion
       nlinarith [mul_nonneg (mul_pos two_pos hK).le hτ]
     by_cases hx0_le : x0 ≤ max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0
     · have hmono := hamiltonIveyConvexBarrier_monotoneOn_of_ge_subregion hK hτ
-      have hle1 := hmono hx0_le (le_trans hx0_le hx_conv) hx_conv
-      exact le_trans hle1 hbar_conv
+      have hle1 := hmono hx0_le (le_trans hx0_le hx_convergence) hx_convergence
+      exact le_trans hle1 hbar_convergence
     · have hlt : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 < x0 := lt_of_not_ge hx0_le
       have hC0x : 0 ≤ max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 := le_max_right _ _
       have hsub : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 ≤ K / (1 + 2 * K * τ) := le_of_lt hlt

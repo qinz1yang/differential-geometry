@@ -100,7 +100,7 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative
   refine ⟨ũ, ?_, hũ_ae⟩
   exact contMDiff_zero_iff.mpr hũ_cont
 
-def ChartSobolevSuperCriticalWitness
+def HasSupercriticalChartSobolevRegularity
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -116,7 +116,7 @@ theorem memWkpChart_forall_implies_contMDiff_m_representative
     [T2Space M] [SigmaCompactSpace M] (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (m : ℕ)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (h_witness : ChartSobolevSuperCriticalWitness (I := I) (M := M) m u)
+    (h_witness : HasSupercriticalChartSobolevRegularity (I := I) (M := M) m u)
     (h_bridge :
       ∀ {p : ℝ}, (Module.finrank ℝ E : ℝ) < p →
         ∀ {v : M → ℝ}, Measurable v →
@@ -132,7 +132,7 @@ theorem memWkpChart_forall_implies_contMDiff_m_representative
   obtain ⟨p, _hp_one, hp_dim, hu_super⟩ := h_witness
   exact h_bridge hp_dim hu_meas hu_super
 
-theorem memWkpChart_forall_implies_contMDiff_zero_representative_via_bridge
+theorem exists_contMDiff_zero_representative_of_supercritical_chart_sobolev
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -140,7 +140,7 @@ theorem memWkpChart_forall_implies_contMDiff_zero_representative_via_bridge
     [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (h_witness : ChartSobolevSuperCriticalWitness (I := I) (M := M) 0 u) :
+    (h_witness : HasSupercriticalChartSobolevRegularity (I := I) (M := M) 0 u) :
     ∃ u_smooth : M → ℝ,
       ContMDiff I 𝓘(ℝ, ℝ) 0 u_smooth ∧
       u_smooth =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
@@ -174,16 +174,16 @@ lemma chartPullback_contMDiff_of_contDiff_finite
     (α : M) (m : ℕ)
     {ψ : EuclN → ℝ}
     (hψ_smooth : ContDiff ℝ m ψ)
-    (hψ_cpt : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_compact : HasCompactSupport ψ)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ContMDiff I 𝓘(ℝ, ℝ) m (chartPullback I α ψ) := by
   classical
   set T : Set M := tsupport (chartPullback I α ψ) with hT_def
   have hT_closed : IsClosed T := isClosed_tsupport _
   refine contMDiff_of_locally_contMDiffOn ?_
   intro x
-  by_cases hx_src : x ∈ (chartAt H α).source
-  · refine ⟨(chartAt H α).source, (chartAt H α).open_source, hx_src, ?_⟩
+  by_cases hx_source : x ∈ (chartAt H α).source
+  · refine ⟨(chartAt H α).source, (chartAt H α).open_source, hx_source, ?_⟩
     have h_eq_on : Set.EqOn (chartPullback I α ψ)
         (fun y => ψ ((toEuclidean (E := E)) (extChartAt I α y)))
         (chartAt H α).source := by
@@ -220,15 +220,15 @@ lemma chartPullback_contMDiff_of_contDiff_finite
             ((toEuclidean (E := E)).symm '' tsupport ψ) := by
         classical
         set Kψ : Set EuclN := tsupport ψ with hKψ_def
-        have hKψ_compact : IsCompact Kψ := hψ_cpt
-        have hImg_E_compact :
+        have hKψ_compact : IsCompact Kψ := hψ_compact
+        have hImage_E_compact :
             IsCompact ((toEuclidean (E := E)).symm '' Kψ) :=
           hKψ_compact.image (toEuclidean (E := E)).symm.continuous
-        have hImg_E_subset_target :
+        have hImage_E_subset_target :
             ((toEuclidean (E := E)).symm '' Kψ) ⊆ (extChartAt I α).target := by
           intro z hz
           rcases hz with ⟨y, hy_in, hyz⟩
-          have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_supp hy_in
+          have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_support hy_in
           rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy_target
           rw [← hyz]
           exact hy_target
@@ -240,15 +240,15 @@ lemma chartPullback_contMDiff_of_contDiff_finite
           have hcontOn_restricted :
               ContinuousOn (extChartAt I α).symm
                 ((toEuclidean (E := E)).symm '' Kψ) :=
-            hcontOn.mono hImg_E_subset_target
-          exact hImg_E_compact.image_of_continuousOn hcontOn_restricted
+            hcontOn.mono hImage_E_subset_target
+          exact hImage_E_compact.image_of_continuousOn hcontOn_restricted
         have hK_M_closed : IsClosed K_M := hK_M_compact.isClosed
         have hfun_support_subset :
             Function.support (chartPullback I α ψ) ⊆ K_M := by
           intro x hx
           simp only [Function.mem_support, ne_eq] at hx
-          by_cases hx_src : x ∈ (chartAt H α).source
-          · rw [chartPullback_apply_of_mem (I := I) (M := M) α ψ hx_src] at hx
+          by_cases hx_source : x ∈ (chartAt H α).source
+          · rw [chartPullback_apply_of_mem (I := I) (M := M) α ψ hx_source] at hx
             have hψ_nz : (toEuclidean (E := E)) (extChartAt I α x) ∈
                 Function.support ψ := hx
             have hψ_in_K : (toEuclidean (E := E)) (extChartAt I α x) ∈ Kψ :=
@@ -262,11 +262,11 @@ lemma chartPullback_contMDiff_of_contDiff_finite
               refine ⟨(toEuclidean (E := E)) (extChartAt I α x), hψ_in_K, ?_⟩
               exact hsymm_eq
             refine ⟨extChartAt I α x, h_in_E, ?_⟩
-            have hx_src' : x ∈ (extChartAt I α).source := by
+            have hx_source' : x ∈ (extChartAt I α).source := by
               rw [extChartAt_source (I := I)]
-              exact hx_src
-            exact (extChartAt I α).left_inv hx_src'
-          · rw [chartPullback_apply_of_notMem (I := I) (M := M) α ψ hx_src] at hx
+              exact hx_source
+            exact (extChartAt I α).left_inv hx_source'
+          · rw [chartPullback_apply_of_notMem (I := I) (M := M) α ψ hx_source] at hx
             exact (hx rfl).elim
         intro x hx
         have h_close : closure (Function.support (chartPullback I α ψ)) ⊆ K_M :=
@@ -276,27 +276,27 @@ lemma chartPullback_contMDiff_of_contDiff_finite
       intro x hx
       rcases hx with ⟨z, hz, hxz⟩
       rcases hz with ⟨y, hy_in, hyz⟩
-      have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_supp hy_in
+      have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α := hψ_support hy_in
       rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy_target
       have hz_target : z ∈ (extChartAt I α).target := by
         rw [← hyz]; exact hy_target
-      have hx_in_src : x ∈ (extChartAt I α).source := by
+      have hx_in_source : x ∈ (extChartAt I α).source := by
         rw [← hxz]
         exact (extChartAt I α).map_target hz_target
-      rw [extChartAt_source (I := I)] at hx_in_src
-      exact hx_in_src
+      rw [extChartAt_source (I := I)] at hx_in_source
+      exact hx_in_source
     have hxT : x ∉ T := by
       intro hxT
-      apply hx_src
+      apply hx_source
       exact h_tsupp_chartPull hxT
     refine ⟨Tᶜ, hT_closed.isOpen_compl, hxT, ?_⟩
     have h_zero_on : Set.EqOn (chartPullback I α ψ) (fun _ : M => (0 : ℝ)) Tᶜ := by
       intro y hy
       simp only [Set.mem_compl_iff] at hy
-      have hy_not_supp : y ∉ Function.support (chartPullback I α ψ) := by
-        intro hy_supp
-        exact hy (subset_tsupport _ hy_supp)
-      simpa [Function.mem_support, not_not] using hy_not_supp
+      have hy_not_support : y ∉ Function.support (chartPullback I α ψ) := by
+        intro hy_support
+        exact hy (subset_tsupport _ hy_support)
+      simpa [Function.mem_support, not_not] using hy_not_support
     have h_const : ContMDiffOn I 𝓘(ℝ, ℝ) m (fun _ : M => (0 : ℝ)) Tᶜ :=
       contMDiff_const.contMDiffOn
     refine h_const.congr ?_
@@ -386,7 +386,7 @@ private theorem chain_to_supercritical
 
 end SuperCriticalWitness
 
-theorem chartSobolevSuperCriticalWitness_of_h_all
+theorem hasSupercriticalChartSobolevRegularity_of_all_even_orders
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -396,7 +396,7 @@ theorem chartSobolevSuperCriticalWitness_of_h_all
     (m : ℕ)
     {u : M → ℝ}
     (h_all : ∀ k : ℕ, MemWkpChart (I := I) (M := M) (2 * k) 2 u) :
-    ChartSobolevSuperCriticalWitness (I := I) (M := M) m u := by
+    HasSupercriticalChartSobolevRegularity (I := I) (M := M) m u := by
   classical
   set n : ℕ := Module.finrank ℝ E with hn_def
   have hn_pos : 0 < n := NeZero.pos _
@@ -409,7 +409,7 @@ theorem chartSobolevSuperCriticalWitness_of_h_all
     have heq : ((s_max + 1 : ℕ) : ℝ) * 2 = (2 * (n + 1) : ℕ) := by
       rw [hs_max_def]; push_cast; ring
     rw [heq]; exact this
-  obtain ⟨p₀, hp₀_one, hp₀_lt, h_n_lt_kp₀, hp₀_reg⟩ :=
+  obtain ⟨p₀, hp₀_one, hp₀_lt, h_n_lt_kp₀, hp₀_regularity⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.RegularExponent.exists_regular_exponent_below
       (n : ℝ) (s_max + 1) hs_max_succ_pos hp_2_strict h_n_lt_kp_2
   set k₀ : ℕ := m + n + 1 with hk₀_def
@@ -434,7 +434,7 @@ theorem chartSobolevSuperCriticalWitness_of_h_all
     DifferentialGeometry.Analysis.Sobolev.Chart.ChartLevelMonoExp.memWkpChart_mono_exponent
       (I := I) (M := M) hp₀_one_enn hp₀_le_two_enn hu_order'
   exact SuperCriticalWitness.chain_to_supercritical (I := I) (M := M) g m s_max
-    hp₀_one hp₀_reg h_n_lt_kp₀ hu_p₀
+    hp₀_one hp₀_regularity h_n_lt_kp₀ hu_p₀
 
 namespace SuperCriticalBridge
 
@@ -457,13 +457,13 @@ private lemma chartPushed_apply_toE_extChartAt
         : C^∞⟮I, M; ℝ⟯) x) * u x := by
   classical
   unfold chartPushed
-  have h_x_src : x ∈ (extChartAt I α).source := by
+  have h_x_source : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source (I := I)]; exact hx
   have h_inv :
       (extChartAt I α).symm
         ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I α x))) = x := by
     rw [ContinuousLinearEquiv.symm_apply_apply]
-    exact (extChartAt I α).left_inv h_x_src
+    exact (extChartAt I α).left_inv h_x_source
   rw [h_inv]
 
 omit [CompactSpace M] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
@@ -541,7 +541,7 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M).exists_pos_of_mem
         (Set.mem_univ _)
     obtain ⟨α, hρα_pos⟩ := hρ_pos
-    have hx_src : x ∈ (chartAt H α).source := by
+    have hx_source : x ∈ (chartAt H α).source := by
       refine DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate
         (I := I) (M := M) α ?_
       exact subset_tsupport _ (by exact ne_of_gt hρα_pos)
@@ -571,16 +571,16 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) : M → ℝ) y} with hV_def
     have hVopen : IsOpen V := (chartAt H α).open_source.inter h_set_open
-    have hxV : x ∈ V := ⟨hx_src, hc_lt⟩
+    have hxV : x ∈ V := ⟨hx_source, hc_lt⟩
     have hVsource : V ⊆ (chartAt H α).source := fun y hy => hy.1
     have hc_bound : ∀ y ∈ V, c ≤
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) : M → ℝ) y := fun y hy => le_of_lt hy.2
     set y₀ : EuclN := (toEuclidean (E := E)) (extChartAt I α x) with hy₀_def
     have hy₀_in : y₀ ∈ chartTargetEuclid (I := I) (M := M) α := by
-      have hx_ext_src : x ∈ (extChartAt I α).source := by
-        rw [extChartAt_source (I := I)]; exact hx_src
-      refine ⟨extChartAt I α x, (extChartAt I α).map_source hx_ext_src, ?_⟩
+      have hx_ext_source : x ∈ (extChartAt I α).source := by
+        rw [extChartAt_source (I := I)]; exact hx_source
+      refine ⟨extChartAt I α x, (extChartAt I α).map_source hx_ext_source, ?_⟩
       rfl
     obtain ⟨R, hR_pos, hR_subset⟩ :=
       exists_ball_subset_chartTargetEuclid (I := I) (M := M) α hy₀_in
@@ -678,7 +678,7 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
     set W : Set M := V ∩ Q with hW_def
     have hW_open : IsOpen W := hVopen.inter hQ_open
     have hxQ : x ∈ Q := by
-      refine ⟨hx_src, ?_⟩
+      refine ⟨hx_source, ?_⟩
       refine ⟨y₀, ?_, ?_⟩
       · rw [Metric.mem_ball]
         change dist y₀ y₀ < R / 4
@@ -732,14 +732,14 @@ theorem memWkpChart_super_critical_implies_contMDiff_m_representative
             ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
               : C^∞⟮I, M; ℝ⟯) : M → ℝ) y) W := by
       intro y hy
-      have hy_src : y ∈ (chartAt H α).source := hVsource hy.1
+      have hy_source : y ∈ (chartAt H α).source := hVsource hy.1
       have h_push_eq :
           chartPushed (I := I) (M := M)
               (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α ũ
               ((toEuclidean (E := E)) (extChartAt I α y)) =
             ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
               : C^∞⟮I, M; ℝ⟯) : M → ℝ) y * ũ y :=
-        chartPushed_apply_toE_extChartAt (I := I) (M := M) α ũ hy_src
+        chartPushed_apply_toE_extChartAt (I := I) (M := M) α ũ hy_source
       have hyQ : y ∈ Q := hy.2
       have hyQ_in_ball : (toEuclidean (E := E)) (extChartAt I α y) ∈
           Metric.ball y₀ (R / 4) := by
@@ -805,7 +805,7 @@ theorem memWkpChart_forall_implies_contMDiff_m_representative_uncond
         (I := I) (M := M) g] u := by
   refine memWkpChart_forall_implies_contMDiff_m_representative
     (I := I) (M := M) g m hu_meas
-    (chartSobolevSuperCriticalWitness_of_h_all (I := I) (M := M) g m h_all) ?_
+    (hasSupercriticalChartSobolevRegularity_of_all_even_orders (I := I) (M := M) g m h_all) ?_
   intro p hp_dim v hv_meas hv
   exact SuperCriticalBridge.memWkpChart_super_critical_implies_contMDiff_m_representative
     (I := I) (M := M) g m hp_dim hv_meas hv

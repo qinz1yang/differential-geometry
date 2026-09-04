@@ -11,6 +11,20 @@ open scoped ENNReal
 
 variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
+theorem eLpNorm_two_sq_eq_lintegral_enorm_sq (f : α → ℝ) :
+    (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal
+    (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))]
+  have h2 : (2 : ℝ≥0∞).toReal = 2 := by rfl
+  rw [h2]
+  have h_integral : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
+      ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
+    refine lintegral_congr_ae ?_
+    filter_upwards with x
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, ENNReal.rpow_natCast]
+  rw [h_integral, ← ENNReal.rpow_natCast _ 2, ← ENNReal.rpow_mul]
+  norm_num
+
 theorem integral_sq_eq_l2 {v : α → ℝ} (hv : MemLp v 2 μ) :
     (∫ x, v x ^ 2 ∂μ) = (eLpNorm v 2 μ).toReal ^ 2 := by
   have h_sq_lintegral :

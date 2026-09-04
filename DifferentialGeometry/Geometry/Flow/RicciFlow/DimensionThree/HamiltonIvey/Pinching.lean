@@ -34,18 +34,18 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
     (horth : OrthonormalBasisAt (I := I) (S.base.metric t) x basis) :
     metricTracePair0SAt (I := I) (S.base.metric t) (S.ricci t x) =
       2 * ∑ i : Fin 3,
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
           (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) := by
   have htrace := traceData_metricTrace (I := I) (M := M) S horth
   have hscalar := htrace.scalar_trace
   have hscalar' : metricTracePair0SAt (I := I) (S.base.metric t) (S.ricci t x) =
-      -stdScalar3 (standardRmCompAt (I := I) basis (S.base.rm04 t x)) := by
+      -standardScalar3 (standardRmCompAt (I := I) basis (S.base.rm04 t x)) := by
     linarith
   rw [hscalar']
   have hcurv := htrace.curvature_symmetries
   have h01 : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 0 1 0 1 a)) =
-      -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+      -tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 0) (basis 1) (basis 1) (basis 0) := by
     have h' : -(S.base.rm04 t x) (vec4 (basis 0) (basis 1) (basis 0) (basis 1)) =
         (S.base.rm04 t x) (vec4 (basis 0) (basis 1) (basis 1) (basis 0)) := by
@@ -54,9 +54,9 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
       vec4 (basis 0) (basis 1) (basis 0) (basis 1) by
         funext a
         fin_cases a <;> simp [slots4, vec4]]
-    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg h'
+    simpa only [tensor04StandardAt, neg_neg] using congrArg Neg.neg h'
   have h02 : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 0 2 0 2 a)) =
-      -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+      -tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 0) (basis 2) (basis 2) (basis 0) := by
     have h' : -(S.base.rm04 t x) (vec4 (basis 0) (basis 2) (basis 0) (basis 2)) =
         (S.base.rm04 t x) (vec4 (basis 0) (basis 2) (basis 2) (basis 0)) := by
@@ -65,9 +65,9 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
       vec4 (basis 0) (basis 2) (basis 0) (basis 2) by
         funext a
         fin_cases a <;> simp [slots4, vec4]]
-    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg h'
+    simpa only [tensor04StandardAt, neg_neg] using congrArg Neg.neg h'
   have h12 : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 1 2 1 2 a)) =
-      -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+      -tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 1) (basis 2) (basis 2) (basis 1) := by
     have h' : -(S.base.rm04 t x) (vec4 (basis 1) (basis 2) (basis 1) (basis 2)) =
         (S.base.rm04 t x) (vec4 (basis 1) (basis 2) (basis 2) (basis 1)) := by
@@ -76,9 +76,9 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
       vec4 (basis 1) (basis 2) (basis 1) (basis 2) by
         funext a
         fin_cases a <;> simp [slots4, vec4]]
-    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg h'
+    simpa only [tensor04StandardAt, neg_neg] using congrArg Neg.neg h'
   have h10' : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 1 0 1 0 a)) =
-      -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+      -tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 0) (basis 1) (basis 1) (basis 0) := by
     have hlast : -(S.base.rm04 t x) (vec4 (basis 1) (basis 0) (basis 1) (basis 0)) =
         (S.base.rm04 t x) (vec4 (basis 1) (basis 0) (basis 0) (basis 1)) := by
@@ -90,9 +90,9 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
       vec4 (basis 1) (basis 0) (basis 1) (basis 0) by
         funext a
         fin_cases a <;> simp [slots4, vec4]]
-    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg (hlast.trans hswap)
+    simpa only [tensor04StandardAt, neg_neg] using congrArg Neg.neg (hlast.trans hswap)
   have h20' : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 2 0 2 0 a)) =
-      -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+      -tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 0) (basis 2) (basis 2) (basis 0) := by
     have hlast : -(S.base.rm04 t x) (vec4 (basis 2) (basis 0) (basis 2) (basis 0)) =
         (S.base.rm04 t x) (vec4 (basis 2) (basis 0) (basis 0) (basis 2)) := by
@@ -104,9 +104,9 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
       vec4 (basis 2) (basis 0) (basis 2) (basis 0) by
         funext a
         fin_cases a <;> simp [slots4, vec4]]
-    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg (hlast.trans hswap)
+    simpa only [tensor04StandardAt, neg_neg] using congrArg Neg.neg (hlast.trans hswap)
   have h21' : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 2 1 2 1 a)) =
-      -tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+      -tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
         (basis 1) (basis 2) (basis 2) (basis 1) := by
     have hlast : -(S.base.rm04 t x) (vec4 (basis 2) (basis 1) (basis 2) (basis 1)) =
         (S.base.rm04 t x) (vec4 (basis 2) (basis 1) (basis 1) (basis 2)) := by
@@ -118,7 +118,7 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
       vec4 (basis 2) (basis 1) (basis 2) (basis 1) by
         funext a
         fin_cases a <;> simp [slots4, vec4]]
-    simpa only [tensor04StdAt, neg_neg] using congrArg Neg.neg (hlast.trans hswap)
+    simpa only [tensor04StandardAt, neg_neg] using congrArg Neg.neg (hlast.trans hswap)
   have hdiag0 : (S.base.rm04 t x) (fun a : Fin 4 => basis (slots4 0 0 0 0 a)) = 0 := by
     have h : standardRmCompAt (I := I) basis (S.base.rm04 t x) 0 0 0 0 =
         -standardRmCompAt (I := I) basis (S.base.rm04 t x) 0 0 0 0 :=
@@ -137,7 +137,7 @@ private theorem scalar_eq_neg_two_mul_sum_sectional
       hcurv.anti_first 2 2 2 2
     unfold standardRmCompAt rm04CompAt component0S at h
     nlinarith
-  unfold stdScalar3 stdRicci3
+  unfold standardScalar3 standardRicci3
   simp only [Fin.sum_univ_three, standardRmCompAt, rm04CompAt, component0S,
     bivectorIndex3, Fin.reduceEq, ↓reduceIte]
   rw [h01, h02, h12, h10', h20', h21', hdiag0, hdiag1, hdiag2]
@@ -159,14 +159,14 @@ theorem scalar_eq_two_mul_sum_orderedSectionalCurvaturesAt
       (I := I) (S.base.metric t) x⟩
   have hscalar : metricTracePair0SAt (I := I) (S.base.metric t) (S.ricci t x) =
       2 * ∑ i : Fin 3,
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
           (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) :=
     scalar_eq_neg_two_mul_sum_sectional (I := I) (M := M) S basis horth
   have htrace :
       ∑ i : Fin 3, orderedSectionalCurvaturesAt (I := I) x basis A i =
         ∑ i : Fin 3,
-          tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+          tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
             (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
             (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) := by
     have hperm :
@@ -186,7 +186,7 @@ theorem scalar_eq_two_mul_sum_orderedSectionalCurvaturesAt
         metricTracePair0SAt (I := I) (S.base.metric t) (S.ricci t x) := by
           simp [SolutionOn.scalar_eq_metricTrace]
     _ = 2 * ∑ i : Fin 3,
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
           (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) := hscalar
     _ = 2 * ∑ i : Fin 3, orderedSectionalCurvaturesAt (I := I) x basis A i := by
@@ -359,7 +359,7 @@ private theorem scalar_ge_two_mul_three_mul_min
   have hscalar := scalar_eq_neg_two_mul_sum_sectional (I := I) (M := M) S basis horth
   rw [hscalar]
   have hray : ∀ i : Fin 3, orderedSectionalCurvaturesAt (I := I) x basis A 2 ≤
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
         (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
         (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) := by
     intro i
@@ -380,16 +380,16 @@ private theorem scalar_ge_two_mul_three_mul_min
         (fun _ : Fin 1 => (1 : Real))
         (fun _ : Fin 1 => basis (bivectorIndex3 i).1)
         (fun _ : Fin 1 => basis (bivectorIndex3 i).2) =
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
           (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) := by
       dsimp [A]
       unfold algebraicCurvatureOperatorQuadraticEval
-      simp only [Fin.sum_univ_one, tensor04StdAt, one_mul]
+      simp only [Fin.sum_univ_one, tensor04StandardAt, one_mul]
     rw [hquad, hid, mul_one] at h
     exact h
   have hsum : 3 * orderedSectionalCurvaturesAt (I := I) x basis A 2 ≤
-      ∑ i : Fin 3, tensor04StdAt (I := I) (M := M) (S.base.rm04 t x)
+      ∑ i : Fin 3, tensor04StandardAt (I := I) (M := M) (S.base.rm04 t x)
         (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
         (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) := by
     have hle := Finset.sum_le_sum (s := Finset.univ) (fun i _ => hray i)
@@ -570,14 +570,14 @@ private theorem scalarEvolutionEquationOn_timeShift
   exact hcomp
 
 omit [SigmaCompactSpace M] in
-private theorem scalarLowerBoundWMPRegularity_timeShift
+private theorem scalarLowerBoundWeakMaximumPrincipleRegularity_timeShift
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (t0 T n c0 : Real) (K : NNReal)
     (hsubset : ∀ t : Real, t ∈ Set.Icc 0 T -> t ∈ (D.timeShift t0).carrier)
     (hden : ∀ t : Real, t ∈ Set.Icc 0 T ->
       1 - (2 / n) * c0 * t ≠ 0) :
-    ScalarLowerBoundWMPRegularity (I := I)
+    ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I)
       (flowG (I := I) (S.timeShift t0)) T n c0 (S.timeShift t0).scalar K := by
   classical
   let hreg := canonicalScalarRegularOn_timeShift (I := I) (M := M) S hS.scalarRegular t0
@@ -764,9 +764,9 @@ private theorem scalarLowerBarrier_le_shifted_scalar
     exists_scalarLowerReaction_lipschitzOn_valueSet (M := M) 3 T scalar'
       (scalarLowerBarrier 3 (-6 * K)) hcompact
   have hreg' :
-      ScalarLowerBoundWMPRegularity (I := I) G' T 3 (-6 * K) scalar' K' := by
+      ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I) G' T 3 (-6 * K) scalar' K' := by
     simpa [G', scalar', S'] using
-      (scalarLowerBoundWMPRegularity_timeShift (I := I) (M := M) S hS t0 T 3 (-6 * K) K'
+      (scalarLowerBoundWeakMaximumPrincipleRegularity_timeShift (I := I) (M := M) S hS t0 T 3 (-6 * K) K'
         hslab' hden_ne')
   have hevol' : ScalarEvolutionEquationOn (D := D.timeShift t0) scalar' scalarLap' ricciNormSq' := by
     change ScalarEvolutionEquationOn (D := D.timeShift t0)

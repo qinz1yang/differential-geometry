@@ -191,7 +191,7 @@ private theorem zeroOrderCoefficient_core_affine
         ‖ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T‖ := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simpa only [S, ccToHsLin_apply] using hrad
   have hS3 : covariantJetNormSq (I := I) (M := M) g 3 S ≤ A3 ^ 2 := by
     refine (hjet3 S).trans ?_

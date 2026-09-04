@@ -223,7 +223,7 @@ private lemma lintegral_density_chartPushedRaw_pow_le
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) *
             ‖F ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖ₑ ^ p
           ∂(volume : Measure EuclN) :=
-    DifferentialGeometry.Analysis.Sobolev.Chart.chartLocalMeasure_lintegral_via_chartTargetEuclid
+    DifferentialGeometry.Analysis.Sobolev.Chart.chartLocalMeasure_lintegral_eq_chartTargetEuclid
       (I := I) (M := M) g α h_G_meas
   have h_density_eq : ∀ y : EuclN,
       DifferentialGeometry.Integral.Measure.chartDensity g α
@@ -636,14 +636,14 @@ private lemma chartPulledIntegralCLM_density_ψ_smoothToLp_eq_setIntegral
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆
+    (hψ_support : tsupport ψ ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α)
     (v : SmoothScalar g) :
     chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothToLp (I := I) (M := M) g v) =
       ∫ y in DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α,
@@ -652,18 +652,18 @@ private lemma chartPulledIntegralCLM_density_ψ_smoothToLp_eq_setIntegral
           ψ y ∂(volume : Measure EuclN) := by
   classical
   have h_clm : chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothToLp (I := I) (M := M) g v) =
       ∫ y in DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α,
         v.toFun ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
           (densityOnEuclid (I := I) g α y * ψ y) ∂(volume : Measure EuclN) :=
     chartPulledIntegralCLM_smoothToLp (I := I) (M := M) g α
-      (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+      (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
       (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-      (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+      (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
       v
   rw [h_clm]
   refine MeasureTheory.setIntegral_congr_fun
@@ -679,7 +679,7 @@ private lemma psi_memLp_chartPulledWeighted
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆
+    (hψ_support : tsupport ψ ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α) :
     MemLp ψ 2
@@ -687,7 +687,7 @@ private lemma psi_memLp_chartPulledWeighted
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α)) :=
   continuous_compactSupport_memLp_chartPulledWeighted_restrict
-    (I := I) (M := M) g α hψ.continuous hψ_cs hψ_supp
+    (I := I) (M := M) g α hψ.continuous hψ_cs hψ_support
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 private lemma setIntegral_density_eq_integral_weighted
@@ -724,7 +724,7 @@ private lemma setIntegral_density_G_psi_eq_inner
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆
+    (hψ_support : tsupport ψ ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α)
     (G : Lp ℝ 2
@@ -737,15 +737,15 @@ private lemma setIntegral_density_G_psi_eq_inner
         ((G : EuclN → ℝ) y) * ψ y ∂(volume : Measure EuclN) =
       @inner ℝ _ _
         ((psi_memLp_chartPulledWeighted
-          (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp ψ) G := by
+          (I := I) (M := M) g α hψ hψ_cs hψ_support).toLp ψ) G := by
   classical
   rw [setIntegral_density_eq_integral_weighted (I := I) (M := M) g α
     ((G : EuclN → ℝ)) ψ]
   rw [L2.inner_def
     ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α
-      hψ hψ_cs hψ_supp).toLp ψ) G]
+      hψ hψ_cs hψ_support).toLp ψ) G]
   have hae_psi : ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α
-      hψ hψ_cs hψ_supp).toLp ψ : Lp ℝ 2 _) =ᵐ[
+      hψ hψ_cs hψ_support).toLp ψ : Lp ℝ 2 _) =ᵐ[
         (chartPulledWeightedMeasure (I := I) g α).restrict
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)] ψ :=
@@ -898,14 +898,14 @@ theorem chartPulledIntegralCLM_density_ψ_eq_setIntegral
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆
+    (hψ_support : tsupport ψ ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α)
     (F : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :
     chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp) F =
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support) F =
       ∫ y in DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α,
         densityOnEuclid (I := I) g α y *
@@ -921,24 +921,24 @@ theorem chartPulledIntegralCLM_density_ψ_eq_setIntegral
   have h_LHS_tendsto :
       Tendsto (fun n =>
         chartPulledIntegralCLM (I := I) (M := M) g α
-          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+          (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
           (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-          (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+          (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
           (smoothToLp (I := I) (M := M) g (v n))) atTop
       (𝓝 (chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp) F)) :=
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support) F)) :=
     chartPulledIntegralCLM_tendsto (I := I) (M := M) g α
-      (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+      (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
       (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-      (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+      (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
       h_v_tendsto
   have h_smooth_case : ∀ n,
       chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothToLp (I := I) (M := M) g (v n)) =
       ∫ y in DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α,
@@ -946,7 +946,7 @@ theorem chartPulledIntegralCLM_density_ψ_eq_setIntegral
           DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α (v n).toFun y *
           ψ y ∂(volume : Measure EuclN) := fun n =>
     chartPulledIntegralCLM_density_ψ_smoothToLp_eq_setIntegral
-      (I := I) (M := M) g α hψ hψ_cs hψ_supp (v n)
+      (I := I) (M := M) g α hψ hψ_cs hψ_support (v n)
   have h_aeEq : ∀ n,
       ((chartPushedRawLpFromLp (I := I) (M := M) g α
         (smoothToLp (I := I) (M := M) g (v n)) :
@@ -999,47 +999,47 @@ theorem chartPulledIntegralCLM_density_ψ_eq_setIntegral
     rw [hy]
   have h_inner_v_n : ∀ n,
       chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothToLp (I := I) (M := M) g (v n)) =
       @inner ℝ _ _
         ((psi_memLp_chartPulledWeighted
-          (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp ψ)
+          (I := I) (M := M) g α hψ hψ_cs hψ_support).toLp ψ)
         (chartPushedRawLpFromLp (I := I) (M := M) g α
           (smoothToLp (I := I) (M := M) g (v n))) := by
     intro n
     rw [h_smooth_case n, h_RHS_v_n_eq n]
     rw [setIntegral_density_G_psi_eq_inner (I := I) (M := M) g α
-      hψ hψ_cs hψ_supp (chartPushedRawLpFromLp (I := I) (M := M) g α
+      hψ hψ_cs hψ_support (chartPushedRawLpFromLp (I := I) (M := M) g α
         (smoothToLp (I := I) (M := M) g (v n)))]
   rw [setIntegral_density_G_psi_eq_inner (I := I) (M := M) g α
-    hψ hψ_cs hψ_supp (chartPushedRawLpFromLp (I := I) (M := M) g α F)]
+    hψ hψ_cs hψ_support (chartPushedRawLpFromLp (I := I) (M := M) g α F)]
   have h_chartPushedRaw_tendsto :
       Tendsto (fun n => chartPushedRawLpFromLp (I := I) (M := M) g α
         (smoothToLp (I := I) (M := M) g (v n))) atTop
       (𝓝 (chartPushedRawLpFromLp (I := I) (M := M) g α F)) :=
     chartPushedRawLpFromLp_tendsto (I := I) (M := M) g α h_v_tendsto
   have h_inner_tendsto : Tendsto (fun n => @inner ℝ _ _
-      ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp ψ)
+      ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α hψ hψ_cs hψ_support).toLp ψ)
       (chartPushedRawLpFromLp (I := I) (M := M) g α
         (smoothToLp (I := I) (M := M) g (v n)))) atTop
     (𝓝 (@inner ℝ _ _
-      ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp ψ)
+      ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α hψ hψ_cs hψ_support).toLp ψ)
       (chartPushedRawLpFromLp (I := I) (M := M) g α F))) := by
     have h_inner_cont :
         Continuous (fun G => @inner ℝ _ _
-          ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp ψ)
+          ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α hψ hψ_cs hψ_support).toLp ψ)
           G) := continuous_const.inner continuous_id
     exact (h_inner_cont.tendsto _).comp h_chartPushedRaw_tendsto
   have h_LHS_eq_inner_seq : (fun n =>
       chartPulledIntegralCLM (I := I) (M := M) g α
-        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_supp)
+        (densityPsi_cont (I := I) (M := M) (g := g) (α := α) hψ hψ_support)
         (densityPsi_cs (I := I) (M := M) (g := g) (α := α) hψ_cs)
-        (densityPsi_supp (I := I) (M := M) (g := g) (α := α) hψ_supp)
+        (densityPsi_support (I := I) (M := M) (g := g) (α := α) hψ_support)
         (smoothToLp (I := I) (M := M) g (v n))) =
       (fun n => @inner ℝ _ _
-        ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp ψ)
+        ((psi_memLp_chartPulledWeighted (I := I) (M := M) g α hψ hψ_cs hψ_support).toLp ψ)
         (chartPushedRawLpFromLp (I := I) (M := M) g α
           (smoothToLp (I := I) (M := M) g (v n)))) := funext h_inner_v_n
   rw [h_LHS_eq_inner_seq] at h_LHS_tendsto
@@ -1060,7 +1060,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_chartTarget
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α) := by
   classical
-  intro φ hφ_smooth hφ_cs hφ_supp
+  intro φ hφ_smooth hφ_cs hφ_support
   have hΩ_open :
       IsOpen (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α) :=
@@ -1070,7 +1070,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_chartTarget
       ∃ δ : ℝ, 0 < δ ∧ Metric.cthickening δ (tsupport φ) ⊆
         DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α :=
-    hφ_cs.exists_cthickening_subset_open hΩ_open hφ_supp
+    hφ_cs.exists_cthickening_subset_open hΩ_open hφ_support
   set Ω' : Set EuclN := Metric.thickening δ (tsupport φ) with hΩ'_def
   set K : Set EuclN := Metric.cthickening δ (tsupport φ) with hK_def
   have hΩ'_open : IsOpen Ω' := Metric.isOpen_thickening
@@ -1102,12 +1102,12 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_chartTarget
     have h_compl_open : IsOpen ((tsupport φ)ᶜ) :=
       (isClosed_tsupport _).isOpen_compl
     have hx_in_compl : x ∈ (tsupport φ)ᶜ := hx
-    have hφ_zero_nbhd : ∀ᶠ y in 𝓝 x, φ y = 0 := by
+    have hφ_zero_neighborhood : ∀ᶠ y in 𝓝 x, φ y = 0 := by
       filter_upwards [h_compl_open.mem_nhds hx_in_compl] with y hy
       exact image_eq_zero_of_notMem_tsupport hy
     have hφ_const_zero : fderiv ℝ φ x = fderiv ℝ (fun _ : EuclN => (0 : ℝ)) x := by
       apply Filter.EventuallyEq.fderiv_eq
-      filter_upwards [hφ_zero_nbhd] with y hy
+      filter_upwards [hφ_zero_neighborhood] with y hy
       rw [hy]
     rw [hφ_const_zero]
     simp
@@ -1239,8 +1239,8 @@ noncomputable def chartBilinearH1ComplDataOfLaplacianDomain
   weak_partial_isWeakPartial := fun i => by
     have h_base := hasWeakPartialDeriv_chartPushedWeakPartialLp_on_chartTarget
       (I := I) (M := M) g α i u_h
-    intro φ hφ_smooth hφ_cs hφ_supp
-    have h_id := h_base φ hφ_smooth hφ_cs hφ_supp
+    intro φ hφ_smooth hφ_cs hφ_support
+    have h_id := h_base φ hφ_smooth hφ_cs hφ_support
     have h_coeFn := chartPushedLpFromLp_coeFn (I := I) (M := M) g α
       (H1ComplToLp (I := I) (M := M) g u_h)
     have h_meas : MeasurableSet
@@ -1343,11 +1343,11 @@ noncomputable def chartBilinearH1ComplDataOfLaplacianDomain
     rw [h_int_eq]
     exact h_id
   variational_identity := by
-    intro ψ hψ hψ_cs hψ_supp
+    intro ψ hψ hψ_cs hψ_support
     have h_integralForm := laplacianDomain_variational_identity
-      (I := I) (M := M) g α hu_h hψ hψ_cs hψ_supp
+      (I := I) (M := M) g α hu_h hψ hψ_cs hψ_support
     have h_partA := chartPulledIntegralCLM_density_ψ_eq_setIntegral
-      (I := I) (M := M) g α hψ hψ_cs hψ_supp
+      (I := I) (M := M) g α hψ hψ_cs hψ_support
       (leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h)
     rw [h_partA] at h_integralForm
     have h_u_chart_ae := chartPushedLpFromLp_coeFn (I := I) (M := M) g α

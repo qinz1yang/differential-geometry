@@ -265,19 +265,19 @@ lemma realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw
           scalarOnE (I := I) x
             (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2 (T - T') x ![] ![b, a]) y)) := by
   classical
-  have hx_src : x ∈ (extChartAt I x).source := by
+  have hx_source : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
   have htarget : extChartAt I x x ∈ (extChartAt I x).target :=
-    (extChartAt I x).map_source hx_src
+    (extChartAt I x).map_source hx_source
   have htarget_open : IsOpen ((extChartAt I x).target : Set E) :=
     isOpen_extChartAt_target (I := I) x
-  filter_upwards [htarget_open.mem_nhds htarget] with y hy_tgt
+  filter_upwards [htarget_open.mem_nhds htarget] with y hy_target
   have hp : (extChartAt I x).symm y ∈ (chartAt H x).source := by
     rw [← extChartAt_source (I := I)]
-    exact (extChartAt I x).map_target hy_tgt
+    exact (extChartAt I x).map_target hy_target
   rw [realizedGramDeriv]
   rw
-    [DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness
+    [DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients.chartGramOnE_realize_sub_eq_symm_rawComponent_two
     (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x a b y hp]
   rw [scalarOnE_def, scalarOnE_def]
 

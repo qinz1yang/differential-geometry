@@ -22,8 +22,8 @@ open DifferentialGeometry.Analysis.Spectral
     deTurckSmoothRemainder exists_smoothCcPath_realizing_coeff gFibreOpBound_ccTensor02Symm
     deTurckSmoothN_path_coeff_finiteOrder_jetSpectralMass
     hs2_opBound_at_two maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
-    perModeConv_allOrder_timeDeriv_spectralMass_le
-    perModeConv_finiteOrder_timeJet_spectralMass_gain smoothCcToTensorHs
+    perModeConvolution_allOrder_timeDeriv_spectralMass_le
+    perModeConvolution_finiteOrder_timeJet_spectralMass_gain smoothCcToTensorHs
     smoothCcToTensorHs_coeff smoothCcToTensorHs_smul symmCoeffPath
     symmCoeffPath_contDiff symmCoeffPath_realizes symmCoeffPath_spectralMass
     tensorHsInclusion_smoothCcToTensorHs
@@ -106,7 +106,7 @@ private theorem coord_eq_smoothN
           (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)))
     {T : ℝ} (hT : 0 < T)
-    (u : MaxRegSolutionSpace (I := I) (M := M)
+    (u : MaximalRegularitySolutionSpace (I := I) (M := M)
       (g := g) (r := 0) (s := 2) (2 : ℝ) T)
     (hUball : ∀ᵐ t ∂timeMeasure T, ‖timeH1.toFun u t‖ ≤ R)
     (hi : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) T)
@@ -132,7 +132,7 @@ private theorem coord_eq_smoothN
           (tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
             (show (0 : ℝ) ≤ (2 : ℝ) by norm_num) (timeH1.toFun u t)) i =
-        perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t)
+        perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t)
     (F : ℝ → SmoothCcTensor g 0 2) {δ' : ℝ} (hδ_lt : δ' < 1)
     (hδ' : ∀ t : ℝ, gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (F t)) δ')
@@ -157,10 +157,10 @@ private theorem coord_eq_smoothN
     refine TensorHs.ext (funext fun j => ?_)
     rw [smoothCcToTensorHs_coeff, h_pin t ht, tensorHsToL2_tensorL2Coeff]
   have hφ_smooth : ∀ i, ContDiff ℝ ∞
-      (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i)) :=
-    fun i => perModeConv_contDiff_of_contDiff ⊤ _ (fc i) (hf_smooth i)
+      (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i)) :=
+    fun i => perModeConvolution_contDiff_of_contDiff ⊤ _ (fc i) (hf_smooth i)
   obtain ⟨Cmaj, hCmaj_sum, hCmaj_le⟩ :=
-    perModeConv_allOrder_timeDeriv_spectralMass_le (I := I) (M := M)
+    perModeConvolution_allOrder_timeDeriv_spectralMass_le (I := I) (M := M)
       (g := g) (r := 0) (s := 2) (T := T) hT.le fc hf_smooth hf_mass 0
       ((3 : ℝ) + (((weylSobolevExp (E := E) : ℕ) : ℝ) + 1)) (by positivity)
   have hfield_cont : ContinuousOn
@@ -169,7 +169,7 @@ private theorem coord_eq_smoothN
     refine tensorHs_continuousOn_of_coeff_of_higher_mass (I := I) (M := M) g
       (σ := (3 : ℝ))
       (σ' := (3 : ℝ) + (((weylSobolevExp (E := E) : ℕ) : ℝ) + 1)) ?_ _
-      (fun i => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i))
+      (fun i => perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i))
       ?_ (fun i => (hφ_smooth i).continuous.continuousOn) hCmaj_sum ?_
     · have hring : (3 : ℝ) + (((weylSobolevExp (E := E) : ℕ) : ℝ) + 1) - 3 =
           ((weylSobolevExp (E := E) : ℕ) : ℝ) + 1 := by ring
@@ -607,19 +607,19 @@ private theorem lowRegularity_forceDriver
       fun t => liftHiN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' FHi
         (tensorHsCongr (I := I) (M := M) g 0 2
           (show (2 : ℝ) + 2 = (4 : ℝ) by norm_num)
-          (maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi t)))
     (hballU : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)),
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (2 : ℝ) ≤ (2 : ℝ) + 2 by norm_num)
-        (maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi t)‖ ≤ R)
     (hspatial : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) t) ^ 2) ∧
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) t) ^ 2 ≤ Cσ) :
     ∀ k : ℕ, ∃ f : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ,
       (∀ i, ContDiff ℝ (k : ℕ) (f i)) ∧
@@ -635,23 +635,23 @@ private theorem lowRegularity_forceDriver
   have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
   set w : ℝ → TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) :=
-    fun t => maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT
+    fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi t with hw_def
   set ρw : ℝ := ((weylSobolevExp (E := E) : ℕ) : ℝ) + 1 with hρw_def
   have hρw_gt : ((weylSobolevExp (E := E) : ℕ) : ℝ) < ρw := by rw [hρw_def]; linarith
   have hpmc_contOn : ∀ i : TensorEigenIdx (I := I) (M := M) g 0 2,
-      ContinuousOn (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+      ContinuousOn (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u)) (Set.Icc (0 : ℝ) T) :=
-    fun i => continuousOn_perModeConv_timeL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
+    fun i => continuousOn_perModeConvolution_timeL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
       (timeModeCoeff (I := I) (M := M) fHi i) hT.le
   set c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ := fun i =>
     Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) =>
-      perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+      perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) p.1) with hc_def
   have hc_cont : ∀ i, Continuous (c i) := fun i =>
     Continuous.Icc_extend' ((hpmc_contOn i).domRestrict)
   have hc_eqOn : ∀ i, Set.EqOn (c i)
-      (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+      (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u)) (Set.Icc (0 : ℝ) T) := by
     intro i t ht
     exact Set.IccExtend_of_mem hT.le _ ht
@@ -659,7 +659,7 @@ private theorem lowRegularity_forceDriver
       ∃ B : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ, Summable B ∧
         ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) T,
           tensorSobolevWeight (I := I) (M := M) i τ *
-              (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+              (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
                 (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) t) ^ 2 ≤ B i := by
     intro τ hτ
     obtain ⟨Cτ, hCτ⟩ := hspatial (τ + ρw)
@@ -668,7 +668,7 @@ private theorem lowRegularity_forceDriver
     intro i t ht
     obtain ⟨hsum_t, hbd_t⟩ := hCτ t ht
     have hterm : tensorSobolevWeight (I := I) (M := M) i (τ + ρw)
-        * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) t) ^ 2 ≤ Cτ :=
       le_trans (hsum_t.le_tsum i (fun j _ => mul_nonneg
         (tensorSobolevWeight_nonneg (I := I) (M := M) j (τ + ρw)) (sq_nonneg _))) hbd_t
@@ -679,11 +679,11 @@ private theorem lowRegularity_forceDriver
       congr 1
       ring
     calc tensorSobolevWeight (I := I) (M := M) i τ
-          * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) t) ^ 2
         = tensorSobolevWeight (I := I) (M := M) i (-ρw)
             * (tensorSobolevWeight (I := I) (M := M) i (τ + ρw)
-              * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+              * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
                   (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) t) ^ 2) := by
           rw [hsplit]; ring
       _ ≤ tensorSobolevWeight (I := I) (M := M) i (-ρw) * Cτ :=
@@ -692,9 +692,9 @@ private theorem lowRegularity_forceDriver
       _ = Cτ * tensorSobolevWeight (I := I) (M := M) i (-ρw) := by ring
   have hcoeff_id : ∀ i, (fun t => (w t).coeff i)
       =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)]
-        (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u)) := fun i =>
-    timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M) hT hc fHi i
+    timeModeCoeff_eq_perModeConvolution_forcing (I := I) (M := M) hT hc fHi i
   have hfHi_tmc : ∀ i, (fun t => (fHi t).coeff i)
       =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)]
         (fun s => (timeModeCoeff (I := I) (M := M) fHi i) s) := fun i =>
@@ -719,31 +719,31 @@ private theorem lowRegularity_forceDriver
   | succ k ih =>
     obtain ⟨fk, hfk_cont, hfk_mass, hfk_ae⟩ := ih
     obtain ⟨hφ_cont, hφ_mass⟩ :=
-      perModeConv_finiteOrder_timeJet_spectralMass_gain (I := I) (M := M)
+      perModeConvolution_finiteOrder_timeJet_spectralMass_gain (I := I) (M := M)
         g hT.le k fk hfk_cont hfk_mass
     have hw_coeff : ∀ i, (fun t => (w t).coeff i)
         =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)]
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i)) := by
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i)) := by
       intro i
       have hfk_tmc : (fun s => (timeModeCoeff (I := I) (M := M) fHi i) s)
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] (fk i) :=
         (hfHi_tmc i).symm.trans (hfk_ae i)
-      have hpm : (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+      have hpm : (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u))
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)]
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i)) := by
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i)) := by
         filter_upwards [MeasureTheory.ae_restrict_mem
           (measurableSet_Icc (a := (0 : ℝ)) (b := T))] with t ht
-        exact perModeConv_timeL2_congr (T := T)
+        exact perModeConvolution_timeL2_congr (T := T)
           (TensorEigenIdx.lambda (I := I) (M := M) i) hfk_tmc ht
       exact (hcoeff_id i).trans hpm
     exact lowRegularity_forceJetStep (I := I) (M := M) g hρ hRρ hδ0 hδ_le hreal'
       FHi hbridge hT w hballU fHi hfix (k + 1)
-      (fun i => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i))
+      (fun i => perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i))
       hφ_cont hφ_mass hw_coeff
 
 omit [BoundarylessManifold I M] in
-theorem carrier_coeff_pmConv
+theorem carrier_coeff_perModeConvolution
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T)
     (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
     (fc : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
@@ -758,9 +758,9 @@ theorem carrier_coeff_pmConv
           (tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
             (show (0 : ℝ) ≤ (2 : ℝ) by norm_num)
-            ((maxRegDuhamelMap (I := I) (M := M) (2 : ℝ) hT
+            ((maximalRegularityDuhamelMap (I := I) (M := M) (2 : ℝ) hT
               (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi).toFun t)) i =
-        perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
+        perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
   have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
@@ -795,9 +795,9 @@ theorem carrier_coeff_pmConv
     rw [ht i, hFrep_coeff t i, hpr_id t htmem]
   intro t ht i
   rw [tensorHsToL2_tensorL2Coeff,
-    carrier_toFun_coeff_eq_perModeConv_IccExtend_restrict (I := I) (M := M)
+    carrier_toFun_coeff_eq_perModeConvolution_IccExtend_restrict (I := I) (M := M)
       (h_compact := hc) (a := (2 : ℝ)) hT hT le_rfl fHi hFcoord hF_rep i ht]
-  refine perModeConv_timeL2_congr (T := T)
+  refine perModeConvolution_timeL2_congr (T := T)
     (TensorEigenIdx.lambda (I := I) (M := M) i) ?_ ht
   filter_upwards [MeasureTheory.ae_restrict_mem (μ := MeasureTheory.volume)
     (measurableSet_Icc (a := (0 : ℝ)) (b := T))] with s hs
@@ -820,10 +820,10 @@ theorem exists_spatial_weighted_energy_bound_all_orders
     (σ : ℝ) :
     ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) t) ^ 2) ∧
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) fHi i) u) t) ^ 2 ≤ Cσ := by
   have hfeq : timeL2Inclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (show ((1 : ℕ) : ℝ) ≤ (2 : ℝ) by norm_num) fHi = fLo := by
@@ -898,12 +898,12 @@ theorem exists_forcing_spectral_jet_mass_control (hDim : Module.finrank ℝ E = 
       fun t => liftHiN (I := I) (M := M) g hρ.le hδ0 hδ_le hreal' FHi
         (tensorHsCongr (I := I) (M := M) g 0 2
           (show (2 : ℝ) + 2 = (4 : ℝ) by norm_num)
-          (maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi t)))
     (hballU : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)),
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (2 : ℝ) ≤ (2 : ℝ) + 2 by norm_num)
-        (maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi t)‖ ≤ R)
     {Ctop B0 B1 D ρlo P Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ}
     (fLo : timeL2 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
@@ -919,7 +919,7 @@ theorem exists_forcing_spectral_jet_mass_control (hDim : Module.finrank ℝ E = 
             tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
               (show (0 : ℝ) ≤ (2 : ℝ) by norm_num)
-              ((maxRegDuhamelMap (I := I) (M := M) (2 : ℝ) hT
+              ((maximalRegularityDuhamelMap (I := I) (M := M) (2 : ℝ) hT
                 (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi).toFun t) →
           ‖smoothCcToTensorHs (I := I) (M := M) g ((2 : ℝ) + 2) S‖ ≤ R₀) ∧
       ∃ fc : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ,
@@ -996,14 +996,14 @@ theorem exists_forcing_spectral_jet_mass_control (hDim : Module.finrank ℝ E = 
       (measurableSet_Icc (a := (0 : ℝ)) (b := T))] with t ht
     exact hfc_eqOn i ht
   obtain ⟨Cmaj, hCmaj_sum, hCmaj_le⟩ :=
-    perModeConv_allOrder_timeDeriv_spectralMass_le (I := I) (M := M)
+    perModeConvolution_allOrder_timeDeriv_spectralMass_le (I := I) (M := M)
       (g := g) (r := 0) (s := 2) (T := T) hT.le fc hfc_smooth hfc_mass 0
       ((2 : ℝ) + 2) (by norm_num)
   have hCmaj_nn : ∀ i, 0 ≤ Cmaj i := fun i =>
     le_trans (mul_nonneg
       (tensorSobolevWeight_nonneg (I := I) (M := M) i ((2 : ℝ) + 2)) (sq_nonneg _))
       (hCmaj_le i 0 ⟨le_rfl, hT.le⟩)
-  have hcarr := carrier_coeff_pmConv (I := I) (M := M) g hT fHi fc
+  have hcarr := carrier_coeff_perModeConvolution (I := I) (M := M) g hT fHi fc
     (fun i => (hfc_smooth i).continuous)
     (by
       obtain ⟨B, hBs, hBle⟩ := hfc_mass 0 (2 : ℝ) (by norm_num)
@@ -1017,7 +1017,7 @@ theorem exists_forcing_spectral_jet_mass_control (hDim : Module.finrank ℝ E = 
   · intro t ht S hS
     have hcoeff : ∀ i,
         (smoothCcToTensorHs (I := I) (M := M) g ((2 : ℝ) + 2) S).coeff i =
-          perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
+          perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
       intro i
       rw [smoothCcToTensorHs_coeff, hS]
       exact hcarr t ht i
@@ -1060,11 +1060,11 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control_of_comp
     (hlo : IsAdaptedLowRegularitySolution (I := I) (M := M) (δ := δ) (Ctop := Ctop)
       (B0 := B0) (B1 := B1) (D := D) (ρ := ρlo) (P := P)
       g hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
-    ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (g := g) (r := 0) (s := 2) (2 : ℝ) T)
+    ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) (g := g) (r := 0) (s := 2) (2 : ℝ) T)
       (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) T)
       (fc : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ) (R₀ : ℝ),
       timeH1.trace0 _ T u = 0 ∧
-      u = maxRegDuhamelMap (I := I) (M := M) (2 : ℝ) hT
+      u = maximalRegularityDuhamelMap (I := I) (M := M) (2 : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi ∧
       (∀ i, (fun t => (fHi t).coeff i) =ᵐ[timeMeasure T] fc i) ∧
       (∀ i, ContDiff ℝ ∞ (fc i)) ∧
@@ -1079,7 +1079,7 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control_of_comp
             (tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
               (show (0 : ℝ) ≤ (2 : ℝ) by norm_num) (timeH1.toFun u t)) i =
-          perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t) ∧
+          perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t) ∧
       0 < R₀ ∧
       (∀ t ∈ Set.Icc (0 : ℝ) T, ∀ S : SmoothCcTensor g 0 2,
         SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2) S =
@@ -1127,37 +1127,37 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control_of_comp
       (by filter_upwards [hballU] with t ht using ht.trans hRcapLe)
   have hδlt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num : (1 : ℝ) / 3 < 1)
   have hfid0 := hforceId
-  have hinit : ucs.lo.init = (0 : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) := by
+  have hinit : ucs.lo.initial = (0 : TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) := by
     have h := htr
     rwa [timeH1.trace0_apply] at h
-  have hduh : ucs.lo = maxRegDuhamelMap (I := I) (M := M) (2 : ℝ) hT
+  have hduh : ucs.lo = maximalRegularityDuhamelMap (I := I) (M := M) (2 : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi := by
     refine timeH1.ext ?_ ?_
-    · rw [hinit, maxRegDuhamelMap_init]
+    · rw [hinit, maximalRegularityDuhamelMap_initial]
       exact (map_zero _).symm
     · have e1 : ucs.lo.deriv =
           timeScaleLaplacian (I := I) (M := M) (2 : ℝ) ucs.hiL2 + fHi := by
         rw [← timeH1.timeDeriv_apply]
         exact hder
-      have e2 : (maxRegDuhamelMap (I := I) (M := M) (2 : ℝ) hT
+      have e2 : (maximalRegularityDuhamelMap (I := I) (M := M) (2 : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi).deriv =
           timeScaleLaplacian (I := I) (M := M) (2 : ℝ)
-              (maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT
                 (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi) + fHi := by
         rw [← timeH1.timeDeriv_apply]
-        exact maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M) (h_compact := hc)
+        exact maximalRegularityDuhamelMap_timeDeriv_eq (I := I) (M := M) (h_compact := hc)
           hT _ fHi
       rw [e1, e2, hhiL2]
   rw [hhiL2] at hforceId
   have hballD : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)),
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (2 : ℝ) ≤ (2 : ℝ) + 2 by norm_num)
-        (maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi t)‖ ≤ R := by
     filter_upwards [ucs.link, hballU] with t hlk hbt
     have hstep : tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (2 : ℝ) ≤ (2 : ℝ) + 2 by norm_num)
-        (maxRegDuhamelSolField (I := I) (M := M) (2 : ℝ) hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (2 : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2)) fHi t) =
         timeH1.toFun ucs.lo t := by
       rw [← hhiL2]
@@ -1180,10 +1180,10 @@ theorem exists_second_order_solution_with_all_order_spectral_jet_control_of_comp
       tensorL2Coeff (I := I) (M := M) hc
           (tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
             (show (0 : ℝ) ≤ (2 : ℝ) by norm_num) (timeH1.toFun ucs.lo t)) i =
-        perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
+        perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
     intro t ht i
     rw [hduh]
-    exact carrier_coeff_pmConv (I := I) (M := M) g hT fHi fc
+    exact carrier_coeff_perModeConvolution (I := I) (M := M) g hT fHi fc
       (fun j => (hf_smooth j).continuous) hf_mass0 hpin t ht i
   refine ⟨ucs.lo, fHi, fc, R₀, htr, hduh, hpin, hf_smooth, hf_mass, hf_id,
     hR₀_pos, ?_, ?_, hstateU⟩
@@ -1212,7 +1212,7 @@ theorem exists_jointly_smooth_metric_solution_of_spectral_data (hDim : Module.fi
           (Nsec S hδ_lt hδ + rawTensorConnLapSmooth (I := I) g 0 2 S) x v w =
         F_RHS (tensorSectionRealizeMetric (I := I) g S hδ_lt hδ) x v w)
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    (u : MaxRegSolutionSpace (I := I) (M := M) (g := g) (r := 0) (s := 2) (2 : ℝ) T)
+    (u : MaximalRegularitySolutionSpace (I := I) (M := M) (g := g) (r := 0) (s := 2) (2 : ℝ) T)
     (htrace : timeH1.trace0 _ T u = 0)
     (fc : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ)
     (hf_smooth : ∀ i, ContDiff ℝ ∞ (fc i))
@@ -1227,7 +1227,7 @@ theorem exists_jointly_smooth_metric_solution_of_spectral_data (hDim : Module.fi
           (tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
             (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
             (show (0 : ℝ) ≤ (2 : ℝ) by norm_num) (timeH1.toFun u t)) i =
-        perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t)
+        perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t)
     (hstate : ∀ t ∈ Set.Icc (0 : ℝ) T, ‖timeH1.toFun u t‖ ≤
       1 / (2 * (hs2_opBound_at_two (I := I) (M := M) hDim g).choose))
     {R₀ : ℝ}
@@ -1305,7 +1305,7 @@ theorem exists_jointly_smooth_metric_solution_of_compatible_second_order_solutio
       g hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap)
     (hRcapC : Rcap ≤
       1 / (2 * (hs2_opBound_at_two (I := I) (M := M) hDim g).choose)) :
-    ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
+    ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M)
         (g := g) (r := 0) (s := 2) (2 : ℝ) T)
         (F : ℝ → SmoothCcTensor g 0 2) (δ' : ℝ) (hδ_lt : δ' < 1)
         (hδ' : ∀ t : ℝ, gFibreOpBound (I := I) (M := M) g
@@ -1352,7 +1352,7 @@ theorem exists_jointly_smooth_metric_solution_with_contraction_threshold (hDim :
       ∀ {c : ℝ}, B2 ≤ c → c < 1 →
         ∃ T₀ : ℝ, 0 < T₀ ∧
           ∀ {T : ℝ} (_hT : 0 < T) (_ : T ≤ T₀) (_hT1 : T ≤ 1),
-            ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
+            ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M)
                 (g := g) (r := 0) (s := 2) (2 : ℝ) T)
                 (F : ℝ → SmoothCcTensor g 0 2) (δ' : ℝ) (hδ_lt : δ' < 1)
                 (hδ' : ∀ t : ℝ, gFibreOpBound (I := I) (M := M) g
@@ -1403,7 +1403,7 @@ theorem exists_jointly_smooth_metric_solution_for_short_time (hDim : Module.finr
         F_RHS (tensorSectionRealizeMetric (I := I) g S hδ_lt hδ) x v w) :
     ∃ T₀ : ℝ, 0 < T₀ ∧
       ∀ {T : ℝ} (_hT : 0 < T) (_ : T ≤ T₀) (_hT1 : T ≤ 1),
-        ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
+        ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M)
             (g := g) (r := 0) (s := 2) (2 : ℝ) T)
             (F : ℝ → SmoothCcTensor g 0 2) (δ' : ℝ) (hδ_lt : δ' < 1)
             (hδ' : ∀ t : ℝ, gFibreOpBound (I := I) (M := M) g

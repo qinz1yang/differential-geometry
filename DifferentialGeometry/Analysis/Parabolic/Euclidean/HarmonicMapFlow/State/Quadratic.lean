@@ -17,7 +17,7 @@ variable {V Y G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-structure HmfStateQuad (K L : ℝ)
+structure HarmonicMapFlowStateQuadraticCoefficients (K L : ℝ)
     (Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F) : Prop where
   K0 : 0 ≤ K
   L0 : 0 ≤ L
@@ -26,9 +26,9 @@ structure HmfStateQuad (K L : ℝ)
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [NormedSpace ℝ Y] in
-theorem stateQuad_bound {K L R : ℝ}
+theorem HarmonicMapFlowStateQuadraticCoefficients.norm_le {K L R : ℝ}
     {Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F}
-    (h : HmfStateQuad K L Q) {z : ℝ × V} {y : Y}
+    (h : HarmonicMapFlowStateQuadraticCoefficients K L Q) {z : ℝ × V} {y : Y}
     (hy : ‖y‖ ≤ R) : ‖Q z y‖ ≤ K + L * R := by
   calc
     ‖Q z y‖ ≤ ‖Q z 0‖ + ‖Q z y - Q z 0‖ := by
@@ -44,15 +44,15 @@ theorem stateQuad_bound {K L R : ℝ}
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [NormedSpace ℝ Y] in
-theorem stateQuad_sub {K L D : ℝ}
+theorem HarmonicMapFlowStateQuadraticCoefficients.dist_le {K L D : ℝ}
     {Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F}
-    (h : HmfStateQuad K L Q) {z : ℝ × V} {y₁ y₂ : Y}
+    (h : HarmonicMapFlowStateQuadraticCoefficients K L Q) {z : ℝ × V} {y₁ y₂ : Y}
     (hy : ‖y₁ - y₂‖ ≤ D) :
     ‖Q z y₁ - Q z y₂‖ ≤ L * D :=
   (h.state_lip z y₁ y₂).trans
     (mul_le_mul_of_nonneg_left hy h.L0)
 
-def hmfStateQuadSrc
+def harmonicMapFlowStateQuadraticSource
     (Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F)
     (p : ℝ × V → Y) (d : ℝ × V → G) (z : ℝ × V) : F :=
   Q z (p z) (d z) (d z)
@@ -60,25 +60,25 @@ def hmfStateQuadSrc
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [NormedAddCommGroup Y]
   [NormedSpace ℝ Y] in
-theorem stateQuadSrc_sub
+theorem harmonicMapFlowStateQuadraticSource_sub
     (Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F)
     (p₁ p₂ : ℝ × V → Y) (d₁ d₂ : ℝ × V → G) (z : ℝ × V) :
-    hmfStateQuadSrc Q p₁ d₁ z - hmfStateQuadSrc Q p₂ d₂ z =
+    harmonicMapFlowStateQuadraticSource Q p₁ d₁ z - harmonicMapFlowStateQuadraticSource Q p₂ d₂ z =
       Q z (p₁ z) (d₁ z - d₂ z) (d₁ z) +
         Q z (p₁ z) (d₂ z) (d₁ z - d₂ z) +
         (Q z (p₁ z) - Q z (p₂ z)) (d₂ z) (d₂ z) := by
-  simp only [hmfStateQuadSrc, map_sub, sub_apply]
+  simp only [harmonicMapFlowStateQuadraticSource, map_sub, sub_apply]
   abel
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
-theorem bilinWtOn
+theorem bilinear_weighted_boundOn
     (B : ℝ × V → G →L[ℝ] G →L[ℝ] F)
     {T K A₁ A₂ : ℝ} {d₁ d₂ : ℝ × V → G}
     (hK : ∀ t x, 0 < t → t ≤ T → ‖B (t, x)‖ ≤ K)
     (hK0 : 0 ≤ K) (hA₁ : 0 ≤ A₁)
-    (h₁ : GradWt T A₁ d₁) (h₂ : GradWt T A₂ d₂) :
-    SrcWt T (K * A₁ * A₂) (fun z ↦ B z (d₁ z) (d₂ z)) := by
+    (h₁ : GradientWeightedBound T A₁ d₁) (h₂ : GradientWeightedBound T A₂ d₂) :
+    SourceWeightedBound T (K * A₁ * A₂) (fun z ↦ B z (d₁ z) (d₂ z)) := by
   intro t x ht hT
   have hd₁ := h₁ t x ht hT
   have hd₂ := h₂ t x ht hT
@@ -109,20 +109,20 @@ theorem bilinWtOn
     _ ≤ K * A₁ * A₂ :=
       mul_le_mul_of_nonneg_left hd₂ (mul_nonneg hK0 hA₁)
 
-theorem bilinCarlOn
+theorem bilinear_carleson_boundOn
     (B : ℝ × V → G →L[ℝ] G →L[ℝ] F)
     {T K : ℝ} {C₁ C₂ : ℝ≥0∞} {d₁ d₂ : ℝ × V → G}
     (hK : ∀ t x, 0 < t → t ≤ T → ‖B (t, x)‖ ≤ K)
     (hK0 : 0 ≤ K)
     (hae : AEStronglyMeasurable (fun z ↦ B z (d₁ z) (d₂ z))
-      (stVolume : Measure (ℝ × V)))
-    (h₁ : GradCarl T C₁ d₁) (h₂ : GradCarl T C₂ d₂) :
-    SrcCarl T (ENNReal.ofReal K * (C₁ + C₂))
+      (spaceTimeVolume : Measure (ℝ × V)))
+    (h₁ : GradientCarlesonBound T C₁ d₁) (h₂ : GradientCarlesonBound T C₂ d₂) :
+    SourceCarlesonBound T (ENNReal.ofReal K * (C₁ + C₂))
       (fun z ↦ B z (d₁ z) (d₂ z)) := by
   refine ⟨hae, ?_⟩
   intro x R hR hRT
   let μ : Measure (ℝ × V) :=
-    (stVolume : Measure (ℝ × V)).restrict (paraCyl x R)
+    (spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)
   have hm₁ : AEMeasurable (fun z ↦ ENNReal.ofReal (‖d₁ z‖ ^ 2)) μ :=
     ((h₁.ae.norm.pow 2).aemeasurable.ennreal_ofReal).mono_measure
       Measure.restrict_le_self
@@ -142,7 +142,7 @@ theorem bilinCarlOn
     have hzT : z.1 ≤ T := hz.1.2.trans hRT
     have hreal : ‖B z (d₁ z) (d₂ z)‖ ≤
         K * (‖d₁ z‖ ^ 2 + ‖d₂ z‖ ^ 2) :=
-      (bilin_sq_bound (B z) (d₁ z) (d₂ z)).trans
+      (norm_bilinear_apply_le_norm_mul_add_sq (B z) (d₁ z) (d₂ z)).trans
         (mul_le_mul_of_nonneg_right (hK z.1 z.2 hz.1.1 hzT)
           (add_nonneg (sq_nonneg _) (sq_nonneg _)))
     calc
@@ -162,7 +162,7 @@ theorem bilinCarlOn
         ≤ ∫⁻ z, ENNReal.ofReal K *
             (ENNReal.ofReal (‖d₁ z‖ ^ 2) +
               ENNReal.ofReal (‖d₂ z‖ ^ 2)) ∂μ := lintegral_mono_ae hpoint
-    _ = ENNReal.ofReal K * (gradMass d₁ x R + gradMass d₂ x R) := by
+    _ = ENNReal.ofReal K * (gradientCarlesonMass d₁ x R + gradientCarlesonMass d₂ x R) := by
       rw [lintegral_const_mul'' _ hmadd, lintegral_add_left' hm₁]
       rfl
     _ ≤ ENNReal.ofReal K *
@@ -176,84 +176,84 @@ theorem bilinCarlOn
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [NormedSpace ℝ Y] in
-theorem stateQuadSrcWt
+theorem harmonicMapFlowStateQuadraticSourceWeightedBound
     {K L T R Dp Rg Dg : ℝ}
     {Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F}
-    (h : HmfStateQuad K L Q) (hR : 0 ≤ R) (hDp : 0 ≤ Dp)
+    (h : HarmonicMapFlowStateQuadraticCoefficients K L Q) (hR : 0 ≤ R) (hDp : 0 ≤ Dp)
     (hRg : 0 ≤ Rg) (hDg : 0 ≤ Dg)
     {p₁ p₂ : ℝ × V → Y} {d₁ d₂ : ℝ × V → G}
-    (hp₁ : PathSup T R p₁)
-    (hpΔ : PathSup T Dp (fun z ↦ p₁ z - p₂ z))
-    (hd₁ : GradWt T Rg d₁) (hd₂ : GradWt T Rg d₂)
-    (hdΔ : GradWt T Dg (fun z ↦ d₁ z - d₂ z)) :
-    SrcWt T
+    (hp₁ : PathUniformBound T R p₁)
+    (hpΔ : PathUniformBound T Dp (fun z ↦ p₁ z - p₂ z))
+    (hd₁ : GradientWeightedBound T Rg d₁) (hd₂ : GradientWeightedBound T Rg d₂)
+    (hdΔ : GradientWeightedBound T Dg (fun z ↦ d₁ z - d₂ z)) :
+    SourceWeightedBound T
       ((K + L * R) * Dg * Rg + (K + L * R) * Rg * Dg +
         (L * Dp) * Rg * Rg)
-      (fun z ↦ hmfStateQuadSrc Q p₁ d₁ z -
-        hmfStateQuadSrc Q p₂ d₂ z) := by
+      (fun z ↦ harmonicMapFlowStateQuadraticSource Q p₁ d₁ z -
+        harmonicMapFlowStateQuadraticSource Q p₂ d₂ z) := by
   have hcoef : 0 ≤ K + L * R :=
     add_nonneg h.K0 (mul_nonneg h.L0 hR)
   have hcoefD : 0 ≤ L * Dp := mul_nonneg h.L0 hDp
-  have h₁ := bilinWtOn (fun z ↦ Q z (p₁ z))
-    (fun t x ht hT ↦ stateQuad_bound h (hp₁ t x ht hT))
+  have h₁ := bilinear_weighted_boundOn (fun z ↦ Q z (p₁ z))
+    (fun t x ht hT ↦ HarmonicMapFlowStateQuadraticCoefficients.norm_le h (hp₁ t x ht hT))
     hcoef hDg hdΔ hd₁
-  have h₂ := bilinWtOn (fun z ↦ Q z (p₁ z))
-    (fun t x ht hT ↦ stateQuad_bound h (hp₁ t x ht hT))
+  have h₂ := bilinear_weighted_boundOn (fun z ↦ Q z (p₁ z))
+    (fun t x ht hT ↦ HarmonicMapFlowStateQuadraticCoefficients.norm_le h (hp₁ t x ht hT))
     hcoef hRg hd₂ hdΔ
-  have h₃ := bilinWtOn (fun z ↦ Q z (p₁ z) - Q z (p₂ z))
-    (fun t x ht hT ↦ stateQuad_sub h (hpΔ t x ht hT))
+  have h₃ := bilinear_weighted_boundOn (fun z ↦ Q z (p₁ z) - Q z (p₂ z))
+    (fun t x ht hT ↦ HarmonicMapFlowStateQuadraticCoefficients.dist_le h (hpΔ t x ht hT))
     hcoefD hRg hd₂ hd₂
-  rw [show (fun z ↦ hmfStateQuadSrc Q p₁ d₁ z -
-      hmfStateQuadSrc Q p₂ d₂ z) =
+  rw [show (fun z ↦ harmonicMapFlowStateQuadraticSource Q p₁ d₁ z -
+      harmonicMapFlowStateQuadraticSource Q p₂ d₂ z) =
       (fun z ↦ (Q z (p₁ z) (d₁ z - d₂ z) (d₁ z) +
         Q z (p₁ z) (d₂ z) (d₁ z - d₂ z)) +
         (Q z (p₁ z) - Q z (p₂ z)) (d₂ z) (d₂ z)) by
     funext z
-    rw [stateQuadSrc_sub]]
-  exact srcWt_add (srcWt_add h₁ h₂) h₃
+    rw [harmonicMapFlowStateQuadraticSource_sub]]
+  exact SourceWeightedBound.add (SourceWeightedBound.add h₁ h₂) h₃
 
 omit [NormedSpace ℝ Y] in
-theorem stateQuadSrcCarl
+theorem harmonicMapFlowStateQuadraticSourceCarlesonBound
     {K L T R Dp : ℝ} {C₁ C₂ CΔ : ℝ≥0∞}
     {Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F}
-    (h : HmfStateQuad K L Q) (hR : 0 ≤ R) (hDp : 0 ≤ Dp)
+    (h : HarmonicMapFlowStateQuadraticCoefficients K L Q) (hR : 0 ≤ R) (hDp : 0 ≤ Dp)
     {p₁ p₂ : ℝ × V → Y} {d₁ d₂ : ℝ × V → G}
-    (hp₁ : PathSup T R p₁)
-    (hpΔ : PathSup T Dp (fun z ↦ p₁ z - p₂ z))
+    (hp₁ : PathUniformBound T R p₁)
+    (hpΔ : PathUniformBound T Dp (fun z ↦ p₁ z - p₂ z))
     (hae₁ : AEStronglyMeasurable
-      (fun z ↦ Q z (p₁ z) (d₁ z - d₂ z) (d₁ z)) stVolume)
+      (fun z ↦ Q z (p₁ z) (d₁ z - d₂ z) (d₁ z)) spaceTimeVolume)
     (hae₂ : AEStronglyMeasurable
-      (fun z ↦ Q z (p₁ z) (d₂ z) (d₁ z - d₂ z)) stVolume)
+      (fun z ↦ Q z (p₁ z) (d₂ z) (d₁ z - d₂ z)) spaceTimeVolume)
     (hae₃ : AEStronglyMeasurable
-      (fun z ↦ (Q z (p₁ z) - Q z (p₂ z)) (d₂ z) (d₂ z)) stVolume)
-    (hd₁ : GradCarl T C₁ d₁) (hd₂ : GradCarl T C₂ d₂)
-    (hdΔ : GradCarl T CΔ (fun z ↦ d₁ z - d₂ z)) :
-    SrcCarl T
+      (fun z ↦ (Q z (p₁ z) - Q z (p₂ z)) (d₂ z) (d₂ z)) spaceTimeVolume)
+    (hd₁ : GradientCarlesonBound T C₁ d₁) (hd₂ : GradientCarlesonBound T C₂ d₂)
+    (hdΔ : GradientCarlesonBound T CΔ (fun z ↦ d₁ z - d₂ z)) :
+    SourceCarlesonBound T
       (ENNReal.ofReal (K + L * R) * (CΔ + C₁) +
         ENNReal.ofReal (K + L * R) * (C₂ + CΔ) +
         ENNReal.ofReal (L * Dp) * (C₂ + C₂))
-      (fun z ↦ hmfStateQuadSrc Q p₁ d₁ z -
-        hmfStateQuadSrc Q p₂ d₂ z) := by
+      (fun z ↦ harmonicMapFlowStateQuadraticSource Q p₁ d₁ z -
+        harmonicMapFlowStateQuadraticSource Q p₂ d₂ z) := by
   have hcoef : 0 ≤ K + L * R :=
     add_nonneg h.K0 (mul_nonneg h.L0 hR)
   have hcoefD : 0 ≤ L * Dp := mul_nonneg h.L0 hDp
-  have h₁ := bilinCarlOn (fun z ↦ Q z (p₁ z))
-    (fun t x ht hT ↦ stateQuad_bound h (hp₁ t x ht hT))
+  have h₁ := bilinear_carleson_boundOn (fun z ↦ Q z (p₁ z))
+    (fun t x ht hT ↦ HarmonicMapFlowStateQuadraticCoefficients.norm_le h (hp₁ t x ht hT))
     hcoef hae₁ hdΔ hd₁
-  have h₂ := bilinCarlOn (fun z ↦ Q z (p₁ z))
-    (fun t x ht hT ↦ stateQuad_bound h (hp₁ t x ht hT))
+  have h₂ := bilinear_carleson_boundOn (fun z ↦ Q z (p₁ z))
+    (fun t x ht hT ↦ HarmonicMapFlowStateQuadraticCoefficients.norm_le h (hp₁ t x ht hT))
     hcoef hae₂ hd₂ hdΔ
-  have h₃ := bilinCarlOn (fun z ↦ Q z (p₁ z) - Q z (p₂ z))
-    (fun t x ht hT ↦ stateQuad_sub h (hpΔ t x ht hT))
+  have h₃ := bilinear_carleson_boundOn (fun z ↦ Q z (p₁ z) - Q z (p₂ z))
+    (fun t x ht hT ↦ HarmonicMapFlowStateQuadraticCoefficients.dist_le h (hpΔ t x ht hT))
     hcoefD hae₃ hd₂ hd₂
-  rw [show (fun z ↦ hmfStateQuadSrc Q p₁ d₁ z -
-      hmfStateQuadSrc Q p₂ d₂ z) =
+  rw [show (fun z ↦ harmonicMapFlowStateQuadraticSource Q p₁ d₁ z -
+      harmonicMapFlowStateQuadraticSource Q p₂ d₂ z) =
       (fun z ↦ (Q z (p₁ z) (d₁ z - d₂ z) (d₁ z) +
         Q z (p₁ z) (d₂ z) (d₁ z - d₂ z)) +
         (Q z (p₁ z) - Q z (p₂ z)) (d₂ z) (d₂ z)) by
     funext z
-    rw [stateQuadSrc_sub]]
-  exact srcCarl_add (srcCarl_add h₁ h₂) h₃
+    rw [harmonicMapFlowStateQuadraticSource_sub]]
+  exact SourceCarlesonBound.add (SourceCarlesonBound.add h₁ h₂) h₃
 
 end Euclidean
 end Parabolic

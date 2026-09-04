@@ -68,7 +68,7 @@ private lemma g1_inner_injective (g₁ : SmoothRiemannianMetric I M) (x : M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma cometricLmodel_covectorOfCLM_inner_loc (g₁ : SmoothRiemannianMetric I M) (y : M)
+private lemma cometricLmodel_covectorOfCLM_inner_local (g₁ : SmoothRiemannianMetric I M) (y : M)
     (φ : E →L[ℝ] ℝ) (u : TangentSpace I y) :
     g₁.inner y ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
       (cometricLmodel (I := I) g₁ y
@@ -113,11 +113,11 @@ theorem cometricLmodel_sub_eq_metricComparisonDifferenceEndomorphism
   have hg1w1 : g₁.inner x w₁ u =
       φ (tangentSpaceModelContinuousLinearEquiv (I := I) x u) := by
     rw [hw₁, hα]
-    exact cometricLmodel_covectorOfCLM_inner_loc (I := I) g₁ x φ u
+    exact cometricLmodel_covectorOfCLM_inner_local (I := I) g₁ x φ u
   have hg0w0 : g₀.inner x w₀ u =
       φ (tangentSpaceModelContinuousLinearEquiv (I := I) x u) := by
     rw [hw₀, hα]
-    exact cometricLmodel_covectorOfCLM_inner_loc (I := I) g₀ x φ u
+    exact cometricLmodel_covectorOfCLM_inner_local (I := I) g₀ x φ u
   have hRHS : g₁.inner x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x w₀) u
       = g₀.inner x w₀ u - g₁.inner x w₀ u :=
     inner_g1_metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x w₀ u
@@ -381,7 +381,7 @@ private lemma cometricLmodel_covOf_g0flat_eq (g₀ : SmoothRiemannianMetric I M)
   rw [ContinuousLinearEquiv.symm_apply_apply]
   apply g1_inner_injective (I := I) g₀ x
   intro u
-  rw [cometricLmodel_covectorOfCLM_inner_loc (I := I) g₀ x
+  rw [cometricLmodel_covectorOfCLM_inner_local (I := I) g₀ x
     ((g₀.inner x v).comp
       (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm.toContinuousLinearMap) u,
     ContinuousLinearMap.comp_apply]

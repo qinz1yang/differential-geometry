@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter
 open scoped Manifold ContDiff Topology
@@ -72,7 +72,7 @@ def withDivisor
   realizes := s.realizes
 
 
-theorem exists_core
+theorem exists_admissible_divisor
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (s : MetricCompactSeed (I := I) X) (c : Real) :
     ∃ D : Real, 0 < D ∧
@@ -533,5 +533,5 @@ def subseq
 end MetricCompactnessInputs
 
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

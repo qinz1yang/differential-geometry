@@ -106,8 +106,8 @@ theorem boundaryInclusion_contMDiff
     have hPhi : ContDiff ℝ ∞ (Phi I) := Phi_contDiff I
     refine hPhi.contDiffOn.congr ?_
     intro e he
-    rcases he with ⟨y, hy_src, hy_eq⟩
-    change (y : M) ∈ (chartAt H (x : M)).source at hy_src
+    rcases he with ⟨y, hy_source, hy_eq⟩
+    change (y : M) ∈ (chartAt H (x : M)).source at hy_source
     change (extChartAt I (boundaryInclusion I M x) ∘ boundaryInclusion I M ∘
       (extChartAt hI.boundaryI x).symm) e = Phi I e
     simp only [Function.comp_apply]
@@ -118,7 +118,7 @@ theorem boundaryInclusion_contMDiff
         hI.boundaryI (BoundaryManifold.boundaryChart (I := I) x y)
       rw [h_chart_eq]
     have h_y_in_source :
-        y ∈ (BoundaryManifold.boundaryChart (I := I) x).source := hy_src
+        y ∈ (BoundaryManifold.boundaryChart (I := I) x).source := hy_source
     have h_inv : (extChartAt hI.boundaryI x).symm e = y := by
       rw [h_e_eq]
       change (chartAt hI.boundaryH x).symm
@@ -129,7 +129,7 @@ theorem boundaryInclusion_contMDiff
       exact (BoundaryManifold.boundaryChart (I := I) x).left_inv h_y_in_source
     rw [h_inv]
     have hinclH := BoundaryManifold.inclH_boundaryChart_apply
-      (I := I) x y hy_src
+      (I := I) x y hy_source
     change I (chartAt H (x : M) (y : M)) = Phi I e
     rw [h_e_eq, Phi_eq]
     simp only [Function.comp_apply]

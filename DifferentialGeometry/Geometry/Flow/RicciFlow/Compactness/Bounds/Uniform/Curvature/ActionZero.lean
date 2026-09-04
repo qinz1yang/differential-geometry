@@ -13,7 +13,7 @@ namespace PDE
 namespace RicciFlow
 
 open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Connection

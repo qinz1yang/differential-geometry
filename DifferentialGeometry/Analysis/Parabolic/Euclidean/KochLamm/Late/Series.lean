@@ -9,14 +9,14 @@ namespace Analysis
 namespace Parabolic
 namespace Euclidean
 
-def klLateWeight (d k : ℕ) : ℝ :=
+def kochLammLateWeight (d k : ℕ) : ℝ :=
   (5 * ((k + 1 : ℕ) : ℝ)) ^ d * Real.exp (-((k : ℝ) ^ 2) / 4)
 
-private def klLateLinWt (d k : ℕ) : ℝ :=
+private def kochLammLateLinWt (d k : ℕ) : ℝ :=
   (5 * ((k + 1 : ℕ) : ℝ)) ^ d *
     Real.exp (-(4 : ℝ)⁻¹ * (k : ℝ))
 
-private theorem klLateLin_sum (d : ℕ) : Summable (klLateLinWt d) := by
+private theorem kochLammLateLin_sum (d : ℕ) : Summable (kochLammLateLinWt d) := by
   have hbase := Real.summable_pow_mul_exp_neg_nat_mul d
     (by norm_num : 0 < (4 : ℝ)⁻¹)
   have hsucc := hbase.comp_injective Nat.succ_injective
@@ -25,7 +25,7 @@ private theorem klLateLin_sum (d : ℕ) : Summable (klLateLinWt d) := by
   apply hmul.congr
   intro k
   symm
-  unfold klLateLinWt
+  unfold kochLammLateLinWt
   simp only [Function.comp_apply, Nat.cast_succ]
   rw [mul_pow]
   calc
@@ -44,8 +44,8 @@ private theorem klLateLin_sum (d : ℕ) : Summable (klLateLinWt d) := by
       ring
     _ = _ := rfl
 
-theorem klLateWeight_le (d k : ℕ) :
-    klLateWeight d k ≤ klLateLinWt d k := by
+theorem kochLammLateWeight_le (d k : ℕ) :
+    kochLammLateWeight d k ≤ kochLammLateLinWt d k := by
   have hk_sq : (k : ℝ) ≤ (k : ℝ) ^ 2 := by
     by_cases hk0 : k = 0
     · simp [hk0]
@@ -55,21 +55,21 @@ theorem klLateWeight_le (d k : ℕ) :
       have hkmul : 0 ≤ (k : ℝ) * ((k : ℝ) - 1) :=
         mul_nonneg hkpos (sub_nonneg.mpr hk1)
       nlinarith
-  unfold klLateWeight klLateLinWt
+  unfold kochLammLateWeight kochLammLateLinWt
   exact mul_le_mul_of_nonneg_left
     (Real.exp_le_exp.mpr (by nlinarith [hk_sq])) (by positivity)
 
-theorem klLateWeight_sum (d : ℕ) : Summable (klLateWeight d) := by
+theorem kochLammLateWeight_sum (d : ℕ) : Summable (kochLammLateWeight d) := by
   exact Summable.of_nonneg_of_le
-    (fun k ↦ by unfold klLateWeight; positivity)
-    (klLateWeight_le d) (klLateLin_sum d)
+    (fun k ↦ by unfold kochLammLateWeight; positivity)
+    (kochLammLateWeight_le d) (kochLammLateLin_sum d)
 
-def klLateSeries (d : ℕ) : ℝ :=
-  ∑' k : ℕ, klLateWeight d k
+def kochLammLateSeries (d : ℕ) : ℝ :=
+  ∑' k : ℕ, kochLammLateWeight d k
 
-theorem klLateSeries_nn (d : ℕ) : 0 ≤ klLateSeries d := by
-  unfold klLateSeries
-  exact tsum_nonneg fun k ↦ by unfold klLateWeight; positivity
+theorem kochLammLateSeries_nn (d : ℕ) : 0 ≤ kochLammLateSeries d := by
+  unfold kochLammLateSeries
+  exact tsum_nonneg fun k ↦ by unfold kochLammLateWeight; positivity
 
 end Euclidean
 end Parabolic

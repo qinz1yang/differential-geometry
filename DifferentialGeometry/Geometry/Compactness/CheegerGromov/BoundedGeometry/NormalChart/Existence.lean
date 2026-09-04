@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Set
 open scoped Manifold ContDiff Topology Bundle
@@ -149,7 +149,7 @@ theorem IntrinsicBallChartData.normal_chart_metric_equiv
   rw [(d.toNormalChartData.metric_eq_intrinsic_frame_metric k (hcomplete.complete k) x) hz]
   change z ∈ Metric.ball (0 : E) (d.normalChart k x).radius at hz
   rw [d.normal_chart_radius k x] at hz
-  exact d.intr_equiv k x z hz v
+  exact d.intrinsic_equiv k x z hz v
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -175,7 +175,7 @@ theorem exists_intrinsic_ball_chart_data
     ratio_pos := hd.normal_chart_ratio_pos hr₁
     ratio_mu0_le := hd.normal_chart_ratio_mul_mu_zero_le_half hr₁_le_one
     chart := ?_
-    intr_equiv := ?_ }⟩
+    intrinsic_equiv := ?_ }⟩
   · intro k x
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -269,8 +269,8 @@ theorem exists_intrinsic_ball_chart_data
           (I := I) (X.obj k).metric y w
     change ∀ z ∈ Metric.ball (0 : E) (hd.normalChartRadius r₁ k x), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-          intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
-        intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
+          intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
+        intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
           2 * ‖v‖ ^ 2
     intro z hz v
     have hr₁' :
@@ -383,16 +383,16 @@ theorem exists_bounded_geometry_normal_data
           (Metric.isOpen_ball.mem_nhds hz)
     have heq :
         ((d.toNormalChartData.chart k x).metric (X.obj k).metric) =ᶠ[nhds z]
-          intrFrameMetric (I := I) (X.obj k).metric hEnorm x :=
+          intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x :=
       Filter.eventuallyEq_of_mem (Metric.isOpen_ball.mem_nhds hz)
         fun q hq =>
           d.toNormalChartData.metric_eq_intrinsic_frame_metric k (hcomplete.complete k) x hq
     have hintrSmooth :
         ContDiffAt Real ∞
-          (intrFrameMetric (I := I) (X.obj k).metric hEnorm x) z :=
+          (intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x) z :=
       hchartSmooth.congr_of_eventuallyEq heq.symm
     exact intrinsic_frame_metric_iterated_fderiv_norm_le (I := I) (X.obj k)
       (hcomplete.complete k) (hconn k) hPk x z n U hzU hintrSmooth
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

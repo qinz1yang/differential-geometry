@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -33,11 +33,11 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 namespace NetLimitData
 
 omit [Module.Finite ℝ E] in
-theorem unifHatSuppData
+theorem uniformHatSupportData
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (mu : (X.obj (L.φ n)).M -> Fin (pb.A r) -> Real)
     (hmu :
@@ -67,7 +67,7 @@ theorem unifHatSuppData
     (hKsrc :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       forall gamma : Fin (pb.A r), IsCompact (sourceK gamma))
-    (hSupp :
+    (hSupport :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       forall gamma : Fin (pb.A r), forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
@@ -105,11 +105,11 @@ theorem unifHatSuppData
           (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
       letI : MetricSpace (X.obj (L.φ n)).M :=
         HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
-      let ptsSeq := decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+      let pointsSeq := decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           forall gamma : Fin (pb.A r), mu x gamma ≠ 0 ->
-            dist x (ptsSeq a b x gamma) < radSeq a b x)
+            dist x (pointsSeq a b x gamma) < radSeq a b x)
     (hstrict :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -122,18 +122,18 @@ theorem unifHatSuppData
       letI : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
         Manifold.metrizableSpace I (X.obj (L.φ n)).M
       letI : T3Space (X.obj (L.φ n)).M := inferInstance
-      let ptsSeq := decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+      let pointsSeq := decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           StrictDistInput (I := I) (X.obj (L.φ n)).metric
-            (centerAverage.activeFill mu (ptsSeq a b)
+            (centerAverage.activeFill mu (pointsSeq a b)
               (fun y : (X.obj (L.φ n)).M => y) x)
             join x (radSeq a b x))
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
     (hB : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
+      MapCInfConvergenceOnCompacts (U gamma) (B gamma) (Binf gamma))
     (hA : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (V gamma) (A gamma) (Ainf gamma))
+      MapCInfConvergenceOnCompacts (V gamma) (A gamma) (Ainf gamma))
     (hBcont : forall gamma : Fin (pb.A r), ContinuousOn (Binf gamma) (U gamma))
     (hAcont : forall gamma : Fin (pb.A r), ContinuousOn (Ainf gamma) (V gamma))
     (hid : forall gamma : Fin (pb.A r), forall v : E, v ∈ U gamma ->
@@ -178,7 +178,7 @@ theorem unifHatSuppData
         (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace (X.obj (L.φ n)).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
-    let ptsSeq := decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+    let pointsSeq := decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
     forall eps : Real, eps > 0 -> exists N : Nat,
       forall a : Nat, a >= N -> forall b : Nat, b >= N ->
         forall x : (X.obj (L.φ n)).M,
@@ -187,13 +187,13 @@ theorem unifHatSuppData
               (centerAverageOn (I := I) (X.obj (L.φ n)).metric
                 (NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n)
                 mu
-                (centerAverage.activeFill mu (ptsSeq a b)
+                (centerAverage.activeFill mu (pointsSeq a b)
                   (fun y : (X.obj (L.φ n)).M => y))
                 join (fun y : (X.obj (L.φ n)).M => y) (radSeq a b)
                 (fun y : (X.obj (L.φ n)).M => y)
                 (fun y hy => centerAverage.inputOfFillSelf (I := I)
                   (g := (X.obj (L.φ n)).metric) (μ := mu)
-                  (pts := ptsSeq a b) (join := join)
+                  (points := pointsSeq a b) (join := join)
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy)
                   (hactive_mem a b y hy)
@@ -221,27 +221,27 @@ theorem unifHatSuppData
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
   let hcomplete :=
     NetLimitData.sourceComplete (I := I) (X := X) hd P L n hX hconn
-  let ptsSeq := decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
-  exact centerAverage.unifTwoIdDataSelf (I := I)
+  let pointsSeq := decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
+  exact centerAverage.uniformTwoIdDataSelf (I := I)
     (g := (X.obj (L.φ n)).metric) (join := join)
     (s := NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n)
     (USeq := fun _ _ gamma => {x | mu x gamma ≠ 0})
-    (μSeq := fun _ _ => mu) (ptsSeq := ptsSeq) (rSeq := radSeq)
-    hcomplete hrad (by simpa [ptsSeq] using hactive_mem)
+    (μSeq := fun _ _ => mu) (pointsSeq := pointsSeq) (rSeq := radSeq)
+    hcomplete hrad (by simpa [pointsSeq] using hactive_mem)
     (fun _ _ y hy => ⟨(hmu.data hy).1, fun _ hne => hne⟩)
-    (by simpa [ptsSeq] using hstrict)
+    (by simpa [pointsSeq] using hstrict)
     (by
-      simpa [ptsSeq, decodedCompPts] using
-        NetLimitData.hatSuppPtsOfComp (I := I) (X := X) hd P L n mu center
-          sourceK U V B Binf A Ainf hconn hKsrc hSupp hsrcK hVopen hB hA
+      simpa [pointsSeq, decodedCompPoints] using
+        NetLimitData.hatSupportPointsOfComp (I := I) (X := X) hd P L n mu center
+          sourceK U V B Binf A Ainf hconn hKsrc hSupport hsrcK hVopen hB hA
           hBcont hAcont hid hKU hKV)
 
 omit [Module.Finite ℝ E] in
-theorem unifHatCageData
+theorem uniformHatCageData
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (mu : (X.obj (L.φ n)).M -> Fin (pb.A r) -> Real)
     (hmu :
@@ -306,12 +306,12 @@ theorem unifHatCageData
           (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
       letI : MetricSpace (X.obj (L.φ n)).M :=
         HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
-      let ptsSeq :=
-        decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+      let pointsSeq :=
+        decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           forall gamma : Fin (pb.A r), mu x gamma ≠ 0 ->
-            dist x (ptsSeq a b x gamma) < radSeq a b x)
+            dist x (pointsSeq a b x gamma) < radSeq a b x)
     (hstrict :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -324,19 +324,19 @@ theorem unifHatCageData
       letI : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
         Manifold.metrizableSpace I (X.obj (L.φ n)).M
       letI : T3Space (X.obj (L.φ n)).M := inferInstance
-      let ptsSeq :=
-        decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+      let pointsSeq :=
+        decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           StrictDistInput (I := I) (X.obj (L.φ n)).metric
-            (centerAverage.activeFill mu (ptsSeq a b)
+            (centerAverage.activeFill mu (pointsSeq a b)
               (fun y : (X.obj (L.φ n)).M => y) x)
             join x (radSeq a b x))
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
     (hB : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
+      MapCInfConvergenceOnCompacts (U gamma) (B gamma) (Binf gamma))
     (hA : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (V gamma) (A gamma) (Ainf gamma))
+      MapCInfConvergenceOnCompacts (V gamma) (A gamma) (Ainf gamma))
     (hBcont : forall gamma : Fin (pb.A r), ContinuousOn (Binf gamma) (U gamma))
     (hAcont : forall gamma : Fin (pb.A r), ContinuousOn (Ainf gamma) (V gamma))
     (hid : forall gamma : Fin (pb.A r), forall v : E, v ∈ U gamma ->
@@ -385,8 +385,8 @@ theorem unifHatCageData
         (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace (X.obj (L.φ n)).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
-    let ptsSeq :=
-      decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+    let pointsSeq :=
+      decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
     forall eps : Real, eps > 0 -> exists N : Nat,
       forall a : Nat, a >= N -> forall b : Nat, b >= N ->
         forall x : (X.obj (L.φ n)).M,
@@ -395,13 +395,13 @@ theorem unifHatCageData
               (centerAverageOn (I := I) (X.obj (L.φ n)).metric
                 (NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n)
                 mu
-                (centerAverage.activeFill mu (ptsSeq a b)
+                (centerAverage.activeFill mu (pointsSeq a b)
                   (fun y : (X.obj (L.φ n)).M => y))
                 join (fun y : (X.obj (L.φ n)).M => y) (radSeq a b)
                 (fun y : (X.obj (L.φ n)).M => y)
                 (fun y hy => centerAverage.inputOfFillSelf (I := I)
                   (g := (X.obj (L.φ n)).metric) (μ := mu)
-                  (pts := ptsSeq a b) (join := join)
+                  (points := pointsSeq a b) (join := join)
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy)
                   (hactive_mem a b y hy)
@@ -429,24 +429,24 @@ theorem unifHatCageData
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
   let hcomplete :=
     NetLimitData.sourceComplete (I := I) (X := X) hd P L n hX hconn
-  let ptsSeq :=
-    decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+  let pointsSeq :=
+    decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
   let sourceK : Fin (pb.A r) -> Set (X.obj (L.φ n)).M :=
     fun gamma => NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma
-  exact centerAverage.unifTwoIdDataSelf (I := I)
+  exact centerAverage.uniformTwoIdDataSelf (I := I)
     (g := (X.obj (L.φ n)).metric) (join := join)
     (s := NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n)
     (USeq := fun _ _ gamma =>
       (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
         (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
         Set (X.obj (L.φ n)).M))
-    (μSeq := fun _ _ => mu) (ptsSeq := ptsSeq) (rSeq := radSeq)
-    hcomplete hrad (by simpa [ptsSeq] using hactive_mem)
+    (μSeq := fun _ _ => mu) (pointsSeq := pointsSeq) (rSeq := radSeq)
+    hcomplete hrad (by simpa [pointsSeq] using hactive_mem)
     (fun _ _ y hy => hmu.data hy)
-    (by simpa [ptsSeq] using hstrict)
+    (by simpa [pointsSeq] using hstrict)
     (by
-      simpa [ptsSeq, decodedCompPts] using
-        NetLimitData.hatSrcPtsOfComp (I := I) (X := X) hd P L pb r n center
+      simpa [pointsSeq, decodedCompPoints] using
+        NetLimitData.hat_source_points_of_composition (I := I) (X := X) hd P L pb r n center
           sourceK U V B Binf A Ainf hconn
           (by simpa [sourceK] using
             NetLimitData.hatCageCompact (I := I) (X := X) hd P L pb r n)
@@ -455,7 +455,7 @@ theorem unifHatCageData
           (by
             intro gamma
             simpa [sourceK] using
-              NetLimitData.hatCageSrcOfRad (I := I) (X := X) hd P L pb r n
+              NetLimitData.hat_source_cage_subset_normalChartAt_source_of_radius (I := I) (X := X) hd P L pb r n
                 center gamma (hcenter gamma) (hR gamma))
           hVopen hB hA hBcont hAcont hid
           (by simpa [sourceK] using hKU)
@@ -463,5 +463,5 @@ theorem unifHatCageData
 
 end NetLimitData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

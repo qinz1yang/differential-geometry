@@ -33,7 +33,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem contMDiffOn_lVelocity_lRegCurve
+private theorem contMDiffOn_lVelocity_lRegularizedCurve
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) :
     ContMDiffOn
@@ -41,17 +41,17 @@ private theorem contMDiffOn_lVelocity_lRegCurve
       I.tangent ∞
       (fun q : E × Real ↦
         (TotalSpace.mk' E (E := fun y : M ↦ TangentSpace I y)
-          (lRegCurve S T x q.1 q.2)
-          (lVelocity (I := I) (fun s ↦ lRegCurve S T x q.1 s) q.2) :
+          (lRegularizedCurve S T x q.1 q.2)
+          (lVelocity (I := I) (fun s ↦ lRegularizedCurve S T x q.1 s) q.2) :
             TangentBundle I M))
-      (lRegJointDom S T x) := by
+      (lRegularizedJointDom S T x) := by
   let J :=
     (modelWithCornersSelf Real E).prod (modelWithCornersSelf Real Real)
-  let U := lRegJointDom S T x
-  let F : E × Real → M := fun q ↦ lRegCurve S T x q.1 q.2
-  have hUopen : IsOpen U := lRegJointDom_open S hS T x
+  let U := lRegularizedJointDom S T x
+  let F : E × Real → M := fun q ↦ lRegularizedCurve S T x q.1 q.2
+  have hUopen : IsOpen U := lRegularizedJointDom_open S hS T x
   have hF : ContMDiffOn J I ∞ F U := by
-    simpa only [J, F, U] using lRegCurve_smoothOn S hS T x
+    simpa only [J, F, U] using lRegularizedCurve_smoothOn S hS T x
   have htm :=
     hF.contMDiffOn_tangentMapWithin (m := ∞) le_rfl hUopen.uniqueMDiffOn
   have hunit : ContMDiff J J.tangent ∞
@@ -111,28 +111,28 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem contDiffOn_lRegLagrangian_lRegCurve
+theorem contDiffOn_lRegularizedLagrangian_lRegularizedCurve
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) :
     ContDiffOn Real ∞
       (fun q : E × Real ↦
-        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
-      (lRegJointDom S T x) := by
+        lRegularizedLagrangian S T (fun s ↦ lRegularizedCurve S T x q.1 s) q.2)
+      (lRegularizedJointDom S T x) := by
   let J :=
     (modelWithCornersSelf Real E).prod (modelWithCornersSelf Real Real)
-  let U := lRegJointDom S T x
-  let F : E × Real → M := fun q ↦ lRegCurve S T x q.1 q.2
+  let U := lRegularizedJointDom S T x
+  let F : E × Real → M := fun q ↦ lRegularizedCurve S T x q.1 q.2
   intro q hq
-  have hUopen : IsOpen U := lRegJointDom_open S hS T x
+  have hUopen : IsOpen U := lRegularizedJointDom_open S hS T x
   have hF : ContMDiffAt J I ∞ F q :=
-    (lRegCurve_smoothOn S hS T x q hq).contMDiffAt
+    (lRegularizedCurve_smoothOn S hS T x q hq).contMDiffAt
       (hUopen.mem_nhds hq)
   have harg : ContMDiffAt J
       ((modelWithCornersSelf Real Real).prod I) ∞
       (fun p : E × Real ↦ (T - p.2 ^ 2, F p)) q :=
     (contMDiffAt_const.sub (contMDiffAt_snd.pow 2)).prodMk hF
   have hreg : T - q.2 ^ 2 ∈ D.regular :=
-    lRegDomain_reg S T x q.1 hq
+    lRegularizedDomain_regularity S T x q.1 hq
   have hmetric₀ := hS.smoothMetric.metricCLMSmoothAt
     (t := T - q.2 ^ 2) (x := F q)
     (D.regular_isOpen.mem_nhds hreg)
@@ -159,7 +159,7 @@ theorem contDiffOn_lRegLagrangian_lRegCurve
         (TotalSpace.mk' E (E := TangentSpace I) (F p)
           (lVelocity (I := I) (fun s ↦ F (p.1, s)) p.2) :
             TangentBundle I M)) q := by
-    exact (contMDiffOn_lVelocity_lRegCurve S hS T x q hq).contMDiffAt
+    exact (contMDiffOn_lVelocity_lRegularizedCurve S hS T x q hq).contMDiffAt
       (hUopen.mem_nhds hq)
   have htotal := ContMDiffAt.clm_bundle_apply₂
     (E₁ := fun y : M ↦ TangentSpace I y)
@@ -199,59 +199,59 @@ theorem contDiffOn_lRegLagrangian_lRegCurve
       ((contMDiffAt_const.mul (contMDiffAt_snd.pow 2)).mul hscalar)
   have hcd : ContDiffAt Real ∞
       (fun p : E × Real ↦
-        lRegLagrangian S T (fun s ↦ lRegCurve S T x p.1 s) p.2) q := by
+        lRegularizedLagrangian S T (fun s ↦ lRegularizedCurve S T x p.1 s) p.2) q := by
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
       ← chartedSpaceSelf_prod]
-    simpa only [J, F, lRegLagrangian] using hlag
+    simpa only [J, F, lRegularizedLagrangian] using hlag
   exact hcd.contDiffWithinAt
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem hasFDerivAt_lRegAction_lRegCurve_integral
+private theorem hasFDerivAt_lRegularizedAction_lRegularizedCurve_integral
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) {b : Real}
-    (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z) :
+    (hb0 : 0 < b) (hb : b ∈ lRegularizedDomain S T x Z) :
     HasFDerivAt (E := E)
-      (fun W : E ↦ lRegAction S T (lRegCurve S T x W) 0 b)
+      (fun W : E ↦ lRegularizedAction S T (lRegularizedCurve S T x W) 0 b)
       (∫ s in (0 : Real)..b,
         fderiv Real
           (fun W : E ↦
-            lRegLagrangian S T (fun r ↦ lRegCurve S T x W r) s) Z) Z := by
+            lRegularizedLagrangian S T (fun r ↦ lRegularizedCurve S T x W r) s) Z) Z := by
   obtain ⟨J, hJopen, hJconn, h0J, hbJ, hchosen⟩ :=
-    lRegChosen_spec S T x Z hb
+    lRegularizedChosen_spec S T x Z hb
   obtain ⟨V, hVopen, hZV, K, hKopen, hKconn, h0K, hbK,
       _alpha, _halpha, hcurves⟩ :=
-    lRegFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
+    lRegularizedFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
   have hseg : Set.uIcc (0 : Real) b ⊆ K := by
     simpa only [Set.uIcc_of_le hb0.le] using
       hKconn.ordConnected.uIcc_subset h0K hbK
-  have hVK : V ×ˢ K ⊆ lRegJointDom S T x := by
+  have hVK : V ×ˢ K ⊆ lRegularizedJointDom S T x := by
     intro q hq
-    change q.2 ∈ lRegDomain S T x q.1
+    change q.2 ∈ lRegularizedDomain S T x q.1
     exact ⟨fun s ↦ _alpha (q.1, s), K, hKopen, hKconn, h0K, hq.2,
       hcurves q.1 hq.1⟩
   have hlag : ContDiffOn Real 2
       (fun q : E × Real ↦
-        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
+        lRegularizedLagrangian S T (fun s ↦ lRegularizedCurve S T x q.1 s) q.2)
       (V ×ˢ K) :=
-    ((contDiffOn_lRegLagrangian_lRegCurve S hS T x).of_le (by
+    ((contDiffOn_lRegularizedLagrangian_lRegularizedCurve S hS T x).of_le (by
       change (↑(2 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat)
       exact WithTop.coe_le_coe.mpr le_top)).mono hVK
-  simpa only [lRegAction] using
+  simpa only [lRegularizedAction] using
     DifferentialGeometry.Analysis.Calculus.hasFDerivAt_paramInt
       (f := fun W : E ↦ fun s : Real ↦
-        lRegLagrangian S T (fun r ↦ lRegCurve S T x W r) s)
+        lRegularizedLagrangian S T (fun r ↦ lRegularizedCurve S T x W r) s)
       V hVopen 0 b K hKopen hseg Z hZV (hlag.of_le (by norm_num))
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem hasDerivAt_lRegAction_eq_endpoint_inner
+theorem hasDerivAt_lRegularizedAction_eq_endpoint_inner
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (b : Real) (x : M) (Z : TangentSpace I x)
-    (hgeo : IsLRegCurveOn S T (f 0) (uIcc (0 : Real) b) x Z)
+    (hgeo : IsLRegularizedCurveOn S T (f 0) (uIcc (0 : Real) b) x Z)
     (hfix : ∀ u : Real, f u 0 = f 0 0) :
-    HasDerivAt (fun u : Real ↦ lRegAction S T (f u) 0 b)
+    HasDerivAt (fun u : Real ↦ lRegularizedAction S T (f u) 0 b)
       ((S.base.metric (T - b ^ 2)).inner (f 0 b)
         (lVelocity (I := I) (fun u : Real ↦ f u b) 0)
         (lVelocity (I := I) (f 0) b)) 0 := by
@@ -265,24 +265,24 @@ theorem hasDerivAt_lRegAction_eq_endpoint_inner
     simp only [lVelocity, mfderiv_const]
     rfl
   have heuler : ∀ s ∈ uIcc (0 : Real) b,
-      lRegEulerPair S T (f 0) s
+      lRegularizedEulerPair S T (f 0) s
         (lVelocity (I := I) (fun u : Real ↦ f u s) 0) = 0 := by
     intro s hs
-    simp only [lRegEulerPair]
+    simp only [lRegularizedEulerPair]
     rw [(hgeo.2.2 s hs).2.2.2, sub_self, map_zero]
   have hint : (∫ s in (0 : Real)..b,
-      lRegEulerPair S T (f 0) s
+      lRegularizedEulerPair S T (f 0) s
         (lVelocity (I := I) (fun u : Real ↦ f u s) 0)) = 0 := by
     calc
       (∫ s in (0 : Real)..b,
-          lRegEulerPair S T (f 0) s
+          lRegularizedEulerPair S T (f 0) s
             (lVelocity (I := I) (fun u : Real ↦ f u s) 0)) =
           ∫ _s in (0 : Real)..b, (0 : Real) := by
             apply intervalIntegral.integral_congr
             intro s hs
             exact heuler s hs
       _ = 0 := by simp only [intervalIntegral.integral_zero]
-  have hfirst := lRegAction_first_variation (I := I) S hS T f hf 0 b ht
+  have hfirst := lRegularizedAction_first_variation (I := I) S hS T f hf 0 b ht
   simpa only [hzero, map_zero, zero_apply, hint,
     sub_zero] using hfirst
 
@@ -290,15 +290,15 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem hasFDerivAt_lRegAction_lRegCurve
+theorem hasFDerivAt_lRegularizedAction_lRegularizedCurve
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) {tau : Real}
     (hdom : (Z, tau) ∈ lExpPosDom S T x) :
     HasFDerivAt (E := E)
       (fun W : E ↦
-        lRegAction S T (lRegCurve S T x W) 0 (Real.sqrt tau))
+        lRegularizedAction S T (lRegularizedCurve S T x W) 0 (Real.sqrt tau))
       (((S.base.metric (T - tau)).inner (lExp S T x Z tau)
-          (lVelocity (I := I) (lRegCurve S T x Z) (Real.sqrt tau))).comp
+          (lVelocity (I := I) (lRegularizedCurve S T x Z) (Real.sqrt tau))).comp
         (mfderiv (modelWithCornersSelf Real E) I
           (fun W : E ↦ lExp S T x W tau) (show E from Z) :
             E →L[Real] TangentSpace I (lExp S T x Z tau))) (show E from Z) := by
@@ -307,31 +307,31 @@ theorem hasFDerivAt_lRegAction_lRegCurve
   let b : Real := Real.sqrt tau
   have hb0 : 0 < b := Real.sqrt_pos.2 htau
   let A : E → Real := fun W ↦
-    lRegAction S T (lRegCurve S T x W) 0 b
+    lRegularizedAction S T (lRegularizedCurve S T x W) 0 b
   let Lint : E →L[Real] Real :=
     ∫ s in (0 : Real)..b,
       fderiv Real
         (fun W : E ↦
-          lRegLagrangian S T (fun r ↦ lRegCurve S T x W r) s) Z
+          lRegularizedLagrangian S T (fun r ↦ lRegularizedCurve S T x W r) s) Z
   let endMap : E → M := fun W ↦ lExp S T x W tau
   let L : E →L[Real] Real :=
     ((S.base.metric (T - tau)).inner (lExp S T x Z tau)
-      (lVelocity (I := I) (lRegCurve S T x Z) b)).comp
+      (lVelocity (I := I) (lRegularizedCurve S T x Z) b)).comp
         (mfderiv (modelWithCornersSelf Real E) I endMap Z)
   have hInt : HasFDerivAt A Lint Z := by
     simpa only [A, Lint, b] using
-      hasFDerivAt_lRegAction_lRegCurve_integral S hS T x Z hb0 hb
+      hasFDerivAt_lRegularizedAction_lRegularizedCurve_integral S hS T x Z hb0 hb
   have hL : Lint = L := by
     ext Y
     obtain ⟨J, hJopen, hJconn, h0J, hbJ, hchosen⟩ :=
-      lRegChosen_spec S T x Z hb
+      lRegularizedChosen_spec S T x Z hb
     obtain ⟨V, hVopen, hZV, K, hKopen, hKconn, h0K, hbK,
         alpha, halpha, hcurves⟩ :=
-      lRegFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
+      lRegularizedFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
     obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, _hrhoDeriv, hrhoK⟩ :=
       DifferentialGeometry.exists_smooth_time_clamp_range_subset
         hKopen hb0 (hKconn.ordConnected.out h0K hbK)
-    obtain ⟨zeta, hzeta, hzetaV, hzeta0, hzetaVel⟩ :=
+    obtain ⟨zeta, hzeta, hzetaV, hzeta0, hzetaVelocity⟩ :=
       exists_smooth_curve (I := modelWithCornersSelf Real E) (M := E)
         Z Y V hVopen hZV
     have h8inf : (↑(8 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat) :=
@@ -385,7 +385,7 @@ theorem hasFDerivAt_lRegAction_lRegCurve
     have hseg : Set.Icc (0 : Real) b ⊆ K := by
       simpa only [b, Set.uIcc_of_le hb0.le] using
         hKconn.ordConnected.uIcc_subset h0K hbK
-    have hcenter : IsLRegCurveOn S T (f 0)
+    have hcenter : IsLRegularizedCurveOn S T (f 0)
         (Set.uIcc (0 : Real) b) x Z := by
       refine ⟨hf0 0, ?_, ?_⟩
       · have heq : (f 0) =ᶠ[nhds (0 : Real)]
@@ -412,28 +412,28 @@ theorem hasFDerivAt_lRegAction_lRegCurve
           rw [hzeta0]
           simpa only [id_eq] using congrArg (fun q ↦ alpha (Z, q))
             (hrho_id ⟨hr.1.le, hr.2.le⟩)
-        exact lRegData_congr S T s heq
+        exact lRegularizedData_congr S T s heq
           ((hcurves Z hZV).2.2 s (hseg hsI))
     have hcanon : ∀ u : Real, Set.EqOn
-        (lRegCurve S T x (zeta u))
+        (lRegularizedCurve S T x (zeta u))
         (fun s : Real ↦ alpha (zeta u, s)) K := by
       intro u
-      exact lRegCurve_eqOn S hS T hKopen hKconn h0K
+      exact lRegularizedCurve_eqOn S hS T hKopen hKconn h0K
         (hcurves (zeta u) (hzetaV u))
     have hfu : ∀ u : Real, Set.EqOn (f u)
-        (lRegCurve S T x (zeta u)) (Set.Icc (0 : Real) b) := by
+        (lRegularizedCurve S T x (zeta u)) (Set.Icc (0 : Real) b) := by
       intro u s hs
-      change alpha (zeta u, rho s) = lRegCurve S T x (zeta u) s
+      change alpha (zeta u, rho s) = lRegularizedCurve S T x (zeta u) s
       have hrhos : rho s = s := by
         simpa only [id_eq] using
           hrho_id ⟨(ha0.trans_le hs.1).le, hs.2.trans hbd.le⟩
       rw [hrhos]
       exact (hcanon u (hseg hs)).symm
-    have hact : (fun u : Real ↦ lRegAction S T (f u) 0 b) =
+    have hact : (fun u : Real ↦ lRegularizedAction S T (f u) 0 b) =
         fun u : Real ↦ A (zeta u) := by
       funext u
-      have heq := lRegAction_congr (I := I) S T (f u)
-        (lRegCurve S T x (zeta u)) 0 b (by
+      have heq := lRegularizedAction_congr (I := I) S T (f u)
+        (lRegularizedCurve S T x (zeta u)) 0 b (by
           intro s hs
           apply hfu u
           simpa only [Set.uIcc_of_le hb0.le] using
@@ -445,16 +445,16 @@ theorem hasFDerivAt_lRegAction_lRegCurve
       change alpha (zeta u, rho b) = lExp S T x (zeta u) tau
       rw [hrhob]
       calc
-        alpha (zeta u, b) = lRegCurve S T x (zeta u) b :=
+        alpha (zeta u, b) = lRegularizedCurve S T x (zeta u) b :=
           (hcanon u hbK).symm
         _ = lExp S T x (zeta u) tau := by
           simp only [lExp, b]
-    have hcentVel : lVelocity (I := I) (f 0) b =
-        lVelocity (I := I) (lRegCurve S T x Z) b := by
-      have heq : (f 0) =ᶠ[nhds b] lRegCurve S T x Z := by
+    have hcentVelocity : lVelocity (I := I) (f 0) b =
+        lVelocity (I := I) (lRegularizedCurve S T x Z) b := by
+      have heq : (f 0) =ᶠ[nhds b] lRegularizedCurve S T x Z := by
         filter_upwards
             [isOpen_Ioo.mem_nhds ⟨ha0.trans hb0, hbd⟩] with s hs
-        change alpha (zeta 0, rho s) = lRegCurve S T x Z s
+        change alpha (zeta 0, rho s) = lRegularizedCurve S T x Z s
         have hrhos : rho s = s := by
           simpa only [id_eq] using hrho_id ⟨hs.1.le, hs.2.le⟩
         have hsK : s ∈ K := by
@@ -491,7 +491,7 @@ theorem hasFDerivAt_lRegAction_lRegCurve
         endMap (zeta 0) := by
       simpa only [hzeta0] using hExpMD
     have hcompMF := hExpMD0.hasMFDerivAt.comp 0 hzetaMD.hasMFDerivAt
-    have hendVel : lVelocity (I := I) (fun u : Real ↦ f u b) 0 =
+    have hendVelocity : lVelocity (I := I) (fun u : Real ↦ f u b) 0 =
         mfderiv (modelWithCornersSelf Real E) I endMap Z Y := by
       unfold lVelocity
       rw [hend]
@@ -503,14 +503,14 @@ theorem hasFDerivAt_lRegAction_lRegCurve
           (mfderiv (modelWithCornersSelf Real Real)
             (modelWithCornersSelf Real E) zeta 0 (1 : Real)) =
         mfderiv (modelWithCornersSelf Real E) I endMap Z Y
-      rw [hzetaVel, hzeta0]
-    have hbdry := hasDerivAt_lRegAction_eq_endpoint_inner S hS T f hf b x Z hcenter hfix
+      rw [hzetaVelocity, hzeta0]
+    have hbdry := hasDerivAt_lRegularizedAction_eq_endpoint_inner S hS T f hf b x Z hcenter hfix
     have hbdry' : HasDerivAt (fun u : Real ↦ A (zeta u))
         ((S.base.metric (T - b ^ 2)).inner (f 0 b)
           (mfderiv (modelWithCornersSelf Real E) I endMap Z Y)
-          (lVelocity (I := I) (lRegCurve S T x Z) b)) 0 := by
+          (lVelocity (I := I) (lRegularizedCurve S T x Z) b)) 0 := by
       rw [← hact]
-      simpa only [hendVel, hcentVel] using hbdry
+      simpa only [hendVelocity, hcentVelocity] using hbdry
     have hzetaF := hzetaMD.hasMFDerivAt.hasFDerivAt
     have hInt0 : HasFDerivAt A Lint (zeta 0) := by
       simpa only [hzeta0] using hInt
@@ -520,7 +520,7 @@ theorem hasFDerivAt_lRegAction_lRegCurve
       change HasDerivAt (A ∘ zeta)
         (Lint (mfderiv (modelWithCornersSelf Real Real)
           (modelWithCornersSelf Real E) zeta 0 (1 : Real))) 0 at hraw
-      rw [hzetaVel] at hraw
+      rw [hzetaVelocity] at hraw
       exact hraw
     have hval := hline.unique hbdry'
     have hfb : f 0 b = lExp S T x Z tau := by
@@ -532,9 +532,9 @@ theorem hasFDerivAt_lRegAction_lRegCurve
     calc
       Lint Y = (S.base.metric (T - tau)).inner (lExp S T x Z tau)
           (mfderiv (modelWithCornersSelf Real E) I endMap Z Y)
-          (lVelocity (I := I) (lRegCurve S T x Z) b) := hval
+          (lVelocity (I := I) (lRegularizedCurve S T x Z) b) := hval
       _ = (S.base.metric (T - tau)).inner (lExp S T x Z tau)
-          (lVelocity (I := I) (lRegCurve S T x Z) b)
+          (lVelocity (I := I) (lRegularizedCurve S T x Z) b)
           (mfderiv (modelWithCornersSelf Real E) I endMap Z Y) :=
         (S.base.metric (T - tau)).symm (lExp S T x Z tau) _ _
       _ = L Y := by
@@ -546,20 +546,20 @@ theorem hasFDerivAt_lRegAction_lRegCurve
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
+theorem hasFDerivAt_lRegularizedAction_lRegularizedCurve_sqrt
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) {tau : Real}
     (hdom : (Z, tau) ∈ lExpPosDom S T x) :
     HasFDerivAt
       (fun p : E × Real ↦
-        lRegAction S T (lRegCurve S T x p.1) 0 (Real.sqrt p.2))
+        lRegularizedAction S T (lRegularizedCurve S T x p.1) 0 (Real.sqrt p.2))
       (((((S.base.metric (T - tau)).inner (lExp S T x Z tau)
-            (lVelocity (I := I) (lRegCurve S T x Z) (Real.sqrt tau))).comp
+            (lVelocity (I := I) (lRegularizedCurve S T x Z) (Real.sqrt tau))).comp
           (mfderiv (modelWithCornersSelf Real E) I
             (fun W : E ↦ lExp S T x W tau) (show E from Z) :
               E →L[Real] TangentSpace I (lExp S T x Z tau))).comp
         (ContinuousLinearMap.fst Real E Real)) +
-      (lRegLagrangian S T (lRegCurve S T x Z) (Real.sqrt tau) /
+      (lRegularizedLagrangian S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
           (2 * Real.sqrt tau)) •
         ContinuousLinearMap.snd Real E Real) (Z, tau) := by
   rcases (mem_lExpPosDom S T x Z tau).1 hdom with
@@ -567,10 +567,10 @@ theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
   let b : Real := Real.sqrt tau
   have hb0 : 0 < b := Real.sqrt_pos.2 htau
   obtain ⟨J, hJopen, hJconn, h0J, hbJ, hchosen⟩ :=
-    lRegChosen_spec S T x Z hb
+    lRegularizedChosen_spec S T x Z hb
   obtain ⟨V, hVopen, hZV, K, hKopen, hKconn, h0K, hbK,
       _alpha, _halpha, hcurves⟩ :=
-    lRegFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
+    lRegularizedFamily_extend S hS T hJopen hJconn h0J hbJ hchosen
   obtain ⟨rho, a, d, ha0, hbd, hrho, hrho_id, _hrhoDeriv, hrhoK⟩ :=
     DifferentialGeometry.exists_smooth_time_clamp_range_subset
       hKopen hb0 (hKconn.ordConnected.out h0K hbK)
@@ -583,17 +583,17 @@ theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
   have hpU : (Z, tau) ∈ U := ⟨hZV, htau, htauD⟩
   let G : (E × Real) → Real → Real := fun p u ↦
     Real.sqrt p.2 *
-      lRegLagrangian S T (lRegCurve S T x p.1)
+      lRegularizedLagrangian S T (lRegularizedCurve S T x p.1)
         (rho (Real.sqrt p.2 * u))
   have hlag : ContDiffOn Real 2
       (fun q : E × Real ↦
-        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
+        lRegularizedLagrangian S T (fun s ↦ lRegularizedCurve S T x q.1 s) q.2)
       (V ×ˢ K) := by
-    apply ((contDiffOn_lRegLagrangian_lRegCurve S hS T x).of_le (by
+    apply ((contDiffOn_lRegularizedLagrangian_lRegularizedCurve S hS T x).of_le (by
       change (↑(2 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat)
       exact WithTop.coe_le_coe.mpr le_top)).mono
     intro q hq
-    change q.2 ∈ lRegDomain S T x q.1
+    change q.2 ∈ lRegularizedDomain S T x q.1
     exact ⟨fun s ↦ _alpha (q.1, s), K, hKopen, hKconn, h0K, hq.2,
       hcurves q.1 hq.1⟩
   have hG : ContDiffOn Real 2
@@ -627,7 +627,7 @@ theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
       ⟨hq.1.1, hrhoK _⟩
     have hlagAt : ContDiffAt Real 2
         (fun r : E × Real ↦
-          lRegLagrangian S T (fun s ↦ lRegCurve S T x r.1 s) r.2)
+          lRegularizedLagrangian S T (fun s ↦ lRegularizedCurve S T x r.1 s) r.2)
         (q.1.1, rho (Real.sqrt q.1.2 * q.2)) :=
       hlag.contDiffAt ((hVopen.prod hKopen).mem_nhds hpairMem)
     have hcomp := hlagAt.comp q hpair
@@ -641,7 +641,7 @@ theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
       (by simp only [Set.uIcc_of_le zero_le_one, Set.subset_univ])
       (Z, tau) hpU (hG.of_le (by norm_num))
   let A : E × Real → Real := fun p ↦
-    lRegAction S T (lRegCurve S T x p.1) 0 (Real.sqrt p.2)
+    lRegularizedAction S T (lRegularizedCurve S T x p.1) 0 (Real.sqrt p.2)
   have hEq : A =ᶠ[nhds (Z, tau)]
       fun p : E × Real ↦ ∫ u in (0 : Real)..1, G p u := by
     filter_upwards [hUopen.mem_nhds hpU] with p hp
@@ -660,7 +660,7 @@ theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
         (∫ u in (0 : Real)..1, G p u) =
           ∫ u in (0 : Real)..1,
             Real.sqrt p.2 *
-              lRegLagrangian S T (lRegCurve S T x p.1)
+              lRegularizedLagrangian S T (lRegularizedCurve S T x p.1)
                 (Real.sqrt p.2 * u) := by
       apply intervalIntegral.integral_congr
       intro u hu
@@ -670,23 +670,23 @@ theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
       change rho (Real.sqrt p.2 * u) = Real.sqrt p.2 * u at hru
       simp only [G]
       rw [hru]
-    change lRegAction S T (lRegCurve S T x p.1) 0 (Real.sqrt p.2) = _
+    change lRegularizedAction S T (lRegularizedCurve S T x p.1) 0 (Real.sqrt p.2) = _
     rw [hcongr]
-    simp only [lRegAction]
+    simp only [lRegularizedAction]
     simpa only [smul_eq_mul, zero_mul, one_mul, mul_zero, mul_one,
       intervalIntegral.integral_const_mul] using
       (intervalIntegral.smul_integral_comp_mul_left
         (a := (0 : Real)) (b := (1 : Real))
-        (fun s : Real ↦ lRegLagrangian S T (lRegCurve S T x p.1) s)
+        (fun s : Real ↦ lRegularizedLagrangian S T (lRegularizedCurve S T x p.1) s)
         (Real.sqrt p.2)).symm
   have hA : DifferentiableAt Real A (Z, tau) :=
     (hInt.congr_of_eventuallyEq hEq).differentiableAt
   let Lz : E →L[Real] Real :=
     ((S.base.metric (T - tau)).inner (lExp S T x Z tau)
-      (lVelocity (I := I) (lRegCurve S T x Z) b)).comp
+      (lVelocity (I := I) (lRegularizedCurve S T x Z) b)).comp
         (mfderiv (modelWithCornersSelf Real E) I
           (fun W : E ↦ lExp S T x W tau) Z)
-  let c : Real := lRegLagrangian S T (lRegCurve S T x Z) b / (2 * b)
+  let c : Real := lRegularizedLagrangian S T (lRegularizedCurve S T x Z) b / (2 * b)
   let z : E := Z
   have hbase : HasFDerivAt A (fderiv Real A (Z, tau)) (Z, tau) :=
     hA.hasFDerivAt
@@ -697,10 +697,10 @@ theorem hasFDerivAt_lRegAction_lRegCurve_sqrt
     simpa only [z] using hbase
   have hZslice := hbaseZ.comp z hins
   have hZgiven : HasFDerivAt (fun W : E ↦ A (W, tau)) Lz z := by
-    with_unfolding_all exact hasFDerivAt_lRegAction_lRegCurve S hS T x Z hdom
+    with_unfolding_all exact hasFDerivAt_lRegularizedAction_lRegularizedCurve S hS T x Z hdom
   have hZeq := hZslice.unique hZgiven
   let lag : Real → Real := fun s ↦
-    lRegLagrangian S T (lRegCurve S T x Z) s
+    lRegularizedLagrangian S T (lRegularizedCurve S T x Z) s
   have hlagK : ContinuousOn lag K := by
     have hzV : z ∈ V := by
       with_unfolding_all exact hZV

@@ -230,13 +230,13 @@ variable {V F : Type*}
 def heatD2Cancel (t : ℝ) (v w : V) (f : V → F) (x : V) : F :=
   ∫ y : V, heatD2 t v w y • (f (x - y) - f x)
 
-def heatD2Conv (t : ℝ) (v w : V) (f : V → F) (x : V) : F :=
+def heatD2Convolution (t : ℝ) (v w : V) (f : V → F) (x : V) : F :=
   ∫ y : V, heatD2 t v w y • f (x - y)
 
 omit [Nontrivial V] [CompleteSpace F] in
-theorem heatD2Conv_comm (t : ℝ) (v w : V) (f : V → F) (x : V) :
-    heatD2Conv t v w f x = heatD2Conv t w v f x := by
-  unfold heatD2Conv
+theorem heatD2Convolution_comm (t : ℝ) (v w : V) (f : V → F) (x : V) :
+    heatD2Convolution t v w f x = heatD2Convolution t w v f x := by
+  unfold heatD2Convolution
   apply integral_congr_ae
   filter_upwards with y
   rw [heatD2_comm]
@@ -291,7 +291,7 @@ theorem heatD2Cancel_int {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     exact cancel_bound ht hf v w x y
 
 omit [CompleteSpace F] in
-theorem heatD2Conv_int {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
+theorem heatD2Convolution_int {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     {f : V → F} (hf : HolderWith K (1 / 2 : ℝ≥0) f)
     (v w x : V) :
     Integrable (fun y : V => heatD2 t v w y • f (x - y)) := by
@@ -300,13 +300,13 @@ theorem heatD2Conv_int {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
   refine (hcancel.add hconst).congr (Filter.Eventually.of_forall fun y => ?_)
   simp only [Pi.add_apply, smul_sub, sub_add_cancel]
 
-theorem heatD2Conv_eq_cancel {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
+theorem heatD2Convolution_eq_cancel {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     {f : V → F} (hf : HolderWith K (1 / 2 : ℝ≥0) f)
     (v w x : V) :
-    heatD2Conv t v w f x = heatD2Cancel t v w f x := by
+    heatD2Convolution t v w f x = heatD2Cancel t v w f x := by
   have hcancel := heatD2Cancel_int ht hf v w x
   have hconst := (heatD2_int ht v w).smul_const (f x)
-  unfold heatD2Conv heatD2Cancel
+  unfold heatD2Convolution heatD2Cancel
   calc
     (∫ y : V, heatD2 t v w y • f (x - y)) =
         ∫ y : V, heatD2 t v w y • (f (x - y) - f x) +

@@ -131,32 +131,32 @@ theorem nemytskiiHa1_lipschitzWith (hN : LipschitzWith L N) :
 end Nemytskii
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelSolFieldHa1_sub (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maximalRegularityDuhamelSolutionFieldHa1_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce gforce' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce -
-        maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce' =
-      maximalRegularitySolFieldHa1 (I := I) (M := M) a hT
+    maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce -
+        maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce' =
+      maximalRegularitySolutionFieldHa1 (I := I) (M := M) a hT
         (gforce - gforce') := by
-  rw [maximalRegularitySolFieldHa1_sub (I := I) (M := M)
+  rw [maximalRegularitySolutionFieldHa1_sub (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 gforce gforce']
-  rw [maxRegDuhamelSolFieldHa1, maxRegDuhamelSolFieldHa1]
+  rw [maximalRegularityDuhamelSolutionFieldHa1, maximalRegularityDuhamelSolutionFieldHa1]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maxRegDuhamelSolFieldHa1_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
+theorem maximalRegularityDuhamelSolutionFieldHa1_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (gforce gforce' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    ‖maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce -
-        maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce'‖ ≤
+    ‖maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce -
+        maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce'‖ ≤
       2 * Real.sqrt T * ‖gforce - gforce'‖ := by
-  rw [maxRegDuhamelSolFieldHa1_sub (I := I) (M := M)
+  rw [maximalRegularityDuhamelSolutionFieldHa1_sub (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 u₀ gforce gforce']
-  exact maximalRegularitySolFieldHa1_norm_le (I := I) (M := M)
+  exact maximalRegularitySolutionFieldHa1_norm_le (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 (gforce - gforce')
 
 section FixedPoint
@@ -170,7 +170,7 @@ def quasilinearDuhamelMapHa1 (a : ℝ) {T : ℝ} (hT : 0 < T)
     timeL2 (TensorHs (I := I) (M := M) g r s a) T →
       timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   fun gforce => nemytskiiHa1 (I := I) (M := M) hN
-    (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce)
+    (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce)
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem quasilinearDuhamelMapHa1_apply (hT : 0 < T)
@@ -182,7 +182,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     quasilinearDuhamelMapHa1 (I := I) (M := M) a hT u₀ hN gforce =
       nemytskiiHa1 (I := I) (M := M) hN
-        (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce) :=
+        (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce) :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -199,21 +199,21 @@ theorem quasilinearDuhamelMapHa1_dist_le (hT : 0 < T) (hT1 : T ≤ 1)
         (quasilinearDuhamelMapHa1 (I := I) (M := M) a hT u₀ hN gforce') ≤
       (L : ℝ) * (2 * Real.sqrt T) * dist gforce gforce' := by
   have hnem := (nemytskiiHa1_lipschitzWith (I := I) (M := M) hN).dist_le_mul
-    (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce)
-    (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce')
+    (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce)
+    (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce')
   have hfield : dist
-      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce)
-      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce') ≤
+      (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce)
+      (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce') ≤
         (2 * Real.sqrt T) * dist gforce gforce' := by
     rw [dist_eq_norm, dist_eq_norm]
-    exact maxRegDuhamelSolFieldHa1_dist_le (I := I) (M := M)
+    exact maximalRegularityDuhamelSolutionFieldHa1_dist_le (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT hT1 u₀ gforce gforce'
   calc dist
         (quasilinearDuhamelMapHa1 (I := I) (M := M) a hT u₀ hN gforce)
         (quasilinearDuhamelMapHa1 (I := I) (M := M) a hT u₀ hN gforce')
       ≤ (L : ℝ) * dist
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce)
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce)
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀
             gforce') := hnem
     _ ≤ (L : ℝ) * ((2 * Real.sqrt T) * dist gforce gforce') :=
         mul_le_mul_of_nonneg_left hfield L.coe_nonneg
@@ -293,19 +293,19 @@ theorem quasilinear_strong_existence_smallTime {L : ℝ≥0}
     (u₀ : TensorHs (I := I) (M := M) g r s (a + 2))
     (hN : LipschitzWith L N) :
     ∃ T_L : ℝ, 0 < T_L ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTL : T ≤ T_L),
-      ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
+      ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) a T)
         (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
-        u = maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
+        u = maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
           gforce = nemytskiiHa1 (I := I) (M := M) hN
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce) ∧
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce) ∧
           TimeSobolev.timeH1.trace0 _ T u =
               tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
                 (show a ≤ a + 2 by linarith) u₀ ∧
           TimeSobolev.timeH1.timeDeriv _ T u =
             timeScaleLaplacian (I := I) (M := M) a
-                (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce) +
+                (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ gforce) +
               nemytskiiHa1 (I := I) (M := M) hN
-                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀
+                (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀
                   gforce) := by
   refine ⟨smallTimeHorizon L, smallTimeHorizon_pos L, ?_⟩
   intro T hT hTL
@@ -319,14 +319,14 @@ theorem quasilinear_strong_existence_smallTime {L : ℝ≥0}
         gStar :=
     ContractingWith.fixedPoint_isFixedPt hcontr
   have hgStar_eq : gStar = nemytskiiHa1 (I := I) (M := M) hN
-      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gStar) := by
+      (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gStar) := by
     rw [← quasilinearDuhamelMapHa1_apply (I := I) (M := M) (a := a) hT u₀ hN
       gStar, hgStar_fix]
-  refine ⟨maxRegDuhamelMap (I := I) (M := M) a hT u₀ gStar,
+  refine ⟨maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gStar,
     gStar, rfl, hgStar_eq, ?_, ?_⟩
-  · exact maxRegDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
+  · exact maximalRegularityDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
       hT u₀ gStar
-  · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M)
+  · rw [maximalRegularityDuhamelMap_timeDeriv_eq (I := I) (M := M)
       (h_compact := h_compact) (a := a) (T := T) hT u₀ gStar]
     exact congrArg₂ (· + ·) rfl hgStar_eq
 

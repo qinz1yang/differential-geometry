@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -30,14 +30,14 @@ theorem exists_inv_seq
     {A G : Nat → E → E} {Q W K : Set E}
     (hQ : IsOpen Q) (hW : IsOpen W) (hK : IsCompact K)
     (hKQ : K ⊆ Q) (hQW : closure Q ⊆ W)
-    (hconv : MapCInfConvOnCompacts Q A id)
+    (hconv : MapCInfConvergenceOnCompacts Q A id)
     (hgood : ∀ᶠ n in atTop,
       IsLocalDiffeomorphOn 𝓘(ℝ, E) 𝓘(ℝ, E)
           (∞ : WithTop ℕ∞) (A n) W ∧
         Set.InjOn (A n) W ∧ LeftInvOn (G n) (A n) W) :
     ∃ V : Set E,
       IsOpen V ∧ IsCompact (closure V) ∧ K ⊆ V ∧
-        MapCInfConvOnCompacts V G id ∧
+        MapCInfConvergenceOnCompacts V G id ∧
         ∀ᶠ n in atTop, ContDiffOn Real (∞ : WithTop ℕ∞) (G n) V := by
   classical
   obtain ⟨N, hN⟩ := eventually_atTop.mp hgood
@@ -89,7 +89,7 @@ theorem exists_inv_seq
     · simpa only [e, dif_neg hn, OpenPartialHomeomorph.refl_apply,
         id_eq] using
         (contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn
-  have he_conv : MapCInfConvOnCompacts Q (fun n ↦ (e n : E → E)) id := by
+  have he_convergence : MapCInfConvergenceOnCompacts Q (fun n ↦ (e n : E → E)) id := by
     apply hconv.congr_eventually hQ
     · filter_upwards [eventually_atTop.2 ⟨N, fun n hn ↦ hn⟩] with n hn
       intro z hz
@@ -112,7 +112,7 @@ theorem exists_inv_seq
   have hsymm :=
     OpenPartialHomeomorph.exists_symm_cInf
       (X := E) (e := e) (eInf := eInf) (Q := Q) (K := K)
-      hQ hK he_conv (Filter.Eventually.of_forall hsource) hstage_cd
+      hQ hK he_convergence (Filter.Eventually.of_forall hsource) hstage_cd
       heInf_cd heInf_symm_cd hKt hKpre
   obtain ⟨V, hV, hVcompact, hKV, _hVtarget, _hVpre, hstage, hinv⟩ := hsymm
   have heq_inv : ∀ᶠ n in atTop,
@@ -128,7 +128,7 @@ theorem exists_inv_seq
     calc
       G n w = G n (A n ((e n).symm w)) := congrArg (G n) hAw.symm
       _ = (e n).symm w := (hN n hn).2.2 hpreW
-  have hGconv : MapCInfConvOnCompacts V G id := by
+  have hGconv : MapCInfConvergenceOnCompacts V G id := by
     apply hinv.congr_eventually hV
     · exact heq_inv
     · exact Set.eqOn_refl id V
@@ -163,7 +163,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasStageJetData.inv_chart_conv
+theorem HasStageJetData.inv_chart_convergence
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -230,7 +230,7 @@ theorem HasStageJetData.inv_chart_conv
       chiK (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.symm w))
     ∃ Vout : Set E,
       IsOpen Vout ∧ IsCompact (closure Vout) ∧ K ⊆ Vout ∧
-        MapCInfConvOnCompacts Vout G id ∧
+        MapCInfConvergenceOnCompacts Vout G id ∧
         ∀ᶠ n in atTop,
           ContDiffOn Real (∞ : WithTop ℕ∞) (G n) Vout := by
   classical
@@ -281,7 +281,7 @@ theorem HasStageJetData.inv_chart_conv
     chiK (Function.invFunOn F (Metric.ball Yk.basepoint T) (chiL.symm w))
   change ∃ Vout : Set E,
     IsOpen Vout ∧ IsCompact (closure Vout) ∧ K ⊆ Vout ∧
-      MapCInfConvOnCompacts Vout G id ∧
+      MapCInfConvergenceOnCompacts Vout G id ∧
       ∀ᶠ n in atTop,
         ContDiffOn Real (∞ : WithTop ℕ∞) (G n) Vout
   rcases hstage with ⟨hdata, hmetric, hjets, hbase⟩
@@ -306,9 +306,9 @@ theorem HasStageJetData.inv_chart_conv
     filter_upwards [hsource] with n hn
     simpa only [Lphi] using
       hn.mono_left (subset_closure.trans hQW)
-  have hAconv : MapCInfConvOnCompacts Q A id := by
+  have hAconv : MapCInfConvergenceOnCompacts Q A id := by
     simpa only [A, Lphi] using
-      HasStageJetData.chart_conv
+      HasStageJetData.chart_convergence
         (E := E) (H := H) (I := I) (X := X)
         (inp := inp) (P := P) (L := L) (r := r) (hr := hr)
         (phi := phi) (hphi := hphi)
@@ -370,10 +370,10 @@ theorem HasStageJetData.inv_chart_conv
           ContDiffAt Real ∞ (A n) z ∧
           ∀ j ≤ 1, mapDerivNorm j (A n) id z ≤ (1 / 2 : Real) := by
       have hzInt : z ∈ interior (C0 alpha) := hWint hz
-      have hzSrc := hsrc hz
+      have hzSource := hsrc hz
       with_unfolding_all
         exact hNjet (kn n) hnkJet (ln n) hnlJet alpha z
-          (interior_subset hzInt) hzInt hzSrc
+          (interior_subset hzInt) hzInt hzSource
     have hAcd : ContDiffOn Real ∞ (A n) W := fun z hz ↦
       (hjet z hz).2.1.contDiffWithinAt
     have hAinv : ∀ z ∈ W,
@@ -421,12 +421,12 @@ theorem HasStageJetData.inv_chart_conv
         cball_subset_of_le hST.le (hsrc hz)
       have hwT : chiK.symm w ∈ Lphi.hatSourceBall inp.decay P T (kn n) :=
         cball_subset_of_le hST.le (hsrc hw)
-      have hFzSrc : F (chiK.symm z) ∈ chiL.source := by
+      have hFzSource : F (chiK.symm z) ∈ chiL.source := by
         exact hsmallTarget _ (hjet z hz).1
-      have hFwSrc : F (chiK.symm w) ∈ chiL.source := by
+      have hFwSource : F (chiK.symm w) ∈ chiL.source := by
         exact hsmallTarget _ (hjet w hw).1
       have hFzw : F (chiK.symm z) = F (chiK.symm w) := by
-        apply chiL.toPartialEquiv.injOn hFzSrc hFwSrc
+        apply chiL.toPartialEquiv.injOn hFzSource hFwSource
         simpa only [A, F, chiK, chiL, ck, cl, Yk, Yl, Lphi] using hzw
       have hxy : chiK.symm z = chiK.symm w := by
         exact hFInj hzT hwT hFzw
@@ -445,11 +445,11 @@ theorem HasStageJetData.inv_chart_conv
           change dist (chiK.symm z) Yk.basepoint ≤ S at hzClosed
           exact hzClosed
         exact hzLe.trans_lt hST
-      have hFzSrc : F (chiK.symm z) ∈ chiL.source := by
+      have hFzSource : F (chiK.symm z) ∈ chiL.source := by
         exact hsmallTarget _ (hjet z hz).1
       have hdecode : chiL.symm (A n z) = F (chiK.symm z) := by
         with_unfolding_all
-          exact chiL.left_inv hFzSrc
+          exact chiL.left_inv hFzSource
       have hFInjBall : Set.InjOn F (Metric.ball Yk.basepoint T) := by
         exact hFInj.mono Metric.ball_subset_closedBall
       have hinv : Function.invFunOn F (Metric.ball Yk.basepoint T)
@@ -574,7 +574,7 @@ theorem HasStageJetData.inv_chart_tail
     filter_upwards [hkn.eventually_ge_atTop Nsrc] with n hn
     simpa only [Lphi] using hNsrc (kn n) hn
   obtain ⟨Vout, _hVopen, _hVcompact, hKVout, hconv, _hGcd⟩ :=
-    HasStageJetData.inv_chart_conv (I := I) inp P L hr phi hphi
+    HasStageJetData.inv_chart_convergence (I := I) inp P L hr phi hphi
       hcomplete hconn U C0 C1 aInf Jinf Jbarinf gInf hstage
       S T Vrad hST hroom hVr alpha Q W K hQ hW hK hKQ hQW hWint
       kn ln hkn hln hsourceSeq
@@ -582,5 +582,5 @@ theorem HasStageJetData.inv_chart_tail
   simpa only [G, Lphi] using
     hconv K' hK' (hK'K.trans hKVout) j
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

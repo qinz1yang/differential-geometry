@@ -68,10 +68,10 @@ theorem curveMean_le_on
     (hRatioLower : ∃ C : ℝ, 0 < C ∧
       ∀ᶠ t in 𝓝[>] (0 : ℝ),
         C ≤ curveDensity (I := I) g γ V t /
-          hypDensity (q * a) (Module.finrank ℝ E - 1) t) :
+          hyperbolicDensity (q * a) (Module.finrank ℝ E - 1) t) :
     ∀ t ∈ Ioo (0 : ℝ) b,
       curveMean (I := I) g γ V t ≤
-        hypMeanCurv (q * a) (Module.finrank ℝ E - 1) t := by
+        hyperbolicMeanCurv (q * a) (Module.finrank ℝ E - 1) t := by
   let d : ℕ := Module.finrank ℝ E - 1
   have hqa : 0 ≤ q * a := mul_nonneg hq ha.le
   let m' : ℝ → ℝ := fun t =>
@@ -104,10 +104,10 @@ theorem curveMean_le_on
       (hLI t ht) (hW t ht) (hJ t ht) e hON hEperp
       (hRic t ht)).2
   let R : ℝ → ℝ := fun t =>
-    curveDensity (I := I) g γ V t / hypDensity (q * a) d t
+    curveDensity (I := I) g γ V t / hyperbolicDensity (q * a) d t
   have hR : ∀ t ∈ Ioo (0 : ℝ) b,
       HasDerivAt R
-        (R t * (curveMean (I := I) g γ V t - hypMeanCurv (q * a) d t)) t := by
+        (R t * (curveMean (I := I) g γ V t - hyperbolicMeanCurv (q * a) d t)) t := by
     intro t ht
     simpa only [R, d] using
       hasDerivAt_denRatio (I := I) hn g γ V (q * a) t d hqa ht.1 (hγ t ht)
@@ -116,8 +116,8 @@ theorem curveMean_le_on
   have hRpos : ∀ t ∈ Ioo (0 : ℝ) b, 0 < R t := by
     intro t ht
     exact div_pos (curveDensity_pos (I := I) g γ V t (hLI t ht))
-      (hypDensity_pos hqa ht.1)
-  apply mean_le_hyp_of_ratio hqa hd hm hmle hR hRpos
+      (hyperbolicDensity_pos hqa ht.1)
+  apply mean_le_hyperbolic_of_ratio hqa hd hm hmle hR hRpos
   simpa only [R, d] using hRatioLower
 
 end VolumeComparison

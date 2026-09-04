@@ -107,8 +107,8 @@ theorem uc_tangentBundleCore_coordChange_agree
           (localSection b) ⁻¹' (chartAt H (proj b)).source :=
       coverChartAt_source_eq b
     rw [hsrc] at hz_b; exact hz_b
-  obtain ⟨hzLSa_src, hzLSa_chart⟩ := hz_a_inter
-  obtain ⟨_hzLSb_src, hzLSb_chart⟩ := hz_b_inter
+  obtain ⟨hzLSa_source, hzLSa_chart⟩ := hz_a_inter
+  obtain ⟨_hzLSb_source, hzLSb_chart⟩ := hz_b_inter
   have hLSa_z : (localSection a) z = proj z := by
     have := congrArg (fun f => f z) (proj_eq_localSection a)
     simpa using this.symm
@@ -119,8 +119,8 @@ theorem uc_tangentBundleCore_coordChange_agree
     rw [Set.mem_preimage, hLSa_z] at hzLSa_chart; exact hzLSa_chart
   have _hprojz_Fb : proj z ∈ (chartAt H (proj b)).source := by
     rw [Set.mem_preimage, hLSb_z] at hzLSb_chart; exact hzLSb_chart
-  have hprojz_LSa_tgt : proj z ∈ (localSection a).target := by
-    have := (localSection a).map_source hzLSa_src
+  have hprojz_LSa_target : proj z ∈ (localSection a).target := by
+    have := (localSection a).map_source hzLSa_source
     rwa [hLSa_z] at this
   have hBase : (Ea.extend I) z = (Fa.extend I) (proj z) := by
     have := congrArg (fun f => f z) hConjA_fwd
@@ -137,14 +137,14 @@ theorem uc_tangentBundleCore_coordChange_agree
   · have hContSymm : ContinuousAt ((chartAt H (proj a)).extend I).symm
         ((chartAt H (proj a)).extend I (proj z)) :=
       OpenPartialHomeomorph.continuousAt_extend_symm (I := I) _ hprojz_Fa
-    have hOpenTgt : IsOpen (localSection a).target := (localSection a).open_target
-    have hMemTgt : ((chartAt H (proj a)).extend I).symm
+    have hOpenTarget : IsOpen (localSection a).target := (localSection a).open_target
+    have hMemTarget : ((chartAt H (proj a)).extend I).symm
           ((chartAt H (proj a)).extend I (proj z)) ∈ (localSection a).target := by
       rw [OpenPartialHomeomorph.extend_left_inv _ hprojz_Fa]
-      exact hprojz_LSa_tgt
+      exact hprojz_LSa_target
     have hPre : ((chartAt H (proj a)).extend I).symm ⁻¹' (localSection a).target
         ∈ 𝓝 ((chartAt H (proj a)).extend I (proj z)) :=
-      hContSymm (hOpenTgt.mem_nhds hMemTgt)
+      hContSymm (hOpenTarget.mem_nhds hMemTarget)
     refine mem_nhdsWithin_of_mem_nhds ?_
     filter_upwards [hPre] with y hy
     show ((extChartAt I b) ∘ (extChartAt I a).symm) y

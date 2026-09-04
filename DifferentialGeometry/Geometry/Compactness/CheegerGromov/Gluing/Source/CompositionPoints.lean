@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -34,11 +34,11 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 namespace NetLimitData
 
 omit [FiniteDimensional ℝ E] in
-theorem hatSrcPtsOfComp
+theorem hat_source_points_of_composition
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (center : Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (sourceK : Fin (pb.A r) -> Set (X.obj (L.φ n)).M)
@@ -71,9 +71,9 @@ theorem hatSrcPtsOfComp
           (center gamma)).source)
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
     (hB : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
+      MapCInfConvergenceOnCompacts (U gamma) (B gamma) (Binf gamma))
     (hA : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (V gamma) (A gamma) (Ainf gamma))
+      MapCInfConvergenceOnCompacts (V gamma) (A gamma) (Ainf gamma))
     (hBcont : forall gamma : Fin (pb.A r), ContinuousOn (Binf gamma) (U gamma))
     (hAcont : forall gamma : Fin (pb.A r), ContinuousOn (Ainf gamma) (V gamma))
     (hid : forall gamma : Fin (pb.A r), forall v : E, v ∈ U gamma ->
@@ -148,7 +148,7 @@ theorem hatSrcPtsOfComp
   let : MetricSpace (X.obj (L.φ n)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
   exact
-    NetLimitData.hatChartPtsSrcK (I := I) (X := X) hd P L pb r n center sourceK
+    NetLimitData.hat_chart_points_converge_on_source_compact (I := I) (X := X) hd P L pb r n center sourceK
       (fun gamma a b v => A gamma b (B gamma a v)) hconn hKsrc hSsub hsrcK
       (fun gamma δ hδ =>
         let ψ := NormalCoordinates.normalChartAt (I := I) (X.obj (L.φ n)).metric
@@ -165,11 +165,11 @@ theorem hatSrcPtsOfComp
           (hAcont gamma) (hid gamma) hKimg (hKU gamma) (hKV gamma) δ hδ)
 
 omit [FiniteDimensional ℝ E] in
-theorem hatSuppPtsOfComp
+theorem hatSupportPointsOfComp
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (n : Nat)
     {s : Set (X.obj (L.φ n)).M} {ι : Type*}
     (mu : (X.obj (L.φ n)).M -> ι -> Real)
@@ -186,7 +186,7 @@ theorem hatSuppPtsOfComp
     (hKsrc :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       forall gamma : ι, IsCompact (sourceK gamma))
-    (hSupp :
+    (hSupport :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       forall gamma : ι, forall x : (X.obj (L.φ n)).M,
         x ∈ s ->
@@ -202,9 +202,9 @@ theorem hatSuppPtsOfComp
           (center gamma)).source)
     (hVopen : forall gamma : ι, IsOpen (V gamma))
     (hB : forall gamma : ι,
-      MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
+      MapCInfConvergenceOnCompacts (U gamma) (B gamma) (Binf gamma))
     (hA : forall gamma : ι,
-      MapCInfConvOnCompacts (V gamma) (A gamma) (Ainf gamma))
+      MapCInfConvergenceOnCompacts (V gamma) (A gamma) (Ainf gamma))
     (hBcont : forall gamma : ι, ContinuousOn (Binf gamma) (U gamma))
     (hAcont : forall gamma : ι, ContinuousOn (Ainf gamma) (V gamma))
     (hid : forall gamma : ι, forall v : E, v ∈ U gamma ->
@@ -281,7 +281,7 @@ theorem hatSuppPtsOfComp
     {x | x ∈ s ∧ mu x gamma ≠ 0}
   have hSsub : S ⊆ sourceK gamma := by
     intro x hx
-    exact hSupp gamma x hx.1 hx.2
+    exact hSupport gamma x hx.1 hx.2
   let psi := NormalCoordinates.normalChartAt (I := I)
     (X.obj (L.φ n)).metric (center gamma)
   have hcont : ContinuousOn (fun x : (X.obj (L.φ n)).M => psi x)
@@ -299,7 +299,7 @@ theorem hatSuppPtsOfComp
       (A gamma) (Ainf gamma) (hB gamma) (hA gamma) (hBcont gamma)
       (hAcont gamma) (hid gamma) hKimg (hKU gamma) (hKV gamma) delta hdelta
   obtain ⟨N, hN⟩ :=
-    chartPtsSrcK (I := I) (g := (X.obj (L.φ n)).metric)
+    chart_points_converge_on_source_compact (I := I) (g := (X.obj (L.φ n)).metric)
       (p := center gamma) (S := S) (Ksrc := sourceK gamma)
       (hKsrc gamma) hSsub (hsrcK gamma)
       (fun a b v => A gamma b (B gamma a v)) (by simpa [psi] using hclose)
@@ -308,11 +308,11 @@ theorem hatSuppPtsOfComp
   exact hN a ha b hb x ⟨hx, hmu⟩
 
 omit [Module.Finite ℝ E] in
-theorem hatSrcPtsCageComp
+theorem hat_source_cage_composition_points
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (center : Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (U V : Fin (pb.A r) -> Set E)
@@ -337,9 +337,9 @@ theorem hatSrcPtsCageComp
           metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric (center gamma))
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
     (hB : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
+      MapCInfConvergenceOnCompacts (U gamma) (B gamma) (Binf gamma))
     (hA : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (V gamma) (A gamma) (Ainf gamma))
+      MapCInfConvergenceOnCompacts (V gamma) (A gamma) (Ainf gamma))
     (hBcont : forall gamma : Fin (pb.A r), ContinuousOn (Binf gamma) (U gamma))
     (hAcont : forall gamma : Fin (pb.A r), ContinuousOn (Ainf gamma) (V gamma))
     (hid : forall gamma : Fin (pb.A r), forall v : E, v ∈ U gamma ->
@@ -401,21 +401,21 @@ theorem hatSrcPtsCageComp
     fun gamma =>
       NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma
   exact
-    NetLimitData.hatSrcPtsOfComp (I := I) (X := X) hd P L pb r n center sourceK
+    NetLimitData.hat_source_points_of_composition (I := I) (X := X) hd P L pb r n center sourceK
       U V B Binf A Ainf hconn
       (NetLimitData.hatCageCompact (I := I) (X := X) hd P L pb r n)
       (NetLimitData.hatCageSub (I := I) (X := X) hd P L pb r n)
       (fun gamma =>
-        NetLimitData.hatCageSrcOfRad (I := I) (X := X) hd P L pb r n center gamma
+        NetLimitData.hat_source_cage_subset_normalChartAt_source_of_radius (I := I) (X := X) hd P L pb r n center gamma
           (hcenter gamma) (hR gamma))
       hVopen hB hA hBcont hAcont hid hKU hKV
 
 omit [Module.Finite ℝ E] in
-theorem hatPtsCasesComp
+theorem hatPointsCasesComp
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (center : Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (U V : Fin (pb.A r) -> Set E)
@@ -440,9 +440,9 @@ theorem hatPtsCasesComp
               metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric c)
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
     (hB : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
+      MapCInfConvergenceOnCompacts (U gamma) (B gamma) (Binf gamma))
     (hA : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (V gamma) (A gamma) (Ainf gamma))
+      MapCInfConvergenceOnCompacts (V gamma) (A gamma) (Ainf gamma))
     (hBcont : forall gamma : Fin (pb.A r), ContinuousOn (Binf gamma) (U gamma))
     (hAcont : forall gamma : Fin (pb.A r), ContinuousOn (Ainf gamma) (V gamma))
     (hid : forall gamma : Fin (pb.A r), forall v : E, v ∈ U gamma ->
@@ -503,19 +503,19 @@ theorem hatPtsCasesComp
   let sourceK : Fin (pb.A r) -> Set (X.obj (L.φ n)).M := fun gamma =>
     NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma
   exact
-    NetLimitData.hatSrcPtsOfComp (I := I) (X := X) hd P L pb r n center sourceK
+    NetLimitData.hat_source_points_of_composition (I := I) (X := X) hd P L pb r n center sourceK
       U V B Binf A Ainf hconn
       (NetLimitData.hatCageCompact (I := I) (X := X) hd P L pb r n)
       (NetLimitData.hatCageSub (I := I) (X := X) hd P L pb r n)
-      (NetLimitData.hatCageSrcCases (I := I) (X := X) hd P L pb r n center hR)
+      (NetLimitData.hat_source_cage_subset_normalChartAt_source (I := I) (X := X) hd P L pb r n center hR)
       hVopen hB hA hBcont hAcont hid hKU hKV
 
 omit [FiniteDimensional ℝ E] in
-theorem hatChartPtsOfComp
+theorem hatChartPointsOfComp
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (center : Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (coordK : Fin (pb.A r) -> Set E)
@@ -569,9 +569,9 @@ theorem hatChartPtsOfComp
           (center gamma)) x ∈ coordK gamma)
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
     (hB : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
+      MapCInfConvergenceOnCompacts (U gamma) (B gamma) (Binf gamma))
     (hA : forall gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts (V gamma) (A gamma) (Ainf gamma))
+      MapCInfConvergenceOnCompacts (V gamma) (A gamma) (Ainf gamma))
     (hBcont : forall gamma : Fin (pb.A r), ContinuousOn (Binf gamma) (U gamma))
     (hAcont : forall gamma : Fin (pb.A r), ContinuousOn (Ainf gamma) (V gamma))
     (hid : forall gamma : Fin (pb.A r), forall v : E, v ∈ U gamma ->
@@ -611,7 +611,7 @@ theorem hatChartPtsOfComp
                   (A gamma b (B gamma a ((NormalCoordinates.normalChartAt (I := I)
                     (X.obj (L.φ n)).metric (center gamma)) x)))) < eps := by
   exact
-    NetLimitData.hatChartPts (I := I) (X := X) hd P L pb r n center coordK
+    NetLimitData.hatChartPoints (I := I) (X := X) hd P L pb r n center coordK
       (fun gamma a b v => A gamma b (B gamma a v)) hconn hK hKtarget hsource
       hcoord
       (fun gamma δ hδ =>
@@ -623,5 +623,5 @@ theorem hatChartPtsOfComp
 
 end NetLimitData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

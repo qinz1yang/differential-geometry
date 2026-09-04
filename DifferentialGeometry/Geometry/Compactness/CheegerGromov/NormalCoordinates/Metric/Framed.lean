@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Topology Bundle
@@ -474,5 +474,5 @@ theorem contDiffOn_framedTransition
     (framedExp_smoothOn (I := I) Y x).mono hUx
   exact (framedChart_smooth (I := I) Y y).comp hexp hmaps
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

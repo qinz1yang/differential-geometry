@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -306,5 +306,5 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 
 end MetricCompactnessConclusion
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

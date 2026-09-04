@@ -185,7 +185,7 @@ theorem towerHeatBoundOn_of_solution
     (gInv (t : Real)) ric Tdot), hreact]
 
 omit [SigmaCompactSpace M] in
-theorem towerHeatSol_any
+theorem towerHeatSolution_any
     {alpha t0 omega : Real} {halphaomega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega halphaomega)}
@@ -203,7 +203,7 @@ theorem towerHeatSol_any
   let S' := S.timeRestrict D'
   have hS' : IsSolutionOn (I := I) S' := by
     simpa only [S', D'] using
-      isSoln_tailRestrict (I := I) hS halphat0 ht0omega
+      isSolutionOn_tailRestrict (I := I) hS halphat0 ht0omega
   exact towerHeatBoundOn_of_solution (I := I) S' hS' k
 
 end DifferentialGeometry.PDE.RicciFlow

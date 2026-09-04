@@ -401,7 +401,7 @@ theorem localized_parabolic_sobolev_time_le
         (2 + 4 / (Module.finrank ℝ E : ℝ))) :=
     hbase_cont.rpow_const (fun _ => Or.inr hcritical)
   have hlhs_cont : ContinuousOn lhs (Icc a b) := by
-    have h := DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+    have h := DifferentialGeometry.Integral.Measure.integral_contOn_compact
       (K := Icc a b) μ (fun t x => |cutoff.toFun x * u t x| ^
         (2 + 4 / (Module.finrank ℝ E : ℝ))) isCompact_Icc
       hintegrand_cont.continuousOn

@@ -19,7 +19,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -357,7 +357,7 @@ noncomputable def tailMemberMaps
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def tailMemberConv
+noncomputable def tailMemberConvergence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k)) (σ : ℕ → ℕ) :
     letI : ∀ j, TopologicalSpace (X.obj (σ j)).M := fun j => (X.obj (σ j)).topology
@@ -490,7 +490,7 @@ noncomputable def tailMemberConv
 namespace CanonicalMetricCompactness
 
 omit [CompleteSpace E] [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-theorem canonicalSourceSigmaCompact
+theorem canonicalSource_isSigmaCompact
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -541,7 +541,7 @@ noncomputable def canonicalReferenceMetric
   letI : IsManifold I ∞ (MetricSourceDomain (I := I) Phi k) :=
     metric_source_domain_smooth (I := I) Phi k
   letI : SigmaCompactSpace (MetricSourceDomain (I := I) Phi k) :=
-    metric_source_domain_sigma_compact (I := I) Phi k (canonicalSourceSigmaCompact (I := I) Phi k)
+    metric_source_domain_sigma_compact (I := I) Phi k (canonicalSource_isSigmaCompact (I := I) Phi k)
   exact L.metric.restrictOpen (I := I) (metricSourceOpenSubset (I := I) Phi k)
 
 noncomputable def canonicalSourceData
@@ -551,7 +551,7 @@ noncomputable def canonicalSourceData
     (Phi : PointedRiemannianConvergenceMaps (I := I) X L subseq) (k : Nat) :
     MetricSourceData (I := I) Phi k :=
   MetricSourceData.ofRestrictPullback (I := I)
-    (Φ := Phi) (k := k) (canonicalSourceSigmaCompact (I := I) Phi k)
+    (Φ := Phi) (k := k) (canonicalSource_isSigmaCompact (I := I) Phi k)
     (canonicalReferenceMetric (I := I) Phi k)
 
 end CanonicalMetricCompactness
@@ -1164,7 +1164,7 @@ private opaque connectedCanonicalMetricCompactness
           metric_source_domain_smooth (I := I) Φc k
         let : SigmaCompactSpace (MetricSourceDomain (I := I) Φc k) :=
           metric_source_domain_sigma_compact (I := I) Φc k
-            (CanonicalMetricCompactness.canonicalSourceSigmaCompact
+            (CanonicalMetricCompactness.canonicalSource_isSigmaCompact
               (I := I) Φc k)
         with_unfolding_all
           convert metricCovDerivNorm_pullback (I := I) q
@@ -1207,7 +1207,7 @@ private opaque connectedCanonicalMetricCompactness
             (I := I) (g j) x v)) j₀ D₀ n)
   let hconverges : PointedRiemannianConverges (I := I) X L
       (fun n => σ (j₀ + n)) maps :=
-    tailMemberConv (I := I) P σ Ψ hbase j₀ D₀ gTail hgTail hchain
+    tailMemberConvergence (I := I) P σ Ψ hbase j₀ D₀ gTail hgTail hchain
   have hconverges_ref : HasLimitReferenceMetric (I := I) hconverges := by
     intro k
     with_unfolding_all exact hchain_ref k
@@ -1273,5 +1273,5 @@ noncomputable def metricCompactnessOfPairwiseApproximateIsometries
     MetricCompactnessConclusion (I := I) X :=
   (canonicalMetricCompactness (I := I) P B).compactness
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

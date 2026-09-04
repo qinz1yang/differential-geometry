@@ -47,7 +47,7 @@ noncomputable def fChartDeriv2
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (l₁ l₂ : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 l₂
     (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁)
     (chartTargetEuclid (I := I) (M := M) α)
@@ -128,7 +128,7 @@ theorem effectiveSourceChartSecondOrder_apply
         (fun z => effectiveSourceChartSecondOrderNumerator (I := I) (M := M) g α l₁ l₂ hu_h z /
           densityOnEuclid (I := I) g α z) y := rfl
 
-theorem density_mul_fChartEffTwice_eq_indicator_numerator
+theorem density_mul_fChartEffectiveTwice_eq_indicator_numerator
     (g : SmoothRiemannianMetric I M) (α : M)
     (l₁ l₂ : Fin (Module.finrank ℝ E))
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
@@ -148,7 +148,7 @@ theorem density_mul_fChartEffTwice_eq_indicator_numerator
     field_simp
   · rw [Set.indicator_of_notMem hy_K, Set.indicator_of_notMem hy_K, mul_zero]
 
-theorem fChartEffTwice_supported_in_chartImagePOUTsupport
+theorem fChartEffectiveTwice_supported_in_chartImagePOUTsupport
     {g : SmoothRiemannianMetric I M} {α : M}
     {l₁ l₂ : Fin (Module.finrank ℝ E)}
     {u_h : H1Compl g} {hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2} :
@@ -458,7 +458,7 @@ private lemma termB1_memLp_vol_K
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) := by
       unfold chosenFChartDeriv
-      exact chosenWeakPartial'_memLp_of_mem h_memW1p l₁
+      exact chosenWeakPartialOrZero_memLp_of_mem h_memW1p l₁
     have h_K :
         MemLp (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁) 2
           ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) :=
@@ -468,7 +468,7 @@ private lemma termB1_memLp_vol_K
   · have h_zero :
         chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ = 0 := by
       unfold chosenFChartDeriv
-      exact chosenWeakPartial'_of_not_mem h_memW1p l₁
+      exact chosenWeakPartialOrZero_of_not_mem h_memW1p l₁
     have : (fun y => densityDerivOnEuclid (I := I) g α l₂ y *
         chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ y) = (fun _ => 0) := by
       funext y
@@ -493,7 +493,7 @@ private lemma termB2_memLp_vol_K
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) := by
       unfold fChartDeriv2
-      exact chosenWeakPartial'_memLp_of_mem h_memW1p l₂
+      exact chosenWeakPartialOrZero_memLp_of_mem h_memW1p l₂
     have h_K :
         MemLp (fChartDeriv2 (I := I) (M := M) g α hu_h l₁ l₂) 2
           ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) :=
@@ -503,7 +503,7 @@ private lemma termB2_memLp_vol_K
   · have h_zero :
         fChartDeriv2 (I := I) (M := M) g α hu_h l₁ l₂ = 0 := by
       unfold fChartDeriv2
-      exact chosenWeakPartial'_of_not_mem h_memW1p l₂
+      exact chosenWeakPartialOrZero_of_not_mem h_memW1p l₂
     have : (fun y => densityOnEuclid (I := I) g α y *
         fChartDeriv2 (I := I) (M := M) g α hu_h l₁ l₂ y) = (fun _ => 0) := by
       funext y
@@ -703,7 +703,7 @@ private lemma termE2_memLp_vol_K
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) := by
       unfold chosenFChartDeriv
-      exact chosenWeakPartial'_memLp_of_mem h_memW1p l₂
+      exact chosenWeakPartialOrZero_memLp_of_mem h_memW1p l₂
     have h_K :
         MemLp (chosenFChartDeriv (I := I) (M := M) g α hu_h l₂) 2
           ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) :=
@@ -713,7 +713,7 @@ private lemma termE2_memLp_vol_K
   · have h_zero :
         chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ = 0 := by
       unfold chosenFChartDeriv
-      exact chosenWeakPartial'_of_not_mem h_memW1p l₂
+      exact chosenWeakPartialOrZero_of_not_mem h_memW1p l₂
     have : (fun y => densityDerivOnEuclid (I := I) g α l₁ y *
         chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ y) = (fun _ => 0) := by
       funext y
@@ -721,7 +721,7 @@ private lemma termE2_memLp_vol_K
     rw [this]
     exact MemLp.zero
 
-private lemma fChartEffTwiceNumerator_memLp_vol_K
+private lemma fChartEffectiveTwiceNumerator_memLp_vol_K
     (g : SmoothRiemannianMetric I M) (α : M)
     (l₁ l₂ : Fin (Module.finrank ℝ E))
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
@@ -837,7 +837,7 @@ private lemma one_div_densityOnEuclid_continuousOn
   rw [h_eq]
   exact h_inv
 
-private lemma fChartEffTwiceNumerator_div_density_memLp_vol_K
+private lemma fChartEffectiveTwiceNumerator_div_density_memLp_vol_K
     (g : SmoothRiemannianMetric I M) (α : M)
     (l₁ l₂ : Fin (Module.finrank ℝ E))
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
@@ -846,7 +846,7 @@ private lemma fChartEffTwiceNumerator_div_density_memLp_vol_K
         densityOnEuclid (I := I) g α y) 2
       ((volume : Measure EuclN).restrict (Kα (I := I) (M := M) α)) := by
   classical
-  have h_num := fChartEffTwiceNumerator_memLp_vol_K
+  have h_num := fChartEffectiveTwiceNumerator_memLp_vol_K
     (I := I) (M := M) g α l₁ l₂ hu_h
   have h_eq : (fun y => effectiveSourceChartSecondOrderNumerator
       (I := I) (M := M) g α l₁ l₂ hu_h y /
@@ -859,7 +859,7 @@ private lemma fChartEffTwiceNumerator_div_density_memLp_vol_K
   exact memLp_two_continuousOn_mul_on_Kα (α := α)
     (one_div_densityOnEuclid_continuousOn (I := I) (M := M) g α) h_num
 
-theorem fChartEffTwice_memLp_two_weighted
+theorem fChartEffectiveTwice_memLp_two_weighted
     {g : SmoothRiemannianMetric I M} {α : M}
     {l₁ l₂ : Fin (Module.finrank ℝ E)}
     {u_h : H1Compl g} {hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2} :
@@ -893,7 +893,7 @@ theorem fChartEffTwice_memLp_two_weighted
   rw [h_double_restrict]
   refine memLp_chartPulledWeighted_restrict_of_volume_restrict
     (g := g) (α := α) hK_compact hK_meas hK_in ?_
-  exact fChartEffTwiceNumerator_div_density_memLp_vol_K
+  exact fChartEffectiveTwiceNumerator_div_density_memLp_vol_K
     (I := I) (M := M) g α l₁ l₂ hu_h
 
 end DiffChartSecondOrderEffectiveSource

@@ -250,7 +250,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
       differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
         (I := I) (0 + 1) α T hb hT_at
     have hCurryFactor :=
-      tensor0SIntrinsicChartCLM_factor_via_partialEval
+      tensor0SIntrinsicChartCLM_factor
         (I := I) 0 α T hb v hT_pull X m₀
     have hCons_eq :
         (Fin.cons (chartParallelExtend (I := I) α b v b) m₀
@@ -409,7 +409,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_of_mdifferentiableAt
       differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
         (I := I) (s + 1 + 1) α T hb hT_at
     have hCurryFactor :=
-      tensor0SIntrinsicChartCLM_factor_via_partialEval
+      tensor0SIntrinsicChartCLM_factor
         (I := I) (s + 1) α T hb v hT_pull X mt
     have hCons_eq :
         (Fin.cons (chartParallelExtend (I := I) α b v b) mt

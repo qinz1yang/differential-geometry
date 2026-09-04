@@ -593,18 +593,18 @@ theorem smoothOrthoFrame_cov_skew
   classical
   have hBi := smoothOrthoFrame_smooth (I := I) g x i
   have hBj := smoothOrthoFrame_smooth (I := I) g x j
-  have h_constant_on_nbhd : ∀ᶠ b in 𝓝 x,
+  have h_constant_on_neighborhood : ∀ᶠ b in 𝓝 x,
       g.inner b (smoothOrthoFrame (I := I) g x i b)
         (smoothOrthoFrame (I := I) g x j b) =
       (if i = j then (1 : ℝ) else 0) := by
-    have h_open : smoothOrthoFrameNbhd (I := I) (M := M) x ∈ 𝓝 x :=
-      smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x
+    have h_open : smoothOrthoFrameNeighborhood (I := I) (M := M) x ∈ 𝓝 x :=
+      smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x
     filter_upwards [h_open] with b hb
     exact smoothOrthoFrame_orthonormal (I := I) g x hb i j
   have h_eq : (fun b : M => g.inner b
         (smoothOrthoFrame (I := I) g x i b)
         (smoothOrthoFrame (I := I) g x j b)) =ᶠ[𝓝 x]
-      (fun _ : M => (if i = j then (1 : ℝ) else 0)) := h_constant_on_nbhd
+      (fun _ : M => (if i = j then (1 : ℝ) else 0)) := h_constant_on_neighborhood
   have h_mfderiv : mfderiv I 𝓘(ℝ) (fun b : M =>
         g.inner b (smoothOrthoFrame (I := I) g x i b)
           (smoothOrthoFrame (I := I) g x j b)) x =

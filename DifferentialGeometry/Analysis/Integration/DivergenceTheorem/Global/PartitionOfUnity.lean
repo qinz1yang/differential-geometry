@@ -62,11 +62,11 @@ lemma chartCoeffOnE_smoothSmul (α : M)
     {y : E} (hy : y ∈ (extChartAt I α).target) :
     chartCoeffOnE (I := I) α (smoothSmul (I := I) φ hφ X) i y =
       scalarOnE (I := I) α φ y * chartCoeffOnE (I := I) α X i y := by
-  have hsymm_src : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
+  have hsymm_source : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
     (extChartAt I α).map_target hy
   have hsymm_chart : (extChartAt I α).symm y ∈ (chartAt H α).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
-    exact hsymm_src
+    rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_source
+    exact hsymm_source
   have hsymm_base : (extChartAt I α).symm y ∈
       (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]
@@ -446,11 +446,11 @@ theorem divergence_g_add [I.Boundaryless]
         chartCoeffOnE (I := I) x (X + Y) i y =
           chartCoeffOnE (I := I) x X i y + chartCoeffOnE (I := I) x Y i y := by
     intro y hy i
-    have hsymm_src : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
+    have hsymm_source : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
       (extChartAt I x).map_target hy
     have hsymm_chart : (extChartAt I x).symm y ∈ (chartAt H x).source := by
-      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
-      exact hsymm_src
+      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_source
+      exact hsymm_source
     have hsymm_base : (extChartAt I x).symm y ∈
         (trivializationAt E (TangentSpace I) x).baseSet := by
       rw [trivializationAt_baseSet_eq_chartAt_source]
@@ -545,11 +545,11 @@ theorem divergence_g_zero [I.Boundaryless]
         chartCoeffOnE (I := I) x
           (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) i y = 0 := by
     intro y hy i
-    have hsymm_src : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
+    have hsymm_source : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
       (extChartAt I x).map_target hy
     have hsymm_chart : (extChartAt I x).symm y ∈ (chartAt H x).source := by
-      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
-      exact hsymm_src
+      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_source
+      exact hsymm_source
     have hsymm_base : (extChartAt I x).symm y ∈
         (trivializationAt E (TangentSpace I) x).baseSet := by
       rw [trivializationAt_baseSet_eq_chartAt_source]

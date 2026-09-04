@@ -22,7 +22,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
 
-private def lConjModelMFDerivAt (f : E → M) (u : E) : E →L[Real] E :=
+private def lConjugateModelMFDerivAt (f : E → M) (u : E) : E →L[Real] E :=
   (tangentSpaceModelContinuousLinearEquiv (I := I) (f u)).toContinuousLinearMap.comp
     ((mfderiv 𝓘(Real, E) I f u).comp
       (tangentSpaceModelContinuousLinearEquiv
@@ -30,11 +30,11 @@ private def lConjModelMFDerivAt (f : E → M) (u : E) : E →L[Real] E :=
 
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-private theorem lConj_hasFDerivAt_chart
+private theorem lConjugate_hasFDerivAt_chart
     {f : E → M} {u : E}
     (hf : MDifferentiableAt 𝓘(Real, E) I f u) :
     HasFDerivAt ((extChartAt I (f u)) ∘ f)
-      (lConjModelMFDerivAt (I := I) f u) u := by
+      (lConjugateModelMFDerivAt (I := I) f u) u := by
   have hf' : HasMFDerivAt 𝓘(Real, E) I f u
       (mfderiv 𝓘(Real, E) I f u) := hf.hasMFDerivAt
   have hchart : HasMFDerivAt I 𝓘(Real, E) (extChartAt I (f u)) (f u)
@@ -59,20 +59,20 @@ private theorem written_fderiv_inv
     (fderiv Real
       (writtenInExtChartAt 𝓘(Real, E) I u f)
       (extChartAt 𝓘(Real, E) u u)).IsInvertible := by
-  have hchart := lConj_hasFDerivAt_chart (I := I) hf
+  have hchart := lConjugate_hasFDerivAt_chart (I := I) hf
   have hwritten : HasFDerivAt
       (writtenInExtChartAt 𝓘(Real, E) I u f)
-      (lConjModelMFDerivAt (I := I) f u)
+      (lConjugateModelMFDerivAt (I := I) f u)
       (extChartAt 𝓘(Real, E) u u) := by
     simpa only [writtenInExtChartAt, extChartAt_model_space_eq_id,
       PartialEquiv.refl_symm, PartialEquiv.refl_coe, Function.comp_id, id_eq] using hchart
   rw [hwritten.fderiv]
-  simpa only [lConjModelMFDerivAt, ContinuousLinearMap.isInvertible_comp_equiv,
+  simpa only [lConjugateModelMFDerivAt, ContinuousLinearMap.isInvertible_comp_equiv,
     ContinuousLinearMap.isInvertible_equiv_comp] using hinv
 
 omit [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-def IsLConj
+def IsLConjugate
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real) : Prop :=
   (Z, tau) ∈ lExpPosDom S T x ∧
@@ -81,15 +81,15 @@ def IsLConj
 
 omit [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem isLConj_iff
+theorem isLConjugate_iff
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real) :
-    IsLConj S T x Z tau ↔
+    IsLConjugate S T x Z tau ↔
       (Z, tau) ∈ lExpPosDom S T x ∧
         ∃ V : E, V ≠ 0 ∧
           mfderiv 𝓘(Real, E) I
             (fun W : E => lExp S T x W tau) Z V = 0 := by
-  unfold IsLConj
+  unfold IsLConjugate
   let f : E →L[Real] E := mfderiv 𝓘(Real, E) I
     (fun W : E => lExp S T x W tau) Z
   refine and_congr_right fun _ => ?_
@@ -117,14 +117,14 @@ theorem isLConj_iff
 
 omit [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem isLConj_iff_jac
+theorem isLConjugate_iff_jacobian
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real) :
-    IsLConj S T x Z tau ↔
+    IsLConjugate S T x Z tau ↔
       (Z, tau) ∈ lExpPosDom S T x ∧
         ∃ V : E, V ≠ 0 ∧
-          lRegJacobiField S T x Z V (Real.sqrt tau) = 0 := by
-  rw [isLConj_iff]
+          lRegularizedJacobiField S T x Z V (Real.sqrt tau) = 0 := by
+  rw [isLConjugate_iff]
   refine and_congr_right fun _ => ?_
   refine exists_congr fun V => and_congr_right fun _ => ?_
   have heq := lExpJacobi_eq (I := I) S T x Z V tau
@@ -140,7 +140,7 @@ theorem lExpDeriv_inj
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real)
     (hdom : (Z, tau) ∈ lExpPosDom S T x)
-    (hconj : ¬ IsLConj S T x Z tau) :
+    (hconj : ¬ IsLConjugate S T x Z tau) :
     Function.Injective fun V : E =>
       mfderiv 𝓘(Real, E) I (fun W : E => lExp S T x W tau) Z V := by
   by_contra hinj
@@ -152,7 +152,7 @@ theorem lExpDeriv_surj
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real)
     (hdom : (Z, tau) ∈ lExpPosDom S T x)
-    (hconj : ¬ IsLConj S T x Z tau) :
+    (hconj : ¬ IsLConjugate S T x Z tau) :
     Function.Surjective fun V : E =>
       mfderiv 𝓘(Real, E) I (fun W : E => lExp S T x W tau) Z V := by
   let Q := tangentSpaceModelContinuousLinearEquiv
@@ -175,7 +175,7 @@ theorem lExp_localDiffeo
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (tau : Real)
     (hdom : (Z, tau) ∈ lExpPosDom S T x)
-    (hconj : ¬ IsLConj S T x Z tau) :
+    (hconj : ¬ IsLConjugate S T x Z tau) :
     IsLocalDiffeomorphAt 𝓘(Real, E) I ∞
       (fun W : E => lExp S T x W tau) Z := by
   let f : E → M := fun W => lExp S T x W tau
@@ -215,13 +215,13 @@ theorem lExp_localDiffeo
       (by simp)
   let Dmodel : E ≃L[Real] E := Df.trans
     (tangentSpaceModelContinuousLinearEquiv (I := I) (f z))
-  have hmodel : lConjModelMFDerivAt (I := I) f z = Dmodel := by
+  have hmodel : lConjugateModelMFDerivAt (I := I) f z = Dmodel := by
     ext V
     with_unfolding_all rfl
-  have hchart := lConj_hasFDerivAt_chart (I := I) hfZ
+  have hchart := lConjugate_hasFDerivAt_chart (I := I) hfZ
   have hwritten : HasFDerivAt
       (writtenInExtChartAt 𝓘(Real, E) I z f)
-      (lConjModelMFDerivAt (I := I) f z)
+      (lConjugateModelMFDerivAt (I := I) f z)
       (extChartAt 𝓘(Real, E) z z) := by
     simpa only [writtenInExtChartAt, extChartAt_model_space_eq_id,
       PartialEquiv.refl_symm, PartialEquiv.refl_coe, Function.comp_id, id_eq] using hchart

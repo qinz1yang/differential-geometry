@@ -17,7 +17,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold Topology
@@ -324,7 +324,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_equation
       ConnectedSpace (X.obj k).M)
     (x : (X.obj k).M) {q : NNReal} {δ ρ : Real}
     (hfull : HasControlledNormalBranch (I := I) (X.obj k) hcomplete hconn x q δ ρ)
-    {ι : Type} [Fintype ι] (mu : ι → Real) (pts : ι → (X.obj k).M)
+    {ι : Type} [Fintype ι] (mu : ι → Real) (points : ι → (X.obj k).M)
     (join : (X.obj k).M → (X.obj k).M → Real → (X.obj k).M)
     (p : (X.obj k).M) (r R : Real) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -352,7 +352,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_equation
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu pts join p r,
+    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
       dist p x ≤ R →
       ENNReal.ofReal (R + 2 * r) < ENNReal.ofReal (ρ / 2) →
       0 < ρ →
@@ -364,10 +364,10 @@ theorem HasControlledNormalBranch.exists_centerOfMass_equation
         NormalDiagFence (I := I) (X.obj k) x q e ∧
           let B := IsNormalDiag.toBranch
             (I := I) (X.obj k) hcomplete hconn x hq he
-          let c := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
+          let c := centerOfMass (I := I) (X.obj k).metric mu points join p r h
           let xi : ι → E := fun i =>
-            NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
-          chartCmEqnB (I := I) (X.obj k).metric
+            NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (points i)
+          normalChartCenterOfMassEquationWithBranch (I := I) (X.obj k).metric
             (normal_enorm (I := I) (X.obj k)) x B
             (NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x c)
             (mu, xi) = 0 := by
@@ -399,28 +399,28 @@ theorem HasControlledNormalBranch.exists_centerOfMass_equation
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
   intro h hpq hscale hρ hρq hρmetric hρexp
   have hpairs₀ := centerPairs_lt_le (I := I) (X.obj k).metric
-    mu pts join p r h x R hpq hscale
-  let c := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
+    mu points join p r h x R hpq hscale
+  let c := centerOfMass (I := I) (X.obj k).metric mu points join p r h
   have hpairs : ∀ i,
-      max (riemannianEDist I x c) (riemannianEDist I x (pts i)) <
+      max (riemannianEDist I x c) (riemannianEDist I x (points i)) <
         ENNReal.ofReal (ρ / 2) := by
     simpa only [c, riemannianEDist_comm] using hpairs₀
   have hsrc (i : ι) :
-      pts i ∈ (NormalCoordinates.normalChartAt
+      points i ∈ (NormalCoordinates.normalChartAt
         (I := I) (X.obj k).metric x).source := by
     have hiLt := (le_max_right (riemannianEDist I x c)
-      (riemannianEDist I x (pts i))).trans_lt (hpairs i)
-    have hiFin : riemannianEDist I x (pts i) ≠ ⊤ :=
+      (riemannianEDist I x (points i))).trans_lt (hpairs i)
+    have hiFin : riemannianEDist I x (points i) ≠ ⊤ :=
       ne_of_lt (hiLt.trans ENNReal.ofReal_lt_top)
-    have hiReal : (riemannianEDist I x (pts i)).toReal < ρ / 2 :=
+    have hiReal : (riemannianEDist I x (points i)).toReal < ρ / 2 :=
       (ENNReal.lt_ofReal_iff_toReal_lt hiFin).mp hiLt
-    exact (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x (pts i)
+    exact (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x (points i)
       ⟨hiFin, hiReal.trans_le hρexp⟩).1
   let xi : ι → E := fun i =>
-    NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
+    NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (points i)
   have hdecode :
       (fun i => (NormalCoordinates.normalChartAt
-        (I := I) (X.obj k).metric x).symm (xi i)) = pts := by
+        (I := I) (X.obj k).metric x).symm (xi i)) = points := by
     funext i
     exact (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).left_inv (hsrc i)
@@ -446,7 +446,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_equation
             (I := I) (X.obj k).metric x).symm (xi i))) <
         ENNReal.ofReal (ρ / 2) := by
     simpa only [riemannianEDist_comm] using hpairs'
-  have hz := centerOfMass_chartCmEqnB_eq_zero_of_normalBounds (I := I) hb k hcomplete hconn x hq he hf
+  have hz := centerOfMass_normalChartCenterOfMassEquationWithBranch_eq_zero_of_normalBounds (I := I) hb k hcomplete hconn x hq he hf
     mu xi join p r h' hρ hρq hρmetric hρexp hpairs''
   simpa only [xi, hdecode] using hz
 
@@ -458,7 +458,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_derivative
       ConnectedSpace (X.obj k).M)
     (x : (X.obj k).M) {q : NNReal} {δ ρ : Real}
     (hfull : HasControlledNormalBranch (I := I) (X.obj k) hcomplete hconn x q δ ρ)
-    {ι : Type} [Fintype ι] (mu : ι → Real) (pts : ι → (X.obj k).M)
+    {ι : Type} [Fintype ι] (mu : ι → Real) (points : ι → (X.obj k).M)
     (join : (X.obj k).M → (X.obj k).M → Real → (X.obj k).M)
     (p : (X.obj k).M) (r R : Real) (hsum : ∑ i, mu i = 1) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -486,7 +486,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_derivative
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu pts join p r,
+    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
       dist p x ≤ R →
       ENNReal.ofReal (R + 2 * r) < ENNReal.ofReal (ρ / 2) →
       0 < ρ →
@@ -498,31 +498,31 @@ theorem HasControlledNormalBranch.exists_centerOfMass_derivative
         NormalDiagFence (I := I) (X.obj k) x q e ∧
           let B := IsNormalDiag.toBranch
             (I := I) (X.obj k) hcomplete hconn x hq he
-          let c := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
+          let c := centerOfMass (I := I) (X.obj k).metric mu points join p r h
           let z := NormalCoordinates.normalChartAt
             (I := I) (X.obj k).metric x c
           let xi : ι → E := fun i =>
-            NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
+            NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (points i)
           c ∈ (NormalCoordinates.normalChartAt
               (I := I) (X.obj k).metric x).source ∧
             (∀ i, (z, xi i) ∈ e.target) ∧
               z ∈ normalBall (I := I) (X.obj k) x ∧
-              chartCmEqnB (I := I) (X.obj k).metric
+              normalChartCenterOfMassEquationWithBranch (I := I) (X.obj k).metric
                   (normal_enorm (I := I) (X.obj k)) x B z (mu, xi) = 0 ∧
                 ∃ L : E ≃L[Real] E,
                   HasFDerivAt
-                    (fun u : E => chartCmEqnB (I := I) (X.obj k).metric
+                    (fun u : E => normalChartCenterOfMassEquationWithBranch (I := I) (X.obj k).metric
                       (normal_enorm (I := I) (X.obj k)) x B u (mu, xi))
                     (L : E →L[Real] E) z ∧
                     ∃ (f : ((ι → Real) × (ι → E)) → E)
                         (Df : ((ι → Real) × (ι → E)) →L[Real] E),
                       f (mu, xi) = z ∧ HasStrictFDerivAt f Df (mu, xi) ∧
                         (∀ᶠ params in nhds (mu, xi),
-                          chartCmEqnB (I := I) (X.obj k).metric
+                          normalChartCenterOfMassEquationWithBranch (I := I) (X.obj k).metric
                             (normal_enorm (I := I) (X.obj k)) x B
                             (f params) params = 0) ∧
                         (∀ᶠ zp in nhds (z, (mu, xi)),
-                          chartCmEqnB (I := I) (X.obj k).metric
+                          normalChartCenterOfMassEquationWithBranch (I := I) (X.obj k).metric
                               (normal_enorm (I := I) (X.obj k)) x B
                               zp.1 zp.2 = 0 →
                             zp.1 = f zp.2) := by
@@ -554,28 +554,28 @@ theorem HasControlledNormalBranch.exists_centerOfMass_derivative
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
   intro h hpq hscale hρ hρq hρmetric hρexp
   have hpairs₀ := centerPairs_lt_le (I := I) (X.obj k).metric
-    mu pts join p r h x R hpq hscale
-  let c := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
+    mu points join p r h x R hpq hscale
+  let c := centerOfMass (I := I) (X.obj k).metric mu points join p r h
   have hpairs : ∀ i,
-      max (riemannianEDist I x c) (riemannianEDist I x (pts i)) <
+      max (riemannianEDist I x c) (riemannianEDist I x (points i)) <
         ENNReal.ofReal (ρ / 2) := by
     simpa only [c, riemannianEDist_comm] using hpairs₀
   have hsrc (i : ι) :
-      pts i ∈ (NormalCoordinates.normalChartAt
+      points i ∈ (NormalCoordinates.normalChartAt
         (I := I) (X.obj k).metric x).source := by
     have hiLt := (le_max_right (riemannianEDist I x c)
-      (riemannianEDist I x (pts i))).trans_lt (hpairs i)
-    have hiFin : riemannianEDist I x (pts i) ≠ ⊤ :=
+      (riemannianEDist I x (points i))).trans_lt (hpairs i)
+    have hiFin : riemannianEDist I x (points i) ≠ ⊤ :=
       ne_of_lt (hiLt.trans ENNReal.ofReal_lt_top)
-    have hiReal : (riemannianEDist I x (pts i)).toReal < ρ / 2 :=
+    have hiReal : (riemannianEDist I x (points i)).toReal < ρ / 2 :=
       (ENNReal.lt_ofReal_iff_toReal_lt hiFin).mp hiLt
-    exact (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x (pts i)
+    exact (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x (points i)
       ⟨hiFin, hiReal.trans_le hρexp⟩).1
   let xi : ι → E := fun i =>
-    NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
+    NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (points i)
   have hdecode :
       (fun i => (NormalCoordinates.normalChartAt
-        (I := I) (X.obj k).metric x).symm (xi i)) = pts := by
+        (I := I) (X.obj k).metric x).symm (xi i)) = points := by
     funext i
     exact (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).left_inv (hsrc i)
@@ -603,9 +603,9 @@ theorem HasControlledNormalBranch.exists_centerOfMass_derivative
             (I := I) (X.obj k).metric x).symm (xi i))) <
         ENNReal.ofReal (ρ / 2) := by
     simpa only [riemannianEDist_comm] using hpairs'
-  have hzero' := centerOfMass_chartCmEqnB_eq_zero_of_normalBounds (I := I) hb k hcomplete hconn x hq he hf
+  have hzero' := centerOfMass_normalChartCenterOfMassEquationWithBranch_eq_zero_of_normalBounds (I := I) hb k hcomplete hconn x hq he hf
     mu xi join p r h' hρ hρq hρmetric hρexp hpairs''
-  have hzero : chartCmEqnB (I := I) (X.obj k).metric
+  have hzero : normalChartCenterOfMassEquationWithBranch (I := I) (X.obj k).metric
       (normal_enorm (I := I) (X.obj k)) x
       (IsNormalDiag.toBranch (I := I) (X.obj k) hcomplete hconn x hq he)
       (NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x c)
@@ -649,7 +649,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_derivative
     with_unfolding_all
       exact hout
   have heta_one : eta < 1 := heta.trans (by norm_num)
-  have hsol := IsNormalDiag.cm_sol_strict (I := I) (X.obj k) hcomplete hconn x
+  have hsol := IsNormalDiag.normalChartCenterOfMassEquationWithBranch_has_strict_solution (I := I) (X.obj k) hcomplete hconn x
     hq he hf happrox heta_one
     (NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x c)
     mu xi htgt h.μ_nonneg hsum hzero
@@ -663,7 +663,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_solution
       ConnectedSpace (X.obj k).M)
     (x : (X.obj k).M) {q : NNReal} {δ ρ : Real}
     (hfull : HasControlledNormalBranch (I := I) (X.obj k) hcomplete hconn x q δ ρ)
-    {ι : Type} [Fintype ι] (mu : ι → Real) (pts : ι → (X.obj k).M)
+    {ι : Type} [Fintype ι] (mu : ι → Real) (points : ι → (X.obj k).M)
     (join : (X.obj k).M → (X.obj k).M → Real → (X.obj k).M)
     (p : (X.obj k).M) (r R : Real) (hsum : ∑ i, mu i = 1) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -691,16 +691,16 @@ theorem HasControlledNormalBranch.exists_centerOfMass_solution
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu pts join p r,
+    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
       dist p x ≤ R →
       ENNReal.ofReal (R + 2 * r) < ENNReal.ofReal (ρ / 2) →
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ hb.radius k x →
       ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
-      HasChartCmSol (I := I) (X.obj k) hcomplete hconn x
+      HasChartCenterOfMassSolution (I := I) (X.obj k) hcomplete hconn x
         (c2RadiusNormalBallChart (I := I) (X.obj k) x)
-        (q := q) (delta := δ) mu pts join p r h := by
+        (q := q) (delta := δ) mu points join p r h := by
   classical
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -729,28 +729,28 @@ theorem HasControlledNormalBranch.exists_centerOfMass_solution
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
   intro h hpq hscale hρ hρq hρmetric hρexp
   have hpairs₀ := centerPairs_lt_le (I := I) (X.obj k).metric
-    mu pts join p r h x R hpq hscale
-  let y := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
+    mu points join p r h x R hpq hscale
+  let y := centerOfMass (I := I) (X.obj k).metric mu points join p r h
   have hpairs : ∀ i,
-      max (riemannianEDist I x y) (riemannianEDist I x (pts i)) <
+      max (riemannianEDist I x y) (riemannianEDist I x (points i)) <
         ENNReal.ofReal (ρ / 2) := by
     simpa only [y, riemannianEDist_comm] using hpairs₀
   have hsrc (i : ι) :
-      pts i ∈ (NormalCoordinates.normalChartAt
+      points i ∈ (NormalCoordinates.normalChartAt
         (I := I) (X.obj k).metric x).source := by
     have hiLt := (le_max_right (riemannianEDist I x y)
-      (riemannianEDist I x (pts i))).trans_lt (hpairs i)
-    have hiFin : riemannianEDist I x (pts i) ≠ ⊤ :=
+      (riemannianEDist I x (points i))).trans_lt (hpairs i)
+    have hiFin : riemannianEDist I x (points i) ≠ ⊤ :=
       ne_of_lt (hiLt.trans ENNReal.ofReal_lt_top)
-    have hiReal : (riemannianEDist I x (pts i)).toReal < ρ / 2 :=
+    have hiReal : (riemannianEDist I x (points i)).toReal < ρ / 2 :=
       (ENNReal.lt_ofReal_iff_toReal_lt hiFin).mp hiLt
-    exact (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x (pts i)
+    exact (NormalCoordMetricBounds.chart_mem_norm_le (I := I) k x (points i)
       ⟨hiFin, hiReal.trans_le hρexp⟩).1
   let xi : ι → E := fun i =>
-    NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (pts i)
+    NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x (points i)
   have hdecode :
       (fun i => (NormalCoordinates.normalChartAt
-        (I := I) (X.obj k).metric x).symm (xi i)) = pts := by
+        (I := I) (X.obj k).metric x).symm (xi i)) = points := by
     funext i
     exact (NormalCoordinates.normalChartAt
       (I := I) (X.obj k).metric x).left_inv (hsrc i)
@@ -778,11 +778,11 @@ theorem HasControlledNormalBranch.exists_centerOfMass_solution
             (I := I) (X.obj k).metric x).symm (xi i))) <
         ENNReal.ofReal (ρ / 2) := by
     simpa only [riemannianEDist_comm] using hpairs'
-  have hzero' := centerOfMass_chartCmEqnB_eq_zero_of_normalBounds (I := I) hb k hcomplete hconn x
+  have hzero' := centerOfMass_normalChartCenterOfMassEquationWithBranch_eq_zero_of_normalBounds (I := I) hb k hcomplete hconn x
     hq he hf
     mu xi join p r h' hρ hρq hρmetric hρexp hpairs''
   have hzeroB₀ :
-      chartCmEqnB (I := I) (X.obj k).metric
+      normalChartCenterOfMassEquationWithBranch (I := I) (X.obj k).metric
         (normal_enorm (I := I) (X.obj k)) x
         (IsNormalDiag.toBranch (I := I) (X.obj k)
           hcomplete hconn x hq he)
@@ -837,7 +837,7 @@ theorem HasControlledNormalBranch.exists_centerOfMass_solution
   have hzNormalZ : z ∈ normalBall (I := I) (X.obj k) x := by
     simpa only [z] using hzNormal
   have hzeroB :
-      chartCmEqnB (I := I) (X.obj k).metric
+      normalChartCenterOfMassEquationWithBranch (I := I) (X.obj k).metric
         (normal_enorm (I := I) (X.obj k)) x
         (IsNormalDiag.toBranch (I := I) (X.obj k)
           hcomplete hconn x hq he) z (mu, xi) = 0 := by
@@ -887,25 +887,25 @@ theorem HasControlledNormalBranch.exists_centerOfMass_solution
       exact c.pairHome_apply (z, xi i)
     refine ⟨?_, hzTarget⟩
     simpa only [normalPair, NormalBallChart.pair] using hpair
-  have hvel : invVelSum e mu xi z = 0 :=
-    (IsNormalDiag.chartCm_zero_iff (I := I) (X.obj k)
+  have hvel : invVelocitySum e mu xi z = 0 :=
+    (IsNormalDiag.normalChartCenterOfMass_zero_iff (I := I) (X.obj k)
       hcomplete hconn x hq he hf z mu xi htgtZ hzNormalZ).mp hzeroB
   have hzeroC :
-      chartCmEqnC (I := I) (X.obj k).metric
+      chartCenterOfMassEquation (I := I) (X.obj k).metric
         (normal_enorm (I := I) (X.obj k)) x c B z (mu, xi) = 0 :=
-    (IsNormalDiag.chartCmC_zero_iff (I := I) (X.obj k)
+    (IsNormalDiag.chartCenterOfMassEquation_zero_iff (I := I) (X.obj k)
       hcomplete hconn x hq he hf z mu xi htgtZ).mpr hvel
-  have hsol := IsNormalDiag.cmC_sol_strict (I := I) (X.obj k)
+  have hsol := IsNormalDiag.chartCenterOfMassEquation_has_strict_solution (I := I) (X.obj k)
     hcomplete hconn x hq he hf happrox heta_one z mu xi
     htgtZ h.μ_nonneg hsum ⟨hzBall, hxiBall, hdom, hzeroC⟩
-  dsimp only [HasChartCmSol]
+  dsimp only [HasChartCenterOfMassSolution]
   refine ⟨hq, e, he, hf, ?_⟩
   change y ∈ c.restrictBall.target ∧
-    HasCmSolC (I := I) (X.obj k).metric
+    HasCenterOfMassChartSolution (I := I) (X.obj k).metric
       (normal_enorm (I := I) (X.obj k)) x c B z (mu, xi)
   exact ⟨hyTarget, hzBall, hxiBall, hdom, hzeroC, hsol⟩
 
-theorem exists_hat_cm_eqn_at
+theorem exists_hat_center_of_mass_equation_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -972,11 +972,11 @@ theorem exists_hat_cm_eqn_at
     letI : MetricSpace (X.obj (L.φ k)).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
     ∀ (mu : Fin (pb.A r) → Real)
-        (pts : Fin (pb.A r) → (X.obj (L.φ k)).M)
+        (points : Fin (pb.A r) → (X.obj (L.φ k)).M)
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
-      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu pts join x rad,
+      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu points join x rad,
         x ∈ NetLimitData.hatBall (I := I) (X := X) hd D P L pb r k alpha.1 →
         ENNReal.ofReal
             (4 * L.lamInf (alpha.1 : Nat) + 2 * rad) <
@@ -994,11 +994,11 @@ theorem exists_hat_cm_eqn_at
               let B := IsNormalDiag.toBranch (I := I) (X.obj (L.φ k))
                 (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0 hq he
               let c := centerOfMass (I := I) (X.obj (L.φ k)).metric
-                mu pts join x rad h
+                mu points join x rad h
               let xi : Fin (pb.A r) → E := fun i =>
                 NormalCoordinates.normalChartAt
-                  (I := I) (X.obj (L.φ k)).metric x0 (pts i)
-              chartCmEqnB (I := I) (X.obj (L.φ k)).metric
+                  (I := I) (X.obj (L.φ k)).metric x0 (points i)
+              normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ k)).metric
                 (normal_enorm (I := I) (X.obj (L.φ k))) x0 B
                 (NormalCoordinates.normalChartAt
                   (I := I) (X.obj (L.φ k)).metric x0 c)
@@ -1034,7 +1034,7 @@ theorem exists_hat_cm_eqn_at
       (hcomplete.complete (L.φ k))
   let : MetricSpace (X.obj (L.φ k)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
-  intro mu pts join x rad h hxhat hradCage
+  intro mu points join x rad h hxhat hradCage
   let x0 := seqCenterD hd P L k (alpha.1 : Nat)
   let rho0 := aMin * hd.mu (L.rInf (alpha.1 : Nat) + 1)
   rcases hqdata alpha with ⟨hq, _hδ, hρ, hρq⟩
@@ -1060,11 +1060,11 @@ theorem exists_hat_cm_eqn_at
     exact hhd.le
   have hresult := HasControlledNormalBranch.exists_centerOfMass_equation (I := I) hb (L.φ k)
     (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0 hfull
-    mu pts join x rad (4 * L.lamInf (alpha.1 : Nat)) h hpq
+    mu points join x rad (4 * L.lamInf (alpha.1 : Nat)) h hpq
     hradCage hρ hρq hρmetric hρexp
   simpa only [x0, rho0] using hresult
 
-theorem exists_hat_cm_sol_at
+theorem exists_hat_center_of_mass_solution_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1130,11 +1130,11 @@ theorem exists_hat_cm_sol_at
     letI : MetricSpace (X.obj (L.φ k)).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
     ∀ (mu : Fin (pb.A r) → Real)
-        (pts : Fin (pb.A r) → (X.obj (L.φ k)).M)
+        (points : Fin (pb.A r) → (X.obj (L.φ k)).M)
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
-      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu pts join x rad,
+      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu points join x rad,
         ∑ i, mu i = 1 →
         x ∈ NetLimitData.hatBall (I := I) (X := X) hd D P L pb r k alpha.1 →
         ENNReal.ofReal
@@ -1153,22 +1153,22 @@ theorem exists_hat_cm_sol_at
               let B := IsNormalDiag.toBranch (I := I) (X.obj (L.φ k))
                 (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0 hq he
               let c := centerOfMass (I := I) (X.obj (L.φ k)).metric
-                mu pts join x rad h
+                mu points join x rad h
               let z := NormalCoordinates.normalChartAt
                 (I := I) (X.obj (L.φ k)).metric x0 c
               let xi : Fin (pb.A r) → E := fun i =>
                 NormalCoordinates.normalChartAt
-                  (I := I) (X.obj (L.φ k)).metric x0 (pts i)
+                  (I := I) (X.obj (L.φ k)).metric x0 (points i)
               c ∈ (NormalCoordinates.normalChartAt
                   (I := I) (X.obj (L.φ k)).metric x0).source ∧
                 (∀ i, (z, xi i) ∈ e.target) ∧
                   z ∈ normalBall (I := I) (X.obj (L.φ k)) x0 ∧
-                  chartCmEqnB (I := I) (X.obj (L.φ k)).metric
+                  normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ k)).metric
                       (normal_enorm (I := I) (X.obj (L.φ k))) x0 B
                       z (mu, xi) = 0 ∧
                     ∃ Lcm : E ≃L[Real] E,
                       HasFDerivAt
-                          (fun u : E => chartCmEqnB (I := I)
+                          (fun u : E => normalChartCenterOfMassEquationWithBranch (I := I)
                             (X.obj (L.φ k)).metric
                             (normal_enorm (I := I) (X.obj (L.φ k))) x0 B
                             u (mu, xi))
@@ -1179,11 +1179,11 @@ theorem exists_hat_cm_sol_at
                               (Fin (pb.A r) → E)) →L[Real] E),
                           f (mu, xi) = z ∧ HasStrictFDerivAt f Df (mu, xi) ∧
                             (∀ᶠ params in nhds (mu, xi),
-                              chartCmEqnB (I := I) (X.obj (L.φ k)).metric
+                              normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ k)).metric
                                 (normal_enorm (I := I) (X.obj (L.φ k))) x0 B
                                 (f params) params = 0) ∧
                             (∀ᶠ zp in nhds (z, (mu, xi)),
-                              chartCmEqnB (I := I) (X.obj (L.φ k)).metric
+                              normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ k)).metric
                                   (normal_enorm (I := I) (X.obj (L.φ k))) x0 B
                                   zp.1 zp.2 = 0 →
                                 zp.1 = f zp.2) := by
@@ -1218,7 +1218,7 @@ theorem exists_hat_cm_sol_at
       (hcomplete.complete (L.φ k))
   let : MetricSpace (X.obj (L.φ k)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
-  intro mu pts join x rad h hsum hxhat hradCage
+  intro mu points join x rad h hsum hxhat hradCage
   let x0 := seqCenterD hd P L k (alpha.1 : Nat)
   let rho0 := aMin * hd.mu (L.rInf (alpha.1 : Nat) + 1)
   rcases hqdata alpha with ⟨hq, _hδ, hρ, hρq⟩
@@ -1244,11 +1244,11 @@ theorem exists_hat_cm_sol_at
     exact hhd.le
   have hresult := HasControlledNormalBranch.exists_centerOfMass_derivative (I := I) hb (L.φ k)
     (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0 hfull
-    mu pts join x rad (4 * L.lamInf (alpha.1 : Nat)) hsum h hpq
+    mu points join x rad (4 * L.lamInf (alpha.1 : Nat)) hsum h hpq
     hradCage hρ hρq hρmetric hρexp
   simpa only [x0, rho0] using hresult
 
-theorem exists_hat_cmC_at
+theorem exists_hat_center_of_massC_at
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1314,23 +1314,23 @@ theorem exists_hat_cmC_at
     letI : MetricSpace (X.obj (L.φ k)).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
     ∀ (mu : Fin (pb.A r) → Real)
-        (pts : Fin (pb.A r) → (X.obj (L.φ k)).M)
+        (points : Fin (pb.A r) → (X.obj (L.φ k)).M)
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
-      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu pts join x rad,
+      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu points join x rad,
         ∑ i, mu i = 1 →
         x ∈ NetLimitData.hatBall (I := I) (X := X) hd D P L pb r k alpha.1 →
         ENNReal.ofReal
             (4 * L.lamInf (alpha.1 : Nat) + 2 * rad) <
           ENNReal.ofReal
             ((aMin * hd.mu (L.rInf (alpha.1 : Nat) + 1)) / 2) →
-          HasChartCmSol (I := I) (X.obj (L.φ k))
+          HasChartCenterOfMassSolution (I := I) (X.obj (L.φ k))
             (hcomplete.complete (L.φ k)) (hconn (L.φ k))
             (seqCenterD hd P L k (alpha.1 : Nat))
             (c2RadiusNormalBallChart (I := I) (X.obj (L.φ k))
               (seqCenterD hd P L k (alpha.1 : Nat)))
-            (q := q alpha) (delta := δ alpha) mu pts join x rad h := by
+            (q := q alpha) (delta := δ alpha) mu points join x rad h := by
   classical
   let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
   let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -1362,7 +1362,7 @@ theorem exists_hat_cmC_at
       (hcomplete.complete (L.φ k))
   let : MetricSpace (X.obj (L.φ k)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
-  intro mu pts join x rad h hsum hxhat hradCage
+  intro mu points join x rad h hsum hxhat hradCage
   let x0 := seqCenterD hd P L k (alpha.1 : Nat)
   let rho0 := aMin * hd.mu (L.rInf (alpha.1 : Nat) + 1)
   rcases hqdata alpha with ⟨_hq, _hδ, hρ, hρq⟩
@@ -1388,11 +1388,11 @@ theorem exists_hat_cmC_at
     exact hhd.le
   have hresult := HasControlledNormalBranch.exists_centerOfMass_solution (I := I) hb (L.φ k)
     (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0 hfull
-    mu pts join x rad (4 * L.lamInf (alpha.1 : Nat)) hsum h hpq
+    mu points join x rad (4 * L.lamInf (alpha.1 : Nat)) hsum h hpq
     hradCage hρ hρq hρmetric hρexp
   simpa only [x0, rho0] using hresult
 
-theorem exists_hat_cm_eqn
+theorem exists_hat_center_of_mass_equation
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D aMin : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -1461,11 +1461,11 @@ theorem exists_hat_cm_eqn
     letI : MetricSpace (X.obj (L.φ k)).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
     ∀ (mu : Fin (pb.A r) → Real)
-        (pts : Fin (pb.A r) → (X.obj (L.φ k)).M)
+        (points : Fin (pb.A r) → (X.obj (L.φ k)).M)
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
-      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu pts join x rad,
+      ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric mu points join x rad,
         (∀ gamma, mu gamma ≠ 0 →
           x ∈ NetLimitData.hatBall (I := I) (X := X) hd D P L pb r k gamma) →
         (∀ gamma : LiveSlot L pb r,
@@ -1486,11 +1486,11 @@ theorem exists_hat_cm_eqn
               let B := IsNormalDiag.toBranch (I := I) (X.obj (L.φ k))
                 (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0 hq he
               let c := centerOfMass (I := I) (X.obj (L.φ k)).metric
-                mu pts join x rad h
+                mu points join x rad h
               let xi : Fin (pb.A r) → E := fun i ↦
                 NormalCoordinates.normalChartAt
-                  (I := I) (X.obj (L.φ k)).metric x0 (pts i)
-              chartCmEqnB (I := I) (X.obj (L.φ k)).metric
+                  (I := I) (X.obj (L.φ k)).metric x0 (points i)
+              normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ k)).metric
                 (normal_enorm (I := I) (X.obj (L.φ k))) x0 B
                 (NormalCoordinates.normalChartAt
                   (I := I) (X.obj (L.φ k)).metric x0 c)
@@ -1526,17 +1526,17 @@ theorem exists_hat_cm_eqn
       (hcomplete.complete (L.φ k))
   let : MetricSpace (X.obj (L.φ k)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
-  intro mu pts join x rad h hhat hradCage
+  intro mu points join x rad h hhat hradCage
   obtain ⟨gamma, hgamma⟩ := h.μ_pos
   have hxhat := hhat gamma (ne_of_gt hgamma)
   have halive : L.alive (gamma : Nat) = true :=
     hat_mem_live hd P L pb r (hstable gamma) hxhat
   let gammaLive : LiveSlot L pb r := ⟨gamma, halive⟩
   refine ⟨gammaLive, ?_⟩
-  exact exists_hat_cm_eqn_at (I := I) hd P hre L pb r k hcomplete hconn
-    q δ hqdata hbranch gammaLive mu pts join x rad h hxhat (hradCage gammaLive)
+  exact exists_hat_center_of_mass_equation_at (I := I) hd P hre L pb r k hcomplete hconn
+    q δ hqdata hbranch gammaLive mu points join x rad h hxhat (hradCage gammaLive)
 
-theorem exists_cm_branch
+theorem exists_center_of_mass_branch
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
@@ -1544,7 +1544,7 @@ theorem exists_cm_branch
       ConnectedSpace (X.obj k).M)
     (x : (X.obj k).M) {q : NNReal} {δ ρ : Real}
     (hdom : HasNormalBranchDom (I := I) (X.obj k) hcomplete hconn x q δ ρ)
-    {ι : Type} [Fintype ι] (μ : ι → Real) (pts : ι → (X.obj k).M)
+    {ι : Type} [Fintype ι] (μ : ι → Real) (points : ι → (X.obj k).M)
     (join : (X.obj k).M → (X.obj k).M → Real → (X.obj k).M)
     (p : (X.obj k).M) (r R : Real) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1571,7 +1571,7 @@ theorem exists_cm_branch
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     letI : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) hcomplete
-    ∀ h : CenterInput (I := I) (X.obj k).metric μ pts join p r,
+    ∀ h : CenterInput (I := I) (X.obj k).metric μ points join p r,
       (letI : MetricSpace (X.obj k).M :=
           HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M);
         dist p x ≤ R) →
@@ -1579,8 +1579,8 @@ theorem exists_cm_branch
       ρ / 2 < metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       ∃ B : DiagonalInverseBranch (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x,
-        ∀ i, (centerOfMass (I := I) (ι := ι) (X.obj k).metric μ pts join p r h,
-          pts i) ∈ B.coordinateDomain := by
+        ∀ i, (centerOfMass (I := I) (ι := ι) (X.obj k).metric μ points join p r h,
+          points i) ∈ B.coordinateDomain := by
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
   let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -1608,12 +1608,12 @@ theorem exists_cm_branch
   have hpairs : ∀ i,
       max
         (riemannianEDist I
-          (centerOfMass (I := I) (ι := ι) (X.obj k).metric μ pts join p r h) x)
-        (riemannianEDist I (pts i) x) < ENNReal.ofReal (ρ / 2) :=
-    centerPairs_lt_le (I := I) (X.obj k).metric μ pts join p r h x R hpq hscale
+          (centerOfMass (I := I) (ι := ι) (X.obj k).metric μ points join p r h) x)
+        (riemannianEDist I (points i) x) < ENNReal.ofReal (ρ / 2) :=
+    centerPairs_lt_le (I := I) (X.obj k).metric μ points join p r h x R hpq hscale
   exact HasNormalBranchDom.exists_branch_containing_pairs (I := I) hb k hcomplete hconn x hdom
-    (fun _ ↦ centerOfMass (I := I) (ι := ι) (X.obj k).metric μ pts join p r h) pts
+    (fun _ ↦ centerOfMass (I := I) (ι := ι) (X.obj k).metric μ points join p r h) points
     hρExp (by simpa [riemannianEDist_comm] using hpairs)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

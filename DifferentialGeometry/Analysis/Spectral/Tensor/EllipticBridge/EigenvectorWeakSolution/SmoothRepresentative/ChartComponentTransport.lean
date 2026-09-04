@@ -69,7 +69,7 @@ lemma mem_chartOverlapEuclid_iff_of_mem_chartTargetEuclid
         (chartAt H γ).source := by
   classical
   set z : M := (extChartAt I β).symm ((toEuclidean (E := E)).symm y) with hz_def
-  have hz_srcβ : z ∈ (chartAt H β).source :=
+  have hz_sourceβ : z ∈ (chartAt H β).source :=
     symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) β hy
   have hsymm_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I β).target := by
     rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
@@ -80,14 +80,14 @@ lemma mem_chartOverlapEuclid_iff_of_mem_chartTargetEuclid
   constructor
   · rintro ⟨w, ⟨x, hx_in, hxw⟩, hwy⟩
     have hx_eq_z : x = z := by
-      have hx_srcβ : x ∈ (extChartAt I β).source := by
+      have hx_sourceβ : x ∈ (extChartAt I β).source := by
         rw [extChartAt_source (I := I)]; exact hx_in.1
       rw [hz_def, ← hwy, ← hxw, (toEuclidean (E := E)).symm_apply_apply,
-        (extChartAt I β).left_inv hx_srcβ]
+        (extChartAt I β).left_inv hx_sourceβ]
     rw [hx_eq_z] at hx_in
     exact hx_in.2
-  · intro hz_srcγ
-    exact ⟨extChartAt I β z, ⟨z, ⟨hz_srcβ, hz_srcγ⟩, rfl⟩, hy_eq⟩
+  · intro hz_sourceγ
+    exact ⟨extChartAt I β z, ⟨z, ⟨hz_sourceβ, hz_sourceγ⟩, rfl⟩, hy_eq⟩
 
 private def chartKernelCutoffPushed (γ : M) : EuclN → ℝ :=
   chartPushedRaw (I := I) (M := M) γ
@@ -100,20 +100,20 @@ private lemma chartKernelCutoffPushed_eq_one_on_chartPouKernel
     chartKernelCutoffPushed (I := I) (M := M) γ y = 1 := by
   classical
   rw [chartPouKernel] at hy
-  obtain ⟨v, ⟨w, hw_supp, hwv⟩, hvy⟩ := hy
-  have hw_srcγ : w ∈ (chartAt H γ).source :=
-    (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) γ hw_supp
+  obtain ⟨v, ⟨w, hw_support, hwv⟩, hvy⟩ := hy
+  have hw_sourceγ : w ∈ (chartAt H γ).source :=
+    (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) γ hw_support
   have hw_extsrc : w ∈ (extChartAt I γ).source := by
-    rw [extChartAt_source (I := I)]; exact hw_srcγ
+    rw [extChartAt_source (I := I)]; exact hw_sourceγ
   have hy_target : y ∈ chartTargetEuclid (I := I) (M := M) γ :=
     chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) γ
-      ⟨v, ⟨w, hw_supp, hwv⟩, hvy⟩
+      ⟨v, ⟨w, hw_support, hwv⟩, hvy⟩
   have hsymm : (extChartAt I γ).symm ((toEuclidean (E := E)).symm y) = w := by
     rw [← hvy, ← hwv, (toEuclidean (E := E)).symm_apply_apply,
       (extChartAt I γ).left_inv hw_extsrc]
   unfold chartKernelCutoffPushed
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) γ _ hy_target, hsymm]
-  exact chartKernelCutoff_eqOn_one (I := I) (M := M) γ hw_supp
+  exact chartKernelCutoff_eqOn_one (I := I) (M := M) γ hw_support
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartKernelCutoffPushed_toEuclidean_extChartAt
@@ -325,9 +325,9 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
         chartOverlapEuclid_subset_chartTarget (I := I) (M := M) β γ hy_mem
       set z : M := (extChartAt I β).symm ((toEuclidean (E := E)).symm y)
         with hz_def
-      have hz_srcβ : z ∈ (chartAt H β).source :=
+      have hz_sourceβ : z ∈ (chartAt H β).source :=
         symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) β hy_target
-      have hz_srcγ : z ∈ (chartAt H γ).source :=
+      have hz_sourceγ : z ∈ (chartAt H γ).source :=
         (mem_chartOverlapEuclid_iff_of_mem_chartTargetEuclid
           (I := I) (M := M) β γ hy_target).mp hy_mem
       set zγ : EuclN := (toEuclidean (E := E)) (extChartAt I γ z) with hzγ_def
@@ -340,21 +340,21 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
         exact (toEuclidean (E := E)).apply_symm_apply y
       have hT_eq : chartTransitionEuclid (I := I) (M := M) β γ y = zγ := by
         rw [← hy_eq, hzγ_def]
-        exact chartTransitionEuclid_eq_chartα_image (I := I) (M := M) β γ hz_srcβ
+        exact chartTransitionEuclid_eq_chartα_image (I := I) (M := M) β γ hz_sourceβ
       have hA_y : A y =
           transitionCoeff (E := E) (I := I) (M := M) r s γ β P₀ Q z *
             chosenComp (I := I) (M := M) g r s i γ Q zγ := by
         rw [hA_def]
         simp only
         rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
-          ← hz_def, if_pos hz_srcγ]
+          ← hz_def, if_pos hz_sourceγ]
         congr 1
         have h_raw := tensorChartComponentRaw_eigenvectorSmoothChart_self
           (I := I) (M := M) g r s i γ Q
           (toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) γ
-            hz_srcγ)
+            hz_sourceγ)
         rw [symm_toEuclidean_symm_toEuclidean_extChartAt
-          (I := I) (M := M) γ hz_srcγ] at h_raw
+          (I := I) (M := M) γ hz_sourceγ] at h_raw
         rw [h_raw, hzγ_def]
       have hRHS_y : RHS y =
           (((chartKernelCutoff (I := I) (M := M) β :
@@ -372,7 +372,7 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
           ((chartKernelCutoff (I := I) (M := M) γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) z := by
         rw [hzγ_def]
         exact chartKernelCutoffPushed_toEuclidean_extChartAt
-          (I := I) (M := M) γ hz_srcγ
+          (I := I) (M := M) γ hz_sourceγ
       rw [hT_eq] at hy_cc hy_kc
       rw [h_cutγ] at hy_kc
       set Eγ : ℝ := eigenvectorChartComponentFun (I := I) (M := M)
@@ -407,23 +407,23 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
       by_cases hy_target : y ∈ chartTargetEuclid (I := I) (M := M) β
       · set z : M := (extChartAt I β).symm ((toEuclidean (E := E)).symm y)
           with hz_def
-        have hz_notin_srcγ : z ∉ (chartAt H γ).source := by
-          intro hz_srcγ
+        have hz_notin_sourceγ : z ∉ (chartAt H γ).source := by
+          intro hz_sourceγ
           exact hy_notin
             ((mem_chartOverlapEuclid_iff_of_mem_chartTargetEuclid
-              (I := I) (M := M) β γ hy_target).mpr hz_srcγ)
+              (I := I) (M := M) β γ hy_target).mpr hz_sourceγ)
         have hA_y : A y = 0 := by
           rw [hA_def]
           simp only
           rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
-            ← hz_def, if_neg hz_notin_srcγ]
+            ← hz_def, if_neg hz_notin_sourceγ]
         have hRHS_y : RHS y = 0 := by
           rw [hRHS_def]
           simp only
           have h_cutγ_zero : ((chartKernelCutoff (I := I) (M := M) γ :
               C^∞⟮I, M; ℝ⟯) : M → ℝ) z = 0 :=
             image_eq_zero_of_notMem_tsupport (fun h =>
-              hz_notin_srcγ
+              hz_notin_sourceγ
                 (chartKernelCutoff_tsupport_subset_source (I := I) (M := M) γ h))
           have h_coeff_zero : chartPushedRaw (I := I) (M := M) β
               (transportCoeffManifold (I := I) (M := M) r s γ β P₀ Q) y = 0 := by

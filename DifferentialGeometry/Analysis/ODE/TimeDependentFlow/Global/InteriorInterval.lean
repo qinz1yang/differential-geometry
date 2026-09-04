@@ -129,7 +129,7 @@ theorem smul_tangentBundleSection_contMDiff
   exact contMDiff_of_contMDiffOn_union_of_isOpen honU honV hcover hUopen hVopen
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [CompactSpace M] [BoundarylessManifold I M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem interior_field_global_cutoff_extension_loc
+theorem interior_field_global_cutoff_extension_local
     (X_DT : ℝ → ∀ x : M, TangentSpace I x) (T : ℝ)
     (hint : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X_DT q.1 q.2) : TangentBundle I M))
@@ -309,8 +309,8 @@ theorem exists_local_flow_anchored_at_interior_time
   obtain ⟨lo, hlo0, hlot₀⟩ := exists_between ht₀.1
   obtain ⟨hi, ht₀hi, hhiT⟩ := exists_between ht₀.2
   obtain ⟨Xt, δ, hδ, hXt_eq, hXt_cont, hXt_auto⟩ :=
-    interior_field_global_cutoff_extension_loc X T hint hlo0 hhiT
-  obtain ⟨Tg, hTg, Φ, hΦ_init, hΦ_smooth, hΦ_bare⟩ :=
+    interior_field_global_cutoff_extension_local X T hint hlo0 hhiT
+  obtain ⟨Tg, hTg, Φ, hΦ_initial, hΦ_smooth, hΦ_bare⟩ :=
     global_flow_jointContMDiffOn_on_closed_manifold Xt hXt_cont t₀
   set T' : ℝ := min (min Tg (t₀ - (lo - δ))) (min ((hi + δ) - t₀) (min t₀ (T - t₀))) with hT'_def
   have hT'_pos : 0 < T' := by
@@ -340,7 +340,7 @@ theorem exists_local_flow_anchored_at_interior_time
   have hXtX : ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'), ∀ p, Xt t p = X t p := by
     intro t ht p
     exact hXt_eq t (hwin_aδ ht) p
-  refine ⟨T', Φ, hT'_pos, hwin_0T, hΦ_init, ?_, ?_⟩
+  refine ⟨T', Φ, hT'_pos, hwin_0T, hΦ_initial, ?_, ?_⟩
   · exact (hΦ_smooth).mono (Set.prod_mono hwin_Tg (subset_refl _))
   · intro p t ht
     have hbare := hΦ_bare p t (hwin_Tg ht)
@@ -371,7 +371,7 @@ theorem integralCurves_eqOn_Icc_of_agree_at_left
   have hlohi : lo < hi := by rw [hlo, hhi]; linarith
   have hhiT : hi < T := by rw [hhi]; linarith
   obtain ⟨Xt, δ, hδ, hXt_eq, hXt_cont, hXt_auto⟩ :=
-    interior_field_global_cutoff_extension_loc X T hint hlo0 hhiT
+    interior_field_global_cutoff_extension_local X T hint hlo0 hhiT
   have hlo_a : lo < a := by rw [hlo]; linarith
   have hb_hi : b < hi := by rw [hhi]; linarith
   have hsub : Set.Icc a b ⊆ Set.Ioo (lo - δ) (hi + δ) := by
@@ -507,7 +507,7 @@ theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
             ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (W p t)))) := by
   classical
   obtain ⟨Xt, δc, hδc, hXt_eq, hXt_cont, _hXt_auto⟩ :=
-    interior_field_global_cutoff_extension_loc X T hint (a := a / 2) (b := (b + T) / 2)
+    interior_field_global_cutoff_extension_local X T hint (a := a / 2) (b := (b + T) / 2)
       (by linarith) (by linarith)
   set lo : ℝ := a / 2 with hlo_def
   set hi : ℝ := (b + T) / 2 with hhi_def
@@ -524,7 +524,7 @@ theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
   have hper := fun p₀ : ℝ × M =>
     local_flow_jointSmooth_and_integralCurve (I := 𝓘(ℝ, ℝ).prod I) (M := ℝ × M)
       Xi hXi' 0 p₀
-  choose U hUopen hUmem Tnb hTnb_pos Ψ hΨinit _hΨsm hΨbare using hper
+  choose U hUopen hUmem Tnb hTnb_pos Ψ hΨinitial _hΨsm hΨbare using hper
   have hKcompact : IsCompact (Set.Icc a b ×ˢ (Set.univ : Set M)) :=
     isCompact_Icc.prod isCompact_univ
   have hKcover : (Set.Icc a b ×ˢ (Set.univ : Set M)) ⊆ ⋃ p : ℝ × M, U p :=
@@ -584,7 +584,7 @@ theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
         fun s hs => autonomizedFlow_fst_hasDerivAt Xt (c q) s (hgbare q s hs)
       have hval : (c q 0).1 = e := by
         simp only [hc_def]
-        rw [hΨinit (p0 q) (e, q) (hp0U q)]
+        rw [hΨinitial (p0 q) (e, q) (hp0U q)]
       have h0mem : (0 : ℝ) ∈ Set.Ioo (-r) r := ⟨by linarith, hr_pos⟩
       have hconst : ∀ s ∈ Set.Ioo (-r) r,
           HasDerivAt (fun u => (c q u).1 - u) (0 : ℝ) s := by
@@ -611,7 +611,7 @@ theorem exists_uniformRadius_local_flow_cover_of_compact_Icc
     refine ⟨fun q t => (c q (t - e)).2, hsub0T, ?_, ?_⟩
     · intro q
       simp only [hc_def, sub_self]
-      exact congrArg Prod.snd (hΨinit (p0 q) (e, q) (hp0U q))
+      exact congrArg Prod.snd (hΨinitial (p0 q) (e, q) (hp0U q))
     · intro q t ht
       have hte : (t - e) ∈ Set.Ioo (-r) r := ⟨by linarith [ht.1], by linarith [ht.2]⟩
       have hsnd := autonomizedFlow_snd_hasMFDerivAt Xt (c q) (t - e) (hgbare q (t - e) hte)

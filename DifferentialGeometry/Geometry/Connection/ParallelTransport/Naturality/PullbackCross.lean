@@ -432,8 +432,8 @@ private theorem covAlong_mapCross_zero
     have hrep0 : chartRepAt (I := J) delta W t t = 0 := by
       simp [chartRepAt_apply, hW0]
     rw [hrep0, ChartChristoffel.contraction_zero_right, add_zero]
-  have haSrc : a ∈ (chartAt H a).source := mem_chart_source H a
-  have hbSrc : b ∈ (chartAt G b).source := mem_chart_source G b
+  have haSource : a ∈ (chartAt H a).source := mem_chart_source H a
+  have hbSource : b ∈ (chartAt G b).source := mem_chart_source G b
   have hleftCoord :
       trivToE (I := J) b b
           (mfderiv I J (Phi : M → N) a
@@ -450,7 +450,7 @@ private theorem covAlong_mapCross_zero
               a gamma w t))) = _
     rw [hsourceChart]
     simpa [psi, u, a, b, chartCurve, writtenInExtChartAt, Function.comp_def] using
-      (triv_mfderiv_cross (I := I) (J := J) Phi a a b haSrc hbSrc (deriv w t))
+      (triv_mfderiv_cross (I := I) (J := J) Phi a a b haSource hbSource (deriv w t))
   have hrightCoord :
       trivToE (I := J) b b (covDerivAlong (I := J) g delta W t) =
         fderiv ℝ psi (u t) (deriv w t) := by
@@ -465,7 +465,7 @@ private theorem covAlong_mapCross_zero
         gamma V t) = covDerivAlong (I := J) g delta W t
   have hbBase : b ∈ (trivializationAt F (TangentSpace J) b).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet]
-    exact hbSrc
+    exact hbSource
   rw [← trivFromE_trivToE (I := J) b hbBase
       (mfderiv I J (Phi : M → N) a
         (covDerivAlong (I := I)

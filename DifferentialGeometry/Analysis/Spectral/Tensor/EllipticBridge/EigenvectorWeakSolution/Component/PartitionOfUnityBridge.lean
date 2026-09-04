@@ -131,7 +131,7 @@ theorem pouSmul_tsupport_subset_chartSource
     funext x
     exact pouSmul_toFun_apply (I := I) (M := M) g r s α S x
   rw [hfun_eq]
-  have h_supp_sub : Function.support
+  have h_support_sub : Function.support
       (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x •
         S.toFun x) ⊆
       Function.support
@@ -140,7 +140,7 @@ theorem pouSmul_tsupport_subset_chartSource
     rw [Function.mem_support] at hx ⊢
     intro hweight_zero
     exact hx (by rw [hweight_zero, zero_smul])
-  refine (closure_mono h_supp_sub).trans ?_
+  refine (closure_mono h_support_sub).trans ?_
   exact (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate
     I M) α
 
@@ -162,7 +162,7 @@ theorem tensorChartComponent_isSmoothWeakSolution
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
-    (hF_supp : tsupport F.toFun ⊆ (chartAt H α).source)
+    (hF_support : tsupport F.toFun ⊆ (chartAt H α).source)
     (hS_K : tsupport
         (tensorChartComponent (I := I) (M := M) g r s S α P₀.1 P₀.2) ⊆ K)
     (hweak : ∀ v : SmoothCcTensor g r s,
@@ -181,7 +181,7 @@ theorem tensorChartComponent_isSmoothWeakSolution
           (pouSmul (I := I) (M := M) g r s α S) α P₀ :=
     tensorChartComponent_eq_tensorComponentEuclid_pouSmul
       (I := I) (M := M) g r s α S P₀
-  have hpou_supp :
+  have hpou_support :
       tsupport (pouSmul (I := I) (M := M) g r s α S).toFun ⊆
         (chartAt H α).source :=
     pouSmul_tsupport_subset_chartSource (I := I) (M := M) g r s α S
@@ -192,7 +192,7 @@ theorem tensorChartComponent_isSmoothWeakSolution
   rw [hcomp_eq]
   exact tensorComponent_isSmoothWeakSolution (I := I) (M := M) g r s
     (pouSmul (I := I) (M := M) g r s α S) F α hK hK_target P₀
-    hpou_supp hF_supp hpou_K hweak
+    hpou_support hF_support hpou_K hweak
 
 end TensorSpectral
 end Parabolic

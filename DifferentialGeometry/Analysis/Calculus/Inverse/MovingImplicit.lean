@@ -15,7 +15,7 @@ open scoped ContDiff Topology
 namespace DifferentialGeometry
 namespace Analysis
 
-open HCGCompactness
+open CheegerGromovCompactness
 
 theorem approx_of_fderiv_le
     {E F : Type*}
@@ -56,7 +56,7 @@ theorem exists_preim_tail
     {H : Nat → E → F} {HInf : E → F}
     (hH : ∀ n, ContDiffOn Real ∞ (H n) D)
     (hHInf : ContDiffOn Real ∞ HInf D)
-    (hconv : MapCInfConvOnCompacts D H HInf)
+    (hconv : MapCInfConvergenceOnCompacts D H HInf)
     {z₀ : E} (hz₀ : z₀ ∈ D)
     {A : E ≃L[Real] F}
     (hstrict : HasStrictFDerivAt HInf (A : E →L[Real] F) z₀)
@@ -119,14 +119,14 @@ theorem exists_preim_tail
     have happBall : ApproximatesLinearOn HInf (A : E →L[Real] F)
         (Metric.closedBall z₀ r) c :=
       happInf.mono_set hballS
-    have hdfconv : MapCInfConvOnCompacts D
+    have hdfconv : MapCInfConvergenceOnCompacts D
         (fun n z => fderiv Real (H n) z) (fun z => fderiv Real HInf z) :=
       hconv.fderivOn hD hH hHInf
     have hdfUniform : TendstoUniformlyOn
         (fun n z => fderiv Real (H n) z) (fun z => fderiv Real HInf z)
         Filter.atTop (Metric.closedBall z₀ r) :=
-      tendstoUniformlyOn_of_cPConv
-        (hdfconv.cPConvOn (isCompact_closedBall z₀ r) hballD 0)
+      tendstoUniformlyOn_of_cPConvergence
+        (hdfconv.cPConvergenceOn (isCompact_closedBall z₀ r) hballD 0)
     rw [Metric.tendstoUniformlyOn_iff] at hdfUniform
     have hderivEv : ∀ᶠ n in Filter.atTop,
         ∀ z ∈ Metric.closedBall z₀ r,
@@ -609,7 +609,7 @@ theorem exists_domain_buffer
     dsimp only [r]
     linarith [T.rho_pos]
   have htubeD : T.closedTube r ⊆ D := T.closedTube_subset hrle
-  obtain ⟨D', hD', htubeD', hD'D, hD'cpt⟩ :=
+  obtain ⟨D', hD', htubeD', hD'D, hD'compact⟩ :=
     exists_open_between_and_isCompact_closure
       (T.closedTube_compact r) T.isOpen_domain htubeD
   let T' : CompactRootTube D' W₀ K FInf PhiInf :=
@@ -635,7 +635,7 @@ theorem exists_domain_buffer
         intro p hp x hx hroot
         exact T.limit_unique p hp x (hx.trans hrle) hroot
       limit_root_deriv_inv := T.limit_root_deriv_inv }
-  exact ⟨D', T', hD'cpt, hD'D, rfl, rfl⟩
+  exact ⟨D', T', hD'compact, hD'D, rfl, rfl⟩
 
 
 def closedAnnulus
@@ -736,7 +736,7 @@ theorem eventually_no_root
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
-    (hF_conv : MapCInfConvOnCompacts D F FInf)
+    (hF_convergence : MapCInfConvergenceOnCompacts D F FInf)
     {inner : Real} (hinner : 0 < inner) :
     ∀ᶠ n in Filter.atTop, ∀ z ∈ T.closedAnnulus inner T.rho, F n z ≠ 0 := by
   obtain ⟨c, hc, hgap⟩ := T.exists_residual_gap hinner
@@ -748,7 +748,7 @@ theorem eventually_no_root
       simpa only [Metric.mem_closedBall] using! hdist)
   have huniform : TendstoUniformlyOn F FInf Filter.atTop
       (T.closedAnnulus inner T.rho) :=
-    tendstoUniformlyOn_of_cPConv (hF_conv.cPConvOn hcompact hsub 0)
+    tendstoUniformlyOn_of_cPConvergence (hF_convergence.cPConvergenceOn hcompact hsub 0)
   rw [Metric.tendstoUniformlyOn_iff] at huniform
   filter_upwards [huniform (c / 2) (by positivity)] with n hn
   intro z hz hzero
@@ -764,7 +764,7 @@ theorem exists_deriv_radius
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
-    (hF_conv : MapCInfConvOnCompacts D F FInf) :
+    (hF_convergence : MapCInfConvergenceOnCompacts D F FInf) :
     ∃ eta : Real, 0 < eta ∧ eta < T.rho ∧
       (∀ z ∈ T.closedTube eta,
         (partialFDeriv₂ FInf z.1 z.2).IsInvertible) ∧
@@ -833,13 +833,13 @@ theorem exists_deriv_radius
   have heta_le : eta ≤ T.rho := heta_rho.le
   have htubeCompact : IsCompact (T.closedTube eta) := T.closedTube_compact eta
   have htubeD : T.closedTube eta ⊆ D := T.closedTube_subset heta_le
-  have hdf_conv : MapCInfConvOnCompacts D
+  have hdf_convergence : MapCInfConvergenceOnCompacts D
       (fun n z => fderiv Real (F n) z) (fun z => fderiv Real FInf z) :=
-    hF_conv.fderivOn T.isOpen_domain hF_cd T.limit_equation_smooth
+    hF_convergence.fderivOn T.isOpen_domain hF_cd T.limit_equation_smooth
   have hdf_uniform : TendstoUniformlyOn
       (fun n z => fderiv Real (F n) z) (fun z => fderiv Real FInf z)
       Filter.atTop (T.closedTube eta) :=
-    tendstoUniformlyOn_of_cPConv (hdf_conv.cPConvOn htubeCompact htubeD 0)
+    tendstoUniformlyOn_of_cPConvergence (hdf_convergence.cPConvergenceOn htubeCompact htubeD 0)
   have hpartial_image : IsCompact (partialInf '' T.closedTube eta) :=
     htubeCompact.image_of_continuousOn (hpartial_cont.mono htubeD)
   have hpartial_image_inv : partialInf '' T.closedTube eta ⊆ invSet := by
@@ -885,7 +885,7 @@ theorem exists_root_buffer
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
-    (hF_conv : MapCInfConvOnCompacts D F FInf)
+    (hF_convergence : MapCInfConvergenceOnCompacts D F FInf)
     {inner : Real} (hinner : 0 < inner) :
     ∃ b : Real, 0 < b ∧ b < inner ∧
       ∃ N : Nat, ∀ n ≥ N,
@@ -903,10 +903,10 @@ theorem exists_root_buffer
   have hHInf_cd : ContDiffOn Real ∞ HInf D := by
     simpa only [HInf, pinnedRootMap] using!
       T.limit_equation_smooth.prodMk contDiff_fst.contDiffOn
-  have hH_conv : MapCInfConvOnCompacts D H HInf := by
+  have hH_convergence : MapCInfConvergenceOnCompacts D H HInf := by
     simpa only [H, HInf, pinnedRootMap] using!
-      mapCInfConv_prodMk T.isOpen_domain hF_conv
-        (mapCInfConv_const (U := D) (fun z : P × X => z.1))
+      mapCInfConvergence_prodMk T.isOpen_domain hF_convergence
+        (mapCInfConvergence_const (U := D) (fun z : P × X => z.1))
         hF_cd T.limit_equation_smooth
         (fun _ => contDiff_fst.contDiffOn) contDiff_fst.contDiffOn
   have hlocal : ∀ p ∈ closure T.W,
@@ -942,7 +942,7 @@ theorem exists_root_buffer
       exact lt_min (div_pos hinner (by norm_num))
         (div_pos T.rho_pos (by norm_num))
     obtain ⟨r, δ, hr, hrR, hδ, N, hN⟩ :=
-      exists_preim_tail T.isOpen_domain hH_cd hHInf_cd hH_conv hz₀D hstrict hR
+      exists_preim_tail T.isOpen_domain hH_cd hHInf_cd hH_convergence hz₀D hstrict hR
     let phiTol : Real := min (r / 8) (inner / 4)
     have hphiTol : 0 < phiTol := by
       dsimp only [phiTol]
@@ -1110,7 +1110,7 @@ theorem exists_root_c0
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
-    (hF_conv : MapCInfConvOnCompacts D F FInf) :
+    (hF_convergence : MapCInfConvergenceOnCompacts D F FInf) :
     ∃ N : Nat, ∃ Phi : Nat → P → X,
       TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) ∧
       (∀ n ≥ N, ∀ p ∈ closure T.W,
@@ -1122,7 +1122,7 @@ theorem exists_root_c0
           (F n (p, x) = 0 ↔ x = Phi n p) := by
   classical
   obtain ⟨eta, heta, hetaRho, hlimitInv, hstageInv⟩ :=
-    T.exists_deriv_radius hF_cd hF_conv
+    T.exists_deriv_radius hF_cd hF_convergence
   let inner : Real := min (eta / 2) (T.rho / 4)
   have hinner : 0 < inner := by
     dsimp only [inner]
@@ -1135,7 +1135,7 @@ theorem exists_root_c0
     calc inner ≤ T.rho / 4 := min_le_right _ _
       _ < T.rho := by linarith [T.rho_pos]
   obtain ⟨b, hb, hbInner, Nroot, hroot⟩ :=
-    T.exists_root_buffer hF_cd hF_conv hinner
+    T.exists_root_buffer hF_cd hF_convergence hinner
   let Phi : Nat → P → X := fun n p =>
     if h : Nroot ≤ n ∧ p ∈ closure T.W then
       Classical.choose ((hroot n h.1).1 p h.2)
@@ -1146,14 +1146,14 @@ theorem exists_root_c0
     dsimp only [Phi]
     rw [dif_pos ⟨hn, hp⟩]
     exact Classical.choose_spec ((hroot n hn).1 p hp)
-  have hPhiConv : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) := by
+  have hPhiConvergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) := by
     rw [Metric.tendstoUniformlyOn_iff]
     intro eps heps
     let a : Real := min (eps / 2) (inner / 2)
     have ha : 0 < a := by
       dsimp only [a]
       exact lt_min (div_pos heps (by norm_num)) (div_pos hinner (by norm_num))
-    have hno := T.eventually_no_root hF_conv ha
+    have hno := T.eventually_no_root hF_convergence ha
     filter_upwards [eventually_ge_atTop Nroot, hno] with n hn hnoN
     intro p hp
     obtain ⟨hPhiDist, hPhiRoot⟩ := hPhiSpec n hn p hp
@@ -1169,11 +1169,11 @@ theorem exists_root_c0
         _ ≤ eps := by linarith
     simpa only [dist_comm] using! hsmall.trans_le haeps
   obtain ⟨Ninv, hNinv⟩ := eventually_atTop.mp hstageInv
-  have hnoOuter := T.eventually_no_root hF_conv
+  have hnoOuter := T.eventually_no_root hF_convergence
     (inner := b / 2) (div_pos hb (by norm_num))
   obtain ⟨Nouter, hNouter⟩ := eventually_atTop.mp hnoOuter
   let N : Nat := max Nroot (max Ninv Nouter)
-  refine ⟨N, Phi, hPhiConv, ?_, ?_⟩
+  refine ⟨N, Phi, hPhiConvergence, ?_, ?_⟩
   · intro n hn p hp
     have hnRoot : Nroot ≤ n := by
       dsimp only [N] at hn
@@ -1381,9 +1381,9 @@ theorem root_cInf
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
-    (hF_conv : MapCInfConvOnCompacts D F FInf)
+    (hF_convergence : MapCInfConvergenceOnCompacts D F FInf)
     {Phi : Nat → P → X}
-    (hPhi_conv : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W))
+    (hPhi_convergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W))
     (hPhi_cd : ∀ n, ContDiffOn Real ∞ (Phi n) T.W)
     (hspec : ∀ n, ∀ p ∈ closure T.W,
       dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
@@ -1392,16 +1392,16 @@ theorem root_cInf
     (huniq : ∀ n, ∀ p ∈ closure T.W, ∀ x,
       dist x (PhiInf p) < T.rho →
         (F n (p, x) = 0 ↔ x = Phi n p)) :
-    MapCInfConvOnCompacts T.W Phi PhiInf := by
+    MapCInfConvergenceOnCompacts T.W Phi PhiInf := by
   intro K' hK' hK'W p
   have hPhiInf_cd : ContDiffOn Real ∞ PhiInf T.W :=
     T.limit_branch_smooth.mono fun q hq =>
       T.closure_W_subset (subset_closure hq)
   induction p with
   | zero =>
-      rw [Metric.tendstoUniformlyOn_iff] at hPhi_conv
+      rw [Metric.tendstoUniformlyOn_iff] at hPhi_convergence
       intro eps heps
-      obtain ⟨N, hN⟩ := eventually_atTop.mp (hPhi_conv eps heps)
+      obtain ⟨N, hN⟩ := eventually_atTop.mp (hPhi_convergence eps heps)
       refine ⟨N, fun n hn r hr q hq => ?_⟩
       have hdist := hN n hn q (subset_closure (hK'W hq))
       have hr0 : r = 0 := by omega
@@ -1409,11 +1409,11 @@ theorem root_cInf
       simpa only [mapDerivNorm, norm_iteratedFDeriv_zero, dist_eq_norm,
         norm_sub_rev] using! hdist.le
   | succ p ih =>
-      have hId : MapCPConvOn K' p (fun _ : Nat => id) id :=
-        (mapCInfConv_const (U := T.W) (id : P → P)) K' hK' hK'W p
-      have hGraph : MapCPConvOn K' p
+      have hId : MapCPConvergenceOn K' p (fun _ : Nat => id) id :=
+        (mapCInfConvergence_const (U := T.W) (id : P → P)) K' hK' hK'W p
+      have hGraph : MapCPConvergenceOn K' p
           (fun n q => (q, Phi n q)) (fun q => (q, PhiInf q)) :=
-        MapCPConvOn.prodMk T.isOpen_W hK'W hId ih
+        MapCPConvergenceOn.prodMk T.isOpen_W hK'W hId ih
           (fun _ => contDiff_id.contDiffOn) contDiff_id.contDiffOn
           hPhi_cd hPhiInf_cd
       have hGraph_cd : ∀ n, ContDiffOn Real ∞
@@ -1433,21 +1433,21 @@ theorem root_cInf
         apply T.tube_subset q (subset_closure hq)
         rw [Metric.mem_closedBall]
         simpa using! T.rho_pos.le
-      have hDF_conv : MapCInfConvOnCompacts D
+      have hDF_convergence : MapCInfConvergenceOnCompacts D
           (fun n z => fderiv Real (F n) z)
           (fun z => fderiv Real FInf z) :=
-        hF_conv.fderivOn T.isOpen_domain hF_cd T.limit_equation_smooth
+        hF_convergence.fderivOn T.isOpen_domain hF_cd T.limit_equation_smooth
       have hDF_cd : ∀ n, ContDiffOn Real ∞ (fderiv Real (F n)) D :=
         fun n => (hF_cd n).fderiv_of_isOpen T.isOpen_domain
           (by exact_mod_cast le_top)
       have hDFInf_cd : ContDiffOn Real ∞ (fderiv Real FInf) D :=
         T.limit_equation_smooth.fderiv_of_isOpen T.isOpen_domain
           (by exact_mod_cast le_top)
-      have hAlong : MapCPConvOn K' p
+      have hAlong : MapCPConvergenceOn K' p
           (fun n q => fderiv Real (F n) (q, Phi n q))
           (fun q => fderiv Real FInf (q, PhiInf q)) :=
-        MapCPConvOn.comp_cInf T.isOpen_W T.isOpen_domain hK' hK'W hGraph
-          hDF_conv hGraph_cd hGraphInf_cd hDF_cd hDFInf_cd
+        MapCPConvergenceOn.comp_cInf T.isOpen_W T.isOpen_domain hK' hK'W hGraph
+          hDF_convergence hGraph_cd hGraphInf_cd hDF_cd hDFInf_cd
           hGraphInf_map hGraph_map
       have hAlong_cd : ∀ n, ContDiffOn Real ∞
           (fun q => fderiv Real (F n) (q, Phi n q)) T.W :=
@@ -1467,15 +1467,15 @@ theorem root_cInf
         intro q hq
         change (partialFDeriv₂ FInf q (PhiInf q)).IsInvertible
         exact T.limit_root_deriv_inv q (subset_closure hq)
-      have hRhs : MapCPConvOn K' p
+      have hRhs : MapCPConvergenceOn K' p
           (fun n q => implicitRootDeriv
             (fderiv Real (F n) (q, Phi n q)))
           (fun q => implicitRootDeriv
             (fderiv Real FInf (q, PhiInf q))) :=
-        MapCPConvOn.comp_cInf T.isOpen_W
+        MapCPConvergenceOn.comp_cInf T.isOpen_W
           (isOpen_rootDerivDom (P := P) (X := X) (Y := Y))
           hK' hK'W hAlong
-          (mapCInfConv_const
+          (mapCInfConvergence_const
             (U := implicitRootDomain (P := P) (X := X) (Y := Y))
             (implicitRootDeriv (P := P) (X := X) (Y := Y)))
           hAlong_cd hAlongInf_cd
@@ -1490,12 +1490,12 @@ theorem root_cInf
         exact T.root_fderiv_eq hF_cd (N := 0) (Phi := Phi)
           (fun m hm => hspec m) (fun m hm => huniq m)
           n (by omega) q hq
-      have hFD : MapCPConvOn K' p
+      have hFD : MapCPConvergenceOn K' p
           (fun n q => fderiv Real (Phi n) q)
           (fun q => fderiv Real PhiInf q) :=
         hRhs.congr T.isOpen_W hK'W hFormula T.limit_fderiv_eq
       simpa only [Nat.succ_eq_add_one] using
-        MapCPConvOn.succ_of_fderiv T.isOpen_W hK'W
+        MapCPConvergenceOn.succ_of_fderiv T.isOpen_W hK'W
           (ih.mono_order (Nat.zero_le p)) hFD
           (fun n => (hPhi_cd n).differentiableOn (by simp))
           (hPhiInf_cd.differentiableOn (by simp))
@@ -1510,7 +1510,7 @@ theorem exists_root_smooth
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
-    (hF_conv : MapCInfConvOnCompacts D F FInf) :
+    (hF_convergence : MapCInfConvergenceOnCompacts D F FInf) :
     ∃ N : Nat, ∃ Phi : Nat → P → X,
       TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) ∧
       (∀ n ≥ N, ContDiffOn Real ∞ (Phi n) T.W) ∧
@@ -1521,7 +1521,7 @@ theorem exists_root_smooth
       ∀ n ≥ N, ∀ p ∈ closure T.W, ∀ x,
         dist x (PhiInf p) < T.rho →
           (F n (p, x) = 0 ↔ x = Phi n p) := by
-  obtain ⟨N, Phi, hconv, hspec, huniq⟩ := T.exists_root_c0 hF_cd hF_conv
+  obtain ⟨N, Phi, hconv, hspec, huniq⟩ := T.exists_root_c0 hF_cd hF_convergence
   exact ⟨N, Phi, hconv, T.root_contDiffOn hF_cd hspec huniq, hspec, huniq⟩
 
 theorem exists_root_cInf
@@ -1534,9 +1534,9 @@ theorem exists_root_cInf
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
     (hF_cd : ∀ n, ContDiffOn Real ∞ (F n) D)
-    (hF_conv : MapCInfConvOnCompacts D F FInf) :
+    (hF_convergence : MapCInfConvergenceOnCompacts D F FInf) :
     ∃ N : Nat, ∃ Phi : Nat → P → X,
-      MapCInfConvOnCompacts T.W Phi PhiInf ∧
+      MapCInfConvergenceOnCompacts T.W Phi PhiInf ∧
       (∀ n, ContDiffOn Real ∞ (Phi n) T.W) ∧
       (∀ n ≥ N, ∀ p ∈ closure T.W,
         dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
@@ -1546,7 +1546,7 @@ theorem exists_root_cInf
         dist x (PhiInf p) < T.rho →
           (F n (p, x) = 0 ↔ x = Phi n p) := by
   obtain ⟨N, Phi₀, hconv₀, hcd₀, hspec₀, huniq₀⟩ :=
-    T.exists_root_smooth hF_cd hF_conv
+    T.exists_root_smooth hF_cd hF_convergence
   let Phi : Nat → P → X := fun n =>
     if N ≤ n then Phi₀ n else PhiInf
   let F' : Nat → P × X → Y := fun n =>
@@ -1554,12 +1554,12 @@ theorem exists_root_cInf
   have hPhiInf_cd : ContDiffOn Real ∞ PhiInf T.W :=
     T.limit_branch_smooth.mono fun q hq =>
       T.closure_W_subset (subset_closure hq)
-  have hPhi_conv : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) := by
+  have hPhi_convergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.W) := by
     rw [Metric.tendstoUniformlyOn_iff] at hconv₀ ⊢
     intro eps heps
-    filter_upwards [hconv₀ eps heps, eventually_ge_atTop N] with n hnConv hn
+    filter_upwards [hconv₀ eps heps, eventually_ge_atTop N] with n hnConvergence hn
     intro q hq
-    simpa only [Phi, if_pos hn] using! hnConv q hq
+    simpa only [Phi, if_pos hn] using! hnConvergence q hq
   have hPhi_cd : ∀ n, ContDiffOn Real ∞ (Phi n) T.W := by
     intro n
     by_cases hn : N ≤ n
@@ -1570,8 +1570,8 @@ theorem exists_root_cInf
     by_cases hn : N ≤ n
     · simpa only [F', if_pos hn] using! hF_cd n
     · simpa only [F', if_neg hn] using! T.limit_equation_smooth
-  have hF'_conv : MapCInfConvOnCompacts D F' FInf := by
-    apply hF_conv.congr_eventually T.isOpen_domain
+  have hF'_convergence : MapCInfConvergenceOnCompacts D F' FInf := by
+    apply hF_convergence.congr_eventually T.isOpen_domain
     · filter_upwards [eventually_ge_atTop N] with n hn
       intro z hz
       simp only [F', if_pos hn]
@@ -1599,8 +1599,8 @@ theorem exists_root_cInf
       · exact T.limit_unique p hp x hx.le
       · rintro rfl
         exact T.limit_root p hp
-  have hCInf : MapCInfConvOnCompacts T.W Phi PhiInf :=
-    T.root_cInf hF'_cd hF'_conv hPhi_conv hPhi_cd hspec huniq
+  have hCInf : MapCInfConvergenceOnCompacts T.W Phi PhiInf :=
+    T.root_cInf hF'_cd hF'_convergence hPhi_convergence hPhi_cd hspec huniq
   refine ⟨N, Phi, hCInf, hPhi_cd, ?_, ?_⟩
   · intro n hn p hp
     simpa only [Phi, if_pos hn] using! hspec₀ n hn p hp
@@ -1617,9 +1617,9 @@ theorem exists_cInf_tail
     (T : CompactRootTube D W₀ K FInf PhiInf)
     {F : Nat → P × X → Y}
     (hF_cd : ∀ᶠ n in Filter.atTop, ContDiffOn Real ∞ (F n) D)
-    (hF_conv : MapCInfConvOnCompacts D F FInf) :
+    (hF_convergence : MapCInfConvergenceOnCompacts D F FInf) :
     ∃ N : Nat, ∃ Phi : Nat → P → X,
-      MapCInfConvOnCompacts T.W Phi PhiInf ∧
+      MapCInfConvergenceOnCompacts T.W Phi PhiInf ∧
       (∀ n, ContDiffOn Real ∞ (Phi n) T.W) ∧
       (∀ n ≥ N, ∀ p ∈ closure T.W,
         dist (Phi n p) (PhiInf p) < T.rho / 2 ∧
@@ -1636,15 +1636,15 @@ theorem exists_cInf_tail
     by_cases hn : N₀ ≤ n
     · simpa only [F', if_pos hn] using! hN₀ n hn
     · simpa only [F', if_neg hn] using! T.limit_equation_smooth
-  have hF'_conv : MapCInfConvOnCompacts D F' FInf := by
-    apply hF_conv.congr_eventually T.isOpen_domain
+  have hF'_convergence : MapCInfConvergenceOnCompacts D F' FInf := by
+    apply hF_convergence.congr_eventually T.isOpen_domain
     · filter_upwards [eventually_ge_atTop N₀] with n hn
       intro z hz
       simp only [F', if_pos hn]
     · intro z hz
       rfl
   obtain ⟨N₁, Phi, hPhi, hPhiC, hspec, huniq⟩ :=
-    T.exists_root_cInf hF'_cd hF'_conv
+    T.exists_root_cInf hF'_cd hF'_convergence
   let N := max N₀ N₁
   refine ⟨N, Phi, hPhi, hPhiC, ?_, ?_⟩
   · intro n hn p hp
@@ -1932,17 +1932,17 @@ theorem exists_rootTube
   have hKW₀ : K ⊆ W₀ := by
     intro p hp
     have hgraphT : graph p ∈ T := hST ⟨p, hp, rfl⟩
-    have hgraphSrc : graph p ∈ e.source := by
+    have hgraphSource : graph p ∈ e.source := by
       simpa only [he_source] using! hgraphT
-    have hmap := e.map_source hgraphSrc
+    have hmap := e.map_source hgraphSource
     rw [he_coe, hseed_image p hp] at hmap
     exact hmap
   have hPhiInf : ContDiffOn Real ∞ PhiInf W₀ := by
     intro p hp
     let z : P × X := e.symm (pair p)
-    have hzSrc : z ∈ e.source := e.symm.map_source hp
+    have hzSource : z ∈ e.source := e.symm.map_source hp
     have hzT : z ∈ T := by
-      simpa only [he_source] using! hzSrc
+      simpa only [he_source] using! hzSource
     have hFAt : ContDiffAt Real ∞ FInf z :=
       hFInf.contDiffAt (hD.mem_nhds hzT.2.1)
     have hHAt : ContDiffAt Real ∞ H z :=
@@ -1970,9 +1970,9 @@ theorem exists_rootTube
       (p, PhiInf p) ∈ D ∧ FInf (p, PhiInf p) = 0 := by
     intro p hp
     let z : P × X := e.symm (pair p)
-    have hzSrc : z ∈ e.source := e.symm.map_source hp
+    have hzSource : z ∈ e.source := e.symm.map_source hp
     have hzT : z ∈ T := by
-      simpa only [he_source] using! hzSrc
+      simpa only [he_source] using! hzSource
     have hright := e.right_inv hp
     rw [he_coe] at hright
     have hzRoot : FInf z = 0 := by
@@ -1991,9 +1991,9 @@ theorem exists_rootTube
   have hEq : Set.EqOn PhiInf seed K := by
     intro p hp
     have hgraphT : graph p ∈ T := hST ⟨p, hp, rfl⟩
-    have hgraphSrc : graph p ∈ e.source := by
+    have hgraphSource : graph p ∈ e.source := by
       simpa only [he_source] using! hgraphT
-    have hleft := e.left_inv hgraphSrc
+    have hleft := e.left_inv hgraphSource
     rw [he_coe, hseed_image p hp] at hleft
     simpa only [PhiInf, graph] using! congrArg Prod.snd hleft
   refine ⟨W₀, PhiInf, hEq, ?_⟩

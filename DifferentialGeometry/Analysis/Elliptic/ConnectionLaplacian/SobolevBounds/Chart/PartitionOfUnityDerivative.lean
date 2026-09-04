@@ -79,7 +79,7 @@ lemma chartPouEucl_contDiff (α : M) :
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x with hf_def
   have hf_smooth : ContMDiff I (𝓘(ℝ, ℝ)) ∞ f :=
     (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff
-  have hf_supp : tsupport f ⊆ (chartAt H α).source :=
+  have hf_support : tsupport f ⊆ (chartAt H α).source :=
     chartAtlasPOU_isSubordinate I M α
   set K : Set EuclN :=
     (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport f)) with hK_def
@@ -87,7 +87,7 @@ lemma chartPouEucl_contDiff (α : M) :
   have hsub_target : tsupport f ⊆ (extChartAt I α).source := by
     intro x hx
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hf_supp hx
+    exact hf_support hx
   have hcont_chart : ContinuousOn (extChartAt I α) (tsupport f) :=
     (continuousOn_extChartAt α).mono hsub_target
   have hK_compact_M : IsCompact ((extChartAt I α) '' (tsupport f)) :=
@@ -136,10 +136,10 @@ lemma chartPouEucl_contDiff (α : M) :
   · have hcarrier_subset_target :
         K ⊆ chartTargetEuclid (I := I) (M := M) α := by
       intro z hz_carrier
-      rcases hz_carrier with ⟨w, ⟨x, hx_supp, hxw⟩, hwz⟩
-      have hx_src : x ∈ (extChartAt I α).source := hsub_target hx_supp
+      rcases hz_carrier with ⟨w, ⟨x, hx_support, hxw⟩, hwz⟩
+      have hx_source : x ∈ (extChartAt I α).source := hsub_target hx_support
       have hw_target : w ∈ (extChartAt I α).target := by
-        rw [← hxw]; exact (extChartAt I α).map_source hx_src
+        rw [← hxw]; exact (extChartAt I α).map_source hx_source
       exact ⟨w, hw_target, hwz⟩
     have hy_off : y ∉ K := fun hy_in =>
       hy_target (hcarrier_subset_target hy_in)
@@ -157,12 +157,12 @@ lemma chartPouEucl_contDiff (α : M) :
       rw [chartPouEucl_apply_of_mem (I := I) (M := M) α hz_target']
       by_contra hne_f
       apply hz
-      have hin_supp : (extChartAt I α).symm ((toEuclidean (E := E)).symm z) ∈
+      have hin_support : (extChartAt I α).symm ((toEuclidean (E := E)).symm z) ∈
           tsupport f := subset_tsupport _ hne_f
-      rw [h_eq] at hin_supp
+      rw [h_eq] at hin_support
       have hext_right : (extChartAt I α) ((extChartAt I α).symm w) = w :=
         (extChartAt I α).right_inv hw_target
-      refine ⟨w, ⟨(extChartAt I α).symm w, hin_supp, hext_right⟩, hwz⟩
+      refine ⟨w, ⟨(extChartAt I α).symm w, hin_support, hext_right⟩, hwz⟩
     · exact chartPouEucl_apply_of_notMem (I := I) (M := M) α hz_target
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
@@ -171,7 +171,7 @@ lemma chartPouEucl_hasCompactSupport (α : M) :
   classical
   set f : M → ℝ := fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x with hf_def
-  have hf_supp : tsupport f ⊆ (chartAt H α).source :=
+  have hf_support : tsupport f ⊆ (chartAt H α).source :=
     chartAtlasPOU_isSubordinate I M α
   set K : Set EuclN :=
     (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport f)) with hK_def
@@ -179,7 +179,7 @@ lemma chartPouEucl_hasCompactSupport (α : M) :
   have hsub_target : tsupport f ⊆ (extChartAt I α).source := by
     intro x hx
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hf_supp hx
+    exact hf_support hx
   have hcont_chart : ContinuousOn (extChartAt I α) (tsupport f) :=
     (continuousOn_extChartAt α).mono hsub_target
   have hK_compact_M : IsCompact ((extChartAt I α) '' (tsupport f)) :=
@@ -198,12 +198,12 @@ lemma chartPouEucl_hasCompactSupport (α : M) :
         ⟨w, hw_target, hwy⟩]
     by_contra hne_f
     apply hy_notK
-    have hin_supp : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+    have hin_support : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         tsupport f := subset_tsupport _ hne_f
-    rw [h_eq] at hin_supp
+    rw [h_eq] at hin_support
     have hext_right : (extChartAt I α) ((extChartAt I α).symm w) = w :=
       (extChartAt I α).right_inv hw_target
-    refine ⟨w, ⟨(extChartAt I α).symm w, hin_supp, hext_right⟩, hwy⟩
+    refine ⟨w, ⟨(extChartAt I α).symm w, hin_support, hext_right⟩, hwy⟩
   · exact chartPouEucl_apply_of_notMem (I := I) (M := M) α hy_target
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -244,9 +244,9 @@ lemma tensorChartComponentRaw_symm_contDiffOn_target
       (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
   have hmaps : Set.MapsTo (extChartAt I α).symm (extChartAt I α).target
       (chartAt H α).source := by
-    intro e he_tgt
+    intro e he_target
     have hsrc : (extChartAt I α).symm e ∈ (extChartAt I α).source :=
-      (extChartAt I α).map_target he_tgt
+      (extChartAt I α).map_target he_target
     rwa [extChartAt_source] at hsrc
   have hcomp : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
       (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx ∘

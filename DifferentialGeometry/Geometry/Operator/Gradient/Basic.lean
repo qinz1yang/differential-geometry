@@ -855,13 +855,13 @@ lemma gradFun_contMDiff_total [I.Boundaryless]
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x (gradFun (I := I) g f x)) := by
   intro x
-  have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
+  have hx_source : x ∈ (chartAt H x).source := mem_chart_source H x
   have hsrc_open : IsOpen ((chartAt H x).source) := (chartAt H x).open_source
   have hsmooth_local : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun y : M => TotalSpace.mk' E y (gradChartLocal (I := I) g x f y))
       (chartAt H x).source :=
     gradChartLocal_contMDiffOn_total_baseSet (I := I) g x hf
-  have heq_on_src : ∀ y ∈ (chartAt H x).source,
+  have heq_on_source : ∀ y ∈ (chartAt H x).source,
       gradChartLocal (I := I) g x f y = gradFun (I := I) g f y := by
     intro y hy
     have hbase : y ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
@@ -880,11 +880,11 @@ lemma gradFun_contMDiff_total [I.Boundaryless]
       (chartAt H x).source := by
     refine hsmooth_local.congr ?_
     intro y hy
-    have h := heq_on_src y hy
+    have h := heq_on_source y hy
     change TotalSpace.mk' E y (gradFun (I := I) g f y) =
       TotalSpace.mk' E y (gradChartLocal (I := I) g x f y)
     rw [h]
-  exact (hsmooth_local2 x hx_src).contMDiffAt (hsrc_open.mem_nhds hx_src)
+  exact (hsmooth_local2 x hx_source).contMDiffAt (hsrc_open.mem_nhds hx_source)
 
 def gradG [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) :

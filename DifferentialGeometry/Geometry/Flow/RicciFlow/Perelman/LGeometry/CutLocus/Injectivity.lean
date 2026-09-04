@@ -92,7 +92,7 @@ theorem lInj_isOpen
       ∃ W : TangentSpace I x,
         (W, rho) ∈ lMinDomain S T x ∧
           lExp S T x W rho = lExp S T x (V n) rho :=
-    exists_lMinVec_ray S hS T x (V n) rho (hVdom n)
+    exists_lMinimizingVector_ray S hS T x (V n) rho (hVdom n)
   let W : Nat → TangentSpace I x := fun n ↦ (hminExists n).choose
   have hWmin (n : Nat) : (W n, rho) ∈ lMinDomain S T x :=
     (hminExists n).choose_spec.1
@@ -112,69 +112,69 @@ theorem lInj_isOpen
       linarith [hr.1]
     have hsqrt : Real.sqrt (T - r) ∈ Icc (0 : Real) (Real.sqrt rho) :=
       ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hle⟩
-    have hreg := lExpPosDom_reg S T x Z hZdom hsqrt
+    have hreg := lExpPosDom_regularity S T x Z hZdom hsqrt
     have heq : T - (Real.sqrt (T - r)) ^ 2 = r := by
       rw [Real.sq_sqrt hnonneg]
       ring
     simpa only [heq] using hreg
-  have hWdom (n : Nat) : b ∈ lRegDomain S T x (W n) := by
+  have hWdom (n : Nat) : b ∈ lRegularizedDomain S T x (W n) := by
     have hdata := (mem_lExpPosDom S T x (W n) rho).1
       ((mem_lMinDomain S T x (W n) rho).1 (hWmin n)).1
     simpa only [b] using hdata.2.2
-  have hVreg (n : Nat) : b ∈ lRegDomain S T x (V n) := by
+  have hVreg (n : Nat) : b ∈ lRegularizedDomain S T x (V n) := by
     have hdata := (mem_lExpPosDom S T x (V n) rho).1 (hVdom n)
     simpa only [b] using hdata.2.2
   let aV : Nat → Real := fun n ↦
-    lRegAction S T (lRegCurve S T x (V n)) 0 b
+    lRegularizedAction S T (lRegularizedCurve S T x (V n)) 0 b
   have haVlim : Tendsto aV atTop
-      (nhds (lRegAction S T (lRegCurve S T x Z) 0 b)) := by
-    have hcontinuous := continuousAt_lRegAction_lRegCurve (I := I) S hS T x hb
+      (nhds (lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b)) := by
+    have hcontinuous := continuousAt_lRegularizedAction_lRegularizedCurve (I := I) S hS T x hb
       (by simpa only [b] using ((mem_lExpPosDom S T x Z rho).1 hZdom).2.2)
     have hresult := hcontinuous.tendsto.comp
       (hVlim.prodMk_nhds
         (tendsto_const_nhds : Tendsto (fun _ : Nat ↦ b) atTop (nhds b)))
     change Tendsto
-      (fun n ↦ lRegAction S T (lRegCurve S T x (V n)) 0 b)
-      atTop (nhds (lRegAction S T (lRegCurve S T x Z) 0 b)) at hresult
+      (fun n ↦ lRegularizedAction S T (lRegularizedCurve S T x (V n)) 0 b)
+      atTop (nhds (lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b)) at hresult
     simpa only [aV] using hresult
   obtain ⟨A, hA⟩ := (Metric.isBounded_range_of_tendsto aV haVlim).bddAbove
   have hWact (n : Nat) :
-      lRegAction S T (lRegCurve S T x (W n)) 0 b ≤ A := by
+      lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 b ≤ A := by
     have hminEq := ((mem_lMinDomain S T x (W n) rho).1 (hWmin n)).2
     have hcostEq :
-        lRegAction S T (lRegCurve S T x (W n)) 0 b =
+        lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 b =
           lCost S T x (lExp S T x (W n) rho) rho := by
       calc
-        lRegAction S T (lRegCurve S T x (W n)) 0 b =
-            lLength S T (squareRootReparametrization (lRegCurve S T x (W n))) 0 rho := by
+        lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 b =
+            lLength S T (squareRootReparametrization (lRegularizedCurve S T x (W n))) 0 rho := by
           simpa only [b] using
-            (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x (W n)) rho hrho.le).symm
+            (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T (lRegularizedCurve S T x (W n)) rho hrho.le).symm
         _ = lCost S T x (lExp S T x (W n) rho) rho := by
-          change lLength S T (squareRootReparametrization (lRegCurve S T x (W n))) 0 rho =
-            lCost S T x (lRegCurve S T x (W n) (Real.sqrt rho)) rho
+          change lLength S T (squareRootReparametrization (lRegularizedCurve S T x (W n))) 0 rho =
+            lCost S T x (lRegularizedCurve S T x (W n) (Real.sqrt rho)) rho
           exact hminEq
     have hcostLe := lCost_le_ray (I := I) S hS T x (V n) b hb (hVreg n)
     have hcostLe' :
         lCost S T x (lExp S T x (V n) rho) rho ≤ aV n := by
       simpa only [lExp, b, aV, hb2] using hcostLe
     calc
-      lRegAction S T (lRegCurve S T x (W n)) 0 b =
+      lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 b =
           lCost S T x (lExp S T x (W n) rho) rho := hcostEq
       _ = lCost S T x (lExp S T x (V n) rho) rho := by rw [hWend n]
       _ ≤ aV n := hcostLe'
       _ ≤ A := hA (Set.mem_range_self n)
   have hWbounded : Bornology.IsBounded (Set.range W) :=
-    isBounded_range_initialVector_of_lRegAction_le (I := I) S hS T x W (fun _ : Nat ↦ b) b b A hb
+    isBounded_range_initialVector_of_lRegularizedAction_le (I := I) S hS T x W (fun _ : Nat ↦ b) b b A hb
       (fun _ ↦ le_rfl) (fun _ ↦ le_rfl) hslab hWdom hWact
   let : ProperSpace (TangentSpace I x) := FiniteDimensional.proper Real _
   obtain ⟨W0, _hW0cl, phi, hphi, hWlim⟩ :=
     tendsto_subseq_of_bounded hWbounded (fun n ↦ Set.mem_range_self n)
-  have hW0reg : b ∈ lRegDomain S T x W0 :=
-    mem_lRegDomain_of_time_slab S hS T x W0 b hb.le hslab
+  have hW0reg : b ∈ lRegularizedDomain S T x W0 :=
+    mem_lRegularizedDomain_of_time_slab S hS T x W0 b hb.le hslab
   have hW0dom : (W0, rho) ∈ lExpPosDom S T x :=
     (mem_lExpPosDom S T x W0 rho).2 ⟨hrho, hrho.le, hW0reg⟩
   have hW0min : (W0, rho) ∈ lMinDomain S T x :=
-    lMinVec_lim S hS T x (fun n ↦ hWmin (phi n)) hWlim hW0dom
+    lMinimizingVector_lim S hS T x (fun n ↦ hWmin (phi n)) hWlim hW0dom
   have hVsub : Tendsto (fun n ↦ V (phi n)) atTop (nhds Z) :=
     hVlim.comp hphi.tendsto_atTop
   have hWpair : Tendsto (fun n ↦ (W (phi n), rho)) atTop
@@ -206,19 +206,19 @@ theorem lInj_isOpen
     exact hVExpLim.congr'
       (Filter.Eventually.of_forall fun n ↦ (hWend (phi n)).symm)
   have hW0eq : W0 = Z :=
-    lMinVec_unique_lt S hS T x (Z := Z) (W := W0)
+    lMinimizingVector_unique_lt S hS T x (Z := Z) (W := W0)
       hZmin hrho hRhoS hW0min hend0
   have hlocal := lExp_localDiffeo S hS T x Z rho hZdom
-    (lMinVec_nconj_lt S hS T x hZmin hRhoS)
-  obtain ⟨Phi, hPhiSrc, hPhiEq⟩ := hlocal
+    (lMinimizingVector_nconj_lt S hS T x hZmin hRhoS)
+  obtain ⟨Phi, hPhiSource, hPhiEq⟩ := hlocal
   have hWsubZ : Tendsto (fun n ↦ W (phi n)) atTop (nhds Z) := by
     change Tendsto (W ∘ phi) atTop (nhds Z)
     rw [← hW0eq]
     exact hWlim
   have hWsrc : ∀ᶠ n in atTop, W (phi n) ∈ Phi.source :=
-    hWsubZ.eventually (Phi.open_source.mem_nhds hPhiSrc)
+    hWsubZ.eventually (Phi.open_source.mem_nhds hPhiSource)
   have hVsrc : ∀ᶠ n in atTop, V (phi n) ∈ Phi.source :=
-    hVsub.eventually (Phi.open_source.mem_nhds hPhiSrc)
+    hVsub.eventually (Phi.open_source.mem_nhds hPhiSource)
   obtain ⟨n, hnW, hnV⟩ := (hWsrc.and hVsrc).exists
   have hEq : W (phi n) = V (phi n) := by
     apply Phi.injOn hnW hnV
@@ -243,8 +243,8 @@ theorem lInj_local
     lMinDomain_down S hS T x Z hmin htau hsigma.le
   have hdom : (Z, tau) ∈ lExpPosDom S T x :=
     ((mem_lMinDomain S T x Z tau).1 hminTau).1
-  have hconj : ¬ IsLConj S T x Z tau :=
-    lMinVec_nconj_lt S hS T x hmin hsigma
+  have hconj : ¬ IsLConjugate S T x Z tau :=
+    lMinimizingVector_nconj_lt S hS T x hmin hsigma
   exact lExp_localDiffeo S hS T x Z tau hdom hconj
 
 theorem lInj_inj
@@ -260,7 +260,7 @@ theorem lInj_inj
     lMinDomain_down S hS T x Z hZmin (htau.trans htauSigma) (min_le_left _ _)
   have hWtau : (W, tau) ∈ lMinDomain S T x :=
     lMinDomain_down S hS T x W hWmin htau (htauSigma.le.trans (min_le_right _ _))
-  exact (lMinVec_unique_lt S hS T x (Z := Z) (W := W)
+  exact (lMinimizingVector_unique_lt S hS T x (Z := Z) (W := W)
     hZsigma htau htauSigma hWtau hend.symm).symm
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

@@ -10,7 +10,7 @@ universe u
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 open DifferentialGeometry.Tensor0SBundle
@@ -215,5 +215,5 @@ theorem exists_uniform_iterated_covariant_derivative_add_norm_bound
         add_le_add ht0 ht1'
     _ = eps0 + eps1 * (Real.sqrt ((2 : Real) ^ (2 + p)) * (1 + Cc * (p : Real))) := by ring
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

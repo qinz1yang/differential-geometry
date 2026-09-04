@@ -24,7 +24,7 @@ variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax 
   {Φ : E × ℝ → E}
 
 omit [CompleteSpace E] in
-theorem orbit_eq_of_augFlow_isLocalFlow
+theorem orbit_eq_of_augmentedFlow_isLocalFlow
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
     (hf_C1 : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)))
     {R_aug : ℝ≥0} {tmin_a tmax_a : ℝ}
@@ -44,8 +44,8 @@ theorem orbit_eq_of_augFlow_isLocalFlow
   set α_Φ : ℝ → E := fun s => Φ ⟨x, s⟩ with hα_Φ_def
   set α_a : ℝ → E := fun s => (aΦ ⟨(x, ContinuousLinearMap.id ℝ E), s⟩).1
     with hα_a_def
-  have hα_Φ_init : α_Φ t₀ = x := hΦ.apply_initial x hx_Φ
-  have hα_a_init : α_a t₀ = x := by
+  have hα_Φ_initial : α_Φ t₀ = x := hΦ.apply_initial x hx_Φ
+  have hα_a_initial : α_a t₀ = x := by
     change (aΦ ⟨(x, ContinuousLinearMap.id ℝ E), t₀⟩).1 = x
     rw [haΦ.apply_initial _ hx_a]
   have hIcc_nhds_Φ : Icc tmin tmax ∈ 𝓝 t₀ :=
@@ -70,10 +70,10 @@ theorem orbit_eq_of_augFlow_isLocalFlow
   set S : Set E := ball x ρ' with hS_def
   have hS_nhds_x : S ∈ 𝓝 x := ball_mem_nhds x hρ'_pos
   have hα_Φ_eventually : ∀ᶠ t in 𝓝 t₀, α_Φ t ∈ S := by
-    have h := hα_Φ_cont (show S ∈ 𝓝 (α_Φ t₀) by rw [hα_Φ_init]; exact hS_nhds_x)
+    have h := hα_Φ_cont (show S ∈ 𝓝 (α_Φ t₀) by rw [hα_Φ_initial]; exact hS_nhds_x)
     exact h
   have hα_a_eventually : ∀ᶠ t in 𝓝 t₀, α_a t ∈ S := by
-    have h := hα_a_cont (show S ∈ 𝓝 (α_a t₀) by rw [hα_a_init]; exact hS_nhds_x)
+    have h := hα_a_cont (show S ∈ 𝓝 (α_a t₀) by rw [hα_a_initial]; exact hS_nhds_x)
     exact h
   have h_v_lip_event : ∀ᶠ t in 𝓝 t₀, LipschitzOnWith K (f t) S := by
     rw [eventually_iff_exists_mem]
@@ -153,10 +153,10 @@ theorem orbit_eq_of_augFlow_isLocalFlow
       rfl
     rw [h_first_eq] at h_comp
     exact h_comp
-  have h_init_eq : α_Φ t₀ = α_a t₀ := by rw [hα_Φ_init, hα_a_init]
+  have h_initial_eq : α_Φ t₀ = α_a t₀ := by rw [hα_Φ_initial, hα_a_initial]
   exact ODE_solution_unique_of_eventually
     (K := K) (v := fun t y => f t y) (s := fun _ => S)
-    h_v_lip_event hα_Φ_deriv_event hα_a_deriv_event h_init_eq
+    h_v_lip_event hα_Φ_deriv_event hα_a_deriv_event h_initial_eq
 
 end OrbitEquality
 
@@ -165,14 +165,14 @@ section SmoothnessInheritance
 variable {f : ℝ → E → E} {x₀ : E} {t₀ : ℝ}
 
 omit [CompleteSpace E] in
-theorem contDiffOn_fromAugFlow_inherits
+theorem contDiffOn_fromAugmentedFlow_inherits
     {aΦ : (E × (E →L[ℝ] E)) × ℝ → E × (E →L[ℝ] E)}
     {ρ_a ρ : ℝ≥0} {T_a T : ℝ}
     (hρ_le : (ρ : ℝ) ≤ (ρ_a : ℝ)) (hT_le : T ≤ T_a)
     (haΦ_C1 : ContDiffOn ℝ 1 aΦ
       ((ball ((x₀, ContinuousLinearMap.id ℝ E) : E × (E →L[ℝ] E))
           (ρ_a : ℝ)) ×ˢ Ioo (t₀ - T_a) (t₀ + T_a))) :
-    ContDiffOn ℝ 1 (fromAugFlow aΦ)
+    ContDiffOn ℝ 1 (fromAugmentedFlow aΦ)
       ((ball x₀ (ρ : ℝ)) ×ˢ Ioo (t₀ - T) (t₀ + T)) := by
   set p₀ : E × (E →L[ℝ] E) := (x₀, ContinuousLinearMap.id ℝ E) with hp₀_def
   set U : Set (E × ℝ) := ball x₀ (ρ : ℝ) ×ˢ Ioo (t₀ - T) (t₀ + T) with hU_def
@@ -192,7 +192,7 @@ theorem contDiffOn_fromAugFlow_inherits
       exact lt_of_lt_of_le hq_x hρ_le
     · rcases hq_t with ⟨h1, h2⟩
       refine ⟨?_, ?_⟩ <;> linarith
-  exact contDiffOn_fromAugFlow (k := (1 : ℕ∞)) (Ω := U_a) (U := U) haΦ_C1 hmap
+  exact contDiffOn_fromAugmentedFlow (k := (1 : ℕ∞)) (Ω := U_a) (U := U) haΦ_C1 hmap
 
 end SmoothnessInheritance
 
@@ -202,7 +202,7 @@ variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax 
   {Φ : E × ℝ → E}
 
 omit [CompleteSpace E] in
-theorem orbit_eq_Icc_of_augFlow_isLocalFlow
+theorem orbit_eq_Icc_of_augmentedFlow_isLocalFlow
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
     {R_aug : ℝ≥0} {tmin_a tmax_a : ℝ}
     {aΦ : (E × (E →L[ℝ] E)) × ℝ → E × (E →L[ℝ] E)}
@@ -226,8 +226,8 @@ theorem orbit_eq_Icc_of_augFlow_isLocalFlow
   set α_Φ : ℝ → E := fun s => Φ ⟨x, s⟩ with hα_Φ_def
   set α_a : ℝ → E := fun s => (aΦ ⟨(x, ContinuousLinearMap.id ℝ E), s⟩).1
     with hα_a_def
-  have hα_Φ_init : α_Φ t₀ = x := hΦ.apply_initial x hx_Φ
-  have hα_a_init : α_a t₀ = x := by
+  have hα_Φ_initial : α_Φ t₀ = x := hΦ.apply_initial x hx_Φ
+  have hα_a_initial : α_a t₀ = x := by
     change (aΦ ⟨(x, ContinuousLinearMap.id ℝ E), t₀⟩).1 = x
     rw [haΦ.apply_initial _ hx_a]
   have hα_Φ_cont : ContinuousOn α_Φ (Icc (t₀ - T) (t₀ + T)) :=
@@ -281,7 +281,7 @@ theorem orbit_eq_Icc_of_augFlow_isLocalFlow
         = f s (α_a s) := rfl
     rw [h_first_eq] at h_comp
     exact h_comp
-  have h_init_eq : α_Φ t₀ = α_a t₀ := by rw [hα_Φ_init, hα_a_init]
+  have h_initial_eq : α_Φ t₀ = α_a t₀ := by rw [hα_Φ_initial, hα_a_initial]
   exact ODE_solution_unique_of_mem_Icc
     (v := fun t y => f t y)
     (s := fun _ => closedBall x₀ r₀)
@@ -293,7 +293,7 @@ theorem orbit_eq_Icc_of_augFlow_isLocalFlow
     hα_a_cont
     (fun t ht => hα_a_deriv t ht)
     (fun t ht => h_a_in t ht)
-    h_init_eq
+    h_initial_eq
 
 end OrbitEqualityIcc
 

@@ -97,13 +97,13 @@ instance : SMul ℝ (InteriorSmoothScalar g) where
         rw [h]
         exact contMDiff_const.mul f.smooth
       interior_support := by
-        have h_supp : Function.support (c • f.toFun) ⊆ Function.support f.toFun := by
+        have h_support : Function.support (c • f.toFun) ⊆ Function.support f.toFun := by
           intro x hx hx_zero
           apply hx
           change c * f.toFun x = 0
           rw [hx_zero, mul_zero]
         have h_tsupp : tsupport (c • f.toFun) ⊆ tsupport f.toFun :=
-          closure_mono h_supp
+          closure_mono h_support
         exact h_tsupp.trans f.interior_support }
 
 @[simp] lemma toFun_zero : (0 : InteriorSmoothScalar g).toFun = (fun _ : M => 0) := rfl

@@ -94,7 +94,7 @@ theorem totalNabla0S_eval_tangentConstInChart_contMDiffAt
       tangentConstInChart (𝕜 := Real) (I := I) x₀
         (b (slots a.succ)) p)
 
-theorem totalNabla0S_reg (s : ℕ)
+theorem totalNabla0S_regularity (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
@@ -158,11 +158,11 @@ noncomputable def CanonicalSpatialDerivs0S.ofSmoothConnection {s : ℕ}
       (n := (∞ : WithTop ℕ∞)) s) :
     CanonicalSpatialDerivs0S (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) cov A := by
-  let hreg1 := totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+  let hreg1 := totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
     s cov hcov A
   let nablaA := totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) s cov A hreg1
-  let hreg2 := totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+  let hreg2 := totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
     (s + 1) cov hcov nablaA
   refine
     { nablaA := nablaA

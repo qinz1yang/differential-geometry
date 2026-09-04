@@ -62,10 +62,10 @@ private lemma chartPushed_mul_eq_smoothExtension_mul_chartPushed
   by_cases hρ : (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
     : C^∞⟮I, M; ℝ⟯) x = 0
   · rw [hρ]; ring
-  · have hx_supp : x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
+  · have hx_support : x ∈ tsupport ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
         I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
       subset_tsupport _ (Function.mem_support.mpr hρ)
-    have hb_x : b x = 1 := hb_one x hx_supp
+    have hb_x : b x = 1 := hb_one x hx_support
     rw [hb_x]; ring
 
 private lemma per_chart_mul_smooth_bound
@@ -87,20 +87,20 @@ private lemma per_chart_mul_smooth_bound
                 (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α v)
               (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  obtain ⟨b, hb_smooth, _, hb_one_on_tsupp, hb_supp⟩ :=
+  obtain ⟨b, hb_smooth, _, hb_one_on_tsupp, hb_support⟩ :=
     exists_chart_cutoff (I := I) (M := M) α
   have hbu_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M => b x * u x) := hb_smooth.mul hu
-  have hbu_supp : tsupport (fun x : M => b x * u x) ⊆ (chartAt H α).source := by
+  have hbu_support : tsupport (fun x : M => b x * u x) ⊆ (chartAt H α).source := by
     have h_eq : (fun x : M => b x * u x) = (fun x : M => b x • u x) := by funext x; rfl
     rw [h_eq]
-    refine (tsupport_smul_subset_left (f := b) (g := u)).trans hb_supp
+    refine (tsupport_smul_subset_left (f := b) (g := u)).trans hb_support
   obtain ⟨Cα, hCα_nn, hCα_bound⟩ :=
-    smoothExtension_first_order_bound (I := I) (M := M) α hbu_smooth hbu_supp
+    smoothExtension_first_order_bound (I := I) (M := M) α hbu_smooth hbu_support
   set η : EuclN → ℝ := smoothExtension (I := I) (M := M) α (fun x : M => b x * u x)
     with hη_def
   have hη_smooth : ContDiff ℝ ∞ η := by
     rw [hη_def]
-    exact contDiff_smoothExtension (I := I) (M := M) α hbu_smooth hbu_supp
+    exact contDiff_smoothExtension (I := I) (M := M) α hbu_smooth hbu_support
   have hη_smooth_top : ContDiff ℝ (⊤ : ℕ∞) η := hη_smooth
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
@@ -253,7 +253,7 @@ private lemma eLpNorm_restrict_le_ofReal_mul_volume_pow
     {p : ℝ≥0∞} {Ω : Set EuclN}
     {K : Set EuclN} (hK_meas : MeasurableSet K)
     {f : EuclN → ℝ} {C : ℝ} (hC_nn : 0 ≤ C)
-    (h_supp : ∀ y, y ∉ K → f y = 0)
+    (h_support : ∀ y, y ∉ K → f y = 0)
     (h_bound : ∀ y, ‖f y‖ ≤ C) :
     eLpNorm f p (volume.restrict Ω) ≤
       ENNReal.ofReal C * (volume K) ^ (1 / p.toReal) := by
@@ -267,7 +267,7 @@ private lemma eLpNorm_restrict_le_ofReal_mul_volume_pow
       rw [this]
       exact h_bound y
     · have h_ind : K.indicator (fun _ : EuclN => C) y = 0 := Set.indicator_of_notMem hy _
-      rw [h_supp y hy, h_ind, norm_zero]
+      rw [h_support y hy, h_ind, norm_zero]
   have h_ae : ∀ᵐ y ∂(volume.restrict Ω),
       ‖f y‖ ≤ ‖K.indicator (fun _ : EuclN => C) y‖ :=
     Filter.Eventually.of_forall h_pointwise
@@ -305,9 +305,9 @@ private lemma eLpNorm_Eu_dR_Ev_bound
   have hK_meas : MeasurableSet K_α := hK_compact.isClosed.measurableSet
   have hC_nn : 0 ≤ uMax * vMax * C_R :=
     mul_nonneg (mul_nonneg huMax_nn hvMax_nn) hC_R_nn
-  have h_R_supp_in_K : tsupport (liftedPou (I := I) (M := M) α) ⊆ K_α :=
+  have h_R_support_in_K : tsupport (liftedPou (I := I) (M := M) α) ⊆ K_α :=
     tsupport_liftedPou_subset_chartCarrierLocal (I := I) (M := M) α
-  have h_supp : ∀ y : EuclN, y ∉ K_α →
+  have h_support : ∀ y : EuclN, y ∉ K_α →
       leftSmoothFactor (I := I) (M := M) α b u y *
         (fderiv ℝ (liftedPou (I := I) (M := M) α) y) (EuclideanSpace.single i (1 : ℝ)) *
         leftSmoothFactor (I := I) (M := M) α b v y = 0 := by
@@ -315,12 +315,12 @@ private lemma eLpNorm_Eu_dR_Ev_bound
     have h_R_zero_nhd : ∀ᶠ z in nhds y, liftedPou (I := I) (M := M) α z = 0 := by
       have h_compl_open : IsOpen (tsupport (liftedPou (I := I) (M := M) α))ᶜ :=
         (isClosed_tsupport _).isOpen_compl
-      have hy_off_R_supp : y ∉ tsupport (liftedPou (I := I) (M := M) α) :=
-        fun h => hy_off (h_R_supp_in_K h)
-      filter_upwards [h_compl_open.mem_nhds hy_off_R_supp] with z hz
-      have hz_off_supp : z ∉ Function.support (liftedPou (I := I) (M := M) α) :=
-        fun h_supp_z => hz (subset_tsupport _ h_supp_z)
-      simpa using hz_off_supp
+      have hy_off_R_support : y ∉ tsupport (liftedPou (I := I) (M := M) α) :=
+        fun h => hy_off (h_R_support_in_K h)
+      filter_upwards [h_compl_open.mem_nhds hy_off_R_support] with z hz
+      have hz_off_support : z ∉ Function.support (liftedPou (I := I) (M := M) α) :=
+        fun h_support_z => hz (subset_tsupport _ h_support_z)
+      simpa using hz_off_support
     have h_fderiv_zero : fderiv ℝ (liftedPou (I := I) (M := M) α) y = 0 := by
       have h_eq : liftedPou (I := I) (M := M) α =ᶠ[nhds y] (fun _ : EuclN => (0 : ℝ)) := by
         filter_upwards [h_R_zero_nhd] with z hz
@@ -357,7 +357,7 @@ private lemma eLpNorm_Eu_dR_Ev_bound
               rw [norm_mul, norm_mul]
       _ ≤ uMax * C_R * vMax := by gcongr
       _ = uMax * vMax * C_R := by ring
-  exact eLpNorm_restrict_le_ofReal_mul_volume_pow hK_meas hC_nn h_supp h_bound
+  exact eLpNorm_restrict_le_ofReal_mul_volume_pow hK_meas hC_nn h_support h_bound
 
 private lemma per_chart_bilinear_bound
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
@@ -386,7 +386,7 @@ private lemma per_chart_bilinear_bound
                 (chartTargetEuclid (I := I) (M := M) α) +
             ENNReal.ofReal (Bα * uMax * vMax) := by
   classical
-  obtain ⟨b, hb_smooth, hb_range, hb_one_on_tsupp, hb_supp⟩ :=
+  obtain ⟨b, hb_smooth, hb_range, hb_one_on_tsupp, hb_support⟩ :=
     exists_chart_cutoff_with_data (I := I) (M := M) α
   have hb_le_one : ∀ x : M, 0 ≤ b x ∧ b x ≤ 1 := hb_range
   obtain ⟨C_R, hC_R_nn, hC_R_bound⟩ :=
@@ -483,10 +483,10 @@ private lemma per_chart_bilinear_bound
   set ePu : ℝ≥0∞ := eLpNorm Pu p (volume.restrict Ω) with hePu_def
   set ePv : ℝ≥0∞ := eLpNorm Pv p (volume.restrict Ω) with hePv_def
   set gPu : Fin d → ℝ≥0∞ := fun i => eLpNorm
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := d) p i Pu Ω) p (volume.restrict Ω) with hgPu_def
   set gPv : Fin d → ℝ≥0∞ := fun i => eLpNorm
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := d) p i Pv Ω) p (volume.restrict Ω) with hgPv_def
   set vMax_e : ℝ≥0∞ := ENNReal.ofReal vMax with hvMax_e_def
   set uMax_e : ℝ≥0∞ := ENNReal.ofReal uMax with huMax_e_def
@@ -508,7 +508,7 @@ private lemma per_chart_bilinear_bound
       _ ≤ vMax * ‖Pu y‖ := by gcongr; exact h_Ev_bound y
   have h_grad_bound : ∀ i : Fin d,
       eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := d) p i (fun y => Pu y * Ev y) Ω) p (volume.restrict Ω) ≤
         vMax_e * gPu i + uMax_e * gPv i +
           ENNReal.ofReal (uMax * vMax * C_R) * vol_K ^ (1 / p.toReal) := by
@@ -527,9 +527,9 @@ private lemma per_chart_bilinear_bound
       have h := hCu1_bd y; rw [norm_iteratedFDeriv_one] at h
       exact h.trans (le_max_right _ _)
     have hEv_mem : DeGiorgi.MemW1p (d := d) p Ev Ω :=
-      leftSmoothFactor_memW1p (I := I) (M := M) α hb_smooth hv hb_supp hp_one
+      leftSmoothFactor_memW1p (I := I) (M := M) α hb_smooth hv hb_support hp_one
     have h_PuEv_ae :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_smul_smooth_bounded_ae
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_smul_smooth_bounded_ae
       (d := d) hp_one hΩ_open hPu_smooth hPu_bd_C hPu_grad_bd_C hEv_mem i
     have hR_smooth : ContDiff ℝ (⊤ : ℕ∞) R := liftedPou_smooth (I := I) (M := M) α
     have hR_bd : ∀ y ∈ Ω, ‖R y‖ ≤ max 1 C_R := fun y _ =>
@@ -537,20 +537,20 @@ private lemma per_chart_bilinear_bound
     have hR_grad_bd : ∀ y ∈ Ω, ‖fderiv ℝ R y‖ ≤ max 1 C_R := fun y _ =>
       (hC_R_bound y).trans (le_max_right _ _)
     have h_REv_ae :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_smul_smooth_bounded_ae
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_smul_smooth_bounded_ae
       (d := d) hp_one hΩ_open hR_smooth hR_bd hR_grad_bd hEv_mem i
     have h_R_Ev_eq_Pv : (fun y : EuclN => R y * Ev y) = Pv :=
       liftedPou_mul_leftSmoothFactor_eq_smoothPushed (I := I) (M := M)
         α (b := b) (v := v) hb_one_on_tsupp
-    have h_chosen_Pv_eq : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_chosen_Pv_eq : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := d) p i Pv Ω =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := d) p i (fun y => R y * Ev y) Ω := by
       rw [h_R_Ev_eq_Pv]
-    have h_Pv_ae : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_Pv_ae : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := d) p i Pv Ω
       =ᵐ[volume.restrict Ω]
-      (fun y => R y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (fun y => R y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := d) p i Ev Ω y +
         (fderiv ℝ R y) (EuclideanSpace.single i (1 : ℝ)) * Ev y) := by
       rw [h_chosen_Pv_eq]
@@ -558,10 +558,10 @@ private lemma per_chart_bilinear_bound
     have h_Pu_eq_R_Eu : (fun y : EuclN => R y * Eu y) = Pu :=
       liftedPou_mul_leftSmoothFactor_eq_smoothPushed (I := I) (M := M)
         α (b := b) (v := u) hb_one_on_tsupp
-    have h_combined : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_combined : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := d) p i (fun y => Pu y * Ev y) Ω
       =ᵐ[volume.restrict Ω]
-      (fun y => Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (fun y => Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := d) p i Pv Ω y -
         Eu y * (fderiv ℝ R y) (EuclideanSpace.single i (1 : ℝ)) * Ev y +
         (fderiv ℝ Pu y) (EuclideanSpace.single i (1 : ℝ)) * Ev y) := by
@@ -571,31 +571,31 @@ private lemma per_chart_bilinear_bound
         exact this.symm
       rw [hy1, hPu_y]
       have h_eq_R_Ev :
-          R y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          R y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := d) p i Ev Ω y =
-            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := d) p i Pv Ω y -
             (fderiv ℝ R y) (EuclideanSpace.single i (1 : ℝ)) * Ev y := by
         linarith
       have h_factor :
-          R y * Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          R y * Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := d) p i Ev Ω y =
-            Eu y * (R y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            Eu y * (R y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := d) p i Ev Ω y) := by ring
       rw [h_factor, h_eq_R_Ev]
       ring
     rw [eLpNorm_congr_ae h_combined]
     set f1 : EuclN → ℝ := fun y => Eu y *
-                                     Analysis.Sobolev.Euclidean.chosenWeakPartial'
+                                     Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := d) p i Pv Ω y with hf1_def
     set f2 : EuclN → ℝ := fun y => Eu y * (fderiv ℝ R y) (EuclideanSpace.single i (1 : ℝ)) * Ev y
       with hf2_def
     set f3 : EuclN → ℝ := fun y => (fderiv ℝ Pu y) (EuclideanSpace.single i (1 : ℝ)) * Ev y
       with hf3_def
     have h_Eu_cont : Continuous Eu :=
-      (leftSmoothFactor_smooth (I := I) (M := M) α hb_smooth hu hb_supp).continuous
+      (leftSmoothFactor_smooth (I := I) (M := M) α hb_smooth hu hb_support).continuous
     have h_Ev_cont : Continuous Ev :=
-      (leftSmoothFactor_smooth (I := I) (M := M) α hb_smooth hv hb_supp).continuous
+      (leftSmoothFactor_smooth (I := I) (M := M) α hb_smooth hv hb_support).continuous
     have h_dR_cont : Continuous
         (fun y : EuclN => (fderiv ℝ R y) (EuclideanSpace.single i (1 : ℝ))) :=
       (hR_smooth.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
@@ -605,12 +605,12 @@ private lemma per_chart_bilinear_bound
       (hPu_smooth.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
         continuous_const
     have h_chosen_cont_AESM : AEStronglyMeasurable
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := d) p i Pv Ω)
         (volume.restrict Ω) := by
       have hPv_W1p : DeGiorgi.MemW1p (d := d) p Pv Ω :=
         smoothPushed_memW1p (I := I) (M := M) α hv hp_one
-      exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         hPv_W1p i).aestronglyMeasurable
     have h_AESM_f1 : AEStronglyMeasurable f1 (volume.restrict Ω) :=
       h_Eu_cont.aestronglyMeasurable.mul h_chosen_cont_AESM
@@ -619,7 +619,7 @@ private lemma per_chart_bilinear_bound
     have h_AESM_f3 : AEStronglyMeasurable f3 (volume.restrict Ω) :=
       h_dPu_cont.aestronglyMeasurable.mul h_Ev_cont.aestronglyMeasurable
     have h_eq_pointwise :
-        (fun y => Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (fun y => Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := d) p i Pv Ω y -
           Eu y * (fderiv ℝ R y) (EuclideanSpace.single i (1 : ℝ)) * Ev y +
           (fderiv ℝ Pu y) (EuclideanSpace.single i (1 : ℝ)) * Ev y) =
@@ -650,21 +650,21 @@ private lemma per_chart_bilinear_bound
     refine (add_le_add h_tri_2 (le_refl (eLpNorm f3 p (volume.restrict Ω)))).trans ?_
     have h_f1_bd : eLpNorm f1 p (volume.restrict Ω) ≤ uMax_e * gPv i := by
       refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul
-        (g := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (g := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := d) p i Pv Ω)
         (c := uMax) ?_ p
       refine (ae_restrict_iff' hΩ_open.measurableSet).mpr ?_
       refine Filter.Eventually.of_forall (fun y _ => ?_)
-      change ‖Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      change ‖Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := d) p i Pv Ω y‖ ≤ uMax *
-            ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := d) p i Pv Ω y‖
       calc
-        ‖Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        ‖Eu y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := d) p i Pv Ω y‖
-          = ‖Eu y‖ * ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          = ‖Eu y‖ * ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := d) p i Pv Ω y‖ := norm_mul _ _
-        _ ≤ uMax * ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        _ ≤ uMax * ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := d) p i Pv Ω y‖ := by gcongr; exact h_Eu_bound y
     have h_f2_bd : eLpNorm f2 p (volume.restrict Ω) ≤
         ENNReal.ofReal (uMax * vMax * C_R) * vol_K ^ (1 / p.toReal) := by
@@ -674,7 +674,7 @@ private lemma per_chart_bilinear_bound
       have h_classical_eq_chosen :
           (fun y : EuclN => (fderiv ℝ Pu y) (EuclideanSpace.single i (1 : ℝ)))
           =ᵐ[volume.restrict Ω]
-          DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := d) p i Pu Ω := by
         have hPu_compact : HasCompactSupport Pu :=
           smoothPushed_hasCompactSupport (I := I) (M := M) α u
@@ -683,27 +683,27 @@ private lemma per_chart_bilinear_bound
         exact chosenWeakPartial_eq_classical_ae hp_one hΩ_open
           hPu_smooth hPu_compact hPu_tsupp i
       have h_f3_ae : f3 =ᵐ[volume.restrict Ω]
-          (fun y => Ev y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (fun y => Ev y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := d) p i Pu Ω y) := by
         filter_upwards [h_classical_eq_chosen] with y hy
         change (fderiv ℝ Pu y) (EuclideanSpace.single i (1 : ℝ)) * Ev y =
-          Ev y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          Ev y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := d) p i Pu Ω y
         rw [hy]
         ring
       rw [eLpNorm_congr_ae h_f3_ae]
       refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul
-        (g := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (g := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := d) p i Pu Ω)
         (c := vMax) ?_ p
       refine (ae_restrict_iff' hΩ_open.measurableSet).mpr ?_
       refine Filter.Eventually.of_forall (fun y _ => ?_)
       calc
-        ‖Ev y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        ‖Ev y * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := d) p i Pu Ω y‖
-          = ‖Ev y‖ * ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          = ‖Ev y‖ * ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := d) p i Pu Ω y‖ := norm_mul _ _
-        _ ≤ vMax * ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        _ ≤ vMax * ‖DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := d) p i Pu Ω y‖ := by gcongr; exact h_Ev_bound y
     calc
       eLpNorm f1 p (volume.restrict Ω) +

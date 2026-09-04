@@ -55,7 +55,7 @@ theorem contMDiffAt_mvfderiv_apply
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (V y)) u) :
     ContMDiffAt I 𝓘(ℝ, ℝ) ∞ (fun y => mvfderiv (I := I) f y (V y)) x := by
   classical
-  obtain ⟨b, -, hb_supp⟩ :=
+  obtain ⟨b, -, hb_support⟩ :=
     (SmoothBumpFunction.nhds_basis_tsupport (I := I) x).mem_iff.mp (hu.mem_nhds hx)
   set ftil : M → ℝ := fun y => b y * f y with hftil_def
   have hftil : ContMDiff I 𝓘(ℝ, ℝ) ∞ ftil := by
@@ -64,7 +64,7 @@ theorem contMDiffAt_mvfderiv_apply
     by_cases hz : z ∈ u
     · exact ⟨u, hu, hz, (b.contMDiff.contMDiffOn).mul hf⟩
     · refine ⟨(tsupport (b : M → ℝ))ᶜ, (isClosed_tsupport _).isOpen_compl,
-        fun hmem => hz (hb_supp hmem), ?_⟩
+        fun hmem => hz (hb_support hmem), ?_⟩
       refine (contMDiffOn_const (c := (0 : ℝ))).congr ?_
       intro y hy
       have hb0 : b y = 0 := by

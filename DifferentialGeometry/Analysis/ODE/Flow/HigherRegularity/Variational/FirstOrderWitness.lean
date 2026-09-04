@@ -31,7 +31,7 @@ theorem exists_isVariationalFlowProjection_one_of_C2
   classical
   obtain ⟨R_aug, ε_aug, hR_aug_pos, hε_aug_pos, aΦ, T_final, ρ_finalN,
       hT_final_pos, hρ_final_pos, haΦ, h_Y_smooth⟩ :=
-    exists_isLocalFlow_augmentedVectorField_and_contDiffOn_fromAugFlow_one_of_C2
+    exists_isLocalFlow_augmentedVectorField_and_contDiffOn_fromAugmentedFlow_one_of_C2
       hf_C2 t₀ x₀
   have hf_C1 : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)) := by
     have h_le : ((1 : ℕ∞) : WithTop ℕ∞) ≤ ((2 : ℕ∞) : WithTop ℕ∞) := by
@@ -42,46 +42,46 @@ theorem exists_isVariationalFlowProjection_one_of_C2
   have ht₀_a_Ioo : t₀ ∈ Ioo (t₀ - ε_aug) (t₀ + ε_aug) :=
     ⟨by linarith, by linarith⟩
   obtain ⟨T_help, ρ_help, hT_help_pos, hρ_help_pos, h_help⟩ :=
-    exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
+    exists_fderiv_eq_fromAugmentedFlow_coprod_timePieceFn
       (Φ := Φ) hΦ hf_C1 ht₀_Ioo hr_pos haΦ ht₀_a_Ioo hR_aug_R
-  set T_eff : ℝ := min T_final T_help with hT_eff_def
-  have hT_eff_pos : 0 < T_eff := lt_min hT_final_pos hT_help_pos
-  have hT_eff_le_final : T_eff ≤ T_final := min_le_left _ _
-  have hT_eff_le_help : T_eff ≤ T_help := min_le_right _ _
-  set ρ_eff : ℝ := min (ρ_finalN : ℝ) (ρ_help : ℝ) with hρ_eff_def
-  have hρ_eff_pos : 0 < ρ_eff := lt_min hρ_final_pos hρ_help_pos
-  set ρ_effN : ℝ≥0 := ⟨ρ_eff, le_of_lt hρ_eff_pos⟩
-  have hρ_effN_eq : (ρ_effN : ℝ) = ρ_eff := rfl
-  have hρ_eff_le_finalN : ρ_eff ≤ (ρ_finalN : ℝ) := min_le_left _ _
-  have hρ_eff_le_help : ρ_eff ≤ (ρ_help : ℝ) := min_le_right _ _
-  have hρ_effN_le_finalN : (ρ_effN : ℝ) ≤ (ρ_finalN : ℝ) := by
-    rw [hρ_effN_eq]
-    exact hρ_eff_le_finalN
-  have hρ_effN_le_help : (ρ_effN : ℝ) ≤ (ρ_help : ℝ) := by
-    rw [hρ_effN_eq]
-    exact hρ_eff_le_help
-  have h_eff_sub_smooth : (ball x₀ (ρ_effN : ℝ)) ×ˢ Ioo (t₀ - T_eff) (t₀ + T_eff)
+  set T_effective : ℝ := min T_final T_help with hT_effective_def
+  have hT_effective_pos : 0 < T_effective := lt_min hT_final_pos hT_help_pos
+  have hT_effective_le_final : T_effective ≤ T_final := min_le_left _ _
+  have hT_effective_le_help : T_effective ≤ T_help := min_le_right _ _
+  set ρ_effective : ℝ := min (ρ_finalN : ℝ) (ρ_help : ℝ) with hρ_effective_def
+  have hρ_effective_pos : 0 < ρ_effective := lt_min hρ_final_pos hρ_help_pos
+  set ρ_effectiveN : ℝ≥0 := ⟨ρ_effective, le_of_lt hρ_effective_pos⟩
+  have hρ_effectiveN_eq : (ρ_effectiveN : ℝ) = ρ_effective := rfl
+  have hρ_effective_le_finalN : ρ_effective ≤ (ρ_finalN : ℝ) := min_le_left _ _
+  have hρ_effective_le_help : ρ_effective ≤ (ρ_help : ℝ) := min_le_right _ _
+  have hρ_effectiveN_le_finalN : (ρ_effectiveN : ℝ) ≤ (ρ_finalN : ℝ) := by
+    rw [hρ_effectiveN_eq]
+    exact hρ_effective_le_finalN
+  have hρ_effectiveN_le_help : (ρ_effectiveN : ℝ) ≤ (ρ_help : ℝ) := by
+    rw [hρ_effectiveN_eq]
+    exact hρ_effective_le_help
+  have h_effective_sub_smooth : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ + T_effective)
       ⊆ (ball x₀ (ρ_finalN : ℝ)) ×ˢ Ioo (t₀ - T_final) (t₀ + T_final) := by
     refine Set.prod_mono ?_ ?_
     · intro y hy
       rw [mem_ball] at hy ⊢
-      exact lt_of_lt_of_le hy hρ_effN_le_finalN
+      exact lt_of_lt_of_le hy hρ_effectiveN_le_finalN
     · intro s hs
       rcases hs with ⟨h1, h2⟩
       refine ⟨?_, ?_⟩ <;> linarith
-  have h_eff_sub_help : (ball x₀ (ρ_effN : ℝ)) ×ˢ Ioo (t₀ - T_eff) (t₀ + T_eff)
+  have h_effective_sub_help : (ball x₀ (ρ_effectiveN : ℝ)) ×ˢ Ioo (t₀ - T_effective) (t₀ + T_effective)
       ⊆ (ball x₀ (ρ_help : ℝ)) ×ˢ Ioo (t₀ - T_help) (t₀ + T_help) := by
     refine Set.prod_mono ?_ ?_
     · intro y hy
       rw [mem_ball] at hy ⊢
-      exact lt_of_lt_of_le hy hρ_effN_le_help
+      exact lt_of_lt_of_le hy hρ_effectiveN_le_help
     · intro s hs
       rcases hs with ⟨h1, h2⟩
       refine ⟨?_, ?_⟩ <;> linarith
-  refine ⟨T_eff, ρ_effN, hT_eff_pos, hρ_eff_pos, fromAugFlow aΦ, ?_⟩
-  refine { contDiffOn := h_Y_smooth.mono h_eff_sub_smooth, fderiv_eq := ?_ }
+  refine ⟨T_effective, ρ_effectiveN, hT_effective_pos, hρ_effective_pos, fromAugmentedFlow aΦ, ?_⟩
+  refine { contDiffOn := h_Y_smooth.mono h_effective_sub_smooth, fderiv_eq := ?_ }
   intro q hq
-  exact h_help q (h_eff_sub_help hq)
+  exact h_help q (h_effective_sub_help hq)
 
 end LevelOneWitness
 

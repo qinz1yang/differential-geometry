@@ -12,7 +12,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower
@@ -56,7 +56,7 @@ theorem trace_h2_uniform
               (reindexedPureTrace (I := I) (M := M) g₀ g₁ p σ)‖ ^ 2) ≤
             (B R) ^ 2 := by
   classical
-  obtain ⟨C, hC, hpt⟩ := trace_grid_unif (I := I) (M := M) p hδ₀
+  obtain ⟨C, hC, hpt⟩ := trace_grid_uniform (I := I) (M := M) p hδ₀
   obtain ⟨B, hB_nn, hB⟩ := h2_low_uniform
     (I := I) (M := M) hDim gBase hΛ (r := p + 2) (s := p) C hC
   refine ⟨B, hB_nn, ?_⟩
@@ -119,7 +119,7 @@ theorem sharp_h2_uniform
               (sharpFlatEndoCc (I := I) g₀ g₁)‖ ^ 2) ≤
             (B R) ^ 2 := by
   classical
-  obtain ⟨C, hC, hpt⟩ := sharpFlat_grid_unif (I := I) (M := M) hδ₀
+  obtain ⟨C, hC, hpt⟩ := sharpFlat_grid_uniform (I := I) (M := M) hδ₀
   obtain ⟨B, hB_nn, hB⟩ := h2_low_uniform
     (I := I) (M := M) hDim gBase hΛ (r := 1) (s := 1) C hC
   refine ⟨B, hB_nn, ?_⟩
@@ -178,7 +178,7 @@ theorem connLow_tame_uniform
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)‖ ^ 2) ≤
             (B0 R + B1 R * A) ^ 2 := by
   classical
-  obtain ⟨C, hC, hpt⟩ := connectionDifference_grid_unif (I := I) (M := M) hδ₀
+  obtain ⟨C, hC, hpt⟩ := connectionDifference_grid_uniform (I := I) (M := M) hδ₀
   obtain ⟨B0, B1, hB0, hB1, hB⟩ := h2_tame_uniform
     (I := I) (M := M) hDim gBase hΛ (r := 0) (s := 3) C hC
   refine ⟨B0, B1, hB0, hB1, ?_⟩

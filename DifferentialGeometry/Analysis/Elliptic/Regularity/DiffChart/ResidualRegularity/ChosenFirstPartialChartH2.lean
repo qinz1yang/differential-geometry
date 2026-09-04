@@ -49,7 +49,7 @@ noncomputable def chosenMixedSecondPartial
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g)
     (l i : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 i
     (chartPushedChosenFirstPartial (I := I) (M := M) g α u_h l)
     (chartTargetEuclid (I := I) (M := M) α)
@@ -154,7 +154,7 @@ theorem chartPushed_chosenFirstPartial_memWkp_two_two_of_laplacianDomainPow_two
     (l : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 2 2
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α

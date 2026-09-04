@@ -302,9 +302,9 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
       chartOverlapEuclid_subset_chartTarget (I := I) (M := M) β α hy_mem
     set z : M := (extChartAt I β).symm ((toEuclidean (E := E)).symm y)
       with hz_def
-    have hz_srcβ : z ∈ (chartAt H β).source :=
+    have hz_sourceβ : z ∈ (chartAt H β).source :=
       symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) β hy_target
-    have hz_srcα : z ∈ (chartAt H α).source :=
+    have hz_sourceα : z ∈ (chartAt H α).source :=
       (mem_chartOverlapEuclid_iff_of_mem_chartTargetEuclid
         (I := I) (M := M) β α hy_target).mp hy_mem
     have hsymm_target : (toEuclidean (E := E)).symm y ∈
@@ -317,7 +317,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
     have hT_eq : chartTransitionEuclid (I := I) (M := M) β α y =
         (toEuclidean (E := E)) (extChartAt I α z) := by
       rw [← hy_eq]
-      exact chartTransitionEuclid_eq_chartα_image (I := I) (M := M) β α hz_srcβ
+      exact chartTransitionEuclid_eq_chartα_image (I := I) (M := M) β α hz_sourceβ
     have h_coeff : chartPushedRaw (I := I) (M := M) β
         (transportCoeffManifold (I := I) (M := M) r s α β P₀ Q) y =
         transportCoeffManifold (I := I) (M := M) r s α β P₀ Q z := by
@@ -326,7 +326,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
         C^∞⟮I, M; ℝ⟯) : M → ℝ) z = 0
     · rw [h_coeff, transportCoeffManifold_apply, hχβ]
       ring
-    · have hχβ_supp : z ∈ tsupport
+    · have hχβ_support : z ∈ tsupport
           ((chartKernelCutoff (I := I) (M := M) β : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
         subset_tsupport _ hχβ
       have hρα : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) z = 0 := by
@@ -336,7 +336,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
       have hw_zero : chartPushedPouWeight (I := I) (M := M) α
           (chartTransitionEuclid (I := I) (M := M) β α y) = 0 := by
         rw [hT_eq, chartPushedPouWeight_toEuclidean_extChartAt
-          (I := I) (M := M) α hz_srcα, hρα]
+          (I := I) (M := M) α hz_sourceα, hρα]
       have hy_gate' : (if chartPushedPouWeight (I := I) (M := M) α
             (chartTransitionEuclid (I := I) (M := M) β α y) = 0 then
           eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
@@ -353,15 +353,15 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
     by_cases hy_target : y ∈ chartTargetEuclid (I := I) (M := M) β
     · set z : M := (extChartAt I β).symm ((toEuclidean (E := E)).symm y)
         with hz_def
-      have hz_notin_srcα : z ∉ (chartAt H α).source := by
-        intro hz_srcα
+      have hz_notin_sourceα : z ∉ (chartAt H α).source := by
+        intro hz_sourceα
         exact hy_notin
           ((mem_chartOverlapEuclid_iff_of_mem_chartTargetEuclid
-            (I := I) (M := M) β α hy_target).mpr hz_srcα)
+            (I := I) (M := M) β α hy_target).mpr hz_sourceα)
       have hχα_zero : ((chartKernelCutoff (I := I) (M := M) α :
           C^∞⟮I, M; ℝ⟯) : M → ℝ) z = 0 :=
         image_eq_zero_of_notMem_tsupport (fun h =>
-          hz_notin_srcα
+          hz_notin_sourceα
             (chartKernelCutoff_tsupport_subset_source (I := I) (M := M) α h))
       have h_coeff_zero : chartPushedRaw (I := I) (M := M) β
           (transportCoeffManifold (I := I) (M := M) r s α β P₀ Q) y = 0 := by

@@ -116,7 +116,7 @@ theorem frameTowerSwap
             hrm ⟨t, ht⟩ x hx m
         refine ⟨htime, ?_⟩
         intro m
-        exact fixedBaseOnRegSmooth (I := I) hu D.regular_isOpen
+        exact fixedBaseOnRegularitySmooth (I := I) hu D.regular_isOpen
           (fun ht => D.regular_mem_nhds ht) (hsmooth 0 m) (htime m)
     | succ k ih =>
         have htime : ∀ (n : Fin (4 + (k + 1)) -> Idx)
@@ -138,7 +138,7 @@ theorem frameTowerSwap
           simpa [iteratedRmComp_succ, iteratedRmCompDt_succ] using hstep
         refine ⟨htime, ?_⟩
         intro n
-        exact fixedBaseOnRegSmooth (I := I) hu D.regular_isOpen
+        exact fixedBaseOnRegularitySmooth (I := I) hu D.regular_isOpen
           (fun ht => D.regular_mem_nhds ht) (hsmooth (k + 1) n) (htime n)
   intro k m
   exact (hboth k).2 m
@@ -231,7 +231,7 @@ theorem tailTowerData
   let D' := RealTimeInterval.closedOpen t0 omega hT0Omega
   let S' := S.timeRestrict D'
   have hS' : IsSolutionOn (I := I) S' := by
-    simpa [S', D'] using isSoln_tailRestrict (I := I) hS hAlphaT0 hT0Omega
+    simpa [S', D'] using isSolutionOn_tailRestrict (I := I) hS hAlphaT0 hT0Omega
   obtain ⟨hframe1, hgamma⟩ :=
     tailChristoffel (I := I) (Idx := Idx) hS hAlphaT0 hT0Omega frame hframe hu
   let baseDt : Real -> M -> (Fin 4 -> Idx) -> Real := fun r x m =>
@@ -362,7 +362,7 @@ theorem towerDataAt
   let Dab := RealTimeInterval.closedOpen a b hab
   let Sab : SolutionOn (I := I) (M := M) Dab := S.timeRestrict Dab
   have hSab : IsSolutionOn (I := I) Sab := by
-    apply isSoln_timeRestrict (I := I) hS
+    apply isSolutionOn_timeRestrict (I := I) hS
     · intro s hs
       exact D.regular_subset (hwin ⟨hs.1, hs.2.le⟩)
     · intro s hs

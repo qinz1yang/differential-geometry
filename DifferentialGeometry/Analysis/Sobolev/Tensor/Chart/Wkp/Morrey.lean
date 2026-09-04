@@ -38,18 +38,18 @@ private theorem chosen_cont_ae
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set EuclN} (hΩ : IsOpen Ω)
     {u : EuclN → ℝ} (huC1 : ContDiff ℝ 1 u)
     (huW1 : DeGiorgi.MemW1p p u Ω) (i : Fin d) :
-    chosenWeakPartial' p i u Ω =ᵐ[volume.restrict Ω]
+    chosenWeakPartialOrZero p i u Ω =ᵐ[volume.restrict Ω]
       fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1) := by
   have hchosen : DeGiorgi.HasWeakPartialDeriv i
-      (chosenWeakPartial' p i u Ω) u Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem huW1 i
+      (chosenWeakPartialOrZero p i u Ω) u Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem huW1 i
   have hclass : DeGiorgi.HasWeakPartialDeriv i
       (fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1)) u Ω :=
     DeGiorgi.HasWeakPartialDeriv.of_contDiff hΩ huC1
-  have hchosen_loc : LocallyIntegrable (chosenWeakPartial' p i u Ω)
+  have hchosen_local : LocallyIntegrable (chosenWeakPartialOrZero p i u Ω)
       (volume.restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem huW1 i).locallyIntegrable hp
-  have hclass_loc : LocallyIntegrable
+    (chosenWeakPartialOrZero_memLp_of_mem huW1 i).locallyIntegrable hp
+  have hclass_local : LocallyIntegrable
       (fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1))
       (volume.restrict Ω) := by
     have hc : Continuous
@@ -57,7 +57,7 @@ private theorem chosen_cont_ae
       (huC1.continuous_fderiv one_ne_zero).clm_apply continuous_const
     exact hc.locallyIntegrable.mono_measure Measure.restrict_le_self
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ hchosen hclass
-    hchosen_loc hclass_loc
+    hchosen_local hclass_local
 
 omit [NeZero d] in
 private theorem weak2_mem
@@ -75,7 +75,7 @@ private theorem weak2_norm_le
       iteratedWeakSobolevNorm (d := d) 3 p u Ω := by
   rw [iterWeakPartial_succ, iterWeakPartial_succ, iterWeakPartial_zero]
   exact (wkpNorm_chosenWeakPartial_le (d := d) 1
-    (chosenWeakPartial' p (β 0) u Ω) (β (Fin.succ 0))).trans
+    (chosenWeakPartialOrZero p (β 0) u Ω) (β (Fin.succ 0))).trans
       (wkpNorm_chosenWeakPartial_le (d := d) 2 u (β 0))
 
 omit [NeZero d] in
@@ -92,10 +92,10 @@ private theorem weakGrad_real_le
   let G : ℝ≥0∞ := eLpNorm (fun x => ‖hw.weakGrad x‖) p
     (volume.restrict Ω)
   have hcomp : ∀ i : Fin d,
-      (fun x => hw.weakGrad x i) = chosenWeakPartial' p i v Ω := by
+      (fun x => hw.weakGrad x i) = chosenWeakPartialOrZero p i v Ω := by
     intro i
     funext x
-    unfold chosenWeakPartial'
+    unfold chosenWeakPartialOrZero
     simp only [dif_pos hW1]
     rfl
   have hmono : G ≤ eLpNorm (fun x => ∑ i : Fin d, ‖hw.weakGrad x i‖) p
@@ -143,7 +143,7 @@ private theorem weak2_classical_ae
       iterClassicalPartial (d := d) 2 β v := by
   let i₀ : Fin d := β 0
   let i₁ : Fin d := β (Fin.succ 0)
-  let v₁ : EuclN → ℝ := chosenWeakPartial' p i₀ v Ω
+  let v₁ : EuclN → ℝ := chosenWeakPartialOrZero p i₀ v Ω
   let c₁ : EuclN → ℝ :=
     fun x => (fderiv ℝ v x) (EuclideanSpace.single i₀ 1)
   have hvW2 : MemWkp (d := d) 2 p v Ω :=
@@ -155,12 +155,12 @@ private theorem weak2_classical_ae
     hvW2.chosenWeakPartial_mem i₀
   have hc₁W : MemWkp (d := d) 1 p c₁ Ω :=
     (MemWkp_congr_ae (d := d) hp hΩ hfirst).mp hv₁W
-  have hcongr : chosenWeakPartial' p i₁ v₁ Ω =ᵐ[volume.restrict Ω]
-      chosenWeakPartial' p i₁ c₁ Ω :=
-    chosenWeakPartial'_ae_congr (d := d) hp hΩ hfirst i₁
+  have hcongr : chosenWeakPartialOrZero p i₁ v₁ Ω =ᵐ[volume.restrict Ω]
+      chosenWeakPartialOrZero p i₁ c₁ Ω :=
+    chosenWeakPartialOrZero_ae_congr (d := d) hp hΩ hfirst i₁
   have hc₁C1 : ContDiff ℝ 1 c₁ := by
     exact (hvC2.fderiv_right (m := 1) (by norm_num)).clm_apply contDiff_const
-  have hsecond : chosenWeakPartial' p i₁ c₁ Ω =ᵐ[volume.restrict Ω]
+  have hsecond : chosenWeakPartialOrZero p i₁ c₁ Ω =ᵐ[volume.restrict Ω]
       fun x => (fderiv ℝ c₁ x) (EuclideanSpace.single i₁ 1) :=
     chosen_cont_ae (d := d) hp hΩ hc₁C1
       (MemWkp.one_iff_memW1p.mp hc₁W) i₁

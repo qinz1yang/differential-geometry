@@ -16,54 +16,54 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [Nontrivial V] in
-theorem klTail_union {R : ℝ} {S U : Set V} (hSU : Disjoint S U)
+theorem kochLammTail_union {R : ℝ} {S U : Set V} (hSU : Disjoint S U)
     (hUm : MeasurableSet U) :
-    klTailMeasure (V := V) R (S ∪ U) =
-      klTailMeasure (V := V) R S + klTailMeasure (V := V) R U := by
-  unfold klTailMeasure
+    kochLammTailMeasure (V := V) R (S ∪ U) =
+      kochLammTailMeasure (V := V) R S + kochLammTailMeasure (V := V) R U := by
+  unfold kochLammTailMeasure
   rw [Measure.restrict_union hSU hUm, Measure.prod_add]
 
 omit [CompleteSpace F] in
-theorem klLatePiece_int {T R : ℝ} {A₁ A_q : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x c : V)
+theorem kochLammLatePiece_int {T R : ℝ} {A₁ A_q : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceZero T A₁ A_q f) (x c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
     (hS : S ⊆ Metric.ball c R) :
-    Integrable (fun z : ℝ × V ↦ klTermKernel (R ^ 2) x z • f z)
-      (klTailMeasure (V := V) R S) := by
-  let μ := klTailMeasure (V := V) R S
-  have hk : MemLp (klTermKernel (R ^ 2) x)
-      (ENNReal.ofReal (klQDual V)) μ :=
-    (klTermKernel_memLp (V := V) (t := R ^ 2) x).mono_measure
-      (klTailTerm_le (V := V) R S)
-  have hf : MemLp f (ENNReal.ofReal (klQReal V)) μ := by
-    simpa only [klQReal_ofReal] using
-      (klPieceSrc_mem (V := V) h c hR hRT hS)
+    Integrable (fun z : ℝ × V ↦ kochLammTermKernel (R ^ 2) x z • f z)
+      (kochLammTailMeasure (V := V) R S) := by
+  let μ := kochLammTailMeasure (V := V) R S
+  have hk : MemLp (kochLammTermKernel (R ^ 2) x)
+      (ENNReal.ofReal (kochLammQDual V)) μ :=
+    (kochLammTermKernel_memLp (V := V) (t := R ^ 2) x).mono_measure
+      (kochLammTailTerm_le (V := V) R S)
+  have hf : MemLp f (ENNReal.ofReal (kochLammQReal V)) μ := by
+    simpa only [kochLammQReal_ofReal] using
+      (kochLammPieceSource_memLp (V := V) h c hR hRT hS)
   let : ENNReal.HolderConjugate
-      (ENNReal.ofReal (klQDual V)) (ENNReal.ofReal (klQReal V)) :=
-    (klQ_holder (V := V)).ennrealOfReal
+      (ENNReal.ofReal (kochLammQDual V)) (ENNReal.ofReal (kochLammQReal V)) :=
+    (kochLammQ_holder (V := V)).ennrealOfReal
   exact memLp_one_iff_integrable.mp (hf.smul hk)
 
 omit [CompleteSpace F] in
-theorem klLateCover_est {T R k : ℝ} {A₁ A_q : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
+theorem kochLammLateCover_est {T R k : ℝ} {A₁ A_q : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceZero T A₁ A_q f) (x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
     (s : Finset V) {S : Set V} (hSm : MeasurableSet S)
     (hcover : S ⊆ ⋃ c ∈ s, Metric.ball c R)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :
-    Integrable (fun z : ℝ × V ↦ klTermKernel (R ^ 2) x z • f z)
-        (klTailMeasure (V := V) R S) ∧
-      ‖klLatePiece0 R f x S‖ ≤
+    Integrable (fun z : ℝ × V ↦ kochLammTermKernel (R ^ 2) x z • f z)
+        (kochLammTailMeasure (V := V) R S) ∧
+      ‖kochLammLatePiece0 R f x S‖ ≤
         (s.card : ℝ) *
-          (Real.exp (-(k ^ 2) / 4) * (klLateTailC V * (A_q : ℝ))) := by
+          (Real.exp (-(k ^ 2) / 4) * (kochLammLateTailC V * (A_q : ℝ))) := by
   classical
   let D : ℝ :=
-    Real.exp (-(k ^ 2) / 4) * (klLateTailC V * (A_q : ℝ))
+    Real.exp (-(k ^ 2) / 4) * (kochLammLateTailC V * (A_q : ℝ))
   induction s using Finset.induction_on generalizing S with
   | empty =>
       have hS0 : S = ∅ := by
         simpa using hcover
       subst S
-      constructor <;> simp [klTailMeasure, klLatePiece0]
+      constructor <;> simp [kochLammTailMeasure, kochLammLatePiece0]
   | @insert c s hc ih =>
       let S₀ : Set V := S ∩ Metric.ball c R
       let S₁ : Set V := S \ Metric.ball c R
@@ -102,30 +102,30 @@ theorem klLateCover_est {T R k : ℝ} {A₁ A_q : ℝ≥0}
         have hy' : y ∈ S := by
           exact hy.1
         exact hfar y hy'
-      have hint₀ := klLatePiece_int (V := V) h x c hR hRT hS₀ball
+      have hint₀ := kochLammLatePiece_int (V := V) h x c hR hRT hS₀ball
       obtain ⟨hint₁, hnorm₁⟩ := ih hS₁m hcover₁ hfar₁
-      have hnorm₀ : ‖klLatePiece0 R f x S₀‖ ≤ D := by
+      have hnorm₀ : ‖kochLammLatePiece0 R f x S₀‖ ≤ D := by
         simpa only [D] using
-          (klLatePiece_norm (V := V) h x c hR hk hRT
+          (kochLammLatePiece_norm (V := V) h x c hR hk hRT
             hS₀m hS₀ball hfar₀)
-      have hμ : klTailMeasure (V := V) R S =
-          klTailMeasure (V := V) R S₀ + klTailMeasure (V := V) R S₁ := by
+      have hμ : kochLammTailMeasure (V := V) R S =
+          kochLammTailMeasure (V := V) R S₀ + kochLammTailMeasure (V := V) R S₁ := by
         rw [← hsplit]
-        exact klTail_union (V := V) hdisj hS₁m
+        exact kochLammTail_union (V := V) hdisj hS₁m
       have hint : Integrable
-          (fun z : ℝ × V ↦ klTermKernel (R ^ 2) x z • f z)
-          (klTailMeasure (V := V) R S) := by
+          (fun z : ℝ × V ↦ kochLammTermKernel (R ^ 2) x z • f z)
+          (kochLammTailMeasure (V := V) R S) := by
         rw [hμ]
         exact hint₀.add_measure hint₁
-      have hpiece : klLatePiece0 R f x S =
-          klLatePiece0 R f x S₀ + klLatePiece0 R f x S₁ := by
-        unfold klLatePiece0
+      have hpiece : kochLammLatePiece0 R f x S =
+          kochLammLatePiece0 R f x S₀ + kochLammLatePiece0 R f x S₁ := by
+        unfold kochLammLatePiece0
         rw [hμ, integral_add_measure hint₀ hint₁]
       refine ⟨hint, ?_⟩
       rw [hpiece]
       calc
-        ‖klLatePiece0 R f x S₀ + klLatePiece0 R f x S₁‖ ≤
-            ‖klLatePiece0 R f x S₀‖ + ‖klLatePiece0 R f x S₁‖ :=
+        ‖kochLammLatePiece0 R f x S₀ + kochLammLatePiece0 R f x S₁‖ ≤
+            ‖kochLammLatePiece0 R f x S₀‖ + ‖kochLammLatePiece0 R f x S₁‖ :=
           norm_add_le _ _
         _ ≤ D + (s.card : ℝ) * D := add_le_add hnorm₀ hnorm₁
         _ = ((insert c s).card : ℝ) * D := by
@@ -134,16 +134,16 @@ theorem klLateCover_est {T R k : ℝ} {A₁ A_q : ℝ≥0}
           ring
 
 omit [CompleteSpace F] in
-theorem klLateCover_norm {T R k : ℝ} {A₁ A_q : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource0 T A₁ A_q f) (x : V)
+theorem kochLammLateCover_norm {T R k : ℝ} {A₁ A_q : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceZero T A₁ A_q f) (x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
     (s : Finset V) {S : Set V} (hSm : MeasurableSet S)
     (hcover : S ⊆ ⋃ c ∈ s, Metric.ball c R)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :
-    ‖klLatePiece0 R f x S‖ ≤
+    ‖kochLammLatePiece0 R f x S‖ ≤
       (s.card : ℝ) *
-        (Real.exp (-(k ^ 2) / 4) * (klLateTailC V * (A_q : ℝ))) :=
-  (klLateCover_est (V := V) h x hR hk hRT s hSm hcover hfar).2
+        (Real.exp (-(k ^ 2) / 4) * (kochLammLateTailC V * (A_q : ℝ))) :=
+  (kochLammLateCover_est (V := V) h x hR hk hRT s hSm hcover hfar).2
 
 end Euclidean
 end Parabolic

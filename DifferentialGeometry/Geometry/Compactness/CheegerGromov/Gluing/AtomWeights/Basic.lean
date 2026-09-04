@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Bundle Manifold
 open scoped Manifold ContDiff Topology
@@ -469,5 +469,5 @@ theorem seqWeights_zero_ev (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
             (seqAtom hd hD P L pb r k) (baseIndex hd hre pb hr))) :=
   seqWeights_ev hd hD P L hre pb r (baseIndex hd hre pb hr)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

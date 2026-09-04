@@ -50,7 +50,7 @@ theorem uhlenbeckCurvatureOperatorMatrixAsMatrix_eq_curvatureOperatorMatrixAt
     {pulledRm : FourComp M (Fin 3)} {t : Real}
     (hpull : ∀ a b c d : Fin 3,
       pulledRm t x a b c d =
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (basis a) (basis b) (basis c) (basis d)) :
     uhlenbeckCurvatureOperatorMatrixAsMatrix pulledRm t x =
       curvatureOperatorMatrixAt (I := I) x basis A := by
@@ -67,7 +67,7 @@ theorem uhlenbeckCurvatureOperatorMatrixAsMatrix_isHermitian
     {pulledRm : FourComp M (Fin 3)} {t : Real}
     (hpull : ∀ a b c d : Fin 3,
       pulledRm t x a b c d =
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (basis a) (basis b) (basis c) (basis d)) :
     (uhlenbeckCurvatureOperatorMatrixAsMatrix pulledRm t x).IsHermitian := by
   rw [uhlenbeckCurvatureOperatorMatrixAsMatrix_eq_curvatureOperatorMatrixAt

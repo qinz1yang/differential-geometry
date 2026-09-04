@@ -26,7 +26,7 @@ private noncomputable def negRmForm
     (g : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x → TangentSpace I x → TangentSpace I x →
       TangentSpace I x → Real :=
-  fun X Y Z W => -metricRm04StdAt (I := I) (M := M) g x X Y Z W
+  fun X Y Z W => -metricRm04StandardAt (I := I) (M := M) g x X Y Z W
 
 private noncomputable def metricModel
     (g : SmoothRiemannianMetric I M) (x : M) :
@@ -62,25 +62,25 @@ private theorem negRm_isAlg
         a * Rm (vec4 (I := I) X Y Z W) at h
     exact h
   have hinput : ∀ X Y Z W : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x Y X Z W =
-        -metricRm04StdAt (I := I) (M := M) g x X Y Z W := by
+      metricRm04StandardAt (I := I) (M := M) g x Y X Z W =
+        -metricRm04StandardAt (I := I) (M := M) g x X Y Z W := by
     intro X Y Z W
-    simpa [metricRm04StdAt_apply, metricRm04_apply] using
+    simpa [metricRm04StandardAt_apply, metricRm04_apply] using
       (rm04InputSkewAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
   have houtput : ∀ X Y Z W : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Z W =
-        -metricRm04StdAt (I := I) (M := M) g x X Y W Z := by
+      metricRm04StandardAt (I := I) (M := M) g x X Y Z W =
+        -metricRm04StandardAt (I := I) (M := M) g x X Y W Z := by
     intro X Y Z W
-    simpa [metricRm04StdAt_apply, metricRm04_apply] using
+    simpa [metricRm04StandardAt_apply, metricRm04_apply] using
       (rm04OutputSkewAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
   have hfirst : ∀ X Y Z W : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Z W +
-          metricRm04StdAt (I := I) (M := M) g x Y Z X W +
-          metricRm04StdAt (I := I) (M := M) g x Z X Y W = 0 := by
+      metricRm04StandardAt (I := I) (M := M) g x X Y Z W +
+          metricRm04StandardAt (I := I) (M := M) g x Y Z X W +
+          metricRm04StandardAt (I := I) (M := M) g x Z X Y W = 0 := by
     intro X Y Z W
-    simpa [metricRm04StdAt_apply, metricRm04_apply] using
+    simpa [metricRm04StandardAt_apply, metricRm04_apply] using
       (firstBianchiAt_of_leviCivita_realizes
         (I := I) g (metricRm04 (I := I) (M := M) g) K.rm04Realizes X Y Z W)
   refine
@@ -90,11 +90,11 @@ private theorem negRm_isAlg
       anti_last := ?_
       bianchi := ?_ }
   · intro X₁ X₂ Y Z W
-    dsimp [negRmForm, metricRm04StdAt, tensor04StdAt, Rm]
+    dsimp [negRmForm, metricRm04StandardAt, tensor04StandardAt, Rm]
     rw [hadd]
     ring
   · intro a X Y Z W
-    dsimp [negRmForm, metricRm04StdAt, tensor04StdAt, Rm]
+    dsimp [negRmForm, metricRm04StandardAt, tensor04StandardAt, Rm]
     rw [hsmul]
     ring
   · intro X Y Z W
@@ -144,11 +144,11 @@ omit [SigmaCompactSpace M] in
 theorem metricRm_of_sec
     (g : SmoothRiemannianMetric I M) (x : M) (c : Real)
     (hsec : ∀ X Y : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y)) :
     ∀ X Y Z W : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Z W =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Z W =
         c * (g.inner x Y Z * g.inner x X W -
           g.inner x X Z * g.inner x Y W) := by
   let B := negRmForm (I := I) (M := M) g x
@@ -167,11 +167,11 @@ theorem metricRm_of_sec
       rw [g.symm x Y X]
     dsimp [B, negRmForm] at hskew
     have hskew' :
-        -metricRm04StdAt (I := I) (M := M) g x X Y X Y =
-          metricRm04StdAt (I := I) (M := M) g x X Y Y X := by
+        -metricRm04StandardAt (I := I) (M := M) g x X Y X Y =
+          metricRm04StandardAt (I := I) (M := M) g x X Y Y X := by
       linarith
     change
-      -metricRm04StdAt (I := I) (M := M) g x X Y X Y =
+      -metricRm04StandardAt (I := I) (M := M) g x X Y X Y =
         c * S X Y X Y
     rw [hskew', hsec X Y, hmodel]
   have heq := hB.ext (hS.smul c) hdiag
@@ -187,7 +187,7 @@ theorem riemannOp_of_rm
     [I.Boundaryless] [BoundarylessManifold I M]
     (g : SmoothRiemannianMetric I M) (x : M) (c : Real)
     (hRm : ∀ X Y Z W : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Z W =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Z W =
         c * (g.inner x Y Z * g.inner x X W -
           g.inner x X Z * g.inner x Y W)) :
     ∀ X Y Z : TangentSpace I x,
@@ -199,7 +199,7 @@ theorem riemannOp_of_rm
   rw [tangentFlatLinear_apply, tangentFlatLinear_apply,
     g.symm x (riemannOp (LeviCivita (I := I) g) x X Y Z) W,
     riemannOp_eq_chartRiemannCLM_apply,
-    ← metricRm04StdAt_eq_chartRiemannCLM, hRm]
+    ← metricRm04StandardAt_eq_chartRiemannCLM, hRm]
   simp only [map_smul, map_sub, smul_apply,
     sub_apply, smul_eq_mul]
 
@@ -207,18 +207,18 @@ omit [SigmaCompactSpace M] in
 theorem metricRm_scale_one
     (g : SmoothRiemannianMetric I M) (x : M) (c : Real) (hc : 0 < c)
     (hsec : ∀ X Y : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y)) :
     ∀ X Y Z W : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M)
+      metricRm04StandardAt (I := I) (M := M)
           (scaleMetric (I := I) c hc g) x X Y Z W =
         (scaleMetric (I := I) c hc g).inner x Y Z *
             (scaleMetric (I := I) c hc g).inner x X W -
           (scaleMetric (I := I) c hc g).inner x X Z *
             (scaleMetric (I := I) c hc g).inner x Y W := by
   have hdiag : ∀ X Y : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M)
+      metricRm04StandardAt (I := I) (M := M)
           (scaleMetric (I := I) c hc g) x X Y Y X =
         (1 : Real) *
           ((scaleMetric (I := I) c hc g).inner x X X *
@@ -226,7 +226,7 @@ theorem metricRm_scale_one
             (scaleMetric (I := I) c hc g).inner x X Y *
               (scaleMetric (I := I) c hc g).inner x X Y) := by
     intro X Y
-    rw [metricRmStd_scale (I := I) c hc g x X Y Y X, hsec X Y]
+    rw [metricRmStandard_scale (I := I) c hc g x X Y Y X, hsec X Y]
     simp only [scaleMetric_inner, one_mul]
     ring
   simpa only [one_mul] using

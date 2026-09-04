@@ -104,13 +104,13 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space
 lemma densityOnEuclid_mul_test_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     MemLp (fun y => densityOnEuclid (I := I) g α y * ψ y) 2
       (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   have h_cd : ContDiff ℝ ∞ (fun y => densityOnEuclid (I := I) g α y * ψ y) :=
     contDiff_mul_chartTest (I := I) (M := M) α
-      (densityOnEuclid_contDiffOn (I := I) g α) hψ hψ_supp
+      (densityOnEuclid_contDiffOn (I := I) g α) hψ hψ_support
   have h_cs : HasCompactSupport (fun y => densityOnEuclid (I := I) g α y * ψ y) :=
     hasCompactSupport_mul_chartTest (E := E) hψ_cs
   rw [chartLebesgueMeasure]
@@ -137,7 +137,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma principalSymbolTest_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (i' : Fin (Module.finrank ℝ E)) :
     MemLp (principalSymbolTest (I := I) (M := M) g α ψ i') 2
       (chartLebesgueMeasure (I := I) (M := M) α) := by
@@ -154,11 +154,11 @@ private lemma principalSymbolTest_memLp
     rw [Function.mem_support] at hy
     by_contra hyψ
     exact hy (euclidPartial_zero_off_tsupport j hyψ)
-  have hdψ_supp : ∀ j : Fin (Module.finrank ℝ E),
+  have hdψ_support : ∀ j : Fin (Module.finrank ℝ E),
       tsupport (euclidPartial (E := E) j ψ) ⊆
         chartTargetEuclid (I := I) (M := M) α := by
     intro j
-    refine (closure_minimal ?_ (isClosed_tsupport _)).trans hψ_supp
+    refine (closure_minimal ?_ (isClosed_tsupport _)).trans hψ_support
     intro z hz
     rw [Function.mem_support] at hz
     by_contra hz'
@@ -187,7 +187,7 @@ private lemma principalSymbolTest_memLp
       (Finset.univ : Finset (Fin (Module.finrank ℝ E))) (fun j _ => ?_)
     have hcd : ContDiff ℝ ∞ (fun y => weightedInvGramOnEuclid (I := I) g α i' j y *
         euclidPartial (E := E) j ψ y) :=
-      contDiff_mul_chartTest (I := I) (M := M) α (hgram j) (hdψ_cd j) (hdψ_supp j)
+      contDiff_mul_chartTest (I := I) (M := M) α (hgram j) (hdψ_cd j) (hdψ_support j)
     have hcs : HasCompactSupport (fun y => weightedInvGramOnEuclid (I := I) g α i' j y *
         euclidPartial (E := E) j ψ y) :=
       hasCompactSupport_mul_chartTest (E := E) (hdψ_cs j)
@@ -201,13 +201,13 @@ lemma density_coeff_test_memLp
     {c : EuclN → ℝ}
     (hc : ContDiffOn ℝ ∞ c (chartTargetEuclid (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     MemLp (fun y => densityOnEuclid (I := I) g α y * c y * ψ y) 2
       (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   have hcd : ContDiff ℝ ∞ (fun y => densityOnEuclid (I := I) g α y * c y * ψ y) :=
     contDiff_mul_chartTest (I := I) (M := M) α
-      ((densityOnEuclid_contDiffOn (I := I) g α).mul hc) hψ hψ_supp
+      ((densityOnEuclid_contDiffOn (I := I) g α).mul hc) hψ hψ_support
   have hcs : HasCompactSupport
       (fun y => densityOnEuclid (I := I) g α y * c y * ψ y) := by
     refine HasCompactSupport.of_support_subset_isCompact
@@ -235,7 +235,7 @@ lemma density_memLp2_test_integrable
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)))
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Integrable (fun y => densityOnEuclid (I := I) g α y * w y * ψ y)
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
@@ -243,7 +243,7 @@ lemma density_memLp2_test_integrable
   have hm_memLp : MemLp (fun y => densityOnEuclid (I := I) g α y * ψ y) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
-    have h := densityOnEuclid_mul_test_memLp (I := I) (M := M) g α hψ hψ_cs hψ_supp
+    have h := densityOnEuclid_mul_test_memLp (I := I) (M := M) g α hψ hψ_cs hψ_support
     rw [chartLebesgueMeasure] at h
     exact h
   have hprod : MemLp (fun y => w y *
@@ -267,7 +267,7 @@ lemma density_coeff_memLp2_test_integrable
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)))
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Integrable (fun y => densityOnEuclid (I := I) g α y * (c y * w y) * ψ y)
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
@@ -275,7 +275,7 @@ lemma density_coeff_memLp2_test_integrable
   have hm_memLp : MemLp (fun y => densityOnEuclid (I := I) g α y * c y * ψ y) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
-    have h := density_coeff_test_memLp (I := I) (M := M) g α hc hψ hψ_cs hψ_supp
+    have h := density_coeff_test_memLp (I := I) (M := M) g α hc hψ hψ_cs hψ_support
     rw [chartLebesgueMeasure] at h
     exact h
   have hprod : MemLp (fun y => w y *
@@ -402,7 +402,7 @@ private lemma eigenvectorChartPartialCLM_smoothApprox_coeFn_eq
   have hμ : i.fst.val ≠ 0 := i.fst.val_ne_zero
   have h1 := eigenvectorChartPartialLp_approx_coeFn (I := I) (M := M)
     g r s i α P₀ k n
-  have h2 := chosenWeakPartial'_tensorChartComponent_ae_eq (I := I) (M := M)
+  have h2 := chosenWeakPartialOrZero_tensorChartComponent_ae_eq (I := I) (M := M)
     g r s (eigenvectorSmoothApprox (I := I) (M := M)
       g r s i n).toCcTensor
     α P₀.1 P₀.2 k
@@ -426,7 +426,7 @@ private lemma eigenvectorChartPartialCLM_smoothApprox_coeFn_eq
             g r s i n)) :
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
         chartLebesgueMeasure (I := I) (M := M) α]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (tensorChartComponent (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor
@@ -440,7 +440,7 @@ private lemma eigenvectorChartPartialCLM_smoothApprox_coeFn_eq
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n)) :
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y =
-      (i.fst.val)⁻¹ • chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      (i.fst.val)⁻¹ • chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (tensorChartComponent (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor
@@ -593,7 +593,7 @@ private lemma bilin_eigenvectorPouApprox_eq_sum
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (_hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
     (tensorPrincipalForm (I := I) (M := M) g α
         (chartPouKernel_isCompact (I := I) (M := M) α)
         (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α)).bilin
@@ -672,7 +672,7 @@ private lemma bilin_eigenvectorPouApprox_eq_sum
   have hPI_zero : ∀ y, y ∉ chartTargetEuclid (I := I) (M := M) α →
       Bform.principalIntegrand uₙ ψ y = 0 := by
     intro y hy
-    have hyψ : y ∉ tsupport ψ := fun h => hy (hψ_supp h)
+    have hyψ : y ∉ tsupport ψ := fun h => hy (hψ_support h)
     rw [SmoothEllipticBilinearForm.principalIntegrand]
     refine Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => ?_))
     rw [show (fderiv ℝ ψ y) (EuclideanSpace.single b 1) =
@@ -747,7 +747,7 @@ private lemma bilin_eigenvectorPouApprox_eq_sum
         HasCompactSupport (euclidPartial (E := E) k uₙ) :=
       fun k => euclidPartial_eigenvectorPouApprox_component_hasCompactSupport
         (I := I) (M := M) g r s i α P₀ k n
-    have huₙ_partial_supp : ∀ k : Fin (Module.finrank ℝ E),
+    have huₙ_partial_support : ∀ k : Fin (Module.finrank ℝ E),
         tsupport (euclidPartial (E := E) k uₙ) ⊆
           chartTargetEuclid (I := I) (M := M) α := by
       intro k
@@ -786,7 +786,7 @@ private lemma bilin_eigenvectorPouApprox_eq_sum
           weightedInvGramOnEuclid (I := I) g α k l y *
             euclidPartial (E := E) k uₙ y) :=
         contDiff_mul_chartTest (I := I) (M := M) α (hgram_cd k l)
-          (huₙ_partial_cd k) (huₙ_partial_supp k)
+          (huₙ_partial_cd k) (huₙ_partial_support k)
       exact h1.mul (hdψ_cd l)
     have hsummand_cs : ∀ k l : Fin (Module.finrank ℝ E),
         HasCompactSupport (fun y => weightedInvGramOnEuclid (I := I) g α k l y *
@@ -824,7 +824,7 @@ private lemma bilin_eigenvectorPouApprox_eq_sum
       refine Finset.sum_eq_zero (fun l _ => ?_)
       rw [show euclidPartial (E := E) i' uₙ y = 0 from
         image_eq_zero_of_notMem_tsupport
-          (fun h => hy (huₙ_partial_supp i' h))]
+          (fun h => hy (huₙ_partial_support i' h))]
       ring
     rw [show (fun i' : Fin (Module.finrank ℝ E) =>
           ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -858,7 +858,7 @@ private lemma bilin_eigenvectorPouApprox_eq_sum
       refine Finset.sum_eq_zero (fun k _ => Finset.sum_eq_zero (fun l _ => ?_))
       rw [show euclidPartial (E := E) k uₙ y = 0 from
         image_eq_zero_of_notMem_tsupport
-          (fun h => hy (huₙ_partial_supp k h))]
+          (fun h => hy (huₙ_partial_support k h))]
       ring
     rw [hdouble_split]
   rw [hbilin_eq, hPI_volume_to_target, hPI_target_eq, hreorg]
@@ -870,7 +870,7 @@ lemma bilin_eigenvectorPouApprox_tendsto
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Filter.Tendsto
       (fun n => (tensorPrincipalForm (I := I) (M := M) g α
           (chartPouKernel_isCompact (I := I) (M := M) α)
@@ -890,7 +890,7 @@ lemma bilin_eigenvectorPouApprox_tendsto
           ∂(volume : Measure EuclN))) := by
   classical
   set mtest : Fin (Module.finrank ℝ E) → Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
-    fun i' => (principalSymbolTest_memLp (I := I) (M := M) g α hψ hψ_cs hψ_supp i').toLp _
+    fun i' => (principalSymbolTest_memLp (I := I) (M := M) g α hψ hψ_cs hψ_support i').toLp _
     with hmtest_def
   have h_dir : ∀ i' : Fin (Module.finrank ℝ E),
       Filter.Tendsto
@@ -943,7 +943,7 @@ lemma bilin_eigenvectorPouApprox_tendsto
           ∂(chartLebesgueMeasure (I := I) (M := M) α) := by
     intro n
     rw [bilin_eigenvectorPouApprox_eq_sum (I := I) (M := M)
-      g r s i α P₀ hψ hψ_cs hψ_supp n]
+      g r s i α P₀ hψ hψ_cs hψ_support n]
     exact Finset.sum_congr rfl (fun i' _ => (h_int_n i' n).symm)
   have h_sum_tendsto :
       Filter.Tendsto
@@ -1061,7 +1061,7 @@ lemma bilin_eigenvectorPouApprox_tendsto
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) := by
         exact principalSymbolTest_memLp (I := I) (M := M) g α hψ hψ_cs
-          hψ_supp i'
+          hψ_support i'
       have hprod : MemLp (fun y => principalSymbolTest (I := I) (M := M) g α ψ i' y *
           eigenvectorChartWeakPartial (I := I) (M := M)
             g r s i α P₀ i' y) 1

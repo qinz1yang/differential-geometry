@@ -65,11 +65,11 @@ theorem chartGramOnE_eq_sum_chartTransition [I.Boundaryless]
         chartTransitionAtEntry (I := I) α β x b j *
         chartGramOnE (I := I) g β a b (chartTransitionMap (I := I) α β x) := by
   classical
-  obtain ⟨p, ⟨hp_α_src, hp_β_src⟩, hp_eq⟩ := hx
+  obtain ⟨p, ⟨hp_α_source, hp_β_source⟩, hp_eq⟩ := hx
   have hp_ext_α : p ∈ (extChartAt I α).source := by
-    rw [extChartAt_source (I := I)]; exact hp_α_src
+    rw [extChartAt_source (I := I)]; exact hp_α_source
   have hp_ext_β : p ∈ (extChartAt I β).source := by
-    rw [extChartAt_source (I := I)]; exact hp_β_src
+    rw [extChartAt_source (I := I)]; exact hp_β_source
   have hx_eq : extChartAt I α p = x := hp_eq
   have hp_symm : (extChartAt I α).symm x = p := by
     rw [← hx_eq, (extChartAt I α).left_inv hp_ext_α]
@@ -77,9 +77,9 @@ theorem chartGramOnE_eq_sum_chartTransition [I.Boundaryless]
     change extChartAt I β ((extChartAt I α).symm x) = extChartAt I β p
     rw [hp_symm]
   have hp_triv_α : p ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    change p ∈ (chartAt H α).source; exact hp_α_src
+    change p ∈ (chartAt H α).source; exact hp_α_source
   have hp_triv_β : p ∈ (trivializationAt E (TangentSpace I) β).baseSet := by
-    change p ∈ (chartAt H β).source; exact hp_β_src
+    change p ∈ (chartAt H β).source; exact hp_β_source
   have h_lhs :
       chartGramOnE (I := I) g α i j x =
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α p i j := by
@@ -126,11 +126,11 @@ theorem chartGramOnE_pullback_under_chartTransition [I.Boundaryless]
             (chartTransitionMap (I := I) α β x) j b *
         chartGramOnE (I := I) g α i j x := by
   classical
-  obtain ⟨p, ⟨hp_α_src, hp_β_src⟩, hp_eq⟩ := hx
+  obtain ⟨p, ⟨hp_α_source, hp_β_source⟩, hp_eq⟩ := hx
   have hp_ext_α : p ∈ (extChartAt I α).source := by
-    rw [extChartAt_source (I := I)]; exact hp_α_src
+    rw [extChartAt_source (I := I)]; exact hp_α_source
   have hp_ext_β : p ∈ (extChartAt I β).source := by
-    rw [extChartAt_source (I := I)]; exact hp_β_src
+    rw [extChartAt_source (I := I)]; exact hp_β_source
   have hx_eq : extChartAt I α p = x := hp_eq
   have hp_symm : (extChartAt I α).symm x = p := by
     rw [← hx_eq, (extChartAt I α).left_inv hp_ext_α]
@@ -138,9 +138,9 @@ theorem chartGramOnE_pullback_under_chartTransition [I.Boundaryless]
     change extChartAt I β ((extChartAt I α).symm x) = extChartAt I β p
     rw [hp_symm]
   have hp_triv_α : p ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    change p ∈ (chartAt H α).source; exact hp_α_src
+    change p ∈ (chartAt H α).source; exact hp_α_source
   have hp_triv_β : p ∈ (trivializationAt E (TangentSpace I) β).baseSet := by
-    change p ∈ (chartAt H β).source; exact hp_β_src
+    change p ∈ (chartAt H β).source; exact hp_β_source
   have h_lhs :
       chartGramOnE (I := I) g β a b (chartTransitionMap (I := I) α β x) =
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β p a b := by

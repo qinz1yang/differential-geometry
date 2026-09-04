@@ -152,21 +152,21 @@ theorem quasilinear_strong_existence_truncated_smallTime_ofCompact
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a + 1) ≤ a + 2 by linarith) u₀) R)) :
     ∃ T_R : ℝ, 0 < T_R ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTR : T ≤ T_R),
-      ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
+      ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) a T)
         (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
-        u = maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
+        u = maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
           gforce = nemytskiiHa1 (I := I) (M := M)
               (truncatedNonlin_lipschitzWith (I := I) (M := M) hR hN)
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce) ∧
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce) ∧
           TimeSobolev.timeH1.trace0 _ T u =
               tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
                 (show a ≤ a + 2 by linarith) u₀ ∧
           TimeSobolev.timeH1.timeDeriv _ T u =
             timeScaleLaplacian (I := I) (M := M) a
-                (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce) +
+                (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ gforce) +
               nemytskiiHa1 (I := I) (M := M)
                 (truncatedNonlin_lipschitzWith (I := I) (M := M) hR hN)
-                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀
+                (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀
                   gforce) :=
   quasilinear_strong_existence_smallTime (I := I) (M := M)
     (h_compact := h_compact) u₀
@@ -204,36 +204,36 @@ theorem de_simon_quasilinear_tensor_heat_short_time_existence_locally_lipschitz_
         (gforce : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
         (_hfix : gforce = nemytskiiHa1 (I := I) (M := M)
             (truncatedNonlin_lipschitzWith (I := I) (M := M) hR hN)
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce))
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce))
         (_hstay : ∀ᵐ t ∂(timeMeasure T),
-            maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce t ∈
+            maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce t ∈
               Metric.closedBall
                 (tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
                   (show (a + 1) ≤ a + 2 by linarith) u₀) R),
-      ∃ u : MaxRegSolutionSpace (I := I) (M := M) a T,
-        u = maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
+      ∃ u : MaximalRegularitySolutionSpace (I := I) (M := M) a T,
+        u = maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce ∧
           gforce =ᵐ[timeMeasure T]
-            (fun t => N (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+            (fun t => N (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
               a hT u₀ gforce t)) ∧
           TimeSobolev.timeH1.trace0 _ T u =
               tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
                 (show a ≤ a + 2 by linarith) u₀ ∧
           TimeSobolev.timeH1.timeDeriv _ T u =
             timeScaleLaplacian (I := I) (M := M) a
-                (maxRegDuhamelSolField (I := I) (M := M) a hT u₀ gforce) +
+                (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u₀ gforce) +
               nemytskiiHa1 (I := I) (M := M)
                 (truncatedNonlin_lipschitzWith (I := I) (M := M) hR hN)
-                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀
+                (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀
                   gforce) := by
   refine ⟨smallTimeHorizon L_R, smallTimeHorizon_pos L_R, ?_⟩
   intro T hT hTR gforce hfix hstay
-  refine ⟨maxRegDuhamelMap (I := I) (M := M) a hT u₀ gforce, rfl, ?_, ?_, ?_⟩
+  refine ⟨maximalRegularityDuhamelMap (I := I) (M := M) a hT u₀ gforce, rfl, ?_, ?_, ?_⟩
   · conv_lhs => rw [hfix]
     exact nemytskiiHa1_truncated_eqOn_ball (I := I) (M := M) hR hN
-      (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u₀ gforce) hstay
-  · exact maxRegDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
+      (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u₀ gforce) hstay
+  · exact maximalRegularityDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
       hT u₀ gforce
-  · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M)
+  · rw [maximalRegularityDuhamelMap_timeDeriv_eq (I := I) (M := M)
       (h_compact := h_compact) (a := a) (T := T) hT u₀ gforce]
     exact congrArg₂ (· + ·) rfl hfix
 

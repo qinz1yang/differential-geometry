@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -32,7 +32,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 
 namespace NetLimitData
 
-noncomputable def decodedCompPts (g : SmoothRiemannianMetric I M)
+noncomputable def decodedCompPoints (g : SmoothRiemannianMetric I M)
     {ι : Type*} (center : ι -> M)
     (B : ι -> Nat -> E -> E) (A : ι -> Nat -> E -> E) :
     Nat -> Nat -> M -> ι -> M :=
@@ -46,7 +46,7 @@ theorem hatPOUDataTwo
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (rho :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -99,7 +99,7 @@ theorem exists_hat_radius
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (rho :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -121,7 +121,7 @@ theorem exists_hat_radius
         (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
           (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
           Set (X.obj (L.φ n)).M)))
-    (ptsSeq : Nat → Nat → (X.obj (L.φ n)).M → Fin (pb.A r) →
+    (pointsSeq : Nat → Nat → (X.obj (L.φ n)).M → Fin (pb.A r) →
       (X.obj (L.φ n)).M)
     (hconn :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -153,7 +153,7 @@ theorem exists_hat_radius
             x ∈ (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
               (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
               Set (X.obj (L.φ n)).M) →
-              dist x (ptsSeq a b x gamma) < eps) :
+              dist x (pointsSeq a b x gamma) < eps) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
     letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -181,7 +181,7 @@ theorem exists_hat_radius
       (∀ a b : Nat, ∀ x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n →
           ∀ gamma : Fin (pb.A r), rho gamma x ≠ 0 →
-            dist x (ptsSeq a b x gamma) < radSeq a b x) ∧
+            dist x (pointsSeq a b x gamma) < radSeq a b x) ∧
       ∀ eps : Real, eps > 0 → ∃ N : Nat,
         ∀ a : Nat, a ≥ N → ∀ b : Nat, b ≥ N → ∀ x : (X.obj (L.φ n)).M,
           x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n →
@@ -211,7 +211,7 @@ theorem exists_hat_radius
       (X := (X.obj (L.φ n)).M) (ι := Fin (pb.A r))
       (s := NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n)
       (target := fun x : (X.obj (L.φ n)).M => x)
-      (μSeq := fun _a _b x gamma => rho gamma x) (ptsSeq := ptsSeq) (by
+      (μSeq := fun _a _b x gamma => rho gamma x) (pointsSeq := pointsSeq) (by
         intro gamma eps heps
         obtain ⟨N, hN⟩ := hpts gamma eps heps
         refine ⟨N, fun a ha b hb x hx hne => ?_⟩
@@ -223,5 +223,5 @@ theorem exists_hat_radius
 
 end NetLimitData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

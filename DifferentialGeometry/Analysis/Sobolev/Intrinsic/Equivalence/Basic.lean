@@ -105,27 +105,27 @@ private lemma chartPushedExt_eq_chartPushed_on_target
 omit [IsManifold I ∞ M] in
 private lemma image_toEuclidean_chart_tsupport_isCompact
     [CompactSpace M] {f : M → ℝ} {α : M}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     IsCompact ((toEuclidean (E := E)) ''
       ((extChartAt I α) '' (tsupport f))) := by
   have hKE := image_extChartAt_tsupport_compact_subset_target
-    (I := I) (M := M) (u := f) (α := α) hf_supp
+    (I := I) (M := M) (u := f) (α := α) hf_support
   exact hKE.1.image (toEuclidean (E := E)).continuous
 
 omit [IsManifold I ∞ M] in
 private lemma image_toEuclidean_chart_tsupport_subset_chartTargetEuclid
     {f : M → ℝ} {α : M}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport f)) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
   image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
-    (I := I) (M := M) (u := f) (α := α) hf_supp
+    (I := I) (M := M) (u := f) (α := α) hf_support
 
 omit [IsManifold I ∞ M] in
 private lemma chartPushedExt_eq_zero_off_image_tsupport
     (α : M) {f : M → ℝ}
-    (_hf_supp : tsupport f ⊆ (chartAt H α).source) {y : EuclN E}
+    (_hf_support : tsupport f ⊆ (chartAt H α).source) {y : EuclN E}
     (hy_off : y ∉ (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport f))) :
     chartPushedExt (I := I) (M := M) α f y = 0 := by
@@ -141,30 +141,30 @@ private lemma chartPushedExt_eq_zero_off_image_tsupport
       hy_symm]
     by_contra hne
     apply hy_off
-    have hsymm_in_supp : (extChartAt I α).symm z ∈ tsupport f :=
+    have hsymm_in_support : (extChartAt I α).symm z ∈ tsupport f :=
       subset_tsupport _ (Function.mem_support.mpr hne)
     have hz_eq : (extChartAt I α) ((extChartAt I α).symm z) = z :=
       (extChartAt I α).right_inv hz_target
-    refine ⟨z, ⟨(extChartAt I α).symm z, hsymm_in_supp, hz_eq⟩, hzy⟩
+    refine ⟨z, ⟨(extChartAt I α).symm z, hsymm_in_support, hz_eq⟩, hzy⟩
   · exact chartPushedExt_apply_of_notMem_chartTargetEuclid (I := I) (M := M) α f hy_target
 
 omit [IsManifold I ∞ M] in
 private lemma hasCompactSupport_chartPushedExt
     [CompactSpace M] (α : M) {f : M → ℝ}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     HasCompactSupport (chartPushedExt (I := I) (M := M) α f) := by
   classical
   set K : Set (EuclN E) :=
     (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport f)) with hK_def
   have hK_compact : IsCompact K :=
     image_toEuclidean_chart_tsupport_isCompact
-      (I := I) (M := M) (f := f) (α := α) hf_supp
+      (I := I) (M := M) (f := f) (α := α) hf_support
   apply HasCompactSupport.of_support_subset_isCompact hK_compact
-  intro y hy_supp
+  intro y hy_support
   by_contra hyK
-  apply hy_supp
+  apply hy_support
   exact chartPushedExt_eq_zero_off_image_tsupport
-    (I := I) (M := M) α (f := f) hf_supp hyK
+    (I := I) (M := M) α (f := f) hf_support hyK
 
 private lemma contDiffOn_chartPushedExt_formula
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -210,7 +210,7 @@ private lemma contDiffAt_chartPushedExt_of_mem_target
 omit [IsManifold I ∞ M] in
 private lemma contDiffAt_chartPushedExt_of_notMem_image_tsupport_compact
     (α : M) {f : M → ℝ}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source)
+    (hf_support : tsupport f ⊆ (chartAt H α).source)
     (hf_compact : IsCompact (tsupport f)) {y : EuclN E}
     (hy_off : y ∉ (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (tsupport f))) :
@@ -222,7 +222,7 @@ private lemma contDiffAt_chartPushedExt_of_notMem_image_tsupport_compact
     have hsub : tsupport f ⊆ (extChartAt I α).source := by
       intro x hx
       rw [extChartAt_source_eq_chartAt_source (I := I) (M := M)]
-      exact hf_supp hx
+      exact hf_support hx
     have hcont : ContinuousOn (extChartAt I α) (tsupport f) :=
       (continuousOn_extChartAt α).mono hsub
     have h1 : IsCompact ((extChartAt I α) '' (tsupport f)) :=
@@ -234,12 +234,12 @@ private lemma contDiffAt_chartPushedExt_of_notMem_image_tsupport_compact
   apply ContDiffAt.congr_of_eventuallyEq (f := fun _ : EuclN E => (0 : ℝ)) contDiffAt_const
   filter_upwards [hK_compl_open.mem_nhds hy_compl] with z hz
   exact chartPushedExt_eq_zero_off_image_tsupport
-    (I := I) (M := M) α (f := f) hf_supp hz
+    (I := I) (M := M) α (f := f) hf_support hz
 
 private lemma contDiff_chartPushedExt
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     [I.Boundaryless]
-    (hf_supp : tsupport f ⊆ (chartAt H α).source)
+    (hf_support : tsupport f ⊆ (chartAt H α).source)
     (hf_compact : IsCompact (tsupport f)) :
     ContDiff ℝ ∞ (chartPushedExt (I := I) (M := M) α f) := by
   classical
@@ -252,9 +252,9 @@ private lemma contDiff_chartPushedExt
       intro hy_in
       apply hy_target
       exact image_toEuclidean_chart_tsupport_subset_chartTargetEuclid
-        (I := I) (M := M) (f := f) (α := α) hf_supp hy_in
+        (I := I) (M := M) (f := f) (α := α) hf_support hy_in
     exact contDiffAt_chartPushedExt_of_notMem_image_tsupport_compact
-      (I := I) (M := M) α (f := f) hf_supp hf_compact hy_off
+      (I := I) (M := M) α (f := f) hf_support hf_compact hy_off
 
 omit [IsManifold I ∞ M] in
 private lemma chartTargetEuclid_isOpen' [I.Boundaryless] (α : M) :
@@ -273,15 +273,15 @@ private lemma memLp_chartPushedExt
   set f : M → ℝ := fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x with hf_def
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f :=
     ((ρ α : C^∞⟮I, M; ℝ⟯).contMDiff).mul hu
-  have hf_supp : tsupport f ⊆ (chartAt H α).source := by
+  have hf_support : tsupport f ⊆ (chartAt H α).source := by
     have h1 : tsupport f ⊆ tsupport ((ρ α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
       apply tsupport_mul_subset_left
     exact h1.trans (hρ α)
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
   have hsmooth : ContDiff ℝ ∞ (chartPushedExt (I := I) (M := M) α f) :=
-    contDiff_chartPushedExt (I := I) (M := M) α hf_smooth hf_supp hf_compact
+    contDiff_chartPushedExt (I := I) (M := M) α hf_smooth hf_support hf_compact
   have hcs : HasCompactSupport (chartPushedExt (I := I) (M := M) α f) :=
-    hasCompactSupport_chartPushedExt (I := I) (M := M) α hf_supp
+    hasCompactSupport_chartPushedExt (I := I) (M := M) α hf_support
   have hmemLp_global : MemLp (chartPushedExt (I := I) (M := M) α f) p volume :=
     hsmooth.continuous.memLp_of_hasCompactSupport hcs
   exact hmemLp_global.restrict _
@@ -301,15 +301,15 @@ private lemma fderiv_chartPushedExt_memLp
   set f : M → ℝ := fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x with hf_def
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f :=
     ((ρ α : C^∞⟮I, M; ℝ⟯).contMDiff).mul hu
-  have hf_supp : tsupport f ⊆ (chartAt H α).source := by
+  have hf_support : tsupport f ⊆ (chartAt H α).source := by
     have h1 : tsupport f ⊆ tsupport ((ρ α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
       apply tsupport_mul_subset_left
     exact h1.trans (hρ α)
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
   have hsmooth : ContDiff ℝ ∞ (chartPushedExt (I := I) (M := M) α f) :=
-    contDiff_chartPushedExt (I := I) (M := M) α hf_smooth hf_supp hf_compact
+    contDiff_chartPushedExt (I := I) (M := M) α hf_smooth hf_support hf_compact
   have hcs : HasCompactSupport (chartPushedExt (I := I) (M := M) α f) :=
-    hasCompactSupport_chartPushedExt (I := I) (M := M) α hf_supp
+    hasCompactSupport_chartPushedExt (I := I) (M := M) α hf_support
   have hderiv_smooth : ContDiff ℝ ∞
       (fun x => (fderiv ℝ (chartPushedExt (I := I) (M := M) α f) x)
         (EuclideanSpace.single i 1)) :=
@@ -334,13 +334,13 @@ private lemma memW1p_chartPushedExt
   set f : M → ℝ := fun x : M => (ρ α : C^∞⟮I, M; ℝ⟯) x * u x with hf_def
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f :=
     ((ρ α : C^∞⟮I, M; ℝ⟯).contMDiff).mul hu
-  have hf_supp : tsupport f ⊆ (chartAt H α).source := by
+  have hf_support : tsupport f ⊆ (chartAt H α).source := by
     have h1 : tsupport f ⊆ tsupport ((ρ α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
       apply tsupport_mul_subset_left
     exact h1.trans (hρ α)
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
   have hsmooth : ContDiff ℝ ∞ (chartPushedExt (I := I) (M := M) α f) :=
-    contDiff_chartPushedExt (I := I) (M := M) α hf_smooth hf_supp hf_compact
+    contDiff_chartPushedExt (I := I) (M := M) α hf_smooth hf_support hf_compact
   refine ⟨?_, ?_⟩
   · exact memLp_chartPushedExt (I := I) (M := M) α ρ hρ hu p
   · intro i
@@ -398,7 +398,7 @@ theorem MemWkpChart_of_contMDiff
         (chartTargetEuclid (I := I) (M := M) α) :=
       memW1p_chartPushed_of_contMDiff (I := I) (M := M) α hu hp
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_zero]
-    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       (d := Module.finrank ℝ E) hMW1p i
 
 theorem MemW1pIntrinsic_of_contMDiff_explicit

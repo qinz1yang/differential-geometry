@@ -157,7 +157,7 @@ theorem tensorInnerPointwise_succ_eq_parseval_sum_slot0
                 (unitZeroSec (I := I) (M := M) x))) (V a x)))) := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, _hsq, _hexp, _hriemannianFiberNormSq⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g s x
+    exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g s x
   have hn' : n = Module.finrank ℝ E := hn
   subst hn'
   set K₀ : Fin 0 → Fin (Module.finrank ℝ E) := fun j => j.elim0

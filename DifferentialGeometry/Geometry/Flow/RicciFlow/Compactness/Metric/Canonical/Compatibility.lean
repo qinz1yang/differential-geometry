@@ -14,7 +14,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -32,9 +32,9 @@ omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
 theorem metric_converges_on_compact_sets
     (D : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
-    (hsrc : SrcSigma (pointedCGHMapsOfManifold (I := I) X
+    (hsrc : SourceIsSigmaCompact (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps))
-    (htgt : TgtSigma (pointedCGHMapsOfManifold (I := I) X
+    (htgt : TargetIsSigmaCompact (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps)) :
     let mc := D.compactness
     let Phi := pointedCGHMapsOfManifold (I := I) X
@@ -56,9 +56,9 @@ theorem metric_converges_on_compact_sets
          letI : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
             sourceDomSigmaOf (I := I) Phi k (hsrc k)
          metricDerivNormSupOn (I := I) (sourceCompactSet (I := I) Phi k K) 0
-           (srcMetric (I := I) Phi hsrc htgt k 0)
-           (resSrc (I := I) Phi k mc.limit.metric)
-           (refRes (I := I) Phi mc.limit.metric k) < eps) := by
+           (sourceMetric (I := I) Phi hsrc htgt k 0)
+           (sourceMetricRestriction (I := I) Phi (k := k) mc.limit.metric)
+           (sourceMetricRestriction (I := I) Phi mc.limit.metric k) < eps) := by
   dsimp only
   intro K hK eps heps
   obtain ⟨k0, hk0⟩ := D.compactness.convergence.metrics.converges K hK 0 eps heps
@@ -71,9 +71,9 @@ omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
 theorem metric_uniformly_equivalent
     (D : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
-    (hsrc : SrcSigma (pointedCGHMapsOfManifold (I := I) X
+    (hsrc : SourceIsSigmaCompact (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps))
-    (htgt : TgtSigma (pointedCGHMapsOfManifold (I := I) X
+    (htgt : TargetIsSigmaCompact (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps)) :
     let mc := D.compactness
     let Phi := pointedCGHMapsOfManifold (I := I) X
@@ -92,8 +92,8 @@ theorem metric_uniformly_equivalent
         sourceDomSmooth (I := I) Phi k
       MetricUniformEquivalentOn (I := I)
         (Set.univ : Set (SourceDomain (I := I) Phi k))
-        (refRes (I := I) Phi mc.limit.metric k)
-        (srcMetric (I := I) Phi hsrc htgt k 0) Crel := by
+        (sourceMetricRestriction (I := I) Phi mc.limit.metric k)
+        (sourceMetric (I := I) Phi hsrc htgt k 0) Crel := by
   dsimp only
   obtain ⟨Crel, hCrel, hrel⟩ := D.uniformly_equivalent
   refine ⟨Crel, hCrel, fun k => ?_⟩
@@ -105,9 +105,9 @@ omit [I.Boundaryless]
   [NeZero (Module.finrank ℝ E)] in
 theorem metric_covariant_derivatives_bounded
     (D : CanonicalMetricCompactness (I := I) (X.atZero (I := I)))
-    (hsrc : SrcSigma (pointedCGHMapsOfManifold (I := I) X
+    (hsrc : SourceIsSigmaCompact (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps))
-    (htgt : TgtSigma (pointedCGHMapsOfManifold (I := I) X
+    (htgt : TargetIsSigmaCompact (pointedCGHMapsOfManifold (I := I) X
       D.compactness.limit D.compactness.subseq D.compactness.maps)) :
     let mc := D.compactness
     let Phi := pointedCGHMapsOfManifold (I := I) X
@@ -129,8 +129,8 @@ theorem metric_covariant_derivatives_bounded
         sourceDomSigmaOf (I := I) Phi k (hsrc k)
       forall y : SourceDomain (I := I) Phi k,
         metricCovDerivNorm (I := I) q
-          (srcMetric (I := I) Phi hsrc htgt k 0)
-          (refRes (I := I) Phi mc.limit.metric k) y <= Cq := by
+          (sourceMetric (I := I) Phi hsrc htgt k 0)
+          (sourceMetricRestriction (I := I) Phi mc.limit.metric k) y <= Cq := by
   dsimp only
   intro q
   obtain ⟨Cq, hCq, hcov⟩ := D.covariant_derivatives_bounded q
@@ -141,5 +141,5 @@ theorem metric_covariant_derivatives_bounded
 
 end CanonicalMetricCompactness
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

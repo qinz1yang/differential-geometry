@@ -370,10 +370,10 @@ theorem exists_flat_dense
     rw [hsum, Pi.add_apply, hzt, hct]
   have hwD : Tendsto (fun n => (w n).deriv) atTop (𝓝 u.deriv) := by
     simpa only [hwderiv, add_zero] using hz.add hc0
-  have hwinit : ∀ n, (w n).init = u.init := by
+  have hwinit : ∀ n, (w n).initial = u.initial := by
     intro n
-    rw [show (w n).init = f n 0 by
-      simp only [w, timeH1.ofContDiffOn, timeH1.init_mk]]
+    rw [show (w n).initial = f n 0 by
+      simp only [w, timeH1.ofContDiffOn, timeH1.initial_mk]]
     rw [hf0 n, timeH1.toFun_zero]
   have hw : Tendsto w atTop (𝓝 u) := by
     rw [tendsto_iff_norm_sub_tendsto_zero]
@@ -382,7 +382,7 @@ theorem exists_flat_dense
     have hnorm : ∀ n, ‖w n - u‖ = ‖(w n).deriv - u.deriv‖ := by
       intro n
       have hsquare := timeH1.norm_sq_eq (w n - u)
-      change ‖w n - u‖ ^ 2 = ‖(w n).init - u.init‖ ^ 2 +
+      change ‖w n - u‖ ^ 2 = ‖(w n).initial - u.initial‖ ^ 2 +
         ‖(w n).deriv - u.deriv‖ ^ 2 at hsquare
       rw [hwinit n, sub_self, norm_zero] at hsquare
       norm_num at hsquare

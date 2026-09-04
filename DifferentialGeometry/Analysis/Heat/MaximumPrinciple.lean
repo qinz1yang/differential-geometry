@@ -367,13 +367,13 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
   set α : M := x_max with hα_def
   set ftilde : E → ℝ := scalarOnE (I := I) α f with hftilde_def
   set y₀ : E := extChartAt I α x_max with hy₀_def
-  have hx_in_src : x_max ∈ (chartAt H α).source := mem_chart_source H α
-  have hx_in_extSrc : x_max ∈ (extChartAt I α).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_in_src
+  have hx_in_source : x_max ∈ (chartAt H α).source := mem_chart_source H α
+  have hx_in_extSource : x_max ∈ (extChartAt I α).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_in_source
   have hx_in_baseSet : x_max ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_in_src
+    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_in_source
   have hy₀_target : y₀ ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hx_in_extSrc
+    (extChartAt I α).map_source hx_in_extSource
   have h_target_open : IsOpen (extChartAt I α).target :=
     isOpen_extChartAt_target (I := I) α
   have hy₀_target_nhds : (extChartAt I α).target ∈ 𝓝 y₀ :=
@@ -392,7 +392,7 @@ private lemma chartHessianTensor_quad_form_nonpos_at_max
     change f ((extChartAt I α).symm y) ≤ ftilde y₀
     have h1 : ftilde y₀ = f x_max := by
       change f ((extChartAt I α).symm y₀) = f x_max
-      rw [(extChartAt I α).left_inv hx_in_extSrc]
+      rw [(extChartAt I α).left_inv hx_in_extSource]
     rw [h1]
     exact h_max _
   have h_partial_zero : ∀ k : Fin (Module.finrank ℝ E),
@@ -528,7 +528,7 @@ theorem weak_maximum_principle_of_closed
       HasDerivAt (fun s : ℝ => u s x) (Du t x) t)
     (h_ineq : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       Du t x ≤ ΔG (I := I) g ⟨u t, hu_smooth t⟩ x)
-    (h_init : ∀ x : M, u 0 x ≤ 0) :
+    (h_initial : ∀ x : M, u 0 x ≤ 0) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ x : M, u t x ≤ 0 := by
   classical
   have key : ∀ {δ : ℝ}, 0 < δ → ∀ {η : ℝ}, 0 < η → η < T →
@@ -565,7 +565,7 @@ theorem weak_maximum_principle_of_closed
       by_contra h_neg
       push Not at h_neg
       have hp_t_zero : p₀.1 = 0 := le_antisymm h_neg hp₀_mem.1.1
-      have hu0 : u 0 p₀.2 ≤ 0 := h_init p₀.2
+      have hu0 : u 0 p₀.2 ≤ 0 := h_initial p₀.2
       have hv_at : v_δ p₀ = u p₀.1 p₀.2 - δ * (p₀.1 + 1) := rfl
       have : v_δ p₀ ≤ -δ := by
         rw [hv_at, hp_t_zero]

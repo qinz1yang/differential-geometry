@@ -161,7 +161,7 @@ theorem tensor0S_eq_sum_slot0_uncurry
             (tensor0SCurry (I := I) (M := M) s x T (e a)) m := by
   classical
   obtain ⟨n, e, _bse, hn, _hbse, horth, _hpars, hv_expand, _hrepr⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g s x
+    exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g s x
   refine ⟨n, e, hn, horth, fun T w m => ?_⟩
   exact tensor0S_uncurry_cons_eval_orthonormal (I := I) (M := M) g T e hv_expand w m
 
@@ -182,7 +182,7 @@ theorem tensorRS_section_eq_sum_slot0Curry_uncurry
               (coframeS (I := I) (M := M) g x 0 e K₀)) m := by
   classical
   obtain ⟨n, e, _bse, hn, _hbse, horth, _hpars, hv_expand, _hrepr⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g s x
+    exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g s x
   refine ⟨n, e, fun k => k.elim0, hn, horth, fun T w m => ?_⟩
   exact tensorRS_section_uncurry_cons_eval_slot0Curry (I := I) (M := M) g s x e
     (fun k => k.elim0) hv_expand T w m

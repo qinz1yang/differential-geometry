@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -101,24 +101,24 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
   have hε0 : 0 < ε := D₁.forward.eps_pos
   have hΨcont : ContinuousOn (Ψ : M → P) KG :=
     Ψ.contMDiffOn_toFun.continuousOn.mono (fun y hy => hsrcU (hKGU hy))
-  have hΨKG_cpt : IsCompact ((Ψ : M → P) '' KG) := hKGcpt.image_of_continuousOn hΨcont
-  have hΨKG_tgt : (Ψ : M → P) '' KG ⊆ Ψ.symm.source := by
+  have hΨKG_compact : IsCompact ((Ψ : M → P) '' KG) := hKGcpt.image_of_continuousOn hΨcont
+  have hΨKG_target : (Ψ : M → P) '' KG ⊆ Ψ.symm.source := by
     rintro _ ⟨y, hy, rfl⟩
     exact Ψ.map_source' (hsrcU (hKGU hy))
   obtain ⟨Pr, Gr, hPGr, hGrinner, hPrapply⟩ :=
-    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Ψ.symm hΨKG_cpt hΨKG_tgt g h'
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Ψ.symm hΨKG_compact hΨKG_target g h'
   have hKimg : (Ψ : M → P) '' K ⊆ (Ψ : M → P) '' KG :=
     Set.image_mono (fun y hy => hVKG (hKV hy))
   have hVsrc : (V : Set M) ⊆ Ψ.source := fun y hy => hsrcU (hKGU (hVKG hy))
   set VP : Opens P := ⟨(Ψ : M → P) '' (V : Set M), image_opens_isOpen (I := I) Ψ hVsrc⟩
     with hVPdef
   have hVPKG : (VP : Set P) ⊆ (Ψ : M → P) '' KG := Set.image_mono hVKG
-  have hΨKG_tgt' : (Ψ : M → P) '' KG ⊆ Φ'.symm.source := by
+  have hΨKG_target' : (Ψ : M → P) '' KG ⊆ Φ'.symm.source := by
     rintro _ ⟨y, hy, rfl⟩
     have : (Φ : M → N) y ∈ (K₂ : Set N) := himg (Set.mem_image_of_mem _ (hKGU hy))
     exact Φ'.map_source' (hK₂ this)
   obtain ⟨P₂r, G₂r, hPG₂r, hG₂rinner, hP₂rapply⟩ :=
-    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ'.symm hΨKG_cpt hΨKG_tgt' h h'
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ'.symm hΨKG_compact hΨKG_target' h h'
   have hε'0' : 0 < ε' := D₂.forward.eps_pos
   set ε₀' : ℝ := ε' / (1 - ε') with hε₀'def
   obtain ⟨h1ε', hε₀'0', hε₀'1', hε'ε₀'', hε₀'2ε''⟩ :=
@@ -154,7 +154,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
   have hc0Tr : ∀ y ∈ (VP : Set P),
       metricTensorErrorNorm (I := I) P₂r h' y ≤ ε' := by
     intro y hyVP
-    obtain ⟨hyK₂, hyU₁img, hyt⟩ := hVPimgK₂ y hyVP
+    obtain ⟨hyK₂, hyU₁image, hyt⟩ := hVPimgK₂ y hyVP
     have hyKG : y ∈ (Ψ : M → P) '' KG := hVPKG hyVP
     have hyΦ'K₂ : y ∈ (Φ' : N → P) '' (K₂ : Set N) := by
       refine ⟨(Φ'.symm : P → N) y, hyK₂, ?_⟩
@@ -184,13 +184,13 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
         = mfderiv I I (Φ.symm : N → M) ((Φ'.symm : P → N) y)
             (mfderiv I I (Φ'.symm : P → N) y v) := by
     intro y hyVP v
-    obtain ⟨hyK₂, hyU₁img, hyt⟩ := hVPimgK₂ y hyVP
+    obtain ⟨hyK₂, hyU₁image, hyt⟩ := hVPimgK₂ y hyVP
     have hΦ'sd : MDifferentiableAt I I (Φ'.symm : P → N) y :=
       (Φ'.symm.contMDiffOn_toFun.contMDiffAt
         (Φ'.symm.open_source.mem_nhds hyt)).mdifferentiableAt
         (by decide : (∞ : WithTop ℕ∞) ≠ 0)
     have hΦst : (Φ'.symm : P → N) y ∈ Φ.target := by
-      obtain ⟨m, hmU, hmeq⟩ := hyU₁img
+      obtain ⟨m, hmU, hmeq⟩ := hyU₁image
       rw [← hmeq]
       exact Φ.map_source' (hU₁ hmU)
     have hΦsd : MDifferentiableAt I I (Φ.symm : N → M) ((Φ'.symm : P → N) y) :=
@@ -206,7 +206,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
       δ₁r y v = δN₁r ((Φ'.symm : P → N) y)
         (fun q => mfderiv I I (Φ'.symm : P → N) y (v q)) := by
     intro y hyVP v
-    obtain ⟨hyK₂, hyU₁img, hyt⟩ := hVPimgK₂ y hyVP
+    obtain ⟨hyK₂, hyU₁image, hyt⟩ := hVPimgK₂ y hyVP
     have hyKG : y ∈ (Ψ : M → P) '' KG := hVPKG hyVP
     have hL : δ₁r y v = Pr y v - P₂r y v := by
       simp [hδ₁rdef, ContMDiffSection.coe_sub, Pi.sub_apply]
@@ -218,7 +218,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
               (fun q => mfderiv I I (Φ'.symm : P → N) y (v q)) := by
       simp [hδN₁rdef, ContMDiffSection.coe_sub, Pi.sub_apply]
     rw [hL, hR, hPrapply y hyKG v, hP₂rapply y hyKG v,
-      D₁.reverse.pullback_apply ((Φ'.symm : P → N) y) hyU₁img
+      D₁.reverse.pullback_apply ((Φ'.symm : P → N) y) hyU₁image
         (fun q => mfderiv I I (Φ'.symm : P → N) y (v q)),
       Tensor0SBundle.metricTensorField_apply]
     rw [hchainr y hyVP (v 0), hchainr y hyVP (v 1)]
@@ -246,7 +246,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
         = D₂.forward.pullback ((Φ'.symm : P → N) y)
             (fun q => mfderiv I I (Φ'.symm : P → N) y (v q)) := by
     intro y hyVP v
-    obtain ⟨hyK₂, hyU₁img, hyt⟩ := hVPimgK₂ y hyVP
+    obtain ⟨hyK₂, hyU₁image, hyt⟩ := hVPimgK₂ y hyVP
     have hfg : (Φ' : N → P) ∘ (Φ'.symm : P → N) =ᶠ[nhds y] id := by
       filter_upwards [Φ'.open_target.mem_nhds hyt] with z hz
       exact Φ'.right_inv' hz
@@ -296,7 +296,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) h' y (2 + r)
         (iterCov (I := I) h' 2 δ₀r r y)) ≤ ε₀' := by
     intro y hyVP r hr0 hrp
-    obtain ⟨hyK₂, hyU₁img, hyt⟩ := hVPimgK₂ y hyVP
+    obtain ⟨hyK₂, hyU₁image, hyt⟩ := hVPimgK₂ y hyVP
     have hyΦ'K₂ : y ∈ (Φ' : N → P) '' (K₂ : Set N) :=
       ⟨(Φ'.symm : P → N) y, hyK₂, Φ'.right_inv' hyt⟩
     obtain ⟨r', rfl⟩ : ∃ r', r = r' + 1 := ⟨r - 1, by omega⟩
@@ -332,7 +332,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) G₂r y (2 + k)
         (iterCov (I := I) G₂r 2 δ₁r k y)) ≤ ε := by
     intro hNVP y hyVP k hkp
-    obtain ⟨hyK₂, hyU₁img, hyt⟩ := hVPimgK₂ y hyVP
+    obtain ⟨hyK₂, hyU₁image, hyt⟩ := hVPimgK₂ y hyVP
     obtain ⟨basis, hON⟩ :=
       DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) G₂r y
     have hinv := DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal
@@ -341,7 +341,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
     rw [hδ₁rtow hNVP k y hyVP]
     rcases Nat.eq_zero_or_pos k with hk0 | hk1
     · subst hk0
-      have hc0 := D₁.reverse.c0_small ((Φ'.symm : P → N) y) hyU₁img
+      have hc0 := D₁.reverse.c0_small ((Φ'.symm : P → N) y) hyU₁image
       calc tensor02CovDerivNormWith (I := I) 0 δN₁r h h ((Φ'.symm : P → N) y)
           = metricTensorErrorNorm (I := I) D₁.reverse.pullback h
               ((Φ'.symm : P → N) y) := by
@@ -361,7 +361,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
               simp
             unfold tensor02CovDerivNormWith
             rw [hfield]
-        _ ≤ ε := D₁.reverse.cov_deriv_small k hk1 hkp ((Φ'.symm : P → N) y) hyU₁img
+        _ ≤ ε := D₁.reverse.cov_deriv_small k hk1 hkp ((Φ'.symm : P → N) y) hyU₁image
   have hCpr := hC (M' := P) (u := (VP : Set P)) VP.2 h' G₂r
     δ₀r δ₁r ε₀' ε hε₀'0 hε₀'1 hε0.le
     hequivF5r
@@ -535,7 +535,7 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
     { eps_pos := hε''0
       eps_lt_one := hub
       smoothOn := Ψ.symm.contMDiffOn_toFun.mono
-        (fun y hy => hΨKG_tgt (hKimg hy))
+        (fun y hy => hΨKG_target (hKimg hy))
       pullback := Pr
       pullback_apply := fun y hy v => hPrapply y (hKimg hy) v
       c0_small := fun y hy => le_trans (hc0Pr y hy) harithc0r
@@ -544,5 +544,5 @@ theorem PartialDiffeomorphMetricApproximation.trans_reverse
 
 end Composition
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

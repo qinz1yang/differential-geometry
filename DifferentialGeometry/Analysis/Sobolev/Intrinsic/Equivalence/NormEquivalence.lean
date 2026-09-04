@@ -78,7 +78,7 @@ private lemma chartInvGramMatrix_l1Sum_continuousOn
           (I := I) g α x ij.1 ij.2)
       (trivializationAt E (TangentSpace I) α).baseSet :=
     h1.continuousOn
-  have h_cont_src : ContinuousOn
+  have h_cont_source : ContinuousOn
       (fun x : M =>
         DifferentialGeometry.Geometry.Operator.chartInvGramMatrix
           (I := I) g α x ij.1 ij.2)
@@ -91,7 +91,7 @@ private lemma chartInvGramMatrix_l1Sum_continuousOn
       intro y hy
       rw [DifferentialGeometry.Integral.Measure.trivializationAt_baseSet_eq_chartAt_source]
       exact hy)
-  exact h_cont_src.abs
+  exact h_cont_source.abs
 
 private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -356,14 +356,14 @@ private lemma gramInvL1SumSupOnPouTsupport_nonneg
     have h_cont : ContinuousOn
         (chartInvGramMatrixL1Sum (I := I) (M := M) g α) Kα :=
       (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hKα_sub
-    set hImg :=
+    set hImage :=
       (hKα_compact.image_of_continuousOn h_cont).bddAbove
     obtain ⟨x₀, hx₀⟩ := hKα_ne
     have hx₀_val :
         chartInvGramMatrixL1Sum (I := I) (M := M) g α x₀ ∈
         (chartInvGramMatrixL1Sum (I := I) (M := M) g α) '' Kα :=
       ⟨x₀, hx₀, rfl⟩
-    have h_le := hImg.choose_spec hx₀_val
+    have h_le := hImage.choose_spec hx₀_val
     have h_val_nn :
         (0 : ℝ) ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α x₀ :=
       chartInvGramMatrix_l1Sum_nonneg (I := I) (M := M) g α x₀
@@ -392,14 +392,14 @@ private lemma chartInvGramMatrix_l1Sum_le_sup
   have h_cont : ContinuousOn
       (chartInvGramMatrixL1Sum (I := I) (M := M) g α) Kα :=
     (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hKα_sub
-  set hImg :=
+  set hImage :=
     (hKα_compact.image_of_continuousOn h_cont).bddAbove
-  exact hImg.choose_spec ⟨x, hx, rfl⟩
+  exact hImage.choose_spec ⟨x, hx, rfl⟩
 
 private lemma contDiff_chartSmoothExt_local
     [I.Boundaryless]
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source)
+    (hf_support : tsupport f ⊆ (chartAt H α).source)
     (hf_compact : IsCompact (tsupport f)) :
     ContDiff ℝ ∞
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartSmoothExt
@@ -469,7 +469,7 @@ private lemma contDiff_chartSmoothExt_local
           intro x hx
           rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
             (I := I) (M := M)]
-          exact hf_supp hx)
+          exact hf_support hx)
       have h1 : IsCompact ((extChartAt I α) '' (tsupport f)) :=
         hf_compact.image_of_continuousOn h_extChart_cont
       exact h1.image (toEuclidean (E := E)).continuous
@@ -480,7 +480,7 @@ private lemma contDiff_chartSmoothExt_local
       have hxsource : x ∈ (extChartAt I α).source := by
         rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
           (I := I) (M := M)]
-        exact hf_supp hx
+        exact hf_support hx
       exact ⟨extChartAt I α x, (extChartAt I α).map_source hxsource, rfl⟩
     have hy_off_K : y ∉ K := by
       intro hy_in
@@ -505,7 +505,7 @@ private lemma contDiff_chartSmoothExt_pou_mul_local
     : C^∞⟮I, M; ℝ⟯) y * u y with hf_def
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff.mul hu
-  have hf_supp : tsupport f ⊆ (chartAt H α).source := by
+  have hf_support : tsupport f ⊆ (chartAt H α).source := by
     have h1 : tsupport f ⊆ tsupport
         ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
       have h_eq : f = (fun y : M => ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
@@ -517,7 +517,7 @@ private lemma contDiff_chartSmoothExt_pou_mul_local
     exact h1.trans
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
-  exact contDiff_chartSmoothExt_local (I := I) (M := M) α hf_smooth hf_supp hf_compact
+  exact contDiff_chartSmoothExt_local (I := I) (M := M) α hf_smooth hf_support hf_compact
 
 private lemma gNormGrad_pou_mul_le_sqrt_partial_sum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
@@ -608,7 +608,7 @@ private lemma gNormGrad_pou_mul_le_indicator_sqrt
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f := ρ.contMDiff.mul hu
   by_cases hx_pou : x ∈ tsupport ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ)
   · exact gNormGrad_pou_mul_le_sqrt_partial_sum (I := I) (M := M) g α hu hx_pou
-  · have hx_supp_f : x ∉ tsupport f := by
+  · have hx_support_f : x ∉ tsupport f := by
       intro hx_in
       apply hx_pou
       have h_subset : tsupport f ⊆ tsupport ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
@@ -618,7 +618,7 @@ private lemma gNormGrad_pou_mul_le_indicator_sqrt
         exact tsupport_smul_subset_left
           (f := fun y : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) y) (g := u)
       exact h_subset hx_in
-    rw [gNormGrad_eq_zero_of_notMem_tsupport (I := I) (M := M) g hf_smooth hx_supp_f]
+    rw [gNormGrad_eq_zero_of_notMem_tsupport (I := I) (M := M) g hf_smooth hx_support_f]
     have h1 : (0 : ℝ) ≤ Real.sqrt
         (gramInvL1SumSupOnPouTsupport (I := I) (M := M) g α) :=
       Real.sqrt_nonneg _
@@ -672,20 +672,20 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
     DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α with hρ_def
   set f : M → ℝ := fun y : M => (ρ : M → ℝ) y * u y with hf_def
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f := ρ.contMDiff.mul hu
-  have hf_supp : tsupport f ⊆ Kα := by
+  have hf_support : tsupport f ⊆ Kα := by
     have h_eq : f = (fun y : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) y • u y) := by
       funext y; rfl
     rw [h_eq]
     exact tsupport_smul_subset_left
       (f := fun y : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) y) (g := u)
-  have hf_supp_chart : tsupport f ⊆ (chartAt H α).source :=
-    hf_supp.trans hKα_sub
+  have hf_support_chart : tsupport f ⊆ (chartAt H α).source :=
+    hf_support.trans hKα_sub
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
   have h_gNormGrad_meas : Measurable (gNormGrad (I := I) (M := M) g f) := by
     have h_cont := continuous_g_norm_gradFun (I := I) (M := M) g hf_smooth
     exact h_cont.measurable
-  have h_gNormGrad_supp : tsupport (gNormGrad (I := I) (M := M) g f) ⊆ Kα := by
-    refine subset_trans ?_ hf_supp
+  have h_gNormGrad_support : tsupport (gNormGrad (I := I) (M := M) g f) ⊆ Kα := by
+    refine subset_trans ?_ hf_support
     apply closure_minimal _ (isClosed_tsupport _)
     intro y hy
     by_contra hy_off
@@ -693,12 +693,12 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
     have : gNormGrad (I := I) (M := M) g f y = 0 :=
       gNormGrad_eq_zero_of_notMem_tsupport (I := I) (M := M) g hf_smooth hy_off
     exact this
-  have h_step1 := hCbridge_bound h_gNormGrad_meas h_gNormGrad_supp
+  have h_step1 := hCbridge_bound h_gNormGrad_meas h_gNormGrad_support
   refine h_step1.trans ?_
   have h_chartSmoothExt_smooth : ContDiff ℝ ∞
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartSmoothExt
         (I := I) (M := M) α f) :=
-    contDiff_chartSmoothExt_local (I := I) (M := M) α hf_smooth hf_supp_chart hf_compact
+    contDiff_chartSmoothExt_local (I := I) (M := M) α hf_smooth hf_support_chart hf_compact
   have h_pt_bound : ∀ y : EuclN_E,
       DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α
         (gNormGrad (I := I) (M := M) g f) y ≤
@@ -806,7 +806,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
               ‖fderiv ℝ
                 (DifferentialGeometry.Analysis.Sobolev.Chart.chartSmoothExt
                   (I := I) (M := M) α f) y‖ := by ring
-      · have hz_off_f : z ∉ tsupport f := fun hin => hz_pou (hf_supp hin)
+      · have hz_off_f : z ∉ tsupport f := fun hin => hz_pou (hf_support hin)
         rw [gNormGrad_eq_zero_of_notMem_tsupport (I := I) (M := M) g hf_smooth hz_off_f]
         positivity
     · rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_notMem
@@ -899,7 +899,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
   have hChartTarget_open :=
     DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
       (I := I) (M := M) (α := α)
-  have h_supp_smooth_ext : tsupport
+  have h_support_smooth_ext : tsupport
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartSmoothExt
         (I := I) (M := M) α f) ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
@@ -911,7 +911,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
         intro x hx
         rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
           (I := I) (M := M)]
-        exact hf_supp_chart hx
+        exact hf_support_chart hx
       have h1 : IsCompact ((extChartAt I α) '' (tsupport f)) :=
         hf_compact.image_of_continuousOn h_cont
       exact h1.image (toEuclidean (E := E)).continuous
@@ -930,7 +930,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
     have hxsource : x ∈ (extChartAt I α).source := by
       rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)]
-      exact hf_supp_chart hx
+      exact hf_support_chart hx
     exact ⟨extChartAt I α x, (extChartAt I α).map_source hxsource, rfl⟩
   have h_compact_smooth_ext : HasCompactSupport
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartSmoothExt
@@ -942,7 +942,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
         intro x hx
         rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
           (I := I) (M := M)]
-        exact hf_supp_chart hx
+        exact hf_support_chart hx
       have h1 : IsCompact ((extChartAt I α) '' (tsupport f)) :=
         hf_compact.image_of_continuousOn h_cont
       exact h1.image (toEuclidean (E := E)).continuous
@@ -963,7 +963,7 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
         (I := I) (M := M) α)
     hChartTarget_open
     (h_chartSmoothExt_smooth)
-    h_compact_smooth_ext h_supp_smooth_ext
+    h_compact_smooth_ext h_support_smooth_ext
   have h_wkpNorm_le := wkpNorm_chartSmoothExt_pou_mul_le_wkpNormChart
     (I := I) (M := M) g α hp_one u
   have h_chain : ENNReal.ofReal Cbridge *

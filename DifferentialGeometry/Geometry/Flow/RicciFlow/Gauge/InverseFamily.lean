@@ -145,7 +145,7 @@ omit [FiniteDimensional ℝ E]
   [SigmaCompactSpace M]
   [T2Space M]
   [BoundarylessManifold I M] in
-theorem symm_gauge_vel
+theorem symm_gauge_velocity
     (Ψ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (W : ℝ → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (T : ℝ)
@@ -290,7 +290,7 @@ open DifferentialGeometry.PDE.DeTurck
 omit [CompactSpace M]
   [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-theorem gauge_vel_refl
+theorem gauge_velocity_refl
     (g g_bg : SmoothRiemannianMetric I M) (x : M) :
     Diffeomorph.pushforward (Diffeomorph.refl I M ∞)
         (deTurckVF (I := I)

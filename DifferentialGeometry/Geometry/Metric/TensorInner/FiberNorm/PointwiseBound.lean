@@ -308,7 +308,7 @@ lemma riemannianFiberNormSq_sum_le_pointwise
   unfold ambientFrameNormSq
   rw [pow_add]
 
-lemma riemannianFiberNormSq_eq_sum_witness
+lemma exists_riemannianFiberNormSq_eq_component_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)
     (T : TensorRSSpace r s I b) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I b),
@@ -332,7 +332,7 @@ lemma riemannianFiberNormSq_eq_sum_witness
   refine ⟨n, fun i => e i, rfl, ?_⟩
   rfl
 
-lemma riemannianFiberNormSq_le_pointwise_witness
+lemma exists_riemannianFiberNormSq_pointwise_bound
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)
     (T : TensorRSSpace r s I b) :
     ∃ (Ab : ℝ), 0 ≤ Ab ∧
@@ -341,7 +341,7 @@ lemma riemannianFiberNormSq_le_pointwise_witness
           (metricInnerOpNorm (I := I) (M := M) g b ^ (2 * r) *
             Ab ^ (r + s)) := by
   obtain ⟨n, e, _hn, h_eq⟩ :=
-    riemannianFiberNormSq_eq_sum_witness (I := I) (M := M) g r s b T
+    exists_riemannianFiberNormSq_eq_component_sum (I := I) (M := M) g r s b T
   refine ⟨ambientFrameNormSq (I := I) (M := M) b n e,
     ambientFrameNormSq_nonneg (I := I) (M := M) b n e, ?_⟩
   rw [h_eq]

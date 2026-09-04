@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold NNReal Topology
@@ -43,7 +43,7 @@ def HasLiveChartCenterSolution
     (q : LiveSlot L pb r → NNReal) (δ : LiveSlot L pb r → Real)
     (alpha : LiveSlot L pb r)
     (mu : Fin (pb.A r) → Real)
-    (pts : Fin (pb.A r) → (X.obj (L.φ n)).M)
+    (points : Fin (pb.A r) → (X.obj (L.φ n)).M)
     (join : (X.obj (L.φ n)).M → (X.obj (L.φ n)).M → Real →
       (X.obj (L.φ n)).M)
     (x : (X.obj (L.φ n)).M) (rad : Real)
@@ -77,12 +77,12 @@ def HasLiveChartCenterSolution
           (hcomplete.complete (L.φ n))
       letI : MetricSpace (X.obj (L.φ n)).M :=
         HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
-      CenterInput (I := I) (X.obj (L.φ n)).metric mu pts join x rad) : Prop :=
-  HasChartCmSol (I := I) (X.obj (L.φ n))
+      CenterInput (I := I) (X.obj (L.φ n)).metric mu points join x rad) : Prop :=
+  HasChartCenterOfMassSolution (I := I) (X.obj (L.φ n))
     (hcomplete.complete (L.φ n)) (hconn (L.φ n))
     (seqCenterD hd P L n (alpha.1 : Nat))
     (d.chart (L.φ n) (seqCenterD hd P L n (alpha.1 : Nat)))
-    (q := q alpha) (delta := δ alpha) mu pts join x rad hcm
+    (q := q alpha) (delta := δ alpha) mu points join x rad hcm
 
 namespace BoundedGeometryNormalChartData
 
@@ -180,12 +180,12 @@ theorem has_live_chart_center_solution_of_cage
     letI : MetricSpace (X.obj (L.φ k)).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
     ∀ (mu : Fin (pb.A r) → Real)
-        (pts : Fin (pb.A r) → (X.obj (L.φ k)).M)
+        (points : Fin (pb.A r) → (X.obj (L.φ k)).M)
         (join : (X.obj (L.φ k)).M → (X.obj (L.φ k)).M → Real →
           (X.obj (L.φ k)).M)
         (x : (X.obj (L.φ k)).M) (rad : Real),
       ∀ h : CenterInput (I := I) (X.obj (L.φ k)).metric
-          mu pts join x rad,
+          mu points join x rad,
         ∑ i, mu i = 1 →
         x ∈ NetLimitData.hatBall (I := I) (X := X)
           hd D P L pb r k alpha.1 →
@@ -194,7 +194,7 @@ theorem has_live_chart_center_solution_of_cage
           ENNReal.ofReal
             ((aMin * hd.mu (L.rInf (alpha.1 : Nat) + 1)) / 2) →
         HasLiveChartCenterSolution (I := I) d P L pb r k hcomplete hconn q δ alpha
-          mu pts join x rad h := by
+          mu points join x rad h := by
   classical
   let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
   let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -226,7 +226,7 @@ theorem has_live_chart_center_solution_of_cage
       (hcomplete.complete (L.φ k))
   let : MetricSpace (X.obj (L.φ k)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ k)).M)
-  intro mu pts join x rad h hsum hxhat hradCage
+  intro mu points join x rad h hsum hxhat hradCage
   let x0 := seqCenterD hd P L k (alpha.1 : Nat)
   let rho0 := aMin * hd.mu (L.rInf (alpha.1 : Nat) + 1)
   rcases hqdata alpha with
@@ -252,7 +252,7 @@ theorem has_live_chart_center_solution_of_cage
       ENNReal.toReal_ofReal (hre.dist_nonneg (L.φ k) x x0)]
     exact hhd.le
   let y := centerOfMass (I := I) (X.obj (L.φ k)).metric
-    mu pts join x rad h
+    mu points join x rad h
   have hyMem : y ∈ Metric.closedBall x (2 * rad) := by
     simpa only [y] using centerOfMass.mem (I := I) h
   have hyDist : dist x0 y ≤
@@ -263,12 +263,12 @@ theorem has_live_chart_center_solution_of_cage
         have hxy : dist x y ≤ 2 * rad := by
           simpa only [dist_comm] using Metric.mem_closedBall.mp hyMem
         linarith
-  have hptDist (i : Fin (pb.A r)) : dist x0 (pts i) <
+  have hptDist (i : Fin (pb.A r)) : dist x0 (points i) <
       4 * L.lamInf (alpha.1 : Nat) + 2 * rad := by
     calc
-      dist x0 (pts i) ≤ dist x0 x + dist x (pts i) := dist_triangle _ _ _
+      dist x0 (points i) ≤ dist x0 x + dist x (points i) := dist_triangle _ _ _
       _ < 4 * L.lamInf (alpha.1 : Nat) + rad := by
-        linarith [h.pts_mem i]
+        linarith [h.points_mem i]
       _ < 4 * L.lamInf (alpha.1 : Nat) + 2 * rad := by
         linarith [h.r_pos]
   have hriem_eq (a b : (X.obj (L.φ k)).M) :
@@ -277,7 +277,7 @@ theorem has_live_chart_center_solution_of_cage
     exact (ENNReal.ofReal_toReal
       (riemannianEDist_ne_top (I := I) a b)).symm
   have hpairs : ∀ i, max (riemannianEDist I x0 y)
-        (riemannianEDist I x0 (pts i)) < ENNReal.ofReal (rho0 / 2) := by
+        (riemannianEDist I x0 (points i)) < ENNReal.ofReal (rho0 / 2) := by
     intro i
     rw [max_lt_iff, hriem_eq, hriem_eq]
     constructor
@@ -294,7 +294,7 @@ theorem has_live_chart_center_solution_of_cage
     (L.φ k) (hcomplete.complete (L.φ k))
     (hconn (L.φ k)) x0 hq he hf happrox
     (by
-      exact hinvErr.trans (by norm_num)) mu pts join x rad hsum h hρ hρq
+      exact hinvErr.trans (by norm_num)) mu points join x rad hsum h hρ hρq
       hρChart hpairs
   exact ⟨hq, e, he, hf, by simpa only [x0, y, rho0] using hsol⟩
 
@@ -391,17 +391,17 @@ theorem exists_live_chart_center_solutions
                 (mu : (X.obj (L.φ n)).M → Fin (pb.A r) → Real)
                 (hmu : centerAverage.WeightDataOn s
                   (fun _ : Fin (pb.A r) => Set.univ) mu)
-                (ptsSeq : Nat → Nat → (X.obj (L.φ n)).M →
+                (pointsSeq : Nat → Nat → (X.obj (L.φ n)).M →
                   Fin (pb.A r) → (X.obj (L.φ n)).M)
                 (hpts : ∀ gamma : Fin (pb.A r), ∀ epsilon : Real,
                   0 < epsilon → ∃ N : Nat,
                     ∀ a ≥ N, ∀ b ≥ N,
                       ∀ x ∈ s, mu x gamma ≠ 0 →
-                        dist x (ptsSeq a b x gamma) < epsilon),
+                        dist x (pointsSeq a b x gamma) < epsilon),
                   ∃ radSeq : Nat → Nat → (X.obj (L.φ n)).M → Real,
                     (∀ a b x, x ∈ s → 0 < radSeq a b x) ∧
                     (∀ a b x, x ∈ s → ∀ gamma, mu x gamma ≠ 0 →
-                      dist x (ptsSeq a b x gamma) < radSeq a b x) ∧
+                      dist x (pointsSeq a b x gamma) < radSeq a b x) ∧
                     (∀ epsilon > 0, ∃ N : Nat,
                       ∀ a ≥ N, ∀ b ≥ N,
                         ∀ x ∈ s, radSeq a b x < epsilon) ∧
@@ -409,13 +409,13 @@ theorem exists_live_chart_center_solutions
                       ∀ x ∈ s,
                         let join := minJoin (I := I) (X.obj (L.φ n)).metric
                           (normal_enorm (I := I) (X.obj (L.φ n)))
-                        let pts := centerAverage.activeFill mu (ptsSeq a b)
+                        let points := centerAverage.activeFill mu (pointsSeq a b)
                           (fun y => y) x
                         ∃ hcm : CenterInput (I := I)
-                            (X.obj (L.φ n)).metric (mu x) pts join x
+                            (X.obj (L.φ n)).metric (mu x) points join x
                             (radSeq a b x),
                           HasLiveChartCenterSolution (I := I) d P L pb r n hcomplete hconn
-                            q δ alpha (mu x) pts join x (radSeq a b x) hcm := by
+                            q δ alpha (mu x) points join x (radSeq a b x) hcm := by
   classical
   let N : NNReal :=
     ‖((PhaseFlow.freeDiagCLE (E := E)).symm :
@@ -461,11 +461,11 @@ theorem exists_live_chart_center_solutions
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
   refine ⟨?_, ?_⟩
   · simpa only [N, T] using hn
-  intro alpha s hs mu hmu ptsSeq hpts
+  intro alpha s hs mu hmu pointsSeq hpts
   obtain ⟨radSeq, hpos, hactive, htail⟩ :=
     centerAverage.exists_active_radius
       (s := s) (target := fun x => x)
-      (μSeq := fun _ _ => mu) (ptsSeq := ptsSeq) hpts
+      (μSeq := fun _ _ => mu) (pointsSeq := pointsSeq) hpts
   refine ⟨radSeq, ?_, ?_, htail, ?_⟩
   · intro a b x _hx
     exact hpos a b x
@@ -480,11 +480,11 @@ theorem exists_live_chart_center_solutions
       refine ⟨N0, ?_⟩
       intro a ha b hb x hx
       nlinarith [hN0 a ha b hb x hx]
-    obtain ⟨N0, hN0⟩ := exists_rad_cage hd hD haMin hphys P L pb r n
+    obtain ⟨N0, hN0⟩ := eventually_cage_radius_bound hd hD haMin hphys P L pb r n
       s (fun a b x => 3 * radSeq a b x) htail3
     refine ⟨N0, ?_⟩
     intro a ha b hb x hx
-    let pts := centerAverage.activeFill mu (ptsSeq a b) (fun y => y) x
+    let points := centerAverage.activeFill mu (pointsSeq a b) (fun y => y) x
     let join := minJoin (I := I) (X.obj (L.φ n)).metric
       (normal_enorm (I := I) (X.obj (L.φ n)))
     let x0 := seqCenterD hd P L n (alpha.1 : Nat)
@@ -511,9 +511,9 @@ theorem exists_live_chart_center_solutions
       rw [dist_comm, HopfRinow.riemMetric_dist_eq, hed,
         ENNReal.toReal_ofReal (hre.dist_nonneg (L.φ n) x x0)]
       exact hhd.le
-    have hptsFilled : ∀ gamma, dist x (pts gamma) < radSeq a b x := by
-      simpa only [pts] using centerAverage.activeFill_close
-        (g := (X.obj (L.φ n)).metric) (μ := mu) (pts := ptsSeq a b)
+    have hptsFilled : ∀ gamma, dist x (points gamma) < radSeq a b x := by
+      simpa only [points] using centerAverage.activeFill_close
+        (g := (X.obj (L.φ n)).metric) (μ := mu) (points := pointsSeq a b)
           (qstar := fun y => y) (x := x) (hpos a b x)
           (hactive a b x hx)
     have hcage6 : ENNReal.ofReal
@@ -527,18 +527,18 @@ theorem exists_live_chart_center_solutions
       rw [heq] at hc
       simpa only [rho0] using hc
     have hstrict : StrictDistInput (I := I) (X.obj (L.φ n)).metric
-        pts join x (radSeq a b x) := by
-      simpa only [pts, join, x0, rho0] using
+        points join x (radSeq a b x) := by
+      simpa only [points, join, x0, rho0] using
         d.strict_dist_input (L.φ n) (hcomplete.complete (L.φ n))
           (hconn (L.φ n)) x0 hq he hf happrox hinvErr hqAcc
-          pts x (radSeq a b x) (4 * L.lamInf (alpha.1 : Nat))
+          points x (radSeq a b x) (4 * L.lamInf (alpha.1 : Nat))
           hρInner hρ hρq (hpos a b x) hpq hptsFilled hcage6
     have hcm : CenterInput (I := I) (X.obj (L.φ n)).metric
-        (mu x) pts join x (radSeq a b x) := by
-      simpa only [pts, join] using
+        (mu x) points join x (radSeq a b x) := by
+      simpa only [points, join] using
         centerAverage.inputOfFillSelf (I := I)
           (g := (X.obj (L.φ n)).metric) (μ := mu)
-          (pts := ptsSeq a b) (join := join) (r := radSeq a b)
+          (points := pointsSeq a b) (join := join) (r := radSeq a b)
           (qstar := fun y => y) x
           (inferInstance : CompleteSpace (X.obj (L.φ n)).M)
           (hpos a b x)
@@ -551,11 +551,11 @@ theorem exists_live_chart_center_solutions
     refine ⟨hcm, ?_⟩
     have hout := d.has_live_chart_center_solution_of_cage
       P hre L pb r n hcomplete hconn
-      q δ hqdata hn alpha (mu x) pts join x (radSeq a b x) hcm
+      q δ hqdata hn alpha (mu x) points join x (radSeq a b x) hcm
       (hmu.sum_one x hx) (hs hx) hradCage
-    simpa only [pts, join] using hout
+    simpa only [points, join] using hout
 
 end BoundedGeometryNormalChartData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

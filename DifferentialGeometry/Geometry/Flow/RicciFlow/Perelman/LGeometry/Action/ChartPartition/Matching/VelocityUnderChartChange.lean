@@ -25,7 +25,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_velocity_eq_under_chart_change
+theorem lRegularizedAction_minimizer_velocity_eq_under_chart_change
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (t : Fin 3 → Real) (p : Fin 2 → M) (gamma : Real → M)
     (u : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
@@ -40,8 +40,8 @@ theorem lRegAction_minimizer_velocity_eq_under_chart_change
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta (t 0) = gamma (t 0) →
       delta (t (Fin.last 2)) = gamma (t (Fin.last 2)) →
-      lRegAction S T gamma (t 0) (t (Fin.last 2)) ≤
-        lRegAction S T delta (t 0) (t (Fin.last 2))) :
+      lRegularizedAction S T gamma (t 0) (t (Fin.last 2)) ≤
+        lRegularizedAction S T delta (t 0) (t (Fin.last 2))) :
     tangentCoordChange I (p 0) (p 1) (gamma (t 1))
         (derivWithin (u 0).toFun
           (Icc (0 : Real) (partitionIntervalLength t 0)) (partitionIntervalLength t 0)) =
@@ -74,7 +74,7 @@ theorem lRegAction_minimizer_velocity_eq_under_chart_change
         tangentCoordChange_comp (I := I) (w := p 1) (x := p 0)
           (y := p 1) (z := gamma (t 1)) ⟨⟨hq, hp⟩, hq⟩
       _ = y := tangentCoordChange_self (I := I) hq
-  have hmom := lRegAction_minimizer_momentum_pairing_eq (I := I) S hS T t p gamma u
+  have hmom := lRegularizedAction_minimizer_momentum_pairing_eq (I := I) S hS T t p gamma u
     hpos hsrc hrep hreg hmin
   have hGram :
       chartGramOp (I := I) S.family (p 1)

@@ -44,7 +44,7 @@ theorem ricci_nonneg_of_sec
     (metricRm04At_mem_tensor04SectionalNonnegativeCone_iff
       (I := I) (M := M) g x).mp hsec (e i) v
   calc
-    0 ≤ metricRm04StdAt (I := I) (M := M) g x (e i) v v (e i) := hcurv
+    0 ≤ metricRm04StandardAt (I := I) (M := M) g x (e i) v v (e i) := hcurv
     _ = g.inner x (e i)
         (riemannOp (LeviCivita (I := I) g) x (e i) v v) :=
       rm04_eq_inner_riem (I := I) (M := M) g x (e i) v v (e i)
@@ -58,7 +58,7 @@ theorem ricci_pos_of_sec
     (hd : 0 < Module.finrank ℝ E - 1)
     (hsec : ∀ a b : TangentSpace I x,
       a ≠ 0 → b ≠ 0 → g.inner x a b = 0 →
-        0 < metricRm04StdAt (I := I) (M := M) g x a b b a)
+        0 < metricRm04StandardAt (I := I) (M := M) g x a b b a)
     {v : TangentSpace I x} (hv : v ≠ 0) :
     0 < ricciTensor (I := I) g x v v := by
   let : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
@@ -73,7 +73,7 @@ theorem ricci_pos_of_sec
         have hii := hON i i
         simp [hei] at hii
       calc
-        0 < metricRm04StdAt (I := I) (M := M) g x (e i) v v (e i) :=
+        0 < metricRm04StandardAt (I := I) (M := M) g x (e i) v v (e i) :=
           hsec (e i) v hei hv (hperp i)
         _ = g.inner x (e i)
             (riemannOp (LeviCivita (I := I) g) x (e i) v v) :=

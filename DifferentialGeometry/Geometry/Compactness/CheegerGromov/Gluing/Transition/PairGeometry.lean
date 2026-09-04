@@ -9,7 +9,7 @@ open Filter Set
 open scoped Topology Manifold ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -226,13 +226,13 @@ theorem NetLimitData.pair_exp_maps
     have hz8 : ‖z‖ < 8 * L.lamInf (α : Nat) := by
       simpa only [Metric.mem_ball, dist_zero_right] using hz
     exact hz8.trans_le hsourceC2
-  have hzSrc := Geometry.Riemannian.mem_expMapDiffeo_source_of_norm_lt_radius
+  have hzSource := Geometry.Riemannian.mem_expMapDiffeo_source_of_norm_lt_radius
     (I := I) (X.obj (L.φ k)).metric x hzC2
   change Geometry.Riemannian.NormalCoordinates.expMapDiffeo
     (I := I) (X.obj (L.φ k)).metric x z ∈ _
   rw [Geometry.Riemannian.NormalCoordinates.expMapDiffeo_apply_eq
-    (I := I) (X.obj (L.φ k)).metric x hzSrc]
+    (I := I) (X.obj (L.φ k)).metric x hzSource]
   exact htarget (Metric.ball_subset_closedBall (hnest (hsource hz)))
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

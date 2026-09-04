@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -93,5 +93,5 @@ noncomputable def limitConvergenceMaps (S : SmoothSeqSystem I A) (O₀ : A 0)
 
 end
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -1400,7 +1400,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciCometricFourTraceCastG0_diago
   nlinarith only [c12, c3, c4, hpure, hpn]
 
 omit [SigmaCompactSpace M] in
-theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
+theorem ricci0_ker_grid_uniform {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -1417,7 +1417,7 @@ theorem ricci0_ker_grid_unif {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
                 ((iteratedCovGrad (I := I) g₀ 0 2 j' P).toSection x)) k := by
   classical
   obtain ⟨CA, hCA_nn, hCA⟩ :=
-    connectionDifference_grid_unif (I := I) (M := M) hδ₀
+    connectionDifference_grid_uniform (I := I) (M := M) hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr : 0 ≤ fr := Nat.cast_nonneg _
   set CQ : ℕ → ℝ := fun l => operatorFieldApplicationGdiag (E := E) l *

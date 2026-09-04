@@ -668,7 +668,7 @@ theorem metricJet2_intrinsic
   let D : SmoothCcTensor gBase 0 2 :=
     metricCcTensor (I := I) (M := M) gBase g₁ -
       metricCcTensor (I := I) (M := M) gBase g₂
-  have hb_src : b ∈ (extChartAt I α).source := by
+  have hb_source : b ∈ (extChartAt I α).source := by
     rw [extChartAt_source]
     exact (chartAtlasPOU_isSubordinate I M) α hb
   have hy_int : extChartAt I α b ∈ interior (extChartAt I α).target :=
@@ -682,7 +682,7 @@ theorem metricJet2_intrinsic
           ((toEuclidean (E := E)).symm
             (toEuclidean (E := E) (extChartAt I α b))) = b := by
     rw [ContinuousLinearEquiv.symm_apply_apply]
-    exact (extChartAt I α).left_inv hb_src
+    exact (extChartAt I α).left_inv hb_source
   have hmetric' := hmetric g₁ g₂ hy_int
   have hgram := chartGramJetDiffSeminormSum_le_chartComponentJetSeminormSum (I := I) (M := M) gBase g₁ g₂ α 2 hy_int
   change chartGramJetDiffSeminormSum (I := I) (M := M) 2 g₁ g₂ α
@@ -751,7 +751,7 @@ theorem metricJet3_intrinsic
   let D : SmoothCcTensor gBase 0 2 :=
     metricCcTensor (I := I) (M := M) gBase g₁ -
       metricCcTensor (I := I) (M := M) gBase g₂
-  have hb_src : b ∈ (extChartAt I α).source := by
+  have hb_source : b ∈ (extChartAt I α).source := by
     rw [extChartAt_source]
     exact (chartAtlasPOU_isSubordinate I M) α hb
   have hy_int : extChartAt I α b ∈ interior (extChartAt I α).target :=
@@ -765,7 +765,7 @@ theorem metricJet3_intrinsic
           ((toEuclidean (E := E)).symm
             (toEuclidean (E := E) (extChartAt I α b))) = b := by
     rw [ContinuousLinearEquiv.symm_apply_apply]
-    exact (extChartAt I α).left_inv hb_src
+    exact (extChartAt I α).left_inv hb_source
   have hmetric' := hmetric g₁ g₂ hy_int
   have hgram := chartGramJetDiffSeminormSum_le_chartComponentJetSeminormSum (I := I) (M := M) gBase g₁ g₂ α 3 hy_int
   change chartGramJetDiffSeminormSum (I := I) (M := M) 3 g₁ g₂ α

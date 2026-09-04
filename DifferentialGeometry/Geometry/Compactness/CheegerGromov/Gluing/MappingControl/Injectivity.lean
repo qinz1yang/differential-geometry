@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -241,5 +241,5 @@ theorem HasStageJetData.inj_tail
     _ = chiK.symm zy := congrArg chiK.symm hzyeq
     _ = y := hzyEq
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

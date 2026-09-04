@@ -204,18 +204,18 @@ theorem chartCurve_contDiffAt_one_of_isGeodesicOn
   classical
   set α : M := γ t with hα_def
   set u : ℝ → E := chartCurve (I := I) α γ with hu_def
-  have hα_src : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hα_source : α ∈ (chartAt H α).source := mem_chart_source H α
   have hcontAt_t : ContinuousAt γ t :=
     hcont.continuousAt (hs.mem_nhds ht)
   have hsrc_nhds : (fun s' => γ s') ⁻¹' (chartAt H α).source ∈ 𝓝 t := by
-    have : α ∈ (chartAt H α).source := hα_src
+    have : α ∈ (chartAt H α).source := hα_source
     exact hcontAt_t.preimage_mem_nhds
       ((chartAt H α).open_source.mem_nhds (by rw [hα_def] at this ⊢; exact this))
-  obtain ⟨V, hV_nhds, hV_src⟩ := Filter.eventually_iff_exists_mem.mp
+  obtain ⟨V, hV_nhds, hV_source⟩ := Filter.eventually_iff_exists_mem.mp
     (Filter.eventually_of_mem hsrc_nhds (fun _ h => h))
   set W : Set ℝ := V ∩ s with hW_def
   have hW_nhds : W ∈ 𝓝 t := Filter.inter_mem hV_nhds (hs.mem_nhds ht)
-  have hW_src : ∀ s' ∈ W, γ s' ∈ (chartAt H α).source := fun s' hs' => hV_src s' hs'.1
+  have hW_source : ∀ s' ∈ W, γ s' ∈ (chartAt H α).source := fun s' hs' => hV_source s' hs'.1
   have hW_geo : ∀ s' ∈ W, HasGeodesicEquationAt (I := I) g γ s' :=
     fun s' hs' => hγ s' hs'.2
   have hW_contAt : ∀ s' ∈ W, ContinuousAt γ s' :=
@@ -226,7 +226,7 @@ theorem chartCurve_contDiffAt_one_of_isGeodesicOn
     intro s' hs'
     simpa [hu_def] using
       hasGeodesicEquationAt_fixedChart_hasDerivAt_velocity (I := I) g α
-        (γ := γ) (t := s') (hW_contAt s' hs') (hW_src s' hs') (hW_geo s' hs')
+        (γ := γ) (t := s') (hW_contAt s' hs') (hW_source s' hs') (hW_geo s' hs')
   obtain ⟨W', hW'_sub, hW'_open, hW'_mem⟩ := mem_nhds_iff.mp hW_nhds
   have hderiv_diffOn : ∀ s' ∈ W', DifferentiableAt ℝ (deriv u) s' :=
     fun s' hs' => (hODE s' (hW'_sub hs')).differentiableAt
@@ -241,7 +241,7 @@ theorem chartCurve_contDiffAt_one_of_isGeodesicOn
     exact hCLE.comp_continuousOn hderiv_contOn
   · intro s' hs'
     have hcont_s' : ContinuousAt γ s' := hW_contAt s' (hW'_sub hs')
-    have hsrc_s' : γ s' ∈ (chartAt H (γ t)).source := hW_src s' (hW'_sub hs')
+    have hsrc_s' : γ s' ∈ (chartAt H (γ t)).source := hW_source s' (hW'_sub hs')
     have hu_ev' : ∀ᶠ r in 𝓝 s', HasDerivAt u (deriv u r) r := by
       simpa [hu_def] using
         hasGeodesicEquationAt_fixedChart_eventually_hasDerivAt (I := I) g α
@@ -265,18 +265,18 @@ theorem isGeodesicOn_contMDiffAt_one
   have hu_cd : ContDiffAt ℝ 1 u t :=
     chartCurve_contDiffAt_one_of_isGeodesicOn (I := I) g hs ht hγ hcont
   have hu_cmd : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) 1 u t := hu_cd.contMDiffAt
-  have hα_src : α ∈ (chartAt H α).source := mem_chart_source H α
-  have hα_ext_src : α ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hα_src
+  have hα_source : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hα_ext_source : α ∈ (extChartAt I α).source := by
+    rw [extChartAt_source]; exact hα_source
   have hut_eq : u t = extChartAt I α α := by
     rw [hu_def, chartCurve_def, hα_def]
   have hut_target : u t ∈ (extChartAt I α).target := by
-    rw [hut_eq]; exact (extChartAt I α).map_source hα_ext_src
+    rw [hut_eq]; exact (extChartAt I α).map_source hα_ext_source
   have htarget_nhds : (extChartAt I α).target ∈ 𝓝 (u t) := by
     have hut_int : u t ∈ interior (extChartAt I α).target := by
       rw [hut_eq]
       exact extChartAt_target_subset_interior_of_boundaryless (I := I) α
-        ((extChartAt I α).map_source hα_ext_src)
+        ((extChartAt I α).map_source hα_ext_source)
     exact mem_nhds_iff.mpr ⟨interior (extChartAt I α).target, interior_subset,
       isOpen_interior, hut_int⟩
   have hsymm_within : ContMDiffWithinAt 𝓘(ℝ, E) I 1
@@ -288,7 +288,7 @@ theorem isGeodesicOn_contMDiffAt_one
     hsymm_at.comp t hu_cmd
   have hcontAt_t : ContinuousAt γ t := hcont.continuousAt (hs.mem_nhds ht)
   have hsrc_nhds : (fun s' => γ s') ⁻¹' (chartAt H α).source ∈ 𝓝 t :=
-    hcontAt_t.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hα_src)
+    hcontAt_t.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hα_source)
   have heq : ((extChartAt I α).symm ∘ u) =ᶠ[𝓝 t] γ := by
     filter_upwards [hsrc_nhds] with s' hs'
     have hs'_ext : γ s' ∈ (extChartAt I α).source := by
@@ -414,7 +414,7 @@ theorem isGeodesicOn_Ioo_extend
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace M] in
-theorem geo_Ioo_extend_cpt
+theorem geo_Ioo_extend_compact
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b c : ℝ} {K : Set M}
     (hab : a < b) (hc_nonneg : 0 ≤ c)

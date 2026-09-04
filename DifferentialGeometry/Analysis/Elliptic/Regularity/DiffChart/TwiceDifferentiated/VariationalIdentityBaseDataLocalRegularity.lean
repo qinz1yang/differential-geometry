@@ -92,7 +92,7 @@ private lemma base_weak_partial_memW1p
   have h_chosen_memWkp_1 :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 1 2
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 i
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
             (I := I) (M := M) (chartAtlasPOU I M) α
@@ -103,7 +103,7 @@ private lemma base_weak_partial_memW1p
     h_memWkp_2.chosenWeakPartial_mem i
   have h_chosen :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 i
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
             (I := I) (M := M) (chartAtlasPOU I M) α
@@ -119,12 +119,12 @@ private lemma base_weak_partial_memW1p
     (base_weak_partial_ae_eq_chartPushedChosenFirstPartial
       (I := I) (M := M) g α hu_h i)).mpr h_chosen
 
-private lemma chosenWeakPartial'_base_weak_partial_ae_eq_chosenSecond
+private lemma chosenWeakPartialOrZero_base_weak_partial_ae_eq_chosenSecond
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (l₁ l₂ : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l₂
         ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
@@ -139,7 +139,7 @@ private lemma chosenWeakPartial'_base_weak_partial_ae_eq_chosenSecond
     base_weak_partial_ae_eq_chartPushedChosenFirstPartial
       (I := I) (M := M) g α hu_h l₁
   have h_congr :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_ae_congr
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_ae_congr
       (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ_open h_aeEq l₂
   exact h_congr
 
@@ -227,7 +227,7 @@ private lemma chosenWeakPartial_base_wp_locally_memLp
     (l₁ l₂ : Fin (Module.finrank ℝ E))
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l₂
         ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
@@ -236,7 +236,7 @@ private lemma chosenWeakPartial_base_wp_locally_memLp
       ((volume : Measure EuclN).restrict K) := by
   have h_w1p := base_weak_partial_memW1p (I := I) (M := M) g α hu_h l₁
   have h_global :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       h_w1p l₂
   have hK_meas : MeasurableSet K := hK_compact.isClosed.measurableSet
   have h_eq : ((volume : Measure EuclN).restrict
@@ -256,7 +256,7 @@ private lemma integral_chosenWeakPartial_base_eq_integral_chosenSecond
     (ψ : EuclN → ℝ) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 l₂
           ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
             (laplacianDomainPow_succ_subset_laplacianDomain
@@ -267,7 +267,7 @@ private lemma integral_chosenWeakPartial_base_eq_integral_chosenSecond
       densityOnEuclid (I := I) g α y *
         chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l₁ l₂ y * ψ y
       ∂(volume : Measure EuclN)) := by
-  have h_aeEq := chosenWeakPartial'_base_weak_partial_ae_eq_chosenSecond
+  have h_aeEq := chosenWeakPartialOrZero_base_weak_partial_ae_eq_chosenSecond
     (I := I) (M := M) g α hu_h l₁ l₂
   refine MeasureTheory.integral_congr_ae ?_
   filter_upwards [h_aeEq] with y hy

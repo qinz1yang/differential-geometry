@@ -267,7 +267,7 @@ lemma riemannianFiberNormSq_eq_sum_componentS_sq
     exact absurd (Subsingleton.elim K K₀) hK
   · intro h; exact absurd (Finset.mem_univ K₀) h
 
-lemma tangent_orthonormalBasisS_witness
+lemma exists_tangent_orthonormalBasisS_with_norm_sum
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x)
       (bse : Module.Basis (Fin n) ℝ (TangentSpace I x)),
@@ -510,7 +510,7 @@ theorem riemannianFiberNormSq_eq_sum_component_sq_of_basis
   refine Finset.sum_congr rfl (fun K _ => Finset.sum_congr rfl (fun J _ => ?_))
   rw [pow_two]
 
-lemma tangent_orthonormalBasisRS_witness
+lemma exists_tangent_orthonormalBasisRS_with_norm_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x)
       (bse : Module.Basis (Fin n) ℝ (TangentSpace I x)),

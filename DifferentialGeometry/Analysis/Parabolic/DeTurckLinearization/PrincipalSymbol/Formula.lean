@@ -58,7 +58,7 @@ end GramBridge
 section SymbolComponent
 
 
-def deTurckCorrSymbolComp (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+def deTurckCorrectionSymbolComp (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i j : Fin (Module.finrank ℝ E)) : ℝ :=
   (∑ k : Fin (Module.finrank ℝ E),
@@ -87,10 +87,10 @@ def deTurckCorrSymbolComp (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
                     formComp (I := I) x t a b)))
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-@[simp] lemma deTurckCorrSymbolComp_def (g : SmoothRiemannianMetric I M) (x : M)
+@[simp] lemma deTurckCorrectionSymbolComp_def (g : SmoothRiemannianMetric I M) (x : M)
     (ξ : E) (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i j : Fin (Module.finrank ℝ E)) :
-    deTurckCorrSymbolComp (I := I) g x ξ t i j =
+    deTurckCorrectionSymbolComp (I := I) g x ξ t i j =
       (∑ k : Fin (Module.finrank ℝ E),
           chartGramOnE (I := I) g x k j (extChartAt I x x) *
             ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -191,7 +191,7 @@ private lemma block_term_trace (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private lemma deTurckCorr_block_contraction (g : SmoothRiemannianMetric I M) (x : M)
+private lemma deTurckCorrection_block_contraction (g : SmoothRiemannianMetric I M) (x : M)
     (ξ : E) (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (d m : Fin (Module.finrank ℝ E)) :
     ∑ k : Fin (Module.finrank ℝ E),
@@ -402,10 +402,10 @@ private lemma deTurckCorr_block_contraction (g : SmoothRiemannianMetric I M) (x 
         ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem deTurckCorrSymbolComp_eq_closedForm (g : SmoothRiemannianMetric I M) (x : M)
+theorem deTurckCorrectionSymbolComp_eq_closedForm (g : SmoothRiemannianMetric I M) (x : M)
     (ξ : E) (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i j : Fin (Module.finrank ℝ E)) :
-    deTurckCorrSymbolComp (I := I) g x ξ t i j =
+    deTurckCorrectionSymbolComp (I := I) g x ξ t i j =
       (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i *
           raisedFormContractionSnd (I := I) g x ξ t j +
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j *
@@ -438,7 +438,7 @@ theorem deTurckCorrSymbolComp_eq_closedForm (g : SmoothRiemannianMetric I M) (x 
           (1 / 2 : ℝ) * ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ d * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ m *
             formMetricTrace (I := I) g x t) := by
     intro d m
-    rw [← deTurckCorr_block_contraction (I := I) g x ξ t d m]
+    rw [← deTurckCorrection_block_contraction (I := I) g x ξ t d m]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [hgram k m]
     refine congrArg _ ?_
@@ -476,7 +476,7 @@ theorem deTurckCorrSymbolComp_eq_closedForm (g : SmoothRiemannianMetric I M) (x 
                         formComp (I := I) x t a b)) := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [chartGramOnE_symm (I := I) g x i k]
-  rw [deTurckCorrSymbolComp_def, hsecond, hksum i j, hksum j i]
+  rw [deTurckCorrectionSymbolComp_def, hsecond, hksum i j, hksum j i]
   ring
 
 end ClosedForm
@@ -484,35 +484,35 @@ end ClosedForm
 section Linearity
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem deTurckCorrSymbolComp_add (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+theorem deTurckCorrectionSymbolComp_add (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (t t' : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i j : Fin (Module.finrank ℝ E)) :
-    deTurckCorrSymbolComp (I := I) g x ξ (t + t') i j =
-      deTurckCorrSymbolComp (I := I) g x ξ t i j +
-        deTurckCorrSymbolComp (I := I) g x ξ t' i j := by
-  rw [deTurckCorrSymbolComp_eq_closedForm (I := I) g x ξ (t + t') i j,
-    deTurckCorrSymbolComp_eq_closedForm (I := I) g x ξ t i j,
-    deTurckCorrSymbolComp_eq_closedForm (I := I) g x ξ t' i j,
+    deTurckCorrectionSymbolComp (I := I) g x ξ (t + t') i j =
+      deTurckCorrectionSymbolComp (I := I) g x ξ t i j +
+        deTurckCorrectionSymbolComp (I := I) g x ξ t' i j := by
+  rw [deTurckCorrectionSymbolComp_eq_closedForm (I := I) g x ξ (t + t') i j,
+    deTurckCorrectionSymbolComp_eq_closedForm (I := I) g x ξ t i j,
+    deTurckCorrectionSymbolComp_eq_closedForm (I := I) g x ξ t' i j,
     raisedFormContractionSnd_add, raisedFormContractionSnd_add, formMetricTrace_add]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem deTurckCorrSymbolComp_smul (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+theorem deTurckCorrectionSymbolComp_smul (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (a : ℝ) (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i j : Fin (Module.finrank ℝ E)) :
-    deTurckCorrSymbolComp (I := I) g x ξ (a • t) i j =
-      a * deTurckCorrSymbolComp (I := I) g x ξ t i j := by
-  rw [deTurckCorrSymbolComp_eq_closedForm (I := I) g x ξ (a • t) i j,
-    deTurckCorrSymbolComp_eq_closedForm (I := I) g x ξ t i j,
+    deTurckCorrectionSymbolComp (I := I) g x ξ (a • t) i j =
+      a * deTurckCorrectionSymbolComp (I := I) g x ξ t i j := by
+  rw [deTurckCorrectionSymbolComp_eq_closedForm (I := I) g x ξ (a • t) i j,
+    deTurckCorrectionSymbolComp_eq_closedForm (I := I) g x ξ t i j,
     raisedFormContractionSnd_smul, raisedFormContractionSnd_smul, formMetricTrace_smul]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem deTurckCorrSymbolComp_zero (g : SmoothRiemannianMetric I M) (x : M)
+theorem deTurckCorrectionSymbolComp_zero (g : SmoothRiemannianMetric I M) (x : M)
     (ξ : E) (i j : Fin (Module.finrank ℝ E)) :
-    deTurckCorrSymbolComp (I := I) g x ξ
+    deTurckCorrectionSymbolComp (I := I) g x ξ
       (0 : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) i j = 0 := by
-  rw [deTurckCorrSymbolComp_eq_closedForm, raisedFormContractionSnd_zero,
+  rw [deTurckCorrectionSymbolComp_eq_closedForm, raisedFormContractionSnd_zero,
     raisedFormContractionSnd_zero, formMetricTrace_zero]
   ring
 
@@ -521,13 +521,13 @@ end Linearity
 section Symmetry
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem deTurckCorrSymbolComp_symm (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
+theorem deTurckCorrectionSymbolComp_symm (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ)
     (i j : Fin (Module.finrank ℝ E)) :
-    deTurckCorrSymbolComp (I := I) g x ξ t i j =
-      deTurckCorrSymbolComp (I := I) g x ξ t j i := by
-  rw [deTurckCorrSymbolComp_eq_closedForm (I := I) g x ξ t i j,
-    deTurckCorrSymbolComp_eq_closedForm (I := I) g x ξ t j i]
+    deTurckCorrectionSymbolComp (I := I) g x ξ t i j =
+      deTurckCorrectionSymbolComp (I := I) g x ξ t j i := by
+  rw [deTurckCorrectionSymbolComp_eq_closedForm (I := I) g x ξ t i j,
+    deTurckCorrectionSymbolComp_eq_closedForm (I := I) g x ξ t j i]
   ring
 
 end Symmetry

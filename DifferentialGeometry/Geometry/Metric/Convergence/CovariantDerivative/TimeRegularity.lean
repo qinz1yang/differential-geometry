@@ -16,7 +16,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -89,7 +89,7 @@ theorem covDerivOfField_eval_hasDerivWithinAt
 
 omit [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
-theorem covDerivOfField_swapReg
+theorem covDerivOfField_swapRegularity
     (gRef : SmoothRiemannianMetric I M)
     (A B : Real → Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
@@ -128,7 +128,7 @@ theorem covDerivOfField_swapReg
   induction p using Nat.strong_induction_on with
   | _ p ihp =>
     intro hpN V x₀
-    refine fixedBaseOnReg_of_timeDerivWithin (I := I) hRT
+    refine fixedBaseOnRegularity_of_timeDerivWithin (I := I) hRT
       (fun {t} ht => hRnhds ht)
       (fun t ht x _ => hSmooth p hpN V t ht x)
       (fun s hs x _ => hFdiff p hpN V s hs x)
@@ -379,5 +379,5 @@ theorem covDerivOfField_eval_mdiffAt
       (I := I) A0 W x)
     p V).mdifferentiableAt (by simp)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

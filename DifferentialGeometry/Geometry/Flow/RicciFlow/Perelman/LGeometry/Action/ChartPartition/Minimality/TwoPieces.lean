@@ -25,7 +25,7 @@ variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] in
 omit [CompactSpace M] in
-theorem lChartAction_pair_le_of_lRegAction_minimizer
+theorem lChartAction_pair_le_of_lRegularizedAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -42,8 +42,8 @@ theorem lChartAction_pair_le_of_lRegAction_minimizer
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta (t 0) = gamma (t 0) →
       delta (t (Fin.last 2)) = gamma (t (Fin.last 2)) →
-      lRegAction S T gamma (t 0) (t (Fin.last 2)) ≤
-        lRegAction S T delta (t 0) (t (Fin.last 2)))
+      lRegularizedAction S T gamma (t 0) (t (Fin.last 2)) ≤
+        lRegularizedAction S T delta (t 0) (t (Fin.last 2)))
     (v : (i : Fin 2) → timeH1 E (partitionIntervalLength t i))
     (hvtar : ∀ i, MapsTo (v i).toFun
       (Icc (0 : Real) (partitionIntervalLength t i)) (extChartAt I (p i)).target)
@@ -56,22 +56,22 @@ theorem lChartAction_pair_le_of_lRegAction_minimizer
     (∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (u i)) ≤
       ∑ i : Fin 2, lChartAction S T (t i.castSucc) (p i) (v i) := by
   obtain ⟨gammaV, hgammaV, hsrcV, hrepV, hV0, hV2, alpha, _w,
-      halpha, halpha0, halpha2, _hsrcA, _hrepA, _hw, _hunif, hact⟩ :=
-    exists_contMDiff_one_lRegAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T t htmono p v hvtar hvnode hreg
+      halpha, halpha0, halpha2, _hsrcA, _hrepA, _hw, _huniform, hact⟩ :=
+    exists_contMDiff_one_lRegularizedAction_approximation_of_compatible_chartH1_pair (I := I) S hMet hSc T t htmono p v hvtar hvnode hreg
   have hneg : Tendsto
-      (fun n ↦ -lRegAction S T (alpha n) (t 0) (t (Fin.last 2))) atTop
-      (nhds (-lRegAction S T gammaV (t 0) (t (Fin.last 2)))) :=
+      (fun n ↦ -lRegularizedAction S T (alpha n) (t 0) (t (Fin.last 2))) atTop
+      (nhds (-lRegularizedAction S T gammaV (t 0) (t (Fin.last 2)))) :=
     continuousAt_neg.tendsto.comp hact
-  have hglobal : lRegAction S T gamma (t 0) (t (Fin.last 2)) ≤
-      lRegAction S T gammaV (t 0) (t (Fin.last 2)) := by
+  have hglobal : lRegularizedAction S T gamma (t 0) (t (Fin.last 2)) ≤
+      lRegularizedAction S T gammaV (t 0) (t (Fin.last 2)) := by
     have hlim := le_of_tendsto' hneg fun n ↦ neg_le_neg
       (hmin (alpha n) (halpha n)
         ((halpha0 n).trans (hV0.trans hv0))
         ((halpha2 n).trans (hV2.trans hv2)))
     linarith
-  rw [lRegAction_eq_sum_lChartAction S hMet hSc T (t 0) (t (Fin.last 2))
+  rw [lRegularizedAction_eq_sum_lChartAction S hMet hSc T (t 0) (t (Fin.last 2))
     t htmono rfl rfl p gamma u hsrc hrep hreg] at hglobal
-  rw [lRegAction_eq_sum_lChartAction S hMet hSc T (t 0) (t (Fin.last 2))
+  rw [lRegularizedAction_eq_sum_lChartAction S hMet hSc T (t 0) (t (Fin.last 2))
     t htmono rfl rfl p gammaV v hsrcV hrepV hreg] at hglobal
   exact hglobal
 

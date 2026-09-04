@@ -37,63 +37,63 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-private theorem perModeConv_contDiff_succ_of_contDiff (lam : ℝ) (k : ℕ) {f : ℝ → ℝ}
-    (hf : ContDiff ℝ (k : ℕ) f) : ContDiff ℝ ((k + 1 : ℕ)) (perModeConv lam f) := by
+private theorem perModeConvolution_contDiff_succ_of_contDiff (lam : ℝ) (k : ℕ) {f : ℝ → ℝ}
+    (hf : ContDiff ℝ (k : ℕ) f) : ContDiff ℝ ((k + 1 : ℕ)) (perModeConvolution lam f) := by
   have hfcont : Continuous f := hf.continuous
-  have hphi_low : ContDiff ℝ (k : ℕ) (perModeConv lam f) :=
-    perModeConv_contDiff_of_contDiff (k : ℕ∞) lam f hf
-  have hderiv_eq : deriv (perModeConv lam f)
-      = fun t => f t - lam * perModeConv lam f t :=
-    deriv_eq (fun t => perModeConv_hasDerivAt lam hfcont t)
-  have hdiff : Differentiable ℝ (perModeConv lam f) :=
-    fun t => (perModeConv_hasDerivAt lam hfcont t).differentiableAt
+  have hphi_low : ContDiff ℝ (k : ℕ) (perModeConvolution lam f) :=
+    perModeConvolution_contDiff_of_contDiff (k : ℕ∞) lam f hf
+  have hderiv_eq : deriv (perModeConvolution lam f)
+      = fun t => f t - lam * perModeConvolution lam f t :=
+    deriv_eq (fun t => perModeConvolution_hasDerivAt lam hfcont t)
+  have hdiff : Differentiable ℝ (perModeConvolution lam f) :=
+    fun t => (perModeConvolution_hasDerivAt lam hfcont t).differentiableAt
   rw [Nat.cast_succ, contDiff_succ_iff_deriv]
   refine ⟨hdiff, fun hω => absurd hω (by simp), ?_⟩
   rw [hderiv_eq]
   exact hf.sub (contDiff_const.mul hphi_low)
 
-private theorem perModeConv_iteratedDeriv_succ_finiteOrder (lam : ℝ) {f : ℝ → ℝ}
+private theorem perModeConvolution_iteratedDeriv_succ_finiteOrder (lam : ℝ) {f : ℝ → ℝ}
     (p : ℕ) (hf : ContDiff ℝ (p : ℕ) f) :
-    iteratedDeriv (p + 1) (perModeConv lam f)
-      = fun t => iteratedDeriv p f t - lam * iteratedDeriv p (perModeConv lam f) t := by
+    iteratedDeriv (p + 1) (perModeConvolution lam f)
+      = fun t => iteratedDeriv p f t - lam * iteratedDeriv p (perModeConvolution lam f) t := by
   have hfcont : Continuous f := hf.continuous
-  have hphi_smooth : ContDiff ℝ (p : ℕ) (perModeConv lam f) :=
-    perModeConv_contDiff_of_contDiff (p : ℕ∞) lam f hf
-  have hderiv_eq : deriv (perModeConv lam f)
-      = fun t => f t - lam * perModeConv lam f t :=
-    deriv_eq (fun t => perModeConv_hasDerivAt lam hfcont t)
+  have hphi_smooth : ContDiff ℝ (p : ℕ) (perModeConvolution lam f) :=
+    perModeConvolution_contDiff_of_contDiff (p : ℕ∞) lam f hf
+  have hderiv_eq : deriv (perModeConvolution lam f)
+      = fun t => f t - lam * perModeConvolution lam f t :=
+    deriv_eq (fun t => perModeConvolution_hasDerivAt lam hfcont t)
   rw [iteratedDeriv_succ', hderiv_eq]
   funext t
   have hcd_f : ContDiffAt ℝ (p : WithTop ℕ∞) f t := hf.contDiffAt
-  have hcd_phi : ContDiffAt ℝ (p : WithTop ℕ∞) (perModeConv lam f) t :=
+  have hcd_phi : ContDiffAt ℝ (p : WithTop ℕ∞) (perModeConvolution lam f) t :=
     hphi_smooth.contDiffAt
   have hcd_lp : ContDiffAt ℝ (p : WithTop ℕ∞)
-      (fun t => lam * perModeConv lam f t) t :=
+      (fun t => lam * perModeConvolution lam f t) t :=
     hcd_phi.const_smul lam
   have hsub :
-      iteratedDeriv p (fun t => f t - lam * perModeConv lam f t) t
+      iteratedDeriv p (fun t => f t - lam * perModeConvolution lam f t) t
         = iteratedDeriv p f t
-          - iteratedDeriv p (fun t => lam * perModeConv lam f t) t := by
+          - iteratedDeriv p (fun t => lam * perModeConvolution lam f t) t := by
     have hshow :
-        (fun t => f t - lam * perModeConv lam f t)
-          = f - fun t => lam * perModeConv lam f t := by
+        (fun t => f t - lam * perModeConvolution lam f t)
+          = f - fun t => lam * perModeConvolution lam f t := by
       funext u; simp
     rw [hshow, iteratedDeriv_sub hcd_f hcd_lp]
   rw [hsub]
   have hconst :
-      iteratedDeriv p (fun t => lam * perModeConv lam f t) t
-        = lam * iteratedDeriv p (perModeConv lam f) t := by
+      iteratedDeriv p (fun t => lam * perModeConvolution lam f t) t
+        = lam * iteratedDeriv p (perModeConvolution lam f) t := by
     have hsmul := iteratedDeriv_const_smul (𝕜 := ℝ) (F := ℝ) (R := ℝ)
-      (n := p) (f := perModeConv lam f) hcd_phi lam
+      (n := p) (f := perModeConvolution lam f) hcd_phi lam
     simp only [smul_eq_mul] at hsmul
     exact hsmul
   rw [hconst]
 
-private theorem perModeConv_sq_le_T_mul_int (lam : ℝ) (hlam : 0 ≤ lam) {T : ℝ}
+private theorem perModeConvolution_sq_le_T_mul_int (lam : ℝ) (hlam : 0 ≤ lam) {T : ℝ}
     {c : ℝ → ℝ} (hc : Continuous c) (hT : 0 ≤ T) {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
-    (perModeConv lam c t) ^ 2 ≤ T * ∫ s in (0 : ℝ)..T, (c s) ^ 2 := by
+    (perModeConvolution lam c t) ^ 2 ≤ T * ∫ s in (0 : ℝ)..T, (c s) ^ 2 := by
   obtain ⟨ht0, htT⟩ := ht
-  have hbase : (perModeConv lam c t) ^ 2 ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 :=
+  have hbase : (perModeConvolution lam c t) ^ 2 ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 :=
     per_mode_convolution_sq_le_time_mul_integral lam hlam hc ht0
   have hint_t_nn : 0 ≤ ∫ s in (0 : ℝ)..t, (c s) ^ 2 :=
     intervalIntegral.integral_nonneg ht0 (fun s _ => sq_nonneg _)
@@ -105,13 +105,13 @@ private theorem perModeConv_sq_le_T_mul_int (lam : ℝ) (hlam : 0 ≤ lam) {T : 
     have htail : 0 ≤ ∫ s in t..T, (c s) ^ 2 :=
       intervalIntegral.integral_nonneg htT (fun s _ => sq_nonneg _)
     linarith
-  calc (perModeConv lam c t) ^ 2
+  calc (perModeConvolution lam c t) ^ 2
       ≤ t * ∫ s in (0 : ℝ)..t, (c s) ^ 2 := hbase
     _ ≤ T * ∫ s in (0 : ℝ)..T, (c s) ^ 2 := by
         exact mul_le_mul htT hint_le hint_t_nn hT
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem perModeConv_finiteOrder_timeDeriv_spectralMass_le
+private theorem perModeConvolution_finiteOrder_timeDeriv_spectralMass_le
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {T : ℝ} (hT : 0 ≤ T) (k : ℕ)
     (f : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)
     (hf_smooth : ∀ i, ContDiff ℝ (k : ℕ) (f i))
@@ -125,7 +125,7 @@ private theorem perModeConv_finiteOrder_timeDeriv_spectralMass_le
         ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) T,
           tensorSobolevWeight (I := I) (M := M) i σ *
               (iteratedDeriv m
-                (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (f i)) t) ^ 2
+                (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (f i)) t) ^ 2
             ≤ Cmaj i := by
   intro m
   induction m with
@@ -139,8 +139,8 @@ private theorem perModeConv_finiteOrder_timeDeriv_spectralMass_le
       have hwt_nn : 0 ≤ tensorSobolevWeight (I := I) (M := M) i σ :=
         tensorSobolevWeight_nonneg (I := I) (M := M) i σ
       have hcont : Continuous (f i) := (hf_smooth i).continuous
-      have hbound : (perModeConv lam (f i) t) ^ 2 ≤ T * ∫ s in (0 : ℝ)..T, f i s ^ 2 :=
-        perModeConv_sq_le_T_mul_int lam hlam_nn hcont hT ht
+      have hbound : (perModeConvolution lam (f i) t) ^ 2 ≤ T * ∫ s in (0 : ℝ)..T, f i s ^ 2 :=
+        perModeConvolution_sq_le_T_mul_int lam hlam_nn hcont hT ht
       have hintegral_le :
           tensorSobolevWeight (I := I) (M := M) i σ * ∫ s in (0 : ℝ)..T, f i s ^ 2
             ≤ T * B i := by
@@ -167,8 +167,8 @@ private theorem perModeConv_finiteOrder_timeDeriv_spectralMass_le
             ≤ (T - 0) * B i := hmono
           _ = T * B i := by ring
       calc tensorSobolevWeight (I := I) (M := M) i σ *
-            (iteratedDeriv 0 (perModeConv lam (f i)) t) ^ 2
-          = tensorSobolevWeight (I := I) (M := M) i σ * (perModeConv lam (f i) t) ^ 2 := by
+            (iteratedDeriv 0 (perModeConvolution lam (f i)) t) ^ 2
+          = tensorSobolevWeight (I := I) (M := M) i σ * (perModeConvolution lam (f i) t) ^ 2 := by
             rw [iteratedDeriv_zero]
         _ ≤ tensorSobolevWeight (I := I) (M := M) i σ * (T * ∫ s in (0 : ℝ)..T, f i s ^ 2) :=
             mul_le_mul_of_nonneg_left hbound hwt_nn
@@ -189,26 +189,26 @@ private theorem perModeConv_finiteOrder_timeDeriv_spectralMass_le
       have hwtσ_nn : 0 ≤ tensorSobolevWeight (I := I) (M := M) i σ :=
         tensorSobolevWeight_nonneg (I := I) (M := M) i σ
       have hfp : ContDiff ℝ (p : ℕ) (f i) := (hf_smooth i).of_le (by exact_mod_cast hp_le_k)
-      have hrec := perModeConv_iteratedDeriv_succ_finiteOrder lam p hfp
-      have hval : iteratedDeriv (p + 1) (perModeConv lam (f i)) t
-          = iteratedDeriv p (f i) t - lam * iteratedDeriv p (perModeConv lam (f i)) t := by
+      have hrec := perModeConvolution_iteratedDeriv_succ_finiteOrder lam p hfp
+      have hval : iteratedDeriv (p + 1) (perModeConvolution lam (f i)) t
+          = iteratedDeriv p (f i) t - lam * iteratedDeriv p (perModeConvolution lam (f i)) t := by
         rw [hrec]
       have hexpand_sq :
-          (iteratedDeriv (p + 1) (perModeConv lam (f i)) t) ^ 2
+          (iteratedDeriv (p + 1) (perModeConvolution lam (f i)) t) ^ 2
             ≤ 2 * (iteratedDeriv p (f i) t) ^ 2
-              + 2 * (lam * iteratedDeriv p (perModeConv lam (f i)) t) ^ 2 := by
+              + 2 * (lam * iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2 := by
         rw [hval]
         nlinarith [sq_nonneg (iteratedDeriv p (f i) t
-            + lam * iteratedDeriv p (perModeConv lam (f i)) t),
+            + lam * iteratedDeriv p (perModeConvolution lam (f i)) t),
           sq_nonneg (iteratedDeriv p (f i) t
-            - lam * iteratedDeriv p (perModeConv lam (f i)) t)]
+            - lam * iteratedDeriv p (perModeConvolution lam (f i)) t)]
       have hforce_term :
           tensorSobolevWeight (I := I) (M := M) i σ *
               (iteratedDeriv p (f i) t) ^ 2 ≤ Bf i :=
         hBf_le i t ht
       have hphi_term :
           tensorSobolevWeight (I := I) (M := M) i (σ + 2) *
-              (iteratedDeriv p (perModeConv lam (f i)) t) ^ 2 ≤ Cprev i :=
+              (iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2 ≤ Cprev i :=
         hCprev_le i t ht
       have hweight_step :
           tensorSobolevWeight (I := I) (M := M) i σ * lam ^ 2
@@ -229,36 +229,36 @@ private theorem perModeConv_finiteOrder_timeDeriv_spectralMass_le
         exact mul_le_mul_of_nonneg_left hlamsq_le hwtσ_nn
       have hlam_sq_term :
           tensorSobolevWeight (I := I) (M := M) i σ *
-              (lam * iteratedDeriv p (perModeConv lam (f i)) t) ^ 2
+              (lam * iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2
             ≤ Cprev i := by
-        have heq : (lam * iteratedDeriv p (perModeConv lam (f i)) t) ^ 2
-            = lam ^ 2 * (iteratedDeriv p (perModeConv lam (f i)) t) ^ 2 := by ring
+        have heq : (lam * iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2
+            = lam ^ 2 * (iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2 := by ring
         calc tensorSobolevWeight (I := I) (M := M) i σ *
-              (lam * iteratedDeriv p (perModeConv lam (f i)) t) ^ 2
+              (lam * iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2
             = (tensorSobolevWeight (I := I) (M := M) i σ * lam ^ 2) *
-                (iteratedDeriv p (perModeConv lam (f i)) t) ^ 2 := by
+                (iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2 := by
               rw [heq]; ring
           _ ≤ tensorSobolevWeight (I := I) (M := M) i (σ + 2) *
-                (iteratedDeriv p (perModeConv lam (f i)) t) ^ 2 := by
+                (iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2 := by
               apply mul_le_mul_of_nonneg_right hweight_step (sq_nonneg _)
           _ ≤ Cprev i := hphi_term
       calc tensorSobolevWeight (I := I) (M := M) i σ *
-            (iteratedDeriv (p + 1) (perModeConv lam (f i)) t) ^ 2
+            (iteratedDeriv (p + 1) (perModeConvolution lam (f i)) t) ^ 2
           ≤ tensorSobolevWeight (I := I) (M := M) i σ *
               (2 * (iteratedDeriv p (f i) t) ^ 2
-                + 2 * (lam * iteratedDeriv p (perModeConv lam (f i)) t) ^ 2) :=
+                + 2 * (lam * iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2) :=
             mul_le_mul_of_nonneg_left hexpand_sq hwtσ_nn
         _ = 2 * (tensorSobolevWeight (I := I) (M := M) i σ *
                 (iteratedDeriv p (f i) t) ^ 2)
               + 2 * (tensorSobolevWeight (I := I) (M := M) i σ *
-                (lam * iteratedDeriv p (perModeConv lam (f i)) t) ^ 2) := by ring
+                (lam * iteratedDeriv p (perModeConvolution lam (f i)) t) ^ 2) := by ring
         _ ≤ 2 * Bf i + 2 * Cprev i := by
             have h1 := mul_le_mul_of_nonneg_left hforce_term (by norm_num : (0 : ℝ) ≤ 2)
             have h2 := mul_le_mul_of_nonneg_left hlam_sq_term (by norm_num : (0 : ℝ) ≤ 2)
             linarith
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem perModeConv_finiteOrder_timeJet_spectralMass_gain
+theorem perModeConvolution_finiteOrder_timeJet_spectralMass_gain
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {T : ℝ} (hT : 0 ≤ T) (k : ℕ)
     (f : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)
     (hf_smooth : ∀ i, ContDiff ℝ (k : ℕ) (f i))
@@ -268,18 +268,18 @@ theorem perModeConv_finiteOrder_timeJet_spectralMass_gain
           tensorSobolevWeight (I := I) (M := M) i τ *
               (iteratedDeriv j (f i) t) ^ 2 ≤ B i) :
     (∀ i, ContDiff ℝ ((k + 1 : ℕ))
-        (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (f i))) ∧
+        (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (f i))) ∧
     (∀ (j : ℕ), j ≤ k + 1 → ∀ (τ : ℝ), 0 ≤ τ →
       ∃ B : TensorEigenIdx (I := I) (M := M) g r s → ℝ, Summable B ∧
         ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) T,
           tensorSobolevWeight (I := I) (M := M) i τ *
               (iteratedDeriv j
-                (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (f i)) t) ^ 2 ≤ B i) := by
+                (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (f i)) t) ^ 2 ≤ B i) := by
   refine ⟨fun i =>
-    perModeConv_contDiff_succ_of_contDiff (TensorEigenIdx.lambda (I := I) (M := M) i) k
+    perModeConvolution_contDiff_succ_of_contDiff (TensorEigenIdx.lambda (I := I) (M := M) i) k
       (hf_smooth i), ?_⟩
   intro j hj τ hτ
-  exact perModeConv_finiteOrder_timeDeriv_spectralMass_le (I := I) (M := M)
+  exact perModeConvolution_finiteOrder_timeDeriv_spectralMass_le (I := I) (M := M)
     g hT k f hf_smooth hf_mass j hj τ hτ
 
 

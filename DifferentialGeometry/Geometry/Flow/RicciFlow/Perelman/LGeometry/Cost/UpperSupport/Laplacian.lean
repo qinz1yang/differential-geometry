@@ -68,15 +68,15 @@ private theorem exists_basis_eq_of_metric_orthonormal
 omit [SigmaCompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem laplacian_lRegAction_endpointBranch_le_index_sum
+theorem laplacian_lRegularizedAction_endpointBranch_le_index_sum
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (ha0 : 0 < a) (hab : a < b)
     {gamma : Real → M} {x : M} {Z : TangentSpace I x}
-    (hgeo : IsLRegCurveOn S T gamma (uIcc (0 : Real) b) x Z)
+    (hgeo : IsLRegularizedCurveOn S T gamma (uIcc (0 : Real) b) x Z)
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta 0 = gamma 0 → delta b = gamma b →
-      lRegAction S T gamma 0 b ≤ lRegAction S T delta 0 b)
+      lRegularizedAction S T gamma 0 b ≤ lRegularizedAction S T delta 0 b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
     (hVopen : IsOpen V) (hA0V : A0 ∈ V)
     (hKopen : IsOpen K) (hKconn : IsPreconnected K)
@@ -91,7 +91,7 @@ theorem laplacian_lRegAction_endpointBranch_le_index_sum
           (fun r : Real ↦ alpha (A, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A, z)) r) s =
-        lRegAccel S T s (alpha (A, s))
+        lRegularizedAccel S T s (alpha (A, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A, r)) s))
     (hcenter : ∀ s ∈ Icc (0 : Real) b,
       (fun r ↦ alpha (A0, r)) =ᶠ[nhds s] gamma)
@@ -101,7 +101,7 @@ theorem laplacian_lRegAction_endpointBranch_le_index_sum
     (P : Fin (Module.finrank Real E) →
       ∀ s, TangentSpace I (alpha (A0, s)))
     {Omega : Set Real} (hOmega : IsOpen Omega)
-    (hOmegaSeg : Icc (0 : Real) b ⊆ Omega)
+    (hOmegaSegment : Icc (0 : Real) b ⊆ Omega)
     (hW : ∀ i, ContMDiffOn (modelWithCornersSelf Real Real)
       I.tangent (8 : Nat)
       (fun s : Real ↦
@@ -114,12 +114,12 @@ theorem laplacian_lRegAction_endpointBranch_le_index_sum
     let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let beta : Real → M := fun s ↦ alpha (A0, s)
     let branch : M → Real := fun y ↦
-      lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
+      lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
     laplacian (I := I) (LeviCivita (I := I)
         (S.base.metric (T - b ^ 2))) (S.base.metric (T - b ^ 2))
         branch (alpha (A0, b)) ≤
       2 * ∑ i : Fin (Module.finrank Real E),
-        lRegIndex S T beta (fun s ↦ ((s - a) / (b - a)) • P i s)
+        lRegularizedIndex S T beta (fun s ↦ ((s - a) / (b - a)) • P i s)
           (fun s ↦ ((s - a) / (b - a)) • P i s) a b := by
   classical
   dsimp only
@@ -128,7 +128,7 @@ theorem laplacian_lRegAction_endpointBranch_le_index_sum
   let g : SmoothRiemannianMetric I M := S.base.metric (T - b ^ 2)
   let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let branch : M → Real := fun q ↦
-    lRegAction S T (fun s ↦ alpha (hloc.localInverse q, s)) a b
+    lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse q, s)) a b
   let W : Fin (Module.finrank Real E) →
       (s : Real) → TangentSpace I (beta s) := fun i s ↦
     ((s - a) / (b - a)) • P i s
@@ -145,7 +145,7 @@ theorem laplacian_lRegAction_endpointBranch_le_index_sum
     rw [hbasis i, hbasis j]
     simpa only [g, y, beta] using hON i j
   obtain ⟨U, hUopen, hyU, F, hFsmooth, hFeq⟩ :=
-    exists_contMDiffOn_lRegAction_endpointBranch
+    exists_contMDiffOn_lRegularizedAction_endpointBranch
       S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg hinj
   have hsmooth : ContMDiffOn I (modelWithCornersSelf Real Real) ∞
@@ -177,17 +177,17 @@ theorem laplacian_lRegAction_endpointBranch_le_index_sum
     exact hlap0.trans htrace
   have hfield (i : Fin (Module.finrank Real E)) :
       hessFun (I := I) g branch y (P i b) (P i b) ≤
-        2 * lRegIndex S T beta (W i) (W i) a b := by
+        2 * lRegularizedIndex S T beta (W i) (W i) a b := by
     have hWa : W i a = 0 := by
       simp only [W, sub_self, zero_div, zero_smul]
     have hWb : W i b = P i b := by
       change ((b - a) / (b - a)) • P i b = P i b
       rw [div_self (sub_ne_zero.mpr hab.ne'), one_smul]
     simpa only [g, branch, y, beta, hloc, W] using
-      hessFun_lRegAction_endpointBranch_le_index
+      hessFun_lRegularizedAction_endpointBranch_le_index
         S hS T a b ha0 hab hgeo hmin hVopen hA0V hKopen
         hKconn h0K hbK hstart halpha hreg hEuler hcenter hinj
-        (P i b) (W i) hOmega hOmegaSeg (by
+        (P i b) (W i) hOmega hOmegaSegment (by
           simpa only [W, beta] using hW i) hWa hWb
   rw [show S.base.metric (T - b ^ 2) = g from rfl,
     show alpha (A0, b) = y from rfl, hlap]
@@ -195,13 +195,13 @@ theorem laplacian_lRegAction_endpointBranch_le_index_sum
     (∑ i : Fin (Module.finrank Real E),
         hessFun (I := I) g branch y (P i b) (P i b)) ≤
         ∑ i : Fin (Module.finrank Real E),
-          2 * lRegIndex S T beta (W i) (W i) a b :=
+          2 * lRegularizedIndex S T beta (W i) (W i) a b :=
       Finset.sum_le_sum fun i _ ↦ hfield i
     _ = 2 * ∑ i : Fin (Module.finrank Real E),
-        lRegIndex S T beta (W i) (W i) a b := by
+        lRegularizedIndex S T beta (W i) (W i) a b := by
       rw [Finset.mul_sum]
     _ = 2 * ∑ i : Fin (Module.finrank Real E),
-        lRegIndex S T beta
+        lRegularizedIndex S T beta
           (fun s ↦ ((s - a) / (b - a)) • P i s)
           (fun s ↦ ((s - a) / (b - a)) • P i s) a b := rfl
 

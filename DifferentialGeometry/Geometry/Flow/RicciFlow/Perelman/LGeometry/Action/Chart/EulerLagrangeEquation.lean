@@ -61,8 +61,8 @@ private theorem lGramPair_deriv
   let w : Real → E × E := fun s ↦ (u s, q s)
   let wz : Real → E × E := fun s ↦ (u s, z)
   let alpha : Real → M := lPhaseCurve (I := I) p w
-  let A : ∀ s, TangentSpace I (alpha s) := lPhaseVel (I := I) p w
-  let Z : ∀ s, TangentSpace I (alpha s) := lPhaseVel (I := I) p wz
+  let A : ∀ s, TangentSpace I (alpha s) := lPhaseVelocity (I := I) p w
+  let Z : ∀ s, TangentSpace I (alpha s) := lPhaseVelocity (I := I) p wz
   let g := S.base.metric (T - r ^ 2)
   have htarget : ∀ᶠ s in nhds r, u s ∈ (extChartAt I p).target :=
     hu.continuousAt.eventually
@@ -81,12 +81,12 @@ private theorem lGramPair_deriv
   have hAdiff : DifferentiableAt Real
       (chartRepAt (I := I) alpha A r) r := by
     simpa only [alpha, A, w] using
-      lPhaseVel_diff (I := I) p w r hu.differentiableAt hq.differentiableAt hy
+      lPhaseVelocity_diff (I := I) p w r hu.differentiableAt hq.differentiableAt hy
   have hconst : HasDerivAt (fun _ : Real ↦ z) 0 r := hasDerivAt_const r z
   have hZdiff : DifferentiableAt Real
       (chartRepAt (I := I) alpha Z r) r := by
     have hz :=
-      lPhaseVel_diff (I := I) p wz r hu.differentiableAt hconst.differentiableAt hy
+      lPhaseVelocity_diff (I := I) p wz r hu.differentiableAt hconst.differentiableAt hy
     refine hz.congr_of_eventuallyEq (Eventually.of_forall fun _ ↦ ?_)
     rfl
   have hcurve_eq : chartCurve (I := I) p alpha =ᶠ[nhds r] u := by
@@ -135,7 +135,7 @@ private theorem lGramPair_deriv
       hcurve_eq.deriv_eq, hu.deriv, hZ_eq.eq_of_nhds,
       hcurve_eq.eq_of_nhds, zero_add] at hinv
     exact hinv.symm
-  have hmove := lRegInner_deriv (I := I) S hS T alpha A Z r ht
+  have hmove := lRegularizedInner_deriv (I := I) S hS T alpha A Z r ht
     halpha hAdiff hZdiff
   refine (hmove.congr_of_eventuallyEq ?_).congr_deriv ?_
   · filter_upwards [htarget] with s hs
@@ -143,7 +143,7 @@ private theorem lGramPair_deriv
     rfl
   · rw [hcovA, hcovZ]
     rw [show alpha r = (extChartAt I p).symm (u r) from rfl]
-    simp only [A, Z, w, wz, lPhaseVel, lPhaseCurve]
+    simp only [A, Z, w, wz, lPhaseVelocity, lPhaseCurve]
     have hgramA :
         (S.base.metric (T - r ^ 2)).inner ((extChartAt I p).symm (u r))
             (trivFromE (I := I) p ((extChartAt I p).symm (u r))
@@ -362,7 +362,7 @@ private theorem lScalPair
     rw [TangentBundle.trivializationAt_baseSet]
     exact hxsrc
   have hf : MDifferentiableAt I 𝓘(Real, Real) (S.scalar t) x :=
-    (scalarSmoothOfSol (I := I) S t).mdifferentiableAt (by simp)
+    (scalarSmoothOfSolution (I := I) S t).mdifferentiableAt (by simp)
   rw [chartScalCov_apply (I := I) S hS p ht hy]
   change _ = (S.base.metric t).inner x
     (gradientFun (I := I) (S.base.metric t) (S.scalar t) x) Y
@@ -383,7 +383,7 @@ private theorem lAccelPair
     let Y := trivFromE (I := I) p x w
     inner Real
         (chartGramOp (I := I) S.family p (T - s ^ 2, y)
-          (trivToE (I := I) p x (lRegAccel S T s x A))) w =
+          (trivToE (I := I) p x (lRegularizedAccel S T s x A))) w =
       2 * s ^ 2 * chartScalCov (I := I) S p (T - s ^ 2, y) w -
         4 * s * S.ricciAt (T - s ^ 2) x (vec2 A Y) := by
   let x : M := (extChartAt I p).symm y
@@ -402,10 +402,10 @@ private theorem lAccelPair
   rw [chartGramOp_inner]
   change (S.base.metric (T - s ^ 2)).inner x
       (trivFromE (I := I) p x
-        (trivToE (I := I) p x (lRegAccel S T s x A))) Y = _
+        (trivToE (I := I) p x (lRegularizedAccel S T s x A))) Y = _
   rw [trivFromE_trivToE (I := I) p hxbase]
   rw [(S.base.metric (T - s ^ 2)).symm x]
-  rw [lRegAccel_inner]
+  rw [lRegularizedAccel_inner]
   rw [← lScalPair (I := I) S hS p ht hy w]
   have hric : S.ricciAt (T - s ^ 2) x (vec2 Y A) =
       S.ricciAt (T - s ^ 2) x (vec2 A Y) := by
@@ -439,7 +439,7 @@ theorem lChart_momentum_deriv_eq_force_iff_velocity_deriv_eq_lPhaseField
   let x : M := (extChartAt I p).symm (u.toFun r)
   let A : TangentSpace I x := trivFromE (I := I) p x (q r)
   let accel : E := trivToE (I := I) p x
-    (lRegAccel S T (a + r) x A)
+    (lRegularizedAccel S T (a + r) x A)
   have harg : DifferentiableAt Real
       (fun z : Real => (T - (a + z) ^ 2, u.toFun z)) r := by
     exact (((differentiableAt_const (c := T)).sub

@@ -29,15 +29,15 @@ variable {D : RealTimeInterval}
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem exists_uniform_lRegSpeedSq_bound
+private theorem exists_uniform_lRegularizedSpeedSq_bound
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {B : Real}
     (hB : 0 < B) (hslab : Set.Icc (T - B ^ 2) T ⊆ D.regular) :
     ∃ Q : Real, 0 ≤ Q ∧
-      ∀ s ∈ Set.Icc (0 : Real) B, s ∈ lRegDomain S T x Z →
-        lRegSpeedSq S T (lRegCurve S T x Z) s ≤ Q := by
-  let alpha : Real → M := lRegCurve S T x Z
+      ∀ s ∈ Set.Icc (0 : Real) B, s ∈ lRegularizedDomain S T x Z →
+        lRegularizedSpeedSq S T (lRegularizedCurve S T x Z) s ≤ Q := by
+  let alpha : Real → M := lRegularizedCurve S T x Z
   have hback : ∀ s ∈ Set.Icc (0 : Real) B,
       T - s ^ 2 ∈ Set.Icc (T - B ^ 2) T := by
     intro s hs
@@ -55,9 +55,9 @@ private theorem exists_uniform_lRegSpeedSq_bound
   have hd : 0 < d := by
     dsimp only [d]
     nlinarith [mul_nonneg hC (sq_nonneg B)]
-  let U0 : Real := lRegSpeedSq S T alpha 0
+  let U0 : Real := lRegularizedSpeedSq S T alpha 0
   let Q : Real := Real.exp (k * B) * (U0 + 1)
-  have hU0 : 0 ≤ U0 := lRegSpeedSq_nonneg (I := I) S T alpha 0
+  have hU0 : 0 ≤ U0 := lRegularizedSpeedSq_nonneg (I := I) S T alpha 0
   have hQ : 0 ≤ Q :=
     mul_nonneg (Real.exp_pos _).le (add_nonneg hU0 zero_le_one)
   refine ⟨Q, hQ, ?_⟩
@@ -68,18 +68,18 @@ private theorem exists_uniform_lRegSpeedSq_bound
       rw [← Real.exp_zero]
       exact Real.exp_le_exp.mpr (mul_nonneg hk.le hB.le)
     calc
-      lRegSpeedSq S T alpha 0 = U0 := rfl
+      lRegularizedSpeedSq S T alpha 0 = U0 := rfl
       _ ≤ 1 * (U0 + 1) := by linarith
       _ ≤ Real.exp (k * B) * (U0 + 1) :=
         mul_le_mul_of_nonneg_right hexp (add_nonneg hU0 zero_le_one)
       _ = Q := rfl
   · have hspos : 0 < s := lt_of_le_of_ne hs.1 (Ne.symm hs0)
-    have halpha : IsLRegCurveOn S T alpha (Set.Icc (0 : Real) s) x Z := by
+    have halpha : IsLRegularizedCurveOn S T alpha (Set.Icc (0 : Real) s) x Z := by
       simpa only [alpha, Set.uIcc_of_le hspos.le] using
-        lRegCurve_isLRegCurveOn (I := I) S hS T x Z hspos hsdom
+        lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hspos hsdom
     have hsub : Set.uIcc (0 : Real) s ⊆ Set.Icc (0 : Real) B := by
       simpa only [Set.uIcc_of_le hspos.le] using Set.Icc_subset_Icc_right hs.2
-    have hgr := lRegSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS T halpha 0 s C B hC hB.le
+    have hgr := lRegularizedSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS T halpha 0 s C B hC hB.le
       (fun _ hr ↦ by simpa only [Set.uIcc_of_le hspos.le] using hr)
       (fun r hr ↦ by
         have hrI := hsub hr
@@ -94,7 +94,7 @@ private theorem exists_uniform_lRegSpeedSq_bound
         have h := hric (T - r ^ 2) (hback r (hsub hr)) (alpha r)
           (lVelocity (I := I) alpha r)
         exact h.trans (mul_le_mul_of_nonneg_right (le_max_right Cg Cr)
-          (lRegSpeedSq_nonneg (I := I) S T alpha r)))
+          (lRegularizedSpeedSq_nonneg (I := I) S T alpha r)))
     have hratio : d / k ≤ 1 := by
       rw [div_le_one hk]
       dsimp only [d, k]
@@ -107,7 +107,7 @@ private theorem exists_uniform_lRegSpeedSq_bound
     have hterm : 0 ≤ U0 + d / k :=
       add_nonneg hU0 (div_nonneg hd.le hk.le)
     calc
-      lRegSpeedSq S T alpha s ≤
+      lRegularizedSpeedSq S T alpha s ≤
           Real.exp (k * |s - 0|) * (U0 + d / k) := by
         simpa only [alpha, U0, k, d] using hgr
       _ ≤ Real.exp (k * B) * (U0 + d / k) :=
@@ -120,36 +120,36 @@ private theorem exists_uniform_lRegSpeedSq_bound
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem mem_lRegDomain_of_time_slab
+theorem mem_lRegularizedDomain_of_time_slab
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) (B : Real)
     (hB : 0 ≤ B) (hslab : Set.Icc (T - B ^ 2) T ⊆ D.regular) :
-    B ∈ lRegDomain S T x Z := by
+    B ∈ lRegularizedDomain S T x Z := by
   classical
   by_cases hB0 : B = 0
   · subst B
-    apply zero_mem_lRegDomain (I := I) S hS T x Z
+    apply zero_mem_lRegularizedDomain (I := I) S hS T x Z
     apply hslab
     simp
   have hBpos : 0 < B := lt_of_le_of_ne hB (Ne.symm hB0)
-  let U : Set Real := lRegDomain S T x Z
-  have hUopen : IsOpen U := lRegDomain_isOpen S T x Z
+  let U : Set Real := lRegularizedDomain S T x Z
+  have hUopen : IsOpen U := lRegularizedDomain_isOpen S T x Z
   have h0U : (0 : Real) ∈ U := by
-    apply zero_mem_lRegDomain (I := I) S hS T x Z
+    apply zero_mem_lRegularizedDomain (I := I) S hS T x Z
     apply hslab
     simpa only [zero_pow, sub_zero] using
       (show T ∈ Set.Icc (T - B ^ 2) T from
         ⟨sub_le_self T (sq_nonneg B), le_rfl⟩)
   obtain ⟨Q, hQ, hspeed⟩ :=
-    exists_uniform_lRegSpeedSq_bound (I := I) S hS T x Z hBpos hslab
+    exists_uniform_lRegularizedSpeedSq_bound (I := I) S hS T x Z hBpos hslab
   have hclosed : closure U ∩ Set.Icc (0 : Real) B ⊆ U := by
     rintro s ⟨hscl, hsIcc⟩
     by_cases hsU : s ∈ U
     · exact hsU
     have hspos : 0 < s := lt_of_le_of_ne hsIcc.1 (fun h ↦ hsU (h ▸ h0U))
     obtain ⟨t, htU, htlim⟩ := mem_closure_iff_seq_limit.mp hscl
-    let gamma : Real → M := lRegCurve S T x Z
+    let gamma : Real → M := lRegularizedCurve S T x Z
     obtain ⟨y, _hy, phi, hphi, hylim⟩ :=
       (isCompact_univ : IsCompact (Set.univ : Set M)).tendsto_subseq
         (x := fun n ↦ gamma (t n)) (fun _ ↦ Set.mem_univ _)
@@ -165,19 +165,19 @@ theorem mem_lRegDomain_of_time_slab
       intro n hn0
       apply lt_of_not_ge
       intro hst
-      have hnDom : tn n ∈ lRegDomain S T x Z := by
+      have hnDom : tn n ∈ lRegularizedDomain S T x Z := by
         simpa only [U] using htnU n
       exact hsU (show s ∈ U from by
-        simpa only [U] using lRegDomain_seg S T x Z hnDom hsIcc.1 hst)
+        simpa only [U] using lRegularizedDomain_segment S T x Z hnDom hsIcc.1 hst)
     have htnpos : ∀ᶠ n in atTop, 0 < tn n :=
       Filter.Tendsto.eventually_const_lt hspos htnlim
     have htnIcc : ∀ᶠ n in atTop, tn n ∈ Set.Icc (0 : Real) B := by
       filter_upwards [htnpos] with n hn
       exact ⟨hn.le, (htnlt n hn.le).le.trans hsIcc.2⟩
-    have hySrc : y ∈ (chartAt H y).source := mem_chart_source H y
+    have hySource : y ∈ (chartAt H y).source := mem_chart_source H y
     have hyExt : y ∈ (extChartAt I y).source := by
       rw [extChartAt_source]
-      exact hySrc
+      exact hySource
     have hyTarget : extChartAt I y y ∈ interior (extChartAt I y).target := by
       rw [(isOpen_extChartAt_target (I := I) y).interior_eq]
       exact (extChartAt I y).map_source hyExt
@@ -198,8 +198,8 @@ theorem mem_lRegDomain_of_time_slab
     have hposK : ∀ᶠ n in atTop, extChartAt I y (gamma (tn n)) ∈ K := by
       apply hposlim
       exact Metric.closedBall_mem_nhds _ (half_pos hrho)
-    have hbaseSrc : ∀ᶠ n in atTop, gamma (tn n) ∈ (chartAt H y).source := by
-      exact hbaselim ((chartAt H y).open_source.mem_nhds hySrc)
+    have hbaseSource : ∀ᶠ n in atTop, gamma (tn n) ∈ (chartAt H y).source := by
+      exact hbaselim ((chartAt H y).open_source.mem_nhds hySource)
     have hmetricSmooth : MetricFamilySmoothOn (I := I) (M := M) D
         S.family.metric := hS.smoothMetric
     have htimeCompact : IsCompact (Set.Icc (T - B ^ 2) T) := isCompact_Icc
@@ -209,17 +209,17 @@ theorem mem_lRegDomain_of_time_slab
         hslab htimeCompact y (K := K) hKchart hKcompact
     let R : Real := Real.sqrt (Q / c)
     have hR : 0 ≤ R := Real.sqrt_nonneg _
-    let vel : Nat → E := fun n ↦
+    let velocity : Nat → E := fun n ↦
       trivToE (I := I) y (gamma (tn n))
         (lVelocity (I := I) gamma (tn n))
-    have hvelR : ∀ᶠ n in atTop, ‖vel n‖ ≤ R := by
-      filter_upwards [htnIcc, hposK, hbaseSrc] with n hn hpn hsrc
+    have hvelR : ∀ᶠ n in atTop, ‖velocity n‖ ≤ R := by
+      filter_upwards [htnIcc, hposK, hbaseSource] with n hn hpn hsrc
       have htime : T - tn n ^ 2 ∈ Set.Icc (T - B ^ 2) T := by
         have hsq : tn n ^ 2 ≤ B ^ 2 :=
           (sq_le_sq₀ hn.1 hB).2 hn.2
         exact ⟨sub_le_sub_left hsq T, sub_le_self T (sq_nonneg (tn n))⟩
       have hlow := hcLower
-        (T - tn n ^ 2, extChartAt I y (gamma (tn n))) ⟨htime, hpn⟩ (vel n)
+        (T - tn n ^ 2, extChartAt I y (gamma (tn n))) ⟨htime, hpn⟩ (velocity n)
       have hbase : gamma (tn n) ∈
           (trivializationAt E (TangentSpace I) y).baseSet := by
         simpa only [TangentBundle.trivializationAt_baseSet] using hsrc
@@ -229,7 +229,7 @@ theorem mem_lRegDomain_of_time_slab
           gamma (tn n) := (extChartAt I y).left_inv hsrc'
       have htriv :
           Tensor.Tensor0SRiemannian.chartTrivializationLinearMapSymm
-            (I := I) (M := M) y (gamma (tn n)) (vel n) =
+            (I := I) (M := M) y (gamma (tn n)) (velocity n) =
           lVelocity (I := I) gamma (tn n) := by
         change trivFromE (I := I) y (gamma (tn n))
           (trivToE (I := I) y (gamma (tn n))
@@ -237,29 +237,29 @@ theorem mem_lRegDomain_of_time_slab
         exact trivFromE_trivToE (I := I) y hbase _
       have hmetric : inner Real
           (chartGramOp (I := I) S.family y
-            (T - tn n ^ 2, extChartAt I y (gamma (tn n))) (vel n)) (vel n) =
-          lRegSpeedSq S T gamma (tn n) := by
+            (T - tn n ^ 2, extChartAt I y (gamma (tn n))) (velocity n)) (velocity n) =
+          lRegularizedSpeedSq S T gamma (tn n) := by
         calc
           _ = (S.family.metric (T - tn n ^ 2)).inner
               ((extChartAt I y).symm (extChartAt I y (gamma (tn n))))
               (Tensor.Tensor0SRiemannian.chartTrivializationLinearMapSymm
                 (I := I) (M := M) y
-                ((extChartAt I y).symm (extChartAt I y (gamma (tn n)))) (vel n))
+                ((extChartAt I y).symm (extChartAt I y (gamma (tn n)))) (velocity n))
               (Tensor.Tensor0SRiemannian.chartTrivializationLinearMapSymm
                 (I := I) (M := M) y
-                ((extChartAt I y).symm (extChartAt I y (gamma (tn n)))) (vel n)) :=
+                ((extChartAt I y).symm (extChartAt I y (gamma (tn n)))) (velocity n)) :=
             chartGramOp_inner (I := I) S.family y _ _ _
           _ = (S.family.metric (T - tn n ^ 2)).inner (gamma (tn n))
               (lVelocity (I := I) gamma (tn n))
               (lVelocity (I := I) gamma (tn n)) := by rw [hsymm, htriv]
-          _ = lRegSpeedSq S T gamma (tn n) := by
-            simp only [lRegSpeedSq, SolutionOn.family_metric]
+          _ = lRegularizedSpeedSq S T gamma (tn n) := by
+            simp only [lRegularizedSpeedSq, SolutionOn.family_metric]
       rw [hmetric] at hlow
-      have hsq : ‖vel n‖ ^ 2 ≤ Q / c := by
+      have hsq : ‖velocity n‖ ^ 2 ≤ Q / c := by
         rw [le_div_iff₀ hc]
         simpa only [mul_comm] using hlow.trans (hspeed (tn n) hn (htnU n))
       have hsqrt := Real.sqrt_le_sqrt hsq
-      simpa only [R, Real.sqrt_sq (norm_nonneg (vel n))] using hsqrt
+      simpa only [R, Real.sqrt_sq (norm_nonneg (velocity n))] using hsqrt
     let C : Set (Real × (E × E)) :=
       Set.Icc (0 : Real) B ×ˢ (K ×ˢ Metric.closedBall (0 : E) R)
     have hCcompact : IsCompact C :=
@@ -267,7 +267,7 @@ theorem mem_lRegDomain_of_time_slab
     have hCreg : C ⊆ {p : Real × (E × E) |
         T - p.1 ^ 2 ∈ D.regular ∧
           p.2.1 ∈ interior (extChartAt I y).target} := by
-      rintro p ⟨hpTime, hpPos, _hpVel⟩
+      rintro p ⟨hpTime, hpPos, _hpVelocity⟩
       have hsq : p.1 ^ 2 ≤ B ^ 2 :=
         (sq_le_sq₀ hpTime.1 hB).2 hpTime.2
       exact ⟨hslab ⟨sub_le_sub_left hsq T,
@@ -275,7 +275,7 @@ theorem mem_lRegDomain_of_time_slab
     obtain ⟨epsilon, hepsilon, hflow⟩ :=
       exists_lPhaseComp S hS T y hCcompact hCreg
     have hseedC : ∀ᶠ n in atTop,
-        (tn n, extChartAt I y (gamma (tn n)), vel n) ∈ C := by
+        (tn n, extChartAt I y (gamma (tn n)), velocity n) ∈ C := by
       filter_upwards [htnIcc, hposK, hvelR] with n hn hp hv
       exact ⟨hn, hp, by simpa only [Metric.mem_closedBall, dist_zero_right] using hv⟩
     have hnear : ∀ᶠ n in atTop, s ∈ Set.Ioo (tn n - epsilon) (tn n + epsilon) := by
@@ -283,16 +283,16 @@ theorem mem_lRegDomain_of_time_slab
         Ioo_mem_nhds (sub_lt_self s hepsilon) (lt_add_of_pos_right s hepsilon)
       filter_upwards [htnlim hnhds] with n hn
       exact ⟨by linarith [hn.2], by linarith [hn.1]⟩
-    obtain ⟨n, hnC, hnNear, hnSrc⟩ :=
-      (hseedC.and (hnear.and hbaseSrc)).exists
+    obtain ⟨n, hnC, hnNear, hnSource⟩ :=
+      (hseedC.and (hnear.and hbaseSource)).exists
     let t0 : Real := tn n
     have ht0U : t0 ∈ U := htnU n
     obtain ⟨curve, J, hJopen, hJconn, h0J, ht0J, hcurve⟩ := ht0U
     obtain ⟨V, hVopen, hZV, L, hLopen, hLconn, h0L, ht0L,
       alpha, halpha, hcurves⟩ :=
-      lRegFamily_extend (I := I) S hS T hJopen hJconn h0J ht0J hcurve
-    have hEq : Set.EqOn (lRegCurve S T x Z) (fun r ↦ alpha (Z, r)) L :=
-      lRegCurve_eqOn S hS T hLopen hLconn h0L (hcurves Z hZV)
+      lRegularizedFamily_extend (I := I) S hS T hJopen hJconn h0J ht0J hcurve
+    have hEq : Set.EqOn (lRegularizedCurve S T x Z) (fun r ↦ alpha (Z, r)) L :=
+      lRegularizedCurve_eqOn S hS T hLopen hLconn h0L (hcurves Z hZV)
     have hpos : alpha (Z, t0) = gamma t0 := (hEq ht0L).symm
     have heqGerm : (fun r ↦ alpha (Z, r)) =ᶠ[nhds t0] gamma :=
       Filter.EventuallyEq.symm <| hEq.eventuallyEq_of_mem (hLopen.mem_nhds ht0L)
@@ -303,24 +303,24 @@ theorem mem_lRegDomain_of_time_slab
       rfl
     have ht0src : alpha (Z, t0) ∈ (chartAt H y).source := by
       rw [hpos]
-      exact hnSrc
+      exact hnSource
     have hseedEq :
         (extChartAt I y (alpha (Z, t0)),
           fderiv Real (fun r : Real ↦ extChartAt I y (alpha (Z, r))) t0
             (1 : Real)) =
-        (extChartAt I y (gamma t0), vel n) := by
+        (extChartAt I y (gamma t0), velocity n) := by
       apply Prod.ext
       · rw [hpos]
-      · have hseedVel := lPhaseSeed_vel (I := I) y
+      · have hseedVelocity := lPhaseSeed_velocity (I := I) y
           ((hcurves Z hZV).2.2 t0 ht0L).2.1 ht0src
         calc
           fderiv Real (fun r : Real ↦ extChartAt I y (alpha (Z, r))) t0
               (1 : Real) =
             trivToE (I := I) y (alpha (Z, t0))
-              (lVelocity (I := I) (fun r ↦ alpha (Z, r)) t0) := hseedVel
-          _ = vel n := by rw [hpos, hvel]
+              (lVelocity (I := I) (fun r ↦ alpha (Z, r)) t0) := hseedVelocity
+          _ = velocity n := by rw [hpos, hvel]
     obtain ⟨O, hOopen, hseedO, Phi, hPhi0, hPhiSmooth, hPhiDeriv, hPhiMap⟩ :=
-      hflow (tn n, extChartAt I y (gamma (tn n)), vel n) hnC
+      hflow (tn n, extChartAt I y (gamma (tn n)), velocity n) hnC
     have hseedO' :
         (extChartAt I y (alpha (Z, t0)),
           fderiv Real (fun r : Real ↦ extChartAt I y (alpha (Z, r))) t0
@@ -328,7 +328,7 @@ theorem mem_lRegDomain_of_time_slab
       rw [hseedEq]
       exact hseedO
     obtain ⟨W, hWopen, hZW, _hWV, beta, hbeta, hbetaCurves⟩ :=
-      lRegFamily_step_of (I := I) S hS T x y hVopen hZV
+      lRegularizedFamily_step_of (I := I) S hS T x y hVopen hZV
         hLopen hLconn h0L ht0L halpha hcurves ht0src epsilon hepsilon
         hOopen hseedO' Phi hPhi0 hPhiSmooth hPhiDeriv hPhiMap
     have ht0I : t0 ∈ Set.Ioo (t0 - epsilon) (t0 + epsilon) :=

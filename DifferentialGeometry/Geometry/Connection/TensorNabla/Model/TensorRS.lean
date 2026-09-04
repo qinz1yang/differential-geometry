@@ -95,7 +95,7 @@ theorem covariantDeriv_tensorRSModelWithin_eval_derivation {r s : ℕ}
             (fun a : Fin s => V a y) := by
     simp [covariantDerivTensor0SModelWithin, covariantDerivTensor0SModelAt,
       lieDeriv_correctionL_apply]
-  have hCorrS :
+  have hCorrectionS :
       ((lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s (ΓX y)) ((T y) (β y)))
           (fun a : Fin s => V a y) =
         ∑ a : Fin s,
@@ -124,7 +124,7 @@ theorem covariantDeriv_tensorRSModelWithin_eval_derivation {r s : ℕ}
     exact ((T y) (β y)).map_update_add
       (fun b : Fin s => V b y) a
       (fderivWithin 𝕜 (V a) u y (X y)) (ΓX y (V a y))
-  rw [hβcov, hCorrS, hsum]
+  rw [hβcov, hCorrectionS, hsum]
   abel
 
 section ChristoffelModelRS

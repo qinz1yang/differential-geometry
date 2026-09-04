@@ -97,7 +97,7 @@ theorem chartLeviCivitaGoodSet_eq_extChartAt_source
   have hbase :
       (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=
     trivializationAt_baseSet_eq_chartAt_source (I := I) α
-  have hbase_extSrc :
+  have hbase_extSource :
       (trivializationAt E (TangentSpace I) α).baseSet = (extChartAt I α).source := by
     rw [hbase, extChartAt_source_eq_chartAt_source (I := I)]
   have h_target_open : IsOpen ((extChartAt I α).target : Set E) :=
@@ -111,7 +111,7 @@ theorem chartLeviCivitaGoodSet_eq_extChartAt_source
   · intro x hx
     refine (mem_chartLeviCivitaGoodSet_iff (I := I)).mpr ?_
     refine ⟨hx, ?_, ?_⟩
-    · rw [hbase_extSrc]
+    · rw [hbase_extSource]
       exact hx
     · have h_map : extChartAt I α x ∈ (extChartAt I α).target :=
         (extChartAt I α).map_source hx
@@ -389,12 +389,12 @@ lemma chartLeviCivita_leibniz (g : SmoothRiemannianMetric I M) (α : M)
       simpa using this
     have hxφ_inv : (extChartAt I α).symm (extChartAt I α x) = x :=
       (extChartAt I α).left_inv hxsrc
-    have hxφ_tgt : extChartAt I α x ∈ (extChartAt I α).target :=
+    have hxφ_target : extChartAt I α x ∈ (extChartAt I α).target :=
       (extChartAt I α).map_source hxsrc
     have hsymm_within :
         MDifferentiableWithinAt 𝓘(ℝ, E) I (extChartAt I α).symm
           (range I) (extChartAt I α x) :=
-      mdifferentiableWithinAt_extChartAt_symm (I := I) (x := α) hxφ_tgt
+      mdifferentiableWithinAt_extChartAt_symm (I := I) (x := α) hxφ_target
     have hint_open : IsOpen (interior ((extChartAt I α).target : Set E)) :=
       isOpen_interior
     have hxint :

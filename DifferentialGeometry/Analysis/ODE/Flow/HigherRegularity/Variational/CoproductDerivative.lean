@@ -31,16 +31,16 @@ theorem variationalLinearMapAt_congr_of_eqOn
       = variationalLinearMapAt (f := f) (α := α₂) (t₀ := t₀) hT hM hMT hA_cont_2 hA_bd_2 ht := by
   apply ContinuousLinearMap.ext
   intro δ
-  have h_sol_1 := variationalSolutionFun_isSolution hT hM hMT hA_cont_1 hA_bd_1 δ
-  have h_sol_2 := variationalSolutionFun_isSolution hT hM hMT hA_cont_2 hA_bd_2 δ
+  have h_solution_1 := variationalSolutionFun_isSolution hT hM hMT hA_cont_1 hA_bd_1 δ
+  have h_solution_2 := variationalSolutionFun_isSolution hT hM hMT hA_cont_2 hA_bd_2 δ
   set y₂ : ℝ → E := variationalSolutionFun hT hM hMT hA_cont_2 hA_bd_2 δ
-  have h_sol_2_as_1 : IsVariationalSolutionOn f α₁ δ t₀ y₂ (Icc (t₀ - T) (t₀ + T)) := by
-    refine ⟨h_sol_2.initial, fun s hs => ?_⟩
-    have h_dw := h_sol_2.hasDerivWithinAt s hs
+  have h_solution_2_as_1 : IsVariationalSolutionOn f α₁ δ t₀ y₂ (Icc (t₀ - T) (t₀ + T)) := by
+    refine ⟨h_solution_2.initial, fun s hs => ?_⟩
+    have h_dw := h_solution_2.hasDerivWithinAt s hs
     have hα_eq : α₁ s = α₂ s := h_eq hs
     rw [hα_eq]
     exact h_dw
-  have h_eq_y := IsVariationalSolutionOn.unique_Icc hT hA_cont_1 h_sol_1 h_sol_2_as_1
+  have h_eq_y := IsVariationalSolutionOn.unique_Icc hT hA_cont_1 h_solution_1 h_solution_2_as_1
   rw [variationalLinearMapAt_apply, variationalLinearMapAt_apply]
   exact h_eq_y ht
 
@@ -61,7 +61,7 @@ private theorem fderiv_along_continuousOn
     continuousOn_id.prodMk hγ
   exact hf.continuousOn.comp hpair (fun _ _ => mem_univ _)
 
-theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
+theorem exists_fderiv_eq_fromAugmentedFlow_coprod_timePieceFn
     [FiniteDimensional ℝ E]
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
     (hf_C1 : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)))
@@ -75,7 +75,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
     (hR_aug_pos : (0 : ℝ) < (R_aug : ℝ)) :
     ∃ (T : ℝ) (ρ : ℝ≥0) (_hT : 0 < T) (_hρ : 0 < (ρ : ℝ)),
       ∀ q ∈ (Metric.ball x₀ (ρ : ℝ)) ×ˢ Set.Ioo (t₀ - T) (t₀ + T),
-        fderiv ℝ Φ q = (fromAugFlow aΦ q).coprod (timePieceFn f Φ q) := by
+        fderiv ℝ Φ q = (fromAugmentedFlow aΦ q).coprod (timePieceFn f Φ q) := by
   classical
   set p₀ : E × (E →L[ℝ] E) := (x₀, ContinuousLinearMap.id ℝ E) with hp₀_def
   have ht₀_minus_tmin : 0 < t₀ - tmin := by linarith [ht₀_Ioo.1]
@@ -125,7 +125,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
   have hR_aug_out_lt : R_aug_out < (R_aug : ℝ) := by rw [hR_aug_out_def]; linarith
   set Slab_a_outer : Set ((E × (E →L[ℝ] E)) × ℝ) :=
     closedBall p₀ R_aug_out ×ˢ Icc (t₀ - T_outer) (t₀ + T_outer) with hSlab_a_outer_def
-  have hSlab_a_outer_cpt : IsCompact Slab_a_outer :=
+  have hSlab_a_outer_compact : IsCompact Slab_a_outer :=
     (isCompact_closedBall (p₀ : E × (E →L[ℝ] E)) R_aug_out).prod isCompact_Icc
   have hSlab_a_outer_ne : Slab_a_outer.Nonempty :=
     ⟨(p₀, t₀), Metric.mem_closedBall_self (le_of_lt hR_aug_out_pos),
@@ -145,7 +145,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
     have h_sub_cont : ContinuousOn (fun q : (E × (E →L[ℝ] E)) × ℝ => (aΦ q).1 - x₀)
         Slab_a_outer := h_fst_cont.sub continuousOn_const
     exact continuous_norm.comp_continuousOn h_sub_cont
-  rcases hSlab_a_outer_cpt.exists_isMaxOn hSlab_a_outer_ne h_aΦ_norm_cont
+  rcases hSlab_a_outer_compact.exists_isMaxOn hSlab_a_outer_ne h_aΦ_norm_cont
     with ⟨qmax_R, _, hqmax_R⟩
   set R_aΦ_image_pre : ℝ := ‖(aΦ qmax_R).1 - x₀‖ with hR_aΦ_image_pre_def
   have hR_aΦ_image_pre_nn : 0 ≤ R_aΦ_image_pre := norm_nonneg _
@@ -153,7 +153,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
     fun q hq => hqmax_R hq
   set Slab_Φ_outer : Set (E × ℝ) :=
     closedBall x₀ ρ_outer ×ˢ Icc (t₀ - T_outer) (t₀ + T_outer) with hSlab_Φ_outer_def
-  have hSlab_Φ_outer_cpt : IsCompact Slab_Φ_outer :=
+  have hSlab_Φ_outer_compact : IsCompact Slab_Φ_outer :=
     (isCompact_closedBall x₀ ρ_outer).prod isCompact_Icc
   have hSlab_Φ_outer_ne : Slab_Φ_outer.Nonempty :=
     ⟨(x₀, t₀), Metric.mem_closedBall_self (le_of_lt hρ_outer_pos),
@@ -165,7 +165,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
     have h_sub_cont : ContinuousOn (fun p : E × ℝ => Φ p - x₀) Slab_Φ_outer :=
       hΦ_cont_slab.sub continuousOn_const
     exact continuous_norm.comp_continuousOn h_sub_cont
-  rcases hSlab_Φ_outer_cpt.exists_isMaxOn hSlab_Φ_outer_ne h_Φ_norm_cont
+  rcases hSlab_Φ_outer_compact.exists_isMaxOn hSlab_Φ_outer_ne h_Φ_norm_cont
     with ⟨pmax_R, _, hpmax_R⟩
   set R_Φ_image_pre : ℝ := ‖Φ pmax_R - x₀‖ with hR_Φ_image_pre_def
   have hR_Φ_image_pre_nn : 0 ≤ R_Φ_image_pre := norm_nonneg _
@@ -187,7 +187,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
     linarith
   set Slab_f : Set (ℝ × E) :=
     Icc (t₀ - T_outer) (t₀ + T_outer) ×ˢ closedBall x₀ r₀_lip with hSlab_f_def
-  have hSlab_f_cpt : IsCompact Slab_f :=
+  have hSlab_f_compact : IsCompact Slab_f :=
     isCompact_Icc.prod (isCompact_closedBall x₀ r₀_lip)
   have hSlab_f_ne : Slab_f.Nonempty :=
     ⟨(t₀, x₀), ⟨by linarith, by linarith⟩, Metric.mem_closedBall_self (le_of_lt hr₀_lip_pos)⟩
@@ -199,7 +199,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
     hpartial_f.continuousOn.mono (subset_univ _)
   have hpartial_f_norm_cont : ContinuousOn (fun p : ℝ × E => ‖fderiv ℝ (f p.1) p.2‖) Slab_f :=
     continuous_norm.comp_continuousOn hpartial_f_cont
-  rcases hSlab_f_cpt.exists_isMaxOn hSlab_f_ne hpartial_f_norm_cont
+  rcases hSlab_f_compact.exists_isMaxOn hSlab_f_ne hpartial_f_norm_cont
     with ⟨pmax_K, _, hpmax_K⟩
   set K_pre : ℝ := ‖fderiv ℝ (f pmax_K.1) pmax_K.2‖ with hK_pre_def
   have hK_pre_nn : 0 ≤ K_pre := norm_nonneg _
@@ -244,7 +244,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
   have hρ_finalN_eq : (ρ_finalN : ℝ) = ρ_final := rfl
   suffices hfinal : ∀ q ∈
       (Metric.ball x₀ (ρ_finalN : ℝ)) ×ˢ Set.Ioo (t₀ - T_final) (t₀ + T_final),
-      fderiv ℝ Φ q = (fromAugFlow aΦ q).coprod (timePieceFn f Φ q) by
+      fderiv ℝ Φ q = (fromAugmentedFlow aΦ q).coprod (timePieceFn f Φ q) by
     exact ⟨T_final, ρ_finalN, hT_final_pos, hρ_final_pos, hfinal⟩
   intro q hq
   rcases hq with ⟨hq_x, hq_t⟩
@@ -319,7 +319,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
   have h_orbit_eqOn : EqOn (fun s => Φ ⟨x, s⟩)
       (fun s => (aΦ ⟨(x, ContinuousLinearMap.id ℝ E), s⟩).1)
       (Icc (t₀ - T_final) (t₀ + T_final)) :=
-    orbit_eq_Icc_of_augFlow_isLocalFlow hΦ haΦ hx_closed_r hx_id_closed_R_aug
+    orbit_eq_Icc_of_augmentedFlow_isLocalFlow hΦ haΦ hx_closed_r hx_id_closed_R_aug
       hsub_final_orig hsub_final_aug ht₀_Ioo_final
       (r₀ := r₀_lip) (K := K_origN) h_Φ_in_r₀ h_aΦ_fst_in_r₀ h_lip_on_r₀
   have hA_cont_orbit_a : ContinuousOn (fun s : ℝ => fderiv ℝ (f s)
@@ -367,7 +367,7 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
       = variationalLinearMapAt (f := f)
           (α := fun s => (aΦ ⟨(x, ContinuousLinearMap.id ℝ E), s⟩).1) (t₀ := t₀)
           hT_final_pos hK_orig_nn h_KT_final hA_cont_orbit_a hA_bd_orbit_a ht_Icc_final :=
-    augFlow_snd_eq_variationalLinearMapAt (aΦ := aΦ) (R := R_aug) (tmin' := tmin_a)
+    augmentedFlow_snd_eq_variationalLinearMapAt (aΦ := aΦ) (R := R_aug) (tmin' := tmin_a)
       (tmax' := tmax_a) (p₀ := p₀) haΦ
       (T := T_final) (M := K_orig) hT_final_pos hK_orig_nn h_KT_final hsub_final_aug
       (x := x) hx_id_closed_R_aug hA_cont_orbit_a hA_bd_orbit_a ht_Icc_final
@@ -461,18 +461,18 @@ theorem exists_fderiv_eq_fromAugFlow_coprod_timePieceFn
         hT_final_pos hK_orig_nn h_KT_final hA_cont_orbit_Φ hA_bd_orbit_Φ ht_Icc_final := by
     apply ContinuousLinearMap.ext
     intro δ
-    have h_sol_mid := variationalSolutionFun_isSolution hT_mid_pos hK_orig_nn hKT_mid
+    have h_solution_mid := variationalSolutionFun_isSolution hT_mid_pos hK_orig_nn hKT_mid
       ((hΦ.continuousOn_fderiv_along_orbit hf_C1 x hx_closed_r).mono hsub_mid_orig)
       (fun τ hτ => hA_bd_Φ_jointly x hx_closed_ρ_outerN τ hτ) δ
-    have h_sol_final := variationalSolutionFun_isSolution hT_final_pos hK_orig_nn h_KT_final
+    have h_solution_final := variationalSolutionFun_isSolution hT_final_pos hK_orig_nn h_KT_final
       hA_cont_orbit_Φ hA_bd_orbit_Φ δ
     have hsub_final_mid : Icc (t₀ - T_final) (t₀ + T_final) ⊆ Icc (t₀ - T_mid) (t₀ + T_mid) :=
       Icc_subset_Icc
         (sub_le_sub_left (le_of_lt hT_final_lt_mid) t₀)
         (add_le_add_right (le_of_lt hT_final_lt_mid) t₀)
-    have h_sol_mid_restricted := h_sol_mid.mono hsub_final_mid
+    have h_solution_mid_restricted := h_solution_mid.mono hsub_final_mid
     have h_eq_y := IsVariationalSolutionOn.unique_Icc hT_final_pos hA_cont_orbit_Φ
-      h_sol_mid_restricted h_sol_final
+      h_solution_mid_restricted h_solution_final
     rw [variationalLinearMapAt_apply, variationalLinearMapAt_apply]
     exact h_eq_y ht_Icc_final
   have hLmap_mid_eq_aΦ_snd : Lmap_mid = (aΦ ⟨(x, ContinuousLinearMap.id ℝ E), t⟩).2 := by

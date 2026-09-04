@@ -33,12 +33,12 @@ local notation "EuclN" =>
 
 noncomputable def fineBlock
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ) :
     RSTensorSection I M r s :=
   chartRepack (I := I) (M := M) r s
-    (canonFlatBase (I := I) (M := M) rFine hr z)
-    (fun Q => canonCutMul (I := I) (M := M) rFine hr z (u Q))
+    (canonicalFlatBase (I := I) (M := M) rFine hr z)
+    (fun Q => canonicalCutMul (I := I) (M := M) rFine hr z (u Q))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private theorem memWkp_sum
@@ -65,7 +65,7 @@ theorem fineBlock_comp_mem
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
-    (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ)
     (hu : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p (u Q) Set.univ)
     (α : M) (P : TensorCompIdx (E := E) r s) :
@@ -75,26 +75,26 @@ theorem fineBlock_comp_mem
       (Chart.chartTargetEuclid (I := I) (M := M) α) := by
   classical
   let v : TensorCompIdx (E := E) r s → EuclN → ℝ :=
-    fun Q => canonCutMul (I := I) (M := M) rFine hr z (u Q)
+    fun Q => canonicalCutMul (I := I) (M := M) rFine hr z (u Q)
   have hv : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p (v Q) Set.univ := by
     intro Q
-    exact ((canonCut_joint (I := I) (M := M) rFine hr z k hp hp_top).choose_spec.2
+    exact ((canonicalCut_joint (I := I) (M := M) rFine hr z k hp hp_top).choose_spec.2
       (hu Q)).1
-  have hv_src : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p (v Q)
+  have hv_source : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p (v Q)
       (Chart.chartTargetEuclid (I := I) (M := M)
-        (canonFlatBase (I := I) (M := M) rFine hr z)) := by
+        (canonicalFlatBase (I := I) (M := M) rFine hr z)) := by
     intro Q
     exact MemWkp.mono_set (d := Module.finrank ℝ E) hp
       (Chart.chartTargetEuclid_isOpen (I := I) (M := M)
-        (canonFlatBase (I := I) (M := M) rFine hr z))
+        (canonicalFlatBase (I := I) (M := M) rFine hr z))
       (Set.subset_univ _) (hv Q)
   have hterm : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p
       (fineSecTerm (I := I) (M := M) rFine hr r s z α P Q (v Q))
       (Chart.chartTargetEuclid (I := I) (M := M) α) := by
     intro Q
     exact ((fineTerm_joint (I := I) (M := M) rFine hr r s k hp hp_top
-      z α P Q).choose_spec.2 (hv_src Q)
-        (canonCutMul_supp (I := I) (M := M) rFine hr z (u Q))).1
+      z α P Q).choose_spec.2 (hv_source Q)
+        (canonicalCutMul_support (I := I) (M := M) rFine hr z (u Q))).1
   have hsum : MemWkp (d := Module.finrank ℝ E) k p
       (fun y => ∑ Q : TensorCompIdx (E := E) r s,
         fineSecTerm (I := I) (M := M) rFine hr r s z α P Q (v Q) y)
@@ -106,7 +106,7 @@ theorem fineBlock_comp_mem
         rFine hr r s z α P Q (v Q))
       (fun Q _ => hterm Q)
   have heq := finePullEq (I := I) (M := M) rFine hr r s z v
-    (fun Q => canonCutMul_supp (I := I) (M := M) rFine hr z (u Q)) α P
+    (fun Q => canonicalCutMul_support (I := I) (M := M) rFine hr z (u Q)) α P
   exact (MemWkp_congr_ae (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M) α) heq).mpr hsum
 
@@ -114,7 +114,7 @@ theorem fineBlock_mem
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
-    (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ)
     (hu : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p (u Q) Set.univ) :
     MemWkpTensor (I := I) (M := M) k p
@@ -127,7 +127,7 @@ theorem fineBlock_bound
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (∞ : ℝ≥0∞))
-    (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P : TensorCompIdx (E := E) r s) :
     ∃ K : TensorCompIdx (E := E) r s → ℝ,
       (∀ Q, 0 < K Q) ∧
@@ -142,30 +142,30 @@ theorem fineBlock_bound
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p (u Q) Set.univ := by
   classical
   obtain ⟨Kc, hKc, hcut⟩ :=
-    canonCut_joint (I := I) (M := M) rFine hr z k hp hp_top
+    canonicalCut_joint (I := I) (M := M) rFine hr z k hp hp_top
   choose Kt hKt hterm using fun Q : TensorCompIdx (E := E) r s =>
     fineTerm_joint (I := I) (M := M) rFine hr r s k hp hp_top z α P Q
   refine ⟨fun Q => Kt Q * Kc, fun Q => mul_pos (hKt Q) hKc, ?_⟩
   intro u hu
   let v : TensorCompIdx (E := E) r s → EuclN → ℝ :=
-    fun Q => canonCutMul (I := I) (M := M) rFine hr z (u Q)
+    fun Q => canonicalCutMul (I := I) (M := M) rFine hr z (u Q)
   have hv : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p (v Q) Set.univ := by
     intro Q
     exact (hcut (hu Q)).1
-  have hv_src : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p (v Q)
+  have hv_source : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p (v Q)
       (Chart.chartTargetEuclid (I := I) (M := M)
-        (canonFlatBase (I := I) (M := M) rFine hr z)) := by
+        (canonicalFlatBase (I := I) (M := M) rFine hr z)) := by
     intro Q
     exact MemWkp.mono_set (d := Module.finrank ℝ E) hp
       (Chart.chartTargetEuclid_isOpen (I := I) (M := M)
-        (canonFlatBase (I := I) (M := M) rFine hr z))
+        (canonicalFlatBase (I := I) (M := M) rFine hr z))
       (Set.subset_univ _) (hv Q)
   have hterm_mem : ∀ Q, MemWkp (d := Module.finrank ℝ E) k p
       (fineSecTerm (I := I) (M := M) rFine hr r s z α P Q (v Q))
       (Chart.chartTargetEuclid (I := I) (M := M) α) := by
     intro Q
-    exact ((hterm Q) (hv_src Q)
-      (canonCutMul_supp (I := I) (M := M) rFine hr z (u Q))).1
+    exact ((hterm Q) (hv_source Q)
+      (canonicalCutMul_support (I := I) (M := M) rFine hr z (u Q))).1
   have hsum := wkpNorm_sum_le (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M) α)
     Finset.univ
@@ -185,17 +185,17 @@ theorem fineBlock_bound
             (Chart.chartTargetEuclid (I := I) (M := M) α) := by
     exact hsum
   have heq := finePullEq (I := I) (M := M) rFine hr r s z v
-    (fun Q => canonCutMul_supp (I := I) (M := M) rFine hr z (u Q)) α P
+    (fun Q => canonicalCutMul_support (I := I) (M := M) rFine hr z (u Q)) α P
   rw [fineBlock, wkpNorm_congr_ae (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M) α) heq]
   refine hsum'.trans ?_
   refine Finset.sum_le_sum ?_
   intro Q _
-  have hQ := (hterm Q) (hv_src Q)
-    (canonCutMul_supp (I := I) (M := M) rFine hr z (u Q))
+  have hQ := (hterm Q) (hv_source Q)
+    (canonicalCutMul_support (I := I) (M := M) rFine hr z (u Q))
   have hmono := wkpNorm_mono_set (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M)
-      (canonFlatBase (I := I) (M := M) rFine hr z))
+      (canonicalFlatBase (I := I) (M := M) rFine hr z))
     (Set.subset_univ _) (hv Q)
   calc
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
@@ -204,7 +204,7 @@ theorem fineBlock_bound
       ENNReal.ofReal (Kt Q) *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p (v Q)
           (Chart.chartTargetEuclid (I := I) (M := M)
-            (canonFlatBase (I := I) (M := M) rFine hr z)) := hQ.2
+            (canonicalFlatBase (I := I) (M := M) rFine hr z)) := hQ.2
     _ ≤ ENNReal.ofReal (Kt Q) *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p (v Q) Set.univ :=
       mul_le_mul_right hmono _

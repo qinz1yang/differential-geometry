@@ -176,7 +176,7 @@ private theorem intrinsicGeodesic_smooth
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrGeo_reverse
+theorem intrinsicGeo_reverse
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -216,7 +216,7 @@ theorem intrGeo_reverse
     rw [intrinsicGeodesic_zero]
     dsimp only [z, γ, intrinsicVelocityLift]
     norm_num
-  have hδvel :
+  have hδvelocity :
       (curveVelocity (I := I) δ 0 : E) = (-z.snd : E) := by
     simpa only [curveVelocity, δ] using
       intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm z.proj (-z.snd)
@@ -235,7 +235,7 @@ theorem intrGeo_reverse
     rfl
   have hvel : (curveVelocity (I := I) δ 0 : E) =
       (curveVelocity (I := I) rev 0 : E) :=
-    hδvel.trans hrevvel.symm
+    hδvelocity.trans hrevvel.symm
   have heq : δ = rev :=
     isGeodesic_eq_of_initial (I := I) g hδ_geo hrev_geo
       hδ_inf.continuous hrev_inf.continuous hfoot hvel
@@ -249,7 +249,7 @@ theorem intrGeo_reverse
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrGeo_rev_vel
+theorem intrinsicGeo_rev_velocity
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -266,7 +266,7 @@ theorem intrGeo_rev_vel
   let z := intrinsicVelocityLift (I := I) g hEnorm p u 1
   let δ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm z.proj (-z.snd)
   have hδ : δ = fun t => γ (1 - t) := by
-    simpa only [δ, γ, z] using intrGeo_reverse (I := I) g hEnorm p u
+    simpa only [δ, γ, z] using intrinsicGeo_reverse (I := I) g hEnorm p u
   have hγ_inf : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ :=
     intrinsicGeodesic_smooth (I := I) g hEnorm p u
   have hcomp := curveVelocity_comp_affine (I := I) γ (-1) 1 1
@@ -351,7 +351,7 @@ private theorem exp_pair_reverse
   let δ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm z.proj (-z.snd)
   generalize hrev_def : (fun t => γ ((-1 : ℝ) * t + 1)) = rev
   have hδrev : δ = rev := by
-    have h := intrGeo_reverse (I := I) g hEnorm p u
+    have h := intrinsicGeo_reverse (I := I) g hEnorm p u
     change δ = fun t => γ (1 - t) at h
     rw [h, ← hrev_def]
     funext t
@@ -429,7 +429,7 @@ private theorem exp_pair_reverse
       rw [hzE]
     rw [hG0] at h
     simpa only [G, K] using h
-  have hJacJ : IsJacobiAlong (I := I) g γ J := by
+  have hJacobianJ : IsJacobiAlong (I := I) g γ J := by
     have hcurve :
         (fun t => intrinsicGeodesic (I := I) g hEnorm p
           (show TangentSpace I p from uE) t) = γ := by
@@ -438,7 +438,7 @@ private theorem exp_pair_reverse
     have h := intrinsic_jacobi (I := I) g hEnorm p uE aE
     rw [hcurve] at h
     simpa only [γ, J, F] using h
-  have hJacK : IsJacobiAlong (I := I) g δ K := by
+  have hJacobianK : IsJacobiAlong (I := I) g δ K := by
     have hcurve :
         (fun t => intrinsicGeodesic (I := I) g hEnorm z.proj
           (show TangentSpace I z.proj from zE) t) = δ := by
@@ -487,15 +487,15 @@ private theorem exp_pair_reverse
       rw [huE]
     rw [hH0] at h
     simpa only [Hrev, JR] using h
-  have hJacJR : IsJacobiAlong (I := I) g δ JR := by
+  have hJacobianJR : IsJacobiAlong (I := I) g δ JR := by
     rw [← hrev_def]
     simpa only [JR, Hrev, F] using
-      jacobi_comp_affine (I := I) g γ J (-1) 1 hγ_inf hJacJ
+      jacobi_comp_affine (I := I) g γ J (-1) 1 hγ_inf hJacobianJ
   have hWderiv (t : ℝ) :
       HasDerivAt (jacobiWronskian (I := I) g δ K JR) 0 t :=
     hasDerivAt_wronsk (I := I) (n := ∞) (by simp) g δ K JR t hδ_inf
       (hKdiff t) (hJRdiff t) (hDKdiff t) (hDJRdiff t)
-      (hJacK t) (hJacJR t)
+      (hJacobianK t) (hJacobianJR t)
   have hWcont :
       ContinuousOn (jacobiWronskian (I := I) g δ K JR)
         (Icc (0 : ℝ) 1) := by

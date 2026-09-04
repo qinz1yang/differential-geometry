@@ -494,20 +494,20 @@ lemma extChartAt_image_isOpen_of_open_subset_source_of_boundaryless
     [I.Boundaryless] (x₀ : M)
     {U : Set M} (hUopen : IsOpen U) (hUsub : U ⊆ (chartAt H x₀).source) :
     IsOpen ((extChartAt I x₀) '' U) := by
-  have hchart_img : IsOpen ((chartAt H x₀) '' U) :=
+  have hchart_image : IsOpen ((chartAt H x₀) '' U) :=
     (chartAt H x₀).isOpen_image_of_subset_source hUopen hUsub
   have himg_eq : (extChartAt I x₀) '' U = I '' ((chartAt H x₀) '' U) := by
     rw [extChartAt]
     simp only [OpenPartialHomeomorph.extend_coe]
     rw [image_comp]
   rw [himg_eq]
-  exact I.toHomeomorph.isOpenMap _ hchart_img
+  exact I.toHomeomorph.isOpenMap _ hchart_image
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma extChartAt_image_measurableSet_of_open_subset_source (x₀ : M)
     {U : Set M} (hUopen : IsOpen U) (hUsub : U ⊆ (chartAt H x₀).source) :
     MeasurableSet ((extChartAt I x₀) '' U) := by
-  have hchart_img : IsOpen ((chartAt H x₀) '' U) :=
+  have hchart_image : IsOpen ((chartAt H x₀) '' U) :=
     (chartAt H x₀).isOpen_image_of_subset_source hUopen hUsub
   have himg_eq : (extChartAt I x₀) '' U = I '' ((chartAt H x₀) '' U) := by
     rw [extChartAt]
@@ -515,7 +515,7 @@ lemma extChartAt_image_measurableSet_of_open_subset_source (x₀ : M)
     rw [image_comp]
   rw [himg_eq]
   exact I.isClosedEmbedding.measurableEmbedding.measurableSet_image.mpr
-    hchart_img.measurableSet
+    hchart_image.measurableSet
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 lemma extChartAt_image_measurableSet_of_overlap (x₀ x₁ : M) :
@@ -608,9 +608,9 @@ lemma setLIntegral_target_eq_setLIntegral_image
         ((extChartAt I x₀) '' U).indicator h y := by
     intro y hy
     by_cases hy' : (extChartAt I x₀).symm y ∈ U
-    · have hy_img : y ∈ (extChartAt I x₀) '' U := by
+    · have hy_image : y ∈ (extChartAt I x₀) '' U := by
         rw [himg]; exact ⟨hy, hy'⟩
-      rw [Set.indicator_of_mem hy', Set.indicator_of_mem hy_img, one_mul]
+      rw [Set.indicator_of_mem hy', Set.indicator_of_mem hy_image, one_mul]
     · have hy_nimg : y ∉ (extChartAt I x₀) '' U := by
         rw [himg]; exact fun h => hy' h.2
       rw [Set.indicator_of_notMem hy', Set.indicator_of_notMem hy_nimg, zero_mul]

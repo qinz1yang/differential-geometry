@@ -160,7 +160,7 @@ theorem smoothPath_strong
     have hFTC : (∫ s in (0 : ℝ)..t, D s) = Flow t - Flow 0 :=
       intervalIntegral.integral_eq_sub_of_hasDerivAt
         (fun s hs => hderiv s ((uIcc_subset_Icc hzeroMem ht) hs)) hint
-    simp only [u, timeH1.toFun_apply, timeH1.init_mk, timeH1.deriv_mk]
+    simp only [u, timeH1.toFun_apply, timeH1.initial_mk, timeH1.deriv_mk]
     rw [hintEq, hFTC]
     abel
   have hfieldRep : (field : ℝ → TensorHs (I := I) (M := M) g 0 2 (a + 2))

@@ -212,8 +212,8 @@ lemma homTensorRS_riemannianFiberNormSq_clm_apply_le
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r a
   let instC : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r c I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r c
-  rw [riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g r c x (A v),
-    riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g r a x v]
+  rw [riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g r c x (A v),
+    riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g r a x v]
   have hle : ‖A v‖ ≤ ‖A‖ * ‖v‖ := A.le_opNorm v
   calc ‖A v‖ ^ 2 ≤ (‖A‖ * ‖v‖) ^ 2 := by
         exact pow_le_pow_left₀ (norm_nonneg _) hle 2

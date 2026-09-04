@@ -69,7 +69,7 @@ omit [FiniteDimensional ℝ E] in
 lemma bumpForm_pos (R : SmoothRiemannianMetric I M) (U : Opens M)
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
     (hχ01 : ∀ x, χ x ∈ Set.Icc (0 : ℝ) 1)
-    (hχsupp : tsupport χ ⊆ (U : Set M))
+    (hχsupport : tsupport χ ⊆ (U : Set M))
     (x : M) (v : TangentSpace I x) (hv : v ≠ 0) :
     0 < bumpForm (I := I) R U gU χ x v v := by
   rw [bumpForm_apply]
@@ -78,7 +78,7 @@ lemma bumpForm_pos (R : SmoothRiemannianMetric I M) (U : Opens M)
   have hb : 0 ≤ 1 - χ x := by linarith [(hχ01 x).2]
   rcases lt_or_eq_of_le ha with ha' | ha'
   · have hxU : x ∈ U := by
-      apply hχsupp
+      apply hχsupport
       exact subset_tsupport χ (Function.mem_support.mpr (ne_of_gt ha'))
     rw [extZeroForm_of_mem (I := I) U gU hxU v v]
     have hgU := gU.pos ⟨x, hxU⟩ v hv
@@ -91,7 +91,7 @@ lemma bumpForm_pos (R : SmoothRiemannianMetric I M) (U : Opens M)
     simp only [zero_smul, zero_add, sub_zero, one_smul]
     exact hR
 
-lemma frameVec_cmdiffAt' (x₀ : M) (i : Fin (Module.finrank ℝ E)) {x : M}
+lemma frameVec_cmdiffAt (x₀ : M) (i : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
     ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞
       (fun y : M => TotalSpace.mk' E y (frameVec (I := I) x₀ i y)) x := by
@@ -131,7 +131,7 @@ lemma frameVec_sub_cmdiffAt (U : Opens M)
     ContMDiffAt.mpullback_vectorField_preimage
       (I := I) (I' := I) (f := (Subtype.val : U → M)) (V := frameVec (I := I) x₀ i)
       (x₀ := ⟨x, hxU⟩) (m := ∞) (n := ∞)
-      (frameVec_cmdiffAt' (I := I) x₀ i hxb)
+      (frameVec_cmdiffAt (I := I) x₀ i hxb)
       (contMDiff_subtype_val (I := I) (U := U)).contMDiffAt
       hf' (by simp)
   refine hpull.congr_of_eventuallyEq ?_
@@ -179,7 +179,7 @@ lemma chiGU_coeff_cmdiffAt (U : Opens M)
 
 lemma chiGU_coeff_cmdiffOn (U : Opens M)
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
-    (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχsupp : tsupport χ ⊆ (U : Set M))
+    (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχsupport : tsupport χ ⊆ (U : Set M))
     (x₀ : M) (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       (fun y : M => χ y • extZeroForm (I := I) U gU y
@@ -188,10 +188,10 @@ lemma chiGU_coeff_cmdiffOn (U : Opens M)
   intro x hxb
   by_cases hxU : x ∈ U
   · exact (chiGU_coeff_cmdiffAt (I := I) U gU χ hχ x₀ i j hxb hxU).contMDiffWithinAt
-  · have hx_not_supp : x ∉ tsupport χ := fun h => hxU (hχsupp h)
+  · have hx_not_support : x ∉ tsupport χ := fun h => hxU (hχsupport h)
     have hχ0 : (fun y : M => χ y • extZeroForm (I := I) U gU y
         (frameVec (I := I) x₀ i y) (frameVec (I := I) x₀ j y)) =ᶠ[𝓝 x] (fun _ => (0 : ℝ)) := by
-      have hopen : (tsupport χ)ᶜ ∈ 𝓝 x := (isClosed_tsupport χ).isOpen_compl.mem_nhds hx_not_supp
+      have hopen : (tsupport χ)ᶜ ∈ 𝓝 x := (isClosed_tsupport χ).isOpen_compl.mem_nhds hx_not_support
       filter_upwards [hopen] with y hy
       have : χ y = 0 := image_eq_zero_of_notMem_tsupport hy
       rw [this, zero_smul]
@@ -202,7 +202,7 @@ lemma chiGU_coeff_cmdiffOn (U : Opens M)
 lemma bumpForm_coeff_contMDiffOn (R : SmoothRiemannianMetric I M) (U : Opens M)
     [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
-    (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχsupp : tsupport χ ⊆ (U : Set M))
+    (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχsupport : tsupport χ ⊆ (U : Set M))
     (x₀ : M) (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun x => bumpForm (I := I) R U gU χ x
@@ -219,14 +219,14 @@ lemma bumpForm_coeff_contMDiffOn (R : SmoothRiemannianMetric I M) (U : Opens M)
     rw [bumpForm_apply]
     simp [smul_eq_mul]
   rw [hrw]
-  have hχgU := chiGU_coeff_cmdiffOn (I := I) U gU χ hχ hχsupp x₀ i j
+  have hχgU := chiGU_coeff_cmdiffOn (I := I) U gU χ hχ hχsupport x₀ i j
   have hR : ContMDiffOn I 𝓘(ℝ) ∞
       (fun x => (1 - χ x) * R.inner x
         (frameVec (I := I) x₀ i x) (frameVec (I := I) x₀ j x))
       (trivializationAt E (TangentSpace I) x₀).baseSet := by
     intro x hx
-    have hfri := frameVec_cmdiffAt' (I := I) x₀ i hx
-    have hfrj := frameVec_cmdiffAt' (I := I) x₀ j hx
+    have hfri := frameVec_cmdiffAt (I := I) x₀ i hx
+    have hfrj := frameVec_cmdiffAt (I := I) x₀ j hx
     have hg : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
         (fun y : M => R.inner y (frameVec (I := I) x₀ i y) (frameVec (I := I) x₀ j y)) x :=
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.metric_inner_contMDiffAt
@@ -245,12 +245,12 @@ noncomputable def SmoothRiemannianMetric.bumpExtendOpen
     [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
     (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχ01 : ∀ x, χ x ∈ Set.Icc (0 : ℝ) 1)
-    (hχsupp : tsupport χ ⊆ (U : Set M)) :
+    (hχsupport : tsupport χ ⊆ (U : Set M)) :
     SmoothRiemannianMetric I M :=
   (smoothMetric_of_localCoeff (I := I) (bumpForm (I := I) R U gU χ)
     (fun x v w => bumpForm_symm (I := I) R U gU χ x v w)
-    (fun x v hv => bumpForm_pos (I := I) R U gU χ hχ01 hχsupp x v hv)
-    (fun x₀ i j => bumpForm_coeff_contMDiffOn (I := I) R U gU χ hχ hχsupp x₀ i j)).choose
+    (fun x v hv => bumpForm_pos (I := I) R U gU χ hχ01 hχsupport x v hv)
+    (fun x₀ i j => bumpForm_coeff_contMDiffOn (I := I) R U gU χ hχ hχsupport x₀ i j)).choose
 
 
 theorem bumpExtendOpen_inner_of_mem
@@ -258,17 +258,17 @@ theorem bumpExtendOpen_inner_of_mem
     [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
     (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχ01 : ∀ x, χ x ∈ Set.Icc (0 : ℝ) 1)
-    (hχsupp : tsupport χ ⊆ (U : Set M))
+    (hχsupport : tsupport χ ⊆ (U : Set M))
     (x : M) (hx : x ∈ U) (v w : TangentSpace I x) :
-    (R.bumpExtendOpen U gU χ hχ hχ01 hχsupp).inner x v w =
+    (R.bumpExtendOpen U gU χ hχ hχ01 hχsupport).inner x v w =
       χ x • gU.inner ⟨x, hx⟩ v w + (1 - χ x) • R.inner x v w := by
-  rw [show (R.bumpExtendOpen U gU χ hχ hχ01 hχsupp).inner x v w
+  rw [show (R.bumpExtendOpen U gU χ hχ hχ01 hχsupport).inner x v w
         = bumpForm (I := I) R U gU χ x v w from
       (smoothMetric_of_localCoeff (I := I) (bumpForm (I := I) R U gU χ)
         (fun x v w => bumpForm_symm (I := I) R U gU χ x v w)
-        (fun x v hv => bumpForm_pos (I := I) R U gU χ hχ01 hχsupp x v hv)
+        (fun x v hv => bumpForm_pos (I := I) R U gU χ hχ01 hχsupport x v hv)
         (fun x₀ i j => bumpForm_coeff_contMDiffOn
-          (I := I) R U gU χ hχ hχsupp x₀ i j)).choose_spec x v w]
+          (I := I) R U gU χ hχ hχsupport x₀ i j)).choose_spec x v w]
   rw [bumpForm_apply, extZeroForm_of_mem (I := I) U gU hx v w]
 
 theorem bumpExtendOpen_inner
@@ -276,17 +276,17 @@ theorem bumpExtendOpen_inner
     [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
     (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχ01 : ∀ x, χ x ∈ Set.Icc (0 : ℝ) 1)
-    (hχsupp : tsupport χ ⊆ (U : Set M))
+    (hχsupport : tsupport χ ⊆ (U : Set M))
     (x : M) (v w : TangentSpace I x) :
-    (R.bumpExtendOpen U gU χ hχ hχ01 hχsupp).inner x v w =
+    (R.bumpExtendOpen U gU χ hχ hχ01 hχsupport).inner x v w =
       χ x • Geometry.extZeroForm (I := I) U gU x v w + (1 - χ x) • R.inner x v w := by
-  rw [show (R.bumpExtendOpen U gU χ hχ hχ01 hχsupp).inner x v w
+  rw [show (R.bumpExtendOpen U gU χ hχ hχ01 hχsupport).inner x v w
         = Geometry.bumpForm (I := I) R U gU χ x v w from
       (smoothMetric_of_localCoeff (I := I) (Geometry.bumpForm (I := I) R U gU χ)
         (fun x v w => Geometry.bumpForm_symm (I := I) R U gU χ x v w)
-        (fun x v hv => Geometry.bumpForm_pos (I := I) R U gU χ hχ01 hχsupp x v hv)
+        (fun x v hv => Geometry.bumpForm_pos (I := I) R U gU χ hχ01 hχsupport x v hv)
         (fun x₀ i j => Geometry.bumpForm_coeff_contMDiffOn
-          (I := I) R U gU χ hχ hχsupp x₀ i j)).choose_spec x v w]
+          (I := I) R U gU χ hχ hχsupport x₀ i j)).choose_spec x v w]
   rw [Geometry.bumpForm_apply]
 
 theorem bumpExtendOpen_inner_of_notMem_tsupport
@@ -294,11 +294,11 @@ theorem bumpExtendOpen_inner_of_notMem_tsupport
     [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
     (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχ01 : ∀ x, χ x ∈ Set.Icc (0 : ℝ) 1)
-    (hχsupp : tsupport χ ⊆ (U : Set M))
+    (hχsupport : tsupport χ ⊆ (U : Set M))
     (x : M) (hx : x ∉ tsupport χ) (v w : TangentSpace I x) :
-    (R.bumpExtendOpen U gU χ hχ hχ01 hχsupp).inner x v w = R.inner x v w := by
+    (R.bumpExtendOpen U gU χ hχ hχ01 hχsupport).inner x v w = R.inner x v w := by
   have hχ0 : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
-  rw [bumpExtendOpen_inner (I := I) R U gU χ hχ hχ01 hχsupp x v w, hχ0]
+  rw [bumpExtendOpen_inner (I := I) R U gU χ hχ hχ01 hχsupport x v w, hχ0]
   simp
 
 theorem bumpExtendOpen_eq_gU_on
@@ -306,11 +306,11 @@ theorem bumpExtendOpen_eq_gU_on
     [SigmaCompactSpace U] [T2Space U]
     (gU : SmoothRiemannianMetric I U) (χ : M → ℝ)
     (hχ : ContMDiff I 𝓘(ℝ, ℝ) ∞ χ) (hχ01 : ∀ x, χ x ∈ Set.Icc (0 : ℝ) 1)
-    (hχsupp : tsupport χ ⊆ (U : Set M))
+    (hχsupport : tsupport χ ⊆ (U : Set M))
     (V : Set M) (hV : ∀ x ∈ V, χ x = 1) (hVU : V ⊆ (U : Set M))
     (x : M) (hx : x ∈ V) (v w : TangentSpace I x) :
-    (R.bumpExtendOpen U gU χ hχ hχ01 hχsupp).inner x v w = gU.inner ⟨x, hVU hx⟩ v w := by
-  rw [bumpExtendOpen_inner_of_mem (I := I) R U gU χ hχ hχ01 hχsupp x (hVU hx), hV x hx]
+    (R.bumpExtendOpen U gU χ hχ hχ01 hχsupport).inner x v w = gU.inner ⟨x, hVU hx⟩ v w := by
+  rw [bumpExtendOpen_inner_of_mem (I := I) R U gU χ hχ hχ01 hχsupport x (hVU hx), hV x hx]
   simp
 
 end DifferentialGeometry

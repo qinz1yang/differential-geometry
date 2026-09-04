@@ -145,7 +145,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma coeffFun_eq_integral (i : TensorEigenIdx (I := I) (M := M) g r s)
     {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     u.coeffFun i t =
-      u.lo.init.coeff i + ∫ s in (0 : ℝ)..t, (u.lo.deriv s).coeff i := by
+      u.lo.initial.coeff i + ∫ s in (0 : ℝ)..t, (u.lo.deriv s).coeff i := by
   have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, le_trans ht.1 ht.2⟩
   have hcomm : ∫ s in (0 : ℝ)..t, (u.lo.deriv s).coeff i =
       (coeffCLM (I := I) (M := M) (g := g) (r := r) (s := s) (σ := a) i)

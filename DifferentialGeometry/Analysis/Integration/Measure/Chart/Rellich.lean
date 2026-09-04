@@ -52,7 +52,7 @@ theorem riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     (α : M)
     {F : M → ℝ≥0∞} (hF : Measurable F)
-    (hF_supp : ∀ x, x ∉ (chartAt H α).source → F x = 0) :
+    (hF_support : ∀ x, x ∉ (chartAt H α).source → F x = 0) :
     ∫⁻ x, F x ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) =
       ∫⁻ x, F x ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α) := by
@@ -105,7 +105,7 @@ theorem riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn
       simp only [Set.mem_inter_iff, not_and] at hx_not_overlap
       by_cases hxβ : x ∈ (chartAt H β).source
       · have hxα : x ∉ (chartAt H α).source := hx_not_overlap hxβ
-        rw [hF_supp x hxα]
+        rw [hF_support x hxα]
         simp
       · have hρβ_zero :
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M β : M → ℝ) x = 0 := by

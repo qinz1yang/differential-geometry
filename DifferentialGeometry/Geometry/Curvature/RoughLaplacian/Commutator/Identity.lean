@@ -150,7 +150,7 @@ lemma contMDiff_unitGradField (g : SmoothRiemannianMetric I M)
         (E := fun z : M => (Tensor0SSpace 0 I z →L[ℝ] Tensor0SSpace 3 I z)) y
         ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace 3 I y from
           (covGrad (I := I) (M := M) g 0 2 T₀).toSection y))) :=
-    covGrad_contMDiff_mk' (I := I) (M := M) g T₀
+    covGrad_contMDiff_totalSpaceMk (I := I) (M := M) g T₀
   have hv : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 0 ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (Tensor0SModel 0 ℝ E)
         (E := fun z : M => Tensor0SSpace 0 I z) y
@@ -173,7 +173,7 @@ lemma contMDiff_curried_unitGradField (g : SmoothRiemannianMetric I M)
     (contMDiff_unitGradField (I := I) (M := M) g T₀)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-lemma curry_abstract_covDeriv_unitGrad_unfold'
+lemma curry_abstract_covDeriv_unitGrad_unfold_of_contMDiff
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     {X Y : Π b : M, TangentSpace I b} {x : M}
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))

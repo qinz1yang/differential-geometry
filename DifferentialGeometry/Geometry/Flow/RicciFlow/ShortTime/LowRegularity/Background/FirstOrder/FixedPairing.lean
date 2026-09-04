@@ -21,7 +21,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -50,8 +50,8 @@ def galerkinFirstOrderActionFixedVectorBackground
     TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
   let T : SmoothCcTensor g 0 2 :=
     ccTensor02Symm (I := I) (M := M) g
-      (galCoreRep (I := I) (M := M) g R F c)
-  let hT := galRepFib (I := I) (M := M) g hR hreal F c
+      (galerkinCoreRep (I := I) (M := M) g R F c)
+  let hT := galerkinRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
   smoothCcToTensorHs (I := I) (M := M) g ((1 : ℕ) : ℝ)
     (operatorFieldApply (I := I) (M := M) g 3 2
@@ -86,8 +86,8 @@ def galerkinFirstOrderActionRemainderVectorBackground
     TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
   let T : SmoothCcTensor g 0 2 :=
     ccTensor02Symm (I := I) (M := M) g
-      (galCoreRep (I := I) (M := M) g R F c)
-  let hT := galRepFib (I := I) (M := M) g hR hreal F c
+      (galerkinCoreRep (I := I) (M := M) g R F c)
+  let hT := galerkinRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
   let AB := lowerScaleActionCoefficients (I := I) (M := M) g gBase T hδ hT hZ
   let AS := lowerScaleActionCoefficients (I := I) (M := M) g g T hδ hT hZ
@@ -97,7 +97,7 @@ def galerkinFirstOrderActionRemainderVectorBackground
       operatorFieldApply (I := I) (M := M) g 3 2 AS.firstOrderCoefficient
         (iteratedCovGrad (I := I) g 0 2 1 T))
 
-theorem galTermVecBackground_split
+theorem galerkinTermVecBackground_split
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1)
     (hreal : ∀ T : SmoothCcTensor g 0 2,
@@ -131,7 +131,7 @@ def galerkinFirstOrderActionRemainderPairingBackground
     (c i * (galerkinFirstOrderActionRemainderVectorBackground (I := I) (M := M) g gBase
       hR hδ hreal F c).coeff i)
 
-theorem galTermPair3_split
+theorem galerkinTermPair3_split
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1)
     (hreal : ∀ T : SmoothCcTensor g 0 2,
@@ -148,7 +148,7 @@ theorem galTermPair3_split
           hR hδ hreal F c 3 +
         galerkinFirstOrderActionFixedPairingBackground (I := I) (M := M) g gBase
           hR hδ hreal F c 3 := by
-  rw [galTermVecBackground_split (I := I) (M := M) g gBase hR hδ hreal F c]
+  rw [galerkinTermVecBackground_split (I := I) (M := M) g gBase hR hδ hreal F c]
   simp only [TensorHs.add_coeff, mul_add, Finset.sum_add_distrib,
     galerkinFirstOrderActionRemainderPairingBackground, galerkinFirstOrderActionFixedPairingBackground]
 
@@ -191,7 +191,7 @@ private theorem lowTerm_symm
           (0 : SmoothCcTensor g 0 2) hδ hZ) = _
   rw [ccTensor02Symm_sub, hsT, hsZ]
 
-theorem galTermPair3_diag
+theorem galerkinTermPair3_diag
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hreal : ∀ T : SmoothCcTensor g 0 2,
@@ -201,12 +201,12 @@ theorem galTermPair3_diag
           (ccTensorBilinSymm (I := I) g T) δ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ) :
-    let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g 1
+    let θ : ℝ := min 1 (R / ‖galerkinLowView (I := I) (M := M) g 1
       (finiteEigenComboHs (I := I) (M := M) g F c (((1 : ℕ) : ℝ) + 2))‖)
     let T : SmoothCcTensor g 0 2 :=
       ccTensor02Symm (I := I) (M := M) g
-        (galCoreRep (I := I) (M := M) g R F c)
-    let hT := galRepFib (I := I) (M := M) g hR hreal F c
+        (galerkinCoreRep (I := I) (M := M) g R F c)
+    let hT := galerkinRepFib (I := I) (M := M) g hR hreal F c
     let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
     let A := lowerScaleActionCoefficients (I := I) (M := M) g gBase T hδ hT hZ
     θ * (∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
@@ -218,12 +218,12 @@ theorem galTermPair3_diag
           (A.secondOrderAction (I := I) (M := M) T +
             A.firstOrderAction (I := I) (M := M) T)).toFun := by
   classical
-  let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g 1
+  let θ : ℝ := min 1 (R / ‖galerkinLowView (I := I) (M := M) g 1
     (finiteEigenComboHs (I := I) (M := M) g F c (((1 : ℕ) : ℝ) + 2))‖)
   let T : SmoothCcTensor g 0 2 :=
     ccTensor02Symm (I := I) (M := M) g
-      (galCoreRep (I := I) (M := M) g R F c)
-  let hT := galRepFib (I := I) (M := M) g hR hreal F c
+      (galerkinCoreRep (I := I) (M := M) g R F c)
+  let hT := galerkinRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
   let A := lowerScaleActionCoefficients (I := I) (M := M) g gBase T hδ hT hZ
   have hTfix : ccTensor02Symm (I := I) (M := M) g T = T := by
@@ -236,7 +236,7 @@ theorem galTermPair3_diag
   have hrep : T = θ • ccTensor02Symm (I := I) (M := M) g
       (finiteEigenCombo (I := I) (M := M) g F c) := by
     dsimp only [T, θ]
-    rw [galCoreRep]
+    rw [galerkinCoreRep]
     rw [ccTensor02Symm_smul]
   have hpair := finite_symm_scale (I := I) (M := M) g F c
     (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T)
@@ -263,14 +263,14 @@ theorem galTermPair3_diag
   have hthree : (((1 + 2 : ℕ) : ℝ)) = (3 : ℝ) := by norm_num
   rw [hthree] at hpair
   have hTfold : ccTensor02Symm (I := I) (M := M) g
-      (galCoreRep (I := I) (M := M) g R F c) = T := rfl
+      (galerkinCoreRep (I := I) (M := M) g R F c) = T := rfl
   simp only [hTfold]
   have hAfold : lowerScaleActionCoefficients (I := I) (M := M)
       g gBase T hδ hT hZ = A := rfl
   rw [hAfold]
   exact hpair
 
-theorem galTermPair4_diag
+theorem galerkinTermPair4_diag
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 ≤ R) (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hreal : ∀ T : SmoothCcTensor g 0 2,
@@ -280,12 +280,12 @@ theorem galTermPair4_diag
           (ccTensorBilinSymm (I := I) g T) δ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ) :
-    let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g 1
+    let θ : ℝ := min 1 (R / ‖galerkinLowView (I := I) (M := M) g 1
       (finiteEigenComboHs (I := I) (M := M) g F c (((1 : ℕ) : ℝ) + 2))‖)
     let T : SmoothCcTensor g 0 2 :=
       ccTensor02Symm (I := I) (M := M) g
-        (galCoreRep (I := I) (M := M) g R F c)
-    let hT := galRepFib (I := I) (M := M) g hR hreal F c
+        (galerkinCoreRep (I := I) (M := M) g R F c)
+    let hT := galerkinRepFib (I := I) (M := M) g hR hreal F c
     let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
     let A := lowerScaleActionCoefficients (I := I) (M := M) g gBase T hδ hT hZ
     θ * (∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) *
@@ -297,12 +297,12 @@ theorem galTermPair4_diag
           (A.secondOrderAction (I := I) (M := M) T +
             A.firstOrderAction (I := I) (M := M) T)).toFun := by
   classical
-  let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g 1
+  let θ : ℝ := min 1 (R / ‖galerkinLowView (I := I) (M := M) g 1
     (finiteEigenComboHs (I := I) (M := M) g F c (((1 : ℕ) : ℝ) + 2))‖)
   let T : SmoothCcTensor g 0 2 :=
     ccTensor02Symm (I := I) (M := M) g
-      (galCoreRep (I := I) (M := M) g R F c)
-  let hT := galRepFib (I := I) (M := M) g hR hreal F c
+      (galerkinCoreRep (I := I) (M := M) g R F c)
+  let hT := galerkinRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
   let A := lowerScaleActionCoefficients (I := I) (M := M) g gBase T hδ hT hZ
   have hTfix : ccTensor02Symm (I := I) (M := M) g T = T := by
@@ -315,7 +315,7 @@ theorem galTermPair4_diag
   have hrep : T = θ • ccTensor02Symm (I := I) (M := M) g
       (finiteEigenCombo (I := I) (M := M) g F c) := by
     dsimp only [T, θ]
-    rw [galCoreRep]
+    rw [galerkinCoreRep]
     rw [ccTensor02Symm_smul]
   have hpair := finite_symm_scale (I := I) (M := M) g F c
     (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T)
@@ -342,7 +342,7 @@ theorem galTermPair4_diag
   have hfour : (((1 + 3 : ℕ) : ℝ)) = (4 : ℝ) := by norm_num
   rw [hfour] at hpair
   have hTfold : ccTensor02Symm (I := I) (M := M) g
-      (galCoreRep (I := I) (M := M) g R F c) = T := rfl
+      (galerkinCoreRep (I := I) (M := M) g R F c) = T := rfl
   simp only [hTfold]
   have hAfold : lowerScaleActionCoefficients (I := I) (M := M)
       g gBase T hδ hT hZ = A := rfl
@@ -391,27 +391,27 @@ theorem galerkinFirstOrderActionFixedPairing_h3_bound
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le hδ₀
   let T : SmoothCcTensor g 0 2 :=
     ccTensor02Symm (I := I) (M := M) g
-      (galCoreRep (I := I) (M := M) g R F c)
-  let hT := galRepFib (I := I) (M := M) g hR hreal F c
+      (galerkinCoreRep (I := I) (M := M) g R F c)
+  let hT := galerkinRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
-  let Corr : SmoothCcTensor g 3 2 :=
+  let Correction : SmoothCcTensor g 3 2 :=
     lowerScaleFirstOrderCoefficientBackgroundDifference (I := I) (M := M) g gBase T hδ_lt hT hZ
   let Y : SmoothCcTensor g 0 2 :=
-    operatorFieldApply (I := I) (M := M) g 3 2 Corr
+    operatorFieldApply (I := I) (M := M) g 3 2 Correction
       (iteratedCovGrad (I := I) g 0 2 1 T)
   have hT2smooth :
       ‖smoothCcToTensorHs (I := I) (M := M) g (2 : ℝ) T‖ ≤ R := by
     have hraw := symm_h2_of_state (I := I) (M := M) g
-        (galCoreRep (I := I) (M := M) g R F c)
-        (galCoreRep_ball (I := I) (M := M) g hR F c)
+        (galerkinCoreRep (I := I) (M := M) g R F c)
+        (galerkinCoreRep_ball (I := I) (M := M) g hR F c)
     rw [show (2 : ℝ) = (((1 : ℕ) : ℝ) + 1) by norm_num]
     simpa only [T] using hraw
   have hT2 :
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ 1 := by
     rw [norm_ccHs_eq_smoothHs]
     exact hT2smooth.trans hRcap
-  have hCorr : covariantJetNormSq (I := I) (M := M) g 2 Corr ≤ (Bc 1) ^ 2 := by
-    simpa only [Corr] using
+  have hCorrection : covariantJetNormSq (I := I) (M := M) g 2 Correction ≤ (Bc 1) ^ 2 := by
+    simpa only [Correction] using
       hcorr g hEq hjet T hδ_le hδ_nonneg hT hZ 1 zero_le_one hT2
   let E3 : ℝ := ∑ i ∈ F,
     tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2
@@ -425,12 +425,12 @@ theorem galerkinFirstOrderActionFixedPairing_h3_bound
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ ≤ Real.sqrt E3 := by
     rw [norm_ccHs_eq_smoothHs]
     simpa only [T, E3] using
-      galRepHs_le (I := I) (M := M) g (3 : ℝ) hR F c
+      galerkinRepHs_le (I := I) (M := M) g (3 : ℝ) hR F c
   have hY :
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) Y‖ ≤
         K * Real.sqrt E3 := by
-    have hact := happ Corr T (Bc 1) (hBc 1 zero_le_one)
-      (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hCorr)
+    have hact := happ Correction T (Bc 1) (hBc 1 zero_le_one)
+      (by simpa only [covariantJetNormSq, Nat.reduceAdd] using hCorrection)
     have hmul := mul_le_mul_of_nonneg_left hT3
       (mul_nonneg hCapp (hBc 1 zero_le_one))
     exact hact.trans (by simpa only [K] using hmul)

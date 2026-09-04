@@ -17,21 +17,21 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [FiniteDimensional ℝ E] [CompactSpace M] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
 theorem chartCoord_hasDerivWithinAt_to_manifold_hasMFDerivWithinAt
-    (α : M) (u : ℝ → E) (s : Set ℝ) (t : ℝ) (vel : E)
+    (α : M) (u : ℝ → E) (s : Set ℝ) (t : ℝ) (velocity : E)
     (htgt_t : u t ∈ (extChartAt I α).target)
     (hconf : u ⁻¹' (Set.range I) ∈ 𝓝[s] t)
-    (hd : HasDerivWithinAt u vel s t) :
+    (hd : HasDerivWithinAt u velocity s t) :
     HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
       (fun s' : ℝ => (extChartAt I α).symm (u s')) s t
       ((mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (Set.range I) (u t)) ∘L
-        ((ContinuousLinearMap.id ℝ ℝ).smulRight vel)) := by
+        ((ContinuousLinearMap.id ℝ ℝ).smulRight velocity)) := by
   set s' : Set ℝ := s ∩ u ⁻¹' (Set.range I) with hs'
   have hu_mf : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) u s' t
-      ((ContinuousLinearMap.id ℝ ℝ).smulRight vel) := by
+      ((ContinuousLinearMap.id ℝ ℝ).smulRight velocity) := by
     have h0 : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) u s t
-        ((ContinuousLinearMap.id ℝ ℝ).smulRight vel) := by
+        ((ContinuousLinearMap.id ℝ ℝ).smulRight velocity) := by
       let hfd : HasFDerivWithinAt u
-          ((ContinuousLinearMap.id ℝ ℝ).smulRight vel) s t :=
+          ((ContinuousLinearMap.id ℝ ℝ).smulRight velocity) s t :=
         hd.hasFDerivWithinAt
       exact hfd.hasMFDerivWithinAt
     exact h0.mono Set.inter_subset_left
@@ -42,7 +42,7 @@ theorem chartCoord_hasDerivWithinAt_to_manifold_hasMFDerivWithinAt
   have hcomp : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
       ((extChartAt I α).symm ∘ u) s' t
       ((mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (Set.range I) (u t)) ∘L
-        ((ContinuousLinearMap.id ℝ ℝ).smulRight vel)) :=
+        ((ContinuousLinearMap.id ℝ ℝ).smulRight velocity)) :=
     HasMFDerivWithinAt.comp t hsymm_mf hu_mf Set.inter_subset_right
   exact (hasMFDerivWithinAt_inter' (I := 𝓘(ℝ, ℝ)) (I' := I)
     (f := (extChartAt I α).symm ∘ u) (s := s)
@@ -95,12 +95,12 @@ theorem manifoldFlowFamily_exists
         (∀ x : M, Φ 0 x = x) ∧
         (∀ t : ℝ, 0 < t → t < T → ∀ x : M, Φ_fam t x = Φ t x) := by
   classical
-  obtain ⟨T, hT, Φ, hΦ_init, _hΦ_repr_simple, hdiffeo⟩ :=
+  obtain ⟨T, hT, Φ, hΦ_initial, _hΦ_repr_simple, hdiffeo⟩ :=
     time_dependent_vf_flow_diffeomorph_on_closed_manifold X hper hperNeg
       hLocalFwd hLocalRev hBijPerChart
   refine ⟨T, hT, fun t =>
     if h : 0 < t ∧ t < T then (hdiffeo t h.1 h.2).choose else Diffeomorph.refl I M ∞,
-    Φ, ?_, hΦ_init, ?_⟩
+    Φ, ?_, hΦ_initial, ?_⟩
   · have h0 : ¬ (0 < (0 : ℝ) ∧ (0 : ℝ) < T) := by
       rintro ⟨h, _⟩; exact (lt_irrefl 0) h
     simp only [h0, dif_neg, not_false_iff]
@@ -162,12 +162,12 @@ theorem manifoldFlowFamily_exists_chartRepr
           (Φ_fam t x : M) = (chartAt H α).symm
             (I.symm ((hper α).flow (I ((chartAt H α) x)) t))) := by
   classical
-  obtain ⟨T, hT, Φ, hΦ_init, hΦ_repr_simple, hdiffeo⟩ :=
+  obtain ⟨T, hT, Φ, hΦ_initial, hΦ_repr_simple, hdiffeo⟩ :=
     time_dependent_vf_flow_diffeomorph_on_closed_manifold X hper hperNeg
       hLocalFwd hLocalRev hBijPerChart
   refine ⟨T, hT, fun t =>
     if h : 0 < t ∧ t < T then (hdiffeo t h.1 h.2).choose else Diffeomorph.refl I M ∞,
-    Φ, ?_, hΦ_init, ?_, hΦ_repr_simple, ?_⟩
+    Φ, ?_, hΦ_initial, ?_, hΦ_repr_simple, ?_⟩
   · have h0 : ¬ (0 < (0 : ℝ) ∧ (0 : ℝ) < T) := by
       rintro ⟨h, _⟩; exact (lt_irrefl 0) h
     simp only [h0, dif_neg, not_false_iff]

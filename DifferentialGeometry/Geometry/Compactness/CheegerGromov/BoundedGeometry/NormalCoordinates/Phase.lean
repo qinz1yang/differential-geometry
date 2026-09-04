@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Set
 open scoped Manifold ContDiff ENNReal NNReal Topology Bundle
@@ -629,5 +629,5 @@ theorem exists_uniform_diag
 
 end BoundedGeometryNormalChartData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

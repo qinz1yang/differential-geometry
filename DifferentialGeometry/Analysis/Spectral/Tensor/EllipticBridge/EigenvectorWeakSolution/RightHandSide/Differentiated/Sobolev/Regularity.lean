@@ -203,7 +203,7 @@ theorem eigenvectorChartRHSDiff_memWkp
           (I := I) (M := M) g r s i α P₀ m (Fin.init l)
       exact eigenvectorChartIteratedStep_memWkp_K_two (I := I) (M := M)
         g r s i α P₀ m K (Fin.init l)
-        (fChartEffPrev := eigenvectorChartRHSDiff (I := I) (M := M)
+        (fChartEffectivePrev := eigenvectorChartRHSDiff (I := I) (M := M)
           g r s i α P₀ m (Fin.init l))
         (l (Fin.last m)) h_comp h_prev_memWkp_succ h_prev_ae_zero
 

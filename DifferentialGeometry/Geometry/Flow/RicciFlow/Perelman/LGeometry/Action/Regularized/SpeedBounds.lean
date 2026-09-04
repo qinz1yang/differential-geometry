@@ -36,12 +36,12 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem hasDerivAt_lRegSpeedSq
+theorem hasDerivAt_lRegularizedSpeedSq
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {alpha : Real → M} {J : Set Real} {x : M}
-    {Z : TangentSpace I x} (halpha : IsLRegCurveOn S T alpha J x Z)
+    {Z : TangentSpace I x} (halpha : IsLRegularizedCurveOn S T alpha J x Z)
     {s : Real} (hs : s ∈ J) :
-    HasDerivAt (lRegSpeedSq S T alpha)
+    HasDerivAt (lRegularizedSpeedSq S T alpha)
       (4 * s ^ 2 *
           (S.base.metric (T - s ^ 2)).inner (alpha s)
             (gradientFun (I := I) (S.base.metric (T - s ^ 2))
@@ -53,17 +53,17 @@ theorem hasDerivAt_lRegSpeedSq
   let A : ∀ r, TangentSpace I (alpha r) :=
     fun r ↦ lVelocity (I := I) alpha r
   obtain ⟨ht, hmd, hvel, hacc⟩ := halpha.2.2 s hs
-  have hinner := lRegInner_deriv (I := I) S hS T alpha A A s ht hmd
+  have hinner := lRegularizedInner_deriv (I := I) S hS T alpha A A s ht hmd
     (by simpa only [A] using hvel) (by simpa only [A] using hvel)
-  have hforce := lRegAccel_inner (I := I) S T s (alpha s) (A s) (A s)
+  have hforce := lRegularizedAccel_inner (I := I) S T s (alpha s) (A s) (A s)
   rw [hacc] at hinner
   have hsymm :
       (S.base.metric (T - s ^ 2)).inner (alpha s)
-          (lRegAccel S T s (alpha s) (A s)) (A s) =
+          (lRegularizedAccel S T s (alpha s) (A s)) (A s) =
         (S.base.metric (T - s ^ 2)).inner (alpha s)
-          (A s) (lRegAccel S T s (alpha s) (A s)) :=
+          (A s) (lRegularizedAccel S T s (alpha s) (A s)) :=
     (S.base.metric (T - s ^ 2)).symm (alpha s) _ _
-  change HasDerivAt (lRegSpeedSq S T alpha) _ s at hinner ⊢
+  change HasDerivAt (lRegularizedSpeedSq S T alpha) _ s at hinner ⊢
   rw [hsymm, hforce] at hinner
   simpa only [A] using hinner.congr_deriv (by ring)
 
@@ -97,10 +97,10 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegSpeedSq_le_of_gradient_ricci_bounds
+theorem lRegularizedSpeedSq_le_of_gradient_ricci_bounds
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {alpha : Real → M} {J : Set Real} {x : M}
-    {Z : TangentSpace I x} (halpha : IsLRegCurveOn S T alpha J x Z)
+    {Z : TangentSpace I x} (halpha : IsLRegularizedCurveOn S T alpha J x Z)
     (a b C R : Real) (hC : 0 ≤ C) (hR : 0 ≤ R)
     (hJ : Set.uIcc a b ⊆ J)
     (hsR : ∀ s ∈ Set.uIcc a b, |s| ≤ R)
@@ -109,17 +109,17 @@ theorem lRegSpeedSq_le_of_gradient_ricci_bounds
           (gradientFun (I := I) (S.base.metric (T - s ^ 2))
             (S.scalar (T - s ^ 2)) (alpha s))
           (lVelocity (I := I) alpha s)| ≤
-        C * Real.sqrt (lRegSpeedSq S T alpha s))
+        C * Real.sqrt (lRegularizedSpeedSq S T alpha s))
     (hric : ∀ s ∈ Set.uIcc a b,
       |S.ricciAt (T - s ^ 2) (alpha s)
           (vec2 (lVelocity (I := I) alpha s)
             (lVelocity (I := I) alpha s))| ≤
-        C * lRegSpeedSq S T alpha s) :
-    lRegSpeedSq S T alpha b ≤
+        C * lRegularizedSpeedSq S T alpha s) :
+    lRegularizedSpeedSq S T alpha b ≤
       Real.exp ((1 + 2 * C * R ^ 2 + 4 * C * R) * |b - a|) *
-        (lRegSpeedSq S T alpha a +
+        (lRegularizedSpeedSq S T alpha a +
           (1 + 2 * C * R ^ 2) / (1 + 2 * C * R ^ 2 + 4 * C * R)) := by
-  let U : Real → Real := lRegSpeedSq S T alpha
+  let U : Real → Real := lRegularizedSpeedSq S T alpha
   let U' : Real → Real := fun s ↦
     4 * s ^ 2 *
         (S.base.metric (T - s ^ 2)).inner (alpha s)
@@ -133,46 +133,46 @@ theorem lRegSpeedSq_le_of_gradient_ricci_bounds
     nlinarith [mul_nonneg hC (sq_nonneg R), mul_nonneg hC hR]
   have hd : 0 < 1 + 2 * C * R ^ 2 := by
     nlinarith [mul_nonneg hC (sq_nonneg R)]
-  apply DifferentialGeometry.HCGCompactness.affineGronwall_of_abs_deriv_le
+  apply DifferentialGeometry.CheegerGromovCompactness.affineGronwall_of_abs_deriv_le
     U U' hk hd
   · intro s hs
-    exact lRegSpeedSq_nonneg (I := I) S T alpha s
+    exact lRegularizedSpeedSq_nonneg (I := I) S T alpha s
   · intro s hs
     simpa only [U, U'] using
-      hasDerivAt_lRegSpeedSq (I := I) S hS T halpha (hJ hs)
+      hasDerivAt_lRegularizedSpeedSq (I := I) S hS T halpha (hJ hs)
   · intro s hs
     apply speedDeriv_le (hsR s hs) hR hC
-      (lRegSpeedSq_nonneg (I := I) S T alpha s)
+      (lRegularizedSpeedSq_nonneg (I := I) S T alpha s)
       (hgrad s hs) (hric s hs)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegInitialVector_inner_le_of_integral_speedSq_le
+theorem lRegularizedInitialVector_inner_le_of_integral_speedSq_le
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {alpha : Real → M} {x : M} {Z : TangentSpace I x}
     (B eps C R K : Real) (hB : 0 < B) (hepsB : eps ≤ B)
     (hBR : B ≤ R) (hC : 0 ≤ C)
-    (halpha : IsLRegCurveOn S T alpha (Set.Icc 0 B) x Z)
+    (halpha : IsLRegularizedCurveOn S T alpha (Set.Icc 0 B) x Z)
     (hgrad : ∀ s ∈ Set.Icc 0 B,
       |(S.base.metric (T - s ^ 2)).inner (alpha s)
           (gradientFun (I := I) (S.base.metric (T - s ^ 2))
             (S.scalar (T - s ^ 2)) (alpha s))
           (lVelocity (I := I) alpha s)| ≤
-        C * Real.sqrt (lRegSpeedSq S T alpha s))
+        C * Real.sqrt (lRegularizedSpeedSq S T alpha s))
     (hric : ∀ s ∈ Set.Icc 0 B,
       |S.ricciAt (T - s ^ 2) (alpha s)
           (vec2 (lVelocity (I := I) alpha s)
             (lVelocity (I := I) alpha s))| ≤
-        C * lRegSpeedSq S T alpha s)
-    (hkin : (∫ s in 0..B, lRegSpeedSq S T alpha s) ≤ K) :
+        C * lRegularizedSpeedSq S T alpha s)
+    (hkin : (∫ s in 0..B, lRegularizedSpeedSq S T alpha s) ≤ K) :
     4 * eps * (S.base.metric T).inner x Z Z ≤
       Real.exp ((1 + 2 * C * R ^ 2 + 4 * C * R) * R) *
         (K + R *
           ((1 + 2 * C * R ^ 2) /
             (1 + 2 * C * R ^ 2 + 4 * C * R))) := by
-  let U : Real → Real := lRegSpeedSq S T alpha
+  let U : Real → Real := lRegularizedSpeedSq S T alpha
   let k : Real := 1 + 2 * C * R ^ 2 + 4 * C * R
   let d : Real := 1 + 2 * C * R ^ 2
   let e : Real := Real.exp (k * R)
@@ -186,7 +186,7 @@ theorem lRegInitialVector_inner_le_of_integral_speedSq_le
   have hratio : 0 ≤ d / k := (div_pos hd hk).le
   have hUcont : ContinuousOn U (Set.Icc 0 B) := by
     intro s hs
-    exact (hasDerivAt_lRegSpeedSq (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
+    exact (hasDerivAt_lRegularizedSpeedSq (I := I) S hS T halpha hs).continuousAt.continuousWithinAt
   have hUcont' : ContinuousOn U (Set.uIcc 0 B) := by
     simpa only [Set.uIcc_of_le hB.le] using hUcont
   have hUint : IntervalIntegrable U MeasureTheory.volume 0 B :=
@@ -204,7 +204,7 @@ theorem lRegInitialVector_inner_le_of_integral_speedSq_le
       have hrI := hsub hr
       rw [abs_of_nonneg hrI.1]
       exact hrI.2.trans hBR
-    have hgr := lRegSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS T halpha s 0 C R hC hR
+    have hgr := lRegularizedSpeedSq_le_of_gradient_ricci_bounds (I := I) S hS T halpha s 0 C R hC hR
       (fun _ hr ↦ hsub hr) hsr
       (fun r hr ↦ hgrad r (hsub hr))
       (fun r hr ↦ hric r (hsub hr))
@@ -215,7 +215,7 @@ theorem lRegInitialVector_inner_le_of_integral_speedSq_le
       apply Real.exp_le_exp.mpr
       exact mul_le_mul_of_nonneg_left hdist hk.le
     have hterm : 0 ≤ U s + d / k :=
-      add_nonneg (lRegSpeedSq_nonneg (I := I) S T alpha s) hratio
+      add_nonneg (lRegularizedSpeedSq_nonneg (I := I) S T alpha s) hratio
     calc
       U 0 ≤ Real.exp (k * |(0 : Real) - s|) * (U s + d / k) := by
         simpa only [U, k, d] using hgr
@@ -244,12 +244,12 @@ theorem lRegInitialVector_inner_le_of_integral_speedSq_le
         simpa only [add_comm] using add_le_add_right hkin (B * (d / k))
   have hleft : eps * U 0 ≤ B * U 0 :=
     mul_le_mul_of_nonneg_right hepsB
-      (lRegSpeedSq_nonneg (I := I) S T alpha 0)
+      (lRegularizedSpeedSq_nonneg (I := I) S T alpha 0)
   have hright : e * (K + B * (d / k)) ≤ e * (K + R * (d / k)) := by
     apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
     exact add_le_add_right (mul_le_mul_of_nonneg_right hBR hratio) K
   have hU0 : U 0 = 4 * (S.base.metric T).inner x Z Z := by
-    dsimp only [U, lRegSpeedSq]
+    dsimp only [U, lRegularizedSpeedSq]
     norm_num only [zero_pow, sub_zero]
     change (S.base.metric T).inner (alpha 0)
       (lVelocity (I := I) alpha 0) (lVelocity (I := I) alpha 0) = _

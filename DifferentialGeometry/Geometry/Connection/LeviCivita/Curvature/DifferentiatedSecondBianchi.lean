@@ -44,7 +44,7 @@ theorem canRmSecond_nabla
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         4 cov Rm04
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           4 cov hcov Rm04)
     let nabla2Rm04 :=
       totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -66,7 +66,7 @@ theorem canRmSecond_nabla
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5 :=
     totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       4 cov Rm04
-      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
         4 cov hcov Rm04)
   let nabla2Rm04 :=
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -115,7 +115,7 @@ theorem canRmSecond_nabla
         5 cov
         (0 : Tensor0SField (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 5)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           5 cov hcov 0)
     have hcan : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 5 cov

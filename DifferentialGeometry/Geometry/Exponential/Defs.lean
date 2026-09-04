@@ -45,9 +45,9 @@ section StationaryWitness
 variable [I.Boundaryless] [CompleteSpace E]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
-theorem maximalGeodesicWitness_zero_all_times
+theorem hasGeodesicAt_zero_all_times
     (g : SmoothRiemannianMetric I M) (p : M) (t : ℝ) :
-    MaximalGeodesicWitness (I := I) g p (0 : TangentSpace I p) t := by
+    HasGeodesicAt (I := I) g p (0 : TangentSpace I p) t := by
   classical
   refine ⟨fun _ : ℝ => p, Set.univ, isOpen_univ, isPreconnected_univ,
     Set.mem_univ _, Set.mem_univ _, ?_⟩
@@ -61,7 +61,7 @@ theorem maximalGeodesicWitness_zero_all_times
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
 theorem zero_mem_expDomain (g : SmoothRiemannianMetric I M) (p : M) :
     (0 : TangentSpace I p) ∈ expDomain (I := I) g p :=
-  maximalGeodesicWitness_zero_all_times (I := I) g p 1
+  hasGeodesicAt_zero_all_times (I := I) g p 1
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
 theorem expDomain_nonempty (g : SmoothRiemannianMetric I M) (p : M) :
@@ -92,10 +92,10 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
 theorem maximalGeodesicChosenCurve_zero_start_eq
     (g : SmoothRiemannianMetric I M) (p : M) :
     maximalGeodesicChosenCurve (I := I) g p (0 : TangentSpace I p)
-      (maximalGeodesicWitness_zero_all_times (I := I) g p 1) 0 = p := by
+      (hasGeodesicAt_zero_all_times (I := I) g p 1) 0 = p := by
   obtain ⟨_J, _hJ_open, _hJ_conn, _h0J, _h1J, hγ⟩ :=
     maximalGeodesicChosenCurve_spec (I := I) g p (0 : TangentSpace I p)
-      (maximalGeodesicWitness_zero_all_times (I := I) g p 1)
+      (hasGeodesicAt_zero_all_times (I := I) g p 1)
   exact hγ.start_eq
 
 end ExpMapZeroWitnessLevel
@@ -164,7 +164,7 @@ theorem isMIntegralCurveOn_zero_section_eq_const
     rw [isOpen_iff_mem_nhds]
     intro t₀ ht₀
     have hft₀ : f (t₀ : ℝ) = (⟨p, (0 : E)⟩ : TangentBundle I M) := ht₀
-    have hp_src : (f (t₀ : ℝ)).proj ∈ (chartAt H p).source := by
+    have hp_source : (f (t₀ : ℝ)).proj ∈ (chartAt H p).source := by
       rw [hft₀]
       exact mem_chart_source H p
     have hf_at : IsMIntegralCurveAt f (geodesicVectorFieldChart (I := I) g p)
@@ -176,7 +176,7 @@ theorem isMIntegralCurveOn_zero_section_eq_const
     have hf_eq_c : f =ᶠ[𝓝 (t₀ : ℝ)] c :=
       isMIntegralCurveAt_geodesicVectorFieldChart_eventuallyEq
         (I := I) (g := g) (α := p) (t₀ := (t₀ : ℝ))
-        (f₁ := f) (f₂ := c) hp_src hf_at hc_at hfc_eq
+        (f₁ := f) (f₂ := c) hp_source hf_at hc_at hfc_eq
     rcases Filter.eventually_iff_exists_mem.mp hf_eq_c with ⟨U, hU_nhds, hU_eq⟩
     rcases mem_nhds_iff.mp hU_nhds with ⟨V, hVU, hV_open, hV_mem⟩
     refine Filter.mem_of_superset (hV_open.preimage continuous_subtype_val
@@ -196,7 +196,7 @@ variable [I.Boundaryless] [CompleteSpace E]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem maximalGeodesicWitness_zero_curve_eq_p
+theorem hasGeodesicAt_zero_curve_eq_p
     {g : SmoothRiemannianMetric I M} {p : M}
     {γ : ℝ → M} {J : Set ℝ}
     (hJ_open : IsOpen J) (hJ_conn : IsPreconnected J) (h0J : (0 : ℝ) ∈ J)
@@ -219,12 +219,12 @@ theorem expMap_zero
   unfold expMap
   have h1 : (1 : ℝ) ∈ maximalGeodesicInterval (I := I) g p
       (0 : TangentSpace I p) :=
-    maximalGeodesicWitness_zero_all_times (I := I) g p 1
+    hasGeodesicAt_zero_all_times (I := I) g p 1
   rw [maximalGeodesic_of_mem (I := I) (g := g) (p := p)
     (v := (0 : TangentSpace I p)) h1]
   obtain ⟨J, hJ_open, hJ_conn, h0J, h1J, hγ⟩ :=
     maximalGeodesicChosenCurve_spec (I := I) g p (0 : TangentSpace I p) h1
-  exact maximalGeodesicWitness_zero_curve_eq_p (I := I)
+  exact hasGeodesicAt_zero_curve_eq_p (I := I)
     hJ_open hJ_conn h0J hγ 1 h1J
 
 end ExpMapZero

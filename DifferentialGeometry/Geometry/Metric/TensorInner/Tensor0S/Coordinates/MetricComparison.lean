@@ -402,7 +402,7 @@ theorem coordInner0S_identity_le_pow_quad
     coordInner0S (I := I) (x := x) s identityInvMetric A A basis <=
       C ^ s * coordInner0S (I := I) (x := x) s Q A A basis := by
   classical
-  have hkey := DifferentialGeometry.HCGCompactness.quadForm_id_le_pow Q C hC hQsymm hQlb s
+  have hkey := DifferentialGeometry.CheegerGromovCompactness.quadForm_id_le_pow Q C hC hQsymm hQlb s
     (fun I0 => tensor0SComponent (I := I) A (fun i => basis i) I0)
   have hQform : coordInner0S (I := I) (x := x) s Q A A basis
       = ∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
@@ -464,7 +464,7 @@ theorem normSq0S_le_pow_sum_comp_sq
     exact Finset.sum_congr rfl fun I0 _ => Finset.sum_congr rfl fun J0 _ =>
       mul_assoc _ _ _
   rw [hQform]
-  exact DifferentialGeometry.HCGCompactness.quad_ub_of_near_id Q ε hε0 hnear s
+  exact DifferentialGeometry.CheegerGromovCompactness.quad_ub_of_near_id Q ε hε0 hnear s
     (fun I0 => tensor0SComponent (I := I) A (fun i => basis i) I0)
 
 end DiagonalCoordinate

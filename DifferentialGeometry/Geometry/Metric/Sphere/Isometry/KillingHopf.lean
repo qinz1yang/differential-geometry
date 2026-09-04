@@ -141,11 +141,11 @@ theorem punctCartan_match
       IsLocalDiffeomorphOn (𝓡 n) J ∞ Fp {x | x ≠ -p} := by
     simpa only [Fp] using
       punctCartan_local hRound g hEnorm p p' i hi hR
-  have hqLoc : IsLocalDiffeomorphAt (𝓡 n) J ∞ Fp q :=
+  have hqLocal : IsLocalDiffeomorphAt (𝓡 n) J ∞ Fp q :=
     hFpP ⟨q, hqneg⟩
   let j : EuclideanSpace ℝ (Fin n) ≃L[ℝ]
       EuclideanSpace ℝ (Fin n) :=
-    hqLoc.mfderivToContinuousLinearEquiv (by decide)
+    hqLocal.mfderivToContinuousLinearEquiv (by decide)
   let q' : N := Fp q
   have hj (a b : EuclideanSpace ℝ (Fin n)) :
       g.inner q' (j a) (j b) =
@@ -156,7 +156,7 @@ theorem punctCartan_match
       (roundMetric (E := A) (n := n)).inner q a b
     rw [show (j : EuclideanSpace ℝ (Fin n) →L[ℝ]
         EuclideanSpace ℝ (Fin n)) = mfderiv (𝓡 n) J Fp q from
-      hqLoc.mfderivToContinuousLinearEquiv_coe (by decide)]
+      hqLocal.mfderivToContinuousLinearEquiv_coe (by decide)]
     exact punctCartan_inner hRound g hEnorm p p' i hi hR hqneg a b
   let Fq : sphere (0 : A) 1 → N :=
     punctCartan g hEnorm q' j q
@@ -246,7 +246,7 @@ theorem punctCartan_match
         mfderiv (𝓡 n) J (fun x : U => Fq x) x₀ := by
     ext v
     have h1 := DFunLike.congr_fun
-      (hqLoc.mfderivToContinuousLinearEquiv_coe (by decide)) v
+      (hqLocal.mfderivToContinuousLinearEquiv_coe (by decide)) v
     have h2 := DFunLike.congr_fun
       (punctCartan_mfd hRound g hEnorm q' j q) v
     have h1' : mfderiv (𝓡 n) J Fp q v = j v := by

@@ -105,7 +105,7 @@ theorem uhlenbeckPulledRm04At_initial_mem_fiberHamiltonIveyRegion
 
 omit [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
   [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-lemma curvatureOperatorMatrixAt_independent_of_witness
+lemma curvatureOperatorMatrixAt_independent_of_membership_proof
     (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (A : Tensor04At (I := I) (M := M) x)
     (h h' : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :

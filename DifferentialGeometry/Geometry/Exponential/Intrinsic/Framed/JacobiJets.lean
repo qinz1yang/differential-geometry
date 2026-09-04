@@ -29,7 +29,7 @@ variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def intrLaunch3
+noncomputable def intrinsicLaunch3
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -41,7 +41,7 @@ noncomputable def intrLaunch3
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunch3_smooth
+theorem intrinsicLaunch3_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -53,7 +53,7 @@ theorem intrLaunch3_smooth
         (modelWithCornersSelf Real Real)).prod
           (modelWithCornersSelf Real Real))
       I ∞
-      (intrLaunch3 (I := I) g hEnorm p u a b) := by
+      (intrinsicLaunch3 (I := I) g hEnorm p u a b) := by
   let launch : (Real × Real) × Real → E := fun q =>
     q.2 • (u + q.1.1 • a + q.1.2 • b)
   have hbase : ContMDiff
@@ -76,7 +76,7 @@ theorem intrLaunch3_smooth
   have heq :
       ((fun v : E => expMapIntrinsic (I := I) g hEnorm p
           (show TangentSpace I p from v)) ∘ launch) =
-        intrLaunch3 (I := I) g hEnorm p u a b := by
+        intrinsicLaunch3 (I := I) g hEnorm p u a b := by
     funext q
     change intrinsicGeodesic (I := I) g hEnorm p
         (show TangentSpace I p from launch q) 1 =
@@ -91,7 +91,7 @@ theorem intrLaunch3_smooth
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def intrLaunchJ
+noncomputable def intrinsicLaunchJ
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -99,15 +99,15 @@ noncomputable def intrLaunchJ
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (q : Real × Real) :
     TangentSpace I
-      (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
+      (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
   mfderiv
     (modelWithCornersSelf Real ((Real × Real) × Real))
-    I (intrLaunch3 (I := I) g hEnorm p u a b)
+    I (intrinsicLaunch3 (I := I) g hEnorm p u a b)
     ((q.1, 0), q.2) ((0, 1), 0)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchJ_smooth
+theorem intrinsicLaunchJ_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -121,18 +121,18 @@ theorem intrLaunchJ_smooth
       (fun q : Real × Real =>
         TotalSpace.mk' E
           (E := (TangentSpace I : M → Type _))
-          (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
-          (intrLaunchJ (I := I) g hEnorm p u a b q)) := by
+          (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+          (intrinsicLaunchJ (I := I) g hEnorm p u a b q)) := by
   let D := modelWithCornersSelf Real ((Real × Real) × Real)
   let Q := modelWithCornersSelf Real (Real × Real)
-  let F := intrLaunch3 (I := I) g hEnorm p u a b
+  let F := intrinsicLaunch3 (I := I) g hEnorm p u a b
   let ι : Real × Real → (Real × Real) × Real := fun q => ((q.1, 0), q.2)
   let v : (Real × Real) × Real := ((0, 1), 0)
   have hF : ContMDiff D I ∞ F := by
     dsimp only [D, F]
     rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod,
       modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
-    exact intrLaunch3_smooth (I := I) g hEnorm p u a b
+    exact intrinsicLaunch3_smooth (I := I) g hEnorm p u a b
   have hconst :
       ContMDiff D D.tangent ∞
         (fun z : (Real × Real) × Real =>
@@ -161,8 +161,8 @@ theorem intrLaunchJ_smooth
       (fun q : Real × Real =>
         TotalSpace.mk' E
           (E := (TangentSpace I : M → Type _))
-          (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
-          (intrLaunchJ (I := I) g hEnorm p u a b q)) =
+          (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+          (intrinsicLaunchJ (I := I) g hEnorm p u a b q)) =
         (tangentMap D I F) ∘
           (fun q : Real × Real =>
             (TotalSpace.mk' ((Real × Real) × Real) (ι q) v :
@@ -174,7 +174,7 @@ theorem intrLaunchJ_smooth
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def intrLaunchJet
+noncomputable def intrinsicLaunchJet
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -182,49 +182,49 @@ noncomputable def intrLaunchJet
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (q : Real × Real) :
     TangentSpace I
-      (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
+      (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
   let f : Real -> Real -> M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let V : forall r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
   Variation.covFstIter (I := I) g f n V q.1 q.2
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 @[simp]
-theorem intrLaunchJet_zero
+theorem intrinsicLaunchJet_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (q : Real × Real) :
-    intrLaunchJet (I := I) g hEnorm p u a b 0 q =
-      intrLaunchJ (I := I) g hEnorm p u a b q :=
+    intrinsicLaunchJet (I := I) g hEnorm p u a b 0 q =
+      intrinsicLaunchJ (I := I) g hEnorm p u a b q :=
   rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 @[simp]
-theorem intrLaunchJet_succ
+theorem intrinsicLaunchJet_succ
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r t : Real) :
-    intrLaunchJet (I := I) g hEnorm p u a b (Nat.succ n) (r, t) =
+    intrinsicLaunchJet (I := I) g hEnorm p u a b (Nat.succ n) (r, t) =
       Variation.covFst (I := I) g
         (fun s v =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v))
         (fun s v =>
-          intrLaunchJet (I := I) g hEnorm p u a b n (s, v))
+          intrinsicLaunchJet (I := I) g hEnorm p u a b n (s, v))
         r t :=
   rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchJet_smooth
+theorem intrinsicLaunchJet_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -237,13 +237,13 @@ theorem intrLaunchJet_smooth
       I.tangent ∞
       (fun q : Real × Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
-          (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
-          (intrLaunchJet (I := I) g hEnorm p u a b n q) :
+          (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+          (intrinsicLaunchJet (I := I) g hEnorm p u a b n q) :
             TangentBundle I M)) := by
   let f : Real -> Real -> M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let V : forall r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
   have hV :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -253,14 +253,14 @@ theorem intrLaunchJet_smooth
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (V q.1 q.2) : TangentBundle I M)) := by
     simpa only [f, V] using
-      intrLaunchJ_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchJ_smooth (I := I) g hEnorm p u a b
   have hjet :=
     Variation.covFstIter_smooth (I := I) g f V hV n
-  simpa only [f, V, intrLaunchJet] using hjet
+  simpa only [f, V, intrinsicLaunchJet] using hjet
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchMix_smooth
+theorem intrinsicLaunchMix_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -268,9 +268,9 @@ theorem intrLaunchMix_smooth
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
     let f : Real → Real → M := fun r t =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
     let V : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-      intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+      intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
     ContMDiff
       ((modelWithCornersSelf Real Real).prod
         (modelWithCornersSelf Real Real))
@@ -282,9 +282,9 @@ theorem intrLaunchMix_smooth
             TangentBundle I M)) := by
   dsimp only
   let f : Real → Real → M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let V : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
   have hV :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -294,12 +294,12 @@ theorem intrLaunchMix_smooth
           (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
             (f q.1 q.2) (V q.1 q.2) : TangentBundle I M)) := by
     simpa only [f, V] using
-      intrLaunchJ_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchJ_smooth (I := I) g hEnorm p u a b
   exact Variation.cov_fst_smooth (I := I) g f V hV
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrMixDeriv_smooth
+theorem intrinsicMixDeriv_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -307,9 +307,9 @@ theorem intrMixDeriv_smooth
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
     let f : Real → Real → M := fun r t =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
     let V : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-      intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+      intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
     let W : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
       Variation.covFst (I := I) g f V r t
     ContMDiff
@@ -323,9 +323,9 @@ theorem intrMixDeriv_smooth
             TangentBundle I M)) := by
   dsimp only
   let f : Real → Real → M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let V : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
   let W : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
     Variation.covFst (I := I) g f V r t
   have hW :
@@ -337,12 +337,12 @@ theorem intrMixDeriv_smooth
           (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
             (f q.1 q.2) (W q.1 q.2) : TangentBundle I M)) := by
     simpa only [f, V, W] using
-      intrLaunchMix_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchMix_smooth (I := I) g hEnorm p u a b
   exact Variation.cov_snd_smooth (I := I) g f W hW
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchDir_smooth
+theorem intrinsicLaunchDir_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -356,20 +356,20 @@ theorem intrLaunchDir_smooth
       (fun q : Real × Real =>
         TotalSpace.mk' E
           (E := (TangentSpace I : M → Type _))
-          (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+          (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
           (mfderiv
             (modelWithCornersSelf Real ((Real × Real) × Real))
-            I (intrLaunch3 (I := I) g hEnorm p u a b)
+            I (intrinsicLaunch3 (I := I) g hEnorm p u a b)
             ((q.1, 0), q.2) v)) := by
   let D := modelWithCornersSelf Real ((Real × Real) × Real)
   let Q := modelWithCornersSelf Real (Real × Real)
-  let F := intrLaunch3 (I := I) g hEnorm p u a b
+  let F := intrinsicLaunch3 (I := I) g hEnorm p u a b
   let ι : Real × Real → (Real × Real) × Real := fun q => ((q.1, 0), q.2)
   have hF : ContMDiff D I ∞ F := by
     dsimp only [D, F]
     rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod,
       modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
-    exact intrLaunch3_smooth (I := I) g hEnorm p u a b
+    exact intrinsicLaunch3_smooth (I := I) g hEnorm p u a b
   have hconst :
       ContMDiff D D.tangent ∞
         (fun z : (Real × Real) × Real =>
@@ -397,10 +397,10 @@ theorem intrLaunchDir_smooth
       (fun q : Real × Real =>
         TotalSpace.mk' E
           (E := (TangentSpace I : M → Type _))
-          (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
+          (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
           (mfderiv
             (modelWithCornersSelf Real ((Real × Real) × Real))
-            I (intrLaunch3 (I := I) g hEnorm p u a b)
+            I (intrinsicLaunch3 (I := I) g hEnorm p u a b)
             ((q.1, 0), q.2) v)) =
         (tangentMap D I F) ∘
           (fun q : Real × Real =>
@@ -413,7 +413,7 @@ theorem intrLaunchDir_smooth
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchA_eq
+theorem intrinsicLaunchA_eq
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -422,20 +422,20 @@ theorem intrLaunchA_eq
     (p : M) (u a b : E) (q : Real × Real) :
     mfderiv
         (modelWithCornersSelf Real ((Real × Real) × Real))
-        I (intrLaunch3 (I := I) g hEnorm p u a b)
+        I (intrinsicLaunch3 (I := I) g hEnorm p u a b)
         ((q.1, 0), q.2) ((1, 0), 0) =
       Variation.varFst (I := I)
         (fun s t : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), t))
         q.1 q.2 := by
   let D := modelWithCornersSelf Real ((Real × Real) × Real)
-  let F := intrLaunch3 (I := I) g hEnorm p u a b
+  let F := intrinsicLaunch3 (I := I) g hEnorm p u a b
   let ι : Real → (Real × Real) × Real := fun s => ((s, 0), q.2)
   have hFsmooth : ContMDiff D I ∞ F := by
     dsimp only [D, F]
     rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod,
       modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
-    exact intrLaunch3_smooth (I := I) g hEnorm p u a b
+    exact intrinsicLaunch3_smooth (I := I) g hEnorm p u a b
   have hF : MDifferentiableAt D I F (ι q.1) :=
     hFsmooth.mdifferentiableAt (by simp)
   have hι :
@@ -460,12 +460,12 @@ theorem intrLaunchA_eq
         hF hι (1 : Real)
   rw [hι'] at hcomp
   rw [show F ∘ ι = fun r : Real ↦
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), q.2) by rfl] at hcomp
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), q.2) by rfl] at hcomp
   simpa only [D, F, ι, Function.comp_apply, Variation.varFst] using hcomp.symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchA_zero
+theorem intrinsicLaunchA_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -474,7 +474,7 @@ theorem intrLaunchA_zero
     (p : M) (u a b : E) (t : Real) :
     Variation.varFst (I := I)
         (fun s v : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)) 0 t =
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)) 0 t =
       intrinsicJacobi (I := I) g hEnorm p u a t := by
   unfold Variation.varFst intrinsicJacobi
   have hfun :
@@ -488,13 +488,13 @@ theorem intrLaunchA_zero
     simp
   have h := congrArg
     (fun F : Real → M => mfderiv (modelWithCornersSelf Real Real) I F 0 1) hfun
-  unfold intrLaunch3
+  unfold intrinsicLaunch3
   convert h using 1
   rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchT_eq
+theorem intrinsicLaunchT_eq
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -503,20 +503,20 @@ theorem intrLaunchT_eq
     (p : M) (u a b : E) (q : Real × Real) :
     mfderiv
         (modelWithCornersSelf Real ((Real × Real) × Real))
-        I (intrLaunch3 (I := I) g hEnorm p u a b)
+        I (intrinsicLaunch3 (I := I) g hEnorm p u a b)
         ((q.1, 0), q.2) ((0, 0), 1) =
       Variation.varSnd (I := I)
         (fun s t : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), t))
         q.1 q.2 := by
   let D := modelWithCornersSelf Real ((Real × Real) × Real)
-  let F := intrLaunch3 (I := I) g hEnorm p u a b
+  let F := intrinsicLaunch3 (I := I) g hEnorm p u a b
   let ι : Real → (Real × Real) × Real := fun t => ((q.1, 0), t)
   have hFsmooth : ContMDiff D I ∞ F := by
     dsimp only [D, F]
     rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod,
       modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
-    exact intrLaunch3_smooth (I := I) g hEnorm p u a b
+    exact intrinsicLaunch3_smooth (I := I) g hEnorm p u a b
   have hF : MDifferentiableAt D I F (ι q.2) :=
     hFsmooth.mdifferentiableAt (by simp)
   have hι :
@@ -541,31 +541,31 @@ theorem intrLaunchT_eq
         hF hι (1 : Real)
   rw [hι'] at hcomp
   rw [show F ∘ ι = fun v : Real ↦
-    intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), v) by rfl] at hcomp
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), v) by rfl] at hcomp
   simpa only [D, F, ι, Function.comp_apply, Variation.varSnd] using hcomp.symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchJ_eq
+theorem intrinsicLaunchJ_eq
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (q : Real × Real) :
-    intrLaunchJ (I := I) g hEnorm p u a b q =
+    intrinsicLaunchJ (I := I) g hEnorm p u a b q =
       mfderiv (modelWithCornersSelf Real Real) I
         (fun s : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((q.1, s), q.2))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, s), q.2))
         0 (1 : Real) := by
   let D := modelWithCornersSelf Real ((Real × Real) × Real)
-  let F := intrLaunch3 (I := I) g hEnorm p u a b
+  let F := intrinsicLaunch3 (I := I) g hEnorm p u a b
   let ι : Real → (Real × Real) × Real := fun s => ((q.1, s), q.2)
   have hFsmooth : ContMDiff D I ∞ F := by
     dsimp only [D, F]
     rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod,
       modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
-    exact intrLaunch3_smooth (I := I) g hEnorm p u a b
+    exact intrinsicLaunch3_smooth (I := I) g hEnorm p u a b
   have hF : MDifferentiableAt D I F (ι 0) :=
     hFsmooth.mdifferentiableAt (by simp)
   have hι : MDifferentiableAt (modelWithCornersSelf Real Real) D ι 0 :=
@@ -589,12 +589,12 @@ theorem intrLaunchJ_eq
         hF hι (1 : Real)
   rw [hι'] at hcomp
   rw [show F ∘ ι = fun s : Real ↦
-    intrLaunch3 (I := I) g hEnorm p u a b ((q.1, s), q.2) by rfl] at hcomp
-  simpa only [D, F, ι, Function.comp_apply, intrLaunchJ] using hcomp.symm
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, s), q.2) by rfl] at hcomp
+  simpa only [D, F, ι, Function.comp_apply, intrinsicLaunchJ] using hcomp.symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchA_self
+theorem intrinsicLaunchA_self
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -602,12 +602,12 @@ theorem intrLaunchA_self
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a : E) (r t : Real) :
     let f : Real → Real → M := fun s v =>
-      intrLaunch3 (I := I) g hEnorm p u a a ((s, 0), v)
+      intrinsicLaunch3 (I := I) g hEnorm p u a a ((s, 0), v)
     Variation.varFst (I := I) f r t =
-      intrLaunchJ (I := I) g hEnorm p u a a (r, t) := by
+      intrinsicLaunchJ (I := I) g hEnorm p u a a (r, t) := by
   dsimp only
   let f : Real → Real → M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a a ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a a ((s, 0), v)
   have hfSmooth :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -622,7 +622,7 @@ theorem intrLaunchA_self
               (modelWithCornersSelf Real Real))
           ∞ (fun q : Real × Real => ((q.1, (0 : Real)), q.2)) :=
       (contMDiff_fst.prodMk contMDiff_const).prodMk contMDiff_snd
-    exact (intrLaunch3_smooth (I := I) g hEnorm p u a a).comp hincl
+    exact (intrinsicLaunch3_smooth (I := I) g hEnorm p u a a).comp hincl
   have hf : Variation.IsSmoothVariation (I := I) f :=
     hfSmooth.of_le ENat.LEInfty.out
   have hshift :=
@@ -630,27 +630,27 @@ theorem intrLaunchA_self
   have hfamily :
       (fun s v : Real => f (r + s) v) =
         fun s v : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a a ((r, s), v) := by
+          intrinsicLaunch3 (I := I) g hEnorm p u a a ((r, s), v) := by
     funext s v
-    simp only [f, intrLaunch3, zero_smul, add_zero, add_smul]
+    simp only [f, intrinsicLaunch3, zero_smul, add_zero, add_smul]
     rw [add_assoc]
   rw [hfamily] at hshift
   calc
     Variation.varFst (I := I) f r t =
         Variation.varFst (I := I)
           (fun s v : Real =>
-            intrLaunch3 (I := I) g hEnorm p u a a ((r, s), v))
+            intrinsicLaunch3 (I := I) g hEnorm p u a a ((r, s), v))
           0 t := hshift.symm
     _ = mfderiv (modelWithCornersSelf Real Real) I
           (fun s : Real =>
-            intrLaunch3 (I := I) g hEnorm p u a a ((r, s), t))
+            intrinsicLaunch3 (I := I) g hEnorm p u a a ((r, s), t))
           0 (1 : Real) := rfl
-    _ = intrLaunchJ (I := I) g hEnorm p u a a (r, t) :=
-      (intrLaunchJ_eq (I := I) g hEnorm p u a a (r, t)).symm
+    _ = intrinsicLaunchJ (I := I) g hEnorm p u a a (r, t) :=
+      (intrinsicLaunchJ_eq (I := I) g hEnorm p u a a (r, t)).symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrAJet_self
+theorem intrinsicAJet_self
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -658,39 +658,39 @@ theorem intrAJet_self
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a : E) (n : Nat) (q : Real × Real) :
     let f : Real → Real → M := fun r t =>
-      intrLaunch3 (I := I) g hEnorm p u a a ((r, 0), t)
+      intrinsicLaunch3 (I := I) g hEnorm p u a a ((r, 0), t)
     let A : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
       Variation.varFst (I := I) f r t
     Variation.covFstIter (I := I) g f n A q.1 q.2 =
-      intrLaunchJet (I := I) g hEnorm p u a a n q := by
+      intrinsicLaunchJet (I := I) g hEnorm p u a a n q := by
   dsimp only
   let f : Real → Real → M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a a ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a a ((r, 0), t)
   let A : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
     Variation.varFst (I := I) f r t
   let B : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a a (r, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a a (r, t)
   have hAB : A = B := by
     funext r t
-    exact intrLaunchA_self (I := I) g hEnorm p u a r t
+    exact intrinsicLaunchA_self (I := I) g hEnorm p u a r t
   change Variation.covFstIter (I := I) g f n A q.1 q.2 =
     Variation.covFstIter (I := I) g f n B q.1 q.2
   rw [hAB]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchJ_time0
+theorem intrinsicLaunchJ_time0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r : Real) :
-    intrLaunchJ (I := I) g hEnorm p u a b (r, 0) = 0 := by
-  rw [intrLaunchJ_eq]
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, 0) = 0 := by
+  rw [intrinsicLaunchJ_eq]
   have hconst :
       (fun s : Real =>
-        intrLaunch3 (I := I) g hEnorm p u a b ((r, s), 0)) =
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, s), 0)) =
         fun _ : Real => p := by
     funext s
     exact intrinsicGeodesic_zero (I := I) g hEnorm p _
@@ -699,25 +699,25 @@ theorem intrLaunchJ_time0
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchJet_time0
+theorem intrinsicLaunchJet_time0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r : Real) :
-    intrLaunchJet (I := I) g hEnorm p u a b n (r, 0) = 0 := by
+    intrinsicLaunchJet (I := I) g hEnorm p u a b n (r, 0) = 0 := by
   let f : Real → Real → M := fun s t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
   let V : ∀ s t : Real, TangentSpace I (f s t) := fun s t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (s, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (s, t)
   change Variation.covFstIter (I := I) g f n V r 0 = 0
   exact Variation.covFstIter_zero_of (I := I) g f V 0
-    (fun s => intrLaunchJ_time0 (I := I) g hEnorm p u a b s) n r
+    (fun s => intrinsicLaunchJ_time0 (I := I) g hEnorm p u a b s) n r
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchDJ_time0
+theorem intrinsicLaunchDJ_time0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -725,15 +725,15 @@ theorem intrLaunchDJ_time0
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r : Real) :
     let f : Real → Real → M := fun s t =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
     let V : ∀ s t : Real, TangentSpace I (f s t) := fun s t =>
-      intrLaunchJ (I := I) g hEnorm p u a b (s, t)
+      intrinsicLaunchJ (I := I) g hEnorm p u a b (s, t)
     Variation.covSnd (I := I) g f V r 0 = b := by
   dsimp only
   let f : Real → Real → M := fun s t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), t)
   let V : ∀ s t : Real, TangentSpace I (f s t) := fun s t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (s, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (s, t)
   let γ : Real → M := fun t => f r t
   let γ' : Real → M := fun t =>
     intrinsicGeodesic (I := I) g hEnorm p
@@ -746,11 +746,11 @@ theorem intrLaunchDJ_time0
       0 (1 : Real)
   have hcurve : γ =ᶠ[𝓝 (0 : Real)] γ' := by
     filter_upwards with t
-    simp only [γ, γ', f, intrLaunch3, zero_smul, add_zero]
+    simp only [γ, γ', f, intrinsicLaunch3, zero_smul, add_zero]
   have hfield : ∀ᶠ t in 𝓝 (0 : Real), (V r t : E) = (J' t : E) := by
     filter_upwards with t
     unfold V J' f
-    convert intrLaunchJ_eq (I := I) g hEnorm p u a b (r, t) using 1
+    convert intrinsicLaunchJ_eq (I := I) g hEnorm p u a b (r, t) using 1
     rfl
   have hcongr :=
     covDerivAlong_congr_curve (I := I) g
@@ -761,31 +761,31 @@ theorem intrLaunchDJ_time0
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchJ_at
+theorem intrinsicLaunchJ_at
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r t : Real) :
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t) =
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t) =
       intrinsicJacobi (I := I) g hEnorm p (u + r • a) b t := by
-  rw [intrLaunchJ_eq]
+  rw [intrinsicLaunchJ_eq]
   unfold intrinsicJacobi
   rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchJ_zero
+theorem intrinsicLaunchJ_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (t : Real) :
-    intrLaunchJ (I := I) g hEnorm p u a b (0, t) =
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (0, t) =
       intrinsicJacobi (I := I) g hEnorm p u b t := by
-  rw [intrLaunchJ_eq]
+  rw [intrinsicLaunchJ_eq]
   unfold intrinsicJacobi
   have hfun :
       (fun s : Real =>
@@ -798,13 +798,13 @@ theorem intrLaunchJ_zero
     simp
   have h := congrArg
     (fun F : Real → M => mfderiv (modelWithCornersSelf Real Real) I F 0 1) hfun
-  unfold intrLaunch3
+  unfold intrinsicLaunch3
   convert h using 1
   rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchDA_zero
+theorem intrinsicLaunchDA_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -812,7 +812,7 @@ theorem intrLaunchDA_zero
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (t : Real) :
     let f : Real → Real → M := fun r s =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), s)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), s)
     Variation.covSnd (I := I) g f
         (fun r s => Variation.varFst (I := I) f r s) 0 t =
       DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
@@ -821,7 +821,7 @@ theorem intrLaunchDA_zero
         (intrinsicJacobi (I := I) g hEnorm p u a) t := by
   dsimp only
   let f : Real → Real → M := fun r s =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), s)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), s)
   let A : ∀ s : Real, TangentSpace I (f 0 s) := fun s =>
     Variation.varFst (I := I) f 0 s
   let γ : Real → M := intrinsicGeodesic (I := I) g hEnorm p u
@@ -829,19 +829,19 @@ theorem intrLaunchDA_zero
     intrinsicJacobi (I := I) g hEnorm p u a
   have hγ : (fun s : Real => f 0 s) =ᶠ[𝓝 t] γ := by
     filter_upwards with s
-    simp [f, γ, intrLaunch3]
+    simp [f, γ, intrinsicLaunch3]
   have hA : ∀ᶠ s in 𝓝 t, (A s : E) = (J s : E) := by
     filter_upwards with s
     unfold A J f
     convert congrArg (fun z => (z : E))
-      (intrLaunchA_zero (I := I) g hEnorm p u a b s) using 1
+      (intrinsicLaunchA_zero (I := I) g hEnorm p u a b s) using 1
     rfl
   simpa only [Variation.covSnd, f, A, γ, J] using
     covDerivAlong_congr_curve (I := I) g A J hγ hA
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunchDJ_zero
+theorem intrinsicLaunchDJ_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -849,9 +849,9 @@ theorem intrLaunchDJ_zero
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (t : Real) :
     let f : Real → Real → M := fun r s =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), s)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), s)
     let V : ∀ r s : Real, TangentSpace I (f r s) := fun r s =>
-      intrLaunchJ (I := I) g hEnorm p u a b (r, s)
+      intrinsicLaunchJ (I := I) g hEnorm p u a b (r, s)
     Variation.covSnd (I := I) g f V 0 t =
       DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
         (I := I) g
@@ -859,27 +859,27 @@ theorem intrLaunchDJ_zero
         (intrinsicJacobi (I := I) g hEnorm p u b) t := by
   dsimp only
   let f : Real → Real → M := fun r s =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), s)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), s)
   let V : ∀ r s : Real, TangentSpace I (f r s) := fun r s =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, s)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, s)
   let γ : Real → M := intrinsicGeodesic (I := I) g hEnorm p u
   let J : ∀ s : Real, TangentSpace I (γ s) :=
     intrinsicJacobi (I := I) g hEnorm p u b
   have hγ : (fun s : Real => f 0 s) =ᶠ[𝓝 t] γ := by
     filter_upwards with s
-    simp [f, γ, intrLaunch3]
+    simp [f, γ, intrinsicLaunch3]
   have hV : ∀ᶠ s in 𝓝 t, (V 0 s : E) = (J s : E) := by
     filter_upwards with s
     unfold V J f
     convert congrArg (fun z => (z : E))
-      (intrLaunchJ_zero (I := I) g hEnorm p u a b s) using 1
+      (intrinsicLaunchJ_zero (I := I) g hEnorm p u a b s) using 1
     rfl
   simpa only [Variation.covSnd, f, V, γ, J] using
     covDerivAlong_congr_curve (I := I) g (fun s => V 0 s) J hγ hV
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunch_jacobi
+theorem intrinsicLaunch_jacobi
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -887,11 +887,11 @@ theorem intrLaunch_jacobi
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r : Real) :
     let γ : Real → M := fun t =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
     let J : ∀ t : Real, TangentSpace I (γ t) := fun t =>
       mfderiv (modelWithCornersSelf Real Real) I
         (fun s : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((r, s), t))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, s), t))
         0 (1 : Real)
     DifferentialGeometry.Geometry.Riemannian.Variation.IsJacobiAlong
       (I := I) g γ J := by
@@ -899,12 +899,12 @@ theorem intrLaunch_jacobi
   let x : E := u + r • a
   have hγ :
       (fun t : Real =>
-        intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)) =
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)) =
         fun t : Real =>
           intrinsicGeodesic (I := I) g hEnorm p
             (show TangentSpace I p from x) t := by
     funext t
-    simp [intrLaunch3, x]
+    simp [intrinsicLaunch3, x]
   rw [hγ]
   unfold x
   convert intrinsic_jacobi (I := I) g hEnorm p (u + r • a) b using 1
@@ -912,7 +912,7 @@ theorem intrLaunch_jacobi
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunch_mix_zero
+theorem intrinsicLaunch_mix_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -920,21 +920,21 @@ theorem intrLaunch_mix_zero
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
     let γ : Real → M := fun r =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 0)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 0)
     let J : ∀ r : Real, TangentSpace I (γ r) := fun r =>
       mfderiv (modelWithCornersSelf Real Real) I
         (fun s : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((r, s), 0))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, s), 0))
         0 (1 : Real)
     DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
       (I := I) g γ J 0 = 0 := by
   dsimp only
   let γ : Real → M := fun r =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 0)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 0)
   let J : ∀ r : Real, TangentSpace I (γ r) := fun r =>
     mfderiv (modelWithCornersSelf Real Real) I
       (fun s : Real =>
-        intrLaunch3 (I := I) g hEnorm p u a b ((r, s), 0))
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, s), 0))
       0 (1 : Real)
   change
     DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
@@ -943,14 +943,14 @@ theorem intrLaunch_mix_zero
     funext r
     have hconst :
         (fun s : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((r, s), 0)) =
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, s), 0)) =
           fun _ : Real => p := by
       funext s
       exact intrinsicGeodesic_zero (I := I) g hEnorm p _
     change
       mfderiv (modelWithCornersSelf Real Real) I
         (fun s : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((r, s), 0))
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, s), 0))
         0 (1 : Real) = 0
     rw [hconst, mfderiv_const]
     rfl
@@ -961,7 +961,7 @@ theorem intrLaunch_mix_zero
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunch_commute
+theorem intrinsicLaunch_commute
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -969,7 +969,7 @@ theorem intrLaunch_commute
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (t : Real) :
     let f : Real → Real → M := fun r s =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, s), t)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, s), t)
     DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong
         (I := I) g (fun r : Real => f r 0)
         (fun r : Real =>
@@ -981,7 +981,7 @@ theorem intrLaunch_commute
           mfderiv (modelWithCornersSelf Real Real) I
             (fun r : Real => f r s) 0 1) 0 := by
   let f : Real → Real → M := fun r s =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, s), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, s), t)
   have hfSmooth :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -995,7 +995,7 @@ theorem intrLaunch_commute
             (modelWithCornersSelf Real Real))
         ∞ (fun q : Real × Real => ((q.1, q.2), t)) :=
       (contMDiff_fst.prodMk contMDiff_snd).prodMk contMDiff_const
-    exact (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
+    exact (intrinsicLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
   have hf :
       DifferentialGeometry.Geometry.Riemannian.Variation.IsSmoothVariation
         (I := I) f := by
@@ -1006,7 +1006,7 @@ theorem intrLaunch_commute
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunch_dmix0
+theorem intrinsicLaunch_dmix0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1014,16 +1014,16 @@ theorem intrLaunch_dmix0
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) :
     let f : Real → Real → M := fun r t =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
     let V : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-      intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+      intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
     Variation.covSnd (I := I) g f
       (fun r t => Variation.covFst (I := I) g f V r t) 0 0 = 0 := by
   dsimp only
   let f : Real → Real → M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let V : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
   change Variation.covSnd (I := I) g f
     (fun r t => Variation.covFst (I := I) g f V r t) 0 0 = 0
   have hfSmooth :
@@ -1040,7 +1040,7 @@ theorem intrLaunch_dmix0
               (modelWithCornersSelf Real Real))
           ∞ (fun q : Real × Real => ((q.1, (0 : Real)), q.2)) :=
       (contMDiff_fst.prodMk contMDiff_const).prodMk contMDiff_snd
-    exact (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
+    exact (intrinsicLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
   have hf : Variation.IsSmoothVariation (I := I) f :=
     hfSmooth.of_le ENat.LEInfty.out
   have hV :
@@ -1052,7 +1052,7 @@ theorem intrLaunch_dmix0
           (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
             (f q.1 q.2) (V q.1 q.2) : TangentBundle I M)) := by
     simpa only [f, V] using
-      intrLaunchJ_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchJ_smooth (I := I) g hEnorm p u a b
   have hcomm :=
     Variation.cov_commute_smooth (I := I) g f hf V 0 hV
   let A : ∀ r : Real, TangentSpace I (f r 0) := fun r =>
@@ -1064,7 +1064,7 @@ theorem intrLaunch_dmix0
   have hA0 : ∀ᶠ r in 𝓝 (0 : Real), (A r : E) = b := by
     filter_upwards with r
     let gamma : Real → M := fun t =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
     let gamma' : Real → M := fun t =>
       intrinsicGeodesic (I := I) g hEnorm p
         (show TangentSpace I p from u + r • a) t
@@ -1076,18 +1076,18 @@ theorem intrLaunch_dmix0
         0 (1 : Real)
     have hcurve : gamma =ᶠ[𝓝 (0 : Real)] gamma' := by
       filter_upwards with t
-      simp only [gamma, gamma', intrLaunch3, zero_smul, add_zero]
+      simp only [gamma, gamma', intrinsicLaunch3, zero_smul, add_zero]
     have hfield : ∀ᶠ t in 𝓝 (0 : Real),
-        (intrLaunchJ (I := I) g hEnorm p u a b (r, t) : E) =
+        (intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t) : E) =
           (J' t : E) := by
       filter_upwards with t
       unfold J'
-      convert intrLaunchJ_eq (I := I) g hEnorm p u a b (r, t) using 1
+      convert intrinsicLaunchJ_eq (I := I) g hEnorm p u a b (r, t) using 1
       rfl
     have hcongr :=
       covDerivAlong_congr_curve (I := I) g
         (γ := gamma) (γ' := gamma')
-        (fun t => intrLaunchJ (I := I) g hEnorm p u a b (r, t))
+        (fun t => intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t))
         J' hcurve hfield
     have hd0 :=
       intrinsic_jacobi_d0 (I := I) g hEnorm p (u + r • a) b
@@ -1123,11 +1123,11 @@ theorem intrLaunch_dmix0
         (I := I) g (fun r : Real => f r 0) A 0 : E) = 0
     exact hleftCongr'.trans (hconst'.trans hderiv)
   have hV00 : V 0 0 = 0 := by
-    change intrLaunchJ (I := I) g hEnorm p u a b (0, 0) = 0
-    rw [intrLaunchJ_eq]
+    change intrinsicLaunchJ (I := I) g hEnorm p u a b (0, 0) = 0
+    rw [intrinsicLaunchJ_eq]
     have hconst :
         (fun s : Real =>
-          intrLaunch3 (I := I) g hEnorm p u a b ((0, s), 0)) =
+          intrinsicLaunch3 (I := I) g hEnorm p u a b ((0, s), 0)) =
           fun _ : Real => p := by
       funext s
       exact intrinsicGeodesic_zero (I := I) g hEnorm p _
@@ -1155,7 +1155,7 @@ theorem intrLaunch_dmix0
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrLaunch_var_eq
+theorem intrinsicLaunch_var_eq
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1163,24 +1163,24 @@ theorem intrLaunch_var_eq
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (t : Real) :
     let f : Real → Real → M := fun r v =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), v)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), v)
     let V : ∀ r v : Real, TangentSpace I (f r v) := fun r v =>
-      intrLaunchJ (I := I) g hEnorm p u a b (r, v)
+      intrinsicLaunchJ (I := I) g hEnorm p u a b (r, v)
     Variation.covSnd2 (I := I) g f
           (fun r v => Variation.covFst (I := I) g f V r v) 0 t +
-        Variation.jacCurv (I := I) g f
+        Variation.jacobianCurv (I := I) g f
           (fun r v => Variation.covFst (I := I) g f V r v) 0 t =
-      Variation.jacVarForce (I := I) g f V t := by
+      Variation.jacobianVarForce (I := I) g f V t := by
   let f : Real → Real → M := fun r v =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), v)
   let V : ∀ r v : Real, TangentSpace I (f r v) := fun r v =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, v)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, v)
   change
     Variation.covSnd2 (I := I) g f
           (fun r v => Variation.covFst (I := I) g f V r v) 0 t +
-        Variation.jacCurv (I := I) g f
+        Variation.jacobianCurv (I := I) g f
           (fun r v => Variation.covFst (I := I) g f V r v) 0 t =
-      Variation.jacVarForce (I := I) g f V t
+      Variation.jacobianVarForce (I := I) g f V t
   have hfSmooth :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -1195,7 +1195,7 @@ theorem intrLaunch_var_eq
               (modelWithCornersSelf Real Real))
           ∞ (fun q : Real × Real => ((q.1, (0 : Real)), q.2)) :=
       (contMDiff_fst.prodMk contMDiff_const).prodMk contMDiff_snd
-    exact (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
+    exact (intrinsicLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
   have hf : Variation.IsSmoothVariation (I := I) f :=
     hfSmooth.of_le ENat.LEInfty.out
   have hV :
@@ -1207,25 +1207,25 @@ theorem intrLaunch_var_eq
           (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
             (f q.1 q.2) (V q.1 q.2) : TangentBundle I M)) := by
     simpa only [f, V] using
-      intrLaunchJ_smooth (I := I) g hEnorm p u a b
-  have hJac : ∀ r : Real,
+      intrinsicLaunchJ_smooth (I := I) g hEnorm p u a b
+  have hJacobian : ∀ r : Real,
       Variation.IsJacobiAlong (I := I) g (fun v : Real => f r v)
         (fun v : Real => V r v) := by
     intro r
-    simpa only [f, V, intrLaunchJ_eq] using
-      intrLaunch_jacobi (I := I) g hEnorm p u a b r
+    simpa only [f, V, intrinsicLaunchJ_eq] using
+      intrinsicLaunch_jacobi (I := I) g hEnorm p u a b r
   have hGeo : ∀ r : Real,
       DifferentialGeometry.Geometry.Riemannian.Geodesic.IsGeodesic
         (I := I) g (fun v : Real => f r v) := by
     intro r
-    simpa only [f, intrLaunch3, zero_smul, add_zero] using
+    simpa only [f, intrinsicLaunch3, zero_smul, add_zero] using
       intrinsicGeodesic_isGeodesic (I := I) g hEnorm p
         (show TangentSpace I p from u + r • a)
-  exact Variation.jacobi_var_eq (I := I) g f hf V hV hJac hGeo t
+  exact Variation.jacobi_var_eq (I := I) g f hf V hV hJacobian hGeo t
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def intrJetResidual
+noncomputable def intrinsicJetResidual
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1233,16 +1233,16 @@ noncomputable def intrJetResidual
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (q : Real × Real) :
     TangentSpace I
-      (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
+      (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
   let f : Real -> Real -> M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let V : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t)
-  Variation.jacJetResidual (I := I) g f V n q.1 q.2
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
+  Variation.jacobianJetResidual (I := I) g f V n q.1 q.2
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def intrJetCorr
+noncomputable def intrinsicJetCorrection
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1250,44 +1250,44 @@ noncomputable def intrJetCorr
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (q : Real × Real) :
     TangentSpace I
-      (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
+      (intrinsicLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2)) :=
   let f : Real -> Real -> M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let V : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJ (I := I) g hEnorm p u a b (r, t)
-  Variation.jacJetCorr (I := I) g f V n q.1 q.2
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (r, t)
+  Variation.jacobianJetCorrection (I := I) g f V n q.1 q.2
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 @[simp]
-theorem intrJetResidual_zero
+theorem intrinsicJetResidual_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (r t : Real) :
-    intrJetResidual (I := I) g hEnorm p u a b 0 (r, t) = 0 := by
+    intrinsicJetResidual (I := I) g hEnorm p u a b 0 (r, t) = 0 := by
   let γ : Real -> M := fun v =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), v)
   let J : ∀ v : Real, TangentSpace I (γ v) := fun v =>
     mfderiv (modelWithCornersSelf Real Real) I
       (fun s : Real =>
-        intrLaunch3 (I := I) g hEnorm p u a b ((r, s), v))
+        intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, s), v))
       0 (1 : Real)
   have hfield :
-      (fun v : Real => intrLaunchJ (I := I) g hEnorm p u a b (r, v)) =
+      (fun v : Real => intrinsicLaunchJ (I := I) g hEnorm p u a b (r, v)) =
         J := by
     funext v
-    exact intrLaunchJ_eq (I := I) g hEnorm p u a b (r, v)
+    exact intrinsicLaunchJ_eq (I := I) g hEnorm p u a b (r, v)
   change Variation.IsJacobiAt (I := I) g γ
-    (fun v : Real => intrLaunchJ (I := I) g hEnorm p u a b (r, v)) t
+    (fun v : Real => intrinsicLaunchJ (I := I) g hEnorm p u a b (r, v)) t
   rw [hfield]
-  exact intrLaunch_jacobi (I := I) g hEnorm p u a b r t
+  exact intrinsicLaunch_jacobi (I := I) g hEnorm p u a b r t
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrJetCurv_smooth
+theorem intrinsicJetCurv_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1295,7 +1295,7 @@ theorem intrJetCurv_smooth
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) :
     let f : Real -> Real -> M := fun r t =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
     ContMDiff
       ((modelWithCornersSelf Real Real).prod
         (modelWithCornersSelf Real Real))
@@ -1303,15 +1303,15 @@ theorem intrJetCurv_smooth
       (fun q : Real × Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
           (f q.1 q.2)
-          (Variation.jacCurv (I := I) g f
+          (Variation.jacobianCurv (I := I) g f
             (fun r t =>
-              intrLaunchJet (I := I) g hEnorm p u a b n (r, t))
+              intrinsicLaunchJet (I := I) g hEnorm p u a b n (r, t))
             q.1 q.2) : TangentBundle I M)) := by
   dsimp only
   let f : Real -> Real -> M := fun r t =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), t)
   let W : ∀ r t : Real, TangentSpace I (f r t) := fun r t =>
-    intrLaunchJet (I := I) g hEnorm p u a b n (r, t)
+    intrinsicLaunchJet (I := I) g hEnorm p u a b n (r, t)
   have hW :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -1321,7 +1321,7 @@ theorem intrJetCurv_smooth
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (W q.1 q.2) : TangentBundle I M)) := by
     simpa only [f, W] using
-      intrLaunchJet_smooth (I := I) g hEnorm p u a b n
+      intrinsicLaunchJet_smooth (I := I) g hEnorm p u a b n
   have hT :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -1333,16 +1333,16 @@ theorem intrJetCurv_smooth
             (Variation.varSnd (I := I) f q.1 q.2) :
               TangentBundle I M)) := by
     have hdir :=
-      intrLaunchDir_smooth (I := I) g hEnorm p u a b
+      intrinsicLaunchDir_smooth (I := I) g hEnorm p u a b
         (((0 : Real), (0 : Real)), (1 : Real))
-    simpa only [f, intrLaunchT_eq] using hdir
+    simpa only [f, intrinsicLaunchT_eq] using hdir
   have hcurv :=
-    Variation.jacCurv_smooth (I := I) g f W hW hT
+    Variation.jacobianCurv_smooth (I := I) g f W hW hT
   simpa only [f, W] using hcurv
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intrJetResidual_succ
+theorem intrinsicJetResidual_succ
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1350,18 +1350,18 @@ theorem intrJetResidual_succ
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (u a b : E) (n : Nat) (r t : Real) :
     let f : Real -> Real -> M := fun s v =>
-      intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
-    intrJetResidual (I := I) g hEnorm p u a b (Nat.succ n) (r, t) =
+      intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
+    intrinsicJetResidual (I := I) g hEnorm p u a b (Nat.succ n) (r, t) =
       Variation.covFst (I := I) g f
           (fun s v =>
-            intrJetResidual (I := I) g hEnorm p u a b n (s, v))
+            intrinsicJetResidual (I := I) g hEnorm p u a b n (s, v))
           r t -
-        intrJetCorr (I := I) g hEnorm p u a b n (r, t) := by
+        intrinsicJetCorrection (I := I) g hEnorm p u a b n (r, t) := by
   dsimp only
   let f : Real -> Real -> M := fun s v =>
-    intrLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
+    intrinsicLaunch3 (I := I) g hEnorm p u a b ((s, 0), v)
   let V : ∀ s v : Real, TangentSpace I (f s v) := fun s v =>
-    intrLaunchJ (I := I) g hEnorm p u a b (s, v)
+    intrinsicLaunchJ (I := I) g hEnorm p u a b (s, v)
   have hfSmooth :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -1376,7 +1376,7 @@ theorem intrJetResidual_succ
               (modelWithCornersSelf Real Real))
           ∞ (fun q : Real × Real => ((q.1, (0 : Real)), q.2)) :=
       (contMDiff_fst.prodMk contMDiff_const).prodMk contMDiff_snd
-    exact (intrLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
+    exact (intrinsicLaunch3_smooth (I := I) g hEnorm p u a b).comp hincl
   have hf : Variation.IsSmoothVariation (I := I) f :=
     hfSmooth.of_le ENat.LEInfty.out
   have hV :
@@ -1388,11 +1388,11 @@ theorem intrJetResidual_succ
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (V q.1 q.2) : TangentBundle I M)) := by
     simpa only [f, V] using
-      intrLaunchJ_smooth (I := I) g hEnorm p u a b
-  have hJn := intrJetCurv_smooth (I := I) g hEnorm p u a b n
+      intrinsicLaunchJ_smooth (I := I) g hEnorm p u a b
+  have hJn := intrinsicJetCurv_smooth (I := I) g hEnorm p u a b n
   have hrec :=
-    Variation.jacJetResidual_succ (I := I) g f hf V hV n hJn r t
-  simpa only [intrJetResidual, intrJetCorr, f, V] using hrec
+    Variation.jacobianJetResidual_succ (I := I) g f hf V hV n hJn r t
+  simpa only [intrinsicJetResidual, intrinsicJetCorrection, f, V] using hrec
 
 end Exponential
 end Riemannian

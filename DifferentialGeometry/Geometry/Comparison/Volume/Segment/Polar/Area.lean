@@ -31,7 +31,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-def expJacDensity
+def expJacobianDensity
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -69,7 +69,7 @@ private theorem pou_term_exp_eq
           ENNReal.ofReal (chartAtlasPOU I M α
             (expMapIntrinsic (I := I) g hEnorm x
               (show TangentSpace I x from v)))
-            * ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+            * ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) := by
   classical
   set Fmap : E → M :=
@@ -139,9 +139,9 @@ private theorem pou_term_exp_eq
     apply (extChartAt I α).injOn hvS hwS
     rw [← hpw v hv.2, ← hpw w hw.2]
     exact hvw
-  have hImgMeas : MeasurableSet (fα '' Kα) :=
+  have hImageMeas : MeasurableSet (fα '' Kα) :=
     measurable_image_of_fderivWithin hKαmeas hderiv hfαinj
-  have hImgTarget : fα '' Kα ⊆ (extChartAt I α).target := by
+  have hImageTarget : fα '' Kα ⊆ (extChartAt I α).target := by
     rintro q ⟨v, hv, rfl⟩
     rw [hpw v hv.2]
     apply (extChartAt I α).map_source
@@ -186,14 +186,14 @@ private theorem pou_term_exp_eq
                 ENNReal.ofReal (chartAtlasPOU I M α y))
               ((extChartAt I α).symm p) ≠ 0 :=
         fun h => hne (by rw [h, mul_zero])
-      have hmemImg :
+      have hmemImage :
           (extChartAt I α).symm p ∈ Fmap '' K := by
         by_contra hnm
         exact hind (Set.indicator_of_notMem hnm _)
       have hρne :
           ENNReal.ofReal
               (chartAtlasPOU I M α ((extChartAt I α).symm p)) ≠ 0 := by
-        rwa [Set.indicator_of_mem hmemImg] at hind
+        rwa [Set.indicator_of_mem hmemImage] at hind
       have hρpos :
           0 < chartAtlasPOU I M α ((extChartAt I α).symm p) :=
         ENNReal.ofReal_pos.mp (pos_iff_ne_zero.mpr hρne)
@@ -201,7 +201,7 @@ private theorem pou_term_exp_eq
         (chartAtlasPOU_isSubordinate I M) α
           (subset_tsupport _
             (Function.mem_support.mpr hρpos.ne'))
-      obtain ⟨v, hvK, hFv⟩ := hmemImg
+      obtain ⟨v, hvK, hFv⟩ := hmemImage
       have hvUα : v ∈ Uα := by
         change Fmap v ∈ S
         rw [hFv]
@@ -227,8 +227,8 @@ private theorem pou_term_exp_eq
       setLIntegral_congr_fun hTmeas hHeq
     _ = ∫⁻ p in fα '' Kα, Wα p
           ∂(modelHaar (E := E)) := by
-      rw [setLIntegral_indicator hImgMeas,
-        inter_eq_left.mpr hImgTarget]
+      rw [setLIntegral_indicator hImageMeas,
+        inter_eq_left.mpr hImageTarget]
     _ = ∫⁻ v in Kα,
           ENNReal.ofReal |(fα' v).det| * Wα (fα v)
           ∂(modelHaar (E := E)) :=
@@ -244,7 +244,7 @@ private theorem pou_term_exp_eq
             (expMapIntrinsic (I := I) g hEnorm x
               (show TangentSpace I x from v)))
             * ENNReal.ofReal
-                (expJacDensity (I := I) g hEnorm x v)
+                (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) := by
       refine setLIntegral_congr_fun hKαmeas (fun v hv => ?_)
       have hvUα : v ∈ Uα := hv.2
@@ -268,7 +268,7 @@ private theorem pou_term_exp_eq
         rw [hfαv, hWpw _ hmap, hsymmv]
       have hden :
           chartDensity g α (Fmap v) * |(fα' v).det| =
-            expJacDensity (I := I) g hEnorm x v :=
+            expJacobianDensity (I := I) g hEnorm x v :=
         exp_density_curve (I := I) g hEnorm x v α hFvS
       rw [hWαv,
         ← ENNReal.ofReal_mul
@@ -285,7 +285,7 @@ private theorem pou_term_exp_eq
             (expMapIntrinsic (I := I) g hEnorm x
               (show TangentSpace I x from v)))
             * ENNReal.ofReal
-                (expJacDensity (I := I) g hEnorm x v)
+                (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) := by
       rw [hKα, inter_comm,
         ← setLIntegral_indicator hUαopen.measurableSet]
@@ -307,14 +307,14 @@ private theorem pou_term_exp_eq
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJac_continuous
+theorem expJacobian_continuous
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (x : M) :
-    Continuous (fun v : E => expJacDensity (I := I) g hEnorm x v) := by
+    Continuous (fun v : E => expJacobianDensity (I := I) g hEnorm x v) := by
   rw [continuous_iff_continuousAt]
   intro v₀
   set F : E → M := fun b => expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from b)
@@ -326,9 +326,9 @@ theorem expJac_continuous
   set ψ : E → ℝ := fun v => chartDensity g y₀ (F v) * |(fderiv ℝ φ v).det| with hψ
   have hUnhds : F ⁻¹' (chartAt H y₀).source ∈ 𝓝 v₀ :=
     hFcont.continuousAt.preimage_mem_nhds ((chartAt H y₀).open_source.mem_nhds hsrc0)
-  have heq : (fun v : E => expJacDensity (I := I) g hEnorm x v) =ᶠ[𝓝 v₀] ψ := by
+  have heq : (fun v : E => expJacobianDensity (I := I) g hEnorm x v) =ᶠ[𝓝 v₀] ψ := by
     filter_upwards [hUnhds] with v hv
-    change expJacDensity (I := I) g hEnorm x v = chartDensity g y₀ (F v) * |(fderiv ℝ φ v).det|
+    change expJacobianDensity (I := I) g hEnorm x v = chartDensity g y₀ (F v) * |(fderiv ℝ φ v).det|
     exact (exp_density_curve (I := I) g hEnorm x v y₀ hv).symm
   have hcd : ContinuousAt (fun v : E => chartDensity g y₀ (F v)) v₀ := by
     have h1 : ContinuousAt (chartDensity g y₀) (F v₀) := by
@@ -364,7 +364,7 @@ private theorem pou_term_exp_le
       ≤ ∫⁻ v in K,
           ENNReal.ofReal (chartAtlasPOU I M α
             (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)))
-            * ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)) := by
+            * ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)) := by
   classical
   set Fmap : E → M :=
     fun b => expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from b) with hFmap
@@ -441,16 +441,16 @@ private theorem pou_term_exp_le
       refine hpimg ?_
       have hind : (Fmap '' K).indicator (fun y : M => ENNReal.ofReal (chartAtlasPOU I M α y))
           ((extChartAt I α).symm p) ≠ 0 := fun h => hne (by rw [h, mul_zero])
-      have hmemImg : (extChartAt I α).symm p ∈ Fmap '' K := by
+      have hmemImage : (extChartAt I α).symm p ∈ Fmap '' K := by
         by_contra hnm; exact hind (Set.indicator_of_notMem hnm _)
       have hρne : ENNReal.ofReal (chartAtlasPOU I M α ((extChartAt I α).symm p)) ≠ 0 := by
-        rwa [Set.indicator_of_mem hmemImg] at hind
+        rwa [Set.indicator_of_mem hmemImage] at hind
       have hρpos : 0 < chartAtlasPOU I M α ((extChartAt I α).symm p) :=
         ENNReal.ofReal_pos.mp (pos_iff_ne_zero.mpr hρne)
       have hccTensor02Symm : (extChartAt I α).symm p ∈ S :=
         (chartAtlasPOU_isSubordinate I M) α
           (subset_tsupport _ (Function.mem_support.mpr hρpos.ne'))
-      obtain ⟨v, hvK, hFv⟩ := hmemImg
+      obtain ⟨v, hvK, hFv⟩ := hmemImage
       have hvUα : v ∈ Uα := by change Fmap v ∈ S; rw [hFv]; exact hccTensor02Symm
       refine ⟨v, ⟨hvK, hvUα⟩, ?_⟩
       rw [hpw v hvUα, hFv]
@@ -470,7 +470,7 @@ private theorem pou_term_exp_le
         image_lintegral_le (modelHaar (E := E)) hKαmeas hfα_meas hderiv hWα_meas
     _ = ∫⁻ v in Kα, ENNReal.ofReal (chartAtlasPOU I M α
             (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)))
-          * ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)) := by
+          * ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)) := by
         refine setLIntegral_congr_fun hKαmeas (fun v hv => ?_)
         have hvUα : v ∈ Uα := hv.2
         have hFvS : Fmap v ∈ S := hvUα
@@ -483,7 +483,7 @@ private theorem pou_term_exp_le
             = ENNReal.ofReal (chartDensity g α (Fmap v) * chartAtlasPOU I M α (Fmap v)) := by
           rw [hfαv, hWpw _ hmap, hsymmv]
         have hden : chartDensity g α (Fmap v) * |(fα' v).det|
-            = expJacDensity (I := I) g hEnorm x v :=
+            = expJacobianDensity (I := I) g hEnorm x v :=
           exp_density_curve (I := I) g hEnorm x v α hFvS
         rw [hWαv,
           ← ENNReal.ofReal_mul (mul_nonneg (hcdnn (Fmap v)) ((chartAtlasPOU I M).nonneg α (Fmap v))),
@@ -494,7 +494,7 @@ private theorem pou_term_exp_le
         ring
     _ ≤ ∫⁻ v in K, ENNReal.ofReal (chartAtlasPOU I M α
             (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)))
-          * ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)) :=
+          * ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)) :=
         lintegral_mono_set Set.inter_subset_left
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
@@ -509,13 +509,13 @@ theorem riemVol_exp_image_le
     (x : M) {K : Set E} (hK : IsCompact K) :
     riemannianVolumeMeasure (I := I) (M := M) g
         ((fun b : E => expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from b)) '' K)
-      ≤ ∫⁻ v in K, ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)) := by
+      ≤ ∫⁻ v in K, ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)) := by
   classical
   have hFcont : Continuous
       (fun b : E => expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from b)) :=
     (intrinsicFiber_smooth (I := I) g hEnorm x).continuous
-  have hDcont : Continuous (fun v : E => expJacDensity (I := I) g hEnorm x v) :=
-    expJac_continuous (I := I) g hEnorm x
+  have hDcont : Continuous (fun v : E => expJacobianDensity (I := I) g hEnorm x v) :=
+    expJacobian_continuous (I := I) g hEnorm x
   have himg : MeasurableSet
       ((fun b : E => expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from b)) '' K) :=
     (hK.image hFcont).measurableSet
@@ -524,7 +524,7 @@ theorem riemVol_exp_image_le
   have hsm : ∀ α : M, Measurable (fun v : E =>
       ENNReal.ofReal (chartAtlasPOU I M α
           (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)))
-        * ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)) := fun α =>
+        * ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)) := fun α =>
     (ENNReal.measurable_ofReal.comp ((hρcont α).comp hFcont).measurable).mul
       (ENNReal.measurable_ofReal.comp hDcont.measurable)
   set Tρ : Set M := {α : M | (Function.support (chartAtlasPOU I M α)).Nonempty} with hTρ
@@ -533,7 +533,7 @@ theorem riemVol_exp_image_le
   have hsupp : Function.support (fun α : M => ∫⁻ v in K,
       ENNReal.ofReal (chartAtlasPOU I M α
           (expMapIntrinsic (I := I) g hEnorm x (show TangentSpace I x from v)))
-        * ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E))) ⊆ Tρ := by
+        * ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E))) ⊆ Tρ := by
     intro α hα
     by_contra hαT
     refine hα ?_
@@ -591,7 +591,7 @@ theorem riemVol_exp_image_eq
         ((fun b : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from b)) '' K)
       = ∫⁻ v in K,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)) := by
   classical
   have hFcont : Continuous
@@ -599,8 +599,8 @@ theorem riemVol_exp_image_eq
         (show TangentSpace I x from b)) :=
     (intrinsicFiber_smooth (I := I) g hEnorm x).continuous
   have hDcont : Continuous
-      (fun v : E => expJacDensity (I := I) g hEnorm x v) :=
-    expJac_continuous (I := I) g hEnorm x
+      (fun v : E => expJacobianDensity (I := I) g hEnorm x v) :=
+    expJacobian_continuous (I := I) g hEnorm x
   have himg : MeasurableSet
       ((fun b : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from b)) '' K) :=
@@ -612,7 +612,7 @@ theorem riemVol_exp_image_eq
           (expMapIntrinsic (I := I) g hEnorm x
             (show TangentSpace I x from v)))
         * ENNReal.ofReal
-            (expJacDensity (I := I) g hEnorm x v)) :=
+            (expJacobianDensity (I := I) g hEnorm x v)) :=
     fun α =>
       (ENNReal.measurable_ofReal.comp
           ((hρcont α).comp hFcont).measurable).mul
@@ -630,7 +630,7 @@ theorem riemVol_exp_image_eq
             (expMapIntrinsic (I := I) g hEnorm x
               (show TangentSpace I x from v)))
           * ENNReal.ofReal
-              (expJacDensity (I := I) g hEnorm x v)
+              (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E))) ⊆ Tρ := by
     intro α hα
     by_contra hαT
@@ -679,13 +679,13 @@ theorem riemVol_exp_image_eq
               (expMapIntrinsic (I := I) g hEnorm x
                 (show TangentSpace I x from v)))
             * ENNReal.ofReal
-                (expJacDensity (I := I) g hEnorm x v)
+                (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) :=
       tsum_congr fun α =>
         pou_term_exp_eq (I := I) g hEnorm x hK himg hinj α
     _ = ∫⁻ v in K,
           ENNReal.ofReal
-            (expJacDensity (I := I) g hEnorm x v)
+            (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)) := by
       rw [DifferentialGeometry.Integral.Measure.tsum_subtype_eq_of_support_subset
           hsupp,
@@ -787,7 +787,7 @@ theorem riemVol_mul_le_area
     m.toENNReal *
         riemannianVolumeMeasure (I := I) (M := M) g S
       ≤ ∫⁻ v in U,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)) := by
   classical
   let F : E → M := fun b =>
@@ -867,7 +867,7 @@ theorem riemVol_mul_le_area
       exact lintegral_indicator_one (hQmeas n)
     _ = ∑' n : ℕ,
         ∫⁻ v in P n,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)) := by
       apply tsum_congr
       intro n
@@ -875,24 +875,24 @@ theorem riemVol_mul_le_area
         riemVol_exp_image_eq (I := I) g hEnorm x
           (hPmeas n) (hPinj n)
     _ = ∫⁻ v in ⋃ n, P n,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)) :=
       (lintegral_iUnion hPmeas hPdisj _).symm
     _ = ∫⁻ v in U,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)) := by
       rw [hPcover]
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJacDensity_continuous
+theorem expJacobianDensity_continuous
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) :
-    Continuous (fun v : E => expJacDensity (I := I) g hEnorm x v) :=
-  expJac_continuous (I := I) g hEnorm x
+    Continuous (fun v : E => expJacobianDensity (I := I) g hEnorm x v) :=
+  expJacobian_continuous (I := I) g hEnorm x
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

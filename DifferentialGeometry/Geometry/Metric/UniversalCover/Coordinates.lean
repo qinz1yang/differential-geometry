@@ -215,8 +215,8 @@ theorem chartChristoffel_lifted
         rfl
       rw [← this]
       exact OpenPartialHomeomorph.continuousAt_extend_symm (I := I) ECov hx'
-    have hOpenCoverSrc : IsOpen ECov.source := ECov.open_source
-    have hCoverSrc_mem : (ECov.extend I).symm y₀ ∈ ECov.source := by
+    have hOpenCoverSource : IsOpen ECov.source := ECov.open_source
+    have hCoverSource_mem : (ECov.extend I).symm y₀ ∈ ECov.source := by
       have hy₀_alt : (ECov.extend I) x' = y₀ := by
         rw [hy₀_def]; rfl
       have : (ECov.extend I).symm ((ECov.extend I) x') = x' :=
@@ -225,7 +225,7 @@ theorem chartChristoffel_lifted
       rw [this]
       exact hx'
     have hPreCover : (ECov.extend I).symm ⁻¹' ECov.source ∈ 𝓝 y₀ :=
-      hContCoverInv (hOpenCoverSrc.mem_nhds hCoverSrc_mem)
+      hContCoverInv (hOpenCoverSource.mem_nhds hCoverSource_mem)
     set EBase : OpenPartialHomeomorph M H := chartAt H (proj α') with hEBase_def
     have hContBaseInv : ContinuousAt (EBase.extend I).symm y₀ := by
       have hy₀_base : (EBase.extend I) (proj x') = y₀ := by
@@ -234,8 +234,8 @@ theorem chartChristoffel_lifted
       rw [← hy₀_base]
       exact OpenPartialHomeomorph.continuousAt_extend_symm (I := I)
         EBase hproj_x'_chart
-    have hOpenLSTgt : IsOpen (localSection α').target := (localSection α').open_target
-    have hLSTgt_mem : (EBase.extend I).symm y₀ ∈ (localSection α').target := by
+    have hOpenLSTarget : IsOpen (localSection α').target := (localSection α').open_target
+    have hLSTarget_mem : (EBase.extend I).symm y₀ ∈ (localSection α').target := by
       have hy₀_base : (EBase.extend I) (proj x') = y₀ := by
         change extChartAt I (proj α') (proj x') = y₀
         exact hy_eq.symm
@@ -246,7 +246,7 @@ theorem chartChristoffel_lifted
       have := (localSection α').map_source hx'_LSsrc
       rwa [hLS_x'] at this
     have hPreBase : (EBase.extend I).symm ⁻¹' (localSection α').target ∈ 𝓝 y₀ :=
-      hContBaseInv (hOpenLSTgt.mem_nhds hLSTgt_mem)
+      hContBaseInv (hOpenLSTarget.mem_nhds hLSTarget_mem)
     filter_upwards [hPreCover, hPreBase] with y hyCover hyBase
     change DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
             (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
@@ -381,30 +381,30 @@ lemma chartChristoffel_lifted_eventuallyEq
     have hy₀_alt : (extChartAt I α') x' = y₀ := by rw [hy₀_def]
     rw [← hy₀_alt]
     exact continuousAt_extChartAt_symm' (I := I) (x := α') hx'_ext
-  have hOpenSrc : IsOpen (chartAt H α').source :=
+  have hOpenSource : IsOpen (chartAt H α').source :=
     (chartAt H α').open_source
-  have hSrc_mem : (extChartAt I α').symm y₀ ∈ (chartAt H α').source := by
+  have hSource_mem : (extChartAt I α').symm y₀ ∈ (chartAt H α').source := by
     have hinv : (extChartAt I α').symm ((extChartAt I α') x') = x' :=
       (extChartAt I α').left_inv hx'_ext
     have hy₀_alt : (extChartAt I α') x' = y₀ := by rw [hy₀_def]
     rw [← hy₀_alt, hinv]; exact hx'
   have hPreImage :
       (extChartAt I α').symm ⁻¹' (chartAt H α').source ∈ 𝓝 y₀ :=
-    hContInv (hOpenSrc.mem_nhds hSrc_mem)
+    hContInv (hOpenSource.mem_nhds hSource_mem)
   have hTargetOpen : IsOpen (extChartAt I α').target :=
     isOpen_extChartAt_target (I := I) α'
   have hy₀_target : y₀ ∈ (extChartAt I α').target := by
     rw [hy₀_def]; exact (extChartAt I α').map_source hx'_ext
-  have hTgtMem : (extChartAt I α').target ∈ 𝓝 y₀ :=
+  have hTargetMem : (extChartAt I α').target ∈ 𝓝 y₀ :=
     hTargetOpen.mem_nhds hy₀_target
-  filter_upwards [hPreImage, hTgtMem] with y hyPre hyTgt
+  filter_upwards [hPreImage, hTargetMem] with y hyPre hyTarget
   set x'_y :
       DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M :=
     (extChartAt I α').symm y with hx'_y_def
-  have hx'_y_src : x'_y ∈ (chartAt H α').source := hyPre
+  have hx'_y_source : x'_y ∈ (chartAt H α').source := hyPre
   have hExt_x'_y : extChartAt I α' x'_y = y := by
-    rw [hx'_y_def]; exact (extChartAt I α').right_inv hyTgt
-  have hLifted := chartChristoffel_lifted (I := I) (M := M) g α' x'_y hx'_y_src i j k
+    rw [hx'_y_def]; exact (extChartAt I α').right_inv hyTarget
+  have hLifted := chartChristoffel_lifted (I := I) (M := M) g α' x'_y hx'_y_source i j k
   have hExt_proj_x'_y :
       extChartAt I (proj (X := M) α') (proj (X := M) x'_y) =
         extChartAt I α' x'_y :=

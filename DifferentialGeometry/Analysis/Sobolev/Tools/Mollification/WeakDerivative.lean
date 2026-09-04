@@ -84,7 +84,7 @@ omit [NeZero d] in
 theorem mollifyEps_partial_eq_mollifyEps_weakPartial
     {ε : ℝ} (hε : 0 < ε)
     {u g : E → ℝ} {j : Fin d}
-    (hu_loc : LocallyIntegrable u (volume : Measure E))
+    (hu_local : LocallyIntegrable u (volume : Measure E))
     (hweak : DeGiorgi.HasWeakPartialDeriv (d := d) j g u Set.univ) (x : E) :
     (fderiv ℝ (mollifyEps (d := d) hε u) x)
         (EuclideanSpace.single j 1) =
@@ -102,7 +102,7 @@ theorem mollifyEps_partial_eq_mollifyEps_weakPartial
       ((u ⋆[(ContinuousLinearMap.lsmul ℝ ℝ).precompR E,
         (volume : Measure E)] fderiv ℝ (mollifierEps (d := d) hε)) x) x :=
     hη_compact.hasFDerivAt_convolution_right
-      (L := ContinuousLinearMap.lsmul ℝ ℝ) hu_loc hη_C1 x
+      (L := ContinuousLinearMap.lsmul ℝ ℝ) hu_local hη_C1 x
   have hpartial_uη :
       (fderiv ℝ (u ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)]
         mollifierEps (d := d) hε) x) (EuclideanSpace.single j 1) =
@@ -112,7 +112,7 @@ theorem mollifyEps_partial_eq_mollifyEps_weakPartial
     rw [hderiv.fderiv]
     exact convolution_precompR_apply (𝕜 := ℝ)
       (L := ContinuousLinearMap.lsmul ℝ ℝ)
-      hu_loc (hη_compact.fderiv ℝ)
+      hu_local (hη_compact.fderiv ℝ)
       (hη_smooth.continuous_fderiv (by simp)) x
         (EuclideanSpace.single j 1)
   have hcomm : mollifyEps (d := d) hε u =
@@ -122,7 +122,7 @@ theorem mollifyEps_partial_eq_mollifyEps_weakPartial
     exact mollifyEps_eq_convolution_swap hε u y
   rw [hcomm]
   rw [hpartial_uη]
-  have h_swap_conv : ∀ y : E,
+  have h_swap_convergence : ∀ y : E,
       (u ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)]
         (fun z => (fderiv ℝ (mollifierEps (d := d) hε) z)
           (EuclideanSpace.single j 1))) y =
@@ -134,7 +134,7 @@ theorem mollifyEps_partial_eq_mollifyEps_weakPartial
     refine integral_congr_ae ?_
     filter_upwards with t
     rw [smul_eq_mul, smul_eq_mul, mul_comm]
-  rw [h_swap_conv x]
+  rw [h_swap_convergence x]
   have hη_smooth' : ContDiff ℝ (⊤ : ℕ∞) (mollifierEps (d := d) hε) :=
     mollifierEps_smooth hε
   have h_ibp :=
@@ -147,7 +147,7 @@ omit [NeZero d] in
 theorem eLpNorm_partial_mollifyEps_le_of_weakPartial_univ
     {ε : ℝ} (hε : 0 < ε)
     {u g : E → ℝ} {j : Fin d}
-    (hu_loc : LocallyIntegrable u (volume : Measure E))
+    (hu_local : LocallyIntegrable u (volume : Measure E))
     (hg : MemLp g 2 (volume : Measure E))
     (hweak : DeGiorgi.HasWeakPartialDeriv (d := d) j g u Set.univ) :
     eLpNorm
@@ -159,7 +159,7 @@ theorem eLpNorm_partial_mollifyEps_le_of_weakPartial_univ
         (EuclideanSpace.single j 1)) =
       (fun x : E => mollifyEps (d := d) hε g x) := by
     funext x
-    exact mollifyEps_partial_eq_mollifyEps_weakPartial hε hu_loc hweak x
+    exact mollifyEps_partial_eq_mollifyEps_weakPartial hε hu_local hweak x
   rw [h_pointwise]
   exact eLpNorm_mollifyEps_le hε hg
 

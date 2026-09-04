@@ -674,14 +674,14 @@ private lemma secondMetricPairTraceOperator_toModel (g₀ g₁ : SmoothRiemannia
     (Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₁ 4 x Z))
     (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j))) ?_
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel (cometricDoubleTraceFib (I := I) g₁ 4 x Z))
     (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j))]
   refine Finset.sum_congr rfl fun b _ => ?_
   rw [cometricDoubleTraceFib_toModel (I := I) g₁ 4 x Z]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₁ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₁ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Z)
     (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
         (smoothOrthoFrame (I := I) g₁ x b x))
@@ -1241,7 +1241,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
       (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3 * σ)
       (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ P)) with hV_def
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr, _⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   set Zm : Tensor0SModel (4 + i) ℝ E :=
     unitModel (I := I) (M := M) g₀ (4 + i) (iteratedCovGrad (I := I) g₀ 0 4 i V) x

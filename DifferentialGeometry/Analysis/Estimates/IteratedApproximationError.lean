@@ -11,7 +11,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped BigOperators
 
@@ -99,7 +99,7 @@ theorem sepTail_succ (s l : ℕ) :
     sepTail s (l + 1) = sepTail s l + (1 / 2 : ℝ) ^ (s + l + 1) := by
   simp [sepTail, Finset.sum_range_succ, add_assoc]
 
-theorem sepTail_succ' (s l : ℕ) :
+theorem sepTail_succ_left (s l : ℕ) :
     sepTail s (l + 1) = (1 / 2 : ℝ) ^ (s + 1) + sepTail (s + 1) l := by
   simp [sepTail, Finset.sum_range_succ', add_assoc, add_comm, add_left_comm]
 
@@ -201,5 +201,5 @@ theorem sepTailBudget (B ε : ℝ) (hε : 0 < ε) :
           mul_le_mul_of_nonneg_left hgeom hβpos.le
     _ = ε := by field_simp [ne_of_gt hβpos]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

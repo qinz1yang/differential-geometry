@@ -237,7 +237,7 @@ private theorem rot_sq_circle
   module
 
 omit [NeZero n] [FiniteDimensional ℝ E] in
-theorem greatCircle_vel
+theorem greatCircle_velocity
     (p : sphere (0 : E) 1) (v : E)
     (hv : ‖v‖ = 1) (hpv : ⟪(p : E), v⟫ = 0) (t : ℝ) :
     dIncl (n := n) (greatCircle p v hv hpv t)
@@ -316,7 +316,7 @@ private theorem velocity_eq_rot
     dIncl (n := n) (greatCircle p v hv hpv t)
       (rotField (E := E) (n := n) (p : E) v
         (greatCircle p v hv hpv t))
-  rw [greatCircle_vel, dIncl_rotField, rot_on_circle]
+  rw [greatCircle_velocity, dIncl_rotField, rot_on_circle]
 
 omit [NeZero n] [FiniteDimensional ℝ E] in
 theorem greatCircle_speed
@@ -330,7 +330,7 @@ theorem greatCircle_speed
         ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n)
           (greatCircle p v hv hpv) t)
             (constantModelVectorField (𝕜 := ℝ) 1 t)) = 1 := by
-  rw [roundMetric_inner, greatCircle_vel, real_inner_self_eq_norm_sq]
+  rw [roundMetric_inner, greatCircle_velocity, real_inner_self_eq_norm_sq]
   rw [norm_sq_orth_comb (norm_eq_of_mem_sphere p) hv hpv]
   rw [neg_sq]
   exact Real.sin_sq_add_cos_sq t
@@ -368,7 +368,7 @@ theorem greatCircle_geodesic
       change dIncl (n := n) (γ t)
           ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ t)
             (constantModelVectorField (𝕜 := ℝ) 1 t)) = _
-      rw [greatCircle_vel, rot_on_circle]
+      rw [greatCircle_velocity, rot_on_circle]
     rw [hvel, rot_sq_circle]
     change
       (↑(((ℝ ∙ (γ t : E))ᗮ).orthogonalProjectionOnto (-(γ t : E))) : E) =

@@ -58,7 +58,7 @@ theorem metricDifference_span
                         (g_fam ((T : ℝ) - s)))).toSection x) ≤ B i := by
   classical
   obtain ⟨ρ₀, hρ₀, hmetric⟩ :=
-    DifferentialGeometry.HCGCompactness.metric_c1_span
+    DifferentialGeometry.CheegerGromovCompactness.metric_c1_span
       (I := I) g_fam hG hab (by norm_num : (0 : ℝ) < 1 / 4)
   let ρ : ℝ := min 1 ρ₀
   have hρ : 0 < ρ := lt_min one_pos hρ₀
@@ -103,13 +103,13 @@ theorem metricDifference_span
     intro y v w
     rw [metricDifference_bilin (I := I) (M := M)]
     have hnorm :
-        DifferentialGeometry.HCGCompactness.metricDerivNorm (I := I) 0
+        DifferentialGeometry.CheegerGromovCompactness.metricDerivNorm (I := I) 0
           (g_fam ((T : ℝ) - s)) q q y ≤ 1 / 4 := by
-      exact (DifferentialGeometry.HCGCompactness.derivNorm_le_sup
+      exact (DifferentialGeometry.CheegerGromovCompactness.derivNorm_le_sup
         (I := I) (K := Set.univ) isCompact_univ (a := 0) (p := 1)
         (by omega) (g_fam ((T : ℝ) - s)) q q (Set.mem_univ y)).trans
         (by simpa only [q] using hsup)
-    have heval := DifferentialGeometry.HCGCompactness.metricDifference_abs_le
+    have heval := DifferentialGeometry.CheegerGromovCompactness.metricDifference_abs_le
       (I := I) (g_fam ((T : ℝ) - s)) q q y v w
     have hfinal :
         |(g_fam ((T : ℝ) - s)).inner y v w - q.inner y v w| ≤
@@ -241,7 +241,7 @@ theorem cc_comm_span
     app_jet_of_bdd (I := I) (M := M) q 1 0 Φ A D₀ hD₀_nn hΦ
   intro n
   obtain ⟨Ct, hCt_nn, hCt⟩ :=
-    slot_iterL_unif (I := I) (M := M) q 0 n C₀ A B hB_nn hC₀
+    slot_iterL_uniform (I := I) (M := M) q 0 n C₀ A B hB_nn hC₀
   obtain ⟨Cd, hCd_nn, hCd⟩ :=
     iterL_pair_jet_of (I := I) (M := M) q 0 n Φ A CG hCG_nn hCG
   refine ⟨Ct + Cd, add_nonneg hCt_nn hCd_nn, ?_⟩
@@ -453,7 +453,7 @@ theorem cc_lap_span
     dsimp only [Atop]
     apply eq_of_heq
     exact HEq.trans
-      (iteratedCovGrad_covGrad_comm_heq' (I := I) (M := M) q 0 0 n U)
+      (iteratedCovGrad_covGrad_comm_heq (I := I) (M := M) q 0 0 n U)
       (castCcTensorRank_heq (I := I) (M := M) q 0
         (by omega : 0 + (n + 1) = 1 + n)
         (iteratedCovGrad (I := I) q 0 0 (n + 1) U)).symm
@@ -557,7 +557,7 @@ theorem cc_a2_span
     intro s hs U
     simpa only [q, gm, A] using hClap s hs U
   obtain ⟨Cmid, hCmid_nn, hcore⟩ :=
-    finite_lap_unif (I := I) (M := M) q gm A n Clap hClap_nn hlap''
+    finite_lap_uniform (I := I) (M := M) q gm A n Clap hClap_nn hlap''
   refine ⟨Cmid, hCmid_nn, ?_⟩
   intro s hs F v hv hsub
   have hcoeff : ∀ i, i ∉ hv.toFinset → v.coeff i = 0 := by

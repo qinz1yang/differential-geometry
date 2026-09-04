@@ -199,13 +199,13 @@ theorem maximalRegularityOp_solves_perMode {a : ℝ} (hT : 0 ≤ T)
         (maximalRegularityDerivField (I := I) (M := M) a hT f) i =
       (-(TensorEigenIdx.lambda (I := I) (M := M) i)) •
           timeModeCoeff (I := I) (M := M)
-            (maximalRegularitySolField (I := I) (M := M) a hT f) i +
+            (maximalRegularitySolutionField (I := I) (M := M) a hT f) i +
         timeModeCoeff (I := I) (M := M) f i := by
   rw [maximalRegularityDerivField_timeModeCoeff (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT f i,
-    maximalRegularitySolField_timeModeCoeff (I := I) (M := M)
+    maximalRegularitySolutionField_timeModeCoeff (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT f i]
-  rw [derivModeCoeff, perModeConvDerivL2_apply, solModeCoeff, neg_smul,
+  rw [derivModeCoeff, perModeConvolutionDerivL2_apply, solutionModeCoeff, neg_smul,
     ← sub_eq_neg_add]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -217,14 +217,14 @@ theorem maximalRegularityOp_solves {a : ℝ}
     TimeSobolev.timeH1.timeDeriv _ T
         (maximalRegularityOp (I := I) (M := M) a hT f) =
       timeScaleLaplacian (I := I) (M := M) a
-          (maximalRegularitySolField (I := I) (M := M) a hT.le f) +
+          (maximalRegularitySolutionField (I := I) (M := M) a hT.le f) +
         f := by
   rw [maximalRegularityOp_timeDeriv (I := I) (M := M)
     (a := a) hT f]
   refine timeModeCoeff_injective (I := I) (M := M) h_compact (fun i => ?_)
   rw [timeModeCoeff_add (I := I) (M := M),
     timeModeCoeff_timeScaleLaplacian (I := I) (M := M) (τ := a)
-      (maximalRegularitySolField (I := I) (M := M) a hT.le f) i]
+      (maximalRegularitySolutionField (I := I) (M := M) a hT.le f) i]
   exact maximalRegularityOp_solves_perMode (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT.le f i
 

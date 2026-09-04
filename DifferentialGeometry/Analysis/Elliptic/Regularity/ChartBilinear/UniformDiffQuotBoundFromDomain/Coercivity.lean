@@ -48,12 +48,12 @@ theorem weighted_diffQuot_weakPartial_energy_le
     (B : SmoothEllipticBilinearForm
       (Module.finrank ℝ E) (Set.univ : Set EuclN))
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : HasCompactSupport η)
+    (hη_support : HasCompactSupport η)
     {Ω' : Set EuclN}
     (hΩ'_chart : closure Ω' ⊆ chartTargetEuclid (I := I) (M := M) α)
     (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (h_B_a_match : ∀ y ∈ Metric.cthickening R₀ (tsupport η),
       ∀ i j : Fin (Module.finrank ℝ E),
@@ -108,11 +108,11 @@ theorem weighted_diffQuot_weakPartial_energy_le
   classical
   intro k h hh hh_le
   have hh_abs_pos : 0 < |h| := abs_pos.mpr hh
-  have hη_tsupp_compact : IsCompact (tsupport η) := hη_supp
+  have hη_tsupp_compact : IsCompact (tsupport η) := hη_support
   have h_cthickR0_compact : IsCompact (Metric.cthickening R₀ (tsupport η)) :=
     hη_tsupp_compact.cthickening
   have h_cthickR0_in_Ω' : Metric.cthickening R₀ (tsupport η) ⊆ Ω' := by
-    have h := hh_supp_in_Ω' (h := R₀) (by rw [abs_of_pos hR₀_pos])
+    have h := hh_support_in_Ω' (h := R₀) (by rw [abs_of_pos hR₀_pos])
     rw [abs_of_pos hR₀_pos] at h
     exact h
   have h_cthickR0_in_chart :
@@ -181,7 +181,7 @@ theorem weighted_diffQuot_weakPartial_energy_le
       isClosed_closure h_subset
   have hΩ_principal_in_univ : closure Ω_principal ⊆ (Set.univ : Set EuclN) := by
     intro x _; exact Set.mem_univ _
-  have hh_supp_in_Ω_principal :
+  have hh_support_in_Ω_principal :
       ∀ {h' : ℝ}, |h'| ≤ R₀ →
         Metric.cthickening |h'| (tsupport η) ⊆ Ω_principal := by
     intro h' hh'_le x hx
@@ -215,8 +215,8 @@ theorem weighted_diffQuot_weakPartial_energy_le
         ∂(volume : Measure EuclN) := by
     exact principal_term_ge_lambda_norm_sq_nonsmooth
       (d := Module.finrank ℝ E) B hG_l2
-      hη hη_supp hΩ_principal_in_univ
-      hh_supp_in_Ω_principal k hh_le
+      hη hη_support hΩ_principal_in_univ
+      hh_support_in_Ω_principal k hh_le
   have h_cthick_h_subset_r :
       Metric.cthickening |h| (tsupport η) ⊆ Metric.cthickening r (tsupport η) :=
     Metric.cthickening_mono (hh_le.trans hr_ge_R0) _
@@ -545,7 +545,7 @@ theorem weighted_diffQuot_weakPartial_energy_le
   have h_subst : chartBilinearLHS (I := I) (M := M) D K_0 η k h =
       chartBilinearRHS (I := I) (M := M) D K_0 η k h :=
     chartBilinear_substitution_identity_holds (I := I) (M := M) D
-      hK_0_compact hK_0_in_chart hη hη_supp (le_refl _) k hh hh_le
+      hK_0_compact hK_0_in_chart hη hη_support (le_refl _) k hh hh_le
       h_thick_K_0_in_chart
   unfold chartBilinearLHS chartBilinearRHS at h_subst
   have h_principal_eq :
@@ -556,7 +556,7 @@ theorem weighted_diffQuot_weakPartial_energy_le
           - cross3TermChartBilinear (I := I) (M := M) D K_0 η k h
           - fTermChartBilinear (I := I) (M := M) D K_0 η k h := by
     linarith
-  have h_test_supp_in_cthick_h :
+  have h_test_support_in_cthick_h :
       Function.support
         (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
           (d := Module.finrank ℝ E) k h η D.uChart) ⊆
@@ -598,11 +598,11 @@ theorem weighted_diffQuot_weakPartial_energy_le
         apply h_num_ne
         rw [show (η (x + (-h) • EuclideanSpace.single k 1))^2 = 0 from by
           rw [h_zero]; ring, zero_mul]
-      have hy_in_supp :
+      have hy_in_support :
           x + (-h) • EuclideanSpace.single k 1 ∈ tsupport η :=
         subset_tsupport η (Function.mem_support.mpr hηy_ne)
       refine Metric.mem_cthickening_of_dist_le _
-        (x + (-h) • EuclideanSpace.single k 1) |h| (tsupport η) hy_in_supp ?_
+        (x + (-h) • EuclideanSpace.single k 1) |h| (tsupport η) hy_in_support ?_
       rw [dist_eq_norm]
       have h_diff_eq : x - (x + (-h) • EuclideanSpace.single k 1) =
           h • EuclideanSpace.single k 1 := by
@@ -612,9 +612,9 @@ theorem weighted_diffQuot_weakPartial_energy_le
       rw [norm_smul]
       have hsing : ‖(EuclideanSpace.single k (1 : ℝ) : EuclN)‖ = 1 := by simp
       rw [hsing, mul_one, Real.norm_eq_abs]
-    · have hx_in_supp : x ∈ tsupport η :=
+    · have hx_in_support : x ∈ tsupport η :=
         subset_tsupport η (Function.mem_support.mpr hηx)
-      exact h_self_subset_cthick_h hx_in_supp
+      exact h_self_subset_cthick_h hx_in_support
   have h_c_term_eq :
       cTermChartBilinear (I := I) (M := M) D K_0 η k h =
       ∫ x in (Set.univ : Set EuclN), B.c x * D.uChart x *
@@ -622,16 +622,16 @@ theorem weighted_diffQuot_weakPartial_energy_le
           (d := Module.finrank ℝ E) k h η D.uChart x
         ∂(volume : Measure EuclN) := by
     unfold cTermChartBilinear
-    have h_supp_in_cthick_h_K_0 :
+    have h_support_in_cthick_h_K_0 :
         Function.support
           (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             (d := Module.finrank ℝ E) k h η D.uChart) ⊆
         Metric.cthickening |h| K_0 := by
-      rw [hK_0_def]; exact h_test_supp_in_cthick_h
+      rw [hK_0_def]; exact h_test_support_in_cthick_h
     have h_cthick_h_K_0_subset_cthick1 :
         Metric.cthickening |h| K_0 ⊆ Metric.cthickening R₀ (tsupport η) := by
       rw [hK_0_def]; exact h_cthick_h_subset_cthickR0
-    have h_Bc_match_on_supp : ∀ x ∈ Metric.cthickening |h| K_0,
+    have h_Bc_match_on_support : ∀ x ∈ Metric.cthickening |h| K_0,
         B.c x = densityOnEuclid (I := I) g α x := fun x hx =>
       h_B_c_match x (h_cthick_h_K_0_subset_cthick1 hx)
     have h_cthick_h_K_0_meas : MeasurableSet (Metric.cthickening |h| K_0) :=
@@ -645,7 +645,7 @@ theorem weighted_diffQuot_weakPartial_energy_le
           DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             (d := Module.finrank ℝ E) k h η D.uChart x = 0 := by
         by_contra h_ne
-        exact hx (h_supp_in_cthick_h_K_0 h_ne)
+        exact hx (h_support_in_cthick_h_K_0 h_ne)
       rw [h_test_zero, mul_zero]
     have h_step_a :
         (∫ x in Metric.cthickening |h| K_0,
@@ -661,7 +661,7 @@ theorem weighted_diffQuot_weakPartial_energy_le
       refine setIntegral_congr_fun h_cthick_h_K_0_meas ?_
       intro x hx
       simp only
-      rw [← h_Bc_match_on_supp x hx]
+      rw [← h_Bc_match_on_support x hx]
     rw [h_step_a]
     rw [setIntegral_eq_integral_of_forall_compl_eq_zero h_F_zero_off,
         ← MeasureTheory.setIntegral_univ]
@@ -673,12 +673,12 @@ theorem weighted_diffQuot_weakPartial_energy_le
           (d := Module.finrank ℝ E) k h η D.uChart x
         ∂(volume : Measure EuclN) := by
     unfold fTermChartBilinear
-    have h_supp_in_cthick_h_K_0 :
+    have h_support_in_cthick_h_K_0 :
         Function.support
           (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             (d := Module.finrank ℝ E) k h η D.uChart) ⊆
         Metric.cthickening |h| K_0 := by
-      rw [hK_0_def]; exact h_test_supp_in_cthick_h
+      rw [hK_0_def]; exact h_test_support_in_cthick_h
     have h_cthick_h_K_0_meas : MeasurableSet (Metric.cthickening |h| K_0) :=
       Metric.isClosed_cthickening.measurableSet
     have h_F_zero_off : ∀ x ∉ Metric.cthickening |h| K_0,
@@ -690,7 +690,7 @@ theorem weighted_diffQuot_weakPartial_energy_le
           DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             (d := Module.finrank ℝ E) k h η D.uChart x = 0 := by
         by_contra h_ne
-        exact hx (h_supp_in_cthick_h_K_0 h_ne)
+        exact hx (h_support_in_cthick_h_K_0 h_ne)
       rw [h_test_zero, mul_zero]
     have h_step_a :
         (∫ x in Metric.cthickening |h| K_0,

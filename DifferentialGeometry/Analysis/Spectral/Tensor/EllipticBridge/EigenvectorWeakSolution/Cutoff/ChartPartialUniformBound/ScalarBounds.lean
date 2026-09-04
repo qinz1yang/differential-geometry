@@ -52,7 +52,7 @@ lemma eLpNorm_add_add_sub_le
     eLpNorm_sub_le (ha.add hb) hc (by norm_num)
   exact h_full.trans (by gcongr)
 
-lemma abs_prod_kronecker_le_one'
+lemma abs_prod_kronecker_le_one
     {ι : Type*} (t : Finset ι) (f : ι → Prop) [DecidablePred f] :
     |∏ i ∈ t, (if f i then (1 : ℝ) else 0)| ≤ 1 := by
   classical
@@ -70,7 +70,7 @@ private lemma abs_kronecker_le_one' {P : Prop} [Decidable P] :
   · rw [if_pos h, abs_one]
   · rw [if_neg h, abs_zero]; exact zero_le_one
 
-lemma abs_sum_coeff_kronecker_le'
+lemma abs_sum_coeff_kronecker_le
     {ι : Type*} (t : Finset ι) (f : ι → ℝ) (P : ι → Prop) [DecidablePred P]
     {Cχ : ℝ} (hCχ_nn : 0 ≤ Cχ) (hf : ∀ i ∈ t, |f i| ≤ Cχ) :
     |∑ i ∈ t, f i * (if P i then (1 : ℝ) else 0)| ≤ t.card * Cχ := by
@@ -89,24 +89,7 @@ lemma abs_sum_coeff_kronecker_le'
     _ ≤ ∑ _i ∈ t, Cχ := Finset.sum_le_sum hbound
     _ = t.card * Cχ := by rw [Finset.sum_const, nsmul_eq_mul]
 
-lemma sq_eLpNorm_two_eq_lintegral_enorm_sq'
-    {β : Type*} [MeasurableSpace β] (μ : Measure β) (f : β → ℝ) :
-    (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
-  classical
-  have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
-  have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
-  have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
-  rw [h2_toReal]
-  have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
-      ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
-    refine lintegral_congr_ae ?_
-    filter_upwards with x
-    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, ENNReal.rpow_natCast]
-  rw [h_inner_eq, ← ENNReal.rpow_natCast _ 2, ← ENNReal.rpow_mul]
-  norm_num
-
-lemma le_sqrt_of_sq_le' {x y : ℝ≥0∞} (h : x ^ 2 ≤ y) :
+lemma le_rpow_half_of_sq_le {x y : ℝ≥0∞} (h : x ^ 2 ≤ y) :
     x ≤ y ^ ((1 : ℝ) / 2) := by
   have h_xpow : x = (x ^ 2) ^ ((1 : ℝ) / 2) := by
     rw [← ENNReal.rpow_natCast x 2, ← ENNReal.rpow_mul]
@@ -114,7 +97,7 @@ lemma le_sqrt_of_sq_le' {x y : ℝ≥0∞} (h : x ^ 2 ≤ y) :
   conv_lhs => rw [h_xpow]
   exact ENNReal.rpow_le_rpow h (by norm_num)
 
-lemma sqrt_ofReal_eq_ofReal_sqrt' {a : ℝ} (ha : 0 ≤ a) :
+lemma ofReal_rpow_half_eq_ofReal_sqrt {a : ℝ} (ha : 0 ≤ a) :
     (ENNReal.ofReal a) ^ ((1 : ℝ) / 2) = ENNReal.ofReal (Real.sqrt a) := by
   rw [show a = Real.sqrt a * Real.sqrt a from (Real.mul_self_sqrt ha).symm,
     ENNReal.ofReal_mul (Real.sqrt_nonneg _),

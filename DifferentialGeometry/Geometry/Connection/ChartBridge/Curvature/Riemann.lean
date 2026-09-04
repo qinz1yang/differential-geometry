@@ -587,7 +587,7 @@ theorem chartRiemannCLM_diag (g : SmoothRiemannianMetric I M) (x : M)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem riemannOp_chartBasis_via_riemannSec (g : SmoothRiemannianMetric I M) (x : M)
+theorem riemannOp_chartBasis_eq_riemannSec (g : SmoothRiemannianMetric I M) (x : M)
     {X : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
     (hX : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (X i)))
     (hXx : ∀ i, X i x = (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) i)

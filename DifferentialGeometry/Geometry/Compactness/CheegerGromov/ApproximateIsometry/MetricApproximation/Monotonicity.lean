@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -106,5 +106,5 @@ def PartialDiffeomorphMetricApproximation.monoOrder [T2Space N]
 
 end DataMono
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

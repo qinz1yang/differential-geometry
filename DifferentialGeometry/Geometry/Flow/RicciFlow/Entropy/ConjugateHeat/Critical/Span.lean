@@ -93,7 +93,7 @@ theorem scalar_crit_span
       exact conjCoeff_rev (I := I) S hS T
   choose C2 hC2_nn hC2 using hA2
   choose C1 hC1_nn hC1 using fun n : ℕ ↦
-    cc_a1_unif (I := I) (M := M) (S.family.metric (T : Real)) ζ
+    cc_a1_uniform (I := I) (M := M) (S.family.metric (T : Real)) ζ
       (R := R) (K := K) hK hKR hζ n
   refine ⟨hreg, fun n ↦ C2 n + C1 n,
     fun n ↦ add_nonneg (hC2_nn n) (hC1_nn n), ?_⟩

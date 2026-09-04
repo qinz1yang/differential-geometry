@@ -62,7 +62,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private theorem bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (g₀ g₁ : SmoothRiemannianMetric I M)
+private theorem palatiniMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (g₀ g₁ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (G : SmoothCcTensor g₀ 0 4) (σ : Equiv.Perm (Fin 4)) :
     operatorFieldApply (I := I) (M := M) g₀ 2 2
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2 (cometricDoublePairTraceCoefficient (I := I) (M := M) g₀ g₁)
@@ -85,11 +85,11 @@ private theorem bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operat
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [bdTensor0S_zero_rank_decomp (I := I) (M := M) x t]
+  rw [tensor0S_zero_rank_eq_smul_unitTensor (I := I) (M := M) x t]
   simp only [map_smul, Tensor0SSpace.toModel_smul, smul_apply,
     smul_eq_mul]
   congr 1
-  rw [bdPairTraceOp_apply_toModel (I := I) (M := M) g₀ g₁
+  rw [palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀ g₁
     (domDomCongrSection (I := I) g₀
       (σ.trans (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3)) G) x
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from S.toSection x)
@@ -121,7 +121,7 @@ private theorem bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operat
   fin_cases k <;> rfl
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem bdLiePairTraceFamily_operatorFieldApplication_eq_familySecondGradient
+theorem palatiniLiePairTraceFamily_operatorFieldApplication_eq_familySecondGradient
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -135,19 +135,19 @@ theorem bdLiePairTraceFamily_operatorFieldApplication_eq_familySecondGradient
   rw [deTurckLieCovariantDerivativeDecompositionPairTraceFamily, deTurckLieCovariantDerivativeDecompositionC2Family,
     Fin.sum_univ_three, Fin.sum_univ_three]
   simp only [operatorFieldApplication_smul_left, operatorFieldApplication_add_left]
-  rw [bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
+  rw [palatiniMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (iteratedCovGrad (I := I) g₀ 0 2 2 T) (q 0),
-    bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
+    palatiniMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (iteratedCovGrad (I := I) g₀ 0 2 2 T)
       ((q 0).trans (Equiv.swap (0 : Fin 4) 1)),
-    bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
+    palatiniMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (iteratedCovGrad (I := I) g₀ 0 2 2 T) (q 1),
-    bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
+    palatiniMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (iteratedCovGrad (I := I) g₀ 0 2 2 T)
       ((q 1).trans (Equiv.swap (0 : Fin 4) 1)),
-    bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
+    palatiniMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (iteratedCovGrad (I := I) g₀ 0 2 2 T) (q 2),
-    bdMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
+    palatiniMonoDecomposition_operatorFieldApplication_eq_pairTrace_operatorFieldApply (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (iteratedCovGrad (I := I) g₀ 0 2 2 T)
       ((q 2).trans (Equiv.swap (0 : Fin 4) 1))]
 
@@ -256,7 +256,7 @@ private lemma lrKT_unitModel (g₀ : SmoothRiemannianMetric I M)
           tangentSpaceModelContinuousLinearEquiv (I := I) x u,
           tangentSpaceModelContinuousLinearEquiv (I := I) x ζ] =
       linearizedKoszulCovec (I := I) g₀ T x u ζ z := by
-  rw [linearizedKoszulTensor, bdUnitModel_smul, bdUnitModel_sub, bdUnitModel_add]
+  rw [linearizedKoszulTensor, palatiniUnitModel_smul, palatiniUnitModel_sub, palatiniUnitModel_add]
   simp only [smul_apply, sub_apply, add_apply, smul_eq_mul]
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel,
     domDomCongrSection_unitModel]
@@ -372,7 +372,7 @@ private lemma lrCovDerivConnectionDifference_self_zero (g₀ : SmoothRiemannianM
     change PDE.DeTurck.connectionDifference (I := I) g₀ g₀ b
         (smoothExtensionTangent (I := I) x p b)
         (smoothExtensionTangent (I := I) x q b) = 0
-    exact bdConnectionDifference_self_apply (I := I) (M := M) g₀ b _ _
+    exact palatiniConnectionDifference_self_apply (I := I) (M := M) g₀ b _ _
   rw [hdz]
   have hσX : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun b : M => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) b
@@ -381,7 +381,7 @@ private lemma lrCovDerivConnectionDifference_self_zero (g₀ : SmoothRiemannianM
   have hsmul := (LeviCivita (I := I) g₀).isCovariantDerivativeOnUniv.smul_const
     (σ := smoothExtensionTangent (I := I) x v0) (x := x) (0 : ℝ) hσX (Set.mem_univ x)
   rw [hsmul, smul_apply]
-  rw [bdConnectionDifference_self_apply (I := I) (M := M) g₀ x, bdConnectionDifference_self_apply (I := I) (M := M) g₀ x,
+  rw [palatiniConnectionDifference_self_apply (I := I) (M := M) g₀ x, palatiniConnectionDifference_self_apply (I := I) (M := M) g₀ x,
     zero_smul]
   simp
 
@@ -420,9 +420,9 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
     have hker0 : connectionDifferenceCovDerivOp (I := I) g₀ g₀ x v0 p q = 0 := by
       rw [DifferentialGeometry.Analysis.Sobolev.deTurckLieConnectionDifferenceDerivativeCovKernel_backgroundSplit (I := I)
         (M := M) g₀ g₀ g₀ x v0 p q]
-      simp only [bdConnectionDifference_self_apply (I := I) (M := M) g₀ x, sub_self, add_zero]
+      simp only [palatiniConnectionDifference_self_apply (I := I) (M := M) g₀ x, sub_self, add_zero]
     rw [hker0]
-    simp only [bdConnectionDifference_self_apply (I := I) (M := M) g₀ x, map_zero,
+    simp only [palatiniConnectionDifference_self_apply (I := I) (M := M) g₀ x, map_zero,
       zero_apply, zero_mul, sub_self]
   · have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
       Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt hs
@@ -596,7 +596,7 @@ private theorem lrKernel_inner (g₀ : SmoothRiemannianMetric I M)
       rw [hKTsec_def]
       exact lrUnitEval_tsmdiffAt (I := I) (M := M) g₀ 3
         (linearizedKoszulTensor (I := I) (M := M) g₀ T) x
-    have hpeel := peel3_core (I := I) (M := M) g₀ KTsec hW_mdiff Z1s Ps Qs v0
+    have hpeel := tensor0SCovariantDerivative_three_toModel (I := I) (M := M) g₀ KTsec hW_mdiff Z1s Ps Qs v0
     have hZ1s_coe : (fun y : M => (Z1s y : TangentSpace I y)) = Z1 := rfl
     have hPs_coe : (fun y : M => (Ps y : TangentSpace I y)) = Pe := rfl
     have hQs_coe : (fun y : M => (Qs y : TangentSpace I y)) = Qe := rfl
@@ -882,11 +882,11 @@ private lemma lrOmegaHat_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
       rw [show (finRotate 3) (2 : Fin 3) = 0 from by decide]
       rw [Function.update_self]
       rfl]
-  rw [bdConnectionDifferenceLoweredCc_unitModel_apply (I := I) (M := M) g₀ gm x]
+  rw [palatiniConnectionDifferenceLoweredCc_unitModel_apply (I := I) (M := M) g₀ gm x]
   simp only [ContinuousLinearEquiv.symm_apply_apply]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     Matrix.cons_val_two, Matrix.tail_cons]
-  exact bdG0_inner_lambda (I := I) (M := M) g₀ gm x
+  exact palatiniG0_inner_lambda (I := I) (M := M) g₀ gm x
     (PDE.DeTurck.connectionDifference (I := I) gm g₀ x (m 1) (m 2)) (m 0)
 
 def connectionDifferenceQuadraticPairedTensor (g₀ gm : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0 4 :=
@@ -1084,7 +1084,7 @@ private lemma lrQuadF_unitModel_apply (g₀ gm : SmoothRiemannianMetric I M)
       funext i
       fin_cases i <;> rfl]
   rw [connectionDifferenceQuadraticCurvatureTerm]
-  rw [bdUnitModel_add, bdUnitModel_add, bdUnitModel_add, bdUnitModel_add, bdUnitModel_add]
+  rw [palatiniUnitModel_add, palatiniUnitModel_add, palatiniUnitModel_add, palatiniUnitModel_add, palatiniUnitModel_add]
   simp only [add_apply]
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel,
     domDomCongrSection_unitModel, domDomCongrSection_unitModel,
@@ -1186,7 +1186,7 @@ private lemma lrRiemW1_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
       ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)).toSection x) D]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
-    rw [bdSlotExtendIter_two_toModel (I := I) (M := M) g₀
+    rw [palatiniSlotExtendIter_two_toModel (I := I) (M := M) g₀
       (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀) x D
       (fun i => w (lrSigmaW1 i))]
     refine congrArg₂ (· * ·) ?_ ?_
@@ -1217,7 +1217,7 @@ private lemma lrRiemW1_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
   rw [cometricDoubleTraceFib_toModel (I := I) g₀ 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₀ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y)
     (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (m j))]
   refine Finset.sum_congr rfl fun e _ => ?_
@@ -1282,7 +1282,7 @@ private lemma lrRiemW2_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
       ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
         (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)).toSection x) D]
     rw [ContinuousMultilinearMap.domDomCongr_apply]
-    rw [bdSlotExtendIter_two_toModel (I := I) (M := M) g₀
+    rw [palatiniSlotExtendIter_two_toModel (I := I) (M := M) g₀
       (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀) x D
       (fun i => w (lrSigmaW2 i))]
     refine congrArg₂ (· * ·) ?_ ?_
@@ -1313,7 +1313,7 @@ private lemma lrRiemW2_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
   rw [cometricDoubleTraceFib_toModel (I := I) g₀ 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₀ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y)
     (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (m j))]
   refine Finset.sum_congr rfl fun e _ => ?_
@@ -1365,7 +1365,7 @@ private lemma lrCurvF_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
     (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i)) from by
       funext i
       fin_cases i <;> rfl]
-  rw [riemannCurvatureCoefficientField, bdUnitModel_add]
+  rw [riemannCurvatureCoefficientField, palatiniUnitModel_add]
   simp only [add_apply]
   have hTu : ∀ (a b : TangentSpace I x),
       Tensor0SSpace.toModel
@@ -1406,7 +1406,7 @@ private lemma lrCurvF_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
         ∑ e : Fin (Module.finrank ℝ E),
           g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 2))
             (smoothOrthoFrame (I := I) g₀ x e x) • smoothOrthoFrame (I := I) g₀ x e x := by
-      have hrep := bdOrthoFrame_center_repr (I := I) (M := M) g₀ x
+      have hrep := palatiniOrthoFrame_center_repr (I := I) (M := M) g₀ x
         (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 2))
       conv_lhs => rw [hrep]
       refine Finset.sum_congr rfl fun e _ => ?_
@@ -1450,7 +1450,7 @@ private lemma lrCurvF_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
         ∑ e : Fin (Module.finrank ℝ E),
           g₀.inner x (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 3))
             (smoothOrthoFrame (I := I) g₀ x e x) • smoothOrthoFrame (I := I) g₀ x e x := by
-      have hrep := bdOrthoFrame_center_repr (I := I) (M := M) g₀ x
+      have hrep := palatiniOrthoFrame_center_repr (I := I) (M := M) g₀ x
         (riemannOp (LeviCivita (I := I) g₀) x (m 0) (m 1) (m 3))
       conv_lhs => rw [hrep]
       refine Finset.sum_congr rfl fun e _ => ?_
@@ -2017,9 +2017,9 @@ private lemma lrCovGradKT_unitModel (g₀ : SmoothRiemannianMetric I M)
     fun v => rfl
   rw [hUM, hUM, hUM]
   rw [linearizedKoszulTensor, covGrad_smul, covGrad_sub, covGrad_add]
-  rw [bdUnitModel_smul]
+  rw [palatiniUnitModel_smul]
   rw [smul_apply, smul_eq_mul]
-  rw [bdUnitModel_sub, sub_apply, bdUnitModel_add, add_apply]
+  rw [palatiniUnitModel_sub, sub_apply, palatiniUnitModel_add, add_apply]
   rw [show (![tangentSpaceModelContinuousLinearEquiv (I := I) x w0,
       tangentSpaceModelContinuousLinearEquiv (I := I) x w1,
       tangentSpaceModelContinuousLinearEquiv (I := I) x w2,
@@ -2171,7 +2171,7 @@ private theorem lrSummand (g₀ : SmoothRiemannianMetric I M)
               tangentSpaceModelContinuousLinearEquiv (I := I) x v1,
               tangentSpaceModelContinuousLinearEquiv (I := I) x pf,
               tangentSpaceModelContinuousLinearEquiv (I := I) x qf] := by
-    rw [deTurckLieCovariantDerivativeRemainderTensor, bdUnitModel_sub, sub_apply, bdUnitModel_smul,
+    rw [deTurckLieCovariantDerivativeRemainderTensor, palatiniUnitModel_sub, sub_apply, palatiniUnitModel_smul,
       smul_apply, smul_eq_mul]
   have hquad := lrQuadF_unitModel_apply (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) x ![v0, v1, pf, qf]
@@ -2400,27 +2400,27 @@ theorem lrTerm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
   rw [hfield]
   simp only [hsub_desc, hsmul_desc, hadd_desc]
   rw [hARM]
-  rw [bdPairTraceOp_apply_toModel (I := I) (M := M) g₀
+  rw [palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
       (domDomCongrSection (I := I) g₀
         ((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
         (iteratedCovGrad (I := I) g₀ 0 2 2 T)) x D v,
-    bdPairTraceOp_apply_toModel (I := I) (M := M) g₀
+    palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
       (domDomCongrSection (I := I) g₀
         (((Equiv.swap (0 : Fin 4) 1 * Equiv.swap (0 : Fin 4) 2).trans
             (Equiv.swap (0 : Fin 4) 1)).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
         (iteratedCovGrad (I := I) g₀ 0 2 2 T)) x D v,
-    bdPairTraceOp_apply_toModel (I := I) (M := M) g₀
+    palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
       (domDomCongrSection (I := I) g₀
         ((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
             Equiv.swap (0 : Fin 4) 1).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
         (iteratedCovGrad (I := I) g₀ 0 2 2 T)) x D v,
-    bdPairTraceOp_apply_toModel (I := I) (M := M) g₀
+    palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
       (domDomCongrSection (I := I) g₀
         (((Equiv.swap (2 : Fin 4) 3 * Equiv.swap (1 : Fin 4) 2 *
@@ -2428,20 +2428,20 @@ theorem lrTerm_sub_family_eq_pairTrace (g₀ : SmoothRiemannianMetric I M)
             (Equiv.swap (0 : Fin 4) 1)).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
         (iteratedCovGrad (I := I) g₀ 0 2 2 T)) x D v,
-    bdPairTraceOp_apply_toModel (I := I) (M := M) g₀
+    palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
       (domDomCongrSection (I := I) g₀
         ((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
         (iteratedCovGrad (I := I) g₀ 0 2 2 T)) x D v,
-    bdPairTraceOp_apply_toModel (I := I) (M := M) g₀
+    palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
       (domDomCongrSection (I := I) g₀
         (((Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3).trans
             (Equiv.swap (0 : Fin 4) 1)).trans
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3))
         (iteratedCovGrad (I := I) g₀ 0 2 2 T)) x D v]
-  rw [bdPairTraceOp_apply_toModel (I := I) (M := M) g₀
+  rw [palatiniPairTraceOp_apply_toModel (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
     (deTurckLieCovariantDerivativeRemainderTensor (I := I) (M := M) g₀ T hδ hδZ s) x D v]
   rw [show (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),

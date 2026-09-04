@@ -54,11 +54,11 @@ theorem metricRm_lifted
     (g : SmoothRiemannianMetric I M)
     (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
     (X Y Z W : E) :
-    metricRm04StdAt
+    metricRm04StandardAt
         (I := I)
         (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
         (liftedMetric (I := I) g) x' X Y Z W =
-      metricRm04StdAt (I := I) (M := M) g (proj (X := M) x') X Y Z W := by
+      metricRm04StandardAt (I := I) (M := M) g (proj (X := M) x') X Y Z W := by
   classical
   have hRModel :
       DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv (I := I) x'
@@ -128,7 +128,7 @@ theorem metricRm_lifted
     rw [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_apply,
       tangentSpaceModelContinuousLinearEquiv_apply]
   have hMetric :
-      metricRm04StdAt
+      metricRm04StandardAt
           (I := I)
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) g) x'
@@ -140,7 +140,7 @@ theorem metricRm_lifted
             (I := I) x').symm Z)
           ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv
             (I := I) x').symm W) =
-        metricRm04StdAt (I := I) (M := M) g (proj (X := M) x')
+        metricRm04StandardAt (I := I) (M := M) g (proj (X := M) x')
           ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv
             (I := I) (proj (X := M) x')).symm X)
           ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv
@@ -149,8 +149,8 @@ theorem metricRm_lifted
             (I := I) (proj (X := M) x')).symm Z)
           ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv
             (I := I) (proj (X := M) x')).symm W) := by
-    rw [metricRm04StdAt_eq_chartRiemannCLM,
-      metricRm04StdAt_eq_chartRiemannCLM, hR]
+    rw [metricRm04StandardAt_eq_chartRiemannCLM,
+      metricRm04StandardAt_eq_chartRiemannCLM, hR]
     simp only [DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply]
     let R : TangentSpace I (proj (X := M) x') :=
       chartRiemannCLM (I := I) (M := M) g (proj (X := M) x') X Y Z
@@ -168,12 +168,12 @@ omit [PseudoEMetricSpace M]
 theorem metricRm_lift_one
     (g : SmoothRiemannianMetric I M) (c : Real) (hc : 0 < c)
     (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y)) :
     ∀ (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
         (X Y Z W : E),
-      metricRm04StdAt
+      metricRm04StandardAt
           (I := I)
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) (scaleMetric (I := I) c hc g))
@@ -195,7 +195,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannOp_lift_one
     (g : SmoothRiemannianMetric I M) (c : Real) (hc : 0 < c)
     (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y)) :
     ∀ (x' : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
@@ -208,7 +208,7 @@ theorem riemannOp_lift_one
           (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' X Z • Y := by
   intro x' X Y Z
   have hRm : ∀ A B C D : E,
-      metricRm04StdAt
+      metricRm04StandardAt
           (I := I)
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) (scaleMetric (I := I) c hc g))

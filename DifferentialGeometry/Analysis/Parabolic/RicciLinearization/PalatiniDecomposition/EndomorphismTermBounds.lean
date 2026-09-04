@@ -50,7 +50,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [SigmaCompactSpace M] in
-lemma bdICG_succ_cometricDT_zero (g₀ : SmoothRiemannianMetric I M) (s m : ℕ) :
+lemma iteratedCovGrad_succ_cometricDoubleTraceField_eq_zero (g₀ : SmoothRiemannianMetric I M) (s m : ℕ) :
     iteratedCovGrad (I := I) g₀ (s + 2) s (m + 1)
       (cometricDoubleTraceField (I := I) g₀ s) = 0 := by
   induction m with
@@ -62,14 +62,14 @@ lemma bdICG_succ_cometricDT_zero (g₀ : SmoothRiemannianMetric I M) (s m : ℕ)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma bdRiemannianFiberNormSq_zero_toSection (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
+lemma palatiniRiemannianFiberNormSq_zero_toSection (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ r s x
       ((0 : SmoothCcTensor g₀ r s).toSection x) = 0 := by
   rw [show ((0 : SmoothCcTensor g₀ r s).toSection x) = (0 : TensorRSSpace r s I x) from by
     rw [SmoothCcTensor.toSection_zero]; rfl]
   exact riemannianFiberNormSq_zero (I := I) (M := M) g₀ r s x
 
-private theorem bdCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric I M)
+private theorem palatiniCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ j, 0 ≤ C j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -89,7 +89,7 @@ private theorem bdCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric I M)
   obtain ⟨CD, hCD_nn, hCD⟩ :=
     riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
       (I := I) (M := M) g₀ hδ₀
-  obtain ⟨cfix, hcfix_nn, hcfix⟩ := bdExists_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ 3 1
+  obtain ⟨cfix, hcfix_nn, hcfix⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 3 1
     (cometricDoubleTraceField (I := I) g₀ 1)
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -112,7 +112,7 @@ private theorem bdCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric I M)
     Combinatorics.one_le_antidiagonalTupleGridWindow b hb (by omega)
   have hW_nn : (0 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow b (j + 1) := by linarith
   rw [cometricCastG0_eq_doubleTrace_add_ccOperatorFieldComp (I := I) (M := M) g₀ g₁]
-  refine le_trans (bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 3 1 j
+  refine le_trans (palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 3 1 j
     (cometricDoubleTraceField (I := I) g₀ 1)
     (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 (cometricDoubleTraceField (I := I) g₀ 1)
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2 (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁)))
@@ -123,8 +123,8 @@ private theorem bdCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric I M)
     match j with
     | 0 => exact hcfix 0 x
     | (m + 1) =>
-        rw [bdICG_succ_cometricDT_zero (I := I) (M := M) g₀ 1 m]
-        rw [bdRiemannianFiberNormSq_zero_toSection]
+        rw [iteratedCovGrad_succ_cometricDoubleTraceField_eq_zero (I := I) (M := M) g₀ 1 m]
+        rw [palatiniRiemannianFiberNormSq_zero_toSection]
         exact hcfix_nn 0
   have hB : riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + j) x
       ((iteratedCovGrad (I := I) g₀ 3 1 j
@@ -150,8 +150,8 @@ private theorem bdCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric I M)
                   (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))).toSection x) = 0 := by
       intro i' _ hi'0
       obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hi'0
-      rw [bdICG_succ_cometricDT_zero (I := I) (M := M) g₀ 1 m]
-      rw [bdRiemannianFiberNormSq_zero_toSection, zero_mul]
+      rw [iteratedCovGrad_succ_cometricDoubleTraceField_eq_zero (I := I) (M := M) g₀ 1 m]
+      rw [palatiniRiemannianFiberNormSq_zero_toSection, zero_mul]
     have hsum_eq : (∑ i' ∈ Finset.range (j + 1),
         riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + i') x
             ((iteratedCovGrad (I := I) g₀ 3 1 i'
@@ -232,7 +232,7 @@ private theorem bdCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private lemma bdConnectionDifferenceSection_eq_cometricRaise (g₀ g₁ : SmoothRiemannianMetric I M) :
+private lemma palatiniConnectionDifferenceSection_eq_cometricRaise (g₀ g₁ : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) g₁ g₀ =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 1
         (domDomCongrSection (I := I) g₀ (finRotate 3) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) := by
@@ -279,7 +279,7 @@ private lemma bdConnectionDifferenceSection_eq_cometricRaise (g₀ g₁ : Smooth
             (inverseMetricSharpFib (I := I) g₀ x om) D)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k)) from by
       rw [Tensor0SSpace.toModel_apply_tangent, Tensor0SSpace.eval_eq]]
-    rw [bdInterior_product_toModel_eval (I := I) (M := M) (1 + 1) x
+    rw [palatiniInterior_product_toModel_eval (I := I) (M := M) (1 + 1) x
       (inverseMetricSharpFib (I := I) g₀ x om) D YZ, ← hu]
   change Tensor0SSpace.eval
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -309,14 +309,14 @@ private lemma bdConnectionDifferenceSection_eq_cometricRaise (g₀ g₁ : Smooth
           tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ 1),
           tangentSpaceModelContinuousLinearEquiv (I := I) x u] from by
     funext i; fin_cases i <;> rfl]
-  rw [bdConnectionDifferenceLoweredCc_unitModel_apply]
+  rw [palatiniConnectionDifferenceLoweredCc_unitModel_apply]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     Matrix.cons_val_two, Matrix.tail_cons, ContinuousLinearEquiv.symm_apply_apply]
   rw [g₀.symm x u (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1))]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma bdRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection
+lemma palatiniRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection
     (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + n) x
         ((iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x) =
@@ -340,10 +340,10 @@ lemma bdRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_c
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) n x).symm
     _ = riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + n) x
           ((iteratedCovGrad (I := I) g₀ 1 2 n (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) := by
-        rw [bdConnectionDifferenceSection_eq_cometricRaise]
+        rw [palatiniConnectionDifferenceSection_eq_cometricRaise]
 
 omit [SigmaCompactSpace M] in
-private theorem bdCA_gridWindow (g₀ : SmoothRiemannianMetric I M)
+private theorem palatiniCA_gridWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ j, 0 ≤ C j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -355,7 +355,7 @@ private theorem bdCA_gridWindow (g₀ : SmoothRiemannianMetric I M)
         (j : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + j) x
             ((iteratedCovGrad (I := I) g₀ 1 2 j
-              (bdCA (I := I) (M := M) g₀ g₁)).toSection x) ≤
+              (palatiniCA (I := I) (M := M) g₀ g₁)).toSection x) ≤
           C j * Combinatorics.antidiagonalTupleGridWindow
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (j + 2) := by
@@ -368,12 +368,12 @@ private theorem bdCA_gridWindow (g₀ : SmoothRiemannianMetric I M)
     ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x) with hb_def
   have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + j) x
       ((iteratedCovGrad (I := I) g₀ 1 2 j
-        (bdCA (I := I) (M := M) g₀ g₁)).toSection x) =
+        (palatiniCA (I := I) (M := M) g₀ g₁)).toSection x) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + j) x
         ((iteratedCovGrad (I := I) g₀ 0 3 j
           (domDomCongrSection (I := I) g₀ (Equiv.swap (1 : Fin 3) 2)
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))).toSection x) := by
-    rw [bdCA]
+    rw [palatiniCA]
     exact riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 1
       (domDomCongrSection (I := I) g₀ (Equiv.swap (1 : Fin 3) 2)
         (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)) j x
@@ -386,12 +386,12 @@ private theorem bdCA_gridWindow (g₀ : SmoothRiemannianMetric I M)
           (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x) :=
     riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (1 : Fin 3) 2) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) j x
-  rw [h1, h2, bdRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ j x]
+  rw [h1, h2, palatiniRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ j x]
   refine le_trans (hCA g₁ P htie hδ_le hδ0 hbound j x) ?_
   rw [show Combinatorics.antidiagonalTupleGridWindow b (j + 2) =
       ∑ k ∈ Finset.range (j + 2), Combinatorics.antidiagonalTupleGrid b k from rfl]
 
-private theorem bdOmega_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem palatiniOmega_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ j, 0 ≤ C j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -403,14 +403,14 @@ private theorem bdOmega_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
         (l : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (1 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 1 l
-              (bdOmega (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+              (palatiniOmega (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
           C l * Combinatorics.antidiagonalTupleGridWindow
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (l + 1) := by
   classical
-  obtain ⟨Cg, hCg_nn, hCg⟩ := bdCometricCastG0_gridWindow (I := I) (M := M) g₀ hδ₀
-  obtain ⟨cxi, hcxi_nn, hcxi⟩ := bdExists_fixedField_riemannianFiberNormSq_jet (I := I) (M := M) g₀ 0 3
-    (bdXiFix (I := I) (M := M) g₀ g_bg)
+  obtain ⟨Cg, hCg_nn, hCg⟩ := palatiniCometricCastG0_gridWindow (I := I) (M := M) g₀ hδ₀
+  obtain ⟨cxi, hcxi_nn, hcxi⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 0 3
+    (palatiniXiFix (I := I) (M := M) g₀ g_bg)
   refine ⟨fun l => diagonalGridGrowthFactor (E := E) l *
       ∑ i' ∈ Finset.range (l + 1), Cg i' * ∑ l' ∈ Finset.range (l + 1 - i'), cxi l',
     fun l => mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) l)
@@ -423,12 +423,12 @@ private theorem bdOmega_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     fun l' => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') x _
   have hW_nn : (0 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow b (l + 1) :=
     Combinatorics.antidiagonalTupleGridWindow_nonneg b hb (l + 1)
-  rw [bdOmega]
+  rw [palatiniOmega]
   refine le_trans
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) g₀ l 0 3 1
     (cometricDoubleTraceCastG0 (I := I) g₀ g₁)
-    (bdXiFix (I := I) (M := M) g₀ g_bg) x) ?_
+    (palatiniXiFix (I := I) (M := M) g₀ g_bg) x) ?_
   have hcell : ∀ i' ∈ Finset.range (l + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + i') x
           ((iteratedCovGrad (I := I) g₀ 3 1 i'
@@ -436,7 +436,7 @@ private theorem bdOmega_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
         ∑ l' ∈ Finset.range (l + 1 - i'),
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + l') x
             ((iteratedCovGrad (I := I) g₀ 0 3 l'
-              (bdXiFix (I := I) (M := M) g₀ g_bg)).toSection x) ≤
+              (palatiniXiFix (I := I) (M := M) g₀ g_bg)).toSection x) ≤
       (Cg i' * ∑ l' ∈ Finset.range (l + 1 - i'), cxi l') *
         Combinatorics.antidiagonalTupleGridWindow b (l + 1) := by
     intro i' hi'
@@ -451,13 +451,13 @@ private theorem bdOmega_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     have hA2 : (∑ l' ∈ Finset.range (l + 1 - i'),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + l') x
           ((iteratedCovGrad (I := I) g₀ 0 3 l'
-            (bdXiFix (I := I) (M := M) g₀ g_bg)).toSection x)) ≤
+            (palatiniXiFix (I := I) (M := M) g₀ g_bg)).toSection x)) ≤
         ∑ l' ∈ Finset.range (l + 1 - i'), cxi l' :=
       Finset.sum_le_sum fun l' _ => hcxi l' x
     have hsum_nn : (0 : ℝ) ≤ ∑ l' ∈ Finset.range (l + 1 - i'),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + l') x
           ((iteratedCovGrad (I := I) g₀ 0 3 l'
-            (bdXiFix (I := I) (M := M) g₀ g_bg)).toSection x) :=
+            (palatiniXiFix (I := I) (M := M) g₀ g_bg)).toSection x) :=
       Finset.sum_nonneg fun l' _ =>
         riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (3 + l') x _
     calc riemannianFiberNormSq (I := I) (M := M) g₀ 3 (1 + i') x
@@ -466,7 +466,7 @@ private theorem bdOmega_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
           ∑ l' ∈ Finset.range (l + 1 - i'),
             riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 3 l'
-                (bdXiFix (I := I) (M := M) g₀ g_bg)).toSection x)
+                (palatiniXiFix (I := I) (M := M) g₀ g_bg)).toSection x)
         ≤ (Cg i' * Combinatorics.antidiagonalTupleGridWindow b (l + 1)) *
             ∑ l' ∈ Finset.range (l + 1 - i'), cxi l' :=
           mul_le_mul hA1 hA2 hsum_nn (mul_nonneg (hCg_nn i') hW_nn)
@@ -476,7 +476,7 @@ private theorem bdOmega_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     (operatorFieldApplicationGdiag_nonneg (E := E) l)) ?_
   rw [← Finset.sum_mul, ← mul_assoc]
 
-private theorem bdAlphaA_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem palatiniAlphaA_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -488,23 +488,23 @@ private theorem bdAlphaA_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 0 2 i
-              (bdAlphaA (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+              (palatiniAlphaA (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
           C i * Combinatorics.antidiagonalTupleGridWindow
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (i + 2) := by
   classical
-  obtain ⟨Cω, hCω_nn, hCω⟩ := bdOmega_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨Cω, hCω_nn, hCω⟩ := palatiniOmega_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨fun i => Cω (i + 1), fun i => hCω_nn (i + 1), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hbound i x
-  rw [bdAlphaA]
+  rw [palatiniAlphaA]
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
     (Equiv.swap (0 : Fin 2) 1)
-    (covGrad (I := I) (M := M) g₀ 0 1 (bdOmega (I := I) (M := M) g₀ g₁ g_bg)) i x]
+    (covGrad (I := I) (M := M) g₀ 0 1 (palatiniOmega (I := I) (M := M) g₀ g₁ g_bg)) i x]
   rw [riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 0 1 i
-    (bdOmega (I := I) (M := M) g₀ g₁ g_bg) x]
+    (palatiniOmega (I := I) (M := M) g₀ g₁ g_bg) x]
   exact hCω g₁ P htie hδ_le hδ0 hbound (i + 1) x
 
-private theorem bdAlphaB_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem palatiniAlphaB_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -516,13 +516,13 @@ private theorem bdAlphaB_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
         (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + i) x
             ((iteratedCovGrad (I := I) g₀ 0 2 i
-              (bdAlphaB (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+              (palatiniAlphaB (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
           C i * Combinatorics.antidiagonalTupleGridWindow
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (i + 2) := by
   classical
-  obtain ⟨CA, hCA_nn, hCA⟩ := bdCA_gridWindow (I := I) (M := M) g₀ hδ₀
-  obtain ⟨Cω, hCω_nn, hCω⟩ := bdOmega_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨CA, hCA_nn, hCA⟩ := palatiniCA_gridWindow (I := I) (M := M) g₀ hδ₀
+  obtain ⟨Cω, hCω_nn, hCω⟩ := palatiniOmega_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨fun i => diagonalGridGrowthFactor (E := E) i *
       ∑ i' ∈ Finset.range (i + 1), CA i' * ∑ l' ∈ Finset.range (i + 1 - i'),
         Cω l' * Combinatorics.antidiagonalTupleGridWindowMulConst (i' + 1) l',
@@ -537,20 +537,20 @@ private theorem bdAlphaB_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     fun l' => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') x _
   have hW_nn : (0 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow b (i + 2) :=
     Combinatorics.antidiagonalTupleGridWindow_nonneg b hb (i + 2)
-  rw [bdAlphaB]
+  rw [palatiniAlphaB]
   refine le_trans
     (riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (I := I) (M := M) g₀ i 0 1 2
-    (bdCA (I := I) (M := M) g₀ g₁)
-    (bdOmega (I := I) (M := M) g₀ g₁ g_bg) x) ?_
+    (palatiniCA (I := I) (M := M) g₀ g₁)
+    (palatiniOmega (I := I) (M := M) g₀ g₁ g_bg) x) ?_
   have hcell : ∀ i' ∈ Finset.range (i + 1),
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i') x
           ((iteratedCovGrad (I := I) g₀ 1 2 i'
-            (bdCA (I := I) (M := M) g₀ g₁)).toSection x) *
+            (palatiniCA (I := I) (M := M) g₀ g₁)).toSection x) *
         ∑ l' ∈ Finset.range (i + 1 - i'),
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (1 + l') x
             ((iteratedCovGrad (I := I) g₀ 0 1 l'
-              (bdOmega (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
+              (palatiniOmega (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
       (CA i' * ∑ l' ∈ Finset.range (i + 1 - i'),
         Cω l' * Combinatorics.antidiagonalTupleGridWindowMulConst (i' + 1) l') *
         Combinatorics.antidiagonalTupleGridWindow b (i + 2) := by
@@ -558,20 +558,20 @@ private theorem bdAlphaB_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     rw [Finset.mem_range] at hi'
     have hA1 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + i') x
         ((iteratedCovGrad (I := I) g₀ 1 2 i'
-          (bdCA (I := I) (M := M) g₀ g₁)).toSection x) ≤
+          (palatiniCA (I := I) (M := M) g₀ g₁)).toSection x) ≤
         CA i' * Combinatorics.antidiagonalTupleGridWindow b (i' + 2) :=
       hCA g₁ P htie hδ_le hδ0 hbound i' x
     have hA2 : (∑ l' ∈ Finset.range (i + 1 - i'),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (1 + l') x
           ((iteratedCovGrad (I := I) g₀ 0 1 l'
-            (bdOmega (I := I) (M := M) g₀ g₁ g_bg)).toSection x)) ≤
+            (palatiniOmega (I := I) (M := M) g₀ g₁ g_bg)).toSection x)) ≤
         ∑ l' ∈ Finset.range (i + 1 - i'),
           Cω l' * Combinatorics.antidiagonalTupleGridWindow b (l' + 1) :=
       Finset.sum_le_sum fun l' _ => hCω g₁ P htie hδ_le hδ0 hbound l' x
     have hsum_nn : (0 : ℝ) ≤ ∑ l' ∈ Finset.range (i + 1 - i'),
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (1 + l') x
           ((iteratedCovGrad (I := I) g₀ 0 1 l'
-            (bdOmega (I := I) (M := M) g₀ g₁ g_bg)).toSection x) :=
+            (palatiniOmega (I := I) (M := M) g₀ g₁ g_bg)).toSection x) :=
       Finset.sum_nonneg fun l' _ =>
         riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (1 + l') x _
     have hA1_rhs_nn : (0 : ℝ) ≤ CA i' * Combinatorics.antidiagonalTupleGridWindow b (i' + 2) :=
@@ -617,7 +617,7 @@ private theorem bdAlphaB_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     (operatorFieldApplicationGdiag_nonneg (E := E) i)) ?_
   rw [← Finset.sum_mul, ← mul_assoc]
 
-private theorem bdWEndoInsertDiff_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+private theorem palatiniWEndoInsertDiff_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -635,8 +635,8 @@ private theorem bdWEndoInsertDiff_gridWindow (g₀ g_bg : SmoothRiemannianMetric
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (i + 2) := by
   classical
-  obtain ⟨CAa, hCAa_nn, hCAa⟩ := bdAlphaA_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
-  obtain ⟨CAb, hCAb_nn, hCAb⟩ := bdAlphaB_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨CAa, hCAa_nn, hCAa⟩ := palatiniAlphaA_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨CAb, hCAb_nn, hCAb⟩ := palatiniAlphaB_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   refine ⟨fun i => 2 * CAa i + 2 * CAb i,
     fun i => by have h1 := hCAa_nn i; have h2 := hCAb_nn i; linarith, ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hbound i x
@@ -644,13 +644,13 @@ private theorem bdWEndoInsertDiff_gridWindow (g₀ g_bg : SmoothRiemannianMetric
     ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x) with hb_def
   have hb : ∀ l', 0 ≤ b l' :=
     fun l' => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l') x _
-  rw [bdWEndoInsert_sub_eq_cometricRaise (I := I) (M := M) g₀ g₁ g_bg]
+  rw [palatiniWEndoInsert_sub_eq_cometricRaise (I := I) (M := M) g₀ g₁ g_bg]
   rw [riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 0
-    (bdAlpha (I := I) (M := M) g₀ g₁ g_bg) i x]
-  rw [bdAlpha]
-  refine le_trans (bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 2 i
-    (bdAlphaA (I := I) (M := M) g₀ g₁ g_bg)
-    (bdAlphaB (I := I) (M := M) g₀ g₁ g_bg) x) ?_
+    (palatiniAlpha (I := I) (M := M) g₀ g₁ g_bg) i x]
+  rw [palatiniAlpha]
+  refine le_trans (palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 0 2 i
+    (palatiniAlphaA (I := I) (M := M) g₀ g₁ g_bg)
+    (palatiniAlphaB (I := I) (M := M) g₀ g₁ g_bg) x) ?_
   have h1 := hCAa g₁ P htie hδ_le hδ0 hbound i x
   have h2 := hCAb g₁ P htie hδ_le hδ0 hbound i x
   have hW_nn : (0 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow b (i + 2) :=
@@ -658,15 +658,15 @@ private theorem bdWEndoInsertDiff_gridWindow (g₀ g_bg : SmoothRiemannianMetric
   nlinarith [h1, h2, hW_nn,
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 0 2 i
-        (bdAlphaA (I := I) (M := M) g₀ g₁ g_bg)).toSection x),
+        (palatiniAlphaA (I := I) (M := M) g₀ g₁ g_bg)).toSection x),
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 0 2 i
-        (bdAlphaB (I := I) (M := M) g₀ g₁ g_bg)).toSection x)]
+        (palatiniAlphaB (I := I) (M := M) g₀ g₁ g_bg)).toSection x)]
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem bdDLb_eq_slotInsert_sum
+private theorem palatiniDLb_eq_slotInsert_sum
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
@@ -791,7 +791,7 @@ private theorem bdDLb_eq_slotInsert_sum
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma bdSlotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
+private lemma palatiniSlotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ s A - endoSlotZeroCcTensor (I := I) (M := M) g₀ s B =
@@ -808,7 +808,7 @@ private lemma bdSlotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : �
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
+private lemma palatiniReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
     (X Y : SmoothCcTensor g₀ 2 2) :
     reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1) X)
@@ -921,7 +921,7 @@ private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
     rfl]
   rw [Tensor0SSpace.toModel_sub, sub_apply]
 
-private def bdWEndoSecDiff (g₁ g_bg g₀' : SmoothRiemannianMetric I M) :
+private def palatiniWEndoSecDiff (g₁ g_bg g₀' : SmoothRiemannianMetric I M) :
     ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) :=
   deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg -
@@ -930,19 +930,19 @@ private def bdWEndoSecDiff (g₁ g_bg g₀' : SmoothRiemannianMetric I M) :
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem bdDLbDiff_eq_slotInsert_sum
+private theorem palatiniDLbDiff_eq_slotInsert_sum
     (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg -
         deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀ =
       endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-          (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)
+          (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)
         + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-                (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)))
+                (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)))
             (Equiv.swap (0 : Fin 2) 1) := by
-  rw [bdDLb_eq_slotInsert_sum (I := I) (M := M) g₀ g₁ g_bg,
-    bdDLb_eq_slotInsert_sum (I := I) (M := M) g₀ g₁ g₀]
+  rw [palatiniDLb_eq_slotInsert_sum (I := I) (M := M) g₀ g₁ g_bg,
+    palatiniDLb_eq_slotInsert_sum (I := I) (M := M) g₀ g₁ g₀]
   rw [show (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
           (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)
         + reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
@@ -971,15 +971,15 @@ private theorem bdDLbDiff_eq_slotInsert_sum
               (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
                 (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g₀)))
             (Equiv.swap (0 : Fin 2) 1)) from by abel]
-  rw [bdSlotInsertEndoCc_sub (I := I) (M := M) g₀ 1
+  rw [palatiniSlotInsertEndoCc_sub (I := I) (M := M) g₀ 1
     (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)
     (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g₀)]
-  rw [bdReindexSwap_sub (I := I) (M := M) g₀
+  rw [palatiniReindexSwap_sub (I := I) (M := M) g₀
     (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
       (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))
     (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
       (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g₀))]
-  rw [bdSlotInsertEndoCc_sub (I := I) (M := M) g₀ 1
+  rw [palatiniSlotInsertEndoCc_sub (I := I) (M := M) g₀ 1
     (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)
     (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g₀)]
   rfl
@@ -987,18 +987,18 @@ private theorem bdDLbDiff_eq_slotInsert_sum
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma bdSlotInsertZero_bdWEndoSecDiff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
+private lemma palatiniSlotInsertZero_bdWEndoSecDiff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
-        (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀) =
+        (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀) =
       deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg -
         deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g₀ := by
   rw [deTurckVectorFieldCovariantDerivativeEndomorphismInsert, deTurckVectorFieldCovariantDerivativeEndomorphismInsert]
-  rw [bdSlotInsertEndoCc_sub (I := I) (M := M) g₀ 0
+  rw [palatiniSlotInsertEndoCc_sub (I := I) (M := M) g₀ 0
     (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)
     (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g₀)]
   rfl
 
-theorem bdEndoTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
+theorem palatiniEndoTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1016,7 +1016,7 @@ theorem bdEndoTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMetric 
             (fun l' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l') x
               ((iteratedCovGrad (I := I) g₀ 0 2 l' P).toSection x)) (i + 2) := by
   classical
-  obtain ⟨CW, hCW_nn, hCW⟩ := bdWEndoInsertDiff_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
+  obtain ⟨CW, hCW_nn, hCW⟩ := palatiniWEndoInsertDiff_gridWindow (I := I) (M := M) g₀ g_bg hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
   refine ⟨fun i => 2 * (fr * CW i) + 2 * (fr * CW i),
@@ -1031,17 +1031,17 @@ theorem bdEndoTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMetric 
   have hbase : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 1 i
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
-          (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀))).toSection x) ≤
+          (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀))).toSection x) ≤
       CW i * Combinatorics.antidiagonalTupleGridWindow b (i + 2) := by
-    rw [bdSlotInsertZero_bdWEndoSecDiff (I := I) (M := M) g₀ g₁ g_bg]
+    rw [palatiniSlotInsertZero_bdWEndoSecDiff (I := I) (M := M) g₀ g₁ g_bg]
     exact hCW g₁ P htie hδ_le hδ0 hbound i x
   have hA : riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-          (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀))).toSection x) ≤
+          (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀))).toSection x) ≤
       fr * CW i * Combinatorics.antidiagonalTupleGridWindow b (i + 2) := by
     have h := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 1
-      (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀) i x
+      (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀) i x
     rw [pow_one] at h
     refine le_trans h ?_
     rw [← hfr_def, mul_assoc]
@@ -1051,31 +1051,31 @@ theorem bdEndoTermDiff_pointwise_gridWindow (g₀ g_bg : SmoothRiemannianMetric 
         (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-              (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)))
+              (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)))
           (Equiv.swap (0 : Fin 2) 1))).toSection x) ≤
       fr * CW i * Combinatorics.antidiagonalTupleGridWindow b (i + 2) := by
     have heq := riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq (I := I) (M := M) g₀ 2 2
       (Equiv.swap (0 : Fin 2) 1) (Equiv.swap (0 : Fin 2) 1)
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-        (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)) i x
+        (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)) i x
     rw [heq]
     exact hA
-  rw [bdDLbDiff_eq_slotInsert_sum (I := I) (M := M) g₀ g₁ g_bg]
-  refine le_trans (bdRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i _ _ x) ?_
+  rw [palatiniDLbDiff_eq_slotInsert_sum (I := I) (M := M) g₀ g₁ g_bg]
+  refine le_trans (palatiniRiemannianFiberNormSq_iteratedCovGrad_add_le (I := I) (M := M) g₀ 2 2 i _ _ x) ?_
   nlinarith [hA, hB,
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-          (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀))).toSection x),
+          (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀))).toSection x),
     riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 2 (2 + i) x
       ((iteratedCovGrad (I := I) g₀ 2 2 i
         (reindexCoefficientInputSlots (I := I) (M := M) g₀ 2 2
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
-              (bdWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)))
+              (palatiniWEndoSecDiff (I := I) (M := M) g₁ g_bg g₀)))
           (Equiv.swap (0 : Fin 2) 1))).toSection x)]
 
-theorem bdL2_tameEnvelope_of_gridWindow (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
+theorem palatiniL2_tameEnvelope_of_gridWindow (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R) :
     ∃ Kg : ℕ → ℝ, (∀ k, 0 ≤ Kg k) ∧
       ∀ (P : SmoothCcTensor g₀ 0 2),

@@ -85,7 +85,7 @@ private lemma tensor0S_eq_of_toModel_eq' {t : ℕ} {x : M} {T T' : Tensor0SSpace
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] in
-lemma tensor00Scalar_unitZeroSec' (x : M) :
+lemma tensor00Scalar_unitZeroSec (x : M) :
     tensor00Scalar (I := I) (M := M) x (unitZeroSec (I := I) (M := M) x) = 1 := by
   rw [tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0)]
   rw [show ((unitZeroSec (I := I) (M := M) x) (fun k : Fin 0 => k.elim0) : ℝ) =
@@ -95,7 +95,7 @@ lemma tensor00Scalar_unitZeroSec' (x : M) :
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] in
-lemma tensor0S_zero_span' (x : M) (τ : Tensor0SSpace 0 I x) :
+lemma tensor0S_zero_span (x : M) (τ : Tensor0SSpace 0 I x) :
     τ = tensor00Scalar (I := I) (M := M) x τ • unitZeroSec (I := I) (M := M) x := by
   apply tensor0S_eq_of_toModel_eq' (I := I) (M := M)
   intro v
@@ -126,12 +126,12 @@ lemma tensor0SAsRS_unit_recover (t : ℕ) (x : M) (W : TensorRSSpace 0 t I x) :
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace t I x from W)
           (unitZeroSec (I := I) (M := M) x)) from
     tensor0SAsRS_apply (I := I) (M := M) x _ τ]
-  conv_rhs => rw [tensor0S_zero_span' (I := I) (M := M) x τ]
+  conv_rhs => rw [tensor0S_zero_span (I := I) (M := M) x τ]
   rw [ContinuousLinearMap.map_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] in
-lemma tensor0SAsRS_sub' (t : ℕ) (x : M) (C D : Tensor0SSpace t I x) :
+lemma tensor0SAsRS_sub (t : ℕ) (x : M) (C D : Tensor0SSpace t I x) :
     tensor0SToTensorRS (I := I) (M := M) x (C - D) =
       tensor0SToTensorRS (I := I) (M := M) x C - tensor0SToTensorRS (I := I) (M := M) x D := by
   have h : (tensor0SToTensorRS (I := I) (M := M) x (C - D) :
@@ -438,7 +438,7 @@ private lemma wrap_carrierSevenInner_eq
           (fun y : M => (LeviCivita (I := I) g).toFun V y (X y))
           (fun y : M => S.toSection y) x := by
   rw [secondCovDerivCommutatorSum]
-  rw [tensor0SAsRS_sub', tensor0SAsRS_sub', tensor0SAsRS_sub',
+  rw [tensor0SAsRS_sub, tensor0SAsRS_sub, tensor0SAsRS_sub,
     tensor0SAsRS_add', tensor0SAsRS_add', tensor0SAsRS_add']
   rw [tensor0SAsRS_unit_recover, tensor0SAsRS_unit_recover, tensor0SAsRS_unit_recover,
     tensor0SAsRS_unit_recover, tensor0SAsRS_unit_recover, tensor0SAsRS_unit_recover,
@@ -726,7 +726,7 @@ private lemma riemannianFiberNormSq_eq_embedRS_unitEval
             (unitZeroSec (I := I) (M := M) x))) := by
   classical
   obtain ⟨n, e, _bse, _hn, _hbse, _horth, _hpars, _hexpand, hreprS⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g s x
+    exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g s x
   set K₀ : Fin 0 → Fin n := fun k => k.elim0 with hK₀
   rw [riemannianFiberNormSq_eq_sum_componentS_sq (I := I) (M := M) g x s e hreprS T K₀]
   rw [riemannianFiberNormSq_eq_sum_componentS_sq (I := I) (M := M) g x s e hreprS
@@ -1040,9 +1040,9 @@ private lemma riemannianFiberNormSq_tensorCovDerivAt_direction_le
           ((covGrad (I := I) (M := M) g 0 s S).toSection x) := by
   classical
   obtain ⟨n, e, _bse, hn, _hbse, horth, hpars, hexpand, hreprS⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g s x
+    exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g s x
   obtain ⟨n', e', _bse', hn', _hbse', _horth', _hpars', _hexpand', hreprSucc'⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g (s + 1) x
+    exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g (s + 1) x
   have hreprSucc : ∀ U : TensorRSSpace 0 (s + 1) I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1) x U =
         ∑ K : Fin 0 → Fin n, ∑ J : Fin (s + 1) → Fin n,

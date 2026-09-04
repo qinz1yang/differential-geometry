@@ -69,7 +69,7 @@ private theorem linIndep_ortho
     rw [if_neg (by simpa using hij), mul_zero]
 
 omit [T2Space (TangentBundle I M)] in
-private theorem intrJacobi_li_on
+private theorem intrinsicJacobi_li_on
     {ι : Type*}
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -200,31 +200,31 @@ theorem exists_intrMean_on
         DifferentiableAt Real (chartRepAt (I := I) γ (V i) t) t := by
       intro t ht i
       simpa only [γ, V] using
-        (intrJacobi_diff (I := I) g hEnorm p u (v i) t).1
+        (intrinsicJacobi_diff (I := I) g hEnorm p u (v i) t).1
     have hDVdiff : ∀ t ∈ Set.Ioo (0 : Real) b, ∀ i,
         DifferentiableAt Real
           (chartRepAt (I := I) γ
             (fun s => covDerivAlong (I := I) g γ (V i) s) t) t := by
       intro t ht i
       simpa only [γ, V] using
-        (intrJacobi_diff (I := I) g hEnorm p u (v i) t).2
+        (intrinsicJacobi_diff (I := I) g hEnorm p u (v i) t).2
     have hVperp : ∀ t ∈ Set.Ioo (0 : Real) b, ∀ i,
         g.inner (γ t) (curveVelocity (I := I) γ t) (V i t) = 0 := by
       intro t ht i
       simpa only [γ, V] using
-        intrJacobi_perp_ne (I := I) g hEnorm p u (v i) ht.1.ne' (hperp i)
+        intrinsicJacobi_perp_ne (I := I) g hEnorm p u (v i) ht.1.ne' (hperp i)
     have hDVperp : ∀ t ∈ Set.Ioo (0 : Real) b, ∀ i,
         g.inner (γ t) (curveVelocity (I := I) γ t)
           (covDerivAlong (I := I) g γ (V i) t) = 0 := by
       intro t ht i
       simpa only [γ, V] using
-        intrJacobi_dperp (I := I) g hEnorm p u (v i) ht.1.ne'
+        intrinsicJacobi_dperp (I := I) g hEnorm p u (v i) ht.1.ne'
           (hperp i)
     have hLI : ∀ t ∈ Set.Ioo (0 : Real) b,
         LinearIndependent Real fun i => V i t := by
       intro t ht
       simpa only [γ, V] using
-        intrJacobi_li_on (I := I) g hEnorm p u v hv ht.1.ne' (hno t ht)
+        intrinsicJacobi_li_on (I := I) g hEnorm p u v hv ht.1.ne' (hno t ht)
     have hW : ∀ t ∈ Set.Ioo (0 : Real) b, ∀ i j,
         jacobiWronskian (I := I) g γ (V i) (V j) t = 0 := by
       intro t ht i j
@@ -232,13 +232,13 @@ theorem exists_intrMean_on
         g γ (V i) (V j) (hγInf.of_le
           (WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞))))
         (fun s _ => by simpa only [γ, V] using
-          (intrJacobi_diff (I := I) g hEnorm p u (v i) s).1)
+          (intrinsicJacobi_diff (I := I) g hEnorm p u (v i) s).1)
         (fun s _ => by simpa only [γ, V] using
-          (intrJacobi_diff (I := I) g hEnorm p u (v j) s).1)
+          (intrinsicJacobi_diff (I := I) g hEnorm p u (v j) s).1)
         (fun s _ => by simpa only [γ, V] using
-          (intrJacobi_diff (I := I) g hEnorm p u (v i) s).2)
+          (intrinsicJacobi_diff (I := I) g hEnorm p u (v i) s).2)
         (fun s _ => by simpa only [γ, V] using
-          (intrJacobi_diff (I := I) g hEnorm p u (v j) s).2)
+          (intrinsicJacobi_diff (I := I) g hEnorm p u (v j) s).2)
         (fun s _ => by
           change IsJacobiAt (I := I) g
             (intrinsicGeodesic (I := I) g hEnorm p u)
@@ -269,7 +269,7 @@ theorem exists_intrMean_on
     have hRatio : ∃ C : Real, 0 < C ∧
         ∀ᶠ t in 𝓝[>] (0 : Real),
           C ≤ curveDensity (I := I) g γ V t /
-            hypDensity (q * ell) d t := by
+            hyperbolicDensity (q * ell) d t := by
       obtain ⟨C, hC, hraw⟩ :=
         radialRatio_auto (I := I) g p (u : E) (fun i => (v i : E))
           (q * ell) (mul_nonneg hq hell.le) hv
@@ -308,9 +308,9 @@ theorem exists_intrMean_on
               (radialCurve (I := I) g p (u : E))
               (fun i => radialJacobiField (I := I) g p
                 (u : E) (v i : E)) t /
-              hypDensity (q * ell) (Fintype.card (Fin d)) t := hrt
+              hyperbolicDensity (q * ell) (Fintype.card (Fin d)) t := hrt
         _ = curveDensity (I := I) g γ V t /
-              hypDensity (q * ell) d t := by
+              hyperbolicDensity (q * ell) d t := by
           rw [Fintype.card_fin]
           simp only [curveDensity, hgram]
     have hmean := curveMean_le_on
@@ -321,13 +321,13 @@ theorem exists_intrMean_on
       ⟨zero_lt_one, hb⟩
     have hmean1 := hmean 1 hone
     have hhyp :=
-      hypMeanCurv_le d (mul_nonneg hq hell.le) (by norm_num : (0 : Real) < 1)
+      hyperbolicMeanCurv_le d (mul_nonneg hq hell.le) (by norm_num : (0 : Real) < 1)
     have hrawBound :
         curveMean (I := I) g γ V 1 ≤
           (d : Real) + (d : Real) * q * ell := by
       calc
         curveMean (I := I) g γ V 1 ≤
-            hypMeanCurv (q * ell) d 1 := hmean1
+            hyperbolicMeanCurv (q * ell) d 1 := hmean1
         _ ≤ (d : Real) / 1 + (d : Real) * (q * ell) := hhyp
         _ = (d : Real) + (d : Real) * q * ell := by ring
     apply (div_le_iff₀ hell).2

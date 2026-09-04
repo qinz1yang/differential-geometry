@@ -37,7 +37,7 @@ theorem conjugating_flow_jointContMDiffOn
         (Set.Ici (0 : ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight
           (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
-    (hfield_reg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+    (hfield_regularity : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
         : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ)) :
@@ -57,14 +57,14 @@ theorem conjugating_flow_jointContMDiffOn
     intro q hq
     exact CutoffExtension.smul_tangentMap_cmdwa
       (fun s x => (deTurckVF (I := I) (g_DT s) g_bg x : TangentSpace I x)) (fun _ => (-1 : ℝ))
-      contMDiffWithinAt_const (hfield_reg q hq)
+      contMDiffWithinAt_const (hfield_regularity q hq)
   intro q₀ hq₀
   obtain ⟨ht₀_lo, ht₀_hi⟩ := hq₀.1
   obtain ⟨a, ha0, hat₀⟩ := exists_between ht₀_lo
   obtain ⟨b, ht₀b, hbT⟩ := exists_between ht₀_hi
   obtain ⟨Xt, δ, hδ, hXt_eq, hXt_cont, hXt_auto⟩ :=
     interior_field_global_cutoff_extension Y T hint_Y ha0 hbT
-  obtain ⟨T', hT', Φ, hΦ_init, hΦ_smooth, hΦ_bare⟩ :=
+  obtain ⟨T', hT', Φ, hΦ_initial, hΦ_smooth, hΦ_bare⟩ :=
     global_flow_jointContMDiffOn_on_closed_manifold Xt hXt_cont q₀.1
   set c : ℝ := max (max (a - δ) (q₀.1 - T')) 0 with hc_def
   set d : ℝ := min (min (b + δ) (q₀.1 + T')) T with hd_def
@@ -108,7 +108,7 @@ theorem conjugating_flow_jointContMDiffOn
       (hΦ_bare ((Φ_fam q₀.1 : M → M) y) s (hcd_T' hs)).hasMFDerivWithinAt.mono (subset_refl _)
     have hstart : (fun u : ℝ => (Φ_fam u : M → M) y) q₀.1
         = (fun u : ℝ => Φ ((Φ_fam q₀.1 : M → M) y) u) q₀.1 := by
-      simp only [hΦ_init]
+      simp only [hΦ_initial]
     exact integral_curves_eqOn_of_jointC1 (a := c) (b := d) (t₀ := q₀.1)
       Xt hXt_auto (fun u : ℝ => (Φ_fam u : M → M))
       (fun u : ℝ => fun p : M => Φ p u) y ((Φ_fam q₀.1 : M → M) y) ht₀_cd hflow hflow' hstart
@@ -192,9 +192,9 @@ private theorem spatial_pushforward_chartCoord_contMDiffAt
       (continuous_snd.prodMk continuous_const).continuousAt
     exact ContinuousAt.comp (g := fun q : ℝ × M => (Φ_fam q.1 : M → M) q.2)
       (x := (t, t)) (by simpa using hflowAt) hcomp
-  have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hαsource : α ∈ (chartAt H α).source := mem_chart_source H α
   have hpre : (fun p : ℝ × ℝ => (Φ_fam p.2 : M → M) x) ⁻¹' (chartAt H α).source ∈ nhds (t, t) :=
-    hcontAt.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds (by rw [hα]; exact hαsrc))
+    hcontAt.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds (by rw [hα]; exact hαsource))
   filter_upwards [hpre] with p hp
   have hxsrc : (id ((fun _ : ℝ × ℝ => x) p)) ∈
     (chartAt H ((fun _ : ℝ × ℝ => x) (t, t))).source := by
@@ -554,7 +554,7 @@ theorem conjugating_flow_flat_data
         (Set.Ici (0 : ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight
           (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
-    (hfield_reg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+    (hfield_regularity : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
         : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
@@ -569,7 +569,7 @@ theorem conjugating_flow_flat_data
           (Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s)).inner x v w)
         ((-2) * ricciTensor (I := I)
           (Diffeomorph.pullbackMetric (g_DT t) (Φ_fam t)) x v w) (Set.Ici 0) t := by
-  have hjoint := conjugating_flow_jointContMDiffOn (I := I) g_DT g_bg T Φ_fam hΦode hfield_reg
+  have hjoint := conjugating_flow_jointContMDiffOn (I := I) g_DT g_bg T Φ_fam hΦode hfield_regularity
   intro t ht x v w
   have ht_Ico : t ∈ Set.Ico (0 : ℝ) T := ⟨le_of_lt ht.1, ht.2⟩
   have h_metric : HasDerivWithinAt
@@ -602,7 +602,7 @@ theorem conjugating_flow_orbit_pushforward_continuity_data
         (Set.Ici (0 : ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight
           (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
-    (hfield_reg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+    (hfield_regularity : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
         : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
@@ -617,7 +617,7 @@ theorem conjugating_flow_orbit_pushforward_continuity_data
       ContinuousOn
         (fun s : ℝ => (TotalSpace.mk' E ((Φ_fam s : M → M) y)
           (mfderiv I I (Φ_fam s : M → M) y u) : TangentBundle I M)) (Set.Ico 0 T)) := by
-  have hjoint := conjugating_flow_jointContMDiffOn (I := I) g_DT g_bg T Φ_fam hΦode hfield_reg
+  have hjoint := conjugating_flow_jointContMDiffOn (I := I) g_DT g_bg T Φ_fam hΦode hfield_regularity
   have horbit_interior : ∀ y : M, ∀ s₀ ∈ Set.Ioo (0 : ℝ) T,
       ContinuousWithinAt (fun s : ℝ => (Φ_fam s : M → M) y) (Set.Ico 0 T) s₀ := by
     intro y s₀ hs₀
@@ -1103,7 +1103,7 @@ theorem conjugating_flow_pullback_jointGram_data
         (Set.Ici (0 : ℝ)) t
         ((1 : ℝ →L[ℝ] ℝ).smulRight
           (-(deTurckVF (I := I) (g_DT t) g_bg ((Φ_fam t : M → M) x)))))
-    (hfield_reg : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+    (hfield_regularity : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g_bg q.2)
         : TangentBundle I M))
       (Set.Ioo (0 : ℝ) T ×ˢ Set.univ))
@@ -1138,7 +1138,7 @@ theorem conjugating_flow_pullback_jointGram_data
             (Diffeomorph.pullbackMetric (g_DT p.1) (Φ_fam p.1)) x₀ p.2 i j)
         (Set.Ico (0 : ℝ) T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) := by
   classical
-  have hjoint := conjugating_flow_jointContMDiffOn (I := I) g_DT g_bg T Φ_fam hΦode hfield_reg
+  have hjoint := conjugating_flow_jointContMDiffOn (I := I) g_DT g_bg T Φ_fam hΦode hfield_regularity
   constructor
   · intro x₀ i j
     rw [contMDiffOn_infty]

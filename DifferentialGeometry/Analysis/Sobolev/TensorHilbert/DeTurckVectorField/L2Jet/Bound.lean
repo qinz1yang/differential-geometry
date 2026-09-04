@@ -456,7 +456,7 @@ private lemma sharpFlatEndoCc_eq_insert_fullRaised (g₀ g₁ : SmoothRiemannian
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₁)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g₀ g₁ x) om from rfl]
-  rw [cotangentToDual_slotInsertEndoFib' (I := I) (M := M) x
+  rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g₀ g₁ x) om w]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (sharpFlatEndoCc (I := I) g₀ g₁).toSection x) om =
@@ -894,7 +894,7 @@ private lemma connectionDifferenceSection_eq_cometricRaiseSlot0Field' (g₀ g₁
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k)) from by
       rw [Tensor0SSpace.toModel_apply_model_vector]
       congr 1]
-    rw [interior_product_toModel_eval' (I := I) (M := M) (1 + 1) x
+    rw [interior_product_toModel_eval (I := I) (M := M) (1 + 1) x
       (inverseMetricSharpFib (I := I) g₀ x om) D YZ, ← hu]
   refine hLHS.trans (Eq.trans ?_ hRHS.symm)
   have hum : unitModel (I := I) (M := M) g₀ 3
@@ -915,7 +915,7 @@ private lemma connectionDifferenceSection_eq_cometricRaiseSlot0Field' (g₀ g₁
         ((![YZ 0, YZ 1, u] : Fin 3 → TangentSpace I x) i)) from by
     funext i
     fin_cases i <;> rfl]
-  rw [connectionDifferenceLoweredCc_unitModel_apply']
+  rw [connectionDifferenceLoweredCc_unitModel_apply]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     Matrix.cons_val_two, Matrix.tail_cons]
   rw [g₀.symm x u (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (YZ 0) (YZ 1))]

@@ -42,7 +42,7 @@ theorem jacobi_pair_pos
     (hDJdiff : ∀ t, DifferentiableAt ℝ
       (chartRepAt (I := I) γ
         (fun s => covDerivAlong (I := I) g γ J s) t) t)
-    (hJac : ∀ t ∈ Icc (0 : ℝ) 1, IsJacobiAt (I := I) g γ J t)
+    (hJacobian : ∀ t ∈ Icc (0 : ℝ) 1, IsJacobiAt (I := I) g γ J t)
     (hJ0 : J 0 = 0) (hJ1 : J 1 ≠ 0)
     (hspeed : ∀ t ∈ Icc (0 : ℝ) 1,
       0 < g.inner (γ t) (curveVelocity (I := I) γ t)
@@ -85,10 +85,10 @@ theorem jacobi_pair_pos
         (fun i => hFdiff i t ht)
         (hJdiff t) (hDJdiff t)
         (fun i => hFpar i t ht)
-        (hJac t ht) (by simp) (hspeed t ht)
+        (hJacobian t ht) (by simp) (hspeed t ht)
         (fun i => hFperp t ht i)
         (hJperp t ht) (fun i j => hON t ht i j)
-  have hsol : IsJacobiSolOn R 0 1 y v :=
+  have hsol : IsJacobiFieldOn R 0 1 y v :=
     { deriv_fst := fun t ht => (hode t ht).1.hasDerivWithinAt
       deriv_snd := fun t ht => (hode t ht).2.hasDerivWithinAt }
   have hRcont : ContinuousOn R (Icc (0 : ℝ) 1) := by

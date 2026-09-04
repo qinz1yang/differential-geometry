@@ -66,7 +66,7 @@ theorem eigenvectorChartComponent_exists_smooth_representative
     eigenvector_chartComponent_memWkp_arbitrary g r s i k α P₀
   obtain ⟨u₀, hu₀_cdiff, hu_ae_u₀⟩ :=
     contDiffOn_of_forall_memWkp_two (d := Module.finrank ℝ E) hΩ_open hu_memWkp
-  obtain ⟨δ, η, hδ_pos, _hδ_subset, hη_cdiff, hη_cpt, _hη_range,
+  obtain ⟨δ, η, hδ_pos, _hδ_subset, hη_cdiff, hη_compact, _hη_range,
       hη_one_cthick, hη_tsupp⟩ :=
     exists_smooth_cutoff_with_neighborhood (d := Module.finrank ℝ E)
       hK_compact hΩ_open hK_subset_Ω
@@ -75,11 +75,11 @@ theorem eigenvectorChartComponent_exists_smooth_representative
   set u_smooth : EuclN → ℝ := fun y => η y * u₀ y with hu_smooth_def
   have hu_smooth_cdiff : ContDiffOn ℝ (∞ : WithTop ℕ∞) u_smooth Ω :=
     (hη_cdiff.contDiffOn).mul hu₀_cdiff
-  have hu_smooth_cpt : HasCompactSupport u_smooth :=
-    HasCompactSupport.mul_right hη_cpt
+  have hu_smooth_compact : HasCompactSupport u_smooth :=
+    HasCompactSupport.mul_right hη_compact
   have hu_smooth_tsupp : tsupport u_smooth ⊆ Ω :=
     (tsupport_mul_subset_left).trans hη_tsupp
-  refine ⟨u_smooth, hu_smooth_cdiff, hu_smooth_cpt, hu_smooth_tsupp, ?_⟩
+  refine ⟨u_smooth, hu_smooth_cdiff, hu_smooth_compact, hu_smooth_tsupp, ?_⟩
   have hu_ae_zero :
       u =ᵐ[(volume : Measure EuclN).restrict (Ω \ K)]
         (fun _ : EuclN => (0 : ℝ)) :=

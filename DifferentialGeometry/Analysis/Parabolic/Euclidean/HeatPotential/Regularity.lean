@@ -497,14 +497,14 @@ theorem heatSupGradient_apply {t : Real} (ht : 0 < t)
   rw [← MeasureTheory.convolution_lsmul_swap]
   rfl
 
-def heatD2ConvMap (t : Real) (v : V)
+def heatD2ConvolutionMap (t : Real) (v : V)
     (u : BoundedContinuousFunction V F) (x : V) : V →L[Real] F :=
   ∫ y : V, (heatD2Map t v (x - y)).smulRight (u y)
 
 omit [CompleteSpace F] in
-@[simp] theorem heatD2ConvMap_apply {t : Real} (ht : 0 < t) (v : V)
+@[simp] theorem heatD2ConvolutionMap_apply {t : Real} (ht : 0 < t) (v : V)
     (u : BoundedContinuousFunction V F) (x w : V) :
-    heatD2ConvMap t v u x w = heatD2Conv t v w u x := by
+    heatD2ConvolutionMap t v u x w = heatD2Convolution t v w u x := by
   have hInt : Integrable
       (fun y : V => (heatD2Map t v (x - y)).smulRight (u y)) := by
     refine ((((heatD2Maj_int (V := V) ht).comp_sub_left x).const_mul ‖v‖).const_mul
@@ -521,7 +521,7 @@ omit [CompleteSpace F] in
           (u.norm_coe_le_norm y) (norm_nonneg _)
           (mul_nonneg (norm_nonneg v) (heatD2Maj_nonneg ht _))
       _ = ‖u‖ * (‖v‖ * heatD2Maj t (x - y)) := by ring
-  unfold heatD2ConvMap heatD2Conv
+  unfold heatD2ConvolutionMap heatD2Convolution
   rw [ContinuousLinearMap.integral_apply hInt w]
   simp only [ContinuousLinearMap.smulRight_apply, heatD2Map_apply]
   change (∫ y : V, heatD2 t v w (x - y) • u y) =
@@ -532,7 +532,7 @@ omit [CompleteSpace F] in
 omit [CompleteSpace F] in
 theorem heatD1Sup_hasFDerivAt {t : Real} (ht : 0 < t) (v : V)
     (u : BoundedContinuousFunction V F) (x : V) :
-    HasFDerivAt (heatD1Sup t v u) (heatD2ConvMap t v u x) x := by
+    HasFDerivAt (heatD1Sup t v u) (heatD2ConvolutionMap t v u x) x := by
   let G : V → V → F := fun z y => heatD1 t v (z - y) • u y
   let DG : V → V → V →L[Real] F := fun z y =>
     (heatD2Map t v (z - y)).smulRight (u y)
@@ -598,12 +598,12 @@ theorem heatD1Sup_hasFDerivAt {t : Real} (ht : 0 < t) (v : V)
     rw [← MeasureTheory.convolution_lsmul_swap]
     rfl
   rw [hfun] at h
-  simpa only [DG, heatD2ConvMap] using h
+  simpa only [DG, heatD2ConvolutionMap] using h
 
 omit [CompleteSpace F] in
 theorem heatSupHessian_apply {t : Real} (ht : 0 < t)
     (u : BoundedContinuousFunction V F) (x w v : V) :
-    heatSupHessian t u x w v = heatD2Conv t v w u x := by
+    heatSupHessian t u x w v = heatD2Convolution t v w u x := by
   let L : (V →L[Real] F) →L[Real] F :=
     (ContinuousLinearMap.apply Real F) v
   have heval := L.hasFDerivAt.comp x (heatSupGradient_hasFDerivAt ht u x)
@@ -618,16 +618,16 @@ theorem heatSupHessian_apply {t : Real} (ht : 0 < t)
   have hmaps := heval'.unique hraw
   have happly := congrArg (fun A : V →L[Real] F => A w) hmaps
   simpa only [L, ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply,
-    heatD2ConvMap_apply ht] using happly
+    heatD2ConvolutionMap_apply ht] using happly
 
 omit [CompleteSpace F] in
-theorem heatSupHessian_eval_eq_heatD2ConvMap {t : Real} (ht : 0 < t)
+theorem heatSupHessian_eval_eq_heatD2ConvolutionMap {t : Real} (ht : 0 < t)
     (u : BoundedContinuousFunction V F) (x v : V) :
     ((ContinuousLinearMap.apply Real F) v).comp (heatSupHessian t u x) =
-      heatD2ConvMap t v u x := by
+      heatD2ConvolutionMap t v u x := by
   ext w
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.apply_apply,
-    heatSupHessian_apply ht, heatD2ConvMap_apply ht]
+    heatSupHessian_apply ht, heatD2ConvolutionMap_apply ht]
 
 end DifferentialGeometry.Analysis.Parabolic.Euclidean
 

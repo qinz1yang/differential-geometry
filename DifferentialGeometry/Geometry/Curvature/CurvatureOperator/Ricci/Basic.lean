@@ -1142,7 +1142,7 @@ theorem ricciTensor_pairing_contMDiff
         (fun b : M => (e ⟨b, riemannSec (LeviCivita (I := I) g) (S i) Y W b⟩).2) x := by
       have := (contMDiffAt_section (F := E) (E := TangentSpace I) x).mp ((hsec_smooth i) x)
       simpa [e, trivializationAt] using this
-    have h_eq_nbhd : ∀ᶠ b in 𝓝 x, (e ⟨b, riemannSec (LeviCivita (I := I) g) (S i) Y W b⟩).2 =
+    have h_eq_neighborhood : ∀ᶠ b in 𝓝 x, (e ⟨b, riemannSec (LeviCivita (I := I) g) (S i) Y W b⟩).2 =
         e.continuousLinearMapAt ℝ b (riemannSec (LeviCivita (I := I) g) (S i) Y W b) := by
       filter_upwards [e.open_baseSet.mem_nhds hex] with b hb
       change (Trivialization.continuousLinearEquivAt ℝ e b hb) _ = _
@@ -1151,7 +1151,7 @@ theorem ricciTensor_pairing_contMDiff
         (fun b : M => e.continuousLinearMapAt ℝ b
           (riemannSec (LeviCivita (I := I) g) (S i) Y W b)) x := by
       apply h_triv.congr_of_eventuallyEq
-      filter_upwards [h_eq_nbhd] with b hb
+      filter_upwards [h_eq_neighborhood] with b hb
       exact hb.symm
     have h_clm_smooth : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, ℝ) ∞ (finBasisReprAt (E := E) i : E → ℝ) :=
       (finBasisReprAt (E := E) i).contMDiff

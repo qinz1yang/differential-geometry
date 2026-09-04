@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped ContDiff Manifold
 
@@ -67,5 +67,5 @@ theorem MetricCompactBase.exists_partial_approximate_isometry_subsequence
       (hcomplete.complete (ψ k)) (hconn (ψ k)))
     hraw r hr ε hε hε1 p
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

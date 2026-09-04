@@ -112,7 +112,7 @@ theorem isCompact_closedGBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem ball_sub_image_segDom_closed [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem ball_sub_image_segmentDom_closed [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -121,14 +121,14 @@ theorem ball_sub_image_segDom_closed [ConnectedSpace M] [PseudoEMetricSpace M]
     {y : M | riemannianEDist I x y < ENNReal.ofReal R} ⊆
       (fun b : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from b)) ''
-        ({v : E | (show TangentSpace I x from v) ∈ SegDom (I := I) g hEnorm x}
+        ({v : E | (show TangentSpace I x from v) ∈ SegmentDom (I := I) g hEnorm x}
           ∩ closedGBall (I := I) g x R) := by
-  have hcov := ball_sub_image_segDom (I := I) g hEnorm x R
+  have hcov := ball_sub_image_segmentDom (I := I) g hEnorm x R
   have hcovE : {y : M | riemannianEDist I x y < ENNReal.ofReal R} ⊆
       (fun b : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from b)) ''
         {v : E | (show TangentSpace I x from v) ∈
-          SegDom (I := I) g hEnorm x ∩ gBall (I := I) g x R} := by
+          SegmentDom (I := I) g hEnorm x ∩ gBall (I := I) g x R} := by
     with_unfolding_all exact hcov
   have hgBallE : {v : E | (show TangentSpace I x from v) ∈
         gBall (I := I) g x R} ⊆ closedGBall (I := I) g x R := by
@@ -137,8 +137,8 @@ theorem ball_sub_image_segDom_closed [ConnectedSpace M] [PseudoEMetricSpace M]
       (show TangentSpace I x from v)) ≤ R
     exact le_of_lt hv
   have hsub : {v : E | (show TangentSpace I x from v) ∈
-        SegDom (I := I) g hEnorm x ∩ gBall (I := I) g x R} ⊆
-      {v : E | (show TangentSpace I x from v) ∈ SegDom (I := I) g hEnorm x}
+        SegmentDom (I := I) g hEnorm x ∩ gBall (I := I) g x R} ⊆
+      {v : E | (show TangentSpace I x from v) ∈ SegmentDom (I := I) g hEnorm x}
         ∩ closedGBall (I := I) g x R := by
     intro v hv
     exact ⟨hv.1, hgBallE hv.2⟩
@@ -146,7 +146,7 @@ theorem ball_sub_image_segDom_closed [ConnectedSpace M] [PseudoEMetricSpace M]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_vol_le_int
+theorem segmentBall_vol_le_int
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -155,24 +155,24 @@ theorem segBall_vol_le_int
     riemannianVolumeMeasure (I := I) (M := M) g
         {y : M | riemannianEDist I x y < ENNReal.ofReal R}
       ≤ ∫⁻ v in {v : E | (show TangentSpace I x from v) ∈
-            SegDom (I := I) g hEnorm x} ∩ closedGBall (I := I) g x R,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+            SegmentDom (I := I) g hEnorm x} ∩ closedGBall (I := I) g x R,
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) := by
   classical
   have : CompleteSpace E := FiniteDimensional.complete ℝ E
-  have hcov := ball_sub_image_segDom_closed (I := I) g hEnorm x R
+  have hcov := ball_sub_image_segmentDom_closed (I := I) g hEnorm x R
   have hK : IsCompact
       ({v : E | (show TangentSpace I x from v) ∈
-          SegDom (I := I) g hEnorm x} ∩ closedGBall (I := I) g x R) := by
+          SegmentDom (I := I) g hEnorm x} ∩ closedGBall (I := I) g x R) := by
     have hclosed : IsClosed {v : E | (show TangentSpace I x from v) ∈
-        SegDom (I := I) g hEnorm x} := by
+        SegmentDom (I := I) g hEnorm x} := by
       with_unfolding_all exact
-        ((isClosed_segDom (I := I) g hEnorm x).preimage
+        ((isClosed_segmentDom (I := I) g hEnorm x).preimage
           (continuous_id : Continuous (fun v : E => v)))
     exact (isCompact_closedGBall (I := I) g x R).of_isClosed_subset
       (hclosed.inter (isClosed_closedGBall (I := I) g x R))
       (Set.inter_subset_right : {v : E | (show TangentSpace I x from v) ∈
-          SegDom (I := I) g hEnorm x} ∩ closedGBall (I := I) g x R ⊆
+          SegmentDom (I := I) g hEnorm x} ∩ closedGBall (I := I) g x R ⊆
           closedGBall (I := I) g x R)
   have himg := riemVol_exp_image_le (I := I) g hEnorm x hK
   have hFcont : Continuous
@@ -189,19 +189,19 @@ theorem segBall_vol_le_int
       ((fun v : E => expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from v)) ''
         ({v : E | (show TangentSpace I x from v) ∈
-          SegDom (I := I) g hEnorm x} ∩ closedGBall (I := I) g x R)) :=
+          SegmentDom (I := I) g hEnorm x} ∩ closedGBall (I := I) g x R)) :=
     (hK.image hFcont).measurableSet
   exact (measure_mono hcov).trans himg
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segDom_not_conj
+theorem segmentDom_not_conj
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {v : TangentSpace I x}
-    (hv : v ∈ SegDom (I := I) g hEnorm x) {t : ℝ} (ht : t ∈ Set.Ioo (0 : ℝ) 1) :
+    (hv : v ∈ SegmentDom (I := I) g hEnorm x) {t : ℝ} (ht : t ∈ Set.Ioo (0 : ℝ) 1) :
     ¬ IsConjVec (I := I) g hEnorm x ((t • v : TangentSpace I x) : E) := by
   classical
   have : CompleteSpace E := FiniteDimensional.complete ℝ E
@@ -301,7 +301,7 @@ theorem segDom_not_conj
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJacDensity_eq_ncd0_mul_transverse
+theorem expJacobianDensity_eq_ncd0_mul_transverse
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -310,7 +310,7 @@ theorem expJacDensity_eq_ncd0_mul_transverse
     (w : Fin (Module.finrank ℝ E - 1) → TangentSpace I x)
     (hON : ∀ i j, g.inner x (w i) (w j) = if i = j then 1 else 0)
     (hperp : ∀ i, g.inner x v (w i) = 0) :
-    expJacDensity (I := I) g hEnorm x (v : E) =
+    expJacobianDensity (I := I) g hEnorm x (v : E) =
       normalChartDensity (I := I) g x 0 *
         curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) 1 := by
@@ -390,15 +390,15 @@ theorem expJacDensity_eq_ncd0_mul_transverse
           refine Finset.sum_congr rfl (fun o' _ => ?_)
           rw [hC o' o, hb o']
   have hrecomb : ∀ o : Option (Fin d),
-      velJacFrame (I := I) g hEnorm x v w o 1 = ∑ o', C o' o • V o' 1 := by
+      velocityJacobianFrame (I := I) g hEnorm x v w o 1 = ∑ o', C o' o • V o' 1 := by
     intro o
-    have hV' : velJacFrame (I := I) g hEnorm x v w o 1 =
+    have hV' : velocityJacobianFrame (I := I) g hEnorm x v w o 1 =
         intrinsicJacobi (I := I) g hEnorm x v (show TangentSpace I x from a o) 1 := by
       rcases o with - | i
-      · simpa [velJacFrame, a, hBnone] using
-          (radialJac_eq_vel (I := I) g hEnorm x v).symm
-      · simp [velJacFrame, a, hBsome]
-    have h1' : velJacFrame (I := I) g hEnorm x v w o 1 =
+      · simpa [velocityJacobianFrame, a, hBnone] using
+          (radialJacobian_eq_velocity (I := I) g hEnorm x v).symm
+      · simp [velocityJacobianFrame, a, hBsome]
+    have h1' : velocityJacobianFrame (I := I) g hEnorm x v w o 1 =
         (mfderiv 𝓘(ℝ, E) I (fun z : E => expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from z)) vE) (a o) :=
       hV'.trans (hjac (a o))
@@ -419,11 +419,11 @@ theorem expJacDensity_eq_ncd0_mul_transverse
     exact h1'.trans (h2'.trans h3')
   have hrecomb' := curveDensity_recomb (I := I) g
     (intrinsicGeodesic (I := I) g hEnorm x v) V
-    (velJacFrame (I := I) g hEnorm x v w) 1 C hrecomb
-  have hsplit := velJac_density_split (I := I) g hEnorm x v w hperp
-  have hExp : expJacDensity (I := I) g hEnorm x (v : E) =
+    (velocityJacobianFrame (I := I) g hEnorm x v w) 1 C hrecomb
+  have hsplit := velocityJacobian_density_split (I := I) g hEnorm x v w hperp
+  have hExp : expJacobianDensity (I := I) g hEnorm x (v : E) =
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v) V 1 := by
-    unfold expJacDensity
+    unfold expJacobianDensity
     exact (curveDensity_reindex (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
       (fun i : Fin (Module.finrank ℝ E) =>
         intrinsicJacobi (I := I) g hEnorm x v (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) 1 e).symm
@@ -449,9 +449,9 @@ theorem expJacDensity_eq_ncd0_mul_transverse
       exact abs_ne_zero.mpr ((modelBasisFor B).isUnit_det B).ne_zero
     have hV : curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v) V 1 =
         curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
-            (velJacFrame (I := I) g hEnorm x v w) 1 / |C.det| := by
+            (velocityJacobianFrame (I := I) g hEnorm x v w) 1 / |C.det| := by
       have hA : curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
-            (velJacFrame (I := I) g hEnorm x v w) 1 =
+            (velocityJacobianFrame (I := I) g hEnorm x v w) 1 =
           |C.det| * curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v) V 1 := by
         simpa [mul_comm] using hrecomb'
       exact (eq_div_iff hdet_ne).mpr (by rw [mul_comm]; exact hA.symm)
@@ -463,13 +463,13 @@ theorem expJacDensity_eq_ncd0_mul_transverse
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem transverseDensity_le_hyp
+theorem transverseDensity_le_hyperbolic
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {v : TangentSpace I x}
-    (hv : v ∈ SegDom (I := I) g hEnorm x) (hvne : v ≠ 0)
+    (hv : v ∈ SegmentDom (I := I) g hEnorm x) (hvne : v ≠ 0)
     (w : Fin (Module.finrank ℝ E - 1) → TangentSpace I x)
     (hON : ∀ i j, g.inner x (w i) (w j) = if i = j then 1 else 0)
     (hperp : ∀ i, g.inner x v (w i) = 0)
@@ -479,28 +479,28 @@ theorem transverseDensity_le_hyp
     ∀ t ∈ Set.Ioo (0 : ℝ) 1,
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) t ≤
-        hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) t := by
+        hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) t := by
   have hno : ∀ t ∈ Set.Ioo (0 : ℝ) 1,
       ¬ IsConjVec (I := I) g hEnorm x ((t • v : TangentSpace I x) : E) :=
-    fun t ht => segDom_not_conj (I := I) g hEnorm x hv ht
-  have hanti := intrRatioOfFrame (I := I) g hEnorm x v q 1 hq hd (g.pos x v hvne)
+    fun t ht => segmentDom_not_conj (I := I) g hEnorm x hv ht
+  have hanti := intrinsicRatioOfFrame (I := I) g hEnorm x v q 1 hq hd (g.pos x v hvne)
     w hON hperp hno hRic
   have hlim := poleLimit (I := I) g hEnorm x v q hq w hON
   intro t ht
-  have hpos : 0 < hypDensity (q * Real.sqrt (g.inner x v v))
+  have hpos : 0 < hyperbolicDensity (q * Real.sqrt (g.inner x v v))
       (Module.finrank ℝ E - 1) t :=
-    hypDensity_pos (mul_nonneg hq (Real.sqrt_nonneg _)) ht.1
+    hyperbolicDensity_pos (mul_nonneg hq (Real.sqrt_nonneg _)) ht.1
   have hRatioLE :
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) t /
-        hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) t ≤ 1 := by
+        hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) t ≤ 1 := by
     have hev : ∀ᶠ s in 𝓝[>] (0 : ℝ),
         curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
             (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) t /
-          hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) t ≤
+          hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) t ≤
           curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
               (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) s /
-            hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) s := by
+            hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) s := by
       filter_upwards [Ioo_mem_nhdsGT ht.1] with s hs
       have hsb : s ∈ Set.Ioo (0 : ℝ) 1 := ⟨hs.1, hs.2.trans ht.2⟩
       exact hanti hsb ht hs.2.le
@@ -772,13 +772,13 @@ theorem curveDensity_jacobiFrame_continuousAt
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma transverseDensity_le_hyp_at_one
+private lemma transverseDensity_le_hyperbolic_at_one
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {v : TangentSpace I x}
-    (hv : v ∈ SegDom (I := I) g hEnorm x) (hvne : v ≠ 0)
+    (hv : v ∈ SegmentDom (I := I) g hEnorm x) (hvne : v ≠ 0)
     (w : Fin (Module.finrank ℝ E - 1) → TangentSpace I x)
     (hON : ∀ i j, g.inner x (w i) (w j) = if i = j then 1 else 0)
     (hperp : ∀ i, g.inner x v (w i) = 0)
@@ -787,73 +787,73 @@ private lemma transverseDensity_le_hyp_at_one
       (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2))) :
     curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) 1 ≤
-        hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
+        hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
   have hwin : ∀ t ∈ Set.Ioo (0 : ℝ) 1,
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) t ≤
-        hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) t :=
-    transverseDensity_le_hyp (I := I) g hEnorm x hv hvne w hON hperp q hq hd hRic
+        hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) t :=
+    transverseDensity_le_hyperbolic (I := I) g hEnorm x hv hvne w hON hperp q hq hd hRic
   set ℓ : ℝ := Real.sqrt (g.inner x v v) with hℓ
   have hqℓ : 0 ≤ q * ℓ := mul_nonneg hq (Real.sqrt_nonneg _)
-  have hpos : 0 < hypDensity (q * ℓ) (Module.finrank ℝ E - 1) 1 :=
-    hypDensity_pos hqℓ (by norm_num)
+  have hpos : 0 < hyperbolicDensity (q * ℓ) (Module.finrank ℝ E - 1) 1 :=
+    hyperbolicDensity_pos hqℓ (by norm_num)
   have hcontNum : ContinuousAt (fun t : ℝ =>
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) t) 1 :=
     curveDensity_jacobiFrame_continuousAt (I := I) g hEnorm x v w 1
   have hcontDen : ContinuousAt (fun t : ℝ =>
-      hypDensity (q * ℓ) (Module.finrank ℝ E - 1) t) 1 :=
-    (hypDen_continuous (q * ℓ) (Module.finrank ℝ E - 1)).continuousAt
+      hyperbolicDensity (q * ℓ) (Module.finrank ℝ E - 1) t) 1 :=
+    (hyperbolicDen_continuous (q * ℓ) (Module.finrank ℝ E - 1)).continuousAt
   have hratio_cont : ContinuousAt (fun t : ℝ =>
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) t /
-        hypDensity (q * ℓ) (Module.finrank ℝ E - 1) t) 1 := by
+        hyperbolicDensity (q * ℓ) (Module.finrank ℝ E - 1) t) 1 := by
     exact hcontNum.div hcontDen hpos.ne'
   have hlim : Tendsto
       (fun t : ℝ => curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) t /
-        hypDensity (q * ℓ) (Module.finrank ℝ E - 1) t)
+        hyperbolicDensity (q * ℓ) (Module.finrank ℝ E - 1) t)
       (𝓝[<] (1 : ℝ))
       (𝓝 (curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) 1 /
-        hypDensity (q * ℓ) (Module.finrank ℝ E - 1) 1)) := by
+        hyperbolicDensity (q * ℓ) (Module.finrank ℝ E - 1) 1)) := by
     simpa [hℓ] using hratio_cont.continuousWithinAt.tendsto
   have hev : ∀ᶠ t in 𝓝[<] (1 : ℝ),
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) t /
-        hypDensity (q * ℓ) (Module.finrank ℝ E - 1) t ≤ 1 := by
+        hyperbolicDensity (q * ℓ) (Module.finrank ℝ E - 1) t ≤ 1 := by
     filter_upwards [Ioo_mem_nhdsLT (by norm_num : (0 : ℝ) < 1)] with t ht
     have htwin : t ∈ Set.Ioo (0 : ℝ) 1 := ht
     have h1 : curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i => intrinsicJacobi (I := I) g hEnorm x v (w i)) t ≤
-        hypDensity (q * ℓ) (Module.finrank ℝ E - 1) t := by
+        hyperbolicDensity (q * ℓ) (Module.finrank ℝ E - 1) t := by
       simpa [hℓ] using hwin t htwin
-    have hpt : 0 < hypDensity (q * ℓ) (Module.finrank ℝ E - 1) t :=
-      hypDensity_pos hqℓ ht.1
+    have hpt : 0 < hyperbolicDensity (q * ℓ) (Module.finrank ℝ E - 1) t :=
+      hyperbolicDensity_pos hqℓ ht.1
     exact (div_le_one hpt).mpr h1
   have hc := le_of_tendsto hlim hev
   rwa [div_le_one hpos] at hc
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJacDensity_le_of_perpOrthonormalFrame
+theorem expJacobianDensity_le_of_perpOrthonormalFrame
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {v : TangentSpace I x}
-    (hv : v ∈ SegDom (I := I) g hEnorm x) (hvne : v ≠ 0)
+    (hv : v ∈ SegmentDom (I := I) g hEnorm x) (hvne : v ≠ 0)
     (w : Fin (Module.finrank ℝ E - 1) → TangentSpace I x)
     (hON : ∀ i j, g.inner x (w i) (w j) = if i = j then 1 else 0)
     (hperp : ∀ i, g.inner x v (w i) = 0)
     (q : ℝ) (hq : 0 ≤ q) (hd : 0 < Module.finrank ℝ E - 1)
     (hRic : RicciBoundedBelow (I := I) g
       (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2))) :
-    expJacDensity (I := I) g hEnorm x (v : E) ≤
+    expJacobianDensity (I := I) g hEnorm x (v : E) ≤
       normalChartDensity (I := I) g x 0 *
-        hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
-  have hfac := expJacDensity_eq_ncd0_mul_transverse (I := I) g hEnorm x hvne w hON hperp
-  have hT := transverseDensity_le_hyp_at_one (I := I) g hEnorm x hv hvne w hON hperp q hq hd hRic
+        hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
+  have hfac := expJacobianDensity_eq_ncd0_mul_transverse (I := I) g hEnorm x hvne w hON hperp
+  have hT := transverseDensity_le_hyperbolic_at_one (I := I) g hEnorm x hv hvne w hON hperp q hq hd hRic
   have hncd : 0 ≤ normalChartDensity (I := I) g x 0 := by
     rw [normalChartDensity, paramDensity_apply]
     exact Real.sqrt_nonneg _
@@ -862,58 +862,58 @@ theorem expJacDensity_le_of_perpOrthonormalFrame
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJacDensity_le
+theorem expJacobianDensity_le
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {v : TangentSpace I x}
-    (hv : v ∈ SegDom (I := I) g hEnorm x) (hvne : v ≠ 0)
+    (hv : v ∈ SegmentDom (I := I) g hEnorm x) (hvne : v ≠ 0)
     (q : ℝ) (hq : 0 ≤ q) (hd : 0 < Module.finrank ℝ E - 1)
     (hRic : RicciBoundedBelow (I := I) g
       (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2))) :
-    expJacDensity (I := I) g hEnorm x (v : E) ≤
+    expJacobianDensity (I := I) g hEnorm x (v : E) ≤
       normalChartDensity (I := I) g x 0 *
-        hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
+        hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
   obtain ⟨w, hON, hperp'⟩ :=
     exists_perp_pos (I := I) g x v (g.pos x v hvne)
   have hperp : ∀ i, g.inner x v (w i) = 0 := by
     intro i
     rw [← g.symm x (w i) v]
     exact hperp' i
-  exact expJacDensity_le_of_perpOrthonormalFrame (I := I) g hEnorm x hv hvne w hON hperp
+  exact expJacobianDensity_le_of_perpOrthonormalFrame (I := I) g hEnorm x hv hvne w hON hperp
     q hq hd hRic
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma hypSn_scale_one (q r : ℝ) : r * hypSn (q * r) 1 = hypSn q r := by
+private lemma hyperbolicSn_scale_one (q r : ℝ) : r * hyperbolicSn (q * r) 1 = hyperbolicSn q r := by
   by_cases hq : q = 0
   · subst q
-    simp [hypSn]
+    simp [hyperbolicSn]
   · by_cases hr : r = 0
     · subst r
-      simp [hypSn]
-    · rw [hypSn, hypSn]
+      simp [hyperbolicSn]
+    · rw [hyperbolicSn, hyperbolicSn]
       have hqr : q * r ≠ 0 := mul_ne_zero hq hr
       rw [if_neg hq, if_neg hqr]
       field_simp
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma hypDensity_scale_one (q r : ℝ) (d : ℕ) :
-    r ^ d * hypDensity (q * r) d 1 = hypDensity q d r := by
-  simp only [hypDensity]
-  rw [← mul_pow, hypSn_scale_one]
+private lemma hyperbolicDensity_scale_one (q r : ℝ) (d : ℕ) :
+    r ^ d * hyperbolicDensity (q * r) d 1 = hyperbolicDensity q d r := by
+  simp only [hyperbolicDensity]
+  rw [← mul_pow, hyperbolicSn_scale_one]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma hypDensity_scaled_nonneg {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) (d : ℕ) :
-    0 ≤ hypDensity (q * r) d 1 := by
+private lemma hyperbolicDensity_scaled_nonneg {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) (d : ℕ) :
+    0 ≤ hyperbolicDensity (q * r) d 1 := by
   have hqr : 0 ≤ q * r := mul_nonneg hq hr.le
-  have hsn : 0 ≤ hypSn (q * r) 1 := by
+  have hsn : 0 ≤ hyperbolicSn (q * r) 1 := by
     by_cases h0 : q * r = 0
-    · simp [hypSn, h0]
-    · exact (hypSn_pos hqr (by norm_num : (0 : ℝ) < 1)).le
+    · simp [hyperbolicSn, h0]
+    · exact (hyperbolicSn_pos hqr (by norm_num : (0 : ℝ) < 1)).le
   exact pow_nonneg hsn d
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -921,8 +921,8 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 private lemma radial_model_lintegral
     (q : ℝ) {d : ℕ} (hq : 0 ≤ q) {R : ℝ} (hR : 0 < R) :
     (∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R, hR⟩ : Ioi (0 : ℝ)),
-        ENNReal.ofReal (hypDensity (q * r.1) d 1) ∂Measure.volumeIoiPow d)
-      = ENNReal.ofReal (hypRadVol q d R) := by
+        ENNReal.ofReal (hyperbolicDensity (q * r.1) d 1) ∂Measure.volumeIoiPow d)
+      = ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
   have hpowMeas : Measurable (fun r : Ioi (0 : ℝ) => ENNReal.ofReal (r.1 ^ d)) :=
     ENNReal.measurable_ofReal.comp (measurable_subtype_coe.pow_const d)
   rw [Measure.volumeIoiPow]
@@ -931,32 +931,32 @@ private lemma radial_model_lintegral
   · have hmul :
         (∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R, hR⟩ : Ioi (0 : ℝ)),
             ((fun s : Ioi (0 : ℝ) => ENNReal.ofReal (s.1 ^ d)) *
-              (fun s : Ioi (0 : ℝ) => ENNReal.ofReal (hypDensity (q * s.1) d 1))) r
+              (fun s : Ioi (0 : ℝ) => ENNReal.ofReal (hyperbolicDensity (q * s.1) d 1))) r
             ∂Measure.comap Subtype.val volume)
       = ∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R, hR⟩ : Ioi (0 : ℝ)),
-          ENNReal.ofReal (hypDensity q d r.1) ∂Measure.comap Subtype.val volume := by
+          ENNReal.ofReal (hyperbolicDensity q d r.1) ∂Measure.comap Subtype.val volume := by
       apply setLIntegral_congr_fun measurableSet_Iic
       intro r _hr
       rw [Pi.mul_apply,
         ← ENNReal.ofReal_mul (pow_nonneg r.2.le d)]
       congr 1
-      exact hypDensity_scale_one q r.1 d
+      exact hyperbolicDensity_scale_one q r.1 d
     rw [hmul]
     rw [setLIntegral_subtype measurableSet_Ioi (Iic (⟨R, hR⟩ : Ioi (0 : ℝ)))
-      (fun t : Real => ENNReal.ofReal (hypDensity q d t))]
+      (fun t : Real => ENNReal.ofReal (hyperbolicDensity q d t))]
     rw [image_subtype_val_Ioi_Iic]
     rw [← ofReal_integral_eq_lintegral_ofReal]
     · rw [← intervalIntegral.integral_of_le hR.le]
       rfl
-    · exact (hypDen_continuous q d).continuousOn.intervalIntegrable_of_Icc hR.le |>.1
+    · exact (hyperbolicDen_continuous q d).continuousOn.intervalIntegrable_of_Icc hR.le |>.1
     · filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
-      exact (hypDensity_pos hq ht.1).le
+      exact (hyperbolicDensity_pos hq ht.1).le
   · filter_upwards [] with r
     exact ENNReal.ofReal_lt_top
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma hypSn_one_continuous : Continuous (fun q' : ℝ => hypSn q' 1) := by
+private lemma hyperbolicSn_one_continuous : Continuous (fun q' : ℝ => hyperbolicSn q' 1) := by
   rw [continuous_iff_continuousAt]
   intro q₀
   by_cases hq₀ : q₀ = 0
@@ -981,25 +981,25 @@ private lemma hypSn_one_continuous : Continuous (fun q' : ℝ => hypSn q' 1) := 
       rw [hfeq]
       exact hg0
     have hfun : (fun x : ℝ => if x = 0 then 1 else Real.sinh x / x) =ᶠ[𝓝 (0 : ℝ)]
-        (fun x : ℝ => hypSn x 1) := by
+        (fun x : ℝ => hyperbolicSn x 1) := by
       filter_upwards with x
       by_cases hx : x = 0
-      · simp [hypSn, hx]
-      · simp [hypSn, hx]
+      · simp [hyperbolicSn, hx]
+      · simp [hyperbolicSn, hx]
     exact ContinuousAt.congr hg hfun
   · have hc_quot : ContinuousAt (fun q' : ℝ => Real.sinh q' / q') q₀ := by
       exact (Real.continuous_sinh.continuousAt.div continuousAt_id hq₀)
-    have hfun : (fun q' : ℝ => hypSn q' 1) =ᶠ[𝓝 q₀] (fun q' : ℝ => Real.sinh q' / q') := by
+    have hfun : (fun q' : ℝ => hyperbolicSn q' 1) =ᶠ[𝓝 q₀] (fun q' : ℝ => Real.sinh q' / q') := by
       filter_upwards [isOpen_ne.mem_nhds hq₀] with q' hq'ne
-      simp [hypSn, hq'ne]
+      simp [hyperbolicSn, hq'ne]
     exact ContinuousAt.congr hc_quot hfun.symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma hypDensity_scale_continuous (q : ℝ) (d : ℕ) :
-    Continuous (fun r : ℝ => hypDensity (q * r) d 1) := by
-  have h1 : Continuous (fun q' : ℝ => hypDensity q' d 1) := by
-    with_unfolding_all exact hypSn_one_continuous.pow d
+private lemma hyperbolicDensity_scale_continuous (q : ℝ) (d : ℕ) :
+    Continuous (fun r : ℝ => hyperbolicDensity (q * r) d 1) := by
+  have h1 : Continuous (fun q' : ℝ => hyperbolicDensity q' d 1) := by
+    with_unfolding_all exact hyperbolicSn_one_continuous.pow d
   exact h1.comp (continuous_const.mul continuous_id)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -1007,17 +1007,17 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 private lemma ball_model_lintegral
     (q R : ℝ) (hq : 0 ≤ q) (hR : 0 < R) :
     ∫⁻ w in Metric.closedBall (0 : E) R,
-        ENNReal.ofReal (hypDensity (q * ‖w‖) (Module.finrank ℝ E - 1) 1) ∂(modelHaar (E := E))
+        ENNReal.ofReal (hyperbolicDensity (q * ‖w‖) (Module.finrank ℝ E - 1) 1) ∂(modelHaar (E := E))
       = ((modelHaar (E := E)).toSphere Set.univ) *
-          ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
+          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
   classical
   let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
   let d : ℕ := Module.finrank ℝ E - 1
-  let F : E → ℝ≥0∞ := fun w => ENNReal.ofReal (hypDensity (q * ‖w‖) d 1)
+  let F : E → ℝ≥0∞ := fun w => ENNReal.ofReal (hyperbolicDensity (q * ‖w‖) d 1)
   have hFmeas : AEMeasurable F (modelHaar (E := E)) := by
-    have hcont : Continuous (fun w : E => hypDensity (q * ‖w‖) d 1) :=
-      (hypDensity_scale_continuous q d).comp continuous_norm
+    have hcont : Continuous (fun w : E => hyperbolicDensity (q * ‖w‖) d 1) :=
+      (hyperbolicDensity_scale_continuous q d).comp continuous_norm
     exact ENNReal.continuous_ofReal.comp hcont |>.aemeasurable
   have hball_meas : MeasurableSet (Metric.closedBall (0 : E) R) :=
     (Metric.isClosed_closedBall : IsClosed (Metric.closedBall (0 : E) R)).measurableSet
@@ -1031,7 +1031,7 @@ private lemma ball_model_lintegral
           simpa [d] using
             (lintegral_polar (modelHaar (E := E)) ((Metric.closedBall (0 : E) R).indicator F)
               (hFmeas.indicator hball_meas))
-    _ = ∫⁻ u : sphere (0 : E) 1, ENNReal.ofReal (hypRadVol q d R)
+    _ = ∫⁻ u : sphere (0 : E) 1, ENNReal.ofReal (hyperbolicRadialVolume q d R)
           ∂(modelHaar (E := E)).toSphere := by
           apply lintegral_congr
           intro u
@@ -1040,11 +1040,11 @@ private lemma ball_model_lintegral
           have hinner : (∫⁻ r : Ioi (0 : ℝ),
               (Metric.closedBall (0 : E) R).indicator F (r.1 • u.1)
                 ∂(Measure.volumeIoiPow d))
-              = ENNReal.ofReal (hypRadVol q d R) := by
+              = ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
             have hEq : (fun r : Ioi (0 : ℝ) =>
                   (Metric.closedBall (0 : E) R).indicator F (r.1 • u.1))
                 = fun r : Ioi (0 : ℝ) => (Iic (⟨R, hR⟩ : Ioi (0 : ℝ))).indicator
-                    (fun r : Ioi (0 : ℝ) => ENNReal.ofReal (hypDensity (q * r.1) d 1)) r := by
+                    (fun r : Ioi (0 : ℝ) => ENNReal.ofReal (hyperbolicDensity (q * r.1) d 1)) r := by
               funext r
               by_cases hr : r.1 ≤ R
               · have hmem : r ∈ Iic (⟨R, hR⟩ : Ioi (0 : ℝ)) := hr
@@ -1068,7 +1068,7 @@ private lemma ball_model_lintegral
             rw [lintegral_indicator measurableSet_Iic]
             exact radial_model_lintegral q hq hR
           exact hinner
-    _ = ((modelHaar (E := E)).toSphere Set.univ) * ENNReal.ofReal (hypRadVol q d R) := by
+    _ = ((modelHaar (E := E)).toSphere Set.univ) * ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
           rw [lintegral_const, mul_comm]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -1076,8 +1076,8 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 private lemma radial_model_lintegral_scaled
     (q : ℝ) {d : ℕ} (hq : 0 ≤ q) {R c : ℝ} (hR : 0 < R) (hc : 0 < c) :
     (∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R / c, div_pos hR hc⟩ : Ioi (0 : ℝ)),
-        ENNReal.ofReal (hypDensity (q * (r.1 * c)) d 1) ∂Measure.volumeIoiPow d)
-      = ENNReal.ofReal ((c ^ (d + 1))⁻¹ * hypRadVol q d R) := by
+        ENNReal.ofReal (hyperbolicDensity (q * (r.1 * c)) d 1) ∂Measure.volumeIoiPow d)
+      = ENNReal.ofReal ((c ^ (d + 1))⁻¹ * hyperbolicRadialVolume q d R) := by
   have hpowMeas : Measurable (fun r : Ioi (0 : ℝ) => ENNReal.ofReal (r.1 ^ d)) :=
     ENNReal.measurable_ofReal.comp (measurable_subtype_coe.pow_const d)
   rw [Measure.volumeIoiPow]
@@ -1086,10 +1086,10 @@ private lemma radial_model_lintegral_scaled
   · have hmul :
         (∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R / c, div_pos hR hc⟩ : Ioi (0 : ℝ)),
             ((fun s : Ioi (0 : ℝ) => ENNReal.ofReal (s.1 ^ d)) *
-              (fun s : Ioi (0 : ℝ) => ENNReal.ofReal (hypDensity (q * (s.1 * c)) d 1))) r
+              (fun s : Ioi (0 : ℝ) => ENNReal.ofReal (hyperbolicDensity (q * (s.1 * c)) d 1))) r
             ∂Measure.comap Subtype.val volume)
       = ∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R / c, div_pos hR hc⟩ : Ioi (0 : ℝ)),
-          ENNReal.ofReal (r.1 ^ d * hypDensity (q * (r.1 * c)) d 1)
+          ENNReal.ofReal (r.1 ^ d * hyperbolicDensity (q * (r.1 * c)) d 1)
             ∂Measure.comap Subtype.val volume := by
       apply setLIntegral_congr_fun measurableSet_Iic
       intro r _hr
@@ -1097,35 +1097,35 @@ private lemma radial_model_lintegral_scaled
       rw [← ENNReal.ofReal_mul (pow_nonneg r.2.le d)]
     rw [hmul]
     rw [setLIntegral_subtype measurableSet_Ioi (Iic (⟨R / c, div_pos hR hc⟩ : Ioi (0 : ℝ)))
-      (fun t : Real => ENNReal.ofReal (t ^ d * hypDensity (q * (t * c)) d 1))]
+      (fun t : Real => ENNReal.ofReal (t ^ d * hyperbolicDensity (q * (t * c)) d 1))]
     rw [image_subtype_val_Ioi_Iic]
-    have hfi : Integrable (fun x : ℝ => x ^ d * hypDensity (q * (x * c)) d 1)
+    have hfi : Integrable (fun x : ℝ => x ^ d * hyperbolicDensity (q * (x * c)) d 1)
         (volume.restrict (Ioc (0 : ℝ) (R / c))) := by
       have hcont : Continuous
-          (fun x : ℝ => x ^ d * hypDensity (q * (x * c)) d 1) := by
-        have heq : (fun x : ℝ => x ^ d * hypDensity (q * (x * c)) d 1) =
-            (fun x : ℝ => x ^ d * hypDensity ((q * c) * x) d 1) := by
+          (fun x : ℝ => x ^ d * hyperbolicDensity (q * (x * c)) d 1) := by
+        have heq : (fun x : ℝ => x ^ d * hyperbolicDensity (q * (x * c)) d 1) =
+            (fun x : ℝ => x ^ d * hyperbolicDensity ((q * c) * x) d 1) := by
           funext z
           rw [show q * (z * c) = (q * c) * z by ring]
         rw [heq]
-        exact (continuous_pow d).mul (hypDensity_scale_continuous (q * c) d)
+        exact (continuous_pow d).mul (hyperbolicDensity_scale_continuous (q * c) d)
       exact (hcont.continuousOn.intervalIntegrable_of_Icc (div_pos hR hc).le).1
     have hnn : 0 ≤ᶠ[ae (volume.restrict (Ioc (0 : ℝ) (R / c)))]
-        (fun x : ℝ => x ^ d * hypDensity (q * (x * c)) d 1) := by
+        (fun x : ℝ => x ^ d * hyperbolicDensity (q * (x * c)) d 1) := by
       filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
       exact mul_nonneg (pow_nonneg ht.1.le d)
-        (hypDensity_scaled_nonneg hq (mul_pos ht.1 hc) d)
+        (hyperbolicDensity_scaled_nonneg hq (mul_pos ht.1 hc) d)
     have hbridge :
-        ENNReal.ofReal (∫ x in Ioc (0 : ℝ) (R / c), x ^ d * hypDensity (q * (x * c)) d 1 ∂volume)
+        ENNReal.ofReal (∫ x in Ioc (0 : ℝ) (R / c), x ^ d * hyperbolicDensity (q * (x * c)) d 1 ∂volume)
           = ∫⁻ x in Ioc (0 : ℝ) (R / c),
-            ENNReal.ofReal (x ^ d * hypDensity (q * (x * c)) d 1) ∂volume := by
+            ENNReal.ofReal (x ^ d * hyperbolicDensity (q * (x * c)) d 1) ∂volume := by
       exact (ofReal_integral_eq_lintegral_ofReal hfi hnn)
     rw [← hbridge]
-    · have hsub : ∫ t in (0 : ℝ)..(R / c), t ^ d * hypDensity (q * (t * c)) d 1
-          = (c ^ (d + 1))⁻¹ * ∫ s in (0 : ℝ)..R, s ^ d * hypDensity (q * s) d 1 := by
-        let g : ℝ → ℝ := fun s => s ^ d * hypDensity (q * s) d 1 * (c ^ (d + 1))⁻¹
+    · have hsub : ∫ t in (0 : ℝ)..(R / c), t ^ d * hyperbolicDensity (q * (t * c)) d 1
+          = (c ^ (d + 1))⁻¹ * ∫ s in (0 : ℝ)..R, s ^ d * hyperbolicDensity (q * s) d 1 := by
+        let g : ℝ → ℝ := fun s => s ^ d * hyperbolicDensity (q * s) d 1 * (c ^ (d + 1))⁻¹
         have hcomp : ∀ t ∈ Set.uIcc (0 : ℝ) (R / c),
-            (g ∘ fun x : ℝ => c * x) t * c = t ^ d * hypDensity (q * (t * c)) d 1 := by
+            (g ∘ fun x : ℝ => c * x) t * c = t ^ d * hyperbolicDensity (q * (t * c)) d 1 := by
           intro t ht
           dsimp [g]
           have hpow : (c * t) ^ d * (c ^ (d + 1))⁻¹ * c = t ^ d := by
@@ -1133,9 +1133,9 @@ private lemma radial_model_lintegral_scaled
             field_simp [hc.ne']
             ring
           calc
-            (c * t) ^ d * hypDensity (q * (c * t)) d 1 * (c ^ (d + 1))⁻¹ * c
-                = ((c * t) ^ d * (c ^ (d + 1))⁻¹ * c) * hypDensity (q * (c * t)) d 1 := by ring
-            _ = t ^ d * hypDensity (q * (t * c)) d 1 := by
+            (c * t) ^ d * hyperbolicDensity (q * (c * t)) d 1 * (c ^ (d + 1))⁻¹ * c
+                = ((c * t) ^ d * (c ^ (d + 1))⁻¹ * c) * hyperbolicDensity (q * (c * t)) d 1 := by ring
+            _ = t ^ d * hyperbolicDensity (q * (t * c)) d 1 := by
                 rw [hpow]
                 congr 1
                 congr 1
@@ -1147,35 +1147,35 @@ private lemma radial_model_lintegral_scaled
           ring
         have hgcont : Continuous g := by
           dsimp [g]
-          exact (((continuous_pow d).mul (hypDensity_scale_continuous q d)).mul
+          exact (((continuous_pow d).mul (hyperbolicDensity_scale_continuous q d)).mul
             continuous_const)
         have hsubst := intervalIntegral.integral_comp_mul_deriv hderiv
           (continuous_const.continuousOn : ContinuousOn (fun _ : ℝ => c)
             (Set.uIcc (0 : ℝ) (R / c))) hgcont
         calc
-          ∫ t in (0 : ℝ)..(R / c), t ^ d * hypDensity (q * (t * c)) d 1
+          ∫ t in (0 : ℝ)..(R / c), t ^ d * hyperbolicDensity (q * (t * c)) d 1
               = ∫ t in (0 : ℝ)..(R / c), (g ∘ fun x : ℝ => c * x) t * c := by
                 refine intervalIntegral.integral_congr ?_
                 intro t ht
                 exact (hcomp t ht).symm
           _ = ∫ s in (0 : ℝ)..R, g s := by
                 simpa [mul_div_cancel₀ R hc.ne'] using hsubst
-          _ = (c ^ (d + 1))⁻¹ * ∫ s in (0 : ℝ)..R, s ^ d * hypDensity (q * s) d 1 := by
+          _ = (c ^ (d + 1))⁻¹ * ∫ s in (0 : ℝ)..R, s ^ d * hyperbolicDensity (q * s) d 1 := by
                 dsimp [g]
                 rw [← intervalIntegral.integral_const_mul (r := (c ^ (d + 1))⁻¹)
-                  (f := fun s : ℝ => s ^ d * hypDensity (q * s) d 1)]
+                  (f := fun s : ℝ => s ^ d * hyperbolicDensity (q * s) d 1)]
                 refine intervalIntegral.integral_congr ?_
                 intro s hs
                 ring
       rw [← intervalIntegral.integral_of_le (div_pos hR hc).le]
       rw [hsub]
       congr 1
-      have hrad : ∫ s in (0 : ℝ)..R, s ^ d * hypDensity (q * s) d 1 = hypRadVol q d R := by
-        change ∫ s in (0 : ℝ)..R, s ^ d * hypDensity (q * s) d 1 =
-          ∫ s in (0 : ℝ)..R, hypDensity q d s
+      have hrad : ∫ s in (0 : ℝ)..R, s ^ d * hyperbolicDensity (q * s) d 1 = hyperbolicRadialVolume q d R := by
+        change ∫ s in (0 : ℝ)..R, s ^ d * hyperbolicDensity (q * s) d 1 =
+          ∫ s in (0 : ℝ)..R, hyperbolicDensity q d s
         refine intervalIntegral.integral_congr ?_
         intro s hs
-        exact hypDensity_scale_one q s d
+        exact hyperbolicDensity_scale_one q s d
       rw [hrad]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -1183,31 +1183,31 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 private lemma radial_model_lintegral_scaled_mul
     (q : ℝ) {d : ℕ} (hq : 0 ≤ q) {R c : ℝ} (hR : 0 < R) (hc : 0 < c) {A : ℝ} (hA : 0 ≤ A) :
     (∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R / c, div_pos hR hc⟩ : Ioi (0 : ℝ)),
-        ENNReal.ofReal (A * hypDensity (q * (r.1 * c)) d 1) ∂Measure.volumeIoiPow d)
-      = ENNReal.ofReal (A * (c ^ (d + 1))⁻¹ * hypRadVol q d R) := by
+        ENNReal.ofReal (A * hyperbolicDensity (q * (r.1 * c)) d 1) ∂Measure.volumeIoiPow d)
+      = ENNReal.ofReal (A * (c ^ (d + 1))⁻¹ * hyperbolicRadialVolume q d R) := by
   have hmeas : Measurable (fun r : Ioi (0 : ℝ) => ENNReal.ofReal
-      (hypDensity (q * (r.1 * c)) d 1)) := by
-    have hc0 : Continuous (fun t : ℝ => hypDensity (q * (t * c)) d 1) := by
-      have hf : Continuous (fun t : ℝ => hypDensity ((q * c) * t) d 1) :=
-        hypDensity_scale_continuous (q * c) d
+      (hyperbolicDensity (q * (r.1 * c)) d 1)) := by
+    have hc0 : Continuous (fun t : ℝ => hyperbolicDensity (q * (t * c)) d 1) := by
+      have hf : Continuous (fun t : ℝ => hyperbolicDensity ((q * c) * t) d 1) :=
+        hyperbolicDensity_scale_continuous (q * c) d
       simpa [mul_assoc, mul_comm, mul_left_comm] using hf
     exact ENNReal.measurable_ofReal.comp ((hc0.measurable).comp measurable_subtype_coe)
   calc
     ∫⁻ r in Iic (⟨R / c, div_pos hR hc⟩ : Ioi (0 : ℝ)),
-        ENNReal.ofReal (A * hypDensity (q * (r.1 * c)) d 1)
+        ENNReal.ofReal (A * hyperbolicDensity (q * (r.1 * c)) d 1)
         ∂(Measure.volumeIoiPow d)
         = ENNReal.ofReal A *
           ∫⁻ r in Iic (⟨R / c, div_pos hR hc⟩ : Ioi (0 : ℝ)),
-            ENNReal.ofReal (hypDensity (q * (r.1 * c)) d 1)
+            ENNReal.ofReal (hyperbolicDensity (q * (r.1 * c)) d 1)
             ∂(Measure.volumeIoiPow d) := by
           rw [← lintegral_const_mul (ENNReal.ofReal A) hmeas]
           apply lintegral_congr
           intro r
           rw [← ENNReal.ofReal_mul hA]
     _ = ENNReal.ofReal A *
-        ENNReal.ofReal ((c ^ (d + 1))⁻¹ * hypRadVol q d R) := by
+        ENNReal.ofReal ((c ^ (d + 1))⁻¹ * hyperbolicRadialVolume q d R) := by
           rw [radial_model_lintegral_scaled (d := d) q hq hR hc]
-    _ = ENNReal.ofReal (A * (c ^ (d + 1))⁻¹ * hypRadVol q d R) := by
+    _ = ENNReal.ofReal (A * (c ^ (d + 1))⁻¹ * hyperbolicRadialVolume q d R) := by
           rw [← ENNReal.ofReal_mul hA]
           rw [← mul_assoc]
 
@@ -1219,30 +1219,30 @@ theorem gBall_model_int
     (x : M) (q R : ℝ) (hq : 0 ≤ q) (hR : 0 < R) :
     ∫⁻ v in closedGBall g x R,
         ENNReal.ofReal (normalChartDensity g x 0 *
-          hypDensity (q * Real.sqrt (g.inner x (show TangentSpace I x from v)
+          hyperbolicDensity (q * Real.sqrt (g.inner x (show TangentSpace I x from v)
             (show TangentSpace I x from v))) (Module.finrank ℝ E - 1) 1)
       ∂(modelHaar (E := E))
     = (∫⁻ θ : sphere (0 : E) 1,
           ENNReal.ofReal (normalChartDensity g x 0 *
             (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
           ∂(modelHaar (E := E)).toSphere)
-      * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
+      * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
   classical
   let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
   let d : ℕ := Module.finrank ℝ E - 1
   let F : E → ℝ≥0∞ := fun v => ENNReal.ofReal (normalChartDensity g x 0 *
-    hypDensity (q * Real.sqrt (g.inner x (show TangentSpace I x from v)
+    hyperbolicDensity (q * Real.sqrt (g.inner x (show TangentSpace I x from v)
       (show TangentSpace I x from v))) d 1)
   have hFmeas : AEMeasurable F (modelHaar (E := E)) := by
     have hcont1 : Continuous (fun v : E => Real.sqrt (g.inner x
         (show TangentSpace I x from v) (show TangentSpace I x from v))) := by
       exact (continuous_sqrt_gInner_self (I := I) g x).comp continuous_id
-    have hcont : Continuous (fun v : E => hypDensity (q *
+    have hcont : Continuous (fun v : E => hyperbolicDensity (q *
         Real.sqrt (g.inner x (show TangentSpace I x from v) (show TangentSpace I x from v))) d 1) :=
-      (hypDensity_scale_continuous q d).comp hcont1
+      (hyperbolicDensity_scale_continuous q d).comp hcont1
     have hcd : Continuous (fun v : E => normalChartDensity g x 0 *
-        hypDensity (q * Real.sqrt (g.inner x (show TangentSpace I x from v)
+        hyperbolicDensity (q * Real.sqrt (g.inner x (show TangentSpace I x from v)
           (show TangentSpace I x from v))) d 1) :=
       continuous_const.mul hcont
     exact ENNReal.continuous_ofReal.comp hcd |>.aemeasurable
@@ -1262,7 +1262,7 @@ theorem gBall_model_int
           ENNReal.ofReal (normalChartDensity g x 0 *
             (Real.sqrt (g.inner x u.1 u.1) ^ (Module.finrank ℝ E))⁻¹)
           ∂(modelHaar (E := E)).toSphere)
-      * ENNReal.ofReal (hypRadVol q d R) := by
+      * ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
           have hd1 : d + 1 = Module.finrank ℝ E := by
             dsimp [d]
             exact Nat.sub_add_cancel (Nat.succ_le_of_lt
@@ -1274,7 +1274,7 @@ theorem gBall_model_int
               (∫⁻ r : Ioi (0 : ℝ), (closedGBall g x R).indicator F (r.1 • u.1)
                 ∂(Measure.volumeIoiPow d))
               = ENNReal.ofReal (normalChartDensity g x 0 *
-                  (Real.sqrt (g.inner x u.1 u.1) ^ (d + 1))⁻¹ * hypRadVol q d R) := by
+                  (Real.sqrt (g.inner x u.1 u.1) ^ (d + 1))⁻¹ * hyperbolicRadialVolume q d R) := by
             have hne : u.1 ≠ 0 := by
               intro h
               have hu := u.2
@@ -1286,7 +1286,7 @@ theorem gBall_model_int
                 = fun r : Ioi (0 : ℝ) => (Iic (⟨R / Real.sqrt (g.inner x u.1 u.1),
                     div_pos hR hc⟩ : Ioi (0 : ℝ))).indicator
                       (fun r : Ioi (0 : ℝ) => ENNReal.ofReal (normalChartDensity g x 0 *
-                        hypDensity (q * (r.1 * Real.sqrt (g.inner x u.1 u.1))) d 1)) r := by
+                        hyperbolicDensity (q * (r.1 * Real.sqrt (g.inner x u.1 u.1))) d 1)) r := by
               funext r
               by_cases hr : r.1 * Real.sqrt (g.inner x u.1 u.1) ≤ R
               · have hmem : r ∈ Iic (⟨R / Real.sqrt (g.inner x u.1 u.1),
@@ -1366,14 +1366,14 @@ theorem gBall_model_int
                   ∂(Measure.volumeIoiPow d) ∂(modelHaar (E := E)).toSphere
                 = ∫⁻ u : sphere (0 : E) 1,
                     ENNReal.ofReal (normalChartDensity g x 0 *
-                      (Real.sqrt (g.inner x u.1 u.1) ^ (d + 1))⁻¹ * hypRadVol q d R)
+                      (Real.sqrt (g.inner x u.1 u.1) ^ (d + 1))⁻¹ * hyperbolicRadialVolume q d R)
                     ∂(modelHaar (E := E)).toSphere := by
                   apply lintegral_congr
                   intro u
                   exact hinner u
             _ = ∫⁻ u : sphere (0 : E) 1,
                   ENNReal.ofReal (normalChartDensity g x 0 *
-                    (Real.sqrt (g.inner x u.1 u.1) ^ (Module.finrank ℝ E))⁻¹ * hypRadVol q d R)
+                    (Real.sqrt (g.inner x u.1 u.1) ^ (Module.finrank ℝ E))⁻¹ * hyperbolicRadialVolume q d R)
                   ∂(modelHaar (E := E)).toSphere := by
                   apply lintegral_congr
                   intro u
@@ -1382,28 +1382,28 @@ theorem gBall_model_int
                     ENNReal.ofReal (normalChartDensity g x 0 *
                       (Real.sqrt (g.inner x u.1 u.1) ^ (Module.finrank ℝ E))⁻¹)
                     ∂(modelHaar (E := E)).toSphere)
-                  * ENNReal.ofReal (hypRadVol q d R) := by
+                  * ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
                   have hsplit : (fun u : sphere (0 : E) 1 => ENNReal.ofReal
                     (normalChartDensity g x 0 *
-                        (Real.sqrt (g.inner x u.1 u.1) ^ (Module.finrank ℝ E))⁻¹ * hypRadVol q d R))
+                        (Real.sqrt (g.inner x u.1 u.1) ^ (Module.finrank ℝ E))⁻¹ * hyperbolicRadialVolume q d R))
                       = fun u => ENNReal.ofReal (normalChartDensity g x 0 *
                         (Real.sqrt (g.inner x u.1 u.1) ^ (Module.finrank ℝ E))⁻¹) *
-                          ENNReal.ofReal (hypRadVol q d R) := by
+                          ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
                     funext u
                     rw [← ENNReal.ofReal_mul (mul_nonneg hcd0
                       (inv_nonneg.mpr (pow_nonneg (Real.sqrt_nonneg _) _))) ]
                   rw [hsplit]
-                  simpa using (lintegral_mul_const (r := ENNReal.ofReal (hypRadVol q d R)) hfmeas)
+                  simpa using (lintegral_mul_const (r := ENNReal.ofReal (hyperbolicRadialVolume q d R)) hfmeas)
     _ = (∫⁻ θ : sphere (0 : E) 1,
           ENNReal.ofReal (normalChartDensity g x 0 *
             (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
           ∂(modelHaar (E := E)).toSphere)
-      * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
+      * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
           rfl
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma segBall_vol_le_explicit
+private lemma segmentBall_vol_le_explicit
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -1418,53 +1418,53 @@ private lemma segBall_vol_le_explicit
           ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
             (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
           ∂(modelHaar (E := E)).toSphere)
-        * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
+        * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
   classical
   let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
-  let K : Set E := {v : E | (show TangentSpace I x from v) ∈ SegDom (I := I) g hEnorm x} ∩
+  let K : Set E := {v : E | (show TangentSpace I x from v) ∈ SegmentDom (I := I) g hEnorm x} ∩
     closedGBall g x R
   let F : E → ℝ := fun v => normalChartDensity (I := I) g x 0 *
-    hypDensity (q * Real.sqrt (g.inner x (show TangentSpace I x from v)
+    hyperbolicDensity (q * Real.sqrt (g.inner x (show TangentSpace I x from v)
       (show TangentSpace I x from v))) (Module.finrank ℝ E - 1) 1
-  have hV := segBall_vol_le_int (I := I) g hEnorm x R
+  have hV := segmentBall_vol_le_int (I := I) g hEnorm x R
   have hpoint : ∀ v : E, v ∈ K → v ≠ 0 →
-      expJacDensity (I := I) g hEnorm x v ≤ F v := by
+      expJacobianDensity (I := I) g hEnorm x v ≤ F v := by
     intro v hv hvne
-    exact expJacDensity_le (I := I) g hEnorm x hv.1 hvne q hq hd hRic
+    exact expJacobianDensity_le (I := I) g hEnorm x hv.1 hvne q hq hd hRic
   have hcontG : Continuous (fun v : E => ENNReal.ofReal (F v)) := by
     have hcont1 : Continuous (fun v : E => Real.sqrt (g.inner x
         (show TangentSpace I x from v) (show TangentSpace I x from v))) := by
       exact (continuous_sqrt_gInner_self (I := I) g x).comp continuous_id
-    have hcont : Continuous (fun v : E => hypDensity (q *
+    have hcont : Continuous (fun v : E => hyperbolicDensity (q *
         Real.sqrt (g.inner x (show TangentSpace I x from v)
           (show TangentSpace I x from v))) (Module.finrank ℝ E - 1) 1) :=
-      (hypDensity_scale_continuous q (Module.finrank ℝ E - 1)).comp hcont1
+      (hyperbolicDensity_scale_continuous q (Module.finrank ℝ E - 1)).comp hcont1
     exact ENNReal.continuous_ofReal.comp (continuous_const.mul hcont)
-  have hcontF : Continuous (fun v : E => ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)) :=
-    ENNReal.continuous_ofReal.comp (expJacDensity_continuous (I := I) g hEnorm x)
+  have hcontF : Continuous (fun v : E => ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)) :=
+    ENNReal.continuous_ofReal.comp (expJacobianDensity_continuous (I := I) g hEnorm x)
   have hKmeas : MeasurableSet K := by
-    have h1 : MeasurableSet {v : E | (show TangentSpace I x from v) ∈ SegDom
+    have h1 : MeasurableSet {v : E | (show TangentSpace I x from v) ∈ SegmentDom
       (I := I) g hEnorm x} := by
-      exact (isClosed_segDom (I := I) g hEnorm x).measurableSet.preimage
+      exact (isClosed_segmentDom (I := I) g hEnorm x).measurableSet.preimage
         (by fun_prop : Measurable (fun v : E => (show TangentSpace I x from v)))
     exact h1.inter (isClosed_closedGBall (I := I) g x R).measurableSet
-  have hle_meas : MeasurableSet {v : E | ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ≤
+  have hle_meas : MeasurableSet {v : E | ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ≤
         ENNReal.ofReal (F v)} :=
     (isClosed_le hcontF hcontG).measurableSet
   have hmono : (∫⁻ v in K,
-    ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)))
+    ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)))
       ≤ ∫⁻ v in K, ENNReal.ofReal (F v) ∂(modelHaar (E := E)) := by
     refine lintegral_mono_ae ?_
     rw [ae_restrict_iff hle_meas]
     rw [ae_iff]
-    have hnull : {a : E | ¬ (a ∈ K → ENNReal.ofReal (expJacDensity (I := I) g hEnorm x a) ≤
+    have hnull : {a : E | ¬ (a ∈ K → ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x a) ≤
           ENNReal.ofReal (F a))} ⊆ ({0} : Set E) := by
       intro v hv
-      have hv' : v ∈ K ∧ ¬ (ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ≤
+      have hv' : v ∈ K ∧ ¬ (ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ≤
           ENNReal.ofReal (F v)) := Classical.not_imp.mp hv
       by_contra hv0
-      have hb : expJacDensity (I := I) g hEnorm x v ≤ F v := hpoint v hv'.1 hv0
+      have hb : expJacobianDensity (I := I) g hEnorm x v ≤ F v := hpoint v hv'.1 hv0
       exact hv'.2 (ENNReal.ofReal_le_ofReal hb)
     exact measure_mono_null hnull (measure_singleton (μ := (modelHaar (E := E))) (0 : E))
   have hstep3 : (∫⁻ v in K, ENNReal.ofReal (F v) ∂(modelHaar (E := E)))
@@ -1474,7 +1474,7 @@ private lemma segBall_vol_le_explicit
   calc
     riemannianVolumeMeasure (I := I) (M := M) g
         {y : M | riemannianEDist I x y < ENNReal.ofReal R}
-        ≤ ∫⁻ v in K, ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+        ≤ ∫⁻ v in K, ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
             ∂(modelHaar (E := E)) := by
           simpa [K] using hV
     _ ≤ ∫⁻ v in K, ENNReal.ofReal (F v) ∂(modelHaar (E := E)) := hmono
@@ -1483,12 +1483,12 @@ private lemma segBall_vol_le_explicit
           ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
             (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
           ∂(modelHaar (E := E)).toSphere)
-        * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
+        * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
           simpa [F] using hstep4
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_vol_le [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentBall_vol_le [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -1503,12 +1503,12 @@ theorem segBall_vol_le [ConnectedSpace M] [PseudoEMetricSpace M]
           ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
             (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
           ∂(modelHaar (E := E)).toSphere)
-        * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
-  exact segBall_vol_le_explicit (I := I) g hEnorm x hq hR hd hRic
+        * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R) := by
+  exact segmentBall_vol_le_explicit (I := I) g hEnorm x hq hR hd hRic
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_vol_fin [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentBall_vol_fin [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -1519,37 +1519,37 @@ theorem segBall_vol_fin [ConnectedSpace M] [PseudoEMetricSpace M]
   classical
   let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
-  let K : Set E := {v : E | (show TangentSpace I x from v) ∈ SegDom (I := I) g hEnorm x} ∩
+  let K : Set E := {v : E | (show TangentSpace I x from v) ∈ SegmentDom (I := I) g hEnorm x} ∩
     closedGBall g x R
-  have hV := segBall_vol_le_int (I := I) g hEnorm x R
+  have hV := segmentBall_vol_le_int (I := I) g hEnorm x R
   have hKcomp : IsCompact K := by
-    have hclosed : IsClosed {v : E | (show TangentSpace I x from v) ∈ SegDom
+    have hclosed : IsClosed {v : E | (show TangentSpace I x from v) ∈ SegmentDom
       (I := I) g hEnorm x} := by
       with_unfolding_all exact
-        (isClosed_segDom (I := I) g hEnorm x).preimage continuous_id
+        (isClosed_segmentDom (I := I) g hEnorm x).preimage continuous_id
     exact (isCompact_closedGBall (I := I) g x R).of_isClosed_subset
       (hclosed.inter (isClosed_closedGBall (I := I) g x R))
       (Set.inter_subset_right : K ⊆ closedGBall g x R)
-  have hbdd : ∃ M : ℝ, ∀ v ∈ K, expJacDensity (I := I) g hEnorm x v ≤ M := by
-    have hcont : ContinuousOn (fun v : E => expJacDensity (I := I) g hEnorm x v) K :=
-      (expJacDensity_continuous (I := I) g hEnorm x).continuousOn
-    have himg : IsCompact ((fun v : E => expJacDensity (I := I) g hEnorm x v) '' K) :=
+  have hbdd : ∃ M : ℝ, ∀ v ∈ K, expJacobianDensity (I := I) g hEnorm x v ≤ M := by
+    have hcont : ContinuousOn (fun v : E => expJacobianDensity (I := I) g hEnorm x v) K :=
+      (expJacobianDensity_continuous (I := I) g hEnorm x).continuousOn
+    have himg : IsCompact ((fun v : E => expJacobianDensity (I := I) g hEnorm x v) '' K) :=
       hKcomp.image_of_continuousOn hcont
     obtain ⟨M, hM⟩ := himg.isBounded.exists_norm_le
     refine ⟨M, fun v hv => ?_⟩
-    have hx : expJacDensity (I := I) g hEnorm x v ∈
-        (fun v : E => expJacDensity (I := I) g hEnorm x v) '' K := ⟨v, hv, rfl⟩
-    exact le_trans (le_abs_self _) (hM (expJacDensity (I := I) g hEnorm x v) hx)
+    have hx : expJacobianDensity (I := I) g hEnorm x v ∈
+        (fun v : E => expJacobianDensity (I := I) g hEnorm x v) '' K := ⟨v, hv, rfl⟩
+    exact le_trans (le_abs_self _) (hM (expJacobianDensity (I := I) g hEnorm x v) hx)
   obtain ⟨M, hM⟩ := hbdd
   have hKmeas : MeasurableSet K := hKcomp.measurableSet
   have hpoint : (fun v : E => (K.indicator (fun v : E =>
-        ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v))) v)
+        ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v))) v)
       ≤ (fun v : E => K.indicator (fun _ : E => ENNReal.ofReal M) v) := by
     intro v
     by_cases hv : v ∈ K
     · simp [hv, ENNReal.ofReal_le_ofReal (hM v hv)]
     · simp [hv]
-  have hmono' : (∫⁻ v in K, ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+  have hmono' : (∫⁻ v in K, ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)))
       ≤ ∫⁻ v in K, ENNReal.ofReal M ∂(modelHaar (E := E)) := by
     rw [← lintegral_indicator hKmeas]
@@ -1560,7 +1560,7 @@ theorem segBall_vol_fin [ConnectedSpace M] [PseudoEMetricSpace M]
     setLIntegral_const K (ENNReal.ofReal M)
   have hfin : ENNReal.ofReal M * (modelHaar (E := E)) K < ⊤ :=
     ENNReal.mul_lt_top ENNReal.ofReal_lt_top hKcomp.measure_lt_top
-  have hKfin : (∫⁻ v in K, ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+  have hKfin : (∫⁻ v in K, ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
       ∂(modelHaar (E := E))) < ⊤ :=
     lt_of_le_of_lt hmono' (by rw [hconst]; exact hfin)
   exact lt_of_le_of_lt (by simpa [K] using hV) hKfin
@@ -1615,7 +1615,7 @@ private lemma gUnit_speedSq_one
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-private lemma segDom_ext_dist
+private lemma segmentDom_ext_dist
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -1623,7 +1623,7 @@ private lemma segDom_ext_dist
     (x : M) (v : TangentSpace I x) (hvne : v ≠ 0) (ε : ℝ) (hε : 0 < ε)
     (hseg : (((Real.sqrt (g.inner x v v) + ε) •
         ((Real.sqrt (g.inner x v v))⁻¹ • v) : TangentSpace I x)) ∈
-        SegDom (I := I) g hEnorm x) :
+        SegmentDom (I := I) g hEnorm x) :
     riemannianEDist I x (intrinsicGeodesic (I := I) g hEnorm x
         ((Real.sqrt (g.inner x v v))⁻¹ • v) (Real.sqrt (g.inner x v v) + ε))
       = ENNReal.ofReal (Real.sqrt (g.inner x v v) + ε) := by
@@ -1632,11 +1632,11 @@ private lemma segDom_ext_dist
   have hℓ0 : 0 ≤ ℓ := by
     dsimp [ℓ]
     exact Real.sqrt_nonneg _
-  have hseg' : ((ℓ + ε) • u : TangentSpace I x) ∈ SegDom (I := I) g hEnorm x := by
+  have hseg' : ((ℓ + ε) • u : TangentSpace I x) ∈ SegmentDom (I := I) g hEnorm x := by
     simpa [ℓ, u, smul_smul, mul_assoc] using hseg
   have hmem : (riemannianEDist I x (expMapIntrinsic (I := I) g hEnorm x ((ℓ + ε) • u))).toReal
       = Real.sqrt (g.inner x ((ℓ + ε) • u) ((ℓ + ε) • u)) := by
-    exact ((mem_segDom (I := I) (g := g) (hEnorm := hEnorm) (x := x)
+    exact ((mem_segmentDom (I := I) (g := g) (hEnorm := hEnorm) (x := x)
       (v := ((ℓ + ε) • u : TangentSpace I x))).mp hseg').symm
   have hsqrt : Real.sqrt (g.inner x ((ℓ + ε) • u) ((ℓ + ε) • u)) = ℓ + ε := by
     rw [gInner_smul_self (I := I) g x (ℓ + ε) u]
@@ -1662,22 +1662,22 @@ private lemma segDom_ext_dist
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-private lemma segDom_same_length
+private lemma segmentDom_same_length
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {v w : TangentSpace I x}
-    (hvseg : v ∈ SegDom (I := I) g hEnorm x)
-    (hwseg : w ∈ SegDom (I := I) g hEnorm x)
+    (hvseg : v ∈ SegmentDom (I := I) g hEnorm x)
+    (hwseg : w ∈ SegmentDom (I := I) g hEnorm x)
     (hvw : expMapIntrinsic (I := I) g hEnorm x v = expMapIntrinsic (I := I) g hEnorm x w) :
     Real.sqrt (g.inner x v v) = Real.sqrt (g.inner x w w) := by
   have h1 : Real.sqrt (g.inner x v v)
       = (riemannianEDist I x (expMapIntrinsic (I := I) g hEnorm x v)).toReal :=
-    (mem_segDom (I := I) (g := g) (hEnorm := hEnorm) (x := x) (v := v)).mp hvseg
+    (mem_segmentDom (I := I) (g := g) (hEnorm := hEnorm) (x := x) (v := v)).mp hvseg
   have h2 : Real.sqrt (g.inner x w w)
       = (riemannianEDist I x (expMapIntrinsic (I := I) g hEnorm x w)).toReal :=
-    (mem_segDom (I := I) (g := g) (hEnorm := hEnorm) (x := x) (v := w)).mp hwseg
+    (mem_segmentDom (I := I) (g := g) (hEnorm := hEnorm) (x := x) (v := w)).mp hwseg
   rw [h1, h2]
   congr 1
   rw [hvw]
@@ -1716,14 +1716,14 @@ private lemma expMapIntrinsic_injective_early
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {v w : TangentSpace I x}
-    (hvseg : v ∈ SegDom (I := I) g hEnorm x)
-    (hwseg : w ∈ SegDom (I := I) g hEnorm x)
+    (hvseg : v ∈ SegmentDom (I := I) g hEnorm x)
+    (hwseg : w ∈ SegmentDom (I := I) g hEnorm x)
     (hvne : v ≠ 0) (hwne : w ≠ 0)
     (hvw : expMapIntrinsic (I := I) g hEnorm x v = expMapIntrinsic (I := I) g hEnorm x w)
     {ε : ℝ} (hε : 0 < ε)
     (hext : (((Real.sqrt (g.inner x v v) + ε) •
         ((Real.sqrt (g.inner x v v))⁻¹ • v) : TangentSpace I x)) ∈
-        SegDom (I := I) g hEnorm x) :
+        SegmentDom (I := I) g hEnorm x) :
     v = w := by
   let ℓ : ℝ := Real.sqrt (g.inner x v v)
   have hℓpos : 0 < ℓ := by
@@ -1736,7 +1736,7 @@ private lemma expMapIntrinsic_injective_early
     simpa [u, ℓ] using gUnit_speedSq_one (I := I) g x v hvne
   have hℓw : Real.sqrt (g.inner x w w) = ℓ := by
     dsimp [ℓ]
-    exact (segDom_same_length (I := I) g hEnorm x (v := v) (w := w) hvseg hwseg hvw).symm
+    exact (segmentDom_same_length (I := I) g hEnorm x (v := v) (w := w) hvseg hwseg hvw).symm
   let uw : TangentSpace I x := ℓ⁻¹ • w
   have huw : g.inner x uw uw = 1 := by
     simpa [uw, ← hℓw] using gUnit_speedSq_one (I := I) g x w hwne
@@ -1826,7 +1826,7 @@ private lemma expMapIntrinsic_injective_early
   have hmin : riemannianEDist I (γw 0) (σ ε) = ENNReal.ofReal (ℓ + ε) := by
     have hd : riemannianEDist I x (intrinsicGeodesic (I := I) g hEnorm x u (ε + ℓ))
         = ENNReal.ofReal (ℓ + ε) := by
-      simpa [ℓ, u, add_comm] using segDom_ext_dist (I := I) g hEnorm x v hvne ε hε hext
+      simpa [ℓ, u, add_comm] using segmentDom_ext_dist (I := I) g hEnorm x v hvne ε hε hext
     simpa [σ, hγw0, add_comm] using hd
   have hvel : mfderiv 𝓘(ℝ, ℝ) I γw ℓ (1 : ℝ) = mfderiv 𝓘(ℝ, ℝ) I γv ℓ (1 : ℝ) := by
     have hbm := broken_minimizer_velocity_match (I := I) g hEnorm
@@ -1849,7 +1849,7 @@ private lemma expMapIntrinsic_injective_early
   have hη₂_cont : Continuous η₂ := hγv_cont.comp (by fun_prop)
   have hη0 : η₁ 0 = η₂ 0 := by
     simpa [η₁, η₂] using hγvγw.symm
-  have hηvel : (mfderiv 𝓘(ℝ, ℝ) I η₁ 0 (1 : ℝ) : E) = (mfderiv 𝓘(ℝ, ℝ) I η₂ 0 (1 : ℝ) : E) := by
+  have hηvelocity : (mfderiv 𝓘(ℝ, ℝ) I η₁ 0 (1 : ℝ) : E) = (mfderiv 𝓘(ℝ, ℝ) I η₂ 0 (1 : ℝ) : E) := by
     have h1 : (mfderiv 𝓘(ℝ, ℝ) I η₁ 0 (1 : ℝ) : E)
         = (mfderiv 𝓘(ℝ, ℝ) I γw ℓ (1 : ℝ) : E) := by
       have h := mfderiv_shift_apply (I := I) (γ := γw) hγw_smooth ℓ 0
@@ -1863,7 +1863,7 @@ private lemma expMapIntrinsic_injective_early
     rw [h1, h2]
     exact hvel
   have hηeq : η₁ = η₂ :=
-    isGeodesic_eq_of_initial (I := I) g hη₁_geo hη₂_geo hη₁_cont hη₂_cont hη0 hηvel
+    isGeodesic_eq_of_initial (I := I) g hη₁_geo hη₂_geo hη₁_cont hη₂_cont hη0 hηvelocity
   have hu0 : (u : E) = (uw : E) := by
     have h1 : (mfderiv 𝓘(ℝ, ℝ) I η₁ (-ℓ) (1 : ℝ) : E)
         = (mfderiv 𝓘(ℝ, ℝ) I γw 0 (1 : ℝ) : E) := by
@@ -2094,7 +2094,7 @@ private lemma curveDensity_congr_eval
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private lemma expJacDensity_radial_scaled
+private lemma expJacobianDensity_radial_scaled
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -2106,7 +2106,7 @@ private lemma expJacDensity_radial_scaled
     (r : ℝ) (hr : 0 < r)
     (hLI : LinearIndependent ℝ fun i =>
       intrinsicJacobi (I := I) g hEnorm x u (w i) r) :
-    expJacDensity (I := I) g hEnorm x ((r • u) : E) * r ^ (Module.finrank ℝ E - 1) =
+    expJacobianDensity (I := I) g hEnorm x ((r • u) : E) * r ^ (Module.finrank ℝ E - 1) =
       normalChartDensity (I := I) g x 0 *
         curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
           (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) r := by
@@ -2125,7 +2125,7 @@ private lemma expJacDensity_radial_scaled
     intro hz
     have : r • (u : E) = 0 := by simpa using congrArg (fun v : TangentSpace I x => (v : E)) hz
     exact hu (smul_eq_zero.mp this |>.resolve_left (ne_of_gt hr))
-  have hfac := expJacDensity_eq_ncd0_mul_transverse (I := I) g hEnorm x
+  have hfac := expJacobianDensity_eq_ncd0_mul_transverse (I := I) g hEnorm x
     (v := (r • u : TangentSpace I x)) hvne w hON hperp'
   have hsc : ∀ i,
       (intrinsicJacobi (I := I) g hEnorm x ((r • u : TangentSpace I x)) (w i) 1 : E)
@@ -2180,13 +2180,13 @@ private lemma expJacDensity_radial_scaled
             rw [hbridge]
   have hmult : (r⁻¹ ^ d) * r ^ d = 1 := by
     rw [← mul_pow, inv_mul_cancel₀ (ne_of_gt hr), one_pow]
-  have hmain : expJacDensity (I := I) g hEnorm x ((r • u) : E)
+  have hmain : expJacobianDensity (I := I) g hEnorm x ((r • u) : E)
       = normalChartDensity (I := I) g x 0 *
           ((r⁻¹ ^ d) * curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
             (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) r) := by
     rw [hfac, hC]
   calc
-    expJacDensity (I := I) g hEnorm x ((r • u) : E) * r ^ d
+    expJacobianDensity (I := I) g hEnorm x ((r • u) : E) * r ^ d
         = normalChartDensity (I := I) g x 0 *
             ((r⁻¹ ^ d) * curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x u)
               (fun i => intrinsicJacobi (I := I) g hEnorm x u (w i)) r) * r ^ d := by
@@ -2238,7 +2238,7 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem segmentBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (y : M) ↦ TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -2248,8 +2248,8 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
     riemannianVolumeMeasure (I := I) (M := M) g
         {y : M | riemannianEDist I x y < ENNReal.ofReal R}
       = ∫⁻ v in
-          SegInt (I := I) g hEnorm x ∩ gBall (I := I) g x R,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          SegmentInt (I := I) g hEnorm x ∩ gBall (I := I) g x R,
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
         ∂(modelHaar (E := E)) := by
   classical
   let : Nontrivial E :=
@@ -2258,18 +2258,18 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
   let L : E ≃L[ℝ] E :=
     normalFrame (I := I) (E := E) g x
   let Kc : Set E :=
-    (SegDom (I := I) g hEnorm x : Set E) ∩
+    (SegmentDom (I := I) g hEnorm x : Set E) ∩
       L '' Metric.closedBall (0 : E) R
   let Ki : Set E :=
-    (SegInt (I := I) g hEnorm x : Set E) ∩
+    (SegmentInt (I := I) g hEnorm x : Set E) ∩
       gBall (I := I) g x R
   have hKc : IsCompact Kc := by
     dsimp only [Kc]
     exact
       ((isCompact_closedBall (0 : E) R).image L.continuous).inter_left
-        (isClosed_segDom (I := I) g hEnorm x)
+        (isClosed_segmentDom (I := I) g hEnorm x)
   have hKi : MeasurableSet Ki := by
-    exact (measurableSet_segInt (I := I) g hEnorm x).inter
+    exact (measurableSet_segmentInt (I := I) g hEnorm x).inter
       (measurableSet_gBall (I := I) g x R)
   have hpre :
       L ⁻¹' gBall (I := I) g x R = Metric.ball (0 : E) R := by
@@ -2284,18 +2284,18 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
         L.apply_symm_apply (show E from v)
       rw [hL]
       exact hv.2
-    exact ⟨segInt_subset (I := I) g hEnorm x hv.1,
+    exact ⟨segmentInt_subset (I := I) g hEnorm x hv.1,
       ⟨L.symm v, Metric.ball_subset_closedBall hwopen,
         L.apply_symm_apply v⟩⟩
   have hdiff_sub :
       L ⁻¹' Kc \ L ⁻¹' Ki ⊆
-        L ⁻¹' (SegDom (I := I) g hEnorm x \
-          SegInt (I := I) g hEnorm x) ∪
+        L ⁻¹' (SegmentDom (I := I) g hEnorm x \
+          SegmentInt (I := I) g hEnorm x) ∪
             Metric.sphere (0 : E) R := by
     intro w hw
     rcases hw with ⟨hwc, hwnKi⟩
     change L w ∈ Kc at hwc
-    by_cases hwI : L w ∈ SegInt (I := I) g hEnorm x
+    by_cases hwI : L w ∈ SegmentInt (I := I) g hEnorm x
     · right
       have hwclosed : w ∈ Metric.closedBall (0 : E) R := by
         rcases hwc.2 with ⟨z, hz, hzw⟩
@@ -2317,7 +2317,7 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
       (volume : Measure E) (L ⁻¹' Kc \ L ⁻¹' Ki) = 0 := by
     apply measure_mono_null hdiff_sub
     apply measure_union_null
-    · with_unfolding_all exact segEnd_zero (I := I) (E := E) g hEnorm x
+    · with_unfolding_all exact segmentEnd_zero (I := I) (E := E) g hEnorm x
     · exact Measure.addHaar_sphere (volume : Measure E) (0 : E) R
   have hpre_ae :
       L ⁻¹' Kc =ᵐ[(volume : Measure E)] L ⁻¹' Ki := by
@@ -2326,10 +2326,10 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
     rw [sdiff_eq_empty.mpr (preimage_mono hKiKc), measure_empty]
   have harea :
       (∫⁻ v in Kc,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E))) =
         ∫⁻ v in Ki,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) := by
     calc
       _ = ∫⁻ w in L ⁻¹' Kc,
@@ -2342,7 +2342,7 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
               1)
           ∂(volume : Measure E) := by
         with_unfolding_all exact
-          expJac_normal_int (I := I) (E := E) g hEnorm x Kc
+          expJacobian_normal_int (I := I) (E := E) g hEnorm x Kc
       _ = ∫⁻ w in L ⁻¹' Ki,
           ENNReal.ofReal
             (curveDensity (I := I) g
@@ -2354,10 +2354,10 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
           ∂(volume : Measure E) :=
         setLIntegral_congr hpre_ae
       _ = ∫⁻ v in Ki,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) := by
         with_unfolding_all exact
-          (expJac_normal_int (I := I) (E := E) g hEnorm x Ki).symm
+          (expJacobian_normal_int (I := I) (E := E) g hEnorm x Ki).symm
   have hcover :
       {y : M | riemannianEDist I x y < ENNReal.ofReal R} ⊆
         (fun b : E =>
@@ -2365,7 +2365,7 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
             (show TangentSpace I x from b)) '' Kc := by
     intro y hy
     obtain ⟨v, hv, hexp⟩ :=
-      ball_sub_image_segDom (I := I) g hEnorm x R hy
+      ball_sub_image_segmentDom (I := I) g hEnorm x R hy
     have hwopen : L.symm v ∈ Metric.ball (0 : E) R := by
       rw [← hpre]
       change (show TangentSpace I x from
@@ -2384,8 +2384,8 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
         {y : M | riemannianEDist I x y < ENNReal.ofReal R} := by
     rintro y ⟨v, hv, rfl⟩
     have hvD :
-        v ∈ SegDom (I := I) g hEnorm x :=
-      segInt_subset (I := I) g hEnorm x hv.1
+        v ∈ SegmentDom (I := I) g hEnorm x :=
+      segmentInt_subset (I := I) g hEnorm x hv.1
     have hfin :
         riemannianEDist I x
           (expMapIntrinsic (I := I) g hEnorm x
@@ -2395,13 +2395,13 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
       (expMapIntrinsic (I := I) g hEnorm x
         (show TangentSpace I x from v)) < ENNReal.ofReal R
     rw [← ENNReal.ofReal_toReal hfin,
-      ← (mem_segDom (I := I)).mp hvD]
+      ← (mem_segmentDom (I := I)).mp hvD]
     exact (ENNReal.ofReal_lt_ofReal_iff hR).2 hv.2
   have hKi_inj : Set.InjOn
       (fun b : E =>
         expMapIntrinsic (I := I) g hEnorm x
           (show TangentSpace I x from b)) Ki :=
-    (exp_inj_segInt (I := I) g hEnorm x).mono inter_subset_left
+    (exp_inj_segmentInt (I := I) g hEnorm x).mono inter_subset_left
   apply le_antisymm
   · calc
       riemannianVolumeMeasure (I := I) (M := M) g
@@ -2412,21 +2412,21 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
               (show TangentSpace I x from b)) '' Kc) :=
         measure_mono hcover
       _ ≤ ∫⁻ v in Kc,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) :=
         riemVol_exp_image_le (I := I) g hEnorm x hKc
       _ = ∫⁻ v in Ki,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) :=
         harea
       _ = ∫⁻ v in
-          SegInt (I := I) g hEnorm x ∩ gBall (I := I) g x R,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          SegmentInt (I := I) g hEnorm x ∩ gBall (I := I) g x R,
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E)) := rfl
   · calc
       (∫⁻ v in
-          SegInt (I := I) g hEnorm x ∩ gBall (I := I) g x R,
-          ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+          SegmentInt (I := I) g hEnorm x ∩ gBall (I := I) g x R,
+          ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
           ∂(modelHaar (E := E))) =
         riemannianVolumeMeasure (I := I) (M := M) g
           ((fun b : E =>
@@ -2440,7 +2440,7 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_vol_rel
+theorem segmentBall_vol_rel
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
@@ -2451,8 +2451,8 @@ theorem segBall_vol_rel
       (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2))) :
     riemannianVolumeMeasure (I := I) (M := M) g
           {y : M | riemannianEDist I x y < ENNReal.ofReal R}
-        * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) s)
-      ≤ ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R)
+        * ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) s)
+      ≤ ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank ℝ E - 1) R)
         * riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I x y < ENNReal.ofReal s} := by
   classical
@@ -2471,36 +2471,36 @@ theorem segBall_vol_rel
         intrinsicJacobi (I := I) g hEnorm x (L w) (B i) t)
       1
   let T : Set E :=
-    L ⁻¹' SegInt (I := I) g hEnorm x
+    L ⁻¹' SegmentInt (I := I) g hEnorm x
   let S : Metric.sphere (0 : E) 1 → Set (Set.Ioi (0 : ℝ)) := fun u =>
-    {r | L (r.1 • u.1) ∈ SegInt (I := I) g hEnorm x}
+    {r | L (r.1 • u.1) ∈ SegmentInt (I := I) g hEnorm x}
   let F : Metric.sphere (0 : E) 1 → Set.Ioi (0 : ℝ) → ℝ≥0∞ := fun u =>
     (S u).indicator fun r => ENNReal.ofReal (Dn (r.1 • u.1))
   let G : Set.Ioi (0 : ℝ) → ℝ≥0∞ := fun r =>
-    ENNReal.ofReal (hypDensity (q * r.1) d 1)
+    ENNReal.ofReal (hyperbolicDensity (q * r.1) d 1)
   have hDn_eq (w : E) :
       Dn w =
         |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).det B| *
-          expJacDensity (I := I) g hEnorm x (L w) := by
+          expJacobianDensity (I := I) g hEnorm x (L w) := by
     with_unfolding_all exact
-      (jacDens_basis (I := I) g hEnorm x (L w) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) B)
+      (jacobianDens_basis (I := I) g hEnorm x (L w) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) B)
   have hDn_cont : Continuous Dn := by
     rw [show Dn = fun w =>
         |(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).det B| *
-          expJacDensity (I := I) g hEnorm x (L w) by
+          expJacobianDensity (I := I) g hEnorm x (L w) by
       funext w
       exact hDn_eq w]
     exact continuous_const.mul
-      ((expJac_continuous (I := I) g hEnorm x).comp L.continuous)
+      ((expJacobian_continuous (I := I) g hEnorm x).comp L.continuous)
   have hDn_nonneg (w : E) : 0 ≤ Dn w := by
     simp only [Dn, curveDensity]
     exact Real.sqrt_nonneg _
   have hT_meas : MeasurableSet T :=
-    (measurableSet_segInt (I := I) g hEnorm x).preimage
+    (measurableSet_segmentInt (I := I) g hEnorm x).preimage
       L.continuous.measurable
   have hS_meas (u : Metric.sphere (0 : E) 1) :
       MeasurableSet (S u) := by
-    exact (measurableSet_segInt (I := I) g hEnorm x).preimage
+    exact (measurableSet_segmentInt (I := I) g hEnorm x).preimage
       (L.continuous.comp
         (continuous_subtype_val.smul continuous_const)).measurable
   have hF_meas (u : Metric.sphere (0 : E) 1) :
@@ -2511,32 +2511,32 @@ theorem segBall_vol_rel
           (hS_meas u)
   have hG_meas : Measurable G := by
     have hscale (r : Set.Ioi (0 : ℝ)) :
-        hypDensity (q * r.1) d 1 =
-          hypDensity q d r.1 / r.1 ^ d := by
+        hyperbolicDensity (q * r.1) d 1 =
+          hyperbolicDensity q d r.1 / r.1 ^ d := by
       apply (eq_div_iff (pow_ne_zero d r.2.ne')).2
       simpa only [mul_one, mul_comm] using
-        hypDens_scale q r.1 d 1 r.2.ne'
+        hyperbolicDens_scale q r.1 d 1 r.2.ne'
     rw [show G = fun r : Set.Ioi (0 : ℝ) =>
-        ENNReal.ofReal (hypDensity q d r.1 / r.1 ^ d) by
+        ENNReal.ofReal (hyperbolicDensity q d r.1 / r.1 ^ d) by
       funext r
-      change ENNReal.ofReal (hypDensity (q * r.1) d 1) =
-        ENNReal.ofReal (hypDensity q d r.1 / r.1 ^ d)
+      change ENNReal.ofReal (hyperbolicDensity (q * r.1) d 1) =
+        ENNReal.ofReal (hyperbolicDensity q d r.1 / r.1 ^ d)
       rw [hscale r]]
     exact ENNReal.measurable_ofReal.comp
-      (((hypDen_continuous q d).measurable.comp measurable_subtype_coe).div
+      (((hyperbolicDen_continuous q d).measurable.comp measurable_subtype_coe).div
         (measurable_subtype_coe.pow_const d))
   have hS_down (u : Metric.sphere (0 : E) 1)
       {a b : Set.Ioi (0 : ℝ)} (hab : a ≤ b) (hb : b ∈ S u) :
       a ∈ S u := by
-    change L (b.1 • u.1) ∈ SegInt (I := I) g hEnorm x at hb
-    change L (a.1 • u.1) ∈ SegInt (I := I) g hEnorm x
+    change L (b.1 • u.1) ∈ SegmentInt (I := I) g hEnorm x at hb
+    change L (a.1 • u.1) ∈ SegmentInt (I := I) g hEnorm x
     have hab' : a.1 ≤ b.1 := hab
     have hratio0 : 0 ≤ a.1 / b.1 :=
       div_nonneg a.2.le b.2.le
     have hratio1 : a.1 / b.1 ≤ 1 :=
       (div_le_one b.2).2 hab'
     have hscaled :=
-      segInt_smul (I := I) g hEnorm hb hratio0 hratio1
+      segmentInt_smul (I := I) g hEnorm hb hratio0 hratio1
     simpa only [map_smul, smul_smul,
       div_mul_cancel₀ a.1 b.2.ne'] using hscaled
   have hu_inner (u : Metric.sphere (0 : E) 1) :
@@ -2546,8 +2546,8 @@ theorem segBall_vol_rel
     simp only [L, normalFrame_inner, real_inner_self_eq_norm_sq,
       hunorm, one_pow]
   have hG_pos (r : Set.Ioi (0 : ℝ)) :
-      0 < hypDensity (q * r.1) d 1 :=
-    hypDensity_pos (mul_nonneg hq r.2.le) one_pos
+      0 < hyperbolicDensity (q * r.1) d 1 :=
+    hyperbolicDensity_pos (mul_nonneg hq r.2.le) one_pos
   have hsingle (r : Set.Ioi (0 : ℝ)) :
       Measure.volumeIoiPow d ({r} : Set (Set.Ioi (0 : ℝ))) = 0 := by
     rw [Measure.volumeIoiPow]
@@ -2564,7 +2564,7 @@ theorem segBall_vol_rel
       (∫⁻ r : Set.Ioi (0 : ℝ) in
           Set.Iic (⟨t, ht⟩ : Set.Ioi (0 : ℝ)), G r
           ∂Measure.volumeIoiPow d) =
-        ENNReal.ofReal (hypRadVol q d t) := by
+        ENNReal.ofReal (hyperbolicRadialVolume q d t) := by
     calc
       (∫⁻ r : Set.Ioi (0 : ℝ) in
           Set.Iic (⟨t, ht⟩ : Set.Ioi (0 : ℝ)), G r
@@ -2577,8 +2577,8 @@ theorem segBall_vol_rel
           (Set.Iio (⟨t, ht⟩ : Set.Ioi (0 : ℝ))).indicator G r
           ∂Measure.volumeIoiPow d :=
         (lintegral_indicator measurableSet_Iio G).symm
-      _ = ENNReal.ofReal (hypRadVol q d t) := by
-        simpa only [G] using hypRad_lintegral q hq d ht
+      _ = ENNReal.ofReal (hyperbolicRadialVolume q d t) := by
+        simpa only [G] using lintegral_hyperbolicDensity_eq_hyperbolicRadialVolume q hq d ht
   have hpolar {t : ℝ} (ht : 0 < t) :
       riemannianVolumeMeasure (I := I) (M := M) g
           {y : M | riemannianEDist I x y < ENNReal.ofReal t} =
@@ -2588,12 +2588,12 @@ theorem segBall_vol_rel
             ∂Measure.volumeIoiPow d
           ∂(volume : Measure E).toSphere := by
     let K : Set E :=
-      SegInt (I := I) g hEnorm x ∩ gBall (I := I) g x t
+      SegmentInt (I := I) g hEnorm x ∩ gBall (I := I) g x t
     have hpre :
         L ⁻¹' K = T ∩ Metric.ball (0 : E) t := by
       dsimp only [K]
       change
-        (L ⁻¹' SegInt (I := I) g hEnorm x) ∩
+        (L ⁻¹' SegmentInt (I := I) g hEnorm x) ∩
             (L ⁻¹' gBall (I := I) g x t) =
           T ∩ Metric.ball (0 : E) t
       rw [preimage_gBall (I := I) (E := E) g x t]
@@ -2609,13 +2609,13 @@ theorem segBall_vol_rel
       riemannianVolumeMeasure (I := I) (M := M) g
           {y : M | riemannianEDist I x y < ENNReal.ofReal t} =
           ∫⁻ v in K,
-            ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+            ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
             ∂(modelHaar (E := E)) := by
-        simpa only [K] using segBall_area_eq (I := I) g hEnorm x ht
+        simpa only [K] using segmentBall_area_eq (I := I) g hEnorm x ht
       _ = ∫⁻ w in L ⁻¹' K, ENNReal.ofReal (Dn w)
           ∂(volume : Measure E) := by
         simpa only [Dn, L, B] using
-          expJac_normal_int (I := I) (E := E) g hEnorm x K
+          expJacobian_normal_int (I := I) (E := E) g hEnorm x K
       _ = ∫⁻ w in T ∩ Metric.ball (0 : E) t,
           ENNReal.ofReal (Dn w) ∂(volume : Measure E) := by
         rw [hpre]
@@ -2692,7 +2692,7 @@ theorem segBall_vol_rel
     by_cases hbS : b ∈ S u
     · have haS : a ∈ S u := hS_down u hab hbS
       have hbS' := hbS
-      change L (b.1 • u.1) ∈ SegInt (I := I) g hEnorm x at hbS'
+      change L (b.1 • u.1) ∈ SegmentInt (I := I) g hEnorm x at hbS'
       obtain ⟨c, hc, hcb⟩ := hbS'
       let uT : TangentSpace I x := L u.1
       have huT_pos : 0 < g.inner x uT uT := by
@@ -2704,7 +2704,7 @@ theorem segBall_vol_rel
       have hc0 : 0 < c := one_pos.trans hc
       have hcb_pos : 0 < c * b.1 := mul_pos hc0 b.2
       have hcbD :
-          (c * b.1) • uT ∈ SegDom (I := I) g hEnorm x := by
+          (c * b.1) • uT ∈ SegmentDom (I := I) g hEnorm x := by
         simpa only [uT, map_smul, smul_smul] using hcb
       have hcb0 : (c * b.1) • uT ≠ 0 :=
         smul_ne_zero hcb_pos.ne' huT0
@@ -2718,7 +2718,7 @@ theorem segBall_vol_rel
           exact ⟨div_pos ht.1 hcb_pos,
             (div_lt_one hcb_pos).2 ht.2⟩
         have hraw :=
-          segDom_no_conj (I := I) g hEnorm hcbD hcb0
+          segmentDom_no_conj (I := I) g hEnorm hcbD hcb0
             (t / (c * b.1)) hratio
         simpa only [smul_smul,
           div_mul_cancel₀ t hcb_pos.ne'] using hraw
@@ -2743,20 +2743,20 @@ theorem segBall_vol_rel
           simpa only [uT] using hu_inner u
         have hanti :
             AntitoneOn
-              (fun t => Dt t / hypDensity q d t)
+              (fun t => Dt t / hyperbolicDensity q d t)
               (Set.Ioo (0 : ℝ) (c * b.1)) := by
           simpa only [Dt, d, huT_one, Real.sqrt_one, mul_one] using
-            intrRatioOfFrame (I := I) g hEnorm x uT q
+            intrinsicRatioOfFrame (I := I) g hEnorm x uT q
               (c * b.1) hq hd huT_pos v hON hperp hno hRic
         have hratio :=
           hanti haWin hbWin (show a.1 ≤ b.1 from hab)
-        have hHa : 0 < hypDensity q d a.1 :=
-          hypDensity_pos hq a.2
-        have hHb : 0 < hypDensity q d b.1 :=
-          hypDensity_pos hq b.2
+        have hHa : 0 < hyperbolicDensity q d a.1 :=
+          hyperbolicDensity_pos hq a.2
+        have hHb : 0 < hyperbolicDensity q d b.1 :=
+          hyperbolicDensity_pos hq b.2
         have htrans :
-            Dt b.1 * hypDensity q d a.1 ≤
-              Dt a.1 * hypDensity q d b.1 :=
+            Dt b.1 * hyperbolicDensity q d a.1 ≤
+              Dt a.1 * hyperbolicDensity q d b.1 :=
           (div_le_div_iff₀ hHb hHa).1 hratio
         have hB :
             ∀ i j, g.inner x (B i) (B j) =
@@ -2797,34 +2797,34 @@ theorem segBall_vol_rel
             expDens_scale (I := I) g hEnorm x uT huT_pos
               B hB v hON hperp b.2
         have hGa :
-            a.1 ^ d * hypDensity (q * a.1) d 1 =
-              hypDensity q d a.1 := by
+            a.1 ^ d * hyperbolicDensity (q * a.1) d 1 =
+              hyperbolicDensity q d a.1 := by
           simpa only [mul_one] using
-            hypDens_scale q a.1 d 1 a.2.ne'
+            hyperbolicDens_scale q a.1 d 1 a.2.ne'
         have hGb :
-            b.1 ^ d * hypDensity (q * b.1) d 1 =
-              hypDensity q d b.1 := by
+            b.1 ^ d * hyperbolicDensity (q * b.1) d 1 =
+              hyperbolicDensity q d b.1 := by
           simpa only [mul_one] using
-            hypDens_scale q b.1 d 1 b.2.ne'
+            hyperbolicDens_scale q b.1 d 1 b.2.ne'
         have hpowa : 0 < a.1 ^ d := pow_pos a.2 d
         have hpowb : 0 < b.1 ^ d := pow_pos b.2 d
         have hreal :
-            Dn (b.1 • u.1) * hypDensity (q * a.1) d 1 ≤
-              Dn (a.1 • u.1) * hypDensity (q * b.1) d 1 := by
+            Dn (b.1 • u.1) * hyperbolicDensity (q * a.1) d 1 ≤
+              Dn (a.1 • u.1) * hyperbolicDensity (q * b.1) d 1 := by
           apply (mul_le_mul_iff_right₀ (mul_pos hpowa hpowb)).mp
           calc
             (a.1 ^ d * b.1 ^ d) *
-                (Dn (b.1 • u.1) * hypDensity (q * a.1) d 1) =
+                (Dn (b.1 • u.1) * hyperbolicDensity (q * a.1) d 1) =
                 (b.1 ^ d * Dn (b.1 • u.1)) *
-                  (a.1 ^ d * hypDensity (q * a.1) d 1) := by ring
-            _ = Dt b.1 * hypDensity q d a.1 := by
+                  (a.1 ^ d * hyperbolicDensity (q * a.1) d 1) := by ring
+            _ = Dt b.1 * hyperbolicDensity q d a.1 := by
               rw [hDb, hGa]
-            _ ≤ Dt a.1 * hypDensity q d b.1 := htrans
+            _ ≤ Dt a.1 * hyperbolicDensity q d b.1 := htrans
             _ = (a.1 ^ d * Dn (a.1 • u.1)) *
-                (b.1 ^ d * hypDensity (q * b.1) d 1) := by
+                (b.1 ^ d * hyperbolicDensity (q * b.1) d 1) := by
               rw [hDa, hGb]
             _ = (a.1 ^ d * b.1 ^ d) *
-                (Dn (a.1 • u.1) * hypDensity (q * b.1) d 1) := by ring
+                (Dn (a.1 • u.1) * hyperbolicDensity (q * b.1) d 1) := by ring
         simp only [F, G, Set.indicator_of_mem hbS,
           Set.indicator_of_mem haS]
         rw [← ENNReal.ofReal_mul (hDn_nonneg (b.1 • u.1)),
@@ -2893,10 +2893,10 @@ theorem segBall_vol_rel
             expDens_scale (I := I) g hEnorm x uT huT_pos
               B hB v hON hperp b.2
           simpa only [d, hd0, pow_zero, one_mul, Dt, hDt] using hscale
-        have hGa : hypDensity (q * a.1) d 1 = 1 := by
-          simp only [hd0, hypDensity, pow_zero]
-        have hGb : hypDensity (q * b.1) d 1 = 1 := by
-          simp only [hd0, hypDensity, pow_zero]
+        have hGa : hyperbolicDensity (q * a.1) d 1 = 1 := by
+          simp only [hd0, hyperbolicDensity, pow_zero]
+        have hGb : hyperbolicDensity (q * b.1) d 1 = 1 := by
+          simp only [hd0, hyperbolicDensity, pow_zero]
         simp only [F, G, Set.indicator_of_mem hbS,
           Set.indicator_of_mem haS, hDa, hDb, hGa, hGb,
           ENNReal.ofReal_one, mul_one, le_refl]
@@ -2905,11 +2905,11 @@ theorem segBall_vol_rel
       (∫⁻ r : Set.Ioi (0 : ℝ) in
           Set.Iic (⟨R, hR⟩ : Set.Ioi (0 : ℝ)), F u r
           ∂Measure.volumeIoiPow d) *
-          ENNReal.ofReal (hypRadVol q d s) ≤
+          ENNReal.ofReal (hyperbolicRadialVolume q d s) ≤
         (∫⁻ r : Set.Ioi (0 : ℝ) in
             Set.Iic (⟨s, hs⟩ : Set.Ioi (0 : ℝ)), F u r
             ∂Measure.volumeIoiPow d) *
-          ENNReal.ofReal (hypRadVol q d R) := by
+          ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
     have h :=
       lintegral_Iic_cross
         (μ := Measure.volumeIoiPow d) (f := F u) (g := G)
@@ -2922,21 +2922,21 @@ theorem segBall_vol_rel
   rw [show Module.finrank ℝ E - 1 = d by rfl]
   rw [hpolar hR, hpolar hs]
   rw [mul_comm
-    (ENNReal.ofReal (hypRadVol q d R))
+    (ENNReal.ofReal (hyperbolicRadialVolume q d R))
     (∫⁻ u : Metric.sphere (0 : E) 1,
       ∫⁻ r : Set.Ioi (0 : ℝ) in
         Set.Iic (⟨s, hs⟩ : Set.Ioi (0 : ℝ)), F u r
         ∂Measure.volumeIoiPow d
       ∂(volume : Measure E).toSphere)]
   rw [← lintegral_mul_const'
-    (ENNReal.ofReal (hypRadVol q d s))
+    (ENNReal.ofReal (hyperbolicRadialVolume q d s))
     (fun u : Metric.sphere (0 : E) 1 =>
       ∫⁻ r : Set.Ioi (0 : ℝ) in
         Set.Iic (⟨R, hR⟩ : Set.Ioi (0 : ℝ)), F u r
         ∂Measure.volumeIoiPow d)
     ENNReal.ofReal_ne_top]
   rw [← lintegral_mul_const'
-    (ENNReal.ofReal (hypRadVol q d R))
+    (ENNReal.ofReal (hyperbolicRadialVolume q d R))
     (fun u : Metric.sphere (0 : E) 1 =>
       ∫⁻ r : Set.Ioi (0 : ℝ) in
         Set.Iic (⟨s, hs⟩ : Set.Ioi (0 : ℝ)), F u r

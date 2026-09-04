@@ -404,7 +404,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β
         (tensorResolventL2_isCompactOperator (I := I) (M := M)
           g r s) i)
       h_pou_eigen
-  have h_each_cpt_le : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
+  have h_each_compact_le : ∀ (β : M) (Q : TensorCompIdx (E := E) r s),
       iteratedWeakSobolevNorm (d := d) K' 2
         (fun y => ((tensorL2ChartComponent (I := I) (M := M) g r s
             (tensorResolventEigenbasisVec (I := I) (M := M)
@@ -446,7 +446,7 @@ theorem eigenvector_crossRightLimit_perK_from_uniform_β
               (chartTargetEuclid (I := I) (M := M) β))
         ≤ ∑ _β ∈ S α, ∑ _Q : TensorCompIdx (E := E) r s, RHS_each :=
           Finset.sum_le_sum (fun β _hβ =>
-            Finset.sum_le_sum (fun Q _hQ => h_each_cpt_le β Q))
+            Finset.sum_le_sum (fun Q _hQ => h_each_compact_le β Q))
       _ = (CT : ℝ≥0∞) * RHS_each := by
           simp only [Finset.sum_const, hCT_def, nsmul_eq_mul, Nat.cast_mul]
           ring

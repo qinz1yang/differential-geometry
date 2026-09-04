@@ -34,7 +34,7 @@ def scalarHeatTerm
     (ricciNormSq : Real -> M -> Real) : Real -> M -> Real :=
   fun t x => 2 * ricciNormSq t x
 
-abbrev PinchEvolOn
+abbrev PinchEvolutionOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q :
@@ -94,7 +94,7 @@ theorem pinch_quotient_evolution_of_heat_equations
       MDiffAt (T% fun z : M =>
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric (t : Real))
           (fun w : M => scalar (t : Real) w ^ (-(2 - epsilon))) z) y) :
-    PinchEvolOn (I := I) (D := D) G
+    PinchEvolutionOn (I := I) (D := D) G
       scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q epsilon := by
   refine quotient_evolution_of_nonnegative_numerator_and_laplacian_identities (I := I) (D := D) G
     (traceFreeRicciNormSq scalar ricciNormSq) scalar
@@ -771,7 +771,7 @@ theorem pinch_quotient_evolution_of_coupling_identity
     (scalar ricciNormSq nablaRicNormSq gradScalarNormSq
       coupleSq Q : Real -> M -> Real)
     (epsilon : Real)
-    (hsetup : PinchEvolOn (I := I) (D := D) G
+    (hsetup : PinchEvolutionOn (I := I) (D := D) G
       scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q epsilon)
     (hscalar : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
@@ -838,7 +838,7 @@ theorem pinch_quotient_evolution_of_mixed_term_identity
     (nablaRic : Real -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) 3 x)
     (epsilon : Real)
-    (hsetup : PinchEvolOn (I := I) (D := D) G
+    (hsetup : PinchEvolutionOn (I := I) (D := D) G
       scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q epsilon)
     (hscalar : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,
@@ -938,7 +938,7 @@ theorem pinch_quotient_evolution_of_tensor_sections
       Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := (∞ : WithTop ℕ∞)) 1)
     (epsilon : Real)
-    (hsetup : PinchEvolOn (I := I) (D := D) G
+    (hsetup : PinchEvolutionOn (I := I) (D := D) G
       scalar ricciNormSq nablaRicNormSq gradScalarNormSq Q epsilon)
     (hscalar : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       x,

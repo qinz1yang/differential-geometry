@@ -17,7 +17,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Set
 open scoped Manifold ContDiff Topology Bundle
@@ -36,7 +36,7 @@ variable [I.Boundaryless]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intr_metric_eq
+theorem intrinsic_metric_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology; ConnectedSpace Y.M)
@@ -67,8 +67,8 @@ theorem intr_metric_eq
       exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := I) Y.metric y w
     ∀ {z : E}, z ∈
-        (intrFrameDiffeo (I := I) Y.metric hEnorm x).source →
-      intrFrameMetric (I := I) Y.metric hEnorm x z =
+        (intrinsicFrameDiffeo (I := I) Y.metric hEnorm x).source →
+      intrinsicFrameMetric (I := I) Y.metric hEnorm x z =
         NormalCoordinates.framedMetric (I := I) Y.metric x z := by
   let _ := hconn
   let : TopologicalSpace Y.M := Y.topology
@@ -98,11 +98,11 @@ theorem intr_metric_eq
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
       (I := I) Y.metric y w
   change ∀ {z : E}, z ∈
-      (intrFrameDiffeo (I := I) Y.metric hEnorm x).source →
-    intrFrameMetric (I := I) Y.metric hEnorm x z =
+      (intrinsicFrameDiffeo (I := I) Y.metric hEnorm x).source →
+    intrinsicFrameMetric (I := I) Y.metric hEnorm x z =
       NormalCoordinates.framedMetric (I := I) Y.metric x z
   intro z hz
-  exact intrFrameMetric_eq (I := I) Y.metric hEnorm x (z := z) hz
+  exact intrinsicFrameMetric_eq (I := I) Y.metric hEnorm x (z := z) hz
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -137,7 +137,7 @@ theorem exists_intr_eq_ball
       exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := I) Y.metric y w
     ∃ r : Real, 0 < r ∧ ∀ z ∈ Metric.ball (0 : E) r,
-      intrFrameMetric (I := I) Y.metric hEnorm x z =
+      intrinsicFrameMetric (I := I) Y.metric hEnorm x z =
         NormalCoordinates.framedMetric (I := I) Y.metric x z := by
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
@@ -165,13 +165,13 @@ theorem exists_intr_eq_ball
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
       (I := I) Y.metric y w
   change ∃ r : Real, 0 < r ∧ ∀ z ∈ Metric.ball (0 : E) r,
-    intrFrameMetric (I := I) Y.metric hEnorm x z =
+    intrinsicFrameMetric (I := I) Y.metric hEnorm x z =
       NormalCoordinates.framedMetric (I := I) Y.metric x z
   obtain ⟨r, hr, hball⟩ :=
-    Metric.isOpen_iff.mp (intrFrameDiffeo (I := I) Y.metric hEnorm x).open_source
+    Metric.isOpen_iff.mp (intrinsicFrameDiffeo (I := I) Y.metric hEnorm x).open_source
       0 (zero_mem_intrFrame_source (I := I) Y.metric hEnorm x)
   refine ⟨r, hr, fun z hz => ?_⟩
-  exact intr_metric_eq (I := I) Y hcomplete hconn x (hball hz)
+  exact intrinsic_metric_eq (I := I) Y hcomplete hconn x (hball hz)
 
 def FramedNormalCoordMetricEquivOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -220,7 +220,7 @@ lemma framedJacobiRadius_pos
   rw [framedJacobiRadius]
   exact div_pos (metricCoerciveExpRadius_pos (I := I) Y.metric x) (by norm_num)
 
-lemma normalFrame_lt_jac
+lemma normalFrame_lt_jacobian
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     {z : E} :
     letI : TopologicalSpace Y.M := Y.topology
@@ -280,7 +280,7 @@ theorem framed_rm04_of_seq
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem intr_rm04_of_seq
+theorem intrinsic_rm04_of_seq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -440,10 +440,10 @@ theorem framed_metric_jacobi
           L.toContinuousLinearMap) w) = _
   rw [expMapDiffeo_apply_eq (I := I) Y.metric x hraw,
     expDiffeo_mfderiv (I := I) Y.metric x hraw]
-  have hvJac := radialJacobi_one (I := I) Y.metric x (L z) (L v) hzC2
-  have hwJac := radialJacobi_one (I := I) Y.metric x (L z) (L w) hzC2
-  simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply] at hvJac hwJac
-  rw [hvJac, hwJac]
+  have hvJacobian := radialJacobi_one (I := I) Y.metric x (L z) (L v) hzC2
+  have hwJacobian := radialJacobi_one (I := I) Y.metric x (L z) (L w) hzC2
+  simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply] at hvJacobian hwJacobian
+  rw [hvJacobian, hwJacobian]
   rfl
 
 open Bundle in
@@ -665,8 +665,8 @@ theorem exists_intr_radii
           (I := I) (X.obj k).metric y w
       ∀ z ∈ Metric.ball (0 : E) r₀, ∀ v : E,
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-            intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
-          intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
+            intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
+          intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
             2 * ‖v‖ ^ 2 := by
   obtain ⟨κ, buffer, hκ, hbuffer, hsmall⟩ :=
     exists_gron_smallK (B₀ := (1 / 4 : Real)) (D := 1)
@@ -713,8 +713,8 @@ theorem exists_intr_radii
       (I := I) (X.obj k).metric y w
   change ∀ z ∈ Metric.ball (0 : E) r₀, ∀ v : E,
     (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-        intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
-      intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
+        intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
+      intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
         2 * ‖v‖ ^ 2
   intro z hz v
   have hzRadius : ‖z‖ < r₀ := by
@@ -750,12 +750,12 @@ theorem exists_intr_radii
   obtain ⟨hmodelLe, hmodelGe⟩ :=
     quarter_models (K := K) (s := ‖v‖) (norm_nonneg _) herr
   have hRm :=
-    intr_rm04_of_seq (I := I) hcomplete hconn hgeom k x z
+    intrinsic_rm04_of_seq (I := I) hcomplete hconn hgeom k x z
   have hODE :=
-    intrJacobi_ode (I := I) (X.obj k).metric hEnorm x u w
+    intrinsicJacobi_ode (I := I) (X.obj k).metric hEnorm x u w
       (hgeom.nonneg 0) hRm
   obtain ⟨hupper, hlower⟩ :=
-    intrJacobi_bounds (I := I) (X.obj k).metric hEnorm x u w
+    intrinsicJacobi_bounds (I := I) (X.obj k).metric hEnorm x u w
       hK zero_lt_one (by simpa only [K] using hODE)
   have hupper1 := hupper 1 (by norm_num)
   have hlower1 := hlower 1 (by norm_num)
@@ -794,11 +794,11 @@ theorem exists_intr_radii
       (mul_nonneg (by norm_num) (norm_nonneg v))).2 hsqrtUpper
   rw [Real.sq_sqrt hmetricNonneg] at hlowerSq hupperSq
   have hmetric :
-      intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v =
+      intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v =
         (X.obj k).metric.inner q J J := by
-    rw [intr_metric_jacobi (I := I) (X.obj k).metric hEnorm x z v v]
+    rw [intrinsic_metric_jacobi (I := I) (X.obj k).metric hEnorm x z v v]
     dsimp only [q, J, u, w, intrinsicFramedExp, expMapIntrinsic]
-    rw [intrFrameCLM_apply]
+    rw [intrinsicFrameCLM_apply]
     rfl
   rw [hmetric]
   constructor <;> nlinarith [sq_nonneg ‖v‖]
@@ -890,12 +890,12 @@ theorem exists_intr_branches
       (normalFrame (I := I) (X.obj k).metric x z : E) ∈ B.hom.source
   intro z hz
   have hlower : ∀ v : E, (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-      intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v :=
+      intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v :=
     fun v => (hmetric k x z hz v).1
   have hnot :
       ¬ IsConjVec (I := I) (X.obj k).metric hEnorm x
         (normalFrame (I := I) (X.obj k).metric x z : E) :=
-    intrFrame_not_conj (I := I) (X.obj k).metric hEnorm x z
+    intrinsicFrame_not_conj (I := I) (X.obj k).metric hEnorm x z
       (by norm_num) hlower
   exact branch_of_not_conj (I := I) (X.obj k).metric hEnorm hnot
 
@@ -980,7 +980,7 @@ theorem exists_intr_localOn
     intro y w
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
       (I := I) (X.obj k).metric y w
-  exact intrFrame_localOn (I := I) (X.obj k).metric hEnorm x
+  exact intrinsicFrame_localOn (I := I) (X.obj k).metric hEnorm x
     (Metric.ball (0 : E) r₀) (hbranch k x)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -1027,8 +1027,8 @@ theorem exists_intr_control
           (I := I) (X.obj k).metric y w
       (∀ z ∈ Metric.ball (0 : E) r₀, ∀ v : E,
           (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-              intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
-            intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
+              intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
+            intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
               2 * ‖v‖ ^ 2) ∧
         IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I ∞
           (intrinsicFramedExp (I := I) (X.obj k).metric hEnorm x)
@@ -1131,7 +1131,7 @@ theorem exists_rm04_radii
   have hzMin :
       ‖z‖ < min (framedJacobiRadius (I := I) (X.obj k) x) r₀ := by
     simpa only [Metric.mem_ball, dist_zero_right] using hz
-  have hzJac : ‖z‖ < framedJacobiRadius (I := I) (X.obj k) x :=
+  have hzJacobian : ‖z‖ < framedJacobiRadius (I := I) (X.obj k) x :=
     hzMin.trans_le (min_le_left _ _)
   have hzRadius : ‖z‖ < r₀ := hzMin.trans_le (min_le_right _ _)
   obtain ⟨a, ha, hav⟩ := exists_smul_lt (v := v)
@@ -1166,10 +1166,10 @@ theorem exists_rm04_radii
     (a := a) (K := K) (R := hgeom.C 0) (Vb := r₀)
     (A := ‖a • v‖) (Blo := (3 / 4 : Real) * ‖v‖)
     (Bhi := (5 / 4 : Real) * ‖v‖)
-    ha hK hr₀.le hzJac hav hzRadius.le le_rfl hKbound
+    ha hK hr₀.le hzJacobian hav hzRadius.le le_rfl hKbound
     (framed_rm04_of_seq (I := I) hgeom k x z) hmodelLe hmodelGe
   have hzGp : ‖z‖ < metricCoerciveExpRadius (I := I) (X.obj k).metric x := by
-    rw [framedJacobiRadius] at hzJac
+    rw [framedJacobiRadius] at hzJacobian
     have hpos := metricCoerciveExpRadius_pos (I := I) (X.obj k).metric x
     linarith
   have hmetricNonneg :
@@ -1412,5 +1412,5 @@ theorem exists_equiv_radii
     exists_equiv_ball (I := I) (X.obj k) x
   exact ⟨radius, fun k x => ⟨hpos k x, hle k x, hequiv k x⟩⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

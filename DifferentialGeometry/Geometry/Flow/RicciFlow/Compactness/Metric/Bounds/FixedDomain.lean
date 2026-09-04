@@ -13,7 +13,7 @@ universe u uE uH
 namespace DifferentialGeometry
 
 attribute [local instance] Fintype.ofFinite
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -246,7 +246,7 @@ theorem covOne_le_christoffel
       (Real.sqrt_nonneg _))
 
 omit [SigmaCompactSpace M] in
-theorem covOne_le_init
+theorem covOne_le_initial
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u K : Set M}
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M) D)
@@ -309,5 +309,5 @@ theorem covOne_le_init
 
 end FixedDomain
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

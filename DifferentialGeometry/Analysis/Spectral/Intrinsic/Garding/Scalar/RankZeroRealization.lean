@@ -68,7 +68,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     -TensorEigenIdx.lambda (I := I) (M := M) i * v.coeff i
   rw [TensorHs.castEquiv_coeff]
 
-theorem scalarLapHs_core
+theorem tensorScaleLaplacian_apply_ccTensorToHs
     (g : SmoothRiemannianMetric I M)
     (m : ℝ) (S : SmoothCcTensor g 0 0) :
     tensorScaleLaplacian (I := I) (M := M)

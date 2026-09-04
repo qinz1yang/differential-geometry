@@ -273,7 +273,7 @@ private lemma lieCorrectionZeroRiemannLift_sum
   rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply, ← hY_def]
   rw [cometricDoubleTraceFib_eq_orthoFrame_diag
     (I := I) g 4 x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) Y]
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x) Y]
   rw [← Tensor0SSpace.toModelL_apply, map_sum,
     sum_apply]
   refine Finset.sum_congr rfl (fun e _ ↦ ?_)

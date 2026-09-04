@@ -285,7 +285,7 @@ lemma iteratedFDeriv_two_repr_opNormSq_le_sum_iteratedFDeriv_components_sq
   set V : Finset ((Fin r → Fin (Module.finrank ℝ E)) ×
       (Fin s → Fin (Module.finrank ℝ E))) := Finset.univ with hV_def
   set b : M := (extChartAt I α).symm e with hb_def
-  have hb_src : b ∈ (extChartAt I α).source := (extChartAt I α).map_target he
+  have hb_source : b ∈ (extChartAt I α).source := (extChartAt I α).map_target he
   have hb_chart : b ∈ (chartAt H α).source := by
     rwa [← extChartAt_source_eq_chartAt_source (I := I)]
   have he_eq : extChartAt I α b = e := (extChartAt I α).right_inv he
@@ -1831,10 +1831,10 @@ private lemma tensorChartComponentRaw_chartTransition_eq
       tsupport ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆
         (chartAt H β).source :=
     chartAtlasPOU_isSubordinate I M β
-  have hb_α_src : b ∈ (chartAt H α).source := hsupp_α hb_α_pou
-  have hb_β_src : b ∈ (chartAt H β).source := hsupp_β hb_β_pou
+  have hb_α_source : b ∈ (chartAt H α).source := hsupp_α hb_α_pou
+  have hb_β_source : b ∈ (chartAt H β).source := hsupp_β hb_β_pou
   exact tensorChartComponentRaw_eq_transitionCoeff_sum
-    (E := E) (I := I) (M := M) g r s T β α ⟨Idx, Jdx⟩ ⟨hb_β_src, hb_α_src⟩
+    (E := E) (I := I) (M := M) g r s T β α ⟨Idx, Jdx⟩ ⟨hb_β_source, hb_α_source⟩
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -2017,17 +2017,17 @@ private lemma symm_mem_pou_inter_goodSet
   have hb_chart : b ∈ (chartAt H α).source := by
     rw [hb_def]
     exact symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy
-  have hb_supp : b ∈ Function.support ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
+  have hb_support : b ∈ Function.support ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
     simp only [Function.mem_support, ne_eq]
     exact h_pou_pos
   have hb_tsupp : b ∈ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
-    subset_tsupport _ hb_supp
+    subset_tsupport _ hb_support
   have h_goodSet_eq : chartLeviCivitaGoodSet (I := I) α = (extChartAt I α).source :=
     chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α
-  have hb_extSrc : b ∈ (extChartAt I α).source := by
+  have hb_extSource : b ∈ (extChartAt I α).source := by
     rw [extChartAt_source]; exact hb_chart
   have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α := by
-    rw [h_goodSet_eq]; exact hb_extSrc
+    rw [h_goodSet_eq]; exact hb_extSource
   exact ⟨hb_tsupp, hb_good⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
@@ -2079,11 +2079,11 @@ private lemma int_fderiv_tensorChartComp_β_sq_le_wkpNorm_two_sq
         ∫⁻ y, ENNReal.ofReal (fd y ^ 2) ∂(volume : Measure EuclN) :=
     setLIntegral_le_lintegral _ _
   refine h_le_full.trans ?_
-  have h_supp : tsupport (tensorChartComp (I := I) (M := M) g r s T β Idx Jdx) ⊆
+  have h_support : tsupport (tensorChartComp (I := I) (M := M) g r s T β Idx Jdx) ⊆
       chartTargetEuclid (I := I) (M := M) β :=
     tensorChartComp_tsupport_subset_chartTargetEuclid
       (I := I) (M := M) g r s T β Idx Jdx
-  have h_fd_supp : tsupport fd ⊆ chartTargetEuclid (I := I) (M := M) β := by
+  have h_fd_support : tsupport fd ⊆ chartTargetEuclid (I := I) (M := M) β := by
     have h_norm_subset : tsupport fd ⊆
         tsupport (fderiv ℝ (tensorChartComp (I := I) (M := M) g r s T β Idx Jdx)) := by
       refine closure_mono ?_
@@ -2093,7 +2093,7 @@ private lemma int_fderiv_tensorChartComp_β_sq_le_wkpNorm_two_sq
       intro hzero
       apply hy
       rw [hzero, norm_zero]
-    refine (h_norm_subset.trans (tsupport_fderiv_subset _)).trans h_supp
+    refine (h_norm_subset.trans (tsupport_fderiv_subset _)).trans h_support
   have h_chartTarget_β_meas :
       MeasurableSet (chartTargetEuclid (I := I) (M := M) β) :=
     chartTargetEuclid_measurableSet (I := I) (M := M) β
@@ -2107,12 +2107,12 @@ private lemma int_fderiv_tensorChartComp_β_sq_le_wkpNorm_two_sq
       funext y
       by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) β
       · rw [Set.indicator_of_mem hy]
-      · have hy_notin_supp : y ∉ tsupport fd := fun hin => hy (h_fd_supp hin)
+      · have hy_notin_support : y ∉ tsupport fd := fun hin => hy (h_fd_support hin)
         have hy_zero : fd y = 0 := by
           by_contra hne
-          have hy_in_supp : y ∈ Function.support fd := by
+          have hy_in_support : y ∈ Function.support fd := by
             simp only [Function.mem_support, ne_eq]; exact hne
-          exact hy_notin_supp (subset_tsupport _ hy_in_supp)
+          exact hy_notin_support (subset_tsupport _ hy_in_support)
         rw [hy_zero, Set.indicator_of_notMem hy]
         simp
     conv_lhs => rw [h_indicator_eq]
@@ -2138,13 +2138,13 @@ private lemma int_fderiv_tensorChartComp_β_sq_le_wkpNorm_two_sq
     tensorChartComp_contDiff (I := I) (M := M) g r s T β Idx Jdx
   have h_cc :=
     tensorChartComp_hasCompactSupport (I := I) (M := M) g r s T β Idx Jdx
-  have h_supp_β :=
+  have h_support_β :=
     tensorChartComp_tsupport_subset_chartTargetEuclid
       (I := I) (M := M) g r s T β Idx Jdx
   have h_bridge :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.chartTarget_fderiv_eLpNorm_le_wkpNorm_two
       (d := Module.finrank ℝ E) (Ω := chartTargetEuclid (I := I) (M := M) β)
-      h_β_open h_smooth h_cc h_supp_β
+      h_β_open h_smooth h_cc h_support_β
   exact pow_le_pow_left' h_bridge 2
 
 omit [BoundarylessManifold I M] in
@@ -2171,11 +2171,11 @@ private lemma int_iteratedFDeriv_two_tensorChartComp_β_sq_le_wkpNorm_two_sq
         ∫⁻ y, ENNReal.ofReal (fd y ^ 2) ∂(volume : Measure EuclN) :=
     setLIntegral_le_lintegral _ _
   refine h_le_full.trans ?_
-  have h_supp : tsupport (tensorChartComp (I := I) (M := M) g r s T β Idx Jdx) ⊆
+  have h_support : tsupport (tensorChartComp (I := I) (M := M) g r s T β Idx Jdx) ⊆
       chartTargetEuclid (I := I) (M := M) β :=
     tensorChartComp_tsupport_subset_chartTargetEuclid
       (I := I) (M := M) g r s T β Idx Jdx
-  have h_fd_supp : tsupport fd ⊆ chartTargetEuclid (I := I) (M := M) β := by
+  have h_fd_support : tsupport fd ⊆ chartTargetEuclid (I := I) (M := M) β := by
     have h_norm_subset : tsupport fd ⊆
         tsupport (iteratedFDeriv ℝ 2
           (tensorChartComp (I := I) (M := M) g r s T β Idx Jdx)) := by
@@ -2186,7 +2186,7 @@ private lemma int_iteratedFDeriv_two_tensorChartComp_β_sq_le_wkpNorm_two_sq
       intro hzero
       apply hy
       rw [hzero, norm_zero]
-    refine (h_norm_subset.trans (tsupport_iteratedFDeriv_subset 2)).trans h_supp
+    refine (h_norm_subset.trans (tsupport_iteratedFDeriv_subset 2)).trans h_support
   have h_chartTarget_β_meas :
       MeasurableSet (chartTargetEuclid (I := I) (M := M) β) :=
     chartTargetEuclid_measurableSet (I := I) (M := M) β
@@ -2200,12 +2200,12 @@ private lemma int_iteratedFDeriv_two_tensorChartComp_β_sq_le_wkpNorm_two_sq
       funext y
       by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) β
       · rw [Set.indicator_of_mem hy]
-      · have hy_notin_supp : y ∉ tsupport fd := fun hin => hy (h_fd_supp hin)
+      · have hy_notin_support : y ∉ tsupport fd := fun hin => hy (h_fd_support hin)
         have hy_zero : fd y = 0 := by
           by_contra hne
-          have hy_in_supp : y ∈ Function.support fd := by
+          have hy_in_support : y ∈ Function.support fd := by
             simp only [Function.mem_support, ne_eq]; exact hne
-          exact hy_notin_supp (subset_tsupport _ hy_in_supp)
+          exact hy_notin_support (subset_tsupport _ hy_in_support)
         rw [hy_zero, Set.indicator_of_notMem hy]
         simp
     conv_lhs => rw [h_indicator_eq]
@@ -2231,13 +2231,13 @@ private lemma int_iteratedFDeriv_two_tensorChartComp_β_sq_le_wkpNorm_two_sq
     tensorChartComp_contDiff (I := I) (M := M) g r s T β Idx Jdx
   have h_cc :=
     tensorChartComp_hasCompactSupport (I := I) (M := M) g r s T β Idx Jdx
-  have h_supp_β :=
+  have h_support_β :=
     tensorChartComp_tsupport_subset_chartTargetEuclid
       (I := I) (M := M) g r s T β Idx Jdx
   have h_bridge :=
     chartTarget_iteratedFDeriv_two_eLpNorm_le_wkpNorm_two
       (d := Module.finrank ℝ E) (Ω := chartTargetEuclid (I := I) (M := M) β)
-      h_β_open h_smooth h_cc h_supp_β
+      h_β_open h_smooth h_cc h_support_β
   exact pow_le_pow_left' h_bridge 2
 
 omit [BoundarylessManifold I M] in

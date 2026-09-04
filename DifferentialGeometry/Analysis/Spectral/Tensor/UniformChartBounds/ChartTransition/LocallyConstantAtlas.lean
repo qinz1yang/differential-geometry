@@ -171,7 +171,7 @@ private lemma coordChangeL_eq_chartJinv_of_locality
   rfl
 
 omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] [T2Space M] in
-private lemma chartJ_continuousOn_loc
+private lemma chartJ_continuousOn_local
     (α b₀ : M)
     {U : Set M}
     (hU_sub_b₀ : U ⊆ (chartAt H b₀).source)
@@ -195,7 +195,7 @@ private lemma chartJ_continuousOn_loc
   exact h_coord_cont.congr h_eq
 
 omit [Module.Finite ℝ E] [InnerProductSpace ℝ E] [T2Space M] in
-private lemma chartJinv_continuousOn_loc
+private lemma chartJinv_continuousOn_local
     (α b₀ : M)
     {U : Set M}
     (hU_sub_b₀ : U ⊆ (chartAt H b₀).source)

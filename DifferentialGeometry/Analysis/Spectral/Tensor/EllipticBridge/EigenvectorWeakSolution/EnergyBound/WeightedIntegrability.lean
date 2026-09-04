@@ -231,11 +231,11 @@ private lemma cutoffComponentEuclid_eq_zero_off_cutoffChartKernelEuclid
     set b : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hb_def
     have hb_notin : b ∉ tsupport (cutoffComponentScalar (I := I) (M := M)
         g r s S α Idx Jdx) := by
-      intro hb_supp
+      intro hb_support
       apply hy
       refine ⟨extChartAt I α b, ?_, ?_⟩
       · exact cutoffComponentScalar_chartImage_subset_kernel
-          (I := I) (M := M) g r s S α Idx Jdx ⟨b, hb_supp, rfl⟩
+          (I := I) (M := M) g r s S α Idx Jdx ⟨b, hb_support, rfl⟩
       · have hmem : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
           DifferentialGeometry.Analysis.Laplacian.MetricExtension.toEuclidean_symm_mem_target
             (I := I) (M := M) htar

@@ -485,11 +485,11 @@ private lemma isOpen_interior_M' : IsOpen (I.interior M) :=
 
 omit [Module.Finite ℝ E] in
 private lemma extChartAt_mem_interior_target_of_interior
-    (α : M) {x : M} (hx_src : x ∈ (chartAt H α).source)
+    (α : M) {x : M} (hx_source : x ∈ (chartAt H α).source)
     (hx_int : x ∈ I.interior M) :
     extChartAt I α x ∈ interior (extChartAt I α).target :=
   extChartAt_mem_interior_target_of_isInteriorPoint
-    (I := I) α hx_src hx_int
+    (I := I) α hx_source hx_int
 
 private lemma gradFun_eq_gradChartLocalWithin_on_chart_inter_interior
     (g : SmoothRiemannianMetric I M) (x₀ : M)

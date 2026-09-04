@@ -103,12 +103,12 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
     uSeq := fun _ => u
     fSeq := fun _ => f
     u_seq_smooth := fun _ => hu_smooth
-    is_smooth_weak_sol := fun _ => ?_
-    f_seq_l2_loc := fun _ {S} _hS_cc =>
+    is_smooth_weak_solution := fun _ => ?_
+    f_seq_l2_local := fun _ {S} _hS_cc =>
       memLp_two_restrict_of_continuous_compactSupport hf_cont hf_cs S
-    u_seq_l2_loc := fun _ {S} _hS_cc =>
+    u_seq_l2_local := fun _ {S} _hS_cc =>
       memLp_two_restrict_of_continuous_compactSupport hu_cont hu_cs S
-    grad_seq_l2_loc := fun _ {S} _hS_cc j =>
+    grad_seq_l2_local := fun _ {S} _hS_cc j =>
       memLp_two_restrict_of_continuous_compactSupport
         (h_grad_cont j) (hu_grad_cs j) S
     dataBound := D
@@ -116,8 +116,8 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
     data_integrated_bound := ?_
   }⟩
   · refine ⟨hu_smooth, ?_⟩
-    intro φ hφ_smooth hφ_cs hφ_supp
-    exact h_weak φ hφ_smooth hφ_cs hφ_supp
+    intro φ hφ_smooth hφ_cs hφ_support
+    exact h_weak φ hφ_smooth hφ_cs hφ_support
   · intro Ω' hΩ'_open hΩ'_cc
     have h_volume_lt_top : volume Ω' < ⊤ :=
       lt_of_le_of_lt (measure_mono subset_closure) hΩ'_cc.measure_lt_top

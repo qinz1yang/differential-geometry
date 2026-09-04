@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set
 open scoped Topology
@@ -102,5 +102,5 @@ theorem seqCenter_dead
     | none => rfl
     | some c => simp [hc, hgamma] at hk
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

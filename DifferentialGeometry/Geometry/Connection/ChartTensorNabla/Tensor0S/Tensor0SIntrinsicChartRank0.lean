@@ -98,10 +98,10 @@ private lemma evalEmpty_chartPullback_eventually_eq_scalar
   set φ := extChartAt I α
   have hBase_open : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
     (trivializationAt E (TangentSpace I) α).open_baseSet
-  have hTgt_int_open : IsOpen (interior (φ.target : Set E)) := isOpen_interior
-  have hb_src : b ∈ φ.source :=
+  have hTarget_int_open : IsOpen (interior (φ.target : Set E)) := isOpen_interior
+  have hb_source : b ∈ φ.source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
-  have hb_tgt_int : φ b ∈ interior (φ.target : Set E) :=
+  have hb_target_int : φ b ∈ interior (φ.target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
@@ -110,12 +110,12 @@ private lemma evalEmpty_chartPullback_eventually_eq_scalar
   have hOpen_inter :
       IsOpen (interior (φ.target : Set E) ∩
               φ.symm ⁻¹' (trivializationAt E (TangentSpace I) α).baseSet) :=
-    hCont_on_int.isOpen_inter_preimage hTgt_int_open hBase_open
+    hCont_on_int.isOpen_inter_preimage hTarget_int_open hBase_open
   have hMem :
       φ b ∈ interior (φ.target : Set E) ∩
               φ.symm ⁻¹' (trivializationAt E (TangentSpace I) α).baseSet := by
-    refine ⟨hb_tgt_int, ?_⟩
-    rw [Set.mem_preimage, φ.left_inv hb_src]
+    refine ⟨hb_target_int, ?_⟩
+    rw [Set.mem_preimage, φ.left_inv hb_source]
     exact hb_base
   refine Filter.eventually_of_mem (hOpen_inter.mem_nhds hMem) ?_
   rintro y ⟨_hy_int, hy_base⟩
@@ -195,9 +195,9 @@ theorem tensor0SIntrinsicChartCLM_zero_apply_empty_eq_mfderiv
   set scalarFn : M → ℝ := fun b' : M =>
     Tensor0SSpace.eval (T b') (fun i : Fin 0 => Fin.elim0 i)
   set v0 : E := trivToE (I := I) α b v
-  have hb_src : b ∈ (chartAt H α).source :=
+  have hb_source : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
-  have hb_tgt_int : φ b ∈ interior (φ.target : Set E) :=
+  have hb_target_int : φ b ∈ interior (φ.target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
@@ -234,7 +234,7 @@ theorem tensor0SIntrinsicChartCLM_zero_apply_empty_eq_mfderiv
     mdifferentiableAt_scalarFn_of_tensorSectionMDiffAt
       (I := I) (M := M) α T (b := b) hb hT_at
   exact (mfderiv_scalar_eq_chart_fderiv (I := I) α scalarFn (x := b)
-    hb_src hb_tgt_int hscalarFn_at v).symm
+    hb_source hb_target_int hscalarFn_at v).symm
 
 end Connection
 end Geometry

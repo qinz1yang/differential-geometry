@@ -109,13 +109,13 @@ private lemma cutoffComponentEuclid_memLp_section
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma chosenWeakPartial'_cutoffComponentEuclid_section_ae_eq
+private lemma chosenWeakPartialOrZero_cutoffComponentEuclid_section_ae_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
     (k : Fin (Module.finrank ℝ E)) :
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α)
       =ᵐ[chartLebesgueMeasure (I := I) (M := M) α]
@@ -126,7 +126,7 @@ private lemma chosenWeakPartial'_cutoffComponentEuclid_section_ae_eq
     cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx with hu_def
   have hu_smooth : ContDiff ℝ (⊤ : ℕ∞) u :=
     cutoffComponentEuclid_contDiff_section (I := I) (M := M) g r s S α Idx Jdx
-  have hu_cpt : HasCompactSupport u :=
+  have hu_compact : HasCompactSupport u :=
     cutoffComponentEuclid_hasCompactSupport_section (I := I) (M := M)
       g r s S α Idx Jdx
   have hu_tsupp : tsupport u ⊆ chartTargetEuclid (I := I) (M := M) α :=
@@ -139,7 +139,7 @@ private lemma chosenWeakPartial'_cutoffComponentEuclid_section_ae_eq
   have hu_W1 : MemWkp (d := Module.finrank ℝ E) 1 2 u
       (chartTargetEuclid (I := I) (M := M) α) :=
     MemWkp_of_smooth_compactSupport (d := Module.finrank ℝ E) hΩ_open
-      hu_smooth hu_cpt hu_tsupp hp_one 1
+      hu_smooth hu_compact hu_tsupp hp_one 1
   have hu_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 u
       (chartTargetEuclid (I := I) (M := M) α) :=
     MemWkp.one_iff_memW1p.mp hu_W1
@@ -218,12 +218,12 @@ lemma chartPushedRaw_pou_eq_zero_off_chartPouKernel
             (I := I) (M := M) htar
         exact (extChartAt I α).right_inv hmem
       · exact toEuclidean.apply_symm_apply y
-    have hb_supp : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∉
+    have hb_support : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∉
         Function.support
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) :=
       fun hc => hb (subset_tsupport _ hc)
     by_contra hc
-    exact hb_supp hc
+    exact hb_support hc
   · rw [chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ htar]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -369,7 +369,7 @@ private lemma integrable_euclidPartial_crossRightTestGradTerm_mul_test
     (l : Fin (Module.finrank ℝ E))
     {φ : EuclN → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
     (hφ_cs : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hφ_support : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Integrable
       (fun y => euclidPartial (E := E) l
           (fun z => densityOnEuclid (I := I) g α z *
@@ -384,7 +384,7 @@ private lemma integrable_euclidPartial_crossRightTestGradTerm_mul_test
     contDiff_partial_coeff_mul_test (I := I) (M := M) α l
       (densityOnEuclid_mul_crossRightTestGradTerm_contDiffOn
         (I := I) (M := M) g r s S α P₀ l)
-      hφ.contDiffOn hφ_supp
+      hφ.contDiffOn hφ_support
   have hsupp : HasCompactSupport
       (fun y => euclidPartial (E := E) l
           (fun z => densityOnEuclid (I := I) g α z *
@@ -401,7 +401,7 @@ theorem crossRightTestGradTerm_byParts
     (P₀ : TensorCompIdx (E := E) r s)
     {φ : EuclN → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ)
     (hφ_cs : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hφ_support : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∑ l : Fin (Module.finrank ℝ E),
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
@@ -428,7 +428,7 @@ theorem crossRightTestGradTerm_byParts
     have hbyParts := chartTarget_integral_byParts (I := I) (M := M) α l
       (densityOnEuclid_mul_crossRightTestGradTerm_contDiffOn
         (I := I) (M := M) g r s S α P₀ l)
-      hφ.contDiffOn hφ_cs hφ_supp
+      hφ.contDiffOn hφ_cs hφ_support
     rw [DifferentialGeometry.Integral.Measure.map_toEuclidean_modelHaar_eq_volume
       (E := E)] at hbyParts
     exact hbyParts
@@ -452,7 +452,7 @@ theorem crossRightTestGradTerm_byParts
     simp only [Finset.sum_mul]
   rw [hsum_eq, MeasureTheory.integral_finsetSum _ (fun l _ =>
     (integrable_euclidPartial_crossRightTestGradTerm_mul_test
-      (I := I) (M := M) g r s S α P₀ l hφ hφ_cs hφ_supp).restrict)]
+      (I := I) (M := M) g r s S α P₀ l hφ hφ_cs hφ_support).restrict)]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -646,10 +646,10 @@ private lemma euclidPartial_cutoffComponentEuclid_approx_memLp
             g r s i n).toCcTensor α P.1 P.2)) 2
       (chartLebesgueMeasure (I := I) (M := M) α) :=
   MemLp.ae_eq
-    (chosenWeakPartial'_cutoffComponentEuclid_section_ae_eq (I := I) (M := M)
+    (chosenWeakPartialOrZero_cutoffComponentEuclid_section_ae_eq (I := I) (M := M)
       g r s (eigenvectorSmoothApprox (I := I) (M := M)
         g r s i n).toCcTensor α P.1 P.2 k)
-    (chosenWeakPartial'_cutoffComponentEuclid_memLp (I := I) (M := M) g r s
+    (chosenWeakPartialOrZero_cutoffComponentEuclid_memLp (I := I) (M := M) g r s
       (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
       α P.1 P.2 k)
 
@@ -890,7 +890,7 @@ private lemma tendsto_cutoffPartialSummand
     · rw [hci_def, Set.indicator_of_notMem hy, hc_zero y hy]
   have h_part_tendsto :
       Filter.Tendsto
-        (fun n => (chosenWeakPartial'_cutoffComponentEuclid_memLp (I := I) (M := M)
+        (fun n => (chosenWeakPartialOrZero_cutoffComponentEuclid_memLp (I := I) (M := M)
           g r s
           (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
           α P.1 P.2 k).toLp _)
@@ -907,14 +907,14 @@ private lemma tendsto_cutoffPartialSummand
               (smoothToTensorH1Compl (I := I) (M := M) g r s
                 (eigenvectorSmoothApprox (I := I) (M := M)
                   g r s i n))) =
-          (chosenWeakPartial'_cutoffComponentEuclid_memLp (I := I) (M := M)
+          (chosenWeakPartialOrZero_cutoffComponentEuclid_memLp (I := I) (M := M)
             g r s
             (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
             α P.1 P.2 k).toLp _ := by
       intro n
       rw [eigenvectorCutoffChartPartialLp_approx_eq (I := I) (M := M)
         g r s i α P k n, smul_smul, mul_inv_cancel₀ i.fst.val_ne_zero, one_smul]
-    rw [show (fun n => (chosenWeakPartial'_cutoffComponentEuclid_memLp (I := I) (M := M)
+    rw [show (fun n => (chosenWeakPartialOrZero_cutoffComponentEuclid_memLp (I := I) (M := M)
           g r s
           (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
           α P.1 P.2 k).toLp _) =
@@ -930,7 +930,7 @@ private lemma tendsto_cutoffPartialSummand
     h_part_tendsto
   have h_term : ∀ n : ℕ,
       (memLp_bdd_mul (I := I) (M := M) α hC_nn hci_bd hci_meas
-        (Lp.memLp ((chosenWeakPartial'_cutoffComponentEuclid_memLp (I := I) (M := M)
+        (Lp.memLp ((chosenWeakPartialOrZero_cutoffComponentEuclid_memLp (I := I) (M := M)
           g r s
           (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
           α P.1 P.2 k).toLp _))).toLp _ =
@@ -939,7 +939,7 @@ private lemma tendsto_cutoffPartialSummand
     apply Lp.ext
     refine (MemLp.coeFn_toLp _).trans (Filter.EventuallyEq.trans ?_
       (MemLp.coeFn_toLp _).symm)
-    have hpart : (((chosenWeakPartial'_cutoffComponentEuclid_memLp (I := I) (M := M)
+    have hpart : (((chosenWeakPartialOrZero_cutoffComponentEuclid_memLp (I := I) (M := M)
         g r s
         (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
         α P.1 P.2 k).toLp _ :
@@ -950,7 +950,7 @@ private lemma tendsto_cutoffPartialSummand
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α P.1 P.2) := by
       refine (MemLp.coeFn_toLp _).trans ?_
-      exact chosenWeakPartial'_cutoffComponentEuclid_section_ae_eq (I := I) (M := M)
+      exact chosenWeakPartialOrZero_cutoffComponentEuclid_section_ae_eq (I := I) (M := M)
         g r s (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor α P.1 P.2 k
     filter_upwards [hpart] with y hy
@@ -962,7 +962,7 @@ private lemma tendsto_cutoffPartialSummand
     apply Lp.ext
     exact (MemLp.coeFn_toLp _).trans (MemLp.coeFn_toLp _).symm
   rw [show (fun n => (memLp_bdd_mul (I := I) (M := M) α hC_nn hci_bd hci_meas
-        (Lp.memLp ((chosenWeakPartial'_cutoffComponentEuclid_memLp (I := I) (M := M)
+        (Lp.memLp ((chosenWeakPartialOrZero_cutoffComponentEuclid_memLp (I := I) (M := M)
           g r s
           (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
           α P.1 P.2 k).toLp _))).toLp _) =

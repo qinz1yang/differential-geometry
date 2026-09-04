@@ -29,7 +29,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
+theorem lRegularizedAction_minimizer_velocity_eq_at_partition_nodes
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 3) → Real)
     (ht0 : t 0 = a) (htlast : t (Fin.last (m + 2)) = b)
@@ -45,7 +45,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b)
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b)
     (q : Fin (m + 1)) :
     tangentCoordChange I (p q.castSucc) (p q.succ)
         (gamma (t q.succ.castSucc))
@@ -97,7 +97,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
   have hlocal1 : IsLocalMinOn
       (lChartAction S T (t j.castSucc) (p j))
       (sameTimeEnds (u j)) (u j) :=
-    lChartAction_isLocalMinOn_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T a b t htmono ht0 htlast
+    lChartAction_isLocalMinOn_of_lRegularizedAction_minimizer (I := I) S hS.smoothMetric hSc T a b t htmono ht0 htlast
       p gamma hgamma u hsrc hrep hreg hmin j hpos1
   have hreg1 : ∀ r, r ∈ Icc (0 : Real) (partitionIntervalLength t j) →
       T - (t j.castSucc + r) ^ 2 ∈ D.regular := by
@@ -324,7 +324,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
           lChartAction S T s p0 w := by
       subst y
       rfl
-    have hcmp := lChartAction_refined_adjacent_pair_le_of_lRegAction_minimizer (I := I) S hS.smoothMetric hSc T a b t htmono
+    have hcmp := lChartAction_refined_adjacent_pair_le_of_lRegularizedAction_minimizer (I := I) S hS.smoothMetric hSc T a b t htmono
       ht0 htlast p gamma hgamma u hsrc hrep hreg hmin q c hpos0 hc0 hc1
       uHead hsrcHead
       (by
@@ -384,10 +384,10 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       huHeadC1 hu1c1
     simpa only [gammaHead, add_zero] using
       hchange ⟨le_rfl, sub_nonneg.mpr hc0.le⟩
-  have hpSrc : gamma (t j.castSucc) ∈ (extChartAt I (p i)).source := by
+  have hpSource : gamma (t j.castSucc) ∈ (extChartAt I (p i)).source := by
     rw [extChartAt_source]
     exact hpNode
-  have hqSrc : gamma (t j.castSucc) ∈ (extChartAt I (p j)).source := by
+  have hqSource : gamma (t j.castSucc) ∈ (extChartAt I (p j)).source := by
     rw [extChartAt_source]
     exact hsrc j ⟨le_rfl, hpos1.le⟩
   have hu0Node : (u i).toFun (partitionIntervalLength t i) =
@@ -412,8 +412,8 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
       J (Jrev y) =
           tangentCoordChange I (p j) (p j) (gamma (t j.castSucc)) y :=
         tangentCoordChange_comp (I := I) (w := p j) (x := p i)
-          (y := p j) (z := gamma (t j.castSucc)) ⟨⟨hqSrc, hpSrc⟩, hqSrc⟩
-      _ = y := tangentCoordChange_self (I := I) hqSrc
+          (y := p j) (z := gamma (t j.castSucc)) ⟨⟨hqSource, hpSource⟩, hqSource⟩
+      _ = y := tangentCoordChange_self (I := I) hqSource
   have hmomCoord : chartGramOp (I := I) S.family (p i)
         (T - (t j.castSucc) ^ 2, extChartAt I (p i) (gamma (t j.castSucc))) v₀ =
       chartGramOp (I := I) S.family (p i)
@@ -442,7 +442,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
           (chartGramOp (I := I) S.family (p i)
             (T - (t j.castSucc) ^ 2, extChartAt I (p i) (gamma (t j.castSucc)))
             v₀) z :=
-        (chartGramOp_change (I := I) S.family hpSrc hqSrc
+        (chartGramOp_change (I := I) S.family hpSource hqSource
           (T - (t j.castSucc) ^ 2) v₀ z).symm
       _ = inner Real
           (chartGramOp (I := I) S.family (p i)
@@ -452,7 +452,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
           (chartGramOp (I := I) S.family (p j)
             (T - (t j.castSucc) ^ 2, extChartAt I (p j) (gamma (t j.castSucc)))
             (J vh)) (J z) :=
-        chartGramOp_change (I := I) S.family hpSrc hqSrc
+        chartGramOp_change (I := I) S.family hpSource hqSource
           (T - (t j.castSucc) ^ 2) vh z
       _ = inner Real
           (chartGramOp (I := I) S.family (p j)
@@ -464,7 +464,7 @@ theorem lRegAction_minimizer_velocity_eq_at_partition_nodes
   have htarget : extChartAt I (p j) (gamma (t j.castSucc)) ∈
       interior (extChartAt I (p j)).target := by
     rw [(isOpen_extChartAt_target (I := I) (p j)).interior_eq]
-    exact (extChartAt I (p j)).map_source hqSrc
+    exact (extChartAt I (p j)).map_source hqSource
   have hunit : IsUnit
       (chartGramOp (I := I) S.family (p j)
         (T - (t j.castSucc) ^ 2, extChartAt I (p j) (gamma (t j.castSucc)))) :=

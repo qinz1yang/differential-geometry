@@ -104,30 +104,30 @@ private lemma iterWeakPartial_cross_exponent_ae_eq
         rw [MemWkp_succ] at hfp; exact hfp.1
       have hfp'_W1 : DeGiorgi.MemW1p p' f Ω := by
         rw [MemWkp_succ] at hfp'; exact hfp'.1
-      have h_chosen_ae : chosenWeakPartial' (d := d) p (β 0) f Ω
+      have h_chosen_ae : chosenWeakPartialOrZero (d := d) p (β 0) f Ω
           =ᵐ[(MeasureTheory.volume :
                 MeasureTheory.Measure (EuclideanSpace ℝ (Fin d))).restrict Ω]
-          chosenWeakPartial' (d := d) p' (β 0) f Ω :=
-        Analysis.Sobolev.Chart.EuclideanIterated.chosenWeakPartial'_cross_exponent_ae_eq
+          chosenWeakPartialOrZero (d := d) p' (β 0) f Ω :=
+        Analysis.Sobolev.Chart.EuclideanIterated.chosenWeakPartialOrZero_cross_exponent_ae_eq
           (d := d) hp_one hp'_one hΩ_open hfp_W1 hfp'_W1 (β 0)
       have hg_memWkp_p : MemWkp (d := d) j p
-          (chosenWeakPartial' (d := d) p (β 0) f Ω) Ω := by
+          (chosenWeakPartialOrZero (d := d) p (β 0) f Ω) Ω := by
         rw [MemWkp_succ] at hfp; exact hfp.2 (β 0)
       have hg_memWkp_p' : MemWkp (d := d) j p'
-          (chosenWeakPartial' (d := d) p' (β 0) f Ω) Ω := by
+          (chosenWeakPartialOrZero (d := d) p' (β 0) f Ω) Ω := by
         rw [MemWkp_succ] at hfp'; exact hfp'.2 (β 0)
       have hg_memWkp_p_of_p' : MemWkp (d := d) j p
-          (chosenWeakPartial' (d := d) p' (β 0) f Ω) Ω :=
+          (chosenWeakPartialOrZero (d := d) p' (β 0) f Ω) Ω :=
         (MemWkp_congr_ae (d := d) hp_one hΩ_open h_chosen_ae).mp hg_memWkp_p
       have h_bridge1 : iterWeakPartial (d := d) p j (fun i : Fin j => β i.succ)
-            (chosenWeakPartial' (d := d) p (β 0) f Ω) Ω
+            (chosenWeakPartialOrZero (d := d) p (β 0) f Ω) Ω
           =ᵐ[(MeasureTheory.volume :
                 MeasureTheory.Measure (EuclideanSpace ℝ (Fin d))).restrict Ω]
           iterWeakPartial (d := d) p j (fun i : Fin j => β i.succ)
-            (chosenWeakPartial' (d := d) p' (β 0) f Ω) Ω :=
+            (chosenWeakPartialOrZero (d := d) p' (β 0) f Ω) Ω :=
         iterWeakPartial_ae_congr (d := d) hp_one hΩ_open j
           (fun i : Fin j => β i.succ) h_chosen_ae
-      have h_bridge2 := ih (f := chosenWeakPartial' (d := d) p' (β 0) f Ω)
+      have h_bridge2 := ih (f := chosenWeakPartialOrZero (d := d) p' (β 0) f Ω)
         hg_memWkp_p_of_p' hg_memWkp_p' (fun i : Fin j => β i.succ)
       exact h_bridge1.trans h_bridge2
 
@@ -137,7 +137,7 @@ private lemma iterWeakPartial_ae_zero_on_sdiff_K
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ_open : IsOpen Ω)
     {K : Set (EuclideanSpace ℝ (Fin d))} (hK_closed : IsClosed K)
     {j : ℕ} {f : EuclideanSpace ℝ (Fin d) → ℝ}
-    (hf_supp : tsupport f ⊆ K)
+    (hf_support : tsupport f ⊆ K)
     (hf_mem : MemWkp (d := d) j p f Ω) (β : Fin j → Fin d) :
     iterWeakPartial (d := d) p j β f Ω
       =ᵐ[(MeasureTheory.volume :
@@ -152,47 +152,47 @@ private lemma iterWeakPartial_ae_zero_on_sdiff_K
       refine Filter.Eventually.of_forall ?_
       intro x hx
       have hx_notK : x ∉ K := hx.2
-      have hx_notsupp : x ∉ tsupport f := fun h => hx_notK (hf_supp h)
+      have hx_notsupp : x ∉ tsupport f := fun h => hx_notK (hf_support h)
       exact image_eq_zero_of_notMem_tsupport hx_notsupp
   | succ j ih =>
       rw [iterWeakPartial_succ]
       have hfW1p : DeGiorgi.MemW1p p f Ω := by
         rw [MemWkp_succ] at hf_mem; exact hf_mem.1
       have h_chosen_mem : MemWkp (d := d) j p
-          (chosenWeakPartial' (d := d) p (β 0) f Ω) Ω := by
+          (chosenWeakPartialOrZero (d := d) p (β 0) f Ω) Ω := by
         rw [MemWkp_succ] at hf_mem; exact hf_mem.2 (β 0)
-      have h_partial_ae_zero_off_supp :
-          chosenWeakPartial' (d := d) p (β 0) f Ω
+      have h_partial_ae_zero_off_support :
+          chosenWeakPartialOrZero (d := d) p (β 0) f Ω
             =ᵐ[(MeasureTheory.volume :
                   MeasureTheory.Measure
                     (EuclideanSpace ℝ (Fin d))).restrict (Ω \ tsupport f)]
             (fun _ => (0 : ℝ)) :=
-        chosenWeakPartial'_ae_zero_on_sdiff_tsupport (d := d) hp_one hΩ_open
+        chosenWeakPartialOrZero_ae_zero_on_sdiff_tsupport (d := d) hp_one hΩ_open
           hfW1p (β 0)
       have h_subset : Ω \ K ⊆ Ω \ tsupport f := by
         intro x hx
         refine ⟨hx.1, ?_⟩
         intro hxsupp
-        exact hx.2 (hf_supp hxsupp)
+        exact hx.2 (hf_support hxsupp)
       have h_partial_ae_zero_off_K :
-          chosenWeakPartial' (d := d) p (β 0) f Ω
+          chosenWeakPartialOrZero (d := d) p (β 0) f Ω
             =ᵐ[(MeasureTheory.volume :
                   MeasureTheory.Measure
                     (EuclideanSpace ℝ (Fin d))).restrict (Ω \ K)]
             (fun _ => (0 : ℝ)) :=
         MeasureTheory.ae_restrict_of_ae_restrict_of_subset h_subset
-          h_partial_ae_zero_off_supp
+          h_partial_ae_zero_off_support
       have hKmeas : MeasurableSet K := hK_closed.measurableSet
       set g : EuclideanSpace ℝ (Fin d) → ℝ :=
-        chosenWeakPartial' (d := d) p (β 0) f Ω with hg_def
+        chosenWeakPartialOrZero (d := d) p (β 0) f Ω with hg_def
       set gK : EuclideanSpace ℝ (Fin d) → ℝ := K.indicator g with hgK_def
-      have h_gK_supp : tsupport gK ⊆ K := by
-        have h_supp_sub : Function.support gK ⊆ K := by
+      have h_gK_support : tsupport gK ⊆ K := by
+        have h_support_sub : Function.support gK ⊆ K := by
           intro x hx
           by_contra hxK
           exact hx (Set.indicator_of_notMem hxK _)
         calc tsupport gK = closure (Function.support gK) := rfl
-          _ ⊆ closure K := closure_mono h_supp_sub
+          _ ⊆ closure K := closure_mono h_support_sub
           _ = K := hK_closed.closure_eq
       have h_g_eq_gK : g =ᵐ[(MeasureTheory.volume :
             MeasureTheory.Measure
@@ -222,7 +222,7 @@ private lemma iterWeakPartial_ae_zero_on_sdiff_K
                 MeasureTheory.Measure
                   (EuclideanSpace ℝ (Fin d))).restrict (Ω \ K)]
           (fun _ => (0 : ℝ)) :=
-        ih (f := gK) h_gK_supp h_gK_memWkp (fun i : Fin j => β i.succ)
+        ih (f := gK) h_gK_support h_gK_memWkp (fun i : Fin j => β i.succ)
       have h_iter_g_vs_gK_onΩ : iterWeakPartial (d := d) p j
             (fun i : Fin j => β i.succ) g Ω
           =ᵐ[(MeasureTheory.volume :
@@ -247,7 +247,7 @@ private lemma iterWeakPartial_ae_eq_indicator
     {Ω : Set (EuclideanSpace ℝ (Fin d))} (hΩ_open : IsOpen Ω)
     {K : Set (EuclideanSpace ℝ (Fin d))} (hK_closed : IsClosed K)
     {j : ℕ} {f : EuclideanSpace ℝ (Fin d) → ℝ}
-    (hf_supp : tsupport f ⊆ K)
+    (hf_support : tsupport f ⊆ K)
     (hf_mem : MemWkp (d := d) j p f Ω) (β : Fin j → Fin d) :
     iterWeakPartial (d := d) p j β f Ω
       =ᵐ[(MeasureTheory.volume :
@@ -261,7 +261,7 @@ private lemma iterWeakPartial_ae_eq_indicator
             MeasureTheory.Measure (EuclideanSpace ℝ (Fin d))).restrict (Ω \ K)]
       (fun _ => (0 : ℝ)) :=
     iterWeakPartial_ae_zero_on_sdiff_K (d := d) hp_one hΩ_open hK_closed
-      hf_supp hf_mem β
+      hf_support hf_mem β
   have h_zero_off' : ∀ᵐ x ∂((MeasureTheory.volume :
         MeasureTheory.Measure (EuclideanSpace ℝ (Fin d))).restrict (Ω \ K)),
       iterWeakPartial (d := d) p j β f Ω x = 0 := by
@@ -285,7 +285,7 @@ private lemma eLpNorm_iterWeakPartial_mono_exponent
     (hp'_le_p : p' ≤ p)
     {k : ℕ} {f : EuclideanSpace ℝ (Fin d) → ℝ}
     (hfp : MemWkp (d := d) k p f Ω) (hfp' : MemWkp (d := d) k p' f Ω)
-    (hf_supp : tsupport f ⊆ K)
+    (hf_support : tsupport f ⊆ K)
     {j : ℕ} (hjk : j ≤ k) (β : Fin j → Fin d) :
     eLpNorm (iterWeakPartial (d := d) p' j β f Ω) p'
         ((MeasureTheory.volume :
@@ -316,7 +316,7 @@ private lemma eLpNorm_iterWeakPartial_mono_exponent
             MeasureTheory.Measure (EuclideanSpace ℝ (Fin d))).restrict Ω]
       K.indicator (iterWeakPartial (d := d) p j β f Ω) :=
     iterWeakPartial_ae_eq_indicator (d := d) hp_one hΩ_open hK_closed
-      hf_supp hfp_j β
+      hf_support hfp_j β
   have h_eq2 : eLpNorm (iterWeakPartial (d := d) p j β f Ω) p'
         ((MeasureTheory.volume :
             MeasureTheory.Measure (EuclideanSpace ℝ (Fin d))).restrict Ω) =
@@ -463,7 +463,7 @@ theorem wkpNorm_chartPushed_mono_exponent_holder
           (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict Ω] fR := by
     rw [hf_def, hfR_def]
     exact chartPushed_ae_eq_fRaw (I := I) (M := M) α u
-  have h_fR_supp : tsupport fR ⊆ Kset := by
+  have h_fR_support : tsupport fR ⊆ Kset := by
     rw [hfR_def, hKset_def]
     exact fRaw_tsupport_subset_K (I := I) (M := M) α u
   have h_Cenn_eq_ofReal : Cenn = ENNReal.ofReal Cenn.toReal := by
@@ -486,7 +486,7 @@ theorem wkpNorm_chartPushed_mono_exponent_holder
       exact hp_top (top_le_iff.mp hp'_le_p)
     exact EuclideanIteratedMonoExp.memWkp_mono_exponent_of_tsupport_subset
       (d := Module.finrank ℝ E) k hΩ_open hK_closed hK_vol_lt_top
-      hp'_one hp'_le_p h_fR_supp h_fR_memWkp_p
+      hp'_one hp'_le_p h_fR_support h_fR_memWkp_p
   rw [show (DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
       (d := Module.finrank ℝ E) k p' fR Ω) =
       ∑ j ∈ Finset.range (k + 1),
@@ -513,7 +513,7 @@ theorem wkpNorm_chartPushed_mono_exponent_holder
     rw [Finset.mem_range] at hj; omega
   have h_per := eLpNorm_iterWeakPartial_mono_exponent
     (d := Module.finrank ℝ E) hΩ_open hK_closed hK_subset
-    hp_one hp'_one hp'_le_p h_fR_memWkp_p h_fR_memWkp_p' h_fR_supp hj_le_k β
+    hp_one hp'_one hp'_le_p h_fR_memWkp_p h_fR_memWkp_p' h_fR_support hj_le_k β
   have h_Cenn_id : MeasureTheory.volume Kset ^ (1 / p'.toReal - 1 / p.toReal) =
       ENNReal.ofReal Cenn.toReal := by
     rw [← hδ_def, ← hCenn_def, ← h_Cenn_eq_ofReal]

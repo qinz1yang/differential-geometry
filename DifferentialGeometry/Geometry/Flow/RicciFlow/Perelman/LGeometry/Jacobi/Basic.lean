@@ -162,7 +162,7 @@ noncomputable def lJacobiPair
       S.base.rm04 t (gamma tau) (vec4 (Y tau) X X W) -
     (1 / 2 : Real) *
       hessianSec (I := I) cov (metricCov_smooth (I := I) g)
-        (S.scalar t) (scalarSmoothOfSol (I := I) S t) (gamma tau)
+        (S.scalar t) (scalarSmoothOfSolution (I := I) S t) (gamma tau)
         (vec2 (Y tau) W) +
     (1 / (2 * tau)) * g.inner (gamma tau) DY W +
     2 * S.ricciAt t (gamma tau) (vec2 DY W) -
@@ -431,7 +431,7 @@ theorem lJacobiPair_squareReparametrization
             (squareReparametrization gamma) (fun u : Real ↦ Y (u ^ 2)) r) s) s)
     (W : TangentSpace I (gamma (s ^ 2))) :
     4 * s ^ 2 * lJacobiPair S T gamma Y (s ^ 2) W =
-      lRegJacobiPair S T (squareReparametrization gamma)
+      lRegularizedJacobiPair S T (squareReparametrization gamma)
         (fun r : Real ↦ Y (r ^ 2)) s W := by
   classical
   let tau : Real := s ^ 2
@@ -466,7 +466,7 @@ theorem lJacobiPair_squareReparametrization
   let Hess : Real :=
     hessianSec (I := I) (S.base.connection (T - tau))
       (metricCov_smooth (I := I) q)
-      (S.scalar (T - tau)) (scalarSmoothOfSol (I := I) S (T - tau))
+      (S.scalar (T - tau)) (scalarSmoothOfSolution (I := I) S (T - tau))
       (gamma tau) (vec2 (Y tau) W)
   let R : Real := Rm (vec4 (Y tau) X X W)
   let RicD : Real := Ric (vec2 (DY tau) W)
@@ -599,7 +599,7 @@ theorem lJacobiPair_squareReparametrization
     rw [hAs, hRm2, hRm1]
     simp only [c]
     ring
-  simp only [lJacobiPair, lRegJacobiPair]
+  simp only [lJacobiPair, lRegularizedJacobiPair]
   change 4 * s ^ 2 *
       (D2 + R - (1 / 2 : Real) * Hess +
         (1 / (2 * s ^ 2)) * U + 2 * RicD - N0 + N1 + N2) =
@@ -786,7 +786,7 @@ theorem hasLJacobiAt_of_squareReparametrization
     (hA : DifferentiableAt Real
       (chartRepAt (I := I) (squareReparametrization gamma)
         (fun r : Real ↦ lVelocity (I := I) (squareReparametrization gamma) r) s) s)
-    (hreg : HasLRegJacobiAt S T (squareReparametrization gamma)
+    (hreg : HasLRegularizedJacobiAt S T (squareReparametrization gamma)
       (fun r : Real ↦ Y (r ^ 2)) s) :
     HasLJacobiAt S T gamma Y (s ^ 2) := by
   rcases hreg with ⟨_, _, hZ, hzero⟩

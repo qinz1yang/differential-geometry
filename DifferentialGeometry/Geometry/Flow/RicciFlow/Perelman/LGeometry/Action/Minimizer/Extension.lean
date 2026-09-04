@@ -46,7 +46,7 @@ private theorem phase_of_germ
             (fun s ↦ lVelocity (I := I) beta s) r) r ∧
         covDerivAlong (I := I) (S.base.metric (T - r ^ 2)) beta
             (fun s ↦ lVelocity (I := I) beta s) r =
-          lRegAccel S T r (beta r) (lVelocity (I := I) beta r)) :
+          lRegularizedAccel S T r (beta r) (lVelocity (I := I) beta r)) :
     HasDerivAt
       (fun s ↦ (chartCurve (I := I) x alpha s, v s))
       (lPhaseField S T x r (chartCurve (I := I) x alpha r, v r)) r := by
@@ -64,7 +64,7 @@ private theorem phase_of_germ
   have hphase : HasDerivAt zbeta
       (lPhaseField S T x r (zbeta r)) r := by
     simpa only [zbeta, X] using
-      lRegCurve_phase (I := I) S T x beta r
+      lRegularizedCurve_phase (I := I) S T x beta r
         hsol.1 hsrc hsol.2.1 hsol.2.2
   have hphase' := hphase.congr_of_eventuallyEq hz
   exact hphase'.congr_deriv (by
@@ -73,7 +73,7 @@ private theorem phase_of_germ
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem regAt_of_punct
+private theorem regularityAt_of_punct
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T c : Real)
     (alpha : Real → M) (v : Real → E)
@@ -94,7 +94,7 @@ private theorem regAt_of_punct
           (fun s ↦ lVelocity (I := I) alpha s) c) c ∧
       covDerivAlong (I := I) (S.base.metric (T - c ^ 2)) alpha
           (fun s ↦ lVelocity (I := I) alpha s) c =
-        lRegAccel S T c (alpha c) (lVelocity (I := I) alpha c) := by
+        lRegularizedAccel S T c (alpha c) (lVelocity (I := I) alpha c) := by
   let x : M := alpha c
   let X : ∀ r, TangentSpace I (alpha r) :=
     fun r ↦ lVelocity (I := I) alpha r
@@ -176,13 +176,13 @@ private theorem regAt_of_punct
       simpa only [X, x, chartRepAtBase_foot] using hrep)
   have hphase := lPhase_accel (I := I) S T x z c hzder hzc
   have hvelEq : ∀ᶠ r in 𝓝 c,
-      (lPhaseVel (I := I) x z r : E) = (X r : E) := by
+      (lPhaseVelocity (I := I) x z r : E) = (X r : E) := by
     filter_upwards [hsrc, hrep] with r hrsrc hrepr
     have hrbase : alpha r ∈
         (trivializationAt E (TangentSpace I) x).baseSet := by
       rw [TangentBundle.trivializationAt_baseSet]
       exact hrsrc
-    simp only [lPhaseVel, lPhaseCurve, z, q, chartCurve]
+    simp only [lPhaseVelocity, lPhaseCurve, z, q, chartCurve]
     rw [(extChartAt I x).left_inv (by
       simpa only [x, extChartAt_source] using hrsrc)]
     rw [← hrepr]
@@ -192,17 +192,17 @@ private theorem regAt_of_punct
   have hcov :=
     DifferentialGeometry.Geometry.Riemannian.covDerivAlong_congr_curve
       (I := I) (S.base.metric (T - c ^ 2))
-      (lPhaseVel (I := I) x z) X hcurve hvelEq
+      (lPhaseVelocity (I := I) x z) X hcurve hvelEq
   refine ⟨hmdiff, hveldiff, ?_⟩
   change
     (covDerivAlong (I := I) (S.base.metric (T - c ^ 2)) alpha X c : E) =
-      (lRegAccel S T c (alpha c) (X c) : E)
+      (lRegularizedAccel S T c (alpha c) (X c) : E)
   rw [← hcov]
   have hphaseE :
       (covDerivAlong (I := I) (S.base.metric (T - c ^ 2))
-        (lPhaseCurve (I := I) x z) (lPhaseVel (I := I) x z) c : E) =
-        (lRegAccel S T c (lPhaseCurve (I := I) x z c)
-          (lPhaseVel (I := I) x z c) : E) :=
+        (lPhaseCurve (I := I) x z) (lPhaseVelocity (I := I) x z) c : E) =
+        (lRegularizedAccel S T c (lPhaseCurve (I := I) x z c)
+          (lPhaseVelocity (I := I) x z c) : E) :=
     congrArg
       (fun A : TangentSpace I (lPhaseCurve (I := I) x z c) ↦ (A : E)) hphase
   rw [hphaseE, hcurve.self_of_nhds, hvelEq.self_of_nhds]
@@ -211,7 +211,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRegExtOn
+theorem exists_lRegularizedExtOn
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b) (gamma : Real → M)
@@ -224,7 +224,7 @@ theorem exists_lRegExtOn
             (fun r ↦ lVelocity (I := I) gamma r) s) s ∧
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
             (fun r ↦ lVelocity (I := I) gamma r) s =
-          lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s)) :
+          lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s)) :
     ∃ alpha : Real → M,
       EqOn alpha gamma (Icc a b) ∧
         ∃ e : Real, 0 < e ∧
@@ -236,7 +236,7 @@ theorem exists_lRegExtOn
                 (fun r ↦ lVelocity (I := I) alpha r) s) s ∧
             covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
                 (fun r ↦ lVelocity (I := I) alpha r) s =
-              lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
+              lRegularizedAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
   classical
   let xa : M := gamma a
   let xb : M := gamma b
@@ -244,32 +244,32 @@ theorem exists_lRegExtOn
     hc1.continuousOn a ⟨le_rfl, hab.le⟩
   have hgb_cont : ContinuousWithinAt gamma (Icc a b) b :=
     hc1.continuousOn b ⟨hab.le, le_rfl⟩
-  have hga_src0 : gamma a ∈ (chartAt H xa).source := by
+  have hga_source0 : gamma a ∈ (chartAt H xa).source := by
     simpa only [xa] using mem_chart_source H (gamma a)
-  have hgb_src0 : gamma b ∈ (chartAt H xb).source := by
+  have hgb_source0 : gamma b ∈ (chartAt H xb).source := by
     simpa only [xb] using mem_chart_source H (gamma b)
   have hga_pre : gamma ⁻¹' (chartAt H xa).source ∈ 𝓝[Icc a b] a :=
     hga_cont.preimage_mem_nhdsWithin
-      ((chartAt H xa).open_source.mem_nhds hga_src0)
+      ((chartAt H xa).open_source.mem_nhds hga_source0)
   have hgb_pre : gamma ⁻¹' (chartAt H xb).source ∈ 𝓝[Icc a b] b :=
     hgb_cont.preimage_mem_nhdsWithin
-      ((chartAt H xb).open_source.mem_nhds hgb_src0)
+      ((chartAt H xb).open_source.mem_nhds hgb_source0)
   rw [nhdsWithin_Icc_eq_nhdsGE hab] at hga_pre
   rw [nhdsWithin_Icc_eq_nhdsLE hab] at hgb_pre
-  obtain ⟨da0, hada0, hda0_src⟩ := mem_nhdsGE_iff_exists_Icc_subset.mp hga_pre
-  obtain ⟨db0, hdb0b, hdb0_src⟩ := mem_nhdsLE_iff_exists_Icc_subset.mp hgb_pre
+  obtain ⟨da0, hada0, hda0_source⟩ := mem_nhdsGE_iff_exists_Icc_subset.mp hga_pre
+  obtain ⟨db0, hdb0b, hdb0_source⟩ := mem_nhdsLE_iff_exists_Icc_subset.mp hgb_pre
   let da : Real := min da0 b
   let db : Real := max db0 a
   have hada : a < da := by simpa only [da] using lt_min hada0 hab
   have hdbb : db < b := by simpa only [db] using max_lt hdb0b hab
   have hda_le : da ≤ b := min_le_right _ _
   have ha_db : a ≤ db := le_max_right _ _
-  have hda_src : MapsTo gamma (Icc a da) (chartAt H xa).source := by
+  have hda_source : MapsTo gamma (Icc a da) (chartAt H xa).source := by
     intro s hs
-    exact hda0_src ⟨hs.1, hs.2.trans (min_le_left _ _)⟩
-  have hdb_src : MapsTo gamma (Icc db b) (chartAt H xb).source := by
+    exact hda0_source ⟨hs.1, hs.2.trans (min_le_left _ _)⟩
+  have hdb_source : MapsTo gamma (Icc db b) (chartAt H xb).source := by
     intro s hs
-    exact hdb0_src ⟨(le_max_left _ _).trans hs.1, hs.2⟩
+    exact hdb0_source ⟨(le_max_left _ _).trans hs.1, hs.2⟩
   let qa : Real → E := chartCurve (I := I) xa gamma
   let qb : Real → E := chartCurve (I := I) xb gamma
   have hqa1 : ContDiffOn Real 1 qa (Icc a da) := by
@@ -278,7 +278,7 @@ theorem exists_lRegExtOn
         ⟨hs.1, hs.2.trans hda_le⟩))).2 xa).mono
         (fun s hs ↦ ⟨hs, by
           rw [extChartAt_source]
-          exact hda_src hs⟩)
+          exact hda_source hs⟩)
     have h := hchart.contDiffOn
     change ContDiffOn Real 1 qa (Icc a da) at h
     exact h
@@ -288,7 +288,7 @@ theorem exists_lRegExtOn
         ⟨ha_db.trans hs.1, hs.2⟩))).2 xb).mono
         (fun s hs ↦ ⟨hs, by
           rw [extChartAt_source]
-          exact hdb_src hs⟩)
+          exact hdb_source hs⟩)
     have h := hchart.contDiffOn
     change ContDiffOn Real 1 qb (Icc db b) at h
     exact h
@@ -304,10 +304,10 @@ theorem exists_lRegExtOn
     trivFromE (I := I) xa xa (va a)
   let Ab : TangentSpace I xb :=
     trivFromE (I := I) xb xb (vb b)
-  obtain ⟨epsa, hepsa, eta, heta0, hetaVel, hetaSol⟩ :=
-    exists_lRegCurve_at S hS T a xa Aa (hreg a ⟨le_rfl, hab.le⟩)
-  obtain ⟨epsb, hepsb, theta, htheta0, hthetaVel, hthetaSol⟩ :=
-    exists_lRegCurve_at S hS T b xb Ab (hreg b ⟨hab.le, le_rfl⟩)
+  obtain ⟨epsa, hepsa, eta, heta0, hetaVelocity, hetaSolution⟩ :=
+    exists_lRegularizedCurve_at S hS T a xa Aa (hreg a ⟨le_rfl, hab.le⟩)
+  obtain ⟨epsb, hepsb, theta, htheta0, hthetaVelocity, hthetaSolution⟩ :=
+    exists_lRegularizedCurve_at S hS T b xb Ab (hreg b ⟨hab.le, le_rfl⟩)
   let alpha : Real → M := fun s ↦
     if s < a then eta s else if s ≤ b then gamma s else theta s
   have halpha_a : alpha a = gamma a := by simp only [alpha, lt_self_iff_false,
@@ -319,8 +319,8 @@ theorem exists_lRegExtOn
     simp only [alpha, if_neg (not_lt_of_ge hs.1), if_pos hs.2]
   have ha_local : a ∈ Ioo (a - epsa) (a + epsa) := ⟨by linarith, by linarith⟩
   have hb_local : b ∈ Ioo (b - epsb) (b + epsb) := ⟨by linarith, by linarith⟩
-  have heta_a := hetaSol a ha_local
-  have htheta_b := hthetaSol b hb_local
+  have heta_a := hetaSolution a ha_local
+  have htheta_b := hthetaSolution b hb_local
   have heta_cont : ContinuousAt eta a := heta_a.1.continuousAt
   have htheta_cont : ContinuousAt theta b := htheta_b.1.continuousAt
   have halpha_cont_a : ContinuousAt alpha a := by
@@ -369,28 +369,28 @@ theorem exists_lRegExtOn
     fun s ↦ lVelocity (I := I) theta s
   let veta : Real → E := chartRepAtBase (I := I) xa eta Xeta
   let vtheta : Real → E := chartRepAtBase (I := I) xb theta Xtheta
-  have heta_src_a : eta a ∈ (chartAt H xa).source := by
+  have heta_source_a : eta a ∈ (chartAt H xa).source := by
     rw [heta0]
-    exact hga_src0
-  have htheta_src_b : theta b ∈ (chartAt H xb).source := by
+    exact hga_source0
+  have htheta_source_b : theta b ∈ (chartAt H xb).source := by
     rw [htheta0]
-    exact hgb_src0
+    exact hgb_source0
   have veta_diff : DifferentiableAt Real veta a := by
     simpa only [veta, Xeta] using
-      chartRep_base_diff (I := I) eta Xeta a xa heta_a.1 heta_src_a heta_a.2.1
+      chartRep_base_diff (I := I) eta Xeta a xa heta_a.1 heta_source_a heta_a.2.1
   have vtheta_diff : DifferentiableAt Real vtheta b := by
     simpa only [vtheta, Xtheta] using
       chartRep_base_diff (I := I) theta Xtheta b xb htheta_b.1
-        htheta_src_b htheta_b.2.1
+        htheta_source_b htheta_b.2.1
   have veta_a : veta a = va a := by
     change trivToE (I := I) xa (eta a) (lVelocity (I := I) eta a) = va a
-    rw [heta0, hetaVel]
+    rw [heta0, hetaVelocity]
     simp only [Aa]
     exact trivToE_trivFromE (I := I) xa
       (FiberBundle.mem_baseSet_trivializationAt' xa) (va a)
   have vtheta_b : vtheta b = vb b := by
     change trivToE (I := I) xb (theta b) (lVelocity (I := I) theta b) = vb b
-    rw [htheta0, hthetaVel]
+    rw [htheta0, hthetaVelocity]
     simp only [Ab]
     exact trivToE_trivFromE (I := I) xb
       (FiberBundle.mem_baseSet_trivializationAt' xb) (vb b)
@@ -444,10 +444,10 @@ theorem exists_lRegExtOn
   have hqcontB : ContinuousAt
       (chartCurve (I := I) (alpha b) alpha) b := by
     exact (continuousAt_extChartAt (I := I) (alpha b)).comp halpha_cont_b
-  have heta_src : ∀ᶠ s in 𝓝 a, eta s ∈ (chartAt H xa).source :=
-    heta_cont.eventually ((chartAt H xa).open_source.mem_nhds heta_src_a)
-  have htheta_src : ∀ᶠ s in 𝓝 b, theta s ∈ (chartAt H xb).source :=
-    htheta_cont.eventually ((chartAt H xb).open_source.mem_nhds htheta_src_b)
+  have heta_source : ∀ᶠ s in 𝓝 a, eta s ∈ (chartAt H xa).source :=
+    heta_cont.eventually ((chartAt H xa).open_source.mem_nhds heta_source_a)
+  have htheta_source : ∀ᶠ s in 𝓝 b, theta s ∈ (chartAt H xb).source :=
+    htheta_cont.eventually ((chartAt H xb).open_source.mem_nhds htheta_source_b)
   have hphaseA : ∀ᶠ r in 𝓝[≠] a,
       HasDerivAt
         (fun s ↦ (chartCurve (I := I) (alpha a) alpha s, vA s))
@@ -457,8 +457,8 @@ theorem exists_lRegExtOn
       Filter.Eventually.filter_mono nhdsWithin_le_nhds
         (isOpen_Ioo.mem_nhds ha_local),
       Filter.Eventually.filter_mono nhdsWithin_le_nhds (Iio_mem_nhds hada),
-      Filter.Eventually.filter_mono nhdsWithin_le_nhds heta_src]
-      with r hra hrlocal hrda hreta_src
+      Filter.Eventually.filter_mono nhdsWithin_le_nhds heta_source]
+      with r hra hrlocal hrda hreta_source
     have hrne : r ≠ a := by
       simpa only [mem_compl_iff, mem_singleton_iff] using hra
     rcases lt_or_gt_of_ne hrne with hra' | har'
@@ -469,8 +469,8 @@ theorem exists_lRegExtOn
         filter_upwards [Iio_mem_nhds hra'] with s hsa
         simp only [vA, if_pos (show s < a from hsa), veta]
       simpa only [halpha_a, xa] using
-        phase_of_germ (I := I) S T xa hcurve hv hreta_src
-          (hetaSol r hrlocal)
+        phase_of_germ (I := I) S T xa hcurve hv hreta_source
+          (hetaSolution r hrlocal)
     · have hrb : r < b := hrda.trans_le hda_le
       have hrgerm : alpha =ᶠ[𝓝 r] gamma := by
         filter_upwards [Ioo_mem_nhds har' hrb] with s hs
@@ -482,18 +482,18 @@ theorem exists_lRegExtOn
         simp only [vA, if_neg (not_lt_of_ge hs.1.le)]
         have hsfull : s ∈ Ioo a b := ⟨hs.1, hs.2.trans_le hda_le⟩
         have hsdata := hsol s hsfull
-        have hs_src := hda_src ⟨hs.1.le, hs.2.le⟩
+        have hs_source := hda_source ⟨hs.1.le, hs.2.le⟩
         have hbridge :=
           DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
-            (I := I) (M := M) hsdata.1 xa hs_src
+            (I := I) (M := M) hsdata.1 xa hs_source
         have hmem : Icc a da ∈ 𝓝 s := Icc_mem_nhds hs.1 hs.2
         rw [fderiv_apply_one_eq_deriv, ← derivWithin_of_mem_nhds hmem] at hbridge
         have hbridge' := hbridge.symm
         change derivWithin qa (Icc a da) s = _ at hbridge'
         simpa only [va, chartRepAtBase_apply, lVelocity] using hbridge'
-      have hr_src := hda_src ⟨har'.le, hrda.le⟩
+      have hr_source := hda_source ⟨har'.le, hrda.le⟩
       simpa only [halpha_a, xa] using
-        phase_of_germ (I := I) S T xa hrgerm hvgerm hr_src
+        phase_of_germ (I := I) S T xa hrgerm hvgerm hr_source
           (hsol r ⟨har', hrb⟩)
   have hmdA : ∀ᶠ r in 𝓝[≠] a,
       MDifferentiableAt (modelWithCornersSelf Real Real) I alpha r := by
@@ -508,13 +508,13 @@ theorem exists_lRegExtOn
     · have hcurve : alpha =ᶠ[𝓝 r] eta := by
         filter_upwards [Iio_mem_nhds hra'] with s hsa
         simp only [alpha, if_pos (show s < a from hsa)]
-      exact (hetaSol r hrlocal).1.congr_of_eventuallyEq hcurve
+      exact (hetaSolution r hrlocal).1.congr_of_eventuallyEq hcurve
     · have hrb : r < b := hrda.trans_le hda_le
       have hcurve : alpha =ᶠ[𝓝 r] gamma := by
         filter_upwards [Ioo_mem_nhds har' hrb] with s hs
         simp only [alpha, if_neg (not_lt_of_ge hs.1.le), if_pos hs.2.le]
       exact (hsol r ⟨har', hrb⟩).1.congr_of_eventuallyEq hcurve
-  have hregA := regAt_of_punct (I := I) S hS T a alpha vA
+  have hregA := regularityAt_of_punct (I := I) S hS T a alpha vA
     (hreg a ⟨le_rfl, hab.le⟩) hqcontA hvA_cont hsrcA hmdA hphaseA
   have hphaseB : ∀ᶠ r in 𝓝[≠] b,
       HasDerivAt
@@ -525,8 +525,8 @@ theorem exists_lRegExtOn
       Filter.Eventually.filter_mono nhdsWithin_le_nhds
         (isOpen_Ioo.mem_nhds hb_local),
       Filter.Eventually.filter_mono nhdsWithin_le_nhds (Ioi_mem_nhds hdbb),
-      Filter.Eventually.filter_mono nhdsWithin_le_nhds htheta_src]
-      with r hrb hrlocal hdbr hrtheta_src
+      Filter.Eventually.filter_mono nhdsWithin_le_nhds htheta_source]
+      with r hrb hrlocal hdbr hrtheta_source
     have hrne : r ≠ b := by
       simpa only [mem_compl_iff, mem_singleton_iff] using hrb
     rcases lt_or_gt_of_ne hrne with hrb' | hbr'
@@ -541,18 +541,18 @@ theorem exists_lRegExtOn
         simp only [vB, if_pos hs.2.le]
         have hsfull : s ∈ Ioo a b := ⟨lt_of_le_of_lt ha_db hs.1, hs.2⟩
         have hsdata := hsol s hsfull
-        have hs_src := hdb_src ⟨hs.1.le, hs.2.le⟩
+        have hs_source := hdb_source ⟨hs.1.le, hs.2.le⟩
         have hbridge :=
           DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
-            (I := I) (M := M) hsdata.1 xb hs_src
+            (I := I) (M := M) hsdata.1 xb hs_source
         have hmem : Icc db b ∈ 𝓝 s := Icc_mem_nhds hs.1 hs.2
         rw [fderiv_apply_one_eq_deriv, ← derivWithin_of_mem_nhds hmem] at hbridge
         have hbridge' := hbridge.symm
         change derivWithin qb (Icc db b) s = _ at hbridge'
         simpa only [vb, chartRepAtBase_apply, lVelocity] using hbridge'
-      have hr_src := hdb_src ⟨hdbr.le, hrb'.le⟩
+      have hr_source := hdb_source ⟨hdbr.le, hrb'.le⟩
       simpa only [halpha_b, xb] using
-        phase_of_germ (I := I) S T xb hrgerm hvgerm hr_src
+        phase_of_germ (I := I) S T xb hrgerm hvgerm hr_source
           (hsol r ⟨har, hrb'⟩)
     · have hcurve : alpha =ᶠ[𝓝 r] theta := by
         filter_upwards [Ioi_mem_nhds hbr'] with s hbs
@@ -562,8 +562,8 @@ theorem exists_lRegExtOn
         filter_upwards [Ioi_mem_nhds hbr'] with s hbs
         simp only [vB, if_neg (not_le_of_gt (show b < s from hbs)), vtheta]
       simpa only [halpha_b, xb] using
-        phase_of_germ (I := I) S T xb hcurve hv hrtheta_src
-          (hthetaSol r hrlocal)
+        phase_of_germ (I := I) S T xb hcurve hv hrtheta_source
+          (hthetaSolution r hrlocal)
   have hmdB : ∀ᶠ r in 𝓝[≠] b,
       MDifferentiableAt (modelWithCornersSelf Real Real) I alpha r := by
     filter_upwards [self_mem_nhdsWithin,
@@ -583,8 +583,8 @@ theorem exists_lRegExtOn
         filter_upwards [Ioi_mem_nhds hbr'] with s hbs
         simp only [alpha, if_neg (not_lt_of_ge (hab.trans hbs).le),
           if_neg (not_le_of_gt (show b < s from hbs))]
-      exact (hthetaSol r hrlocal).1.congr_of_eventuallyEq hcurve
-  have hregB := regAt_of_punct (I := I) S hS T b alpha vB
+      exact (hthetaSolution r hrlocal).1.congr_of_eventuallyEq hcurve
+  have hregB := regularityAt_of_punct (I := I) S hS T b alpha vB
     (hreg b ⟨hab.le, le_rfl⟩) hqcontB hvB_cont hsrcB hmdB hphaseB
   have hclosed : ∀ s ∈ Icc a b,
       T - s ^ 2 ∈ D.regular ∧
@@ -594,7 +594,7 @@ theorem exists_lRegExtOn
             (fun r ↦ lVelocity (I := I) alpha r) s) s ∧
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
             (fun r ↦ lVelocity (I := I) alpha r) s =
-          lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
+          lRegularizedAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
     intro s hs
     refine ⟨hreg s hs, ?_⟩
     rcases eq_or_lt_of_le hs.1 with rfl | has
@@ -606,18 +606,18 @@ theorem exists_lRegExtOn
     have heq : alpha =ᶠ[𝓝 s] gamma := by
       filter_upwards [Ioo_mem_nhds has hsb] with r hr
       simp only [alpha, if_neg (not_lt_of_ge hr.1.le), if_pos hr.2.le]
-    exact (lRegData_congr (I := I) S T s heq ⟨hreg s hs, hsdata⟩).2
+    exact (lRegularizedData_congr (I := I) S T s heq ⟨hreg s hs, hsdata⟩).2
   let timeMap : Real → Real := fun s ↦ T - s ^ 2
   have htime_cont : Continuous timeMap :=
     continuous_const.sub (continuous_id.pow 2)
   have hregOpen : IsOpen (timeMap ⁻¹' D.regular) :=
     D.regular_isOpen.preimage htime_cont
-  have haReg : a ∈ timeMap ⁻¹' D.regular :=
+  have haRegularity : a ∈ timeMap ⁻¹' D.regular :=
     hreg a ⟨le_rfl, hab.le⟩
-  have hbReg : b ∈ timeMap ⁻¹' D.regular :=
+  have hbRegularity : b ∈ timeMap ⁻¹' D.regular :=
     hreg b ⟨hab.le, le_rfl⟩
-  obtain ⟨ra, hra, hraSub⟩ := Metric.isOpen_iff.mp hregOpen a haReg
-  obtain ⟨rb, hrb, hrbSub⟩ := Metric.isOpen_iff.mp hregOpen b hbReg
+  obtain ⟨ra, hra, hraSub⟩ := Metric.isOpen_iff.mp hregOpen a haRegularity
+  obtain ⟨rb, hrb, hrbSub⟩ := Metric.isOpen_iff.mp hregOpen b hbRegularity
   let e : Real := min (min epsa epsb) (min ra rb)
   have he : 0 < e := by
     simpa only [e] using lt_min (lt_min hepsa hepsb) (lt_min hra hrb)
@@ -636,7 +636,7 @@ theorem exists_lRegExtOn
       constructor
       · exact (sub_le_sub_left he_epsa a).trans_lt hs.1
       · linarith
-    have hsReg : T - s ^ 2 ∈ D.regular := by
+    have hsRegularity : T - s ^ 2 ∈ D.regular := by
       apply hraSub
       rw [Metric.mem_ball, Real.dist_eq,
         abs_of_nonpos (sub_nonpos.mpr hsa.le)]
@@ -645,13 +645,13 @@ theorem exists_lRegExtOn
       filter_upwards [Iio_mem_nhds hsa] with r hr
       change r < a at hr
       simp only [alpha, if_pos hr]
-    exact lRegData_congr (I := I) S T s heq ⟨hsReg, hetaSol s hlocal⟩
+    exact lRegularizedData_congr (I := I) S T s heq ⟨hsRegularity, hetaSolution s hlocal⟩
   by_cases hbs : b < s
   · have hlocal : s ∈ Ioo (b - epsb) (b + epsb) := by
       constructor
       · linarith
       · linarith [hs.2, he_epsb]
-    have hsReg : T - s ^ 2 ∈ D.regular := by
+    have hsRegularity : T - s ^ 2 ∈ D.regular := by
       apply hrbSub
       rw [Metric.mem_ball, Real.dist_eq,
         abs_of_nonneg (sub_nonneg.mpr hbs.le)]
@@ -661,14 +661,14 @@ theorem exists_lRegExtOn
       change b < r at hr
       simp only [alpha, if_neg (not_lt_of_ge (hab.trans hr).le),
         if_neg (not_le_of_gt hr)]
-    exact lRegData_congr (I := I) S T s heq ⟨hsReg, hthetaSol s hlocal⟩
+    exact lRegularizedData_congr (I := I) S T s heq ⟨hsRegularity, hthetaSolution s hlocal⟩
   exact hclosed s ⟨le_of_not_gt hsa, le_of_not_gt hbs⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_lRegExt
+theorem exists_lRegularizedExt
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b) (gamma : Real → M)
@@ -681,7 +681,7 @@ theorem exists_lRegExt
             (fun r ↦ lVelocity (I := I) gamma r) s) s ∧
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
             (fun r ↦ lVelocity (I := I) gamma r) s =
-          lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s)) :
+          lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s)) :
     ∃ alpha : Real → M,
       EqOn alpha gamma (Icc a b) ∧
         ∀ s ∈ Icc a b,
@@ -692,9 +692,9 @@ theorem exists_lRegExt
                 (fun r ↦ lVelocity (I := I) alpha r) s) s ∧
             covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
                 (fun r ↦ lVelocity (I := I) alpha r) s =
-              lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
+              lRegularizedAccel S T s (alpha s) (lVelocity (I := I) alpha s) := by
   obtain ⟨alpha, halpha, e, he, hsolOpen⟩ :=
-    exists_lRegExtOn (I := I) S hS T a b hab gamma hc1 hreg hsol
+    exists_lRegularizedExtOn (I := I) S hS T a b hab gamma hc1 hreg hsol
   refine ⟨alpha, halpha, fun s hs ↦ hsolOpen s ?_⟩
   exact ⟨by linarith [hs.1], by linarith [hs.2]⟩
 

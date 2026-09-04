@@ -63,15 +63,15 @@ private lemma integrable_mul_triple_of_tsupport {Ω K : Set EuclN}
     (hK_closed : IsClosed K) (hK_meas : MeasurableSet K)
     {a : EuclN → ℝ} (ha_cont_on : ContinuousOn a Ω)
     {u : EuclN → ℝ} (hu_int : IntegrableOn u K (volume : Measure EuclN))
-    {h₁ : EuclN → ℝ} (hh₁_cont : Continuous h₁) (hh₁_supp : tsupport h₁ ⊆ K) :
+    {h₁ : EuclN → ℝ} (hh₁_cont : Continuous h₁) (hh₁_support : tsupport h₁ ⊆ K) :
     Integrable (fun y => a y * u y * h₁ y)
       ((volume : Measure EuclN).restrict Ω) := by
   let h_prod : EuclN → ℝ := fun y => a y * h₁ y
-  have hh_prod_supp : tsupport h_prod ⊆ K := by
+  have hh_prod_support : tsupport h_prod ⊆ K := by
     refine closure_minimal (fun y hy => ?_) hK_closed
     by_contra hy_notin
     have hh1y : h₁ y = 0 := image_eq_zero_of_notMem_tsupport
-      (fun h => hy_notin (hh₁_supp h))
+      (fun h => hy_notin (hh₁_support h))
     exact hy (by change a y * _ = 0; rw [hh1y, mul_zero])
   have hh_prod_cont : Continuous h_prod := by
     rw [continuous_iff_continuousAt]
@@ -83,7 +83,7 @@ private lemma integrable_mul_triple_of_tsupport {Ω K : Set EuclN}
       have h_eq_zero : ∀ᶠ z in 𝓝 y, h_prod z = 0 := by
         filter_upwards [h_compl_open.mem_nhds hy] with z hz
         have hh1z : h₁ z = 0 := image_eq_zero_of_notMem_tsupport
-          (fun h => hz (hh₁_supp h))
+          (fun h => hz (hh₁_support h))
         change a z * h₁ z = 0; rw [hh1z, mul_zero]
       rw [continuousAt_congr h_eq_zero]; exact continuousAt_const
   have hh_prod_contOn_K : ContinuousOn h_prod K := hh_prod_cont.continuousOn
@@ -93,7 +93,7 @@ private lemma integrable_mul_triple_of_tsupport {Ω K : Set EuclN}
   have h_vanish : ∀ y, y ∉ K → u y * h_prod y = 0 := by
     intro y hy
     have : h_prod y = 0 :=
-      image_eq_zero_of_notMem_tsupport (fun hy_supp => hy (hh_prod_supp hy_supp))
+      image_eq_zero_of_notMem_tsupport (fun hy_support => hy (hh_prod_support hy_support))
     simp [this]
   have h_eq_ind :
       (fun y => u y * h_prod y) = K.indicator (fun y => u y * h_prod y) := by
@@ -654,7 +654,7 @@ theorem twice_differentiated_variational_identity_holds
         (chartTargetEuclid (I := I) (M := M) α))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -684,10 +684,10 @@ theorem twice_differentiated_variational_identity_holds
     contDiff_fderiv_apply_single (ψ := ψ) hψ_smooth l₂
   have hψl₂_cs : HasCompactSupport ψl₂ :=
     hasCompactSupport_fderiv_apply_single (ψ := ψ) hψ_cs l₂
-  have hψl₂_supp : tsupport ψl₂ ⊆ Ω :=
-    (tsupport_fderiv_apply_single_subset ψ l₂).trans hψ_supp
+  have hψl₂_support : tsupport ψl₂ ⊆ Ω :=
+    (tsupport_fderiv_apply_single_subset ψ l₂).trans hψ_support
   have h_once := differentiated_variational_identity_holds
-    (I := I) (M := M) g α hu_h l₁ hψl₂_smooth hψl₂_cs hψl₂_supp
+    (I := I) (M := M) g α hu_h l₁ hψl₂_smooth hψl₂_cs hψl₂_support
   have h_schwarz_A1 : ∀ y : EuclN, ∀ i j : Fin (Module.finrank ℝ E),
       (fderiv ℝ ψl₂ y) (EuclideanSpace.single j 1) =
       (fderiv ℝ (fun z : EuclN => (fderiv ℝ ψ z) (EuclideanSpace.single j 1)) y)
@@ -702,8 +702,8 @@ theorem twice_differentiated_variational_identity_holds
     contDiff_fderiv_apply_single (ψ := ψ) hψ_smooth j
   have hψj_cs : ∀ j, HasCompactSupport (ψj j) := fun j =>
     hasCompactSupport_fderiv_apply_single (ψ := ψ) hψ_cs j
-  have hψj_supp : ∀ j, tsupport (ψj j) ⊆ Ω := fun j =>
-    (tsupport_fderiv_apply_single_subset ψ j).trans hψ_supp
+  have hψj_support : ∀ j, tsupport (ψj j) ⊆ Ω := fun j =>
+    (tsupport_fderiv_apply_single_subset ψ j).trans hψ_support
   have h_aij_contDiffOn : ∀ i j : Fin (Module.finrank ℝ E),
       ContDiffOn ℝ (⊤ : ℕ∞) (weightedInvGramOnEuclid (I := I) g α i j) Ω :=
     fun i j => weightedInvGramOnEuclid_contDiffOn (I := I) g α i j
@@ -724,7 +724,7 @@ theorem twice_differentiated_variational_identity_holds
                 ψj j y
               ∂(volume : Measure EuclN))) := fun i j =>
     per_pair_ibp_chosenSecond (I := I) (M := M) g α hu_h i l₁ l₂
-      (h_aij_contDiffOn i j) (hψj_smooth j) (hψj_cs j) (hψj_supp j)
+      (h_aij_contDiffOn i j) (hψj_smooth j) (hψj_cs j) (hψj_support j)
   have h_daij_contDiffOn : ∀ i j : Fin (Module.finrank ℝ E),
       ContDiffOn ℝ (⊤ : ℕ∞)
         (weightedInvGramDerivOnEuclid (I := I) g α i j l₂) Ω :=
@@ -746,7 +746,7 @@ theorem twice_differentiated_variational_identity_holds
                 ψ y
               ∂(volume : Measure EuclN))) := fun i j =>
     per_pair_ibp_chosenSecond (I := I) (M := M) g α hu_h i l₁ j
-      (h_daij_contDiffOn i j) hψ_smooth hψ_cs hψ_supp
+      (h_daij_contDiffOn i j) hψ_smooth hψ_cs hψ_support
   have h_density_contDiffOn : ContDiffOn ℝ (⊤ : ℕ∞)
       (densityOnEuclid (I := I) g α) Ω :=
     densityOnEuclid_contDiffOn (I := I) g α
@@ -765,7 +765,7 @@ theorem twice_differentiated_variational_identity_holds
                   (I := I) (M := M) g α u_h l₁ l₂ y * ψ y
               ∂(volume : Measure EuclN))) :=
     per_pair_ibp_base_weak_partial (I := I) (M := M) g α hu_h l₁ l₂
-      h_density_contDiffOn hψ_smooth hψ_cs hψ_supp
+      h_density_contDiffOn hψ_smooth hψ_cs hψ_support
   have h_B :
       (∫ y in Ω, densityOnEuclid (I := I) g α y *
           chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ y *
@@ -781,7 +781,7 @@ theorem twice_differentiated_variational_identity_holds
               ∂(volume : Measure EuclN))) :=
     per_pair_ibp_chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ l₂
       h_chosenFChartDeriv_memW1p h_density_contDiffOn
-      hψ_smooth hψ_cs hψ_supp
+      hψ_smooth hψ_cs hψ_support
   have h_daij_l₁_contDiffOn : ∀ i j : Fin (Module.finrank ℝ E),
       ContDiffOn ℝ (⊤ : ℕ∞)
         (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) Ω :=
@@ -801,7 +801,7 @@ theorem twice_differentiated_variational_identity_holds
                   (I := I) (M := M) g α u_h i l₂ y * ψ y
               ∂(volume : Measure EuclN))) := fun i j =>
     per_pair_ibp_base_weak_partial (I := I) (M := M) g α hu_h i l₂
-      (h_daij_l₁_contDiffOn i j) hψ_smooth hψ_cs hψ_supp
+      (h_daij_l₁_contDiffOn i j) hψ_smooth hψ_cs hψ_support
   have h_dc_l₁_contDiffOn :
       ContDiffOn ℝ (⊤ : ℕ∞) (densityDerivOnEuclid (I := I) g α l₁) Ω :=
     densityDerivOnEuclid_contDiffOn (I := I) g α l₁
@@ -819,7 +819,7 @@ theorem twice_differentiated_variational_identity_holds
                 D_base.weakPartial l₂ y * ψ y
               ∂(volume : Measure EuclN))) :=
     per_pair_ibp_base_u_chart (I := I) (M := M) g α hu_h l₂
-      h_dc_l₁_contDiffOn hψ_smooth hψ_cs hψ_supp
+      h_dc_l₁_contDiffOn hψ_smooth hψ_cs hψ_support
   have h_E :
       (∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
           D_base.fChart y *
@@ -834,7 +834,7 @@ theorem twice_differentiated_variational_identity_holds
                 chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ y * ψ y
               ∂(volume : Measure EuclN))) :=
     per_pair_ibp_base_f_chart (I := I) (M := M) g α hu_h l₂
-      h_dc_l₁_contDiffOn hψ_smooth hψ_cs hψ_supp
+      h_dc_l₁_contDiffOn hψ_smooth hψ_cs hψ_support
   have hA1_Schwarz : (∫ y in Ω,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -873,7 +873,7 @@ theorem twice_differentiated_variational_identity_holds
     rw [h_schwarz_A1 y i j]
   let K : Set EuclN := tsupport ψ
   have hK_compact : IsCompact K := hψ_cs
-  have hK_in : K ⊆ Ω := hψ_supp
+  have hK_in : K ⊆ Ω := hψ_support
   have hK_meas : MeasurableSet K := (isClosed_tsupport ψ).measurableSet
   have hvolK_finite : (volume : Measure EuclN) K < (⊤ : ℝ≥0∞) :=
     hK_compact.measure_lt_top
@@ -919,12 +919,12 @@ theorem twice_differentiated_variational_identity_holds
       ∀ {a : EuclN → ℝ} (ha_cont_on : ContinuousOn a Ω)
         {u : EuclN → ℝ} (hu_int : IntegrableOn u K (volume : Measure EuclN))
         {h₁ : EuclN → ℝ} (hh₁_cont : Continuous h₁)
-        (hh₁_supp : tsupport h₁ ⊆ K),
+        (hh₁_support : tsupport h₁ ⊆ K),
         Integrable (fun y => a y * u y * h₁ y)
           ((volume : Measure EuclN).restrict Ω) := by
-    intro a ha_cont_on u hu_int h₁ hh₁_cont hh₁_supp
+    intro a ha_cont_on u hu_int h₁ hh₁_cont hh₁_support
     exact integrable_mul_triple_of_tsupport hΩ_open hK_in hK_compact
-      (isClosed_tsupport ψ) hK_meas ha_cont_on hu_int hh₁_cont hh₁_supp
+      (isClosed_tsupport ψ) hK_meas ha_cont_on hu_int hh₁_cont hh₁_support
   have h_chosenSecond_int : ∀ i l : Fin (Module.finrank ℝ E),
       IntegrableOn (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l)
         K (volume : Measure EuclN) :=
@@ -949,14 +949,14 @@ theorem twice_differentiated_variational_identity_holds
     let h₁ : EuclN → ℝ := fun y =>
       (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1)
     have hh₁_cont : Continuous h₁ := hψj_fderiv_cont j l₂
-    have hh₁_supp : tsupport h₁ ⊆ K := by
+    have hh₁_support : tsupport h₁ ⊆ K := by
       refine closure_minimal (fun y hy => ?_) (isClosed_tsupport ψ)
       by_contra hy_notin
       have : (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1) = 0 := by
         rw [h_fderiv_zero_outside_K_ψj j y hy_notin]; simp
       exact hy this
     exact integrable_triple (h_aij_cont_on i j) (h_chosenSecond_int i l₁)
-      hh₁_cont hh₁_supp
+      hh₁_cont hh₁_support
   have h_int_A1_inner_pair : ∀ i j,
       Integrable (fun y => weightedInvGramDerivOnEuclid (I := I) g α i j l₂ y *
           chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l₁ y *
@@ -965,14 +965,14 @@ theorem twice_differentiated_variational_identity_holds
     let h₁ : EuclN → ℝ := fun y =>
       (fderiv ℝ ψ y) (EuclideanSpace.single j 1)
     have hh₁_cont : Continuous h₁ := hψ_fderiv_cont j
-    have hh₁_supp : tsupport h₁ ⊆ K := by
+    have hh₁_support : tsupport h₁ ⊆ K := by
       refine closure_minimal (fun y hy => ?_) (isClosed_tsupport ψ)
       by_contra hy_notin
       have : (fderiv ℝ ψ y) (EuclideanSpace.single j 1) = 0 := by
         rw [h_fderiv_zero_outside_K_ψ y hy_notin]; simp
       exact hy this
     exact integrable_triple (h_daij_cont_on i j) (h_chosenSecond_int i l₁)
-      hh₁_cont hh₁_supp
+      hh₁_cont hh₁_support
   have h_int_C_pair : ∀ i j,
       Integrable (fun y => weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
           D_base.weakPartial i y *
@@ -981,14 +981,14 @@ theorem twice_differentiated_variational_identity_holds
     let h₁ : EuclN → ℝ := fun y =>
       (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1)
     have hh₁_cont : Continuous h₁ := hψj_fderiv_cont j l₂
-    have hh₁_supp : tsupport h₁ ⊆ K := by
+    have hh₁_support : tsupport h₁ ⊆ K := by
       refine closure_minimal (fun y hy => ?_) (isClosed_tsupport ψ)
       by_contra hy_notin
       have : (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1) = 0 := by
         rw [h_fderiv_zero_outside_K_ψj j y hy_notin]; simp
       exact hy this
     exact integrable_triple (h_daij_l₁_cont_on i j) (h_base_wp_int i)
-      hh₁_cont hh₁_supp
+      hh₁_cont hh₁_support
   have sum_swap_LHS_A1 :
       ∫ y in Ω,
         (∑ i : Fin (Module.finrank ℝ E),
@@ -1074,7 +1074,7 @@ theorem twice_differentiated_variational_identity_holds
     refine Finset.sum_congr rfl ?_; intro i _
     refine Finset.sum_congr rfl ?_; intro j _
     exact per_pair_ibp_base_weak_partial (I := I) (M := M) g α hu_h i l₂
-      (h_daij_l₁_contDiffOn i j) (hψj_smooth j) (hψj_cs j) (hψj_supp j)
+      (h_daij_l₁_contDiffOn i j) (hψj_smooth j) (hψj_cs j) (hψj_support j)
   rw [h_LHS_A1_after_IBP, h_C_after_IBP, h_A2, h_B, h_D, h_E] at h_once
   have h_fderiv_aij_eq : ∀ y : EuclN, ∀ i j : Fin (Module.finrank ℝ E),
       (fderiv ℝ (weightedInvGramOnEuclid (I := I) g α i j) y)
@@ -1121,10 +1121,10 @@ theorem twice_differentiated_variational_identity_holds
           ψj j y)
         ((volume : Measure EuclN).restrict Ω) := fun i j => by
     have hh₁_cont : Continuous (ψj j) := (hψj_smooth j).continuous
-    have hh₁_supp : tsupport (ψj j) ⊆ K :=
+    have hh₁_support : tsupport (ψj j) ⊆ K :=
       tsupport_fderiv_apply_single_subset ψ j
     exact integrable_triple (h_aij_fderiv_l₂_cont_on i j) (h_chosenSecond_int i l₁)
-      hh₁_cont hh₁_supp
+      hh₁_cont hh₁_support
   have h_int_Y1_ij : ∀ i j,
       Integrable (fun y => weightedInvGramOnEuclid (I := I) g α i j y *
           chosenThirdMixedPartialChartPushedU
@@ -1132,10 +1132,10 @@ theorem twice_differentiated_variational_identity_holds
           ψj j y)
         ((volume : Measure EuclN).restrict Ω) := fun i j => by
     have hh₁_cont : Continuous (ψj j) := (hψj_smooth j).continuous
-    have hh₁_supp : tsupport (ψj j) ⊆ K :=
+    have hh₁_support : tsupport (ψj j) ⊆ K :=
       tsupport_fderiv_apply_single_subset ψ j
     exact integrable_triple (h_aij_cont_on i j) (h_chosenThird_int i l₁ l₂)
-      hh₁_cont hh₁_supp
+      hh₁_cont hh₁_support
   have h_int_X2_ij : ∀ i j,
       Integrable (fun y =>
           (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
@@ -1143,20 +1143,20 @@ theorem twice_differentiated_variational_identity_holds
           D_base.weakPartial i y * ψj j y)
         ((volume : Measure EuclN).restrict Ω) := fun i j => by
     have hh₁_cont : Continuous (ψj j) := (hψj_smooth j).continuous
-    have hh₁_supp : tsupport (ψj j) ⊆ K :=
+    have hh₁_support : tsupport (ψj j) ⊆ K :=
       tsupport_fderiv_apply_single_subset ψ j
     exact integrable_triple (h_daij_l₁_fderiv_l₂_cont_on i j) (h_base_wp_int i)
-      hh₁_cont hh₁_supp
+      hh₁_cont hh₁_support
   have h_int_Y2_ij : ∀ i j,
       Integrable (fun y => weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
           chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l₂ y *
           ψj j y)
         ((volume : Measure EuclN).restrict Ω) := fun i j => by
     have hh₁_cont : Continuous (ψj j) := (hψj_smooth j).continuous
-    have hh₁_supp : tsupport (ψj j) ⊆ K :=
+    have hh₁_support : tsupport (ψj j) ⊆ K :=
       tsupport_fderiv_apply_single_subset ψ j
     exact integrable_triple (h_daij_l₁_cont_on i j) (h_chosenSecond_int i l₂)
-      hh₁_cont hh₁_supp
+      hh₁_cont hh₁_support
   have h_sum_distrib_LHS_A1 :
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -1548,7 +1548,7 @@ theorem twice_differentiated_variational_identity_holds
       rfl
     rw [h_rewrite]
     exact per_pair_ibp_base_weak_partial (I := I) (M := M) g α hu_h i j
-      (h_d2aij_contDiffOn i j) hψ_smooth hψ_cs hψ_supp
+      (h_d2aij_contDiffOn i j) hψ_smooth hψ_cs hψ_support
   have h_γ_sub2_IBP : ∀ i j : Fin (Module.finrank ℝ E),
       γ_sub2 i j = -(C3 i j + C4 i j) := by
     intro i j
@@ -1565,7 +1565,7 @@ theorem twice_differentiated_variational_identity_holds
       rfl
     rw [h_rewrite]
     exact per_pair_ibp_chosenSecond (I := I) (M := M) g α hu_h i l₂ j
-      (h_daij_l₁_contDiffOn i j) hψ_smooth hψ_cs hψ_supp
+      (h_daij_l₁_contDiffOn i j) hψ_smooth hψ_cs hψ_support
   have h_sumγ_sub1 :
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), γ_sub1 i j =
@@ -1697,7 +1697,7 @@ theorem twice_differentiated_variational_identity_holds
     effectiveSourceChartSecondOrderNumerator (I := I) (M := M) g α l₁ l₂ hu_h y * ψ y
     ∂(volume : Measure EuclN)
   have h_psi_cont : Continuous ψ := hψ_smooth.continuous
-  have h_psi_supp : tsupport ψ ⊆ K := le_refl _
+  have h_psi_support : tsupport ψ ⊆ K := le_refl _
   have h_base_uc_int : IntegrableOn D_base.uChart K (volume : Measure EuclN) :=
     (base_u_chart_locally_memLp (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
@@ -1710,7 +1710,7 @@ theorem twice_differentiated_variational_identity_holds
       IntegrableOn (chosenFChartDeriv (I := I) (M := M) g α hu_h l)
         K (volume : Measure EuclN) := fun l => by
     have h_global :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_base_f_chart_memW1p l
     have h_K_eq : ((volume : Measure EuclN).restrict Ω).restrict K =
         (volume : Measure EuclN).restrict K := by
@@ -1718,7 +1718,7 @@ theorem twice_differentiated_variational_identity_holds
       congr 1; exact Set.inter_eq_self_of_subset_left hK_in
     have h_memLp_K : MemLp (chosenFChartDeriv (I := I) (M := M) g α hu_h l) 2
         ((volume : Measure EuclN).restrict K) := by
-      change MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      change MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l D_base.fChart Ω) 2 _
       rw [← h_K_eq]; exact h_global.restrict K
     exact h_memLp_K.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
@@ -1726,7 +1726,7 @@ theorem twice_differentiated_variational_identity_holds
       IntegrableOn (fChartDeriv2 (I := I) (M := M) g α hu_h l₁ l₂)
         K (volume : Measure EuclN) := by
     have h_global :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_chosenFChartDeriv_memW1p l₂
     have h_K_eq : ((volume : Measure EuclN).restrict Ω).restrict K =
         (volume : Measure EuclN).restrict K := by
@@ -1734,7 +1734,7 @@ theorem twice_differentiated_variational_identity_holds
       congr 1; exact Set.inter_eq_self_of_subset_left hK_in
     have h_memLp_K : MemLp (fChartDeriv2 (I := I) (M := M) g α hu_h l₁ l₂) 2
         ((volume : Measure EuclN).restrict K) := by
-      change MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      change MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l₂
         (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁) Ω) 2 _
       rw [← h_K_eq]; exact h_global.restrict K
@@ -1757,7 +1757,7 @@ theorem twice_differentiated_variational_identity_holds
         Integrable (fun y => a y * u y * ψ y)
           ((volume : Measure EuclN).restrict Ω) := by
     intro a ha u hu_int
-    exact integrable_triple ha hu_int h_psi_cont h_psi_supp
+    exact integrable_triple ha hu_int h_psi_cont h_psi_support
   have integrable_double_psi :
       ∀ {a : EuclN → ℝ}, ContinuousOn a Ω →
         ∀ {u : EuclN → ℝ}, IntegrableOn u K (volume : Measure EuclN) →
@@ -1828,7 +1828,7 @@ theorem twice_differentiated_variational_identity_holds
       h_dc_l₁_cont_on h_dc_l₂_cont_on h_int_C1_pair h_int_C2_pair h_int_C3_pair
       h_int_C4_pair h_int_X1_named h_int_X2_named
   have h_I_num_eq_rhs :=
-    integral_fChartEffTwiceNumerator_eq_integral_density_fChartEffTwice
+    integral_fChartEffectiveTwiceNumerator_eq_integral_density_fChartEffectiveTwice
       (I := I) (M := M) g α hu_h l₁ l₂ h_chosenFChartDeriv_memW1p ψ
   rw [show I_num = ∫ y in chartTargetEuclid (I := I) (M := M) α,
         effectiveSourceChartSecondOrderNumerator (I := I) (M := M) g α l₁ l₂ hu_h y * ψ y

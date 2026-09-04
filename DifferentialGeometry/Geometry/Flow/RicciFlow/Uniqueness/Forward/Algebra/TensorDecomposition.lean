@@ -547,7 +547,7 @@ def sdecRem (g₁ g₂ : SmoothRiemannianMetric I M) {x : M}
 omit [I.Boundaryless] in
 omit [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
-theorem sdec_core
+private theorem sdec_core
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (g₁ g₂ : Real -> SmoothRiemannianMetric I M)
     (basisAt : (y : M) -> Module.Basis Idx Real (TangentSpace I y))

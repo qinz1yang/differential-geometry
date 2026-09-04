@@ -35,23 +35,23 @@ theorem chartImage_pouTsupport_isCompact
   have h_tsupp_compact : IsCompact (tsupport
       (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     (isClosed_tsupport _).isCompact
-  have h_tsupp_sub_src :
+  have h_tsupp_sub_source :
       tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
         (chartAt H α).source :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α
-  have h_tsupp_sub_extSrc :
+  have h_tsupp_sub_extSource :
       tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
         (extChartAt I α).source := by
     intro x hx
     rw [extChartAt_source]
-    exact h_tsupp_sub_src hx
+    exact h_tsupp_sub_source hx
   have h_cont :
       ContinuousOn (extChartAt I α : M → E)
         (tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
-    (continuousOn_extChartAt α).mono h_tsupp_sub_extSrc
+    (continuousOn_extChartAt α).mono h_tsupp_sub_extSource
   exact h_tsupp_compact.image_of_continuousOn h_cont
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -63,15 +63,15 @@ theorem chartImage_pouTsupport_subset_target
       (extChartAt I α).target := by
   classical
   rintro y ⟨x, hx, rfl⟩
-  have h_tsupp_sub_src :
+  have h_tsupp_sub_source :
       tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ⊆
         (chartAt H α).source :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α
-  have hx_src : x ∈ (extChartAt I α).source := by
+  have hx_source : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source]
-    exact h_tsupp_sub_src hx
-  exact (extChartAt I α).map_source hx_src
+    exact h_tsupp_sub_source hx
+  exact (extChartAt I α).map_source hx_source
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartImage_pouTsupport_subset_interior_target

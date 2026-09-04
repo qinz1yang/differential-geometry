@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -162,11 +162,11 @@ theorem exists_lowBounds_at
     refine {
       threshold_nonneg := by simpa only [K] using hRD.threshold_nonneg
       threshold_le_third := by simpa only [K] using hRD.threshold_le_third
-      hreal := hrealK
-      hcont := ?_
-      htame := ?_
-      hzero := ?_
-      core_cont := ?_ }
+      metric_realization := hrealK
+      remainder_continuous := ?_
+      remainder_lipschitz := ?_
+      remainder_zero_bound := ?_
+      smoothCore_continuous := ?_ }
     · simpa only [K, Q, boundedDeTurckRemainderOnLowerState] using hcont0
     · simpa only [K, Q, boundedDeTurckRemainderOnLowerState] using htame0
     · simpa only [K, Q] using hzero0

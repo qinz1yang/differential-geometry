@@ -55,10 +55,10 @@ private theorem slice_inj_small
       exact hlaunch y hy
     have hf := Filter.EventuallyEq.fderiv_eq (𝕜 := Real) heq
     simpa only [B, fderiv_id] using hf
-  have hUnif := DifferentialGeometry.Analysis.Calculus.paramInt_tendstoUnif
+  have hUniform := DifferentialGeometry.Analysis.Calculus.paramInt_tendstoUniform
     B K V S hKcpt hKV hS h0S hB
-  rw [Metric.tendstoUniformlyOn_iff] at hUnif
-  have hnear := hUnif (1 / 2 : Real) (by norm_num)
+  rw [Metric.tendstoUniformlyOn_iff] at hUniform
+  have hnear := hUniform (1 / 2 : Real) (by norm_num)
   have hnear' : ∀ᶠ b : Real in 𝓝 0, ∀ z ∈ K,
       dist (∫ t in (0 : Real)..1, B (z, t * b)) (B (z, 0)) < 1 / 2 := by
     filter_upwards [hnear] with b hb z hz
@@ -204,36 +204,36 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegCurve_endpoint_injOn_closedBall_of_small_time
+theorem lRegularizedCurve_endpoint_injOn_closedBall_of_small_time
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (R : Real) (hT : T ∈ D.regular) :
     ∃ eps : Real, 0 < eps ∧ ∀ b : Real, 0 < b → b < eps →
-      Set.InjOn (fun W : TangentSpace I x ↦ lRegCurve S T x W b)
+      Set.InjOn (fun W : TangentSpace I x ↦ lRegularizedCurve S T x W b)
         (Metric.closedBall 0 R) := by
-  let F : E × Real → M := fun p ↦ lRegCurve S T x p.1 p.2
+  let F : E × Real → M := fun p ↦ lRegularizedCurve S T x p.1 p.2
   let U : Set (E × Real) :=
-    lRegJointDom S T x ∩ F ⁻¹' (chartAt H x).source
+    lRegularizedJointDom S T x ∩ F ⁻¹' (chartAt H x).source
   let Phi : E × Real → E := fun p ↦
     (1 / 2 : Real) • ((extChartAt I x) (F p) - (extChartAt I x) x)
   let K : Set E := Metric.closedBall 0 R
   have hFall : ContMDiffOn (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ F
-      (lRegJointDom S T x) := lRegCurve_smoothOn S hS T x
+      (lRegularizedJointDom S T x) := lRegularizedCurve_smoothOn S hS T x
   have hU : IsOpen U := hFall.continuousOn.isOpen_inter_preimage
-    (lRegJointDom_open S hS T x) (chartAt H x).open_source
+    (lRegularizedJointDom_open S hS T x) (chartAt H x).open_source
   have hKcpt : IsCompact K := isCompact_closedBall 0 R
   have hKconv : Convex Real K := convex_closedBall 0 R
   have hK0 : K ×ˢ ({0} : Set Real) ⊆ U := by
     rintro ⟨W, _⟩ ⟨hW, rfl⟩
-    refine ⟨zero_mem_lRegDomain S hS T x W hT, ?_⟩
+    refine ⟨zero_mem_lRegularizedDomain S hS T x W hT, ?_⟩
     change F (W, 0) ∈ (chartAt H x).source
     rw [show F (W, 0) = x by
-      change lRegCurve S T x W 0 = x
-      exact lRegCurve_zero S T x W]
+      change lRegularizedCurve S T x W 0 = x
+      exact lRegularizedCurve_zero S T x W]
     exact mem_chart_source H x
-  have hK0cpt : IsCompact (K ×ˢ ({0} : Set Real)) :=
+  have hK0compact : IsCompact (K ×ˢ ({0} : Set Real)) :=
     hKcpt.prod isCompact_singleton
-  obtain ⟨d, hd, hdU⟩ := hK0cpt.exists_thickening_subset_open hU hK0
+  obtain ⟨d, hd, hdU⟩ := hK0compact.exists_thickening_subset_open hU hK0
   let r : Real := d / 3
   let V : Set E := Metric.thickening r K
   let St : Set Real := Set.Ioo (-r) r
@@ -296,8 +296,8 @@ theorem lRegCurve_endpoint_injOn_closedBall_of_small_time
     change (1 / 2 : Real) •
       ((extChartAt I x) (F (W, 0)) - (extChartAt I x) x) = 0
     rw [show F (W, 0) = x by
-      change lRegCurve S T x W 0 = x
-      exact lRegCurve_zero S T x W]
+      change lRegularizedCurve S T x W 0 = x
+      exact lRegularizedCurve_zero S T x W]
     simp only [sub_self, smul_zero]
   have hlaunch : ∀ W ∈ V,
       (fderiv Real Phi (W, 0)) ((0 : E), (1 : Real)) = W := by
@@ -311,19 +311,19 @@ theorem lRegCurve_endpoint_injOn_closedBall_of_small_time
     have hchartvel :
         (mfderiv (modelWithCornersSelf Real Real) I
           (fun s : Real ↦ F (W, s)) 0) (1 : Real) = (2 : Real) • W := by
-      have hfun : (fun s : Real ↦ F (W, s)) = lRegCurve S T x W := by
+      have hfun : (fun s : Real ↦ F (W, s)) = lRegularizedCurve S T x W := by
         funext s
         rfl
       rw [hfun]
-      exact lRegCurve_vel_zero S hS T x W hT
+      exact lRegularizedCurve_velocity_zero S hS T x W hT
     have hcurveM : ContMDiffAt (modelWithCornersSelf Real Real) I 1
         (fun s : Real ↦ F (W, s)) 0 := by
       have hcomp : ContMDiffAt (modelWithCornersSelf Real Real) I ∞
-          ((fun p : E × Real ↦ lRegCurve S T x p.1 p.2) ∘ Prod.mk W) 0 :=
-        (lRegCurve_smoothAt S hS T x W hT).comp (0 : Real)
+          ((fun p : E × Real ↦ lRegularizedCurve S T x p.1 p.2) ∘ Prod.mk W) 0 :=
+        (lRegularizedCurve_smoothAt S hS T x W hT).comp (0 : Real)
           (contMDiff_const.prodMk contMDiff_id).contMDiffAt
       have hfun :
-          (fun p : E × Real ↦ lRegCurve S T x p.1 p.2) ∘ Prod.mk W =
+          (fun p : E × Real ↦ lRegularizedCurve S T x p.1 p.2) ∘ Prod.mk W =
             (fun s : Real ↦ F (W, s)) := by
         funext s
         rfl
@@ -341,8 +341,8 @@ theorem lRegCurve_endpoint_injOn_closedBall_of_small_time
       rw [mfderiv_extChartAt_self (I := I) (x := x)] at hm
       exact hm
     have hcurve0 : F (W, 0) = x := by
-      change lRegCurve S T x W 0 = x
-      exact lRegCurve_zero S T x W
+      change lRegularizedCurve S T x W 0 = x
+      exact lRegularizedCurve_zero S T x W
     have hextD' : HasMFDerivAt I (modelWithCornersSelf Real E)
         (extChartAt I x) (F (W, 0)) (ContinuousLinearMap.id Real E) := by
       rw [hcurve0]

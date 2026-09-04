@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Calculus.Compactness.SmoothMap
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 
@@ -21,7 +21,7 @@ theorem exists_smooth_bilinear_form_limit_subsequence_on
       a * ‖v‖ ^ 2 ≤ g k z v v ∧ g k z v v ≤ b * ‖v‖ ^ 2) :
     ∃ (φ : ℕ → ℕ) (gInf : E → (E →L[ℝ] E →L[ℝ] ℝ)),
       StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) gInf U ∧
-        MapCInfConvOnCompacts U (fun k => g (φ k)) gInf ∧
+        MapCInfConvergenceOnCompacts U (fun k => g (φ k)) gInf ∧
         ∀ z ∈ U, ∀ v : E,
           a * ‖v‖ ^ 2 ≤ gInf z v v ∧ gInf z v v ≤ b * ‖v‖ ^ 2 := by
   obtain ⟨φ, gInf, hφ, hsmooth, hconv⟩ := exists_cInf_subseq_on hU g hg hbdd
@@ -38,5 +38,5 @@ theorem exists_smooth_bilinear_form_limit_subsequence_on
     le_of_tendsto htendv
       (Filter.Eventually.of_forall fun k => (hab (φ k) z hz v).2)⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

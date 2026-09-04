@@ -177,7 +177,7 @@ private theorem exists_norm_covGrad_connectionDifferenceSection_le_of_jetEnvelop
       diagonalGridGrowthFactor (E := E) 1 *
         ∑ i ∈ Finset.range 2, Bf i * ∑ l ∈ Finset.range (2 - i), Sf l :=
     hjet
-  rw [riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 1 3 x] at hWsq
+  rw [riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 1 3 x] at hWsq
   have hWnn : 0 ≤ ‖((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection
     x :
       Tensor0SBundle.TensorRSSpace 1 3 I x)‖ := norm_nonneg _

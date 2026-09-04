@@ -852,7 +852,7 @@ private lemma chartProjCLM_covApply_chartBasis_eq_euclidPartial_add_lowerOrder
           (I := I) (M := M) g r s T₀ α m Idx Jdx
           ((toEuclidean (E := E)) ((extChartAt I α) b)) := by
   classical
-  have hb_src : b ∈ (chartAt H α).source :=
+  have hb_source : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
   have hb_ext : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb

@@ -559,7 +559,7 @@ private theorem exists_contDiff_tsupport_subset_eventuallyEq_one
       rIn_pos := half_pos d_pos
       rIn_lt_rOut := half_lt_self d_pos } with hc_def
   set ρ : E → ℝ := c ∘ toEuclidean with hρ_def
-  have ρ_supp : Function.support ρ ⊆ Euclidean.ball x d := by
+  have ρ_support : Function.support ρ ⊆ Euclidean.ball x d := by
     intro y hy
     have : toEuclidean y ∈ Function.support c := by
       rw [hρ_def] at hy
@@ -567,10 +567,10 @@ private theorem exists_contDiff_tsupport_subset_eventuallyEq_one
     rwa [c.support_eq] at this
   have ρ_tsupp : tsupport ρ ⊆ Euclidean.closedBall x d := by
     rw [tsupport, ← Euclidean.closure_ball _ d_pos.ne']
-    exact closure_mono ρ_supp
+    exact closure_mono ρ_support
   refine ⟨ρ, ρ_tsupp.trans hd, ?_, ?_, ?_, ?_, ?_⟩
   · exact HasCompactSupport.of_support_subset_isCompact Euclidean.isCompact_closedBall
-      (ρ_supp.trans Euclidean.ball_subset_closedBall)
+      (ρ_support.trans Euclidean.ball_subset_closedBall)
   · exact c.contDiff.comp (ContinuousLinearEquiv.contDiff _)
   · rintro t ⟨y, rfl⟩
     exact ⟨c.nonneg, c.le_one⟩

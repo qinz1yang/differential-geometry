@@ -31,7 +31,7 @@ private theorem rampUp_add {L : Real} (hL : 0 < L) (z w : E) :
     timeH1.rampUp L (z + w) = timeH1.rampUp L z + timeH1.rampUp L w := by
   apply timeH1.ext
   · rw [← timeH1.toFun_zero (timeH1.rampUp L (z + w)),
-      timeH1.init_add,
+      timeH1.initial_add,
       ← timeH1.toFun_zero (timeH1.rampUp L z),
       ← timeH1.toFun_zero (timeH1.rampUp L w),
       timeH1.rampUp_zero hL, timeH1.rampUp_zero hL,
@@ -150,10 +150,10 @@ private theorem chart_tail_lim
     (hK0 : ∀ r : Icc (0 : Real) (b - c), u0.toFun r.1 ∈ K)
     (hreg : ∀ s ∈ Icc c b, T - s ^ 2 ∈ D.regular) :
     Tendsto
-      (fun n ↦ lRegAction S T
+      (fun n ↦ lRegularizedAction S T
         (fun s ↦ (extChartAt I p).symm
           ((u0 + timeH1.rampUp (b - c) (z n)).toFun (s - c))) c b)
-      atTop (nhds (lRegAction S T gamma c b)) := by
+      atTop (nhds (lRegularizedAction S T gamma c b)) := by
   let v : Nat → timeH1 E (b - c) := fun n ↦
     u0 + timeH1.rampUp (b - c) (z n)
   let beta : Nat → Real → M := fun n s ↦
@@ -171,7 +171,7 @@ private theorem chart_tail_lim
   have hsymm : UniformContinuousOn (extChartAt I p).symm K :=
     hKc.uniformContinuousOn_of_continuous <|
       (continuousOn_extChartAt_symm p).mono (hKchart.trans interior_subset)
-  have hunif : TendstoUniformly
+  have huniform : TendstoUniformly
       (fun n (s : Icc c b) ↦ beta n s.1)
       (fun s ↦ beta0 s.1) atTop := by
     have hshift : MapsTo (fun s : Icc c b ↦ s.1 - c)
@@ -304,7 +304,7 @@ private theorem chart_tail_lim
       subst i
       change Tendsto vt atTop (nhds u0t)
       exact timeH1_tendsto_cast htLen v u0 hv)
-    hcont hunif hreg
+    hcont huniform hreg
   have heq : EqOn beta0 gamma (Icc c b) := by
     intro s hs
     apply (extChartAt I p).injOn
@@ -321,8 +321,8 @@ private theorem chart_tail_lim
         _ = extChartAt I p (gamma s) := by
           congr 2
           ring
-  have heqAct : lRegAction S T beta0 c b = lRegAction S T gamma c b :=
-    lRegAction_congr (I := I) S T beta0 gamma c b
+  have heqAct : lRegularizedAction S T beta0 c b = lRegularizedAction S T gamma c b :=
+    lRegularizedAction_congr (I := I) S T beta0 gamma c b
       (by
         have heq' : EqOn beta0 gamma (uIcc c b) := by
           simpa only [uIcc_of_le hcb.le] using heq
@@ -342,17 +342,17 @@ theorem lCost_lt_event
     (h0 : alpha 0 = x) (hend : alpha (Real.sqrt tau) = y)
     (hreg : ∀ s ∈ Icc (0 : Real) (Real.sqrt tau),
       T - s ^ 2 ∈ D.regular)
-    (A : Real) (hA : lRegAction S T alpha 0 (Real.sqrt tau) < A)
+    (A : Real) (hA : lRegularizedAction S T alpha 0 (Real.sqrt tau) < A)
     (q : Nat → M) (hq : Tendsto q atTop (nhds y)) :
     ∀ᶠ n in atTop, lCost S T x (q n) tau < A := by
   classical
   let b : Real := Real.sqrt tau
   have hb : 0 < b := Real.sqrt_pos.2 htau
-  have hySrc : y ∈ (chartAt H y).source := mem_chart_source H y
+  have hySource : y ∈ (chartAt H y).source := mem_chart_source H y
   have hpre : alpha ⁻¹' (chartAt H y).source ∈ 𝓝[≤] b := by
     apply mem_nhdsWithin_of_mem_nhds
     apply halpha.continuous.continuousAt.preimage_mem_nhds
-    exact (chartAt H y).open_source.mem_nhds (by simpa only [b, hend] using hySrc)
+    exact (chartAt H y).open_source.mem_nhds (by simpa only [b, hend] using hySource)
   obtain ⟨c0, hc0b, hc0src⟩ := mem_nhdsLE_iff_exists_Icc_subset.mp hpre
   let c : Real := max c0 (b / 2)
   have hc : 0 < c := lt_of_lt_of_le (half_pos hb) (le_max_right _ _)
@@ -369,23 +369,23 @@ theorem lCost_lt_event
   have hgamma : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma
       (Icc (0 : Real) (b - c)) := by
     exact halpha.comp (contDiff_const.add contDiff_id).contMDiff |>.contMDiffOn
-  have hgammaSrc : MapsTo gamma (Icc (0 : Real) (b - c))
+  have hgammaSource : MapsTo gamma (Icc (0 : Real) (b - c))
       (chartAt H y).source := fun r hr ↦ hsrcTail (hshift hr)
   let u0 : timeH1 E (b - c) :=
-    chartTimeH1 I (sub_nonneg.mpr hcb.le) y gamma hgamma hgammaSrc
+    chartTimeH1 I (sub_nonneg.mpr hcb.le) y gamma hgamma hgammaSource
   have hrep0 : EqOn u0.toFun
       (fun r ↦ extChartAt I y (alpha (c + r)))
       (Icc (0 : Real) (b - c)) := by
     intro r hr
     change u0.toFun r = ((extChartAt I y) ∘ gamma) r
     exact chartTimeH1_toFun I (sub_nonneg.mpr hcb.le) y gamma hgamma
-      hgammaSrc hr
+      hgammaSource hr
   have htar0 (r : Icc (0 : Real) (b - c)) :
       u0.toFun r.1 ∈ (extChartAt I y).target := by
     rw [hrep0 r.2]
     exact (extChartAt I y).map_source (by
       rw [extChartAt_source]
-      exact hgammaSrc r.2)
+      exact hgammaSource r.2)
   obtain ⟨K, hKc, _hKclosed, hintoK, hKtar⟩ :=
     exists_compact_closed_between
       (isCompact_Icc.image_of_continuousOn u0.continuousOn_toFun)
@@ -395,8 +395,8 @@ theorem lCost_lt_event
     simpa only [(isOpen_extChartAt_target (I := I) y).interior_eq] using hKtar
   have hK0 (r : Icc (0 : Real) (b - c)) : u0.toFun r.1 ∈ K :=
     interior_subset (hintoK ⟨r.1, r.2, rfl⟩)
-  have hqSrc : ∀ᶠ n in atTop, q n ∈ (chartAt H y).source :=
-    hq.eventually ((chartAt H y).open_source.mem_nhds hySrc)
+  have hqSource : ∀ᶠ n in atTop, q n ∈ (chartAt H y).source :=
+    hq.eventually ((chartAt H y).open_source.mem_nhds hySource)
   let z : Nat → E := fun n ↦ extChartAt I y (q n) - extChartAt I y y
   have hz : Tendsto z atTop (nhds 0) := by
     have hcq := (continuousAt_extChartAt (I := I) y).tendsto.comp hq
@@ -424,11 +424,11 @@ theorem lCost_lt_event
       (fun n r ↦ (v n).toFun r.1) K
       hu0Range
       (fun r ↦ hintoK ⟨r.1, r.2, rfl⟩) hcoord
-  obtain ⟨N, hN⟩ := (eventually_atTop.1 (hqSrc.and hvK))
+  obtain ⟨N, hN⟩ := (eventually_atTop.1 (hqSource.and hvK))
   let q' : Nat → M := fun n ↦ q (n + N)
   let z' : Nat → E := fun n ↦ z (n + N)
   let v' : Nat → timeH1 E (b - c) := fun n ↦ v (n + N)
-  have hq'Src (n : Nat) : q' n ∈ (chartAt H y).source := (hN _ (Nat.le_add_left N n)).1
+  have hq'Source (n : Nat) : q' n ∈ (chartAt H y).source := (hN _ (Nat.le_add_left N n)).1
   have hz' : Tendsto z' atTop (nhds 0) := hz.comp (tendsto_add_atTop_nat N)
   have hv' (n : Nat) : v' n = u0 + timeH1.rampUp (b - c) (z' n) := rfl
   have hv'K (n : Nat) (r : Icc (0 : Real) (b - c)) :
@@ -437,14 +437,14 @@ theorem lCost_lt_event
   let beta : Nat → Real → M := fun n s ↦
     (extChartAt I y).symm
       ((u0 + timeH1.rampUp (b - c) (z' n)).toFun (s - c))
-  have htailLim : Tendsto (fun n ↦ lRegAction S T (beta n) c b) atTop
-      (nhds (lRegAction S T alpha c b)) := by
+  have htailLim : Tendsto (fun n ↦ lRegularizedAction S T (beta n) c b) atTop
+      (nhds (lRegularizedAction S T alpha c b)) := by
     apply chart_tail_lim (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩ T c b hcb y
       alpha u0 hsrcTail hrep0 z' hz' K hKc hKchart hv'K hK0
     intro s hs
     exact hreg s ⟨hc.le.trans hs.1, by simpa only [b] using hs.2⟩
   have hu0c1 : ContDiffOn Real 1 u0.toFun (Icc (0 : Real) (b - c)) := by
-    exact (chartCoord_contDiff I y gamma hgamma hgammaSrc).congr
+    exact (chartCoord_contDiff I y gamma hgamma hgammaSource).congr
       (fun r hr ↦ by simpa only [gamma, Function.comp_apply] using hrep0 hr)
   have hbetaC1 (n : Nat) : ContMDiffOn
       (modelWithCornersSelf Real Real) I 1 (beta n) (Icc c b) := by
@@ -469,7 +469,7 @@ theorem lCost_lt_event
       exact ((extChartAt I y).right_inv
         (interior_subset (hKchart (hv'K n ⟨r, hr⟩)))).symm
     · exact hvC1
-  have hbetaSrc (n : Nat) : MapsTo (beta n) (Icc c b)
+  have hbetaSource (n : Nat) : MapsTo (beta n) (Icc c b)
       (chartAt H y).source := by
     intro s hs
     rw [← extChartAt_source (I := I) y]
@@ -478,7 +478,7 @@ theorem lCost_lt_event
         ⟨sub_nonneg.mpr hs.1, sub_le_sub_right hs.2 c⟩⟩)))
   have hbetaC (n : Nat) : beta n c = alpha c := by
     apply (extChartAt I y).injOn
-    · simpa only [extChartAt_source] using hbetaSrc n ⟨le_rfl, hcb.le⟩
+    · simpa only [extChartAt_source] using hbetaSource n ⟨le_rfl, hcb.le⟩
     · rw [extChartAt_source]
       exact hsrcTail ⟨le_rfl, hcb.le⟩
     · simp only [beta, sub_self]
@@ -503,7 +503,7 @@ theorem lCost_lt_event
         (interior_subset (hKchart (hv'K n ⟨b - c,
           ⟨sub_nonneg.mpr hcb.le, le_rfl⟩⟩)))
     · rw [extChartAt_source]
-      exact hq'Src n
+      exact hq'Source n
     · have hrightB : extChartAt I y (beta n b) =
           (u0 + timeH1.rampUp (b - c) (z' n)).toFun (b - c) := by
         exact (extChartAt I y).right_inv
@@ -526,23 +526,23 @@ theorem lCost_lt_event
   have hregcb : ∀ s ∈ Icc c b, T - s ^ 2 ∈ D.regular := by
     intro s hs
     exact hreg s ⟨hc.le.trans hs.1, by simpa only [b] using hs.2⟩
-  have hheadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
+  have hheadInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
     T 0 c hc.le alpha halpha.contMDiffOn hreg0c
-  have htailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
+  have htailInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
     T c b hcb.le alpha halpha.contMDiffOn hregcb
-  have halphaAdd := lRegAction_add (I := I) S T alpha 0 c b hheadInt htailInt
+  have halphaAdd := lRegularizedAction_add (I := I) S T alpha 0 c b hheadInt htailInt
   have hpiece : Tendsto
-      (fun n ↦ lRegAction S T alpha 0 c + lRegAction S T (beta n) c b)
-      atTop (nhds (lRegAction S T alpha 0 b)) := by
+      (fun n ↦ lRegularizedAction S T alpha 0 c + lRegularizedAction S T (beta n) c b)
+      atTop (nhds (lRegularizedAction S T alpha 0 b)) := by
     have hsum : Tendsto
-        (fun n ↦ lRegAction S T alpha 0 c + lRegAction S T (beta n) c b)
+        (fun n ↦ lRegularizedAction S T alpha 0 c + lRegularizedAction S T (beta n) c b)
         atTop (nhds
-          (lRegAction S T alpha 0 c + lRegAction S T alpha c b)) :=
+          (lRegularizedAction S T alpha 0 c + lRegularizedAction S T alpha c b)) :=
       tendsto_const_nhds.add htailLim
     rw [halphaAdd] at hsum
     exact hsum
   have hsmall : ∀ᶠ n in atTop,
-      lRegAction S T alpha 0 c + lRegAction S T (beta n) c b < A :=
+      lRegularizedAction S T alpha 0 c + lRegularizedAction S T (beta n) c b < A :=
     hpiece.eventually (Iio_mem_nhds (by simpa only [b] using hA))
   have hcost' : ∀ᶠ n in atTop, lCost S T x (q' n) tau < A := by
     filter_upwards [hsmall] with n hn
@@ -551,7 +551,7 @@ theorem lCost_lt_event
       exists_chartH1_join (I := I) 0 c b hc hcb alpha (beta n)
         halpha.contMDiffOn (hbetaC1 n) (hbetaC n).symm
     obtain ⟨delta, _u, hdelta, hdelta0, hdeltab, _hsrcDelta, _hrepDelta,
-        _hu, _hunif, hdeltaAct⟩ :=
+        _hu, _huniform, hdeltaAct⟩ :=
       lAction_c1_dense (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
         T 0 b t htmono ht0 htlast p eta w hsrc hrep
         (fun s hs ↦ hreg s (by simpa only [b] using hs))
@@ -559,33 +559,33 @@ theorem lCost_lt_event
         (Icc (0 : Real) c) := halpha.contMDiffOn.congr fun s hs ↦ heta0 hs
     have hetaTail : ContMDiffOn (modelWithCornersSelf Real Real) I 1 eta
         (Icc c b) := (hbetaC1 n).congr fun s hs ↦ heta1 hs
-    have hetaHeadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+    have hetaHeadInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
       ⟨hS.scalarCont⟩ T 0 c hc.le eta hetaHead hreg0c
-    have hetaTailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+    have hetaTailInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
       ⟨hS.scalarCont⟩ T c b hcb.le eta hetaTail hregcb
-    have hetaAdd := lRegAction_add (I := I) S T eta 0 c b
+    have hetaAdd := lRegularizedAction_add (I := I) S T eta 0 c b
       hetaHeadInt hetaTailInt
-    have hetaHeadAct : lRegAction S T eta 0 c = lRegAction S T alpha 0 c :=
-      lRegAction_congr (I := I) S T eta alpha 0 c (by
+    have hetaHeadAct : lRegularizedAction S T eta 0 c = lRegularizedAction S T alpha 0 c :=
+      lRegularizedAction_congr (I := I) S T eta alpha 0 c (by
         intro s hs
         have hs' : s ∈ Ioo (0 : Real) c := by
           simpa only [uIoo_of_le hc.le] using hs
         exact heta0 ⟨hs'.1.le, hs'.2.le⟩)
-    have hetaTailAct : lRegAction S T eta c b = lRegAction S T (beta n) c b :=
-      lRegAction_congr (I := I) S T eta (beta n) c b (by
+    have hetaTailAct : lRegularizedAction S T eta c b = lRegularizedAction S T (beta n) c b :=
+      lRegularizedAction_congr (I := I) S T eta (beta n) c b (by
         intro s hs
         have hs' : s ∈ Ioo c b := by
           simpa only [uIoo_of_le hcb.le] using hs
         exact heta1 ⟨hs'.1.le, hs'.2.le⟩)
-    have hetaLt : lRegAction S T eta 0 b < A := by
+    have hetaLt : lRegularizedAction S T eta 0 b < A := by
       rw [← hetaAdd, hetaHeadAct, hetaTailAct]
       exact hn
-    have hdeltaSmall : ∀ᶠ k in atTop, lRegAction S T (delta k) 0 b < A :=
+    have hdeltaSmall : ∀ᶠ k in atTop, lRegularizedAction S T (delta k) 0 b < A :=
       hdeltaAct.eventually (Iio_mem_nhds hetaLt)
     obtain ⟨k, hk⟩ := hdeltaSmall.exists
-    rw [lCost_eq_reg (I := I) S T x (q' n) tau htau.le]
+    rw [lCost_eq_regularity (I := I) S T x (q' n) tau htau.le]
     exact lt_of_le_of_lt
-      (lRegCostC1_le (I := I) S hS T t0 t1 0 b hb.le
+      (lRegularizedCostC1_le (I := I) S hS T t0 t1 0 b hb.le
         htime (by simpa only [b] using hback) x (q' n) (delta k) (hdelta k)
         ((hdelta0 k).trans ((heta0 ⟨le_rfl, hc.le⟩).trans h0))
         ((hdeltab k).trans
@@ -601,13 +601,13 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem lCost_le_ray
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (b : Real)
-    (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z) :
-    lCost S T x (lRegCurve S T x Z b) (b ^ 2) ≤
-      lRegAction S T (lRegCurve S T x Z) 0 b := by
+    (hb0 : 0 < b) (hb : b ∈ lRegularizedDomain S T x Z) :
+    lCost S T x (lRegularizedCurve S T x Z b) (b ^ 2) ≤
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b := by
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lRegDomain_smoothClamp S T x Z hb0 hb
+    exists_lRegularizedDomain_smoothClamp S T x Z hb0 hb
   let z : E := Z
-  let gamma : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
+  let gamma : Real → M := fun s ↦ lRegularizedCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞ rho :=
     contMDiff_iff_contDiff.mpr hrho
@@ -619,20 +619,20 @@ theorem lCost_le_ray
   have hgammaInf : ContMDiff (modelWithCornersSelf Real Real) I ∞ gamma := by
     rw [← contMDiffOn_univ]
     change ContMDiffOn (modelWithCornersSelf Real Real) I ∞
-      (fun s ↦ lRegCurve S T x Z (rho s)) univ
-    exact (lRegCurve_smoothOn S hS T x).comp hpair.contMDiffOn
+      (fun s ↦ lRegularizedCurve S T x Z (rho s)) univ
+    exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
       (fun s _hs ↦ by
-        change rho s ∈ lRegDomain S T x Z
+        change rho s ∈ lRegularizedDomain S T x Z
         exact hrho_range s)
   have hgamma : ContMDiff (modelWithCornersSelf Real Real) I 1 gamma :=
     hgammaInf.of_le (by norm_num)
-  have heq : Set.EqOn gamma (lRegCurve S T x Z) (Icc (0 : Real) b) := by
+  have heq : Set.EqOn gamma (lRegularizedCurve S T x Z) (Icc (0 : Real) b) := by
     intro s hs
-    exact congrArg (lRegCurve S T x Z) (hrho_id hs)
+    exact congrArg (lRegularizedCurve S T x Z) (hrho_id hs)
   have hreg : ∀ s ∈ Icc (0 : Real) b, T - s ^ 2 ∈ D.regular := by
     intro s hs
-    exact lRegDomain_reg S T x Z
-      (lRegDomain_seg S T x Z hb hs.1 hs.2)
+    exact lRegularizedDomain_regularity S T x Z
+      (lRegularizedDomain_segment S T x Z hb hs.1 hs.2)
   have htime : Icc (T - b ^ 2) T ⊆ D.carrier := by
     intro r hr
     have hnonneg : 0 ≤ T - r := by linarith [hr.2]
@@ -653,9 +653,9 @@ theorem lCost_le_ray
     have hsq : s ^ 2 ≤ b ^ 2 :=
       (sq_le_sq₀ hs.1 hb0.le).2 hs.2
     exact ⟨by linarith, by nlinarith [sq_nonneg s]⟩
-  have hact : lRegAction S T gamma 0 b =
-      lRegAction S T (lRegCurve S T x Z) 0 b := by
-    apply lRegAction_congr (I := I) S T gamma (lRegCurve S T x Z) 0 b
+  have hact : lRegularizedAction S T gamma 0 b =
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b := by
+    apply lRegularizedAction_congr (I := I) S T gamma (lRegularizedCurve S T x Z) 0 b
     intro s hs
     apply heq
     have hs' : s ∈ Ioo (0 : Real) b := by
@@ -665,16 +665,16 @@ theorem lCost_le_ray
     simpa only [id_eq] using hrho_id ⟨le_rfl, hb0.le⟩
   have hrhob : rho b = b := by
     simpa only [id_eq] using hrho_id ⟨hb0.le, le_rfl⟩
-  rw [lCost_eq_reg (I := I) S T x (lRegCurve S T x Z b)
+  rw [lCost_eq_regularity (I := I) S T x (lRegularizedCurve S T x Z b)
       (b ^ 2) (sq_nonneg b), Real.sqrt_sq_eq_abs, abs_of_pos hb0]
   calc
-    lRegCostC1 S T 0 b x (lRegCurve S T x Z b) ≤
-        lRegAction S T gamma 0 b :=
-      lRegCostC1_le (I := I) S hS T (T - b ^ 2) T 0 b hb0.le
-        htime hback x (lRegCurve S T x Z b) gamma hgamma
-        (by simp only [gamma, hrho0, lRegCurve_zero])
+    lRegularizedCostC1 S T 0 b x (lRegularizedCurve S T x Z b) ≤
+        lRegularizedAction S T gamma 0 b :=
+      lRegularizedCostC1_le (I := I) S hS T (T - b ^ 2) T 0 b hb0.le
+        htime hback x (lRegularizedCurve S T x Z b) gamma hgamma
+        (by simp only [gamma, hrho0, lRegularizedCurve_zero])
         (by simp only [gamma, hrhob]) hreg
-    _ = lRegAction S T (lRegCurve S T x Z) 0 b := hact
+    _ = lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b := hact
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -684,11 +684,11 @@ theorem lCost_ray_event
     (T : Real) (x : M) {Z : Nat → TangentSpace I x}
     {Z₀ : TangentSpace I x} {tau : Nat → Real} {tau₀ : Real}
     (htau₀ : 0 < tau₀)
-    (hdom : Real.sqrt tau₀ ∈ lRegDomain S T x Z₀)
+    (hdom : Real.sqrt tau₀ ∈ lRegularizedDomain S T x Z₀)
     (hZ : Tendsto Z atTop (nhds Z₀))
     (htau : Tendsto tau atTop (nhds tau₀))
     (A : Real)
-    (hA : lRegAction S T (lRegCurve S T x Z₀) 0
+    (hA : lRegularizedAction S T (lRegularizedCurve S T x Z₀) 0
       (Real.sqrt tau₀) < A) :
     ∀ᶠ n in atTop, lCost S T x (lExp S T x (Z n) (tau n)) (tau n) < A := by
   have hsqrt : Tendsto (fun n ↦ Real.sqrt (tau n)) atTop
@@ -698,24 +698,24 @@ theorem lCost_ray_event
   have hjoint : Tendsto (fun n ↦ ((Z n : E), Real.sqrt (tau n))) atTop
       (nhds ((Z₀ : E), Real.sqrt tau₀)) := hZ.prodMk_nhds hsqrt
   have hmem : ∀ᶠ n in atTop,
-      Real.sqrt (tau n) ∈ lRegDomain S T x (Z n) := by
+      Real.sqrt (tau n) ∈ lRegularizedDomain S T x (Z n) := by
     exact hjoint.eventually
-      ((lRegJointDom_open S hS T x).mem_nhds (by
-        change Real.sqrt tau₀ ∈ lRegDomain S T x Z₀
+      ((lRegularizedJointDom_open S hS T x).mem_nhds (by
+        change Real.sqrt tau₀ ∈ lRegularizedDomain S T x Z₀
         exact hdom))
   have hpos : ∀ᶠ n in atTop, 0 < tau n :=
     htau.eventually (Ioi_mem_nhds htau₀)
-  have hact := (continuousAt_lRegAction_lRegCurve (I := I)
+  have hact := (continuousAt_lRegularizedAction_lRegularizedCurve (I := I)
     S hS T x hsqrt0 hdom).tendsto.comp (hZ.prodMk_nhds hsqrt)
   have hactLt : ∀ᶠ n in atTop,
-      lRegAction S T (lRegCurve S T x (Z n)) 0
+      lRegularizedAction S T (lRegularizedCurve S T x (Z n)) 0
         (Real.sqrt (tau n)) < A :=
     hact.eventually (Iio_mem_nhds hA)
   filter_upwards [hmem, hpos, hactLt] with n hnDom hnPos hnAct
   have hle := lCost_le_ray (I := I) S hS T x (Z n)
     (Real.sqrt (tau n)) (Real.sqrt_pos.2 hnPos) hnDom
   have hle' : lCost S T x (lExp S T x (Z n) (tau n)) (tau n) ≤
-      lRegAction S T (lRegCurve S T x (Z n)) 0
+      lRegularizedAction S T (lRegularizedCurve S T x (Z n)) 0
         (Real.sqrt (tau n)) := by
     simpa only [lExp, Real.sq_sqrt hnPos.le] using hle
   exact hle'.trans_lt hnAct

@@ -14,7 +14,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set
 open scoped Manifold ContDiff Topology
@@ -44,11 +44,11 @@ theorem open_upgrade_of_canonical_metric_compactness
   let : T2Space mc.limit.M := mc.limit.t2
   let : IsManifold I ∞ mc.limit.M := mc.limit.smooth
   let : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
-  have hsrc : SrcSigma (I := I) Phi := by
+  have hsrc : SourceIsSigmaCompact (I := I) Phi := by
     intro k
     exact Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.source_open (I := I) Phi k)
-  have htgt : TgtSigma (I := I) Phi := by
+  have htgt : TargetIsSigmaCompact (I := I) Phi := by
     intro k
     let : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
@@ -83,8 +83,8 @@ theorem open_upgrade_of_canonical_metric_compactness
   dsimp only at hcanonRel
   obtain ⟨Crel, hCrel, hrelZero⟩ := hcanonRel
   have hsrcZero (k : Nat) :
-      tgtRefSrc (I := I) Phi gRefT k =
-        srcMetric (I := I) Phi hsrc htgt k 0 := by
+      targetReferenceMetricPullback (I := I) Phi gRefT k =
+        sourceMetric (I := I) Phi hsrc htgt k 0 := by
     let : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
     let : ChartedSpace H (X.term (mc.subseq k)).M :=
@@ -107,8 +107,8 @@ theorem open_upgrade_of_canonical_metric_compactness
         sourceDomSmooth (I := I) Phi k
       MetricUniformEquivalentOn (I := I)
         (Set.univ : Set (SourceDomain (I := I) Phi k))
-        (refRes (I := I) Phi mc.limit.metric k)
-        (tgtRefSrc (I := I) Phi gRefT k) Crel := by
+        (sourceMetricRestriction (I := I) Phi mc.limit.metric k)
+        (targetReferenceMetricPullback (I := I) Phi gRefT k) Crel := by
     intro k
     rw [hsrcZero k]
     exact hrelZero k
@@ -202,7 +202,7 @@ theorem open_upgrade_of_canonical_metric_compactness
     have hk := hShiAll (mc.subseq k)
     intro s hs i t ht x _hx
     exact hk s hs i t ht x (Set.mem_univ x)
-  have hShiSrc (n : Nat) : ∀ N : Nat, ∃ KShi : Real, 0 ≤ KShi ∧
+  have hShiSource (n : Nat) : ∀ N : Nat, ∃ KShi : Real, 0 ≤ KShi ∧
       ∀ k : Nat,
         letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
           sourceDomTop (I := I) Phi k
@@ -217,14 +217,14 @@ theorem open_upgrade_of_canonical_metric_compactness
         MovingShiBoundOn (I := I)
           (Set.univ : Set (SourceDomain (I := I) Phi k))
           (beta n) (psi n)
-          (fun _ t => srcMetric (I := I) Phi hsrc htgt k t) N KShi := by
+          (fun _ t => sourceMetric (I := I) Phi hsrc htgt k t) N KShi := by
     intro N
     obtain ⟨KShi, hKShi, hShi⟩ := hShiT n N
     exact ⟨KShi, hKShi, fun k =>
-      srcShi (I := I) Phi hsrc htgt (beta n) (psi n) N KShi hShi k⟩
+      sourceShi (I := I) Phi hsrc htgt (beta n) (psi n) N KShi hShi k⟩
   have hBsrc (n : Nat) : 1 ≤ Crel * Bmax n := by
     exact one_le_mul_of_one_le_of_one_le hCrel (hBmax n)
-  have hequivSrc (n : Nat) : ∀ k : Nat,
+  have hequivSource (n : Nat) : ∀ k : Nat,
       letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
         sourceDomTop (I := I) Phi k
       letI : ChartedSpace H (SourceDomain (I := I) Phi k) :=
@@ -238,8 +238,8 @@ theorem open_upgrade_of_canonical_metric_compactness
       ∀ t : Real, t ∈ Set.Icc (beta n) (psi n) →
         MetricUniformEquivalentOn (I := I)
           (Set.univ : Set (SourceDomain (I := I) Phi k))
-          (refRes (I := I) Phi mc.limit.metric k)
-          (srcMetric (I := I) Phi hsrc htgt k t) (Crel * Bmax n) := by
+          (sourceMetricRestriction (I := I) Phi mc.limit.metric k)
+          (sourceMetric (I := I) Phi hsrc htgt k t) (Crel * Bmax n) := by
     intro k t ht
     let : TopologicalSpace (SourceDomain (I := I) Phi k) :=
       sourceDomTop (I := I) Phi k
@@ -251,15 +251,15 @@ theorem open_upgrade_of_canonical_metric_compactness
       sourceDomSmooth (I := I) Phi k
     let : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
       sourceDomSigmaOf (I := I) Phi k (hsrc k)
-    have hEq := srcEquivOn (I := I) Phi mc.limit.metric hsrc htgt
+    have hEq := sourceEquivOn (I := I) Phi mc.limit.metric hsrc htgt
       (beta n) (psi n) gRefT (B n) Crel (hequivT n) hrel k t ht
     exact metricUniformEquivalentOn_of_le (I := I) hEq
       (mul_le_mul_of_nonneg_left (hBmajor n t ht) (zero_le_one.trans hCrel))
-  have srcData (n : Nat) : SrcCovLipData (I := I) Phi mc.limit.metric
+  have sourceData (n : Nat) : SourceMetricCovariantLipschitzBounds (I := I) Phi mc.limit.metric
       hsrc htgt (beta n) (psi n) :=
-    srcCovLip_of_soln (I := I) Phi mc.limit.metric hsrc htgt
+    source_metric_covariant_lipschitz_bounds_of_solution (I := I) Phi mc.limit.metric hsrc htgt
       (hzeroWindow n) (hregular n)
-      (Crel * Bmax n) (hBsrc n) (hequivSrc n) (hShiSrc n) hinit
+      (Crel * Bmax n) (hBsrc n) (hequivSource n) (hShiSource n) hinit
   let cLow : Nat → Real := fun n => (Crel * Bmax n)⁻¹
   have hcLow (n : Nat) : 0 < cLow n := by
     exact inv_pos.mpr (zero_lt_one.trans_le (hBsrc n))
@@ -278,7 +278,7 @@ theorem open_upgrade_of_canonical_metric_compactness
             sourceDomCharted (I := I) Phi k
           letI : IsManifold I ∞ (SourceDomain (I := I) Phi k) :=
             sourceDomSmooth (I := I) Phi k
-          (srcMetric (I := I) Phi hsrc htgt k t).inner y v v := by
+          (sourceMetric (I := I) Phi hsrc htgt k t).inner y v v := by
     intro n k t ht y v
     have ht' : t ∈ Set.Icc (beta n) (psi n) := by
       simpa only [beta, psi, RealTimeInterval.openWindow] using ht
@@ -293,7 +293,7 @@ theorem open_upgrade_of_canonical_metric_compactness
           (gSeqExt (I := I) Phi mc.limit.metric bf hsrc htgt k t)
           mc.limit.metric z ≤ C := by
     intro n
-    have hcovSrc : ∀ q : Nat, ∃ C : Real, 0 ≤ C ∧
+    have hcovSource : ∀ q : Nat, ∃ C : Real, 0 ≤ C ∧
         ∀ (k : Nat) (t : Real), t ∈ Set.Icc (beta n) (psi n) →
           ∀ y : SourceDomain (I := I) Phi k, (y : mc.limit.M) ∈ bf.grow k →
             letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
@@ -307,13 +307,13 @@ theorem open_upgrade_of_canonical_metric_compactness
             letI : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
               sourceDomSigmaOf (I := I) Phi k (hsrc k)
             metricCovDerivNorm (I := I) q
-              (srcMetric (I := I) Phi hsrc htgt k t)
-              (refRes (I := I) Phi mc.limit.metric k) y ≤ C := by
+              (sourceMetric (I := I) Phi hsrc htgt k t)
+              (sourceMetricRestriction (I := I) Phi mc.limit.metric k) y ≤ C := by
       intro q
-      obtain ⟨C, hC, hboundC⟩ := (srcData n).cov q
+      obtain ⟨C, hC, hboundC⟩ := (sourceData n).cov q
       exact ⟨C, hC, fun k t ht y _ => hboundC k t ht y⟩
     have hcov := covTail_of_bounds (I := I) Phi mc.limit.metric bf hsrc htgt
-      (beta n) (psi n) hcovSrc
+      (beta n) (psi n) hcovSource
     intro q
     obtain ⟨C, hC⟩ := hcov q
     exact ⟨C, fun k t ht z hz => hC k t (by
@@ -344,14 +344,14 @@ theorem open_upgrade_of_canonical_metric_compactness
               letI : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
                 sourceDomSigmaOf (I := I) Phi k (hsrc k)
               metricDerivNorm (I := I) q
-                (srcMetric (I := I) Phi hsrc htgt k s)
-                (srcMetric (I := I) Phi hsrc htgt k t)
-                (refRes (I := I) Phi mc.limit.metric k) y ≤ Lt * |s - t| := by
+                (sourceMetric (I := I) Phi hsrc htgt k s)
+                (sourceMetric (I := I) Phi hsrc htgt k t)
+                (sourceMetricRestriction (I := I) Phi mc.limit.metric k) y ≤ Lt * |s - t| := by
       intro p
-      obtain ⟨Lt, hLt, hlip⟩ := (srcData n).lip p
+      obtain ⟨Lt, hLt, hlip⟩ := (sourceData n).lip p
       exact ⟨Lt, hLt, fun k s t hs ht q hq y _ =>
         hlip k s t hs ht q hq y⟩
-    have hlip := lipTail_of_src (I := I) Phi mc.limit.metric bf hsrc htgt
+    have hlip := lipTail_of_source (I := I) Phi mc.limit.metric bf hsrc htgt
       (beta n) (psi n) hlipG
     intro p
     obtain ⟨Lt, hLt, hlipLt⟩ := hlip p
@@ -361,7 +361,7 @@ theorem open_upgrade_of_canonical_metric_compactness
       (by simpa only [beta, psi, RealTimeInterval.openWindow] using hs)
       (by simpa only [beta, psi, RealTimeInterval.openWindow] using ht)
       q hq z hz
-  have hlipSrc : ∀ n k : Nat,
+  have hlipSource : ∀ n k : Nat,
       letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
         sourceDomTop (I := I) Phi k
       letI : ChartedSpace H (SourceDomain (I := I) Phi k) :=
@@ -383,12 +383,12 @@ theorem open_upgrade_of_canonical_metric_compactness
             ∀ q : Nat, q ≤ p →
               ∀ y : SourceDomain (I := I) Phi k, y ∈ C →
                 metricDerivNorm (I := I) q
-                  (srcMetric (I := I) Phi hsrc htgt k s)
-                  (srcMetric (I := I) Phi hsrc htgt k t)
-                  (refRes (I := I) Phi mc.limit.metric k) y ≤
+                  (sourceMetric (I := I) Phi hsrc htgt k s)
+                  (sourceMetric (I := I) Phi hsrc htgt k t)
+                  (sourceMetricRestriction (I := I) Phi mc.limit.metric k) y ≤
                     Ls * |s - t| := by
     intro n k C _hC p
-    obtain ⟨Ls, hLs, hlip⟩ := (srcData n).lip p
+    obtain ⟨Ls, hLs, hlip⟩ := (sourceData n).lip p
     refine ⟨Ls, hLs, ?_⟩
     intro s t hs ht q hq y _hy
     exact hlip k s t
@@ -397,7 +397,7 @@ theorem open_upgrade_of_canonical_metric_compactness
       q hq y
   simpa only [mc] using
     (exists_complete_flowUpgrade_of_open_metric_bounds (I := I) (X := X) mc Phi bf hsrc htgt
-      hzero hD cLow hcLow hbound hcovTail hlipTail hlipSrc hcp)
+      hzero hD cLow hcLow hbound hcovTail hlipTail hlipSource hcp)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -68,13 +68,13 @@ lemma wkpNorm_smooth_coef_mul_ae_zero_factor_le
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport χ
-    · have hy_chart : y ∈ Ω := hχ_tsupp hy_supp
+    by_cases hy_support : y ∈ tsupport χ
+    · have hy_chart : y ∈ Ω := hχ_tsupp hy_support
       exact hχ_smooth.contDiffAt.mul
         ((hcoef_chart y hy_chart).contDiffAt (hΩ_open.mem_nhds hy_chart))
     · have h_eq_zero : (fun y => χ y * coef y)
           =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_open_compl.mem_nhds hy_supp] with z hz
+        filter_upwards [h_open_compl.mem_nhds hy_support] with z hz
         rw [image_eq_zero_of_notMem_tsupport hz, zero_mul]
       exact contDiffAt_const.congr_of_eventuallyEq h_eq_zero
   have hχ_coef_cs : HasCompactSupport (fun y => χ y * coef y) :=
@@ -200,13 +200,13 @@ lemma wkpNorm_smooth_coef_mul_ae_zero_factor_le_uniform
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport χ
-    · have hy_chart : y ∈ Ω := hχ_tsupp hy_supp
+    by_cases hy_support : y ∈ tsupport χ
+    · have hy_chart : y ∈ Ω := hχ_tsupp hy_support
       exact hχ_smooth.contDiffAt.mul
         ((hcoef_chart y hy_chart).contDiffAt (hΩ_open.mem_nhds hy_chart))
     · have h_eq_zero : (fun y => χ y * coef y)
           =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_open_compl.mem_nhds hy_supp] with z hz
+        filter_upwards [h_open_compl.mem_nhds hy_support] with z hz
         rw [image_eq_zero_of_notMem_tsupport hz, zero_mul]
       exact contDiffAt_const.congr_of_eventuallyEq h_eq_zero
   have hχ_coef_cs : HasCompactSupport (fun y => χ y * coef y) :=

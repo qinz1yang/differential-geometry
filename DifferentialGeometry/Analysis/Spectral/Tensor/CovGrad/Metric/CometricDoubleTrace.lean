@@ -622,7 +622,7 @@ private theorem model_cons_slot0_smul {s : ℕ} (c : ℝ) (u : E)
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem smoothOrthoFrame_basis_at (g₀ : SmoothRiemannianMetric I M) (x : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x) :
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x) :
     ∃ bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I y),
       ∀ i, bse i = smoothOrthoFrame (I := I) g₀ x i y := by
   classical
@@ -657,7 +657,7 @@ private theorem smoothOrthoFrame_basis_at (g₀ : SmoothRiemannianMetric I M) (x
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem smoothOrthoFrame_expansion_at (g₀ : SmoothRiemannianMetric I M) (x : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x) (u : TangentSpace I y) :
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x) (u : TangentSpace I y) :
     u = ∑ i : Fin (Module.finrank ℝ E),
       g₀.inner y u (smoothOrthoFrame (I := I) g₀ x i y) •
         smoothOrthoFrame (I := I) g₀ x i y := by
@@ -733,7 +733,7 @@ omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I
     [SigmaCompactSpace M] in
 theorem cometric_dualTrace_eq_orthoFrame_diag (g₀ : SmoothRiemannianMetric I M)
     {s : ℕ} (x : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x)
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x)
     (T : Tensor0SBundle.Tensor0SModel (s + 2) ℝ E) (mm : Fin s → E) :
     ∑ k : Fin (Module.finrank ℝ E),
         T (Fin.cons (cometricLmodel (I := I) g₀ y
@@ -899,7 +899,7 @@ private theorem tensor0SCovDeriv_finset_sum (g₀ : SmoothRiemannianMetric I M) 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem cometricDoubleTraceFib_eq_orthoFrame_diag (g₀ : SmoothRiemannianMetric I M)
-    (p : ℕ) (x : M) {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x)
+    (p : ℕ) (x : M) {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x)
     (D : Tensor0SBundle.Tensor0SSpace (p + 2) I y) :
     cometricDoubleTraceFib (I := I) g₀ p y D =
       ∑ i : Fin (Module.finrank ℝ E),
@@ -975,7 +975,7 @@ private theorem orthoFrame_skew_correction_cancel (g₀ : SmoothRiemannianMetric
       (LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v =
         ∑ j : Fin (Module.finrank ℝ E), a i j • smoothOrthoFrame (I := I) g₀ x j x :=
     fun i => smoothOrthoFrame_expansion_at (I := I) g₀ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       ((LeviCivita (I := I) g₀).toFun (smoothOrthoFrame (I := I) g₀ x i) x v)
   have hexp_model : ∀ i : Fin (Module.finrank ℝ E),
       tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -1299,7 +1299,7 @@ theorem cometricDoubleTraceField_covGrad_eq_zero (g₀ : SmoothRiemannianMetric 
     have hagree : ∀ᶠ y in nhds x,
         (show Tensor0SBundle.Tensor0SSpace (p + 2) I y →L[ℝ] Tensor0SBundle.Tensor0SSpace p I y from
           (cometricDoubleTraceField (I := I) g₀ p).toSection y) (w y) = Q y := by
-      filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x] with y hy
+      filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x] with y hy
       rw [hQ_coe y]
       rw [show (show Tensor0SBundle.Tensor0SSpace (p + 2) I y →L[ℝ]
             Tensor0SBundle.Tensor0SSpace p I y from
@@ -1379,7 +1379,7 @@ theorem cometricDoubleTraceField_covGrad_eq_zero (g₀ : SmoothRiemannianMetric 
               ((Tensor0SNabla.tensor0SCovariantDerivative I M (p + 2)
                 (LeviCivita (I := I) g₀)).toFun (fun y : M => w y) x v) :=
             (cometricDoubleTraceFib_eq_orthoFrame_diag (I := I) g₀ p x
-              (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+              (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
               ((Tensor0SNabla.tensor0SCovariantDerivative I M (p + 2)
                 (LeviCivita (I := I) g₀)).toFun (fun y : M => w y) x v)).symm
     exact hfinal

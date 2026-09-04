@@ -180,12 +180,12 @@ theorem variationalSolution_compare_norm
     have hbound_R : ∀ τ ∈ Ico t₀ (t₀ + T),
         ‖A₁ τ (y₁ τ) - A₂ τ (y₂ τ)‖ ≤ M * ‖w τ‖ + ε * (‖δ‖ * exp (M * T)) :=
       fun τ hτ => hbound_aux τ (hsub_R ⟨hτ.1, le_of_lt hτ.2⟩)
-    have hw_init : ‖w t₀‖ ≤ 0 := by
+    have hw_initial : ‖w t₀‖ ≤ 0 := by
       simp [w, h₁.1, h₂.1]
     have hgr := norm_le_gronwallBound_of_norm_deriv_right_le
       (f := w) (f' := fun τ => A₁ τ (y₁ τ) - A₂ τ (y₂ τ))
       (δ := 0) (K := M) (ε := ε * (‖δ‖ * exp (M * T)))
-      hw_cont hw_d hw_init hbound_R
+      hw_cont hw_d hw_initial hbound_R
     have ht_R : t ∈ Icc t₀ (t₀ + T) := ⟨htge, ht.2⟩
     have hgr_t := hgr t ht_R
     have hx_nn : 0 ≤ t - t₀ := by linarith
@@ -249,14 +249,14 @@ theorem variationalSolution_compare_norm
       have h_w_z : w (φ τ) = z τ := rfl
       rw [h_w_z] at h
       exact h
-    have hz_init : ‖z t₀‖ ≤ 0 := by
+    have hz_initial : ‖z t₀‖ ≤ 0 := by
       change ‖w (2 * t₀ - t₀)‖ ≤ 0
       have h0 : 2 * t₀ - t₀ = t₀ := by ring
       simp [w, h0, h₁.1, h₂.1]
     have hgr := norm_le_gronwallBound_of_norm_deriv_right_le
       (f := z) (f' := fun τ => -(A₁ (φ τ) (y₁ (φ τ)) - A₂ (φ τ) (y₂ (φ τ))))
       (δ := 0) (K := M) (ε := ε * (‖δ‖ * exp (M * T)))
-      hz_cont hz_d hz_init hbound_L
+      hz_cont hz_d hz_initial hbound_L
     set τ' := 2 * t₀ - t
     have hτ'_in : τ' ∈ Icc t₀ (t₀ + T) := ⟨by linarith [htlt.le], by linarith [ht.1]⟩
     have hgr_τ' := hgr τ' hτ'_in
@@ -360,7 +360,7 @@ lemma variationalLinearMapAt_opNorm_time_lipschitz
   have h_sub : (L₁ - L₂) δ = y t₁ - y t₂ := by
     rw [sub_apply, hL₁_eq, hL₂_eq]
   rw [h_sub]
-  have hy_sol := variationalSolutionFun_isSolution hT hM hMT hA_cont hA_bd δ
+  have hy_solution := variationalSolutionFun_isSolution hT hM hMT hA_cont hA_bd δ
   have hy_bd := fun τ (hτ : τ ∈ Icc (t₀ - T) (t₀ + T)) =>
     variationalSolutionFun_norm_le hT hM hMT hA_cont hA_bd δ hτ
   have hy_deriv_bd : ∀ τ ∈ Icc (t₀ - T) (t₀ + T),
@@ -380,16 +380,16 @@ lemma variationalLinearMapAt_opNorm_time_lipschitz
     ⟨ht₁.1.trans (le_max_left _ _), max_le ht₁.2 ht₂.2⟩
   have hseg_sub : Icc tlo thi ⊆ Icc (t₀ - T) (t₀ + T) := fun τ hτ =>
     ⟨htlo_in.1.trans hτ.1, hτ.2.trans hthi_in.2⟩
-  have hy_d_seg : ∀ τ ∈ Icc tlo thi,
+  have hy_d_segment : ∀ τ ∈ Icc tlo thi,
       HasDerivWithinAt y ((fderiv ℝ (f τ) (α τ)) (y τ)) (Icc tlo thi) τ := fun τ hτ =>
-    (hy_sol.2 τ (hseg_sub hτ)).mono hseg_sub
-  have hy_d_seg_bd : ∀ τ ∈ Ico tlo thi,
+    (hy_solution.2 τ (hseg_sub hτ)).mono hseg_sub
+  have hy_d_segment_bd : ∀ τ ∈ Ico tlo thi,
       ‖(fderiv ℝ (f τ) (α τ)) (y τ)‖ ≤ M * exp (M * T) * ‖δ‖ := fun τ hτ =>
     hy_deriv_bd τ (hseg_sub ⟨hτ.1, le_of_lt hτ.2⟩)
   have hmvt := norm_image_sub_le_of_norm_deriv_le_segment'
     (f := y) (f' := fun τ => (fderiv ℝ (f τ) (α τ)) (y τ))
     (C := M * exp (M * T) * ‖δ‖) (a := tlo) (b := thi)
-    hy_d_seg hy_d_seg_bd thi (right_mem_Icc.mpr htlo_le_thi)
+    hy_d_segment hy_d_segment_bd thi (right_mem_Icc.mpr htlo_le_thi)
   have h_diff_eq : thi - tlo = |t₁ - t₂| := by
     rcases le_or_gt t₁ t₂ with h | h
     · have htlo : tlo = t₁ := min_eq_left h
@@ -509,7 +509,7 @@ lemma uniformly_close_fderiv_in_x
   have hF_cont_slab : ContinuousOn F Kc :=
     continuousOn_fderiv_jointly hΦ hf_C1 hsub hρ_le
   set L : Set (E × ℝ) := {x} ×ˢ Icc (t₀ - T') (t₀ + T')
-  have hL_cpt : IsCompact L :=
+  have hL_compact : IsCompact L :=
     (isCompact_singleton (x := x)).prod isCompact_Icc
   set Uo : Set (E × ℝ) := ball x₀ ρ ×ˢ Ioo (t₀ - T) (t₀ + T)
   have hUo_open : IsOpen Uo := isOpen_ball.prod isOpen_Ioo
@@ -531,10 +531,10 @@ lemma uniformly_close_fderiv_in_x
     have hUo_nhds : Uo ∈ nhds p := IsOpen.mem_nhds hUo_open hp_Uo
     have hKc_nhds : Kc ∈ nhds p := Filter.mem_of_superset hUo_nhds hUo_sub_Kc
     exact (hF_cont_slab p hp_Kc).continuousAt hKc_nhds
-  have hr_unif : { y : (E →L[ℝ] E) × (E →L[ℝ] E) | dist y.1 y.2 < ε / 2 } ∈
+  have hr_uniform : { y : (E →L[ℝ] E) × (E →L[ℝ] E) | dist y.1 y.2 < ε / 2 } ∈
       uniformity (E →L[ℝ] E) := Metric.dist_mem_uniformity (by positivity)
-  have hL_unif := hL_cpt.uniformContinuousAt_of_continuousAt F hF_at_L hr_unif
-  rcases Metric.mem_uniformity_dist.mp hL_unif with ⟨δ, hδ_pos, hδ⟩
+  have hL_uniform := hL_compact.uniformContinuousAt_of_continuousAt F hF_at_L hr_uniform
+  rcases Metric.mem_uniformity_dist.mp hL_uniform with ⟨δ, hδ_pos, hδ⟩
   refine ⟨δ, hδ_pos, fun xq hxq τ hτ => ?_⟩
   set p₁ : E × ℝ := (x, τ)
   set p₂ : E × ℝ := (xq, τ)

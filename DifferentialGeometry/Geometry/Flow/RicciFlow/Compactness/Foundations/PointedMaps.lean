@@ -12,7 +12,7 @@ universe u
 namespace DifferentialGeometry
 
 attribute [local instance] Fintype.ofFinite
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -770,7 +770,7 @@ noncomputable def ofRestrictPullback
     {subseq : Nat -> Nat}
     {Φ : PointedCGHMaps (I := I) X P subseq}
     {k : Nat}
-    (hσsrc : letI : TopologicalSpace P.M := P.topology; IsSigmaCompact (Φ.source k))
+    (hσsource : letI : TopologicalSpace P.M := P.topology; IsSigmaCompact (Φ.source k))
     (referenceMetric :
       letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
       letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
@@ -807,14 +807,14 @@ noncomputable def ofRestrictPullback
   letI : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
   letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
   letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
-    sourceDomSigmaOf (I := I) Φ k hσsrc
+    sourceDomSigmaOf (I := I) Φ k hσsource
   letI : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
   letI : ChartedSpace H (TargetDomain (I := I) Φ k) := targetDomCharted (I := I) Φ k
   letI : T2Space (TargetDomain (I := I) Φ k) := targetDomT2 (I := I) Φ k
   letI : IsManifold I ∞ (TargetDomain (I := I) Φ k) := targetDomSmooth (I := I) Φ k
   refine SourceDomainMetricData.ofCanonical (I := I)
     (Φ := Φ) (k := k)
-    (sourceDomSigmaOf (I := I) Φ k hσsrc)
+    (sourceDomSigmaOf (I := I) Φ k hσsource)
     (fun t => by
       let sourceT2 : T2Space (sourceOpen (I := I) Φ k) := by
         change T2Space (SourceDomain (I := I) Φ k)
@@ -970,7 +970,7 @@ noncomputable def derivNormSupOn
 
 end SourceDomainMetricData
 
-def SourceMetricCPConvOn
+def SourceMetricCPConvergenceOn
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
@@ -983,7 +983,7 @@ def SourceMetricCPConvOn
       K ⊆ Φ.source k /\
         (D k).derivNormSupOn (I := I) K p t < ε
 
-def SourceMetricCPConvOnWindow
+def SourceMetricCPConvergenceOnWindow
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
@@ -998,7 +998,7 @@ def SourceMetricCPConvOnWindow
         forall t : Real, t ∈ Set.Icc a b ->
           (D k).derivNormSupOn (I := I) K p t < ε
 
-theorem SourceMetricCPConvOnWindow.of_derivNormSupOn
+theorem SourceMetricCPConvergenceOnWindow.of_derivNormSupOn
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
@@ -1011,13 +1011,13 @@ theorem SourceMetricCPConvOnWindow.of_derivNormSupOn
       exists k0 : Nat, forall k : Nat, k0 <= k ->
         forall t : Real, t ∈ Set.Icc a b ->
           (D k).derivNormSupOn (I := I) K p t < ε) :
-    SourceMetricCPConvOnWindow (I := I) Φ D K p a b := by
+    SourceMetricCPConvergenceOnWindow (I := I) Φ D K p a b := by
   intro ε hε
-  obtain ⟨kSrc, hSrc⟩ := Φ.source_subset hK
-  obtain ⟨kConv, hConv⟩ := hconv ε hε
-  refine ⟨max kSrc kConv, fun k hk => ?_⟩
-  refine ⟨hSrc k (le_trans (Nat.le_max_left kSrc kConv) hk), ?_⟩
-  exact hConv k (le_trans (Nat.le_max_right kSrc kConv) hk)
+  obtain ⟨kSource, hSource⟩ := Φ.source_subset hK
+  obtain ⟨kConvergence, hConvergence⟩ := hconv ε hε
+  refine ⟨max kSource kConvergence, fun k hk => ?_⟩
+  refine ⟨hSource k (le_trans (Nat.le_max_left kSource kConvergence) hk), ?_⟩
+  exact hConvergence k (le_trans (Nat.le_max_right kSource kConvergence) hk)
 
 structure SourceMetricConvergenceData
     {X : PointedFlowSeq (I := I)}
@@ -1030,7 +1030,7 @@ structure SourceMetricConvergenceData
       forall _hK : letI : TopologicalSpace P.M := P.topology; IsCompact K,
       forall p : Nat,
       forall t : Real, t ∈ X.D.carrier ->
-        SourceMetricCPConvOn (I := I) Φ domain K p t
+        SourceMetricCPConvergenceOn (I := I) Φ domain K p t
 
 namespace SourceMetricConvergenceData
 
@@ -1051,18 +1051,18 @@ noncomputable def ofDerivNormSupOn
   domain := D
   converges := by
     intro K hK p t ht ε hε
-    obtain ⟨kSrc, hSrc⟩ := Φ.source_subset hK
-    obtain ⟨kConv, hConv⟩ := hconv K hK p t ht ε hε
-    refine ⟨max kSrc kConv, fun k hk => ?_⟩
-    refine ⟨hSrc k (le_trans (Nat.le_max_left kSrc kConv) hk), ?_⟩
-    exact hConv k (le_trans (Nat.le_max_right kSrc kConv) hk)
+    obtain ⟨kSource, hSource⟩ := Φ.source_subset hK
+    obtain ⟨kConvergence, hConvergence⟩ := hconv K hK p t ht ε hε
+    refine ⟨max kSource kConvergence, fun k hk => ?_⟩
+    refine ⟨hSource k (le_trans (Nat.le_max_left kSource kConvergence) hk), ?_⟩
+    exact hConvergence k (le_trans (Nat.le_max_right kSource kConvergence) hk)
 
 noncomputable def ofRestrictPullback
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
     {Φ : PointedCGHMaps (I := I) X P subseq}
-    (hσsrc : forall k : Nat,
+    (hσsource : forall k : Nat,
       letI : TopologicalSpace P.M := P.topology
       IsSigmaCompact (Φ.source k))
     (referenceMetric : forall k : Nat,
@@ -1082,12 +1082,12 @@ noncomputable def ofRestrictPullback
         forall ε : Real, 0 < ε ->
           exists k0 : Nat, forall k : Nat, k0 <= k ->
             ((SourceDomainMetricData.ofRestrictPullback (I := I)
-              (Φ := Φ) (k := k) (hσsrc k)
+              (Φ := Φ) (k := k) (hσsource k)
               (referenceMetric k) limitMetricFamily).derivNormSupOn (I := I) K p t) < ε) :
     SourceMetricConvergenceData (I := I) Φ :=
   SourceMetricConvergenceData.ofDerivNormSupOn (I := I)
     (D := fun k => SourceDomainMetricData.ofRestrictPullback (I := I)
-      (Φ := Φ) (k := k) (hσsrc k) (referenceMetric k) limitMetricFamily)
+      (Φ := Φ) (k := k) (hσsource k) (referenceMetric k) limitMetricFamily)
     hconv
 
 end SourceMetricConvergenceData
@@ -1103,7 +1103,7 @@ structure SourceSpacetimeConvergenceData
       forall _hK : letI : TopologicalSpace P.M := P.topology; IsCompact K,
       forall p : Nat,
       forall a b : Real, Set.Icc a b ⊆ X.D.carrier ->
-        SourceMetricCPConvOnWindow (I := I) Φ D K p a b
+        SourceMetricCPConvergenceOnWindow (I := I) Φ D K p a b
 
 namespace SourceSpacetimeConvergenceData
 
@@ -1144,7 +1144,7 @@ theorem of_derivNormSupOn
     SourceSpacetimeConvergenceData (I := I) Φ D where
   converges_on_windows := by
     intro K hK p a b hwin
-    exact SourceMetricCPConvOnWindow.of_derivNormSupOn (I := I) hK
+    exact SourceMetricCPConvergenceOnWindow.of_derivNormSupOn (I := I) hK
       (hconv K hK p a b hwin)
 
 theorem ofRestrictPullback
@@ -1152,7 +1152,7 @@ theorem ofRestrictPullback
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
     {Φ : PointedCGHMaps (I := I) X P subseq}
-    (hσsrc : forall k : Nat,
+    (hσsource : forall k : Nat,
       letI : TopologicalSpace P.M := P.topology
       IsSigmaCompact (Φ.source k))
     (referenceMetric : forall k : Nat,
@@ -1173,11 +1173,11 @@ theorem ofRestrictPullback
           exists k0 : Nat, forall k : Nat, k0 <= k ->
             forall t : Real, t ∈ Set.Icc a b ->
               ((SourceDomainMetricData.ofRestrictPullback (I := I)
-                (Φ := Φ) (k := k) (hσsrc k)
+                (Φ := Φ) (k := k) (hσsource k)
                 (referenceMetric k) limitMetricFamily).derivNormSupOn (I := I) K p t) < ε) :
     SourceSpacetimeConvergenceData (I := I) Φ
       (fun k => SourceDomainMetricData.ofRestrictPullback (I := I)
-        (Φ := Φ) (k := k) (hσsrc k) (referenceMetric k) limitMetricFamily) :=
+        (Φ := Φ) (k := k) (hσsource k) (referenceMetric k) limitMetricFamily) :=
   SourceSpacetimeConvergenceData.of_derivNormSupOn (I := I) hconv
 
 end SourceSpacetimeConvergenceData
@@ -1324,7 +1324,7 @@ noncomputable def ofRestrictPullback
     (Φ : PointedCGHMaps (I := I) X (L.atTime 0) subseq)
     (hscalar : ScalarPullbackTendsto (I := I) Φ)
     (hric : RicNormPullback (I := I) Φ)
-    (hσsrc : forall k : Nat,
+    (hσsource : forall k : Nat,
       letI : TopologicalSpace (L.atTime 0).M := L.topology
       IsSigmaCompact (Φ.source k))
     (referenceMetric : forall k : Nat,
@@ -1345,14 +1345,14 @@ noncomputable def ofRestrictPullback
           exists k0 : Nat, forall k : Nat, k0 <= k ->
             forall t : Real, t ∈ Set.Icc a b ->
               ((SourceDomainMetricData.ofRestrictPullback (I := I)
-                (Φ := Φ) (k := k) (hσsrc k)
+                (Φ := Φ) (k := k) (hσsource k)
                 (referenceMetric k) limitMetricFamily).derivNormSupOn (I := I) K p t) < ε) :
     SmoothCGHConverges (I := I) X L subseq :=
   SmoothCGHConverges.ofSpacetime (I := I) Φ hscalar hric
     (SourceSpacetimeConvergenceData.ofRestrictPullback (I := I)
-      hσsrc referenceMetric limitMetricFamily hconv)
+      hσsource referenceMetric limitMetricFamily hconv)
 
 end SmoothCGHConverges
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

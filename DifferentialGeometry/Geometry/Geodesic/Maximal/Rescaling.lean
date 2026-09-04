@@ -35,7 +35,7 @@ lemma chartFiberCoord_mk_self (α : M) (v : E) :
   change (trivializationAt E (TangentSpace I) α
       (⟨α, v⟩ : TangentBundle I M)).2 = v
   have hα_mem : α ∈ (chartAt H α).source := mem_chart_source H α
-  have hα_src : α ∈ (extChartAt I α).source := by
+  have hα_source : α ∈ (extChartAt I α).source := by
     rw [extChartAt_source]; exact hα_mem
   have hbase : α ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet]
@@ -46,7 +46,7 @@ lemma chartFiberCoord_mk_self (α : M) (v : E) :
     TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (𝕜 := ℝ)
       (b₀ := α) (b := α) hα_mem
   have hself : ∀ w : E, tangentCoordChange I α α α w = w :=
-    fun w => tangentCoordChange_self (I := I) (x := α) (z := α) (v := w) hα_src
+    fun w => tangentCoordChange_self (I := I) (x := α) (z := α) (v := w) hα_source
   have hcore_at :
       ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ α) v = v := by
     rw [hcore]
@@ -69,7 +69,7 @@ section ChartPushLiftAtZero
 variable [I.Boundaryless]
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-lemma chartPushLift_zero_of_init
+lemma chartPushLift_zero_of_initial
     {f : ℝ → TangentBundle I M} {p : M} {v : E}
     (hf0 : f 0 = (⟨p, v⟩ : TangentBundle I M)) :
     chartPushLift (I := I) f 0 0 = (extChartAt I p p, v) := by
@@ -124,7 +124,7 @@ lemma rescaled_chartPushLift_at_zero
       (extChartAt I p p, a • v) := by
   classical
   rw [mul_zero]
-  rw [chartPushLift_zero_of_init (I := I) (f := f_v) (p := p) (v := v) hf_v0]
+  rw [chartPushLift_zero_of_initial (I := I) (f := f_v) (p := p) (v := v) hf_v0]
   rfl
 
 end RescaledChartOrbit
@@ -201,10 +201,10 @@ lemma rescaled_chartPushLift_phaseVF_and_target_interior
   rw [hpair]
   refine ⟨?_, Set.mem_univ _⟩
   have h_target : extChartAt I p (f_v (a * s)).proj ∈ (extChartAt I p).target := by
-    have h_src : (f_v (a * s)).proj ∈ (extChartAt I p).source := by
+    have h_source : (f_v (a * s)).proj ∈ (extChartAt I p).source := by
       rw [extChartAt_source]
       exact hssrc
-    exact (extChartAt I p).map_source h_src
+    exact (extChartAt I p).map_source h_source
   exact extChartAt_target_subset_interior_of_boundaryless (I := I) p h_target
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -224,14 +224,14 @@ theorem chartPushLift_rescaled_eq_chartPushLift_av_eventually
   have hc_R0 : rescaleChartOrbit (E := E) a (chartPushLift (I := I) f_v 0 (a * 0)) =
       (extChartAt I p p, a • v) := rescaled_chartPushLift_at_zero (I := I) hf_v0 a
   have hc_av0 : chartPushLift (I := I) f_av 0 0 = (extChartAt I p p, a • v) :=
-    chartPushLift_zero_of_init (I := I) hf_av0
+    chartPushLift_zero_of_initial (I := I) hf_av0
   have hz₀_target : (extChartAt I p p, a • v) ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
     refine ⟨?_, Set.mem_univ _⟩
-    have hp_src : p ∈ (extChartAt I p).source := by
+    have hp_source : p ∈ (extChartAt I p).source := by
       rw [extChartAt_source]; exact mem_chart_source H p
     have h_target : extChartAt I p p ∈ (extChartAt I p).target :=
-      (extChartAt I p).map_source hp_src
+      (extChartAt I p).map_source hp_source
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) p h_target
   have hd_R := rescaled_chartPushLift_phaseVF_and_target_interior (I := I)
     (g := g) (p := p) (a := a) (v := v) (f_v := f_v) hf_v0 hf_v_int
@@ -253,7 +253,7 @@ omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma rescaled_chartPushLift_fst
     {f_v : ℝ → TangentBundle I M} {p : M} {a : ℝ} {s : ℝ}
     (hf_v0_proj : (f_v 0).proj = p)
-    (hs_src : (f_v (a * s)).proj ∈ (chartAt H p).source) :
+    (hs_source : (f_v (a * s)).proj ∈ (chartAt H p).source) :
     (rescaleChartOrbit (E := E) a (chartPushLift (I := I) f_v 0 (a * s))).1 =
       extChartAt I p (projectCurve (I := I) f_v (a * s)) := by
   classical
@@ -262,7 +262,7 @@ lemma rescaled_chartPushLift_fst
     have h := chartPushLift_fst (I := I) (f := f_v) 0 (a * s) ?_
     · rw [show (f_v 0).proj = p from hf_v0_proj] at h
       exact h
-    · rw [hf_v0_proj]; exact hs_src
+    · rw [hf_v0_proj]; exact hs_source
   change ((chartPushLift (I := I) f_v 0 (a * s)).1, _).1 = _
   rw [hfst]; rfl
 
@@ -329,17 +329,17 @@ theorem projectCurve_rescale_eventually
     · rw [hf_av0_proj]; exact hs_av
   rw [hlhs] at h_fst_eq
   rw [hrhs] at h_fst_eq
-  have hv_src : projectCurve (I := I) f_v (a * s) ∈ (extChartAt I p).source := by
+  have hv_source : projectCurve (I := I) f_v (a * s) ∈ (extChartAt I p).source := by
     rw [extChartAt_source, projectCurve_apply]; exact hs_v
-  have hav_src : (f_av s).proj ∈ (extChartAt I p).source := by
+  have hav_source : (f_av s).proj ∈ (extChartAt I p).source := by
     rw [extChartAt_source]; exact hs_av
   have hlhs_inv : (extChartAt I p).symm (extChartAt I p
       (projectCurve (I := I) f_v (a * s))) =
       projectCurve (I := I) f_v (a * s) :=
-    (extChartAt I p).left_inv hv_src
+    (extChartAt I p).left_inv hv_source
   have hrhs_inv : (extChartAt I p).symm (extChartAt I p
       (f_av s).proj) = (f_av s).proj :=
-    (extChartAt I p).left_inv hav_src
+    (extChartAt I p).left_inv hav_source
   have h_inv := congrArg (extChartAt I p).symm h_fst_eq
   rw [hlhs_inv, hrhs_inv] at h_inv
   change projectCurve (I := I) f_v (a * s) = projectCurve (I := I) f_av s

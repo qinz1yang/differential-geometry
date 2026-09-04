@@ -18,7 +18,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -1108,7 +1108,7 @@ omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     [SigmaCompactSpace M] in
-theorem normsq_evol_of_comp
+theorem normsq_evolution_of_comp
     [Module.Finite ℝ E]
     {K : Set M} {β ψ : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
@@ -1290,9 +1290,9 @@ theorem hevComp_of_solutions
         (TangentSpace I : M → Type _), ∀ x₀ : M,
       FixedBaseExtDerivTimeDerivativeOnRegular (I := I) (D i).carrier (D i).regular
         ({x₀} : Set M)
-        (fun r p' => (covDerivOfField (I := I) gRef (solnMetricField (I := I) (S i) r) p) p'
+        (fun r p' => (covDerivOfField (I := I) gRef (solutionMetricField (I := I) (S i) r) p) p'
           (fun a : Fin (p + 2) => V a p'))
-        (fun r p' => (covDerivOfField (I := I) gRef (solnEvolField (I := I) (S i) r) p) p'
+        (fun r p' => (covDerivOfField (I := I) gRef (solutionEvolutionField (I := I) (S i) r) p) p'
           (fun a : Fin (p + 2) => V a p'))) :
     ∀ i : Nat, ∀ x, ∀ s ∈ Set.Icc β ψ,
       ∀ v : Fin (N + 2) → TangentSpace I x,
@@ -1300,27 +1300,27 @@ theorem hevComp_of_solutions
           (fun r : Real => metricCovDeriv (I := I) (gSeq i r) gRef N x v)
           (((-2 : Real) • nablaRicReal (I := I) gSeq gRef N i s x) v) s := by
   intro i x s hs v
-  have h := solnTower_hasDerivAt (I := I) gRef (S i) (hS i) N (hswap i)
+  have h := solutionTower_hasDerivAt (I := I) gRef (S i) (hS i) N (hswap i)
     N le_rfl s (hreg i hs) x v
   have hfun : (fun r : Real =>
-      (covDerivOfField (I := I) gRef (solnMetricField (I := I) (S i) r) N) x v)
+      (covDerivOfField (I := I) gRef (solutionMetricField (I := I) (S i) r) N) x v)
       = fun r : Real => metricCovDeriv (I := I) (gSeq i r) gRef N x v := by
     funext r
-    simp only [solnMetricField, hmet i r]
+    simp only [solutionMetricField, hmet i r]
     rfl
-  have hsolng : solnRicField (I := I) (S i) s
+  have hsolng : solutionRicField (I := I) (S i) s
       = CovariantDerivative.ricciSection (I := I) (M := M)
           (leviCivitaConnectionOfMetric (I := I) (gSeq i s))
           (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
             (I := I) (M := M) (gSeq i s)) := by
-    simp only [solnRicField, hmet i s]
+    simp only [solutionRicField, hmet i s]
   have hric : ricCovTower (I := I) (gSeq i s) gRef N
       = iterCov (I := I) gRef 2
           (CovariantDerivative.ricciSection (I := I) (M := M)
             (leviCivitaConnectionOfMetric (I := I) (gSeq i s))
             (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
               (I := I) (M := M) (gSeq i s))) N := rfl
-  have hsec : (covDerivOfField (I := I) gRef (solnRicField (I := I) (S i) s) N) x
+  have hsec : (covDerivOfField (I := I) gRef (solutionRicField (I := I) (S i) s) N) x
       = nablaRicReal (I := I) gSeq gRef N i s x := by
     rw [hsolng, covDerivOfField_eq_iterCov, ← hric]
     change ContinuousMultilinearMap.domDomCongr (acEquiv N)
@@ -1330,9 +1330,9 @@ theorem hevComp_of_solutions
       (ricCovTower (I := I) (gSeq i s) gRef N x).domDomCongr (acEquiv N) =
         (ricCovTower (I := I) (gSeq i s) gRef N x).domDomCongr (acEquiv N)
     rfl
-  have hval : (covDerivOfField (I := I) gRef (solnEvolField (I := I) (S i) s) N) x v
+  have hval : (covDerivOfField (I := I) gRef (solutionEvolutionField (I := I) (S i) s) N) x v
       = ((-2 : Real) • nablaRicReal (I := I) gSeq gRef N i s x) v := by
-    simp only [solnEvolField]
+    simp only [solutionEvolutionField]
     rw [covDerivOfField_smul, ContMDiffSection.coe_smul, Pi.smul_apply, hsec]
   rw [hfun, hval] at h
   exact h
@@ -1359,31 +1359,31 @@ theorem covOrderBound_stage_on
         HasDerivAt
           (fun r : Real => metricCovDeriv (I := I) (gSeq i r) gRef N x v)
           (((-2 : Real) • nablaRicReal (I := I) gSeq gRef N i s x) v) s)
-    (initC : Real) (hinitC0 : 0 ≤ initC)
+    (initialC : Real) (hinitC0 : 0 ≤ initialC)
     (hinit : ∀ i : Nat, ∀ x ∈ U,
-      metricCovDerivNorm (I := I) N (gSeq i t0) gRef x ≤ initC)
+      metricCovDerivNorm (I := I) N (gSeq i t0) gRef x ≤ initialC)
     (timeRadius : Real)
     (htime : ∀ t ∈ Set.Icc β ψ, |t - t0| ≤ timeRadius) :
     MetricCovDerivOrderBoundOnWindow (I := I) U β ψ gSeq gRef N
       (metricCovOrderEvolutionConstant
         (ricTowerCoeffs (Module.finrank Real E) N Bmax Cg KShi).slope
         (ricTowerCoeffs (Module.finrank Real E) N Bmax Cg KShi).offset
-        timeRadius initC) := by
+        timeRadius initialC) := by
   have hcoeff := ricCoeffs_nonneg (Module.finrank Real E) N Bmax Cg KShi
     hBmax1 hKShi0
   exact metricCovOrderWindow_of_evolution (I := I)
     { t0_mem := ht0
       nablaRic := nablaRicReal (I := I) gSeq gRef N
-      normsq_evol := normsq_evol_of_comp (I := I) hevComp
+      normsq_evolution := normsq_evolution_of_comp (I := I) hevComp
       Cpp := (ricTowerCoeffs (Module.finrank Real E) N Bmax Cg KShi).slope
       Cppp := (ricTowerCoeffs (Module.finrank Real E) N Bmax Cg KShi).offset
       Cpp_nonneg := hcoeff.1
       Cppp_nonneg := hcoeff.2
       ric_bound := ric_bound_field_on (I := I) hU N hN Bmax hBmax1 hequiv
         Cg hBprev KShi hKShi0 hShi
-      initC := initC
-      initC_nonneg := hinitC0
-      init_bound := hinit
+      initialC := initialC
+      initialC_nonneg := hinitC0
+      initial_bound := hinit
       timeRadius := timeRadius
       time_abs_le := htime }
 
@@ -1410,28 +1410,28 @@ theorem covOrderBound_stage
         HasDerivAt
           (fun r : Real => metricCovDeriv (I := I) (gSeq i r) gRef N x v)
           (((-2 : Real) • nablaRicReal (I := I) gSeq gRef N i s x) v) s)
-    (initC : Real) (hinitC0 : 0 ≤ initC)
+    (initialC : Real) (hinitC0 : 0 ≤ initialC)
     (hinit : forall i : Nat, forall x : M, x ∈ K ->
-      metricCovDerivNorm (I := I) N (gSeq i t0) gRef x <= initC)
+      metricCovDerivNorm (I := I) N (gSeq i t0) gRef x <= initialC)
     (timeRadius : Real)
     (htime : forall t : Real, t ∈ Set.Icc β ψ -> |t - t0| <= timeRadius) :
     exists Cw : Real,
       MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef N Cw := by
   obtain ⟨Cpp, Cppp, hpp0, hppp0, hfield⟩ := ric_bound_field (I := I) hKc hU hKU
     N hN B hequiv Bmax hBmax1 hBmax Cg hBprev KShi hKShi0 hShi
-  refine ⟨metricCovOrderEvolutionConstant Cpp Cppp timeRadius initC, ?_⟩
+  refine ⟨metricCovOrderEvolutionConstant Cpp Cppp timeRadius initialC, ?_⟩
   exact metricCovOrderWindow_of_evolution (I := I)
     { t0_mem := ht0
       nablaRic := nablaRicReal (I := I) gSeq gRef N
-      normsq_evol := normsq_evol_of_comp (I := I) hevComp
+      normsq_evolution := normsq_evolution_of_comp (I := I) hevComp
       Cpp := Cpp
       Cppp := Cppp
       Cpp_nonneg := hpp0
       Cppp_nonneg := hppp0
       ric_bound := hfield
-      initC := initC
-      initC_nonneg := hinitC0
-      init_bound := hinit
+      initialC := initialC
+      initialC_nonneg := hinitC0
+      initial_bound := hinit
       timeRadius := timeRadius
       time_abs_le := htime }
 
@@ -1455,9 +1455,9 @@ theorem covOrderBound_tower
         HasDerivAt
           (fun r' : Real => metricCovDeriv (I := I) (gSeq i r') gRef r x v)
           (((-2 : Real) • nablaRicReal (I := I) gSeq gRef r i s x) v) s)
-    (initC : Nat -> Real) (hinitC0 : ∀ r : Nat, 0 ≤ initC r)
+    (initialC : Nat -> Real) (hinitC0 : ∀ r : Nat, 0 ≤ initialC r)
     (hinit : ∀ r : Nat, 1 ≤ r → r ≤ N → ∀ i : Nat, ∀ x ∈ U,
-      metricCovDerivNorm (I := I) r (gSeq i t0) gRef x <= initC r)
+      metricCovDerivNorm (I := I) r (gSeq i t0) gRef x <= initialC r)
     (timeRadius : Real)
     (htime : forall t : Real, t ∈ Set.Icc β ψ -> |t - t0| <= timeRadius) :
     ∀ r : Nat, 1 ≤ r → r ≤ N →
@@ -1496,12 +1496,12 @@ theorem covOrderBound_tower
       (fun s hs i t ht x hx => hShi s (le_trans hs hrN) i t ht x (hLsubU hx))
       ht0
       (fun i x hx s hs v => hev r h1 hrN i x (hU'U (hK'U' hx)) s hs v)
-      (initC r) (hinitC0 r)
+      (initialC r) (hinitC0 r)
       (fun i x hx => hinit r h1 hrN i x (hU'U (hK'U' hx)))
       timeRadius htime
 
 omit [Module.Finite ℝ E] [SigmaCompactSpace M] in
-theorem covOrderBound_of_soln
+theorem covOrderBound_of_solution
     [Module.Finite ℝ E]
     {K U : Set M} {β ψ t0 : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
@@ -1521,21 +1521,21 @@ theorem covOrderBound_of_soln
     (hShi : MovingShiBoundOn (I := I) U β ψ gSeq N KShi)
     (ht0 : t0 ∈ Set.Icc β ψ)
     (hDreg : ∀ i : Nat, ∀ {t : Real}, t ∈ (D i).regular → (D i).regular ∈ 𝓝 t)
-    (initC : Nat -> Real) (hinitC0 : ∀ r : Nat, 0 ≤ initC r)
+    (initialC : Nat -> Real) (hinitC0 : ∀ r : Nat, 0 ≤ initialC r)
     (hinit : ∀ r : Nat, 1 ≤ r → r ≤ N → ∀ i : Nat, ∀ x ∈ U,
-      metricCovDerivNorm (I := I) r (gSeq i t0) gRef x <= initC r)
+      metricCovDerivNorm (I := I) r (gSeq i t0) gRef x <= initialC r)
     (timeRadius : Real)
     (htime : forall t : Real, t ∈ Set.Icc β ψ -> |t - t0| <= timeRadius) :
     ∀ r : Nat, 1 ≤ r → r ≤ N →
       exists Cw : Real,
         MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef r Cw := by
   refine covOrderBound_tower (I := I) hKc hU hKU N B hequiv Bmax hBmax1 hBmax
-    KShi hKShi0 hShi ht0 ?_ initC hinitC0 hinit timeRadius htime
+    KShi hKShi0 hShi ht0 ?_ initialC hinitC0 hinit timeRadius htime
   intro r h1 hrN i x _hx
   exact hevComp_of_solutions (I := I) D S hS hmet hreg
     (fun j p hp V x₀ =>
-      solnTowerSwap_reg (I := I) gRef (S j) (hS j) N (hDreg j)
+      solutionTowerSwap_regularity (I := I) gRef (S j) (hS j) N (hDreg j)
         p (lt_of_lt_of_le hp hrN) V x₀) i x
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

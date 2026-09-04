@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -147,7 +147,7 @@ theorem MetricCompactBase.exists_stage_seed
       HasStageSeed inp (properMetricsOfCompleteConnected (I := I) hcomplete hconn) L0 := by
   classical
   obtain ⟨aMin, haMin, hread⟩ :=
-    exists_hat_cm_min (I := I) b.normalRadius b.realizes
+    exists_hat_center_of_mass_min (I := I) b.normalRadius b.realizes
       hcomplete hconn
   let c0 :=
     (8 * Real.exp b.decay.C / aMin) * b.normalRadius.metricCoerciveRatio
@@ -178,7 +178,7 @@ theorem MetricCompactBase.exists_stage_seed
   dsimp only [HasStageRefine]
   obtain ⟨phi, hphi, U, C0, C1, aInf, Jinf, Jbarinf, hconv,
       hptsTail⟩ :=
-    inp.exists_supp_pts_fin h8' hradRatio' P L hstable r hr hconn
+    inp.exists_support_points_fin h8' hradRatio' P L hstable r hr hconn
   let Lphi := L.subseq hphi
   obtain ⟨q, δ, hqdata, hqWide, hqAcc, herr, hinvErr,
       hbranchTail, hscaleTail, hreadTail⟩ :=
@@ -203,7 +203,7 @@ theorem MetricCompactBase.exists_stage_seed
       C1 gamma ⊆ Metric.ball 0 ((q gamma : Real) / 2) := by
     intro gamma z hz
     have hconv0 := hconv
-    dsimp only [HasSuppConvData] at hconv0
+    dsimp only [HasSupportedCenterMapConvergence] at hconv0
     have hzBall := (hconv0.2.1 gamma)
       ((hconv0.2.2.2.2.2.1 gamma) hz)
     have hlam := lamInf_lt_halfMin inp.decay inp.hD hphys P L
@@ -213,7 +213,7 @@ theorem MetricCompactBase.exists_stage_seed
     rw [Metric.mem_ball] at hzBall ⊢
     linarith [hqGamma.2.2.2]
   have hcapTail : ∀ᶠ n in Filter.atTop,
-      HasSuppCmData (I := I) inp P L r hr phi hphi n
+      HasSupportedCenterMapConstruction (I := I) inp P L r hr phi hphi n
         hcomplete hconn U aInf q δ := by
     filter_upwards [hptsTail, hreadTail] with n hn hreadN
     let Y := X.obj (Lphi.φ n)
@@ -257,7 +257,7 @@ theorem MetricCompactBase.exists_stage_seed
     let localWeight := fun (alpha : LiveSlot L inp.pack r)
         (x : Y.M) (gamma : Fin (inp.pack.A r)) =>
       weightInf alpha (chi alpha x) gamma
-    let pairPts : (alpha : LiveSlot L inp.pack r) →
+    let pairPoints : (alpha : LiveSlot L inp.pack r) →
         InterSlot L inp.pack r alpha → Nat → Nat → Y.M → Y.M :=
       fun alpha target a b x =>
         (chi alpha).symm
@@ -265,16 +265,16 @@ theorem MetricCompactBase.exists_stage_seed
             (beta b target.1) (beta b alpha)
             (normalTransition (I := I) (X.obj (Lphi.φ a))
               (beta a alpha) (beta a target.1) (chi alpha x)))
-    let pts := fun (alpha : LiveSlot L inp.pack r) =>
-      totalPts (X := X) pairPts alpha
+    let points := fun (alpha : LiveSlot L inp.pack r) =>
+      totalPoints (X := X) pairPoints alpha
     dsimp only at hn hreadN
     rcases hn with ⟨hcompact, hcover, hhat, hweight, hpts⟩
-    dsimp only [HasSuppCmData]
+    dsimp only [HasSupportedCenterMapConstruction]
     refine ⟨hcompact, ?_⟩
-    dsimp only [HasSuppCmFin]
+    dsimp only [HasSupportedFiniteCenterMapConstruction]
     have hlocal := fun alpha =>
       hreadN.2 alpha (sourcePatch alpha) (hhat alpha)
-        (localWeight alpha) (hweight alpha) (pts alpha) (hpts alpha)
+        (localWeight alpha) (hweight alpha) (points alpha) (hpts alpha)
     choose radSeq hpos hactive hsmall hcapLocal using hlocal
     refine ⟨radSeq, hcover, hhat, hweight, hpos, hactive, ?_, ?_⟩
     · intro epsilon hepsilon
@@ -317,7 +317,7 @@ theorem MetricCompactBase.exists_stage_seed
         rho / 2 ≤ metricCoerciveExpRadius
           (I := I) (X.obj (Lphi.φ n)).metric x
   let Q : Nat → Prop := fun n =>
-    HasSuppCmData (I := I) inp P L r hr phi hphi n
+    HasSupportedCenterMapConstruction (I := I) inp P L r hr phi hphi n
         hcomplete hconn U aInf q δ ∧
       ScaleAt n
   have hQ : ∀ᶠ n in Filter.atTop, Q n := by
@@ -331,17 +331,17 @@ theorem MetricCompactBase.exists_stage_seed
   have htheta : StrictMono theta := hphi.comp hpsi
   let Ltheta := L.subseq htheta
   have hconvTheta :
-      HasSuppConvData (I := I) inp P L r hr theta htheta U C0 C1
+      HasSupportedCenterMapConvergence (I := I) inp P L r hr theta htheta U C0 C1
         aInf Jinf Jbarinf := by
     simpa only [theta] using
-      HasSuppConvData.subseq inp P L r hr hphi U C0 C1 aInf Jinf Jbarinf
+      HasSupportedCenterMapConvergence.subseq inp P L r hr hphi U C0 C1 aInf Jinf Jbarinf
         hconv hpsi
   have hmetric : ∀ alpha : LiveSlot L inp.pack r,
       let Ralpha := L.rInf (alpha.1 : Nat) + 1
       let Ualpha := Metric.ball (0 : E)
         (inp.normalRadius.phaseRadius Ralpha)
       ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) Ualpha ∧
-      MapCInfConvOnCompacts Ualpha
+      MapCInfConvergenceOnCompacts Ualpha
         (fun n => normalCoordMetric (I := I)
           (X.obj (Ltheta.φ n))
           (seqCenterD inp.decay P Ltheta n (alpha.1 : Nat)))
@@ -385,7 +385,7 @@ theorem MetricCompactBase.exists_stage_seed
   let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xtheta.obj n).M :=
     fun alpha n => seqCenterD inp.decay P Ltheta n (alpha.1 : Nat)
   have hpair : ∀ alpha,
-      HasDiagPairConv (I := I) (hcomplete.subseq index)
+      HasDiagPairConvergence (I := I) (hcomplete.subseq index)
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) (q alpha) (q alpha / 2)
           (δ alpha) (deltaInf alpha) (e alpha) (eInf alpha) ∧
@@ -416,7 +416,7 @@ theorem MetricCompactBase.exists_stage_seed
         (inp.normalRadius.phaseRadius Ralpha)
       C1 alpha ⊆ Ualpha ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) Ualpha ∧
-      MapCInfConvOnCompacts Ualpha
+      MapCInfConvergenceOnCompacts Ualpha
         (fun n => normalCoordMetric (I := I)
           (X.obj ((L.subseq htheta).φ n))
           (seqCenterD inp.decay P (L.subseq htheta) n
@@ -440,5 +440,5 @@ theorem MetricCompactBase.exists_stage_seed
   dsimp only [HasStageJetData]
   exact ⟨hconvTheta, hmetric', hjet, hbase⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

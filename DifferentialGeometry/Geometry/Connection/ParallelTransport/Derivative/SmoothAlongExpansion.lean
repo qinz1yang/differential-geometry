@@ -97,7 +97,7 @@ theorem exists_frame_exp
   let S : Real -> TangentBundle I M := fun s =>
     TotalSpace.mk' E (E := (TangentSpace I : M -> Type _)) (gamma s) (V s)
   let U : Set Real := gamma ⁻¹' e.baseSet
-  let cLoc : Fin (Module.finrank Real E) -> Real -> Real :=
+  let cLocal : Fin (Module.finrank Real E) -> Real -> Real :=
     fun i => chartSectionCoord (E := E) (chartRepAt (I := I) gamma V t) i
   have hUopen : IsOpen U :=
     hgamma.continuous.isOpen_preimage _ e.open_baseSet
@@ -110,8 +110,8 @@ theorem exists_frame_exp
       ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) ∞
         (fun s => (e (S s)).2) U :=
     (e.contMDiffOn_iff hSMaps).mp hV.contMDiffOn |>.2
-  have hcLocOn : forall i,
-      ContMDiffOn 𝓘(Real, Real) 𝓘(Real, Real) ∞ (cLoc i) U := by
+  have hcLocalOn : forall i,
+      ContMDiffOn 𝓘(Real, Real) 𝓘(Real, Real) ∞ (cLocal i) U := by
     intro i
     refine ((chartCoordCLM (E := E) i).contMDiff.comp_contMDiffOn hcoord).congr ?_
     intro s hs
@@ -123,9 +123,9 @@ theorem exists_frame_exp
     rw [e.coe_linearMapAt_of_mem hs]
   have hc : forall i, exists f : Real -> Real,
       ContMDiff 𝓘(Real, Real) 𝓘(Real, Real) ∞ f /\
-        f =ᶠ[𝓝 t] cLoc i :=
+        f =ᶠ[𝓝 t] cLocal i :=
     fun i => exists_smooth_germ (I := 𝓘(Real, Real))
-      hUopen htU (hcLocOn i)
+      hUopen htU (hcLocalOn i)
   choose c hcsm hceq using hc
   have hgammaCont : ContinuousAt gamma t := hgamma.continuous.continuousAt
   have hBcurve :

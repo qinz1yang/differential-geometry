@@ -23,13 +23,13 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 variable {D : RealTimeInterval}
 
-noncomputable def lRegSpeedSq
+noncomputable def lRegularizedSpeedSq
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (s : Real) : Real :=
   (S.base.metric (T - s ^ 2)).inner (alpha s)
     (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)
 
-noncomputable def lRegLagrangian
+noncomputable def lRegularizedLagrangian
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (s : Real) : Real :=
   let g := S.base.metric (T - s ^ 2)
@@ -37,10 +37,10 @@ noncomputable def lRegLagrangian
   (1 / 2 : Real) * g.inner (alpha s) A A +
     2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s)
 
-noncomputable def lRegAction
+noncomputable def lRegularizedAction
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (a b : Real) : Real :=
-  ∫ s in a..b, lRegLagrangian S T alpha s
+  ∫ s in a..b, lRegularizedLagrangian S T alpha s
 
 end
 

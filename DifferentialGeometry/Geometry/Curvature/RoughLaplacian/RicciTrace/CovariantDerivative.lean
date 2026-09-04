@@ -95,7 +95,7 @@ theorem nablaRicciBilin_chartBasis_contMDiffOn
       (chartAt H α).source := by
   classical
   intro x₀ hx₀
-  have hbasis_src : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α j)
+  have hbasis_source : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α j)
       (chartAt H α).source := by
     have h := DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α j
     rwa [trivializationAt_baseSet_eq_chartAt_source (I := I) α] at h
@@ -103,7 +103,7 @@ theorem nablaRicciBilin_chartBasis_contMDiffOn
     (F := E) (V := fun b : M => TangentSpace I b) (n := (⊤ : ℕ∞))
     (s := fun _ : Unit => fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b)
     (u := (chartAt H α).source) (p := x₀)
-    (fun _ => hbasis_src) ((chartAt H α).open_source) hx₀
+    (fun _ => hbasis_source) ((chartAt H α).open_source) hx₀
   set Yext : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := s' () with hYext_def
   have hYext_eq : ∀ᶠ b in 𝓝 x₀, Yext b = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j b := by
     filter_upwards [hs'_eq] with b hb using hb ()

@@ -67,7 +67,7 @@ theorem scalar_crit_tame
                         (v.coeff i) ^ 2) := by
   classical
   obtain ⟨tau, htau, htau_one, hreg, hA2⟩ :=
-    cc_a2_unif (I := I) (M := M) S.family.metric hS.smoothMetric T
+    cc_a2_uniform (I := I) (M := M) S.family.metric hS.smoothMetric T
   let K : Set Real := Set.Icc (0 : Real) tau
   let R : Set Real := {s : Real | (T : Real) - s ∈ D.regular}
   let zeta : Real → C^∞⟮I, M; Real⟯ := fun s =>
@@ -85,7 +85,7 @@ theorem scalar_crit_tame
       exact conjCoeff_rev (I := I) S hS T
   choose C2 hC2_nn hC2 using hA2
   choose C1 hC1_nn hC1 using fun n : ℕ =>
-    cc_a1_unif (I := I) (M := M) (S.family.metric (T : Real)) zeta
+    cc_a1_uniform (I := I) (M := M) (S.family.metric (T : Real)) zeta
       (R := R) (K := K) hK hKR hzeta n
   refine ⟨tau, htau, htau_one, fun n => C2 n + C1 n,
     fun n => add_nonneg (hC2_nn n) (hC1_nn n), ?_⟩

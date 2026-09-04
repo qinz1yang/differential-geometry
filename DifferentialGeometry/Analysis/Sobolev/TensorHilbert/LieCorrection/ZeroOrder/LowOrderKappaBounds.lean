@@ -206,7 +206,7 @@ theorem kappa_base_neg (g₀ gB : SmoothRiemannianMetric I M) :
     -(unitModel (I := I) (M := M) g₀ 3
       (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ gB) x
       (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (v i)))
-  rw [connectionDifferenceLoweredCc_unitModel_apply']
+  rw [connectionDifferenceLoweredCc_unitModel_apply]
   have hcycle := PDE.DeTurck.connectionDifference_cocycle
     (I := I) gB g₀ g₀ x (v 0) (v 1)
   rw [PDE.DeTurck.connectionDifference_self] at hcycle

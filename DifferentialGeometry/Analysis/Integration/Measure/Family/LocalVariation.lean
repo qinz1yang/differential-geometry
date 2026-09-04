@@ -155,7 +155,7 @@ theorem first_var_local
     exact hf.comp_contMDiff hinner (fun p => ⟨hρmem p.1, Set.mem_univ p.2⟩)
   let F' : C^∞⟮𝓘(Real, Real).prod I, Real × M; Real⟯ :=
     ⟨fun p : Real × M => f' p.1 p.2, hf'smooth⟩
-  have hf'reg : FunctionRegularAt f' t := by
+  have hf'regularity : FunctionRegularAt f' t := by
     refine
       { hasDerivAt_time := ?_
         continuous_joint := hf'smooth.continuous
@@ -169,7 +169,7 @@ theorem first_var_local
         exact hslice.differentiable (by simp) s
       exact hdiff.hasDerivAt
     · exact (DifferentialGeometry.contMDiff_partial_deriv_fst I F').continuous
-  have hvariation := first_variation_of_volume (I := I) (M := M) hg hf'reg
+  have hvariation := first_variation_of_volume (I := I) (M := M) hg hf'regularity
   have hmass_eq :
       (fun s : Real =>
         ∫ x, f' s x ∂(riemannianMeasureFamily (I := I) (M := M) g_fam s)) =ᶠ[𝓝 t]
@@ -235,7 +235,7 @@ theorem first_var_joint
         (trivializationAt E (TangentSpace I) x₀).baseSet)
       exact ⟨hρmem p.1, hp.2⟩)
     exact hcomp.congr (by intro p hp; rfl)
-  have hg'reg : MetricFamilyRegularAt (I := I) g' t := by
+  have hg'regularity : MetricFamilyRegularAt (I := I) g' t := by
     refine
       { hasDerivAt_chartGramMatrix := ?_
         continuousOn_chartGramMatrix := ?_
@@ -287,7 +287,7 @@ theorem first_var_joint
       (fun p => ⟨hρmem p.1, Set.mem_univ p.2⟩)
   let F' : C^∞⟮𝓘(Real, Real).prod I, Real × M; Real⟯ :=
     ⟨fun p : Real × M => f' p.1 p.2, hf'smooth⟩
-  have hf'reg : FunctionRegularAt f' t := by
+  have hf'regularity : FunctionRegularAt f' t := by
     refine
       { hasDerivAt_time := ?_
         continuous_joint := hf'smooth.continuous
@@ -301,7 +301,7 @@ theorem first_var_joint
         exact hslice.differentiable (by simp) s
       exact hdiff.hasDerivAt
     · exact (DifferentialGeometry.contMDiff_partial_deriv_fst I F').continuous
-  have hvariation := first_variation_of_volume (I := I) (M := M) hg'reg hf'reg
+  have hvariation := first_variation_of_volume (I := I) (M := M) hg'regularity hf'regularity
   have hρt : ρ t = t := hρeq.eq_of_nhds
   have hgt : g' t = g_fam t := by
     simp only [g', hρt]

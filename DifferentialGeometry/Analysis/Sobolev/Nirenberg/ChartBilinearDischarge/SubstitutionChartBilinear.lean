@@ -55,7 +55,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma integral_F_diffQuot_neg_eq_neg_integral_diffQuot_F
     {F G : EuclN → ℝ} (k : Fin (Module.finrank ℝ E)) {h : ℝ} (hh : h ≠ 0)
     (hF_cont : Continuous F) (hG_smooth : ContDiff ℝ (⊤ : ℕ∞) G)
-    (hG_supp : HasCompactSupport G) :
+    (hG_support : HasCompactSupport G) :
     ∫ x, F x *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k (-h) G x ∂(volume : Measure EuclN) =
@@ -65,7 +65,7 @@ lemma integral_F_diffQuot_neg_eq_neg_integral_diffQuot_F
   have h_ibp :=
     integral_diffQuot_mul_eq_neg_integral_mul_diffQuot_locally_supported
       (d := Module.finrank ℝ E) (k := k) (f := F) (g := G) hh hF_cont
-      hG_smooth hG_supp
+      hG_smooth hG_support
   linarith [h_ibp]
 
 end SubstitutionDischargeChartBilinear

@@ -48,11 +48,11 @@ section Cylinders
 
 variable {V : Type*} [NormedAddCommGroup V]
 
-def earlyFluxCyl (t : ℝ) (x : V) : Set (ℝ × V) :=
+def earlyFluxCylinder (t : ℝ) (x : V) : Set (ℝ × V) :=
   Set.Ioc 0 (t / 2) ×ˢ Metric.ball x (heatScale t)
 
-theorem earlyFluxCyl_sub {t : ℝ} (ht : 0 ≤ t) (x : V) :
-    earlyFluxCyl t x ⊆ paraCyl x (heatScale t) := by
+theorem earlyFluxCylinder_subset {t : ℝ} (ht : 0 ≤ t) (x : V) :
+    earlyFluxCylinder t x ⊆ forwardParabolicCylinder x (heatScale t) := by
   rintro z ⟨hzs, hzx⟩
   refine ⟨⟨hzs.1, ?_⟩, hzx⟩
   have hhalf : t / 2 ≤ t := by linarith
@@ -60,8 +60,8 @@ theorem earlyFluxCyl_sub {t : ℝ} (ht : 0 ≤ t) (x : V) :
 
 variable [MeasurableSpace V] [BorelSpace V]
 
-theorem earlyFluxCyl_meas (t : ℝ) (x : V) :
-    MeasurableSet (earlyFluxCyl t x) :=
+theorem earlyFluxCylinder_measurable (t : ℝ) (x : V) :
+    MeasurableSet (earlyFluxCylinder t x) :=
   measurableSet_Ioc.prod measurableSet_ball
 
 variable [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [Nontrivial V]
@@ -73,11 +73,11 @@ def heatBallVol (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     (Real.sqrt Real.pi ^ Module.finrank ℝ V /
       Real.Gamma (Module.finrank ℝ V / 2 + 1))
 
-theorem earlyFluxCyl_volume_le {t : ℝ} (ht : 0 < t) (x : V) :
-    (stVolume : Measure (ℝ × V)) (earlyFluxCyl t x) ≤
+theorem earlyFluxCylinder_volume_le {t : ℝ} (ht : 0 < t) (x : V) :
+    (spaceTimeVolume : Measure (ℝ × V)) (earlyFluxCylinder t x) ≤
       (ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 2) *
         heatBallVol V := by
-  rw [stVolume, earlyFluxCyl, Measure.prod_prod, Real.volume_Ioc,
+  rw [spaceTimeVolume, earlyFluxCylinder, Measure.prod_prod, Real.volume_Ioc,
     InnerProductSpace.volume_ball]
   have ht2 : t / 2 ≤ t := by linarith
   have hs0 : 0 ≤ heatScale t := Real.sqrt_nonneg _
@@ -129,22 +129,22 @@ theorem parabolicSqrt_mul (r B C : ℝ≥0∞) (n : ℕ) :
 
 theorem earlyFlux_l1 {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
-    (hsrc : GradCarl T C f) :
-    (∫⁻ z in earlyFluxCyl t x, ENNReal.ofReal ‖f z‖
-        ∂(stVolume : Measure (ℝ × V))) ≤
+    (hsrc : GradientCarlesonBound T C f) :
+    (∫⁻ z in earlyFluxCylinder t x, ENNReal.ofReal ‖f z‖
+        ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
       ((ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 2) *
           heatBallVol V) ^ ((1 : ℝ) / 2) *
         (C * ENNReal.ofReal
           ((heatScale t) ^ Module.finrank ℝ V)) ^ ((1 : ℝ) / 2) := by
   let μ : Measure (ℝ × V) :=
-    (stVolume : Measure (ℝ × V)).restrict (earlyFluxCyl t x)
+    (spaceTimeVolume : Measure (ℝ × V)).restrict (earlyFluxCylinder t x)
   have hholder := lintegral_enorm_le_sqrt μ f
     (hsrc.ae.mono_measure Measure.restrict_le_self)
   have hvol : μ Set.univ ≤
       (ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 2) *
         heatBallVol V := by
     simpa only [μ, Measure.restrict_apply_univ] using
-      earlyFluxCyl_volume_le ht x
+      earlyFluxCylinder_volume_le ht x
   have hscaleT : (heatScale t) ^ 2 ≤ T := by
     simpa [heatScale, Real.sq_sqrt ht.le] using htT
   have hmass :
@@ -153,14 +153,14 @@ theorem earlyFlux_l1 {T t : ℝ} {C : ℝ≥0∞}
           ((heatScale t) ^ Module.finrank ℝ V) := by
     calc
       (∫⁻ z, ENNReal.ofReal (‖f z‖ ^ 2) ∂μ) ≤
-          gradMass f x (heatScale t) := by
-        exact lintegral_mono_set (earlyFluxCyl_sub ht.le x)
+          gradientCarlesonMass f x (heatScale t) := by
+        exact lintegral_mono_set (earlyFluxCylinder_subset ht.le x)
       _ ≤ C * ENNReal.ofReal
           ((heatScale t) ^ Module.finrank ℝ V) :=
         hsrc.bound x (heatScale t) (heatScale_pos ht) hscaleT
   calc
-    (∫⁻ z in earlyFluxCyl t x, ENNReal.ofReal ‖f z‖
-        ∂(stVolume : Measure (ℝ × V))) = ∫⁻ z, ‖f z‖ₑ ∂μ := by
+    (∫⁻ z in earlyFluxCylinder t x, ENNReal.ofReal ‖f z‖
+        ∂(spaceTimeVolume : Measure (ℝ × V))) = ∫⁻ z, ‖f z‖ₑ ∂μ := by
       change (∫⁻ z, ENNReal.ofReal ‖f z‖ ∂μ) = ∫⁻ z, ‖f z‖ₑ ∂μ
       apply lintegral_congr
       intro z
@@ -175,9 +175,9 @@ theorem earlyFlux_l1 {T t : ℝ} {C : ℝ≥0∞}
 
 theorem earlyFlux_l1_scale {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
-    (hsrc : GradCarl T C f) :
-    (∫⁻ z in earlyFluxCyl t x, ENNReal.ofReal ‖f z‖
-        ∂(stVolume : Measure (ℝ × V))) ≤
+    (hsrc : GradientCarlesonBound T C f) :
+    (∫⁻ z in earlyFluxCylinder t x, ENNReal.ofReal ‖f z‖
+        ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
       (ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 1) *
         (heatBallVol V) ^ ((1 : ℝ) / 2) * C ^ ((1 : ℝ) / 2) := by
   refine (earlyFlux_l1 ht htT f x hsrc).trans_eq ?_
@@ -192,13 +192,13 @@ theorem earlyFlux_cover_l1 {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (A : Set V)
     (s : Finset V)
     (hcover : A ⊆ ⋃ c ∈ s, Metric.ball c (heatScale t))
-    (hsrc : GradCarl T C f) :
+    (hsrc : GradientCarlesonBound T C f) :
     (∫⁻ z in Set.Ioc 0 (t / 2) ×ˢ A, ENNReal.ofReal ‖f z‖
-        ∂(stVolume : Measure (ℝ × V))) ≤
+        ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
       (s.card : ℝ≥0∞) *
         ((ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 1) *
           (heatBallVol V) ^ ((1 : ℝ) / 2) * C ^ ((1 : ℝ) / 2)) := by
-  let U : V → Set (ℝ × V) := fun c => earlyFluxCyl t c
+  let U : V → Set (ℝ × V) := fun c => earlyFluxCylinder t c
   have hcyl : (Set.Ioc 0 (t / 2) ×ˢ A) ⊆ ⋃ c ∈ s, U c := by
     rintro z ⟨hzs, hzy⟩
     have hcov := hcover hzy
@@ -209,9 +209,9 @@ theorem earlyFlux_cover_l1 {T t : ℝ} {C : ℝ≥0∞}
     exact Set.mem_iUnion.2 ⟨c, Set.mem_iUnion.2 ⟨hc, hzs, hyc⟩⟩
   calc
     (∫⁻ z in Set.Ioc 0 (t / 2) ×ˢ A, ENNReal.ofReal ‖f z‖
-        ∂(stVolume : Measure (ℝ × V))) ≤
+        ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
         ∑ c ∈ s, ∫⁻ z in U c, ENNReal.ofReal ‖f z‖
-          ∂(stVolume : Measure (ℝ × V)) :=
+          ∂(spaceTimeVolume : Measure (ℝ × V)) :=
       DeGiorgi.lintegralOn_le_sum_lintegralOn_of_finite_cover hcyl
     _ ≤ ∑ _c ∈ s,
         (ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 1) *
@@ -228,12 +228,12 @@ def fluxShell (t : ℝ) (x : V) (k : ℕ) : Set V :=
   {y | (k : ℝ) * heatScale t ≤ ‖x - y‖ ∧
     ‖x - y‖ < ((k + 1 : ℕ) : ℝ) * heatScale t}
 
-def fluxShellCyl (t : ℝ) (x : V) (k : ℕ) : Set (ℝ × V) :=
+def fluxShellCylinder (t : ℝ) (x : V) (k : ℕ) : Set (ℝ × V) :=
   Set.Ioc 0 (t / 2) ×ˢ fluxShell t x k
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [Nontrivial V] in
-theorem fluxShellCyl_meas (t : ℝ) (x : V) (k : ℕ) :
-    MeasurableSet (fluxShellCyl t x k) := by
+theorem fluxShellCylinder_measurable (t : ℝ) (x : V) (k : ℕ) :
+    MeasurableSet (fluxShellCylinder t x k) := by
   have hnorm : Continuous (fun y : V => ‖x - y‖) :=
     (continuous_const.sub continuous_id).norm
   exact measurableSet_Ioc.prod
@@ -325,9 +325,9 @@ variable [NormedSpace ℝ F] [CompleteSpace F]
 
 def fluxShellMass (t : ℝ) (w : V) (f : ℝ × V → F)
     (x : V) (k : ℕ) : ℝ≥0∞ :=
-  ∫⁻ z in fluxShellCyl t x k,
+  ∫⁻ z in fluxShellCylinder t x k,
     ‖heatD1 (t - z.1) w (x - z.2) • f z‖ₑ
-      ∂(stVolume : Measure (ℝ × V))
+      ∂(spaceTimeVolume : Measure (ℝ × V))
 
 omit [CompleteSpace F] in
 theorem fluxShellMass_le_of_finite_cover {T t : ℝ} {C : ℝ≥0∞}
@@ -335,7 +335,7 @@ theorem fluxShellMass_le_of_finite_cover {T t : ℝ} {C : ℝ≥0∞}
     (x : V) (k : ℕ) (s : Finset V)
     (hcover : fluxShell t x k ⊆
       ⋃ c ∈ s, Metric.ball c (heatScale t))
-    (hsrc : GradCarl T C f) :
+    (hsrc : GradientCarlesonBound T C f) :
     fluxShellMass t w f x k ≤
       ENNReal.ofReal
         (‖w‖ *
@@ -372,16 +372,16 @@ theorem fluxShellMass_le_of_finite_cover {T t : ℝ} {C : ℝ≥0∞}
             (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le)
             (Real.exp_pos _).le)))
   have hsource :
-      (∫⁻ z in fluxShellCyl t x k, ENNReal.ofReal ‖f z‖
-          ∂(stVolume : Measure (ℝ × V))) ≤
+      (∫⁻ z in fluxShellCylinder t x k, ENNReal.ofReal ‖f z‖
+          ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
         (s.card : ℝ≥0∞) *
           ((ENNReal.ofReal (heatScale t)) ^
               (Module.finrank ℝ V + 1) *
             (heatBallVol V) ^ ((1 : ℝ) / 2) *
               C ^ ((1 : ℝ) / 2)) := by
-    simpa only [fluxShellCyl] using
+    simpa only [fluxShellCylinder] using
       earlyFlux_cover_l1 ht htT f (fluxShell t x k) s hcover hsrc
-  have hpoint : ∀ z ∈ fluxShellCyl t x k,
+  have hpoint : ∀ z ∈ fluxShellCylinder t x k,
       ‖heatD1 (t - z.1) w (x - z.2) • f z‖ₑ ≤
         ENNReal.ofReal K * ENNReal.ofReal ‖f z‖ := by
     intro z hz
@@ -390,23 +390,23 @@ theorem fluxShellMass_le_of_finite_cover {T t : ℝ} {C : ℝ≥0∞}
       ENNReal.ofReal_mul (norm_nonneg _)]
     exact mul_le_mul_left (ENNReal.ofReal_le_ofReal hk) _
   have hm : AEMeasurable (fun z : ℝ × V => ENNReal.ofReal ‖f z‖)
-      ((stVolume : Measure (ℝ × V)).restrict (fluxShellCyl t x k)) :=
+      ((spaceTimeVolume : Measure (ℝ × V)).restrict (fluxShellCylinder t x k)) :=
     (hsrc.ae.norm.aemeasurable.ennreal_ofReal).mono_measure
       Measure.restrict_le_self
   unfold fluxShellMass
   calc
-    (∫⁻ z in fluxShellCyl t x k,
+    (∫⁻ z in fluxShellCylinder t x k,
         ‖heatD1 (t - z.1) w (x - z.2) • f z‖ₑ
-          ∂(stVolume : Measure (ℝ × V))) ≤
-        ∫⁻ z in fluxShellCyl t x k,
+          ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
+        ∫⁻ z in fluxShellCylinder t x k,
           ENNReal.ofReal K * ENNReal.ofReal ‖f z‖
-            ∂(stVolume : Measure (ℝ × V)) := by
+            ∂(spaceTimeVolume : Measure (ℝ × V)) := by
       apply lintegral_mono_ae
-      filter_upwards [ae_restrict_mem (fluxShellCyl_meas t x k)] with z hz
+      filter_upwards [ae_restrict_mem (fluxShellCylinder_measurable t x k)] with z hz
       exact hpoint z hz
     _ = ENNReal.ofReal K *
-        (∫⁻ z in fluxShellCyl t x k, ENNReal.ofReal ‖f z‖
-          ∂(stVolume : Measure (ℝ × V))) := by
+        (∫⁻ z in fluxShellCylinder t x k, ENNReal.ofReal ‖f z‖
+          ∂(spaceTimeVolume : Measure (ℝ × V))) := by
       rw [lintegral_const_mul'' _ hm]
     _ ≤ ENNReal.ofReal K *
         ((s.card : ℝ≥0∞) *
@@ -423,7 +423,7 @@ theorem fluxShellMass_le {T t : ℝ} {C : ℝ≥0∞}
     (hcard : s.card ≤ (5 * (k + 1)) ^ Module.finrank ℝ V)
     (hcover : fluxShell t x k ⊆
       ⋃ c ∈ s, Metric.ball c (heatScale t))
-    (hsrc : GradCarl T C f) :
+    (hsrc : GradientCarlesonBound T C f) :
     fluxShellMass t w f x k ≤
       ENNReal.ofReal ‖w‖ * earlyFluxC V * C ^ ((1 : ℝ) / 2) *
         ENNReal.ofReal
@@ -554,9 +554,9 @@ theorem fluxShellMass_le {T t : ℝ} {C : ℝ≥0∞}
       all_goals ring
 
 def heatEarly1Near (t : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
-  ∫ z in earlyFluxCyl t x,
+  ∫ z in earlyFluxCylinder t x,
     heatD1 (t - z.1) w (x - z.2) • f z
-      ∂(stVolume : Measure (ℝ × V))
+      ∂(spaceTimeVolume : Measure (ℝ × V))
 
 omit [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
 omit [FiniteDimensional ℝ V] in
@@ -594,7 +594,7 @@ theorem heatD1_early_near {t s : ℝ} (ht : 0 < t)
 omit [CompleteSpace F] in
 theorem heatEarly1Near_norm {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (w : V)
-    (f : ℝ × V → F) (x : V) (hsrc : GradCarl T C f) :
+    (f : ℝ × V → F) (x : V) (hsrc : GradientCarlesonBound T C f) :
     ‖heatEarly1Near t w f x‖ₑ ≤
       ENNReal.ofReal ‖w‖ * earlyFluxC V * C ^ ((1 : ℝ) / 2) := by
   let K : ℝ := ‖w‖ *
@@ -611,7 +611,7 @@ theorem heatEarly1Near_norm {T t : ℝ} {C : ℝ≥0∞}
         (mul_nonneg
           (mul_nonneg (by positivity) (Real.sqrt_nonneg _))
           (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le)))
-  have hpoint : ∀ z ∈ earlyFluxCyl t x,
+  have hpoint : ∀ z ∈ earlyFluxCylinder t x,
       ‖heatD1 (t - z.1) w (x - z.2) • f z‖ₑ ≤
         ENNReal.ofReal K * ENNReal.ofReal ‖f z‖ := by
     intro z hz
@@ -620,7 +620,7 @@ theorem heatEarly1Near_norm {T t : ℝ} {C : ℝ≥0∞}
       ENNReal.ofReal_mul (norm_nonneg _)]
     exact mul_le_mul_left (ENNReal.ofReal_le_ofReal hk) _
   have hm : AEMeasurable (fun z : ℝ × V => ENNReal.ofReal ‖f z‖)
-      ((stVolume : Measure (ℝ × V)).restrict (earlyFluxCyl t x)) :=
+      ((spaceTimeVolume : Measure (ℝ × V)).restrict (earlyFluxCylinder t x)) :=
     (hsrc.ae.norm.aemeasurable.ennreal_ofReal).mono_measure
       Measure.restrict_le_self
   have hraw : ‖heatEarly1Near t w f x‖ₑ ≤
@@ -629,22 +629,22 @@ theorem heatEarly1Near_norm {T t : ℝ} {C : ℝ≥0∞}
           (heatBallVol V) ^ ((1 : ℝ) / 2) * C ^ ((1 : ℝ) / 2)) := by
     unfold heatEarly1Near
     calc
-      ‖∫ z in earlyFluxCyl t x,
+      ‖∫ z in earlyFluxCylinder t x,
           heatD1 (t - z.1) w (x - z.2) • f z
-            ∂(stVolume : Measure (ℝ × V))‖ₑ ≤
-          ∫⁻ z in earlyFluxCyl t x,
+            ∂(spaceTimeVolume : Measure (ℝ × V))‖ₑ ≤
+          ∫⁻ z in earlyFluxCylinder t x,
             ‖heatD1 (t - z.1) w (x - z.2) • f z‖ₑ
-              ∂(stVolume : Measure (ℝ × V)) :=
+              ∂(spaceTimeVolume : Measure (ℝ × V)) :=
         enorm_integral_le_lintegral_enorm _
-      _ ≤ ∫⁻ z in earlyFluxCyl t x,
+      _ ≤ ∫⁻ z in earlyFluxCylinder t x,
           ENNReal.ofReal K * ENNReal.ofReal ‖f z‖
-            ∂(stVolume : Measure (ℝ × V)) := by
+            ∂(spaceTimeVolume : Measure (ℝ × V)) := by
         apply lintegral_mono_ae
-        filter_upwards [ae_restrict_mem (earlyFluxCyl_meas t x)] with z hz
+        filter_upwards [ae_restrict_mem (earlyFluxCylinder_measurable t x)] with z hz
         exact hpoint z hz
       _ = ENNReal.ofReal K *
-          (∫⁻ z in earlyFluxCyl t x, ENNReal.ofReal ‖f z‖
-            ∂(stVolume : Measure (ℝ × V))) := by
+          (∫⁻ z in earlyFluxCylinder t x, ENNReal.ofReal ‖f z‖
+            ∂(spaceTimeVolume : Measure (ℝ × V))) := by
         rw [lintegral_const_mul'' _ hm]
       _ ≤ ENNReal.ofReal K *
           ((ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 1) *
@@ -716,7 +716,7 @@ omit [MeasurableSpace V] [BorelSpace V] [InnerProductSpace ℝ V]
   [FiniteDimensional ℝ V] [Nontrivial V] in
 theorem earlyFluxSlab_sub {t : ℝ} (ht : 0 < t) (x : V) :
     (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)) ⊆
-      ⋃ k : ℕ, fluxShellCyl t x k := by
+      ⋃ k : ℕ, fluxShellCylinder t x k := by
   rintro z ⟨hzs, -⟩
   obtain ⟨k, hyk⟩ := Set.mem_iUnion.mp (mem_fluxShell_union ht x z.2)
   exact Set.mem_iUnion.2 ⟨k, hzs, hyk⟩
@@ -724,7 +724,7 @@ theorem earlyFluxSlab_sub {t : ℝ} (ht : 0 < t) (x : V) :
 def heatEarly1 (t : ℝ) (w : V) (f : ℝ × V → F) (x : V) : F :=
   ∫ z in (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)),
     heatD1 (t - z.1) w (x - z.2) • f z
-      ∂(stVolume : Measure (ℝ × V))
+      ∂(spaceTimeVolume : Measure (ℝ × V))
 
 omit [CompleteSpace F] in
 theorem heatEarly1_norm {T t : ℝ} {C S : ℝ≥0∞}
@@ -736,7 +736,7 @@ theorem heatEarly1_norm {T t : ℝ} {C S : ℝ≥0∞}
       ((5 * ((k + 1 : ℕ) : ℝ)) ^ Module.finrank ℝ V *
         ((k + 1 : ℕ) : ℝ) *
           Real.exp (-(4 : ℝ)⁻¹ * (k : ℝ)))) ≤ S)
-    (hsrc : GradCarl T C f) :
+    (hsrc : GradientCarlesonBound T C f) :
     ‖heatEarly1 t w f x‖ₑ ≤
       ENNReal.ofReal ‖w‖ * earlyFluxC V * C ^ ((1 : ℝ) / 2) * S := by
   let q : ℝ × V → ℝ≥0∞ := fun z =>
@@ -745,15 +745,15 @@ theorem heatEarly1_norm {T t : ℝ} {C S : ℝ≥0∞}
   calc
     ‖∫ z in (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)),
         heatD1 (t - z.1) w (x - z.2) • f z
-          ∂(stVolume : Measure (ℝ × V))‖ₑ ≤
+          ∂(spaceTimeVolume : Measure (ℝ × V))‖ₑ ≤
         ∫⁻ z in (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)), q z
-          ∂(stVolume : Measure (ℝ × V)) :=
+          ∂(spaceTimeVolume : Measure (ℝ × V)) :=
       enorm_integral_le_lintegral_enorm _
-    _ ≤ ∫⁻ z in (⋃ k : ℕ, fluxShellCyl t x k), q z
-        ∂(stVolume : Measure (ℝ × V)) :=
+    _ ≤ ∫⁻ z in (⋃ k : ℕ, fluxShellCylinder t x k), q z
+        ∂(spaceTimeVolume : Measure (ℝ × V)) :=
       lintegral_mono_set (earlyFluxSlab_sub ht x)
-    _ ≤ ∑' k : ℕ, ∫⁻ z in fluxShellCyl t x k, q z
-        ∂(stVolume : Measure (ℝ × V)) :=
+    _ ≤ ∑' k : ℕ, ∫⁻ z in fluxShellCylinder t x k, q z
+        ∂(spaceTimeVolume : Measure (ℝ × V)) :=
       lintegral_iUnion_le _ _
     _ = ∑' k : ℕ, fluxShellMass t w f x k := by rfl
     _ ≤ ∑' k : ℕ,

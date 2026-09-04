@@ -30,7 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem lapDiff_hs_unif
+theorem lapDiff_hs_uniform
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -72,9 +72,9 @@ theorem lapDiff_hs_unif
   · intro s hs
     exact hreg s hs
   · obtain ⟨C₂, hC₂_nn, hC₂⟩ :=
-      app_hs_unif (I := I) (M := M) q 2 0 Phi₂ A B₂ hB₂_nn hPhi₂ m
+      app_hs_uniform (I := I) (M := M) q 2 0 Phi₂ A B₂ hB₂_nn hPhi₂ m
     obtain ⟨C₁, hC₁_nn, hC₁⟩ :=
-      app_hs_unif (I := I) (M := M) q 1 0 Phi₁ A B₁ hB₁_nn hPhi₁ m
+      app_hs_uniform (I := I) (M := M) q 1 0 Phi₁ A B₁ hB₁_nn hPhi₁ m
     obtain ⟨g_fam₂, hG₂_nn, hG₂⟩ := ccGrad_le (I := I) (M := M) q 0 2 m
     obtain ⟨g_fam₁, hG₁_nn, hG₁⟩ := ccGrad_le (I := I) (M := M) q 0 1 m
     refine ⟨C₂ * g_fam₂ + C₁ * g_fam₁, by positivity, ?_⟩
@@ -162,7 +162,7 @@ noncomputable def lapDiffHs
       (lapDiffCcLin (I := I) (M := M) q h)).extendOfNorm
     (ccToHsLin (I := I) (M := M) q 0 ((m : ℝ) + 2))
 
-theorem lapHs_core
+theorem lapDiffHs_apply_ccTensorToHs
     (q h : SmoothRiemannianMetric I M) (m : ℕ)
     (U : SmoothCcTensor q 0 0) :
     lapDiffHs (I := I) (M := M) q h m
@@ -187,7 +187,7 @@ theorem lapHs_core
             (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) W) =
           ccTensorToHs (I := I) (M := M) q 2 (m : ℝ)
             (iteratedCovGrad (I := I) q 0 0 2 W) := by
-      exact iterCovGradHs_core (I := I) (M := M) q 0 2 m W
+      exact iterCovGradHs_apply_ccTensorToHs (I := I) (M := M) q 0 2 m W
     have hJ :
         J (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) W) =
           ccTensorToHs (I := I) (M := M) q 0
@@ -201,7 +201,7 @@ theorem lapHs_core
               ((m : ℝ) + ((1 : ℕ) : ℝ)) W) =
           ccTensorToHs (I := I) (M := M) q 1 (m : ℝ)
             (iteratedCovGrad (I := I) q 0 0 1 W) := by
-      exact iterCovGradHs_core (I := I) (M := M) q 0 1 m W
+      exact iterCovGradHs_apply_ccTensorToHs (I := I) (M := M) q 0 1 m W
     let X := operatorFieldApply (I := I) q 2 0 (scalarTraceCoeff (I := I) q h)
       (iteratedCovGrad (I := I) q 0 0 2 W)
     let Y := operatorFieldApply (I := I) q 1 0 (connTraceCoeff (I := I) q h)
@@ -213,7 +213,7 @@ theorem lapHs_core
       simpa only [ccToHsLin_apply] using
         map_sub (ccToHsLin (I := I) (M := M) q 0 (m : ℝ)) X Y
     simp only [R, D₂, D₁, J, sub_apply,
-      ContinuousLinearMap.comp_apply, hD₂, hJ, hD₁, appHs_core]
+      ContinuousLinearMap.comp_apply, hD₂, hJ, hD₁, appHs_apply_ccTensorToHs]
     rw [← hsub]
     rfl
   have hdense : DenseRange
@@ -266,13 +266,13 @@ theorem lapHs_eq
     lapDiffHs (I := I) (M := M) q h m
         (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) U) =
       R (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) U)
-  rw [lapHs_core (I := I) (M := M)]
+  rw [lapDiffHs_apply_ccTensorToHs (I := I) (M := M)]
   have hD₂ :
       iterCovGradHs (I := I) (M := M) q 0 2 m
           (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) U) =
         ccTensorToHs (I := I) (M := M) q 2 (m : ℝ)
           (iteratedCovGrad (I := I) q 0 0 2 U) := by
-    exact iterCovGradHs_core (I := I) (M := M) q 0 2 m U
+    exact iterCovGradHs_apply_ccTensorToHs (I := I) (M := M) q 0 2 m U
   have hJ :
       J (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) U) =
         ccTensorToHs (I := I) (M := M) q 0
@@ -286,7 +286,7 @@ theorem lapHs_eq
             ((m : ℝ) + ((1 : ℕ) : ℝ)) U) =
         ccTensorToHs (I := I) (M := M) q 1 (m : ℝ)
           (iteratedCovGrad (I := I) q 0 0 1 U) := by
-    exact iterCovGradHs_core (I := I) (M := M) q 0 1 m U
+    exact iterCovGradHs_apply_ccTensorToHs (I := I) (M := M) q 0 1 m U
   let X := operatorFieldApply (I := I) q 2 0 (scalarTraceCoeff (I := I) q h)
     (iteratedCovGrad (I := I) q 0 0 2 U)
   let Y := operatorFieldApply (I := I) q 1 0 (connTraceCoeff (I := I) q h)
@@ -298,11 +298,11 @@ theorem lapHs_eq
     simpa only [ccToHsLin_apply] using
       map_sub (ccToHsLin (I := I) (M := M) q 0 (m : ℝ)) X Y
   simp only [R, sub_apply, ContinuousLinearMap.comp_apply,
-    D₂, D₁, hD₂, hJ, hD₁, appHs_core]
+    D₂, D₁, hD₂, hJ, hD₁, appHs_apply_ccTensorToHs]
   rw [← hsub]
   rfl
 
-theorem lapDiffHs_core
+theorem exists_uniform_lapDiffHs_apply_ccTensorToHs
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -319,10 +319,10 @@ theorem lapDiffHs_core
               (scalarLapDiffCc (I := I) (g_fam (T : ℝ))
                 (g_fam ((T : ℝ) - s)) U) := by
   obtain ⟨tau, htau, htau_one, hreg, _hbound⟩ :=
-    lapDiff_hs_unif (I := I) (M := M) g_fam hG T
+    lapDiff_hs_uniform (I := I) (M := M) g_fam hG T
   refine ⟨tau, htau, htau_one, hreg, ?_⟩
   intro m s _hs U
-  exact lapHs_core (I := I) (M := M)
+  exact lapDiffHs_apply_ccTensorToHs (I := I) (M := M)
     (g_fam (T : ℝ)) (g_fam ((T : ℝ) - s)) m U
 
 theorem lapDiffHs_norm
@@ -338,7 +338,7 @@ theorem lapDiffHs_norm
             (g_fam ((T : ℝ) - s)) m‖ ≤ C := by
   classical
   obtain ⟨tau, htau, htau_one, hreg, hbound⟩ :=
-    lapDiff_hs_unif (I := I) (M := M) g_fam hG T
+    lapDiff_hs_uniform (I := I) (M := M) g_fam hG T
   refine ⟨tau, htau, htau_one, hreg, fun m ↦ ?_⟩
   obtain ⟨C, hC_nn, hC⟩ := hbound m
   refine ⟨C, hC_nn, ?_⟩
@@ -576,7 +576,7 @@ theorem lapHs_inc
           (tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0) hnmR2
             (ccTensorToHs (I := I) (M := M) q 0 ((m : ℝ) + 2) U))
-    rw [lapHs_core (I := I) (M := M)]
+    rw [lapDiffHs_apply_ccTensorToHs (I := I) (M := M)]
     have hin :
         tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0) hnmR2
@@ -585,7 +585,7 @@ theorem lapHs_inc
       apply TensorHs.ext
       funext i
       simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
-    rw [hin, lapHs_core (I := I) (M := M)]
+    rw [hin, lapDiffHs_apply_ccTensorToHs (I := I) (M := M)]
     apply TensorHs.ext
     funext i
     simp only [tensorHsInclusion_coeff_apply, ccTensorToHs_coeff]
@@ -612,7 +612,7 @@ theorem lapDiffHs_inc
             (by exact_mod_cast Nat.add_le_add_right hnm 2 :
               (n : ℝ) + 2 ≤ (m : ℝ) + 2)) := by
   obtain ⟨tau, htau, htau_one, hreg, _hcore⟩ :=
-    lapDiffHs_core (I := I) (M := M) g_fam hG T
+    exists_uniform_lapDiffHs_apply_ccTensorToHs (I := I) (M := M) g_fam hG T
   refine ⟨tau, htau, htau_one, hreg, ?_⟩
   intro n m hnm s _hs
   exact lapHs_inc (I := I) (M := M)

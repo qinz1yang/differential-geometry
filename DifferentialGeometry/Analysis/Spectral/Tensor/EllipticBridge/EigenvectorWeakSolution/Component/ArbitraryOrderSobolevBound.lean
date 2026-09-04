@@ -188,14 +188,14 @@ private lemma wkpNorm_eigenvectorChartComponentFun_eq_zero_of_notMem
     have h_zero : ∀ x : M,
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0 :=
       chartAtlasPOU_eq_zero_of_notMem_activeFinset (I := I) (M := M) hα
-    have h_supp_empty :
+    have h_support_empty :
         Function.support (fun x : M =>
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = ∅ := by
       ext x; simp [Function.mem_support, h_zero x]
     have h_tsupp_empty :
         tsupport (fun x : M =>
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = ∅ := by
-      unfold tsupport; rw [h_supp_empty]; exact closure_empty
+      unfold tsupport; rw [h_support_empty]; exact closure_empty
     unfold chartPouKernel
     rw [h_tsupp_empty, Set.image_empty, Set.image_empty]
   have h_ae_off :=
@@ -684,7 +684,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖ := by
     intro idx
-    obtain ⟨D_m, hD_m_dirs, hD_m_fChartEff⟩ :=
+    obtain ⟨D_m, hD_m_dirs, hD_m_fChartEffective⟩ :=
       exists_eigenvectorIteratedCarrier
         (I := I) (M := M) g r s i α P₀ (m + 1) idx h_pou_qual
     obtain ⟨_, h_w2_slot⟩ := hC_W2_bd i idx D_m hD_m_dirs h_parent_m2
@@ -702,13 +702,13 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
                   g r s) i‖ :=
       h_w1_of_idx.trans (hC_IH_bd α P₀ i)
     have h_f_chart_eq :
-        (eigenvectorIteratedTensorChartBilinearDataToData
+        (EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
             (I := I) (M := M) g r s i α P₀ D_m h_parent_m2).fChart =
           eigenvectorChartRHSDiff (I := I) (M := M)
             g r s i α P₀ (m + 1) idx := by
       change D_m.diffChartForcing = eigenvectorChartRHSDiff (I := I) (M := M)
         g r s i α P₀ (m + 1) idx
-      exact hD_m_fChartEff
+      exact hD_m_fChartEffective
     have h_eLp_vol_eq_wkp_zero := wkpNorm_zero (d := n) 2
       (eigenvectorChartRHSDiff (I := I) (M := M)
         g r s i α P₀ (m + 1) idx)
@@ -728,7 +728,7 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
       exact hC_p5_bd idx i
     have h_eLp_weighted_bd :
         eLpNorm
-            ((eigenvectorIteratedTensorChartBilinearDataToData
+            ((EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
                 (I := I) (M := M) g r s i α P₀ D_m h_parent_m2).fChart)
             2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))

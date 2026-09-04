@@ -50,10 +50,10 @@ private lemma tensorChartComponentProjection_covApply_eq_covDerivComponentEuclid
       covDerivComponentEuclid (I := I) (M := M) g r s α T₀ k Idx Jdx
         ((toEuclidean (E := E)) ((extChartAt I α) b)) := by
   classical
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb_good
   have hb_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   have hsymm_te : (toEuclidean (E := E)).symm
       ((toEuclidean (E := E)) ((extChartAt I α) b)) =
       (extChartAt I α) b :=
@@ -109,14 +109,14 @@ private lemma tensorChartComponentProjection_covApply_eq_T₀_expansion
   classical
   rw [tensorChartComponentProjection_covApply_eq_covDerivComponentEuclid
     (I := I) (M := M) g r s α T₀ k Idx Jdx hb_good]
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb_good
-  have hb_tgt : (extChartAt I α) b ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb_src
+  have hb_target : (extChartAt I α) b ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hb_source
   have hy_target :
       (toEuclidean (E := E)) ((extChartAt I α) b) ∈
         chartTargetEuclid (I := I) (M := M) α :=
-    ⟨(extChartAt I α) b, hb_tgt, rfl⟩
+    ⟨(extChartAt I α) b, hb_target, rfl⟩
   have hEqOn := covDerivComponentEuclid_eqOn (I := I) (M := M) g r s α T₀ k Idx
     Jdx hy_target
   simp only at hEqOn

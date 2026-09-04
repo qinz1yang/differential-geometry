@@ -5,7 +5,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped ContDiff BigOperators Topology
 
@@ -37,7 +37,7 @@ theorem bumpWeights_data {ι : Type} [DecidableEq ι] [Fintype ι]
   normWeights_data (fun z _hz i => bumpNum_nonneg hχ hψ i z) hne hactive
 
 omit [NormedAddCommGroup E'] [NormedSpace Real E'] in
-theorem bumpNum_delta {ι : Type*} [DecidableEq ι]
+theorem bumpNum_delta_of_cutoff_eq_zero {ι : Type*} [DecidableEq ι]
     {χ : E' → Real} {ψ : ι → E' → Real} {J : ι → E' → E'}
     {i0 : ι} {x₀ : E'} (hχ0 : χ (J i0 x₀) = 0) :
     (∀ j, j ≠ i0 → bumpNum χ ψ J i0 j x₀ = 0) ∧
@@ -46,7 +46,7 @@ theorem bumpNum_delta {ι : Type*} [DecidableEq ι]
   simp [bumpNum, hj, hχ0]
 
 omit [NormedAddCommGroup E'] [NormedSpace Real E'] in
-theorem bumpNum_delta' {ι : Type*} [DecidableEq ι]
+theorem bumpNum_delta_of_weights_eq_zero {ι : Type*} [DecidableEq ι]
     {χ : E' → Real} {ψ : ι → E' → Real} {J : ι → E' → E'}
     {i0 : ι} {x₀ : E'} (hψ0 : ∀ j, j ≠ i0 → ψ j (J j x₀) = 0) :
     (∀ j, j ≠ i0 → bumpNum χ ψ J i0 j x₀ = 0) ∧
@@ -71,22 +71,22 @@ theorem bumpNum_contDiffOn {ι : Type*} [DecidableEq ι]
       (hψ i).comp_contDiffOn (hJ i)
     exact ContDiffOn.congr (h1.mul h2) (fun z _ => by simp [bumpNum, h])
 
-theorem bumpNumConv {ι : Type*} [DecidableEq ι] [ProperSpace E']
+theorem bumpNumConvergence {ι : Type*} [DecidableEq ι] [ProperSpace E']
     {U : Set E'} (hU : IsOpen U)
     {χ : E' → Real} {ψ : ι → E' → Real}
     {J : ι → Nat → E' → E'} {Jinf : ι → E' → E'} {i0 : ι}
     (hχ : ContDiff Real (∞ : WithTop ℕ∞) χ)
     (hψ : ∀ i, ContDiff Real (∞ : WithTop ℕ∞) (ψ i))
-    (hJ : ∀ i, MapCInfConvOnCompacts U (J i) (Jinf i))
+    (hJ : ∀ i, MapCInfConvergenceOnCompacts U (J i) (Jinf i))
     (hJc : ∀ i k, ContDiffOn Real (∞ : WithTop ℕ∞) (J i k) U)
     (hJinfc : ∀ i, ContDiffOn Real (∞ : WithTop ℕ∞) (Jinf i) U) (i : ι) :
-    MapCInfConvOnCompacts U (fun k => bumpNum χ ψ (fun j => J j k) i0 i)
+    MapCInfConvergenceOnCompacts U (fun k => bumpNum χ ψ (fun j => J j k) i0 i)
       (bumpNum χ ψ Jinf i0 i) := by
   have hread : ∀ (g : E' → Real), ContDiff Real (∞ : WithTop ℕ∞) g → ∀ j : ι,
-      MapCInfConvOnCompacts U (fun k z => g (J j k z)) (fun z => g (Jinf j z)) := by
+      MapCInfConvergenceOnCompacts U (fun k z => g (J j k z)) (fun z => g (Jinf j z)) := by
     intro g hg j
-    exact MapCInfConvOnCompacts.comp hU isOpen_univ (hJ j)
-      (mapCInfConv_const (U := (Set.univ : Set E')) g) (hJc j) (hJinfc j)
+    exact MapCInfConvergenceOnCompacts.comp hU isOpen_univ (hJ j)
+      (mapCInfConvergence_const (U := (Set.univ : Set E')) g) (hJc j) (hJinfc j)
       (fun _ => hg.contDiffOn) hg.contDiffOn
       (Set.mapsTo_univ _ _) (fun _ => Set.mapsTo_univ _ _)
   by_cases h : i = i0
@@ -95,7 +95,7 @@ theorem bumpNumConv {ι : Type*} [DecidableEq ι] [ProperSpace E']
     refine this.congr hU (fun k z _ => ?_) (fun z _ => ?_) <;> simp [bumpNum]
   · have h1 := hread χ hχ i0
     have h2 := hread (ψ i) (hψ i) i
-    have hmul := mapCInfConv_mul hU h1 h2
+    have hmul := mapCInfConvergence_mul hU h1 h2
       (fun k => hχ.comp_contDiffOn (hJc i0 k)) (hχ.comp_contDiffOn (hJinfc i0))
       (fun k => (hψ i).comp_contDiffOn (hJc i k)) ((hψ i).comp_contDiffOn (hJinfc i))
     refine hmul.congr hU (fun k z _ => ?_) (fun z _ => ?_) <;> simp [bumpNum, h]
@@ -106,7 +106,7 @@ theorem bumpNumDeltaOfNorm {ι : Type*} [DecidableEq ι] [HasContDiffBump E']
     (hfar : ∀ j, j ≠ i0 → (f j).rOut ≤ ‖J j x₀‖) :
     (∀ j, j ≠ i0 → bumpNum χ (fun i => ⇑(f i)) J i0 j x₀ = 0) ∧
       bumpNum χ (fun i => ⇑(f i)) J i0 i0 x₀ = f i0 (J i0 x₀) :=
-  bumpNum_delta' (fun j hj => (f j).zero_of_le_dist
+  bumpNum_delta_of_weights_eq_zero (fun j hj => (f j).zero_of_le_dist
     (by rw [dist_zero_right]; exact hfar j hj))
 
 theorem bumpNumLowOfMem {ι : Type*} [DecidableEq ι] [HasContDiffBump E']
@@ -160,22 +160,22 @@ theorem weightsSlot {ι : Type*} [DecidableEq ι] [Fintype ι] [ProperSpace E']
     {δ : Real} (hδ : 0 < δ)
     (hχ : ContDiff Real (∞ : WithTop ℕ∞) χ)
     (hψ : ∀ i, ContDiff Real (∞ : WithTop ℕ∞) (ψ i))
-    (hJ : ∀ i, MapCInfConvOnCompacts U (J i) (Jinf i))
+    (hJ : ∀ i, MapCInfConvergenceOnCompacts U (J i) (Jinf i))
     (hJc : ∀ i k, ContDiffOn Real (∞ : WithTop ℕ∞) (J i k) U)
     (hJinfc : ∀ i, ContDiffOn Real (∞ : WithTop ℕ∞) (Jinf i) U)
     (hlow : ∀ k, ∀ z ∈ U, δ < ∑ j, bumpNum χ ψ (fun j' => J j' k) i0 j z)
     (hlowinf : ∀ z ∈ U, δ < ∑ j, bumpNum χ ψ Jinf i0 j z) (i : ι)
     (kn : Nat → Nat) (hkn : Filter.Tendsto kn Filter.atTop Filter.atTop) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun n => normWeights (bumpNum χ ψ (fun j => J j (kn n)) i0) i)
       (normWeights (bumpNum χ ψ Jinf i0) i) := by
-  have hsingle : MapCInfConvOnCompacts U
+  have hsingle : MapCInfConvergenceOnCompacts U
       (fun k => normWeights (bumpNum χ ψ (fun j => J j k) i0) i)
       (normWeights (bumpNum χ ψ Jinf i0) i) := by
-    refine normWeightsConv hU hδ (fun j => bumpNumConv hU hχ hψ hJ hJc hJinfc j)
+    refine normWeightsConvergence hU hδ (fun j => bumpNumConvergence hU hχ hψ hJ hJc hJinfc j)
       (fun k j => bumpNum_contDiffOn hχ hψ (fun j' => hJc j' k) j)
       (fun j => bumpNum_contDiffOn hχ hψ hJinfc j) hlow hlowinf i
   exact hsingle.comp_tendsto_atTop hkn
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

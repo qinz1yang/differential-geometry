@@ -56,7 +56,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma extendedDensity_contDiff
     (g : SmoothRiemannianMetric I M) (α : M) [I.Boundaryless]
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
-    (hχ_supp : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hχ_support : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ContDiff ℝ (⊤ : ℕ∞) (extendedDensity (I := I) g α χ) := by
   set f : EuclN → ℝ := extendedDensity (I := I) g α χ with hf_def
   set s : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hs_def
@@ -67,7 +67,7 @@ private lemma extendedDensity_contDiff
     refine Set.eq_univ_of_forall ?_
     intro y
     by_cases hy : y ∈ tsupport χ
-    · exact Or.inl (hχ_supp hy)
+    · exact Or.inl (hχ_support hy)
     · exact Or.inr hy
   have hf_on_s : ContDiffOn ℝ (⊤ : ℕ∞) f s := by
     change ContDiffOn ℝ (⊤ : ℕ∞) (fun y =>
@@ -114,7 +114,7 @@ private theorem exists_smooth_metric_extension_with_density
   have h_K_in_Ω' : K ⊆ Ω' := Metric.self_subset_thickening δ_pos K
   have h_Ω'_in_K' : Ω' ⊆ K' := Metric.thickening_subset_cthickening δ K
   have h_K'_in_chart : K' ⊆ chartTargetEuclid (I := I) (M := M) α := hδ_subset
-  obtain ⟨χ, hχ_smooth, hχ_supp, hχ_one_nhds, hχ_tsupp, hχ_range⟩ :=
+  obtain ⟨χ, hχ_smooth, hχ_support, hχ_one_nhds, hχ_tsupp, hχ_range⟩ :=
     DifferentialGeometry.Analysis.exists_bump_compact
       (K := K) (U := Ω') hK hΩ'_open h_K_in_Ω'
   have hχ_one : ∀ x ∈ K, χ x = 1 := fun _ hx =>
@@ -123,9 +123,9 @@ private theorem exists_smooth_metric_extension_with_density
     intro y hy
     have h1 : y ∈ Ω' := hχ_tsupp hy
     exact (h_Ω'_in_K'.trans h_K'_in_chart) h1
-  have hχ_tsupp_compact : IsCompact (tsupport χ) := hχ_supp
+  have hχ_tsupp_compact : IsCompact (tsupport χ) := hχ_support
   obtain ⟨lamK0, hlamK0_pos, hlamK0_bound⟩ :=
-    exists_unif_lower_bound_on_compact (I := I) g α hχ_tsupp_compact hχ_tsupp_chart
+    exists_uniform_lower_bound_on_compact (I := I) g α hχ_tsupp_compact hχ_tsupp_chart
   set lamK : ℝ := min 1 lamK0 with hlamK_def
   have hlamK_pos : 0 < lamK := lt_min one_pos hlamK0_pos
   have hlamK_le_one : lamK ≤ 1 := min_le_left _ _
@@ -199,7 +199,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : HasCompactSupport η)
+    (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set EuclN} (hΩ' : IsOpen Ω')
@@ -207,7 +207,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     (hΩ'_compact : IsCompact (closure Ω'))
     (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_meas : MeasurableSet Ω'') :
@@ -229,11 +229,11 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
               + (eLpNorm D.fChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)) := by
   classical
-  have hη_tsupp_compact : IsCompact (tsupport η) := hη_supp
+  have hη_tsupp_compact : IsCompact (tsupport η) := hη_support
   have h_cthickR0_compact : IsCompact (Metric.cthickening R₀ (tsupport η)) :=
     hη_tsupp_compact.cthickening
   have h_cthickR0_in_Ω' : Metric.cthickening R₀ (tsupport η) ⊆ Ω' := by
-    have h := hh_supp_in_Ω' (h := R₀) (by rw [abs_of_pos hR₀_pos])
+    have h := hh_support_in_Ω' (h := R₀) (by rw [abs_of_pos hR₀_pos])
     rw [abs_of_pos hR₀_pos] at h
     exact h
   have h_cthickR0_in_chart :
@@ -282,9 +282,9 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     exact ⟨(hχ_range hx_range).1, (hχ_range hx_range).2⟩
   have hχ_cont : Continuous χ := hχ_smooth.continuous
   obtain ⟨M_χ, hM_χ_nn, hM_χ_bd⟩ : ∃ M_χ : ℝ, 0 ≤ M_χ ∧ ∀ x, |χ x| ≤ M_χ := by
-    by_cases hSupp_empty : (tsupport χ).Nonempty
+    by_cases hSupport_empty : (tsupport χ).Nonempty
     · obtain ⟨xMax, _, hxMax_max⟩ :=
-        hχ_cs.exists_isMaxOn hSupp_empty hχ_cont.abs.continuousOn
+        hχ_cs.exists_isMaxOn hSupport_empty hχ_cont.abs.continuousOn
       refine ⟨|χ xMax|, abs_nonneg _, ?_⟩
       intro x
       by_cases hx : x ∈ tsupport χ
@@ -294,7 +294,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     · refine ⟨0, le_refl _, ?_⟩
       intro x
       by_cases hx : x ∈ tsupport χ
-      · exact absurd ⟨x, hx⟩ hSupp_empty
+      · exact absurd ⟨x, hx⟩ hSupport_empty
       · have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
         rw [hχx, abs_zero]
   have hχ_fderiv_cont : Continuous (fderiv ℝ χ) :=
@@ -315,10 +315,10 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       have h_cont_abs : Continuous
           (fun x => |(fderiv ℝ χ x) (EuclideanSpace.single l 1)|) :=
         (hχ_partial_cont l).abs
-      by_cases hSupp_empty :
+      by_cases hSupport_empty :
           (tsupport (fun x => (fderiv ℝ χ x) (EuclideanSpace.single l 1))).Nonempty
       · obtain ⟨xMax, _, hxMax_max⟩ :=
-          h_cs_l.exists_isMaxOn hSupp_empty h_cont_abs.continuousOn
+          h_cs_l.exists_isMaxOn hSupport_empty h_cont_abs.continuousOn
         refine ⟨|(fderiv ℝ χ xMax) (EuclideanSpace.single l 1)|,
           abs_nonneg _, fun x => ?_⟩
         by_cases hx : x ∈ tsupport
@@ -331,7 +331,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       · refine ⟨0, le_refl _, fun x => ?_⟩
         by_cases hx : x ∈ tsupport
             (fun x => (fderiv ℝ χ x) (EuclideanSpace.single l 1))
-        · exact absurd ⟨x, hx⟩ hSupp_empty
+        · exact absurd ⟨x, hx⟩ hSupport_empty
         · have hχx : (fderiv ℝ χ x) (EuclideanSpace.single l 1) = 0 :=
             image_eq_zero_of_notMem_tsupport
               (f := fun x => (fderiv ℝ χ x) (EuclideanSpace.single l 1)) hx
@@ -358,14 +358,14 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
   refine ⟨C_geom, fun i k => Real.sqrt_nonneg _, ?_⟩
   intro D i k h hh_pos hh_le
   have h_diffQuot_u_bound :=
-    integral_sq_diffQuot_uChart_le (I := I) (M := M) D hη_supp
-      hΩ'_chart hΩ'_compact hR₀_pos hh_supp_in_Ω'
+    integral_sq_diffQuot_uChart_le (I := I) (M := M) D hη_support
+      hΩ'_chart hΩ'_compact hR₀_pos hh_support_in_Ω'
   have h_testFunction_sq_bound :=
-    integral_sq_nirenbergTestFunction_le (I := I) (M := M) D hη hη_supp hη_range
-      hN h_fderiv_eta hΩ'_chart hR₀_pos hh_supp_in_Ω'
+    integral_sq_nirenbergTestFunction_le (I := I) (M := M) D hη hη_support hη_range
+      hN h_fderiv_eta hΩ'_chart hR₀_pos hh_support_in_Ω'
   have h_coercivity :=
-    weighted_diffQuot_weakPartial_energy_le (I := I) (M := M) D B hη hη_supp
-      hΩ'_chart hη_in_Ω' hR₀_pos hh_supp_in_Ω'
+    weighted_diffQuot_weakPartial_energy_le (I := I) (M := M) D B hη hη_support
+      hΩ'_chart hη_in_Ω' hR₀_pos hh_support_in_Ω'
       hB_a_match hB_c_match
   set u_g : EuclN → ℝ := fun x => χ x * D.uChart x with hu_g_def
   set g_g : Fin (Module.finrank ℝ E) → EuclN → ℝ := fun i x =>
@@ -386,9 +386,9 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     classical
     have hχ_cont : Continuous χ := hχ_smooth.continuous
     obtain ⟨M_χ, hM_χ_nn, hM_χ_bd⟩ : ∃ M_χ : ℝ, 0 ≤ M_χ ∧ ∀ x, |χ x| ≤ M_χ := by
-      by_cases hSupp_empty : (tsupport χ).Nonempty
+      by_cases hSupport_empty : (tsupport χ).Nonempty
       · obtain ⟨xMax, _, hxMax_max⟩ :=
-          hχ_cs.exists_isMaxOn hSupp_empty hχ_cont.abs.continuousOn
+          hχ_cs.exists_isMaxOn hSupport_empty hχ_cont.abs.continuousOn
         refine ⟨|χ xMax|, abs_nonneg _, ?_⟩
         intro x
         by_cases hx : x ∈ tsupport χ
@@ -398,11 +398,11 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       · refine ⟨0, le_refl _, ?_⟩
         intro x
         by_cases hx : x ∈ tsupport χ
-        · exact absurd ⟨x, hx⟩ hSupp_empty
+        · exact absurd ⟨x, hx⟩ hSupport_empty
         · have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
           rw [hχx, abs_zero]
-    have h_supp_compact : IsCompact (tsupport χ) := hχ_cs
-    have h_supp_meas : MeasurableSet (tsupport χ) :=
+    have h_support_compact : IsCompact (tsupport χ) := hχ_cs
+    have h_support_meas : MeasurableSet (tsupport χ) :=
       (isClosed_tsupport χ).measurableSet
     have h_density_contOn : ContinuousOn (densityOnEuclid (I := I) g α)
         (tsupport χ) :=
@@ -411,31 +411,31 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     obtain ⟨M_d, hM_d_nn, hM_d_bd⟩ :
         ∃ M_d : ℝ, 0 ≤ M_d ∧ ∀ x ∈ tsupport χ,
           |densityOnEuclid (I := I) g α x| ≤ M_d := by
-      by_cases hSupp_empty : (tsupport χ).Nonempty
+      by_cases hSupport_empty : (tsupport χ).Nonempty
       · obtain ⟨xMax, _, hxMax_max⟩ :=
-          h_supp_compact.exists_isMaxOn hSupp_empty h_density_contOn.abs
+          h_support_compact.exists_isMaxOn hSupport_empty h_density_contOn.abs
         refine ⟨|densityOnEuclid (I := I) g α xMax|, abs_nonneg _, ?_⟩
         intro x hx; exact hxMax_max hx
       · refine ⟨0, le_refl _, ?_⟩
-        intro x hx; exact absurd ⟨x, hx⟩ hSupp_empty
-    have hf_l2_supp : MemLp D.fChart 2
+        intro x hx; exact absurd ⟨x, hx⟩ hSupport_empty
+    have hf_l2_support : MemLp D.fChart 2
         ((volume : Measure EuclN).restrict (tsupport χ)) :=
       memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
-        D.f_chart_memLp_weighted h_supp_compact h_supp_meas hχ_tsupp_in_chart
+        D.f_chart_memLp_weighted h_support_compact h_support_meas hχ_tsupp_in_chart
     have h_f_aesm : AEStronglyMeasurable D.fChart
         ((volume : Measure EuclN).restrict (tsupport χ)) :=
-      hf_l2_supp.aestronglyMeasurable
-    have h_density_aesm_supp : AEStronglyMeasurable
+      hf_l2_support.aestronglyMeasurable
+    have h_density_aesm_support : AEStronglyMeasurable
         (densityOnEuclid (I := I) g α)
         ((volume : Measure EuclN).restrict (tsupport χ)) :=
-      h_density_contOn.aestronglyMeasurable h_supp_meas
+      h_density_contOn.aestronglyMeasurable h_support_meas
     have h_prod_aesm : AEStronglyMeasurable f_g
         ((volume : Measure EuclN).restrict (tsupport χ)) := by
       refine (hχ_cont.aestronglyMeasurable.restrict).mul ?_
-      exact h_density_aesm_supp.mul h_f_aesm
+      exact h_density_aesm_support.mul h_f_aesm
     have h_pt_le : ∀ᵐ x ∂((volume : Measure EuclN).restrict (tsupport χ)),
         ‖f_g x‖ ≤ ‖(M_χ * M_d) * D.fChart x‖ := by
-      refine ae_restrict_of_forall_mem h_supp_meas ?_
+      refine ae_restrict_of_forall_mem h_support_meas ?_
       intro x hx
       change ‖χ x * (densityOnEuclid (I := I) g α x * D.fChart x)‖ ≤ _
       rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul, abs_mul]
@@ -447,7 +447,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
         mul_le_mul h1 h2 (abs_nonneg _) hM_χ_nn]
     have h_const_lp : MemLp (fun x => (M_χ * M_d) * D.fChart x) 2
         ((volume : Measure EuclN).restrict (tsupport χ)) :=
-      hf_l2_supp.const_mul (M_χ * M_d)
+      hf_l2_support.const_mul (M_χ * M_d)
     have h_restrict_lp : MemLp f_g 2
         ((volume : Measure EuclN).restrict (tsupport χ)) :=
       MemLp.mono h_const_lp h_prod_aesm h_pt_le
@@ -461,10 +461,10 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
         rw [this, hχx, zero_mul]
     have h_indicator_lp :
         MemLp ((tsupport χ).indicator f_g) 2 (volume : Measure EuclN) :=
-      (MeasureTheory.memLp_indicator_iff_restrict h_supp_meas).mpr h_restrict_lp
+      (MeasureTheory.memLp_indicator_iff_restrict h_support_meas).mpr h_restrict_lp
     rw [h_indicator_eq] at h_indicator_lp
     exact h_indicator_lp
-  have hf_g_l2_loc : ∀ {Ω'_in : Set EuclN}, IsCompact (closure Ω'_in) →
+  have hf_g_l2_local : ∀ {Ω'_in : Set EuclN}, IsCompact (closure Ω'_in) →
       MemLp f_g 2 ((volume : Measure EuclN).restrict Ω'_in) := fun _ =>
     hf_g_l2_global.restrict _
   have h_closure_subset_thick_half_δ :
@@ -510,7 +510,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     rw [hdχx, hχx, zero_mul, one_mul, zero_add]
   have h_cthick_h_subset_closure : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ closure Ω' := fun {h} hh_le =>
-    (hh_supp_in_Ω' hh_le).trans subset_closure
+    (hh_support_in_Ω' hh_le).trans subset_closure
   have h_tsupp_subset_closure : tsupport η ⊆ closure Ω' :=
     hη_in_Ω'.trans subset_closure
   have h_diffQuot_u_g_eq_on_tsupport :
@@ -622,9 +622,9 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       intro y
       by_cases hη_y : η y = 0
       · rw [hη_y]; ring
-      · have hy_in_supp : y ∈ tsupport η :=
+      · have hy_in_support : y ∈ tsupport η :=
           subset_tsupport η (Function.mem_support.mpr hη_y)
-        rw [h_diffQuot_u_g_eq_on_tsupport hh hh_le k y hy_in_supp]
+        rw [h_diffQuot_u_g_eq_on_tsupport hh hh_le k y hy_in_support]
     change DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k (-h)
         (fun y => (η y)^2 *
@@ -692,9 +692,9 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
           (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial k) x)^2
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
-      · have hx_in_supp : x ∈ tsupport η :=
+      · have hx_in_support : x ∈ tsupport η :=
           subset_tsupport η (Function.mem_support.mpr hη_x)
-        rw [h_diffQuot_g_g_eq_on_tsupport hh hh_le k k x hx_in_supp]
+        rw [h_diffQuot_g_g_eq_on_tsupport hh hh_le k k x hx_in_support]
     rw [h_LHS_eq, h_RHS_1_eq, h_RHS_2_eq]
     exact h_testFunction_sq_bound k hh hh_le
   have h_master :
@@ -754,12 +754,12 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial l) x ^ 2
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
-      · have hx_in_supp : x ∈ tsupport η :=
+      · have hx_in_support : x ∈ tsupport η :=
           subset_tsupport η (Function.mem_support.mpr hη_x)
         congr 1
         refine Finset.sum_congr rfl ?_
         intro l _
-        rw [h_diffQuot_g_g_eq_on_tsupport hh hh_le k l x hx_in_supp]
+        rw [h_diffQuot_g_g_eq_on_tsupport hh hh_le k l x hx_in_support]
     have h_A1_eq :
         ∀ i j : Fin (Module.finrank ℝ E),
         ∫ x, 2 * DifferentialGeometry.Analysis.Sobolev.translate k h
@@ -790,10 +790,10 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.uChart x
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
-      · have hx_in_supp : x ∈ tsupport η :=
+      · have hx_in_support : x ∈ tsupport η :=
           subset_tsupport η (Function.mem_support.mpr hη_x)
-        rw [h_diffQuot_g_g_eq_on_tsupport hh hh_le k i x hx_in_supp,
-            h_diffQuot_u_g_eq_on_tsupport hh hh_le k x hx_in_supp]
+        rw [h_diffQuot_g_g_eq_on_tsupport hh hh_le k i x hx_in_support,
+            h_diffQuot_u_g_eq_on_tsupport hh hh_le k x hx_in_support]
     have h_A2_eq :
         ∀ i j : Fin (Module.finrank ℝ E),
         ∫ x, DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -820,11 +820,11 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial j) x
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
-      · have hx_in_supp : x ∈ tsupport η :=
+      · have hx_in_support : x ∈ tsupport η :=
           subset_tsupport η (Function.mem_support.mpr hη_x)
-        have hx_in_closure : x ∈ closure Ω' := h_tsupp_subset_closure hx_in_supp
+        have hx_in_closure : x ∈ closure Ω' := h_tsupp_subset_closure hx_in_support
         rw [hg_g_eq_on_closure x hx_in_closure i,
-            h_diffQuot_g_g_eq_on_tsupport hh hh_le k j x hx_in_supp]
+            h_diffQuot_g_g_eq_on_tsupport hh hh_le k j x hx_in_support]
     have h_A3_eq :
         ∀ i j : Fin (Module.finrank ℝ E),
         ∫ x, 2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -855,11 +855,11 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.uChart x
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
-      · have hx_in_supp : x ∈ tsupport η :=
+      · have hx_in_support : x ∈ tsupport η :=
           subset_tsupport η (Function.mem_support.mpr hη_x)
-        have hx_in_closure : x ∈ closure Ω' := h_tsupp_subset_closure hx_in_supp
+        have hx_in_closure : x ∈ closure Ω' := h_tsupp_subset_closure hx_in_support
         rw [hg_g_eq_on_closure x hx_in_closure i,
-            h_diffQuot_u_g_eq_on_tsupport hh hh_le k x hx_in_supp]
+            h_diffQuot_u_g_eq_on_tsupport hh hh_le k x hx_in_support]
     have h_f_term_eq :
         ∫ x in (Set.univ : Set EuclN), f_g x *
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
@@ -871,7 +871,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       refine setIntegral_congr_ae MeasurableSet.univ ?_
       refine Filter.Eventually.of_forall ?_
       intro x _
-      have h_supp_subset :
+      have h_support_subset :
           Function.support
             (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η D.uChart) ⊆
@@ -908,11 +908,11 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
             apply h_num_ne
             rw [show (η (y + (-h) • EuclideanSpace.single k 1))^2 = 0 from by
               rw [h_zero]; ring, zero_mul]
-          have h_shift_in_supp :
+          have h_shift_in_support :
               y + (-h) • EuclideanSpace.single k 1 ∈ tsupport η :=
             subset_tsupport η (Function.mem_support.mpr h_eta_shift_ne)
           refine Metric.mem_cthickening_of_dist_le _ _ |h| (tsupport η)
-            h_shift_in_supp ?_
+            h_shift_in_support ?_
           rw [dist_eq_norm]
           have h_diff_eq : y - (y + (-h) • EuclideanSpace.single k 1) =
               h • EuclideanSpace.single k 1 := by
@@ -922,7 +922,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
           rw [hsing, mul_one, Real.norm_eq_abs]
         · exact Metric.self_subset_cthickening _
             (subset_tsupport η (Function.mem_support.mpr hη_y))
-      have h_supp_subset_u_g :
+      have h_support_subset_u_g :
           Function.support
             (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g) ⊆
@@ -959,11 +959,11 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
             apply h_num_ne
             rw [show (η (y + (-h) • EuclideanSpace.single k 1))^2 = 0 from by
               rw [h_zero]; ring, zero_mul]
-          have h_shift_in_supp :
+          have h_shift_in_support :
               y + (-h) • EuclideanSpace.single k 1 ∈ tsupport η :=
             subset_tsupport η (Function.mem_support.mpr h_eta_shift_ne)
           refine Metric.mem_cthickening_of_dist_le _ _ |h| (tsupport η)
-            h_shift_in_supp ?_
+            h_shift_in_support ?_
           rw [dist_eq_norm]
           have h_diff_eq : y - (y + (-h) • EuclideanSpace.single k 1) =
               h • EuclideanSpace.single k 1 := by
@@ -986,12 +986,12 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g x = 0 := by
           by_contra h_ne
-          exact hx_in (h_supp_subset_u_g (Function.mem_support.mpr h_ne))
+          exact hx_in (h_support_subset_u_g (Function.mem_support.mpr h_ne))
         have h_test_D_zero :
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η D.uChart x = 0 := by
           by_contra h_ne
-          exact hx_in (h_supp_subset (Function.mem_support.mpr h_ne))
+          exact hx_in (h_support_subset (Function.mem_support.mpr h_ne))
         rw [h_test_u_g_zero, h_test_D_zero, mul_zero, mul_zero]
     have h_c_term_eq :
         ∫ x in (Set.univ : Set EuclN), B.c x * u_g x *
@@ -1003,7 +1003,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       refine setIntegral_congr_ae MeasurableSet.univ ?_
       refine Filter.Eventually.of_forall ?_
       intro x _
-      have h_supp_subset_D :
+      have h_support_subset_D :
           Function.support
             (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η D.uChart) ⊆
@@ -1038,11 +1038,11 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
             apply h_num_ne
             rw [show (η (y + (-h) • EuclideanSpace.single k 1))^2 = 0 from by
               rw [h_zero]; ring, zero_mul]
-          have h_shift_in_supp :
+          have h_shift_in_support :
               y + (-h) • EuclideanSpace.single k 1 ∈ tsupport η :=
             subset_tsupport η (Function.mem_support.mpr h_eta_shift_ne)
           refine Metric.mem_cthickening_of_dist_le _ _ |h| (tsupport η)
-            h_shift_in_supp ?_
+            h_shift_in_support ?_
           rw [dist_eq_norm]
           have h_diff_eq : y - (y + (-h) • EuclideanSpace.single k 1) =
               h • EuclideanSpace.single k 1 := by
@@ -1052,7 +1052,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
           rw [hsing, mul_one, Real.norm_eq_abs]
         · exact Metric.self_subset_cthickening _
             (subset_tsupport η (Function.mem_support.mpr hη_y))
-      have h_supp_subset_u :
+      have h_support_subset_u :
           Function.support
             (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g) ⊆
@@ -1087,11 +1087,11 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
             apply h_num_ne
             rw [show (η (y + (-h) • EuclideanSpace.single k 1))^2 = 0 from by
               rw [h_zero]; ring, zero_mul]
-          have h_shift_in_supp :
+          have h_shift_in_support :
               y + (-h) • EuclideanSpace.single k 1 ∈ tsupport η :=
             subset_tsupport η (Function.mem_support.mpr h_eta_shift_ne)
           refine Metric.mem_cthickening_of_dist_le _ _ |h| (tsupport η)
-            h_shift_in_supp ?_
+            h_shift_in_support ?_
           rw [dist_eq_norm]
           have h_diff_eq : y - (y + (-h) • EuclideanSpace.single k 1) =
               h • EuclideanSpace.single k 1 := by
@@ -1110,12 +1110,12 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g x = 0 := by
           by_contra h_ne
-          exact hx_in (h_supp_subset_u (Function.mem_support.mpr h_ne))
+          exact hx_in (h_support_subset_u (Function.mem_support.mpr h_ne))
         have h_test_D_zero :
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η D.uChart x = 0 := by
           by_contra h_ne
-          exact hx_in (h_supp_subset_D (Function.mem_support.mpr h_ne))
+          exact hx_in (h_support_subset_D (Function.mem_support.mpr h_ne))
         rw [h_test_u_g_zero, h_test_D_zero, mul_zero, mul_zero]
     rw [h_LHS_eq]
     have h_A1_sum_eq :
@@ -1197,9 +1197,9 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
             ∫ x in Ω', (f_g x)^2 ∂(volume : Measure EuclN)))) :=
     uniform_diffQuot_bound_quantitative
       (d := Module.finrank ℝ E)
-      B hu_g_l2 hf_g_l2_loc hg_g_l2 hη hη_supp hη_range hN
+      B hu_g_l2 hf_g_l2_local hg_g_l2 hη hη_support hη_range hN
       h_fderiv_eta hΩ' hΩ'_compact
-      hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas
+      hh_support_in_Ω' hη_one_on_Ω'' hΩ''_meas
       h_FK h_v_test_sq h_master hh_pos hh_le
   have hΩ'_closure_meas : MeasurableSet (closure Ω') :=
     isClosed_closure.measurableSet
@@ -1207,9 +1207,9 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
       D.f_chart_memLp_weighted hΩ'_compact hΩ'_closure_meas hΩ'_chart
-  set fSrc : EuclN → ℝ := fun x => densityOnEuclid (I := I) g α x * D.fChart x
-    with hfSrc_def
-  have hfSrc_l2_closure : MemLp fSrc 2
+  set fSource : EuclN → ℝ := fun x => densityOnEuclid (I := I) g α x * D.fChart x
+    with hfSource_def
+  have hfSource_l2_closure : MemLp fSource 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     densityOnEuclid_mul_memLp (I := I) (M := M) (g := g) (α := α)
       hΩ'_compact hΩ'_chart hf_chart_l2_closure
@@ -1242,21 +1242,21 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     have hn_nn : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
     positivity
   have h_Sf'_le :
-      (eLpNorm fSrc 2
+      (eLpNorm fSource 2
         ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 ≤
         (densityOnEuclidClosureSup (I := I) (M := M) g α Ω') ^ 2 * Sf := by
     have h := eLpNorm_densityOnEuclid_mul_sq_le (I := I) (M := M)
       (g := g) (α := α) hΩ'_compact hΩ'_chart hf_chart_l2_closure
-    rw [hfSrc_def, hSf_def]
+    rw [hfSource_def, hSf_def]
     exact h
   have h_gTotal_data : G_total ≤
       Cχ * (Sw + Su +
-        (eLpNorm fSrc 2
+        (eLpNorm fSource 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2) := by
     have h := cutoff_energy_le_data_eLpNorm_sq (I := I) (M := M) (g := g) (α := α)
-      hχ_smooth hM_χ_bd hM_dχ_bd hΩ'_compact hΩ'_chart hfSrc_l2_closure D
+      hχ_smooth hM_χ_bd hM_dχ_bd hΩ'_compact hΩ'_chart hfSource_l2_closure D
     rw [hG_total_def, hCχ_def, hSw_def, hSu_def]
-    simp only [hg_g_def, hu_g_def, hf_g_def, hfSrc_def] at h ⊢
+    simp only [hg_g_def, hu_g_def, hf_g_def, hfSource_def] at h ⊢
     convert h using 2
   set Mden2 : ℝ := max 1 ((densityOnEuclidClosureSup (I := I) (M := M) g α Ω') ^ 2)
     with hMden2_def
@@ -1269,7 +1269,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
     refine le_trans h_gTotal_data ?_
     have h_inner :
         Sw + Su +
-          (eLpNorm fSrc 2
+          (eLpNorm fSource 2
             ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 ≤
           Mden2 * (Sw + Su + Sf) := by
       have h_w : Sw ≤ Mden2 * Sw :=
@@ -1277,7 +1277,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
       have h_u : Su ≤ Mden2 * Su :=
         le_mul_of_one_le_left hSu_nn hMden2_one_le
       have h_f :
-          (eLpNorm fSrc 2
+          (eLpNorm fSource 2
             ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 ≤
             Mden2 * Sf := by
         refine le_trans h_Sf'_le ?_
@@ -1286,7 +1286,7 @@ theorem uniform_diffQuot_weakPartial_bound_quantitative
           Mden2 * Sw + Mden2 * Su + Mden2 * Sf := by ring
       linarith [h_w, h_u, h_f, h_expand]
     calc Cχ * (Sw + Su +
-            (eLpNorm fSrc 2
+            (eLpNorm fSource 2
               ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
         ≤ Cχ * (Mden2 * (Sw + Su + Sf)) :=
           mul_le_mul_of_nonneg_left h_inner hCχ_nn
@@ -1384,7 +1384,7 @@ theorem uniform_diffQuot_weakPartial_bound
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : HasCompactSupport η)
+    (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set EuclN} (hΩ' : IsOpen Ω')
@@ -1392,7 +1392,7 @@ theorem uniform_diffQuot_weakPartial_bound
     (hΩ'_compact : IsCompact (closure Ω'))
     (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_meas : MeasurableSet Ω'') :
@@ -1409,8 +1409,8 @@ theorem uniform_diffQuot_weakPartial_bound
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
     uniform_diffQuot_weakPartial_bound_quantitative
       (I := I) (M := M) (E := E) (H := H) (g := g) (α := α)
-      hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_chart hΩ'_compact
-      hη_in_Ω' hR₀_pos hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas
+      hη hη_support hη_range hN h_fderiv_eta hΩ' hΩ'_chart hΩ'_compact
+      hη_in_Ω' hR₀_pos hh_support_in_Ω' hη_one_on_Ω'' hΩ''_meas
   refine ⟨fun i k => C_geom i k * Real.sqrt (
       (∑ l : Fin (Module.finrank ℝ E),
         (eLpNorm (D.weakPartial l) 2

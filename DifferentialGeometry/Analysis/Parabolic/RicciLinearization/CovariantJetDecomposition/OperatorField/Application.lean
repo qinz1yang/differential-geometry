@@ -91,7 +91,7 @@ theorem exists_linearizedRicciOrder1DivCoeff (g₀ : SmoothRiemannianMetric I M)
               (tangentModel (I := I) x v) := by
   classical
   obtain ⟨_, _, _, hident, _, _⟩ :=
-    (exists_orderZero_firstOrder_corrField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
+    (exists_orderZero_firstOrder_correctionField_data (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec
   refine ⟨linearizedRicciOrderZeroField (I := I) g₀ T T' hδ hδ',
     linearizedRicciFirstOrderField (I := I) g₀ T T' hδ hδ',
     linearizedRicciSecondOrderFieldLichnerowicz (I := I) g₀ T T' hδ hδ',

@@ -174,7 +174,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma perChartDensityCeil_bound
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
-    (h_supp_ne :
+    (h_support_ne :
       (tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)).Nonempty)
     {y : E}
@@ -185,9 +185,9 @@ private lemma perChartDensityCeil_bound
       perChartDensityCeil (I := I) (M := M) g α := by
   classical
   unfold perChartDensityCeil
-  rw [dif_pos h_supp_ne]
+  rw [dif_pos h_support_ne]
   exact (exists_sup_chartDensity_on_pou_tsupport_image
-    (I := I) (M := M) g α h_supp_ne).choose_spec.2 y hy_image
+    (I := I) (M := M) g α h_support_ne).choose_spec.2 y hy_image
 
 private noncomputable def compNormSqOnM
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T₀ : SmoothCcTensor g r s)
@@ -219,7 +219,7 @@ private lemma compNormSqOnM_nonneg
   sq_nonneg _
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma compNormSqOnM_eq_of_mem_chartSrc
+private lemma compNormSqOnM_eq_of_mem_chartSource
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T₀ : SmoothCcTensor g r s)
     (α : M) (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -386,7 +386,7 @@ private lemma per_alpha_measurable_lintegral_le
       exact riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn
         (I := I) (M := M) g α hG_meas hG_zero_off
     have hbridge_eucl :=
-      chartLocalMeasure_lintegral_via_chartTargetEuclid
+      chartLocalMeasure_lintegral_eq_chartTargetEuclid
         (I := I) (M := M) g α (F := G) hG_meas
     have h_on_target :
         ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
@@ -406,11 +406,11 @@ private lemma per_alpha_measurable_lintegral_le
                     ((toEuclidean (E := E)).symm y)‖ ^ 2) := by
       intro y hy_target
       set b' : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hb'_def
-      have hb'_src : b' ∈ (chartAt H α).source := by
+      have hb'_source : b' ∈ (chartAt H α).source := by
         rw [hb'_def]
         exact symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy_target
       have hb'_extExt : extChartAtExt (I := I) α b' = (extChartAt I α) b' :=
-        extChartAtExt_apply_of_mem (I := I) (α := α) hb'_src
+        extChartAtExt_apply_of_mem (I := I) (α := α) hb'_source
       have h_ext_b' : (extChartAt I α) b' = (toEuclidean (E := E)).symm y := by
         rw [hb'_def]
         have h_in_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
@@ -487,13 +487,13 @@ private lemma per_alpha_measurable_lintegral_le
       · set b' : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hb'_def
         have hρ_pos : 0 < ρy :=
           lt_of_le_of_ne ((chartAtlasPOU I M).nonneg α _) (Ne.symm hρ0)
-        have hb'_supp_fn : b' ∈ Function.support rho := by
+        have hb'_support_fn : b' ∈ Function.support rho := by
           change (chartAtlasPOU I M α : M → ℝ) b' ≠ 0
           change (chartAtlasPOU I M α : M → ℝ) ((extChartAt I α).symm
               ((toEuclidean (E := E)).symm y)) ≠ 0
           change ρy ≠ 0
           exact hρ0
-        have hb'_tsupp : b' ∈ tsupport rho := subset_tsupport _ hb'_supp_fn
+        have hb'_tsupp : b' ∈ tsupport rho := subset_tsupport _ hb'_support_fn
         have h_tsupp_ne : (tsupport rho).Nonempty := ⟨b', hb'_tsupp⟩
         have h_tsupp_ne' : (tsupport
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)).Nonempty := h_tsupp_ne
@@ -749,20 +749,20 @@ theorem rawTensorConnLap_intrinsicL2_le_tensorPouSobolevNorm_sq
             ∑ Idx : Fin r → Fin n, ∑ Jdx : Fin s → Fin n, ∑ j ∈ Finset.range 3,
               compNormSqOnM (I := I) (M := M) g r s T₀ α Idx Jdx j b := by
       intro α hα_S
-      by_cases hb_supp : b ∈ tsupport
+      by_cases hb_support : b ∈ tsupport
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
-      · have hb_chartSrc : b ∈ (chartAt H α).source :=
-          (chartAtlasPOU_isSubordinate (I := I) (M := M) α) hb_supp
-        have hb_extSrc : b ∈ (extChartAt I α).source := by
-          rw [extChartAt_source_eq_chartAt_source]; exact hb_chartSrc
+      · have hb_chartSource : b ∈ (chartAt H α).source :=
+          (chartAtlasPOU_isSubordinate (I := I) (M := M) α) hb_support
+        have hb_extSource : b ∈ (extChartAt I α).source := by
+          rw [extChartAt_source_eq_chartAt_source]; exact hb_chartSource
         have hgood :
             chartLeviCivitaGoodSet (I := I) α = (extChartAt I α).source :=
           chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α
         have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α := by
-          rw [hgood]; exact hb_extSrc
+          rw [hgood]; exact hb_extSource
         have hb_inter : b ∈ tsupport
               (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
-            chartLeviCivitaGoodSet (I := I) α := ⟨hb_supp, hb_good⟩
+            chartLeviCivitaGoodSet (I := I) α := ⟨hb_support, hb_good⟩
         have hF_bd : F b ≤ CB α *
             (∑ Idx : Fin r → Fin n, ∑ Jdx : Fin s → Fin n, ∑ j ∈ Finset.range 3,
               ‖iteratedFDeriv ℝ j
@@ -780,8 +780,8 @@ theorem rawTensorConnLap_intrinsicL2_le_tensorPouSobolevNorm_sq
           refine Finset.sum_congr rfl (fun _ _ => ?_)
           refine Finset.sum_congr rfl (fun _ _ => ?_)
           refine Finset.sum_congr rfl (fun _ _ => ?_)
-          rw [compNormSqOnM_eq_of_mem_chartSrc (I := I) (M := M)
-              g r s T₀ α _ _ _ hb_chartSrc]
+          rw [compNormSqOnM_eq_of_mem_chartSource (I := I) (M := M)
+              g r s T₀ α _ _ _ hb_chartSource]
         rw [h_sum_align] at hF_bd
         have h_sum_nn :
             0 ≤ ∑ Idx : Fin r → Fin n, ∑ Jdx : Fin s → Fin n, ∑ j ∈ Finset.range 3,
@@ -803,7 +803,7 @@ theorem rawTensorConnLap_intrinsicL2_le_tensorPouSobolevNorm_sq
                 ∑ Idx : Fin r → Fin n, ∑ Jdx : Fin s → Fin n, ∑ j ∈ Finset.range 3,
                   compNormSqOnM (I := I) (M := M) g r s T₀ α Idx Jdx j b := by ring
       · have hp0 : (chartAtlasPOU I M α : M → ℝ) b = 0 :=
-          image_eq_zero_of_notMem_tsupport hb_supp
+          image_eq_zero_of_notMem_tsupport hb_support
         rw [hp0]
         ring_nf
         have h_sum_nn :

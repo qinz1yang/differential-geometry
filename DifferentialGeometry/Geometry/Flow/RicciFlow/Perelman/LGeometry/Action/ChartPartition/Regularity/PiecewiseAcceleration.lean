@@ -27,7 +27,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_acceleration_eq_on_chart_piece_interior
+theorem lRegularizedAction_minimizer_acceleration_eq_on_chart_piece_interior
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
@@ -44,11 +44,11 @@ theorem lRegAction_minimizer_acceleration_eq_on_chart_piece_interior
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
     ∀ (i : Fin m) (s : Real), s ∈ Ioo (t i.castSucc) (t i.succ) →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
           gamma (fun q ↦ lVelocity (I := I) gamma q) s =
-        lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
+        lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
   classical
   let hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
   intro i s hs
@@ -82,7 +82,7 @@ theorem lRegAction_minimizer_acceleration_eq_on_chart_piece_interior
   have hlocal : IsLocalMinOn
       (lChartAction S T (t i.castSucc) (p i))
       (sameTimeEnds (u i)) (u i) :=
-    lChartAction_isLocalMinOn_of_lRegAction_minimizer S hS.smoothMetric hSc T a b t ht.monotone
+    lChartAction_isLocalMinOn_of_lRegularizedAction_minimizer S hS.smoothMetric hSc T a b t ht.monotone
       ht0 htlast p gamma hgamma u hsrc hrep hreg hmin i hpos
   let r : Real := s - t i.castSucc
   have hr : r ∈ Ioo (0 : Real) (partitionIntervalLength t i) := by
@@ -127,7 +127,7 @@ theorem lRegAction_minimizer_acceleration_eq_on_chart_piece_interior
   change
     (covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
         (fun q ↦ lVelocity (I := I) gamma q) s : E) =
-      (lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s) : E)
+      (lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s) : E)
   rw [hcov, heq.self_of_nhds, hvel.self_of_nhds, ← hsadd]
   exact congrArg (fun v : TangentSpace I (alpha (t i.castSucc + r)) ↦ (v : E)) hacc
 

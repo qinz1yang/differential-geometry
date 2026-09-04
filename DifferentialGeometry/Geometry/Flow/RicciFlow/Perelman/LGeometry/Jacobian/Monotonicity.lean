@@ -37,19 +37,19 @@ theorem redLength_ray_K
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
     HasDerivAt
       (fun r ↦ redLength S T x (lExp S T x Z r) r)
-      (-lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+      (-lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
         (2 * tau * Real.sqrt tau)) tau := by
   obtain ⟨sigma, hsigma, hmin⟩ := hZ
   have hminTau : (Z, tau) ∈ lMinDomain S T x :=
     lMinDomain_down S hS T x Z hmin htau hsigma.le
   have hdom : (Z, tau) ∈ lExpPosDom S T x :=
     ((mem_lMinDomain S T x Z tau).1 hminTau).1
-  let alpha : Real → M := lRegCurve S T x Z
+  let alpha : Real → M := lRegularizedCurve S T x Z
   let b : Real := Real.sqrt tau
   let z : E := Z
   let A : E × Real → Real := fun p ↦
-    lRegAction S T (lRegCurve S T x p.1) 0 (Real.sqrt p.2)
-  let c : Real := lRegLagrangian S T alpha b / (2 * b)
+    lRegularizedAction S T (lRegularizedCurve S T x p.1) 0 (Real.sqrt p.2)
+  let c : Real := lRegularizedLagrangian S T alpha b / (2 * b)
   let y : M := lExp S T x Z tau
   let endMap : E → M := fun W ↦ lExp S T x W tau
   let Lz : E →L[Real] Real :=
@@ -61,7 +61,7 @@ theorem redLength_ray_K
       c • ContinuousLinearMap.snd Real E Real
   have hJoint : HasFDerivAt A L (Z, tau) := by
     with_unfolding_all
-      exact hasFDerivAt_lRegAction_lRegCurve_sqrt S hS T x Z hdom
+      exact hasFDerivAt_lRegularizedAction_lRegularizedCurve_sqrt S hS T x Z hdom
   have htins : HasFDerivAt (fun r : Real ↦ (z, r))
       (ContinuousLinearMap.inr Real E Real) tau :=
     hasFDerivAt_prodMk_right z tau
@@ -77,14 +77,14 @@ theorem redLength_ray_K
     have hminr : (Z, r) ∈ lMinDomain S T x :=
       lMinDomain_down S hS T x Z hmin hrpos hrlt.le
     have hcost := ((mem_lMinDomain S T x Z r).1 hminr).2
-    change lRegAction S T alpha 0 (Real.sqrt r) =
+    change lRegularizedAction S T alpha 0 (Real.sqrt r) =
       lCost S T x (lExp S T x Z r) r
     calc
-      lRegAction S T alpha 0 (Real.sqrt r) =
+      lRegularizedAction S T alpha 0 (Real.sqrt r) =
           lLength S T (fun q : Real ↦ lExp S T x Z q) 0 r := by
-        change lRegAction S T alpha 0 (Real.sqrt r) =
+        change lRegularizedAction S T alpha 0 (Real.sqrt r) =
           lLength S T (squareRootReparametrization alpha) 0 r
-        exact (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T alpha r hrpos.le).symm
+        exact (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T alpha r hrpos.le).symm
       _ = lCost S T x (lExp S T x Z r) r := hcost
   have hcost := hact.congr_of_eventuallyEq hEq.symm
   have hbpos : 0 < b := by
@@ -92,11 +92,11 @@ theorem redLength_ray_K
   have hb0 : b ≠ 0 := hbpos.ne'
   have hbsq : b ^ 2 = tau := by
     simpa only [b] using Real.sq_sqrt htau.le
-  have hbdom : b ∈ lRegDomain S T x Z := by
+  have hbdom : b ∈ lRegularizedDomain S T x Z := by
     simpa only [b] using ((mem_lExpPosDom S T x Z tau).1 hdom).2.2
   have hcostTau :
       lCost S T x (lExp S T x Z tau) tau =
-        lRegAction S T alpha 0 b := by
+        lRegularizedAction S T alpha 0 b := by
     simpa only [A, alpha, b, z] using hEq.self_of_nhds.symm
   have hden0 : 2 * b ≠ 0 := mul_ne_zero (by norm_num) hb0
   have hquot := hcost.div
@@ -127,12 +127,12 @@ theorem redLength_ray_K
 noncomputable def lRedLog
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real) : Real :=
-  Real.log (lExpJac S T x Z tau) -
+  Real.log (lExpJacobian S T x Z tau) -
     redLength S T x (lExp S T x Z tau) tau -
     ((Module.finrank Real E : Real) / 2) * Real.log tau -
     ((Module.finrank Real E : Real) / 2) * Real.log (4 * Real.pi)
 
-noncomputable def lRedJac
+noncomputable def lReducedJacobian
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (Z : TangentSpace I x) (tau : Real) : Real :=
   Real.exp (lRedLog S T x Z tau)
@@ -150,7 +150,7 @@ theorem lRedLog_hasDeriv
           (S.base.metric (T - tau))) (S.base.metric (T - tau))
           (fun y : M ↦ redLength S T x y tau) (lExp S T x Z tau) +
         S.scalar (T - tau) (lExp S T x Z tau) +
-        lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+        lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
           (2 * tau * Real.sqrt tau) -
         (Module.finrank Real E : Real) / (2 * tau)) tau := by
   let n2 : Real := (Module.finrank Real E : Real) / 2
@@ -164,20 +164,20 @@ theorem lRedLog_hasDeriv
           (S.base.metric (T - tau))) (S.base.metric (T - tau))
           (fun y : M ↦ redLength S T x y tau) (lExp S T x Z tau) +
         S.scalar (T - tau) (lExp S T x Z tau) -
-      -lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+      -lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
         (2 * tau * Real.sqrt tau) - n2 * tau⁻¹) tau at hout
   have hcoef :
       laplacian (I := I) (LeviCivita (I := I)
             (S.base.metric (T - tau))) (S.base.metric (T - tau))
             (fun y : M ↦ redLength S T x y tau) (lExp S T x Z tau) +
           S.scalar (T - tau) (lExp S T x Z tau) -
-        -lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+        -lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
           (2 * tau * Real.sqrt tau) - n2 * tau⁻¹ =
       laplacian (I := I) (LeviCivita (I := I)
             (S.base.metric (T - tau))) (S.base.metric (T - tau))
             (fun y : M ↦ redLength S T x y tau) (lExp S T x Z tau) +
           S.scalar (T - tau) (lExp S T x Z tau) +
-        lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+        lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
           (2 * tau * Real.sqrt tau) -
         (Module.finrank Real E : Real) / (2 * tau) := by
     dsimp only [n2]
@@ -188,19 +188,19 @@ theorem lRedLog_hasDeriv
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lRedJac_hasDeriv
+theorem lReducedJacobian_hasDeriv
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
-    HasDerivAt (lRedJac S T x Z)
+    HasDerivAt (lReducedJacobian S T x Z)
       (Real.exp (lRedLog S T x Z tau) *
         (laplacian (I := I) (LeviCivita (I := I)
             (S.base.metric (T - tau))) (S.base.metric (T - tau))
             (fun y : M ↦ redLength S T x y tau) (lExp S T x Z tau) +
           S.scalar (T - tau) (lExp S T x Z tau) +
-          lK S T (lRegCurve S T x Z) (Real.sqrt tau) /
+          lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
             (2 * tau * Real.sqrt tau) -
           (Module.finrank Real E : Real) / (2 * tau))) tau := by
   with_unfolding_all exact (lRedLog_hasDeriv S hS T x htau hZ).exp
@@ -214,103 +214,103 @@ theorem lRedLog_deriv_le
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     {Ω : Set Real} (hΩ : IsOpen Ω)
-    (hΩseg : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
+    (hΩsegment : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
     (hW : ∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent
       (8 : Nat)
       (fun s : Real ↦ (TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _))
-        (lRegCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
+        (lRegularizedCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
           TangentBundle I M)) Ω)
     (hP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
       (S.base.metric (T - tau)).inner (lExp S T x Z tau)
           (P i (Real.sqrt tau)) (P j (Real.sqrt tau)) =
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
-        S.ricciAt (T - s ^ 2) (lRegCurve S T x Z s)
+        S.ricciAt (T - s ^ 2) (lRegularizedCurve S T x Z s)
           (vec2 (P i s) (P i s)))
       MeasureTheory.volume 0 (Real.sqrt tau)) :
     deriv (lRedLog S T x Z) tau ≤ 0 := by
   rw [(lRedLog_hasDeriv S hS T x htau hZ).deriv]
   have hbound := lExpLog_deriv_le S hS T x htau hZ P
-    hΩ hΩseg hW hP hDP hON hIint hRint
+    hΩ hΩsegment hW hP hDP hON hIint hRint
   rw [(lExpLog_hasDeriv S hS T x htau hZ).deriv] at hbound
   linarith
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lRedJac_deriv_le
+theorem lReducedJacobian_deriv_le
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     {Ω : Set Real} (hΩ : IsOpen Ω)
-    (hΩseg : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
+    (hΩsegment : Set.Icc (0 : Real) (Real.sqrt tau) ⊆ Ω)
     (hW : ∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent
       (8 : Nat)
       (fun s : Real ↦ (TotalSpace.mk' E
         (E := (TangentSpace I : M → Type _))
-        (lRegCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
+        (lRegularizedCurve S T x Z s) ((s / Real.sqrt tau) • P i s) :
           TangentBundle I M)) Ω)
     (hP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc (0 : Real) (Real.sqrt tau) →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
       (S.base.metric (T - tau)).inner (lExp S T x Z tau)
           (P i (Real.sqrt tau)) (P j (Real.sqrt tau)) =
         if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / Real.sqrt tau) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 (Real.sqrt tau))
     (hRint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (2 * s ^ 2 / (Real.sqrt tau) ^ 2) *
-        S.ricciAt (T - s ^ 2) (lRegCurve S T x Z s)
+        S.ricciAt (T - s ^ 2) (lRegularizedCurve S T x Z s)
           (vec2 (P i s) (P i s)))
       MeasureTheory.volume 0 (Real.sqrt tau)) :
-    deriv (lRedJac S T x Z) tau ≤ 0 := by
-  rw [(lRedJac_hasDeriv S hS T x htau hZ).deriv]
+    deriv (lReducedJacobian S T x Z) tau ≤ 0 := by
+  rw [(lReducedJacobian_hasDeriv S hS T x htau hZ).deriv]
   have hlog := lRedLog_deriv_le S hS T x htau hZ P
-    hΩ hΩseg hW hP hDP hON hIint hRint
+    hΩ hΩsegment hW hP hDP hON hIint hRint
   rw [(lRedLog_hasDeriv S hS T x htau hZ).deriv] at hlog
   exact mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le hlog
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lRedJac_deriv_le0
+theorem lReducedJacobian_deriv_le0
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau : Real}
     (htau : 0 < tau)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
-    deriv (lRedJac S T x Z) tau ≤ 0 := by
+    deriv (lReducedJacobian S T x Z) tau ≤ 0 := by
   classical
   have hZ0 := hZ
   obtain ⟨sigma, hsigma, hmin⟩ := hZ
   let b : Real := Real.sqrt tau
-  let alpha : Real → M := lRegCurve S T x Z
+  let alpha : Real → M := lRegularizedCurve S T x Z
   have hb : 0 < b := by
     simpa only [b] using Real.sqrt_pos.2 htau
   have hbsq : b ^ 2 = tau := by
@@ -319,11 +319,11 @@ theorem lRedJac_deriv_le0
     lMinDomain_down S hS T x Z hmin htau hsigma.le
   have hpos : (Z, tau) ∈ lExpPosDom S T x :=
     ((mem_lMinDomain S T x Z tau).1 hminTau).1
-  have hbdom : b ∈ lRegDomain S T x Z := by
+  have hbdom : b ∈ lRegularizedDomain S T x Z := by
     simpa only [b] using
       ((mem_lExpPosDom S T x Z tau).1 hpos).2.2
   obtain ⟨P, Ω, hΩ, hseg, hPsm, hDPΩ, hON⟩ :=
-    exists_lRegCurve_adaptedFrame (I := I) S hS T x hb hbdom
+    exists_lRegularizedCurve_adaptedFrame (I := I) S hS T x hb hbdom
   have hW (i : Fin (Module.finrank Real E)) :
       ContMDiffOn (modelWithCornersSelf Real Real) I.tangent (8 : Nat)
         (fun s : Real ↦
@@ -360,8 +360,8 @@ theorem lRedJac_deriv_le0
   have hregIcc : ∀ s ∈ Set.Icc (0 : Real) b,
       T - s ^ 2 ∈ D.regular := by
     intro s hs
-    exact lRegDomain_reg S T x Z
-      (lRegDomain_seg S T x Z hbdom hs.1 hs.2)
+    exact lRegularizedDomain_regularity S T x Z
+      (lRegularizedDomain_segment S T x Z hbdom hs.1 hs.2)
   have huseg : Set.uIcc (0 : Real) b ⊆ Ω := by
     simpa only [Set.uIcc_of_le hb.le] using hseg
   have hPtwo (i : Fin (Module.finrank Real E)) :
@@ -373,9 +373,9 @@ theorem lRedJac_deriv_le0
       (2 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))
   have hIint (i : Fin (Module.finrank Real E)) : IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexIntegrand S T alpha (P i) (P i) s)
+        lRegularizedIndexIntegrand S T alpha (P i) (P i) s)
       MeasureTheory.volume 0 b := by
-    have hi := intervalIntegrable_lRegIndexIntegrand_of_contMDiffOn S hS T 0 b alpha (P i) (P i)
+    have hi := intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiffOn S hS T 0 b alpha (P i) (P i)
       hΩ huseg (hPtwo i) (hPtwo i) (by
         intro s hs
         apply hregIcc s
@@ -414,7 +414,7 @@ theorem lRedJac_deriv_le0
     have hc : Continuous (fun s : Real ↦ 2 * s ^ 2 / b ^ 2) :=
       (continuous_const.mul (continuous_id.pow 2)).div_const _
     exact (hc.continuousOn.mul hric).intervalIntegrable_of_Icc hb.le
-  refine lRedJac_deriv_le S hS T x htau hZ0 P hΩ ?_ ?_ ?_ ?_ ?_ ?_ ?_
+  refine lReducedJacobian_deriv_le S hS T x htau hZ0 P hΩ ?_ ?_ ?_ ?_ ?_ ?_ ?_
   · simpa only [b] using hseg
   · simpa only [alpha, b] using hW
   · simpa only [alpha, b] using hPdiff
@@ -434,13 +434,13 @@ theorem lRedJac_deriv_le0
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lRedJac_anti
+theorem lReducedJacobian_anti
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     {Z : TangentSpace I x} {tau₁ tau₂ : Real}
     (htau₁ : 0 < tau₁) (h12 : tau₁ ≤ tau₂)
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau₂) :
-    lRedJac S T x Z tau₂ ≤ lRedJac S T x Z tau₁ := by
+    lReducedJacobian S T x Z tau₂ ≤ lReducedJacobian S T x Z tau₁ := by
   obtain ⟨sigma, hsigma, hmin⟩ := hZ
   have hZr (r : Real) (hr : r ∈ Set.Icc tau₁ tau₂) :
       Z ∈ lInjDomain (E := E) (I := I) S T x r :=
@@ -448,11 +448,11 @@ theorem lRedJac_anti
   have hrpos (r : Real) (hr : r ∈ Set.Icc tau₁ tau₂) : 0 < r :=
     htau₁.trans_le hr.1
   have hder (r : Real) (hr : r ∈ Set.Icc tau₁ tau₂) :=
-    lRedJac_hasDeriv S hS T x (hrpos r hr) (hZr r hr)
-  have hcont : ContinuousOn (lRedJac S T x Z) (Set.Icc tau₁ tau₂) := by
+    lReducedJacobian_hasDeriv S hS T x (hrpos r hr) (hZr r hr)
+  have hcont : ContinuousOn (lReducedJacobian S T x Z) (Set.Icc tau₁ tau₂) := by
     intro r hr
     exact (hder r hr).continuousAt.continuousWithinAt
-  have hdiff : DifferentiableOn Real (lRedJac S T x Z)
+  have hdiff : DifferentiableOn Real (lReducedJacobian S T x Z)
       (interior (Set.Icc tau₁ tau₂)) := by
     intro r hr
     have hrI : r ∈ Set.Icc tau₁ tau₂ := interior_subset hr
@@ -460,7 +460,7 @@ theorem lRedJac_anti
   have hanti := antitoneOn_of_deriv_nonpos
     (convex_Icc tau₁ tau₂) hcont hdiff (fun r hr ↦ by
       have hrI : r ∈ Set.Icc tau₁ tau₂ := interior_subset hr
-      exact lRedJac_deriv_le0 S hS T x (hrpos r hrI) (hZr r hrI))
+      exact lReducedJacobian_deriv_le0 S hS T x (hrpos r hrI) (hZr r hrI))
   exact hanti ⟨le_rfl, h12⟩ ⟨h12, le_rfl⟩ h12
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

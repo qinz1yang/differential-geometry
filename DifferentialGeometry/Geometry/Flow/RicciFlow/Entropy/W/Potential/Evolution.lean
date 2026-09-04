@@ -282,7 +282,7 @@ theorem potential_df_time
       FixedBaseExtDerivTimeDerivativeOnRegular (I := I)
         D.carrier (D.regular ∩ Set.Ioi (0 : Real)) Set.univ
         (fun t : Real => perelmanPotential n t (u t)) velocity := by
-    apply fixedBaseOnRegSmooth (I := I) isOpen_univ
+    apply fixedBaseOnRegularitySmooth (I := I) isOpen_univ
       (D.regular_isOpen.inter isOpen_Ioi)
     · intro t ht
       exact D.regular_mem_nhds ht.1

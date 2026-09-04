@@ -590,13 +590,13 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
         ∀ i : Fin k,
           (polyVertex idx ref i.castSucc ∈ B (idx i)) ∧
           (polyVertex idx ref i.succ ∈ B (idx i)) then
-      let seg : (i : Fin k) → _root_.Path
+      let segment : (i : Fin k) → _root_.Path
           (polyVertex idx ref i.castSucc) (polyVertex idx ref i.succ) :=
         fun i =>
           ((hBpc (idx i)).joinedIn _ (hvalid i).1 _ (hvalid i).2).somePath
       let p₀ : Fin (k + 1) → X := fun j => polyVertex idx ref j
       let polyLoop : _root_.Path x x :=
-        (_root_.Path.concat p₀ seg).cast
+        (_root_.Path.concat p₀ segment).cast
           (show x = p₀ 0 from (polyVertex_zero idx ref).symm)
           (show x = p₀ (Fin.last k) from (polyVertex_last idx ref).symm)
       FundamentalGroup.fromPath ⟦polyLoop⟧
@@ -779,17 +779,17 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
       (polyVertex idx ref i.castSucc ∈ B (idx i)) ∧
       (polyVertex idx ref i.succ ∈ B (idx i)) :=
     fun i => ⟨hVertex_castSucc i, hVertex_succ i⟩
-  let seg : (i : Fin k) → _root_.Path
+  let segment : (i : Fin k) → _root_.Path
       (polyVertex idx ref i.castSucc) (polyVertex idx ref i.succ) :=
     fun i =>
       ((hBpc (idx i)).joinedIn _ (hvalid i).1 _ (hvalid i).2).somePath
   have hseg_range : ∀ i : Fin k, ∀ s : unitInterval,
-      (seg i s : X) ∈ B (idx i) := by
+      (segment i s : X) ∈ B (idx i) := by
     intro i s
     exact ((hBpc (idx i)).joinedIn _ (hvalid i).1 _ (hvalid i).2).somePath_mem s
   let p₀ : Fin (k + 1) → X := fun j => polyVertex idx ref j
   let polyLoop : _root_.Path x x :=
-    (_root_.Path.concat p₀ seg).cast
+    (_root_.Path.concat p₀ segment).cast
       (show x = p₀ 0 from (polyVertex_zero idx ref).symm)
       (show x = p₀ (Fin.last k) from (polyVertex_last idx ref).symm)
   have hf_unfold :
@@ -798,13 +798,13 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
         ∀ i : Fin k,
           (polyVertex idx ref i.castSucc ∈ B (idx i)) ∧
           (polyVertex idx ref i.succ ∈ B (idx i)) then
-      let seg' : (i : Fin k) → _root_.Path
+      let segment' : (i : Fin k) → _root_.Path
           (polyVertex idx ref i.castSucc) (polyVertex idx ref i.succ) :=
         fun i =>
           ((hBpc (idx i)).joinedIn _ (hv i).1 _ (hv i).2).somePath
       let p₀' : Fin (k + 1) → X := fun j => polyVertex idx ref j
       let polyLoop' : _root_.Path x x :=
-        (_root_.Path.concat p₀' seg').cast
+        (_root_.Path.concat p₀' segment').cast
           (show x = p₀' 0 from (polyVertex_zero idx ref).symm)
           (show x = p₀' (Fin.last k) from (polyVertex_last idx ref).symm)
       FundamentalGroup.fromPath ⟦polyLoop'⟧
@@ -958,8 +958,8 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
       Set.range (T' i).toContinuousMap ⊆ B (idx i) :=
     fun i => range_subset_of_mem (T' i) (idx i) (fun s => hT_range i s)
   have hseg_range' : ∀ i : Fin k,
-      Set.range (seg i).toContinuousMap ⊆ B (idx i) :=
-    fun i => range_subset_of_mem (seg i) (idx i) (fun s => hseg_range i s)
+      Set.range (segment i).toContinuousMap ⊆ B (idx i) :=
+    fun i => range_subset_of_mem (segment i) (idx i) (fun s => hseg_range i s)
   have hc_cs_range : ∀ i : Fin k,
       Set.range (c i.castSucc).toContinuousMap ⊆ B (idx i) :=
     fun i => range_subset_of_mem (c i.castSucc) (idx i) (hc_cs i)
@@ -983,7 +983,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
       exact hv ⟨s', by simpa [Path.coe_toContinuousMap] using hs'⟩
   have hsquare : ∀ i : Fin k,
       _root_.Path.Homotopic.Quotient.trans
-          (⟦seg i⟧ : _root_.Path.Homotopic.Quotient (p₀ i.castSucc) (p₀ i.succ))
+          (⟦segment i⟧ : _root_.Path.Homotopic.Quotient (p₀ i.castSucc) (p₀ i.succ))
           (⟦c i.succ⟧ : _root_.Path.Homotopic.Quotient (p₀ i.succ) (γv i.succ))
         = _root_.Path.Homotopic.Quotient.trans
             (⟦c i.castSucc⟧
@@ -991,16 +991,16 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
             (⟦T' i⟧ : _root_.Path.Homotopic.Quotient (γv i.castSucc) (γv i.succ)) := by
     intro i
     have hpiece :
-        (⟦(seg i).trans (c i.succ)⟧
+        (⟦(segment i).trans (c i.succ)⟧
             : _root_.Path.Homotopic.Quotient (p₀ i.castSucc) (γv i.succ))
           = ⟦(c i.castSucc).trans (T' i)⟧ :=
       uc_pi1_countable_piece_homotopy X B hBnull (idx i)
-        ((seg i).trans (c i.succ)) ((c i.castSucc).trans (T' i))
-        (htrans_range_subset (seg i) (c i.succ) (idx i)
+        ((segment i).trans (c i.succ)) ((c i.castSucc).trans (T' i))
+        (htrans_range_subset (segment i) (c i.succ) (idx i)
           (hseg_range' i) (hc_su_range i))
         (htrans_range_subset (c i.castSucc) (T' i) (idx i)
           (hc_cs_range i) (hT'_range i))
-    exact (_root_.Path.Homotopic.Quotient.mk_trans (seg i) (c i.succ)).symm.trans
+    exact (_root_.Path.Homotopic.Quotient.mk_trans (segment i) (c i.succ)).symm.trans
       (hpiece.trans (_root_.Path.Homotopic.Quotient.mk_trans (c i.castSucc) (T' i)))
   have htel :
       _root_.Path.Homotopic.Quotient.trans
@@ -1008,19 +1008,19 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
           (⟦_root_.Path.concat γv T'⟧
             : _root_.Path.Homotopic.Quotient (γv 0) (γv (Fin.last k)))
         = _root_.Path.Homotopic.Quotient.trans
-            (⟦_root_.Path.concat p₀ seg⟧
+            (⟦_root_.Path.concat p₀ segment⟧
               : _root_.Path.Homotopic.Quotient (p₀ 0) (p₀ (Fin.last k)))
             (⟦c (Fin.last k)⟧
               : _root_.Path.Homotopic.Quotient (p₀ (Fin.last k)) (γv (Fin.last k))) :=
-    uc_pi1_countable_telescope p₀ γv seg T' c hsquare
+    uc_pi1_countable_telescope p₀ γv segment T' c hsquare
   have htel' :
       (⟦(c 0).trans (_root_.Path.concat γv T')⟧
         : _root_.Path.Homotopic.Quotient (p₀ 0) (γv (Fin.last k)))
-        = ⟦(_root_.Path.concat p₀ seg).trans (c (Fin.last k))⟧ :=
+        = ⟦(_root_.Path.concat p₀ segment).trans (c (Fin.last k))⟧ :=
     (_root_.Path.Homotopic.Quotient.mk_trans (c 0) (_root_.Path.concat γv T')).trans
       (htel.trans
         (_root_.Path.Homotopic.Quotient.mk_trans
-          (_root_.Path.concat p₀ seg) (c (Fin.last k))).symm)
+          (_root_.Path.concat p₀ segment) (c (Fin.last k))).symm)
   have qtrans_cast :
       ∀ {a₁ a₂ b₁ b₂ d₁ d₂ : X}
         (A : _root_.Path.Homotopic.Quotient a₂ b₂)
@@ -1045,7 +1045,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
             hγv0.symm hb_eq)
         = _root_.Path.Homotopic.Quotient.trans
             (_root_.Path.Homotopic.Quotient.cast
-              (⟦_root_.Path.concat p₀ seg⟧
+              (⟦_root_.Path.concat p₀ segment⟧
                 : _root_.Path.Homotopic.Quotient (p₀ 0) (p₀ (Fin.last k)))
               hp0.symm hplast.symm)
             (_root_.Path.Homotopic.Quotient.cast
@@ -1057,7 +1057,7 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
             (⟦(c 0).trans (_root_.Path.concat γv T')⟧
               : _root_.Path.Homotopic.Quotient (p₀ 0) (γv (Fin.last k))) hp0.symm hb_eq
           = _root_.Path.Homotopic.Quotient.cast
-              (⟦(_root_.Path.concat p₀ seg).trans (c (Fin.last k))⟧
+              (⟦(_root_.Path.concat p₀ segment).trans (c (Fin.last k))⟧
                 : _root_.Path.Homotopic.Quotient (p₀ 0) (γv (Fin.last k))) hp0.symm hb_eq :=
       congrArg
         (fun w => _root_.Path.Homotopic.Quotient.cast w hp0.symm hb_eq) htel'
@@ -1094,10 +1094,10 @@ theorem fundamentalGroup_countable_surjection_of_nullHomotopic_basis
     exact congrArg (fun p : _root_.Path x x => (⟦p⟧ : _root_.Path.Homotopic.Quotient x x))
       (Path.ext rfl)
   have hRq : _root_.Path.Homotopic.Quotient.cast
-      (⟦_root_.Path.concat p₀ seg⟧
+      (⟦_root_.Path.concat p₀ segment⟧
         : _root_.Path.Homotopic.Quotient (p₀ 0) (p₀ (Fin.last k))) hp0.symm hplast.symm
         = (⟦polyLoop⟧ : _root_.Path.Homotopic.Quotient x x) := by
-    change (⟦(_root_.Path.concat p₀ seg).cast hp0.symm hplast.symm⟧
+    change (⟦(_root_.Path.concat p₀ segment).cast hp0.symm hplast.symm⟧
         : _root_.Path.Homotopic.Quotient x x) = ⟦polyLoop⟧
     exact congrArg (fun p : _root_.Path x x => (⟦p⟧ : _root_.Path.Homotopic.Quotient x x))
       (Path.ext rfl)

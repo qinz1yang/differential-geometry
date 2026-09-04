@@ -10,7 +10,7 @@ open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped ContDiff Manifold Topology BigOperators
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -132,7 +132,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_low_reg_coeff {ι : Type*}
+theorem exists_low_regularity_coeff {ι : Type*}
     (gBase : SmoothRiemannianMetric I M)
     (gSeq : ι → SmoothRiemannianMetric I M)
     (Λ : ℝ) (hΛ : 1 ≤ Λ)

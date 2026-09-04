@@ -33,7 +33,7 @@ variable
 
 theorem deturck_interior_time_regularity
     (g_bg : SmoothRiemannianMetric I M) (a : ℕ) {T : ℝ}
-    (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
+    (u : MaximalRegularitySolutionSpace (I := I) (M := M) (a : ℝ) T)
     (u₂ : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 ((a : ℝ) + 2))
     (hderiv_ae : (u.deriv : ℝ → TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ))
         =ᵐ[timeMeasure T]

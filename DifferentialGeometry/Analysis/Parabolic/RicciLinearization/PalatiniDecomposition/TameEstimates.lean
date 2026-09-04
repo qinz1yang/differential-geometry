@@ -1152,8 +1152,8 @@ theorem exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope
   classical
   set δ₁ : ℝ := max δ₀ 0 with hδ₁_def
   have hδ₁_lt : δ₁ < 1 := max_lt hδ₀ one_pos
-  obtain ⟨C, hC_nn, hpt⟩ := bdEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₁_lt
-  obtain ⟨Kg, hKg_nn, hKg⟩ := bdL2_tameEnvelope_of_gridWindow (I := I) (M := M) g₀ a ha_super hR
+  obtain ⟨C, hC_nn, hpt⟩ := palatiniEndoTermDiff_pointwise_gridWindow (I := I) (M := M) g₀ g_bg hδ₁_lt
+  obtain ⟨Kg, hKg_nn, hKg⟩ := palatiniL2_tameEnvelope_of_gridWindow (I := I) (M := M) g₀ a ha_super hR
   refine ⟨fun i => C i * ∑ k ∈ Finset.range (i + 2), Kg k,
     fun i => mul_nonneg (hC_nn i) (Finset.sum_nonneg fun k _ => hKg_nn k), ?_⟩
   intro g₁ P δ hδ_le hδ htie hPball i
@@ -1166,7 +1166,7 @@ theorem exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope
     rw [endomorphismTermField_eq_deTurckLieCovariantDerivativeInsertionCoeffField, endomorphismTermField_eq_deTurckLieCovariantDerivativeInsertionCoeffField]
   by_cases hM : Nonempty M
   · obtain ⟨x₀⟩ := hM
-    have hδ0 : 0 ≤ δ := bdDelta_nonneg (I := I) (M := M) g₀ x₀ P hδ
+    have hδ0 : 0 ≤ δ := metricCauchySchwarzBound_nonneg (I := I) (M := M) g₀ x₀ P hδ
     have hδ_le' : δ ≤ δ₁ := le_trans hδ_le (le_max_left _ _)
     rw [hsubj]
     exact hKg P hPball i (C i) (hC_nn i)
@@ -1177,7 +1177,7 @@ theorem exists_deTurckLieEndoTerm_backgroundDifference_perOrder_l2_tameEnvelope
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g_bg -
           deTurckLieEndoTermField (I := I) (M := M) g₀ g₁ g₀)‖ = 0 :=
-      bdNorm_zero_of_isEmpty (I := I) (M := M) g₀ 2 (2 + i) _
+      smoothCcTensor_norm_eq_zero_of_isEmpty (I := I) (M := M) g₀ 2 (2 + i) _
     rw [hz]
     have hK_nn : 0 ≤ C i * ∑ k ∈ Finset.range (i + 2), Kg k :=
       mul_nonneg (hC_nn i) (Finset.sum_nonneg fun k _ => hKg_nn k)

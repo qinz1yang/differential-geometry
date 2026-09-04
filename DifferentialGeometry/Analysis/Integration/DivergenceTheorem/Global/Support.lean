@@ -79,10 +79,10 @@ private lemma localDivergence_zero_of_eventuallyEq_zero [I.Boundaryless]
     have hsymm_base : (extChartAt I α).symm z ∈
         (trivializationAt E (TangentSpace I) α).baseSet := by
       rw [trivializationAt_baseSet_eq_chartAt_source]
-      have hsymm_src : (extChartAt I α).symm z ∈ (extChartAt I α).source :=
+      have hsymm_source : (extChartAt I α).symm z ∈ (extChartAt I α).source :=
         (extChartAt I α).map_target htz
-      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
-      exact hsymm_src
+      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_source
+      exact hsymm_source
     have hcoeffZero : chartCoeffOnE (I := I) α X i z = 0 := by
       unfold chartCoeffOnE chartCoeff
       rw [hXz]
@@ -181,12 +181,12 @@ private lemma integrable_chartLocalMeasure_of_compactSupport_subset_chartSource
     [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf_cont : Continuous f) (hf_cs : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     Integrable f (chartLocalMeasure (I := I) g α) := by
   classical
   have hsupp_compact : IsCompact (tsupport f) := hf_cs
-  have hμ_supp : chartLocalMeasure (I := I) g α (tsupport f) < ⊤ :=
-    chartLocalMeasure_compact_lt_top (I := I) g α hsupp_compact hf_supp
+  have hμ_support : chartLocalMeasure (I := I) g α (tsupport f) < ⊤ :=
+    chartLocalMeasure_compact_lt_top (I := I) g α hsupp_compact hf_support
   obtain ⟨C, hC⟩ : ∃ C, ∀ x, ‖f x‖ ≤ C := by
     have hCpt := hsupp_compact.image hf_cont.norm
     obtain ⟨C, hCmem⟩ := hCpt.bddAbove
@@ -220,7 +220,7 @@ private lemma integrable_chartLocalMeasure_of_compactSupport_subset_chartSource
             (isClosed_tsupport _).measurableSet)]
           rw [lintegral_indicator (isClosed_tsupport _).measurableSet]
           rw [setLIntegral_const, one_mul]
-    _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_supp
+    _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_support
 
 private lemma withDensity_pou_restrict_eq_zero_of_disjoint
     [T2Space M] [SigmaCompactSpace M]
@@ -375,7 +375,7 @@ private lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_compactSupport_i
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α₀ : M)
     {h : M → ℝ} (hh_cont : Continuous h) (hh_cs : HasCompactSupport h)
-    (hh_supp : tsupport h ⊆ (chartAt H α₀).source) :
+    (hh_support : tsupport h ⊆ (chartAt H α₀).source) :
     ∫ x, h x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, h x ∂(chartLocalMeasure (I := I) g α₀) := by
   classical
@@ -397,7 +397,7 @@ private lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_compactSupport_i
     intro x hx
     by_cases hxα : x ∈ (chartAt H α).source
     · have hxα₀ : x ∉ (chartAt H α₀).source := fun h' => hx ⟨hxα, h'⟩
-      have hxK : x ∉ K := fun h' => hxα₀ (hh_supp h')
+      have hxK : x ∉ K := fun h' => hxα₀ (hh_support h')
       have hh_zero : h x = 0 := by
         by_contra hne
         exact hxK (subset_tsupport _ hne)
@@ -425,7 +425,7 @@ private lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_compactSupport_i
     have hcs_each : HasCompactSupport (fun x : M => h x * (ρ α : M → ℝ) x) :=
       hh_cs.mono' (subset_trans (subset_tsupport _) hsupp_sub)
     refine integrable_chartLocalMeasure_of_compactSupport_subset_chartSource (I := I) g α₀
-      hcont hcs_each (hsupp_sub.trans hh_supp)
+      hcont hcs_each (hsupp_sub.trans hh_support)
   rw [show (∑ α ∈ S, ∫ x, h x * (ρ α : M → ℝ) x ∂(chartLocalMeasure (I := I) g α₀))
       = ∫ x, ∑ α ∈ S, h x * (ρ α : M → ℝ) x ∂(chartLocalMeasure (I := I) g α₀) from
         (integral_finsetSum (μ := chartLocalMeasure (I := I) g α₀) S hint_each).symm]
@@ -487,7 +487,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
   have hdiv_cont : Continuous (divergenceG (I := I) g X) := hdiv_smooth.continuous
   have hdiv_cs : HasCompactSupport (divergenceG (I := I) g X) :=
     hasCompactSupport_divergence_g (I := I) g hX
-  have hdiv_supp : tsupport (divergenceG (I := I) g X) ⊆ K :=
+  have hdiv_support : tsupport (divergenceG (I := I) g X) ⊆ K :=
     tsupport_divergence_g_subset (I := I) g X
   obtain ⟨χ, hχ_smooth, hχ_cs, hχ_one_nhds, hχ_range⟩ :=
     exists_smooth_cutoff_compactSupport_one_nhds (I := I) (M := M) hK_compact
@@ -500,7 +500,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
       rw [Set.Finite.mem_toFinset _] at hα
       rw [hSmem]
       rcases hα with ⟨x, hxρα, hx⟩
-      exact ⟨x, hxρα, hdiv_supp hx⟩
+      exact ⟨x, hxρα, hdiv_support hx⟩
     rw [integral_riemannianVolumeMeasure_of_compactSupport_eq_finset_sum (I := I) (M := M) g
         hdiv_cont hdiv_cs]
     apply Finset.sum_subset hSdiv
@@ -535,13 +535,13 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
     have hU_open : K ⊆ interior U := by
       rwa [← subset_interior_iff_mem_nhdsSet] at hU_nhds
     exact hU_eq x (interior_subset (hU_open hxK))
-  have hχ_one_supp : ∀ x ∈ tsupport (divergenceG (I := I) g X), χ x = 1 :=
-    fun x hx => hχ_one_K x (hdiv_supp hx)
+  have hχ_one_support : ∀ x ∈ tsupport (divergenceG (I := I) g X), χ x = 1 :=
+    fun x hx => hχ_one_K x (hdiv_support hx)
   have hdiv_mul_chi_eq : ∀ x : M,
       divergenceG (I := I) g X x * χ x = divergenceG (I := I) g X x := by
     intro x
     by_cases hxsupp : x ∈ tsupport (divergenceG (I := I) g X)
-    · rw [hχ_one_supp x hxsupp, mul_one]
+    · rw [hχ_one_support x hxsupp, mul_one]
     · have hdiv_zero : divergenceG (I := I) g X x = 0 := by
         by_contra hne
         exact hxsupp (subset_tsupport _ hne)
@@ -579,7 +579,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
   have hφ_smooth : ∀ α : M, ContMDiff I 𝓘(ℝ) ∞ (φ α) := fun α =>
     hχ_smooth.mul (ρ α).contMDiff
   have hφ_cs : ∀ α : M, HasCompactSupport (φ α) := fun α => hχ_cs.mul_right
-  have hφ_supp : ∀ α : M, tsupport (φ α) ⊆ (chartAt H α).source := fun α => by
+  have hφ_support : ∀ α : M, tsupport (φ α) ⊆ (chartAt H α).source := fun α => by
     have h1 : tsupport (φ α) ⊆ tsupport (ρ α : M → ℝ) := by
       refine closure_minimal ?_ (isClosed_tsupport _)
       intro x hx
@@ -596,7 +596,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
         -∫ x, tangentSectionAction (I := I) X (φ α) x
             ∂(chartLocalMeasure (I := I) g α) := by
     intro α _
-    exact chart_local_ibp (I := I) g α X (hφ_smooth α) (hφ_cs α) (hφ_supp α)
+    exact chart_local_ibp (I := I) g α X (hφ_smooth α) (hφ_cs α) (hφ_support α)
   rw [Finset.sum_congr rfl h_step_d]
   rw [show (∑ α ∈ S, -∫ x, tangentSectionAction (I := I) X (φ α) x
             ∂(chartLocalMeasure (I := I) g α))
@@ -609,10 +609,10 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
   have hAct_cont : ∀ α : M,
       Continuous (tangentSectionAction (I := I) X (φ α)) := fun α =>
     (hAct_smooth α).continuous
-  have hAct_supp : ∀ α : M,
+  have hAct_support : ∀ α : M,
       tsupport (tangentSectionAction (I := I) X (φ α)) ⊆ (chartAt H α).source := by
     intro α
-    refine subset_trans ?_ (hφ_supp α)
+    refine subset_trans ?_ (hφ_support α)
     refine closure_minimal ?_ (isClosed_tsupport _)
     intro x hx
     rw [Function.mem_support] at hx
@@ -656,7 +656,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     intro α _
     exact (integral_riemannianVolumeMeasure_eq_chartLocal_of_compactSupport_in_chart
-      (I := I) g α (hAct_cont α) (hAct_cs α) (hAct_supp α)).symm
+      (I := I) g α (hAct_cont α) (hAct_cs α) (hAct_support α)).symm
   rw [Finset.sum_congr rfl h_step_e]
   have : IsLocallyFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isLocallyFiniteMeasure (I := I) (M := M) g

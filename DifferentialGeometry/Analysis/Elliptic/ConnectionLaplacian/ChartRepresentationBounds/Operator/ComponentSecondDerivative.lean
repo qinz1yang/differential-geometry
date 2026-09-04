@@ -98,7 +98,7 @@ private lemma tensorRepr_chart_pulled_contDiffAt_inf
     (e := trivializationAt (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) α)).mp hsmooth_total.contMDiffOn
   rw [hbase] at hrewrite
-  have hcm_on_source :
+  have hcenter_of_mass_on_source :
       ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
         (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) b)
@@ -124,11 +124,11 @@ private lemma tensorRepr_chart_pulled_contDiffAt_inf
       (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) ∘ (extChartAt I α).symm)
       (extChartAt I α).target :=
-    hcm_on_source.comp hsymm hmaps
-  have hb_src : b ∈ (extChartAt I α).source := by
+    hcenter_of_mass_on_source.comp hsymm hmaps
+  have hb_source : b ∈ (extChartAt I α).source := by
     rw [extChartAt_source]; exact hb_chart
   have hb_target : extChartAt I α b ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb_src
+    (extChartAt I α).map_source hb_source
   have h_open_target : IsOpen (extChartAt I α).target :=
     isOpen_extChartAt_target (I := I) α
   have hcontDiffOn : ContDiffOn ℝ ∞

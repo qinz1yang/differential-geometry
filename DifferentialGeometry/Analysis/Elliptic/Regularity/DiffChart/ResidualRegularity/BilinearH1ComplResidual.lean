@@ -101,7 +101,7 @@ noncomputable def diffChartBilinearH1ComplDataOfSmoothToH1Compl
                   (I := I) (M := M) g v))).fChart y * ψ y
           ∂(volume : Measure EuclN))) :
     DiffChartBilinearH1ComplData (I := I) (M := M) g α :=
-  diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoViaResidual
+  diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoOfResidualMemW1p
     (I := I) (M := M) g α
     (smoothToH1Compl_mem_laplacianDomainPow_two (I := I) (M := M) g v)
     direction
@@ -392,7 +392,7 @@ theorem memW1p_fChartResidual_of_wkpNorm_cauchy_identification
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     hF_lim_aeEq).mp hF_lim_W1p
 
-noncomputable def diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoViaDensity
+private noncomputable def diffChartBilinearH1ComplDataOfSmoothResidualApproximation
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (v : ℕ → SmoothScalar g)
@@ -459,7 +459,7 @@ noncomputable def diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoViaDensity
                 (I := I) (M := M) g 1 hu_h)).fChart y * ψ y
           ∂(volume : Measure EuclN))) :
     DiffChartBilinearH1ComplData (I := I) (M := M) g α :=
-  diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoViaResidual
+  diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoOfResidualMemW1p
     (I := I) (M := M) g α hu_h direction
     (memW1p_fChartResidual_of_wkpNorm_cauchy_identification
       (I := I) (M := M) g α v h_cauchy h_identification)

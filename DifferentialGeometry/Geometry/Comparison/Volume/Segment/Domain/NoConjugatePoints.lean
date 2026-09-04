@@ -28,14 +28,14 @@ variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace ℝ E] in
-theorem segDom_no_conj
+theorem segmentDom_no_conj
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     {x : M} {v : TangentSpace I x}
-    (hv : v ∈ SegDom (I := I) g hEnorm x)
+    (hv : v ∈ SegmentDom (I := I) g hEnorm x)
     (hv0 : v ≠ 0) :
     ∀ t ∈ Ioo (0 : ℝ) 1,
       ¬ IsConjVec (I := I) g hEnorm x
@@ -74,7 +74,7 @@ theorem segDom_no_conj
       L = (riemannianEDist I x
         (expMapIntrinsic (I := I) g hEnorm x v)).toReal := by
     simpa only [L] using
-      (mem_segDom (I := I) (g := g) (hEnorm := hEnorm)).mp hv
+      (mem_segmentDom (I := I) (g := g) (hEnorm := hEnorm)).mp hv
   have hmin :
       ∀ η : ℝ → M,
         ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 L) →

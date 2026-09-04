@@ -36,7 +36,7 @@ theorem eigenvector_chartComponent_h2_quantitative
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ι : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set EuclN} (hΩ' : IsOpen Ω')
@@ -44,7 +44,7 @@ theorem eigenvector_chartComponent_h2_quantitative
     (hΩ'_compact : IsCompact (closure Ω'))
     (hη_in_Ω' : tsupport η ⊆ Ω')
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_open : IsOpen Ω'') (hΩ''_compact_closure : IsCompact (closure Ω''))
@@ -72,10 +72,10 @@ theorem eigenvector_chartComponent_h2_quantitative
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)) := by
   classical
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
-    tensor_h2_chart_loc_of_data_quantitative (I := I) (M := M) (g := g)
+    tensor_h2_chart_local_of_data_quantitative (I := I) (M := M) (g := g)
       (α := α) (r := r) (s := s) (P₀ := P₀)
-      hη hη_supp hη_range hN h_fderiv_eta hΩ' hΩ'_chart hΩ'_compact
-      hη_in_Ω' hR₀_pos hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_open
+      hη hη_support hη_range hN h_fderiv_eta hΩ' hΩ'_chart hΩ'_compact
+      hη_in_Ω' hR₀_pos hh_support_in_Ω' hη_one_on_Ω'' hΩ''_open
       hΩ''_compact_closure h_room
   exact ⟨C_geom, hC_geom_nn,
     fun i k => hC_geom

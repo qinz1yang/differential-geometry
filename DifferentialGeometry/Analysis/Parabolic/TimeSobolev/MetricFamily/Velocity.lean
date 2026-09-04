@@ -25,7 +25,7 @@ theorem exists_chartGramOp_ae_bound {D : RealTimeInterval}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (τ : Real → Real)
     (hτc : ContinuousOn τ (Icc (0 : Real) L))
-    (hτreg : MapsTo τ (Icc (0 : Real) L) D.regular)
+    (hτregularity : MapsTo τ (Icc (0 : Real) L) D.regular)
     {K : Set E} (hKc : IsCompact K)
     (hKchart : K ⊆ interior (extChartAt I alpha).target)
     (u : timeH1 E L) (huK : MapsTo u.toFun (Icc (0 : Real) L) K) :
@@ -38,7 +38,7 @@ theorem exists_chartGramOp_ae_bound {D : RealTimeInterval}
   have hJc : IsCompact J := isCompact_Icc.image_of_continuousOn hτc
   have hJreg : J ⊆ D.regular := by
     rintro t ⟨r, hr, rfl⟩
-    exact hτreg hr
+    exact hτregularity hr
   let A : Real → E →L[Real] E := fun r ↦
     chartGramOp (I := I) G alpha (τ r, u.toFun r)
   have hpair : ContinuousOn (fun r ↦ (τ r, u.toFun r)) (Icc (0 : Real) L) :=
@@ -58,7 +58,7 @@ theorem exists_continuous_velocity_representative_of_momentum {D : RealTimeInter
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (τ : Real → Real)
     (hτc : ContinuousOn τ (Icc (0 : Real) L))
-    (hτreg : MapsTo τ (Icc (0 : Real) L) D.regular)
+    (hτregularity : MapsTo τ (Icc (0 : Real) L) D.regular)
     {K : Set E} (hKchart : K ⊆ interior (extChartAt I alpha).target)
     (u : timeH1 E L) (huK : MapsTo u.toFun (Icc (0 : Real) L) K)
     (p : Real → E)
@@ -71,7 +71,7 @@ theorem exists_continuous_velocity_representative_of_momentum {D : RealTimeInter
   let J : Set Real := τ '' Icc (0 : Real) L
   have hJreg : J ⊆ D.regular := by
     rintro t ⟨r, hr, rfl⟩
-    exact hτreg hr
+    exact hτregularity hr
   have hpair : ContinuousOn (fun t ↦ (τ t, u.toFun t)) (Icc (0 : Real) L) :=
     hτc.prodMk u.continuousOn_toFun
   have hinv : ContinuousOn
@@ -100,7 +100,7 @@ theorem exists_continuous_velocity_representative_of_weak_euler {D : RealTimeInt
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (hL : 0 < L) (τ : Real → Real)
     (hτc : ContinuousOn τ (Icc (0 : Real) L))
-    (hτreg : MapsTo τ (Icc (0 : Real) L) D.regular)
+    (hτregularity : MapsTo τ (Icc (0 : Real) L) D.regular)
     {K : Set E} (hKchart : K ⊆ interior (extChartAt I alpha).target)
     (u : timeH1 E L) (huK : MapsTo u.toFun (Icc (0 : Real) L) K)
     (hA : AEStronglyMeasurable
@@ -108,7 +108,7 @@ theorem exists_continuous_velocity_representative_of_weak_euler {D : RealTimeInt
     (C : NNReal) (hC : ∀ᵐ t ∂timeMeasure L,
       ‖chartGramOp (I := I) G alpha (τ t, u.toFun t)‖ ≤ (C : Real))
     (F : Real → E) (hF : IntegrableOn F (Icc (0 : Real) L) volume)
-    (hEuler : ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
+    (hEuler : ∀ v : timeH1 E L, v.initial = 0 → v.toFun L = 0 →
       2 * inner Real
           (timeOp (fun t ↦ chartGramOp (I := I) G alpha (τ t, u.toFun t))
             hA C hC u.deriv) v.deriv +
@@ -117,7 +117,7 @@ theorem exists_continuous_velocity_representative_of_weak_euler {D : RealTimeInt
       u.deriv =ᵐ[volume.restrict (Ioo (0 : Real) L)] q := by
   obtain ⟨c, hmom, hcont⟩ := mom_rep_cont_l1 hL
     (fun t ↦ chartGramOp (I := I) G alpha (τ t, u.toFun t)) hA C hC u F hF hEuler
-  exact exists_continuous_velocity_representative_of_momentum hG alpha τ hτc hτreg hKchart u huK
+  exact exists_continuous_velocity_representative_of_momentum hG alpha τ hτc hτregularity hKchart u huK
     (fun t ↦ c + ∫ r in (0 : Real)..t, F r) hmom hcont
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev

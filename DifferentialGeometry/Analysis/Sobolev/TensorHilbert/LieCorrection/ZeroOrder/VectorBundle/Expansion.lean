@@ -43,7 +43,7 @@ theorem metricLoweredConnectionDifference_eq_connectionDifferenceLoweredCc (g₀
     funext i
     exact ContinuousLinearEquiv.apply_symm_apply _ _
   rw [← hm]
-  rw [metricLoweredConnectionDifference_unitModel_apply, connectionDifferenceLoweredCc_unitModel_apply']
+  rw [metricLoweredConnectionDifference_unitModel_apply, connectionDifferenceLoweredCc_unitModel_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in

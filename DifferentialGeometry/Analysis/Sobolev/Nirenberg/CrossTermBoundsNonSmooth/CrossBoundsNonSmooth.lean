@@ -43,7 +43,7 @@ private theorem cross_1_pointwise_bound_nonsmooth
     {Ω' : Set E} {Λ : ℝ}
     (h_Λ : ∀ i j : Fin d, ∀ x ∈ closure Ω', |B.a x i j| ≤ Λ)
     (i j k : Fin d) {h : ℝ}
-    (hh_supp_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω')
+    (hh_support_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω')
     {ε : ℝ} (hε : 0 < ε) (x : E) :
     |2 * translate k h (fun y => B.a y i j) x * (η x) *
         ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
@@ -58,7 +58,7 @@ private theorem cross_1_pointwise_bound_nonsmooth
   by_cases hx : x ∈ tsupport η
   · have h_shift_in : x + h • EuclideanSpace.single k 1 ∈ closure Ω' := by
       have h_shift_in_Ω' : x + h • EuclideanSpace.single k 1 ∈ Ω' := by
-        refine hh_supp_in_Ω' ?_
+        refine hh_support_in_Ω' ?_
         refine Metric.mem_cthickening_of_dist_le _ x |h| (tsupport η) hx ?_
         have hsing_norm : ‖(EuclideanSpace.single k (1 : ℝ) : E)‖ = 1 := by simp
         have hdist_eq :
@@ -129,7 +129,7 @@ private theorem cross_1_pointwise_bound_nonsmooth
         rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) h_dη_bound 2
       have hΛ_nn : 0 ≤ Λ := by
         have h_x_in_Ω' : x ∈ Ω' :=
-          hh_supp_in_Ω' (self_subset_cthickening _ hx)
+          hh_support_in_Ω' (self_subset_cthickening _ hx)
         have h_x_in : x ∈ closure Ω' := subset_closure h_x_in_Ω'
         exact le_trans (abs_nonneg _) (h_Λ i j x h_x_in)
       have hN_nn : 0 ≤ N := le_trans (norm_nonneg _) (h_fderiv_eta x)
@@ -232,15 +232,15 @@ lemma memLp_diffQuot_two
 
 omit [NeZero d] in
 lemma exists_bound_of_continuous_compactSupport
-    {f : E → ℝ} (hf_cont : Continuous f) (hf_supp : HasCompactSupport f) :
+    {f : E → ℝ} (hf_cont : Continuous f) (hf_support : HasCompactSupport f) :
     ∃ M : ℝ, 0 ≤ M ∧ ∀ x, |f x| ≤ M := by
   have h_abs_cont : Continuous (fun x : E => |f x|) :=
     hf_cont.abs
-  have h_abs_supp : HasCompactSupport (fun x : E => |f x|) := by
+  have h_abs_support : HasCompactSupport (fun x : E => |f x|) := by
     have heq : (fun x : E => |f x|) = (fun y : ℝ => |y|) ∘ f := rfl
     rw [heq]
-    exact hf_supp.comp_left abs_zero
-  obtain ⟨M, hM⟩ := h_abs_cont.bddAbove_range_of_hasCompactSupport h_abs_supp
+    exact hf_support.comp_left abs_zero
+  obtain ⟨M, hM⟩ := h_abs_cont.bddAbove_range_of_hasCompactSupport h_abs_support
   refine ⟨max M 0, le_max_right _ _, fun x => ?_⟩
   have h : |f x| ≤ M := hM ⟨x, rfl⟩
   exact h.trans (le_max_left _ _)
@@ -265,7 +265,7 @@ private lemma integrable_cross_1_summand_nonsmooth
     {u : E → ℝ} (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (i j k : Fin d) (h : ℝ) :
     Integrable (fun x : E =>
       2 * translate k h (fun y => B.a y i j) x * (η x) *
@@ -287,13 +287,13 @@ private lemma integrable_cross_1_summand_nonsmooth
       ((fderiv ℝ η x) (EuclideanSpace.single j 1)) with hf₁_def
   have hf₁_cont : Continuous f₁ :=
     ((continuous_const.mul h_translate_a).mul hη.continuous).mul h_partial_η
-  have hf₁_supp : HasCompactSupport f₁ := by
+  have hf₁_support : HasCompactSupport f₁ := by
     have h_step1 : HasCompactSupport (fun x : E =>
         2 * translate k h (fun y => B.a y i j) x * (η x)) := by
-      exact hη_supp.mul_left
+      exact hη_support.mul_left
     exact h_step1.mul_right
   obtain ⟨M, hM_nn, hM⟩ :=
-    exists_bound_of_continuous_compactSupport hf₁_cont hf₁_supp
+    exists_bound_of_continuous_compactSupport hf₁_cont hf₁_support
   have h_dq_g_l2 : MemLp (diffQuot k h (g i)) 2 (volume : Measure E) :=
     memLp_diffQuot_two k h (hg_l2 i)
   have h_dq_u_l2 : MemLp (diffQuot k h u) 2 (volume : Measure E) :=
@@ -322,19 +322,19 @@ omit [NeZero d] in
 lemma integrable_const_eta_sq_diffQuot_g_sq
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (i k : Fin d) (h : ℝ) (c : ℝ) :
     Integrable (fun x : E => c * (η x)^2 *
       (diffQuot k h (g i) x)^2)
       (volume : Measure E) := by
   classical
   have hη_sq_cont : Continuous (fun x : E => η x ^ 2) := hη.continuous.pow 2
-  have hη_sq_supp : HasCompactSupport (fun x : E => η x ^ 2) := by
+  have hη_sq_support : HasCompactSupport (fun x : E => η x ^ 2) := by
     have heq : (fun y : E => η y ^ 2) = (fun y : E => η y * η y) := by
       funext y; ring
-    rw [heq]; exact hη_supp.mul_right
+    rw [heq]; exact hη_support.mul_right
   obtain ⟨M, hM_nn, hM⟩ :=
-    exists_bound_of_continuous_compactSupport hη_sq_cont hη_sq_supp
+    exists_bound_of_continuous_compactSupport hη_sq_cont hη_sq_support
   have h_dq_g_l2 : MemLp (diffQuot k h (g i)) 2 (volume : Measure E) :=
     memLp_diffQuot_two k h (hg_l2 i)
   have h_dq_g_sq_int : Integrable (fun x : E => (diffQuot k h (g i) x)^2)
@@ -400,7 +400,7 @@ lemma integrable_const_eta_sq_diffQuot_g_sq
 omit [NeZero d] in
 lemma integrable_const_indicator_diffQuot_u_sq
     {u : E → ℝ} (hu_l2 : MemLp u 2 (volume : Measure E))
-    {η : E → ℝ} (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη_support : HasCompactSupport η)
     (k : Fin d) (h : ℝ) (c : ℝ) :
     Integrable (fun x : E => c *
       (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
@@ -409,7 +409,7 @@ lemma integrable_const_indicator_diffQuot_u_sq
   classical
   have h_tsupp_meas : MeasurableSet (tsupport η) :=
     isClosed_tsupport η |>.measurableSet
-  have h_tsupp_compact : IsCompact (tsupport η) := hη_supp
+  have h_tsupp_compact : IsCompact (tsupport η) := hη_support
   have h_dq_u_l2 : MemLp (diffQuot k h u) 2 (volume : Measure E) :=
     memLp_diffQuot_two k h hu_l2
   have h_dq_u_sq_int : Integrable (fun x : E => (diffQuot k h u x)^2)
@@ -491,12 +491,12 @@ omit [NeZero d] in
 private lemma integrable_eta_sq_diffQuot_g_sq
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (i k : Fin d) (h : ℝ) :
     Integrable (fun x : E => (η x)^2 *
       (diffQuot k h (g i) x)^2)
       (volume : Measure E) := by
-  have hint := integrable_const_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_supp i k h 1
+  have hint := integrable_const_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_support i k h 1
   have h_eq : (fun x : E => (η x)^2 * (diffQuot k h (g i) x)^2) =
       fun x : E => 1 * (η x)^2 * (diffQuot k h (g i) x)^2 := by
     funext x; ring
@@ -540,13 +540,13 @@ theorem cross_1_bound_nonsmooth_quantitative
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E}
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -595,7 +595,7 @@ theorem cross_1_bound_nonsmooth_quantitative
       (sq_nonneg _)
     exact (one_div_pos.mpr hε'_pos).le
   intro h hh hh_le
-  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_supp_in_Ω' hh_le
+  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_support_in_Ω' hh_le
   have h_each_pointwise := fun (i j : Fin d) (x : E) =>
     cross_1_pointwise_bound_nonsmooth (d := d) B u g hη_range h_fderiv_eta
       hΛ i j k h_thick_in_Ω' hε'_pos x
@@ -624,17 +624,17 @@ theorem cross_1_bound_nonsmooth_quantitative
         diffQuot k h (g i) x *
         diffQuot k h u x) volume :=
     fun i j => integrable_cross_1_summand_nonsmooth (d := d) B hu_l2 hg_l2 hη
-      hη_supp i j k h
+      hη_support i j k h
   have h_first_int : ∀ i : Fin d, Integrable (fun x : E =>
       (ε / d_real) * (η x)^2 *
         (diffQuot k h (g i) x)^2) volume :=
-    fun i => integrable_const_eta_sq_diffQuot_g_sq hg_l2 hη hη_supp
+    fun i => integrable_const_eta_sq_diffQuot_g_sq hg_l2 hη hη_support
       i k h (ε / d_real)
   have h_indicator_int : Integrable (fun x : E =>
       (1 / (ε / d_real)) * Λ^2 * N^2 *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
         (diffQuot k h u x)^2) volume :=
-    integrable_const_indicator_diffQuot_u_sq hu_l2 hη_supp
+    integrable_const_indicator_diffQuot_u_sq hu_l2 hη_support
       k h ((1 / (ε / d_real)) * Λ^2 * N^2)
   have h_pt_bound_int : ∀ i j : Fin d, Integrable (fun x : E =>
       (ε / d_real) * (η x)^2 *
@@ -774,7 +774,7 @@ theorem cross_1_bound_nonsmooth_quantitative
     rw [← Finset.mul_sum]
     have h_first_int_per : ∀ i : Fin d, Integrable (fun x : E =>
         (η x)^2 * (diffQuot k h (g i) x)^2) volume :=
-      fun i => integrable_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_supp i k h
+      fun i => integrable_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_support i k h
     have h_swap_sum : ∑ i : Fin d, ∫ x, (η x)^2 *
             (diffQuot k h (g i) x)^2 ∂(volume : Measure E) =
         ∫ x, (η x)^2 *
@@ -818,13 +818,13 @@ theorem cross_1_bound_nonsmooth
     (hu_l2 : MemLp u 2 (volume : Measure E))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E}
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -861,7 +861,7 @@ theorem cross_1_bound_nonsmooth
     exact (one_div_pos.mpr hε'_pos).le
   · intro h hh hh_le
     exact cross_1_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-      hη hη_supp hη_range h_fderiv_eta hΩ'_compact hh_supp_in_Ω' k
+      hη hη_support hη_range h_fderiv_eta hΩ'_compact hh_support_in_Ω' k
       h_FK_diffQuot_u_bound ε hε hh hh_le
 
 end DifferentialGeometry.Analysis.Sobolev.NirenbergCrossBoundsNonSmooth

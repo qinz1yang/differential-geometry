@@ -47,9 +47,9 @@ def nonautMap (a : Real) {T : Real} (hT : 0 < T)
       timeL2 (TensorHs (I := I) (M := M) g r s a) T :=
   fun force =>
     timeOp A2 hA2 C2 hC2
-        (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
       timeOp A1 hA1 C1 hC1
-        (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force)
+        (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force)
 
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -67,9 +67,9 @@ theorem nonautMap_apply (hT : 0 < T)
     nonautMap (I := I) (M := M) a hT u0
         A2 hA2 C2 hC2 A1 hA1 C1 hC1 force =
       timeOp A2 hA2 C2 hC2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
         timeOp A1 hA1 C1 hC1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force) :=
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force) :=
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -93,28 +93,28 @@ theorem nonautMap_dist_le
         A2 hA2 C2 hC2 A1 hA1 C1 hC1 force') ≤
       ((C2 : Real) * (1 + T) + (C1 : Real) * (2 * Real.sqrt T)) *
         dist force force' := by
-  have hfield2 := maxRegDuhamelSolField_dist_le (I := I) (M := M)
+  have hfield2 := maximalRegularityDuhamelSolutionField_dist_le (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT u0 force force'
-  have hfield1 := maxRegDuhamelSolFieldHa1_dist_le (I := I) (M := M)
+  have hfield1 := maximalRegularityDuhamelSolutionFieldHa1_dist_le (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 u0 force force'
   have h2 :
       ‖timeOp A2 hA2 C2 hC2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) -
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) -
           timeOp A2 hA2 C2 hC2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force')‖ ≤
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force')‖ ≤
         (C2 : Real) * (1 + T) * ‖force - force'‖ := by
     rw [← map_sub]
     calc
       ‖timeOp A2 hA2 C2 hC2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force -
-            maxRegDuhamelSolField (I := I) (M := M) a hT u0 force')‖
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force -
+            maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force')‖
           ≤ ‖timeOp A2 hA2 C2 hC2‖ *
-              ‖maxRegDuhamelSolField (I := I) (M := M) a hT u0 force -
-                maxRegDuhamelSolField (I := I) (M := M) a hT u0 force'‖ :=
+              ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force -
+                maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force'‖ :=
             (timeOp A2 hA2 C2 hC2).le_opNorm _
       _ ≤ (C2 : Real) *
-              ‖maxRegDuhamelSolField (I := I) (M := M) a hT u0 force -
-                maxRegDuhamelSolField (I := I) (M := M) a hT u0 force'‖ :=
+              ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force -
+                maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force'‖ :=
           mul_le_mul_of_nonneg_right (timeOp_norm_le A2 hA2 C2 hC2)
             (norm_nonneg _)
       _ ≤ (C2 : Real) * ((1 + T) * ‖force - force'‖) :=
@@ -122,22 +122,22 @@ theorem nonautMap_dist_le
       _ = (C2 : Real) * (1 + T) * ‖force - force'‖ := by ring
   have h1 :
       ‖timeOp A1 hA1 C1 hC1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force) -
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force) -
           timeOp A1 hA1 C1 hC1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force')‖ ≤
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force')‖ ≤
         (C1 : Real) * (2 * Real.sqrt T) * ‖force - force'‖ := by
     rw [← map_sub]
     calc
       ‖timeOp A1 hA1 C1 hC1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force -
-            maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force')‖
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force -
+            maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force')‖
           ≤ ‖timeOp A1 hA1 C1 hC1‖ *
-              ‖maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force -
-                maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force'‖ :=
+              ‖maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force -
+                maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force'‖ :=
             (timeOp A1 hA1 C1 hC1).le_opNorm _
       _ ≤ (C1 : Real) *
-              ‖maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force -
-                maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force'‖ :=
+              ‖maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force -
+                maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force'‖ :=
           mul_le_mul_of_nonneg_right (timeOp_norm_le A1 hA1 C1 hC1)
             (norm_nonneg _)
       _ ≤ (C1 : Real) * ((2 * Real.sqrt T) * ‖force - force'‖) :=
@@ -147,40 +147,40 @@ theorem nonautMap_dist_le
   unfold nonautMap
   have hsplit :
       (timeOp A2 hA2 C2 hC2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
           timeOp A1 hA1 C1 hC1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force)) -
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force)) -
         (timeOp A2 hA2 C2 hC2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force') +
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force') +
           timeOp A1 hA1 C1 hC1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force')) =
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force')) =
       (timeOp A2 hA2 C2 hC2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) -
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) -
           timeOp A2 hA2 C2 hC2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force')) +
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force')) +
         (timeOp A1 hA1 C1 hC1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force) -
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force) -
           timeOp A1 hA1 C1 hC1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force')) := by
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force')) := by
     abel
   rw [hsplit]
   calc
     ‖(timeOp A2 hA2 C2 hC2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) -
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) -
         timeOp A2 hA2 C2 hC2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force')) +
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force')) +
       (timeOp A1 hA1 C1 hC1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force) -
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force) -
         timeOp A1 hA1 C1 hC1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force'))‖
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force'))‖
         ≤ ‖timeOp A2 hA2 C2 hC2
-            (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) -
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) -
             timeOp A2 hA2 C2 hC2
-              (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force')‖ +
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force')‖ +
           ‖timeOp A1 hA1 C1 hC1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force) -
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force) -
             timeOp A1 hA1 C1 hC1
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0 force')‖ :=
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0 force')‖ :=
           norm_add_le _ _
     _ ≤ (C2 : Real) * (1 + T) * ‖force - force'‖ +
           (C1 : Real) * (2 * Real.sqrt T) * ‖force - force'‖ :=
@@ -236,25 +236,25 @@ theorem nonaut_strong_exists
     (C1 : NNReal) (hC1 : ∀ᵐ t ∂timeMeasure T, ‖A1 t‖ ≤ (C1 : Real))
     (hsmall :
       (C2 : Real) * (1 + T) + (C1 : Real) * (2 * Real.sqrt T) < 1) :
-    ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
+    ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) a T)
       (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
-      u = maxRegDuhamelMap (I := I) (M := M) a hT u0 force ∧
+      u = maximalRegularityDuhamelMap (I := I) (M := M) a hT u0 force ∧
         force =
           timeOp A2 hA2 C2 hC2
-              (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
             timeOp A1 hA1 C1 hC1
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0
                 force) ∧
         TimeSobolev.timeH1.trace0 _ T u =
             tensorHsInclusion (I := I) (M := M) (g := g) (r := r) (s := s)
               (show a ≤ a + 2 by linarith) u0 ∧
         TimeSobolev.timeH1.timeDeriv _ T u =
           timeScaleLaplacian (I := I) (M := M) a
-              (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
             (timeOp A2 hA2 C2 hC2
-                (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+                (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
               timeOp A1 hA1 C1 hC1
-                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0
+                (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0
                   force)) := by
   have hcontr := nonautMap_contract (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 u0
@@ -268,17 +268,17 @@ theorem nonaut_strong_exists
     ContractingWith.fixedPoint_isFixedPt hcontr
   have hforceStar_eq : forceStar =
       timeOp A2 hA2 C2 hC2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 forceStar) +
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 forceStar) +
         timeOp A1 hA1 C1 hC1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0
             forceStar) := by
     rw [← nonautMap_apply (I := I) (M := M) (a := a) hT u0
       A2 hA2 C2 hC2 A1 hA1 C1 hC1 forceStar, hforceStar_fix]
-  refine ⟨maxRegDuhamelMap (I := I) (M := M) a hT u0 forceStar,
+  refine ⟨maximalRegularityDuhamelMap (I := I) (M := M) a hT u0 forceStar,
     forceStar, rfl, hforceStar_eq, ?_, ?_⟩
-  · exact maxRegDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
+  · exact maximalRegularityDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
       hT u0 forceStar
-  · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M)
+  · rw [maximalRegularityDuhamelMap_timeDeriv_eq (I := I) (M := M)
       (h_compact := h_compact) (a := a) (T := T) hT u0 forceStar]
     exact congrArg₂ (fun x y => x + y) rfl hforceStar_eq
 
@@ -299,14 +299,14 @@ theorem nonaut_forced_exists
     (f0 : timeL2 (TensorHs (I := I) (M := M) g r s a) T)
     (hsmall :
       (C2 : Real) * (1 + T) + (C1 : Real) * (2 * Real.sqrt T) < 1) :
-    ∃ (u : MaxRegSolutionSpace (I := I) (M := M) a T)
+    ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) a T)
       (force : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
-      u = maxRegDuhamelMap (I := I) (M := M) a hT u0 force ∧
+      u = maximalRegularityDuhamelMap (I := I) (M := M) a hT u0 force ∧
         force =
           timeOp A2 hA2 C2 hC2
-              (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
             timeOp A1 hA1 C1 hC1
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0
                 force) +
             f0 ∧
         TimeSobolev.timeH1.trace0 _ T u =
@@ -314,11 +314,11 @@ theorem nonaut_forced_exists
               (show a ≤ a + 2 by linarith) u0 ∧
         TimeSobolev.timeH1.timeDeriv _ T u =
           timeScaleLaplacian (I := I) (M := M) a
-              (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
             (timeOp A2 hA2 C2 hC2
-                (maxRegDuhamelSolField (I := I) (M := M) a hT u0 force) +
+                (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 force) +
               timeOp A1 hA1 C1 hC1
-                (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0
+                (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0
                   force) +
               f0) := by
   let K : NNReal :=
@@ -350,17 +350,17 @@ theorem nonaut_forced_exists
     ContractingWith.fixedPoint_isFixedPt hcontr
   have hforceStar_eq : forceStar =
       timeOp A2 hA2 C2 hC2
-          (maxRegDuhamelSolField (I := I) (M := M) a hT u0 forceStar) +
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT u0 forceStar) +
         timeOp A1 hA1 C1 hC1
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT u0
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT u0
             forceStar) +
         f0 := by
     simpa only [F, nonautMap] using hforceStar_fix.symm
-  refine ⟨maxRegDuhamelMap (I := I) (M := M) a hT u0 forceStar,
+  refine ⟨maximalRegularityDuhamelMap (I := I) (M := M) a hT u0 forceStar,
     forceStar, rfl, hforceStar_eq, ?_, ?_⟩
-  · exact maxRegDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
+  · exact maximalRegularityDuhamelMap_trace0 (I := I) (M := M) (a := a) (T := T)
       hT u0 forceStar
-  · rw [maxRegDuhamelMap_timeDeriv_eq (I := I) (M := M)
+  · rw [maximalRegularityDuhamelMap_timeDeriv_eq (I := I) (M := M)
       (h_compact := h_compact) (a := a) (T := T) hT u0 forceStar]
     exact congrArg₂ (fun x y => x + y) rfl hforceStar_eq
 

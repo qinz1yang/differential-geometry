@@ -58,7 +58,7 @@ def deTurckCorrectionSymbolOutput (g : SmoothRiemannianMetric I M) (x : M) (ξ :
         ∑ j : Fin (Module.finrank ℝ E),
           (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v i *
             (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w j *
-            deTurckCorrSymbolComp (I := I) g x ξ t i j)
+            deTurckCorrectionSymbolComp (I := I) g x ξ t i j)
     (fun v₁ v₂ w => by
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl (fun i _ => ?_)
@@ -98,7 +98,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
         ∑ j : Fin (Module.finrank ℝ E),
           (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v i *
             (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w j *
-            deTurckCorrSymbolComp (I := I) g x ξ t i j := rfl
+            deTurckCorrectionSymbolComp (I := I) g x ξ t i j := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 lemma deTurckCorrectionSymbolOutput_add (g : SmoothRiemannianMetric I M) (x : M) (ξ : E)
@@ -113,7 +113,7 @@ lemma deTurckCorrectionSymbolOutput_add (g : SmoothRiemannianMetric I M) (x : M)
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [deTurckCorrSymbolComp_add]
+  rw [deTurckCorrectionSymbolComp_add]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -128,7 +128,7 @@ lemma deTurckCorrectionSymbolOutput_smul (g : SmoothRiemannianMetric I M) (x : M
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [deTurckCorrSymbolComp_smul]
+  rw [deTurckCorrectionSymbolComp_smul]
   ring
 
 end Output
@@ -158,7 +158,7 @@ theorem deTurckCorrectionSymbol_apply_apply (g : SmoothRiemannianMetric I M) (x 
     (deTurckCorrectionSymbol (I := I) g x ξ t)
         (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
         (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) =
-      deTurckCorrSymbolComp (I := I) g x ξ t i j := by
+      deTurckCorrectionSymbolComp (I := I) g x ξ t i j := by
   classical
   rw [deTurckCorrectionSymbol_apply, deTurckCorrectionSymbolOutput_apply_apply]
   rw [(DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr_self,
@@ -191,7 +191,7 @@ theorem deTurckCorrectionSymbol_apply_eq_closedForm (g : SmoothRiemannianMetric 
           raisedFormContractionSnd (I := I) g x ξ t i -
         (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ i * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ j *
           formMetricTrace (I := I) g x t := by
-  rw [deTurckCorrectionSymbol_apply_apply, deTurckCorrSymbolComp_eq_closedForm]
+  rw [deTurckCorrectionSymbol_apply_apply, deTurckCorrectionSymbolComp_eq_closedForm]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem deTurckCorrectionSymbol_apply_symm (g : SmoothRiemannianMetric I M) (x : M)
@@ -203,7 +203,7 @@ theorem deTurckCorrectionSymbol_apply_symm (g : SmoothRiemannianMetric I M) (x :
     deTurckCorrectionSymbolOutput_apply_apply, Finset.sum_comm]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [deTurckCorrSymbolComp_symm (I := I) g x ξ t j i]
+  rw [deTurckCorrectionSymbolComp_symm (I := I) g x ξ t j i]
   ring
 
 end Bundle

@@ -430,17 +430,17 @@ omit [FiniteDimensional ℝ E] in
 private lemma classical_partial_ae_eq_chosenWeakPartial_local_local
     {q : ℝ≥0∞} (hq_one : 1 ≤ q) {Ω : Set EuclN_E} (hΩ_open : IsOpen Ω)
     {ψ : EuclN_E → ℝ} (h_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_compact : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω)
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω)
     (i : Fin (Module.finrank ℝ E)) :
     (fun z : EuclN_E => (fderiv ℝ ψ z) (EuclideanSpace.single i 1))
       =ᵐ[volume.restrict Ω]
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         q i ψ Ω := by
   classical
   have hψ_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 q ψ Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
-      (d := Module.finrank ℝ E) hΩ_open h_smooth hψ_compact hψ_supp hq_one 1
+      (d := Module.finrank ℝ E) hΩ_open h_smooth hψ_compact hψ_support hq_one 1
   have hψ_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) q ψ Ω :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hψ_mem
   have h_classical_isWeak :
@@ -450,32 +450,32 @@ private lemma classical_partial_ae_eq_chosenWeakPartial_local_local
       hΩ_open (h_smooth.of_le (by norm_cast))
   have h_chosen_isWeak :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           q i ψ Ω) ψ Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       hψ_W1p i
-  have h_classical_loc : LocallyIntegrable
+  have h_classical_local : LocallyIntegrable
       (fun z : EuclN_E => (fderiv ℝ ψ z) (EuclideanSpace.single i 1))
       (volume.restrict Ω) := by
     have h_cont : Continuous
         (fun z : EuclN_E => (fderiv ℝ ψ z) (EuclideanSpace.single i 1)) :=
       (h_smooth.continuous_fderiv (by simp)).clm_apply continuous_const
     exact h_cont.locallyIntegrable.mono_measure Measure.restrict_le_self
-  have h_chosen_loc : LocallyIntegrable
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have h_chosen_local : LocallyIntegrable
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         q i ψ Ω)
       (volume.restrict Ω) :=
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       hψ_W1p i).locallyIntegrable hq_one
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq (Ω := Ω) hΩ_open
-    h_classical_isWeak h_chosen_isWeak h_classical_loc h_chosen_loc
+    h_classical_isWeak h_chosen_isWeak h_classical_local h_chosen_local
 
 omit [FiniteDimensional ℝ E] in
 lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm_local
     [NeZero (Module.finrank ℝ E)]
     {q : ℝ≥0∞} (hq_one : 1 ≤ q) {Ω : Set EuclN_E} (hΩ_open : IsOpen Ω)
     {ψ : EuclN_E → ℝ} (h_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_compact : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω) :
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω) :
     eLpNorm (fun z : EuclN_E => ‖fderiv ℝ ψ z‖) q (volume.restrict Ω) ≤
       ((Module.finrank ℝ E : ℕ) : ℝ≥0∞) *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -489,10 +489,10 @@ lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm_local
         (fun z : EuclN_E => (fderiv ℝ ψ z) (EuclideanSpace.single i 1)) q
         (volume.restrict Ω) =
       eLpNorm
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           q i ψ Ω) q (volume.restrict Ω) := fun i =>
     eLpNorm_congr_ae (classical_partial_ae_eq_chosenWeakPartial_local_local
-      hq_one hΩ_open h_smooth hψ_compact hψ_supp i)
+      hq_one hΩ_open h_smooth hψ_compact hψ_support i)
   have h_step1 :
       ∑ i : Fin (Module.finrank ℝ E),
         eLpNorm
@@ -500,7 +500,7 @@ lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm_local
           (volume.restrict Ω)
         = ∑ i : Fin (Module.finrank ℝ E),
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               q i ψ Ω) q (volume.restrict Ω) :=
     Finset.sum_congr rfl (fun i _ => h_each_eq i)
   rw [h_step1]
@@ -521,20 +521,20 @@ lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm_local
               (d := Module.finrank ℝ E) q 1 β ψ Ω) q (volume.restrict Ω)) =
         ∑ i : Fin (Module.finrank ℝ E),
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               q i ψ Ω) q (volume.restrict Ω) := by
     have h_unfold : ∀ β : Fin 1 → Fin (Module.finrank ℝ E),
         eLpNorm
           (DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial
             (d := Module.finrank ℝ E) q 1 β ψ Ω) q (volume.restrict Ω) =
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               q (β 0) ψ Ω) q (volume.restrict Ω) := by
       intro β
       have hit :
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial
               (d := Module.finrank ℝ E) q 1 β ψ Ω =
-            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               q (β 0) ψ Ω := by
         rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial_succ]
         simp [DifferentialGeometry.Analysis.Sobolev.Euclidean.iterWeakPartial_zero]
@@ -551,17 +551,17 @@ lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm_local
     exact Fintype.sum_equiv e
       (fun β =>
         eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             q (β 0) ψ Ω) q (volume.restrict Ω))
       (fun i =>
         eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             q i ψ Ω) q (volume.restrict Ω))
       (fun _ => rfl)
   have h_le_wkp :
       (∑ i : Fin (Module.finrank ℝ E),
           eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               q i ψ Ω) q (volume.restrict Ω)) ≤
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 1 q ψ Ω := by

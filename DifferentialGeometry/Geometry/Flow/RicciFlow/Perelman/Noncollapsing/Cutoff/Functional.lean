@@ -224,7 +224,7 @@ theorem exists_cutoff_wdata
   have hgrad_top : gradScale ≠ (⊤ : ENNReal) := by
     exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
       (ENNReal.rpow_ne_top_of_nonneg (by positivity) (measure_ne_top μ U))
-  obtain ⟨φ, hφ, hφsupp, hφlower, hφgrad⟩ :=
+  obtain ⟨φ, hφ, hφsupport, hφlower, hφgrad⟩ :=
     exists_cutoff_energy (I := I) (M := M) g a hr
   have hφpos : 0 < eLpNorm φ 2 μ := by
     exact hmass_pos.trans_le hφlower
@@ -241,7 +241,7 @@ theorem exists_cutoff_wdata
     hφ.continuous.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   refine ⟨v, hv, ?_, hvmass, hvgradi, ?_⟩
   · intro x hx
-    exact hφsupp (subset_tsupport φ (hvsupp hx))
+    exact hφsupport (subset_tsupport φ (hvsupp hx))
   · have hgrad_real : (eLpNorm gp 2 μ).toReal ≤ gradScale.toReal :=
       ENNReal.toReal_mono hgrad_top hφgrad
     have hmass_real : massScale.toReal ≤ (eLpNorm φ 2 μ).toReal :=

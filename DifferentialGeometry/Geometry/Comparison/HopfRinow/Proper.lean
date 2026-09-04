@@ -171,7 +171,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 omit [T2Space (TangentBundle I M)] in
-theorem expImgClosedBall_compact
+theorem expImageClosedBall_compact
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (hcomplete :
       letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
@@ -193,7 +193,7 @@ theorem expImgClosedBall_compact
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem closedBall_subset_expImg
+theorem closedBall_subset_expImage
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (hcomplete :
       letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
@@ -239,9 +239,9 @@ theorem properSpace_riemMetric
   refine ProperSpace.of_isCompact_closedBall_of_le (α := M) 0 ?_
   intro p R hR
   have hsubset :=
-    closedBall_subset_expImg (I := I) (M := M) hcomplete g hEnorm p (R := R)
+    closedBall_subset_expImage (I := I) (M := M) hcomplete g hEnorm p (R := R)
   have himg :=
-    expImgClosedBall_compact (I := I) (M := M) hcomplete g hEnorm p R
+    expImageClosedBall_compact (I := I) (M := M) hcomplete g hEnorm p R
   have hclosed : IsClosed (Metric.closedBall p R) := by
     simpa [riemMetricSpace] using
       (Metric.isClosed_closedBall : IsClosed (Metric.closedBall p R))

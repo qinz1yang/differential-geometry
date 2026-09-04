@@ -93,13 +93,13 @@ theorem differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
   have hrepr_α_diff : MDifferentiableAt I 𝓘(ℝ, Tensor0SModel n ℝ E)
       (tensor0SChartESectionRepr (I := I) n α T) b :=
     hα_repr_diff.congr_of_eventuallyEq h_funeq
-  have hb_src : b ∈ (chartAt H α).source :=
+  have hb_source : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
   have hb_int : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
   have hpb := mdifferentiableAt_iff_source_of_mem_source (I := I)
     (E' := Tensor0SModel n ℝ E) (I' := 𝓘(ℝ, Tensor0SModel n ℝ E)) (x := α)
-    (f := tensor0SChartESectionRepr (I := I) n α T) hb_src
+    (f := tensor0SChartESectionRepr (I := I) n α T) hb_source
   have hwithin : MDifferentiableWithinAt 𝓘(ℝ, E) 𝓘(ℝ, Tensor0SModel n ℝ E)
       (tensor0SChartESectionRepr (I := I) n α T ∘ (extChartAt I α).symm)
       (range I) (extChartAt I α b) := hpb.mp hrepr_α_diff

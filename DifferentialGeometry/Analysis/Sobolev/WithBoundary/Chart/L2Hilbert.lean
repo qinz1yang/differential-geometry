@@ -117,7 +117,7 @@ theorem wkpNormChartL2Sq_lt_top_of_memWkpChart
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU
           (modelWithCornersEuclideanHalfSpace n) M) α u)
       (chartTargetEuclid (n := n) (M := M) α) with hf_def
-  have hPOU_locFin : LocallyFinite
+  have hPOU_localFin : LocallyFinite
       (fun α : M => Function.support
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU
           (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)) :=
@@ -126,7 +126,7 @@ theorem wkpNormChartL2Sq_lt_top_of_memWkpChart
   have hSupport_finite : {α : M | (Function.support
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU
         (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)).Nonempty}.Finite :=
-    hPOU_locFin.finite_nonempty_of_compact
+    hPOU_localFin.finite_nonempty_of_compact
   have hf_zero_off : ∀ α : M, (Function.support
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU
         (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)) = ∅ →
@@ -161,7 +161,7 @@ theorem wkpNormChartL2Sq_lt_top_of_memWkpChart
         (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)).Nonempty}
       with hS_def
   have hS_finite : S.Finite := hSupport_finite
-  have hf_supp_S : Function.support f ⊆ S := by
+  have hf_support_S : Function.support f ⊆ S := by
     intro α hα
     by_contra hαS
     apply hα
@@ -298,13 +298,13 @@ private theorem wkpNormChartL2_add_le_aux
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU
         (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)).Nonempty}
       with hS_def
-  have hPOU_locFin : LocallyFinite
+  have hPOU_localFin : LocallyFinite
       (fun α : M => Function.support
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU
           (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)) :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU
       (modelWithCornersEuclideanHalfSpace n) M).locallyFinite
-  have hS_finite : S.Finite := hPOU_locFin.finite_nonempty_of_compact
+  have hS_finite : S.Finite := hPOU_localFin.finite_nonempty_of_compact
   set fU : M → ℝ≥0∞ := fun α =>
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2HalfSpace
       (d := n) k
@@ -874,26 +874,26 @@ lemma inner_wkpChartL2_def
     @inner ℝ _ _ u v =
       wkpInnerChartL2 (n := n) (M := M) k (wkpChartL2Fun u) (wkpChartL2Fun v) := rfl
 
-private def activeChartSupp
+private def activeChartSupport
     [T2Space M] [SigmaCompactSpace M] : Set M :=
   { α : M | (Function.support
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU
         (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)).Nonempty }
 
-private theorem activeChartSupp_finite
+private theorem activeChartSupport_finite
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] :
-    (activeChartSupp (n := n) (M := M)).Finite :=
+    (activeChartSupport (n := n) (M := M)).Finite :=
   ((DifferentialGeometry.Integral.Measure.chartAtlasPOU
     (modelWithCornersEuclideanHalfSpace n) M).locallyFinite).finite_nonempty_of_compact
 
-private theorem chartPushed_eq_zero_off_activeChartSupp
+private theorem chartPushed_eq_zero_off_activeChartSupport
     [T2Space M] [SigmaCompactSpace M]
-    (α : M) (hα : α ∉ activeChartSupp (n := n) (M := M)) (u : M → ℝ) :
+    (α : M) (hα : α ∉ activeChartSupport (n := n) (M := M)) (u : M → ℝ) :
     chartPushed (n := n) (M := M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU
         (modelWithCornersEuclideanHalfSpace n) M) α u =
       (fun _ => (0 : ℝ)) := by
-  unfold activeChartSupp at hα
+  unfold activeChartSupport at hα
   have hempty : (Function.support
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU
         (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)) = ∅ := by
@@ -918,7 +918,7 @@ private theorem wkpInnerChartL2_eq_finsum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (k : ℕ) (u v : M → ℝ) :
     wkpInnerChartL2 (n := n) (M := M) k u v =
-      ∑ α ∈ (activeChartSupp_finite (n := n) (M := M)).toFinset,
+      ∑ α ∈ (activeChartSupport_finite (n := n) (M := M)).toFinset,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2HalfSpace
           (d := n) k
           (chartPushed (n := n) (M := M)
@@ -931,9 +931,9 @@ private theorem wkpInnerChartL2_eq_finsum
   unfold wkpInnerChartL2
   apply tsum_eq_sum
   intro α hα
-  have hα_off : α ∉ activeChartSupp (n := n) (M := M) := fun hαS =>
+  have hα_off : α ∉ activeChartSupport (n := n) (M := M) := fun hαS =>
     hα ((Set.Finite.mem_toFinset _).mpr hαS)
-  rw [chartPushed_eq_zero_off_activeChartSupp (n := n) (M := M) α hα_off u]
+  rw [chartPushed_eq_zero_off_activeChartSupport (n := n) (M := M) α hα_off u]
   unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2HalfSpace
   unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2
   refine Finset.sum_eq_zero ?_
@@ -976,7 +976,7 @@ private theorem wkpNormChartL2Sq_toReal_eq_finsum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     {k : ℕ} {u : M → ℝ} (hu : MemWkpChart (n := n) (M := M) k 2 u) :
     (wkpNormChartL2Sq (n := n) (M := M) k u).toReal =
-      ∑ α ∈ (activeChartSupp_finite (n := n) (M := M)).toFinset,
+      ∑ α ∈ (activeChartSupport_finite (n := n) (M := M)).toFinset,
         (DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2SqHalfSpace
           (d := n) k
           (chartPushed (n := n) (M := M)
@@ -986,7 +986,7 @@ private theorem wkpNormChartL2Sq_toReal_eq_finsum
   classical
   unfold wkpNormChartL2Sq
   have h_zero_outside : ∀ α : M,
-      α ∉ (activeChartSupp_finite (n := n) (M := M)).toFinset →
+      α ∉ (activeChartSupport_finite (n := n) (M := M)).toFinset →
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2SqHalfSpace
         (d := n) k
         (chartPushed (n := n) (M := M)
@@ -994,12 +994,12 @@ private theorem wkpNormChartL2Sq_toReal_eq_finsum
             (modelWithCornersEuclideanHalfSpace n) M) α u)
         (chartTargetEuclid (n := n) (M := M) α) = 0 := by
     intro α hα
-    have hα_off : α ∉ activeChartSupp (n := n) (M := M) := fun hαS =>
+    have hα_off : α ∉ activeChartSupport (n := n) (M := M) := fun hαS =>
       hα ((Set.Finite.mem_toFinset _).mpr hαS)
-    rw [chartPushed_eq_zero_off_activeChartSupp (n := n) (M := M) α hα_off u]
+    rw [chartPushed_eq_zero_off_activeChartSupport (n := n) (M := M) α hα_off u]
     exact DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2SqHalfSpace_zero_fun_zero
       (d := n) (chartTargetEuclid_isHalfSpaceRelOpen (n := n) (M := M) α)
-  have h_finiteness : ∀ α ∈ (activeChartSupp_finite (n := n) (M := M)).toFinset,
+  have h_finiteness : ∀ α ∈ (activeChartSupport_finite (n := n) (M := M)).toFinset,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormL2SqHalfSpace
         (d := n) k
         (chartPushed (n := n) (M := M)
@@ -1017,7 +1017,7 @@ private theorem wkpInnerChartL2_self_eq_finsum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (k : ℕ) (u : M → ℝ) :
     wkpInnerChartL2 (n := n) (M := M) k u u =
-      ∑ α ∈ (activeChartSupp_finite (n := n) (M := M)).toFinset,
+      ∑ α ∈ (activeChartSupport_finite (n := n) (M := M)).toFinset,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpInnerL2HalfSpace
           (d := n) k
           (chartPushed (n := n) (M := M)

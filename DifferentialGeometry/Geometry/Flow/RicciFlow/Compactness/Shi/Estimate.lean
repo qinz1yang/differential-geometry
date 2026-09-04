@@ -18,7 +18,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Set DifferentialGeometry.Tensor0SBundle
 
 open DifferentialGeometry.Analysis.Parabolic
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open scoped Manifold ContDiff BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -62,7 +62,7 @@ theorem canonical_curvature_norm_sq_bounded_of_realization
   rw [heq]
   exact hK t x htAlpha htOmega
 
-theorem movingRmBoundSol
+theorem movingRmBoundSolution
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
@@ -85,7 +85,7 @@ theorem movingRmBoundSol
   let SShift : SolutionOn (I := I) (M := M) DShift :=
     (S.timeShift t0).timeRestrict DShift
   have hSShift : IsSolutionOn (I := I) SShift := by
-    apply isSoln_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hS t0)
+    apply isSolutionOn_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hS t0)
     · intro s hs
       change s + t0 ∈ Set.Ico alpha omega
       change s ∈ Set.Ico (alpha - t0) (omega - t0) at hs
@@ -99,13 +99,13 @@ theorem movingRmBoundSol
   let S0 : SolutionOn (I := I) (M := M) D0 := SShift.timeRestrict D0
   have hS0 : IsSolutionOn (I := I) S0 := by
     simpa only [S0, D0, DShift] using
-      (isSoln_tailRestrict (I := I) hSShift (sub_neg.mpr hAlphaT0) hZeroOmega)
+      (isSolutionOn_tailRestrict (I := I) hSShift (sub_neg.mpr hAlphaT0) hZeroOmega)
   have hHeat (k : Nat) :
       TowerHeatBoundOn (D := D0)
         (nablaKRm04NormSqIntrinsic (I := I) S0)
-        (nablaKNormLap (I := I) S0) (towerSolConst k) k := by
+        (nablaKNormLap (I := I) S0) (towerSolutionConst k) k := by
     simpa only [S0, D0, DShift] using
-      (towerHeatSol (I := I) hSShift (sub_neg.mpr hAlphaT0) hZeroOmega hdim k)
+      (towerHeatSolution (I := I) hSShift (sub_neg.mpr hAlphaT0) hZeroOmega hdim k)
   let delta : Real := beta - t0
   have hDelta : 0 < delta := by simpa only [delta] using sub_pos.mpr hT0Beta
   let K : Real := max 1 K0
@@ -120,13 +120,13 @@ theorem movingRmBoundSol
     refine ⟨0, ?_⟩
     simp only [levels, Finset.mem_range]
     omega
-  let c : Real := max 0 (levels.sup' hLevels towerSolConst)
+  let c : Real := max 0 (levels.sup' hLevels towerSolutionConst)
   have hc : 0 <= c := le_max_left _ _
-  have hLevel (k : Nat) (hk : k <= order) : towerSolConst k <= c := by
+  have hLevel (k : Nat) (hk : k <= order) : towerSolutionConst k <= c := by
     have hkMem : k ∈ levels := by
       simp only [levels, Finset.mem_range]
       omega
-    exact (Finset.le_sup' towerSolConst hkMem).trans (le_max_right _ _)
+    exact (Finset.le_sup' towerSolutionConst hkMem).trans (le_max_right _ _)
   let B : Nat -> Real := fun k =>
     (towerConst c aScale k) ^ 2 * K ^ 2 / delta ^ k
   let KRm : Real := levels.sup' hLevels B
@@ -210,7 +210,7 @@ theorem movingRmBoundSol
   have hEstimate := BernsteinTower.estimate_of_heat (I := I)
     (D := D0) (flowG (I := I) S0)
     (w := nablaKRm04NormSqIntrinsic (I := I) S0)
-    (wLap := nablaKNormLap (I := I) S0) towerSolConst
+    (wLap := nablaKNormLap (I := I) S0) towerSolutionConst
     K aScale (psi - t0) hT hKPos hScale hSlab hRegular
     (fun j s y => nablaKRm04NormSqIntrinsic_nonneg (I := I) S0 j s y)
     hw0 hTK hHeat hLap hwCont hwSpace
@@ -259,7 +259,7 @@ theorem movingShiBoundN
           (fun _ t => S.base.metric t) order KShi := by
   classical
   obtain ⟨KRm, hKRm, hRm⟩ :=
-    movingRmBoundSol (I := I) beta hBeta order hdim hS hbound
+    movingRmBoundSolution (I := I) beta hBeta order hdim hS hbound
   let levels : Finset Nat := Finset.range (order + 1)
   have hLevels : levels.Nonempty := by
     refine ⟨0, ?_⟩
@@ -289,7 +289,7 @@ theorem movingShiBoundN
     exact (Real.sqrt_le_sqrt (Finset.le_sup' A hkMem))
   exact (Real.sqrt_le_sqrt hRicA).trans hTerm
 
-theorem movingShiBoundSol
+theorem movingShiBoundSolution
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}

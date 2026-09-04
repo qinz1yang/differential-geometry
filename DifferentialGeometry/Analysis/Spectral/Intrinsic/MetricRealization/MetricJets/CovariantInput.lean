@@ -223,12 +223,12 @@ theorem reprDiffChartCompOnE_comp_toEuclidean_symm_eqOn
   intro y' hy'
   set S : SmoothCcTensor g_bg 0 2 :=
     realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂ with hS_def
-  have hb_src : (extChartAt I α).symm ((toEuclidean (E := E)).symm y') ∈ (chartAt H α).source :=
+  have hb_source : (extChartAt I α).symm ((toEuclidean (E := E)).symm y') ∈ (chartAt H α).source :=
     symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy'
   simp only []
   rw [Function.comp_apply,
     reprDiffChartCompOnE_eq_symm_tensorChartComponentRaw (I := I) g_bg hu₁ hu₂ α l b
-      (y := (toEuclidean (E := E)).symm y') hb_src]
+      (y := (toEuclidean (E := E)).symm y') hb_source]
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy',
     chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy']
 
@@ -408,10 +408,10 @@ theorem covDerivLowerOrderTerm_abs_le_riemannianFibreNorm
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 s
-  obtain ⟨hImg_cpt, hImg_sub⟩ :=
+  obtain ⟨hImage_compact, hImage_sub⟩ :=
     chartPreimage_image_isCompact_subset_chartSource (I := I) (M := M) α hK hKsub
   obtain ⟨Craw, hCraw_nn, hCraw_bd⟩ :=
-    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg s α hImg_cpt hImg_sub
+    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg s α hImage_compact hImage_sub
   have h_coeff_bound : ∀ (mIJ : (Fin (Module.finrank ℝ E)) ×
         ((Fin 0 → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)) ×
           (Fin s → Fin (Module.finrank ℝ E)))),
@@ -442,7 +442,7 @@ theorem covDerivLowerOrderTerm_abs_le_riemannianFibreNorm
   refine ⟨Npairs * (Ccoeff * Craw), by positivity, ?_⟩
   intro T m Jdx y' hy'
   set b₀ : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y') with hb₀_def
-  have hb₀_img : b₀ ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) ''
+  have hb₀_image : b₀ ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) ''
       K_eucl := ⟨y', hy', rfl⟩
   set N : ℝ := ‖T.toSection b₀‖ with hN_def
   have hN_nn : 0 ≤ N := norm_nonneg _
@@ -462,7 +462,7 @@ theorem covDerivLowerOrderTerm_abs_le_riemannianFibreNorm
       (hCc_bd (m, p.1, Jdx, p.2) y' hy').trans (hCcoeff_ge _)
     have h_raw : |tensorChartComponentRaw (I := I) (M := M) g_bg 0 s T α p.1 p.2 b₀| ≤
         Craw * N := by
-      rw [hp1]; exact hCraw_bd T b₀ hb₀_img p.2
+      rw [hp1]; exact hCraw_bd T b₀ hb₀_image p.2
     exact mul_le_mul h_coeff h_raw (abs_nonneg _) hCcoeff_nn
   refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
   refine (Finset.sum_le_sum (fun p _ => h_term p)).trans ?_
@@ -607,9 +607,9 @@ theorem euclidPartial_covDerivComponentEuclid_abs_le
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 4
   let inst3 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 3 I bb) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
-  have hy'_tgt : y' ∈ chartTargetEuclid (I := I) (M := M) α := hKsub hy'
+  have hy'_target : y' ∈ chartTargetEuclid (I := I) (M := M) α := hKsub hy'
   set b₀ : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y') with hb₀_def
-  have hb₀_img : b₀ ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) ''
+  have hb₀_image : b₀ ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) ''
       K_eucl := ⟨y', hy', rfl⟩
   have hbridge : Set.EqOn
       (covDerivComponentEuclid (I := I) (M := M) g_bg 0 2 α S a
@@ -623,11 +623,11 @@ theorem euclidPartial_covDerivComponentEuclid_abs_le
     rw [covDerivComponentEuclid_eqOn_rawComponent_covGrad (I := I) g_bg 2 S α a Jdx hz]
     rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hz]
   rw [(euclidPartial_congr_of_eqOn_isOpen (E := E) c (chartTargetEuclid_isOpen
-    (I := I) (M := M) α) hbridge) hy'_tgt]
+    (I := I) (M := M) α) hbridge) hy'_target]
   rw [euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder (I := I) g_bg 3
-    (covGrad (I := I) (M := M) g_bg 0 2 S) α c (Fin.cons a Jdx) hy'_tgt]
+    (covGrad (I := I) (M := M) g_bg 0 2 S) α c (Fin.cons a Jdx) hy'_target]
   have h_raw4 := hCraw4_bd (covGrad (I := I) (M := M) g_bg 0 3
-    (covGrad (I := I) (M := M) g_bg 0 2 S)) b₀ hb₀_img (Fin.cons c (Fin.cons a Jdx))
+    (covGrad (I := I) (M := M) g_bg 0 2 S)) b₀ hb₀_image (Fin.cons c (Fin.cons a Jdx))
   have h_lo3 := hCLO3_bd (covGrad (I := I) (M := M) g_bg 0 2 S) c (Fin.cons a Jdx) y' hy'
   refine (abs_sub _ _).trans ?_
   exact add_le_add h_raw4 h_lo3
@@ -730,9 +730,9 @@ theorem euclidPartial2_chartPushedRaw_abs_le_covariantJet_terms
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
   let inst2 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 2 I bb) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
-  have hy'_tgt : y' ∈ chartTargetEuclid (I := I) (M := M) α := hKsub hy'
+  have hy'_target : y' ∈ chartTargetEuclid (I := I) (M := M) α := hKsub hy'
   set b₀ : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y') with hb₀_def
-  have hb₀_img : b₀ ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) ''
+  have hb₀_image : b₀ ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) ''
       K_eucl := ⟨y', hy', rfl⟩
   set N0 : ℝ := ‖S.toSection b₀‖ with hN0_def
   set N1 : ℝ := ‖(covGrad (I := I) (M := M) g_bg 0 2 S).toSection b₀‖ with hN1_def
@@ -751,7 +751,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_covariantJet_terms
         euclidPartial (E := E) c
           (rawComponentEuclid (I := I) (M := M) g_bg 0 2 α S p.1 p.2) y' with hDsum_def
   have hform := covDerivComponent_second_eq_iteratedFDeriv_add_lowerOrder (I := I) (M := M)
-    g_bg 0 2 α S a c (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx hy'_tgt
+    g_bg 0 2 α S a c (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx hy'_target
   rw [← hA_def, ← hBsum_def, ← hDsum_def] at hform
   have h_target : euclidPartial (E := E) c
         (euclidPartial (E := E) a
@@ -777,7 +777,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_covariantJet_terms
     rw [abs_mul]
     have hp1 : p.1 = (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) := Subsingleton.elim _ _
     have h_raw : |rawComponentEuclid (I := I) (M := M) g_bg 0 2 α S p.1 p.2 y'| ≤ Craw2 * N0 := by
-      rw [rawComponentEuclid_def, hp1, hN0_def]; exact hCraw2_bd S b₀ hb₀_img p.2
+      rw [rawComponentEuclid_def, hp1, hN0_def]; exact hCraw2_bd S b₀ hb₀_image p.2
     exact mul_le_mul (hCval_bd a c p.1 Jdx p.2 y' hy') h_raw (abs_nonneg _) hCval_nn
   have h_val_sum : |Bsum| ≤ Npairs * (Cval * Craw2) * N0 := by
     rw [hBsum_def]
@@ -804,10 +804,10 @@ theorem euclidPartial2_chartPushedRaw_abs_le_covariantJet_terms
           (chartTargetEuclid (I := I) (M := M) α) :=
         rawComponentEuclid_eqOn_chartPushed (I := I) (M := M) g_bg 0 2 α S p.1 p.2
       rw [(euclidPartial_congr_of_eqOn_isOpen (E := E) c (chartTargetEuclid_isOpen
-        (I := I) (M := M) α) hcongr) hy'_tgt, hp1]
+        (I := I) (M := M) α) hcongr) hy'_target, hp1]
       rw [euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder (I := I) g_bg 2
-        S α c p.2 hy'_tgt]
-      have h_raw3 := hCraw3_bd (covGrad (I := I) (M := M) g_bg 0 2 S) b₀ hb₀_img (Fin.cons c p.2)
+        S α c p.2 hy'_target]
+      have h_raw3 := hCraw3_bd (covGrad (I := I) (M := M) g_bg 0 2 S) b₀ hb₀_image (Fin.cons c p.2)
       have h_lo2 := hCLO2_bd S c p.2 y' hy'
       rw [← hN1_def] at h_raw3
       rw [← hN0_def] at h_lo2
@@ -934,14 +934,14 @@ theorem euclidPartial2_chartPushedRaw_abs_le_jetSum
           C * iteratedCovGradJetSum (I := I) g_bg S
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y')) := by
   classical
-  obtain ⟨hImg_cpt, hImg_sub⟩ :=
+  obtain ⟨hImage_compact, hImage_sub⟩ :=
     chartPreimage_image_isCompact_subset_chartSource (I := I) (M := M) α hK hKsub
   obtain ⟨Craw4, hCraw4_nn, hCraw4_bd⟩ :=
-    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 4 α hImg_cpt hImg_sub
+    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 4 α hImage_compact hImage_sub
   obtain ⟨Craw3, hCraw3_nn, hCraw3_bd⟩ :=
-    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 3 α hImg_cpt hImg_sub
+    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 3 α hImage_compact hImage_sub
   obtain ⟨Craw2, hCraw2_nn, hCraw2_bd⟩ :=
-    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 2 α hImg_cpt hImg_sub
+    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 2 α hImage_compact hImage_sub
   obtain ⟨CLO3, hCLO3_nn, hCLO3_bd⟩ :=
     covDerivLowerOrderTerm_abs_le_riemannianFibreNorm (I := I) g_bg 3 α hK hKsub
   obtain ⟨CLO2, hCLO2_nn, hCLO2_bd⟩ :=
@@ -1025,24 +1025,24 @@ theorem reprDiffChartCompOnE_abs_le_riemannianFibreNorm
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
   set S : SmoothCcTensor g_bg 0 2 :=
     realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂ with hS_def
-  obtain ⟨hImg_cpt, hImg_sub⟩ :=
+  obtain ⟨hImage_compact, hImage_sub⟩ :=
     extChartAt_symm_image_isCompact_subset_chartSource (I := I) (M := M) α hK hKsub
   obtain ⟨Craw, hCraw_nn, hCraw_bd⟩ :=
-    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 2 α hImg_cpt hImg_sub
+    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 2 α hImage_compact hImage_sub
   refine ⟨Craw, hCraw_nn, ?_⟩
   intro y hy l b
   set b₀ : M := (extChartAt I α).symm y with hb₀_def
-  have hb₀_src : b₀ ∈ (chartAt H α).source := hImg_sub ⟨y, hy, rfl⟩
-  have hb₀_img : b₀ ∈ (extChartAt I α).symm '' K := ⟨y, hy, rfl⟩
-  rw [reprDiffChartCompOnE_eq_symm_tensorChartComponentRaw (I := I) g_bg hu₁ hu₂ α l b hb₀_src]
+  have hb₀_source : b₀ ∈ (chartAt H α).source := hImage_sub ⟨y, hy, rfl⟩
+  have hb₀_image : b₀ ∈ (extChartAt I α).symm '' K := ⟨y, hy, rfl⟩
+  rw [reprDiffChartCompOnE_eq_symm_tensorChartComponentRaw (I := I) g_bg hu₁ hu₂ α l b hb₀_source]
   set N : ℝ := ‖S.toSection b₀‖ with hN_def
   have hN_nn : 0 ≤ N := norm_nonneg _
   have h_lb : |tensorChartComponentRaw (I := I) (M := M) g_bg 0 2 S α
       (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) ![l, b] b₀| ≤ Craw * N :=
-    hCraw_bd S b₀ hb₀_img ![l, b]
+    hCraw_bd S b₀ hb₀_image ![l, b]
   have h_bl : |tensorChartComponentRaw (I := I) (M := M) g_bg 0 2 S α
       (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) ![b, l] b₀| ≤ Craw * N :=
-    hCraw_bd S b₀ hb₀_img ![b, l]
+    hCraw_bd S b₀ hb₀_image ![b, l]
   calc |(1 / 2 : ℝ) *
           (tensorChartComponentRaw (I := I) (M := M) g_bg 0 2 S α
               (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) ![l, b] b₀ +
@@ -1079,18 +1079,18 @@ theorem partialDeriv_reprDiffChartCompOnE_abs_le
   classical
   set S : SmoothCcTensor g_bg 0 2 :=
     realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂ with hS_def
-  obtain ⟨hImg_cpt, hImg_sub⟩ :=
+  obtain ⟨hImage_compact, hImage_sub⟩ :=
     extChartAt_symm_image_isCompact_subset_chartSource (I := I) (M := M) α hK hKsub
   obtain ⟨Craw1, hCraw1_nn, hCraw1_bd⟩ :=
-    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 3 α hImg_cpt hImg_sub
-  have hKe_cpt : IsCompact (toEuclidean (E := E) '' K) := hK.image toEuclidean.continuous
+    tensorChartComponentRaw_abs_le_riemannianFibreNorm (I := I) g_bg 3 α hImage_compact hImage_sub
+  have hKe_compact : IsCompact (toEuclidean (E := E) '' K) := hK.image toEuclidean.continuous
   have hKe_sub : toEuclidean (E := E) '' K ⊆ chartTargetEuclid (I := I) (M := M) α := by
     intro z hz
     obtain ⟨y, hy_mem, hy_eq⟩ := hz
     rw [← hy_eq]
     exact toEuclidean_mem_chartTargetEuclid_of_mem_interior (I := I) (M := M) α (hKsub hy_mem)
   obtain ⟨CLO, hCLO_nn, hCLO_bd⟩ :=
-    covDerivLowerOrderTerm_abs_le_riemannianFibreNorm (I := I) g_bg 2 α hKe_cpt hKe_sub
+    covDerivLowerOrderTerm_abs_le_riemannianFibreNorm (I := I) g_bg 2 α hKe_compact hKe_sub
   refine ⟨Craw1 + CLO, by positivity, ?_⟩
   intro y hy l b a
   let inst3 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 (2 + 1) I bb) :=
@@ -1098,7 +1098,7 @@ theorem partialDeriv_reprDiffChartCompOnE_abs_le
   let inst2 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 2 I bb) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
   set b₀ : M := (extChartAt I α).symm y with hb₀_def
-  have hb₀_img : b₀ ∈ (extChartAt I α).symm '' K := ⟨y, hy, rfl⟩
+  have hb₀_image : b₀ ∈ (extChartAt I α).symm '' K := ⟨y, hy, rfl⟩
   set N1 : ℝ := ‖(covGrad (I := I) (M := M) g_bg 0 2 S).toSection b₀‖ with hN1_def
   set N0 : ℝ := ‖S.toSection b₀‖ with hN0_def
   have hN1_nn : 0 ≤ N1 := norm_nonneg _
@@ -1126,11 +1126,11 @@ theorem partialDeriv_reprDiffChartCompOnE_abs_le
   have h_raw_alb : |tensorChartComponentRaw (I := I) (M := M) g_bg 0 (2 + 1)
       (covGrad (I := I) (M := M) g_bg 0 2 S) α
       (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) ![a, l, b] b₀| ≤ Craw1 * N1 :=
-    hCraw1_bd (covGrad (I := I) (M := M) g_bg 0 2 S) b₀ hb₀_img ![a, l, b]
+    hCraw1_bd (covGrad (I := I) (M := M) g_bg 0 2 S) b₀ hb₀_image ![a, l, b]
   have h_raw_abl : |tensorChartComponentRaw (I := I) (M := M) g_bg 0 (2 + 1)
       (covGrad (I := I) (M := M) g_bg 0 2 S) α
       (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) ![a, b, l] b₀| ≤ Craw1 * N1 :=
-    hCraw1_bd (covGrad (I := I) (M := M) g_bg 0 2 S) b₀ hb₀_img ![a, b, l]
+    hCraw1_bd (covGrad (I := I) (M := M) g_bg 0 2 S) b₀ hb₀_image ![a, b, l]
   have hbase_eq : (extChartAt I α).symm ((toEuclidean (E := E)).symm (toEuclidean (E := E) y)) =
       b₀ := by rw [hb₀_def]; simp
   have h_lo_lb : |covDerivLowerOrderTerm (I := I) (M := M) g_bg 0 2 S α a
@@ -1190,14 +1190,14 @@ theorem partialDeriv2_reprDiffChartCompOnE_abs_le
   classical
   set S : SmoothCcTensor g_bg 0 2 :=
     realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂ with hS_def
-  have hKe_cpt : IsCompact (toEuclidean (E := E) '' K) := hK.image toEuclidean.continuous
+  have hKe_compact : IsCompact (toEuclidean (E := E) '' K) := hK.image toEuclidean.continuous
   have hKe_sub : toEuclidean (E := E) '' K ⊆ chartTargetEuclid (I := I) (M := M) α := by
     intro z hz
     obtain ⟨y, hy_mem, hy_eq⟩ := hz
     rw [← hy_eq]
     exact toEuclidean_mem_chartTargetEuclid_of_mem_interior (I := I) (M := M) α (hKsub hy_mem)
   obtain ⟨C2, hC2_nn, hC2_bd⟩ :=
-    euclidPartial2_chartPushedRaw_abs_le_jetSum (I := I) g_bg α hKe_cpt hKe_sub
+    euclidPartial2_chartPushedRaw_abs_le_jetSum (I := I) g_bg α hKe_compact hKe_sub
   have hopen : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   refine ⟨C2, hC2_nn, ?_⟩

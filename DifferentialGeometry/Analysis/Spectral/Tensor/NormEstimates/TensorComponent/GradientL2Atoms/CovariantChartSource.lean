@@ -68,7 +68,7 @@ private lemma chartTensorRSCovariantDerivative_eq_of_eq_at
   rw [chartTensorRSCovariantDerivative_def, chartTensorRSCovariantDerivative_def]
   rw [show tensorRSIntrinsicChartCLM (I := I) r s α T b (X b) =
       tensorRSIntrinsicChartCLM (I := I) r s α T b (Y b) from by rw [hb]]
-  have hPara :
+  have hParabolic :
       chartLeviCivitaParallelCLM (I := I) g α b X =
         chartLeviCivitaParallelCLM (I := I) g α b Y := by
     unfold chartLeviCivitaParallelCLM
@@ -78,13 +78,13 @@ private lemma chartTensorRSCovariantDerivative_eq_of_eq_at
         chartTensorRSInputSlotCorrection (I := I) r s g α T Y b k := by
     intro k
     unfold chartTensorRSInputSlotCorrection
-    rw [hPara]
+    rw [hParabolic]
   have hOutput : ∀ l : Fin s,
       chartTensorRSOutputSlotCorrection (I := I) r s g α T X b l =
         chartTensorRSOutputSlotCorrection (I := I) r s g α T Y b l := by
     intro l
     unfold chartTensorRSOutputSlotCorrection
-    rw [hPara]
+    rw [hParabolic]
   rw [Finset.sum_congr rfl (fun k _ => hInput k)]
   rw [Finset.sum_congr rfl (fun l _ => hOutput l)]
 

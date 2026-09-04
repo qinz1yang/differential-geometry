@@ -31,13 +31,13 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem expJac_lt_of_ricci
+theorem expJacobian_lt_of_ricci
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (x : M) {v : TangentSpace I x}
-    (hv : v ∈ SegDom (I := I) g hEnorm x) (hvne : v ≠ 0)
+    (hv : v ∈ SegmentDom (I := I) g hEnorm x) (hvne : v ≠ 0)
     (q : ℝ) (hq : 0 ≤ q) (hd : 0 < Module.finrank ℝ E - 1)
     (hRic : RicciBoundedBelow (I := I) g
       (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2)))
@@ -48,10 +48,10 @@ theorem expJac_lt_of_ricci
         (curveVelocity (I := I) (intrinsicGeodesic (I := I) g hEnorm x v) t) ≠
       -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) *
         (q * Real.sqrt (g.inner x v v)) ^ 2)) :
-    expJacDensity (I := I) g hEnorm x (v : E) <
+    expJacobianDensity (I := I) g hEnorm x (v : E) <
       normalChartDensity (I := I) g x 0 *
-        hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
-  have hle := expJacDensity_le (I := I) g hEnorm x hv hvne q hq hd hRic
+        hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
+  have hle := expJacobianDensity_le (I := I) g hEnorm x hv hvne q hq hd hRic
   refine lt_of_le_of_ne hle ?_
   intro heq
   obtain ⟨w, hON, hperp'⟩ :=
@@ -67,23 +67,23 @@ theorem expJac_lt_of_ricci
   have htrans :
       curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
           (fun i ↦ intrinsicJacobi (I := I) g hEnorm x v (w i)) 1 =
-        hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
+        hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := by
     apply mul_left_cancel₀ hncd.ne'
     calc
       normalChartDensity (I := I) g x 0 *
           curveDensity (I := I) g (intrinsicGeodesic (I := I) g hEnorm x v)
             (fun i ↦ intrinsicJacobi (I := I) g hEnorm x v (w i)) 1 =
-          expJacDensity (I := I) g hEnorm x (v : E) :=
-        (expJacDensity_eq_ncd0_mul_transverse (I := I) g hEnorm x hvne w hON hperp).symm
+          expJacobianDensity (I := I) g hEnorm x (v : E) :=
+        (expJacobianDensity_eq_ncd0_mul_transverse (I := I) g hEnorm x hvne w hON hperp).symm
       _ = normalChartDensity (I := I) g x 0 *
-          hypDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := heq
+          hyperbolicDensity (q * Real.sqrt (g.inner x v v)) (Module.finrank ℝ E - 1) 1 := heq
   have hsat := (transDens_eq_rigid (I := I) g hEnorm x hv hvne w hON hperp
     q hq hd hRic htrans).2 t ht
   exact hne hsat.1
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem segBall_vol_lt
+theorem segmentBall_vol_lt
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (y : M) ↦ TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -98,7 +98,7 @@ theorem segBall_vol_lt
           ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
             (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
           ∂(modelHaar (E := E)).toSphere)
-        * ENNReal.ofReal (hypRadVol 0 (Module.finrank ℝ E - 1) R) := by
+        * ENNReal.ofReal (hyperbolicRadialVolume 0 (Module.finrank ℝ E - 1) R) := by
   classical
   let : CompleteSpace E := FiniteDimensional.complete ℝ E
   let : Nontrivial E := Module.nontrivial_of_finrank_pos
@@ -112,24 +112,24 @@ theorem segBall_vol_lt
       simp
     · simpa only [zero_mul] using (hRicPos y u hu).le
   let K : Set E :=
-    {v : E | (show TangentSpace I x from v) ∈ SegDom (I := I) g hEnorm x} ∩
+    {v : E | (show TangentSpace I x from v) ∈ SegmentDom (I := I) g hEnorm x} ∩
       closedGBall (I := I) g x R
   let F : E → ℝ := fun v => normalChartDensity (I := I) g x 0 *
-    hypDensity (0 * Real.sqrt (g.inner x (show TangentSpace I x from v)
+    hyperbolicDensity (0 * Real.sqrt (g.inner x (show TangentSpace I x from v)
       (show TangentSpace I x from v))) (Module.finrank ℝ E - 1) 1
-  have hV := segBall_vol_le_int (I := I) g hEnorm x R
+  have hV := segmentBall_vol_le_int (I := I) g hEnorm x R
   have hncd : 0 < normalChartDensity (I := I) g x 0 := by
     simpa only [normalChartDensity] using
       paramDensity_pos (I := I) g (expMapDiffeo (I := I) g x)
         (zero_mem_expMapDiffeo_source (I := I) g x)
   have hpoint : ∀ v : E, v ∈ K → v ≠ 0 →
-      expJacDensity (I := I) g hEnorm x v < F v := by
+      expJacobianDensity (I := I) g hEnorm x v < F v := by
     intro v hv hvne
     let γ : ℝ → M := intrinsicGeodesic (I := I) g hEnorm x
       (show TangentSpace I x from v)
     have hvel : curveVelocity (I := I) γ (1 / 2 : ℝ) ≠ 0 := by
       simpa only [γ, curveVelocity] using
-        intrGeo_vel_ne (I := I) g hEnorm x (show TangentSpace I x from v) hvne (1 / 2 : ℝ)
+        intrinsicGeo_velocity_ne (I := I) g hEnorm x (show TangentSpace I x from v) hvne (1 / 2 : ℝ)
     have hne : ricciTensor (I := I) g (γ (1 / 2 : ℝ))
         (curveVelocity (I := I) γ (1 / 2 : ℝ))
         (curveVelocity (I := I) γ (1 / 2 : ℝ)) ≠
@@ -137,20 +137,20 @@ theorem segBall_vol_lt
           (0 * Real.sqrt (g.inner x v v)) ^ 2) := by
       simpa using
         (hRicPos (γ (1 / 2 : ℝ)) (curveVelocity (I := I) γ (1 / 2 : ℝ)) hvel).ne'
-    exact expJac_lt_of_ricci (I := I) g hEnorm x hv.1 hvne 0 (by positivity) hd
+    exact expJacobian_lt_of_ricci (I := I) g hEnorm x hv.1 hvne 0 (by positivity) hd
       (by simpa using hRic) (t := 1 / 2) (by norm_num) (by simpa only [γ] using hne)
   have hFpos (v : E) : 0 < F v := by
-    simpa [F, hypDensity, hypSn] using hncd
+    simpa [F, hyperbolicDensity, hyperbolicSn] using hncd
   have hKcomp : IsCompact K := by
     have hclosed : IsClosed {v : E | (show TangentSpace I x from v) ∈
-        SegDom (I := I) g hEnorm x} := by
+        SegmentDom (I := I) g hEnorm x} := by
       with_unfolding_all exact
-        (isClosed_segDom (I := I) g hEnorm x).preimage continuous_id
+        (isClosed_segmentDom (I := I) g hEnorm x).preimage continuous_id
     exact (isCompact_closedGBall (I := I) g x R).of_isClosed_subset
       (hclosed.inter (isClosed_closedGBall (I := I) g x R))
       (Set.inter_subset_right : K ⊆ closedGBall (I := I) g x R)
   have hKmeas : MeasurableSet K := hKcomp.measurableSet
-  obtain ⟨ρ, hρ, hradial⟩ := radial_riemannianEDist_eq_of_small' (I := I) g hEnorm x
+  obtain ⟨ρ, hρ, hradial⟩ := riemannianEDist_expMapIntrinsic_eq_norm_of_small (I := I) g hEnorm x
   let δ : ℝ := min ρ R / 2
   have hδ : 0 < δ := by
     dsimp only [δ]
@@ -165,8 +165,8 @@ theorem segBall_vol_lt
     intro v hv
     change Real.sqrt (g.inner x v v) < δ at hv
     have hvρ : Real.sqrt (g.inner x v v) < ρ := hv.trans hδρ
-    have hvseg : (show TangentSpace I x from v) ∈ SegDom (I := I) g hEnorm x := by
-      rw [mem_segDom, hradial hvρ,
+    have hvseg : (show TangentSpace I x from v) ∈ SegmentDom (I := I) g hEnorm x := by
+      rw [mem_segmentDom, hradial hvρ,
         ENNReal.toReal_ofReal (Real.sqrt_nonneg (g.inner x v v))]
     refine ⟨hvseg, ?_⟩
     change Real.sqrt (g.inner x v v) ≤ R
@@ -187,11 +187,11 @@ theorem segBall_vol_lt
     have hfun : (fun v : E => ENNReal.ofReal (F v)) =
       fun _ : E => ENNReal.ofReal (normalChartDensity (I := I) g x 0) := by
       funext v
-      simp [F, hypDensity, hypSn]
+      simp [F, hyperbolicDensity, hyperbolicSn]
     rw [hfun]
     fun_prop
   have hmono : (∫⁻ v in K,
-      ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)))
+      ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)))
       ≤ ∫⁻ v in K, ENNReal.ofReal (F v) ∂(modelHaar (E := E)) := by
     apply setLIntegral_mono_ae' hKmeas
     filter_upwards [Measure.ae_ne (modelHaar (E := E)) (0 : E)] with v hvne hvK
@@ -200,14 +200,14 @@ theorem segBall_vol_lt
     have hfun : (fun v : E => ENNReal.ofReal (F v)) =
       fun _ : E => ENNReal.ofReal (normalChartDensity (I := I) g x 0) := by
       funext v
-      simp [F, hypDensity, hypSn]
+      simp [F, hyperbolicDensity, hyperbolicSn]
     rw [hfun, setLIntegral_const]
     exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hKcomp.measure_lt_top
   have hfin : (∫⁻ v in K,
-      ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E))) ≠ ⊤ :=
+      ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E))) ≠ ⊤ :=
     (hmono.trans_lt hFfin).ne
   have hstrict : (∫⁻ v in K,
-      ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)))
+      ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v) ∂(modelHaar (E := E)))
       < ∫⁻ v in K, ENNReal.ofReal (F v) ∂(modelHaar (E := E)) := by
     apply setLIntegral_strict_mono hKmeas hKne hGmeas hfin
     filter_upwards [Measure.ae_ne (modelHaar (E := E)) (0 : E)] with v hvne hvK
@@ -216,7 +216,7 @@ theorem segBall_vol_lt
   calc
     riemannianVolumeMeasure (I := I) (M := M) g
         {y : M | riemannianEDist I x y < ENNReal.ofReal R}
-        ≤ ∫⁻ v in K, ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
+        ≤ ∫⁻ v in K, ENNReal.ofReal (expJacobianDensity (I := I) g hEnorm x v)
             ∂(modelHaar (E := E)) := by
           simpa only [K] using hV
     _ < ∫⁻ v in K, ENNReal.ofReal (F v) ∂(modelHaar (E := E)) := hstrict
@@ -227,7 +227,7 @@ theorem segBall_vol_lt
           ENNReal.ofReal (normalChartDensity (I := I) g x 0 *
             (Real.sqrt (g.inner x θ.1 θ.1) ^ (Module.finrank ℝ E))⁻¹)
           ∂(modelHaar (E := E)).toSphere)
-        * ENNReal.ofReal (hypRadVol 0 (Module.finrank ℝ E - 1) R) := by
+        * ENNReal.ofReal (hyperbolicRadialVolume 0 (Module.finrank ℝ E - 1) R) := by
       simpa only [F] using hmodel
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

@@ -182,10 +182,10 @@ theorem weightedMeasureIntegral_hasDerivAt_at
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (hintegrand_reg :
+    (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
@@ -206,7 +206,7 @@ theorem weightedMeasureIntegral_hasDerivAt_at
       (I := I) (M := M) G
       (f := fun s : Real => fun x : M =>
         perelmanDensity n (tauPath s) (potentialPath s) x * phiPath s x)
-      (t₀ := s0) hmetric_reg hintegrand_reg
+      (t₀ := s0) hmetric_regularity hintegrand_regularity
   refine hvol.congr_deriv ?_
   apply integral_congr_ae
   refine Filter.Eventually.of_forall ?_
@@ -271,10 +271,10 @@ theorem wEntropyBaseIntegral_hasDerivAt_at
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (hintegrand_reg :
+    (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           perelmanDensity n (tauPath s) (potentialPath s) x *
@@ -323,7 +323,7 @@ theorem wEntropyBaseIntegral_hasDerivAt_at
         (gradPotentialNormSqVariation := gradPotentialNormSqVariation)
         (potentialVariation := potentialVariation)
         htau htau_deriv hscalar_deriv hgrad_deriv hpotential_deriv)
-      htrace hmetric_reg hintegrand_reg)
+      htrace hmetric_regularity hintegrand_regularity)
 
 omit [TopologicalSpace M] in
 theorem WEntropyHasFirstVariationAt_of_baseIntegral_hasDerivAt
@@ -396,10 +396,10 @@ theorem WEntropyHasFirstVariationAt_of_volumeVariation
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (hintegrand_reg :
+    (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           perelmanDensity n (tauPath s) (potentialPath s) x *
@@ -425,7 +425,7 @@ theorem WEntropyHasFirstVariationAt_of_volumeVariation
     (wEntropyBaseIntegral_hasDerivAt_at
       (I := I) (M := M) G
       htau htau_pos htau_deriv hscalar_deriv hgrad_deriv
-      hpotential_deriv htrace hmetric_reg hintegrand_reg)
+      hpotential_deriv htrace hmetric_regularity hintegrand_regularity)
 
 end Geometry
 

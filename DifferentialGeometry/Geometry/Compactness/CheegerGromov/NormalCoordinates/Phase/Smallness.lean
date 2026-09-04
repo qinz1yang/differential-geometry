@@ -15,7 +15,7 @@ open Filter Set Topology
 open scoped Manifold ContDiff NNReal Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
@@ -700,5 +700,5 @@ theorem exists_chart_biq_inv
 
 end ControlledPhaseSmallness
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

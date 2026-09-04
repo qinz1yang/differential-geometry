@@ -7,7 +7,7 @@ import Mathlib.Topology.MetricSpace.Thickening
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Analysis
 open Filter Topology
@@ -18,9 +18,9 @@ variable {E F G : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F]
   [NormedAddCommGroup G] [NormedSpace ℝ G]
 
-theorem MapCPConvOn.tendstoUniformlyOn_iteratedFDeriv
+theorem MapCPConvergenceOn.tendstoUniformlyOn_iteratedFDeriv
     {U K : Set E} {p : ℕ} {Φ : ℕ → E → F} {Φinf : E → F}
-    (hU : IsOpen U) (hKU : K ⊆ U) (h : MapCPConvOn K p Φ Φinf)
+    (hU : IsOpen U) (hKU : K ⊆ U) (h : MapCPConvergenceOn K p Φ Φinf)
     (hΦ : ∀ k, ContDiffOn ℝ (p : ℕ∞) (Φ k) U)
     (hΦinf : ContDiffOn ℝ (p : ℕ∞) Φinf U) {r : ℕ} (hr : r ≤ p) :
     TendstoUniformlyOn
@@ -42,19 +42,19 @@ theorem MapCPConvOn.tendstoUniformlyOn_iteratedFDeriv
   rw [dist_eq_norm, norm_sub_rev]
   exact lt_of_le_of_lt hb (by linarith)
 
-theorem MapCPConvOn.comp_tendsto_atTop {K : Set E} {p : ℕ}
-    {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCPConvOn K p Φ Φinf)
+theorem MapCPConvergenceOn.comp_tendsto_atTop {K : Set E} {p : ℕ}
+    {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCPConvergenceOn K p Φ Φinf)
     {τ : ℕ → ℕ} (hτ : Tendsto τ atTop atTop) :
-    MapCPConvOn K p (fun k => Φ (τ k)) Φinf := by
+    MapCPConvergenceOn K p (fun k => Φ (τ k)) Φinf := by
   intro ε hε
   obtain ⟨k0, hk0⟩ := h ε hε
   obtain ⟨N, hN⟩ := eventually_atTop.mp (hτ.eventually_ge_atTop k0)
   exact ⟨N, fun k hk r hr x hx => hk0 (τ k) (hN k hk) r hr x hx⟩
 
-theorem MapCInfConvOnCompacts.comp_tendsto_atTop {U : Set E}
-    {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCInfConvOnCompacts U Φ Φinf)
+theorem MapCInfConvergenceOnCompacts.comp_tendsto_atTop {U : Set E}
+    {Φ : ℕ → E → F} {Φinf : E → F} (h : MapCInfConvergenceOnCompacts U Φ Φinf)
     {τ : ℕ → ℕ} (hτ : Tendsto τ atTop atTop) :
-    MapCInfConvOnCompacts U (fun k => Φ (τ k)) Φinf :=
+    MapCInfConvergenceOnCompacts U (fun k => Φ (τ k)) Φinf :=
   fun K hK hKU p => (h K hK hKU p).comp_tendsto_atTop hτ
 
 omit [NormedAddCommGroup F] [NormedSpace ℝ F] in
@@ -62,7 +62,7 @@ theorem mapCInf_pair_tail
     {U : Set E} {Φ : ℕ → ℕ → E → G} {Φinf : E → G}
     (hconv : ∀ kn ln : ℕ → ℕ,
       Tendsto kn atTop atTop → Tendsto ln atTop atTop →
-        MapCInfConvOnCompacts U (fun n => Φ (kn n) (ln n)) Φinf)
+        MapCInfConvergenceOnCompacts U (fun n => Φ (kn n) (ln n)) Φinf)
     {K : Set E} (hK : IsCompact K) (hKU : K ⊆ U) (p : ℕ) :
     ∀ ε > 0, ∃ N : ℕ, ∀ k ≥ N, ∀ l ≥ N, ∀ j ≤ p, ∀ x ∈ K,
       mapDerivNorm j (Φ k l) Φinf x ≤ ε := by
@@ -103,9 +103,9 @@ theorem exists_three_tail {P : Nat → Nat → Nat → Prop}
   obtain ⟨N, hN⟩ := eventually_atTop.mp (h a b c ha_top hb_top hc_top)
   exact hbad N (hN N le_rfl)
 
-theorem MapCInfConvOnCompacts.eventually_mapsTo
+theorem MapCInfConvergenceOnCompacts.eventually_mapsTo
     {U : Set E} {Φ : Nat → E → F} {Φinf : E → F}
-    (hconv : MapCInfConvOnCompacts U Φ Φinf)
+    (hconv : MapCInfConvergenceOnCompacts U Φ Φinf)
     {K : Set E} (hK : IsCompact K) (hKU : K ⊆ U)
     (hΦinf : ContinuousOn Φinf K)
     {V : Set F} (hV : IsOpen V) (hmap : Set.MapsTo Φinf K V) :
@@ -115,7 +115,7 @@ theorem MapCInfConvOnCompacts.eventually_mapsTo
   have hKV : Φinf '' K ⊆ V := Set.image_subset_iff.mpr hmap
   obtain ⟨delta, hdelta, hthick⟩ :=
     hKimage.exists_thickening_subset_open hV hKV
-  have htu := tendstoUniformlyOn_of_cPConv (hconv K hK hKU 0)
+  have htu := tendstoUniformlyOn_of_cPConvergence (hconv K hK hKU 0)
   rw [Metric.tendstoUniformlyOn_iff] at htu
   filter_upwards [htu delta hdelta] with n hn
   intro x hx
@@ -124,12 +124,12 @@ theorem MapCInfConvOnCompacts.eventually_mapsTo
   exact ⟨Φinf x, ⟨x, hx, rfl⟩, by
     simpa only [dist_comm] using hn x hx⟩
 
-theorem MapCInfConvOnCompacts.three_tail
+theorem MapCInfConvergenceOnCompacts.three_tail
     {U : Set E} {Φ : ℕ → ℕ → ℕ → E → F} {Φinf : E → F}
     (hconv : ∀ an bn cn : ℕ → ℕ,
       Tendsto an atTop atTop → Tendsto bn atTop atTop →
         Tendsto cn atTop atTop →
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun n => Φ (an n) (bn n) (cn n)) Φinf)
     {K : Set E} (hK : IsCompact K) (hKU : K ⊆ U) (p : ℕ)
     (ε : ℝ) (hε : 0 < ε) :
@@ -160,17 +160,17 @@ theorem exists_cInf_finite
     (Q : ι → (E → F) → Prop)
     (hstep : ∀ i (τ : ℕ → ℕ), StrictMono τ →
       ∃ (σ : ℕ → ℕ) (Φinf : E → F), StrictMono σ ∧
-        MapCInfConvOnCompacts (U i)
+        MapCInfConvergenceOnCompacts (U i)
           (fun n => Φ i (τ (σ n))) Φinf ∧ Q i Φinf) :
     ∃ (ψ : ℕ → ℕ), StrictMono ψ ∧
       ∀ i, ∃ Φinf : E → F,
-        MapCInfConvOnCompacts (U i) (fun n => Φ i (ψ n)) Φinf ∧ Q i Φinf := by
+        MapCInfConvergenceOnCompacts (U i) (fun n => Φ i (ψ n)) Φinf ∧ Q i Φinf := by
   classical
   let := Fintype.ofFinite ι
   have aux : ∀ s : Finset ι,
       ∃ (ψ : ℕ → ℕ), StrictMono ψ ∧
         ∀ i ∈ s, ∃ Φinf : E → F,
-          MapCInfConvOnCompacts (U i) (fun n => Φ i (ψ n)) Φinf ∧ Q i Φinf := by
+          MapCInfConvergenceOnCompacts (U i) (fun n => Φ i (ψ n)) Φinf ∧ Q i Φinf := by
     intro s
     induction s using Finset.induction_on with
     | empty =>
@@ -190,10 +190,10 @@ theorem exists_cInf_finite
   obtain ⟨ψ, hψ, hconv⟩ := aux Finset.univ
   exact ⟨ψ, hψ, fun i => hconv i (Finset.mem_univ i)⟩
 
-theorem MapCInfConvOnCompacts.tendstoUniformlyOn_iteratedFDeriv
+theorem MapCInfConvergenceOnCompacts.tendstoUniformlyOn_iteratedFDeriv
     {U K : Set E} {Φ : ℕ → E → F} {Φinf : E → F}
     (hU : IsOpen U) (hK : IsCompact K) (hKU : K ⊆ U)
-    (h : MapCInfConvOnCompacts U Φ Φinf)
+    (h : MapCInfConvergenceOnCompacts U Φ Φinf)
     (hΦ : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (Φ k) U)
     (hΦinf : ContDiffOn ℝ (∞ : WithTop ℕ∞) Φinf U) (r : ℕ) :
     TendstoUniformlyOn
@@ -203,14 +203,14 @@ theorem MapCInfConvOnCompacts.tendstoUniformlyOn_iteratedFDeriv
     (fun k => (hΦ k).of_le (by exact_mod_cast le_top))
     (hΦinf.of_le (by exact_mod_cast le_top)) le_rfl
 
-theorem mapCPConvOn_of_tendstoUniformlyOn {U K : Set E} {p : ℕ}
+theorem mapCPConvergenceOn_of_tendstoUniformlyOn {U K : Set E} {p : ℕ}
     {Φ : ℕ → E → F} {Φinf : E → F} (hU : IsOpen U) (hKU : K ⊆ U)
     (hΦ : ∀ k, ContDiffOn ℝ (p : ℕ∞) (Φ k) U)
     (hΦinf : ContDiffOn ℝ (p : ℕ∞) Φinf U)
     (htu : ∀ r : ℕ, r ≤ p →
       TendstoUniformlyOn (fun k x => iteratedFDeriv ℝ r (Φ k) x)
         (fun x => iteratedFDeriv ℝ r Φinf x) atTop K) :
-    MapCPConvOn K p Φ Φinf := by
+    MapCPConvergenceOn K p Φ Φinf := by
   intro ε hε
   have key : ∀ r : ℕ, r ≤ p →
       ∀ᶠ k in atTop, ∀ x ∈ K, mapDerivNorm r (Φ k) Φinf x ≤ ε := by
@@ -283,11 +283,11 @@ theorem TendstoUniformlyOn.eventually_norm_le
   nlinarith [hC x hx, hdist.le]
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] in
-theorem MapCInfConvOnCompacts.tendstoUniformlyOn_iteratedFDeriv_comp_moving
+theorem MapCInfConvergenceOnCompacts.tendstoUniformlyOn_iteratedFDeriv_comp_moving
     {K : Set E} {V K' : Set F}
     {A : ℕ → F → G} {Ainf : F → G} {B : ℕ → E → F} {Binf : E → F}
     (hV : IsOpen V) (hK' : IsCompact K') (hK'V : K' ⊆ V)
-    (hA : MapCInfConvOnCompacts V A Ainf)
+    (hA : MapCInfConvergenceOnCompacts V A Ainf)
     (hAc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (A k) V)
     (hAinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) Ainf V)
     (hB : TendstoUniformlyOn B Binf atTop K)
@@ -334,19 +334,19 @@ theorem MapCInfConvOnCompacts.tendstoUniformlyOn_iteratedFDeriv_comp_moving
         exact add_lt_add (hNB k hkB x hx) (hNA k hkA (B k x) hBxK')
     _ = ε := by ring
 
-theorem MapCPConvOn.comp_cInf
+theorem MapCPConvergenceOn.comp_cInf
     {U K : Set E} {V : Set F} {p : ℕ} (hU : IsOpen U) (hV : IsOpen V)
     [ProperSpace F]
     {B : ℕ → E → F} {Binf : E → F} {A : ℕ → F → G} {Ainf : F → G}
     (hK : IsCompact K) (hKU : K ⊆ U)
-    (hB : MapCPConvOn K p B Binf)
-    (hA : MapCInfConvOnCompacts V A Ainf)
+    (hB : MapCPConvergenceOn K p B Binf)
+    (hA : MapCInfConvergenceOnCompacts V A Ainf)
     (hBc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (B k) U)
     (hBinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) Binf U)
     (hAc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (A k) V)
     (hAinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) Ainf V)
     (hmap : Set.MapsTo Binf U V) (hmapk : ∀ k, Set.MapsTo (B k) U V) :
-    MapCPConvOn K p (fun k x => A k (B k x)) (fun x => Ainf (Binf x)) := by
+    MapCPConvergenceOn K p (fun k x => A k (B k x)) (fun x => Ainf (Binf x)) := by
   have hBinf_cont : ContinuousOn Binf U := hBinfc.continuousOn
   have hBKcpt : IsCompact (Binf '' K) := hK.image_of_continuousOn (hBinf_cont.mono hKU)
   have hBKV : Binf '' K ⊆ V := by
@@ -354,10 +354,10 @@ theorem MapCPConvOn.comp_cInf
     exact hmap (hKU hx)
   obtain ⟨δ₀, hδ₀pos, hδ₀V⟩ := hBKcpt.exists_cthickening_subset_open hV hBKV
   set K' : Set F := Metric.cthickening δ₀ (Binf '' K) with hK'def
-  have hK'cpt : IsCompact K' := hBKcpt.cthickening
+  have hK'compact : IsCompact K' := hBKcpt.cthickening
   have hK'V : K' ⊆ V := hδ₀V
   have hB0 : TendstoUniformlyOn B Binf atTop K :=
-    tendstoUniformlyOn_of_cPConv (hB.mono_order (Nat.zero_le p))
+    tendstoUniformlyOn_of_cPConvergence (hB.mono_order (Nat.zero_le p))
   rw [Metric.tendstoUniformlyOn_iff] at hB0
   obtain ⟨NB, hNB⟩ := eventually_atTop.mp (hB0 δ₀ hδ₀pos)
   have hBK' : ∀ᶠ k in atTop, Set.MapsTo (B k) K K' := by
@@ -369,7 +369,7 @@ theorem MapCPConvOn.comp_cInf
   have hBinfK' : Set.MapsTo Binf K K' := by
     intro x hx
     exact Metric.self_subset_cthickening _ ⟨x, hx, rfl⟩
-  refine mapCPConvOn_of_tendstoUniformlyOn hU hKU
+  refine mapCPConvergenceOn_of_tendstoUniformlyOn hU hKU
     (fun k => ContDiffOn.comp ((hAc k).of_le (by exact_mod_cast le_top))
       ((hBc k).of_le (by exact_mod_cast le_top)) (hmapk k))
     (ContDiffOn.comp (hAinfc.of_le (by exact_mod_cast le_top))
@@ -390,8 +390,8 @@ theorem MapCPConvOn.comp_cInf
       TendstoUniformlyOn
         (fun k x => iteratedFDeriv ℝ i (A k) (B k x))
         (fun x => iteratedFDeriv ℝ i Ainf (Binf x)) atTop K :=
-    fun i => hA.tendstoUniformlyOn_iteratedFDeriv_comp_moving hV hK'cpt hK'V
-      hAc hAinfc (tendstoUniformlyOn_of_cPConv (hB.mono_order (Nat.zero_le p)))
+    fun i => hA.tendstoUniformlyOn_iteratedFDeriv_comp_moving hV hK'compact hK'V
+      hAc hAinfc (tendstoUniformlyOn_of_cPConvergence (hB.mono_order (Nat.zero_le p)))
       hBK' hBinfK' i
   have hBder : ∀ i : ℕ, i ≤ p →
       TendstoUniformlyOn
@@ -443,7 +443,7 @@ theorem MapCPConvOn.comp_cInf
     refine FormalMultilinearSeries.taylorComp_sub_taylorComp_isLittleO ?hp ?hpf ?hq1 ?hq2 ?hqf
     · intro i hi
       obtain ⟨C, hC⟩ : ∃ C : ℝ, ∀ y ∈ K', ‖iteratedFDeriv ℝ i Ainf y‖ ≤ C := by
-        obtain ⟨C, hC⟩ := hK'cpt.bddAbove_image
+        obtain ⟨C, hC⟩ := hK'compact.bddAbove_image
           ((ContinuousOn.continuousOn_iteratedFDeriv hAinfc hV
             (by exact_mod_cast le_top)).norm.mono hK'V)
         exact ⟨C, fun y hy => hC ⟨y, hy, rfl⟩⟩
@@ -485,49 +485,49 @@ theorem MapCPConvOn.comp_cInf
   exact htail.mono fun k hk x hx => by
     simpa [dist_eq_norm, norm_sub_rev] using hk x hx
 
-theorem MapCInfConvOnCompacts.comp
+theorem MapCInfConvergenceOnCompacts.comp
     {U : Set E} {V : Set F} (hU : IsOpen U) (hV : IsOpen V)
     [ProperSpace F]
     {B : ℕ → E → F} {Binf : E → F} {A : ℕ → F → G} {Ainf : F → G}
-    (hB : MapCInfConvOnCompacts U B Binf)
-    (hA : MapCInfConvOnCompacts V A Ainf)
+    (hB : MapCInfConvergenceOnCompacts U B Binf)
+    (hA : MapCInfConvergenceOnCompacts V A Ainf)
     (hBc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (B k) U)
     (hBinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) Binf U)
     (hAc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (A k) V)
     (hAinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) Ainf V)
     (hmap : Set.MapsTo Binf U V) (hmapk : ∀ k, Set.MapsTo (B k) U V) :
-    MapCInfConvOnCompacts U (fun k x => A k (B k x)) (fun x => Ainf (Binf x)) := by
+    MapCInfConvergenceOnCompacts U (fun k x => A k (B k x)) (fun x => Ainf (Binf x)) := by
   intro K hK hKU p
-  exact MapCPConvOn.comp_cInf hU hV hK hKU (hB K hK hKU p) hA
+  exact MapCPConvergenceOn.comp_cInf hU hV hK hKU (hB K hK hKU p) hA
     hBc hBinfc hAc hAinfc hmap hmapk
 
-theorem MapCInfConvOnCompacts.comp_of_finiteDimensional
+theorem MapCInfConvergenceOnCompacts.comp_of_finiteDimensional
     {U : Set E} {V : Set F} (hU : IsOpen U) (hV : IsOpen V)
     [FiniteDimensional Real F]
     {B : Nat → E → F} {Binf : E → F}
     {A : Nat → F → G} {Ainf : F → G}
-    (hB : MapCInfConvOnCompacts U B Binf)
-    (hA : MapCInfConvOnCompacts V A Ainf)
+    (hB : MapCInfConvergenceOnCompacts U B Binf)
+    (hA : MapCInfConvergenceOnCompacts V A Ainf)
     (hBc : ∀ k, ContDiffOn Real ∞ (B k) U)
     (hBinfc : ContDiffOn Real ∞ Binf U)
     (hAc : ∀ k, ContDiffOn Real ∞ (A k) V)
     (hAinfc : ContDiffOn Real ∞ Ainf V)
     (hmap : Set.MapsTo Binf U V)
     (hmapk : ∀ k, Set.MapsTo (B k) U V) :
-    MapCInfConvOnCompacts U (fun k x => A k (B k x))
+    MapCInfConvergenceOnCompacts U (fun k x => A k (B k x))
       (fun x => Ainf (Binf x)) := by
   let : ProperSpace F := FiniteDimensional.proper Real F
   exact hB.comp hU hV hA hBc hBinfc hAc hAinfc hmap hmapk
 
-theorem MapCInfConvOnCompacts.const_arg
+theorem MapCInfConvergenceOnCompacts.const_arg
     {U : Set E} {V : Set F} (hU : IsOpen U) (hV : IsOpen V)
     [ProperSpace F]
     {A : Nat → F → G} {Ainf : F → G} {y₀ : F}
-    (hy₀ : y₀ ∈ V) (hA : MapCInfConvOnCompacts V A Ainf)
+    (hy₀ : y₀ ∈ V) (hA : MapCInfConvergenceOnCompacts V A Ainf)
     (hAc : ∀ k, ContDiffOn Real ∞ (A k) V)
     (hAinfc : ContDiffOn Real ∞ Ainf V) :
-    MapCInfConvOnCompacts U (fun k _ => A k y₀) (fun _ => Ainf y₀) := by
-  have hconst : MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U (fun k _ => A k y₀) (fun _ => Ainf y₀) := by
+  have hconst : MapCInfConvergenceOnCompacts U
       (fun _ : Nat => fun _ : E => y₀) (fun _ : E => y₀) :=
     by
       intro K _ _ p ε hε
@@ -544,34 +544,34 @@ variable {E' P Q : Type*}
   [NormedAddCommGroup P] [NormedSpace ℝ P]
   [NormedAddCommGroup Q] [NormedSpace ℝ Q]
 
-theorem mapCInfConv_const {U : Set E'} (Φ : E' → P) :
-    MapCInfConvOnCompacts U (fun _ : ℕ => Φ) Φ := by
+theorem mapCInfConvergence_const {U : Set E'} (Φ : E' → P) :
+    MapCInfConvergenceOnCompacts U (fun _ : ℕ => Φ) Φ := by
   intro K _ _ p ε hε
   exact ⟨0, fun k _ r _ x _ => by
     simpa [mapDerivNorm, sub_self] using hε.le⟩
 
-theorem MapCInfConvOnCompacts.precomp
+theorem MapCInfConvergenceOnCompacts.precomp
     {D : Set E'} {U : Set P} (hD : IsOpen D) (hU : IsOpen U)
     [ProperSpace P]
     {A : Nat → P → Q} {Ainf : P → Q}
-    (hA : MapCInfConvOnCompacts U A Ainf)
+    (hA : MapCInfConvergenceOnCompacts U A Ainf)
     {f : E' → P} (hf : ContDiffOn ℝ (∞ : WithTop ℕ∞) f D)
     (hmap : Set.MapsTo f D U)
     (hAc : ∀ n, ContDiffOn ℝ (∞ : WithTop ℕ∞) (A n) U)
     (hAinfC : ContDiffOn ℝ (∞ : WithTop ℕ∞) Ainf U) :
-    MapCInfConvOnCompacts D
+    MapCInfConvergenceOnCompacts D
       (fun n x => A n (f x)) (fun x => Ainf (f x)) :=
-  MapCInfConvOnCompacts.comp hD hU (mapCInfConv_const f) hA
+  MapCInfConvergenceOnCompacts.comp hD hU (mapCInfConvergence_const f) hA
     (fun _ => hf) hf hAc hAinfC hmap (fun _ => hmap)
 
-theorem MapCPConvOn.prodMk {U K : Set E'} {p : ℕ} (hU : IsOpen U) (hKU : K ⊆ U)
+theorem MapCPConvergenceOn.prodMk {U K : Set E'} {p : ℕ} (hU : IsOpen U) (hKU : K ⊆ U)
     {u : ℕ → E' → P} {uinf : E' → P} {v : ℕ → E' → Q} {vinf : E' → Q}
-    (hu : MapCPConvOn K p u uinf) (hv : MapCPConvOn K p v vinf)
+    (hu : MapCPConvergenceOn K p u uinf) (hv : MapCPConvergenceOn K p v vinf)
     (huc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (u k) U)
     (huinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) uinf U)
     (hvc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (v k) U)
     (hvinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) vinf U) :
-    MapCPConvOn K p (fun k y => (u k y, v k y)) (fun y => (uinf y, vinf y)) := by
+    MapCPConvergenceOn K p (fun k y => (u k y, v k y)) (fun y => (uinf y, vinf y)) := by
   intro ε hε
   obtain ⟨k1, hk1⟩ := hu ε hε
   obtain ⟨k2, hk2⟩ := hv ε hε
@@ -594,24 +594,24 @@ theorem MapCPConvOn.prodMk {U K : Set E'} {p : ℕ} (hU : IsOpen U) (hKU : K ⊆
   exact max_le (hk1 k (le_trans (le_max_left k1 k2) hk) r hr x hx)
     (hk2 k (le_trans (le_max_right k1 k2) hk) r hr x hx)
 
-theorem mapCInfConv_prodMk {U : Set E'} (hU : IsOpen U)
+theorem mapCInfConvergence_prodMk {U : Set E'} (hU : IsOpen U)
     {u : ℕ → E' → P} {uinf : E' → P} {v : ℕ → E' → Q} {vinf : E' → Q}
-    (hu : MapCInfConvOnCompacts U u uinf) (hv : MapCInfConvOnCompacts U v vinf)
+    (hu : MapCInfConvergenceOnCompacts U u uinf) (hv : MapCInfConvergenceOnCompacts U v vinf)
     (huc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (u k) U)
     (huinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) uinf U)
     (hvc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (v k) U)
     (hvinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) vinf U) :
-    MapCInfConvOnCompacts U (fun k y => (u k y, v k y)) (fun y => (uinf y, vinf y)) := by
+    MapCInfConvergenceOnCompacts U (fun k y => (u k y, v k y)) (fun y => (uinf y, vinf y)) := by
   intro K hK hKU p
-  exact MapCPConvOn.prodMk hU hKU (hu K hK hKU p) (hv K hK hKU p)
+  exact MapCPConvergenceOn.prodMk hU hKU (hu K hK hKU p) (hv K hK hKU p)
     huc huinfc hvc hvinfc
 
-theorem mapCInfConv_pi {ι : Type*} [Fintype ι] {U : Set E'} (hU : IsOpen U)
+theorem mapCInfConvergence_pi {ι : Type*} [Fintype ι] {U : Set E'} (hU : IsOpen U)
     {v : ι → ℕ → E' → Q} {vinf : ι → E' → Q}
-    (hv : ∀ i, MapCInfConvOnCompacts U (v i) (vinf i))
+    (hv : ∀ i, MapCInfConvergenceOnCompacts U (v i) (vinf i))
     (hvc : ∀ i k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (v i k) U)
     (hvinfc : ∀ i, ContDiffOn ℝ (∞ : WithTop ℕ∞) (vinf i) U) :
-    MapCInfConvOnCompacts U (fun k y i => v i k y) (fun y i => vinf i y) := by
+    MapCInfConvergenceOnCompacts U (fun k y i => v i k y) (fun y i => vinf i y) := by
   intro K hK hKU p ε hε
   choose k0 hk0 using fun i => hv i K hK hKU p ε hε
   refine ⟨Finset.univ.sup k0, fun k hk r hr x hx => ?_⟩
@@ -632,10 +632,10 @@ theorem mapCInfConv_pi {ι : Type*} [Fintype ι] {U : Set E'} (hU : IsOpen U)
 theorem mapCInf_apply {ι : Type*} [Fintype ι]
     {U : Set E'} (hU : IsOpen U)
     {u : ℕ → E' → (ι → Q)} {uinf : E' → (ι → Q)}
-    (hu : MapCInfConvOnCompacts U u uinf)
+    (hu : MapCInfConvergenceOnCompacts U u uinf)
     (huc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (u k) U)
     (huinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) uinf U) (i : ι) :
-    MapCInfConvOnCompacts U (fun k x ↦ u k x i) (fun x ↦ uinf x i) := by
+    MapCInfConvergenceOnCompacts U (fun k x ↦ u k x i) (fun x ↦ uinf x i) := by
   intro K hK hKU p epsilon hepsilon
   obtain ⟨k0, hk0⟩ := hu K hK hKU p epsilon hepsilon
   refine ⟨k0, fun k hk r hr x hx ↦ ?_⟩
@@ -654,14 +654,14 @@ theorem mapCInf_apply {ι : Type*} [Fintype ι]
   exact (norm_le_pi_norm (fun j ↦
     iteratedFDeriv ℝ r (fun y ↦ u k y j - uinf y j) x) i).trans hbase
 
-theorem mapCInfConv_clm {F' G' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F']
+theorem mapCInfConvergence_clm {F' G' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F']
     [NormedAddCommGroup G'] [NormedSpace ℝ G']
     {U : Set E'} (hU : IsOpen U) (L : F' →L[ℝ] G')
     {u : ℕ → E' → F'} {uinf : E' → F'}
-    (hu : MapCInfConvOnCompacts U u uinf)
+    (hu : MapCInfConvergenceOnCompacts U u uinf)
     (huc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (u k) U)
     (huinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) uinf U) :
-    MapCInfConvOnCompacts U (fun k y => L (u k y)) (fun y => L (uinf y)) := by
+    MapCInfConvergenceOnCompacts U (fun k y => L (u k y)) (fun y => L (uinf y)) := by
   intro K hK hKU p ε hε
   have hL1 : (0 : ℝ) < ‖L‖ + 1 := by positivity
   obtain ⟨k0, hk0⟩ := hu K hK hKU p (ε / (‖L‖ + 1)) (div_pos hε hL1)
@@ -683,7 +683,7 @@ theorem mapCInfConv_clm {F' G' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ
         refine mul_le_mul (by linarith [norm_nonneg L]) hbase (norm_nonneg _) hL1.le
     _ = ε := mul_div_cancel₀ ε (ne_of_gt hL1)
 
-theorem MapCInfConvOnCompacts.pullbackForm
+theorem MapCInfConvergenceOnCompacts.pullbackForm
     {V W : Type*}
     [NormedAddCommGroup V] [NormedSpace ℝ V]
     [NormedAddCommGroup W] [NormedSpace ℝ W]
@@ -691,21 +691,21 @@ theorem MapCInfConvOnCompacts.pullbackForm
     {U : Set E'} (hU : IsOpen U)
     {B : ℕ → E' → W →L[ℝ] W →L[ℝ] ℝ} {Binf : E' → W →L[ℝ] W →L[ℝ] ℝ}
     {D : ℕ → E' → V →L[ℝ] W} {Dinf : E' → V →L[ℝ] W}
-    (hB : MapCInfConvOnCompacts U B Binf)
-    (hD : MapCInfConvOnCompacts U D Dinf)
+    (hB : MapCInfConvergenceOnCompacts U B Binf)
+    (hD : MapCInfConvergenceOnCompacts U D Dinf)
     (hBc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (B k) U)
     (hBinfC : ContDiffOn ℝ (∞ : WithTop ℕ∞) Binf U)
     (hDc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (D k) U)
     (hDinfC : ContDiffOn ℝ (∞ : WithTop ℕ∞) Dinf U) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k z => pullbackForm (B k z, D k z))
       (fun z => pullbackForm (Binf z, Dinf z)) := by
-  have hpair : MapCInfConvOnCompacts U
+  have hpair : MapCInfConvergenceOnCompacts U
       (fun k z => (B k z, D k z)) (fun z => (Binf z, Dinf z)) :=
-    mapCInfConv_prodMk hU hB hD hBc hBinfC hDc hDinfC
-  apply MapCInfConvOnCompacts.comp hU isOpen_univ hpair
-    (mapCInfConv_const (U := Set.univ)
-      (_root_.DifferentialGeometry.HCGCompactness.pullbackForm (E := V) (F := W)))
+    mapCInfConvergence_prodMk hU hB hD hBc hBinfC hDc hDinfC
+  apply MapCInfConvergenceOnCompacts.comp hU isOpen_univ hpair
+    (mapCInfConvergence_const (U := Set.univ)
+      (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm (E := V) (F := W)))
   · exact fun k => (hBc k).prodMk (hDc k)
   · exact hBinfC.prodMk hDinfC
   · exact fun _ => pullbackForm.contDiff.contDiffOn
@@ -713,7 +713,7 @@ theorem MapCInfConvOnCompacts.pullbackForm
   · exact fun _ _ => Set.mem_univ _
   · exact fun _ _ _ => Set.mem_univ _
 
-theorem MapCInfConvOnCompacts.pullbackForm_comp_fderiv
+theorem MapCInfConvergenceOnCompacts.pullbackForm_comp_fderiv
     {V W : Type*}
     [NormedAddCommGroup V] [NormedSpace Real V]
     [NormedAddCommGroup W] [NormedSpace Real W] [ProperSpace W]
@@ -722,24 +722,24 @@ theorem MapCInfConvOnCompacts.pullbackForm_comp_fderiv
     {A : Nat → V → W} {Ainf : V → W}
     {B : Nat → W → (W →L[Real] W →L[Real] Real)}
     {Binf : W → (W →L[Real] W →L[Real] Real)}
-    (hA : MapCInfConvOnCompacts U A Ainf)
-    (hB : MapCInfConvOnCompacts D B Binf)
+    (hA : MapCInfConvergenceOnCompacts U A Ainf)
+    (hB : MapCInfConvergenceOnCompacts D B Binf)
     (hAc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (A n) U)
     (hAinfC : ContDiffOn Real (∞ : WithTop ℕ∞) Ainf U)
     (hBc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (B n) D)
     (hBinfC : ContDiffOn Real (∞ : WithTop ℕ∞) Binf D)
     (hmapInf : Set.MapsTo Ainf U D)
     (hmap : ∀ n, Set.MapsTo (A n) U D) :
-    MapCInfConvOnCompacts U
-      (fun n z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    MapCInfConvergenceOnCompacts U
+      (fun n z ↦ _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (B n (A n z), fderiv Real (A n) z))
-      (fun z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+      (fun z ↦ _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (Binf (Ainf z), fderiv Real Ainf z)) := by
-  have hBA : MapCInfConvOnCompacts U
+  have hBA : MapCInfConvergenceOnCompacts U
       (fun n z ↦ B n (A n z)) (fun z ↦ Binf (Ainf z)) :=
-    MapCInfConvOnCompacts.comp hU hD hA hB hAc hAinfC hBc hBinfC
+    MapCInfConvergenceOnCompacts.comp hU hD hA hB hAc hAinfC hBc hBinfC
       hmapInf hmap
-  have hDA : MapCInfConvOnCompacts U
+  have hDA : MapCInfConvergenceOnCompacts U
       (fun n z ↦ fderiv Real (A n) z) (fun z ↦ fderiv Real Ainf z) :=
     hA.fderivOn hU hAc hAinfC
   have hBAc : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
@@ -765,28 +765,28 @@ theorem MapCInfConvOnCompacts.pullbackForm_comp_fderiv
 
 end BasicClosures
 
-theorem MapCInfConvOnCompacts.ringInv
+theorem MapCInfConvergenceOnCompacts.ringInv
     {E R : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedRing R] [NormedAlgebra ℝ R] [HasSummableGeomSeries R]
     [ProperSpace R]
     {U : Set E} (hU : IsOpen U)
     {A : ℕ → E → R} {Ainf : E → R}
-    (hA : MapCInfConvOnCompacts U A Ainf)
+    (hA : MapCInfConvergenceOnCompacts U A Ainf)
     (hAc : ∀ k, ContDiffOn ℝ (∞ : WithTop ℕ∞) (A k) U)
     (hAinfc : ContDiffOn ℝ (∞ : WithTop ℕ∞) Ainf U)
     (hunit : ∀ k x, x ∈ U → IsUnit (A k x))
     (hunitInf : ∀ x, x ∈ U → IsUnit (Ainf x)) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k x => Ring.inverse (A k x))
       (fun x => Ring.inverse (Ainf x)) := by
-  apply MapCInfConvOnCompacts.comp hU Units.isOpen hA
-    (mapCInfConv_const (U := {y : R | IsUnit y}) Ring.inverse)
+  apply MapCInfConvergenceOnCompacts.comp hU Units.isOpen hA
+    (mapCInfConvergence_const (U := {y : R | IsUnit y}) Ring.inverse)
     hAc hAinfc
     (fun _ => contDiffOn_ringInverse (𝕜 := ℝ) (∞ : WithTop ℕ∞))
     (contDiffOn_ringInverse (𝕜 := ℝ) (∞ : WithTop ℕ∞))
   · exact fun x hx => hunitInf x hx
   · exact fun k x hx => hunit k x hx
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -135,10 +135,10 @@ private lemma integral_chosenSecond_mul_eq_integral_u_mixed
     (i j : Fin (Module.finrank ℝ E))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ Ω) :
+    (hψ_support : tsupport ψ ⊆ Ω) :
     ∫ y in Ω,
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y
         ∂(volume : Measure EuclN) =
     ∫ y in Ω,
         u y *
@@ -153,24 +153,24 @@ private lemma integral_chosenSecond_mul_eq_integral_u_mixed
     contDiff_fderiv_apply_single_aux (ψ := ψ) hψ_smooth j
   have hψj_cs : HasCompactSupport ψj :=
     hasCompactSupport_fderiv_apply_single_aux (ψ := ψ) hψ_cs j
-  have hψj_supp : tsupport ψj ⊆ Ω :=
-    (tsupport_fderiv_apply_single_subset_aux ψ j).trans hψ_supp
+  have hψj_support : tsupport ψj ⊆ Ω :=
+    (tsupport_fderiv_apply_single_subset_aux ψ j).trans hψ_support
   have h_u_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 u Ω := hu.memW1p
   set g_i : EuclN → ℝ :=
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω with hg_i_def
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω with hg_i_def
   have h_g_i_isWeakPartial :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i g_i u Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem h_u_memW1p i
+    chosenWeakPartialOrZero_isWeakPartial_of_mem h_u_memW1p i
   have h_g_i_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 g_i Ω := by
     have h_step := hu.chosenWeakPartial_mem i
     rw [MemWkp.one_iff_memW1p] at h_step
     exact h_step
   have h_outer_isWeakPartial :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j g_i Ω) g_i Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem h_g_i_memW1p j
-  have h_ibp_outer := h_outer_isWeakPartial ψ hψ_smooth hψ_cs hψ_supp
-  have h_ibp_inner := h_g_i_isWeakPartial ψj hψj_smooth hψj_cs hψj_supp
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j g_i Ω) g_i Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem h_g_i_memW1p j
+  have h_ibp_outer := h_outer_isWeakPartial ψ hψ_smooth hψ_cs hψ_support
+  have h_ibp_inner := h_g_i_isWeakPartial ψj hψj_smooth hψj_cs hψj_support
   have hA_eq : ∫ y in Ω, g_i y * (fderiv ℝ ψ y) (EuclideanSpace.single j 1)
         ∂(volume : Measure EuclN) =
       ∫ y in Ω, g_i y * ψj y ∂(volume : Measure EuclN) := rfl
@@ -204,21 +204,21 @@ private lemma integral_chosenSecond_mul_swap
     (i j : Fin (Module.finrank ℝ E))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ Ω) :
+    (hψ_support : tsupport ψ ⊆ Ω) :
     ∫ y in Ω,
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y
         ∂(volume : Measure EuclN) =
     ∫ y in Ω,
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y
         ∂(volume : Measure EuclN) := by
   classical
   rw [integral_chosenSecond_mul_eq_integral_u_mixed hΩ_open hu i j
-      hψ_smooth hψ_cs hψ_supp]
+      hψ_smooth hψ_cs hψ_support]
   rw [integral_u_mixed_partial_swap (u := u) hΩ_open i j hψ_smooth]
   rw [← integral_chosenSecond_mul_eq_integral_u_mixed hΩ_open hu j i
-      hψ_smooth hψ_cs hψ_supp]
+      hψ_smooth hψ_cs hψ_support]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma chosenSecond_locallyIntegrableOn_of_memWkp_two
@@ -226,21 +226,21 @@ private lemma chosenSecond_locallyIntegrableOn_of_memWkp_two
     (hu : MemWkp (d := Module.finrank ℝ E) 2 2 u Ω)
     (i j : Fin (Module.finrank ℝ E)) :
     LocallyIntegrableOn
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω) Ω
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω) Ω
       (volume : Measure EuclN) := by
   classical
   have h_inner_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω := by
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω := by
     have h_step := hu.chosenWeakPartial_mem i
     rw [MemWkp.one_iff_memW1p] at h_step
     exact h_step
   have h_outer_memLp :
-      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω) 2
+      MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω) 2
         ((volume : Measure EuclN).restrict Ω) :=
-    chosenWeakPartial'_memLp_of_mem h_inner_memW1p j
+    chosenWeakPartialOrZero_memLp_of_mem h_inner_memW1p j
   intro x hx
   obtain ⟨r, hr_pos, hr_subset⟩ := Metric.isOpen_iff.mp hΩ_open x hx
   set B : Set EuclN := Metric.closedBall x (r / 2) with hB_def
@@ -253,8 +253,8 @@ private lemma chosenSecond_locallyIntegrableOn_of_memWkp_two
     linarith [hy, hr_pos]
   have hB_meas : MeasurableSet B := hB_compact.isClosed.measurableSet
   have h_restrict :
-      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω) 2
+      MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω) 2
         (((volume : Measure EuclN).restrict Ω).restrict B) :=
     h_outer_memLp.restrict B
   have h_double_restrict :
@@ -269,8 +269,8 @@ private lemma chosenSecond_locallyIntegrableOn_of_memWkp_two
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact hB_finite
-  have h_int : IntegrableOn (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω) B
+  have h_int : IntegrableOn (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω) B
       (volume : Measure EuclN) :=
     h_restrict.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   refine ⟨B, ?_, h_int⟩
@@ -279,30 +279,30 @@ private lemma chosenSecond_locallyIntegrableOn_of_memWkp_two
   exact Metric.ball_subset_closedBall
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-theorem chosenWeakPartial'_swap_ae_of_memWkp_two
+theorem chosenWeakPartialOrZero_swap_ae_of_memWkp_two
     {u : EuclN → ℝ} {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     (hu : MemWkp (d := Module.finrank ℝ E) 2 2 u Ω)
     (i j : Fin (Module.finrank ℝ E)) :
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω =ᵐ[
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω =ᵐ[
         (volume : Measure EuclN).restrict Ω]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω := by
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω := by
   classical
   set d_fn : EuclN → ℝ := fun y =>
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y -
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y -
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y
     with hd_fn_def
   have h_first_li : LocallyIntegrableOn
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω) Ω
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω) Ω
       (volume : Measure EuclN) :=
     chosenSecond_locallyIntegrableOn_of_memWkp_two hΩ_open hu i j
   have h_second_li : LocallyIntegrableOn
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω) Ω
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω) Ω
       (volume : Measure EuclN) :=
     chosenSecond_locallyIntegrableOn_of_memWkp_two hΩ_open hu j i
   have h_d_li : LocallyIntegrableOn d_fn Ω (volume : Measure EuclN) := by
@@ -312,22 +312,22 @@ theorem chosenWeakPartial'_swap_ae_of_memWkp_two
     refine ⟨t₁ ∩ t₂, Filter.inter_mem ht₁_nhd ht₂_nhd, ?_⟩
     have h_sub₁ : t₁ ∩ t₂ ⊆ t₁ := Set.inter_subset_left
     have h_sub₂ : t₁ ∩ t₂ ⊆ t₂ := Set.inter_subset_right
-    have h1 : IntegrableOn (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω)
+    have h1 : IntegrableOn (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω)
         (t₁ ∩ t₂) (volume : Measure EuclN) :=
       ht₁_int.mono_set h_sub₁
-    have h2 : IntegrableOn (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω)
+    have h2 : IntegrableOn (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω)
         (t₁ ∩ t₂) (volume : Measure EuclN) :=
       ht₂_int.mono_set h_sub₂
     exact h1.sub h2
   have h_zero : ∀ (ψ : EuclN → ℝ), ContDiff ℝ ∞ ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ Ω → ∫ y, ψ y • d_fn y ∂(volume : Measure EuclN) = 0 := by
-    intro ψ hψ_smooth hψ_cs hψ_supp
+    intro ψ hψ_smooth hψ_cs hψ_support
     have h_vanish_off_Ω : ∀ y, y ∉ Ω → ψ y • d_fn y = 0 := by
       intro y hy
       have : ψ y = 0 :=
-        image_eq_zero_of_notMem_tsupport (fun hy_t => hy (hψ_supp hy_t))
+        image_eq_zero_of_notMem_tsupport (fun hy_t => hy (hψ_support hy_t))
       simp [this]
     rw [← setIntegral_eq_integral_of_forall_compl_eq_zero h_vanish_off_Ω]
     have h_smul_eq : ∀ y : EuclN, ψ y • d_fn y = d_fn y * ψ y := by
@@ -336,147 +336,147 @@ theorem chosenWeakPartial'_swap_ae_of_memWkp_two
     set K : Set EuclN := tsupport ψ with hK_def
     have hK_compact : IsCompact K := hψ_cs
     have hK_meas : MeasurableSet K := (isClosed_tsupport ψ).measurableSet
-    have hK_subset : K ⊆ Ω := hψ_supp
+    have hK_subset : K ⊆ Ω := hψ_support
     have hK_finite : (volume : Measure EuclN) K < ⊤ := hK_compact.measure_lt_top
     have hK_isFin : IsFiniteMeasure ((volume : Measure EuclN).restrict K) := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact hK_finite
     have h_int_first : IntegrableOn (fun y =>
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y)
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y)
         Ω (volume : Measure EuclN) := by
       have h_int_on_K : IntegrableOn (fun y =>
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y)
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y)
         K (volume : Measure EuclN) := by
         have h_inner_memW1p :
             DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω := by
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω := by
           have h_step := hu.chosenWeakPartial_mem i
           rw [MemWkp.one_iff_memW1p] at h_step
           exact h_step
         have h_memLp_Ω :
-            MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω) 2
+            MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω) 2
               ((volume : Measure EuclN).restrict Ω) :=
-          chosenWeakPartial'_memLp_of_mem h_inner_memW1p j
+          chosenWeakPartialOrZero_memLp_of_mem h_inner_memW1p j
         have h_eq : ((volume : Measure EuclN).restrict Ω).restrict K =
             (volume : Measure EuclN).restrict K := by
           rw [Measure.restrict_restrict hK_meas]
           congr 1
           exact Set.inter_eq_self_of_subset_left hK_subset
-        have h_memLp_K : MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω) 2
+        have h_memLp_K : MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω) 2
             ((volume : Measure EuclN).restrict K) := by
           have := h_memLp_Ω.restrict K
           rw [h_eq] at this
           exact this
         have h_int_K : IntegrableOn
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω) K
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω) K
             (volume : Measure EuclN) :=
           h_memLp_K.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
         exact h_int_K.mul_continuousOn hψ_smooth.continuous.continuousOn hK_compact
       have h_vanish_off_K : ∀ y, y ∉ K →
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y = 0 := by
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y = 0 := by
         intro y hy
         have : ψ y = 0 := image_eq_zero_of_notMem_tsupport hy
         simp [this]
       have h_eq_ind : (fun y =>
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y) =
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y) =
           K.indicator (fun y =>
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y) := by
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y) := by
         funext y
         by_cases hy : y ∈ K
         · simp [Set.indicator_of_mem hy]
         · simp [Set.indicator_of_notMem hy, h_vanish_off_K y hy]
       have h_ind_int : Integrable (K.indicator (fun y =>
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y))
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y))
           (volume : Measure EuclN) :=
         (integrable_indicator_iff hK_meas).mpr h_int_on_K
       have h_full_int : Integrable (fun y =>
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y)
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y)
             (volume : Measure EuclN) := by
         rw [h_eq_ind]; exact h_ind_int
       exact h_full_int.restrict
     have h_int_second : IntegrableOn (fun y =>
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y)
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y)
         Ω (volume : Measure EuclN) := by
       have h_int_on_K : IntegrableOn (fun y =>
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y)
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y)
         K (volume : Measure EuclN) := by
         have h_inner_memW1p :
             DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω := by
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω := by
           have h_step := hu.chosenWeakPartial_mem j
           rw [MemWkp.one_iff_memW1p] at h_step
           exact h_step
         have h_memLp_Ω :
-            MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω) 2
+            MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω) 2
               ((volume : Measure EuclN).restrict Ω) :=
-          chosenWeakPartial'_memLp_of_mem h_inner_memW1p i
+          chosenWeakPartialOrZero_memLp_of_mem h_inner_memW1p i
         have h_eq : ((volume : Measure EuclN).restrict Ω).restrict K =
             (volume : Measure EuclN).restrict K := by
           rw [Measure.restrict_restrict hK_meas]
           congr 1
           exact Set.inter_eq_self_of_subset_left hK_subset
-        have h_memLp_K : MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω) 2
+        have h_memLp_K : MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω) 2
             ((volume : Measure EuclN).restrict K) := by
           have := h_memLp_Ω.restrict K
           rw [h_eq] at this
           exact this
         have h_int_K : IntegrableOn
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω) K
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω) K
             (volume : Measure EuclN) :=
           h_memLp_K.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
         exact h_int_K.mul_continuousOn hψ_smooth.continuous.continuousOn hK_compact
       have h_vanish_off_K : ∀ y, y ∉ K →
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y = 0 := by
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y = 0 := by
         intro y hy
         have : ψ y = 0 := image_eq_zero_of_notMem_tsupport hy
         simp [this]
       have h_eq_ind : (fun y =>
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y) =
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y) =
           K.indicator (fun y =>
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-              (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y) := by
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+              (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y) := by
         funext y
         by_cases hy : y ∈ K
         · simp [Set.indicator_of_mem hy]
         · simp [Set.indicator_of_notMem hy, h_vanish_off_K y hy]
       have h_ind_int : Integrable (K.indicator (fun y =>
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y))
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y))
           (volume : Measure EuclN) :=
         (integrable_indicator_iff hK_meas).mpr h_int_on_K
       have h_full_int : Integrable (fun y =>
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-            (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y)
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+            (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y)
             (volume : Measure EuclN) := by
         rw [h_eq_ind]; exact h_ind_int
       exact h_full_int.restrict
     have h_d_mul : ∀ y : EuclN, d_fn y * ψ y =
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y -
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y := by
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i u Ω) Ω y * ψ y -
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 j u Ω) Ω y * ψ y := by
       intro y; simp [hd_fn_def]; ring
     simp_rw [h_d_mul]
     rw [integral_sub h_int_first h_int_second]
-    rw [integral_chosenSecond_mul_swap hΩ_open hu i j hψ_smooth hψ_cs hψ_supp]
+    rw [integral_chosenSecond_mul_swap hΩ_open hu i j hψ_smooth hψ_cs hψ_support]
     ring
   have h_ae_d_zero : ∀ᵐ x ∂(volume : Measure EuclN), x ∈ Ω → d_fn x = 0 :=
     hΩ_open.ae_eq_zero_of_integral_contDiff_smul_eq_zero h_d_li h_zero
@@ -492,7 +492,7 @@ private lemma chartPushedFirstPartial_memWkp_two_two
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (l₁ : Fin (Module.finrank ℝ E)) :
     MemWkp (d := Module.finrank ℝ E) 2 2
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₁
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₁
         (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
         (chartTargetEuclid (I := I) (M := M) α))
@@ -507,7 +507,7 @@ theorem chosenWeakPartial_chosenSecondPartialChartPushedU_eq_chosenThirdMixedPar
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (i l₁ l₂ : Fin (Module.finrank ℝ E)) :
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
         (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l₁ l₂)
         (chartTargetEuclid (I := I) (M := M) α) =ᵐ[
         (volume : Measure EuclN).restrict
@@ -520,27 +520,27 @@ theorem chosenWeakPartial_chosenSecondPartialChartPushedU_eq_chosenThirdMixedPar
     (chartAtlasPOU I M) α
     ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ) with hf_def
   set g_l₁ : EuclN → ℝ :=
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₁ f Ω with hg_l₁_def
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₁ f Ω with hg_l₁_def
   have h_g_l₁_memWkp_2 :
       MemWkp (d := Module.finrank ℝ E) 2 2 g_l₁ Ω :=
     chartPushedFirstPartial_memWkp_two_two (I := I) (M := M) g α hu_h l₁
   have h_swap1 :
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂ g_l₁ Ω) Ω =ᵐ[
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂ g_l₁ Ω) Ω =ᵐ[
         (volume : Measure EuclN).restrict Ω]
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i g_l₁ Ω) Ω := by
-    have h := chosenWeakPartial'_swap_ae_of_memWkp_two hΩ_open
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i g_l₁ Ω) Ω := by
+    have h := chosenWeakPartialOrZero_swap_ae_of_memWkp_two hΩ_open
       h_g_l₁_memWkp_2 l₂ i
     exact h
   have h_second_eq_l₁l₂ :
       chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l₁ l₂ =
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂ g_l₁ Ω := by
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂ g_l₁ Ω := by
     unfold chosenSecondPartialChartPushedU
     rfl
   have h_second_eq_l₁i :
       chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l₁ i =
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 i g_l₁ Ω := by
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i g_l₁ Ω := by
     unfold chosenSecondPartialChartPushedU
     rfl
   have h_swap2 :
@@ -551,29 +551,29 @@ theorem chosenWeakPartial_chosenSecondPartialChartPushedU_eq_chosenThirdMixedPar
       (I := I) (M := M) g α hu_h l₁ i
   have h_third_unfold :
       chosenThirdMixedPartialChartPushedU (I := I) (M := M) g α u_h i l₁ l₂ =
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂
         (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l₁) Ω := by
     unfold chosenThirdMixedPartialChartPushedU
     rfl
   rw [h_third_unfold]
   rw [h_second_eq_l₁l₂]
-  have h_aux : chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i g_l₁ Ω) Ω =
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂
+  have h_aux : chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i g_l₁ Ω) Ω =
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂
         (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l₁ i) Ω := by
     rw [h_second_eq_l₁i]
-  have h_congr := chosenWeakPartial'_ae_congr
+  have h_congr := chosenWeakPartialOrZero_ae_congr
     (d := Module.finrank ℝ E) (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     hΩ_open h_swap2 l₂
-  calc chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂ g_l₁ Ω) Ω
+  calc chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂ g_l₁ Ω) Ω
       =ᵐ[(volume : Measure EuclN).restrict Ω]
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂
-          (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i g_l₁ Ω) Ω := h_swap1
-    _ = chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂
+          (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i g_l₁ Ω) Ω := h_swap1
+    _ = chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂
           (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l₁ i) Ω := h_aux
     _ =ᵐ[(volume : Measure EuclN).restrict Ω]
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂
           (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l₁) Ω :=
         h_congr
 
@@ -645,11 +645,11 @@ private lemma weakPartial_ae_zero_off_inline
     rw [← ae_restrict_iff' hU_meas]; exact hf_ae_zero
   have h_target : ∀ᵐ y ∂(volume : Measure EuclN), y ∈ U → w y = 0 := by
     apply hU_open.ae_eq_zero_of_integral_contDiff_smul_eq_zero hw_li
-    intro ψ hψ_smooth hψ_cs hψ_supp
-    have hψ_supp_Ω : tsupport ψ ⊆ Ω := hψ_supp.trans hU_sub
+    intro ψ hψ_smooth hψ_cs hψ_support
+    have hψ_support_Ω : tsupport ψ ⊆ Ω := hψ_support.trans hU_sub
     have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
-    have h_weak := hw_isWeak ψ hψ_smooth hψ_cs hψ_supp_Ω
-    have h_f_supp_ae : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
+    have h_weak := hw_isWeak ψ hψ_smooth hψ_cs hψ_support_Ω
+    have h_f_support_ae : ∀ᵐ y ∂((volume : Measure EuclN).restrict Ω),
         f y * (fderiv ℝ ψ y) (EuclideanSpace.single i 1) = 0 := by
       refine (ae_restrict_iff' hΩ_meas).mpr ?_
       filter_upwards [hf_ae_zero_vol] with y hy _hyΩ
@@ -657,24 +657,24 @@ private lemma weakPartial_ae_zero_off_inline
       · rw [hy hy_U]; ring
       · have h_compl_open : IsOpen ((tsupport ψ)ᶜ) :=
           (isClosed_tsupport _).isOpen_compl
-        have h_y_not_supp : y ∉ tsupport ψ := fun h => hy_U (hψ_supp h)
-        have h_zero_nbhd : ∀ᶠ z in 𝓝 y, ψ z = 0 := by
-          filter_upwards [h_compl_open.mem_nhds h_y_not_supp] with z hz
+        have h_y_not_support : y ∉ tsupport ψ := fun h => hy_U (hψ_support h)
+        have h_zero_neighborhood : ∀ᶠ z in 𝓝 y, ψ z = 0 := by
+          filter_upwards [h_compl_open.mem_nhds h_y_not_support] with z hz
           exact image_eq_zero_of_notMem_tsupport hz
         have h_fderiv_zero : fderiv ℝ ψ y = 0 := by
-          have h_ev_const : ψ =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := h_zero_nbhd
+          have h_ev_const : ψ =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := h_zero_neighborhood
           rw [Filter.EventuallyEq.fderiv_eq h_ev_const]; simp
         rw [h_fderiv_zero]; simp
     have h_zero_lhs :
         ∫ y in Ω, f y * (fderiv ℝ ψ y) (EuclideanSpace.single i 1)
           ∂(volume : Measure EuclN) = 0 := by
-      rw [MeasureTheory.integral_congr_ae h_f_supp_ae]; simp
+      rw [MeasureTheory.integral_congr_ae h_f_support_ae]; simp
     rw [h_zero_lhs] at h_weak
     have h_rhs_zero :
         ∫ y in Ω, w y * ψ y ∂(volume : Measure EuclN) = 0 := by linarith
     have h_vanish_off_Ω : ∀ x ∉ Ω, ψ x • w x = 0 := fun x hx => by
-      have hx_supp : x ∉ tsupport ψ := fun h => hx (hψ_supp_Ω h)
-      have hψ_x : ψ x = 0 := image_eq_zero_of_notMem_tsupport hx_supp
+      have hx_support : x ∉ tsupport ψ := fun h => hx (hψ_support_Ω h)
+      have hψ_x : ψ x = 0 := image_eq_zero_of_notMem_tsupport hx_support
       rw [hψ_x]; simp
     rw [← MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero
       h_vanish_off_Ω]
@@ -763,7 +763,7 @@ private lemma chosenFirstPartial_chartPushed_ae_zero_off_chartImagePOUTsupport
     ∀ᵐ y ∂((volume : Measure EuclN).restrict
       ((chartTargetEuclid (I := I) (M := M) α) \
         chartImagePOUTsupport (I := I) (M := M) α)),
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
         (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
         (chartTargetEuclid (I := I) (M := M) α) y = 0 := by
@@ -772,14 +772,14 @@ private lemma chosenFirstPartial_chartPushed_ae_zero_off_chartImagePOUTsupport
     chartPushed_memW1p_two_of_laplacianDomainPow_two
       (I := I) (M := M) g α hu_h
   have h_isWeak :=
-    chosenWeakPartial'_isWeakPartial_of_mem h_w1p i
+    chosenWeakPartialOrZero_isWeakPartial_of_mem h_w1p i
   have h_pushed_zero :=
     chartPushed_ae_zero_off_chartImagePOUTsupport (I := I) (M := M) g α u_h
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hU_open := chartTarget_diff_chartImagePOUTsupport_isOpen (I := I) (M := M) α
   have hU_sub := chartTarget_diff_chartImagePOUTsupport_subset (I := I) (M := M) α
-  have h_chosen_memLp := chosenWeakPartial'_memLp_of_mem h_w1p i
+  have h_chosen_memLp := chosenWeakPartialOrZero_memLp_of_mem h_w1p i
   have hw_li := locallyIntegrableOn_of_memLp_two_chartTarget_inline
     (I := I) (M := M) (α := α) (f := _) h_chosen_memLp
   exact weakPartial_ae_zero_off_inline hΩ_open hU_open hU_sub (i := i)
@@ -797,7 +797,7 @@ private lemma chosenSecondPartial_ae_zero_off_chartImagePOUTsupport
         (I := I) (M := M) g α u_h l₁ l₂ y = 0 := by
   classical
   set g_l₁ : EuclN → ℝ :=
-    chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₁
+    chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₁
       (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
       (chartTargetEuclid (I := I) (M := M) α) with hg_l₁_def
@@ -806,7 +806,7 @@ private lemma chosenSecondPartial_ae_zero_off_chartImagePOUTsupport
       (I := I) (M := M) g α hu_h l₁
   have h_unfold : chosenSecondPartialChartPushedU
         (I := I) (M := M) g α u_h l₁ l₂ =
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 l₂ g_l₁
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 l₂ g_l₁
         (chartTargetEuclid (I := I) (M := M) α) := rfl
   rw [h_unfold]
   have h_g_l₁_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 g_l₁
@@ -817,9 +817,9 @@ private lemma chosenSecondPartial_ae_zero_off_chartImagePOUTsupport
     rw [MemWkp.one_iff_memW1p] at h_step
     exact h_step
   have h_isWeak :=
-    chosenWeakPartial'_isWeakPartial_of_mem h_g_l₁_memW1p l₂
+    chosenWeakPartialOrZero_isWeakPartial_of_mem h_g_l₁_memW1p l₂
   have h_chosen_memLp :=
-    chosenWeakPartial'_memLp_of_mem h_g_l₁_memW1p l₂
+    chosenWeakPartialOrZero_memLp_of_mem h_g_l₁_memW1p l₂
   have hw_li := locallyIntegrableOn_of_memLp_two_chartTarget_inline
     (I := I) (M := M) (α := α) (f := _) h_chosen_memLp
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
@@ -847,7 +847,7 @@ private noncomputable def twiceDerived_weak_partial
     (l₁ l₂ : Fin (Module.finrank ℝ E))
     (u_h : H1Compl (I := I) (M := M) g)
     (i : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+  chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
     (twiceDerived_u_chart (I := I) (M := M) g α l₁ l₂ u_h)
     (chartTargetEuclid (I := I) (M := M) α)
 
@@ -960,7 +960,7 @@ private lemma twiceDerived_f_chart_memLp_weighted
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   unfold twiceDerived_f_chart
-  exact fChartEffTwice_memLp_two_weighted (I := I) (M := M)
+  exact fChartEffectiveTwice_memLp_two_weighted (I := I) (M := M)
     (g := g) (α := α) (l₁ := l₁) (l₂ := l₂) (u_h := u_h) (hu_h := hu_h)
 
 private lemma twiceDerived_weak_partial_locally_memLp
@@ -979,12 +979,12 @@ private lemma twiceDerived_weak_partial_locally_memLp
     chosenSecondPartialChartPushedU_memW1p_two_of_laplacianDomainPow_two
       (I := I) (M := M) g α hu_h l₁ l₂
   have h_global :
-      MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 i
+      MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 i
         (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l₁ l₂)
         (chartTargetEuclid (I := I) (M := M) α)) 2
         ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)) :=
-    chosenWeakPartial'_memLp_of_mem h_u_memW1p i
+    chosenWeakPartialOrZero_memLp_of_mem h_u_memW1p i
   have hK_meas : MeasurableSet K := hK_compact.isClosed.measurableSet
   have h_eq : ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)).restrict K =
@@ -1006,7 +1006,7 @@ private lemma twiceDerived_weak_partial_isWeakPartial
       (twiceDerived_u_chart (I := I) (M := M) g α l₁ l₂ u_h)
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold twiceDerived_weak_partial twiceDerived_u_chart
-  exact chosenWeakPartial'_isWeakPartial_of_mem
+  exact chosenWeakPartialOrZero_isWeakPartial_of_mem
     (chosenSecondPartialChartPushedU_memW1p_two_of_laplacianDomainPow_two
       (I := I) (M := M) g α hu_h l₁ l₂) i
 
@@ -1049,9 +1049,9 @@ noncomputable def twiceDerivedChartBilinearH1ComplData
   weak_partial_isWeakPartial := fun i =>
     twiceDerived_weak_partial_isWeakPartial (I := I) (M := M) g α l₁ l₂ hu_h i
   variational_identity := by
-    intro ψ hψ hψ_cs hψ_supp
+    intro ψ hψ hψ_cs hψ_support
     classical
-    have h_in := h_twice_identity ψ hψ hψ_cs hψ_supp
+    have h_in := h_twice_identity ψ hψ hψ_cs hψ_support
     have h_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
       chartTargetEuclid_isOpen (I := I) (M := M) α
     have hK_compact : IsCompact (tsupport ψ) := hψ_cs

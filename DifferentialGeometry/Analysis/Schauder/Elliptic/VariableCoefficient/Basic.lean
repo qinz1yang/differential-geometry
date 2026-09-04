@@ -19,7 +19,7 @@ private abbrev Euc (n : Type*) := EuclideanSpace Real n
 variable {n F : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
   [NormedAddCommGroup F] [NormedSpace Real F]
 
-def hessianComponentBcf
+def hessianComponentBoundedContinuousFunction
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[Real] Euc n →L[Real] F)) (i j : n) :
     BoundedContinuousFunction (Euc n) F :=
@@ -31,10 +31,10 @@ def hessianComponentBcf
 
 omit [DecidableEq n] [Nonempty n] in
 @[simp]
-theorem hessianComponentBcf_apply
+theorem hessianComponentBoundedContinuousFunction_apply
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[Real] Euc n →L[Real] F)) (i j : n) (x : Euc n) :
-    hessianComponentBcf d2u i j x =
+    hessianComponentBoundedContinuousFunction d2u i j x =
       d2u x (EuclideanSpace.basisFun n Real i)
         (EuclideanSpace.basisFun n Real j) := rfl
 
@@ -43,25 +43,25 @@ def variableMatrixLap
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[Real] Euc n →L[Real] F)) :
     BoundedContinuousFunction (Euc n) F :=
-  ∑ i, ∑ j, a i j • hessianComponentBcf d2u i j
+  ∑ i, ∑ j, a i j • hessianComponentBoundedContinuousFunction d2u i j
 
-def matrixLapBcf
+def matrixLapBoundedContinuousFunction
     (A : Matrix n n Real)
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[Real] Euc n →L[Real] F)) :
     BoundedContinuousFunction (Euc n) F :=
-  ∑ i, ∑ j, (A i j) • hessianComponentBcf d2u i j
+  ∑ i, ∑ j, (A i j) • hessianComponentBoundedContinuousFunction d2u i j
 
 omit [DecidableEq n] [Nonempty n] in
 @[simp]
-theorem matrixLapBcf_apply
+theorem matrixLapBoundedContinuousFunction_apply
     (A : Matrix n n Real)
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[Real] Euc n →L[Real] F)) (x : Euc n) :
-    matrixLapBcf A d2u x = matrixLap A (d2u x) := by
-  simp only [matrixLapBcf, matrixLap,
+    matrixLapBoundedContinuousFunction A d2u x = matrixLap A (d2u x) := by
+  simp only [matrixLapBoundedContinuousFunction, matrixLap,
     BoundedContinuousFunction.sum_apply,
-    BoundedContinuousFunction.smul_apply, hessianComponentBcf_apply]
+    BoundedContinuousFunction.smul_apply, hessianComponentBoundedContinuousFunction_apply]
 
 omit [DecidableEq n] [Nonempty n] in
 @[simp]
@@ -343,7 +343,7 @@ def frozenMatrixLap
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[Real] Euc n →L[Real] F)) :
     BoundedContinuousFunction (Euc n) F :=
-  ∑ i, ∑ j, (a i j x0) • hessianComponentBcf d2u i j
+  ∑ i, ∑ j, (a i j x0) • hessianComponentBoundedContinuousFunction d2u i j
 
 omit [DecidableEq n] [Nonempty n] in
 @[simp]
@@ -355,7 +355,7 @@ theorem frozenMatrixLap_apply
       matrixLap (fun i j ↦ a i j x0) (d2u x) := by
   simp only [frozenMatrixLap, matrixLap,
     BoundedContinuousFunction.sum_apply,
-    BoundedContinuousFunction.smul_apply, hessianComponentBcf_apply]
+    BoundedContinuousFunction.smul_apply, hessianComponentBoundedContinuousFunction_apply]
 
 def matrixLapFreezeDefect
     (a : n → n → BoundedContinuousFunction (Euc n) Real) (x0 : Euc n)
@@ -363,8 +363,8 @@ def matrixLapFreezeDefect
       (Euc n →L[Real] Euc n →L[Real] F)) :
     BoundedContinuousFunction (Euc n) F :=
   ∑ i, ∑ j,
-    ((a i j x0) • hessianComponentBcf d2u i j -
-      a i j • hessianComponentBcf d2u i j)
+    ((a i j x0) • hessianComponentBoundedContinuousFunction d2u i j -
+      a i j • hessianComponentBoundedContinuousFunction d2u i j)
 
 omit [DecidableEq n] [Nonempty n] in
 @[simp]
@@ -419,10 +419,10 @@ theorem norm_apply_euclideanBasis_le_one
     mul_one, one_mul] using A.le_opNorm (EuclideanSpace.basisFun n Real i)
 
 omit [DecidableEq n] [Nonempty n] in
-theorem norm_hessianComponentBcf_apply_le
+theorem norm_hessianComponentBoundedContinuousFunction_apply_le
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[Real] Euc n →L[Real] F)) (i j : n) (x : Euc n) :
-    ‖hessianComponentBcf d2u i j x‖ ≤ ‖d2u x‖ := by
+    ‖hessianComponentBoundedContinuousFunction d2u i j x‖ ≤ ‖d2u x‖ := by
   calc
     ‖d2u x (EuclideanSpace.basisFun n Real i)
         (EuclideanSpace.basisFun n Real j)‖ ≤
@@ -439,17 +439,17 @@ theorem norm_hessianComponentBcf_apply_le
         mul_one, mul_one]
 
 omit [DecidableEq n] [Nonempty n] in
-theorem hessianComponentBcf_holderWith
+theorem hessianComponentBoundedContinuousFunction_holderWith
     {alpha K : NNReal}
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[Real] Euc n →L[Real] F))
     (hd2u : HolderWith K alpha
       (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F))
     (i j : n) :
-    HolderWith K alpha (hessianComponentBcf d2u i j : Euc n → F) := by
+    HolderWith K alpha (hessianComponentBoundedContinuousFunction d2u i j : Euc n → F) := by
   intro x y
-  have hreal : dist (hessianComponentBcf d2u i j x)
-      (hessianComponentBcf d2u i j y) ≤
+  have hreal : dist (hessianComponentBoundedContinuousFunction d2u i j x)
+      (hessianComponentBoundedContinuousFunction d2u i j y) ≤
       (K : Real) * dist x y ^ (alpha : Real) := by
     rw [dist_eq_norm]
     change ‖d2u x (EuclideanSpace.basisFun n Real i)
@@ -478,8 +478,8 @@ theorem hessianComponentBcf_holderWith
       _ ≤ (K : Real) * dist x y ^ (alpha : Real) := hd2u.dist_le x y
   rw [edist_dist, edist_dist]
   calc
-    ENNReal.ofReal (dist (hessianComponentBcf d2u i j x)
-        (hessianComponentBcf d2u i j y)) ≤
+    ENNReal.ofReal (dist (hessianComponentBoundedContinuousFunction d2u i j x)
+        (hessianComponentBoundedContinuousFunction d2u i j y)) ≤
         ENNReal.ofReal ((K : Real) * dist x y ^ (alpha : Real)) :=
       ENNReal.ofReal_le_ofReal hreal
     _ = (K : ENNReal) * ENNReal.ofReal (dist x y ^ (alpha : Real)) := by
@@ -518,7 +518,7 @@ theorem norm_matrixLapFreezeDefect_le
       intro j hj
       rw [norm_smul]
       exact mul_le_mul (homega i j x)
-        ((norm_hessianComponentBcf_apply_le d2u i j x).trans
+        ((norm_hessianComponentBoundedContinuousFunction_apply_le d2u i j x).trans
           (hd2unorm x))
         (norm_nonneg _) (by positivity)
 
@@ -555,11 +555,11 @@ theorem matrixLapFreezeDefect_holderWith
         rw [show a i j x0 - a i j x - (a i j x0 - a i j y) =
           -(a i j x - a i j y) by ring, abs_neg]]
       exact ha i j x y
-    have hhess := hessianComponentBcf_holderWith d2u hd2u i j
+    have hhess := hessianComponentBoundedContinuousFunction_holderWith d2u hd2u i j
     apply holderWith_smul_of_norm_le hcoeff hhess
     · exact homega i j
     · intro x
-      exact (norm_hessianComponentBcf_apply_le d2u i j x).trans
+      exact (norm_hessianComponentBoundedContinuousFunction_apply_le d2u i j x).trans
         (hd2unorm x)
   have hinner : ∀ i,
       HolderWith (∑ j, C i j) alpha (fun x ↦
@@ -616,7 +616,7 @@ theorem norm_matrixLapFreezeDefect_le_of_support
         intro j hj
         rw [norm_smul]
         exact mul_le_mul (homega i j x hx)
-          ((norm_hessianComponentBcf_apply_le d2u i j x).trans
+          ((norm_hessianComponentBoundedContinuousFunction_apply_le d2u i j x).trans
             (hd2unorm x))
           (norm_nonneg _) (by positivity)
   · rw [hd2usupport x hx]
@@ -662,14 +662,14 @@ theorem matrixLapFreezeDefect_holderWith_of_support
         rw [show a i j x0 - a i j x.1 - (a i j x0 - a i j y.1) =
           -(a i j x.1 - a i j y.1) by ring, abs_neg]]
       exact ha i j x y
-    have hhess := hessianComponentBcf_holderWith d2u hd2u i j
+    have hhess := hessianComponentBoundedContinuousFunction_holderWith d2u hd2u i j
     apply holderWith_smul_of_restrict_of_support hcoeff hhess
     · exact homega i j
     · intro x
-      exact (norm_hessianComponentBcf_apply_le d2u i j x).trans
+      exact (norm_hessianComponentBoundedContinuousFunction_apply_le d2u i j x).trans
         (hd2unorm x)
     · intro x hx
-      rw [hessianComponentBcf_apply, hd2usupport x hx]
+      rw [hessianComponentBoundedContinuousFunction_apply, hd2usupport x hx]
       simp
   have hinner : ∀ i,
       HolderWith (∑ j, C i j) alpha (fun x ↦

@@ -142,14 +142,14 @@ theorem radialFirstOrderActionSecondToFirstOrder_pairing_bound
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T₀‖ ≤ r := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simp only [ccToHsLin_apply] at hrad
     exact hrad.trans hTr
   have hU₀top :
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U₀‖ ≤ r := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) U)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ U] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ U] at hrad
     simp only [ccToHsLin_apply] at hrad
     exact hrad.trans hUr
   have hT₃ :

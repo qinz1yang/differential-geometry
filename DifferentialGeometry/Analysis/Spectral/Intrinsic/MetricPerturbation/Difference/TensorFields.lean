@@ -225,12 +225,12 @@ def metricDifference02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
         (chartAt H x₀).source :=
       chartFrame_component_contMDiffOn (I := I)
         (metricDifference02_contMDiff (I := I) g₁ g₂) x₀ (σ 0) (σ 1)
-    have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
+    have hx₀_source : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) x₀
-    have h_src_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
-      (chartAt H x₀).open_source.mem_nhds hx₀_src
-    refine ((hcomp x₀ hx₀_src).contMDiffAt h_src_nhd).congr_of_eventuallyEq ?_
+    have h_source_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
+      (chartAt H x₀).open_source.mem_nhds hx₀_source
+    refine ((hcomp x₀ hx₀_source).contMDiffAt h_source_nhd).congr_of_eventuallyEq ?_
     have h_base_nhd :
         (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 x₀ :=
       (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hx₀_base
@@ -346,12 +346,12 @@ def metricDifference02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
         (chartAt H x₀).source :=
       chartFrame_component3_contMDiffOn (I := I)
         (metricDifference02Cov_contMDiff (I := I) g₀ g₁ g₂) x₀ (σ 0) (σ 1) (σ 2)
-    have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
+    have hx₀_source : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) x₀
-    have h_src_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
-      (chartAt H x₀).open_source.mem_nhds hx₀_src
-    refine ((hcomp x₀ hx₀_src).contMDiffAt h_src_nhd).congr_of_eventuallyEq ?_
+    have h_source_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
+      (chartAt H x₀).open_source.mem_nhds hx₀_source
+    refine ((hcomp x₀ hx₀_source).contMDiffAt h_source_nhd).congr_of_eventuallyEq ?_
     have h_base_nhd :
         (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 x₀ :=
       (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hx₀_base
@@ -471,12 +471,12 @@ def metricDifference02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I
         (chartAt H x₀).source :=
       chartFrame_component4_contMDiffOn (I := I)
         (metricDifference02CovIterate_contMDiff (I := I) g₀ g₁ g₂) x₀ (σ 0) (σ 1) (σ 2) (σ 3)
-    have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
+    have hx₀_source : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) x₀
-    have h_src_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
-      (chartAt H x₀).open_source.mem_nhds hx₀_src
-    refine ((hcomp x₀ hx₀_src).contMDiffAt h_src_nhd).congr_of_eventuallyEq ?_
+    have h_source_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
+      (chartAt H x₀).open_source.mem_nhds hx₀_source
+    refine ((hcomp x₀ hx₀_source).contMDiffAt h_source_nhd).congr_of_eventuallyEq ?_
     have h_base_nhd :
         (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 x₀ :=
       (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hx₀_base

@@ -16,14 +16,14 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 
 omit [NeZero d] in
 theorem diffQuot_bound_of_smooth_compactSupport
-    {f : E → ℝ} (hf : ContDiff ℝ 1 f) (hf_supp : HasCompactSupport f)
+    {f : E → ℝ} (hf : ContDiff ℝ 1 f) (hf_support : HasCompactSupport f)
     (i : Fin d) :
     ∃ L : ℝ, 0 ≤ L ∧
       ∀ h : ℝ, ∀ x : E,
         |DifferentialGeometry.Analysis.Sobolev.diffQuot i h f x| ≤ L := by
   obtain ⟨L, hL_nn, hLip⟩ :=
     DifferentialGeometry.Analysis.Sobolev.lipschitz_of_contDiff_compactSupport
-      (d := d) hf hf_supp
+      (d := d) hf hf_support
   refine ⟨L, hL_nn, fun h x => ?_⟩
   by_cases hh : h = 0
   · simp [DifferentialGeometry.Analysis.Sobolev.diffQuot, hh, hL_nn]

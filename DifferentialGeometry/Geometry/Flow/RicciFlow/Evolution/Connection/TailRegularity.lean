@@ -85,13 +85,13 @@ theorem tailChristoffel
   let D' := RealTimeInterval.closedOpen t₀ omega ht₀ω
   let S' := S.timeRestrict D'
   have hS' : IsSolutionOn (I := I) S' := by
-    simpa [S', D'] using isSoln_tailRestrict (I := I) hS hαt₀ ht₀ω
+    simpa [S', D'] using isSolutionOn_tailRestrict (I := I) hS hαt₀ ht₀ω
   have htime :
       MetricFrameTimeRegularityInFrameOnLocal
         (I := I) S'
         (localFrameInv (E := E) (I := I) S' frame hframe)
         (localFrameInvDt (E := E) (I := I) S' frame hframe) frame u := by
-    simpa [S', D'] using tailFrameTimeReg (I := I) hS hαt₀ ht₀ω frame hframe
+    simpa [S', D'] using tailFrameTimeRegularity (I := I) hS hαt₀ ht₀ω frame hframe
   have hSmooth : ∀ a b : Idx, ∀ t, t ∈ D'.regular -> ∀ x : M, x ∈ u ->
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) 2
         (fun p : Real × M =>
@@ -137,7 +137,7 @@ theorem tailChristoffel
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem tailChristoffelReg
+theorem tailChristoffelRegularized
     {Idx : Type} [Fintype Idx] [DecidableEq Idx]
     {u : Set M}
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
@@ -169,7 +169,7 @@ theorem tailChristoffelReg
   obtain ⟨hframe1, hchr⟩ :=
     tailChristoffel (I := I) (Idx := Idx) hS hAlphaT0 hT0Omega frame hframe hu
   refine ⟨hframe1, ?_, hchr⟩
-  exact tailFrameSpaceReg (I := I) hS hAlphaT0 hT0Omega frame hframe hu
+  exact tailFrameSpaceRegularity (I := I) hS hAlphaT0 hT0Omega frame hframe hu
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in

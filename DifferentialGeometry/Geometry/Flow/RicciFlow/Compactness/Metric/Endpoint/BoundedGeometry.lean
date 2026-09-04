@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -55,5 +55,5 @@ def metricCompactnessOfBoundedGeometry
     exists_bounded_geometry_normal_data (I := I) X hcomplete hconn hgeom b.decay b.realizes
   exact b.higherRegularityMetricCompactness (Classical.choice hd) hcomplete hconn
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

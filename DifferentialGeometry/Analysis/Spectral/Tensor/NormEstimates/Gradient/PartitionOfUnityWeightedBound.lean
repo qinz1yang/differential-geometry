@@ -94,14 +94,14 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
   refine ⟨A, B, hA_nn, hB_nn, ?_⟩
   intro S Idx Jdx b hb
   set z : E := extChartAt I α b with hz_def
-  have hb_chart_src : b ∈ (chartAt H α).source :=
+  have hb_chart_source : b ∈ (chartAt H α).source :=
     chartAtlasPOU_isSubordinate (I := I) (M := M) α hb
   have hb_goodSet : b ∈ chartLeviCivitaGoodSet (I := I) α := by
     rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α,
         extChartAt_source_eq_chartAt_source (I := I)]
-    exact hb_chart_src
-  have hb_extSrc : b ∈ (extChartAt I α).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hb_chart_src
+    exact hb_chart_source
+  have hb_extSource : b ∈ (extChartAt I α).source := by
+    rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hb_chart_source
   have hu_mdiff_at : MDifferentiableAt I 𝓘(ℝ, ℝ)
       (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx) b :=
     ((tensorChartComponentScalar_contMDiff (I := I) (M := M)
@@ -142,7 +142,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
     with hρ_z_def
   have hρ_z_eq_b : ρ_z = ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b := by
     rw [hρ_z_def, hz_def]
-    exact scalarOnE_extChartAt (I := I) α _ hb_extSrc
+    exact scalarOnE_extChartAt (I := I) α _ hb_extSource
   have h_step_grad3 :
       g.inner b
         (gradFun (I := I) g
@@ -157,7 +157,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
     have := g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials
       (I := I) (M := M) g α
       (f := tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx)
-      (x := b) hu_mdiff_at hb_chart_src
+      (x := b) hu_mdiff_at hb_chart_source
     rw [hz_def]
     exact this
   have h_l1Sum_le : chartInvGramMatrixL1Sum (I := I) (M := M) g α b ≤ M_Ginv :=
@@ -174,7 +174,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
               g r s S α Idx Jdx)) z := by
     intro k
     have h := partialDeriv_scalarOnE_tensorChartComponentScalar_leibniz
-      (I := I) (M := M) g r s S α Idx Jdx hb_chart_src k
+      (I := I) (M := M) g r s S α Idx Jdx hb_chart_source k
     rw [hraw_z_def, hρ_z_def, hz_def]
     exact h
   have h_sq_le : ∀ k : Fin (Module.finrank ℝ E),

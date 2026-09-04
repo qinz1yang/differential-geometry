@@ -32,10 +32,10 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem hasDerivAt_lRegLagrangian
+theorem hasDerivAt_lRegularizedLagrangian
     (S : SolutionOn (I := I) (M := M) D) (T s : Real)
     (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f) :
-    HasDerivAt (fun u : Real ↦ lRegLagrangian S T (f u) s)
+    HasDerivAt (fun u : Real ↦ lRegularizedLagrangian S T (f u) s)
       ((S.base.metric (T - s ^ 2)).inner (f 0 s)
           (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
             (f 0) (fun r : Real ↦
@@ -73,7 +73,7 @@ theorem hasDerivAt_lRegLagrangian
     convert hscalar using 1 <;> ring_nf
   have hout := (hspeed'.const_mul (1 / 2 : Real)).add
     (hscalar'.const_mul (2 * s ^ 2))
-  have hfun : (fun u : Real ↦ lRegLagrangian S T (f u) s) =
+  have hfun : (fun u : Real ↦ lRegularizedLagrangian S T (f u) s) =
       (fun y ↦ (1 / 2 : Real) * speedSq (I := I) g f y s) +
         (fun y ↦ 2 * s ^ 2 * S.scalar (T - s ^ 2) (f y s)) := by
     funext u
@@ -85,7 +85,7 @@ theorem hasDerivAt_lRegLagrangian
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem lRegScalar_contDiffOn_two
+private theorem lRegularizedScalar_contDiffOn_two
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f) :
     ContDiffOn Real 2
@@ -123,7 +123,7 @@ private theorem lRegScalar_contDiffOn_two
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem lRegSpeed_contDiffOn_two
+private theorem lRegularizedSpeed_contDiffOn_two
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f) :
     ContDiffOn Real 2
@@ -192,7 +192,7 @@ private theorem lRegSpeed_contDiffOn_two
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem lRegPair_contDiffOn_two
+private theorem lRegularizedPair_contDiffOn_two
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f) :
     ContDiffOn Real 2
@@ -287,26 +287,26 @@ private theorem lRegPair_contDiffOn_two
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem lRegLagrangian_contDiffOn_two
+private theorem lRegularizedLagrangian_contDiffOn_two
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f) :
     ContDiffOn Real 2
-      (fun p : Real × Real ↦ lRegLagrangian S T (f p.1) p.2)
+      (fun p : Real × Real ↦ lRegularizedLagrangian S T (f p.1) p.2)
       {p : Real × Real | T - p.2 ^ 2 ∈ D.regular} := by
-  have hscalar := lRegScalar_contDiffOn_two (I := I) S hS T f hf
-  have hspeed := lRegSpeed_contDiffOn_two (I := I) S hS T f hf
-  simpa only [lRegLagrangian] using
+  have hscalar := lRegularizedScalar_contDiffOn_two (I := I) S hS T f hf
+  have hspeed := lRegularizedSpeed_contDiffOn_two (I := I) S hS T f hf
+  simpa only [lRegularizedLagrangian] using
     (contDiffOn_const.mul hspeed).add
       ((contDiffOn_const.mul (contDiffOn_snd.pow 2)).mul hscalar)
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem hasDerivAt_lRegAction
+theorem hasDerivAt_lRegularizedAction
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real)
     (ht : ∀ s ∈ Set.uIcc a b, T - s ^ 2 ∈ D.regular) :
-    HasDerivAt (fun u : Real ↦ lRegAction S T (f u) a b)
+    HasDerivAt (fun u : Real ↦ lRegularizedAction S T (f u) a b)
       (∫ s in a..b,
         (S.base.metric (T - s ^ 2)).inner (f 0 s)
             (covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
@@ -320,24 +320,24 @@ theorem hasDerivAt_lRegAction
               (lVelocity (I := I) (fun u : Real ↦ f u s) 0)) 0 := by
   let U : Set (Real × Real) :=
     {p : Real × Real | T - p.2 ^ 2 ∈ D.regular}
-  let lag : Real → Real → Real := fun u s ↦ lRegLagrangian S T (f u) s
+  let lag : Real → Real → Real := fun u s ↦ lRegularizedLagrangian S T (f u) s
   let dLag : Real → Real → Real := fun u s ↦
-    fderiv Real (fun p : Real × Real ↦ lRegLagrangian S T (f p.1) p.2)
+    fderiv Real (fun p : Real × Real ↦ lRegularizedLagrangian S T (f p.1) p.2)
       (u, s) (1, 0)
   have hUopen : IsOpen U :=
     D.regular_isOpen.preimage
       (continuous_const.sub (continuous_snd.pow 2))
   have hlag2 : ContDiffOn Real 2
-      (fun p : Real × Real ↦ lRegLagrangian S T (f p.1) p.2) U := by
-    simpa only [U] using lRegLagrangian_contDiffOn_two (I := I) S hS T f hf
+      (fun p : Real × Real ↦ lRegularizedLagrangian S T (f p.1) p.2) U := by
+    simpa only [U] using lRegularizedLagrangian_contDiffOn_two (I := I) S hS T f hf
   have hlag1 : ContDiffOn Real 1
-      (fun p : Real × Real ↦ lRegLagrangian S T (f p.1) p.2) U :=
+      (fun p : Real × Real ↦ lRegularizedLagrangian S T (f p.1) p.2) U :=
     hlag2.of_le (by norm_num)
   have hlagJoint : ContinuousOn
-      (fun p : Real × Real ↦ lRegLagrangian S T (f p.1) p.2) U :=
+      (fun p : Real × Real ↦ lRegularizedLagrangian S T (f p.1) p.2) U :=
     hlag2.continuousOn
   have hfd : ContinuousOn
-      (fderiv Real (fun p : Real × Real ↦ lRegLagrangian S T (f p.1) p.2)) U :=
+      (fderiv Real (fun p : Real × Real ↦ lRegularizedLagrangian S T (f p.1) p.2)) U :=
     hlag1.continuousOn_fderiv_of_isOpen hUopen (by norm_num)
   have hdJoint : ContinuousOn (fun p : Real × Real ↦ dLag p.1 p.2) U := by
     simpa only [dLag] using hfd.clm_apply continuousOn_const
@@ -354,7 +354,7 @@ theorem hasDerivAt_lRegAction
     intro s hs
     exact ht s hs
   have hlagDiff : DifferentiableOn Real
-      (fun p : Real × Real ↦ lRegLagrangian S T (f p.1) p.2) U :=
+      (fun p : Real × Real ↦ lRegularizedLagrangian S T (f p.1) p.2) U :=
     hlag1.differentiableOn (by norm_num)
   have hslice (u s : Real) (hs : s ∈ Set.uIcc a b) :
       HasDerivAt (fun z : Real ↦ lag z s) (dLag u s) u := by
@@ -362,7 +362,7 @@ theorem hasDerivAt_lRegAction
     have hat := (hlagDiff (u, s) hpU).differentiableAt
       (hUopen.mem_nhds hpU)
     simpa only [lag, dLag] using Aux2.hasDerivAt_slice_fst
-      (fun z r : Real ↦ lRegLagrangian S T (f z) r) u s hat
+      (fun z r : Real ↦ lRegularizedLagrangian S T (f z) r) u s hat
   let K : Set (Real × Real) := Set.Icc (-1 : Real) 1 ×ˢ Set.uIcc a b
   have hKcompact : IsCompact K := by
     simpa only [K] using isCompact_Icc.prod isCompact_uIcc
@@ -421,20 +421,20 @@ theorem hasDerivAt_lRegAction
   have heq : Set.EqOn (dLag 0) raw (Set.uIcc a b) := by
     intro s hs
     exact (hslice 0 s hs).unique (by
-      simpa only [lag, raw] using hasDerivAt_lRegLagrangian (I := I) S T s f hf)
+      simpa only [lag, raw] using hasDerivAt_lRegularizedLagrangian (I := I) S T s f hf)
   have heqInt : (∫ s in a..b, dLag 0 s) = ∫ s in a..b, raw s :=
     intervalIntegral.integral_congr heq
   rw [heqInt] at hparam
-  simpa only [lRegAction, lag, raw] using hparam.2
+  simpa only [lRegularizedAction, lag, raw] using hparam.2
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegEulerPair_variation_contDiffOn_one
+theorem lRegularizedEulerPair_variation_contDiffOn_one
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f) :
     ContDiffOn Real 1
       (fun p : Real × Real ↦
-        lRegEulerPair S T (f p.1) p.2
+        lRegularizedEulerPair S T (f p.1) p.2
           (lVelocity (I := I) (fun u : Real ↦ f u p.2) p.1))
       {p : Real × Real | T - p.2 ^ 2 ∈ D.regular} := by
   let U : Set (Real × Real) :=
@@ -443,22 +443,22 @@ theorem lRegEulerPair_variation_contDiffOn_one
     (S.base.metric (T - p.2 ^ 2)).inner (f p.1 p.2)
       (lVelocity (I := I) (fun u : Real ↦ f u p.2) p.1)
       (lVelocity (I := I) (f p.1) p.2)
-  let lag : Real × Real → Real := fun p ↦ lRegLagrangian S T (f p.1) p.2
+  let lag : Real × Real → Real := fun p ↦ lRegularizedLagrangian S T (f p.1) p.2
   let dPair : Real × Real → Real := fun p ↦
     fderiv Real pair p (0, 1)
   let dLag : Real × Real → Real := fun p ↦
     fderiv Real lag p (1, 0)
   let raw : Real × Real → Real := fun p ↦ dPair p - dLag p
   let euler : Real × Real → Real := fun p ↦
-    lRegEulerPair S T (f p.1) p.2
+    lRegularizedEulerPair S T (f p.1) p.2
       (lVelocity (I := I) (fun u : Real ↦ f u p.2) p.1)
   have hUopen : IsOpen U :=
     D.regular_isOpen.preimage
       (continuous_const.sub (continuous_snd.pow 2))
   have hpair2 : ContDiffOn Real 2 pair U := by
-    simpa only [pair, U] using lRegPair_contDiffOn_two (I := I) S hS T f hf
+    simpa only [pair, U] using lRegularizedPair_contDiffOn_two (I := I) S hS T f hf
   have hlag2 : ContDiffOn Real 2 lag U := by
-    simpa only [lag, U] using lRegLagrangian_contDiffOn_two (I := I) S hS T f hf
+    simpa only [lag, U] using lRegularizedLagrangian_contDiffOn_two (I := I) S hS T f hf
   have hdPair : ContDiffOn Real 1 dPair U := by
     have hfd : ContDiffOn Real 1 (fderiv Real pair) U :=
       hpair2.fderiv_of_isOpen hUopen (by norm_num)
@@ -508,7 +508,7 @@ theorem lRegEulerPair_variation_contDiffOn_one
         (fun u : Real ↦ lag (p.1 + u, p.2)) (dLag p) 0 :=
       HasDerivAt.comp_const_add p.1 0 (by
         simpa only [add_zero] using hlagSlice)
-    have hlagGeom := hasDerivAt_lRegLagrangian (I := I) S T p.2 fp hfp
+    have hlagGeom := hasDerivAt_lRegularizedLagrangian (I := I) S T p.2 fp hfp
     rw [hfp0, hYfun, hYshift p.2] at hlagGeom
     have hdLagEq := hlagShift.unique (by
       simpa only [lag, fp] using hlagGeom)
@@ -530,7 +530,7 @@ theorem lRegEulerPair_variation_contDiffOn_one
           (fun s : Real ↦ lVelocity (I := I) (fp 0) s) p.2) p.2 := by
       with_unfolding_all exact
         (velocityField_chartRep_differentiableAt (I := I) fp hfp p.2)
-    have hpairGeom := lRegInner_deriv (I := I) S hS T (fp 0)
+    have hpairGeom := lRegularizedInner_deriv (I := I) S hS T (fp 0)
       (fun s : Real ↦ lVelocity (I := I) (fun a : Real ↦ fp a s) 0)
       (fun s : Real ↦ lVelocity (I := I) (fp 0) s) p.2 hp
       hcentral hYdiff hAdiff
@@ -562,10 +562,10 @@ theorem lRegEulerPair_variation_contDiffOn_one
       exact hpairSlice.unique hpairGeom
     dsimp only [euler, raw]
     rw [hdPairEq, hdLagEq]
-    simp only [lRegEulerPair]
+    simp only [lRegularizedEulerPair]
     rw [((S.base.metric (T - p.2 ^ 2)).inner (f p.1 p.2)
       (lVelocity (I := I) (fun u : Real ↦ f u p.2) p.1)).map_sub]
-    rw [lRegAccel_inner]
+    rw [lRegularizedAccel_inner]
     ring
   have hout : ContDiffOn Real 1 euler U :=
     hraw.congr (fun p hp ↦ heq hp)
@@ -573,12 +573,12 @@ theorem lRegEulerPair_variation_contDiffOn_one
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegAction_first_variation
+theorem lRegularizedAction_first_variation
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real)
     (ht : ∀ s ∈ Set.uIcc a b, T - s ^ 2 ∈ D.regular) :
-    HasDerivAt (fun u : Real ↦ lRegAction S T (f u) a b)
+    HasDerivAt (fun u : Real ↦ lRegularizedAction S T (f u) a b)
       ((S.base.metric (T - b ^ 2)).inner (f 0 b)
             (lVelocity (I := I) (fun u : Real ↦ f u b) 0)
             (lVelocity (I := I) (f 0) b) -
@@ -586,7 +586,7 @@ theorem lRegAction_first_variation
             (lVelocity (I := I) (fun u : Real ↦ f u a) 0)
             (lVelocity (I := I) (f 0) a) -
         ∫ s in a..b,
-          lRegEulerPair S T (f 0) s
+          lRegularizedEulerPair S T (f 0) s
             (lVelocity (I := I) (fun u : Real ↦ f u s) 0)) 0 := by
   let U : Set (Real × Real) :=
     {p : Real × Real | T - p.2 ^ 2 ∈ D.regular}
@@ -609,13 +609,13 @@ theorem lRegAction_first_variation
             (S.scalar (T - s ^ 2)) (f 0 s))
           (lVelocity (I := I) (fun u : Real ↦ f u s) 0)
   let Eul : Real → Real := fun s ↦
-    lRegEulerPair S T (f 0) s
+    lRegularizedEulerPair S T (f 0) s
       (lVelocity (I := I) (fun u : Real ↦ f u s) 0)
   have hUopen : IsOpen U :=
     D.regular_isOpen.preimage
       (continuous_const.sub (continuous_snd.pow 2))
   have hpair2 : ContDiffOn Real 2 pair U := by
-    simpa only [pair, U] using lRegPair_contDiffOn_two (I := I) S hS T f hf
+    simpa only [pair, U] using lRegularizedPair_contDiffOn_two (I := I) S hS T f hf
   have hpairDiff : DifferentiableOn Real pair U :=
     hpair2.differentiableOn (by norm_num)
   have hpair1 : ContDiffOn Real 1 pair U :=
@@ -644,9 +644,9 @@ theorem lRegAction_first_variation
       (hBslice s (Set.uIoc_subset_uIcc hs)).deriv.symm)
   have hEulJoint : ContinuousOn
       (fun p : Real × Real ↦
-        lRegEulerPair S T (f p.1) p.2
+        lRegularizedEulerPair S T (f p.1) p.2
           (lVelocity (I := I) (fun u : Real ↦ f u p.2) p.1)) U := by
-    simpa only [U] using (lRegEulerPair_variation_contDiffOn_one (I := I) S hS T f hf).continuousOn
+    simpa only [U] using (lRegularizedEulerPair_variation_contDiffOn_one (I := I) S hS T f hf).continuousOn
   have hEulCont : ContinuousOn Eul (Set.uIcc a b) := by
     have hmap : ContinuousOn (fun s : Real ↦ ((0 : Real), s))
         (Set.uIcc a b) := continuousOn_const.prodMk continuousOn_id
@@ -676,15 +676,15 @@ theorem lRegAction_first_variation
           (fun r : Real ↦ lVelocity (I := I) (f 0) r) s) s := by
       with_unfolding_all exact
         (velocityField_chartRep_differentiableAt (I := I) f hf s)
-    have hinner := lRegInner_deriv (I := I) S hS T (f 0)
+    have hinner := lRegularizedInner_deriv (I := I) S hS T (f 0)
       (fun r : Real ↦ lVelocity (I := I) (fun u : Real ↦ f u r) 0)
       (fun r : Real ↦ lVelocity (I := I) (f 0) r) s (ht s hs)
       hcentral hYdiff hAdiff
     convert hinner using 1
-    simp only [raw, Eul, lRegEulerPair]
+    simp only [raw, Eul, lRegularizedEulerPair]
     rw [((S.base.metric (T - s ^ 2)).inner (f 0 s)
       (lVelocity (I := I) (fun u : Real ↦ f u s) 0)).map_sub]
-    rw [lRegAccel_inner]
+    rw [lRegularizedAccel_inner]
     ring
   have hftc := intervalIntegral.integral_deriv_eq_sub
     (fun s hs ↦ (hBslice s hs).differentiableAt) hdBint
@@ -700,9 +700,9 @@ theorem lRegAction_first_variation
       _ = (∫ s in a..b, deriv B s) - ∫ s in a..b, Eul s :=
         intervalIntegral.integral_sub hdBint hEulInt
       _ = B b - B a - ∫ s in a..b, Eul s := by rw [hftc]
-  have hact : HasDerivAt (fun u : Real ↦ lRegAction S T (f u) a b)
+  have hact : HasDerivAt (fun u : Real ↦ lRegularizedAction S T (f u) a b)
       (∫ s in a..b, raw s) 0 := by
-    simpa only [raw] using hasDerivAt_lRegAction (I := I) S hS T f hf a b ht
+    simpa only [raw] using hasDerivAt_lRegularizedAction (I := I) S hS T f hf a b ht
   apply hact.congr_deriv
   simpa only [B, pair, Eul] using hrawEq
 

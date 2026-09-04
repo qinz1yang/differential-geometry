@@ -162,7 +162,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
     · simpa [VXq, Vfield, ha] using
         ((Vsec a).contMDiff.contMDiffAt.of_le
           (by simp : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞)))
-  have hDX_corrY (q : Fin s) :
+  have hDX_correctionY (q : Fin s) :
       mvfderiv (I := I)
           (fun p : M => alphaSec p (fun a : Fin s => VYq q a p))
           x (Xsec x) =
@@ -176,7 +176,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
       (I := I) hnabla2.1 Xsec (VYq q) x (hVYq_C1 q)
     rw [h]
     abel
-  have hDY_corrX (q : Fin s) :
+  have hDY_correctionX (q : Fin s) :
       mvfderiv (I := I)
           (fun p : M => alphaSec p (fun a : Fin s => VXq q a p))
           x (Ysec x) =
@@ -652,7 +652,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
     rw [hcorrWY, hcorrWX]
     rw [hFY_deriv, hFX_deriv]
     rw [hbaseComm_left]
-    simp_rw [hDX_corrY, hDY_corrX]
+    simp_rw [hDX_correctionY, hDY_correctionX]
     rw [hnablaAlpha, halpha]
     have hVYq_at (q : Fin s) :
         (fun a : Fin s => VYq q a x) =

@@ -39,7 +39,7 @@ def nablaKRm04Field
   | (k + 1) =>
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (4 + k) (S.family.connection t) (nablaKRm04Field S t k)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t)
           (nablaKRm04Field S t k))
 
@@ -56,7 +56,7 @@ theorem nablaKRm04Field_succ
     nablaKRm04Field (I := I) S t (k + 1) =
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (4 + k) (S.family.connection t) (nablaKRm04Field (I := I) S t k)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
           (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t)
           (nablaKRm04Field (I := I) S t k)) := rfl
 
@@ -70,7 +70,7 @@ theorem nablaKRm04Field_realizes
   rw [nablaKRm04Field_succ]
   exact totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (4 + k) (S.family.connection t) (nablaKRm04Field (I := I) S t k)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t)
       (nablaKRm04Field (I := I) S t k))
 
@@ -255,7 +255,7 @@ theorem nablaKRm04_ricciIdentityAt
   have hcov :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (S.family.connection (t : Real)) (1 : WithTop ℕ∞) :=
-    connSmoothOfSol (I := I) S (t : Real)
+    connSmoothOfSolution (I := I) S (t : Real)
   have htor : (S.family.connection (t : Real)).torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -268,7 +268,7 @@ theorem nablaKRm04_ricciIdentityAt
     (nablaKRm04Field (I := I) S (t : Real) k x)
     (nablaKRm04Field (I := I) S (t : Real) (k + 1) x)
     (nablaKRm04Field (I := I) S (t : Real) (k + 2) x)
-    (rm13OfSol (I := I) S (t : Real)) rfl rfl
+    (rm13OfSolution (I := I) S (t : Real)) rfl rfl
     (nablaKRm04_nabla20SRealizesAt (I := I) S (t : Real) k x) htor
 
 end RicciIdentity

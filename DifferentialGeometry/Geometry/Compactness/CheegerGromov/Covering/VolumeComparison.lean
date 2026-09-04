@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open DifferentialGeometry.Geometry.Riemannian
 open scoped Manifold ContDiff Bundle
@@ -313,5 +313,5 @@ def toBallMultiplicityBound {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 end UniformBallVolumeBounds
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

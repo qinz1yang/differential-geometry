@@ -749,32 +749,32 @@ theorem metricUnitOn_compact
     hK.elim_finite_subcover U hUopen hUcover
   obtain ⟨Kloc, hKcompact, hKsub, hKeq⟩ :=
     hK.finite_compact_cover t U (fun i _ => hUopen i) htcover
-  let loc : M → Set (MetricUnitTangent (I := I) (M := M) g) :=
+  let localPiece : M → Set (MetricUnitTangent (I := I) (M := M) g) :=
     fun i => {p | MetricUnitTangent.base (I := I) (M := M) p ∈ Kloc i}
-  have hlocal_compact : ∀ i ∈ t, IsCompact (loc i) := by
+  have hlocal_compact : ∀ i ∈ t, IsCompact (localPiece i) := by
     intro i hi
     obtain ⟨R, hR, hbound⟩ :=
       coordMetric_bound (I := I) (M := M) g i
         (hKcompact i) (by simpa [U] using hKsub i)
-    simpa [loc] using
+    simpa [localPiece] using
       unitRest_compact (I := I) (M := M) g
         (trivializationAt E (TangentSpace I) i)
         (hKcompact i) (by simpa [U] using hKsub i) hR hbound
   have hunion :
       {p : MetricUnitTangent (I := I) (M := M) g |
           MetricUnitTangent.base (I := I) (M := M) p ∈ K} =
-        ⋃ i ∈ t, loc i := by
+        ⋃ i ∈ t, localPiece i := by
     ext p
     constructor
     · intro hp
       have hbase : MetricUnitTangent.base (I := I) (M := M) p ∈
           K := hp
       rw [hKeq] at hbase
-      simpa [loc] using hbase
+      simpa [localPiece] using hbase
     · intro hp
       change MetricUnitTangent.base (I := I) (M := M) p ∈ K
       rw [hKeq]
-      simpa [loc] using hp
+      simpa [localPiece] using hp
   rw [hunion]
   exact t.isCompact_biUnion hlocal_compact
 

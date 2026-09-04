@@ -37,7 +37,7 @@ private theorem tower_to_supercritical_quant
   intro s
   induction s with
   | zero =>
-      intro p hp_one _hreg hkp f _hf_cpt _hf_supp hf
+      intro p hp_one _hreg hkp f _hf_compact _hf_support hf
       have hp_dim : (d : ℝ) < p := by
         have : ((0 + 1 : ℕ) : ℝ) = 1 := by norm_num
         rw [this, one_mul] at hkp
@@ -46,7 +46,7 @@ private theorem tower_to_supercritical_quant
       simp only [add_zero] at hf ⊢
       rw [ENNReal.ofReal_one, one_mul]
   | succ s ih =>
-      intro p hp_one hreg hkp f hf_cpt hf_supp hf
+      intro p hp_one hreg hkp f hf_compact hf_support hf
       have hp_ne_d : p ≠ (d : ℝ) := hreg.p_ne_n_of_one_le (by omega)
       rcases lt_or_gt_of_ne hp_ne_d with hp_lt | hp_gt
       · have hp_pos : 0 < p := by linarith
@@ -56,7 +56,7 @@ private theorem tower_to_supercritical_quant
           exact hf
         obtain ⟨h_mem_p1, h_norm_p1⟩ :=
           MemWkp_subcritical_iterated (d := d) (m + 1 + s)
-            hp_one hp_lt hΩ_open hf_cpt hf_supp hf'
+            hp_one hp_lt hΩ_open hf_compact hf_support hf'
         set p_1 : ℝ := (d : ℝ) * p / ((d : ℝ) - p) with hp_1_def
         have hd_pos : 0 < (d : ℝ) := by exact_mod_cast NeZero.pos d
         have hd_p_pos : 0 < (d : ℝ) - p := by linarith
@@ -81,7 +81,7 @@ private theorem tower_to_supercritical_quant
         have h_mem_p1' : MemWkp (d := d) (m + 1 + s) (ENNReal.ofReal p_1) f Ω := by
           rw [hp_1_def]; exact h_mem_p1
         obtain ⟨q, hq_one, hq_dim, C', hC'_nn, h_mem_q, h_norm_q⟩ :=
-          ih hp_1_one hreg_p_1 hkp_next hf_cpt hf_supp h_mem_p1'
+          ih hp_1_one hreg_p_1 hkp_next hf_compact hf_support h_mem_p1'
         refine ⟨q, hq_one, hq_dim,
           C' * subcriticalConstant (m + 1 + s) d p,
           mul_nonneg hC'_nn (subcriticalConstant_nonneg _ _ _), h_mem_q, ?_⟩
@@ -132,7 +132,7 @@ private theorem tower_to_supercritical_quant_uniform
         rw [this, one_mul] at hkp
         exact hkp
       refine ⟨p, hp_one, hp_dim, 1, by norm_num, ?_⟩
-      intro f _hf_cpt _hf_supp hf
+      intro f _hf_compact _hf_support hf
       refine ⟨by simpa using hf, ?_⟩
       simp only [add_zero] at hf ⊢
       rw [ENNReal.ofReal_one, one_mul]
@@ -163,16 +163,16 @@ private theorem tower_to_supercritical_quant_uniform
         refine ⟨q, hq_one, hq_dim,
           C' * subcriticalConstant (m + 1 + s) d p,
           mul_nonneg hC'_nn (subcriticalConstant_nonneg _ _ _), ?_⟩
-        intro f hf_cpt hf_supp hf
+        intro f hf_compact hf_support hf
         have hf' : MemWkp (d := d) ((m + 1 + s) + 1) (ENNReal.ofReal p) f Ω := by
           have h_idx : m + 1 + (s + 1) = (m + 1 + s) + 1 := by ring
           rw [h_idx] at hf; exact hf
         obtain ⟨h_mem_p1, h_norm_p1⟩ :=
           MemWkp_subcritical_iterated (d := d) (m + 1 + s)
-            hp_one hp_lt hΩ_open hf_cpt hf_supp hf'
+            hp_one hp_lt hΩ_open hf_compact hf_support hf'
         have h_mem_p1' : MemWkp (d := d) (m + 1 + s) (ENNReal.ofReal p_1) f Ω := by
           rw [hp_1_def]; exact h_mem_p1
-        obtain ⟨h_mem_q, h_norm_q⟩ := h_uniform hf_cpt hf_supp h_mem_p1'
+        obtain ⟨h_mem_q, h_norm_q⟩ := h_uniform hf_compact hf_support h_mem_p1'
         refine ⟨h_mem_q, ?_⟩
         have h_idx : m + 1 + (s + 1) = (m + 1 + s) + 1 := by ring
         have h_step_norm :
@@ -195,7 +195,7 @@ private theorem tower_to_supercritical_quant_uniform
           rw [ENNReal.ofReal_mul hC'_nn, h_idx]; ring
         rw [← h_rhs_eq]; exact h_chain
       · refine ⟨p, hp_one, hp_gt, 1, by norm_num, ?_⟩
-        intro f _hf_cpt _hf_supp hf
+        intro f _hf_compact _hf_support hf
         refine ⟨MemWkp.le_of_le (by omega) hf, ?_⟩
         rw [ENNReal.ofReal_one, one_mul]
         exact wkpNorm_mono_order (d := d) (by omega) f Ω
@@ -205,12 +205,12 @@ private theorem eLpNorm_iterWeakPartial_le_eLpNorm_iteratedFDeriv
     {Ω : Set EuN} (hΩ_open : IsOpen Ω) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     (j : ℕ) (β : Fin j → Fin d) {ψ : EuN → ℝ}
     (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω) :
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω) :
     eLpNorm (iterWeakPartial (d := d) p j β ψ Ω) p (volume.restrict Ω) ≤
       eLpNorm (fun z => ‖iteratedFDeriv ℝ j ψ z‖) p (volume.restrict Ω) := by
   have h_ae :=
     iterWeakPartial_smooth_ae_eq_iterClassicalPartial (d := d) hp_one hΩ_open j β
-      hψ_smooth hψ_cpt hψ_supp
+      hψ_smooth hψ_compact hψ_support
   rw [eLpNorm_congr_ae h_ae]
   refine eLpNorm_mono (fun x => ?_)
   have h := norm_iterClassicalPartial_le_iteratedFDeriv (d := d) j β hψ_smooth x
@@ -220,7 +220,7 @@ private theorem wkpNorm_le_sum_eLpNorm_iteratedFDeriv
     {Ω : Set EuN} (hΩ_open : IsOpen Ω) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     (k : ℕ) {ψ : EuN → ℝ}
     (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_cpt : HasCompactSupport ψ) (hψ_supp : tsupport ψ ⊆ Ω) :
+    (hψ_compact : HasCompactSupport ψ) (hψ_support : tsupport ψ ⊆ Ω) :
     iteratedWeakSobolevNorm (d := d) k p ψ Ω ≤
       (d ^ k : ℕ) *
         ∑ j ∈ Finset.range (k + 1),
@@ -240,7 +240,7 @@ private theorem wkpNorm_le_sum_eLpNorm_iteratedFDeriv
     exact_mod_cast Nat.pow_le_pow_right (NeZero.pos d) hj_le
   refine le_trans (Finset.sum_le_sum (fun β _ => ?_)) h_card_le
   exact eLpNorm_iterWeakPartial_le_eLpNorm_iteratedFDeriv (d := d) hΩ_open hp_one
-    j β hψ_smooth hψ_cpt hψ_supp
+    j β hψ_smooth hψ_compact hψ_support
 
 omit [NeZero d] in
 private theorem eLpNorm_le_eLpNorm_two_mul_rpow_ball
@@ -369,12 +369,12 @@ theorem smooth_localBall_L2_pointwise_embedding
   have hball_sub : Metric.closedBall x₀ (R / 2) ⊆ Ω := by
     rw [hΩ_def]
     exact Metric.closedBall_subset_ball (by linarith)
-  obtain ⟨δ, χ, hδ_pos, _hδ_sub, hχ_smooth, hχ_cpt, _hχ_range, hχ_one, hχ_supp⟩ :=
+  obtain ⟨δ, χ, hδ_pos, _hδ_sub, hχ_smooth, hχ_compact, _hχ_range, hχ_one, hχ_support⟩ :=
     exists_smooth_cutoff_with_neighborhood (d := d)
       (isCompact_closedBall x₀ (R / 2)) hΩ_open hball_sub
   obtain ⟨Cχ, hCχ_nn, hCχ_bound⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport (d := d)
-      hχ_smooth hχ_cpt (2 * K)
+      hχ_smooth hχ_compact (2 * K)
   have h_Ioo_inf : (Set.Ioo (1 : ℝ) 2).Infinite := Set.Ioo_infinite (by norm_num)
   obtain ⟨p', hp'_mem, hp'_notMem⟩ :=
     h_Ioo_inf.exists_notMem_finset
@@ -419,16 +419,16 @@ theorem smooth_localBall_L2_pointwise_embedding
   intro f hf_smooth x hx
   set χf : EuN → ℝ := fun y => χ y * f y with hχf_def
   have hχf_smooth : ContDiff ℝ (⊤ : ℕ∞) χf := hχ_smooth.mul hf_smooth
-  have hχf_cpt : HasCompactSupport χf := hχ_cpt.mul_right
-  have hχf_supp : tsupport χf ⊆ Ω :=
-    (tsupport_smul_subset_left χ f).trans hχ_supp
+  have hχf_compact : HasCompactSupport χf := hχ_compact.mul_right
+  have hχf_support : tsupport χf ⊆ Ω :=
+    (tsupport_smul_subset_left χ f).trans hχ_support
   have hχf_mem_p' : MemWkp (d := d) (2 * K) (ENNReal.ofReal p') χf Ω :=
-    MemWkp_of_smooth_compactSupport (d := d) hΩ_open hχf_smooth hχf_cpt hχf_supp
+    MemWkp_of_smooth_compactSupport (d := d) hΩ_open hχf_smooth hχf_compact hχf_support
       (by rw [← ENNReal.ofReal_one]; exact ENNReal.ofReal_le_ofReal hp'_one) (2 * K)
   have hχf_mem_p'_idx : MemWkp (d := d) (0 + 1 + s) (ENNReal.ofReal p') χf Ω := by
     have : 0 + 1 + s = 2 * K := by omega
     rw [this]; exact hχf_mem_p'
-  obtain ⟨hχf_mem_q, h_tower_norm⟩ := h_tower hχf_cpt hχf_supp hχf_mem_p'_idx
+  obtain ⟨hχf_mem_q, h_tower_norm⟩ := h_tower hχf_compact hχf_support hχf_mem_p'_idx
   set T : ℝ := ∑ j ∈ Finset.range (2 * K + 1),
     (eLpNorm (fun z => ‖iteratedFDeriv ℝ j f z‖) 2 (volume.restrict Ω)).toReal with hT_def
   have hT_nn : 0 ≤ T := Finset.sum_nonneg (fun j _ => ENNReal.toReal_nonneg)
@@ -452,7 +452,7 @@ theorem smooth_localBall_L2_pointwise_embedding
       S_q ≤ (iteratedWeakSobolevNorm (d := d) 1 (ENNReal.ofReal q) χf Ω).toReal := by
     have h_bridge :=
       eLpNorm_iteratedFDeriv_le_wkpNorm (d := d) hΩ_open hq_enn_one
-        1 hχf_smooth hχf_cpt hχf_supp
+        1 hχf_smooth hχf_compact hχf_support
     rw [hS_q_def, show (0 + 2 : ℕ) = 1 + 1 by rfl,
       ← ENNReal.toReal_sum (fun j _ => hfin_χf _ j)]
     exact ENNReal.toReal_mono (wkpNorm_lt_top_of_memWkp hχf_mem_q).ne h_bridge
@@ -478,7 +478,7 @@ theorem smooth_localBall_L2_pointwise_embedding
       (iteratedWeakSobolevNorm (d := d) (0 + 1 + s) (ENNReal.ofReal p') χf Ω).toReal ≤
         dpow * Wsum_p' := by
     have h := wkpNorm_le_sum_eLpNorm_iteratedFDeriv (d := d) hΩ_open hp'_enn_one
-      (0 + 1 + s) hχf_smooth hχf_cpt hχf_supp
+      (0 + 1 + s) hχf_smooth hχf_compact hχf_support
     have h_sum_finite :
         (((d ^ (0 + 1 + s) : ℕ) : ℝ≥0∞) *
           ∑ j ∈ Finset.range (0 + 1 + s + 1),
@@ -650,12 +650,12 @@ theorem smooth_localBall_L2_pointwise_embedding_supercritical
   have hball_sub : Metric.closedBall x₀ (R / 2) ⊆ Ω := by
     rw [hΩ_def]
     exact Metric.closedBall_subset_ball (by linarith)
-  obtain ⟨δ, χ, hδ_pos, _hδ_sub, hχ_smooth, hχ_cpt, _hχ_range, hχ_one, hχ_supp⟩ :=
+  obtain ⟨δ, χ, hδ_pos, _hδ_sub, hχ_smooth, hχ_compact, _hχ_range, hχ_one, hχ_support⟩ :=
     exists_smooth_cutoff_with_neighborhood (d := d)
       (isCompact_closedBall x₀ (R / 2)) hΩ_open hball_sub
   obtain ⟨Cχ, hCχ_nn, hCχ_bound⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport (d := d)
-      hχ_smooth hχ_cpt (m)
+      hχ_smooth hχ_compact (m)
   set L : ℝ := max 1 ((d : ℝ) / (m)) with hL_def
   have hL_lt_two : L < 2 := by
     rw [hL_def]
@@ -707,16 +707,16 @@ theorem smooth_localBall_L2_pointwise_embedding_supercritical
   intro f hf_smooth x hx
   set χf : EuN → ℝ := fun y => χ y * f y with hχf_def
   have hχf_smooth : ContDiff ℝ (⊤ : ℕ∞) χf := hχ_smooth.mul hf_smooth
-  have hχf_cpt : HasCompactSupport χf := hχ_cpt.mul_right
-  have hχf_supp : tsupport χf ⊆ Ω :=
-    (tsupport_smul_subset_left χ f).trans hχ_supp
+  have hχf_compact : HasCompactSupport χf := hχ_compact.mul_right
+  have hχf_support : tsupport χf ⊆ Ω :=
+    (tsupport_smul_subset_left χ f).trans hχ_support
   have hχf_mem_p' : MemWkp (d := d) (m) (ENNReal.ofReal p') χf Ω :=
-    MemWkp_of_smooth_compactSupport (d := d) hΩ_open hχf_smooth hχf_cpt hχf_supp
+    MemWkp_of_smooth_compactSupport (d := d) hΩ_open hχf_smooth hχf_compact hχf_support
       (by rw [← ENNReal.ofReal_one]; exact ENNReal.ofReal_le_ofReal hp'_one) (m)
   have hχf_mem_p'_idx : MemWkp (d := d) (0 + 1 + s) (ENNReal.ofReal p') χf Ω := by
     have : 0 + 1 + s = m := by omega
     rw [this]; exact hχf_mem_p'
-  obtain ⟨hχf_mem_q, h_tower_norm⟩ := h_tower hχf_cpt hχf_supp hχf_mem_p'_idx
+  obtain ⟨hχf_mem_q, h_tower_norm⟩ := h_tower hχf_compact hχf_support hχf_mem_p'_idx
   set T : ℝ := ∑ j ∈ Finset.range (m + 1),
     (eLpNorm (fun z => ‖iteratedFDeriv ℝ j f z‖) 2 (volume.restrict Ω)).toReal with hT_def
   have hT_nn : 0 ≤ T := Finset.sum_nonneg (fun j _ => ENNReal.toReal_nonneg)
@@ -740,7 +740,7 @@ theorem smooth_localBall_L2_pointwise_embedding_supercritical
       S_q ≤ (iteratedWeakSobolevNorm (d := d) 1 (ENNReal.ofReal q) χf Ω).toReal := by
     have h_bridge :=
       eLpNorm_iteratedFDeriv_le_wkpNorm (d := d) hΩ_open hq_enn_one
-        1 hχf_smooth hχf_cpt hχf_supp
+        1 hχf_smooth hχf_compact hχf_support
     rw [hS_q_def, show (0 + 2 : ℕ) = 1 + 1 by rfl,
       ← ENNReal.toReal_sum (fun j _ => hfin_χf _ j)]
     exact ENNReal.toReal_mono (wkpNorm_lt_top_of_memWkp hχf_mem_q).ne h_bridge
@@ -766,7 +766,7 @@ theorem smooth_localBall_L2_pointwise_embedding_supercritical
       (iteratedWeakSobolevNorm (d := d) (0 + 1 + s) (ENNReal.ofReal p') χf Ω).toReal ≤
         dpow * Wsum_p' := by
     have h := wkpNorm_le_sum_eLpNorm_iteratedFDeriv (d := d) hΩ_open hp'_enn_one
-      (0 + 1 + s) hχf_smooth hχf_cpt hχf_supp
+      (0 + 1 + s) hχf_smooth hχf_compact hχf_support
     have h_sum_finite :
         (((d ^ (0 + 1 + s) : ℕ) : ℝ≥0∞) *
           ∑ j ∈ Finset.range (0 + 1 + s + 1),

@@ -333,14 +333,14 @@ variable [RiemannianBundle (fun x : N ↦ TangentSpace J x)]
 variable [PseudoEMetricSpace N] [IsRiemannianManifold J N] [CompleteSpace N]
   [IsContinuousRiemannianBundle V (fun x : N ↦ TangentSpace J x)]
 
-theorem intrFrame_radial_le
+theorem intrinsicFrame_radial_le
     (g : SmoothRiemannianMetric J N)
     (hEnorm : ∀ (x : N) (v : TangentSpace J x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : N) (z v : V) :
     |Inner.inner Real z v| ≤
       ‖z‖ * Real.sqrt
-        (intrFrameMetric (I := J) g hEnorm p z v v) := by
+        (intrinsicFrameMetric (I := J) g hEnorm p z v v) := by
   classical
   by_cases hz : z = 0
   · subst z
@@ -361,11 +361,11 @@ theorem intrFrame_radial_le
               (show TangentSpace J p from b))
           (u : V) (w : V) := by
     dsimp only [W]
-    rw [intrFrame_mfderiv]
+    rw [intrinsicFrame_mfderiv]
     exact (intrinsic_jacobi_one (I := J) g hEnorm p (u : V) (w : V)).trans rfl
   have hq :
       q = expMapIntrinsic (I := J) g hEnorm p u := by
-    exact intrFrame_apply (I := J) g hEnorm p z
+    exact intrinsicFrame_apply (I := J) g hEnorm p z
   have hgauss : g.inner q U W = Inner.inner Real z v := by
     rw [hW, hq]
     simpa only [u, w, normalFrame_inner] using
@@ -383,10 +383,10 @@ theorem intrFrame_radial_le
       abs_metric_inner_le_sqrt_metric_quadratic
         (I := J) (M := N) g q U W
     _ = ‖z‖ * Real.sqrt
-        (intrFrameMetric (I := J) g hEnorm p z v v) := by
-      rw [hspeed, intrFrameMetric_apply]
+        (intrinsicFrameMetric (I := J) g hEnorm p z v v) := by
+      rw [hspeed, intrinsicFrameMetric_apply]
 
-theorem intrLift_norm_le
+theorem intrinsicLift_norm_le
     (g : SmoothRiemannianMetric J N)
     (hEnorm : ∀ (x : N) (v : TangentSpace J x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -420,7 +420,7 @@ theorem intrLift_norm_le
     hη.contMDiffOn
   have hγ :
       ContMDiffOn 𝓘(Real, Real) J 1 γ (Set.Icc a b) := by
-    exact ((intrFrame_smooth (I := J) g hEnorm p).of_le
+    exact ((intrinsicFrame_smooth (I := J) g hEnorm p).of_le
       (by norm_num)).comp_contMDiffOn hηm
   have hρc : ContinuousOn ρ (Set.Icc a b) := by
     exact (psd_sqrt_lipschitz B hBsym hBnn).continuous.comp_continuousOn
@@ -446,7 +446,7 @@ theorem intrLift_norm_le
           (⟨t, (1 : Real)⟩ : TangentBundle 𝓘(Real, Real) Real))
         (Set.Icc a b) (Bundle.TotalSpace.proj ⁻¹' (Set.Icc a b)) :=
     fun t ht => by simpa using ht
-  have hVel :
+  have hVelocity :
       ContinuousOn
         (fun t : Real =>
           TotalSpace.mk' V
@@ -458,7 +458,7 @@ theorem intrLift_norm_le
   have hφc : ContinuousOn φ (Set.Icc a b) := by
     simp only [φ]
     exact Real.continuous_sqrt.comp_continuousOn
-      (Variation.continuousOn_g_inner_along_curve (I := J) g hVel hVel)
+      (Variation.continuousOn_g_inner_along_curve (I := J) g hVelocity hVelocity)
   have hφnn : ∀ t ∈ Set.Icc a b, 0 ≤ φ t :=
     fun _ _ => Real.sqrt_nonneg _
   have hφint :
@@ -495,7 +495,7 @@ theorem intrLift_norm_le
       (hηm.mdifferentiableOn one_ne_zero) x hx
     have hFdiff :
         MDifferentiableWithinAt 𝓘(Real, V) J F Set.univ (η x) :=
-      (intrFrame_smooth (I := J) g hEnorm p).mdifferentiableAt
+      (intrinsicFrame_smooth (I := J) g hEnorm p).mdifferentiableAt
         (by decide) |>.mdifferentiableWithinAt
     have hc := mfderivWithin_comp
       (I := 𝓘(Real, Real)) (I' := 𝓘(Real, V)) (I'' := J)
@@ -570,11 +570,11 @@ theorem intrLift_norm_le
           Real.sqrt_sq (norm_nonneg _)]
       have hφx : φ x = ‖cv‖ := by
         have hF0 : F 0 = p := by
-          simp only [F, intrFrame_zero]
+          simp only [F, intrinsicFrame_zero]
         simp only [φ]
         with_unfolding_all rw [show γ = F ∘ η from rfl, hchain x hxIcc,
           ContinuousLinearMap.comp_apply, Function.comp_apply, hηx,
-          intrFrame_deriv_zero, hF0]
+          intrinsicFrame_deriv_zero, hF0]
         with_unfolding_all
           change Real.sqrt
             (g.inner p (normalFrame (I := J) g p cv) (normalFrame (I := J) g p cv)) = ‖cv‖
@@ -615,10 +615,10 @@ theorem intrLift_norm_le
       have hφx :
           φ x =
             Real.sqrt
-              (intrFrameMetric (I := J) g hEnorm p (η x) cv cv) := by
+              (intrinsicFrameMetric (I := J) g hEnorm p (η x) cv cv) := by
         simp only [φ]
         rw [show γ = F ∘ η from rfl, hchain x hxIcc,
-          ContinuousLinearMap.comp_apply, intrFrameMetric_apply]
+          ContinuousLinearMap.comp_apply, intrinsicFrameMetric_apply]
         rfl
       have hρ'_le : ρ' ≤ φ x := by
         rw [hφx]
@@ -633,13 +633,13 @@ theorem intrLift_norm_le
         calc
           B (η x) cv ≤ |B (η x) cv| := le_abs_self _
           _ ≤ ‖η x‖ * Real.sqrt
-              (intrFrameMetric (I := J) g hEnorm p (η x) cv cv) := by
+              (intrinsicFrameMetric (I := J) g hEnorm p (η x) cv cv) := by
                 change |Inner.inner Real (η x) cv| ≤
                   ‖η x‖ * Real.sqrt
-                    (intrFrameMetric (I := J) g hEnorm p (η x) cv cv)
-                exact intrFrame_radial_le g hEnorm p (η x) cv
+                    (intrinsicFrameMetric (I := J) g hEnorm p (η x) cv cv)
+                exact intrinsicFrame_radial_le g hEnorm p (η x) cv
           _ = Real.sqrt
-              (intrFrameMetric (I := J) g hEnorm p (η x) cv cv) *
+              (intrinsicFrameMetric (I := J) g hEnorm p (η x) cv cv) *
                 ‖η x‖ := mul_comm _ _
       have hρ'_lt : ρ' < r := lt_of_le_of_lt hρ'_le hr
       exact

@@ -17,26 +17,26 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-theorem klFluxShell_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+theorem kochLammFluxShell_norm {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) (k : ℕ) (s : Finset V)
     (hcard : s.card ≤ (5 * (k + 1)) ^ Module.finrank ℝ V)
     (hcover : Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) ⊆
       ⋃ c ∈ s, Metric.ball c R) :
-    ‖klFluxPiece1 R w f x (klLateShell x R k)‖ ≤
+    ‖kochLammFluxPiece1 R w f x (kochLammLateShell x R k)‖ ≤
       (((5 * (k + 1)) ^ Module.finrank ℝ V : ℕ) : ℝ) *
         (‖w‖ * Real.exp (-(8 : ℝ)⁻¹ * (k : ℝ) ^ 2) *
-          (klFluxTailC V * (Aₚ : ℝ))) := by
-  have hnorm := klFluxCover_norm (V := V) h w x hR
-    (Nat.cast_nonneg k) hRT s (klLateShell_mble (V := V) x R k)
-    (fun _ hy ↦ hcover (klLateShell_sub (V := V) x R k hy))
-    (klLateShell_far (V := V) x R k)
-  have hc : 0 ≤ klFluxTailC V := by
-    unfold klFluxTailC klFluxHalfRoot
+          (kochLammFluxTailC V * (Aₚ : ℝ))) := by
+  have hnorm := kochLammFluxCover_norm (V := V) h w x hR
+    (Nat.cast_nonneg k) hRT s (kochLammLateShell_mble (V := V) x R k)
+    (fun _ hy ↦ hcover (kochLammLateShell_sub (V := V) x R k hy))
+    (kochLammLateShell_far (V := V) x R k)
+  have hc : 0 ≤ kochLammFluxTailC V := by
+    unfold kochLammFluxTailC kochLammFluxHalfRoot
     exact Real.rpow_nonneg
-      (klFluxHalf_nonneg (V := V) one_pos) _
+      (kochLammFluxHalf_nonneg (V := V) one_pos) _
   have hD : 0 ≤ ‖w‖ * Real.exp (-(8 : ℝ)⁻¹ * (k : ℝ) ^ 2) *
-      (klFluxTailC V * (Aₚ : ℝ)) :=
+      (kochLammFluxTailC V * (Aₚ : ℝ)) :=
     mul_nonneg
       (mul_nonneg (norm_nonneg w) (Real.exp_pos _).le)
       (mul_nonneg hc (NNReal.coe_nonneg Aₚ))

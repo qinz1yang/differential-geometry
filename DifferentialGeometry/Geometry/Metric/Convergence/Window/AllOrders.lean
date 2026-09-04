@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 
@@ -263,7 +263,7 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
       simp only [Nat.sub_add_cancel (show m <= k by omega)] at hval
       exact hval
   obtain ⟨phi, hphi, hPphi⟩ := exists_diag_subseq P hstep hsub hextend
-  choose gNetF hgNetTend hgNetConv using hPphi
+  choose gNetF hgNetTend hgNetConvergence using hPphi
   have hgNetUniq : forall i j : Nat, gNetF i = gNetF j := by
     intro i j
     refine funext fun n => metric_ext_inner (gNetF i n) (gNetF j n) fun x => ?_
@@ -272,12 +272,12 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
   have hnetTend : forall n : Nat, forall x : M,
       Filter.Tendsto (fun k => (gSeq (phi k) (e n)).inner x) Filter.atTop
         (nhds ((gNet n).inner x)) := hgNetTend 0
-  have hnetConv : forall j : Nat, forall n : Nat, forall eps : Real, 0 < eps ->
+  have hnetConvergence : forall j : Nat, forall n : Nat, forall eps : Real, 0 < eps ->
       exists k0 : Nat, forall k : Nat, k0 <= k -> forall a : Nat, a <= j ->
         forall z, z ∈ Kx j -> metricDerivNorm (I := I) a (gSeq (phi k) (e n)) (gNet n) gRef z <
           eps := by
     intro j n eps heps
-    have := hgNetConv j n eps heps
+    have := hgNetConvergence j n eps heps
     rw [show gNetF j = gNet from (hgNetUniq j 0)] at this
     exact this
   choose Lf hLf using fun j : Nat => hgLip (Kx j) (hKxc j) j
@@ -295,7 +295,7 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
     have hxKm : x ∈ Kx m0 := hm0 (Set.mem_singleton x)
     obtain ⟨k0, hk0⟩ :=
       metric_subsequence_cauchy_at_time_of_dense_time_convergence (I := I) (Kx m0) beta psiT m0 gSeq gNet gRef phi (Lf m0) (hLfnn m0)
-        (hLipAll m0) e he hdense (hnetConv m0) t ht eps heps
+        (hLipAll m0) e he hdense (hnetConvergence m0) t ht eps heps
     exact ⟨k0, fun m hm l hl => hk0 m hm l hl 0 (Nat.zero_le m0) x hxKm⟩
   have hcauchyInner : forall t, t ∈ Set.Icc beta psiT -> forall x : M,
       forall v w : TangentSpace I x, CauchySeq (fun k => (gSeq (phi k) t).inner x v w) := by
@@ -341,7 +341,7 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
       exact metricLimit_uniq (I := I) (fun k => gSeq (phi k) t) gT (gAt0 t ht)
         (hcauchyInner t ht) psi hpsi (psi0 t ht) (hpsi0 t ht) hinnerT' (hgAt0 t ht)
     have hcauchyj := metric_subsequence_cauchy_at_time_of_dense_time_convergence (I := I) (Kx j) beta psiT j gSeq gNet gRef phi (Lf j)
-      (hLfnn j) (hLipAll j) e he hdense (hnetConv j) t ht
+      (hLfnn j) (hLipAll j) e he hdense (hnetConvergence j) t ht
     have hsubj : forall eps : Real, 0 < eps -> exists k0 : Nat,
         forall k : Nat, k0 <= k -> forall a : Nat, a <= j -> forall x, x ∈ Kx j ->
           metricDerivNorm (I := I) a ((fun k => gSeq (phi k) t) (psi k)) gT gRef x < eps := by
@@ -430,5 +430,5 @@ theorem exists_metric_subsequence_tendsto_in_derivative_sup_norm_on_compacts_uni
   intro a hap x hxK
   exact (hk0 k hk t ht a (le_trans hap hpj) x (hKj hxK)).le
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -27,7 +27,7 @@ variable [I.Boundaryless]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def PointedRiemannianManifold.intrInjRadius
+noncomputable def PointedRiemannianManifold.intrinsicInjRadius
     (X : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) X)
     (x : X.M) : ENNReal := by
@@ -53,14 +53,14 @@ noncomputable def PointedRiemannianManifold.intrInjRadius
     with_unfolding_all
       exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := I) X.metric y w
-  exact Geometry.Riemannian.NormalCoordinates.intrInjRadius
+  exact Geometry.Riemannian.NormalCoordinates.intrinsicInjRadius
     (I := I) X.metric hEnorm x
 
 def HasInjRadiusAt
     (X : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : X.M)
     (rho : Real) : Prop :=
   0 < rho ∧ ∀ hcomplete : MetricComplete (I := I) X,
-    ENNReal.ofReal rho ≤ X.intrInjRadius (I := I) hcomplete x
+    ENNReal.ofReal rho ≤ X.intrinsicInjRadius (I := I) hcomplete x
 
 omit [CompleteSpace E] in
 theorem hasInjRadiusAt_iff
@@ -68,7 +68,7 @@ theorem hasInjRadiusAt_iff
     (rho : Real) :
     HasInjRadiusAt (I := I) X x rho ↔
       (0 < rho ∧ ∀ hcomplete : MetricComplete (I := I) X,
-        ENNReal.ofReal rho ≤ X.intrInjRadius (I := I) hcomplete x) :=
+        ENNReal.ofReal rho ≤ X.intrinsicInjRadius (I := I) hcomplete x) :=
   Iff.rfl
 
 omit [CompleteSpace E] in
@@ -76,7 +76,7 @@ theorem hasInjRadiusAt_of_le
     {X : PointedRiemannianManifold.{u, uE, uH} (I := I)} {x : X.M}
     {rho : Real} (hpos : 0 < rho)
     (h : ∀ hcomplete : MetricComplete (I := I) X,
-      ENNReal.ofReal rho ≤ X.intrInjRadius (I := I) hcomplete x) :
+      ENNReal.ofReal rho ≤ X.intrinsicInjRadius (I := I) hcomplete x) :
     HasInjRadiusAt (I := I) X x rho :=
   ⟨hpos, h⟩
 
@@ -85,7 +85,7 @@ theorem HasInjRadiusAt.le_intr
     {X : PointedRiemannianManifold.{u, uE, uH} (I := I)} {x : X.M}
     {rho : Real} (h : HasInjRadiusAt (I := I) X x rho)
     (hcomplete : MetricComplete (I := I) X) :
-    ENNReal.ofReal rho ≤ X.intrInjRadius (I := I) hcomplete x :=
+    ENNReal.ofReal rho ≤ X.intrinsicInjRadius (I := I) hcomplete x :=
   h.2 hcomplete
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -141,9 +141,9 @@ theorem HasInjRadiusAt.injOn_ball
     with_unfolding_all
       exact Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := I) X.metric y w
-  apply intrInjOn_ball (I := I) X.metric hEnorm x
+  apply intrinsicInjOn_ball (I := I) X.metric hEnorm x
   exact ((ENNReal.ofReal_lt_ofReal_iff h.1).2 hr).trans_le <| by
-    simpa only [PointedRiemannianManifold.intrInjRadius] using
+    simpa only [PointedRiemannianManifold.intrinsicInjRadius] using
       h.le_intr hcomplete
 
 omit [CompleteSpace E] in
@@ -176,5 +176,5 @@ def subseq {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
 end BaseInjBound
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

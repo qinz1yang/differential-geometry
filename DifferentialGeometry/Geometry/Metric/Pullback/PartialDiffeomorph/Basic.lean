@@ -38,14 +38,14 @@ theorem PartialDiffeomorph.exists_cutoff_pullback_inner
         (ContinuousLinearMap.precomp ℝ (mfderiv I I Φ x)).comp
           ((h.inner (Φ x)).comp (mfderiv I I Φ x)) := by
   classical
-  obtain ⟨χ, hχ, _, hχK_nhds, hχsupp, hχrange⟩ :=
+  obtain ⟨χ, hχ, _, hχK_nhds, hχsupport, hχrange⟩ :=
     Analysis.exists_mfd_bump (I := I) hK Φ.open_source hKs
   have hχK : Set.EqOn χ 1 K := fun _ hx => hχK_nhds.self_of_nhdsSet hx
   have hχ01 : ∀ x, χ x ∈ Set.Icc (0 : ℝ) 1 := Set.range_subset_iff.mp hχrange
   set Q : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ := fun x =>
     (ContinuousLinearMap.precomp ℝ (mfderiv I I Φ x)).comp
       ((h.inner (Φ x)).comp (mfderiv I I Φ x)) with hQ
-  refine ⟨χ, fun x => χ x • Q x, ?_, hχ, hχK, hχsupp, hχ01, fun x => rfl⟩
+  refine ⟨χ, fun x => χ x • Q x, ?_, hχ, hχK, hχsupport, hχ01, fun x => rfl⟩
   apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x => χ x • Q x)
@@ -121,7 +121,7 @@ theorem PartialDiffeomorph.exists_cutoff_pullback_inner
       refine hmul.congr_of_eventuallyEq ?_
       filter_upwards with x
       exact hval x
-    · have hx₀' : x₀ ∉ tsupport χ := fun hmem => hx₀ (hχsupp hmem)
+    · have hx₀' : x₀ ∉ tsupport χ := fun hmem => hx₀ (hχsupport hmem)
       have hev : (fun x => (χ x • Q x) (Y x) (W x)) =ᶠ[nhds x₀] (fun _ => (0 : ℝ)) := by
         filter_upwards [(isClosed_tsupport χ).isOpen_compl.mem_nhds hx₀'] with x hx
         rw [hval x, image_eq_zero_of_notMem_tsupport hx, zero_mul]

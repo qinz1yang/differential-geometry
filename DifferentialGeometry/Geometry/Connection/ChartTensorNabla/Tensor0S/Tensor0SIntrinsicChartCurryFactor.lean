@@ -79,7 +79,7 @@ theorem tensor0SBundle_symmL_apply_eq_compContinuousLinearMap {n : ℕ}
   let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel n ℝ E)
       (fun y : M => Tensor0SSpace n I y)) :=
     tensor0SBundleTopology n
-  have h := _root_.Pretrivialization.continuousMultilinearMap_symm_apply'
+  have h := _root_.Pretrivialization.continuousMultilinearMap_symm_apply_of_mem
     (𝕜 := ℝ) (s := n) (F := E) (E := (TangentSpace I : M → Type _))
     (e := trivializationAt E (TangentSpace I) α) (b := b) hb D
   have hbTensor : b ∈ (trivializationAt (Tensor0SModel n ℝ E)
@@ -161,8 +161,8 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem partialEval_chartPullback_eventually_eq_curryLeftEval_chartPullback
     (s : ℕ) (α : M) (T : Π b : M, Tensor0SSpace (s + 1) I b)
     {b : M} (v : TangentSpace I b)
-    (hb_src : b ∈ (extChartAt I α).source)
-    (hb_tgt : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E))
+    (hb_source : b ∈ (extChartAt I α).source)
+    (hb_target : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E))
     (hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     (tensor0SChartESectionRepr (I := I) s α
         (Tensor0SPartialEval.tensor0SPartialEval I M T
@@ -175,12 +175,12 @@ theorem partialEval_chartPullback_eventually_eq_curryLeftEval_chartPullback
   classical
   set φ := extChartAt I α
   have hU_int : interior (φ.target : Set E) ∈ 𝓝 (φ b) :=
-    isOpen_interior.mem_nhds hb_tgt
+    isOpen_interior.mem_nhds hb_target
   have hBase_open : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
     (trivializationAt E (TangentSpace I) α).open_baseSet
-  have hb_inv : φ.symm (φ b) = b := φ.left_inv hb_src
+  have hb_inv : φ.symm (φ b) = b := φ.left_inv hb_source
   have hcont_symm : ContinuousAt φ.symm (φ b) :=
-    continuousAt_extChartAt_symm' (I := I) (x := α) (x' := b) hb_src
+    continuousAt_extChartAt_symm' (I := I) (x := α) (x' := b) hb_source
   have hBase_pre : φ.symm ⁻¹' (trivializationAt E (TangentSpace I) α).baseSet ∈ 𝓝 (φ b) := by
     have hmem : (φ.symm (φ b)) ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
       rw [hb_inv]; exact hb_base
@@ -194,8 +194,8 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem fderiv_partialEval_chartPullback_eq_comp_curryLeftEval (s : ℕ) (α : M)
     (T : Π b : M, Tensor0SSpace (s + 1) I b)
     {b : M} (v : TangentSpace I b)
-    (hb_src : b ∈ (extChartAt I α).source)
-    (hb_tgt : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E))
+    (hb_source : b ∈ (extChartAt I α).source)
+    (hb_target : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E))
     (hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hT : DifferentiableAt ℝ
       (tensor0SChartESectionRepr (I := I) (s + 1) α T ∘ (extChartAt I α).symm)
@@ -213,7 +213,7 @@ theorem fderiv_partialEval_chartPullback_eq_comp_curryLeftEval (s : ℕ) (α : M
           (extChartAt I α b)) := by
   classical
   have heq := partialEval_chartPullback_eventually_eq_curryLeftEval_chartPullback
-    (I := I) (M := M) s α T (b := b) v hb_src hb_tgt hb_base
+    (I := I) (M := M) s α T (b := b) v hb_source hb_target hb_base
   rw [Filter.EventuallyEq.fderiv_eq heq]
   exact (((curryLeftEvalCLM (E := E) s (trivToE (I := I) α b v)).hasFDerivAt
       (x := (tensor0SChartESectionRepr (I := I) (s + 1) α T ∘
@@ -221,7 +221,7 @@ theorem fderiv_partialEval_chartPullback_eq_comp_curryLeftEval (s : ℕ) (α : M
     (extChartAt I α b) hT.hasFDerivAt).fderiv
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem tensor0SIntrinsicChartCLM_factor_via_partialEval
+theorem tensor0SIntrinsicChartCLM_factor
     (s : ℕ) (α : M) (T : Π b : M, Tensor0SSpace (s + 1) I b)
     {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (v : TangentSpace I b)
@@ -245,9 +245,9 @@ theorem tensor0SIntrinsicChartCLM_factor_via_partialEval
   let _h_top_s : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y)) :=
     tensor0SBundleTopology s
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
-  have hb_tgt : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) :=
+  have hb_target : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
@@ -306,7 +306,7 @@ theorem tensor0SIntrinsicChartCLM_factor_via_partialEval
     rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   rw [hRHS_unfold]
   have hfderivEq := fderiv_partialEval_chartPullback_eq_comp_curryLeftEval
-    (I := I) (M := M) s α T (b := b) v hb_src hb_tgt hb_base hT
+    (I := I) (M := M) s α T (b := b) v hb_source hb_target hb_base hT
   have hfderiv_at_w : fderiv ℝ
         (tensor0SChartESectionRepr (I := I) s α
             (Tensor0SPartialEval.tensor0SPartialEval I M T

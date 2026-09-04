@@ -110,14 +110,14 @@ theorem lowerScaleFirstOrderActionThirdToSecondOrderBackground_ball_bound
           F (j S) =
             (lowCoreActionCoefficientsBackground (I := I) (M := M)
               g g hρ hδ0 hδ_le hreal S).firstOrderActionThirdToSecondOrder (I := I) (M := M) := by
-        exact lowerScaleFirstOrderActionThirdToSecondOrderBackground_core (I := I) (M := M) g g hpair S
+        exact lowerScaleFirstOrderActionThirdToSecondOrderBackground_apply_ccToHsLin (I := I) (M := M) g g hpair S
       have hcore0 :
           F 0 =
             (lowCoreActionCoefficientsBackground (I := I) (M := M)
               g g hρ hδ0 hδ_le hreal
               (0 : SmoothCcTensor g 0 2)).firstOrderActionThirdToSecondOrder (I := I) (M := M) := by
         simpa only [map_zero] using
-          (lowerScaleFirstOrderActionThirdToSecondOrderBackground_core (I := I) (M := M) g g hpair
+          (lowerScaleFirstOrderActionThirdToSecondOrderBackground_apply_ccToHsLin (I := I) (M := M) g g hpair
             (0 : SmoothCcTensor g 0 2))
       rw [← hcoreS, ← hcore0] at hdiff
       have hdiff0 : ‖F (j S) - F 0‖ ≤ K * ‖j S‖ := by
@@ -198,14 +198,14 @@ theorem lowerScaleFirstOrderActionSecondToFirstOrderBackground_ball_bound
           F (j S) =
             (lowCoreActionCoefficientsBackground (I := I) (M := M)
               g g hρ hδ0 hδ_le hreal S).firstOrderActionSecondToFirstOrder (I := I) (M := M) := by
-        exact lowerScaleFirstOrderActionSecondToFirstOrderBackground_core (I := I) (M := M) g g hpair S
+        exact lowerScaleFirstOrderActionSecondToFirstOrderBackground_apply_ccToHsLin (I := I) (M := M) g g hpair S
       have hcore0 :
           F 0 =
             (lowCoreActionCoefficientsBackground (I := I) (M := M)
               g g hρ hδ0 hδ_le hreal
               (0 : SmoothCcTensor g 0 2)).firstOrderActionSecondToFirstOrder (I := I) (M := M) := by
         simpa only [map_zero] using
-          (lowerScaleFirstOrderActionSecondToFirstOrderBackground_core (I := I) (M := M) g g hpair
+          (lowerScaleFirstOrderActionSecondToFirstOrderBackground_apply_ccToHsLin (I := I) (M := M) g g hpair
             (0 : SmoothCcTensor g 0 2))
       rw [← hcoreS, ← hcore0] at hdiff
       have hdiff0 : ‖F (j S) - F 0‖ ≤ K * ‖j S‖ := by

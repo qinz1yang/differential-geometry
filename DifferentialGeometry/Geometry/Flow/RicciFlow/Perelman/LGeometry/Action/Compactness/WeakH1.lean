@@ -44,15 +44,15 @@ theorem lAction_subseq
     (hE : ∀ n, IntegrableOn
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
         (lVelocity (I := I) (alpha n) s)) (Set.Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
-    (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A) :
+    (hLag : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b)
+    (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A) :
     ∃ (phi : Nat → Nat) (g : C(Set.Icc a b, M)),
       StrictMono phi ∧
         TendstoUniformly
           (fun n (s : Set.Icc a b) ↦ alpha (phi n) s.1) g atTop := by
   classical
   obtain ⟨c, C, hc, hbudget⟩ :=
-    exists_curveEnergy_le_of_lRegAction_le (I := I) S hS T t0 t1 gRef a b A hab htime hback
+    exists_curveEnergy_le_of_lRegularizedAction_le (I := I) S hS T t0 t1 gRef a b A hab htime hback
   let B : Real := (2 / c) * (A - C * (b - a))
   have href (n : Nat) : IntervalIntegrable
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
@@ -82,7 +82,7 @@ theorem lAction_subseq
     have hcont : Continuous (fun r : Real ↦ Real.sqrt r * Real.sqrt B) :=
       Real.continuous_sqrt.mul continuous_const
     simpa only [Real.sqrt_zero, zero_mul] using hcont.tendsto (0 : Real)
-  have hunif : UniformEquicontinuous (fun n ↦ (f n : Set.Icc a b → M)) := by
+  have huniform : UniformEquicontinuous (fun n ↦ (f n : Set.Icc a b → M)) := by
     rw [Metric.uniformEquicontinuous_iff]
     intro ε hε
     let : RiemannianBundle (fun x : M ↦ TangentSpace I x) :=
@@ -115,9 +115,9 @@ theorem lAction_subseq
       rw [dist_comm]
       with_unfolding_all exact hout
   have hequi : Equicontinuous (fun n ↦ (f n : Set.Icc a b → M)) :=
-    hunif.equicontinuous
+    huniform.equicontinuous
   obtain ⟨phi, g, hphi, hconv⟩ :=
-    DifferentialGeometry.Analysis.arzela_subseq_cpt
+    DifferentialGeometry.Analysis.arzela_subseq_compact
       (K := Set.univ) isCompact_univ f (fun _ _ ↦ Set.mem_univ _) hequi
   refine ⟨phi, g, hphi, ?_⟩
   with_unfolding_all exact hconv
@@ -136,8 +136,8 @@ theorem lAction_subseq_fix
     (hE : ∀ n, IntegrableOn
       (fun s ↦ gRef.inner (alpha n s) (lVelocity (I := I) (alpha n) s)
         (lVelocity (I := I) (alpha n) s)) (Set.Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
-    (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
+    (hLag : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b)
+    (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A)
     (x y : M) (hfixa : ∀ n, alpha n a = x)
     (hfixb : ∀ n, alpha n b = y) :
     ∃ (phi : Nat → Nat) (g : C(Set.Icc a b, M)),
@@ -180,7 +180,7 @@ private theorem lChartKin_bound
       (fun r ↦ extChartAt J p (alpha n (a + r))) (Icc (0 : Real) (b - a)))
     (hdiff : ∀ n, ∀ᵐ r ∂timeMeasure (b - a),
       MDifferentiableAt (modelWithCornersSelf Real Real) J (alpha n) (a + r))
-    {A : Real} (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
+    {A : Real} (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D'.regular) :
     ∃ B : Real, ∀ n,
       (∫ r in (0 : Real)..b - a, (1 / 2 : Real) * inner Real
@@ -209,10 +209,10 @@ private theorem lChartKin_bound
       simpa only [uIcc_of_le hab] using hcarrier) (by
       simpa only [uIcc_of_le hab] using hcont n)
   have hsplit (n : Nat) :
-      lRegAction S T (alpha n) a b = kin n + pot n := by
-    simpa only [lRegAction, lRegLagrangian, kin, pot] using
+      lRegularizedAction S T (alpha n) a b = kin n + pot n := by
+    simpa only [lRegularizedAction, lRegularizedLagrangian, kin, pot] using
       intervalIntegral.integral_add (hkinInt n) (hpotInt n)
-  obtain ⟨C, hC⟩ := exists_uniform_lower_bound_lRegPotential (I := J) S hSc T a b (by
+  obtain ⟨C, hC⟩ := exists_uniform_lower_bound_lRegularizedPotential (I := J) S hSc T a b (by
     simpa only [uIcc_of_le hab] using hcarrier)
   have hpotLower (n : Nat) : C * (b - a) ≤ pot n := by
     have hmono := intervalIntegral.integral_mono_on hab
@@ -251,7 +251,7 @@ theorem lChartH1_subseq
     {K : Set F} (hKc : IsCompact K)
     (hKchart : K ⊆ interior (extChartAt J p).target)
     (huK : ∀ n (r : Icc (0 : Real) (b - a)), (u n).toFun r.1 ∈ K)
-    {A : Real} (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
+    {A : Real} (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D'.regular) :
     ∃ (phi : Nat → Nat) (uLim : timeH1 F (b - a)),
       StrictMono phi ∧
@@ -267,12 +267,12 @@ theorem lChartH1_subseq
   have hτc : ContinuousOn (fun r : Real ↦ T - (a + r) ^ 2)
       (Icc (0 : Real) (b - a)) :=
     (continuous_const.sub ((continuous_const.add continuous_id).pow 2)).continuousOn
-  have hτreg : MapsTo (fun r : Real ↦ T - (a + r) ^ 2)
+  have hτregularity : MapsTo (fun r : Real ↦ T - (a + r) ^ 2)
       (Icc (0 : Real) (b - a)) D'.regular := by
     intro r hr
     exact hreg (a + r) ⟨le_add_of_nonneg_right hr.1, by linarith [hr.2]⟩
   exact chartH1_subseq (I := J) hMet p hba
-    (fun r : Real ↦ T - (a + r) ^ 2) hτc hτreg hKc hKchart u huK hchart
+    (fun r : Real ↦ T - (a + r) ^ 2) hτc hτregularity hKc hKchart u huK hchart
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

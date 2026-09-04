@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Topology.ThreeManifold
 open DifferentialGeometry.Geometry
 
@@ -44,12 +44,12 @@ theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bou
     (hscalar : forall t : Real, t ∈ P.D.carrier →
       forall x : M, 0 < P.S.scalar t x)
     (hpinch : hamiltonPinchingEstimate (I := I) P)
-    (hinj : FlowerScaleInjBound (I := I)
+    (hinj : FlowScaleInjectivityBound (I := I)
       (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow)) :
     admitsConstantPositiveSectionalCurvature (I := I) (M := M) := by
   classical
   let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
-  change FlowerScaleInjBound (I := I) X at hinj
+  change FlowScaleInjectivityBound (I := I) X at hinj
   have hcpl : SeqMetricComplete (I := I) (X.atZero (I := I)) := by
     refine ⟨?_⟩
     intro k
@@ -113,14 +113,14 @@ theorem hamilton_constant_positive_sectional_curvature_of_volume_noncollapse
     (hscalar : forall t : Real, t ∈ P.D.carrier →
       forall x : M, 0 < P.S.scalar t x)
     (hpinch : hamiltonPinchingEstimate (I := I) P)
-    (V : FlowerScaleVolData (I := I)
+    (V : FlowNoncollapsingScale (I := I)
       (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow))
-    (hvol : IsFlowerScaleVolBound (I := I) V) :
+    (hvol : IsFlowNoncollapsingScaleBound (I := I) V) :
     admitsConstantPositiveSectionalCurvature (I := I) (M := M) := by
   classical
   let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
-  change FlowerScaleVolData (I := I) X at V
-  change IsFlowerScaleVolBound (I := I) V at hvol
+  change FlowNoncollapsingScale (I := I) X at V
+  change IsFlowNoncollapsingScaleBound (I := I) V at hvol
   have hcpl : SeqMetricComplete (I := I) (X.atZero (I := I)) := by
     refine ⟨?_⟩
     intro k
@@ -139,7 +139,7 @@ theorem hamilton_constant_positive_sectional_curvature_of_volume_noncollapse
       exact hM.2.1
   let hderiv : FlowDerivativeInput (I := I) X :=
     hamiltonSourceDerivativeInput (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
-  have hinj : FlowerScaleInjBound (I := I) X :=
+  have hinj : FlowScaleInjectivityBound (I := I) X :=
     flowInjOfVol (I := I) X hcpl hconn hderiv.atZeroGeom V hvol
   exact hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bound
     (I := I) (M := M) h0omega hM P hD Q hsel hrm hwindow

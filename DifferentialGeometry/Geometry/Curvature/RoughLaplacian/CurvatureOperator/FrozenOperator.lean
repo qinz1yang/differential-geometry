@@ -577,7 +577,7 @@ theorem exists_proportional_pureRFrozenFrameDiffOp_orderZero
           g.inner x₀ (B i x₀) (B j x₀) = if i = j then (1 : ℝ) else 0 := by
         intro i j; rw [hB_def]; exact smoothOrthoFrame_orthonormal_at_center (I := I) g x₀ i j
       obtain ⟨n, e, _bse, hn, _hbse_eq, horth, _hpars, _hexp, _hreprm1⟩ :=
-        tangent_orthonormalBasisS_witness (I := I) (M := M) g (m + 1) x₀
+        exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g (m + 1) x₀
       set K₀ : Fin 0 → Fin n := fun k => k.elim0 with hK₀
       have hreprS : ∀ S : TensorRSSpace 0 m I x₀,
           riemannianFiberNormSq (I := I) (M := M) g 0 m x₀ S =

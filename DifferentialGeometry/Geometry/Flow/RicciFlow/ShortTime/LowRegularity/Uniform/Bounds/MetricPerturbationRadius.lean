@@ -21,7 +21,7 @@ open DifferentialGeometry.Tensor.RSTensor
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
@@ -57,7 +57,7 @@ structure HasUniformMetricPerturbationRealization
 noncomputable def metricPerturbationRealizationParameters
     (gBase : SmoothRiemannianMetric I M) (Λ Kb₀ Kb₁ : ℝ) : MetricPerturbationRealizationParameters where
   threshold := deTurckRemainderContractionThreshold (Module.finrank ℝ E)
-  radius := actionRealizeRad (morreyTwoC (I := I) (M := M) gBase Λ)
+  radius := actionRealizationRadius (morreyTwoC (I := I) (M := M) gBase Λ)
     (uniformPtCurvZeroC (Module.finrank ℝ E) Λ Kb₀ Kb₁)
     (Module.finrank ℝ E)
 
@@ -85,7 +85,7 @@ theorem has_uniform_metric_perturbation_realization
   · exact (de_turck_remainder_contraction_threshold_pos (Module.finrank ℝ E)).le
   · exact de_turck_remainder_contraction_threshold_le_third_of_ne_zero (Module.finrank ℝ E)
   · exact de_turck_remainder_contraction_threshold_lt_one_of_ne_zero (Module.finrank ℝ E)
-  · exact actionRealizeRad_pos hCpt
+  · exact actionRealizationRadius_pos hCpt
       (uniformPtCurvZeroC (Module.finrank ℝ E) Λ Kb₀ Kb₁)
       (Module.finrank ℝ E)
   · intro g hEq hjet T hT
@@ -124,14 +124,14 @@ theorem exists_uniform_metric_perturbation_realization_parameters
 theorem horizon_action_pos {Ctop B0 B1 D ρ Cpt K : ℝ} (d : ℕ)
     (hCtop : 0 ≤ Ctop) (hB0 : 0 ≤ B0) (hB1 : 0 ≤ B1) (hD : 0 ≤ D) (hρ : 0 < ρ)
     (hCpt : 0 ≤ Cpt) :
-    0 < lowRegularityTimeHorizon Ctop B0 B1 D ρ (actionRealizeRad Cpt K d) :=
-  lowRegularityTimeHorizon_pos hCtop hB0 hB1 hD hρ (actionRealizeRad_pos hCpt K d)
+    0 < lowRegularityTimeHorizon Ctop B0 B1 D ρ (actionRealizationRadius Cpt K d) :=
+  lowRegularityTimeHorizon_pos hCtop hB0 hB1 hD hρ (actionRealizationRadius_pos hCpt K d)
 
 theorem lowRegularityTimeHorizon_uniform_pos {Ctop B0 B1 D ρ Cpt : ℝ} {Fc : ℕ → ℝ} (d : ℕ)
     (hCtop : 0 ≤ Ctop) (hB0 : 0 ≤ B0) (hB1 : 0 ≤ B1) (hD : 0 ≤ D) (hρ : 0 < ρ)
     (hCpt : 0 ≤ Cpt) (hFc : ∀ p, 0 ≤ Fc p) :
-    0 < lowRegularityTimeHorizon Ctop B0 B1 D ρ (unifRealizeRad Cpt Fc d) :=
-  lowRegularityTimeHorizon_pos hCtop hB0 hB1 hD hρ (unifRealizeRad_pos hCpt hFc d)
+    0 < lowRegularityTimeHorizon Ctop B0 B1 D ρ (uniformRealizationRadius Cpt Fc d) :=
+  lowRegularityTimeHorizon_pos hCtop hB0 hB1 hD hρ (uniformRealizationRadius_pos hCpt hFc d)
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

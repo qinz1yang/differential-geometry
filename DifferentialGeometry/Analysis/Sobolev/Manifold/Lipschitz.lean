@@ -100,7 +100,7 @@ theorem chart_pou_lip
     simpa only [v, ρ] using
       ChartTower.hasCompactSupport_chartPushedRaw_pou_mul
         (I := I) (M := M) α u
-  have hv_supp : tsupport v ⊆ Ω := by
+  have hv_support : tsupport v ⊆ Ω := by
     simpa only [v, ρ, Ω] using
       ChartTower.tsupport_chartPushedRaw_pou_mul_subset_target
         (I := I) (M := M) α u
@@ -143,7 +143,7 @@ theorem chart_pou_lip
   have hv_local : LocallyLipschitz v := by
     intro y
     by_cases hy : y ∈ tsupport v
-    · have hyΩ : y ∈ Ω := hv_supp hy
+    · have hyΩ : y ∈ Ω := hv_support hy
       have hyE : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
         rw [show Ω = chartTargetEuclid (I := I) (M := M) α from rfl,
           chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hyΩ

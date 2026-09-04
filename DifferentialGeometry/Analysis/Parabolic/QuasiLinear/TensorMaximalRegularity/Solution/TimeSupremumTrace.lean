@@ -74,14 +74,14 @@ private theorem integral_sq_Icc_le_norm_sq (f : timeL2 ℝ T) {t : ℝ}
         exact LE.le.eventuallyLE hsub
     _ = ‖f‖ ^ 2 := hnorm'.symm
 
-private theorem perModeConv_endpoint_sq_le_timeL2 (lam : ℝ) (f : timeL2 ℝ T)
+private theorem perModeConvolution_endpoint_sq_le_timeL2 (lam : ℝ) (f : timeL2 ℝ T)
     {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
-    (perModeConv lam (fun s => f s) t) ^ 2
+    (perModeConvolution lam (fun s => f s) t) ^ 2
       ≤ MaximalRegularity.duhamelKernelSqIntegral lam t *
           ∫ s in (0 : ℝ)..t, (f s) ^ 2 := by
   obtain ⟨ht0, htT⟩ := ht
   set k : ℝ → ℝ := fun s => Real.exp (-(lam * (t - s))) with hk_def
-  have hconv_eq : perModeConv lam (fun s => f s) t = ∫ s in (0 : ℝ)..t, k s * f s := rfl
+  have hconv_eq : perModeConvolution lam (fun s => f s) t = ∫ s in (0 : ℝ)..t, k s * f s := rfl
   set A : ℝ := ∫ s in (0 : ℝ)..t, (f s) ^ 2 with hA
   set B : ℝ := ∫ s in (0 : ℝ)..t, k s * f s with hB
   set C : ℝ := ∫ s in (0 : ℝ)..t, k s ^ 2 with hC
@@ -123,12 +123,12 @@ private theorem perModeConv_endpoint_sq_le_timeL2 (lam : ℝ) (f : timeL2 ℝ T)
   rw [hconv_eq]
   nlinarith [hdiscrim]
 
-private theorem one_add_lambda_mul_perModeConv_sq_le_timeL2 (lam : ℝ)
+private theorem one_add_lambda_mul_perModeConvolution_sq_le_timeL2 (lam : ℝ)
     (hlam : 0 ≤ lam) (f : timeL2 ℝ T)
     {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
-    (1 + lam) * (perModeConv lam (fun s => f s) t) ^ 2 ≤ (1 + T) * ‖f‖ ^ 2 := by
+    (1 + lam) * (perModeConvolution lam (fun s => f s) t) ^ 2 ≤ (1 + T) * ‖f‖ ^ 2 := by
   obtain ⟨ht0, htT⟩ := ht
-  have hcs := perModeConv_endpoint_sq_le_timeL2 (T := T) lam f ⟨ht0, htT⟩
+  have hcs := perModeConvolution_endpoint_sq_le_timeL2 (T := T) lam f ⟨ht0, htT⟩
   have hkernel :=
     MaximalRegularity.one_add_lambda_mul_duhamel_kernel_sq_integral_le hlam ht0
   have hf2_nn : 0 ≤ ∫ s in (0 : ℝ)..t, (f s) ^ 2 :=
@@ -138,7 +138,7 @@ private theorem one_add_lambda_mul_perModeConv_sq_le_timeL2 (lam : ℝ)
     integral_sq_Icc_le_norm_sq (T := T) f ⟨ht0, htT⟩
   have hfac_le : t + 1 / 2 ≤ 1 + T := by linarith
   have hfac_nn : 0 ≤ t + 1 / 2 := by linarith
-  calc (1 + lam) * (perModeConv lam (fun s => f s) t) ^ 2
+  calc (1 + lam) * (perModeConvolution lam (fun s => f s) t) ^ 2
       ≤ (1 + lam) * (MaximalRegularity.duhamelKernelSqIntegral lam t *
           ∫ s in (0 : ℝ)..t, (f s) ^ 2) :=
         mul_le_mul_of_nonneg_left hcs h1plus_nn
@@ -154,12 +154,12 @@ private theorem one_add_lambda_mul_perModeConv_sq_le_timeL2 (lam : ℝ)
 variable {g₀ : SmoothRiemannianMetric I M}
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem weighted_perModeConv_forcing_sq_le
+private theorem weighted_perModeConvolution_forcing_sq_le
     (F : timeL2 (TensorHs (I := I) (M := M) g₀ r s a) T)
     (i : TensorEigenIdx (I := I) (M := M) g₀ r s)
     {t : ℝ} (ht : t ∈ Set.Icc (0 : ℝ) T) :
     tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-        (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t) ^ 2 ≤
       (1 + T) * (tensorSobolevWeight (I := I) (M := M) i a *
         ‖timeModeCoeff (I := I) (M := M) F i‖ ^ 2) := by
@@ -173,13 +173,13 @@ private theorem weighted_perModeConv_forcing_sq_le
       Real.rpow_one]
   have hwa_nn : 0 ≤ tensorSobolevWeight (I := I) (M := M) i a :=
     tensorSobolevWeight_nonneg (I := I) (M := M) i a
-  have hperMode := one_add_lambda_mul_perModeConv_sq_le_timeL2 (T := T) lam hlam_nn
+  have hperMode := one_add_lambda_mul_perModeConvolution_sq_le_timeL2 (T := T) lam hlam_nn
     (timeModeCoeff (I := I) (M := M) F i) ht
   calc tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-          (perModeConv lam (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t) ^ 2
+          (perModeConvolution lam (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t) ^ 2
       = tensorSobolevWeight (I := I) (M := M) i a *
           ((1 + lam) *
-            (perModeConv lam (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t) ^ 2) := by
+            (perModeConvolution lam (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t) ^ 2) := by
         rw [hweight_split]; ring
     _ ≤ tensorSobolevWeight (I := I) (M := M) i a *
           ((1 + T) * ‖timeModeCoeff (I := I) (M := M) F i‖ ^ 2) :=
@@ -187,13 +187,13 @@ private theorem weighted_perModeConv_forcing_sq_le
     _ = (1 + T) * (tensorSobolevWeight (I := I) (M := M) i a *
           ‖timeModeCoeff (I := I) (M := M) F i‖ ^ 2) := by ring
 
-theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
+theorem maximalRegularityDuhamelSolutionField_inclusion_Ha1_ae_pointwise_le
     {a : ℝ} {T : ℝ} (hT : 0 < T)
     (F : timeL2 (TensorHs (I := I) (M := M) g₀ r s a) T) :
     ∀ᵐ t ∂(timeMeasure T),
       ‖(timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
           (show a + 1 ≤ a + 2 by linarith)
-          (maxRegDuhamelSolField (I := I) (M := M) a hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT
             (0 : TensorHs (I := I) (M := M) g₀ r s (a + 2)) F)) t‖ ≤
         Real.sqrt (1 + T) * ‖F‖ := by
   classical
@@ -202,7 +202,7 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
       (I := I) (M := M) g₀ r s
   have := countable_tensorEigenIdx (I := I) (M := M)
     (g := g₀) (r := r) (s := s) h_compact
-  set field := maxRegDuhamelSolField (I := I) (M := M) a hT
+  set field := maximalRegularityDuhamelSolutionField (I := I) (M := M) a hT
     (0 : TensorHs (I := I) (M := M) g₀ r s (a + 2)) F with hfield_def
   set inclField := timeL2Inclusion (I := I) (M := M) (g := g₀) (r := r) (s := s)
     (show a + 1 ≤ a + 2 by linarith) field with hinclField_def
@@ -215,14 +215,14 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
       (p := 2) (μ := timeMeasure T) field
   have hcoeff_ae : ∀ i : TensorEigenIdx (I := I) (M := M) g₀ r s,
       (fun t => (field t).coeff i) =ᵐ[timeMeasure T]
-        fun t => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        fun t => perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t :=
-    fun i => timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M)
+    fun i => timeModeCoeff_eq_perModeConvolution_forcing (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT F i
   have hcoeff_all : ∀ᵐ t ∂(timeMeasure T),
       ∀ i : TensorEigenIdx (I := I) (M := M) g₀ r s,
         (field t).coeff i =
-          perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t :=
     (MeasureTheory.ae_all_iff).2 hcoeff_ae
   filter_upwards [hincl_coeFn, hcoeff_all, ae_restrict_mem measurableSet_Icc]
@@ -231,7 +231,7 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
   have hnormsq : ‖inclField t‖ ^ 2 =
       ∑' i : TensorEigenIdx (I := I) (M := M) g₀ r s,
         tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t) ^ 2 := by
     rw [htincl, TensorHs.norm_sq_eq_tsum (I := I) (M := M)]
     refine tsum_congr (fun i => ?_)
@@ -242,12 +242,12 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
     (summable_weight_mul_norm_timeModeCoeff_sq (I := I) (M := M) h_compact (f := F)).mul_left _
   have hsummable_lhs : Summable (fun i : TensorEigenIdx (I := I) (M := M) g₀ r s =>
       tensorSobolevWeight (I := I) (M := M) i (a + 1) *
-        (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun u => (timeModeCoeff (I := I) (M := M) F i) u) t) ^ 2) := by
     refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_) hsummable_rhs
     · exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (a + 1))
         (sq_nonneg _)
-    · exact weighted_perModeConv_forcing_sq_le (I := I) (M := M) F i htmem'
+    · exact weighted_perModeConvolution_forcing_sq_le (I := I) (M := M) F i htmem'
   have hsq_le : ‖inclField t‖ ^ 2 ≤ (1 + T) * ‖F‖ ^ 2 := by
     rw [hnormsq]
     have hmass : ∑' i : TensorEigenIdx (I := I) (M := M) g₀ r s,
@@ -257,7 +257,7 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
         ← norm_sq_eq_tsum_timeModeCoeff (I := I) (M := M) h_compact (f := F)]
     rw [← hmass]
     exact Summable.tsum_le_tsum
-      (fun i => weighted_perModeConv_forcing_sq_le (I := I) (M := M) F i htmem')
+      (fun i => weighted_perModeConvolution_forcing_sq_le (I := I) (M := M) F i htmem')
       hsummable_lhs hsummable_rhs
   have hF_nn : (0 : ℝ) ≤ ‖F‖ := norm_nonneg _
   have hrhs_nn : 0 ≤ Real.sqrt (1 + T) * ‖F‖ :=

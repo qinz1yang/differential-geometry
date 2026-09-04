@@ -259,7 +259,7 @@ theorem expMap_contMDiffAt_of_norm_lt
         w := by
   classical
   obtain ⟨Φ, ρ, T, T_match, hρ_pos, hT_pos, hT_match_pos, hT_match_le_T,
-    hΦ_cd, hΦ_init0, hΦ_init_v, hΦ_target, hΦ_phase, hΦ_const_zero, _hF_int⟩ :=
+    hΦ_cd, hΦ_initial0, hΦ_initial_v, hΦ_target, hΦ_phase, hΦ_const_zero, _hF_int⟩ :=
     exists_unified_chartFlow_data (I := I) g p
   set t' : ℝ := T_match / 2 with ht'_def
   have ht'_pos : 0 < t' := by rw [ht'_def]; exact half_pos hT_match_pos
@@ -273,8 +273,8 @@ theorem expMap_contMDiffAt_of_norm_lt
       (expMap (I := I) g p (show TangentSpace I p from (t' • v)) : M) =
         chartFlowSlice (I := I) Φ p t' v := by
     intro v hv_ball
-    have hΦ_init_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) :=
-      hΦ_init_v v hv_ball
+    have hΦ_initial_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) :=
+      hΦ_initial_v v hv_ball
     have hΦ_target_v : ∀ s ∈ Set.Icc (-T) T,
         Φ (((x₀, v) : E × E), s) ∈
           (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
@@ -286,7 +286,7 @@ theorem expMap_contMDiffAt_of_norm_lt
     have hproj1 :=
       chartFlowOrbitLiftRescaled_proj_at_one (I := I) (g := g) (p := p) (v := v)
         (T := T) (t' := t') ht'_pos ht'_lt_T (Φ := Φ)
-        hΦ_init_v_at hΦ_target_v hΦ_phase_v
+        hΦ_initial_v_at hΦ_target_v hΦ_phase_v
     have hΦ_target_t' : Φ (((x₀, v) : E × E), t' * 1) ∈
         (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
       rw [mul_one]
@@ -390,15 +390,15 @@ private theorem exists_unified_chartFlow_data_two
           (geodesicVectorFieldChart (I := I) g p) (Set.Ioo (-T) T)) := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
-  have hx₀_src : p ∈ (extChartAt I p).source :=
+  have hx₀_source : p ∈ (extChartAt I p).source :=
     mem_extChartAt_source (I := I) p
   have hx₀_target : x₀ ∈ (extChartAt I p).target :=
-    (extChartAt I p).map_source hx₀_src
+    (extChartAt I p).map_source hx₀_source
   have hx₀_interior : x₀ ∈ interior (extChartAt I p).target :=
     Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
       (I := I) p hx₀_target
   obtain ⟨b, r, ε, ρ_V4, T_V4, Φ, hr, hε, hρ_V4_pos, hT_V4_pos, hb_sub, hΦ_ILF,
-    hΦ_cd_V4_two, hΦ_init0⟩ :=
+    hΦ_cd_V4_two, hΦ_initial0⟩ :=
     Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined_two
       (I := I) (g := g) (α := p) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   have hΦ_cd_V4 : ContDiffOn ℝ 1 Φ
@@ -408,7 +408,7 @@ private theorem exists_unified_chartFlow_data_two
     exists_uniform_orbit_in_inner_ball
       (x₀ := x₀)
       (b := b) (ρ_V4 := ρ_V4) (T_V4 := T_V4) hρ_V4_pos hT_V4_pos
-      (Φ := Φ) hΦ_cd_V4 hΦ_init0
+      (Φ := Φ) hΦ_cd_V4 hΦ_initial0
   set ρ : ℝ := min ρ₀ ((r : ℝ) / 2) with hρ_def
   have hρ_pos : 0 < ρ := by
     apply lt_min hρ₀_pos
@@ -441,7 +441,7 @@ private theorem exists_unified_chartFlow_data_two
     · refine ⟨?_, ?_⟩
       · linarith [hw.2.1]
       · linarith [hw.2.2]
-  have hΦ_init_v : ∀ v ∈ Metric.ball (0 : E) ρ,
+  have hΦ_initial_v : ∀ v ∈ Metric.ball (0 : E) ρ,
       Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) := by
     intro v hv
     have hr_nn : (0 : ℝ) ≤ (r : ℝ) := r.coe_nonneg
@@ -529,11 +529,11 @@ private theorem exists_unified_chartFlow_data_two
     exact hΦ_cd
   · change Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
       ((extChartAt I p p, (0 : E)) : E × E)
-    exact hΦ_init0
+    exact hΦ_initial0
   · intro v hv
     change Φ (((extChartAt I p p, v) : E × E), 0) =
       ((extChartAt I p p, v) : E × E)
-    exact hΦ_init_v v hv
+    exact hΦ_initial_v v hv
   · intro v hv s hs
     change Φ (((extChartAt I p p, v) : E × E), s) ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E)
@@ -559,7 +559,7 @@ theorem expMap_contMDiffAt2_of_norm_lt
         w := by
   classical
   obtain ⟨Φ, ρ, T, T_match, hρ_pos, hT_pos, hT_match_pos, hT_match_le_T,
-    hΦ_cd, hΦ_init0, hΦ_init_v, hΦ_target, hΦ_phase, hΦ_const_zero, _hF_int⟩ :=
+    hΦ_cd, hΦ_initial0, hΦ_initial_v, hΦ_target, hΦ_phase, hΦ_const_zero, _hF_int⟩ :=
     exists_unified_chartFlow_data_two (I := I) g p
   set t' : ℝ := T_match / 2 with ht'_def
   have ht'_pos : 0 < t' := by rw [ht'_def]; exact half_pos hT_match_pos
@@ -573,8 +573,8 @@ theorem expMap_contMDiffAt2_of_norm_lt
       (expMap (I := I) g p (show TangentSpace I p from (t' • v)) : M) =
         chartFlowSlice (I := I) Φ p t' v := by
     intro v hv_ball
-    have hΦ_init_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) :=
-      hΦ_init_v v hv_ball
+    have hΦ_initial_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) :=
+      hΦ_initial_v v hv_ball
     have hΦ_target_v : ∀ s ∈ Set.Icc (-T) T,
         Φ (((x₀, v) : E × E), s) ∈
           (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
@@ -586,7 +586,7 @@ theorem expMap_contMDiffAt2_of_norm_lt
     have hproj1 :=
       chartFlowOrbitLiftRescaled_proj_at_one (I := I) (g := g) (p := p) (v := v)
         (T := T) (t' := t') ht'_pos ht'_lt_T (Φ := Φ)
-        hΦ_init_v_at hΦ_target_v hΦ_phase_v
+        hΦ_initial_v_at hΦ_target_v hΦ_phase_v
     have hΦ_target_t' : Φ (((x₀, v) : E × E), t' * 1) ∈
         (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
       rw [mul_one]
@@ -693,15 +693,15 @@ private theorem exists_unified_chartFlow_data_inf
           (geodesicVectorFieldChart (I := I) g p) (Set.Ioo (-T) T)) := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
-  have hx₀_src : p ∈ (extChartAt I p).source :=
+  have hx₀_source : p ∈ (extChartAt I p).source :=
     mem_extChartAt_source (I := I) p
   have hx₀_target : x₀ ∈ (extChartAt I p).target :=
-    (extChartAt I p).map_source hx₀_src
+    (extChartAt I p).map_source hx₀_source
   have hx₀_interior : x₀ ∈ interior (extChartAt I p).target :=
     Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
       (I := I) p hx₀_target
   obtain ⟨b, r, ε, ρ_V4, T_V4, Φ, hr, hε, hρ_V4_pos, hT_V4_pos, hb_sub, hΦ_ILF,
-    hΦ_cd_V4_inf, hΦ_init0⟩ :=
+    hΦ_cd_V4_inf, hΦ_initial0⟩ :=
     Geodesic.exists_smooth_chartPhase_localFlow
       (I := I) (g := g) (α := p) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   have hΦ_cd_V4 : ContDiffOn ℝ 1 Φ
@@ -711,7 +711,7 @@ private theorem exists_unified_chartFlow_data_inf
     exists_uniform_orbit_in_inner_ball
       (x₀ := x₀)
       (b := b) (ρ_V4 := ρ_V4) (T_V4 := T_V4) hρ_V4_pos hT_V4_pos
-      (Φ := Φ) hΦ_cd_V4 hΦ_init0
+      (Φ := Φ) hΦ_cd_V4 hΦ_initial0
   set ρ : ℝ := min ρ₀ ((r : ℝ) / 2) with hρ_def
   have hρ_pos : 0 < ρ := by
     apply lt_min hρ₀_pos
@@ -744,7 +744,7 @@ private theorem exists_unified_chartFlow_data_inf
     · refine ⟨?_, ?_⟩
       · linarith [hw.2.1]
       · linarith [hw.2.2]
-  have hΦ_init_v : ∀ v ∈ Metric.ball (0 : E) ρ,
+  have hΦ_initial_v : ∀ v ∈ Metric.ball (0 : E) ρ,
       Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) := by
     intro v hv
     have hr_nn : (0 : ℝ) ≤ (r : ℝ) := r.coe_nonneg
@@ -832,11 +832,11 @@ private theorem exists_unified_chartFlow_data_inf
     exact hΦ_cd
   · change Φ (((extChartAt I p p, (0 : E)) : E × E), 0) =
       ((extChartAt I p p, (0 : E)) : E × E)
-    exact hΦ_init0
+    exact hΦ_initial0
   · intro v hv
     change Φ (((extChartAt I p p, v) : E × E), 0) =
       ((extChartAt I p p, v) : E × E)
-    exact hΦ_init_v v hv
+    exact hΦ_initial_v v hv
   · intro v hv s hs
     change Φ (((extChartAt I p p, v) : E × E), s) ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E)
@@ -893,7 +893,7 @@ private lemma expMap_contMDiffAtN_of_chartData
     (hT_match_pos : 0 < T_match) (hT_match_le_T : T_match ≤ T)
     (hΦ_cd : ContDiffOn ℝ (n : ℕ∞) Φ
       ((Metric.ball ((extChartAt I p p, (0 : E)) : E × E) ρ) ×ˢ Set.Ioo (-T) T))
-    (hΦ_init_v : ∀ v ∈ Metric.ball (0 : E) ρ,
+    (hΦ_initial_v : ∀ v ∈ Metric.ball (0 : E) ρ,
       Φ (((extChartAt I p p, v) : E × E), 0) = ((extChartAt I p p, v) : E × E))
     (hΦ_target : ∀ v ∈ Metric.ball (0 : E) ρ, ∀ s ∈ Set.Icc (-T) T,
       Φ (((extChartAt I p p, v) : E × E), s) ∈
@@ -917,8 +917,8 @@ private lemma expMap_contMDiffAtN_of_chartData
       (expMap (I := I) g p (show TangentSpace I p from (t' • v)) : M) =
         chartFlowSlice (I := I) Φ p t' v := by
     intro v hv_ball
-    have hΦ_init_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) :=
-      hΦ_init_v v hv_ball
+    have hΦ_initial_v_at : Φ (((x₀, v) : E × E), 0) = ((x₀, v) : E × E) :=
+      hΦ_initial_v v hv_ball
     have hΦ_target_v : ∀ s ∈ Set.Icc (-T) T,
         Φ (((x₀, v) : E × E), s) ∈
           (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
@@ -930,7 +930,7 @@ private lemma expMap_contMDiffAtN_of_chartData
     have hproj1 :=
       chartFlowOrbitLiftRescaled_proj_at_one (I := I) (g := g) (p := p) (v := v)
         (T := T) (t' := t') ht'_pos ht'_lt_T (Φ := Φ)
-        hΦ_init_v_at hΦ_target_v hΦ_phase_v
+        hΦ_initial_v_at hΦ_target_v hΦ_phase_v
     have hΦ_target_t' : Φ (((x₀, v) : E × E), t' * 1) ∈
         (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
       rw [mul_one]
@@ -1017,11 +1017,11 @@ theorem expMap_contMDiffAtN_of_norm_lt
         (fun u : E => (expMap (I := I) g p (show TangentSpace I p from u) : M))
         w := by
   obtain ⟨Φ, ρ, T, T_match, hρ_pos, hT_pos, hT_match_pos, hT_match_le_T,
-    hΦ_cd, _hΦ_init0, hΦ_init_v, hΦ_target, hΦ_phase, _hΦ_const_zero, _hF_int⟩ :=
+    hΦ_cd, _hΦ_initial0, hΦ_initial_v, hΦ_target, hΦ_phase, _hΦ_const_zero, _hF_int⟩ :=
     exists_unified_chartFlow_data_nat (I := I) g p n hn
   exact ⟨(T_match / 2) * ρ, by positivity, fun w hw =>
     expMap_contMDiffAtN_of_chartData g p n hT_match_pos hT_match_le_T hΦ_cd
-      hΦ_init_v hΦ_target hΦ_phase hw⟩
+      hΦ_initial_v hΦ_target hΦ_phase hw⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem expMap_contMDiffAt_infty_of_norm_lt
@@ -1031,14 +1031,14 @@ theorem expMap_contMDiffAt_infty_of_norm_lt
         (fun u : E => (expMap (I := I) g p (show TangentSpace I p from u) : M))
         w := by
   obtain ⟨Φ, ρ, T, T_match, hρ_pos, hT_pos, hT_match_pos, hT_match_le_T,
-    hΦ_cd_inf, _hΦ_init0, hΦ_init_v, hΦ_target, hΦ_phase, _hΦ_const_zero, _hF_int⟩ :=
+    hΦ_cd_inf, _hΦ_initial0, hΦ_initial_v, hΦ_target, hΦ_phase, _hΦ_const_zero, _hF_int⟩ :=
     exists_unified_chartFlow_data_inf (I := I) g p
   refine ⟨(T_match / 2) * ρ, by positivity, fun w hw => ?_⟩
   rw [contMDiffAt_infty]
   intro n
   exact expMap_contMDiffAtN_of_chartData g p n hT_match_pos hT_match_le_T
     (hΦ_cd_inf.of_le (by exact_mod_cast (le_top : (n : ℕ∞) ≤ ⊤)))
-    hΦ_init_v hΦ_target hΦ_phase hw
+    hΦ_initial_v hΦ_target hΦ_phase hw
 
 section JointBasepointVector
 
@@ -1089,7 +1089,7 @@ private lemma exists_phaseBall_orbit_in_inner_ball {x₀ : E}
     {Φ : (E × E) × ℝ → E × E}
     (hΦ_cd : ContDiffOn ℝ 1 Φ
       ((Metric.ball ((x₀, (0 : E)) : E × E) ρ_V) ×ˢ Set.Ioo (-T_V) T_V))
-    (hΦ_init0 : Φ (((x₀, (0 : E)) : E × E), 0) = (x₀, (0 : E))) :
+    (hΦ_initial0 : Φ (((x₀, (0 : E)) : E × E), 0) = (x₀, (0 : E))) :
     ∃ (ρ T : ℝ), 0 < ρ ∧ 0 < T ∧ ρ ≤ ρ_V ∧ T < T_V ∧
       ∀ z ∈ Metric.ball ((x₀, (0 : E)) : E × E) ρ, ∀ s ∈ Set.Icc (-T) T,
         Φ ((z, s) : (E × E) × ℝ) ∈
@@ -1106,7 +1106,7 @@ private lemma exists_phaseBall_orbit_in_inner_ball {x₀ : E}
   have h_preim : Φ ⁻¹' (Metric.ball ((x₀, (0 : E)) : E × E) b.rIn) ∈
       𝓝 (((x₀, (0 : E)) : E × E), (0 : ℝ)) := by
     apply hΦ_cont.preimage_mem_nhds
-    rw [hΦ_init0]
+    rw [hΦ_initial0]
     exact Metric.ball_mem_nhds _ b.rIn_pos
   obtain ⟨U, V, hU_open, hU_mem, hV_open, hV_mem, h_subset⟩ :=
     mem_nhds_prod_iff'.mp h_preim
@@ -1173,15 +1173,15 @@ theorem exists_chartExp_jointContDiffOn_infty
         ((Metric.ball ((extChartAt I α α, (0 : E)) : E × E) ρ) ×ˢ Set.Ioo (-T) T) := by
   classical
   set x₀ : E := extChartAt I α α with hx₀_def
-  have hx₀_src : α ∈ (extChartAt I α).source :=
+  have hx₀_source : α ∈ (extChartAt I α).source :=
     mem_extChartAt_source (I := I) α
   have hx₀_target : x₀ ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hx₀_src
+    (extChartAt I α).map_source hx₀_source
   have hx₀_interior : x₀ ∈ interior (extChartAt I α).target :=
     Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
       (I := I) α hx₀_target
   obtain ⟨b, r, ε, ρ_V, T_V, Φ, hr, hε, hρ_V_pos, hT_V_pos, hb_sub, hΦ_ILF,
-    hΦ_cd_V, hΦ_init0⟩ :=
+    hΦ_cd_V, hΦ_initial0⟩ :=
     Geodesic.exists_smooth_chartPhase_localFlow
       (I := I) (g := g) (α := α) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   have hΦ_cd_V1 : ContDiffOn ℝ 1 Φ
@@ -1192,7 +1192,7 @@ theorem exists_chartExp_jointContDiffOn_infty
     exists_phaseBall_orbit_in_inner_ball
       (x₀ := x₀)
       (b := b) (ρ_V := ρ_V) (T_V := T_V) hρ_V_pos hT_V_pos
-      (Φ := Φ) hΦ_cd_V1 hΦ_init0
+      (Φ := Φ) hΦ_cd_V1 hΦ_initial0
   set ρ : ℝ := min ρ₀ ((r : ℝ) / 2) with hρ_def
   have hρ_pos : 0 < ρ := by
     apply lt_min hρ₀_pos
@@ -1233,7 +1233,7 @@ theorem exists_chartExp_jointContDiffOn_infty
       (Φ := Φ) (z₀ := ((x₀, (0 : E)) : E × E)) (ρ := ρ) (T := T) (t' := t') n
       ht'_in_Ioo
       (hΦ_cd.of_le (by exact_mod_cast (le_top : (n : ℕ∞) ≤ ⊤)))
-  have hΦ_init_z : ∀ z ∈ Metric.ball ((x₀, (0 : E)) : E × E) ρ,
+  have hΦ_initial_z : ∀ z ∈ Metric.ball ((x₀, (0 : E)) : E × E) ρ,
       Φ ((z, (0 : ℝ)) : (E × E) × ℝ) = z := by
     intro z hz
     have hz_cb : z ∈ Metric.closedBall ((x₀, (0 : E)) : E × E) (r : ℝ) := by
@@ -1313,7 +1313,7 @@ theorem exists_chartExp_jointContDiffOn_infty
       Metric.closedBall_subset_closedBall (le_of_lt b.rIn_lt_rOut) h_in_closed
     exact hb_sub h_in_outer
   exact ⟨Φ, ρ, T, t', hρ_pos, hT_pos, ht'_in_Ioo, ht'_pos,
-    hjoint, hΦ_init_z, hΦ_phase_z, hΦ_target_z, hΦ_cd⟩
+    hjoint, hΦ_initial_z, hΦ_phase_z, hΦ_target_z, hΦ_cd⟩
 
 omit [CompleteSpace E] in
 omit [I.Boundaryless] [T2Space (TangentBundle I M)] in

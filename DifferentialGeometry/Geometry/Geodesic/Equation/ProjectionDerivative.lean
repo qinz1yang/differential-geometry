@@ -84,9 +84,9 @@ lemma fst_continuousLinearMapAt_secondaryTriv
       e.continuousLinearMapAt ℝ p =
         tangentCoordChange I.tangent p (⟨α, (0 : E)⟩ : TangentBundle I M) p :=
     hcore2
-  have hp_src_p : p ∈ (extChartAt I.tangent p).source :=
+  have hp_source_p : p ∈ (extChartAt I.tangent p).source :=
     mem_extChartAt_source (I := I.tangent) p
-  have hp_src_α0 : p ∈ (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).source := by
+  have hp_source_α0 : p ∈ (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).source := by
     rw [extChartAt_source]; exact hp_TM
   have hFTM :
       HasFDerivWithinAt
@@ -97,7 +97,7 @@ lemma fst_continuousLinearMapAt_secondaryTriv
         ((extChartAt I.tangent p) p) :=
     hasFDerivWithinAt_tangentCoordChange (I := I.tangent) (M := TangentBundle I M)
       (x := p) (y := (⟨α, (0 : E)⟩ : TangentBundle I M)) (z := p)
-      ⟨hp_src_p, hp_src_α0⟩
+      ⟨hp_source_p, hp_source_α0⟩
   set FTM : E × E → E × E :=
     (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)) ∘
       (extChartAt I.tangent p).symm with hFTM_def
@@ -135,9 +135,9 @@ lemma fst_continuousLinearMapAt_secondaryTriv
     rw [Filter.eventuallyEq_iff_exists_mem]
     refine ⟨(extChartAt I.tangent p) '' U, hVnhds, ?_⟩
     rintro z ⟨q, hqU, hqEq⟩
-    have hq_src : q ∈ (extChartAt I.tangent p).source := hqU.1
+    have hq_source : q ∈ (extChartAt I.tangent p).source := hqU.1
     have hsymm : (extChartAt I.tangent p).symm z = q := by
-      rw [← hqEq]; exact (extChartAt I.tangent p).left_inv hq_src
+      rw [← hqEq]; exact (extChartAt I.tangent p).left_inv hq_source
     change ((extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M))
         ((extChartAt I.tangent p).symm z)).1 = FM z.1
     rw [hsymm]
@@ -145,8 +145,8 @@ lemma fst_continuousLinearMapAt_secondaryTriv
       (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := q)]
     have hz1 : z.1 = extChartAt I p.proj q.proj := by
       rw [← hqEq]
-      have hq_proj_src_p : q.proj ∈ (chartAt H p.proj).source := by
-        have := hq_src
+      have hq_proj_source_p : q.proj ∈ (chartAt H p.proj).source := by
+        have := hq_source
         rw [extChartAt_source] at this
         rw [TangentBundle.mem_chart_source_iff] at this
         exact this
@@ -155,13 +155,13 @@ lemma fst_continuousLinearMapAt_secondaryTriv
     change extChartAt I α q.proj =
       (extChartAt I α) ((extChartAt I p.proj).symm
         (extChartAt I p.proj q.proj))
-    have hq_proj_src : q.proj ∈ (extChartAt I p.proj).source := by
+    have hq_proj_source : q.proj ∈ (extChartAt I p.proj).source := by
       rw [extChartAt_source]
-      have := hq_src
+      have := hq_source
       rw [extChartAt_source] at this
       rw [TangentBundle.mem_chart_source_iff] at this
       exact this
-    rw [(extChartAt I p.proj).left_inv hq_proj_src]
+    rw [(extChartAt I p.proj).left_inv hq_proj_source]
   have hfst_basepoint :
       (fun z : E × E => (FTM z).1) basepoint = (fun z : E × E => FM z.1) basepoint := by
     have hsymmp : (extChartAt I.tangent p).symm basepoint = p := by
@@ -187,15 +187,15 @@ lemma fst_continuousLinearMapAt_secondaryTriv
           (tangentCoordChange I.tangent p (⟨α, (0 : E)⟩ : TangentBundle I M) p))
         (range I.tangent) basepoint :=
     hFTM_fst.congr_of_eventuallyEq hfst_FTM_eq_FM hfst_basepoint
-  have hp_E_src : p.proj ∈ (extChartAt I p.proj).source :=
+  have hp_E_source : p.proj ∈ (extChartAt I p.proj).source :=
     mem_extChartAt_source (I := I) p.proj
-  have hp_E_src_α : p.proj ∈ (extChartAt I α).source := by
+  have hp_E_source_α : p.proj ∈ (extChartAt I α).source := by
     rw [extChartAt_source]; exact hp
   have hFM_hasD :
       HasFDerivWithinAt FM (tangentCoordChange I p.proj α p.proj)
         (range I) (extChartAt I p.proj p.proj) :=
     hasFDerivWithinAt_tangentCoordChange (I := I) (M := M)
-      (x := p.proj) (y := α) (z := p.proj) ⟨hp_E_src, hp_E_src_α⟩
+      (x := p.proj) (y := α) (z := p.proj) ⟨hp_E_source, hp_E_source_α⟩
   have hfst_hasD :
       HasFDerivWithinAt (Prod.fst : E × E → E) (ContinuousLinearMap.fst ℝ E E)
         (range I.tangent) basepoint :=
@@ -303,9 +303,9 @@ lemma snd_continuousLinearMapAt_secondaryTriv
         tangentCoordChange I.tangent p (⟨α, (0 : E)⟩ : TangentBundle I M) p :=
     TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
       (𝕜 := ℝ) (b₀ := (⟨α, (0 : E)⟩ : TangentBundle I M)) (b := p) hp_TM
-  have hp_src_p : p ∈ (extChartAt I.tangent p).source :=
+  have hp_source_p : p ∈ (extChartAt I.tangent p).source :=
     mem_extChartAt_source (I := I.tangent) p
-  have hp_src_α0 : p ∈ (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).source := by
+  have hp_source_α0 : p ∈ (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).source := by
     rw [extChartAt_source]; exact hp_TM
   set Ψ : E × E → E × E :=
     (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)) ∘
@@ -317,7 +317,7 @@ lemma snd_continuousLinearMapAt_secondaryTriv
         (range I.tangent) basepoint :=
     hasFDerivWithinAt_tangentCoordChange (I := I.tangent) (M := TangentBundle I M)
       (x := p) (y := (⟨α, (0 : E)⟩ : TangentBundle I M)) (z := p)
-      ⟨hp_src_p, hp_src_α0⟩
+      ⟨hp_source_p, hp_source_α0⟩
   have hΨ_snd :
       HasFDerivWithinAt (fun z : E × E => (Ψ z).2)
         ((ContinuousLinearMap.snd ℝ E E).comp
@@ -345,10 +345,10 @@ lemma snd_continuousLinearMapAt_secondaryTriv
       ((extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)) q).2 =
         secondaryTrivFiberComponentMap (I := I) α p ((extChartAt I.tangent p) q) := by
     intro q hqU
-    have hq_src : q ∈ (extChartAt I.tangent p).source := hqU.1
-    have hq_proj_src_α : q.proj ∈ (chartAt H α).source := hqU.2
-    have hq_proj_src_p : q.proj ∈ (chartAt H p.proj).source := by
-      have := hq_src
+    have hq_source : q ∈ (extChartAt I.tangent p).source := hqU.1
+    have hq_proj_source_α : q.proj ∈ (chartAt H α).source := hqU.2
+    have hq_proj_source_p : q.proj ∈ (chartAt H p.proj).source := by
+      have := hq_source
       rw [extChartAt_source] at this
       rw [TangentBundle.mem_chart_source_iff] at this
       exact this
@@ -356,26 +356,26 @@ lemma snd_continuousLinearMapAt_secondaryTriv
         ((extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)) q).2 =
           tangentCoordChange I q.proj α q.proj (q.snd : E) :=
       extChartAt_tangent_apply_snd_tangentCoordChange (I := I)
-        (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := q) hq_proj_src_α
+        (q := (⟨α, (0 : E)⟩ : TangentBundle I M)) (p := q) hq_proj_source_α
     have hz1 : ((extChartAt I.tangent p) q).1 = extChartAt I p.proj q.proj :=
       extChartAt_tangent_apply_fst (I := I) (q := p) (p := q)
     have hz2 : ((extChartAt I.tangent p) q).2 =
         tangentCoordChange I q.proj p.proj q.proj (q.snd : E) :=
-      extChartAt_tangent_apply_snd_tangentCoordChange (I := I) (q := p) (p := q) hq_proj_src_p
-    have hq_proj_ext_src : q.proj ∈ (extChartAt I p.proj).source := by
-      rw [extChartAt_source]; exact hq_proj_src_p
+      extChartAt_tangent_apply_snd_tangentCoordChange (I := I) (q := p) (p := q) hq_proj_source_p
+    have hq_proj_ext_source : q.proj ∈ (extChartAt I p.proj).source := by
+      rw [extChartAt_source]; exact hq_proj_source_p
     have hsymm_z1 :
         (extChartAt I p.proj).symm (((extChartAt I.tangent p) q).1) = q.proj := by
-      rw [hz1]; exact (extChartAt I p.proj).left_inv hq_proj_ext_src
-    have hq_proj_ext_src_α : q.proj ∈ (extChartAt I α).source := by
-      rw [extChartAt_source]; exact hq_proj_src_α
+      rw [hz1]; exact (extChartAt I p.proj).left_inv hq_proj_ext_source
+    have hq_proj_ext_source_α : q.proj ∈ (extChartAt I α).source := by
+      rw [extChartAt_source]; exact hq_proj_source_α
     unfold secondaryTrivFiberComponentMap
     rw [hsymm_z1, hz2]
-    have hq_proj_ext_src_self : q.proj ∈ (extChartAt I q.proj).source :=
+    have hq_proj_ext_source_self : q.proj ∈ (extChartAt I q.proj).source :=
       mem_extChartAt_source (I := I) q.proj
     rw [tangentCoordChange_comp (I := I) (w := q.proj) (x := p.proj) (y := α)
       (z := q.proj) (v := (q.snd : E))
-      ⟨⟨hq_proj_ext_src_self, hq_proj_ext_src⟩, hq_proj_ext_src_α⟩]
+      ⟨⟨hq_proj_ext_source_self, hq_proj_ext_source⟩, hq_proj_ext_source_α⟩]
     exact hLHS.symm
   have hsnd_Ψ_eq :
       (secondaryTrivFiberComponentMap (I := I) α p) =ᶠ[𝓝[range I.tangent] basepoint]
@@ -383,9 +383,9 @@ lemma snd_continuousLinearMapAt_secondaryTriv
     rw [Filter.eventuallyEq_iff_exists_mem]
     refine ⟨(extChartAt I.tangent p) '' U, hVnhds, ?_⟩
     rintro z ⟨q, hqU, hqEq⟩
-    have hq_src : q ∈ (extChartAt I.tangent p).source := hqU.1
+    have hq_source : q ∈ (extChartAt I.tangent p).source := hqU.1
     have hsymm : (extChartAt I.tangent p).symm z = q := by
-      rw [← hqEq]; exact (extChartAt I.tangent p).left_inv hq_src
+      rw [← hqEq]; exact (extChartAt I.tangent p).left_inv hq_source
     change secondaryTrivFiberComponentMap (I := I) α p z =
       ((extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M))
         ((extChartAt I.tangent p).symm z)).2
@@ -462,20 +462,20 @@ theorem geodesicVectorFieldChart_fst
           ((geodesicVectorFieldChart (I := I) g α p : E × E).1) =
         tangentCoordChange I p.proj α p.proj (p.snd : E) := by
     rw [← hLHS, hfst_eq, hRHS]
-  have hp_E_src : p.proj ∈ (extChartAt I p.proj).source :=
+  have hp_E_source : p.proj ∈ (extChartAt I p.proj).source :=
     mem_extChartAt_source (I := I) p.proj
-  have hp_E_src_α : p.proj ∈ (extChartAt I α).source := by
+  have hp_E_source_α : p.proj ∈ (extChartAt I α).source := by
     rw [extChartAt_source]; exact hp
   have hself :
       tangentCoordChange I p.proj p.proj p.proj
           ((geodesicVectorFieldChart (I := I) g α p : E × E).1) =
         (geodesicVectorFieldChart (I := I) g α p : E × E).1 :=
     tangentCoordChange_self (I := I) (x := p.proj) (z := p.proj)
-      (v := (geodesicVectorFieldChart (I := I) g α p : E × E).1) hp_E_src
+      (v := (geodesicVectorFieldChart (I := I) g α p : E × E).1) hp_E_source
   have hself_snd :
       tangentCoordChange I p.proj p.proj p.proj (p.snd : E) = p.snd :=
     tangentCoordChange_self (I := I) (x := p.proj) (z := p.proj)
-      (v := p.snd) hp_E_src
+      (v := p.snd) hp_E_source
   have h_comp1 :
       tangentCoordChange I α p.proj p.proj
           (tangentCoordChange I p.proj α p.proj
@@ -485,13 +485,13 @@ theorem geodesicVectorFieldChart_fst
     tangentCoordChange_comp (I := I) (w := p.proj) (x := α) (y := p.proj)
       (z := p.proj)
       (v := (geodesicVectorFieldChart (I := I) g α p : E × E).1)
-      ⟨⟨hp_E_src, hp_E_src_α⟩, hp_E_src⟩
+      ⟨⟨hp_E_source, hp_E_source_α⟩, hp_E_source⟩
   have h_comp2 :
       tangentCoordChange I α p.proj p.proj
           (tangentCoordChange I p.proj α p.proj (p.snd : E)) =
         tangentCoordChange I p.proj p.proj p.proj (p.snd : E) :=
     tangentCoordChange_comp (I := I) (w := p.proj) (x := α) (y := p.proj)
-      (z := p.proj) (v := p.snd) ⟨⟨hp_E_src, hp_E_src_α⟩, hp_E_src⟩
+      (z := p.proj) (v := p.snd) ⟨⟨hp_E_source, hp_E_source_α⟩, hp_E_source⟩
   have : (geodesicVectorFieldChart (I := I) g α p : E × E).1 = p.snd := by
     rw [← hself]
     rw [← h_comp1]

@@ -33,7 +33,7 @@ theorem lCost_le_join_bdd
     (hc : 0 < c) (hcb : c < b)
     (hbdd : BddBelow {r : Real | ∃ gamma : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 gamma ∧
-        gamma 0 = x ∧ gamma b = y ∧ lRegAction S T gamma 0 b = r})
+        gamma 0 = x ∧ gamma b = y ∧ lRegularizedAction S T gamma 0 b = r})
     (hreg : ∀ s ∈ Icc (0 : Real) b, T - s ^ 2 ∈ D.regular)
     (alpha beta : Real → M)
     (halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 1 alpha
@@ -43,13 +43,13 @@ theorem lCost_le_join_bdd
     (hnode : alpha c = beta c) (hstart : alpha 0 = x)
     (hend : beta b = y) :
     lCost S T x y (b ^ 2) ≤
-      lRegAction S T alpha 0 c + lRegAction S T beta c b := by
+      lRegularizedAction S T alpha 0 c + lRegularizedAction S T beta c b := by
   obtain ⟨eta, m, t, p, w, heta0, heta1, htmono, ht0, htlast,
       _hcnode, hsrc, hrep⟩ :=
     exists_chartH1_join (I := I) 0 c b hc hcb alpha beta
       halpha hbeta hnode
   obtain ⟨delta, _u, hdelta, hdelta0, hdeltab, _hsrcDelta, _hrepDelta,
-      _hu, _hunif, hdeltaAct⟩ :=
+      _hu, _huniform, hdeltaAct⟩ :=
     lAction_c1_dense (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
       T 0 b t htmono ht0 htlast p eta w hsrc hrep hreg
   have hreg0c : ∀ s ∈ Icc (0 : Real) c, T - s ^ 2 ∈ D.regular := by
@@ -62,41 +62,41 @@ theorem lCost_le_join_bdd
       (Icc (0 : Real) c) := halpha.congr fun s hs ↦ heta0 hs
   have hetaTail : ContMDiffOn (modelWithCornersSelf Real Real) I 1 eta
       (Icc c b) := hbeta.congr fun s hs ↦ heta1 hs
-  have hetaHeadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+  have hetaHeadInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T 0 c hc.le eta hetaHead hreg0c
-  have hetaTailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+  have hetaTailInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T c b hcb.le eta hetaTail hregcb
-  have hetaAdd := lRegAction_add (I := I) S T eta 0 c b
+  have hetaAdd := lRegularizedAction_add (I := I) S T eta 0 c b
     hetaHeadInt hetaTailInt
-  have hetaHeadAct : lRegAction S T eta 0 c =
-      lRegAction S T alpha 0 c :=
-    lRegAction_congr (I := I) S T eta alpha 0 c (by
+  have hetaHeadAct : lRegularizedAction S T eta 0 c =
+      lRegularizedAction S T alpha 0 c :=
+    lRegularizedAction_congr (I := I) S T eta alpha 0 c (by
       intro s hs
       have hs' : s ∈ Ioo (0 : Real) c := by
         simpa only [uIoo_of_le hc.le] using hs
       exact heta0 ⟨hs'.1.le, hs'.2.le⟩)
-  have hetaTailAct : lRegAction S T eta c b =
-      lRegAction S T beta c b :=
-    lRegAction_congr (I := I) S T eta beta c b (by
+  have hetaTailAct : lRegularizedAction S T eta c b =
+      lRegularizedAction S T beta c b :=
+    lRegularizedAction_congr (I := I) S T eta beta c b (by
       intro s hs
       have hs' : s ∈ Ioo c b := by
         simpa only [uIoo_of_le hcb.le] using hs
       exact heta1 ⟨hs'.1.le, hs'.2.le⟩)
-  have hetaAct : lRegAction S T eta 0 b =
-      lRegAction S T alpha 0 c + lRegAction S T beta c b := by
+  have hetaAct : lRegularizedAction S T eta 0 b =
+      lRegularizedAction S T alpha 0 c + lRegularizedAction S T beta c b := by
     rw [← hetaAdd, hetaHeadAct, hetaTailAct]
   rw [← hetaAct]
   have hcostDelta : ∀ n, lCost S T x y (b ^ 2) ≤
-      lRegAction S T (delta n) 0 b := by
+      lRegularizedAction S T (delta n) 0 b := by
     intro n
-    rw [lCost_eq_reg (I := I) S T x y (b ^ 2) (sq_nonneg b),
+    rw [lCost_eq_regularity (I := I) S T x y (b ^ 2) (sq_nonneg b),
       Real.sqrt_sq_eq_abs, abs_of_pos hb]
-    apply lRegCostC1_le_bdd (I := I) S T 0 b x y hbdd
+    apply lRegularizedCostC1_le_bdd (I := I) S T 0 b x y hbdd
       (delta n) (hdelta n)
     · exact (hdelta0 n).trans ((heta0 ⟨le_rfl, hc.le⟩).trans hstart)
     · exact (hdeltab n).trans ((heta1 ⟨hcb.le, le_rfl⟩).trans hend)
-  have hneg : Tendsto (fun n ↦ -lRegAction S T (delta n) 0 b) atTop
-      (nhds (-lRegAction S T eta 0 b)) :=
+  have hneg : Tendsto (fun n ↦ -lRegularizedAction S T (delta n) 0 b) atTop
+      (nhds (-lRegularizedAction S T eta 0 b)) :=
     continuousAt_neg.tendsto.comp hdeltaAct
   have hlim := le_of_tendsto' hneg fun n ↦ neg_le_neg (hcostDelta n)
   linarith
@@ -108,17 +108,17 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem lCost_le_ray_bdd
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (b : Real)
-    (hb0 : 0 < b) (hb : b ∈ lRegDomain S T x Z)
+    (hb0 : 0 < b) (hb : b ∈ lRegularizedDomain S T x Z)
     (hbdd : BddBelow {r : Real | ∃ gamma : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 gamma ∧
-        gamma 0 = x ∧ gamma b = lRegCurve S T x Z b ∧
-        lRegAction S T gamma 0 b = r}) :
-    lCost S T x (lRegCurve S T x Z b) (b ^ 2) ≤
-      lRegAction S T (lRegCurve S T x Z) 0 b := by
+        gamma 0 = x ∧ gamma b = lRegularizedCurve S T x Z b ∧
+        lRegularizedAction S T gamma 0 b = r}) :
+    lCost S T x (lRegularizedCurve S T x Z b) (b ^ 2) ≤
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b := by
   obtain ⟨rho, hrho, hrho_id, _hrho_deriv, hrho_range⟩ :=
-    exists_lRegDomain_smoothClamp S T x Z hb0 hb
+    exists_lRegularizedDomain_smoothClamp S T x Z hb0 hb
   let z : E := Z
-  let gamma : Real → M := fun s ↦ lRegCurve S T x Z (rho s)
+  let gamma : Real → M := fun s ↦ lRegularizedCurve S T x Z (rho s)
   have hrhoM : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞ rho :=
     contMDiff_iff_contDiff.mpr hrho
@@ -130,20 +130,20 @@ theorem lCost_le_ray_bdd
   have hgammaInf : ContMDiff (modelWithCornersSelf Real Real) I ∞ gamma := by
     rw [← contMDiffOn_univ]
     change ContMDiffOn (modelWithCornersSelf Real Real) I ∞
-      ((fun q : E × Real ↦ lRegCurve S T x q.1 q.2) ∘
+      ((fun q : E × Real ↦ lRegularizedCurve S T x q.1 q.2) ∘
         fun s : Real ↦ (z, rho s)) Set.univ
-    exact (lRegCurve_smoothOn S hS T x).comp hpair.contMDiffOn
+    exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
       (fun s _hs ↦ by
-        change rho s ∈ lRegDomain S T x Z
+        change rho s ∈ lRegularizedDomain S T x Z
         exact hrho_range s)
   have hgamma : ContMDiff (modelWithCornersSelf Real Real) I 1 gamma :=
     hgammaInf.of_le (by norm_num)
-  have heq : Set.EqOn gamma (lRegCurve S T x Z) (Icc (0 : Real) b) := by
+  have heq : Set.EqOn gamma (lRegularizedCurve S T x Z) (Icc (0 : Real) b) := by
     intro s hs
-    exact congrArg (lRegCurve S T x Z) (hrho_id hs)
-  have hact : lRegAction S T gamma 0 b =
-      lRegAction S T (lRegCurve S T x Z) 0 b := by
-    apply lRegAction_congr (I := I) S T gamma (lRegCurve S T x Z) 0 b
+    exact congrArg (lRegularizedCurve S T x Z) (hrho_id hs)
+  have hact : lRegularizedAction S T gamma 0 b =
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b := by
+    apply lRegularizedAction_congr (I := I) S T gamma (lRegularizedCurve S T x Z) 0 b
     intro s hs
     apply heq
     have hs' : s ∈ Ioo (0 : Real) b := by
@@ -153,16 +153,16 @@ theorem lCost_le_ray_bdd
     simpa only [id_eq] using hrho_id ⟨le_rfl, hb0.le⟩
   have hrhob : rho b = b := by
     simpa only [id_eq] using hrho_id ⟨hb0.le, le_rfl⟩
-  rw [lCost_eq_reg (I := I) S T x (lRegCurve S T x Z b)
+  rw [lCost_eq_regularity (I := I) S T x (lRegularizedCurve S T x Z b)
       (b ^ 2) (sq_nonneg b), Real.sqrt_sq_eq_abs, abs_of_pos hb0]
   calc
-    lRegCostC1 S T 0 b x (lRegCurve S T x Z b) ≤
-        lRegAction S T gamma 0 b :=
-      lRegCostC1_le_bdd (I := I) S T 0 b x (lRegCurve S T x Z b)
+    lRegularizedCostC1 S T 0 b x (lRegularizedCurve S T x Z b) ≤
+        lRegularizedAction S T gamma 0 b :=
+      lRegularizedCostC1_le_bdd (I := I) S T 0 b x (lRegularizedCurve S T x Z b)
         hbdd gamma hgamma
-        (by simp only [gamma, hrho0, lRegCurve_zero])
+        (by simp only [gamma, hrho0, lRegularizedCurve_zero])
         (by simp only [gamma, hrhob])
-    _ = lRegAction S T (lRegCurve S T x Z) 0 b := hact
+    _ = lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b := hact
 
 omit [NeZero (Module.finrank Real E)] in
 theorem lCost_le_join
@@ -181,19 +181,19 @@ theorem lCost_le_join
     (hnode : alpha c = beta c) (hstart : alpha 0 = x)
     (hend : beta b = y) :
     lCost S T x y (b ^ 2) ≤
-      lRegAction S T alpha 0 c + lRegAction S T beta c b := by
+      lRegularizedAction S T alpha 0 c + lRegularizedAction S T beta c b := by
   have hbdd : BddBelow {r : Real | ∃ gamma : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 gamma ∧
-        gamma 0 = x ∧ gamma b = y ∧ lRegAction S T gamma 0 b = r} := by
-    refine ⟨lRegCostC1 S T 0 b x y, ?_⟩
+        gamma 0 = x ∧ gamma b = y ∧ lRegularizedAction S T gamma 0 b = r} := by
+    refine ⟨lRegularizedCostC1 S T 0 b x y, ?_⟩
     intro r hr
     obtain ⟨gamma, hgamma, hgamma0, hgammab, rfl⟩ := hr
-    exact lRegCostC1_le (I := I) S hS T (T - b ^ 2) T 0 b hb.le
+    exact lRegularizedCostC1_le (I := I) S hS T (T - b ^ 2) T 0 b hb.le
       htime hback x y gamma hgamma hgamma0 hgammab hreg
   exact lCost_le_join_bdd (I := I) S hS T b hb x y hc hcb hbdd hreg
     alpha beta halpha hbeta hnode hstart hend
 
-theorem lMinVec_local_bdd
+theorem lMinimizingVector_local_bdd
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (b : Real)
     (hb0 : 0 < b) (hZmin : (Z, b ^ 2) ∈ lMinDomain S T x)
@@ -233,18 +233,18 @@ theorem lMinVec_local_bdd
     exact ((continuousOn_extChartAt_symm (I := I) p).continuousAt
       ((isOpen_extChartAt_target (I := I) p).mem_nhds hq0)).tendsto.comp hqLim
   have hEnd : Tendsto (fun n ↦ lExp S T x (W n) (b ^ 2)) atTop
-      (nhds (lRegCurve S T x Z b)) := by
-    have hcenter : (extChartAt I p).symm q0 = lRegCurve S T x Z b := by
+      (nhds (lRegularizedCurve S T x Z b)) := by
+    have hcenter : (extChartAt I p).symm q0 = lRegularizedCurve S T x Z b := by
       rw [← hZend]
       simp only [lExp, Real.sqrt_sq_eq_abs, abs_of_pos hb0]
     rw [← hcenter]
     exact hsymm.congr' (Eventually.of_forall fun n ↦ (hWend n).symm)
-  have hZdom : b ∈ lRegDomain S T x Z := by
+  have hZdom : b ∈ lRegularizedDomain S T x Z := by
     have hdom := (((mem_lExpPosDom S T x Z (b ^ 2)).1
       ((mem_lMinDomain S T x Z (b ^ 2)).1 hZmin).1).2).2
     simpa only [lExpDomain, Real.sqrt_sq_eq_abs, abs_of_pos hb0] using hdom
   have hBdd : Bornology.IsBounded (range W) :=
-    lMinVec_end_bdd (I := I) S hS T x Z b hb0 hZdom W hWmin hEnd
+    lMinimizingVector_end_bdd (I := I) S hS T x Z b hb0 hZdom W hWmin hEnd
   obtain ⟨C, hC⟩ := hBdd.exists_norm_le
   obtain ⟨n, hn⟩ := exists_nat_gt C
   have hupper : ‖(W n : E)‖ ≤ C := hC (W n) ⟨n, rfl⟩
@@ -256,20 +256,20 @@ theorem lRayChart_bound
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x p : M) {K : Set E} {a b : Real}
     (hKcpt : IsCompact K)
-    (hdom : K ×ˢ Icc a b ⊆ lRegJointDom S T x)
-    (hsrc : MapsTo (fun q : E × Real ↦ lRegCurve S T x q.1 q.2)
+    (hdom : K ×ˢ Icc a b ⊆ lRegularizedJointDom S T x)
+    (hsrc : MapsTo (fun q : E × Real ↦ lRegularizedCurve S T x q.1 q.2)
       (K ×ˢ Icc a b) (extChartAt I p).source) :
     ∃ V : Real, 0 ≤ V ∧ ∀ Z ∈ K, ∀ c ∈ Icc a b,
-      ‖(extChartAt I p) (lRegCurve S T x Z b) -
-          (extChartAt I p) (lRegCurve S T x Z c)‖ ≤ V * (b - c) := by
+      ‖(extChartAt I p) (lRegularizedCurve S T x Z b) -
+          (extChartAt I p) (lRegularizedCurve S T x Z c)‖ ≤ V * (b - c) := by
   let Q : Set (E × Real) := K ×ˢ Icc a b
-  let F : E × Real → M := fun q ↦ lRegCurve S T x q.1 q.2
+  let F : E × Real → M := fun q ↦ lRegularizedCurve S T x q.1 q.2
   let G : E × Real → E := fun q ↦ (extChartAt I p) (F q)
-  let U : Set (E × Real) := lRegJointDom S T x ∩ F ⁻¹' (chartAt H p).source
+  let U : Set (E × Real) := lRegularizedJointDom S T x ∩ F ⁻¹' (chartAt H p).source
   have hFall : ContMDiffOn (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ F
-      (lRegJointDom S T x) := lRegCurve_smoothOn S hS T x
+      (lRegularizedJointDom S T x) := lRegularizedCurve_smoothOn S hS T x
   have hUopen : IsOpen U := hFall.continuousOn.isOpen_inter_preimage
-    (lRegJointDom_open S hS T x) (chartAt H p).open_source
+    (lRegularizedJointDom_open S hS T x) (chartAt H p).open_source
   have hGm : ContMDiffOn (𝓘(Real, E).prod 𝓘(Real, Real))
       𝓘(Real, E) 1 G U := by
     exact (contMDiffOn_extChartAt (I := I) (n := 1) (x := p)).comp
@@ -285,7 +285,7 @@ theorem lRayChart_bound
     exact ⟨C, V, mem_nhdsWithin_of_mem_nhds hV, hCV⟩
   have hQcpt : IsCompact Q := hKcpt.prod isCompact_Icc
   have hQU : Q ⊆ U := fun q hq ↦ ⟨hdom hq, by
-    change lRegCurve S T x q.1 q.2 ∈ (chartAt H p).source
+    change lRegularizedCurve S T x q.1 q.2 ∈ (chartAt H p).source
     rw [← extChartAt_source (I := I) (H := H) p]
     exact hsrc hq⟩
   obtain ⟨V, hV⟩ :=
@@ -307,22 +307,22 @@ theorem lRayChart_tube
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x p : M) {K : Set E} {b : Real} (hb : 0 < b)
     (hKcpt : IsCompact K)
-    (hbdom : ∀ Z ∈ K, b ∈ lRegDomain S T x Z)
-    (hbchart : ∀ Z ∈ K, lRegCurve S T x Z b ∈ (chartAt H p).source) :
+    (hbdom : ∀ Z ∈ K, b ∈ lRegularizedDomain S T x Z)
+    (hbchart : ∀ Z ∈ K, lRegularizedCurve S T x Z b ∈ (chartAt H p).source) :
     ∃ δ > 0, δ ≤ b ∧ ∀ Z ∈ K, ∀ s ∈ Icc (b - δ) b,
-      s ∈ lRegDomain S T x Z ∧
-        lRegCurve S T x Z s ∈ (chartAt H p).source := by
-  let F : E × Real → M := fun q ↦ lRegCurve S T x q.1 q.2
-  let U : Set (E × Real) := lRegJointDom S T x ∩ F ⁻¹' (chartAt H p).source
+      s ∈ lRegularizedDomain S T x Z ∧
+        lRegularizedCurve S T x Z s ∈ (chartAt H p).source := by
+  let F : E × Real → M := fun q ↦ lRegularizedCurve S T x q.1 q.2
+  let U : Set (E × Real) := lRegularizedJointDom S T x ∩ F ⁻¹' (chartAt H p).source
   have hFall : ContMDiffOn (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ F
-      (lRegJointDom S T x) := lRegCurve_smoothOn S hS T x
+      (lRegularizedJointDom S T x) := lRegularizedCurve_smoothOn S hS T x
   have hUopen : IsOpen U := hFall.continuousOn.isOpen_inter_preimage
-    (lRegJointDom_open S hS T x) (chartAt H p).open_source
+    (lRegularizedJointDom_open S hS T x) (chartAt H p).open_source
   have hev : ∀ᶠ s in nhds b, ∀ Z ∈ K, (Z, s) ∈ U := by
     apply hKcpt.eventually_forall_of_forall_eventually
     intro Z hZ
     have hmem : (Z, b) ∈ U := ⟨by
-      change b ∈ lRegDomain S T x Z
+      change b ∈ lRegularizedDomain S T x Z
       exact hbdom Z hZ, hbchart Z hZ⟩
     exact (continuous_snd.prodMk continuous_fst).continuousAt.eventually
       (hUopen.mem_nhds hmem)
@@ -353,7 +353,7 @@ theorem lRampAct_eq
       (Icc (0 : Real) (b - a))
       (extChartAt I p).target)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    lRegAction S T
+    lRegularizedAction S T
         (fun s ↦ (extChartAt I p).symm
           ((lChartRamp y z (sub_nonneg.mpr hab.le)).toFun (s - a))) a b =
       lChartAction S T a p (lChartRamp y z (sub_nonneg.mpr hab.le)) := by
@@ -398,7 +398,7 @@ theorem lRampAct_eq
         ((lChartRamp y z (sub_nonneg.mpr hab.le)).toFun ((a + r) - a)))
     rw [add_sub_cancel_left]
     exact ((extChartAt I p).right_inv (htar hrL)).symm
-  have hsum := lRegAction_eq_sum_lChartAction (I := I) S hS.smoothMetric
+  have hsum := lRegularizedAction_eq_sum_lChartAction (I := I) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T a b t htmono (by rfl) (by rfl)
     ps gamma us hsrc hrep hreg
   rw [Fin.sum_univ_one] at hsum
@@ -417,27 +417,27 @@ theorem lCost_ramp_le
     (hback : ∀ s ∈ Icc (0 : Real) b,
       T - s ^ 2 ∈ Icc (T - b ^ 2) T)
     (hreg : ∀ s ∈ Icc (0 : Real) b, T - s ^ 2 ∈ D.regular)
-    (W : TangentSpace I x) (hbdom : b ∈ lRegDomain S T x W)
-    (hrayc : lRegCurve S T x W c ∈ (chartAt H p).source)
+    (W : TangentSpace I x) (hbdom : b ∈ lRegularizedDomain S T x W)
+    (hrayc : lRegularizedCurve S T x W c ∈ (chartAt H p).source)
     (z : E)
     (htar : MapsTo
-      (lChartRamp ((extChartAt I p) (lRegCurve S T x W c)) z
+      (lChartRamp ((extChartAt I p) (lRegularizedCurve S T x W c)) z
         (sub_nonneg.mpr hcb.le)).toFun (Icc (0 : Real) (b - c))
       (extChartAt I p).target) :
     lCost S T x ((extChartAt I p).symm z) (b ^ 2) ≤
-      lRegAction S T (lRegCurve S T x W) 0 c +
+      lRegularizedAction S T (lRegularizedCurve S T x W) 0 c +
         lChartAction S T c p
-          (lChartRamp ((extChartAt I p) (lRegCurve S T x W c)) z
+          (lChartRamp ((extChartAt I p) (lRegularizedCurve S T x W c)) z
             (sub_nonneg.mpr hcb.le)) := by
-  let y : E := (extChartAt I p) (lRegCurve S T x W c)
+  let y : E := (extChartAt I p) (lRegularizedCurve S T x W c)
   let u : timeH1 E (b - c) := lChartRamp y z (sub_nonneg.mpr hcb.le)
   let beta : Real → M := fun s ↦
     (extChartAt I p).symm (u.toFun (s - c))
-  have hcdom : c ∈ lRegDomain S T x W :=
-    lRegDomain_seg S T x W hbdom hc.le hcb.le
+  have hcdom : c ∈ lRegularizedDomain S T x W :=
+    lRegularizedDomain_segment S T x W hbdom hc.le hcb.le
   have halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 1
-      (lRegCurve S T x W) (Icc (0 : Real) c) :=
-    lRegCurve_c1On S hS T x W hcdom
+      (lRegularizedCurve S T x W) (Icc (0 : Real) c) :=
+    lRegularizedCurve_c1On S hS T x W hcdom
   let v : Real → E := fun s ↦ y + ((s - c) / (b - c)) • (z - y)
   have hv : ContDiffOn Real 1 v (Icc c b) := by
     exact (contDiff_const.add
@@ -464,8 +464,8 @@ theorem lCost_ramp_le
       constructor <;> linarith [hs.1, hs.2]
     exact congrArg (extChartAt I p).symm
       (lRamp_apply (y := y) (z := z) (sub_nonneg.mpr hcb.le) hr)
-  have hnode : lRegCurve S T x W c = beta c := by
-    change lRegCurve S T x W c =
+  have hnode : lRegularizedCurve S T x W c = beta c := by
+    change lRegularizedCurve S T x W c =
       (extChartAt I p).symm (u.toFun (c - c))
     rw [sub_self, show u.toFun 0 = y by
       exact lRamp_start (y := y) (z := z) (sub_nonneg.mpr hcb.le)]
@@ -475,8 +475,8 @@ theorem lCost_ramp_le
     simp only [beta, u, lRamp_end (sub_pos.mpr hcb)]
   have hle := lCost_le_join (I := I) S hS T b (lt_trans hc hcb) x
     ((extChartAt I p).symm z) hc hcb htime hback hreg
-    (lRegCurve S T x W) beta halpha hbeta hnode
-    (lRegCurve_zero S T x W) hend
+    (lRegularizedCurve S T x W) beta halpha hbeta hnode
+    (lRegularizedCurve_zero S T x W) hend
   have hact := lRampAct_eq (I := I) S hS T c b p hcb htar
     (fun s hs ↦ hreg s ⟨hc.le.trans hs.1, hs.2⟩)
   rw [hact] at hle
@@ -510,14 +510,14 @@ theorem lCost_chart_lip
       ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
         alpha 0 = x ∧ alpha b = (extChartAt I p).symm q0
   · obtain ⟨alpha, halpha, hstart, hend⟩ := hreach
-    obtain ⟨Z0, hZ0min, hZ0end⟩ := exists_lMinVec (I := I) S hS
+    obtain ⟨Z0, hZ0min, hZ0end⟩ := exists_lMinimizingVector (I := I) S hS
       T (T - b ^ 2) T (b ^ 2) (sq_pos_of_pos hb) htime (by
         simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb] using hback)
       x ((extChartAt I p).symm q0) alpha halpha hstart (by
         simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb] using hend) (by
           simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb] using hreg)
     obtain ⟨ε0, hε0, C, hC, hminBdd⟩ :=
-      lMinVec_local_bdd (I := I) S hS T x Z0 b hb hZ0min p hq0 (by
+      lMinimizingVector_local_bdd (I := I) S hS T x Z0 b hb hZ0min p hq0 (by
         simpa only [lExp, Real.sqrt_sq_eq_abs, abs_of_pos hb] using hZ0end)
     obtain ⟨R, hR, hRtar⟩ := Metric.isOpen_iff.1
       (isOpen_extChartAt_target (I := I) p) q0 hq0
@@ -535,9 +535,9 @@ theorem lCost_chart_lip
     have hYcpt : IsCompact Y :=
       hQcpt.image_of_continuousOn
         ((continuousOn_extChartAt_symm (I := I) p).mono hQtar)
-    let endMap : E → M := fun Z ↦ lRegCurve S T x Z b
-    have hbdomAll (Z : E) : b ∈ lRegDomain S T x Z :=
-      mem_lRegDomain_of_time_slab S hS T x Z b hb.le (by
+    let endMap : E → M := fun Z ↦ lRegularizedCurve S T x Z b
+    have hbdomAll (Z : E) : b ∈ lRegularizedDomain S T x Z :=
+      mem_lRegularizedDomain_of_time_slab S hS T x Z b hb.le (by
         simpa only [hb2] using hslab)
     have hendCont : Continuous endMap := by
       have hpair : ContMDiff 𝓘(Real, E)
@@ -545,9 +545,9 @@ theorem lCost_chart_lip
           (fun Z : E ↦ (Z, b)) := contMDiff_id.prodMk contMDiff_const
       have hendMD : ContMDiff 𝓘(Real, E) I ∞ endMap := by
         rw [← contMDiffOn_univ]
-        exact (lRegCurve_smoothOn S hS T x).comp hpair.contMDiffOn
+        exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
           (fun Z _hZ ↦ by
-            change b ∈ lRegDomain S T x Z
+            change b ∈ lRegularizedDomain S T x Z
             exact hbdomAll Z)
       exact hendMD.continuous
     let K : Set E := Metric.closedBall (0 : E) C ∩
@@ -566,13 +566,13 @@ theorem lCost_chart_lip
         exact hminBdd q0 (Metric.mem_ball_self hε0) Z0 hZ0min hZ0end
       · refine ⟨q0, ⟨?_, ?_⟩⟩
         · exact Metric.mem_closedBall_self hρ.le
-        · change (extChartAt I p).symm q0 = lRegCurve S T x Z0 b
+        · change (extChartAt I p).symm q0 = lRegularizedCurve S T x Z0 b
           calc
             (extChartAt I p).symm q0 = lExp S T x Z0 (b ^ 2) := hZ0end.symm
-            _ = lRegCurve S T x Z0 b := by
+            _ = lRegularizedCurve S T x Z0 b := by
               rw [lExp, Real.sqrt_sq_eq_abs, abs_of_pos hb]
     have hbchart : ∀ Z ∈ K,
-        lRegCurve S T x Z b ∈ (chartAt H p).source := by
+        lRegularizedCurve S T x Z b ∈ (chartAt H p).source := by
       intro Z hZ
       obtain ⟨q, hqQ, hqend⟩ := hZ.2
       change endMap Z ∈ (chartAt H p).source
@@ -580,12 +580,12 @@ theorem lCost_chart_lip
       simpa only [extChartAt_source] using (extChartAt I p).map_target (hQtar hqQ)
     obtain ⟨δ, hδ, hδb, htube⟩ := lRayChart_tube (I := I)
       S hS T x p hb hKcpt (fun Z hZ ↦ hbdomAll Z) hbchart
-    have hdomTail : K ×ˢ Icc (b - δ) b ⊆ lRegJointDom S T x := by
+    have hdomTail : K ×ˢ Icc (b - δ) b ⊆ lRegularizedJointDom S T x := by
       intro q hq
-      change q.2 ∈ lRegDomain S T x q.1
+      change q.2 ∈ lRegularizedDomain S T x q.1
       exact (htube q.1 hq.1 q.2 hq.2).1
     have hsrcTail : MapsTo
-        (fun q : E × Real ↦ lRegCurve S T x q.1 q.2)
+        (fun q : E × Real ↦ lRegularizedCurve S T x q.1 q.2)
         (K ×ˢ Icc (b - δ) b) (extChartAt I p).source := by
       intro q hq
       simpa only [extChartAt_source] using (htube q.1 hq.1 q.2 hq.2).2
@@ -630,13 +630,13 @@ theorem lCost_chart_lip
       (Metric.mem_ball_self hρ) hrρ alpha halpha hstart hend
     obtain ⟨alphaQ, halphaQ, halphaQ0, halphaQb⟩ := hreachQ
     obtain ⟨alphaR, halphaR, halphaR0, halphaRb⟩ := hreachR
-    obtain ⟨Wq, hWqmin, hWqend⟩ := exists_lMinVec (I := I) S hS
+    obtain ⟨Wq, hWqmin, hWqend⟩ := exists_lMinimizingVector (I := I) S hS
       T (T - b ^ 2) T (b ^ 2) (sq_pos_of_pos hb) htime (by
         simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb] using hback) x
       ((extChartAt I p).symm q) alphaQ halphaQ halphaQ0 (by
         simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb] using halphaQb) (by
           simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb] using hreg)
-    obtain ⟨Wr, hWrmin, hWrend⟩ := exists_lMinVec (I := I) S hS
+    obtain ⟨Wr, hWrmin, hWrend⟩ := exists_lMinimizingVector (I := I) S hS
       T (T - b ^ 2) T (b ^ 2) (sq_pos_of_pos hb) htime (by
         simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb] using hback) x
       ((extChartAt I p).symm r) alphaR halphaR halphaR0 (by
@@ -650,10 +650,10 @@ theorem lCost_chart_lip
           (half_le_self hε0.le))) Wq hWqmin hWqend
       · refine ⟨q,
           ⟨Metric.ball_subset_closedBall hqρ, ?_⟩⟩
-        change (extChartAt I p).symm q = lRegCurve S T x Wq b
+        change (extChartAt I p).symm q = lRegularizedCurve S T x Wq b
         calc
           (extChartAt I p).symm q = lExp S T x Wq (b ^ 2) := hWqend.symm
-          _ = lRegCurve S T x Wq b := by
+          _ = lRegularizedCurve S T x Wq b := by
             rw [lExp, Real.sqrt_sq_eq_abs, abs_of_pos hb]
     have hWrK : (Wr : E) ∈ K := by
       refine ⟨⟨?_, hWrmin⟩, ?_⟩
@@ -663,10 +663,10 @@ theorem lCost_chart_lip
           (half_le_self hε0.le))) Wr hWrmin hWrend
       · refine ⟨r,
           ⟨Metric.ball_subset_closedBall hrρ, ?_⟩⟩
-        change (extChartAt I p).symm r = lRegCurve S T x Wr b
+        change (extChartAt I p).symm r = lRegularizedCurve S T x Wr b
         calc
           (extChartAt I p).symm r = lExp S T x Wr (b ^ 2) := hWrend.symm
-          _ = lRegCurve S T x Wr b := by
+          _ = lRegularizedCurve S T x Wr b := by
             rw [lExp, Real.sqrt_sq_eq_abs, abs_of_pos hb]
     have oneSide : ∀ (u v : E) (Wu : TangentSpace I x),
         u ∈ Metric.ball q0 ε → v ∈ Metric.ball q0 ε →
@@ -703,12 +703,12 @@ theorem lCost_chart_lip
       have hc : 0 < c := sub_pos.mpr hdb
       have hcb : c < b := sub_lt_self b hd
       have hcI : c ∈ Icc (b - δ) b := ⟨by dsimp only [c]; linarith, hcb.le⟩
-      have hWuEnd : lRegCurve S T x Wu b = (extChartAt I p).symm u := by
+      have hWuEnd : lRegularizedCurve S T x Wu b = (extChartAt I p).symm u := by
         simpa only [lExp, Real.sqrt_sq_eq_abs, abs_of_pos hb] using hWend
-      have hchartEnd : (extChartAt I p) (lRegCurve S T x Wu b) = u := by
+      have hchartEnd : (extChartAt I p) (lRegularizedCurve S T x Wu b) = u := by
         rw [hWuEnd]
         exact (extChartAt I p).right_inv hutar
-      let y : E := (extChartAt I p) (lRegCurve S T x Wu c)
+      let y : E := (extChartAt I p) (lRegularizedCurve S T x Wu c)
       have hyu : ‖y - u‖ ≤ V * d := by
         have hh := hchart (Wu : E) hWK c hcI
         rw [hchartEnd] at hh
@@ -789,43 +789,43 @@ theorem lCost_chart_lip
           intro z hz
           exact interior_subset (hQbigTar (by
             simpa only [y, c, sub_sub_cancel] using hmap hz)))
-      have hheadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
-        ⟨hS.scalarCont⟩ T 0 c hc.le (lRegCurve S T x Wu)
-        (lRegCurve_c1On S hS T x Wu
-          (lRegDomain_seg S T x Wu (hbdomAll (Wu : E)) hc.le hcb.le))
+      have hheadInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+        ⟨hS.scalarCont⟩ T 0 c hc.le (lRegularizedCurve S T x Wu)
+        (lRegularizedCurve_c1On S hS T x Wu
+          (lRegularizedDomain_segment S T x Wu (hbdomAll (Wu : E)) hc.le hcb.le))
         (fun s hs ↦ hreg s ⟨hs.1, hs.2.trans hcb.le⟩)
-      have htailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
-        ⟨hS.scalarCont⟩ T c b hcb.le (lRegCurve S T x Wu)
-        ((lRegCurve_c1On S hS T x Wu (hbdomAll (Wu : E))).mono
+      have htailInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hS.smoothMetric
+        ⟨hS.scalarCont⟩ T c b hcb.le (lRegularizedCurve S T x Wu)
+        ((lRegularizedCurve_c1On S hS T x Wu (hbdomAll (Wu : E))).mono
           (fun s hs ↦ ⟨hc.le.trans hs.1, hs.2⟩))
         (fun s hs ↦ hreg s ⟨hc.le.trans hs.1, hs.2⟩)
-      have hadd := lRegAction_add (I := I) S T (lRegCurve S T x Wu)
+      have hadd := lRegularizedAction_add (I := I) S T (lRegularizedCurve S T x Wu)
         0 c b hheadInt htailInt
       have hminEq := ((mem_lMinDomain S T x Wu (b ^ 2)).1 hWmin).2
-      have hfull : lRegAction S T (lRegCurve S T x Wu) 0 b =
+      have hfull : lRegularizedAction S T (lRegularizedCurve S T x Wu) 0 b =
           lCost S T x ((extChartAt I p).symm u) (b ^ 2) := by
         calc
-          lRegAction S T (lRegCurve S T x Wu) 0 b =
-              lLength S T (squareRootReparametrization (lRegCurve S T x Wu)) 0 (b ^ 2) := by
+          lRegularizedAction S T (lRegularizedCurve S T x Wu) 0 b =
+              lLength S T (squareRootReparametrization (lRegularizedCurve S T x Wu)) 0 (b ^ 2) := by
                 simpa only [Real.sqrt_sq_eq_abs, abs_of_pos hb] using
-                  (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x Wu)
+                  (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T (lRegularizedCurve S T x Wu)
                     (b ^ 2) (sq_nonneg b)).symm
           _ = lCost S T x (lExp S T x Wu (b ^ 2)) (b ^ 2) := by
-                change lLength S T (squareRootReparametrization (lRegCurve S T x Wu)) 0
+                change lLength S T (squareRootReparametrization (lRegularizedCurve S T x Wu)) 0
                   (b ^ 2) = lCost S T x
-                    (lRegCurve S T x Wu (Real.sqrt (b ^ 2))) (b ^ 2)
+                    (lRegularizedCurve S T x Wu (Real.sqrt (b ^ 2))) (b ^ 2)
                 exact hminEq
           _ = lCost S T x ((extChartAt I p).symm u) (b ^ 2) := by rw [hWend]
       have htailLe := htail (Wu : E) hWK c hcI
       rw [← hfull, ← hadd]
       have hcalc := hcostLe
       dsimp only [y] at hrampLin hcalc
-      have hnegTail : -lRegAction S T (lRegCurve S T x Wu) c b ≤ Cr * d := by
+      have hnegTail : -lRegularizedAction S T (lRegularizedCurve S T x Wu) c b ≤ Cr * d := by
         calc
-          -lRegAction S T (lRegCurve S T x Wu) c b ≤
-              |lRegAction S T (lRegCurve S T x Wu) c b| := by
+          -lRegularizedAction S T (lRegularizedCurve S T x Wu) c b ≤
+              |lRegularizedAction S T (lRegularizedCurve S T x Wu) c b| := by
                 simpa only [abs_neg] using
-                  le_abs_self (-lRegAction S T (lRegCurve S T x Wu) c b)
+                  le_abs_self (-lRegularizedAction S T (lRegularizedCurve S T x Wu) c b)
           _ ≤ Cr * (b - c) := htailLe
           _ = Cr * d := by simp only [c, sub_sub_cancel]
       dsimp only [Aconst]

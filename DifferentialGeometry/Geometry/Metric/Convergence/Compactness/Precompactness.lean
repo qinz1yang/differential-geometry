@@ -29,7 +29,7 @@ universe u uE uH
 namespace DifferentialGeometry
 
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
@@ -676,7 +676,7 @@ theorem iterFDeriv_tower_le
         fun i => contDiffAt_chartRep _
           (covDerivOfField_eval_contMDiff (I := I) gRef A0 (p + 1) (Vf i))
           x₀ (hKchart hy)
-      have hcd_corr : ∀ (i : Fin m) (a : Fin (p + 2)), ContDiffAt Real (∞ : WithTop ℕ∞)
+      have hcd_correction : ∀ (i : Fin m) (a : Fin (p + 2)), ContDiffAt Real (∞ : WithTop ℕ∞)
           (writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef A0 p) w
               (fun bb => (Function.update V a (W i a)) bb w))) z :=
@@ -688,7 +688,7 @@ theorem iterFDeriv_tower_le
             (writtenInExtChartAt I 𝓘(Real, Real) x₀
               (fun w : M => (covDerivOfField (I := I) gRef A0 p) w
                 (fun bb => Vc i a bb w))) z') z :=
-        fun i => ContDiffAt.sum (fun a _ => hcd_corr i a)
+        fun i => ContDiffAt.sum (fun a _ => hcd_correction i a)
       have hcd_g : ∀ i : Fin m, ContDiffAt Real (∞ : WithTop ℕ∞)
           (writtenInExtChartAt I 𝓘(Real, Real) x₀
             (towerStep (I := I) gRef A0 p V (σ i))) z := by
@@ -722,7 +722,7 @@ theorem iterFDeriv_tower_le
         intro i
         rw [hsplit i,
           fun_iteratedFDeriv_add_apply ((hcd_first i).of_le hr) ((hcd_corrsum i).of_le hr),
-          iteratedFDeriv_fun_sum_apply (fun a _ => (hcd_corr i a).of_le hr)]
+          iteratedFDeriv_fun_sum_apply (fun a _ => (hcd_correction i a).of_le hr)]
         refine le_trans (norm_add_le _ _) ?_
         have hfst : ‖iteratedFDeriv Real r (writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef A0 (p + 1)) w
@@ -1604,27 +1604,27 @@ theorem exists_chart_component_precompactness_family
   classical
   let _ : NormalSpace E := inferInstance
   let _ : LocallyCompactSpace E := inferInstance
-  set tgt := (extChartAt I x₀).target with htgt
-  have htgt_open : IsOpen tgt := isOpen_extChartAt_target (I := I) x₀
+  set target := (extChartAt I x₀).target with htgt
+  have htgt_open : IsOpen target := isOpen_extChartAt_target (I := I) x₀
   set EK₀ : Set E := extChartAt I x₀ '' K₀ with hEK₀
-  have hEK₀cpt : IsCompact EK₀ :=
+  have hEK₀compact : IsCompact EK₀ :=
     hK₀.image_of_continuousOn ((continuousOn_extChartAt (I := I) x₀).mono
       (by rw [extChartAt_source]; exact hK₀chart))
-  have hEK₀tgt : EK₀ ⊆ tgt := by
+  have hEK₀target : EK₀ ⊆ target := by
     rintro z ⟨y, hy, rfl⟩
     exact (extChartAt I x₀).map_source (by rw [extChartAt_source]; exact hK₀chart hy)
-  obtain ⟨L, hLcpt, hEK₀L, hLt⟩ := exists_compact_between hEK₀cpt htgt_open hEK₀tgt
+  obtain ⟨L, hLcpt, hEK₀L, hLt⟩ := exists_compact_between hEK₀compact htgt_open hEK₀target
   obtain ⟨χM, hχ1, hχ0, -⟩ :=
     exists_contMDiffMap_one_nhds_of_subset_interior (I := 𝓘(Real, E)) (M := E)
-      (n := (⊤ : ℕ∞)) hEK₀cpt.isClosed hEK₀L
+      (n := (⊤ : ℕ∞)) hEK₀compact.isClosed hEK₀L
   set χ : E → Real := (χM : E → Real) with hχdef
   have hχcd : ContDiff Real (∞ : WithTop ℕ∞) χ :=
     contMDiff_iff_contDiff.mp (χM.contMDiff.of_le (by exact_mod_cast le_top))
   have hχLsub : tsupport χ ⊆ L :=
     closure_minimal (fun x hx => by by_contra hxL; exact hx (hχ0 x hxL)) hLcpt.isClosed
-  have hχcpt : IsCompact (tsupport χ) :=
+  have hχcompact : IsCompact (tsupport χ) :=
     hLcpt.of_isClosed_subset (isClosed_tsupport χ) hχLsub
-  have hχtsupp : tsupport χ ⊆ tgt := subset_trans hχLsub hLt
+  have hχtsupp : tsupport χ ⊆ target := subset_trans hχLsub hLt
   obtain ⟨V₂, hV₂o, htsχV₂, hV₂t⟩ :=
     normal_exists_closure_subset (isClosed_tsupport χ) htgt_open hχtsupp
   obtain ⟨χ1M, hχ1one, hχ1zero, -⟩ :=
@@ -1633,7 +1633,7 @@ theorem exists_chart_component_precompactness_family
   set χ1 : E → Real := (χ1M : E → Real) with hχ1def
   have hχ1cd : ContDiff Real (∞ : WithTop ℕ∞) χ1 :=
     contMDiff_iff_contDiff.mp (χ1M.contMDiff.of_le (by exact_mod_cast le_top))
-  have hχ1tsupp : tsupport χ1 ⊆ tgt := by
+  have hχ1tsupp : tsupport χ1 ⊆ target := by
     refine subset_trans (closure_mono ?_) hV₂t
     intro x hx; by_contra hxV; exact hx (hχ1zero x hxV)
   set cr : ℕ → E → Real := fun k =>
@@ -1641,7 +1641,7 @@ theorem exists_chart_component_precompactness_family
       (fun w : M => (covDerivOfField (I := I) gRef
         (Tensor0SBundle.metricTensorField (I := I) (gSeq k)) 0) w (fun a => V a w))
     with hcr
-  have hcrOn : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (cr k) tgt := by
+  have hcrOn : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (cr k) target := by
     intro k z hz
     have : ContDiffAt Real (∞ : WithTop ℕ∞) (cr k) z := by
       have hzsrc : (extChartAt I x₀).symm z ∈ (chartAt H x₀).source := by
@@ -1656,7 +1656,7 @@ theorem exists_chart_component_precompactness_family
   · intro r
     set Kc : Set M := (extChartAt I x₀).symm '' (tsupport χ) with hKcdef
     have hKccpt : IsCompact Kc :=
-      hχcpt.image_of_continuousOn
+      hχcompact.image_of_continuousOn
         ((continuousOn_extChartAt_symm (I := I) x₀).mono hχtsupp)
     have hKcsrc : Kc ⊆ (chartAt H x₀).source := by
       rintro w ⟨z, hz, rfl⟩
@@ -1667,7 +1667,7 @@ theorem exists_chart_component_precompactness_family
       have hbd : ∀ i : ℕ, ∃ Bi : Real, ∀ x ∈ tsupport χ,
           ‖iteratedFDeriv Real i χ x‖ ≤ Bi := by
         intro i
-        obtain ⟨Bi, hBi⟩ := hχcpt.bddAbove_image
+        obtain ⟨Bi, hBi⟩ := hχcompact.bddAbove_image
           ((hχcd.continuous_iteratedFDeriv (by exact_mod_cast le_top)).norm).continuousOn
         exact ⟨Bi, fun x hx => hBi ⟨x, hx, rfl⟩⟩
       choose Bi hBi using hbd
@@ -1708,7 +1708,7 @@ theorem exists_chart_component_precompactness_family
     exact hχ1.self_of_nhdsSet _ ⟨y, hy, rfl⟩
 
 omit [IsManifold I 2 M] in
-theorem exists_chart_cInfConv
+theorem exists_chart_cInfConvergence
     (gRef : SmoothRiemannianMetric I M)
     (gSeq : ℕ → SmoothRiemannianMetric I M)
     (hbdd : ∀ q : ℕ, ∀ K : Set M, IsCompact K → ∃ C : Real, ∀ k : ℕ, ∀ z ∈ K,
@@ -1719,7 +1719,7 @@ theorem exists_chart_cInfConv
     ∃ (φ : ℕ → ℕ) (Φinf : E → Real) (χ : E → Real),
       StrictMono φ ∧ ContDiff Real (∞ : WithTop ℕ∞) Φinf ∧
       (∀ y ∈ K₀, χ (extChartAt I x₀ y) = 1) ∧
-      MapCInfConvOnCompacts Set.univ
+      MapCInfConvergenceOnCompacts Set.univ
         (fun k => fun x : E => χ x *
           writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef
@@ -1739,5 +1739,5 @@ theorem exists_chart_cInfConv
     funext k; exact (hΦrel (φ k)).symm
   rw [hseq]; exact hconv
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

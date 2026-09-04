@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Bundle
@@ -143,5 +143,5 @@ structure InjInput {I : ModelWithCorners Real E H}
   iota_pos : 0 < iota
   inj_lower : forall i : Nat, iota <= injRadiusAtBase i
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

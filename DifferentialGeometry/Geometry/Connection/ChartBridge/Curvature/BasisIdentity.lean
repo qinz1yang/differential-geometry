@@ -355,7 +355,7 @@ private lemma fderiv_chartE_section_repr_eq_zero_of_eventuallyEq [I.Boundaryless
         (chartESectionRepr (I := I) x
           (fun b : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x j b) ∘ (extChartAt I x).symm) := by
     filter_upwards [hopen_V.mem_nhds hxV] with y hy
-    obtain ⟨_hy_tgt, hy_pre⟩ := hy
+    obtain ⟨_hy_target, hy_pre⟩ := hy
     rw [Set.mem_preimage] at hy_pre
     change chartESectionRepr (I := I) x X ((extChartAt I x).symm y) =
       chartESectionRepr (I := I) x

@@ -597,7 +597,7 @@ noncomputable def riemannCurvature04At
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞) (x : M) :
     Tensor04At (I := I) (M := M) x :=
-  tensor04StdOfOutAt (I := I) (M := M)
+  tensor04StandardOfOutAt (I := I) (M := M)
     (Tensor0SSpace.ofModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (ContinuousLinearMap.uncurryLeft
         (𝕜 := Real) (n := 3) (Ei := fun _ : Fin 4 => E) (G := Real)
@@ -618,7 +618,7 @@ theorem riemannCurvature04At_apply_const
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x) := by
   dsimp [riemannCurvature04At]
-  rw [tensor04StdOfOutAt_apply]
+  rw [tensor04StandardOfOutAt_apply]
   let modelVec : Fin 4 → E := fun i =>
     tangentSpaceModelContinuousLinearEquiv (I := I) x (vec4 W X Y Z i)
   change

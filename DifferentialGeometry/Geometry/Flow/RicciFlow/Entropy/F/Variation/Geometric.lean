@@ -459,17 +459,17 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (horig_reg :
+    (horig_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
             fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) x)
         s0)
-    (hclosed_reg :
+    (hclosed_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
@@ -619,7 +619,7 @@ theorem fFunctionalFirstVariationFormula_of_metric_connection_family
     refine hfirstVariation.trans ?_
     exact first_variation_eq_pre_integration_by_parts (I := I) (M := M) G hmeas hmeas_near
       hibp_near hscalar_deriv hgrad_deriv hlap_deriv hpotential_deriv
-      htrace hmetric_reg horig_reg hclosed_reg hpotential0 hscalar0 hlap0
+      htrace hmetric_regularity horig_regularity hclosed_regularity hpotential0 hscalar0 hlap0
       hclosed_variation
   exact fFunctionalFirstVariationFormula_of_christoffel_variation_components (I := I) (G.metric s0) A
     nablaChristoffelVariation christoffelVariation gradPotential

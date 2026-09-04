@@ -15,7 +15,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -239,5 +239,5 @@ theorem tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph
 
 end PartialCovNaturality
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

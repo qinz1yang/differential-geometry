@@ -49,37 +49,37 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-theorem deTurckForcing_solCoeff_continuous_smallTimeBase
+theorem deTurckForcing_solutionCoeff_continuous_smallTimeBase
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a)
     {T : ℝ} (hT : 0 < T)
     (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (hspatial : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2) ∧
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 ≤ Cσ) :
     ∃ d : ℝ, 0 < d ∧ d ≤ T ∧
       (∀ i, ∃ c : ℝ → ℝ, Continuous c ∧
           c =ᵐ[timeMeasure T]
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u))) ∧
       (∀ τ : ℝ, 0 ≤ τ →
         ∃ B : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ, Summable B ∧
           ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) d,
             tensorSobolevWeight (I := I) (M := M) i τ *
-                (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+                (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
                   (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 ≤ B i) ∧
       (∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)),
-        ‖maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t‖ ≤
           deTurckRealizabilityRadius (I := I) (M := M) g₀ a ha_super) ∧
-      (∀ i, (fun t => (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+      (∀ i, (fun t => (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t).coeff i)
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u))) := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2 with hhc_def
@@ -106,21 +106,21 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
     rw [hσ'_def]; ring
   have hB_le : ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) T,
       tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
-          * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 ≤ B i := by
     intro i t htT
     obtain ⟨hsum_t, hbd_t⟩ := hCσ' t htT
     have hterm : tensorSobolevWeight (I := I) (M := M) i σ'
-        * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 ≤ Cσ' :=
       le_trans (hsum_t.le_tsum i (fun j _ => mul_nonneg
         (tensorSobolevWeight_nonneg (I := I) (M := M) j σ') (sq_nonneg _))) hbd_t
     calc tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
-            * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
                 (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2
         = tensorSobolevWeight (I := I) (M := M) i (-ρ)
             * (tensorSobolevWeight (I := I) (M := M) i σ'
-              * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+              * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
                   (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2) := by
           rw [hweight_split i]; ring
       _ ≤ tensorSobolevWeight (I := I) (M := M) i (-ρ) * Cσ' :=
@@ -128,9 +128,9 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
             (tensorSobolevWeight_nonneg (I := I) (M := M) i (-ρ))
       _ = B i := by rw [hB_def]; ring
   have hpmc_contOn : ∀ i : TensorEigenIdx (I := I) (M := M) g₀ 0 2,
-      ContinuousOn (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+      ContinuousOn (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u)) (Set.Icc (0 : ℝ) T) := fun i =>
-    continuousOn_perModeConv_timeL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
+    continuousOn_perModeConvolution_timeL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
       (timeModeCoeff (I := I) (M := M) gforce i) hT.le
   have htend : Filter.Tendsto
       (fun s : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2) => ∑ i ∈ s, B i)
@@ -147,15 +147,15 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
     linarith [hcompl, hs₀]
   have hg_contOn : ContinuousOn
       (fun t => ∑ i ∈ s₀, tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
-        * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2)
       (Set.Icc (0 : ℝ) T) :=
     continuousOn_finsetSum s₀ (fun i _ =>
       ContinuousOn.mul continuousOn_const ((hpmc_contOn i).pow 2))
   have hg0 : (∑ i ∈ s₀, tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
-        * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) 0) ^ 2) = 0 :=
-    Finset.sum_eq_zero (fun i _ => by rw [perModeConv_zero_left]; ring)
+    Finset.sum_eq_zero (fun i _ => by rw [perModeConvolution_zero_left]; ring)
   have hcwa := hg_contOn 0 ⟨le_rfl, hT.le⟩
   rw [Metric.continuousWithinAt_iff] at hcwa
   obtain ⟨δ, hδ_pos, hδ⟩ := hcwa (R₀ ^ 2 / 2) hhalf_pos
@@ -165,7 +165,7 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
   have hd_le2 : d ≤ δ / 2 := min_le_right _ _
   have hcont_head : ∀ t ∈ Set.Icc (0 : ℝ) d,
       (∑ i ∈ s₀, tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
-        * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2) ≤ R₀ ^ 2 / 2 := by
     intro t ht
     have htT : t ∈ Set.Icc (0 : ℝ) T := ⟨ht.1, le_trans ht.2 hd_le⟩
@@ -178,13 +178,13 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
     exact le_of_lt (lt_of_le_of_lt (le_abs_self _) hh)
   have hball_d : ∀ t ∈ Set.Icc (0 : ℝ) d,
       (∑' i, tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
-          * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2) ≤ R₀ ^ 2 := by
     intro t ht
     have htT : t ∈ Set.Icc (0 : ℝ) T := ⟨ht.1, le_trans ht.2 hd_le⟩
     set f : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ :=
       fun i => tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
-        * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 with hf_def
     have hf_le_B : ∀ i, f i ≤ B i := fun i => hB_le i t htT
     have hf_nonneg : ∀ i, 0 ≤ f i := fun i =>
@@ -209,7 +209,7 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
   refine ⟨d, hd_pos, hd_le, ?_, ?_, ?_, ?_⟩
   · intro i
     refine ⟨Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) =>
-        perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) p.1), ?_, ?_⟩
     · exact Continuous.Icc_extend' ((hpmc_contOn i).domRestrict)
     · filter_upwards [MeasureTheory.ae_restrict_mem (μ := MeasureTheory.volume)
@@ -223,7 +223,7 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
     have htT : t ∈ Set.Icc (0 : ℝ) T := ⟨ht.1, le_trans ht.2 hd_le⟩
     obtain ⟨hsum_t, hbd_t⟩ := hCτ t htT
     have hterm : tensorSobolevWeight (I := I) (M := M) i (τ + ρ)
-        * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 ≤ Cτ :=
       le_trans (hsum_t.le_tsum i (fun j _ => mul_nonneg
         (tensorSobolevWeight_nonneg (I := I) (M := M) j (τ + ρ)) (sq_nonneg _))) hbd_t
@@ -233,49 +233,49 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
       rw [← TensorHs.tensorSobolevWeight_add (I := I) (M := M) i (-ρ) (τ + ρ)]
       congr 1; ring
     calc tensorSobolevWeight (I := I) (M := M) i τ
-          * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2
         = tensorSobolevWeight (I := I) (M := M) i (-ρ)
             * (tensorSobolevWeight (I := I) (M := M) i (τ + ρ)
-              * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+              * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
                   (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2) := by
           rw [hsplit_τ]; ring
       _ ≤ tensorSobolevWeight (I := I) (M := M) i (-ρ) * Cτ :=
           mul_le_mul_of_nonneg_left hterm
             (tensorSobolevWeight_nonneg (I := I) (M := M) i (-ρ))
       _ = Cτ * tensorSobolevWeight (I := I) (M := M) i (-ρ) := by ring
-  · have hae_coeff : ∀ i, (fun t => (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+  · have hae_coeff : ∀ i, (fun t => (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t).coeff i)
         =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u)) := fun i =>
       MeasureTheory.ae_restrict_of_ae_restrict_of_subset (μ := MeasureTheory.volume)
         (Set.Icc_subset_Icc le_rfl hd_le)
-        (timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M) hT hc gforce i)
+        (timeModeCoeff_eq_perModeConvolution_forcing (I := I) (M := M) hT hc gforce i)
     have hae_all : ∀ᵐ t ∂(MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)),
-        ∀ i, (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        ∀ i, (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t).coeff i
-          = perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          = perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t :=
       (MeasureTheory.ae_all_iff).2 hae_coeff
     filter_upwards [hae_all, MeasureTheory.ae_restrict_mem (μ := MeasureTheory.volume)
       (measurableSet_Icc (a := (0 : ℝ)) (b := d))] with t ht_coeff ht_mem
-    have hnorm_sq : ‖maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+    have hnorm_sq : ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t‖ ^ 2
         = ∑' i, tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
-            * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            * (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
                 (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 := by
       rw [TensorHs.norm_sq_eq_tsum (I := I) (M := M)]
       exact tsum_congr (fun i => by rw [ht_coeff i])
-    have hWsq_le : ‖maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+    have hWsq_le : ‖maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t‖ ^ 2 ≤ R₀ ^ 2 := by
       rw [hnorm_sq]; exact hball_d t ht_mem
-    nlinarith [norm_nonneg (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+    nlinarith [norm_nonneg (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t), hR₀_pos.le, hWsq_le]
   · intro i
     exact MeasureTheory.ae_restrict_of_ae_restrict_of_subset (μ := MeasureTheory.volume)
       (Set.Icc_subset_Icc le_rfl hd_le)
-      (timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M) hT hc gforce i)
+      (timeModeCoeff_eq_perModeConvolution_forcing (I := I) (M := M) hT hc gforce i)
 
 private theorem exists_smoothCcTensor_of_allOrder_spectralMass_local
     (g₀ : SmoothRiemannianMetric I M)
@@ -384,12 +384,12 @@ private theorem pdIter_rawCompOnE_eigenSeries_tsum_eq_local
       = ∑' i, d i * tensorChartComponentOnModel (I := I) (M := M) g
           (eigenvectorSmooth (I := I) (M := M) g 0 2 i) α Jdx z := by
     intro z hz
-    have hz_src : (extChartAt I α).symm z ∈ (chartAt H α).source := by
+    have hz_source : (extChartAt I α).symm z ∈ (chartAt H α).source := by
       have hzt : z ∈ (extChartAt I α).target := interior_subset hz
       have := (extChartAt I α).map_target hzt
       rwa [extChartAt_source (I := I)] at this
     exact smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local (I := I) (M := M)
-      g S d hd hmass α Jdx hz_src
+      g S d hd hmass α Jdx hz_source
   obtain ⟨r, hr_pos, hball⟩ := Metric.isOpen_iff.mp hΩ_open y hy
   set Bo : Set E := Metric.ball y (r / 2) with hBo_def
   set Bc : Set E := Metric.closedBall y (r / 2) with hBc_def
@@ -1205,14 +1205,14 @@ private lemma pouRegion_open (α : M) :
   have hpou_cont : Continuous pou := (chartAtlasPOU I M α).contMDiff.continuous
   set U : Set M := {x : M | 0 < pou x} with hU
   have hU_open : IsOpen U := isOpen_lt continuous_const hpou_cont
-  have hU_src : U ⊆ (extChartAt I α).source := by
+  have hU_source : U ⊆ (extChartAt I α).source := by
     intro x hx
     rw [extChartAt_source (I := I)]
     refine (chartAtlasPOU_isSubordinate (I := I) (M := M) α) ?_
     exact subset_tsupport _ (Function.mem_support.mpr (ne_of_gt hx))
   have himg : (extChartAt I α) '' U =
       (extChartAt I α).target ∩ (extChartAt I α).symm ⁻¹' U :=
-    (extChartAt I α).image_eq_target_inter_inv_preimage hU_src
+    (extChartAt I α).image_eq_target_inter_inv_preimage hU_source
   have himg_open : IsOpen ((extChartAt I α) '' U) := by
     rw [himg]
     exact (continuousOn_extChartAt_symm (I := I) α).isOpen_inter_preimage
@@ -1225,11 +1225,11 @@ private lemma pouRegion_subset_chartTargetEuclid (α : M) :
       {x : M | 0 < ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x}) ⊆
       chartTargetEuclid (I := I) (M := M) α := by
   rintro ŷ ⟨z, ⟨x, hx, rfl⟩, rfl⟩
-  have hx_src : x ∈ (extChartAt I α).source := by
+  have hx_source : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source (I := I)]
     refine (chartAtlasPOU_isSubordinate (I := I) (M := M) α) ?_
     exact subset_tsupport _ (Function.mem_support.mpr (ne_of_gt hx))
-  exact ⟨extChartAt I α x, (extChartAt I α).map_source hx_src, rfl⟩
+  exact ⟨extChartAt I α x, (extChartAt I α).map_source hx_source, rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma pouRegion_mem_facts (α : M)
@@ -1244,17 +1244,17 @@ private lemma pouRegion_mem_facts (α : M)
     (toEuclidean (E := E)) ((extChartAt I α)
       ((extChartAt I α).symm (toEuclidean.symm ŷ))) = ŷ := by
   obtain ⟨z, ⟨x, hx, rfl⟩, rfl⟩ := hŷ
-  have hx_src : x ∈ (extChartAt I α).source := by
+  have hx_source : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source (I := I)]
     refine (chartAtlasPOU_isSubordinate (I := I) (M := M) α) ?_
     exact subset_tsupport _ (Function.mem_support.mpr (ne_of_gt hx))
   have hz_t : (extChartAt I α) x ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hx_src
+    (extChartAt I α).map_source hx_source
   have hsymm_te : (toEuclidean (E := E)).symm
       ((toEuclidean (E := E)) ((extChartAt I α) x)) = (extChartAt I α) x :=
     (toEuclidean (E := E)).symm_apply_apply _
   have hround : (extChartAt I α).symm ((extChartAt I α) x) = x :=
-    (extChartAt I α).left_inv hx_src
+    (extChartAt I α).left_inv hx_source
   refine ⟨?_, ?_, ?_, ?_⟩
   · rw [hsymm_te, hround]; exact hx
   · rw [hsymm_te]; exact hz_t
@@ -1313,11 +1313,11 @@ private theorem anisoOn_pushed_oneMinusConnLapIter_reconFOPath
           hφ_smooth hcoeff hmodemass α (Jdx 0) (Jdx 1)).congr hVE _
           (fun t ht y hy => ?_)
         have hy_t : y ∈ (extChartAt I α).target := interior_subset hy
-        have hsymm_src : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+        have hsymm_source : (extChartAt I α).symm y ∈ (chartAt H α).source := by
           have := (extChartAt I α).map_target hy_t
           rwa [extChartAt_source (I := I)] at this
         have hkey := reconFO_raw_eq_chartRHS (I := I) (M := M) g₀ g_bg (F t)
-          hδ_lt (hδ t) α Jdx hsymm_src
+          hδ_lt (hδ t) α Jdx hsymm_source
         have hRI : (extChartAt I α) ((extChartAt I α).symm y) = y :=
           (extChartAt I α).right_inv hy_t
         change chartDeTurckRicciRHS (I := I)
@@ -1419,7 +1419,7 @@ private theorem anisoOn_pushed_oneMinusConnLapIter_reconFOPath
         (fun t ht ŷ hŷ => ?_)
       obtain ⟨hbU, hbT, hbRI, hbround⟩ := pouRegion_mem_facts (I := I) (M := M) α hŷ
       set b : M := (extChartAt I α).symm (toEuclidean.symm ŷ) with hb_def
-      have hb_supp : b ∈ tsupport (fun x : M =>
+      have hb_support : b ∈ tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
           chartLeviCivitaGoodSet (I := I) α := by
         constructor
@@ -1430,7 +1430,7 @@ private theorem anisoOn_pushed_oneMinusConnLapIter_reconFOPath
       set Qm : SmoothCcTensor g₀ 0 2 :=
         oneMinusConnLapSmoothIter (I := I) g₀ 0 2 m
           (deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F t) hδ_lt (hδ t)) with hQm_def
-      have hform := hformula Qm hb_supp
+      have hform := hformula Qm hb_support
       have hte : (toEuclidean (E := E)) ((extChartAt I α) b) = ŷ := hbround
       have hpushed_succ : chartPushedRaw I α
           (tensorChartComponentRaw (I := I) (M := M) g₀ 0 2
@@ -1507,7 +1507,7 @@ private theorem reconFOIter_rawChartComponent_jointContMDiffOn_pou
     (toEuclidean (E := E)) '' ((extChartAt I α) '' U) with hR_def
   have hR_sub : R ⊆ chartTargetEuclid (I := I) (M := M) α :=
     pouRegion_subset_chartTargetEuclid (I := I) (M := M) α
-  have hU_src : U ⊆ (chartAt H α).source := by
+  have hU_source : U ⊆ (chartAt H α).source := by
     intro x hx
     refine (chartAtlasPOU_isSubordinate (I := I) (M := M) α) ?_
     exact subset_tsupport _ (Function.mem_support.mpr (ne_of_gt hx))
@@ -1529,7 +1529,7 @@ private theorem reconFOIter_rawChartComponent_jointContMDiffOn_pou
     have hchart : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, E) (k : ℕ)
         (fun p : M × ℝ => extChartAt I α p.1) (U ×ˢ Set.Icc (0 : ℝ) T) :=
       ((contMDiffOn_extChartAt (I := I) (n := ∞) (x := α)).comp contMDiffOn_fst
-        (fun p hp => hU_src hp.1)).of_le (by exact_mod_cast le_top)
+        (fun p hp => hU_source hp.1)).of_le (by exact_mod_cast le_top)
     exact (toEuclidean (E := E)).toContinuousLinearMap.contMDiff.comp_contMDiffOn hchart
   have hmaps : Set.MapsTo f (U ×ˢ Set.Icc (0 : ℝ) T) (Set.Icc (0 : ℝ) T ×ˢ R) := by
     rintro ⟨x, t⟩ ⟨hx, ht⟩
@@ -1542,14 +1542,14 @@ private theorem reconFOIter_rawChartComponent_jointContMDiffOn_pou
           α ![] Jdx p.1)
       (G ∘ f) (U ×ˢ Set.Icc (0 : ℝ) T) := by
     rintro ⟨x, t⟩ ⟨hx, -⟩
-    have hx_src : x ∈ (extChartAt I α).source := by
+    have hx_source : x ∈ (extChartAt I α).source := by
       rw [extChartAt_source (I := I)]
-      exact hU_src hx
+      exact hU_source hx
     have hxR : toEuclidean (E := E) ((extChartAt I α) x) ∈ R :=
       ⟨(extChartAt I α) x, ⟨x, hx, rfl⟩, rfl⟩
     simp only [Function.comp, hG_def, hf_def]
     rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ (hR_sub hxR),
-      (toEuclidean (E := E)).symm_apply_apply, (extChartAt I α).left_inv hx_src]
+      (toEuclidean (E := E)).symm_apply_apply, (extChartAt I α).left_inv hx_source]
   intro q hq
   refine (ContMDiffWithinAt.congr ?_ (fun y hy => heq hy) (heq hq))
   have hGf : ContDiffWithinAt ℝ (k : ℕ) G (Set.Icc (0 : ℝ) T ×ˢ R) (f q) :=
@@ -1582,7 +1582,7 @@ private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
   have hU_open : IsOpen
       {x : M | 0 < ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x} :=
     isOpen_lt continuous_const (chartAtlasPOU I M α).contMDiff.continuous
-  have hU_src : {x : M | 0 < ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x} ⊆
+  have hU_source : {x : M | 0 < ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x} ⊆
       (chartAt H α).source := by
     intro x hx
     refine (chartAtlasPOU_isSubordinate (I := I) (M := M) α) ?_
@@ -1611,7 +1611,7 @@ private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
     rw [hQ1]
     exact hrawQ.smul contMDiffOn_const
   intro p₀ hp₀
-  obtain ⟨hx₀src, hs₀'⟩ := hp₀
+  obtain ⟨hx₀source, hs₀'⟩ := hp₀
   have hbaseSet : p₀.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).baseSet := by
     change p₀.1 ∈ ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -1622,7 +1622,7 @@ private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
       · change p₀.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet
         rw [show (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source from
           TangentBundle.trivializationAt_baseSet (I := I) α]
-        exact hU_src hx₀src
+        exact hU_source hx₀source
   have hsource : (⟨p₀.1, (T_rep p₀.2).toSection p₀.1⟩ :
       TotalSpace (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
         (fun z : M => Tensor0SBundle.TensorRSSpace 0 2 I z)) ∈
@@ -1638,7 +1638,7 @@ private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
           tensorChartComponentRaw (I := I) (M := M) g 0 2 (T_rep p.2) α Q.1 Q.2 p.1 •
             tensorChartBasisElement (E := E) 0 2 Q.1 Q.2 := by
     intro p hpU
-    have hpx : p.1 ∈ (chartAt H α).source := hU_src hpU
+    have hpx : p.1 ∈ (chartAt H α).source := hU_source hpU
     have hpbase : p.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).baseSet := by
       change p.1 ∈ ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -1689,10 +1689,10 @@ private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
           ⟨p.1, (T_rep p.2).toSection p.1⟩).2)
       ({x : M | 0 < ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x} ×ˢ
         Set.Icc (0 : ℝ) T) p₀ := by
-    refine (hSum p₀ ⟨hx₀src, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
+    refine (hSum p₀ ⟨hx₀source, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with p hp
       exact hfibeq p hp.1
-    · exact hfibeq p₀ hx₀src
+    · exact hfibeq p₀ hx₀source
   exact ((Bundle.Trivialization.contMDiffWithinAt_iff
     (IM := I.prod 𝓘(ℝ, ℝ)) (n := ((k : ℕ) : WithTop ℕ∞))
     (f := fun p : M × ℝ => (⟨p.1, (T_rep p.2).toSection p.1⟩ :
@@ -2985,14 +2985,14 @@ theorem deTurckForcing_finiteOrderSmoothDriver
     (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
     (hforce : gforce =ᵐ[timeMeasure T]
       (fun t => deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
-        (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)))
     (hspatial : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2) ∧
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 ≤ Cσ) :
     ∃ d : ℝ, 0 < d ∧ d ≤ T ∧
       ∀ k : ℕ, ∃ f : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ → ℝ,
@@ -3006,21 +3006,21 @@ theorem deTurckForcing_finiteOrderSmoothDriver
             =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)] f i) := by
   classical
   obtain ⟨d, hd_pos, hd_le, hs_cont, hs_mass, hball, hcoeff_id⟩ :=
-    deTurckForcing_solCoeff_continuous_smallTimeBase (I := I) (M := M)
+    deTurckForcing_solutionCoeff_continuous_smallTimeBase (I := I) (M := M)
       g₀ a ha_super hT gforce hspatial
   choose c hc_cont hc_ae using hs_cont
   have hae_d : ∀ i, c i =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
-      (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+      (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u)) := fun i =>
     MeasureTheory.ae_restrict_of_ae_restrict_of_subset (μ := MeasureTheory.volume)
       (Set.Icc_subset_Icc le_rfl hd_le) (hc_ae i)
   have hcont_pmc : ∀ i, ContinuousOn
-      (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+      (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u)) (Set.Icc (0 : ℝ) d) := fun i =>
-    (continuousOn_perModeConv_timeL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
+    (continuousOn_perModeConvolution_timeL2 (TensorEigenIdx.lambda (I := I) (M := M) i)
       (timeModeCoeff (I := I) (M := M) gforce i) hT.le).mono (Set.Icc_subset_Icc le_rfl hd_le)
   have heqOn_d : ∀ i, Set.EqOn (c i)
-      (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+      (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u)) (Set.Icc (0 : ℝ) d) := fun i =>
     MeasureTheory.Measure.eqOn_Icc_of_ae_eq (MeasureTheory.volume : MeasureTheory.Measure ℝ)
       (ne_of_lt hd_pos) (hae_d i) (hc_cont i).continuousOn (hcont_pmc i)
@@ -3029,7 +3029,7 @@ theorem deTurckForcing_finiteOrderSmoothDriver
   have hforce_coeff : ∀ i, (fun t => (gforce t).coeff i)
       =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
         (fun t => (deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
-          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)).coeff i) := by
     intro i
     exact MeasureTheory.ae_restrict_of_ae_restrict_of_subset (μ := MeasureTheory.volume) hsub
@@ -3046,7 +3046,7 @@ theorem deTurckForcing_finiteOrderSmoothDriver
     obtain ⟨ψ, hψ_smooth, hψ_mass, hψ_ae⟩ :=
       deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving (I := I) (M := M)
         g₀ g_bg a ha_super hd_pos
-        (fun t => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        (fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)
         hball 0
         c
@@ -3062,32 +3062,32 @@ theorem deTurckForcing_finiteOrderSmoothDriver
   | succ k ih =>
     obtain ⟨fk, hfk_cont, hfk_mass, hfk_ae⟩ := ih
     obtain ⟨hφ_cont, hφ_mass⟩ :=
-      perModeConv_finiteOrder_timeJet_spectralMass_gain (I := I) (M := M)
+      perModeConvolution_finiteOrder_timeJet_spectralMass_gain (I := I) (M := M)
         g₀ hd_pos.le k fk hfk_cont hfk_mass
-    have hw_coeff : ∀ i, (fun t => (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+    have hw_coeff : ∀ i, (fun t => (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t).coeff i)
         =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i)) := by
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i)) := by
       intro i
       have hfk_tmc : (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s)
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)] (fk i) :=
         (hgforce_tmc i).symm.trans (hfk_ae i)
-      have hbridge : (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+      have hbridge : (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u))
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d)]
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i)) := by
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i)) := by
         filter_upwards [MeasureTheory.ae_restrict_mem (μ := MeasureTheory.volume)
           (measurableSet_Icc (a := (0 : ℝ)) (b := d))] with t ht
-        exact perModeConv_timeL2_congr (T := d) (TensorEigenIdx.lambda (I := I) (M := M) i)
+        exact perModeConvolution_timeL2_congr (T := d) (TensorEigenIdx.lambda (I := I) (M := M) i)
           hfk_tmc ht
       exact (hcoeff_id i).trans hbridge
     obtain ⟨ψ, hψ_smooth, hψ_mass, hψ_ae⟩ :=
       deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving (I := I) (M := M)
         g₀ g_bg a ha_super hd_pos
-        (fun t => maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        (fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)
         hball (k + 1)
-        (fun i => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i))
+        (fun i => perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (fk i))
         hφ_cont hφ_mass hw_coeff
     exact ⟨ψ, hψ_smooth, hψ_mass, fun i => (hforce_coeff i).trans (hψ_ae i)⟩
 

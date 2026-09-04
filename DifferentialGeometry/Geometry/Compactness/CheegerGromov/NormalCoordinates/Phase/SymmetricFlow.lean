@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Metric
 open scoped Manifold ContDiff NNReal
@@ -428,5 +428,5 @@ theorem exists_chartBiflow
 
 end ControlledPhaseSym
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

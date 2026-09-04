@@ -26,39 +26,39 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tendsto_lRegAction_div_at_zero
+theorem tendsto_lRegularizedAction_div_at_zero
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : TangentSpace I x) (hT : T ∈ D.regular) :
     Tendsto
       (fun s : Real ↦
-        lRegAction S T (lRegCurve S T x Z) 0 s / (2 * s))
+        lRegularizedAction S T (lRegularizedCurve S T x Z) 0 s / (2 * s))
       (𝓝[>] (0 : Real))
       (𝓝 ((S.base.metric T).inner x Z Z)) := by
   let lag : Real → Real := fun s ↦
-    lRegLagrangian S T (lRegCurve S T x Z) s
-  have hzero : (Z, (0 : Real)) ∈ lRegJointDom S T x := by
-    exact zero_mem_lRegDomain S hS T x Z hT
-  have hopen : IsOpen (lRegJointDom S T x) :=
-    lRegJointDom_open S hS T x
+    lRegularizedLagrangian S T (lRegularizedCurve S T x Z) s
+  have hzero : (Z, (0 : Real)) ∈ lRegularizedJointDom S T x := by
+    exact zero_mem_lRegularizedDomain S hS T x Z hT
+  have hopen : IsOpen (lRegularizedJointDom S T x) :=
+    lRegularizedJointDom_open S hS T x
   let z : E := Z
   let K : Set Real :=
-    (fun s : Real ↦ (z, s)) ⁻¹' lRegJointDom S T x
+    (fun s : Real ↦ (z, s)) ⁻¹' lRegularizedJointDom S T x
   have hKopen : IsOpen K := by
     exact hopen.preimage (continuous_const.prodMk continuous_id)
   have hzeroK : (0 : Real) ∈ K := by
-    change (Z, (0 : Real)) ∈ lRegJointDom S T x
+    change (Z, (0 : Real)) ∈ lRegularizedJointDom S T x
     exact hzero
   have hcontOn : ContinuousOn lag K := by
     have hpairOn : ContinuousOn (fun s : Real ↦ (z, s)) K :=
       continuous_const.continuousOn.prodMk continuous_id.continuousOn
     have hcomp : ContinuousOn
         ((fun q : E × Real ↦
-          lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
+          lRegularizedLagrangian S T (fun s ↦ lRegularizedCurve S T x q.1 s) q.2) ∘
             fun s : Real ↦ (z, s)) K :=
-      (contDiffOn_lRegLagrangian_lRegCurve S hS T x).continuousOn.comp hpairOn
+      (contDiffOn_lRegularizedLagrangian_lRegularizedCurve S hS T x).continuousOn.comp hpairOn
         (fun s hs ↦ hs)
     have heq : ((fun q : E × Real ↦
-        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2) ∘
+        lRegularizedLagrangian S T (fun s ↦ lRegularizedCurve S T x q.1 s) q.2) ∘
           fun s : Real ↦ (z, s)) = lag := by
       funext s
       rfl
@@ -79,8 +79,8 @@ theorem tendsto_lRegAction_div_at_zero
       (𝓝[>] (0 : Real)) (𝓝 ((1 / 2 : Real) * lag 0)) := by
     simpa only [smul_eq_mul] using tendsto_const_nhds.mul hlim
   have hlag0 : lag 0 = 2 * (S.base.metric T).inner x Z Z := by
-    simp only [lag, lRegLagrangian]
-    rw [lRegCurve_zero, lRegCurve_vel_zero S hS T x Z hT]
+    simp only [lag, lRegularizedLagrangian]
+    rw [lRegularizedCurve_zero, lRegularizedCurve_velocity_zero S hS T x Z hT]
     norm_num only [zero_pow, sub_zero, mul_zero, add_zero]
     rw [((S.base.metric T).inner x).map_smul,
       smul_apply,
@@ -91,9 +91,9 @@ theorem tendsto_lRegAction_div_at_zero
   · filter_upwards [self_mem_nhdsWithin] with s hs
     have hs0 : s ≠ 0 := ne_of_gt hs
     simp only [zero_add, intervalIntegral.integral_same, sub_zero]
-    change (1 / 2 : Real) * (s⁻¹ * lRegAction S T
-      (lRegCurve S T x Z) 0 s) =
-        lRegAction S T (lRegCurve S T x Z) 0 s / (2 * s)
+    change (1 / 2 : Real) * (s⁻¹ * lRegularizedAction S T
+      (lRegularizedCurve S T x Z) 0 s) =
+        lRegularizedAction S T (lRegularizedCurve S T x Z) 0 s / (2 * s)
     field_simp [hs0]
   · rw [hlag0]
     ring_nf
@@ -122,14 +122,14 @@ theorem tendsto_redLength_lExp_square_at_zero
   have hsigma : 0 < sigma := lMinDomain_pos S T x Z sigma hmin
   have hposDom : (Z, sigma) ∈ lExpPosDom S T x :=
     ((mem_lMinDomain S T x Z sigma).1 hmin).1
-  have hsqrtDom : Real.sqrt sigma ∈ lRegDomain S T x Z :=
+  have hsqrtDom : Real.sqrt sigma ∈ lRegularizedDomain S T x Z :=
     ((mem_lExpPosDom S T x Z sigma).1 hposDom).2.2
-  have hzeroDom : (0 : Real) ∈ lRegDomain S T x Z :=
-    lRegDomain_seg S T x Z hsqrtDom (by norm_num) (Real.sqrt_nonneg sigma)
+  have hzeroDom : (0 : Real) ∈ lRegularizedDomain S T x Z :=
+    lRegularizedDomain_segment S T x Z hsqrtDom (by norm_num) (Real.sqrt_nonneg sigma)
   have hT : T ∈ D.regular :=
     by
       simpa only [zero_pow (by norm_num : (2 : Nat) ≠ 0), sub_zero] using
-        lRegDomain_reg S T x Z hzeroDom
+        lRegularizedDomain_regularity S T x Z hzeroDom
   have hsToZero : Tendsto (fun s : Real ↦ s ^ 2)
       (𝓝[>] (0 : Real)) (𝓝 (0 : Real)) := by
     have hid : Tendsto (fun s : Real ↦ s) (𝓝[>] (0 : Real))
@@ -140,7 +140,7 @@ theorem tendsto_redLength_lExp_square_at_zero
     hsToZero.eventually (Iio_mem_nhds hsigma)
   have hEq :
       (fun s : Real ↦
-        lRegAction S T (lRegCurve S T x Z) 0 s / (2 * s)) =ᶠ[𝓝[>] (0 : Real)]
+        lRegularizedAction S T (lRegularizedCurve S T x Z) 0 s / (2 * s)) =ᶠ[𝓝[>] (0 : Real)]
       fun s : Real ↦
         redLength (I := J) S T x (lExp (I := J) S T x Z (s ^ 2))
           (s ^ 2) := by
@@ -151,18 +151,18 @@ theorem tendsto_redLength_lExp_square_at_zero
     have hcost := ((mem_lMinDomain S T x Z (s ^ 2)).1 hminSq).2
     have hlen :
         lLength S T (fun r : Real ↦ lExp S T x Z r) 0 (s ^ 2) =
-          lRegAction S T (lRegCurve S T x Z) 0 s := by
-      change lLength S T (squareRootReparametrization (lRegCurve S T x Z)) 0 (s ^ 2) = _
-      have hlenSq := lLength_squareRootReparametrization_eq_lRegAction (I := J) S T
-        (lRegCurve S T x Z) (s ^ 2) hs0.le
+          lRegularizedAction S T (lRegularizedCurve S T x Z) 0 s := by
+      change lLength S T (squareRootReparametrization (lRegularizedCurve S T x Z)) 0 (s ^ 2) = _
+      have hlenSq := lLength_squareRootReparametrization_eq_lRegularizedAction (I := J) S T
+        (lRegularizedCurve S T x Z) (s ^ 2) hs0.le
       rw [Real.sqrt_sq hs.le] at hlenSq
       exact hlenSq
-    change lRegAction S T (lRegCurve S T x Z) 0 s / (2 * s) =
+    change lRegularizedAction S T (lRegularizedCurve S T x Z) 0 s / (2 * s) =
       lCost S T x (lExp S T x Z (s ^ 2)) (s ^ 2) /
         (2 * Real.sqrt (s ^ 2))
     rw [Real.sqrt_sq hs.le]
     exact congrArg (fun q : Real ↦ q / (2 * s)) (hlen.symm.trans hcost)
-  exact (tendsto_lRegAction_div_at_zero S hS T x Z hT).congr' hEq
+  exact (tendsto_lRegularizedAction_div_at_zero S hS T x Z hT).congr' hEq
 
 end Compact
 

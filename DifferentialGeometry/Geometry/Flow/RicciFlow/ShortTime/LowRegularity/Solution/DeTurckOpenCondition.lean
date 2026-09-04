@@ -31,7 +31,7 @@ theorem exists_jointly_smooth_ricci_deTurck_solution_for_short_time (hDim : Modu
     (g : SmoothRiemannianMetric I M) :
     ∃ T₀ : ℝ, 0 < T₀ ∧
       ∀ {T : ℝ} (_hT : 0 < T) (_ : T ≤ T₀) (_hT1 : T ≤ 1),
-        ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
+        ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M)
             (g := g) (r := 0) (s := 2) (2 : ℝ) T)
             (F : ℝ → SmoothCcTensor g 0 2) (δ' : ℝ) (hδ_lt : δ' < 1)
             (hδ' : ∀ t : ℝ, gFibreOpBound (I := I) (M := M) g

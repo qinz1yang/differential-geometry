@@ -57,7 +57,7 @@ noncomputable def cometricDoubleTraceH2
   appHs (I := I) (M := M) g 4 2 2
     (cometricDoubleTraceField (I := I) g 2)
 
-theorem hessianH2_core
+theorem secondCovariantDerivativeH4ToH2_apply_ccTensorToHs
     (g : SmoothRiemannianMetric I M) (U : SmoothCcTensor g 0 2) :
     secondCovariantDerivativeH4ToH2 (I := I) (M := M) g
         (ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) U) =
@@ -79,16 +79,16 @@ theorem hessianH2_core
     ext i
     simp only [TensorHs.castEquiv_coeff, ccTensorToHs_coeff]
   rw [secondCovariantDerivativeH4ToH2, ContinuousLinearMap.comp_apply, hcast]
-  exact iterCovGradHs_core (I := I) (M := M) g 2 2 2 U
+  exact iterCovGradHs_apply_ccTensorToHs (I := I) (M := M) g 2 2 2 U
 
-theorem traceH2_core
+theorem cometricDoubleTraceH2_apply_ccTensorToHs
     (g : SmoothRiemannianMetric I M) (V : SmoothCcTensor g 0 4) :
     cometricDoubleTraceH2 (I := I) (M := M) g
         (ccTensorToHs (I := I) (M := M) g 4 (2 : ℝ) V) =
       ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
         (operatorFieldApply (I := I) (M := M) g 4 2
           (cometricDoubleTraceField (I := I) g 2) V) := by
-  exact appHs_core (I := I) (M := M) g 4 2 2
+  exact appHs_apply_ccTensorToHs (I := I) (M := M) g 4 2 2
     (cometricDoubleTraceField (I := I) g 2) V
 
 noncomputable def lowRegularityPrincipalOperatorH2

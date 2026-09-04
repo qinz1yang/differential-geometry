@@ -540,7 +540,7 @@ theorem eventuallyEq_timeFDeriv
     hy_deriv.hasDerivAt htime
   exact htime_deriv.unique hchart
 
-theorem fixedBaseAtReg
+theorem fixedBaseAtRegularity
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     [I.Boundaryless]
@@ -639,7 +639,7 @@ theorem contDiffAt_prodChart
       rfl
   simpa [contDiffWithinAt_univ] using hsrc'
 
-theorem fixedBaseOnReg_of_timeDerivWithin
+theorem fixedBaseOnRegularity_of_timeDerivWithin
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     [I.Boundaryless]
@@ -675,7 +675,7 @@ theorem fixedBaseOnReg_of_timeDerivWithin
   have hsingle :
       FixedBaseExtDerivTimeDerivativeOnRegular
         (I := I) timeSet regularSet ({x} : Set M) F Ft := by
-    refine fixedBaseAtReg
+    refine fixedBaseAtRegularity
       (I := I) (timeSet := timeSet) (regularSet := regularSet)
       (x₀ := x) (F := F) (Ft := Ft) (Φ := Φ)
       hregular_subset ?hΦ ?hFdiff ?hFchart ?hFtdiff ?hFtchart
@@ -735,7 +735,7 @@ theorem fixedBaseOnReg_of_timeDerivWithin
       exact hFt_raw.trans hraw
   exact hsingle t ht x (by simp) V
 
-theorem fixedBaseOnRegLocal
+theorem fixedBaseOnRegularityLocal
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     [I.Boundaryless]
@@ -772,7 +772,7 @@ theorem fixedBaseOnRegLocal
   have hsingle :
       FixedBaseExtDerivTimeDerivativeOnRegular
         (I := I) timeSet regularSet ({x} : Set M) F Ft := by
-    refine fixedBaseAtReg
+    refine fixedBaseAtRegularity
       (I := I) (timeSet := timeSet) (regularSet := regularSet)
       (x₀ := x) (F := F) (Ft := Ft) (Φ := Φ)
       hregular_subset ?hΦ ?hFdiff ?hFchart ?hFtdiff ?hFtchart
@@ -842,7 +842,7 @@ theorem fixedBaseOnRegLocal
       exact hFt_raw.trans hraw
   exact hsingle t ht x (by simp) V
 
-theorem fixedBaseOnRegSmooth
+theorem fixedBaseOnRegularitySmooth
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     [I.Boundaryless]
@@ -905,18 +905,18 @@ theorem fixedBaseOnRegSmooth
       filter_upwards [hu.mem_nhds hx] with y hy
       exact ((hTime t ht y hy).hasDerivAt (hregular_nhds ht)).deriv.symm
     exact hpartialSpace.congr_of_eventuallyEq heq
-  have hTimeReg :
+  have hTimeRegularity :
       ∀ t, t ∈ regularSet -> ∀ x : M, x ∈ u ->
         HasDerivWithinAt (fun s : Real => F s x) (Ft t x) regularSet t := by
     intro t ht x hx
     exact ((hTime t ht x hx).hasDerivAt (hregular_nhds ht)).hasDerivWithinAt
-  have hswapReg :
+  have hswapRegularity :
       FixedBaseExtDerivTimeDerivativeOnRegular
         (I := I) regularSet regularSet u F Ft :=
-    fixedBaseOnRegLocal (I := I) hu (Set.Subset.rfl)
-      (fun ht => hregular_open.mem_nhds ht) hSmooth hFdiff hFtdiff hTimeReg
+    fixedBaseOnRegularityLocal (I := I) hu (Set.Subset.rfl)
+      (fun ht => hregular_open.mem_nhds ht) hSmooth hFdiff hFtdiff hTimeRegularity
   intro t ht x hx V
-  exact ((hswapReg t ht x hx V).hasDerivAt
+  exact ((hswapRegularity t ht x hx V).hasDerivAt
     (hregular_open.mem_nhds ht)).hasDerivWithinAt
 
 

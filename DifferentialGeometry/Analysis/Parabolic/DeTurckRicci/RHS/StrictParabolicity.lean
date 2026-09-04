@@ -49,7 +49,7 @@ noncomputable def deTurckRicciRHSChartSecondOrderPart
       Fin (Module.finrank ℝ E) → E → ℝ :=
   fun h α i j y =>
     (-2 : ℝ) * chartRicciSecondOrderPart (I := I) g₀ α h i j y +
-      chartDeTurckCorrSecondOrderPart (I := I) g₀ α h i j y
+      chartDeTurckCorrectionSecondOrderPart (I := I) g₀ α h i j y
 
 section ReadOff
 
@@ -209,15 +209,15 @@ private lemma chartRicciSecondOrderPrincipalSymbol_symbolTestPerturbation
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
     [I.Boundaryless] in
-private lemma chartDeTurckCorrPrincipalSymbolExpr_symbolTestPerturbation
+private lemma chartDeTurckCorrectionPrincipalSymbolExpr_symbolTestPerturbation
     (g₀ : SmoothRiemannianMetric I M) (x : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
     (i j : Fin (Module.finrank ℝ E)) :
-    chartDeTurckCorrPrincipalSymbolExpr (I := I) g₀ x
+    chartDeTurckCorrectionPrincipalSymbolExpr (I := I) g₀ x
         (symbolTestPerturbation (I := I) x x ξ t ht) i j (extChartAt I x x) =
-      deTurckCorrSymbolComp (I := I) g₀ x ξ t i j := by
+      deTurckCorrectionSymbolComp (I := I) g₀ x ξ t i j := by
   classical
-  rw [chartDeTurckCorrPrincipalSymbolExpr_eq_explicit, deTurckCorrSymbolComp_def]
+  rw [chartDeTurckCorrectionPrincipalSymbolExpr_eq_explicit, deTurckCorrectionSymbolComp_def]
   refine congrArg₂ (· + ·) ?_ ?_ <;>
     refine Finset.sum_congr rfl (fun k _ => congrArg (fun z => _ * z)
       (Finset.sum_congr rfl (fun a _ => Finset.sum_congr rfl (fun b _ =>
@@ -245,7 +245,7 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
           (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) := by
   classical
   set hh : ChartMetricPerturbation E := symbolTestPerturbation (I := I) x x ξ t ht with hhdef
-  have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
+  have hx_source : x ∈ (chartAt H x).source := mem_chart_source H x
   have hval : ∀ a b, hh a b (extChartAt I x x) = 0 :=
     fun a b => symbolTestPerturbation_apply_self (I := I) x x ξ t ht a b
   have hjet : ∀ p a b, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (hh a b) (extChartAt I x x) = 0 :=
@@ -254,7 +254,7 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
       chartRicciSecondOrderPart (I := I) g₀ x hh i j (extChartAt I x x) =
         ricciSymbolComp (I := I) g₀ x ξ t i j := by
     rw [chartRicciSecondOrderPart_eq_principalSymbol_add_remainder_of_mem_source
-        (I := I) g₀ x hh i j hx_src]
+        (I := I) g₀ x hh i j hx_source]
     rw [chartRicciSecondOrderPrincipalSymbol_symbolTestPerturbation g₀ x ξ t ht i j]
     rw [chartRicciFirstOrderRemainder_eq_first_order_sum]
     have hrem : (∑ jj : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -280,12 +280,12 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
       rw [hjet i l j, hjet j l i, hjet l i j, hjet i l jj, hjet jj l i, hjet l i jj]
       ring
     rw [hrem, add_zero]
-  have hCorr :
-      chartDeTurckCorrSecondOrderPart (I := I) g₀ x hh i j (extChartAt I x x) =
-        deTurckCorrSymbolComp (I := I) g₀ x ξ t i j := by
-    rw [chartDeTurckCorrSecondOrderPart_eq_principalSymbol_add_remainder_of_mem_source
-        (I := I) g₀ x hh i j hx_src]
-    rw [chartDeTurckCorrPrincipalSymbolExpr_symbolTestPerturbation g₀ x ξ t ht i j]
+  have hCorrection :
+      chartDeTurckCorrectionSecondOrderPart (I := I) g₀ x hh i j (extChartAt I x x) =
+        deTurckCorrectionSymbolComp (I := I) g₀ x ξ t i j := by
+    rw [chartDeTurckCorrectionSecondOrderPart_eq_principalSymbol_add_remainder_of_mem_source
+        (I := I) g₀ x hh i j hx_source]
+    rw [chartDeTurckCorrectionPrincipalSymbolExpr_symbolTestPerturbation g₀ x ξ t ht i j]
     have hLCP : ∀ a b k : Fin (Module.finrank ℝ E),
         chartLinearizedChristoffelPrincipal (I := I) g₀ x hh a b k (extChartAt I x x) = 0 := by
       intro a b k
@@ -293,9 +293,9 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
       refine mul_eq_zero_of_right _ (Finset.sum_eq_zero (fun l _ => ?_))
       rw [hjet a l b, hjet b l a, hjet l a b]; ring
     have hGDB : ∀ d a b k : Fin (Module.finrank ℝ E),
-        chartDeTurckCorrGramDerivBlock (I := I) g₀ x hh d a b k (extChartAt I x x) = 0 := by
+        chartDeTurckCorrectionGramDerivBlock (I := I) g₀ x hh d a b k (extChartAt I x x) = 0 := by
       intro d a b k
-      rw [chartDeTurckCorrGramDerivBlock_def]
+      rw [chartDeTurckCorrectionGramDerivBlock_def]
       refine mul_eq_zero_of_right _ (Finset.sum_eq_zero (fun l _ => ?_))
       rw [hjet a l b, hjet b l a, hjet l a b]; ring
     have hblock_zero : ∀ (gf : Fin (Module.finrank ℝ E) → ℝ) (d : Fin (Module.finrank ℝ E)),
@@ -307,7 +307,7 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
                     (extChartAt I x x)) +
               (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
                 chartInvGramOnE (I := I) g₀ x a b (extChartAt I x x) *
-                  chartDeTurckCorrGramDerivBlock (I := I) g₀ x hh d a b k
+                  chartDeTurckCorrectionGramDerivBlock (I := I) g₀ x hh d a b k
                     (extChartAt I x x)))) = 0 := by
       intro gf d
       refine Finset.sum_eq_zero (fun k _ => mul_eq_zero_of_right _ ?_)
@@ -319,20 +319,20 @@ private theorem deTurckRicciRHS_test_perturbation_readoff
           rw [hLCP a b k]; ring))]
       rw [show (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g₀ x a b (extChartAt I x x) *
-              chartDeTurckCorrGramDerivBlock (I := I) g₀ x hh d a b k
+              chartDeTurckCorrectionGramDerivBlock (I := I) g₀ x hh d a b k
                 (extChartAt I x x)) = 0 from
         Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => by
           rw [hGDB d a b k]; ring))]
       ring
-    have hrem : chartDeTurckCorrFirstOrderRemainder (I := I) g₀ x hh i j
+    have hrem : chartDeTurckCorrectionFirstOrderRemainder (I := I) g₀ x hh i j
         (extChartAt I x x) = 0 := by
-      rw [chartDeTurckCorrFirstOrderRemainder_def,
+      rw [chartDeTurckCorrectionFirstOrderRemainder_def,
         hblock_zero (fun k => chartGramOnE (I := I) g₀ x k j (extChartAt I x x)) i,
         hblock_zero (fun k => chartGramOnE (I := I) g₀ x i k (extChartAt I x x)) j, add_zero]
     rw [hrem, add_zero]
-  rw [deTurckRicciRHSChartSecondOrderPart, hRicci, hCorr]
+  rw [deTurckRicciRHSChartSecondOrderPart, hRicci, hCorrection]
   have hLHS : (-2 : ℝ) * ricciSymbolComp (I := I) g₀ x ξ t i j +
-        deTurckCorrSymbolComp (I := I) g₀ x ξ t i j =
+        deTurckCorrectionSymbolComp (I := I) g₀ x ξ t i j =
       DifferentialGeometry.PDE.DeTurck.metricCovectorNormSq (I := I) g₀ x ξ *
         formComp (I := I) x t i j := by
     rw [← ricciSymbol_apply_apply (I := I) g₀ x ξ t i j,

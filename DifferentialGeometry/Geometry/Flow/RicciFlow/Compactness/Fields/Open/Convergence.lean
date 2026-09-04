@@ -14,7 +14,7 @@ open Set Function Filter Bundle Manifold TopologicalSpace
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -31,14 +31,14 @@ structure BumpMetricConvergence
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (ρ : Nat → Nat)
     (gInf : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       Real → SmoothRiemannianMetric I P.M)
     (β ψ : Real) : Prop where
-  conv : letI : TopologicalSpace P.M := P.topology
+  convergence : letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
     letI : IsManifold I ∞ P.M := P.smooth
@@ -47,7 +47,7 @@ structure BumpMetricConvergence
       ∃ k₀ : Nat, ∀ k : Nat, k₀ ≤ k → ∀ t, t ∈ Set.Icc β ψ →
         metricDerivNormSupOn (I := I) K p
           (gSeqExt (I := I) Φ R bf hsrc htgt (ρ k) t) (gInf t) R < ε
-  convPt : letI : TopologicalSpace P.M := P.topology
+  convergencePt : letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
     letI : T2Space P.M := P.t2
     letI : IsManifold I ∞ P.M := P.smooth
@@ -67,7 +67,7 @@ theorem comp
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {ρ : Nat → Nat}
     {gInf : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -79,12 +79,12 @@ theorem comp
     BumpMetricConvergence (I := I) Φ R bf hsrc htgt (ρ ∘ η) gInf β ψ := by
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergence K hK p ε hε
     refine ⟨k₀, fun k hk t ht => ?_⟩
     simpa only [Function.comp_apply] using
       hk₀ (η k) (hk.trans (hη.id_le k)) t ht
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.convPt K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergencePt K hK p ε hε
     refine ⟨k₀, fun k hk t ht a ha x hx => ?_⟩
     simpa only [Function.comp_apply] using
       hk₀ (η k) (hk.trans (hη.id_le k)) t ht a ha x hx
@@ -96,7 +96,7 @@ theorem of_compSubseq
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     (ρ : Nat -> Nat) (hρ : StrictMono ρ) {τ : Nat -> Nat}
     {gInf : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -105,8 +105,8 @@ theorem of_compSubseq
     {β ψ : Real}
     (h : BumpMetricConvergence (I := I) (Φ.compSubseq ρ hρ) R
       (BumpFamily.compSubseq (I := I) Φ bf ρ hρ)
-      (SrcSigma.compSubseq (I := I) Φ hsrc ρ hρ)
-      (TgtSigma.compSubseq (I := I) Φ htgt ρ hρ) τ gInf β ψ) :
+      (SourceIsSigmaCompact.compSubseq (I := I) Φ hsrc ρ hρ)
+      (TargetIsSigmaCompact.compSubseq (I := I) Φ htgt ρ hρ) τ gInf β ψ) :
     BumpMetricConvergence (I := I) Φ R bf hsrc htgt (ρ ∘ τ) gInf β ψ := by
   let : TopologicalSpace P.M := P.topology
   let : ChartedSpace H P.M := P.charted
@@ -115,14 +115,14 @@ theorem of_compSubseq
   let : SigmaCompactSpace P.M := P.sigmaCompact
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergence K hK p ε hε
     refine ⟨k₀, fun k hk t ht => ?_⟩
     change metricDerivNormSupOn (I := I) K p
       (gSeqExt (I := I) Φ R bf hsrc htgt (ρ (τ k)) t) (gInf t) R < ε
     rw [← gSeqExt_compSubseq (I := I) (Φ := Φ) R bf hsrc htgt ρ hρ]
     exact hk₀ k hk t ht
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.convPt K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergencePt K hK p ε hε
     refine ⟨k₀, fun k hk t ht a ha x hx => ?_⟩
     change metricDerivNorm (I := I) a
       (gSeqExt (I := I) Φ R bf hsrc htgt (ρ (τ k)) t) (gInf t) R x < ε
@@ -136,7 +136,7 @@ theorem of_tail
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {ρ : Nat → Nat}
     {gInf : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -148,12 +148,12 @@ theorem of_tail
     BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ gInf β ψ := by
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergence K hK p ε hε
     refine ⟨k₀ + m, fun k hk t ht => ?_⟩
     have hval := hk₀ (k - m) (by omega) t ht
     simpa only [Nat.sub_add_cancel (show m ≤ k by omega)] using hval
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.convPt K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergencePt K hK p ε hε
     refine ⟨k₀ + m, fun k hk t ht a ha x hx => ?_⟩
     have hval := hk₀ (k - m) (by omega) t ht a ha x hx
     simpa only [Nat.sub_add_cancel (show m ≤ k by omega)] using hval
@@ -165,7 +165,7 @@ theorem mono
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {ρ : Nat → Nat}
     {gInf : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -177,10 +177,10 @@ theorem mono
     BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ gInf c d := by
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergence K hK p ε hε
     exact ⟨k₀, fun k hk t ht => hk₀ k hk t (hsub ht)⟩
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.convPt K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergencePt K hK p ε hε
     exact ⟨k₀, fun k hk t ht => hk₀ k hk t (hsub ht)⟩
 
 omit [NeZero (Module.finrank ℝ E)]
@@ -190,7 +190,7 @@ theorem congr
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {ρ : Nat → Nat}
     {A B : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -202,11 +202,11 @@ theorem congr
     BumpMetricConvergence (I := I) Φ R bf hsrc htgt ρ B β ψ := by
   refine ⟨?_, ?_⟩
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.conv K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergence K hK p ε hε
     refine ⟨k₀, fun k hk t ht => ?_⟩
     simpa only [← hAB t ht] using hk₀ k hk t ht
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := h.convPt K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := h.convergencePt K hK p ε hε
     refine ⟨k₀, fun k hk t ht a ha x hx => ?_⟩
     simpa only [← hAB t ht] using hk₀ k hk t ht a ha x hx
 
@@ -217,7 +217,7 @@ theorem unique
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {ρ : Nat → Nat}
     {A B : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -236,10 +236,10 @@ theorem unique
   refine metricCInf_unique (I := I)
     (fun k => gSeqExt (I := I) Φ R bf hsrc htgt (ρ k) t) (A t) (B t) R R ?_ ?_
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := hA.conv K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := hA.convergence K hK p ε hε
     exact ⟨k₀, fun k hk => hk₀ k hk t htA⟩
   · intro K hK p ε hε
-    obtain ⟨k₀, hk₀⟩ := hB.conv K hK p ε hε
+    obtain ⟨k₀, hk₀⟩ := hB.convergence K hK p ε hε
     exact ⟨k₀, fun k hk => hk₀ k hk t htB⟩
 
 end BumpMetricConvergence
@@ -248,15 +248,15 @@ namespace FlowMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-theorem bump_conv
+theorem bump_convergence
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {β ψ : Real} (co : FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt β ψ) :
     BumpMetricConvergence (I := I) Φ R bf hsrc htgt co.φ co.gInf β ψ :=
-  ⟨co.conv, co.convPt⟩
+  ⟨co.convergence, co.convergencePt⟩
 
 end FlowMetricConvergenceData
 
@@ -265,7 +265,7 @@ structure OpenMetricConvergenceData
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (a b t₀ : Real) where
   φ : Nat → Nat
   hφ : StrictMono φ
@@ -273,7 +273,7 @@ structure OpenMetricConvergenceData
     letI : ChartedSpace H P.M := P.charted
     letI : IsManifold I ∞ P.M := P.smooth
     Real → SmoothRiemannianMetric I P.M
-  convOn : ∀ n : Nat,
+  convergenceOn : ∀ n : Nat,
     BumpMetricConvergence (I := I) Φ R bf hsrc htgt φ gInf
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n)
@@ -285,7 +285,7 @@ noncomputable def atWindow
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real}
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀) (n : Nat) :
     FlowMetricConvergenceData (I := I) Φ R bf hsrc htgt
@@ -294,23 +294,23 @@ noncomputable def atWindow
   φ := co.φ
   hφ := co.hφ
   gInf := co.gInf
-  conv := (co.convOn n).conv
-  convPt := (co.convOn n).convPt
+  convergence := (co.convergenceOn n).convergence
+  convergencePt := (co.convergenceOn n).convergencePt
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
-theorem conv_Icc
+theorem convergence_Icc
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ c d : Real}
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (ht₀ : t₀ ∈ Set.Ioo a b) (hcd : Set.Icc c d ⊆ Set.Ioo a b) :
     BumpMetricConvergence (I := I) Φ R bf hsrc htgt co.φ co.gInf c d := by
   obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_superset ht₀ hcd
-  exact BumpMetricConvergence.mono (Φ := Φ) (co.convOn n) hn
+  exact BumpMetricConvergence.mono (Φ := Φ) (co.convergenceOn n) hn
 
 end OpenMetricConvergenceData
 
@@ -321,7 +321,7 @@ theorem exists_openMetricConvergenceData
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hrefine : ∀ n : Nat, ∀ ρ : Nat → Nat, StrictMono ρ →
       ∃ τ : Nat → Nat, StrictMono τ ∧
@@ -381,7 +381,7 @@ theorem exists_openMetricConvergenceData
     φ := φ
     hφ := hφ
     gInf := gInf
-    convOn := fun n =>
+    convergenceOn := fun n =>
       BumpMetricConvergence.congr (Φ := Φ) (hgN n) fun t ht => (hgInf n t ht).symm
   }⟩
 
@@ -391,7 +391,7 @@ theorem exists_openMetricConvergenceData_of_bounds
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (cLow : Nat -> Real) (hcLow : ∀ n, 0 < cLow n)
     (hbound : letI : TopologicalSpace P.M := P.topology
@@ -412,7 +412,7 @@ theorem exists_openMetricConvergenceData_of_bounds
               sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
               sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
@@ -437,7 +437,7 @@ theorem exists_openMetricConvergenceData_of_bounds
               (gSeqExt (I := I) Φ R bf hsrc htgt k s)
               (gSeqExt (I := I) Φ R bf hsrc htgt k t) R z <=
                 Lt * |s - t|)
-    (hlipSrc : letI : TopologicalSpace P.M := P.topology
+    (hlipSource : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
         letI : IsManifold I ∞ P.M := P.smooth
@@ -463,9 +463,9 @@ theorem exists_openMetricConvergenceData_of_bounds
               ∀ q : Nat, q <= p ->
                 ∀ y : SourceDomain (I := I) Φ k, y ∈ C ->
                   metricDerivNorm (I := I) q
-                    (srcMetric (I := I) Φ hsrc htgt k s)
-                    (srcMetric (I := I) Φ hsrc htgt k t)
-                    (refRes (I := I) Φ R k) y <= Ls * |s - t|) :
+                    (sourceMetric (I := I) Φ hsrc htgt k s)
+                    (sourceMetric (I := I) Φ hsrc htgt k t)
+                    (sourceMetricRestriction (I := I) Φ R k) y <= Ls * |s - t|) :
     Nonempty (OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀) := by
   classical
   let : TopologicalSpace P.M := P.topology
@@ -476,8 +476,8 @@ theorem exists_openMetricConvergenceData_of_bounds
   refine exists_openMetricConvergenceData (Φ := Φ) ht₀ ?_
   intro n ρ hρ
   let bfρ := BumpFamily.compSubseq (I := I) Φ bf ρ hρ
-  let hsrcρ := SrcSigma.compSubseq (I := I) Φ hsrc ρ hρ
-  let htgtρ := TgtSigma.compSubseq (I := I) Φ htgt ρ hρ
+  let hsrcρ := SourceIsSigmaCompact.compSubseq (I := I) Φ hsrc ρ hρ
+  let htgtρ := TargetIsSigmaCompact.compSubseq (I := I) Φ htgt ρ hρ
   have hboundρ : ∀ (k : Nat) (t : Real),
       t ∈ RealTimeInterval.openWindow a b t₀ n ->
       ∀ (y : SourceDomain (I := I) (Φ.compSubseq ρ hρ) k)
@@ -498,10 +498,10 @@ theorem exists_openMetricConvergenceData_of_bounds
           letI : IsManifold I ∞
               (SourceDomain (I := I) (Φ.compSubseq ρ hρ) k) :=
                 sourceDomSmooth (I := I) (Φ.compSubseq ρ hρ) k
-          (srcMetric (I := I) (Φ.compSubseq ρ hρ) hsrcρ htgtρ k t).inner y v v := by
+          (sourceMetric (I := I) (Φ.compSubseq ρ hρ) hsrcρ htgtρ k t).inner y v v := by
     intro k t ht y v
     have hb := hbound n (ρ k) t ht y v
-    rw [← srcMetric_compSubseq (I := I) (Φ := Φ) hsrc htgt ρ hρ k] at hb
+    rw [← sourceMetric_compSubseq (I := I) (Φ := Φ) hsrc htgt ρ hρ k] at hb
     exact hb
   have hcovTailρ : ∀ q : Nat, ∃ C : Real, ∀ (k : Nat) (t : Real),
       t ∈ RealTimeInterval.openWindow a b t₀ n ->
@@ -529,7 +529,7 @@ theorem exists_openMetricConvergenceData_of_bounds
     dsimp only [bfρ, hsrcρ, htgtρ]
     rw [gSeqExt_compSubseq, gSeqExt_compSubseq]
     exact hLt (ρ k) s t hs ht q hq z hz
-  have hlipSrcρ : ∀ k : Nat,
+  have hlipSourceρ : ∀ k : Nat,
       letI : TopologicalSpace (SourceDomain (I := I) (Φ.compSubseq ρ hρ) k) :=
         sourceDomTop (I := I) (Φ.compSubseq ρ hρ) k
       letI : ChartedSpace H (SourceDomain (I := I) (Φ.compSubseq ρ hρ) k) :=
@@ -552,12 +552,12 @@ theorem exists_openMetricConvergenceData_of_bounds
             ∀ q : Nat, q <= p ->
               ∀ y : SourceDomain (I := I) (Φ.compSubseq ρ hρ) k, y ∈ C ->
                 metricDerivNorm (I := I) q
-                  (srcMetric (I := I) (Φ.compSubseq ρ hρ) hsrcρ htgtρ k s)
-                  (srcMetric (I := I) (Φ.compSubseq ρ hρ) hsrcρ htgtρ k t)
-                  (refRes (I := I) (Φ.compSubseq ρ hρ) R k) y <=
+                  (sourceMetric (I := I) (Φ.compSubseq ρ hρ) hsrcρ htgtρ k s)
+                  (sourceMetric (I := I) (Φ.compSubseq ρ hρ) hsrcρ htgtρ k t)
+                  (sourceMetricRestriction (I := I) (Φ.compSubseq ρ hρ) R k) y <=
                     Ls * |s - t| := by
     intro k C hC p
-    obtain ⟨Ls, hLs0, hLs⟩ := hlipSrc n (ρ k) C hC p
+    obtain ⟨Ls, hLs0, hLs⟩ := hlipSource n (ρ k) C hC p
     refine ⟨Ls, hLs0, fun s t hs ht q hq y hy => ?_⟩
     have hst := hLs s t hs ht q hq y hy
     rw [← refRes_compSubseq (I := I) (Φ := Φ) R ρ hρ k] at hst
@@ -569,10 +569,10 @@ theorem exists_openMetricConvergenceData_of_bounds
   let coρ := flowMetricConvergenceData (I := I) (Φ := Φ.compSubseq ρ hρ) R bfρ hsrcρ htgtρ
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n) hβψ (cLow n) (hcLow n)
-    hboundρ hcovTailρ hlipTailρ hlipSrcρ
+    hboundρ hcovTailρ hlipTailρ hlipSourceρ
   refine ⟨coρ.φ, coρ.hφ, coρ.gInf, ?_⟩
   exact BumpMetricConvergence.of_compSubseq (Φ := Φ) ρ hρ
-    (FlowMetricConvergenceData.bump_conv (Φ := Φ.compSubseq ρ hρ) coρ)
+    (FlowMetricConvergenceData.bump_convergence (Φ := Φ.compSubseq ρ hρ) coρ)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

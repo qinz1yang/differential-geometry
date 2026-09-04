@@ -29,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem iterL_pair_unif (g : SmoothRiemannianMetric I M) (s n : ℕ)
+theorem iterL_pair_uniform (g : SmoothRiemannianMetric I M) (s n : ℕ)
     (Φ : ℝ → SmoothCcTensor g (s + 1) s) {S K : Set ℝ}
     (hK : IsCompact K) (hKS : K ⊆ S)
     (hjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
@@ -51,7 +51,7 @@ theorem iterL_pair_unif (g : SmoothRiemannianMetric I M) (s n : ℕ)
     param_app_jet (I := I) (M := M) g (s + 1) s Φ hK hKS hjoint
   exact iterL_pair_jet_of (I := I) (M := M) g s n Φ K CG hCG_nn hCG
 
-theorem iterL_smul_unif (g : SmoothRiemannianMetric I M) (n : ℕ)
+theorem iterL_smul_uniform (g : SmoothRiemannianMetric I M) (n : ℕ)
     (zeta : ℝ → C^∞⟮I, M; ℝ⟯) {S K : Set ℝ}
     (hK : IsCompact K) (hKS : K ⊆ S)
     (hzeta : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
@@ -67,7 +67,7 @@ theorem iterL_smul_unif (g : SmoothRiemannianMetric I M) (n : ℕ)
             ‖iteratedCovGrad (I := I) g 0 0 j U‖)) := by
   classical
   obtain ⟨cY, hcY_nn, hcY⟩ :=
-    smul_jet_unif (I := I) (M := M) g zeta hK hKS hzeta
+    smul_jet_uniform (I := I) (M := M) g zeta hK hKS hzeta
   obtain ⟨C, hC_nn, hC⟩ :=
     iterL_window_pair (I := I) (M := M) g 0 0 n (n / 2) 0 0
       (n + 1) n (by omega) (by omega) (by omega)

@@ -212,10 +212,10 @@ theorem fiberOperatorTensor_apply
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (Rmat : Matrix (Fin 3) (Fin 3) ℝ) (X Y Z W : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) (fiberOperatorTensor g basis Rmat) X Y Z W =
+    tensor04StandardAt (I := I) (M := M) (fiberOperatorTensor g basis Rmat) X Y Z W =
       ∑ p : Fin 3, ∑ q : Fin 3,
         Rmat p q * fiberBivectorTwoForm g basis p X Y * fiberBivectorTwoForm g basis q W Z := by
-  unfold tensor04StdAt fiberOperatorTensor
+  unfold tensor04StandardAt fiberOperatorTensor
   change (∑ p : Fin 3, ∑ q : Fin 3,
       Rmat p q * fiberBivectorTwoForm g basis p (vec4 X Y Z W 0) (vec4 X Y Z W 1) *
         fiberBivectorTwoForm g basis q (vec4 X Y Z W 3) (vec4 X Y Z W 2)) =
@@ -230,7 +230,7 @@ theorem fiberOperatorTensor_apply_basis
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (horth : ∀ i j : Fin 3, (g.inner x (basis i) (basis j)) = if i = j then 1 else 0)
     (Rmat : Matrix (Fin 3) (Fin 3) ℝ) (i j : Fin 3) :
-    tensor04StdAt (I := I) (M := M) (fiberOperatorTensor g basis Rmat)
+    tensor04StandardAt (I := I) (M := M) (fiberOperatorTensor g basis Rmat)
         (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
         (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1) =
       Rmat i j := by
@@ -1369,10 +1369,10 @@ theorem tensor04CurvatureOperatorMatrixAt_conj_of_orthonormal
   ext i j
   calc
     tensor04CurvatureOperatorMatrixAt (I := I) b' (A : Tensor04At x) i j
-        = tensor04StdAt (I := I) (M := M) (A : Tensor04At x)
+        = tensor04StandardAt (I := I) (M := M) (A : Tensor04At x)
             (b' (bivectorIndex3 i).1) (b' (bivectorIndex3 i).2)
             (b' (bivectorIndex3 j).2) (b' (bivectorIndex3 j).1) := rfl
-    _ = tensor04StdAt (I := I) (M := M) (fiberOperatorTensor (I := I) g b Mat)
+    _ = tensor04StandardAt (I := I) (M := M) (fiberOperatorTensor (I := I) g b Mat)
             (b' (bivectorIndex3 i).1) (b' (bivectorIndex3 i).2)
             (b' (bivectorIndex3 j).2) (b' (bivectorIndex3 j).1) := by rw [hA_eq]
     _ = ∑ p : Fin 3, ∑ q : Fin 3,

@@ -42,7 +42,7 @@ private theorem small_ray_data
           γ 1 = expMap (I := I) g q
             (show TangentSpace I q from a) := by
   classical
-  obtain ⟨ρ₀, T, Φ, hρ₀, hT, hΦ_init, hΦ_target, hΦ_phase, _⟩ :=
+  obtain ⟨ρ₀, T, Φ, hρ₀, hT, hΦ_initial, hΦ_target, hΦ_phase, _⟩ :=
     Exponential.exists_uniform_existence_interval (I := I) (g := g) (p := q)
   let t' : ℝ := T / 2
   have ht'_pos : 0 < t' := by
@@ -89,7 +89,7 @@ private theorem small_ray_data
       Exponential.chartFlowOrbitLiftRescaled (I := I) Φ q t' vb 0 =
         (⟨q, a⟩ : TangentBundle I M) := by
     rw [Exponential.chartFlowOrbitLiftRescaled_zero
-      (I := I) q vb t' (hΦ_init vb hvb_ball), hvb_resc]
+      (I := I) q vb t' (hΦ_initial vb hvb_ball), hvb_resc]
   have hcont : ContinuousOn γ O := by
     have hproj : Continuous (Bundle.TotalSpace.proj : TangentBundle I M → M) :=
       FiberBundle.continuous_proj E (TangentSpace I)
@@ -133,7 +133,7 @@ private theorem small_ray_data
     have h :=
       Exponential.chartFlowOrbitLiftRescaled_proj_at_one
         (I := I) g q vb ht'_pos ht'_lt
-        (hΦ_init vb hvb_ball) (hΦ_target vb hvb_ball)
+        (hΦ_initial vb hvb_ball) (hΦ_target vb hvb_ball)
         (hΦ_phase vb hvb_ball)
     rw [hvb_resc] at h
     exact h
@@ -326,7 +326,7 @@ theorem localIso_eventually
       rw [hγ0]
       exact hq
     have heq :=
-      Exponential.geo_eqOn_of_init (I := J) g'
+      Exponential.geo_eqOn_of_initial (I := J) g'
         hO hOconn h0O hgeo₁ hgeo₂ hcont₁ hcont₂ hzero hvel
     have h1 := heq h1O
     simpa [hγ1] using h1

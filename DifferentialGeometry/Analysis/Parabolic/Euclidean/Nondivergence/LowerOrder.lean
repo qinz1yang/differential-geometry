@@ -1010,7 +1010,7 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_lower_order_source
     (u : Real → Euc n → F)
     (g : Real → BoundedContinuousFunction (Euc n) F)
     (hrep : u = fun t x ↦
-      spdHeatDuh (fun i j ↦ a i j p0) hA t g x)
+      spdHeatDuhamel (fun i j ↦ a i j p0) hA t g x)
     (hgfrozen : Set.EqOn (fun p ↦ g p.time p.space)
       (parabolicFrozenMatrixOperator (fun i j ↦ a i j p0) u)
       (parabolicCylinder (Icc (0 : Real) S) Set.univ))
@@ -1068,7 +1068,7 @@ theorem parabolic_nondivergence_schauder_estimate_of_frozen_representation
     (u : Real → Euc n → F)
     (g : Real → BoundedContinuousFunction (Euc n) F)
     (hrep : u = fun t x ↦
-      spdHeatDuh (fun i j ↦ a i j p0) hA t g x)
+      spdHeatDuhamel (fun i j ↦ a i j p0) hA t g x)
     (hgfrozen : Set.EqOn (fun p ↦ g p.time p.space)
       (parabolicFrozenMatrixOperator (fun i j ↦ a i j p0) u)
       (parabolicCylinder (Icc (0 : Real) S) Set.univ))
@@ -1141,7 +1141,7 @@ theorem parabolic_nondivergence_schauder_estimate_of_small_freeze_defect
     (u : Real → Euc n → F)
     (g : Real → BoundedContinuousFunction (Euc n) F)
     (hrep : u = fun t x ↦
-      spdHeatDuh (fun i j ↦ a i j p0) hA t g x)
+      spdHeatDuhamel (fun i j ↦ a i j p0) hA t g x)
     (hgfrozen : Set.EqOn (fun p ↦ g p.time p.space)
       (parabolicFrozenMatrixOperator (fun i j ↦ a i j p0) u)
       (parabolicCylinder (Icc (0 : Real) S) Set.univ))

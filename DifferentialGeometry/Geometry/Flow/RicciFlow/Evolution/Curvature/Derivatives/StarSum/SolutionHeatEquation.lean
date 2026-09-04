@@ -48,13 +48,13 @@ variable [I.Boundaryless]
 variable [IsManifold I ∞ M] [IsManifold I 2 M]
 variable [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [BoundarylessManifold I M]
 
-def towerSolConst (k : Nat) : Real :=
+def towerSolutionConst (k : Nat) : Real :=
   2 * Real.sqrt (Fintype.card (Fin (4 + k) -> Fin 3) : Real) *
     (((4 + k : Nat) : Real) * (3 : Real) ^ 2 + resStarCost k)
 
 omit [CompactSpace M] in
 omit [SigmaCompactSpace M] in
-theorem towerHeatSol
+theorem towerHeatSolution
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
@@ -65,15 +65,15 @@ theorem towerHeatSol
     let S' := S.timeRestrict D'
     TowerHeatBoundOn (D := D')
       (nablaKRm04NormSqIntrinsic (I := I) S')
-      (nablaKNormLap (I := I) S') (towerSolConst k) k := by
+      (nablaKNormLap (I := I) S') (towerSolutionConst k) k := by
   classical
   let D' := RealTimeInterval.closedOpen t0 omega hT0Omega
   let S' := S.timeRestrict D'
   change TowerHeatBoundOn (D := D')
     (nablaKRm04NormSqIntrinsic (I := I) S')
-    (nablaKNormLap (I := I) S') (towerSolConst k) k
+    (nablaKNormLap (I := I) S') (towerSolutionConst k) k
   have hS' : IsSolutionOn (I := I) S' := by
-    simpa [S', D'] using isSoln_tailRestrict (I := I) hS hAlphaT0 hT0Omega
+    simpa [S', D'] using isSolutionOn_tailRestrict (I := I) hS hAlphaT0 hT0Omega
   intro t x
   let g := S'.base.metric (t : Real)
   let e : Fin 3 ≃ Fin (Module.finrank Real E) := finCongr hdim.symm
@@ -106,7 +106,7 @@ theorem towerHeatSol
       Module.finrank Real (TangentSpace I y) = Module.finrank Real E := rfl
       _ = 3 := hdim
   obtain ⟨T, _hTmem, hrest⟩ :=
-    resStarSol (I := I) (S := S) hS hAlphaT0 hT0Omega k t
+    resStarSolution (I := I) (S := S) hS hAlphaT0 hT0Omega k t
       frame hframe hu hdimT horthU
   obtain ⟨C, hCeq, hC, htail⟩ := hrest
   obtain ⟨hcompDt, hres⟩ := htail
@@ -114,7 +114,7 @@ theorem towerHeatSol
   let gInvAll := localFrameInv (I := I) S' frame hframe
   let gInvDtAll := localFrameInvDt (I := I) S' frame hframe
   have hreg0 :=
-    tailFrameTimeReg (I := I) (S := S) hS hAlphaT0 hT0Omega frame hframe
+    tailFrameTimeRegularity (I := I) (S := S) hS hAlphaT0 hT0Omega frame hframe
   have hreg : MetricFrameTimeRegularityInFrameOnLocal
       (I := I) S' gInvAll gInvDtAll frame u := by
     simpa [S', D', gInvAll, gInvDtAll] using hreg0
@@ -136,7 +136,7 @@ theorem towerHeatSol
     MetricInverseInBasis.unique (I := I) g x basis _ _ (by simpa [g] using hinv (t : Real)) hinvId
   let ric : Fin 3 -> Fin 3 -> Real := fun i j =>
     S'.ricciAt (t : Real) x (vec2 (I := I) (basis i) (basis j))
-  have hInvEvol :=
+  have hInvEvolution :=
     inverseMetricEvolution_of_metricFrameTimeRegularity
       (I := I) S' hS' gInvAll gInvDtAll frame hreg
   have hgInvDt : ∀ i j : Fin 3,
@@ -147,7 +147,7 @@ theorem towerHeatSol
     intro i j
     simpa [gInv, gInvAll, ric, basis, inverseMetricEvolutionRHSInFrame,
       raisedRicciCompInFrame_apply, ricciCompInFrame,
-      IsLocalFrameOn.toBasisAt_coe] using hInvEvol t x hx i j
+      IsLocalFrameOn.toBasisAt_coe] using hInvEvolution t x hx i j
   let Tdot : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (4 + k) x :=
     metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
@@ -217,8 +217,8 @@ theorem towerHeatSol
   have hreact : |nablaKReactionAt (I := I) S' k (t : Real) x basis
       (gInv (t : Real)) ric Tdot| ≤
       towerReactionSum (M := M) (nablaKRm04NormSqIntrinsic (I := I) S')
-        (towerSolConst k) k (t : Real) x := by
-    simpa [towerSolConst] using hreact0
+        (towerSolutionConst k) k (t : Real) x := by
+    simpa [towerSolutionConst] using hreact0
   refine ⟨nablaKNormLap (I := I) S' k (t : Real) x +
       (-2 * nablaKRm04NormSqIntrinsic (I := I) S' (k + 1) (t : Real) x +
         nablaKReactionAt (I := I) S' k (t : Real) x basis

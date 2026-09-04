@@ -522,21 +522,21 @@ theorem HasWeakRiemannianGradLpWithBoundary.add
     rw [integral_add h_int_G h_int_G']
     rw [h₁.pairing_eq X hX hX_int, h₂.pairing_eq X hX hX_int]
     have hX' : HasCompactSupport (X : ∀ x, TangentSpace I x) := hX
-    have h_div_supp : tsupport (divergenceGWithBoundary (I := I) g X) ⊆
+    have h_div_support : tsupport (divergenceGWithBoundary (I := I) g X) ⊆
         tsupport (X : ∀ x, TangentSpace I x) :=
       tsupport_divergence_g_with_boundary_subset
         (I := I) g X
-    have h_div_supp_int :
+    have h_div_support_int :
         tsupport (divergenceGWithBoundary (I := I) g X) ⊆ I.interior M :=
-      h_div_supp.trans hX_int
+      h_div_support.trans hX_int
     have h_div_cont : Continuous (divergenceGWithBoundary (I := I) g X) := by
       rw [continuous_iff_continuousAt]
       intro x
-      by_cases hx_supp : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
+      by_cases hx_support : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
       · have hopen_int : IsOpen (I.interior M) :=
           I.isOpen_interior (M := M) (n := ∞)
             (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
-        have hx_int : x ∈ I.interior M := h_div_supp_int hx_supp
+        have hx_int : x ∈ I.interior M := h_div_support_int hx_support
         have hcont_int :
             ContinuousOn (divergenceGWithBoundary (I := I) g X) (I.interior M) :=
           divergence_g_with_boundary_continuousOn_interior (I := I) g X
@@ -545,7 +545,7 @@ theorem HasWeakRiemannianGradLpWithBoundary.add
           (isClosed_tsupport _).isOpen_compl
         have hev_zero : (divergenceGWithBoundary (I := I) g X) =ᶠ[𝓝 x]
             (fun _ => (0 : ℝ)) := by
-          filter_upwards [h_open.mem_nhds hx_supp] with y hy
+          filter_upwards [h_open.mem_nhds hx_support] with y hy
           by_contra hne
           exact hy (subset_tsupport _ hne)
         exact (continuous_const.continuousAt.congr hev_zero.symm)
@@ -616,21 +616,21 @@ theorem HasWeakRiemannianGradLpWithBoundary.const_smul
     rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
     rw [integral_const_mul c]
     rw [h.pairing_eq X hX hX_int]
-    have h_div_supp : tsupport (divergenceGWithBoundary (I := I) g X) ⊆
+    have h_div_support : tsupport (divergenceGWithBoundary (I := I) g X) ⊆
         tsupport (X : ∀ x, TangentSpace I x) :=
       tsupport_divergence_g_with_boundary_subset
         (I := I) g X
-    have h_div_supp_int :
+    have h_div_support_int :
         tsupport (divergenceGWithBoundary (I := I) g X) ⊆ I.interior M :=
-      h_div_supp.trans hX_int
+      h_div_support.trans hX_int
     have h_div_cont : Continuous (divergenceGWithBoundary (I := I) g X) := by
       rw [continuous_iff_continuousAt]
       intro x
-      by_cases hx_supp : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
+      by_cases hx_support : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
       · have hopen_int : IsOpen (I.interior M) :=
           I.isOpen_interior (M := M) (n := ∞)
             (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
-        have hx_int : x ∈ I.interior M := h_div_supp_int hx_supp
+        have hx_int : x ∈ I.interior M := h_div_support_int hx_support
         have hcont_int :
             ContinuousOn (divergenceGWithBoundary (I := I) g X) (I.interior M) :=
           divergence_g_with_boundary_continuousOn_interior (I := I) g X
@@ -639,7 +639,7 @@ theorem HasWeakRiemannianGradLpWithBoundary.const_smul
           (isClosed_tsupport _).isOpen_compl
         have hev_zero : (divergenceGWithBoundary (I := I) g X) =ᶠ[𝓝 x]
             (fun _ => (0 : ℝ)) := by
-          filter_upwards [h_open.mem_nhds hx_supp] with y hy
+          filter_upwards [h_open.mem_nhds hx_support] with y hy
           by_contra hne
           exact hy (subset_tsupport _ hne)
         exact (continuous_const.continuousAt.congr hev_zero.symm)

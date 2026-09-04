@@ -150,7 +150,7 @@ theorem exists_eigenvectorIteratedCarrier
               EuclN → ℝ) y)
             (chartTargetEuclid (I := I) (M := M) β) :=
         fun j hj => h_pou j (hj.trans (Nat.lt_succ_self m))
-      obtain ⟨D_m, hD_m_dirs, hD_m_fChartEff⟩ :=
+      obtain ⟨D_m, hD_m_dirs, hD_m_fChartEffective⟩ :=
         ih (Fin.init directions) h_pou_prev
       set l : Fin (Module.finrank ℝ E) := directions (Fin.last m) with hl_def
       have h_comp_m1 : MemWkp (d := Module.finrank ℝ E) (m + 1) 2
@@ -181,24 +181,24 @@ theorem exists_eigenvectorIteratedCarrier
           (chartTargetEuclid (I := I) (M := M) α) :=
         eigenvectorChartComponentFun_memWkp_of_pou (I := I) (M := M)
           g r s i (m + 2) (h_pou m (Nat.lt_succ_self m)) α P₀
-      have h_fChartEff_memW1p :
+      have h_fChartEffective_memW1p :
           DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 D_m.diffChartForcing
             (chartTargetEuclid (I := I) (M := M) α) := by
-        rw [hD_m_fChartEff]
+        rw [hD_m_fChartEffective]
         exact eigenvectorChartRHSDiff_memW1p (I := I) (M := M)
           g r s i α P₀ m (Fin.init directions)
           (h_pou m (Nat.lt_succ_self m))
-      have h_fChartEff_ae_zero :
+      have h_fChartEffective_ae_zero :
           D_m.diffChartForcing =ᵐ[(volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α \
               chartPouKernel (I := I) (M := M) α)]
             (fun _ : EuclN => (0 : ℝ)) := by
-        rw [hD_m_fChartEff]
+        rw [hD_m_fChartEffective]
         exact eigenvectorChartRHSDiff_ae_zero_off_chartPouKernel
           (I := I) (M := M) g r s i α P₀ m (Fin.init directions)
       refine ⟨eigenvectorIteratedTensorChartBilinearDataStep
         (I := I) (M := M) g r s i α P₀ D_m l
-        h_comp_m1 h_comp_m2 h_fChartEff_memW1p h_fChartEff_ae_zero, ?_, ?_⟩
+        h_comp_m1 h_comp_m2 h_fChartEffective_memW1p h_fChartEffective_ae_zero, ?_, ?_⟩
       · change Fin.snoc D_m.directions l = directions
         rw [hD_m_dirs, hl_def]
         exact Fin.snoc_init_self directions
@@ -206,7 +206,7 @@ theorem exists_eigenvectorIteratedCarrier
             g r s i α P₀ m D_m.directions D_m.diffChartForcing l =
           eigenvectorChartRHSDiff (I := I) (M := M)
             g r s i α P₀ (m + 1) directions
-        rw [hD_m_dirs, hD_m_fChartEff]
+        rw [hD_m_dirs, hD_m_fChartEffective]
         rw [eigenvectorChartIteratedStep_eq_rhsDiff_succ
           (I := I) (M := M) g r s i α P₀ m (Fin.init directions) l]
         rw [hl_def, Fin.snoc_init_self directions]

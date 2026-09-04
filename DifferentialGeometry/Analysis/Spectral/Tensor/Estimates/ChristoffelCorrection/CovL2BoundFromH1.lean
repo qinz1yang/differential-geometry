@@ -40,7 +40,7 @@ private lemma
     {K_M : Set M} (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
-    (hw_supp : tsupport w ⊆ K_M) :
+    (hw_support : tsupport w ⊆ K_M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s) (b : M),
         w b ^ 2 *
@@ -90,7 +90,7 @@ private lemma
       _ = C * Q := one_mul _
   · have hw_zero : w b = 0 := by
       by_contra hne
-      exact hb (hw_supp (subset_tsupport _ hne))
+      exact hb (hw_support (subset_tsupport _ hne))
     have hLHS_zero : w b ^ 2 * SqSum = 0 := by
       rw [hw_zero]; ring
     rw [hLHS_zero]
@@ -177,7 +177,7 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
     {K_M : Set M} (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
-    (hw_supp : tsupport w ⊆ K_M) :
+    (hw_support : tsupport w ⊆ K_M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensorH1 g r s),
         (eLpNorm
@@ -196,7 +196,7 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
   obtain ⟨C, hC_nn, h_pt⟩ :=
     chartWeight_mul_sum_chartRSTwistInv_cov_sq_norm_le_const_mul_tensorCovDerivPointwiseInner
       (I := I) (M := M) g r s α w hw_nn hw_le_one hK_M_compact hK_M_sub_baseSet
-      hw_supp
+      hw_support
   refine ⟨C, hC_nn, ?_⟩
   intro S
   set ρ : M → ℝ := w with hρ_def
@@ -295,7 +295,7 @@ theorem exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_c
     {K_M : Set M} (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
-    (hw_supp : tsupport w ⊆ K_M) :
+    (hw_support : tsupport w ⊆ K_M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensorH1 g r s),
         eLpNorm
@@ -314,7 +314,7 @@ theorem exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_c
   obtain ⟨C, hC_nn, h_sq⟩ :=
     sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
       (I := I) (M := M) g r s α w hw_nn hw_le_one hK_M_compact hK_M_sub_baseSet
-      hw_supp
+      hw_support
   refine ⟨Real.sqrt C, Real.sqrt_nonneg _, ?_⟩
   intro S
   set T : ℝ := C * ‖S‖ ^ 2 with hT_def

@@ -16,7 +16,7 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 
-structure H1WeakSolutionData
+private structure H1WeakSolutionData
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) (u f : E → ℝ) where
   hu_l2 : MemLp u 2 (volume : Measure E)
   hf_l2 : MemLp f 2 (volume : Measure E)
@@ -39,7 +39,7 @@ private lemma contDiff_mollifyEps_of_memLp_two
     ContDiff ℝ (⊤ : ℕ∞) (mollifyEps (d := d) hε u) :=
   mollifyEps_contDiff hε (hu.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2))
 
-private lemma is_smooth_weak_sol_mollifyEps
+private lemma is_smooth_weak_solution_mollifyEps
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
     {u : E → ℝ} (hu : MemLp u 2 (volume : Measure E))
     {ε : ℝ} (hε : 0 < ε) :
@@ -107,7 +107,7 @@ private lemma integral_sq_le_eLpNorm_sq
   rw [h_int_E] at h_int_le_E
   exact h_int_le_E
 
-theorem exists_smoothApproximation_of_h1WeakSolutionData
+private theorem exists_smoothApproximation_of_h1WeakSolutionData
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     (D : H1WeakSolutionData B u f) :
@@ -126,7 +126,7 @@ theorem exists_smoothApproximation_of_h1WeakSolutionData
     SmoothEllipticBilinearForm.contDiff_classicalApply (d := d) B (huSeq_smooth n)
   have hfSeq_cont : ∀ n, Continuous (fSeq n) := fun n => (hfSeq_smooth n).continuous
   have h_smooth_weak : ∀ n, B.IsSmoothWeakSolution (uSeq n) (fSeq n) := fun n =>
-    is_smooth_weak_sol_mollifyEps hΩ B D.hu_l2 (hε_pos n)
+    is_smooth_weak_solution_mollifyEps hΩ B D.hu_l2 (hε_pos n)
   have hgrad_cont : ∀ n, ∀ j : Fin d,
       Continuous (fun x : E => (fderiv ℝ (uSeq n) x)
         (EuclideanSpace.single j 1)) := fun n j =>
@@ -166,13 +166,13 @@ theorem exists_smoothApproximation_of_h1WeakSolutionData
     refine add_nonneg (add_nonneg (add_nonneg (sq_nonneg _) ?_) (sq_nonneg _))
       (sq_nonneg _)
     exact Finset.sum_nonneg (fun j _ => sq_nonneg _)
-  have hf_seq_l2_loc : ∀ n, ∀ {S : Set E}, IsCompact (closure S) →
+  have hf_seq_l2_local : ∀ n, ∀ {S : Set E}, IsCompact (closure S) →
       MemLp (fSeq n) 2 (volume.restrict S) := fun n {S} _ =>
     memLp_two_restrict_of_memLp_two (hfSeq_l2 n) S
-  have hu_seq_l2_loc : ∀ n, ∀ {S : Set E}, IsCompact (closure S) →
+  have hu_seq_l2_local : ∀ n, ∀ {S : Set E}, IsCompact (closure S) →
       MemLp (uSeq n) 2 (volume.restrict S) := fun n {S} _ =>
     memLp_two_restrict_of_memLp_two (huSeq_l2 n) S
-  have hgrad_seq_l2_loc : ∀ n, ∀ {S : Set E}, IsCompact (closure S) →
+  have hgrad_seq_l2_local : ∀ n, ∀ {S : Set E}, IsCompact (closure S) →
       ∀ j : Fin d, MemLp
         (fun y : E => (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1))
         2 (volume.restrict S) := fun n {S} _ j =>
@@ -181,10 +181,10 @@ theorem exists_smoothApproximation_of_h1WeakSolutionData
     uSeq := uSeq
     fSeq := fSeq
     u_seq_smooth := huSeq_smooth
-    is_smooth_weak_sol := h_smooth_weak
-    f_seq_l2_loc := hf_seq_l2_loc
-    u_seq_l2_loc := hu_seq_l2_loc
-    grad_seq_l2_loc := hgrad_seq_l2_loc
+    is_smooth_weak_solution := h_smooth_weak
+    f_seq_l2_local := hf_seq_l2_local
+    u_seq_l2_local := hu_seq_l2_local
+    grad_seq_l2_local := hgrad_seq_l2_local
     dataBound := DB
     data_bound_nn := hDB_nn
     data_integrated_bound := ?_

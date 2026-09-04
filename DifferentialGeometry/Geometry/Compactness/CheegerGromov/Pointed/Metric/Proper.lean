@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff ENNReal
@@ -213,5 +213,5 @@ theorem ProperMetricOn.openBall_nonempty {I : ModelWithCorners Real E H}
   let : TopologicalSpace Y.M := Y.topology
   exact P.ball_nonempty Y x hr
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

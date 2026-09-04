@@ -486,10 +486,10 @@ theorem expWeightedMeasureIntegral_hasDerivAt_at
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (hintegrand_reg :
+    (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x * phiPath s x)
@@ -510,7 +510,7 @@ theorem expWeightedMeasureIntegral_hasDerivAt_at
       (I := I) (M := M) G
       (f := fun s : Real => fun x : M =>
         expNegPotentialDensity (potentialPath s) x * phiPath s x)
-      (t₀ := s0) hmetric_reg hintegrand_reg
+      (t₀ := s0) hmetric_regularity hintegrand_regularity
   refine hvol.congr_deriv ?_
   apply integral_congr_ae
   refine Filter.Eventually.of_forall ?_
@@ -627,10 +627,10 @@ theorem fFunctionalBaseIntegral_hasDerivAt_at
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (hintegrand_reg :
+    (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
@@ -673,7 +673,7 @@ theorem fFunctionalBaseIntegral_hasDerivAt_at
       (scalarCurvatureVariation := scalarCurvatureVariation)
       (gradPotentialNormSqVariation := gradPotentialNormSqVariation)
       hscalar_deriv hgrad_deriv)
-    htrace hmetric_reg hintegrand_reg
+    htrace hmetric_regularity hintegrand_regularity
 
 theorem closedBase_deriv
     [T2Space M] [CompactSpace M]
@@ -698,10 +698,10 @@ theorem closedBase_deriv
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (hintegrand_reg :
+    (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
@@ -743,7 +743,7 @@ theorem closedBase_deriv
       (scalarCurvatureVariation := scalarCurvatureVariation)
       (lapPotentialVariation := lapPotentialVariation)
       hscalar_deriv hlap_deriv)
-    htrace hmetric_reg hintegrand_reg
+    htrace hmetric_regularity hintegrand_regularity
 
 omit [TopologicalSpace M] in
 theorem FFunctionalHasFirstVariationAt_of_baseIntegral_hasDerivAt
@@ -812,10 +812,10 @@ theorem FFunctionalHasFirstVariationAt_of_volumeVariation
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (hintegrand_reg :
+    (hintegrand_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
@@ -839,8 +839,8 @@ theorem FFunctionalHasFirstVariationAt_of_volumeVariation
     hbase_eq
     (fFunctionalBaseIntegral_hasDerivAt_at
       (I := I) (M := M) G
-      hscalar_deriv hgrad_deriv hpotential_deriv htrace hmetric_reg
-      hintegrand_reg)
+      hscalar_deriv hgrad_deriv hpotential_deriv htrace hmetric_regularity
+      hintegrand_regularity)
 
 end Geometry
 

@@ -86,7 +86,7 @@ noncomputable def varCurv
     (fun v : Real => varSnd (I := I) f s v)
     (fun v : Real => V s v) t
 
-noncomputable def jacCurv
+noncomputable def jacobianCurv
     (g : SmoothRiemannianMetric I M) (f : Real → Real → M)
     (V : ∀ s t : Real, TangentSpace I (f s t)) (s t : Real) :
     TangentSpace I (f s t) :=
@@ -108,7 +108,7 @@ noncomputable def curvDerivAlong
     curvAlong (I := I) g γ X Y
       (fun s : Real => covDerivAlong (I := I) g γ Z s) t
 
-noncomputable def jacVarForce
+noncomputable def jacobianVarForce
     (g : SmoothRiemannianMetric I M) (f : Real → Real → M)
     (V : ∀ s t : Real, TangentSpace I (f s t)) (t : Real) :
     TangentSpace I (f 0 t) :=
@@ -237,7 +237,7 @@ theorem curvAlong_smooth
   simpa only [curvAlong] using hR3
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem jacCurv_smooth
+theorem jacobianCurv_smooth
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : ∀ s t : Real, TangentSpace I (f s t))
     (hV : ContMDiff
@@ -260,7 +260,7 @@ theorem jacCurv_smooth
       I.tangent ∞
       (fun q : Real × Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
-          (f q.1 q.2) (jacCurv (I := I) g f V q.1 q.2) :
+          (f q.1 q.2) (jacobianCurv (I := I) g f V q.1 q.2) :
             TangentBundle I M)) := by
   let _ : NormedAddCommGroup (E →L[Real] E) :=
     ContinuousLinearMap.toNormedAddCommGroup
@@ -329,7 +329,7 @@ theorem jacCurv_smooth
         (riemannOp (LeviCivita (I := I) g) (F q))
           (V q.1 q.2) (T q))
       (v := T) hR2 hT
-  simpa only [F, T, jacCurv, curvAlong] using hR3
+  simpa only [F, T, jacobianCurv, curvAlong] using hR3
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -1483,7 +1483,7 @@ theorem cov_snd_mdiff_at
             (covDerivAlong (I := I) g (fun v : Real ↦ f q.1 v)
               (fun v : Real ↦ V q.1 v) q.2))).2)
         =ᶠ[𝓝 (s, t)] Z := by
-    filter_upwards [hsrc, hWev] with q hqSrc hqW
+    filter_upwards [hsrc, hWev] with q hqSource hqW
     have hqF : ContMDiffAt
         ((modelWithCornersSelf Real Real).prod
           (modelWithCornersSelf Real Real)) I 2 F q :=
@@ -1513,7 +1513,7 @@ theorem cov_snd_mdiff_at
         hcoordSlice.differentiableAt (by norm_num)
     have hcov := covDeriv_coord_at (I := I) g
       (fun v : Real ↦ f q.1 v) (fun v : Real ↦ V q.1 v) q.2 β
-      (hslice.mdifferentiableAt (by norm_num)) hqSrc hfield
+      (hslice.mdifferentiableAt (by norm_num)) hqSource hfield
     have hrep :
         chartRepAtBase (I := I) β (fun v : Real ↦ f q.1 v)
             (fun v : Real ↦ V q.1 v) =
@@ -1524,7 +1524,7 @@ theorem cov_snd_mdiff_at
     have hbase : F q ∈
         (trivializationAt E (TangentSpace I) β).baseSet := by
       rw [TangentBundle.trivializationAt_baseSet]
-      exact hqSrc
+      exact hqSource
     dsimp only [Z]
     rw [← hcov]
     simp only [TotalSpace.mk']
@@ -2063,7 +2063,7 @@ theorem cov_commute_at
           fun u : Real ↦
             chartCovDerivAlong (I := I) g β (fun v : Real ↦ f u v)
               (fun v : Real ↦ Y u v) t := by
-    filter_upwards [hsrcL, hWevL] with u huSrc huW
+    filter_upwards [hsrcL, hWevL] with u huSource huW
     have huF : ContMDiffAt
         ((modelWithCornersSelf Real Real).prod
           (modelWithCornersSelf Real Real)) I 2 F (u, t) :=
@@ -2093,7 +2093,7 @@ theorem cov_commute_at
         hcoordSlice.differentiableAt (by norm_num)
     have hcov := covDeriv_coord_at (I := I) g
       (fun v : Real ↦ f u v) (fun v : Real ↦ V u v) t β
-      (hslice.mdifferentiableAt (by norm_num)) huSrc hfield
+      (hslice.mdifferentiableAt (by norm_num)) huSource hfield
     have hrep :
         chartRepAtBase (I := I) β (fun v : Real ↦ f u v)
             (fun v : Real ↦ V u v) =
@@ -2113,7 +2113,7 @@ theorem cov_commute_at
           fun v : Real ↦
             chartCovDerivAlong (I := I) g β (fun u : Real ↦ f u v)
               (fun u : Real ↦ Y u v) s := by
-    filter_upwards [hsrcR, hWevR] with v hvSrc hvW
+    filter_upwards [hsrcR, hWevR] with v hvSource hvW
     have hvF : ContMDiffAt
         ((modelWithCornersSelf Real Real).prod
           (modelWithCornersSelf Real Real)) I 2 F (s, v) :=
@@ -2143,7 +2143,7 @@ theorem cov_commute_at
         hcoordSlice.differentiableAt (by norm_num)
     have hcov := covDeriv_coord_at (I := I) g
       (fun u : Real ↦ f u v) (fun u : Real ↦ V u v) s β
-      (hslice.mdifferentiableAt (by norm_num)) hvSrc hfield
+      (hslice.mdifferentiableAt (by norm_num)) hvSource hfield
     have hrep :
         chartRepAtBase (I := I) β (fun u : Real ↦ f u v)
             (fun u : Real ↦ V u v) =
@@ -2614,11 +2614,11 @@ theorem cov_varCurv
       (fun v : Real => V s v) t
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem cov_jacCurv
+theorem cov_jacobianCurv
     (g : SmoothRiemannianMetric I M) (f : Real → Real → M)
     (V : ∀ s t : Real, TangentSpace I (f s t)) (s t : Real) :
     covFst (I := I) g f
-        (fun r v => jacCurv (I := I) g f V r v) s t =
+        (fun r v => jacobianCurv (I := I) g f V r v) s t =
       curvDerivAlong (I := I) g (fun r : Real => f r t)
           (fun r : Real => V r t)
           (fun r : Real => varSnd (I := I) f r t)
@@ -2639,7 +2639,7 @@ theorem cov_jacCurv
           (fun r : Real =>
             covFst (I := I) g f
               (fun a v => varSnd (I := I) f a v) r t) s := by
-  simpa only [covFst, jacCurv] using
+  simpa only [covFst, jacobianCurv] using
     cov_curvAlong (I := I) g (fun r : Real => f r t)
       (fun r : Real => V r t)
       (fun r : Real => varSnd (I := I) f r t)
@@ -2819,44 +2819,44 @@ theorem jacobi_var_eq
       (fun q : Real × Real =>
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (f q.1 q.2) (V q.1 q.2) : TangentBundle I M)))
-    (hJac : ∀ s : Real,
+    (hJacobian : ∀ s : Real,
       IsJacobiAlong (I := I) g (fun v : Real => f s v)
         (fun v : Real => V s v))
     (hGeo : ∀ s : Real, IsGeodesic (I := I) g (fun v : Real => f s v))
     (t : Real) :
     covSnd2 (I := I) g f
           (fun s v => covFst (I := I) g f V s v) 0 t +
-        jacCurv (I := I) g f
+        jacobianCurv (I := I) g f
           (fun s v => covFst (I := I) g f V s v) 0 t =
-      jacVarForce (I := I) g f V t := by
-  have hJacEq : ∀ s : Real,
+      jacobianVarForce (I := I) g f V t := by
+  have hJacobianEq : ∀ s : Real,
       covSnd2 (I := I) g f V s t =
-        - jacCurv (I := I) g f V s t := by
+        - jacobianCurv (I := I) g f V s t := by
     intro s
     have hj :=
       jacobi_d2_eq (I := I) g (fun v : Real => f s v)
-        (fun v : Real => V s v) ((hJac s) t)
-    simpa only [covSnd2, covSnd, jacCurv, curvAlong, varSnd,
+        (fun v : Real => V s v) ((hJacobian s) t)
+    simpa only [covSnd2, covSnd, jacobianCurv, curvAlong, varSnd,
       curveVelocity] using hj
-  have hJacField :
+  have hJacobianField :
       (fun s : Real => covSnd2 (I := I) g f V s t) =
-        fun s : Real => - jacCurv (I := I) g f V s t := by
+        fun s : Real => - jacobianCurv (I := I) g f V s t := by
     funext s
-    exact hJacEq s
-  have hJacDeriv :
+    exact hJacobianEq s
+  have hJacobianDeriv :
       covFst (I := I) g f
           (fun s v => covSnd2 (I := I) g f V s v) 0 t =
         - covFst (I := I) g f
-          (fun s v => jacCurv (I := I) g f V s v) 0 t := by
+          (fun s v => jacobianCurv (I := I) g f V s v) 0 t := by
     change
       covDerivAlong (I := I) g (fun s : Real => f s t)
           (fun s : Real => covSnd2 (I := I) g f V s t) 0 =
         - covDerivAlong (I := I) g (fun s : Real => f s t)
-          (fun s : Real => jacCurv (I := I) g f V s t) 0
-    rw [hJacField]
+          (fun s : Real => jacobianCurv (I := I) g f V s t) 0
+    rw [hJacobianField]
     have hneg :=
       covDerivAlong_smul (I := I) g (fun s : Real => f s t)
-        (-1 : Real) (fun s : Real => jacCurv (I := I) g f V s t) 0
+        (-1 : Real) (fun s : Real => jacobianCurv (I := I) g f V s t) 0
     simpa only [neg_one_smul] using hneg
   have hAcomm :
       covFst (I := I) g f
@@ -2908,13 +2908,13 @@ theorem jacobi_var_eq
     rfl
   rw [hzeroTerm] at hExp
   simp only [add_zero] at hExp
-  have hJcurv := cov_jacCurv (I := I) g f V 0 t
+  have hJcurv := cov_jacobianCurv (I := I) g f V 0 t
   have hKterm :
       curvAlong (I := I) g (fun r : Real => f r t)
           (fun r : Real => covFst (I := I) g f V r t)
           (fun r : Real => varSnd (I := I) f r t)
           (fun r : Real => varSnd (I := I) f r t) 0 =
-        jacCurv (I := I) g f
+        jacobianCurv (I := I) g f
           (fun s v => covFst (I := I) g f V s v) 0 t := rfl
   have hslot2 :
       curvAlong (I := I) g (fun r : Real => f r t)
@@ -2977,9 +2977,9 @@ theorem jacobi_var_eq
             (fun s w => varFst (I := I) f s w) 0 t)
     rw [hAcomm]
   rw [hKterm, hslot2, hslot3] at hJcurv
-  rw [hExp, hJcurv] at hJacDeriv
-  unfold jacVarForce
-  linear_combination (norm := module) hJacDeriv
+  rw [hExp, hJcurv] at hJacobianDeriv
+  unfold jacobianVarForce
+  linear_combination (norm := module) hJacobianDeriv
 
 end Variation
 end Riemannian

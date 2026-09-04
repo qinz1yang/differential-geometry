@@ -15,7 +15,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 
@@ -486,7 +486,7 @@ theorem lapDiff_sq_le
   simpa only [rho] using
     lapDiff_sq_core (I := I) g h hf x rho hrho hEq hzero hone
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

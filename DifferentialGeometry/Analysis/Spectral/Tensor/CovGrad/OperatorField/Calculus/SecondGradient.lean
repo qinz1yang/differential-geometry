@@ -587,10 +587,10 @@ def curvatureActionMonomialTrace (g₁ : SmoothRiemannianMetric I M)
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
     [CompleteSpace E] in
-theorem curvatureDecompositionMonomialBiContrFib_eq_fixedFrame_on_nbhd
+theorem curvatureDecompositionMonomialBiContrFib_eq_fixedFrame_on_neighborhood
     (g₁ : SmoothRiemannianMetric I M) (W : Π b : M, Tensor0SSpace 2 I b)
     (σ : Equiv.Perm (Fin 4)) (x₀ : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     curvatureActionMonomialTrace (I := I) (M := M) g₁ W σ y =
       curvatureActionMonomialFrameTrace (I := I) (M := M) W σ
         (smoothOrthoFrame (I := I) g₁ x₀) y := by
@@ -665,11 +665,11 @@ theorem curvatureDecompositionMonomialBiContrFib_contMDiff (g₁ : SmoothRiemann
         (fun i => smoothOrthoFrame_smooth (I := I) g₁ x₀ i) Y
     exact h_glob x₀
   refine h_fixed.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 4 2 ℝ E)
     (E := fun z : M => TensorRSSpace 4 2 I z) y)
     (congrArg TensorRSSpace.ofCLM
-      (curvatureDecompositionMonomialBiContrFib_eq_fixedFrame_on_nbhd (I := I) (M := M)
+      (curvatureDecompositionMonomialBiContrFib_eq_fixedFrame_on_neighborhood (I := I) (M := M)
         g₁ W σ x₀ hy))
 
 def curvatureActionMonomialCoeffField (g₀ g₁ : SmoothRiemannianMetric I M)

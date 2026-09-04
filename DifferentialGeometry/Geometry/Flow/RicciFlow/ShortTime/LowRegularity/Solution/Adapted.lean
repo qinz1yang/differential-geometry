@@ -99,8 +99,8 @@ theorem IsAdaptedLowRegularitySolution.absorb {g₀ : SmoothRiemannianMetric I M
   by
     obtain ⟨A, B, _hgate, hA, hB, ε, hε, hbudget⟩ := h.exists_absorption_constants_and_margin
     have hR : 0 ≤ lowRegularityStateRadius Ctop B1 ρ P :=
-      (lowRegularityStateRadius_pos h.1.hCtop h.1.hB1 h.1.hρ h.1.hP).le
-    have hdom := energyLadder_absorption_coefficient_le hA hB h.1.hδ0 hR
+      (lowRegularityStateRadius_pos h.1.top_nonneg h.1.slope_nonneg h.1.outer_pos h.1.realize_pos).le
+    have hdom := energyLadder_absorption_coefficient_le hA hB h.1.threshold_nonneg hR
     exact ⟨ε, hε, by linarith only [hdom, hbudget]⟩
 
 theorem exists_absorption_radius_and_margin {A B : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B) :
@@ -219,7 +219,7 @@ theorem exists_adapted_lowRegularity_solution_parameters_with_contraction_thresh
     hpack hT hTT₀ hT1
   refine ⟨f, fLo, Ctop, B0, B1, D, ρout, P, hre, hfae, hlo, hord,
     A, B, hgate, hA, hB, ε, hε, ?_⟩
-  exact hbudget (hlo.hcap.trans hRcapAbs)
+  exact hbudget (hlo.stateRadius_le.trans hRcapAbs)
 
 theorem exists_adapted_lowRegularity_solution_parameters
     (hDim : Module.finrank ℝ E = 3)

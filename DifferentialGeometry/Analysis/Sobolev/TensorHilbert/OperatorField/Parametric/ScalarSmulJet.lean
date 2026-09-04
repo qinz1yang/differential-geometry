@@ -92,7 +92,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] in
-theorem unit_init_or_empty (g : SmoothRiemannianMetric I M) :
+theorem unit_initial_or_empty (g : SmoothRiemannianMetric I M) :
     IsEmpty M ∨
       ∃ u0 : SmoothCcTensor g 0 0,
         (∀ x : M, 0 <
@@ -237,7 +237,7 @@ theorem scalarCc_joint (g : SmoothRiemannianMetric I M)
     (fun p : M × ℝ => A p.1) hA
   exact hsmul.congr fun p _ => rfl
 
-theorem smul_jet_unif (g : SmoothRiemannianMetric I M)
+theorem smul_jet_uniform (g : SmoothRiemannianMetric I M)
     (zeta : ℝ → C^∞⟮I, M; ℝ⟯) {S K : Set ℝ}
     (hK : IsCompact K) (hKS : K ⊆ S)
     (hzeta : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞

@@ -17,48 +17,48 @@ variable {V F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
 omit [CompleteSpace F] in
-theorem klFluxPiece_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x c : V)
+theorem kochLammFluxPiece_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x c : V)
     (hR : 0 < R) (hRT : R ^ 2 ≤ T) {S : Set V}
     (hS : S ⊆ Metric.ball c R) :
-    Integrable (fun z : ℝ × V ↦ klFluxKernel (R ^ 2) w x z • f z)
-      (klTailMeasure (V := V) R S) := by
-  let μ := klTailMeasure (V := V) R S
-  have hk : MemLp (klFluxKernel (R ^ 2) w x)
-      (ENNReal.ofReal (klPDual V)) μ :=
-    (klFluxKernel_memLp (V := V) (t := R ^ 2) w x).mono_measure
-      (klTailTerm_le (V := V) R S)
-  have hf : MemLp f (ENNReal.ofReal (klPReal V)) μ := by
-    simpa only [klPReal_ofReal] using
-      (klFluxPiece_mem (V := V) h c hR hRT hS)
+    Integrable (fun z : ℝ × V ↦ kochLammFluxKernel (R ^ 2) w x z • f z)
+      (kochLammTailMeasure (V := V) R S) := by
+  let μ := kochLammTailMeasure (V := V) R S
+  have hk : MemLp (kochLammFluxKernel (R ^ 2) w x)
+      (ENNReal.ofReal (kochLammPDual V)) μ :=
+    (kochLammFluxKernel_memLp (V := V) (t := R ^ 2) w x).mono_measure
+      (kochLammTailTerm_le (V := V) R S)
+  have hf : MemLp f (ENNReal.ofReal (kochLammPReal V)) μ := by
+    simpa only [kochLammPReal_ofReal] using
+      (kochLammFluxPiece_mem (V := V) h c hR hRT hS)
   let : ENNReal.HolderConjugate
-      (ENNReal.ofReal (klPDual V)) (ENNReal.ofReal (klPReal V)) :=
-    (klPDual_holder (V := V)).ennrealOfReal
+      (ENNReal.ofReal (kochLammPDual V)) (ENNReal.ofReal (kochLammPReal V)) :=
+    (kochLammPDual_holder (V := V)).ennrealOfReal
   exact memLp_one_iff_integrable.mp (hf.smul hk)
 
 omit [CompleteSpace F] in
-theorem klFluxCover_est {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+theorem kochLammFluxCover_est {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
     (s : Finset V) {S : Set V} (hSm : MeasurableSet S)
     (hcover : S ⊆ ⋃ c ∈ s, Metric.ball c R)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :
-    Integrable (fun z : ℝ × V ↦ klFluxKernel (R ^ 2) w x z • f z)
-        (klTailMeasure (V := V) R S) ∧
-      ‖klFluxPiece1 R w f x S‖ ≤
+    Integrable (fun z : ℝ × V ↦ kochLammFluxKernel (R ^ 2) w x z • f z)
+        (kochLammTailMeasure (V := V) R S) ∧
+      ‖kochLammFluxPiece1 R w f x S‖ ≤
         (s.card : ℝ) *
           (‖w‖ * Real.exp (-(8 : ℝ)⁻¹ * k ^ 2) *
-            (klFluxTailC V * (Aₚ : ℝ))) := by
+            (kochLammFluxTailC V * (Aₚ : ℝ))) := by
   classical
   let D : ℝ :=
     ‖w‖ * Real.exp (-(8 : ℝ)⁻¹ * k ^ 2) *
-      (klFluxTailC V * (Aₚ : ℝ))
+      (kochLammFluxTailC V * (Aₚ : ℝ))
   induction s using Finset.induction_on generalizing S with
   | empty =>
       have hS0 : S = ∅ := by
         simpa using hcover
       subst S
-      constructor <;> simp [klTailMeasure, klFluxPiece1]
+      constructor <;> simp [kochLammTailMeasure, kochLammFluxPiece1]
   | @insert c s hc ih =>
       let S₀ : Set V := S ∩ Metric.ball c R
       let S₁ : Set V := S \ Metric.ball c R
@@ -95,30 +95,30 @@ theorem klFluxCover_est {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
       have hfar₁ : ∀ y ∈ S₁, k * R ≤ ‖x - y‖ := by
         intro y hy
         exact hfar y hy.1
-      have hint₀ := klFluxPiece_int (V := V) h w x c hR hRT hS₀ball
+      have hint₀ := kochLammFluxPiece_int (V := V) h w x c hR hRT hS₀ball
       obtain ⟨hint₁, hnorm₁⟩ := ih hS₁m hcover₁ hfar₁
-      have hnorm₀ : ‖klFluxPiece1 R w f x S₀‖ ≤ D := by
+      have hnorm₀ : ‖kochLammFluxPiece1 R w f x S₀‖ ≤ D := by
         simpa only [D] using
-          (klFluxPiece_norm (V := V) h w x c hR hk hRT
+          (kochLammFluxPiece_norm (V := V) h w x c hR hk hRT
             hS₀m hS₀ball hfar₀)
-      have hμ : klTailMeasure (V := V) R S =
-          klTailMeasure (V := V) R S₀ + klTailMeasure (V := V) R S₁ := by
+      have hμ : kochLammTailMeasure (V := V) R S =
+          kochLammTailMeasure (V := V) R S₀ + kochLammTailMeasure (V := V) R S₁ := by
         rw [← hsplit]
-        exact klTail_union (V := V) hdisj hS₁m
+        exact kochLammTail_union (V := V) hdisj hS₁m
       have hint : Integrable
-          (fun z : ℝ × V ↦ klFluxKernel (R ^ 2) w x z • f z)
-          (klTailMeasure (V := V) R S) := by
+          (fun z : ℝ × V ↦ kochLammFluxKernel (R ^ 2) w x z • f z)
+          (kochLammTailMeasure (V := V) R S) := by
         rw [hμ]
         exact hint₀.add_measure hint₁
-      have hpiece : klFluxPiece1 R w f x S =
-          klFluxPiece1 R w f x S₀ + klFluxPiece1 R w f x S₁ := by
-        unfold klFluxPiece1
+      have hpiece : kochLammFluxPiece1 R w f x S =
+          kochLammFluxPiece1 R w f x S₀ + kochLammFluxPiece1 R w f x S₁ := by
+        unfold kochLammFluxPiece1
         rw [hμ, integral_add_measure hint₀ hint₁]
       refine ⟨hint, ?_⟩
       rw [hpiece]
       calc
-        ‖klFluxPiece1 R w f x S₀ + klFluxPiece1 R w f x S₁‖ ≤
-            ‖klFluxPiece1 R w f x S₀‖ + ‖klFluxPiece1 R w f x S₁‖ :=
+        ‖kochLammFluxPiece1 R w f x S₀ + kochLammFluxPiece1 R w f x S₁‖ ≤
+            ‖kochLammFluxPiece1 R w f x S₀‖ + ‖kochLammFluxPiece1 R w f x S₁‖ :=
           norm_add_le _ _
         _ ≤ D + (s.card : ℝ) * D := add_le_add hnorm₀ hnorm₁
         _ = ((insert c s).card : ℝ) * D := by
@@ -127,17 +127,17 @@ theorem klFluxCover_est {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
           ring
 
 omit [CompleteSpace F] in
-theorem klFluxCover_norm {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
-    {f : ℝ × V → F} (h : KLSource1 T A₂ Aₚ f) (w x : V)
+theorem kochLammFluxCover_norm {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
+    {f : ℝ × V → F} (h : KochLammSourceOne T A₂ Aₚ f) (w x : V)
     (hR : 0 < R) (hk : 0 ≤ k) (hRT : R ^ 2 ≤ T)
     (s : Finset V) {S : Set V} (hSm : MeasurableSet S)
     (hcover : S ⊆ ⋃ c ∈ s, Metric.ball c R)
     (hfar : ∀ y ∈ S, k * R ≤ ‖x - y‖) :
-    ‖klFluxPiece1 R w f x S‖ ≤
+    ‖kochLammFluxPiece1 R w f x S‖ ≤
       (s.card : ℝ) *
         (‖w‖ * Real.exp (-(8 : ℝ)⁻¹ * k ^ 2) *
-          (klFluxTailC V * (Aₚ : ℝ))) :=
-  (klFluxCover_est (V := V) h w x hR hk hRT s hSm hcover hfar).2
+          (kochLammFluxTailC V * (Aₚ : ℝ))) :=
+  (kochLammFluxCover_est (V := V) h w x hR hk hRT s hSm hcover hfar).2
 
 end Euclidean
 end Parabolic

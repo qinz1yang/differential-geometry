@@ -11,7 +11,7 @@ open Set Bundle
 open scoped Manifold ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -137,7 +137,7 @@ theorem derivNorm_le_sup {K : Set M} (hK : IsCompact K)
     exact hC q hqp z hz
   exact le_csSup hbdd ⟨a, hap, x, hx, rfl⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

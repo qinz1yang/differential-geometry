@@ -38,7 +38,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-lemma covGrad_contMDiff_mk'
+lemma covGrad_contMDiff_totalSpaceMk
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 3 ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 3 ℝ E)
@@ -225,7 +225,7 @@ noncomputable def covApplyCovGradSection
       covApply (tensorCov (I := I) g 0 3) X
         (fun z : M => (covGrad (I := I) (M := M) g 0 2 T₀).toSection z) y)
     (covApplyRS_contMDiff (I := I) g 0 3
-      (covGrad_contMDiff_mk' (I := I) (M := M) g T₀) hX)
+      (covGrad_contMDiff_totalSpaceMk (I := I) (M := M) g T₀) hX)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 @[simp] lemma covApplyCovGradSection_apply
@@ -403,7 +403,7 @@ lemma curry_unitGradFieldCovariantTensor_eq (g : SmoothRiemannianMetric I M) (s 
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-lemma covGrad_contMDiff_mk'_covariantTensor
+lemma covGrad_contMDiff_totalSpaceMk_covariantTensor
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 (s + 1) ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 (s + 1) ℝ E)
@@ -427,7 +427,7 @@ noncomputable def covApplyCovGradSectionCovariantTensor
       covApply (tensorCov (I := I) g 0 (s + 1)) X
         (fun z : M => (covGrad (I := I) (M := M) g 0 s S).toSection z) y)
     (covApplyRS_contMDiff (I := I) g 0 (s + 1)
-      (covGrad_contMDiff_mk'_covariantTensor (I := I) (M := M) g s S) hX)
+      (covGrad_contMDiff_totalSpaceMk_covariantTensor (I := I) (M := M) g s S) hX)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 @[simp] lemma covApplyCovGradSectionCovariantTensor_apply

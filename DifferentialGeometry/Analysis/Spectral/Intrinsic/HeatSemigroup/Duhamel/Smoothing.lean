@@ -44,17 +44,17 @@ theorem one_add_lambda_mul_duhamel_kernel_sq_integral_le {lam t : ℝ}
 
 variable {f : ℝ → ℝ}
 
-theorem perModeConv_endpoint_sq_le (lam : ℝ) (hf : Continuous f) {t : ℝ}
+theorem perModeConvolution_endpoint_sq_le (lam : ℝ) (hf : Continuous f) {t : ℝ}
     (ht : 0 ≤ t) :
-    (perModeConv lam f t) ^ 2
+    (perModeConvolution lam f t) ^ 2
       ≤ duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, f s ^ 2 :=
-  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.perModeConv_endpoint_sq_le lam hf ht
+  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.perModeConvolution_endpoint_sq_le lam hf ht
 
-theorem one_add_lambda_mul_perModeConv_endpoint_sq_le (lam : ℝ)
+theorem one_add_lambda_mul_perModeConvolution_endpoint_sq_le (lam : ℝ)
     (hlam : 0 ≤ lam) (hf : Continuous f) {t : ℝ} (ht : 0 ≤ t) :
-    (1 + lam) * (perModeConv lam f t) ^ 2
+    (1 + lam) * (perModeConvolution lam f t) ^ 2
       ≤ (t + 1 / 2) * ∫ s in (0 : ℝ)..t, f s ^ 2 :=
-  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.one_add_lambda_mul_perModeConv_endpoint_sq_le
+  DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.one_add_lambda_mul_perModeConvolution_endpoint_sq_le
     lam hlam hf ht
 
 end Scalar
@@ -88,7 +88,7 @@ theorem duhamel_endpoint_value_weighted_summable
         ∫ s in (0 : ℝ)..t, (φ i s) ^ 2)) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
       tensorSobolevWeight (I := I) (M := M) i (c + 1) *
-        (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ^ 2) := by
+        (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ^ 2) := by
   refine Summable.of_nonneg_of_le (fun i => ?_) (fun i => ?_) (hmass.mul_left (t + 1 / 2))
   · exact mul_nonneg (tensorSobolevWeight_nonneg (I := I) (M := M) i (c + 1))
       (sq_nonneg _)
@@ -103,12 +103,12 @@ theorem duhamel_endpoint_value_weighted_summable
         Real.rpow_one]
     have hwc_nn : 0 ≤ tensorSobolevWeight (I := I) (M := M) i c :=
       tensorSobolevWeight_nonneg (I := I) (M := M) i c
-    have hgain := one_add_lambda_mul_perModeConv_endpoint_sq_le
+    have hgain := one_add_lambda_mul_perModeConvolution_endpoint_sq_le
       (f := φ i) lam hlam_nn (hφ i) ht
     calc tensorSobolevWeight (I := I) (M := M) i (c + 1) *
-            (perModeConv lam (φ i) t) ^ 2
+            (perModeConvolution lam (φ i) t) ^ 2
         = tensorSobolevWeight (I := I) (M := M) i c *
-            ((1 + lam) * (perModeConv lam (φ i) t) ^ 2) := by
+            ((1 + lam) * (perModeConvolution lam (φ i) t) ^ 2) := by
           rw [hweight_split]; ring
       _ ≤ tensorSobolevWeight (I := I) (M := M) i c *
             ((t + 1 / 2) * ∫ s in (0 : ℝ)..t, (φ i s) ^ 2) :=
@@ -124,7 +124,7 @@ def duhamelValueHs {g : SmoothRiemannianMetric I M} {r s : ℕ} (c : ℝ)
       tensorSobolevWeight (I := I) (M := M) i c *
         ∫ s in (0 : ℝ)..t, (φ i s) ^ 2)) :
     TensorHs (I := I) (M := M) g r s (c + 1) where
-  coeff i := perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t
+  coeff i := perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t
   weighted_summable :=
     duhamel_endpoint_value_weighted_summable (I := I) (M := M) c ht φ hφ hmass
 
@@ -138,7 +138,7 @@ omit [NeZero (Module.finrank ℝ E)] in
         ∫ s in (0 : ℝ)..t, (φ i s) ^ 2))
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     (duhamelValueHs (I := I) (M := M) c ht φ hφ hmass).coeff i =
-      perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t := rfl
+      perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem duhamel_endpoint_value_summable_sq
@@ -150,7 +150,7 @@ theorem duhamel_endpoint_value_summable_sq
       tensorSobolevWeight (I := I) (M := M) i c *
         ∫ s in (0 : ℝ)..t, (φ i s) ^ 2)) :
     Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
-      (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ^ 2) :=
+      (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ^ 2) :=
   TensorHs.coeff_summable_sq_of_nonneg (I := I) (M := M) (by linarith : 0 ≤ c + 1)
     (duhamelValueHs (I := I) (M := M) c ht φ hφ hmass)
 
@@ -167,7 +167,7 @@ theorem duhamel_into_all_tensorHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
           ∫ s in (0 : ℝ)..t, (φ i s) ^ 2)) :
     ∃ u : TensorL2 r s g,
       (∀ i, tensorL2Coeff (I := I) (M := M) h_compact u i =
-        perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ∧
+        perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ∧
       ∀ σ : ℝ, ∀ hσ : 0 ≤ σ,
         ∃ v : TensorHs (I := I) (M := M) g r s σ,
           tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
@@ -177,18 +177,18 @@ theorem duhamel_into_all_tensorHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (I := I) (M := M) h_compact with hbsis_def
   have hval_summable :
       Summable (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
-        (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ^ 2) :=
+        (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) ^ 2) :=
     duhamel_endpoint_value_summable_sq (I := I) (M := M) (c := 0) le_rfl ht φ hφ
       (hsmooth 0 le_rfl)
   have hmemℓp : Memℓp (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
-      perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) 2 := by
+      perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t) 2 := by
     apply memℓp_gen
     have hpr : (2 : ℝ≥0∞).toReal = 2 := by norm_num
     have h_eq :
         (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
-          ‖perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t‖ ^
+          ‖perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t‖ ^
             (2 : ℝ≥0∞).toReal) =
-        (fun i => (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        (fun i => (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
           (φ i) t) ^ 2) := by
       funext i
       rw [hpr, Real.norm_eq_abs, ← sq_abs]
@@ -196,7 +196,7 @@ theorem duhamel_into_all_tensorHs {g : SmoothRiemannianMetric I M} {r s : ℕ}
     rw [h_eq]; exact hval_summable
   set u : TensorL2 r s g := bsis.repr.symm ⟨_, hmemℓp⟩ with hu_def
   have hu_coeff : ∀ i, tensorL2Coeff (I := I) (M := M) h_compact u i =
-      perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t := by
+      perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t := by
     intro i
     rw [tensorL2Coeff, hu_def, hbsis_def,
       LinearIsometryEquiv.apply_symm_apply]
@@ -250,7 +250,7 @@ theorem exists_smooth_tensor_representative_of_duhamel_smoothing
       ∀ i, tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           (T : TensorL2 r s g) i =
-        perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t := by
+        perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (φ i) t := by
   obtain ⟨u, hu_coeff, hu_all⟩ :=
     duhamel_into_all_tensorHs (I := I) (M := M) ht
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)

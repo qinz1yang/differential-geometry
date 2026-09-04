@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -107,5 +107,5 @@ theorem limit_complete_of_compact_stage_balls
     exact h
   exact (complete_of_proper : CompleteSpace S.toSeqSystem.Lim)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

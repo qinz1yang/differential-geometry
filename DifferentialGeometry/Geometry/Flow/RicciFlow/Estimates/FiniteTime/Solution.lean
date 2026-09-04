@@ -39,7 +39,7 @@ theorem scalar_pos_of_ricci
       hdimx (hpos x))
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] in
-private theorem initMin_of_start
+private theorem initialMin_of_start
     {T c0 : Real} {hT : 0 < T}
     (g0 : SmoothRiemannianMetric I M)
     (S : SolutionOn (I := I) (M := M)
@@ -118,9 +118,9 @@ theorem flow_end_le
   let scalarLap : Real → M → Real := fun t x =>
     DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I) G t (S.scalar t) x
   have hSmooth : IsSmoothSolutionOn (I := I) (M := M) S :=
-    smoothOfSol (I := I) S hS
+    smoothOfSolution (I := I) S hS
   have hinit_min : InitialScalarMinimum (M := M) S.scalar c0 :=
-    initMin_of_start (I := I) (M := M) g0 S hstart hmin
+    initialMin_of_start (I := I) (M := M) g0 S hstart hmin
   have hstart_base : S.base.metric 0 = g0 := by
     simpa using hstart
   have hinit_pos : ∀ x : M, 0 < S.scalar 0 x := by
@@ -180,7 +180,7 @@ theorem flow_end_le
     else 0
   have hreg : ∀ U : Real, 0 < U → U < T →
       U < scalarBlowupTime 3 c0 →
-      ScalarLowerBoundWMPRegularity (I := I) G U 3 c0 S.scalar (K U) := by
+      ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I) G U 3 c0 S.scalar (K U) := by
     intro U hU hUT hPole
     have hsubset : ∀ t : Real, t ∈ Set.Icc 0 U →
         t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 T hT).carrier := by
@@ -191,7 +191,7 @@ theorem flow_end_le
       intro t ht
       exact ne_of_gt (scalarLowerBarrier_denominator_pos_on_Icc_of_lt_blowup
         (n := 3) (c0 := c0) (by norm_num) hc0 hPole t ht)
-    exact scalarRegOfSmooth (I := I) (M := M) S hSmooth G U 3 c0 (K U)
+    exact scalarRegularityOfSmooth (I := I) (M := M) S hSmooth G U 3 c0 (K U)
       hsubset (by intro t _ht; rfl) hden
   have hlap : ∀ U : Real, 0 < U → U < T →
       U < scalarBlowupTime 3 c0 →

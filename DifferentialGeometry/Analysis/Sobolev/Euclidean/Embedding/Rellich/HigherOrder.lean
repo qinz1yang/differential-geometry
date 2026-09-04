@@ -21,24 +21,24 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 
-lemma chosenWeakPartial'_ae_eq_fderiv_of_smooth
+lemma chosenWeakPartialOrZero_ae_eq_fderiv_of_smooth
     {Ω : Set E} (hΩ : IsOpen Ω) {u : E → ℝ}
     (hu_smooth : ContDiff ℝ (⊤ : WithTop ℕ∞) u)
-    (hu_supp : HasCompactSupport u) (hu_sub : tsupport u ⊆ Ω) (i : Fin d) :
-    chosenWeakPartial' 2 i u Ω =ᵐ[volume.restrict Ω]
+    (hu_support : HasCompactSupport u) (hu_sub : tsupport u ⊆ Ω) (i : Fin d) :
+    chosenWeakPartialOrZero 2 i u Ω =ᵐ[volume.restrict Ω]
       (fun x => (fderiv ℝ u x) (EuclideanSpace.single i (1 : ℝ))) := by
   classical
   have hu_inner : ContDiff ℝ (⊤ : ℕ∞) u :=
     hu_smooth.of_le (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
   have hu_mem : DeGiorgi.MemW1p 2 u Ω :=
-    (DeGiorgi.memW01p_of_contDiff_hasCompactSupport_subset hΩ hu_inner hu_supp hu_sub).memW1p
-  have hw : DeGiorgi.HasWeakPartialDeriv i (chosenWeakPartial' 2 i u Ω) u Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem hu_mem i
+    (DeGiorgi.memW01p_of_contDiff_hasCompactSupport_subset hΩ hu_inner hu_support hu_sub).memW1p
+  have hw : DeGiorgi.HasWeakPartialDeriv i (chosenWeakPartialOrZero 2 i u Ω) u Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hu_mem i
   have hf : DeGiorgi.HasWeakPartialDeriv i
       (fun x => (fderiv ℝ u x) (EuclideanSpace.single i (1 : ℝ))) u Ω :=
     DeGiorgi.HasWeakPartialDeriv.of_contDiff hΩ (hu_smooth.of_le (by norm_num))
-  have hg₁ : LocallyIntegrable (chosenWeakPartial' 2 i u Ω) (volume.restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem hu_mem i).locallyIntegrable
+  have hg₁ : LocallyIntegrable (chosenWeakPartialOrZero 2 i u Ω) (volume.restrict Ω) :=
+    (chosenWeakPartialOrZero_memLp_of_mem hu_mem i).locallyIntegrable
       (show (1 : ℝ≥0∞) ≤ 2 by norm_num)
   have hg₂ : LocallyIntegrable (fun x => (fderiv ℝ u x) (EuclideanSpace.single i (1 : ℝ)))
       (volume.restrict Ω) := by
@@ -47,7 +47,7 @@ lemma chosenWeakPartial'_ae_eq_fderiv_of_smooth
       (hu_inner.fderiv_right (m := (⊤ : ℕ∞)) (by simp)).clm_apply contDiff_const
     have hsupp : HasCompactSupport
         (fun x => (fderiv ℝ u x) (EuclideanSpace.single i (1 : ℝ))) :=
-      hu_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i (1 : ℝ))
+      hu_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i (1 : ℝ))
     exact ((hs.continuous.memLp_of_hasCompactSupport hsupp).restrict Ω).locallyIntegrable
       (show (1 : ℝ≥0∞) ≤ 2 by norm_num)
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ hw hf hg₁ hg₂
@@ -267,7 +267,7 @@ lemma iteratedFDeriv_fderiv_cons_eq
 lemma iterWeakPartial_ae_eq_iteratedFDeriv_of_smooth
     {Ω : Set E} (hΩ : IsOpen Ω) {u : E → ℝ}
     (hu_smooth : ContDiff ℝ (⊤ : WithTop ℕ∞) u)
-    (hu_supp : HasCompactSupport u) (hu_sub : tsupport u ⊆ Ω) :
+    (hu_support : HasCompactSupport u) (hu_sub : tsupport u ⊆ Ω) :
     ∀ (j : ℕ) (α : Fin j → Fin d),
       iterWeakPartial (d := d) 2 j α u Ω =ᵐ[volume.restrict Ω]
         (fun x => (iteratedFDeriv ℝ j u x) (fun i : Fin j => EuclideanSpace.single (α i)
@@ -280,19 +280,19 @@ lemma iterWeakPartial_ae_eq_iteratedFDeriv_of_smooth
   | succ j ih =>
       intro α
       rw [iterWeakPartial_succ]
-      have hpart := chosenWeakPartial'_ae_eq_fderiv_of_smooth hΩ hu_smooth hu_supp hu_sub (α 0)
+      have hpart := chosenWeakPartialOrZero_ae_eq_fderiv_of_smooth hΩ hu_smooth hu_support hu_sub (α 0)
       have hw_smooth : ContDiff ℝ (⊤ : WithTop ℕ∞)
           (fun x => (fderiv ℝ u x) (EuclideanSpace.single (α 0) (1 : ℝ))) :=
         (hu_smooth.fderiv_right (m := (⊤ : WithTop ℕ∞)) (by simp)).clm_apply contDiff_const
-      have hw_supp : HasCompactSupport
+      have hw_support : HasCompactSupport
           (fun x => (fderiv ℝ u x) (EuclideanSpace.single (α 0) (1 : ℝ))) :=
-        hu_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (α 0) (1 : ℝ))
+        hu_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (α 0) (1 : ℝ))
       have hw_sub : tsupport (fun x => (fderiv ℝ u x) (EuclideanSpace.single (α 0) (1 : ℝ))) ⊆ Ω :=
         (tsupport_fderiv_apply_subset (𝕜 := ℝ) (EuclideanSpace.single (α 0) (1 : ℝ))).trans hu_sub
       have hIH := ih (u := fun x => (fderiv ℝ u x) (EuclideanSpace.single (α 0) (1 : ℝ)))
-        hw_smooth hw_supp hw_sub (fun i : Fin j => α i.succ)
+        hw_smooth hw_support hw_sub (fun i : Fin j => α i.succ)
       have htransport : iterWeakPartial (d := d) 2 j (fun i : Fin j => α i.succ)
-            (chosenWeakPartial' 2 (α 0) u Ω) Ω =ᵐ[volume.restrict Ω]
+            (chosenWeakPartialOrZero 2 (α 0) u Ω) Ω =ᵐ[volume.restrict Ω]
           iterWeakPartial (d := d) 2 j (fun i : Fin j => α i.succ)
             (fun x => (fderiv ℝ u x) (EuclideanSpace.single (α 0) (1 : ℝ))) Ω :=
         iterWeakPartial_ae_congr (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ j
@@ -427,8 +427,8 @@ theorem rellich_kondrachov_W01p_seq_smooth
     {Ω : Set E} (hΩ_open : IsOpen Ω) (hΩ_bdd : Bornology.IsBounded Ω)
     {u : ℕ → E → ℝ}
     (hu_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u n))
-    (hu_supp : ∀ n, HasCompactSupport (u n))
-    (hu_supp_sub : ∀ n, tsupport (u n) ⊆ Ω)
+    (hu_support : ∀ n, HasCompactSupport (u n))
+    (hu_support_sub : ∀ n, tsupport (u n) ⊆ Ω)
     {R : ℝ}
     (hu_bdd_fun : ∀ n, eLpNorm (u n) 2 (volume.restrict Ω) ≤ ENNReal.ofReal R)
     (hu_bdd_grad : ∀ n,
@@ -444,7 +444,7 @@ theorem rellich_kondrachov_W01p_seq_smooth
   have hK_compact : IsCompact K := hΩ_bdd.isCompact_closure
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   set u_ext : ℕ → E → ℝ := fun n => Ω.indicator (u n) with hu_ext_def
-  have hu_ext_supp : ∀ n, ∀ x, x ∉ K → u_ext n x = 0 := by
+  have hu_ext_support : ∀ n, ∀ x, x ∉ K → u_ext n x = 0 := by
     intro n x hx
     rw [hu_ext_def]
     have hx0 : x ∉ Ω := by
@@ -455,7 +455,7 @@ theorem rellich_kondrachov_W01p_seq_smooth
     intro n
     have hm : MemLp (u n) 2 (volume.restrict Ω) := by
       have hinner : ContDiff ℝ (⊤ : ℕ∞) (u n) := hu_smooth n
-      exact (hinner.continuous.memLp_of_hasCompactSupport (hu_supp n)).restrict Ω
+      exact (hinner.continuous.memLp_of_hasCompactSupport (hu_support n)).restrict Ω
     exact (memLp_indicator_iff_restrict (μ := volume) (s := Ω) (f := u n) (p := 2) hΩ_meas).mpr hm
   have hu_ext_eLp : ∀ n,
       eLpNorm (u_ext n) 2 volume = eLpNorm (u n) 2 (volume.restrict Ω) := by
@@ -483,16 +483,16 @@ theorem rellich_kondrachov_W01p_seq_smooth
       · by_cases hx2 : x ∈ Ω
         · simp [hx1, hx2]
         · have hu0 : u n x = 0 :=
-            DeGiorgi.zero_outside_of_tsupport_subset (hu_supp_sub n) hx2
+            DeGiorgi.zero_outside_of_tsupport_subset (hu_support_sub n) hx2
           simp [hx1, hx2, hu0]
       · by_cases hx2 : x ∈ Ω
         · have hu0 : u n (x - h) = 0 :=
-            DeGiorgi.zero_outside_of_tsupport_subset (hu_supp_sub n) hx1
+            DeGiorgi.zero_outside_of_tsupport_subset (hu_support_sub n) hx1
           simp [hx1, hx2, hu0]
         · have hu0 : u n (x - h) = 0 :=
-            DeGiorgi.zero_outside_of_tsupport_subset (hu_supp_sub n) hx1
+            DeGiorgi.zero_outside_of_tsupport_subset (hu_support_sub n) hx1
           have hu1 : u n x = 0 :=
-            DeGiorgi.zero_outside_of_tsupport_subset (hu_supp_sub n) hx2
+            DeGiorgi.zero_outside_of_tsupport_subset (hu_support_sub n) hx2
           simp [hx1, hx2, hu0, hu1]
     have htrans := eLpNorm_translate_sub_le_sum_components (d := d) (p := 2)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num : (2 : ℝ≥0∞) ≠ ∞) (hu_smooth n) h
@@ -503,7 +503,7 @@ theorem rellich_kondrachov_W01p_seq_smooth
           eLpNorm (fun x => (fderiv ℝ (u n) x) (EuclideanSpace.single i (1 : ℝ))) 2 volume =
             eLpNorm (fun x => (fderiv ℝ (u n) x) (EuclideanSpace.single i (1 : ℝ))) 2
               (volume.restrict Ω) := fun i =>
-        eLpNorm_grad_eq_restrict hΩ_meas (hu_smooth n) (hu_supp_sub n) i
+        eLpNorm_grad_eq_restrict hΩ_meas (hu_smooth n) (hu_support_sub n) i
       calc
         (∑ i : Fin d,
           eLpNorm (fun x => (fderiv ℝ (u n) x) (EuclideanSpace.single i (1 : ℝ))) 2 volume)
@@ -538,7 +538,7 @@ theorem rellich_kondrachov_W01p_seq_smooth
     exact hPhB'.trans (h2.trans h4)
   rcases tendsto_subseq_of_uniform_translation_in_Lp (d := d)
     (p := 2) (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num : (2 : ℝ≥0∞) ≠ ∞)
-    hK_compact hu_ext_memLp hu_ext_supp hu_ext_bdd hu_ext_translation with
+    hK_compact hu_ext_memLp hu_ext_support hu_ext_bdd hu_ext_translation with
     ⟨φ, hφ_mono, u_lim_v, hu_lim_v_memLp, h_tendsto_v⟩
   refine ⟨φ, hφ_mono, u_lim_v, hu_lim_v_memLp.restrict Ω, ?_⟩
   have hSqueeze : ∀ k,
@@ -565,7 +565,7 @@ lemma smooth_extract_of_sequence
     {Ω : Set E} (hΩ_open : IsOpen Ω) (hΩ_bdd : Bornology.IsBounded Ω)
     (v : ℕ → E → ℝ)
     (hv_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (v n))
-    (hv_supp : ∀ n, HasCompactSupport (v n))
+    (hv_support : ∀ n, HasCompactSupport (v n))
     (hv_sub : ∀ n, tsupport (v n) ⊆ Ω)
     {R : ℝ}
     (hv_fun : ∀ n, eLpNorm (v n) 2 (volume.restrict Ω) ≤ ENNReal.ofReal R)
@@ -577,14 +577,14 @@ lemma smooth_extract_of_sequence
       ∃ w_lim : E → ℝ, MemLp w_lim 2 (volume.restrict Ω) ∧
         Tendsto (fun n => eLpNorm (fun x => v (σ n) x - w_lim x) 2
           (volume.restrict Ω)) atTop (𝓝 0) :=
-  rellich_kondrachov_W01p_seq_smooth hΩ_open hΩ_bdd hv_smooth hv_supp hv_sub hv_fun hv_grad
+  rellich_kondrachov_W01p_seq_smooth hΩ_open hΩ_bdd hv_smooth hv_support hv_sub hv_fun hv_grad
 
 theorem rellich_kondrachov_Wkp_seq_smooth
     {Ω : Set E} (hΩ_open : IsOpen Ω) (hΩ_bdd : Bornology.IsBounded Ω)
     {k : ℕ} {u : ℕ → E → ℝ}
     (hu_smooth : ∀ n, ContDiff ℝ (⊤ : WithTop ℕ∞) (u n))
-    (hu_supp : ∀ n, HasCompactSupport (u n))
-    (hu_supp_sub : ∀ n, tsupport (u n) ⊆ Ω)
+    (hu_support : ∀ n, HasCompactSupport (u n))
+    (hu_support_sub : ∀ n, tsupport (u n) ⊆ Ω)
     {R : ℝ} (hR : 0 ≤ R)
     (hu_bdd : ∀ n, iteratedWeakSobolevNorm (d := d) (k + 1) 2 (u n) Ω ≤ ENNReal.ofReal R) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧
@@ -606,10 +606,10 @@ theorem rellich_kondrachov_Wkp_seq_smooth
         map_add' := by intro L M; rfl
         map_smul' := by intro c L; rfl }
     exact A.contDiff.comp hf
-  have hs_supp : ∀ t n, HasCompactSupport (s t n) := by
+  have hs_support : ∀ t n, HasCompactSupport (s t n) := by
     intro t n
     have hf : HasCompactSupport (iteratedFDeriv ℝ t.1.1 (u n)) :=
-      (hu_supp n).iteratedFDeriv t.1.1
+      (hu_support n).iteratedFDeriv t.1.1
     refine hf.of_isClosed_subset (isClosed_tsupport _) (closure_mono ?_)
     intro x hx
     by_contra hx0
@@ -617,7 +617,7 @@ theorem rellich_kondrachov_Wkp_seq_smooth
       by_contra hfx
       exact hx0 (by simp [Function.support, hfx])
     simp [s, hfx] at hx
-  have hs_supp_sub : ∀ t n, tsupport (s t n) ⊆ Ω := by
+  have hs_support_sub : ∀ t n, tsupport (s t n) ⊆ Ω := by
     intro t n
     have hs : Function.support (s t n) ⊆ Function.support (iteratedFDeriv ℝ t.1.1 (u n)) := by
       intro x hx
@@ -627,12 +627,12 @@ theorem rellich_kondrachov_Wkp_seq_smooth
         exact hx0 (by simp [Function.support, hfx])
       simp [s, hfx] at hx
     exact (closure_mono hs).trans ((tsupport_iteratedFDeriv_subset (n := t.1.1)).trans
-      (hu_supp_sub n))
+      (hu_support_sub n))
   have hs_ae : ∀ t n,
       (iterWeakPartial (d := d) 2 t.1.1 t.2 (u n) Ω =ᵐ[volume.restrict Ω] s t n) := by
     intro t n
     exact iterWeakPartial_ae_eq_iteratedFDeriv_of_smooth hΩ_open (hu_smooth n)
-      (hu_supp n) (hu_supp_sub n) t.1.1 t.2
+      (hu_support n) (hu_support_sub n) t.1.1 t.2
   have hs_fun_bdd : ∀ t n,
       eLpNorm (s t n) 2 (volume.restrict Ω) ≤ ENNReal.ofReal R := by
     intro t n
@@ -664,7 +664,7 @@ theorem rellich_kondrachov_Wkp_seq_smooth
             (Fin.cons (EuclideanSpace.single i (1 : ℝ))
               (fun i' : Fin t.1.1 => EuclideanSpace.single (t.2 i') (1 : ℝ)))) :=
         iterWeakPartial_ae_eq_iteratedFDeriv_of_smooth hΩ_open (hu_smooth n)
-          (hu_supp n) (hu_supp_sub n) (t.1.1 + 1) (Fin.cons i t.2)
+          (hu_support n) (hu_support_sub n) (t.1.1 + 1) (Fin.cons i t.2)
       calc
         eLpNorm (fun x => (fderiv ℝ (s t n) x) (EuclideanSpace.single i (1 : ℝ))) 2
             (volume.restrict Ω)
@@ -719,12 +719,12 @@ theorem rellich_kondrachov_Wkp_seq_smooth
     have hv_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (v n) := fun n => by
       change ContDiff ℝ (⊤ : ℕ∞) (s t (ψ n))
       exact (hs_smooth t (ψ n)).of_le (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
-    have hv_supp : ∀ n, HasCompactSupport (v n) := fun n => by
+    have hv_support : ∀ n, HasCompactSupport (v n) := fun n => by
       change HasCompactSupport (s t (ψ n))
-      exact hs_supp t (ψ n)
+      exact hs_support t (ψ n)
     have hv_sub : ∀ n, tsupport (v n) ⊆ Ω := fun n => by
       change tsupport (s t (ψ n)) ⊆ Ω
-      exact hs_supp_sub t (ψ n)
+      exact hs_support_sub t (ψ n)
     have hv_fun : ∀ n, eLpNorm (v n) 2 (volume.restrict Ω) ≤ ENNReal.ofReal R1 := fun n => by
       change eLpNorm (s t (ψ n)) 2 (volume.restrict Ω) ≤ ENNReal.ofReal R1
       exact h_fun_le_R1 t (ψ n)
@@ -736,12 +736,12 @@ theorem rellich_kondrachov_Wkp_seq_smooth
         eLpNorm (fun x => (fderiv ℝ (s t (ψ n)) x) (EuclideanSpace.single i (1 : ℝ))) 2
           (volume.restrict Ω)) ≤ ENNReal.ofReal R1
       exact h_grad_le_R1 t (ψ n)
-    exact smooth_extract_of_sequence hΩ_open hΩ_bdd v hv_smooth hv_supp hv_sub hv_fun hv_grad
-  obtain ⟨ψ, hψ_mono, hψ_conv⟩ := exists_diagonal_extraction_lp (Ω := Ω) (s := s) h_extract
+    exact smooth_extract_of_sequence hΩ_open hΩ_bdd v hv_smooth hv_support hv_sub hv_fun hv_grad
+  obtain ⟨ψ, hψ_mono, hψ_convergence⟩ := exists_diagonal_extraction_lp (Ω := Ω) (s := s) h_extract
   refine ⟨ψ, hψ_mono, ?_⟩
   intro j hj α
   let t : Σ j : Fin (k + 1), Fin j.1 → Fin d := ⟨⟨j, by omega⟩, α⟩
-  rcases hψ_conv t with ⟨a, ha_mem, ha⟩
+  rcases hψ_convergence t with ⟨a, ha_mem, ha⟩
   refine ⟨a, ha_mem, ?_⟩
   refine (Filter.tendsto_congr (fun n => ?_)).mpr ha
   exact eLpNorm_congr_ae (by

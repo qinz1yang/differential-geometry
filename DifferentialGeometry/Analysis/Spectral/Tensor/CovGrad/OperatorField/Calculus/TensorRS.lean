@@ -643,7 +643,7 @@ theorem castRankCc_operatorFieldComposition_iteratedCovGrad_covGrad (g : SmoothR
     (by omega : (rr + 1) + p = rr + (p + 1)) Ψ (iteratedCovGrad g r (rr + 1) k (covGrad g r rr W))]
   congr 1
   apply eq_of_heq
-  refine HEq.trans ?_ (iteratedCovGrad_covGrad_comm_heq' g r rr k W)
+  refine HEq.trans ?_ (iteratedCovGrad_covGrad_comm_heq g r rr k W)
   exact castCcTensorRank_heq g r (by omega : (rr + 1) + k = rr + (k + 1))
     (iteratedCovGrad g r (rr + 1) k (covGrad g r rr W))
 

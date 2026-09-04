@@ -15,7 +15,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold NNReal Topology
@@ -302,16 +302,16 @@ theorem inv_is_min_ctrl
   let : EMetricSpace Y.M := Y.emetricSpace (I := I)
   let : CompleteSpace Y.M :=
     MetricComplete.complete (I := I) Y hcomplete
-  intro hρ hρq hρmetric hyTarget hyCoord hyp
-  have hypReal : (riemannianEDist I y pt).toReal < ρ :=
+  intro hρ hρq hρmetric hyTarget hyCoord hyperbolic
+  have hyperbolicReal : (riemannianEDist I y pt).toReal < ρ :=
     (ENNReal.lt_ofReal_iff_toReal_lt
-      (riemannianEDist_ne_top (I := I) y pt)).mp hyp
+      (riemannianEDist_ne_top (I := I) y pt)).mp hyperbolic
   obtain ⟨v, hexp, hlen⟩ :=
     hopf_rinow_expMapIntrinsic_surjective_minimizing
       (I := I) Y.metric (normal_enorm (I := I) Y) y pt
   have hvSmall : Real.sqrt (Y.metric.inner y v v) < ρ := by
     rw [hlen]
-    exact hypReal
+    exact hyperbolicReal
   have hvsrc := tan_mem_of_ctrl (I := I) Y hcomplete hconn x mb
     hq he hf hρ hρq hρmetric hyTarget hyCoord hvSmall
   let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he
@@ -410,10 +410,10 @@ theorem halfSq_eq_ctrl
     MetricComplete.complete (I := I) Y hcomplete
   let : MetricSpace Y.M :=
     HopfRinow.riemMetricSpace (I := I) (M := Y.M)
-  intro hρ hρq hρmetric hyTarget hyCoord hyp
+  intro hρ hρq hρmetric hyTarget hyCoord hyperbolic
   obtain ⟨v, _hdom, hinv, _hexp, hlen⟩ :=
     inv_is_min_ctrl (I := I) Y hcomplete hconn x mb hq he hf
-      hρ hρq hρmetric hyTarget hyCoord hyp
+      hρ hρq hρmetric hyTarget hyCoord hyperbolic
   have hinnerNonneg : 0 ≤ Y.metric.inner y v v := by
     rcases eq_or_ne v 0 with rfl | hv0
     · simp
@@ -1096,7 +1096,7 @@ theorem inv_is_min
           ENNReal.ofReal (ρ / 2 + ρ / 2) :=
         (ENNReal.ofReal_add (by linarith) (by linarith)).symm
       _ = ENNReal.ofReal ρ := by ring_nf
-  have hyp : riemannianEDist I y pt < ENNReal.ofReal ρ := by
+  have hyperbolic : riemannianEDist I y pt < ENNReal.ofReal ρ := by
     calc
       riemannianEDist I y pt ≤
       riemannianEDist I y x + riemannianEDist I x pt :=
@@ -1104,15 +1104,15 @@ theorem inv_is_min
       _ < ENNReal.ofReal (ρ / 2) + ENNReal.ofReal (ρ / 2) :=
         ENNReal.add_lt_add hyx hpt
       _ = ENNReal.ofReal ρ := hsum
-  have hypReal : (riemannianEDist I y pt).toReal < ρ :=
+  have hyperbolicReal : (riemannianEDist I y pt).toReal < ρ :=
     (ENNReal.lt_ofReal_iff_toReal_lt
-      (riemannianEDist_ne_top (I := I) y pt)).mp hyp
+      (riemannianEDist_ne_top (I := I) y pt)).mp hyperbolic
   obtain ⟨v, hexp, hlen⟩ :=
     hopf_rinow_expMapIntrinsic_surjective_minimizing
       (I := I) (X.obj k).metric (normal_enorm (I := I) (X.obj k)) y pt
   have hvSmall : Real.sqrt ((X.obj k).metric.inner y v v) < ρ := by
     rw [hlen]
-    exact hypReal
+    exact hyperbolicReal
   have hvsrc := tan_mem_of_small (I := I) hb k hcomplete hconn x hq he hf
     hρ hρq hρmetric hρexp hy hvSmall
   let B := IsNormalDiag.toBranch (I := I) (X.obj k) hcomplete hconn x hq he
@@ -1605,5 +1605,5 @@ theorem hess_half_inv
 
 end IsNormalDiag
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

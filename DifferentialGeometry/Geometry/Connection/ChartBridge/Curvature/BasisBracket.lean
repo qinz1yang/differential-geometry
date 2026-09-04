@@ -43,11 +43,11 @@ private lemma chartBasisVecFiber_apply_of_mem {x₀ x : M}
     DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x =
       (mfderiv[Set.range I] (extChartAt I x₀).symm (extChartAt I x₀ x))
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
-  have hx_src : x ∈ (chartAt H x₀).source := by
+  have hx_source : x ∈ (chartAt H x₀).source := by
     rwa [chartBasis_baseSet_eq_chartSource (I := I) x₀] at hx
   rw [chartBasisVecFiber_symmL_apply (I := I) x₀ i x]
   exact congrArg (fun L : E →L[ℝ] TangentSpace I x => L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
-    (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := ℝ) hx_src)
+    (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := ℝ) hx_source)
 
 private lemma chartBasisVecFiber_pullback_eq_const (x₀ : M) (i : Fin (Module.finrank ℝ E)) :
     VectorField.mpullbackWithin 𝓘(ℝ, E) I (extChartAt I x₀).symm
@@ -58,7 +58,7 @@ private lemma chartBasisVecFiber_pullback_eq_const (x₀ : M) (i : Fin (Module.f
     IsManifold.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)
   filter_upwards [extChartAt_target_mem_nhdsWithin (I := I) x₀] with y hy
   simp only [VectorField.mpullbackWithin_apply]
-  have hy_src : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
+  have hy_source : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x₀).map_target hy
   have hy_base : (extChartAt I x₀).symm y ∈
@@ -224,7 +224,7 @@ private lemma LeviCivita_covApply_firstLayer_pointwise
     rw [hy]
   rw [LeviCivita_chart_apply (I := I) g x hb hXi_at vk]
   rw [chartLeviCivita_apply (I := I) g x Xi hb vk]
-  have hb_src_ext : b ∈ (extChartAt I x).source :=
+  have hb_source_ext : b ∈ (extChartAt I x).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hfd0 :
       fderiv ℝ (chartESectionRepr (I := I) x Xi ∘ (extChartAt I x).symm)
@@ -242,13 +242,13 @@ private lemma LeviCivita_covApply_firstLayer_pointwise
         hcont_symm.isOpen_inter_preimage (isOpen_extChartAt_target (I := I) x)
           ((trivializationAt E (TangentSpace I) x).open_baseSet.inter hW'_open)
       have hbtgt : extChartAt I x b ∈ (extChartAt I x).target :=
-        (extChartAt I x).map_source hb_src_ext
+        (extChartAt I x).map_source hb_source_ext
       have hφV : extChartAt I x b ∈ V := by
         refine ⟨hbtgt, ?_⟩
-        rw [Set.mem_preimage, (extChartAt I x).left_inv hb_src_ext]
+        rw [Set.mem_preimage, (extChartAt I x).left_inv hb_source_ext]
         exact ⟨hbase, hbW'⟩
       filter_upwards [hV_open.mem_nhds hφV] with y hy
-      obtain ⟨hy_tgt, hy_pre⟩ := hy
+      obtain ⟨hy_target, hy_pre⟩ := hy
       rw [Set.mem_preimage] at hy_pre
       obtain ⟨hy_base, hy_W'⟩ := hy_pre
       simp only [Function.comp_apply, chartE_section_repr_eq_trivToE]
@@ -329,7 +329,7 @@ private lemma chartE_section_repr_covApply_eventuallyEq
     rw [Set.mem_preimage, (extChartAt I x).left_inv hxsrc_ext]
     exact ⟨hx_good, hxW⟩
   filter_upwards [hV_open.mem_nhds hφxV] with y hy
-  obtain ⟨hy_tgt, hy_pre⟩ := hy
+  obtain ⟨hy_target, hy_pre⟩ := hy
   rw [Set.mem_preimage] at hy_pre
   obtain ⟨hy_good, hy_W⟩ := hy_pre
   set b : M := (extChartAt I x).symm y with hb_def
@@ -353,7 +353,7 @@ private lemma chartE_section_repr_covApply_eventuallyEq
               (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) from
       LeviCivita_covApply_firstLayer_pointwise (I := I) g x i k hy_good (hXp_nhds i) hvk]
   rw [trivToE_trivFromE (I := I) x hb_base]
-  rw [hb_def, (extChartAt I x).right_inv hy_tgt]
+  rw [hb_def, (extChartAt I x).right_inv hy_target]
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in

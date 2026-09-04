@@ -102,8 +102,8 @@ theorem exists_cutoff_energy
     dsimp only [ε]
     exact half_pos (lt_min (ENNReal.toReal_pos hm_pos.ne' hm_top)
       (ENNReal.toReal_pos hq_pos.ne' hq_top))
-  obtain ⟨φ, hφ, hφsupp, herr, hgraderr⟩ :=
-    exists_smooth_supp (I := I) (M := M) g
+  obtain ⟨φ, hφ, hφsupport, herr, hgraderr⟩ :=
+    exists_smooth_support (I := I) (M := M) g
       (B := 1)
       (riemTent_lip g a hr) (fun x => by
         rw [← NNReal.coe_le_coe]
@@ -111,7 +111,7 @@ theorem exists_cutoff_energy
           abs_of_nonneg (riemTent_mem_Icc g a hr x).1]
             using (riemTent_mem_Icc g a hr x).2)
       hU (riemTent_tsupport g a hr) hε
-  refine ⟨φ, hφ, hφsupp, ?_, ?_⟩
+  refine ⟨φ, hφ, hφsupport, ?_, ?_⟩
   · have hu_aesm : AEStronglyMeasurable u μ :=
       (intrinsic_lip_cont (I := I) g (riemTent_lip g a hr)).aestronglyMeasurable
     have hφ_aesm : AEStronglyMeasurable φ μ :=

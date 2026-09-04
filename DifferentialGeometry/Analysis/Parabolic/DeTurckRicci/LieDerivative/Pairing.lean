@@ -52,13 +52,13 @@ theorem lieDerivMetric_pairing_contMDiff
   have h_baseSet_eq :
       (trivializationAt E (TangentSpace I) b₀).baseSet = (chartAt H b₀).source :=
     TangentBundle.trivializationAt_baseSet (I := I) b₀
-  have hb₀_chartSrc : b₀ ∈ (chartAt H b₀).source := mem_chart_source H b₀
+  have hb₀_chartSource : b₀ ∈ (chartAt H b₀).source := mem_chart_source H b₀
   have hb₀_baseSet : b₀ ∈ e.baseSet := by
-    rw [he_def, h_baseSet_eq]; exact hb₀_chartSrc
+    rw [he_def, h_baseSet_eq]; exact hb₀_chartSource
   have h_chart_open : IsOpen ((chartAt H b₀).source) :=
     (chartAt H b₀).open_source
   have h_chart_nhd : (chartAt H b₀).source ∈ 𝓝 b₀ :=
-    h_chart_open.mem_nhds hb₀_chartSrc
+    h_chart_open.mem_nhds hb₀_chartSource
   have h_coeffY : ∀ i : Fin (Module.finrank ℝ E),
       ContMDiffOn I 𝓘(ℝ) ∞
         (chartCoeff (I := I) b₀ Y i) (chartAt H b₀).source := by
@@ -149,7 +149,7 @@ theorem lieDerivMetric_pairing_contMDiff
         (fun b : M => lieDerivMetric (I := I) g W b (Y b) (Z b))
         (chartAt H b₀).source :=
     h_sum_smooth.congr (fun b hb => h_decomp b hb)
-  exact (h_pair_on_chart b₀ hb₀_chartSrc).contMDiffAt h_chart_nhd
+  exact (h_pair_on_chart b₀ hb₀_chartSource).contMDiffAt h_chart_nhd
 
 end RicciFlow
 end PDE

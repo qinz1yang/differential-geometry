@@ -35,23 +35,23 @@ private lemma sqrtR_sq {R : Real} (hR : 0 < R) :
     (Real.sqrt R) ^ 2 = R :=
   Real.sq_sqrt hR.le
 
-private lemma para_reg_time
+private lemma parabolic_regularity_time
     (t0 R T s : Real) (hR : 0 < R) :
-    paraTime t0 R (paraBack t0 R T - (Real.sqrt R * s) ^ 2) =
+    parabolicTime t0 R (parabolicBackward t0 R T - (Real.sqrt R * s) ^ 2) =
       T - s ^ 2 := by
   rw [show (Real.sqrt R * s) ^ 2 = R * s ^ 2 by
     rw [mul_pow, sqrtR_sq hR]]
-  unfold paraTime paraBack
+  unfold parabolicTime parabolicBackward
   field_simp [ne_of_gt hR]
   ring
 
-private lemma para_reg_time_inv
+private lemma parabolic_regularity_time_inv
     (t0 R T r : Real) (hR : 0 < R) :
-    paraTime t0 R (paraBack t0 R T - r ^ 2) =
+    parabolicTime t0 R (parabolicBackward t0 R T - r ^ 2) =
       T - ((Real.sqrt R)⁻¹ * r) ^ 2 := by
   have hc : Real.sqrt R ≠ 0 := ne_of_gt (sqrtR_pos hR)
   have hsqrtSq : (Real.sqrt R) ^ 2 = R := sqrtR_sq hR
-  unfold paraTime paraBack
+  unfold parabolicTime parabolicBackward
   field_simp [ne_of_gt hR, hc]
   nlinarith
 
@@ -144,22 +144,22 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegAccel_para
+theorem lRegularizedAccel_parabolic
     (S : SolutionOn (I := I) (M := M) D)
     (t0 R : Real) (hR : 0 < R) (ht0 : t0 ∈ D.carrier)
     (T s : Real) (x : M) (A : TangentSpace I x) :
-    lRegAccel (paraSolution (I := I) S t0 R hR ht0)
-        (paraBack t0 R T) (Real.sqrt R * s) x
+    lRegularizedAccel (parabolicSolution (I := I) S t0 R hR ht0)
+        (parabolicBackward t0 R T) (Real.sqrt R * s) x
         ((Real.sqrt R)⁻¹ • A) =
-      R⁻¹ • lRegAccel S T s x A := by
-  let SR := paraSolution (I := I) S t0 R hR ht0
-  let TR := paraBack t0 R T
+      R⁻¹ • lRegularizedAccel S T s x A := by
+  let SR := parabolicSolution (I := I) S t0 R hR ht0
+  let TR := parabolicBackward t0 R T
   let g := S.base.metric (T - s ^ 2)
   let gR := SR.base.metric (TR - (Real.sqrt R * s) ^ 2)
-  have htime : paraTime t0 R (TR - (Real.sqrt R * s) ^ 2) =
-      T - s ^ 2 := para_reg_time t0 R T s hR
+  have htime : parabolicTime t0 R (TR - (Real.sqrt R * s) ^ 2) =
+      T - s ^ 2 := parabolic_regularity_time t0 R T s hR
   have hgR : gR = scaleMetric (I := I) R hR g := by
-    simp only [gR, SR, TR, paraSolution_metric, htime, g]
+    simp only [gR, SR, TR, parabolicSolution_metric, htime, g]
   apply metricFlatLinear_injective (I := I) gR x
   ext Y
   rw [metricFlatLinear_apply, metricFlatLinear_apply]
@@ -168,7 +168,7 @@ theorem lRegAccel_para
       SR.scalar (TR - (Real.sqrt R * s) ^ 2) =
         R⁻¹ • S.scalar (T - s ^ 2) := by
     funext y
-    simp only [SR, TR, paraSolution_scalar, htime,
+    simp only [SR, TR, parabolicSolution_scalar, htime,
       Pi.smul_apply, smul_eq_mul]
   have hgrad :
       gradientFun (I := I) gR
@@ -187,7 +187,7 @@ theorem lRegAccel_para
     rw [show SR.base.ricciAt (TR - (Real.sqrt R * s) ^ 2) =
         S.base.ricciAt (T - s ^ 2) by
       have hsec := congrFun
-        (paraSolution_ricci (I := I) S t0 R hR ht0)
+        (parabolicSolution_ricci (I := I) S t0 R hR ht0)
         (TR - (Real.sqrt R * s) ^ 2)
       funext y
       have hy := congrArg (fun q => q y) hsec
@@ -203,12 +203,12 @@ theorem lRegAccel_para
       (vec2 Y A) (1 : Fin 2) (Real.sqrt R)⁻¹ A
     rw [hleft, hright] at hmap
     simpa only [smul_eq_mul, SolutionOn.ricciAt] using hmap
-  have hleft := lRegAccel_inner SR TR (Real.sqrt R * s) x
+  have hleft := lRegularizedAccel_inner SR TR (Real.sqrt R * s) x
     ((Real.sqrt R)⁻¹ • A) Y
-  have hold := lRegAccel_inner S T s x A Y
+  have hold := lRegularizedAccel_inner S T s x A Y
   have hright :
-      gR.inner x Y (R⁻¹ • lRegAccel S T s x A) =
-        g.inner x Y (lRegAccel S T s x A) := by
+      gR.inner x Y (R⁻¹ • lRegularizedAccel S T s x A) =
+        g.inner x Y (lRegularizedAccel S T s x A) := by
     rw [(gR.inner x Y).map_smul, hgR, scaleMetric_inner]
     simp only [smul_eq_mul]
     field_simp [ne_of_gt hR]
@@ -227,20 +227,20 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem isLRegCurve_para
+theorem isLRegularizedCurve_parabolic
     (S : SolutionOn (I := I) (M := M) D)
     (t0 R : Real) (hR : 0 < R) (ht0 : t0 ∈ D.carrier)
     (T : Real) {alpha : Real → M} {J : Set Real} {x : M}
     {Z : TangentSpace I x}
-    (halpha : IsLRegCurveOn S T alpha J x Z) :
-    IsLRegCurveOn (paraSolution (I := I) S t0 R hR ht0)
-      (paraBack t0 R T)
+    (halpha : IsLRegularizedCurveOn S T alpha J x Z) :
+    IsLRegularizedCurveOn (parabolicSolution (I := I) S t0 R hR ht0)
+      (parabolicBackward t0 R T)
       (fun r => alpha ((Real.sqrt R)⁻¹ * r))
       (Real.sqrt R • J) x ((Real.sqrt R)⁻¹ • Z) := by
   let c := Real.sqrt R
   let ci := c⁻¹
-  let SR := paraSolution (I := I) S t0 R hR ht0
-  let TR := paraBack t0 R T
+  let SR := parabolicSolution (I := I) S t0 R hR ht0
+  let TR := parabolicBackward t0 R T
   let alphaR : Real → M := fun r => alpha (ci * r)
   have hc : c ≠ 0 := ne_of_gt (sqrtR_pos hR)
   have hci : ci ≠ 0 := inv_ne_zero hc
@@ -258,10 +258,10 @@ theorem isLRegCurve_para
     have := (Set.mem_smul_set_iff_inv_smul_mem₀ hc J r).mp hr
     simpa only [c, ci, smul_eq_mul] using this
   obtain ⟨hreg, hmdiff, hrepDiff, heq⟩ := halpha.2.2 (ci * r) hs
-  have htime : paraTime t0 R (TR - r ^ 2) = T - (ci * r) ^ 2 := by
-    simpa only [TR, c, ci] using para_reg_time_inv t0 R T r hR
-  have hregR : TR - r ^ 2 ∈ (paraInterval D t0 R ht0).regular := by
-    change paraTime t0 R (TR - r ^ 2) ∈ D.regular
+  have htime : parabolicTime t0 R (TR - r ^ 2) = T - (ci * r) ^ 2 := by
+    simpa only [TR, c, ci] using parabolic_regularity_time_inv t0 R T r hR
+  have hregR : TR - r ^ 2 ∈ (parabolicInterval D t0 R ht0).regular := by
+    change parabolicTime t0 R (TR - r ^ 2) ∈ D.regular
     rwa [htime]
   have hparam : MDifferentiableAt (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) (fun q : Real => ci * q) r := by
@@ -293,7 +293,7 @@ theorem isLRegCurve_para
   refine ⟨hregR, hmdiffR, hrepDiffR, ?_⟩
   have hmetric : SR.base.metric (TR - r ^ 2) =
       scaleMetric (I := I) R hR (S.base.metric (T - (ci * r) ^ 2)) := by
-    simp only [SR, paraSolution_metric, htime]
+    simp only [SR, parabolicSolution_metric, htime]
   have hrform : r = c * (ci * r) := by
     simp [ci, hc]
   have hcomp :
@@ -312,7 +312,7 @@ theorem isLRegCurve_para
   have hcov :
       covDerivAlong (I := I) (SR.base.metric (TR - r ^ 2)) alphaR
           (fun q => lVelocity (I := I) alphaR q) r =
-        R⁻¹ • lRegAccel S T (ci * r) (alpha (ci * r))
+        R⁻¹ • lRegularizedAccel S T (ci * r) (alpha (ci * r))
           (lVelocity (I := I) alpha (ci * r)) := by
     calc
       _ = covDerivAlong (I := I)
@@ -332,46 +332,46 @@ theorem isLRegCurve_para
       _ = ci • (ci • covDerivAlong (I := I)
           (S.base.metric (T - (ci * r) ^ 2)) alpha
           (fun q => lVelocity (I := I) alpha q) (ci * r)) := by rw [hcomp]
-      _ = ci • (ci • lRegAccel S T (ci * r) (alpha (ci * r))
+      _ = ci • (ci • lRegularizedAccel S T (ci * r) (alpha (ci * r))
           (lVelocity (I := I) alpha (ci * r))) := by rw [heq]
-      _ = R⁻¹ • lRegAccel S T (ci * r) (alpha (ci * r))
+      _ = R⁻¹ • lRegularizedAccel S T (ci * r) (alpha (ci * r))
           (lVelocity (I := I) alpha (ci * r)) := by
         rw [smul_smul, hciSq]
   have hpoint : alphaR r = alpha (ci * r) := rfl
   have hvelr : lVelocity (I := I) alphaR r =
       ci • lVelocity (I := I) alpha (ci * r) := hvelAll r
   have hacc :
-      lRegAccel SR TR r (alphaR r) (lVelocity (I := I) alphaR r) =
-        R⁻¹ • lRegAccel S T (ci * r) (alpha (ci * r))
+      lRegularizedAccel SR TR r (alphaR r) (lVelocity (I := I) alphaR r) =
+        R⁻¹ • lRegularizedAccel S T (ci * r) (alpha (ci * r))
           (lVelocity (I := I) alpha (ci * r)) := by
     rw [hpoint, hvelr]
-    have hbase := lRegAccel_para (I := I) S t0 R hR ht0 T (ci * r)
+    have hbase := lRegularizedAccel_parabolic (I := I) S t0 R hR ht0 T (ci * r)
       (alpha (ci * r)) (lVelocity (I := I) alpha (ci * r))
     rw [← hrform] at hbase
     simpa only [SR, TR, c, ci] using hbase
   change covDerivAlong (I := I) (SR.base.metric (TR - r ^ 2)) alphaR
       (fun q => lVelocity (I := I) alphaR q) r =
-    lRegAccel SR TR r (alphaR r) (lVelocity (I := I) alphaR r)
+    lRegularizedAccel SR TR r (alphaR r) (lVelocity (I := I) alphaR r)
   exact hcov.trans hacc.symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem isLRegCurve_unpara
+theorem isLRegularizedCurve_unpara
     (S : SolutionOn (I := I) (M := M) D)
     (t0 R : Real) (hR : 0 < R) (ht0 : t0 ∈ D.carrier)
     (T : Real) {beta : Real → M} {K : Set Real} {x : M}
     {W : TangentSpace I x}
-    (hbeta : IsLRegCurveOn
-      (paraSolution (I := I) S t0 R hR ht0) (paraBack t0 R T)
+    (hbeta : IsLRegularizedCurveOn
+      (parabolicSolution (I := I) S t0 R hR ht0) (parabolicBackward t0 R T)
       beta K x W) :
-    IsLRegCurveOn S T (fun s => beta (Real.sqrt R * s))
+    IsLRegularizedCurveOn S T (fun s => beta (Real.sqrt R * s))
       ((Real.sqrt R)⁻¹ • K) x (Real.sqrt R • W) := by
   let c := Real.sqrt R
   let ci := c⁻¹
-  let SR := paraSolution (I := I) S t0 R hR ht0
-  let TR := paraBack t0 R T
+  let SR := parabolicSolution (I := I) S t0 R hR ht0
+  let TR := parabolicBackward t0 R T
   let alpha : Real → M := fun s => beta (c * s)
   have hc : c ≠ 0 := ne_of_gt (sqrtR_pos hR)
   have hci : ci ≠ 0 := inv_ne_zero hc
@@ -389,10 +389,10 @@ theorem isLRegCurve_unpara
     have hmem := (Set.mem_smul_set_iff_inv_smul_mem₀ hci K s).mp hs
     simpa only [ci, inv_inv, smul_eq_mul] using hmem
   obtain ⟨hregR, hmdiff, hrepDiff, heq⟩ := hbeta.2.2 (c * s) hr
-  have htime : paraTime t0 R (TR - (c * s) ^ 2) = T - s ^ 2 := by
-    simpa only [TR, c] using para_reg_time t0 R T s hR
+  have htime : parabolicTime t0 R (TR - (c * s) ^ 2) = T - s ^ 2 := by
+    simpa only [TR, c] using parabolic_regularity_time t0 R T s hR
   have hreg : T - s ^ 2 ∈ D.regular := by
-    change paraTime t0 R (TR - (c * s) ^ 2) ∈ D.regular at hregR
+    change parabolicTime t0 R (TR - (c * s) ^ 2) ∈ D.regular at hregR
     rwa [htime] at hregR
   have hparam : MDifferentiableAt (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) (fun q : Real => c * q) s := by
@@ -424,7 +424,7 @@ theorem isLRegCurve_unpara
   refine ⟨hreg, hmdiffA, hrepDiffA, ?_⟩
   have hmetric : SR.base.metric (TR - (c * s) ^ 2) =
       scaleMetric (I := I) R hR (S.base.metric (T - s ^ 2)) := by
-    simp only [SR, paraSolution_metric, htime]
+    simp only [SR, parabolicSolution_metric, htime]
   have hcomp :
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
           (fun q => lVelocity (I := I) beta (c * q)) s =
@@ -438,7 +438,7 @@ theorem isLRegCurve_unpara
   have hcov :
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
           (fun q => lVelocity (I := I) alpha q) s =
-        R • lRegAccel SR TR (c * s) (beta (c * s))
+        R • lRegularizedAccel SR TR (c * s) (beta (c * s))
           (lVelocity (I := I) beta (c * s)) := by
     calc
       _ = covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
@@ -457,60 +457,60 @@ theorem isLRegCurve_unpara
         congr 1
         rw [hmetric]
         exact (covDerivAlong_scale (I := I) R hR _ _ _ (c * s)).symm
-      _ = R • lRegAccel SR TR (c * s) (beta (c * s))
+      _ = R • lRegularizedAccel SR TR (c * s) (beta (c * s))
           (lVelocity (I := I) beta (c * s)) := by rw [heq]
   have hpoint : alpha s = beta (c * s) := rfl
   have hvels : lVelocity (I := I) alpha s =
       c • lVelocity (I := I) beta (c * s) := hvelAll s
-  have hbase := lRegAccel_para (I := I) S t0 R hR ht0 T s
+  have hbase := lRegularizedAccel_parabolic (I := I) S t0 R hR ht0 T s
     (beta (c * s)) (lVelocity (I := I) alpha s)
-  have hciVel : ci • lVelocity (I := I) alpha s =
+  have hciVelocity : ci • lVelocity (I := I) alpha s =
       lVelocity (I := I) beta (c * s) := by
     rw [hvels, smul_smul]
     simp only [ci, inv_mul_cancel₀ hc, one_smul]
   have hbase' :
-      lRegAccel SR TR (c * s) (beta (c * s))
+      lRegularizedAccel SR TR (c * s) (beta (c * s))
           (lVelocity (I := I) beta (c * s)) =
-        R⁻¹ • lRegAccel S T s (beta (c * s))
+        R⁻¹ • lRegularizedAccel S T s (beta (c * s))
           (lVelocity (I := I) alpha s) := by
-    simpa only [SR, TR, c, ci, hciVel] using hbase
+    simpa only [SR, TR, c, ci, hciVelocity] using hbase
   have hacc :
-      lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s) =
-        R • lRegAccel SR TR (c * s) (beta (c * s))
+      lRegularizedAccel S T s (alpha s) (lVelocity (I := I) alpha s) =
+        R • lRegularizedAccel SR TR (c * s) (beta (c * s))
           (lVelocity (I := I) beta (c * s)) := by
     rw [hpoint, hbase', smul_smul]
     simp only [mul_inv_cancel₀ (ne_of_gt hR), one_smul]
   change covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha
       (fun q => lVelocity (I := I) alpha q) s =
-    lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s)
+    lRegularizedAccel S T s (alpha s) (lVelocity (I := I) alpha s)
   exact hcov.trans hacc.symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegDomain_para
+theorem lRegularizedDomain_parabolic
     (S : SolutionOn (I := I) (M := M) D)
     (t0 R : Real) (hR : 0 < R) (ht0 : t0 ∈ D.carrier)
     (T : Real) (x : M) (Z : TangentSpace I x) :
-    lRegDomain (paraSolution (I := I) S t0 R hR ht0)
-        (paraBack t0 R T) x ((Real.sqrt R)⁻¹ • Z) =
-      Real.sqrt R • lRegDomain S T x Z := by
+    lRegularizedDomain (parabolicSolution (I := I) S t0 R hR ht0)
+        (parabolicBackward t0 R T) x ((Real.sqrt R)⁻¹ • Z) =
+      Real.sqrt R • lRegularizedDomain S T x Z := by
   let c := Real.sqrt R
   let ci := c⁻¹
-  let SR := paraSolution (I := I) S t0 R hR ht0
-  let TR := paraBack t0 R T
+  let SR := parabolicSolution (I := I) S t0 R hR ht0
+  let TR := parabolicBackward t0 R T
   have hc : c ≠ 0 := ne_of_gt (sqrtR_pos hR)
   have hci : ci ≠ 0 := inv_ne_zero hc
   ext r
   constructor
   · intro hr
     obtain ⟨beta, K, hKopen, hKconn, h0K, hrK, hbeta⟩ := hr
-    apply (Set.mem_smul_set_iff_inv_smul_mem₀ hc (lRegDomain S T x Z) r).2
-    have hcurve : IsLRegCurveOn S T (fun s => beta (c * s))
+    apply (Set.mem_smul_set_iff_inv_smul_mem₀ hc (lRegularizedDomain S T x Z) r).2
+    have hcurve : IsLRegularizedCurveOn S T (fun s => beta (c * s))
         (ci • K) x Z := by
       simpa only [SR, TR, c, ci, smul_smul, mul_inv_cancel₀ hc, one_smul] using
-        isLRegCurve_unpara (I := I) S t0 R hR ht0 T hbeta
+        isLRegularizedCurve_unpara (I := I) S t0 R hR ht0 T hbeta
     refine ⟨fun s => beta (c * s), ci • K, hKopen.smul₀ hci, ?_, ?_, ?_, hcurve⟩
     · rw [← Set.image_smul]
       exact hKconn.image (fun s : Real => ci • s)
@@ -519,12 +519,12 @@ theorem lRegDomain_para
     · simpa only [smul_eq_mul] using
         (Set.smul_mem_smul_set_iff₀ hci K r).2 hrK
   · intro hr
-    have hs : ci * r ∈ lRegDomain S T x Z := by
+    have hs : ci * r ∈ lRegularizedDomain S T x Z := by
       have := (Set.mem_smul_set_iff_inv_smul_mem₀ hc
-        (lRegDomain S T x Z) r).1 hr
+        (lRegularizedDomain S T x Z) r).1 hr
       simpa only [c, ci, smul_eq_mul] using this
     obtain ⟨alpha, J, hJopen, hJconn, h0J, hsJ, halpha⟩ := hs
-    have hcurve := isLRegCurve_para (I := I) S t0 R hR ht0 T halpha
+    have hcurve := isLRegularizedCurve_parabolic (I := I) S t0 R hR ht0 T halpha
     refine ⟨fun q => alpha (ci * q), c • J, hJopen.smul₀ hc, ?_, ?_, ?_, ?_⟩
     · rw [← Set.image_smul]
       exact hJconn.image (fun s : Real => c • s)
@@ -538,24 +538,24 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegCurve_para
+theorem lRegularizedCurve_parabolic
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (t0 R : Real) (hR : 0 < R) (ht0 : t0 ∈ D.carrier)
     (T : Real) (x : M) (Z : TangentSpace I x) (s : Real) :
-    lRegCurve (paraSolution (I := I) S t0 R hR ht0)
-        (paraBack t0 R T) x ((Real.sqrt R)⁻¹ • Z) (Real.sqrt R * s) =
-      lRegCurve S T x Z s := by
+    lRegularizedCurve (parabolicSolution (I := I) S t0 R hR ht0)
+        (parabolicBackward t0 R T) x ((Real.sqrt R)⁻¹ • Z) (Real.sqrt R * s) =
+      lRegularizedCurve S T x Z s := by
   let c := Real.sqrt R
   let ci := c⁻¹
-  let SR := paraSolution (I := I) S t0 R hR ht0
-  let TR := paraBack t0 R T
+  let SR := parabolicSolution (I := I) S t0 R hR ht0
+  let TR := parabolicBackward t0 R T
   have hc : c ≠ 0 := ne_of_gt (sqrtR_pos hR)
   have hSR : IsSolutionOn (I := I) SR := by
-    simpa only [SR] using paraSol (I := I) S hS t0 R hR ht0
-  by_cases hs : s ∈ lRegDomain S T x Z
+    simpa only [SR] using parabolicSolution_isSolutionOn (I := I) S hS t0 R hR ht0
+  by_cases hs : s ∈ lRegularizedDomain S T x Z
   · obtain ⟨alpha, J, hJopen, hJconn, h0J, hsJ, halpha⟩ := hs
-    have hcurve := isLRegCurve_para (I := I) S t0 R hR ht0 T halpha
+    have hcurve := isLRegularizedCurve_parabolic (I := I) S t0 R hR ht0 T halpha
     have hJconnR : IsPreconnected (c • J) := by
       rw [← Set.image_smul]
       exact hJconn.image (fun q : Real => c • q)
@@ -565,74 +565,74 @@ theorem lRegCurve_para
     have hsJR : c * s ∈ c • J := by
       simpa only [smul_eq_mul] using
         (Set.smul_mem_smul_set_iff₀ hc J s).2 hsJ
-    have hscaled := lRegCurve_eqOn SR hSR TR (hJopen.smul₀ hc)
+    have hscaled := lRegularizedCurve_eqOn SR hSR TR (hJopen.smul₀ hc)
       hJconnR h0JR (by simpa only [SR, TR, c, ci] using hcurve) hsJR
-    have horig := lRegCurve_eqOn S hS T hJopen hJconn h0J halpha hsJ
+    have horig := lRegularizedCurve_eqOn S hS T hJopen hJconn h0J halpha hsJ
     calc
-      lRegCurve SR TR x (ci • Z) (c * s) = alpha (ci * (c * s)) := by
+      lRegularizedCurve SR TR x (ci • Z) (c * s) = alpha (ci * (c * s)) := by
         simpa only [SR, TR, c, ci] using hscaled
       _ = alpha s := by simp only [ci, inv_mul_cancel_left₀ hc]
-      _ = lRegCurve S T x Z s := horig.symm
-  · have hsR : c * s ∉ lRegDomain SR TR x (ci • Z) := by
-      rw [lRegDomain_para (I := I) S t0 R hR ht0 T x Z]
+      _ = lRegularizedCurve S T x Z s := horig.symm
+  · have hsR : c * s ∉ lRegularizedDomain SR TR x (ci • Z) := by
+      rw [lRegularizedDomain_parabolic (I := I) S t0 R hR ht0 T x Z]
       intro hmem
-      have hs' : c • s ∈ c • lRegDomain S T x Z := by
+      have hs' : c • s ∈ c • lRegularizedDomain S T x Z := by
         simpa only [smul_eq_mul] using hmem
-      exact hs ((Set.smul_mem_smul_set_iff₀ hc (lRegDomain S T x Z) s).1 hs')
-    rw [lRegCurve_of_not_mem hsR, lRegCurve_of_not_mem hs]
+      exact hs ((Set.smul_mem_smul_set_iff₀ hc (lRegularizedDomain S T x Z) s).1 hs')
+    rw [lRegularizedCurve_of_not_mem hsR, lRegularizedCurve_of_not_mem hs]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lExpDomain_para
+theorem lExpDomain_parabolic
     (S : SolutionOn (I := I) (M := M) D)
     (t0 R : Real) (hR : 0 < R) (ht0 : t0 ∈ D.carrier)
     (T : Real) (x : M) (Z : TangentSpace I x) (tau : Real) :
-    R * tau ∈ lExpDomain (paraSolution (I := I) S t0 R hR ht0)
-        (paraBack t0 R T) x ((Real.sqrt R)⁻¹ • Z) ↔
+    R * tau ∈ lExpDomain (parabolicSolution (I := I) S t0 R hR ht0)
+        (parabolicBackward t0 R T) x ((Real.sqrt R)⁻¹ • Z) ↔
       tau ∈ lExpDomain S T x Z := by
   let c := Real.sqrt R
   let ci := c⁻¹
-  let SR := paraSolution (I := I) S t0 R hR ht0
-  let TR := paraBack t0 R T
+  let SR := parabolicSolution (I := I) S t0 R hR ht0
+  let TR := parabolicBackward t0 R T
   have hc : c ≠ 0 := ne_of_gt (sqrtR_pos hR)
   have hsqrt : Real.sqrt (R * tau) = c * Real.sqrt tau := by
     simpa only [c] using Real.sqrt_mul hR.le tau
   simp only [lExpDomain, mem_ofPred_eq]
-  rw [show lRegDomain SR TR x (ci • Z) =
-      c • lRegDomain S T x Z by
+  rw [show lRegularizedDomain SR TR x (ci • Z) =
+      c • lRegularizedDomain S T x Z by
     simpa only [SR, TR, c, ci] using
-      lRegDomain_para (I := I) S t0 R hR ht0 T x Z]
+      lRegularizedDomain_parabolic (I := I) S t0 R hR ht0 T x Z]
   constructor
   · rintro ⟨hRtau, hdom⟩
     have htau : 0 ≤ tau := (mul_nonneg_iff_of_pos_left hR).1 hRtau
     have hmem := (Set.mem_smul_set_iff_inv_smul_mem₀ hc
-      (lRegDomain S T x Z) (Real.sqrt (R * tau))).1 hdom
+      (lRegularizedDomain S T x Z) (Real.sqrt (R * tau))).1 hdom
     rw [hsqrt] at hmem
-    have hdom' : Real.sqrt tau ∈ lRegDomain S T x Z := by
+    have hdom' : Real.sqrt tau ∈ lRegularizedDomain S T x Z := by
       simpa only [smul_eq_mul, inv_mul_cancel_left₀ hc] using hmem
     exact ⟨htau, hdom'⟩
   · rintro ⟨htau, hdom⟩
     refine ⟨mul_nonneg hR.le htau, ?_⟩
     rw [hsqrt]
     simpa only [smul_eq_mul] using
-      (Set.smul_mem_smul_set_iff₀ hc (lRegDomain S T x Z)
+      (Set.smul_mem_smul_set_iff₀ hc (lRegularizedDomain S T x Z)
         (Real.sqrt tau)).2 hdom
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lExp_para
+theorem lExp_parabolic
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (t0 R : Real) (hR : 0 < R) (ht0 : t0 ∈ D.carrier)
     (T : Real) (x : M) (Z : TangentSpace I x) (tau : Real) :
-    lExp (paraSolution (I := I) S t0 R hR ht0)
-        (paraBack t0 R T) x ((Real.sqrt R)⁻¹ • Z) (R * tau) =
+    lExp (parabolicSolution (I := I) S t0 R hR ht0)
+        (parabolicBackward t0 R T) x ((Real.sqrt R)⁻¹ • Z) (R * tau) =
       lExp S T x Z tau := by
   simpa only [lExp, Real.sqrt_mul hR.le tau] using
-    lRegCurve_para (I := I) S hS t0 R hR ht0 T x Z (Real.sqrt tau)
+    lRegularizedCurve_parabolic (I := I) S hS t0 R hR ht0 T x Z (Real.sqrt tau)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

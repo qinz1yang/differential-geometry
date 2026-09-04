@@ -56,7 +56,7 @@ private theorem ins_succ {m : Nat} (j k : Fin (m + 2)) :
   omega
 
 omit [NeZero (Module.finrank Real E)] [T2Space M] [CompactSpace M] in
-theorem lChartAction_refined_adjacent_pair_le_of_lRegAction_minimizer
+theorem lChartAction_refined_adjacent_pair_le_of_lRegularizedAction_minimizer
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -74,7 +74,7 @@ theorem lChartAction_refined_adjacent_pair_le_of_lRegAction_minimizer
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b)
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b)
     (q : Fin (m + 1)) (c : Real)
     (hpos0 : t q.castSucc.castSucc < t q.castSucc.succ)
     (hc0 : t q.succ.castSucc < c) (hc1 : c < t q.succ.succ)
@@ -344,7 +344,7 @@ theorem lChartAction_refined_adjacent_pair_le_of_lRegAction_minimizer
   have hposHead : tr i.succ.castSucc < tr i.succ.succ := by
     rw [hheadIdx, htrHead0, htrHead1]
     simpa only [j] using hc0
-  have hcmpR := lChartAction_adjacent_pair_le_of_lRegAction_minimizer (I := I) S hMet hSc T a b
+  have hcmpR := lChartAction_adjacent_pair_le_of_lRegularizedAction_minimizer (I := I) S hMet hSc T a b
     (m := m + 1) tr htrMono (htr0.trans ht0) (htrLast.trans htlast)
     pr gamma hgamma ur hsrcR hrepR hreg hmin i hposLeft hposHead
     v0r v1r htar0r htar1r hv0r hv2r hvnoder

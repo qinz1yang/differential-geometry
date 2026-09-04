@@ -14,7 +14,7 @@ open scoped Manifold Topology ContDiff BigOperators
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Connection
   (LeviCivita connectionDifference_koszul_deriv
    leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally)

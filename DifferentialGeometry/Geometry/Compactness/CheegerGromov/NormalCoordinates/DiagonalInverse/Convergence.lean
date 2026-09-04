@@ -14,7 +14,7 @@ open Filter Set
 open scoped ContDiff Manifold Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -24,7 +24,7 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-def HasDiagPairConv
+def HasDiagPairConvergence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k,
@@ -54,7 +54,7 @@ def HasDiagPairConv
       ((PhaseFlow.freeDiagCLE (E := E)).symm :
         (E × E) →L[Real] (E × E))
       eInf.target η) ∧
-  MapCInfConvOnCompacts (Metric.ball (0 : E × E) qInf)
+  MapCInfConvergenceOnCompacts (Metric.ball (0 : E × E) qInf)
     (fun n ↦ (e n : E × E → E × E)) eInf ∧
   ∃ delta₀ : Real,
     0 < delta₀ ∧ delta₀ < min deltaStage deltaInf ∧
@@ -63,10 +63,10 @@ def HasDiagPairConv
       (fun n : Nat ↦ Set.MapsTo (e n).symm
         (Metric.closedBall 0 delta₀) (Metric.ball 0 qInf))
       Filter.atTop ∧
-    MapCInfConvOnCompacts (Metric.ball 0 delta₀)
+    MapCInfConvergenceOnCompacts (Metric.ball 0 delta₀)
       (fun n ↦ ((e n).symm : E × E → E × E)) eInf.symm
 
-theorem HasDiagPairConv.subseq
+theorem HasDiagPairConvergence.subseq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k,
@@ -77,10 +77,10 @@ theorem HasDiagPairConv.subseq
     {e : Nat → OpenPartialHomeomorph (E × E) (E × E)}
     {eInf : OpenPartialHomeomorph (E × E) (E × E)}
     {chart : NormalChartFamily (I := I) X}
-    (h : HasDiagPairConv (I := I) hcomplete hconn c
+    (h : HasDiagPairConvergence (I := I) hcomplete hconn c
       qStage qInf deltaStage deltaInf e eInf (chart := chart))
     (f : Nat → Nat) (hf : Tendsto f Filter.atTop Filter.atTop) :
-    HasDiagPairConv (I := I) (hcomplete.subseq f)
+    HasDiagPairConvergence (I := I) (hcomplete.subseq f)
       (PointedRiemannianSeq.connected_subseq hconn f)
       (fun n => c (f n)) qStage qInf deltaStage deltaInf
       (fun n => e (f n)) eInf
@@ -98,7 +98,7 @@ theorem HasDiagPairConv.subseq
   intro n
   simpa only [PointedRiemannianSeq.subseq] using hnormal (f n)
 
-theorem HasDiagPairConv.congr_stage
+theorem HasDiagPairConvergence.congr_stage
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k,
@@ -109,7 +109,7 @@ theorem HasDiagPairConv.congr_stage
     {e e' : Nat → OpenPartialHomeomorph (E × E) (E × E)}
     {eInf : OpenPartialHomeomorph (E × E) (E × E)}
     {chart : NormalChartFamily (I := I) X}
-    (h : HasDiagPairConv (I := I) hcomplete hconn c
+    (h : HasDiagPairConvergence (I := I) hcomplete hconn c
       qStage qInf deltaStage deltaInf e eInf (chart := chart))
     (hfence : ∀ n, NormalDiagFence (I := I) (X.obj n) (c n)
       qStage (e n) (c := chart n (c n)))
@@ -119,7 +119,7 @@ theorem HasDiagPairConv.congr_stage
         (c := chart n (c n)))
     (hfence' : ∀ n, NormalDiagFence (I := I) (X.obj n) (c n)
       qStage (e' n) (c := chart n (c n))) :
-    HasDiagPairConv (I := I) hcomplete hconn c
+    HasDiagPairConvergence (I := I) hcomplete hconn c
       qStage qInf deltaStage' deltaInf e' eInf (chart := chart) := by
   rcases h with
     ⟨hqStage, hqInf, hqInfStage, hdeltaStage, hdeltaInf,
@@ -133,7 +133,7 @@ theorem HasDiagPairConv.congr_stage
       (hnormal n) (hfence n) (hnormal' n) (hfence' n)
   have hqInfStageReal : (qInf : Real) < qStage := by
     exact_mod_cast hqInfStage
-  have hforward' : MapCInfConvOnCompacts
+  have hforward' : MapCInfConvergenceOnCompacts
       (Metric.ball (0 : E × E) qInf)
       (fun n ↦ (e' n : E × E → E × E)) eInf := by
     apply hforward.congr Metric.isOpen_ball
@@ -185,12 +185,12 @@ theorem HasDiagPairConv.congr_stage
       (hnormal n).2.2.2.1 hwStage
     rw [← (heq n).symm_eqOn_target hwTarget]
     exact hn hw0
-  have hinvSmall : MapCInfConvOnCompacts (Metric.ball 0 delta1)
+  have hinvSmall : MapCInfConvergenceOnCompacts (Metric.ball 0 delta1)
       (fun n ↦ ((e n).symm : E × E → E × E)) eInf.symm := by
     intro K hK hKU p
     exact hinv K hK
       (hKU.trans (Metric.ball_subset_ball hdelta1lt0.le)) p
-  have hinv' : MapCInfConvOnCompacts (Metric.ball 0 delta1)
+  have hinv' : MapCInfConvergenceOnCompacts (Metric.ball 0 delta1)
       (fun n ↦ ((e' n).symm : E × E → E × E)) eInf.symm := by
     apply hinvSmall.congr Metric.isOpen_ball
     · intro n w hw
@@ -207,7 +207,7 @@ theorem HasDiagPairConv.congr_stage
     hInfDiag, hInfApprox, hforward', delta1, hdelta1,
     lt_min hdelta1ltStage' hdelta1ltInf, himage', hstageMap', hinv'⟩
 
-theorem HasDiagPairConv.inv_data
+theorem HasDiagPairConvergence.inv_data
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k,
@@ -218,14 +218,14 @@ theorem HasDiagPairConv.inv_data
     {e : Nat → OpenPartialHomeomorph (E × E) (E × E)}
     {eInf : OpenPartialHomeomorph (E × E) (E × E)}
     {chart : NormalChartFamily (I := I) X}
-    (h : HasDiagPairConv (I := I) hcomplete hconn c
+    (h : HasDiagPairConvergence (I := I) hcomplete hconn c
       qStage qInf deltaStage deltaInf e eInf (chart := chart)) :
     ∃ delta0 : Real, 0 < delta0 ∧
       (∀ n, ContDiffOn Real ∞
         ((e n).symm : E × E → E × E) (Metric.ball 0 delta0)) ∧
       ContDiffOn Real ∞ (eInf.symm : E × E → E × E)
         (Metric.ball 0 delta0) ∧
-      MapCInfConvOnCompacts (Metric.ball 0 delta0)
+      MapCInfConvergenceOnCompacts (Metric.ball 0 delta0)
         (fun n ↦ ((e n).symm : E × E → E × E)) eInf.symm := by
   rcases h with
     ⟨_hqStage, _hqInf, _hqInfStage, _hdeltaStage, _hdeltaInf,
@@ -253,7 +253,7 @@ theorem HasDiagPairConv.inv_data
     fun n ↦ (hnormal n).2.2.2.2.1.mono (hstageTarget n),
     hInfSymmC.mono hInfTarget0, hinv⟩
 
-theorem HasDiagPairConv.exists_diag_inv
+theorem HasDiagPairConvergence.exists_diag_inv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hcomplete : SeqMetricComplete (I := I) X}
     {hconn : ∀ k,
@@ -264,7 +264,7 @@ theorem HasDiagPairConv.exists_diag_inv
     {e : Nat → OpenPartialHomeomorph (E × E) (E × E)}
     {eInf : OpenPartialHomeomorph (E × E) (E × E)}
     {chart : NormalChartFamily (I := I) X}
-    (h : HasDiagPairConv (I := I) hcomplete hconn c
+    (h : HasDiagPairConvergence (I := I) hcomplete hconn c
       qStage qInf deltaStage deltaInf e eInf (chart := chart))
     {K : Set E} (hK : IsCompact K)
     (hKq : K ⊆ Metric.ball (0 : E) qInf) :
@@ -277,7 +277,7 @@ theorem HasDiagPairConv.exists_diag_inv
         (fun n : Nat ↦ closure V ⊆ (e n).target ∧
           Set.MapsTo (e n).symm (closure V)
             (Metric.ball (0 : E × E) qInf)) Filter.atTop ∧
-      MapCInfConvOnCompacts V
+      MapCInfConvergenceOnCompacts V
         (fun n ↦ ((e n).symm : E × E → E × E)) eInf.symm := by
   rcases h with
     ⟨_hqStage, hqInf, hqInfStage, _hdeltaStage, _hdeltaInf,
@@ -334,7 +334,7 @@ theorem HasDiagPairConv.exists_diag_inv
 
 namespace NormalRadiusProfile
 
-theorem exists_diagInv_conv
+theorem exists_diagInv_convergence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -353,7 +353,7 @@ theorem exists_diagInv_conv
       (Metric.ball 0 (h.phaseRadius R)))
     (hgInf_lo : ∀ z ∈ Metric.ball (0 : E) (h.phaseRadius R), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v)
-    (hg_conv : MapCInfConvOnCompacts
+    (hg_convergence : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (h.phaseRadius R))
       (fun n ↦ normalCoordMetric (I := I) (X.obj n) (c n)) gInf)
     {Φ : Nat → (E × E) → Real → E × E}
@@ -388,7 +388,7 @@ theorem exists_diagInv_conv
     (hInf_target : Metric.closedBall (0 : E × E) deltaInf ⊆
       eInf.target)
     (hInf_symm_cd : ContDiffOn Real ∞ eInf.symm eInf.target) :
-    MapCInfConvOnCompacts (Metric.ball (0 : E × E) qInf)
+    MapCInfConvergenceOnCompacts (Metric.ball (0 : E × E) qInf)
         (fun n ↦ (e n : E × E → E × E)) eInf ∧
       ∃ delta₀ : Real,
         0 < delta₀ ∧ delta₀ < min delta deltaInf ∧
@@ -398,7 +398,7 @@ theorem exists_diagInv_conv
           (fun n : Nat ↦ Set.MapsTo (e n).symm
             (Metric.closedBall 0 delta₀)
             (Metric.ball 0 qInf)) Filter.atTop ∧
-        MapCInfConvOnCompacts (Metric.ball 0 delta₀)
+        MapCInfConvergenceOnCompacts (Metric.ball 0 delta₀)
           (fun n ↦ ((e n).symm : E × E → E × E)) eInf.symm := by
   let Q : Set (E × E) := Metric.ball 0 qInf
   have hqInfReal : (0 : Real) < qInf := by exact_mod_cast hqInf
@@ -411,13 +411,13 @@ theorem exists_diagInv_conv
   have hQInf : Q ⊆ Metric.closedBall (0 : E × E) qInf := by
     intro z hz
     exact Metric.ball_subset_closedBall hz
-  have hforwardFormula := h.diag_end_conv R c hc Metric.isOpen_ball
-    hgInf_cd hgInf_lo hg_conv
+  have hforwardFormula := h.diag_end_convergence R c hc Metric.isOpen_ball
+    hgInf_cd hgInf_lo hg_convergence
     (fun n z hz ↦ hΦ n z (hQStage hz))
     (fun z hz ↦ hΦInf z (hQInf hz))
     (fun n z hz ↦ hstay n z (hQStage hz))
     (fun z hz ↦ hstayInf z (hQInf hz)) he
-  have hforward : MapCInfConvOnCompacts Q
+  have hforward : MapCInfConvergenceOnCompacts Q
       (fun n ↦ (e n : E × E → E × E)) eInf :=
     hforwardFormula.congr Metric.isOpen_ball
       (fun _n _z _hz ↦ rfl)
@@ -468,7 +468,7 @@ theorem exists_diagInv_conv
     rw [hbase_eq]
     simpa only [dist_self] using hqInfReal
   refine ⟨hforward, ?_⟩
-  exact Analysis.OpenPartialHomeomorph.exists_symm_convOn_ball Metric.isOpen_ball
+  exact Analysis.OpenPartialHomeomorph.exists_symm_convergenceOn_ball Metric.isOpen_ball
     hforward hsource hstage_cd (lt_min hdelta hdeltaInf) htarget
     htargetInf hInf_cd' hInf_symm_cd' hbase
 
@@ -502,13 +502,13 @@ theorem exists_diagPair_at
       (Metric.ball 0 (h.phaseRadius R)))
     (hgInf_lo : ∀ z ∈ Metric.ball (0 : E) (h.phaseRadius R), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v)
-    (hg_conv : MapCInfConvOnCompacts
+    (hg_convergence : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (h.phaseRadius R))
       (fun n ↦ normalCoordMetric (I := I) (X.obj n) (c n)) gInf) :
     ∃ (deltaStage deltaInf : Real)
         (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
         (eInf : OpenPartialHomeomorph (E × E) (E × E)),
-      HasDiagPairConv hcomplete hconn c q (q / 2)
+      HasDiagPairConvergence hcomplete hconn c q (q / 2)
         deltaStage deltaInf e eInf ∧
       ∀ n, NormalDiagFence (I := I) (X.obj n) (c n) q (e n) := by
   classical
@@ -551,7 +551,7 @@ theorem exists_diagPair_at
   obtain ⟨ΦInf, eInf, deltaInf, hdeltaInf, hΦInf0, hΦInfCurve,
       hΦInfStay, hInfSource, hInfZero, heInf, hInfTarget,
       hInfSmooth, hInfSymmSmooth, hInfDiag, hInfApprox⟩ :=
-    h.exists_limit_diag R c hc hgInf_cd hgInf_lo hg_conv qInf hqInf
+    h.exists_limit_diag R c hc hgInf_cd hgInf_lo hg_convergence qInf hqInf
       hqInfRadius hqInfAcc hqInfErr
   let N : NNReal :=
     ‖((PhaseFlow.freeDiagCLE (E := E)).symm :
@@ -576,23 +576,23 @@ theorem exists_diagPair_at
     simpa only [η, N, cInf] using hInfApprox
   obtain ⟨hforward, delta₀, hdelta₀, hdelta₀lt, hInfMaps,
       hstageMaps, hinverse⟩ :=
-    h.exists_diagInv_conv hcomplete hconn R c hc q qInf hqInf
+    h.exists_diagInv_convergence hcomplete hconn R c hc q qInf hqInf
       hqInfStage deltaStage deltaInf hdeltaStage hdeltaInf
-      hgInf_cd hgInf_lo hg_conv
+      hgInf_cd hgInf_lo hg_convergence
       (fun n z hz ↦ ⟨hΦ0 n z hz, hΦcurve n z hz⟩)
       (fun z hz ↦ ⟨hΦInf0 z hz, hΦInfCurve z hz⟩)
       hΦstay hΦInfStay he heInf hdiag hInfSource hInfZero
       hInfSmooth hInfTarget hInfSymmSmooth
   refine ⟨deltaStage, deltaInf, e, eInf, ?_, hfence⟩
   simpa only [qInf] using
-    (show HasDiagPairConv hcomplete hconn c q qInf
+    (show HasDiagPairConvergence hcomplete hconn c q qInf
       deltaStage deltaInf e eInf from
       ⟨hq, hqInf, hqInfStage, hdeltaStage, hdeltaInf, hdiag,
         hInfSource, hInfZero, hInfTarget, hInfSmooth, hInfSymmSmooth,
         hInfDiag, ⟨η, hη, hInfApproxη⟩, hforward,
         delta₀, hdelta₀, hdelta₀lt, hInfMaps, hstageMaps, hinverse⟩)
 
-theorem exists_diagPair_conv
+theorem exists_diagPair_convergence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -608,13 +608,13 @@ theorem exists_diagPair_conv
       (Metric.ball 0 (h.phaseRadius R)))
     (hgInf_lo : ∀ z ∈ Metric.ball (0 : E) (h.phaseRadius R), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v)
-    (hg_conv : MapCInfConvOnCompacts
+    (hg_convergence : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (h.phaseRadius R))
       (fun n ↦ normalCoordMetric (I := I) (X.obj n) (c n)) gInf) :
     ∃ (qStage qInf : NNReal) (deltaStage deltaInf : Real)
         (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
         (eInf : OpenPartialHomeomorph (E × E) (E × E)),
-      HasDiagPairConv hcomplete hconn c qStage qInf deltaStage deltaInf e eInf := by
+      HasDiagPairConvergence hcomplete hconn c qStage qInf deltaStage deltaInf e eInf := by
   classical
   let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
@@ -655,7 +655,7 @@ theorem exists_diagPair_conv
   obtain ⟨ΦInf, eInf, deltaInf, hdeltaInf, hΦInf0, hΦInfCurve,
       hΦInfStay, hInfSource, hInfZero, heInf, hInfTarget,
       hInfSmooth, hInfSymmSmooth, hInfDiag, hInfApprox⟩ :=
-    h.exists_limit_diag R c hc hgInf_cd hgInf_lo hg_conv qInf hqInf
+    h.exists_limit_diag R c hc hgInf_cd hgInf_lo hg_convergence qInf hqInf
       hqInfRadius hqInfAcc hqInfErrInv
   let η : NNReal := N * (T - PhaseFlow.phaseErr
     (normalPhaseK hb (2 * qInf)))⁻¹ *
@@ -670,9 +670,9 @@ theorem exists_diagPair_conv
     simpa only [η, T, N] using hInfApprox
   obtain ⟨hforward, delta₀, hdelta₀, hdelta₀lt, hInfMaps,
       hstageMaps, hinverse⟩ :=
-    h.exists_diagInv_conv hcomplete hconn R c hc qStage qInf hqInf
+    h.exists_diagInv_convergence hcomplete hconn R c hc qStage qInf hqInf
       hqInfStage deltaStage deltaInf hdeltaStage hdeltaInf
-      hgInf_cd hgInf_lo hg_conv
+      hgInf_cd hgInf_lo hg_convergence
       (fun n z hz ↦ ⟨hΦ0 n z hz, hΦcurve n z hz⟩)
       (fun z hz ↦ ⟨hΦInf0 z hz, hΦInfCurve z hz⟩)
       hΦstay hΦInfStay he heInf hdiag hInfSource hInfZero
@@ -684,5 +684,5 @@ theorem exists_diagPair_conv
     delta₀, hdelta₀, hdelta₀lt, hInfMaps, hstageMaps, hinverse⟩
 
 end NormalRadiusProfile
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

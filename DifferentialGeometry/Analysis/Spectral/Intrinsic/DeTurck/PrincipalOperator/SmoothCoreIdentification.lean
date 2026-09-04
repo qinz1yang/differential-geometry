@@ -204,7 +204,7 @@ private lemma fullH2_self
             ccTensorToHs (I := I) (M := M) g 4 (2 : ℝ)
               (operatorFieldApply (I := I) (M := M) g 4 4
                 (fullCoeff4 (I := I) (M := M) g g g) W) := by
-                  exact appHs_core (I := I) (M := M) g 4 4 2
+                  exact appHs_apply_ccTensorToHs (I := I) (M := M) g 4 4 2
                     (fullCoeff4 (I := I) (M := M) g g g) W
         _ = ccTensorToHs (I := I) (M := M) g 4 (2 : ℝ) W := by
           rw [fullCoeff_self (I := I) (M := M) g W])
@@ -279,14 +279,14 @@ private lemma fullH2_mul
               (operatorFieldApply (I := I) (M := M) g₀ 4 4
                 (fullCoeff4 (I := I) (M := M) g₀ g₁ g₀) W)) := by
             congr 1
-            exact appHs_core (I := I) (M := M) g₀ 4 4 2
+            exact appHs_apply_ccTensorToHs (I := I) (M := M) g₀ 4 4 2
               (fullCoeff4 (I := I) (M := M) g₀ g₁ g₀) W
       _ = ccTensorToHs (I := I) (M := M) g₀ 4 (2 : ℝ)
             (operatorFieldApply (I := I) (M := M) g₀ 4 4
               (fullCoeff4 (I := I) (M := M) g₀ g₀ g₁)
               (operatorFieldApply (I := I) (M := M) g₀ 4 4
                 (fullCoeff4 (I := I) (M := M) g₀ g₁ g₀) W)) := by
-            exact appHs_core (I := I) (M := M) g₀ 4 4 2
+            exact appHs_apply_ccTensorToHs (I := I) (M := M) g₀ 4 4 2
               (fullCoeff4 (I := I) (M := M) g₀ g₀ g₁)
               (operatorFieldApply (I := I) (M := M) g₀ 4 4
                 (fullCoeff4 (I := I) (M := M) g₀ g₁ g₀) W)
@@ -419,7 +419,7 @@ theorem lowRegularityPrincipalOperatorH2_apply_smoothCore
                   (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))
                 (ccTensorToHs (I := I) (M := M) g₀ 4 (2 : ℝ)
                   (iteratedCovGrad (I := I) g₀ 0 2 2 W))) := by
-                    rw [hessianH2_core (I := I) (M := M) g₀ W,
+                    rw [secondCovariantDerivativeH4ToH2_apply_ccTensorToHs (I := I) (M := M) g₀ W,
                       inverseMetricPerturbationCorrectionH2_apply_smoothCore (I := I) (M := M)
                         hDim g₀ g₁ T htie hsmall]
         _ = cometricDoubleTraceH2 (I := I) (M := M) g₀
@@ -429,7 +429,7 @@ theorem lowRegularityPrincipalOperatorH2_apply_smoothCore
                     (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))
                   (iteratedCovGrad (I := I) g₀ 0 2 2 W))) := by
                     congr 1
-                    exact appHs_core (I := I) (M := M) g₀ 4 4 2
+                    exact appHs_apply_ccTensorToHs (I := I) (M := M) g₀ 4 4 2
                       (slotInsertEndoCc (I := I) (M := M) g₀ 3
                         (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))
                       (iteratedCovGrad (I := I) g₀ 0 2 2 W)
@@ -440,7 +440,7 @@ theorem lowRegularityPrincipalOperatorH2_apply_smoothCore
                   (slotInsertEndoCc (I := I) (M := M) g₀ 3
                     (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁))
                   (iteratedCovGrad (I := I) g₀ 0 2 2 W))) := by
-                    exact traceH2_core (I := I) (M := M) g₀ _
+                    exact cometricDoubleTraceH2_apply_ccTensorToHs (I := I) (M := M) g₀ _
         _ = ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ)
               (deTurckPrincipalCometricTerm (I := I) (M := M) g₀ g₁ W) := by
                     congr 1

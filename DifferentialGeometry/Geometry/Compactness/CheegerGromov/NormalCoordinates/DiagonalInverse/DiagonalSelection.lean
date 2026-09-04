@@ -13,7 +13,7 @@ open Filter Set
 open scoped ContDiff Manifold Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -51,7 +51,7 @@ theorem exists_live_diag
           (X.obj (L.φ (psi k))).basepoint ≤ R) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) gInf
         (Metric.ball 0 (inp.normalRadius.phaseRadius R)) ∧
-      MapCInfConvOnCompacts
+      MapCInfConvergenceOnCompacts
         (Metric.ball 0 (inp.normalRadius.phaseRadius R))
         (fun k z alpha ↦ normalCoordMetric (I := I)
           (X.obj (L.φ (psi k)))
@@ -71,7 +71,7 @@ theorem exists_live_diag
       let c : LiveSlot L inp.pack r → ∀ k : Nat, (Xpsi.obj k).M :=
         fun alpha k ↦ seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)
       ∀ alpha,
-        HasDiagPairConv (I := I) (hcomplete.subseq index)
+        HasDiagPairConvergence (I := I) (hcomplete.subseq index)
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) (qStage alpha) (qInf alpha)
           (deltaStage alpha) (deltaInf alpha) (e alpha) (eInf alpha) := by
@@ -88,7 +88,7 @@ theorem exists_live_diag
       ∃ (qStage qInf : NNReal) (deltaStage deltaInf : Real)
           (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
           (eInf : OpenPartialHomeomorph (E × E) (E × E)),
-        HasDiagPairConv (I := I) (hcomplete.subseq index)
+        HasDiagPairConvergence (I := I) (hcomplete.subseq index)
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) qStage qInf deltaStage deltaInf e eInf := by
     intro alpha
@@ -109,7 +109,7 @@ theorem exists_live_diag
           (2 * inp.decay.lambda inp.D 0 * (inp.pack.A r : Real))),
         ∀ v : E, (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z alpha v v :=
       fun z hz v ↦ (hequiv z hz alpha v).1
-    have hgInfAlphaConv : MapCInfConvOnCompacts
+    have hgInfAlphaConvergence : MapCInfConvergenceOnCompacts
         (Metric.ball 0 (inp.normalRadius.phaseRadius
           (2 * inp.decay.lambda inp.D 0 * (inp.pack.A r : Real))))
         (fun k ↦ normalCoordMetric (I := I) (Xpsi.obj k) (c alpha k))
@@ -119,11 +119,11 @@ theorem exists_live_diag
     simpa only [MetricCompactnessInputs.subseq, NormalRadiusProfile.subseq,
         InjectivityRadiusDecay.subseq, NormalCoordMetricBounds.subseq,
         NormalRadiusProfile.phaseRadius] using
-      (inp.normalRadius.subseq index).exists_diagPair_conv
+      (inp.normalRadius.subseq index).exists_diagPair_convergence
         (hcomplete.subseq index)
         (PointedRiemannianSeq.connected_subseq hconn index)
         (2 * inp.decay.lambda inp.D 0 * (inp.pack.A r : Real)) (c alpha) hc
-        hgInfAlpha hgInfAlphaLo hgInfAlphaConv
+        hgInfAlpha hgInfAlphaLo hgInfAlphaConvergence
   choose qStage qInf deltaStage deltaInf e eInf hpair using hpair
   refine ⟨psi, gInf, qStage, qInf, deltaStage, deltaInf, e, eInf,
     hpsi, hcenter, hgInf, hconv, hstage, hequiv, ?_⟩
@@ -178,7 +178,7 @@ theorem exists_slot_diag
         let Ualpha := Metric.ball (0 : E)
           (inp.normalRadius.phaseRadius Ralpha)
         ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) Ualpha ∧
-        MapCInfConvOnCompacts Ualpha
+        MapCInfConvergenceOnCompacts Ualpha
           (fun n => normalCoordMetric (I := I)
             (X.obj (L.φ (psi n)))
             (seqCenterD inp.decay P L (psi n) (alpha.1 : Nat)))
@@ -191,7 +191,7 @@ theorem exists_slot_diag
       let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xpsi.obj n).M :=
         fun alpha n => seqCenterD inp.decay P L (psi n) (alpha.1 : Nat)
       ∀ alpha,
-        HasDiagPairConv (I := I) (hcomplete.subseq index)
+        HasDiagPairConvergence (I := I) (hcomplete.subseq index)
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) (q alpha) (q alpha / 2)
           (deltaStage alpha) (deltaInf alpha) (e alpha) (eInf alpha) ∧
@@ -208,7 +208,7 @@ theorem exists_slot_diag
       ∃ (deltaStage deltaInf : Real)
           (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
           (eInf : OpenPartialHomeomorph (E × E) (E × E)),
-        HasDiagPairConv (I := I) (hcomplete.subseq index)
+        HasDiagPairConvergence (I := I) (hcomplete.subseq index)
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) (q alpha) (q alpha / 2)
           deltaStage deltaInf e eInf ∧
@@ -228,7 +228,7 @@ theorem exists_slot_diag
         (inp.normalRadius.phaseRadius Ralpha), ∀ v : E,
           (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf alpha z v v :=
       fun z hz v => (hm.2.2 z hz v).1
-    have hgConv : MapCInfConvOnCompacts
+    have hgConvergence : MapCInfConvergenceOnCompacts
         (Metric.ball (0 : E) (inp.normalRadius.phaseRadius Ralpha))
         (fun n => normalCoordMetric (I := I) (Xpsi.obj n) (c alpha n))
         (gInf alpha) := by
@@ -241,7 +241,7 @@ theorem exists_slot_diag
         (PointedRiemannianSeq.connected_subseq hconn index)
         Ralpha (c alpha) hc (q alpha) (hq alpha) (hqWide alpha)
         (hqAcc alpha) (herr alpha) (hinvErr alpha)
-        hm.1 hgInfLo hgConv
+        hm.1 hgInfLo hgConvergence
   choose deltaStage deltaInf e eInf hpair using hpair
   exact ⟨psi, gInf, deltaStage, deltaInf, e, eInf,
     hpsi, hcenter, hmetric, hpair⟩
@@ -302,7 +302,7 @@ theorem exists_diagonal_subsequence_of_eventually
         let Ualpha := Metric.ball (0 : E)
           (inp.normalRadius.phaseRadius Ralpha)
         ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) Ualpha ∧
-        MapCInfConvOnCompacts Ualpha
+        MapCInfConvergenceOnCompacts Ualpha
           (fun n ↦ normalCoordMetric (I := I)
             (X.obj (L.φ (psi n)))
             (seqCenterD inp.decay P L (psi n) (alpha.1 : Nat)))
@@ -318,7 +318,7 @@ theorem exists_diagonal_subsequence_of_eventually
       let c : LiveSlot L inp.pack r → ∀ n : Nat, (Xpsi.obj n).M :=
         fun alpha n ↦ seqCenterD inp.decay P Lpsi n (alpha.1 : Nat)
       ∀ alpha,
-        HasDiagPairConv (I := I) (hcomplete.subseq index)
+        HasDiagPairConvergence (I := I) (hcomplete.subseq index)
           (PointedRiemannianSeq.connected_subseq hconn index)
           (c alpha) (q alpha) (q alpha / 2)
           (δ alpha) (deltaInf alpha) (e alpha) (eInf alpha)
@@ -382,7 +382,7 @@ theorem exists_diagonal_subsequence_of_eventually
       let Ualpha := Metric.ball (0 : E)
         (inp.normalRadius.phaseRadius Ralpha)
       ContDiffOn Real (∞ : WithTop ℕ∞) (gInf alpha) Ualpha ∧
-      MapCInfConvOnCompacts Ualpha
+      MapCInfConvergenceOnCompacts Ualpha
         (fun n ↦ normalCoordMetric (I := I)
           (X.obj (L.φ (psi n)))
           (seqCenterD inp.decay P L (psi n) (alpha.1 : Nat)))
@@ -402,7 +402,7 @@ theorem exists_diagonal_subsequence_of_eventually
       let Xpsi : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
       let c : ∀ n : Nat, (Xpsi.obj n).M :=
         fun n ↦ seqCenterD inp.decay P Lpsi n (alpha.1 : Nat)
-      HasDiagPairConv (I := I) (hcomplete.subseq index)
+      HasDiagPairConvergence (I := I) (hcomplete.subseq index)
         (PointedRiemannianSeq.connected_subseq hconn index)
         c (q alpha) (q alpha / 2) (δ alpha) (deltaInf alpha)
         (e alpha) (eInf alpha)
@@ -428,5 +428,5 @@ theorem exists_diagonal_subsequence_of_eventually
   exact ⟨hpair alpha, hfence alpha⟩
 
 end MetricCompactnessInputs
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

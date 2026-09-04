@@ -15,7 +15,7 @@ private abbrev Euc (n : Type*) := EuclideanSpace Real n
 variable {n F : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
   [NormedAddCommGroup F] [NormedSpace Real F] [CompleteSpace F]
 
-def gradientComponentBcf
+def gradientComponentBoundedContinuousFunction
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[Real] F))
     (i : n) : BoundedContinuousFunction (Euc n) F :=
   (ContinuousLinearMap.apply Real F (EuclideanSpace.basisFun n Real i))
@@ -23,17 +23,17 @@ def gradientComponentBcf
 
 omit [DecidableEq n] [Nonempty n] [CompleteSpace F] in
 @[simp]
-theorem gradientComponentBcf_apply
+theorem gradientComponentBoundedContinuousFunction_apply
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[Real] F))
     (i : n) (x : Euc n) :
-    gradientComponentBcf du i x =
+    gradientComponentBoundedContinuousFunction du i x =
       du x (EuclideanSpace.basisFun n Real i) := rfl
 
 def driftTerm
     (b : n → BoundedContinuousFunction (Euc n) Real)
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[Real] F)) :
     BoundedContinuousFunction (Euc n) F :=
-  ∑ i, b i • gradientComponentBcf du i
+  ∑ i, b i • gradientComponentBoundedContinuousFunction du i
 
 omit [DecidableEq n] [Nonempty n] [CompleteSpace F] in
 @[simp]

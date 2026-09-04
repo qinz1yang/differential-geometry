@@ -250,7 +250,7 @@ theorem heatD2Cancel_int_of_holder {alpha K : NNReal}
   exact cancel_bound_of_holder ht hf v w x y
 
 omit [CompleteSpace F] in
-theorem heatD2Conv_int_of_holder {alpha K : NNReal}
+theorem heatD2Convolution_int_of_holder {alpha K : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {t : Real} (ht : 0 < t) {f : V → F} (hf : HolderWith K alpha f)
     (v w x : V) :
@@ -260,14 +260,14 @@ theorem heatD2Conv_int_of_holder {alpha K : NNReal}
   refine (hcancel.add hconst).congr (Filter.Eventually.of_forall fun y => ?_)
   simp only [Pi.add_apply, smul_sub, sub_add_cancel]
 
-theorem heatD2Conv_eq_cancel_of_holder {alpha K : NNReal}
+theorem heatD2Convolution_eq_cancel_of_holder {alpha K : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {t : Real} (ht : 0 < t) {f : V → F} (hf : HolderWith K alpha f)
     (v w x : V) :
-    heatD2Conv t v w f x = heatD2Cancel t v w f x := by
+    heatD2Convolution t v w f x = heatD2Cancel t v w f x := by
   have hcancel := heatD2Cancel_int_of_holder halpha0 halpha1 ht hf v w x
   have hconst := (heatD2_int ht v w).smul_const (f x)
-  unfold heatD2Conv heatD2Cancel
+  unfold heatD2Convolution heatD2Cancel
   calc
     (∫ y : V, heatD2 t v w y • f (x - y)) =
         ∫ y : V, heatD2 t v w y • (f (x - y) - f x) +
@@ -337,82 +337,82 @@ section Duhamel
 variable {F : Type*}
   [NormedAddCommGroup F] [NormedSpace Real F] [CompleteSpace F]
 
-def d2DuhHolderConst (alpha : NNReal) (v w : V) (K : NNReal) : Real :=
+def d2DuhamelHolderConst (alpha : NNReal) (v w : V) (K : NNReal) : Real :=
   ‖v‖ * ‖w‖ * (K : Real) * heatC2Holder (V := V) alpha
 
-def d2DuhHolderMajor (alpha : NNReal) (v w : V) (K : NNReal)
+def d2DuhamelHolderMajor (alpha : NNReal) (v w : V) (K : NNReal)
     (t s : Real) : Real :=
-  d2DuhHolderConst alpha v w K * holderHeatScale alpha (t - s)
+  d2DuhamelHolderConst alpha v w K * holderHeatScale alpha (t - s)
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F] [CompleteSpace F] in
-theorem d2DuhHolderMajor_intble {alpha : NNReal} (halpha : 0 < alpha)
+theorem d2DuhamelHolderMajor_intble {alpha : NNReal} (halpha : 0 < alpha)
     {t : Real} (v w : V) (K : NNReal) :
-    IntervalIntegrable (d2DuhHolderMajor alpha v w K t) volume 0 t :=
-  (holderHeatScale_intble halpha).const_mul (d2DuhHolderConst alpha v w K)
+    IntervalIntegrable (d2DuhamelHolderMajor alpha v w K t) volume 0 t :=
+  (holderHeatScale_intble halpha).const_mul (d2DuhamelHolderConst alpha v w K)
 
 omit [Nontrivial V] [NormedAddCommGroup F] [NormedSpace Real F] [CompleteSpace F] in
-theorem d2DuhHolderMajor_int {alpha : NNReal} (halpha : 0 < alpha)
+theorem d2DuhamelHolderMajor_int {alpha : NNReal} (halpha : 0 < alpha)
     {t : Real} (v w : V) (K : NNReal) :
-    ∫ s : Real in 0..t, d2DuhHolderMajor alpha v w K t s =
-      d2DuhHolderConst alpha v w K *
+    ∫ s : Real in 0..t, d2DuhamelHolderMajor alpha v w K t s =
+      d2DuhamelHolderConst alpha v w K *
         ((2 / (alpha : Real)) * t ^ ((alpha : Real) / 2)) := by
-  unfold d2DuhHolderMajor
+  unfold d2DuhamelHolderMajor
   rw [intervalIntegral.integral_const_mul, timeHolderHeatScale_int halpha]
 
-theorem heatD2Duh_int_of_holder {alpha K : NNReal}
+theorem heatD2Duhamel_int_of_holder {alpha K : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {t : Real} (ht : 0 < t) (f : Real → V → F)
     (hf : ∀ s ∈ Set.Icc (0 : Real) t, HolderWith K alpha (f s))
     (v w x : V)
     (hmeas : AEStronglyMeasurable
-      (fun s : Real => heatD2Conv (t - s) v w (f s) x)
+      (fun s : Real => heatD2Convolution (t - s) v w (f s) x)
       (volume.restrict (Set.uIoc (0 : Real) t))) :
     IntervalIntegrable
-      (fun s : Real => heatD2Conv (t - s) v w (f s) x) volume 0 t := by
-  apply (d2DuhHolderMajor_intble (V := V) halpha0 v w K).mono_fun' hmeas
+      (fun s : Real => heatD2Convolution (t - s) v w (f s) x) volume 0 t := by
+  apply (d2DuhamelHolderMajor_intble (V := V) halpha0 v w K).mono_fun' hmeas
   have hne : ∀ᵐ s ∂(volume : Measure Real), s ≠ t := by
     simp [ae_iff, measure_singleton]
   filter_upwards [ae_restrict_mem measurableSet_uIoc,
     ae_restrict_of_ae (s := Set.uIoc (0 : Real) t) hne] with s hs hst
   rw [Set.uIoc_of_le ht.le] at hs
   have hstlt : s < t := lt_of_le_of_ne hs.2 hst
-  rw [heatD2Conv_eq_cancel_of_holder halpha0 halpha1 (sub_pos.mpr hstlt)
+  rw [heatD2Convolution_eq_cancel_of_holder halpha0 halpha1 (sub_pos.mpr hstlt)
     (hf s ⟨hs.1.le, hs.2⟩) v w x]
   refine (heatD2Cancel_norm_of_holder halpha1 (sub_pos.mpr hstlt)
     (hf s ⟨hs.1.le, hs.2⟩) v w x).trans_eq ?_
-  unfold d2DuhHolderMajor d2DuhHolderConst
+  unfold d2DuhamelHolderMajor d2DuhamelHolderConst
   ring
 
-theorem heatD2Duh_norm_of_holder {alpha K : NNReal}
+theorem heatD2Duhamel_norm_of_holder {alpha K : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {t : Real} (ht : 0 < t) (f : Real → V → F)
     (hf : ∀ s ∈ Set.Icc (0 : Real) t, HolderWith K alpha (f s))
     (v w x : V)
     (hmeas : AEStronglyMeasurable
-      (fun s : Real => heatD2Conv (t - s) v w (f s) x)
+      (fun s : Real => heatD2Convolution (t - s) v w (f s) x)
       (volume.restrict (Set.uIoc (0 : Real) t))) :
-    ‖heatD2Duh t v w f x‖ ≤
-      d2DuhHolderConst alpha v w K *
+    ‖heatD2Duhamel t v w f x‖ ≤
+      d2DuhamelHolderConst alpha v w K *
         ((2 / (alpha : Real)) * t ^ ((alpha : Real) / 2)) := by
-  have hint := heatD2Duh_int_of_holder halpha0 halpha1 ht f hf v w x hmeas
-  unfold heatD2Duh
+  have hint := heatD2Duhamel_int_of_holder halpha0 halpha1 ht f hf v w x hmeas
+  unfold heatD2Duhamel
   calc
-    ‖∫ s : Real in 0..t, heatD2Conv (t - s) v w (f s) x‖ ≤
-        ∫ s : Real in 0..t, ‖heatD2Conv (t - s) v w (f s) x‖ :=
+    ‖∫ s : Real in 0..t, heatD2Convolution (t - s) v w (f s) x‖ ≤
+        ∫ s : Real in 0..t, ‖heatD2Convolution (t - s) v w (f s) x‖ :=
       intervalIntegral.norm_integral_le_integral_norm ht.le
-    _ ≤ ∫ s : Real in 0..t, d2DuhHolderMajor alpha v w K t s := by
+    _ ≤ ∫ s : Real in 0..t, d2DuhamelHolderMajor alpha v w K t s := by
       apply intervalIntegral.integral_mono_on_of_le_Ioo ht.le hint.norm
-        (d2DuhHolderMajor_intble (V := V) halpha0 v w K)
+        (d2DuhamelHolderMajor_intble (V := V) halpha0 v w K)
       intro s hs
-      rw [heatD2Conv_eq_cancel_of_holder halpha0 halpha1 (sub_pos.mpr hs.2)
+      rw [heatD2Convolution_eq_cancel_of_holder halpha0 halpha1 (sub_pos.mpr hs.2)
         (hf s ⟨hs.1.le, hs.2.le⟩) v w x]
       refine (heatD2Cancel_norm_of_holder halpha1 (sub_pos.mpr hs.2)
         (hf s ⟨hs.1.le, hs.2.le⟩) v w x).trans_eq ?_
-      unfold d2DuhHolderMajor d2DuhHolderConst
+      unfold d2DuhamelHolderMajor d2DuhamelHolderConst
       ring
-    _ = d2DuhHolderConst alpha v w K *
+    _ = d2DuhamelHolderConst alpha v w K *
         ((2 / (alpha : Real)) * t ^ ((alpha : Real) / 2)) :=
-      d2DuhHolderMajor_int (V := V) halpha0 v w K
+      d2DuhamelHolderMajor_int (V := V) halpha0 v w K
 
 end Duhamel
 

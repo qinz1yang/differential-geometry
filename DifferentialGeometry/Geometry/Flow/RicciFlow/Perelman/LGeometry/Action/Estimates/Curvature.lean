@@ -14,7 +14,7 @@ open scoped ENNReal Manifold ContDiff Topology
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 
 universe u uE uH
@@ -35,7 +35,7 @@ private def lRmFactor (E : Type uE) [NormedAddCommGroup E]
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
-theorem lRegPot_lower_rm
+theorem lRegularizedPot_lower_rm
     (S : SolutionOn (I := I) (M := M) D)
     (K T b : Real) (hb : 0 ≤ b)
     (hRm : ∀ t ∈ Icc (T - b ^ 2) T, ∀ x : M,
@@ -68,7 +68,7 @@ theorem lRegPot_lower_rm
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
-theorem lRegPot_upper_rm
+theorem lRegularizedPot_upper_rm
     (S : SolutionOn (I := I) (M := M) D)
     (K T b : Real) (hb : 0 ≤ b)
     (hRm : ∀ t ∈ Icc (T - b ^ 2) T, ∀ x : M,
@@ -97,7 +97,7 @@ theorem lRegPot_upper_rm
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space (TangentBundle I M)] in
-theorem lRegMetric_le_rm
+theorem lRegularizedMetric_le_rm
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T b : Real) (hb : 0 ≤ b)
     (hreg : Icc (T - b ^ 2) T ⊆ D.regular)
@@ -162,7 +162,7 @@ theorem lRegMetric_le_rm
         (S.base.metric (T - s ^ 2)).inner x v v :=
       mul_le_mul_of_nonneg_right hFB hmov
 
-theorem lRegRange_of_rm
+theorem lRegularizedRange_of_rm
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T : Real)
     (hg : RiemannianMetricComplete (I := I) (S.base.metric T))
@@ -174,19 +174,19 @@ theorem lRegRange_of_rm
     (hE : IntegrableOn (fun s ↦
       (S.base.metric T).inner (alpha s)
         (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s)) (Icc a b))
-    (hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume a b)
-    (hLag : IntervalIntegrable (lRegLagrangian S T alpha) volume a b)
-    (hact : lRegAction S T alpha a b ≤ A) :
+    (hkin : IntervalIntegrable (lRegularizedSpeedSq S T alpha) volume a b)
+    (hLag : IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b)
+    (hact : lRegularizedAction S T alpha a b ≤ A) :
     ∃ Cpt : Set M, IsCompact Cpt ∧ alpha '' Icc a b ⊆ Cpt := by
   have hb : 0 ≤ b := ha.trans hab
-  apply lRegRange_compact (I := I) S (S.base.metric T) hg T alpha a b A
+  apply lRegularizedRange_compact (I := I) S (S.base.metric T) hg T alpha a b A
     (-2 * b ^ 2 * lRmFactor E K)
     (Real.exp (2 * lRmFactor E K * b ^ 2)) hab (Real.exp_pos _).le
   · intro s hs v
-    exact lRegMetric_le_rm (I := I) S hS K T b hb hreg hRm s
+    exact lRegularizedMetric_le_rm (I := I) S hS K T b hb hreg hRm s
       ⟨ha.trans hs.1, hs.2⟩ (alpha s) v
   · intro s hs
-    exact lRegPot_lower_rm (I := I) S K T b hb hRm s
+    exact lRegularizedPot_lower_rm (I := I) S K T b hb hRm s
       ⟨ha.trans hs.1, hs.2⟩ (alpha s)
   · exact halpha
   · exact hE
@@ -194,7 +194,7 @@ theorem lRegRange_of_rm
   · exact hLag
   · exact hact
 
-theorem lRegRanges_of_rm
+theorem lRegularizedRanges_of_rm
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T : Real)
     (hg : RiemannianMetricComplete (I := I) (S.base.metric T))
@@ -210,19 +210,19 @@ theorem lRegRanges_of_rm
       (S.base.metric T).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s))
       (Icc a b))
-    (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
-    (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A) :
+    (hkin : ∀ n, IntervalIntegrable (lRegularizedSpeedSq S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b)
+    (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A) :
     ∃ Cpt : Set M, IsCompact Cpt ∧ ∀ n, alpha n '' Icc a b ⊆ Cpt := by
   have hb : 0 ≤ b := ha.trans hab
-  apply lRegRanges_compact (I := I) S (S.base.metric T) hg T alpha x a b A
+  apply lRegularizedRanges_compact (I := I) S (S.base.metric T) hg T alpha x a b A
     (-2 * b ^ 2 * lRmFactor E K)
     (Real.exp (2 * lRmFactor E K * b ^ 2)) hab (Real.exp_pos _).le hstart
   · intro n s hs v
-    exact lRegMetric_le_rm (I := I) S hS K T b hb hreg hRm s
+    exact lRegularizedMetric_le_rm (I := I) S hS K T b hb hreg hRm s
       ⟨ha.trans hs.1, hs.2⟩ (alpha n s) v
   · intro n s hs
-    exact lRegPot_lower_rm (I := I) S K T b hb hRm s
+    exact lRegularizedPot_lower_rm (I := I) S K T b hb hRm s
       ⟨ha.trans hs.1, hs.2⟩ (alpha n s)
   · exact halpha
   · exact hE

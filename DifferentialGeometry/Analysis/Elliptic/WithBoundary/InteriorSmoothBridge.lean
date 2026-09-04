@@ -69,8 +69,8 @@ theorem interiorSmoothScalarH1Inner_eq_integral_oneSubLap_mul
   unfold interiorSmoothScalarH1Inner
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I_half n) (M := M) g
-  have hu_supp : HasCompactSupport u.toFun := HasCompactSupport.of_compactSpace _
-  have hv_supp : HasCompactSupport v.toFun := HasCompactSupport.of_compactSpace _
+  have hu_support : HasCompactSupport u.toFun := HasCompactSupport.of_compactSpace _
+  have hv_support : HasCompactSupport v.toFun := HasCompactSupport.of_compactSpace _
   have hgreen :
       ∫ x, g.inner x (gradFun (I := I_half n) g v.toFun x)
             (gradFun (I := I_half n) g u.toFun x)
@@ -78,7 +78,7 @@ theorem interiorSmoothScalarH1Inner_eq_integral_oneSubLap_mul
         -∫ x, v.toFun x * ΔGWithBoundary (I := I_half n) g u.smooth u.interior_support x
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
-      (I := I_half n) g v.smooth u.smooth v.interior_support u.interior_support hu_supp
+      (I := I_half n) g v.smooth u.smooth v.interior_support u.interior_support hu_support
   have hsymm :
       (∫ x, g.inner x (gradFun (I := I_half n) g u.toFun x)
             (gradFun (I := I_half n) g v.toFun x)

@@ -54,12 +54,12 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
         = F (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδ) x v w)
     (hForce : ∀ {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
         (hTT₀ : T ≤ (quasilinear_maxreg_solution_of_nemytskii g₀ a Nfun hLipN H2).choose)
-        (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
+        (u : MaximalRegularitySolutionSpace (I := I) (M := M) (a : ℝ) T)
         (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
-        (hduh : u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
+        (hduh : u = maximalRegularityDuhamelMap (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce)
         (hforce : gforce =ᵐ[timeMeasure T]
-          (fun t => Nfun (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          (fun t => Nfun (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)))
         (hgforce : ‖gforce‖ ≤ 1 / (16 * ((H2.choose : ℝ) + 1)))
         (htrace : timeH1.trace0 _ T u = 0),
@@ -77,7 +77,7 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
                 (tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
                   (Nat.cast_nonneg a) (timeH1.toFun u t)) i =
-              perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (f i) t) ∧
+              perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (f i) t) ∧
           ∃ (R₀ : ℝ), 0 < R₀ ∧
             (∃ d₂ : ℝ, 0 < d₂ ∧ d₂ ≤ T ∧
               ∀ t ∈ Set.Icc (0 : ℝ) d₂, ∀ S : SmoothCcTensor g₀ 0 2,
@@ -131,7 +131,7 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
                 (tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
                   (Nat.cast_nonneg a) (timeH1.toFun u t)) i =
-              perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (f i) t) ∧
+              perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (f i) t) ∧
           ∃ (R₀ : ℝ), 0 < R₀ ∧
             (∃ d₂ : ℝ, 0 < d₂ ∧ d₂ ≤ T ∧
               ∀ t ∈ Set.Icc (0 : ℝ) d₂, ∀ S : SmoothCcTensor g₀ 0 2,

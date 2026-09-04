@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 open DifferentialGeometry.Geometry.Riemannian
@@ -79,12 +79,12 @@ theorem exists_joint_normal_metric_transition_limit
         (Jinf : LiveSlot L pb r → E → E),
       StrictMono psi ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) gInf Set.univ ∧
-      MapCInfConvOnCompacts Set.univ
+      MapCInfConvergenceOnCompacts Set.univ
         (fun k _ gamma => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
           (seqCenterD hd P L (psi k) (gamma.1 : Nat)) 0) gInf ∧
       ∀ gamma : LiveSlot L pb r,
         ContDiffOn Real (∞ : WithTop ℕ∞) (Jinf gamma) U ∧
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k => normalTransition (I := I) (X.obj (L.φ (psi k)))
             (beta (psi k)) (seqCenterD hd P L (psi k) (gamma.1 : Nat)))
           (Jinf gamma) ∧
@@ -251,5 +251,5 @@ theorem exists_joint_normal_metric_transition_limit
     · intro k
       simpa only [Function.comp_apply] using hLive (psi2 k) gamma
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

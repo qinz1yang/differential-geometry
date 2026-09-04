@@ -38,7 +38,7 @@ variable {D : RealTimeInterval}
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
-private theorem hasMFDerivAt_lRegAction_endpointBranch_at
+private theorem hasMFDerivAt_lRegularizedAction_endpointBranch_at
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -54,16 +54,16 @@ private theorem hasMFDerivAt_lRegAction_endpointBranch_at
           (fun r : Real ↦ alpha (A, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A, z)) r) s =
-        lRegAccel S T s (alpha (A, s))
+        lRegularizedAccel S T s (alpha (A, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A, r)) s))
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B)
     (y : M)
-    (hySrc : y ∈
+    (hySource : y ∈
       (Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse.source)
     (hyV : (Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse y ∈ V) :
     HasMFDerivAt I 𝓘(Real, Real)
-      (fun q : M ↦ lRegAction S T
+      (fun q : M ↦ lRegularizedAction S T
         (fun s ↦ alpha
           ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse q, s))
         a b) y
@@ -76,15 +76,15 @@ private theorem hasMFDerivAt_lRegAction_endpointBranch_at
   let A : E := hloc.localInverse y
   let endMap : E → M := fun B ↦ alpha (B, b)
   let act : E → Real := fun B ↦
-    lRegAction S T (fun s ↦ alpha (B, s)) a b
+    lRegularizedAction S T (fun s ↦ alpha (B, s)) a b
   let flat : TangentSpace I (alpha (A, b)) →L[Real] Real :=
     (S.base.metric (T - b ^ 2)).inner (alpha (A, b))
       (lVelocity (I := I) (fun s : Real ↦ alpha (A, s)) b)
-  have hright : endMap A = y := hloc.localInverse_right_inv hySrc
+  have hright : endMap A = y := hloc.localInverse_right_inv hySource
   have hstartA : ∀ B ∈ V, alpha (B, a) = alpha (A, a) := by
     intro B hBV
     exact (hstart B hBV).trans (hstart A hyV).symm
-  have hjoint := hasFDerivAt_lRegAction_family_endpoint
+  have hjoint := hasFDerivAt_lRegularizedAction_family_endpoint
     S hS T a b hab hVopen hyV hKopen
     hKconn haK hbK hstartA halpha hreg (hEuler A hyV)
   have hins : HasFDerivAt (fun B : E ↦ (B, b))
@@ -98,12 +98,12 @@ private theorem hasMFDerivAt_lRegAction_endpointBranch_at
     apply ContinuousLinearMap.ext
     intro B
     change flat (mfderiv 𝓘(Real, E) I endMap A B) +
-        lRegLagrangian S T (fun s : Real ↦ alpha (A, s)) b * 0 =
+        lRegularizedLagrangian S T (fun s : Real ↦ alpha (A, s)) b * 0 =
       flat (mfderiv 𝓘(Real, E) I endMap A B)
     ring
   have hInv : MDifferentiableAt I 𝓘(Real, E) hloc.localInverse y :=
-    (hloc.localInverse_contMDiffOn y hySrc).contMDiffAt
-      (hloc.localInverse_open_source.mem_nhds hySrc) |>.mdifferentiableAt (by simp)
+    (hloc.localInverse_contMDiffOn y hySource).contMDiffAt
+      (hloc.localInverse_open_source.mem_nhds hySource) |>.mdifferentiableAt (by simp)
   have hEnd : MDifferentiableAt 𝓘(Real, E) I endMap A := by
     have hpair : ContMDiffAt 𝓘(Real, E)
         (𝓘(Real, E).prod 𝓘(Real, Real)) ∞
@@ -115,7 +115,7 @@ private theorem hasMFDerivAt_lRegAction_endpointBranch_at
   have hcomp := hact.hasMFDerivAt.comp y hInv.hasMFDerivAt
   have hEq : (endMap ∘ hloc.localInverse) =ᶠ[nhds y] id := by
     exact Filter.eventuallyEq_of_mem
-      (hloc.localInverse_open_source.mem_nhds hySrc)
+      (hloc.localInverse_open_source.mem_nhds hySource)
       (fun q hq ↦ hloc.localInverse_right_inv hq)
   have hchain := mfderiv_comp y hEnd hInv
   have hcancel :
@@ -168,7 +168,7 @@ private theorem hasMFDerivAt_lRegAction_endpointBranch_at
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
-private theorem exists_gradient_lRegAction_endpointBranch
+private theorem exists_gradient_lRegularizedAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -184,13 +184,13 @@ private theorem exists_gradient_lRegAction_endpointBranch
           (fun r : Real ↦ alpha (A, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A, z)) r) s =
-        lRegAccel S T s (alpha (A, s))
+        lRegularizedAccel S T s (alpha (A, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A, r)) s))
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B) :
     let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let branch : M → Real := fun y ↦
-      lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
+      lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
     ∃ U : Set M, IsOpen U ∧ alpha (A0, b) ∈ U ∧
       ContMDiffOn I 𝓘(Real, Real) ∞ branch U ∧
       (∀ y ∈ U, y ∈ hloc.localInverse.source) ∧
@@ -200,12 +200,12 @@ private theorem exists_gradient_lRegAction_endpointBranch
           (fun s : Real ↦ alpha (hloc.localInverse y, s)) b := by
   dsimp only
   obtain ⟨W, hWopen, hA0W, hWV, hact⟩ :=
-    exists_contDiffOn_lRegAction_family
+    exists_contDiffOn_lRegularizedAction_family
       S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg
   let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let branch : M → Real := fun y ↦
-    lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
+    lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
   let U : Set M := hloc.localInverse.source ∩ hloc.localInverse ⁻¹' W
   have hUopen : IsOpen U :=
     hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
@@ -218,21 +218,21 @@ private theorem exists_gradient_lRegAction_endpointBranch
     rw [hinv]
     exact hA0W
   have hactM : ContMDiffOn 𝓘(Real, E) 𝓘(Real, Real) ∞
-      (fun A : E ↦ lRegAction S T (fun s ↦ alpha (A, s)) a b) W :=
+      (fun A : E ↦ lRegularizedAction S T (fun s ↦ alpha (A, s)) a b) W :=
     contMDiffOn_iff_contDiffOn.mpr hact
   have hbranch : ContMDiffOn I 𝓘(Real, Real) ∞ branch U := by
     have hcomp := hactM.comp
       (hloc.localInverse_contMDiffOn.mono inter_subset_left)
       (fun _ hy ↦ hy.2)
     change ContMDiffOn I 𝓘(Real, Real) ∞
-      ((fun A : E ↦ lRegAction S T (fun s ↦ alpha (A, s)) a b) ∘
+      ((fun A : E ↦ lRegularizedAction S T (fun s ↦ alpha (A, s)) a b) ∘
         hloc.localInverse) U
     exact hcomp
   refine ⟨U, hUopen, hyU, hbranch, (fun _ hy ↦ hy.1),
     (fun _ hy ↦ hWV hy.2), ?_⟩
   intro y hy
   apply gradientFun_eq_of_flat
-  have hmfd := hasMFDerivAt_lRegAction_endpointBranch_at
+  have hmfd := hasMFDerivAt_lRegularizedAction_endpointBranch_at
     S hS T a b hab hVopen hA0V hKopen
     hKconn haK hbK hstart halpha hreg hEuler hinj y hy.1 (hWV hy.2)
   ext Y
@@ -242,19 +242,19 @@ private theorem exists_gradient_lRegAction_endpointBranch
   rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv]
   have hd' := congrArg
     (NormedSpace.fromTangentSpace (𝕜 := Real) (branch y)) hd
-  let vel : TangentSpace I y :=
+  let velocity : TangentSpace I y :=
     lVelocity (I := I) (fun s : Real ↦ alpha (hloc.localInverse y, s)) b
   have hcast :
-      ((S.base.metric (T - b ^ 2)).inner y vel) Y =
+      ((S.base.metric (T - b ^ 2)).inner y velocity) Y =
         (NormedSpace.fromTangentSpace (𝕜 := Real) (branch y)).symm
-          (metricFlatEquiv (I := I) (S.base.metric (T - b ^ 2)) y vel Y) := by
+          (metricFlatEquiv (I := I) (S.base.metric (T - b ^ 2)) y velocity Y) := by
     rfl
   calc
     _ = (NormedSpace.fromTangentSpace (𝕜 := Real) (branch y))
-        (((S.base.metric (T - b ^ 2)).inner y vel) Y) := hd'
+        (((S.base.metric (T - b ^ 2)).inner y velocity) Y) := hd'
     _ = (NormedSpace.fromTangentSpace (𝕜 := Real) (branch y))
         ((NormedSpace.fromTangentSpace (𝕜 := Real) (branch y)).symm
-          (metricFlatEquiv (I := I) (S.base.metric (T - b ^ 2)) y vel Y)) :=
+          (metricFlatEquiv (I := I) (S.base.metric (T - b ^ 2)) y velocity Y)) :=
       congrArg (NormedSpace.fromTangentSpace (𝕜 := Real) (branch y)) hcast
     _ = _ := ContinuousLinearEquiv.apply_symm_apply _ _
 
@@ -262,7 +262,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
-private theorem covDerivAlong_gradient_lRegAction_endpointBranch
+private theorem covDerivAlong_gradient_lRegularizedAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -278,7 +278,7 @@ private theorem covDerivAlong_gradient_lRegAction_endpointBranch
           (fun r : Real ↦ alpha (A, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A, z)) r) s =
-        lRegAccel S T s (alpha (A, s))
+        lRegularizedAccel S T s (alpha (A, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A, r)) s))
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B)
@@ -289,7 +289,7 @@ private theorem covDerivAlong_gradient_lRegAction_endpointBranch
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, s)) A0 W
     (LeviCivita (I := I) (S.base.metric (T - b ^ 2))).toFun
         (fun y ↦ gradientFun (I := I) (S.base.metric (T - b ^ 2))
-          (fun q : M ↦ lRegAction S T
+          (fun q : M ↦ lRegularizedAction S T
             (fun s ↦ alpha (hloc.localInverse q, s)) a b) y)
         (alpha (A0, b)) Y =
       covDerivAlong (I := I) (S.base.metric (T - b ^ 2))
@@ -299,15 +299,15 @@ private theorem covDerivAlong_gradient_lRegAction_endpointBranch
   let y : M := alpha (A0, b)
   let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let branch : M → Real := fun q ↦
-    lRegAction S T (fun s ↦ alpha (hloc.localInverse q, s)) a b
+    lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse q, s)) a b
   let W : E := mfderiv I 𝓘(Real, E) hloc.localInverse y Y
   let J : (s : Real) → TangentSpace I (alpha (A0, s)) := fun s ↦
     mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, s)) A0 W
   obtain ⟨U, hUopen, hyU, hsmooth, hsource, hparam, hgrad⟩ :=
-    exists_gradient_lRegAction_endpointBranch
+    exists_gradient_lRegularizedAction_endpointBranch
       S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK hstart halpha hreg hEuler hinj
-  obtain ⟨eta, heta, hetaU, heta0, hetaVel⟩ :=
+  obtain ⟨eta, heta, hetaU, heta0, hetaVelocity⟩ :=
     exists_smooth_curve y Y U hUopen (by simpa only [y] using hyU)
   let zeta : Real → E := fun u ↦ hloc.localInverse (eta u)
   have hzeta : ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ zeta := by
@@ -323,7 +323,7 @@ private theorem covDerivAlong_gradient_lRegAction_endpointBranch
     dsimp only [zeta]
     rw [heta0]
     exact hinv0
-  have hzetaVel : mfderiv 𝓘(Real, Real) 𝓘(Real, E) zeta 0
+  have hzetaVelocity : mfderiv 𝓘(Real, Real) 𝓘(Real, E) zeta 0
       (1 : Real) = W := by
     have hInv0 : MDifferentiableAt I 𝓘(Real, E)
         hloc.localInverse (eta 0) := by
@@ -337,7 +337,7 @@ private theorem covDerivAlong_gradient_lRegAction_endpointBranch
     change mfderiv I 𝓘(Real, E) hloc.localInverse (eta 0)
       (mfderiv 𝓘(Real, Real) I eta 0 1) = W
     rw [heta0]
-    exact congrArg (mfderiv I 𝓘(Real, E) hloc.localInverse y) hetaVel
+    exact congrArg (mfderiv I 𝓘(Real, E) hloc.localInverse y) hetaVelocity
   obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, _hrhoDeriv, hrhoK⟩ :=
     DifferentialGeometry.exists_smooth_time_clamp_range_subset
       hKopen hab (hKconn.ordConnected.out haK hbK)
@@ -427,7 +427,7 @@ private theorem covDerivAlong_gradient_lRegAction_endpointBranch
     exact hchain.trans (congrArg
       (fun Q : TangentSpace I y ↦
         (LeviCivita (I := I) g).toFun
-          (fun q ↦ gradientFun (I := I) g branch q) y Q) hetaVel)
+          (fun q ↦ gradientFun (I := I) g branch q) y Q) hetaVelocity)
   have hcomm := commute_ds_dt_intrinsic (I := I) g F hF b
   have hbase : (fun s : Real ↦ F 0 s) =ᶠ[nhds b]
       (fun s : Real ↦ alpha (A0, s)) := by
@@ -465,10 +465,10 @@ private theorem covDerivAlong_gradient_lRegAction_endpointBranch
     rw [hzcomp, hzeta0]
     exact congrArg
       (mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, s)) A0)
-      hzetaVel
+      hzetaVelocity
   have hcomm' : covDerivAlong (I := I) g eta Vterm 0 =
       covDerivAlong (I := I) g (fun s ↦ alpha (A0, s)) J b := by
-    have hendVel : (fun u : Real ↦
+    have hendVelocity : (fun u : Real ↦
         lVelocity (I := I) (fun s ↦ F u s) b) = Vterm := by
       funext u
       have heq : (fun s ↦ F u s) =ᶠ[nhds b]
@@ -483,7 +483,7 @@ private theorem covDerivAlong_gradient_lRegAction_endpointBranch
         (heq.mfderiv_eq (I := 𝓘(Real, Real)) (I' := I))
     change covDerivAlong (I := I) g (fun u ↦ F u b)
         (fun u ↦ lVelocity (I := I) (fun s ↦ F u s) b) 0 = _ at hcomm
-    rw [hend, hendVel] at hcomm
+    rw [hend, hendVelocity] at hcomm
     have hc := DifferentialGeometry.Geometry.Riemannian.covDerivAlong_congr_curve
       (I := I) g _ _ hbase hfield
     exact hcomm.trans (by simpa using hc)
@@ -493,7 +493,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
-theorem hessFun_lRegAction_endpointBranch
+theorem hessFun_lRegularizedAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -509,14 +509,14 @@ theorem hessFun_lRegAction_endpointBranch
           (fun r : Real ↦ alpha (A, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A, z)) r) s =
-        lRegAccel S T s (alpha (A, s))
+        lRegularizedAccel S T s (alpha (A, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A, r)) s))
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B)
     (Y Z : TangentSpace I (alpha (A0, b))) :
     let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let branch : M → Real := fun y ↦
-      lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
+      lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
     let W := mfderiv I 𝓘(Real, E) hloc.localInverse (alpha (A0, b)) Y
     let J : ∀ s, TangentSpace I (alpha (A0, s)) := fun s ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, s)) A0 W
@@ -527,12 +527,12 @@ theorem hessFun_lRegAction_endpointBranch
           (fun s ↦ alpha (A0, s)) J b) Z := by
   dsimp only
   obtain ⟨U, hUopen, hyU, hsmooth, _hsource, _hparam, _hgrad⟩ :=
-    exists_gradient_lRegAction_endpointBranch
+    exists_gradient_lRegularizedAction_endpointBranch
       S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK hstart halpha hreg hEuler hinj
   have hhess := hessFun_eq_cov_local (I := I)
     (S.base.metric (T - b ^ 2)) hUopen hsmooth hyU Y Z
-  have hcov := covDerivAlong_gradient_lRegAction_endpointBranch
+  have hcov := covDerivAlong_gradient_lRegularizedAction_endpointBranch
     S hS T a b hab hVopen hA0V hKopen
     hKconn haK hbK hstart halpha hreg hEuler hinj Y
   simp only [gradient_eq_gradFun] at hcov
@@ -543,15 +543,15 @@ theorem hessFun_lRegAction_endpointBranch
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem hessFun_lRegAction_endpointBranch_le_index
+theorem hessFun_lRegularizedAction_endpointBranch_le_index
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (ha0 : 0 < a) (hab : a < b)
     {gamma : Real → M} {x : M} {Z : TangentSpace I x}
-    (hgeo : IsLRegCurveOn S T gamma (uIcc (0 : Real) b) x Z)
+    (hgeo : IsLRegularizedCurveOn S T gamma (uIcc (0 : Real) b) x Z)
     (hmin : ∀ delta : Real → M,
       ContMDiff 𝓘(Real, Real) I 1 delta →
       delta 0 = gamma 0 → delta b = gamma b →
-      lRegAction S T gamma 0 b ≤ lRegAction S T delta 0 b)
+      lRegularizedAction S T gamma 0 b ≤ lRegularizedAction S T delta 0 b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
     (hVopen : IsOpen V) (hA0V : A0 ∈ V)
     (hKopen : IsOpen K) (hKconn : IsPreconnected K)
@@ -565,7 +565,7 @@ theorem hessFun_lRegAction_endpointBranch_le_index
           (fun r : Real ↦ alpha (A, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A, z)) r) s =
-        lRegAccel S T s (alpha (A, s))
+        lRegularizedAccel S T s (alpha (A, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A, r)) s))
     (hcenter : ∀ s ∈ Icc (0 : Real) b,
       (fun r ↦ alpha (A0, r)) =ᶠ[nhds s] gamma)
@@ -574,7 +574,7 @@ theorem hessFun_lRegAction_endpointBranch_le_index
     (Y : TangentSpace I (alpha (A0, b)))
     (W : ∀ s, TangentSpace I (alpha (A0, s)))
     {Omega : Set Real} (hOmega : IsOpen Omega)
-    (hOmegaSeg : Icc (0 : Real) b ⊆ Omega)
+    (hOmegaSegment : Icc (0 : Real) b ⊆ Omega)
     (hW : ContMDiffOn 𝓘(Real, Real) I.tangent (8 : Nat)
       (fun s : Real ↦
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
@@ -582,17 +582,17 @@ theorem hessFun_lRegAction_endpointBranch_le_index
     (hWa : W a = 0) (hWb : W b = Y) :
     let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
     let branch : M → Real := fun y ↦
-      lRegAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
+      lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
     hessFun (I := I) (S.base.metric (T - b ^ 2)) branch
         (alpha (A0, b)) Y Y ≤
-      2 * lRegIndex S T (fun s ↦ alpha (A0, s)) W W a b := by
+      2 * lRegularizedIndex S T (fun s ↦ alpha (A0, s)) W W a b := by
   dsimp only
   let beta : Real → M := fun s ↦ alpha (A0, s)
   let y : M := beta b
   let g := S.base.metric (T - b ^ 2)
   let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let branch : M → Real := fun q ↦
-    lRegAction S T (fun s ↦ alpha (hloc.localInverse q, s)) a b
+    lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse q, s)) a b
   let B : E := mfderiv I 𝓘(Real, E) hloc.localInverse y Y
   let J : (s : Real) → TangentSpace I (beta s) := fun s ↦
     lVelocity (I := I) (fun u : Real ↦ alpha (A0 + u • B, s)) 0
@@ -608,18 +608,18 @@ theorem hessFun_lRegAction_endpointBranch_le_index
     simpa only [beta, J, lVelocity] using
       contMDiffOn_affine_variationField (I := I) (B := B)
         hVopen hA0V hKopen halpha
-  have hlineJac := isLRegJacobi_affine_parameter (I := I) (B := B) S T (beta a)
+  have hlineJacobian := isLRegularizedJacobi_affine_parameter (I := I) (B := B) S T (beta a)
     hVopen hA0V hKopen halpha
     (by simpa only [beta] using hstart) hEuler
-  have hJacK : IsLRegJacobi S T beta J K := by
-    simpa only [beta, J] using hlineJac.1
+  have hJacobianK : IsLRegularizedJacobi S T beta J K := by
+    simpa only [beta, J] using hlineJacobian.1
   have hJa : J a = 0 := by
     change lVelocity (I := I)
       (fun u : Real ↦ alpha (A0 + u • B, a)) 0 =
         (0 : TangentSpace I (beta a))
     rw [show beta a = alpha (A0 + 0 • B, a) by
       simp only [beta, zero_smul, add_zero]]
-    exact hlineJac.2
+    exact hlineJacobian.2
   have halphaB : ContMDiffAt
       (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha (A0, b) :=
     (halpha (A0, b) ⟨hA0V, hbK⟩).contMDiffAt
@@ -647,7 +647,7 @@ theorem hessFun_lRegAction_endpointBranch_le_index
     rw [hWb, hJb, sub_self]
   have hsegInter : Icc (0 : Real) b ⊆ K ∩ Omega := by
     intro s hs
-    exact ⟨hsegK hs, hOmegaSeg hs⟩
+    exact ⟨hsegK hs, hOmegaSegment hs⟩
   obtain ⟨rho, lo, hi, hlo0, hbhi, hrho, hrhoEq, _hrhoDeriv,
       hrhoRange, hJgSmooth, _hpairEq⟩ :=
     exists_contMDiff_tangentCurve_reparametrization (I := I)
@@ -724,7 +724,7 @@ theorem hessFun_lRegAction_endpointBranch_le_index
     have hneg := (contMDiff_const (c := (-1 : Real))).smul_bundle hJg8
     simpa only [Qg, Pi.sub_apply, neg_one_smul, sub_eq_add_neg] using
       hWg8.add_bundle hneg
-  have hgeoG : IsLRegCurveOn S T gammaG (uIcc (0 : Real) b) x Z := by
+  have hgeoG : IsLRegularizedCurveOn S T gammaG (uIcc (0 : Real) b) x Z := by
     have h0Icc : (0 : Real) ∈ Icc (0 : Real) b := ⟨le_rfl, hb0.le⟩
     have h0germ := hGGerm 0 h0Icc
     refine ⟨(h0germ.self_of_nhds).trans hgeo.1, ?_, ?_⟩
@@ -737,18 +737,18 @@ theorem hessFun_lRegAction_endpointBranch_le_index
     · intro s hs
       have hsIcc : s ∈ Icc (0 : Real) b := by
         simpa only [uIcc_of_le hb0.le] using hs
-      exact lRegData_congr S T s (hGGerm s hsIcc) (hgeo.2.2 s hs)
+      exact lRegularizedData_congr S T s (hGGerm s hsIcc) (hgeo.2.2 s hs)
   have hminG : ∀ delta : Real → M,
       ContMDiff 𝓘(Real, Real) I 1 delta →
       delta 0 = gammaG 0 → delta b = gammaG b →
-      lRegAction S T gammaG 0 b ≤ lRegAction S T delta 0 b := by
+      lRegularizedAction S T gammaG 0 b ≤ lRegularizedAction S T delta 0 b := by
     intro delta hdelta hd0 hdb
     have hG0 := (hGGerm 0 ⟨le_rfl, hb0.le⟩).self_of_nhds
     have hGb := (hGGerm b ⟨hb0.le, le_rfl⟩).self_of_nhds
     have hraw := hmin delta hdelta (hd0.trans hG0) (hdb.trans hGb)
-    have haction : lRegAction S T gammaG 0 b =
-        lRegAction S T gamma 0 b := by
-      apply lRegAction_congr (I := I) S T
+    have haction : lRegularizedAction S T gammaG 0 b =
+        lRegularizedAction S T gamma 0 b := by
+      apply lRegularizedAction_congr (I := I) S T
       intro s hs
       have hs' : s ∈ Ioo (0 : Real) b := by
         simpa only [uIoo_of_le hb0.le] using hs
@@ -775,17 +775,17 @@ theorem hessFun_lRegAction_endpointBranch_le_index
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (gammaG s) ((0 : Real) • Jg s) : TangentBundle I M))
     exact hz
-  have hnonneg := lRegIndex_piecewise_nonneg (E := E) (I := I) S hS T gammaG
+  have hnonneg := lRegularizedIndex_piecewise_nonneg (E := E) (I := I) S hS T gammaG
     0 a b ha0 hab x Z hgeoG hminG Zg Qg hZg8 hQg8
     (by dsimp only [Zg]; change (0 : Real) • (Jg 0 : E) = 0; module)
     hQgb (by
       dsimp only [Zg]
       change (0 : Real) • (Jg a : E) = (Qg a : E)
       rw [zero_smul, hQga])
-  have hZidx : lRegIndex S T gammaG Zg Zg 0 a = 0 := by
+  have hZidx : lRegularizedIndex S T gammaG Zg Zg 0 a = 0 := by
     simpa only [Zg, zero_mul] using
-      (lRegIndex_smul (I := I) S T 0 gammaG Jg Zg 0 a)
-  have hQgNonneg : 0 ≤ lRegIndex S T gammaG Qg Qg a b := by
+      (lRegularizedIndex_smul (I := I) S T 0 gammaG Jg Zg 0 a)
+  have hQgNonneg : 0 ≤ lRegularizedIndex S T gammaG Qg Qg a b := by
     rw [hZidx, zero_add] at hnonneg
     exact hnonneg
   have hBetaGerm : ∀ s ∈ uIoo a b, beta =ᶠ[nhds s] gammaG := by
@@ -800,13 +800,13 @@ theorem hessFun_lRegAction_endpointBranch_le_index
       simpa only [uIoo_of_le hab.le] using hs
     exact Filter.EventuallyEq.symm
       (hQgGerm s ⟨ha0.le.trans hs'.1.le, hs'.2.le⟩)
-  have hQQeq : lRegIndex S T beta Q Q a b =
-      lRegIndex S T gammaG Qg Qg a b := by
-    apply lRegIndex_congr_of_eventuallyEq (I := I) S T Q Q Qg Qg
+  have hQQeq : lRegularizedIndex S T beta Q Q a b =
+      lRegularizedIndex S T gammaG Qg Qg a b := by
+    apply lRegularizedIndex_congr_of_eventuallyEq (I := I) S T Q Q Qg Qg
     · exact hBetaGerm
     · exact hQGerm
     · exact hQGerm
-  have hQQNonneg : 0 ≤ lRegIndex S T beta Q Q a b := by
+  have hQQNonneg : 0 ≤ lRegularizedIndex S T beta Q Q a b := by
     rw [hQQeq]
     exact hQgNonneg
   have htailInter : uIcc a b ⊆ K ∩ Omega := by
@@ -814,7 +814,7 @@ theorem hessFun_lRegAction_endpointBranch_le_index
     have hs' : s ∈ Icc a b := by
       simpa only [uIcc_of_le hab.le] using hs
     exact ⟨hsegK ⟨ha0.le.trans hs'.1, hs'.2⟩,
-      hOmegaSeg ⟨ha0.le.trans hs'.1, hs'.2⟩⟩
+      hOmegaSegment ⟨ha0.le.trans hs'.1, hs'.2⟩⟩
   have hJg2 : ContMDiff 𝓘(Real, Real) I.tangent 2
       (fun s : Real ↦
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
@@ -839,11 +839,11 @@ theorem hessFun_lRegAction_endpointBranch_le_index
       rw [uIcc_of_le hb0.le]
       exact hs0b
     exact (hgeoG.2.2 s hs0b').1
-  have hJJgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T a b gammaG Jg Jg
+  have hJJgInt := intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiff (I := I) S hS T a b gammaG Jg Jg
     hJg2 hJg2 hregGTail
-  have hJQgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T a b gammaG Jg Qg
+  have hJQgInt := intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiff (I := I) S hS T a b gammaG Jg Qg
     hJg2 hQg2 hregGTail
-  have hQQgInt := intervalIntegrable_lRegIndexIntegrand_of_contMDiff (I := I) S hS T a b gammaG Qg Qg
+  have hQQgInt := intervalIntegrable_lRegularizedIndexIntegrand_of_contMDiff (I := I) S hS T a b gammaG Qg Qg
     hQg2 hQg2 hregGTail
   have hBetaIGerm : ∀ s ∈ Ioo a b, beta =ᶠ[nhds s] gammaG := by
     intro s hs
@@ -857,17 +857,17 @@ theorem hessFun_lRegAction_endpointBranch_le_index
       ∀ᶠ r in nhds s, (Q r : E) = (Qg r : E) := by
     intro s hs
     exact hQGerm s (by simpa only [uIoo_of_le hab.le] using hs)
-  have hJJInt : IntervalIntegrable (lRegIndexIntegrand S T beta J J)
+  have hJJInt : IntervalIntegrable (lRegularizedIndexIntegrand S T beta J J)
       MeasureTheory.volume a b :=
-    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J J Jg Jg a b hab.le
+    (intervalIntegrable_lRegularizedIndexIntegrand_congr_of_eventuallyEq (I := I) S T J J Jg Jg a b hab.le
       hBetaIGerm hJGerm hJGerm).2 hJJgInt
-  have hJQInt : IntervalIntegrable (lRegIndexIntegrand S T beta J Q)
+  have hJQInt : IntervalIntegrable (lRegularizedIndexIntegrand S T beta J Q)
       MeasureTheory.volume a b :=
-    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T J Q Jg Qg a b hab.le
+    (intervalIntegrable_lRegularizedIndexIntegrand_congr_of_eventuallyEq (I := I) S T J Q Jg Qg a b hab.le
       hBetaIGerm hJGerm hQIGerm).2 hJQgInt
-  have hQQInt : IntervalIntegrable (lRegIndexIntegrand S T beta Q Q)
+  have hQQInt : IntervalIntegrable (lRegularizedIndexIntegrand S T beta Q Q)
       MeasureTheory.volume a b :=
-    (intervalIntegrable_lRegIndexIntegrand_congr_of_eventuallyEq (I := I) S T Q Q Qg Qg a b hab.le
+    (intervalIntegrable_lRegularizedIndexIntegrand_congr_of_eventuallyEq (I := I) S T Q Q Qg Qg a b hab.le
       hBetaIGerm hQIGerm hQIGerm).2 hQQgInt
   have hbetaAt : ∀ s ∈ Icc a b,
       ContMDiffAt 𝓘(Real, Real) I ∞ beta s := by
@@ -902,12 +902,12 @@ theorem hessFun_lRegAction_endpointBranch_le_index
       simpa only [uIcc_of_le hab.le] using hs
     simpa only [lVelocity] using
       velocity_rep_diffAt (I := I) beta s (hbetaAt s hs')
-  have hJacTail : IsLRegJacobi S T beta J (uIcc a b) := by
+  have hJacobianTail : IsLRegularizedJacobi S T beta J (uIcc a b) := by
     intro s hs
-    exact hJacK s (htailInter hs).1
+    exact hJacobianK s (htailInter hs).1
   have hJdiff : ∀ s ∈ uIcc a b,
       DifferentiableAt Real (chartRepAt (I := I) beta J s) s :=
-    fun s hs ↦ (hJacTail s hs).2.1
+    fun s hs ↦ (hJacobianTail s hs).2.1
   have hWdiff : ∀ s ∈ uIcc a b,
       DifferentiableAt Real (chartRepAt (I := I) beta W s) s := by
     intro s hs
@@ -929,29 +929,29 @@ theorem hessFun_lRegAction_endpointBranch_le_index
       module
     rw [hrep]
     exact (hWdiff s hs).sub (hJdiff s hs)
-  have hJQzero : lRegIndex S T beta J Q a b = 0 := by
-    have hgreen := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T beta J Q a b
-      hregTail hBetaMdiff hA hJacTail hQdiff hJQInt
+  have hJQzero : lRegularizedIndex S T beta J Q a b = 0 := by
+    have hgreen := lRegularizedIndex_eq_half_boundary_of_isLRegularizedJacobi (I := I) S hS T beta J Q a b
+      hregTail hBetaMdiff hA hJacobianTail hQdiff hJQInt
     rw [hgreen, hQa, hQb]
     simp
-  have hsquare := lRegIndex_add_smul_self (I := I) S T 1 beta J Q a b
+  have hsquare := lRegularizedIndex_add_smul_self (I := I) S T 1 beta J Q a b
     hJdiff hQdiff hJJInt hJQInt hQQInt
   have hfield : (fun s ↦ J s + (1 : Real) • Q s) = W := by
     funext s
     dsimp only [Q]
     module
   rw [hfield] at hsquare
-  have hdecomp : lRegIndex S T beta W W a b =
-      lRegIndex S T beta J J a b + lRegIndex S T beta Q Q a b := by
+  have hdecomp : lRegularizedIndex S T beta W W a b =
+      lRegularizedIndex S T beta J J a b + lRegularizedIndex S T beta Q Q a b := by
     rw [hsquare, hJQzero]
     ring
-  have hJleW : lRegIndex S T beta J J a b ≤
-      lRegIndex S T beta W W a b := by
+  have hJleW : lRegularizedIndex S T beta J J a b ≤
+      lRegularizedIndex S T beta W W a b := by
     rw [hdecomp]
     linarith
-  have hgreenJJ := lRegIndex_eq_half_boundary_of_isLRegJacobi (I := I) S hS T beta J J a b
-    hregTail hBetaMdiff hA hJacTail hJdiff hJJInt
-  have hJJend : 2 * lRegIndex S T beta J J a b =
+  have hgreenJJ := lRegularizedIndex_eq_half_boundary_of_isLRegularizedJacobi (I := I) S hS T beta J J a b
+    hregTail hBetaMdiff hA hJacobianTail hJdiff hJJInt
+  have hJJend : 2 * lRegularizedIndex S T beta J J a b =
       g.inner y (covDerivAlong (I := I) g beta J b) Y := by
     rw [hgreenJJ, hJa, hJb]
     simp only [map_zero, sub_zero]
@@ -971,7 +971,7 @@ theorem hessFun_lRegAction_endpointBranch_le_index
     covDerivAlong_congr_of_eventuallyEq (I := I) g beta hJmEq
   have hbranch : hessFun (I := I) g branch y Y Y =
       g.inner y (covDerivAlong (I := I) g beta J b) Y := by
-    have hh := hessFun_lRegAction_endpointBranch
+    have hh := hessFun_lRegularizedAction_endpointBranch
       S hS T a b hab hVopen hA0V hKopen
       hKconn haK hbK hstart halpha hreg
       (fun A hA s hs ↦ hEuler A hA s
@@ -979,15 +979,15 @@ theorem hessFun_lRegAction_endpointBranch_le_index
     simpa only [g, branch, y, beta, hloc, B, Jm, hcovEq] using hh
   calc
     hessFun (I := I) (S.base.metric (T - b ^ 2))
-        (fun q ↦ lRegAction S T
+        (fun q ↦ lRegularizedAction S T
           (fun s ↦ alpha
             ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse q, s))
           a b) (alpha (A0, b)) Y Y =
       hessFun (I := I) g branch y Y Y := rfl
     _ = g.inner y (covDerivAlong (I := I) g beta J b) Y := hbranch
-    _ = 2 * lRegIndex S T beta J J a b := hJJend.symm
-    _ ≤ 2 * lRegIndex S T beta W W a b :=
+    _ = 2 * lRegularizedIndex S T beta J J a b := hJJend.symm
+    _ ≤ 2 * lRegularizedIndex S T beta W W a b :=
       mul_le_mul_of_nonneg_left hJleW (by norm_num)
-    _ = 2 * lRegIndex S T (fun s ↦ alpha (A0, s)) W W a b := rfl
+    _ = 2 * lRegularizedIndex S T (fun s ↦ alpha (A0, s)) W W a b := rfl
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

@@ -610,7 +610,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (smoothCcTensorBilinForm ccTensorModel ccTensorMultilinear ccTensorBilin_apply) in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_eq_ccTensorBilin_loc (g₀ : SmoothRiemannianMetric I M)
+private lemma unitModel_eq_ccTensorBilin_local (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (b : M) (u w : TangentSpace I b) :
     unitModel (I := I) (M := M) g₀ 2 S b
         ![tangentSpaceModelContinuousLinearEquiv (I := I) b u,
@@ -676,7 +676,7 @@ private lemma cotangentToDual_cometricRaiseSlot0_eq (g₀ : SmoothRiemannianMetr
     · simp only [Fin.cons_succ]
       fin_cases j
       rfl]
-  rw [unitModel_eq_ccTensorBilin_loc, smoothCcTensorBilinForm_ccTensor02Symm]
+  rw [unitModel_eq_ccTensorBilin_local, smoothCcTensorBilinForm_ccTensor02Symm]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -1015,7 +1015,7 @@ private lemma riemannianFiberNormSq_slotInsertFULL_zero_le
   have hceil0 : 0 < 1 - δ₀ := by linarith
   have hcoeff : 0 < 1 - δ := by linarith
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   have hg₁ : ∀ (b : M) (u₁ u₂ : TangentSpace I b),
       g₁.inner b u₁ u₂ = g₀.inner b u₁ u₂ + ccTensorBilinSymm (I := I) g₀ T b u₁ u₂ :=
@@ -1113,7 +1113,7 @@ private lemma riemannianFiberNormSq_slotInsertE_zero_le
   have hceil0 : 0 < 1 - δ₀ := by linarith
   have hcoeff : 0 < 1 - δ := by linarith
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   have hg₁ : ∀ (b : M) (u₁ u₂ : TangentSpace I b),
       g₁.inner b u₁ u₂ = g₀.inner b u₁ u₂ + ccTensorBilinSymm (I := I) g₀ T b u₁ u₂ :=
@@ -1330,7 +1330,7 @@ private theorem
     rw [hSdef]
 
 omit [SigmaCompactSpace M] in
-theorem invDiff_zero_unif
+theorem invDiff_zero_uniform
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1451,7 +1451,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricCompar
               ∏ m : Fin n,
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
-  obtain ⟨C, hC, hbnd⟩ := invDiff_zero_unif (I := I) (M := M) hδ₀
+  obtain ⟨C, hC, hbnd⟩ := invDiff_zero_uniform (I := I) (M := M) hδ₀
   exact ⟨C, hC, hbnd g₀⟩
 
 omit [SigmaCompactSpace M] in
@@ -1477,7 +1477,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricCompar
     (E := E) (I := I) (M := M) g₀ hδ₀
 
 omit [SigmaCompactSpace M] in
-theorem invDiff_slot_unif
+theorem invDiff_slot_uniform
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1496,7 +1496,7 @@ theorem invDiff_slot_unif
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   obtain ⟨C, hC, hbnd⟩ :=
-    invDiff_zero_unif (I := I) (M := M) hδ₀
+    invDiff_zero_uniform (I := I) (M := M) hδ₀
   refine ⟨fun i => (Module.finrank ℝ E : ℝ) * C i,
     fun i => mul_nonneg (Nat.cast_nonneg _) (hC i), ?_⟩
   intro g₀ g₁ T htie δ hδ_le hδ0 hbound i x
@@ -1527,11 +1527,11 @@ theorem riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_metricComparisonD
               ∏ m : Fin n,
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
-  obtain ⟨C, hC, hbnd⟩ := invDiff_slot_unif (I := I) (M := M) hδ₀
+  obtain ⟨C, hC, hbnd⟩ := invDiff_slot_uniform (I := I) (M := M) hδ₀
   exact ⟨C, hC, hbnd g₀⟩
 
 omit [SigmaCompactSpace M] in
-theorem invDiff_grid_unif
+theorem invDiff_grid_uniform
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1548,7 +1548,7 @@ theorem invDiff_grid_unif
               ∏ m : Fin n,
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
-  obtain ⟨C, hC, hbnd⟩ := invDiff_slot_unif (I := I) (M := M) hδ₀
+  obtain ⟨C, hC, hbnd⟩ := invDiff_slot_uniform (I := I) (M := M) hδ₀
   refine ⟨C, hC, fun g₀ g₁ T htie δ hδ_le hδ0 hbound i x => ?_⟩
   rw [inverseMetricDifferenceSlotCoefficient_eq_slotInsertEndoCc (E := E) (I := I) g₀ g₁]
   exact hbnd g₀ g₁ T htie hδ_le hδ0 hbound i x
@@ -1571,7 +1571,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_inverseMetricDifferenceSlotCoeffic
               ∏ m : Fin n,
                 riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                   ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
-  obtain ⟨C, hC, hbnd⟩ := invDiff_grid_unif (I := I) (M := M) hδ₀
+  obtain ⟨C, hC, hbnd⟩ := invDiff_grid_uniform (I := I) (M := M) hδ₀
   exact ⟨C, hC, hbnd g₀⟩
 
 end Spectral

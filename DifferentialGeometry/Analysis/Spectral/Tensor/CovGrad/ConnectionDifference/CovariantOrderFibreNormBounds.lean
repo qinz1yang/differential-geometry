@@ -110,7 +110,7 @@ theorem riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one
   have hceil0 : 0 < 1 - δ₀ := by linarith
   have hcoeff : 0 < 1 - δ := by linarith
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   have hg₁ : ∀ (b : M) (u₁ u₂ : TangentSpace I b),
       g₁.inner b u₁ u₂ = g₀.inner b u₁ u₂ + ccTensorBilinSymm (I := I) g₀ T b u₁ u₂ :=
@@ -325,7 +325,7 @@ theorem riemannianFiberNormSq_raisedKoszul_le_of_lt_one
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * ((1 + δ₀) * C₀), by positivity, ?_⟩
   intro g₁ T h δ hδ hδ0 hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   set G : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG_def
@@ -1758,7 +1758,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_one_raisedKoszul_le_of_lt_one
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 4) * Carm, by positivity, ?_⟩
   intro g₁ T h δ hδ hδ0 hbound x R hR0 hjet
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   set G1 : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG1_def
@@ -2078,7 +2078,7 @@ theorem riemannianFiberNormSq_flatTermCc_le_of_lt_one
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * Carm, by positivity, ?_⟩
   intro g₁ T h δ hδ hδ0 hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   set G : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG_def

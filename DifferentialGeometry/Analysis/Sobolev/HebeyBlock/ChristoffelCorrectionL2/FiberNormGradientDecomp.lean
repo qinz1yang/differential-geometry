@@ -94,7 +94,7 @@ theorem g_inner_gradFun_le_pou_weighted_fiber_norm_atoms_on_pouTsupport_h1
   obtain ⟨A₀, B₀, hA₀_nn, hB₀_nn, hbound₀⟩ :=
     g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport_h1
       (I := I) (M := M) g r s α
-  have hK_cpt :
+  have hK_compact :
       IsCompact (tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     chartAtlasPOU_tsupport_isCompact (I := I) (M := M) α
@@ -105,7 +105,7 @@ theorem g_inner_gradFun_le_pou_weighted_fiber_norm_atoms_on_pouTsupport_h1
     chartAtlasPOU_tsupport_subset_chartSource (I := I) (M := M) α
   obtain ⟨Cop, hCop_pos, hCop_bound⟩ :=
     tensorRSChartFiberToModel_opNorm_isBounded_on_compact
-      (I := I) (M := M) g r s α hK_cpt hK_sub
+      (I := I) (M := M) g r s α hK_compact hK_sub
   set A : ℝ := A₀ with hA_def
   set B : ℝ := B₀ * Cop ^ 2 with hB_def
   have hCop_nn : 0 ≤ Cop := le_of_lt hCop_pos

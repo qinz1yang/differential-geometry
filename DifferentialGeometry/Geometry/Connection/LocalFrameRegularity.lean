@@ -427,22 +427,22 @@ theorem mvfderiv_apply_contMDiffAt_of_section
       hF contMDiffAt_id contMDiffAt_id hXcoord le_rfl
   refine hApply.congr_of_eventuallyEq ?_
   filter_upwards [e.open_baseSet.mem_nhds (by simp [e])] with p hp
-  have hp_src : p ∈ (chartAt H x₀).source := by
+  have hp_source : p ∈ (chartAt H x₀).source := by
     simpa [e, TangentBundle.trivializationAt_baseSet] using hp
-  have hf_src : f p ∈ (chartAt Real (f x₀)).source := by
+  have hf_source : f p ∈ (chartAt Real (f x₀)).source := by
     rw [chartAt_self_eq]
     exact Set.mem_univ _
   rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(Real, Real))
     (f := fun p : M => p) (g := f)
     (ϕ := fun p : M => mfderiv I 𝓘(Real, Real) f p)
-    hp_src hf_src]
+    hp_source hf_source]
   have htarget :
       (tangentBundleCore 𝓘(Real, Real) Real).coordChange
         (achart Real (f p)) (achart Real (f x₀)) (f p) = (1 : Real →L[Real] Real) := by
     simp
   have hsource_raw :=
     (TangentBundle.symmL_trivializationAt_eq_core
-      (𝕜 := Real) (I := I) (b₀ := x₀) (b := p) hp_src).symm
+      (𝕜 := Real) (I := I) (b₀ := x₀) (b := p) hp_source).symm
   have hcancel :
       e.symmL Real p (Xcoord p) = X p := by
     exact e.symmL_continuousLinearMapAt (R := Real) hp (X p)
@@ -495,22 +495,22 @@ theorem mvfderiv_apply_contMDiffAt_of_section_one
       hF contMDiffAt_id contMDiffAt_id hXcoord le_rfl
   refine hApply.congr_of_eventuallyEq ?_
   filter_upwards [e.open_baseSet.mem_nhds (by simp [e])] with p hp
-  have hp_src : p ∈ (chartAt H x₀).source := by
+  have hp_source : p ∈ (chartAt H x₀).source := by
     simpa [e, TangentBundle.trivializationAt_baseSet] using hp
-  have hf_src : f p ∈ (chartAt Real (f x₀)).source := by
+  have hf_source : f p ∈ (chartAt Real (f x₀)).source := by
     rw [chartAt_self_eq]
     exact Set.mem_univ _
   rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(Real, Real))
     (f := fun p : M => p) (g := f)
     (ϕ := fun p : M => mfderiv I 𝓘(Real, Real) f p)
-    hp_src hf_src]
+    hp_source hf_source]
   have htarget :
       (tangentBundleCore 𝓘(Real, Real) Real).coordChange
         (achart Real (f p)) (achart Real (f x₀)) (f p) = (1 : Real →L[Real] Real) := by
     simp
   have hsource_raw :=
     (TangentBundle.symmL_trivializationAt_eq_core
-      (𝕜 := Real) (I := I) (b₀ := x₀) (b := p) hp_src).symm
+      (𝕜 := Real) (I := I) (b₀ := x₀) (b := p) hp_source).symm
   have hcancel :
       e.symmL Real p (Xcoord p) = X p := by
     exact e.symmL_continuousLinearMapAt (R := Real) hp (X p)

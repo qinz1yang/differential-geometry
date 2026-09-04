@@ -100,11 +100,11 @@ theorem exists_tame_projected_partial_solution
       T₀ = min 1 (min (1 / (64 * ((B : ℝ) + 1) ^ 2))
         (((R / 4) / (2 * (D + 1))) ^ 2)) ∧
       0 < T₀ ∧ ∀ {T : ℝ} (hT : 0 < T) (_hTT₀ : T ≤ T₀),
-      ∃ (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
+      ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) (a : ℝ) T)
         (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T),
-        let field := maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        let field := maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce
-        u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
+        u = maximalRegularityDuhamelMap (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce ∧
           (∀ᵐ t ∂(timeMeasure T),
             field t ∈ lowerState (I := I) (M := M) g₀ a R) ∧
@@ -115,7 +115,7 @@ theorem exists_tame_projected_partial_solution
           timeH1.timeDeriv _ T u =
             timeScaleLaplacian (I := I) (M := M) (a : ℝ) field + gforce ∧
           ‖gforce‖ ≤ R / 4 :=
-  partial_sol_tame (I := I) (M := M) g₀ a hR
+  partial_solution_tame (I := I) (M := M) g₀ a hR
     (projNfun (I := I) (M := M) g₀ a N Nfun)
     (projN_cont (I := I) (M := M) g₀ a N hcont) A B C D hD
     (projN_zero (I := I) (M := M) g₀ a hR.le N hzero) hsmallA hsmallC
@@ -238,12 +238,12 @@ theorem projFixTame_dist_le
     (hsB : ‖fstar‖ ≤ R / 4) (hNB : ‖fN‖ ≤ R / 4)
     (hsE : ⇑fstar =ᵐ[timeMeasure T] fun t =>
       Nfun (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ a hR.le)
-        (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) t))
     (hNE : ⇑fN =ᵐ[timeMeasure T] fun t =>
       projNfun (I := I) (M := M) g₀ a N Nfun
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ a hR.le)
-          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fN) t)) :
     ‖fN - fstar‖ ≤
       (1 - ((A : ℝ) * R * (1 + T) + (B : ℝ) * (2 * Real.sqrt T) +
@@ -254,7 +254,7 @@ theorem projFixTame_dist_le
   have hSN := field_mem_lower (I := I) (M := M) g₀ a hT hT1 h2R fN hNB
   have hstarFix :
       nemytskiiTame (I := I) (M := M) g₀ a hR.le hcont hsingle
-          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) hSs =
         fstar :=
     MeasureTheory.Lp.ext
@@ -264,7 +264,7 @@ theorem projFixTame_dist_le
       nemytskiiTame (I := I) (M := M) g₀ a hR.le
           (projN_cont (I := I) (M := M) g₀ a N hcont)
           (projN_tame (I := I) (M := M) g₀ a N hsingle)
-          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fN) hSN =
         fN :=
     MeasureTheory.Lp.ext
@@ -275,7 +275,7 @@ theorem projFixTame_dist_le
       nemytskiiTame (I := I) (M := M) g₀ a hR.le
           (projN_cont (I := I) (M := M) g₀ a N hcont)
           (projN_tame (I := I) (M := M) g₀ a N hsingle)
-          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) hSs =
         timeL2EigenProj (I := I) (M := M) g₀ (a : ℝ) T N fstar := by
     rw [projN_nemytskiiTame (I := I) (M := M) g₀ a hR.le N hcont hsingle _ hSs,
@@ -339,12 +339,12 @@ theorem projFixTame_le_two
     (hsB : ‖fstar‖ ≤ R / 4) (hNB : ‖fN‖ ≤ R / 4)
     (hsE : ⇑fstar =ᵐ[timeMeasure T] fun t =>
       Nfun (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ a hR.le)
-        (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fstar) t))
     (hNE : ⇑fN =ᵐ[timeMeasure T] fun t =>
       projNfun (I := I) (M := M) g₀ a N Nfun
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ a hR.le)
-          (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) fN) t)) :
     ‖fN - fstar‖ ≤
       2 * ‖timeL2EigenProj (I := I) (M := M) g₀ (a : ℝ) T N fstar - fstar‖ := by

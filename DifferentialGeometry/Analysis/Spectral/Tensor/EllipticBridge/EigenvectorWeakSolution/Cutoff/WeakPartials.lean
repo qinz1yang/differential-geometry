@@ -140,7 +140,7 @@ lemma eigenvectorCutoffChartPartialLp_approx_coeFn
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
         chartLebesgueMeasure (I := I) (M := M) α]
       fun y => (i.fst.val)⁻¹ •
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α P₀.1 P₀.2)
@@ -149,10 +149,10 @@ lemma eigenvectorCutoffChartPartialLp_approx_coeFn
   rw [eigenvectorCutoffChartPartialLp_approx_eq (I := I) (M := M)
     g r s i α P₀ k n]
   refine (Lp.coeFn_smul (i.fst.val)⁻¹
-    ((chosenWeakPartial'_cutoffComponentEuclid_memLp (I := I) (M := M) g r s
+    ((chosenWeakPartialOrZero_cutoffComponentEuclid_memLp (I := I) (M := M) g r s
       (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
       α P₀.1 P₀.2 k).toLp
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P₀.1 P₀.2)
@@ -189,7 +189,7 @@ private lemma eigenvectorCutoffChartWeakPartial_approx_hasWeakPartialDeriv
       α P₀.1 P₀.2
   have h_weak :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
-        (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+        (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M) g r s
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α P₀.1 P₀.2)
@@ -198,11 +198,11 @@ private lemma eigenvectorCutoffChartWeakPartial_approx_hasWeakPartialDeriv
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor α P₀.1 P₀.2)
         (chartTargetEuclid (I := I) (M := M) α) :=
-    chosenWeakPartial'_isWeakPartial_of_mem h_w1p k
+    chosenWeakPartialOrZero_isWeakPartial_of_mem h_w1p k
   have h_weak_smul :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k
         (fun y => (i.fst.val)⁻¹ •
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
             (cutoffComponentEuclid (I := I) (M := M) g r s
               (eigenvectorSmoothApprox (I := I) (M := M)
                 g r s i n).toCcTensor α P₀.1 P₀.2)

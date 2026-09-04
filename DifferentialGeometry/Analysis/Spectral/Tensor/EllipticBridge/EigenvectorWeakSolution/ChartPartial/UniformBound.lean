@@ -155,13 +155,13 @@ private lemma tensorChartComponent_tsupport_subset
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma chosenWeakPartial'_tensorChartComponent_ae_eq_euclidPartial
+private lemma chosenWeakPartialOrZero_tensorChartComponent_ae_eq_euclidPartial
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (k : Fin (Module.finrank ℝ E))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 k
         (tensorChartComponent (I := I) (M := M) g r s S α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α)
@@ -174,7 +174,7 @@ private lemma chosenWeakPartial'_tensorChartComponent_ae_eq_euclidPartial
     tensorChartComponent (I := I) (M := M) g r s S α Idx Jdx with hu_def
   have hu_smooth : ContDiff ℝ (⊤ : ℕ∞) u :=
     tensorChartComponent_contDiff (I := I) (M := M) g r s S α Idx Jdx
-  have hu_cpt : HasCompactSupport u :=
+  have hu_compact : HasCompactSupport u :=
     tensorChartComponent_hasCompactSupport' (I := I) (M := M) g r s S α Idx Jdx
   have hu_tsupp : tsupport u ⊆ chartTargetEuclid (I := I) (M := M) α :=
     tensorChartComponent_tsupport_subset (I := I) (M := M) g r s S α Idx Jdx
@@ -184,7 +184,7 @@ private lemma chosenWeakPartial'_tensorChartComponent_ae_eq_euclidPartial
   have hu_W1 : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 2 u (chartTargetEuclid (I := I) (M := M) α) :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
-      (d := Module.finrank ℝ E) hΩ_open hu_smooth hu_cpt hu_tsupp hp_one 1
+      (d := Module.finrank ℝ E) hΩ_open hu_smooth hu_compact hu_tsupp hp_one 1
   have hu_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 u
       (chartTargetEuclid (I := I) (M := M) α) :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hu_W1
@@ -535,7 +535,7 @@ private lemma euclidPartial_chartPushedRaw_pou_tsupport_subset
         (⇑(chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯)) hy_off)
     set b : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y)
       with hb_def
-    have hb_src : b ∈ (chartAt H α).source :=
+    have hb_source : b ∈ (chartAt H α).source :=
       symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy_target
     have hb_pou : b ∈ pouKernelM (I := I) (M := M) α := by
       refine subset_tsupport _ ?_
@@ -548,7 +548,7 @@ private lemma euclidPartial_chartPushedRaw_pou_tsupport_subset
     have hb_ext : b ∈ (extChartAt I α).source := by
       rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)]
-      exact hb_src
+      exact hb_source
     have hy_symm : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
       rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy_target
       exact hy_target
@@ -851,7 +851,7 @@ private lemma exists_const_euclidPartial_chartPushedRaw_pou_le
     rw [hχ_def]
     exact (euclidPartial_contDiff_of_contDiff (E := E)
       (chartPushedRaw_pou_contDiff (I := I) (M := M) α) k).continuous
-  have hχ_cpt : HasCompactSupport χ := by
+  have hχ_compact : HasCompactSupport χ := by
     refine HasCompactSupport.of_support_subset_isCompact
       (K := (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (pouKernelM (I := I) (M := M) α))) ?_ ?_
@@ -862,7 +862,7 @@ private lemma exists_const_euclidPartial_chartPushedRaw_pou_le
       exact subset_tsupport _
   by_cases hK_ne : (tsupport χ).Nonempty
   · obtain ⟨x₀, _, hx₀_max⟩ :=
-      hχ_cpt.exists_isMaxOn hK_ne (hχ_cont.norm.continuousOn)
+      hχ_compact.exists_isMaxOn hK_ne (hχ_cont.norm.continuousOn)
     refine ⟨max ‖χ x₀‖ 0, le_max_right _ _, fun y => ?_⟩
     by_cases hy : y ∈ tsupport χ
     · exact (hx₀_max hy).trans (le_max_left _ _)
@@ -916,7 +916,7 @@ private lemma leibnizCrossTerm_le_const_mul_chartPushedRaw_cutoff
         have hy_symm : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
           rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
           exact hy
-        have hb'_src : b' ∈ (extChartAt I α).source := by
+        have hb'_source : b' ∈ (extChartAt I α).source := by
           rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
             (I := I) (M := M)]
           exact pouKernelM_subset_chart_source (I := I) (M := M) α hb'_pou
@@ -924,7 +924,7 @@ private lemma leibnizCrossTerm_le_const_mul_chartPushedRaw_cutoff
           rw [← hz_eq]
           exact (toEuclidean (E := E)).symm_apply_apply z
         have hb_eq_b' : b = b' := by
-          rw [hb_def, h_symm_y, ← hb'_eq, (extChartAt I α).left_inv hb'_src]
+          rw [hb_def, h_symm_y, ← hb'_eq, (extChartAt I α).left_inv hb'_source]
         rw [hb_eq_b']
         exact hb'_pou
       rw [h_cross_zero, norm_zero]
@@ -1041,13 +1041,13 @@ private theorem exists_const_eLpNorm_leibnizCrossTerm_le_uniform
         ring
 
 omit [CompleteSpace E] in
-theorem exists_const_sum_eLpNorm_chosenWeakPartial'_tensorChartComponent_le_uniform
+theorem exists_const_sum_eLpNorm_chosenWeakPartialOrZero_tensorChartComponent_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensorH1 g r s)
       (Idx : Fin r → Fin (Module.finrank ℝ E))
       (Jdx : Fin s → Fin (Module.finrank ℝ E)),
       ∑ k : Fin (Module.finrank ℝ E),
-        eLpNorm (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        eLpNorm (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := Module.finrank ℝ E) 2 k
             (tensorChartComponent (I := I) (M := M) g r s S.toCcTensor α Idx Jdx)
             (chartTargetEuclid (I := I) (M := M) α)) 2
@@ -1084,7 +1084,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_tensorChartComponent_le_unif
   have hμ_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_measurableSet (I := I) (M := M) α
   have hdir : ∀ k : Fin n,
-      eLpNorm (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      eLpNorm (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 k
           (tensorChartComponent (I := I) (M := M) g r s S.toCcTensor α Idx Jdx)
           (chartTargetEuclid (I := I) (M := M) α)) 2 μ ≤
@@ -1098,7 +1098,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_tensorChartComponent_le_unif
               (pouLowerOrderTerm (I := I) (M := M) g r s S.toCcTensor α
                 k Idx Jdx) 2 μ := by
     intro k
-    have h_step1 := chosenWeakPartial'_tensorChartComponent_ae_eq_euclidPartial
+    have h_step1 := chosenWeakPartialOrZero_tensorChartComponent_ae_eq_euclidPartial
       (I := I) (M := M) g r s S.toCcTensor α k Idx Jdx
     rw [hμ_def, eLpNorm_congr_ae h_step1]
     set tCov : EuclN → ℝ :=

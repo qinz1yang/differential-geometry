@@ -271,7 +271,7 @@ theorem timeNlin_euler
       (sameTimeEnds u) u) :
     let F : ℝ → X := fun t ↦ G t (u.toFun t)
     IntegrableOn F (Icc (0 : ℝ) T) volume ∧
-      ∀ v : timeH1 X T, v.init = 0 → v.toFun T = 0 →
+      ∀ v : timeH1 X T, v.initial = 0 → v.toFun T = 0 →
         2 * inner ℝ (timeOp A hA C hC u.deriv) v.deriv +
           ∫ t in Icc (0 : ℝ) T, inner ℝ (F t) (v.toFun t) = 0 := by
   dsimp only
@@ -287,7 +287,7 @@ theorem timeNlin_euler
   have hmaps : univ ⊆ line ⁻¹' sameTimeEnds u := by
     intro c _
     constructor
-    · simp only [line, timeH1.init_add, timeH1.init_smul, hv0, smul_zero, add_zero]
+    · simp only [line, timeH1.initial_add, timeH1.initial_smul, hv0, smul_zero, add_zero]
     · change (u + c • v).toFun T = u.toFun T
       rw [timeH1.toFun_add u (c • v) ⟨hT.le, le_rfl⟩,
         timeH1.toFun_smul c v ⟨hT.le, le_rfl⟩, hvT, smul_zero, add_zero]

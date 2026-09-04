@@ -49,7 +49,7 @@ private lemma eval0SLinear_injective (n : ℕ) :
   intro v
   exact congr_fun h v
 
-private lemma finrank_tensor0SModel_loc (n : ℕ) :
+private lemma finrank_tensor0SModel_local (n : ℕ) :
     Module.finrank ℝ (Tensor0SModel n ℝ E) =
       (Module.finrank ℝ E) ^ n := by
   induction n with
@@ -72,7 +72,7 @@ private lemma finrank_tensor0SModel_loc (n : ℕ) :
       ring
 
 omit [Module.Finite ℝ E] in
-private lemma finrank_basis_pi_loc (n : ℕ) :
+private lemma finrank_basis_pi_local (n : ℕ) :
     Module.finrank ℝ ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) =
       (Module.finrank ℝ E) ^ n := by
   rw [Module.finrank_pi, Fintype.card_pi]
@@ -84,7 +84,7 @@ private lemma eval0SLinear_bijective (n : ℕ) :
   refine ⟨h_inj, ?_⟩
   have h_eq : Module.finrank ℝ (Tensor0SModel n ℝ E) =
       Module.finrank ℝ ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) := by
-    rw [finrank_tensor0SModel_loc, finrank_basis_pi_loc]
+    rw [finrank_tensor0SModel_local, finrank_basis_pi_local]
   exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank h_eq).mp h_inj
 
 noncomputable def eval0SLinearEquiv (n : ℕ) :
@@ -167,7 +167,7 @@ private lemma evalAtBasisLinear_TensorRSModel_injective (r s : ℕ) :
     exact h_pt Idx
   exact ContinuousLinearMap.coe_injective h_linear
 
-private lemma finrank_tensorRSModel_loc (r s : ℕ) :
+private lemma finrank_tensorRSModel_local (r s : ℕ) :
     Module.finrank ℝ (TensorRSModel r s ℝ E) =
       (Module.finrank ℝ E) ^ (r + s) := by
   have : FiniteDimensional ℝ (Tensor0SModel r ℝ E) :=
@@ -181,11 +181,11 @@ private lemma finrank_tensorRSModel_loc (r s : ℕ) :
   change Module.finrank ℝ (Tensor0SModel r ℝ E →L[ℝ] Tensor0SModel s ℝ E) =
       (Module.finrank ℝ E) ^ (r + s)
   rw [e.finrank_eq, Module.finrank_linearMap,
-    finrank_tensor0SModel_loc (E := E) r,
-    finrank_tensor0SModel_loc (E := E) s, ← pow_add]
+    finrank_tensor0SModel_local (E := E) r,
+    finrank_tensor0SModel_local (E := E) s, ← pow_add]
 
 omit [Module.Finite ℝ E] in
-private lemma finrank_basis_pair_pi_loc (r s : ℕ) :
+private lemma finrank_basis_pair_pi_local (r s : ℕ) :
     Module.finrank ℝ
       (((Fin r → Fin (Module.finrank ℝ E)) ×
         (Fin s → Fin (Module.finrank ℝ E))) → ℝ) =
@@ -203,7 +203,7 @@ private lemma evalAtBasisLinear_TensorRSModel_bijective (r s : ℕ) :
       Module.finrank ℝ
         (((Fin r → Fin (Module.finrank ℝ E)) ×
           (Fin s → Fin (Module.finrank ℝ E))) → ℝ) := by
-    rw [finrank_tensorRSModel_loc, finrank_basis_pair_pi_loc]
+    rw [finrank_tensorRSModel_local, finrank_basis_pair_pi_local]
   exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank h_eq).mp h_inj
 
 noncomputable def evalAtBasisCLETensorRSModel (r s : ℕ) :

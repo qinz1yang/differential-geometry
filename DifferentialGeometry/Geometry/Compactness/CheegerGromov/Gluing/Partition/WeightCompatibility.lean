@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH uι
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
@@ -103,5 +103,5 @@ theorem normalWeight_eq {ι : Type} [Fintype ι] [DecidableEq ι]
 
 end NormalRawBridge
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

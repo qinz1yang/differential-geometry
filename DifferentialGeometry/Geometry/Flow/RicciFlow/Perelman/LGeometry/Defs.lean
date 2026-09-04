@@ -106,14 +106,14 @@ theorem lSpeedSq_contOn
   let P := {tau : Real // tau ∈ uIcc a b}
   let timeLift : P -> {t : Real // t ∈ D.carrier} :=
     fun tau => ⟨T - tau.1, hback tau.2⟩
-  let velLift : P -> TangentBundle I M :=
+  let velocityLift : P -> TangentBundle I M :=
     fun tau => tangentMap 𝓘(Real, Real) I gamma
       (⟨tau.1, (1 : Real)⟩ : TangentBundle 𝓘(Real, Real) Real)
   let input : P -> {t : Real // t ∈ D.carrier} × TangentBundle I M :=
-    fun tau => (timeLift tau, velLift tau)
+    fun tau => (timeLift tau, velocityLift tau)
   have htime : Continuous timeLift := by
     exact ((continuous_const.sub continuous_subtype_val).subtype_mk _)
-  have hvel : Continuous velLift := by
+  have hvel : Continuous velocityLift := by
     exact
       (DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.continuous_tangentMap_unitLift
         (I := I) (M := M) (n := (1 : WithTop ℕ∞)) (by simp) hgamma).comp

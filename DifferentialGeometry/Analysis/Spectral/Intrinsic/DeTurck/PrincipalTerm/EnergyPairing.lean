@@ -386,7 +386,7 @@ private lemma termResidual_toModel_doubleTraceFib (g₀ : SmoothRiemannianMetric
               (smoothOrthoFrame (I := I) g₀ b i b)) m)) := by
   classical
   rw [DeTurck.cometricDoubleTraceFib_eq_orthoFrame_diag (I := I) g₀ 2 b
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) b) W]
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) b) W]
   rw [termResidual_toModel_sum (I := I) (M := M) b Finset.univ
     (fun i => Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 b
       (Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (2 + 1) b W

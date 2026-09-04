@@ -279,7 +279,7 @@ theorem tail_in_single_sheet
     rw [hpolar, hpolar_g, hdiag (v + w), hdiag v, hdiag w]
   have hCRB : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun x v w => hbundle_inner x v w⟩
-  have hRegM : RegularSpace M := by
+  have hRegularityM : RegularSpace M := by
     have : LocallyCompactSpace M :=
       Manifold.locallyCompact_of_finiteDimensional (M := M) I
     infer_instance
@@ -424,21 +424,21 @@ theorem tail_in_single_sheet
     exact ⟨hyU, Set.mem_singleton _⟩
   · intro z hz
     rw [he_def, OpenPartialHomeomorph.trans_source] at hz
-    obtain ⟨hz_src, hz_slice⟩ := hz
+    obtain ⟨hz_source, hz_slice⟩ := hz
     have hez : e z = (t z).1 := rfl
     rw [hez]
-    exact (t.coe_fst hz_src).symm
+    exact (t.coe_fst hz_source).symm
   · filter_upwards [Filter.eventually_ge_atTop N] with n hn
     have hnN₂ : N₂ ≤ n := le_trans (le_max_right _ _) hn
     have hballn : Manifold.riemannianEDist I y (p (x' n)) < ε := hN₂ n hnN₂
     have hcn : Manifold.riemannianEDist I y (p (x' n)) < c :=
       lt_of_lt_of_le hballn (by rw [hε_def]; exact ENNReal.half_le_self)
     have hmemU : p (x' n) ∈ U := hc_sub hcn
-    have hx_src : x' n ∈ t.source := t.mem_source.2 hmemU
+    have hx_source : x' n ∈ t.source := t.mem_source.2 hmemU
     rw [he_def, OpenPartialHomeomorph.trans_source]
-    refine ⟨hx_src, ?_⟩
+    refine ⟨hx_source, ?_⟩
     change t (x' n) ∈ slice.source
-    have hfst : (t (x' n)).1 = p (x' n) := t.coe_fst hx_src
+    have hfst : (t (x' n)).1 = p (x' n) := t.coe_fst hx_source
     have hsnd : (t (x' n)).2 = pt := htail_fib n hn
     rw [hslice_def]
     refine ⟨?_, ?_⟩
@@ -565,7 +565,7 @@ theorem completeSpace_of_complete [CompleteSpace M]
   have huM : CauchySeq (fun n => proj (X := M) (u n)) :=
     hUC.comp_cauchySeq hu
   obtain ⟨y, hy⟩ := cauchySeq_tendsto_of_complete huM
-  have hRegM : RegularSpace M := by
+  have hRegularityM : RegularSpace M := by
     have : LocallyCompactSpace M :=
       Manifold.locallyCompact_of_finiteDimensional (M := M) I
     infer_instance

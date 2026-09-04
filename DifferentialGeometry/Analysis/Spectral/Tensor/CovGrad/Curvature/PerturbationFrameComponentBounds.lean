@@ -143,7 +143,7 @@ private theorem riemannianFiberNormSq_le_of_componentSlice_sq_sum_le
       ((Module.finrank ℝ E : ℝ) ^ 2) * C ^ 2 := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hrepr⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E :=
     hn.trans (by rfl)
   subst hnE

@@ -29,15 +29,15 @@ theorem ricciFromSectional3_secRic3
     simp [DifferentialGeometry.Dim3Reaction.ricciFromSectional3,
       sec12Ric3, sec13Ric3, sec23Ric3, ricciDiag3] <;> ring
 
-theorem stdRmDiag3_neg_eq_rm_ricciFromSectional3
+theorem standardRmDiag3_neg_eq_rm_ricciFromSectional3
     (l1 l2 l3 : Real) (i j k l : Fin 3) :
-    stdRmDiag3 (-l1) (-l2) (-l3) i j k l =
+    standardRmDiag3 (-l1) (-l2) (-l3) i j k l =
       DifferentialGeometry.Dim3Reaction.rm
         (DifferentialGeometry.Dim3Reaction.ricciFromSectional3
           (sec12Ric3 l1 l2 l3) (sec13Ric3 l1 l2 l3)
           (sec23Ric3 l1 l2 l3)) i j k l := by
   fin_cases i <;> fin_cases j <;> fin_cases k <;> fin_cases l <;>
-    simp [stdRmDiag3, ricciDiag3, ricciEigenScalar3, delta3,
+    simp [standardRmDiag3, ricciDiag3, ricciEigenScalar3, delta3,
       DifferentialGeometry.Dim3Reaction.rm,
       DifferentialGeometry.Dim3Reaction.ricciFromSectional3,
       DifferentialGeometry.Dim3Reaction.sc, DifferentialGeometry.Dim3Reaction.kd,
@@ -63,7 +63,7 @@ theorem algebraicCurvatureOperatorNonnegative_normalForm3
           ricciCompAt (I := I) basis Ric i j =
             DifferentialGeometry.Dim3Reaction.ricciFromSectional3 K12 K13 K23 i j) ∧
         ∀ a b c d,
-          tensor04StdAt (I := I) (M := M)
+          tensor04StandardAt (I := I) (M := M)
             (A : Tensor04At (I := I) (M := M) x)
             (basis a) (basis b) (basis c) (basis d) =
               DifferentialGeometry.Dim3Reaction.rm
@@ -76,7 +76,7 @@ theorem algebraicCurvatureOperatorNonnegative_normalForm3
   let K23 := sec23Ric3 l1 l2 l3
   have htraceBasis := htrace basis horth
   have h00 :
-      stdRicci3 (standardRmCompAt (I := I) basis
+      standardRicci3 (standardRmCompAt (I := I) basis
         (A : Tensor04At (I := I) (M := M) x)) 0 0 = -l1 := by
     rw [← htraceBasis.ricci_trace 0 0]
     rw [ricciCompAt_apply]
@@ -85,7 +85,7 @@ theorem algebraicCurvatureOperatorNonnegative_normalForm3
     rw [ricciCompAt_apply] at h
     simpa [ricciDiag3] using congrArg Neg.neg h
   have h11 :
-      stdRicci3 (standardRmCompAt (I := I) basis
+      standardRicci3 (standardRmCompAt (I := I) basis
         (A : Tensor04At (I := I) (M := M) x)) 1 1 = -l2 := by
     rw [← htraceBasis.ricci_trace 1 1]
     rw [ricciCompAt_apply]
@@ -94,7 +94,7 @@ theorem algebraicCurvatureOperatorNonnegative_normalForm3
     rw [ricciCompAt_apply] at h
     simpa [ricciDiag3] using congrArg Neg.neg h
   have h22 :
-      stdRicci3 (standardRmCompAt (I := I) basis
+      standardRicci3 (standardRmCompAt (I := I) basis
         (A : Tensor04At (I := I) (M := M) x)) 2 2 = -l3 := by
     rw [← htraceBasis.ricci_trace 2 2]
     rw [ricciCompAt_apply]
@@ -104,7 +104,7 @@ theorem algebraicCurvatureOperatorNonnegative_normalForm3
     simpa [ricciDiag3] using congrArg Neg.neg h
   have hscalar : scalar = ricciEigenScalar3 l1 l2 l3 := by
     have hs := htraceBasis.scalar_trace
-    unfold stdScalar3 at hs
+    unfold standardScalar3 at hs
     simp [h00, h11, h22] at hs
     unfold ricciEigenScalar3
     linarith
@@ -120,32 +120,32 @@ theorem algebraicCurvatureOperatorNonnegative_normalForm3
         ricciDiag3 (-l1) (-l2) (-l3) i j
       rw [hij]
       fin_cases i <;> fin_cases j <;> simp [ricciDiag3]
-  have hcompStd := stdRmComp_eq_diag (I := I) htraceBasis hdiagNeg
+  have hcompStandard := standardRmComp_eq_diag (I := I) htraceBasis hdiagNeg
   have hcomp : ∀ a b c d,
-      tensor04StdAt (I := I) (M := M)
+      tensor04StandardAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)
         (basis a) (basis b) (basis c) (basis d) =
           DifferentialGeometry.Dim3Reaction.rm
             (DifferentialGeometry.Dim3Reaction.ricciFromSectional3 K12 K13 K23)
             a b c d := by
     intro a b c d
-    unfold tensor04StdAt
+    unfold tensor04StandardAt
     rw [← rm04CompAt_apply]
     change standardRmCompAt (I := I) basis
       (A : Tensor04At (I := I) (M := M) x) a b c d = _
-    rw [hcompStd a b c d]
-    exact stdRmDiag3_neg_eq_rm_ricciFromSectional3 l1 l2 l3 a b c d
+    rw [hcompStandard a b c d]
+    exact standardRmDiag3_neg_eq_rm_ricciFromSectional3 l1 l2 l3 a b c d
   have hsectional :
       A ∈ algebraicSectionalNonnegativeCone (I := I) (M := M) :=
     algebraicCurvatureOperatorNonnegativeCone_le_sectionalNonnegativeCone hA
   have h12 := mem_algebraicSectionalNonnegativeCone.mp hsectional (basis 0) (basis 1)
   have h13 := mem_algebraicSectionalNonnegativeCone.mp hsectional (basis 0) (basis 2)
   have h23 := mem_algebraicSectionalNonnegativeCone.mp hsectional (basis 1) (basis 2)
-  change 0 ≤ tensor04StdAt (I := I) (M := M)
+  change 0 ≤ tensor04StandardAt (I := I) (M := M)
     (A : Tensor04At (I := I) (M := M) x) (basis 0) (basis 1) (basis 1) (basis 0) at h12
-  change 0 ≤ tensor04StdAt (I := I) (M := M)
+  change 0 ≤ tensor04StandardAt (I := I) (M := M)
     (A : Tensor04At (I := I) (M := M) x) (basis 0) (basis 2) (basis 2) (basis 0) at h13
-  change 0 ≤ tensor04StdAt (I := I) (M := M)
+  change 0 ≤ tensor04StandardAt (I := I) (M := M)
     (A : Tensor04At (I := I) (M := M) x) (basis 1) (basis 2) (basis 2) (basis 1) at h23
   rw [hcomp 0 1 1 0] at h12
   rw [hcomp 0 2 2 0] at h13
@@ -184,7 +184,7 @@ theorem algebraicCurvatureOperatorReaction_nonnegative3
     (hA : A ∈ algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M))
     (hreaction : ∀ (basis : Module.Basis (Fin 3) Real (TangentSpace I x)),
       OrthonormalBasisAt (I := I) g x basis → ∀ a b c d,
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
           (Q : Tensor04At (I := I) (M := M) x)
           (basis a) (basis b) (basis c) (basis d) =
             -2 * DifferentialGeometry.Dim3Reaction.Bsharp
@@ -284,19 +284,19 @@ theorem algebraicCurvatureOperatorNonnegative_iff_ricci_upper_bound3
     have hscalar : scalar = lam 0 + lam 1 + lam 2 := by
       have htr := htrace basis horth
       have hs := htr.scalar_trace
-      have hdiag0 : stdRicci3 (standardRmCompAt (I := I) basis
+      have hdiag0 : standardRicci3 (standardRmCompAt (I := I) basis
           (A : Tensor04At (I := I) (M := M) x)) 0 0 = -lam 0 := by
         rw [← htr.ricci_trace 0 0]
         simpa [ricciCompAt, lam] using hRic 0 0
-      have hdiag1 : stdRicci3 (standardRmCompAt (I := I) basis
+      have hdiag1 : standardRicci3 (standardRmCompAt (I := I) basis
           (A : Tensor04At (I := I) (M := M) x)) 1 1 = -lam 1 := by
         rw [← htr.ricci_trace 1 1]
         simpa [ricciCompAt, lam] using hRic 1 1
-      have hdiag2 : stdRicci3 (standardRmCompAt (I := I) basis
+      have hdiag2 : standardRicci3 (standardRmCompAt (I := I) basis
           (A : Tensor04At (I := I) (M := M) x)) 2 2 = -lam 2 := by
         rw [← htr.ricci_trace 2 2]
         simpa [ricciCompAt, lam] using hRic 2 2
-      unfold stdScalar3 at hs
+      unfold standardScalar3 at hs
       simp [hdiag0, hdiag1, hdiag2] at hs
       have : scalar = lam 0 + lam 1 + lam 2 := by linarith
       simpa [ricciEigenScalar3] using this
@@ -358,28 +358,28 @@ theorem algebraicCurvatureOperatorNonnegative_iff_ricci_upper_bound3
     have htr := htrace basis horth
     have hscalar' : scalar = l1 + l2 + l3 := by
       have hs := htr.scalar_trace
-      have hr0 : stdRicci3 (standardRmCompAt (I := I) basis
+      have hr0 : standardRicci3 (standardRmCompAt (I := I) basis
           (A : Tensor04At (I := I) (M := M) x)) 0 0 = -l1 := by
         rw [← htr.ricci_trace 0 0]
         rw [show ricciCompAt (I := I) basis (-Ric) 0 0 =
             -ricciCompAt (I := I) basis Ric 0 0 by simp [ricciCompAt]]
         rw [hdiag.2 0 0]
         simp [ricciDiag3]
-      have hr1 : stdRicci3 (standardRmCompAt (I := I) basis
+      have hr1 : standardRicci3 (standardRmCompAt (I := I) basis
           (A : Tensor04At (I := I) (M := M) x)) 1 1 = -l2 := by
         rw [← htr.ricci_trace 1 1]
         rw [show ricciCompAt (I := I) basis (-Ric) 1 1 =
             -ricciCompAt (I := I) basis Ric 1 1 by simp [ricciCompAt]]
         rw [hdiag.2 1 1]
         simp [ricciDiag3]
-      have hr2 : stdRicci3 (standardRmCompAt (I := I) basis
+      have hr2 : standardRicci3 (standardRmCompAt (I := I) basis
           (A : Tensor04At (I := I) (M := M) x)) 2 2 = -l3 := by
         rw [← htr.ricci_trace 2 2]
         rw [show ricciCompAt (I := I) basis (-Ric) 2 2 =
             -ricciCompAt (I := I) basis Ric 2 2 by simp [ricciCompAt]]
         rw [hdiag.2 2 2]
         simp [ricciDiag3]
-      unfold stdScalar3 at hs
+      unfold standardScalar3 at hs
       simp [hr0, hr1, hr2] at hs
       linarith
     have hl1 : l1 ≤ scalar / 2 := by
@@ -408,7 +408,7 @@ theorem algebraicCurvatureOperatorNonnegative_iff_ricci_upper_bound3
       nlinarith [hl1, hsc2]
     let R : Fin 3 → Fin 3 → ℝ := fun i j =>
       DifferentialGeometry.Dim3Reaction.ricciFromSectional3 K12 K13 K23 i j
-    have hstdR : ∀ i j, stdRicci3 (standardRmCompAt (I := I) basis
+    have hstdR : ∀ i j, standardRicci3 (standardRmCompAt (I := I) basis
           (A : Tensor04At (I := I) (M := M) x)) i j = -R i j := by
       intro i j
       rw [← htr.ricci_trace i j]
@@ -418,7 +418,7 @@ theorem algebraicCurvatureOperatorNonnegative_iff_ricci_upper_bound3
       fin_cases i <;> fin_cases j <;>
         simp [R, ricciDiag3, K12, K13, K23, sec12Ric3, sec13Ric3, sec23Ric3,
           DifferentialGeometry.Dim3Reaction.ricciFromSectional3] <;> ring
-    have hstdS : stdScalar3 (standardRmCompAt (I := I) basis
+    have hstdS : standardScalar3 (standardRmCompAt (I := I) basis
           (A : Tensor04At (I := I) (M := M) x)) = -scalar := htr.scalar_trace.symm
     have hscR : scalar = DifferentialGeometry.Dim3Reaction.sc R := by
       dsimp [DifferentialGeometry.Dim3Reaction.sc, R]
@@ -427,14 +427,14 @@ theorem algebraicCurvatureOperatorNonnegative_iff_ricci_upper_bound3
         DifferentialGeometry.Dim3Reaction.ricciFromSectional3]
       ring
     have hcomp : ∀ a b c d,
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
           (A : Tensor04At (I := I) (M := M) x)
           (basis a) (basis b) (basis c) (basis d) =
             DifferentialGeometry.Dim3Reaction.rm R a b c d := by
       intro a b c d
       have hformula := rm04Comp_displayedRiemannFromRicci3D_at_of_curvature_symmetries
         (Rm04 := (A : Tensor04At (I := I) (M := M) x)) htr.curvature_symmetries a b d c
-      rw [show tensor04StdAt (I := I) (M := M)
+      rw [show tensor04StandardAt (I := I) (M := M)
             (A : Tensor04At (I := I) (M := M) x)
             (basis a) (basis b) (basis c) (basis d) =
             (A : Tensor04At (I := I) (M := M) x)

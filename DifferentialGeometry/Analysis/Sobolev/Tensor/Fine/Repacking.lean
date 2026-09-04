@@ -28,179 +28,179 @@ local notation "EuclN" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonChi_cpt
+theorem canonChi_compact
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
     HasCompactSupport
-      (((canonFlatChi (I := I) (M := M) rFine hr z :
+      (((canonicalFlatChi (I := I) (M := M) rFine hr z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
   (isClosed_tsupport _).isCompact
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonChi_src
+theorem canonChi_source
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
     tsupport
-        (((canonFlatChi (I := I) (M := M) rFine hr z :
+        (((canonicalFlatChi (I := I) (M := M) rFine hr z :
           C^∞⟮I, M; ℝ⟯) : M → ℝ)) ⊆
-      (chartAt H (canonFlatBase (I := I) (M := M) rFine hr z)).source := by
+      (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source := by
   intro x hx
   change x ∈ tsupport
-      ((((canonFineData (I := I) (M := M) rFine hr z.1.1).chi z.2 :
+      ((((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).chi z.2 :
         C^∞⟮I, M; ℝ⟯) : M → ℝ)) at hx
   change x ∈ (chartAt H z.1.1).source
   rw [← extChartAt_source (I := I)]
-  exact ((canonFineData (I := I) (M := M) rFine hr z.1.1).chi_supp z.2 hx).1
+  exact ((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).chi_support z.2 hx).1
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonPsi_cpt
+theorem canonPsi_compact
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
     HasCompactSupport
-      (((canonFlatPsi (I := I) (M := M) rFine hr z :
+      (((canonicalFlatPsi (I := I) (M := M) rFine hr z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
   (isClosed_tsupport _).isCompact
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonPsi_src
+theorem canonPsi_source
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
     tsupport
-        (((canonFlatPsi (I := I) (M := M) rFine hr z :
+        (((canonicalFlatPsi (I := I) (M := M) rFine hr z :
           C^∞⟮I, M; ℝ⟯) : M → ℝ)) ⊆
-      (chartAt H (canonFlatBase (I := I) (M := M) rFine hr z)).source := by
+      (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source := by
   intro x hx
   change x ∈ tsupport
-      ((((canonFineData (I := I) (M := M) rFine hr z.1.1).psi z.2 :
+      ((((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).psi z.2 :
         C^∞⟮I, M; ℝ⟯) : M → ℝ)) at hx
   change x ∈ (chartAt H z.1.1).source
   rw [← extChartAt_source (I := I)]
-  exact ((canonFineData (I := I) (M := M) rFine hr z.1.1).psi_supp z.2 hx).1
+  exact ((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).psi_support z.2 hx).1
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem canonPsi_one
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     {x : M}
     (hx : x ∈ tsupport
-      (((canonFlatChi (I := I) (M := M) rFine hr z :
+      (((canonicalFlatChi (I := I) (M := M) rFine hr z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ))) :
-    ((canonFlatPsi (I := I) (M := M) rFine hr z :
+    ((canonicalFlatPsi (I := I) (M := M) rFine hr z :
       C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1 := by
   change x ∈ tsupport
-      ((((canonFineData (I := I) (M := M) rFine hr z.1.1).chi z.2 :
+      ((((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).chi z.2 :
         C^∞⟮I, M; ℝ⟯) : M → ℝ)) at hx
-  exact ((canonFineData (I := I) (M := M) rFine hr z.1.1).psi_one z.2)
+  exact ((canonicalFineChartData (I := I) (M := M) rFine hr z.1.1).psi_one z.2)
     |>.self_of_nhdsSet x hx
 
-def canonCutE
+def canonicalCutE
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) : EuclN → ℝ :=
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) : EuclN → ℝ :=
   chartCutoffEuclidean (I := I) (M := M)
-    (canonFlatBase (I := I) (M := M) rFine hr z)
-    (((canonFlatChi (I := I) (M := M) rFine hr z :
+    (canonicalFlatBase (I := I) (M := M) rFine hr z)
+    (((canonicalFlatChi (I := I) (M := M) rFine hr z :
       C^∞⟮I, M; ℝ⟯) : M → ℝ))
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonCut_smooth
+theorem canonicalCut_smooth
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
     ContDiff ℝ (⊤ : ℕ∞)
-      (canonCutE (I := I) (M := M) rFine hr z) := by
+      (canonicalCutE (I := I) (M := M) rFine hr z) := by
   exact contDiff_etaEuclid (I := I) (M := M)
-    (canonFlatBase (I := I) (M := M) rFine hr z)
-    (((canonFlatChi (I := I) (M := M) rFine hr z :
+    (canonicalFlatBase (I := I) (M := M) rFine hr z)
+    (((canonicalFlatChi (I := I) (M := M) rFine hr z :
       C^∞⟮I, M; ℝ⟯) : M → ℝ))
-    (canonFlatChi (I := I) (M := M) rFine hr z).contMDiff
-    (canonChi_cpt (I := I) (M := M) rFine hr z)
-    (canonChi_src (I := I) (M := M) rFine hr z)
+    (canonicalFlatChi (I := I) (M := M) rFine hr z).contMDiff
+    (canonChi_compact (I := I) (M := M) rFine hr z)
+    (canonChi_source (I := I) (M := M) rFine hr z)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonCut_cpt
+theorem canonicalCut_compact
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
-    HasCompactSupport (canonCutE (I := I) (M := M) rFine hr z) := by
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
+    HasCompactSupport (canonicalCutE (I := I) (M := M) rFine hr z) := by
   exact hasCompactSupport_etaEuclid (I := I) (M := M)
-    (canonFlatBase (I := I) (M := M) rFine hr z)
-    (((canonFlatChi (I := I) (M := M) rFine hr z :
+    (canonicalFlatBase (I := I) (M := M) rFine hr z)
+    (((canonicalFlatChi (I := I) (M := M) rFine hr z :
       C^∞⟮I, M; ℝ⟯) : M → ℝ))
-    (canonChi_cpt (I := I) (M := M) rFine hr z)
-    (canonChi_src (I := I) (M := M) rFine hr z)
+    (canonChi_compact (I := I) (M := M) rFine hr z)
+    (canonChi_source (I := I) (M := M) rFine hr z)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonCut_support
+theorem canonicalCut_support
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) :
-    tsupport (canonCutE (I := I) (M := M) rFine hr z) ⊆
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) :
+    tsupport (canonicalCutE (I := I) (M := M) rFine hr z) ⊆
       (fun x : M => toEuclidean (E := E)
-        (extChartAt I (canonFlatBase (I := I) (M := M) rFine hr z) x)) ''
+        (extChartAt I (canonicalFlatBase (I := I) (M := M) rFine hr z) x)) ''
           tsupport
-            (((canonFlatChi (I := I) (M := M) rFine hr z :
+            (((canonicalFlatChi (I := I) (M := M) rFine hr z :
               C^∞⟮I, M; ℝ⟯) : M → ℝ)) := by
   exact tsupport_etaEuclid_subset_chartImage (I := I) (M := M)
-    (canonFlatBase (I := I) (M := M) rFine hr z)
-    (((canonFlatChi (I := I) (M := M) rFine hr z :
+    (canonicalFlatBase (I := I) (M := M) rFine hr z)
+    (((canonicalFlatChi (I := I) (M := M) rFine hr z :
       C^∞⟮I, M; ℝ⟯) : M → ℝ))
-    (canonChi_cpt (I := I) (M := M) rFine hr z)
-    (canonChi_src (I := I) (M := M) rFine hr z)
+    (canonChi_compact (I := I) (M := M) rFine hr z)
+    (canonChi_source (I := I) (M := M) rFine hr z)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonCut_coord
+theorem canonicalCut_coord
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     {x : M}
     (hx : x ∈
-      (chartAt H (canonFlatBase (I := I) (M := M) rFine hr z)).source) :
-    canonCutE (I := I) (M := M) rFine hr z
+      (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source) :
+    canonicalCutE (I := I) (M := M) rFine hr z
         (toEuclidean (E := E)
-          (extChartAt I (canonFlatBase (I := I) (M := M) rFine hr z) x)) =
-      ((canonFlatChi (I := I) (M := M) rFine hr z :
+          (extChartAt I (canonicalFlatBase (I := I) (M := M) rFine hr z) x)) =
+      ((canonicalFlatChi (I := I) (M := M) rFine hr z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ) x := by
-  rw [canonCutE, etaEuclid_apply_of_mem (I := I) (M := M)
-    (canonFlatBase (I := I) (M := M) rFine hr z)
+  rw [canonicalCutE, etaEuclid_apply_of_mem (I := I) (M := M)
+    (canonicalFlatBase (I := I) (M := M) rFine hr z)
     _ (toEuclidean_extChartAt_mem_chartTargetEuclid
       (I := I) (M := M)
-      (canonFlatBase (I := I) (M := M) rFine hr z) hx),
+      (canonicalFlatBase (I := I) (M := M) rFine hr z) hx),
     symm_toEuclidean_symm_toEuclidean_extChartAt
       (I := I) (M := M)
-      (canonFlatBase (I := I) (M := M) rFine hr z) hx]
+      (canonicalFlatBase (I := I) (M := M) rFine hr z) hx]
 
-def canonCutMul
+def canonicalCutMul
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (u : EuclN → ℝ) : EuclN → ℝ :=
-  fun y => canonCutE (I := I) (M := M) rFine hr z y * u y
+  fun y => canonicalCutE (I := I) (M := M) rFine hr z y * u y
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonCutMul_supp
+theorem canonicalCutMul_support
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (u : EuclN → ℝ) :
-    tsupport (canonCutMul (I := I) (M := M) rFine hr z u) ⊆
+    tsupport (canonicalCutMul (I := I) (M := M) rFine hr z u) ⊆
       (fun x : M => toEuclidean (E := E)
-        (extChartAt I (canonFlatBase (I := I) (M := M) rFine hr z) x)) ''
+        (extChartAt I (canonicalFlatBase (I := I) (M := M) rFine hr z) x)) ''
           tsupport
-            (((canonFlatChi (I := I) (M := M) rFine hr z :
+            (((canonicalFlatChi (I := I) (M := M) rFine hr z :
               C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
   (tsupport_mul_subset_left
-    (f := canonCutE (I := I) (M := M) rFine hr z) (g := u)).trans
-      (canonCut_support (I := I) (M := M) rFine hr z)
+    (f := canonicalCutE (I := I) (M := M) rFine hr z) (g := u)).trans
+      (canonicalCut_support (I := I) (M := M) rFine hr z)
 
-theorem canonCut_joint
+theorem canonicalCut_joint
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
     (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
     ∃ K : ℝ, 0 < K ∧ ∀ {u : EuclN → ℝ},
       MemWkp (d := Module.finrank ℝ E) k p u Set.univ →
       MemWkp (d := Module.finrank ℝ E) k p
-          (canonCutMul (I := I) (M := M) rFine hr z u) Set.univ ∧
+          (canonicalCutMul (I := I) (M := M) rFine hr z u) Set.univ ∧
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
-            (canonCutMul (I := I) (M := M) rFine hr z u) Set.univ ≤
+            (canonicalCutMul (I := I) (M := M) rFine hr z u) Set.univ ≤
           ENNReal.ofReal K *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p u Set.univ := by
-  have hsmooth := canonCut_smooth (I := I) (M := M) rFine hr z
-  have hcpt := canonCut_cpt (I := I) (M := M) rFine hr z
+  have hsmooth := canonicalCut_smooth (I := I) (M := M) rFine hr z
+  have hcpt := canonicalCut_compact (I := I) (M := M) rFine hr z
   obtain ⟨C, hC, hCbound⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
       (d := Module.finrank ℝ E) hsmooth hcpt k
@@ -231,41 +231,41 @@ theorem modelRepack_mul
   intro Jdx _
   rw [smul_smul]
 
-noncomputable def canonERepack
+noncomputable def canonicalEuclideanRepack
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ)
     (u : FineCompArray (E := E)
-      (CanonFineFlat (I := I) (M := M) rFine hr) r s) :
+      (CanonicalFineFlatIndex (I := I) (M := M) rFine hr) r s) :
     RSTensorSection I M r s :=
   fun x =>
-    ∑ a : CanonChartIdx (I := I) (M := M),
-      ∑ z : CanonFineIdx (I := I) (M := M) rFine hr a.1,
+    ∑ a : CanonicalChartIndex (I := I) (M := M),
+      ∑ z : CanonicalFineIndex (I := I) (M := M) rFine hr a.1,
         chartRepack (I := I) (M := M) r s a.1
-          (fun P => canonCutMul (I := I) (M := M) rFine hr ⟨a, z⟩
+          (fun P => canonicalCutMul (I := I) (M := M) rFine hr ⟨a, z⟩
             (u ⟨a, z⟩ P)) x
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartRepack_cut
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ) :
     chartRepack (I := I) (M := M) r s
-        (canonFlatBase (I := I) (M := M) rFine hr z)
-        (fun P => canonCutMul (I := I) (M := M) rFine hr z (u P)) =
+        (canonicalFlatBase (I := I) (M := M) rFine hr z)
+        (fun P => canonicalCutMul (I := I) (M := M) rFine hr z (u P)) =
       fun x =>
-        ((canonFlatChi (I := I) (M := M) rFine hr z :
+        ((canonicalFlatChi (I := I) (M := M) rFine hr z :
           C^∞⟮I, M; ℝ⟯) : M → ℝ) x •
           chartRepack (I := I) (M := M) r s
-            (canonFlatBase (I := I) (M := M) rFine hr z) u x := by
+            (canonicalFlatBase (I := I) (M := M) rFine hr z) u x := by
   funext x
   by_cases hx : x ∈
-      (chartAt H (canonFlatBase (I := I) (M := M) rFine hr z)).source
+      (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source
   · unfold chartRepack secModelPull
     simp only [dif_pos hx]
-    unfold canonCutMul
+    unfold canonicalCutMul
     rw [modelRepack_mul (E := E) r s
-      (canonCutE (I := I) (M := M) rFine hr z) u,
-      canonCut_coord (I := I) (M := M) rFine hr z hx,
+      (canonicalCutE (I := I) (M := M) rFine hr z) u,
+      canonicalCut_coord (I := I) (M := M) rFine hr z hx,
       ContinuousLinearMap.map_smul]
   · unfold chartRepack secModelPull
     simp only [dif_neg hx, smul_zero]
@@ -275,12 +275,12 @@ theorem canonERepack_eq
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ)
     (u : FineCompArray (E := E)
-      (CanonFineFlat (I := I) (M := M) rFine hr) r s) :
-    canonERepack (I := I) (M := M) rFine hr r s u =
-      canonCutRepack (I := I) (M := M) rFine hr r s u := by
+      (CanonicalFineFlatIndex (I := I) (M := M) rFine hr) r s) :
+    canonicalEuclideanRepack (I := I) (M := M) rFine hr r s u =
+      canonicalCutRepack (I := I) (M := M) rFine hr r s u := by
   classical
   funext x
-  unfold canonERepack canonCutRepack
+  unfold canonicalEuclideanRepack canonicalCutRepack
   refine Finset.sum_congr rfl ?_
   intro a _
   refine Finset.sum_congr rfl ?_
@@ -289,57 +289,57 @@ theorem canonERepack_eq
     (chartRepack_cut (I := I) (M := M) rFine hr r s ⟨a, z⟩ (u ⟨a, z⟩)) x
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem canonE_retract
+theorem canonicalEuclidean_retract
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s : ℕ) (S : RSTensorSection I M r s) :
-    canonERepack (I := I) (M := M) rFine hr r s
-        (canonFineRaw (I := I) (M := M) rFine hr r s S) =
+    canonicalEuclideanRepack (I := I) (M := M) rFine hr r s
+        (canonicalFineRaw (I := I) (M := M) rFine hr r s S) =
       S := by
   rw [canonERepack_eq (I := I) (M := M)]
-  exact canonCut_retract (I := I) (M := M) rFine hr r s S
+  exact canonicalCut_retract (I := I) (M := M) rFine hr r s S
 
 def fineTransCoeff
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) : M → ℝ :=
   fun x =>
     ((chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯) :
         M → ℝ) x *
-      ((canonFlatPsi (I := I) (M := M) rFine hr z :
+      ((canonicalFlatPsi (I := I) (M := M) rFine hr z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
         transitionCoeff (E := E) (I := I) (M := M) r s
-          (canonFlatBase (I := I) (M := M) rFine hr z) α P Q x
+          (canonicalFlatBase (I := I) (M := M) rFine hr z) α P Q x
 
 private def fineTransSupport
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) (α : M) : Set M :=
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) (α : M) : Set M :=
   tsupport
       (((chartKernelCutoff (I := I) (M := M) α :
         C^∞⟮I, M; ℝ⟯) : M → ℝ)) ∩
     tsupport
-      (((canonFlatPsi (I := I) (M := M) rFine hr z :
+      (((canonicalFlatPsi (I := I) (M := M) rFine hr z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ))
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem fineTransSupport_cpt
+private theorem fineTransSupport_compact
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) (α : M) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) (α : M) :
     IsCompact (fineTransSupport (I := I) (M := M) rFine hr z α) :=
   (chartKernelCutoff_hasCompactSupport (I := I) (M := M) α).inter_right
     (isClosed_tsupport _)
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem fineTransSupport_src
+private theorem fineTransSupport_source
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) (α : M) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) (α : M) :
     fineTransSupport (I := I) (M := M) rFine hr z α ⊆
-      (chartAt H (canonFlatBase (I := I) (M := M) rFine hr z)).source :=
-  fun _ hx => canonPsi_src (I := I) (M := M) rFine hr z hx.2
+      (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source :=
+  fun _ hx => canonPsi_source (I := I) (M := M) rFine hr z hx.2
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem fineTransSupport_tgt
+private theorem fineTransSupport_target
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (z : CanonFineFlat (I := I) (M := M) rFine hr) (α : M) :
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr) (α : M) :
     fineTransSupport (I := I) (M := M) rFine hr z α ⊆
       (chartAt H α).source :=
   fun _ hx => chartKernelCutoff_tsupport_subset_source
@@ -348,7 +348,7 @@ private theorem fineTransSupport_tgt
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem fineTrans_zero_left
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) {x : M}
     (hx : ((chartKernelCutoff (I := I) (M := M) α :
       C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0) :
@@ -358,9 +358,9 @@ private theorem fineTrans_zero_left
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem fineTrans_zero_right
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) {x : M}
-    (hx : ((canonFlatPsi (I := I) (M := M) rFine hr z :
+    (hx : ((canonicalFlatPsi (I := I) (M := M) rFine hr z :
       C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0) :
     fineTransCoeff (I := I) (M := M) rFine hr r s z α P Q x = 0 := by
   rw [fineTransCoeff, hx, mul_zero, zero_mul]
@@ -368,7 +368,7 @@ private theorem fineTrans_zero_right
 omit [NeZero (Module.finrank ℝ E)] in
 theorem fineTrans_support
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) :
     tsupport (fineTransCoeff (I := I) (M := M)
         rFine hr r s z α P Q) ⊆
@@ -386,42 +386,42 @@ theorem fineTrans_support
       rFine hr r s z α P Q (image_eq_zero_of_notMem_tsupport hright))
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fineTrans_cpt
+theorem fineTrans_compact
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) :
     HasCompactSupport
       (fineTransCoeff (I := I) (M := M) rFine hr r s z α P Q) :=
   HasCompactSupport.of_support_subset_isCompact
-    (fineTransSupport_cpt (I := I) (M := M) rFine hr z α)
+    (fineTransSupport_compact (I := I) (M := M) rFine hr z α)
     (fun _ hx => fineTrans_support (I := I) (M := M)
       rFine hr r s z α P Q (subset_tsupport _ hx))
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem fineTrans_smooth
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) :
     ContMDiff I (modelWithCornersSelf ℝ ℝ) (⊤ : ℕ∞)
       (fineTransCoeff (I := I) (M := M) rFine hr r s z α P Q) := by
   classical
   intro x
   by_cases hx : x ∈
-      (chartAt H (canonFlatBase (I := I) (M := M) rFine hr z)).source ∩
+      (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source ∩
         (chartAt H α).source
   · have htarget :=
       ((chartKernelCutoff (I := I) (M := M) α :
         C^∞⟮I, M; ℝ⟯).contMDiff).contMDiffAt (x := x)
     have hsource :=
-      ((canonFlatPsi (I := I) (M := M) rFine hr z :
+      ((canonicalFlatPsi (I := I) (M := M) rFine hr z :
         C^∞⟮I, M; ℝ⟯).contMDiff).contMDiffAt (x := x)
     have hopen : IsOpen
-        ((chartAt H (canonFlatBase (I := I) (M := M) rFine hr z)).source ∩
+        ((chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source ∩
           (chartAt H α).source) :=
       (chartAt H _).open_source.inter (chartAt H α).open_source
     have hcoeff :=
       (contMDiffOn_transitionCoeff (E := E) (I := I) (M := M)
-        r s (canonFlatBase (I := I) (M := M) rFine hr z) α P Q x hx)
+        r s (canonicalFlatBase (I := I) (M := M) rFine hr z) α P Q x hx)
         |>.contMDiffAt (hopen.mem_nhds hx)
     unfold fineTransCoeff
     exact (htarget.mul hsource).mul hcoeff
@@ -430,9 +430,9 @@ theorem fineTrans_smooth
       intro hs
       have hcarrier := fineTrans_support (I := I) (M := M)
         rFine hr r s z α P Q hs
-      exact hx ⟨fineTransSupport_src (I := I) (M := M)
+      exact hx ⟨fineTransSupport_source (I := I) (M := M)
         rFine hr z α hcarrier,
-        fineTransSupport_tgt (I := I) (M := M) rFine hr z α hcarrier⟩
+        fineTransSupport_target (I := I) (M := M) rFine hr z α hcarrier⟩
     refine ContMDiffAt.congr_of_eventuallyEq
       (f := fun _ : M => (0 : ℝ)) contMDiffAt_const ?_
     filter_upwards [((isClosed_tsupport _).isOpen_compl.mem_nhds hxoff)] with y hy
@@ -444,91 +444,91 @@ theorem fineTrans_smooth
 
 def fineCoeffE
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
   chartCutoffEuclidean (I := I) (M := M)
-    (canonFlatBase (I := I) (M := M) rFine hr z)
+    (canonicalFlatBase (I := I) (M := M) rFine hr z)
     (fineTransCoeff (I := I) (M := M) rFine hr r s z α P Q)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem fineCoeff_smooth
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) :
     ContDiff ℝ (⊤ : ℕ∞)
       (fineCoeffE (I := I) (M := M) rFine hr r s z α P Q) := by
   apply contDiff_etaEuclid (I := I) (M := M)
-    (canonFlatBase (I := I) (M := M) rFine hr z)
+    (canonicalFlatBase (I := I) (M := M) rFine hr z)
     (fineTransCoeff (I := I) (M := M) rFine hr r s z α P Q)
   · exact fineTrans_smooth (I := I) (M := M) rFine hr r s z α P Q
-  · exact fineTrans_cpt (I := I) (M := M) rFine hr r s z α P Q
+  · exact fineTrans_compact (I := I) (M := M) rFine hr r s z α P Q
   · exact (fineTrans_support (I := I) (M := M)
       rFine hr r s z α P Q).trans
-        (fineTransSupport_src (I := I) (M := M) rFine hr z α)
+        (fineTransSupport_source (I := I) (M := M) rFine hr z α)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem fineCoeff_cpt
+theorem fineCoeff_compact
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) :
     HasCompactSupport
       (fineCoeffE (I := I) (M := M) rFine hr r s z α P Q) := by
   apply hasCompactSupport_etaEuclid (I := I) (M := M)
-    (canonFlatBase (I := I) (M := M) rFine hr z)
+    (canonicalFlatBase (I := I) (M := M) rFine hr z)
     (fineTransCoeff (I := I) (M := M) rFine hr r s z α P Q)
-  · exact fineTrans_cpt (I := I) (M := M) rFine hr r s z α P Q
+  · exact fineTrans_compact (I := I) (M := M) rFine hr r s z α P Q
   · exact (fineTrans_support (I := I) (M := M)
       rFine hr r s z α P Q).trans
-        (fineTransSupport_src (I := I) (M := M) rFine hr z α)
+        (fineTransSupport_source (I := I) (M := M) rFine hr z α)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem fineCoeff_apply
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s)
     {x : M}
     (hx : x ∈
-      (chartAt H (canonFlatBase (I := I) (M := M) rFine hr z)).source) :
+      (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source) :
     fineCoeffE (I := I) (M := M) rFine hr r s z α P Q
         (toEuclidean (E := E)
-          (extChartAt I (canonFlatBase (I := I) (M := M) rFine hr z) x)) =
+          (extChartAt I (canonicalFlatBase (I := I) (M := M) rFine hr z) x)) =
       fineTransCoeff (I := I) (M := M) rFine hr r s z α P Q x := by
   rw [fineCoeffE, etaEuclid_apply_of_mem (I := I) (M := M)
-    (canonFlatBase (I := I) (M := M) rFine hr z) _
+    (canonicalFlatBase (I := I) (M := M) rFine hr z) _
     (toEuclidean_extChartAt_mem_chartTargetEuclid
       (I := I) (M := M)
-      (canonFlatBase (I := I) (M := M) rFine hr z) hx),
+      (canonicalFlatBase (I := I) (M := M) rFine hr z) hx),
     symm_toEuclidean_symm_toEuclidean_extChartAt
       (I := I) (M := M)
-      (canonFlatBase (I := I) (M := M) rFine hr z) hx]
+      (canonicalFlatBase (I := I) (M := M) rFine hr z) hx]
 
 theorem fineCoeff_joint
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s k : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s k : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞)) :
     ∃ K : ℝ, 0 < K ∧ ∀ {v : EuclN → ℝ},
       MemWkp (d := Module.finrank ℝ E) k p v
           (chartTargetEuclid (I := I) (M := M)
-            (canonFlatBase (I := I) (M := M) rFine hr z)) →
+            (canonicalFlatBase (I := I) (M := M) rFine hr z)) →
       MemWkp (d := Module.finrank ℝ E) k p
           (fun y => fineCoeffE (I := I) (M := M)
             rFine hr r s z α P Q y * v y)
           (chartTargetEuclid (I := I) (M := M)
-            (canonFlatBase (I := I) (M := M) rFine hr z)) ∧
+            (canonicalFlatBase (I := I) (M := M) rFine hr z)) ∧
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
             (fun y => fineCoeffE (I := I) (M := M)
               rFine hr r s z α P Q y * v y)
             (chartTargetEuclid (I := I) (M := M)
-              (canonFlatBase (I := I) (M := M) rFine hr z)) ≤
+              (canonicalFlatBase (I := I) (M := M) rFine hr z)) ≤
           ENNReal.ofReal K *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p v
               (chartTargetEuclid (I := I) (M := M)
-                (canonFlatBase (I := I) (M := M) rFine hr z)) := by
+                (canonicalFlatBase (I := I) (M := M) rFine hr z)) := by
   classical
   have hsmooth := fineCoeff_smooth (I := I) (M := M)
     rFine hr r s z α P Q
-  have hcpt := fineCoeff_cpt (I := I) (M := M)
+  have hcpt := fineCoeff_compact (I := I) (M := M)
     rFine hr r s z α P Q
   obtain ⟨C, hC, hCbound⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
@@ -537,7 +537,7 @@ theorem fineCoeff_joint
     wkpNorm_smul_smooth_bounded_le (d := Module.finrank ℝ E)
       k hp hp_top
       (chartTargetEuclid_isOpen (I := I) (M := M)
-        (canonFlatBase (I := I) (M := M) rFine hr z))
+        (canonicalFlatBase (I := I) (M := M) rFine hr z))
       hsmooth hC (fun j hj y _ => hCbound y j hj)
   refine ⟨K, hK, ?_⟩
   intro v hv
@@ -545,17 +545,17 @@ theorem fineCoeff_joint
   exact MemWkp.smul_smooth_bounded (d := Module.finrank ℝ E)
     k hp
     (chartTargetEuclid_isOpen (I := I) (M := M)
-      (canonFlatBase (I := I) (M := M) rFine hr z))
+      (canonicalFlatBase (I := I) (M := M) rFine hr z))
     hsmooth (fun j hj y _ => hCbound y j hj) hv
 
 def fineSecTerm
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s)
     (v : EuclN → ℝ) : EuclN → ℝ :=
   chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
     (chartPullback I
-      (canonFlatBase (I := I) (M := M) rFine hr z)
+      (canonicalFlatBase (I := I) (M := M) rFine hr z)
       (fun y => fineCoeffE (I := I) (M := M)
         rFine hr r s z α P Q y * v y))
 
@@ -563,18 +563,18 @@ theorem fineTerm_joint
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
-    (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s) :
     ∃ K : ℝ, 0 < K ∧ ∀ {v : EuclN → ℝ},
       MemWkp (d := Module.finrank ℝ E) k p v
           (chartTargetEuclid (I := I) (M := M)
-            (canonFlatBase (I := I) (M := M) rFine hr z)) →
+            (canonicalFlatBase (I := I) (M := M) rFine hr z)) →
       tsupport v ⊆
           (fun x : M => toEuclidean (E := E)
             (extChartAt I
-              (canonFlatBase (I := I) (M := M) rFine hr z) x)) ''
+              (canonicalFlatBase (I := I) (M := M) rFine hr z) x)) ''
             tsupport
-              (((canonFlatChi (I := I) (M := M) rFine hr z :
+              (((canonicalFlatChi (I := I) (M := M) rFine hr z :
                 C^∞⟮I, M; ℝ⟯) : M → ℝ)) →
       MemWkp (d := Module.finrank ℝ E) k p
           (fineSecTerm (I := I) (M := M)
@@ -587,35 +587,35 @@ theorem fineTerm_joint
           ENNReal.ofReal K *
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p v
               (chartTargetEuclid (I := I) (M := M)
-                (canonFlatBase (I := I) (M := M) rFine hr z)) := by
+                (canonicalFlatBase (I := I) (M := M) rFine hr z)) := by
   classical
   obtain ⟨K_mul, hK_mul, hmul⟩ :=
     fineCoeff_joint (I := I) (M := M)
       rFine hr r s k z α P Q hp hp_top
   obtain ⟨K_cross, hK_cross, hcross⟩ :=
     crossChartJointK (I := I) (M := M) k hp hp_top α
-      (canonFlatBase (I := I) (M := M) rFine hr z)
+      (canonicalFlatBase (I := I) (M := M) rFine hr z)
       (K_α := tsupport
-        (((canonFlatChi (I := I) (M := M) rFine hr z :
+        (((canonicalFlatChi (I := I) (M := M) rFine hr z :
           C^∞⟮I, M; ℝ⟯) : M → ℝ)))
-      (canonChi_cpt (I := I) (M := M) rFine hr z)
-      (canonChi_src (I := I) (M := M) rFine hr z)
+      (canonChi_compact (I := I) (M := M) rFine hr z)
+      (canonChi_source (I := I) (M := M) rFine hr z)
   refine ⟨K_cross * K_mul, mul_pos hK_cross hK_mul, ?_⟩
-  intro v hv hv_supp
+  intro v hv hv_support
   have hv_mul := hmul hv
-  have hprod_supp :
+  have hprod_support :
       tsupport (fun y => fineCoeffE (I := I) (M := M)
           rFine hr r s z α P Q y * v y) ⊆
         (fun x : M => toEuclidean (E := E)
           (extChartAt I
-            (canonFlatBase (I := I) (M := M) rFine hr z) x)) ''
+            (canonicalFlatBase (I := I) (M := M) rFine hr z) x)) ''
           tsupport
-            (((canonFlatChi (I := I) (M := M) rFine hr z :
+            (((canonicalFlatChi (I := I) (M := M) rFine hr z :
               C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
     (tsupport_mul_subset_right
       (f := fineCoeffE (I := I) (M := M)
-        rFine hr r s z α P Q) (g := v)).trans hv_supp
-  have hout := hcross hv_mul.1 hprod_supp
+        rFine hr r s z α P Q) (g := v)).trans hv_support
+  have hout := hcross hv_mul.1 hprod_support
   refine ⟨hout.1, ?_⟩
   calc
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
@@ -627,90 +627,90 @@ theorem fineTerm_joint
           (fun y => fineCoeffE (I := I) (M := M)
             rFine hr r s z α P Q y * v y)
           (chartTargetEuclid (I := I) (M := M)
-            (canonFlatBase (I := I) (M := M) rFine hr z)) := hout.2
+            (canonicalFlatBase (I := I) (M := M) rFine hr z)) := hout.2
     _ ≤ ENNReal.ofReal K_cross *
         (ENNReal.ofReal K_mul *
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p v
             (chartTargetEuclid (I := I) (M := M)
-              (canonFlatBase (I := I) (M := M) rFine hr z))) :=
+              (canonicalFlatBase (I := I) (M := M) rFine hr z))) :=
       mul_le_mul_right hv_mul.2 _
     _ = ENNReal.ofReal (K_cross * K_mul) *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p v
           (chartTargetEuclid (I := I) (M := M)
-            (canonFlatBase (I := I) (M := M) rFine hr z)) := by
+            (canonicalFlatBase (I := I) (M := M) rFine hr z)) := by
       rw [ENNReal.ofReal_mul hK_cross.le]
       simp only [mul_assoc]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem fineCoeffEq
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (α : M) (P Q : TensorCompIdx (E := E) r s)
     {v : EuclN → ℝ}
     (hv : tsupport v ⊆
       (fun x : M => toEuclidean (E := E)
         (extChartAt I
-          (canonFlatBase (I := I) (M := M) rFine hr z) x)) ''
+          (canonicalFlatBase (I := I) (M := M) rFine hr z) x)) ''
         tsupport
-          (((canonFlatChi (I := I) (M := M) rFine hr z :
+          (((canonicalFlatChi (I := I) (M := M) rFine hr z :
             C^∞⟮I, M; ℝ⟯) : M → ℝ)))
     {x : M}
     (hx : x ∈
       (chartAt H
-        (canonFlatBase (I := I) (M := M) rFine hr z)).source) :
+        (canonicalFlatBase (I := I) (M := M) rFine hr z)).source) :
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
         (transitionCoeff (E := E) (I := I) (M := M) r s
-          (canonFlatBase (I := I) (M := M) rFine hr z) α P Q x *
+          (canonicalFlatBase (I := I) (M := M) rFine hr z) α P Q x *
           v (toEuclidean (E := E)
             (extChartAt I
-              (canonFlatBase (I := I) (M := M) rFine hr z) x))) =
+              (canonicalFlatBase (I := I) (M := M) rFine hr z) x))) =
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
         (fineTransCoeff (I := I) (M := M)
           rFine hr r s z α P Q x *
           v (toEuclidean (E := E)
             (extChartAt I
-              (canonFlatBase (I := I) (M := M) rFine hr z) x))) := by
+              (canonicalFlatBase (I := I) (M := M) rFine hr z) x))) := by
   classical
   by_cases hρ :
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0
   · rw [hρ, zero_mul, zero_mul]
   by_cases hvx : v (toEuclidean (E := E)
       (extChartAt I
-        (canonFlatBase (I := I) (M := M) rFine hr z) x)) = 0
+        (canonicalFlatBase (I := I) (M := M) rFine hr z) x)) = 0
   · simp only [hvx, mul_zero]
-  have hxα_supp : x ∈ tsupport
+  have hxα_support : x ∈ tsupport
       (((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :=
     subset_tsupport _ hρ
   have hcut :
       ((chartKernelCutoff (I := I) (M := M) α :
         C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1 :=
-    chartKernelCutoff_eqOn_one (I := I) (M := M) α hxα_supp
-  have hy_supp := hv (subset_tsupport _ hvx)
-  obtain ⟨w, hwχ, hcoord⟩ := hy_supp
+    chartKernelCutoff_eqOn_one (I := I) (M := M) α hxα_support
+  have hy_support := hv (subset_tsupport _ hvx)
+  obtain ⟨w, hwχ, hcoord⟩ := hy_support
   have hw : w ∈
       (chartAt H
-        (canonFlatBase (I := I) (M := M) rFine hr z)).source :=
-    canonChi_src (I := I) (M := M) rFine hr z hwχ
+        (canonicalFlatBase (I := I) (M := M) rFine hr z)).source :=
+    canonChi_source (I := I) (M := M) rFine hr z hwχ
   have hw_ext : w ∈
       (extChartAt I
-        (canonFlatBase (I := I) (M := M) rFine hr z)).source := by
+        (canonicalFlatBase (I := I) (M := M) rFine hr z)).source := by
     rw [extChartAt_source]
     exact hw
   have hx_ext : x ∈
       (extChartAt I
-        (canonFlatBase (I := I) (M := M) rFine hr z)).source := by
+        (canonicalFlatBase (I := I) (M := M) rFine hr z)).source := by
     rw [extChartAt_source]
     exact hx
   have hext :
-      extChartAt I (canonFlatBase (I := I) (M := M) rFine hr z) w =
-        extChartAt I (canonFlatBase (I := I) (M := M) rFine hr z) x :=
+      extChartAt I (canonicalFlatBase (I := I) (M := M) rFine hr z) w =
+        extChartAt I (canonicalFlatBase (I := I) (M := M) rFine hr z) x :=
     (toEuclidean (E := E)).injective hcoord
   have hwx : w = x :=
     (extChartAt I
-      (canonFlatBase (I := I) (M := M) rFine hr z)).injOn
+      (canonicalFlatBase (I := I) (M := M) rFine hr z)).injOn
         hw_ext hx_ext hext
   have hψ :
-      ((canonFlatPsi (I := I) (M := M) rFine hr z :
+      ((canonicalFlatPsi (I := I) (M := M) rFine hr z :
         C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 1 := by
     rw [← hwx]
     exact canonPsi_one (I := I) (M := M) rFine hr z hwχ
@@ -720,19 +720,19 @@ theorem fineCoeffEq
 omit [NeZero (Module.finrank ℝ E)] in
 theorem finePullEq
     (rFine : M → ℝ) (hr : ∀ α, 0 < rFine α)
-    (r s : ℕ) (z : CanonFineFlat (I := I) (M := M) rFine hr)
+    (r s : ℕ) (z : CanonicalFineFlatIndex (I := I) (M := M) rFine hr)
     (u : TensorCompIdx (E := E) r s → EuclN → ℝ)
     (hu : ∀ Q, tsupport (u Q) ⊆
       (fun x : M => toEuclidean (E := E)
         (extChartAt I
-          (canonFlatBase (I := I) (M := M) rFine hr z) x)) ''
+          (canonicalFlatBase (I := I) (M := M) rFine hr z) x)) ''
         tsupport
-          (((canonFlatChi (I := I) (M := M) rFine hr z :
+          (((canonicalFlatChi (I := I) (M := M) rFine hr z :
             C^∞⟮I, M; ℝ⟯) : M → ℝ)))
     (α : M) (P : TensorCompIdx (E := E) r s) :
     secChartComp (I := I) (M := M) r s
         (chartRepack (I := I) (M := M) r s
-          (canonFlatBase (I := I) (M := M) rFine hr z) u)
+          (canonicalFlatBase (I := I) (M := M) rFine hr z) u)
         α P.1 P.2 =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
@@ -754,10 +754,10 @@ theorem finePullEq
   unfold secCompPou
   by_cases hx : x ∈
       (chartAt H
-        (canonFlatBase (I := I) (M := M) rFine hr z)).source
+        (canonicalFlatBase (I := I) (M := M) rFine hr z)).source
   · rw [chartRepack,
       secPull_raw_trans (E := E) (I := I) (M := M) r s
-        (canonFlatBase (I := I) (M := M) rFine hr z) α
+        (canonicalFlatBase (I := I) (M := M) rFine hr z) α
         (modelRepack (E := E) r s u) P ⟨hx, hxα⟩,
       Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
@@ -765,14 +765,14 @@ theorem finePullEq
     rw [modelRepack_proj (E := E) r s u Q]
     unfold fineSecTerm chartPushed
     rw [chartPullback_apply_of_mem (I := I) (M := M)
-        (canonFlatBase (I := I) (M := M) rFine hr z) _ hx,
+        (canonicalFlatBase (I := I) (M := M) rFine hr z) _ hx,
       fineCoeff_apply (I := I) (M := M)
         rFine hr r s z α P Q hx]
     exact fineCoeffEq (I := I) (M := M)
       rFine hr r s z α P Q (hu Q) hx
   · have hpull :
         chartRepack (I := I) (M := M) r s
-          (canonFlatBase (I := I) (M := M) rFine hr z) u x = 0 := by
+          (canonicalFlatBase (I := I) (M := M) rFine hr z) u x = 0 := by
       unfold chartRepack secModelPull
       rw [dif_neg hx]
     unfold secCompRaw secTriv
@@ -781,7 +781,7 @@ theorem finePullEq
     refine (Finset.sum_eq_zero (fun Q _ => ?_)).symm
     unfold fineSecTerm chartPushed
     rw [chartPullback_apply_of_notMem (I := I) (M := M)
-      (canonFlatBase (I := I) (M := M) rFine hr z) _ hx, mul_zero]
+      (canonicalFlatBase (I := I) (M := M) rFine hr z) _ hx, mul_zero]
 
 end Tensor
 end Sobolev

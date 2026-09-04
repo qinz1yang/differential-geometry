@@ -47,7 +47,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
-theorem MemWkp_extend_via_cutoff_poly
+theorem MemWkp.extend_of_ae_zero_outside_compact
     (k : ℕ)
     {Ω Ω' K : Set EuclN}
     (hΩ_open : IsOpen Ω) (hΩ'_open : IsOpen Ω')
@@ -166,17 +166,17 @@ private theorem chosenMthMixed_memWkp_of_chartH_at_all_multi_indices
   intro i
   have h_snoc_last : (Fin.snoc dirs i : Fin (m + 1) →
       Fin (Module.finrank ℝ E)) (Fin.last m) = i := Fin.snoc_last _ _
-  have h_init_snoc : (Fin.init (Fin.snoc dirs i : Fin (m + 1) →
+  have h_initial_snoc : (Fin.init (Fin.snoc dirs i : Fin (m + 1) →
       Fin (Module.finrank ℝ E)) : Fin m → Fin (Module.finrank ℝ E)) = dirs :=
     Fin.init_snoc _ _
   have h_succ_eq :
       chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h (m + 1)
         (Fin.snoc dirs i) =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 i
         (chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h m dirs)
         (chartTargetEuclid (I := I) (M := M) α) := by
-    rw [chosenMthMixedPartialChartPushedU_succ, h_snoc_last, h_init_snoc]
+    rw [chosenMthMixedPartialChartPushedU_succ, h_snoc_last, h_initial_snoc]
   have h_next := h_memWkp_succ (Fin.snoc dirs i)
   rw [h_succ_eq] at h_next
   exact h_next

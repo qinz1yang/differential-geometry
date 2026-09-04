@@ -73,30 +73,30 @@ private theorem ha1_down
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 1 by linarith)
-        (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
           a hT 0 f) =
-      maxRegDuhamelSolField (I := I) (M := M)
+      maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (a - 1) hT 0
           (timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show a - 1 ≤ a by linarith) f) := by
   refine timeModeCoeff_injective (I := I) (M := M) hcompact (fun i => ?_)
   rw [timeModeCoeff_timeL2Inclusion (I := I) (M := M),
-    maxRegDuhamelSolFieldHa1, maxRegDuhamelSolField,
+    maximalRegularityDuhamelSolutionFieldHa1, maximalRegularityDuhamelSolutionField,
     timeModeCoeff_add (I := I) (M := M),
     timeModeCoeff_add (I := I) (M := M),
-    maxRegHomogeneousSolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularityHomogeneousSolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (a := a) (T := T) hT.le,
-    maxRegHomogeneousSolField_timeModeCoeff (I := I) (M := M)
+    maximalRegularityHomogeneousSolutionField_timeModeCoeff (I := I) (M := M)
       (a := a - 1) (T := T) hT.le,
-    maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularitySolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (h_compact := hcompact) (a := a) hT hT1,
-    maximalRegularitySolField_timeModeCoeff (I := I) (M := M)
+    maximalRegularitySolutionField_timeModeCoeff (I := I) (M := M)
       (h_compact := hcompact) (a := a - 1) hT.le,
     homMode_zero (I := I) (M := M) (a := a) hT i,
     homMode_zero (I := I) (M := M) (a := a - 1) hT i,
     zero_add]
-  unfold solModeCoeff
+  unfold solutionModeCoeff
   rw [timeModeCoeff_timeL2Inclusion (I := I) (M := M)]
   simp only [zero_add]
 
@@ -108,9 +108,9 @@ private theorem duhamel_down
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT 0 f) =
-      maxRegDuhamelSolField (I := I) (M := M)
+      maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (a - 1) hT 0
           (timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
@@ -118,7 +118,7 @@ private theorem duhamel_down
   let hmid : a + 1 ≤ a + 2 := by linarith
   let heq : (a - 1) + 2 ≤ a + 1 := by linarith
   have htrans := timeIncl_trans (I := I) (M := M) heq hmid hcompact
-    (maxRegDuhamelSolField (I := I) (M := M)
+    (maximalRegularityDuhamelSolutionField (I := I) (M := M)
       a hT (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f)
   have hduh := duhamel_incl (I := I) (M := M)
     hT hT1 hcompact
@@ -126,19 +126,19 @@ private theorem duhamel_down
   calc
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 2 ≤ a + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           a hT 0 f) =
       timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         heq
         (timeL2Inclusion (I := I) (M := M)
           (g := g) (r := r) (s := s) hmid
-          (maxRegDuhamelSolField (I := I) (M := M)
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M)
             a hT 0 f)) := by simpa only using htrans
     _ = timeL2Inclusion (I := I) (M := M)
         (g := g) (r := r) (s := s) heq
-          (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+          (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
             a hT 0 f) := congrArg _ hduh
-    _ = maxRegDuhamelSolField (I := I) (M := M)
+    _ = maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (a - 1) hT 0
           (timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
@@ -153,30 +153,30 @@ private theorem duhamel_mid_down
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     timeL2Inclusion (I := I) (M := M) (g := g) (r := r) (s := s)
         (show (a - 1) + 1 ≤ a + 1 by linarith)
-        (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
           a hT 0 f) =
-      maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+      maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
         (a - 1) hT 0
           (timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show a - 1 ≤ a by linarith) f) := by
   refine timeModeCoeff_injective (I := I) (M := M) hcompact (fun i => ?_)
   rw [timeModeCoeff_timeL2Inclusion (I := I) (M := M),
-    maxRegDuhamelSolFieldHa1, maxRegDuhamelSolFieldHa1,
+    maximalRegularityDuhamelSolutionFieldHa1, maximalRegularityDuhamelSolutionFieldHa1,
     timeModeCoeff_add (I := I) (M := M),
     timeModeCoeff_add (I := I) (M := M),
-    maxRegHomogeneousSolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularityHomogeneousSolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (a := a) (T := T) hT.le,
-    maxRegHomogeneousSolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularityHomogeneousSolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (a := a - 1) (T := T) hT.le,
-    maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularitySolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (h_compact := hcompact) (a := a) hT hT1,
-    maximalRegularitySolFieldHa1_timeModeCoeff (I := I) (M := M)
+    maximalRegularitySolutionFieldHa1_timeModeCoeff (I := I) (M := M)
       (h_compact := hcompact) (a := a - 1) hT hT1,
     homMode_zero (I := I) (M := M) (a := a) hT i,
     homMode_zero (I := I) (M := M) (a := a - 1) hT i,
     zero_add]
-  unfold solModeCoeff
+  unfold solutionModeCoeff
   rw [timeModeCoeff_timeL2Inclusion (I := I) (M := M)]
   simp only [zero_add]
 
@@ -204,9 +204,9 @@ private theorem zeroRepr_down_ae
   let fLo := timeL2Inclusion (I := I) (M := M)
     (g := g) (r := r) (s := s)
     (show a - 1 ≤ a by linarith) f
-  let uHi := maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+  let uHi := maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
     a hT (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f
-  let uLo := maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+  let uLo := maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
     (a - 1) hT
       (0 : TensorHs (I := I) (M := M) g r s ((a - 1) + 2)) fLo
   have hcoe :
@@ -455,7 +455,7 @@ private theorem nonautL2_down
   rw [map_add]
   have htop := timeOp_down (I := I) (M := M)
     A2Hi hA2Hi C2Hi hC2Hi A2Lo hA2Lo C2Lo hC2Lo hA2compat
-    (maxRegDuhamelSolField (I := I) (M := M)
+    (maximalRegularityDuhamelSolutionField (I := I) (M := M)
       a hT (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f)
   rw [htop, duhamel_down (I := I) (M := M) hT hT1 hcompact f,
     a1L2_down (I := I) (M := M)
@@ -571,10 +571,10 @@ theorem nonautL2_lift
       nonautL2Map (I := I) (M := M)
         (a := a - 1) hT hT1 hcompact
           A2Lo hA2Lo C2Lo hC2Lo A1Lo hA1Lo fLo + f0Lo) :
-    ∃ (uHi : MaxRegSolutionSpace (I := I) (M := M)
+    ∃ (uHi : MaximalRegularitySolutionSpace (I := I) (M := M)
         (g := g) (r := r) (s := s) a T)
       (fHi : timeL2 (TensorHs (I := I) (M := M) g r s a) T),
-      uHi = maxRegDuhamelMap (I := I) (M := M)
+      uHi = maximalRegularityDuhamelMap (I := I) (M := M)
           a hT 0 fHi ∧
         fHi =
           nonautL2Map (I := I) (M := M)
@@ -585,10 +585,10 @@ theorem nonautL2_lift
           (0 : TensorHs (I := I) (M := M) g r s a) ∧
         TimeSobolev.timeH1.timeDeriv _ T uHi =
           timeScaleLaplacian (I := I) (M := M) a
-              (maxRegDuhamelSolField (I := I) (M := M)
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                 a hT 0 fHi) +
             (timeOp A2Hi hA2Hi C2Hi hC2Hi
-                (maxRegDuhamelSolField (I := I) (M := M)
+                (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                   a hT 0 fHi) +
               a1L2Term (I := I) (M := M)
                 hT hT1 hcompact A1Hi hA1Hi fHi +
@@ -599,9 +599,9 @@ theorem nonautL2_lift
         timeL2Inclusion (I := I) (M := M)
             (g := g) (r := r) (s := s)
             (show (a - 1) + 2 ≤ a + 2 by linarith)
-            (maxRegDuhamelSolField (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M)
               a hT 0 fHi) =
-          maxRegDuhamelSolField (I := I) (M := M)
+          maximalRegularityDuhamelSolutionField (I := I) (M := M)
             (a - 1) hT 0 fLo := by
   obtain ⟨uHi, fHi, huHi, hfHi, htrace, hderiv⟩ :=
     nonautL2_forced (I := I) (M := M)
@@ -665,9 +665,9 @@ theorem nonautL2_lift
       timeL2Inclusion (I := I) (M := M)
           (g := g) (r := r) (s := s)
           (show (a - 1) + 2 ≤ a + 2 by linarith)
-          (maxRegDuhamelSolField (I := I) (M := M)
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M)
             a hT 0 fHi) =
-        maxRegDuhamelSolField (I := I) (M := M)
+        maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (a - 1) hT 0 fLo := by
     rw [hfield0, hforce]
   exact ⟨uHi, fHi, huHi, hfHi, htrace, hderiv, hforce, hfield⟩

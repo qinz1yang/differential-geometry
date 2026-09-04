@@ -72,14 +72,14 @@ private lemma cutoffComponentEuclid_support_subset_cutoffKernelEuclid
   by_cases hy_in : y ∈ chartTargetEuclid (I := I) (M := M) α
   · rw [cutoffComponentEuclid_apply_of_mem (I := I) (M := M)
       g r s S α P₀.1 P₀.2 hy_in] at hy_ne
-    have hp_supp : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+    have hp_support : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         Function.support
           (cutoffComponentScalar (I := I) (M := M) g r s S α P₀.1 P₀.2) :=
       hy_ne
     have hp_tsupp : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         tsupport
           (cutoffComponentScalar (I := I) (M := M) g r s S α P₀.1 P₀.2) :=
-      subset_tsupport _ hp_supp
+      subset_tsupport _ hp_support
     have hx_kernel :
         (extChartAt I α)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) ∈
@@ -87,9 +87,9 @@ private lemma cutoffComponentEuclid_support_subset_cutoffKernelEuclid
       cutoffComponentScalar_chartImage_subset_kernel
         (I := I) (M := M) g r s S α P₀.1 P₀.2
         ⟨_, hp_tsupp, rfl⟩
-    have hy_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
+    have hy_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
       toEuclidean_symm_mem_target (I := I) hy_in
-    rw [(extChartAt I α).right_inv hy_tgt] at hx_kernel
+    rw [(extChartAt I α).right_inv hy_target] at hx_kernel
     refine ⟨(toEuclidean (E := E)).symm y, hx_kernel, ?_⟩
     exact (toEuclidean (E := E)).apply_symm_apply y
   · exact absurd
@@ -105,7 +105,7 @@ private lemma eLpNorm_chartPulledWeighted_restrict_le_of_support_subset
     {K : Set EuclN}
     (densitySup : ℝ) (hdensitySup_pos : 0 < densitySup)
     (hdensitySup_bd : ∀ y ∈ K, densityOnEuclid (I := I) g α y ≤ densitySup)
-    {f : EuclN → ℝ} (hf_supp : Function.support f ⊆ K) :
+    {f : EuclN → ℝ} (hf_support : Function.support f ⊆ K) :
     eLpNorm f 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) ≤
@@ -150,7 +150,7 @@ private lemma eLpNorm_chartPulledWeighted_restrict_le_of_support_subset
     simp only [Pi.mul_apply]
     by_cases hfy : f y = 0
     · simp [hfy, ENNReal.zero_rpow_of_pos (by norm_num : (0 : ℝ) < 2)]
-    · have hy_in : y ∈ K := hf_supp hfy
+    · have hy_in : y ∈ K := hf_support hfy
       have h_dens_le :
           ENNReal.ofReal (densityOnEuclid (I := I) g α y) ≤
             ENNReal.ofReal densitySup :=
@@ -346,7 +346,7 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le
     by_cases hyK : y ∈ K
     · rw [Set.indicator_of_mem hyK]
     · rw [Set.indicator_of_notMem hyK, hy (by simpa using hyK)]
-  have hfK_supp : Function.support fK ⊆ K := by
+  have hfK_support : Function.support fK ⊆ K := by
     rw [hfK_def]; exact Set.support_indicator_subset
   have h_wabs : (chartPulledWeightedMeasure (I := I) g α).restrict
       (chartTargetEuclid (I := I) (M := M) α) ≪
@@ -386,7 +386,7 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le
               (chartTargetEuclid (I := I) (M := M) α)) :=
         eLpNorm_chartPulledWeighted_restrict_le_of_support_subset
           (I := I) (M := M) g α c_max hc_max_pos
-          (fun y hy => (h_dens_bd y hy).2) hfK_supp
+          (fun y hy => (h_dens_bd y hy).2) hfK_support
     _ = ENNReal.ofReal (c_max ^ (1 / (2 : ℝ))) *
           eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) := by
         rw [show chartLebesgueMeasure (I := I) (M := M) α =
@@ -451,7 +451,7 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le_uniform
     by_cases hyK : y ∈ K
     · rw [Set.indicator_of_mem hyK]
     · rw [Set.indicator_of_notMem hyK, hy (by simpa using hyK)]
-  have hfK_supp : Function.support fK ⊆ K := by
+  have hfK_support : Function.support fK ⊆ K := by
     rw [hfK_def]; exact Set.support_indicator_subset
   have h_wabs : (chartPulledWeightedMeasure (I := I) g α).restrict
       (chartTargetEuclid (I := I) (M := M) α) ≪
@@ -491,7 +491,7 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le_uniform
               (chartTargetEuclid (I := I) (M := M) α)) :=
         eLpNorm_chartPulledWeighted_restrict_le_of_support_subset
           (I := I) (M := M) g α c_max hc_max_pos
-          (fun y hy => (h_dens_bd y hy).2) hfK_supp
+          (fun y hy => (h_dens_bd y hy).2) hfK_support
     _ = ENNReal.ofReal (c_max ^ (1 / (2 : ℝ))) *
           eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) := by
         rw [show chartLebesgueMeasure (I := I) (M := M) α =

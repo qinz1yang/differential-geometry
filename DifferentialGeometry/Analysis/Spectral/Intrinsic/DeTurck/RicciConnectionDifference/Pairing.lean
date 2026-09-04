@@ -394,7 +394,7 @@ theorem ricTrace_eval (g gm : SmoothRiemannianMetric I M)
   rw [cometricDoubleTraceFib_toModel,
     modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)]
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [slotInsertEndoFib_apply_eval, Fin.update_cons_zero]
   rw [unitModel]

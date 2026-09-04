@@ -244,7 +244,7 @@ def lieTopSum
   ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
     ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr v) k *
       ((DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x).repr w) i *
-      chartDeTurckCorrPrincipalSymbolExprRaw (I := I)
+      chartDeTurckCorrectionPrincipalSymbolExprRaw (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x)
         i k (extChartAt I x x)
@@ -302,31 +302,31 @@ private theorem lieTopRaw_symm
     (g : SmoothRiemannianMetric I M) (x : M)
     (f : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → E → ℝ)
     (i j : Fin (Module.finrank ℝ E)) (y : E) :
-    chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g x f i j y =
-      chartDeTurckCorrPrincipalSymbolExprRaw (I := I) g x f j i y := by
-  unfold chartDeTurckCorrPrincipalSymbolExprRaw
+    chartDeTurckCorrectionPrincipalSymbolExprRaw (I := I) g x f i j y =
+      chartDeTurckCorrectionPrincipalSymbolExprRaw (I := I) g x f j i y := by
+  unfold chartDeTurckCorrectionPrincipalSymbolExprRaw
   have h₁ : (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g x k j y *
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g x a b y *
-            chartDeTurckCorrHessBlockRaw (I := I) g x f i a b k y) =
+            chartDeTurckCorrectionHessBlockRaw (I := I) g x f i a b k y) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g x j k y *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g x a b y *
-              chartDeTurckCorrHessBlockRaw (I := I) g x f i a b k y := by
+              chartDeTurckCorrectionHessBlockRaw (I := I) g x f i a b k y := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [chartGramOnE_symm (I := I) g x k j y]
   have h₂ : (∑ k : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g x i k y *
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g x a b y *
-            chartDeTurckCorrHessBlockRaw (I := I) g x f j a b k y) =
+            chartDeTurckCorrectionHessBlockRaw (I := I) g x f j a b k y) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) g x k i y *
           ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
             chartInvGramOnE (I := I) g x a b y *
-              chartDeTurckCorrHessBlockRaw (I := I) g x f j a b k y := by
+              chartDeTurckCorrectionHessBlockRaw (I := I) g x f j a b k y := by
     refine Finset.sum_congr rfl (fun k _ => ?_)
     rw [chartGramOnE_symm (I := I) g x i k y]
   rw [h₁, h₂]

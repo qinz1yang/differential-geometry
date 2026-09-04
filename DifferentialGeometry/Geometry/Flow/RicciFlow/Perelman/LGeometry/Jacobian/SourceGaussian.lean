@@ -31,13 +31,13 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-private theorem lSrcGram_eq_gramMatrixAt
+private theorem lSourceGram_eq_gramMatrixAt
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) :
-    lSrcGram S T x =
+    lSourceGram S T x =
       DifferentialGeometry.Integral.L2.gramMatrixAt
         (I := I) (M := M) (S.base.metric T) x := by
   ext i j
-  simp only [lSrcGram, Matrix.of_apply,
+  simp only [lSourceGram, Matrix.of_apply,
     DifferentialGeometry.Integral.L2.gramMatrixAt_apply,
     DifferentialGeometry.Integral.L2.modelInnerAt_apply]
   with_unfolding_all
@@ -45,20 +45,20 @@ private theorem lSrcGram_eq_gramMatrixAt
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-theorem lSrcGram_pd
+theorem lSourceGram_posDef
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) :
-    (lSrcGram S T x).PosDef := by
-  rw [lSrcGram_eq_gramMatrixAt S T x]
+    (lSourceGram S T x).PosDef := by
+  rw [lSourceGram_eq_gramMatrixAt S T x]
   exact DifferentialGeometry.Integral.L2.gramMatrixAt_posDef
     (I := I) (M := M) (S.base.metric T) x
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-theorem lSrcGram_quad
+theorem lSourceGram_quadraticForm
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) (Z : E) :
     inner Real (toEuclidean Z)
         (Matrix.toEuclideanCLM (n := Fin (Module.finrank Real E))
-          (𝕜 := Real) (lSrcGram S T x) (toEuclidean Z)) =
+          (𝕜 := Real) (lSourceGram S T x) (toEuclidean Z)) =
       (S.base.metric T).inner x Z Z := by
   classical
   let v := toEuclidean Z
@@ -82,14 +82,14 @@ theorem lSrcGram_quad
   calc
     inner Real v
         (Matrix.toEuclideanCLM (n := Fin (Module.finrank Real E))
-          (𝕜 := Real) (lSrcGram S T x) v) =
+          (𝕜 := Real) (lSourceGram S T x) v) =
         ∑ i : Fin (Module.finrank Real E),
           ∑ j : Fin (Module.finrank Real E),
             v i * v j *
               DifferentialGeometry.Integral.L2.modelInnerAt
                 (I := I) (M := M) g x
                   ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
-      rw [lSrcGram_eq_gramMatrixAt S T x]
+      rw [lSourceGram_eq_gramMatrixAt S T x]
       rw [Matrix.inner_toEuclideanCLM]
       simp only [dotProduct, Matrix.mulVec,
         DifferentialGeometry.Integral.L2.gramMatrixAt_apply]
@@ -159,35 +159,35 @@ theorem lSrcGram_quad
       with_unfolding_all
         simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply]
 
-noncomputable def lSrcGauss
+noncomputable def lSourceGaussian
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) (Z : E) : Real :=
   ((Real.pi : Real) ^
       ((Module.finrank Real E : Real) / 2))⁻¹ *
-    lSrcDensity S T x *
+    lSourceDensity S T x *
     Real.exp (-inner Real (toEuclidean Z)
       (Matrix.toEuclideanCLM (n := Fin (Module.finrank Real E))
-        (𝕜 := Real) (lSrcGram S T x) (toEuclidean Z)))
+        (𝕜 := Real) (lSourceGram S T x) (toEuclidean Z)))
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-theorem lSrcGauss_eq
+theorem lSourceGaussian_eq_metric_norm
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) (Z : E) :
-    lSrcGauss S T x Z =
+    lSourceGaussian S T x Z =
       ((Real.pi : Real) ^
           ((Module.finrank Real E : Real) / 2))⁻¹ *
-        lSrcDensity S T x *
+        lSourceDensity S T x *
         Real.exp (-(S.base.metric T).inner x Z Z) := by
-  rw [lSrcGauss, lSrcGram_quad]
+  rw [lSourceGaussian, lSourceGram_quadraticForm]
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-theorem lSrcGauss_mass
+theorem lSourceGaussian_mass
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) :
-    ∫⁻ Z : E, ENNReal.ofReal (lSrcGauss S T x Z)
+    ∫⁻ Z : E, ENNReal.ofReal (lSourceGaussian S T x Z)
       ∂(modelHaar (E := E)) = 1 := by
   classical
-  let A := lSrcGram S T x
-  let L := spdSqrtEquiv A (lSrcGram_pd S T x)
+  let A := lSourceGram S T x
+  let L := spdSqrtEquiv A (lSourceGram_posDef S T x)
   let f : EuclideanSpace Real (Fin (Module.finrank Real E)) → Real :=
     fun y ↦ Real.exp (-‖y‖ ^ 2)
   let q : EuclideanSpace Real (Fin (Module.finrank Real E)) → Real :=
@@ -211,14 +211,14 @@ theorem lSrcGauss_mass
         EuclideanSpace Real (Fin (Module.finrank Real E))) :
           EuclideanSpace Real (Fin (Module.finrank Real E)) →ₗ[Real]
             EuclideanSpace Real (Fin (Module.finrank Real E))) =
-      Real.sqrt A.det := spdSqrt_det A (lSrcGram_pd S T x)
+      Real.sqrt A.det := spdSqrt_det A (lSourceGram_posDef S T x)
   have hdet_pos : 0 < LinearMap.det
       ((L : EuclideanSpace Real (Fin (Module.finrank Real E)) →L[Real]
         EuclideanSpace Real (Fin (Module.finrank Real E))) :
           EuclideanSpace Real (Fin (Module.finrank Real E)) →ₗ[Real]
             EuclideanSpace Real (Fin (Module.finrank Real E))) := by
     rw [hdet]
-    exact Real.sqrt_pos.2 (lSrcGram_pd S T x).det_pos
+    exact Real.sqrt_pos.2 (lSourceGram_posDef S T x).det_pos
   have hmap : Measure.map
       (L : EuclideanSpace Real (Fin (Module.finrank Real E)) →ₗ[Real]
         EuclideanSpace Real (Fin (Module.finrank Real E)))
@@ -249,24 +249,24 @@ theorem lSrcGauss_mass
       rw [spdSqrt_norm_sq]
     exact heq ▸ hcomp
   let c : Real := ((Real.pi : Real) ^
-      ((Module.finrank Real E : Real) / 2))⁻¹ * lSrcDensity S T x
+      ((Module.finrank Real E : Real) / 2))⁻¹ * lSourceDensity S T x
   have hc0 : 0 ≤ c := mul_nonneg
     (inv_nonneg.mpr (Real.rpow_nonneg Real.pi_pos.le _))
-    (lSrcDensity_pos S T x).le
+    (lSourceDensity_pos S T x).le
   have hF : Integrable (fun y ↦ c * q y) := hq.const_mul c
   have hFn : ∀ y, 0 ≤ c * q y := fun y ↦ mul_nonneg hc0 (Real.exp_pos _).le
   have hFint : ∫ y, c * q y = 1 := by
-    rw [integral_const_mul, gaussSPD_int A (lSrcGram_pd S T x)]
+    rw [integral_const_mul, gaussSPD_int A (lSourceGram_posDef S T x)]
     simp only [c, A, Fintype.card_fin]
-    rw [show lSrcDensity S T x = Real.sqrt (lSrcGram S T x).det from rfl]
-    have hsqrt : Real.sqrt (lSrcGram S T x).det ≠ 0 :=
-      ne_of_gt (Real.sqrt_pos.2 (lSrcGram_pd S T x).det_pos)
+    rw [show lSourceDensity S T x = Real.sqrt (lSourceGram S T x).det from rfl]
+    have hsqrt : Real.sqrt (lSourceGram S T x).det ≠ 0 :=
+      ne_of_gt (Real.sqrt_pos.2 (lSourceGram_posDef S T x).det_pos)
     have hpi : (Real.pi : Real) ^
         ((Module.finrank Real E : Real) / 2) ≠ 0 :=
       ne_of_gt (Real.rpow_pos_of_pos Real.pi_pos _)
     field_simp
   calc
-    ∫⁻ Z : E, ENNReal.ofReal (lSrcGauss S T x Z)
+    ∫⁻ Z : E, ENNReal.ofReal (lSourceGaussian S T x Z)
         ∂(modelHaar (E := E)) =
         ∫⁻ Z : E, ENNReal.ofReal (c * q (toEuclidean Z))
           ∂(modelHaar (E := E)) := by

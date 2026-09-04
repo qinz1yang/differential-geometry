@@ -107,7 +107,7 @@ private theorem abs_tensor12_flat_eval_le_fibreNorm_mul_sqrt_local
         Real.sqrt (g₀.inner x a a) * Real.sqrt (g₀.inner x b b) := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr, _hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   set vec : Fin 2 → TangentSpace I x := ![a, b] with hvec_def
   set coef : (Fin 1 → Fin n) × (Fin 2 → Fin n) → ℝ :=
@@ -480,7 +480,7 @@ theorem exists_fixed_covDerivConnectionDifference_sqrt_bound
   have hWnorm : NW ≤ Real.sqrt K := by
     have h2 : riemannianFiberNormSq (I := I) (M := M) g₀ 1 3 x W ≤ K := hK x
     have h1 : NW ^ 2 ≤ K := by
-      rw [hNW_def, ← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 1 3 x W]
+      rw [hNW_def, ← riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 1 3 x W]
       exact h2
     calc NW = Real.sqrt (NW ^ 2) := (Real.sqrt_sq hNW_nn).symm
       _ ≤ Real.sqrt K := Real.sqrt_le_sqrt h1

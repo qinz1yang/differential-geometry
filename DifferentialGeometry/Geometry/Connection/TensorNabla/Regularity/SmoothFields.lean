@@ -30,7 +30,7 @@ noncomputable def nabla0SSmooth (s : ℕ)
     Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s :=
   nabla0S (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov X α
-    (nabla0S_reg (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov hcov X α)
+    (nabla0S_regularity (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov hcov X α)
 
 noncomputable def nablaRSSmooth (r s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -42,7 +42,7 @@ noncomputable def nablaRSSmooth (r s : ℕ)
     TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) r s :=
   nablaRS (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov X T
-    (nablaRS_reg (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov hcov X T)
+    (nablaRS_regularity (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov hcov X T)
 
 @[simp] theorem nabla0S_smooth_apply (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))

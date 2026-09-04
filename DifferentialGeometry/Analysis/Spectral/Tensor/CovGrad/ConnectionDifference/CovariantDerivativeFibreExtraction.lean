@@ -76,7 +76,7 @@ theorem abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt
       (fun y : M => Tensor0SBundle.TensorRSSpace 1 3 I y) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 1 3
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr, _hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   set vec : Fin 3 → TangentSpace I x := ![a, b, c] with hvec_def
   set coef : (Fin 1 → Fin n) × (Fin 3 → Fin n) → ℝ :=
@@ -236,7 +236,7 @@ theorem abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt
     rw [hKsum, hJsum]
   have hcompsq : (∑ p : (Fin 1 → Fin n) × (Fin 3 → Fin n), comp p ^ 2) =
       ‖(W : Tensor0SBundle.TensorRSSpace 1 3 I x)‖ ^ 2 := by
-    rw [← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 1 3 x W]
+    rw [← riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 1 3 x W]
     rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 1 3 x W e bse hnE
       hbse horth]
     rw [Fintype.sum_prod_type]

@@ -85,7 +85,7 @@ theorem pinch_quotient_evolution_of_solution_sections
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (S : SolutionOn (I := I) (M := M) D)
     (epsilon : Real)
-    (hsetup : PinchEvolOn (I := I) (D := D) (flowG (I := I) S)
+    (hsetup : PinchEvolutionOn (I := I) (D := D) (flowG (I := I) S)
       S.scalar (ricciNorm (I := I) S) (ricciGradSq (I := I) S)
       (scalarGradientNormSq (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))
@@ -607,7 +607,7 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_solution
       S.scalar
       (ricciNorm (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S)) := by
-  exact trace_free_ricci_norm_sq_heat_equation_of_smooth_solution (I := I) S (smoothOfSol (I := I) S hS) hdim
+  exact trace_free_ricci_norm_sq_heat_equation_of_smooth_solution (I := I) S (smoothOfSolution (I := I) S hS) hdim
 
 omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_sq_nonneg
@@ -677,7 +677,7 @@ theorem trace_free_ricci_norm_sq_mdifferentiable
       MDifferentiableAt I 𝓘(Real, Real)
         (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) x := by
   intro t x
-  let hSmooth := smoothOfSol (I := I) S hS
+  let hSmooth := smoothOfSolution (I := I) S hS
   have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
   unfold traceFreeRicciNormSq traceFreeRicciNormSqOf traceFreeRicciNormSqAtOf
   exact (hSmooth.ricciRegular.ricci_norm_space (t : Real) ht x).sub
@@ -697,7 +697,7 @@ theorem gradient_trace_free_ricci_norm_sq
           ((flowG (I := I) S).metric (t : Real))
           (traceFreeRicciNormSq S.scalar (ricciNorm (I := I) S) (t : Real)) y) x := by
   intro t x
-  let hSmooth := smoothOfSol (I := I) S hS
+  let hSmooth := smoothOfSolution (I := I) S hS
   have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
   let f : M -> Real := ricciNorm (I := I) S (t : Real)
   let h : M -> Real := fun y : M => S.scalar (t : Real) y ^ 2 / 3
@@ -767,7 +767,7 @@ theorem gradient_scalar_rpow
           ((flowG (I := I) S).metric (t : Real))
           (fun w : M => S.scalar (t : Real) w ^ (-(2 - epsilon))) z) y := by
   intro t y
-  let hSmooth := smoothOfSol (I := I) S hS
+  let hSmooth := smoothOfSolution (I := I) S hS
   have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
   let p : Real := -(2 - epsilon)
   let f : M -> Real := S.scalar (t : Real)
@@ -863,7 +863,7 @@ theorem pinch_quotient_evolution_of_solution_data
     have h := scalarEvolution_of_isSolution (I := I) S hS (flowG (I := I) S)
       (by intro t; rfl) (by intro t; rfl) t x
     simpa [scalarLap, ricciNorm, flowG] using h
-  have hSmooth := smoothOfSol (I := I) S hS
+  have hSmooth := smoothOfSolution (I := I) S hS
   have htfDiff := trace_free_ricci_norm_sq_mdifferentiable (I := I) S hS
   have hscalarDiff :
       forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) x,
@@ -882,7 +882,7 @@ theorem pinch_quotient_evolution_of_solution_data
     exact hSmooth.scalarRegular.scalar_grad (t : Real)
       (D.regular_subset t.2) x
   have hgradScalarPow := gradient_scalar_rpow (I := I) S hS epsilon hscalar
-  have hsetup : PinchEvolOn (I := I) (D := D) (flowG (I := I) S)
+  have hsetup : PinchEvolutionOn (I := I) (D := D) (flowG (I := I) S)
       S.scalar (ricciNorm (I := I) S) (ricciGradSq (I := I) S)
       (scalarGradientNormSq (I := I) S)
       (cubicQ S.scalar (ricciNorm (I := I) S) (ricciCube (I := I) S))

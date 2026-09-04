@@ -21,7 +21,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Set DifferentialGeometry.Tensor0SBundle
 
@@ -674,31 +674,31 @@ theorem movingRm_of_bound
     dsimp only [t0]
     linarith
   have hT0Psi : t0 < psi := hT0Beta.trans_le hbetaPsi
-  have hpsiReg : psi ∈ D.regular := hreg ⟨halphaPsi, le_rfl⟩
-  obtain ⟨a, omega, hpsiWin, hwinReg⟩ := D.exists_Icc_regular hpsiReg
+  have hpsiRegularity : psi ∈ D.regular := hreg ⟨halphaPsi, le_rfl⟩
+  obtain ⟨a, omega, hpsiWin, hwinRegularity⟩ := D.exists_Icc_regular hpsiRegularity
   have hpsiOmega : psi < omega := hpsiWin.2
   have halphaOmega : alpha < omega := halphaPsi.trans hpsiOmega
   let Dco := RealTimeInterval.closedOpen alpha omega halphaOmega
   let Sco : SolutionOn (I := I) (M := F.M) Dco := F.S.timeRestrict Dco
   have hSco : IsSolutionOn (I := I) Sco := by
-    apply isSoln_timeRestrict (I := I) F.isSolution
+    apply isSolutionOn_timeRestrict (I := I) F.isSolution
     · intro s hs
       change s ∈ Set.Ico alpha omega at hs
       by_cases hspsi : s ≤ psi
       · exact hslab ⟨hs.1, hspsi⟩
-      · exact D.regular_subset (hwinReg ⟨by linarith [hpsiWin.1], hs.2.le⟩)
+      · exact D.regular_subset (hwinRegularity ⟨by linarith [hpsiWin.1], hs.2.le⟩)
     · intro s hs
       change s ∈ Set.Ioo alpha omega at hs
       by_cases hspsi : s ≤ psi
       · exact hreg ⟨hs.1, hspsi⟩
-      · exact hwinReg ⟨by linarith [hpsiWin.1], hs.2.le⟩
+      · exact hwinRegularity ⟨by linarith [hpsiWin.1], hs.2.le⟩
   have hT0Omega : t0 < omega := hT0Psi.trans hpsiOmega
   have hShift : alpha - t0 < omega - t0 := sub_lt_sub_right halphaOmega t0
   let DShift := RealTimeInterval.closedOpen (alpha - t0) (omega - t0) hShift
   let SShift : SolutionOn (I := I) (M := F.M) DShift :=
     (Sco.timeShift t0).timeRestrict DShift
   have hSShift : IsSolutionOn (I := I) SShift := by
-    apply isSoln_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hSco t0)
+    apply isSolutionOn_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hSco t0)
     · intro s hs
       change s + t0 ∈ Set.Ico alpha omega
       change s ∈ Set.Ico (alpha - t0) (omega - t0) at hs
@@ -712,7 +712,7 @@ theorem movingRm_of_bound
   let S0 : SolutionOn (I := I) (M := F.M) D0 := SShift.timeRestrict D0
   have hS0 : IsSolutionOn (I := I) S0 := by
     simpa only [S0, D0, DShift] using
-      (isSoln_tailRestrict (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega)
+      (isSolutionOn_tailRestrict (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega)
   let d : Nat := Module.finrank Real E
   let levelC : Nat → Real := fun k ↦ rmTowerCost d k
   have hHeat (k : Nat) :
@@ -720,7 +720,7 @@ theorem movingRm_of_bound
         (nablaKRm04NormSqIntrinsic (I := I) S0)
         (nablaKNormLap (I := I) S0) (levelC k) k := by
     simpa only [S0, D0, DShift, levelC, d] using
-      (towerHeatSol_any (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega k)
+      (towerHeatSolution_any (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega k)
   let delta : Real := (beta - alpha) / 2
   have hdeltaEq : delta = beta - t0 := by
     dsimp only [delta, t0]
@@ -1041,31 +1041,31 @@ theorem movingShi_of_bound
     dsimp only [t0]
     linarith
   have hT0Psi : t0 < psi := hT0Beta.trans_le hbetaPsi
-  have hpsiReg : psi ∈ D.regular := hreg ⟨halphaPsi, le_rfl⟩
-  obtain ⟨a, omega, hpsiWin, hwinReg⟩ := D.exists_Icc_regular hpsiReg
+  have hpsiRegularity : psi ∈ D.regular := hreg ⟨halphaPsi, le_rfl⟩
+  obtain ⟨a, omega, hpsiWin, hwinRegularity⟩ := D.exists_Icc_regular hpsiRegularity
   have hpsiOmega : psi < omega := hpsiWin.2
   have halphaOmega : alpha < omega := halphaPsi.trans hpsiOmega
   let Dco := RealTimeInterval.closedOpen alpha omega halphaOmega
   let Sco : SolutionOn (I := I) (M := F.M) Dco := F.S.timeRestrict Dco
   have hSco : IsSolutionOn (I := I) Sco := by
-    apply isSoln_timeRestrict (I := I) F.isSolution
+    apply isSolutionOn_timeRestrict (I := I) F.isSolution
     · intro s hs
       change s ∈ Set.Ico alpha omega at hs
       by_cases hspsi : s ≤ psi
       · exact hslab ⟨hs.1, hspsi⟩
-      · exact D.regular_subset (hwinReg ⟨by linarith [hpsiWin.1], hs.2.le⟩)
+      · exact D.regular_subset (hwinRegularity ⟨by linarith [hpsiWin.1], hs.2.le⟩)
     · intro s hs
       change s ∈ Set.Ioo alpha omega at hs
       by_cases hspsi : s ≤ psi
       · exact hreg ⟨hs.1, hspsi⟩
-      · exact hwinReg ⟨by linarith [hpsiWin.1], hs.2.le⟩
+      · exact hwinRegularity ⟨by linarith [hpsiWin.1], hs.2.le⟩
   have hT0Omega : t0 < omega := hT0Psi.trans hpsiOmega
   have hShift : alpha - t0 < omega - t0 := sub_lt_sub_right halphaOmega t0
   let DShift := RealTimeInterval.closedOpen (alpha - t0) (omega - t0) hShift
   let SShift : SolutionOn (I := I) (M := F.M) DShift :=
     (Sco.timeShift t0).timeRestrict DShift
   have hSShift : IsSolutionOn (I := I) SShift := by
-    apply isSoln_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hSco t0)
+    apply isSolutionOn_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hSco t0)
     · intro s hs
       change s + t0 ∈ Set.Ico alpha omega
       change s ∈ Set.Ico (alpha - t0) (omega - t0) at hs
@@ -1079,7 +1079,7 @@ theorem movingShi_of_bound
   let S0 : SolutionOn (I := I) (M := F.M) D0 := SShift.timeRestrict D0
   have hS0 : IsSolutionOn (I := I) S0 := by
     simpa only [S0, D0, DShift] using
-      (isSoln_tailRestrict (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega)
+      (isSolutionOn_tailRestrict (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega)
   let d : Nat := Module.finrank Real E
   let levelC : Nat → Real := fun k ↦ rmTowerCost d k
   have hHeat (k : Nat) :
@@ -1087,7 +1087,7 @@ theorem movingShi_of_bound
         (nablaKRm04NormSqIntrinsic (I := I) S0)
         (nablaKNormLap (I := I) S0) (levelC k) k := by
     simpa only [S0, D0, DShift, levelC, d] using
-      (towerHeatSol_any (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega k)
+      (towerHeatSolution_any (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega k)
   let delta : Real := (beta - alpha) / 2
   have hdeltaEq : delta = beta - t0 := by
     dsimp only [delta, t0]
@@ -1571,5 +1571,5 @@ noncomputable def atZeroGeomOpen
     exact hbound
 
 end CurvBoundInput
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

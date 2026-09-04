@@ -153,16 +153,16 @@ theorem chartRD_local
     ∃ T : ℝ, 0 < T ∧
       ∀ t ∈ Icc (0 : ℝ) T, g₁ (c + t) = g₂ (c + t) := by
   let D : RealTimeInterval := RealTimeInterval.closedOpen a b hab
-  let Sol₁ : SolutionOn (I := I) (M := M) D := { base := { metric := g₁ } }
-  let Sol₂ : SolutionOn (I := I) (M := M) D := { base := { metric := g₂ } }
-  let G₁ : MetricConnectionFamilyOn (I := I) (M := M) D := Sol₁.family
-  let G₂ : MetricConnectionFamilyOn (I := I) (M := M) D := Sol₂.family
+  let Solution₁ : SolutionOn (I := I) (M := M) D := { base := { metric := g₁ } }
+  let Solution₂ : SolutionOn (I := I) (M := M) D := { base := { metric := g₂ } }
+  let G₁ : MetricConnectionFamilyOn (I := I) (M := M) D := Solution₁.family
+  let G₂ : MetricConnectionFamilyOn (I := I) (M := M) D := Solution₂.family
   have hG₁ : MetricFamilySmoothOn (I := I) (M := M) D G₁.metric := by
-    simpa only [D, G₁, Sol₁] using
+    simpa only [D, G₁, Solution₁] using
       metricFamilySmoothOn_of_chartGram (I := I) (M := M)
         g₁ hab hsmooth₁ hcont₁
   have hG₂ : MetricFamilySmoothOn (I := I) (M := M) D G₂.metric := by
-    simpa only [D, G₂, Sol₂] using
+    simpa only [D, G₂, Solution₂] using
       metricFamilySmoothOn_of_chartGram (I := I) (M := M)
         g₂ hab hsmooth₂ hcont₂
   let S : Set ℝ := (fun t : ℝ => c + t) ⁻¹' Ioo a b
@@ -179,7 +179,7 @@ theorem chartRD_local
     intro t ht x v w
     change c + t ∈ Ioo a b at ht
     have hpde := hPDE₁ (t + c) (by simpa only [add_comm] using ht) x v w
-    simpa only [G₁, Sol₁, SolutionOn.family, SolutionFamily.connection,
+    simpa only [G₁, Solution₁, SolutionOn.family, SolutionFamily.connection,
       add_comm] using hpde.comp_add_const t c
   have hshift₂ : ∀ t ∈ S, ∀ x : M, ∀ v w : TangentSpace I x,
       HasDerivAt (fun tau => (G₂.metric (c + tau)).inner x v w)
@@ -187,14 +187,14 @@ theorem chartRD_local
     intro t ht x v w
     change c + t ∈ Ioo a b at ht
     have hpde := hPDE₂ (t + c) (by simpa only [add_comm] using ht) x v w
-    simpa only [G₂, Sol₂, SolutionOn.family, SolutionFamily.connection,
+    simpa only [G₂, Solution₂, SolutionOn.family, SolutionFamily.connection,
       add_comm] using hpde.comp_add_const t c
   obtain ⟨T, hT, huniq⟩ := metricRD_local (I := I) (M := M)
     G₁.metric G₂.metric hG₁ hG₂ (g₁ c) g_bg c hS h0S hmap rfl (by
-      simpa only [G₂, Sol₂, SolutionOn.family] using hagree.symm) hshift₁ hshift₂
+      simpa only [G₂, Solution₂, SolutionOn.family] using hagree.symm) hshift₁ hshift₂
   refine ⟨T, hT, ?_⟩
   intro t ht
-  simpa only [G₁, G₂, Sol₁, Sol₂, SolutionOn.family] using huniq t ht
+  simpa only [G₁, G₂, Solution₁, Solution₂, SolutionOn.family] using huniq t ht
 
 theorem chartRD_forward
     (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b c : Real} (hab : a < b)

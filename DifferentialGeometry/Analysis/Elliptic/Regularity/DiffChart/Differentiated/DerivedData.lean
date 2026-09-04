@@ -129,7 +129,7 @@ private lemma integral_chosenSecondPartial_mul_eq_integral_chartPushed_mixed
     (i l : Fin (Module.finrank ℝ E))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
         chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l y * ψ y
         ∂(volume : Measure EuclN) =
@@ -149,8 +149,8 @@ private lemma integral_chosenSecondPartial_mul_eq_integral_chartPushed_mixed
     contDiff_fderiv_apply_single (ψ := ψ) hψ_smooth l
   have hψl_cs : HasCompactSupport ψl :=
     hasCompactSupport_fderiv_apply_single (ψ := ψ) hψ_cs l
-  have hψl_supp : tsupport ψl ⊆ Ω :=
-    (tsupport_fderiv_apply_single_subset_ψ ψ l).trans hψ_supp
+  have hψl_support : tsupport ψl ⊆ Ω :=
+    (tsupport_fderiv_apply_single_subset_ψ ψ l).trans hψ_support
   set uChart : EuclN → ℝ := chartPushed (I := I) (M := M)
     (chartAtlasPOU I M) α
     ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ) with hu_chart_def
@@ -158,15 +158,15 @@ private lemma integral_chosenSecondPartial_mul_eq_integral_chartPushed_mixed
     (laplacianDomainPow_two_chartPushed_memWkp_two_two
       (I := I) (M := M) g α hu_h).memW1p
   set g_i : EuclN → ℝ :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := Module.finrank ℝ E) 2 i uChart Ω with hg_i_def
   have h_g_i_isWeakPartial :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i g_i uChart Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       h_u_chart_memW1p i
   have h_second_eq :
       chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l g_i Ω := by
     unfold chosenSecondPartialChartPushedU; rfl
   have h_g_i_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 g_i Ω := by
@@ -178,10 +178,10 @@ private lemma integral_chosenSecondPartial_mul_eq_integral_chartPushed_mixed
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) l
         (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l) g_i Ω := by
     rw [h_second_eq]
-    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       h_g_i_memW1p l
-  have h_ibp_outer := h_second_isWeakPartial ψ hψ_smooth hψ_cs hψ_supp
-  have h_ibp_inner := h_g_i_isWeakPartial ψl hψl_smooth hψl_cs hψl_supp
+  have h_ibp_outer := h_second_isWeakPartial ψ hψ_smooth hψ_cs hψ_support
+  have h_ibp_inner := h_g_i_isWeakPartial ψl hψl_smooth hψl_cs hψl_support
   have hA_eq : ∫ y in Ω, g_i y * (fderiv ℝ ψ y) (EuclideanSpace.single l 1)
         ∂(volume : Measure EuclN) =
       ∫ y in Ω, g_i y * ψl y ∂(volume : Measure EuclN) := rfl
@@ -222,7 +222,7 @@ private lemma integral_chosenSecondPartial_mul_swap
     (i l : Fin (Module.finrank ℝ E))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
         chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l y * ψ y
         ∂(volume : Measure EuclN) =
@@ -231,10 +231,10 @@ private lemma integral_chosenSecondPartial_mul_swap
         ∂(volume : Measure EuclN) := by
   classical
   rw [integral_chosenSecondPartial_mul_eq_integral_chartPushed_mixed
-      (I := I) (M := M) g α hu_h i l hψ_smooth hψ_cs hψ_supp]
+      (I := I) (M := M) g α hu_h i l hψ_smooth hψ_cs hψ_support]
   rw [integral_chartPushed_mixed_partial_swap (I := I) (M := M) g α u_h i l hψ_smooth]
   rw [← integral_chosenSecondPartial_mul_eq_integral_chartPushed_mixed
-      (I := I) (M := M) g α hu_h l i hψ_smooth hψ_cs hψ_supp]
+      (I := I) (M := M) g α hu_h l i hψ_smooth hψ_cs hψ_support]
 
 private lemma chosenSecondPartialChartPushedU_locallyIntegrableOn
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -314,11 +314,11 @@ theorem chosenSecondPartialChartPushedU_swap_ae
     exact h1.sub h2
   have h_zero : ∀ (ψ : EuclN → ℝ), ContDiff ℝ ∞ ψ → HasCompactSupport ψ →
       tsupport ψ ⊆ Ω → ∫ y, ψ y • d y ∂(volume : Measure EuclN) = 0 := by
-    intro ψ hψ_smooth hψ_cs hψ_supp
+    intro ψ hψ_smooth hψ_cs hψ_support
     have h_vanish_off_Ω : ∀ y, y ∉ Ω → ψ y • d y = 0 := by
       intro y hy
       have : ψ y = 0 :=
-        image_eq_zero_of_notMem_tsupport (fun hy_t => hy (hψ_supp hy_t))
+        image_eq_zero_of_notMem_tsupport (fun hy_t => hy (hψ_support hy_t))
       simp [this]
     rw [← setIntegral_eq_integral_of_forall_compl_eq_zero h_vanish_off_Ω]
     have h_smul_eq : ∀ y : EuclN, ψ y • d y = d y * ψ y := by
@@ -329,7 +329,7 @@ theorem chosenSecondPartialChartPushedU_swap_ae
         chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l i y * ψ y := by
       intro y; simp [hd_def]; ring
     simp_rw [h_d_mul]
-    have h_K : tsupport ψ ⊆ Ω := hψ_supp
+    have h_K : tsupport ψ ⊆ Ω := hψ_support
     have hK_compact : IsCompact (tsupport ψ) := hψ_cs
     have hK_meas : MeasurableSet (tsupport ψ) := (isClosed_tsupport ψ).measurableSet
     have hK_finite : (volume : Measure EuclN) (tsupport ψ) < ⊤ := hK_compact.measure_lt_top
@@ -413,7 +413,7 @@ theorem chosenSecondPartialChartPushedU_swap_ae
       exact h_full_int.restrict
     rw [integral_sub (int_factor l) (int_factor' l)]
     rw [integral_chosenSecondPartial_mul_swap (I := I) (M := M) g α hu_h i l
-      hψ_smooth hψ_cs hψ_supp]
+      hψ_smooth hψ_cs hψ_support]
     ring
   have h_ae_d_zero : ∀ᵐ x ∂(volume : Measure EuclN), x ∈ Ω → d x = 0 :=
     hΩ_open.ae_eq_zero_of_integral_contDiff_smul_eq_zero h_d_li h_zero
@@ -468,8 +468,8 @@ private lemma derived_weak_partial_isWeakPartial
   have h_bridge :=
     chosenSecondPartialChartPushedU_isWeakPartial_of_chartPushedWeakPartialLp
       (I := I) (M := M) g α hu_h l i
-  intro φ hφ_smooth hφ_cs hφ_supp
-  have h_id_bridge := h_bridge φ hφ_smooth hφ_cs hφ_supp
+  intro φ hφ_smooth hφ_cs hφ_support
+  have h_id_bridge := h_bridge φ hφ_smooth hφ_cs hφ_support
   have h_ae_integrand : (fun y : EuclN =>
         chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l i y * φ y) =ᵐ[
         (volume : Measure EuclN).restrict

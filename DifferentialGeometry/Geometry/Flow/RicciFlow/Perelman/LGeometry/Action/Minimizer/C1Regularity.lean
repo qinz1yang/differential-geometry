@@ -41,7 +41,7 @@ theorem lMinCurve_c1
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
     ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma (Icc a b) := by
   classical
   obtain ⟨k, s, _q, p', u', hs, _hq, hs0, hslast, _hseg, _hp,
@@ -58,7 +58,7 @@ theorem lMinCurve_c1
   have hpos : ∀ i : Fin k, s i.castSucc < s i.succ := by
     intro i
     exact hs Fin.castSucc_lt_succ
-  exact lRegAction_minimizer_contMDiffOn_one_of_chart_partition (I := I) S hS T a b hk s hs0a hslastb p' gamma
+  exact lRegularizedAction_minimizer_contMDiffOn_one_of_chart_partition (I := I) S hS T a b hk s hs0a hslastb p' gamma
     hgamma u' hpos hsrc' hrep' hreg hmin
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

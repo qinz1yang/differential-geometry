@@ -873,7 +873,7 @@ lemma riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (g₀ : SmoothRiemann
       (Module.finrank ℝ E : ℝ) ^ 2 * δ ^ 2 := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hrepr, _hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt (I := I) (M := M) g₀ 0 2 x
     ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) e hnE horth]
@@ -1373,7 +1373,7 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
           (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) x := rfl
     rw [hT]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (unitModel (I := I) (M := M) g₀ 4
         (riemannLoweredBackgroundDifference (I := I) (M := M) g₀ g₁) x)
       mm]
@@ -2235,8 +2235,8 @@ def riemannMixedBiContrFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
   riemannMixedBiContrFibFixedFrame (I := I) g₀ g₁ (smoothOrthoFrame (I := I) g₀ x) x
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
-theorem riemannMixedBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemannianMetric I M)
-    (x₀ : M) {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+theorem riemannMixedBiContrFib_eq_fixedFrame_on_neighborhood (g₀ g₁ : SmoothRiemannianMetric I M)
+    (x₀ : M) {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     riemannMixedBiContrFib (I := I) (M := M) g₀ g₁ y =
       riemannMixedBiContrFibFixedFrame (I := I) g₀ g₁ (smoothOrthoFrame (I := I) g₀ x₀) y := by
   classical
@@ -2299,11 +2299,11 @@ theorem riemannMixedBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M
     riemannMixedBiContrFibFixedFrame_contMDiff (I := I) g₀ g₁ (smoothOrthoFrame (I := I) g₀ x₀)
       (fun i => smoothOrthoFrame_smooth (I := I) g₀ x₀ i) x₀
   refine h_fixed.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
     (E := fun z : M => TensorRSSpace 2 2 I z) y)
     (congrArg TensorRSSpace.ofCLM
-      (riemannMixedBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₀ g₁ x₀ hy))
+      (riemannMixedBiContrFib_eq_fixedFrame_on_neighborhood (I := I) g₀ g₁ x₀ hy))
 
 def ricciOrderZeroRiemannMixedCoeff (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where

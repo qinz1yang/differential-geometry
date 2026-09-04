@@ -228,7 +228,7 @@ theorem differentiated_chart_bilinear_identity
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -257,7 +257,7 @@ theorem differentiated_chart_bilinear_identity
       densityDerivOnEuclid (I := I) g α D.direction y *
         D.base.fChart y * ψ y
       ∂(volume : Measure EuclN)) :=
-  D.differentiated_variational_identity ψ hψ hψ_cs hψ_supp
+  D.differentiated_variational_identity ψ hψ hψ_cs hψ_support
 
 abbrev base
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -278,7 +278,7 @@ theorem base_chart_bilinear_identity
     (D : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -292,7 +292,7 @@ theorem base_chart_bilinear_identity
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y * D.base.fChart y * ψ y
       ∂(volume : Measure EuclN) :=
-  D.base.variational_identity ψ hψ hψ_cs hψ_supp
+  D.base.variational_identity ψ hψ hψ_cs hψ_support
 
 end DiffChartBilinearH1Compl
 end Laplacian

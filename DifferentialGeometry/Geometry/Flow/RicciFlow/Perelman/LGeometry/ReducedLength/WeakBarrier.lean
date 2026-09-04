@@ -151,7 +151,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
         (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
           (I := I) x y)
     obtain ⟨path, hpath, _hlen⟩ :=
-      DifferentialGeometry.Geometry.Riemannian.CGT.exists_flat_path
+      DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor.exists_flat_path
         (I := I) hxy
     let alpha0 : Real → M := fun s ↦ path.extend (s / b)
     have halpha0 : ContMDiff 𝓘(Real, Real) I 1 alpha0 := by
@@ -162,14 +162,14 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     · simp only [alpha0, zero_div, Path.extend_zero]
     · simp only [alpha0, b, div_self hb.ne', Path.extend_one]
   obtain ⟨Z, hZmin, hZend⟩ :=
-    exists_lMinVec_rm (I := I) S hS K T hg tau htau hregTau hRmTau
+    exists_lMinimizingVector_rm (I := I) S hS K T hg tau htau hregTau hRmTau
       x y alpha0 halpha0 halpha00 halpha0b
-  have hbdom : b ∈ lRegDomain S T x Z := by
+  have hbdom : b ∈ lRegularizedDomain S T x Z := by
     have hpos : (Z, tau) ∈ lExpPosDom S T x :=
       ((mem_lMinDomain S T x Z tau).1 hZmin).1
     simpa only [b] using
       ((mem_lExpPosDom S T x Z tau).1 hpos).2.2
-  let gamma : Real → M := lRegCurve S T x Z
+  let gamma : Real → M := lRegularizedCurve S T x Z
   let kval : Real := lK S T gamma b
   obtain ⟨a, ha0, hab, herr⟩ :=
     exists_tail_cut (Module.finrank Real E : Real) b kval eps hb heps
@@ -177,7 +177,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       (by simpa only [gamma, kval] using lKTail_tendsto S hS T x Z hb hbdom)
   obtain ⟨V, hVopen, hA0V, Ktime, hKopen, hKconn, h0K, haK, hbK,
       alpha, halpha, hcurves, hinj⟩ :=
-    exists_lRegGeodesicFamily_with_injective_endpoint_mfderiv
+    exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv
       (E := E) (I := I) S hS K T x hZmin hregTau hRmTau
       ha0 (by simpa only [b] using hab)
   let x0 : M := gamma a
@@ -193,19 +193,19 @@ theorem exists_redWeak_sup [ConnectedSpace M]
           (fun r : Real ↦ alpha (A, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A, z)) r) s =
-        lRegAccel S T s (alpha (A, s))
+        lRegularizedAccel S T s (alpha (A, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A, r)) s) := by
     intro A hAV s hs
     exact ((hcurves A hAV).2.2 s hs).2.2.2
-  let Rdom : Set Real := lRegDomain S T x Z
+  let Rdom : Set Real := lRegularizedDomain S T x Z
   have hRdomOpen : IsOpen Rdom := by
-    simpa only [Rdom] using lRegDomain_isOpen S T x Z
+    simpa only [Rdom] using lRegularizedDomain_isOpen S T x Z
   have hRdomConn : IsPreconnected Rdom := by
-    simpa only [Rdom] using lRegDomain_preconn S T x Z
+    simpa only [Rdom] using lRegularizedDomain_preconn S T x Z
   have h0Rdom : 0 ∈ Rdom := by
-    simpa only [Rdom] using lRegDomain_seg S T x Z hbdom le_rfl hb.le
+    simpa only [Rdom] using lRegularizedDomain_segment S T x Z hbdom le_rfl hb.le
   have haRdom : a ∈ Rdom := by
-    simpa only [Rdom] using lRegDomain_seg S T x Z hbdom ha0.le hab.le
+    simpa only [Rdom] using lRegularizedDomain_segment S T x Z hbdom ha0.le hab.le
   have hbRdom : b ∈ Rdom := by simpa only [Rdom] using hbdom
   have hgamma : ∀ r ∈ Rdom,
       T - r ^ 2 ∈ D.regular ∧
@@ -215,20 +215,20 @@ theorem exists_redWeak_sup [ConnectedSpace M]
             (fun q : Real ↦ lVelocity (I := I) gamma q) r) r ∧
         covDerivAlong (I := I) (S.base.metric (T - r ^ 2)) gamma
             (fun q : Real ↦ lVelocity (I := I) gamma q) r =
-          lRegAccel S T r (gamma r) (lVelocity (I := I) gamma r) := by
+          lRegularizedAccel S T r (gamma r) (lVelocity (I := I) gamma r) := by
     intro r hr
-    have hrdom : r ∈ lRegDomain S T x Z := by simpa only [Rdom] using hr
+    have hrdom : r ∈ lRegularizedDomain S T x Z := by simpa only [Rdom] using hr
     obtain ⟨L, hLopen, hLconn, h0L, hrL, hchosen⟩ :=
-      lRegChosen_spec S T x Z hrdom
-    have heqOn : Set.EqOn gamma (lRegChosen S T x Z hrdom) L := by
+      lRegularizedChosen_spec S T x Z hrdom
+    have heqOn : Set.EqOn gamma (lRegularizedChosen S T x Z hrdom) L := by
       simpa only [gamma] using
-        lRegCurve_eqOn S hS T hLopen hLconn h0L hchosen
-    have heq : gamma =ᶠ[nhds r] lRegChosen S T x Z hrdom :=
+        lRegularizedCurve_eqOn S hS T hLopen hLconn h0L hchosen
+    have heq : gamma =ᶠ[nhds r] lRegularizedChosen S T x Z hrdom :=
       heqOn.eventuallyEq_of_mem (hLopen.mem_nhds hrL)
-    exact lRegData_congr S T r heq (hchosen.2.2 r hrL)
+    exact lRegularizedData_congr S T r heq (hchosen.2.2 r hrL)
   have hcenterEq : Set.EqOn (fun r ↦ alpha (A0, r)) gamma
       (Ktime ∩ Rdom) :=
-    lRegSol_eqOn S hS T hKopen hKconn haK hRdomOpen hRdomConn haRdom
+    lRegularizedSolution_eqOn S hS T hKopen hKconn haK hRdomOpen hRdomConn haRdom
       (hcurves A0 hA0V).2.2 hgamma
       (by simpa only [x0] using (hcurves A0 hA0V).1)
       (by simpa only [A0] using (hcurves A0 hA0V).2.1)
@@ -247,8 +247,8 @@ theorem exists_redWeak_sup [ConnectedSpace M]
         (hcenter b ⟨hb.le, le_rfl⟩).self_of_nhds
       _ = lExp S T x Z tau := by simp only [gamma, b, lExp]
       _ = y := hZend
-  obtain ⟨P0, Omega0, hOmega0, hOmega0seg, hP0sm, hP0ode, hP0ON⟩ :=
-    exists_lRegCurve_adaptedFrame (I := I) S hS T x hb hbdom
+  obtain ⟨P0, Omega0, hOmega0, hOmega0segment, hP0sm, hP0ode, hP0ON⟩ :=
+    exists_lRegularizedCurve_adaptedFrame (I := I) S hS T x hb hbdom
   let beta : Real → M := fun s ↦ alpha (A0, s)
   let P : Fin (Module.finrank Real E) →
       ∀ s, TangentSpace I (beta s) := fun i s ↦ (P0 i s : E)
@@ -256,9 +256,9 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     {s : Real | beta =ᶠ[nhds s] gamma} ∩ Omega0
   have hOmega : IsOpen Omega :=
     (isOpen_germ_eq beta gamma).inter hOmega0
-  have hOmegaSeg : Icc (0 : Real) b ⊆ Omega := by
+  have hOmegaSegment : Icc (0 : Real) b ⊆ Omega := by
     intro s hs
-    refine ⟨?_, hOmega0seg hs⟩
+    refine ⟨?_, hOmega0segment hs⟩
     change beta =ᶠ[nhds s] gamma
     simpa only [beta] using hcenter s hs
   have hPsm : ∀ i, ContMDiffOn 𝓘(Real, Real) I.tangent ∞
@@ -298,7 +298,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     rw [hbeta]
     simpa only [P] using congrArg
       (fun v : TangentSpace I (gamma s) ↦ (v : E))
-      (hP0ode i s (hOmega0seg hs0b))
+      (hP0ode i s (hOmega0segment hs0b))
   have hPON : ∀ i j,
       (S.base.metric (T - b ^ 2)).inner (alpha (A0, b))
           (P i b) (P j b) = if i = j then 1 else 0 := by
@@ -308,13 +308,13 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     simpa only [P] using hP0ON i j
   let htime := Coordinates.isLocalDiffeomorphAt_parameter_graph_of_slice_mfderiv_injective hVopen hA0V hKopen hbK halpha hinj
   let hfixed := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
-  let head : Real := lRegAction S T gamma 0 a
+  let head : Real := lRegularizedAction S T gamma 0 a
   let joint : M × Real → Real := fun q ↦
-    lRegAction S T
+    lRegularizedAction S T
       (fun s : Real ↦ alpha ((htime.localInverse q).1, s))
       a (htime.localInverse q).2
   let fixed : M → Real := fun z ↦
-    lRegAction S T (fun s : Real ↦ alpha (hfixed.localInverse z, s)) a b
+    lRegularizedAction S T (fun s : Real ↦ alpha (hfixed.localInverse z, s)) a b
   let Phi : M → Real → Real := fun z rho ↦
     (head + joint (z, Real.sqrt rho)) / (2 * Real.sqrt rho)
   have htime0 : htime.localInverse (y, b) = (A0, b) := by
@@ -404,7 +404,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       constructor
       · linarith [hq.1, hrange.2, hcSq]
       · exact hq.2
-    have hbdd := lRegCosts_bdd_rm (I := I) S hS K T 0 c
+    have hbdd := lRegularizedCosts_bdd_rm (I := I) S hS K T 0 c
       (by norm_num) hc.le hregC hRmC x z
     have hregBack : ∀ s ∈ Icc (0 : Real) c,
         T - s ^ 2 ∈ D.regular := by
@@ -414,7 +414,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       constructor <;> linarith [sq_nonneg s]
     have hheadC1 : ContMDiffOn 𝓘(Real, Real) I 1 gamma
         (Icc (0 : Real) a) :=
-      (lRegCurve_c1On (I := I) S hS T x Z hbdom).mono
+      (lRegularizedCurve_c1On (I := I) S hS T x Z hbdom).mono
         (fun s hs ↦ ⟨hs.1, hs.2.trans hab.le⟩)
     let delta : Real → M := fun s ↦ alpha (p.1, s)
     have htailC1 : ContMDiffOn 𝓘(Real, Real) I 1 delta
@@ -430,40 +430,40 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       exact ((hcenter a ⟨ha0.le, hab.le⟩).self_of_nhds).symm
     have hle := lCost_le_join_bdd (I := I) S hS T c hc x z ha0 hac
       hbdd hregBack gamma delta hheadC1 htailC1 hnode
-      (by simpa only [gamma] using lRegCurve_zero S T x Z) hend
+      (by simpa only [gamma] using lRegularizedCurve_zero S T x Z) hend
     change lCost S T x z rho / (2 * Real.sqrt rho) ≤
       (head + joint (z, Real.sqrt rho)) / (2 * Real.sqrt rho)
     rw [show rho = c ^ 2 from hcSq.symm, Real.sqrt_sq hc.le]
     apply (div_le_div_iff_of_pos_right (mul_pos (by norm_num) hc)).2
     simpa only [head, joint, gamma, p, hp2, delta] using hle
-  have hfull : lRegAction S T gamma 0 b = lCost S T x y tau := by
+  have hfull : lRegularizedAction S T gamma 0 b = lCost S T x y tau := by
     have hvec := (mem_lMinDomain S T x Z tau).1 hZmin
     calc
-      lRegAction S T gamma 0 b =
+      lRegularizedAction S T gamma 0 b =
           lLength S T (squareRootReparametrization gamma) 0 tau := by
         simpa only [gamma, b] using
-          (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T gamma tau htau.le).symm
+          (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T gamma tau htau.le).symm
       _ = lCost S T x (lExp S T x Z tau) tau := by
         change lLength S T (fun r : Real ↦ gamma (Real.sqrt r)) 0 tau = _
         simpa only [gamma, lExp] using hvec.2
       _ = lCost S T x y tau := by rw [hZend]
-  have hheadTail : head + fixed y = lRegAction S T gamma 0 b := by
+  have hheadTail : head + fixed y = lRegularizedAction S T gamma 0 b := by
     have hheadInt := lRayLag_int S hS T x Z hb hbdom
-    have hheadInt' : IntervalIntegrable (lRegLagrangian S T gamma) volume 0 a :=
+    have hheadInt' : IntervalIntegrable (lRegularizedLagrangian S T gamma) volume 0 a :=
       hheadInt.mono_set (by
         simpa only [uIcc_of_le hb.le, uIcc_of_le ha0.le] using
           (show Icc (0 : Real) a ⊆ Icc (0 : Real) b from
             fun s hs ↦ ⟨hs.1, hs.2.trans hab.le⟩))
-    have htailInt : IntervalIntegrable (lRegLagrangian S T gamma) volume a b :=
+    have htailInt : IntervalIntegrable (lRegularizedLagrangian S T gamma) volume a b :=
       hheadInt.mono_set (by
         simpa only [uIcc_of_le hb.le, uIcc_of_le hab.le] using
           (show Icc a b ⊆ Icc (0 : Real) b from
             fun s hs ↦ ⟨ha0.le.trans hs.1, hs.2⟩))
-    have hadd := lRegAction_add (I := I) S T gamma 0 a b hheadInt' htailInt
-    have htailEq : fixed y = lRegAction S T gamma a b := by
-      rw [show fixed y = lRegAction S T
+    have hadd := lRegularizedAction_add (I := I) S T gamma 0 a b hheadInt' htailInt
+    have htailEq : fixed y = lRegularizedAction S T gamma a b := by
+      rw [show fixed y = lRegularizedAction S T
         (fun s ↦ alpha (hfixed.localInverse y, s)) a b by rfl, hfixed0]
-      apply lRegAction_congr (I := I) S T
+      apply lRegularizedAction_congr (I := I) S T
       intro s hs
       have hs' : s ∈ Ioo a b := by simpa only [uIoo_of_le hab.le] using hs
       exact hcenterEq ⟨hsegK ⟨ha0.le.trans hs'.1.le, hs'.2.le⟩,
@@ -478,7 +478,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     rw [hjoint0, hheadTail, hfull]
     rfl
   obtain ⟨Ufix, hUfixOpen, hyUfix, Ffix, hFfixSmooth, hFfixEq⟩ :=
-    exists_contMDiffOn_lRegAction_endpointBranch
+    exists_contMDiffOn_lRegularizedAction_endpointBranch
       S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hregFamily hinj
   have hyUfixY : y ∈ Ufix := by
@@ -521,20 +521,20 @@ theorem exists_redWeak_sup [ConnectedSpace M]
   have hPhiSmoothAt : ContMDiffAt I 𝓘(Real, Real) ∞
       (fun z : M ↦ Phi z tau) y :=
     hPsiSmoothAt.congr_of_eventuallyEq hPhiFixed
-  let vel : TangentSpace I (alpha (A0, b)) :=
+  let velocity : TangentSpace I (alpha (A0, b)) :=
     lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b
-  let lag : Real := lRegLagrangian S T (fun s : Real ↦ alpha (A0, s)) b
-  let action : Real := lRegAction S T gamma 0 b
+  let lag : Real := lRegularizedLagrangian S T (fun s : Real ↦ alpha (A0, s)) b
+  let action : Real := lRegularizedAction S T gamma 0 b
   let d : Real := (lag - (S.base.metric (T - b ^ 2)).inner
-      (alpha (A0, b)) vel vel) / (4 * b ^ 2) - action / (4 * b ^ 3)
-  have hjointM := hasMFDerivAt_lRegAction_endpointBranch
+      (alpha (A0, b)) velocity velocity) / (4 * b ^ 2) - action / (4 * b ^ 3)
+  have hjointM := hasMFDerivAt_lRegularizedAction_endpointBranch
     S hS T a b hab hVopen hA0V hKopen
     hKconn haK hbK hstart halpha hregFamily
     (fun s hs ↦ hEulerFamily A0 hA0V s (hsegK ⟨ha0.le.trans hs.1, hs.2⟩)) hinj
   let ctime : Real := lag - (S.base.metric (T - b ^ 2)).inner
-    (alpha (A0, b)) vel vel
+    (alpha (A0, b)) velocity velocity
   let Lj : E × Real →L[Real] Real :=
-    ((S.base.metric (T - b ^ 2)).inner (alpha (A0, b)) vel).comp
+    ((S.base.metric (T - b ^ 2)).inner (alpha (A0, b)) velocity).comp
         (ContinuousLinearMap.fst Real E Real) +
       ctime • ContinuousLinearMap.snd Real E Real
   let Lid := ContinuousLinearMap.id Real
@@ -547,7 +547,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
   have hjointMY : HasMFDerivAt (I.prod 𝓘(Real, Real)) 𝓘(Real, Real)
       joint (y, b) Lj := by
     rw [← hcenterB]
-    simpa only [joint, htime, Lj, ctime, lag, vel, A0, gamma] using hjointM
+    simpa only [joint, htime, Lj, ctime, lag, velocity, A0, gamma] using hjointM
   have hline : HasMFDerivAt 𝓘(Real, Real)
       (I.prod 𝓘(Real, Real)) (fun r : Real ↦ (y, r)) b Lq := by
     change HasMFDerivAt 𝓘(Real, Real) (I.prod 𝓘(Real, Real))
@@ -562,11 +562,11 @@ theorem exists_redWeak_sup [ConnectedSpace M]
         ((0 : TangentSpace I (alpha (A0, b))), (1 : Real)) = 1 := rfl
     simp only [Lj, Lq, Lid]
     calc
-      _ = (S.base.metric (T - b ^ 2)).inner (alpha (A0, b)) vel
+      _ = (S.base.metric (T - b ^ 2)).inner (alpha (A0, b)) velocity
             (0 : TangentSpace I (alpha (A0, b))) + ctime * 1 :=
         congrArg₂ (· + ·)
           (congrArg (fun v : TangentSpace I (alpha (A0, b)) ↦
-            (S.base.metric (T - b ^ 2)).inner (alpha (A0, b)) vel v) hfst)
+            (S.base.metric (T - b ^ 2)).inner (alpha (A0, b)) velocity v) hfst)
           (congrArg (fun r : Real ↦ ctime * r) hsnd)
       _ = _ := by
         rw [map_zero, zero_add, mul_one]
@@ -594,7 +594,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     exact hrawF'
   have hjointDeriv : HasDerivAt (fun rho : Real ↦ joint (y, Real.sqrt rho))
       ((lag - (S.base.metric (T - b ^ 2)).inner
-        (alpha (A0, b)) vel vel) / (2 * b)) tau := by
+        (alpha (A0, b)) velocity velocity) / (2 * b)) tau := by
     have hcomp := hjointTime.comp tau (Real.hasDerivAt_sqrt htau.ne')
     change HasDerivAt (fun rho : Real ↦ joint (y, Real.sqrt rho))
       (ctime / (2 * b)) tau
@@ -612,7 +612,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
   have hnum : HasDerivAt
       (fun rho : Real ↦ head + joint (y, Real.sqrt rho))
       ((lag - (S.base.metric (T - b ^ 2)).inner
-        (alpha (A0, b)) vel vel) / (2 * b)) tau :=
+        (alpha (A0, b)) velocity velocity) / (2 * b)) tau :=
     hjointDeriv.const_add head
   have hden : HasDerivAt (fun rho : Real ↦ 2 * Real.sqrt rho)
       (1 / b) tau := by
@@ -625,18 +625,18 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     have hquot := hnum.div hden (mul_ne_zero (by norm_num) hb.ne')
     apply hquot.congr_deriv
     have hnumAt : head + joint (y, Real.sqrt tau) = action := by
-      change head + joint (y, b) = lRegAction S T gamma 0 b
+      change head + joint (y, b) = lRegularizedAction S T gamma 0 b
       rw [hjoint0]
       exact hheadTail
     simp only [d]
     rw [hnumAt]
     field_simp [hb.ne']
     ring
-  have hlapRaw := laplacian_lRegAction_endpointBranch_le_hamilton
+  have hlapRaw := laplacian_lRegularizedAction_endpointBranch_le_hamilton
     (I := I) S hS T a b ha0 hab x Z hbdom
-    (lMinVec_min_rm (I := I) S hS K T x hZmin hregTau hRmTau)
+    (lMinimizingVector_min_rm (I := I) S hS K T x hZmin hregTau hRmTau)
     hVopen hA0V hKopen hKconn h0K hbK hstart halpha hregFamily
-    hEulerFamily hcenter hinj P hOmega hOmegaSeg
+    hEulerFamily hcenter hinj P hOmega hOmegaSegment
     (fun i ↦ (hPsm i).of_le (by decide :
       (8 : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞))) hPode hPON
   have hKtail : lKTail S T beta a b = lKTail S T gamma a b := by
@@ -720,7 +720,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     rw [laplacian_smul_at (I := I) _ _ _ haddMD haddGrad]
     rw [laplacian_add_const (I := I) _ _ head hfixedMD hfixedGrad]
   have henergy := lK_ray_energy S hS T x Z hb hbdom
-  have hlagEq : lag = lRegLagrangian S T gamma b := by
+  have hlagEq : lag = lRegularizedLagrangian S T gamma b := by
     have heq := hcenter b ⟨hb.le, le_rfl⟩
     have hptBeta : beta b = gamma b := by
       simpa only [beta] using heq.self_of_nhds
@@ -731,12 +731,12 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       rw [heq.mfderiv_eq (I := 𝓘(Real, Real)) (I' := I)]
       rfl
     unfold lag
-    change lRegLagrangian S T beta b = lRegLagrangian S T gamma b
-    dsimp only [lRegLagrangian]
+    change lRegularizedLagrangian S T beta b = lRegularizedLagrangian S T gamma b
+    dsimp only [lRegularizedLagrangian]
     rw [hptBeta]
     rw [show lVelocity (I := I) beta b = lVelocity (I := I) gamma b from hvelEq]
   have hvelEq : (S.base.metric (T - b ^ 2)).inner
-      (alpha (A0, b)) vel vel =
+      (alpha (A0, b)) velocity velocity =
       (S.base.metric (T - b ^ 2)).inner (gamma b)
         (lVelocity (I := I) gamma b) (lVelocity (I := I) gamma b) := by
     have heq := hcenter b ⟨hb.le, le_rfl⟩
@@ -747,7 +747,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       rw [heq.mfderiv_eq (I := 𝓘(Real, Real)) (I' := I)]
       rfl
     rw [show alpha (A0, b) = gamma b from heq.self_of_nhds]
-    simpa only [vel, beta] using congrArg
+    simpa only [velocity, beta] using congrArg
       (fun v : TangentSpace I (gamma b) ↦
         (S.base.metric (T - b ^ 2)).inner (gamma b) v v) hv
   have hpre : d + laplacian (I := I) (LeviCivita (I := I)
@@ -757,20 +757,20 @@ theorem exists_redWeak_sup [ConnectedSpace M]
         Phi y tau / b ^ 2 + kval / (2 * b ^ 3) -
         lKTail S T gamma a b / (2 * b * (b - a) ^ 2) := by
     rw [hPhiLap]
-    have hPhiAction : Phi y tau = lRegAction S T gamma 0 b / (2 * b) := by
+    have hPhiAction : Phi y tau = lRegularizedAction S T gamma 0 b / (2 * b) := by
       rw [htouch, redLength, hfull]
     have hbaseEq : alpha (A0, b) = gamma b :=
       (hcenter b ⟨hb.le, le_rfl⟩).self_of_nhds
     let speed : Real := (S.base.metric (T - b ^ 2)).inner (gamma b)
       (lVelocity (I := I) gamma b) (lVelocity (I := I) gamma b)
     have hspeed : (S.base.metric (T - b ^ 2)).inner
-        (alpha (A0, b)) vel vel = speed := by
+        (alpha (A0, b)) velocity velocity = speed := by
       simpa only [speed] using hvelEq
     have hgammaB : gamma b = y := hbaseEq.symm.trans hcenterB
     have hlagShape : lag = (1 / 2 : Real) * speed +
         2 * b ^ 2 * S.scalar (T - b ^ 2) y := by
       rw [hlagEq]
-      dsimp only [lRegLagrangian]
+      dsimp only [lRegularizedLagrangian]
       simp only [speed]
       rw [hgammaB]
     have henergy' : kval = (action - b * lag) / 2 := by

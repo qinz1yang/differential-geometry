@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -62,10 +62,10 @@ structure FlowLimitData
   scalar : ScalarPullbackTendsto (I := I) maps
   ricciNorm : RicNormPullback (I := I) maps
 
-  hσsrc : forall k : Nat,
+  hσsource : forall k : Nat,
     letI : TopologicalSpace (L.atTime 0).M := L.topology
     IsSigmaCompact (maps.source k)
-  hσtgt : forall k : Nat,
+  hσtarget : forall k : Nat,
     letI : TopologicalSpace (X.term (mc.subseq k)).M :=
       (X.term (mc.subseq k)).topology
     IsSigmaCompact (maps.target k)
@@ -75,7 +75,7 @@ structure FlowLimitData
     letI : IsManifold I ∞ (SourceDomain (I := I) maps k) := sourceDomSmooth (I := I) maps k
     Real -> SmoothRiemannianMetric I (SourceDomain (I := I) maps k)
 
-  conv : forall K : Set (L.atTime 0).M,
+  convergence : forall K : Set (L.atTime 0).M,
     forall _hK : letI : TopologicalSpace (L.atTime 0).M := L.topology; IsCompact K,
     forall p : Nat,
     forall a b : Real, Set.Icc a b ⊆ X.D.carrier ->
@@ -83,7 +83,7 @@ structure FlowLimitData
         exists k0 : Nat, forall k : Nat, k0 <= k ->
           forall t : Real, t ∈ Set.Icc a b ->
             ((SourceDomainMetricData.ofRestrictPullback (I := I)
-              (Φ := maps) (k := k) (hσsrc k)
+              (Φ := maps) (k := k) (hσsource k)
               (refMetric k) (letI : TopologicalSpace L.M := L.topology; letI : ChartedSpace H L.M :=
                                                                           L.charted; letI : IsManifold I ∞ L.M := L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) L.M := (by change IsManifold I ∞ L.M; infer_instance); letI : SigmaCompactSpace L.M := L.sigmaCompact; letI : T2Space L.M := L.t2; L.S.family.metric)).derivNormSupOn (I := I) K p t) < ε
 
@@ -95,26 +95,7 @@ theorem flowLimit_upgrade
     compactnessConclusion (I := I) X :=
   ⟨d.L, mc.subseq, mc.strictMono,
     ⟨SmoothCGHConverges.ofRestrictPullback (I := I)
-      d.maps d.scalar d.ricciNorm d.hσsrc d.refMetric (letI : TopologicalSpace d.L.M := d.L.topology; letI : ChartedSpace H d.L.M := d.L.charted; letI : IsManifold I ∞ d.L.M := d.L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.L.M := (by change IsManifold I ∞ d.L.M; infer_instance); letI : SigmaCompactSpace d.L.M := d.L.sigmaCompact; letI : T2Space d.L.M := d.L.t2; d.L.S.family.metric) d.conv⟩⟩
-
-structure FlowUpgradeData
-    (X : PointedFlowSeq.{u, uE, uH} (I := I))
-    (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I))) where
-  φ : Nat -> Nat
-  hφ : StrictMono φ
-  data : FlowLimitData (I := I) X (mc.compSubseq φ hφ)
-
-namespace FlowUpgradeData
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem toConclusion
-    {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    {mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I))}
-    (d : FlowUpgradeData (I := I) X mc) :
-    compactnessConclusion (I := I) X :=
-  flowLimit_upgrade (I := I) X (mc.compSubseq d.φ d.hφ) d.data
-
-end FlowUpgradeData
+      d.maps d.scalar d.ricciNorm d.hσsource d.refMetric (letI : TopologicalSpace d.L.M := d.L.topology; letI : ChartedSpace H d.L.M := d.L.charted; letI : IsManifold I ∞ d.L.M := d.L.smooth; letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) d.L.M := (by change IsManifold I ∞ d.L.M; infer_instance); letI : SigmaCompactSpace d.L.M := d.L.sigmaCompact; letI : T2Space d.L.M := d.L.t2; d.L.S.family.metric) d.convergence⟩⟩
 
 structure FlowUpgrade
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
@@ -135,5 +116,5 @@ theorem toConclusion
 
 end FlowUpgrade
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -160,11 +160,11 @@ private theorem NormalBallChart.MetricEquivOn.inv_join_le
           (c.hom.open_target.mem_nhds (hjoin hs).1)
     have hetaDiff : MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, E) eta s := by
       simpa only [eta] using hinvDiff.comp s hgammaDiff
-    have hetaSrc : eta s ∈ c.hom.source :=
+    have hetaSource : eta s ∈ c.hom.source :=
       c.hom.map_target (hjoin hs).1
     have hhomDiff : MDifferentiableAt 𝓘(Real, E) I c.hom (eta s) :=
-      (c.hom.contMDiffOn_toFun.mdifferentiableOn one_ne_zero _ hetaSrc)
-        |>.mdifferentiableAt (c.hom.open_source.mem_nhds hetaSrc)
+      (c.hom.contMDiffOn_toFun.mdifferentiableOn one_ne_zero _ hetaSource)
+        |>.mdifferentiableAt (c.hom.open_source.mem_nhds hetaSource)
     have hnear : ∀ᶠ q in nhds s, gamma q ∈ c.hom.target :=
       hgammaCont.continuousAt.eventually
         (c.hom.open_target.mem_nhds (hjoin hs).1)
@@ -180,7 +180,7 @@ private theorem NormalBallChart.MetricEquivOn.inv_join_le
         (I := 𝓘(Real, Real)) (I' := I) heq
       rw [mfderiv_comp s hhomDiff hetaDiff] at hderiv
       simpa only using hderiv
-    have hetaVel : mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta s 1 =
+    have hetaVelocity : mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta s 1 =
         deriv eta s := by
       rw [mfderiv_eq_fderiv]
       exact fderiv_apply_one_eq_deriv
@@ -190,7 +190,7 @@ private theorem NormalBallChart.MetricEquivOn.inv_join_le
       change (mfderiv 𝓘(Real, E) I c.hom (eta s))
           (mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta s 1) =
         mfderiv 𝓘(Real, Real) I gamma s 1 at hv
-      rw [hetaVel] at hv
+      rw [hetaVelocity] at hv
       exact hv
     have hlaunch : Y.metric.inner x w w = d ^ 2 := by
       have hnonneg : 0 ≤ Y.metric.inner x w w :=
@@ -317,12 +317,12 @@ theorem NormalBallChart.MetricEquivOn.core_dist
     hBcompact.image_of_continuousOn (hhomCont.mono hBsrc)
   have hKclosed : IsClosed K := hKcompact.isClosed
   have hballB : Metric.ball z eta ⊆ B := Metric.ball_subset_closedBall
-  have hballSrc : Metric.ball z eta ⊆ c.hom.source :=
+  have hballSource : Metric.ball z eta ⊆ c.hom.source :=
     hballB.trans hBsrc
   let O : Set Y.M := c.hom '' Metric.ball z eta
   have hOopen : IsOpen O :=
     c.hom.toOpenPartialHomeomorph.isOpen_image_of_subset_source
-      Metric.isOpen_ball hballSrc
+      Metric.isOpen_ball hballSource
   have hzball : z ∈ Metric.ball z eta := Metric.mem_ball_self heta
   have hyO : c.hom z ∈ O := ⟨z, hzball, rfl⟩
   have hOK : O ⊆ K := Set.image_mono hballB
@@ -340,9 +340,9 @@ theorem NormalBallChart.MetricEquivOn.core_dist
   have hgammaOne : gamma 1 = x := by
     dsimp only [gamma]
     exact minJoin_one (I := I) Y.metric hEnorm (c.hom z) x
-  have hzSrc : z ∈ c.hom.source :=
+  have hzSource : z ∈ c.hom.source :=
     hBsrc (Metric.mem_closedBall_self heta.le)
-  have hInvZ : c.inv (c.hom z) = z := c.hom.left_inv hzSrc
+  have hInvZ : c.inv (c.hom z) = z := c.hom.left_inv hzSource
   have hgammaK : Set.MapsTo gamma (Set.Icc (0 : Real) 1) K := by
     intro q hq
     by_contra hqK
@@ -361,10 +361,10 @@ theorem NormalBallChart.MetricEquivOn.core_dist
       rw [frontier, hKclosed.closure_eq] at hfront
       exact hfront
     obtain ⟨w, hwB, hwgamma⟩ := hfront'.1
-    have hwSrc : w ∈ c.hom.source := hBsrc hwB
+    have hwSource : w ∈ c.hom.source := hBsrc hwB
     have hInvGamma : c.inv (gamma t) = w := by
       rw [← hwgamma]
-      exact c.hom.left_inv hwSrc
+      exact c.hom.left_inv hwSource
     have hwNotBall : w ∉ Metric.ball z eta := by
       intro hwball
       apply hfront'.2
@@ -379,13 +379,13 @@ theorem NormalBallChart.MetricEquivOn.core_dist
         (c.hom.target ∩ c.inv ⁻¹' U) := by
       intro s hs
       obtain ⟨v, hvB, hvgamma⟩ := hstay s hs
-      have hvSrc : v ∈ c.hom.source := hBsrc hvB
+      have hvSource : v ∈ c.hom.source := hBsrc hvB
       have htgt : gamma s ∈ c.hom.target := by
         rw [← hvgamma]
-        exact c.hom.map_source hvSrc
+        exact c.hom.map_source hvSource
       have hinv : c.inv (gamma s) = v := by
         rw [← hvgamma]
-        exact c.hom.left_inv hvSrc
+        exact c.hom.left_inv hvSource
       refine ⟨htgt, ?_⟩
       change c.inv (gamma s) ∈ U
       rw [hinv]
@@ -428,13 +428,13 @@ theorem NormalBallChart.MetricEquivOn.core_dist
       (c.hom.target ∩ c.inv ⁻¹' U) := by
     intro q hq
     obtain ⟨v, hvB, hvgamma⟩ := hgammaK hq
-    have hvSrc : v ∈ c.hom.source := hBsrc hvB
+    have hvSource : v ∈ c.hom.source := hBsrc hvB
     have htgt : gamma q ∈ c.hom.target := by
       rw [← hvgamma]
-      exact c.hom.map_source hvSrc
+      exact c.hom.map_source hvSource
     have hinv : c.inv (gamma q) = v := by
       rw [← hvgamma]
-      exact c.hom.left_inv hvSrc
+      exact c.hom.left_inv hvSource
     refine ⟨htgt, ?_⟩
     change c.inv (gamma q) ∈ U
     rw [hinv]
@@ -471,7 +471,7 @@ theorem BoundedGeometryNormalChartData.metric_buffer
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvDataOn (I := I) inp P L r hr phi hphi d.chart
+    (h : HasSupportedCenterMapConvergenceOn (I := I) inp P L r hr phi hphi d.chart
       U C0 C1 aInf Jinf Jbarinf)
     (hcomplete : ∀ j, MetricComplete (I := I) (X.obj j))
     (hconn : ∀ j,
@@ -503,7 +503,7 @@ theorem BoundedGeometryNormalChartData.metric_buffer
   classical
   let Lphi := L.subseq hphi
   have hraw := h
-  dsimp only [HasSuppConvDataOn] at hraw
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hraw
   rcases hraw with
     ⟨_hU, _hU8, _hC0, _hC1, _hC01, _hC1U, _hconvex, _hzero,
       hbuffer, _hcore, _hgeom, _hlim, _hweight, _htrans, _hsmooth⟩
@@ -606,5 +606,5 @@ theorem BoundedGeometryNormalChartData.metric_buffer
   · intro x hx
     exact (hpoint x hx).2
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -110,7 +110,7 @@ private theorem kappa_split
   refine ContinuousMultilinearMap.ext fun v => ?_
   rw [kappa_unit (I := I) (M := M)]
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add (I := I) (M := M), add_apply]
-  have hlower := connectionDifferenceLoweredCc_unitModel_apply'
+  have hlower := connectionDifferenceLoweredCc_unitModel_apply
     (I := I) (M := M) g gm x
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
   simp only [ContinuousLinearEquiv.apply_symm_apply] at hlower
@@ -123,7 +123,7 @@ private theorem kappa_split
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private theorem pb_eq_corr
+private theorem pb_eq_correction
     (g gm : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g 0 2)
     (htie : ∀ (x : M) (v w : TangentSpace I x),
@@ -369,10 +369,10 @@ private theorem moving_pair
     raised_inner (I := I) (M := M)]
   rw [g.symm x c (PDE.DeTurck.connectionDifference (I := I) gT g x a b),
     g.symm x c (PDE.DeTurck.connectionDifference (I := I) gU g x a b)]
-  have hlowT := connectionDifferenceLoweredCc_unitModel_apply'
+  have hlowT := connectionDifferenceLoweredCc_unitModel_apply
     (I := I) (M := M) g gT x
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
-  have hlowU := connectionDifferenceLoweredCc_unitModel_apply'
+  have hlowU := connectionDifferenceLoweredCc_unitModel_apply
     (I := I) (M := M) g gU x
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
   simp only [ContinuousLinearEquiv.apply_symm_apply] at hlowT hlowU
@@ -393,43 +393,43 @@ private theorem app_sub_right
   rw [hneg]
   rfl
 
-private def corrPermA : Equiv.Perm (Fin 5) :=
+private def correctionPermA : Equiv.Perm (Fin 5) :=
   ⟨![2, 3, 0, 1, 4], ![2, 3, 0, 1, 4], by decide, by decide⟩
 
-private def corrPermB : Equiv.Perm (Fin 5) :=
+private def correctionPermB : Equiv.Perm (Fin 5) :=
   ⟨![2, 3, 0, 4, 1], ![2, 4, 0, 1, 3], by decide, by decide⟩
 
-private noncomputable def corrPk3
+private noncomputable def correctionPk3
     (g : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2) :
     SmoothCcTensor g 3 5 :=
   slotExtend (I := I) (M := M) g 2 4
     (slotExtend (I := I) (M := M) g 1 3
       (slotExtend (I := I) (M := M) g 0 2 P))
 
-private noncomputable def corrPhi
+private noncomputable def correctionPhi
     (g : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
     (σ : Equiv.Perm (Fin 5)) : SmoothCcTensor g 3 3 :=
   ccOperatorFieldComp (I := I) (M := M) g 3 5 3
     (reindexCoefficientInputSlots (I := I) (M := M) g 5 3
       (cometricDoubleTraceField (I := I) g 3) σ)
-    (corrPk3 (I := I) (M := M) g P)
+    (correctionPk3 (I := I) (M := M) g P)
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private theorem corr_formula
+private theorem correction_formula
     (g gm g_bg : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g 0 2) :
     metricLoweredConnectionDifferenceCorrection (I := I) (M := M) g gm g_bg P =
       (1 / 2 : ℝ) • operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g P corrPermA)
+          (correctionPhi (I := I) (M := M) g P correctionPermA)
           (metricLoweredConnectionDifference (I := I) (M := M) g gm g_bg) +
         (1 / 2 : ℝ) • operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g P corrPermB)
+          (correctionPhi (I := I) (M := M) g P correctionPermB)
           (metricLoweredConnectionDifference (I := I) (M := M) g gm g_bg) := by
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem corr_cross
+private theorem correction_cross
     (g gT gU : SmoothRiemannianMetric I M)
     (U : SmoothCcTensor g 0 2) :
     metricLoweredConnectionDifferenceCorrection (I := I) (M := M) g gT g U -
@@ -445,57 +445,57 @@ private theorem corr_cross
     simp only [WT, WU, WC, metricLoweredConnectionDifference]
     module
   have hA := app_sub_right (I := I) (M := M) g 3 3
-    (corrPhi (I := I) (M := M) g U corrPermA) WT WU
+    (correctionPhi (I := I) (M := M) g U correctionPermA) WT WU
   have hB := app_sub_right (I := I) (M := M) g 3 3
-    (corrPhi (I := I) (M := M) g U corrPermB) WT WU
+    (correctionPhi (I := I) (M := M) g U correctionPermB) WT WU
   have hAn := operatorFieldApplication_smul_right (I := I) (M := M) g 3 3
-    (-1 : ℝ) (corrPhi (I := I) (M := M) g U corrPermA) WC
+    (-1 : ℝ) (correctionPhi (I := I) (M := M) g U correctionPermA) WC
   have hBn := operatorFieldApplication_smul_right (I := I) (M := M) g 3 3
-    (-1 : ℝ) (corrPhi (I := I) (M := M) g U corrPermB) WC
+    (-1 : ℝ) (correctionPhi (I := I) (M := M) g U correctionPermB) WC
   simp only [neg_one_smul] at hAn hBn
   have hA' :
       operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermA) WT -
+          (correctionPhi (I := I) (M := M) g U correctionPermA) WT -
         operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermA) WU =
+          (correctionPhi (I := I) (M := M) g U correctionPermA) WU =
       -operatorFieldApply (I := I) (M := M) g 3 3
-        (corrPhi (I := I) (M := M) g U corrPermA) WC := by
+        (correctionPhi (I := I) (M := M) g U correctionPermA) WC := by
     rw [← hA, hW, hAn]
   have hB' :
       operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermB) WT -
+          (correctionPhi (I := I) (M := M) g U correctionPermB) WT -
         operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermB) WU =
+          (correctionPhi (I := I) (M := M) g U correctionPermB) WU =
       -operatorFieldApply (I := I) (M := M) g 3 3
-        (corrPhi (I := I) (M := M) g U corrPermB) WC := by
+        (correctionPhi (I := I) (M := M) g U correctionPermB) WC := by
     rw [← hB, hW, hBn]
-  rw [corr_formula (I := I) (M := M) g gT g U,
-    corr_formula (I := I) (M := M) g gU g U,
-    corr_formula (I := I) (M := M) g gU gT U]
+  rw [correction_formula (I := I) (M := M) g gT g U,
+    correction_formula (I := I) (M := M) g gU g U,
+    correction_formula (I := I) (M := M) g gU gT U]
   change
     ((1 / 2 : ℝ) • operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermA) WT +
+          (correctionPhi (I := I) (M := M) g U correctionPermA) WT +
         (1 / 2 : ℝ) • operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermB) WT) -
+          (correctionPhi (I := I) (M := M) g U correctionPermB) WT) -
       ((1 / 2 : ℝ) • operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermA) WU +
+          (correctionPhi (I := I) (M := M) g U correctionPermA) WU +
         (1 / 2 : ℝ) • operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermB) WU) =
+          (correctionPhi (I := I) (M := M) g U correctionPermB) WU) =
     -((1 / 2 : ℝ) • operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermA) WC +
+          (correctionPhi (I := I) (M := M) g U correctionPermA) WC +
         (1 / 2 : ℝ) • operatorFieldApply (I := I) (M := M) g 3 3
-          (corrPhi (I := I) (M := M) g U corrPermB) WC)
+          (correctionPhi (I := I) (M := M) g U correctionPermB) WC)
   calc
     _ = (1 / 2 : ℝ) •
           (operatorFieldApply (I := I) (M := M) g 3 3
-              (corrPhi (I := I) (M := M) g U corrPermA) WT -
+              (correctionPhi (I := I) (M := M) g U correctionPermA) WT -
             operatorFieldApply (I := I) (M := M) g 3 3
-              (corrPhi (I := I) (M := M) g U corrPermA) WU) +
+              (correctionPhi (I := I) (M := M) g U correctionPermA) WU) +
         (1 / 2 : ℝ) •
           (operatorFieldApply (I := I) (M := M) g 3 3
-              (corrPhi (I := I) (M := M) g U corrPermB) WT -
+              (correctionPhi (I := I) (M := M) g U correctionPermB) WT -
             operatorFieldApply (I := I) (M := M) g 3 3
-              (corrPhi (I := I) (M := M) g U corrPermB) WU) := by
+              (correctionPhi (I := I) (M := M) g U correctionPermB) WU) := by
       module
     _ = _ := by rw [hA', hB']; module
 
@@ -589,10 +589,10 @@ private theorem raise_cross
   rw [g.symm x c (PDE.DeTurck.connectionDifference (I := I) gU gT x a b)]
   have hc := PDE.DeTurck.connectionDifference_cocycle
     (I := I) gT gU g x a b
-  have hlowT := connectionDifferenceLoweredCc_unitModel_apply'
+  have hlowT := connectionDifferenceLoweredCc_unitModel_apply
     (I := I) (M := M) g gT x
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
-  have hlowU := connectionDifferenceLoweredCc_unitModel_apply'
+  have hlowU := connectionDifferenceLoweredCc_unitModel_apply
     (I := I) (M := M) g gU x
     (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i))
   simp only [ContinuousLinearEquiv.apply_symm_apply] at hlowT hlowU
@@ -602,7 +602,7 @@ private theorem raise_cross
 
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
-private theorem moving_corr
+private theorem moving_correction
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2)
     (hTtie : ∀ (x : M) (v w : TangentSpace I x),
@@ -622,7 +622,7 @@ private theorem moving_corr
   rw [metricLoweredConnectionDifference_eq_connectionDifferenceLoweredCc (I := I) (M := M) g gT] at hmT
   rw [metricLoweredConnectionDifference_eq_connectionDifferenceLoweredCc (I := I) (M := M) g gU] at hmU
   have hsub := metricLoweredConnectionDifferenceCorrection_sub (I := I) (M := M) g gT g T U
-  have hcross := corr_cross (I := I) (M := M) g gT gU U
+  have hcross := correction_cross (I := I) (M := M) g gT gU U
   have hmC := metricConnectionDifferenceLoweredCoefficient_eq_lowered_add_correction (I := I) (M := M) g gU gT U hUtie
   have hwC :
       metricLoweredConnectionDifference (I := I) (M := M) g gU gT =
@@ -981,7 +981,7 @@ private theorem connSec_eq_raise
           ((![YZ 0, YZ 1, u] : Fin 3 → TangentSpace I x) i)) by
       funext i
       fin_cases i <;> rfl]
-    rw [connectionDifferenceLoweredCc_unitModel_apply']
+    rw [connectionDifferenceLoweredCc_unitModel_apply]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
       Matrix.cons_val_two, Matrix.tail_cons]
     exact g.symm x u
@@ -1483,7 +1483,7 @@ private theorem sharp_eq_slot0
           (metricComparisonEndomorphismField (I := I) (M := M) g gm)).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g gm x) om from rfl]
-  rw [cotangentToDual_slotInsertEndoFib' (I := I) (M := M) x
+  rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g gm x) om w]
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (sharpFlatEndoCc (I := I) g gm).toSection x) om =
@@ -1883,7 +1883,7 @@ private theorem wXi_h2_low
   simpa only [covariantJetNormSq, Nat.reduceAdd] using
     hFlow gm P htie hδ_le hδ0 hδ hsup 2 (by omega)
 
-private theorem corr_diff_h2
+private theorem correction_diff_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -1947,7 +1947,7 @@ private theorem corr_diff_h2
       simp only [K]
       ring
 
-private theorem corr_diff_h2_low
+private theorem correction_diff_h2_low
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -2040,7 +2040,7 @@ theorem exists_metricLoweredConnectionDifference_covariantJetNormSq_two_sub_boun
   obtain ⟨Kk, hKk, hkappa⟩ :=
     kappa_pair_h2 (I := I) (M := M) hDim g
   obtain ⟨Kc, hKc, hcorr⟩ :=
-    corr_diff_h2 (I := I) (M := M) hDim g hδ₀0 hδ₀
+    correction_diff_h2 (I := I) (M := M) hDim g hδ₀0 hδ₀
   let K : ℝ := 2 * Cr * Ks * (Kk + Kc)
   have hK : 0 ≤ K :=
     mul_nonneg
@@ -2069,7 +2069,7 @@ theorem exists_metricLoweredConnectionDifference_covariantJetNormSq_two_sub_boun
           metricLoweredConnectionDifference (I := I) (M := M) g gU g_bg =
         raiseLast (I := I) (M := M) g gU (X - Y) := by
     rw [hbg]
-    exact (moving_corr (I := I) (M := M) g gT gU T U
+    exact (moving_correction (I := I) (M := M) g gT gU T U
       hTtie hUtie).symm
   have hJT : 0 ≤ JT := jet_nonneg (I := I) (M := M) g _
   have hJU : 0 ≤ JU := jet_nonneg (I := I) (M := M) g _
@@ -2223,7 +2223,7 @@ theorem exists_metricLoweredConnectionDifference_covariantJetNormSq_one_sub_boun
   obtain ⟨Kk, hKk, hkappa⟩ :=
     kappa_pair_h1 (I := I) (M := M) hDim g
   obtain ⟨Kc, hKc, hcorr⟩ :=
-    corr_diff_h2_low (I := I) (M := M) hDim g hδ₀0 hδ₀
+    correction_diff_h2_low (I := I) (M := M) hDim g hδ₀0 hδ₀
   let Q0 : ℝ → ℝ := fun R =>
     2 * Cr * Ks * (1 + R ^ 2) * (Kk + Kc)
   let Q1 : ℝ → ℝ := fun R =>
@@ -2268,7 +2268,7 @@ theorem exists_metricLoweredConnectionDifference_covariantJetNormSq_one_sub_boun
           metricLoweredConnectionDifference (I := I) (M := M) g gU g_bg =
         raiseLast (I := I) (M := M) g gU (X - Y) := by
     rw [hbg]
-    exact (moving_corr (I := I) (M := M) g gT gU T U
+    exact (moving_correction (I := I) (M := M) g gT gU T U
       hTtie hUtie).symm
   have hJT0 : 0 ≤ JT := jet_nonneg (I := I) (M := M) g _
   have hJD0 : 0 ≤ JD := jet_nonneg (I := I) (M := M) g _
@@ -2485,7 +2485,7 @@ theorem exists_metricLoweredConnectionDifference_covariantJetNormSq_two_sub_tame
           metricLoweredConnectionDifference (I := I) (M := M) g gU g_bg =
         raiseLast (I := I) (M := M) g gU (X - Y) := by
     rw [hbg]
-    exact (moving_corr (I := I) (M := M) g gT gU T U
+    exact (moving_correction (I := I) (M := M) g gT gU T U
       hTtie hUtie).symm
   have hX :
       covariantJetNormSq (I := I) (M := M) g 2 X ≤ Kk * D3 ^ 2 := by
@@ -3145,17 +3145,17 @@ private theorem reindex_h2_eq
   rw [iteratedCovGrad_reindexCoefficientInputSlots (I := I) (M := M),
     norm_reindexCoefficientInputSlots_eq (I := I) (M := M)]
 
-private theorem corrPk3_h2
+private theorem correctionPk3_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g 0 2) :
     covariantJetNormSq (I := I) (M := M) g 2
-        (corrPk3 (I := I) (M := M) g P) ≤
+        (correctionPk3 (I := I) (M := M) g P) ≤
       27 * covariantJetNormSq (I := I) (M := M) g 2 P := by
   let fr : ℝ := Module.finrank ℝ E
   have hper : ∀ q : ℕ,
       ‖iteratedCovGrad (I := I) g 3 5 q
-          (corrPk3 (I := I) (M := M) g P)‖ ≤
+          (correctionPk3 (I := I) (M := M) g P)‖ ≤
         Real.sqrt fr *
           (Real.sqrt fr *
             (Real.sqrt fr *
@@ -3163,12 +3163,12 @@ private theorem corrPk3_h2
     intro q
     calc
       ‖iteratedCovGrad (I := I) g 3 5 q
-          (corrPk3 (I := I) (M := M) g P)‖ ≤
+          (correctionPk3 (I := I) (M := M) g P)‖ ≤
         Real.sqrt (Module.finrank ℝ E) *
           ‖iteratedCovGrad (I := I) g 2 4 q
             (slotExtend (I := I) (M := M) g 1 3
               (slotExtend (I := I) (M := M) g 0 2 P))‖ := by
-            simpa only [corrPk3, fr] using
+            simpa only [correctionPk3, fr] using
               slotExt_norm_le (I := I) (M := M) g 2 4 q
                 (slotExtend (I := I) (M := M) g 1 3
                   (slotExtend (I := I) (M := M) g 0 2 P))
@@ -3191,19 +3191,19 @@ private theorem corrPk3_h2
               (Real.sqrt_nonneg _)
   have hsq : ∀ q : ℕ,
       ‖iteratedCovGrad (I := I) g 3 5 q
-          (corrPk3 (I := I) (M := M) g P)‖ ^ 2 ≤
+          (correctionPk3 (I := I) (M := M) g P)‖ ^ 2 ≤
         27 * ‖iteratedCovGrad (I := I) g 0 2 q P‖ ^ 2 := by
     intro q
     have h := pow_le_pow_left₀
       (norm_nonneg
         (iteratedCovGrad (I := I) g 3 5 q
-          (corrPk3 (I := I) (M := M) g P)))
+          (correctionPk3 (I := I) (M := M) g P)))
       (hper q) 2
     have hs : Real.sqrt ((3 : ℕ) : ℝ) ^ 2 = 3 :=
       Real.sq_sqrt (by norm_num)
     calc
       ‖iteratedCovGrad (I := I) g 3 5 q
-          (corrPk3 (I := I) (M := M) g P)‖ ^ 2 ≤
+          (correctionPk3 (I := I) (M := M) g P)‖ ^ 2 ≤
         (Real.sqrt fr *
           (Real.sqrt fr *
             (Real.sqrt fr *
@@ -3223,7 +3223,7 @@ private theorem corrPk3_h2
   calc
     ∑ q ∈ Finset.range 3,
         ‖iteratedCovGrad (I := I) g 3 5 q
-          (corrPk3 (I := I) (M := M) g P)‖ ^ 2 ≤
+          (correctionPk3 (I := I) (M := M) g P)‖ ^ 2 ≤
       ∑ q ∈ Finset.range 3,
         27 * ‖iteratedCovGrad (I := I) g 0 2 q P‖ ^ 2 :=
       Finset.sum_le_sum fun q _ => hsq q
@@ -3231,13 +3231,13 @@ private theorem corrPk3_h2
         ‖iteratedCovGrad (I := I) g 0 2 q P‖ ^ 2 := by
       rw [Finset.mul_sum]
 
-private theorem corrPhi_h2
+private theorem correctionPhi_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (P : SmoothCcTensor g 0 2) (σ : Equiv.Perm (Fin 5)),
         covariantJetNormSq (I := I) (M := M) g 2
-            (corrPhi (I := I) (M := M) g P σ) ≤
+            (correctionPhi (I := I) (M := M) g P σ) ≤
           C * covariantJetNormSq (I := I) (M := M) g 2 P := by
   obtain ⟨Ca, hCa, happ⟩ :=
     app_h2_mul (I := I) (M := M) hDim g 3 5 3
@@ -3251,20 +3251,20 @@ private theorem corrPhi_h2
     mul_nonneg (mul_nonneg (by norm_num) hCa) hJ
   refine ⟨C, hC, ?_⟩
   intro P σ
-  have hpk := corrPk3_h2 (I := I) (M := M) hDim g P
+  have hpk := correctionPk3_h2 (I := I) (M := M) hDim g P
   have hraw := happ
     (reindexCoefficientInputSlots (I := I) (M := M) g 5 3
       (cometricDoubleTraceField (I := I) g 3) σ)
-    (corrPk3 (I := I) (M := M) g P)
+    (correctionPk3 (I := I) (M := M) g P)
   rw [reindex_h2_eq (I := I) (M := M) g
     (cometricDoubleTraceField (I := I) g 3) σ] at hraw
   calc
     covariantJetNormSq (I := I) (M := M) g 2
-        (corrPhi (I := I) (M := M) g P σ) ≤
+        (correctionPhi (I := I) (M := M) g P σ) ≤
       Ca * J *
         covariantJetNormSq (I := I) (M := M) g 2
-          (corrPk3 (I := I) (M := M) g P) := by
-            simpa only [corrPhi, J] using hraw
+          (correctionPk3 (I := I) (M := M) g P) := by
+            simpa only [correctionPhi, J] using hraw
     _ ≤ Ca * J *
         (27 * covariantJetNormSq (I := I) (M := M) g 2 P) :=
       mul_le_mul_of_nonneg_left hpk (mul_nonneg hCa hJ)
@@ -4210,7 +4210,7 @@ theorem sharp_pair_h2
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
-private theorem corr_tel
+private theorem correction_tel
     (g gT gU : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) :
     metricLoweredConnectionDifferenceCorrection (I := I) (M := M) g gT g T -
@@ -4221,7 +4221,7 @@ private theorem corr_tel
   rw [metricLoweredConnectionDifferenceCorrection_sub (I := I) (M := M) g gT g T U]
   abel
 
-private theorem corr_pair_h2
+private theorem correction_pair_h2
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -4278,7 +4278,7 @@ private theorem corr_pair_h2
       covariantJetNormSq (I := I) (M := M) g 2 Y ≤ C1 * B := by
     simpa only [covariantJetNormSq, Nat.reduceAdd, Y, B, mul_assoc] using
       hmove gT gU g U
-  rw [corr_tel (I := I) (M := M) g gT gU T U]
+  rw [correction_tel (I := I) (M := M) g gT gU T U]
   calc
     covariantJetNormSq (I := I) (M := M) g 2 (X + Y) ≤
         2 * (covariantJetNormSq (I := I) (M := M) g 2 X +
@@ -4295,7 +4295,7 @@ private theorem corr_pair_h2
     _ = (2 * max C0 C1) * (A + B) := by ring
     _ = C * (A + B) := rfl
 
-private theorem corr_h1_mul
+private theorem correction_h1_mul
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -4307,7 +4307,7 @@ private theorem corr_h1_mul
             covariantJetNormSq (I := I) (M := M) g 1
               (metricLoweredConnectionDifference (I := I) (M := M) g gm g_bg) := by
   obtain ⟨Cφ, hCφ, hφ⟩ :=
-    corrPhi_h2 (I := I) (M := M) hDim g
+    correctionPhi_h2 (I := I) (M := M) hDim g
   obtain ⟨Ca, hCa, happ⟩ :=
     app_h21_mul (I := I) (M := M) hDim g 0 3 3
   let C : ℝ := Ca * Cφ
@@ -4317,9 +4317,9 @@ private theorem corr_h1_mul
   let W : SmoothCcTensor g 0 3 :=
     metricLoweredConnectionDifference (I := I) (M := M) g gm g_bg
   let ΦA : SmoothCcTensor g 3 3 :=
-    corrPhi (I := I) (M := M) g P corrPermA
+    correctionPhi (I := I) (M := M) g P correctionPermA
   let ΦB : SmoothCcTensor g 3 3 :=
-    corrPhi (I := I) (M := M) g P corrPermB
+    correctionPhi (I := I) (M := M) g P correctionPermB
   let UA : SmoothCcTensor g 0 3 :=
     operatorFieldApply (I := I) (M := M) g 3 3 ΦA W
   let UB : SmoothCcTensor g 0 3 :=
@@ -4338,7 +4338,7 @@ private theorem corr_h1_mul
       _ ≤ Ca * (Cφ * JP) * JW := by
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left
-            (by simpa only [ΦA, JP] using hφ P corrPermA) hCa)
+            (by simpa only [ΦA, JP] using hφ P correctionPermA) hCa)
           hJW
       _ = C * JP * JW := by
         simp only [C]
@@ -4353,7 +4353,7 @@ private theorem corr_h1_mul
       _ ≤ Ca * (Cφ * JP) * JW := by
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left
-            (by simpa only [ΦB, JP] using hφ P corrPermB) hCa)
+            (by simpa only [ΦB, JP] using hφ P correctionPermB) hCa)
           hJW
       _ = C * JP * JW := by
         simp only [C]
@@ -4361,7 +4361,7 @@ private theorem corr_h1_mul
   have hadd := jet_add1 (I := I) (M := M) g 1
     ((1 / 2 : ℝ) • UA) ((1 / 2 : ℝ) • UB)
   rw [jet_smul1, jet_smul1] at hadd
-  rw [corr_formula (I := I) (M := M) g gm g_bg P]
+  rw [correction_formula (I := I) (M := M) g gm g_bg P]
   change covariantJetNormSq (I := I) (M := M) g 1
       ((1 / 2 : ℝ) • UA + (1 / 2 : ℝ) • UB) ≤ C * JP * JW
   calc
@@ -4374,7 +4374,7 @@ private theorem corr_h1_mul
     _ ≤ C * JP * JW := by
       nlinarith
 
-theorem metricCorr_pair_h1
+theorem metricCorrection_pair_h1
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -4392,7 +4392,7 @@ theorem metricCorr_pair_h1
                 (metricLoweredConnectionDifference (I := I) (M := M) g gT g -
                   metricLoweredConnectionDifference (I := I) (M := M) g gU g)) := by
   obtain ⟨C0, hC0, hmul⟩ :=
-    corr_h1_mul (I := I) (M := M) hDim g
+    correction_h1_mul (I := I) (M := M) hDim g
   let C : ℝ := 2 * C0
   have hC : 0 ≤ C := mul_nonneg (by norm_num) hC0
   refine ⟨C, hC, ?_⟩
@@ -4430,12 +4430,12 @@ theorem metricCorr_pair_h1
     change covariantJetNormSq (I := I) (M := M) g 1
       (metricLoweredConnectionDifferenceCorrection (I := I) (M := M) g gT g U -
         metricLoweredConnectionDifferenceCorrection (I := I) (M := M) g gU g U) ≤ C0 * B
-    rw [corr_cross (I := I) (M := M) g gT gU U,
+    rw [correction_cross (I := I) (M := M) g gT gU U,
       jet_neg1 (I := I) (M := M) g 1]
     have hraw := hmul gU gT U
     rw [hWcross, jet_neg1 (I := I) (M := M) g 1] at hraw
     simpa only [B, WT, WU, mul_assoc] using hraw
-  rw [corr_tel (I := I) (M := M) g gT gU T U]
+  rw [correction_tel (I := I) (M := M) g gT gU T U]
   change covariantJetNormSq (I := I) (M := M) g 1 (X + Y) ≤ C * (A + B)
   calc
     covariantJetNormSq (I := I) (M := M) g 1 (X + Y) ≤
@@ -4737,7 +4737,7 @@ theorem mcd_pair_h2
   obtain ⟨Kw, hKw, hwT⟩ :=
     wXi_h2_low (I := I) (M := M) g hδ₀0 hδ₀
   obtain ⟨Cc, hCc, hcorr⟩ :=
-    corr_pair_h2 (I := I) (M := M) hDim g
+    correction_pair_h2 (I := I) (M := M) hDim g
   let H : ℝ := Real.sqrt Cc
   let Hw : ℝ := Real.sqrt Kw
   let B0 : ℝ → ℝ := fun R =>
@@ -4994,7 +4994,7 @@ theorem mcd_pair_h1
   obtain ⟨Kw, hKw, hwlow⟩ :=
     wXi_h2_low (I := I) (M := M) g hδ₀0 hδ₀
   obtain ⟨Cc, hCc, hcp⟩ :=
-    metricCorr_pair_h1 (I := I) (M := M) hDim g
+    metricCorrection_pair_h1 (I := I) (M := M) hDim g
   let Q0 : ℝ → ℝ := fun R =>
     2 * (2 * (W0 R) ^ 2 + Cc * (Kw + R ^ 2 * (2 * (W0 R) ^ 2)))
   let Q1 : ℝ → ℝ := fun R =>

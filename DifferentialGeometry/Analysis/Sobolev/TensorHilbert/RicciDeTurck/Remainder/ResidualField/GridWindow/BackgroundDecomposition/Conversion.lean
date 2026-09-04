@@ -187,7 +187,7 @@ private lemma ricciContractionWeight_unitModel_gen (σ : Equiv.Perm (Fin 6))
   rw [cometricDoubleTraceFib_toModel (I := I) g₀ 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₀ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y) m]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [hYval]
@@ -751,7 +751,7 @@ lemma bgRCommCoeffField_eq_decomposition (g : SmoothRiemannianMetric I M) :
   rw [cometricDoubleTraceFib_toModel (I := I) g 2 x]
   rw [modelDoubleTrace_apply (E := E) 2 (cometricLmodel (I := I) g x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
         (riemannCometricDoubleTraceContraction (I := I) (M := M) g₀).toSection x) D))
@@ -993,7 +993,7 @@ lemma koszulConnectionDifferenceContractionWeight_unitModel (σ : Equiv.Perm (Fi
   rw [cometricDoubleTraceFib_toModel (I := I) g₀ 4 x Y]
   rw [modelDoubleTrace_apply (E := E) 4 (cometricLmodel (I := I) g₀ x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g₀ x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel Y) m]
   refine Finset.sum_congr rfl fun e _ => ?_
   rw [hYval]

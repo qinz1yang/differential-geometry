@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators ENNReal
 open Bundle Manifold
@@ -87,5 +87,5 @@ theorem MapMetricApproximationOn.image_metric_ball_subset_of_closedEBall_subset
   exact (hdata.mono hK le_rfl hdata.eps_lt_one).image_metric_ball_subset
     (I := I) Φ hgnorm hhnorm hr hrr₂ hε0 hR hsub
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

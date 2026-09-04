@@ -32,7 +32,7 @@ variable [PseudoEMetricSpace M]
   [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
 
-def intrInjRadiusSet
+def intrinsicInjRadiusSet
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -40,21 +40,21 @@ def intrInjRadiusSet
   {r | InjOn (intrinsicFramedExp (I := I) g hEnorm p)
     (Metric.eball (0 : E) r)}
 
-def intrInjRadius
+def intrinsicInjRadius
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) : ℝ≥0∞ :=
-  sSup (intrInjRadiusSet (I := I) g hEnorm p)
+  sSup (intrinsicInjRadiusSet (I := I) g hEnorm p)
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] [ConnectedSpace M] in
-lemma intrInj_down
+lemma intrinsicInj_down
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) {r r' : ℝ≥0∞} (h : r' ≤ r)
-    (hr : r ∈ intrInjRadiusSet (I := I) g hEnorm p) :
-    r' ∈ intrInjRadiusSet (I := I) g hEnorm p :=
+    (hr : r ∈ intrinsicInjRadiusSet (I := I) g hEnorm p) :
+    r' ∈ intrinsicInjRadiusSet (I := I) g hEnorm p :=
   hr.mono (Metric.eball_subset_eball h)
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] [ConnectedSpace M] in
@@ -63,7 +63,7 @@ lemma zero_mem_intrInj
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) :
-    (0 : ℝ≥0∞) ∈ intrInjRadiusSet (I := I) g hEnorm p := by
+    (0 : ℝ≥0∞) ∈ intrinsicInjRadiusSet (I := I) g hEnorm p := by
   classical
   change InjOn _ (Metric.eball (0 : E) (0 : ℝ≥0∞))
   rw [Metric.eball_zero]
@@ -75,18 +75,18 @@ lemma le_intrInjRadius
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) {r : ℝ≥0∞}
-    (hr : r ∈ intrInjRadiusSet (I := I) g hEnorm p) :
-    r ≤ intrInjRadius (I := I) g hEnorm p :=
+    (hr : r ∈ intrinsicInjRadiusSet (I := I) g hEnorm p) :
+    r ≤ intrinsicInjRadius (I := I) g hEnorm p :=
   le_sSup hr
 
 omit [ConnectedSpace M] in
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
-theorem intrInjOn_eball
+theorem intrinsicInjOn_eball
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) {r : ℝ≥0∞}
-    (hr : r < intrInjRadius (I := I) g hEnorm p) :
+    (hr : r < intrinsicInjRadius (I := I) g hEnorm p) :
     InjOn (intrinsicFramedExp (I := I) g hEnorm p)
       (Metric.eball (0 : E) r) := by
   classical
@@ -96,15 +96,15 @@ theorem intrInjOn_eball
 
 omit [ConnectedSpace M] in
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
-theorem intrInjOn_ball
+theorem intrinsicInjOn_ball
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) {r : Real}
-    (hr : ENNReal.ofReal r < intrInjRadius (I := I) g hEnorm p) :
+    (hr : ENNReal.ofReal r < intrinsicInjRadius (I := I) g hEnorm p) :
     InjOn (intrinsicFramedExp (I := I) g hEnorm p)
       (Metric.ball (0 : E) r) := by
-  have h := intrInjOn_eball (I := I) g hEnorm p hr
+  have h := intrinsicInjOn_eball (I := I) g hEnorm p hr
   rwa [Metric.eball_ofReal] at h
 
 end NormalCoordinates

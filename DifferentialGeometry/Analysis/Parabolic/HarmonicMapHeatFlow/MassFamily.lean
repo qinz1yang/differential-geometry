@@ -30,7 +30,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem hmfVolumeReal
+theorem harmonicMapFlowVolumeReal
     (q : SmoothRiemannianMetric I M)
     (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b)
     (hgram : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)), ContinuousOn
@@ -48,7 +48,7 @@ theorem hmfVolumeReal
           C.toReal *
             (riemannianVolumeMeasure (I := I) (M := M) q).real Set.univ := by
   obtain ⟨C, hC0, hCtop, hvol⟩ :=
-    hmfVolumeEquiv (I := I) (M := M) q g hcb hgram
+    harmonicMapFlowVolumeEquiv (I := I) (M := M) q g hcb hgram
   refine ⟨C, hC0, hCtop, hvol, ?_⟩
   intro t ht
   let μq := riemannianVolumeMeasure (I := I) (M := M) q
@@ -66,7 +66,7 @@ theorem hmfVolumeReal
 
 omit [BoundarylessManifold I M]
   [ConnectedSpace M] in
-theorem hmfSpecTime_cont
+theorem harmonicMapFlowSpecTime_cont
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1)) :
     ∃ R : ℝ, 0 < R ∧
@@ -76,7 +76,7 @@ theorem hmfSpecTime_cont
         (K ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
         ContinuousOn
-          (fun t ↦ hmfSpecMassOp (I := I) (M := M) q (g t) S u) K := by
+          (fun t ↦ harmonicMapFlowSpecMassOp (I := I) (M := M) q (g t) S u) K := by
   let : NormedAddCommGroup
       (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
     ContinuousLinearMap.toNormedAddCommGroup
@@ -92,11 +92,11 @@ theorem hmfSpecTime_cont
         EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
     ContinuousLinearMap.toNormedSpace
   obtain ⟨Rt, hRt, htime⟩ :=
-    hmfStateTime_cont (I := I) (M := M) q S
+    harmonicMapFlowStateTime_cont (I := I) (M := M) q S
   obtain ⟨Rm, hRm, hmass⟩ :=
-    hmfSpecMassPt_continuous (I := I) (M := M) q S
+    harmonicMapFlowSpecMassPt_continuous (I := I) (M := M) q S
   obtain ⟨Ra, hRa, hmap⟩ :=
-    hmfSpecMap_md (I := I) (M := M) q S
+    harmonicMapFlowSpecMap_md (I := I) (M := M) q S
   let R := min Rt (min Rm Ra)
   have hR : 0 < R := lt_min hRt (lt_min hRm hRa)
   refine ⟨R, hR, ?_⟩
@@ -113,15 +113,15 @@ theorem hmfSpecTime_cont
     Metric.ball_subset_ball
       ((min_le_right Rt (min Rm Ra)).trans (min_le_right Rm Ra)) hu
   have hpt : Continuous
-      (fun x : M ↦ hmfSpecMassPt (I := I) (M := M) q S u x) := by
+      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x) := by
     exact hmass u hu_m
   have hmd : ∀ x : M,
       MDifferentiableAt 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
         (fun z : EuclideanSpace ℝ {i // i ∈ S} ↦
-          hmfAdd (I := I) (M := M) q
-            (hmfSpecIncl (I := I) (M := M) q S z) x) u := by
+          harmonicMapFlowAdd (I := I) (M := M) q
+            (harmonicMapFlowSpecIncl (I := I) (M := M) q S z) x) u := by
     intro x
-    simpa only [hmfSpecMap_eq] using hmap u hu_a x
+    simpa only [harmonicMapFlowSpecMap_eq] using hmap u hu_a x
   rw [continuousOn_clm_apply]
   intro v
   rw [continuousOn_clm_apply]
@@ -132,14 +132,14 @@ theorem hmfSpecTime_cont
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
   have hint : Integrable
-      (fun x : M ↦ hmfSpecMassPt (I := I) (M := M) q S u x)
+      (fun x : M ↦ harmonicMapFlowSpecMassPt (I := I) (M := M) q S u x)
       μt :=
     integrableOn_univ.mp
       (hpt.continuousOn.integrableOn_compact isCompact_univ)
-  exact hmfSpecMass_state (I := I) (M := M) q (g t) S u v w hmd hint
+  exact harmonicMapFlowSpecMass_state (I := I) (M := M) q (g t) S u v w hmd hint
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-theorem hmfMassFamily
+theorem harmonicMapFlowMassFamily
     (q : SmoothRiemannianMetric I M)
     (S : Finset (TensorEigenIdx (I := I) (M := M) q 0 1))
     (g : ℝ → SmoothRiemannianMetric I M) {a b c : ℝ} (hcb : c < b)
@@ -159,21 +159,21 @@ theorem hmfMassFamily
             (riemannianVolumeMeasure (I := I) (M := M) q).real Set.univ) ∧
       ∃ R : ℝ, 0 < R ∧ ∃ L : ℝ≥0,
         (∀ t ∈ Icc a c, LipschitzOnWith L
-          (hmfSpecMassOp (I := I) (M := M) q (g t) S)
+          (harmonicMapFlowSpecMassOp (I := I) (M := M) q (g t) S)
           (Metric.closedBall 0 R)) ∧
         (∀ t ∈ Icc a c,
           ∀ u ∈ Metric.closedBall
             (0 : EuclideanSpace ℝ {i // i ∈ S}) R,
           ∀ v : EuclideanSpace ℝ {i // i ∈ S},
             (C.toReal⁻¹ / 2) * ‖v‖ * ‖v‖ ≤
-              hmfSpecMassOp (I := I) (M := M) q (g t) S u v v) ∧
+              harmonicMapFlowSpecMassOp (I := I) (M := M) q (g t) S u v v) ∧
         ∀ u ∈ Metric.closedBall
             (0 : EuclideanSpace ℝ {i // i ∈ S}) R,
           ContinuousOn
-            (fun t ↦ hmfSpecMassOp (I := I) (M := M) q (g t) S u)
+            (fun t ↦ harmonicMapFlowSpecMassOp (I := I) (M := M) q (g t) S u)
             (Icc a c) := by
   obtain ⟨C, hC0, hCtop, hvol, hvolReal⟩ :=
-    hmfVolumeReal (I := I) (M := M) q g hcb hgram
+    harmonicMapFlowVolumeReal (I := I) (M := M) q g hcb hgram
   let B : ℝ≥0 := ⟨C.toReal *
     (riemannianVolumeMeasure (I := I) (M := M) q).real Set.univ,
     mul_nonneg ENNReal.toReal_nonneg measureReal_nonneg⟩
@@ -184,9 +184,9 @@ theorem hmfMassFamily
       C.toReal * (riemannianVolumeMeasure (I := I) (M := M) q).real Set.univ
     exact hvolReal t ht
   obtain ⟨Rl, hRl, L, hlip⟩ :=
-    hmfMassFam_lip (I := I) (M := M) q S g B hB
+    harmonicMapFlowMassFam_lip (I := I) (M := M) q S g B hB
   obtain ⟨Rt, hRt, htime⟩ :=
-    hmfSpecTime_cont (I := I) (M := M) q S
+    harmonicMapFlowSpecTime_cont (I := I) (M := M) q S
   have hCpos : 0 < C.toReal := ENNReal.toReal_pos hC0 hCtop
   have hc0 : 0 < C.toReal⁻¹ := inv_pos.mpr hCpos
   let Rc : ℝ := C.toReal⁻¹ / (2 * ((L : ℝ) + 1))
@@ -226,10 +226,10 @@ theorem hmfMassFamily
     exact (hlip t ht).mono hclosed_lip
   · intro t ht u hu
     exact (DifferentialGeometry.Analysis.ODE.coerOn_of_lip
-      (B := hmfSpecMassOp (I := I) (M := M) q (g t) S)
+      (B := harmonicMapFlowSpecMassOp (I := I) (M := M) q (g t) S)
       (c := C.toReal⁻¹) (R := R) (K := L) hR.le
       ((hlip t ht).mono hclosed_lip)
-      (hmfSpecMass_lower (I := I) (M := M) q (g t) S C hC0 hCtop
+      (harmonicMapFlowSpecMass_lower (I := I) (M := M) q (g t) S C hC0 hCtop
         (hvol t ht).2) hLR) u hu
   · intro u hu
     exact htime g isCompact_Icc hgramI u (hclosed_time hu)

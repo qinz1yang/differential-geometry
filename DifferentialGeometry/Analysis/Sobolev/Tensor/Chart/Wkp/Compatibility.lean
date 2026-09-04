@@ -40,12 +40,12 @@ theorem pouCutoffMul (α : M) (x : M) (v : ℝ) :
   classical
   by_cases hρ : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0
   · rw [hρ, zero_mul, zero_mul]
-  · have hx_supp : x ∈ tsupport
+  · have hx_support : x ∈ tsupport
         (fun y : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) y) :=
       subset_tsupport _ hρ
     have hχ : ((chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯) :
         M → ℝ) x = 1 :=
-      chartKernelCutoff_eqOn_one (I := I) (M := M) α hx_supp
+      chartKernelCutoff_eqOn_one (I := I) (M := M) α hx_support
     rw [hχ, one_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -81,14 +81,14 @@ theorem pouRawTrans
     unfold secCompPou
     rw [hβ]
     ring
-  · have hx_supp : x ∈ tsupport
+  · have hx_support : x ∈ tsupport
         (fun y : M => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) y) :=
       subset_tsupport _ hβ
     have hxβ : x ∈ (chartAt H β).source :=
-      chartAtlasPOU_isSubordinate I M β hx_supp
+      chartAtlasPOU_isSubordinate I M β hx_support
     have hχβ : ((chartKernelCutoff (I := I) (M := M) β : C^∞⟮I, M; ℝ⟯) :
         M → ℝ) x = 1 :=
-      chartKernelCutoff_eqOn_one (I := I) (M := M) β hx_supp
+      chartKernelCutoff_eqOn_one (I := I) (M := M) β hx_support
     have hdecomp := secCompRaw_trans (E := E) (I := I) (M := M)
       r s S β α P ⟨hxβ, hxα⟩
     rw [hdecomp, Finset.mul_sum]
@@ -114,18 +114,18 @@ theorem repCoeffEq
   · rw [hρα, zero_mul, zero_mul]
   by_cases hvx : v (toEuclidean (E := E) (extChartAt I β x)) = 0
   · simp only [hvx, mul_zero]
-  have hxα_supp : x ∈ tsupport
+  have hxα_support : x ∈ tsupport
       (fun z : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) z) :=
     subset_tsupport _ hρα
   have hχα : ((chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯) :
       M → ℝ) x = 1 :=
-    chartKernelCutoff_eqOn_one (I := I) (M := M) α hxα_supp
-  have hy_supp := hv (subset_tsupport _ hvx)
-  unfold chartImagePOUTsupport at hy_supp
-  obtain ⟨z, hz, hzy⟩ := hy_supp
-  obtain ⟨w, hw_supp, hwz⟩ := hz
+    chartKernelCutoff_eqOn_one (I := I) (M := M) α hxα_support
+  have hy_support := hv (subset_tsupport _ hvx)
+  unfold chartImagePOUTsupport at hy_support
+  obtain ⟨z, hz, hzy⟩ := hy_support
+  obtain ⟨w, hw_support, hwz⟩ := hz
   have hwβ : w ∈ (chartAt H β).source :=
-    chartAtlasPOU_isSubordinate I M β hw_supp
+    chartAtlasPOU_isSubordinate I M β hw_support
   have hw_ext : w ∈ (extChartAt I β).source := by
     rw [extChartAt_source]
     exact hwβ
@@ -142,7 +142,7 @@ theorem repCoeffEq
   have hχβ : ((chartKernelCutoff (I := I) (M := M) β : C^∞⟮I, M; ℝ⟯) :
       M → ℝ) x = 1 := by
     rw [← hwx]
-    exact chartKernelCutoff_eqOn_one (I := I) (M := M) β hw_supp
+    exact chartKernelCutoff_eqOn_one (I := I) (M := M) β hw_support
   rw [transportCoeffManifold_apply, hχα, hχβ]
   ring
 

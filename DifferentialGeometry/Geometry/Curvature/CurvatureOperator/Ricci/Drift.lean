@@ -111,14 +111,14 @@ private theorem div_ricGrad [I.Boundaryless]
   let Ric := metricRicci (I := I) (M := M) g
   let G := gradG (I := I) g ⟨_, hf⟩
   let beta := ricGradForm (I := I) g hf
-  let hRicReg := totalNabla0S_reg (I := I) 2 cov hcov Ric
-  let nRic := totalNabla0S (I := I) 2 cov Ric hRicReg
-  let hBetaReg := totalNabla0S_reg (I := I) 1 cov hcov beta
-  let nBeta := totalNabla0S (I := I) 1 cov beta hBetaReg
+  let hRicRegularity := totalNabla0S_regularity (I := I) 2 cov hcov Ric
+  let nRic := totalNabla0S (I := I) 2 cov Ric hRicRegularity
+  let hBetaRegularity := totalNabla0S_regularity (I := I) 1 cov hcov beta
+  let nBeta := totalNabla0S (I := I) 1 cov beta hBetaRegularity
   have hRicReal : TotalNabla0SRealizes (I := I) 2 cov Ric nRic := by
-    exact totalNabla0S_realizes (I := I) 2 cov Ric hRicReg
+    exact totalNabla0S_realizes (I := I) 2 cov Ric hRicRegularity
   have hBetaReal : TotalNabla0SRealizes (I := I) 1 cov beta nBeta := by
-    exact totalNabla0S_realizes (I := I) 1 cov beta hBetaReg
+    exact totalNabla0S_realizes (I := I) 1 cov beta hBetaRegularity
   have hmc : IsMetricCompatible (I := I) cov g := by
     rw [show cov =
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g by rfl]

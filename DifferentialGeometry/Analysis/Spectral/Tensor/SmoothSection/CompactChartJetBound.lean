@@ -348,11 +348,11 @@ lemma exists_zeroContentR_le_fiberNorm_on_compact
   refine ⟨Npair * Real.sqrt Craw, by positivity, ?_⟩
   intro S b hb
   set y : EuclN := toEuclidean (E := E) (extChartAt I α b) with hy_def
-  have hb_src : b ∈ (extChartAt I α).source := by
+  have hb_source : b ∈ (extChartAt I α).source := by
     rw [extChartAt_source (I := I)]; exact hK_M_sub hb
   have hb_eq : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) = b := by
     rw [hy_def, (toEuclidean (E := E)).symm_apply_apply]
-    exact (extChartAt I α).left_inv hb_src
+    exact (extChartAt I α).left_inv hb_source
   have hfib_eq : ‖S.toSection b‖ =
       Real.sqrt (tensorInnerPointwise (I := I) (M := M) g r s b
         (S.toFun b) (S.toFun b)) := by

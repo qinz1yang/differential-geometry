@@ -15,7 +15,7 @@ universe u
 namespace DifferentialGeometry
 
 attribute [local instance] Fintype.ofFinite
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -55,7 +55,7 @@ noncomputable def metricCovDerivStep
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
         (I := I) (M := M) gRef
   let hreg :=
-    Tensor0SBundle.totalNabla0S_reg (E := E) (H := H)
+    Tensor0SBundle.totalNabla0S_regularity (E := E) (H := H)
       (I := I) (M := M) (a + 2) cov hcov A
   simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm, cov, hcov, hreg]
     using
@@ -117,7 +117,7 @@ theorem metricCovDeriv_one_apply_section
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
         (I := I) (M := M) gRef
   let hreg :=
-    Tensor0SBundle.totalNabla0S_reg (E := E) (H := H)
+    Tensor0SBundle.totalNabla0S_regularity (E := E) (H := H)
       (I := I) (M := M) 2 cov hcov A
   change
     (Tensor0SBundle.totalNabla0S (𝕜 := Real) (E := E) (H := H)
@@ -374,5 +374,5 @@ theorem metricCovDeriv_one_component_localFrame
 
 end FixedManifoldMetricConvergence
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

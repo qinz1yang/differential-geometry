@@ -15,7 +15,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold NNReal Topology
@@ -131,7 +131,7 @@ theorem halfCage_ctrl
           ENNReal.ofReal (ρ / 2 + ρ / 2) :=
         (ENNReal.ofReal_add (by linarith) (by linarith)).symm
       _ = ENNReal.ofReal ρ := by ring_nf
-  have hyp : riemannianEDist I y pt < ENNReal.ofReal ρ := by
+  have hyperbolic : riemannianEDist I y pt < ENNReal.ofReal ρ := by
     calc
       riemannianEDist I y pt ≤
           riemannianEDist I y x + riemannianEDist I x pt :=
@@ -139,7 +139,7 @@ theorem halfCage_ctrl
       _ < ENNReal.ofReal (ρ / 2) + ENNReal.ofReal (ρ / 2) :=
         ENNReal.add_lt_add hyx hpt
       _ = ENNReal.ofReal ρ := hsum
-  exact ⟨hyTarget, hyCoord, hyp⟩
+  exact ⟨hyTarget, hyCoord, hyperbolic⟩
 
 omit [CompleteSpace E] in
 theorem halfSqDist_contMDiffOn
@@ -1069,7 +1069,7 @@ theorem hess_lower
     ((heData.2.2.2.2.1 (z, xi) hw).contDiffAt
       (e.open_target.mem_nhds hw)).differentiableAt (by simp)
   have hAop : ‖A + ContinuousLinearMap.id Real E‖ ≤ (eta : Real) := by
-    simpa only [A, V] using PhaseFlow.invVel_fderiv_le happrox
+    simpa only [A, V] using PhaseFlow.invVelocity_fderiv_le happrox
       (e.open_target.mem_nhds hw) hInvDiff
   have hAeval :
       ‖(A + ContinuousLinearMap.id Real E) v‖ ≤
@@ -1396,11 +1396,11 @@ theorem hess_pos
     simpa only [z, xi, c] using
       IsNormalDiag.target_of_inv_dom (I := I) (X.obj k)
         hcomplete hconn x hq he hyCtrl.1 hptCtrl.1 hdom
-  have hzSrc : z ∈ c.hom.source :=
+  have hzSource : z ∈ c.hom.source :=
     c.ball_subset hzBall
   let hloc : IsLocalDiffeomorphAt 𝓘(Real, E) I 1 c.hom z :=
     PartialDiffeomorph.isLocalDiffeomorphAt
-      (I := 𝓘(Real, E)) (J := I) (n := 1) c.hom hzSrc
+      (I := 𝓘(Real, E)) (J := I) (n := 1) c.hom hzSource
   let dHomEquiv : E ≃L[Real] TangentSpace I (c.hom z) :=
     hloc.mfderivToContinuousLinearEquiv (by norm_num)
   let u : E := dHomEquiv.symm v
@@ -1468,7 +1468,7 @@ theorem center_of_mass_normal_coordinate_data
     (hf : NormalDiagFence (I := I) (X.obj k) x q e
       (c := d.chart k x))
     {ι : Type} [Fintype ι] (mu : ι → Real)
-    (pts : ι → (X.obj k).M)
+    (points : ι → (X.obj k).M)
     (join : (X.obj k).M → (X.obj k).M → Real → (X.obj k).M)
     (p : (X.obj k).M) (r : Real) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1499,24 +1499,24 @@ theorem center_of_mass_normal_coordinate_data
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu pts join p r,
+    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ (d.chart k x).radius →
-      let y := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
+      let y := centerOfMass (I := I) (X.obj k).metric mu points join p r h
       (∀ i, max (riemannianEDist I x y)
-          (riemannianEDist I x (pts i)) < ENNReal.ofReal (ρ / 2)) →
+          (riemannianEDist I x (points i)) < ENNReal.ofReal (ρ / 2)) →
       let c := d.chart k x
       let B := IsNormalDiag.toBranch
         (I := I) (X.obj k) hcomplete hconn x hq he
       let z := c.inv y
-      let xi : ι → E := fun i => c.inv (pts i)
+      let xi : ι → E := fun i => c.inv (points i)
       y ∈ c.restrictBall.target ∧
         z ∈ Metric.ball (0 : E) c.radius ∧
         (∀ i, xi i ∈ Metric.ball (0 : E) c.radius) ∧
         (∀ i, (z, xi i) ∈ e.target) ∧
         (∀ i, (c.hom z, c.hom (xi i)) ∈ B.chartCoordinateDomain c) ∧
-        chartCmEqnC (I := I) (X.obj k).metric
+        chartCenterOfMassEquation (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x c B z (mu, xi) = 0 := by
   classical
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1549,24 +1549,24 @@ theorem center_of_mass_normal_coordinate_data
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
   intro h hρ hρq hρChart
   dsimp only
-  let y := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
+  let y := centerOfMass (I := I) (X.obj k).metric mu points join p r h
   intro hpairs
   let c := d.chart k x
   let B := IsNormalDiag.toBranch
     (I := I) (X.obj k) hcomplete hconn x hq he
   let z := c.inv y
-  let xi : ι → E := fun i => c.inv (pts i)
+  let xi : ι → E := fun i => c.inv (points i)
   obtain ⟨i₀, _hi₀⟩ := h.μ_pos
   have hyCtrl :
       y ∈ c.restrictBall.target ∧ ‖c.inv y‖ < ρ ∧
-        riemannianEDist I y (pts i₀) < ENNReal.ofReal ρ := by
+        riemannianEDist I y (points i₀) < ENNReal.ofReal ρ := by
     simpa only [c] using
       d.halfCage_ctrl k hcomplete hconn x hρ hρChart (hpairs i₀)
   have hptCtrl (i : ι) :
-      pts i ∈ c.restrictBall.target ∧ ‖c.inv (pts i)‖ < ρ ∧
-        riemannianEDist I (pts i) y < ENNReal.ofReal ρ := by
+      points i ∈ c.restrictBall.target ∧ ‖c.inv (points i)‖ < ρ ∧
+        riemannianEDist I (points i) y < ENNReal.ofReal ρ := by
     have hpairs' :
-        max (riemannianEDist I x (pts i)) (riemannianEDist I x y) <
+        max (riemannianEDist I x (points i)) (riemannianEDist I x y) <
           ENNReal.ofReal (ρ / 2) := by
       simpa only [max_comm] using hpairs i
     simpa only [c] using
@@ -1578,39 +1578,39 @@ theorem center_of_mass_normal_coordinate_data
     rw [Metric.mem_ball, dist_zero_right]
     exact (hptCtrl i).2.1.trans_le hρChart
   have hdiff (i : ι) : MDifferentiableAt I 𝓘(Real, Real)
-      (CenterOfMass.halfSqDist (pts i)) y := by
+      (CenterOfMass.halfSqDist (points i)) y := by
     let S : Set (X.obj k).M :=
       {w | max (riemannianEDist I x w)
-        (riemannianEDist I x (pts i)) < ENNReal.ofReal (ρ / 2)}
+        (riemannianEDist I x (points i)) < ENNReal.ofReal (ρ / 2)}
     have hSopen : IsOpen S := by
       dsimp only [S]
       exact isOpen_lt
         ((continuous_riemannianEDist (I := I) (X.obj k).metric x).max
           continuous_const) continuous_const
     have hsmooth : ContMDiffOn I 𝓘(Real) ∞
-        (CenterOfMass.halfSqDist (pts i)) S := by
+        (CenterOfMass.halfSqDist (points i)) S := by
       simpa only [S] using
         d.halfSqDist_contMDiffOn k hcomplete hconn x hq he hf hρ hρq hρChart
     have hyS : y ∈ S := by
-      change max (riemannianEDist I x y) (riemannianEDist I x (pts i)) <
+      change max (riemannianEDist I x y) (riemannianEDist I x (points i)) <
         ENNReal.ofReal (ρ / 2)
       exact hpairs i
     exact (hsmooth.contMDiffAt
       (hSopen.mem_nhds hyS)).mdifferentiableAt (by simp)
   have hgrad (i : ι) :
       gradientFun (I := I) (X.obj k).metric
-          (CenterOfMass.halfSqDist (pts i)) y =
-        -(show TangentSpace I y from (B.inv (y, pts i)).snd) := by
+          (CenterOfMass.halfSqDist (points i)) y =
+        -(show TangentSpace I y from (B.inv (y, points i)).snd) := by
     simpa only [B, y] using
       d.grad_half k hcomplete hconn x hq he hf hρ hρq hρChart
         (hpairs i)
   have hsum : ∑ i : ι, mu i •
-      (show TangentSpace I y from (B.inv (y, pts i)).snd) = 0 := by
+      (show TangentSpace I y from (B.inv (y, points i)).snd) = 0 := by
     simpa only [y] using
-      centerOfMass.invB_eqn (I := I) h
-        (fun i => show TangentSpace I y from (B.inv (y, pts i)).snd)
+      centerOfMass.invB_equation (I := I) h
+        (fun i => show TangentSpace I y from (B.inv (y, points i)).snd)
         hdiff hgrad
-  have hdom (i : ι) : (y, pts i) ∈ B.dom := by
+  have hdom (i : ι) : (y, points i) ∈ B.dom := by
     have hctrl := d.halfCage_ctrl k hcomplete hconn x
       hρ hρChart (hpairs i)
     exact
@@ -1625,7 +1625,7 @@ theorem center_of_mass_normal_coordinate_data
   have hyDecode : c.hom z = y := by
     with_unfolding_all
       exact c.restrictBall.right_inv hyCtrl.1
-  have hptDecode (i : ι) : c.hom (xi i) = pts i := by
+  have hptDecode (i : ι) : c.hom (xi i) = points i := by
     with_unfolding_all
       exact c.restrictBall.right_inv (hptCtrl i).1
   have hreadDom (i : ι) :
@@ -1643,15 +1643,15 @@ theorem center_of_mass_normal_coordinate_data
           (show TangentSpace I y from
             (B.inv (y, c.hom (xi i))).snd) =
           ∑ i : ι, mu i •
-            (show TangentSpace I y from (B.inv (y, pts i)).snd) := by
+            (show TangentSpace I y from (B.inv (y, points i)).snd) := by
         apply Finset.sum_congr rfl
         intro i _hi
         rw [hptDecode i]
       _ = 0 := hsum
   have hzero :
-      chartCmEqnC (I := I) (X.obj k).metric
+      chartCenterOfMassEquation (I := I) (X.obj k).metric
         (normal_enorm (I := I) (X.obj k)) x c B z (mu, xi) = 0 :=
-    chartCmC_zero_of_sum (I := I) (X.obj k).metric
+    chartCenterOfMassEquation_zero_of_sum (I := I) (X.obj k).metric
       (normal_enorm (I := I) (X.obj k)) x c B z mu xi
       hzBall hreadDom hsum'
   exact ⟨hyCtrl.1, hzBall, hxiBall, htgt, hreadDom, hzero⟩
@@ -1676,7 +1676,7 @@ theorem center_of_mass_satisfies_normal_coordinate_equation
         (E × E) →L[Real] (E × E)) e.target eta)
     (heta : eta < 1)
     {ι : Type} [Fintype ι] (mu : ι → Real)
-    (pts : ι → (X.obj k).M)
+    (points : ι → (X.obj k).M)
     (join : (X.obj k).M → (X.obj k).M → Real → (X.obj k).M)
     (p : (X.obj k).M) (r : Real)
     (hsum : ∑ i, mu i = 1) :
@@ -1708,20 +1708,20 @@ theorem center_of_mass_satisfies_normal_coordinate_equation
       MetricComplete.complete (I := I) (X.obj k) hcomplete
     letI : MetricSpace (X.obj k).M :=
       HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
-    ∀ h : CenterInput (I := I) (X.obj k).metric mu pts join p r,
+    ∀ h : CenterInput (I := I) (X.obj k).metric mu points join p r,
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ (d.chart k x).radius →
-      let y := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
+      let y := centerOfMass (I := I) (X.obj k).metric mu points join p r h
       (∀ i, max (riemannianEDist I x y)
-          (riemannianEDist I x (pts i)) < ENNReal.ofReal (ρ / 2)) →
+          (riemannianEDist I x (points i)) < ENNReal.ofReal (ρ / 2)) →
       let c := d.chart k x
       let B := IsNormalDiag.toBranch
         (I := I) (X.obj k) hcomplete hconn x hq he
       let z := c.inv y
-      let xi : ι → E := fun i => c.inv (pts i)
+      let xi : ι → E := fun i => c.inv (points i)
       y ∈ c.restrictBall.target ∧
-        HasCmSolC (I := I) (X.obj k).metric
+        HasCenterOfMassChartSolution (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x c B z (mu, xi) := by
   classical
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -1754,23 +1754,23 @@ theorem center_of_mass_satisfies_normal_coordinate_equation
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
   intro h hρ hρq hρChart
   dsimp only
-  let y := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
+  let y := centerOfMass (I := I) (X.obj k).metric mu points join p r h
   intro hpairs
   let c := d.chart k x
   let B := IsNormalDiag.toBranch
     (I := I) (X.obj k) hcomplete hconn x hq he
   let z := c.inv y
-  let xi : ι → E := fun i => c.inv (pts i)
+  let xi : ι → E := fun i => c.inv (points i)
   have hdata := d.center_of_mass_normal_coordinate_data
     k hcomplete hconn x hq he hf
-    mu pts join p r h hρ hρq hρChart hpairs
+    mu points join p r h hρ hρq hρChart hpairs
   rcases hdata with ⟨hy, hz, hxi, htgt, hdom, hzero⟩
-  have hsol := IsNormalDiag.cmC_sol_strict (I := I) (X.obj k)
+  have hsol := IsNormalDiag.chartCenterOfMassEquation_has_strict_solution (I := I) (X.obj k)
     hcomplete hconn x hq he hf happrox heta z mu xi
     htgt h.μ_nonneg hsum ⟨hz, hxi, hdom, hzero⟩
   exact ⟨hy, hz, hxi, hdom, hzero, hsol⟩
 
 end BoundedGeometryNormalChartData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

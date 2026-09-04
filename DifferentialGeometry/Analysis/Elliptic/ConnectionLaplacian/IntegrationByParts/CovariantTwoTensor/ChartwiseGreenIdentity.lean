@@ -322,21 +322,21 @@ private theorem pou_tensorCovDerivPointwiseInner_eq_perDirCross_sum
       (chartAtlasPOU I M α : M → ℝ) b
         * ∑ i : Fin (Module.finrank ℝ E), frameDirGradPairing (I := I) (M := M) g T v α i b := by
   classical
-  by_cases hb_supp : b ∈ tsupport
+  by_cases hb_support : b ∈ tsupport
       (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
-  · have hb_chartSrc : b ∈ (chartAt H α).source :=
-      (chartAtlasPOU_isSubordinate (I := I) (M := M) α) hb_supp
-    have hb_extSrc : b ∈ (extChartAt I α).source := by
-      rw [extChartAt_source_eq_chartAt_source]; exact hb_chartSrc
+  · have hb_chartSource : b ∈ (chartAt H α).source :=
+      (chartAtlasPOU_isSubordinate (I := I) (M := M) α) hb_support
+    have hb_extSource : b ∈ (extChartAt I α).source := by
+      rw [extChartAt_source_eq_chartAt_source]; exact hb_chartSource
     have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α := by
-      rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α]; exact hb_extSrc
+      rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α]; exact hb_extSource
     have hb_inter : b ∈ tsupport (fun x : M =>
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
-          chartLeviCivitaGoodSet (I := I) α := ⟨hb_supp, hb_good⟩
+          chartLeviCivitaGoodSet (I := I) α := ⟨hb_support, hb_good⟩
     rw [tensorCovDerivPointwiseInner_eq_perDirCross_sum_on_support
       (I := I) (M := M) g T v α hb_inter]
   · have hp0 : (chartAtlasPOU I M α : M → ℝ) b = 0 :=
-      image_eq_zero_of_notMem_tsupport hb_supp
+      image_eq_zero_of_notMem_tsupport hb_support
     rw [hp0, zero_mul, zero_mul]
 
 private theorem integral_pou_tensorCovDerivPointwiseInner_eq_frame_sum

@@ -74,7 +74,7 @@ private lemma chartGramMatrix_sum_entry_bound_on_pouTsupport
   have hKα_sub_base :
       Kα ⊆ (trivializationAt E (TangentSpace I) α).baseSet :=
     pouTsupport_subset_baseSet (I := I) (M := M) α
-  have hKα_sub_src : Kα ⊆ (chartAt H α).source := by
+  have hKα_sub_source : Kα ⊆ (chartAt H α).source := by
     have h_set_eq : ((trivializationAt E (TangentSpace I) α).baseSet : Set M)
         = (chartAt H α).source :=
       trivializationAt_baseSet_eq_chartAt_source (I := I) (M := M) α
@@ -85,7 +85,7 @@ private lemma chartGramMatrix_sum_entry_bound_on_pouTsupport
         ∀ b ∈ Kα, |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b ij.1 ij.2| ≤ K := by
     intro ij
     exact chartGramMatrix_entry_isBounded_on_compact (I := I) (M := M)
-      g α ij.1 ij.2 hKα_compact hKα_sub_src
+      g α ij.1 ij.2 hKα_compact hKα_sub_source
   choose K hK_pos hK_le using hchoice
   set V : Finset (Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E)) :=
     Finset.univ with hV_def

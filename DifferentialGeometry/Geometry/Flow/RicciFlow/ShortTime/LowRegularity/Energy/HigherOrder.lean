@@ -58,7 +58,7 @@ theorem galerkin_action_all_order_tame_bound (g₀ : SmoothRiemannianMetric I M)
   intro F c hE5
   let T : SmoothCcTensor g₀ 0 2 :=
     ccTensor02Symm (I := I) (M := M) g₀
-      (galCoreRep (I := I) (M := M) g₀ R F c)
+      (galerkinCoreRep (I := I) (M := M) g₀ R F c)
   have hsym : ∀ (x : M) (u v : TangentSpace I x),
       ccTensorBilin (I := I) g₀ T x u v =
         ccTensorBilin (I := I) g₀ T x v u := by
@@ -68,19 +68,19 @@ theorem galerkin_action_all_order_tame_bound (g₀ : SmoothRiemannianMetric I M)
   have hδg : gFibreOpBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ T) δ := by
     dsimp only [T]
-    exact galRepFib (I := I) (M := M) g₀ hR hreal F c
+    exact galerkinRepFib (I := I) (M := M) g₀ hR hreal F c
   have hδZ : gFibreOpBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2)) δ :=
     zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal
   have hT5 :
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ 5 T‖ ≤ R5 := by
     dsimp only [T]
-    exact (galRepHs_le (I := I) (M := M) g₀ 5 hR F c).trans hE5
+    exact (galerkinRepHs_le (I := I) (M := M) g₀ 5 hR F c).trans hE5
   have hb := hladder T hsym hδg hδZ hT5 m
   obtain ⟨_, _, hsplit⟩ := lowData_split (I := I) (M := M) g₀ g₀
   rw [(hsplit T hsym hδ3 hδ0 hδg hδZ).1] at hb
-  have htop := galRepHs_le (I := I) (M := M) g₀ ((m : ℝ) + 2) hR F c
-  have hmid := galRepHs_le (I := I) (M := M) g₀ ((m : ℝ) + 1) hR F c
+  have htop := galerkinRepHs_le (I := I) (M := M) g₀ ((m : ℝ) + 2) hR F c
+  have hmid := galerkinRepHs_le (I := I) (M := M) g₀ ((m : ℝ) + 1) hR F c
   have hrate : 0 ≤ δ / (1 - δ) ^ 2 := div_nonneg hδ0 (sq_nonneg _)
   have hα : 0 ≤ κ * (δ / (1 - δ) ^ 2) := mul_nonneg hhm.1 hrate
   have hb' := hb.trans (add_le_add
@@ -165,7 +165,7 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
     dsimp only [R5]
     exact Real.sqrt_le_sqrt ((hE5 N t ht).trans (le_max_left _ _))
   have hRpos : 0 < lowRegularityStateRadius Ctop B1 ρ P :=
-    lowRegularityStateRadius_pos hsol.hCtop hsol.hB1 hsol.hρ hsol.hP
+    lowRegularityStateRadius_pos hsol.top_nonneg hsol.slope_nonneg hsol.outer_pos hsol.realize_pos
   let hmassPack : ∀ k : ℕ, ∃ Kmid : ℝ, 0 ≤ Kmid ∧
       ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
         (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ),
@@ -173,9 +173,9 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
           tensorSobolevWeight (I := I) (M := M) i 5 * (c i) ^ 2) ≤ R5 →
         Real.sqrt (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i ((5 + k : ℕ) : ℝ) *
-            ((galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.hδ
+            ((galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.threshold_lt_one
               (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
-                (ρ := ρ) hsol.hP.le hsol.hreal) F c).coeff i) ^ 2) ≤
+                (ρ := ρ) hsol.realize_pos.le hsol.metric_realization) F c).coeff i) ^ 2) ≤
           κ * (δ / (1 - δ) ^ 2) *
               Real.sqrt (∑ i ∈ F,
                 tensorSobolevWeight (I := I) (M := M) i
@@ -183,9 +183,9 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
             Kmid * Real.sqrt (∑ i ∈ F,
               tensorSobolevWeight (I := I) (M := M) i
                 (((5 + k : ℕ) : ℝ) + 1) * (c i) ^ 2) := fun k =>
-    galerkin_action_all_order_tame_bound (I := I) (M := M) g₀ hhm hRpos.le hsol.hδ hsol.hδ0 hsol.hδ3
+    galerkin_action_all_order_tame_bound (I := I) (M := M) g₀ hhm hRpos.le hsol.threshold_lt_one hsol.threshold_nonneg hsol.threshold_le_third
       (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
-        (ρ := ρ) hsol.hP.le hsol.hreal) (5 + k)
+        (ρ := ρ) hsol.realize_pos.le hsol.metric_realization) (5 + k)
   let Kmid : ℕ → ℝ := fun k => (hmassPack k).choose
   have hKmid : ∀ k, 0 ≤ Kmid k := fun k => (hmassPack k).choose_spec.1
   have hmass : ∀ k : ℕ,
@@ -195,9 +195,9 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
           tensorSobolevWeight (I := I) (M := M) i 5 * (c i) ^ 2) ≤ R5 →
         Real.sqrt (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i ((5 + k : ℕ) : ℝ) *
-            ((galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.hδ
+            ((galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.threshold_lt_one
               (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
-                (ρ := ρ) hsol.hP.le hsol.hreal) F c).coeff i) ^ 2) ≤
+                (ρ := ρ) hsol.realize_pos.le hsol.metric_realization) F c).coeff i) ^ 2) ≤
           κ * (δ / (1 - δ) ^ 2) *
               Real.sqrt (∑ i ∈ F,
                 tensorSobolevWeight (I := I) (M := M) i
@@ -207,20 +207,20 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
                 (((5 + k : ℕ) : ℝ) + 1) * (c i) ^ 2) :=
     fun k => (hmassPack k).choose_spec.2
   obtain ⟨Cseed, hCseed, hseed⟩ := exists_zero_state_deTurck_remainder_spectral_bound (I := I) (M := M) g₀ g₀
-    hRpos hsol.hδ
+    hRpos hsol.threshold_lt_one
     (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
-      (ρ := ρ) hsol.hP.le hsol.hreal) hsol.hcore
+      (ρ := ρ) hsol.realize_pos.le hsol.metric_realization) hsol.smoothCore_continuous
   let α : ℝ := κ * (δ / (1 - δ) ^ 2)
   have hα : 0 ≤ α := by
     dsimp only [α]
-    exact mul_nonneg hhm.1 (div_nonneg hsol.hδ0 (sq_nonneg _))
+    exact mul_nonneg hhm.1 (div_nonneg hsol.threshold_nonneg (sq_nonneg _))
   have hclosure : ∀ (N : ℕ) (k : ℕ), ∀ t ∈ Set.Ico (0 : ℝ) T,
       2 * ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
           tensorSobolevWeight (I := I) (M := M) i (6 + (k : ℝ)) *
             (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i *
-              galTameForce (I := I) (M := M) g₀ 1 hRpos.le
-                (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.hδ hsol.hCtop hsol.hB1
-                  hsol.hρ hsol.hP hsol.hreal)
+              galerkinTameForce (I := I) (M := M) g₀ 1 hRpos.le
+                (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.threshold_lt_one hsol.top_nonneg hsol.slope_nonneg
+                  hsol.outer_pos hsol.realize_pos hsol.metric_realization)
                 (eigenIdxFinset (I := I) (M := M) g₀ N)
                 (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) i) ≤
         (2 * α + ε) * galerkinEnergy (I := I) (M := M)
@@ -238,22 +238,22 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
               (6 + (k : ℝ)) t) := by
     intro N k t ht
     have hsplit : ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
-        galTameForce (I := I) (M := M) g₀ 1 hRpos.le
-            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.hδ hsol.hCtop hsol.hB1
-              hsol.hρ hsol.hP hsol.hreal)
+        galerkinTameForce (I := I) (M := M) g₀ 1 hRpos.le
+            (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.threshold_lt_one hsol.top_nonneg hsol.slope_nonneg
+              hsol.outer_pos hsol.realize_pos hsol.metric_realization)
             (eigenIdxFinset (I := I) (M := M) g₀ N)
             (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) i =
-          (galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.hδ
+          (galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.threshold_lt_one
             (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
-              (ρ := ρ) hsol.hP.le hsol.hreal)
+              (ρ := ρ) hsol.realize_pos.le hsol.metric_realization)
             (eigenIdxFinset (I := I) (M := M) g₀ N)
             (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t)).coeff i +
-          (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.hδ hsol.hCtop hsol.hB1
-            hsol.hρ hsol.hP hsol.hreal
+          (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.threshold_lt_one hsol.top_nonneg hsol.slope_nonneg
+            hsol.outer_pos hsol.realize_pos hsol.metric_realization
             ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i := by
       intro i hi
-      rw [galForceTerm (I := I) (M := M) g₀ hsol.hδ hsol.hδ0 hsol.hδ3
-        hsol.hCtop hsol.hB1 hsol.hρ hsol.hP hsol.hreal hsol.hcore
+      rw [galerkinForceTerm (I := I) (M := M) g₀ hsol.threshold_lt_one hsol.threshold_nonneg hsol.threshold_le_third
+        hsol.top_nonneg hsol.slope_nonneg hsol.outer_pos hsol.realize_pos hsol.metric_realization hsol.smoothCore_continuous
         (eigenIdxFinset (I := I) (M := M) g₀ N)
         (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) i, if_pos hi]
       simp only [galerkinActionVector]
@@ -261,8 +261,8 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
     have hstatRaw := hseed (6 + k) (eigenIdxFinset (I := I) (M := M) g₀ N)
     have hstat : ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
         tensorSobolevWeight (I := I) (M := M) i (6 + (k : ℝ)) *
-          ((boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.hδ hsol.hCtop hsol.hB1
-            hsol.hρ hsol.hP hsol.hreal
+          ((boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.threshold_lt_one hsol.top_nonneg hsol.slope_nonneg
+            hsol.outer_pos hsol.realize_pos hsol.metric_realization
             ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i) ^ 2 ≤
           Cseed (6 + k) ^ 2 := by
       simpa only [boundedDeTurckRemainderOnLowerState, Nat.cast_add,
@@ -270,9 +270,9 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
     have hladder :
         Real.sqrt (∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
           tensorSobolevWeight (I := I) (M := M) i ((6 + (k : ℝ)) - 1) *
-            ((galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.hδ
+            ((galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.threshold_lt_one
               (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
-                (ρ := ρ) hsol.hP.le hsol.hreal)
+                (ρ := ρ) hsol.realize_pos.le hsol.metric_realization)
               (eigenIdxFinset (I := I) (M := M) g₀ N)
               (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t)).coeff i) ^ 2) ≤
             α * Real.sqrt (∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
@@ -292,17 +292,17 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
     have hres := two_mul_sum_ladder_le (I := I) (M := M)
       (eigenIdxFinset (I := I) (M := M) g₀ N) (6 + (k : ℝ))
       (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t)
-      (fun i => (galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.hδ
+      (fun i => (galerkinActionVector (I := I) (M := M) g₀ hRpos.le hsol.threshold_lt_one
         (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop) (B1 := B1)
-          (ρ := ρ) hsol.hP.le hsol.hreal)
+          (ρ := ρ) hsol.realize_pos.le hsol.metric_realization)
         (eigenIdxFinset (I := I) (M := M) g₀ N)
         (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t)).coeff i)
-      (fun i => (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.hδ hsol.hCtop hsol.hB1
-        hsol.hρ hsol.hP hsol.hreal
+      (fun i => (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.threshold_lt_one hsol.top_nonneg hsol.slope_nonneg
+        hsol.outer_pos hsol.realize_pos hsol.metric_realization
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i)
-      (galTameForce (I := I) (M := M) g₀ 1 hRpos.le
-        (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.hδ hsol.hCtop hsol.hB1
-          hsol.hρ hsol.hP hsol.hreal)
+      (galerkinTameForce (I := I) (M := M) g₀ 1 hRpos.le
+        (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.threshold_lt_one hsol.top_nonneg hsol.slope_nonneg
+          hsol.outer_pos hsol.realize_pos hsol.metric_realization)
         (eigenIdxFinset (I := I) (M := M) g₀ N)
         (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t))
       (hCseed (6 + k)) hε hsplit hladder hstat
@@ -311,9 +311,9 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
   refine galerkin_energy_uniform_bound_perScale (I := I) (M := M)
     (g := g₀) (r := 0) (s₀ := 2)
     (U := galerkinSolutionMode (I := I) (M := M) g₀ fseq)
-    (Fseq := fun N t => galTameForce (I := I) (M := M) g₀ 1 hRpos.le
-      (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.hδ hsol.hCtop hsol.hB1
-        hsol.hρ hsol.hP hsol.hreal)
+    (Fseq := fun N t => galerkinTameForce (I := I) (M := M) g₀ 1 hRpos.le
+      (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hsol.threshold_lt_one hsol.top_nonneg hsol.slope_nonneg
+        hsol.outer_pos hsol.realize_pos hsol.metric_realization)
       (eigenIdxFinset (I := I) (M := M) g₀ N)
       (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t))
     (sseq := fun N => eigenIdxFinset (I := I) (M := M) g₀ N)
@@ -339,7 +339,7 @@ def HasUniformGalerkinEnergyBounds (g₀ : SmoothRiemannianMetric I M) {T : ℝ}
     Prop :=
   (∀ (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2), ∀ t ∈ Set.Icc (0 : ℝ) T,
       Tendsto (fun N => galerkinSolutionMode (I := I) (M := M) g₀ fseq N t i) atTop
-        (𝓝 (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+        (𝓝 (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t))) ∧
     ∀ k : ℕ, ∃ Φ : ℝ, ∀ N : ℕ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       galerkinEnergy (I := I) (M := M)
@@ -364,9 +364,9 @@ theorem exists_galerkin_approximation_with_uniform_all_order_energy_bounds
   obtain ⟨A, B, hgate, _hA3, _hB3, ε, hε, hbudget⟩ := hlo.exists_absorption_constants_and_margin
   obtain ⟨κ, hhm, hκA⟩ := hgate.2.2.2.2.2
   have hrate : 0 ≤ δ / (1 - δ) ^ 2 :=
-    div_nonneg hsol.hδ0 (sq_nonneg _)
+    div_nonneg hsol.threshold_nonneg (sq_nonneg _)
   have hstate : 0 ≤ lowRegularityStateRadius Ctop B1 ρ P :=
-    (lowRegularityStateRadius_pos hsol.hCtop hsol.hB1 hsol.hρ hsol.hP).le
+    (lowRegularityStateRadius_pos hsol.top_nonneg hsol.slope_nonneg hsol.outer_pos hsol.realize_pos).le
   have hκrate : κ * (δ / (1 - δ) ^ 2) ≤
       A * (δ / (1 - δ) ^ 2) :=
     mul_le_mul_of_nonneg_right hκA hrate
@@ -402,10 +402,10 @@ theorem per_mode_limit_weighted_energy_bound_all_orders
       g₀ hT hT1 fLo Rcap Ctop₂ Kr2 Kr1 Kcap) :
     ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t) ^ 2) ∧
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) t) ^ 2 ≤
           Cσ := by
   classical

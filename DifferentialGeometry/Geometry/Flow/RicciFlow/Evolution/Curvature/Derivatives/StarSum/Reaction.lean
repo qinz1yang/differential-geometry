@@ -56,7 +56,7 @@ def nablaKRmNablaFrozenSlotField
       (n := (∞ : WithTop ℕ∞)) 2 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 (S.family.connection t) (nablaKRmFrozenSlotField (I := I) S t k q Y)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       1 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nablaKRmFrozenSlotField (I := I) S t k q Y))
 
@@ -72,7 +72,7 @@ theorem nablaKRmNablaFrozenSlotField_realizes
       (nablaKRmNablaFrozenSlotField (I := I) S t k q Y) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 (S.family.connection t) (nablaKRmFrozenSlotField (I := I) S t k q Y)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       1 (S.family.connection t) (connSmoothInf (I := I) S t)
       (nablaKRmFrozenSlotField (I := I) S t k q Y))
 
@@ -404,7 +404,7 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
   have hcb :=
     (nablaKRm04Field_realizes (I := I) S (t : Real) (k + 2)).eval_smooth_slots X Wcb x₀
   rw [← hcov_def] at hbc hcb
-  have hbc_corr :
+  have hbc_correction :
       (∑ a : Fin (4 + (k + 2)),
           nablaKRm04Field (I := I) S (t : Real) (k + 2) x₀
             (Function.update (fun b : Fin (4 + (k + 2)) => Wbc b x₀) a
@@ -412,7 +412,7 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
     refine Finset.sum_eq_zero fun a _ => ?_
     rw [hWbc_cov a]
     exact (nablaKRm04Field (I := I) S (t : Real) (k + 2) x₀).map_update_zero _ a
-  have hcb_corr :
+  have hcb_correction :
       (∑ a : Fin (4 + (k + 2)),
           nablaKRm04Field (I := I) S (t : Real) (k + 2) x₀
             (Function.update (fun b : Fin (4 + (k + 2)) => Wcb b x₀) a
@@ -426,8 +426,8 @@ theorem nablaK_antisym_eq_covDeriv_curvatureAction
   have hWcb_x : (fun a : Fin (4 + (k + 2)) => Wcb a x₀) =
       metricTraceInput (I := I) (Vc x₀) (Vb x₀) (fun i : Fin (4 + k) => Vm i x₀) :=
     nablaKSlotSections_apply (I := I) (k := k) Vc Vb Vm x₀
-  rw [hbc_corr, sub_zero] at hbc
-  rw [hcb_corr, sub_zero] at hcb
+  rw [hbc_correction, sub_zero] at hbc
+  rw [hcb_correction, sub_zero] at hcb
   rw [hWbc_x] at hbc
   rw [hWcb_x] at hcb
   have ebc :

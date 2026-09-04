@@ -41,8 +41,8 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorRSChartFiberFromModel_local_bound
     (r s : ℕ) (α y₀ b : M)
     [Bundle.RiemannianBundle (fun x : M => TensorRSSpace r s I x)]
-    (hb_y₀_src : b ∈ (chartAt H y₀).source)
-    (hb_α_src : b ∈ (chartAt H α).source)
+    (hb_y₀_source : b ∈ (chartAt H y₀).source)
+    (hb_α_source : b ∈ (chartAt H α).source)
     (C₁ C₂ : ℝ) (hC₁_nn : 0 ≤ C₁)
     (h_symmL_norm_le : ‖(trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) y₀).symmL ℝ b‖ ≤ C₁)
@@ -57,10 +57,10 @@ private lemma tensorRSChartFiberFromModel_local_bound
       TensorRSSpace r s I b)‖ ≤ C₁ * C₂ * ‖v‖ := by
   have hb_tan_y₀ : b ∈ (trivializationAt E (TangentSpace I) y₀).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet (𝕜 := ℝ) (I := I) y₀]
-    exact hb_y₀_src
+    exact hb_y₀_source
   have hb_tan_α : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet (𝕜 := ℝ) (I := I) α]
-    exact hb_α_src
+    exact hb_α_source
   have hb_y₀_RS : b ∈ (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) y₀).baseSet := ⟨hb_tan_y₀, hb_tan_y₀⟩
   have hb_α_RS : b ∈ (trivializationAt (TensorRSModel r s ℝ E)
@@ -162,7 +162,7 @@ private lemma exists_W_and_constant_symmL
     ⟨⟨⟨hV₁_mem, hV₂_mem⟩, hy₀_y₀⟩, h_y₀_α⟩, ?_⟩
   refine ⟨C₁ * C₂, by positivity, ?_⟩
   intro b hb v
-  obtain ⟨⟨⟨hb_V₁, hb_V₂⟩, hb_y₀_src⟩, hb_α_src⟩ := hb
+  obtain ⟨⟨⟨hb_V₁, hb_V₂⟩, hb_y₀_source⟩, hb_α_source⟩ := hb
   have h_symmL_norm_lt : ‖(trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) y₀).symmL ℝ b‖ < C₁ :=
     hU₁_bound b (hV₁_sub hb_V₁)
@@ -177,7 +177,7 @@ private lemma exists_W_and_constant_symmL
       (fun y : M => TensorRSSpace r s I y) y₀) b :
     TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E)‖ ≤ C₂ at h_cc_norm_le
   exact tensorRSChartFiberFromModel_local_bound (I := I) r s α y₀ b
-    hb_y₀_src hb_α_src C₁ C₂ (le_of_lt hC₁_pos) h_symmL_norm_le h_cc_norm_le v
+    hb_y₀_source hb_α_source C₁ C₂ (le_of_lt hC₁_pos) h_symmL_norm_le h_cc_norm_le v
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace

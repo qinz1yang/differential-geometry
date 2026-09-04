@@ -225,14 +225,14 @@ private lemma eLpNorm_chartPulledWeighted_le_of_ae_zero_off_chartPouKernel_unifo
 section MainBound
 
 omit [CompleteSpace E] in
-theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le
+theorem eigenvectorIteratedCarrier_fChartEffective_eLpNorm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
     (directions : Fin m → Fin (Module.finrank ℝ E))
     (D_m : EigenvectorIteratedTensorChartBilinearData (I := I) (M := M)
       g r s i α P₀ m)
-    (h_fChartEff : D_m.diffChartForcing =
+    (h_fChartEffective : D_m.diffChartForcing =
       eigenvectorChartRHSDiff (I := I) (M := M)
         g r s i α P₀ m directions)
     (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -248,7 +248,7 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ C : ℝ, 0 ≤ C ∧
       eLpNorm
-          ((eigenvectorIteratedTensorChartBilinearDataToData
+          ((EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
               (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart)
           2 ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
@@ -257,14 +257,14 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le
             g r s i α P₀ m 0 directions := by
   classical
   have h_f_chart_eq :
-      (eigenvectorIteratedTensorChartBilinearDataToData
+      (EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
           (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart =
         eigenvectorChartRHSDiff (I := I) (M := M)
           g r s i α P₀ m directions := by
     change D_m.diffChartForcing =
       eigenvectorChartRHSDiff (I := I) (M := M)
         g r s i α P₀ m directions
-    exact h_fChartEff
+    exact h_fChartEffective
   rw [h_f_chart_eq]
   have h_ae_zero :
       eigenvectorChartRHSDiff (I := I) (M := M)
@@ -304,7 +304,7 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le
           ring
 
 omit [CompleteSpace E] in
-theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform
+theorem eigenvectorIteratedCarrier_fChartEffective_eLpNorm_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
     (directions : Fin m → Fin (Module.finrank ℝ E))
@@ -320,7 +320,7 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform
       ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
         (D_m : EigenvectorIteratedTensorChartBilinearData
           (I := I) (M := M) g r s i α P₀ m)
-        (_h_fChartEff : D_m.diffChartForcing =
+        (_h_fChartEffective : D_m.diffChartForcing =
           eigenvectorChartRHSDiff (I := I) (M := M)
             g r s i α P₀ m directions)
         (h_parent : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -328,7 +328,7 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform
           (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)),
         eLpNorm
-            ((eigenvectorIteratedTensorChartBilinearDataToData
+            ((EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
                 (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart)
             2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))
@@ -353,16 +353,16 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform
     eigenvectorChartRHSDiff_eLpNorm_le_uniform (I := I) (M := M)
       g r s α P₀ m directions h_pou
   refine ⟨Ccmp * Cvol, mul_nonneg hCcmp_nn hCvol_nn, ?_⟩
-  intro i D_m h_fChartEff h_parent
+  intro i D_m h_fChartEffective h_parent
   have h_f_chart_eq :
-      (eigenvectorIteratedTensorChartBilinearDataToData
+      (EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
           (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart =
         eigenvectorChartRHSDiff (I := I) (M := M)
           g r s i α P₀ m directions := by
     change D_m.diffChartForcing =
       eigenvectorChartRHSDiff (I := I) (M := M)
         g r s i α P₀ m directions
-    exact h_fChartEff
+    exact h_fChartEffective
   rw [h_f_chart_eq]
   calc
     eLpNorm (eigenvectorChartRHSDiff (I := I) (M := M)

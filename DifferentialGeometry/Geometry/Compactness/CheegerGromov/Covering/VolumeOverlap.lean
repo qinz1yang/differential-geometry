@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold
 open scoped Manifold ContDiff Topology Bundle
@@ -92,7 +92,7 @@ def volInputOfBg
   have hq : 0 ≤ q := mul_nonneg (Nat.cast_nonneg _) (Real.sqrt_nonneg _)
   have hC0 : 0 ≤ bg.C 0 := bg.nonneg 0
   refine ⟨{ dist := hd.dist, r0 := r0, r0_pos := hr0,
-            multiplicity := fun m => segImult (Module.finrank ℝ E) q r0 m,
+            multiplicity := fun m => segmentImult (Module.finrank ℝ E) q r0 m,
             card_le := ?_ }, rfl⟩
   intro m k α _ _ centers r hr hcap hsep z J hJz
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -173,7 +173,7 @@ def volInputOfBg
     intro j hj
     rw [hbridge (centers j) z]
     exact ENNReal.ofReal_le_ofReal (hJz j hj)
-  exact segBall_card (I := I) (X.obj k).metric hEnorm hq hRic hr hcap
+  exact segmentBall_card (I := I) (X.obj k).metric hEnorm hq hRic hr hcap
     centers hsep' z J hJz'
 
 def packInputOfBg
@@ -233,5 +233,5 @@ def packInputOfBg
       subst J
       simp only [Finset.card_empty, hr, ↓reduceDIte, le_refl]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

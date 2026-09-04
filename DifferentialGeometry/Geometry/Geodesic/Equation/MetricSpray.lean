@@ -172,7 +172,7 @@ theorem metricSpray_eq
   rw [metricSpray, raisedKoszulOp_eq hg]
 
 open DifferentialGeometry.Analysis
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open scoped ContDiff
 
 private theorem invGram_smooth
@@ -190,7 +190,7 @@ private theorem invGram_smooth
     (contDiffOn_ringInverse (R := E →L[Real] E) (𝕜 := Real)
       (∞ : WithTop ℕ∞)) hgram (fun x hx => gramCLM_isUnit (hg_co x hx))
 
-private theorem invGram_conv
+private theorem invGram_convergence
     [FiniteDimensional Real E]
     {U : Set E} (hU : IsOpen U)
     {g : ℕ → E → E →L[Real] E →L[Real] Real}
@@ -199,8 +199,8 @@ private theorem invGram_conv
     (hgInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U)
     (hg_co : ∀ n x, x ∈ U → IsCoercive (g n x))
     (hgInf_co : ∀ x, x ∈ U → IsCoercive (gInf x))
-    (hg_conv : MapCInfConvOnCompacts U g gInf) :
-    MapCInfConvOnCompacts U
+    (hg_convergence : MapCInfConvergenceOnCompacts U g gInf) :
+    MapCInfConvergenceOnCompacts U
       (fun n x => Ring.inverse (gramCLM (g n x)))
       (fun x => Ring.inverse (gramCLM (gInf x))) := by
   let : ProperSpace (E →L[Real] E) := FiniteDimensional.proper Real _
@@ -210,13 +210,13 @@ private theorem invGram_conv
   have hgramInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun x => gramCLM (gInf x)) U := by
     simpa [Function.comp_def] using gramCLM.contDiff.comp_contDiffOn hgInf_cd
-  have hgram_conv : MapCInfConvOnCompacts U
+  have hgram_convergence : MapCInfConvergenceOnCompacts U
       (fun n x => gramCLM (g n x)) (fun x => gramCLM (gInf x)) :=
-    mapCInfConv_clm (E' := E)
+    mapCInfConvergence_clm (E' := E)
       (F' := E →L[Real] E →L[Real] Real) (G' := E →L[Real] E)
-      hU (gramCLM (E := E)) hg_conv hg_cd hgInf_cd
-  exact MapCInfConvOnCompacts.ringInv (E := E) (R := E →L[Real] E)
-    hU hgram_conv hgram_cd hgramInf_cd
+      hU (gramCLM (E := E)) hg_convergence hg_cd hgInf_cd
+  exact MapCInfConvergenceOnCompacts.ringInv (E := E) (R := E →L[Real] E)
+    hU hgram_convergence hgram_cd hgramInf_cd
     (fun n x hx => gramCLM_isUnit (hg_co n x hx))
     (fun x hx => gramCLM_isUnit (hgInf_co x hx))
 
@@ -230,21 +230,21 @@ private theorem koszulRiesz_smooth
     (hg_cd.fderiv_of_isOpen hU
       (by rw [show (∞ : WithTop ℕ∞) + 1 = ∞ from rfl]))
 
-private theorem koszulRiesz_conv
+private theorem koszulRiesz_convergence
     {U : Set E} (hU : IsOpen U)
     {g : ℕ → E → E →L[Real] E →L[Real] Real}
     {gInf : E → E →L[Real] E →L[Real] Real}
     (hg_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (g n) U)
     (hgInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U)
-    (hg_conv : MapCInfConvOnCompacts U g gInf) :
-    MapCInfConvOnCompacts U
+    (hg_convergence : MapCInfConvergenceOnCompacts U g gInf) :
+    MapCInfConvergenceOnCompacts U
       (fun n x => koszulRieszOp (fderiv Real (g n) x))
       (fun x => koszulRieszOp (fderiv Real gInf x)) := by
-  have hderiv : MapCInfConvOnCompacts U
+  have hderiv : MapCInfConvergenceOnCompacts U
       (fun n x => fderiv Real (g n) x) (fun x => fderiv Real gInf x) :=
-    MapCInfConvOnCompacts.fderivOn (E := E)
-      (F := E →L[Real] E →L[Real] Real) hU hg_conv hg_cd hgInf_cd
-  exact mapCInfConv_clm (E' := E)
+    MapCInfConvergenceOnCompacts.fderivOn (E := E)
+      (F := E →L[Real] E →L[Real] Real) hU hg_convergence hg_cd hgInf_cd
+  exact mapCInfConvergence_clm (E' := E)
     (F' := E →L[Real] E →L[Real] E →L[Real] Real)
     (G' := E →L[Real] E →L[Real] E)
     hU (koszulRieszOp (E := E)) hderiv
@@ -265,7 +265,7 @@ theorem raisedOp_smooth
     (postBilin (E := E)).isBoundedBilinearMap.contDiff.comp₂_contDiffOn
       (invGram_smooth hg_cd hg_co) (koszulRiesz_smooth hU hg_cd)
 
-theorem raisedKoszulOp_conv
+theorem raisedKoszulOp_convergence
     [FiniteDimensional Real E]
     {U : Set E} (hU : IsOpen U)
     {g : ℕ → E → E →L[Real] E →L[Real] Real}
@@ -274,43 +274,43 @@ theorem raisedKoszulOp_conv
     (hgInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U)
     (hg_co : ∀ n x, x ∈ U → IsCoercive (g n x))
     (hgInf_co : ∀ x, x ∈ U → IsCoercive (gInf x))
-    (hg_conv : MapCInfConvOnCompacts U g gInf) :
-    MapCInfConvOnCompacts U
+    (hg_convergence : MapCInfConvergenceOnCompacts U g gInf) :
+    MapCInfConvergenceOnCompacts U
       (fun n x => raisedKoszulOp (g n x) (fderiv Real (g n) x))
       (fun x => raisedKoszulOp (gInf x) (fderiv Real gInf x)) := by
   let : ProperSpace
       ((E →L[Real] E) × (E →L[Real] E →L[Real] E)) :=
     FiniteDimensional.proper Real _
-  have hinv := invGram_conv hU hg_cd hgInf_cd hg_co hgInf_co hg_conv
-  have hkoszul := koszulRiesz_conv hU hg_cd hgInf_cd hg_conv
+  have hinv := invGram_convergence hU hg_cd hgInf_cd hg_co hgInf_co hg_convergence
+  have hkoszul := koszulRiesz_convergence hU hg_cd hgInf_cd hg_convergence
   have hinv_cd := fun n => invGram_smooth (hg_cd n) (hg_co n)
   have hinvInf_cd := invGram_smooth hgInf_cd hgInf_co
   have hkoszul_cd := fun n => koszulRiesz_smooth hU (hg_cd n)
   have hkoszulInf_cd := koszulRiesz_smooth hU hgInf_cd
-  have hpair := mapCInfConv_prodMk hU hinv hkoszul hinv_cd hinvInf_cd
+  have hpair := mapCInfConvergence_prodMk hU hinv hkoszul hinv_cd hinvInf_cd
     hkoszul_cd hkoszulInf_cd
   let postEval : (E →L[Real] E) × (E →L[Real] E →L[Real] E) →
       E →L[Real] E →L[Real] E := fun q => postBilin (E := E) q.1 q.2
   have hpost : ContDiff Real (∞ : WithTop ℕ∞) postEval :=
     (postBilin (E := E)).isBoundedBilinearMap.contDiff
   simpa [raisedKoszulOp, postEval] using
-    (MapCInfConvOnCompacts.comp hU isOpen_univ hpair
-      (mapCInfConv_const (U := Set.univ) postEval)
+    (MapCInfConvergenceOnCompacts.comp hU isOpen_univ hpair
+      (mapCInfConvergence_const (U := Set.univ) postEval)
       (fun n => (hinv_cd n).prodMk (hkoszul_cd n))
       (hinvInf_cd.prodMk hkoszulInf_cd)
       (fun _ => hpost.contDiffOn) hpost.contDiffOn
       (fun _ _ => Set.mem_univ _) (fun _ _ _ => Set.mem_univ _))
 
 omit [ContinuousDualEquiv E] in
-private theorem raisedDiag_conv
+private theorem raisedDiag_convergence
     [FiniteDimensional Real E]
     {U : Set E} (hU : IsOpen U)
     {R : ℕ → E → E →L[Real] E →L[Real] E}
     {RInf : E → E →L[Real] E →L[Real] E}
     (hR_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (R n) U)
     (hRInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) RInf U)
-    (hR_conv : MapCInfConvOnCompacts U R RInf) :
-    MapCInfConvOnCompacts (U ×ˢ Set.univ)
+    (hR_convergence : MapCInfConvergenceOnCompacts U R RInf) :
+    MapCInfConvergenceOnCompacts (U ×ˢ Set.univ)
       (fun n q => R n q.1 q.2 q.2) (fun q => RInf q.1 q.2 q.2) := by
   let : ProperSpace E := FiniteDimensional.proper Real _
   let : ProperSpace ((E →L[Real] E →L[Real] E) × E) :=
@@ -318,12 +318,12 @@ private theorem raisedDiag_conv
   let phaseU : Set (E × E) := U ×ˢ Set.univ
   have hphaseU : IsOpen phaseU := hU.prod isOpen_univ
   let fstMap : E × E → E := fun q => q.1
-  have hfst : MapCInfConvOnCompacts phaseU (fun _ : ℕ => fstMap) fstMap :=
-    mapCInfConv_const fstMap
-  have hRphase : MapCInfConvOnCompacts phaseU
+  have hfst : MapCInfConvergenceOnCompacts phaseU (fun _ : ℕ => fstMap) fstMap :=
+    mapCInfConvergence_const fstMap
+  have hRphase : MapCInfConvergenceOnCompacts phaseU
       (fun n q => R n q.1) (fun q => RInf q.1) := by
     simpa [fstMap] using
-      (MapCInfConvOnCompacts.comp hphaseU hU hfst hR_conv
+      (MapCInfConvergenceOnCompacts.comp hphaseU hU hfst hR_convergence
         (fun _ => contDiff_fst.contDiffOn) contDiff_fst.contDiffOn
         hR_cd hRInf_cd (fun q hq => hq.1) (fun _ q hq => hq.1))
   have hRphase_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
@@ -333,17 +333,17 @@ private theorem raisedDiag_conv
       (fun q : E × E => RInf q.1) phaseU :=
     ContDiffOn.comp hRInf_cd contDiff_fst.contDiffOn (fun q hq => hq.1)
   let sndMap : E × E → E := fun q => q.2
-  have hsnd : MapCInfConvOnCompacts phaseU (fun _ : ℕ => sndMap) sndMap :=
-    mapCInfConv_const sndMap
-  have hpair := mapCInfConv_prodMk hphaseU hRphase hsnd hRphase_cd
+  have hsnd : MapCInfConvergenceOnCompacts phaseU (fun _ : ℕ => sndMap) sndMap :=
+    mapCInfConvergence_const sndMap
+  have hpair := mapCInfConvergence_prodMk hphaseU hRphase hsnd hRphase_cd
     hRphaseInf_cd (fun _ => contDiff_snd.contDiffOn) contDiff_snd.contDiffOn
   let diagEval : (E →L[Real] E →L[Real] E) × E → E :=
     fun q => q.1 q.2 q.2
   have hdiag : ContDiff Real (∞ : WithTop ℕ∞) diagEval :=
     (contDiff_fst.clm_apply contDiff_snd).clm_apply contDiff_snd
   simpa [phaseU, sndMap, diagEval] using
-    (MapCInfConvOnCompacts.comp hphaseU isOpen_univ hpair
-      (mapCInfConv_const (U := Set.univ) diagEval)
+    (MapCInfConvergenceOnCompacts.comp hphaseU isOpen_univ hpair
+      (mapCInfConvergence_const (U := Set.univ) diagEval)
       (fun n => (hRphase_cd n).prodMk contDiff_snd.contDiffOn)
       (hRphaseInf_cd.prodMk contDiff_snd.contDiffOn)
       (fun _ => hdiag.contDiffOn) hdiag.contDiffOn
@@ -369,7 +369,7 @@ theorem metricSpray_contDiffOn
     (U ×ˢ Set.univ)
   exact contDiffOn_snd.prodMk hdiag.neg
 
-theorem metricSpray_conv
+theorem metricSpray_convergence
     [FiniteDimensional Real E]
     {U : Set E} (hU : IsOpen U)
     {g : ℕ → E → E →L[Real] E →L[Real] Real}
@@ -378,8 +378,8 @@ theorem metricSpray_conv
     (hgInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U)
     (hg_co : ∀ n x, x ∈ U → IsCoercive (g n x))
     (hgInf_co : ∀ x, x ∈ U → IsCoercive (gInf x))
-    (hg_conv : MapCInfConvOnCompacts U g gInf) :
-    MapCInfConvOnCompacts (U ×ˢ Set.univ)
+    (hg_convergence : MapCInfConvergenceOnCompacts U g gInf) :
+    MapCInfConvergenceOnCompacts (U ×ˢ Set.univ)
       (fun n => metricSpray (g n)) (metricSpray gInf) := by
   let R : ℕ → E → E →L[Real] E →L[Real] E :=
     fun n x => raisedKoszulOp (g n x) (fderiv Real (g n) x)
@@ -389,9 +389,9 @@ theorem metricSpray_conv
     fun n => raisedOp_smooth hU (hg_cd n) (hg_co n)
   have hRInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞) RInf U :=
     raisedOp_smooth hU hgInf_cd hgInf_co
-  have hR_conv : MapCInfConvOnCompacts U R RInf :=
-    raisedKoszulOp_conv hU hg_cd hgInf_cd hg_co hgInf_co hg_conv
-  have hdiag := raisedDiag_conv hU hR_cd hRInf_cd hR_conv
+  have hR_convergence : MapCInfConvergenceOnCompacts U R RInf :=
+    raisedKoszulOp_convergence hU hg_cd hgInf_cd hg_co hgInf_co hg_convergence
+  have hdiag := raisedDiag_convergence hU hR_cd hRInf_cd hR_convergence
   have hdiag_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun q : E × E => R n q.1 q.2 q.2) (U ×ˢ Set.univ) :=
     fun n => ((((hR_cd n).comp contDiffOn_fst (fun q hq => hq.1)).clm_apply
@@ -401,7 +401,7 @@ theorem metricSpray_conv
     (((hRInf_cd.comp contDiffOn_fst (fun q hq => hq.1)).clm_apply
       contDiffOn_snd).clm_apply contDiffOn_snd)
   let negCLM : E →L[Real] E := -(ContinuousLinearMap.id Real E)
-  have hneg := mapCInfConv_clm (hU.prod isOpen_univ) negCLM hdiag
+  have hneg := mapCInfConvergence_clm (hU.prod isOpen_univ) negCLM hdiag
     hdiag_cd hdiagInf_cd
   have hneg_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun q : E × E => negCLM (R n q.1 q.2 q.2)) (U ×ˢ Set.univ) :=
@@ -409,10 +409,10 @@ theorem metricSpray_conv
   have hnegInf_cd : ContDiffOn Real (∞ : WithTop ℕ∞)
       (fun q : E × E => negCLM (RInf q.1 q.2 q.2)) (U ×ˢ Set.univ) :=
     negCLM.contDiff.comp_contDiffOn hdiagInf_cd
-  have hmain := mapCInfConv_prodMk (hU.prod isOpen_univ)
-    (mapCInfConv_const (U := U ×ˢ Set.univ) (fun q : E × E => q.2)) hneg
+  have hmain := mapCInfConvergence_prodMk (hU.prod isOpen_univ)
+    (mapCInfConvergence_const (U := U ×ˢ Set.univ) (fun q : E × E => q.2)) hneg
     (fun _ => contDiffOn_snd) contDiffOn_snd hneg_cd hnegInf_cd
-  change MapCInfConvOnCompacts (U ×ˢ Set.univ)
+  change MapCInfConvergenceOnCompacts (U ×ˢ Set.univ)
     (fun n q => (q.2, -raisedKoszulOp (g n q.1) (fderiv Real (g n) q.1) q.2 q.2))
     (fun q => (q.2, -raisedKoszulOp (gInf q.1) (fderiv Real gInf q.1) q.2 q.2)) at hmain
   exact hmain

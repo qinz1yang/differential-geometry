@@ -26,7 +26,7 @@ noncomputable def tensor04CurvatureOperatorMatrixAt {x : M}
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (A : Tensor04At (I := I) (M := M) x) : Matrix (Fin 3) (Fin 3) Real :=
   fun i j =>
-    tensor04StdAt (I := I) (M := M) A
+    tensor04StandardAt (I := I) (M := M) A
       (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
       (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1)
 
@@ -35,7 +35,7 @@ omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] in
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (A : Tensor04At (I := I) (M := M) x) (i j : Fin 3) :
     tensor04CurvatureOperatorMatrixAt (I := I) basis A i j =
-      tensor04StdAt (I := I) (M := M) A
+      tensor04StandardAt (I := I) (M := M) A
         (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
         (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1) := by
   rfl
@@ -278,10 +278,10 @@ theorem inner0S_algebraic_eq_four_mul_operatorInner
         tensor0SComponent (I := I) (B : Tensor04At (I := I) (M := M) x)
           (fun i : Fin 3 => basis i) J0) =
     4 * (∑ p : Fin 3, ∑ q : Fin 3,
-      tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+      tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
         (basis (bivectorIndex3 p).1) (basis (bivectorIndex3 p).2)
         (basis (bivectorIndex3 q).2) (basis (bivectorIndex3 q).1) *
-      tensor04StdAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
+      tensor04StandardAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
         (basis (bivectorIndex3 p).1) (basis (bivectorIndex3 p).2)
         (basis (bivectorIndex3 q).2) (basis (bivectorIndex3 q).1))
   have hcollapse : (∑ I0 : Fin 4 → Fin 3, ∑ J0 : Fin 4 → Fin 3,
@@ -367,9 +367,9 @@ theorem inner0S_algebraic_eq_four_mul_operatorInner
   have hB1 := mem_algebraicCurvatureTensorSubmodule_iff_symmetries.mp B.2
   let X : Fin 3 → Fin 3 → Fin 3 → Fin 3 → Real :=
     fun i j k l =>
-      tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+      tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (basis i) (basis j) (basis k) (basis l) *
-        tensor04StdAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
           (basis i) (basis j) (basis k) (basis l)
   have hX : (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
       tensor0SComponent (I := I) (A : Tensor04At (I := I) (M := M) x)
@@ -388,17 +388,17 @@ theorem inner0S_algebraic_eq_four_mul_operatorInner
     unfold X
     rw [show tensor0SComponent (I := I) (A : Tensor04At (I := I) (M := M) x)
           (fun m : Fin 3 => basis m) (slots4 i j k l) =
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (basis i) (basis j) (basis k) (basis l) from by
-        simp only [tensor0SComponent_apply, tensor04StdAt_apply]
+        simp only [tensor0SComponent_apply, tensor04StandardAt_apply]
         congr 1
         funext a
         fin_cases a <;> simp [slots4, vec4]]
     rw [show tensor0SComponent (I := I) (B : Tensor04At (I := I) (M := M) x)
           (fun m : Fin 3 => basis m) (slots4 i j k l) =
-        tensor04StdAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
           (basis i) (basis j) (basis k) (basis l) from by
-        simp only [tensor0SComponent_apply, tensor04StdAt_apply]
+        simp only [tensor0SComponent_apply, tensor04StandardAt_apply]
         congr 1
         funext a
         fin_cases a <;> simp [slots4, vec4]]
@@ -422,9 +422,9 @@ theorem inner0S_algebraic_eq_four_mul_operatorInner
       intro i j k l
       have h1 := hA1.1 (basis i) (basis i) (basis k) (basis l)
       have h2 := hB1.1 (basis i) (basis i) (basis k) (basis l)
-      have hA0 : tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+      have hA0 : tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (basis i) (basis i) (basis k) (basis l) = 0 := by linarith
-      have hB0 : tensor04StdAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
+      have hB0 : tensor04StandardAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
           (basis i) (basis i) (basis k) (basis l) = 0 := by linarith
       unfold X
       rw [hA0, hB0]
@@ -433,9 +433,9 @@ theorem inner0S_algebraic_eq_four_mul_operatorInner
       intro i j k l
       have h1 := hA1.2.1 (basis i) (basis j) (basis k) (basis k)
       have h2 := hB1.2.1 (basis i) (basis j) (basis k) (basis k)
-      have hA0 : tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+      have hA0 : tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (basis i) (basis j) (basis k) (basis k) = 0 := by linarith
-      have hB0 : tensor04StdAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
+      have hB0 : tensor04StandardAt (I := I) (M := M) (B : Tensor04At (I := I) (M := M) x)
           (basis i) (basis j) (basis k) (basis k) = 0 := by linarith
       unfold X
       rw [hA0, hB0]

@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Bundle
@@ -146,5 +146,5 @@ theorem subseq
 
 end SeqMetricComplete
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

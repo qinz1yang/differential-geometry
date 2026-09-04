@@ -16,7 +16,7 @@ open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 namespace DifferentialGeometry
 namespace PDE
@@ -95,8 +95,8 @@ theorem uniformRm04Sup
             (basis (slots 0)) (basis (slots 1)) (basis (slots 2))) := by
       rw [component0S, hvec]
       rw [show metricRm04 (I := I) (M := M) g₀ x = metricRm04At (I := I) (M := M) g₀ x from rfl]
-      rw [← metricRm04StdAt_apply (I := I) (M := M) g₀ x]
-      exact metricRm04StdAt_eq_inner_riemannOp (I := I) (M := M) g₀ x _ _ _ _
+      rw [← metricRm04StandardAt_apply (I := I) (M := M) g₀ x]
+      exact metricRm04StandardAt_eq_inner_riemannOp (I := I) (M := M) g₀ x _ _ _ _
     rw [hval]
     have hunit : ∀ i, g₀.inner x (basis i) (basis i) = 1 := by
       intro i; rw [hON i i]; simp

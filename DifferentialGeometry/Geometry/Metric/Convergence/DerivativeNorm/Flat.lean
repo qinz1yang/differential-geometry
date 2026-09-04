@@ -11,7 +11,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open TopologicalSpace
@@ -205,5 +205,5 @@ theorem metricDerivNorm_flat
     _ = metricDerivNorm (I := I) a gk gInf gRef (Opens.inclusion hVU x) := by
       rfl
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

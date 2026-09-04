@@ -241,15 +241,15 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_smoothCase
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   set w_lift : H1Compl (I := I) (M := M) g :=
-    smoothGradInnerWitness (I := I) (M := M) g φ v with hw_lift_def
+    smoothGradInnerPreimage (I := I) (M := M) g φ v with hw_lift_def
   have hw_lift_mem : w_lift ∈ laplacianDomain (I := I) (M := M) g := by
     rw [hw_lift_def]
-    exact smoothGradInnerWitness_mem_laplacianDomain (I := I) (M := M) g φ v
+    exact smoothGradInnerPreimage_mem_laplacianDomain (I := I) (M := M) g φ v
   have hw_lift_eq : H1ComplToLp (I := I) (M := M) g w_lift =
       gradInnerCLM (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) := by
     rw [hw_lift_def]
-    exact H1ComplToLp_smoothGradInnerWitness (I := I) (M := M) g φ v
+    exact H1ComplToLp_smoothGradInnerPreimage (I := I) (M := M) g φ v
   have h_main :=
     integral_gradInner_oneSubLap_smooth_eq_integral_preimage_smooth
       (I := I) (M := M) g φ hw_lift_mem hw_lift_eq w
@@ -263,7 +263,7 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_smoothCase
     rw [h_lhs]
     change w_lift = _
     rw [hw_lift_def]
-    unfold smoothGradInnerWitness
+    unfold smoothGradInnerPreimage
     exact smoothToH1Compl_eq_resolvent_oneSubLap (I := I) (M := M)
       (gradInnerSmoothBundle (I := I) (M := M) g φ v)
   rw [h_preimage_eq] at h_main
@@ -340,10 +340,10 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_rhs_of_density
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_smooth_seq : ℕ → SmoothScalar g)
-    (h_conv_H1Compl : Tendsto
+    (h_convergence_H1Compl : Tendsto
       (fun n => smoothToH1Compl (I := I) (M := M) g (h_smooth_seq n))
       atTop (𝓝 u_h))
-    (h_conv_candidate : Tendsto
+    (h_convergence_candidate : Tendsto
       (fun n => gradInnerLaplacianRhs (I := I) (M := M) g φ
         (smoothToH1Compl_mem_laplacianDomainPow_two
           (I := I) (M := M) g (h_smooth_seq n)))
@@ -368,9 +368,9 @@ theorem integral_gradInner_oneSubLap_smooth_eq_integral_rhs_of_density
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   have hvar_id :=
-    gradInnerCLM_eq_H1ComplToLp_resolvent_via_density
-      (I := I) (M := M) g φ hu_h h_smooth_seq h_conv_H1Compl
-      h_conv_candidate h_smooth_identity
+    gradInnerCLM_eq_H1ComplToLp_resolvent_of_smooth_approximation
+      (I := I) (M := M) g φ hu_h h_smooth_seq h_convergence_H1Compl
+      h_convergence_candidate h_smooth_identity
   exact integral_gradInner_oneSubLap_smooth_eq_integral_rhs_of_variational
     (I := I) (M := M) g φ hu_h hvar_id w
 

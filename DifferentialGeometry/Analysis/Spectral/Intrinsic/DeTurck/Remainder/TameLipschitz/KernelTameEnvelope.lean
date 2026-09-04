@@ -31,8 +31,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
   exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
   linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
-  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
-  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
@@ -511,7 +511,7 @@ private theorem
       mul_nonneg (sq_nonneg ε) (sq_nonneg _)
     nlinarith
 
-theorem exists_linearizedRicciOrderZeroCorrField_metricPerturbationPath_jetL2_topTerm_tameEnvelope_highOrder
+theorem exists_linearizedRicciOrderZeroCorrectionField_metricPerturbationPath_jetL2_topTerm_tameEnvelope_highOrder
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) :
@@ -615,7 +615,7 @@ theorem exists_linearizedRicciOrderZeroCorrField_metricPerturbationPath_jetL2_to
       mul_nonneg h1ms (sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖),
       mul_nonneg hs0 (sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖)]
   rw
-    [Analysis.Parabolic.TensorSpectral.corrTerm0Combination_eq_order0_add_halfRiemann
+    [Analysis.Parabolic.TensorSpectral.correctionTerm0Combination_eq_order0_add_halfRiemann
     (I := I) (M := M) g₀ T T' hδ hδ' s]
   have hmain := hK (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
     (convexPerturbation (I := I) g₀ T T' s) hδP_le hδP htie hPball i hi
@@ -638,7 +638,7 @@ theorem exists_linearizedRicciOrderZeroCorrField_metricPerturbationPath_jetL2_to
     mul_le_mul_of_nonneg_left (hwin_ineq (i + 2)) (sq_nonneg ε)
   linarith
 
-theorem linearizedRicciOrderZeroCorrField_allOrder_tameEnvelope_interface
+theorem linearizedRicciOrderZeroCorrectionField_allOrder_tameEnvelope_interface
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) :
@@ -656,7 +656,7 @@ theorem linearizedRicciOrderZeroCorrField_allOrder_tameEnvelope_interface
         (∀ j : ℕ, j ≤ a + 2 → ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖ ≤ R) →
         ∀ (i : ℕ), ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 →
           ‖iteratedCovGrad (I := I) g₀ 2 2 i
-              (linearizedRicciOrderZeroCorrField (I := I) g₀ T T' hδ hδ' s
+              (linearizedRicciOrderZeroCorrectionField (I := I) g₀ T T' hδ hδ' s
                 + (3 / 2 : ℝ) •
                   DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ricciOrderZeroRiemannCoeff
                     (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
@@ -669,18 +669,18 @@ theorem linearizedRicciOrderZeroCorrField_allOrder_tameEnvelope_interface
                 ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T'‖ ^ 2) := by
   classical
   obtain ⟨Kle, hKle_nn, hKle⟩ :=
-    Analysis.Parabolic.TensorSpectral.exists_corrTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
+    Analysis.Parabolic.TensorSpectral.exists_correctionTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Kgt, hKgt_nn, ε, hε_nn, hε_cap, hKgt⟩ :=
-    exists_linearizedRicciOrderZeroCorrField_metricPerturbationPath_jetL2_topTerm_tameEnvelope_highOrder
+    exists_linearizedRicciOrderZeroCorrectionField_metricPerturbationPath_jetL2_topTerm_tameEnvelope_highOrder
       (I := I) (M := M) g₀ a ha_super hR hδ₀ hδ₀half
   refine ⟨fun i => Kle i + Kgt i, fun i => add_nonneg (hKle_nn i) (hKgt_nn i),
     ε, hε_nn, hε_cap, ?_⟩
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball i s hs
   have hid :=
-    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_corrField_data
+    (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_orderZero_firstOrder_correctionField_data
       (I := I) g₀ T T' hδ hδ').choose_spec.choose_spec.2.2.2.2.1
-  rw [show linearizedRicciOrderZeroCorrField (I := I) g₀ T T' hδ hδ' s =
+  rw [show linearizedRicciOrderZeroCorrectionField (I := I) g₀ T T' hδ hδ' s =
       DifferentialGeometry.Analysis.Parabolic.TensorSpectral.linearizedRicciConnectionDifferenceOrder0Coeff
           (I := I) g₀ T T' hδ hδ' s
         - linearizedRicciOrderZeroBaseCoeff (I := I) g₀ T T' hδ hδ' s from hid s]

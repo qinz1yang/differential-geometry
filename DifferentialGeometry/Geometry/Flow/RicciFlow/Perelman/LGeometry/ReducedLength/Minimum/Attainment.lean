@@ -44,9 +44,9 @@ private theorem lRmFree_subseq
     (hE : ∀ n, IntegrableOn (fun s =>
       (S.base.metric T).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)) (Icc a b))
-    (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
-    (hact : ∀ n, lRegAction S T (alpha n) a b <= A)
+    (hkin : ∀ n, IntervalIntegrable (lRegularizedSpeedSq S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b)
+    (hact : ∀ n, lRegularizedAction S T (alpha n) a b <= A)
     (x : M) (hfixa : ∀ n, alpha n a = x) :
     ∃ (Cpt : Set M) (phi : Nat -> Nat) (g : C(Icc a b, M)),
       IsCompact Cpt ∧ StrictMono phi ∧
@@ -65,13 +65,13 @@ private theorem lRmFree_subseq
   have hQ : 0 <= Q := (Real.exp_pos _).le
   have henergy (n : Nat) :
       curveEnergy (I := I) (S.base.metric T) (alpha n) a b <= B := by
-    apply lRegEnergy_le (I := I) S (S.base.metric T) T (alpha n) a b A C Q
+    apply lRegularizedEnergy_le (I := I) S (S.base.metric T) T (alpha n) a b A C Q
       hab hQ
     · intro s hs v
-      exact lRegMetric_le_rm (I := I) S hS K T b hb hreg hRm s
+      exact lRegularizedMetric_le_rm (I := I) S hS K T b hb hreg hRm s
         ⟨ha.trans hs.1, hs.2⟩ (alpha n s) v
     · intro s hs
-      exact lRegPot_lower_rm (I := I) S K T b hb hRm s
+      exact lRegularizedPot_lower_rm (I := I) S K T b hb hRm s
         ⟨ha.trans hs.1, hs.2⟩ (alpha n s)
     · exact hE n
     · exact hkin n
@@ -106,11 +106,11 @@ private theorem lRmFree_subseq
       Real.continuous_sqrt.mul continuous_const
     simpa only [Real.sqrt_zero, zero_mul] using hcont.tendsto (0 : Real)
   have hequi : Equicontinuous (fun n => (f n : Icc a b -> M)) := by
-    have hunif : UniformEquicontinuous (fun n => (f n : Icc a b -> M)) := by
+    have huniform : UniformEquicontinuous (fun n => (f n : Icc a b -> M)) := by
       rw [Metric.uniformEquicontinuous_iff]
       intro epsilon hepsilon
       obtain ⟨rho, hrho, htoDist⟩ :=
-        dist_lt_riedist_cpt (I := I) (S.base.metric T) Cpt hCpt hepsilon
+        dist_lt_riedist_compact (I := I) (S.base.metric T) Cpt hCpt hepsilon
       obtain ⟨delta, hdelta, hmoddelta⟩ :=
         Metric.tendsto_nhds_nhds.1 hmod rho hrho
       refine ⟨delta, hdelta, ?_⟩
@@ -135,9 +135,9 @@ private theorem lRmFree_subseq
           htoDist (alpha n t.1) (hval n t) (alpha n s.1) (hval n s) hriem'
         change dist (alpha n s.1) (alpha n t.1) < epsilon
         simpa only [dist_comm] using hout
-    exact hunif.equicontinuous
+    exact huniform.equicontinuous
   obtain ⟨phi, g, hphi, hconv⟩ :=
-    DifferentialGeometry.Analysis.arzela_subseq_cpt Cpt hCpt f hval hequi
+    DifferentialGeometry.Analysis.arzela_subseq_compact Cpt hCpt f hval hequi
   refine ⟨Cpt, phi, g, hCpt, hphi, (fun n s => hval (phi n) s), ?_, ?_⟩
   · have heq : (fun n ↦ ⇑(f (phi n))) =
         fun n s ↦ alpha (phi n) s.1 := by
@@ -167,9 +167,9 @@ private theorem lRmFree_lsc
     (hE : ∀ n, IntegrableOn (fun s ↦
       (S.base.metric T).inner (alpha n s)
         (lVelocity (I := I) (alpha n) s) (lVelocity (I := I) (alpha n) s)) (Icc a b))
-    (hkin : ∀ n, IntervalIntegrable (lRegSpeedSq S T (alpha n)) volume a b)
-    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
-    (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
+    (hkin : ∀ n, IntervalIntegrable (lRegularizedSpeedSq S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b)
+    (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A)
     (x : M) (hfixa : ∀ n, alpha n a = x) :
     ∃ (m : Nat) (t : Fin (m + 1) → Real) (p : Fin m → M)
       (chi : Nat → Nat) (gamma : Real → M)
@@ -191,7 +191,7 @@ private theorem lRmFree_lsc
             ((uLim i).deriv r)) ((uLim i).deriv r)) +
         (∫ s in t i.castSucc..t i.succ,
           2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma s)))) ≤
-        liminf (fun n ↦ lRegAction S T (alpha (chi n)) a b) atTop := by
+        liminf (fun n ↦ lRegularizedAction S T (alpha (chi n)) a b) atTop := by
   have hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric :=
     hS.smoothMetric
   have hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
@@ -236,11 +236,11 @@ private theorem lRmFree_lsc
   let beta : Nat → Real → M := fun n ↦ alpha (phi0 (n + N))
   have hbeta : ∀ n, ContMDiffOn (modelWithCornersSelf Real Real) I 1
       (beta n) (Icc a b) := fun n ↦ halpha _
-  have hkinBeta : ∀ n, IntervalIntegrable (lRegSpeedSq S T (beta n)) volume a b :=
+  have hkinBeta : ∀ n, IntervalIntegrable (lRegularizedSpeedSq S T (beta n)) volume a b :=
     fun n ↦ hkin _
-  have hLagBeta : ∀ n, IntervalIntegrable (lRegLagrangian S T (beta n)) volume a b :=
+  have hLagBeta : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (beta n)) volume a b :=
     fun n ↦ hLag _
-  have hactBeta : ∀ n, lRegAction S T (beta n) a b ≤ A := fun n ↦ hact _
+  have hactBeta : ∀ n, lRegularizedAction S T (beta n) a b ≤ A := fun n ↦ hact _
   obtain ⟨psi, uLim, hpsi, hdu, hu⟩ :=
     lRmChartH1_fin (I := I) S hMet K T a b ha t htmono ht0 htlast p beta
       hbeta hkinBeta hLagBeta u
@@ -271,7 +271,7 @@ private theorem lRmFree_lsc
   have huK' (i : Fin m) (n : Nat) (r : Icc (0 : Real) (partitionIntervalLength t i)) :
       (u i (psi n)).toFun r.1 ∈ Kcoord i := by
     simpa only [beta, Nat.add_comm] using huK i (psi n) r
-  have hgammaSrc (i : Fin m) : MapsTo gamma
+  have hgammaSource (i : Fin m) : MapsTo gamma
       (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source :=
     (hgammaK i).mono_right (interior_subset.trans (hKsrc i))
   have hdiff (i : Fin m) (n : Nat) :
@@ -314,13 +314,13 @@ private theorem lRmFree_lsc
       change r ∈ Icc (0 : Real) (t i.succ - t i.castSucc) at hr
       exact ⟨by linarith [hr.1], by linarith [hr.2]⟩
     let rsub : Icc (0 : Real) (partitionIntervalLength t i) := ⟨r, hr⟩
-    have hExtSrc : gamma (t i.castSucc + r) ∈ (extChartAt I (p i)).source := by
+    have hExtSource : gamma (t i.castSucc + r) ∈ (extChartAt I (p i)).source := by
       rw [extChartAt_source]
-      exact hgammaSrc i hrpiece
+      exact hgammaSource i hrpiece
     have hchart : Tendsto (fun n ↦
         extChartAt I (p i) (alpha (chi n) (t i.castSucc + r))) atTop
         (nhds (extChartAt I (p i) (gamma (t i.castSucc + r)))) :=
-      (continuousAt_extChartAt' (I := I) hExtSrc).tendsto.comp hpoint
+      (continuousAt_extChartAt' (I := I) hExtSource).tendsto.comp hpoint
     have huPoint := (hu i).tendsto_at rsub
     have huChart : Tendsto (fun n ↦
         extChartAt I (p i) (alpha (chi n) (t i.castSucc + r))) atTop
@@ -330,9 +330,9 @@ private theorem lRmFree_lsc
       exact hrep' i n rsub.2
     exact tendsto_nhds_unique huChart hchart
   have hactBound : IsBoundedUnder (· ≤ ·) atTop
-      (fun n ↦ lRegAction S T (alpha (chi n)) a b) :=
+      (fun n ↦ lRegularizedAction S T (alpha (chi n)) a b) :=
     isBoundedUnder_of_eventually_le (Eventually.of_forall fun n ↦ hact (chi n))
-  have hlsc := lRegAction_fin_cpt S hMet hSc T a b t htmono ht0 htlast p
+  have hlsc := lRegularizedAction_fin_compact S hMet hSc T a b t htmono ht0 htlast p
     (fun n ↦ alpha (chi n)) gamma Cpt hCpt
     (fun n s hs ↦ hval0 (psi n + N) ⟨s, hs⟩)
     (fun i n ↦ u i (psi n))
@@ -341,7 +341,7 @@ private theorem lRmFree_lsc
     (fun i z ↦ by simpa only using hdu i z)
     hconv hactBound hregBack
   exact ⟨m, t, p, chi, gamma, uLim, hchi, hgamma, hga', hconv,
-    htmono, ht0, htlast, hgammaSrc, hlimRep, hlsc⟩
+    htmono, ht0, htlast, hgammaSource, hlimRep, hlsc⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -367,9 +367,9 @@ theorem exists_redMin_rm [ConnectedSpace M]
     simpa only [hbSq] using hRm
   let costs : Set Real := {r : Real | ∃ alpha : Real → M,
     ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
-      alpha 0 = x ∧ lRegAction S T alpha 0 b = r}
+      alpha 0 = x ∧ lRegularizedAction S T alpha 0 b = r}
   have hcosts : costs.Nonempty := by
-    refine ⟨lRegAction S T (fun _ : Real ↦ x) 0 b, fun _ ↦ x,
+    refine ⟨lRegularizedAction S T (fun _ : Real ↦ x) 0 b, fun _ ↦ x,
       contMDiff_const, rfl, rfl⟩
   have hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric :=
     hS.smoothMetric
@@ -384,19 +384,19 @@ theorem exists_redMin_rm [ConnectedSpace M]
     refine ⟨C * b, ?_⟩
     intro r hr
     obtain ⟨alpha, halpha, _h0, rfl⟩ := hr
-    have hkin := intervalIntegrable_lRegSpeedSq_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le alpha
+    have hkin := intervalIntegrable_lRegularizedSpeedSq_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le alpha
       halpha.contMDiffOn hregBack
-    have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le alpha
+    have hLag := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le alpha
       halpha.contMDiffOn hregBack
-    have hbound := lRegKinetic_le (I := I) S T alpha 0 b
-      (lRegAction S T alpha 0 b) C hb.le
-      (fun s hs ↦ lRegPot_lower_rm (I := I) S K T b hb.le hRmSq s
+    have hbound := lRegularizedKinetic_le (I := I) S T alpha 0 b
+      (lRegularizedAction S T alpha 0 b) C hb.le
+      (fun s hs ↦ lRegularizedPot_lower_rm (I := I) S K T b hb.le hRmSq s
         ⟨hs.1, hs.2⟩ (alpha s))
       hkin hLag le_rfl
-    have hnonneg : 0 ≤ ∫ s in 0..b, lRegSpeedSq S T alpha s := by
+    have hnonneg : 0 ≤ ∫ s in 0..b, lRegularizedSpeedSq S T alpha s := by
       apply intervalIntegral.integral_nonneg hb.le
       intro s _hs
-      exact lRegSpeedSq_nonneg (I := I) S T alpha s
+      exact lRegularizedSpeedSq_nonneg (I := I) S T alpha s
     have hbound' := hbound
     simp only [sub_zero] at hbound'
     linarith
@@ -409,14 +409,14 @@ theorem exists_redMin_rm [ConnectedSpace M]
       (Icc (0 : Real) b) :=
     integrableOn_riemannianMetric_inner_lVelocity_self_of_contMDiff_one (I := I) (S.base.metric T) (alpha n) (halpha n) 0 b
   have hkin (n : Nat) : IntervalIntegrable
-      (lRegSpeedSq S T (alpha n)) volume 0 b :=
-    intervalIntegrable_lRegSpeedSq_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le (alpha n)
+      (lRegularizedSpeedSq S T (alpha n)) volume 0 b :=
+    intervalIntegrable_lRegularizedSpeedSq_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le (alpha n)
       (halpha n).contMDiffOn hregBack
   have hLag (n : Nat) : IntervalIntegrable
-      (lRegLagrangian S T (alpha n)) volume 0 b :=
-    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le (alpha n)
+      (lRegularizedLagrangian S T (alpha n)) volume 0 b :=
+    intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T 0 b hb.le (alpha n)
       (halpha n).contMDiffOn hregBack
-  have hact (n : Nat) : lRegAction S T (alpha n) 0 b ≤ v 0 := by
+  have hact (n : Nat) : lRegularizedAction S T (alpha n) 0 b ≤ v 0 := by
     rw [hval n]
     exact hvanti (Nat.zero_le n)
   obtain ⟨m, t, p, chi, gamma, uLim, hchi, _hgamma, hga, _hconv,
@@ -425,7 +425,7 @@ theorem exists_redMin_rm [ConnectedSpace M]
       hregSq hRmSq alpha (fun n ↦ (halpha n).contMDiffOn)
       hE hkin hLag hact x hstart
   have hsubseq : Tendsto
-      (fun n ↦ lRegAction S T (alpha (chi n)) 0 b) atTop
+      (fun n ↦ lRegularizedAction S T (alpha (chi n)) 0 b) atTop
       (nhds (sInf costs)) := by
     have hlim := hvlim.comp hchi.tendsto_atTop
     have heq : v ∘ chi = fun n ↦ v (chi n) := by
@@ -433,28 +433,28 @@ theorem exists_redMin_rm [ConnectedSpace M]
       rfl
     rw [heq] at hlim
     simpa only [hval] using hlim
-  have hL : lRegAction S T gamma 0 b ≤ sInf costs := by
-    have hraw : lRegAction S T gamma 0 b ≤
-        liminf (fun n ↦ lRegAction S T (alpha (chi n)) 0 b) atTop := by
-      rw [lRegAction_chart S hMet hSc T 0 b t htmono ht0 htlast p gamma
+  have hL : lRegularizedAction S T gamma 0 b ≤ sInf costs := by
+    have hraw : lRegularizedAction S T gamma 0 b ≤
+        liminf (fun n ↦ lRegularizedAction S T (alpha (chi n)) 0 b) atTop := by
+      rw [lRegularizedAction_chart S hMet hSc T 0 b t htmono ht0 htlast p gamma
         uLim hsrc hrep hregBack]
       exact hlsc
     simpa only [hsubseq.liminf_eq] using hraw
   obtain ⟨beta, _u, hbeta, hbetaa, hbetab, _hsrcBeta, _hrepBeta,
-      _hu, _hunifBeta, hbetaAct⟩ :=
+      _hu, _huniformBeta, hbetaAct⟩ :=
     lAction_c1_dense (I := I) S hMet hSc T 0 b t htmono ht0 htlast p gamma
       uLim hsrc hrep hregBack
   let y : M := gamma b
   let fixed (z : M) : Set Real := {r : Real | ∃ delta : Real → M,
     ContMDiff (modelWithCornersSelf Real Real) I 1 delta ∧
-      delta 0 = x ∧ delta b = z ∧ lRegAction S T delta 0 b = r}
+      delta 0 = x ∧ delta b = z ∧ lRegularizedAction S T delta 0 b = r}
   have hfixed_bdd (z : M) : BddBelow (fixed z) := by
     apply hcosts_bdd.mono
     intro r hr
     obtain ⟨delta, hdelta, hd0, _hdb, rfl⟩ := hr
     exact ⟨delta, hdelta, hd0, rfl⟩
-  have hyL : lRegCostC1 S T 0 b x y ≤ lRegAction S T gamma 0 b := by
-    change sInf (fixed y) ≤ lRegAction S T gamma 0 b
+  have hyL : lRegularizedCostC1 S T 0 b x y ≤ lRegularizedAction S T gamma 0 b := by
+    change sInf (fixed y) ≤ lRegularizedAction S T gamma 0 b
     apply ge_of_tendsto' hbetaAct
     intro n
     apply csInf_le (hfixed_bdd y)
@@ -472,17 +472,17 @@ theorem exists_redMin_rm [ConnectedSpace M]
         (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
           (I := I) x z)
     obtain ⟨path, hpath, _hlen⟩ :=
-      DifferentialGeometry.Geometry.Riemannian.CGT.exists_flat_path
+      DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor.exists_flat_path
         (I := I) hxz
     let delta : Real → M := fun s ↦ path.extend (s / b)
     have hdelta : ContMDiff (modelWithCornersSelf Real Real) I 1 delta := by
       apply hpath.c1.comp
       rw [contMDiff_iff_contDiff]
       fun_prop
-    refine ⟨lRegAction S T delta 0 b, delta, hdelta, ?_, ?_, rfl⟩
+    refine ⟨lRegularizedAction S T delta 0 b, delta, hdelta, ?_, ?_, rfl⟩
     · simp only [delta, zero_div, Path.extend_zero]
     · simp only [delta, div_self hb.ne', Path.extend_one]
-  have hfree_le (z : M) : sInf costs ≤ lRegCostC1 S T 0 b x z := by
+  have hfree_le (z : M) : sInf costs ≤ lRegularizedCostC1 S T 0 b x z := by
     change sInf costs ≤ sInf (fixed z)
     apply le_csInf (hfixed z)
     intro r hr
@@ -490,9 +490,9 @@ theorem exists_redMin_rm [ConnectedSpace M]
     apply csInf_le hcosts_bdd
     exact ⟨delta, hdelta, hd0, rfl⟩
   refine ⟨y, fun z ↦ ?_⟩
-  rw [redLength, redLength, lCost_eq_reg (I := I) S T x y tau htau.le,
-    lCost_eq_reg (I := I) S T x z tau htau.le]
-  have hcost : lRegCostC1 S T 0 b x y ≤ lRegCostC1 S T 0 b x z :=
+  rw [redLength, redLength, lCost_eq_regularity (I := I) S T x y tau htau.le,
+    lCost_eq_regularity (I := I) S T x z tau htau.le]
+  have hcost : lRegularizedCostC1 S T 0 b x y ≤ lRegularizedCostC1 S T 0 b x z :=
     hyL.trans (hL.trans (hfree_le z))
   exact (div_le_div_iff_of_pos_right (by positivity)).2 hcost
 

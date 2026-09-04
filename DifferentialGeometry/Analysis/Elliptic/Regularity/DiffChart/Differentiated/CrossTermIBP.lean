@@ -81,15 +81,15 @@ lemma exists_smooth_global_extension
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport η
-    · have hy_chart : y ∈ chartTargetEuclid (I := I) (M := M) α := hη_tsupp hy_supp
+    by_cases hy_support : y ∈ tsupport η
+    · have hy_chart : y ∈ chartTargetEuclid (I := I) (M := M) α := hη_tsupp hy_support
       have hη_at : ContDiffAt ℝ (⊤ : ℕ∞) η y := hη_smooth.contDiffAt
       have hφ_at : ContDiffAt ℝ (⊤ : ℕ∞) φ y :=
         (hφ_chart y hy_chart).contDiffAt (h_open_chart.mem_nhds hy_chart)
       exact hη_at.mul hφ_at
-    · have h_nbhd : (tsupport η)ᶜ ∈ 𝓝 y := h_open_compl.mem_nhds hy_supp
+    · have h_neighborhood : (tsupport η)ᶜ ∈ 𝓝 y := h_open_compl.mem_nhds hy_support
       have h_eq_zero : φExt =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_nbhd] with z hz
+        filter_upwards [h_neighborhood] with z hz
         have hηz : η z = 0 := image_eq_zero_of_notMem_tsupport hz
         change η z * φ z = 0
         rw [hηz, zero_mul]
@@ -118,7 +118,7 @@ private lemma cross_derivative_term_ibp_single
     (i j : Fin (Module.finrank ℝ E))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       weightedInvGramDerivOnEuclid (I := I) g α i j direction y *
         (((chartPushedWeakPartialLp (I := I) (M := M) g α i
@@ -159,17 +159,17 @@ private lemma cross_derivative_term_ibp_single
         (I := I) (M := M) g α hu_h i j'
   set K : Set EuclN := tsupport ψ with hK_def
   have hK_compact : IsCompact K := hψ_cs
-  have hK_in : K ⊆ Ω := hψ_supp
+  have hK_in : K ⊆ Ω := hψ_support
   obtain ⟨δ, φExt, hδ_pos, hδ_subset, hφExt_smooth, hφExt_eq⟩ :=
     exists_smooth_global_extension (I := I) (M := M) (φ := φ) α
       hφ_chart hK_compact hK_in
-  have hv_locMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
+  have hv_localMemLp : ∀ K' : Set EuclN, IsCompact K' → K' ⊆ Ω →
       MemLp v 2 ((volume : Measure EuclN).restrict K') := by
     intro K' hK'_compact hK'_in
     have h := chartPushedWeakPartialLp_locally_memLp
       (I := I) (M := M) g α i u_h hK'_compact hK'_in
     exact h
-  have hw_locMemLp : ∀ (j' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
+  have hw_localMemLp : ∀ (j' : Fin (Module.finrank ℝ E)) (K' : Set EuclN),
       IsCompact K' → K' ⊆ Ω →
       MemLp (w j') 2 ((volume : Measure EuclN).restrict K') := by
     intro j' K' hK'_compact hK'_in
@@ -180,8 +180,8 @@ private lemma cross_derivative_term_ibp_single
     Sobolev.Euclidean.integral_smul_weak_partial_eq
       (d := Module.finrank ℝ E) (Ω := Ω) hΩ_open
       (φ := φExt) hφExt_smooth (v := v) (w := w)
-      hv_locMemLp hw_locMemLp hw_isWeakPartial j
-      (ψ := ψ) hψ_smooth hψ_cs hψ_supp
+      hv_localMemLp hw_localMemLp hw_isWeakPartial j
+      (ψ := ψ) hψ_smooth hψ_cs hψ_support
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   have hcthick_subset : Metric.cthickening δ K ⊆ Ω := hδ_subset
   have hK_in_thickening : K ⊆ Metric.cthickening δ K :=
@@ -190,12 +190,12 @@ private lemma cross_derivative_term_ibp_single
     intro x hx
     have h_compl_open : IsOpen (Kᶜ) := (isClosed_tsupport _).isOpen_compl
     have hx_in_compl : x ∈ Kᶜ := hx
-    have hψ_zero_nbhd : ∀ᶠ y in 𝓝 x, ψ y = 0 := by
+    have hψ_zero_neighborhood : ∀ᶠ y in 𝓝 x, ψ y = 0 := by
       filter_upwards [h_compl_open.mem_nhds hx_in_compl] with y hy
       exact image_eq_zero_of_notMem_tsupport hy
     have hψ_const_zero : fderiv ℝ ψ x = fderiv ℝ (fun _ : EuclN => (0 : ℝ)) x := by
       apply Filter.EventuallyEq.fderiv_eq
-      filter_upwards [hψ_zero_nbhd] with y hy
+      filter_upwards [hψ_zero_neighborhood] with y hy
       rw [hy]
     rw [hψ_const_zero]; simp
   have hLHS_eq :
@@ -218,14 +218,14 @@ private lemma cross_derivative_term_ibp_single
       refine ⟨y, hy_K, ?_⟩
       simp [hδ_pos]
     have h_thick_open : IsOpen (Metric.thickening δ K) := Metric.isOpen_thickening
-    have h_nbhd : Metric.thickening δ K ∈ 𝓝 y := h_thick_open.mem_nhds hy_thick_open
+    have h_neighborhood : Metric.thickening δ K ∈ 𝓝 y := h_thick_open.mem_nhds hy_thick_open
     have h_thick_sub : Metric.thickening δ K ⊆ Metric.cthickening δ K :=
       Metric.thickening_subset_cthickening _ _
-    have h_eq_nbhd : φExt =ᶠ[𝓝 y] φ := by
-      filter_upwards [h_nbhd] with z hz
+    have h_eq_neighborhood : φExt =ᶠ[𝓝 y] φ := by
+      filter_upwards [h_neighborhood] with z hz
       exact hφExt_eq z (h_thick_sub hz)
     have h_fderiv_eq : fderiv ℝ φExt y = fderiv ℝ φ y :=
-      Filter.EventuallyEq.fderiv_eq h_eq_nbhd
+      Filter.EventuallyEq.fderiv_eq h_eq_neighborhood
     rw [h_fderiv_eq]
   have hLeibniz1_eq :
       ∫ y in Ω, (fderiv ℝ φExt y) (EuclideanSpace.single j 1) * v y * ψ y
@@ -255,7 +255,7 @@ theorem cross_derivative_term_ibp
     (l : Fin (Module.finrank ℝ E))
     {ψ : EuclN → ℝ} (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -304,10 +304,10 @@ theorem cross_derivative_term_ibp
         + (∫ y in Ω, A i j y * u₂ i j y * ψ y ∂(volume : Measure EuclN))) :=
     fun i j =>
       cross_derivative_term_ibp_single
-        (I := I) (M := M) g α hu_h l i j hψ_smooth hψ_cs hψ_supp
+        (I := I) (M := M) g α hu_h l i j hψ_smooth hψ_cs hψ_support
   set K : Set EuclN := tsupport ψ with hK_def
   have hK_compact : IsCompact K := hψ_cs
-  have hK_in : K ⊆ Ω := hψ_supp
+  have hK_in : K ⊆ Ω := hψ_support
   have hK_meas : MeasurableSet K := (isClosed_tsupport ψ).measurableSet
   have hvolK_finite : (volume : Measure EuclN) K < (⊤ : ℝ≥0∞) :=
     hK_compact.measure_lt_top
@@ -323,15 +323,15 @@ theorem cross_derivative_term_ibp
     intro x hx
     have h_compl_open : IsOpen (Kᶜ) := (isClosed_tsupport _).isOpen_compl
     have hx_in_compl : x ∈ Kᶜ := hx
-    have hψ_zero_nbhd : ∀ᶠ y in 𝓝 x, ψ y = 0 := by
+    have hψ_zero_neighborhood : ∀ᶠ y in 𝓝 x, ψ y = 0 := by
       filter_upwards [h_compl_open.mem_nhds hx_in_compl] with y hy
       exact image_eq_zero_of_notMem_tsupport hy
     have hψ_const_zero : fderiv ℝ ψ x = fderiv ℝ (fun _ : EuclN => (0 : ℝ)) x := by
       apply Filter.EventuallyEq.fderiv_eq
-      filter_upwards [hψ_zero_nbhd] with y hy
+      filter_upwards [hψ_zero_neighborhood] with y hy
       rw [hy]
     rw [hψ_const_zero]; simp
-  have hψ_fderiv_supp : ∀ j : Fin (Module.finrank ℝ E),
+  have hψ_fderiv_support : ∀ j : Fin (Module.finrank ℝ E),
       tsupport (fun y => (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) ⊆ K := by
     intro j
     refine closure_minimal (fun y hy => ?_) (isClosed_tsupport ψ)
@@ -344,13 +344,13 @@ theorem cross_derivative_term_ibp
     weightedInvGramDerivOnEuclid_continuousOn (I := I) g α i j l
   have h_A_cont_K : ∀ i j : Fin (Module.finrank ℝ E),
       ContinuousOn (A i j) K := fun i j => (h_A_cont_on i j).mono hK_in
-  have hv_locMemLp_K : ∀ i : Fin (Module.finrank ℝ E),
+  have hv_localMemLp_K : ∀ i : Fin (Module.finrank ℝ E),
       MemLp (v i) 2 ((volume : Measure EuclN).restrict K) :=
     fun i => chartPushedWeakPartialLp_locally_memLp
       (I := I) (M := M) g α i u_h hK_compact hK_in
   have hv_int_K : ∀ i : Fin (Module.finrank ℝ E),
       IntegrableOn (v i) K (volume : Measure EuclN) :=
-    fun i => (hv_locMemLp_K i).integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    fun i => (hv_localMemLp_K i).integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have h_dA_cont_on : ∀ i j j' : Fin (Module.finrank ℝ E),
       ContinuousOn (dA i j j') Ω := by
     intro i j j'
@@ -366,26 +366,26 @@ theorem cross_derivative_term_ibp
     exact h.continuousOn
   have h_dA_cont_K : ∀ i j j' : Fin (Module.finrank ℝ E),
       ContinuousOn (dA i j j') K := fun i j j' => (h_dA_cont_on i j j').mono hK_in
-  have hu₂_locMemLp_K : ∀ (i j' : Fin (Module.finrank ℝ E)),
+  have hu₂_localMemLp_K : ∀ (i j' : Fin (Module.finrank ℝ E)),
       MemLp (u₂ i j') 2 ((volume : Measure EuclN).restrict K) := fun i j' =>
     chosenSecondPartialChartPushedU_locally_memLp
       (I := I) (M := M) g α hu_h i j' hK_compact hK_in
   have hu₂_int_K : ∀ (i j' : Fin (Module.finrank ℝ E)),
       IntegrableOn (u₂ i j') K (volume : Measure EuclN) := fun i j' =>
-    (hu₂_locMemLp_K i j').integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    (hu₂_localMemLp_K i j').integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have integrable_mul_compact_v :
       ∀ {i : Fin (Module.finrank ℝ E)} {h₁ : EuclN → ℝ},
         Continuous h₁ → tsupport h₁ ⊆ K →
         Integrable (fun y => v i y * h₁ y)
           ((volume : Measure EuclN).restrict Ω) := by
-    intro i h₁ hh₁_cont hh₁_supp
+    intro i h₁ hh₁_cont hh₁_support
     have hh₁_contOn : ContinuousOn h₁ K := hh₁_cont.continuousOn
     have step_K : IntegrableOn (fun y => v i y * h₁ y) K (volume : Measure EuclN) :=
       (hv_int_K i).mul_continuousOn hh₁_contOn hK_compact
     have h_vanish : ∀ y, y ∉ K → v i y * h₁ y = 0 := by
       intro y hy
       have : h₁ y = 0 :=
-        image_eq_zero_of_notMem_tsupport (fun hy_supp => hy (hh₁_supp hy_supp))
+        image_eq_zero_of_notMem_tsupport (fun hy_support => hy (hh₁_support hy_support))
       simp [this]
     have h_eq_ind :
         (fun y => v i y * h₁ y) = K.indicator (fun y => v i y * h₁ y) := by
@@ -404,14 +404,14 @@ theorem cross_derivative_term_ibp
         Continuous h₁ → tsupport h₁ ⊆ K →
         Integrable (fun y => u₂ i j' y * h₁ y)
           ((volume : Measure EuclN).restrict Ω) := by
-    intro i j' h₁ hh₁_cont hh₁_supp
+    intro i j' h₁ hh₁_cont hh₁_support
     have hh₁_contOn : ContinuousOn h₁ K := hh₁_cont.continuousOn
     have step_K : IntegrableOn (fun y => u₂ i j' y * h₁ y) K (volume : Measure EuclN) :=
       (hu₂_int_K i j').mul_continuousOn hh₁_contOn hK_compact
     have h_vanish : ∀ y, y ∉ K → u₂ i j' y * h₁ y = 0 := by
       intro y hy
       have : h₁ y = 0 :=
-        image_eq_zero_of_notMem_tsupport (fun hy_supp => hy (hh₁_supp hy_supp))
+        image_eq_zero_of_notMem_tsupport (fun hy_support => hy (hh₁_support hy_support))
       simp [this]
     have h_eq_ind :
         (fun y => u₂ i j' y * h₁ y) = K.indicator (fun y => u₂ i j' y * h₁ y) := by
@@ -432,7 +432,7 @@ theorem cross_derivative_term_ibp
     intro i j
     set h₁ : EuclN → ℝ := fun y => A i j y *
       (fderiv ℝ ψ y) (EuclideanSpace.single j 1) with hh₁_def
-    have hh₁_supp : tsupport h₁ ⊆ K := by
+    have hh₁_support : tsupport h₁ ⊆ K := by
       refine closure_minimal (fun y hy => ?_) (isClosed_tsupport ψ)
       by_contra hy_notin
       have hψ_y : (fderiv ℝ ψ y) (EuclideanSpace.single j 1) = 0 := by
@@ -462,7 +462,7 @@ theorem cross_derivative_term_ibp
         rw [continuousAt_congr h_eq_zero]
         exact continuousAt_const
     have h_int := integrable_mul_compact_v
-      (i := i) (h₁ := h₁) h_h₁_cont hh₁_supp
+      (i := i) (h₁ := h₁) h_h₁_cont hh₁_support
     have h_eq : (fun y => v i y * h₁ y) =
         (fun y => A i j y * v i y *
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) := by
@@ -477,7 +477,7 @@ theorem cross_derivative_term_ibp
         ((volume : Measure EuclN).restrict Ω) := by
     intro i j
     set h₁ : EuclN → ℝ := fun y => dA i j j y * ψ y with hh₁_def
-    have hh₁_supp : tsupport h₁ ⊆ K := by
+    have hh₁_support : tsupport h₁ ⊆ K := by
       refine closure_minimal (fun y hy => ?_) (isClosed_tsupport ψ)
       by_contra hy_notin
       have hψ_y : ψ y = 0 := image_eq_zero_of_notMem_tsupport hy_notin
@@ -503,7 +503,7 @@ theorem cross_derivative_term_ibp
         rw [continuousAt_congr h_eq_zero]
         exact continuousAt_const
     have h_int := integrable_mul_compact_v
-      (i := i) (h₁ := h₁) h_h₁_cont hh₁_supp
+      (i := i) (h₁ := h₁) h_h₁_cont hh₁_support
     have h_eq : (fun y => v i y * h₁ y) =
         (fun y => dA i j j y * v i y * ψ y) := by
       funext y
@@ -516,7 +516,7 @@ theorem cross_derivative_term_ibp
         ((volume : Measure EuclN).restrict Ω) := by
     intro i j
     set h₁ : EuclN → ℝ := fun y => A i j y * ψ y with hh₁_def
-    have hh₁_supp : tsupport h₁ ⊆ K := by
+    have hh₁_support : tsupport h₁ ⊆ K := by
       refine closure_minimal (fun y hy => ?_) (isClosed_tsupport ψ)
       by_contra hy_notin
       have hψ_y : ψ y = 0 := image_eq_zero_of_notMem_tsupport hy_notin
@@ -542,7 +542,7 @@ theorem cross_derivative_term_ibp
         rw [continuousAt_congr h_eq_zero]
         exact continuousAt_const
     have h_int := integrable_mul_compact_u₂
-      (i := i) (j' := j) (h₁ := h₁) h_h₁_cont hh₁_supp
+      (i := i) (j' := j) (h₁ := h₁) h_h₁_cont hh₁_support
     have h_eq : (fun y => u₂ i j y * h₁ y) =
         (fun y => A i j y * u₂ i j y * ψ y) := by
       funext y

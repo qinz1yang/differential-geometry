@@ -58,7 +58,7 @@ theorem heatShift_memLp {t p : ℝ} (ht : 0 < t) (hp : 0 < p) (x : V) :
     Real.norm_of_nonneg (heatKernel_nonneg ht _)] using hpow
 
 omit [CompleteSpace F] in
-theorem heatConv_holder {t p q : ℝ} (ht : 0 < t)
+theorem heatConvolution_holder {t p q : ℝ} (ht : 0 < t)
     (hpq : p.HolderConjugate q) (x : V) (f : V → F)
     (hf : MemLp f (ENNReal.ofReal q) (volume : Measure V)) :
     ‖∫ y : V, heatKernel t (x - y) • f y‖ ≤

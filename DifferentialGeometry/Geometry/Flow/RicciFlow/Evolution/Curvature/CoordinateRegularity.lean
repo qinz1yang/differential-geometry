@@ -70,7 +70,7 @@ private lemma coordFrame_chartSum
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-theorem solnChartGramSmooth
+theorem solutionChartGramSmooth
     {alpha omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
@@ -304,7 +304,7 @@ theorem coordRmSmoothInf
   have hy : y ∈ interior (extChartAt I x0).target :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hx
   have hsmooth := fun z i j =>
-    solnChartGramSmooth (I := I) hS z i j
+    solutionChartGramSmooth (I := I) hS z i j
   have hLower : ContDiffAt Real ∞
       (fun q : Real × E =>
         ∑ l : Fin (Module.finrank Real E),

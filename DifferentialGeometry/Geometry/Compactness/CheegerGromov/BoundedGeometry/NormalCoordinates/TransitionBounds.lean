@@ -9,7 +9,7 @@ open DifferentialGeometry.Geometry.Curvature
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 namespace MetricIsometry
 
 open scoped Manifold ContDiff Topology Bundle
@@ -2303,5 +2303,5 @@ end NormalBounds
 end
 
 end MetricIsometry
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

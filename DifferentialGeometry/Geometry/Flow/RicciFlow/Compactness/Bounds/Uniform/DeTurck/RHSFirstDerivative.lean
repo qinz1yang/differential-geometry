@@ -30,7 +30,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 namespace DifferentialGeometry
 namespace PDE
@@ -121,7 +121,7 @@ private theorem cometricTrace_eq
   apply tensor0SSpace_ext (𝕜 := ℝ) p x
   intro tail
   rw [cometricDoubleTraceFib_eq_orthoFrame_diag (I := I) g p x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) D]
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x) D]
   rw [metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) hinv D tail]
@@ -930,7 +930,7 @@ theorem uniformConnectionDifferenceTwo
       rw [hunit (slots 0), hunit (slots 1),
         hunit (slots 3), hunit (slots 2)] at h
       norm_num at h
-      have hN : N = HCGCompactness.covDerivConnectionDifference2 (I := I)
+      have hN : N = CheegerGromovCompactness.covDerivConnectionDifference2 (I := I)
           g₀ gBase D X Z Y x := rfl
       rw [hN]
       simpa [C, C₁, C₂, C₃, D, X, Y, Z] using h
@@ -986,7 +986,7 @@ private theorem connLow_self_zero
     funext i
     rw [ContinuousLinearEquiv.apply_symm_apply]
   rw [hm]
-  rw [connectionDifferenceLoweredCc_unitModel_apply']
+  rw [connectionDifferenceLoweredCc_unitModel_apply]
   rw [PDE.DeTurck.connectionDifference_self]
   simp
 

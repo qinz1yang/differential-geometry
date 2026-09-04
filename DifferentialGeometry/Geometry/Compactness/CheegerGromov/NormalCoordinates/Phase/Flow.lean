@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set
 open scoped Manifold ContDiff NNReal
@@ -609,5 +609,5 @@ end ChartPhase
 
 end ControlledChartPhase
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

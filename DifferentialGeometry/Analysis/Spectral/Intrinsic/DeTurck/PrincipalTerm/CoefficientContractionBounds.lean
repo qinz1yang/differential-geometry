@@ -337,7 +337,7 @@ lemma coeffContract_iteratedCovGrad_jet_bound
           ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2)) := by
     simp only [hFW]
     rw [MeasureTheory.integral_const_mul, MeasureTheory.integral_add hint1 hint2, hF1eq, hF2eq]
-  have hReg1 : (∑ i ∈ flt1, supΦsq i * ∑ l ∈ Finset.range (q + 1 - i),
+  have hRegularity1 : (∑ i ∈ flt1, supΦsq i * ∑ l ∈ Finset.range (q + 1 - i),
         ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2) ≤ S1 q * f (q + 3 + 2 * p) ^ 2 := by
     rw [hS1, Finset.sum_mul]
     refine Finset.sum_le_sum (fun i hi => ?_)
@@ -356,7 +356,7 @@ lemma coeffContract_iteratedCovGrad_jet_bound
           refine mul_le_mul (hsupΦ_region1 i hit) hdata
             (Finset.sum_nonneg (fun l _ => sq_nonneg _)) (hKballΦ_nn i)
       _ = KballΦ i * (∑ l ∈ Finset.range (q + 1 - i), (Kw l) ^ 2) * f (q + 3 + 2 * p) ^ 2 := by ring
-  have hReg2 : (∑ i ∈ flt2, (∑ l ∈ Finset.range (q + 1 - i), supWsq l) *
+  have hRegularity2 : (∑ i ∈ flt2, (∑ l ∈ Finset.range (q + 1 - i), supWsq l) *
         ‖iteratedCovGrad (I := I) g₀ b₀ s₀ i Φ‖ ^ 2) ≤ S2 q * f (q + 3 + 2 * p) ^ 2 := by
     rw [hS2, Finset.sum_mul]
     refine Finset.sum_le_sum (fun i hi => ?_)
@@ -397,7 +397,7 @@ lemma coeffContract_iteratedCovGrad_jet_bound
     rw [mul_assoc]
     refine mul_le_mul_of_nonneg_left ?_ hG_nn
     rw [add_mul]
-    exact add_le_add hReg1 hReg2
+    exact add_le_add hRegularity1 hRegularity2
   refine le_of_sq_le_sq ?_ (mul_nonneg (Real.sqrt_nonneg _) (hf_nn _))
   rw [mul_pow, Real.sq_sqrt (mul_nonneg hG_nn (add_nonneg (hS1_nn q) (hS2_nn q)))]
   exact hfinalsq

@@ -260,7 +260,7 @@ theorem spectralChartComponent_tendsto
   have hμ_eq : μ = (volume : Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))).restrict S := by
     rw [hμ_def, chartLebesgueMeasure, hS_def]
   have hS_open : IsOpen S := chartTargetEuclid_isOpen (I := I) (M := M) β
-  obtain ⟨uP, huP_contDiff, _huP_supp, huP_tendsto⟩ :=
+  obtain ⟨uP, huP_contDiff, _huP_support, huP_tendsto⟩ :=
     exists_chartComponent_limit_smooth_compactSupport (I := I) (M := M) g 0 2 F hcauchy β
   have hmemFn : ∀ n,
       MemLp (tensorChartComponent (I := I) (M := M) g 0 2 (F n) β P.1 P.2) 2 μ :=
@@ -304,7 +304,7 @@ theorem spectralChartComponent_tendsto
   have huP_contOn : ContinuousOn (uP P) S := (huP_contDiff P).continuousOn
   have hTrep_contOn :
       ContinuousOn (tensorChartComponent (I := I) (M := M) g 0 2 Trep β P.1 P.2) S :=
-    (tensorChartComponent_contDiff' (I := I) (M := M) g 0 2 Trep β P.1 P.2).continuous.continuousOn
+    (tensorChartComponent_contDiff_top (I := I) (M := M) g 0 2 Trep β P.1 P.2).continuous.continuousOn
   have hEqOn :
       Set.EqOn (uP P) (tensorChartComponent (I := I) (M := M) g 0 2 Trep β P.1 P.2) S := by
     rw [hμ_eq] at hae_eq
@@ -355,17 +355,17 @@ private theorem spectralPartialSum_ccTensorBilinSymm_tendsto
     exact absurd hsum (by norm_num)
   obtain ⟨β, _hβmem, hβpos⟩ := hexists
   set ρ : ℝ := ((chartAtlasPOU I M) β : C^∞⟮I, M; ℝ⟯) x with hρ_def
-  have hx_src : x ∈ (chartAt H β).source := by
+  have hx_source : x ∈ (chartAt H β).source := by
     have hsub := chartAtlasPOU_isSubordinate (I := I) (M := M) β
     apply hsub
     exact subset_tsupport _ (Function.mem_support.mpr (ne_of_gt hβpos))
   set yx : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
     toEuclidean (extChartAt I β x) with hyx_def
   have hyx_mem : yx ∈ chartTargetEuclid (I := I) (M := M) β :=
-    toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) β hx_src
+    toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) β hx_source
   have hround : (extChartAt I β).symm (toEuclidean.symm yx) = x := by
     rw [hyx_def, ContinuousLinearEquiv.symm_apply_apply]
-    exact (extChartAt I β).left_inv (by rw [extChartAt_source (I := I)]; exact hx_src)
+    exact (extChartAt I β).left_inv (by rw [extChartAt_source (I := I)]; exact hx_source)
   have hcomp_eq : ∀ (Z : SmoothCcTensor g 0 2) (Q : CompIdx E 0 2),
       tensorChartComponent (I := I) (M := M) g 0 2 Z β Q.1 Q.2 yx =
         ρ * tensorChartComponentRaw (I := I) (M := M) g 0 2 Z β Q.1 Q.2 x := by
@@ -384,14 +384,14 @@ private theorem spectralPartialSum_ccTensorBilinSymm_tendsto
     have hscaled := hct.const_mul ρ⁻¹
     simp only [← mul_assoc, inv_mul_cancel₀ hρne, one_mul] at hscaled
     exact hscaled
-  rw [ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g Trep β hx_src v w]
+  rw [ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g Trep β hx_source v w]
   have hrw : (fun n => ccTensorBilinSymm (I := I) g (F n) x v w) =
       fun n => ∑ Q : CompIdx E 0 2,
         tensorChartComponentRaw (I := I) (M := M) g 0 2 (F n) β Q.1 Q.2 x *
           fibreSymmBilinForm (I := I) x
             (chartBasisFiberSection (I := I) (M := M) 0 2 β Q x) v w := by
     funext n
-    exact ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g (F n) β hx_src v w
+    exact ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g (F n) β hx_source v w
   rw [hrw]
   refine tendsto_finsetSum _ (fun Q _ => ?_)
   exact (hraw_tendsto Q).mul_const _
@@ -1298,13 +1298,13 @@ lemma chartGramOnE_realize_eq_add_half_rawCompOnE
           tensorChartComponentOnModel (I := I) (M := M) g S α ![b, a] y) := by
   classical
   have hy_t : y ∈ (extChartAt I α).target := interior_subset hy
-  have hp_src : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+  have hp_source : (extChartAt I α).symm y ∈ (chartAt H α).source := by
     have := (extChartAt I α).map_target hy_t
     rwa [extChartAt_source] at this
   rw [DifferentialGeometry.Geometry.Operator.chartGramOnE_def,
     DifferentialGeometry.Geometry.Operator.chartGramOnE_def,
     DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, tensorSectionRealizeMetric_inner]
-  have hhalf := ccTensorBilinSymm_eq_half_rawComponent (I := I) (M := M) g S α a b hp_src
+  have hhalf := ccTensorBilinSymm_eq_half_rawComponent (I := I) (M := M) g S α a b hp_source
   rw [hhalf]
   rfl
 

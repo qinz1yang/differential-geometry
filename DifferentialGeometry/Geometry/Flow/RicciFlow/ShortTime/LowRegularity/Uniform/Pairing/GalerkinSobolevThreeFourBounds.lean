@@ -10,7 +10,7 @@ open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral hiding TensorEigenIdx
@@ -47,7 +47,7 @@ theorem galerkin_background_action_sobolev_three_four_pairing_bounds_of_low_view
                     (ccTensorBilinSymm (I := I) g T) δ),
               ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
                 (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
-                ‖galLowView (I := I) (M := M) g 1
+                ‖galerkinLowView (I := I) (M := M) g 1
                     (finiteEigenComboHs (I := I) (M := M) g F c
                       (((1 : ℕ) : ℝ) + 2))‖ ≤ R →
                 2 * |∑ i ∈ F,
@@ -70,7 +70,7 @@ theorem galerkin_background_action_sobolev_three_four_pairing_bounds_of_low_view
                     (ccTensorBilinSymm (I := I) g T) δ),
               ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
                 (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
-                ‖galLowView (I := I) (M := M) g 1
+                ‖galerkinLowView (I := I) (M := M) g 1
                     (finiteEigenComboHs (I := I) (M := M) g F c
                       (((1 : ℕ) : ℝ) + 2))‖ ≤ R →
                 2 * |∑ i ∈ F,
@@ -134,7 +134,7 @@ theorem galerkin_background_action_sobolev_three_four_pairing_bounds_of_low_view
                     (ccTensorBilinSymm (I := I) g T) δ),
               ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
                 (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
-                ‖galLowView (I := I) (M := M) g 1
+                ‖galerkinLowView (I := I) (M := M) g 1
                     (finiteEigenComboHs (I := I) (M := M) g F c
                       (((1 : ℕ) : ℝ) + 2))‖ ≤ R →
                 2 * |∑ i ∈ F,
@@ -157,7 +157,7 @@ theorem galerkin_background_action_sobolev_three_four_pairing_bounds_of_low_view
                     (ccTensorBilinSymm (I := I) g T) δ),
               ∀ (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
                 (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
-                ‖galLowView (I := I) (M := M) g 1
+                ‖galerkinLowView (I := I) (M := M) g 1
                     (finiteEigenComboHs (I := I) (M := M) g F c
                       (((1 : ℕ) : ℝ) + 2))‖ ≤ R →
                 2 * |∑ i ∈ F,

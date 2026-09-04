@@ -7,7 +7,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Set
 open scoped Manifold ContDiff Topology Bundle
@@ -148,7 +148,7 @@ theorem metric_eq_intrinsic_frame_metric
         exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) (X.obj k).metric y w
     EqOn ((d.chart k x).metric (X.obj k).metric)
-      (intrFrameMetric (I := I) (X.obj k).metric hEnorm x)
+      (intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x)
       (Metric.ball (0 : E) (d.chart k x).radius) := by
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
@@ -181,7 +181,7 @@ theorem metric_eq_intrinsic_frame_metric
       exact tensor0SBundle_enorm_eq_riemannianBundle_enorm
         (I := I) (X.obj k).metric y w
   change EqOn ((d.chart k x).metric (X.obj k).metric)
-    (intrFrameMetric (I := I) (X.obj k).metric hEnorm x)
+    (intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x)
     (Metric.ball (0 : E) (d.chart k x).radius)
   intro z hz
   have hev : Filter.EventuallyEq (nhds z)
@@ -196,7 +196,7 @@ theorem metric_eq_intrinsic_frame_metric
     Filter.EventuallyEq.mfderiv_eq
       (I := modelWithCornersSelf Real E) (I' := I) hev
   ext v w
-  rw [NormalBallChart.metric_apply, intrFrameMetric_apply,
+  rw [NormalBallChart.metric_apply, intrinsicFrameMetric_apply,
     d.hom_eq k x hcomplete hz, hD]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -296,7 +296,7 @@ theorem mem_image_and_norm_inv_eq_riemannian_distance
         d.hom_eq k x hcomplete hzBall
       _ = expMapIntrinsic (I := I) (X.obj k).metric hEnorm x
           (normalFrame (I := I) (X.obj k).metric x z) := by
-        rw [intrFrame_apply]
+        rw [intrinsicFrame_apply]
       _ = expMapIntrinsic (I := I) (X.obj k).metric hEnorm x v := by
         rw [hzFrame]
       _ = y := hvExp
@@ -440,5 +440,5 @@ def chartOverlapOn
 
 end BoundedGeometryNormalChartData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

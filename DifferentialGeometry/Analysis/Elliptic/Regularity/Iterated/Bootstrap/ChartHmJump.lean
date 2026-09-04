@@ -106,11 +106,11 @@ private structure LevelBundle
     (m j : ℕ) where
   data : IteratedDiffChartBilinearData (I := I) (M := M) g α u_h j
   directions_eq : data.directions = dirsOf dirs j
-  fChartEff_memWkp :
+  fChartEffective_memWkp :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) (m - j) 2 data.diffChartForcing
       (chartTargetEuclid (I := I) (M := M) α)
-  fChartEff_ae_zero_off_K :
+  fChartEffective_ae_zero_off_K :
     data.diffChartForcing =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \
         chartImagePOUTsupport (I := I) (M := M) α)]
@@ -139,7 +139,7 @@ private def buildLevelZero
     directions_eq := by
       change (Fin.elim0 : Fin 0 → Fin (Module.finrank ℝ E)) = dirsOf dirs 0
       rw [dirsOf_zero]
-    fChartEff_memWkp := by
+    fChartEffective_memWkp := by
       change DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) (m - 0) 2
         (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
@@ -152,7 +152,7 @@ private def buildLevelZero
         (laplacianDomainPow_succ_subset_laplacianDomain
           (I := I) (M := M) g 1 hu_h)
         h_chart_H_m_plus_1_u h_chart_H_m_RHS
-    fChartEff_ae_zero_off_K := by
+    fChartEffective_ae_zero_off_K := by
       change (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M)
         g α (laplacianDomainPow_succ_subset_laplacianDomain
           (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[
@@ -203,7 +203,7 @@ private def buildLevelStep
     have h_w1p_eq : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 1 2 B_j.data.diffChartForcing
         (chartTargetEuclid (I := I) (M := M) α) :=
-      B_j.fChartEff_memWkp.le_of_le h_le_1
+      B_j.fChartEffective_memWkp.le_of_le h_le_1
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]
       at h_w1p_eq
     exact h_w1p_eq
@@ -211,7 +211,7 @@ private def buildLevelStep
     iteratedDiffChartBilinearDataStep (I := I) (M := M) g α
       (u_h := u_h) j B_j.data (padDirs dirs j)
       h_chart_H_j_plus_1 h_chart_H_j_plus_2
-      h_D_j_W1p B_j.fChartEff_ae_zero_off_K
+      h_D_j_W1p B_j.fChartEffective_ae_zero_off_K
   have h_directions_eq : D_next.directions = dirsOf dirs (j + 1) := by
     change Fin.snoc B_j.data.directions (padDirs dirs j) = dirsOf dirs (j + 1)
     rw [dirsOf_succ, B_j.directions_eq]
@@ -222,7 +222,7 @@ private def buildLevelStep
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) (K_next + 1) 2 B_j.data.diffChartForcing
         (chartTargetEuclid (I := I) (M := M) α) := by
-    rw [hK_succ_eq]; exact B_j.fChartEff_memWkp
+    rw [hK_succ_eq]; exact B_j.fChartEffective_memWkp
   have h_chart_H_propagator :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) (j + 2 + K_next) 2
@@ -234,20 +234,20 @@ private def buildLevelStep
   have h_next_memWkp_K :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) K_next 2
-        (fChartEffStep (I := I) (M := M) g α u_h j B_j.data.directions
+        (fChartEffectiveStep (I := I) (M := M) g α u_h j B_j.data.directions
           B_j.data.diffChartForcing (padDirs dirs j))
         (chartTargetEuclid (I := I) (M := M) α) :=
-    fChartEffStep_memWkp_K_two (I := I) (M := M) g α u_h j K_next
+    fChartEffectiveStep_memWkp_K_two (I := I) (M := M) g α u_h j K_next
       B_j.data.directions B_j.data.diffChartForcing (padDirs dirs j)
-      h_prev_memWkp_succ B_j.fChartEff_ae_zero_off_K h_chart_H_propagator
-  have h_next_fChartEff_eq : D_next.diffChartForcing =
-      fChartEffStep (I := I) (M := M) g α u_h j B_j.data.directions
+      h_prev_memWkp_succ B_j.fChartEffective_ae_zero_off_K h_chart_H_propagator
+  have h_next_fChartEffective_eq : D_next.diffChartForcing =
+      fChartEffectiveStep (I := I) (M := M) g α u_h j B_j.data.directions
         B_j.data.diffChartForcing (padDirs dirs j) := rfl
   have h_D_next_memWkp :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) (m - (j + 1)) 2 D_next.diffChartForcing
         (chartTargetEuclid (I := I) (M := M) α) := by
-    rw [h_next_fChartEff_eq]
+    rw [h_next_fChartEffective_eq]
     have h_eq : K_next = m - (j + 1) := by omega
     rw [← h_eq]
     exact h_next_memWkp_K
@@ -256,7 +256,7 @@ private def buildLevelStep
         (chartTargetEuclid (I := I) (M := M) α \
           chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)) := by
-    rw [h_next_fChartEff_eq]
+    rw [h_next_fChartEffective_eq]
     have h_diff_open : IsOpen
         (chartTargetEuclid (I := I) (M := M) α \
           chartImagePOUTsupport (I := I) (M := M) α) :=
@@ -265,13 +265,13 @@ private def buildLevelStep
     refine (ae_restrict_iff' h_diff_open.measurableSet).mpr ?_
     refine Filter.Eventually.of_forall ?_
     intro y hy
-    unfold fChartEffStep
+    unfold fChartEffectiveStep
     exact Set.indicator_of_notMem hy.2 _
   exact
     { data := D_next
       directions_eq := h_directions_eq
-      fChartEff_memWkp := h_D_next_memWkp
-      fChartEff_ae_zero_off_K := h_D_next_ae_zero }
+      fChartEffective_memWkp := h_D_next_memWkp
+      fChartEffective_ae_zero_off_K := h_D_next_ae_zero }
 
 private def buildLevel
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -360,7 +360,7 @@ private theorem chosenMthMixed_memWkp_two_two
         =ᵐ[(volume : Measure EuclN).restrict (Ω \ Kα)]
         (fun _ : EuclN => (0 : ℝ)) :=
     chosenMthMixed_ae_zero_off_Kα (I := I) (M := M) g α u_h m h_parent_m dirs
-  exact MemWkp_extend_via_cutoff_poly (E := E) 2
+  exact MemWkp.extend_of_ae_zero_outside_compact (E := E) 2
     hΩ_open hΩ''_open hΩ''_in_Ω hKα_compact hKα_in_Ω''
     h_memWkp_22_Ω'' h_chosen_ae_zero
 

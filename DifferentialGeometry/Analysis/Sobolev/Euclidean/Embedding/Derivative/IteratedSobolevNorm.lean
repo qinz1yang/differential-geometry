@@ -18,7 +18,7 @@ omit [NeZero d] in
 theorem chartTarget_iteratedFDeriv_two_eLpNorm_le_wkpNorm_two
     {Ω : Set EuclN} (hΩ_open : IsOpen Ω)
     {u : EuclN → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
-    (hu_compact : HasCompactSupport u) (hu_supp : tsupport u ⊆ Ω) :
+    (hu_compact : HasCompactSupport u) (hu_support : tsupport u ⊆ Ω) :
     eLpNorm (fun y : EuclN => ‖iteratedFDeriv ℝ 2 u y‖) 2
         (volume.restrict Ω) ≤
       iteratedWeakSobolevNorm (d := d) 2 2 u Ω := by
@@ -29,7 +29,7 @@ theorem chartTarget_iteratedFDeriv_two_eLpNorm_le_wkpNorm_two
   have h_sum_le :=
     eLpNorm_iteratedFDeriv_le_wkpNorm (d := d) hΩ_open
       (p := (2 : ℝ≥0∞)) hp_one (k := 2)
-      hu_smooth' hu_compact hu_supp
+      hu_smooth' hu_compact hu_support
   have h2_mem : (2 : ℕ) ∈ Finset.range (2 + 1) := by
     rw [Finset.mem_range]; omega
   have h_single :

@@ -42,7 +42,7 @@ theorem exists_lC1_join
     exists_chartH1_join (I := I) a c b hac hcb alpha beta
       halpha hbeta hnode
   obtain ⟨delta, _u, hdelta, hdelta0, hdeltab, _hsrcDelta,
-      _hrepDelta, _hu, _hunif, _hdeltaAct⟩ :=
+      _hrepDelta, _hu, _huniform, _hdeltaAct⟩ :=
     lAction_c1_dense (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
       T a b t htmono ht0 htlast p eta w hsrc hrep hreg
   refine ⟨delta 0, hdelta 0, ?_, ?_⟩

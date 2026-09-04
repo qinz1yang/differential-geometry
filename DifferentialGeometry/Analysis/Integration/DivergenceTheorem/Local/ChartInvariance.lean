@@ -34,22 +34,22 @@ theorem integral_localDivergence_eq_of_overlap_support [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α β : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (hφ_compactSupp : HasCompactSupport φ)
-    (hφ_supp : tsupport φ ⊆ (chartAt H α).source ∩ (chartAt H β).source) :
+    (hφ_compactSupport : HasCompactSupport φ)
+    (hφ_support : tsupport φ ⊆ (chartAt H α).source ∩ (chartAt H β).source) :
     ∫ x, localDivergence (I := I) g α X x * φ x ∂(chartLocalMeasure (I := I) g α) =
       ∫ x, localDivergence (I := I) g β X x * φ x ∂(chartLocalMeasure (I := I) g β) := by
-  have hsupp_α : tsupport φ ⊆ (chartAt H α).source := hφ_supp.trans Set.inter_subset_left
-  have hsupp_β : tsupport φ ⊆ (chartAt H β).source := hφ_supp.trans Set.inter_subset_right
-  have hibp_α := chart_local_ibp (I := I) g α X hφ hφ_compactSupp hsupp_α
-  have hibp_β := chart_local_ibp (I := I) g β X hφ hφ_compactSupp hsupp_β
+  have hsupp_α : tsupport φ ⊆ (chartAt H α).source := hφ_support.trans Set.inter_subset_left
+  have hsupp_β : tsupport φ ⊆ (chartAt H β).source := hφ_support.trans Set.inter_subset_right
+  have hibp_α := chart_local_ibp (I := I) g α X hφ hφ_compactSupport hsupp_α
+  have hibp_β := chart_local_ibp (I := I) g β X hφ hφ_compactSupport hsupp_β
   rw [hibp_α, hibp_β]
   refine congrArg Neg.neg ?_
   set U : Set M := (chartAt H α).source ∩ (chartAt H β).source with hU_def
   have hU_open : IsOpen U := IsOpen.inter (chartAt H α).open_source (chartAt H β).open_source
   have hU_meas : MeasurableSet U := hU_open.measurableSet
-  have htsa_supp : ∀ x ∉ U, tangentSectionAction (I := I) X φ x = 0 := by
+  have htsa_support : ∀ x ∉ U, tangentSectionAction (I := I) X φ x = 0 := by
     intro x hx
-    have hxsupp : x ∉ tsupport φ := fun h => hx (hφ_supp h)
+    have hxsupp : x ∉ tsupport φ := fun h => hx (hφ_support h)
     have hOpen_compl : IsOpen (tsupport φ)ᶜ := (isClosed_tsupport _).isOpen_compl
     have hphi_zero_on_nhd : φ =ᶠ[𝓝 x] (fun _ => (0 : ℝ)) := by
       filter_upwards [hOpen_compl.mem_nhds hxsupp] with z hz
@@ -64,10 +64,10 @@ theorem integral_localDivergence_eq_of_overlap_support [I.Boundaryless]
     rfl
   have htsa_α : ∫ x, tangentSectionAction (I := I) X φ x ∂(chartLocalMeasure (I := I) g α) =
       ∫ x in U, tangentSectionAction (I := I) X φ x ∂(chartLocalMeasure (I := I) g α) := by
-    rw [setIntegral_eq_integral_of_forall_compl_eq_zero htsa_supp]
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero htsa_support]
   have htsa_β : ∫ x, tangentSectionAction (I := I) X φ x ∂(chartLocalMeasure (I := I) g β) =
       ∫ x in U, tangentSectionAction (I := I) X φ x ∂(chartLocalMeasure (I := I) g β) := by
-    rw [setIntegral_eq_integral_of_forall_compl_eq_zero htsa_supp]
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero htsa_support]
   rw [htsa_α, htsa_β]
   have h_meas_eq : (chartLocalMeasure (I := I) g α).restrict U =
       (chartLocalMeasure (I := I) g β).restrict U :=
@@ -217,7 +217,7 @@ private lemma chartLocalMeasure_open_pos_under_boundaryless [I.Boundaryless]
     exact measure_eq_zero_iff_ae_notMem.mpr hyNotW
   exact (ne_of_gt hW_pos) hW_zero
 
-private lemma exists_open_nbhd_positive
+private lemma exists_open_neighborhood_positive
     {f : M → ℝ} {U : Set M} (hU : IsOpen U) (hfcont : ContinuousOn f U)
     {x : M} (hxU : x ∈ U) (hfx : 0 < f x) :
     ∃ V : Set M, IsOpen V ∧ x ∈ V ∧ V ⊆ U ∧ ∀ y ∈ V, f x / 2 < f y := by
@@ -268,22 +268,22 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
     (localDivergence_continuousOn_baseSet (I := I) g β X).mono Set.inter_subset_right
   have hΔ_contOn : ContinuousOn Δ U := hα_contOn.sub hβ_contOn
   obtain ⟨V, hVopen, hxV, hVU, hΔ_pos⟩ :=
-    exists_open_nbhd_positive (M := M) hUopen hΔ_contOn hxU hΔpos
-  obtain ⟨φ, hφ_smooth, hφ_compactSupp, hφ_supp, hφ_nonneg, hφx_pos⟩ :=
+    exists_open_neighborhood_positive (M := M) hUopen hΔ_contOn hxU hΔpos
+  obtain ⟨φ, hφ_smooth, hφ_compactSupport, hφ_support, hφ_nonneg, hφx_pos⟩ :=
     exists_smooth_bump_in_open (I := I) hVopen hxV
-  have hsupp_overlap : tsupport φ ⊆ U := hφ_supp.trans hVU
+  have hsupp_overlap : tsupport φ ⊆ U := hφ_support.trans hVU
   have hint_eq := integral_localDivergence_eq_of_overlap_support (I := I) g α β X
-    hφ_smooth hφ_compactSupp hsupp_overlap
+    hφ_smooth hφ_compactSupport hsupp_overlap
   have hrestrict_eq := chartLocalMeasure_restrict_overlap_eq (I := I) g α β
   have hβ_int_via_restrict :
       ∫ y, localDivergence (I := I) g β X y * φ y ∂(chartLocalMeasure (I := I) g β) =
         ∫ y, localDivergence (I := I) g β X y * φ y ∂(chartLocalMeasure (I := I) g α) := by
     have hzero_off : ∀ y ∉ U, localDivergence (I := I) g β X y * φ y = 0 := by
       intro y hy
-      have hy_supp : y ∉ tsupport φ := fun h => hy (hsupp_overlap h)
+      have hy_support : y ∉ tsupport φ := fun h => hy (hsupp_overlap h)
       have : φ y = 0 := by
         by_contra hne
-        exact hy_supp (subset_tsupport _ hne)
+        exact hy_support (subset_tsupport _ hne)
       rw [this, mul_zero]
     have hβ_to_U : ∫ y, localDivergence (I := I) g β X y * φ y
           ∂(chartLocalMeasure (I := I) g β) =
@@ -312,17 +312,17 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
         rw [continuous_iff_continuousAt]
         intro y
         by_cases hy : y ∈ (chartAt H α).source
-        · have hy_cont_src : ContinuousAt
+        · have hy_cont_source : ContinuousAt
               (fun z => localDivergence (I := I) g α X z * φ z) y := by
             have hα_at : ContinuousAt (localDivergence (I := I) g α X) y :=
               ((localDivergence_continuousOn_baseSet (I := I) g α X) y hy).continuousAt
                 ((chartAt H α).open_source.mem_nhds hy)
             exact hα_at.mul hφ_smooth.continuous.continuousAt
-          exact hy_cont_src
-        · have hy_supp : y ∉ tsupport φ := fun h => hy (hsupp_α h)
+          exact hy_cont_source
+        · have hy_support : y ∉ tsupport φ := fun h => hy (hsupp_α h)
           have h_open : IsOpen (tsupport φ)ᶜ := (isClosed_tsupport _).isOpen_compl
           have hphi_zero_nhd : φ =ᶠ[𝓝 y] (fun _ => (0 : ℝ)) := by
-            filter_upwards [h_open.mem_nhds hy_supp] with z hz
+            filter_upwards [h_open.mem_nhds hy_support] with z hz
             by_contra hne
             exact hz (subset_tsupport _ hne)
           have hzero_nhd : (fun z => localDivergence (I := I) g α X z * φ z) =ᶠ[𝓝 y]
@@ -332,9 +332,9 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
           rw [show (fun z => localDivergence (I := I) g α X z * φ z) =
                 (fun z => localDivergence (I := I) g α X z * φ z) from rfl]
           exact (continuous_const.continuousAt.congr hzero_nhd.symm)
-      have h_compact_supp : HasCompactSupport (fun y =>
+      have h_compact_support : HasCompactSupport (fun y =>
           localDivergence (I := I) g α X y * φ y) :=
-        hφ_compactSupp.mul_left
+        hφ_compactSupport.mul_left
       have hsupp_α' : tsupport (fun y => localDivergence (I := I) g α X y * φ y) ⊆
           (chartAt H α).source := by
         refine subset_trans ?_ hsupp_α
@@ -346,11 +346,11 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
           by_contra hne'
           exact hne (subset_tsupport _ hne')
         exact hy (by rw [this, mul_zero])
-      have hμ_supp_bound : chartLocalMeasure (I := I) g α
+      have hμ_support_bound : chartLocalMeasure (I := I) g α
             (tsupport (fun y => localDivergence (I := I) g α X y * φ y)) < ⊤ :=
-        chartLocalMeasure_compact_lt_top (I := I) g α h_compact_supp hsupp_α'
+        chartLocalMeasure_compact_lt_top (I := I) g α h_compact_support hsupp_α'
       have hbounded : ∃ C, ∀ y, ‖localDivergence (I := I) g α X y * φ y‖ ≤ C := by
-        rcases (h_compact_supp.exists_bound_of_continuous h_cont_total) with ⟨C, hC⟩
+        rcases (h_compact_support.exists_bound_of_continuous h_cont_total) with ⟨C, hC⟩
         exact ⟨C, fun y => hC y⟩
       obtain ⟨C, hC⟩ := hbounded
       refine ⟨h_cont_total.aestronglyMeasurable, ?_⟩
@@ -381,7 +381,7 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
                 (isClosed_tsupport _).measurableSet)]
               rw [lintegral_indicator (isClosed_tsupport _).measurableSet]
               rw [setLIntegral_const, one_mul]
-        _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_supp_bound
+        _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_support_bound
   have h2_int : Integrable
       (fun y => localDivergence (I := I) g β X y * φ y)
       (chartLocalMeasure (I := I) g α) := by
@@ -394,10 +394,10 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
           ((localDivergence_continuousOn_baseSet (I := I) g β X) y hy).continuousAt
             ((chartAt H β).open_source.mem_nhds hy)
         exact hβ_at.mul hφ_smooth.continuous.continuousAt
-      · have hy_supp : y ∉ tsupport φ := fun h => hy (hsupp_β h)
+      · have hy_support : y ∉ tsupport φ := fun h => hy (hsupp_β h)
         have h_open : IsOpen (tsupport φ)ᶜ := (isClosed_tsupport _).isOpen_compl
         have hphi_zero_nhd : φ =ᶠ[𝓝 y] (fun _ => (0 : ℝ)) := by
-          filter_upwards [h_open.mem_nhds hy_supp] with z hz
+          filter_upwards [h_open.mem_nhds hy_support] with z hz
           by_contra hne
           exact hz (subset_tsupport _ hne)
         have hzero_nhd : (fun z => localDivergence (I := I) g β X z * φ z) =ᶠ[𝓝 y]
@@ -405,8 +405,8 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
           filter_upwards [hphi_zero_nhd] with z hz
           rw [hz, mul_zero]
         exact (continuous_const.continuousAt.congr hzero_nhd.symm)
-    have h_compact_supp : HasCompactSupport
-        (fun y => localDivergence (I := I) g β X y * φ y) := hφ_compactSupp.mul_left
+    have h_compact_support : HasCompactSupport
+        (fun y => localDivergence (I := I) g β X y * φ y) := hφ_compactSupport.mul_left
     have hsupp_α' : tsupport (fun y => localDivergence (I := I) g β X y * φ y) ⊆
         (chartAt H α).source := by
       refine subset_trans ?_ (hsupp_overlap.trans Set.inter_subset_left)
@@ -418,11 +418,11 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
         by_contra hne'
         exact hne (subset_tsupport _ hne')
       exact hy (by rw [this, mul_zero])
-    have hμ_supp_bound : chartLocalMeasure (I := I) g α
+    have hμ_support_bound : chartLocalMeasure (I := I) g α
           (tsupport (fun y => localDivergence (I := I) g β X y * φ y)) < ⊤ :=
-      chartLocalMeasure_compact_lt_top (I := I) g α h_compact_supp hsupp_α'
+      chartLocalMeasure_compact_lt_top (I := I) g α h_compact_support hsupp_α'
     have hbounded : ∃ C, ∀ y, ‖localDivergence (I := I) g β X y * φ y‖ ≤ C := by
-      rcases (h_compact_supp.exists_bound_of_continuous h_cont_total) with ⟨C, hC⟩
+      rcases (h_compact_support.exists_bound_of_continuous h_cont_total) with ⟨C, hC⟩
       exact ⟨C, fun y => hC y⟩
     obtain ⟨C, hC⟩ := hbounded
     refine ⟨h_cont_total.aestronglyMeasurable, ?_⟩
@@ -454,7 +454,7 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
               (isClosed_tsupport _).measurableSet)]
             rw [lintegral_indicator (isClosed_tsupport _).measurableSet]
             rw [setLIntegral_const, one_mul]
-      _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_supp_bound
+      _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_support_bound
   have hΔ_int_zero :
       ∫ y, Δ y * φ y ∂(chartLocalMeasure (I := I) g α) = 0 := by
     have hexpand : (fun y => Δ y * φ y) =
@@ -472,7 +472,7 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
     have hφx_half_pos : 0 < φ x / 2 := by linarith
     obtain ⟨V₀, hV₀_open, hxV₀, hV₀_sub_V, hφ_pos_V₀⟩ :
         ∃ V₀ : Set M, IsOpen V₀ ∧ x ∈ V₀ ∧ V₀ ⊆ V ∧ ∀ y ∈ V₀, φ x / 2 < φ y :=
-      exists_open_nbhd_positive (M := M) hVopen hφ_smooth.continuous.continuousOn
+      exists_open_neighborhood_positive (M := M) hVopen hφ_smooth.continuous.continuousOn
         hxV hφx_pos
     have hV₀_sub_α : V₀ ⊆ (chartAt H α).source := hV₀_sub_V.trans hV_sub_α
     have hμ_V₀_pos : 0 < chartLocalMeasure (I := I) g α V₀ :=
@@ -525,10 +525,10 @@ private theorem localDivergence_chart_invariance_pos [I.Boundaryless]
       · have hΔy : Δ x / 2 < Δ y := hΔ_pos y hy
         have hΔy_pos : 0 < Δ y := by linarith
         exact mul_nonneg hΔy_pos.le (hφ_nonneg y)
-      · have hy_supp : y ∉ tsupport φ := fun h => hy (hφ_supp h)
+      · have hy_support : y ∉ tsupport φ := fun h => hy (hφ_support h)
         have hφy : φ y = 0 := by
           by_contra hne
-          exact hy_supp (subset_tsupport _ hne)
+          exact hy_support (subset_tsupport _ hne)
         rw [hφy, mul_zero]
     have hV₁_meas : MeasurableSet V₁ := hV₁_open.measurableSet
     have hint_const : ∫ _ in V₁, c ∂(chartLocalMeasure (I := I) g α) =

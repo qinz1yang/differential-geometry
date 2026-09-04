@@ -34,7 +34,7 @@ noncomputable def constPosQuotient
     (hbdry : I.Boundaryless) (hdim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) (c : ℝ) (hc : 0 < c)
     (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
-      DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
+      DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt
           (I := I) (M := M) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y)) :
@@ -50,7 +50,7 @@ noncomputable def constPosQuotient
   let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin 3) := by
     exact ContinuousLinearEquiv.ofFinrankEq (by
       rw [hdim, finrank_euclideanSpace_fin])
-  let S := Topology.stdModelCopy (I := I) (M := M) e
+  let S := Topology.standardModelCopy (I := I) (M := M) e
   letI : CompactSpace S.Q := S.equiv.toHomeomorph.compactSpace
   letI : ConnectedSpace S.Q :=
     S.equiv.surjective.connectedSpace S.equiv.continuous
@@ -72,12 +72,12 @@ noncomputable def constPosQuotient
       (I := 𝓡 3) (J := I) g S.equiv.symm
   have hsecQ :
       ∀ x : S.Q, ∀ X Y : TangentSpace (𝓡 3) x,
-        DifferentialGeometry.Geometry.Curvature.metricRm04StdAt
+        DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt
             (I := 𝓡 3) (M := S.Q) gQ x X Y Y X =
           c * (gQ.inner x X X * gQ.inner x Y Y -
             gQ.inner x X Y * gQ.inner x X Y) := by
     intro x X Y
-    rw [DifferentialGeometry.Geometry.Curvature.metricRm04Std_pullbackCross
+    rw [DifferentialGeometry.Geometry.Curvature.metricRm04Standard_pullbackCross
           g S.equiv.symm x X Y Y X,
       hsec,
       ← Diffeomorph.pullbackMetricCross_inner g S.equiv.symm x X X,

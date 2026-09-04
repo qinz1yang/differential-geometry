@@ -169,7 +169,7 @@ theorem scalarLowerBarrierBoundUpToPole_of_scalarEvolution_closedOpen
     (K : Real -> NNReal)
     (hreg : forall T : Real, 0 < T -> T < omega ->
       T < scalarBlowupTime n c0 ->
-        ScalarLowerBoundWMPRegularity (I := I) G T n c0 scalar (K T))
+        ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I) G T n c0 scalar (K T))
     (hevol : ScalarEvolutionEquationOn
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
       scalar scalarLap ricciNormSq)
@@ -221,7 +221,7 @@ theorem positive_scalar_finite_time_of_scalarEvolution_closedOpen
         (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T))
     (hreg : forall T : Real, 0 < T -> T < omega ->
       T < scalarBlowupTime n c0 ->
-        ScalarLowerBoundWMPRegularity (I := I) G T n c0 scalar (K T))
+        ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I) G T n c0 scalar (K T))
     (hevol : ScalarEvolutionEquationOn
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
       scalar scalarLap ricciNormSq)
@@ -276,7 +276,7 @@ theorem finiteTime3D
         (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T))
     (hreg : forall T : Real, 0 < T -> T < omega ->
       T < scalarBlowupTime 3 c0 ->
-        ScalarLowerBoundWMPRegularity (I := I) G T 3 c0 scalar (K T))
+        ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I) G T 3 c0 scalar (K T))
     (hevol : ScalarEvolutionEquationOn
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
       scalar scalarLap ricciNormSq)

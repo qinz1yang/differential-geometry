@@ -19,7 +19,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.RSTensor
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -139,11 +139,11 @@ theorem exists_uniform_low_regularity_bound_parameters
   refine {
     threshold_nonneg := by simpa only [K] using hRD.threshold_nonneg
     threshold_le_third := by simpa only [K] using hRD.threshold_le_third
-    hreal := hrealK
-    hcont := ?_
-    htame := ?_
-    hzero := ?_
-    core_cont := ?_ }
+    metric_realization := hrealK
+    remainder_continuous := ?_
+    remainder_lipschitz := ?_
+    remainder_zero_bound := ?_
+    smoothCore_continuous := ?_ }
   · simpa only [K, Q, boundedDeTurckRemainderOnLowerState] using hcont0
   · simpa only [K, Q, boundedDeTurckRemainderOnLowerState] using htame0
   · simpa only [K, Q] using hzero0
@@ -168,7 +168,7 @@ theorem exists_low_regularity_solution_of_uniform_bounds
         ∀ {T : ℝ} (hT : 0 < T)
           (_ : T ≤ lowRegularityTimeHorizon K.top K.base K.slope K.zeroBd K.outer K.realize)
           (hT1 : T ≤ 1),
-          ∃ (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
+          ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
             (gforce : timeL2
               (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
             IsBackgroundLowRegularitySolution (I := I) (M := M) g gBase K
@@ -192,7 +192,7 @@ theorem exists_low_regularity_solution_of_uniform_caps
           (hT1 : T ≤ 1),
           ∃ (K : LowRegularityBoundParameters)
             (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gBase K)
-            (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
+            (u : MaximalRegularitySolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
             (gforce : timeL2
               (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
             IsLowRegularityBoundCap K U ∧
@@ -219,7 +219,7 @@ theorem exists_uniform_low_regularity_solution
             (hT1 : T ≤ 1),
             ∃ (K : LowRegularityBoundParameters)
               (hK : HasLowRegularityBoundsAt (I := I) (M := M) g gBase K)
-              (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
+              (u : MaximalRegularitySolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
               (gforce : timeL2
                 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
               IsLowRegularityBoundCap K U ∧

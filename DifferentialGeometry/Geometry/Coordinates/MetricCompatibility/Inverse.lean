@@ -110,11 +110,11 @@ theorem flatChart_apply
       g.inner x
         ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real x v)
         ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real x w) := by
-  have hx_src : x ∈ (extChartAt I x₀).source := by
+  have hx_source : x ∈ (extChartAt I x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source] using hx
   have hcenter :
       (extChartAt I x₀).symm (extChartAt I x₀ x) = x :=
-    (extChartAt I x₀).left_inv hx_src
+    (extChartAt I x₀).left_inv hx_source
   simp only [metricFlatModelInChart]
   rw [hom_trivializationAt_apply]
   rw [hcenter]
@@ -213,11 +213,11 @@ theorem coordBasis_model
         ((Module.finBasis Real E) i) := by
   rw [coordinateFrameAt_basis_apply]
   rw [coordinateFrameAt_apply_of_mem (I := I) hx i]
-  have hx_src : x ∈ (chartAt H x₀).source := by
+  have hx_source : x ∈ (chartAt H x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt] using hx
   exact (congrArg
     (fun L : E →L[Real] TangentSpace I x => L ((Module.finBasis Real E) i))
-    (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hx_src)).symm
+    (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hx_source)).symm
 
 theorem metricFlatModelInChart_center_isInvertible
     (g : SmoothRiemannianMetric I M) (x₀ : M) :

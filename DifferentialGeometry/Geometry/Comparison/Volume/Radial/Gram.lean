@@ -38,7 +38,7 @@ lemma radialJacobi_li
     {ι : Type*} {v : ι → E}
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) {t : ℝ}
     (hv : LinearIndependent ℝ v) (ht : t ≠ 0)
-    (htx_src : t • x ∈ (expMapDiffeo (I := I) g p).source)
+    (htx_source : t • x ∈ (expMapDiffeo (I := I) g p).source)
     (htx_rad : ‖t • x‖ < expMapC2Radius (I := I) g p) :
     LinearIndependent ℝ fun i ↦
       radialJacobiField (I := I) g p x (v i) t := by
@@ -46,10 +46,10 @@ lemma radialJacobi_li
     (fun b : E ↦ (expMap (I := I) g p
       (show TangentSpace I p from b) : M)) (t • x)
   have hlocal := PartialDiffeomorph.isLocalDiffeomorphAt
-    (I := 𝓘(ℝ, E)) (J := I) (n := 1) (expMapDiffeo (I := I) g p) htx_src
+    (I := 𝓘(ℝ, E)) (J := I) (n := 1) (expMapDiffeo (I := I) g p) htx_source
   have hLinj : Function.Injective L := by
     dsimp only [L]
-    rw [← expDiffeo_mfderiv (I := I) g p htx_src]
+    rw [← expDiffeo_mfderiv (I := I) g p htx_source]
     exact (hlocal.mfderivToContinuousLinearEquiv (by norm_num)).injective
   let u : ℝˣ := Units.mk0 t ht
   let us : ι → ℝˣ := fun _ ↦ u
@@ -89,8 +89,8 @@ theorem radial_wronsk_zero
           (radialJacobiField (I := I) g p x w)
           (radialJacobiField (I := I) g p x z) t = 0 := by
   obtain ⟨rd, hrd, hdiff⟩ := exists_radialJacobi_diff (I := I) g p
-  obtain ⟨rj, hrj, hJac⟩ := exists_jacobi_Ioo (I := I) g p
-  obtain ⟨r0, hr0, hJac0⟩ := exists_radialJacobi_zero_radius (I := I) g hEnorm p
+  obtain ⟨rj, hrj, hJacobian⟩ := exists_jacobi_Ioo (I := I) g p
+  obtain ⟨r0, hr0, hJacobian0⟩ := exists_radialJacobi_zero_radius (I := I) g hEnorm p
   let re : ℝ := expMapC2Radius (I := I) g p
   let r : ℝ := min rd (min rj (min r0 re))
   have hre : 0 < re := expMapC2Radius_pos (I := I) g p
@@ -119,14 +119,14 @@ theorem radial_wronsk_zero
   have hb1 : b ≤ 1 := hblt.le
   obtain ⟨hJdiff, hDJdiff⟩ := hdiff x w hxrd hwrd hb1
   obtain ⟨hKdiff, hDKdiff⟩ := hdiff x z hxrd hzrd hb1
-  have hJ0 := hJac0 x w hx0 hw0
-  have hK0 := hJac0 x z hx0 hz0
+  have hJ0 := hJacobian0 x w hx0 hw0
+  have hK0 := hJacobian0 x z hx0 hz0
   have hcurve :
       (fun v : ℝ => Geodesic.maximalGeodesic (I := I) g p
         (show TangentSpace I p from v • x) 1) = radialCurve (I := I) g p x := by
     funext v
     rfl
-  have hJacJ : ∀ s ∈ Icc (0 : ℝ) b,
+  have hJacobianJ : ∀ s ∈ Icc (0 : ℝ) b,
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x w) s := by
     intro s hs
@@ -134,9 +134,9 @@ theorem radial_wronsk_zero
     · subst s
       rw [← hcurve]
       exact hJ0
-    · exact hJac x w hxj hwj (b := (1 : ℝ)) le_rfl s
+    · exact hJacobian x w hxj hwj (b := (1 : ℝ)) le_rfl s
         ⟨lt_of_le_of_ne hs.1 (Ne.symm hs0), hs.2.trans_lt hblt⟩
-  have hJacK : ∀ s ∈ Icc (0 : ℝ) b,
+  have hJacobianK : ∀ s ∈ Icc (0 : ℝ) b,
       IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
         (radialJacobiField (I := I) g p x z) s := by
     intro s hs
@@ -144,14 +144,14 @@ theorem radial_wronsk_zero
     · subst s
       rw [← hcurve]
       exact hK0
-    · exact hJac x z hxj hzj (b := (1 : ℝ)) le_rfl s
+    · exact hJacobian x z hxj hzj (b := (1 : ℝ)) le_rfl s
         ⟨lt_of_le_of_ne hs.1 (Ne.symm hs0), hs.2.trans_lt hblt⟩
   exact wronskian_zero_on (I := I) (by norm_num) g
     (radialCurve (I := I) g p x)
     (radialJacobiField (I := I) g p x w)
     (radialJacobiField (I := I) g p x z)
     (radialCurve_contMDiffAt_Icc (I := I) g p x hb1 hxe)
-    hJdiff hKdiff hDJdiff hDKdiff hJacJ hJacK
+    hJdiff hKdiff hDJdiff hDKdiff hJacobianJ hJacobianK
     (radialJacobi_zero (I := I) g p x w)
     (radialJacobi_zero (I := I) g p x z) t ht
 

@@ -213,13 +213,13 @@ private lemma chartPushed_rawConnLapComponent_apply_of_good
         (rawTensorConnLapSmooth (I := I) g r s T₀) α Idx Jdx b := by
   classical
   unfold chartPushed_rawConnLapComponent
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
-  have hb_tgt : (extChartAt I α) b ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb_src
+  have hb_target : (extChartAt I α) b ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hb_source
   have hy_chart : (toEuclidean (E := E)) ((extChartAt I α) b) ∈
       chartTargetEuclid (I := I) (M := M) α :=
-    ⟨(extChartAt I α) b, hb_tgt, rfl⟩
+    ⟨(extChartAt I α) b, hb_target, rfl⟩
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy_chart]
   have hsymm_te :
       (toEuclidean (E := E)).symm
@@ -227,7 +227,7 @@ private lemma chartPushed_rawConnLapComponent_apply_of_good
         (extChartAt I α) b :=
     (toEuclidean (E := E)).symm_apply_apply _
   have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   rw [hsymm_te, hleft_inv]
 
 omit [CompactSpace M] in

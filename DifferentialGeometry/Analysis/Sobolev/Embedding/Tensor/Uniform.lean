@@ -137,24 +137,24 @@ theorem fibreNormSq_cross_le
       (unitZeroSec (I := I) (M := M) x))).2
   rwa [zpow_natCast] at h
 
-def morreyUnifConst (Λ Cb Kjet : ℝ) (n s : ℕ) : ℝ :=
+def morreyUniformConst (Λ Cb Kjet : ℝ) (n s : ℕ) : ℝ :=
   Real.sqrt (Λ ^ s) * (Cb * ((n / 2 + 2 : ℕ) : ℝ) * Kjet)
 
-lemma morreyUnifConst_nonneg {Λ Cb Kjet : ℝ} (hΛ : 0 ≤ Λ) (hCb : 0 ≤ Cb)
-    (hKjet : 0 ≤ Kjet) (n s : ℕ) : 0 ≤ morreyUnifConst Λ Cb Kjet n s := by
-  unfold morreyUnifConst
+lemma morreyUniformConst_nonneg {Λ Cb Kjet : ℝ} (hΛ : 0 ≤ Λ) (hCb : 0 ≤ Cb)
+    (hKjet : 0 ≤ Kjet) (n s : ℕ) : 0 ≤ morreyUniformConst Λ Cb Kjet n s := by
+  unfold morreyUniformConst
   have hp : (0 : ℝ) ≤ Λ ^ s := pow_nonneg hΛ s
   positivity
 
-lemma morreyUnifConst_sq {Λ Cb Kjet : ℝ} (hΛ : 0 ≤ Λ) (n s : ℕ) :
-    morreyUnifConst Λ Cb Kjet n s ^ 2 =
+lemma morreyUniformConst_sq {Λ Cb Kjet : ℝ} (hΛ : 0 ≤ Λ) (n s : ℕ) :
+    morreyUniformConst Λ Cb Kjet n s ^ 2 =
       Λ ^ s * (Cb ^ 2 * (((n / 2 + 2 : ℕ) : ℝ) ^ 2 * Kjet ^ 2)) := by
-  unfold morreyUnifConst
+  unfold morreyUniformConst
   rw [mul_pow, Real.sq_sqrt (pow_nonneg hΛ s)]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
-theorem fibreMorrey_unif
+theorem fibreMorrey_uniform
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hequiv : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -171,7 +171,7 @@ theorem fibreMorrey_unif
             ‖iteratedCovGrad (I := I) g₀ 0 s i S‖)
     (T : SmoothCcTensor g₀ 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 s x (T.toSection x) ≤
-      morreyUnifConst Λ Cb Kjet (Module.finrank ℝ E) s ^ 2 *
+      morreyUniformConst Λ Cb Kjet (Module.finrank ℝ E) s ^ 2 *
         ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
           ‖iteratedCovGrad (I := I) g₀ 0 s j T‖ ^ 2 := by
   classical
@@ -224,8 +224,8 @@ theorem fibreMorrey_unif
           ((T.recast (g' := gBase)).toSection x) := hfib
     _ ≤ Λ ^ s * (Cb ^ 2 * ((w : ℝ) ^ 2 * Kjet ^ 2 * Q)) :=
         mul_le_mul_of_nonneg_left hbase' hpow_nn
-    _ = morreyUnifConst Λ Cb Kjet (Module.finrank ℝ E) s ^ 2 * Q := by
-        rw [morreyUnifConst_sq hΛ0, ← hw_def]
+    _ = morreyUniformConst Λ Cb Kjet (Module.finrank ℝ E) s ^ 2 * Q := by
+        rw [morreyUniformConst_sq hΛ0, ← hw_def]
         ring
 
 def baseMorreyConst (gBase : SmoothRiemannianMetric I M) (r s : ℕ) : ℝ :=
@@ -250,7 +250,7 @@ lemma fibreNormSq_le_baseMorreyConst
     (I := I) (M := M) gBase r s).choose_spec.2 W x
 
 omit [BoundarylessManifold I M] in
-theorem fibreMorrey_unif_base
+theorem fibreMorrey_uniform_base
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     (hequiv : ∀ (x : M) (v : TangentSpace I x),
       Λ⁻¹ * gBase.inner x v v ≤ g₀.inner x v v ∧
@@ -263,11 +263,11 @@ theorem fibreMorrey_unif_base
             ‖iteratedCovGrad (I := I) g₀ 0 s i S‖)
     (T : SmoothCcTensor g₀ 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 s x (T.toSection x) ≤
-      morreyUnifConst Λ (baseMorreyConst (I := I) (M := M) gBase 0 s) Kjet
+      morreyUniformConst Λ (baseMorreyConst (I := I) (M := M) gBase 0 s) Kjet
           (Module.finrank ℝ E) s ^ 2 *
         ∑ j ∈ Finset.range (Module.finrank ℝ E / 2 + 2),
           ‖iteratedCovGrad (I := I) g₀ 0 s j T‖ ^ 2 :=
-  fibreMorrey_unif (I := I) gBase g₀ hΛ hequiv s
+  fibreMorrey_uniform (I := I) gBase g₀ hΛ hequiv s
     (fibreNormSq_le_baseMorreyConst (I := I) gBase 0 s) hjet T x
 
 end DifferentialGeometry.PDE.RicciFlow

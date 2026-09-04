@@ -106,7 +106,7 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_local_cutoff_source_
       (parabolicVariableMatrixOperator a
         (fun t x ↦ cutoffValue (chi t) (u t) x))
       (fun p ↦ chi p.time p.space • source p + comm p) Q := by
-    apply parabolicVariableMatrixOperator_cutoff_eqOn_of_bcf_jets
+    apply parabolicVariableMatrixOperator_cutoff_eqOn_of_boundedContinuousFunction_jets
       a chi dtimeChi dchi d2chi u dtimeU du d2u
     · intro p hp
       exact hchiTime p.time hp.1

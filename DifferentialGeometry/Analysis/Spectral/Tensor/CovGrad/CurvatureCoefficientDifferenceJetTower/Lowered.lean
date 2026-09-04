@@ -646,7 +646,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_raisedKoszul_pointwise (g₀ g₁ : 
   exact riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_pointwise (I := I) (M := M) g₀ T i x
 
 omit [SigmaCompactSpace M] in
-theorem sharpFlat_grid_unif
+theorem sharpFlat_grid_uniform
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ S : ℕ → ℝ, (∀ l, 0 ≤ S l) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -662,7 +662,7 @@ theorem sharpFlat_grid_unif
               ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) l := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    invDiff_zero_unif (I := I) (M := M) hδ₀
+    invDiff_zero_uniform (I := I) (M := M) hδ₀
   let cid : ℝ := (Module.finrank ℝ E : ℝ) ^ 2
   have hcid_nn : 0 ≤ cid := by
     dsimp [cid]
@@ -753,7 +753,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_sharpFlatEndoCc_tgrid
           S l * Combinatorics.antidiagonalTupleGrid
             (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
               ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) l := by
-  obtain ⟨S, hS, hbnd⟩ := sharpFlat_grid_unif (I := I) (M := M) hδ₀
+  obtain ⟨S, hS, hbnd⟩ := sharpFlat_grid_uniform (I := I) (M := M) hδ₀
   exact ⟨S, hS, hbnd g₀⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
@@ -1192,7 +1192,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_termSlotPass_connectionDifferenceTer
 end CurvatureCoefficientDifferenceJetTower
 
 omit [SigmaCompactSpace M] in
-theorem connectionDifference_grid_unif
+theorem connectionDifference_grid_uniform
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ CA : ℕ → ℝ, (∀ j, 0 ≤ CA j) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -1209,7 +1209,7 @@ theorem connectionDifference_grid_unif
               (fun j' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j') x
                 ((iteratedCovGrad (I := I) g₀ 0 2 j' T).toSection x)) k := by
   classical
-  obtain ⟨S, hS_nn, hS⟩ := sharpFlat_grid_unif (I := I) (M := M) hδ₀
+  obtain ⟨S, hS_nn, hS⟩ := sharpFlat_grid_uniform (I := I) (M := M) hδ₀
   refine ⟨fun j => operatorFieldApplicationGdiag (E := E) j *
       ∑ i ∈ Finset.range (j + 1), 10 * ∑ l ∈ Finset.range (j + 1 - i), S l,
     fun j => mul_nonneg (operatorFieldApplicationGdiag_nonneg (E := E) j)
@@ -1319,7 +1319,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection
             Combinatorics.antidiagonalTupleGrid
               (fun j' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j') x
                 ((iteratedCovGrad (I := I) g₀ 0 2 j' T).toSection x)) k := by
-  obtain ⟨CA, hCA, hbnd⟩ := connectionDifference_grid_unif (I := I) (M := M) hδ₀
+  obtain ⟨CA, hCA, hbnd⟩ := connectionDifference_grid_uniform (I := I) (M := M) hδ₀
   exact ⟨CA, hCA, hbnd g₀⟩
 
 end RiemannLoweredDifference

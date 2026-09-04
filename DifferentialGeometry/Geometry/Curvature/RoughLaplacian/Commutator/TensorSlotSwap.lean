@@ -239,14 +239,14 @@ lemma swapTwoFib_eval (r t : ℕ) (x : M) (T : TensorRSSpace r (t + 2) I x)
   rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r (t + 1) x _ D
     (Fin.cons a (Fin.cons b m))]
   simp only [Fin.cons_zero]
-  rw [vecTail_cons' a (Fin.cons b m)]
+  rw [vecTail_cons a (Fin.cons b m)]
   rw [show swapTwoCurryFib (I := I) (M := M) r t x T a =
     covGradBundleEquiv (I := I) (M := M) r t x
       (tangentBilinFlip (I := I) (M := M) (curryLastTwoTensorSlots (I := I) (M := M) r t x T) a)
     from rfl]
   rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r t x _ D (Fin.cons b m)]
   simp only [Fin.cons_zero]
-  rw [vecTail_cons' b m]
+  rw [vecTail_cons b m]
   rw [tangentBilinFlip_apply]
   exact twoSlotPeel_eval (I := I) (M := M) r t x T b a D m
 

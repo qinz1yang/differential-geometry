@@ -9,7 +9,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped BigOperators
 
@@ -219,5 +219,5 @@ theorem two_parameter_iterated_recurrence_bound_of_finite_horizon
       · intro k hk
         exact hOne i k (by omega)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

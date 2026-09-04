@@ -221,12 +221,12 @@ private lemma hkIntegrand_continuousOn
     refine hSymmCont.comp h_toEucl_cont.continuousOn ?_
     intro y hy
     unfold chartTargetEuclid at hy
-    obtain ⟨z, hz_tgt, hz_eq⟩ := hy
+    obtain ⟨z, hz_target, hz_eq⟩ := hy
     rw [← hz_eq]
     change (toEuclidean (E := E)).symm
         ((toEuclidean (E := E)) z) ∈ (extChartAt I α).target
     rw [(toEuclidean (E := E)).symm_apply_apply]
-    exact hz_tgt
+    exact hz_target
   have hPOU_pull_cont :
       ContinuousOn (fun y : EuclideanSpace ℝ
             (Fin (Module.finrank ℝ E)) =>
@@ -285,10 +285,10 @@ private lemma hkIntegrand_continuousOn
           (chartTargetEuclid (I := I) (M := M) α)
           (extChartAt I α).target := by
         intro y hy
-        rcases hy with ⟨z, hz_tgt, hz_eq⟩
+        rcases hy with ⟨z, hz_target, hz_eq⟩
         have h_eq : (toEuclidean (E := E)).symm y = z := by
           rw [← hz_eq]; exact (toEuclidean (E := E)).symm_apply_apply z
-        rw [h_eq]; exact hz_tgt
+        rw [h_eq]; exact hz_target
       exact h_raw_pull_contDiffOn.comp
         h_toEucl_symm_smooth.contDiffOn h_maps
     have h_iter_contOn : ContinuousOn
@@ -850,7 +850,7 @@ private lemma hkInner_self_eq_normSq_toReal
               Measure (EuclideanSpace ℝ
                 (Fin (Module.finrank ℝ E))))) ≠ ⊤ := by
     intro α _ IJ _ j _ basisIdx _
-    exact (tensorPouSobolevHsNorm_inner_integral_lt_top'
+    exact (tensorPouSobolevHsNorm_chartComponent_integral_lt_top
       (I := I) (M := M) g r s T.toCcTensor α IJ.1 IJ.2 j basisIdx).ne
   rw [ENNReal.toReal_sum]
   · refine Finset.sum_congr rfl ?_

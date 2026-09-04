@@ -10,7 +10,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 
@@ -43,7 +43,7 @@ theorem exists_normal_coord_metric_limit_subsequence
       U ⊆ Metric.ball (0 : E) (expMapC2Radius (I := I) (X.obj k).metric (c k))) :
     ∃ (φ : ℕ → ℕ) (gInf : E → (E →L[ℝ] E →L[ℝ] ℝ)),
       StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) gInf U ∧
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k => normalCoordMetric (I := I) (X.obj (φ k)) (c (φ k))) gInf ∧
         ∀ z ∈ U, ∀ v : E,
           (1 / 2 : ℝ) * ‖v‖ ^ 2 ≤ gInf z v v ∧ gInf z v v ≤ 2 * ‖v‖ ^ 2 :=
@@ -75,41 +75,41 @@ theorem exists_finite_normal_coord_metric_limit_subsequence
         (gInf : E → (ι → (E →L[Real] E →L[Real] Real))),
       StrictMono phi ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) gInf U ∧
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k z i ↦ normalCoordMetric (I := I) (X.obj (phi k))
           (c i (phi k)) z) gInf ∧
       ∀ z ∈ U, ∀ i v,
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z i v v ∧
           gInf z i v v ≤ 2 * ‖v‖ ^ 2 := by
   classical
-  let gLoc : Nat → E → (ι → (E →L[Real] E →L[Real] Real)) :=
+  let gLocal : Nat → E → (ι → (E →L[Real] E →L[Real] Real)) :=
     fun k z i ↦ normalCoordMetric (I := I) (X.obj k) (c i k) z
   have hsmooth_comp : ∀ k i, ContDiffOn Real (∞ : WithTop ℕ∞)
-      (fun z ↦ gLoc k z i) U := by
+      (fun z ↦ gLocal k z i) U := by
     intro k i
     exact normal_coord_metric_cont_diff_on_of_subset_exp_ball
       (I := I) (fun n ↦ c i n) (fun n ↦ hsub n i) k
-  have hsmooth : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (gLoc k) U :=
+  have hsmooth : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (gLocal k) U :=
     fun k ↦ contDiffOn_pi.mpr (hsmooth_comp k)
   have hbdd_comp : ∀ i,
-      iteratedFDerivBoundsOnCompactsWithin U (fun k z ↦ gLoc k z i) := by
+      iteratedFDerivBoundsOnCompactsWithin U (fun k z ↦ gLocal k z i) := by
     intro i r K hK hKU
     exact ⟨input.metricC r, fun k z hz ↦
       input.metric_deriv k r (c i k) z (hdom k i (hKU hz))⟩
-  have hbdd : iteratedFDerivBoundsOnCompactsWithin U gLoc :=
+  have hbdd : iteratedFDerivBoundsOnCompactsWithin U gLocal :=
     iteratedFDerivBoundsOnCompactsWithin.pi hU hsmooth_comp hbdd_comp
   obtain ⟨phi, gInf, hphi, hginf, hconv⟩ :=
-    exists_cInf_subseq_on hU gLoc hsmooth hbdd
+    exists_cInf_subseq_on hU gLocal hsmooth hbdd
   refine ⟨phi, gInf, hphi, hginf, hconv, ?_⟩
   intro z hz i v
-  have htendAll : Tendsto (fun k ↦ gLoc (phi k) z) atTop (nhds (gInf z)) :=
+  have htendAll : Tendsto (fun k ↦ gLocal (phi k) z) atTop (nhds (gInf z)) :=
     tendsto_of_cInf hconv hz
-  have htend : Tendsto (fun k ↦ gLoc (phi k) z i) atTop
+  have htend : Tendsto (fun k ↦ gLocal (phi k) z i) atTop
       (nhds (gInf z i)) := (tendsto_pi_nhds.mp htendAll) i
   have heval : Continuous
       (fun A : E →L[Real] E →L[Real] Real ↦ A v v) := by
     fun_prop
-  have htendv : Tendsto (fun k ↦ gLoc (phi k) z i v v) atTop
+  have htendv : Tendsto (fun k ↦ gLocal (phi k) z i v v) atTop
       (nhds (gInf z i v v)) := (heval.tendsto _).comp htend
   exact ⟨
     ge_of_tendsto htendv (Filter.Eventually.of_forall fun k ↦
@@ -121,5 +121,5 @@ theorem exists_finite_normal_coord_metric_limit_subsequence
 
 end HCGNormalCoord
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem smul_hs_unif (g : SmoothRiemannianMetric I M)
+theorem smul_hs_uniform (g : SmoothRiemannianMetric I M)
     (zeta : ℝ → C^∞⟮I, M; ℝ⟯) {S K : Set ℝ}
     (hK : IsCompact K) (hKS : K ⊆ S)
     (hzeta : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
@@ -40,7 +40,7 @@ theorem smul_hs_unif (g : SmoothRiemannianMetric I M)
           C * ‖ccTensorToHs (I := I) (M := M) g 0 (n : ℝ) U‖ := by
   classical
   obtain ⟨D, hD_nn, hD⟩ :=
-    smul_jet_unif (I := I) (M := M) g zeta hK hKS hzeta
+    smul_jet_uniform (I := I) (M := M) g zeta hK hKS hzeta
   intro n
   obtain ⟨Cout, hCout_nn, hCout⟩ := hs_le_jet (I := I) (M := M) g 0 n
   obtain ⟨Cin, hCin_nn, hCin⟩ := hsJet_le (I := I) (M := M) g 0 n

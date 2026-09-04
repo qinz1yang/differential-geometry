@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -35,5 +35,5 @@ theorem tensor02_cov_deriv_eq_cov_deriv_of_field
         covDerivOfField (I := I) gRef A (a + 1)
       rw [ih, covDerivOfField_succ]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

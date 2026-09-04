@@ -40,11 +40,11 @@ private lemma chartCoeffOnE_alpha_eq_basis_comp_pullback_eventuallyEq
     ⟨interior ((extChartAt I α).target : Set E),
       isOpen_interior.mem_nhds hint, ?_⟩
   intro y hy_int
-  have hy_tgt : y ∈ (extChartAt I α).target := interior_subset hy_int
+  have hy_target : y ∈ (extChartAt I α).target := interior_subset hy_int
   have hy_base : (extChartAt I α).symm y ∈
       (trivializationAt E (TangentSpace I) α).baseSet := by
     have hsource : (extChartAt I α).symm y ∈ (extChartAt I α).source :=
-      (extChartAt I α).map_target hy_tgt
+      (extChartAt I α).map_target hy_target
     rw [extChartAt_source_eq_chartAt_source (I := I)] at hsource
     rw [trivializationAt_baseSet_eq_chartAt_source]
     exact hsource
@@ -286,7 +286,7 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
                   chartChristoffel (I := I) g α j l k (extChartAt I α x) *
                     chartCoeff (I := I) α W l x))) := by
   classical
-  have hx_src : x ∈ (extChartAt I α).source :=
+  have hx_source : x ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx
   rw [chartLieDerivMetricMatrix_def (I := I) g W α i j x]
   have hgram : ∀ a b : Fin (Module.finrank ℝ E),
@@ -294,7 +294,7 @@ private lemma chartLieDerivMetricMatrix_alpha_algebraic
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x a b := by
     intro a b
     unfold chartGramOnE
-    rw [(extChartAt I α).left_inv hx_src]
+    rw [(extChartAt I α).left_inv hx_source]
   have hmc : ∀ k : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (chartGramOnE (I := I) g α i j) (extChartAt I α x) =
         (∑ l, chartChristoffel (I := I) g α k i l (extChartAt I α x) *
@@ -456,7 +456,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
   classical
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
-  have hx_src : x ∈ (extChartAt I α).source :=
+  have hx_source : x ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx
   set vα : TangentSpace I x := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x with hvα_def
   set wα : TangentSpace I x := DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x with hwα_def
@@ -470,7 +470,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
                 ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x vα))) i' *
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (trivToE (I := I) α x wα)) j' *
             chartGramOnE (I := I) g α i' j' (extChartAt I α x) :=
-    g_inner_eq_chart_sum (I := I) g α hx_base hx_src
+    g_inner_eq_chart_sum (I := I) g α hx_base hx_source
       ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x vα) wα
   have hRHS2 :
       g.inner x vα ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x wα) =
@@ -481,7 +481,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
               (trivToE (I := I) α x
                 ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x wα))) j' *
             chartGramOnE (I := I) g α i' j' (extChartAt I α x) :=
-    g_inner_eq_chart_sum (I := I) g α hx_base hx_src vα
+    g_inner_eq_chart_sum (I := I) g α hx_base hx_source vα
       ((LeviCivita (I := I) g) (W : ∀ x : M, TangentSpace I x) x wα)
   rw [hRHS1, hRHS2]
   have h_trivToE_vα : trivToE (I := I) α x vα = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
@@ -499,7 +499,7 @@ theorem chartLieDerivMetricMatrix_eq_lieDerivMetric_chartBasis
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x a b := by
     intro a b
     unfold chartGramOnE
-    rw [(extChartAt I α).left_inv hx_src]
+    rw [(extChartAt I α).left_inv hx_source]
   have hrepr_basis : ∀ (r s : Fin (Module.finrank ℝ E)),
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) r)) s =
         if r = s then (1 : ℝ) else 0 := by

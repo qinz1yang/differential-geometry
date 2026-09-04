@@ -42,7 +42,7 @@ theorem lChartAction_minimizer_contDiffOn_one
   let K : Set E := u.toFun '' Icc (0 : Real) L
   have hτc : ContinuousOn τ (Icc (0 : Real) L) := by
     exact (continuous_const.sub ((continuous_const.add continuous_id).pow 2)).continuousOn
-  have hτreg : MapsTo τ (Icc (0 : Real) L) D.regular := by
+  have hτregularity : MapsTo τ (Icc (0 : Real) L) D.regular := by
     exact hreg
   have hKc : IsCompact K :=
     isCompact_Icc.image_of_continuousOn u.continuousOn_toFun
@@ -52,7 +52,7 @@ theorem lChartAction_minimizer_contDiffOn_one
   have huK : MapsTo u.toFun (Icc (0 : Real) L) K := by
     intro r hr
     exact ⟨r, hr, rfl⟩
-  obtain ⟨C, hA, hC⟩ := exists_chartGramOp_ae_bound hS.smoothMetric p τ hτc hτreg
+  obtain ⟨C, hA, hC⟩ := exists_chartGramOp_ae_bound hS.smoothMetric p τ hτc hτregularity
     hKc hKchart u huK
   obtain ⟨hForce, hWeak⟩ :=
     lChartAction_weak_euler_lagrange_of_isLocalMinOn (I := I) S hS T a p hL u hreg hchart hmin
@@ -61,7 +61,7 @@ theorem lChartAction_minimizer_contDiffOn_one
     change Integrable F (volume.restrict (Icc (0 : Real) L))
     exact (Integrable.smul (2 : Real) hForce).congr
       (Eventually.of_forall fun _ ↦ rfl)
-  have hEuler : ∀ v : timeH1 E L, v.init = 0 → v.toFun L = 0 →
+  have hEuler : ∀ v : timeH1 E L, v.initial = 0 → v.toFun L = 0 →
       2 * inner Real
           (timeOp (fun r ↦ chartGramOp (I := I) S.family p
             (τ r, u.toFun r)) hA C hC u.deriv) v.deriv +
@@ -141,7 +141,7 @@ theorem lChartAction_minimizer_contDiffOn_one
     rw [hMomEq, hForceEq]
     linarith
   obtain ⟨q, hq, hqae⟩ := exists_continuous_velocity_representative_of_weak_euler hS.smoothMetric p hL τ
-    hτc hτreg hKchart u huK hA C hC F hF hEuler
+    hτc hτregularity hKchart u huK hA C hC F hF hEuler
   have hqtime : u.deriv =ᵐ[timeMeasure L] q := by
     have hae : ae (volume.restrict (Ioo (0 : Real) L)) =
         ae (timeMeasure L) := by

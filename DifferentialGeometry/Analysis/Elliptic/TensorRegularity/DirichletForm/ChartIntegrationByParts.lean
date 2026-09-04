@@ -150,32 +150,32 @@ lemma contDiff_partial_coeff_mul_test
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma hasCompactSupport_coeff_mul_test
     {f g : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
-    (hg_supp : HasCompactSupport g) :
+    (hg_support : HasCompactSupport g) :
     HasCompactSupport (fun y => f y * g y) :=
-  hg_supp.mul_left
+  hg_support.mul_left
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma hasCompactSupport_coeff_mul_partial_test
     (l : Fin (Module.finrank ℝ E))
     {f g : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
-    (hg_supp : HasCompactSupport g) :
+    (hg_support : HasCompactSupport g) :
     HasCompactSupport (fun y => f y * euclidPartial (E := E) l g y) := by
   classical
-  have hpartial_supp : HasCompactSupport (euclidPartial (E := E) l g) := by
-    refine HasCompactSupport.of_support_subset_isCompact hg_supp ?_
+  have hpartial_support : HasCompactSupport (euclidPartial (E := E) l g) := by
+    refine HasCompactSupport.of_support_subset_isCompact hg_support ?_
     intro y hy
     rw [Function.mem_support] at hy
     by_contra hy'
     exact hy (euclidPartial_eq_zero_of_notMem_tsupport (E := E) l hy')
-  exact hpartial_supp.mul_left
+  exact hpartial_support.mul_left
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma hasCompactSupport_partial_coeff_mul_test
     (l : Fin (Module.finrank ℝ E))
     {f g : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
-    (hg_supp : HasCompactSupport g) :
+    (hg_support : HasCompactSupport g) :
     HasCompactSupport (fun y => euclidPartial (E := E) l f y * g y) :=
-  hg_supp.mul_left
+  hg_support.mul_left
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 theorem chartTarget_integral_byParts
@@ -183,7 +183,7 @@ theorem chartTarget_integral_byParts
     {f g : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ}
     (hf : ContDiffOn ℝ ∞ f (chartTargetEuclid (I := I) (M := M) α))
     (hg : ContDiffOn ℝ ∞ g (chartTargetEuclid (I := I) (M := M) α))
-    (hg_supp : HasCompactSupport g)
+    (hg_support : HasCompactSupport g)
     (hg_tsub : tsupport g ⊆ chartTargetEuclid (I := I) (M := M) α) :
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
         f y * euclidPartial (E := E) l g y
@@ -211,13 +211,13 @@ theorem chartTarget_integral_byParts
       ContDiff ℝ ∞ (fun y => euclidPartial (E := E) l f y * g y) :=
     contDiff_partial_coeff_mul_test (I := I) (M := M) α l hf hg hg_tsub
   have hsupp_fg : HasCompactSupport (fun y => f y * g y) :=
-    hasCompactSupport_coeff_mul_test (E := E) hg_supp
+    hasCompactSupport_coeff_mul_test (E := E) hg_support
   have hsupp_f_dg :
       HasCompactSupport (fun y => f y * euclidPartial (E := E) l g y) :=
-    hasCompactSupport_coeff_mul_partial_test (E := E) l hg_supp
+    hasCompactSupport_coeff_mul_partial_test (E := E) l hg_support
   have hsupp_df_g :
       HasCompactSupport (fun y => euclidPartial (E := E) l f y * g y) :=
-    hasCompactSupport_partial_coeff_mul_test (E := E) l hg_supp
+    hasCompactSupport_partial_coeff_mul_test (E := E) l hg_support
   have hint_df_g :
       Integrable (fun x =>
           fderiv ℝ f x (EuclideanSpace.single l 1) * g x) volume := by

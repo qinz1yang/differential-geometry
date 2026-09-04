@@ -294,15 +294,15 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 variable [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
 
-def solOfMetric {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+def solutionOfMetric {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (g : Real -> SmoothRiemannianMetric I M) : SolutionOn (I := I) (M := M) D :=
   ⟨⟨g⟩⟩
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 @[simp]
-theorem solOfMetric_metric {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+theorem solutionOfMetric_metric {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (g : Real -> SmoothRiemannianMetric I M) (s : Real) :
-    (solOfMetric (I := I) (D := D) g).base.metric s = g s := rfl
+    (solutionOfMetric (I := I) (D := D) g).base.metric s = g s := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I 2 M] [SigmaCompactSpace M] [T2Space M] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 theorem christoffel_symbol_in_frame_eq_solution_metric_christoffel
@@ -313,7 +313,7 @@ theorem christoffel_symbol_in_frame_eq_solution_metric_christoffel
     (hframe : IsLocalFrameOn I E 1 frame u)
     (s : Real) (x : M) (i j k : Idx) :
     DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame
-        ((solOfMetric (I := I) (D := D) g).family.connection s) frame hframe x i j k =
+        ((solutionOfMetric (I := I) (D := D) g).family.connection s) frame hframe x i j k =
       DifferentialGeometry.Tensor.Coordinates.christoffelSymbolInFrame
         (metricCov (I := I) (g s)) frame hframe x i j k := rfl
 
@@ -341,10 +341,10 @@ theorem gamma_of_fields
       Fin (Module.finrank Real E) -> Fin (Module.finrank Real E) -> Real)
     {a b : Real} (hreg : Set.Ioo a b ⊆ D.regular)
     (hΓ₁ : ∀ x₀ : M, ChristoffelEvolutionEquationInFrameOn (I := I) (D := D)
-      (solOfMetric (I := I) (D := D) g₁) (gInv₁ x₀)
+      (solutionOfMetric (I := I) (D := D) g₁) (gInv₁ x₀)
       (chartFrame I x₀) (chartFrame_isFrame I x₀) (nablaRic₁ x₀))
     (hΓ₂ : ∀ x₀ : M, ChristoffelEvolutionEquationInFrameOn (I := I) (D := D)
-      (solOfMetric (I := I) (D := D) g₂) (gInv₂ x₀)
+      (solutionOfMetric (I := I) (D := D) g₂) (gInv₂ x₀)
       (chartFrame I x₀) (chartFrame_isFrame I x₀) (nablaRic₂ x₀)) :
     ∀ t ∈ Set.Ioo a b, ∀ x : M, ∀ i j k : Fin (Module.finrank Real E),
       HasDerivAt
@@ -368,7 +368,7 @@ theorem gamma_of_fields
       i j k
   rw [hval]
   have hdiff := christoffelEvolutionDiffInFrameOn (I := I) (D := D)
-    (solOfMetric (I := I) (D := D) g₁) (solOfMetric (I := I) (D := D) g₂)
+    (solutionOfMetric (I := I) (D := D) g₁) (solutionOfMetric (I := I) (D := D) g₂)
     (gInv₁ x) (gInv₂ x) (chartFrame I x) (chartFrame_isFrame I x)
     (nablaRic₁ x) (nablaRic₂ x) (hΓ₁ x) (hΓ₂ x) ⟨t, hreg ht⟩ x (chartFrame_mem I x) i j k
   exact hdiff.hasDerivAt hnhds
@@ -387,14 +387,14 @@ private def refInterval : DifferentialGeometry.Geometry.Curvature.RealTimeInterv
 def chartFrameInv (g : Real -> SmoothRiemannianMetric I M) (x₀ : M) :
     Real -> DifferentialGeometry.Integral.Connection.InverseMetricComponents M
       (Fin (Module.finrank Real E)) :=
-  localFrameInv (E := E) (I := I) (D := refInterval) (solOfMetric (I := I) g)
+  localFrameInv (E := E) (I := I) (D := refInterval) (solutionOfMetric (I := I) g)
     (chartFrame I x₀) (chartFrame_isFrameTop I x₀)
 
 def chartNablaRic (g : Real -> SmoothRiemannianMetric I M) (x₀ : M) :
     Real -> M -> Fin (Module.finrank Real E) -> Fin (Module.finrank Real E) ->
       Fin (Module.finrank Real E) -> Real :=
   fun t x d p q =>
-    ricciCovDerivCompInFrame (I := I) (D := refInterval) (solOfMetric (I := I) g)
+    ricciCovDerivCompInFrame (I := I) (D := refInterval) (solutionOfMetric (I := I) g)
       (chartFrame I x₀) t x d p q
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I 2 M] [SigmaCompactSpace M] [CompactSpace M] in
@@ -411,10 +411,10 @@ theorem chrEvo_of_gram [FiniteDimensional ℝ E] (g : Real -> SmoothRiemannianMe
     (x₀ : M) {t₀ : Real} (ha : a < t₀) (hb : t₀ < b) :
     ChristoffelEvolutionEquationInFrameOn (I := I)
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen t₀ b hb)
-      (solOfMetric (I := I) g) (chartFrameInv (I := I) g x₀) (chartFrame I x₀)
+      (solutionOfMetric (I := I) g) (chartFrameInv (I := I) g x₀) (chartFrame I x₀)
       (chartFrame_isFrame I x₀) (chartNablaRic (I := I) g x₀) := by
   have hS : IsSolutionOn (I := I)
-      (solOfMetric (I := I)
+      (solutionOfMetric (I := I)
         (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen a b hab) g) :=
     solutionOn_of_joint (I := I) hab g hjoint hpde
   obtain ⟨_, h⟩ := tailChristoffel (I := I) (Idx := Fin (Module.finrank Real E)) hS ha hb
@@ -473,7 +473,7 @@ theorem gamma_of_gram [FiniteDimensional ℝ E] (g₁ g₂ : Real -> SmoothRiema
   have hdiff := christoffelEvolutionDiffInFrameOn (I := I)
     (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
       ((a + t) / 2) b hb)
-    (solOfMetric (I := I) g₁) (solOfMetric (I := I) g₂)
+    (solutionOfMetric (I := I) g₁) (solutionOfMetric (I := I) g₂)
     (chartFrameInv (I := I) g₁ x) (chartFrameInv (I := I) g₂ x)
     (chartFrame I x) (chartFrame_isFrame I x)
     (chartNablaRic (I := I) g₁ x) (chartNablaRic (I := I) g₂ x)

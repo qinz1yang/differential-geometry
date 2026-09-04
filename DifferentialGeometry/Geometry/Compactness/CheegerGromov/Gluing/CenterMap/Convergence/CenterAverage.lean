@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -47,7 +47,7 @@ noncomputable local instance centerAverageModelBilinearNormedSpace :
 
 theorem uniform_center_average_convergence (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (rho :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -104,11 +104,11 @@ theorem uniform_center_average_convergence (hd : InjectivityRadiusDecay (I := I)
           rfl⟩
       letI : MetricSpace (X.obj (L.φ n)).M := HopfRinow.riemMetricSpace (I := I)
         (M := (X.obj (L.φ n)).M)
-      let ptsSeq := NetLimitData.decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+      let pointsSeq := NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           forall gamma : Fin (pb.A r), rho gamma x ≠ 0 ->
-            dist x (ptsSeq a b x gamma) < radSeq a b x)
+            dist x (pointsSeq a b x gamma) < radSeq a b x)
     (hstrict :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -120,17 +120,17 @@ theorem uniform_center_average_convergence (hd : InjectivityRadiusDecay (I := I)
       letI : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
         Manifold.metrizableSpace I (X.obj (L.φ n)).M
       letI : T3Space (X.obj (L.φ n)).M := inferInstance
-      let ptsSeq := NetLimitData.decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+      let pointsSeq := NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           StrictDistInput (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
-              (ptsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)
+              (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)
             join x (radSeq a b x))
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
-    (hB : forall gamma : Fin (pb.A r), MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
-    (hA : forall gamma : Fin (pb.A r), MapCInfConvOnCompacts (V gamma) (A gamma) (Ainf gamma))
+    (hB : forall gamma : Fin (pb.A r), MapCInfConvergenceOnCompacts (U gamma) (B gamma) (Binf gamma))
+    (hA : forall gamma : Fin (pb.A r), MapCInfConvergenceOnCompacts (V gamma) (A gamma) (Ainf gamma))
     (hBcont : forall gamma : Fin (pb.A r), ContinuousOn (Binf gamma) (U gamma))
     (hAcont : forall gamma : Fin (pb.A r), ContinuousOn (Ainf gamma) (V gamma))
     (hid : forall gamma : Fin (pb.A r), forall v : E, v ∈ U gamma ->
@@ -172,7 +172,7 @@ theorem uniform_center_average_convergence (hd : InjectivityRadiusDecay (I := I)
       ⟨(X.obj (L.φ n)).metric.inner, (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace (X.obj (L.φ n)).M := HopfRinow.riemMetricSpace (I := I)
       (M := (X.obj (L.φ n)).M)
-    let ptsSeq := NetLimitData.decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+    let pointsSeq := NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
     forall eps : Real, eps > 0 -> exists N : Nat,
       forall a : Nat, a >= N -> forall b : Nat, b >= N ->
         forall x : (X.obj (L.φ n)).M,
@@ -183,13 +183,13 @@ theorem uniform_center_average_convergence (hd : InjectivityRadiusDecay (I := I)
                 (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
                 (centerAverage.activeFill
                   (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
-                  (ptsSeq a b) (fun y : (X.obj (L.φ n)).M => y))
+                  (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y))
                 join (fun y : (X.obj (L.φ n)).M => y) (radSeq a b)
                 (fun y : (X.obj (L.φ n)).M => y)
                 (fun y hy => centerAverage.inputOfFillSelf (I := I)
                   (g := (X.obj (L.φ n)).metric)
                   (μ := fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
-                  (pts := ptsSeq a b) (join := join)
+                  (points := pointsSeq a b) (join := join)
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy) (hactive_mem a b y hy)
                   ((NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd)
@@ -199,7 +199,7 @@ theorem uniform_center_average_convergence (hd : InjectivityRadiusDecay (I := I)
                     (D := D) (P := P) (L := L) (pb := pb) (r := r) (n := n)
                     (rho := rho) (hrho := hrho) hy).1.2.1)
                   (hstrict a b y hy)) x) < eps := by
-  exact NetLimitData.unifHatCageSelfComp hd P L pb r n rho hrho join radSeq center U V
+  exact NetLimitData.uniformHatCageSelfComp hd P L pb r n rho hrho join radSeq center U V
     B Binf A Ainf hconn hX hcenter
     (fun gamma => hgp gamma (center gamma) (hcenter gamma))
     hrad hactive_mem hstrict hVopen hB hA hBcont hAcont hid hKU
@@ -209,7 +209,7 @@ theorem uniform_center_average_convergence (hd : InjectivityRadiusDecay (I := I)
 
 theorem uniform_center_average_convergence_of_weight_data (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (mu : (X.obj (L.φ n)).M -> Fin (pb.A r) -> Real)
     (hmu :
@@ -261,11 +261,11 @@ theorem uniform_center_average_convergence_of_weight_data (hd : InjectivityRadiu
           rfl⟩
       letI : MetricSpace (X.obj (L.φ n)).M := HopfRinow.riemMetricSpace (I := I)
         (M := (X.obj (L.φ n)).M)
-      let ptsSeq := NetLimitData.decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+      let pointsSeq := NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           forall gamma : Fin (pb.A r), mu x gamma ≠ 0 ->
-            dist x (ptsSeq a b x gamma) < radSeq a b x)
+            dist x (pointsSeq a b x gamma) < radSeq a b x)
     (hstrict :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -277,16 +277,16 @@ theorem uniform_center_average_convergence_of_weight_data (hd : InjectivityRadiu
       letI : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
         Manifold.metrizableSpace I (X.obj (L.φ n)).M
       letI : T3Space (X.obj (L.φ n)).M := inferInstance
-      let ptsSeq := NetLimitData.decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+      let pointsSeq := NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           StrictDistInput (I := I) (X.obj (L.φ n)).metric
-            (centerAverage.activeFill mu (ptsSeq a b)
+            (centerAverage.activeFill mu (pointsSeq a b)
               (fun y : (X.obj (L.φ n)).M => y) x)
             join x (radSeq a b x))
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
-    (hB : forall gamma : Fin (pb.A r), MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
-    (hA : forall gamma : Fin (pb.A r), MapCInfConvOnCompacts (V gamma) (A gamma) (Ainf gamma))
+    (hB : forall gamma : Fin (pb.A r), MapCInfConvergenceOnCompacts (U gamma) (B gamma) (Binf gamma))
+    (hA : forall gamma : Fin (pb.A r), MapCInfConvergenceOnCompacts (V gamma) (A gamma) (Ainf gamma))
     (hBcont : forall gamma : Fin (pb.A r), ContinuousOn (Binf gamma) (U gamma))
     (hAcont : forall gamma : Fin (pb.A r), ContinuousOn (Ainf gamma) (V gamma))
     (hid : forall gamma : Fin (pb.A r), forall v : E, v ∈ U gamma ->
@@ -328,7 +328,7 @@ theorem uniform_center_average_convergence_of_weight_data (hd : InjectivityRadiu
       ⟨(X.obj (L.φ n)).metric.inner, (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace (X.obj (L.φ n)).M := HopfRinow.riemMetricSpace (I := I)
       (M := (X.obj (L.φ n)).M)
-    let ptsSeq := NetLimitData.decodedCompPts (I := I) (X.obj (L.φ n)).metric center B A
+    let pointsSeq := NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric center B A
     forall eps : Real, eps > 0 -> exists N : Nat,
       forall a : Nat, a >= N -> forall b : Nat, b >= N ->
         forall x : (X.obj (L.φ n)).M,
@@ -337,18 +337,18 @@ theorem uniform_center_average_convergence_of_weight_data (hd : InjectivityRadiu
               (centerAverageOn (I := I) (X.obj (L.φ n)).metric
                 (NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n)
                 mu
-                (centerAverage.activeFill mu (ptsSeq a b)
+                (centerAverage.activeFill mu (pointsSeq a b)
                   (fun y : (X.obj (L.φ n)).M => y))
                 join (fun y : (X.obj (L.φ n)).M => y) (radSeq a b)
                 (fun y : (X.obj (L.φ n)).M => y)
                 (fun y hy => centerAverage.inputOfFillSelf (I := I)
                   (g := (X.obj (L.φ n)).metric) (μ := mu)
-                  (pts := ptsSeq a b) (join := join)
+                  (points := pointsSeq a b) (join := join)
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy) (hactive_mem a b y hy)
                   ((hmu.data hy).1.1) ((hmu.data hy).1.2.1)
                   (hstrict a b y hy)) x) < eps := by
-  exact NetLimitData.unifHatCageData hd P L pb r n mu hmu join radSeq center U V
+  exact NetLimitData.uniformHatCageData hd P L pb r n mu hmu join radSeq center U V
     B Binf A Ainf hconn hX hcenter
     (fun gamma => hgp gamma (center gamma) (hcenter gamma))
     hrad hactive_mem hstrict hVopen hB hA hBcont hAcont hid hKU
@@ -358,7 +358,7 @@ theorem uniform_center_average_convergence_of_weight_data (hd : InjectivityRadiu
 
 theorem exists_center_average_identity_convergence_subsequence (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (metricInput : NormalCoordMetricBounds (I := I) X)
     (x y : Fin (pb.A r) -> forall k : Nat, (X.obj (L.φ k)).M)
@@ -493,7 +493,7 @@ theorem exists_center_average_identity_convergence_subsequence (hd : Injectivity
       forall a b : Nat, forall xx : (X.obj (L.φ n)).M,
         xx ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           forall gamma : Fin (pb.A r), rho gamma xx ≠ 0 ->
-            dist xx (NetLimitData.decodedCompPts (I := I) (X.obj (L.φ n)).metric
+            dist xx (NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric
               (fun gamma => x gamma n)
               (fun gamma a => normalTransition (I := I) (X.obj (L.φ a)) (x gamma a) (y gamma a))
               (fun gamma b => normalTransition (I := I) (X.obj (L.φ b)) (y gamma b) (x gamma b))
@@ -514,7 +514,7 @@ theorem exists_center_average_identity_convergence_subsequence (hd : Injectivity
           StrictDistInput (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun yy : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma yy)
-              (NetLimitData.decodedCompPts (I := I) (X.obj (L.φ n)).metric
+              (NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric
                 (fun gamma => x gamma n)
                 (fun gamma a => normalTransition (I := I) (X.obj (L.φ a)) (x gamma a) (y gamma a))
                 (fun gamma b => normalTransition (I := I) (X.obj (L.φ b)) (y gamma b) (x gamma b))
@@ -561,7 +561,7 @@ theorem exists_center_average_identity_convergence_subsequence (hd : Injectivity
            rfl⟩
        letI : MetricSpace (X.obj (L.φ n)).M := HopfRinow.riemMetricSpace (I := I)
          (M := (X.obj (L.φ n)).M)
-       let ptsSeq := NetLimitData.decodedCompPts (I := I) (X.obj (L.φ n)).metric
+       let pointsSeq := NetLimitData.decodedCompPoints (I := I) (X.obj (L.φ n)).metric
          (fun gamma => x gamma n)
          (fun gamma a => normalTransition (I := I) (X.obj (L.φ (phi a))) (x gamma (phi a))
            (y gamma (phi a)))
@@ -577,14 +577,14 @@ theorem exists_center_average_identity_convergence_subsequence (hd : Injectivity
                    (fun yy : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma yy)
                    (centerAverage.activeFill
                      (fun yy : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma yy)
-                     (ptsSeq a b) (fun yy : (X.obj (L.φ n)).M => yy))
+                     (pointsSeq a b) (fun yy : (X.obj (L.φ n)).M => yy))
                    join (fun yy : (X.obj (L.φ n)).M => yy)
                    (fun xx => radSeq (phi a) (phi b) xx)
                    (fun yy : (X.obj (L.φ n)).M => yy)
                    (fun yy hy => centerAverage.inputOfFillSelf (I := I)
                      (g := (X.obj (L.φ n)).metric)
                      (μ := fun yy : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma yy)
-                     (pts := ptsSeq a b) (join := join)
+                     (points := pointsSeq a b) (join := join)
                      (r := fun xx => radSeq (phi a) (phi b) xx)
                        (qstar := fun yy : (X.obj (L.φ n)).M => yy)
                      yy hcomplete (hrad (phi a) (phi b) yy hy) (hactive0 (phi a) (phi b) yy hy)
@@ -653,5 +653,5 @@ theorem exists_center_average_identity_convergence_subsequence (hd : Injectivity
     hKU V' hV'closed hV'sub
     (fun gamma v hv a => hKV0 gamma v hv (phi a))
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

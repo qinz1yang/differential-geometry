@@ -120,7 +120,7 @@ def QuotientEvolutionOn
       D.carrier
       (t : Real)
 
-def QuotEvolDivOn
+def QuotEvolutionDivOn
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (phi psi phiHeat psiHeat : Real -> M -> Real)
@@ -664,7 +664,7 @@ theorem quotHeatDiv
       MDiffAt (T% fun z : M =>
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric (t : Real))
           (fun w : M => psi (t : Real) w ^ (-beta)) z) y) :
-    QuotEvolDivOn (I := I) (D := D) G
+    QuotEvolutionDivOn (I := I) (D := D) G
       phi psi phiHeat psiHeat alpha beta := by
   have hstable :=
     quotient_evolution_of_laplacian_identities (I := I) (D := D) G

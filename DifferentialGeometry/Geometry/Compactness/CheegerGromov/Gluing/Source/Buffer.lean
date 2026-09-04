@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -210,11 +210,11 @@ private theorem NormalCoordMetricEquivOn.chart_join_le
           (chi.open_source.mem_nhds (hjoin hs).1)
     have hetaDiff : MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, E) eta s := by
       simpa only [eta] using hchiDiff.comp s hgammaDiff
-    have hetaSrc : eta s ∈ e.source := by
+    have hetaSource : eta s ∈ e.source := by
       exact chi.map_source (hjoin hs).1
     have heDiff : MDifferentiableAt 𝓘(Real, E) I e (eta s) :=
-      (e.contMDiffOn_toFun.mdifferentiableOn one_ne_zero _ hetaSrc).mdifferentiableAt
-        (e.open_source.mem_nhds hetaSrc)
+      (e.contMDiffOn_toFun.mdifferentiableOn one_ne_zero _ hetaSource).mdifferentiableAt
+        (e.open_source.mem_nhds hetaSource)
     have hnear : ∀ᶠ q in nhds s, gamma q ∈ chi.source :=
       hgammaCont.continuousAt.eventually (chi.open_source.mem_nhds (hjoin hs).1)
     have heq : e ∘ eta =ᶠ[nhds s] gamma := by
@@ -229,7 +229,7 @@ private theorem NormalCoordMetricEquivOn.chart_join_le
         (I := 𝓘(Real, Real)) (I' := I) heq
       rw [mfderiv_comp s heDiff hetaDiff] at hderiv
       simpa only using hderiv
-    have hetaVel : mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta s 1 =
+    have hetaVelocity : mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta s 1 =
         deriv eta s := by
       rw [mfderiv_eq_fderiv]
       exact fderiv_apply_one_eq_deriv (𝕜 := Real) (f := eta) (x := s)
@@ -239,7 +239,7 @@ private theorem NormalCoordMetricEquivOn.chart_join_le
       change (mfderiv 𝓘(Real, E) I e (eta s))
           (mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta s 1) =
         mfderiv 𝓘(Real, Real) I gamma s 1 at hv
-      rw [hetaVel] at hv
+      rw [hetaVelocity] at hv
       exact hv
     have hlaunch : Y.metric.inner x w w = d ^ 2 := by
       have hnonneg : 0 ≤ Y.metric.inner x w w :=
@@ -391,8 +391,8 @@ theorem NormalCoordMetricEquivOn.ball_core_dist
   have hgammaOne : gamma 1 = x := by
     change minJoin (I := I) Y.metric hEnorm (chi.symm z) x 1 = x
     exact minJoin_one (I := I) Y.metric hEnorm (chi.symm z) x
-  have hzTgt : z ∈ chi.target := hBtgt (Metric.mem_closedBall_self heta.le)
-  have hchiZ : chi (chi.symm z) = z := chi.right_inv hzTgt
+  have hzTarget : z ∈ chi.target := hBtgt (Metric.mem_closedBall_self heta.le)
+  have hchiZ : chi (chi.symm z) = z := chi.right_inv hzTarget
   have hgammaK : Set.MapsTo gamma (Set.Icc (0 : Real) 1) K := by
     intro q hq
     by_contra hqK
@@ -411,10 +411,10 @@ theorem NormalCoordMetricEquivOn.ball_core_dist
       rw [frontier, hKclosed.closure_eq] at hfront
       exact hfront
     obtain ⟨w, hwB, hwgamma⟩ := hfront'.1
-    have hwTgt : w ∈ chi.target := hBtgt hwB
+    have hwTarget : w ∈ chi.target := hBtgt hwB
     have hchiGamma : chi (gamma t) = w := by
       rw [← hwgamma]
-      exact chi.right_inv hwTgt
+      exact chi.right_inv hwTarget
     have hwNotBall : w ∉ Metric.ball z eta := by
       intro hwball
       apply hfront'.2
@@ -429,13 +429,13 @@ theorem NormalCoordMetricEquivOn.ball_core_dist
         (chi.source ∩ chi ⁻¹' U) := by
       intro s hs
       obtain ⟨v, hvB, hvgamma⟩ := hstay s hs
-      have hvTgt : v ∈ chi.target := hBtgt hvB
+      have hvTarget : v ∈ chi.target := hBtgt hvB
       have hsrc : gamma s ∈ chi.source := by
         rw [← hvgamma]
-        exact chi.mapsTo_symm hvTgt
+        exact chi.mapsTo_symm hvTarget
       have hchi : chi (gamma s) = v := by
         rw [← hvgamma]
-        exact chi.right_inv hvTgt
+        exact chi.right_inv hvTarget
       refine ⟨hsrc, ?_⟩
       change chi (gamma s) ∈ U
       rw [hchi]
@@ -476,13 +476,13 @@ theorem NormalCoordMetricEquivOn.ball_core_dist
       (chi.source ∩ chi ⁻¹' U) := by
     intro q hq
     obtain ⟨v, hvB, hvgamma⟩ := hgammaK hq
-    have hvTgt : v ∈ chi.target := hBtgt hvB
+    have hvTarget : v ∈ chi.target := hBtgt hvB
     have hsrc : gamma q ∈ chi.source := by
       rw [← hvgamma]
-      exact chi.mapsTo_symm hvTgt
+      exact chi.mapsTo_symm hvTarget
     have hchi : chi (gamma q) = v := by
       rw [← hvgamma]
-      exact chi.right_inv hvTgt
+      exact chi.right_inv hvTarget
     refine ⟨hsrc, ?_⟩
     change chi (gamma q) ∈ U
     rw [hchi]
@@ -504,7 +504,7 @@ theorem NormalCoordMetricEquivOn.ball_core_dist
       _ ≤ Real.sqrt 2 * (riemannianEDist I (chi.symm z) x).toReal := hfull'
   exact ⟨hxcore, hcoord⟩
 
-theorem NormalCoordMetricEquivOn.ball_subset_core
+theorem NormalCoordMetricEquivOn.ball_subset_symm_image_interior
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn :
@@ -547,7 +547,7 @@ theorem NormalCoordMetricEquivOn.ball_subset_core
   exact (NormalCoordMetricEquivOn.ball_core_dist Y hcomplete hconn hEnorm
     h hCU hUtgt heta hclosed hrhoeta hx).1
 
-theorem HasSuppConvData.metric_buffer
+theorem HasSupportedCenterMapConvergence.metric_buffer
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P)
@@ -561,7 +561,7 @@ theorem HasSuppConvData.metric_buffer
       InterSlot L inp.pack r alpha → E → E)
     (Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (h : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (h : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (hcomplete : ∀ j, MetricComplete (I := I) (X.obj j))
     (hconn : ∀ j,
@@ -692,5 +692,5 @@ theorem HasSuppConvData.metric_buffer
   · intro x hx
     exact (hpoint x hx).2
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

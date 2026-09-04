@@ -400,7 +400,7 @@ theorem exists_smooth_covariant_two_tensor_representative_of_duhamel_smoothing
       ∀ i, tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           (T : TensorL2 0 2 g) i =
-        perModeConv (TensorHeatEquation.TensorEigenIdx.lambda (I := I) (M := M) i)
+        perModeConvolution (TensorHeatEquation.TensorEigenIdx.lambda (I := I) (M := M) i)
           (φ i) t :=
   exists_smooth_tensor_representative_of_duhamel_smoothing
     (I := I) (M := M) ht

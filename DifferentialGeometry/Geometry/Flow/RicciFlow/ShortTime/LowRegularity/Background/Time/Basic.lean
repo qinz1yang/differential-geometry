@@ -373,14 +373,14 @@ theorem radialFirstOrderActionBackground_pairing_bound
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T₀‖ ≤ r := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simp only [ccToHsLin_apply] at hrad
     exact hrad.trans hTr
   have hU₀top :
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U₀‖ ≤ r := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) U)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ U] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ U] at hrad
     simp only [ccToHsLin_apply] at hrad
     exact hrad.trans hUr
   have hT₃ :
@@ -631,14 +631,14 @@ theorem radialFirstOrderActionThirdToSecondOrder_self
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T₀‖ ≤ r := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simp only [ccToHsLin_apply] at hrad
     exact hrad.trans hTr
   have hU₀top :
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U₀‖ ≤ r := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) U)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ U] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ U] at hrad
     simp only [ccToHsLin_apply] at hrad
     exact hrad.trans hUr
   have hT₃ :
@@ -876,14 +876,14 @@ theorem radialFirstOrderActionThirdToSecondOrderBackground_pairing_bound
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T0‖ ≤ r := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simp only [ccToHsLin_apply] at hrad
     exact hrad.trans hTr
   have hU0top :
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U0‖ ≤ r := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) U)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ U] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ U] at hrad
     simp only [ccToHsLin_apply] at hrad
     exact hrad.trans hUr
   have hT3 :
@@ -1044,7 +1044,7 @@ theorem radialFirstOrderActionThirdToSecondOrderBackground_pairing_bound
       simp only [D]
 
 
-theorem lowerScaleFirstOrderActionSecondToFirstOrderBackground_core
+theorem lowerScaleFirstOrderActionSecondToFirstOrderBackground_apply_ccToHsLin
     (g gB : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} {hρ : 0 ≤ ρ} {hδ0 : 0 ≤ δ} {hδ_le : δ ≤ 1 / 3}
     {hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -1110,7 +1110,7 @@ theorem lowerScaleFirstOrderActionSecondToFirstOrderBackground_aestronglyMeasura
   (lowerScaleFirstOrderActionSecondToFirstOrderBackground_continuous (I := I) (M := M) g gB hpair).comp_aestronglyMeasurable hu
 
 
-theorem lowerScaleFirstOrderActionThirdToSecondOrderBackground_core
+theorem lowerScaleFirstOrderActionThirdToSecondOrderBackground_apply_ccToHsLin
     (g gB : SmoothRiemannianMetric I M)
     {ρ δ : ℝ} {hρ : 0 ≤ ρ} {hδ0 : 0 ≤ δ} {hδ_le : δ ≤ 1 / 3}
     {hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -1227,8 +1227,8 @@ theorem lowerScaleFirstOrderActionBackground_extensions_commute
     ccToHsLin_dense (I := I) (M := M) g 2 (by positivity)
   refine hdense.induction_on v (isClosed_eq hleft hright) ?_
   intro T
-  rw [lowerScaleFirstOrderActionThirdToSecondOrderBackground_core (I := I) (M := M) g g hHi T,
-    lowerScaleFirstOrderActionSecondToFirstOrderBackground_core (I := I) (M := M) g g hLo T]
+  rw [lowerScaleFirstOrderActionThirdToSecondOrderBackground_apply_ccToHsLin (I := I) (M := M) g g hHi T,
+    lowerScaleFirstOrderActionSecondToFirstOrderBackground_apply_ccToHsLin (I := I) (M := M) g g hLo T]
   simpa only [lowCoreActionCoefficientsBackground, lowCoreActionCoefficients] using (hcoreComm T).2.2
 
 theorem lowerScaleFirstOrderActionBackground_extensions_commute_background
@@ -1281,8 +1281,8 @@ theorem lowerScaleFirstOrderActionBackground_extensions_commute_background
     ccToHsLin_dense (I := I) (M := M) g 2 (by positivity)
   refine hdense.induction_on v (isClosed_eq hleft hright) ?_
   intro T
-  rw [lowerScaleFirstOrderActionThirdToSecondOrderBackground_core (I := I) (M := M) g gB hHi T,
-    lowerScaleFirstOrderActionSecondToFirstOrderBackground_core (I := I) (M := M) g gB hLo T]
+  rw [lowerScaleFirstOrderActionThirdToSecondOrderBackground_apply_ccToHsLin (I := I) (M := M) g gB hHi T,
+    lowerScaleFirstOrderActionSecondToFirstOrderBackground_apply_ccToHsLin (I := I) (M := M) g gB hLo T]
   exact first_order_action_sobolev_extensions_commute (I := I) (M := M) hDim g
     (lowCoreActionCoefficientsBackground (I := I) (M := M) g gB hρ.le hδ0 hδ_le hreal T)
 

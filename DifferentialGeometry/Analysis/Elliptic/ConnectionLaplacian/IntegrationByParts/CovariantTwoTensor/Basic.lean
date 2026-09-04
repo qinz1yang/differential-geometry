@@ -196,11 +196,11 @@ lemma divergence_g_chartBasis_metricTrace_self
               (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b m b))
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) b n b) := by
   classical
-  have hb_src : b ∈ (chartAt H b).source := mem_chart_source H b
+  have hb_source : b ∈ (chartAt H b).source := mem_chart_source H b
   have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) b := by
     rw [mem_chartLeviCivitaGoodSet_iff_mem_extChartAt_source (I := I) b b]
     exact mem_extChartAt_source (I := I) b
-  rw [voss_weyl_divergence_formula (I := I) g b Z hb_src]
+  rw [voss_weyl_divergence_formula (I := I) g b Z hb_source]
   rw [localDivergence_eq_coord_covariant_divergence (I := I) g b Z hb_good]
   rw [metricTrace_eq_coord_covariant_divergence (I := I) g b Z hb_good]
   rw [Finset.sum_add_distrib]

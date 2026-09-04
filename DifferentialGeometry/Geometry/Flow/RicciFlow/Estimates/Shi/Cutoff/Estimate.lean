@@ -242,7 +242,7 @@ private theorem parabolic_add_nhds
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] [I.Boundaryless] in
-private theorem sum_reg_nhds
+private theorem sum_regularity_nhds
     {G : MetricConnectionFamily (I := I) (M := M) Real}
     {κ : Type*} (s : Finset κ)
     (u : κ → Real → M → Real) (T t : Real) (x : M)
@@ -377,7 +377,7 @@ private theorem parabolic_sum_nhds
       have hatime := htime a (Finset.mem_insert_self a s)
       have haspace := hspace a (Finset.mem_insert_self a s)
       have hagrad := hgrad a (Finset.mem_insert_self a s)
-      have hsreg := sum_reg_nhds (I := I) (G := G) s u T t x
+      have hsreg := sum_regularity_nhds (I := I) (G := G) s u T t x
         (fun i hi => htime i (Finset.mem_insert_of_mem hi))
         (fun i hi => hspace i (Finset.mem_insert_of_mem hi))
         (fun i hi => hgrad i (Finset.mem_insert_of_mem hi))
@@ -862,7 +862,7 @@ end ShiCutoffData
 
 omit [NeZero (Module.finrank Real E)] [CompleteSpace E] [SigmaCompactSpace M]
   [T2Space M] [I.Boundaryless] in
-private theorem support_pow_para
+private theorem support_pow_parabolic
     {G : MetricConnectionFamily (I := I) (M := M) Real} {T eps t : Real}
     {chi : Real → M → Real} {x : M}
     (support : ShiCutoffLowerSupportAt (I := I) G T eps chi t x)
@@ -1596,7 +1596,7 @@ private theorem supportLevel_le
     change parabolicOperatorWithDrift (I := I) G B.T
         (fun _ y => (0 : TangentSpace I y))
         (fun s y => support.phi s y ^ (i + 1)) t x ≤ _
-    exact support_pow_para (I := I) support ht i
+    exact support_pow_parabolic (I := I) support ht i
   have hcross := support_pow_cross (I := I) B (m := m) (k := i) (p := i)
     hgrad hi support ht htpos heps
   have hcoef0 : 0 ≤ BernsteinTower.Gcoef (I := I) B m i :=
@@ -1908,7 +1908,7 @@ private theorem GfunSupport_parabolic_le
     rw [hF]
     exact parabolic_sum_nhds (I := I) (Finset.range (m + 1)) B.T
       (fun _ y ↦ (0 : TangentSpace I y)) term t x htime hspace hgradTerm
-  have hreg := sum_reg_nhds (I := I) (G := G)
+  have hreg := sum_regularity_nhds (I := I) (G := G)
     (Finset.range (m + 1)) term B.T t x htime hspace hgradTerm
   refine ⟨?_, ?_, ?_, ?_⟩
   · rw [hF]
@@ -2526,7 +2526,7 @@ theorem estimate_cutoff_at
             simpa only [F, bBar, bCore, bErr] using hsub
           rw [hop]
           linarith
-        have hw_nonneg := strict_barrier_cpt (I := I) G B.T
+        have hw_nonneg := strict_barrier_compact (I := I) G B.T
           (fun _ z ↦ (0 : TangentSpace I z)) w (cut.support n)
           (cut.support_compact n) hw_out hw_cont hw0 hw_time hw_mdiff hw_grad
           hw_negative
@@ -2842,7 +2842,7 @@ theorem estimate_barrier_at
               hop]
             dsimp only [bBar, bErr]
             linarith [hrec.2.2.2]
-        have hw_nonneg := strict_barrier_cpt_of_upperSupport
+        have hw_nonneg := strict_barrier_compact_of_upperSupport
           (I := I) G B.T
           (fun _ z ↦ (0 : TangentSpace I z)) w (cut.support n)
           (cut.support_compact n) hw_out hw_cont hw0 hsupport

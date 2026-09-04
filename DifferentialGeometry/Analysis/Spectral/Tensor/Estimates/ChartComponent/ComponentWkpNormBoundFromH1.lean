@@ -115,7 +115,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
           (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)),
           eLpNorm
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) 2 k
                 (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β
                   (tensorChartComponentScalar (I := I) (M := M)
@@ -139,7 +139,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
         tensorChartComponentScalar_contMDiff
           (I := I) (M := M) g r s S.toCcTensor α Idx Jdx
       have h_bridge :=
-        eLpNorm_chosenWeakPartial'_chartPushed_eq_eLpNorm_fderiv_chartSmoothExt
+        eLpNorm_chosenWeakPartialOrZero_chartPushed_eq_eLpNorm_fderiv_chartSmoothExt
           (I := I) (M := M) (α := β) (u := u) hu_smooth k
       have h_env_apply := h_env hu_smooth k
       have h_u_L2 : eLpNorm u 2 μM ≤ ENNReal.ofReal C_L2 * NS :=
@@ -152,7 +152,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
         add_le_add h_u_L2 h_grad
       have hMain :
           eLpNorm
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) 2 k
                 (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β u)
                 (chartTargetEuclid (I := I) (M := M) β)) 2 μE ≤
@@ -191,7 +191,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
       rw [hu_def, hΩ_def]; exact hC₀_le S Idx Jdx
     have h1 : ∑ k : Fin (Module.finrank ℝ E),
           eLpNorm
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) 2 k u Ω) 2
               (volume.restrict Ω) ≤
         (N : ℝ≥0∞) * (ENNReal.ofReal (C_env * (C_L2 + C_grad)) *
@@ -199,7 +199,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
       rw [hu_def, hΩ_def]
       calc ∑ k : Fin (Module.finrank ℝ E),
               eLpNorm
-                (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+                (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                   (d := Module.finrank ℝ E) 2 k
                   (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β
                     (tensorChartComponentScalar (I := I) (M := M)

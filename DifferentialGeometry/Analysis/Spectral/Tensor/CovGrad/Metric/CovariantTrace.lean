@@ -153,9 +153,9 @@ theorem riemannianFiberNormSq_tensorRS_clm_apply_le
     ∃ Cφ : ℝ, 0 ≤ Cφ ∧ ∀ v : TensorRSSpace r₁ s₁ I x,
       riemannianFiberNormSq (I := I) (M := M) g r₂ s₂ x (φ v) ≤
         Cφ * riemannianFiberNormSq (I := I) (M := M) g r₁ s₁ x v := by
-  let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r₁ s₁ I b) :=
+  let instSource : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r₁ s₁ I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r₁ s₁
-  let instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r₂ s₂ I b) :=
+  let instTarget : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r₂ s₂ I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r₂ s₂
   let φg : TensorRSSpace r₁ s₁ I x →L[ℝ] TensorRSSpace r₂ s₂ I x :=
     LinearMap.toContinuousLinearMap (φ.toLinearMap)

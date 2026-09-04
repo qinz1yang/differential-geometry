@@ -313,7 +313,7 @@ theorem riemannianFiberNormSq_bilinearSlotInsertCLM_le
       ((Module.finrank ℝ E : ℝ)) ^ (s + 1 + 1) * B := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ (s + 1) (s + 1 + 1) x
     (show TensorRSSpace (s + 1) (s + 1 + 1) I x from
@@ -416,7 +416,7 @@ theorem riemannianFiberNormSq_termSlotFib_spectator_eq
             TensorRSSpace.ofCLM (bilinearSlotInsertCLM (I := I) (M := M) 0 x Term)) := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_termSlotFib_eq_sum_normSq_frame (I := I) g₀ x s Term e bse hnE hbse horth hpars]
   rw [riemannianFiberNormSq_termSlotFib_eq_sum_normSq_frame (I := I) g₀ x 0 Term e bse hnE hbse horth hpars]

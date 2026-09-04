@@ -9,15 +9,15 @@ namespace Analysis
 namespace Parabolic
 namespace Euclidean
 
-def klFluxWeight (d k : ℕ) : ℝ :=
+def kochLammFluxWeight (d k : ℕ) : ℝ :=
   (5 * ((k + 1 : ℕ) : ℝ)) ^ d *
     Real.exp (-(8 : ℝ)⁻¹ * (k : ℝ) ^ 2)
 
-private def klFluxLinWt (d k : ℕ) : ℝ :=
+private def kochLammFluxLinWt (d k : ℕ) : ℝ :=
   (5 * ((k + 1 : ℕ) : ℝ)) ^ d *
     Real.exp (-(8 : ℝ)⁻¹ * (k : ℝ))
 
-private theorem klFluxLin_sum (d : ℕ) : Summable (klFluxLinWt d) := by
+private theorem kochLammFluxLin_sum (d : ℕ) : Summable (kochLammFluxLinWt d) := by
   have hbase := Real.summable_pow_mul_exp_neg_nat_mul d
     (by norm_num : 0 < (8 : ℝ)⁻¹)
   have hsucc := hbase.comp_injective Nat.succ_injective
@@ -26,7 +26,7 @@ private theorem klFluxLin_sum (d : ℕ) : Summable (klFluxLinWt d) := by
   apply hmul.congr
   intro k
   symm
-  unfold klFluxLinWt
+  unfold kochLammFluxLinWt
   simp only [Function.comp_apply, Nat.cast_succ]
   rw [mul_pow]
   calc
@@ -45,8 +45,8 @@ private theorem klFluxLin_sum (d : ℕ) : Summable (klFluxLinWt d) := by
       ring
     _ = _ := rfl
 
-theorem klFluxWeight_le (d k : ℕ) :
-    klFluxWeight d k ≤ klFluxLinWt d k := by
+theorem kochLammFluxWeight_le (d k : ℕ) :
+    kochLammFluxWeight d k ≤ kochLammFluxLinWt d k := by
   have hk_sq : (k : ℝ) ≤ (k : ℝ) ^ 2 := by
     by_cases hk0 : k = 0
     · simp [hk0]
@@ -56,21 +56,21 @@ theorem klFluxWeight_le (d k : ℕ) :
       have hkmul : 0 ≤ (k : ℝ) * ((k : ℝ) - 1) :=
         mul_nonneg hkpos (sub_nonneg.mpr hk1)
       nlinarith
-  unfold klFluxWeight klFluxLinWt
+  unfold kochLammFluxWeight kochLammFluxLinWt
   exact mul_le_mul_of_nonneg_left
     (Real.exp_le_exp.mpr (by nlinarith [hk_sq])) (by positivity)
 
-theorem klFluxWeight_sum (d : ℕ) : Summable (klFluxWeight d) := by
+theorem kochLammFluxWeight_sum (d : ℕ) : Summable (kochLammFluxWeight d) := by
   exact Summable.of_nonneg_of_le
-    (fun k ↦ by unfold klFluxWeight; positivity)
-    (klFluxWeight_le d) (klFluxLin_sum d)
+    (fun k ↦ by unfold kochLammFluxWeight; positivity)
+    (kochLammFluxWeight_le d) (kochLammFluxLin_sum d)
 
-def klFluxSeries (d : ℕ) : ℝ :=
-  ∑' k : ℕ, klFluxWeight d k
+def kochLammFluxSeries (d : ℕ) : ℝ :=
+  ∑' k : ℕ, kochLammFluxWeight d k
 
-theorem klFluxSeries_nn (d : ℕ) : 0 ≤ klFluxSeries d := by
-  unfold klFluxSeries
-  exact tsum_nonneg fun k ↦ by unfold klFluxWeight; positivity
+theorem kochLammFluxSeries_nn (d : ℕ) : 0 ≤ kochLammFluxSeries d := by
+  unfold kochLammFluxSeries
+  exact tsum_nonneg fun k ↦ by unfold kochLammFluxWeight; positivity
 
 end Euclidean
 end Parabolic

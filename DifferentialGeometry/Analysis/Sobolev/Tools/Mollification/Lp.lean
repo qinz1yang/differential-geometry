@@ -52,12 +52,12 @@ theorem eLpNorm_mollifyEps_le
         (Filter.Eventually.of_forall hψ_nn)]
       rw [hψ_int]
       simp
-    have hu_loc : LocallyIntegrable u (volume : Measure E) :=
+    have hu_local : LocallyIntegrable u (volume : Measure E) :=
       hu.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have hce_u : ConvolutionExistsAt ψ u x
         (ContinuousLinearMap.lsmul ℝ ℝ) (volume : Measure E) :=
       hψ_compact.convolutionExists_left
-        (L := ContinuousLinearMap.lsmul ℝ ℝ) hψ_cont hu_loc x
+        (L := ContinuousLinearMap.lsmul ℝ ℝ) hψ_cont hu_local x
     have hconv_ν :
         ((ψ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) x) =
           ∫ y, u (x - y) ∂ν := by
@@ -75,7 +75,7 @@ theorem eLpNorm_mollifyEps_le
     have h_norm_int : Integrable (fun y => ‖u (x - y)‖) ν := by
       exact (MeasureTheory.integrable_withDensity_iff_integrable_smul' hρ_meas hρ_lt_top).2 <| by
         simpa [ρ, ψ, hψ_nn] using h_norm_sq_int_vol
-    have hu_sq_loc : LocallyIntegrable (fun y => ‖u y‖ ^ (2 : ℝ)) (volume : Measure E) := by
+    have hu_sq_local : LocallyIntegrable (fun y => ‖u y‖ ^ (2 : ℝ)) (volume : Measure E) := by
       have hh_int : Integrable (fun y => ‖u y‖ ^ (2 : ℝ)) (volume : Measure E) := by
         have := hu.integrable_norm_rpow (p := 2) (by norm_num : (2 : ℝ≥0∞) ≠ 0)
           (by norm_num : (2 : ℝ≥0∞) ≠ ∞)
@@ -84,7 +84,7 @@ theorem eLpNorm_mollifyEps_le
     have hce_h : ConvolutionExistsAt ψ h_norm_sq x
         (ContinuousLinearMap.lsmul ℝ ℝ) (volume : Measure E) :=
       hψ_compact.convolutionExists_left
-        (L := ContinuousLinearMap.lsmul ℝ ℝ) hψ_cont hu_sq_loc x
+        (L := ContinuousLinearMap.lsmul ℝ ℝ) hψ_cont hu_sq_local x
     have h_rpow_int_vol :
         Integrable (fun y => (ρ y).toReal * ‖u (x - y)‖ ^ (2 : ℝ)) (volume : Measure E) := by
       refine hce_h.integrable.congr ?_
@@ -148,7 +148,7 @@ theorem eLpNorm_mollifyEps_le
             filter_upwards with t
             rw [ContinuousLinearMap.lsmul_apply, smul_eq_mul]
             exact h_rearr t
-  have hu_loc : LocallyIntegrable u (volume : Measure E) :=
+  have hu_local : LocallyIntegrable u (volume : Measure E) :=
     hu.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have hu_sq_int : Integrable (fun y => ‖u y‖ ^ (2 : ℝ)) (volume : Measure E) := by
     have := hu.integrable_norm_rpow (p := 2) (by norm_num : (2 : ℝ≥0∞) ≠ 0)
@@ -158,8 +158,8 @@ theorem eLpNorm_mollifyEps_le
       (ψ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u :
         E → ℝ) :=
     hψ_compact.continuous_convolution_left (L := ContinuousLinearMap.lsmul ℝ ℝ)
-      hψ_cont hu_loc
-  have hh_conv_int : Integrable
+      hψ_cont hu_local
+  have hh_convergence_int : Integrable
       ((fun y => ‖u y‖ ^ (2 : ℝ))
         ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] ψ)
       (volume : Measure E) :=
@@ -167,7 +167,7 @@ theorem eLpNorm_mollifyEps_le
   have hpow_int : Integrable
       (fun x => ‖((ψ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) x)‖
         ^ (2 : ℝ)) (volume : Measure E) := by
-    refine Integrable.mono' hh_conv_int ?_ ?_
+    refine Integrable.mono' hh_convergence_int ?_ ?_
     · exact (hconv_cont.norm.rpow_const
         (fun _ => Or.inr (by norm_num : (0 : ℝ) ≤ 2))).aestronglyMeasurable
     · filter_upwards with x
@@ -183,10 +183,10 @@ theorem eLpNorm_mollifyEps_le
       ∫ x, ((fun y => ‖u y‖ ^ (2 : ℝ))
         ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] ψ) x
         ∂(volume : Measure E) := by
-    refine integral_mono_ae hpow_int hh_conv_int ?_
+    refine integral_mono_ae hpow_int hh_convergence_int ?_
     filter_upwards with x
     exact h_pt_jensen x
-  have h_conv_eq :
+  have h_convergence_eq :
       ∫ x, ((fun y => ‖u y‖ ^ (2 : ℝ))
         ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] ψ) x
         ∂(volume : Measure E) =
@@ -253,7 +253,7 @@ theorem eLpNorm_mollifyEps_le
     funext y
     exact mollifyEps_eq_convolution_swap hε u y
   rw [hcomm]
-  have hcomm_conv : ∀ y : E,
+  have hcomm_convergence : ∀ y : E,
       (u ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)]
         mollifierEps (d := d) hε) y =
       (mollifierEps (d := d) hε
@@ -268,7 +268,7 @@ theorem eLpNorm_mollifyEps_le
         mollifierEps (d := d) hε) =
       (mollifierEps (d := d) hε
         ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) := by
-    funext y; exact hcomm_conv y
+    funext y; exact hcomm_convergence y
   rw [hfun_eq]
   change eLpNorm (mollifierEps (d := d) hε
         ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) 2
@@ -279,7 +279,7 @@ theorem eLpNorm_mollifyEps_le
       ∫ x, ‖((ψ ⋆[ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) x)‖ ^ (2 : ℝ)
         ∂(volume : Measure E) ≤
       ∫ x, ‖u x‖ ^ (2 : ℝ) ∂(volume : Measure E) :=
-    h_int_le.trans (le_of_eq h_conv_eq)
+    h_int_le.trans (le_of_eq h_convergence_eq)
   refine Real.rpow_le_rpow ?_ h_int_combined ?_
   · exact integral_nonneg fun _ => Real.rpow_nonneg (norm_nonneg _) _
   · exact inv_nonneg.mpr (by norm_num : (0 : ℝ) ≤ 2)

@@ -47,13 +47,13 @@ private lemma integral_const_indicator_eq
 
 theorem translated_coeff_cutoff_deriv_diffQuot_cross_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d) (ε : ℝ) (hε : 0 < ε) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : E → ℝ}, ContDiff ℝ (⊤ : ℕ∞) u →
@@ -89,7 +89,7 @@ theorem translated_coeff_cutoff_deriv_diffQuot_cross_bound
     exact (one_div_pos.mpr hε'_pos).le
   refine ⟨C, hC_nn, ?_⟩
   intro u hu h hh hh_le
-  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_supp_in_Ω' hh_le
+  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_support_in_Ω' hh_le
   have h_each_pointwise := fun (i j : Fin d) (x : E) =>
     translated_coeff_cutoff_gradient_pointwise_bound (d := d) B hu hη hη_range h_fderiv_eta
       hΛ i j k h_thick_in_Ω' hε'_pos x
@@ -118,18 +118,18 @@ theorem translated_coeff_cutoff_deriv_diffQuot_cross_bound
         ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
         diffQuot k h (fun y => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x *
         diffQuot k h u x) volume :=
-    fun i j => integrable_cross_1_summand (d := d) B hu hη hη_supp i j k hh
+    fun i j => integrable_cross_1_summand (d := d) B hu hη hη_support i j k hh
   have h_first_int : ∀ i : Fin d, Integrable (fun x : E =>
       (ε / d_real) * (η x)^2 *
         (diffQuot k h
           (fun y => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)^2) volume :=
-    fun i => integrable_const_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_supp
+    fun i => integrable_const_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_support
       i k hh (ε / d_real)
   have h_indicator_int : Integrable (fun x : E =>
       (1 / (ε / d_real)) * Λ^2 * N^2 *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
         (diffQuot k h u x)^2) volume :=
-    integrable_const_indicator_diffQuot_sq (d := d) hu hη_supp
+    integrable_const_indicator_diffQuot_sq (d := d) hu hη_support
       k hh ((1 / (ε / d_real)) * Λ^2 * N^2)
   have h_pt_bound_int : ∀ i j : Fin d, Integrable (fun x : E =>
       (ε / d_real) * (η x)^2 *
@@ -280,7 +280,7 @@ theorem translated_coeff_cutoff_deriv_diffQuot_cross_bound
     have h_first_int_per : ∀ i : Fin d, Integrable (fun x : E =>
         (η x)^2 * (diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)^2) volume :=
-      fun i => integrable_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_supp i k hh
+      fun i => integrable_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_support i k hh
     have h_swap_sum : ∑ i : Fin d, ∫ x, (η x)^2 *
             (diffQuot k h (fun y => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)^2
           ∂(volume : Measure E) =
@@ -325,12 +325,12 @@ theorem translated_coeff_cutoff_deriv_diffQuot_cross_bound
 
 theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {Ω' : Set E} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d) (ε : ℝ) (hε : 0 < ε) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : E → ℝ}, ContDiff ℝ (⊤ : ℕ∞) u →
@@ -366,7 +366,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
     refine inv_nonneg.mpr (by linarith [hε'_pos])
   refine ⟨C, hC_nn, ?_⟩
   intro u hu h hh hh_le
-  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_supp_in_Ω' hh_le
+  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_support_in_Ω' hh_le
   have h_each_pointwise := fun (i j : Fin d) (x : E) =>
     diffQuot_coeff_cutoff_squared_pointwise_bound (d := d) (u := u) B hη_range i j k hM_nn h_M
       h_thick_in_Ω' hε'_pos x
@@ -392,18 +392,18 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
         ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
         diffQuot k h (fun y => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x)
       volume :=
-    fun i j => integrable_cross_2_summand (d := d) B hu hη hη_supp i j k hh
+    fun i j => integrable_cross_2_summand (d := d) B hu hη hη_support i j k hh
   have h_first_int : ∀ j : Fin d, Integrable (fun x : E =>
       (ε / d_real) * (η x)^2 *
         (diffQuot k h
           (fun y => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x)^2) volume :=
-    fun j => integrable_const_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_supp
+    fun j => integrable_const_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_support
       j k hh (ε / d_real)
   have h_second_int : ∀ i : Fin d, Integrable (fun x : E =>
       (M^2 / (4 * (ε / d_real))) * (η x)^2 *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
         ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2) volume :=
-    fun i => integrable_const_eta_sq_indicator_partial_sq (d := d) hu hη hη_supp i
+    fun i => integrable_const_eta_sq_indicator_partial_sq (d := d) hu hη hη_support i
       (M^2 / (4 * (ε / d_real)))
   have h_pt_bound_int : ∀ i j : Fin d, Integrable (fun x : E =>
       (ε / d_real) * (η x)^2 *
@@ -575,7 +575,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
       have h_eta_sq_diffQuot_int : ∀ j : Fin d, Integrable (fun x : E =>
           (η x)^2 * (diffQuot k h
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x)^2) volume :=
-        fun j => integrable_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_supp j k hh
+        fun j => integrable_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_support j k hh
       rw [show (∑ j : Fin d, ∫ x, (η x)^2 *
               (diffQuot k h
                 (fun y => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x)^2
@@ -628,7 +628,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
         (η x)^2 * (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
         ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2) volume := by
       intro i
-      have h := integrable_const_eta_sq_indicator_partial_sq (d := d) hu hη hη_supp i 1
+      have h := integrable_const_eta_sq_indicator_partial_sq (d := d) hu hη hη_support i 1
       have h_eq : (fun x : E => (1 : ℝ) * (η x)^2 *
             (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
             ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2) =
@@ -738,7 +738,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
           (η x)^2 * ((Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
             ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2)) volume := by
         intro i
-        have h := integrable_const_eta_sq_indicator_partial_sq (d := d) hu hη hη_supp i 1
+        have h := integrable_const_eta_sq_indicator_partial_sq (d := d) hu hη hη_support i 1
         have h_eq : (fun x : E => (1 : ℝ) * (η x)^2 *
               (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
               ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2) =
@@ -837,13 +837,13 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
 
 theorem coeff_diffQuot_cutoff_deriv_cross_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : E → ℝ}, ContDiff ℝ (⊤ : ℕ∞) u →
@@ -876,7 +876,7 @@ theorem coeff_diffQuot_cutoff_deriv_cross_bound
     exact mul_nonneg (by linarith) hM_nn
   refine ⟨C, hC_nn, ?_⟩
   intro u hu h hh hh_le
-  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_supp_in_Ω' hh_le
+  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_support_in_Ω' hh_le
   have h_each_pointwise := fun (i j : Fin d) (x : E) =>
     diffQuot_coeff_cutoff_gradient_pointwise_bound (d := d) B (u := u) hη_range h_fderiv_eta i j k
       hM_nn h_M
@@ -902,13 +902,13 @@ theorem coeff_diffQuot_cutoff_deriv_cross_bound
         ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
         ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
         diffQuot k h u x) volume :=
-    fun i j => integrable_cross_3_summand (d := d) B hu hη hη_supp i j k hh
+    fun i j => integrable_cross_3_summand (d := d) B hu hη hη_support i j k hh
   have h_pt_bound1_int : ∀ i : Fin d, Integrable (fun x : E =>
       M * N *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
         ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2) volume := by
     intro i
-    have h := integrable_const_eta_sq_indicator_partial_sq (d := d) hu hη hη_supp i 1
+    have h := integrable_const_eta_sq_indicator_partial_sq (d := d) hu hη hη_support i 1
     have h_partial_cont : Continuous
         (fun x : E => (fderiv ℝ u x) (EuclideanSpace.single i 1)) :=
       continuous_partial_u (d := d) hu i
@@ -917,7 +917,7 @@ theorem coeff_diffQuot_cutoff_deriv_cross_bound
       h_partial_cont.pow 2
     have h_tsupp_meas : MeasurableSet (tsupport η) :=
       isClosed_tsupport η |>.measurableSet
-    have h_tsupp_compact : IsCompact (tsupport η) := hη_supp
+    have h_tsupp_compact : IsCompact (tsupport η) := hη_support
     have h_eq : (fun x : E => M * N *
           (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
           ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2) =
@@ -938,7 +938,7 @@ theorem coeff_diffQuot_cutoff_deriv_cross_bound
       M * N *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
         (diffQuot k h u x)^2) volume :=
-    integrable_const_indicator_diffQuot_sq (d := d) hu hη_supp k hh (M * N)
+    integrable_const_indicator_diffQuot_sq (d := d) hu hη_support k hh (M * N)
   have h_pt_bound_int : ∀ i j : Fin d, Integrable (fun x : E =>
       M * N *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
@@ -1225,7 +1225,7 @@ theorem coeff_diffQuot_cutoff_deriv_cross_bound
 omit [NeZero d] in
 private theorem nirenbergTestFunction_sq_integral_le
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     (k : Fin d) {h : ℝ} (hh : h ≠ 0) :
@@ -1243,12 +1243,12 @@ private theorem nirenbergTestFunction_sq_integral_le
     have h2 : ContDiff ℝ (⊤ : ℕ∞) (DifferentialGeometry.Analysis.Sobolev.diffQuot k h u) :=
       contDiff_diffQuot_of_contDiff (d := d) hu k hh
     exact (h1.mul h2).of_le (by norm_cast)
-  have hg_supp : HasCompactSupport g := by
-    have h_eta_sq_supp : HasCompactSupport (fun y : E => η y ^ 2) := by
+  have hg_support : HasCompactSupport g := by
+    have h_eta_sq_support : HasCompactSupport (fun y : E => η y ^ 2) := by
       have heq : (fun y : E => η y ^ 2) = (fun y : E => η y * η y) := by
         funext y; ring
-      rw [heq]; exact hη_supp.mul_right
-    exact h_eta_sq_supp.mul_right
+      rw [heq]; exact hη_support.mul_right
+    exact h_eta_sq_support.mul_right
   have hnh : (-h) ≠ 0 := neg_ne_zero.mpr hh
   have h_thick_int : Integrable
       (fun y : E => ((fderiv ℝ g y) (EuclideanSpace.single k 1)) ^ 2)
@@ -1260,17 +1260,17 @@ private theorem nirenbergTestFunction_sq_integral_le
     have h_partial_sq_cont : Continuous
       (fun y : E => ((fderiv ℝ g y) (EuclideanSpace.single k 1))^2) :=
       h_partial_cont.pow 2
-    have h_partial_supp : HasCompactSupport
+    have h_partial_support : HasCompactSupport
         (fun y : E => (fderiv ℝ g y) (EuclideanSpace.single k 1)) :=
-      HasCompactSupport.fderiv_apply (𝕜 := ℝ) hg_supp (EuclideanSpace.single k 1)
-    have h_partial_sq_supp : HasCompactSupport
+      HasCompactSupport.fderiv_apply (𝕜 := ℝ) hg_support (EuclideanSpace.single k 1)
+    have h_partial_sq_support : HasCompactSupport
         (fun y : E => ((fderiv ℝ g y) (EuclideanSpace.single k 1))^2) := by
       have : (fun y : E => ((fderiv ℝ g y) (EuclideanSpace.single k 1))^2) =
           (fun x : ℝ => x^2) ∘ (fun y : E => (fderiv ℝ g y) (EuclideanSpace.single k 1)) := by
         funext y; rfl
       rw [this]
-      exact HasCompactSupport.comp_left h_partial_supp (by simp : (0 : ℝ)^2 = 0)
-    exact (h_partial_sq_cont.integrable_of_hasCompactSupport h_partial_sq_supp).integrableOn
+      exact HasCompactSupport.comp_left h_partial_support (by simp : (0 : ℝ)^2 = 0)
+    exact (h_partial_sq_cont.integrable_of_hasCompactSupport h_partial_sq_support).integrableOn
   have h_local := integral_sq_diffQuot_le_local (d := d) hg_smooth k hnh
     MeasurableSet.univ h_thick_int
   have h_v_test_eq : (fun x : E =>
@@ -1319,27 +1319,27 @@ private theorem nirenbergTestFunction_sq_integral_le
     have h_partial_sq_cont : Continuous
       (fun y : E => ((fderiv ℝ g y) (EuclideanSpace.single k 1))^2) :=
       h_partial_cont.pow 2
-    have h_partial_supp : HasCompactSupport
+    have h_partial_support : HasCompactSupport
         (fun y : E => (fderiv ℝ g y) (EuclideanSpace.single k 1)) :=
-      HasCompactSupport.fderiv_apply (𝕜 := ℝ) hg_supp (EuclideanSpace.single k 1)
-    have h_partial_sq_supp : HasCompactSupport
+      HasCompactSupport.fderiv_apply (𝕜 := ℝ) hg_support (EuclideanSpace.single k 1)
+    have h_partial_sq_support : HasCompactSupport
         (fun y : E => ((fderiv ℝ g y) (EuclideanSpace.single k 1))^2) := by
       have : (fun y : E => ((fderiv ℝ g y) (EuclideanSpace.single k 1))^2) =
           (fun x : ℝ => x^2) ∘ (fun y : E => (fderiv ℝ g y) (EuclideanSpace.single k 1)) := by
         funext y; rfl
       rw [this]
-      exact HasCompactSupport.comp_left h_partial_supp (by simp : (0 : ℝ)^2 = 0)
-    exact h_partial_sq_cont.integrable_of_hasCompactSupport h_partial_sq_supp
+      exact HasCompactSupport.comp_left h_partial_support (by simp : (0 : ℝ)^2 = 0)
+    exact h_partial_sq_cont.integrable_of_hasCompactSupport h_partial_sq_support
   have h_t1_int : Integrable (fun x : E =>
       8 * N^2 *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
         (diffQuot k h u x)^2) volume :=
-    integrable_const_indicator_diffQuot_sq (d := d) hu hη_supp k hh (8 * N^2)
+    integrable_const_indicator_diffQuot_sq (d := d) hu hη_support k hh (8 * N^2)
   have h_t2_int : Integrable (fun x : E =>
       2 * (η x)^2 *
         (diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single k 1)) x)^2) volume :=
-    integrable_const_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_supp k k hh 2
+    integrable_const_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_support k k hh 2
   have h_rhs_int : Integrable (fun x : E =>
       8 * N^2 *
         (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
@@ -1376,13 +1376,13 @@ private theorem nirenbergTestFunction_sq_integral_le
 
 theorem c_term_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d) (ε : ℝ) (hε : 0 < ε) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u : E → ℝ}, ContDiff ℝ (⊤ : ℕ∞) u →
@@ -1409,16 +1409,16 @@ theorem c_term_bound
     exact mul_nonneg (by linarith) hε.le
   refine ⟨C, hC_nn, ?_⟩
   intro u hu h hh hh_le
-  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_supp_in_Ω' hh_le
+  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_support_in_Ω' hh_le
   set v_test : E → ℝ :=
     DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
       k h η u with hv_test_def
-  have h_v_test_supp : tsupport v_test ⊆ Ω' := v_test_supported_in_Ω' hh_supp_in_Ω' k hh_le
+  have h_v_test_support : tsupport v_test ⊆ Ω' := v_test_supported_in_Ω' hh_support_in_Ω' k hh_le
   have h_v_test_in_Ω : tsupport v_test ⊆ Ω := fun x hx =>
-    hΩ'_closure (subset_closure (h_v_test_supp hx))
+    hΩ'_closure (subset_closure (h_v_test_support hx))
   have h_v_test_cont : Continuous v_test := continuous_v_test (d := d) hu hη k hh
-  have h_v_test_supp_cmp : HasCompactSupport v_test :=
-    hasCompactSupport_v_test (d := d) hη_supp k h
+  have h_v_test_support_cmp : HasCompactSupport v_test :=
+    hasCompactSupport_v_test (d := d) hη_support k h
   have h_c_cont : Continuous B.c := B.continuous_c
   have h_u_cont : Continuous u := hu.continuous
   have h_v_test_zero_outside : ∀ x ∉ Ω, v_test x = 0 := fun x hx =>
@@ -1431,7 +1431,7 @@ theorem c_term_bound
     exact setIntegral_eq_integral_of_forall_compl_eq_zero h_eq_zero
   rw [h_int_E]
   have h_v_test_zero_outside_Ω' : ∀ x ∉ Ω', v_test x = 0 := fun x hx =>
-    image_eq_zero_of_notMem_tsupport (fun hy => hx (h_v_test_supp hy))
+    image_eq_zero_of_notMem_tsupport (fun hy => hx (h_v_test_support hy))
   have h_int_Ω' : ∫ x, B.c x * u x * v_test x ∂(volume : Measure E) =
       ∫ x in Ω', B.c x * u x * v_test x ∂(volume : Measure E) := by
     have h_eq_zero : ∀ x, x ∉ Ω' → B.c x * u x * v_test x = 0 := by
@@ -1454,14 +1454,14 @@ theorem c_term_bound
     have h_ε_eq : ε * (v_test x)^2 = 2 * ((ε / 2) * (v_test x)^2) := by ring
     linarith [h_y, h_div_eq, h_ε_eq]
   have h_v_test_sq_int_Ω' : IntegrableOn (fun x : E => (v_test x)^2) Ω' volume := by
-    have h_square_supp : HasCompactSupport (fun x : E => (v_test x) ^ 2) := by
-      exact HasCompactSupport.intro' h_v_test_supp_cmp (isClosed_tsupport v_test)
+    have h_square_support : HasCompactSupport (fun x : E => (v_test x) ^ 2) := by
+      exact HasCompactSupport.intro' h_v_test_support_cmp (isClosed_tsupport v_test)
         (fun x hx => by
           rw [image_eq_zero_of_notMem_tsupport hx]
           norm_num)
     have h_int : Integrable (fun x : E => (v_test x)^2) volume :=
       (h_v_test_cont.pow 2).integrable_of_hasCompactSupport
-        h_square_supp
+        h_square_support
     exact h_int.integrableOn
   have h_cu_sq_int_Ω' : IntegrableOn (fun x : E => (B.c x * u x)^2) Ω' volume := by
     have h_cont : Continuous (fun x : E => (B.c x * u x)^2) :=
@@ -1472,9 +1472,9 @@ theorem c_term_bound
   have h_cu_v_int_Ω' : IntegrableOn (fun x : E => B.c x * u x * v_test x) Ω' volume := by
     have h_cont : Continuous (fun x : E => B.c x * u x * v_test x) :=
       (h_c_cont.mul h_u_cont).mul h_v_test_cont
-    have h_supp : HasCompactSupport (fun x : E => B.c x * u x * v_test x) :=
-      h_v_test_supp_cmp.mul_left
-    exact (h_cont.integrable_of_hasCompactSupport h_supp).integrableOn
+    have h_support : HasCompactSupport (fun x : E => B.c x * u x * v_test x) :=
+      h_v_test_support_cmp.mul_left
+    exact (h_cont.integrable_of_hasCompactSupport h_support).integrableOn
   have h_rhs_int_Ω' : IntegrableOn (fun x : E =>
       (ε/2) * (v_test x)^2 + (1/(2*ε)) * (B.c x * u x)^2) Ω' volume := by
     refine (h_v_test_sq_int_Ω'.const_mul (ε/2)).add (h_cu_sq_int_Ω'.const_mul (1/(2*ε)))
@@ -1496,14 +1496,14 @@ theorem c_term_bound
   have h_v_test_sq_Ω'_le_E :
       ∫ x in Ω', (v_test x)^2 ∂(volume : Measure E) ≤
       ∫ x, (v_test x)^2 ∂(volume : Measure E) := by
-    have h_square_supp : HasCompactSupport (fun x : E => (v_test x) ^ 2) := by
-      exact HasCompactSupport.intro' h_v_test_supp_cmp (isClosed_tsupport v_test)
+    have h_square_support : HasCompactSupport (fun x : E => (v_test x) ^ 2) := by
+      exact HasCompactSupport.intro' h_v_test_support_cmp (isClosed_tsupport v_test)
         (fun x hx => by
           rw [image_eq_zero_of_notMem_tsupport hx]
           norm_num)
     have h_int_E : Integrable (fun x : E => (v_test x)^2) volume :=
       (h_v_test_cont.pow 2).integrable_of_hasCompactSupport
-        h_square_supp
+        h_square_support
     have h_v_test_sq_eq : ∫ x, (v_test x)^2 ∂(volume : Measure E) =
         ∫ x in Ω', (v_test x)^2 ∂(volume : Measure E) := by
       have h_eq_zero : ∀ x, x ∉ Ω' → (v_test x)^2 = 0 := by
@@ -1511,7 +1511,7 @@ theorem c_term_bound
         rw [h_v_test_zero_outside_Ω' x hx]; ring
       exact (setIntegral_eq_integral_of_forall_compl_eq_zero h_eq_zero).symm
     rw [h_v_test_sq_eq]
-  have h_v_test_bound := nirenbergTestFunction_sq_integral_le (d := d) hu hη hη_supp hη_range
+  have h_v_test_bound := nirenbergTestFunction_sq_integral_le (d := d) hu hη hη_support hη_range
     h_fderiv_eta k hh
   have h_cu_sq_bound : ∀ x ∈ Ω', (B.c x * u x)^2 ≤ Mc^2 * (u x)^2 := by
     intro x hx
@@ -1566,12 +1566,12 @@ theorem c_term_bound
       (η x)^2 *
         (diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single k 1)) x)^2) volume :=
-    integrable_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_supp k k hh
+    integrable_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_support k k hh
   have h_eta_sq_sum_int : Integrable (fun x : E =>
       (η x)^2 *
         ∑ i : Fin d, (diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)^2) volume :=
-    integrable_eta_sq_diffQuot_sum (d := d) hu hη hη_supp k hh
+    integrable_eta_sq_diffQuot_sum (d := d) hu hη hη_support k hh
   have h_partial_int_le :
       ∫ x, (η x)^2 *
           (diffQuot k h
@@ -1678,13 +1678,13 @@ theorem c_term_bound
 omit [NeZero d] in
 theorem f_term_bound
     {Ω : Set E}
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d) (ε : ℝ) (hε : 0 < ε) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -1711,21 +1711,21 @@ theorem f_term_bound
     refine mul_nonneg ?_ (sq_nonneg _)
     exact mul_nonneg (by linarith) hε.le
   refine ⟨C, hC_nn, ?_⟩
-  intro f hf_l2_loc u hu h hh hh_le
-  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_supp_in_Ω' hh_le
+  intro f hf_l2_local u hu h hh hh_le
+  have h_thick_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω' := hh_support_in_Ω' hh_le
   set v_test : E → ℝ :=
     DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
       k h η u with hv_test_def
-  have h_v_test_supp : tsupport v_test ⊆ Ω' := v_test_supported_in_Ω' hh_supp_in_Ω' k hh_le
+  have h_v_test_support : tsupport v_test ⊆ Ω' := v_test_supported_in_Ω' hh_support_in_Ω' k hh_le
   have h_v_test_cont : Continuous v_test := continuous_v_test (d := d) hu hη k hh
-  have h_v_test_supp_cmp : HasCompactSupport v_test :=
-    hasCompactSupport_v_test (d := d) hη_supp k h
+  have h_v_test_support_cmp : HasCompactSupport v_test :=
+    hasCompactSupport_v_test (d := d) hη_support k h
   have h_v_test_zero_outside : ∀ x ∉ Ω, v_test x = 0 := fun x hx =>
     image_eq_zero_of_notMem_tsupport
-      (fun hy => hx (hΩ'_closure (subset_closure (h_v_test_supp hy))))
+      (fun hy => hx (hΩ'_closure (subset_closure (h_v_test_support hy))))
   have h_v_test_zero_outside_Ω' : ∀ x ∉ Ω', v_test x = 0 := fun x hx =>
-    image_eq_zero_of_notMem_tsupport (fun hy => hx (h_v_test_supp hy))
-  have hf_memLp : MemLp f 2 (volume.restrict Ω') := hf_l2_loc hΩ'_compact
+    image_eq_zero_of_notMem_tsupport (fun hy => hx (h_v_test_support hy))
+  have hf_memLp : MemLp f 2 (volume.restrict Ω') := hf_l2_local hΩ'_compact
   have hf_sq_int_Ω' : IntegrableOn (fun x : E => (f x)^2) Ω' volume := hf_memLp.integrable_sq
   have h_int_E : ∫ x in Ω, f x * v_test x ∂(volume : Measure E) =
       ∫ x in Ω', f x * v_test x ∂(volume : Measure E) := by
@@ -1749,14 +1749,14 @@ theorem f_term_bound
     have h_ε_eq : ε * (v_test x)^2 = 2 * ((ε / 2) * (v_test x)^2) := by ring
     linarith [h_y, h_div_eq, h_ε_eq]
   have h_v_test_sq_int_Ω' : IntegrableOn (fun x : E => (v_test x)^2) Ω' volume := by
-    have h_square_supp : HasCompactSupport (fun x : E => (v_test x) ^ 2) := by
-      exact HasCompactSupport.intro' h_v_test_supp_cmp (isClosed_tsupport v_test)
+    have h_square_support : HasCompactSupport (fun x : E => (v_test x) ^ 2) := by
+      exact HasCompactSupport.intro' h_v_test_support_cmp (isClosed_tsupport v_test)
         (fun x hx => by
           rw [image_eq_zero_of_notMem_tsupport hx]
           norm_num)
     have h_int : Integrable (fun x : E => (v_test x)^2) volume :=
       (h_v_test_cont.pow 2).integrable_of_hasCompactSupport
-        h_square_supp
+        h_square_support
     exact h_int.integrableOn
   have h_f_v_int_Ω' : IntegrableOn (fun x : E => f x * v_test x) Ω' volume := by
     have h_pointwise_abs : ∀ x : E,
@@ -1807,7 +1807,7 @@ theorem f_term_bound
         rw [h_v_test_zero_outside_Ω' x hx]; ring
       exact (setIntegral_eq_integral_of_forall_compl_eq_zero h_eq_zero).symm
     rw [h_v_test_sq_eq]
-  have h_v_test_bound := nirenbergTestFunction_sq_integral_le (d := d) hu hη hη_supp hη_range
+  have h_v_test_bound := nirenbergTestFunction_sq_integral_le (d := d) hu hη hη_support hη_range
     h_fderiv_eta k hh
   have h_v_sq_le_8N_2I :
       ∫ x in Ω', (v_test x)^2 ∂(volume : Measure E) ≤
@@ -1840,12 +1840,12 @@ theorem f_term_bound
       (η x)^2 *
         (diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single k 1)) x)^2) volume :=
-    integrable_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_supp k k hh
+    integrable_eta_sq_diffQuot_partial_sq (d := d) hu hη hη_support k k hh
   have h_eta_sq_sum_int : Integrable (fun x : E =>
       (η x)^2 *
         ∑ i : Fin d, (diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)^2) volume :=
-    integrable_eta_sq_diffQuot_sum (d := d) hu hη hη_supp k hh
+    integrable_eta_sq_diffQuot_sum (d := d) hu hη hη_support k hh
   have h_partial_int_le :
       ∫ x, (η x)^2 *
           (diffQuot k h
@@ -1940,13 +1940,13 @@ theorem f_term_bound
 
 theorem nirenberg_master_inequality_after_young
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -1968,28 +1968,28 @@ theorem nirenberg_master_inequality_after_young
           ∫ x in Ω', (u x)^2 ∂(volume : Measure E) +
           ∫ x in Ω', (f x)^2 ∂(volume : Measure E)) := by
   classical
-  set ε_eff : ℝ := B.lam / 8 with hε_eff_def
-  have hε_eff_pos : 0 < ε_eff := by
-    rw [hε_eff_def]; exact div_pos B.hlam_pos (by norm_num)
+  set ε_effective : ℝ := B.lam / 8 with hε_effective_def
+  have hε_effective_pos : 0 < ε_effective := by
+    rw [hε_effective_def]; exact div_pos B.hlam_pos (by norm_num)
   obtain ⟨C1, hC1_nn, hC1⟩ := translated_coeff_cutoff_deriv_diffQuot_cross_bound (d := d) B hη
-    hη_supp hη_range h_fderiv_eta hΩ' hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
-  obtain ⟨C2, hC2_nn, hC2⟩ := coeff_diffQuot_cutoff_sq_gradient_cross_bound (d := d) B hη hη_supp
+    hη_support hη_range h_fderiv_eta hΩ' hΩ'_compact hh_support_in_Ω' k ε_effective hε_effective_pos
+  obtain ⟨C2, hC2_nn, hC2⟩ := coeff_diffQuot_cutoff_sq_gradient_cross_bound (d := d) B hη hη_support
     hη_range
-    hΩ' hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
-  obtain ⟨C3, hC3_nn, hC3⟩ := coeff_diffQuot_cutoff_deriv_cross_bound (d := d) B hη hη_supp hη_range
+    hΩ' hΩ'_compact hh_support_in_Ω' k ε_effective hε_effective_pos
+  obtain ⟨C3, hC3_nn, hC3⟩ := coeff_diffQuot_cutoff_deriv_cross_bound (d := d) B hη hη_support hη_range
     hN
-    h_fderiv_eta hΩ' hΩ'_compact hh_supp_in_Ω' k
-  obtain ⟨Cc, hCc_nn, hCc⟩ := c_term_bound (d := d) B hη hη_supp hη_range
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
-  obtain ⟨Cf, hCf_nn, hCf⟩ := f_term_bound (d := d) hη hη_supp hη_range
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k ε_eff hε_eff_pos
+    h_fderiv_eta hΩ' hΩ'_compact hh_support_in_Ω' k
+  obtain ⟨Cc, hCc_nn, hCc⟩ := c_term_bound (d := d) B hη hη_support hη_range
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_support_in_Ω' k ε_effective hε_effective_pos
+  obtain ⟨Cf, hCf_nn, hCf⟩ := f_term_bound (d := d) hη hη_support hη_range
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_support_in_Ω' k ε_effective hε_effective_pos
   set C : ℝ := max (C1 + C2 + C3 + Cc + Cf) (max Cc Cf) with hC_def
   have hC_nn : 0 ≤ C := by
     rw [hC_def]
     refine le_max_of_le_left ?_
     refine add_nonneg (add_nonneg (add_nonneg (add_nonneg hC1_nn hC2_nn) hC3_nn) hCc_nn) hCf_nn
   refine ⟨C, hC_nn, ?_⟩
-  intro u f h_weak hf_l2_loc h hh hh_le
+  intro u f h_weak hf_l2_local h hh hh_le
   have hu : ContDiff ℝ (⊤ : ℕ∞) u := h_weak.1
   set I : ℝ := ∫ x, (η x)^2 *
       ∑ i : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -2006,17 +2006,17 @@ theorem nirenberg_master_inequality_after_young
   have hU_nn : 0 ≤ U := integral_nonneg (fun x => sq_nonneg _)
   have hF_nn : 0 ≤ F := integral_nonneg (fun x => sq_nonneg _)
   have h_thick_in_Ω : Metric.cthickening |h| (tsupport η) ⊆ Ω :=
-    (hh_supp_in_Ω' hh_le).trans (subset_closure.trans hΩ'_closure)
-  have h_master := nirenberg_master_inequality (d := d) B h_weak hη hη_supp k hh h_thick_in_Ω
+    (hh_support_in_Ω' hh_le).trans (subset_closure.trans hΩ'_closure)
+  have h_master := nirenberg_master_inequality (d := d) B h_weak hη hη_support k hh h_thick_in_Ω
   have hC1_h := hC1 hu hh hh_le
   have hC2_h := hC2 hu hh hh_le
   have hC3_h := hC3 hu hh hh_le
   have hCc_h := hCc hu hh hh_le
-  have hCf_h := hCf hf_l2_loc hu hh hh_le
-  have h_4ε_eq : 4 * ε_eff = B.lam / 2 := by
-    rw [hε_eff_def]; ring
+  have hCf_h := hCf hf_l2_local hu hh hh_le
+  have h_4ε_eq : 4 * ε_effective = B.lam / 2 := by
+    rw [hε_effective_def]; ring
   have h_combine : B.lam * I ≤
-      4 * ε_eff * I + (C1 + C2 + C3 + Cc + Cf) * G + Cc * U + Cf * F := by
+      4 * ε_effective * I + (C1 + C2 + C3 + Cc + Cf) * G + Cc * U + Cf * F := by
     have h_sum_bound :
         |∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
               DifferentialGeometry.Analysis.Sobolev.translate k h
@@ -2046,8 +2046,8 @@ theorem nirenberg_master_inequality_after_young
           |∫ x in Ω, B.c x * u x *
               DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
                 k h η u x| ≤
-        (ε_eff * I + C1 * G) + (ε_eff * I + C2 * G) + (C3 * G) +
-          (ε_eff * I + Cf * (G + F)) + (ε_eff * I + Cc * (G + U)) := by
+        (ε_effective * I + C1 * G) + (ε_effective * I + C2 * G) + (C3 * G) +
+          (ε_effective * I + Cf * (G + F)) + (ε_effective * I + Cc * (G + U)) := by
       have h1 : |- ∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
               DifferentialGeometry.Analysis.Sobolev.translate k h
                 (fun y : E => B.a y i j) x * (η x) *
@@ -2055,7 +2055,7 @@ theorem nirenberg_master_inequality_after_young
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
-            ∂(volume : Measure E)| ≤ ε_eff * I + C1 * G := hC1_h
+            ∂(volume : Measure E)| ≤ ε_effective * I + C1 * G := hC1_h
       have h1' :
         |∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
               DifferentialGeometry.Analysis.Sobolev.translate k h
@@ -2064,7 +2064,7 @@ theorem nirenberg_master_inequality_after_young
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
-            ∂(volume : Measure E)| ≤ ε_eff * I + C1 * G := by
+            ∂(volume : Measure E)| ≤ ε_effective * I + C1 * G := by
         rw [← abs_neg]; exact h1
       have h2 : |- ∑ i : Fin d, ∑ j : Fin d, ∫ x,
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -2072,7 +2072,7 @@ theorem nirenberg_master_inequality_after_young
               ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x
-            ∂(volume : Measure E)| ≤ ε_eff * I + C2 * G := hC2_h
+            ∂(volume : Measure E)| ≤ ε_effective * I + C2 * G := hC2_h
       have h2' :
         |∑ i : Fin d, ∑ j : Fin d, ∫ x,
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -2080,7 +2080,7 @@ theorem nirenberg_master_inequality_after_young
               ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x
-            ∂(volume : Measure E)| ≤ ε_eff * I + C2 * G := by
+            ∂(volume : Measure E)| ≤ ε_effective * I + C2 * G := by
         rw [← abs_neg]; exact h2
       have h3 : |- ∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -2103,7 +2103,7 @@ theorem nirenberg_master_inequality_after_young
     have hCc_distrib : Cc * (G + U) = Cc * G + Cc * U := by ring
     have hCf_distrib : Cf * (G + F) = Cf * G + Cf * F := by ring
     linarith [hCc_distrib, hCf_distrib]
-  rw [show (4 * ε_eff * I) = (B.lam / 2) * I from by rw [h_4ε_eq]] at h_combine
+  rw [show (4 * ε_effective * I) = (B.lam / 2) * I from by rw [h_4ε_eq]] at h_combine
   have hC_grad_le : C1 + C2 + C3 + Cc + Cf ≤ C := le_max_left _ _
   have hC_Cc_le : Cc ≤ C := le_trans (le_max_left _ _) (le_max_right _ _)
   have hC_Cf_le : Cf ≤ C := le_trans (le_max_right _ _) (le_max_right _ _)

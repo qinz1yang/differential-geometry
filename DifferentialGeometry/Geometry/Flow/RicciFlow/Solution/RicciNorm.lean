@@ -270,13 +270,13 @@ structure IsSmoothSolutionOn
               (S.ricci (t : Real) x))
           D.carrier
           (t : Real)
-  invEvol :
+  invEvolution :
     ∀ x0 : M,
       InverseMetricEvolutionEquationInFrame
         (I := I) S (coordInv (I := I) S x0)
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0)
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0)
-  ricciEvol :
+  ricciEvolution :
     ∀ x0 : M, ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E),
       HasDerivWithinAt
@@ -329,7 +329,7 @@ theorem scalarCont
   hS.scalarSTCont
 
 omit [SigmaCompactSpace M] in
-theorem scalarReg
+theorem scalarRegularity
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S) :

@@ -14,7 +14,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set
 open scoped ContDiff Manifold Topology
@@ -129,7 +129,7 @@ theorem NormalBallChart.MetricEquivOn.hom_dist_le
     apply hseg
     rw [segment_eq_image_lineMap]
     exact ⟨t, ht, rfl⟩
-  have hetaSrc : MapsTo eta (Set.Icc (0 : Real) 1) chi.hom.source :=
+  have hetaSource : MapsTo eta (Set.Icc (0 : Real) 1) chi.hom.source :=
     fun _ ht => hUsrc (hetaU ht)
   have hetaSmooth : ContMDiffOn 𝓘(Real, Real) 𝓘(Real, F) 1 eta
       (Set.Icc (0 : Real) 1) := by
@@ -137,7 +137,7 @@ theorem NormalBallChart.MetricEquivOn.hom_dist_le
     exact eta.contDiff.contDiffOn
   have hgammaSmooth : ContMDiffOn 𝓘(Real, Real) J 1 gamma
       (Set.Icc (0 : Real) 1) :=
-    chi.hom.contMDiffOn.comp hetaSmooth hetaSrc
+    chi.hom.contMDiffOn.comp hetaSmooth hetaSource
   have hgammaZero : gamma 0 = chi.hom u := by
     simp only [gamma, Function.comp_apply, eta,
       ContinuousAffineMap.coe_lineMap_eq, AffineMap.lineMap_apply_zero]
@@ -149,7 +149,7 @@ theorem NormalBallChart.MetricEquivOn.hom_dist_le
         ENNReal.ofReal (Real.sqrt 2 * dist u v) := by
     intro t ht
     have heDiff : MDifferentiableAt 𝓘(Real, F) J chi.hom (eta t) :=
-      chi.hom.mdifferentiableAt one_ne_zero (hetaSrc ht)
+      chi.hom.mdifferentiableAt one_ne_zero (hetaSource ht)
     have hetaDiff : MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, F) eta t := by
       rw [mdifferentiableAt_iff_differentiableAt]
       exact eta.differentiableAt
@@ -338,11 +338,11 @@ theorem NormalBallChart.MetricEquivOn.inv_dist_le
           (chi.hom.open_target.mem_nhds (hjoin ht).1)
     have hetaDiff : MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, F) eta t := by
       simpa only [eta] using hinvDiff.comp t hgammaDiff
-    have hetaSrc : eta t ∈ chi.hom.source :=
+    have hetaSource : eta t ∈ chi.hom.source :=
       chi.hom.map_target (hjoin ht).1
     have hhomDiff : MDifferentiableAt 𝓘(Real, F) J chi.hom (eta t) :=
-      (chi.hom.contMDiffOn_toFun.mdifferentiableOn one_ne_zero _ hetaSrc)
-        |>.mdifferentiableAt (chi.hom.open_source.mem_nhds hetaSrc)
+      (chi.hom.contMDiffOn_toFun.mdifferentiableOn one_ne_zero _ hetaSource)
+        |>.mdifferentiableAt (chi.hom.open_source.mem_nhds hetaSource)
     have hnear : ∀ᶠ s in nhds t, gamma s ∈ chi.hom.target :=
       hgammaCont.continuousAt.eventually
         (chi.hom.open_target.mem_nhds (hjoin ht).1)
@@ -358,7 +358,7 @@ theorem NormalBallChart.MetricEquivOn.inv_dist_le
         (I := 𝓘(Real, Real)) (I' := J) heq
       rw [mfderiv_comp t hhomDiff hetaDiff] at hderiv
       simpa only using hderiv
-    have hetaVel : mfderiv 𝓘(Real, Real) 𝓘(Real, F) eta t 1 =
+    have hetaVelocity : mfderiv 𝓘(Real, Real) 𝓘(Real, F) eta t 1 =
         deriv eta t := by
       rw [mfderiv_eq_fderiv]
       exact fderiv_apply_one_eq_deriv
@@ -368,7 +368,7 @@ theorem NormalBallChart.MetricEquivOn.inv_dist_le
       change (mfderiv 𝓘(Real, F) J chi.hom (eta t))
           (mfderiv 𝓘(Real, Real) 𝓘(Real, F) eta t 1) =
         mfderiv 𝓘(Real, Real) J gamma t 1 at hv
-      rw [hetaVel] at hv
+      rw [hetaVelocity] at hv
       exact hv
     have hlaunch : Y.metric.inner x w w = d ^ 2 := by
       have hnonneg : 0 ≤ Y.metric.inner x w w :=
@@ -466,14 +466,14 @@ theorem NormalCoordMetricEquivOn.symm_dist_le
     apply hseg
     rw [segment_eq_image_lineMap]
     exact ⟨t, ht, rfl⟩
-  have hetaSrc : MapsTo eta (Set.Icc (0 : Real) 1) e.source := by
+  have hetaSource : MapsTo eta (Set.Icc (0 : Real) 1) e.source := by
     intro t ht
     simpa only [e, normalChartAt_target_eq] using hUtgt (hetaU ht)
   have hetaSmooth : ContMDiffOn 𝓘(Real, Real) 𝓘(Real, E) 1 eta (Set.Icc (0 : Real) 1) := by
     rw [contMDiffOn_iff_contDiffOn]
     exact eta.contDiff.contDiffOn
   have hgammaSmooth : ContMDiffOn 𝓘(Real, Real) I 1 gamma (Set.Icc (0 : Real) 1) :=
-    e.contMDiffOn.comp hetaSmooth hetaSrc
+    e.contMDiffOn.comp hetaSmooth hetaSource
   have hgammaZero : gamma 0 = e u := by
     simp only [gamma, Function.comp_apply, eta, ContinuousAffineMap.coe_lineMap_eq,
       AffineMap.lineMap_apply_zero]
@@ -485,7 +485,7 @@ theorem NormalCoordMetricEquivOn.symm_dist_le
         ENNReal.ofReal (Real.sqrt 2 * dist u v) := by
     intro t ht
     have heDiff : MDifferentiableAt 𝓘(Real, E) I e (eta t) :=
-      e.mdifferentiableAt one_ne_zero (hetaSrc ht)
+      e.mdifferentiableAt one_ne_zero (hetaSource ht)
     have hetaDiff : MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, E) eta t := by
       rw [mdifferentiableAt_iff_differentiableAt]
       exact eta.differentiableAt
@@ -670,12 +670,12 @@ theorem NormalCoordMetricEquivOn.chart_dist_le
           (chi.open_source.mem_nhds (hjoin ht).1)
     have hetaDiff : MDifferentiableAt 𝓘(Real, Real) 𝓘(Real, E) eta t := by
       simpa only [eta] using hchiDiff.comp t hgammaDiff
-    have hetaSrc : eta t ∈ e.source := by
+    have hetaSource : eta t ∈ e.source := by
       rw [← normalChartAt_target_eq (I := I)]
       exact chi.map_source (hjoin ht).1
     have heDiff : MDifferentiableAt 𝓘(Real, E) I e (eta t) :=
-      (e.contMDiffOn_toFun.mdifferentiableOn one_ne_zero _ hetaSrc).mdifferentiableAt
-        (e.open_source.mem_nhds hetaSrc)
+      (e.contMDiffOn_toFun.mdifferentiableOn one_ne_zero _ hetaSource).mdifferentiableAt
+        (e.open_source.mem_nhds hetaSource)
     have hnear : ∀ᶠ s in nhds t, gamma s ∈ chi.source :=
       hgammaCont.continuousAt.eventually (chi.open_source.mem_nhds (hjoin ht).1)
     have heq : e ∘ eta =ᶠ[nhds t] gamma := by
@@ -690,7 +690,7 @@ theorem NormalCoordMetricEquivOn.chart_dist_le
         (I := 𝓘(Real, Real)) (I' := I) heq
       rw [mfderiv_comp t heDiff hetaDiff] at hderiv
       simpa only using hderiv
-    have hetaVel : mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta t 1 =
+    have hetaVelocity : mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta t 1 =
         deriv eta t := by
       rw [mfderiv_eq_fderiv]
       change (fderiv Real eta t : Real →L[Real] E) 1 = deriv eta t
@@ -701,7 +701,7 @@ theorem NormalCoordMetricEquivOn.chart_dist_le
       change (mfderiv 𝓘(Real, E) I e (eta t))
           (mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta t 1) =
         mfderiv 𝓘(Real, Real) I gamma t 1 at hv
-      rw [hetaVel] at hv
+      rw [hetaVelocity] at hv
       exact hv
     have hlaunch : Y.metric.inner x w w = d ^ 2 := by
       have hnonneg : 0 ≤ Y.metric.inner x w w :=
@@ -764,7 +764,7 @@ theorem NormalCoordMetricEquivOn.chart_dist_le
   norm_num at hmean
   simpa only [d] using hmean
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

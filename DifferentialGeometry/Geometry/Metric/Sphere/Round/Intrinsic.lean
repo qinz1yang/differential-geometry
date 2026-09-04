@@ -64,7 +64,7 @@ theorem intrinsic_eq_gc
     exact greatCircle_geodesic (n := n) p (dIncl (n := n) p v)
       hv (dIncl_orth p v) s
   have heq : Set.EqOn γi γc Set.univ := by
-    apply geo_eqOn_of_init (I := 𝓡 n) (roundMetric (E := E) (n := n))
+    apply geo_eqOn_of_initial (I := 𝓡 n) (roundMetric (E := E) (n := n))
       isOpen_univ isPreconnected_univ (Set.mem_univ 0)
     · exact
         (intrinsicGeodesic_isGeodesic (I := 𝓡 n)
@@ -81,7 +81,7 @@ theorem intrinsic_eq_gc
       rw [intrinsicGeodesic_mfderiv_zero]
       apply injective_mvfderiv_subtypeVal_sphere p
       have hvel :=
-        greatCircle_vel (n := n) p (dIncl (n := n) p v)
+        greatCircle_velocity (n := n) p (dIncl (n := n) p v)
           hv (dIncl_orth p v) 0
       rw [greatCircle_zero] at hvel
       change dIncl (n := n) p v = dIncl (n := n) p

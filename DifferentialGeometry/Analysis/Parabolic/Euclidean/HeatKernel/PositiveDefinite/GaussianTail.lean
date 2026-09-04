@@ -13,13 +13,13 @@ variable {n : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
 
 private abbrev Eucl := EuclideanSpace Real n
 
-private def stdGauss (y : Eucl (n := n)) : Real :=
+private def standardGauss (y : Eucl (n := n)) : Real :=
   ((Real.pi : Real) ^ ((Fintype.card n : Real) / 2))⁻¹ *
     Real.exp (-‖y‖ ^ 2)
 
 omit [DecidableEq n] in
-private theorem stdGauss_int :
-    Integrable (stdGauss (n := n)) := by
+private theorem standardGauss_int :
+    Integrable (standardGauss (n := n)) := by
   change Integrable (fun y : Eucl (n := n) ↦
     ((Real.pi : Real) ^ ((Fintype.card n : Real) / 2))⁻¹ *
       Real.exp (-‖y‖ ^ 2))
@@ -28,15 +28,15 @@ private theorem stdGauss_int :
       (((Real.pi : Real) ^ ((Fintype.card n : Real) / 2))⁻¹)
 
 omit [DecidableEq n] in
-private theorem stdGauss_tail :
+private theorem standardGauss_tail :
     Tendsto
       (fun R : Real ↦
         ∫⁻ y : Eucl (n := n) in {y | R < ‖y‖},
-          ENNReal.ofReal (stdGauss y) ∂volume)
+          ENNReal.ofReal (standardGauss y) ∂volume)
       atTop (nhds 0) := by
   let s : Real → Set (Eucl (n := n)) := fun R ↦ {y | R < ‖y‖}
   let ν : Measure (Eucl (n := n)) :=
-    volume.withDensity (fun y ↦ ENNReal.ofReal (stdGauss y))
+    volume.withDensity (fun y ↦ ENNReal.ofReal (standardGauss y))
   have hs : ∀ R, MeasurableSet (s R) := by
     intro R
     exact measurableSet_lt measurable_const continuous_norm.measurable
@@ -48,7 +48,7 @@ private theorem stdGauss_tail :
     · intro y hy
       exact False.elim ((lt_irrefl ‖y‖) (mem_iInter.mp hy ‖y‖))
     · exact empty_subset _
-  have hstd_nonneg : ∀ y : Eucl (n := n), 0 ≤ stdGauss y := by
+  have hstd_nonneg : ∀ y : Eucl (n := n), 0 ≤ standardGauss y := by
     intro y
     exact mul_nonneg
       (inv_nonneg.mpr (Real.rpow_nonneg Real.pi_pos.le _))
@@ -57,8 +57,8 @@ private theorem stdGauss_tail :
     simp only [ν, withDensity_apply _ MeasurableSet.univ,
       Measure.restrict_univ]
     exact (lintegral_ofReal_ne_top_iff_integrable
-      stdGauss_int.aestronglyMeasurable
-      (ae_of_all _ hstd_nonneg)).2 stdGauss_int
+      standardGauss_int.aestronglyMeasurable
+      (ae_of_all _ hstd_nonneg)).2 standardGauss_int
   have hfin : ∃ R, ν (s R) ≠ (⊤ : ENNReal) := by
     refine ⟨0, ne_of_lt ((measure_mono (subset_univ (s 0))).trans_lt ?_)⟩
     exact lt_top_iff_ne_top.mpr hνfin
@@ -70,7 +70,7 @@ private theorem stdGauss_tail :
       (ν ∘ s) =
         (fun R : Real ↦
           ∫⁻ y : Eucl (n := n) in {y | R < ‖y‖},
-            ENNReal.ofReal (stdGauss y) ∂volume) := by
+            ENNReal.ofReal (standardGauss y) ∂volume) := by
     funext R
     simp only [Function.comp_apply, ν, withDensity_apply _ (hs R), s]
   rw [heq] at ht'
@@ -95,7 +95,7 @@ theorem gaussSPDTail_eq
   let d : Real := LinearMap.det
     (L : Eucl (n := n) →ₗ[Real] Eucl (n := n))
   let f : Eucl (n := n) → ENNReal :=
-    fun y ↦ ENNReal.ofReal (stdGauss y)
+    fun y ↦ ENNReal.ofReal (standardGauss y)
   let s : Set (Eucl (n := n)) := {y | R < ‖y‖}
   have hd : d = Real.sqrt A.det := spdSqrt_det A hA
   have hdpos : 0 < d := hd ▸ Real.sqrt_pos.2 hA.det_pos
@@ -119,7 +119,7 @@ theorem gaussSPDTail_eq
     rw [← spdSqrt_norm_sq A hA]
     rw [Real.sqrt_sq (norm_nonneg (L x))]
   have hf : Measurable f := by
-    dsimp only [f, stdGauss]
+    dsimp only [f, standardGauss]
     fun_prop
   have hs : MeasurableSet s := by
     exact measurableSet_lt measurable_const continuous_norm.measurable
@@ -134,7 +134,7 @@ theorem gaussSPDTail_eq
         ENNReal.ofReal d * f (L x) := by
     intro x
     rw [← hd, ← spdSqrt_norm_sq A hA]
-    dsimp only [f, stdGauss]
+    dsimp only [f, standardGauss]
     let c : Real :=
       ((Real.pi : Real) ^ ((Fintype.card n : Real) / 2))⁻¹
     have hc : 0 ≤ c :=
@@ -194,7 +194,7 @@ theorem gaussSPDTail_eq
       rw [← lintegral_indicator hs]
       exact lintegral_congr fun _ ↦ rfl
 
-theorem gaussSPDTail_unif (eps : ENNReal) (heps : 0 < eps) :
+theorem gaussianPosDef_uniform_tail (eps : ENNReal) (heps : 0 < eps) :
     ∃ R : Real, 0 ≤ R ∧ ∀ (A : Matrix n n Real), A.PosDef →
       (∫⁻ x : Eucl (n := n) in
           {x | R < Real.sqrt
@@ -204,7 +204,7 @@ theorem gaussSPDTail_unif (eps : ENNReal) (heps : 0 < eps) :
               Real.sqrt A.det *
               Real.exp (-inner Real x
                 (Matrix.toEuclideanCLM (n := n) (𝕜 := Real) A x))) ∂volume) ≤ eps := by
-  have hevent := (tendsto_order.1 (stdGauss_tail (n := n))).2 eps heps
+  have hevent := (tendsto_order.1 (standardGauss_tail (n := n))).2 eps heps
   obtain ⟨R₀, hR₀⟩ := hevent.exists_forall_of_atTop
   let R := max 0 R₀
   refine ⟨R, le_max_left _ _, ?_⟩

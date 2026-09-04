@@ -12,7 +12,7 @@ open Set Function Filter Bundle Manifold TopologicalSpace DifferentialGeometry.T
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -26,12 +26,12 @@ variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
 namespace OpenMetricConvergenceData
 
-theorem scalar_conv
+theorem scalar_convergence
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
@@ -54,7 +54,7 @@ theorem scalar_conv
               sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
               sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
@@ -100,18 +100,18 @@ theorem scalar_conv
     mem_of_mem_nhds hn
   simpa only [Function.comp_apply, PointedCGHMaps.compSubseq, PointedCGHMaps.map,
     OpenMetricConvergenceData.atWindow] using
-    FlowMetricConvergenceData.scalar_conv_at (I := I) Φ R bf hsrc htgt
+    FlowMetricConvergenceData.scalar_convergence_at (I := I) Φ R bf hsrc htgt
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n) (cLow n) (hcLow n)
       (fun k s hs ↦ hbound n k s hs) (fun q ↦ hcovTail n q)
       (OpenMetricConvergenceData.atWindow Φ co n) htWin x
 
-theorem ricNorm_conv
+theorem ricNorm_convergence
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
@@ -134,7 +134,7 @@ theorem ricNorm_conv
               sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
               sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
@@ -182,7 +182,7 @@ theorem ricNorm_conv
     mem_of_mem_nhds hn
   simpa only [Function.comp_apply, PointedCGHMaps.compSubseq, PointedCGHMaps.map,
     OpenMetricConvergenceData.atWindow] using
-    FlowMetricConvergenceData.ricNorm_conv_at (I := I) Φ R bf hsrc htgt
+    FlowMetricConvergenceData.ricNorm_convergence_at (I := I) Φ R bf hsrc htgt
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n) (cLow n) (hcLow n)
       (fun k s hs ↦ hbound n k s hs) (fun q ↦ hcovTail n q)
@@ -190,5 +190,5 @@ theorem ricNorm_conv
 
 end OpenMetricConvergenceData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

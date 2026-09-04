@@ -37,7 +37,7 @@ def zeroDuhamelCross (hT : 0 < T)
       (I := I) (M := M) g r s))
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     CrossScaleField (I := I) (M := M) g r s a T :=
-  maxRegRecentredCrossScaleField (I := I) (M := M)
+  maximalRegularityRecentredCrossScaleField (I := I) (M := M)
     (h_compact := h_compact) hT 0 f
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -59,7 +59,7 @@ theorem zeroRepr_ae (hT : 0 < T) (hT1 : T ≤ 1)
     (f : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
     (fun t => (zeroDuhamelCross (I := I) (M := M)
         hT h_compact f).repr t) =ᵐ[timeMeasure T]
-      fun t => maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+      fun t => maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
         a hT 0 f t := by
   have h := recentred_repr_eq_field_sub (I := I) (M := M)
     (h_compact := h_compact) hT hT1
@@ -77,7 +77,7 @@ theorem zeroRepr_meas (hT : 0 < T) (hT1 : T ≤ 1)
         hT h_compact f).repr t)
       (timeMeasure T) := by
   exact (Lp.aestronglyMeasurable
-    (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+    (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
       a hT (0 : TensorHs (I := I) (M := M) g r s (a + 2)) f)).congr
         (zeroRepr_ae (I := I) (M := M) hT hT1 h_compact f).symm
 
@@ -99,24 +99,24 @@ omit [NeZero (Module.finrank ℝ E)] in
 private theorem homField_zero (hT : 0 < T)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s)) :
-    maxRegHomogeneousSolFieldTraceScale (I := I) (M := M) a T
+    maximalRegularityHomogeneousSolutionFieldTraceScale (I := I) (M := M) a T
         (0 : TensorHs (I := I) (M := M) g r s (a + 2)) = 0 := by
   refine timeModeCoeff_injective (I := I) (M := M) h_compact (fun i => ?_)
-  rw [maxRegHomogeneousSolFieldHa1_timeModeCoeff (I := I) (M := M)
+  rw [maximalRegularityHomogeneousSolutionFieldHa1_timeModeCoeff (I := I) (M := M)
     (a := a) (T := T) hT.le, homMode_zero (I := I) (M := M) hT i]
   simp only [timeModeCoeff, map_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem duhField_sub (hT : 0 < T) (hT1 : T ≤ 1)
+private theorem duhamelField_sub (hT : 0 < T) (hT1 : T ≤ 1)
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (f f' : timeL2 (TensorHs (I := I) (M := M) g r s a) T) :
-    maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT 0 f -
-        maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT 0 f' =
-      maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT 0 (f - f') := by
-  rw [maxRegDuhamelSolFieldHa1_sub (I := I) (M := M)
+    maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT 0 f -
+        maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT 0 f' =
+      maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT 0 (f - f') := by
+  rw [maximalRegularityDuhamelSolutionFieldHa1_sub (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1]
-  rw [maxRegDuhamelSolFieldHa1,
+  rw [maximalRegularityDuhamelSolutionFieldHa1,
     homField_zero (I := I) (M := M) (a := a) hT h_compact, zero_add]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -135,9 +135,9 @@ theorem zeroRepr_sub_ae (hT : 0 < T) (hT1 : T ≤ 1)
   have hf' := zeroRepr_ae (I := I) (M := M) hT hT1 h_compact f'
   have hd := zeroRepr_ae (I := I) (M := M) hT hT1 h_compact (f - f')
   have hsub := Lp.coeFn_sub
-    (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT 0 f)
-    (maxRegDuhamelSolFieldHa1 (I := I) (M := M) a hT 0 f')
-  rw [duhField_sub (I := I) (M := M)
+    (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT 0 f)
+    (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) a hT 0 f')
+  rw [duhamelField_sub (I := I) (M := M)
     (h_compact := h_compact) (a := a) hT hT1 f f'] at hsub
   filter_upwards [hf, hf', hd, hsub] with t hft hf't hdt hst
   rw [hft, hf't, hdt]
@@ -154,7 +154,7 @@ theorem zeroRepr_norm_le (hT : 0 < T)
       2 * Real.sqrt (1 + T) * ‖f‖ := by
   set u := zeroDuhamelCross (I := I) (M := M)
     hT h_compact f with hu
-  have hsq := u.normSq_repr_le_init_add_integral hT ht
+  have hsq := u.normSq_repr_le_initial_add_integral hT ht
   have hzero : u.repr 0 =
       (0 : TensorHs (I := I) (M := M) g r s (a + 1)) := by
     simpa only [hu] using

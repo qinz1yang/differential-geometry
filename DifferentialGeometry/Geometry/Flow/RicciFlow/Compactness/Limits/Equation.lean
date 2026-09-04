@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 
@@ -25,13 +25,13 @@ theorem hasDerivWithinAt_lim
     (f f' : Nat → Real → Real) (g h : Real → Real)
     (hderiv : ∀ k : Nat, ∀ u ∈ s, HasDerivWithinAt (f k) (f' k u) s u)
     (hfg : ∀ u ∈ s, Filter.Tendsto (fun k => f k u) Filter.atTop (nhds (g u)))
-    (hunif : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
+    (huniform : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
       ∀ u ∈ s, |f' k u - h u| < ε) :
     HasDerivWithinAt g (h t) s t := by
   rw [hasDerivWithinAt_iff_isLittleO, isLittleO_iff]
   intro c hc
   have hc4 : (0 : Real) < c / 4 := by positivity
-  obtain ⟨k0, hk0⟩ := hunif (c / 4) hc4
+  obtain ⟨k0, hk0⟩ := huniform (c / 4) hc4
   have hA : ∀ u ∈ s, |f k0 u - g u - (f k0 t - g t)| ≤ 2 * (c / 4) * |u - t| := by
     intro u hu
     have hAm : ∀ m : Nat, k0 ≤ m →
@@ -95,7 +95,7 @@ theorem hasDeriv_lim_tail
     (hderiv : ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
       ∀ u ∈ s, HasDerivWithinAt (f k) (f' k u) s u)
     (hfg : ∀ u ∈ s, Filter.Tendsto (fun k => f k u) Filter.atTop (nhds (g u)))
-    (hunif : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
+    (huniform : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
       ∀ u ∈ s, |f' k u - h u| < ε) :
     HasDerivWithinAt g (h t) s t := by
   obtain ⟨k0, hk0⟩ := hderiv
@@ -106,7 +106,7 @@ theorem hasDeriv_lim_tail
   · intro u hu
     exact (hfg u hu).comp (tendsto_add_atTop_nat k0)
   · intro ε hε
-    obtain ⟨k1, hk1⟩ := hunif ε hε
+    obtain ⟨k1, hk1⟩ := huniform ε hε
     refine ⟨k1, fun k hk u hu => hk1 (k + k0) ?_ u hu⟩
     omega
 
@@ -180,7 +180,7 @@ theorem metric_limit_pde_of_metric_sequence
     (hinner : ∀ u ∈ Set.Icc β ψ,
       Filter.Tendsto (fun k => (gSeq k u).inner x v w)
         Filter.atTop (nhds ((gInf u).inner x v w)))
-    (hRicConv : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
+    (hRicConvergence : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
       ∀ u ∈ Set.Icc β ψ,
         |ricciTensor (I := I) (gSeq k u) x v w
           - ricciTensor (I := I) (gInf u) x v w| < ε)
@@ -194,7 +194,7 @@ theorem metric_limit_pde_of_metric_sequence
     (fun u => -2 * ricciTensor (I := I) (gInf u) x v w)
     hderiv hinner ?_
   intro ε hε
-  obtain ⟨k0, hk0⟩ := hRicConv (ε / 2) (by positivity)
+  obtain ⟨k0, hk0⟩ := hRicConvergence (ε / 2) (by positivity)
   refine ⟨k0, fun k hk u hu => ?_⟩
   have h1 := hk0 k hk u hu
   have hfactor : -2 * ricciTensor (I := I) (gSeq k u) x v w
@@ -219,7 +219,7 @@ theorem metric_limit_pde
     (hinner : ∀ u ∈ Set.Icc β ψ,
       Filter.Tendsto (fun k => ((S k).family.metric u).inner x v w)
         Filter.atTop (nhds ((gInf u).inner x v w)))
-    (hRicConv : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
+    (hRicConvergence : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
       ∀ u ∈ Set.Icc β ψ,
         |ricciTensor (I := I) ((S k).family.metric u) x v w
           - ricciTensor (I := I) (gInf u) x v w| < ε)
@@ -242,7 +242,7 @@ theorem metric_limit_pde
     rw [hval] at h0'
     exact h0'.mono (fun r hr => (D k).regular_subset (hreg k hr))
   refine metric_limit_pde_of_metric_sequence (fun k s => (S k).family.metric s) β ψ gInf x v w
-    ?_ hinner hRicConv ht
+    ?_ hinner hRicConvergence ht
   exact ⟨0, fun k _ => hkder k⟩
 
 omit [Module.Finite ℝ E] in
@@ -263,7 +263,7 @@ theorem metric_limit_pde_on
       ∀ u ∈ Set.Icc β ψ, ∀ a : Nat, a ≤ p → ∀ z ∈ K,
         metricDerivNorm (I := I) a ((S k).family.metric u) (gInf u) gRef z < ε)
     (x : M) (hx : x ∈ K) (v w : TangentSpace I x)
-    (hRicConv : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
+    (hRicConvergence : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
       ∀ u ∈ Set.Icc β ψ,
         |ricciTensor (I := I) ((S k).family.metric u) x v w
           - ricciTensor (I := I) (gInf u) x v w| < ε)
@@ -271,7 +271,7 @@ theorem metric_limit_pde_on
     HasDerivWithinAt (fun s : Real => (gInf s).inner x v w)
       (-2 * ricciTensor (I := I) (gInf t) x v w) (Set.Icc β ψ) t := by
   let _ := (inferInstance : (NeZero (Module.finrank ℝ E)))
-  refine metric_limit_pde S hS β ψ hreg gInf x v w ?_ hRicConv ht
+  refine metric_limit_pde S hS β ψ hreg gInf x v w ?_ hRicConvergence ht
   intro u hu
   refine metricInner_tendsto (fun k => (S k).family.metric u) (gInf u) gRef x
     ?_ v w
@@ -279,5 +279,5 @@ theorem metric_limit_pde_on
   obtain ⟨k0, hk0⟩ := hconv 0 ε hε
   exact ⟨k0, fun k hk => hk0 k hk u hu 0 le_rfl x hx⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

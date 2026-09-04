@@ -23,8 +23,8 @@ def IsWeakSolution
 theorem IsSmoothWeakSolution.toWeakSolution
     {Ω : Set E} {B : SmoothEllipticBilinearForm d Ω} {u f : E → ℝ}
     (h : B.IsSmoothWeakSolution u f) : B.IsWeakSolution u f := by
-  intro ψ hψ_smooth hψ_supp hψ_tsub
-  exact h.2 ψ hψ_smooth hψ_supp hψ_tsub
+  intro ψ hψ_smooth hψ_support hψ_tsub
+  exact h.2 ψ hψ_smooth hψ_support hψ_tsub
 
 def classicalApply
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω) (v : E → ℝ) : E → ℝ :=
@@ -85,19 +85,19 @@ private lemma ibp_smooth_against_test_inner
     {f : E → ℝ} (hf : ContDiff ℝ (⊤ : ℕ∞) f)
     {Ω : Set E} (hΩ : IsOpen Ω)
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
     (i : Fin d) :
     ∫ x in Ω, f x * (fderiv ℝ ψ x) (EuclideanSpace.single i 1) =
       -∫ x in Ω, (fderiv ℝ f x) (EuclideanSpace.single i 1) * ψ x := by
   have hf_C1 : ContDiff ℝ 1 f := hf.of_le (by norm_cast)
   have h_weak := DeGiorgi.HasWeakPartialDeriv.of_contDiff (d := d) hΩ
     (i := i) (f := f) hf_C1
-  exact h_weak ψ hψ hψ_supp hψ_tsub
+  exact h_weak ψ hψ hψ_support hψ_tsub
 
 private lemma integrable_principalIntegrand_smooth_test
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {v ψ : E → ℝ} (hv : ContDiff ℝ (⊤ : ℕ∞) v) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) :
+    (hψ_support : HasCompactSupport ψ) :
     Integrable (fun x => B.principalIntegrand v ψ x) (volume.restrict Ω) := by
   classical
   have h_summand_int : ∀ i j : Fin d,
@@ -112,14 +112,14 @@ private lemma integrable_principalIntegrand_smooth_test
       refine ((B.continuous_a i j).mul ?_).mul ?_
       · exact (hv.continuous_fderiv (by simp)).clm_apply continuous_const
       · exact (hψ.continuous_fderiv (by simp)).clm_apply continuous_const
-    have hψ_partial_supp : HasCompactSupport
+    have hψ_partial_support : HasCompactSupport
         (fun x : E => (fderiv ℝ ψ x) (EuclideanSpace.single j 1)) :=
-      hψ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
-    have h_supp : HasCompactSupport (fun x : E => B.a x i j *
+      hψ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+    have h_support : HasCompactSupport (fun x : E => B.a x i j *
         ((fderiv ℝ v x) (EuclideanSpace.single i 1)) *
         ((fderiv ℝ ψ x) (EuclideanSpace.single j 1))) :=
-      hψ_partial_supp.mul_left
-    exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
+      hψ_partial_support.mul_left
+    exact (h_cont.integrable_of_hasCompactSupport h_support).restrict
   unfold SmoothEllipticBilinearForm.principalIntegrand
   exact integrable_finsetSum _ (fun i _ => integrable_finsetSum _
     (fun j _ => h_summand_int i j))
@@ -127,18 +127,18 @@ private lemma integrable_principalIntegrand_smooth_test
 private lemma integrable_zeroth_smooth_test
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {v ψ : E → ℝ} (hv : ContDiff ℝ (⊤ : ℕ∞) v) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) :
+    (hψ_support : HasCompactSupport ψ) :
     Integrable (fun x => B.c x * v x * ψ x) (volume.restrict Ω) := by
   have h_cont : Continuous (fun x : E => B.c x * v x * ψ x) :=
     (B.continuous_c.mul hv.continuous).mul hψ.continuous
-  have h_supp : HasCompactSupport (fun x : E => B.c x * v x * ψ x) :=
-    hψ_supp.mul_left
-  exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
+  have h_support : HasCompactSupport (fun x : E => B.c x * v x * ψ x) :=
+    hψ_support.mul_left
+  exact (h_cont.integrable_of_hasCompactSupport h_support).restrict
 
 private lemma integrable_principalIntegrand_term_smooth_test
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {v ψ : E → ℝ} (hv : ContDiff ℝ (⊤ : ℕ∞) v) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (i j : Fin d) :
+    (hψ_support : HasCompactSupport ψ) (i j : Fin d) :
     Integrable (fun x : E => B.a x i j *
         ((fderiv ℝ v x) (EuclideanSpace.single i 1)) *
         ((fderiv ℝ ψ x) (EuclideanSpace.single j 1))) (volume.restrict Ω) := by
@@ -148,19 +148,19 @@ private lemma integrable_principalIntegrand_term_smooth_test
     refine ((B.continuous_a i j).mul ?_).mul ?_
     · exact (hv.continuous_fderiv (by simp)).clm_apply continuous_const
     · exact (hψ.continuous_fderiv (by simp)).clm_apply continuous_const
-  have h_supp : HasCompactSupport (fun x : E => B.a x i j *
+  have h_support : HasCompactSupport (fun x : E => B.a x i j *
       ((fderiv ℝ v x) (EuclideanSpace.single i 1)) *
       ((fderiv ℝ ψ x) (EuclideanSpace.single j 1))) := by
-    have hψ_partial_supp : HasCompactSupport
+    have hψ_partial_support : HasCompactSupport
         (fun x : E => (fderiv ℝ ψ x) (EuclideanSpace.single j 1)) :=
-      hψ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
-    exact hψ_partial_supp.mul_left
-  exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
+      hψ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+    exact hψ_partial_support.mul_left
+  exact (h_cont.integrable_of_hasCompactSupport h_support).restrict
 
 private lemma bilin_decomp_smooth
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {v ψ : E → ℝ} (hv : ContDiff ℝ (⊤ : ℕ∞) v) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) :
+    (hψ_support : HasCompactSupport ψ) :
     B.bilin v ψ =
       (∑ i : Fin d, ∑ j : Fin d, ∫ x in Ω, B.a x i j *
         (fderiv ℝ v x) (EuclideanSpace.single i 1) *
@@ -168,11 +168,11 @@ private lemma bilin_decomp_smooth
       ∫ x in Ω, B.c x * v x * ψ x := by
   classical
   have h_princ_int := integrable_principalIntegrand_smooth_test (d := d)
-    B hv hψ hψ_supp
+    B hv hψ hψ_support
   have h_zero_int := integrable_zeroth_smooth_test (d := d)
-    B hv hψ hψ_supp
+    B hv hψ hψ_support
   have h_summand_int := integrable_principalIntegrand_term_smooth_test
-    (d := d) B hv hψ hψ_supp
+    (d := d) B hv hψ hψ_support
   unfold SmoothEllipticBilinearForm.bilin
   rw [integral_add h_princ_int h_zero_int]
   congr 1
@@ -209,7 +209,7 @@ private lemma ibp_innerSum_against_test
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
     {v : E → ℝ} (hv : ContDiff ℝ (⊤ : ℕ∞) v)
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω) (i : Fin d) :
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω) (i : Fin d) :
     ∫ x in Ω, (∑ j : Fin d, B.a x i j *
         (fderiv ℝ v x) (EuclideanSpace.single j 1)) *
         (fderiv ℝ ψ x) (EuclideanSpace.single i 1) =
@@ -220,14 +220,14 @@ private lemma ibp_innerSum_against_test
       (fun y : E => ∑ j : Fin d, B.a y i j *
         (fderiv ℝ v y) (EuclideanSpace.single j 1)) :=
     contDiff_innerSum (d := d) B hv i
-  exact ibp_smooth_against_test_inner (d := d) h_inner_smooth hΩ hψ hψ_supp
+  exact ibp_smooth_against_test_inner (d := d) h_inner_smooth hΩ hψ hψ_support
     hψ_tsub i
 
 private lemma principal_eq_neg_classical
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
     {v : E → ℝ} (hv : ContDiff ℝ (⊤ : ℕ∞) v)
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω) :
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω) :
     (∑ i : Fin d, ∑ j : Fin d, ∫ x in Ω, B.a x i j *
         (fderiv ℝ v x) (EuclideanSpace.single i 1) *
         (fderiv ℝ ψ x) (EuclideanSpace.single j 1)) =
@@ -250,7 +250,7 @@ private lemma principal_eq_neg_classical
         ((fderiv ℝ v x) (EuclideanSpace.single j 1)) *
         ((fderiv ℝ ψ x) (EuclideanSpace.single i 1))) (volume.restrict Ω) := fun j =>
       integrable_principalIntegrand_term_smooth_test (d := d)
-        B hv hψ hψ_supp j i
+        B hv hψ hψ_support j i
     rw [← integral_finsetSum (s := Finset.univ) (f := fun (j : Fin d) (x : E) =>
         B.a x j i *
           (fderiv ℝ v x) (EuclideanSpace.single j 1) *
@@ -281,12 +281,12 @@ private lemma principal_eq_neg_classical
     rw [Finset.sum_neg_distrib]]
   refine Finset.sum_congr rfl ?_
   intro i _
-  exact ibp_innerSum_against_test (d := d) hΩ B hv hψ hψ_supp hψ_tsub i
+  exact ibp_innerSum_against_test (d := d) hΩ B hv hψ hψ_support hψ_tsub i
 
 private lemma integrable_classicalApply_term_against_psi
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {v ψ : E → ℝ} (hv : ContDiff ℝ (⊤ : ℕ∞) v) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (i : Fin d) :
+    (hψ_support : HasCompactSupport ψ) (i : Fin d) :
     Integrable (fun x : E => (fderiv ℝ (fun y : E =>
         ∑ j : Fin d, B.a y i j *
           (fderiv ℝ v y) (EuclideanSpace.single j 1)) x)
@@ -314,31 +314,31 @@ private lemma integrable_classicalApply_term_against_psi
         (fderiv ℝ v y) (EuclideanSpace.single j 1)) x)
         (EuclideanSpace.single i 1) * ψ x) :=
     h_partial_smooth.continuous.mul hψ.continuous
-  have h_supp : HasCompactSupport (fun x : E => (fderiv ℝ (fun y : E =>
+  have h_support : HasCompactSupport (fun x : E => (fderiv ℝ (fun y : E =>
       ∑ j : Fin d, B.a y i j *
         (fderiv ℝ v y) (EuclideanSpace.single j 1)) x)
         (EuclideanSpace.single i 1) * ψ x) :=
-    hψ_supp.mul_left
-  exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
+    hψ_support.mul_left
+  exact (h_cont.integrable_of_hasCompactSupport h_support).restrict
 
 theorem isSmoothWeakSolution_classicalApply
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
     {v : E → ℝ} (hv : ContDiff ℝ (⊤ : ℕ∞) v) :
     B.IsSmoothWeakSolution v (B.classicalApply v) := by
   refine ⟨hv, ?_⟩
-  intro ψ hψ_smooth hψ_supp hψ_tsub
-  rw [bilin_decomp_smooth (d := d) B hv hψ_smooth hψ_supp]
-  rw [principal_eq_neg_classical (d := d) hΩ B hv hψ_smooth hψ_supp hψ_tsub]
+  intro ψ hψ_smooth hψ_support hψ_tsub
+  rw [bilin_decomp_smooth (d := d) B hv hψ_smooth hψ_support]
+  rw [principal_eq_neg_classical (d := d) hΩ B hv hψ_smooth hψ_support hψ_tsub]
   unfold SmoothEllipticBilinearForm.classicalApply
   have h_class_int : ∀ i : Fin d, Integrable (fun x : E =>
       (fderiv ℝ (fun y : E => ∑ j : Fin d, B.a y i j *
         (fderiv ℝ v y) (EuclideanSpace.single j 1)) x)
         (EuclideanSpace.single i 1) * ψ x) (volume.restrict Ω) := fun i =>
     integrable_classicalApply_term_against_psi (d := d) B hv hψ_smooth
-      hψ_supp i
+      hψ_support i
   have h_zero_int : Integrable (fun x : E => B.c x * v x * ψ x)
       (volume.restrict Ω) :=
-    integrable_zeroth_smooth_test (d := d) B hv hψ_smooth hψ_supp
+    integrable_zeroth_smooth_test (d := d) B hv hψ_smooth hψ_support
   have h_rhs_eq :
       ∫ x in Ω, ((-∑ i : Fin d, (fderiv ℝ (fun y : E =>
             ∑ j : Fin d, B.a y i j *
@@ -403,7 +403,7 @@ theorem isSmoothWeakSolution_classicalApply
 
 theorem mollifyEps_isSmoothWeakSolution_classicalApply
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
-    {u : E → ℝ} (hu_loc : LocallyIntegrable u (volume : Measure E))
+    {u : E → ℝ} (hu_local : LocallyIntegrable u (volume : Measure E))
     {ε : ℝ} (hε : 0 < ε) :
     B.IsSmoothWeakSolution
       (DifferentialGeometry.Analysis.Sobolev.mollifyEps
@@ -415,32 +415,32 @@ theorem mollifyEps_isSmoothWeakSolution_classicalApply
       (DifferentialGeometry.Analysis.Sobolev.mollifyEps
         (d := d) hε u) :=
     DifferentialGeometry.Analysis.Sobolev.mollifyEps_contDiff
-      (d := d) hε hu_loc
+      (d := d) hε hu_local
   exact isSmoothWeakSolution_classicalApply (d := d) hΩ B h_uε_smooth
 
 theorem integral_classicalApply_mollifyEps_eq_bilin
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
-    {u : E → ℝ} (hu_loc : LocallyIntegrable u (volume : Measure E))
+    {u : E → ℝ} (hu_local : LocallyIntegrable u (volume : Measure E))
     {ε : ℝ} (hε : 0 < ε)
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω) :
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω) :
     ∫ x in Ω, B.classicalApply
       (DifferentialGeometry.Analysis.Sobolev.mollifyEps
         (d := d) hε u) x * ψ x =
       B.bilin (DifferentialGeometry.Analysis.Sobolev.mollifyEps
         (d := d) hε u) ψ := by
   have h_smooth_weak :=
-    mollifyEps_isSmoothWeakSolution_classicalApply (d := d) hΩ B hu_loc hε
-  exact (h_smooth_weak.2 ψ hψ hψ_supp hψ_tsub).symm
+    mollifyEps_isSmoothWeakSolution_classicalApply (d := d) hΩ B hu_local hε
+  exact (h_smooth_weak.2 ψ hψ hψ_support hψ_tsub).symm
 
 theorem integral_classicalApply_mollifyEps_sub_eq_bilin_sub
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
-    (hu_loc : LocallyIntegrable u (volume : Measure E))
+    (hu_local : LocallyIntegrable u (volume : Measure E))
     (h_weak : B.IsWeakSolution u f)
     {ε : ℝ} (hε : 0 < ε)
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
     (hf_psi_int : Integrable (fun x : E => f x * ψ x) (volume.restrict Ω)) :
     ∫ x in Ω, (B.classicalApply
         (DifferentialGeometry.Analysis.Sobolev.mollifyEps
@@ -455,7 +455,7 @@ theorem integral_classicalApply_mollifyEps_sub_eq_bilin_sub
           (d := d) hε u) x * ψ x) -
       ∫ x in Ω, f x * ψ x := by
     have h_smooth_weak :=
-      mollifyEps_isSmoothWeakSolution_classicalApply (d := d) hΩ B hu_loc hε
+      mollifyEps_isSmoothWeakSolution_classicalApply (d := d) hΩ B hu_local hε
     have h_pairing_int : Integrable (fun x : E => B.classicalApply
         (DifferentialGeometry.Analysis.Sobolev.mollifyEps
           (d := d) hε u) x * ψ x) (volume.restrict Ω) := by
@@ -464,16 +464,16 @@ theorem integral_classicalApply_mollifyEps_sub_eq_bilin_sub
             (d := d) hε u)) := by
         refine contDiff_classicalApply (d := d) B ?_
         exact DifferentialGeometry.Analysis.Sobolev.mollifyEps_contDiff
-          (d := d) hε hu_loc
+          (d := d) hε hu_local
       have h_cont : Continuous (fun x : E => B.classicalApply
           (DifferentialGeometry.Analysis.Sobolev.mollifyEps
             (d := d) hε u) x * ψ x) :=
         h_class_smooth.continuous.mul hψ.continuous
-      have h_supp : HasCompactSupport (fun x : E => B.classicalApply
+      have h_support : HasCompactSupport (fun x : E => B.classicalApply
           (DifferentialGeometry.Analysis.Sobolev.mollifyEps
             (d := d) hε u) x * ψ x) :=
-        hψ_supp.mul_left
-      exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
+        hψ_support.mul_left
+      exact (h_cont.integrable_of_hasCompactSupport h_support).restrict
     have h_fun_eq : (fun x : E => (B.classicalApply
             (DifferentialGeometry.Analysis.Sobolev.mollifyEps
               (d := d) hε u) x - f x) * ψ x) =
@@ -485,8 +485,8 @@ theorem integral_classicalApply_mollifyEps_sub_eq_bilin_sub
     rw [integral_sub h_pairing_int hf_psi_int]
   rw [h_lhs_split]
   have h_classicalApply_pair := integral_classicalApply_mollifyEps_eq_bilin
-    (d := d) hΩ B hu_loc hε hψ hψ_supp hψ_tsub
-  have h_weak_eq := h_weak ψ hψ hψ_supp hψ_tsub
+    (d := d) hΩ B hu_local hε hψ hψ_support hψ_tsub
+  have h_weak_eq := h_weak ψ hψ hψ_support hψ_tsub
   rw [h_classicalApply_pair, h_weak_eq]
 
 end SmoothEllipticBilinearForm

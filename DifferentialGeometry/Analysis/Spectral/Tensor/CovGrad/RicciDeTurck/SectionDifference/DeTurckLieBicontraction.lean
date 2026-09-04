@@ -783,9 +783,9 @@ end
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-private theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_nbhd_aux
+private theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_neighborhood_aux
     (g₁ g_bg : SmoothRiemannianMetric I M) (x₀ : M)
-    {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg y =
       connectionDifferenceCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg (smoothOrthoFrame (I := I) g₁ x₀)
         y := by
@@ -838,13 +838,13 @@ private theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_nbhd
+theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_neighborhood
     (g₁ g_bg : SmoothRiemannianMetric I M) (x₀ : M)
-    {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg y =
       connectionDifferenceCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg
         (smoothOrthoFrame (I := I) g₁ x₀) y :=
-  deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_nbhd_aux
+  deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_neighborhood_aux
     (I := I) g₁ g_bg x₀ hy
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -864,11 +864,11 @@ theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_contMDiff (g₁ g_bg 
     deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_contMDiff (I := I) g₁ g_bg (smoothOrthoFrame (I := I) g₁ x₀)
       (fun i => smoothOrthoFrame_smooth (I := I) g₁ x₀ i) x₀
   refine h_fixed.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
     (E := fun z : M => TensorRSSpace 2 2 I z) y)
     (congrArg TensorRSSpace.ofCLM
-      (deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₁ g_bg x₀ hy))
+      (deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_neighborhood (I := I) g₁ g_bg x₀ hy))
 
 def deTurckVectorFieldCovariantDerivativeEndomorphism (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x :=

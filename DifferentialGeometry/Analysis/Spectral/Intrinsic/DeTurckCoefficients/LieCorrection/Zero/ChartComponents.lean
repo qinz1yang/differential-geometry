@@ -51,7 +51,7 @@ open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
   euclidPartial_def covDerivComponent_lowerOrder_contDiffOn euclidPartial_chartPushedRaw_contDiffOn
   chartPushedRaw_tensorChartComponentRaw_contDiffOn)
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization
-  (chartDeTurckCorrPrincipalSymbolExprRaw chartDeTurckCorrHessBlockRaw)
+  (chartDeTurckCorrectionPrincipalSymbolExprRaw chartDeTurckCorrectionHessBlockRaw)
 open DifferentialGeometry.Geometry.Operator (chartGramOnE chartInvGramOnE)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -118,17 +118,17 @@ private lemma lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv
   classical
   have hev := realizedGramDeriv_eventuallyEq_symm_scalarOnE_raw (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x c d
-  have hx_src : x ∈ (extChartAt I x).source := by
+  have hx_source : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
   have htarget : extChartAt I x x ∈ (extChartAt I x).target :=
-    (extChartAt I x).map_source hx_src
+    (extChartAt I x).map_source hx_source
   have htarget_open : IsOpen ((extChartAt I x).target : Set E) :=
     isOpen_extChartAt_target (I := I) x
-  filter_upwards [htarget_open.mem_nhds htarget, hev] with y hy_tgt hev_y
+  filter_upwards [htarget_open.mem_nhds htarget, hev] with y hy_target hev_y
   rw [hev_y]
   have hb : (extChartAt I x).symm y ∈ (chartAt H x).source := by
     rw [← extChartAt_source (I := I)]
-    exact (extChartAt I x).map_target hy_tgt
+    exact (extChartAt I x).map_target hy_target
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
   rw [lieTerm_ccTensor02Symm_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def,
@@ -239,9 +239,9 @@ private lemma lieCorrectionZero_raw_chartComponent (hδ_lt : δ < 1)
     hδ_lt hδ hδ'_lt hδ' x c d
   have hpt := hev.self_of_nhds
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def] at hpt
-  have hx_src : x ∈ (extChartAt I x).source := by
+  have hx_source : x ∈ (extChartAt I x).source := by
     rw [extChartAt_source (I := I)]; exact mem_chart_source H x
-  rw [(extChartAt I x).left_inv hx_src] at hpt
+  rw [(extChartAt I x).left_inv hx_source] at hpt
   exact hpt
 
 

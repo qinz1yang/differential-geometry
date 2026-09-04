@@ -91,11 +91,11 @@ private theorem rhs_pull_eq
   have hy_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
     DifferentialGeometry.Analysis.Laplacian.MetricExtension.toEuclidean_symm_mem_target
       (I := I) hy
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     (extChartAt I α).map_target hy_target
   have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α :=
     (mem_chartLeviCivitaGoodSet_iff_mem_extChartAt_source
-      (I := I) α b).2 hb_src
+      (I := I) α b).2 hb_source
   have hφ : extChartAt I α b = (toEuclidean (E := E)).symm y :=
     (extChartAt I α).right_inv hy_target
   rw [rhs_raw_eq (I := I) (M := M) gBase g α hb_good]
@@ -169,7 +169,7 @@ private theorem lowerTerm_sub
 
 private theorem rhs_cov_raw_eq
     (gBase g : SmoothRiemannianMetric I M) (α : M) {b : M}
-    (hb_src : b ∈ (extChartAt I α).source)
+    (hb_source : b ∈ (extChartAt I α).source)
     (Kdx : Fin 3 → Fin (Module.finrank ℝ E)) :
     tensorChartComponentRaw (I := I) (M := M) gBase 0 3
         (covGrad (I := I) (M := M) gBase 0 2
@@ -187,11 +187,11 @@ private theorem rhs_cov_raw_eq
   let Jdx : Fin 2 → Fin (Module.finrank ℝ E) := Matrix.vecTail Kdx
   let y : EuclN := toEuclidean (E := E) (extChartAt I α b)
   have hy : y ∈ chartTargetEuclid (I := I) (M := M) α :=
-    ⟨extChartAt I α b, (extChartAt I α).map_source hb_src, rfl⟩
+    ⟨extChartAt I α b, (extChartAt I α).map_source hb_source, rfl⟩
   have hround :
       (extChartAt I α).symm ((toEuclidean (E := E)).symm y) = b := by
     dsimp [y]
-    simpa using (extChartAt I α).left_inv hb_src
+    simpa using (extChartAt I α).left_inv hb_source
   have hcons : (Fin.cons d Jdx : Fin 3 → Fin (Module.finrank ℝ E)) = Kdx :=
     Fin.cons_self_tail Kdx
   have hinv := euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder
@@ -243,12 +243,12 @@ theorem rhs_raw_lip {ι : Type*}
   have hB : 0 ≤ B := mul_nonneg hD.rhsLip_pos.le hCjetAll
   refine ⟨B, hB, ?_⟩
   intro α hα k₁ k₂ b hb Idx Jdx
-  have hb_src : b ∈ (extChartAt I α).source := by
+  have hb_source : b ∈ (extChartAt I α).source := by
     rw [extChartAt_source]
     exact chartAtlasPOU_isSubordinate I M α hb
   have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α :=
     (mem_chartLeviCivitaGoodSet_iff_mem_extChartAt_source
-      (I := I) α b).2 hb_src
+      (I := I) α b).2 hb_source
   set A : ℝ := ∑ i ∈ Finset.range 3,
     Real.sqrt (riemannianFiberNormSq (I := I) (M := M)
       gBase 0 (2 + i) b
@@ -378,13 +378,13 @@ theorem rhs_cov_lip {ι : Type*}
       (Finset.range_subset_range.mpr (by omega)) ?_
     intro i _ _
     exact Real.sqrt_nonneg _
-  have hb_src : b ∈ (extChartAt I α).source := by
+  have hb_source : b ∈ (extChartAt I α).source := by
     rw [extChartAt_source]
     exact chartAtlasPOU_isSubordinate I M α hb
   have hround :
       (extChartAt I α).symm ((toEuclidean (E := E)).symm y) = b := by
     dsimp [y]
-    simpa using (extChartAt I α).left_inv hb_src
+    simpa using (extChartAt I α).left_inv hb_source
   have hyK : y ∈ chartImagePOUTsupport (I := I) (M := M) α := by
     dsimp [y]
     exact ⟨extChartAt I α b, ⟨b, hb, rfl⟩, rfl⟩
@@ -439,9 +439,9 @@ theorem rhs_cov_lip {ι : Type*}
     rw [covGrad_sub (I := I) (M := M) gBase 0 2]
     exact rawComp_sub (I := I) (M := M) gBase 0 3 _ _ α _ _ b
   have hcov₁ := rhs_cov_raw_eq (I := I) (M := M)
-    gBase (gSeq k₁) α hb_src Kdx
+    gBase (gSeq k₁) α hb_source Kdx
   have hcov₂ := rhs_cov_raw_eq (I := I) (M := M)
-    gBase (gSeq k₂) α hb_src Kdx
+    gBase (gSeq k₂) α hb_source Kdx
   have hlower_eq := lowerTerm_sub (I := I) (M := M) gBase 0 2
     (deTurckRHSSectionBackground (I := I) gBase (gSeq k₁))
     (deTurckRHSSectionBackground (I := I) gBase (gSeq k₂)) α d
@@ -583,12 +583,12 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
             |tensorChartComponentRaw (I := I) (M := M)
               gBase 0 2 (S k) α Idx Jdx b| ≤ D.rhsBound := by
     intro α hα k b hb Idx Jdx
-    have hb_src : b ∈ (extChartAt I α).source := by
+    have hb_source : b ∈ (extChartAt I α).source := by
       rw [extChartAt_source]
       exact chartAtlasPOU_isSubordinate I M α hb
     have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α :=
       (mem_chartLeviCivitaGoodSet_iff_mem_extChartAt_source
-        (I := I) α b).2 hb_src
+        (I := I) α b).2 hb_source
     rw [show S k = deTurckRHSSectionBackground (I := I) gBase (gSeq k) from rfl,
       rhs_raw_eq (I := I) (M := M) gBase (gSeq k) α hb_good]
     exact hD.rhs_bound α hα k b hb (Jdx 0) (Jdx 1)
@@ -636,14 +636,14 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
               (S k) α m (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx
               (toEuclidean (E := E) (extChartAt I α b))| ≤ L := by
     intro α hα k b hb m Jdx
-    have hb_src : b ∈ (extChartAt I α).source := by
+    have hb_source : b ∈ (extChartAt I α).source := by
       rw [extChartAt_source]
       exact chartAtlasPOU_isSubordinate I M α hb
     have hround :
         (extChartAt I α).symm
           ((toEuclidean (E := E)).symm
             (toEuclidean (E := E) (extChartAt I α b))) = b := by
-      simpa using (extChartAt I α).left_inv hb_src
+      simpa using (extChartAt I α).left_inv hb_source
     have hyK : toEuclidean (E := E) (extChartAt I α b) ∈
         chartImagePOUTsupport (I := I) (M := M) α :=
       ⟨extChartAt I α b, ⟨b, hb, rfl⟩, rfl⟩
@@ -680,15 +680,15 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
     let d : Fin (Module.finrank ℝ E) := Kdx 0
     let Jdx : Fin 2 → Fin (Module.finrank ℝ E) := Matrix.vecTail Kdx
     let y : EuclN := toEuclidean (E := E) (extChartAt I α b)
-    have hb_src : b ∈ (extChartAt I α).source := by
+    have hb_source : b ∈ (extChartAt I α).source := by
       rw [extChartAt_source]
       exact chartAtlasPOU_isSubordinate I M α hb
     have hy : y ∈ chartTargetEuclid (I := I) (M := M) α :=
-      ⟨extChartAt I α b, (extChartAt I α).map_source hb_src, rfl⟩
+      ⟨extChartAt I α b, (extChartAt I α).map_source hb_source, rfl⟩
     have hround :
         (extChartAt I α).symm ((toEuclidean (E := E)).symm y) = b := by
       dsimp [y]
-      simpa using (extChartAt I α).left_inv hb_src
+      simpa using (extChartAt I α).left_inv hb_source
     have hcons : (Fin.cons d Jdx : Fin 3 → Fin (Module.finrank ℝ E)) = Kdx := by
       exact Fin.cons_self_tail Kdx
     have hinv := euclidPartial_chartPushedRaw_eq_covGrad_sub_lowerOrder

@@ -58,12 +58,12 @@ theorem one_add_lambda_mul_duhamel_kernel_sq_integral_le {lam t : ℝ}
 
 variable {f : ℝ → ℝ}
 
-theorem perModeConv_endpoint_sq_le (lam : ℝ) (hf : Continuous f) {t : ℝ}
+theorem perModeConvolution_endpoint_sq_le (lam : ℝ) (hf : Continuous f) {t : ℝ}
     (ht : 0 ≤ t) :
-    (perModeConv lam f t) ^ 2
+    (perModeConvolution lam f t) ^ 2
       ≤ duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, f s ^ 2 := by
   set k : ℝ → ℝ := fun s => Real.exp (-(lam * (t - s))) with hk_def
-  have hconv_eq : perModeConv lam f t = ∫ s in (0 : ℝ)..t, k s * f s := rfl
+  have hconv_eq : perModeConvolution lam f t = ∫ s in (0 : ℝ)..t, k s * f s := rfl
   set A : ℝ := ∫ s in (0 : ℝ)..t, f s ^ 2 with hA
   set B : ℝ := ∫ s in (0 : ℝ)..t, k s * f s with hB
   set C : ℝ := ∫ s in (0 : ℝ)..t, k s ^ 2 with hC
@@ -110,16 +110,16 @@ theorem perModeConv_endpoint_sq_le (lam : ℝ) (hf : Continuous f) {t : ℝ}
   rw [hconv_eq]
   nlinarith [hdiscrim]
 
-theorem one_add_lambda_mul_perModeConv_endpoint_sq_le (lam : ℝ)
+theorem one_add_lambda_mul_perModeConvolution_endpoint_sq_le (lam : ℝ)
     (hlam : 0 ≤ lam) (hf : Continuous f) {t : ℝ} (ht : 0 ≤ t) :
-    (1 + lam) * (perModeConv lam f t) ^ 2
+    (1 + lam) * (perModeConvolution lam f t) ^ 2
       ≤ (t + 1 / 2) * ∫ s in (0 : ℝ)..t, f s ^ 2 := by
-  have hcs := perModeConv_endpoint_sq_le (f := f) lam hf ht
+  have hcs := perModeConvolution_endpoint_sq_le (f := f) lam hf ht
   have hkernel := one_add_lambda_mul_duhamel_kernel_sq_integral_le hlam ht
   have hf2_nn : 0 ≤ ∫ s in (0 : ℝ)..t, f s ^ 2 :=
     intervalIntegral.integral_nonneg ht (fun s _ => sq_nonneg _)
   have h1plus_nn : 0 ≤ 1 + lam := by linarith
-  calc (1 + lam) * (perModeConv lam f t) ^ 2
+  calc (1 + lam) * (perModeConvolution lam f t) ^ 2
       ≤ (1 + lam) *
           (duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, f s ^ 2) :=
         mul_le_mul_of_nonneg_left hcs h1plus_nn

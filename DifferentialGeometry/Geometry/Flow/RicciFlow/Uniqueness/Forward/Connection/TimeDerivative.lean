@@ -110,7 +110,7 @@ private theorem lowerBilinOut_apply
   funext a
   fin_cases a <;> simp [Fin.tail]
 
-private def lowerStdPerm : Equiv.Perm (Fin 3) where
+private def lowerStandardPerm : Equiv.Perm (Fin 3) where
   toFun i := if i = 0 then 2 else if i = 1 then 0 else 1
   invFun i := if i = 0 then 1 else if i = 1 then 2 else 0
   left_inv i := by fin_cases i <;> simp
@@ -122,7 +122,7 @@ def lowerBilin (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M :
   Tensor0SSpace.domDomCongr
     (lowerBilinOut (I := I)
       (Tensor0SSpace.domDomCongr q (Equiv.swap (0 : Fin 2) 1)) A)
-    lowerStdPerm
+    lowerStandardPerm
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem lowerBilin_apply
@@ -136,12 +136,12 @@ theorem lowerBilin_apply
       Tensor0SSpace.eval
         (lowerBilinOut (I := I)
           (Tensor0SSpace.domDomCongr q (Equiv.swap (0 : Fin 2) 1)) A)
-        (fun i : Fin 3 => v (lowerStdPerm i)) := rfl
+        (fun i : Fin 3 => v (lowerStandardPerm i)) := rfl
   rw [h, lowerBilinOut_apply]
   rw [Tensor0SSpace.eval_domDomCongr]
   congr 1
   funext a
-  fin_cases a <;> simp [lowerStdPerm]
+  fin_cases a <;> simp [lowerStandardPerm]
 
 end Lowering
 

@@ -87,17 +87,17 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     (hu_l2 : MemLp u 2 (volume : Measure E))
-    (hf_l2_loc : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
+    (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -159,19 +159,19 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
           ∫ x in Ω', (u x)^2 ∂(volume : Measure E) +
           ∫ x in Ω', (f x)^2 ∂(volume : Measure E)) := by
   classical
-  have hε_eff_pos₀ : (0 : ℝ) < B.lam / 8 := div_pos B.hlam_pos (by norm_num)
+  have hε_effective_pos₀ : (0 : ℝ) < B.lam / 8 := div_pos B.hlam_pos (by norm_num)
   have hC1 := cross_1_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-    hη hη_supp hη_range h_fderiv_eta hΩ'_compact
-    hh_supp_in_Ω' k h_FK_diffQuot_u_bound (B.lam / 8) hε_eff_pos₀
+    hη hη_support hη_range h_fderiv_eta hΩ'_compact
+    hh_support_in_Ω' k h_FK_diffQuot_u_bound (B.lam / 8) hε_effective_pos₀
   have hC2 := cross_2_bound_nonsmooth_quantitative (d := d) B hg_l2
-    hη hη_supp hη_range hΩ' hΩ'_compact
-    hh_supp_in_Ω' k (B.lam / 8) hε_eff_pos₀
+    hη hη_support hη_range hΩ' hΩ'_compact
+    hh_support_in_Ω' k (B.lam / 8) hε_effective_pos₀
   have hC3 := diffQuot_coeff_cutoff_gradient_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-    hη hη_supp hη_range hN h_fderiv_eta hΩ'_compact
-    hh_supp_in_Ω' k h_FK_diffQuot_u_bound
+    hη hη_support hη_range hN h_fderiv_eta hΩ'_compact
+    hh_support_in_Ω' k h_FK_diffQuot_u_bound
   have hCc := c_term_bound_nonsmooth_quantitative (d := d) B hu_l2 hg_l2
-    hη hη_supp hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
-    (B.lam / 8) hε_eff_pos₀ h_v_test_sq_bound
+    hη hη_support hΩ' hΩ'_closure hΩ'_compact hh_support_in_Ω' k
+    (B.lam / 8) hε_effective_pos₀ h_v_test_sq_bound
     h_FK_diffQuot_u_bound
   have h_v_test_sq_bound_sum : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
       ∫ x, (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
@@ -204,7 +204,7 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
     have h_integrable_single : Integrable (fun x : E =>
         (η x)^2 * (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g k) x)^2)
         (volume : Measure E) := by
-      have hint := integrable_const_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_supp
+      have hint := integrable_const_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_support
         k k h 1
       have h_eq : (fun x : E => (η x)^2 *
           (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g k) x)^2) =
@@ -221,7 +221,7 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
           (η x)^2 * (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x)^2)
           (volume : Measure E) := by
         intro i
-        have hint := integrable_const_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_supp
+        have hint := integrable_const_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_support
           i k h 1
         have h_eq : (fun x : E => (η x)^2 *
             (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x)^2) =
@@ -256,11 +256,11 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
             ∂(volume : Measure E) :=
       mul_le_mul_of_nonneg_left h_int_le (by linarith)
     linarith
-  have hCf := f_term_bound_nonsmooth_quantitative (d := d) hf_l2_loc hu_l2
-    hη hη_supp hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
+  have hCf := f_term_bound_nonsmooth_quantitative (d := d) hf_l2_local hu_l2
+    hη hη_support hΩ'_closure hΩ'_compact hh_support_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound_sum
-    (B.lam / 8) hε_eff_pos₀
-  set ε_eff : ℝ := B.lam / 8 with hε_eff_def
+    (B.lam / 8) hε_effective_pos₀
+  set ε_effective : ℝ := B.lam / 8 with hε_effective_def
   set Λ : ℝ := Classical.choose
     (SmoothEllipticBilinearForm.bounded_a_on_compact (d := d) B hΩ'_compact)
     with hΛ_eq
@@ -273,13 +273,13 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
   set d_real : ℝ := (Fintype.card (Fin d) : ℝ) with hd_real
   have hd_pos : 0 < d_real := by
     rw [hd_real]; exact_mod_cast Fintype.card_pos
-  have hε_eff_pos : 0 < ε_eff := hε_eff_pos₀
-  have hε'_pos : 0 < ε_eff / d_real := div_pos hε_eff_pos hd_pos
-  set C1 : ℝ := (1 / (ε_eff / d_real)) * Λ^2 * N^2 * d_real^2 with hC1_def
-  set C2 : ℝ := (M^2 / (4 * (ε_eff / d_real))) * d_real^2 with hC2_def
+  have hε_effective_pos : 0 < ε_effective := hε_effective_pos₀
+  have hε'_pos : 0 < ε_effective / d_real := div_pos hε_effective_pos hd_pos
+  set C1 : ℝ := (1 / (ε_effective / d_real)) * Λ^2 * N^2 * d_real^2 with hC1_def
+  set C2 : ℝ := (M^2 / (4 * (ε_effective / d_real))) * d_real^2 with hC2_def
   set C3 : ℝ := 2 * M * N * d_real^2 with hC3_def
-  set Cc : ℝ := max (4 * ε_eff * N^2) (Mc^2 / (2 * ε_eff)) with hCc_def
-  set Cf : ℝ := max (4 * ε_eff * N^2) (1 / (2 * ε_eff)) with hCf_def
+  set Cc : ℝ := max (4 * ε_effective * N^2) (Mc^2 / (2 * ε_effective)) with hCc_def
+  set Cf : ℝ := max (4 * ε_effective * N^2) (1 / (2 * ε_effective)) with hCf_def
   have hΛ_nn : 0 ≤ Λ :=
     (Classical.choose_spec
       (SmoothEllipticBilinearForm.bounded_a_on_compact (d := d) B hΩ'_compact)).1
@@ -309,12 +309,12 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
     rw [hCc_def]
     refine le_max_of_le_left ?_
     refine mul_nonneg ?_ (sq_nonneg _)
-    exact mul_nonneg (by linarith) hε_eff_pos.le
+    exact mul_nonneg (by linarith) hε_effective_pos.le
   have hCf_nn : 0 ≤ Cf := by
     rw [hCf_def]
     refine le_max_of_le_left ?_
     refine mul_nonneg ?_ (sq_nonneg _)
-    exact mul_nonneg (by linarith) hε_eff_pos.le
+    exact mul_nonneg (by linarith) hε_effective_pos.le
   set C : ℝ := max (C1 + C2 + C3 + Cc + Cf) (max Cc Cf) with hC_def
   have hC_nn : 0 ≤ C := by
     rw [hC_def]
@@ -343,10 +343,10 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
   have hC3_h := hC3 hh hh_le
   have hCc_h := hCc hh hh_le
   have hCf_h := hCf hh hh_le
-  have h_4ε_eq : 4 * ε_eff = B.lam / 2 := by
-    rw [hε_eff_def]; ring
+  have h_4ε_eq : 4 * ε_effective = B.lam / 2 := by
+    rw [hε_effective_def]; ring
   have h_combine : B.lam * I ≤
-      4 * ε_eff * I + (C1 + C2 + C3 + Cc + Cf) * G + Cc * U + Cf * F := by
+      4 * ε_effective * I + (C1 + C2 + C3 + Cc + Cf) * G + Cc * U + Cf * F := by
     have h_sum_bound :
         |∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
               DifferentialGeometry.Analysis.Sobolev.translate k h
@@ -374,15 +374,15 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
           |∫ x in Ω, B.c x * u x *
               DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
                 k h η u x ∂(volume : Measure E)| ≤
-        (ε_eff * I + C1 * G) + (ε_eff * I + C2 * G) + (C3 * G) +
-          (ε_eff * I + Cf * (G + F)) + (ε_eff * I + Cc * (G + U)) := by
+        (ε_effective * I + C1 * G) + (ε_effective * I + C2 * G) + (C3 * G) +
+          (ε_effective * I + Cf * (G + F)) + (ε_effective * I + Cc * (G + U)) := by
       have h1 : |- ∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
               DifferentialGeometry.Analysis.Sobolev.translate k h
                 (fun y : E => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
-            ∂(volume : Measure E)| ≤ ε_eff * I + C1 * G := hC1_h
+            ∂(volume : Measure E)| ≤ ε_effective * I + C1 * G := hC1_h
       have h1' :
         |∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
               DifferentialGeometry.Analysis.Sobolev.translate k h
@@ -390,21 +390,21 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
-            ∂(volume : Measure E)| ≤ ε_eff * I + C1 * G := by
+            ∂(volume : Measure E)| ≤ ε_effective * I + C1 * G := by
         rw [← abs_neg]; exact h1
       have h2 : |- ∑ i : Fin d, ∑ j : Fin d, ∫ x,
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : E => B.a y i j) x * (η x)^2 *
               ((g i) x) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g j) x
-            ∂(volume : Measure E)| ≤ ε_eff * I + C2 * G := hC2_h
+            ∂(volume : Measure E)| ≤ ε_effective * I + C2 * G := hC2_h
       have h2' :
         |∑ i : Fin d, ∑ j : Fin d, ∫ x,
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : E => B.a y i j) x * (η x)^2 *
               ((g i) x) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g j) x
-            ∂(volume : Measure E)| ≤ ε_eff * I + C2 * G := by
+            ∂(volume : Measure E)| ≤ ε_effective * I + C2 * G := by
         rw [← abs_neg]; exact h2
       have h3 : |- ∑ i : Fin d, ∑ j : Fin d, ∫ x, 2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -427,7 +427,7 @@ theorem nirenberg_master_inequality_after_young_nonsmooth_quantitative
     have hCc_distrib : Cc * (G + U) = Cc * G + Cc * U := by ring
     have hCf_distrib : Cf * (G + F) = Cf * G + Cf * F := by ring
     linarith [hCc_distrib, hCf_distrib]
-  rw [show (4 * ε_eff * I) = (B.lam / 2) * I from by rw [h_4ε_eq]] at h_combine
+  rw [show (4 * ε_effective * I) = (B.lam / 2) * I from by rw [h_4ε_eq]] at h_combine
   have hC_grad_le : C1 + C2 + C3 + Cc + Cf ≤ C := le_max_left _ _
   have hC_Cc_le : Cc ≤ C := le_trans (le_max_left _ _) (le_max_right _ _)
   have hC_Cf_le : Cf ≤ C := le_trans (le_max_right _ _) (le_max_right _ _)
@@ -448,17 +448,17 @@ theorem nirenberg_master_inequality_absorbed_nonsmooth_quantitative
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     (hu_l2 : MemLp u 2 (volume : Measure E))
-    (hf_l2_loc : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
+    (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -517,8 +517,8 @@ theorem nirenberg_master_inequality_absorbed_nonsmooth_quantitative
           ∫ x in Ω', (f x)^2 ∂(volume : Measure E)) := by
   classical
   have hC := nirenberg_master_inequality_after_young_nonsmooth_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
+    (d := d) B hu_l2 hf_l2_local hg_l2 hη hη_support hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_support_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound
     h_master_nonsmooth
   intro h hh hh_le
@@ -534,17 +534,17 @@ theorem nirenberg_diffQuot_g_localL2_bound_quantitative
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     (hu_l2 : MemLp u 2 (volume : Measure E))
-    (hf_l2_loc : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
+    (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_meas : MeasurableSet Ω'')
@@ -605,8 +605,8 @@ theorem nirenberg_diffQuot_g_localL2_bound_quantitative
           ∫ x in Ω', (f x)^2 ∂(volume : Measure E)) := by
   classical
   have hC := nirenberg_master_inequality_absorbed_nonsmooth_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
+    (d := d) B hu_l2 hf_l2_local hg_l2 hη hη_support hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_support_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound
     h_master_nonsmooth
   intro h hh hh_le
@@ -630,7 +630,7 @@ theorem nirenberg_diffQuot_g_localL2_bound_quantitative
         (η x)^2 * (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x)^2)
         (volume : Measure E) := by
       intro i
-      have hint := integrable_const_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_supp
+      have hint := integrable_const_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη hη_support
         i k h 1
       have h_eq : (fun x : E => (η x)^2 *
           (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x)^2) =
@@ -698,17 +698,17 @@ theorem nirenberg_master_inequality_after_young_nonsmooth
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     (hu_l2 : MemLp u 2 (volume : Measure E))
-    (hf_l2_loc : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
+    (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -772,8 +772,8 @@ theorem nirenberg_master_inequality_after_young_nonsmooth
     nirenbergMasterYoungConstant_nonneg (d := d) B hN hΩ'_compact k, ?_⟩
   intro h hh hh_le
   exact nirenberg_master_inequality_after_young_nonsmooth_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
+    (d := d) B hu_l2 hf_l2_local hg_l2 hη hη_support hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_support_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound h_master_nonsmooth hh hh_le
 
 
@@ -781,17 +781,17 @@ theorem nirenberg_master_inequality_absorbed_nonsmooth
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     (hu_l2 : MemLp u 2 (volume : Measure E))
-    (hf_l2_loc : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
+    (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -851,8 +851,8 @@ theorem nirenberg_master_inequality_absorbed_nonsmooth
     nirenbergMasterYoungConstant_nonneg (d := d) B hN hΩ'_compact k, ?_⟩
   intro h hh hh_le
   exact nirenberg_master_inequality_absorbed_nonsmooth_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
+    (d := d) B hu_l2 hf_l2_local hg_l2 hη hη_support hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_support_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound h_master_nonsmooth hh hh_le
 
 
@@ -860,17 +860,17 @@ theorem nirenberg_diffQuot_g_localL2_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     (hu_l2 : MemLp u 2 (volume : Measure E))
-    (hf_l2_loc : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
+    (hf_l2_local : ∀ {Ω' : Set E}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → E → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure E))
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : E, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set E} (hΩ' : IsOpen Ω') (hΩ'_closure : closure Ω' ⊆ Ω)
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_meas : MeasurableSet Ω'')
@@ -932,8 +932,8 @@ theorem nirenberg_diffQuot_g_localL2_bound
     nirenbergMasterYoungConstant_nonneg (d := d) B hN hΩ'_compact k, ?_⟩
   intro h hh hh_le
   exact nirenberg_diffQuot_g_localL2_bound_quantitative
-    (d := d) B hu_l2 hf_l2_loc hg_l2 hη hη_supp hη_range hN
-    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω'
+    (d := d) B hu_l2 hf_l2_local hg_l2 hη hη_support hη_range hN
+    h_fderiv_eta hΩ' hΩ'_closure hΩ'_compact hh_support_in_Ω'
     hη_one_on_Ω'' hΩ''_meas k
     h_FK_diffQuot_u_bound h_v_test_sq_bound h_master_nonsmooth hh hh_le
 

@@ -76,16 +76,16 @@ lemma gradInnerCoefI_M_smooth
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (gradInnerCoefIM (I := I) (M := M) g α i) := by
   classical
   intro x₀
-  by_cases hx_src : x₀ ∈ (chartAt H α).source
-  · have h_chart_src_open : IsOpen ((chartAt H α).source) :=
+  by_cases hx_source : x₀ ∈ (chartAt H α).source
+  · have h_chart_source_open : IsOpen ((chartAt H α).source) :=
       (chartAt H α).open_source
     have h_cut_smooth : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
         (chartStrictCutoff (I := I) (M := M) α) x₀ :=
       (chartStrictCutoff_contMDiff (I := I) (M := M) α).contMDiffAt
     have hbase : x₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-      rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_src
+      rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_source
     have h_base_open : IsOpen ((trivializationAt E (TangentSpace I) α).baseSet) := by
-      rw [trivializationAt_baseSet_eq_chartAt_source]; exact h_chart_src_open
+      rw [trivializationAt_baseSet_eq_chartAt_source]; exact h_chart_source_open
     have hα_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff
@@ -141,13 +141,13 @@ lemma gradInnerCoefI_M_smooth
           intro x hx
           have hsrc : x ∈ (chartAt H α).source := by
             rw [trivializationAt_baseSet_eq_chartAt_source] at hx; exact hx
-          have h_ext_src : x ∈ (extChartAt I α).source := by
+          have h_ext_source : x ∈ (extChartAt I α).source := by
             rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hsrc
-          exact (extChartAt I α).map_source h_ext_src
+          exact (extChartAt I α).map_source h_ext_source
         exact h_partial_M_E.comp h_extChartOn h_maps
     exact h_cut_smooth.mul ((h_coeff_on x₀ hbase).contMDiffAt
       (h_base_open.mem_nhds hbase))
-  · have hx_compl : x₀ ∈ ((chartAt H α).source)ᶜ := hx_src
+  · have hx_compl : x₀ ∈ ((chartAt H α).source)ᶜ := hx_source
     have h_ev_zero : ∀ᶠ x in 𝓝 x₀,
         chartStrictCutoff (I := I) (M := M) α x = 0 := by
       have h_ev_nhdsSet :=
@@ -167,7 +167,7 @@ lemma tsupport_gradInnerCoefI_M_subset
     (i : Fin (Module.finrank ℝ E)) :
     tsupport (gradInnerCoefIM (I := I) (M := M) g α i) ⊆ (chartAt H α).source := by
   classical
-  have h_supp_subset : Function.support (gradInnerCoefIM (I := I) (M := M) g α i) ⊆
+  have h_support_subset : Function.support (gradInnerCoefIM (I := I) (M := M) g α i) ⊆
       Function.support (chartStrictCutoff (I := I) (M := M) α) := by
     intro x hx
     by_contra hxoff
@@ -177,7 +177,7 @@ lemma tsupport_gradInnerCoefI_M_subset
     exact gradInnerCoefI_M_eq_zero_of_cutoff_zero (I := I) (M := M) g α i h0
   have h_tsupp_subset : tsupport (gradInnerCoefIM (I := I) (M := M) g α i) ⊆
       tsupport (chartStrictCutoff (I := I) (M := M) α) :=
-    closure_minimal (h_supp_subset.trans (subset_tsupport _))
+    closure_minimal (h_support_subset.trans (subset_tsupport _))
       (isClosed_tsupport _)
   exact h_tsupp_subset.trans (chartStrictCutoff_tsupport_subset (I := I) (M := M) α)
 

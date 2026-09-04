@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -32,11 +32,11 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ 
 namespace NetLimitData
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem unifHatIdOn
+theorem uniformHatIdOn
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (rho :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -60,7 +60,7 @@ theorem unifHatIdOn
           Set (X.obj (L.φ n)).M)))
     (join : (X.obj (L.φ n)).M -> (X.obj (L.φ n)).M -> Real ->
       (X.obj (L.φ n)).M)
-    (ptsSeq :
+    (pointsSeq :
       Nat -> Nat -> (X.obj (L.φ n)).M -> Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (pSeq : Nat -> Nat -> (X.obj (L.φ n)).M -> (X.obj (L.φ n)).M)
     (radSeq : Nat -> Nat -> (X.obj (L.φ n)).M -> Real)
@@ -140,7 +140,7 @@ theorem unifHatIdOn
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           forall gamma : Fin (pb.A r), rho gamma x ≠ 0 ->
-            dist (pSeq a b x) (ptsSeq a b x gamma) < radSeq a b x)
+            dist (pSeq a b x) (pointsSeq a b x gamma) < radSeq a b x)
     (hstrict :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -158,7 +158,7 @@ theorem unifHatIdOn
           StrictDistInput (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
-              (ptsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)
+              (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)
             join (pSeq a b x) (radSeq a b x))
     (hpts :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -188,7 +188,7 @@ theorem unifHatIdOn
               x ∈ (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
                 (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
                 Set (X.obj (L.φ n)).M) ->
-                dist x (ptsSeq a b x gamma) < eps) :
+                dist x (pointsSeq a b x gamma) < eps) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
     letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -221,14 +221,14 @@ theorem unifHatIdOn
                 (centerAverage.activeFill
                   (fun y : (X.obj (L.φ n)).M =>
                     fun gamma : Fin (pb.A r) => rho gamma y)
-                  (ptsSeq a b) (fun y : (X.obj (L.φ n)).M => y))
+                  (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y))
                 join (pSeq a b) (radSeq a b)
                 (fun y : (X.obj (L.φ n)).M => y)
                 (fun y hy => centerAverage.inputOfFill (I := I)
                   (g := (X.obj (L.φ n)).metric)
                   (μ := fun y : (X.obj (L.φ n)).M =>
                     fun gamma : Fin (pb.A r) => rho gamma y)
-                  (pts := ptsSeq a b) (join := join) (p := pSeq a b)
+                  (points := pointsSeq a b) (join := join) (p := pSeq a b)
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy) (hqstar a b y hy)
                   (hactive_mem a b y hy)
@@ -257,14 +257,14 @@ theorem unifHatIdOn
       (fun x : (X.obj (L.φ n)).M => TangentSpace I x) :=
     ⟨(X.obj (L.φ n)).metric.inner,
       (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
-  exact centerAverage.unifTwoIdDataOn (I := I)
+  exact centerAverage.uniformTwoIdDataOn (I := I)
     (g := (X.obj (L.φ n)).metric) (join := join)
     (s := NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n)
     (USeq := fun _ _ gamma =>
       (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
         (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
         Set (X.obj (L.φ n)).M))
-    (μSeq := fun _ _ y gamma => rho gamma y) (ptsSeq := ptsSeq)
+    (μSeq := fun _ _ y gamma => rho gamma y) (pointsSeq := pointsSeq)
     (pSeq := pSeq) (rSeq := radSeq) hcomplete hrad hqstar hactive_mem
     (fun a b y hy =>
       NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd) (D := D)
@@ -273,11 +273,11 @@ theorem unifHatIdOn
     hstrict hpts
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem unifHatIdSelfOn
+theorem uniformHatIdSelfOn
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (rho :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -301,7 +301,7 @@ theorem unifHatIdSelfOn
           Set (X.obj (L.φ n)).M)))
     (join : (X.obj (L.φ n)).M -> (X.obj (L.φ n)).M -> Real ->
       (X.obj (L.φ n)).M)
-    (ptsSeq :
+    (pointsSeq :
       Nat -> Nat -> (X.obj (L.φ n)).M -> Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (radSeq : Nat -> Nat -> (X.obj (L.φ n)).M -> Real)
     (hconn :
@@ -356,7 +356,7 @@ theorem unifHatIdSelfOn
       forall a b : Nat, forall x : (X.obj (L.φ n)).M,
         x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
           forall gamma : Fin (pb.A r), rho gamma x ≠ 0 ->
-            dist x (ptsSeq a b x gamma) < radSeq a b x)
+            dist x (pointsSeq a b x gamma) < radSeq a b x)
     (hstrict :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -374,7 +374,7 @@ theorem unifHatIdSelfOn
           StrictDistInput (I := I) (X.obj (L.φ n)).metric
             (centerAverage.activeFill
               (fun y : (X.obj (L.φ n)).M => fun gamma : Fin (pb.A r) => rho gamma y)
-              (ptsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)
+              (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y) x)
             join x (radSeq a b x))
     (hpts :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -404,7 +404,7 @@ theorem unifHatIdSelfOn
               x ∈ (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
                 (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
                 Set (X.obj (L.φ n)).M) ->
-                dist x (ptsSeq a b x gamma) < eps) :
+                dist x (pointsSeq a b x gamma) < eps) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
     letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -437,14 +437,14 @@ theorem unifHatIdSelfOn
                 (centerAverage.activeFill
                   (fun y : (X.obj (L.φ n)).M =>
                     fun gamma : Fin (pb.A r) => rho gamma y)
-                  (ptsSeq a b) (fun y : (X.obj (L.φ n)).M => y))
+                  (pointsSeq a b) (fun y : (X.obj (L.φ n)).M => y))
                 join (fun y : (X.obj (L.φ n)).M => y) (radSeq a b)
                 (fun y : (X.obj (L.φ n)).M => y)
                 (fun y hy => centerAverage.inputOfFillSelf (I := I)
                   (g := (X.obj (L.φ n)).metric)
                   (μ := fun y : (X.obj (L.φ n)).M =>
                     fun gamma : Fin (pb.A r) => rho gamma y)
-                  (pts := ptsSeq a b) (join := join)
+                  (points := pointsSeq a b) (join := join)
                   (r := radSeq a b) (qstar := fun y : (X.obj (L.φ n)).M => y)
                   y hcomplete (hrad a b y hy)
                   (hactive_mem a b y hy)
@@ -473,14 +473,14 @@ theorem unifHatIdSelfOn
       (fun x : (X.obj (L.φ n)).M => TangentSpace I x) :=
     ⟨(X.obj (L.φ n)).metric.inner,
       (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
-  exact centerAverage.unifTwoIdDataSelf (I := I)
+  exact centerAverage.uniformTwoIdDataSelf (I := I)
     (g := (X.obj (L.φ n)).metric) (join := join)
     (s := NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n)
     (USeq := fun _ _ gamma =>
       (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
         (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
         Set (X.obj (L.φ n)).M))
-    (μSeq := fun _ _ y gamma => rho gamma y) (ptsSeq := ptsSeq)
+    (μSeq := fun _ _ y gamma => rho gamma y) (pointsSeq := pointsSeq)
     (rSeq := radSeq) hcomplete hrad hactive_mem
     (fun a b y hy =>
       NetLimitData.hatPOUDataTwo (I := I) (X := X) (hd := hd) (D := D)
@@ -490,5 +490,5 @@ theorem unifHatIdSelfOn
 
 end NetLimitData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

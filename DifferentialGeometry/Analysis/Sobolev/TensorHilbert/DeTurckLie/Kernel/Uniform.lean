@@ -57,7 +57,7 @@ private theorem kernel_grid_of_conn
               (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (i + 3) := by
   classical
-  obtain ⟨CA, hCA_nn, hCA⟩ := connectionDifference_grid_unif (I := I) (M := M) hδ₀
+  obtain ⟨CA, hCA_nn, hCA⟩ := connectionDifference_grid_uniform (I := I) (M := M) hδ₀
   let CQ1 : ℕ → ℝ := fun j => operatorFieldApplicationGdiag (E := E) j * ∑ i' ∈ Finset.range (j + 1),
     (Module.finrank ℝ E : ℝ) * CA i' *
       ∑ l ∈ Finset.range (j + 1 - i'), CA l * antidiagonalTuplePairCount (i' + 2) (l + 2)
@@ -480,7 +480,7 @@ private theorem sym_grid_of_conn
   linarith [hLG1]
 
 omit [SigmaCompactSpace M] in
-private theorem pair_trace_grid_unif
+private theorem pair_trace_grid_uniform
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ j, 0 ≤ C j) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -497,8 +497,8 @@ private theorem pair_trace_grid_unif
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (j + 1) := by
   classical
-  obtain ⟨C2, hC2_nn, hC2⟩ := trace_grid_unif (I := I) (M := M) 2 hδ₀
-  obtain ⟨C4, hC4_nn, hC4⟩ := trace_grid_unif (I := I) (M := M) 4 hδ₀
+  obtain ⟨C2, hC2_nn, hC2⟩ := trace_grid_uniform (I := I) (M := M) 2 hδ₀
+  obtain ⟨C4, hC4_nn, hC4⟩ := trace_grid_uniform (I := I) (M := M) 4 hδ₀
   refine ⟨fun j => operatorFieldApplicationGdiag (E := E) j * ∑ i' ∈ Finset.range (j + 1),
       C2 i' * ∑ l ∈ Finset.range (j + 1 - i'),
         C4 l * antidiagonalTuplePairCount (i' + 1) (l + 1),
@@ -632,7 +632,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeKernel_gridBound_of_conne
                     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                       ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   classical
-  obtain ⟨CPT, hCPT_nn, hCPT⟩ := pair_trace_grid_unif (I := I) (M := M) hδ₀
+  obtain ⟨CPT, hCPT_nn, hCPT⟩ := pair_trace_grid_uniform (I := I) (M := M) hδ₀
   obtain ⟨CX, hCX_nn, hCX⟩ := sym_grid_of_conn (I := I) (M := M) hδ₀ F hF
   let fr : ℝ := Module.finrank ℝ E
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _

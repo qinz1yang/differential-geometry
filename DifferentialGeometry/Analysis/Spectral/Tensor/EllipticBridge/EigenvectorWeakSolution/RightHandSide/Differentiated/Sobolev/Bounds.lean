@@ -341,7 +341,7 @@ theorem eigenvectorChartRHSDiff_wkpNorm_le
       obtain ⟨Cstep, hCstep_nn, hCstep_bd⟩ :=
         eigenvectorChartIteratedStep_wkpNorm_le (I := I) (M := M)
           g r s i α P₀ m K (Fin.init l)
-          (fChartEffPrev := eigenvectorChartRHSDiff (I := I) (M := M)
+          (fChartEffectivePrev := eigenvectorChartRHSDiff (I := I) (M := M)
             g r s i α P₀ m (Fin.init l))
           (l (Fin.last m)) h_iter h_prev h_prev_zero
       obtain ⟨Cih, hCih_nn, hCih_bd⟩ := ih (K + 1) (Fin.init l) h_pou_prev
@@ -535,7 +535,7 @@ theorem eigenvectorChartRHSDiff_wkpNorm_le_uniform
       obtain ⟨Cstep, hCstep_nn, hCstep_bd⟩ :=
         eigenvectorChartIteratedStep_wkpNorm_le_uniform (I := I)
           (M := M) g r s α P₀ m K (Fin.init l) (l (Fin.last m))
-          (fChartEffPrev := fPrev) h_iter h_prev h_prev_zero
+          (fChartEffectivePrev := fPrev) h_iter h_prev h_prev_zero
       obtain ⟨Cih, hCih_nn, hCih_bd⟩ := ih (K + 1) (Fin.init l) h_pou_prev
       refine ⟨max Cstep (2 * Cstep * Cih), le_max_of_le_left hCstep_nn,
         fun i => ?_⟩

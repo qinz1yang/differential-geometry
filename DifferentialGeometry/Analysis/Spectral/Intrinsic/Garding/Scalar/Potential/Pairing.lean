@@ -26,7 +26,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem cc_a1_unif
+theorem cc_a1_uniform
     (q : SmoothRiemannianMetric I M)
     (ζ : ℝ → C^∞⟮I, M; ℝ⟯) {R K : Set ℝ}
     (hK : IsCompact K) (hKR : K ⊆ R)
@@ -61,7 +61,7 @@ theorem cc_a1_unif
                       (T.coeff i) ^ 2) := by
   classical
   obtain ⟨P, hP_nn, hpair⟩ :=
-    iterL_smul_unif (I := I) (M := M) q n ζ hK hKR hζ
+    iterL_smul_uniform (I := I) (M := M) q n ζ hK hKR hζ
   obtain ⟨Clo, hClo_nn, hlo⟩ := hsJet_le (I := I) (M := M) q 0 n
   obtain ⟨Chi, hChi_nn, hhi⟩ := hsJet_le (I := I) (M := M) q 0 (n + 1)
   let Q : ℝ := P * Chi * Clo

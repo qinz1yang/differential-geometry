@@ -31,24 +31,24 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem galVec_norm_sq
+theorem galerkinVec_norm_sq
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (c : TensorEigenIdx (I := I) (M := M) q 0 0 → Real) (sigma : Real) :
-    ‖scalarGalVec (I := I) (M := M) q F c sigma‖ ^ 2 =
+    ‖scalarGalerkinVec (I := I) (M := M) q F c sigma‖ ^ 2 =
       ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i sigma * (c i) ^ 2 := by
   classical
   rw [TensorHs.norm_sq_eq_tsum]
   rw [tsum_eq_sum (s := F) (fun i hi => by
-    rw [scalarGalVec_coeff, if_neg hi]
+    rw [scalarGalerkinVec_coeff, if_neg hi]
     ring)]
   refine Finset.sum_congr rfl (fun i hi => ?_)
-  rw [scalarGalVec_coeff, if_pos hi]
+  rw [scalarGalerkinVec_coeff, if_pos hi]
 
 omit [BoundarylessManifold I M] in
 open scoped Classical in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem gal_crit_nf
+private theorem galerkin_crit_nf
     (q : SmoothRiemannianMetric I M)
     (F : Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (c f R : TensorEigenIdx (I := I) (M := M) q 0 0 → Real)
@@ -57,14 +57,14 @@ private theorem gal_crit_nf
     (hcrit :
       2 * ∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (k : Real) *
-            ((scalarGalVec (I := I) (M := M) q F c 0).coeff i * R i) ≤
+            ((scalarGalerkinVec (I := I) (M := M) q F c 0).coeff i * R i) ≤
         ((23 : Real) / 12) *
             (∑ i ∈ F,
               tensorSobolevWeight (I := I) (M := M) i ((k + 1 : Nat) : Real) *
-                ((scalarGalVec (I := I) (M := M) q F c 0).coeff i) ^ 2) +
+                ((scalarGalerkinVec (I := I) (M := M) q F c 0).coeff i) ^ 2) +
           C * ∑ i ∈ F,
             tensorSobolevWeight (I := I) (M := M) i (k : Real) *
-              ((scalarGalVec (I := I) (M := M) q F c 0).coeff i) ^ 2) :
+              ((scalarGalerkinVec (I := I) (M := M) q F c 0).coeff i) ^ 2) :
       2 * ∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (k : Real) * (c i * f i) ≤
         ((23 : Real) / 12) *
@@ -75,34 +75,34 @@ private theorem gal_crit_nf
   have hleft :
       (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (k : Real) *
-            ((scalarGalVec (I := I) (M := M) q F c 0).coeff i * R i)) =
+            ((scalarGalerkinVec (I := I) (M := M) q F c 0).coeff i * R i)) =
         ∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (k : Real) * (c i * f i) := by
     apply Finset.sum_congr rfl
     intro i hi
-    rw [scalarGalVec_coeff, if_pos hi, hforce i]
+    rw [scalarGalerkinVec_coeff, if_pos hi, hforce i]
   have hhigh :
       (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i ((k + 1 : Nat) : Real) *
-            ((scalarGalVec (I := I) (M := M) q F c 0).coeff i) ^ 2) =
+            ((scalarGalerkinVec (I := I) (M := M) q F c 0).coeff i) ^ 2) =
         ∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i ((k : Real) + 1) * (c i) ^ 2 := by
     apply Finset.sum_congr rfl
     intro i hi
-    rw [Nat.cast_add, Nat.cast_one, scalarGalVec_coeff, if_pos hi]
+    rw [Nat.cast_add, Nat.cast_one, scalarGalerkinVec_coeff, if_pos hi]
   have hlow :
       (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (k : Real) *
-            ((scalarGalVec (I := I) (M := M) q F c 0).coeff i) ^ 2) =
+            ((scalarGalerkinVec (I := I) (M := M) q F c 0).coeff i) ^ 2) =
         ∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (k : Real) * (c i) ^ 2 := by
     apply Finset.sum_congr rfl
     intro i hi
-    rw [scalarGalVec_coeff, if_pos hi]
+    rw [scalarGalerkinVec_coeff, if_pos hi]
   rw [hleft, hhigh, hlow] at hcrit
   exact hcrit
 
-private def GalCriticalBound
+private def GalerkinCriticalBound
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) (tau : Real) (Cmid : Nat → Real) : Prop :=
   let q := S.family.metric (T : Real)
@@ -136,7 +136,7 @@ private def GalCriticalBound
                 tensorSobolevWeight (I := I) (M := M) i (n : Real) *
                   (v.coeff i) ^ 2)
 
-private def GalCoreCompatibility
+private def GalerkinCoreCompatibility
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) (tau : Real) : Prop :=
   let q := S.family.metric (T : Real)
@@ -150,11 +150,11 @@ private def GalCoreCompatibility
           (S.family.metric ((T : Real) - s)) v
 
 open scoped Classical in
-private theorem gal_closure
+private theorem galerkin_closure
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) {tau : Real}
-    (Cmid : Nat → Real) (hcrit : GalCriticalBound (I := I) (M := M) S T tau Cmid)
-    (hcore : GalCoreCompatibility (I := I) (M := M) S T tau)
+    (Cmid : Nat → Real) (hcrit : GalerkinCriticalBound (I := I) (M := M) S T tau Cmid)
+    (hcore : GalerkinCoreCompatibility (I := I) (M := M) S T tau)
     (Fs : Nat → Finset (TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0))
     (V : Nat → Real → TensorEigenIdx (I := I) (M := M)
@@ -163,8 +163,8 @@ private theorem gal_closure
       2 * ∑ i ∈ Fs N,
           tensorSobolevWeight (I := I) (M := M) i (k : Real) *
             (V N t i *
-              (scalarGalPert (I := I) (M := M) S T t
-                (scalarGalVec (I := I) (M := M)
+              (scalarGalerkinPert (I := I) (M := M) S T t
+                (scalarGalerkinVec (I := I) (M := M)
                   (S.family.metric (T : Real)) (Fs N) (V N t) 2)).coeff i) ≤
         ((23 : Real) / 12) *
             galerkinEnergy (I := I) (M := M) (Fs N) (V N)
@@ -175,12 +175,12 @@ private theorem gal_closure
   intro N k t ht
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
   let v : TensorHs (I := I) (M := M) q 0 0 0 :=
-    scalarGalVec (I := I) (M := M) q (Fs N) (V N t) 0
+    scalarGalerkinVec (I := I) (M := M) q (Fs N) (V N t) 0
   let hv : (Function.support v.coeff).Finite :=
-    scalarGalVec_finite (I := I) (M := M) q (Fs N) (V N t) 0
+    scalarGalerkinVec_finite (I := I) (M := M) q (Fs N) (V N t) 0
   have hsub : hv.toFinset ⊆ Fs N := by
     intro i hi
-    exact scalarGalVec_supp (I := I) (M := M) q (Fs N) (V N t) 0
+    exact scalarGalerkinVec_support (I := I) (M := M) q (Fs N) (V N t) 0
       (hv.mem_toFinset.mp hi)
   have hcrit' := hcrit k t (Set.Ico_subset_Icc_self ht) (Fs N) v hv hsub
   let R : TensorEigenIdx (I := I) (M := M) q 0 0 → Real := fun i =>
@@ -196,10 +196,10 @@ private theorem gal_closure
             (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorHsSmoothRepr
               (I := I) (M := M) v hv))) i
   have hforce (i : TensorEigenIdx (I := I) (M := M) q 0 0) :
-      (scalarGalPert (I := I) (M := M) S T t
-        (scalarGalVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i = R i := by
+      (scalarGalerkinPert (I := I) (M := M) S T t
+        (scalarGalerkinVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i = R i := by
     simpa only [R, q, v, hv] using
-      galPert_fin_of (I := I) (M := M) S T t
+      galerkinPert_fin_of (I := I) (M := M) S T t
         (hcore t (Set.Ico_subset_Icc_self ht)) (Fs N) (V N t) i
   have hcritR :
       2 * ∑ i ∈ Fs N,
@@ -213,16 +213,16 @@ private theorem gal_closure
             tensorSobolevWeight (I := I) (M := M) i (k : Real) *
               (v.coeff i) ^ 2 := by
     simpa only [R, q] using hcrit'
-  have hnf := gal_crit_nf (I := I) (M := M) q (Fs N)
+  have hnf := galerkin_crit_nf (I := I) (M := M) q (Fs N)
     (V N t)
     (fun i =>
-      (scalarGalPert (I := I) (M := M) S T t
-        (scalarGalVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i)
+      (scalarGalerkinPert (I := I) (M := M) S T t
+        (scalarGalerkinVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i)
     R k (Cmid k) hforce (by simpa only [v] using hcritR)
   simpa only [galerkinEnergy, q] using hnf
 
 open scoped Classical in
-private theorem gal_initial_energy_bound
+private theorem galerkin_initial_energy_bound
     (q : SmoothRiemannianMetric I M) (u0 : SmoothCcTensor q 0 0)
     (Fs : Nat → Finset (TensorEigenIdx (I := I) (M := M) q 0 0))
     (V : Nat → Real → TensorEigenIdx (I := I) (M := M) q 0 0 → Real)
@@ -249,10 +249,10 @@ private theorem gal_initial_energy_bound
       cc_partial_le_norm (I := I) (M := M) q 0 (k : Real) u0 (Fs N)
 
 open scoped Classical in
-theorem gal_bound_on
+theorem galerkin_bound_on
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) {tau : Real}
-    (hG : IsConjGalTime (I := I) (M := M) S T ⟨tau⟩) :
+    (hG : IsConjGalerkinTime (I := I) (M := M) S T ⟨tau⟩) :
     let q := S.family.metric (T : Real)
     ∀ (Cmid : Nat → Real), (∀ n, 0 ≤ Cmid n) →
       (∀ (n : Nat) s, s ∈ Set.Icc (0 : Real) tau →
@@ -301,8 +301,8 @@ theorem gal_bound_on
           (∀ N t, t ∈ Set.Ico (0 : Real) tau → ∀ i, i ∈ Fs N →
             HasDerivWithinAt (fun r => V N r i)
               (-(TensorEigenIdx.lambda (I := I) (M := M) i) * V N t i +
-                (scalarGalPert (I := I) (M := M) S T t
-                  (scalarGalVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i)
+                (scalarGalerkinPert (I := I) (M := M) S T t
+                  (scalarGalerkinVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i)
               (Set.Ici t) t) ∧
           (∀ N i, i ∈ Fs N →
             V N 0 i =
@@ -320,13 +320,13 @@ theorem gal_bound_on
   intro Cmid hCmid hcrit hcore
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
   intro u0 Fs
-  let uInit : TensorHs (I := I) (M := M) q 0 0 0 :=
+  let uInitial : TensorHs (I := I) (M := M) q 0 0 0 :=
     ccTensorToHs (I := I) (M := M) q 0 0 u0
-  choose V hV using fun N => hG.exists_solution uInit (Fs N)
+  choose V hV using fun N => hG.exists_solution uInitial (Fs N)
   let Fseq : Nat → Real → TensorEigenIdx (I := I) (M := M) q 0 0 → Real :=
     fun N t i =>
-      (scalarGalPert (I := I) (M := M) S T t
-        (scalarGalVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i
+      (scalarGalerkinPert (I := I) (M := M) S T t
+        (scalarGalerkinVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i
   have hcont : ∀ N i, i ∈ Fs N →
       ContinuousOn (fun t => V N t i) (Set.Icc (0 : Real) tau) := by
     intro N i hi
@@ -336,19 +336,19 @@ theorem gal_bound_on
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) * V N t i + Fseq N t i)
         (Set.Ici t) t := by
     intro N t ht i hi
-    simpa only [Fseq, scalarGalRhs] using (hV N).deriv t ht i hi
+    simpa only [Fseq, scalarGalerkinRhs] using (hV N).deriv t ht i hi
   have hinit : ∀ N i, i ∈ Fs N →
       V N 0 i =
         tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) q 0 0)
           (SmoothCcTensor.toL2 u0) i := by
     intro N i hi
-    simpa only [uInit, ccTensorToHs_coeff] using (hV N).init i hi
+    simpa only [uInitial, ccTensorToHs_coeff] using (hV N).initial i hi
   have hsupp : ∀ N t i, i ∉ Fs N → V N t i = 0 := by
     intro N t i hi
     exact (hV N).support t i hi
-  change GalCriticalBound (I := I) (M := M) S T tau Cmid at hcrit
-  change GalCoreCompatibility (I := I) (M := M) S T tau at hcore
+  change GalerkinCriticalBound (I := I) (M := M) S T tau Cmid at hcrit
+  change GalerkinCoreCompatibility (I := I) (M := M) S T tau at hcore
   have hclosure : ∀ (N k : Nat), ∀ t ∈ Set.Ico (0 : Real) tau,
       2 * ∑ i ∈ Fs N,
           tensorSobolevWeight (I := I) (M := M) i (k : Real) *
@@ -358,11 +358,11 @@ theorem gal_bound_on
           Cmid k * galerkinEnergy (I := I) (M := M) (Fs N) (V N) (k : Real) t := by
     intro N k t ht
     simpa only [Fseq, q] using
-      gal_closure (I := I) (M := M) S T Cmid hcrit hcore Fs V N k t ht
+      galerkin_closure (I := I) (M := M) S T Cmid hcrit hcore Fs V N k t ht
   have hinitEnergy : ∀ (N k : Nat),
       galerkinEnergy (I := I) (M := M) (Fs N) (V N) (k : Real) 0 ≤
         ‖ccTensorToHs (I := I) (M := M) q 0 (k : Real) u0‖ ^ 2 := by
-    exact gal_initial_energy_bound (I := I) (M := M) q u0 Fs V hinit
+    exact galerkin_initial_energy_bound (I := I) (M := M) q u0 Fs V hinit
   have hbounds := galerkin_energy_uniform_bound_perScale
     (I := I) (M := M) (g := q) (r := 0) (s₀ := 0)
     (U := V) (Fseq := Fseq) (sseq := Fs) (T := tau) (σ₀ := 0)
@@ -381,7 +381,7 @@ theorem gal_bound_on
   · simpa only [zero_add] using hbounds
 
 open scoped Classical in
-theorem scalar_gal_bound
+theorem scalar_galerkin_bound
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime) :
     let q := S.family.metric (T : Real)
@@ -394,8 +394,8 @@ theorem scalar_gal_bound
           (∀ N t, t ∈ Set.Ico (0 : Real) tau → ∀ i, i ∈ Fs N →
             HasDerivWithinAt (fun r => V N r i)
               (-(TensorEigenIdx.lambda (I := I) (M := M) i) * V N t i +
-                (scalarGalPert (I := I) (M := M) S T t
-                  (scalarGalVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i)
+                (scalarGalerkinPert (I := I) (M := M) S T t
+                  (scalarGalerkinVec (I := I) (M := M) q (Fs N) (V N t) 2)).coeff i)
               (Set.Ici t) t) ∧
           (∀ N i, i ∈ Fs N →
             V N 0 i =
@@ -410,12 +410,12 @@ theorem scalar_gal_bound
                 (k : Real) t ≤ Bound := by
   classical
   dsimp only
-  obtain ⟨G, hG⟩ := scalar_gal_exists (I := I) (M := M) S hS T
+  obtain ⟨G, hG⟩ := scalar_galerkin_exists (I := I) (M := M) S hS T
   let tauG : Real := G.tau
   have htauG : 0 < tauG := by simpa only [tauG] using hG.pos
   obtain ⟨tauC, htauC, _htauC_one, Cmid, hCmid, hcrit⟩ :=
     scalar_crit_tame (I := I) (M := M) S hS T
-  have hcore := lapDiffA20_core (I := I) (M := M) S.family.metric hS.smoothMetric T
+  have hcore := eventually_lapDiffA20_apply_scalarH2Core (I := I) (M := M) S.family.metric hS.smoothMetric T
   obtain ⟨delta, hdelta, hball⟩ := Metric.mem_nhds_iff.mp hcore
   let tau : Real := min (min tauG tauC) (delta / 2)
   have htau : 0 < tau := by
@@ -435,10 +435,10 @@ theorem scalar_gal_bound
       t ∈ Metric.ball (0 : Real) delta := by
     rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_nonneg ht.1]
     exact ht.2.trans_lt htau_delta
-  have hGtau : IsConjGalTime (I := I) (M := M) S T ⟨tau⟩ :=
-    gal_time_mono (I := I) (M := M) hG htau htau_tauG
+  have hGtau : IsConjGalerkinTime (I := I) (M := M) S T ⟨tau⟩ :=
+    galerkin_time_mono (I := I) (M := M) hG htau htau_tauG
   refine ⟨tau, htau, htau_one, ?_⟩
-  exact gal_bound_on (I := I) (M := M) S T hGtau Cmid hCmid
+  exact galerkin_bound_on (I := I) (M := M) S T hGtau Cmid hCmid
     (fun n s hs => hcrit n s (hIccC hs))
     (fun s hs => hball (htball s hs))
 

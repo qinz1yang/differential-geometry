@@ -56,7 +56,7 @@ theorem ricciFrame_mdiffAt
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem tailFrameSpaceReg
+theorem tailFrameSpaceRegularity
     {Idx : Type} [Fintype Idx] [DecidableEq Idx]
     {u : Set M}
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
@@ -78,14 +78,14 @@ theorem tailFrameSpaceReg
   let D' := RealTimeInterval.closedOpen t0 omega hT0Omega
   let S' := S.timeRestrict D'
   have hS' : IsSolutionOn (I := I) S' := by
-    simpa [S', D'] using isSoln_tailRestrict (I := I) hS hAlphaT0 hT0Omega
+    simpa [S', D'] using isSolutionOn_tailRestrict (I := I) hS hAlphaT0 hT0Omega
   have htime :
       MetricFrameTimeRegularityInFrameOnLocal
         (I := I) S'
         (localFrameInv (E := E) (I := I) S' frame hframe)
         (localFrameInvDt (E := E) (I := I) S' frame hframe) frame u := by
     simpa [S', D'] using
-      tailFrameTimeReg (I := I) hS hAlphaT0 hT0Omega frame hframe
+      tailFrameTimeRegularity (I := I) hS hAlphaT0 hT0Omega frame hframe
   have hSmooth : forall a b : Idx, forall t, t ∈ D'.regular -> forall x : M, x ∈ u ->
       ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
         (modelWithCornersSelf Real Real) 2
@@ -158,7 +158,7 @@ theorem tailFrameSpaceReg
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem tailCoordFrameReg
+theorem tailCoordFrameRegularity
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
@@ -176,9 +176,9 @@ theorem tailCoordFrameReg
       (DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x₀) := by
   have hS' : IsSolutionOn (I := I)
       (S.timeRestrict (RealTimeInterval.closedOpen t0 omega hT0Omega)) :=
-    isSoln_tailRestrict (I := I) hS hAlphaT0 hT0Omega
+    isSolutionOn_tailRestrict (I := I) hS hAlphaT0 hT0Omega
   exact
-    (tailFrameSpaceReg (I := I) hS hAlphaT0 hT0Omega
+    (tailFrameSpaceRegularity (I := I) hS hAlphaT0 hT0Omega
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x₀)
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_isLocalFrame (I := I) x₀)
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet_open

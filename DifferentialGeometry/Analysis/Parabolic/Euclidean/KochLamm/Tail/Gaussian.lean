@@ -14,56 +14,56 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V]
 
-def klTailGauss (p : ℝ) (x : V) : ℝ :=
+def kochLammTailGauss (p : ℝ) (x : V) : ℝ :=
   ((baseHeatMass V)⁻¹) ^ (p / 2) * (baseHeat x) ^ (p / 2)
 
-def klTailMass (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+def kochLammTailMass (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
     (p : ℝ) : ℝ :=
   ((baseHeatMass V)⁻¹) ^ (p / 2) * basePowMass V (p / 2)
 
-theorem klTailGauss_mem {p : ℝ} (hp : 0 < p) :
-    Integrable (klTailGauss (V := V) p) := by
-  unfold klTailGauss
+theorem kochLammTailGauss_mem {p : ℝ} (hp : 0 < p) :
+    Integrable (kochLammTailGauss (V := V) p) := by
+  unfold kochLammTailGauss
   exact (baseHeatPow_mem (V := V) (half_pos hp)).const_mul _
 
 omit [Nontrivial V] in
-theorem klTailGauss_int {p : ℝ} (hp : 0 < p) :
-    ∫ x : V, klTailGauss p x = klTailMass V p := by
-  unfold klTailGauss klTailMass
+theorem kochLammTailGauss_int {p : ℝ} (hp : 0 < p) :
+    ∫ x : V, kochLammTailGauss p x = kochLammTailMass V p := by
+  unfold kochLammTailGauss kochLammTailMass
   rw [integral_const_mul, baseHeatPow_int (V := V) (half_pos hp)]
 
-def klTailKernel (u p : ℝ) (x : V) : ℝ :=
+def kochLammTailKernel (u p : ℝ) (x : V) : ℝ :=
   ((((heatScale u) ^ Module.finrank ℝ V)⁻¹) ^ p) *
-    klTailGauss p ((heatScale u)⁻¹ • x)
+    kochLammTailGauss p ((heatScale u)⁻¹ • x)
 
 omit [Nontrivial V] in
-theorem klTailKernel_int {u p : ℝ} (hu : 0 < u) (hp : 0 < p) (x : V) :
-    ∫ y : V, klTailKernel u p (x - y) =
+theorem kochLammTailKernel_int {u p : ℝ} (hu : 0 < u) (hp : 0 < p) (x : V) :
+    ∫ y : V, kochLammTailKernel u p (x - y) =
       u ^ ((Module.finrank ℝ V : ℝ) * (1 - p) / 2) *
-        klTailMass V p := by
+        kochLammTailMass V p := by
   rw [integral_sub_left_eq_self
-    (klTailKernel (V := V) u p) (volume : Measure V) x]
-  unfold klTailKernel
+    (kochLammTailKernel (V := V) u p) (volume : Measure V) x]
+  unfold kochLammTailKernel
   rw [integral_const_mul,
     Measure.integral_comp_inv_smul_of_nonneg (volume : Measure V)
-      (klTailGauss (V := V) p) (heatScale_pos hu).le,
-    klTailGauss_int (V := V) hp]
+      (kochLammTailGauss (V := V) p) (heatScale_pos hu).le,
+    kochLammTailGauss_int (V := V) hp]
   simp only [smul_eq_mul]
   calc
     ((((heatScale u) ^ Module.finrank ℝ V)⁻¹) ^ p) *
-          ((heatScale u) ^ Module.finrank ℝ V * klTailMass V p) =
+          ((heatScale u) ^ Module.finrank ℝ V * kochLammTailMass V p) =
         ((((heatScale u) ^ Module.finrank ℝ V)⁻¹) ^ p) *
-          (heatScale u) ^ Module.finrank ℝ V * klTailMass V p := by ring
+          (heatScale u) ^ Module.finrank ℝ V * kochLammTailMass V p := by ring
     _ = u ^ ((Module.finrank ℝ V : ℝ) * (1 - p) / 2) *
-        klTailMass V p := by
+        kochLammTailMass V p := by
       rw [heatPow_scale (V := V) hu]
 
 omit [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in
-theorem klHeatPow_tail {u p k : ℝ} (hu : 0 < u) (hp : 0 < p)
+theorem kochLammHeatPow_tail {u p k : ℝ} (hu : 0 < u) (hp : 0 < p)
     (hk : 0 ≤ k) {x : V}
     (hlo : Real.sqrt 2 * k ≤ ‖(heatScale u)⁻¹ • x‖) :
     (heatKernel u x) ^ p ≤
-      Real.exp (-(p * k ^ 2) / 4) * klTailKernel u p x := by
+      Real.exp (-(p * k ^ 2) / 4) * kochLammTailKernel u p x := by
   let z : V := (heatScale u)⁻¹ • x
   have hsqrt : (Real.sqrt 2) ^ 2 = 2 := Real.sq_sqrt (by norm_num)
   have hsq0 : (Real.sqrt 2 * k) ^ 2 ≤ ‖z‖ ^ 2 :=
@@ -120,8 +120,8 @@ theorem klHeatPow_tail {u p k : ℝ} (hu : 0 < u) (hp : 0 < p)
           (Real.rpow_nonneg (baseHeat_nonneg _) _))
         (Real.rpow_nonneg
           (inv_nonneg.mpr (pow_nonneg (heatScale_pos hu).le _)) _)
-    _ = Real.exp (-(p * k ^ 2) / 4) * klTailKernel u p x := by
-      unfold klTailKernel klTailGauss
+    _ = Real.exp (-(p * k ^ 2) / 4) * kochLammTailKernel u p x := by
+      unfold kochLammTailKernel kochLammTailGauss
       dsimp [z]
       ring
 

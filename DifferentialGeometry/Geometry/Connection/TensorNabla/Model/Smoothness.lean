@@ -40,7 +40,7 @@ theorem contDiffWithinAt_covariantDeriv_tensor0SModelWithin (s : ℕ)
     hα.fderivWithin_right_apply hX hu hmn hx
   have hα_m : ContDiffWithinAt 𝕜 m α u x :=
     hα.of_le (le_trans le_self_add hmn)
-  have hCorrOp :
+  have hCorrectionOp :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s (ΓX y)) u x := by
     let h := hΓ.continuousLinearMap_comp
@@ -49,12 +49,12 @@ theorem contDiffWithinAt_covariantDeriv_tensor0SModelWithin (s : ℕ)
       (Eventually.of_forall fun y ↦
         (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX y)).symm)
       (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX x)).symm
-  have hCorr :
+  have hCorrection :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDerivCorrection (𝕜 := 𝕜) (E := E) s (ΓX y) (α y)) u x := by
-    simpa [lieDerivCorrectionL] using hCorrOp.clm_apply hα_m
+    simpa [lieDerivCorrectionL] using hCorrectionOp.clm_apply hα_m
   simpa [covariantDerivTensor0SModelWithin, covariantDerivTensor0SModelAt] using
-    hprincipal.sub hCorr
+    hprincipal.sub hCorrection
 
 theorem contDiffWithinAt_covariantDeriv_tensorRSModelWithin (r s : ℕ)
     {m n' : WithTop ℕ∞} {X : E → E} {ΓX : E → E →L[𝕜] E}
@@ -73,7 +73,7 @@ theorem contDiffWithinAt_covariantDeriv_tensorRSModelWithin (r s : ℕ)
     hT.fderivWithin_right_apply hX hu hmn hx
   have hT_m : ContDiffWithinAt 𝕜 m T u x :=
     hT.of_le (le_trans le_self_add hmn)
-  have hCorrS :
+  have hCorrectionS :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s (ΓX y)) u x := by
     let h := hΓ.continuousLinearMap_comp
@@ -82,7 +82,7 @@ theorem contDiffWithinAt_covariantDeriv_tensorRSModelWithin (r s : ℕ)
       (Eventually.of_forall fun y ↦
         (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX y)).symm)
       (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX x)).symm
-  have hCorrR :
+  have hCorrectionR :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r (ΓX y)) u x := by
     let h := hΓ.continuousLinearMap_comp
@@ -94,11 +94,11 @@ theorem contDiffWithinAt_covariantDeriv_tensorRSModelWithin (r s : ℕ)
   have hOut :
       ContDiffWithinAt 𝕜 m
         (fun y => (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s (ΓX y)).comp (T y)) u x :=
-    hCorrS.clm_comp hT_m
+    hCorrectionS.clm_comp hT_m
   have hIn :
       ContDiffWithinAt 𝕜 m
         (fun y => (T y).comp (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r (ΓX y))) u x :=
-    hT_m.clm_comp hCorrR
+    hT_m.clm_comp hCorrectionR
   simpa [covariantDerivTensorRSModelWithin, covariantDerivTensorRSModelAt] using
     (hprincipal.sub hOut).add hIn
 

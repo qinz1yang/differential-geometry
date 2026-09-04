@@ -23,7 +23,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-theorem exists_lRegMinC1On
+theorem exists_lRegularizedMinC1On
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T t0 t1 : Real)
     (a b : Real) (hab : a < b)
@@ -36,20 +36,20 @@ theorem exists_lRegMinC1On
     ∃ gamma : Real → M,
       ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma (Icc a b) ∧
         gamma a = x ∧ gamma b = y ∧
-        lRegAction S T gamma a b = lRegCostC1 S T a b x y ∧
+        lRegularizedAction S T gamma a b = lRegularizedCostC1 S T a b x y ∧
         ∀ delta : Real → M,
           ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
           delta a = x → delta b = y →
-          lRegAction S T gamma a b ≤ lRegAction S T delta a b := by
+          lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b := by
   obtain ⟨gamma, m, t, p, uLim, _beta, _u, hgamma, hga, hgb, hcost,
       hmin, htmono, ht0, htlast, hsrc, hrep, _hbeta, _hbetaa, _hbetab,
-      _hsrcBeta, _hrepBeta, _hu, _hunifBeta, _hbetaAct⟩ :=
-    exists_lRegMinC1 (I := I) S hS T t0 t1 a b hab.le htime hback x y
+      _hsrcBeta, _hrepBeta, _hu, _huniformBeta, _hbetaAct⟩ :=
+    exists_lRegularizedMinC1 (I := I) S hS T t0 t1 a b hab.le htime hback x y
       alpha0 halpha0 h0a h0b hreg
   have hmin' : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b := by
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b := by
     intro delta hdelta hda hdb
     exact hmin delta hdelta (hda.trans hga) (hdb.trans hgb)
   have hc1 : ContMDiffOn (modelWithCornersSelf Real Real) I 1 gamma

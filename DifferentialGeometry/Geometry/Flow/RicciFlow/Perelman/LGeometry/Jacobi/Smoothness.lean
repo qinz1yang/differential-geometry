@@ -26,21 +26,21 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lRegJacobi_smooth
+theorem lRegularizedJacobi_smooth
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (V : TangentSpace I x) :
     ContMDiffOn (𝓘(Real, E).prod 𝓘(Real, Real)) I.tangent ∞
       (fun p : E × Real =>
         (TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
-          (lRegCurve S T x p.1 p.2)
-          (lRegJacobiField S T x p.1 V p.2) : TangentBundle I M))
-      (lRegJointDom S T x) := by
+          (lRegularizedCurve S T x p.1 p.2)
+          (lRegularizedJacobiField S T x p.1 V p.2) : TangentBundle I M))
+      (lRegularizedJointDom S T x) := by
   let J := 𝓘(Real, E).prod 𝓘(Real, Real)
-  let U := lRegJointDom S T x
-  let F : E × Real → M := fun p => lRegCurve S T x p.1 p.2
-  have hU : IsOpen U := lRegJointDom_open S hS T x
-  have hF : ContMDiffOn J I ∞ F U := lRegCurve_smoothOn S hS T x
+  let U := lRegularizedJointDom S T x
+  let F : E × Real → M := fun p => lRegularizedCurve S T x p.1 p.2
+  have hU : IsOpen U := lRegularizedJointDom_open S hS T x
+  have hF : ContMDiffOn J I ∞ F U := lRegularizedCurve_smoothOn S hS T x
   have htm := hF.contMDiffOn_tangentMapWithin (m := ∞) le_rfl hU.uniqueMDiffOn
   have hσ : ContMDiff J J.tangent ∞
       (fun p : E × Real =>
@@ -85,14 +85,14 @@ theorem lRegJacobi_smooth
     (f := F) (p := p) (v := ((V : E), (0 : Real))) hdiff
   have hjoint :
       mfderiv J I F p ((V : E), (0 : Real)) =
-        lRegJacobiField S T x p.1 V p.2 := by
+        lRegularizedJacobiField S T x p.1 V p.2 := by
     have hzero : mfderiv 𝓘(Real, Real) I
         (fun z : Real => F (p.1, z)) p.2 (0 : Real) = 0 :=
       map_zero _
     rw [hzero, add_zero] at hsplit
-    simpa only [F, lRegJacobiField] using hsplit
+    simpa only [F, lRegularizedJacobiField] using hsplit
   change TotalSpace.mk' E (E := fun y : M => TangentSpace I y)
-      (F p) (lRegJacobiField S T x p.1 V p.2) =
+      (F p) (lRegularizedJacobiField S T x p.1 V p.2) =
     tangentMapWithin J I F U
       (TotalSpace.mk' (E × Real) p ((V : E), (0 : Real)))
   simp only [tangentMapWithin, hwithin, hjoint]

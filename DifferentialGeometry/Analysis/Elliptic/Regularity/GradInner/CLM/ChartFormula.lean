@@ -74,10 +74,10 @@ theorem gradInner_eq_chart_formula
     toEuclidean_symm_mem_target (I := I) hy
   have hx_source : x ∈ (extChartAt I α).source :=
     (extChartAt I α).map_target h_target
-  have hx_chart_src : x ∈ (chartAt H α).source := by
+  have hx_chart_source : x ∈ (chartAt H α).source := by
     rwa [extChartAt_source_eq_chartAt_source (I := I)] at hx_source
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_chart_src
+    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_chart_source
   have hx_int : extChartAt I α x ∈ interior (extChartAt I α).target := by
     have h_φx : extChartAt I α x = (toEuclidean (E := E)).symm y := by
       rw [hx_def]; exact (extChartAt I α).right_inv h_target

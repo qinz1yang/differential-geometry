@@ -39,7 +39,7 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-private theorem lRegJacCLM_cont
+private theorem lRegularizedJacobianCLM_cont
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x0 : M)
     (K : Set Real) (alpha : Real → M) (a : Real → E)
@@ -48,7 +48,7 @@ private theorem lRegJacCLM_cont
     (hsrc : ∀ s ∈ K, alpha s ∈ (chartAt H x0).source)
     (hreg : ∀ s ∈ K, T - s ^ 2 ∈ D.regular) :
     Continuous (fun z : {s : Real // s ∈ K} ↦
-      lRegJacobiCLM S T z x0 (alpha z)
+      lRegularizedJacobiCLM S T z x0 (alpha z)
         (trivFromE (I := I) x0 (alpha z) (a z)) (a z)
         (chartCurve (I := I) x0 alpha z)) := by
   classical
@@ -154,7 +154,7 @@ private theorem lRegJacCLM_cont
       Continuous (fun z : P ↦
         hessianSec (I := I) (S.base.connection (tau z))
           (metricCov_smooth (I := I) (S.base.metric (tau z)))
-          (S.scalar (tau z)) (scalarSmoothOfSol (I := I) S (tau z)) (b z)
+          (S.scalar (tau z)) (scalarSmoothOfSolution (I := I) S (tau z)) (b z)
           (vec2 (Yv Z z) (Wv j z))) := by
     apply (scalarHess_cont (I := I) S hS).eval_continuous
       (P := P) htau (fun z ↦ hreg z z.2) hb
@@ -176,7 +176,7 @@ private theorem lRegJacCLM_cont
       SolutionFamily.ricci_apply] using h
   have hCov (Z : E × E) (j : Fin (Module.finrank Real E)) :
       Continuous (fun z : P ↦
-        lRegJacobiCov S T z (b z) (Yv Z z) (A z) (Pv Z z) (Wv j z)) := by
+        lRegularizedJacobiCov S T z (b z) (Yv Z z) (A z) (Pv Z z) (Wv j z)) := by
     have h0 := hRm Z j
     have h1 := hHess Z j
     have h2 := hRic Z j
@@ -221,14 +221,14 @@ private theorem lRegJacCLM_cont
       (hc2.mul h1)).sub (hc4.mul h2)).add (hc2s.mul h3)).sub
         (hc2s.mul h4)).sub (hc2s.mul h5))
     rw [show (fun z : P ↦
-        lRegJacobiCov S T z (b z) (Yv Z z) (A z) (Pv Z z) (Wv j z)) =
+        lRegularizedJacobiCov S T z (b z) (Yv Z z) (A z) (Pv Z z) (Wv j z)) =
       fun z : P ↦
         -S.base.rm04 (tau z) (b z)
             (vec4 (Yv Z z) (A z) (A z) (Wv j z)) +
           2 * (z : Real) ^ 2 *
             hessianSec (I := I) (S.base.connection (tau z))
               (metricCov_smooth (I := I) (S.base.metric (tau z)))
-              (S.scalar (tau z)) (scalarSmoothOfSol (I := I) S (tau z)) (b z)
+              (S.scalar (tau z)) (scalarSmoothOfSolution (I := I) S (tau z)) (b z)
               (vec2 (Yv Z z) (Wv j z)) -
           4 * (z : Real) *
             S.ricciAt (tau z) (b z) (vec2 (Pv Z z) (Wv j z)) +
@@ -243,7 +243,7 @@ private theorem lRegJacCLM_cont
             (vec3 (Wv j z) (A z) (Yv Z z)) by
         funext z
         simpa only [tau] using
-          lRegJacobiCov_apply (I := I) S T z (b z)
+          lRegularizedJacobiCov_apply (I := I) S T z (b z)
             (Yv Z z) (A z) (Pv Z z) (Wv j z)]
     exact hall
   have hInv (i j : Fin (Module.finrank Real E)) :
@@ -261,21 +261,21 @@ private theorem lRegJacCLM_cont
     rw [hcoord z]
     rfl
   have hForce (Z : E × E) : Continuous (fun z : P ↦
-      lRegForceChart S T z x0 (b z) (A z) Z) := by
+      lRegularizedForceChart S T z x0 (b z) (A z) Z) := by
     have hsum : Continuous (fun z : P ↦
         ∑ i : Fin (Module.finrank Real E),
           (∑ j : Fin (Module.finrank Real E),
             chartInvGramMatrix (I := I) (S.base.metric (tau z)) x0 (b z) i j *
-              lRegJacobiCov S T z (b z) (Yv Z z) (A z) (Pv Z z) (Wv j z)) •
+              lRegularizedJacobiCov S T z (b z) (Yv Z z) (A z) (Pv Z z) (Wv j z)) •
             DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) := by
       refine continuous_finsetSum _ (fun i _ ↦ ?_)
       refine (continuous_finsetSum _ (fun j _ ↦
         (hInv i j).mul (hCov Z j))).smul continuous_const
     refine hsum.congr (fun z ↦ ?_)
     symm
-    rw [lRegForceChart_apply]
+    rw [lRegularizedForceChart_apply]
     let cv : ∀ x : M, TangentSpace I x →ₗ[Real] Real := fun x ↦
-      lRegJacobiCov S T z x
+      lRegularizedJacobiCov S T z x
         (trivFromE (I := I) x0 x Z.1)
         (trivFromE (I := I) x0 x (a z))
         (trivFromE (I := I) x0 x Z.2)
@@ -315,18 +315,18 @@ private theorem lRegJacCLM_cont
       continuous_finsetSum _ (fun j _ ↦ ?_))).smul continuous_const
     exact ((hGamma i j k).mul (haCoord i)).mul continuous_const
   have hEval (Z : E × E) : Continuous (fun z : P ↦
-      lRegJacobiCLM S T z x0 (b z) (A z) (a z) (u z) Z) := by
+      lRegularizedJacobiCLM S T z x0 (b z) (A z) (a z) (u z) Z) := by
     rw [show (fun z : P ↦
-        lRegJacobiCLM S T z x0 (b z) (A z) (a z) (u z) Z) =
+        lRegularizedJacobiCLM S T z x0 (b z) (A z) (a z) (u z) Z) =
       fun z : P ↦
         (Z.2 - Geometry.Riemannian.Geodesic.chartChristoffelContraction
             (I := I) (S.base.metric (tau z)) x0 (a z) Z.1 (u z),
-          lRegForceChart S T z x0 (b z) (A z) Z -
+          lRegularizedForceChart S T z x0 (b z) (A z) Z -
             Geometry.Riemannian.Geodesic.chartChristoffelContraction
               (I := I) (S.base.metric (tau z)) x0 (a z) Z.2 (u z)) by
         funext z
         simpa only [tau] using
-          lRegJacobiCLM_apply (I := I) S T z x0 (b z) (A z) (a z) (u z) Z]
+          lRegularizedJacobiCLM_apply (I := I) S T z x0 (b z) (A z) (a z) (u z) Z]
     exact (continuous_const.sub (hGApp Z.1)).prodMk
       ((hForce Z).sub (hGApp Z.2))
   rw [continuous_iff_continuousAt]
@@ -340,7 +340,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem lRegJacobi_unique
+theorem lRegularizedJacobi_unique
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     {alpha : Real → M} {Y Y' : ∀ s, TangentSpace I (alpha s)}
@@ -350,8 +350,8 @@ theorem lRegJacobi_unique
     (hvel : ∀ s ∈ J, DifferentiableAt Real
       (chartRepAt (I := I) alpha
         (fun r ↦ lVelocity (I := I) alpha r) s) s)
-    (hY : IsLRegJacobi S T alpha Y J)
-    (hY' : IsLRegJacobi S T alpha Y' J)
+    (hY : IsLRegularizedJacobi S T alpha Y J)
+    (hY' : IsLRegularizedJacobi S T alpha Y' J)
     (h0 : Y s0 = Y' s0)
     (hD0 : covDerivAlong (I := I) (S.base.metric (T - s0 ^ 2)) alpha Y s0 =
       covDerivAlong (I := I) (S.base.metric (T - s0 ^ 2)) alpha Y' s0) :
@@ -372,12 +372,12 @@ theorem lRegJacobi_unique
     intro s hs
     exact (hY s hs).1.continuousAt.continuousWithinAt
   have hPgerm (V : ∀ s, TangentSpace I (alpha s))
-      (hV : IsLRegJacobi S T alpha V J) (s : Real) (hs : s ∈ J) :
+      (hV : IsLRegularizedJacobi S T alpha V J) (s : Real) (hs : s ∈ J) :
       DifferentiableAt Real
         (chartRepAt (I := I) alpha
           (fun r ↦ covDerivAlong (I := I)
             (S.base.metric (T - r ^ 2)) alpha V r) s) s := by
-    apply lRegJacobiVel_diff (I := I) S hS T alpha V s (hreg s hs)
+    apply lRegularizedJacobiVelocity_diff (I := I) S hS T alpha V s (hreg s hs)
     · filter_upwards [hJopen.mem_nhds hs] with r hr
       exact (hV r hr).1
     · exact (hV s hs).2.1
@@ -419,7 +419,7 @@ theorem lRegJacobi_unique
     let z : Real → E × E := fun r ↦ (y r, p r)
     let z' : Real → E × E := fun r ↦ (y' r, p' r)
     let C : Real → (E × E →L[Real] E × E) := fun r ↦
-      lRegJacobiCLM S T r x0 (alpha r) (A r) (a r)
+      lRegularizedJacobiCLM S T r x0 (alpha r) (A r) (a r)
         (chartCurve (I := I) x0 alpha r)
     have hsubJ : Ioo c d ⊆ J := fun r hr ↦ (hcd hr).1
     have hsrc : ∀ r ∈ Ioo c d, alpha r ∈ (chartAt H x0).source :=
@@ -432,12 +432,12 @@ theorem lRegJacobi_unique
         (by simpa only [A] using hvel r (hsubJ hr))).continuousAt.continuousWithinAt
     have hC : ContinuousOn C (Ioo c d) := by
       rw [continuousOn_iff_continuous_domRestrict]
-      have hraw := lRegJacCLM_cont (I := I) S hS T x0 (Ioo c d) alpha a
+      have hraw := lRegularizedJacobianCLM_cont (I := I) S hS T x0 (Ioo c d) alpha a
         (continuousOn_iff_continuous_domRestrict.mp halphaI)
         (continuousOn_iff_continuous_domRestrict.mp haI) hsrc
         (fun r hr ↦ hreg r (hsubJ hr))
       refine hraw.congr (fun r ↦ ?_)
-      change lRegJacobiCLM S T r x0 (alpha r)
+      change lRegularizedJacobiCLM S T r x0 (alpha r)
           (trivFromE (I := I) x0 (alpha r) (a r)) (a r)
           (chartCurve (I := I) x0 alpha r) = C r
       have hbase : alpha r ∈
@@ -450,7 +450,7 @@ theorem lRegJacobi_unique
     have hz (r : Real) (hr : r ∈ Ioo c d) :
         HasDerivAt z (C r (z r)) r := by
       simpa only [A, P, y, a, p, z, C] using
-        lRegJacobi_state_clm (I := I) S hS T x0 alpha Y r
+        lRegularizedJacobi_state_clm (I := I) S hS T x0 alpha Y r
           (hreg r (hsubJ hr)) (hsrc r hr)
           (by
             filter_upwards [hJopen.mem_nhds (hsubJ hr)] with q hq
@@ -459,7 +459,7 @@ theorem lRegJacobi_unique
     have hz' (r : Real) (hr : r ∈ Ioo c d) :
         HasDerivAt z' (C r (z' r)) r := by
       simpa only [A, P', y', a, p', z', C] using
-        lRegJacobi_state_clm (I := I) S hS T x0 alpha Y' r
+        lRegularizedJacobi_state_clm (I := I) S hS T x0 alpha Y' r
           (hreg r (hsubJ hr)) (hsrc r hr)
           (by
             filter_upwards [hJopen.mem_nhds (hsubJ hr)] with q hq
@@ -536,28 +536,28 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem covDerivAlong_lRegJacobiField_ne_zero
+theorem covDerivAlong_lRegularizedJacobiField_ne_zero
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
     (Z V : TangentSpace I x) {c : Real}
-    (hcpos : 0 < c) (hc : c ∈ lRegDomain S T x Z)
+    (hcpos : 0 < c) (hc : c ∈ lRegularizedDomain S T x Z)
     (hV : V ≠ 0)
-    (hzero : lRegJacobiField S T x Z V c = 0) :
+    (hzero : lRegularizedJacobiField S T x Z V c = 0) :
     covDerivAlong (I := I) (S.base.metric (T - c ^ 2))
-        (lRegCurve S T x Z) (lRegJacobiField S T x Z V) c ≠ 0 := by
+        (lRegularizedCurve S T x Z) (lRegularizedJacobiField S T x Z V) c ≠ 0 := by
   intro hDc
-  let alpha : Real → M := lRegCurve S T x Z
+  let alpha : Real → M := lRegularizedCurve S T x Z
   let Y : ∀ s, TangentSpace I (alpha s) :=
-    lRegJacobiField S T x Z V
-  let J : Set Real := lRegDomain S T x Z
-  have hJopen : IsOpen J := lRegDomain_isOpen S T x Z
-  have hJconn : IsPreconnected J := lRegDomain_preconn S T x Z
+    lRegularizedJacobiField S T x Z V
+  let J : Set Real := lRegularizedDomain S T x Z
+  have hJopen : IsOpen J := lRegularizedDomain_isOpen S T x Z
+  have hJconn : IsPreconnected J := lRegularizedDomain_preconn S T x Z
   have hcJ : c ∈ J := hc
   have h0J : (0 : Real) ∈ J := by
-    exact lRegDomain_seg S T x Z hc le_rfl hcpos.le
+    exact lRegularizedDomain_segment S T x Z hc le_rfl hcpos.le
   have hreg : ∀ s ∈ J, T - s ^ 2 ∈ D.regular := by
     intro s hs
-    exact lRegDomain_reg S T x Z hs
+    exact lRegularizedDomain_regularity S T x Z hs
   let z : E := Z
   have hvel : ∀ s ∈ J, DifferentiableAt Real
       (chartRepAt (I := I) alpha
@@ -568,14 +568,14 @@ theorem covDerivAlong_lRegJacobiField_ne_zero
         (fun r : Real ↦ (z, r)) s :=
       (contMDiff_const.prodMk contMDiff_id).contMDiffAt
     have hcurve : ContMDiffAt 𝓘(Real, Real) I ∞
-        (lRegCurve S T x Z) s := by
-      with_unfolding_all exact (lRegCurve_smooth S hS T x hs).comp s hpair
+        (lRegularizedCurve S T x Z) s := by
+      with_unfolding_all exact (lRegularizedCurve_smooth S hS T x hs).comp s hpair
     simpa only [alpha, lVelocity] using
-      velocity_rep_diffAt (I := I) (lRegCurve S T x Z) s
+      velocity_rep_diffAt (I := I) (lRegularizedCurve S T x Z) s
         hcurve
-  have hY : IsLRegJacobi S T alpha Y J := by
-    exact lRegCurve_jacobi S hS T x Z V J (fun _ hs ↦ hs)
-  have hYsub : IsLRegJacobi S T alpha (fun r ↦ Y r - Y r) J :=
+  have hY : IsLRegularizedJacobi S T alpha Y J := by
+    exact lRegularizedCurve_jacobi S hS T x Z V J (fun _ hs ↦ hs)
+  have hYsub : IsLRegularizedJacobi S T alpha (fun r ↦ Y r - Y r) J :=
     hY.sub hJopen hY
   let g := S.base.metric (T - c ^ 2)
   have hYdiff : DifferentiableAt Real
@@ -602,7 +602,7 @@ theorem covDerivAlong_lRegJacobiField_ne_zero
   have hDc' : covDerivAlong (I := I) g alpha Y c = 0 := by
     simpa only [g, alpha, Y] using hDc
   have heq : Set.EqOn Y (fun r ↦ Y r - Y r) J :=
-    lRegJacobi_unique S hS T hJopen hJconn hcJ hreg hvel hY hYsub
+    lRegularizedJacobi_unique S hS T hJopen hJconn hcJ hreg hvel hY hYsub
       hfieldc (hDc'.trans hDsub.symm)
   have hzeroOn : ∀ s ∈ J, Y s = 0 := by
     intro s hs
@@ -630,9 +630,9 @@ theorem covDerivAlong_lRegJacobiField_ne_zero
     hDEq.trans hDzero
   have hT : T ∈ D.regular := by
     simpa using hreg 0 h0J
-  have hinit := lRegJacobi_d0 S hS T x Z V hT
+  have hinit := lRegularizedJacobi_d0 S hS T x Z V hT
   have hDY0' : covDerivAlong (I := I) (S.base.metric T)
-      (lRegCurve S T x Z) (lRegJacobiField S T x Z V) 0 = 0 := by
+      (lRegularizedCurve S T x Z) (lRegularizedJacobiField S T x Z V) 0 = 0 := by
     simpa only [g0, alpha, Y] using hDY0
   have htwo : (2 : Real) • V = 0 := hinit.symm.trans hDY0'
   have htwo_ne : (2 : Real) ≠ 0 := by norm_num

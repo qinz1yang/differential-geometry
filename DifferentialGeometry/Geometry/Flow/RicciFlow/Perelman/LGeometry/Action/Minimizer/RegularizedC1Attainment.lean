@@ -61,28 +61,28 @@ private theorem c1_ref_int
     exact hinner.congr fun _ ↦ rfl
   exact hq.continuousOn.integrableOn_compact isCompact_Icc
 
-def lRegCostC1
+def lRegularizedCostC1
     (S : SolutionOn (I := I) (M := M) D) (T a b : Real) (x y : M) : Real :=
   sInf {r : Real | ∃ alpha : Real → M,
     ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
-      alpha a = x ∧ alpha b = y ∧ lRegAction S T alpha a b = r}
+      alpha a = x ∧ alpha b = y ∧ lRegularizedAction S T alpha a b = r}
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [CompactSpace M] in
-theorem lRegCostC1_le_bdd
+theorem lRegularizedCostC1_le_bdd
     (S : SolutionOn (I := I) (M := M) D) (T a b : Real) (x y : M)
     (hbdd : BddBelow {r : Real | ∃ alpha : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
-        alpha a = x ∧ alpha b = y ∧ lRegAction S T alpha a b = r})
+        alpha a = x ∧ alpha b = y ∧ lRegularizedAction S T alpha a b = r})
     (alpha : Real → M)
     (halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha)
     (hxa : alpha a = x) (hyb : alpha b = y) :
-    lRegCostC1 S T a b x y ≤ lRegAction S T alpha a b := by
-  unfold lRegCostC1
+    lRegularizedCostC1 S T a b x y ≤ lRegularizedAction S T alpha a b := by
+  unfold lRegularizedCostC1
   exact csInf_le hbdd ⟨alpha, halpha, hxa, hyb, rfl⟩
 
 omit [NeZero (Module.finrank Real E)] in
-theorem exists_lRegMinC1
+theorem exists_lRegularizedMinC1
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T t0 t1 : Real)
     (a b : Real) (hab : a ≤ b)
@@ -97,11 +97,11 @@ theorem exists_lRegMinC1
       (beta : Nat → Real → M)
       (u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i)),
       Continuous gamma ∧ gamma a = x ∧ gamma b = y ∧
-        lRegAction S T gamma a b = lRegCostC1 S T a b x y ∧
+        lRegularizedAction S T gamma a b = lRegularizedCostC1 S T a b x y ∧
         (∀ delta : Real → M,
           ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
           delta a = x → delta b = y →
-          lRegAction S T gamma a b ≤ lRegAction S T delta a b) ∧
+          lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) ∧
         Monotone t ∧ t 0 = a ∧ t (Fin.last m) = b ∧
         (∀ i, MapsTo gamma (Icc (t i.castSucc) (t i.succ))
           (chartAt H (p i)).source) ∧
@@ -119,20 +119,20 @@ theorem exists_lRegMinC1
         TendstoUniformly
           (fun n (s : Icc a b) ↦ beta n s.1)
           (fun s ↦ gamma s.1) atTop ∧
-        Tendsto (fun n ↦ lRegAction S T (beta n) a b) atTop
-          (nhds (lRegAction S T gamma a b)) := by
+        Tendsto (fun n ↦ lRegularizedAction S T (beta n) a b) atTop
+          (nhds (lRegularizedAction S T gamma a b)) := by
   classical
   let costs : Set Real := {r : Real | ∃ alpha : Real → M,
     ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
-      alpha a = x ∧ alpha b = y ∧ lRegAction S T alpha a b = r}
+      alpha a = x ∧ alpha b = y ∧ lRegularizedAction S T alpha a b = r}
   have hcosts : costs.Nonempty := by
-    refine ⟨lRegAction S T alpha0 a b, alpha0, halpha0, h0a, h0b, rfl⟩
+    refine ⟨lRegularizedAction S T alpha0 a b, alpha0, halpha0, h0a, h0b, rfl⟩
   have hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric :=
     hS.smoothMetric
   have hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
   let gRef : SmoothRiemannianMetric I M := S.family.metric t0
   obtain ⟨c, C, hc, hcoerc⟩ :=
-    exists_lRegAction_coercivity_constants (I := I) S hS T t0 t1 gRef a b hab htime hback
+    exists_lRegularizedAction_coercivity_constants (I := I) S hS T t0 t1 gRef a b hab htime hback
   have hcosts_bdd : BddBelow costs := by
     refine ⟨C * (b - a), ?_⟩
     intro r hr
@@ -143,7 +143,7 @@ theorem exists_lRegMinC1
           (lVelocity (I := I) alpha s)) volume a b := by
       apply IntegrableOn.intervalIntegrable
       simpa only [uIcc_of_le hab] using hE
-    have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab alpha
+    have hLag := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab alpha
       halpha.contMDiffOn hreg
     have hkin : 0 ≤ ∫ s in a..b, (c / 2) *
         gRef.inner (alpha s) (lVelocity (I := I) alpha s)
@@ -151,11 +151,11 @@ theorem exists_lRegMinC1
       apply intervalIntegral.integral_nonneg hab
       intro s _hs
       apply mul_nonneg (div_nonneg hc.le (by norm_num))
-      let vel := lVelocity (I := I) alpha s
-      rcases eq_or_ne vel 0 with hvel | hvel
-      · simp only [vel, hvel, map_zero]
+      let velocity := lVelocity (I := I) alpha s
+      rcases eq_or_ne velocity 0 with hvel | hvel
+      · simp only [velocity, hvel, map_zero]
         exact le_rfl
-      · exact (gRef.pos (alpha s) vel hvel).le
+      · exact (gRef.pos (alpha s) velocity hvel).le
     linarith [hcoerc alpha href hLag]
   obtain ⟨v, _hvanti, hvlim, hv⟩ :=
     exists_seq_tendsto_sInf hcosts hcosts_bdd
@@ -165,10 +165,10 @@ theorem exists_lRegMinC1
         (lVelocity (I := I) (alpha n) s)) (Icc a b) :=
     c1_ref_int (I := I) gRef (alpha n) (halpha n) a b
   have hLag (n : Nat) : IntervalIntegrable
-      (lRegLagrangian S T (alpha n)) volume a b :=
-    intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab (alpha n)
+      (lRegularizedLagrangian S T (alpha n)) volume a b :=
+    intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab (alpha n)
       (halpha n).contMDiffOn hreg
-  have hact (n : Nat) : lRegAction S T (alpha n) a b ≤ v 0 := by
+  have hact (n : Nat) : lRegularizedAction S T (alpha n) a b ≤ v 0 := by
     rw [hval n]
     exact _hvanti (Nat.zero_le n)
   obtain ⟨m, t, p, chi, gamma, uLim, hchi, hgamma, hga, hgb, _hconv,
@@ -177,34 +177,34 @@ theorem exists_lRegMinC1
       hback alpha (fun n ↦ (halpha n).contMDiffOn) hE hLag hact
       x y hfixa hfixb hreg
   have hsubseq : Tendsto
-      (fun n ↦ lRegAction S T (alpha (chi n)) a b) atTop
+      (fun n ↦ lRegularizedAction S T (alpha (chi n)) a b) atTop
       (nhds (sInf costs)) := by
     have h := hvlim.comp hchi.tendsto_atTop
     exact h.congr' (Eventually.of_forall fun n ↦ (hval (chi n)).symm)
-  have hupper : lRegAction S T gamma a b ≤ sInf costs := by
-    have hraw : lRegAction S T gamma a b ≤
-        liminf (fun n ↦ lRegAction S T (alpha (chi n)) a b) atTop := by
-      rw [lRegAction_chart S hMet hSc T a b t htmono ht0 htlast p gamma
+  have hupper : lRegularizedAction S T gamma a b ≤ sInf costs := by
+    have hraw : lRegularizedAction S T gamma a b ≤
+        liminf (fun n ↦ lRegularizedAction S T (alpha (chi n)) a b) atTop := by
+      rw [lRegularizedAction_chart S hMet hSc T a b t htmono ht0 htlast p gamma
         uLim hsrc hrep hreg]
       exact hlsc
     simpa only [hsubseq.liminf_eq] using hraw
   obtain ⟨beta, u, hbeta, hbetaa, hbetab, hsrcBeta, hrepBeta, hu,
-      hunifBeta, hbetaAct⟩ :=
+      huniformBeta, hbetaAct⟩ :=
     lAction_c1_dense (I := I) S hMet hSc T a b t htmono ht0 htlast p gamma
       uLim hsrc hrep hreg
-  have hlower : sInf costs ≤ lRegAction S T gamma a b := by
+  have hlower : sInf costs ≤ lRegularizedAction S T gamma a b := by
     apply ge_of_tendsto hbetaAct
     exact Eventually.of_forall fun n ↦ csInf_le hcosts_bdd
       ⟨beta n, hbeta n, (hbetaa n).trans hga, (hbetab n).trans hgb, rfl⟩
-  have heq : lRegAction S T gamma a b = lRegCostC1 S T a b x y := by
-    change lRegAction S T gamma a b = sInf costs
+  have heq : lRegularizedAction S T gamma a b = lRegularizedCostC1 S T a b x y := by
+    change lRegularizedAction S T gamma a b = sInf costs
     exact le_antisymm hupper hlower
   refine ⟨gamma, m, t, p, uLim, beta, u, hgamma, hga, hgb, heq, ?_, htmono,
     ht0, htlast, hsrc, hrep, hbeta, ?_, ?_, hsrcBeta, hrepBeta, hu,
-    hunifBeta, hbetaAct⟩
+    huniformBeta, hbetaAct⟩
   · intro delta hdelta hda hdb
     rw [heq]
-    change sInf costs ≤ lRegAction S T delta a b
+    change sInf costs ≤ lRegularizedAction S T delta a b
     exact csInf_le hcosts_bdd ⟨delta, hdelta, hda, hdb, rfl⟩
   · intro n
     simpa only [hga] using hbetaa n
@@ -212,7 +212,7 @@ theorem exists_lRegMinC1
     simpa only [hgb] using hbetab n
 
 omit [NeZero (Module.finrank Real E)] in
-theorem lRegCostC1_le
+theorem lRegularizedCostC1_le
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T t0 t1 : Real) (a b : Real) (hab : a ≤ b)
     (htime : Icc t0 t1 ⊆ D.carrier)
@@ -221,9 +221,9 @@ theorem lRegCostC1_le
     (halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha)
     (hxa : alpha a = x) (hyb : alpha b = y)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    lRegCostC1 S T a b x y ≤ lRegAction S T alpha a b := by
+    lRegularizedCostC1 S T a b x y ≤ lRegularizedAction S T alpha a b := by
   obtain ⟨gamma, _, _, _, _, _, _, _, _, _, heq, hmin, _⟩ :=
-    exists_lRegMinC1 (I := I) S hS T t0 t1 a b hab htime hback x y alpha
+    exists_lRegularizedMinC1 (I := I) S hS T t0 t1 a b hab htime hback x y alpha
       halpha hxa hyb hreg
   rw [← heq]
   exact hmin alpha halpha hxa hyb

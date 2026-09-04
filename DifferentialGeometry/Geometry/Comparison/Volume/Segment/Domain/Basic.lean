@@ -34,7 +34,7 @@ def gBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ) :
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-def SegDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+def SegmentDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -45,12 +45,12 @@ def SegDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 omit [T2Space (TangentBundle I M)] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem mem_segDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+theorem mem_segmentDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     {g : SmoothRiemannianMetric I M}
     {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {x : M} {v : TangentSpace I x} :
-    v ∈ SegDom (I := I) g hEnorm x ↔
+    v ∈ SegmentDom (I := I) g hEnorm x ↔
       Real.sqrt (g.inner x v v)
         = (riemannianEDist I x (expMapIntrinsic (I := I) g hEnorm x v)).toReal :=
   Iff.rfl
@@ -58,25 +58,25 @@ theorem mem_segDom [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSp
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem segDom_zero [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+theorem segmentDom_zero [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (x : M) : (0 : TangentSpace I x) ∈ SegDom (I := I) g hEnorm x := by
-  rw [mem_segDom, expMapIntrinsic_zero (I := I) g hEnorm x,
+    (x : M) : (0 : TangentSpace I x) ∈ SegmentDom (I := I) g hEnorm x := by
+  rw [mem_segmentDom, expMapIntrinsic_zero (I := I) g hEnorm x,
     show g.inner x (0 : TangentSpace I x) (0 : TangentSpace I x) = 0 by simp,
     Real.sqrt_zero, Manifold.riemannianEDist_self, ENNReal.toReal_zero]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem segDom_smul [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
+theorem segmentDom_smul [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    {x : M} {v : TangentSpace I x} (hv : v ∈ SegDom (I := I) g hEnorm x)
+    {x : M} {v : TangentSpace I x} (hv : v ∈ SegmentDom (I := I) g hEnorm x)
     {s : ℝ} (hs0 : 0 ≤ s) (hs1 : s ≤ 1) :
-    s • v ∈ SegDom (I := I) g hEnorm x := by
+    s • v ∈ SegmentDom (I := I) g hEnorm x := by
   set L : ℝ := Real.sqrt (g.inner x v v) with hL
   have hLnn : 0 ≤ L := Real.sqrt_nonneg _
   have h1s : 0 ≤ 1 - s := by linarith
@@ -141,13 +141,13 @@ theorem segDom_smul [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManif
       (intrinsicGeodesic (I := I) g hEnorm x v s) = ENNReal.ofReal (L * s) :=
     le_antisymm hup hlow
   rw [hg0] at heq
-  rw [mem_segDom, sqrt_gInner_smul_self (I := I) g x hs0 v, ← hL, ← hgs, heq,
+  rw [mem_segmentDom, sqrt_gInner_smul_self (I := I) g x hs0 v, ← hL, ← hgs, heq,
     ENNReal.toReal_ofReal (mul_nonneg hLnn hs0)]
   ring
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem ball_sub_image_segDom [ConnectedSpace M] [PseudoEMetricSpace M]
+theorem ball_sub_image_segmentDom [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -155,12 +155,12 @@ theorem ball_sub_image_segDom [ConnectedSpace M] [PseudoEMetricSpace M]
     (x : M) (R : ℝ) :
     {y : M | riemannianEDist I x y < ENNReal.ofReal R} ⊆
       expMapIntrinsic (I := I) g hEnorm x ''
-        (SegDom (I := I) g hEnorm x ∩ gBall (I := I) g x R) := by
+        (SegmentDom (I := I) g hEnorm x ∩ gBall (I := I) g x R) := by
   intro y hy
   obtain ⟨v, hexp, hlen⟩ :=
     hopf_rinow_expMapIntrinsic_surjective_minimizing (I := I) g hEnorm x y
   refine ⟨v, ⟨?_, ?_⟩, hexp⟩
-  · rw [mem_segDom, hexp]; exact hlen
+  · rw [mem_segmentDom, hexp]; exact hlen
   · change Real.sqrt (g.inner x v v) < R
     rw [hlen]
     exact ENNReal.toReal_lt_of_lt_ofReal hy
@@ -189,11 +189,11 @@ theorem measurableSet_gBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ) :
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem isClosed_segDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
+theorem isClosed_segmentDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (x : M) : IsClosed (SegDom (I := I) g hEnorm x) := by
+    (x : M) : IsClosed (SegmentDom (I := I) g hEnorm x) := by
   have hf₁ : Continuous fun v : TangentSpace I x => Real.sqrt (g.inner x v v) :=
     Real.continuous_sqrt.comp (continuous_gInner_self (I := I) g x)
   have hexp : Continuous fun v : TangentSpace I x =>
@@ -214,11 +214,11 @@ theorem isClosed_segDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianM
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
-theorem measurableSet_segDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
+theorem measurableSet_segmentDom [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (x : M) : MeasurableSet (SegDom (I := I) g hEnorm x) :=
-  (isClosed_segDom (I := I) g hEnorm x).measurableSet
+    (x : M) : MeasurableSet (SegmentDom (I := I) g hEnorm x) :=
+  (isClosed_segmentDom (I := I) g hEnorm x).measurableSet
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

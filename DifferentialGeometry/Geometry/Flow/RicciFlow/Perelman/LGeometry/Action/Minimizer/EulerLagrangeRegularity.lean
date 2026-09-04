@@ -26,7 +26,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lMinCurve_reg
+theorem lMinCurve_regularity
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b) {m : Nat} (t : Fin (m + 1) → Real)
     (htmono : Monotone t) (ht0 : t 0 = a)
@@ -42,7 +42,7 @@ theorem lMinCurve_reg
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
     ∀ s ∈ Ioo a b,
       MDifferentiableAt (modelWithCornersSelf Real Real) I gamma s ∧
       DifferentiableAt Real
@@ -50,7 +50,7 @@ theorem lMinCurve_reg
           (fun r ↦ lVelocity (I := I) gamma r) s) s ∧
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
           (fun r ↦ lVelocity (I := I) gamma r) s =
-        lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
+        lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
   classical
   obtain ⟨k, s, _q, p', u', hs, _hq, hs0, hslast, _hseg, _hp,
       hsrc', hrep'⟩ := exists_strict_chart_partition (I := I) t htmono p u gamma hsrc hrep
@@ -63,7 +63,7 @@ theorem lMinCurve_reg
         apply hab.ne
         exact hs0a.symm.trans ((congrArg s (Fin.ext (by simp))).trans hslastb)
     | succ k => omega
-  exact lRegAction_minimizer_differentiable_and_acceleration_eq_on_interior (I := I) S hS T a b s hs hs0a hslastb p'
+  exact lRegularizedAction_minimizer_differentiable_and_acceleration_eq_on_interior (I := I) S hS T a b s hs hs0a hslastb p'
     gamma hgamma u' hsrc' hrep' hreg hmin
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

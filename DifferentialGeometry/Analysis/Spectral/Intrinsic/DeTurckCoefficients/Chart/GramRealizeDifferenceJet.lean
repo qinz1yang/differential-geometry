@@ -68,12 +68,12 @@ theorem chartGramOnE_realize_sub_eqOn_symm_rawComponent
             ((extChartAt I α).symm y)))
       (interior (extChartAt I α).target) := by
   intro y hy
-  have hp_src : (extChartAt I α).symm y ∈ (chartAt H α).source := by
+  have hp_source : (extChartAt I α).symm y ∈ (chartAt H α).source := by
     have hy_t : y ∈ (extChartAt I α).target := interior_subset hy
     have := (extChartAt I α).map_target hy_t
     rwa [extChartAt_source] at this
-  have hkey := chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness (I := I) (M := M)
-    g_bg T T' hδ_lt hδ hδ'_lt hδ' α a b y hp_src
+  have hkey := chartGramOnE_realize_sub_eq_symm_rawComponent_two (I := I) (M := M)
+    g_bg T T' hδ_lt hδ hδ'_lt hδ' α a b y hp_source
   simpa using hkey
 
 def tensorChartComponentOnModel (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (α : M)

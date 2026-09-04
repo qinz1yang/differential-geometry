@@ -53,7 +53,7 @@ noncomputable def chosenMthMixedPartialChartPushedU
         (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)
   | m + 1, idx =>
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 (idx (Fin.last m))
         (chosenMthMixedPartialChartPushedU g α u_h m (Fin.init idx))
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
@@ -75,7 +75,7 @@ theorem chosenMthMixedPartialChartPushedU_succ
     (u_h : H1Compl (I := I) (M := M) g)
     (m : ℕ) (idx : Fin (m + 1) → Fin (Module.finrank ℝ E)) :
     chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h (m + 1) idx =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 (idx (Fin.last m))
         (chosenMthMixedPartialChartPushedU (I := I) (M := M)
           g α u_h m (Fin.init idx))
@@ -130,12 +130,12 @@ theorem chosenMthMixedPartialChartPushedU_three_eq_chosenThirdMixedPartialChartP
     have : (Fin.last 2 : Fin 3) = 2 := rfl
     rw [this, h_idx_2]
   rw [h_last_2]
-  have h_init_0 : (Fin.init idx) 0 = i := by
+  have h_initial_0 : (Fin.init idx) 0 = i := by
     simp [Fin.init, h_idx_0]
-  have h_init_1 : (Fin.init idx) 1 = l := by
+  have h_initial_1 : (Fin.init idx) 1 = l := by
     simp [Fin.init, h_idx_1]
   have h_inner_eq := chosenMthMixedPartialChartPushedU_two_eq_chosenSecondPartialChartPushedU
-    (I := I) (M := M) g α u_h i l (Fin.init idx) h_init_0 h_init_1
+    (I := I) (M := M) g α u_h i l (Fin.init idx) h_initial_0 h_initial_1
   rw [h_inner_eq]
   unfold chosenThirdMixedPartialChartPushedU
   rfl

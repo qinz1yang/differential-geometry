@@ -31,44 +31,44 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem tendsto_normalized_lRegJacobiField_chartRepAtBase_at_zero
+theorem tendsto_normalized_lRegularizedJacobiField_chartRepAtBase_at_zero
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z V : TangentSpace I x) (hT : T ∈ D.regular) :
     Tendsto
       (fun s : Real ↦ (2 * s)⁻¹ •
-        chartRepAtBase (I := I) x (lRegCurve S T x Z)
-          (lRegJacobiField S T x Z V) s)
+        chartRepAtBase (I := I) x (lRegularizedCurve S T x Z)
+          (lRegularizedJacobiField S T x Z V) s)
       (nhdsWithin (0 : Real) (Ioi 0))
       (nhds ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt
         Real x V)) := by
-  let gamma : Real → M := lRegCurve S T x Z
-  let Y : ∀ s, TangentSpace I (gamma s) := lRegJacobiField S T x Z V
+  let gamma : Real → M := lRegularizedCurve S T x Z
+  let Y : ∀ s, TangentSpace I (gamma s) := lRegularizedJacobiField S T x Z V
   let e := trivializationAt E (TangentSpace I) x
   let rep : Real → E := chartRepAtBase (I := I) x gamma Y
-  have h0dom : (0 : Real) ∈ lRegDomain S T x Z :=
-    zero_mem_lRegDomain S hS T x Z hT
-  have hJac : HasLRegJacobiAt S T gamma Y 0 := by
-    exact lRegCurve_jacobi S hS T x Z V (lRegDomain S T x Z)
+  have h0dom : (0 : Real) ∈ lRegularizedDomain S T x Z :=
+    zero_mem_lRegularizedDomain S hS T x Z hT
+  have hJacobian : HasLRegularizedJacobiAt S T gamma Y 0 := by
+    exact lRegularizedCurve_jacobi S hS T x Z V (lRegularizedDomain S T x Z)
       (fun _ hs ↦ hs) 0 h0dom
-  have hgamma : MDifferentiableAt (modelWithCornersSelf Real Real) I gamma 0 := hJac.1
+  have hgamma : MDifferentiableAt (modelWithCornersSelf Real Real) I gamma 0 := hJacobian.1
   have hY : DifferentiableAt Real
-      (chartRepAt (I := I) gamma Y 0) 0 := hJac.2.1
+      (chartRepAt (I := I) gamma Y 0) 0 := hJacobian.2.1
   have hxchart : gamma 0 ∈ (chartAt H x).source := by
-    simpa only [gamma, lRegCurve_zero] using mem_chart_source H x
+    simpa only [gamma, lRegularizedCurve_zero] using mem_chart_source H x
   have hrepDiff : DifferentiableAt Real rep 0 := by
     exact chartRep_base_diff (I := I) gamma Y 0 x hgamma hxchart hY
   have hcov := covDeriv_chartAt (I := I) (S.base.metric T) gamma Y 0 x
     hgamma hxchart hY
   have hrep0 : rep 0 = 0 := by
-    simp only [rep, chartRepAtBase_apply, Y, gamma, lRegJacobi_zero, map_zero]
+    simp only [rep, chartRepAtBase_apply, Y, gamma, lRegularizedJacobi_zero, map_zero]
   have hchartCov :
       chartCovDerivAlong (I := I) (S.base.metric T) x gamma rep 0 =
         deriv rep 0 := by
     rw [chartCovDerivAlong_def, hrep0,
       ChartChristoffel.contraction_zero_right, add_zero]
   have hcov' : e.symmL Real x (deriv rep 0) = (2 : Real) • V := by
-    have hd0 := lRegJacobi_d0 (I := I) S hS T x Z V hT
-    rw [show gamma 0 = x by simp only [gamma, lRegCurve_zero], hchartCov] at hcov
+    have hd0 := lRegularizedJacobi_d0 (I := I) S hS T x Z V hT
+    rw [show gamma 0 = x by simp only [gamma, lRegularizedCurve_zero], hchartCov] at hcov
     simpa only [gamma, Y, e] using hcov.trans hd0
   have hxbase : x ∈ e.baseSet := by
     exact FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) x
@@ -114,9 +114,9 @@ private noncomputable def lNormGram
     (Z : TangentSpace J x) (s : Real) :
     Matrix (Fin (Module.finrank Real F)) (Fin (Module.finrank Real F)) Real :=
   Matrix.of fun i j ↦
-    (S.base.metric (T - s ^ 2)).inner (lRegCurve S T x Z s)
-      ((2 * s)⁻¹ • lRegJacobiField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) i) s)
-      ((2 * s)⁻¹ • lRegJacobiField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) j) s)
+    (S.base.metric (T - s ^ 2)).inner (lRegularizedCurve S T x Z s)
+      ((2 * s)⁻¹ • lRegularizedJacobiField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) i) s)
+      ((2 * s)⁻¹ • lRegularizedJacobiField S T x Z ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) j) s)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -127,22 +127,22 @@ private theorem tendsto_lNormGram
     (T : Real) (x : N) (Z : TangentSpace J x) (hT : T ∈ K.regular) :
     Tendsto (lNormGram S T x Z)
       (nhdsWithin (0 : Real) (Ioi 0))
-      (nhds (lSrcGram S T x)) := by
+      (nhds (lSourceGram S T x)) := by
   classical
-  let gamma : Real → N := lRegCurve S T x Z
+  let gamma : Real → N := lRegularizedCurve S T x Z
   let e := trivializationAt F (TangentSpace J) x
   let Y (V : TangentSpace J x) : ∀ s, TangentSpace J (gamma s) :=
-    lRegJacobiField S T x Z V
+    lRegularizedJacobiField S T x Z V
   let U (V : TangentSpace J x) (s : Real) : F :=
     if s = 0 then e.continuousLinearMapAt Real x V
     else (2 * s)⁻¹ • chartRepAtBase (I := J) x gamma (Y V) s
   let W (V : TangentSpace J x) (s : Real) : TangentSpace J (gamma s) :=
     e.symmL Real (gamma s) (U V s)
   have hgamma : ContinuousAt gamma 0 := by
-    have hjoint := (lRegCurve_smoothAt (I := J) (M := N) S hS T x Z hT).continuousAt
+    have hjoint := (lRegularizedCurve_smoothAt (I := J) (M := N) S hS T x Z hT).continuousAt
     exact hjoint.comp (continuousAt_const.prodMk continuousAt_id)
   have hgamma0 : gamma 0 = x := by
-    simp only [gamma, lRegCurve_zero]
+    simp only [gamma, lRegularizedCurve_zero]
   have hxbase : x ∈ e.baseSet := by
     exact FiberBundle.mem_baseSet_trivializationAt F (TangentSpace J) x
   have hbase : ∀ᶠ s in nhds 0, gamma s ∈ e.baseSet := by
@@ -157,7 +157,7 @@ private theorem tendsto_lNormGram
     have hU0 : U V 0 = e.continuousLinearMapAt Real x V := by
       simp only [U, if_pos]
     rw [hU0]
-    refine (tendsto_normalized_lRegJacobiField_chartRepAtBase_at_zero S hS T x Z V hT).congr' ?_
+    refine (tendsto_normalized_lRegularizedJacobiField_chartRepAtBase_at_zero S hS T x Z V hT).congr' ?_
     filter_upwards [self_mem_nhdsWithin] with s hs
     have hspos : 0 < s := hs
     have hs0 : s ≠ 0 := ne_of_gt hspos
@@ -317,9 +317,9 @@ private theorem lNormGram_eq
     Matrix.smul_apply, lExpField]
   let bi : TangentSpace J x := show F from (DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) i
   let bj : TangentSpace J x := show F from (DifferentialGeometry.Tensor.Coordinates.chartModelBasis F) j
-  change (S.base.metric (T - s ^ 2)).inner (lRegCurve S T x Z s)
-      ((2 * s)⁻¹ • lRegJacobiField S T x Z bi s)
-      ((2 * s)⁻¹ • lRegJacobiField S T x Z bj s) =
+  change (S.base.metric (T - s ^ 2)).inner (lRegularizedCurve S T x Z s)
+      ((2 * s)⁻¹ • lRegularizedJacobiField S T x Z bi s)
+      ((2 * s)⁻¹ • lRegularizedJacobiField S T x Z bj s) =
     ((2 * s)⁻¹ ^ 2) •
       (S.base.metric (T - s ^ 2)).inner (lExp S T x Z (s ^ 2))
         (mfderiv 𝓘(Real, F) J (fun W : F ↦ lExp S T x W (s ^ 2)) Z bi)
@@ -327,15 +327,15 @@ private theorem lNormGram_eq
   with_unfolding_all
     rw [lExpJacobi_eq, lExpJacobi_eq, lExp, Real.sqrt_sq hs.le]
   simp only [smul_eq_mul]
-  let beta := (S.base.metric (T - s ^ 2)).inner (lRegCurve S T x Z s)
-  let Xi := lRegJacobiField S T x Z bi s
-  let Xj := lRegJacobiField S T x Z bj s
+  let beta := (S.base.metric (T - s ^ 2)).inner (lRegularizedCurve S T x Z s)
+  let Xi := lRegularizedJacobiField S T x Z bi s
+  let Xj := lRegularizedJacobiField S T x Z bj s
   change beta ((2 * s)⁻¹ • Xi) ((2 * s)⁻¹ • Xj) =
     ((2 * s)⁻¹ ^ 2) * beta Xi Xj
   have hleft : beta ((2 * s)⁻¹ • Xi) ((2 * s)⁻¹ • Xj) =
       (2 * s)⁻¹ * beta Xi ((2 * s)⁻¹ • Xj) := by
     have h := congrArg
-      (fun L : TangentSpace J (lRegCurve S T x Z s) →L[Real] Real ↦
+      (fun L : TangentSpace J (lRegularizedCurve S T x Z s) →L[Real] Real ↦
         L ((2 * s)⁻¹ • Xj))
       (beta.map_smul (2 * s)⁻¹ Xi)
     simpa only [smul_apply, smul_eq_mul] using h
@@ -356,21 +356,21 @@ theorem tendsto_normalized_lExpDensity_at_zero
       (fun s : Real ↦ lExpDensity S T x Z (s ^ 2) /
         (2 * s) ^ (Module.finrank Real F))
       (nhdsWithin (0 : Real) (Ioi 0))
-      (nhds (lSrcDensity S T x)) := by
+      (nhds (lSourceDensity S T x)) := by
   have hmatrix := tendsto_lNormGram S hS T x Z hT
   have hdet : Tendsto (fun s ↦ (lNormGram S T x Z s).det)
       (nhdsWithin (0 : Real) (Ioi 0))
-      (nhds (lSrcGram S T x).det) := by
+      (nhds (lSourceGram S T x).det) := by
     change Tendsto ((fun A ↦ A.det) ∘ lNormGram S T x Z)
-      (nhdsWithin (0 : Real) (Ioi 0)) (nhds (lSrcGram S T x).det)
+      (nhdsWithin (0 : Real) (Ioi 0)) (nhds (lSourceGram S T x).det)
     exact continuous_id.matrix_det.continuousAt.tendsto.comp hmatrix
   have hsqrt : Tendsto (fun s ↦ Real.sqrt (lNormGram S T x Z s).det)
       (nhdsWithin (0 : Real) (Ioi 0))
-      (nhds (lSrcDensity S T x)) := by
+      (nhds (lSourceDensity S T x)) := by
     change Tendsto
       ((fun r : Real ↦ Real.sqrt r) ∘ fun s ↦ (lNormGram S T x Z s).det)
       (nhdsWithin (0 : Real) (Ioi 0))
-      (nhds (Real.sqrt (lSrcGram S T x).det))
+      (nhds (Real.sqrt (lSourceGram S T x).det))
     exact Real.continuous_sqrt.continuousAt.tendsto.comp hdet
   refine hsqrt.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs

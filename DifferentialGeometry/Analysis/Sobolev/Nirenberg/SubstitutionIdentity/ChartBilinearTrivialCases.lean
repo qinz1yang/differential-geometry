@@ -224,20 +224,20 @@ private lemma chartBilinear_substitution_identity_K_0_empty
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_empty : K_0 = ∅)
     (η : EuclN → ℝ)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E)) (h : ℝ) :
     chartBilinearLHS (I := I) (M := M) D K_0 η k h =
     chartBilinearRHS (I := I) (M := M) D K_0 η k h := by
   classical
   have hη_zero : η = 0 := by
-    have h_supp_empty : tsupport η = ∅ := by
-      rw [hK_0_empty] at hη_supp_in_K_0
-      exact Set.subset_empty_iff.mp hη_supp_in_K_0
+    have h_support_empty : tsupport η = ∅ := by
+      rw [hK_0_empty] at hη_support_in_K_0
+      exact Set.subset_empty_iff.mp hη_support_in_K_0
     funext x
     by_contra hηx
-    have hx_in_supp : x ∈ tsupport η := subset_tsupport η hηx
-    rw [h_supp_empty] at hx_in_supp
-    exact hx_in_supp
+    have hx_in_support : x ∈ tsupport η := subset_tsupport η hηx
+    rw [h_support_empty] at hx_in_support
+    exact hx_in_support
   have h_test_zero : nirenbergTestFunction
       (d := Module.finrank ℝ E) k h η D.uChart = 0 := by
     rw [hη_zero]
@@ -275,7 +275,7 @@ theorem chart_bilinear_substitution_identity_of_nonzero_nonempty
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN}
     {η : EuclN → ℝ}
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E)) {h : ℝ}
     (h_substitution_identity_holds :
       h ≠ 0 → K_0 ≠ ∅ →
@@ -290,7 +290,7 @@ theorem chart_bilinear_substitution_identity_of_nonzero_nonempty
       D K_0 η k
   · by_cases hK_0_empty : K_0 = ∅
     · exact chartBilinear_substitution_identity_K_0_empty (I := I) (M := M)
-        D hK_0_empty η hη_supp_in_K_0 k h
+        D hK_0_empty η hη_support_in_K_0 k h
     · exact h_substitution_identity_holds hh hK_0_empty
 
 

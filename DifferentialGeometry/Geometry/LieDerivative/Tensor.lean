@@ -347,14 +347,14 @@ theorem contDiffWithinAt_lieDeriv_tensorRSWithin (r s : ℕ) {m n' : WithTop ℕ
     hT.of_le (le_trans le_self_add hmn)
   have hDX : ContDiffWithinAt 𝕜 m (fun y => fderivWithin 𝕜 X u y) u x :=
     hX.fderivWithin_right hu hmn hx
-  have hCorrS :
+  have hCorrectionS :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s
           (fderivWithin 𝕜 X u y)) u x := by
     exact (hDX.continuousLinearMap_comp
       (lieDerivCorrectionOpL (𝕜 := 𝕜) (E := E) s)).congr_of_eventuallyEq
         (Filter.Eventually.of_forall fun _ => rfl) rfl
-  have hCorrR :
+  have hCorrectionR :
       ContDiffWithinAt 𝕜 m
         (fun y => lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r
           (fderivWithin 𝕜 X u y)) u x := by
@@ -365,12 +365,12 @@ theorem contDiffWithinAt_lieDeriv_tensorRSWithin (r s : ℕ) {m n' : WithTop ℕ
       ContDiffWithinAt 𝕜 m
         (fun y => (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s
           (fderivWithin 𝕜 X u y)).comp (T y)) u x :=
-    hCorrS.clm_comp hT_m
+    hCorrectionS.clm_comp hT_m
   have hIn :
       ContDiffWithinAt 𝕜 m
         (fun y => (T y).comp (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r
           (fderivWithin 𝕜 X u y))) u x :=
-    hT_m.clm_comp hCorrR
+    hT_m.clm_comp hCorrectionR
   simpa [lieDerivTensorRSWithin, directionalDerivTensorRSWithin] using
     (hprincipal.sub hOut).add hIn
 

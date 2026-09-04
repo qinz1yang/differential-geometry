@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter
 open scoped Manifold ContDiff Topology
@@ -201,5 +201,5 @@ theorem exists_stable_net_with_intersection_bound_subsequence
 end MetricCompactnessInputs
 
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

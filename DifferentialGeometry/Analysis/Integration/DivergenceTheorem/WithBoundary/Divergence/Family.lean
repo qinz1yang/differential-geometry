@@ -96,7 +96,7 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary_family
     {f h : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hf_int : tsupport f ⊆ I.interior M) (hh_int : tsupport h ⊆ I.interior M)
-    (hh_supp : HasCompactSupport h) (t : ℝ) :
+    (hh_support : HasCompactSupport h) (t : ℝ) :
     ∫ x, (g_fam t).inner x (gradFun (I := I) (g_fam t) f x)
             (gradFun (I := I) (g_fam t) h x)
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) =
@@ -104,7 +104,7 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary_family
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) := by
   rw [riemannianMeasureFamily_def]
   exact integral_inner_grad_eq_neg_integral_smul_laplacian_with_boundary
-    (I := I) (g_fam t) hf hh hf_int hh_int hh_supp
+    (I := I) (g_fam t) hf hh hf_int hh_int hh_support
 
 theorem integral_smul_laplacian_sub_eq_zero_with_boundary_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -124,7 +124,7 @@ section StokesGlobal
 
 variable [hI : HasSmoothBoundary E H I]
 
-theorem stokes_compact_via_pou_family
+theorem stokes_compact_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (t : ℝ) :
@@ -134,7 +134,7 @@ theorem stokes_compact_via_pou_family
         chartBoundaryFaceIntegral (I := I) (g_fam t) α X
           ((chartAtlasPOU I M) α) := by
   rw [riemannianMeasureFamily_def]
-  exact stokes_compact_via_pou (I := I) (g_fam t) X
+  exact stokes_compact (I := I) (g_fam t) X
 
 theorem integral_divergence_with_boundary_eq_boundaryFaceSum_family
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]

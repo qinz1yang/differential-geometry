@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -40,5 +40,5 @@ theorem solutionComp_cond
       inp hcomplete0 hconn)
     hflow
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -176,11 +176,11 @@ def ricciReact3 (l1 l2 l3 : Real) : Real :=
 
 theorem react3_diag (l1 l2 l3 : Real) :
     (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
-      DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3 i k j l *
+      DifferentialGeometry.Geometry.Curvature.standardRmDiag3 l1 l2 l3 i k j l *
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 i j *
           DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 k l) =
       ricciReact3 l1 l2 l3 := by
-  unfold ricciReact3 DifferentialGeometry.Geometry.Curvature.stdRmDiag3
+  unfold ricciReact3 DifferentialGeometry.Geometry.Curvature.standardRmDiag3
     DifferentialGeometry.Geometry.Curvature.ricciDiag3
     DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3
       DifferentialGeometry.Geometry.Curvature.delta3
@@ -189,11 +189,11 @@ theorem react3_diag (l1 l2 l3 : Real) :
 
 theorem curv3_diag_eq (l1 l2 l3 : Real) :
     (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
-      DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3 i k j l *
+      DifferentialGeometry.Geometry.Curvature.standardRmDiag3 l1 l2 l3 i k j l *
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 i j *
           DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 k l) =
       ricciReact3 l1 l2 l3 := by
-  unfold ricciReact3 DifferentialGeometry.Geometry.Curvature.stdRmDiag3
+  unfold ricciReact3 DifferentialGeometry.Geometry.Curvature.standardRmDiag3
     DifferentialGeometry.Geometry.Curvature.ricciDiag3
     DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3
       DifferentialGeometry.Geometry.Curvature.delta3
@@ -202,11 +202,11 @@ theorem curv3_diag_eq (l1 l2 l3 : Real) :
 
 theorem curv3_neg_eq (l1 l2 l3 : Real) :
     (∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
-      DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-l1) (-l2) (-l3) i k j l *
+      DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (-l1) (-l2) (-l3) i k j l *
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 i j *
           DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 k l) =
       -ricciReact3 l1 l2 l3 := by
-  unfold ricciReact3 DifferentialGeometry.Geometry.Curvature.stdRmDiag3
+  unfold ricciReact3 DifferentialGeometry.Geometry.Curvature.standardRmDiag3
     DifferentialGeometry.Geometry.Curvature.ricciDiag3
     DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3
       DifferentialGeometry.Geometry.Curvature.delta3
@@ -217,7 +217,7 @@ def diagReact3
     (l1 l2 l3 : Real -> M -> Real) : Real -> M -> Real :=
   fun t x =>
     ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
-      DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (l1 t x) (l2 t x) (l3 t x) i k j l *
+      DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (l1 t x) (l2 t x) (l3 t x) i k j l *
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) i j *
           DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) k l
 
@@ -227,7 +227,7 @@ theorem diagReact3_apply
     (l1 l2 l3 : Real -> M -> Real) (t : Real) (x : M) :
     diagReact3 (M := M) l1 l2 l3 t x =
       ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin 3, ∑ l : Fin 3,
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (l1 t x) (l2 t x) (l3 t x) i k j l *
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (l1 t x) (l2 t x) (l3 t x) i k j l *
           DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) i j *
             DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) k l := by
   rfl
@@ -333,7 +333,7 @@ theorem curvReact3_frame
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 i j)
     (hRm : ∀ i j k l : Fin 3,
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3 i k j l) :
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 l1 l2 l3 i k j l) :
     curvRicciRicciInFrame (I := I) S Rm04 gInv frame t x =
       ricciReact3 l1 l2 l3 := by
   classical
@@ -369,7 +369,7 @@ theorem canonReact3_frame
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 i j)
     (hRm : ∀ i j k l : Fin 3,
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 l1 l2 l3 i k j l) :
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 l1 l2 l3 i k j l) :
     ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame t x =
       -ricciReact3 l1 l2 l3 := by
   rw [ricciNormCurvatureReactionInFrame_apply,
@@ -389,7 +389,7 @@ theorem curv3_frame_neg
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 i j)
     (hRm : ∀ i j k l : Fin 3,
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-l1) (-l2) (-l3) i k j l) :
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (-l1) (-l2) (-l3) i k j l) :
     curvRicciRicciInFrame (I := I) S Rm04 gInv frame t x =
       -ricciReact3 l1 l2 l3 := by
   classical
@@ -425,7 +425,7 @@ theorem canon3_frame_neg
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 l1 l2 l3 i j)
     (hRm : ∀ i j k l : Fin 3,
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-l1) (-l2) (-l3) i k j l) :
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (-l1) (-l2) (-l3) i k j l) :
     ricciNormCurvatureReactionInFrame (I := I) S Rm04 gInv frame t x =
       ricciReact3 l1 l2 l3 := by
   rw [ricciNormCurvatureReactionInFrame_apply,
@@ -867,7 +867,7 @@ theorem reactAt_diag {x : M}
       basis)
     (hRm : ∀ i j k l : Fin 3,
       DifferentialGeometry.Geometry.Curvature.rm04CompAt (I := I) basis Rm04 i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-l1) (-l2) (-l3) i k j l) :
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (-l1) (-l2) (-l3) i k j l) :
     reactAt (I := I) Ric Rm04 basis = ricciReact3 l1 l2 l3 := by
   classical
   rcases hdiag with ⟨_, hric⟩
@@ -889,7 +889,7 @@ theorem trace_free_ricci_reaction_relation_in_basis {x : M}
       ricciTraceCube = DifferentialGeometry.Geometry.Curvature.ricciEigenTraceCube3 l1 l2 l3)
     (hRm : ∀ i j k l : Fin 3,
       DifferentialGeometry.Geometry.Curvature.rm04CompAt (I := I) basis Rm04 i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-l1) (-l2) (-l3) i k j l)
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (-l1) (-l2) (-l3) i k j l)
     (hR : scalar ≠ 0) :
     4 * reactAt (I := I) Ric Rm04 basis -
         ((4 : Real) / 3) * scalar * ricciNormAt (I := I) Ric basis =
@@ -950,10 +950,10 @@ theorem trace_free_ricci_reaction_relation_of_trace_data {x : M}
           ricciTraceCube) / scalar := by
   have hneg := diag_neg (I := I) hdiag
   have hcomp :=
-    DifferentialGeometry.Geometry.Curvature.stdRmComp_eq_diag (I := I) htrace hneg
+    DifferentialGeometry.Geometry.Curvature.standardRmComp_eq_diag (I := I) htrace hneg
   have hRm : ∀ i j k l : Fin 3,
       DifferentialGeometry.Geometry.Curvature.rm04CompAt (I := I) basis Rm04 i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-l1) (-l2) (-l3) i k j l := by
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (-l1) (-l2) (-l3) i k j l := by
     intro i j k l
     have h := hcomp i k j l
     simpa [DifferentialGeometry.Geometry.Curvature.standardRmCompAt_apply] using h
@@ -1512,7 +1512,7 @@ theorem trace_free_ricci_reaction_relation_of_diagonal_frame_data
         DifferentialGeometry.Geometry.Curvature.ricciDiag3 (l1 t x) (l2 t x) (l3 t x) i j)
     (hRm : ∀ (t : Real) (x : M) (i j k l : Fin 3),
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-(l1 t x)) (-(l2 t x)) (-(l3 t x))
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (-(l1 t x)) (-(l2 t x)) (-(l3 t x))
           i k j l) :
     TraceFreeRicciReactionRelation
       scalar
@@ -1591,7 +1591,7 @@ theorem trace_free_ricci_reaction_relation_of_curvature_trace_data
   classical
   have hRm : ∀ (t : Real) (x : M) (i j k l : Fin 3),
       DifferentialGeometry.Geometry.Curvature.rm04Comp (I := I) (Rm04 t) frame x i k j l =
-        DifferentialGeometry.Geometry.Curvature.stdRmDiag3 (-(l1 t x)) (-(l2 t x)) (-(l3 t x))
+        DifferentialGeometry.Geometry.Curvature.standardRmDiag3 (-(l1 t x)) (-(l2 t x)) (-(l3 t x))
           i k j l := by
     intro t x i j k l
     have hdiag : DifferentialGeometry.Geometry.Curvature.RicciDiagAt (I := I)
@@ -1605,7 +1605,7 @@ theorem trace_free_ricci_reaction_relation_of_curvature_trace_data
           hbasis t x a, hbasis t x b] using h
     have hneg := diag_neg (I := I) hdiag
     have hcomp :=
-      DifferentialGeometry.Geometry.Curvature.stdRmComp_eq_diag (I := I) (htrace t x) hneg
+      DifferentialGeometry.Geometry.Curvature.standardRmComp_eq_diag (I := I) (htrace t x) hneg
     have h := hcomp i k j l
     simpa [DifferentialGeometry.Geometry.Curvature.standardRmCompAt_apply,
       DifferentialGeometry.Geometry.Curvature.rm04Comp,

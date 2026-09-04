@@ -68,11 +68,11 @@ theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
   classical
   set α : M := γ t with hα_def
   set u : ℝ → E := chartCurve (I := I) α γ with hu_def
-  have hα_src : α ∈ (chartAt H α).source := mem_chart_source H α
+  have hα_source : α ∈ (chartAt H α).source := mem_chart_source H α
   set O : Set ℝ := s ∩ γ ⁻¹' (chartAt H α).source with hO_def
   have hO_open : IsOpen O :=
     hcont.isOpen_inter_preimage hs (chartAt H α).open_source
-  have htO : t ∈ O := ⟨ht, by rw [Set.mem_preimage, ← hα_def]; exact hα_src⟩
+  have htO : t ∈ O := ⟨ht, by rw [Set.mem_preimage, ← hα_def]; exact hα_source⟩
   have hu_cdOn : ContDiffOn ℝ ∞ u O :=
     (chartCurve_contDiffOn (I := I) g α hO_open
       (hcont.mono Set.inter_subset_left) (fun r hr => hr.2)
@@ -80,12 +80,12 @@ theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
   have hu_cd : ContDiffAt ℝ ∞ u t :=
     hu_cdOn.contDiffAt (hO_open.mem_nhds htO)
   have hu_cmd : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ u t := hu_cd.contMDiffAt
-  have hα_ext_src : α ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hα_src
+  have hα_ext_source : α ∈ (extChartAt I α).source := by
+    rw [extChartAt_source]; exact hα_source
   have hut_eq : u t = extChartAt I α α := by
     rw [hu_def, chartCurve_def, hα_def]
   have hut_target : u t ∈ (extChartAt I α).target := by
-    rw [hut_eq]; exact (extChartAt I α).map_source hα_ext_src
+    rw [hut_eq]; exact (extChartAt I α).map_source hα_ext_source
   have htarget_nhds : (extChartAt I α).target ∈ 𝓝 (u t) :=
     (isOpen_extChartAt_target (I := I) α).mem_nhds hut_target
   have hsymm_at : ContMDiffAt 𝓘(ℝ, E) I ∞ (extChartAt I α).symm (u t) :=
@@ -95,7 +95,7 @@ theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
     hsymm_at.comp t hu_cmd
   have hcontAt_t : ContinuousAt γ t := hcont.continuousAt (hs.mem_nhds ht)
   have hsrc_nhds : (fun r => γ r) ⁻¹' (chartAt H α).source ∈ 𝓝 t :=
-    hcontAt_t.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hα_src)
+    hcontAt_t.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hα_source)
   have heq : ((extChartAt I α).symm ∘ u) =ᶠ[𝓝 t] γ := by
     filter_upwards [hsrc_nhds] with r hr
     have hr_ext : γ r ∈ (extChartAt I α).source := by

@@ -61,7 +61,7 @@ theorem lapA20_span
     dsimp only [ε]
     positivity
   obtain ⟨ρ₀, hρ₀, hmetric⟩ :=
-    HCGCompactness.metric_c1_span (I := I) g_fam hG hab hε
+    CheegerGromovCompactness.metric_c1_span (I := I) g_fam hG hab hε
   let ρ : Real := min 1 ρ₀
   have hρ : 0 < ρ := lt_min zero_lt_one hρ₀
   have hρone : ρ ≤ 1 := min_le_left _ _
@@ -85,19 +85,19 @@ theorem lapA20_span
       abs_of_nonneg hs.1]
     exact hs.2.trans (hhρ.trans hρle)
   have hmod (s : Real) (hs : s ∈ Set.Icc (0 : Real) h) :
-      HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+      CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
           (g_fam ((T : Real) - s))
           (g_fam (T : Real)) (g_fam (T : Real)) ≤ ε :=
     hmetric (T : Real) hT (T - s) (hvar s hs) (hdist s hs)
   have hsmall (s : Real) (hs : s ∈ Set.Icc (0 : Real) h) :
       (Module.finrank Real E : Real) *
-          HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+          CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
             (g_fam ((T : Real) - s))
             (g_fam (T : Real)) (g_fam (T : Real)) ≤
         (1 / 2 : Real) := by
     calc
       (Module.finrank Real E : Real) *
-          HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1
+          CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1
             (g_fam ((T : Real) - s))
             (g_fam (T : Real)) (g_fam (T : Real)) ≤
           d * ε := by
@@ -138,7 +138,7 @@ theorem lapA20_span
     intro s hs v
     rw [lapDiffA20_apply, LinearIsometryEquiv.apply_symm_apply]
     simpa only [lapDiffA2] using
-      lapDiffOp_core (I := I) (M := M)
+      lapDiffOp_apply_scalarH2Core (I := I) (M := M)
         (g_fam (T : Real)) (g_fam ((T : Real) - s)) v (hsmall s hs)
   exact ⟨hreg, hA20cont, C2, hbound, hcore⟩
 

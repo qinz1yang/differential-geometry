@@ -16,7 +16,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold MeasureTheory Metric Set
 open scoped Manifold ContDiff Topology
@@ -69,7 +69,7 @@ def baseFlowBall
 
 end PointedFlowData
 
-structure FlowerScaleVolData
+structure FlowNoncollapsingScale
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
   zero_mem : 0 ∈ X.D.carrier
   kappa : Real
@@ -77,9 +77,9 @@ structure FlowerScaleVolData
   radius : Real
   radius_pos : 0 < radius
 
-structure IsFlowerScaleVolBound
+structure IsFlowNoncollapsingScaleBound
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}
-    (V : FlowerScaleVolData (I := I) X) : Prop where
+    (V : FlowNoncollapsingScale (I := I) X) : Prop where
   curvature : ∀ i : Nat,
     letI : TopologicalSpace (X.term i).M := (X.term i).topology
     letI : ChartedSpace H (X.term i).M := (X.term i).charted
@@ -117,11 +117,11 @@ private lemma ofReal_add_mul {a b c : Real}
   rw [← add_mul, ← ENNReal.ofReal_add ha hb,
     ← ENNReal.ofReal_mul (add_nonneg ha hb)]
 
-private lemma cgt_fit {s : Real} (hs : 0 < s) :
+private lemma cheeger_gromov_taylor_fit {s : Real} (hs : 0 < s) :
     s + 2 * s < 5 * s := by
   nlinarith
 
-private lemma cgt_quarter {s : Real} (hs : 0 < s) :
+private lemma cheeger_gromov_taylor_quarter {s : Real} (hs : 0 < s) :
     s < (5 * s) / 4 := by
   nlinarith
 
@@ -135,9 +135,9 @@ noncomputable def flowInjOfVol
         ((X.atZero (I := I)).obj i).topology
       ConnectedSpace ((X.atZero (I := I)).obj i).M)
     (hgeom : SeqBoundedGeometry (I := I) (X.atZero (I := I)))
-    (V : FlowerScaleVolData (I := I) X)
-    (hvol : IsFlowerScaleVolBound (I := I) V) :
-    FlowerScaleInjBound (I := I) X := by
+    (V : FlowNoncollapsingScale (I := I) X)
+    (hvol : IsFlowNoncollapsingScaleBound (I := I) V) :
+    FlowScaleInjectivityBound (I := I) X := by
   classical
   letI : MeasurableSpace E := borel E
   letI : BorelSpace E := ⟨rfl⟩
@@ -159,10 +159,10 @@ noncomputable def flowInjOfVol
       (EuclideanSpace Real (Fin n))).toSphere Set.univ)).toReal
   let sphereP : Real :=
     (((volume : Measure E).toSphere Set.univ)).toReal
-  let modelTwo : Real := hypRadVol q d (2 * s)
+  let modelTwo : Real := hyperbolicRadialVolume q d (2 * s)
   let den : Real := (sphereB + sphereP) * modelTwo
-  let modelSmall : Real := hypRadVol q d s
-  let modelLarge : Real := hypRadVol q d V.radius
+  let modelSmall : Real := hyperbolicRadialVolume q d s
+  let modelLarge : Real := hyperbolicRadialVolume q d V.radius
   let low : Real :=
     V.kappa * V.radius ^ n * modelSmall / modelLarge
   let ρ : Real := (s / 2) * low / den
@@ -184,13 +184,13 @@ noncomputable def flowInjOfVol
     mul_nonneg (Nat.cast_nonneg _) (Real.sqrt_nonneg _)
   have hmodelTwo : 0 < modelTwo := by
     dsimp only [modelTwo]
-    exact hypRadVol_pos hq (by positivity)
+    exact hyperbolicRadialVolume_pos hq (by positivity)
   have hmodelSmall : 0 < modelSmall := by
     dsimp only [modelSmall]
-    exact hypRadVol_pos hq hs
+    exact hyperbolicRadialVolume_pos hq hs
   have hmodelLarge : 0 < modelLarge := by
     dsimp only [modelLarge]
-    exact hypRadVol_pos hq V.radius_pos
+    exact hyperbolicRadialVolume_pos hq V.radius_pos
   have hlow : 0 < low := by
     dsimp only [low]
     exact div_pos
@@ -289,9 +289,9 @@ noncomputable def flowInjOfVol
   have hmetricCtrl :
       ∀ z ∈ Metric.ball (0 : E) rCtrl, ∀ v : E,
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-            intrFrameMetric (I := I) (Y.obj i).metric hEnorm
+            intrinsicFrameMetric (I := I) (Y.obj i).metric hEnorm
               (Y.obj i).basepoint z v v ∧
-          intrFrameMetric (I := I) (Y.obj i).metric hEnorm
+          intrinsicFrameMetric (I := I) (Y.obj i).metric hEnorm
               (Y.obj i).basepoint z v v ≤
             2 * ‖v‖ ^ 2 :=
     (hcontrol i (Y.obj i).basepoint).1
@@ -371,7 +371,7 @@ noncomputable def flowInjOfVol
         _ < 2 * s := hz
         _ < rCtrl := htwoCtrl
     have hraw :=
-      intrFrame_not_conj (I := I) (Y.obj i).metric hEnorm
+      intrinsicFrame_not_conj (I := I) (Y.obj i).metric hEnorm
         (Y.obj i).basepoint (t • z) (c := (1 / 2 : Real)) (by norm_num)
         (fun v => (hmetricCtrl (t • z) htz v).1)
     simpa only [map_smul] using hraw
@@ -382,7 +382,7 @@ noncomputable def flowInjOfVol
         riemannianEDist I (Y.obj i).basepoint y <
           ENNReal.ofReal s}
   let P : ENNReal :=
-    intrPullVol (I := I) (Y.obj i).metric hEnorm
+    intrinsicPullVol (I := I) (Y.obj i).metric hEnorm
       (Y.obj i).basepoint (2 * s)
   have hVxRaw :
       Vx ≤
@@ -404,13 +404,13 @@ noncomputable def flowInjOfVol
             (EuclideanSpace Real (Fin n))).toSphere Set.univ *
               ENNReal.ofReal modelTwo := by
         simpa only [modelTwo, d, n] using
-          (segBall_vol_le_euclidean (I := I) (Y.obj i).metric hEnorm
+          (segmentBall_vol_le_euclidean (I := I) (Y.obj i).metric hEnorm
             (Y.obj i).basepoint hq (by positivity : 0 < 2 * s) hRic)
   have hPraw :
       P ≤ (volume : Measure E).toSphere Set.univ *
         ENNReal.ofReal modelTwo := by
     simpa only [P, modelTwo, d, n] using
-      (intrPullVol_le_hyp (I := I) (Y.obj i).metric hEnorm
+      (intrinsicPullVol_le_hyperbolic (I := I) (Y.obj i).metric hEnorm
         (Y.obj i).basepoint hq (by positivity : 0 < 2 * s) hno hRic)
   have hsphereBEq :
       (volume : Measure
@@ -450,7 +450,7 @@ noncomputable def flowInjOfVol
       Vlarge * ENNReal.ofReal modelSmall ≤
         ENNReal.ofReal modelLarge * Vx := by
     simpa only [Vlarge, Vx, modelSmall, modelLarge, d, n] using
-      (segBall_vol_rel (I := I) (Y.obj i).metric hEnorm
+      (segmentBall_vol_rel (I := I) (Y.obj i).metric hEnorm
         (Y.obj i).basepoint hq hs hsLarge hRic)
   have hNC :
       ENNReal.ofReal V.kappa *
@@ -493,13 +493,13 @@ noncomputable def flowInjOfVol
     (ENNReal.ofReal_le_iff_le_toReal hVxFin).2 hlowReal
   have hcgt :
       ENNReal.ofReal (s / 2) * Vx / (Vx + P) ≤
-        intrInjRadius (I := I) (Y.obj i).metric hEnorm
+        intrinsicInjRadius (I := I) (Y.obj i).metric hEnorm
           (Y.obj i).basepoint := by
     simpa only [Vx, P, two_mul] using
-      (intrInj_ge_cgt (I := I) (K := K) (R := 5 * s)
+      (intrinsicInjRadius_ge_cheeger_gromov_taylor (I := I) (K := K) (R := 5 * s)
         (r₀ := s) (s := s) (Y.obj i).metric hEnorm
         (Y.obj i).basepoint hK (by positivity) hfivePi hRm hlocalFive
-        hs hs (cgt_fit hs) (cgt_quarter hs))
+        hs hs (cheeger_gromov_taylor_fit hs) (cheeger_gromov_taylor_quarter hs))
   have hratio :
       ENNReal.ofReal ρ ≤
         ENNReal.ofReal (s / 2) * Vx / (Vx + P) := by
@@ -510,8 +510,8 @@ noncomputable def flowInjOfVol
       (by
         gcongr)
       hDen
-  simpa only [Y, PointedRiemannianManifold.intrInjRadius] using
+  simpa only [Y, PointedRiemannianManifold.intrinsicInjRadius] using
     hratio.trans hcgt
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

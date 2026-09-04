@@ -24,14 +24,14 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
-theorem lRegAction_stationary_of_isLocalMin
+theorem lRegularizedAction_stationary_of_isLocalMin
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real) (ht : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.regular)
-    (hmin : IsLocalMin (fun z : Real ↦ lRegAction S T (f z) a b) 0)
+    (hmin : IsLocalMin (fun z : Real ↦ lRegularizedAction S T (f z) a b) 0)
     (hfixa : ∀ z : Real, f z a = f 0 a)
     (hfixb : ∀ z : Real, f z b = f 0 b) :
-    ∫ s in a..b, lRegEulerPair S T (f 0) s
+    ∫ s in a..b, lRegularizedEulerPair S T (f 0) s
       (lVelocity (I := I) (fun z : Real ↦ f z s) 0) = 0 := by
   have hva : lVelocity (I := I) (fun z : Real ↦ f z a) 0 = 0 := by
     have heq : (fun z : Real ↦ f z a) = fun _ ↦ f 0 a := by
@@ -47,7 +47,7 @@ theorem lRegAction_stationary_of_isLocalMin
     rw [heq]
     simp only [lVelocity, mfderiv_const]
     rfl
-  have hact := lRegAction_first_variation (I := I) S hS T f hf a b ht
+  have hact := lRegularizedAction_first_variation (I := I) S hS T f hf a b ht
   have hzero := hmin.deriv_eq_zero
   rw [hact.deriv] at hzero
   simp only [hva, hvb, map_zero, zero_apply, zero_sub] at hzero

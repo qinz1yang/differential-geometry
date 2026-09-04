@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 open DifferentialGeometry.Geometry.Riemannian
@@ -47,7 +47,7 @@ theorem atomWeightOn_of_atoms
     (hdead : ∀ gamma : Fin (pb.A r),
       L.alive (gamma : Nat) = false → aInf gamma = 0)
     (hatom : ∀ gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => seqAtomOn (I := I) chart hd hD P L pb r beta gamma k)
         (aInf gamma))
     (hatomSmooth : ∀ k (gamma : Fin (pb.A r)),
@@ -68,17 +68,17 @@ theorem atomWeightOn_of_atoms
       L.alive (gamma : Nat) = false → aInf gamma = 0) ∧
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (atomPi k) U) ∧
     ContDiffOn Real (∞ : WithTop ℕ∞) atomInf U ∧
-    MapCInfConvOnCompacts U atomPi atomInf ∧
+    MapCInfConvergenceOnCompacts U atomPi atomInf ∧
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U) ∧
     ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-    MapCInfConvOnCompacts U weight weightInf := by
+    MapCInfConvergenceOnCompacts U weight weightInf := by
   classical
   let atom : Nat → Fin (pb.A r) → E → Real := fun k gamma =>
     seqAtomOn (I := I) chart hd hD P L pb r beta gamma k
   let atomPi : Nat → E → (Fin (pb.A r) → Real) := fun k z gamma => atom k gamma z
   let atomInf : E → (Fin (pb.A r) → Real) := fun z gamma => aInf gamma z
-  have hatomPi : MapCInfConvOnCompacts U atomPi atomInf :=
-    mapCInfConv_pi (E' := E) (Q := Real) hU hatom
+  have hatomPi : MapCInfConvergenceOnCompacts U atomPi atomInf :=
+    mapCInfConvergence_pi (E' := E) (Q := Real) hU hatom
       (fun gamma k => hatomSmooth k gamma) hatomInfSmooth
   have hatomPiSmooth (k : Nat) :
       ContDiffOn Real (∞ : WithTop ℕ∞) (atomPi k) U :=
@@ -125,10 +125,10 @@ theorem atomWeightOn_of_atoms
       ((chart (L.φ k) (beta k)).hom z)
     exact seqAtom_nonneg hd hD P L pb r k gamma _
   have hweight (gamma : Fin (pb.A r)) :=
-    cutWeights_conv hU hatom (fun k gamma => hatomSmooth k gamma)
+    cutWeights_convergence hU hatom (fun k gamma => hatomSmooth k gamma)
       hatomInfSmooth i0 hbase hnn hcover gamma
   have hraw (gamma : Fin (pb.A r)) :=
-    cutRaw_conv hU hatom (fun k gamma => hatomSmooth k gamma)
+    cutRaw_convergence hU hatom (fun k gamma => hatomSmooth k gamma)
       hatomInfSmooth i0 gamma
   have hrawc (k : Nat) (gamma : Fin (pb.A r)) :=
     cutRaw_contDiffOn (fun q => hatomSmooth k q) i0 gamma
@@ -164,8 +164,8 @@ theorem atomWeightOn_of_atoms
     rawWeights (cutRaw (atom k i0) (atom k) i0) z gamma
   let weightInf : E → (Fin (pb.A r) → Real) := fun z gamma =>
     rawWeights (cutRaw (aInf i0) aInf i0) z gamma
-  have hweightPi : MapCInfConvOnCompacts U weight weightInf :=
-    mapCInfConv_pi (E' := E) (Q := Real) hU hweight
+  have hweightPi : MapCInfConvergenceOnCompacts U weight weightInf :=
+    mapCInfConvergence_pi (E' := E) (Q := Real) hU hweight
       (fun gamma k => hweightSmooth k gamma) hweightInfSmooth
   have hweightPiSmooth (k : Nat) :
       ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U :=
@@ -198,7 +198,7 @@ theorem atomWeight_of_atoms
     (hdead : ∀ gamma : Fin (pb.A r),
       L.alive (gamma : Nat) = false → aInf gamma = 0)
     (hatom : ∀ gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => seqAtomChart (I := I) hd hD P L pb r beta gamma k)
         (aInf gamma))
     (hatomSmooth : ∀ k (gamma : Fin (pb.A r)),
@@ -219,17 +219,17 @@ theorem atomWeight_of_atoms
       L.alive (gamma : Nat) = false → aInf gamma = 0) ∧
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (atomPi k) U) ∧
     ContDiffOn Real (∞ : WithTop ℕ∞) atomInf U ∧
-    MapCInfConvOnCompacts U atomPi atomInf ∧
+    MapCInfConvergenceOnCompacts U atomPi atomInf ∧
     (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U) ∧
     ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-    MapCInfConvOnCompacts U weight weightInf := by
+    MapCInfConvergenceOnCompacts U weight weightInf := by
   classical
   let atom : Nat → Fin (pb.A r) → E → Real := fun k gamma =>
     seqAtomChart (I := I) hd hD P L pb r beta gamma k
   let atomPi : Nat → E → (Fin (pb.A r) → Real) := fun k z gamma => atom k gamma z
   let atomInf : E → (Fin (pb.A r) → Real) := fun z gamma => aInf gamma z
-  have hatomPi : MapCInfConvOnCompacts U atomPi atomInf :=
-    mapCInfConv_pi (E' := E) (Q := Real) hU hatom
+  have hatomPi : MapCInfConvergenceOnCompacts U atomPi atomInf :=
+    mapCInfConvergence_pi (E' := E) (Q := Real) hU hatom
       (fun gamma k => hatomSmooth k gamma) hatomInfSmooth
   have hatomPiSmooth (k : Nat) :
       ContDiffOn Real (∞ : WithTop ℕ∞) (atomPi k) U :=
@@ -276,10 +276,10 @@ theorem atomWeight_of_atoms
       (expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z)
     exact seqAtom_nonneg hd hD P L pb r k gamma _
   have hweight (gamma : Fin (pb.A r)) :=
-    cutWeights_conv hU hatom (fun k gamma => hatomSmooth k gamma)
+    cutWeights_convergence hU hatom (fun k gamma => hatomSmooth k gamma)
       hatomInfSmooth i0 hbase hnn hcover gamma
   have hraw (gamma : Fin (pb.A r)) :=
-    cutRaw_conv hU hatom (fun k gamma => hatomSmooth k gamma)
+    cutRaw_convergence hU hatom (fun k gamma => hatomSmooth k gamma)
       hatomInfSmooth i0 gamma
   have hrawc (k : Nat) (gamma : Fin (pb.A r)) :=
     cutRaw_contDiffOn (fun q => hatomSmooth k q) i0 gamma
@@ -315,8 +315,8 @@ theorem atomWeight_of_atoms
     rawWeights (cutRaw (atom k i0) (atom k) i0) z gamma
   let weightInf : E → (Fin (pb.A r) → Real) := fun z gamma =>
     rawWeights (cutRaw (aInf i0) aInf i0) z gamma
-  have hweightPi : MapCInfConvOnCompacts U weight weightInf :=
-    mapCInfConv_pi (E' := E) (Q := Real) hU hweight
+  have hweightPi : MapCInfConvergenceOnCompacts U weight weightInf :=
+    mapCInfConvergence_pi (E' := E) (Q := Real) hU hweight
       (fun gamma k => hweightSmooth k gamma) hweightInfSmooth
   have hweightPiSmooth (k : Nat) :
       ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U :=
@@ -360,12 +360,12 @@ private theorem existsAtomWeightCore
           (Jinf : LiveSlot L pb r → E → E),
         StrictMono psi ∧
         ContDiffOn Real (∞ : WithTop ℕ∞) gInf Set.univ ∧
-        MapCInfConvOnCompacts Set.univ
+        MapCInfConvergenceOnCompacts Set.univ
           (fun k _ gamma => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
             (seqCenterD hd P L (psi k) (gamma.1 : Nat)) 0) gInf ∧
         ∀ gamma : LiveSlot L pb r,
           ContDiffOn Real (∞ : WithTop ℕ∞) (Jinf gamma) U ∧
-          MapCInfConvOnCompacts U
+          MapCInfConvergenceOnCompacts U
             (fun k => normalTransition (I := I) (X.obj (L.φ (psi k)))
               (beta (psi k)) (seqCenterD hd P L (psi k) (gamma.1 : Nat)))
             (Jinf gamma) ∧
@@ -393,10 +393,10 @@ private theorem existsAtomWeightCore
         Lpsi.alive (gamma : Nat) = false -> aInf gamma = 0) ∧
       (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (atomPi k) U) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) atomInf U ∧
-      MapCInfConvOnCompacts U atomPi atomInf ∧
+      MapCInfConvergenceOnCompacts U atomPi atomInf ∧
       (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-      MapCInfConvOnCompacts U weight weightInf := by
+      MapCInfConvergenceOnCompacts U weight weightInf := by
   classical
   obtain ⟨psi0, gInf, Jinf, hpsi0, hginf, hg, hJ⟩ :=
     hjoint
@@ -448,10 +448,10 @@ private theorem existsAtomWeightCore
   let center : LiveSlot L pb r -> ∀ k, (Xpsi.obj k).M := fun gamma k =>
     seqCenterD hd P Lpsi k (gamma.1 : Nat)
   have hgsub := hg.comp_subseq htau
-  have hgpsi : MapCInfConvOnCompacts U
+  have hgpsi : MapCInfConvergenceOnCompacts U
       (fun k (_ : E) (gamma : LiveSlot L pb r) =>
         normalCoordMetric (I := I) (Xpsi.obj k) (center gamma k) 0) gInf := by
-    change MapCInfConvOnCompacts U
+    change MapCInfConvergenceOnCompacts U
       (fun k (_ : E) (gamma : LiveSlot L pb r) =>
         normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
         (seqCenterD hd P L (psi k) (gamma.1 : Nat)) 0) gInf
@@ -461,10 +461,10 @@ private theorem existsAtomWeightCore
   have hginfU : ContDiffOn Real (∞ : WithTop ℕ∞) gInf U :=
     hginf.mono (Set.subset_univ U)
   have hJpsi (gamma : LiveSlot L pb r) :
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => normalTransition (I := I) (Xpsi.obj k)
           (betapsi k) (center gamma k)) (Jinf gamma) := by
-    change MapCInfConvOnCompacts U
+    change MapCInfConvergenceOnCompacts U
       (fun k => normalTransition (I := I) (X.obj (L.φ (psi k)))
         (beta (psi k)) (seqCenterD hd P L (psi k) (gamma.1 : Nat)))
       (Jinf gamma)
@@ -515,7 +515,7 @@ private theorem existsAtomWeightCore
     else fun _ => 0
   have hliveForSeq : ∀ gamma : Fin (pb.A r),
       Lpsi.alive (gamma : Nat) = true ->
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => gluingAtomChart (I := I) (X.obj (Lpsi.φ k))
           (betapsi k) (seqCenterD hd P Lpsi k (gamma : Nat))
           (Lpsi.lamInf (gamma : Nat))
@@ -528,9 +528,9 @@ private theorem existsAtomWeightCore
   have hgpPsi (k : Nat) : ExponentialRadiusScaleAt (I := I) hd D P Lpsi pb r k := by
     exact (htailAt k).2.2
   have hatom0 :=
-    seqAtoms_conv (I := I) hd hD P Lpsi pb r hgpPsi betapsi hU aInf hliveForSeq
+    seqAtoms_convergence (I := I) hd hD P Lpsi pb r hgpPsi betapsi hU aInf hliveForSeq
   have hatom : ∀ gamma : Fin (pb.A r),
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => seqAtomChart (I := I) hd hD P Lpsi pb r betapsi gamma k)
         (aInf gamma) := by
     intro gamma
@@ -690,10 +690,10 @@ theorem exists_smooth_atom_weight_limit_of_inner_cover
         Lpsi.alive (gamma : Nat) = false -> aInf gamma = 0) ∧
       (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (atomPi k) U) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) atomInf U ∧
-      MapCInfConvOnCompacts U atomPi atomInf ∧
+      MapCInfConvergenceOnCompacts U atomPi atomInf ∧
       (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-      MapCInfConvOnCompacts U weight weightInf := by
+      MapCInfConvergenceOnCompacts U weight weightInf := by
   exact existsAtomWeightCore (I := I) hD P L hre pb r hr hgp beta U hU
     hUexp hcoverU
     (exists_joint_normal_metric_transition_limit (I := I) metricInput P L pb r rho beta U hU
@@ -772,10 +772,10 @@ theorem exists_smooth_atom_weight_limit
         Lpsi.alive (gamma : Nat) = false -> aInf gamma = 0) ∧
       (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (atomPi k) U) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) atomInf U ∧
-      MapCInfConvOnCompacts U atomPi atomInf ∧
+      MapCInfConvergenceOnCompacts U atomPi atomInf ∧
       (∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (weight k) U) ∧
       ContDiffOn Real (∞ : WithTop ℕ∞) weightInf U ∧
-      MapCInfConvOnCompacts U weight weightInf := by
+      MapCInfConvergenceOnCompacts U weight weightInf := by
   have hcover := L.innerBall_cover hd hD P hre pb r
   have hcoverU : ∀ᶠ k in Filter.atTop,
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -800,5 +800,5 @@ theorem exists_smooth_atom_weight_limit
   exact exists_smooth_atom_weight_limit_of_inner_cover (I := I) metricInput hD P L hre pb r hr
     hgp rho beta U hU hovlJ hUmetric hUexp hmapsJ hVmetric hVexp hcoverU
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

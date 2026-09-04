@@ -371,7 +371,7 @@ theorem wkpNormChart_lt_top_of_memWkpChart
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU
           (modelWithCornersEuclideanHalfSpace n) M) α u)
       (chartTargetEuclid (n := n) (M := M) α) with hf_def
-  have hPOU_locFin : LocallyFinite
+  have hPOU_localFin : LocallyFinite
       (fun α : M => Function.support
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU
           (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)) :=
@@ -380,7 +380,7 @@ theorem wkpNormChart_lt_top_of_memWkpChart
   have hSupport_finite : {α : M | (Function.support
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU
         (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)).Nonempty}.Finite :=
-    hPOU_locFin.finite_nonempty_of_compact
+    hPOU_localFin.finite_nonempty_of_compact
   have hf_zero_off : ∀ α : M, (Function.support
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU
         (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)) = ∅ →
@@ -418,7 +418,7 @@ theorem wkpNormChart_lt_top_of_memWkpChart
         (modelWithCornersEuclideanHalfSpace n) M α : M → ℝ)).Nonempty}
       with hS_def
   have hS_finite : S.Finite := hSupport_finite
-  have hf_supp_S : Function.support f ⊆ S := by
+  have hf_support_S : Function.support f ⊆ S := by
     intro α hα
     by_contra hαS
     apply hα

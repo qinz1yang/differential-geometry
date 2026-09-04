@@ -63,9 +63,9 @@ private lemma smoothCompactlySupportedSubmodule_smul_coe
 
 omit [NeZero d] in
 private lemma memLp_two_of_smoothCompactlySupported
-    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφ_supp : HasCompactSupport φ) :
+    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφ_support : HasCompactSupport φ) :
     MemLp φ 2 (volume : Measure E) :=
-  hφ.continuous.memLp_of_hasCompactSupport hφ_supp
+  hφ.continuous.memLp_of_hasCompactSupport hφ_support
 
 private def smoothCompactlySupportedToLp :
     smoothCompactlySupportedSubmodule (d := d) →ₗ[ℝ] Lp ℝ 2 (volume : Measure E) where
@@ -251,7 +251,7 @@ omit [NeZero d] in
 
 omit [NeZero d] in
 private lemma diffQuot_eq_zero_of_notMem_cthickening
-    {φ : E → ℝ} (_hφ_supp : HasCompactSupport φ)
+    {φ : E → ℝ} (_hφ_support : HasCompactSupport φ)
     (k : Fin d) {h₀ : ℝ} (_hh₀ : 0 ≤ h₀) {h : ℝ} (hh_bd : |h| ≤ h₀) :
     ∀ x : E, x ∉ Metric.cthickening h₀ (tsupport φ) →
       diffQuot k h φ x = 0 := by
@@ -283,11 +283,11 @@ private lemma diffQuot_eq_zero_of_notMem_cthickening
 
 omit [NeZero d] in
 private lemma abs_diffQuot_le_lipschitz_bound
-    {φ : E → ℝ} (hφ_C1 : ContDiff ℝ 1 φ) (hφ_supp : HasCompactSupport φ)
+    {φ : E → ℝ} (hφ_C1 : ContDiff ℝ 1 φ) (hφ_support : HasCompactSupport φ)
     (k : Fin d) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ h : ℝ, ∀ x : E, |diffQuot k h φ x| ≤ L := by
   obtain ⟨L, hL_nn, hLip⟩ :=
-    lipschitz_of_contDiff_compactSupport (d := d) hφ_C1 hφ_supp
+    lipschitz_of_contDiff_compactSupport (d := d) hφ_C1 hφ_support
   refine ⟨L, hL_nn, fun h x => ?_⟩
   by_cases hh : h = 0
   · rw [hh, diffQuot_zero_h]; simpa using hL_nn
@@ -317,14 +317,14 @@ private lemma abs_diffQuot_le_lipschitz_bound
 
 omit [NeZero d] in
 private lemma abs_partialDeriv_le_lipschitz_bound
-    {φ : E → ℝ} (hφ_C1 : ContDiff ℝ 1 φ) (hφ_supp : HasCompactSupport φ)
+    {φ : E → ℝ} (hφ_C1 : ContDiff ℝ 1 φ) (hφ_support : HasCompactSupport φ)
     (k : Fin d) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ x : E,
       |(fderiv ℝ φ x) (EuclideanSpace.single k 1)| ≤ L := by
   have hfderiv_cont : Continuous (fderiv ℝ φ) :=
     hφ_C1.continuous_fderiv (by simp)
   have hfderiv_compact : HasCompactSupport (fderiv ℝ φ) :=
-    hφ_supp.fderiv ℝ
+    hφ_support.fderiv ℝ
   obtain ⟨C, hC⟩ := hfderiv_cont.bounded_above_of_compact_support hfderiv_compact
   refine ⟨max C 0, le_max_right _ _, fun x => ?_⟩
   have hbnd : ‖fderiv ℝ φ x‖ ≤ max C 0 := (hC x).trans (le_max_left _ _)
@@ -405,7 +405,7 @@ omit [NeZero d] in
 private lemma tendsto_integral_w_diffQuot_phi
     {w : E → ℝ} (hw_l2 : MemLp w 2 (volume : Measure E))
     {φ : E → ℝ} (hφ_smooth : ContDiff ℝ (⊤ : ℕ∞) φ)
-    (hφ_supp : HasCompactSupport φ) (k : Fin d)
+    (hφ_support : HasCompactSupport φ) (k : Fin d)
     {hₙ : ℕ → ℝ} (hₙ_ne : ∀ n, hₙ n ≠ 0)
     (hₙ_tendsto : Tendsto hₙ atTop (𝓝 0)) :
     Tendsto (fun n =>
@@ -415,7 +415,7 @@ private lemma tendsto_integral_w_diffQuot_phi
         ∂(volume : Measure E))) := by
   have hφ_C1 : ContDiff ℝ 1 φ := hφ_smooth.of_le (by norm_cast)
   obtain ⟨L, _hL_nn, hLip⟩ :=
-    abs_diffQuot_le_lipschitz_bound (d := d) hφ_C1 hφ_supp k
+    abs_diffQuot_le_lipschitz_bound (d := d) hφ_C1 hφ_support k
   set h₀ : ℝ := 1 with h₀_def
   have hh₀_nn : (0 : ℝ) ≤ h₀ := by simp [h₀_def]
   have hN : ∀ᶠ n in atTop, |hₙ n| ≤ h₀ := by
@@ -430,7 +430,7 @@ private lemma tendsto_integral_w_diffQuot_phi
     rw [h_dist] at hn
     exact hn.le
   set K_thick : Set E := Metric.cthickening h₀ (tsupport φ) with hKt_def
-  have hK_compact : IsCompact (tsupport φ) := hφ_supp
+  have hK_compact : IsCompact (tsupport φ) := hφ_support
   have hK_thick_compact : IsCompact K_thick := hK_compact.cthickening
   have hK_thick_meas : MeasurableSet K_thick :=
     hK_thick_compact.measurableSet
@@ -477,11 +477,11 @@ private lemma tendsto_integral_w_diffQuot_phi
       linarith
     · have h_neg_h_bd : |-(hₙ n)| ≤ h₀ := by rw [abs_neg]; exact hn
       have hdq_zero : diffQuot k (-(hₙ n)) φ x = 0 :=
-        diffQuot_eq_zero_of_notMem_cthickening (d := d) hφ_supp k hh₀_nn
+        diffQuot_eq_zero_of_notMem_cthickening (d := d) hφ_support k hh₀_nn
           h_neg_h_bd x hx
       rw [hdq_zero, mul_zero, norm_zero]
       simp [bound, Set.indicator_of_notMem hx]
-  have h_pointwise_conv :
+  have h_pointwise_convergence :
       ∀ᵐ x ∂(volume : Measure E),
         Tendsto (fun n => w x * diffQuot k (-(hₙ n)) φ x) atTop
           (𝓝 (w x * (fderiv ℝ φ x) (EuclideanSpace.single k 1))) := by
@@ -512,7 +512,7 @@ private lemma tendsto_integral_w_diffQuot_phi
     exact hw_meas.mul hdq_meas
   exact tendsto_integral_filter_of_dominated_convergence
     bound (Filter.Eventually.of_forall h_aesm_seq)
-    h_pointwise_bound h_bound_int h_pointwise_conv
+    h_pointwise_bound h_bound_int h_pointwise_convergence
 
 
 omit [NeZero d] in
@@ -553,7 +553,7 @@ private lemma abs_smoothTestFunctional_le
     simpa using hmul
   have hφ_memLp : MemLp φ.1 2 (volume : Measure E) :=
     memLp_two_of_smoothCompactlySupported (d := d) φ.2.1 φ.2.2
-  have h_conv : Tendsto (fun n =>
+  have h_convergence : Tendsto (fun n =>
       ∫ x, w x * diffQuot k (-(hₙ n)) φ.1 x ∂(volume : Measure E)) atTop
       (𝓝 (∫ x, w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)
         ∂(volume : Measure E))) :=
@@ -605,16 +605,16 @@ private lemma abs_smoothTestFunctional_le
       |∫ x, w x * diffQuot k (-(hₙ n)) φ.1 x ∂(volume : Measure E)| ≤
         M * (eLpNorm φ.1 2 (volume : Measure E)).toReal := by
     intro n; rw [← h_lhs_eq n]; exact h_lhs_bound n
-  have h_abs_conv :
+  have h_abs_convergence :
       Tendsto (fun n =>
           |∫ x, w x * diffQuot k (-(hₙ n)) φ.1 x ∂(volume : Measure E)|)
         atTop
         (𝓝 |∫ x, w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)
           ∂(volume : Measure E)|) := by
-    have := h_conv.abs
+    have := h_convergence.abs
     simpa using this
   have h_lim_le := le_of_tendsto_of_tendsto'
-    h_abs_conv tendsto_const_nhds (fun n => h_dual_bound n)
+    h_abs_convergence tendsto_const_nhds (fun n => h_dual_bound n)
   exact h_lim_le
 
 
@@ -714,9 +714,9 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_univ
     smoothTestFunctionalRiesz (d := d) hw_l2 k with hg_lp_def
   refine ⟨⇑g_lp, ?_, ?_, ?_⟩
   · exact Lp.memLp g_lp
-  · intro φ hφ_smooth hφ_supp _
+  · intro φ hφ_smooth hφ_support _
     rw [setIntegral_univ, setIntegral_univ]
-    set φ_cs : smoothCompactlySupportedSubmodule (d := d) := ⟨φ, hφ_smooth, hφ_supp⟩
+    set φ_cs : smoothCompactlySupportedSubmodule (d := d) := ⟨φ, hφ_smooth, hφ_support⟩
     have h_ext_apply :=
       smoothTestFunctional_ext_apply (d := d) hw_l2 k hM_nn hh₀ h_bdd φ_cs
     have h_ext_inner :=

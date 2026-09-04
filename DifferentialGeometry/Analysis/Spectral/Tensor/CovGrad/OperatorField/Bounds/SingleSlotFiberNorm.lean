@@ -35,7 +35,7 @@ attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 omit [CompleteSpace E] in
-lemma riemannianFiberNormSq_eq_bundle_norm_sq'
+lemma riemannianFiberNormSq_eq_bundle_norm_sq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (z : TensorRSSpace r s I x) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
       Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
@@ -66,9 +66,9 @@ theorem riemannianFiberNormSq_clm_apply_le_of_sqrt_le
     ∀ v : TensorRSSpace 0 r I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 s x (φ v) ≤
         μ ^ 2 * riemannianFiberNormSq (I := I) (M := M) g 0 r x v := by
-  let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
+  let instSource : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 r
-  let instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
+  let instTarget : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 s
   intro v
   have hsrc_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g 0 r x v :=

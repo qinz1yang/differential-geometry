@@ -37,7 +37,7 @@ theorem MemWkpHalfSpace_subcritical_iterated
     {Ω : Set EuN} (hΩ : IsHalfSpaceRelOpen (d := d) Ω)
     {f : EuN → ℝ}
     (hf_compact : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ interiorHalfSpace Ω)
+    (hf_support : tsupport f ⊆ interiorHalfSpace Ω)
     (hf : MemWkpHalfSpace (d := d) (k + 1) (ENNReal.ofReal p) f Ω) :
     MemWkpHalfSpace (d := d) k (ENNReal.ofReal (pOne d p)) f Ω ∧
       wkpNormHalfSpace (d := d) k (ENNReal.ofReal (pOne d p)) f Ω ≤
@@ -48,14 +48,14 @@ theorem MemWkpHalfSpace_subcritical_iterated
   have hf' : MemWkp (d := d) (k + 1) (ENNReal.ofReal p) f
       (interiorHalfSpace Ω) := hf
   exact TowerStep.MemWkp_subcritical_iterated (d := d) k hp_one hp_dim
-    hΩ_int_open hf_compact hf_supp hf'
+    hΩ_int_open hf_compact hf_support hf'
 
 theorem MemWkpHalfSpace_succ_subcritical_step
     {k : ℕ} {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (d : ℝ))
     {Ω : Set EuN} (hΩ : IsHalfSpaceRelOpen (d := d) Ω)
     {f : EuN → ℝ}
     (hf_compact : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ interiorHalfSpace Ω)
+    (hf_support : tsupport f ⊆ interiorHalfSpace Ω)
     (hf : MemWkpHalfSpace (d := d) (k + 1) (ENNReal.ofReal p) f Ω) :
     MemWkpHalfSpace (d := d) k
         (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p))) f Ω ∧
@@ -66,7 +66,7 @@ theorem MemWkpHalfSpace_succ_subcritical_step
             wkpNormHalfSpace (d := d) (k + 1) (ENNReal.ofReal p) f Ω := by
   obtain ⟨h_mem, h_norm⟩ :=
     MemWkpHalfSpace_subcritical_iterated (d := d) k hp_one hp_dim hΩ
-      hf_compact hf_supp hf
+      hf_compact hf_support hf
   have hpOne_eq : pOne d p = (d : ℝ) * p / ((d : ℝ) - p) := rfl
   refine ⟨?_, ?_⟩
   · rw [show (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p))) =
@@ -113,7 +113,7 @@ theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart
   have hC_nn : 0 ≤ C :=
     EuclideanTowerStep.subcriticalConstant_nonneg (d := n) k p
   refine ⟨C, hC_nn, ?_⟩
-  intro u h_compact h_supp hu
+  intro u h_compact h_support hu
   have h_per_chart : ∀ α : M,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkpHalfSpace
           (d := n) k (ENNReal.ofReal ((n : ℝ) * p / ((n : ℝ) - p)))
@@ -139,7 +139,7 @@ theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart
       EuclideanTowerStep.MemWkpHalfSpace_subcritical_iterated (d := n) k
         hp_one hp_dim
         (chartTargetEuclid_isHalfSpaceRelOpen (n := n) (M := M) α)
-        (h_compact α) (h_supp α) (hu α)
+        (h_compact α) (h_support α) (hu α)
     obtain ⟨h_mem_p1, h_norm_p1⟩ := h_iter
     have h_pOne_eq : EuclideanTowerStep.pOne n p =
         (n : ℝ) * p / ((n : ℝ) - p) := rfl
@@ -202,8 +202,8 @@ theorem wkpNormChart_succ_subcritical_step_withBoundary_perChart_smooth
     wkpNormChart_succ_subcritical_step_withBoundary_perChart (n := n) (M := M)
       (k := k) hp_one hp_dim
   refine ⟨C, hC_nn, ?_⟩
-  intro u _hu_smooth h_compact h_supp hu
-  exact h h_compact h_supp hu
+  intro u _hu_smooth h_compact h_support hu
+  exact h h_compact h_support hu
 
 theorem dim_lt_mul_sobolevConjugate_of_dim_lt_succ_mul
     (d : ℕ) (k : ℕ) (p : ℝ) (hp_pos : 0 < p) (hp_dim : p < (d : ℝ))

@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set
 open scoped Manifold ContDiff Topology
@@ -77,7 +77,7 @@ theorem normalBump_tsupport (g : SmoothRiemannianMetric I M) (p : M)
     tsupport (normalBump g p f) ⊆
       (normalChartAt (I := I) g p).symm '' Metric.closedBall (0 : E) f.rOut := by
   let ψ := normalChartAt (I := I) g p
-  have hball_tgt : Metric.closedBall (0 : E) f.rOut ⊆ ψ.target := by
+  have hball_target : Metric.closedBall (0 : E) f.rOut ⊆ ψ.target := by
     intro v hv
     rw [Metric.mem_closedBall, dist_zero_right] at hv
     exact ball_subset_normalChartAt_target (I := I) g p (hv.trans_lt hr)
@@ -86,7 +86,7 @@ theorem normalBump_tsupport (g : SmoothRiemannianMetric I M) (p : M)
     have hcont : ContinuousOn ψ.symm ψ.target := by
       simpa only [ψ] using
         (normalChartAt_symm_contMDiffOn (I := I) g p).continuousOn
-    exact hcont.mono hball_tgt
+    exact hcont.mono hball_target
   apply closure_minimal ?_ hcompact.isClosed
   intro q hq
   rw [Function.mem_support] at hq
@@ -109,7 +109,7 @@ theorem normalBump_tsupport (g : SmoothRiemannianMetric I M) (p : M)
   exact ψ.toPartialEquiv.left_inv hqsrc
 
 omit [NeZero (Module.finrank Real E)] in
-theorem normalBump_src (g : SmoothRiemannianMetric I M) (p : M)
+theorem normalBump_source (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : E))
     (hr : f.rOut < expMapC2Radius (I := I) g p) :
     tsupport (normalBump g p f) ⊆ (normalChartAt (I := I) g p).source := by
@@ -127,7 +127,7 @@ theorem normalBump_contMDiff (g : SmoothRiemannianMetric I M) (p : M)
     ContMDiff I 𝓘(Real) ∞ (normalBump g p f) := by
   let ψ := normalChartAt (I := I) g p
   refine contMDiff_of_tsupport fun q hq => ?_
-  have hqsrc : q ∈ ψ.source := normalBump_src g p f hr hq
+  have hqsrc : q ∈ ψ.source := normalBump_source g p f hr hq
   have heq : Set.EqOn (normalBump g p f) (fun y => f (ψ y)) ψ.source := by
     intro y hy
     have hy' : y ∈ (normalChartAt (I := I) g p).source := by
@@ -385,5 +385,5 @@ theorem normalRaw_normalChart_apply (g : SmoothRiemannianMetric I M) (p : ι →
 
 end NormalRaw
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

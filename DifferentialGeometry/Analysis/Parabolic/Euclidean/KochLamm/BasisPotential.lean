@@ -21,10 +21,10 @@ variable {V F : Type*}
 
 omit [Nontrivial V]
   [CompleteSpace F] in
-theorem klFluxComp {T : ℝ} {A₂ Aₚ : ℝ≥0}
-    (f : ℝ × V → V →L[ℝ] F) (h : KLSource1 T A₂ Aₚ f)
+theorem kochLammFluxComp {T : ℝ} {A₂ Aₚ : ℝ≥0}
+    (f : ℝ × V → V →L[ℝ] F) (h : KochLammSourceOne T A₂ Aₚ f)
     (i : Fin (Module.finrank ℝ V)) :
-    KLSource1 T A₂ Aₚ
+    KochLammSourceOne T A₂ Aₚ
       (fun z ↦ f z ((stdOrthonormalBasis ℝ V) i)) := by
   let e := stdOrthonormalBasis ℝ V
   let ev : (V →L[ℝ] F) →L[ℝ] F := ContinuousLinearMap.apply ℝ F (e i)
@@ -36,20 +36,20 @@ theorem klFluxComp {T : ℝ} {A₂ Aₚ : ℝ≥0}
       _ ≤ ‖L‖ * ‖e i‖ := L.le_opNorm (e i)
       _ = 1 * ‖L‖ := by rw [e.norm_eq_one i, mul_one, one_mul]
   have hmeas : AEStronglyMeasurable (fun z ↦ ev (f z))
-      (klVolume : Measure (ℝ × V)) :=
+      (kochLammVolume : Measure (ℝ × V)) :=
     ev.continuous.comp_aestronglyMeasurable h.ae
   simpa only [ev, e, ContinuousLinearMap.apply_apply, one_mul] using
-    (kl1_map_bound (V := V) (ε := 1) (A := fun _ : ℝ × V ↦ ev) (d := f)
+    (KochLammSourceOne.clm_apply (V := V) (ε := 1) (A := fun _ : ℝ × V ↦ ev) (d := f)
       (hA := fun _ ↦ hev) (hmeas := hmeas) h)
 
-def klBasisPot (t : ℝ) (f₀ : ℝ × V → F)
+def kochLammBasisPot (t : ℝ) (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V) : F :=
-  klHeat0 t f₀ x +
+  kochLammHeat0 t f₀ x +
     ∑ i : Fin (Module.finrank ℝ V),
-      klHeat1 t ((stdOrthonormalBasis ℝ V) i)
+      kochLammHeat1 t ((stdOrthonormalBasis ℝ V) i)
         (fun z ↦ f₁ z ((stdOrthonormalBasis ℝ V) i)) x
 
-def klBasisGrad (t : ℝ) (f₀ : ℝ × V → F)
+def kochLammBasisGrad (t : ℝ) (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V) : V →L[ℝ] F :=
   heatGrad0 t f₀ x +
     ∑ i : Fin (Module.finrank ℝ V),
@@ -57,158 +57,158 @@ def klBasisGrad (t : ℝ) (f₀ : ℝ × V → F)
         (fun z ↦ f₁ z ((stdOrthonormalBasis ℝ V) i)) x
 
 omit [CompleteSpace F] in
-theorem klBasisPot_eq {T t : ℝ} {A₁ A_q A₂ Aₚ : ℝ≥0}
+theorem kochLammBasisPot_eq {T t : ℝ} {A₁ A_q A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V)
-    (h₀ : KLSource0 T A₁ A_q f₀) (h₁ : KLSource1 T A₂ Aₚ f₁) :
-    klBasisPot t f₀ f₁ x =
+    (h₀ : KochLammSourceZero T A₁ A_q f₀) (h₁ : KochLammSourceOne T A₂ Aₚ f₁) :
+    kochLammBasisPot t f₀ f₁ x =
       heatPot0 t f₀ x +
         ∑ i : Fin (Module.finrank ℝ V),
           heatPot1 t ((stdOrthonormalBasis ℝ V) i)
             (fun z ↦ f₁ z ((stdOrthonormalBasis ℝ V) i)) x := by
-  unfold klBasisPot
-  rw [klHeat0_eq_heatPot (V := V) ht htT f₀ x h₀]
+  unfold kochLammBasisPot
+  rw [kochLammHeat0_eq_heatPot (V := V) ht htT f₀ x h₀]
   refine congrArg (fun z : F ↦ heatPot0 t f₀ x + z) ?_
   apply Finset.sum_congr rfl
   intro i _
-  exact klHeat1_eq_heatPot (V := V) ht htT
+  exact kochLammHeat1_eq_heatPot (V := V) ht htT
     ((stdOrthonormalBasis ℝ V) i)
     (fun z ↦ f₁ z ((stdOrthonormalBasis ℝ V) i)) x
-    (klFluxComp (V := V) f₁ h₁ i)
+    (kochLammFluxComp (V := V) f₁ h₁ i)
 
 omit [Nontrivial V]
   [CompleteSpace F] in
-@[simp] theorem klBasisPot_zero (f₀ : ℝ × V → F)
+@[simp] theorem kochLammBasisPot_zero (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V) :
-    klBasisPot 0 f₀ f₁ x = 0 := by
+    kochLammBasisPot 0 f₀ f₁ x = 0 := by
   classical
-  simp [klBasisPot, klHeat0, klHeat1, heatEarly0, heatEarly1,
-    klLatePotential, klFluxPotential, klTermMeasure]
+  simp [kochLammBasisPot, kochLammHeat0, kochLammHeat1, heatEarly0, heatEarly1,
+    kochLammLatePotential, kochLammFluxPotential, kochLammTermMeasure]
 
 omit [CompleteSpace F] in
-theorem klHeat0_sub {T t : ℝ} {A₁ A_q B₁ B_q : ℝ≥0}
+theorem kochLammHeat0_sub {T t : ℝ} {A₁ A_q B₁ B_q : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f g : ℝ × V → F) (x : V)
-    (hf : KLSource0 T A₁ A_q f) (hg : KLSource0 T B₁ B_q g) :
-    klHeat0 t (fun z ↦ f z - g z) x = klHeat0 t f x - klHeat0 t g x := by
-  have hfE := klEarly0_int (V := V) ht htT f x hf
-  have hgE := klEarly0_int (V := V) ht htT g x hg
-  have hfL := klLate0_int (V := V) ht htT f x hf
-  have hgL := klLate0_int (V := V) ht htT g x hg
-  unfold klHeat0 heatEarly0 klLatePotential
+    (hf : KochLammSourceZero T A₁ A_q f) (hg : KochLammSourceZero T B₁ B_q g) :
+    kochLammHeat0 t (fun z ↦ f z - g z) x = kochLammHeat0 t f x - kochLammHeat0 t g x := by
+  have hfE := kochLammEarly0_int (V := V) ht htT f x hf
+  have hgE := kochLammEarly0_int (V := V) ht htT g x hg
+  have hfL := kochLammLate0_int (V := V) ht htT f x hf
+  have hgL := kochLammLate0_int (V := V) ht htT g x hg
+  unfold kochLammHeat0 heatEarly0 kochLammLatePotential
   simp only [smul_sub, Real.sq_sqrt ht.le]
   rw [MeasureTheory.integral_sub hfE hgE,
     MeasureTheory.integral_sub hfL hgL]
   abel
 
 omit [CompleteSpace F] in
-theorem klHeat1_sub {T t : ℝ} {A₂ Aₚ B₂ Bₚ : ℝ≥0}
+theorem kochLammHeat1_sub {T t : ℝ} {A₂ Aₚ B₂ Bₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f g : ℝ × V → F) (x : V)
-    (hf : KLSource1 T A₂ Aₚ f) (hg : KLSource1 T B₂ Bₚ g) :
-    klHeat1 t w (fun z ↦ f z - g z) x =
-      klHeat1 t w f x - klHeat1 t w g x := by
-  have hfE := klEarly1_int (V := V) ht htT w f x hf
-  have hgE := klEarly1_int (V := V) ht htT w g x hg
-  have hfL := klLate1_int (V := V) ht htT w f x hf
-  have hgL := klLate1_int (V := V) ht htT w g x hg
-  unfold klHeat1 heatEarly1 klFluxPotential
+    (hf : KochLammSourceOne T A₂ Aₚ f) (hg : KochLammSourceOne T B₂ Bₚ g) :
+    kochLammHeat1 t w (fun z ↦ f z - g z) x =
+      kochLammHeat1 t w f x - kochLammHeat1 t w g x := by
+  have hfE := kochLammEarly1_int (V := V) ht htT w f x hf
+  have hgE := kochLammEarly1_int (V := V) ht htT w g x hg
+  have hfL := kochLammLate1_int (V := V) ht htT w f x hf
+  have hgL := kochLammLate1_int (V := V) ht htT w g x hg
+  unfold kochLammHeat1 heatEarly1 kochLammFluxPotential
   simp only [smul_sub, Real.sq_sqrt ht.le]
   rw [MeasureTheory.integral_sub hfE hgE,
     MeasureTheory.integral_sub hfL hgL]
   abel
 
 omit [CompleteSpace F] in
-theorem klBasisPot_sub {T t : ℝ}
+theorem kochLammBasisPot_sub {T t : ℝ}
     {A₁ A_q B₁ B_q A₂ Aₚ B₂ Bₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f₀ g₀ : ℝ × V → F)
     (f₁ g₁ : ℝ × V → V →L[ℝ] F) (x : V)
-    (hf₀ : KLSource0 T A₁ A_q f₀) (hg₀ : KLSource0 T B₁ B_q g₀)
-    (hf₁ : KLSource1 T A₂ Aₚ f₁) (hg₁ : KLSource1 T B₂ Bₚ g₁) :
-    klBasisPot t (fun z ↦ f₀ z - g₀ z) (fun z ↦ f₁ z - g₁ z) x =
-      klBasisPot t f₀ f₁ x - klBasisPot t g₀ g₁ x := by
+    (hf₀ : KochLammSourceZero T A₁ A_q f₀) (hg₀ : KochLammSourceZero T B₁ B_q g₀)
+    (hf₁ : KochLammSourceOne T A₂ Aₚ f₁) (hg₁ : KochLammSourceOne T B₂ Bₚ g₁) :
+    kochLammBasisPot t (fun z ↦ f₀ z - g₀ z) (fun z ↦ f₁ z - g₁ z) x =
+      kochLammBasisPot t f₀ f₁ x - kochLammBasisPot t g₀ g₁ x := by
   classical
-  unfold klBasisPot
-  rw [klHeat0_sub (V := V) ht htT f₀ g₀ x hf₀ hg₀]
+  unfold kochLammBasisPot
+  rw [kochLammHeat0_sub (V := V) ht htT f₀ g₀ x hf₀ hg₀]
   have hsum :
       (∑ i : Fin (Module.finrank ℝ V),
-        klHeat1 t ((stdOrthonormalBasis ℝ V) i)
+        kochLammHeat1 t ((stdOrthonormalBasis ℝ V) i)
           (fun z ↦ (f₁ z - g₁ z) ((stdOrthonormalBasis ℝ V) i)) x) =
         (∑ i : Fin (Module.finrank ℝ V),
-          klHeat1 t ((stdOrthonormalBasis ℝ V) i)
+          kochLammHeat1 t ((stdOrthonormalBasis ℝ V) i)
             (fun z ↦ f₁ z ((stdOrthonormalBasis ℝ V) i)) x) -
           ∑ i : Fin (Module.finrank ℝ V),
-            klHeat1 t ((stdOrthonormalBasis ℝ V) i)
+            kochLammHeat1 t ((stdOrthonormalBasis ℝ V) i)
               (fun z ↦ g₁ z ((stdOrthonormalBasis ℝ V) i)) x := by
     rw [← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
     intro i _
     simp only [sub_apply]
-    exact klHeat1_sub (V := V) ht htT
+    exact kochLammHeat1_sub (V := V) ht htT
       ((stdOrthonormalBasis ℝ V) i)
       (fun z ↦ f₁ z ((stdOrthonormalBasis ℝ V) i))
       (fun z ↦ g₁ z ((stdOrthonormalBasis ℝ V) i)) x
-      (klFluxComp (V := V) f₁ hf₁ i)
-      (klFluxComp (V := V) g₁ hg₁ i)
+      (kochLammFluxComp (V := V) f₁ hf₁ i)
+      (kochLammFluxComp (V := V) g₁ hg₁ i)
   rw [hsum]
   abel
 
-def klVal0Bound (A₁ A_q : ℝ≥0) : ℝ≥0∞ :=
+def kochLammVal0Bound (A₁ A_q : ℝ≥0) : ℝ≥0∞ :=
   earlyHeatC V * (A₁ : ℝ≥0∞) +
     ENNReal.ofReal
-      (klLateSeries (Module.finrank ℝ V) * (klLateTailC V * (A_q : ℝ)))
+      (kochLammLateSeries (Module.finrank ℝ V) * (kochLammLateTailC V * (A_q : ℝ)))
 
-def klVal1Bound (A₂ Aₚ : ℝ≥0) : ℝ≥0∞ :=
+def kochLammVal1Bound (A₂ Aₚ : ℝ≥0) : ℝ≥0∞ :=
   earlyFluxC V * (A₂ : ℝ≥0∞) *
       fluxShellSeries (Module.finrank ℝ V) +
     ENNReal.ofReal
-      (klFluxSeries (Module.finrank ℝ V) * (klFluxTailC V * (Aₚ : ℝ)))
+      (kochLammFluxSeries (Module.finrank ℝ V) * (kochLammFluxTailC V * (Aₚ : ℝ)))
 
 omit [CompleteSpace F] in
-theorem klBasisPot_norm {T t : ℝ} {A₁ A_q A₂ Aₚ : ℝ≥0}
+theorem kochLammBasisPot_norm {T t : ℝ} {A₁ A_q A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (f₀ : ℝ × V → F)
     (f₁ : ℝ × V → V →L[ℝ] F) (x : V)
-    (h₀ : KLSource0 T A₁ A_q f₀) (h₁ : KLSource1 T A₂ Aₚ f₁) :
-    ‖klBasisPot t f₀ f₁ x‖ₑ ≤
-      klVal0Bound (V := V) A₁ A_q +
-        (Module.finrank ℝ V : ℝ≥0∞) * klVal1Bound (V := V) A₂ Aₚ := by
+    (h₀ : KochLammSourceZero T A₁ A_q f₀) (h₁ : KochLammSourceOne T A₂ Aₚ f₁) :
+    ‖kochLammBasisPot t f₀ f₁ x‖ₑ ≤
+      kochLammVal0Bound (V := V) A₁ A_q +
+        (Module.finrank ℝ V : ℝ≥0∞) * kochLammVal1Bound (V := V) A₂ Aₚ := by
   classical
   let e := stdOrthonormalBasis ℝ V
   have hzero :
-      ‖klHeat0 t f₀ x‖ₑ ≤ klVal0Bound (V := V) A₁ A_q := by
-    simpa only [enorm_eq_nnnorm, klVal0Bound] using
-      (klHeat0_norm (V := V) ht htT f₀ x h₀)
+      ‖kochLammHeat0 t f₀ x‖ₑ ≤ kochLammVal0Bound (V := V) A₁ A_q := by
+    simpa only [enorm_eq_nnnorm, kochLammVal0Bound] using
+      (kochLammHeat0_norm (V := V) ht htT f₀ x h₀)
   have hone (i : Fin (Module.finrank ℝ V)) :
-      ‖klHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ ≤
-        klVal1Bound (V := V) A₂ Aₚ := by
+      ‖kochLammHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ ≤
+        kochLammVal1Bound (V := V) A₂ Aₚ := by
     have hei : ‖e i‖ = 1 := e.norm_eq_one i
-    have hi := klHeat1_norm (V := V) ht htT (e i)
+    have hi := kochLammHeat1_norm (V := V) ht htT (e i)
       (fun z ↦ f₁ z (e i)) x
-      (by simpa only [e] using klFluxComp (V := V) f₁ h₁ i)
-    simpa only [enorm_eq_nnnorm, klVal1Bound, hei, ENNReal.ofReal_one,
+      (by simpa only [e] using kochLammFluxComp (V := V) f₁ h₁ i)
+    simpa only [enorm_eq_nnnorm, kochLammVal1Bound, hei, ENNReal.ofReal_one,
       one_mul] using hi
   have hsum :
       ‖∑ i : Fin (Module.finrank ℝ V),
-          klHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ ≤
+          kochLammHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ ≤
         (Module.finrank ℝ V : ℝ≥0∞) *
-          klVal1Bound (V := V) A₂ Aₚ := by
+          kochLammVal1Bound (V := V) A₂ Aₚ := by
     calc
       ‖∑ i : Fin (Module.finrank ℝ V),
-          klHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ ≤
+          kochLammHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ ≤
           ∑ i : Fin (Module.finrank ℝ V),
-            ‖klHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ := by
+            ‖kochLammHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ := by
               simpa using enorm_sum_le Finset.univ
                 (fun i : Fin (Module.finrank ℝ V) ↦
-                  klHeat1 t (e i) (fun z ↦ f₁ z (e i)) x)
+                  kochLammHeat1 t (e i) (fun z ↦ f₁ z (e i)) x)
       _ ≤ ∑ _i : Fin (Module.finrank ℝ V),
-          klVal1Bound (V := V) A₂ Aₚ :=
+          kochLammVal1Bound (V := V) A₂ Aₚ :=
         Finset.sum_le_sum fun i _ ↦ hone i
       _ = (Module.finrank ℝ V : ℝ≥0∞) *
-          klVal1Bound (V := V) A₂ Aₚ := by
+          kochLammVal1Bound (V := V) A₂ Aₚ := by
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
           nsmul_eq_mul]
   change
-    ‖klHeat0 t f₀ x +
+    ‖kochLammHeat0 t f₀ x +
       ∑ i : Fin (Module.finrank ℝ V),
-        klHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ ≤ _
+        kochLammHeat1 t (e i) (fun z ↦ f₁ z (e i)) x‖ₑ ≤ _
   exact (enorm_add_le _ _).trans (add_le_add hzero hsum)
 
 end Euclidean

@@ -384,14 +384,14 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelVariation
     rw [hRicTrace s hs x₀]
     exact
       DifferentialGeometry.Geometry.Curvature.ricciFromRm13At_coordFrame_eq_christoffelRicciCoeffAt
-      (I := I) (S.family.connection s) (connSmoothOfSol (I := I) S s) (Rm13 s) x₀
+      (I := I) (S.family.connection s) (connSmoothOfSolution (I := I) S s) (Rm13 s) x₀
       (hRm s hs) (hcurv s hs) i j
   exact hderiv.congr
     (fun s hs => hricci s hs)
     (hricci (t : Real) (D.regular_subset t.2))
 
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem gammaCovNab2Core
+theorem christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame_of_coordinate_identities
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (gInv :
@@ -610,11 +610,11 @@ theorem christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
     (x₀ : M)
     (gInvDt :
       Real -> M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
-    (hmetricReg :
+    (hmetricRegularity :
       MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt (coordinateFrameAt (I := I) x₀)
         (coordinateFrameSet (I := I) x₀))
-    (hnablaReg :
+    (hnablaRegularity :
       Nabla2RicciComponentsRegularInFrameOnLocal
         (I := I) S (coordinateFrameAt (I := I) x₀)
         (coordinateFrameSet (I := I) x₀)
@@ -643,14 +643,14 @@ theorem christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => gInv (t : Real) y a b) x₀ := by
     intro a b
-    exact hmetricReg.gInv_mdiffAt
+    exact hmetricRegularity.gInv_mdiffAt
       (I := I) S gInv gInvDt frame t hu hx₀ a b
   have hmetric_mdiff :
       ∀ a b : CoordinateIdx (𝕜 := Real) E,
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => metricCompInFrame (I := I) S frame (t : Real) y a b) x₀ := by
     intro a b
-    exact hmetricReg.metricComp_mdiffAt
+    exact hmetricRegularity.metricComp_mdiffAt
       (I := I) S gInv gInvDt frame t hu hx₀ a b
   have hginv_zero :
       ∀ k l : CoordinateIdx (𝕜 := Real) E,
@@ -661,14 +661,14 @@ theorem christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
     intro k l
     exact invCovZeroLocal
       (I := I) S gInv (S.family.connection (t : Real)) frame hframe
-      hmetricReg.nondegenerateGram (t : Real)
+      hmetricRegularity.nondegenerateGram (t : Real)
       hmc hu hx₀ hginv_mdiff hmetric_mdiff d k l
   have hN_mdiff :
       ∀ a b c : CoordinateIdx (𝕜 := Real) E,
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => nablaRic (t : Real) y a b c) x₀ := by
     intro a b c
-    exact hnablaReg.first.mdiffAt (t : Real) x₀ hx₀ a b c
+    exact hnablaRegularity.first.mdiffAt (t : Real) x₀ hx₀ a b c
   have hnabla2_at :
       ∀ a b c e : CoordinateIdx (𝕜 := Real) E,
         nabla2Ric (t : Real) x₀ a b c e =
@@ -676,13 +676,13 @@ theorem christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame
             (I := I) S (coordinateFrameAt (I := I) x₀)
             (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic
             (t : Real) x₀ a b c e :=
-    hnablaReg.second (t : Real) x₀ hx₀
-  exact gammaCovNab2Core
+    hnablaRegularity.second (t : Real) x₀ hx₀
+  exact christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame_of_coordinate_identities
     (I := I) S gInv nablaRic nabla2Ric x₀ t d k i j
     hginv_mdiff hN_mdiff hginv_zero hnabla2_at
 
 omit [SigmaCompactSpace M] in
-theorem ricciVarCore
+theorem ricciVariationFormulaInFrameOnLocal_of_coordinate_identities
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (gInv :
@@ -769,7 +769,7 @@ theorem ricciVarCore
         nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric
           (t : Real) x₀ a a i j := by
     refine Finset.sum_congr rfl fun a _ha => ?_
-    exact gammaCovNab2Core
+    exact christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame_of_coordinate_identities
       (I := I) S gInv nablaRic nabla2Ric x₀ t a a i j
       (hginv_mdiff t) (hN_mdiff t) (fun k l => hginv_zero t a k l)
       (hnabla2_at t)
@@ -783,7 +783,7 @@ theorem ricciVarCore
         nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric
           (t : Real) x₀ i a a j := by
     refine Finset.sum_congr rfl fun a _ha => ?_
-    exact gammaCovNab2Core
+    exact christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame_of_coordinate_identities
       (I := I) S gInv nablaRic nabla2Ric x₀ t i a a j
       (hginv_mdiff t) (hN_mdiff t) (fun k l => hginv_zero t i k l)
       (hnabla2_at t)
@@ -837,11 +837,11 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
         CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
     (Rm13 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor13Section (I := I) (M := M))
     (x₀ : M)
-    (hmetricReg :
+    (hmetricRegularity :
       MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S gInv gInvDt (coordinateFrameAt (I := I) x₀)
         (coordinateFrameSet (I := I) x₀))
-    (hnablaReg :
+    (hnablaRegularity :
       Nabla2RicciComponentsRegularInFrameOnLocal
         (I := I) S (coordinateFrameAt (I := I) x₀)
         (coordinateFrameSet (I := I) x₀)
@@ -877,15 +877,15 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
     christoffelEvolution_of_spacetimeSmoothMetric
       (I := I) S hS gInv gInvDt (coordinateFrameAt (I := I) x₀)
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
-      (coordinateFrameSet_open (I := I) x₀) nablaRic hmetricReg
-      hnablaReg.first.realizes
+      (coordinateFrameSet_open (I := I) x₀) nablaRic hmetricRegularity
+      hnablaRegularity.first.realizes
   have hginv_mdiff :
       ∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
         ∀ a b : CoordinateIdx (𝕜 := Real) E,
           MDifferentiableAt I 𝓘(Real, Real)
             (fun y : M => gInv (t : Real) y a b) x₀ := by
     intro t a b
-    exact hmetricReg.gInv_mdiffAt
+    exact hmetricRegularity.gInv_mdiffAt
       (I := I) S gInv gInvDt frame t hu hx₀ a b
   have hmetric_mdiff :
       ∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
@@ -893,7 +893,7 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
           MDifferentiableAt I 𝓘(Real, Real)
             (fun y : M => metricCompInFrame (I := I) S frame (t : Real) y a b) x₀ := by
     intro t a b
-    exact hmetricReg.metricComp_mdiffAt
+    exact hmetricRegularity.metricComp_mdiffAt
       (I := I) S gInv gInvDt frame t hu hx₀ a b
   have hginv_zero :
       ∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
@@ -909,7 +909,7 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
         (I := I) S.family t
     exact invCovZeroLocal
       (I := I) S gInv (S.family.connection (t : Real)) frame hframe
-      hmetricReg.nondegenerateGram (t : Real)
+      hmetricRegularity.nondegenerateGram (t : Real)
       hmc hu hx₀ (hginv_mdiff t) (hmetric_mdiff t) d k l
   have hN_mdiff :
       ∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
@@ -917,7 +917,7 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
           MDifferentiableAt I 𝓘(Real, Real)
             (fun y : M => nablaRic (t : Real) y a b c) x₀ := by
     intro t a b c
-    exact hnablaReg.first.mdiffAt (t : Real) x₀ hx₀ a b c
+    exact hnablaRegularity.first.mdiffAt (t : Real) x₀ hx₀ a b c
   have hnabla2_at :
       ∀ t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
         ∀ a b c e : CoordinateIdx (𝕜 := Real) E,
@@ -927,8 +927,8 @@ theorem ricciVariationFormulaInCoordFrameAt_of_christoffelEvolution_nabla2
               (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic
               (t : Real) x₀ a b c e := by
     intro t
-    exact hnablaReg.second (t : Real) x₀ hx₀
-  exact ricciVarCore
+    exact hnablaRegularity.second (t : Real) x₀ hx₀
+  exact ricciVariationFormulaInFrameOnLocal_of_coordinate_identities
     (I := I) S gInv nablaRic nabla2Ric Rm13 x₀ hGamma
     hginv_mdiff hN_mdiff hginv_zero hnabla2_at
     hRicTrace hRm hcurv hmix

@@ -629,12 +629,12 @@ lemma per_chart_hasDerivAt
   have hK'_sub_target : K' ⊆ target := by
     intro y hy
     obtain ⟨x, hxK, hx_eq⟩ := hy
-    have hx_src : x ∈ (extChartAt I α).source := by
+    have hx_source : x ∈ (extChartAt I α).source := by
       have : x ∈ (chartAt H α).source := hρα_subord hxK
       rw [← extChartAt_source_eq_chartAt_source (I := I)] at this
       exact this
     rw [← hx_eq]
-    exact (extChartAt I α).map_source hx_src
+    exact (extChartAt I α).map_source hx_source
   have h_Fprim_continuousOn_Ω :
       ContinuousOn (fun p : ℝ × E => Fprim p.1 p.2) (I₁ ×ˢ K') := by
     have h_symm_contOn_K' : ContinuousOn symm K' := h_symm_contOn.mono hK'_sub_target

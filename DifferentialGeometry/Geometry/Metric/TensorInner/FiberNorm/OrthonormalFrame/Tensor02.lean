@@ -191,7 +191,7 @@ lemma tensor02_coframe_expansion
     rw [if_neg hb, mul_zero, mul_zero]
   · intro h; exact absurd (Finset.mem_univ (v 1)) h
 
-lemma tangent_orthonormalBasis_witness
+lemma exists_tangent_orthonormalBasis_with_norm_sum
     (g : SmoothRiemannianMetric I M) (x : M) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x)
       (bse : Module.Basis (Fin n) ℝ (TangentSpace I x)),

@@ -39,7 +39,7 @@ theorem hasDerivAt_inner_of_isLAdaptedAt
     HasDerivAt
       (fun r : Real ↦
         (S.base.metric (T - r ^ 2)).inner (alpha r) (V r) (W r)) 0 s := by
-  have h := lRegInner_deriv S hS T alpha V W s ht halpha hV hW
+  have h := lRegularizedInner_deriv S hS T alpha V W s ht halpha hV hW
   apply h.congr_deriv
   rw [hDV, hDW]
   rw [map_smul, smul_apply]

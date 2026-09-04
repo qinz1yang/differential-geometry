@@ -257,11 +257,11 @@ theorem wkpNormChartWithPartition_lt_top_of_memWkpChartWithPartition
       (d := Module.finrank ℝ E) k p
       (chartPushed (I := I) (M := M) ρ α u)
       (chartTargetEuclid (I := I) (M := M) α) with hf_def
-  have hPOU_locFin : LocallyFinite
+  have hPOU_localFin : LocallyFinite
       (fun α : M => Function.support (ρ α : M → ℝ)) :=
     ρ.locallyFinite
   have hSupport_finite : {α : M | (Function.support (ρ α : M → ℝ)).Nonempty}.Finite :=
-    hPOU_locFin.finite_nonempty_of_compact
+    hPOU_localFin.finite_nonempty_of_compact
   have hf_zero_off : ∀ α : M, (Function.support (ρ α : M → ℝ)) = ∅ →
         f α = 0 := by
     intro α hα

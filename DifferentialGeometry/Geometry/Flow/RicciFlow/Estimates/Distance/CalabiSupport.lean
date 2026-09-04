@@ -387,7 +387,7 @@ theorem pathLength_deriv_ge
 omit [IsManifold I 2 M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem intrGeo_vel_ne
+private theorem intrinsicGeo_velocity_ne
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -791,11 +791,11 @@ private theorem calabi_core_of_solution
     exact hreal
   have htreg : t ∈ D.regular :=
     hreg ⟨htpos, ht.2⟩
-  have hγ_vel : ∀ u ∈ Set.Icc (0 : Real) 1,
+  have hγ_velocity : ∀ u ∈ Set.Icc (0 : Real) 1,
       mfderiv 𝓘(Real, Real) I γ u (1 : Real) ≠ 0 := by
     intro u _hu
     simpa only [γ] using
-      intrGeo_vel_ne
+      intrinsicGeo_velocity_ne
         (I := I) (S.base.metric t) hEnorm O vLeft hvLeft_pos u
   have hinv_x : tail.branch.inv x = (tail.u : E) := by
     have hleft := tail.branch.left_inv tail.source_mem
@@ -826,21 +826,21 @@ private theorem calabi_core_of_solution
           tail.u
     rw [hu_round]
     exact hu_pos
-  have hδx_vel : ∀ u ∈ Set.Icc (0 : Real) 1,
+  have hδx_velocity : ∀ u ∈ Set.Icc (0 : Real) 1,
       mfderiv 𝓘(Real, Real) I (δ x) u (1 : Real) ≠ 0 := by
     intro u _hu
     simpa only [δ] using
-      intrGeo_vel_ne
+      intrinsicGeo_velocity_ne
         (I := I) (S.base.metric t) hEnorm tail.p
           ((tangentSpaceModelContinuousLinearEquiv (I := I) tail.p).symm
             (tail.branch.inv x))
           hinv_pos u
   have hL₁_deriv :=
     pathLength_timeDeriv_of_ricciFlow
-      (I := I) S hS zero_le_one htreg γ hγ_smooth hγ_vel
+      (I := I) S hS zero_le_one htreg γ hγ_smooth hγ_velocity
   have hL₂_deriv :=
     pathLength_timeDeriv_of_ricciFlow
-      (I := I) S hS zero_le_one htreg (δ x) (hδ_smooth x) hδx_vel
+      (I := I) S hS zero_le_one htreg (δ x) (hδ_smooth x) hδx_velocity
   have hL₁_diff : DifferentiableAt Real L₁ t := by
     simpa only [L₁] using hL₁_deriv.differentiableAt
   have hL₂_diff : DifferentiableAt Real (fun s => L₂ s x) t := by
@@ -849,7 +849,7 @@ private theorem calabi_core_of_solution
       -Λ * L₁ t ≤ deriv L₁ t := by
     simpa only [L₁] using
       pathLength_deriv_ge
-        (I := I) S hS (A := Λ) zero_le_one htreg γ hγ_smooth hγ_vel
+        (I := I) S hS (A := Λ) zero_le_one htreg γ hγ_smooth hγ_velocity
           (fun u _hu => hricQuad t ht (γ u)
             (mfderiv 𝓘(Real, Real) I γ u (1 : Real)))
   have hL₂_lower :
@@ -857,7 +857,7 @@ private theorem calabi_core_of_solution
     simpa only [L₂] using
       pathLength_deriv_ge
         (I := I) S hS (A := Λ) zero_le_one htreg (δ x)
-          (hδ_smooth x) hδx_vel
+          (hδ_smooth x) hδx_velocity
           (fun u _hu => hricQuad t ht (δ x u)
             (mfderiv 𝓘(Real, Real) I (δ x) u (1 : Real)))
   have hv_diffAt :

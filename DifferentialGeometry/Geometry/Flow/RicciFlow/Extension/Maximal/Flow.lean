@@ -25,7 +25,7 @@ variable [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
 structure FlowTo (g0 : SmoothRiemannianMetric I M) (T : Real) where
   hT : 0 < T
   S : SolutionOn (I := I) (M := M) (RealTimeInterval.closedOpen 0 T hT)
-  isSol : IsSolutionOn (I := I) S
+  isSolution : IsSolutionOn (I := I) S
   start : S.family.metric 0 = g0
   joint : ∀ (x0 : M) (i j : Fin (Module.finrank Real E)),
     ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
@@ -125,7 +125,7 @@ theorem flow_to_extend
         isOpen_Ioo.prod (trivializationAt E (TangentSpace I) x0).open_baseSet,
         ⟨⟨lt_of_lt_of_le P.hT hTp, hp.1.2⟩, hp.2⟩, ?_⟩
       simpa using
-        ((chartGram_smooth_of_soln (I := I) (M := M) hShat x0 i j).mono
+        ((chartGram_smooth_of_solution (I := I) (M := M) hShat x0 i j).mono
           Set.inter_subset_right)
   have hpde : ∀ t ∈ Ico 0 (T + eps), ∀ x : M,
       ∀ v w : TangentSpace I x,
@@ -152,7 +152,7 @@ theorem flow_to_extend
       exact htransport
     · have ht_pos : 0 < t := lt_of_lt_of_le P.hT (le_of_not_gt htT)
       simpa using
-        ricciFlowPDE_Ici_of_soln (I := I) (M := M) hShat t
+        ricciFlowPDE_Ici_of_solution (I := I) (M := M) hShat t
           ⟨le_of_lt ht_pos, ht.2⟩ x v w
   refine ⟨eps, heps, ⟨⟨hwide, Shat, hShat, hstart, hjoint, hpde⟩⟩⟩
 
@@ -191,7 +191,7 @@ theorem exists_max_flow
     change Nonempty (FlowTo (I := I) (M := M) g0 T) at hT
     let P : FlowTo (I := I) (M := M) g0 T := Classical.choice hT
     exact flow_end_le (I := I) (M := M) g0 hdim hscalar_pos P.hT hc0
-      P.S P.isSol P.start
+      P.S P.isSolution P.start
   let omega : Real := sSup ends
   have hT0_le : T0 ≤ omega := by
     dsimp [omega]

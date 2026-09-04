@@ -59,7 +59,7 @@ structure IteratedDiffChartBilinearData
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ) where
   directions : Fin m → Fin (Module.finrank ℝ E)
   diffChartForcing : EuclN → ℝ
-  fChartEff_memLp_weighted :
+  fChartEffective_memLp_weighted :
     MemLp diffChartForcing 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
@@ -88,7 +88,7 @@ def IteratedDiffChartBilinearData.mkFromHypotheses
     {u_h : H1Compl (I := I) (M := M) g} {m : ℕ}
     (directions : Fin m → Fin (Module.finrank ℝ E))
     (diffChartForcing : EuclN → ℝ)
-    (fChartEff_memLp_weighted :
+    (fChartEffective_memLp_weighted :
       MemLp diffChartForcing 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)))
@@ -114,7 +114,7 @@ def IteratedDiffChartBilinearData.mkFromHypotheses
     IteratedDiffChartBilinearData (I := I) (M := M) g α u_h m :=
   { directions := directions
     diffChartForcing := diffChartForcing
-    fChartEff_memLp_weighted := fChartEff_memLp_weighted
+    fChartEffective_memLp_weighted := fChartEffective_memLp_weighted
     m_diff_variational_identity := m_diff_variational_identity }
 
 namespace IteratedDiffChartBilinearData
@@ -225,19 +225,19 @@ def ofBase
     (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h)).fChart
-  fChartEff_memLp_weighted :=
+  fChartEffective_memLp_weighted :=
     (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h)).f_chart_memLp_weighted
   m_diff_variational_identity := by
     classical
-    intro ψ hψ_smooth hψ_cs hψ_supp
+    intro ψ hψ_smooth hψ_cs hψ_support
     set hu_h_lap : u_h ∈ laplacianDomain (I := I) (M := M) g :=
       laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h
     set D := chartBilinearH1ComplDataOfLaplacianDomain
       (I := I) (M := M) g α hu_h_lap with hD_def
-    have h_base := D.variational_identity ψ hψ_smooth hψ_cs hψ_supp
+    have h_base := D.variational_identity ψ hψ_smooth hψ_cs hψ_support
     have h_wp_ae := base_weak_partial_ae_eq_chartPushedChosenFirstPartial_aux
       (I := I) (M := M) g α hu_h
     have h_u_ae := base_u_chart_ae_eq_chartPushed
@@ -344,14 +344,14 @@ def ofDiff
   diffChartForcing :=
     DifferentialGeometry.Analysis.Laplacian.DiffChartEffectiveSource.diffChartForcing
       (I := I) (M := M) g α l hu_h
-  fChartEff_memLp_weighted :=
+  fChartEffective_memLp_weighted :=
     DifferentialGeometry.Analysis.Laplacian.DiffChartEffectiveSource.diffChartForcing_memLp_two_weighted
       (I := I) (M := M) (g := g) (α := α) (l := l) (hu_h := hu_h)
   m_diff_variational_identity := by
     classical
-    intro ψ hψ_smooth hψ_cs hψ_supp
+    intro ψ hψ_smooth hψ_cs hψ_support
     have h_once := derived_variational_identity_holds
-      (I := I) (M := M) g α l hu_h hψ_smooth hψ_cs hψ_supp
+      (I := I) (M := M) g α l hu_h hψ_smooth hψ_cs hψ_support
     have h_principal_eq :
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
           (∑ i : Fin (Module.finrank ℝ E),
@@ -439,12 +439,12 @@ def ofDiffTwice
   diffChartForcing :=
     DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource.effectiveSourceChartSecondOrder
       (I := I) (M := M) g α l₁ l₂ hu_h
-  fChartEff_memLp_weighted :=
-    DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource.fChartEffTwice_memLp_two_weighted
+  fChartEffective_memLp_weighted :=
+    DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource.fChartEffectiveTwice_memLp_two_weighted
       (I := I) (M := M) (g := g) (α := α) (l₁ := l₁) (l₂ := l₂) (hu_h := hu_h)
   m_diff_variational_identity := by
     classical
-    intro ψ hψ_smooth hψ_cs hψ_supp
+    intro ψ hψ_smooth hψ_cs hψ_support
     have h_base_f_chart_memWkp22 :=
       base_f_chart_memWkp_two_two
         (I := I) (M := M) g α hu_h
@@ -453,7 +453,7 @@ def ofDiffTwice
         (I := I) (M := M) g α hu_h l₁ h_base_f_chart_memWkp22
     have h_twice := twice_differentiated_variational_identity_holds
       (I := I) (M := M) g α hu_h l₁ l₂ h_chosenFChartDeriv_memW1p
-      hψ_smooth hψ_cs hψ_supp
+      hψ_smooth hψ_cs hψ_support
     have h_principal_eq :
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
           (∑ i : Fin (Module.finrank ℝ E),

@@ -30,9 +30,9 @@ theorem fluxShell_cover {t : ℝ} (ht : 0 < t) (x : V) (k : ℕ) :
   rw [Metric.mem_closedBall, dist_eq_norm, norm_sub_rev]
   exact hy.2.le
 
-theorem kl1_early_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
+theorem KochLammSourceOne.earlyFlux_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
     (ht : 0 < t) (htT : t ≤ T) (w : V) (f : ℝ × V → F) (x : V)
-    (h : KLSource1 T A₂ Aₚ f) :
+    (h : KochLammSourceOne T A₂ Aₚ f) :
     ‖heatEarly1 t w f x‖ₑ ≤
       ENNReal.ofReal ‖w‖ * earlyFluxC V * (A₂ : ℝ≥0∞) *
         fluxShellSeries (Module.finrank ℝ V) := by
@@ -44,7 +44,7 @@ theorem kl1_early_norm {T t : ℝ} {A₂ Aₚ : ℝ≥0}
         fluxShellSeries (Module.finrank ℝ V) := by
     rfl
   have hb := heatEarly1_norm ht htT w f x
-    (fluxShell_cover ht x) hsum (kl1_to_gradCarl h)
+    (fluxShell_cover ht x) hsum (kochLammSourceOne_gradientCarlesonBound h)
   have hsqrt :
       (((A₂ : ℝ≥0∞) ^ 2) ^ ((1 : ℝ) / 2)) = (A₂ : ℝ≥0∞) := by
     rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]

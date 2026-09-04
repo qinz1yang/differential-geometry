@@ -12,7 +12,7 @@ namespace PDE
 namespace RicciFlow
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
@@ -38,7 +38,7 @@ noncomputable def morreyTwoC
     (gBase : SmoothRiemannianMetric I M) (Λ : ℝ) : ℝ :=
   let L₁ := max (revJetOneC (E := E) Λ) Λ
   let L₂ := revJetTwoC (E := E) Λ
-  morreyUnifConst Λ
+  morreyUniformConst Λ
     (baseMorreyConst (I := I) (M := M) gBase 0 2)
     (kjetConst (Module.finrank ℝ E) Λ L₁ L₂ 2)
     (Module.finrank ℝ E) 2
@@ -58,7 +58,7 @@ theorem morreyTwoC_spec
                 ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2 := by
   have hC : 0 ≤ morreyTwoC (I := I) (M := M) gBase Λ := by
     dsimp only [morreyTwoC]
-    exact morreyUnifConst_nonneg hΛ
+    exact morreyUniformConst_nonneg hΛ
       (baseMorreyConst_nonneg (I := I) (M := M) gBase 0 2)
       (kjetConst_nonneg hΛ
         (hΛ.trans (le_max_right _ _))

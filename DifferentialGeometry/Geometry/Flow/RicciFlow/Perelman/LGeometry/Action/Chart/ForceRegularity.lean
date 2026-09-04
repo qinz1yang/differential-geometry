@@ -70,7 +70,7 @@ private theorem chartScalCov_basis
   have hright : extChartAt I p x = z.2 :=
     (extChartAt I p).right_inv hzt
   have hf : ContMDiff I 𝓘(Real, Real) ∞ f := by
-    simpa only [f] using scalarSmoothOfSol (I := I) S z.1
+    simpa only [f] using scalarSmoothOfSolution (I := I) S z.1
   rw [chartScalCov_apply (I := I) S hS p hz.1 hz.2]
   rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv]
   rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt

@@ -176,10 +176,10 @@ theorem exists_chartFlowGeodesicCurve
       Φ (((extChartAt I p p, v_chart) : E × E), 0) = (extChartAt I p p, v_chart) ∧
       chartFlowGeodesicCurve (I := I) Φ p v_chart 0 = p := by
   set x₀ : E := extChartAt I p p with hx₀_def
-  have hx₀_src : p ∈ (extChartAt I p).source :=
+  have hx₀_source : p ∈ (extChartAt I p).source :=
     mem_extChartAt_source (I := I) p
   have hx₀_target : x₀ ∈ (extChartAt I p).target :=
-    (extChartAt I p).map_source hx₀_src
+    (extChartAt I p).map_source hx₀_source
   have hx₀_interior : x₀ ∈ interior (extChartAt I p).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) p hx₀_target
   obtain ⟨_b, ρ, T, Φ, hρ_pos, hT_pos, _hb_sub, hcd, hinit⟩ :=
@@ -237,24 +237,24 @@ theorem exists_chartFlow_orbit_eq_chartPhase_solution_eventually
       c =ᶠ[𝓝 (0 : ℝ)] (fun t => Φ (((extChartAt I p p, v_chart) : E × E), t)) := by
   classical
   set x₀ : E := extChartAt I p p with hx₀_def
-  have hx₀_src : p ∈ (extChartAt I p).source :=
+  have hx₀_source : p ∈ (extChartAt I p).source :=
     mem_extChartAt_source (I := I) p
   have hx₀_target : x₀ ∈ (extChartAt I p).target :=
-    (extChartAt I p).map_source hx₀_src
+    (extChartAt I p).map_source hx₀_source
   have hx₀_interior : x₀ ∈ interior (extChartAt I p).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) p hx₀_target
   obtain ⟨b, r, ε, Φ, hr, hε, hb_sub, hΦ⟩ :=
     exists_chartPhase_isLocalFlow (I := I) (M := M)
       (g := g) (α := p) (x₀ := x₀) (v₀ := v_chart) hx₀_interior
-  have hΦinit : Φ (((x₀, v_chart) : E × E), 0) = (x₀, v_chart) :=
+  have hΦinitial : Φ (((x₀, v_chart) : E × E), 0) = (x₀, v_chart) :=
     hΦ.apply_initial ((x₀, v_chart) : E × E)
       (Metric.mem_closedBall_self (by exact_mod_cast (le_of_lt hr)))
-  refine ⟨Φ, hΦinit, ?_⟩
+  refine ⟨Φ, hΦinitial, ?_⟩
   set Φorbit : ℝ → E × E := fun t => Φ ((x₀, v_chart), t) with hΦorbit_def
   have hz₀_interior : ((x₀, v_chart) : E × E) ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) :=
     ⟨hx₀_interior, Set.mem_univ _⟩
-  have hΦorbit_zero : Φorbit 0 = (x₀, v_chart) := hΦinit
+  have hΦorbit_zero : Φorbit 0 = (x₀, v_chart) := hΦinitial
   have hc_zero : c 0 = (x₀, v_chart) := h0
   have hΦorbit_cont0 : ContinuousAt Φorbit 0 := by
     have hcont_on : ContinuousOn Φorbit (Set.Icc (-ε) ε) :=
@@ -334,18 +334,18 @@ theorem chartFlowGeodesicCurve_eq_of_chartPhase_solution_eventually
   have hc0 : ((extChartAt I p (γ 0), w 0) : E × E) =
       (extChartAt I p p, v_chart) := by
     rw [hu0, hw0]
-  obtain ⟨Φ, hΦ_init, hc_eq_orbit⟩ :=
+  obtain ⟨Φ, hΦ_initial, hc_eq_orbit⟩ :=
     exists_chartFlow_orbit_eq_chartPhase_solution_eventually
       (I := I) (g := g) (p := p) (v_chart := v_chart)
       (c := fun s => (extChartAt I p (γ s), w s)) hc0 hd
-  refine ⟨Φ, hΦ_init, ?_⟩
-  filter_upwards [hc_eq_orbit, hγ_chart_eventually] with t ht_eq ht_src
+  refine ⟨Φ, hΦ_initial, ?_⟩
+  filter_upwards [hc_eq_orbit, hγ_chart_eventually] with t ht_eq ht_source
   have ht_eq_fst :
       extChartAt I p (γ t) = (Φ (((extChartAt I p p, v_chart) : E × E), t)).1 := by
     have := congrArg Prod.fst ht_eq
     exact this
   have hγ_recover : (extChartAt I p).symm (extChartAt I p (γ t)) = γ t :=
-    (extChartAt I p).left_inv ht_src
+    (extChartAt I p).left_inv ht_source
   rw [← hγ_recover, ht_eq_fst]
   rfl
 

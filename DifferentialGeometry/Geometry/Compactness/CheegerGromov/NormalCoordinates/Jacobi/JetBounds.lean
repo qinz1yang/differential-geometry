@@ -11,7 +11,7 @@ open Bundle Set
 open scoped Manifold ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Geometry.Riemannian.CovariantDerivativeAlong
 open Geometry.Riemannian.Exponential
@@ -246,7 +246,7 @@ theorem intrinsic_jacobi_pair_le
   let K := C0 * U ^ 2
   have hK : 0 <= K := by
     exact mul_nonneg hC0 (sq_nonneg U)
-  have hJac : IsJacobiAlong (I := I) P.metric γ J := by
+  have hJacobian : IsJacobiAlong (I := I) P.metric γ J := by
     change IsJacobiAlong (I := I) P.metric
       (intrinsicGeodesic (I := I) P.metric hEnorm p
         (show TangentSpace I p from u))
@@ -268,7 +268,7 @@ theorem intrinsic_jacobi_pair_le
     let R : TangentSpace I (γ t) :=
       Geometry.Riemannian.Variation.curvAlong
         (I := I) P.metric γ J T T t
-    have hD2 := (isJacobiAlong_iff (I := I) P.metric γ J).mp hJac t
+    have hD2 := (isJacobiAlong_iff (I := I) P.metric γ J).mp hJacobian t
     have hR :=
       HasCurvDerivBound.curvature_along_le (I := I) P h0 γ J T T t
     have hspeedSq :
@@ -297,7 +297,7 @@ theorem intrinsic_jacobi_pair_le
         dsimp only [K]
         ring
   simpa only [γ, J, U, K] using
-    (Geometry.Riemannian.VolumeComparison.intrJacobi_pair
+    (Geometry.Riemannian.VolumeComparison.intrinsicJacobi_pair
       (I := I) P.metric hEnorm p u w hK hb hODE)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -337,10 +337,10 @@ theorem intrinsic_mixed_jacobi_force_le
           Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
             (I := I) P.metric x v
     let f : Real -> Real -> P.M := fun r s =>
-      intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), s)
+      intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), s)
     let V : ∀ r s : Real, TangentSpace I (f r s) := fun r s =>
-      intrLaunchJ (I := I) P.metric hEnorm p u a b (r, s)
-    let F := Geometry.Riemannian.Variation.jacVarForce
+      intrinsicLaunchJ (I := I) P.metric hEnorm p u a b (r, s)
+    let F := Geometry.Riemannian.Variation.jacobianVarForce
       (I := I) P.metric f V t
     let U := Real.sqrt (P.metric.inner p u u)
     let K := C0 * U ^ 2
@@ -377,16 +377,16 @@ theorem intrinsic_mixed_jacobi_force_le
         Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) P.metric x v
   let f : Real -> Real -> P.M := fun r s =>
-    intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), s)
+    intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), s)
   let V : ∀ r s : Real, TangentSpace I (f r s) := fun r s =>
-    intrLaunchJ (I := I) P.metric hEnorm p u a b (r, s)
+    intrinsicLaunchJ (I := I) P.metric hEnorm p u a b (r, s)
   let A := Geometry.Riemannian.Variation.varFst (I := I) f 0 t
   let T := Geometry.Riemannian.Variation.varSnd (I := I) f 0 t
   let J := V 0 t
   let KA := Geometry.Riemannian.Variation.covSnd (I := I) P.metric f
     (fun r s => Geometry.Riemannian.Variation.varFst (I := I) f r s) 0 t
   let DJ := Geometry.Riemannian.Variation.covSnd (I := I) P.metric f V 0 t
-  let F := Geometry.Riemannian.Variation.jacVarForce
+  let F := Geometry.Riemannian.Variation.jacobianVarForce
     (I := I) P.metric f V t
   let L : TangentSpace I (f 0 t) -> Real := fun z =>
     Real.sqrt (P.metric.inner (f 0 t) z z)
@@ -423,11 +423,11 @@ theorem intrinsic_mixed_jacobi_force_le
     exact gronwallBound_mono (Real.sqrt_nonneg _) (by norm_num) hmaxK ht.2
   have hf0 :
       f 0 t = intrinsicGeodesic (I := I) P.metric hEnorm p u t := by
-    simp only [f, intrLaunch3, zero_smul, add_zero]
+    simp only [f, intrinsicLaunch3, zero_smul, add_zero]
   have hLA : L A <= BA := by
     have hbound := (hpairA.1 t ht).trans hmonoA
     rw [show A = intrinsicJacobi (I := I) P.metric hEnorm p u a t from
-      intrLaunchA_zero (I := I) P.metric hEnorm p u a b t]
+      intrinsicLaunchA_zero (I := I) P.metric hEnorm p u a b t]
     dsimp only [L]
     rw [hf0]
     simpa only [K] using hbound
@@ -437,14 +437,14 @@ theorem intrinsic_mixed_jacobi_force_le
         covDerivAlong (I := I) P.metric
           (intrinsicGeodesic (I := I) P.metric hEnorm p u)
           (intrinsicJacobi (I := I) P.metric hEnorm p u a) t from
-      intrLaunchDA_zero (I := I) P.metric hEnorm p u a b t]
+      intrinsicLaunchDA_zero (I := I) P.metric hEnorm p u a b t]
     dsimp only [L]
     rw [hf0]
     simpa only [K] using hbound
   have hLJ : L J <= BB := by
     have hbound := (hpairB.1 t ht).trans hmonoB
     rw [show J = intrinsicJacobi (I := I) P.metric hEnorm p u b t from
-      intrLaunchJ_zero (I := I) P.metric hEnorm p u a b t]
+      intrinsicLaunchJ_zero (I := I) P.metric hEnorm p u a b t]
     dsimp only [L]
     rw [hf0]
     simpa only [K] using hbound
@@ -454,7 +454,7 @@ theorem intrinsic_mixed_jacobi_force_le
         covDerivAlong (I := I) P.metric
           (intrinsicGeodesic (I := I) P.metric hEnorm p u)
           (intrinsicJacobi (I := I) P.metric hEnorm p u b) t from
-      intrLaunchDJ_zero (I := I) P.metric hEnorm p u a b t]
+      intrinsicLaunchDJ_zero (I := I) P.metric hEnorm p u a b t]
     dsimp only [L]
     rw [hf0]
     simpa only [K] using hbound
@@ -468,7 +468,7 @@ theorem intrinsic_mixed_jacobi_force_le
       P.metric.inner (f 0 t) T T =
           P.metric.inner p u0 u0 := by
         dsimp only [T, f, u0, Geometry.Riemannian.Variation.varSnd,
-          intrLaunch3, curveVelocity]
+          intrinsicLaunch3, curveVelocity]
         apply eq_of_heq
         exact heq_of_eq hspeed
       _ = P.metric.inner p u u := by simp [u0]
@@ -527,9 +527,9 @@ theorem intrinsic_mixed_jacobi_pair_le
           Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
             (I := I) P.metric x v
     let f : Real -> Real -> P.M := fun r s =>
-      intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), s)
+      intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), s)
     let V : ∀ r s : Real, TangentSpace I (f r s) := fun r s =>
-      intrLaunchJ (I := I) P.metric hEnorm p u a b (r, s)
+      intrinsicLaunchJ (I := I) P.metric hEnorm p u a b (r, s)
     let W : ∀ r s : Real, TangentSpace I (f r s) := fun r s =>
       Geometry.Riemannian.Variation.covFst (I := I) P.metric f V r s
     let DW : ∀ s : Real, TangentSpace I (f 0 s) := fun s =>
@@ -574,9 +574,9 @@ theorem intrinsic_mixed_jacobi_pair_le
         Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) P.metric x v
   let f : Real -> Real -> P.M := fun r s =>
-    intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), s)
+    intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), s)
   let V : ∀ r s : Real, TangentSpace I (f r s) := fun r s =>
-    intrLaunchJ (I := I) P.metric hEnorm p u a b (r, s)
+    intrinsicLaunchJ (I := I) P.metric hEnorm p u a b (r, s)
   let W : ∀ r s : Real, TangentSpace I (f r s) := fun r s =>
     Geometry.Riemannian.Variation.covFst (I := I) P.metric f V r s
   let DW : ∀ s : Real, TangentSpace I (f 0 s) := fun s =>
@@ -613,9 +613,9 @@ theorem intrinsic_mixed_jacobi_pair_le
           eps := by
     intro t ht
     have htc : t ∈ Icc (0 : Real) 1 := ⟨ht.1, ht.2.le⟩
-    let F := Geometry.Riemannian.Variation.jacVarForce
+    let F := Geometry.Riemannian.Variation.jacobianVarForce
       (I := I) P.metric f V t
-    let R := Geometry.Riemannian.Variation.jacCurv
+    let R := Geometry.Riemannian.Variation.jacobianCurv
       (I := I) P.metric f W 0 t
     let T := Geometry.Riemannian.Variation.varSnd (I := I) f 0 t
     let L : TangentSpace I (f 0 t) -> Real := fun z =>
@@ -634,7 +634,7 @@ theorem intrinsic_mixed_jacobi_pair_le
         P.metric.inner (f 0 t) T T =
           P.metric.inner p u0 u0 := by
           dsimp only [T, f, u0, Geometry.Riemannian.Variation.varSnd,
-            intrLaunch3, curveVelocity]
+            intrinsicLaunch3, curveVelocity]
           apply eq_of_heq
           exact heq_of_eq hspeed
         _ = P.metric.inner p u u := by simp [u0]
@@ -651,7 +651,7 @@ theorem intrinsic_mixed_jacobi_pair_le
     have hR : L R <= K * L (W 0 t) := by
       have hmain :
           L R <= C0 * L (W 0 t) * L T * L T := by
-        simpa only [L, R, T, Geometry.Riemannian.Variation.jacCurv,
+        simpa only [L, R, T, Geometry.Riemannian.Variation.jacobianCurv,
           Geometry.Riemannian.Variation.curvAlong] using hRraw
       calc
         L R <= C0 * L (W 0 t) * L T * L T := hmain
@@ -660,7 +660,7 @@ theorem intrinsic_mixed_jacobi_pair_le
           dsimp only [K]
           ring
     have hvar :=
-      intrLaunch_var_eq (I := I) P.metric hEnorm p u a b t
+      intrinsicLaunch_var_eq (I := I) P.metric hEnorm p u a b t
     have hD2 :
         Geometry.Riemannian.Variation.covSnd2
             (I := I) P.metric f W 0 t = F - R := by
@@ -691,7 +691,7 @@ theorem intrinsic_mixed_jacobi_pair_le
           (TotalSpace.mk' E (E := (TangentSpace I : P.M → Type _))
             (f q.1 q.2) (W q.1 q.2) : TangentBundle I P.M)) := by
     simpa only [f, V, W] using
-      intrLaunchMix_smooth (I := I) P.metric hEnorm p u a b
+      intrinsicLaunchMix_smooth (I := I) P.metric hEnorm p u a b
   have hDWjoint :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -703,7 +703,7 @@ theorem intrinsic_mixed_jacobi_pair_le
             (Geometry.Riemannian.Variation.covSnd
               (I := I) P.metric f W q.1 q.2) : TangentBundle I P.M)) := by
     simpa only [f, V, W] using
-      intrMixDeriv_smooth (I := I) P.metric hEnorm p u a b
+      intrinsicMixDeriv_smooth (I := I) P.metric hEnorm p u a b
   let Q := (modelWithCornersSelf Real Real).prod
     (modelWithCornersSelf Real Real)
   have hzero :
@@ -726,17 +726,17 @@ theorem intrinsic_mixed_jacobi_pair_le
   have hWzero : W 0 0 = 0 := by
     dsimp only [W, f, V, Geometry.Riemannian.Variation.covFst]
     have hfield :
-        (fun r : Real => intrLaunchJ (I := I) P.metric hEnorm p u a b (r, 0)) =
+        (fun r : Real => intrinsicLaunchJ (I := I) P.metric hEnorm p u a b (r, 0)) =
           fun r : Real => mfderiv 𝓘(Real, Real) I
-            (fun s : Real => intrLaunch3
+            (fun s : Real => intrinsicLaunch3
               (I := I) P.metric hEnorm p u a b ((r, s), 0)) 0 (1 : Real) := by
       funext r
-      exact intrLaunchJ_eq (I := I) P.metric hEnorm p u a b (r, 0)
+      exact intrinsicLaunchJ_eq (I := I) P.metric hEnorm p u a b (r, 0)
     rw [hfield]
-    exact intrLaunch_mix_zero (I := I) P.metric hEnorm p u a b
+    exact intrinsicLaunch_mix_zero (I := I) P.metric hEnorm p u a b
   have hDWzero : DW 0 = 0 := by
     simpa only [DW, W, f, V] using
-      intrLaunch_dmix0 (I := I) P.metric hEnorm p u a b
+      intrinsicLaunch_dmix0 (I := I) P.metric hEnorm p u a b
   let u0 : TangentSpace I p :=
     show TangentSpace I p from u + (0 : Real) • a + (0 : Real) • b
   have hW0 :
@@ -777,13 +777,13 @@ theorem intrinsic_mixed_jacobi_pair_le
       _ <= 0 := by rw [Real.sqrt_zero]
   have hf0 : f 0 = intrinsicGeodesic (I := I) P.metric hEnorm p u0 := by
     funext v
-    simp only [f, u0, intrLaunch3]
+    simp only [f, u0, intrinsicLaunch3]
   have hbounds :=
-    Geometry.Riemannian.VolumeComparison.intrForce_pair
+    Geometry.Riemannian.VolumeComparison.intrinsicForce_pair
       (I := I) P.metric hEnorm p u0 (fun t => W 0 t)
       hK heps (by norm_num : (0 : Real) < 1)
-      (by simpa only [u0, f, intrLaunch3] using hWslice)
-      (by simpa only [u0, f, DW, W, intrLaunch3,
+      (by simpa only [u0, f, intrinsicLaunch3] using hWslice)
+      (by simpa only [u0, f, DW, W, intrinsicLaunch3,
         Geometry.Riemannian.Variation.covSnd] using hDWslice)
       (by
         have h := hODE
@@ -849,9 +849,9 @@ theorem intrinsic_jacobi_jet_pair_le_of
           Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
             (I := I) P.metric x v
     let f : Real -> Real -> P.M := fun s t =>
-      intrLaunch3 (I := I) P.metric hEnorm p u a b ((s, 0), t)
+      intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((s, 0), t)
     let W : forall s t : Real, TangentSpace I (f s t) := fun s t =>
-      intrLaunchJet (I := I) P.metric hEnorm p u a b n (s, t)
+      intrinsicLaunchJet (I := I) P.metric hEnorm p u a b n (s, t)
     let DW : forall t : Real, TangentSpace I (f r t) := fun t =>
       Geometry.Riemannian.Variation.covSnd (I := I) P.metric f W r t
     0 <= U ->
@@ -861,8 +861,8 @@ theorem intrinsic_jacobi_jet_pair_le_of
     (forall t, t ∈ Ico (0 : Real) 1 ->
       Real.sqrt
           (P.metric.inner (f r t)
-            (intrJetResidual (I := I) P.metric hEnorm p u a b n (r, t))
-            (intrJetResidual (I := I) P.metric hEnorm p u a b n (r, t))) <=
+            (intrinsicJetResidual (I := I) P.metric hEnorm p u a b n (r, t))
+            (intrinsicJetResidual (I := I) P.metric hEnorm p u a b n (r, t))) <=
         eps) ->
     Real.sqrt (P.metric.inner (f r 0) (W r 0) (W r 0)) <= delta ->
     Real.sqrt (P.metric.inner (f r 0) (DW 0) (DW 0)) <= delta ->
@@ -900,9 +900,9 @@ theorem intrinsic_jacobi_jet_pair_le_of
         Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
           (I := I) P.metric x v
   let f : Real -> Real -> P.M := fun s t =>
-    intrLaunch3 (I := I) P.metric hEnorm p u a b ((s, 0), t)
+    intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((s, 0), t)
   let W : forall s t : Real, TangentSpace I (f s t) := fun s t =>
-    intrLaunchJet (I := I) P.metric hEnorm p u a b n (s, t)
+    intrinsicLaunchJet (I := I) P.metric hEnorm p u a b n (s, t)
   let DW : forall t : Real, TangentSpace I (f r t) := fun t =>
     Geometry.Riemannian.Variation.covSnd (I := I) P.metric f W r t
   dsimp only
@@ -922,7 +922,7 @@ theorem intrinsic_jacobi_jet_pair_le_of
           (TotalSpace.mk' E (E := (TangentSpace I : P.M -> Type _))
             (f q.1 q.2) (W q.1 q.2) : TangentBundle I P.M)) := by
     simpa only [f, W] using
-      intrLaunchJet_smooth (I := I) P.metric hEnorm p u a b n
+      intrinsicLaunchJet_smooth (I := I) P.metric hEnorm p u a b n
   have hDWjoint :
       ContMDiff
         ((modelWithCornersSelf Real Real).prod
@@ -965,7 +965,7 @@ theorem intrinsic_jacobi_jet_pair_le_of
           eps := by
     intro t ht
     let T := Geometry.Riemannian.Variation.varSnd (I := I) f r t
-    let R := Geometry.Riemannian.Variation.jacCurv
+    let R := Geometry.Riemannian.Variation.jacobianCurv
       (I := I) P.metric f W r t
     let L : TangentSpace I (f r t) -> Real := fun z =>
       Real.sqrt (P.metric.inner (f r t) z z)
@@ -974,7 +974,7 @@ theorem intrinsic_jacobi_jet_pair_le_of
       have hspeedEq :=
         intrinsicGeodesic_speedSq_eq
           (I := I) P.metric hEnorm p u0 t
-      dsimp only [T, f, u0, intrLaunch3,
+      dsimp only [T, f, u0, intrinsicLaunch3,
         Geometry.Riemannian.Variation.varSnd, curveVelocity]
       apply eq_of_heq
       exact heq_of_eq hspeedEq
@@ -993,7 +993,7 @@ theorem intrinsic_jacobi_jet_pair_le_of
       have hmain :
           L R <= C0 * L (W r t) * L T * L T := by
         simpa only [L, R, T,
-          Geometry.Riemannian.Variation.jacCurv,
+          Geometry.Riemannian.Variation.jacobianCurv,
           Geometry.Riemannian.Variation.curvAlong] using hRraw
       calc
         L R <= C0 * L (W r t) * L T * L T := hmain
@@ -1005,12 +1005,12 @@ theorem intrinsic_jacobi_jet_pair_le_of
     have hresEq :
         Geometry.Riemannian.Variation.covSnd2
               (I := I) P.metric f W r t + R =
-          intrJetResidual (I := I) P.metric hEnorm p u a b n (r, t) := by
+          intrinsicJetResidual (I := I) P.metric hEnorm p u a b n (r, t) := by
       rfl
     have hD2 :
         Geometry.Riemannian.Variation.covSnd2
             (I := I) P.metric f W r t =
-          intrJetResidual (I := I) P.metric hEnorm p u a b n (r, t) - R :=
+          intrinsicJetResidual (I := I) P.metric hEnorm p u a b n (r, t) - R :=
       eq_sub_of_add_eq hresEq
     change L
         (Geometry.Riemannian.Variation.covSnd2
@@ -1019,14 +1019,14 @@ theorem intrinsic_jacobi_jet_pair_le_of
     rw [hD2, sub_eq_add_neg]
     calc
       L
-          (intrJetResidual (I := I) P.metric hEnorm p u a b n (r, t) +
+          (intrinsicJetResidual (I := I) P.metric hEnorm p u a b n (r, t) +
             -R) <=
-          L (intrJetResidual (I := I) P.metric hEnorm p u a b n (r, t)) +
+          L (intrinsicJetResidual (I := I) P.metric hEnorm p u a b n (r, t)) +
             L (-R) := by
         exact Geometry.Riemannian.sqrt_inner_add_le
           (I := I) P.metric (f r t)
-          (intrJetResidual (I := I) P.metric hEnorm p u a b n (r, t)) (-R)
-      _ = L (intrJetResidual
+          (intrinsicJetResidual (I := I) P.metric hEnorm p u a b n (r, t)) (-R)
+      _ = L (intrinsicJetResidual
             (I := I) P.metric hEnorm p u a b n (r, t)) + L R := by
         congr 1
         simpa only [L, neg_one_smul, abs_neg, abs_one, one_mul] using
@@ -1036,16 +1036,16 @@ theorem intrinsic_jacobi_jet_pair_le_of
       _ = K * L (W r t) + eps := add_comm _ _
   have hfr : f r = intrinsicGeodesic (I := I) P.metric hEnorm p u0 := by
     funext v
-    simp only [f, u0, intrLaunch3]
+    simp only [f, u0, intrinsicLaunch3]
   rw [hfr] at hW0
   dsimp only [DW, Geometry.Riemannian.Variation.covSnd] at hDW0
   rw [hfr] at hDW0
   have hbounds :=
-    Geometry.Riemannian.VolumeComparison.intrForce_pair
+    Geometry.Riemannian.VolumeComparison.intrinsicForce_pair
       (I := I) P.metric hEnorm p u0 (fun t => W r t)
       hK heps (by norm_num : (0 : Real) < 1)
-      (by simpa only [u0, f, intrLaunch3] using hWslice)
-      (by simpa only [u0, f, DW, W, intrLaunch3,
+      (by simpa only [u0, f, intrinsicLaunch3] using hWslice)
+      (by simpa only [u0, f, DW, W, intrinsicLaunch3,
         Geometry.Riemannian.Variation.covSnd] using hDWslice)
       (by
         have h := hODE
@@ -1112,7 +1112,7 @@ theorem intrinsic_jacobi_jets_le
       fun a b atom r t =>
         Real.sqrt
           (P.metric.inner
-            (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+            (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
             (atom.eval (I := I) P.metric hEnorm p u a b (r, t))
             (atom.eval (I := I) P.metric hEnorm p u a b (r, t)))
     Real.sqrt (P.metric.inner p u u) + R * D <= U ->
@@ -1174,18 +1174,18 @@ theorem intrinsic_jacobi_jets_le
             intro t ht
             change Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                (intrJetResidual
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicJetResidual
                   (I := I) P.metric hEnorm p u a b 0 (r, t))
-                (intrJetResidual
+                (intrinsicJetResidual
                   (I := I) P.metric hEnorm p u a b 0 (r, t))) <= 0
-            rw [intrJetResidual_zero (I := I) P.metric hEnorm p u a b r t]
+            rw [intrinsicJetResidual_zero (I := I) P.metric hEnorm p u a b r t]
             simpa only [map_zero, Real.sqrt_zero] using
               (le_refl (0 : Real)))
           (by
             change Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
                 ((IntrinsicJacobiJetAtom.bJet 0).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))
                 ((IntrinsicJacobiJetAtom.bJet 0).eval
@@ -1195,7 +1195,7 @@ theorem intrinsic_jacobi_jets_le
           (by
             change Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
                 ((IntrinsicJacobiJetAtom.bTime 0).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))
                 ((IntrinsicJacobiJetAtom.bTime 0).eval
@@ -1218,7 +1218,7 @@ theorem intrinsic_jacobi_jets_le
         calc
           Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
                 ((IntrinsicJacobiJetAtom.bJet 0).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
                 ((IntrinsicJacobiJetAtom.bJet 0).eval
@@ -1226,10 +1226,10 @@ theorem intrinsic_jacobi_jets_le
               gronwallBound D (jacobiJetGrowthRate hP.C U) 0 t := by
             change Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                (intrLaunchJet
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunchJet
                   (I := I) P.metric hEnorm p u a b 0 (r, t))
-                (intrLaunchJet
+                (intrinsicLaunchJet
                   (I := I) P.metric hEnorm p u a b 0 (r, t))) <=
                 gronwallBound D (jacobiJetGrowthRate hP.C U) 0 t
             simpa only [jacobiJetGrowthRate] using hpair.1 t ht
@@ -1243,7 +1243,7 @@ theorem intrinsic_jacobi_jets_le
         calc
           Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
                 ((IntrinsicJacobiJetAtom.bTime 0).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
                 ((IntrinsicJacobiJetAtom.bTime 0).eval
@@ -1251,18 +1251,18 @@ theorem intrinsic_jacobi_jets_le
               gronwallBound D (jacobiJetGrowthRate hP.C U) 0 t := by
             change Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
                 (Geometry.Riemannian.Variation.covSnd
                   (I := I) P.metric
-                  (fun s t => intrLaunch3
+                  (fun s t => intrinsicLaunch3
                     (I := I) P.metric hEnorm p u a b ((s, 0), t))
-                  (fun s t => intrLaunchJet
+                  (fun s t => intrinsicLaunchJet
                     (I := I) P.metric hEnorm p u a b 0 (s, t)) r t)
                 (Geometry.Riemannian.Variation.covSnd
                   (I := I) P.metric
-                  (fun s t => intrLaunch3
+                  (fun s t => intrinsicLaunch3
                     (I := I) P.metric hEnorm p u a b ((s, 0), t))
-                  (fun s t => intrLaunchJet
+                  (fun s t => intrinsicLaunchJet
                     (I := I) P.metric hEnorm p u a b 0 (s, t)) r t)) <=
                 gronwallBound D (jacobiJetGrowthRate hP.C U) 0 t
             simpa only [jacobiJetGrowthRate] using hpair.2 t ht
@@ -1288,14 +1288,14 @@ theorem intrinsic_jacobi_jets_le
       have hres : forall t, t ∈ Ico (0 : Real) 1 ->
           Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                (intrJetResidual
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicJetResidual
                   (I := I) P.metric hEnorm p u a b (n + 1) (r, t))
-                (intrJetResidual
+                (intrinsicJetResidual
                   (I := I) P.metric hEnorm p u a b (n + 1) (r, t))) <=
             jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n := by
         intro t ht
-        rw [show intrJetResidual
+        rw [show intrinsicJetResidual
               (I := I) P.metric hEnorm p u a b (n + 1) (r, t) =
             (intrinsicJacobiResidualTerm (n + 1)).eval
               (I := I) P.metric hEnorm p u a b (r, t) by
@@ -1313,9 +1313,9 @@ theorem intrinsic_jacobi_jets_le
           (r, t)
         · intro atom hatom
           have hbaseSelf :
-              intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t) =
-                intrLaunch3 (I := I) P.metric hEnorm p u a a ((r, 0), t) := by
-            simp only [intrLaunch3, zero_smul, add_zero]
+              intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t) =
+                intrinsicLaunch3 (I := I) P.metric hEnorm p u a a ((r, 0), t) := by
+            simp only [intrinsicLaunch3, zero_smul, add_zero]
           cases atom with
           | pathT =>
               let u0 : TangentSpace I p :=
@@ -1326,21 +1326,21 @@ theorem intrinsic_jacobi_jets_le
                   (I := I) P.metric hEnorm p u0 t
               change Real.sqrt
                   (P.metric.inner
-                    (intrLaunch3
+                    (intrinsicLaunch3
                       (I := I) P.metric hEnorm p u a b ((r, 0), t))
                     ((IntrinsicJacobiJetAtom.pathT).eval
                       (I := I) P.metric hEnorm p u a b (r, t))
                     ((IntrinsicJacobiJetAtom.pathT).eval
                       (I := I) P.metric hEnorm p u a b (r, t))) <= U
               rw [show P.metric.inner
-                    (intrLaunch3
+                    (intrinsicLaunch3
                       (I := I) P.metric hEnorm p u a b ((r, 0), t))
                     ((IntrinsicJacobiJetAtom.pathT).eval
                       (I := I) P.metric hEnorm p u a b (r, t))
                     ((IntrinsicJacobiJetAtom.pathT).eval
                       (I := I) P.metric hEnorm p u a b (r, t)) =
                   P.metric.inner p (u + r • a) (u + r • a) by
-                simp only [IntrinsicJacobiJetAtom.eval, intrLaunch3, varSnd]
+                simp only [IntrinsicJacobiJetAtom.eval, intrinsicLaunch3, varSnd]
                 change P.metric.inner
                     (intrinsicGeodesic (I := I) P.metric hEnorm p u0 t)
                     (mfderiv 𝓘(Real, Real) I
@@ -1383,7 +1383,7 @@ theorem intrinsic_jacobi_jets_le
           (by
             change Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
                 ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))
                 ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
@@ -1394,7 +1394,7 @@ theorem intrinsic_jacobi_jets_le
           (by
             change Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), 0))
                 ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, 0))
                 ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
@@ -1406,7 +1406,7 @@ theorem intrinsic_jacobi_jets_le
       have hnewPos : forall t, t ∈ Icc (0 : Real) 1 ->
           Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
                 ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
                 ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
@@ -1416,7 +1416,7 @@ theorem intrinsic_jacobi_jets_le
         calc
           Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
                 ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
                 ((IntrinsicJacobiJetAtom.bJet (n + 1)).eval
@@ -1425,10 +1425,10 @@ theorem intrinsic_jacobi_jets_le
                 (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) t := by
             change Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
-                (intrLaunchJet
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunchJet
                   (I := I) P.metric hEnorm p u a b (n + 1) (r, t))
-                (intrLaunchJet
+                (intrinsicLaunchJet
                   (I := I) P.metric hEnorm p u a b (n + 1) (r, t))) <=
                 gronwallBound 0 (jacobiJetGrowthRate hP.C U)
                   (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) t
@@ -1441,7 +1441,7 @@ theorem intrinsic_jacobi_jets_le
       have hnewTime : forall t, t ∈ Icc (0 : Real) 1 ->
           Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
                 ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
                 ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
@@ -1451,7 +1451,7 @@ theorem intrinsic_jacobi_jets_le
         calc
           Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
                 ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
                   (I := I) P.metric hEnorm p u a b (r, t))
                 ((IntrinsicJacobiJetAtom.bTime (n + 1)).eval
@@ -1460,18 +1460,18 @@ theorem intrinsic_jacobi_jets_le
                 (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) t := by
             change Real.sqrt
               (P.metric.inner
-                (intrLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
+                (intrinsicLaunch3 (I := I) P.metric hEnorm p u a b ((r, 0), t))
                 (Geometry.Riemannian.Variation.covSnd
                   (I := I) P.metric
-                  (fun s t => intrLaunch3
+                  (fun s t => intrinsicLaunch3
                     (I := I) P.metric hEnorm p u a b ((s, 0), t))
-                  (fun s t => intrLaunchJet
+                  (fun s t => intrinsicLaunchJet
                     (I := I) P.metric hEnorm p u a b (n + 1) (s, t)) r t)
                 (Geometry.Riemannian.Variation.covSnd
                   (I := I) P.metric
-                  (fun s t => intrLaunch3
+                  (fun s t => intrinsicLaunch3
                     (I := I) P.metric hEnorm p u a b ((s, 0), t))
-                  (fun s t => intrLaunchJet
+                  (fun s t => intrinsicLaunchJet
                     (I := I) P.metric hEnorm p u a b (n + 1) (s, t)) r t)) <=
                 gronwallBound 0 (jacobiJetGrowthRate hP.C U)
                   (jacobiJetForcingBound hP.C U (jacobiJetBound hP.C U D n) n) t
@@ -1493,7 +1493,7 @@ theorem intrinsic_jacobi_jets_le
             (jacobi_jet_bound_le_succ hP.C U D n)
         · exact hnewTime t ht
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

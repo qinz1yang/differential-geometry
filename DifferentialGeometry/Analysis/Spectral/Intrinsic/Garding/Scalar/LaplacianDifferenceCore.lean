@@ -74,7 +74,7 @@ private theorem traceFib_diag
   rw [cometricDoubleTraceFib_toModel,
     modelDoubleTrace_apply (E := E) 0 (cometricLmodel (I := I) g x)]
   rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (Tensor0SSpace.toModel D) (fun i : Fin 0 => Fin.elim0 i)]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [← Tensor0SSpace.toModel_apply_tangent]
@@ -384,7 +384,7 @@ theorem scalarLapDiff_eq
   let CD : Tensor0SSpace 2 I x :=
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
       connectionDifferenceFib (I := I) h q x) D1
-  let Corr : Tensor0SSpace 2 I x :=
+  let Correction : Tensor0SSpace 2 I x :=
     connectionDifferenceOutput (I := I)
       (CovariantDerivative.difference
         (LeviCivita (I := I) h) (LeviCivita (I := I) q) x)
@@ -404,10 +404,10 @@ theorem scalarLapDiff_eq
       Tensor0SSpace.toModel
           (cometricDoubleTraceFib (I := I) h 0 x CD)
           (fun i : Fin 0 => Fin.elim0 i) =
-        scalarLapTraceAt (I := I) h Corr := by
+        scalarLapTraceAt (I := I) h Correction := by
     apply trace_eq_lap (I := I) (M := M)
     intro i
-    dsimp only [CD, D1, Corr]
+    dsimp only [CD, D1, Correction]
     change Tensor0SSpace.eval
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           connectionDifferenceFib (I := I) h q x)
@@ -457,7 +457,7 @@ theorem scalarLapDiff_eq
     hcovh hcovq h q hmch hmcq f hf x
   rw [laplacian_levi_eq (I := I) h hf x,
     laplacian_levi_eq (I := I) q hf x] at hlap
-  simpa only [Hs, Corr, f, hf] using hlap.symm
+  simpa only [Hs, Correction, f, hf] using hlap.symm
 
 private theorem lapDiff_unit
     (q h : SmoothRiemannianMetric I M)

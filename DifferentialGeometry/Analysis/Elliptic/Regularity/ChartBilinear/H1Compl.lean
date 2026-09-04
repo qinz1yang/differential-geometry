@@ -81,7 +81,7 @@ theorem chart_bilinear_identity_h1Compl
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -95,7 +95,7 @@ theorem chart_bilinear_identity_h1Compl
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y * D.fChart y * ψ y
       ∂(volume : Measure EuclN) :=
-  D.variational_identity ψ hψ hψ_cs hψ_supp
+  D.variational_identity ψ hψ hψ_cs hψ_support
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma densityOnEuclid_bounded_on_compact

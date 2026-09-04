@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Bundle
@@ -82,5 +82,5 @@ theorem PointedRiemannianManifold.riemBundle_cont
     Y.riemBundle (I := I)
   exact ⟨⟨Y.metric.inner, Y.metric.contMDiff.continuous, by intro x v w; rfl⟩⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

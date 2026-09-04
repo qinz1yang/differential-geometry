@@ -40,7 +40,7 @@ variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
-theorem intrInj_ge_vol
+theorem intrinsicInj_ge_vol
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -68,21 +68,21 @@ theorem intrInj_ge_vol
     ENNReal.ofReal (r₀ / 2) * v /
         (((volume : Measure
             (EuclideanSpace Real (Fin (Module.finrank Real E)))).toSphere Set.univ) *
-          ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) s) +
+          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) s) +
         (volume : Measure E).toSphere Set.univ *
-          ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) (r₀ + s)))
-      ≤ intrInjRadius (I := I) g hEnorm p := by
+          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) (r₀ + s)))
+      ≤ intrinsicInjRadius (I := I) g hEnorm p := by
   classical
   let V : ENNReal :=
     riemannianVolumeMeasure (I := I) (M := M) g
       {y : M | riemannianEDist I p y < ENNReal.ofReal s}
-  let P : ENNReal := intrPullVol (I := I) g hEnorm p (r₀ + s)
+  let P : ENNReal := intrinsicPullVol (I := I) g hEnorm p (r₀ + s)
   let D : ENNReal :=
     ((volume : Measure
         (EuclideanSpace Real (Fin (Module.finrank Real E)))).toSphere Set.univ) *
-      ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) s) +
+      ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) s) +
     (volume : Measure E).toSphere Set.univ *
-      ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) (r₀ + s))
+      ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) (r₀ + s))
   have hRm :
       ∀ z : E, ‖z‖ < 3 * R / 4 →
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
@@ -91,7 +91,7 @@ theorem intrInj_ge_vol
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K := by
     intro z hz
-    exact hRmBall _ (intrFrame_mem_eball (I := I) g hEnorm p hz)
+    exact hRmBall _ (intrinsicFrame_mem_eball (I := I) g hEnorm p hz)
   have hno : ∀ z, z ∈ ball (0 : E) (r₀ + s) → z ≠ 0 →
       ∀ t, t ∈ Ioo (0 : Real) 1 →
         ¬ IsConjVec (I := I) g hEnorm p
@@ -114,26 +114,26 @@ theorem intrInj_ge_vol
   have hV :
       V ≤ ((volume : Measure
           (EuclideanSpace Real (Fin (Module.finrank Real E)))).toSphere Set.univ) *
-        ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) s) := by
+        ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) s) := by
     simpa only [V] using
-      (segBall_vol_le_euclidean (I := I) g hEnorm p hq hs hRic)
+      (segmentBall_vol_le_euclidean (I := I) g hEnorm p hq hs hRic)
   have hP :
       P ≤ (volume : Measure E).toSphere Set.univ *
         ENNReal.ofReal
-          (hypRadVol q (Module.finrank Real E - 1) (r₀ + s)) := by
+          (hyperbolicRadialVolume q (Module.finrank Real E - 1) (r₀ + s)) := by
     simpa only [P] using
-      (intrPullVol_le_hyp (I := I) g hEnorm p hq
+      (intrinsicPullVol_le_hyperbolic (I := I) g hEnorm p hq
         (add_pos hr₀ hs) hno hRic)
   have hDen : V + P ≤ D := by
     simpa only [D] using add_le_add hV hP
   have hcgt :
       ENNReal.ofReal (r₀ / 2) * V / (V + P) ≤
-        intrInjRadius (I := I) g hEnorm p := by
+        intrinsicInjRadius (I := I) g hEnorm p := by
     simpa only [V, P] using
-      (intrInj_ge_cgt_on (I := I) (K := K) (R := R) (r₀ := r₀)
+      (intrinsicInjRadius_ge_cheeger_gromov_taylor_on (I := I) (K := K) (R := R) (r₀ := r₀)
         (s := s) g hEnorm p hK hR hRpi hRm hloc hr₀ hs hfit hquarter)
   change ENNReal.ofReal (r₀ / 2) * v / D ≤
-    intrInjRadius (I := I) g hEnorm p
+    intrinsicInjRadius (I := I) g hEnorm p
   exact
     (ENNReal.div_le_div
       (mul_le_mul_right hvolV (ENNReal.ofReal (r₀ / 2))) hDen).trans hcgt

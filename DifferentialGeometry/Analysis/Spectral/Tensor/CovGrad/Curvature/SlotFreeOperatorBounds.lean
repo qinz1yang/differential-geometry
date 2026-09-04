@@ -258,7 +258,7 @@ theorem sfOne_riemannianFiberNormSq_zero
   classical
   intro x
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hrepr⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 1 3 x
     (show TensorRSSpace 1 3 I x from
@@ -302,7 +302,7 @@ theorem sfOne_riemannianFiberNormSq_one
   classical
   intro x
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hrepr⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 1 4 x
     (show TensorRSSpace 1 4 I x from

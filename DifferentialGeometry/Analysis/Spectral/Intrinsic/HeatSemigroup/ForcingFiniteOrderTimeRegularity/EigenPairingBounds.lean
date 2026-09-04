@@ -881,9 +881,9 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
       tauto
     rw [hsub_eq]
     intro p₀ hp₀
-    obtain ⟨hx₀src, hs₀'⟩ := hp₀
+    obtain ⟨hx₀source, hs₀'⟩ := hp₀
     have hbaseSet : p₀.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
-        (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).baseSet := hbaseRS α p₀.1 hx₀src
+        (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).baseSet := hbaseRS α p₀.1 hx₀source
     have hsource : (⟨p₀.1, Tensor0SBundle.TensorRSSpace.ofModel (jetD p₀.1 p₀.2)⟩ :
         TotalSpace (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
           (fun z : M => Tensor0SBundle.TensorRSSpace 0 2 I z)) ∈
@@ -897,7 +897,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
               (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α)
             ⟨p.1, Tensor0SBundle.TensorRSSpace.ofModel (jetD p.1 p.2)⟩).2)
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) p₀ := by
-      refine ((hChartJet α) p₀ ⟨hx₀src, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
+      refine ((hChartJet α) p₀ ⟨hx₀source, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
       · filter_upwards [self_mem_nhdsWithin] with p hp
         rw [DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply,
           Bundle.Trivialization.continuousLinearMapAt_apply,

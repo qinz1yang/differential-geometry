@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.TensorLieDeriv
@@ -31,13 +31,13 @@ omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
-theorem metricCInfConvOnCompacts_of_normConv
+theorem metricCInfConvergenceOnCompacts_of_normConvergence
     [FiniteDimensional Real E]
     (gSeq : ℕ → SmoothRiemannianMetric I M) (gInf gRef : SmoothRiemannianMetric I M)
     (hnorm : ∀ (p : ℕ) (K : Set M), IsCompact K → ∀ ε : Real, 0 < ε →
       ∃ k0 : ℕ, ∀ k : ℕ, k0 ≤ k → ∀ a : ℕ, a ≤ p → ∀ x ∈ K,
         metricDerivNorm (I := I) a (gSeq k) gInf gRef x < ε) :
-    MetricCInfConvOnCompacts (I := I) gSeq gInf gRef := by
+    MetricCInfConvergenceOnCompacts (I := I) gSeq gInf gRef := by
   intro K hK p ε hε
   obtain ⟨k0, hk0⟩ := hnorm p K hK (ε / 2) (by positivity)
   refine ⟨k0, fun k hk => ?_⟩
@@ -110,5 +110,5 @@ theorem windowPreconv_of_perTime
   · rintro τ ⟨n, rfl⟩ _ ε hε
     exact hconv n ε hε
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

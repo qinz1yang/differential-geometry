@@ -30,13 +30,13 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-theorem lSrcGauss_tail
+theorem lSourceGaussian_tail_tendsto_zero
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) :
     Tendsto
       (fun R : Real ↦
         ∫⁻ Z : E in
           {Z | R < Real.sqrt ((S.base.metric T).inner x Z Z)},
-          ENNReal.ofReal (lSrcGauss S T x Z)
+          ENNReal.ofReal (lSourceGaussian S T x Z)
             ∂(modelHaar (E := E)))
       atTop (nhds 0) := by
   let q : E → Real := fun Z ↦
@@ -44,7 +44,7 @@ theorem lSrcGauss_tail
   let s : Real → Set E := fun R ↦ {Z | R < q Z}
   let ν : Measure E :=
     (modelHaar (E := E)).withDensity
-      (fun Z ↦ ENNReal.ofReal (lSrcGauss S T x Z))
+      (fun Z ↦ ENNReal.ofReal (lSourceGaussian S T x Z))
   have hq : Continuous q := by
     dsimp only [q]
     fun_prop
@@ -61,7 +61,7 @@ theorem lSrcGauss_tail
     · exact empty_subset _
   have hνuniv : ν Set.univ = 1 := by
     simp only [ν, withDensity_apply _ MeasurableSet.univ]
-    simpa only [Measure.restrict_univ] using lSrcGauss_mass S T x
+    simpa only [Measure.restrict_univ] using lSourceGaussian_mass S T x
   have hfin : ∃ R, ν (s R) ≠ (⊤ : ENNReal) := by
     refine ⟨0, ne_of_lt ((measure_mono (subset_univ (s 0))).trans_lt ?_)⟩
     rw [hνuniv]
@@ -76,7 +76,7 @@ theorem lSrcGauss_tail
         (fun R : Real ↦
           ∫⁻ Z : E in
             {Z | R < Real.sqrt ((S.base.metric T).inner x Z Z)},
-            ENNReal.ofReal (lSrcGauss S T x Z)
+            ENNReal.ofReal (lSourceGaussian S T x Z)
               ∂(modelHaar (E := E))) := by
     funext R
     simp only [ν, withDensity_apply _ (hs R)]
@@ -86,21 +86,21 @@ theorem lSrcGauss_tail
 
 omit [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
-theorem lSrcGauss_unif (eps : ENNReal) (heps : 0 < eps) :
+theorem lSourceGaussian_uniform_tail (eps : ENNReal) (heps : 0 < eps) :
     ∃ R : Real, 0 ≤ R ∧
       ∀ (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M),
         (∫⁻ Z : E in
             {Z | R < Real.sqrt ((S.base.metric T).inner x Z Z)},
-            ENNReal.ofReal (lSrcGauss S T x Z)
+            ENNReal.ofReal (lSourceGaussian S T x Z)
               ∂(modelHaar (E := E))) ≤ eps := by
   classical
   let : Nonempty (Fin (Module.finrank Real E)) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E))⟩⟩
-  obtain ⟨R, hR, htail⟩ := gaussSPDTail_unif
+  obtain ⟨R, hR, htail⟩ := gaussianPosDef_uniform_tail
     (n := Fin (Module.finrank Real E)) eps heps
   refine ⟨R, hR, ?_⟩
   intro S T x
-  let A := lSrcGram S T x
+  let A := lSourceGram S T x
   let e := toEuclidean (E := E)
   let sE : Set E :=
     {Z | R < Real.sqrt ((S.base.metric T).inner x Z Z)}
@@ -109,7 +109,7 @@ theorem lSrcGauss_unif (eps : ENNReal) (heps : 0 < eps) :
       (Matrix.toEuclideanCLM (n := Fin (Module.finrank Real E))
         (𝕜 := Real) A y))}
   let G : E → ENNReal :=
-    sE.indicator (fun Z ↦ ENNReal.ofReal (lSrcGauss S T x Z))
+    sE.indicator (fun Z ↦ ENNReal.ofReal (lSourceGaussian S T x Z))
   have hsE : MeasurableSet sE := by
     dsimp only [sE]
     apply measurableSet_lt measurable_const
@@ -122,7 +122,7 @@ theorem lSrcGauss_unif (eps : ENNReal) (heps : 0 < eps) :
       e.symm y ∈ sE ↔ y ∈ sU := by
     intro y
     simp only [sE, sU, Set.mem_ofPred_eq]
-    have hquad := lSrcGram_quad S T x (e.symm y)
+    have hquad := lSourceGram_quadraticForm S T x (e.symm y)
     simp only [e, ContinuousLinearEquiv.apply_symm_apply] at hquad
     rw [← hquad]
   have hpoint : ∀ y,
@@ -140,8 +140,8 @@ theorem lSrcGauss_unif (eps : ENNReal) (heps : 0 < eps) :
     by_cases hy : y ∈ sU
     · have hEy : e.symm y ∈ sE := (hmem y).2 hy
       simp only [G, Set.indicator_of_mem hEy, Set.indicator_of_mem hy]
-      rw [lSrcGauss_eq]
-      have hquad := lSrcGram_quad S T x (e.symm y)
+      rw [lSourceGaussian_eq_metric_norm]
+      have hquad := lSourceGram_quadraticForm S T x (e.symm y)
       simp only [e, ContinuousLinearEquiv.apply_symm_apply] at hquad
       rw [← hquad]
       rfl
@@ -149,7 +149,7 @@ theorem lSrcGauss_unif (eps : ENNReal) (heps : 0 < eps) :
       simp only [G, Set.indicator_of_notMem hEy,
         Set.indicator_of_notMem hy]
   calc
-    (∫⁻ Z : E in sE, ENNReal.ofReal (lSrcGauss S T x Z)
+    (∫⁻ Z : E in sE, ENNReal.ofReal (lSourceGaussian S T x Z)
         ∂(modelHaar (E := E))) =
         ∫⁻ Z : E, G Z ∂(modelHaar (E := E)) := by
       rw [← lintegral_indicator hsE]
@@ -183,6 +183,6 @@ theorem lSrcGauss_unif (eps : ENNReal) (heps : 0 < eps) :
         simpa only [e] using hpoint y
     _ ≤ eps := by
       simpa only [sU, Fintype.card_fin] using
-        htail A (lSrcGram_pd S T x)
+        htail A (lSourceGram_posDef S T x)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

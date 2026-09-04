@@ -28,10 +28,10 @@ local instance : NormedAddCommGroup (Third V) :=
 local instance : NormedSpace Real (Third V) :=
   ContinuousLinearMap.toNormedSpace
 
-def ballCutoffFDeriv3Bcf
+def ballCutoffFDeriv3BoundedContinuousFunction
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) :
     BoundedContinuousFunction V (Third V) :=
-  compactSupportBcf
+  compactSupportBoundedContinuousFunction
     (fderiv Real (ballCutoffFDeriv2 center r R))
     (by
       exact ((ballCutoffFDeriv2_contDiff center r R).fderiv_right
@@ -39,22 +39,22 @@ def ballCutoffFDeriv3Bcf
     ((ballCutoffFDeriv2_hasCompactSupport hr hrR).fderiv Real)
 
 @[simp]
-theorem ballCutoffFDeriv3Bcf_apply
+theorem ballCutoffFDeriv3BoundedContinuousFunction_apply
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) (x : V) :
-    ballCutoffFDeriv3Bcf center hr hrR x =
+    ballCutoffFDeriv3BoundedContinuousFunction center hr hrR x =
       fderiv Real (ballCutoffFDeriv2 center r R) x := rfl
 
 def ballCutoffFDeriv2HolderConst
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) : NNReal :=
   max (2 * Real.toNNReal (ballCutoffFDeriv2Bound r R))
-    ‖ballCutoffFDeriv3Bcf center hr hrR‖₊
+    ‖ballCutoffFDeriv3BoundedContinuousFunction center hr hrR‖₊
 
 theorem ballCutoffFDeriv2_holderWith
     {center : V} {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
     {alpha : NNReal} (halpha0 : 0 ≤ alpha) (halpha1 : alpha ≤ 1) :
     HolderWith (ballCutoffFDeriv2HolderConst center hr hrR) alpha
       (ballCutoffFDeriv2 center r R) := by
-  let d3chi := ballCutoffFDeriv3Bcf center hr hrR
+  let d3chi := ballCutoffFDeriv3BoundedContinuousFunction center hr hrR
   have hd2chi : ∀ x, HasFDerivAt (ballCutoffFDeriv2 center r R)
       (d3chi x) x := by
     intro x

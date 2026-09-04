@@ -320,11 +320,11 @@ theorem first_variation_of_arcLength_at_regular_parameter
       exact this
     rw [← hval]
     rw [hfoot0, hcov_shift]
-    have hsh_velT : ∀ u : ℝ, (fun u' : ℝ => fsh 0 u') u = (fun u' : ℝ => f s₀ u') u := by
+    have hsh_velocityT : ∀ u : ℝ, (fun u' : ℝ => fsh 0 u') u = (fun u' : ℝ => f s₀ u') u := by
       intro u; rw [hfsh]; simp
-    have hsh_velT_fun : (fun u : ℝ => fsh 0 u) = (fun u : ℝ => f s₀ u) := by
+    have hsh_velocityT_fun : (fun u : ℝ => fsh 0 u) = (fun u : ℝ => f s₀ u) := by
       funext u; rw [hfsh]; simp
-    rw [hsh_velT_fun]
+    rw [hsh_velocityT_fun]
     rw [mul_div_mul_left _ _ (by norm_num : (2 : ℝ) ≠ 0)]
   rw [intervalIntegral.integral_congr hintegrand_eq] at hS2
   exact hS2

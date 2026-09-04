@@ -416,15 +416,15 @@ theorem exists_galerkin_action_h4_tame_bound_constants (hDim : Module.finrank �
       riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 2) 2 x
           ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
             (ccTensor02Symm (I := I) (M := M) g₀
-              (galCoreRep (I := I) (M := M) g₀ R S c)) hδ
-            (galRepFib (I := I) (M := M) g₀ hR hreal S c)
+              (galerkinCoreRep (I := I) (M := M) g₀ R S c)) hδ
+            (galerkinRepFib (I := I) (M := M) g₀ hR hreal S c)
             (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderCoefficient.toSection x) ≤
         Cδ ^ 2 := by
     intro S c x
     exact (hsplit _
       (smoothCcTensorBilinForm_ccTensor02Symm_symm (I := I) (M := M)
-        g₀ (galCoreRep (I := I) (M := M) g₀ R S c))
-      hδ3 hδ0 (galRepFib (I := I) (M := M) g₀ hR hreal S c)
+        g₀ (galerkinCoreRep (I := I) (M := M) g₀ R S c))
+      hδ3 hδ0 (galerkinRepFib (I := I) (M := M) g₀ hR hreal S c)
       (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).2 x
   let γlow : ℝ := (Ltop * Cδ + Lr2 * Z + Lr1 * Z) * V +
     Lrem * (1 + Cδ) * ((1 + Y) ^ 2 * (1 + Z) ^ 2)
@@ -477,62 +477,62 @@ theorem exists_galerkin_action_h4_tame_bound_constants (hDim : Module.finrank �
   have hs4nn : 0 ≤ s4 := by rw [hs4def]; positivity
   have hs3nn : 0 ≤ s3 := by rw [hs3def]; positivity
   have hsym := smoothCcTensorBilinForm_ccTensor02Symm_symm
-    (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)
+    (I := I) (M := M) g₀ (galerkinCoreRep (I := I) (M := M) g₀ R F c)
   have h7 : Real.sqrt (∑ j ∈ Finset.range 7,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (ccTensor02Symm (I := I) (M := M) g₀
-          (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C6 * s6 :=
+          (galerkinCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C6 * s6 :=
     le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 7 _) (hjet6 hR F c)
   have h6 : Real.sqrt (∑ j ∈ Finset.range 6,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (ccTensor02Symm (I := I) (M := M) g₀
-          (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C5 * s5 :=
+          (galerkinCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C5 * s5 :=
     le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 6 _) (hjet5 hR F c)
   have h5raw : Real.sqrt (∑ j ∈ Finset.range 5,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (ccTensor02Symm (I := I) (M := M) g₀
-          (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C4 * s4 :=
+          (galerkinCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C4 * s4 :=
     le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 5 _) (hjet4 hR F c)
   have h5 : Real.sqrt (∑ j ∈ Finset.range 5,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (ccTensor02Symm (I := I) (M := M) g₀
-          (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ V := by
+          (galerkinCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ V := by
     refine le_trans h5raw ?_
     dsimp only [V]
     exact mul_le_mul_of_nonneg_left (by simpa only [hs4def] using hE4) hC4
   have h4raw : Real.sqrt (∑ j ∈ Finset.range 4,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (ccTensor02Symm (I := I) (M := M) g₀
-          (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C3 * s3 :=
+          (galerkinCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C3 * s3 :=
     le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 4 _) (hjet3 hR F c)
   have h4 : Real.sqrt (∑ j ∈ Finset.range 4,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (ccTensor02Symm (I := I) (M := M) g₀
-          (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ Y := by
+          (galerkinCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ Y := by
     refine le_trans h4raw ?_
     dsimp only [Y]
     exact mul_le_mul_of_nonneg_left (by simpa only [hs3def] using hE3) hC3
   have h3 : Real.sqrt (∑ j ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
         (ccTensor02Symm (I := I) (M := M) g₀
-          (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ Z := by
+          (galerkinCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ Z := by
     refine le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 3 _) (hjetR hR F c)
   have hlowb := hlow
     (ccTensor02Symm (I := I) (M := M) g₀
-      (galCoreRep (I := I) (M := M) g₀ R F c)) hsym hδ0 hδ3
-    (galRepFib (I := I) (M := M) g₀ hR hreal F c)
+      (galerkinCoreRep (I := I) (M := M) g₀ R F c)) hsym hδ0 hδ3
+    (galerkinRepFib (I := I) (M := M) g₀ hR hreal F c)
     (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal) hCδ (hcap F c)
     hY hZ h5 h4 h3
   have hq3b := hq3
     (ccTensor02Symm (I := I) (M := M) g₀
-      (galCoreRep (I := I) (M := M) g₀ R F c)) hsym hδ0 hδ3
-    (galRepFib (I := I) (M := M) g₀ hR hreal F c)
+      (galerkinCoreRep (I := I) (M := M) g₀ R F c)) hsym hδ0 hδ3
+    (galerkinRepFib (I := I) (M := M) g₀ hR hreal F c)
     (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal) hCδ (hcap F c)
     hV hY hZ h6 h5 h4 h3
   have hq4b := hq4
     (ccTensor02Symm (I := I) (M := M) g₀
-      (galCoreRep (I := I) (M := M) g₀ R F c)) hsym hδ0 hδ3
-    (galRepFib (I := I) (M := M) g₀ hR hreal F c)
+      (galerkinCoreRep (I := I) (M := M) g₀ R F c)) hsym hδ0 hδ3
+    (galerkinRepFib (I := I) (M := M) g₀ hR hreal F c)
     (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal) hCδ (hcap F c)
     (mul_nonneg hC5 hs5nn) hV hZ h7 h6 h5 h3
   have hsum :
@@ -540,21 +540,21 @@ theorem exists_galerkin_action_h4_tame_bound_constants (hDim : Module.finrank �
           (‖iteratedCovGrad (I := I) g₀ 0 2 q
               ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
                 (ccTensor02Symm (I := I) (M := M) g₀
-                  (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
-                (galRepFib (I := I) (M := M) g₀ hR hreal F c)
+                  (galerkinCoreRep (I := I) (M := M) g₀ R F c)) hδ
+                (galerkinRepFib (I := I) (M := M) g₀ hR hreal F c)
                 (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderAction
                   (I := I) (M := M)
                   (ccTensor02Symm (I := I) (M := M) g₀
-                    (galCoreRep (I := I) (M := M) g₀ R F c)))‖ +
+                    (galerkinCoreRep (I := I) (M := M) g₀ R F c)))‖ +
             ‖iteratedCovGrad (I := I) g₀ 0 2 q
               ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
                 (ccTensor02Symm (I := I) (M := M) g₀
-                  (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
-                (galRepFib (I := I) (M := M) g₀ hR hreal F c)
+                  (galerkinCoreRep (I := I) (M := M) g₀ R F c)) hδ
+                (galerkinRepFib (I := I) (M := M) g₀ hR hreal F c)
                 (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).firstOrderAction
                   (I := I) (M := M)
                   (ccTensor02Symm (I := I) (M := M) g₀
-                    (galCoreRep (I := I) (M := M) g₀ R F c)))‖) ≤
+                    (galerkinCoreRep (I := I) (M := M) g₀ R F c)))‖) ≤
         (A4top * Cδ + A4r2 * Z + A4r1 * Z) * (C6 * s6) +
           (β3 + β4) * s5 + (γlow + γ3 + γ4) := by
     rw [Finset.sum_range_succ, Finset.sum_range_succ]
@@ -565,18 +565,18 @@ theorem exists_galerkin_action_h4_tame_bound_constants (hDim : Module.finrank �
   have hmass := cc_partial_le_norm (I := I) (M := M) g₀ 2 (4 : ℝ)
     ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
           (ccTensor02Symm (I := I) (M := M) g₀
-            (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
-          (galRepFib (I := I) (M := M) g₀ hR hreal F c)
+            (galerkinCoreRep (I := I) (M := M) g₀ R F c)) hδ
+          (galerkinRepFib (I := I) (M := M) g₀ hR hreal F c)
           (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderAction
         (I := I) (M := M)
-        (ccTensor02Symm (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)) +
+        (ccTensor02Symm (I := I) (M := M) g₀ (galerkinCoreRep (I := I) (M := M) g₀ R F c)) +
       (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
           (ccTensor02Symm (I := I) (M := M) g₀
-            (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
-          (galRepFib (I := I) (M := M) g₀ hR hreal F c)
+            (galerkinCoreRep (I := I) (M := M) g₀ R F c)) hδ
+          (galerkinRepFib (I := I) (M := M) g₀ hR hreal F c)
           (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).firstOrderAction
         (I := I) (M := M)
-        (ccTensor02Symm (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c))) F
+        (ccTensor02Symm (I := I) (M := M) g₀ (galerkinCoreRep (I := I) (M := M) g₀ R F c))) F
   refine le_trans (le_trans (Real.sqrt_le_sqrt hmass)
     (le_of_eq (Real.sqrt_sq (norm_nonneg _)))) ?_
   refine le_trans (hhs _) ?_
@@ -610,7 +610,7 @@ private theorem exists_galerkin_energy_five_bound_of_three_four_bounds_parameter
           ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
           HasDerivWithinAt (fun u => U N u i)
             (-(TensorEigenIdx.lambda (I := I) (M := M) i) * U N t i +
-              galTameForce (I := I) (M := M) g₀ 1
+              galerkinTameForce (I := I) (M := M) g₀ 1
                 (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
                 (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
                 (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i)
@@ -652,7 +652,7 @@ private theorem exists_galerkin_energy_five_bound_of_three_four_bounds_parameter
   have hclosure : ∀ N : ℕ, ∀ t ∈ Set.Ico (0 : ℝ) T,
       2 * ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
           tensorSobolevWeight (I := I) (M := M) i 5 *
-            (U N t i * galTameForce (I := I) (M := M) g₀ 1 hRpos.le
+            (U N t i * galerkinTameForce (I := I) (M := M) g₀ 1 hRpos.le
               (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
               (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i) ≤
         (2 * (Ctop₄ * Cδ + Kr2 * lowRegularityStateRadius Ctop B1 ρ P +
@@ -666,7 +666,7 @@ private theorem exists_galerkin_energy_five_bound_of_three_four_bounds_parameter
           Kadd ^ 2 / ε := by
     intro N t ht
     have hsplit : ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
-        galTameForce (I := I) (M := M) g₀ 1 hRpos.le
+        galerkinTameForce (I := I) (M := M) g₀ 1 hRpos.le
             (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
             (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i =
           (galerkinActionVector (I := I) (M := M) g₀ hRpos.le hδ
@@ -676,7 +676,7 @@ private theorem exists_galerkin_energy_five_bound_of_three_four_bounds_parameter
           (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
             ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i := by
       intro i hi
-      rw [galForceTerm (I := I) (M := M) g₀ hδ hδ0 hδ3 hCtop hB1 hρ hP hreal
+      rw [galerkinForceTerm (I := I) (M := M) g₀ hδ hδ0 hδ3 hCtop hB1 hρ hP hreal
         hcore (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, if_pos hi]
       simp only [galerkinActionVector]
       module
@@ -713,7 +713,7 @@ private theorem exists_galerkin_energy_five_bound_of_three_four_bounds_parameter
           hP.le hreal) (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t)).coeff i)
       (fun i => (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
         ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i)
-      (galTameForce (I := I) (M := M) g₀ 1 hRpos.le
+      (galerkinTameForce (I := I) (M := M) g₀ 1 hRpos.le
         (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
         (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t))
       (hCseed 5) hε hsplit hladder hstat
@@ -721,7 +721,7 @@ private theorem exists_galerkin_energy_five_bound_of_three_four_bounds_parameter
     simpa only [add_zero] using hres
   refine galerkin_l1_single (I := I) (M := M) (g := g₀) (r := 0) (s₀ := 2)
     (U := U) (T := T) (σ := 5)
-    (Fseq := fun N t => galTameForce (I := I) (M := M) g₀ 1 hRpos.le
+    (Fseq := fun N t => galerkinTameForce (I := I) (M := M) g₀ 1 hRpos.le
       (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
       (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t))
     (sseq := fun N => eigenIdxFinset (I := I) (M := M) g₀ N)
@@ -764,7 +764,7 @@ def HasGalerkinEnergyFiveBound (g₀ : SmoothRiemannianMetric I M)
         ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
         HasDerivWithinAt (fun u => U N u i)
           (-(TensorEigenIdx.lambda (I := I) (M := M) i) * U N t i +
-            galTameForce (I := I) (M := M) g₀ 1
+            galerkinTameForce (I := I) (M := M) g₀ 1
               (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
               (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal)
               (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i)

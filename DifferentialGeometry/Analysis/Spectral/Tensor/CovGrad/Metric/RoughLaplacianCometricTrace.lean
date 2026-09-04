@@ -132,7 +132,7 @@ theorem rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
   exact
     (DifferentialGeometry.Analysis.Spectral.DeTurck.cometric_dualTrace_eq_orthoFrame_diag
     (I := I) g₀ (s := 2) x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
     (unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 S) x) v).symm
 
 end TensorSpectral

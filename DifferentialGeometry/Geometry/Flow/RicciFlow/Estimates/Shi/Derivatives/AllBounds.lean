@@ -50,7 +50,7 @@ theorem bbsAllMBounds
     simpa [SolutionOn.family, SolutionFamily.connection, metricCov] using h
   have hboundCan := canonical_curvature_norm_sq_bounded_of_realization
     (I := I) Rm04 hRmRaw hbound
-  obtain ⟨C, _hC, hC⟩ := movingRmBoundSol (I := I)
+  obtain ⟨C, _hC, hC⟩ := movingRmBoundSolution (I := I)
     ((alpha + omega) / 2) hBeta m hdim hS hboundCan
   refine ⟨C, ?_⟩
   intro t x htBeta htOmega

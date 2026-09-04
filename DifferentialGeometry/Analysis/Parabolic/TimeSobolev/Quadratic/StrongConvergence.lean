@@ -34,7 +34,7 @@ theorem timeQuad_strong
   have hv_weak : ∀ z, Tendsto (fun n ↦ inner ℝ (v n) z) atTop
       (nhds (inner ℝ v_lim z)) := by
     simpa only [v, v_lim] using
-      timeOp_weak_unif A A_lim hA hA_lim C C_lim hC hC_lim hconv
+      timeOp_weak_uniform A A_lim hA hA_lim C C_lim hC hC_lim hconv
         u u_lim hu_weak
   obtain ⟨D, hvD⟩ := banach_steinhaus (g := fun n ↦ innerSL ℝ (v n)) fun z ↦ by
     simpa only [innerSL_apply_apply, forall_mem_range] using

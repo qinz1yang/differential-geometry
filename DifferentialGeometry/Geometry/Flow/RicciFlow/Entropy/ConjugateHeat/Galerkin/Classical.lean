@@ -419,7 +419,7 @@ theorem heatpot_mass_on
   change mass s = mass 0
   exact (hclosed hs).trans (hclosed ⟨le_rfl, htau.le⟩).symm
 
-theorem galLimExt_coeff
+theorem galerkinLimExt_coeff
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -430,16 +430,16 @@ theorem galLimExt_coeff
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hτ : 0 ≤ tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim)
     (m : Nat) {t : Real} (ht : t ∈ Icc (0 : Real) tau)
     (i : TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0) :
-    (galLimExt hτ hlim m t).coeff i = ulim t i := by
-  rw [galLimExt_mem hτ hlim m ht]
+    (galerkinLimExt hτ hlim m t).coeff i = ulim t i := by
+  rw [galerkinLimExt_mem hτ hlim m ht]
   rfl
 
-theorem galLimExt_zero
+theorem galerkinLimExt_zero
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -450,16 +450,16 @@ theorem galLimExt_zero
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hτ : 0 ≤ tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim)
     (m : Nat) :
-    galLimExt hτ hlim m 0 =
+    galerkinLimExt hτ hlim m 0 =
       ccTensorToHs (I := I) (M := M)
         (S.family.metric (T : Real)) 0 (m : Real) u0 := by
   apply TensorHs.ext
   funext i
-  rw [galLimExt_coeff hτ hlim m ⟨le_rfl, hτ⟩,
-    ccTensorToHs_coeff, hlim.lim_init i]
+  rw [galerkinLimExt_coeff hτ hlim m ⟨le_rfl, hτ⟩,
+    ccTensorToHs_coeff, hlim.lim_initial i]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem covGrad0_apply
@@ -511,7 +511,7 @@ private theorem covGrad0_apply
         (mvfderiv (I := I) f x X)) = _
   rw [ContinuousLinearEquiv.apply_symm_apply]
 
-theorem galLim_jet_mass
+theorem galerkinLim_jet_mass
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -522,7 +522,7 @@ theorem galLim_jet_mass
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ∃ tau' : Real, 0 < tau' ∧ tau' ≤ tau ∧
       ∀ ⦃a b : Real⦄, 0 < a → a ≤ b → b < tau' →
@@ -536,7 +536,7 @@ theorem galLim_jet_mass
                 (iteratedDeriv j (fun s => ulim s i) t) ^ 2 ≤ B i := by
   classical
   obtain ⟨tau', htau', htau'_tau, hsmooth⟩ :=
-    galLimExt_smooth (I := I) (M := M) hS hτ hlim
+    galerkinLimExt_smooth (I := I) (M := M) hS hτ hlim
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
   have htail : EigenvalueTailSummable (I := I) (M := M) q 0 0 :=
     scalar_eigen_tail (I := I) (M := M) q
@@ -552,7 +552,7 @@ theorem galLim_jet_mass
       (g := S.family.metric (T : Real)) (r := 0) (s := 0)
       (a := ((0 : Nat) : Real)) i
     have hcomp : ContDiffOn Real ∞
-        (fun t => L (galLimExt hτ.le hlim 0 t))
+        (fun t => L (galerkinLimExt hτ.le hlim 0 t))
         (Ioo (0 : Real) tau') := by
       with_unfolding_all
         exact L.contDiff.comp_contDiffOn (hsmooth 0)
@@ -561,7 +561,7 @@ theorem galLim_jet_mass
       refine hcomp.congr ?_
       intro t ht
       simpa only [L, q, tensorHsCoeffL_apply] using
-        (galLimExt_coeff hτ.le hlim 0
+        (galerkinLimExt_coeff hτ.le hlim 0
           ⟨ht.1.le, ht.2.le.trans htau'_tau⟩ i).symm
     exact hcoeff_open.mono hKsub
   refine ⟨hcoeff_smooth, ?_⟩
@@ -573,7 +573,7 @@ theorem galLim_jet_mass
   let J := tensorHsInclusion (I := I) (M := M)
     (g := q) (r := 0) (s := 0) hmp
   let U : Real → TensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
-    fun t => J (galLimExt hτ.le hlim (m + k) t)
+    fun t => J (galerkinLimExt hτ.le hlim (m + k) t)
   have hU : ContDiffOn Real ∞ U (Ioo (0 : Real) tau') := by
     with_unfolding_all
       exact J.contDiff.comp_contDiffOn (hsmooth (m + k))
@@ -603,7 +603,7 @@ theorem galLim_jet_mass
       intro z hz
       simpa only [L, U, J, q, tensorHsCoeffL_apply,
         tensorHsInclusion_coeff_apply] using
-        galLimExt_coeff hτ.le hlim (m + k)
+        galerkinLimExt_coeff hτ.le hlim (m + k)
           ⟨hz.1.le, hz.2.le.trans htau'_tau⟩ i
     have hUt : ContDiffWithinAt Real j U (Ioo (0 : Real) tau') t :=
       (hU t htO).of_le (by exact_mod_cast le_top)
@@ -635,7 +635,7 @@ theorem galLim_jet_mass
   intro i t ht
   simpa only [jet] using hB_le i t ht
 
-theorem galLim_mass0
+theorem galerkinLim_mass0
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -646,7 +646,7 @@ theorem galLim_mass0
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ∀ m : Nat,
       ∃ B : TensorEigenIdx (I := I) (M := M)
@@ -668,15 +668,15 @@ theorem galLim_mass0
   let J := tensorHsInclusion (I := I) (M := M)
     (g := q) (r := 0) (s := 0) hmp
   let W : Real → TensorHs (I := I) (M := M) q 0 0 ((m : Real) + p) :=
-    fun t => J (galLimExt hτ.le hlim (m + k) t)
+    fun t => J (galerkinLimExt hτ.le hlim (m + k) t)
   have hW : Continuous W := by
     with_unfolding_all
-      exact J.continuous.comp (galLimExt_cont hτ.le hlim (m + k))
+      exact J.continuous.comp (galerkinLimExt_cont hτ.le hlim (m + k))
   have hcoeff : ∀ t ∈ Icc (0 : Real) tau, ∀ i,
       (W t).coeff i = ulim t i := by
     intro t ht i
     simpa only [W, J, q, tensorHsInclusion_coeff_apply] using
-      galLimExt_coeff hτ.le hlim (m + k) ht i
+      galerkinLimExt_coeff hτ.le hlim (m + k) ht i
   have hneg : Summable
       (fun i : TensorEigenIdx (I := I) (M := M) q 0 0 =>
         tensorSobolevWeight (I := I) (M := M) i
@@ -686,7 +686,7 @@ theorem galLim_mass0
   exact mass_le_of_compact (I := I) (M := M) q hneg isCompact_Icc
     W hW.continuousOn (fun i t => ulim t i) hcoeff
 
-theorem galLim_slice_cc
+theorem galerkinLim_slice_cc
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -697,14 +697,14 @@ theorem galLim_slice_cc
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hτ : 0 ≤ tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim)
     {t : Real} (ht : t ∈ Icc (0 : Real) tau) :
     ∃ U : SmoothCcTensor (S.family.metric (T : Real)) 0 0,
       (∀ m : Nat,
         ccTensorToHs (I := I) (M := M)
             (S.family.metric (T : Real)) 0 (m : Real) U =
-          galLimExt hτ hlim m t) ∧
+          galerkinLimExt hτ hlim m t) ∧
       scalarSpecSum (I := I) (M := M) (S.family.metric (T : Real))
           (fun i s => ulim s i) t =
         TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection := by
@@ -715,7 +715,7 @@ theorem galLim_slice_cc
   let u : TensorL2 0 0 (S.family.metric (T : Real)) :=
     tensorHsToL2 (I := I) (M := M)
       (g := S.family.metric (T : Real)) (r := 0) (s := 0)
-      hc h0 (galLimExt hτ hlim 0 t)
+      hc h0 (galerkinLimExt hτ hlim 0 t)
   have htail : EigenvalueTailSummable (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 :=
     scalar_eigen_tail (I := I) (M := M) (S.family.metric (T : Real))
@@ -729,7 +729,7 @@ theorem galLim_slice_cc
     obtain ⟨m, hm⟩ := exists_nat_ge σ
     let J := tensorHsInclusion (I := I) (M := M)
       (g := S.family.metric (T : Real)) (r := 0) (s := 0) hm
-    refine ⟨J (galLimExt hτ hlim m t), ?_⟩
+    refine ⟨J (galerkinLimExt hτ hlim m t), ?_⟩
     let b :=
       Analysis.Parabolic.TensorSpectral.tensorResolventHilbertEigenbasisSigma
         (I := I) (M := M) hc
@@ -738,14 +738,14 @@ theorem galLim_slice_cc
     change tensorL2Coeff (I := I) (M := M) hc
         (tensorHsToL2 (I := I) (M := M)
           (g := S.family.metric (T : Real)) (r := 0) (s := 0)
-            hc hσ (J (galLimExt hτ hlim m t))) i =
+            hc hσ (J (galerkinLimExt hτ hlim m t))) i =
       tensorL2Coeff (I := I) (M := M) hc u i
     rw [tensorHsToL2_tensorL2Coeff, tensorHsInclusion_coeff_apply,
-      galLimExt_coeff hτ hlim m ht,
+      galerkinLimExt_coeff hτ hlim m ht,
       show tensorL2Coeff (I := I) (M := M) hc u i = ulim t i by
         dsimp only [u]
         rw [tensorHsToL2_tensorL2Coeff]
-        exact galLimExt_coeff hτ hlim 0 ht i]
+        exact galerkinLimExt_coeff hτ hlim 0 ht i]
   have hgate : SpectralSmoothRealizesAsSmooth (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 :=
     spectralSmoothRealizesAsSmooth_of_eigenvalueTailSummable
@@ -754,17 +754,17 @@ theorem galLim_slice_cc
   have hrealize (m : Nat) :
       ccTensorToHs (I := I) (M := M)
           (S.family.metric (T : Real)) 0 (m : Real) U =
-        galLimExt hτ hlim m t := by
+        galerkinLimExt hτ hlim m t := by
     apply TensorHs.ext
     funext i
     rw [ccTensorToHs_coeff, SmoothCcTensor.toL2_apply, hU]
     dsimp only [u]
     rw [tensorHsToL2_tensorL2Coeff]
     calc
-      (galLimExt hτ hlim 0 t).coeff i = ulim t i :=
-        galLimExt_coeff hτ hlim 0 ht i
-      _ = (galLimExt hτ hlim m t).coeff i :=
-        (galLimExt_coeff hτ hlim m ht i).symm
+      (galerkinLimExt hτ hlim 0 t).coeff i = ulim t i :=
+        galerkinLimExt_coeff hτ hlim 0 ht i
+      _ = (galerkinLimExt hτ hlim m t).coeff i :=
+        (galerkinLimExt_coeff hτ hlim m ht i).symm
   refine ⟨U, ?_, ?_⟩
   · intro m
     exact hrealize m
@@ -783,13 +783,13 @@ theorem galLim_slice_cc
               rw [SmoothCcTensor.toL2_apply, hU]
               dsimp only [u]
               rw [tensorHsToL2_tensorL2Coeff]
-              exact galLimExt_coeff hτ hlim 0 ht i
+              exact galerkinLimExt_coeff hτ hlim 0 ht i
             simp only [hcoeff]
       _ = TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection := by
         simpa only [hc] using scalarSpec_cc (I := I) (M := M)
           (S.family.metric (T : Real)) U
 
-theorem galLim_initial
+theorem galerkinLim_initial
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -799,7 +799,7 @@ theorem galLim_initial
     {phi : Nat → Nat}
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     scalarSpecSum (I := I) (M := M) (S.family.metric (T : Real))
         (fun i t => ulim t i) 0 =
@@ -821,11 +821,11 @@ theorem galLim_initial
           (tensorResolventL2_isCompactOperator (I := I) (M := M)
             (S.family.metric (T : Real)) 0 0)
           (SmoothCcTensor.toL2 u0) i * _
-      rw [hlim.lim_init i]
+      rw [hlim.lim_initial i]
     _ = TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection :=
       scalarSpec_cc (I := I) (M := M) (S.family.metric (T : Real)) u0
 
-theorem galLim_d_zero
+theorem galerkinLim_d_zero
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -836,7 +836,7 @@ theorem galLim_d_zero
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hDim : Module.finrank Real E = 3) (hτ : 0 ≤ tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) (x : M) (X : TangentSpace I x) :
     Tendsto
       (fun t => mvfderiv (I := I)
@@ -852,13 +852,13 @@ theorem galLim_d_zero
   let f0 : Real := mvfderiv (I := I)
     (TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection) x X
   let N : Real → Real := fun t =>
-    ‖galLimExt hτ hlim 3 t - galLimExt hτ hlim 3 0‖
+    ‖galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0‖
   obtain ⟨C, hC, hgrad⟩ :=
     hs3_grad_low2 (I := I) (M := M) hDim q 0
   have hN : Tendsto N (𝓝[Set.Icc (0 : Real) tau] 0) (𝓝 0) := by
     have hc : Continuous (fun t =>
-        ‖galLimExt hτ hlim 3 t - galLimExt hτ hlim 3 0‖) :=
-      (galLimExt_cont hτ hlim 3).sub continuous_const |>.norm
+        ‖galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0‖) :=
+      (galerkinLimExt_cont hτ hlim 3).sub continuous_const |>.norm
     rw [nhdsWithin]
     simpa only [N, sub_self, norm_zero] using
       (hc.tendsto 0).mono_left inf_le_left
@@ -880,7 +880,7 @@ theorem galLim_d_zero
     filter_upwards [(@self_mem_nhdsWithin Real inferInstance 0
       (Set.Icc (0 : Real) tau))] with t ht
     obtain ⟨U, hUall, hUscalar⟩ :=
-      galLim_slice_cc (I := I) (M := M) hτ hlim ht
+      galerkinLim_slice_cc (I := I) (M := M) hτ hlim ht
     let DU : SmoothCcTensor q 0 0 := U - u0
     have hscalar : mvfderiv (I := I) (f t) x X - f0 =
         mvfderiv (I := I)
@@ -905,13 +905,13 @@ theorem galLim_d_zero
         (I := I) (M := M) q 0 0 DU).toSection x) X
     rw [covGrad0_apply (I := I) (M := M) q DU x X] at hpoint
     have hDU : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU =
-        galLimExt hτ hlim 3 t - galLimExt hτ hlim 3 0 := by
+        galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0 := by
       have hU3 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) U =
-          galLimExt hτ hlim 3 t := by
+          galerkinLimExt hτ hlim 3 t := by
         simpa only [q] using hUall 3
       have h03 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) u0 =
-          galLimExt hτ hlim 3 0 := by
-        simpa only [q] using (galLimExt_zero hτ hlim 3).symm
+          galerkinLimExt hτ hlim 3 0 := by
+        simpa only [q] using (galerkinLimExt_zero hτ hlim 3).symm
       dsimp only [DU]
       rw [← ccToHsLin_apply, map_sub, ccToHsLin_apply, ccToHsLin_apply,
         hU3, h03]
@@ -939,7 +939,7 @@ theorem galLim_d_zero
     (tendsto_zero_iff_abs_tendsto_zero _).2 habs
   simpa only [f, q, f0, sub_add_cancel, zero_add] using hzero.add_const f0
 
-theorem galLim_d_joint
+theorem galerkinLim_d_joint
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -950,7 +950,7 @@ theorem galLim_d_joint
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hDim : Module.finrank Real E = 3) (hτ : 0 ≤ tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim)
     (a : M) (i : Fin (Module.finrank Real E)) :
     ContinuousWithinAt
@@ -972,19 +972,19 @@ theorem galLim_d_joint
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection
   let base : M → Real := fun y => mvfderiv (I := I) f0 y (Xf y)
   let N : Real → Real := fun t =>
-    ‖galLimExt hτ hlim 3 t - galLimExt hτ hlim 3 0‖
+    ‖galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0‖
   let K : Set (Real × M) := Set.Icc (0 : Real) tau ×ˢ e.baseSet
   have hae : a ∈ e.baseSet := by
     simpa only [e] using
       mem_baseSet_trivializationAt E (TangentSpace I : M → Type _) a
   have hfzero : f 0 = f0 := by
-    simpa only [f, f0, q] using galLim_initial (I := I) (M := M) hlim
+    simpa only [f, f0, q] using galerkinLim_initial (I := I) (M := M) hlim
   obtain ⟨C, hC, hgrad⟩ :=
     hs3_grad_low2 (I := I) (M := M) hDim q 0
   have hN0 : Tendsto N (𝓝 (0 : Real)) (𝓝 0) := by
     have hc : Continuous (fun t =>
-        ‖galLimExt hτ hlim 3 t - galLimExt hτ hlim 3 0‖) :=
-      (galLimExt_cont hτ hlim 3).sub continuous_const |>.norm
+        ‖galerkinLimExt hτ hlim 3 t - galerkinLimExt hτ hlim 3 0‖) :=
+      (galerkinLimExt_cont hτ hlim 3).sub continuous_const |>.norm
     simpa only [N, sub_self, norm_zero] using hc.tendsto 0
   have hN : Tendsto (fun p : Real × M => N p.1)
       (𝓝[K] ((0 : Real), a)) (𝓝 0) :=
@@ -1024,7 +1024,7 @@ theorem galLim_d_joint
     filter_upwards [(@self_mem_nhdsWithin (Real × M) inferInstance
       ((0 : Real), a) K)] with p hp
     obtain ⟨U, hUall, hUscalar⟩ :=
-      galLim_slice_cc (I := I) (M := M) hτ hlim hp.1
+      galerkinLim_slice_cc (I := I) (M := M) hτ hlim hp.1
     let DU : SmoothCcTensor q 0 0 := U - u0
     have hscalar :
         mvfderiv (I := I) (f p.1) p.2 (Xf p.2) - base p.2 =
@@ -1052,13 +1052,13 @@ theorem galLim_d_joint
         (I := I) (M := M) q 0 0 DU).toSection p.2) (Xf p.2)
     rw [covGrad0_apply (I := I) (M := M) q DU p.2 (Xf p.2)] at hpoint
     have hDU : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) DU =
-        galLimExt hτ hlim 3 p.1 - galLimExt hτ hlim 3 0 := by
+        galerkinLimExt hτ hlim 3 p.1 - galerkinLimExt hτ hlim 3 0 := by
       have hU3 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) U =
-          galLimExt hτ hlim 3 p.1 := by
+          galerkinLimExt hτ hlim 3 p.1 := by
         simpa only [q] using hUall 3
       have h03 : ccTensorToHs (I := I) (M := M) q 0 ((3 : Nat) : Real) u0 =
-          galLimExt hτ hlim 3 0 := by
-        simpa only [q] using (galLimExt_zero hτ hlim 3).symm
+          galerkinLimExt hτ hlim 3 0 := by
+        simpa only [q] using (galerkinLimExt_zero hτ hlim 3).symm
       dsimp only [DU]
       rw [← ccToHsLin_apply, map_sub, ccToHsLin_apply, ccToHsLin_apply,
         hU3, h03]
@@ -1116,7 +1116,7 @@ theorem galLim_d_joint
   change Tendsto _ (𝓝[_] ((0 : Real), a)) (𝓝 _)
   simpa only [q, e, Xf, f, f0, base, K, hfzero] using hmain
 
-theorem galLim_grad_zero
+theorem galerkinLim_grad_zero
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau sigma : Real}
@@ -1131,7 +1131,7 @@ theorem galLim_grad_zero
     (hσ : 0 ≤ sigma) (hστ : sigma ≤ tau)
     (hmap : Set.MapsTo (fun r : Real => (T : Real) - r)
       (Set.Icc (0 : Real) sigma) D.regular)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) (a : M) :
     ContinuousWithinAt
       (fun p : Real × M =>
@@ -1191,7 +1191,7 @@ theorem galLim_grad_zero
     exact (continuousWithinAt_pi.mp (continuousWithinAt_pi.mp hinv i) j)
   have hdF (i : Fin (Module.finrank Real E)) :
       ContinuousWithinAt (fun p => dF p i) K ((0 : Real), a) := by
-    have hjoint := galLim_d_joint (I := I) (M := M) hDim hτ hlim a i
+    have hjoint := galerkinLim_d_joint (I := I) (M := M) hDim hτ hlim a i
     have hsub : Set.Icc (0 : Real) sigma ×ˢ
         (trivializationAt E (TangentSpace I) a).baseSet ⊆
         Set.Icc (0 : Real) tau ×ˢ
@@ -1278,7 +1278,7 @@ theorem galLim_grad_zero
   have hglobal := (continuousWithinAt_inter hO).mp hlocal
   simpa only [G, f, L, reverse_metric] using hglobal
 
-theorem galLim_joint_cont
+theorem galerkinLim_joint_cont
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -1289,7 +1289,7 @@ theorem galLim_joint_cont
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ContinuousOn
       (fun q : Real × M =>
@@ -1314,14 +1314,14 @@ theorem galLim_joint_cont
     have hj0 : j = 0 := Nat.eq_zero_of_le_zero hj
     subst j
     obtain ⟨B, hB, hB_le⟩ :=
-      galLim_mass0 (I := I) (M := M) hτ hlim m
+      galerkinLim_mass0 (I := I) (M := M) hτ hlim m
     refine ⟨B, hB, ?_⟩
     intro i t ht
     simpa only [iteratedDeriv_zero] using hB_le i t ht
   exact (scalar_path_recon (I := I) (M := M) q htail hτ 0
     (fun i t => ulim t i) isOpen_univ (Set.subset_univ _) hc hmass).continuousOn
 
-theorem galLim_joint_smooth
+theorem galerkinLim_joint_smooth
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -1332,7 +1332,7 @@ theorem galLim_joint_smooth
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ∃ tau' : Real, 0 < tau' ∧ tau' ≤ tau ∧
       ∀ ⦃a b : Real⦄, 0 < a → a < b → b < tau' → ∀ N : Nat,
@@ -1343,7 +1343,7 @@ theorem galLim_joint_smooth
           (Icc a b ×ˢ (Set.univ : Set M)) := by
   classical
   obtain ⟨tau', htau', htau'_tau, hjet⟩ :=
-    galLim_jet_mass (I := I) (M := M) hS hτ hlim
+    galerkinLim_jet_mass (I := I) (M := M) hS hτ hlim
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
   have htail : EigenvalueTailSummable (I := I) (M := M) q 0 0 :=
     scalar_eigen_tail (I := I) (M := M) q
@@ -1375,7 +1375,7 @@ theorem galLim_joint_smooth
     intro i t ht
     exact hB_le i t (Ioo_subset_Icc_self (hinner ht))
 
-theorem galLim_joint_top
+theorem galerkinLim_joint_top
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -1386,7 +1386,7 @@ theorem galLim_joint_top
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ∃ tau' : Real, 0 < tau' ∧ tau' ≤ tau ∧
       ContMDiffOn (𝓘(Real, Real).prod I) 𝓘(Real) ∞
@@ -1395,7 +1395,7 @@ theorem galLim_joint_top
             (fun i t => ulim t i) q.1 q.2)
         (Ioo (0 : Real) tau' ×ˢ (Set.univ : Set M)) := by
   obtain ⟨tau', htau', htau'_tau, hfin⟩ :=
-    galLim_joint_smooth (I := I) (M := M) hS hτ hlim
+    galerkinLim_joint_smooth (I := I) (M := M) hS hτ hlim
   refine ⟨tau', htau', htau'_tau, ?_⟩
   rw [contMDiffOn_infty]
   intro N p hp
@@ -1422,7 +1422,7 @@ theorem galLim_joint_top
     prod_mem_nhds (Icc_mem_nhds hat htb) univ_mem
   exact ((hfin ha hab hb N) p hpab).contMDiffAt hnhds |>.contMDiffWithinAt
 
-theorem galLim_grad_cont
+theorem galerkinLim_grad_cont
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -1434,7 +1434,7 @@ theorem galLim_grad_cont
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S)
     (hDim : Module.finrank Real E = 3) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ∃ tau' : Real, 0 < tau' ∧ tau' ≤ tau ∧
       ContinuousOn
@@ -1448,7 +1448,7 @@ theorem galLim_grad_cont
         (Set.Icc (0 : Real) tau' ×ˢ (Set.univ : Set M)) := by
   classical
   obtain ⟨tauTop, htauTop, htauTop_le, hjoint⟩ :=
-    galLim_joint_top (I := I) (M := M) hS hτ hlim
+    galerkinLim_joint_top (I := I) (M := M) hS hτ hlim
   let W : Set Real := (fun r : Real => (T : Real) - r) ⁻¹' D.regular
   have hWopen : IsOpen W :=
     D.regular_isOpen.preimage (continuous_const.sub continuous_id)
@@ -1501,7 +1501,7 @@ theorem galLim_grad_cont
   rintro ⟨t, x⟩ htx
   by_cases ht0 : t = 0
   · subst t
-    have hzero := galLim_grad_zero (I := I) (M := M)
+    have hzero := galerkinLim_grad_zero (I := I) (M := M)
       hS hDim hτ.le htauCore.le htauCore_tau hmapCore hlim x
     refine hzero.mono ?_
     intro p hp
@@ -1515,7 +1515,7 @@ theorem galLim_grad_cont
       (isOpen_Ioo.prod isOpen_univ).mem_nhds hopen
     exact ((hpos (t, x) hopen).contMDiffAt hnhds).continuousAt.continuousWithinAt
 
-theorem galLim_slice_pos
+theorem galerkinLim_slice_pos
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -1526,7 +1526,7 @@ theorem galLim_slice_pos
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ∃ tau' : Real, 0 < tau' ∧ tau' ≤ tau ∧
       ∀ t ∈ Ioo (0 : Real) tau',
@@ -1534,7 +1534,7 @@ theorem galLim_slice_pos
           (scalarSpecSum (I := I) (M := M) (S.family.metric (T : Real))
             (fun i s => ulim s i) t) := by
   obtain ⟨tau', htau', htau'_tau, htop⟩ :=
-    galLim_joint_top (I := I) (M := M) hS hτ hlim
+    galerkinLim_joint_top (I := I) (M := M) hS hτ hlim
   refine ⟨tau', htau', htau'_tau, ?_⟩
   intro t ht
   have harg : ContMDiffOn I (𝓘(Real, Real).prod I) ∞
@@ -1546,7 +1546,7 @@ theorem galLim_slice_pos
     exact ⟨ht, Set.mem_univ x⟩
   exact contMDiffOn_univ.mp (htop.comp harg hmaps)
 
-theorem galLim_pde
+theorem galerkinLim_pde
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     {T : D.RegularTime} {tau : Real}
@@ -1557,7 +1557,7 @@ theorem galLim_pde
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ∃ tau' : Real, 0 < tau' ∧ tau' ≤ tau ∧
       ∀ t ∈ Ioo (0 : Real) tau', ∀ x : M,
@@ -1580,11 +1580,11 @@ theorem galLim_pde
   have htail : EigenvalueTailSummable (I := I) (M := M) q 0 0 :=
     scalar_eigen_tail (I := I) (M := M) q
   obtain ⟨tauJ, htauJ, htauJ_tau, hjet⟩ :=
-    galLim_jet_mass (I := I) (M := M) hS hτ hlim
+    galerkinLim_jet_mass (I := I) (M := M) hS hτ hlim
   obtain ⟨tauD, htauD, _htauD_one, _hreg, hcore⟩ :=
-    lapDiffHs_core (I := I) (M := M) S.family.metric hS.smoothMetric T
+    exists_uniform_lapDiffHs_apply_ccTensorToHs (I := I) (M := M) S.family.metric hS.smoothMetric T
   obtain ⟨tauV, htauV, _htauV_tau, hlift⟩ :=
-    galLimVel_lift (I := I) (M := M) hS hτ hlim
+    galerkinLimVelocity_lift (I := I) (M := M) hS hτ hlim
   obtain ⟨w, _hwcont, hw0, hwcan⟩ := hlift 0
   let tau' : Real := min tauJ (min tauD tauV)
   have htau' : 0 < tau' := by
@@ -1611,7 +1611,7 @@ theorem galLim_pde
   have htD : t ∈ Icc (0 : Real) tauD := ⟨ht.1.le, htDlt.le⟩
   have htV : t ∈ Icc (0 : Real) tauV := ⟨ht.1.le, htVlt.le⟩
   obtain ⟨U, hUall, hscalar⟩ :=
-    galLim_slice_cc (I := I) (M := M) hτ.le hlim htTau
+    galerkinLim_slice_cc (I := I) (M := M) hτ.le hlim htTau
   let f : M → Real :=
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection
   have hf : ContMDiff I 𝓘(Real, Real) ∞ f := by
@@ -1638,7 +1638,7 @@ theorem galLim_pde
     TensorHs.castEquiv (I := I) (M := M)
       (g := q) (r := 0) (s := 0)
       (by norm_num : ((1 + 2 : Nat) : Real) = ((1 : Nat) : Real) + 2)
-      (galLimExt hτ.le hlim (1 + 2) t)
+      (galerkinLimExt hτ.le hlim (1 + 2) t)
   let U1bar : TensorHs (I := I) (M := M) q 0 0 ((1 : Nat) : Real) :=
     tensorHsInclusion (I := I) (M := M)
       (g := q) (r := 0) (s := 0)
@@ -1664,7 +1664,7 @@ theorem galLim_pde
         ccTensorToHs (I := I) (M := M) q 0 ((1 : Nat) : Real)
           (rawTensorConnLapSmooth (I := I) q 0 0 U) := by
     simpa only [U3] using
-      scalarLapHs_core (I := I) (M := M) q ((1 : Nat) : Real) U
+      tensorScaleLaplacian_apply_ccTensorToHs (I := I) (M := M) q ((1 : Nat) : Real) U
   have hdiffCore :
       lapDiffHs (I := I) (M := M) q h 1 U3 =
         ccTensorToHs (I := I) (M := M) q 0 ((1 : Nat) : Real)
@@ -1676,9 +1676,9 @@ theorem galLim_pde
           (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.scalarSmul
             (I := I) (M := M) q 0 0 zeta U) := by
     simpa only [U1] using
-      scalarPotHs_core (I := I) (M := M) q zeta 1 U
+      scalarPotHs_apply_ccTensorToHs (I := I) (M := M) q zeta 1 U
   have hvelExpand :
-      galLimVelHs hτ.le hlim 1 t =
+      galerkinLimVelocityHs hτ.le hlim 1 t =
         tensorScaleLaplacian (I := I) (M := M)
             (g := q) (r := 0) (s := 0) ((1 : Nat) : Real) Ubar +
           lapDiffHs (I := I) (M := M) q h 1 Ubar +
@@ -1686,7 +1686,7 @@ theorem galLim_pde
     rfl
   have hW1 :
       ccTensorToHs (I := I) (M := M) q 0 ((1 : Nat) : Real) W =
-        galLimVelHs hτ.le hlim 1 t := by
+        galerkinLimVelocityHs hτ.le hlim 1 t := by
     calc
       _ = ccTensorToHs (I := I) (M := M) q 0 ((1 : Nat) : Real)
               (rawTensorConnLapSmooth (I := I) q 0 0 U) +
@@ -1709,14 +1709,14 @@ theorem galLim_pde
     (by norm_num : ((0 : Nat) : Real) ≤ ((1 : Nat) : Real))
   have hcan :
       J10 (ccTensorToHs (I := I) (M := M) q 0 ((1 : Nat) : Real) W) =
-        galLimVelCan hτ.le hlim 0 t := by
+        galerkinLimVelocityCan hτ.le hlim 0 t := by
     have hz := congrArg J10 hW1
-    simpa only [J10, galLimVelCan, q] using hz
+    simpa only [J10, galerkinLimVelocityCan, q] using hz
   let tt : Icc (0 : Real) tauV := ⟨t, htV⟩
   have hWcoeff (i : TensorEigenIdx (I := I) (M := M) q 0 0) :
       tensorL2Coeff (I := I) (M := M) hc
           (SmoothCcTensor.toL2 W) i =
-        (galLimVel hτ.le hlim t).coeff i := by
+        (galerkinLimVelocity hτ.le hlim t).coeff i := by
     have h1 := congrArg
       (fun z : TensorHs (I := I) (M := M) q 0 0 ((0 : Nat) : Real) =>
         z.coeff i) hcan
@@ -1732,11 +1732,11 @@ theorem galLim_pde
         simpa only [hc] using
           (ccTensorToHs_coeff (I := I) (M := M) q 0
             ((1 : Nat) : Real) W i).symm
-      _ = (galLimVelCan hτ.le hlim 0 t).coeff i := by
+      _ = (galerkinLimVelocityCan hτ.le hlim 0 t).coeff i := by
         simpa only [J10, tensorHsInclusion_coeff_apply] using h1
       _ = (w tt).coeff i := by
         simpa only [tt] using h2.symm
-      _ = (galLimVel hτ.le hlim t).coeff i := by
+      _ = (galerkinLimVelocity hτ.le hlim t).coeff i := by
         simpa only [tt, tensorHsInclusion_coeff_apply] using h3
   let a : Real := t / 2
   let b : Real := (t + tauJ) / 2
@@ -1779,22 +1779,22 @@ theorem galLim_pde
           (fun i s => deriv (fun r => ulim r i) s) t x) t := by
     exact (scalarSpec_d1 (I := I) (M := M) q htail hab
       (fun i r => ulim r i) isOpen_Ioo hIcc
-      (fun i => galLim_mode_c1 hτ hlim i) hmass1 x htIcc).hasDerivAt
+      (fun i => galerkinLim_mode_c1 hτ hlim i) hmass1 x htIcc).hasDerivAt
         (Icc_mem_nhds hat htb)
   have hderivSeries :
       scalarSpecSum (I := I) (M := M) q
           (fun i s => deriv (fun r => ulim r i) s) t x =
         scalarSpecSum (I := I) (M := M) q
-          (fun i _ => (galLimVel hτ.le hlim t).coeff i) t x := by
+          (fun i _ => (galerkinLimVelocity hτ.le hlim t).coeff i) t x := by
     unfold scalarSpecSum
     apply tsum_congr
     intro i
     change deriv (fun r => ulim r i) t * _ =
-      (galLimVel hτ.le hlim t).coeff i * _
-    rw [(galLim_mode_deriv hτ hlim htTauOpen i).deriv]
+      (galerkinLimVelocity hτ.le hlim t).coeff i * _
+    rw [(galerkinLim_mode_deriv hτ hlim htTauOpen i).deriv]
   have hseriesW :
       scalarSpecSum (I := I) (M := M) q
-          (fun i _ => (galLimVel hτ.le hlim t).coeff i) t x =
+          (fun i _ => (galerkinLimVelocity hτ.le hlim t).coeff i) t x =
         TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) W.toSection x := by
     calc
       _ = scalarSpecSum (I := I) (M := M) q
@@ -1803,7 +1803,7 @@ theorem galLim_pde
               unfold scalarSpecSum
               apply tsum_congr
               intro i
-              change (galLimVel hτ.le hlim t).coeff i * _ =
+              change (galerkinLimVelocity hτ.le hlim t).coeff i * _ =
                 tensorL2Coeff (I := I) (M := M) hc
                   (SmoothCcTensor.toL2 W) i * _
               rw [hWcoeff i]
@@ -1846,7 +1846,7 @@ theorem heatpot_of_gallim
     {ulim : Real → TensorEigenIdx (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 → Real}
     (hS : IsSolutionOn (I := I) S) (hτ : 0 < tau)
-    (hlim : IsConjGalSubseq (I := I) (M := M)
+    (hlim : IsConjGalerkinSubseq (I := I) (M := M)
       S T tau u0 V phi ulim) :
     ∃ tau' : Real, ∃ htau' : 0 < tau', tau' ≤ tau ∧
       DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn
@@ -1858,12 +1858,12 @@ theorem heatpot_of_gallim
           scalarSpecSum (I := I) (M := M) (S.family.metric (T : Real))
             (fun i r => ulim r i) s x) := by
   obtain ⟨tauP, htauP, htauP_tau, hpde⟩ :=
-    galLim_pde (I := I) (M := M) hS hτ hlim
+    galerkinLim_pde (I := I) (M := M) hS hτ hlim
   obtain ⟨tauS, htauS, _htauS_tau, hsmooth⟩ :=
-    galLim_joint_top (I := I) (M := M) hS hτ hlim
+    galerkinLim_joint_top (I := I) (M := M) hS hτ hlim
   obtain ⟨tauL, htauL, _htauL_tau, hslice⟩ :=
-    galLim_slice_pos (I := I) (M := M) hS hτ hlim
-  have hcont := galLim_joint_cont (I := I) (M := M) hτ hlim
+    galerkinLim_slice_pos (I := I) (M := M) hS hτ hlim
+  have hcont := galerkinLim_joint_cont (I := I) (M := M) hτ hlim
   let rho : Real := min tauP (min tauS tauL)
   have hrho : 0 < rho := by
     dsimp only [rho]
@@ -1908,7 +1908,7 @@ theorem heatpot_of_gallim
     change s ∈ Icc (0 : Real) tau' at hs
     by_cases hs0 : s = 0
     · subst s
-      rw [galLim_initial (I := I) (M := M) hlim]
+      rw [galerkinLim_initial (I := I) (M := M) hlim]
       exact TensorRSField.scalar0_smooth
         (n := (∞ : WithTop ℕ∞)) u0.toSection
     · have hspos : 0 < s := lt_of_le_of_ne hs.1 (Ne.symm hs0)
@@ -1936,7 +1936,7 @@ theorem heatpot_exists
           u ∧
         u 0 = TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) u0.toSection := by
   obtain ⟨tau, htau, htau_one, hsubseq⟩ :=
-    scalar_gal_subseq (I := I) (M := M) S hS T
+    scalar_galerkin_subseq (I := I) (M := M) S hS T
   obtain ⟨V, phi, ulim, hlim⟩ := hsubseq u0
   obtain ⟨tau', htau', htau'_tau, hpot⟩ :=
     heatpot_of_gallim (I := I) (M := M) hS htau hlim
@@ -1945,7 +1945,7 @@ theorem heatpot_exists
       (fun i r => ulim r i) s x
   refine ⟨tau', htau', htau'_tau.trans htau_one, u, ?_, ?_⟩
   · simpa only [u] using hpot
-  · simpa only [u] using galLim_initial (I := I) (M := M) hlim
+  · simpa only [u] using galerkinLim_initial (I := I) (M := M) hlim
 
 omit [SigmaCompactSpace M] in
 theorem conj_heat_exists
@@ -2115,7 +2115,7 @@ theorem gallim_unit_pos
             (∫ x, u s x ∂(volumeMeasureFamily (I := I) (M := M)
               (reverseFamily (I := I) (M := M)
                 (flowG (I := I) S) (T : Real)) s)) = 1 := by
-  rcases unit_init_or_empty (I := I) (M := M)
+  rcases unit_initial_or_empty (I := I) (M := M)
       (S.family.metric (T : Real)) with hM | ⟨u0, hinit, hunit⟩
   · exact Or.inl hM
   · right

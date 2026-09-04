@@ -728,12 +728,12 @@ theorem exists_radialLowerScaleActionCoefficients_lipschitz_on_hs_three_ball
   have hStop : ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) S‖ ≤ r0 := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simpa only [S, ccToHsLin_apply] using hrad.trans hTr0
   have hVtop : ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) V‖ ≤ r0 := by
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) U)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ U] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ U] at hrad
     simpa only [V, ccToHsLin_apply] using hrad.trans hUr0
   have hS3 : covariantJetNormSq (I := I) (M := M) g 3 S ≤ A3 ^ 2 := by
     refine (hjet3 S).trans ?_

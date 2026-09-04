@@ -51,28 +51,28 @@ private lemma contDiff_partial_aux
 
 omit [NeZero d] in
 private lemma hasCompactSupport_partial_aux
-    {u : E → ℝ} (hu_supp : HasCompactSupport u) (i : Fin d) :
+    {u : E → ℝ} (hu_support : HasCompactSupport u) (i : Fin d) :
     HasCompactSupport
       (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) :=
-  hu_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
+  hu_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
 
 omit [NeZero d] in
 private lemma hasCompactSupport_kdi_partial
-    {u : E → ℝ} (hu_supp : HasCompactSupport u) (i k : Fin d) :
+    {u : E → ℝ} (hu_support : HasCompactSupport u) (i k : Fin d) :
     HasCompactSupport (fun y : E =>
       (fderiv ℝ (fun z : E => (fderiv ℝ u z) (EuclideanSpace.single i 1)) y)
         (EuclideanSpace.single k 1)) := by
-  have h_partial_supp : HasCompactSupport
+  have h_partial_support : HasCompactSupport
       (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) :=
-    hasCompactSupport_partial_aux hu_supp i
-  exact h_partial_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single k 1)
+    hasCompactSupport_partial_aux hu_support i
+  exact h_partial_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single k 1)
 
 omit [NeZero d] in
 private lemma memLp_two_continuous_compact_support_restrict
-    {f : E → ℝ} (hf_cont : Continuous f) (hf_supp : HasCompactSupport f)
+    {f : E → ℝ} (hf_cont : Continuous f) (hf_support : HasCompactSupport f)
     (S : Set E) :
     MemLp f 2 (volume.restrict S) :=
-  (hf_cont.memLp_of_hasCompactSupport hf_supp).restrict S
+  (hf_cont.memLp_of_hasCompactSupport hf_support).restrict S
 
 omit [NeZero d] in
 theorem hasWeakPartialDeriv_kdi_partial_of_smooth
@@ -223,7 +223,7 @@ theorem hasWeakPartialDeriv_of_strong_L2_limit
     (hg_l2 : MemLp g 2 (volume.restrict Ω''))
     {uSeq : ℕ → E → ℝ}
     (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n))
-    (hu_seq_supp : ∀ n, HasCompactSupport (uSeq n))
+    (hu_seq_support : ∀ n, HasCompactSupport (uSeq n))
     (h_partial_converges_Ω'' : Tendsto
       (fun n => eLpNorm
         (fun x : E => (fderiv ℝ (uSeq n) x) (EuclideanSpace.single i 1) -
@@ -245,18 +245,18 @@ theorem hasWeakPartialDeriv_of_strong_L2_limit
       (EuclideanSpace.single k 1) with hgψ_def
   have hψ_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (ψ n) :=
     fun n => contDiff_partial_aux (hu_seq_smooth n) i
-  have hψ_supp : ∀ n, HasCompactSupport (ψ n) :=
-    fun n => hasCompactSupport_partial_aux (hu_seq_supp n) i
+  have hψ_support : ∀ n, HasCompactSupport (ψ n) :=
+    fun n => hasCompactSupport_partial_aux (hu_seq_support n) i
   have hψ_cont : ∀ n, Continuous (ψ n) := fun n => (hψ_smooth n).continuous
   have hgψ_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (gψ n) :=
     fun n => contDiff_kdi_partial (hu_seq_smooth n) i k
-  have hgψ_supp : ∀ n, HasCompactSupport (gψ n) :=
-    fun n => hasCompactSupport_kdi_partial (hu_seq_supp n) i k
+  have hgψ_support : ∀ n, HasCompactSupport (gψ n) :=
+    fun n => hasCompactSupport_kdi_partial (hu_seq_support n) i k
   have hgψ_cont : ∀ n, Continuous (gψ n) := fun n => (hgψ_smooth n).continuous
   have hψ_l2 : ∀ n, MemLp (ψ n) 2 (volume.restrict Ω'') := fun n =>
-    memLp_two_continuous_compact_support_restrict (hψ_cont n) (hψ_supp n) Ω''
+    memLp_two_continuous_compact_support_restrict (hψ_cont n) (hψ_support n) Ω''
   have hgψ_l2 : ∀ n, MemLp (gψ n) 2 (volume.restrict Ω'') := fun n =>
-    memLp_two_continuous_compact_support_restrict (hgψ_cont n) (hgψ_supp n) Ω''
+    memLp_two_continuous_compact_support_restrict (hgψ_cont n) (hgψ_support n) Ω''
   have hψ_diff_lp : ∀ n, MemLp (fun x : E => ψ n x - w_i_func x) 2
       (volume.restrict Ω'') := fun n => (hψ_l2 n).sub hw_i_l2
   have hgψ_diff_lp : ∀ n, MemLp (fun x : E => gψ n x - g x) 2

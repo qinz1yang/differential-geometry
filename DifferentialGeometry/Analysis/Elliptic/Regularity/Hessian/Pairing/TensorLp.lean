@@ -105,14 +105,14 @@ private lemma chosenChartFirstWeakPartial_ae_zero_off_support
     intro y hy
     exact chartPushed_eq_zero_off_chartImagePOUTsupport (I := I) (M := M) α _
       hy.1 hy.2
-  have h_partial_V_ae_zero : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have h_partial_V_ae_zero : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := Module.finrank ℝ E) 2 j
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
         (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)) V
         =ᵐ[(volume : Measure EuclN).restrict V]
       (fun _ : EuclN => (0 : ℝ)) :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_ae_zero_of_ae_zero
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_ae_zero_of_ae_zero
       (d := Module.finrank ℝ E) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hV_open
       h_chart_pushed_vanishes j
   have h_memWkp_2 : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
@@ -121,10 +121,8 @@ private lemma chosenChartFirstWeakPartial_ae_zero_off_support
         (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
       (chartTargetEuclid (I := I) (M := M) α) := by
-    have h :=
-      chartH2NonSmoothPOUWitness_of_laplacianDomain
+    exact chartPushed_memWkp_two_of_laplacianDomain
       (I := I) (M := M) g hu_h α
-    exact h.memWkp_two
   have h_memW1p_Ω : DeGiorgi.MemW1p 2
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
         (I := I) (M := M) (chartAtlasPOU I M) α
@@ -143,7 +141,7 @@ private lemma chosenChartFirstWeakPartial_ae_zero_off_support
       · exact hgk_memLp.mono_measure (Measure.restrict_mono_set volume hV_subset)
       · exact DeGiorgi.HasWeakPartialDeriv.restrict hV_open hV_subset hgk_weak
   have h_partial_Ω : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 j
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α
@@ -151,10 +149,10 @@ private lemma chosenChartFirstWeakPartial_ae_zero_off_support
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
         (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)) Ω :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       h_memW1p_Ω j
   have h_partial_Ω_on_V : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 j
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α
@@ -164,7 +162,7 @@ private lemma chosenChartFirstWeakPartial_ae_zero_off_support
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)) V :=
     DeGiorgi.HasWeakPartialDeriv.restrict hV_open hV_subset h_partial_Ω
   have h_partial_V : DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 j
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α
@@ -172,42 +170,42 @@ private lemma chosenChartFirstWeakPartial_ae_zero_off_support
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
         (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)) V :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       h_memW1p_V j
-  have h_loc_Ω : LocallyIntegrable
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have h_local_Ω : LocallyIntegrable
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 j
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)) Ω)
       ((volume : Measure EuclN).restrict V) := by
-    have hLp := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    have hLp := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       h_memW1p_Ω j
     exact (hLp.mono_measure (Measure.restrict_mono_set volume hV_subset)).locallyIntegrable
       (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-  have h_loc_V : LocallyIntegrable
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have h_local_V : LocallyIntegrable
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 j
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)) V)
       ((volume : Measure EuclN).restrict V) := by
-    have hLp := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    have hLp := DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       h_memW1p_V j
     exact hLp.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-  have h_ae_eq : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have h_ae_eq : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := Module.finrank ℝ E) 2 j
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
         (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)) Ω
         =ᵐ[(volume : Measure EuclN).restrict V]
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 j
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)) V :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq hV_open h_partial_Ω_on_V h_partial_V
-      h_loc_Ω h_loc_V
+      h_local_Ω h_local_V
   exact h_ae_eq.trans h_partial_V_ae_zero
 
 private lemma chartChristoffelCorrectionWeak_ae_zero_off_support
@@ -788,7 +786,7 @@ private lemma tensorContribSurrogate_tsupport_subset
     tsupport (tensorContribSurrogate (I := I) (M := M) g φ α hu_h) ⊆
       (chartAt H α).source := by
   classical
-  have h_supp_in_pou : Function.support
+  have h_support_in_pou : Function.support
       (tensorContribSurrogate (I := I) (M := M) g φ α hu_h) ⊆
         Function.support fun x : M => (chartAtlasPOU I M α : M → ℝ) x := by
     intro x hx
@@ -800,7 +798,7 @@ private lemma tensorContribSurrogate_tsupport_subset
   have h_tsupp_in_pou : tsupport
       (tensorContribSurrogate (I := I) (M := M) g φ α hu_h) ⊆
         tsupport fun x : M => (chartAtlasPOU I M α : M → ℝ) x :=
-    closure_mono h_supp_in_pou
+    closure_mono h_support_in_pou
   exact h_tsupp_in_pou.trans
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
 
@@ -852,8 +850,8 @@ private lemma tensorContribSurrogate_ae_eq
   refine MeasureTheory.measure_mono_null ?_ hpre_null
   intro x hx
   simp only [Set.mem_ofPred_eq] at hx
-  by_cases hx_src : x ∈ (chartAt H α).source
-  · refine ⟨hx_src, ?_⟩
+  by_cases hx_source : x ∈ (chartAt H α).source
+  · refine ⟨hx_source, ?_⟩
     simp only [Set.mem_ofPred_eq]
     have h_y_in_target : (toEuclidean (E := E)) ((extChartAt I α) x) ∈
         chartTargetEuclid (I := I) (M := M) α := by
@@ -865,15 +863,15 @@ private lemma tensorContribSurrogate_ae_eq
     by_contra h_not_in_N
     have h_agree_at_y := hN_agree _ h_y_in_target h_not_in_N
     apply hx
-    rw [tensorContribSurrogate_eq_on_source (I := I) (M := M) g φ α hu_h hx_src,
+    rw [tensorContribSurrogate_eq_on_source (I := I) (M := M) g φ α hu_h hx_source,
         tensorHessPairingMChartContribution_eq_on_source
           (I := I) (M := M) (u_h := u_h) g φ α,
         h_agree_at_y]
   · exfalso
     apply hx
-    rw [tensorContribSurrogate_zero_off_source (I := I) (M := M) g φ α hu_h hx_src,
+    rw [tensorContribSurrogate_zero_off_source (I := I) (M := M) g φ α hu_h hx_source,
         tensorHessPairingMChartContribution_zero_off_source
-          (I := I) (M := M) (u_h := u_h) g φ α hx_src]
+          (I := I) (M := M) (u_h := u_h) g φ α hx_source]
 
 private lemma chartPushedRaw_tensorContribSurrogate_le_rep
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (α : M)
@@ -891,13 +889,13 @@ private lemma chartPushedRaw_tensorContribSurrogate_le_rep
       have h_eq : (toEuclidean (E := E)).symm y = w := by
         rw [← hwy]; exact (toEuclidean (E := E)).symm_apply_apply w
       rw [h_eq]; exact hw_target
-    have hx_src :
+    have hx_source :
         (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈ (chartAt H α).source := by
       have : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈ (extChartAt I α).source :=
         (extChartAt I α).map_target hy_target'
       rwa [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)] at this
-    rw [tensorContribSurrogate_eq_on_source (I := I) (M := M) g φ α hu_h hx_src]
+    rw [tensorContribSurrogate_eq_on_source (I := I) (M := M) g φ α hu_h hx_source]
     have h_toE_extChart_x :
         (toEuclidean (E := E)) ((extChartAt I α)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) = y := by
@@ -1084,19 +1082,19 @@ theorem tensorHessPairingFunc_aeEq_pou_weighted_chartLocal_smoothCase
   unfold tensorHessPairingFunc
   apply Finset.sum_congr rfl
   intro α _
-  by_cases hx_src : x ∈ (chartAt H α).source
+  by_cases hx_source : x ∈ (chartAt H α).source
   · rw [tensorHessPairingMChartContribution_eq_on_source
       (I := I) (M := M)
       (u_h := smoothToH1Compl (I := I) (M := M) g v) g φ α]
   · rw [tensorHessPairingMChartContribution_zero_off_source
       (I := I) (M := M)
-      (u_h := smoothToH1Compl (I := I) (M := M) g v) g φ α hx_src]
+      (u_h := smoothToH1Compl (I := I) (M := M) g v) g φ α hx_source]
     have h_pou_subord :
         tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) ⊆
           (chartAt H α).source :=
       DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
     have hx_notsupp : x ∉ tsupport
-        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := fun h => hx_src (h_pou_subord h)
+        ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := fun h => hx_source (h_pou_subord h)
     have hρ_zero : (chartAtlasPOU I M α : M → ℝ) x = 0 :=
       image_eq_zero_of_notMem_tsupport hx_notsupp
     rw [hρ_zero]; ring

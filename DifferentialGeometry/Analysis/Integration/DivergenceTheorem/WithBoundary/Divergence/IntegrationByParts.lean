@@ -58,8 +58,8 @@ lemma tangentSectionAction_continuous_of_interior_support
   classical
   rw [continuous_iff_continuousAt]
   intro x
-  by_cases hx_supp : x ∈ tsupport f
-  · have hx_int : x ∈ I.interior M := hf_int hx_supp
+  by_cases hx_support : x ∈ tsupport f
+  · have hx_int : x ∈ I.interior M := hf_int hx_support
     have hx_chart : x ∈ (chartAt H x).source := mem_chart_source H x
     have hx_target_int : extChartAt I x x ∈ interior (extChartAt I x).target :=
       extChartAt_mem_interior_target_of_isInteriorPoint
@@ -81,7 +81,7 @@ lemma tangentSectionAction_continuous_of_interior_support
     exact ((hsmooth x hxU).continuousWithinAt.continuousAt) (hUopen.mem_nhds hxU)
   · have h_open : IsOpen (tsupport f)ᶜ := (isClosed_tsupport _).isOpen_compl
     have hev : f =ᶠ[𝓝 x] (fun _ => (0 : ℝ)) := by
-      filter_upwards [h_open.mem_nhds hx_supp] with y hy
+      filter_upwards [h_open.mem_nhds hx_support] with y hy
       by_contra hne
       exact hy (subset_tsupport _ hne)
     have hev_action : tangentSectionAction (I := I) X f =ᶠ[𝓝 x] (fun _ => (0 : ℝ)) := by
@@ -161,16 +161,16 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
     divergence_g_with_boundary_smoothSmul (I := I) g f hf X
   have hf_cont : Continuous f := hf.continuous
   have hX_div_cont : Continuous (divergenceGWithBoundary (I := I) g X) := by
-    have hdiv_supp : tsupport (divergenceGWithBoundary (I := I) g X) ⊆ tsupport X :=
+    have hdiv_support : tsupport (divergenceGWithBoundary (I := I) g X) ⊆ tsupport X :=
       tsupport_divergence_g_with_boundary_subset
         (I := I) g X
-    have hdiv_supp_int :
+    have hdiv_support_int :
         tsupport (divergenceGWithBoundary (I := I) g X) ⊆ I.interior M :=
-      hdiv_supp.trans hX_int
+      hdiv_support.trans hX_int
     rw [continuous_iff_continuousAt]
     intro x
-    by_cases hx_supp : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
-    · have hx_int : x ∈ I.interior M := hdiv_supp_int hx_supp
+    by_cases hx_support : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
+    · have hx_int : x ∈ I.interior M := hdiv_support_int hx_support
       have hcont_int :
           ContinuousOn (divergenceGWithBoundary (I := I) g X) (I.interior M) :=
         divergence_g_with_boundary_continuousOn_interior (I := I) g X
@@ -179,7 +179,7 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
         (isClosed_tsupport _).isOpen_compl
       have hev_zero : (divergenceGWithBoundary (I := I) g X) =ᶠ[𝓝 x]
           (fun _ => (0 : ℝ)) := by
-        filter_upwards [h_open.mem_nhds hx_supp] with y hy
+        filter_upwards [h_open.mem_nhds hx_support] with y hy
         by_contra hne
         exact hy (subset_tsupport _ hne)
       exact (continuous_const.continuousAt.congr hev_zero.symm)

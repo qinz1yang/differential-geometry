@@ -39,7 +39,7 @@ def rmComp
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem rm04SymmOfSol
+theorem rm04SymmOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M)
@@ -50,7 +50,7 @@ theorem rm04SymmOfSol
       ∀ τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D,
         DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
           (S.family.connection (τ : Real)) (S.base.rm13 (τ : Real)) :=
-    fun τ => rm13OfSol (I := I) S (τ : Real)
+    fun τ => rm13OfSolution (I := I) S (τ : Real)
   have hLower :
       ∀ (τ : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
         (y : M),
@@ -320,22 +320,22 @@ def nab2RmComp
           (coordinateFrameAt (I := I) x₀ d x) (coordinateFrameAt (I := I) x₀ e x)
           (coordinateFrameAt (I := I) x₀ f x)))
 
-private def solNabRic
+private def solutionNabRic
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     2 (S.family.connection t) (S.ricci t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       2 (S.family.connection t) (connSmoothInf (I := I) S t) (S.ricci t))
 
-private def solNab2Ric
+private def solutionNab2Ric
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
   totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-    3 (S.family.connection t) (solNabRic (I := I) S t) x
+    3 (S.family.connection t) (solutionNabRic (I := I) S t) x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [SigmaCompactSpace M] in
@@ -344,7 +344,7 @@ private theorem coordNab2Eq
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M) (t : Real)
     (d a i j : CoordinateIdx (𝕜 := Real) E) :
     coordNab2Ric (I := I) S x₀ t x₀ d a i j =
-      solNab2Ric (I := I) S t x₀
+      solutionNab2Ric (I := I) S t x₀
         (DifferentialGeometry.Geometry.Curvature.vec4 (I := I)
           (coordinateFrameAt (I := I) x₀ d x₀) (coordinateFrameAt (I := I) x₀ a x₀)
           (coordinateFrameAt (I := I) x₀ i x₀) (coordinateFrameAt (I := I) x₀ j x₀)) := by
@@ -381,7 +381,7 @@ theorem n2RicTr
     (coordinateFrameAt (I := I) x₀ a x₀) (coordinateFrameAt (I := I) x₀ b x₀)
     (coordinateFrameAt (I := I) x₀ c x₀) (coordinateFrameAt (I := I) x₀ d x₀)
   rw [coordNab2Eq (I := I) S x₀ t a b c d]
-  simpa [solNab2Ric, solNabRic, nab2RmComp, nabla2Rm04Field, nablaRm04Field,
+  simpa [solutionNab2Ric, solutionNabRic, nab2RmComp, nabla2Rm04Field, nablaRm04Field,
     SolutionOn.family, SolutionOn.ricci, SolutionFamily.connection, SolutionFamily.ricci,
     SolutionFamily.rm04, metricCov, metricRicci, metricRm04,
     DifferentialGeometry.Geometry.Curvature.metricCov,
@@ -416,7 +416,7 @@ theorem ricTr
     (I := I) (S.family.metric (t : Real)) (hframe.toBasisAt hx₀)
     (fun k l : CoordinateIdx (𝕜 := Real) E => coordInv (I := I) S x₀ (t : Real) x₀ k l)
     hinvAt (S.ricci (t : Real)) (S.base.rm13 (t : Real)) (S.base.rm04 (t : Real))
-    (ricciTraceOfSol (I := I) S (t : Real))
+    (ricciTraceOfSolution (I := I) S (t : Real))
     (solution_rm04LowersRm13At (I := I) S (t : Real) x₀)
   simpa [ricciCompInFrame, SolutionOn.ricciAt, SolutionFamily.ricciAt, rmComp,
     IsLocalFrameOn.toBasisAt_coe] using h a b
@@ -552,7 +552,7 @@ theorem rmRicciId
 
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem rm04LapInOfSol
+theorem rm04LapInOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M)
@@ -656,8 +656,8 @@ theorem rmRaise
                 (t : Real) x₀ e p := by
     intro e
     have h := solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients (I := I) S x₀ (t : Real)
-      (rm13OfSol (I := I) S (t : Real))
-      (connCurvOfSol (I := I) S x₀ (t : Real))
+      (rm13OfSolution (I := I) S (t : Real))
+      (connCurvOfSolution (I := I) S x₀ (t : Real))
       (fun q : Fin 4 => if q = 0 then a else if q = 1 then b else if q = 2 then c else e)
     rw [rmCompBase (I := I) S x₀ (t : Real)] at h
     simpa using h
@@ -691,37 +691,37 @@ theorem rmRaise
           (I := I) (S.family.connection (t : Real)) x₀ a b c d := by
         simp
 
-private def solNab2RicF
+private def solutionNab2RicF
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-    3 (S.family.connection t) (solNabRic (I := I) S t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-      3 (S.family.connection t) (connSmoothInf (I := I) S t) (solNabRic (I := I) S t))
+    3 (S.family.connection t) (solutionNabRic (I := I) S t)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+      3 (S.family.connection t) (connSmoothInf (I := I) S t) (solutionNabRic (I := I) S t))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem solNabRicReal
+private theorem solutionNabRicReal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      2 (S.family.connection t) (S.ricci t) (solNabRic (I := I) S t) :=
+      2 (S.family.connection t) (S.ricci t) (solutionNabRic (I := I) S t) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     2 (S.family.connection t) (S.ricci t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       2 (S.family.connection t) (connSmoothInf (I := I) S t) (S.ricci t))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem solNab2RicReal
+private theorem solutionNab2RicReal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      3 (S.family.connection t) (solNabRic (I := I) S t) (solNab2RicF (I := I) S t) :=
+      3 (S.family.connection t) (solutionNabRic (I := I) S t) (solutionNab2RicF (I := I) S t) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-    3 (S.family.connection t) (solNabRic (I := I) S t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-      3 (S.family.connection t) (connSmoothInf (I := I) S t) (solNabRic (I := I) S t))
+    3 (S.family.connection t) (solutionNabRic (I := I) S t)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+      3 (S.family.connection t) (connSmoothInf (I := I) S t) (solutionNabRic (I := I) S t))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricRicciIdAt
@@ -731,11 +731,11 @@ theorem ricRicciIdAt
     (x : M) :
     DifferentialGeometry.Tensor.RSTensor.Tensor0SRicciIdentityAt (I := I)
       (S.base.rm13 (t : Real)) (S.ricci (t : Real) x)
-      (solNab2Ric (I := I) S (t : Real) x) := by
+      (solutionNab2Ric (I := I) S (t : Real) x) := by
   have hcov :
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (S.family.connection (t : Real)) (1 : WithTop ℕ∞) :=
-    connSmoothOfSol (I := I) S (t : Real)
+    connSmoothOfSolution (I := I) S (t : Real)
   have htor : (S.family.connection (t : Real)).torsion x = 0 := by
     have htf :=
       DifferentialGeometry.Geometry.Connection.torsionFree_of_isLeviCivita
@@ -744,23 +744,23 @@ theorem ricRicciIdAt
   have h20 :
       DifferentialGeometry.Tensor.RicciIdentity.Nabla20SRealizesAt (I := I) 2
         (S.family.connection (t : Real)) (S.ricci (t : Real))
-        (solNabRic (I := I) S (t : Real)) x
-        (solNab2Ric (I := I) S (t : Real) x) := by
+        (solutionNabRic (I := I) S (t : Real)) x
+        (solutionNab2Ric (I := I) S (t : Real) x) := by
     refine ⟨?_, ?_⟩
     · intro y X slots
-      exact solNabRicReal (I := I) S (t : Real) X y slots
+      exact solutionNabRicReal (I := I) S (t : Real) X y slots
     · intro X slots
-      exact solNab2RicReal (I := I) S (t : Real) X x slots
+      exact solutionNab2RicReal (I := I) S (t : Real) X x slots
   exact DifferentialGeometry.Tensor.RicciIdentity.tensor0S_ricciIdentity_of_torsionFree
     (I := I) (S.family.connection (t : Real)) hcov (S.base.rm13 (t : Real))
-    (S.ricci (t : Real)) (solNabRic (I := I) S (t : Real))
-    (S.ricci (t : Real) x) (solNabRic (I := I) S (t : Real) x)
-    (solNab2Ric (I := I) S (t : Real) x)
-    (rm13OfSol (I := I) S (t : Real)) rfl rfl h20 htor
+    (S.ricci (t : Real)) (solutionNabRic (I := I) S (t : Real))
+    (S.ricci (t : Real) x) (solutionNabRic (I := I) S (t : Real) x)
+    (solutionNab2Ric (I := I) S (t : Real) x)
+    (rm13OfSolution (I := I) S (t : Real)) rfl rfl h20 htor
 
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem ricCommOfSol
+theorem ricCommOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M)
@@ -886,7 +886,7 @@ theorem ricCommOfSol
 
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem rm04StaticOfSol
+theorem rm04StaticOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x₀ : M)
@@ -913,18 +913,18 @@ theorem rm04StaticOfSol
     (ricciOneUpCompInFrame (I := I) S (coordInv (I := I) S x₀)
       (coordinateFrameAt (I := I) x₀))
     (coordNab2Ric (I := I) S x₀) (nab2RmComp (I := I) S x₀)
-    (rm04SymmOfSol (I := I) S x₀ t x₀)
+    (rm04SymmOfSolution (I := I) S x₀ t x₀)
     (fun p q => coordInvSymmOn (I := I) S x₀ (t : Real) hx₀ p q)
     (fun p q => coordRicSymmOn (I := I) S x₀ (t : Real) hx₀ p q)
     (fun p q => (coordInvLocal (I := I) S x₀ (t : Real) x₀ hx₀ p q).2)
     (fun p q r s => rmRaise (I := I) S x₀ t p q r s)
     (fun p q => rfl)
-    (ricCommOfSol (I := I) S x₀ t)
-    (rm04LapInOfSol (I := I) S x₀ t) m
+    (ricCommOfSolution (I := I) S x₀ t)
+    (rm04LapInOfSolution (I := I) S x₀ t) m
 
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem rm04Evol_at
+theorem rm04Evolution_at
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -932,7 +932,7 @@ theorem rm04Evol_at
     (x₀ : M)
     (gInvDt :
       Real → M → CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real)
-    (hmetricReg :
+    (hmetricRegularity :
       MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S (coordInv (I := I) S x₀) gInvDt
         (coordinateFrameAt (I := I) x₀) (coordinateFrameSet (I := I) x₀))
@@ -957,15 +957,15 @@ theorem rm04Evol_at
       D.carrier (t : Real) := by
   have hmix :=
     coordGammaMix (I := I) S hS x₀
-      (coordGammaEvol (I := I) S hS x₀
+      (coordGammaEvolution (I := I) S hS x₀
         (coordMetricMix (I := I) S hS x₀ (coordMetricDeriv (I := I) S hS x₀)))
   have hbase :=
     riemann_covariant_variation_of_solution
       (I := I) S hS x₀ gInvDt (coordNab2Ric (I := I) S x₀)
-      hmetricReg (coordNab2Reg (I := I) S x₀) hmix
-      (fun s _ => rm13OfSol (I := I) S s)
-      (fun s _ => connCurvOfSol (I := I) S x₀ s) t m
-  exact hbase.congr_deriv (rm04StaticOfSol (I := I) S x₀ t m)
+      hmetricRegularity (coordNab2Regularity (I := I) S x₀) hmix
+      (fun s _ => rm13OfSolution (I := I) S s)
+      (fun s _ => connCurvOfSolution (I := I) S x₀ s) t m
+  exact hbase.congr_deriv (rm04StaticOfSolution (I := I) S x₀ t m)
 
 def coordBasisAt (y : M) :
     Module.Basis (CoordinateIdx (𝕜 := Real) E) Real (TangentSpace I y) :=
@@ -1019,14 +1019,14 @@ def ricUpFam
 
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem rm04EvolFam
+theorem rm04EvolutionFam
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (gInvDt :
       M → Real → M → CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real)
-    (hmetricReg : ∀ y : M,
+    (hmetricRegularity : ∀ y : M,
       MetricFrameSpacetimeRegularityInFrameOnLocal
         (I := I) S (coordInv (I := I) S y) (gInvDt y)
         (coordinateFrameAt (I := I) y) (coordinateFrameSet (I := I) y)) :
@@ -1034,7 +1034,7 @@ theorem rm04EvolFam
       (rm04Fam (I := I) S) (rm04LapFam (I := I) S) (rm04BFam (I := I) S)
       (ricUpFam (I := I) S) := by
   intro t x i j k l
-  have h := rm04Evol_at (I := I) S hS x (gInvDt x) (hmetricReg x) t
+  have h := rm04Evolution_at (I := I) S hS x (gInvDt x) (hmetricRegularity x) t
     (fun q : Fin 4 => if q = 0 then i else if q = 1 then j else if q = 2 then k else l)
   simpa only [rm04Fam, rm04LapFam, rm04BFam, ricUpFam, riemann04RicciDriftInFrame,
     rmCompBase (I := I) S x, if_pos, if_neg, if_false,

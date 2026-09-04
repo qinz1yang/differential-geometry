@@ -12,7 +12,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped BigOperators
 
@@ -361,5 +361,5 @@ theorem recurrence_step_bound_of_partials
     heps0 (oneStepConst_nonneg hB k s) hN (Nat.le_of_lt hk)
     (hGk k hk)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

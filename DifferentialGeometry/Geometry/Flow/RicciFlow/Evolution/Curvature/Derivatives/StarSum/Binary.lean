@@ -217,7 +217,7 @@ def stNabla (S : SolutionOn (I := I) (M := M) D) (t : Real) {k : ℕ}
       (n := (∞ : WithTop ℕ∞)) (4 + (k + 1)) :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (4 + k) (S.family.connection t) T
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t) T)
 
 omit [I.Boundaryless] in
@@ -229,7 +229,7 @@ theorem stNabla_realizes (S : SolutionOn (I := I) (M := M) D) (t : Real) {k : �
       (4 + k) (S.family.connection t) T (stNabla (I := I) S t T) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (4 + k) (S.family.connection t) T
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t) T)
 
 omit [Module.Finite ℝ E] in

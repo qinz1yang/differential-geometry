@@ -28,16 +28,16 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem lConjChart_null
+theorem lConjugateChart_null
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (tau : Real) (alpha : M) :
     DifferentialGeometry.Integral.Measure.modelHaar (E := E)
         ((fun Z : E => (extChartAt I alpha) (lExp S T x Z tau)) ''
-          {Z : E | IsLConj S T x Z tau ∧
+          {Z : E | IsLConjugate S T x Z tau ∧
             lExp S T x Z tau ∈ (chartAt H alpha).source}) = 0 := by
   let f : E → M := fun Z => lExp S T x Z tau
   let g : E → E := fun Z => (extChartAt I alpha) (f Z)
-  let s : Set E := {Z : E | IsLConj S T x Z tau ∧
+  let s : Set E := {Z : E | IsLConjugate S T x Z tau ∧
     f Z ∈ (chartAt H alpha).source}
   have hpair : ContMDiff 𝓘(Real, E)
       (𝓘(Real, E).prod 𝓘(Real, Real)) ∞
@@ -69,7 +69,7 @@ theorem lConjChart_null
     exact hraw
   have hdet (Z : E) (hZ : Z ∈ s) : (dg Z).det = 0 := by
     rw [LinearMap.det_eq_zero_iff_ker_ne_bot]
-    rcases (isLConj_iff S T x Z tau).1 hZ.1 with
+    rcases (isLConjugate_iff S T x Z tau).1 hZ.1 with
       ⟨_hdom, V, hV, hV0⟩
     intro hker
     have hV0' : (mfderiv 𝓘(Real, E) I f Z) V = 0 := by

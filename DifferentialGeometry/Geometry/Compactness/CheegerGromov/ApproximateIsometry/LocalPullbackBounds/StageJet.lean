@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology
 open Bundle Manifold
@@ -47,7 +47,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
 
-theorem HasSuppConvData.source_stay
+theorem HasSupportedCenterMapConvergence.source_stay
     (inp : MetricCompactnessInputs (I := I) X)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (L : NetLimitData inp.decay inp.D P) {r : Real} (hr : 0 ≤ r)
@@ -57,7 +57,7 @@ theorem HasSuppConvData.source_stay
       Fin (inp.pack.A r) → E → Real)
     (Jinf Jbarinf : (alpha : LiveSlot L inp.pack r) →
       InterSlot L inp.pack r alpha → E → E)
-    (hdata : HasSuppConvData (I := I) inp P L r hr phi hphi U C0 C1
+    (hdata : HasSupportedCenterMapConvergence (I := I) inp P L r hr phi hphi U C0 C1
       aInf Jinf Jbarinf)
     (alpha : LiveSlot L inp.pack r) {R S eta : Real}
     (hRS : R < S) (heta : 0 < eta)
@@ -230,7 +230,7 @@ theorem HasStageJetData.pb_buf_tail
       normalCoordMetric (I := I) (X.obj (Lphi.φ l))
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
     let Q : Nat → Nat → E → (E →L[Real] E →L[Real] Real) :=
-      fun k l z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+      fun k l z ↦ _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (B l (A k l z), fderiv Real (A k l) z)
     ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ j ≤ p, ∀ z : E,
       Metric.closedBall z eta ⊆ interior (C0 alpha) →
@@ -278,7 +278,7 @@ theorem HasStageJetData.pb_buf_tail
     normalCoordMetric (I := I) (X.obj (Lphi.φ l))
       (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
   let Q : Nat → Nat → E → (E →L[Real] E →L[Real] Real) :=
-    fun k l z ↦ _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    fun k l z ↦ _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (B l (A k l z), fderiv Real (A k l) z)
   change ∃ N : Nat, ∀ k ≥ N, ∀ l ≥ N, ∀ j ≤ p, ∀ z : E,
     Metric.closedBall z eta ⊆ interior (C0 alpha) →
@@ -381,10 +381,10 @@ theorem HasStageJetData.pb_buf_tail
           (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))).symm
         W (Lphi.hatSourceBall inp.decay P S (kn n)) := by
     simpa only [V, W, Lphi] using hstay
-  have hQconv : MapCInfConvOnCompacts V
+  have hQconv : MapCInfConvergenceOnCompacts V
       (fun n ↦ Q (kn n) (ln n)) (gInf alpha) := by
     simpa only [V, W, Q, B, A, Lphi] using
-      HasStageJetData.pb_conv (I := I) inp P L hr phi hphi
+      HasStageJetData.pb_convergence (I := I) inp P L hr phi hphi
         U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha V W hVopen hVcompact
         hVW hWint kn ln hkn hln hstay'
@@ -399,7 +399,7 @@ theorem HasStageJetData.pb_buf_tail
   have hKD : K ⊆ Metric.ball (0 : E)
       (inp.normalRadius.phaseRadius (L.rInf (alpha.1 : Nat) + 1)) :=
     hKC1.trans hC1D
-  have hGconv : MapCInfConvOnCompacts
+  have hGconv : MapCInfConvergenceOnCompacts
       (Metric.ball (0 : E)
         (inp.normalRadius.phaseRadius (L.rInf (alpha.1 : Nat) + 1)))
       (fun n ↦ B (kn n)) (gInf alpha) := by
@@ -527,7 +527,7 @@ theorem HasStageJetData.pb_buf_tail
   have hQcd : ContDiffAt Real (∞ : WithTop ℕ∞)
       (Q (kn n) (ln n)) (zn n) := by
     have hpair := hBAcd.prodMk hDAcd
-    have hpull := (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
+    have hpull := (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm.contDiff
       (E := E) (F := E)).contDiffAt.comp (zn n) hpair
     change ContDiffAt Real (∞ : WithTop ℕ∞)
       (pullbackForm ∘ fun x =>
@@ -591,7 +591,7 @@ theorem HasStageJetData.pb_local_tail
         (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
     let Q : LiveSlot L inp.pack r → Nat → Nat →
         E → (E →L[Real] E →L[Real] Real) := fun alpha k l z ↦
-      _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+      _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (B alpha l (A alpha k l z), fderiv Real (A alpha k l) z)
     ∃ eta : LiveSlot L inp.pack r → Real,
       (∀ alpha, 0 < eta alpha) ∧
@@ -638,7 +638,7 @@ theorem HasStageJetData.pb_local_tail
       (seqCenterD inp.decay P Lphi l (alpha.1 : Nat))
   let Q : LiveSlot L inp.pack r → Nat → Nat →
       E → (E →L[Real] E →L[Real] Real) := fun alpha k l z ↦
-    _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (B alpha l (A alpha k l z), fderiv Real (A alpha k l) z)
   change ∃ eta : LiveSlot L inp.pack r → Real,
     (∀ alpha, 0 < eta alpha) ∧
@@ -708,5 +708,5 @@ theorem HasStageJetData.pb_local_tail
   simpa only [chiK, Yk, Lphi] using
     hNalpha alpha k hkAlpha l hlAlpha j hj z hzbuffer hzSource
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

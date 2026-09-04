@@ -42,7 +42,7 @@ theorem lChartAction_minimizer_acceleration_eq
         (extChartAt I p).symm (u.toFun (s - a))
       covDerivAlong (I := I) (S.base.metric (T - (a + r) ^ 2))
           alpha (fun s => lVelocity (I := I) alpha s) (a + r) =
-        lRegAccel S T (a + r) (alpha (a + r))
+        lRegularizedAccel S T (a + r) (alpha (a + r))
           (lVelocity (I := I) alpha (a + r)) := by
   obtain ⟨q, P, hqcont, hqae, hu1, huder, hP1, hPeq, hPder⟩ :=
     lChartAction_minimizer_momentum_contDiffOn_one (I := I) S hS T a p hL u hreg hchart hmin
@@ -104,7 +104,7 @@ theorem lChartAction_minimizer_acceleration_eq
     hqAt.hasDerivAt.congr_deriv hqDeriv
   let z : Real → E × E := fun s => (u.toFun (s - a), q (s - a))
   let alpha : Real → M := lPhaseCurve (I := I) p z
-  let A : ∀ s, TangentSpace I (alpha s) := lPhaseVel (I := I) p z
+  let A : ∀ s, TangentSpace I (alpha s) := lPhaseVelocity (I := I) p z
   have hshift : HasDerivAt (fun s : Real => s - a) 1 (a + r) := by
     simpa using (hasDerivAt_id (x := a + r)).sub_const a
   have har : a + r - a = r := by ring
@@ -159,7 +159,7 @@ theorem lChartAction_minimizer_acceleration_eq
     have hzchart : (z s).1 ∈ interior (extChartAt I p).target := by
       simpa only [z] using hchart hscc
     change lVelocity (I := I) (lPhaseCurve (I := I) p z) s =
-      lPhaseVel (I := I) p z s
+      lPhaseVelocity (I := I) p z s
     exact lPhase_velocity (I := I) p z s hzs hzchart
   have harIoo : a + r ∈ Ioo a (a + L) := by
     constructor <;> linarith [hr.1, hr.2]
@@ -167,7 +167,7 @@ theorem lChartAction_minimizer_acceleration_eq
     hvel.eventuallyEq_of_mem (isOpen_Ioo.mem_nhds harIoo)
   change covDerivAlong (I := I) (S.base.metric (T - (a + r) ^ 2))
       alpha (fun s => lVelocity (I := I) alpha s) (a + r) =
-    lRegAccel S T (a + r) (alpha (a + r))
+    lRegularizedAccel S T (a + r) (alpha (a + r))
       (lVelocity (I := I) alpha (a + r))
   calc
     covDerivAlong (I := I) (S.base.metric (T - (a + r) ^ 2))
@@ -176,9 +176,9 @@ theorem lChartAction_minimizer_acceleration_eq
         alpha A (a + r) :=
       covDerivAlong_congr_of_eventuallyEq
         (I := I) (S.base.metric (T - (a + r) ^ 2)) alpha hfield
-    _ = lRegAccel S T (a + r) (alpha (a + r)) (A (a + r)) := by
+    _ = lRegularizedAccel S T (a + r) (alpha (a + r)) (A (a + r)) := by
       simpa only [alpha, A] using hphase
-    _ = lRegAccel S T (a + r) (alpha (a + r))
+    _ = lRegularizedAccel S T (a + r) (alpha (a + r))
         (lVelocity (I := I) alpha (a + r)) := by
       rw [hfield.eq_of_nhds]
 

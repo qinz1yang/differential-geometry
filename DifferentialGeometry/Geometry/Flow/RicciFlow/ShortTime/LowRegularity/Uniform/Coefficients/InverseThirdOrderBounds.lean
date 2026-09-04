@@ -9,7 +9,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -73,7 +73,7 @@ theorem inv_coeff_h3_uniform
     morreyTwoC_spec (I := I) (M := M) gBase
       (le_trans zero_le_one hΛ) hdim
   obtain ⟨Cinv, hCinv, hinv⟩ :=
-    invDiff_grid_unif (I := I) (M := M)
+    invDiff_grid_uniform (I := I) (M := M)
       (show (1 / 2 : ℝ) < 1 by norm_num)
   let Cpt : ℝ := morreyTwoC (I := I) (M := M) gBase Λ
   let Cop : ℝ := hs2OpActionC Cpt Kcurv.rankTwo

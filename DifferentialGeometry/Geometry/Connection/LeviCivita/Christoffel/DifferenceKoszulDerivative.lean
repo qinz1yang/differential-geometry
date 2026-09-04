@@ -60,11 +60,11 @@ theorem connectionDifference_koszul_nabla
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-theorem metricField_totalReg
+theorem metricField_totalRegularized
     (g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SBundle.TotalNabla0SRegular (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
       (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁) :=
-  Tensor0SBundle.totalNabla0S_reg (I := I) 2 (LeviCivita (I := I) g₂)
+  Tensor0SBundle.totalNabla0S_regularity (I := I) 2 (LeviCivita (I := I) g₂)
     (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (I := I) g₂)
     (Tensor0SBundle.metricTensorField (I := I) g₁)
 
@@ -83,18 +83,18 @@ theorem nablaMetric_combo_extDeriv
           (LeviCivita (I := I) g₂) W
           (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
             (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-            (metricField_totalReg (I := I) g₁ g₂)) x
+            (metricField_totalRegularized (I := I) g₁ g₂)) x
           (fun a : Fin 3 => V a x) +
         ∑ a : Fin 3,
           (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
             (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-            (metricField_totalReg (I := I) g₁ g₂)) x
+            (metricField_totalRegularized (I := I) g₁ g₂)) x
             (Function.update (fun b : Fin 3 => V b x) a
               (((LeviCivita (I := I) g₂) (fun p : M => V a p) x) (W x))) := by
   classical
   set α := Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
     (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-    (metricField_totalReg (I := I) g₁ g₂) with hαdef
+    (metricField_totalRegularized (I := I) g₁ g₂) with hαdef
   have hbridge : (fun p : M => α p (fun a : Fin 3 => V a p)) =
       (fun p : M => Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
         (LeviCivita (I := I) g₂) (V 0) (Tensor0SBundle.metricTensorField (I := I) g₁) p
@@ -143,13 +143,13 @@ private theorem koszul_field
           (P x) (Q x)) (R x) =
       (1 / 2) * Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-          (metricField_totalReg (I := I) g₁ g₂) x ![Q x, P x, R x] +
+          (metricField_totalRegularized (I := I) g₁ g₂) x ![Q x, P x, R x] +
         (1 / 2) * Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-          (metricField_totalReg (I := I) g₁ g₂) x ![P x, Q x, R x] -
+          (metricField_totalRegularized (I := I) g₁ g₂) x ![P x, Q x, R x] -
         (1 / 2) * Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-          (metricField_totalReg (I := I) g₁ g₂) x ![R x, Q x, P x] := by
+          (metricField_totalRegularized (I := I) g₁ g₂) x ![R x, Q x, P x] := by
   have hslot : ∀ a b : TangentSpace I x,
       (fun q : Fin 2 => if q = 0 then a else b) = ![a, b] := by
     intro a b; funext q; fin_cases q <;> simp
@@ -160,7 +160,7 @@ private theorem koszul_field
           (fun q : Fin 2 => if q = 0 then a else b) =
         Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-          (metricField_totalReg (I := I) g₁ g₂) x ![S x, a, b] := by
+          (metricField_totalRegularized (I := I) g₁ g₂) x ![S x, a, b] := by
     intro S a b
     rw [hslot a b, Tensor0SBundle.totalNabla0S_apply]
     exact (Tensor0SBundle.totalNabla0SFun_apply_section (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
@@ -180,17 +180,17 @@ theorem connectionDifference_koszul_deriv
           (LeviCivita (I := I) g₂) W
           (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
             (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-            (metricField_totalReg (I := I) g₁ g₂)) x ![X x, Y x, Z x] +
+            (metricField_totalRegularized (I := I) g₁ g₂)) x ![X x, Y x, Z x] +
         Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
           (LeviCivita (I := I) g₂) W
           (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
             (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-            (metricField_totalReg (I := I) g₁ g₂)) x ![Y x, X x, Z x] -
+            (metricField_totalRegularized (I := I) g₁ g₂)) x ![Y x, X x, Z x] -
         Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
           (LeviCivita (I := I) g₂) W
           (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
             (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-            (metricField_totalReg (I := I) g₁ g₂)) x ![Z x, X x, Y x] -
+            (metricField_totalRegularized (I := I) g₁ g₂)) x ![Z x, X x, Y x] -
         2 * Tensor0SBundle.nabla0SFun (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (LeviCivita (I := I) g₂) W (Tensor0SBundle.metricTensorField (I := I) g₁) x
           ![(CovariantDerivative.difference (LeviCivita (I := I) g₁) (LeviCivita (I := I) g₂) x)
@@ -201,7 +201,7 @@ theorem connectionDifference_koszul_deriv
   let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
   set field := Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
     (LeviCivita (I := I) g₂) (Tensor0SBundle.metricTensorField (I := I) g₁)
-    (metricField_totalReg (I := I) g₁ g₂) with hfield
+    (metricField_totalRegularized (I := I) g₁ g₂) with hfield
   have hAsm : ContMDiff I (I.prod 𝓘(ℝ, E)) (∞ : WithTop ℕ∞)
       (T% (diffSec (LeviCivita (I := I) g₂) (LeviCivita (I := I) g₁)
         (fun b => X b) (fun b => Y b))) :=

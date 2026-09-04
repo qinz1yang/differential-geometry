@@ -99,15 +99,15 @@ theorem redLen_ramp_bound
         Icc (T - b ^ 2) T ⊆ D.regular →
         (∀ r ∈ Icc (0 : Real) (b - c),
           T - (c + r) ^ 2 ∈ Icc t₀ t₁) →
-        b ∈ lRegDomain S T x W → (W, c ^ 2) ∈ lMinDomain S T x →
-        lRegCurve S T x W c ∈ (chartAt H p).source →
-        (extChartAt I p) (lRegCurve S T x W c) ∈ K →
-        redLength S T x (lRegCurve S T x W c) (c ^ 2) ≤ l₀ →
+        b ∈ lRegularizedDomain S T x W → (W, c ^ 2) ∈ lMinDomain S T x →
+        lRegularizedCurve S T x W c ∈ (chartAt H p).source →
+        (extChartAt I p) (lRegularizedCurve S T x W c) ∈ K →
+        redLength S T x (lRegularizedCurve S T x W c) (c ^ 2) ≤ l₀ →
         ∀ z ∈ K,
           redLength S T x ((extChartAt I p).symm z) (b ^ 2) ≤
             (2 * c * l₀ +
                 (Cg / 2) *
-                  (‖z - (extChartAt I p) (lRegCurve S T x W c)‖ ^ 2 /
+                  (‖z - (extChartAt I p) (lRegularizedCurve S T x W c)‖ ^ 2 /
                     (b - c)) + Cs * (b - c)) /
               (2 * b) := by
   obtain ⟨Cg, Cs, hCg, hCs, hramp⟩ :=
@@ -127,7 +127,7 @@ theorem redLen_ramp_bound
     exact hslab (hback s hs)
   have htime : Icc (T - b ^ 2) T ⊆ D.carrier := fun _ ht ↦
     D.regular_subset (hslab ht)
-  let y : E := (extChartAt I p) (lRegCurve S T x W c)
+  let y : E := (extChartAt I p) (lRegularizedCurve S T x W c)
   have hmap : MapsTo
       (lChartRamp y z (sub_nonneg.mpr hcb.le)).toFun
       (Icc (0 : Real) (b - c)) K :=
@@ -141,21 +141,21 @@ theorem redLen_ramp_bound
     htime hback hreg W hbdom hrayc z hmapTarget
   have hrampLe := hramp hT (sub_pos.mpr hcb) hforward hmap
   have hminEq := ((mem_lMinDomain S T x W (c ^ 2)).1 hmin).2
-  have hhead : lRegAction S T (lRegCurve S T x W) 0 c =
-      lCost S T x (lRegCurve S T x W c) (c ^ 2) := by
+  have hhead : lRegularizedAction S T (lRegularizedCurve S T x W) 0 c =
+      lCost S T x (lRegularizedCurve S T x W c) (c ^ 2) := by
     calc
-      lRegAction S T (lRegCurve S T x W) 0 c =
-          lLength S T (squareRootReparametrization (lRegCurve S T x W)) 0 (c ^ 2) := by
+      lRegularizedAction S T (lRegularizedCurve S T x W) 0 c =
+          lLength S T (squareRootReparametrization (lRegularizedCurve S T x W)) 0 (c ^ 2) := by
         simpa only [Real.sqrt_sq hc.le] using
-          (lLength_squareRootReparametrization_eq_lRegAction (I := I) S T (lRegCurve S T x W)
+          (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T (lRegularizedCurve S T x W)
             (c ^ 2) (sq_nonneg c)).symm
       _ = lCost S T x (lExp S T x W (c ^ 2)) (c ^ 2) := by
         change lLength S T (fun r : Real ↦
-          lRegCurve S T x W (Real.sqrt r)) 0 (c ^ 2) = _
+          lRegularizedCurve S T x W (Real.sqrt r)) 0 (c ^ 2) = _
         simpa only [lExp] using hminEq
-      _ = lCost S T x (lRegCurve S T x W c) (c ^ 2) := by
+      _ = lCost S T x (lRegularizedCurve S T x W c) (c ^ 2) := by
         simp only [lExp, Real.sqrt_sq hc.le]
-  have hheadLe : lCost S T x (lRegCurve S T x W c) (c ^ 2) ≤
+  have hheadLe : lCost S T x (lRegularizedCurve S T x W c) (c ^ 2) ≤
       2 * c * l₀ := by
     unfold redLength at hred
     rw [Real.sqrt_sq hc.le] at hred
@@ -185,11 +185,11 @@ theorem redLen_ball_bound
         Icc (T - b ^ 2) T ⊆ D.regular →
         (∀ r ∈ Icc (0 : Real) (b - c),
           T - (c + r) ^ 2 ∈ Icc t₀ t₁) →
-        b ∈ lRegDomain S T x W → (W, c ^ 2) ∈ lMinDomain S T x →
-        lRegCurve S T x W c ∈ (chartAt H p).source →
-        (extChartAt I p) (lRegCurve S T x W c) ∈
+        b ∈ lRegularizedDomain S T x W → (W, c ^ 2) ∈ lMinDomain S T x →
+        lRegularizedCurve S T x W c ∈ (chartAt H p).source →
+        (extChartAt I p) (lRegularizedCurve S T x W c) ∈
           Metric.closedBall q R →
-        redLength S T x (lRegCurve S T x W c) (c ^ 2) ≤ l₀ →
+        redLength S T x (lRegularizedCurve S T x W c) (c ^ 2) ≤ l₀ →
         let A := (extChartAt I p).symm '' Metric.ball q R
         MeasurableSet A ∧
           0 < riemannianVolumeMeasure (I := I) (M := M)
@@ -228,29 +228,29 @@ theorem redLen_ball_bound
   have hraw := hbound hT hc hcb hslab hforward hbdom hmin hrayc
     hyBall hred z hzClosed
   have hnorm :
-      ‖z - (extChartAt I p) (lRegCurve S T x W c)‖ ≤ 2 * R := by
+      ‖z - (extChartAt I p) (lRegularizedCurve S T x W c)‖ ≤ 2 * R := by
     calc
-      ‖z - (extChartAt I p) (lRegCurve S T x W c)‖ =
-          dist z ((extChartAt I p) (lRegCurve S T x W c)) := by
+      ‖z - (extChartAt I p) (lRegularizedCurve S T x W c)‖ =
+          dist z ((extChartAt I p) (lRegularizedCurve S T x W c)) := by
         rw [dist_eq_norm]
-      _ ≤ dist z q + dist q ((extChartAt I p) (lRegCurve S T x W c)) :=
+      _ ≤ dist z q + dist q ((extChartAt I p) (lRegularizedCurve S T x W c)) :=
         dist_triangle _ _ _
       _ ≤ R + R := by
         rw [dist_comm q]
         exact add_le_add hz.le hyBall
       _ = 2 * R := by ring
   have hsq :
-      ‖z - (extChartAt I p) (lRegCurve S T x W c)‖ ^ 2 ≤
+      ‖z - (extChartAt I p) (lRegularizedCurve S T x W c)‖ ^ 2 ≤
         (2 * R) ^ 2 :=
     (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (by norm_num) hR.le)).2 hnorm
   have hfrac :
-      ‖z - (extChartAt I p) (lRegCurve S T x W c)‖ ^ 2 /
+      ‖z - (extChartAt I p) (lRegularizedCurve S T x W c)‖ ^ 2 /
           (b - c) ≤
         (2 * R) ^ 2 / (b - c) :=
     (div_le_div_iff_of_pos_right (sub_pos.mpr hcb)).2 hsq
   have hterm :
       (Cg / 2) *
-          (‖z - (extChartAt I p) (lRegCurve S T x W c)‖ ^ 2 /
+          (‖z - (extChartAt I p) (lRegularizedCurve S T x W c)‖ ^ 2 /
             (b - c)) ≤
         (Cg / 2) * ((2 * R) ^ 2 / (b - c)) :=
     mul_le_mul_of_nonneg_left hfrac (div_nonneg hCg (by norm_num))
@@ -259,7 +259,7 @@ theorem redLen_ball_bound
     redLength S T x ((extChartAt I p).symm z) (b ^ 2) ≤
         (2 * c * l₀ +
             (Cg / 2) *
-              (‖z - (extChartAt I p) (lRegCurve S T x W c)‖ ^ 2 /
+              (‖z - (extChartAt I p) (lRegularizedCurve S T x W c)‖ ^ 2 /
                 (b - c)) + Cs * (b - c)) /
           (2 * b) := hraw
     _ ≤ (2 * c * l₀ +

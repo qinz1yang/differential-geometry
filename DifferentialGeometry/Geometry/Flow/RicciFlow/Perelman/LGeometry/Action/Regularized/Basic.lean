@@ -25,10 +25,10 @@ variable {D : RealTimeInterval}
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem lRegSpeedSq_nonneg
+theorem lRegularizedSpeedSq_nonneg
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
-    (alpha : Real → M) (s : Real) : 0 ≤ lRegSpeedSq S T alpha s := by
-  unfold lRegSpeedSq
+    (alpha : Real → M) (s : Real) : 0 ≤ lRegularizedSpeedSq S T alpha s := by
+  unfold lRegularizedSpeedSq
   by_cases hzero : lVelocity (I := I) alpha s = 0
   · rw [hzero]
     simp
@@ -36,34 +36,34 @@ theorem lRegSpeedSq_nonneg
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem lRegAction_add
+theorem lRegularizedAction_add
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (a b c : Real)
-    (hab : IntervalIntegrable (lRegLagrangian S T alpha) volume a b)
-    (hbc : IntervalIntegrable (lRegLagrangian S T alpha) volume b c) :
-    lRegAction S T alpha a b + lRegAction S T alpha b c =
-      lRegAction S T alpha a c := by
+    (hab : IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b)
+    (hbc : IntervalIntegrable (lRegularizedLagrangian S T alpha) volume b c) :
+    lRegularizedAction S T alpha a b + lRegularizedAction S T alpha b c =
+      lRegularizedAction S T alpha a c := by
   exact intervalIntegral.integral_add_adjacent_intervals hab hbc
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem lRegAction_sum
+theorem lRegularizedAction_sum
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) {t : ℕ → Real} {n : ℕ}
     (hint : ∀ k < n,
-      IntervalIntegrable (lRegLagrangian S T alpha) volume (t k) (t (k + 1))) :
-    (∑ k ∈ Finset.range n, lRegAction S T alpha (t k) (t (k + 1))) =
-      lRegAction S T alpha (t 0) (t n) := by
+      IntervalIntegrable (lRegularizedLagrangian S T alpha) volume (t k) (t (k + 1))) :
+    (∑ k ∈ Finset.range n, lRegularizedAction S T alpha (t k) (t (k + 1))) =
+      lRegularizedAction S T alpha (t 0) (t n) := by
   exact intervalIntegral.sum_integral_adjacent_intervals hint
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem lRegAction_congr
+theorem lRegularizedAction_congr
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha beta : Real → M) (a b : Real)
     (h : Set.EqOn alpha beta (Set.uIoo a b)) :
-    lRegAction S T alpha a b = lRegAction S T beta a b := by
-  unfold lRegAction
+    lRegularizedAction S T alpha a b = lRegularizedAction S T beta a b := by
+  unfold lRegularizedAction
   apply intervalIntegral.integral_congr_ae
   filter_upwards
     [MeasureTheory.Measure.ae_ne MeasureTheory.volume (max a b)]
@@ -82,7 +82,7 @@ theorem lRegAction_congr
   have hvel : lVelocity (I := I) alpha s = lVelocity (I := I) beta s := by
     with_unfolding_all exact
       (congrArg (fun L => L (1 : Real)) hmf)
-  simp only [lRegLagrangian]
+  simp only [lRegularizedLagrangian]
   rw [hval, hvel]
 
 

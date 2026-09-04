@@ -95,13 +95,13 @@ lemma tensorChartComponent_eq_zero_off_chartPouKernel
         (tensorChartComponentPou (I := I) (M := M) g r s S α Idx Jdx) htar]
     have hb := notMem_pouTsupport_of_notMem_chartPouKernel
       (I := I) (M := M) α htar hy
-    have hb_supp : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∉
+    have hb_support : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∉
         Function.support
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) :=
       fun hc => hb (subset_tsupport _ hc)
     have hρ : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) = 0 := by
-      by_contra hc; exact hb_supp hc
+      by_contra hc; exact hb_support hc
     change tensorChartComponentPou (I := I) (M := M) g r s S α Idx Jdx
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) = 0
     unfold tensorChartComponentPou

@@ -21,20 +21,20 @@ def mollifyEps {ε : ℝ} (hε : 0 < ε) (u : E → ℝ) : E → ℝ :=
 
 omit [NeZero d] in
 theorem mollifyEps_contDiff {ε : ℝ} (hε : 0 < ε) {u : E → ℝ}
-    (hu_loc : LocallyIntegrable u (volume : Measure E)) :
+    (hu_local : LocallyIntegrable u (volume : Measure E)) :
     ContDiff ℝ (⊤ : ℕ∞) (mollifyEps (d := d) hε u) := by
   unfold mollifyEps
   exact HasCompactSupport.contDiff_convolution_left
     (L := ContinuousLinearMap.lsmul ℝ ℝ)
     (DifferentialGeometry.Analysis.Sobolev.mollifierEps_compactSupport hε)
     (DifferentialGeometry.Analysis.Sobolev.mollifierEps_smooth hε)
-    hu_loc
+    hu_local
 
 omit [NeZero d] in
 theorem mollifyEps_continuous {ε : ℝ} (hε : 0 < ε) {u : E → ℝ}
-    (hu_loc : LocallyIntegrable u (volume : Measure E)) :
+    (hu_local : LocallyIntegrable u (volume : Measure E)) :
     Continuous (mollifyEps (d := d) hε u) :=
-  (mollifyEps_contDiff (d := d) hε hu_loc).continuous
+  (mollifyEps_contDiff (d := d) hε hu_local).continuous
 
 omit [NeZero d] in
 lemma mollifyEps_apply {ε : ℝ} (hε : 0 < ε) (u : E → ℝ) (x : E) :
@@ -60,25 +60,25 @@ theorem mollifyEps_eq_convolution_swap
 
 omit [NeZero d] in
 theorem mollifyEps_hasCompactSupport {ε : ℝ} (hε : 0 < ε) {u : E → ℝ}
-    (hu_supp : HasCompactSupport u) :
+    (hu_support : HasCompactSupport u) :
     HasCompactSupport (mollifyEps (d := d) hε u) :=
   HasCompactSupport.convolution (L := ContinuousLinearMap.lsmul ℝ ℝ)
     (μ := (volume : Measure E))
     (DifferentialGeometry.Analysis.Sobolev.mollifierEps_compactSupport hε)
-    hu_supp
+    hu_support
 
 omit [NeZero d] in
 theorem mollifyEps_memLp_two_of_hasCompactSupport {ε : ℝ} (hε : 0 < ε)
     {u : E → ℝ} (hu_l2 : MemLp u 2 (volume : Measure E))
-    (hu_supp : HasCompactSupport u) :
+    (hu_support : HasCompactSupport u) :
     MemLp (mollifyEps (d := d) hε u) 2 (volume : Measure E) := by
-  have hu_loc : LocallyIntegrable u (volume : Measure E) :=
+  have hu_local : LocallyIntegrable u (volume : Measure E) :=
     hu_l2.locallyIntegrable (by norm_num)
   have h_cont : Continuous (mollifyEps (d := d) hε u) :=
-    mollifyEps_continuous (d := d) hε hu_loc
-  have h_supp : HasCompactSupport (mollifyEps (d := d) hε u) :=
-    mollifyEps_hasCompactSupport (d := d) hε hu_supp
-  exact h_cont.memLp_of_hasCompactSupport h_supp
+    mollifyEps_continuous (d := d) hε hu_local
+  have h_support : HasCompactSupport (mollifyEps (d := d) hε u) :=
+    mollifyEps_hasCompactSupport (d := d) hε hu_support
+  exact h_cont.memLp_of_hasCompactSupport h_support
 
 omit [NeZero d] in
 theorem tendsto_mollifyEps_of_continuous {ι : Type*} {l : Filter ι}
@@ -102,7 +102,7 @@ theorem tendsto_mollifyEps_of_continuous {ι : Type*} {l : Filter ι}
       funext i; exact h_bump_rOut i
     rw [h_funeq]
     exact hε_tendsto
-  have h_conv_tendsto :
+  have h_convergence_tendsto :
       Tendsto
         (fun i =>
           ((DifferentialGeometry.Analysis.Sobolev.mollifierBumpEps (d := d)
@@ -122,13 +122,13 @@ theorem tendsto_mollifyEps_of_continuous {ι : Type*} {l : Filter ι}
             ContinuousLinearMap.lsmul ℝ ℝ, (volume : Measure E)] u) x₀
         = mollifyEps (d := d) (hε i) u x₀
     rfl
-  refine h_conv_tendsto.congr ?_
+  refine h_convergence_tendsto.congr ?_
   intro i; exact h_fn_eq i
 
 omit [NeZero d] in
 theorem ae_tendsto_mollifyEps_of_locallyIntegrable {ι : Type*} {l : Filter ι}
     {ε : ι → ℝ} (hε : ∀ i, 0 < ε i) (hε_tendsto : Tendsto ε l (𝓝 0))
-    {u : E → ℝ} (hu_loc : LocallyIntegrable u (volume : Measure E)) :
+    {u : E → ℝ} (hu_local : LocallyIntegrable u (volume : Measure E)) :
     ∀ᵐ x₀ ∂(volume : Measure E),
       Tendsto (fun i => mollifyEps (d := d) (hε i) u x₀) l (𝓝 (u x₀)) := by
   have h_bump_rOut : ∀ i,
@@ -167,7 +167,7 @@ theorem ae_tendsto_mollifyEps_of_locallyIntegrable {ι : Type*} {l : Filter ι}
     linarith
   have h_ae :=
     ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable
-      (μ := (volume : Measure E)) h_rOut_tendsto h_ratio hu_loc
+      (μ := (volume : Measure E)) h_rOut_tendsto h_ratio hu_local
   filter_upwards [h_ae] with x₀ hx₀
   have h_eq : ∀ i,
       ((DifferentialGeometry.Analysis.Sobolev.mollifierBumpEps (d := d)

@@ -17,7 +17,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 open DifferentialGeometry.Tensor0SBundle
@@ -379,5 +379,5 @@ theorem iterCov_smulF_le [FiniteDimensional Real E]
     (Tensor0SField.fromScalarField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (∞ : WithTop ℕ∞) φ hφ) B
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

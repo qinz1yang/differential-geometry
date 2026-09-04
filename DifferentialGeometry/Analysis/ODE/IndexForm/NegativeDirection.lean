@@ -126,13 +126,13 @@ private theorem exists_quad_neg {κ Q : ℝ} (hκ : 0 < κ) :
     2 * s * κ + s ^ 2 * Q = s * (2 * κ + s * Q) := by ring
     _ < 0 := mul_neg_of_neg_of_pos hsneg hsum
 
-namespace IsJacobiSolOn
+namespace IsJacobiFieldOn
 
 theorem mono
     {R : ℝ → F →L[ℝ] F} {a b a' b' : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R a b y v)
+    (hsol : IsJacobiFieldOn R a b y v)
     (ha : a ≤ a') (hb : b' ≤ b) :
-    IsJacobiSolOn R a' b' y v := by
+    IsJacobiFieldOn R a' b' y v := by
   have hsub : Icc a' b' ⊆ Icc a b := Icc_subset_Icc ha hb
   exact
     { deriv_fst := fun t ht => (hsol.deriv_fst t (hsub ht)).mono hsub
@@ -140,7 +140,7 @@ theorem mono
 
 theorem velocity_ne_zero_of_position_eq_zero
     {R : ℝ → F →L[ℝ] F} {a b c : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R a b y v)
+    (hsol : IsJacobiFieldOn R a b y v)
     (hc : c ∈ Ioo a b)
     (hR : ContinuousOn R (Icc a b))
     (hyc : y c = 0)
@@ -160,7 +160,7 @@ theorem velocity_ne_zero_of_position_eq_zero
 
 theorem indexForm_indexTestFieldTo
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R 0 c y v)
+    (hsol : IsJacobiFieldOn R 0 c y v)
     (hc : 0 ≤ c)
     (hR : ContinuousOn R (Icc 0 c)) :
     indexForm R 0 c y v
@@ -175,7 +175,7 @@ theorem indexForm_indexTestFieldTo
 
 theorem indexForm_indexTestField
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R 0 c y v)
+    (hsol : IsJacobiFieldOn R 0 c y v)
     (hc : 0 ≤ c)
     (hR : ContinuousOn R (Icc 0 c)) :
     indexForm R 0 c y v (indexTestField (v c)) (indexTestDeriv (v c))
@@ -185,7 +185,7 @@ theorem indexForm_indexTestField
 
 theorem indexForm_indexTestFieldTo_pos
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R 0 c y v)
+    (hsol : IsJacobiFieldOn R 0 c y v)
     (hc : c ∈ Ioo (0 : ℝ) L)
     (hR : ContinuousOn R (Icc 0 c))
     (hvc : v c ≠ 0) :
@@ -197,7 +197,7 @@ theorem indexForm_indexTestFieldTo_pos
 
 theorem indexForm_indexTestField_pos
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R 0 c y v)
+    (hsol : IsJacobiFieldOn R 0 c y v)
     (hc : c ∈ Ioo (0 : ℝ) 1)
     (hR : ContinuousOn R (Icc 0 c))
     (hvc : v c ≠ 0) :
@@ -208,7 +208,7 @@ theorem indexForm_indexTestField_pos
 
 theorem exists_split_neg_on
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R 0 L y v)
+    (hsol : IsJacobiFieldOn R 0 L y v)
     (hc : c ∈ Ioo (0 : ℝ) L)
     (hR : ContinuousOn R (Icc 0 L))
     (hSym : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
@@ -225,7 +225,7 @@ theorem exists_split_neg_on
           (s • indexTestDerivTo L (v c))
           (s • indexTestFieldTo L (v c))
           (s • indexTestDerivTo L (v c)) < 0 := by
-  have hsol0c : IsJacobiSolOn R 0 c y v :=
+  have hsol0c : IsJacobiFieldOn R 0 c y v :=
     hsol.mono le_rfl hc.2.le
   have hR0c : ContinuousOn R (Icc 0 c) :=
     hR.mono (Icc_subset_Icc le_rfl hc.2.le)
@@ -383,7 +383,7 @@ theorem exists_split_neg_on
 
 theorem exists_split_neg
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R 0 1 y v)
+    (hsol : IsJacobiFieldOn R 0 1 y v)
     (hc : c ∈ Ioo (0 : ℝ) 1)
     (hR : ContinuousOn R (Icc 0 1))
     (hSym : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
@@ -426,7 +426,7 @@ theorem exists_smooth_split
     exact ⟨hA.trans_le ht.1, ht.2.trans_lt hB⟩
   have hR01 : ContinuousOn R (Icc (0 : ℝ) 1) :=
     hR.continuousOn.mono h01
-  have hsol : IsJacobiSolOn R 0 1 y v :=
+  have hsol : IsJacobiFieldOn R 0 1 y v :=
     { deriv_fst := fun t ht => (hy t (h01 ht)).hasDerivWithinAt
       deriv_snd := fun t ht => (hv t (h01 ht)).hasDerivWithinAt }
   obtain ⟨s, hs⟩ :=
@@ -484,6 +484,6 @@ theorem exists_smooth_split
   · rw [e₀, e₁]
     exact hs
 
-end IsJacobiSolOn
+end IsJacobiFieldOn
 
 end DifferentialGeometry.Analysis.ODE

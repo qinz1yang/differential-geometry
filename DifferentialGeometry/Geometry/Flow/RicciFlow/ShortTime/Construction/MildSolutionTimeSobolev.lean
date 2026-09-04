@@ -66,16 +66,16 @@ theorem exists_deturck_remainder_mild_solution_with_time_sobolev_one
                     - DifferentialGeometry.Integral.L2.SmoothCcTensor.toL2 (Nsec u')) i) ^ 2)
             ≤ ((K : ℝ) * dist u u') ^ 2) :
     ∃ T : ℝ, ∃ (hT : 0 < T)
-        (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
+        (u : MaximalRegularitySolutionSpace (I := I) (M := M) (a : ℝ) T)
         (gforce : timeL2 (TensorHs (I := I) (M := M) g_bg 0 2 (a : ℝ)) T),
         ContinuousOn (timeH1.toFun u) (Set.Icc 0 T) ∧
           timeH1.trace0 _ T u =
             tensorHsInclusion (I := I) (M := M) (g := g_bg) (r := 0) (s := 2)
               (show (a : ℝ) ≤ (a : ℝ) + 2 by linarith) u₀ ∧
-          u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT u₀ gforce ∧
+          u = maximalRegularityDuhamelMap (I := I) (M := M) (a : ℝ) hT u₀ gforce ∧
           gforce =ᵐ[timeMeasure T]
             (fun t => N_cont
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M) (a : ℝ) hT u₀ gforce t)) := by
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M) (a : ℝ) hT u₀ gforce t)) := by
   let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E)))
   obtain ⟨L_R, R, hR, hLip⟩ :=

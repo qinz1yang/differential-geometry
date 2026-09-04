@@ -499,7 +499,7 @@ theorem ricDot_of_solution
     HasDerivWithinAt (fun s : Real => R s i j)
       (DifferentialGeometry.Geometry.Operator.metricTraceFirstTwo0SAt
           (I := I) (S.base.metric (t : Real))
-          (ricciNabla2WMP (I := I) S (t : Real) x)
+          (ricciNabla2WeakMaximumPrinciple (I := I) S (t : Real) x)
           (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis i) (basis j)) -
         2 * Cc (R (t : Real)) i j - 2 * Rsq (R (t : Real)) i j)
       D.carrier (t : Real) := by
@@ -707,7 +707,7 @@ theorem rmBaseDeriv_basis
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem connSmoothSol
+theorem connSmoothSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
@@ -717,7 +717,7 @@ theorem connSmoothSol
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] [T2Space M] in
-theorem metricCompatSol
+theorem metricCompatSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
@@ -735,8 +735,8 @@ theorem ricNablaRealizes
       2 (S.family.connection t) (S.ricci t)
       (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         2 (S.family.connection t) (S.ricci t)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-          2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t))) :=
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+          2 (S.family.connection t) (connSmoothSolution (I := I) S t) (S.ricci t))) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     2 (S.family.connection t) (S.ricci t) _
 
@@ -759,8 +759,8 @@ theorem knTermRealizes
             (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2)
               (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                 2 (S.family.connection t) (S.ricci t)
-                (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-                  2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
+                (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+                  2 (S.family.connection t) (connSmoothSolution (I := I) S t) (S.ricci t)))
               (metricTensorField (I := I) (S.family.metric t)))
           + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
             (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1)
@@ -771,7 +771,7 @@ theorem knTermRealizes
       (S.ricci t) (metricTensorField (I := I) (S.family.metric t)) _ 0
       (ricNablaRealizes (I := I) S t)
       (zero_realizes_metric (I := I) (S.family.connection t)
-        (S.family.metric t) (metricCompatSol (I := I) S t)))
+        (S.family.metric t) (metricCompatSolution (I := I) S t)))
 
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -787,7 +787,7 @@ theorem knScalRealizes
         (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
           (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
             (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
-            (S.scalar t) (scalarSmoothOfSol (I := I) S t)
+            (S.scalar t) (scalarSmoothOfSolution (I := I) S t)
             (metricTensorField (I := I) (S.family.metric t)))
           (metricTensorField (I := I) (S.family.metric t))))
       (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
@@ -796,14 +796,14 @@ theorem knScalRealizes
             (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2)
               (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
                 (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-                  (S.scalar t) (scalarSmoothOfSol (I := I) S t))
+                  (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
                 (metricTensorField (I := I) (S.family.metric t)))
               (metricTensorField (I := I) (S.family.metric t)))
           + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
             (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1)
               (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
                 (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
-                (S.scalar t) (scalarSmoothOfSol (I := I) S t)
+                (S.scalar t) (scalarSmoothOfSolution (I := I) S t)
                 (metricTensorField (I := I) (S.family.metric t)))
               0))) :=
   totalNabla0SRealizes_domDomCongr (I := I)
@@ -811,16 +811,16 @@ theorem knScalRealizes
     (nabla0S_product_realizes (I := I) (S.family.connection t)
       _ (metricTensorField (I := I) (S.family.metric t)) _ 0
       (nabla_smul_metric (I := I) (M := M) (S.family.connection t)
-        (S.family.metric t) (metricCompatSol (I := I) S t)
-        (S.scalar t) (scalarSmoothOfSol (I := I) S t)
+        (S.family.metric t) (metricCompatSolution (I := I) S t)
+        (S.scalar t) (scalarSmoothOfSolution (I := I) S t)
         (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-          (S.scalar t) (scalarSmoothOfSol (I := I) S t))
+          (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
         (fun x v => by
           rw [DifferentialGeometry.Geometry.Operator.duSec_apply]
           exact DifferentialGeometry.Geometry.Operator.differential1FormFun_apply_eq_mvfderiv
             (I := I) (S.scalar t) x v))
       (zero_realizes_metric (I := I) (S.family.connection t)
-        (S.family.metric t) (metricCompatSol (I := I) S t)))
+        (S.family.metric t) (metricCompatSolution (I := I) S t)))
 
 section KnField
 
@@ -845,7 +845,7 @@ private noncomputable def knScalT
     (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
       (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
-        (S.scalar t) (scalarSmoothOfSol (I := I) S t)
+        (S.scalar t) (scalarSmoothOfSolution (I := I) S t)
         (metricTensorField (I := I) (S.family.metric t)))
       (metricTensorField (I := I) (S.family.metric t)))
 
@@ -890,16 +890,16 @@ theorem ric2NablaRealizes
       (2 + 1) (S.family.connection t)
       (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         2 (S.family.connection t) (S.ricci t)
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-          2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+          2 (S.family.connection t) (connSmoothSolution (I := I) S t) (S.ricci t)))
       (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (2 + 1) (S.family.connection t)
         (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           2 (S.family.connection t) (S.ricci t)
-          (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-            2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-          (2 + 1) (S.family.connection t) (connSmoothSol (I := I) S t) _)) :=
+          (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+            2 (S.family.connection t) (connSmoothSolution (I := I) S t) (S.ricci t)))
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+          (2 + 1) (S.family.connection t) (connSmoothSolution (I := I) S t) _)) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (2 + 1) (S.family.connection t) _ _
 
@@ -910,13 +910,13 @@ theorem duNablaRealizes
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 (S.family.connection t)
       (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-        (S.scalar t) (scalarSmoothOfSol (I := I) S t))
+        (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
       (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         1 (S.family.connection t)
         (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-          (S.scalar t) (scalarSmoothOfSol (I := I) S t))
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-          1 (S.family.connection t) (connSmoothSol (I := I) S t) _)) :=
+          (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+          1 (S.family.connection t) (connSmoothSolution (I := I) S t) _)) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 (S.family.connection t) _ _
 
@@ -930,8 +930,8 @@ private noncomputable def knRicD
         (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2)
           (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 (S.family.connection t) (S.ricci t)
-            (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-              2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
+            (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+              2 (S.family.connection t) (connSmoothSolution (I := I) S t) (S.ricci t)))
           (metricTensorField (I := I) (S.family.metric t)))
       + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
         (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1)
@@ -947,14 +947,14 @@ private noncomputable def knScalD
         (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2)
           (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
             (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-              (S.scalar t) (scalarSmoothOfSol (I := I) S t))
+              (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
             (metricTensorField (I := I) (S.family.metric t)))
           (metricTensorField (I := I) (S.family.metric t)))
       + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
         (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1)
           (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
             (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
-            (S.scalar t) (scalarSmoothOfSol (I := I) S t)
+            (S.scalar t) (scalarSmoothOfSolution (I := I) S t)
             (metricTensorField (I := I) (S.family.metric t)))
           0))
 
@@ -986,17 +986,17 @@ private theorem knTerm2Realizes
                     (2 + 1) (S.family.connection t)
                     (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                       2 (S.family.connection t) (S.ricci t)
-                      (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-                        2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
-                    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-                      (2 + 1) (S.family.connection t) (connSmoothSol (I := I) S t) _))
+                      (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+                        2 (S.family.connection t) (connSmoothSolution (I := I) S t) (S.ricci t)))
+                    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+                      (2 + 1) (S.family.connection t) (connSmoothSolution (I := I) S t) _))
                   (metricTensorField (I := I) (S.family.metric t)))
               + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
                 (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
                   (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                     2 (S.family.connection t) (S.ricci t)
-                    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-                      2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
+                    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+                      2 (S.family.connection t) (connSmoothSolution (I := I) S t) (S.ricci t)))
                   0))
           + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
             (frontExtendEquiv (leibnizRightEquiv 2 2))
@@ -1004,8 +1004,8 @@ private theorem knTerm2Realizes
                 (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
                   (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                     2 (S.family.connection t) (S.ricci t)
-                    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-                      2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
+                    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+                      2 (S.family.connection t) (connSmoothSolution (I := I) S t) (S.ricci t)))
                   0)
               + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
                 (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1 + 1)
@@ -1018,7 +1018,7 @@ private theorem knTerm2Realizes
           _ (metricTensorField (I := I) (S.family.metric t)) _ 0
           (ric2NablaRealizes (I := I) S t)
           (zero_realizes_metric (I := I) (S.family.connection t)
-            (S.family.metric t) (metricCompatSol (I := I) S t)))).add
+            (S.family.metric t) (metricCompatSolution (I := I) S t)))).add
       (totalNabla0SRealizes_domDomCongr (I := I)
         (S.family.connection t) (leibnizRightEquiv 2 2) _ _
         (nabla0S_product_realizes (I := I) (S.family.connection t)
@@ -1046,21 +1046,21 @@ private theorem knScal2Realizes
                         (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                           1 (S.family.connection t)
                           (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-                            (S.scalar t) (scalarSmoothOfSol (I := I) S t))
-                          (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-                            1 (S.family.connection t) (connSmoothSol (I := I) S t) _))
+                            (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
+                          (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+                            1 (S.family.connection t) (connSmoothSolution (I := I) S t) _))
                         (metricTensorField (I := I) (S.family.metric t)))
                     + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 1 2)
                       (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2 + 1)
                         (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-                          (S.scalar t) (scalarSmoothOfSol (I := I) S t))
+                          (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
                         0))
                   (metricTensorField (I := I) (S.family.metric t)))
               + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
                 (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
                   (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
                     (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-                      (S.scalar t) (scalarSmoothOfSol (I := I) S t))
+                      (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
                     (metricTensorField (I := I) (S.family.metric t)))
                   0))
           + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
@@ -1069,14 +1069,14 @@ private theorem knScal2Realizes
                 (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
                   (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
                     (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-                      (S.scalar t) (scalarSmoothOfSol (I := I) S t))
+                      (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
                     (metricTensorField (I := I) (S.family.metric t)))
                   0)
               + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
                 (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1 + 1)
                   (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
                     (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
-                    (S.scalar t) (scalarSmoothOfSol (I := I) S t)
+                    (S.scalar t) (scalarSmoothOfSolution (I := I) S t)
                     (metricTensorField (I := I) (S.family.metric t)))
                   0)))) :=
   totalNabla0SRealizes_domDomCongr (I := I)
@@ -1087,22 +1087,22 @@ private theorem knScal2Realizes
           _ (metricTensorField (I := I) (S.family.metric t)) _ 0
           (nabla0S_product_realizes (I := I) (S.family.connection t)
             (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-              (S.scalar t) (scalarSmoothOfSol (I := I) S t))
+              (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
             (metricTensorField (I := I) (S.family.metric t)) _ 0
             (duNablaRealizes (I := I) S t)
             (zero_realizes_metric (I := I) (S.family.connection t)
-              (S.family.metric t) (metricCompatSol (I := I) S t)))
+              (S.family.metric t) (metricCompatSolution (I := I) S t)))
           (zero_realizes_metric (I := I) (S.family.connection t)
-            (S.family.metric t) (metricCompatSol (I := I) S t)))).add
+            (S.family.metric t) (metricCompatSolution (I := I) S t)))).add
       (totalNabla0SRealizes_domDomCongr (I := I)
         (S.family.connection t) (leibnizRightEquiv 2 2) _ _
         (nabla0S_product_realizes (I := I) (S.family.connection t)
           _ 0 _ 0
           (nabla_smul_metric (I := I) (M := M) (S.family.connection t)
-            (S.family.metric t) (metricCompatSol (I := I) S t)
-            (S.scalar t) (scalarSmoothOfSol (I := I) S t)
+            (S.family.metric t) (metricCompatSolution (I := I) S t)
+            (S.scalar t) (scalarSmoothOfSolution (I := I) S t)
             (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-              (S.scalar t) (scalarSmoothOfSol (I := I) S t))
+              (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
             (fun x v => by
               rw [DifferentialGeometry.Geometry.Operator.duSec_apply]
               exact
@@ -1387,10 +1387,10 @@ private noncomputable def knRicLapT
           (2 + 1) (S.family.connection t)
           (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 (S.family.connection t) (S.ricci t)
-            (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-              2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
-          (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-            (2 + 1) (S.family.connection t) (connSmoothSol (I := I) S t) _)))
+            (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+              2 (S.family.connection t) (connSmoothSolution (I := I) S t) (S.ricci t)))
+          (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+            (2 + 1) (S.family.connection t) (connSmoothSolution (I := I) S t) _)))
       (metricTensorField (I := I) (S.family.metric t)))
 
 private noncomputable def knScalLapT
@@ -1406,9 +1406,9 @@ private noncomputable def knScalLapT
           (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             1 (S.family.connection t)
             (DifferentialGeometry.Geometry.Operator.duSec (I := I)
-              (S.scalar t) (scalarSmoothOfSol (I := I) S t))
-            (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-              1 (S.family.connection t) (connSmoothSol (I := I) S t) _)))
+              (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
+            (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+              1 (S.family.connection t) (connSmoothSolution (I := I) S t) _)))
         (metricTensorField (I := I) (S.family.metric t)))
       (metricTensorField (I := I) (S.family.metric t)))
 
@@ -1431,16 +1431,16 @@ private theorem lapRm04Kn_apply
     (v : Fin 4 → TangentSpace I x) :
     lapRm04Kn (I := I) S t x v =
       -metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-          (ricciNabla2WMP (I := I) S t x) (vec2 (I := I) (v 0) (v 2)) *
+          (ricciNabla2WeakMaximumPrinciple (I := I) S t x) (vec2 (I := I) (v 0) (v 2)) *
           (S.base.metric t).inner x (v 1) (v 3) +
         metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-          (ricciNabla2WMP (I := I) S t x) (vec2 (I := I) (v 1) (v 2)) *
+          (ricciNabla2WeakMaximumPrinciple (I := I) S t x) (vec2 (I := I) (v 1) (v 2)) *
           (S.base.metric t).inner x (v 0) (v 3) +
         metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-          (ricciNabla2WMP (I := I) S t x) (vec2 (I := I) (v 0) (v 3)) *
+          (ricciNabla2WeakMaximumPrinciple (I := I) S t x) (vec2 (I := I) (v 0) (v 3)) *
           (S.base.metric t).inner x (v 1) (v 2) -
         metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-          (ricciNabla2WMP (I := I) S t x) (vec2 (I := I) (v 1) (v 3)) *
+          (ricciNabla2WeakMaximumPrinciple (I := I) S t x) (vec2 (I := I) (v 1) (v 3)) *
           (S.base.metric t).inner x (v 0) (v 2) +
         metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
             (scalarHessSec (I := I) S t x) Fin.elim0 / 2 *
@@ -1462,7 +1462,7 @@ private theorem lapRm04Kn_apply
   have hricT (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
       knRicLapT (I := I) S t e x v =
         metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-            (ricciNabla2WMP (I := I) S t x)
+            (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
             ((fun i => v (e i)) ∘ Fin.castAdd 2) *
           (S.base.metric t).inner x
             (((fun i => v (e i)) ∘ Fin.natAdd 2) 0)
@@ -1489,9 +1489,9 @@ private theorem lapRm04Kn_apply
         (n := (∞ : WithTop ℕ∞)) 2 :=
       totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         1 (S.family.connection t)
-        (duSec (I := I) (S.scalar t) (scalarSmoothOfSol (I := I) S t))
-        (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
-          1 (S.family.connection t) (connSmoothSol (I := I) S t) _)
+        (duSec (I := I) (S.scalar t) (scalarSmoothOfSolution (I := I) S t))
+        (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
+          1 (S.family.connection t) (connSmoothSolution (I := I) S t) _)
     have hHess : rawHess = scalarHessSec (I := I) S t := by
       simp only [rawHess, scalarHessSec, hessianSec, SolutionOn.family_connection]
     rw [knScalLapT, Tensor0SField.domDomCongr_apply]
@@ -1584,16 +1584,16 @@ theorem roughRm04_comp
           (identityInvMetric (Idx := Fin 3))
           (nablaKRm04Field (I := I) S t 2 x)) (fun i => basis i) I0 =
       -metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-          (ricciNabla2WMP (I := I) S t x)
+          (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
           (vec2 (I := I) (basis (I0 0)) (basis (I0 2))) * kd (I0 1) (I0 3) +
         metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-          (ricciNabla2WMP (I := I) S t x)
+          (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
           (vec2 (I := I) (basis (I0 1)) (basis (I0 2))) * kd (I0 0) (I0 3) +
         metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-          (ricciNabla2WMP (I := I) S t x)
+          (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
           (vec2 (I := I) (basis (I0 0)) (basis (I0 3))) * kd (I0 1) (I0 2) -
         metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-          (ricciNabla2WMP (I := I) S t x)
+          (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
           (vec2 (I := I) (basis (I0 1)) (basis (I0 3))) * kd (I0 0) (I0 2) +
         DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I)
             (flowG (I := I) S) t (S.scalar t) x / 2 *
@@ -1674,7 +1674,7 @@ theorem riemann_component_evolution_in_orthonormal_frame_of_solution
     S.ricciAt r y (vec2 (I := I) (basis i) (basis j))
   let lap : Fin 3 → Fin 3 → Real := fun i j =>
     metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : Real))
-      (ricciNabla2WMP (I := I) S (t : Real) y)
+      (ricciNabla2WeakMaximumPrinciple (I := I) S (t : Real) y)
       (vec2 (I := I) (basis i) (basis j))
   let scalarLap : Real → M → Real := fun r z =>
     DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I)

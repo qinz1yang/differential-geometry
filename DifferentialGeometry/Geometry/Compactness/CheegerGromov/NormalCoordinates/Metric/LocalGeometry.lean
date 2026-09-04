@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set TopologicalSpace
 open scoped Manifold ContDiff Topology
@@ -504,5 +504,5 @@ theorem normalGeo_map
   exact Geometry.Riemannian.Geodesic.HasGeodesicEquationAt.congr_of_eventuallyEq_at
     hev.self_of_nhds hev (hmapAmbient t ht)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

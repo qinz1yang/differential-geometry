@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 open Set Topology TopologicalSpace
@@ -205,7 +205,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
 omit [∀ j, SigmaCompactSpace (M j)] [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem path_escape_core
+private theorem path_escape_core
     (b : ∀ j, M j) (j₀ n : ℕ)
     [ProperSpace (M (j₀ + n))]
     [∀ m, Nonempty (tailBallOpen b j₀ m)]
@@ -344,7 +344,7 @@ theorem mem_core_of_edist
         (S.toSeqSystem.incl n (tailCenter b j₀ n)) q <
           ENNReal.ofReal ((2 : ℝ) ^ n / 4)) :
     q ∈ limitCore b j₀ S n := by
-  let _ := (inferInstance : (∀ (m : ℕ), SigmaCompactSpace ↥(DifferentialGeometry.HCGCompactness.tailBallOpen b j₀ m)))
+  let _ := (inferInstance : (∀ (m : ℕ), SigmaCompactSpace ↥(DifferentialGeometry.CheegerGromovCompactness.tailBallOpen b j₀ m)))
   let _ : RiemannianBundle (fun z : S.toSeqSystem.Lim => TangentSpace I z) :=
     ⟨(S.limitMetric gTail hgTail).toRiemannianMetric⟩
   by_contra hqK
@@ -642,5 +642,5 @@ theorem tail_limit_complete
 
 end ApproxData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

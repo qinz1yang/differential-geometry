@@ -249,7 +249,7 @@ theorem chart_bilinear_identity_h1_0
     (ψ_seq : ℕ → EuclN → ℝ)
     (hψ_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (ψ_seq n))
     (hψ_seq_cs : ∀ n, HasCompactSupport (ψ_seq n))
-    (hψ_seq_supp : ∀ n, tsupport (ψ_seq n) ⊆ K_0)
+    (hψ_seq_support : ∀ n, tsupport (ψ_seq n) ⊆ K_0)
     (hψ_seq_l2 :
       Tendsto (fun n => eLpNorm (fun x => ψ_seq n x - ψ x) 2
         ((volume : Measure EuclN).restrict K_0)) atTop (𝓝 0))
@@ -407,12 +407,12 @@ theorem chart_bilinear_identity_h1_0
               densityOnEuclid (I := I) g α y * D.fChart y * ψ_seq n y
               ∂(volume : Measure EuclN) := by
     intro n
-    have hψ_seq_supp_chart : tsupport (ψ_seq n) ⊆
+    have hψ_seq_support_chart : tsupport (ψ_seq n) ⊆
         chartTargetEuclid (I := I) (M := M) α :=
-      (hψ_seq_supp n).trans hK_0_in
+      (hψ_seq_support n).trans hK_0_in
     have h_id_chart :=
       chart_bilinear_identity_h1Compl (I := I) (M := M) D
-        (hψ_seq_smooth n) (hψ_seq_cs n) hψ_seq_supp_chart
+        (hψ_seq_smooth n) (hψ_seq_cs n) hψ_seq_support_chart
     have hChart_meas : MeasurableSet
         (chartTargetEuclid (I := I) (M := M) α) :=
       (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet
@@ -434,15 +434,15 @@ theorem chart_bilinear_identity_h1_0
       apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hChart_meas
         (hK_0_in.trans (subset_refl _))
       intro y hy
-      have hy_notin_supp : y ∉ tsupport (ψ_seq n) := fun hin =>
-        hy.2 ((hψ_seq_supp n) hin)
+      have hy_notin_support : y ∉ tsupport (ψ_seq n) := fun hin =>
+        hy.2 ((hψ_seq_support n) hin)
       have h_fderiv_zero :
           ∀ v : EuclN, (fderiv ℝ (ψ_seq n) y) v = 0 := by
         have h_fderiv_eq_zero : fderiv ℝ (ψ_seq n) y = 0 := by
           have h_open_compl : IsOpen (tsupport (ψ_seq n))ᶜ :=
             (isClosed_tsupport (ψ_seq n)).isOpen_compl
           have hpsi_eq_zero : ψ_seq n =ᶠ[𝓝 y] (0 : EuclN → ℝ) := by
-            refine (h_open_compl.eventually_mem hy_notin_supp).mono ?_
+            refine (h_open_compl.eventually_mem hy_notin_support).mono ?_
             intro z hz
             exact image_eq_zero_of_notMem_tsupport hz
           have hf_eq : fderiv ℝ (ψ_seq n) y = fderiv ℝ (0 : EuclN → ℝ) y :=
@@ -473,10 +473,10 @@ theorem chart_bilinear_identity_h1_0
       apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hChart_meas
         (hK_0_in.trans (subset_refl _))
       intro y hy
-      have hy_notin_supp : y ∉ tsupport (ψ_seq n) := fun hin =>
-        hy.2 ((hψ_seq_supp n) hin)
+      have hy_notin_support : y ∉ tsupport (ψ_seq n) := fun hin =>
+        hy.2 ((hψ_seq_support n) hin)
       have hpsi_y : ψ_seq n y = 0 :=
-        image_eq_zero_of_notMem_tsupport hy_notin_supp
+        image_eq_zero_of_notMem_tsupport hy_notin_support
       rw [hpsi_y]; ring
     have h_int_rhs_chart_to_K0 :
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -488,10 +488,10 @@ theorem chart_bilinear_identity_h1_0
       apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hChart_meas
         (hK_0_in.trans (subset_refl _))
       intro y hy
-      have hy_notin_supp : y ∉ tsupport (ψ_seq n) := fun hin =>
-        hy.2 ((hψ_seq_supp n) hin)
+      have hy_notin_support : y ∉ tsupport (ψ_seq n) := fun hin =>
+        hy.2 ((hψ_seq_support n) hin)
       have hpsi_y : ψ_seq n y = 0 :=
-        image_eq_zero_of_notMem_tsupport hy_notin_supp
+        image_eq_zero_of_notMem_tsupport hy_notin_support
       rw [hpsi_y]; ring
     rw [← h_int_lhs1_chart_to_K0, ← h_int_lhs2_chart_to_K0,
       ← h_int_rhs_chart_to_K0]

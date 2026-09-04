@@ -31,14 +31,14 @@ private theorem rayLag_cont
     (T : Real) (x : M) :
     ContinuousOn
       (fun q : E × Real ↦
-        lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2)
-      (lRegJointDom S T x) := by
+        lRegularizedLagrangian S T (fun s ↦ lRegularizedCurve S T x q.1 s) q.2)
+      (lRegularizedJointDom S T x) := by
   let J := 𝓘(Real, E).prod 𝓘(Real, Real)
-  let U := lRegJointDom S T x
-  let F : E × Real → M := fun q ↦ lRegCurve S T x q.1 q.2
-  have hUopen : IsOpen U := lRegJointDom_open S hS T x
+  let U := lRegularizedJointDom S T x
+  let F : E × Real → M := fun q ↦ lRegularizedCurve S T x q.1 q.2
+  have hUopen : IsOpen U := lRegularizedJointDom_open S hS T x
   have hF : ContMDiffOn J I ∞ F U := by
-    simpa only [J, F, U] using lRegCurve_smoothOn S hS T x
+    simpa only [J, F, U] using lRegularizedCurve_smoothOn S hS T x
   have htm :=
     hF.contMDiffOn_tangentMapWithin (m := ∞) le_rfl hUopen.uniqueMDiffOn
   have hunit : ContMDiff J J.tangent ∞
@@ -101,16 +101,16 @@ private theorem rayLag_cont
   let P := {q : E × Real // q ∈ U}
   let timeLift : P → {t : Real // t ∈ D.carrier} := fun q ↦
     ⟨T - q.1.2 ^ 2, D.regular_subset
-      (lRegDomain_reg S T x q.1.1 q.2)⟩
-  let velLift : P → TangentBundle I M := fun q ↦
+      (lRegularizedDomain_regularity S T x q.1.1 q.2)⟩
+  let velocityLift : P → TangentBundle I M := fun q ↦
     ⟨F q.1, lVelocity (I := I) (fun s ↦ F (q.1.1, s)) q.1.2⟩
   have htime : Continuous timeLift :=
     ((continuous_const.sub
       ((continuous_snd.comp continuous_subtype_val).pow 2)).subtype_mk _)
-  have hvel : Continuous velLift := by
+  have hvel : Continuous velocityLift := by
     have hvelOn := hvelSmooth.continuousOn
     rw [continuousOn_iff_continuous_domRestrict] at hvelOn
-    change Continuous velLift at hvelOn
+    change Continuous velocityLift at hvelOn
     exact hvelOn
   have hbase : Continuous (fun q : P ↦ F q.1) := by
     have hbaseOn := hF.continuousOn
@@ -159,12 +159,12 @@ theorem lRayTail_bound
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) {K : Set E} {a b : Real}
     (hK : IsCompact K)
-    (hdom : K ×ˢ Icc a b ⊆ lRegJointDom S T x) :
+    (hdom : K ×ˢ Icc a b ⊆ lRegularizedJointDom S T x) :
     ∃ C : Real, 0 ≤ C ∧ ∀ Z ∈ K, ∀ c ∈ Icc a b,
-      |lRegAction S T (lRegCurve S T x Z) c b| ≤ C * (b - c) := by
+      |lRegularizedAction S T (lRegularizedCurve S T x Z) c b| ≤ C * (b - c) := by
   let Q : Set (E × Real) := K ×ˢ Icc a b
   let lag : E × Real → Real := fun q ↦
-    lRegLagrangian S T (fun s ↦ lRegCurve S T x q.1 s) q.2
+    lRegularizedLagrangian S T (fun s ↦ lRegularizedCurve S T x q.1 s) q.2
   have hQ : IsCompact Q := hK.prod isCompact_Icc
   have hcont : ContinuousOn lag Q := by
     exact (rayLag_cont (I := I) S hS T x).mono hdom
@@ -186,7 +186,7 @@ theorem lRayTail_bound
     have hsIcc : s ∈ Icc c b := by
       simpa only [uIcc_of_le hcb] using uIoc_subset_uIcc hs
     simpa only [Real.norm_eq_abs] using hlagBound s hsIcc
-  simpa only [lRegAction, lag, Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr hcb)]
+  simpa only [lRegularizedAction, lag, Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr hcb)]
     using hnorm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -197,9 +197,9 @@ theorem lRayTail_bdd
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (Z : Nat → E) {a b : Real}
     (hZ : Bornology.IsBounded (range Z))
-    (hdom : closure (range Z) ×ˢ Icc a b ⊆ lRegJointDom S T x) :
+    (hdom : closure (range Z) ×ˢ Icc a b ⊆ lRegularizedJointDom S T x) :
     ∃ C : Real, 0 ≤ C ∧ ∀ n, ∀ c ∈ Icc a b,
-      |lRegAction S T (lRegCurve S T x (Z n)) c b| ≤ C * (b - c) := by
+      |lRegularizedAction S T (lRegularizedCurve S T x (Z n)) c b| ≤ C * (b - c) := by
   obtain ⟨C, hC, hall⟩ := lRayTail_bound (I := I) S hS T x
     hZ.isCompact_closure hdom
   refine ⟨C, hC, ?_⟩

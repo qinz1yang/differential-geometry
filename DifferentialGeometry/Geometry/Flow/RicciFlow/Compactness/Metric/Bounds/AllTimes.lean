@@ -13,7 +13,7 @@ universe u uE uH
 namespace DifferentialGeometry
 
 attribute [local instance] Fintype.ofFinite
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -154,7 +154,7 @@ theorem metricCovOrderOneWindow_of_christoffel
             (3 * H.R * |t - t0| +
               (3 / 2 : Real) *
                 (Real.sqrt (H.base.equivC ^ 3) * H.initialOneC))) :=
-    covOne_le_init
+    covOne_le_initial
       (I := I) (K := K) (u := u) (SSeq i) gRef (H.gInv i)
       H.frame H.hframe H.hu (H.K_subset_u hxK) hxK (H.nablaRic i)
       hsub hregular
@@ -229,10 +229,10 @@ def metricCovOrderEvolutionBeta (Cppp : Real) : Real :=
   8 * Cppp ^ 2 + 1
 
 def metricCovOrderEvolutionConstant
-    (Cpp Cppp timeRadius initC : Real) : Real :=
+    (Cpp Cppp timeRadius initialC : Real) : Real :=
   Real.sqrt
     (Real.exp (metricCovOrderEvolutionAlpha Cpp * timeRadius) *
-      (initC ^ 2 +
+      (initialC ^ 2 +
         metricCovOrderEvolutionBeta Cppp /
           metricCovOrderEvolutionAlpha Cpp))
 
@@ -280,7 +280,7 @@ structure MetricCovOrderEvolutionInput
     Nat -> Real -> (x : M) ->
       Tensor0SBundle.Tensor0SSpace
         (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (p + 2) x
-  normsq_evol :
+  normsq_evolution :
     MetricCovOrderNormSqEvolutionOn (I := I) K β ψ gSeq gRef p nablaRic
   Cpp : Real
   Cppp : Real
@@ -293,11 +293,11 @@ structure MetricCovOrderEvolutionInput
           (Tensor0SBundle.normSq0S (I := I) gRef x (p + 2)
             (nablaRic i s x)) <=
           Cpp * metricCovDerivNorm (I := I) p (gSeq i s) gRef x + Cppp
-  initC : Real
-  initC_nonneg : 0 <= initC
-  init_bound :
+  initialC : Real
+  initialC_nonneg : 0 <= initialC
+  initial_bound :
     forall i : Nat, forall x : M, x ∈ K ->
-      metricCovDerivNorm (I := I) p (gSeq i t0) gRef x <= initC
+      metricCovDerivNorm (I := I) p (gSeq i t0) gRef x <= initialC
   timeRadius : Real
   time_abs_le :
     forall t : Real, t ∈ Set.Icc β ψ -> |t - t0| <= timeRadius
@@ -311,11 +311,11 @@ theorem metricCovOrderWindow_of_evolution
       MetricCovOrderEvolutionInput (I := I) K β ψ t0 gSeq gRef p) :
     MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef p
       (metricCovOrderEvolutionConstant
-        Hin.Cpp Hin.Cppp Hin.timeRadius Hin.initC) := by
+        Hin.Cpp Hin.Cppp Hin.timeRadius Hin.initialC) := by
   refine
     metricCovOrderWindow_of_pointwise (I := I) K β ψ gSeq gRef p
       (metricCovOrderEvolutionConstant
-        Hin.Cpp Hin.Cppp Hin.timeRadius Hin.initC) ?_
+        Hin.Cpp Hin.Cppp Hin.timeRadius Hin.initialC) ?_
   intro i t ht x hxK
   let U : Real -> Real := fun s =>
     metricCovDerivNorm (I := I) p (gSeq i s) gRef x ^ 2
@@ -330,7 +330,7 @@ theorem metricCovOrderWindow_of_evolution
                 (Tensor0SBundle.normSq0S (I := I) gRef x (p + 2)
                   (Hin.nablaRic i s x))) ^ 2 := fun s hs =>
     by
-      simpa [U] using Hin.normsq_evol i x hxK s hs
+      simpa [U] using Hin.normsq_evolution i x hxK s hs
   let U' : Real -> Real := fun s =>
     if hs : s ∈ Set.Icc β ψ then Classical.choose (derivData s hs) else 0
   have hU_nonneg : forall s : Real, s ∈ Set.uIcc t0 t -> 0 <= U s := by
@@ -421,15 +421,15 @@ theorem metricCovOrderWindow_of_evolution
     affineGronwall_of_abs_deriv_le U U'
       halpha_pos hbeta_pos hU_nonneg hU_deriv hbound
   have hU0 :
-      U t0 <= Hin.initC ^ 2 := by
-    have hinit := Hin.init_bound i x hxK
+      U t0 <= Hin.initialC ^ 2 := by
+    have hinit := Hin.initial_bound i x hxK
     have hnorm_nonneg :
         0 <= metricCovDerivNorm (I := I) p (gSeq i t0) gRef x :=
       Real.sqrt_nonneg _
     have hsquare :
         (metricCovDerivNorm (I := I) p (gSeq i t0) gRef x) ^ 2 <=
-          Hin.initC ^ 2 :=
-      (sq_le_sq₀ hnorm_nonneg Hin.initC_nonneg).2 hinit
+          Hin.initialC ^ 2 :=
+      (sq_le_sq₀ hnorm_nonneg Hin.initialC_nonneg).2 hinit
     simpa [U] using hsquare
   have hshift_nonneg :
       0 <=
@@ -440,17 +440,17 @@ theorem metricCovOrderWindow_of_evolution
       U t0 +
           metricCovOrderEvolutionBeta Hin.Cppp /
             metricCovOrderEvolutionAlpha Hin.Cpp <=
-        Hin.initC ^ 2 +
+        Hin.initialC ^ 2 +
           metricCovOrderEvolutionBeta Hin.Cppp /
             metricCovOrderEvolutionAlpha Hin.Cpp := by
     simpa [add_comm, add_left_comm, add_assoc] using
       add_le_add_right hU0
         (metricCovOrderEvolutionBeta Hin.Cppp /
           metricCovOrderEvolutionAlpha Hin.Cpp)
-  have hafter_init :
+  have hafter_initial :
       U t <=
         Real.exp (metricCovOrderEvolutionAlpha Hin.Cpp * |t - t0|) *
-          (Hin.initC ^ 2 +
+          (Hin.initialC ^ 2 +
             metricCovOrderEvolutionBeta Hin.Cppp /
               metricCovOrderEvolutionAlpha Hin.Cpp) :=
     le_trans hgronwall
@@ -463,28 +463,28 @@ theorem metricCovOrderWindow_of_evolution
       nlinarith [le_of_lt halpha_pos, Hin.time_abs_le t ht])
   have hbracket_nonneg :
       0 <=
-        Hin.initC ^ 2 +
+        Hin.initialC ^ 2 +
           metricCovOrderEvolutionBeta Hin.Cppp /
             metricCovOrderEvolutionAlpha Hin.Cpp :=
-    add_nonneg (sq_nonneg Hin.initC) hshift_nonneg
+    add_nonneg (sq_nonneg Hin.initialC) hshift_nonneg
   have hfinal_sq :
       U t <=
         Real.exp (metricCovOrderEvolutionAlpha Hin.Cpp * Hin.timeRadius) *
-          (Hin.initC ^ 2 +
+          (Hin.initialC ^ 2 +
             metricCovOrderEvolutionBeta Hin.Cppp /
               metricCovOrderEvolutionAlpha Hin.Cpp) :=
-    le_trans hafter_init
+    le_trans hafter_initial
       (mul_le_mul_of_nonneg_right htime_exp hbracket_nonneg)
   have htarget_nonneg :
       0 <=
         Real.exp (metricCovOrderEvolutionAlpha Hin.Cpp * Hin.timeRadius) *
-          (Hin.initC ^ 2 +
+          (Hin.initialC ^ 2 +
             metricCovOrderEvolutionBeta Hin.Cppp /
               metricCovOrderEvolutionAlpha Hin.Cpp) :=
     mul_nonneg (le_of_lt (Real.exp_pos _)) hbracket_nonneg
   have hnorm_le :
       metricCovDerivNorm (I := I) p (gSeq i t) gRef x <=
-        metricCovOrderEvolutionConstant Hin.Cpp Hin.Cppp Hin.timeRadius Hin.initC := by
+        metricCovOrderEvolutionConstant Hin.Cpp Hin.Cppp Hin.timeRadius Hin.initialC := by
     unfold metricCovOrderEvolutionConstant
     refine
       (sq_le_sq₀ (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)).1 ?_
@@ -654,5 +654,5 @@ noncomputable def metricAllTimes
 
 end FixedDomain
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

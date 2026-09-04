@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -35,7 +35,7 @@ namespace NetLimitData
 
 noncomputable def hatSourceBall (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (r : Real) (n : Nat) :
     Set (X.obj (L.φ n)).M :=
   letI : MetricSpace (X.obj (L.φ n)).M := (P (L.φ n)).ms
@@ -47,7 +47,7 @@ omit [CompleteSpace E] in
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (r : Real) (n : Nat) {ψ : Nat -> Nat} (hψ : StrictMono ψ) :
     NetLimitData.hatSourceBall (I := I) (X := X) hd P (L.subseq hψ) r n =
       NetLimitData.hatSourceBall (I := I) (X := X) hd P L r (ψ n) := rfl
@@ -58,7 +58,7 @@ theorem hatSource_nhds
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     {R s : Real} (n : Nat) (hRs : R < s)
     {x : (X.obj (L.φ n)).M}
     (hx : x ∈ hatSourceBall (I := I) (X := X) hd P L R n) :
@@ -97,7 +97,7 @@ theorem hatSourceCompact
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (r : Real) (n : Nat) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     IsCompact (NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n) := by
@@ -119,7 +119,7 @@ theorem sourceComplete
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (n : Nat) (hX : SeqMetricComplete (I := I) X)
     (hconn : letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology;
       ConnectedSpace (X.obj (L.φ n)).M) :
@@ -154,7 +154,7 @@ theorem hatBallInCompact
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (k : Nat) (gamma : Fin (pb.A r)) :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
     exists K : Set (X.obj (L.φ k)).M, IsCompact K ∧
@@ -186,7 +186,7 @@ theorem hatBallInCompact
 
 noncomputable def hatSourceCage (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat) (gamma : Fin (pb.A r)) :
     Set (X.obj (L.φ n)).M :=
   letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -202,7 +202,7 @@ omit [CompleteSpace E] in
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat) (gamma : Fin (pb.A r))
     {ψ : Nat -> Nat} (hψ : StrictMono ψ) :
     NetLimitData.hatSourceCage (I := I) (X := X) hd P (L.subseq hψ) pb r n gamma =
@@ -216,7 +216,7 @@ theorem hatCageData
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat) (gamma : Fin (pb.A r)) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     IsCompact (NetLimitData.hatSourceCage (I := I) (X := X) hd P L pb r n gamma) ∧
@@ -250,7 +250,7 @@ theorem hatCageCompact
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     forall gamma : Fin (pb.A r),
@@ -265,7 +265,7 @@ theorem hatCageSub
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     forall gamma : Fin (pb.A r),
@@ -284,7 +284,7 @@ theorem hatCageInClosed
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat) (gamma : Fin (pb.A r))
     {c : (X.obj (L.φ n)).M}
     (hc : seqCenter hd D P (L.φ n) (gamma : Nat) = some c) :
@@ -322,11 +322,11 @@ theorem hatCageInClosed
   simpa [NetLimitData.hatSourceCage] using closure_minimal hsub hclosed
 
 omit [Module.Finite ℝ E] in
-theorem hatCageSrcOfBall
+theorem hat_source_cage_subset_normalChartAt_source_of_ball
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (center : Fin (pb.A r) -> (X.obj (L.φ n)).M) (gamma : Fin (pb.A r))
     (hcenter : seqCenter hd D P (L.φ n) (gamma : Nat) = some (center gamma))
@@ -359,11 +359,11 @@ theorem hatCageSrcOfBall
       hball
 
 omit [Module.Finite ℝ E] in
-theorem hatCageSrcOfRad
+theorem hat_source_cage_subset_normalChartAt_source_of_radius
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (center : Fin (pb.A r) -> (X.obj (L.φ n)).M) (gamma : Fin (pb.A r))
     (hcenter : seqCenter hd D P (L.φ n) (gamma : Nat) = some (center gamma))
@@ -385,16 +385,16 @@ theorem hatCageSrcOfRad
       (NormalCoordinates.normalChartAt (I := I) (X.obj (L.φ n)).metric
         (center gamma)).source := by
   exact
-    NetLimitData.hatCageSrcOfBall (X := X) hd P L pb r n center gamma
+    NetLimitData.hat_source_cage_subset_normalChartAt_source_of_ball (X := X) hd P L pb r n center gamma
       hcenter
-      (properBallSrcOfRad (I := I) (Y := X.obj (L.φ n)) (P := P (L.φ n)) hR)
+      (closedBall_subset_normalChartAt_source_of_radius (I := I) (Y := X.obj (L.φ n)) (P := P (L.φ n)) hR)
 
 omit [Module.Finite ℝ E] in
-theorem hatCageSrcCases
+theorem hat_source_cage_subset_normalChartAt_source
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (center : Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (hR :
@@ -424,15 +424,15 @@ theorem hatCageSrcCases
       simp [NetLimitData.hatSourceCage, NetLimitData.hatBall, hc]
   | some c =>
       rcases hR gamma c hc with ⟨rfl, hrad⟩
-      exact NetLimitData.hatCageSrcOfRad (I := I) (X := X) hd P L pb r n center
+      exact NetLimitData.hat_source_cage_subset_normalChartAt_source_of_radius (I := I) (X := X) hd P L pb r n center
         gamma hc hrad
 
 omit [Module.Finite ℝ E] in
-theorem hatSuppCageData
+theorem hatSupportCageData
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (n : Nat)
     {s : Set (X.obj (L.φ n)).M} {ι : Type*}
     (mu : (X.obj (L.φ n)).M -> ι -> Real)
@@ -443,7 +443,7 @@ theorem hatSuppCageData
     (hCageCompact :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       forall gamma : ι, IsCompact (sourceCage gamma))
-    (hSuppCage :
+    (hSupportCage :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       forall gamma : ι, forall x : (X.obj (L.φ n)).M,
         x ∈ s ->
@@ -471,7 +471,7 @@ theorem hatSuppCageData
             sourceCage gamma ⊆
           U gamma)
     (hV'closed : forall gamma : ι, IsClosed (V' gamma))
-    (hSuppV :
+    (hSupportV :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
       letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -520,7 +520,7 @@ theorem hatSuppCageData
   have hKsub (gamma : ι) : sourceK gamma ⊆ sourceCage gamma := by
     apply closure_minimal
     · intro x hx
-      exact hSuppCage gamma x hx.1 hx.2
+      exact hSupportCage gamma x hx.1 hx.2
     · exact (hCageCompact gamma).isClosed
   refine ⟨sourceK, ?_, ?_, ?_, ?_, ?_⟩
   · intro gamma
@@ -551,10 +551,10 @@ theorem hatSuppCageData
         sourceCage gamma ∩
           (fun y => Binf gamma (chart gamma y)) ⁻¹' V' gamma := by
       intro y hy
-      exact ⟨hSuppCage gamma y hy.1 hy.2, hSuppV gamma y hy.1 hy.2⟩
+      exact ⟨hSupportCage gamma y hy.1 hy.2, hSupportV gamma y hy.1 hy.2⟩
     exact (closure_minimal hsupp hclosed hx).2
 
 end NetLimitData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

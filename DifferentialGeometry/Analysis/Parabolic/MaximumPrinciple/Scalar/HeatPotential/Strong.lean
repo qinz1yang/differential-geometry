@@ -51,7 +51,7 @@ theorem heat_pot_pos_of_barrier
       r ≤ rho x → rho x ≤ R →
       heatOperatorWithDrift (I := I) G t
         (fun y => (0 : TangentSpace I y)) rho x ≤ B)
-    (hkappa : 0 < kappa) (hbarrier_init : R ≤ kappa * tau ^ 2)
+    (hkappa : 0 < kappa) (hbarrier_initial : R ≤ kappa * tau ^ 2)
     (hbarrier_time : R ≤ kappa * delta ^ 2)
     (halpha : 0 < alpha) (hdom : 2 * kappa * tau + B ≤ alpha * m)
     {y : M} (hy : rho y < R) :
@@ -108,7 +108,7 @@ theorem heat_pot_pos_of_barrier
   exact scalar_strong_maximum_principle_with_potential_of_barrier (I := I)
     G htau.1 X V L u hu_cont hu_nonneg hu_time hu_mdiff hu_grad
     hu_super hV_lower hrho hrho_nonneg hR hdelta heta hlocal
-    hgrad_lower hheat_upper hkappa hbarrier_init hbarrier_time
+    hgrad_lower hheat_upper hkappa hbarrier_initial hbarrier_time
     halpha hdom hy
 
 omit [CompleteSpace E] in

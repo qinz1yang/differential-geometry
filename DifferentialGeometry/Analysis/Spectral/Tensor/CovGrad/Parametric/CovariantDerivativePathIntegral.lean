@@ -248,10 +248,10 @@ private theorem hasFDerivAt_chartRepr_pathIntegral
   have hdiff_all : ∀ t : ℝ, t ∈ S → ∀ y ∈ interior ((extChartAt I α).target : Set E),
       HasFDerivAt (fun y => F y t) (F' y t) y := by
     intro t ht y hy
-    have hy_tgt : y ∈ (extChartAt I α).target := hInt_sub hy
+    have hy_target : y ∈ (extChartAt I α).target := hInt_sub hy
     have hjoint_at : ContDiffWithinAt ℝ ∞
         (fun q : ℝ × E => Gfn q.1 q.2) (S ×ˢ (extChartAt I α).target) (t, y) :=
-      chartRepr_euclid_jointContDiffWithinAt (I := I) g₀ r s Φ S α hjoint ht hy_tgt
+      chartRepr_euclid_jointContDiffWithinAt (I := I) g₀ r s Φ S α hjoint ht hy_target
     have hslice : ContDiffWithinAt ℝ ∞ (fun y' : E => Gfn t y')
         (extChartAt I α).target y := by
       have hcomp : ContDiffWithinAt ℝ ∞ (fun y' : E => (t, y'))
@@ -272,17 +272,17 @@ private theorem hasFDerivAt_chartRepr_pathIntegral
   have hGfn_slice_cont : ∀ y ∈ interior ((extChartAt I α).target : Set E),
       ContinuousOn (fun t : ℝ => Gfn t y) (Set.uIcc (0:ℝ) 1) := by
     intro y hy
-    have hy_tgt : y ∈ (extChartAt I α).target := hInt_sub hy
+    have hy_target : y ∈ (extChartAt I α).target := hInt_sub hy
     intro t ht
     have hts : t ∈ S := hSI ht
     have hjoint_at : ContDiffWithinAt ℝ ∞
         (fun q : ℝ × E => Gfn q.1 q.2) (S ×ˢ (extChartAt I α).target) (t, y) :=
-      chartRepr_euclid_jointContDiffWithinAt (I := I) g₀ r s Φ S α hjoint hts hy_tgt
+      chartRepr_euclid_jointContDiffWithinAt (I := I) g₀ r s Φ S α hjoint hts hy_target
     have hsliceT : ContDiffWithinAt ℝ ∞ (fun t' : ℝ => Gfn t' y) S t := by
       have hcomp : ContDiffWithinAt ℝ ∞ (fun t' : ℝ => (t', y)) S t :=
         contDiffWithinAt_id.prodMk contDiffWithinAt_const
       have hmaps : Set.MapsTo (fun t' : ℝ => (t', y)) S
-          (S ×ˢ (extChartAt I α).target) := fun t' ht' => ⟨ht', hy_tgt⟩
+          (S ×ˢ (extChartAt I α).target) := fun t' ht' => ⟨ht', hy_target⟩
       have hc := ContDiffWithinAt.comp (𝕜 := ℝ) (n := ∞)
         (g := fun q : ℝ × E => Gfn q.1 q.2) (f := fun t' : ℝ => (t', y))
         t hjoint_at hcomp hmaps
@@ -424,7 +424,7 @@ private theorem intervalIntegrable_slotInput
       ((Set.univ : Set M) ×ˢ S))
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
-    (hx_src : x ∈ (chartAt H x).source) (k : Fin r) :
+    (hx_source : x ∈ (chartAt H x).source) (k : Fin r) :
     IntervalIntegrable
       (fun t : ℝ =>
         (trivializationAt (TensorRSModel r s ℝ E)
@@ -453,7 +453,7 @@ private theorem intervalIntegrable_slotInput
           (DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
             (I := I) r s x (fun z : M => (Φ t).toSection z) x)
     rw [chartTensorRSInputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s x
-      (fun z : M => (Φ t).toSection z) B.toFun hx_src k,
+      (fun z : M => (Φ t).toSection z) B.toFun hx_source k,
       DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply]
   exact hcont.intervalIntegrable
 
@@ -468,7 +468,7 @@ private theorem intervalIntegrable_slotOutput
       ((Set.univ : Set M) ×ˢ S))
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M)
     (hSI : Set.uIcc (0 : ℝ) 1 ⊆ S)
-    (hx_src : x ∈ (chartAt H x).source) (l : Fin s) :
+    (hx_source : x ∈ (chartAt H x).source) (l : Fin s) :
     IntervalIntegrable
       (fun t : ℝ =>
         (trivializationAt (TensorRSModel r s ℝ E)
@@ -497,7 +497,7 @@ private theorem intervalIntegrable_slotOutput
           (DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
             (I := I) r s x (fun z : M => (Φ t).toSection z) x)
     rw [chartTensorRSOutputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s x
-      (fun z : M => (Φ t).toSection z) B.toFun hx_src l,
+      (fun z : M => (Φ t).toSection z) B.toFun hx_source l,
       DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply]
   exact hcont.intervalIntegrable
 
@@ -524,14 +524,14 @@ private theorem inputSlotCorrection_pathIntegral_comm
           (DifferentialGeometry.Geometry.Connection.chartTensorRSInputSlotCorrection (I := I) r s g₀
             x
             (fun z : M => (Φ t).toSection z) B.toFun x k) := by
-  have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
+  have hx_source : x ∈ (chartAt H x).source := mem_chart_source H x
   have hIIΦ : IntervalIntegrable
       (fun t : ℝ => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) r s x (fun z : M => (Φ t).toSection z) x) volume 0 1 :=
     (chartE_repr_slice_continuousOn (I := I) g₀ r s Φ S hjoint x x hSI).intervalIntegrable
   rw [chartTensorRSInputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s x
     (fun z : M => (pathIntegralCoeffField (I := I) (M := M) g₀ r s Φ S hS hSI hjoint).toSection z)
-    B.toFun hx_src k,
+    B.toFun hx_source k,
     ← DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply (I := I) r s x
       (fun z : M => (pathIntegralCoeffField (I := I) (M := M) g₀ r s Φ S hS hSI hjoint).toSection z)
         x,
@@ -541,7 +541,7 @@ private theorem inputSlotCorrection_pathIntegral_comm
       hIIΦ]
   refine intervalIntegral.integral_congr (fun t _ => ?_)
   rw [chartTensorRSInputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s x
-    (fun z : M => (Φ t).toSection z) B.toFun hx_src k,
+    (fun z : M => (Φ t).toSection z) B.toFun hx_source k,
     DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
@@ -567,14 +567,14 @@ private theorem outputSlotCorrection_pathIntegral_comm
           (DifferentialGeometry.Geometry.Connection.chartTensorRSOutputSlotCorrection (I := I) r s
             g₀ x
             (fun z : M => (Φ t).toSection z) B.toFun x l) := by
-  have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
+  have hx_source : x ∈ (chartAt H x).source := mem_chart_source H x
   have hIIΦ : IntervalIntegrable
       (fun t : ℝ => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) r s x (fun z : M => (Φ t).toSection z) x) volume 0 1 :=
     (chartE_repr_slice_continuousOn (I := I) g₀ r s Φ S hjoint x x hSI).intervalIntegrable
   rw [chartTensorRSOutputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s x
     (fun z : M => (pathIntegralCoeffField (I := I) (M := M) g₀ r s Φ S hS hSI hjoint).toSection z)
-    B.toFun hx_src l,
+    B.toFun hx_source l,
     ← DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply (I := I) r s x
       (fun z : M => (pathIntegralCoeffField (I := I) (M := M) g₀ r s Φ S hS hSI hjoint).toSection z)
         x,
@@ -584,7 +584,7 @@ private theorem outputSlotCorrection_pathIntegral_comm
       hIIΦ]
   refine intervalIntegral.integral_congr (fun t _ => ?_)
   rw [chartTensorRSOutputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ r s x
-    (fun z : M => (Φ t).toSection z) B.toFun hx_src l,
+    (fun z : M => (Φ t).toSection z) B.toFun hx_source l,
     DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply]
 
 omit [CompleteSpace E] in
@@ -612,18 +612,18 @@ private theorem covApply_chartE_pathIntegral_comm
   set φ := extChartAt I α with hφ
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) α :=
     DifferentialGeometry.Geometry.Connection.self_mem_chartLeviCivitaGoodSet (I := I) α
-  have hx_src : x ∈ (chartAt H α).source :=
+  have hx_source : x ∈ (chartAt H α).source :=
     DifferentialGeometry.Geometry.Connection.chartLeviCivitaGoodSet_mem_chartAt_source
       (I := I) hx_good
-  have hx_tgt : φ x ∈ φ.target := φ.map_source (by rw [hφ, extChartAt_source]; exact hx_src)
-  have hx_round : φ.symm (φ x) = x := φ.left_inv (by rw [hφ, extChartAt_source]; exact hx_src)
+  have hx_target : φ x ∈ φ.target := φ.map_source (by rw [hφ, extChartAt_source]; exact hx_source)
+  have hx_round : φ.symm (φ x) = x := φ.left_inv (by rw [hφ, extChartAt_source]; exact hx_source)
   have hx_int : φ x ∈ interior ((φ).target : Set E) := by
     rw [hφ, (isOpen_extChartAt_target (I := I) α).interior_eq]
-    exact hx_tgt
+    exact hx_target
   set W : SmoothCcTensor g₀ r s :=
     pathIntegralCoeffField (I := I) (M := M) g₀ r s Φ S hS hSI hjoint with hW
   have hform_W := chart_pulled_covApply_explicit_formula_target_smoothCc (I := I) (M := M)
-    g₀ r s α W B hx_tgt (by rw [hx_round]; exact hx_good)
+    g₀ r s α W B hx_target (by rw [hx_round]; exact hx_good)
   have hform_Φ : ∀ t : ℝ,
       (DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) r s α
           (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g₀))
@@ -646,7 +646,7 @@ private theorem covApply_chartE_pathIntegral_comm
                 s g₀ α
                 (fun z : M => (Φ t).toSection z) B.toFun (φ.symm (φ x)) l) := fun t =>
     chart_pulled_covApply_explicit_formula_target_smoothCc (I := I) (M := M)
-      g₀ r s α (Φ t) B hx_tgt (by rw [hx_round]; exact hx_good)
+      g₀ r s α (Φ t) B hx_target (by rw [hx_round]; exact hx_good)
   set dir : E := DifferentialGeometry.Geometry.Connection.trivToE (I := I) α x (B.toFun x) with hdir
   set Wchart : E → TensorRSModel r s ℝ E :=
     fun y => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) r s α
@@ -754,7 +754,7 @@ private theorem covApply_chartE_pathIntegral_comm
             α
             (fun z : M => (Φ t).toSection z) B.toFun x k) := by
     refine finset_sum_eq_intervalIntegral_sum_local _ _ hinput_comm ?_
-    exact fun k => intervalIntegrable_slotInput (I := I) g₀ r s Φ S hjoint B x hSI hx_src k
+    exact fun k => intervalIntegrable_slotInput (I := I) g₀ r s Φ S hjoint B x hSI hx_source k
   have hsum_output : (∑ l : Fin s,
         (trivializationAt (TensorRSModel r s ℝ E)
             (fun y' : M => TensorRSSpace r s I y') α).continuousLinearMapAt ℝ x
@@ -768,7 +768,7 @@ private theorem covApply_chartE_pathIntegral_comm
             g₀ α
             (fun z : M => (Φ t).toSection z) B.toFun x l) := by
     refine finset_sum_eq_intervalIntegral_sum_local _ _ houtput_comm ?_
-    exact fun l => intervalIntegrable_slotOutput (I := I) g₀ r s Φ S hjoint B x hSI hx_src l
+    exact fun l => intervalIntegrable_slotOutput (I := I) g₀ r s Φ S hjoint B x hSI hx_source l
   rw [hsum_input, hsum_output]
   have hII_fderivApply : IntervalIntegrable
       (fun t : ℝ => fderiv ℝ (Φchart t) (φ x) dir) volume 0 1 := by
@@ -782,7 +782,7 @@ private theorem covApply_chartE_pathIntegral_comm
             α
             (fun z : M => (Φ t).toSection z) B.toFun x k)) volume 0 1 := by
     refine intervalIntegrable_finset_sum_local _ ?_
-    exact fun k => intervalIntegrable_slotInput (I := I) g₀ r s Φ S hjoint B x hSI hx_src k
+    exact fun k => intervalIntegrable_slotInput (I := I) g₀ r s Φ S hjoint B x hSI hx_source k
   have hII_outputSum : IntervalIntegrable
       (fun t : ℝ => ∑ l : Fin s,
         (trivializationAt (TensorRSModel r s ℝ E)
@@ -791,7 +791,7 @@ private theorem covApply_chartE_pathIntegral_comm
             g₀ α
             (fun z : M => (Φ t).toSection z) B.toFun x l)) volume 0 1 := by
     refine intervalIntegrable_finset_sum_local _ ?_
-    exact fun l => intervalIntegrable_slotOutput (I := I) g₀ r s Φ S hjoint B x hSI hx_src l
+    exact fun l => intervalIntegrable_slotOutput (I := I) g₀ r s Φ S hjoint B x hSI hx_source l
   rw [← intervalIntegral.integral_add hII_fderivApply hII_inputSum,
     ← intervalIntegral.integral_sub (hII_fderivApply.add hII_inputSum) hII_outputSum]
   refine intervalIntegral.integral_congr (fun t _ => ?_)

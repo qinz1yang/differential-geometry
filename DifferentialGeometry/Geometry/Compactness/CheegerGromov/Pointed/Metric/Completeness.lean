@@ -14,7 +14,7 @@ open Bundle
 open scoped Manifold ContDiff Bundle Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 namespace MetricComplete
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -121,7 +121,7 @@ theorem complete_of_lower
   exact ⟨x, hx⟩
 
 end MetricComplete
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

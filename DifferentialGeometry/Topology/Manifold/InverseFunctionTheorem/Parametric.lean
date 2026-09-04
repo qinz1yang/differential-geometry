@@ -326,20 +326,20 @@ theorem eventuallyEq_fst_localInverse_parameter_graph_slice
   have hfirst : ContinuousAt
       (fun y : M ↦ (htime.localInverse (y, b)).1) (alpha (A0, b)) :=
     continuousAt_fst.comp hinv
-  have htimeSrc :
+  have htimeSource :
       {y : M | (y, b) ∈ htime.localInverse.source} ∈
         nhds (alpha (A0, b)) := by
     apply hslice.preimage_mem_nhds
     exact htime.localInverse_open_source.mem_nhds
       htime.localInverse_mem_source
-  have hfixedTgt :
+  have hfixedTarget :
       {y : M | (htime.localInverse (y, b)).1 ∈
         hfixed.localInverse.target} ∈ nhds (alpha (A0, b)) := by
     apply hfirst.preimage_mem_nhds
     rw [htime0]
     exact hfixed.localInverse.open_target.mem_nhds
       hfixed.localInverse_mem_target
-  filter_upwards [htimeSrc, hfixedTgt] with y hyTime hyTarget
+  filter_upwards [htimeSource, hfixedTarget] with y hyTime hyTarget
   let A : E := (htime.localInverse (y, b)).1
   have hright : F (htime.localInverse (y, b)) = (y, b) := by
     simpa only [F] using htime.localInverse_right_inv hyTime

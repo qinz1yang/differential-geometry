@@ -69,14 +69,17 @@ private lemma chartPushed_pou_zero_off_KApha
   exact chartPushed_eq_zero_off_chartImagePOUTsupport (I := I) (M := M) α u hy hy_off
 
 
-theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
+theorem chartPushed_memWkp_two_of_laplacianDomain
     [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (α : M) :
-    ChartH2NonSmoothPOUWitness (I := I) (M := M) g
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) α := by
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+      (d := Module.finrank ℝ E) 2 2
+      (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
+        ((H1ComplToLp (I := I) (M := M) g u_h :
+          Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
+      (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   set u : M → ℝ := ((H1ComplToLp (I := I) (M := M) g u_h :
     Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) with hu_def
@@ -159,13 +162,13 @@ theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
   have hΩ_η_open : IsOpen Ω_η := Metric.isOpen_thickening
   have hK_η_in_Ω_η : K_η ⊆ Ω_η := by
     refine Metric.cthickening_subset_thickening' (by positivity) (by linarith) K_α
-  obtain ⟨δ_η, η, hδ_η_pos, hδ_η_sub_Ωη, hη_smooth, hη_supp, hη_range,
+  obtain ⟨δ_η, η, hδ_η_pos, hδ_η_sub_Ωη, hη_smooth, hη_support, hη_range,
       hη_one_on_cthick_K_η, hη_tsupp_in_Ω_η⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E) hK_η_compact hΩ_η_open hK_η_in_Ω_η
   obtain ⟨N, hN_pos, h_fderiv_eta⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.exists_grad_bound_of_compactSupport_smooth
-      hη_smooth hη_supp
+      hη_smooth hη_support
   have hN_nn : 0 ≤ N := hN_pos.le
   have hη_one_on_K_η : ∀ x ∈ K_η, η x = 1 := by
     intro x hx
@@ -181,7 +184,7 @@ theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
     refine hη_tsupp_in_Ω_η.trans ?_
     rw [hΩ_η_def, hΩ'_def]
     exact thickening_mono_of_lt (by linarith) K_α
-  have hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+  have hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω' := by
     intro h hh
     have h_tsupp_in_cthick_5ε : tsupport η ⊆ Metric.cthickening (5 * ε) K_α := by
@@ -216,15 +219,14 @@ theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
   obtain ⟨MBound, hM_nn, h_uniform_bd⟩ :=
     uniform_diffQuot_weakPartial_bound
       (I := I) (M := M) (g := g) (α := α) D
-      hη_smooth hη_supp hη_range hN_nn h_fderiv_eta
+      hη_smooth hη_support hη_range hN_nn h_fderiv_eta
       hΩ'_open h_closureΩ'_in_chart hΩ'_compact_closure
-      hη_in_Ω' hR₀_pos hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_open.measurableSet
+      hη_in_Ω' hR₀_pos hh_support_in_Ω' hη_one_on_Ω'' hΩ''_open.measurableSet
   have h_h2 :=
     exists_weak_second_partial_of_uniform_diffQuot_bound
       (I := I) (M := M) (g := g) (α := α) D
       hΩ''_open hΩ''_compact_closure hR₀_pos h_room
       hM_nn h_uniform_bd
-  refine ChartH2NonSmoothPOUWitness.mk' ?_
   set f : EuclN → ℝ := chartPushed (I := I) (M := M)
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u with hf_def
   set v : EuclN → ℝ := Ω''.indicator f with hv_def
@@ -243,7 +245,7 @@ theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
       exact (chartPushed_pou_zero_off_KApha (I := I) (M := M) α u y hy hy_off_K_α).symm
   have hΩ''_in_chart : Ω'' ⊆ chartTargetEuclid (I := I) (M := M) α :=
     fun y hy => h_closureΩ''_in_chart (subset_closure hy)
-  have h_supp_v_sub_K_α : Function.support v ⊆ K_α := by
+  have h_support_v_sub_K_α : Function.support v ⊆ K_α := by
     intro y hy
     by_contra hy_off
     apply hy
@@ -254,7 +256,7 @@ theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
       exact chartPushed_pou_zero_off_KApha (I := I) (M := M) α u y hy_chart hy_off
     · rw [Set.indicator_of_notMem hyΩ]
   have h_tsupp_v_sub_K_α : tsupport v ⊆ K_α := by
-    refine closure_minimal h_supp_v_sub_K_α ?_
+    refine closure_minimal h_support_v_sub_K_α ?_
     exact hK_α_compact.isClosed
   have hv_compactSupport : HasCompactSupport v :=
     hK_α_compact.of_isClosed_subset (isClosed_tsupport _) h_tsupp_v_sub_K_α
@@ -359,22 +361,22 @@ theorem chartH2NonSmoothPOUWitness_of_laplacianDomain
     intro i
     have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
         (d := Module.finrank ℝ E) i
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i v Ω'') v Ω'' :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
         hv_memW1p_Ω'' i
-    have h_chosen_loc : MeasureTheory.LocallyIntegrable
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_chosen_local : MeasureTheory.LocallyIntegrable
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i v Ω'') (volume.restrict Ω'') :=
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         hv_memW1p_Ω'' i).locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-    have h_dwp_loc : MeasureTheory.LocallyIntegrable (D.weakPartial i)
+    have h_dwp_local : MeasureTheory.LocallyIntegrable (D.weakPartial i)
         (volume.restrict Ω'') :=
       (h_dwp_memLp_Ω'' i).locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-    have h_ae : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_ae : DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         2 i v Ω'' =ᵐ[volume.restrict Ω''] D.weakPartial i :=
       DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial
-        (h_dwp_weak_v_Ω'' i) h_chosen_loc h_dwp_loc
+        (h_dwp_weak_v_Ω'' i) h_chosen_local h_dwp_local
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]
     exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae hΩ''_open
       h_ae.symm).mp (hwp_i_memW1p_Ω'' i)
@@ -401,10 +403,14 @@ theorem laplacianDomain_memWkpChart_two
       (I := I) (M := M) 2 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ := by
-  let h_witness := fun α => chartH2NonSmoothPOUWitness_of_laplacianDomain
-    (I := I) (M := M) g hu_h α
-  exact ⟨memWkpChart_two_of_chartPOUWitnesses (I := I) (M := M) g h_witness,
-    wkpNormChart_two_lt_top_of_chartPOUWitnesses (I := I) (M := M) g h_witness⟩
+  have h_mem : DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
+      (I := I) (M := M) 2 2
+      ((H1ComplToLp (I := I) (M := M) g u_h :
+        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) :=
+    fun α => chartPushed_memWkp_two_of_laplacianDomain (I := I) (M := M) g hu_h α
+  exact ⟨h_mem,
+    DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart_lt_top_of_memWkpChart
+      (I := I) (M := M) (k := 2) (p := 2) (by norm_num) h_mem⟩
 
 end LaplacianDomainPerChartWitness
 end Laplacian

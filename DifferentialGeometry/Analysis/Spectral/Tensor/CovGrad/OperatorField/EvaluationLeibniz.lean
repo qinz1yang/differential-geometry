@@ -94,9 +94,9 @@ theorem riemannianFiberNormSq_clm_apply_le
     ∃ Cφ : ℝ, 0 ≤ Cφ ∧ ∀ v : TensorRSSpace 0 r I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 s x (φ v) ≤
         Cφ * riemannianFiberNormSq (I := I) (M := M) g 0 r x v := by
-  let instSrc : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
+  let instSource : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 r I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 r
-  let instTgt : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
+  let instTarget : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
     Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 s
   let φg : TensorRSSpace 0 r I x →L[ℝ] TensorRSSpace 0 s I x :=
     LinearMap.toContinuousLinearMap (φ.toLinearMap)

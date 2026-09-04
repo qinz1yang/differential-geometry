@@ -456,7 +456,7 @@ theorem tensorRSRiemannianInnerCLM_isVonNBounded
       (𝕜 := ℝ) (E := E) (I := I) (M := M) r s b with he_def
   have hModel := innerModelRS_diagonal_sublevel_isVonNBounded
     (I := I) (M := M) g r s b
-  have hImg :=
+  have hImage :=
     hModel.image (e.symm.toContinuousLinearMap)
   have hSetEq :
       e.symm.toContinuousLinearMap ''
@@ -487,7 +487,7 @@ theorem tensorRSRiemannianInnerCLM_isVonNBounded
         exact hv
       · exact e.symm_apply_apply v
   rw [← hSetEq]
-  exact hImg
+  exact hImage
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace

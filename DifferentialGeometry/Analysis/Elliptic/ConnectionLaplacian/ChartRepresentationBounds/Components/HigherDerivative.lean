@@ -51,10 +51,10 @@ lemma tensorRepr_chart_pulled_component_contDiffAt_order
       (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx ∘
         (extChartAt I α).symm) (extChartAt I α).target :=
     hsmooth_on.comp hsymm hmaps
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     (extChartAt_source (I := I) α).symm ▸ hb_chart
   have hb_target : extChartAt I α b ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb_src
+    (extChartAt I α).map_source hb_source
   have h_open_target : IsOpen (extChartAt I α).target :=
     isOpen_extChartAt_target (I := I) α
   have hcontDiffOn : ContDiffOn ℝ ∞

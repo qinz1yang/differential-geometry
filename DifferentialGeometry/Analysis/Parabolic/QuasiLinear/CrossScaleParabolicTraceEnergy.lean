@@ -235,7 +235,7 @@ theorem energyIdentity (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
   have h0 : (0 : ℝ) ∈ Icc (0 : ℝ) T := ⟨le_rfl, le_trans ht.1 ht.2⟩
   have hnorm_t := u.normSq_repr hT ht
   have hnorm_0 := u.normSq_repr hT h0
-  have hsum_init : Summable
+  have hsum_initial : Summable
       (fun i => tensorSobolevWeight (I := I) (M := M) i (a + 1) * (u.coeffFun i 0) ^ 2) :=
     u.summable_coeffFun_sq hT h0
   have hsum_int := u.summable_intervalIntegral_energyIntegrand ht
@@ -247,10 +247,10 @@ theorem energyIdentity (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     funext i
     rw [u.perMode_energyIdentity i ht]
     rfl
-  rw [hpermode, hsum_init.tsum_add hsum_int, ← hnorm_0]
+  rw [hpermode, hsum_initial.tsum_add hsum_int, ← hnorm_0]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem normSq_repr_le_init_add_integral (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
+theorem normSq_repr_le_initial_add_integral (hT : 0 < T) {t : ℝ} (ht : t ∈ Icc (0 : ℝ) T) :
     ‖u.repr t‖ ^ 2 ≤ ‖u.repr 0‖ ^ 2 +
       ∫ s in (0 : ℝ)..t, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := by
   rw [u.energyIdentity hT ht]

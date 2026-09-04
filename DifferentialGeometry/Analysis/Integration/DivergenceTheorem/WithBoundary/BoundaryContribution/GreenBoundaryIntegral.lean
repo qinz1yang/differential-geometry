@@ -95,10 +95,10 @@ private lemma integrable_divergence_g_with_boundary
     rw [continuous_iff_continuousAt]
     intro x
     by_cases hx : x ∈ (chartAt H α).source
-    · have h_locDiv_at : ContinuousAt (localDivergenceWithin (I := I) g α X) x :=
+    · have h_localDiv_at : ContinuousAt (localDivergenceWithin (I := I) g α X) x :=
         (hα_cont_on_source x hx).continuousAt
           ((chartAt H α).open_source.mem_nhds hx)
-      exact h_locDiv_at.mul hρα_cont.continuousAt
+      exact h_localDiv_at.mul hρα_cont.continuousAt
     · have hx_nots : x ∉ tsupport ((ρ α : M → ℝ)) :=
         fun h => hx (hsupp_each α h)
       have h_open : IsOpen (tsupport ((ρ α : M → ℝ)))ᶜ :=
@@ -112,7 +112,7 @@ private lemma integrable_divergence_g_with_boundary
         change localDivergenceWithin (I := I) g α X y * (ρ α : M → ℝ) y = 0
         rw [hρy, mul_zero]
       exact (continuousAt_const (y := (0 : ℝ))).congr hev.symm
-  have hsumm_supp : ∀ α : M,
+  have hsumm_support : ∀ α : M,
       tsupport (fun x : M => localDivergenceWithin (I := I) g α X x *
         (ρ α : M → ℝ) x) ⊆ (chartAt H α).source := by
     intro α
@@ -135,10 +135,10 @@ private lemma integrable_divergence_g_with_boundary
     have hsupp_compact : IsCompact (tsupport (fun x : M =>
         localDivergenceWithin (I := I) g α X x * (ρ α : M → ℝ) x)) :=
       .of_isClosed_subset isCompact_univ (isClosed_tsupport _) (Set.subset_univ _)
-    have hμ_supp : chartLocalMeasure (I := I) g α
+    have hμ_support : chartLocalMeasure (I := I) g α
         (tsupport (fun x : M =>
           localDivergenceWithin (I := I) g α X x * (ρ α : M → ℝ) x)) < ⊤ :=
-      chartLocalMeasure_compact_lt_top (I := I) g α hsupp_compact (hsumm_supp α)
+      chartLocalMeasure_compact_lt_top (I := I) g α hsupp_compact (hsumm_support α)
     obtain ⟨C, hC⟩ : ∃ C, ∀ x, ‖localDivergenceWithin (I := I) g α X x *
           (ρ α : M → ℝ) x‖ ≤ C := by
       have hCpt := (isCompact_univ (X := M)).image (hsummand_cont α).norm
@@ -177,7 +177,7 @@ private lemma integrable_divergence_g_with_boundary
               (isClosed_tsupport _).measurableSet)]
             rw [MeasureTheory.lintegral_indicator (isClosed_tsupport _).measurableSet]
             simp
-      _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_supp
+      _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_support
   have hae_eq : ∀ α : M,
       (fun x : M => divergenceGWithBoundary (I := I) g X x * (ρ α : M → ℝ) x)
         =ᵐ[chartLocalMeasure (I := I) g α]

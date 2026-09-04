@@ -105,7 +105,7 @@ private lemma connectionDifferenceLoweredCc_unitModel' (g₀ g₁ : SmoothRieman
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-lemma connectionDifferenceLoweredCc_unitModel_apply' (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
+lemma connectionDifferenceLoweredCc_unitModel_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (m : Fin 3 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 3
         (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
@@ -127,7 +127,7 @@ private lemma metricLoweredConnectionDifference_unitModel_apply (g₀ g₁ g_bg 
       g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (m 0) (m 1)) (m 2) := by
   unfold tangentModel
   rw [connectionDifferenceLoweredCcDiff, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_sub, sub_apply,
-    connectionDifferenceLoweredCc_unitModel_apply', connectionDifferenceLoweredCc_unitModel_apply']
+    connectionDifferenceLoweredCc_unitModel_apply, connectionDifferenceLoweredCc_unitModel_apply]
   rw [show g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (m 0) (m 1)) (m 2) -
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g_bg g₀ x (m 0) (m 1)) (m 2) =
       g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (m 0) (m 1) -
@@ -163,7 +163,7 @@ private lemma deTurckVectorFieldCovector_unitModel_apply (g₀ g₁ g_bg : Smoot
       (connectionDifferenceLoweredCcDiff (I := I) (M := M) g₀ g₁ g_bg).toSection x)
       (unitTensor (I := I) (M := M) x) with hD
   have hdiag := cometricDoubleTraceFib_eq_orthoFrame_diag (I := I) g₁ 1 x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) D
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x) D
   rw [hdiag]
   rw [show Tensor0SSpace.toModel
         (∑ i : Fin (Module.finrank ℝ E),
@@ -449,7 +449,7 @@ private lemma wAlphaA_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetric I
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma interior_product_toModel_eval' (s : ℕ) (x : M) (v : TangentSpace I x)
+lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
         (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D)
@@ -487,7 +487,7 @@ private lemma deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_u
     (g0FlatCLM (I := I) g₀ x (deTurckVFRaw (I := I) (M := M) g₁ g_bg x))]
   rw [inverseMetricSharpFib_g0FlatCLM (I := I) g₀ x (deTurckVFRaw (I := I) (M := M) g₁ g_bg x)]
   unfold tangentModel
-  rw [interior_product_toModel_eval' (I := I) (M := M) (1 + 1) x
+  rw [interior_product_toModel_eval (I := I) (M := M) (1 + 1) x
     (deTurckVFRaw (I := I) (M := M) g₁ g_bg x) D ![u, w]]
   have hDm : Tensor0SSpace.toModel D
       (tangentModel x ![deTurckVFRaw (I := I) (M := M) g₁ g_bg x, u, w]) =
@@ -512,7 +512,7 @@ private lemma deTurckVectorFieldCovariantDerivativeLoweredConnectionDifference_u
     funext i
     fin_cases i <;> rfl]
   unfold tangentModel
-  rw [connectionDifferenceLoweredCc_unitModel_apply']
+  rw [connectionDifferenceLoweredCc_unitModel_apply]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
     Matrix.cons_val_two, Matrix.tail_cons]
 
@@ -537,7 +537,7 @@ private lemma wEndo_eq_covDeriv_add_connectionDifference (g₀ g₁ g_bg : Smoot
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma cotangentToDual_slotInsertEndoFib' (x : M)
+lemma cotangentToDual_slotInsertEndoFib (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (om : Tensor0SSpace 1 I x)
     (w : TangentSpace I x) :
     cotangentToDual (I := I)
@@ -597,7 +597,7 @@ private lemma cotangentToDual_cometricRaise_wAlpha
     rw [Tensor0SSpace.toModel_apply_model_vector]
     congr 1]
   unfold tangentModel
-  rw [interior_product_toModel_eval' (I := I) (M := M) (0 + 1) x
+  rw [interior_product_toModel_eval (I := I) (M := M) (0 + 1) x
     (inverseMetricSharpFib (I := I) g₀ x om)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (0 + 2) I x from
         (deTurckVectorFieldCovariantDerivativeEndomorphismBilin (I := I) (M := M) g₀ g₁ g_bg).toSection x)
@@ -630,7 +630,7 @@ theorem deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise
         (deTurckVectorFieldCovariantDerivativeEndomorphismInsert (I := I) (M := M) g₀ g₁ g_bg).toSection x) om =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
         (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) om from rfl]
-  rw [cotangentToDual_slotInsertEndoFib' (I := I) (M := M) x
+  rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) om w]
   rw [wEndo_eq_covDeriv_add_connectionDifference (I := I) (M := M) g₀ g₁ g_bg x w]
   rw [deTurckVectorFieldCovariantDerivativeEndomorphismBilin, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add, add_apply,

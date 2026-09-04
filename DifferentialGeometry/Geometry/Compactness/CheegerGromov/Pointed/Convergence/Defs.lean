@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff
 
@@ -85,18 +85,18 @@ noncomputable def ofDerivNormSupOn
   domain := D
   converges := by
     intro K hK p ε hε
-    obtain ⟨kSrc, hSrc⟩ := Φ.source_subset hK
-    obtain ⟨kConv, hConv⟩ := hconv K hK p ε hε
-    refine ⟨max kSrc kConv, fun k hk => ?_⟩
-    refine ⟨hSrc k (le_trans (Nat.le_max_left kSrc kConv) hk), ?_⟩
-    exact hConv k (le_trans (Nat.le_max_right kSrc kConv) hk)
+    obtain ⟨kSource, hSource⟩ := Φ.source_subset hK
+    obtain ⟨kConvergence, hConvergence⟩ := hconv K hK p ε hε
+    refine ⟨max kSource kConvergence, fun k hk => ?_⟩
+    refine ⟨hSource k (le_trans (Nat.le_max_left kSource kConvergence) hk), ?_⟩
+    exact hConvergence k (le_trans (Nat.le_max_right kSource kConvergence) hk)
 
 noncomputable def ofRestrictPullback
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
     {Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq}
-    (hσsrc : forall k : Nat,
+    (hσsource : forall k : Nat,
       letI : TopologicalSpace L.M := L.topology
       IsSigmaCompact (Φ.source k))
     (referenceMetric : forall k : Nat,
@@ -113,12 +113,12 @@ noncomputable def ofRestrictPullback
         forall ε : Real, 0 < ε ->
           exists k0 : Nat, forall k : Nat, k0 <= k ->
             ((MetricSourceData.ofRestrictPullback (I := I)
-              (Φ := Φ) (k := k) (hσsrc k)
+              (Φ := Φ) (k := k) (hσsource k)
               (referenceMetric k)).derivNormSupOn (I := I) K p) < ε) :
     MetricConvergenceData (I := I) Φ :=
   MetricConvergenceData.ofDerivNormSupOn (I := I)
     (D := fun k => MetricSourceData.ofRestrictPullback (I := I)
-      (Φ := Φ) (k := k) (hσsrc k) (referenceMetric k))
+      (Φ := Φ) (k := k) (hσsource k) (referenceMetric k))
     hconv
 
 end MetricConvergenceData
@@ -170,7 +170,7 @@ noncomputable def ofRestrictPullback
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
     (Φ : PointedRiemannianConvergenceMaps (I := I) X L subseq)
-    (hσsrc : forall k : Nat,
+    (hσsource : forall k : Nat,
       letI : TopologicalSpace L.M := L.topology
       IsSigmaCompact (Φ.source k))
     (referenceMetric : forall k : Nat,
@@ -187,11 +187,11 @@ noncomputable def ofRestrictPullback
         forall ε : Real, 0 < ε ->
           exists k0 : Nat, forall k : Nat, k0 <= k ->
             ((MetricSourceData.ofRestrictPullback (I := I)
-              (Φ := Φ) (k := k) (hσsrc k)
+              (Φ := Φ) (k := k) (hσsource k)
               (referenceMetric k)).derivNormSupOn (I := I) K p) < ε) :
     PointedRiemannianConverges (I := I) X L subseq Φ where
   metrics := MetricConvergenceData.ofRestrictPullback (I := I)
-    hσsrc referenceMetric hconv
+    hσsource referenceMetric hconv
 
 end PointedRiemannianConverges
 
@@ -206,5 +206,5 @@ structure MetricCompactnessConclusion
 
 end MetricCompactnessCore
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

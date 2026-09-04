@@ -296,7 +296,7 @@ private theorem scalarPart_joint
       (chartBasisVecFiber (I := I) alpha j x)
   rw [← hright]
   exact (mfderiv_chartBasisVecFiber_of_mdifferentiableAt (I := I) alpha
-    ((scalarSmoothOfSol (I := I) S p.1).mdifferentiableAt (by simp))
+    ((scalarSmoothOfSolution (I := I) S p.1).mdifferentiableAt (by simp))
     hxsrc (by simpa only [hright] using hp.2) j).symm
 
 omit [SigmaCompactSpace M] in
@@ -359,7 +359,7 @@ theorem scalarHess_cont [I.Boundaryless]
     tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 D.regular
       (fun t x => hessianSec (I := I) (S.base.connection t)
         (metricCov_smooth (I := I) (S.base.metric t))
-        (S.scalar t) (scalarSmoothOfSol (I := I) S t) x) := by
+        (S.scalar t) (scalarSmoothOfSolution (I := I) S t) x) := by
   classical
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp
     (N := fun alpha => chartLeviCivitaGoodSet (I := I) alpha)
@@ -396,15 +396,15 @@ theorem scalarHess_cont [I.Boundaryless]
   rw [hessSec_inner_cov (I := I) (S.base.connection q.1.1)
     (metricCov_smooth (I := I) (S.base.metric q.1.1))
     (S.base.metric q.1.1) (by simpa using hmc)
-    (S.scalar q.1.1) (scalarSmoothOfSol (I := I) S q.1.1)]
+    (S.scalar q.1.1) (scalarSmoothOfSolution (I := I) S q.1.1)]
   rw [show gradientFun (I := I) (S.base.metric q.1.1) (S.scalar q.1.1) =
       gradFun (I := I) (S.base.metric q.1.1) (S.scalar q.1.1) from rfl]
   rw [show S.base.connection q.1.1 =
       LeviCivita (I := I) (S.base.metric q.1.1) from rfl]
   rw [abstractHessian_eq_inner_cov_gradFun_extend (I := I)
-    (S.base.metric q.1.1) (scalarSmoothOfSol (I := I) S q.1.1)]
+    (S.base.metric q.1.1) (scalarSmoothOfSolution (I := I) S q.1.1)]
   rw [chartAlphaMatrixIdentity_holds (I := I) (S.base.metric q.1.1)
-    alpha (scalarSmoothOfSol (I := I) S q.1.1) hx (idx 0) (idx 1)]
+    alpha (scalarSmoothOfSolution (I := I) S q.1.1) hx (idx 0) (idx 1)]
   rw [hleft]
   simp only [SolutionOn.family_metric]
 

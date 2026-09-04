@@ -39,12 +39,12 @@ theorem wtwokTwoNorm_lt_top
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
           (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx)
           (chartTargetEuclid (I := I) (M := M) α) with hf_def
-  have hPOU_locFin : LocallyFinite
+  have hPOU_localFin : LocallyFinite
       (fun α : M => Function.support (chartAtlasPOU I M α : M → ℝ)) :=
     (chartAtlasPOU I M).locallyFinite
   have hSupport_finite :
       {α : M | (Function.support (chartAtlasPOU I M α : M → ℝ)).Nonempty}.Finite :=
-    hPOU_locFin.finite_nonempty_of_compact
+    hPOU_localFin.finite_nonempty_of_compact
   set S : Set M :=
     {α : M | (Function.support (chartAtlasPOU I M α : M → ℝ)).Nonempty} with hS_def
   have hS_finite : S.Finite := hSupport_finite
@@ -233,11 +233,11 @@ theorem eq_zero_of_wtwokTwoNorm_zero
   refine ContMDiffSection.ext (fun x => ?_)
   obtain ⟨α, hα_pos⟩ :=
     (chartAtlasPOU I M).exists_pos_of_mem (Set.mem_univ x)
-  have hx_supp : x ∈ Function.support (chartAtlasPOU I M α : M → ℝ) := by
+  have hx_support : x ∈ Function.support (chartAtlasPOU I M α : M → ℝ) := by
     rw [Function.mem_support]; exact ne_of_gt hα_pos
   have hx_chart : x ∈ (chartAt H α).source :=
     tsupport_subset_chartAt_source (chartAtlasPOU I M)
-      (chartAtlasPOU_isSubordinate I M) α (subset_tsupport _ hx_supp)
+      (chartAtlasPOU_isSubordinate I M) α (subset_tsupport _ hx_support)
   have hx_ext : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_chart
   set y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=

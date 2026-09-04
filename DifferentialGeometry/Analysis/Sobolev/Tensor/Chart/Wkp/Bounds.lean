@@ -57,7 +57,7 @@ theorem transCoeffE_smooth
       (I := I) (M := M) r s β α P Q)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem transCoeffE_cpt
+theorem transCoeffE_compact
     (r s : ℕ) (β α : M)
     (P Q : TensorCompIdx (E := E) r s) :
     HasCompactSupport (transCoeffE (I := I) (M := M) r s β α P Q) := by
@@ -100,10 +100,10 @@ theorem coeffMulJoint
               (chartTargetEuclid (I := I) (M := M) β) := by
   classical
   have h_smooth := transCoeffE_smooth (I := I) (M := M) r s β α P Q
-  have h_cpt := transCoeffE_cpt (I := I) (M := M) r s β α P Q
+  have h_compact := transCoeffE_compact (I := I) (M := M) r s β α P Q
   obtain ⟨C, hC_nonneg, hC_bound⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
-      (d := Module.finrank ℝ E) h_smooth h_cpt 2
+      (d := Module.finrank ℝ E) h_smooth h_compact 2
   obtain ⟨K, hK_pos, hK_bound⟩ :=
     wkpNorm_smul_smooth_bounded_le (d := Module.finrank ℝ E) 2 hp hp_top
       (chartTargetEuclid_isOpen (I := I) (M := M) β)

@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -217,5 +217,5 @@ theorem windowPreconv
 
 end ManifoldSection
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

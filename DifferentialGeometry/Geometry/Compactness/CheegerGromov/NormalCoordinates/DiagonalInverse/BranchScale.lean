@@ -14,7 +14,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold NNReal Topology
@@ -473,5 +473,5 @@ theorem exists_normal_branch_domain_scales
   exact HasControlledNormalBranch.toDom (I := I) (X.obj k) (hcomplete.complete k)
     (hconn k) x (hfull k x hx)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

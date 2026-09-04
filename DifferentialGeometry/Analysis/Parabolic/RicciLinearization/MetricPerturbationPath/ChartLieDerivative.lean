@@ -201,12 +201,12 @@ theorem hasDerivAt_metricPerturbationPath_chartDeTurckVFComp (g₀ : SmoothRiema
     simp only [Pi.sub_apply]
     ring
   refine hd.congr_deriv ?_
-  rw [deTurckVFDerivRaw, chartLinearizedDeTurckVFPrincipalRaw, deTurckVFFirstOrderCorrRaw,
+  rw [deTurckVFDerivRaw, chartLinearizedDeTurckVFPrincipalRaw, deTurckVFFirstOrderCorrectionRaw,
     ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun b _ => ?_)
-  rw [chartLinearizedChristoffelPrincipalRaw, christoffelFirstOrderCorrRaw,
+  rw [chartLinearizedChristoffelPrincipalRaw, christoffelFirstOrderCorrectionRaw,
     Finset.sum_add_distrib]
   ring
 
@@ -461,7 +461,7 @@ theorem lieDeTurckChartSlope_eq_orderSplit (g₀ : SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M) (x : M) (i j : Fin (Module.finrank ℝ E))
     (s₀ : ℝ) {y : E} (hy : y ∈ interior (extChartAt I x).target) :
     lieDeTurckChartSlope (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' g_bg x i j s₀ y =
-      chartDeTurckCorrPrincipalSymbolExprRaw (I := I)
+      chartDeTurckCorrectionPrincipalSymbolExprRaw (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) x
           (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x) i j y +
         lieDeTurckOrder1Raw (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s₀) g_bg x

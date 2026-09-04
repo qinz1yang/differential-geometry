@@ -473,13 +473,13 @@ theorem localizedSpacetimeRpowNorm_le_of_bound_on_cutoff
       (hu.rpow_const fun z => Or.inl (hpos z.1 z.2).ne')
   have hP_cont : ContinuousOn P (Icc a b) := by
     simpa only [P, μ] using
-      (DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+      (DifferentialGeometry.Integral.Measure.integral_contOn_compact
         (K := Icc a b) μ
         (fun t x => cutoff.toFun x ^ 2 * u t x ^ p)
         isCompact_Icc hjointP.continuousOn)
   have hQ_cont : ContinuousOn Q (Icc a b) := by
     simpa only [Q, μ] using
-      (DifferentialGeometry.Integral.Measure.integral_contOn_cpt
+      (DifferentialGeometry.Integral.Measure.integral_contOn_compact
         (K := Icc a b) μ
         (fun t x => cutoff.toFun x ^ 2 * u t x ^ q)
         isCompact_Icc hjointQ.continuousOn)

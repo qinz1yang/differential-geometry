@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.H4Bridge
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2Regularity
 
 
@@ -195,54 +194,6 @@ theorem laplacianDomainPow_memWkpChart_2k_of_chartSideH2kBridge_one
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ :=
   iteratedH2Regularity_one (I := I) (M := M) g hu_h
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem chartSideH4Bridge_iff_chartSideH2kBridge_two
-    (u : M → ℝ) :
-    DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH4Bridge.ChartSideH4Bridge (I := I) (M := M) u ↔
-    ChartSideH2kBridge (I := I) (M := M) 2 u := by
-  unfold DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH4Bridge.ChartSideH4Bridge
-    ChartSideH2kBridge
-  have h_eq : (2 : ℕ) * 2 = 4 := by norm_num
-  rw [h_eq]
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem chartSideH2kBridge_two_of_chartSideH4Bridge
-    {u : M → ℝ}
-    (h : DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH4Bridge.ChartSideH4Bridge (I := I) (M := M) u) :
-    ChartSideH2kBridge (I := I) (M := M) 2 u :=
-  (chartSideH4Bridge_iff_chartSideH2kBridge_two (I := I) (M := M) u).mp h
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem chartSideH4Bridge_of_chartSideH2kBridge_two
-    {u : M → ℝ}
-    (h : ChartSideH2kBridge (I := I) (M := M) 2 u) :
-    DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH4Bridge.ChartSideH4Bridge (I := I) (M := M) u :=
-  (chartSideH4Bridge_iff_chartSideH2kBridge_two (I := I) (M := M) u).mpr h
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem laplacianDomainPow_memWkpChart_2k_of_chartSideH4Bridge
-    (g : SmoothRiemannianMetric I M)
-    {u_h : H1Compl (I := I) (M := M) g}
-    (h_bridge : DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH4Bridge.ChartSideH4Bridge
-      (I := I) (M := M)
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
-    DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
-      (I := I) (M := M) 4 2
-      ((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) ∧
-    DifferentialGeometry.Analysis.Sobolev.Chart.wkpNormChart
-      (I := I) (M := M) 4 2
-      ((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ := by
-  have h_bridge_2k := chartSideH2kBridge_two_of_chartSideH4Bridge
-    (I := I) (M := M) h_bridge
-  have h := laplacianDomainPow_memWkpChart_2k_of_chartSideH2kBridge
-    (I := I) (M := M) g 2 h_bridge_2k
-  have h_eq : (2 : ℕ) * 2 = 4 := by norm_num
-  rw [h_eq] at h
-  exact h
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem chartSideH2kBridge_le_of_le

@@ -204,7 +204,7 @@ theorem linearizedRicciConnectionDifferenceOrder1CoeffField_perOrder_l2_tameEnve
         ring
 
 
-theorem exists_corrTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
+theorem exists_correctionTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -370,7 +370,7 @@ theorem exists_corrTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
         (linearizedRicciFirstOrderBaseCoeff (I := I) g₀ T T' hδ hδ' s)‖)]
 
 omit [SigmaCompactSpace M] in
-theorem corrTerm0Combination_eq_order0_add_halfRiemann
+theorem correctionTerm0Combination_eq_order0_add_halfRiemann
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     {δ' : ℝ} (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T')
@@ -1561,7 +1561,7 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder
     nlinarith only [hwin_nn, h1, h2]
 
 
-theorem exists_corrTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
+theorem exists_correctionTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1665,7 +1665,7 @@ theorem exists_corrTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
           ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖)),
       mul_nonneg h1ms (sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖),
       mul_nonneg hs0 (sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j T'‖)]
-  rw [corrTerm0Combination_eq_order0_add_halfRiemann (I := I) (M := M) g₀ T T' hδ hδ' s]
+  rw [correctionTerm0Combination_eq_order0_add_halfRiemann (I := I) (M := M) g₀ T T' hδ hδ' s]
   have hmain := hK0 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)
     (convexPerturbation (I := I) g₀ T T' s) hδP_le hδP htie hPball i hi
   refine le_trans hmain ?_

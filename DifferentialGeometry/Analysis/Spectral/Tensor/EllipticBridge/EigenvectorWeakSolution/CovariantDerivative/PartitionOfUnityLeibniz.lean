@@ -81,11 +81,11 @@ theorem chartPushedRaw_chartAtlasPOU_contDiffOn (α : M) :
   have hPOU_global : ContMDiff I 𝓘(ℝ, ℝ) ∞
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
     (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯).contMDiff
-  have hPOU_src : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
+  have hPOU_source : ContMDiffOn I 𝓘(ℝ, ℝ) ∞
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
       ((chartAt H α).source) :=
     hPOU_global.contMDiffOn
-  exact chartPushedRaw_bump_contDiffOn (I := I) (M := M) α hPOU_src
+  exact chartPushedRaw_bump_contDiffOn (I := I) (M := M) α hPOU_source
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem differentiableAt_chartPushedRaw_chartAtlasPOU

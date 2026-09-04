@@ -12,7 +12,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -88,7 +88,7 @@ theorem linearizedRicciConnectionDifferenceOrder0CoeffField_h1_uniform_bound
   obtain ⟨Bt, hBt, htrace⟩ :=
     trace2_h2_uniform (I := I) (M := M) hDim gBase hΛ0 hδ₀
   obtain ⟨Ck, hCk, hkerPt⟩ :=
-    ricci0_ker_grid_unif (I := I) (M := M) hδ₀
+    ricci0_ker_grid_uniform (I := I) (M := M) hδ₀
   obtain ⟨Bk0, Bk1, hBk0, hBk1, hker⟩ :=
     h1_grid_uniform (I := I) (M := M) hDim gBase hΛ0
       (r := 2) (s := 4) Ck hCk

@@ -109,7 +109,7 @@ noncomputable def lowerScaleForceBackground
   incl21Background (I := I) (M := M) g
     (zeroStateDeTurckRemainderH2 (I := I) (M := M) g gB)
 
-theorem lowerScaleForceBackground_core
+theorem lowerScaleForceBackground_eq_ccTensorToHs
     (g gB : SmoothRiemannianMetric I M) :
     lowerScaleForceBackground (I := I) (M := M) g gB =
       ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
@@ -347,11 +347,11 @@ theorem deTurckRemainderOnLowerState_affine_background
                 (incl32Background (I := I) (M := M) g
                   (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) S))) from rfl,
         e1,
-        lowRadialH3_core (I := I) (M := M) g hρ S,
-        lowRadialHs_core (I := I) (M := M) g hρ.le S,
-        hA2core S, lowerScaleFirstOrderActionSecondToFirstOrderBackground_core (I := I) (M := M) g gB hA1pair S,
+        lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ S,
+        lowRadialHs_apply_ccToHsLin (I := I) (M := M) g hρ.le S,
+        hA2core S, lowerScaleFirstOrderActionSecondToFirstOrderBackground_apply_ccToHsLin (I := I) (M := M) g gB hA1pair S,
         ← hA, ← hS', e6, e7,
-        lowerScaleForceBackground_core (I := I) (M := M) g gB,
+        lowerScaleForceBackground_eq_ccTensorToHs (I := I) (M := M) g gB,
         ← ccTensorToHs_add, ← ccTensorToHs_add]
       refine congrArg (ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)) ?_
       have hz0 := deTurckRem_zero (I := I) (M := M) g gB

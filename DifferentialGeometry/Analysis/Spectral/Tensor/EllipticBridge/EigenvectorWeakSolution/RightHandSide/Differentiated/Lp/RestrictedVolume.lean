@@ -239,14 +239,14 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma chosenWp_memLp_volume_restrict
     (b : Fin (Module.finrank ℝ E)) (w : EuclN → ℝ) {Ω K : Set EuclN}
     (hK_meas : MeasurableSet K) (hK_in : K ⊆ Ω) :
-    MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 b w Ω) 2
+    MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b w Ω) 2
       ((volume : Measure EuclN).restrict K) := by
   classical
-  have h_global : MemLp (chosenWeakPartial' (d := Module.finrank ℝ E) 2 b w Ω)
+  have h_global : MemLp (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b w Ω)
       2 ((volume : Measure EuclN).restrict Ω) := by
     by_cases hw : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 w Ω
-    · exact chosenWeakPartial'_memLp_of_mem hw b
-    · rw [chosenWeakPartial'_of_not_mem hw b]
+    · exact chosenWeakPartialOrZero_memLp_of_mem hw b
+    · rw [chosenWeakPartialOrZero_of_not_mem hw b]
       exact MemLp.zero
   have h_eq : ((volume : Measure EuclN).restrict Ω).restrict K =
       (volume : Measure EuclN).restrict K := by

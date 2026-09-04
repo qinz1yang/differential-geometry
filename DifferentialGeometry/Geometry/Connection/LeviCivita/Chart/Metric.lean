@@ -51,14 +51,14 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma chartInnerOnE_eq_g_inner
     (g : SmoothRiemannianMetric I M) (α : M)
     (Y Z : Π x : M, TangentSpace I x) {b : M}
-    (hb_src : b ∈ (extChartAt I α).source)
+    (hb_source : b ∈ (extChartAt I α).source)
     (hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     chartInnerOnE (I := I) g α Y Z (extChartAt I α b) =
       g.inner b (Y b) (Z b) := by
   classical
   unfold chartInnerOnE
   have hb_inv : (extChartAt I α).symm (extChartAt I α b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   have hG : ∀ i j : Fin (Module.finrank ℝ E),
       chartGramOnE (I := I) g α i j (extChartAt I α b) =
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j := by
@@ -71,7 +71,7 @@ lemma chartInnerOnE_eq_g_inner
   have hZrepr : chartESectionRepr (I := I) α Z
       ((extChartAt I α).symm (extChartAt I α b)) =
         chartESectionRepr (I := I) α Z b := by rw [hb_inv]
-  rw [g_inner_eq_chart_sum (I := I) g α hb_base hb_src (Y b) (Z b)]
+  rw [g_inner_eq_chart_sum (I := I) g α hb_base hb_source (Y b) (Z b)]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [hYrepr, hZrepr]
@@ -116,11 +116,11 @@ private lemma chartInnerOnE_eventuallyEq
     chartLeviCivitaGoodSet_isOpen (I := I) α
   have hnhds : chartLeviCivitaGoodSet (I := I) α ∈ 𝓝 x := hopen.mem_nhds hx
   filter_upwards [hnhds] with b hb
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hb
-  exact (chartInnerOnE_eq_g_inner (I := I) g α Y Z hb_src hb_base).symm
+  exact (chartInnerOnE_eq_g_inner (I := I) g α Y Z hb_source hb_base).symm
 
 private def chartReprComp
     (α : M) (Y : Π x : M, TangentSpace I x)
@@ -326,7 +326,7 @@ private lemma mfderiv_g_inner_eq_chartInnerOnE_fderiv
   classical
   have hev := chartInnerOnE_eventuallyEq (I := I) g α Y Z hx
   rw [Filter.EventuallyEq.mfderiv_eq hev]
-  have hx_src_chart : x ∈ (chartAt H α).source :=
+  have hx_source_chart : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx
   have hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hx
@@ -338,7 +338,7 @@ private lemma mfderiv_g_inner_eq_chartInnerOnE_fderiv
         (chartInnerOnE (I := I) g α Y Z) (extChartAt I α x) :=
       hF_at.mdifferentiableAt
     have hφ_mdiff : MDiffAt (extChartAt I α) x :=
-      mdifferentiableAt_extChartAt (I := I) (x := α) hx_src_chart
+      mdifferentiableAt_extChartAt (I := I) (x := α) hx_source_chart
     exact hF_mdiff.comp x hφ_mdiff
   have hmf_to_fderiv :
       (mfderiv I 𝓘(ℝ) (chartInnerOnE (I := I) g α Y Z ∘ extChartAt I α) x) v =
@@ -348,7 +348,7 @@ private lemma mfderiv_g_inner_eq_chartInnerOnE_fderiv
           (trivToE (I := I) α x v) :=
     mfderiv_scalar_eq_chart_fderiv (I := I) α
       (chartInnerOnE (I := I) g α Y Z ∘ extChartAt I α)
-      hx_src_chart hx_int hcomp_at v
+      hx_source_chart hx_int hcomp_at v
   refine hmf_to_fderiv.trans ?_
   have hev_pull :
       ((chartInnerOnE (I := I) g α Y Z ∘ extChartAt I α) ∘
@@ -359,10 +359,10 @@ private lemma mfderiv_g_inner_eq_chartInnerOnE_fderiv
     have hnhds : interior ((extChartAt I α).target : Set E) ∈ 𝓝 (extChartAt I α x) :=
       htgt_open.mem_nhds hx_int
     filter_upwards [hnhds] with y hy
-    have hy_tgt : y ∈ (extChartAt I α).target := interior_subset hy
+    have hy_target : y ∈ (extChartAt I α).target := interior_subset hy
     change chartInnerOnE (I := I) g α Y Z (extChartAt I α ((extChartAt I α).symm y)) =
       chartInnerOnE (I := I) g α Y Z y
-    rw [(extChartAt I α).right_inv hy_tgt]
+    rw [(extChartAt I α).right_inv hy_target]
   rw [Filter.EventuallyEq.fderiv_eq hev_pull]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -462,7 +462,7 @@ private lemma mfderiv_g_inner_chart_expand
                       chartChristoffel (I := I) g α k j l (extChartAt I α x) *
                         chartGramOnE (I := I) g α l i (extChartAt I α x))))) := by
   classical
-  have hx_src : x ∈ (extChartAt I α).source :=
+  have hx_source : x ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx
   have hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hx
@@ -470,7 +470,7 @@ private lemma mfderiv_g_inner_chart_expand
   rw [chartInnerOnE_fderiv_apply (I := I) g α hx hY hZ
     (trivToE (I := I) α x v)]
   have hxinv : (extChartAt I α).symm (extChartAt I α x) = x :=
-    (extChartAt I α).left_inv hx_src
+    (extChartAt I α).left_inv hx_source
   refine Finset.sum_congr rfl (fun i _ => ?_)
   refine Finset.sum_congr rfl (fun j _ => ?_)
   have hreprY : chartReprComp (I := I) α Y i (extChartAt I α x) =
@@ -538,11 +538,11 @@ private lemma g_inner_chartLeviCivita_Y_Z_expand
                 (chartESectionRepr (I := I) α Z x)) j *
             chartGramOnE (I := I) g α i j (extChartAt I α x) := by
   classical
-  have hx_src : x ∈ (extChartAt I α).source :=
+  have hx_source : x ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
-  rw [g_inner_eq_chart_sum (I := I) g α hx_base hx_src
+  rw [g_inner_eq_chart_sum (I := I) g α hx_base hx_source
         (chartLeviCivita (I := I) g α Y x v) (Z x)]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   refine Finset.sum_congr rfl (fun j _ => ?_)
@@ -612,11 +612,11 @@ private lemma g_inner_Y_chartLeviCivita_Z_expand
                     chartChristoffel (I := I) g α k l j (extChartAt I α x) ) *
             chartGramOnE (I := I) g α i j (extChartAt I α x) := by
   classical
-  have hx_src : x ∈ (extChartAt I α).source :=
+  have hx_source : x ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hx
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
-  rw [g_inner_eq_chart_sum (I := I) g α hx_base hx_src
+  rw [g_inner_eq_chart_sum (I := I) g α hx_base hx_source
         (Y x) (chartLeviCivita (I := I) g α Z x v)]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   refine Finset.sum_congr rfl (fun j _ => ?_)

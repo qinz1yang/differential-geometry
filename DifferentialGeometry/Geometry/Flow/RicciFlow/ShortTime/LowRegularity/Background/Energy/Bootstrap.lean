@@ -13,7 +13,7 @@ open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
@@ -49,7 +49,7 @@ noncomputable def deTurckRemainderSectionBackground (g g_bg : SmoothRiemannianMe
 
 structure BackgroundSmoothRicciDeTurckSolution (g g_bg : SmoothRiemannianMetric I M)
     (K : LowRegularityBoundParameters) (T : ℝ) where
-  carrier : MaxRegSolutionSpace (I := I) (M := M)
+  carrier : MaximalRegularitySolutionSpace (I := I) (M := M)
     (g := g) (r := 0) (s := 2) (2 : ℝ) T
   modePath : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ → ℝ
   radius : ℝ
@@ -66,7 +66,7 @@ structure BackgroundSmoothRicciDeTurckSolution (g g_bg : SmoothRiemannianMetric 
         (tensorHsToL2 (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           (show (0 : ℝ) ≤ (2 : ℝ) by norm_num) (timeH1.toFun carrier t)) i =
-      perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (modePath i) t
+      perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (modePath i) t
   state_bound : ∀ t ∈ Set.Icc (0 : ℝ) T, ‖timeH1.toFun carrier t‖ ≤
     lowRegularityStateRadius K.top K.slope K.outer K.realize
   radius_pos : 0 < radius
@@ -99,17 +99,17 @@ theorem exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds
     (g g_bg : SmoothRiemannianMetric I M) (K : LowRegularityBoundParameters)
     (hK : HasLowRegularityBoundsAt (I := I) (M := M) g g_bg K)
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    (uLo : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
+    (uLo : MaximalRegularitySolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hsol : IsBackgroundLowRegularitySolution (I := I) (M := M)
       g g_bg K hK hT hT1 uLo gforce)
     (hmass : ∀ σ : ℝ, ∃ Cσ : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
-          (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+          (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2) ∧
         ∑' i, tensorSobolevWeight (I := I) (M := M) i σ *
-            (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
+            (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i)
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2 ≤ Cσ) :
     Nonempty (BackgroundSmoothRicciDeTurckSolution (I := I) (M := M) g g_bg K T) := by
   let R := lowRegularityStateRadius K.top K.slope K.outer K.realize
@@ -119,18 +119,18 @@ theorem exists_background_smooth_ricciDeTurck_solution_of_all_order_mode_bounds
       ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1) S‖ ≤ R →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) K.threshold :=
-    lowRegularityMetricRealization (I := I) (M := M) g K.realize_pos.le hK.hreal
+    lowRegularityMetricRealization (I := I) (M := M) g K.realize_pos.le hK.metric_realization
   have hforce : gforce =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g g_bg hR K.threshold_lt hreal
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g 1 hR.le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) t) := by
     simpa only [R, hreal, boundedDeTurckRemainderOnLowerState] using hsol.force_eq
   obtain ⟨carrier, _fHi, modePath, radius, htrace, _hmap, _hpin,
       hsmooth, hjet, hmode, hradius, hrealize, hforceCoeff, hstate⟩ :=
     direct_jet_of_mass (I := I) (M := M) g g_bg hR K.threshold_lt hreal
-      hK.core_cont hT gforce (by simpa only [R] using hsol.field_mem)
+      hK.smoothCore_continuous hT gforce (by simpa only [R] using hsol.field_mem)
       hforce hmass
   refine ⟨{
     carrier := carrier
@@ -174,7 +174,7 @@ theorem exists_jointly_smooth_ricciDeTurck_metric_solution_of_spectral_solution 
   have hthreshold : K.threshold ≤ 1 :=
     hK.threshold_le_third.trans (by norm_num)
   obtain ⟨C, hC_pos, hCraw, hcap⟩ :=
-    realize_h2_bound (I := I) (M := M) g K.realize_pos hthreshold hK.hreal
+    realize_h2_bound (I := I) (M := M) g K.realize_pos hthreshold hK.metric_realization
   have horder : (((1 : ℕ) : ℝ) + 1) = (2 : ℝ) := by norm_num
   rw [horder] at hCraw
   have hC : ∀ S : SmoothCcTensor g 0 2,
@@ -216,13 +216,13 @@ theorem exists_cross_scale_field_of_background_lowRegularity_solution
     (K : LowRegularityBoundParameters)
     (hK : HasLowRegularityBoundsAt (I := I) (M := M) g g_bg K)
     {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-    (u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
+    (u : MaximalRegularitySolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hsol : IsBackgroundLowRegularitySolution (I := I) (M := M) g g_bg K hK hT hT1 u gforce) :
     ∃ v : CrossScaleField (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) T,
       v.lo = u ∧
-        v.hiL2 = maxRegDuhamelSolField (I := I) (M := M)
+        v.hiL2 = maximalRegularityDuhamelSolutionField (I := I) (M := M)
           ((1 : ℕ) : ℝ) hT 0 gforce ∧
         (∀ t ∈ Set.Icc (0 : ℝ) T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
@@ -233,17 +233,17 @@ theorem exists_cross_scale_field_of_background_lowRegularity_solution
   let v := duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)
     hT 0 gforce
   have hvlo : v.lo = u := by
-    change maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
+    change maximalRegularityDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ)
       hT 0 gforce = u
     exact hsol.map_eq.symm
   have hfield : ∀ᵐ t ∂(timeMeasure T),
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ)
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ)
             hT 0 gforce t)‖ ≤
         lowRegularityStateRadius K.top K.slope K.outer K.realize := by
     filter_upwards [hsol.field_mem] with t ht
-    change maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ)
+    change maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ)
         hT 0 gforce t ∈ lowerState (I := I) (M := M) g 1
           (lowRegularityStateRadius K.top K.slope K.outer K.realize)
     exact ht
@@ -258,7 +258,7 @@ theorem exists_background_smooth_ricciDeTurck_solution_of_adapted_solution
     (g g_bg : SmoothRiemannianMetric I M) (K : LowRegularityBoundParameters)
     {T Rcap Ctop₂ Kr2 Kr1 Kcap : ℝ}
     (hT : 0 < T) (hT1 : T ≤ 1)
-    (uLo : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
+    (uLo : MaximalRegularitySolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T)
     (gforce : timeL2
       (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
     (hlo : IsAdaptedBackgroundLowRegularitySolution (I := I) (M := M) g g_bg K hT hT1
@@ -281,7 +281,7 @@ theorem exists_uniform_jointly_smooth_ricciDeTurck_metric_solution (hDim : Modul
           IsQuasilinearMetricParabolicSolution (I := I)
             (deTurckRicciRHS (I := I) gBase) g T g_DT ∧
       JointChartGramSmooth (I := I) T g_DT := by
-  obtain ⟨K, _hKunif, T, hT, hT1, hsolve⟩ :=
+  obtain ⟨K, _hKuniform, T, hT, hT1, hsolve⟩ :=
     exists_uniform_background_lowRegularity_solution_with_all_order_weighted_energy_bounds (I := I) (M := M) hDim gBase hΛ
   refine ⟨T, hT, ?_⟩
   intro g hEq hjet

@@ -18,7 +18,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -432,9 +432,9 @@ theorem metricDerivNorm_le_metricDerivNormSupOn [CompactSpace M]
   exact le_csSup hbdd ⟨0, le_refl 0, x, Set.mem_univ x, rfl⟩
 
 omit [SigmaCompactSpace M] in
-theorem exists_uniform_equiv_of_metricCPConv [CompactSpace M]
+theorem exists_uniform_equiv_of_metricCPConvergence [CompactSpace M]
     (gSeq : Nat -> SmoothRiemannianMetric I M) (gInf : SmoothRiemannianMetric I M)
-    (hconv : MetricCPConvOn (I := I) Set.univ 0 gSeq gInf gInf) :
+    (hconv : MetricCPConvergenceOn (I := I) Set.univ 0 gSeq gInf gInf) :
     ∃ C : Real, forall k : Nat,
       MetricUniformEquivalentOn (I := I) Set.univ gInf (gSeq k) C := by
   classical
@@ -478,5 +478,5 @@ theorem exists_uniform_equiv_of_metricCPConv [CompactSpace M]
     linarith
 
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

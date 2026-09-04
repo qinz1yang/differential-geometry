@@ -734,7 +734,7 @@ theorem galerkin_l1_single
     (fun u hu => by nlinarith [hclosure N u hu]) (hinit N) t ht
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem gal_rider_bound_at
+theorem galerkin_rider_bound_at
     {U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g r s₀ → ℝ}
     {Fseq : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g r s₀ → ℝ}
     {sseq : ℕ → Finset (TensorEigenIdx (I := I) (M := M) g r s₀)}
@@ -786,7 +786,7 @@ theorem gal_rider_bound_at
     exact mul_le_mul_of_nonneg_left hle hCrid
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem galRiderBound
+theorem galerkinRiderBound
     {U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g r s₀ → ℝ}
     {Fseq : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g r s₀ → ℝ}
     {sseq : ℕ → Finset (TensorEigenIdx (I := I) (M := M) g r s₀)}
@@ -898,7 +898,7 @@ theorem energy_l1_diss
     hWinit
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem galRiderDiss
+theorem galerkinRiderDiss
     {U : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g r s₀ → ℝ}
     {Fseq : ℕ → ℝ → TensorEigenIdx (I := I) (M := M) g r s₀ → ℝ}
     {sseq : ℕ → Finset (TensorEigenIdx (I := I) (M := M) g r s₀)}

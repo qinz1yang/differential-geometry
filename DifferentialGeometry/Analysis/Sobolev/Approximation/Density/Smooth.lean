@@ -37,17 +37,17 @@ lemma chartImagePOUTsupport_isCompact
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hTα_def
   have hTα_compact : IsCompact Tα := (isClosed_tsupport _).isCompact
-  have hTα_chart_src : Tα ⊆ (chartAt H α).source :=
+  have hTα_chart_source : Tα ⊆ (chartAt H α).source :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
-  have hTα_ext_src : Tα ⊆ (extChartAt I α).source := by
+  have hTα_ext_source : Tα ⊆ (extChartAt I α).source := by
     intro x hx
     rw [extChartAt_source]
-    exact hTα_chart_src hx
+    exact hTα_chart_source hx
   have hcont_ext : ContinuousOn (extChartAt I α) Tα :=
-    (continuousOn_extChartAt α).mono hTα_ext_src
-  have hImg_ext_compact : IsCompact ((extChartAt I α) '' Tα) :=
+    (continuousOn_extChartAt α).mono hTα_ext_source
+  have hImage_ext_compact : IsCompact ((extChartAt I α) '' Tα) :=
     hTα_compact.image_of_continuousOn hcont_ext
-  exact hImg_ext_compact.image (toEuclidean (E := E)).continuous
+  exact hImage_ext_compact.image (toEuclidean (E := E)).continuous
 
 lemma chartImagePOUTsupport_subset_target
     [T2Space M] [SigmaCompactSpace M] (α : M) :
@@ -55,9 +55,9 @@ lemma chartImagePOUTsupport_subset_target
       chartTargetEuclid (I := I) (M := M) α := by
   intro y hy
   unfold chartImagePOUTsupport at hy
-  obtain ⟨z, ⟨x, hx_supp, hxz⟩, hzy⟩ := hy
+  obtain ⟨z, ⟨x, hx_support, hxz⟩, hzy⟩ := hy
   have hx_chart : x ∈ (chartAt H α).source :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α hx_supp
+    DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α hx_support
   have hx_ext : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source]; exact hx_chart
   have hz_target : z ∈ (extChartAt I α).target := by
@@ -108,7 +108,7 @@ omit [FiniteDimensional ℝ E] in
 lemma exists_grad_bound_of_compactSupport_smooth
     {η : EuclN → ℝ}
     (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_cpt : HasCompactSupport η) :
+    (hη_compact : HasCompactSupport η) :
     ∃ C : ℝ, 0 < C ∧ ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ C := by
   classical
   have h_ne_zero : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by simp
@@ -126,7 +126,7 @@ lemma exists_grad_bound_of_compactSupport_smooth
     rw [Filter.EventuallyEq.fderiv_eq h_eq]
     simp
   set K : Set EuclN := tsupport η with hK_def
-  have hK_compact : IsCompact K := hη_cpt
+  have hK_compact : IsCompact K := hη_compact
   have h_bdd : ∃ C : ℝ, ∀ x ∈ K, ‖fderiv ℝ η x‖ ≤ C := by
     by_cases hKn : K.Nonempty
     · obtain ⟨x₀, _hx₀K, hx₀_max⟩ :=
@@ -213,13 +213,13 @@ theorem exists_smooth_strong_support_approx
         (chartTargetEuclid (I := I) (M := M) α) ≤
         ENNReal.ofReal ε_per := by
   classical
-  obtain ⟨δ, η, hδ_pos, _hδ_subset, hη_smooth, hη_cpt, hη_range, hη_one,
-    hη_supp⟩ :=
+  obtain ⟨δ, η, hδ_pos, _hδ_subset, hη_smooth, hη_compact, hη_range, hη_one,
+    hη_support⟩ :=
     exists_chartCutoff (I := I) (M := M) α
   have hη_norm_one : ∀ x : EuclN, ‖η x‖ ≤ 1 :=
     norm_le_one_of_range_Icc hη_range
   obtain ⟨Cη, _hCη_pos, hCη_grad⟩ :=
-    exists_grad_bound_of_compactSupport_smooth hη_smooth hη_cpt
+    exists_grad_bound_of_compactSupport_smooth hη_smooth hη_compact
   set C : ℝ := max Cη 1 with hC_def
   have hη_norm_C : ∀ x ∈ chartTargetEuclid (I := I) (M := M) α, ‖η x‖ ≤ C :=
     fun x _ => (hη_norm_one x).trans (le_max_right _ _)
@@ -235,28 +235,28 @@ theorem exists_smooth_strong_support_approx
         (chartTargetEuclid (I := I) (M := M) α) :=
     chartCutoff_smul_chartPushed_memWkp (I := I) (M := M) hp_one hu α
       hη_smooth hη_norm_C hη_grad_C
-  have hf_supp_subset : tsupport f ⊆ tsupport η :=
+  have hf_support_subset : tsupport f ⊆ tsupport η :=
     tsupport_smul_subset_left η f_orig
   have hf_compact : HasCompactSupport f :=
-    HasCompactSupport.intro hη_cpt (fun y hy => by
+    HasCompactSupport.intro hη_compact (fun y hy => by
       change η y * f_orig y = 0
       have hy_off : y ∉ tsupport η := hy
       rw [image_eq_zero_of_notMem_tsupport hy_off]
       ring)
-  have hf_supp_target : tsupport f ⊆ chartTargetEuclid (I := I) (M := M) α :=
-    hf_supp_subset.trans hη_supp
+  have hf_support_target : tsupport f ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    hf_support_subset.trans hη_support
   have hf_eq_forig_on_target : ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
       f y = f_orig y :=
     chartCutoff_smul_chartPushed_eq_chartPushed (I := I) (M := M) α u
       hη_one
-  obtain ⟨χ, hχ_smooth, hχ_compact, hχ_supp, hχ_close⟩ :=
+  obtain ⟨χ, hχ_smooth, hχ_compact, hχ_support, hχ_close⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.exists_smooth_compactSupport_approx
       (d := Module.finrank ℝ E)
       (chartTargetEuclid_isOpen (I := I) (M := M) α)
       1 p hp_one hp_top
-      hf_mem_W1p hf_compact hf_supp_target
+      hf_mem_W1p hf_compact hf_support_target
       ε_per hε_per
-  refine ⟨χ, hχ_smooth, hχ_compact, hχ_supp, ?_⟩
+  refine ⟨χ, hχ_smooth, hχ_compact, hχ_support, ?_⟩
   have h_target_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
     (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet
   have h_diff_eq : (fun y => f_orig y - χ y) =ᵐ[volume.restrict

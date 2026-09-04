@@ -31,7 +31,7 @@ def parabolicCutoffFrozenSource
       (Euc n →L[Real] Euc n →L[Real] F)) :
     Real → BoundedContinuousFunction (Euc n) F :=
   fun t ↦ cutoffTimeJet chi dtimeChi u dtimeU t -
-    matrixLapBcf A (cutoffJet2 (chi t) (dchi t) (d2chi t)
+    matrixLapBoundedContinuousFunction A (cutoffJet2 (chi t) (dchi t) (d2chi t)
       (u t) (du t) (d2u t))
 
 omit [DecidableEq n] [Nonempty n] [CompleteSpace F] in
@@ -55,10 +55,10 @@ theorem parabolicCutoffFrozenSource_apply
         matrixLap A (cutoffJet2 (chi t) (dchi t) (d2chi t)
           (u t) (du t) (d2u t) x) := by
   simp only [parabolicCutoffFrozenSource,
-    BoundedContinuousFunction.sub_apply, matrixLapBcf_apply]
+    BoundedContinuousFunction.sub_apply, matrixLapBoundedContinuousFunction_apply]
 
 omit [DecidableEq n] [Nonempty n] [CompleteSpace F] in
-theorem parabolicVariableMatrixOperator_cutoff_eqOn_of_bcf_jets
+theorem parabolicVariableMatrixOperator_cutoff_eqOn_of_boundedContinuousFunction_jets
     {Q : Set (ParabolicPoint (Euc n))}
     (a : n → n → ParabolicPoint (Euc n) → Real)
     (chi dtimeChi : Real → BoundedContinuousFunction (Euc n) Real)
@@ -299,7 +299,7 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_cutoff_source_estima
       (parabolicVariableMatrixOperator a
         (fun t x ↦ cutoffValue (chi t) (u t) x))
       (fun p ↦ chi p.time p.space • source p + comm p) Q := by
-    apply parabolicVariableMatrixOperator_cutoff_eqOn_of_bcf_jets
+    apply parabolicVariableMatrixOperator_cutoff_eqOn_of_boundedContinuousFunction_jets
       a chi dtimeChi dchi d2chi u dtimeU du d2u
     · intro p hp
       exact hchiTime p.time hp.1

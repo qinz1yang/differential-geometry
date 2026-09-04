@@ -20,7 +20,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 theorem tensorRS_trivializationAt_continuousLinearMapAt_eq_continuousLinearEquiv_on_locality
     (r s : ℕ) (b₀ : M) {b : M}
     (h_chart : chartAt H b = chartAt H b₀)
-    (h_src : b ∈ (chartAt H b₀).source) :
+    (h_source : b ∈ (chartAt H b₀).source) :
     ((trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b :
         TensorRSSpace r s I b →L[ℝ] TensorRSModel r s ℝ E) =
@@ -32,7 +32,7 @@ theorem tensorRS_trivializationAt_continuousLinearMapAt_eq_continuousLinearEquiv
   intro D_α
   have h_subB := tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
     (I := I) (M := M) (r := r) (s := s) (b₀ := b₀) (b := b)
-    (h_chart := h_chart) (h_src := h_src) (T := T) (D_α := D_α)
+    (h_chart := h_chart) (h_source := h_source) (T := T) (D_α := D_α)
   change (((trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b T)
         D_α : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) =
@@ -43,13 +43,13 @@ theorem tensorRS_trivializationAt_continuousLinearMapAt_eq_continuousLinearEquiv
 theorem tensorRS_trivializationAt_continuousLinearMapAt_norm_eq_on_locality
     (r s : ℕ) (b₀ : M) {b : M}
     (h_chart : chartAt H b = chartAt H b₀)
-    (h_src : b ∈ (chartAt H b₀).source)
+    (h_source : b ∈ (chartAt H b₀).source)
     (T : TensorRSSpace r s I b) :
     ‖((trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b T :
         TensorRSModel r s ℝ E)‖ = ‖T‖ := by
   rw [tensorRS_trivializationAt_continuousLinearMapAt_eq_continuousLinearEquiv_on_locality
-    (I := I) (M := M) r s b₀ h_chart h_src]
+    (I := I) (M := M) r s b₀ h_chart h_source]
   exact tensorRSSpace_continuousLinearEquiv_norm_apply (𝕜 := ℝ) (I := I) (M := M) r s b T
 
 theorem tensorRS_trivializationAt_continuousLinearMapAt_norm_le_coordChangeL_norm_on_locality

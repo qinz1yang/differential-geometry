@@ -8,7 +8,7 @@ open scoped Topology
 
 namespace DifferentialGeometry.Integral.Measure
 
-theorem integral_contOn_cpt
+theorem integral_contOn_compact
     {P X W : Type*} [TopologicalSpace P] [FirstCountableTopology P]
     [TopologicalSpace X] [CompactSpace X] [MeasurableSpace X] [BorelSpace X]
     [NormedAddCommGroup W] [NormedSpace ℝ W]

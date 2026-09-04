@@ -6146,7 +6146,7 @@ theorem norm_negPart_le_morseNorm {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) 
     have hinjOn : Set.InjOn (negIdx hk) (↑(Finset.univ : Finset (Fin k))) := by
       intro a ha b hb hab
       exact hinj hab
-    let img : Finset (Fin n) := Finset.image (negIdx hk) (Finset.univ : Finset (Fin k))
+    let image : Finset (Fin n) := Finset.image (negIdx hk) (Finset.univ : Finset (Fin k))
     have hsum : (∑ i : Fin k, ((negPart hk y).ofLp i) ^ 2) ≤
         ∑ j : Fin n, ((WithLp.toLp 2 y).ofLp j) ^ 2 := by
       calc
@@ -6154,8 +6154,8 @@ theorem norm_negPart_le_morseNorm {n k : ℕ} (hk : k ≤ n) (y : MorseModel n) 
           apply Finset.sum_congr rfl
           intro i hi
           simp [negPart]
-        _ = ∑ j ∈ img, (y j) ^ 2 := by
-          dsimp [img]
+        _ = ∑ j ∈ image, (y j) ^ 2 := by
+          dsimp [image]
           rw [Finset.sum_image hinjOn]
         _ ≤ ∑ j : Fin n, ((WithLp.toLp 2 y).ofLp j) ^ 2 := by
           have hrew : (∑ j : Fin n, ((WithLp.toLp 2 y).ofLp j) ^ 2) = ∑ j : Fin n, (y j) ^ 2 := by

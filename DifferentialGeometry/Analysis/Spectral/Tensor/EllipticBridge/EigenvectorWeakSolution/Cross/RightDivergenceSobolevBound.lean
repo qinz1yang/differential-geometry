@@ -65,27 +65,27 @@ private lemma wkpNorm_offKernelSmoothCoef_mul_le
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
-  have h_supp : Function.support coef ⊆ Kkern := by
+  have h_support : Function.support coef ⊆ Kkern := by
     intro z hz
     by_contra hzk
     exact hz (hcoef_zero_off z hzk)
   have h_tsupp : tsupport coef ⊆ Kkern :=
-    closure_minimal h_supp hKkern_compact.isClosed
+    closure_minimal h_support hKkern_compact.isClosed
   have h_tsupp_Ω : tsupport coef ⊆ Ω := h_tsupp.trans hKkern_in
   have hcoef_smooth : ContDiff ℝ (⊤ : ℕ∞) coef := by
     have h_open_compl : IsOpen ((tsupport coef)ᶜ) :=
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport coef
-    · have hy_chart : y ∈ Ω := h_tsupp_Ω hy_supp
+    by_cases hy_support : y ∈ tsupport coef
+    · have hy_chart : y ∈ Ω := h_tsupp_Ω hy_support
       exact (hcoef_chart y hy_chart).contDiffAt (hΩ_open.mem_nhds hy_chart)
     · have h_eq_zero : coef =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_open_compl.mem_nhds hy_supp] with z hz
+        filter_upwards [h_open_compl.mem_nhds hy_support] with z hz
         exact image_eq_zero_of_notMem_tsupport hz
       exact contDiffAt_const.congr_of_eventuallyEq h_eq_zero
   have hcoef_cs : HasCompactSupport coef :=
-    HasCompactSupport.of_support_subset_isCompact hKkern_compact h_supp
+    HasCompactSupport.of_support_subset_isCompact hKkern_compact h_support
   obtain ⟨C₀, hC₀_nn, hC₀_bd⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
       (d := Module.finrank ℝ E) hcoef_smooth hcoef_cs K
@@ -177,27 +177,27 @@ private lemma wkpNorm_offKernelSmoothCoef_mul_le_uniform
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
-  have h_supp : Function.support coef ⊆ Kkern := by
+  have h_support : Function.support coef ⊆ Kkern := by
     intro z hz
     by_contra hzk
     exact hz (hcoef_zero_off z hzk)
   have h_tsupp : tsupport coef ⊆ Kkern :=
-    closure_minimal h_supp hKkern_compact.isClosed
+    closure_minimal h_support hKkern_compact.isClosed
   have h_tsupp_Ω : tsupport coef ⊆ Ω := h_tsupp.trans hKkern_in
   have hcoef_smooth : ContDiff ℝ (⊤ : ℕ∞) coef := by
     have h_open_compl : IsOpen ((tsupport coef)ᶜ) :=
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport coef
-    · have hy_chart : y ∈ Ω := h_tsupp_Ω hy_supp
+    by_cases hy_support : y ∈ tsupport coef
+    · have hy_chart : y ∈ Ω := h_tsupp_Ω hy_support
       exact (hcoef_chart y hy_chart).contDiffAt (hΩ_open.mem_nhds hy_chart)
     · have h_eq_zero : coef =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_open_compl.mem_nhds hy_supp] with z hz
+        filter_upwards [h_open_compl.mem_nhds hy_support] with z hz
         exact image_eq_zero_of_notMem_tsupport hz
       exact contDiffAt_const.congr_of_eventuallyEq h_eq_zero
   have hcoef_cs : HasCompactSupport coef :=
-    HasCompactSupport.of_support_subset_isCompact hKkern_compact h_supp
+    HasCompactSupport.of_support_subset_isCompact hKkern_compact h_support
   obtain ⟨C₀, hC₀_nn, hC₀_bd⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
       (d := Module.finrank ℝ E) hcoef_smooth hcoef_cs K

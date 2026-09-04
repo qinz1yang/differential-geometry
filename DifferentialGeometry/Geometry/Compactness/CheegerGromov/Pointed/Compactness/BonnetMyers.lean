@@ -12,7 +12,7 @@ noncomputable section
 universe u
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -74,5 +74,5 @@ theorem compact_of_ricci
 
 end PointedRiemannianManifold
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

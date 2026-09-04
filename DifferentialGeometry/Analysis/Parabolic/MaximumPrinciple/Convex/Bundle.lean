@@ -160,11 +160,11 @@ theorem bundle_closed_convex_time_dependent_heat_reaction_mem_of_support_tangent
         have hz0 : Metric.infDist (u 0 q₀.2) (C 0 q₀.2) = 0 := Metric.infDist_zero_of_mem (hinit q₀.2)
         simp [hz0]
       linarith
-    have hq₀reg : q₀.1 ∈ (RealTimeInterval.closed 0 T hT.le).regular := by
+    have hq₀regularity : q₀.1 ∈ (RealTimeInterval.closed 0 T hT.le).regular := by
       change q₀.1 ∈ Set.Ioo 0 T
       exact ⟨hq₀tpos, lt_of_le_of_lt hq₀Q.1.2 ht.2⟩
     have hq₀carrier : q₀.1 ∈ (RealTimeInterval.closed 0 T hT.le).carrier :=
-      (RealTimeInterval.closed 0 T hT.le).regular_subset hq₀reg
+      (RealTimeInterval.closed 0 T hT.le).regular_subset hq₀regularity
     obtain ⟨p, hpC, hpmin⟩ :=
       exists_norm_eq_iInf_of_complete_convex (hCne q₀.1 q₀.2) (hCclosed q₀.1 q₀.2).isComplete
         (hCconvex q₀.1 q₀.2) (u q₀.1 q₀.2)
@@ -318,7 +318,7 @@ theorem bundle_closed_convex_time_dependent_heat_reaction_mem_of_support_tangent
     have hztimeMax : IsMaxOn (fun s ↦ z s q₀.2) (Set.Icc 0 q₀.1) q₀.1 := by
       intro s hs
       exact hzmax (s, q₀.2) ⟨⟨hs.1, hs.2.trans hq₀Q.1.2⟩, mem_univ q₀.2⟩
-    have hscalarEq := hsol.equation ν₀ q₀.1 hq₀reg q₀.2 hν₀flat
+    have hscalarEq := hsol.equation ν₀ q₀.1 hq₀regularity q₀.2 hν₀flat
     have hsupport_time_s : HasDerivAt (fun r : Real => support r q₀.2 (ν₀ q₀.2))
         (support' q₀.1 q₀.2 (ν₀ q₀.2)) q₀.1 :=
       hsupport_time ν₀ q₀.1 hq₀carrier hq₀tpos q₀.2
@@ -432,7 +432,7 @@ theorem bundle_closed_convex_time_dependent_heat_reaction_mem_of_support_tangent
         nlinarith
       rw [Metric.mem_closedBall]
       simpa [dist_eq_norm, sub_zero] using hb
-    have hLip := (hL q₀.1 hq₀reg q₀.2 (ν₀ q₀.2)).norm_sub_le hu_ball hp_ball
+    have hLip := (hL q₀.1 hq₀regularity q₀.2 (ν₀ q₀.2)).norm_sub_le hu_ball hp_ball
     have hinnerLip : source q₀.1 q₀.2 (u q₀.1 q₀.2) (ν₀ q₀.2) -
         source q₀.1 q₀.2 p (ν₀ q₀.2) ≤ (L : Real) * ‖ν'‖ ^ 2 := by
       have hle' : source q₀.1 q₀.2 (u q₀.1 q₀.2) (ν₀ q₀.2) -

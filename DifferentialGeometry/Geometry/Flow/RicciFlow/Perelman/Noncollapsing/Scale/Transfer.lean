@@ -24,97 +24,97 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M]
 variable [T2Space M] [SigmaCompactSpace M]
 
-def paraFlowTime
+def parabolicFlowTime
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (tau R : Real) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime) : D.FlowTime :=
-  ⟨paraTime tau R (s : Real), s.2⟩
+    (s : (parabolicInterval D tau R htau).FlowTime) : D.FlowTime :=
+  ⟨parabolicTime tau R (s : Real), s.2⟩
 
-@[simp] theorem paraFlowTime_coe
+@[simp] theorem parabolicFlowTime_coe
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (tau R : Real) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime) :
-    (paraFlowTime tau R htau s : Real) = paraTime tau R (s : Real) := by
+    (s : (parabolicInterval D tau R htau).FlowTime) :
+    (parabolicFlowTime tau R htau s : Real) = parabolicTime tau R (s : Real) := by
   rfl
 
 namespace Perelman
 
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
-def paraBall
+def parabolicBall
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
-    FlowMetricBall (paraSolution (I := I) S tau R hR htau) s where
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (parabolicFlowTime tau R htau s)) :
+    FlowMetricBall (parabolicSolution (I := I) S tau R hR htau) s where
   center := B.center
   radius := Real.sqrt R * B.radius
   radius_pos := mul_pos (Real.sqrt_pos.2 hR) B.radius_pos
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
     [SigmaCompactSpace M] in
-theorem paraBall_setAt
+theorem parabolicBall_setAt
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R htau s))
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (parabolicFlowTime tau R htau s))
     (q : Real) :
-    (paraBall S tau R hR htau s B).setAt q =
-      B.setAt (paraTime tau R q) := by
-  simpa only [FlowMetricBall.setAt, paraBall, paraSolution_metric] using
+    (parabolicBall S tau R hR htau s B).setAt q =
+      B.setAt (parabolicTime tau R q) := by
+  simpa only [FlowMetricBall.setAt, parabolicBall, parabolicSolution_metric] using
     (_root_.DifferentialGeometry.edistBall_scale (I := I) R hR
-      (S.base.metric (paraTime tau R q)) B.center B.radius)
+      (S.base.metric (parabolicTime tau R q)) B.center B.radius)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
     [SigmaCompactSpace M] in
-theorem paraBall_set
+theorem parabolicBall_set
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
-    (paraBall S tau R hR htau s B).set = B.set := by
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (parabolicFlowTime tau R htau s)) :
+    (parabolicBall S tau R hR htau s B).set = B.set := by
   unfold FlowMetricBall.set
-  simpa only [paraFlowTime_coe] using
-    paraBall_setAt (I := I) S tau R hR htau s B (s : Real)
+  simpa only [parabolicFlowTime_coe] using
+    parabolicBall_setAt (I := I) S tau R hR htau s B (s : Real)
 
 omit [CompleteSpace E] in
-theorem paraBall_volume
+theorem parabolicBall_volume
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
-    (paraBall S tau R hR htau s B).volume =
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (parabolicFlowTime tau R htau s)) :
+    (parabolicBall S tau R hR htau s B).volume =
       ENNReal.ofReal (Real.sqrt R) ^ Module.finrank Real E * B.volume := by
   change
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
         (I := I) (M := M)
         (scaleMetric (I := I) R hR
-          (S.base.metric (paraTime tau R (s : Real))))
-        (paraBall S tau R hR htau s B).set =
+          (S.base.metric (parabolicTime tau R (s : Real))))
+        (parabolicBall S tau R hR htau s B).set =
       ENNReal.ofReal (Real.sqrt R) ^ Module.finrank Real E *
         DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure
           (I := I) (M := M)
-          (S.base.metric (paraTime tau R (s : Real))) B.set
-  rw [paraBall_set (I := I) S tau R hR htau s B]
+          (S.base.metric (parabolicTime tau R (s : Real))) B.set
+  rw [parabolicBall_set (I := I) S tau R hR htau s B]
   exact DifferentialGeometry.Integral.Measure.volume_scale_apply
     (I := I) (M := M) R hR
-      (S.base.metric (paraTime tau R (s : Real))) B.set
+      (S.base.metric (parabolicTime tau R (s : Real))) B.set
 
 omit [CompleteSpace E] in
-theorem paraBall_kappa
+theorem parabolicBall_kappa
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R htau s))
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (parabolicFlowTime tau R htau s))
     (kappa : Real) (hB : B.IsKappaNoncollapsed kappa) :
-    (paraBall S tau R hR htau s B).IsKappaNoncollapsed kappa := by
+    (parabolicBall S tau R hR htau s B).IsKappaNoncollapsed kappa := by
   refine ⟨hB.1, ?_⟩
   change
     ENNReal.ofReal kappa *
         ENNReal.ofReal (Real.sqrt R * B.radius) ^ Module.finrank Real E ≤
-      (paraBall S tau R hR htau s B).volume
+      (parabolicBall S tau R hR htau s B).volume
   rw [ENNReal.ofReal_mul (Real.sqrt_nonneg R), mul_pow]
-  rw [paraBall_volume (I := I) S tau R hR htau s B]
+  rw [parabolicBall_volume (I := I) S tau R hR htau s B]
   calc
     ENNReal.ofReal kappa *
           (ENNReal.ofReal (Real.sqrt R) ^ Module.finrank Real E *
@@ -126,11 +126,11 @@ theorem paraBall_kappa
     _ ≤ ENNReal.ofReal (Real.sqrt R) ^ Module.finrank Real E * B.volume :=
       mul_le_mul_right hB.2 _
 
-private theorem paraWindow
+private theorem parabolicWindow
     (tau R : Real) (hR : 0 < R) (s q r : Real)
     (hq : q ∈ Set.Icc (s - (Real.sqrt R * r) ^ 2) s) :
-    paraTime tau R q ∈
-      Set.Icc (paraTime tau R s - r ^ 2) (paraTime tau R s) := by
+    parabolicTime tau R q ∈
+      Set.Icc (parabolicTime tau R s - r ^ 2) (parabolicTime tau R s) := by
   have hrad : (Real.sqrt R * r) ^ 2 = R * r ^ 2 := by
     rw [mul_pow, Real.sq_sqrt hR.le]
   have hlo : s - R * r ^ 2 ≤ q := by
@@ -142,30 +142,30 @@ private theorem paraWindow
   rw [hsplit] at hlo_div
   have hhi_div : q / R ≤ s / R :=
     (div_le_div_iff_of_pos_right hR).2 hq.2
-  unfold paraTime
+  unfold parabolicTime
   constructor <;> linarith
 
 omit [SigmaCompactSpace M] in
-theorem paraBall_rm
+theorem parabolicBall_rm
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R htau s))
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (parabolicFlowTime tau R htau s))
     (hB : B.IsRmControlled) :
-    (paraBall S tau R hR htau s B).IsRmControlled := by
+    (parabolicBall S tau R hR htau s B).IsRmControlled := by
   rcases hB with ⟨hwindow, hcurv⟩
   constructor
   · intro q hq
-    have hq_old := paraWindow tau R hR (s : Real) q B.radius hq
+    have hq_old := parabolicWindow tau R hR (s : Real) q B.radius hq
     exact hwindow hq_old
   · intro q hq x hx
-    have hq_old := paraWindow tau R hR (s : Real) q B.radius hq
-    have hx_old : x ∈ B.setAt (paraTime tau R q) := by
-      rw [← paraBall_setAt (I := I) S tau R hR htau s B q]
+    have hq_old := parabolicWindow tau R hR (s : Real) q B.radius hq
+    have hx_old : x ∈ B.setAt (parabolicTime tau R q) := by
+      rw [← parabolicBall_setAt (I := I) S tau R hR htau s B q]
       exact hx
-    have hold := hcurv (paraTime tau R q) hq_old x hx_old
+    have hold := hcurv (parabolicTime tau R q) hq_old x hx_old
     unfold FlowMetricBall.rmNormSq
-    rw [paraRmNormSq]
+    rw [parabolicRmNormSq]
     have hscale :
         (Real.sqrt R * B.radius) ^ 4 * R⁻¹ ^ 2 = B.radius ^ 4 := by
       rw [mul_pow]
@@ -179,39 +179,39 @@ theorem paraBall_rm
       (Real.sqrt R * B.radius) ^ 4 *
           (R⁻¹ ^ 2 *
             Tensor0SBundle.normSq0S (I := I)
-              (S.base.metric (paraTime tau R q)) x 4
-              (S.base.rm04 (paraTime tau R q) x)) =
+              (S.base.metric (parabolicTime tau R q)) x 4
+              (S.base.rm04 (parabolicTime tau R q) x)) =
           ((Real.sqrt R * B.radius) ^ 4 * R⁻¹ ^ 2) *
             Tensor0SBundle.normSq0S (I := I)
-              (S.base.metric (paraTime tau R q)) x 4
-              (S.base.rm04 (paraTime tau R q) x) := by ring
+              (S.base.metric (parabolicTime tau R q)) x 4
+              (S.base.rm04 (parabolicTime tau R q) x) := by ring
       _ = B.radius ^ 4 *
             Tensor0SBundle.normSq0S (I := I)
-              (S.base.metric (paraTime tau R q)) x 4
-              (S.base.rm04 (paraTime tau R q) x) := by rw [hscale]
+              (S.base.metric (parabolicTime tau R q)) x 4
+              (S.base.rm04 (parabolicTime tau R q) x) := by rw [hscale]
       _ ≤ 1 := hold
 
 def backBall
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s) :
-    FlowMetricBall S (paraFlowTime tau R htau s) where
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall (parabolicSolution (I := I) S tau R hR htau) s) :
+    FlowMetricBall S (parabolicFlowTime tau R htau s) where
   center := B.center
   radius := B.radius / Real.sqrt R
   radius_pos := div_pos B.radius_pos (Real.sqrt_pos.2 hR)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
     [SigmaCompactSpace M] in
-theorem paraBall_back
+theorem parabolicBall_back
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s) :
-    paraBall S tau R hR htau s (backBall S tau R hR htau s B) = B := by
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall (parabolicSolution (I := I) S tau R hR htau) s) :
+    parabolicBall S tau R hR htau s (backBall S tau R hR htau s B) = B := by
   cases B with
   | mk center radius radius_pos =>
-      simp only [paraBall, backBall]
+      simp only [parabolicBall, backBall]
       congr
       field_simp [ne_of_gt (Real.sqrt_pos.2 hR)]
 
@@ -220,35 +220,35 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
 theorem backBall_setAt
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s)
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall (parabolicSolution (I := I) S tau R hR htau) s)
     (q : Real) :
-    (backBall S tau R hR htau s B).setAt (paraTime tau R q) =
+    (backBall S tau R hR htau s B).setAt (parabolicTime tau R q) =
       B.setAt q := by
-  have h := paraBall_setAt (I := I) S tau R hR htau s
+  have h := parabolicBall_setAt (I := I) S tau R hR htau s
     (backBall S tau R hR htau s B) q
-  rw [paraBall_back (I := I) S tau R hR htau s B] at h
+  rw [parabolicBall_back (I := I) S tau R hR htau s B] at h
   exact h.symm
 
 omit [CompleteSpace E] in
 theorem backBall_volume
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s) :
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall (parabolicSolution (I := I) S tau R hR htau) s) :
     B.volume = ENNReal.ofReal (Real.sqrt R) ^ Module.finrank Real E *
       (backBall S tau R hR htau s B).volume := by
-  have h := paraBall_volume (I := I) S tau R hR htau s
+  have h := parabolicBall_volume (I := I) S tau R hR htau s
     (backBall S tau R hR htau s B)
-  rw [paraBall_back (I := I) S tau R hR htau s B] at h
+  rw [parabolicBall_back (I := I) S tau R hR htau s B] at h
   exact h
 
 omit [CompleteSpace E] in
 theorem backBall_kappa
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s)
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall (parabolicSolution (I := I) S tau R hR htau) s)
     (kappa : Real) (hB : B.IsKappaNoncollapsed kappa) :
     (backBall S tau R hR htau s B).IsKappaNoncollapsed kappa := by
   refine ⟨hB.1, ?_⟩
@@ -277,54 +277,54 @@ theorem backBall_kappa
 private theorem backWindow
     (tau R : Real) (hR : 0 < R) (s q r : Real)
     (hq : q ∈ Set.Icc
-      (paraTime tau R s - (r / Real.sqrt R) ^ 2) (paraTime tau R s)) :
-    paraBack tau R q ∈ Set.Icc (s - r ^ 2) s := by
+      (parabolicTime tau R s - (r / Real.sqrt R) ^ 2) (parabolicTime tau R s)) :
+    parabolicBackward tau R q ∈ Set.Icc (s - r ^ 2) s := by
   have hrad : (r / Real.sqrt R) ^ 2 = r ^ 2 / R := by
     rw [div_pow, Real.sq_sqrt hR.le]
   have hlo0 := hq.1
   rw [hrad] at hlo0
-  unfold paraTime at hlo0
+  unfold parabolicTime at hlo0
   have hlo_div : (s - r ^ 2) / R ≤ q - tau := by
     rw [sub_div]
     linarith
   have hlo := (div_le_iff₀ hR).1 hlo_div
   have hhi0 := hq.2
-  unfold paraTime at hhi0
+  unfold parabolicTime at hhi0
   have hhi_div : q - tau ≤ s / R := by linarith
   have hhi := (le_div_iff₀ hR).1 hhi_div
   constructor
-  · simpa [paraBack, mul_comm] using hlo
-  · simpa [paraBack, mul_comm] using hhi
+  · simpa [parabolicBackward, mul_comm] using hlo
+  · simpa [parabolicBackward, mul_comm] using hhi
 
 omit [SigmaCompactSpace M] in
 theorem backBall_rm
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall (paraSolution (I := I) S tau R hR htau) s)
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall (parabolicSolution (I := I) S tau R hR htau) s)
     (hB : B.IsRmControlled) :
     (backBall S tau R hR htau s B).IsRmControlled := by
   rcases hB with ⟨hwindow, hcurv⟩
   constructor
   · intro q hq
-    let q' : Real := paraBack tau R q
+    let q' : Real := parabolicBackward tau R q
     have hq_new : q' ∈ Set.Icc (s - B.radius ^ 2) (s : Real) :=
       backWindow tau R hR (s : Real) q B.radius hq
     have hmem := hwindow hq_new
-    change paraTime tau R q' ∈ D.carrier at hmem
-    simpa only [q', paraTime_back (ne_of_gt hR)] using hmem
+    change parabolicTime tau R q' ∈ D.carrier at hmem
+    simpa only [q', parabolicTime_back (ne_of_gt hR)] using hmem
   · intro q hq x hx
-    let q' : Real := paraBack tau R q
+    let q' : Real := parabolicBackward tau R q
     have hq_new : q' ∈ Set.Icc (s - B.radius ^ 2) (s : Real) :=
       backWindow tau R hR (s : Real) q B.radius hq
     have hset := backBall_setAt (I := I) S tau R hR htau s B q'
-    rw [paraTime_back (ne_of_gt hR)] at hset
+    rw [parabolicTime_back (ne_of_gt hR)] at hset
     have hx_new : x ∈ B.setAt q' := by
       rw [← hset]
       exact hx
     have hold := hcurv q' hq_new x hx_new
     unfold FlowMetricBall.rmNormSq at hold ⊢
-    rw [paraRmNormSq, paraTime_back (ne_of_gt hR)] at hold
+    rw [parabolicRmNormSq, parabolicTime_back (ne_of_gt hR)] at hold
     change (B.radius / Real.sqrt R) ^ 4 *
       Tensor0SBundle.normSq0S (I := I) (S.base.metric q) x 4
         (S.base.rm04 q x) ≤ 1
@@ -341,57 +341,57 @@ theorem backBall_rm
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I 1 M] [T2Space M]
     [SigmaCompactSpace M] in
-theorem backBall_para
+theorem backBall_parabolic
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
-    backBall S tau R hR htau s (paraBall S tau R hR htau s B) = B := by
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (parabolicFlowTime tau R htau s)) :
+    backBall S tau R hR htau s (parabolicBall S tau R hR htau s B) = B := by
   cases B with
   | mk center radius radius_pos =>
-      simp only [paraBall, backBall]
+      simp only [parabolicBall, backBall]
       congr
       field_simp [ne_of_gt (Real.sqrt_pos.2 hR)]
 
 omit [SigmaCompactSpace M] in
-theorem paraBall_rm_iff
+theorem parabolicBall_rm_iff
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R htau s)) :
-    (paraBall S tau R hR htau s B).IsRmControlled ↔ B.IsRmControlled := by
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (parabolicFlowTime tau R htau s)) :
+    (parabolicBall S tau R hR htau s B).IsRmControlled ↔ B.IsRmControlled := by
   constructor
   · intro h
     have hback := backBall_rm (I := I) S tau R hR htau s
-      (paraBall S tau R hR htau s B) h
-    rw [backBall_para (I := I) S tau R hR htau s B] at hback
+      (parabolicBall S tau R hR htau s B) h
+    rw [backBall_parabolic (I := I) S tau R hR htau s B] at hback
     exact hback
-  · exact paraBall_rm (I := I) S tau R hR htau s B
+  · exact parabolicBall_rm (I := I) S tau R hR htau s B
 
 omit [CompleteSpace E] in
-theorem paraBall_kappa_iff
+theorem parabolicBall_kappa_iff
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
-    (s : (paraInterval D tau R htau).FlowTime)
-    (B : FlowMetricBall S (paraFlowTime tau R htau s))
+    (s : (parabolicInterval D tau R htau).FlowTime)
+    (B : FlowMetricBall S (parabolicFlowTime tau R htau s))
     (kappa : Real) :
-    (paraBall S tau R hR htau s B).IsKappaNoncollapsed kappa ↔
+    (parabolicBall S tau R hR htau s B).IsKappaNoncollapsed kappa ↔
       B.IsKappaNoncollapsed kappa := by
   constructor
   · intro h
     have hback := backBall_kappa (I := I) S tau R hR htau s
-      (paraBall S tau R hR htau s B) kappa h
-    rw [backBall_para (I := I) S tau R hR htau s B] at hback
+      (parabolicBall S tau R hR htau s B) kappa h
+    rw [backBall_parabolic (I := I) S tau R hR htau s B] at hback
     exact hback
-  · exact paraBall_kappa (I := I) S tau R hR htau s B kappa
+  · exact parabolicBall_kappa (I := I) S tau R hR htau s B kappa
 
-theorem para_noncollapse
+theorem parabolic_noncollapse
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
     (kappa rho : Real)
     (hS : KappaNoncollapsedBelowScale S kappa rho) :
     KappaNoncollapsedBelowScale
-      (paraSolution (I := I) S tau R hR htau) kappa
+      (parabolicSolution (I := I) S tau R hR htau) kappa
       (Real.sqrt R * rho) := by
   refine ⟨mul_pos (Real.sqrt_pos.2 hR) hS.1, ?_⟩
   intro s B hscale hRm
@@ -402,20 +402,20 @@ theorem para_noncollapse
     simpa only [mul_comm] using hscale
   have hRm₀ : B₀.IsRmControlled :=
     backBall_rm (I := I) S tau R hR htau s B hRm
-  have hk₀ := hS.2 (paraFlowTime tau R htau s) B₀ hradius hRm₀
-  have hk := paraBall_kappa (I := I) S tau R hR htau s B₀ kappa hk₀
-  rw [paraBall_back (I := I) S tau R hR htau s B] at hk
+  have hk₀ := hS.2 (parabolicFlowTime tau R htau s) B₀ hradius hRm₀
+  have hk := parabolicBall_kappa (I := I) S tau R hR htau s B₀ kappa hk₀
+  rw [parabolicBall_back (I := I) S tau R hR htau s B] at hk
   exact hk
 
-theorem para_no_local
+theorem parabolic_no_local
     (S : SolutionOn (I := I) (M := M) D)
     (tau R : Real) (hR : 0 < R) (htau : tau ∈ D.carrier)
     (rho : Real) (hS : NoLocalCollapsing S rho) :
-    NoLocalCollapsing (paraSolution (I := I) S tau R hR htau)
+    NoLocalCollapsing (parabolicSolution (I := I) S tau R hR htau)
       (Real.sqrt R * rho) := by
   rcases hS with ⟨kappa, hkappa, hbelow⟩
   exact ⟨kappa, hkappa,
-    para_noncollapse (I := I) S tau R hR htau kappa rho hbelow⟩
+    parabolic_noncollapse (I := I) S tau R hR htau kappa rho hbelow⟩
 
 end Perelman
 

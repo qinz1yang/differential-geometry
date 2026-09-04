@@ -101,11 +101,11 @@ noncomputable def UnrestrictedSmoothScalar.oneSubLapInteriorSupportLp
     Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
   (u.oneSubLap_memLp_of_interior_support hu_int).toLp _
 
-theorem fullSmoothScalarH1Inner_eq_integral_oneSubLap_mul_of_interior_support
+theorem unrestrictedSmoothScalarH1Inner_eq_integral_oneSubLap_mul_of_interior_support
     {g : SmoothRiemannianMetric (I_half n) M}
     (u v : UnrestrictedSmoothScalar g)
     (hu_int : tsupport u.toFun ⊆ (I_half n).interior M) :
-    fullSmoothScalarH1Inner u v =
+    unrestrictedSmoothScalarH1Inner u v =
       ∫ x, (u.toFun x -
               ΔGWithBoundary (I := I_half n) g u.smooth hu_int x) *
             v.toFun x
@@ -152,7 +152,7 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLap_mul_of_interior_support
               ΔGWithBoundary (I := I_half n) g u.smooth hu_int x
             ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
     linarith
-  unfold fullSmoothScalarH1Inner
+  unfold unrestrictedSmoothScalarH1Inner
   have hΔu_cont : Continuous
       (ΔGWithBoundary (I := I_half n) g u.smooth hu_int) :=
     Δ_g_with_boundary_continuous (I := I_half n) g u.smooth hu_int
@@ -189,13 +189,13 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLap_mul_of_interior_support
   rw [h_grad_eq]
   ring
 
-theorem fullSmoothScalarH1Inner_eq_lpInner_oneSubLap_of_interior_support
+theorem unrestrictedSmoothScalarH1Inner_eq_lpInner_oneSubLap_of_interior_support
     {g : SmoothRiemannianMetric (I_half n) M}
     (u v : UnrestrictedSmoothScalar g)
     (hu_int : tsupport u.toFun ⊆ (I_half n).interior M) :
-    fullSmoothScalarH1Inner u v =
+    unrestrictedSmoothScalarH1Inner u v =
       ⟪u.oneSubLapInteriorSupportLp hu_int, smoothToLpUnrestricted g v⟫_ℝ := by
-  rw [fullSmoothScalarH1Inner_eq_integral_oneSubLap_mul_of_interior_support
+  rw [unrestrictedSmoothScalarH1Inner_eq_integral_oneSubLap_mul_of_interior_support
     (u := u) (v := v) hu_int]
   rw [MeasureTheory.L2.inner_def (𝕜 := ℝ)]
   have hae_lhs :
@@ -229,11 +229,11 @@ theorem fullSmoothScalarH1Inner_eq_lpInner_oneSubLap_of_interior_support
 lemma inner_smoothToUnrestrictedH1Compl_smoothToUnrestrictedH1Compl
     {g : SmoothRiemannianMetric (I_half n) M} (u v : UnrestrictedSmoothScalar g) :
     ⟪smoothToUnrestrictedH1Compl g u, smoothToUnrestrictedH1Compl g v⟫_ℝ =
-      fullSmoothScalarH1Inner u v := by
+      unrestrictedSmoothScalarH1Inner u v := by
   unfold smoothToUnrestrictedH1Compl
   change ⟪((u : UnrestrictedH1Compl g) : UnrestrictedH1Compl g),
         ((v : UnrestrictedH1Compl g) : UnrestrictedH1Compl g)⟫_ℝ =
-      fullSmoothScalarH1Inner u v
+      unrestrictedSmoothScalarH1Inner u v
   rw [UniformSpace.Completion.inner_coe (𝕜 := ℝ) u v]
   rfl
 
@@ -242,11 +242,11 @@ lemma unrestrictedH1ComplBilin_smoothToUnrestrictedH1Compl_smoothToUnrestrictedH
     unrestrictedH1ComplBilin g
         (smoothToUnrestrictedH1Compl g u)
         (smoothToUnrestrictedH1Compl g v) =
-      fullSmoothScalarH1Inner u v := by
+      unrestrictedSmoothScalarH1Inner u v := by
   rw [unrestrictedH1ComplBilin_apply]
   exact inner_smoothToUnrestrictedH1Compl_smoothToUnrestrictedH1Compl u v
 
-theorem fullSmoothScalar_bilin_eq_lpFunctional_smooth_of_interior_support
+theorem unrestrictedSmoothScalar_bilin_eq_lpFunctional_smooth_of_interior_support
     {g : SmoothRiemannianMetric (I_half n) M}
     (u v : UnrestrictedSmoothScalar g)
     (hu_int : tsupport u.toFun ⊆ (I_half n).interior M) :
@@ -256,7 +256,7 @@ theorem fullSmoothScalar_bilin_eq_lpFunctional_smooth_of_interior_support
       lpFunctionalCLMUnrestricted g (u.oneSubLapInteriorSupportLp hu_int)
         (smoothToUnrestrictedH1Compl g v) := by
   rw [unrestrictedH1ComplBilin_smoothToUnrestrictedH1Compl_smoothToUnrestrictedH1Compl,
-    fullSmoothScalarH1Inner_eq_lpInner_oneSubLap_of_interior_support
+    unrestrictedSmoothScalarH1Inner_eq_lpInner_oneSubLap_of_interior_support
       (u := u) (v := v) hu_int]
   rw [lpFunctionalCLMUnrestricted_apply,
     unrestrictedH1ComplToLp_smoothToUnrestrictedH1Compl]
@@ -293,7 +293,7 @@ theorem smoothToUnrestrictedH1Compl_bilin_eq_lpFunctional_of_interior_support
   have hLR_smooth :
       L ∘ (smoothToUnrestrictedH1Compl g) = R ∘ (smoothToUnrestrictedH1Compl g) := by
     funext v
-    exact fullSmoothScalar_bilin_eq_lpFunctional_smooth_of_interior_support
+    exact unrestrictedSmoothScalar_bilin_eq_lpFunctional_smooth_of_interior_support
       u v hu_int
   exact congrFun
     ((denseRange_smoothToUnrestrictedH1Compl g).equalizer hL_cont hR_cont

@@ -157,12 +157,12 @@ private lemma tangent_continuousLinearMapAt_levelSet (α x : M)
     (hx : chartAt H x = chartAt H α) :
     (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x =
       (1 : E →L[ℝ] E) := by
-  have hx_src : x ∈ (chartAt H α).source := by
+  have hx_source : x ∈ (chartAt H α).source := by
     have hxs : x ∈ (chartAt H x).source := ChartedSpace.mem_chart_source x
     rw [hx] at hxs
     exact hxs
   rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
-    (b₀ := α) (b := x) hx_src]
+    (b₀ := α) (b := x) hx_source]
   have hach : achart H x = achart H α := by
     apply Subtype.ext
     change chartAt H x = chartAt H α
@@ -170,18 +170,18 @@ private lemma tangent_continuousLinearMapAt_levelSet (α x : M)
   ext v
   rw [hach]
   exact (tangentBundleCore I M).coordChange_self (achart H α) x
-    (by rw [tangentBundleCore_baseSet, coe_achart]; exact hx_src) v
+    (by rw [tangentBundleCore_baseSet, coe_achart]; exact hx_source) v
 
 omit [Module.Finite ℝ E] in
 private lemma tangent_symmL_levelSet (α x : M)
     (hx : chartAt H x = chartAt H α) :
     (trivializationAt E (TangentSpace I) α).symmL ℝ x = (1 : E →L[ℝ] E) := by
-  have hx_src : x ∈ (chartAt H α).source := by
+  have hx_source : x ∈ (chartAt H α).source := by
     have hxs : x ∈ (chartAt H x).source := ChartedSpace.mem_chart_source x
     rw [hx] at hxs
     exact hxs
   rw [TangentBundle.symmL_trivializationAt_eq_core
-    (b₀ := α) (b := x) hx_src]
+    (b₀ := α) (b := x) hx_source]
   have hach : achart H x = achart H α := by
     apply Subtype.ext
     change chartAt H x = chartAt H α
@@ -189,14 +189,14 @@ private lemma tangent_symmL_levelSet (α x : M)
   ext v
   rw [hach]
   exact (tangentBundleCore I M).coordChange_self (achart H α) x
-    (by rw [tangentBundleCore_baseSet, coe_achart]; exact hx_src) v
+    (by rw [tangentBundleCore_baseSet, coe_achart]; exact hx_source) v
 
 private lemma tensor0S_continuousLinearMapAt_levelSet_apply
     (s : ℕ) (α x : M) (hx : chartAt H x = chartAt H α)
     (p : Tensor0SSpace s I x) :
     (trivializationAt (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y) α).continuousLinearMapAt ℝ x p = p := by
-  have hx_src : x ∈ (chartAt H α).source := by
+  have hx_source : x ∈ (chartAt H α).source := by
     have hxs : x ∈ (chartAt H x).source := ChartedSpace.mem_chart_source x
     rw [hx] at hxs
     exact hxs
@@ -204,7 +204,7 @@ private lemma tensor0S_continuousLinearMapAt_levelSet_apply
       (fun y : M => Tensor0SSpace s I y) α).baseSet := by
     change x ∈ (trivializationAt E (TangentSpace I) α).baseSet
     change x ∈ (chartAt H α).source
-    exact hx_src
+    exact hx_source
   have hcLMAt :
       (trivializationAt (Tensor0SModel s ℝ E)
         (fun y : M => Tensor0SSpace s I y) α).continuousLinearMapAt ℝ x p =
@@ -228,7 +228,7 @@ private lemma tensor0S_symmL_levelSet_apply
     (p : Tensor0SModel s ℝ E) :
     (trivializationAt (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y) α).symmL ℝ x p = p := by
-  have hx_src : x ∈ (chartAt H α).source := by
+  have hx_source : x ∈ (chartAt H α).source := by
     have hxs : x ∈ (chartAt H x).source := ChartedSpace.mem_chart_source x
     rw [hx] at hxs
     exact hxs
@@ -236,7 +236,7 @@ private lemma tensor0S_symmL_levelSet_apply
       (fun y : M => Tensor0SSpace s I y) α).baseSet := by
     change x ∈ (trivializationAt E (TangentSpace I) α).baseSet
     change x ∈ (chartAt H α).source
-    exact hx_src
+    exact hx_source
   have hinv : (trivializationAt (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y) α).continuousLinearMapAt ℝ x
       ((trivializationAt (Tensor0SModel s ℝ E)

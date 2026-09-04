@@ -39,11 +39,11 @@ private theorem ode2_zero
   rw [hzero t] at hnorm
   exact norm_le_zero_iff.mp hnorm
 
-namespace IsJacobiSolOn
+namespace IsJacobiFieldOn
 
 theorem eq_zero_of_interior
     {R : ℝ → F →L[ℝ] F} {a b c C : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R a b y v)
+    (hsol : IsJacobiFieldOn R a b y v)
     (hc : c ∈ Ioo a b) (hC : 0 ≤ C)
     (hR : ∀ t ∈ Icc a b, ‖R t‖ ≤ C)
     (hyc : y c = 0) (hvc : v c = 0) :
@@ -216,6 +216,6 @@ theorem eq_zero_of_interior
   intro t ht
   exact ⟨hy_zero t ht, hv_zero t ht⟩
 
-end IsJacobiSolOn
+end IsJacobiFieldOn
 
 end DifferentialGeometry.Analysis.ODE

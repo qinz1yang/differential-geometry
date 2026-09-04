@@ -51,7 +51,7 @@ theorem ricci_quadratic_form_on_unit_vector_le_of_solution
     have h :=
       ricci_diag_eq_sum_rm04_diag_of_orthonormal (I := I) (S.base.metric t) basis
         (S.ricci t) (S.base.rm13 t) (S.base.rm04 t)
-        (DifferentialGeometry.PDE.RicciFlow.ricciTraceOfSol (I := I) S t)
+        (DifferentialGeometry.PDE.RicciFlow.ricciTraceOfSolution (I := I) S t)
         (DifferentialGeometry.PDE.RicciFlow.solution_rm04LowersRm13At (I := I) S t x) hON i j
     rw [hbridge i j] at h
     exact h
@@ -65,10 +65,10 @@ theorem twoTensorQuadBound_of_solutions
     (K : Set M) (β ψ C : Real)
     (hcurv : forall i : Nat, forall t : Real, t ∈ Set.Icc β ψ -> forall x : M, x ∈ K ->
       normSq0S (I := I) ((S i).base.metric t) x 4 ((S i).base.rm04 t x) <= C) :
-    DifferentialGeometry.HCGCompactness.TwoTensorQuadBoundOnWindow (I := I) K β ψ
+    DifferentialGeometry.CheegerGromovCompactness.TwoTensorQuadBoundOnWindow (I := I) K β ψ
       (fun i s => (S i).base.metric s) (fun i t x => (S i).ricciAt t x)
       ((Module.finrank Real E : Real) ^ 2 * Real.sqrt C) := by
-  refine DifferentialGeometry.HCGCompactness.twoTensorQuadBound_of_unit_bound K β ψ
+  refine DifferentialGeometry.CheegerGromovCompactness.twoTensorQuadBound_of_unit_bound K β ψ
     ((Module.finrank Real E : Real) ^ 2 * Real.sqrt C)
     (fun i s => (S i).base.metric s) (fun i t x => (S i).ricciAt t x)
     (by positivity) ?_

@@ -12,7 +12,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff BigOperators
 
@@ -366,12 +366,12 @@ theorem ricciTensor_cross
           (cov := LeviCivita (I := I)
             (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi))
           x (basis i) v w) (basis i),
-      ← metricRm04StdAt_eq_inner_riemannOp
+      ← metricRm04StandardAt_eq_inner_riemannOp
         (I := I) (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
         x (basis i) v w (basis i),
-      metricRm04Std_pullbackCross
+      metricRm04Standard_pullbackCross
         (I := I) (J := J) g Phi x (basis i) v w (basis i),
-      metricRm04StdAt_eq_inner_riemannOp
+      metricRm04StandardAt_eq_inner_riemannOp
         (I := J) g (Phi x)
         (mfderiv I J (Phi : M → N) x (basis i))
         (mfderiv I J (Phi : M → N) x v)
@@ -636,5 +636,5 @@ theorem metricDerivNorm_pullbackCross
   exact metricDiffCovDerivAt_pullbackCross
     (I := I) (J := J) gk gInf gRef Phi a x slots
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -146,7 +146,7 @@ theorem parabolic_variable_coefficient_ball_interior_schauder_estimate_of_local_
     have hspace : p.space ∉ Metric.ball center R := by
       intro hpball
       exact hpSource ⟨hpQ.1, hpball⟩
-    change intervalCutoffBcf aTime t₀ t₁ bTime hat₀ ht₀t₁ ht₁b p.time •
+    change intervalCutoffBoundedContinuousFunction aTime t₀ t₁ bTime hat₀ ht₀t₁ ht₁b p.time •
       ballCutoff center r R p.space = 0
     rw [ballCutoff_eq_zero_of_not_mem_ball hr hrR hspace, smul_zero]
   have hsourceHolder' : HolderWith Ksource alpha
@@ -335,7 +335,7 @@ theorem parabolic_variable_coefficient_ball_interior_schauder_estimate_of_local_
     have hspace : p.space ∉ Metric.ball center R := by
       intro hpball
       exact hpSource ⟨hpQ.1, hpball⟩
-    change intervalCutoffBcf aTime t₀ t₁ bTime hat₀ ht₀t₁ ht₁b p.time •
+    change intervalCutoffBoundedContinuousFunction aTime t₀ t₁ bTime hat₀ ht₀t₁ ht₁b p.time •
       ballCutoff center r R p.space = 0
     rw [ballCutoff_eq_zero_of_not_mem_ball hr hrR hspace, smul_zero]
   have hsourceHolder' : HolderWith Ksource alpha

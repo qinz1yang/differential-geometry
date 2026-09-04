@@ -128,10 +128,10 @@ private lemma tensorTrivProjPushedNormSq_eq_zero_off_image_tsupport
     rw [← hzy]; exact (toEuclidean (E := E)).symm_apply_apply z
   have hxz : x = (extChartAt I α).symm z := by
     rw [hx_def, hsym_eq]
-  have hx_supp :
+  have hx_support :
       x ∈ tsupport (fun x : M => ‖TensorRSSpace.toModel (S x)‖ ^ 2) :=
     subset_tsupport _ (Function.mem_support.mpr hne)
-  refine ⟨z, ⟨x, hx_supp, ?_⟩, hzy⟩
+  refine ⟨z, ⟨x, hx_support, ?_⟩, hzy⟩
   rw [hxz]
   exact (extChartAt I α).right_inv hz_target
 
@@ -139,7 +139,7 @@ theorem tensorTrivProjPushedNormSq_hasCompactSupport
     [CompactSpace M]
     (r s : ℕ) (α : M)
     (S : Π b : M, TensorRSSpace r s I b)
-    (hS_supp :
+    (hS_support :
       tsupport (fun x : M => ‖TensorRSSpace.toModel (S x)‖ ^ 2) ⊆
         (chartAt H α).source) :
     HasCompactSupport
@@ -148,14 +148,14 @@ theorem tensorTrivProjPushedNormSq_hasCompactSupport
   set u : M → ℝ := fun x => ‖TensorRSSpace.toModel (S x)‖ ^ 2 with hu_def
   obtain ⟨hcompact_image, hsub_target⟩ :=
     image_extChartAt_tsupport_compact_subset_target
-      (I := I) (M := M) (u := u) (α := α) hS_supp
+      (I := I) (M := M) (u := u) (α := α) hS_support
   set K : Set EuclN := toEuclidean '' ((extChartAt I α) '' (tsupport u)) with hK_def
   have hK_compact : IsCompact K :=
     hcompact_image.image (toEuclidean (E := E)).continuous
   refine HasCompactSupport.of_support_subset_isCompact hK_compact ?_
-  intro y hy_supp
+  intro y hy_support
   by_contra hy_notK
-  apply hy_supp
+  apply hy_support
   by_cases hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α
   · exact tensorTrivProjPushedNormSq_eq_zero_off_image_tsupport
       (I := I) (M := M) r s α S hy_target hy_notK
@@ -238,7 +238,7 @@ theorem tensorTrivProjPushedNormSq_integrableOn
     (S : Π b : M, TensorRSSpace r s I b)
     (hS_meas :
       Measurable (fun x : M => ‖TensorRSSpace.toModel (S x)‖ ^ 2))
-    (hS_supp :
+    (hS_support :
       tsupport (fun x : M => ‖TensorRSSpace.toModel (S x)‖ ^ 2) ⊆
         (chartAt H α).source)
     (hS_cont :
@@ -261,14 +261,14 @@ theorem tensorTrivProjPushedNormSq_integrableOn
   set u : M → ℝ := fun x => ‖TensorRSSpace.toModel (S x)‖ ^ 2 with hu_def
   obtain ⟨hK_compact_image, _hK_sub_target⟩ :=
     image_extChartAt_tsupport_compact_subset_target
-      (I := I) (M := M) (u := u) (α := α) hS_supp
+      (I := I) (M := M) (u := u) (α := α) hS_support
   set K : Set EuclN := toEuclidean '' ((extChartAt I α) '' (tsupport u)) with hK_def
   have hK_compact : IsCompact K :=
     hK_compact_image.image (toEuclidean (E := E)).continuous
   have hK_sub :
       K ⊆ chartTargetEuclid (I := I) (M := M) α :=
     image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
-      (I := I) (M := M) (u := u) (α := α) hS_supp
+      (I := I) (M := M) (u := u) (α := α) hS_support
   have hcont_K :
       ContinuousOn (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S) K :=
     hcont_target.mono hK_sub

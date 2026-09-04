@@ -12,7 +12,7 @@ noncomputable section
 open scoped ContDiff ENNReal Manifold Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold MeasureTheory Metric Set
 open DifferentialGeometry.Geometry.Riemannian
@@ -31,14 +31,14 @@ variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-private lemma hyp_shift_le
+private lemma hyperbolic_shift_le
     (d : Nat) {q s D : Real} (hq : 0 ≤ q) (hs : 0 < s) (hD : 0 ≤ D) :
-    hypRadVol q d (D + s) ≤
+    hyperbolicRadialVolume q d (D + s) ≤
       (2 ^ (d + 1) * Real.exp (q * (d : Real) * s)) *
         Real.exp ((q * (d : Real) + (d + 1 : Nat) / s) * D) *
-          hypRadVol q d s := by
+          hyperbolicRadialVolume q d s := by
   have hsR : s ≤ D + s := by linarith
-  have hratio := hypRadVol_ratio_le d hq hs hsR
+  have hratio := hyperbolicRadialVolume_ratio_le d hq hs hsR
   have hsdiv : 0 ≤ D / s := div_nonneg hD hs.le
   have hone :
       1 + D / s ≤ Real.exp (D / s) := by
@@ -56,47 +56,47 @@ private lemma hyp_shift_le
     exact pow_le_pow_left₀ hbase
       (mul_le_mul_of_nonneg_left hone (by norm_num)) _
   calc
-    hypRadVol q d (D + s)
+    hyperbolicRadialVolume q d (D + s)
         ≤ Real.exp (q * (d : Real) * (D + s)) *
             ((D + s) / (s / 2)) ^ (d + 1) *
-              hypRadVol q d s := hratio
+              hyperbolicRadialVolume q d s := hratio
     _ ≤ Real.exp (q * (d : Real) * (D + s)) *
             (2 * Real.exp (D / s)) ^ (d + 1) *
-              hypRadVol q d s := by
+              hyperbolicRadialVolume q d s := by
           exact mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left hpow (Real.exp_pos _).le)
             ((pow_nonneg (by positivity : 0 ≤ s / 2) _).trans
-              (hypRadVol_ge d hq hs))
+              (hyperbolicRadialVolume_ge d hq hs))
     _ = (2 ^ (d + 1) * Real.exp (q * (d : Real) * s)) *
           Real.exp ((q * (d : Real) + (d + 1 : Nat) / s) * D) *
-            hypRadVol q d s := by
+            hyperbolicRadialVolume q d s := by
           rw [mul_pow, ← Real.exp_nat_mul (D / s) (d + 1)]
           calc
             Real.exp (q * (d : Real) * (D + s)) *
                   (2 ^ (d + 1) *
                     Real.exp ((d + 1 : Nat) * (D / s))) *
-                  hypRadVol q d s =
+                  hyperbolicRadialVolume q d s =
                 2 ^ (d + 1) *
                   (Real.exp (q * (d : Real) * (D + s)) *
                     Real.exp ((d + 1 : Nat) * (D / s))) *
-                  hypRadVol q d s := by ring
+                  hyperbolicRadialVolume q d s := by ring
             _ = 2 ^ (d + 1) *
                   Real.exp
                     (q * (d : Real) * (D + s) +
                       (d + 1 : Nat) * (D / s)) *
-                  hypRadVol q d s := by
+                  hyperbolicRadialVolume q d s := by
                 rw [Real.exp_add]
             _ = 2 ^ (d + 1) *
                   Real.exp
                     (q * (d : Real) * s +
                       (q * (d : Real) + (d + 1 : Nat) / s) * D) *
-                  hypRadVol q d s := by
+                  hyperbolicRadialVolume q d s := by
                 congr 3
                 ring
             _ = (2 ^ (d + 1) * Real.exp (q * (d : Real) * s)) *
                   Real.exp
                     ((q * (d : Real) + (d + 1 : Nat) / s) * D) *
-                  hypRadVol q d s := by
+                  hyperbolicRadialVolume q d s := by
                 rw [Real.exp_add]
                 ring
 
@@ -108,11 +108,11 @@ private lemma ofReal_add_mul {a b c : Real}
   rw [← add_mul, ← ENNReal.ofReal_add ha hb,
     ← ENNReal.ofReal_mul (add_nonneg ha hb)]
 
-private lemma cgt_fit {s : Real} (hs : 0 < s) :
+private lemma cheeger_gromov_taylor_fit {s : Real} (hs : 0 < s) :
     s + 2 * s < 5 * s := by
   nlinarith
 
-private lemma cgt_quarter {s : Real} (hs : 0 < s) :
+private lemma cheeger_gromov_taylor_quarter {s : Real} (hs : 0 < s) :
     s < (5 * s) / 4 := by
   nlinarith
 
@@ -360,8 +360,8 @@ def injectivityRadiusDecayOfBoundedGeometry
   have hmetricCtrl :
       ∀ z ∈ Metric.ball (0 : E) rCtrl, ∀ v : E,
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-            intrFrameMetric (I := I) Y.metric hEnorm x z v v ∧
-          intrFrameMetric (I := I) Y.metric hEnorm x z v v ≤
+            intrinsicFrameMetric (I := I) Y.metric hEnorm x z v v ∧
+          intrinsicFrameMetric (I := I) Y.metric hEnorm x z v v ≤
             2 * ‖v‖ ^ 2 := by
     exact (hcontrol k x).1
   have hlocalCtrl :
@@ -389,9 +389,9 @@ def injectivityRadiusDecayOfBoundedGeometry
   have hmetricS :
       ∀ z ∈ Metric.ball (0 : E) s, ∀ v : E,
         (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-            intrFrameMetric (I := I) Y.metric hEnorm
+            intrinsicFrameMetric (I := I) Y.metric hEnorm
               Y.basepoint z v v ∧
-          intrFrameMetric (I := I) Y.metric hEnorm
+          intrinsicFrameMetric (I := I) Y.metric hEnorm
               Y.basepoint z v v ≤
             2 * ‖v‖ ^ 2 := by
     intro z hz v
@@ -407,7 +407,7 @@ def injectivityRadiusDecayOfBoundedGeometry
       ENNReal.ofReal dens *
           (modelHaar (E := E)) (Metric.ball (0 : E) s) ≤ V0 := by
     simpa only [dens, V0, smallNormalBall] using
-      (intrBall_vol_ge (I := I) Y.metric hEnorm
+      (intrinsicBall_vol_ge (I := I) Y.metric hEnorm
         Y.basepoint hs baseChart hmetricS)
   have hunitEq :
       (modelHaar (E := E)) (Metric.ball (0 : E) 1) =
@@ -515,48 +515,48 @@ def injectivityRadiusDecayOfBoundedGeometry
     dsimp only [d]
     omega
   have hrel :
-      VxR * ENNReal.ofReal (hypRadVol q d s) ≤
-        ENNReal.ofReal (hypRadVol q d (D + s)) * Vx := by
+      VxR * ENNReal.ofReal (hyperbolicRadialVolume q d s) ≤
+        ENNReal.ofReal (hyperbolicRadialVolume q d (D + s)) * Vx := by
     simpa only [VxR, Vx, d, n] using
-      (segBall_vol_rel (I := I) Y.metric hEnorm x hq hs
+      (segmentBall_vol_rel (I := I) Y.metric hEnorm x hq hs
         (by linarith : s ≤ D + s) hRic)
   have hmodelShift :
-      hypRadVol q d (D + s) ≤
-        (shiftC * Real.exp (C * D)) * hypRadVol q d s := by
+      hyperbolicRadialVolume q d (D + s) ≤
+        (shiftC * Real.exp (C * D)) * hyperbolicRadialVolume q d s := by
     simpa only [shiftC, C, hdSucc, mul_assoc] using
-      (hyp_shift_le d hq hs hD)
+      (hyperbolic_shift_le d hq hs hD)
   have hcoeffNonneg :
       0 ≤ shiftC * Real.exp (C * D) :=
     mul_nonneg hshift.le (Real.exp_pos _).le
   have hmodelShiftE :
-      ENNReal.ofReal (hypRadVol q d (D + s)) ≤
+      ENNReal.ofReal (hyperbolicRadialVolume q d (D + s)) ≤
         ENNReal.ofReal (shiftC * Real.exp (C * D)) *
-          ENNReal.ofReal (hypRadVol q d s) := by
+          ENNReal.ofReal (hyperbolicRadialVolume q d s) := by
     calc
-      ENNReal.ofReal (hypRadVol q d (D + s))
+      ENNReal.ofReal (hyperbolicRadialVolume q d (D + s))
           ≤ ENNReal.ofReal
-              ((shiftC * Real.exp (C * D)) * hypRadVol q d s) :=
+              ((shiftC * Real.exp (C * D)) * hyperbolicRadialVolume q d s) :=
         ENNReal.ofReal_le_ofReal hmodelShift
       _ = ENNReal.ofReal (shiftC * Real.exp (C * D)) *
-            ENNReal.ofReal (hypRadVol q d s) := by
+            ENNReal.ofReal (hyperbolicRadialVolume q d s) := by
         rw [ENNReal.ofReal_mul hcoeffNonneg]
-  have hmodelSPos : 0 < hypRadVol q d s :=
-    hypRadVol_pos hq hs
+  have hmodelSPos : 0 < hyperbolicRadialVolume q d s :=
+    hyperbolicRadialVolume_pos hq hs
   have hmodelS0 :
-      ENNReal.ofReal (hypRadVol q d s) ≠ 0 :=
+      ENNReal.ofReal (hyperbolicRadialVolume q d s) ≠ 0 :=
     ENNReal.ofReal_ne_zero_iff.mpr hmodelSPos
   have hVxRel :
       VxR ≤ ENNReal.ofReal (shiftC * Real.exp (C * D)) * Vx := by
     apply
       (ENNReal.mul_le_mul_iff_left hmodelS0 ENNReal.ofReal_ne_top).mp
     calc
-      VxR * ENNReal.ofReal (hypRadVol q d s)
-          ≤ ENNReal.ofReal (hypRadVol q d (D + s)) * Vx := hrel
+      VxR * ENNReal.ofReal (hyperbolicRadialVolume q d s)
+          ≤ ENNReal.ofReal (hyperbolicRadialVolume q d (D + s)) * Vx := hrel
       _ ≤ (ENNReal.ofReal (shiftC * Real.exp (C * D)) *
-              ENNReal.ofReal (hypRadVol q d s)) * Vx := by
+              ENNReal.ofReal (hyperbolicRadialVolume q d s)) * Vx := by
         gcongr
       _ = (ENNReal.ofReal (shiftC * Real.exp (C * D)) * Vx) *
-            ENNReal.ofReal (hypRadVol q d s) := by
+            ENNReal.ofReal (hyperbolicRadialVolume q d s) := by
         ac_rfl
   let low : Real :=
     (lowerC / shiftC) * s ^ n * Real.exp (-C * D)
@@ -613,23 +613,23 @@ def injectivityRadiusDecayOfBoundedGeometry
         _ < 2 * s := hz
         _ < rCtrl := htwoCtrl
     have hraw :=
-      intrFrame_not_conj (I := I) Y.metric hEnorm x
+      intrinsicFrame_not_conj (I := I) Y.metric hEnorm x
         (t • z) (c := (1 / 2 : Real)) (by norm_num)
         (fun v => (hmetricCtrl (t • z) htz v).1)
     simpa only [map_smul] using hraw
   let P : ENNReal :=
-    intrPullVol (I := I) Y.metric hEnorm x (2 * s)
+    intrinsicPullVol (I := I) Y.metric hEnorm x (2 * s)
   have hPraw :
       P ≤ (volume : Measure E).toSphere Set.univ *
-        ENNReal.ofReal (hypRadVol q d (2 * s)) := by
+        ENNReal.ofReal (hyperbolicRadialVolume q d (2 * s)) := by
     simpa only [P, d, n] using
-      (intrPullVol_le_hyp (I := I) Y.metric hEnorm x hq
+      (intrinsicPullVol_le_hyperbolic (I := I) Y.metric hEnorm x hq
         (by positivity : 0 < 2 * s) hno hRic)
   have hVxRaw :
       Vx ≤
         (volume : Measure
           (EuclideanSpace Real (Fin n))).toSphere Set.univ *
-            ENNReal.ofReal (hypRadVol q d (2 * s)) := by
+            ENNReal.ofReal (hyperbolicRadialVolume q d (2 * s)) := by
     calc
       Vx ≤
           riemannianVolumeMeasure (I := I) (M := Y.M)
@@ -641,23 +641,23 @@ def injectivityRadiusDecayOfBoundedGeometry
       _ ≤
           (volume : Measure
             (EuclideanSpace Real (Fin n))).toSphere Set.univ *
-              ENNReal.ofReal (hypRadVol q d (2 * s)) := by
+              ENNReal.ofReal (hyperbolicRadialVolume q d (2 * s)) := by
         simpa only [d, n] using
-          (segBall_vol_le_euclidean (I := I) Y.metric hEnorm x hq
+          (segmentBall_vol_le_euclidean (I := I) Y.metric hEnorm x hq
             (by positivity : 0 < 2 * s) hRic)
   have hmodelTwo :
-      hypRadVol q d (2 * s) ≤ upperC * s ^ n := by
+      hyperbolicRadialVolume q d (2 * s) ≤ upperC * s ^ n := by
     calc
-      hypRadVol q d (2 * s)
+      hyperbolicRadialVolume q d (2 * s)
           ≤ (2 * s) ^ (d + 1) *
               Real.exp (q * (d : Real) * (2 * s)) :=
-        hypRadVol_le d hq (by positivity)
+        hyperbolicRadialVolume_le d hq (by positivity)
       _ = upperC * s ^ n := by
         dsimp only [upperC]
         rw [hdSucc, mul_pow]
         ring
   have hmodelTwoE :
-      ENNReal.ofReal (hypRadVol q d (2 * s)) ≤
+      ENNReal.ofReal (hyperbolicRadialVolume q d (2 * s)) ≤
         ENNReal.ofReal (upperC * s ^ n) :=
     ENNReal.ofReal_le_ofReal hmodelTwo
   have hsphereBEq :
@@ -677,9 +677,9 @@ def injectivityRadiusDecayOfBoundedGeometry
       Vx ≤
           (volume : Measure
             (EuclideanSpace Real (Fin n))).toSphere Set.univ *
-              ENNReal.ofReal (hypRadVol q d (2 * s)) := hVxRaw
+              ENNReal.ofReal (hyperbolicRadialVolume q d (2 * s)) := hVxRaw
       _ = ENNReal.ofReal sphereB *
-            ENNReal.ofReal (hypRadVol q d (2 * s)) := by
+            ENNReal.ofReal (hyperbolicRadialVolume q d (2 * s)) := by
         rw [hsphereBEq]
       _ ≤ ENNReal.ofReal sphereB *
             ENNReal.ofReal (upperC * s ^ n) := by
@@ -690,9 +690,9 @@ def injectivityRadiusDecayOfBoundedGeometry
       P ≤ ENNReal.ofReal sphereP * ENNReal.ofReal T := by
     calc
       P ≤ (volume : Measure E).toSphere Set.univ *
-            ENNReal.ofReal (hypRadVol q d (2 * s)) := hPraw
+            ENNReal.ofReal (hyperbolicRadialVolume q d (2 * s)) := hPraw
       _ = ENNReal.ofReal sphereP *
-            ENNReal.ofReal (hypRadVol q d (2 * s)) := by
+            ENNReal.ofReal (hyperbolicRadialVolume q d (2 * s)) := by
         rw [hspherePEq]
       _ ≤ ENNReal.ofReal sphereP *
             ENNReal.ofReal (upperC * s ^ n) := by
@@ -712,13 +712,13 @@ def injectivityRadiusDecayOfBoundedGeometry
       _ = ENNReal.ofReal den := rfl
   have hfivePos : 0 < 5 * s :=
     mul_pos (by norm_num) hs
-  have hfit : s + 2 * s < 5 * s := cgt_fit hs
-  have hquarter : s < (5 * s) / 4 := cgt_quarter hs
+  have hfit : s + 2 * s < 5 * s := cheeger_gromov_taylor_fit hs
+  have hquarter : s < (5 * s) / 4 := cheeger_gromov_taylor_quarter hs
   have hcgt :
       ENNReal.ofReal (s / 2) * Vx / (Vx + P) ≤
-        intrInjRadius (I := I) Y.metric hEnorm x := by
+        intrinsicInjRadius (I := I) Y.metric hEnorm x := by
     simpa only [Vx, P, two_mul] using
-      (intrInj_ge_cgt (I := I) (K := K) (R := 5 * s)
+      (intrinsicInjRadius_ge_cheeger_gromov_taylor (I := I) (K := K) (R := 5 * s)
         (r₀ := s) (s := s) Y.metric hEnorm x
         hK hfivePos hfivePi hRm hlocalFive hs hs hfit hquarter)
   have hratio :
@@ -749,10 +749,10 @@ def injectivityRadiusDecayOfBoundedGeometry
   have hfinal :
       ENNReal.ofReal
           (a * b ^ n * Real.exp (-C * D)) ≤
-        intrInjRadius (I := I) Y.metric hEnorm x := by
+        intrinsicInjRadius (I := I) Y.metric hEnorm x := by
     exact (ENNReal.ofReal_le_ofReal hprofileRatio).trans
       (hratio.trans hcgt)
-  simpa only [n, b, C, D, PointedRiemannianManifold.intrInjRadius] using
+  simpa only [n, b, C, D, PointedRiemannianManifold.intrinsicInjRadius] using
     hfinal
 
 @[simp] theorem injectivity_radius_decay_of_bounded_geometry_dist
@@ -823,5 +823,5 @@ theorem exists_injectivity_radius_decay
   ⟨injectivityRadiusDecayOfBoundedGeometry (I := I) X hcomplete hconn bg base,
     injectivity_radius_decay_realizes_distance (I := I) X hcomplete hconn bg base⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

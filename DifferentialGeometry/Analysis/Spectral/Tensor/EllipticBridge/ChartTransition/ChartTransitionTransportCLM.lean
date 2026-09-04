@@ -302,7 +302,7 @@ private lemma exists_transportDiffeoData
       apply hy
       unfold transportCoeffPushed
       rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy_target, ← hz_def, h0]
-    have hz_supp : z ∈ transportSupportSet (I := I) (M := M) α β :=
+    have hz_support : z ∈ transportSupportSet (I := I) (M := M) α β :=
       tsupport_transportCoeffManifold_subset (I := I) (M := M) r s β α P₀ Q
         (subset_tsupport _ (Function.mem_support.mpr hcoeff_ne))
     have hy_eq_image : (toEuclidean (E := E)) (extChartAt I α z) = y := by
@@ -311,7 +311,7 @@ private lemma exists_transportDiffeoData
     have hy_in_image :
         y ∈ ((toEuclidean : E ≃L[ℝ] _) ∘ extChartAt I α) ''
           (transportSupportSet (I := I) (M := M) α β) :=
-      ⟨z, hz_supp, hy_eq_image⟩
+      ⟨z, hz_support, hy_eq_image⟩
     exact h_image_subset hy_in_image
   · exact absurd
       (by unfold transportCoeffPushed
@@ -835,13 +835,13 @@ private lemma transportFun_tensorChartComponent_eq
     rw [h_rhs, h_coeff_push]
     by_cases hcoeff : transportCoeffManifold (I := I) (M := M) r s β α P₀ Q z = 0
     · rw [hcoeff, zero_mul, zero_mul]
-    · have hz_supp : z ∈ transportSupportSet (I := I) (M := M) α β :=
+    · have hz_support : z ∈ transportSupportSet (I := I) (M := M) α β :=
         tsupport_transportCoeffManifold_subset (I := I) (M := M) r s β α P₀ Q
           (subset_tsupport _ (Function.mem_support.mpr hcoeff))
       have hz_chartα : z ∈ (chartAt H α).source :=
-        transportSupportSet_subset_sourceα (I := I) (M := M) α β hz_supp
+        transportSupportSet_subset_sourceα (I := I) (M := M) α β hz_support
       have hz_chartβ : z ∈ (chartAt H β).source :=
-        transportSupportSet_subset_sourceβ (I := I) (M := M) α β hz_supp
+        transportSupportSet_subset_sourceβ (I := I) (M := M) α β hz_support
       have hy_eq_image : (toEuclidean (E := E)) (extChartAt I α z) = y := by
         rw [hz_def, (extChartAt I α).right_inv hsymm_target]
         exact (toEuclidean (E := E)).apply_symm_apply y
@@ -850,16 +850,16 @@ private lemma transportFun_tensorChartComponent_eq
         rw [← hy_eq_image]
         exact chartTransitionEuclid_eq_chartα_image (I := I) (M := M) α β hz_chartα
       rw [hT_eq, tensorChartComponent_def]
-      have hz_extβ_src : z ∈ (extChartAt I β).source := by
+      have hz_extβ_source : z ∈ (extChartAt I β).source := by
         rw [extChartAt_source (I := I)]; exact hz_chartβ
       have h_imageβ_mem :
           (toEuclidean (E := E)) (extChartAt I β z) ∈
             chartTargetEuclid (I := I) (M := M) β := by
         refine ⟨extChartAt I β z, ?_, rfl⟩
-        exact (extChartAt I β).map_source hz_extβ_src
+        exact (extChartAt I β).map_source hz_extβ_source
       rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ h_imageβ_mem]
       rw [(toEuclidean (E := E)).symm_apply_apply,
-        (extChartAt I β).left_inv hz_extβ_src]
+        (extChartAt I β).left_inv hz_extβ_source]
   · have h_lhs : transportCoeffPushed (I := I) (M := M) r s β α P₀ Q y = 0 := by
       unfold transportCoeffPushed
       exact chartPushedRaw_apply_of_notMem (I := I) (M := M) α _ hy

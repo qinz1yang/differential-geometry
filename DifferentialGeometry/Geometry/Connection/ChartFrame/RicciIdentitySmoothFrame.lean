@@ -137,11 +137,11 @@ noncomputable def smoothOrthoFrame
   fun b => (chartBumpAt (I := I) (M := M) α : M → ℝ) b •
     chartFrameNorm (I := I) g α i b
 
-noncomputable def smoothOrthoFrameNbhd (α : M) : Set M :=
+noncomputable def smoothOrthoFrameNeighborhood (α : M) : Set M :=
   {b : M | (chartBumpAt (I := I) (M := M) α : M → ℝ) b = 1}
 
 noncomputable def smoothOrthoOpen (α : M) : Set M :=
-  interior (smoothOrthoFrameNbhd (I := I) (M := M) α)
+  interior (smoothOrthoFrameNeighborhood (I := I) (M := M) α)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -151,8 +151,8 @@ lemma smoothOrthoOpen_open (α : M) :
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
-lemma smoothOrthoFrameNbhd_mem_nhds (α : M) :
-    smoothOrthoFrameNbhd (I := I) (M := M) α ∈ 𝓝 α := by
+lemma smoothOrthoFrameNeighborhood_mem_nhds (α : M) :
+    smoothOrthoFrameNeighborhood (I := I) (M := M) α ∈ 𝓝 α := by
   classical
   exact (chartBumpAt (I := I) (M := M) α).eventuallyEq_one
 
@@ -161,21 +161,21 @@ omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
 lemma mem_smoothOrthoOpen (α : M) :
     α ∈ smoothOrthoOpen (I := I) (M := M) α := by
   exact mem_interior_iff_mem_nhds.mpr
-    (smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) α)
+    (smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) α)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
-lemma mem_smoothOrthoFrameNbhd_self (α : M) :
-    α ∈ smoothOrthoFrameNbhd (I := I) (M := M) α := by
+lemma mem_smoothOrthoFrameNeighborhood_self (α : M) :
+    α ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α := by
   classical
   change (chartBumpAt (I := I) (M := M) α : M → ℝ) α = 1
   exact (chartBumpAt (I := I) (M := M) α).eq_one
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-lemma smoothOrthoFrame_eq_on_nbhd
+lemma smoothOrthoFrame_eq_on_neighborhood
     (g : SmoothRiemannianMetric I M) (α : M)
     (i : Fin (Module.finrank ℝ E)) {b : M}
-    (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) α) :
+    (hb : b ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α) :
     smoothOrthoFrame (I := I) g α i b =
       chartFrameNorm (I := I) g α i b := by
   classical
@@ -185,8 +185,8 @@ lemma smoothOrthoFrame_eq_on_nbhd
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
-lemma smoothOrthoFrameNbhd_subset_chartAt_source (α : M) :
-    smoothOrthoFrameNbhd (I := I) (M := M) α ⊆ (chartAt H α).source := by
+lemma smoothOrthoFrameNeighborhood_subset_chartAt_source (α : M) :
+    smoothOrthoFrameNeighborhood (I := I) (M := M) α ⊆ (chartAt H α).source := by
   classical
   intro b hb
   have hb1 : (chartBumpAt (I := I) (M := M) α : M → ℝ) b = 1 := hb
@@ -196,17 +196,17 @@ lemma smoothOrthoFrameNbhd_subset_chartAt_source (α : M) :
   exact (chartBumpAt (I := I) (M := M) α).support_subset_source hsupp
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-lemma smoothOrthoFrameNbhd_subset_baseSet (α : M) :
-    smoothOrthoFrameNbhd (I := I) (M := M) α ⊆
+lemma smoothOrthoFrameNeighborhood_subset_baseSet (α : M) :
+    smoothOrthoFrameNeighborhood (I := I) (M := M) α ⊆
       (trivializationAt E (TangentSpace I) α).baseSet := by
   intro b hb
   rw [trivializationAt_baseSet_eq_chartAt_source]
-  exact smoothOrthoFrameNbhd_subset_chartAt_source (I := I) (M := M) α hb
+  exact smoothOrthoFrameNeighborhood_subset_chartAt_source (I := I) (M := M) α hb
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem smoothOrthoFrame_orthonormal_of_chartFrameNorm
     (g : SmoothRiemannianMetric I M) (α : M)
-    {b : M} (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) α)
+    {b : M} (hb : b ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E))
     (hOrth : g.inner b
         (chartFrameNorm (I := I) g α i b)
@@ -214,8 +214,8 @@ theorem smoothOrthoFrame_orthonormal_of_chartFrameNorm
     g.inner b
         (smoothOrthoFrame (I := I) g α i b)
         (smoothOrthoFrame (I := I) g α j b) = if i = j then 1 else 0 := by
-  rw [smoothOrthoFrame_eq_on_nbhd (I := I) g α i hb,
-      smoothOrthoFrame_eq_on_nbhd (I := I) g α j hb]
+  rw [smoothOrthoFrame_eq_on_neighborhood (I := I) g α i hb,
+      smoothOrthoFrame_eq_on_neighborhood (I := I) g α j hb]
   exact hOrth
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -708,21 +708,21 @@ theorem chartFrameNorm_orthonormal
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem smoothOrthoFrame_orthonormal
     (g : SmoothRiemannianMetric I M) (α : M)
-    {b : M} (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) α)
+    {b : M} (hb : b ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α)
     (i j : Fin (Module.finrank ℝ E)) :
     g.inner b
         (smoothOrthoFrame (I := I) g α i b)
         (smoothOrthoFrame (I := I) g α j b) =
       if i = j then 1 else 0 := by
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
-    smoothOrthoFrameNbhd_subset_baseSet (I := I) (M := M) α hb
+    smoothOrthoFrameNeighborhood_subset_baseSet (I := I) (M := M) α hb
   exact smoothOrthoFrame_orthonormal_of_chartFrameNorm (I := I) g α hb i j
     (chartFrameNorm_orthonormal (I := I) g α hb_base i j)
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 private lemma smoothOrtho_li
     (g : SmoothRiemannianMetric I M) (α : M)
-    {b : M} (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) α) :
+    {b : M} (hb : b ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) α) :
     LinearIndependent ℝ (fun i : Fin (Module.finrank ℝ E) =>
       smoothOrthoFrame (I := I) g α i b) := by
   classical
@@ -774,7 +774,7 @@ theorem smoothOrthoFrame_orthonormal_at_center
         (smoothOrthoFrame (I := I) g x j x) =
       if i = j then 1 else 0 :=
   smoothOrthoFrame_orthonormal (I := I) g x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x) i j
+    (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x) i j
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -1168,7 +1168,7 @@ theorem smoothOrtho_isLocal
     (g : SmoothRiemannianMetric I M) (α : M) :
     IsLocalFrameOn I E (∞ : WithTop ℕ∞)
       (smoothOrthoFrame (I := I) g α)
-      (smoothOrthoFrameNbhd (I := I) (M := M) α) where
+      (smoothOrthoFrameNeighborhood (I := I) (M := M) α) where
   linearIndependent hb := smoothOrtho_li (I := I) g α hb
   generating := by
     intro b hb
@@ -1224,7 +1224,7 @@ lemma smoothOrthoOpen_subset_baseSet (α : M) :
     smoothOrthoOpen (I := I) (M := M) α ⊆
       (trivializationAt E (TangentSpace I) α).baseSet := by
   exact fun b hb =>
-    smoothOrthoFrameNbhd_subset_baseSet (I := I) (M := M) α (interior_subset hb)
+    smoothOrthoFrameNeighborhood_subset_baseSet (I := I) (M := M) α (interior_subset hb)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in

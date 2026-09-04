@@ -157,7 +157,7 @@ theorem thirdOrder_ricci_identity_firstSlot
   rw [← tensorSecondCovDeriv_eq_firstSlotHessMap, ← tensorSecondCovDeriv_eq_firstSlotHessMap]
   exact tensorSecondCovDeriv_antisymm_eq_riemannOp (I := I) g 0 3
     (T := fun y : M => (covGrad (I := I) (M := M) g 0 2 T₀).toSection y)
-    hX hY (covGrad_contMDiff_mk' (I := I) (M := M) g T₀)
+    hX hY (covGrad_contMDiff_totalSpaceMk (I := I) (M := M) g T₀)
 
 end MetricTraceAlgebra
 

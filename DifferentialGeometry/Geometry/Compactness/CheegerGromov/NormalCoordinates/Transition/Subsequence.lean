@@ -9,7 +9,7 @@ open DifferentialGeometry.Geometry.Curvature
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 
@@ -95,10 +95,10 @@ theorem exists_normal_transition_subsequence
     ∃ (φ : ℕ → ℕ) (Jinf : E → E) (Jbarinf : E → E),
       StrictMono φ ∧ ContDiffOn ℝ (⊤ : ℕ∞) Jinf U ∧
         ContDiffOn ℝ (⊤ : ℕ∞) Jbarinf V ∧
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k => normalTransition (I := I) (X.obj (φ k))
             (x (φ k)) (y (φ k))) Jinf ∧
-        MapCInfConvOnCompacts V
+        MapCInfConvergenceOnCompacts V
           (fun k => normalTransition (I := I) (X.obj (φ k))
             (y (φ k)) (x (φ k))) Jbarinf ∧
         (∀ z ∈ U, Jinf z ∈ V → Jbarinf (Jinf z) = z) ∧
@@ -118,5 +118,5 @@ end NormalTransitionCompactness
 
 end HCGNormalTransition
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

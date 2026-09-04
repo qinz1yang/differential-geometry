@@ -135,7 +135,7 @@ omit [BoundarylessManifold I M] in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem chartGramOnE_realize_sub_eq_symm_rawComponent_two_witness
+theorem chartGramOnE_realize_sub_eq_symm_rawComponent_two
     (g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g_bg 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g_bg (ccTensorBilinSymm (I := I) g_bg T) δ)

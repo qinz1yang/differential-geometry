@@ -910,12 +910,12 @@ theorem nabla0SFun_contMDiff_of_eval_coordinateFrame_contMDiffAt
             (b (σ a))) =
         fun a : Fin s => coordinateFrameAt (I := I) x₀ (σ a) p := by
     funext a
-    have hp_src : p ∈ (chartAt H x₀).source := by
+    have hp_source : p ∈ (chartAt H x₀).source := by
       simpa [coordinateFrameSet, coordinateTrivializationAt] using hp
     rw [coordinateFrameAt_apply_of_mem (I := I) (x₀ := x₀) (x := p) hp (σ a)]
     exact congrArg
       (fun L : E →L[𝕜] TangentSpace I p => L (b (σ a)))
-      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hp_src)
+      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hp_source)
   rw [continuousMultilinearMap_basis_repr]
   change ((trivializationAt (Tensor0SModel s 𝕜 E)
       (Bundle.continuousMultilinearMap 𝕜 s E (TangentSpace I : M -> Type _)) x₀
@@ -947,7 +947,7 @@ theorem nabla0SFun_contMDiff
         (⟨p, nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
           s cov X α p⟩ :
           TotalSpace (Tensor0SModel s 𝕜 E) (fun p : M => Tensor0SSpace s I p))) := by
-  exact Tensor0SBundle.nabla0S_reg
+  exact Tensor0SBundle.nabla0S_regularity
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov hcov X α
 
 noncomputable def nabla0SCoord (s : ℕ)

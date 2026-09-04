@@ -35,7 +35,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma tensorSectionMDiffAt_curriedSection_apply_loc
+private lemma tensorSectionMDiffAt_curriedSection_apply_local
     (s : ℕ) (W : Π x : M, Tensor0SSpace (s + 1) I x) {x : M}
     (hW : TensorSectionMDiffAt (I := I) (s + 1) W x)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -105,7 +105,7 @@ private theorem tensor0SCovariantDerivative02_consEval_leibnizDefect
   set W₁ : Π b : M, Tensor0SSpace 1 I b :=
     fun b => Tensor0SNabla.curriedSection I M V b (Y b) with hW₁
   have hW₁_mdiff : TensorSectionMDiffAt (I := I) 1 W₁ x :=
-    tensorSectionMDiffAt_curriedSection_apply_loc (I := I) (M := M) 1 V hV Y
+    tensorSectionMDiffAt_curriedSection_apply_local (I := I) (M := M) 1 V hV Y
   have hpeel1 := tensor0SCovariantDerivative_succ_consEval_peel_natural
     (I := I) (M := M) g₀ 1 V hV Y v ![Z x]
   have hpeel2 := tensor0SCovariantDerivative_succ_consEval_peel_natural
@@ -197,7 +197,7 @@ private lemma unitEvalSection_eval_eq_ccTensorBilin
   fin_cases k <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv
+theorem covGrad02_unitModel_eval_eq_metricCovDeriv_sub
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (hbil : ∀ (b : M) (u w : TangentSpace I b),
       smoothCcTensorBilinForm (I := I) g₀ S b u w =
@@ -253,7 +253,7 @@ theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
-theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv'
+theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv_sub
     (g₀ g₁ g₁' : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (hbil : ∀ (b : M) (u w : TangentSpace I b),
       smoothCcTensorBilinForm (I := I) g₀ S b u w =
@@ -268,7 +268,7 @@ theorem covGrad02_unitModel_eval_eq_metricDiffCovDeriv'
           (fun b => X b) (fun b => Y b) (fun b => Z b) x
         - metricDiffCovDeriv (I := I) g₁' g₀
           (fun b => X b) (fun b => Y b) (fun b => Z b) x := by
-  rw [covGrad02_unitModel_eval_eq_metricDiffCovDeriv (I := I) (M := M) g₀ g₁ g₁' S hbil X Y Z x]
+  rw [covGrad02_unitModel_eval_eq_metricCovDeriv_sub (I := I) (M := M) g₀ g₁ g₁' S hbil X Y Z x]
   rw [metricDiffCovDeriv_eq_metricCovDeriv (I := I) g₁ g₀
         (Y := fun b => Y b) (Z := fun b => Z b) Y.mdifferentiableAt Z.mdifferentiableAt,
       metricDiffCovDeriv_eq_metricCovDeriv (I := I) g₁' g₀

@@ -252,15 +252,15 @@ theorem deTurckRHSField_realizeMetric_jointContMDiffOn
         (fun p : M × ℝ => chartDeTurckRicciRHS (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg α (σ 0) (σ 1) (extChartAt I α p.1))
         ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) p₀ := hP1 p₀ hp₀_in_α
-    have hαsrc_nhd : ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) ∈
+    have hαsource_nhd : ((chartAt H α).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) ∈
         nhdsWithin p₀ ((chartAt H x₀).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
       have h := inter_mem_nhdsWithin
         ((chartAt H x₀).source ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ'))
         (((chartAt H α).open_source.prod metricPerturbationPathDomain_isOpen).mem_nhds hp₀_in_α)
       refine Filter.mem_of_superset h ?_
       intro q hq; exact hq.2
-    refine (hP1at.mono_of_mem_nhdsWithin hαsrc_nhd).congr_of_eventuallyEq ?_ ?_
-    · filter_upwards [hαsrc_nhd] with p hp
+    refine (hP1at.mono_of_mem_nhdsWithin hαsource_nhd).congr_of_eventuallyEq ?_ ?_
+    · filter_upwards [hαsource_nhd] with p hp
       obtain ⟨hpx, hps⟩ := hp
       have hpgood : p.1 ∈ chartLeviCivitaGoodSet (I := I) α := by
         rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α, extChartAt_source (I := I)]
@@ -494,10 +494,10 @@ private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt
   set U : Set E := φ '' chartLeviCivitaGoodSet (I := I) α with hU_def
   have hU_open : IsOpen U := chartLeviCivitaGoodSet_image_isOpen (I := I) α
   have hx_mem : φ b ∈ U := ⟨b, hb_good, rfl⟩
-  have hb_src : b ∈ (chartAt H α).source :=
+  have hb_source : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb_good
-  have hyb_tgt : φ b ∈ φ.target :=
-    φ.map_source (by rw [hφ, extChartAt_source]; exact hb_src)
+  have hyb_target : φ b ∈ φ.target :=
+    φ.map_source (by rw [hφ, extChartAt_source]; exact hb_source)
   have hchartRep_w : ∀ y₀ : E, y₀ ∈ φ.target →
       ContDiffWithinAt ℝ ∞ (fun q : ℝ × E => chartRep q.1 q.2) (S ×ˢ φ.target) (t₀, y₀) := by
     intro y₀ hy₀
@@ -527,7 +527,7 @@ private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt
         ((S ×ˢ φ.target) ×ˢ φ.target)
         ((t₀, φ b), (fun q : ℝ × E => q.2) (t₀, φ b)) := by
       have hbrick : ContDiffWithinAt ℝ ∞ (fun r : ℝ × E => chartRep r.1 r.2)
-          (S ×ˢ φ.target) (t₀, φ b) := hchartRep_w (φ b) hyb_tgt
+          (S ×ˢ φ.target) (t₀, φ b) := hchartRep_w (φ b) hyb_target
       have hproj : ContDiffWithinAt ℝ ∞
           (fun r : (ℝ × E) × E => (r.1.1, r.2))
           ((S ×ˢ φ.target) ×ˢ φ.target) ((t₀, φ b), φ b) :=
@@ -542,17 +542,17 @@ private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt
     have h_le : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by rw [ENat.coe_top_add_one]
     have hsub : (S ×ˢ φ.target) ⊆ (fun q : ℝ × E => q.2) ⁻¹' φ.target := by
       intro q hq; exact hq.2
-    have hfdw := ContDiffWithinAt.fderivWithin huncurry hg hud h_le ⟨ht₀, hyb_tgt⟩ hsub
+    have hfdw := ContDiffWithinAt.fderivWithin huncurry hg hud h_le ⟨ht₀, hyb_target⟩ hsub
     have hfd_eq : ContDiffWithinAt ℝ ∞
         (fun q : ℝ × E => fderiv ℝ (fun y' : E => chartRep q.1 y') q.2) (S ×ˢ φ.target)
           (t₀, φ b) := by
       refine hfdw.congr_of_eventuallyEq ?_ ?_
       · filter_upwards [self_mem_nhdsWithin] with q hq
         exact (fderivWithin_of_isOpen htgt_open hq.2).symm
-      · exact (fderivWithin_of_isOpen htgt_open hyb_tgt).symm
+      · exact (fderivWithin_of_isOpen htgt_open hyb_target).symm
     exact hfd_eq.clm_apply hvec_q
   have hchartRep_q : ContDiffWithinAt ℝ ∞ (fun q : ℝ × E => chartRep q.1 q.2)
-      (S ×ˢ φ.target) (t₀, φ b) := hchartRep_w (φ b) hyb_tgt
+      (S ×ˢ φ.target) (t₀, φ b) := hchartRep_w (φ b) hyb_target
   have h_output : ∀ l : Fin 2, ContDiffWithinAt ℝ ∞
       (fun q : ℝ × E =>
         (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
@@ -582,23 +582,23 @@ private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt
       rintro ⟨t, y⟩ hq
       have hy : y ∈ U := hq.2
       obtain ⟨x', hx'_good, hx'y⟩ := hy
-      have hx'_src : x' ∈ (chartAt H α).source :=
+      have hx'_source : x' ∈ (chartAt H α).source :=
         chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx'_good
-      have hx'_extsrc : x' ∈ φ.source := by rw [hφ, extChartAt_source]; exact hx'_src
+      have hx'_extsrc : x' ∈ φ.source := by rw [hφ, extChartAt_source]; exact hx'_source
       have hx'_inv : φ.symm y = x' := by rw [← hx'y]; exact φ.left_inv hx'_extsrc
       change _ = Ker y (chartRep t y)
       rw [hKer, hchartRep]
       simp only []
       exact (chartTensorRSOutputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ 0 2 α
         (fun b' : M => (F t).toSection b') B.toFun
-        (b := φ.symm y) (by rw [hx'_inv]; exact hx'_src) l)
-    · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_src)
+        (b := φ.symm y) (by rw [hx'_inv]; exact hx'_source) l)
+    · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_source)
       change _ = Ker (φ b) (chartRep t₀ (φ b))
       rw [hKer, hchartRep]
       simp only []
       exact (chartTensorRSOutputSlotCorrection_chart_kernel_factorization (I := I) (M := M) g₀ 0 2 α
         (fun b' : M => (F t₀).toSection b') B.toFun
-        (b := φ.symm (φ b)) (by rw [hgood_inv]; exact hb_src) l)
+        (b := φ.symm (φ b)) (by rw [hgood_inv]; exact hb_source) l)
   have h_sum : ContDiffWithinAt ℝ ∞
       (fun q : ℝ × E =>
         fderiv ℝ (fun y' : E => chartRep q.1 y') q.2
@@ -630,19 +630,19 @@ private theorem smoothCcCovApplyChartRepr_euclid_jointContDiffWithinAt
     obtain ⟨x', hx'_good, hx'y⟩ := hy
     have hx'_extsrc : x' ∈ φ.source := by
       rw [hφ, extChartAt_source]; exact chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx'_good
-    have hy_tgt : y ∈ φ.target := hx'y ▸ φ.map_source hx'_extsrc
+    have hy_target : y ∈ φ.target := hx'y ▸ φ.map_source hx'_extsrc
     have hy_good : φ.symm y ∈ chartLeviCivitaGoodSet (I := I) α := by
       rw [← hx'y, φ.left_inv hx'_extsrc]; exact hx'_good
     have hform := chart_pulled_covApply_explicit_formula_target_smoothCc (I := I) (M := M)
-      g₀ 0 2 α (F t) B hy_tgt hy_good
+      g₀ 0 2 α (F t) B hy_target hy_good
     change DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g₀))
           B.toFun (fun z : M => (F t).toSection z)) (φ.symm y) = _
     rw [hchartRep]
     exact hform
-  · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_src)
+  · have hgood_inv : φ.symm (φ b) = b := φ.left_inv (by rw [hφ, extChartAt_source]; exact hb_source)
     have hform := chart_pulled_covApply_explicit_formula_target_smoothCc (I := I) (M := M)
-      g₀ 0 2 α (F t₀) B hyb_tgt (by rw [hgood_inv]; exact hb_good)
+      g₀ 0 2 α (F t₀) B hyb_target (by rw [hgood_inv]; exact hb_good)
     change DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g₀))
           B.toFun (fun z : M => (F t₀).toSection z)) (φ.symm (φ b)) = _
@@ -752,7 +752,7 @@ private theorem smoothCcCovApplySection_jointContMDiffOn
       ((chartAt H α).source ×ˢ S) :=
     smoothCcCovApplyChartRepr_manifold_jointContMDiffOn (I := I) g₀ F S α B hF
   intro p₀ hp₀
-  obtain ⟨hx₀src, hs₀'⟩ := hp₀
+  obtain ⟨hx₀source, hs₀'⟩ := hp₀
   have hbaseSet : p₀.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).baseSet := by
     change p₀.1 ∈ ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -763,7 +763,7 @@ private theorem smoothCcCovApplySection_jointContMDiffOn
       · change p₀.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet
         rw [show (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source from
           TangentBundle.trivializationAt_baseSet (I := I) α]
-        rw [hα]; exact hx₀src
+        rw [hα]; exact hx₀source
   have hsource : (⟨p₀.1,
       covApply (TensorRSNabla.tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g₀))
         B.toFun (fun z : M => (F p₀.2).toSection z) p₀.1⟩ :
@@ -781,7 +781,7 @@ private theorem smoothCcCovApplySection_jointContMDiffOn
             covApply (TensorRSNabla.tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g₀))
               B.toFun (fun z : M => (F p.2).toSection z) p.1⟩).2)
       ((chartAt H α).source ×ˢ S) p₀ := by
-    refine (hCR p₀ ⟨hx₀src, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
+    refine (hCR p₀ ⟨hx₀source, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with p hp
       obtain ⟨hpx, _⟩ := hp
       have hpbase : p.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
@@ -1181,13 +1181,13 @@ theorem rawTensorConnLapSmooth_jointContMDiffOn
   have hx₀U : x₀ ∈ U := hα_pos
   have hU_sub_tsupp : U ⊆ tsupport pou := fun x hx => subset_tsupport pou (by
     simp only [Function.mem_support]; exact ne_of_gt hx)
-  have htsupp_sub_src : tsupport pou ⊆ (chartAt H α).source := by
+  have htsupp_sub_source : tsupport pou ⊆ (chartAt H α).source := by
     have := (chartAtlasPOU_isSubordinate I M) α
     simpa only [hpou] using this
   have hU_sub_good : U ⊆ chartLeviCivitaGoodSet (I := I) α := by
     intro x hx
     rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α, extChartAt_source]
-    exact htsupp_sub_src (hU_sub_tsupp hx)
+    exact htsupp_sub_source (hU_sub_tsupp hx)
   refine ⟨U ×ˢ (Set.univ : Set ℝ), hU_open.prod isOpen_univ, ⟨hx₀U, Set.mem_univ _⟩, ?_⟩
   have hinter : ((Set.univ : Set M) ×ˢ S) ∩ (U ×ˢ (Set.univ : Set ℝ)) = U ×ˢ S := by
     ext ⟨y, u⟩
@@ -1195,7 +1195,7 @@ theorem rawTensorConnLapSmooth_jointContMDiffOn
     tauto
   rw [hinter]
   have hCR0 := fixedFrameTrace_chartRepr_jointContMDiffOn (I := I) g₀ F S α hF
-  have hU_sub_src : U ⊆ (chartAt H α).source := fun x hx => htsupp_sub_src (hU_sub_tsupp hx)
+  have hU_sub_source : U ⊆ (chartAt H α).source := fun x hx => htsupp_sub_source (hU_sub_tsupp hx)
   have hCR : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E) ∞
       (fun p : M × ℝ => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) 0 2 α
@@ -1204,9 +1204,9 @@ theorem rawTensorConnLapSmooth_jointContMDiffOn
             (chartFrameNormGlobalSmooth (I := I) (M := M) g₀ α i).toFun)
           (fun y : M => (F p.2).toSection y) z) p.1)
       (U ×ˢ S) :=
-    hCR0.mono (fun q hq => ⟨hU_sub_src hq.1, hq.2⟩)
+    hCR0.mono (fun q hq => ⟨hU_sub_source hq.1, hq.2⟩)
   intro p₀ hp₀
-  obtain ⟨hx₀src, hs₀'⟩ := hp₀
+  obtain ⟨hx₀source, hs₀'⟩ := hp₀
   have hbaseSet : p₀.1 ∈ (trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).baseSet := by
     change p₀.1 ∈ ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
@@ -1217,7 +1217,7 @@ theorem rawTensorConnLapSmooth_jointContMDiffOn
       · change p₀.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet
         rw [show (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source from
           TangentBundle.trivializationAt_baseSet (I := I) α]
-        exact hU_sub_src hx₀src
+        exact hU_sub_source hx₀source
   have hsource : (⟨p₀.1,
       (rawTensorConnLapSmooth (I := I) g₀ 0 2 (F p₀.2)).toSection p₀.1⟩ :
       TotalSpace (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
@@ -1232,7 +1232,7 @@ theorem rawTensorConnLapSmooth_jointContMDiffOn
             (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α)
           ⟨p.1, (rawTensorConnLapSmooth (I := I) g₀ 0 2 (F p.2)).toSection p.1⟩).2)
       (U ×ˢ S) p₀ := by
-    refine (hCR p₀ ⟨hx₀src, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
+    refine (hCR p₀ ⟨hx₀source, hs₀'⟩).congr_of_eventuallyEq ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with p hp
       obtain ⟨hpx, _⟩ := hp
       have hpgood : p.1 ∈ tsupport pou ∩ chartLeviCivitaGoodSet (I := I) α :=
@@ -1247,19 +1247,19 @@ theorem rawTensorConnLapSmooth_jointContMDiffOn
           · change p.1 ∈ (trivializationAt E (TangentSpace I) α).baseSet
             rw [show (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source from
               TangentBundle.trivializationAt_baseSet (I := I) α]
-            exact hU_sub_src hpx
+            exact hU_sub_source hpx
       rw [DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply,
         Bundle.Trivialization.continuousLinearMapAt_apply,
         Bundle.Trivialization.coe_linearMapAt_of_mem _ hpbase,
         rawTensorConnLapSmooth_toSection_apply,
-        rawTensorConnLap_via_chartFrameNormGlobalSmooth (I := I) g₀ 0 2 (F p.2) α hpgood]
+        rawTensorConnLap_eq_rawTensorConnLapFixedFrame (I := I) g₀ 0 2 (F p.2) α hpgood]
     · have hp₀good : p₀.1 ∈ tsupport pou ∩ chartLeviCivitaGoodSet (I := I) α :=
-        ⟨hU_sub_tsupp hx₀src, hU_sub_good hx₀src⟩
+        ⟨hU_sub_tsupp hx₀source, hU_sub_good hx₀source⟩
       rw [DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply,
         Bundle.Trivialization.continuousLinearMapAt_apply,
         Bundle.Trivialization.coe_linearMapAt_of_mem _ hbaseSet,
         rawTensorConnLapSmooth_toSection_apply,
-        rawTensorConnLap_via_chartFrameNormGlobalSmooth (I := I) g₀ 0 2 (F p₀.2) α hp₀good]
+        rawTensorConnLap_eq_rawTensorConnLapFixedFrame (I := I) g₀ 0 2 (F p₀.2) α hp₀good]
   refine ((Bundle.Trivialization.contMDiffWithinAt_iff
     (IM := I.prod 𝓘(ℝ, ℝ)) (n := ∞)
     (f := fun p : M × ℝ => (⟨p.1,

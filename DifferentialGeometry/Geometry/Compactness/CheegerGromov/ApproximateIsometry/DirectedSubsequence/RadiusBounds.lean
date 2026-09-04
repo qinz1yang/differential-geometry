@@ -7,7 +7,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 section DirectedRadii
 
@@ -179,5 +179,5 @@ theorem sqrt_one_add_mul_midRadius_lt_next_openRadius {a : ℝ} (j l : ℕ) (ha0
 
 end DirectedRadii
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

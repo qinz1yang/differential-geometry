@@ -79,12 +79,12 @@ private theorem heatShell_meas (t : ℝ) (x : V) (k : ℕ) :
   exact (isClosed_le continuous_const hnorm).measurableSet.inter
     (isOpen_lt hnorm continuous_const).measurableSet
 
-def shellCyl (t : ℝ) (x : V) (k : ℕ) : Set (ℝ × V) :=
+def shellCylinder (t : ℝ) (x : V) (k : ℕ) : Set (ℝ × V) :=
   Set.Ioc 0 (t / 2) ×ˢ heatShell t x k
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [Nontrivial V] in
-theorem shellCyl_meas (t : ℝ) (x : V) (k : ℕ) :
-    MeasurableSet (shellCyl t x k) :=
+theorem shellCylinder_measurable (t : ℝ) (x : V) (k : ℕ) :
+    MeasurableSet (shellCylinder t x k) :=
   measurableSet_Ioc.prod (heatShell_meas t x k)
 
 omit [InnerProductSpace ℝ V]
@@ -114,7 +114,7 @@ omit [InnerProductSpace ℝ V]
   [Nontrivial V] in
 theorem earlySlab_sub {t : ℝ} (ht : 0 < t) (x : V) :
     (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)) ⊆
-      ⋃ k : ℕ, shellCyl t x k := by
+      ⋃ k : ℕ, shellCylinder t x k := by
   rintro z ⟨hzs, -⟩
   obtain ⟨k, hyk⟩ := Set.mem_iUnion.mp (mem_shell_union ht x z.2)
   exact Set.mem_iUnion.2 ⟨k, hzs, hyk⟩
@@ -124,18 +124,18 @@ omit [InnerProductSpace ℝ V]
   [MeasurableSpace V]
   [BorelSpace V]
   [Nontrivial V] in
-theorem ballCyl_sub {t : ℝ} (ht : 0 < t) (c : V) :
+theorem ballCylinder_subset {t : ℝ} (ht : 0 < t) (c : V) :
     (Set.Ioc 0 (t / 2) ×ˢ Metric.ball c (heatScale t)) ⊆
-      paraCyl c (heatScale t) := by
+      forwardParabolicCylinder c (heatScale t) := by
   rintro z ⟨hzs, hzy⟩
   refine ⟨⟨hzs.1, ?_⟩, hzy⟩
   have hhalf : t / 2 ≤ t := by linarith
   simpa [heatScale, Real.sq_sqrt ht.le] using hzs.2.trans hhalf
 
 def shellMass (t : ℝ) (f : ℝ × V → F) (x : V) (k : ℕ) : ℝ≥0∞ :=
-  ∫⁻ z in shellCyl t x k,
+  ∫⁻ z in shellCylinder t x k,
     ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ
-      ∂(stVolume : Measure (ℝ × V))
+      ∂(spaceTimeVolume : Measure (ℝ × V))
 
 theorem nat_sq_ge (k : ℕ) : (k : ℝ) ≤ (k : ℝ) ^ 2 := by
   cases k with
@@ -148,7 +148,7 @@ theorem nat_sq_ge (k : ℕ) : (k : ℝ) ≤ (k : ℝ) ^ 2 := by
 omit [CompleteSpace F] in
 theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
-    (hsrc : SrcCarl T C f) (k : ℕ) :
+    (hsrc : SourceCarlesonBound T C f) (k : ℕ) :
     shellMass t f x k ≤
       nearHeatC V * C *
         ENNReal.ofReal (shellWeight (Module.finrank ℝ V) k) := by
@@ -157,7 +157,7 @@ theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
   obtain ⟨s, hcard, hcover⟩ := exists_shell_cover x hrho k
   let U : V → Set (ℝ × V) := fun c ↦
     Set.Ioc 0 (t / 2) ×ˢ Metric.ball c rho
-  have hcylCover : shellCyl t x k ⊆ ⋃ c ∈ s, U c := by
+  have hcylCover : shellCylinder t x k ⊆ ⋃ c ∈ s, U c := by
     rintro z ⟨hzs, hzy⟩
     have hyclosed : z.2 ∈
         Metric.closedBall x (((k + 1 : ℕ) : ℝ) * rho) := by
@@ -173,21 +173,21 @@ theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
     dsimp [rho]
     simpa [heatScale, Real.sq_sqrt ht.le] using htT
   have hsource :
-      ∫⁻ z in shellCyl t x k, ENNReal.ofReal ‖f z‖
-          ∂(stVolume : Measure (ℝ × V)) ≤
+      ∫⁻ z in shellCylinder t x k, ENNReal.ofReal ‖f z‖
+          ∂(spaceTimeVolume : Measure (ℝ × V)) ≤
         (s.card : ℝ≥0∞) *
           (C * ENNReal.ofReal (rho ^ Module.finrank ℝ V)) := by
     calc
-      (∫⁻ z in shellCyl t x k, ENNReal.ofReal ‖f z‖
-          ∂(stVolume : Measure (ℝ × V))) ≤
+      (∫⁻ z in shellCylinder t x k, ENNReal.ofReal ‖f z‖
+          ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
           ∑ c ∈ s, ∫⁻ z in U c, ENNReal.ofReal ‖f z‖
-            ∂(stVolume : Measure (ℝ × V)) :=
+            ∂(spaceTimeVolume : Measure (ℝ × V)) :=
         DeGiorgi.lintegralOn_le_sum_lintegralOn_of_finite_cover hcylCover
       _ ≤ ∑ c ∈ s,
           C * ENNReal.ofReal (rho ^ Module.finrank ℝ V) := by
         apply Finset.sum_le_sum
         intro c hc
-        exact (lintegral_mono_set (ballCyl_sub ht c)).trans
+        exact (lintegral_mono_set (ballCylinder_subset ht c)).trans
           (hsrc.bound c rho hrho hscaleT)
       _ = (s.card : ℝ≥0∞) *
           (C * ENNReal.ofReal (rho ^ Module.finrank ℝ V)) := by
@@ -201,7 +201,7 @@ theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
     exact mul_nonneg
       (inv_nonneg.mpr (pow_nonneg (Real.sqrt_nonneg _) _))
       (mul_nonneg (inv_nonneg.mpr (baseHeatMass_pos (V := V)).le) hG0)
-  have hpoint : ∀ z ∈ shellCyl t x k,
+  have hpoint : ∀ z ∈ shellCylinder t x k,
       ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ ≤
         ENNReal.ofReal K * ENNReal.ofReal ‖f z‖ := by
     intro z hz
@@ -225,7 +225,7 @@ theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
       _ = ENNReal.ofReal K * ENNReal.ofReal ‖f z‖ :=
         ENNReal.ofReal_mul hK0
   have hm : AEMeasurable (fun z : ℝ × V ↦ ENNReal.ofReal ‖f z‖)
-      ((stVolume : Measure (ℝ × V)).restrict (shellCyl t x k)) :=
+      ((spaceTimeVolume : Measure (ℝ × V)).restrict (shellCylinder t x k)) :=
     (hsrc.ae.norm.aemeasurable.ennreal_ofReal).mono_measure
       Measure.restrict_le_self
   have hraw : shellMass t f x k ≤
@@ -234,18 +234,18 @@ theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
           (C * ENNReal.ofReal (rho ^ Module.finrank ℝ V))) := by
     unfold shellMass
     calc
-      (∫⁻ z in shellCyl t x k,
+      (∫⁻ z in shellCylinder t x k,
           ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ
-            ∂(stVolume : Measure (ℝ × V))) ≤
-          ∫⁻ z in shellCyl t x k,
+            ∂(spaceTimeVolume : Measure (ℝ × V))) ≤
+          ∫⁻ z in shellCylinder t x k,
             ENNReal.ofReal K * ENNReal.ofReal ‖f z‖
-              ∂(stVolume : Measure (ℝ × V)) := by
+              ∂(spaceTimeVolume : Measure (ℝ × V)) := by
         apply lintegral_mono_ae
-        filter_upwards [ae_restrict_mem (shellCyl_meas t x k)] with z hz
+        filter_upwards [ae_restrict_mem (shellCylinder_measurable t x k)] with z hz
         exact hpoint z hz
       _ = ENNReal.ofReal K *
-          (∫⁻ z in shellCyl t x k, ENNReal.ofReal ‖f z‖
-            ∂(stVolume : Measure (ℝ × V))) := by
+          (∫⁻ z in shellCylinder t x k, ENNReal.ofReal ‖f z‖
+            ∂(spaceTimeVolume : Measure (ℝ × V))) := by
         rw [lintegral_const_mul'' _ hm]
       _ ≤ ENNReal.ofReal K *
           ((s.card : ℝ≥0∞) *
@@ -318,12 +318,12 @@ theorem shellMass_le {T t : ℝ} {C : ℝ≥0∞}
 def heatEarly0 (t : ℝ) (f : ℝ × V → F) (x : V) : F :=
   ∫ z in (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)),
     heatKernel (t - z.1) (x - z.2) • f z
-      ∂(stVolume : Measure (ℝ × V))
+      ∂(spaceTimeVolume : Measure (ℝ × V))
 
 omit [CompleteSpace F] in
 theorem heatEarly0_norm {T t : ℝ} {C : ℝ≥0∞}
     (ht : 0 < t) (htT : t ≤ T) (f : ℝ × V → F) (x : V)
-    (hsrc : SrcCarl T C f) :
+    (hsrc : SourceCarlesonBound T C f) :
     ‖heatEarly0 t f x‖ₑ ≤ earlyHeatC V * C := by
   let q : ℝ × V → ℝ≥0∞ := fun z ↦
     ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ
@@ -331,15 +331,15 @@ theorem heatEarly0_norm {T t : ℝ} {C : ℝ≥0∞}
   calc
     ‖∫ z in (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)),
         heatKernel (t - z.1) (x - z.2) • f z
-          ∂(stVolume : Measure (ℝ × V))‖ₑ ≤
+          ∂(spaceTimeVolume : Measure (ℝ × V))‖ₑ ≤
       ∫⁻ z in (Set.Ioc 0 (t / 2) ×ˢ (Set.univ : Set V)), q z
-        ∂(stVolume : Measure (ℝ × V)) :=
+        ∂(spaceTimeVolume : Measure (ℝ × V)) :=
       enorm_integral_le_lintegral_enorm _
-    _ ≤ ∫⁻ z in (⋃ k : ℕ, shellCyl t x k), q z
-        ∂(stVolume : Measure (ℝ × V)) :=
+    _ ≤ ∫⁻ z in (⋃ k : ℕ, shellCylinder t x k), q z
+        ∂(spaceTimeVolume : Measure (ℝ × V)) :=
       lintegral_mono_set (earlySlab_sub ht x)
-    _ ≤ ∑' k : ℕ, ∫⁻ z in shellCyl t x k, q z
-        ∂(stVolume : Measure (ℝ × V)) :=
+    _ ≤ ∑' k : ℕ, ∫⁻ z in shellCylinder t x k, q z
+        ∂(spaceTimeVolume : Measure (ℝ × V)) :=
       lintegral_iUnion_le _ _
     _ = ∑' k : ℕ, shellMass t f x k := by rfl
     _ ≤ ∑' k : ℕ,

@@ -25,7 +25,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -171,7 +171,7 @@ private theorem field_eq_mcd1
     (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
         (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
         (Tensor0SBundle.metricTensorField (I := I) g₁)
-        (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂))
+        (DifferentialGeometry.Geometry.Connection.metricField_totalRegularized (I := I) g₁ g₂))
       = metricCovDeriv (I := I) g₁ g₂ 1 := by
   have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
@@ -193,7 +193,7 @@ private theorem nabla3_eq_mcd2
         (Tensor0SBundle.totalNabla0S (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
           (DifferentialGeometry.Geometry.Connection.LeviCivita (I := I) g₂)
           (Tensor0SBundle.metricTensorField (I := I) g₁)
-          (DifferentialGeometry.Geometry.Connection.metricField_totalReg (I := I) g₁ g₂)) x slots
+          (DifferentialGeometry.Geometry.Connection.metricField_totalRegularized (I := I) g₁ g₂)) x slots
       = metricCovDeriv (I := I) g₁ g₂ 2 x (Fin.cons (W x) slots) := by
   rw [field_eq_mcd1 (I := I) g₁ g₂,
     show metricCovDeriv (I := I) g₁ g₂ 2

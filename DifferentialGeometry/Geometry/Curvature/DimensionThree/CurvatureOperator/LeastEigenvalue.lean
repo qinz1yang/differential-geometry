@@ -30,7 +30,7 @@ noncomputable def curvatureOperatorMatrixAt
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
     Matrix (Fin 3) (Fin 3) Real :=
   fun i j =>
-    tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+    tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
       (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
       (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1)
 
@@ -44,17 +44,17 @@ theorem curvatureOperatorMatrixAt_isHermitian
   ext i j
   have hsym := mem_algebraicCurvatureTensorSubmodule_iff_symmetries.mp A.2
   have hpair :=
-    tensor04StdAt_pair_swap_of_mem_algebraicCurvatureTensorSubmodule A.2
+    tensor04StandardAt_pair_swap_of_mem_algebraicCurvatureTensorSubmodule A.2
       (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)
       (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1)
   have hfirst := hsym.1 (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1)
     (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)
   have hlast := hsym.2.1 (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
     (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)
-  have hji : tensor04StdAt (I := I) (M := M) A.1
+  have hji : tensor04StandardAt (I := I) (M := M) A.1
       (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)
       (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) =
-    tensor04StdAt (I := I) (M := M) A.1
+    tensor04StandardAt (I := I) (M := M) A.1
       (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
       (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1) := by
     rw [hpair]
@@ -70,7 +70,7 @@ theorem curvatureOperatorMatrixAt_trace_eq_sectionalSum
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
     Matrix.trace (curvatureOperatorMatrixAt (I := I) x basis A) =
       ∑ i : Fin 3,
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) := by
   unfold Matrix.trace curvatureOperatorMatrixAt
@@ -83,7 +83,7 @@ theorem curvatureOperatorMatrixAt_eigenvalues_trace_eq_sectionalSum
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
     ∑ i : Fin 3, (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues i =
       ∑ i : Fin 3,
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) := by
   calc
@@ -92,7 +92,7 @@ theorem curvatureOperatorMatrixAt_eigenvalues_trace_eq_sectionalSum
       exact (Matrix.IsHermitian.trace_eq_sum_eigenvalues
         (hA := curvatureOperatorMatrixAt_isHermitian (I := I) x basis A)).symm
     _ = ∑ i : Fin 3,
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 i).2) (basis (bivectorIndex3 i).1) := by
       rw [curvatureOperatorMatrixAt_trace_eq_sectionalSum]
@@ -627,107 +627,107 @@ private theorem sum_antisym_pair_eq_bivectorSum {F : Fin 3 → Fin 3 → Real}
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
-private theorem tensor04StdAt_expand_first {x : M}
+private theorem tensor04StandardAt_expand_first {x : M}
     {A : Tensor04At (I := I) (M := M) x}
     (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (r : Fin 3 → Real) (w z q : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) A (∑ p : Fin 3, r p • basis p) w z q =
-      ∑ p : Fin 3, r p * tensor04StdAt (I := I) (M := M) A (basis p) w z q := by
+    tensor04StandardAt (I := I) (M := M) A (∑ p : Fin 3, r p • basis p) w z q =
+      ∑ p : Fin 3, r p * tensor04StandardAt (I := I) (M := M) A (basis p) w z q := by
   have hForm := mem_algebraicCurvatureTensorSubmodule.mp hA
   rw [Fin.sum_univ_three, Fin.sum_univ_three]
   simp_rw [hForm.add_left, hForm.smul_left]
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
-private theorem tensor04StdAt_expand_second {x : M}
+private theorem tensor04StandardAt_expand_second {x : M}
     {A : Tensor04At (I := I) (M := M) x}
     (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (v : TangentSpace I x) (r : Fin 3 → Real) (z q : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) A v (∑ p : Fin 3, r p • basis p) z q =
-      ∑ p : Fin 3, r p * tensor04StdAt (I := I) (M := M) A v (basis p) z q := by
+    tensor04StandardAt (I := I) (M := M) A v (∑ p : Fin 3, r p • basis p) z q =
+      ∑ p : Fin 3, r p * tensor04StandardAt (I := I) (M := M) A v (basis p) z q := by
   have hForm := mem_algebraicCurvatureTensorSubmodule.mp hA
-  rw [show tensor04StdAt (I := I) (M := M) A v (∑ p : Fin 3, r p • basis p) z q =
-      -tensor04StdAt (I := I) (M := M) A (∑ p : Fin 3, r p • basis p) v z q from
+  rw [show tensor04StandardAt (I := I) (M := M) A v (∑ p : Fin 3, r p • basis p) z q =
+      -tensor04StandardAt (I := I) (M := M) A (∑ p : Fin 3, r p • basis p) v z q from
     hForm.anti_first v (∑ p : Fin 3, r p • basis p) z q]
-  rw [tensor04StdAt_expand_first hA basis r v z q]
+  rw [tensor04StandardAt_expand_first hA basis r v z q]
   rw [← Finset.sum_neg_distrib]
   apply Finset.sum_congr rfl
   intro p _
-  rw [show tensor04StdAt (I := I) (M := M) A v (basis p) z q =
-      -tensor04StdAt (I := I) (M := M) A (basis p) v z q from
+  rw [show tensor04StandardAt (I := I) (M := M) A v (basis p) z q =
+      -tensor04StandardAt (I := I) (M := M) A (basis p) v z q from
     hForm.anti_first v (basis p) z q]
   ring
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
-private theorem tensor04StdAt_expand_third {x : M}
+private theorem tensor04StandardAt_expand_third {x : M}
     {A : Tensor04At (I := I) (M := M) x}
     (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (v w : TangentSpace I x) (r : Fin 3 → Real) (q : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) A v w (∑ p : Fin 3, r p • basis p) q =
-      ∑ p : Fin 3, r p * tensor04StdAt (I := I) (M := M) A v w (basis p) q := by
+    tensor04StandardAt (I := I) (M := M) A v w (∑ p : Fin 3, r p • basis p) q =
+      ∑ p : Fin 3, r p * tensor04StandardAt (I := I) (M := M) A v w (basis p) q := by
   have hForm := mem_algebraicCurvatureTensorSubmodule.mp hA
-  rw [show tensor04StdAt (I := I) (M := M) A v w (∑ p : Fin 3, r p • basis p) q =
-      tensor04StdAt (I := I) (M := M) A (∑ p : Fin 3, r p • basis p) q v w from
+  rw [show tensor04StandardAt (I := I) (M := M) A v w (∑ p : Fin 3, r p • basis p) q =
+      tensor04StandardAt (I := I) (M := M) A (∑ p : Fin 3, r p • basis p) q v w from
     hForm.pair_swap v w (∑ p : Fin 3, r p • basis p) q]
-  rw [tensor04StdAt_expand_first hA basis r q v w]
+  rw [tensor04StandardAt_expand_first hA basis r q v w]
   apply Finset.sum_congr rfl
   intro p _
-  rw [show tensor04StdAt (I := I) (M := M) A v w (basis p) q =
-      tensor04StdAt (I := I) (M := M) A (basis p) q v w from
+  rw [show tensor04StandardAt (I := I) (M := M) A v w (basis p) q =
+      tensor04StandardAt (I := I) (M := M) A (basis p) q v w from
     hForm.pair_swap v w (basis p) q]
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
-private theorem tensor04StdAt_expand_fourth {x : M}
+private theorem tensor04StandardAt_expand_fourth {x : M}
     {A : Tensor04At (I := I) (M := M) x}
     (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (v w z : TangentSpace I x) (r : Fin 3 → Real) :
-    tensor04StdAt (I := I) (M := M) A v w z (∑ p : Fin 3, r p • basis p) =
-      ∑ p : Fin 3, r p * tensor04StdAt (I := I) (M := M) A v w z (basis p) := by
+    tensor04StandardAt (I := I) (M := M) A v w z (∑ p : Fin 3, r p • basis p) =
+      ∑ p : Fin 3, r p * tensor04StandardAt (I := I) (M := M) A v w z (basis p) := by
   have hForm := mem_algebraicCurvatureTensorSubmodule.mp hA
-  rw [show tensor04StdAt (I := I) (M := M) A v w z (∑ p : Fin 3, r p • basis p) =
-      tensor04StdAt (I := I) (M := M) A z (∑ p : Fin 3, r p • basis p) v w from
+  rw [show tensor04StandardAt (I := I) (M := M) A v w z (∑ p : Fin 3, r p • basis p) =
+      tensor04StandardAt (I := I) (M := M) A z (∑ p : Fin 3, r p • basis p) v w from
     hForm.pair_swap v w z (∑ p : Fin 3, r p • basis p)]
-  rw [tensor04StdAt_expand_second hA basis z r v w]
+  rw [tensor04StandardAt_expand_second hA basis z r v w]
   apply Finset.sum_congr rfl
   intro p _
-  rw [show tensor04StdAt (I := I) (M := M) A v w z (basis p) =
-      tensor04StdAt (I := I) (M := M) A z (basis p) v w from
+  rw [show tensor04StandardAt (I := I) (M := M) A v w z (basis p) =
+      tensor04StandardAt (I := I) (M := M) A z (basis p) v w from
     hForm.pair_swap v w z (basis p)]
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
-private theorem tensor04StdAt_expand_repr {x : M}
+private theorem tensor04StandardAt_expand_repr {x : M}
     {A : Tensor04At (I := I) (M := M) x}
     (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (v w z q : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) A v w z q =
+    tensor04StandardAt (I := I) (M := M) A v w z q =
       ∑ p : Fin 3, ∑ r : Fin 3, ∑ s : Fin 3, ∑ t : Fin 3,
         basis.repr v p * basis.repr w r * basis.repr z s * basis.repr q t *
-          tensor04StdAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t) := by
+          tensor04StandardAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t) := by
   conv_lhs => rw [← basis.sum_repr v]
-  rw [tensor04StdAt_expand_first hA basis (basis.repr v) w z q]
+  rw [tensor04StandardAt_expand_first hA basis (basis.repr v) w z q]
   apply Finset.sum_congr rfl
   intro p _
   conv_lhs => rw [← basis.sum_repr w]
-  rw [tensor04StdAt_expand_second hA basis (basis p) (basis.repr w) z q]
+  rw [tensor04StandardAt_expand_second hA basis (basis p) (basis.repr w) z q]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro r _
   conv_lhs => rw [← basis.sum_repr z]
-  rw [tensor04StdAt_expand_third hA basis (basis p) (basis r) (basis.repr z) q]
+  rw [tensor04StandardAt_expand_third hA basis (basis p) (basis r) (basis.repr z) q]
   rw [Finset.mul_sum]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro s _
   conv_lhs => rw [← basis.sum_repr q]
-  rw [tensor04StdAt_expand_fourth hA basis (basis p) (basis r) (basis s) (basis.repr q)]
+  rw [tensor04StandardAt_expand_fourth hA basis (basis p) (basis r) (basis s) (basis.repr q)]
   rw [Finset.mul_sum]
   rw [Finset.mul_sum]
   rw [Finset.mul_sum]
@@ -737,27 +737,27 @@ private theorem tensor04StdAt_expand_repr {x : M}
 
 omit [FiniteDimensional Real E] [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E]
   [SigmaCompactSpace M] [T2Space M] in
-private theorem tensor04StdAt_bivectorQuad_expand {x : M}
+private theorem tensor04StandardAt_bivectorQuad_expand {x : M}
     {A : Tensor04At (I := I) (M := M) x}
     (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (v w z q : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) A v w z q =
+    tensor04StandardAt (I := I) (M := M) A v w z q =
       ∑ i : Fin 3, ∑ j : Fin 3,
         (basis.repr v (bivectorIndex3 i).1 * basis.repr w (bivectorIndex3 i).2 -
           basis.repr v (bivectorIndex3 i).2 * basis.repr w (bivectorIndex3 i).1) *
         (basis.repr z (bivectorIndex3 j).1 * basis.repr q (bivectorIndex3 j).2 -
           basis.repr z (bivectorIndex3 j).2 * basis.repr q (bivectorIndex3 j).1) *
-        tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2) := by
   have hForm := mem_algebraicCurvatureTensorSubmodule.mp hA
-  rw [tensor04StdAt_expand_repr hA basis v w z q]
+  rw [tensor04StandardAt_expand_repr hA basis v w z q]
   have hleft : (∑ p : Fin 3, ∑ r : Fin 3, ∑ s : Fin 3, ∑ t : Fin 3,
       basis.repr v p * basis.repr w r * basis.repr z s * basis.repr q t *
-        tensor04StdAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t)) =
+        tensor04StandardAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t)) =
       ∑ p : Fin 3, ∑ r : Fin 3, (basis.repr v p * basis.repr w r) *
         ∑ s : Fin 3, ∑ t : Fin 3, basis.repr z s * basis.repr q t *
-          tensor04StdAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t) := by
+          tensor04StandardAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t) := by
     apply Finset.sum_congr rfl
     intro p _
     apply Finset.sum_congr rfl
@@ -765,10 +765,10 @@ private theorem tensor04StdAt_bivectorQuad_expand {x : M}
     calc
       (∑ s : Fin 3, ∑ t : Fin 3, basis.repr v p * basis.repr w r *
           basis.repr z s * basis.repr q t *
-          tensor04StdAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t)) =
+          tensor04StandardAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t)) =
           ∑ s : Fin 3, ∑ t : Fin 3, (basis.repr v p * basis.repr w r) *
             (basis.repr z s * basis.repr q t *
-              tensor04StdAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t)) := by
+              tensor04StandardAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t)) := by
             apply Finset.sum_congr rfl
             intro s _
             apply Finset.sum_congr rfl
@@ -776,7 +776,7 @@ private theorem tensor04StdAt_bivectorQuad_expand {x : M}
             ring
       _ = (basis.repr v p * basis.repr w r) * ∑ s : Fin 3, ∑ t : Fin 3,
           basis.repr z s * basis.repr q t *
-            tensor04StdAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t) := by
+            tensor04StandardAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t) := by
             rw [Finset.mul_sum]
             apply Finset.sum_congr rfl
             intro s _
@@ -784,7 +784,7 @@ private theorem tensor04StdAt_bivectorQuad_expand {x : M}
   rw [hleft]
   rw [sum_antisym_pair_eq_bivectorSum (F := fun p r => ∑ s : Fin 3, ∑ t : Fin 3,
     basis.repr z s * basis.repr q t *
-      tensor04StdAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t))
+      tensor04StandardAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t))
     (hanti := fun p r => by
       rw [← Finset.sum_neg_distrib]
       apply Finset.sum_congr rfl
@@ -792,15 +792,15 @@ private theorem tensor04StdAt_bivectorQuad_expand {x : M}
       rw [← Finset.sum_neg_distrib]
       apply Finset.sum_congr rfl
       intro t _
-      rw [show tensor04StdAt (I := I) (M := M) A (basis r) (basis p) (basis s) (basis t) =
-          -tensor04StdAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t) from
+      rw [show tensor04StandardAt (I := I) (M := M) A (basis r) (basis p) (basis s) (basis t) =
+          -tensor04StandardAt (I := I) (M := M) A (basis p) (basis r) (basis s) (basis t) from
         hForm.anti_first (basis r) (basis p) (basis s) (basis t)]
       ring)
     (basis.repr v) (basis.repr w)]
   apply Finset.sum_congr rfl
   intro i _
   rw [sum_antisym_pair_eq_bivectorSum (F := fun s t =>
-    tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+    tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
       (basis s) (basis t))
     (hanti := fun s t => by
       rw [hForm.anti_last (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
@@ -829,16 +829,16 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
         curvatureOperatorMatrixAt (I := I) x basis A i j := by
   unfold algebraicCurvatureOperatorQuadraticEval
   have hexp : ∀ k l : Fin n, c k * c l *
-      tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x) (v k) (w k) (w l) (v l) =
+      tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x) (v k) (w k) (w l) (v l) =
       ∑ i : Fin 3, ∑ j : Fin 3, c k * c l *
         (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
           basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
         (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
           basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-        tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2) := by
     intro k l
-    rw [tensor04StdAt_bivectorQuad_expand A.2 basis (v k) (w k) (w l) (v l)]
+    rw [tensor04StandardAt_bivectorQuad_expand A.2 basis (v k) (w k) (w l) (v l)]
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i _
@@ -853,7 +853,7 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
           basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
         (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
           basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-        tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) =
       ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin n, ∑ l : Fin n,
         c k * c l *
@@ -867,14 +867,14 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
           basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
         (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
           basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-        tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j) =
         ∑ k : Fin n, ∑ i : Fin 3, ∑ l : Fin n, ∑ j : Fin 3, (fun k l i j => c k * c l *
           (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
             basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
           (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
             basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-          tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+          tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
             (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j := by
       apply Finset.sum_congr rfl
       intro k _
@@ -884,21 +884,21 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
             basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
           (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
             basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-          tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+          tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
             (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j))
     have h2 : (∑ k : Fin n, ∑ i : Fin 3, ∑ l : Fin n, ∑ j : Fin 3, (fun k l i j => c k * c l *
         (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
           basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
         (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
           basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-        tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j) =
         ∑ i : Fin 3, ∑ k : Fin n, ∑ l : Fin n, ∑ j : Fin 3, (fun k l i j => c k * c l *
           (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
             basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
           (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
             basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-          tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+          tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
             (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j := by
       simpa using (Finset.sum_comm (s := (Finset.univ : Finset (Fin n))) (t := (Finset.univ : Finset (Fin 3)))
         (f := fun k i => ∑ l : Fin n, ∑ j : Fin 3, (fun k l i j => c k * c l *
@@ -906,21 +906,21 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
             basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
           (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
             basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-          tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+          tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
             (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j))
     have h3 : (∑ i : Fin 3, ∑ k : Fin n, ∑ l : Fin n, ∑ j : Fin 3, (fun k l i j => c k * c l *
         (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
           basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
         (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
           basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-        tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j) =
         ∑ i : Fin 3, ∑ j : Fin 3, ∑ k : Fin n, ∑ l : Fin n, (fun k l i j => c k * c l *
           (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
             basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
           (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
             basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-          tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+          tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
             (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j := by
       apply Finset.sum_congr rfl
       intro i _
@@ -929,14 +929,14 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
             basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
           (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
             basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-          tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+          tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
             (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j) =
           ∑ k : Fin n, ∑ j : Fin 3, ∑ l : Fin n, (fun k l i j => c k * c l *
             (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
               basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
             (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
               basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-            tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+            tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
               (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j := by
         apply Finset.sum_congr rfl
         intro k _
@@ -946,21 +946,21 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
               basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
             (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
               basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-            tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+            tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
               (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j))
       have h3b : (∑ k : Fin n, ∑ j : Fin 3, ∑ l : Fin n, (fun k l i j => c k * c l *
           (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
             basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
           (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
             basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-          tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+          tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
             (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j) =
           ∑ j : Fin 3, ∑ k : Fin n, ∑ l : Fin n, (fun k l i j => c k * c l *
             (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
               basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
             (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
               basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-            tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+            tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
               (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j := by
         simpa using (Finset.sum_comm (s := (Finset.univ : Finset (Fin n))) (t := (Finset.univ : Finset (Fin 3)))
           (f := fun k j => ∑ l : Fin n, (fun k l i j => c k * c l *
@@ -968,7 +968,7 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
               basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
             (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
               basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-            tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+            tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
               (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2)) k l i j))
       rw [h3a, h3b]
     rw [h1, h2, h3]
@@ -985,7 +985,7 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
           basis.repr (v k) (bivectorIndex3 i).2 * basis.repr (w k) (bivectorIndex3 i).1) *
         (basis.repr (w l) (bivectorIndex3 j).1 * basis.repr (v l) (bivectorIndex3 j).2 -
           basis.repr (w l) (bivectorIndex3 j).2 * basis.repr (v l) (bivectorIndex3 j).1) *
-        tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2) =
       c k * c l *
         (basis.repr (v k) (bivectorIndex3 i).1 * basis.repr (w k) (bivectorIndex3 i).2 -
@@ -993,9 +993,9 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_bivectorQuad
         (basis.repr (v l) (bivectorIndex3 j).1 * basis.repr (w l) (bivectorIndex3 j).2 -
           basis.repr (v l) (bivectorIndex3 j).2 * basis.repr (w l) (bivectorIndex3 j).1) *
         curvatureOperatorMatrixAt (I := I) x basis A i j
-    rw [show tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+    rw [show tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
         (basis (bivectorIndex3 j).1) (basis (bivectorIndex3 j).2) =
-        -tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
+        -tensor04StandardAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
           (basis (bivectorIndex3 j).2) (basis (bivectorIndex3 j).1) from
       (mem_algebraicCurvatureTensorSubmodule.mp A.2).anti_last
         (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)

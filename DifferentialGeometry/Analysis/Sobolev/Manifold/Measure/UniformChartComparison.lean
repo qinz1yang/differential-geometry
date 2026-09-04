@@ -46,10 +46,10 @@ lemma image_extChartAt_compact_subset_target_of_subset
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 lemma image_extChartAt_tsupport_subset_image_K
     {u : M → ℝ} {K : Set M} {α : M}
-    (hu_supp : tsupport u ⊆ K) :
+    (hu_support : tsupport u ⊆ K) :
     (extChartAt I α) '' (tsupport u) ⊆ (extChartAt I α) '' K := by
   rintro y ⟨x, hx, rfl⟩
-  exact ⟨x, hu_supp hx, rfl⟩
+  exact ⟨x, hu_support hx, rfl⟩
 
 theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform_of_subset
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -76,20 +76,20 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform_of
       eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform
         (I := I) (M := M) g α hK_E_compact hK_E_ne hK_E_sub_target hp_one hp_top
     refine ⟨C, hC_pos, ?_⟩
-    intro u hu_meas hu_supp
-    have hu_chart_supp : tsupport u ⊆ (chartAt H α).source := hu_supp.trans hK_sub
+    intro u hu_meas hu_support
+    have hu_chart_support : tsupport u ⊆ (chartAt H α).source := hu_support.trans hK_sub
     have hu_K_E : (extChartAt I α) '' (tsupport u) ⊆ (extChartAt I α) '' K :=
       image_extChartAt_tsupport_subset_image_K (I := I) (u := u) (K := K) (α := α)
-        hu_supp
-    exact hC_bnd hu_meas hu_chart_supp hu_K_E
+        hu_support
+    exact hC_bnd hu_meas hu_chart_support hu_K_E
   · rw [Set.not_nonempty_iff_eq_empty] at hK_ne
     refine ⟨1, one_pos, ?_⟩
-    intro u _ hu_supp
-    have hu_supp_empty : tsupport u ⊆ ∅ := by rw [← hK_ne]; exact hu_supp
-    have hu_supp_eq : tsupport u = ∅ := Set.subset_empty_iff.mp hu_supp_empty
+    intro u _ hu_support
+    have hu_support_empty : tsupport u ⊆ ∅ := by rw [← hK_ne]; exact hu_support
+    have hu_support_eq : tsupport u = ∅ := Set.subset_empty_iff.mp hu_support_empty
     have hu_zero : u = 0 := by
       funext x
-      have hx_notsupp : x ∉ tsupport u := by rw [hu_supp_eq]; simp
+      have hx_notsupp : x ∉ tsupport u := by rw [hu_support_eq]; simp
       exact image_eq_zero_of_notMem_tsupport hx_notsupp
     rw [hu_zero, eLpNorm_zero]
     exact zero_le
@@ -119,20 +119,20 @@ theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure_uniform_of
       eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure_uniform
         (I := I) (M := M) g α hK_E_compact hK_E_ne hK_E_sub_target hp_one hp_top
     refine ⟨C, hC_pos, ?_⟩
-    intro u hu_meas hu_supp
-    have hu_chart_supp : tsupport u ⊆ (chartAt H α).source := hu_supp.trans hK_sub
+    intro u hu_meas hu_support
+    have hu_chart_support : tsupport u ⊆ (chartAt H α).source := hu_support.trans hK_sub
     have hu_K_E : (extChartAt I α) '' (tsupport u) ⊆ (extChartAt I α) '' K :=
       image_extChartAt_tsupport_subset_image_K (I := I) (u := u) (K := K) (α := α)
-        hu_supp
-    exact hC_bnd hu_meas hu_chart_supp hu_K_E
+        hu_support
+    exact hC_bnd hu_meas hu_chart_support hu_K_E
   · rw [Set.not_nonempty_iff_eq_empty] at hK_ne
     refine ⟨1, one_pos, ?_⟩
-    intro u _ hu_supp
-    have hu_supp_empty : tsupport u ⊆ ∅ := by rw [← hK_ne]; exact hu_supp
-    have hu_supp_eq : tsupport u = ∅ := Set.subset_empty_iff.mp hu_supp_empty
+    intro u _ hu_support
+    have hu_support_empty : tsupport u ⊆ ∅ := by rw [← hK_ne]; exact hu_support
+    have hu_support_eq : tsupport u = ∅ := Set.subset_empty_iff.mp hu_support_empty
     have hu_zero : u = 0 := by
       funext x
-      have hx_notsupp : x ∉ tsupport u := by rw [hu_supp_eq]; simp
+      have hx_notsupp : x ∉ tsupport u := by rw [hu_support_eq]; simp
       exact image_eq_zero_of_notMem_tsupport hx_notsupp
     have hchartPushedRaw_zero :
         chartPushedRaw I α u = (fun _ => (0 : ℝ)) := by

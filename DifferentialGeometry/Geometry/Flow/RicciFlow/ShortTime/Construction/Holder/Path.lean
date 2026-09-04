@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Parabolic.Euclidean
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 
 variable

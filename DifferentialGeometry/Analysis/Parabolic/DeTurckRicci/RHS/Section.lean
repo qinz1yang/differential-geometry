@@ -61,12 +61,12 @@ def deTurckRHSField (g_bg g : SmoothRiemannianMetric I M) :
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ (σ 1) x))
         (chartAt H x₀).source :=
       combine_smoothness_of_summands (I := I) g_bg g x₀ (σ 0) (σ 1)
-    have hx₀_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
+    have hx₀_source : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hx₀_base : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) x₀
-    have h_src_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
-      (chartAt H x₀).open_source.mem_nhds hx₀_src
-    refine ((hcomp x₀ hx₀_src).contMDiffAt h_src_nhd).congr_of_eventuallyEq ?_
+    have h_source_nhd : (chartAt H x₀).source ∈ 𝓝 x₀ :=
+      (chartAt H x₀).open_source.mem_nhds hx₀_source
+    refine ((hcomp x₀ hx₀_source).contMDiffAt h_source_nhd).congr_of_eventuallyEq ?_
     have h_base_nhd :
         (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 x₀ :=
       (trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hx₀_base

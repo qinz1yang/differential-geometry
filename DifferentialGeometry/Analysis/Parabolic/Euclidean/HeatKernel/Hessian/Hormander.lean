@@ -419,7 +419,7 @@ theorem heatD2Dt_norm_int {t : ℝ} (ht : 0 < t) (v w : V) :
     simpa [mul_assoc] using heatD2Dt_bound ht v w x
 
 omit [MeasurableSpace V] [BorelSpace V] in
-private theorem timeSeg_lower {t a s : ℝ} (hta : |a| < t)
+private theorem timeSegment_lower {t a s : ℝ} (hta : |a| < t)
     (hs : s ∈ Set.Icc (0 : ℝ) 1) :
     0 < t - |a| ∧ t - |a| ≤ t - s * a := by
   have hsa : s * a ≤ |a| := by
@@ -446,8 +446,8 @@ private theorem d2Time_point {t a : ℝ} (hta : |a| < t)
       HasDerivAt (fun r : ℝ => heatD2 (γ r) v w x)
         (-a * heatD2Dt (γ s) v w x) s := by
     intro s hs
-    have hpos : 0 < γ s := (timeSeg_lower hta hs).1.trans_le
-      (timeSeg_lower hta hs).2
+    have hpos : 0 < γ s := (timeSegment_lower hta hs).1.trans_le
+      (timeSegment_lower hta hs).2
     have h0 := (heatD2_time hpos v w x).comp s (hγ s)
     exact h0.congr_deriv (by ring)
   have hderiv : IntervalIntegrable
@@ -455,8 +455,8 @@ private theorem d2Time_point {t a : ℝ} (hta : |a| < t)
     apply ContinuousOn.intervalIntegrable
     intro s hs
     rw [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] at hs
-    have hpos : 0 < γ s := (timeSeg_lower hta hs).1.trans_le
-      (timeSeg_lower hta hs).2
+    have hpos : 0 < γ s := (timeSegment_lower hta hs).1.trans_le
+      (timeSegment_lower hta hs).2
     have hγne : γ s ≠ 0 := hpos.ne'
     have hrne : heatScale (γ s) ≠ 0 := (heatScale_pos hpos).ne'
     have hpowne : heatScale (γ s) ^ Module.finrank ℝ V ≠ 0 :=
@@ -498,7 +498,7 @@ theorem heatD2_time_diff {t a : ℝ} (hta : |a| < t) (v w : V) :
   have hd : 0 < d := sub_pos.mpr hta
   have hslice_pos : ∀ s ∈ Set.Icc (0 : ℝ) 1, 0 < t - s * a := by
     intro s hs
-    exact (timeSeg_lower hta hs).1.trans_le (timeSeg_lower hta hs).2
+    exact (timeSegment_lower hta hs).1.trans_le (timeSegment_lower hta hs).2
   have hslice_int : ∀ s ∈ Set.Icc (0 : ℝ) 1,
       Integrable (fun x : V => G (s, x)) := by
     intro s hs
@@ -507,7 +507,7 @@ theorem heatD2_time_diff {t a : ℝ} (hta : |a| < t) (v w : V) :
       (∫ x : V, G (s, x)) ≤
         |a| * ‖v‖ * ‖w‖ * (d ^ 2)⁻¹ * heatC2Dt V := by
     intro s hs
-    have hlow := (timeSeg_lower hta hs).2
+    have hlow := (timeSegment_lower hta hs).2
     have hspos := hslice_pos s hs
     have hsq : d ^ 2 ≤ (t - s * a) ^ 2 :=
       (sq_le_sq₀ hd.le hspos.le).2 hlow

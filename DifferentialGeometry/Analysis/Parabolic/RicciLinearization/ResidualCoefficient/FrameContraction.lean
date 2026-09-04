@@ -448,10 +448,10 @@ def decompositionKernelContractionMonomialBiContrFib (g₁ : SmoothRiemannianMet
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-theorem decompositionKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd
+theorem decompositionKernelContractionMonomialBiContrFib_eq_fixedFrame_on_neighborhood
     (g₁ : SmoothRiemannianMetric I M) (Gs : Π b : M, Tensor0SSpace 4 I b)
     (σ : Equiv.Perm (Fin 4)) (x₀ : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     curvatureDecompositionMonomialOrthonormalFrameBiContraction (I := I) (M := M) g₁ Gs σ y =
       curvatureDecompositionMonomialFrameContraction (I := I) (M := M) Gs σ
         (smoothOrthoFrame (I := I) g₁ x₀) y := by
@@ -526,11 +526,11 @@ theorem decompositionKernelContractionMonomialBiContrFib_contMDiff (g₁ : Smoot
         (fun i => smoothOrthoFrame_smooth (I := I) g₁ x₀ i) Y
     exact h_glob x₀
   refine h_fixed.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
     (E := fun z : M => TensorRSSpace 2 2 I z) y)
     (congrArg TensorRSSpace.ofCLM
-      (decompositionKernelContractionMonomialBiContrFib_eq_fixedFrame_on_nbhd (I := I) (M := M)
+      (decompositionKernelContractionMonomialBiContrFib_eq_fixedFrame_on_neighborhood (I := I) (M := M)
         g₁ Gs σ x₀ hy))
 
 def decompositionKernelContractionMonomialField (g₀ g₁ : SmoothRiemannianMetric I M)

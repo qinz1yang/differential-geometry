@@ -99,7 +99,7 @@ omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Sp
     [SigmaCompactSpace M] in
 private lemma chartPushedRaw_smooth_hasCompactSupport
     {α : M} {f : M → ℝ}
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     HasCompactSupport (chartPushedRaw (I := I) (M := M) α f) := by
   classical
   set K : Set EuclN :=
@@ -111,15 +111,15 @@ private lemma chartPushedRaw_smooth_hasCompactSupport
     have h_cont : ContinuousOn (extChartAt I α) (tsupport f) := by
       apply (continuousOn_extChartAt (I := I) α).mono
       intro x hx
-      have hsrc : x ∈ (chartAt H α).source := hf_supp hx
+      have hsrc : x ∈ (chartAt H α).source := hf_support hx
       rw [← DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)] at hsrc
       exact hsrc
     exact h_tsupp_compact.image_of_continuousOn h_cont
   apply HasCompactSupport.of_support_subset_isCompact hK_compact
-  intro y hy_supp
+  intro y hy_support
   by_contra hyK
-  apply hy_supp
+  apply hy_support
   exact chartPushedRaw_smooth_eq_zero_off_image_tsupport
     (I := I) (M := M) (f := f) (α := α) hyK
 
@@ -127,7 +127,7 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private lemma chartPushedRaw_smooth_continuous
     {α : M} {f : M → ℝ}
     (hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     Continuous (chartPushedRaw (I := I) (M := M) α f) := by
   classical
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
@@ -141,7 +141,7 @@ private lemma chartPushedRaw_smooth_continuous
     have h_cont : ContinuousOn (extChartAt I α) (tsupport f) := by
       apply (continuousOn_extChartAt (I := I) α).mono
       intro x hx
-      have hsrc : x ∈ (chartAt H α).source := hf_supp hx
+      have hsrc : x ∈ (chartAt H α).source := hf_support hx
       rw [← DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)] at hsrc
       exact hsrc
@@ -149,8 +149,8 @@ private lemma chartPushedRaw_smooth_continuous
   have hK_in_Ω : K ⊆ Ω := by
     intro y hy
     rcases hy with ⟨z, hz, hzy⟩
-    rcases hz with ⟨x, hx_supp, hxz⟩
-    have hxsrc : x ∈ (chartAt H α).source := hf_supp hx_supp
+    rcases hz with ⟨x, hx_support, hxz⟩
+    have hxsrc : x ∈ (chartAt H α).source := hf_support hx_support
     rw [hΩ_def, chartTargetEuclid]
     refine ⟨z, ?_, hzy⟩
     rw [← hxz]
@@ -205,17 +205,17 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 private lemma chartPushedRaw_smooth_memLp
     {α : M} {f : M → ℝ}
     (hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source)
+    (hf_support : tsupport f ⊆ (chartAt H α).source)
     (p : ℝ≥0∞) :
     MemLp (chartPushedRaw (I := I) (M := M) α f) p
       ((volume : Measure EuclN).restrict (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
   have hcont : Continuous (chartPushedRaw (I := I) (M := M) α f) :=
     chartPushedRaw_smooth_continuous (I := I) (M := M)
-      (f := f) (α := α) hf_smooth hf_supp
+      (f := f) (α := α) hf_smooth hf_support
   have hcompact : HasCompactSupport (chartPushedRaw (I := I) (M := M) α f) :=
     chartPushedRaw_smooth_hasCompactSupport
-      (I := I) (M := M) (f := f) (α := α) hf_supp
+      (I := I) (M := M) (f := f) (α := α) hf_support
   have hmemLp_full : MemLp (chartPushedRaw (I := I) (M := M) α f) p
       (volume : Measure EuclN) :=
     hcont.memLp_of_hasCompactSupport (μ := volume) hcompact
@@ -225,7 +225,7 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 theorem memW1p_chartPushedRaw_of_contMDiff_tsupport
     {α : M} {f : M → ℝ}
     (hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source)
+    (hf_support : tsupport f ⊆ (chartAt H α).source)
     (p : ℝ≥0∞) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) p
       (chartPushedRaw (I := I) (M := M) α f)
@@ -233,7 +233,7 @@ theorem memW1p_chartPushedRaw_of_contMDiff_tsupport
   classical
   refine ⟨?_, ?_⟩
   · exact chartPushedRaw_smooth_memLp (I := I) (M := M)
-      (f := f) (α := α) hf_smooth hf_supp p
+      (f := f) (α := α) hf_smooth hf_support p
   · intro i
     set Λ : EuclN → ℝ := chartPushedRaw (I := I) (M := M) α f with hΛ_def
     set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
@@ -247,7 +247,7 @@ theorem memW1p_chartPushedRaw_of_contMDiff_tsupport
       have h_cont : ContinuousOn (extChartAt I α) (tsupport f) := by
         apply (continuousOn_extChartAt (I := I) α).mono
         intro x hx
-        have hsrc : x ∈ (chartAt H α).source := hf_supp hx
+        have hsrc : x ∈ (chartAt H α).source := hf_support hx
         rw [← DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
           (I := I) (M := M)] at hsrc
         exact hsrc
@@ -256,8 +256,8 @@ theorem memW1p_chartPushedRaw_of_contMDiff_tsupport
     have hK_in_Ω : K ⊆ Ω := by
       intro y hy
       rcases hy with ⟨z, hz, hzy⟩
-      rcases hz with ⟨x, hx_supp, hxz⟩
-      have hxsrc : x ∈ (chartAt H α).source := hf_supp hx_supp
+      rcases hz with ⟨x, hx_support, hxz⟩
+      have hxsrc : x ∈ (chartAt H α).source := hf_support hx_support
       rw [hΩ_def, chartTargetEuclid]
       refine ⟨z, ?_, hzy⟩
       rw [← hxz]
@@ -304,7 +304,7 @@ theorem memW1p_chartPushedRaw_of_contMDiff_tsupport
           (I := I) (M := M) (f := f) (α := α) hz
     have hΛ_compact : HasCompactSupport Λ :=
       chartPushedRaw_smooth_hasCompactSupport
-        (I := I) (M := M) (f := f) (α := α) hf_supp
+        (I := I) (M := M) (f := f) (α := α) hf_support
     have hΛ_smooth_top : ContDiff ℝ (⊤ : ℕ∞) Λ := hΛ_smooth
     have hΛ_smooth_C1 : ContDiff ℝ 1 Λ := hΛ_smooth.of_le (by norm_cast)
     have hw_univ : DeGiorgi.MemW1pWitness (d := Module.finrank ℝ E) p Λ Set.univ :=
@@ -369,12 +369,12 @@ lemma fHLeibnizResidualSmoothRep_tsupport_subset
     tsupport (fHLeibnizResidualSmoothRep (I := I) (M := M) g α v) ⊆
       (chartAt H α).source := by
   classical
-  have h_supp_subset : Function.support
+  have h_support_subset : Function.support
       (fHLeibnizResidualSmoothRep (I := I) (M := M) g α v) ⊆
       tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
-    intro x hx_supp
+    intro x hx_support
     by_contra hx_off
-    apply hx_supp
+    apply hx_support
     have h_open : IsOpen
         (tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ))ᶜ :=
       (isClosed_tsupport _).isOpen_compl
@@ -412,7 +412,7 @@ lemma fHLeibnizResidualSmoothRep_tsupport_subset
   have h_tsupp_subset : tsupport
       (fHLeibnizResidualSmoothRep (I := I) (M := M) g α v) ⊆
       tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
-    closure_minimal h_supp_subset (isClosed_tsupport _)
+    closure_minimal h_support_subset (isClosed_tsupport _)
   exact h_tsupp_subset.trans
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α)
 
@@ -424,10 +424,10 @@ theorem memW1p_chartPushedRaw_fHLeibnizResidualSmoothRep
         (fHLeibnizResidualSmoothRep (I := I) (M := M) g α v))
       (chartTargetEuclid (I := I) (M := M) α) := by
   have h_smooth := fHLeibnizResidualSmoothRep_contMDiff (I := I) (M := M) g α v
-  have h_supp := fHLeibnizResidualSmoothRep_tsupport_subset (I := I) (M := M) g α v
+  have h_support := fHLeibnizResidualSmoothRep_tsupport_subset (I := I) (M := M) g α v
   exact memW1p_chartPushedRaw_of_contMDiff_tsupport
     (I := I) (M := M) (f := fHLeibnizResidualSmoothRep (I := I) (M := M) g α v)
-    (α := α) h_smooth h_supp 2
+    (α := α) h_smooth h_support 2
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem fHLeibnizResidualLp_smoothToH1Compl_coeFn_ae

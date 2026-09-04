@@ -58,7 +58,7 @@ private lemma summable_basis_coeff_sq (b : HilbertBasis ι ℝ X) (v : X) :
   rw [h_map_eq] at h_iff
   exact h_iff.mp h_summable_smul
 
-lemma summable_basis_coeff_sq' (b : HilbertBasis ι ℝ X) (v : X) :
+lemma summable_basis_real_inner_sq (b : HilbertBasis ι ℝ X) (v : X) :
     Summable (fun i : ι => (⟪b i, v⟫_ℝ) ^ 2) := by
   have h := summable_basis_coeff_sq b v
   have h_eq : (fun i : ι => ‖⟪b i, v⟫_ℝ‖ ^ 2) = (fun i => (⟪b i, v⟫_ℝ) ^ 2) := by
@@ -87,7 +87,7 @@ lemma summable_heatTerm (b : HilbertBasis ι ℝ X) {lam : ι → ℝ}
     h_orthonormal.orthogonalFamily
   have h_sq_summable : Summable
       (fun i : ι => (heatCoeff lam t i * ⟪b i, v⟫_ℝ) ^ 2) := by
-    refine Summable.of_nonneg_of_le ?_ ?_ (summable_basis_coeff_sq' b v)
+    refine Summable.of_nonneg_of_le ?_ ?_ (summable_basis_real_inner_sq b v)
     · intro i; positivity
     · intro i
       have h_sq_le : (heatCoeff lam t i) ^ 2 ≤ 1 := heatCoeff_sq_le_one hlam ht i
@@ -163,7 +163,7 @@ private lemma norm_sq_heatTerm_sum_le (b : HilbertBasis ι ℝ X) {lam : ι → 
     funext i; rw [mul_smul]
   rw [h_summand_eq]
   set f : ι → ℝ := fun i => heatCoeff lam t i * ⟪b i, v⟫_ℝ
-  have h_coeff_sq_summable := summable_basis_coeff_sq' b v
+  have h_coeff_sq_summable := summable_basis_real_inner_sq b v
   have h_f_sq_le : ∀ i : ι, (f i) ^ 2 ≤ (⟪b i, v⟫_ℝ) ^ 2 := by
     intro i
     have h_sq_le : (heatCoeff lam t i) ^ 2 ≤ 1 := heatCoeff_sq_le_one hlam ht i

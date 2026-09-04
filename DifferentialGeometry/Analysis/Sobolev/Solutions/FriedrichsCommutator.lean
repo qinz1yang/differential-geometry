@@ -67,7 +67,7 @@ private lemma hasCompactSupport_translateSub
   hφ_compact.comp_homeomorph (Homeomorph.subLeft x)
 
 omit [NeZero d] in
-private lemma integrable_conv_integrand
+private lemma integrable_convergence_integrand
     {u φ : E → ℝ}
     (hu : MemLp u 2 (volume : Measure E))
     (hφ_cont : Continuous φ) (hφ_compact : HasCompactSupport φ) (x : E) :
@@ -85,9 +85,9 @@ private lemma integrable_conv_integrand
   set K : Set E := tsupport (fun t : E => φ (x - t)) with hK_def
   have hK_compact : IsCompact K := hφ_compact_sub
   have hK_subset : tsupport (fun t : E => φ (x - t)) ⊆ K := subset_rfl
-  have hu_loc : LocallyIntegrable u volume :=
+  have hu_local : LocallyIntegrable u volume :=
     hu.locallyIntegrable (by norm_num)
-  have hu_K : IntegrableOn u K volume := hu_loc.integrableOn_isCompact hK_compact
+  have hu_K : IntegrableOn u K volume := hu_local.integrableOn_isCompact hK_compact
   have hbnd : ∀ t, ‖u t * φ (x - t)‖ ≤ M * (K.indicator (fun t => |u t|) t) := by
     intro t
     by_cases ht : t ∈ K
@@ -137,11 +137,11 @@ lemma commutatorPointwise_eq_integral
       ∫ t, φ (x - t) * (a x - a t) * u t ∂(volume : Measure E) := by
   classical
   have h_int_u : Integrable (fun t : E => u t * φ (x - t)) volume :=
-    integrable_conv_integrand hu hφ_cont hφ_compact x
+    integrable_convergence_integrand hu hφ_cont hφ_compact x
   have h_au_memLp : MemLp (fun t => a t * u t) 2 volume :=
     memLp_smul_of_bound ha_cont.aestronglyMeasurable ha_bd hu
   have h_int_au : Integrable (fun t : E => (a t * u t) * φ (x - t)) volume :=
-    integrable_conv_integrand h_au_memLp hφ_cont hφ_compact x
+    integrable_convergence_integrand h_au_memLp hφ_cont hφ_compact x
   rw [commutatorPointwise]
   rw [conv_apply, conv_apply]
   rw [← integral_const_mul]
@@ -157,13 +157,13 @@ private lemma abs_commutator_integrand_le
     (hΛ_nn : 0 ≤ Λ)
     (ha_lip : ∀ x y : E, |a x - a y| ≤ Λ * ‖x - y‖)
     (hφ_nn : ∀ y, 0 ≤ φ y)
-    (hφ_supp : Function.support φ ⊆ Metric.closedBall (0 : E) ε)
+    (hφ_support : Function.support φ ⊆ Metric.closedBall (0 : E) ε)
     (x t : E) :
     |φ (x - t) * (a x - a t) * u t| ≤ φ (x - t) * (Λ * ε) * |u t| := by
   rcases eq_or_ne (φ (x - t)) 0 with hφzero | hφne
   · rw [hφzero]; simp
   · have hin : (x - t) ∈ Function.support φ := hφne
-    have hcb : (x - t) ∈ Metric.closedBall (0 : E) ε := hφ_supp hin
+    have hcb : (x - t) ∈ Metric.closedBall (0 : E) ε := hφ_support hin
     have hdist : ‖x - t‖ ≤ ε := by
       have := Metric.mem_closedBall.mp hcb
       simpa [dist_eq_norm] using this
@@ -194,7 +194,7 @@ lemma abs_commutatorPointwise_le
     (hu : MemLp u 2 (volume : Measure E))
     (hφ_cont : Continuous φ) (hφ_compact : HasCompactSupport φ)
     (hφ_nn : ∀ y, 0 ≤ φ y)
-    (hφ_supp : Function.support φ ⊆ Metric.closedBall (0 : E) ε)
+    (hφ_support : Function.support φ ⊆ Metric.closedBall (0 : E) ε)
     (x : E) :
     |commutatorPointwise a u φ x| ≤
       (Λ * ε) * ∫ t, φ (x - t) * |u t| ∂(volume : Measure E) := by
@@ -204,7 +204,7 @@ lemma abs_commutatorPointwise_le
   have h_abs_memLp : MemLp (fun t => |u t|) 2 volume := by
     have := hu.norm; simpa [Real.norm_eq_abs] using this
   have h_int_abs : Integrable (fun t : E => |u t| * φ (x - t)) volume :=
-    integrable_conv_integrand h_abs_memLp hφ_cont hφ_compact x
+    integrable_convergence_integrand h_abs_memLp hφ_cont hφ_compact x
   have h_rhs_int : Integrable (fun t : E => φ (x - t) * (Λ * ε) * |u t|) volume := by
     have heq : (fun t : E => φ (x - t) * (Λ * ε) * |u t|)
              = fun t : E => (Λ * ε) * (|u t| * φ (x - t)) := by
@@ -215,7 +215,7 @@ lemma abs_commutatorPointwise_le
         refine integral_mono_of_nonneg
           (Eventually.of_forall fun _ => abs_nonneg _) h_rhs_int ?_
         exact Eventually.of_forall fun t =>
-          abs_commutator_integrand_le (u := u) hΛ_nn ha_lip hφ_nn hφ_supp x t
+          abs_commutator_integrand_le (u := u) hΛ_nn ha_lip hφ_nn hφ_support x t
     _ = (Λ * ε) * ∫ t, φ (x - t) * |u t| ∂(volume : Measure E) := by
         rw [← integral_const_mul]
         congr 1; funext t; ring
@@ -238,7 +238,7 @@ private lemma enorm_commutatorPointwise_le_lintegral
     (hu : MemLp u 2 (volume : Measure E))
     (hφ_cont : Continuous φ) (hφ_compact : HasCompactSupport φ)
     (hφ_nn : ∀ y, 0 ≤ φ y)
-    (hφ_supp : Function.support φ ⊆ Metric.closedBall (0 : E) ε)
+    (hφ_support : Function.support φ ⊆ Metric.closedBall (0 : E) ε)
     (x : E) :
     ‖commutatorPointwise a u φ x‖ₑ ≤
       ENNReal.ofReal (Λ * ε) *
@@ -248,11 +248,11 @@ private lemma enorm_commutatorPointwise_le_lintegral
   have h1 : |commutatorPointwise a u φ x| ≤
       (Λ * ε) * ∫ t, φ (x - t) * |u t| ∂(volume : Measure E) :=
     abs_commutatorPointwise_le hΛ_nn ha_cont ha_bd ha_lip hu hφ_cont hφ_compact
-      hφ_nn hφ_supp x
+      hφ_nn hφ_support x
   have h_abs_memLp : MemLp (fun t => |u t|) 2 volume := by
     have := hu.norm; simpa [Real.norm_eq_abs] using this
   have h_int_abs : Integrable (fun t : E => |u t| * φ (x - t)) volume :=
-    integrable_conv_integrand h_abs_memLp hφ_cont hφ_compact x
+    integrable_convergence_integrand h_abs_memLp hφ_cont hφ_compact x
   have h_int_abs' : Integrable (fun t : E => φ (x - t) * |u t|) volume := by
     have heq : (fun t : E => φ (x - t) * |u t|)
              = fun t : E => |u t| * φ (x - t) := by funext t; ring
@@ -368,7 +368,7 @@ private lemma eLpNorm_commutatorPointwise_sq_le
     (hu : MemLp u 2 (volume : Measure E))
     (hφ_cont : Continuous φ) (hφ_compact : HasCompactSupport φ)
     (hφ_nn : ∀ y, 0 ≤ φ y)
-    (hφ_supp : Function.support φ ⊆ Metric.closedBall (0 : E) ε) :
+    (hφ_support : Function.support φ ⊆ Metric.closedBall (0 : E) ε) :
     eLpNorm (commutatorPointwise a u φ) 2 (volume : Measure E)
         ^ (2 : ℝ) ≤
       ENNReal.ofReal (Λ * ε) ^ (2 : ℝ) *
@@ -399,7 +399,7 @@ private lemma eLpNorm_commutatorPointwise_sq_le
                 ∂(volume : Measure E)) := by
     intro x
     have h1 := enorm_commutatorPointwise_le_lintegral
-      hΛ_nn hε_nn ha_cont ha_bd ha_lip hu hφ_cont hφ_compact hφ_nn hφ_supp x
+      hΛ_nn hε_nn ha_cont ha_bd ha_lip hu hφ_cont hφ_compact hφ_nn hφ_support x
     have h_sq : ‖commutatorPointwise a u φ x‖ₑ ^ (2 : ℝ)
         ≤ (ENNReal.ofReal (Λ * ε)
             * ∫⁻ t, ENNReal.ofReal (φ (x - t)) * ‖u t‖ₑ
@@ -504,14 +504,14 @@ theorem eLpNorm_commutatorPointwise_le
     (hu : MemLp u 2 (volume : Measure E))
     (hφ_cont : Continuous φ) (hφ_compact : HasCompactSupport φ)
     (hφ_nn : ∀ y, 0 ≤ φ y)
-    (hφ_supp : Function.support φ ⊆ Metric.closedBall (0 : E) ε) :
+    (hφ_support : Function.support φ ⊆ Metric.closedBall (0 : E) ε) :
     eLpNorm (commutatorPointwise a u φ) 2 (volume : Measure E) ≤
       ENNReal.ofReal (Λ * ε) *
         (∫⁻ y, ENNReal.ofReal (φ y) ∂(volume : Measure E)) *
         eLpNorm u 2 (volume : Measure E) := by
   classical
   have h_sq := eLpNorm_commutatorPointwise_sq_le
-    hΛ_nn hε_nn ha_cont ha_bd ha_lip hu hφ_cont hφ_compact hφ_nn hφ_supp
+    hΛ_nn hε_nn ha_cont ha_bd ha_lip hu hφ_cont hφ_compact hφ_nn hφ_support
   have h_root := ENNReal.rpow_le_rpow h_sq (by norm_num : (0 : ℝ) ≤ (1 : ℝ) / 2)
   have hLHS : (eLpNorm (commutatorPointwise a u φ) 2 (volume : Measure E)
       ^ (2 : ℝ)) ^ ((1 : ℝ) / 2)
@@ -619,10 +619,10 @@ theorem friedrichsCommutator_tendsto_zero
   obtain ⟨hε_pos, hε_lt⟩ := hε
   rw [dif_pos hε_pos]
   have h_prop := mollifierEps_props (d := d) hε_pos
-  obtain ⟨h_cont, h_compact, h_nn, h_supp, h_intone⟩ := h_prop
+  obtain ⟨h_cont, h_compact, h_nn, h_support, h_intone⟩ := h_prop
   have h_bound :=
     eLpNorm_commutatorPointwise_le hΛ_nn hε_pos.le ha_cont ha_bd ha_lip hu
-      h_cont h_compact h_nn h_supp
+      h_cont h_compact h_nn h_support
   rw [h_intone, mul_one] at h_bound
   refine h_bound.trans ?_
   have hC_eq_form : ENNReal.ofReal Ctop = eLpNorm u 2 (volume : Measure E) := by

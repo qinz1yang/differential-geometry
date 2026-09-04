@@ -203,13 +203,13 @@ private theorem exists_global_ext
   have hsub : Icc (0 : ℝ) 1 ⊆ Ioo A B := by
     intro t ht
     exact ⟨hA.trans_le ht.1, ht.2.trans_lt hB⟩
-  obtain ⟨χ, hχ, -, hχone, hχsupp, -⟩ :=
+  obtain ⟨χ, hχ, -, hχone, hχsupport, -⟩ :=
     DifferentialGeometry.Analysis.exists_bump_compact
       isCompact_Icc isOpen_Ioo hsub
   let Wg : ℝ → F := fun t => χ t • W t
   have hWg : ContDiff ℝ ∞ Wg := by
     exact DifferentialGeometry.Analysis.contDiff_cutoff_smul
-      isOpen_Ioo hχ hχsupp hW
+      isOpen_Ioo hχ hχsupport hW
   refine ⟨Wg, hWg, ?_, ?_⟩
   · intro t ht
     have hχt :
@@ -945,10 +945,10 @@ private theorem smooth_split_to
       rwa [← hindex]
     exact lt_of_mul_lt_mul_left (by simpa using hmul_neg) hL.le
 
-theorem IsJacobiSolOn.exists_smooth_neg_on
+theorem IsJacobiFieldOn.exists_smooth_neg_on
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {L c : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R 0 L y v)
+    (hsol : IsJacobiFieldOn R 0 L y v)
     (hc : c ∈ Ioo (0 : ℝ) L)
     (hR : ContinuousOn R (Icc (0 : ℝ) L))
     (hSym : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)
@@ -1029,10 +1029,10 @@ theorem IsJacobiSolOn.exists_smooth_neg_on
     (hc.1.trans hc.2) hc hR hW₀Smooth hW₁Smooth
     hW₀_zero hW₁_zero hmatch hneg
 
-theorem IsJacobiSolOn.exists_smooth_neg
+theorem IsJacobiFieldOn.exists_smooth_neg
     [CompleteSpace F]
     {R : ℝ → F →L[ℝ] F} {c : ℝ} {y v : ℝ → F}
-    (hsol : IsJacobiSolOn R 0 1 y v)
+    (hsol : IsJacobiFieldOn R 0 1 y v)
     (hc : c ∈ Ioo (0 : ℝ) 1)
     (hR : ContinuousOn R (Icc (0 : ℝ) 1))
     (hSym : ∀ t, ∀ x x' : F, ⟪R t x, x'⟫ = ⟪x, R t x'⟫)

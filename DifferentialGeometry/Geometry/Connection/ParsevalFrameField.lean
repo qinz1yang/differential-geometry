@@ -159,10 +159,10 @@ theorem exists_smooth_parseval_frame_family (g : SmoothRiemannianMetric I M) :
         (∑ a : Fin N, g.inner x (W a x) u • W a x) = u := by
   classical
   set n : ℕ := Module.finrank ℝ E with hn_def
-  set U : M → Set M := fun α => interior (smoothOrthoFrameNbhd (I := I) (M := M) α) with hU_def
+  set U : M → Set M := fun α => interior (smoothOrthoFrameNeighborhood (I := I) (M := M) α) with hU_def
   have hU_open : ∀ α : M, IsOpen (U α) := fun _ => isOpen_interior
   have hU_mem : ∀ α : M, α ∈ U α := fun α =>
-    mem_interior_iff_mem_nhds.mpr (smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) α)
+    mem_interior_iff_mem_nhds.mpr (smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) α)
   obtain ⟨t, ht⟩ := isCompact_univ.elim_finite_subcover U hU_open
     (fun x _ => mem_iUnion.mpr ⟨x, hU_mem x⟩)
   obtain ⟨f, hf⟩ := SmoothPartitionOfUnity.exists_isSubordinate (I := I) isClosed_univ
@@ -227,7 +227,7 @@ theorem exists_smooth_parseval_frame_family (g : SmoothRiemannianMetric I M) :
         simp only [hW0_def, hc0, zero_smul, map_zero, zero_apply,
           smul_zero, Finset.sum_const_zero]
         rw [show (0 : ℝ) ^ 2 * (ρ x)⁻¹ = 0 by ring, zero_smul]
-      · have hx_mem : x ∈ smoothOrthoFrameNbhd (I := I) (M := M) (k : M) := by
+      · have hx_mem : x ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) (k : M) := by
           have h1 : x ∈ tsupport (f k) := subset_closure (Function.mem_support.mpr hfk)
           exact interior_subset (hf k h1)
         have horth : ∀ i j : Fin n,

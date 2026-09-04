@@ -84,7 +84,7 @@ theorem IsBackgroundLowRegularitySolution.force_le_cap
     {g₀ g_bg : SmoothRiemannianMetric I M}
     {K : LowRegularityBoundParameters} {hK : HasLowRegularityBoundsAt (I := I) (M := M) g₀ g_bg K}
     {T : ℝ} {hT : 0 < T} {hT1 : T ≤ 1}
-    {u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T}
+    {u : MaximalRegularitySolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T}
     {gforce : timeL2
       (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T}
     (hsol : IsBackgroundLowRegularitySolution (I := I) (M := M)

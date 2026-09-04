@@ -80,7 +80,7 @@ omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tsupport_etaTimesV_subset (α : M) (v : M → ℝ) :
     tsupport (etaTimesV (I := I) (M := M) α v) ⊆ (chartAt H α).source := by
-  have h_supp_subset : Function.support (etaTimesV (I := I) (M := M) α v) ⊆
+  have h_support_subset : Function.support (etaTimesV (I := I) (M := M) α v) ⊆
       Function.support (chartStrictCutoff (I := I) (M := M) α) := by
     intro x hx
     by_contra hxnot
@@ -91,7 +91,7 @@ lemma tsupport_etaTimesV_subset (α : M) (v : M → ℝ) :
     rw [h0]; ring
   have h_tsupp_subset : tsupport (etaTimesV (I := I) (M := M) α v) ⊆
       tsupport (chartStrictCutoff (I := I) (M := M) α) :=
-    closure_minimal (h_supp_subset.trans (subset_tsupport _))
+    closure_minimal (h_support_subset.trans (subset_tsupport _))
       (isClosed_tsupport _)
   exact h_tsupp_subset.trans (chartStrictCutoff_tsupport_subset (I := I) (M := M) α)
 
@@ -191,11 +191,11 @@ private lemma smoothRep_eq_etaTimesV
     (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x *
       etaTimesV (I := I) (M := M) α v.toFun x := by
   classical
-  by_cases hx_supp : x ∈ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
+  by_cases hx_support : x ∈ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
   · have h_one : chartStrictCutoff (I := I) (M := M) α =ᶠ[𝓝 x]
         (fun _ : M => (1 : ℝ)) :=
       (chartStrictCutoff_eventually_one_nhdsSet_tsupport_chartAtlasPOU
-        (I := I) (M := M) α).filter_mono (nhds_le_nhdsSet hx_supp)
+        (I := I) (M := M) α).filter_mono (nhds_le_nhdsSet hx_support)
     have h_grad := gradFun_eq_gradFun_etaTimesV_of_eventuallyOne
       (I := I) (M := M) g α h_one (v := v.toFun)
     have h_eta_v : etaTimesV (I := I) (M := M) α v.toFun x = v.toFun x :=
@@ -203,14 +203,14 @@ private lemma smoothRep_eq_etaTimesV
     rw [smoothRep_apply, ← h_grad, ← h_eta_v]
   · have hLHS : smoothRep (I := I) (M := M) g α v x = 0 :=
       smoothRep_eq_zero_off_tsupport_chartAtlasPOU
-        (I := I) (M := M) g α v hx_supp
+        (I := I) (M := M) g α v hx_support
     rw [hLHS]
     have h_open : IsOpen
         (tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ))ᶜ :=
       (isClosed_tsupport _).isOpen_compl
     have h_ev : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) =ᶠ[𝓝 x]
         (fun _ : M => (0 : ℝ)) := by
-      filter_upwards [h_open.mem_nhds hx_supp] with y hy
+      filter_upwards [h_open.mem_nhds hx_support] with y hy
       by_contra hne
       exact hy (subset_tsupport _ hne)
     have h_grad_zero : gradFun (I := I) g
@@ -223,7 +223,7 @@ private lemma smoothRep_eq_etaTimesV
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y =
           (0 : TangentSpace I y) := by
-        filter_upwards [h_open.mem_nhds hx_supp] with y hy
+        filter_upwards [h_open.mem_nhds hx_support] with y hy
         have h_y_ev : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) =ᶠ[𝓝 y]
             (fun _ : M => (0 : ℝ)) := by
           filter_upwards [h_open.mem_nhds hy] with z hz
@@ -321,7 +321,7 @@ private lemma tsupport_gradInnerPiece_subset
     tsupport (gradInnerPiece (I := I) (M := M) g α v) ⊆
       tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
   classical
-  have h_supp_subset : Function.support (gradInnerPiece (I := I) (M := M) g α v) ⊆
+  have h_support_subset : Function.support (gradInnerPiece (I := I) (M := M) g α v) ⊆
       tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
     intro x hx
     by_contra hxoff
@@ -340,7 +340,7 @@ private lemma tsupport_gradInnerPiece_subset
     change gradInnerPiece (I := I) (M := M) g α v x = 0
     rw [gradInnerPiece_apply, h_grad_zero]
     simp
-  exact closure_minimal h_supp_subset (isClosed_tsupport _)
+  exact closure_minimal h_support_subset (isClosed_tsupport _)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tsupport_gradInnerPiece_subset_source
@@ -356,7 +356,7 @@ private lemma tsupport_lapPiece_subset
     tsupport (lapPiece (I := I) (M := M) g α v) ⊆
       tsupport (etaTimesV (I := I) (M := M) α v) := by
   classical
-  have h_supp_subset : Function.support (lapPiece (I := I) (M := M) g α v) ⊆
+  have h_support_subset : Function.support (lapPiece (I := I) (M := M) g α v) ⊆
       Function.support (etaTimesV (I := I) (M := M) α v) := by
     intro x hx
     by_contra hxoff
@@ -365,7 +365,7 @@ private lemma tsupport_lapPiece_subset
       simpa [Function.mem_support, not_not] using hxoff
     change lapPiece (I := I) (M := M) g α v x = 0
     rw [lapPiece_apply, h0]; ring
-  exact closure_minimal (h_supp_subset.trans (subset_tsupport _))
+  exact closure_minimal (h_support_subset.trans (subset_tsupport _))
     (isClosed_tsupport _)
 
 omit [SigmaCompactSpace M] in
@@ -432,7 +432,7 @@ lemma chartPushedRaw_lapPiece_factor
   have hRHS_smooth : smoothExtensionScalar (I := I) (M := M) α
       (fun x => b x * (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x) y =
       b x * (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x := by
-    have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
+    have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
       rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy; exact hy
     classical
     change (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
@@ -440,7 +440,7 @@ lemma chartPushedRaw_lapPiece_factor
           (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
       else 0) = b x * (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x
-    rw [if_pos h_tgt]
+    rw [if_pos h_target]
   have hRHS_etav : chartPushedRaw (I := I) (M := M) α
       (etaTimesV (I := I) (M := M) α v) y =
       etaTimesV (I := I) (M := M) α v x := by
@@ -449,7 +449,7 @@ lemma chartPushedRaw_lapPiece_factor
   rw [hLHS, hRHS_smooth, hRHS_etav]
   by_cases h_lap_zero : (laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ) x = 0
   · rw [lapPiece_apply, h_lap_zero]; ring
-  · have h_supp_Δρα : Function.support
+  · have h_support_Δρα : Function.support
         ((laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ)) ⊆
         tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
       intro z hz
@@ -479,10 +479,10 @@ lemma chartPushedRaw_lapPiece_factor
         exact gradFun_eq_zero_of_eventuallyEq_zero (I := I) g h_w_ev
       exact DifferentialGeometry.Integral.DivergenceTheorem.divergence_g_zero_of_eventuallyEq_zero
         (I := I) g _ h_grad_ev
-    have hx_supp : x ∈ Function.support
+    have hx_support : x ∈ Function.support
         ((laplacianOfChartPOU (I := I) (M := M) g α : M → ℝ)) := h_lap_zero
     have hx_tsupp : x ∈ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
-      h_supp_Δρα hx_supp
+      h_support_Δρα hx_support
     have h_bx : b x = 1 := hb_one x hx_tsupp
     rw [lapPiece_apply, h_bx]
     ring

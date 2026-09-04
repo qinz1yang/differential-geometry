@@ -540,7 +540,7 @@ private lemma linearIndependent_of_orthonormal
 
 private noncomputable def smoothOrthoBasis
     (g : SmoothRiemannianMetric I M) (x : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x) :
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x) :
     Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I y) :=
   basisOfLinearIndependentOfCardEqFinrank
     (b := fun a : Fin (Module.finrank ℝ E) =>
@@ -556,7 +556,7 @@ omit [CompleteSpace E] [T2Space M] [BoundarylessManifold I M] in
 @[simp]
 private lemma smoothOrthoBasis_apply
     (g : SmoothRiemannianMetric I M) (x : M) {y : M}
-    (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x)
+    (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x)
     (a : Fin (Module.finrank ℝ E)) :
     smoothOrthoBasis (I := I) (M := M) g x hy a =
       smoothOrthoFrame (I := I) g x a y := by
@@ -763,7 +763,7 @@ private lemma smoothOrthoFrame_connection_skew
         (smoothOrthoFrame (I := I) g x a y)
         (smoothOrthoFrame (I := I) g x b y)) =ᶠ[nhds x]
       (fun _ : M => (if a = b then (1 : ℝ) else 0)) := by
-    filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x] with y hy
+    filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x] with y hy
     exact smoothOrthoFrame_orthonormal (I := I) g x hy a b
   have hmfderiv0 : mfderiv I 𝓘(ℝ) (fun y : M => g.inner y
         (smoothOrthoFrame (I := I) g x a y)
@@ -834,8 +834,8 @@ private lemma tensorMetricCompatDiff_succ_eq_sum
   set E_ := fun a : Fin n => smoothOrthoFrameSection (I := I) (M := M) g x a with hE_def
   set WC := fun a : Fin n => fun y : M => curriedSection I M W y (E_ a y) with hWC_def
   set TC := fun a : Fin n => fun y : M => curriedSection I M T y (E_ a y) with hTC_def
-  have hx_mem : x ∈ smoothOrthoFrameNbhd (I := I) (M := M) x :=
-    mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x
+  have hx_mem : x ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x :=
+    mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x
   set frameB := smoothOrthoBasis (I := I) (M := M) g x hx_mem with hframeB_def
   have hframeB_orth : ∀ a b, g.inner x (frameB a) (frameB b) = if a = b then 1 else 0 := by
     intro a b
@@ -1104,7 +1104,7 @@ theorem tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible
           (∑ a : Fin (Module.finrank ℝ E),
             fun y : M => covariantTensorInnerPointwise (I := I) (M := M) s g y
               (Tensor0SSpace.toModel (WC a y)) (Tensor0SSpace.toModel (TC a y))) := by
-        filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x] with y hy
+        filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x] with y hy
         rw [Finset.sum_apply]
         rw [tensorInnerPointwise_0s_succ_orthoFrame (I := I) (M := M) g y s
           (smoothOrthoBasis (I := I) (M := M) g x hy)

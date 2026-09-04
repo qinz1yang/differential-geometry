@@ -32,52 +32,52 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {T : ℝ}
 
-private theorem perModeConv_iteratedDeriv_succ (lam : ℝ) (f : ℝ → ℝ)
+private theorem perModeConvolution_iteratedDeriv_succ (lam : ℝ) (f : ℝ → ℝ)
     (hf : ContDiff ℝ ∞ f) (k : ℕ) :
-    iteratedDeriv (k + 1) (perModeConv lam f)
-      = fun t => iteratedDeriv k f t - lam * iteratedDeriv k (perModeConv lam f) t := by
+    iteratedDeriv (k + 1) (perModeConvolution lam f)
+      = fun t => iteratedDeriv k f t - lam * iteratedDeriv k (perModeConvolution lam f) t := by
   have hfcont : Continuous f := hf.continuous
-  have hphi_smooth : ContDiff ℝ ∞ (perModeConv lam f) :=
-    perModeConv_contDiff_of_contDiff ⊤ lam f hf
-  have hderiv_eq : deriv (perModeConv lam f)
-      = fun t => f t - lam * perModeConv lam f t :=
-    deriv_eq (fun t => perModeConv_hasDerivAt lam hfcont t)
+  have hphi_smooth : ContDiff ℝ ∞ (perModeConvolution lam f) :=
+    perModeConvolution_contDiff_of_contDiff ⊤ lam f hf
+  have hderiv_eq : deriv (perModeConvolution lam f)
+      = fun t => f t - lam * perModeConvolution lam f t :=
+    deriv_eq (fun t => perModeConvolution_hasDerivAt lam hfcont t)
   rw [iteratedDeriv_succ', hderiv_eq]
   funext t
   have hcd_f : ContDiffAt ℝ (k : WithTop ℕ∞) f t :=
     (hf.of_le (by exact_mod_cast le_top)).contDiffAt
-  have hcd_phi : ContDiffAt ℝ (k : WithTop ℕ∞) (perModeConv lam f) t :=
+  have hcd_phi : ContDiffAt ℝ (k : WithTop ℕ∞) (perModeConvolution lam f) t :=
     (hphi_smooth.of_le (by exact_mod_cast le_top)).contDiffAt
   have hcd_lp : ContDiffAt ℝ (k : WithTop ℕ∞)
-      (fun t => lam * perModeConv lam f t) t :=
+      (fun t => lam * perModeConvolution lam f t) t :=
     hcd_phi.const_smul lam
   have hsub :
-      iteratedDeriv k (fun t => f t - lam * perModeConv lam f t) t
+      iteratedDeriv k (fun t => f t - lam * perModeConvolution lam f t) t
         = iteratedDeriv k f t
-          - iteratedDeriv k (fun t => lam * perModeConv lam f t) t := by
+          - iteratedDeriv k (fun t => lam * perModeConvolution lam f t) t := by
     have hshow :
-        (fun t => f t - lam * perModeConv lam f t)
-          = f - fun t => lam * perModeConv lam f t := by
+        (fun t => f t - lam * perModeConvolution lam f t)
+          = f - fun t => lam * perModeConvolution lam f t := by
       funext u; simp
     rw [hshow, iteratedDeriv_sub hcd_f hcd_lp]
   rw [hsub]
   have hconst :
-      iteratedDeriv k (fun t => lam * perModeConv lam f t) t
-        = lam * iteratedDeriv k (perModeConv lam f) t := by
+      iteratedDeriv k (fun t => lam * perModeConvolution lam f t) t
+        = lam * iteratedDeriv k (perModeConvolution lam f) t := by
     have hsmul := iteratedDeriv_const_smul (𝕜 := ℝ) (F := ℝ) (R := ℝ)
-      (n := k) (f := perModeConv lam f) hcd_phi lam
+      (n := k) (f := perModeConvolution lam f) hcd_phi lam
     simp only [smul_eq_mul] at hsmul
     exact hsmul
   rw [hconst]
 
-private theorem perModeConv_sq_le_T_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
+private theorem perModeConvolution_sq_le_T_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
     (f : ℝ → ℝ) (hf : Continuous f) (hT : 0 ≤ T) {t : ℝ}
     (ht : t ∈ Set.Icc (0 : ℝ) T) :
-    (perModeConv lam f t) ^ 2 ≤ T * ∫ s in (0 : ℝ)..T, f s ^ 2 := by
+    (perModeConvolution lam f t) ^ 2 ≤ T * ∫ s in (0 : ℝ)..T, f s ^ 2 := by
   obtain ⟨ht0, htT⟩ := ht
-  have hkernel : (perModeConv lam f t) ^ 2
+  have hkernel : (perModeConvolution lam f t) ^ 2
       ≤ duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, f s ^ 2 :=
-    perModeConv_endpoint_sq_le lam hf ht0
+    perModeConvolution_endpoint_sq_le lam hf ht0
   have hmass_le : duhamelKernelSqIntegral lam t ≤ T :=
     le_trans (duhamelKernelSqIntegral_le_t hlam ht0) htT
   have hmass_nn : 0 ≤ duhamelKernelSqIntegral lam t :=
@@ -100,13 +100,13 @@ private theorem perModeConv_sq_le_T_mul_integral (lam : ℝ) (hlam : 0 ≤ lam)
     have htail : 0 ≤ ∫ s in t..T, f s ^ 2 :=
       intervalIntegral.integral_nonneg htT (fun s _ => sq_nonneg _)
     linarith
-  calc (perModeConv lam f t) ^ 2
+  calc (perModeConvolution lam f t) ^ 2
       ≤ duhamelKernelSqIntegral lam t * ∫ s in (0 : ℝ)..t, f s ^ 2 := hkernel
     _ ≤ T * ∫ s in (0 : ℝ)..T, f s ^ 2 := by
         apply mul_le_mul hmass_le hintegral_le hintegral_t_nn hT
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem perModeConv_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
+theorem perModeConvolution_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
     (f : TensorEigenIdx (I := I) (M := M) g r s → ℝ → ℝ)
     (hf_smooth : ∀ i, ContDiff ℝ ∞ (f i))
     (hforcing_mass : ∀ (j : ℕ) (τ : ℝ), 0 ≤ τ →
@@ -119,7 +119,7 @@ theorem perModeConv_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
         ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) T,
           tensorSobolevWeight (I := I) (M := M) i σ *
               (iteratedDeriv k
-                (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (f i)) t) ^ 2
+                (perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (f i)) t) ^ 2
             ≤ Cmaj i := by
   intro k
   induction k with
@@ -133,8 +133,8 @@ theorem perModeConv_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
       have hwt_nn : 0 ≤ tensorSobolevWeight (I := I) (M := M) i σ :=
         tensorSobolevWeight_nonneg (I := I) (M := M) i σ
       have hcont : Continuous (f i) := (hf_smooth i).continuous
-      have hbound : (perModeConv lam (f i) t) ^ 2 ≤ T * ∫ s in (0 : ℝ)..T, f i s ^ 2 :=
-        perModeConv_sq_le_T_mul_integral lam hlam_nn (f i) hcont hT ht
+      have hbound : (perModeConvolution lam (f i) t) ^ 2 ≤ T * ∫ s in (0 : ℝ)..T, f i s ^ 2 :=
+        perModeConvolution_sq_le_T_mul_integral lam hlam_nn (f i) hcont hT ht
       have hintegral_le :
           tensorSobolevWeight (I := I) (M := M) i σ * ∫ s in (0 : ℝ)..T, f i s ^ 2
             ≤ T * B i := by
@@ -166,8 +166,8 @@ theorem perModeConv_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
             ≤ (T - 0) * B i := hmono
           _ = T * B i := by ring
       calc tensorSobolevWeight (I := I) (M := M) i σ *
-            (iteratedDeriv 0 (perModeConv lam (f i)) t) ^ 2
-          = tensorSobolevWeight (I := I) (M := M) i σ * (perModeConv lam (f i) t) ^ 2 := by
+            (iteratedDeriv 0 (perModeConvolution lam (f i)) t) ^ 2
+          = tensorSobolevWeight (I := I) (M := M) i σ * (perModeConvolution lam (f i) t) ^ 2 := by
             rw [iteratedDeriv_zero]
         _ ≤ tensorSobolevWeight (I := I) (M := M) i σ * (T * ∫ s in (0 : ℝ)..T, f i s ^ 2) :=
             mul_le_mul_of_nonneg_left hbound hwt_nn
@@ -186,26 +186,26 @@ theorem perModeConv_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
       have hlam_nn : 0 ≤ lam := tensor_lambda_nonneg (I := I) (M := M) i
       have hwtσ_nn : 0 ≤ tensorSobolevWeight (I := I) (M := M) i σ :=
         tensorSobolevWeight_nonneg (I := I) (M := M) i σ
-      have hrec := perModeConv_iteratedDeriv_succ lam (f i) (hf_smooth i) k
-      have hval : iteratedDeriv (k + 1) (perModeConv lam (f i)) t
-          = iteratedDeriv k (f i) t - lam * iteratedDeriv k (perModeConv lam (f i)) t := by
+      have hrec := perModeConvolution_iteratedDeriv_succ lam (f i) (hf_smooth i) k
+      have hval : iteratedDeriv (k + 1) (perModeConvolution lam (f i)) t
+          = iteratedDeriv k (f i) t - lam * iteratedDeriv k (perModeConvolution lam (f i)) t := by
         rw [hrec]
       have hexpand_sq :
-          (iteratedDeriv (k + 1) (perModeConv lam (f i)) t) ^ 2
+          (iteratedDeriv (k + 1) (perModeConvolution lam (f i)) t) ^ 2
             ≤ 2 * (iteratedDeriv k (f i) t) ^ 2
-              + 2 * (lam * iteratedDeriv k (perModeConv lam (f i)) t) ^ 2 := by
+              + 2 * (lam * iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2 := by
         rw [hval]
         nlinarith [sq_nonneg (iteratedDeriv k (f i) t
-            + lam * iteratedDeriv k (perModeConv lam (f i)) t),
+            + lam * iteratedDeriv k (perModeConvolution lam (f i)) t),
           sq_nonneg (iteratedDeriv k (f i) t
-            - lam * iteratedDeriv k (perModeConv lam (f i)) t)]
+            - lam * iteratedDeriv k (perModeConvolution lam (f i)) t)]
       have hforce_term :
           tensorSobolevWeight (I := I) (M := M) i σ *
               (iteratedDeriv k (f i) t) ^ 2 ≤ Bf i :=
         hBf_le i t ht
       have hphi_term :
           tensorSobolevWeight (I := I) (M := M) i (σ + 2) *
-              (iteratedDeriv k (perModeConv lam (f i)) t) ^ 2 ≤ Cprev i :=
+              (iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2 ≤ Cprev i :=
         hCprev_le i t ht
       have hweight_step :
           tensorSobolevWeight (I := I) (M := M) i σ * lam ^ 2
@@ -226,29 +226,29 @@ theorem perModeConv_allOrder_timeDeriv_spectralMass_le (hT : 0 ≤ T)
         exact mul_le_mul_of_nonneg_left hlamsq_le hwtσ_nn
       have hlam_sq_term :
           tensorSobolevWeight (I := I) (M := M) i σ *
-              (lam * iteratedDeriv k (perModeConv lam (f i)) t) ^ 2
+              (lam * iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2
             ≤ Cprev i := by
-        have heq : (lam * iteratedDeriv k (perModeConv lam (f i)) t) ^ 2
-            = lam ^ 2 * (iteratedDeriv k (perModeConv lam (f i)) t) ^ 2 := by ring
+        have heq : (lam * iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2
+            = lam ^ 2 * (iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2 := by ring
         calc tensorSobolevWeight (I := I) (M := M) i σ *
-              (lam * iteratedDeriv k (perModeConv lam (f i)) t) ^ 2
+              (lam * iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2
             = (tensorSobolevWeight (I := I) (M := M) i σ * lam ^ 2) *
-                (iteratedDeriv k (perModeConv lam (f i)) t) ^ 2 := by
+                (iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2 := by
               rw [heq]; ring
           _ ≤ tensorSobolevWeight (I := I) (M := M) i (σ + 2) *
-                (iteratedDeriv k (perModeConv lam (f i)) t) ^ 2 := by
+                (iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2 := by
               apply mul_le_mul_of_nonneg_right hweight_step (sq_nonneg _)
           _ ≤ Cprev i := hphi_term
       calc tensorSobolevWeight (I := I) (M := M) i σ *
-            (iteratedDeriv (k + 1) (perModeConv lam (f i)) t) ^ 2
+            (iteratedDeriv (k + 1) (perModeConvolution lam (f i)) t) ^ 2
           ≤ tensorSobolevWeight (I := I) (M := M) i σ *
               (2 * (iteratedDeriv k (f i) t) ^ 2
-                + 2 * (lam * iteratedDeriv k (perModeConv lam (f i)) t) ^ 2) :=
+                + 2 * (lam * iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2) :=
             mul_le_mul_of_nonneg_left hexpand_sq hwtσ_nn
         _ = 2 * (tensorSobolevWeight (I := I) (M := M) i σ *
                 (iteratedDeriv k (f i) t) ^ 2)
               + 2 * (tensorSobolevWeight (I := I) (M := M) i σ *
-                (lam * iteratedDeriv k (perModeConv lam (f i)) t) ^ 2) := by ring
+                (lam * iteratedDeriv k (perModeConvolution lam (f i)) t) ^ 2) := by ring
         _ ≤ 2 * Bf i + 2 * Cprev i := by
             have h1 := mul_le_mul_of_nonneg_left hforce_term (by norm_num : (0 : ℝ) ≤ 2)
             have h2 := mul_le_mul_of_nonneg_left hlam_sq_term (by norm_num : (0 : ℝ) ≤ 2)

@@ -18,7 +18,7 @@ variable {V F : Type*}
   [NormedAddCommGroup V] [NormedSpace ℝ V]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-def linPullBcf (L : V ≃L[ℝ] V) (u : BoundedContinuousFunction V F) :
+def linPullBoundedContinuousFunction (L : V ≃L[ℝ] V) (u : BoundedContinuousFunction V F) :
     BoundedContinuousFunction V F where
   toFun := fun x => u (L x)
   continuous_toFun := u.continuous.comp L.continuous
@@ -28,22 +28,22 @@ def linPullBcf (L : V ≃L[ℝ] V) (u : BoundedContinuousFunction V F) :
 
 omit [NormedSpace ℝ F] in
 @[simp]
-theorem linPullBcf_apply (L : V ≃L[ℝ] V)
+theorem linPullBoundedContinuousFunction_apply (L : V ≃L[ℝ] V)
     (u : BoundedContinuousFunction V F) (x : V) :
-    linPullBcf L u x = u (L x) := rfl
+    linPullBoundedContinuousFunction L u x = u (L x) := rfl
 
 omit [NormedSpace ℝ F] in
-theorem norm_linPullBcf (L : V ≃L[ℝ] V)
+theorem norm_linPullBoundedContinuousFunction (L : V ≃L[ℝ] V)
     (u : BoundedContinuousFunction V F) :
-    ‖linPullBcf L u‖ = ‖u‖ := by
+    ‖linPullBoundedContinuousFunction L u‖ = ‖u‖ := by
   apply le_antisymm
   · rw [BoundedContinuousFunction.norm_le (norm_nonneg u)]
     intro x
     exact u.norm_coe_le_norm (L x)
-  · rw [BoundedContinuousFunction.norm_le (norm_nonneg (linPullBcf L u))]
+  · rw [BoundedContinuousFunction.norm_le (norm_nonneg (linPullBoundedContinuousFunction L u))]
     intro x
-    simpa only [linPullBcf_apply, ContinuousLinearEquiv.apply_symm_apply] using
-      (linPullBcf L u).norm_coe_le_norm (L.symm x)
+    simpa only [linPullBoundedContinuousFunction_apply, ContinuousLinearEquiv.apply_symm_apply] using
+      (linPullBoundedContinuousFunction L u).norm_coe_le_norm (L.symm x)
 
 def precompJet (L : V ≃L[ℝ] V) :
     (V →L[ℝ] F) →L[ℝ] V →L[ℝ] F :=
@@ -110,7 +110,7 @@ theorem lipschitzWith_pushHess (L : V ≃L[ℝ] V) :
 def pullJet1 (L : V ≃L[ℝ] V)
     (du : BoundedContinuousFunction V (V →L[ℝ] F)) :
     BoundedContinuousFunction V (V →L[ℝ] F) :=
-  (precompJet (F := F) L).compLeftContinuousBounded V (linPullBcf L du)
+  (precompJet (F := F) L).compLeftContinuousBounded V (linPullBoundedContinuousFunction L du)
 
 def pullJet2 (L : V ≃L[ℝ] V)
     (d2u : BoundedContinuousFunction V (V →L[ℝ] V →L[ℝ] F)) :
@@ -142,7 +142,7 @@ theorem linPull_fderiv (L : V ≃L[ℝ] V)
     (u : BoundedContinuousFunction V F)
     (du : BoundedContinuousFunction V (V →L[ℝ] F))
     (hu : ∀ x : V, HasFDerivAt (u : V → F) (du x) x) (x : V) :
-    HasFDerivAt (linPullBcf L u : V → F) (pullJet1 L du x) x := by
+    HasFDerivAt (linPullBoundedContinuousFunction L u : V → F) (pullJet1 L du x) x := by
   have h := (hu (L x)).comp x L.hasFDerivAt
   exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
@@ -289,78 +289,78 @@ section SPDEvolution
 variable {n F : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-def spdDuh (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
+def spdDuhamel (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction (Euc n) F) (x : Euc n) : F :=
   let L := spdSqrtEquiv A hA
-  frozenDuh t a (linPullBcf L u) (L.symm x)
+  frozenDuhamel t a (linPullBoundedContinuousFunction L u) (L.symm x)
 
-def spdDuhD1 (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
+def spdDuhamelD1 (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[ℝ] F))
     (x : Euc n) : Euc n →L[ℝ] F :=
   let L := spdSqrtEquiv A hA
-  (frozenDuh t a (pullJet1 L du) (L.symm x)).comp
+  (frozenDuhamel t a (pullJet1 L du) (L.symm x)).comp
     (L.symm : Euc n →L[ℝ] Euc n)
 
-def spdDuhD2 (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
+def spdDuhamelD2 (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[ℝ] Euc n →L[ℝ] F))
     (x : Euc n) : Euc n →L[ℝ] Euc n →L[ℝ] F :=
   let L := spdSqrtEquiv A hA
   pushHess (F := F) L.symm
-    (frozenDuh t a (pullJet2 L d2u) (L.symm x))
+    (frozenDuhamel t a (pullJet2 L d2u) (L.symm x))
 
 omit [Nonempty n]
   [CompleteSpace F] in
 @[simp]
-theorem spdDuh_zero (A : Matrix n n ℝ) (hA : A.PosDef)
+theorem spdDuhamel_zero (A : Matrix n n ℝ) (hA : A.PosDef)
     (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction (Euc n) F) (x : Euc n) :
-    spdDuh A hA 0 a u x = 0 := by
-  simp [spdDuh]
+    spdDuhamel A hA 0 a u x = 0 := by
+  simp [spdDuhamel]
 
 omit [Nonempty n]
   [CompleteSpace F] in
 @[simp]
-theorem spdDuhD1_zero (A : Matrix n n ℝ) (hA : A.PosDef)
+theorem spdDuhamelD1_zero (A : Matrix n n ℝ) (hA : A.PosDef)
     (a : BoundedContinuousFunction ℝ ℝ)
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[ℝ] F))
-    (x : Euc n) : spdDuhD1 A hA 0 a du x = 0 := by
+    (x : Euc n) : spdDuhamelD1 A hA 0 a du x = 0 := by
   ext v
-  simp [spdDuhD1]
+  simp [spdDuhamelD1]
 
 omit [Nonempty n]
   [CompleteSpace F] in
 @[simp]
-theorem spdDuhD2_zero (A : Matrix n n ℝ) (hA : A.PosDef)
+theorem spdDuhamelD2_zero (A : Matrix n n ℝ) (hA : A.PosDef)
     (a : BoundedContinuousFunction ℝ ℝ)
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[ℝ] Euc n →L[ℝ] F))
-    (x : Euc n) : spdDuhD2 A hA 0 a d2u x = 0 := by
+    (x : Euc n) : spdDuhamelD2 A hA 0 a d2u x = 0 := by
   ext v w
-  simp [spdDuhD2]
+  simp [spdDuhamelD2]
 
 omit [CompleteSpace F] in
-theorem spdDuh_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
+theorem spdDuhamel_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (u : BoundedContinuousFunction (Euc n) F)
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[ℝ] F))
     (hu : ∀ x : Euc n, HasFDerivAt (u : Euc n → F) (du x) x)
     (x : Euc n) :
-    HasFDerivAt (fun y : Euc n => spdDuh A hA t a u y)
-      (spdDuhD1 A hA t a du x) x := by
+    HasFDerivAt (fun y : Euc n => spdDuhamel A hA t a u y)
+      (spdDuhamelD1 A hA t a du x) x := by
   let L := spdSqrtEquiv A hA
   have hpull : ∀ z : Euc n,
-      HasFDerivAt (linPullBcf L u : Euc n → F) (pullJet1 L du z) z :=
+      HasFDerivAt (linPullBoundedContinuousFunction L u : Euc n → F) (pullJet1 L du z) z :=
     fun z => linPull_fderiv L u du hu z
-  have h := (frozenDuh_space t a (linPullBcf L u)
+  have h := (frozenDuhamel_space t a (linPullBoundedContinuousFunction L u)
     (pullJet1 L du) hpull (L.symm x)).comp x L.symm.hasFDerivAt
   exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [CompleteSpace F] in
-theorem spdDuhD1_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
+theorem spdDuhamelD1_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[ℝ] F))
     (d2u : BoundedContinuousFunction (Euc n)
@@ -368,46 +368,46 @@ theorem spdDuhD1_space (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (hdu : ∀ x : Euc n,
       HasFDerivAt (du : Euc n → Euc n →L[ℝ] F) (d2u x) x)
     (x : Euc n) :
-    HasFDerivAt (fun y : Euc n => spdDuhD1 A hA t a du y)
-      (spdDuhD2 A hA t a d2u x) x := by
+    HasFDerivAt (fun y : Euc n => spdDuhamelD1 A hA t a du y)
+      (spdDuhamelD2 A hA t a d2u x) x := by
   let L := spdSqrtEquiv A hA
   have hpull : ∀ z : Euc n,
       HasFDerivAt (pullJet1 L du : Euc n → Euc n →L[ℝ] F)
         (pullJet2 L d2u z) z :=
     fun z => pullJet1_fderiv L du d2u hdu z
-  have hz := frozenDuh_space t a (pullJet1 L du)
+  have hz := frozenDuhamel_space t a (pullJet1 L du)
     (pullJet2 L d2u) hpull (L.symm x)
   have hdom := hz.comp x L.symm.hasFDerivAt
   have h := (precompJet (F := F) L.symm).hasFDerivAt.comp x hdom
   exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
-theorem spdDuh_lap (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
+theorem spdDuhamel_lap (A : Matrix n n ℝ) (hA : A.PosDef) (t : ℝ)
     (a : BoundedContinuousFunction ℝ ℝ)
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[ℝ] Euc n →L[ℝ] F)) (x : Euc n) :
-    matrixLap A (spdDuhD2 A hA t a d2u x) =
-      frozenDuh t a
+    matrixLap A (spdDuhamelD2 A hA t a d2u x) =
+      frozenDuhamel t a
         (coreLap (pullJet2 (spdSqrtEquiv A hA) d2u))
         ((spdSqrtEquiv A hA).symm x) := by
   let L := spdSqrtEquiv A hA
   let d2p := pullJet2 L d2u
   let B : Euc n →L[ℝ] Euc n →L[ℝ] F :=
-    frozenDuh t a d2p (L.symm x)
+    frozenDuhamel t a d2p (L.symm x)
   have hfactor :
       factorLap L (pushHess L.symm B) = lapEval B :=
     factorLap_pull (F := F) (n := n) L B
   have hlap :
-      lapEval B = frozenDuh t a (coreLap d2p) (L.symm x) := by
-    exact frozenDuh_lap (V := Euc n) (F := F) t a d2p (L.symm x)
+      lapEval B = frozenDuhamel t a (coreLap d2p) (L.symm x) := by
+    exact frozenDuhamel_lap (V := Euc n) (F := F) t a d2p (L.symm x)
   change matrixLap A (pushHess L.symm B) =
-    frozenDuh t a (coreLap d2p) (L.symm x)
+    frozenDuhamel t a (coreLap d2p) (L.symm x)
   calc
     _ = factorLap L (pushHess L.symm B) :=
       (spd_factorLap A hA _).symm
     _ = lapEval B := hfactor
-    _ = frozenDuh t a (coreLap d2p) (L.symm x) := hlap
+    _ = frozenDuhamel t a (coreLap d2p) (L.symm x) := hlap
 
-theorem spdDuh_pde {t : ℝ} (ht : 0 < t)
+theorem spdDuhamel_pde {t : ℝ} (ht : 0 < t)
     (A : Matrix n n ℝ) (hA : A.PosDef)
     (a da : BoundedContinuousFunction ℝ ℝ)
     (ha : ∀ q : ℝ, HasDerivAt (a : ℝ → ℝ) (da q) q)
@@ -419,26 +419,26 @@ theorem spdDuh_pde {t : ℝ} (ht : 0 < t)
     (hdu : ∀ x : Euc n,
       HasFDerivAt (du : Euc n → Euc n →L[ℝ] F) (d2u x) x)
     (x : Euc n) :
-    HasFDerivAt (fun y : Euc n => spdDuh A hA t a u y)
-        (spdDuhD1 A hA t a du x) x ∧
-      HasFDerivAt (fun y : Euc n => spdDuhD1 A hA t a du y)
-        (spdDuhD2 A hA t a d2u x) x ∧
-      HasDerivAt (fun q : ℝ => spdDuh A hA q a u x)
-        (matrixLap A (spdDuhD2 A hA t a d2u x) + a t • u x) t := by
-  refine ⟨spdDuh_space A hA t a u du hu x,
-    spdDuhD1_space A hA t a du d2u hdu x, ?_⟩
+    HasFDerivAt (fun y : Euc n => spdDuhamel A hA t a u y)
+        (spdDuhamelD1 A hA t a du x) x ∧
+      HasFDerivAt (fun y : Euc n => spdDuhamelD1 A hA t a du y)
+        (spdDuhamelD2 A hA t a d2u x) x ∧
+      HasDerivAt (fun q : ℝ => spdDuhamel A hA q a u x)
+        (matrixLap A (spdDuhamelD2 A hA t a d2u x) + a t • u x) t := by
+  refine ⟨spdDuhamel_space A hA t a u du hu x,
+    spdDuhamelD1_space A hA t a du d2u hdu x, ?_⟩
   let L := spdSqrtEquiv A hA
   have hpull0 : ∀ z : Euc n,
-      HasFDerivAt (linPullBcf L u : Euc n → F) (pullJet1 L du z) z :=
+      HasFDerivAt (linPullBoundedContinuousFunction L u : Euc n → F) (pullJet1 L du z) z :=
     fun z => linPull_fderiv L u du hu z
   have hpull1 : ∀ z : Euc n,
       HasFDerivAt (pullJet1 L du : Euc n → Euc n →L[ℝ] F)
         (pullJet2 L d2u z) z :=
     fun z => pullJet1_fderiv L du d2u hdu z
-  have htime := frozenDuh_time ht a da ha (linPullBcf L u)
+  have htime := frozenDuhamel_time ht a da ha (linPullBoundedContinuousFunction L u)
     (pullJet1 L du) (pullJet2 L d2u) hpull0 hpull1 (L.symm x)
-  have hlap := spdDuh_lap A hA t a d2u x
-  simpa only [spdDuh, L, linPullBcf_apply,
+  have hlap := spdDuhamel_lap A hA t a d2u x
+  simpa only [spdDuhamel, L, linPullBoundedContinuousFunction_apply,
     ContinuousLinearEquiv.apply_symm_apply, hlap, add_comm] using htime
 
 end SPDEvolution

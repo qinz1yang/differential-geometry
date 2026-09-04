@@ -103,10 +103,10 @@ def approxPartialLp
     (α : M) (P : TensorCompIdx (E := E) r s)
     (k : Fin (Module.finrank ℝ E)) (n : ℕ) :
     Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
-  (chosenWeakPartial'_tensorChartComponent_memLp (I := I) (M := M) g r s
+  (chosenWeakPartialOrZero_tensorChartComponent_memLp (I := I) (M := M) g r s
     (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
     α P.1 P.2 k).toLp
-    (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
+    (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 k
       (tensorChartComponent (I := I) (M := M) g r s
         (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor α P.1 P.2)
@@ -284,7 +284,7 @@ lemma tendsto_partialSummand
             (eigenvectorSmoothApprox (I := I) (M := M)
               g r s i n).toCcTensor α P.1 P.2) := by
       refine (MemLp.coeFn_toLp _).trans ?_
-      exact chosenWeakPartial'_tensorChartComponent_ae_eq (I := I) (M := M)
+      exact chosenWeakPartialOrZero_tensorChartComponent_ae_eq (I := I) (M := M)
         g r s (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor α P.1 P.2 k
     filter_upwards [hpart] with y hy
@@ -319,10 +319,10 @@ lemma euclidPartial_tensorChartComponent_approx_memLp
             g r s i n).toCcTensor α P.1 P.2)) 2
       (chartLebesgueMeasure (I := I) (M := M) α) :=
   MemLp.ae_eq
-    (chosenWeakPartial'_tensorChartComponent_ae_eq (I := I) (M := M) g r s
+    (chosenWeakPartialOrZero_tensorChartComponent_ae_eq (I := I) (M := M) g r s
       (eigenvectorSmoothApprox (I := I) (M := M)
         g r s i n).toCcTensor α P.1 P.2 k)
-    (chosenWeakPartial'_tensorChartComponent_memLp (I := I) (M := M) g r s
+    (chosenWeakPartialOrZero_tensorChartComponent_memLp (I := I) (M := M) g r s
       (eigenvectorSmoothApprox (I := I) (M := M) g r s i n)
       α P.1 P.2 k)
 

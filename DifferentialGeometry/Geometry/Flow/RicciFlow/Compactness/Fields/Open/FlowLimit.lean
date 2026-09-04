@@ -18,7 +18,7 @@ open scoped Manifold Topology ContDiff BigOperators
 open DifferentialGeometry.PDE.RicciFlow (SolutionOn IsSolutionOn)
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -38,7 +38,7 @@ theorem isSolution
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
@@ -61,7 +61,7 @@ theorem isSolution
               sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
               sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
@@ -96,7 +96,7 @@ theorem isSolution
       ({ base := { metric := co.gInf } } :
         SolutionOn (I := I) (M := P.M) X.D).family.metric := by
     exact hD.symm ▸
-      OpenMetricConvergenceData.smoothMetric_of_conv (I := I) (Φ := Φ) ht₀ hD co
+      OpenMetricConvergenceData.smoothMetric_of_convergence (I := I) (Φ := Φ) ht₀ hD co
   have hpde : ∀ t ∈ X.D.regular, ∀ (x : P.M) (v w : TangentSpace I x),
       HasDerivAt (fun s : Real => (co.gInf s).inner x v w)
         ((-2 : Real) * ricciTensor (I := I) (co.gInf t) x v w) t :=
@@ -127,7 +127,7 @@ theorem isSolution
     simpa only [hD, RealTimeInterval.openInterval] using
       (DifferentialGeometry.PDE.RicciFlow.rm04Cont_interior_of_chartGram
         (I := I) co.gInf a b hgram)
-  exact DifferentialGeometry.PDE.RicciFlow.isSolutionOn_of_reg (I := I)
+  exact DifferentialGeometry.PDE.RicciFlow.isSolutionOn_of_regularity (I := I)
     co.gInf hsmooth hpde hscalarCont hscalarTime hricciCont hrm04Cont
 
 end OpenMetricConvergenceData
@@ -145,8 +145,8 @@ noncomputable def flowUpgradeOfOpen
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
     (bf : BumpFamily (I := I) Φ)
-    (hsrc : SrcSigma (I := I) Φ)
-    (htgt : TgtSigma (I := I) Φ)
+    (hsrc : SourceIsSigmaCompact (I := I) Φ)
+    (htgt : TargetIsSigmaCompact (I := I) Φ)
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
@@ -184,7 +184,7 @@ noncomputable def flowUpgradeOfOpen
   have hricciNorm : RicNormPullback (I := I) (Φ.compSubseq co.φ co.hφ) := ricciNorm
   set mc' := mc.compSubseq co.φ co.hφ with hmc'
   set Φ' := Φ.compSubseq co.φ co.hφ with hΦ'
-  have hσsrc' : ∀ k : Nat, IsSigmaCompact (Φ'.source k) :=
+  have hσsource' : ∀ k : Nat, IsSigmaCompact (Φ'.source k) :=
     fun k => Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.source_open (I := I) Φ' k)
   refine ⟨co.φ, co.hφ, ?_⟩
@@ -195,10 +195,10 @@ noncomputable def flowUpgradeOfOpen
       maps := Φ'
       scalar := hscalar
       ricciNorm := hricciNorm
-      hσsrc := hσsrc'
-      hσtgt := ?_
+      hσsource := hσsource'
+      hσtarget := ?_
       refMetric := ?_
-      conv := ?_ }
+      convergence := ?_ }
   · intro k
     let : TopologicalSpace (X.term (mc'.subseq k)).M :=
       (X.term (mc'.subseq k)).topology
@@ -209,7 +209,7 @@ noncomputable def flowUpgradeOfOpen
     exact Geometry.isSigmaCompact_of_isOpen I
       (PointedCGHMaps.target_open (I := I) Φ' k)
   · intro k
-    exact fun _ => refRes (I := I) Φ' R k
+    exact fun _ => sourceMetricRestriction (I := I) Φ' R k
   · intro K hK p c d hcd ε hε
     have hcdOpen : Set.Icc c d ⊆ Set.Ioo a b := by
       intro t ht
@@ -225,7 +225,7 @@ noncomputable def flowUpgradeOfOpen
       apply hLm t
       have htOpen := RealTimeInterval.openWindow_subset ht₀ n ht
       simpa only [hD, RealTimeInterval.openInterval] using htOpen
-    have hbridge := ofRP_supOn_conv (I := I) Φ R bf hsrc htgt
+    have hbridge := ofRP_supOn_convergence (I := I) Φ R bf hsrc htgt
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n) coN
       (letI : TopologicalSpace L.M := L.topology;
@@ -256,8 +256,8 @@ theorem flowUpgrade_open_L
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
     (bf : BumpFamily (I := I) Φ)
-    (hsrc : SrcSigma (I := I) Φ)
-    (htgt : TgtSigma (I := I) Φ)
+    (hsrc : SourceIsSigmaCompact (I := I) Φ)
+    (htgt : TargetIsSigmaCompact (I := I) Φ)
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
@@ -295,8 +295,8 @@ theorem flowLimit_of_open
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
     (bf : BumpFamily (I := I) Φ)
-    (hsrc : SrcSigma (I := I) Φ)
-    (htgt : TgtSigma (I := I) Φ)
+    (hsrc : SourceIsSigmaCompact (I := I) Φ)
+    (htgt : TargetIsSigmaCompact (I := I) Φ)
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
     (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
@@ -318,5 +318,5 @@ theorem flowLimit_of_open
   (flowUpgradeOfOpen (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
     hLmetric scalar ricciNorm).toConclusion
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

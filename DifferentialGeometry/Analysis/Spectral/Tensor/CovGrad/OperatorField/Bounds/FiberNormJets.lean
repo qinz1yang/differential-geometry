@@ -564,7 +564,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (g : SmoothRiemann
       riemannianFiberNormSq (I := I) (M := M) g r (s + (m + 1)) x
         ((iteratedCovGrad g r s (m + 1) Φ).toSection x) :=
   riemannianFiberNormSq_toSection_heq_congr_rs g (by omega : (s + 1) + m = s + (m + 1))
-    (iteratedCovGrad_covGrad_comm_heq' g r s m Φ) x
+    (iteratedCovGrad_covGrad_comm_heq g r s m Φ) x
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in

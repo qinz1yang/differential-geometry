@@ -772,7 +772,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
   let Sq : M -> Real := fun x =>
     normSq0S (I := I) g x 2
       (Ric x + Hess x - (1 / (2 * s)) • metricTensor0S (I := I) g x)
-  let Corr : M -> Real := fun x =>
+  let Correction : M -> Real := fun x =>
     ((((((2 * s) * HB x + (4 * s) * HS x) + (-2 * s) * Zft x) +
       (2 * s) * Wft x) + (-s) * WR x) + (-1) * Wf x) +
       (2 * (n : Real)) * Zf x
@@ -907,7 +907,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
     simpa only [μw] using weighted_int (I := I) g hf hZf.continuous
   have hSqI : Integrable Sq μw := by
     simpa only [μw] using weighted_int (I := I) g hf hSq.continuous
-  have hCorr : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) Corr := by
+  have hCorrection : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) Correction := by
     have h0 : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun x => (2 * s) * HB x) := contMDiff_const.mul hHB
     have h1 : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
@@ -925,10 +925,10 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
     refine (((((h0.add h1).add h2).add h3).add h4).add h5).add h6 |>.congr ?_
     intro x
     rfl
-  have hCorrI : Integrable Corr μw := by
-    simpa only [μw] using weighted_int (I := I) g hf hCorr.continuous
-  have hCorrzero : (∫ x, Corr x ∂μw) = 0 := by
-    simpa only [Corr] using int7_zero (μ := μw)
+  have hCorrectionI : Integrable Correction μw := by
+    simpa only [μw] using weighted_int (I := I) g hf hCorrection.continuous
+  have hCorrzero : (∫ x, Correction x ∂μw) = 0 := by
+    simpa only [Correction] using int7_zero (μ := μw)
       hHBI hHSI hZftI hWftI hWRI hWfI hZfI
       hHBzero hHSzero hZftzero hWftzero hWRzero hWfzero hZfzero
       (2 * s) (4 * s) (-2 * s) (2 * s) (-s) (-1) (2 * (n : Real))
@@ -936,8 +936,8 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
       R x + q x + s * (Rt x + qt x) + ft x +
           (s * (R x + q x) + f x - (n : Real)) *
             (-((n : Real) / (2 * s)) - ft x + R x) =
-        (-2 * s) * Sq x + Corr x := by
-    dsimp only [Sq, Corr, HB, HS, C, RicGrad, Zft, Wft, WR, Wf, Zf,
+        (-2 * s) * Sq x + Correction x := by
+    dsimp only [Sq, Correction, HB, HS, C, RicGrad, Zft, Wft, WR, Wf, Zf,
       Rt, qt]
     rw [hsq x]
     dsimp only [R, L, n]
@@ -958,11 +958,11 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
         (R x + q x + s * (Rt x + qt x) + ft x +
           (s * (R x + q x) + f x - (n : Real)) *
             (-((n : Real) / (2 * s)) - ft x + R x)) ∂μw) =
-        ∫ x, ((-2 * s) * Sq x + Corr x) ∂μw := by
+        ∫ x, ((-2 * s) * Sq x + Correction x) ∂μw := by
       apply integral_congr_ae
       exact Filter.Eventually.of_forall hpoint
-    _ = (∫ x, (-2 * s) * Sq x ∂μw) + ∫ x, Corr x ∂μw := by
-      exact integral_add (hSqI.const_mul (-2 * s)) hCorrI
+    _ = (∫ x, (-2 * s) * Sq x ∂μw) + ∫ x, Correction x ∂μw := by
+      exact integral_add (hSqI.const_mul (-2 * s)) hCorrectionI
     _ = (-2 * s) * (∫ x, Sq x ∂μw) + 0 := by
       rw [integral_const_mul, hCorrzero]
     _ = -2 * s * ∫ x, Sq x ∂μw := by ring

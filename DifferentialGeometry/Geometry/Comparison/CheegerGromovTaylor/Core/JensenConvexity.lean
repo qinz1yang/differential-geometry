@@ -12,7 +12,7 @@ open scoped ContDiff Manifold Topology
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
-namespace CGT
+namespace CheegerGromovTaylor
 
 open Exponential Geodesic NormalCoordinates
 open DifferentialGeometry.Integral.Connection
@@ -37,10 +37,10 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
 
 noncomputable local instance {R : Real} :
-    SigmaCompactSpace (intrPullBall (E := E) R) :=
+    SigmaCompactSpace (intrinsicPullBall (E := E) R) :=
   isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen
-      𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
+      𝓘(Real, E) (intrinsicPullBall (E := E) R).isOpen)
 
 private theorem branchEnergy_inf
     {g : SmoothRiemannianMetric I M}
@@ -141,7 +141,7 @@ private theorem branch_hess_zero
   rw [hγ 1, hJ Y 1, one_smul, hcov] at hh
   exact hh
 
-theorem intrBranch_hess_pos
+theorem intrinsicBranch_hess_pos
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -162,13 +162,13 @@ theorem intrBranch_hess_pos
     {x : E} (u : E)
     (hfence :
       ∀ t ∈ Set.Icc (0 : Real) 1,
-        ‖intrExtLaunch (I := I) g hEnorm p hR hloc x u t‖ <
+        ‖intrinsicExtLaunch (I := I) g hEnorm p hR hloc x u t‖ <
           3 * R / 4)
     (huL :
       Real.sqrt
-          ((intrExtMetric (I := I) g hEnorm p hR hloc).inner x u u) ≤
+          ((intrinsicExtMetric (I := I) g hEnorm p hR hloc).inner x u u) ≤
         L) :
-    let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+    let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
     letI : RiemannianBundle
         (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
       ⟨gExt.toRiemannianMetric⟩
@@ -180,7 +180,7 @@ theorem intrBranch_hess_pos
     letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
     letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
     letI : CompleteSpace E :=
-      (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+      (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
     let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
       fun z v =>
@@ -193,7 +193,7 @@ theorem intrBranch_hess_pos
           (branchEnergy (I := 𝓘(Real, E)) gExt B)
           (expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x u) Y Y := by
   classical
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -211,7 +211,7 @@ theorem intrBranch_hess_pos
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
     fun z v =>
@@ -424,7 +424,7 @@ theorem intrBranch_hess_pos
           Variation.curveVelocity (I := 𝓘(Real, E)) γ 1 := by
       with_unfolding_all
         exact
-        intrJacobi_self
+        intrinsicJacobi_self
           (I := 𝓘(Real, E)) gExt hExt x u
     have hqγ : q = γ 1 := by
       with_unfolding_all rfl
@@ -445,7 +445,7 @@ theorem intrBranch_hess_pos
             (u := u) (w₁ := W) (w₂ := uE) huB
       dsimp only at hh
       have hdperp :=
-        intrJacobi_dperp
+        intrinsicJacobi_dperp
           (I := 𝓘(Real, E)) gExt hExt x u W one_ne_zero hperp
       have hpair :
           gExt.inner (γ 1)
@@ -512,7 +512,7 @@ theorem intrBranch_hess_pos
       rw [hYdecomp, hW, hJzero, zero_add, hscale, hdiag]
       exact mul_pos (sq_pos_of_ne_zero hα) hdpos
     · have hpair :=
-        intrExt_pair_pos
+        intrinsicExt_pair_pos
           (I := I) g hEnorm p hR hloc u W hfence huL
             hu0 hW hperp hK hRm hsmall
       have hh :=
@@ -603,27 +603,27 @@ def IsCoreMinJoin
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
     (join :
-      intrPullBall (E := E) R →
-      intrPullBall (E := E) R →
-      Real → intrPullBall (E := E) R) : Prop :=
-  ∀ x ∈ intrCore (E := E) R a,
-  ∀ y ∈ intrCore (E := E) R a,
+      intrinsicPullBall (E := E) R →
+      intrinsicPullBall (E := E) R →
+      Real → intrinsicPullBall (E := E) R) : Prop :=
+  ∀ x ∈ intrinsicCore (E := E) R a,
+  ∀ y ∈ intrinsicCore (E := E) R a,
     ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ (join x y) ∧
     IsGeodesicOn (I := 𝓘(Real, E))
-      (intrPullMetric (I := I) g hEnorm p hloc)
+      (intrinsicPullMetric (I := I) g hEnorm p hloc)
       (join x y) (Set.Icc (0 : Real) 1) ∧
     join x y 0 = x ∧ join x y 1 = y ∧
     (∀ t ∈ Set.Icc (0 : Real) 1,
-      ‖((join x y t : intrPullBall (E := E) R) : E)‖ <
+      ‖((join x y t : intrinsicPullBall (E := E) R) : E)‖ <
         3 * R / 4) ∧
     Set.EqOn
-      (fun t => ((join x y t : intrPullBall (E := E) R) : E))
-      (intrExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E))
+      (fun t => ((join x y t : intrinsicPullBall (E := E) R) : E))
+      (intrinsicExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E))
       (Set.Icc (0 : Real) 1) ∧
     ∀ t ∈ Set.Icc (0 : Real) 1,
-      join x y t ∈ intrCore (E := E) R a
+      join x y t ∈ intrinsicCore (E := E) R a
 
-private def intrCoreJensenMinProp
+private def intrinsicCoreJensenMinProp
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -632,31 +632,31 @@ private def intrCoreJensenMinProp
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R)) : Prop :=
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-    letI : ConnectedSpace (intrPullBall (E := E) R) :=
+    letI : ConnectedSpace (intrinsicPullBall (E := E) R) :=
       Subtype.connectedSpace (isConnected_ball hR)
-    letI : MetricSpace (intrPullBall (E := E) R) :=
+    letI : MetricSpace (intrinsicPullBall (E := E) R) :=
       HopfRinow.riemMetricSpace
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
     ∃ join :
-        intrPullBall (E := E) R →
-        intrPullBall (E := E) R →
-        Real → intrPullBall (E := E) R,
+        intrinsicPullBall (E := E) R →
+        intrinsicPullBall (E := E) R →
+        Real → intrinsicPullBall (E := E) R,
       IsCoreMinJoin (I := I) (a := a) g hEnorm p hR hloc join ∧
-        ∀ pt ∈ intrCore (E := E) R a,
+        ∀ pt ∈ intrinsicCore (E := E) R a,
           CenterOfMass.StrictMidJensenOn join
-            (intrCore (E := E) R a) (CenterOfMass.halfSqDist pt)
+            (intrinsicCore (E := E) R a) (CenterOfMass.halfSqDist pt)
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
-theorem intrCore_jensen_min
+theorem intrinsicCore_jensen_min
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -674,37 +674,37 @@ theorem intrCore_jensen_min
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K) :
-    intrCoreJensenMinProp (I := I) g hEnorm p (a := a) hR hloc := by
+    intrinsicCoreJensenMinProp (I := I) g hEnorm p (a := a) hR hloc := by
   classical
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  let : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrinsicPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  let : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrinsicPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
-      (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
-  dsimp only [intrCoreJensenMinProp]
+      (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
+  dsimp only [intrinsicCoreJensenMinProp]
   change
     ∃ join :
-        intrPullBall (E := E) R →
-        intrPullBall (E := E) R →
-        Real → intrPullBall (E := E) R,
+        intrinsicPullBall (E := E) R →
+        intrinsicPullBall (E := E) R →
+        Real → intrinsicPullBall (E := E) R,
       IsCoreMinJoin (I := I) (a := a) g hEnorm p hR hloc join ∧
-        ∀ pt ∈ intrCore (E := E) R a,
+        ∀ pt ∈ intrinsicCore (E := E) R a,
           CenterOfMass.StrictMidJensenOn join
-            (intrCore (E := E) R a) (CenterOfMass.halfSqDist pt)
+            (intrinsicCore (E := E) R a) (CenterOfMass.halfSqDist pt)
   obtain ⟨L, h2aL, hbudget, hsmallL⟩ :=
     exists_short_scale h4aR hsmall
   obtain ⟨join, hjoin⟩ :=
     exists_fenced_min (I := I) g hEnorm p hR h4aR hloc
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -722,7 +722,7 @@ theorem intrCore_jensen_min
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
     fun z v =>
@@ -730,10 +730,10 @@ theorem intrCore_jensen_min
         (I := 𝓘(Real, E)) gExt z v
   have haR : a < R := by linarith
   have hcoreJoin :
-      ∀ x ∈ intrCore (E := E) R a,
-      ∀ y ∈ intrCore (E := E) R a,
+      ∀ x ∈ intrinsicCore (E := E) R a,
+      ∀ y ∈ intrinsicCore (E := E) R a,
       ∀ t ∈ Set.Icc (0 : Real) 1,
-        join x y t ∈ intrCore (E := E) R a := by
+        join x y t ∈ intrinsicCore (E := E) R a := by
     intro x hx y hy t ht
     let v : E :=
       minimizingVec (I := 𝓘(Real, E)) gExt hExt (x : E) (y : E)
@@ -743,7 +743,7 @@ theorem intrCore_jensen_min
         riemannianEDistOf
             (I := 𝓘(Real, E)) gExt (x : E) (y : E) ≤
           ENNReal.ofReal (2 * a) :=
-      intrExt_edist_le (I := I) g hEnorm p hR hloc hx hy haInner
+      intrinsicExt_edist_le (I := I) g hEnorm p hR hloc hx hy haInner
     have hdistReal :
         (riemannianEDistOf
           (I := 𝓘(Real, E)) gExt (x : E) (y : E)).toReal ≤
@@ -759,7 +759,7 @@ theorem intrCore_jensen_min
             (I := 𝓘(Real, E)) gExt hExt (x : E) (y : E)]
       exact hdistReal.trans h2aL.le
     have hvEnd :
-        intrExtLaunch (I := I) g hEnorm p hR hloc
+        intrinsicExtLaunch (I := I) g hEnorm p hR hloc
             (x : E) v 1 = (y : E) := by
       with_unfolding_all
         change expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt
@@ -767,17 +767,17 @@ theorem intrCore_jensen_min
         exact minimizingVec_exp
           (I := 𝓘(Real, E)) gExt hExt (x : E) (y : E)
     have hcoreExt :=
-      intrExt_edge_core
+      intrinsicExtendedGeodesic_stays_in_ball
         (I := I) g hEnorm p hR hloc hK hRm hsmallL h2aL hbudget
           hx hy v hvL hvEnd t ht
     have hEq := (hjoin x hx y hy).2.2.2.2.2 ht
     have hEq' :
-        ((join x y t : intrPullBall (E := E) R) : E) =
-          intrExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E) t := by
+        ((join x y t : intrinsicPullBall (E := E) R) : E) =
+          intrinsicExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E) t := by
       simpa only using hEq
-    change ‖((join x y t : intrPullBall (E := E) R) : E)‖ ≤ a
+    change ‖((join x y t : intrinsicPullBall (E := E) R) : E)‖ ≤ a
     rw [hEq']
-    simpa only [gExt, hExt, v, intrExtJoin, minJoin, intrExtLaunch] using
+    simpa only [gExt, hExt, v, intrinsicExtJoin, minJoin, intrinsicExtLaunch] using
       hcoreExt
   refine ⟨join, ?_, ?_⟩
   · intro x hx y hy
@@ -796,7 +796,7 @@ theorem intrCore_jensen_min
     exact (hjoin x hx y hy).2.2.2.1
   · intro x hx y hy hxy
     let γ : Real → E :=
-      intrExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E)
+      intrinsicExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E)
     let uxy : E :=
       minimizingVec (I := 𝓘(Real, E)) gExt hExt (x : E) (y : E)
     have huxy : uxy ≠ 0 := by
@@ -821,15 +821,15 @@ theorem intrCore_jensen_min
     have hγsmooth :
         ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γ := by
       simpa only [γ] using
-        intrExtJoin_smooth (I := I) g hEnorm p hR hloc (x : E) (y : E)
+        intrinsicExtJoin_smooth (I := I) g hEnorm p hR hloc (x : E) (y : E)
     have hγgeo :
         IsGeodesic (I := 𝓘(Real, E)) gExt γ := by
       simpa only [γ, gExt] using
-        intrExtJoin_geo (I := I) g hEnorm p hR hloc (x : E) (y : E)
+        intrinsicExtJoin_geo (I := I) g hEnorm p hR hloc (x : E) (y : E)
     have hvel (t : Real) :
         mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t (1 : Real) ≠ 0 := by
       with_unfolding_all
-        exact intrGeo_vel_ne
+        exact intrinsicGeo_velocity_ne
           (I := 𝓘(Real, E)) gExt hExt (x : E) uxy huxy t
     let f : E → Real := fun z =>
       (1 / 2 : Real) *
@@ -864,24 +864,24 @@ theorem intrCore_jensen_min
         hcoreJoin x hx y hy t htIcc
       have hEq := (hjoin x hx y hy).2.2.2.2.2 htIcc
       have hEq' :
-          ((join x y t : intrPullBall (E := E) R) : E) = γ t := by
+          ((join x y t : intrinsicPullBall (E := E) R) : E) = γ t := by
         simpa only [γ] using hEq
       have hqtNorm : ‖γ t‖ ≤ a := by
-        change ‖((join x y t : intrPullBall (E := E) R) : E)‖ ≤ a at hqtJoin
+        change ‖((join x y t : intrinsicPullBall (E := E) R) : E)‖ ≤ a at hqtJoin
         rw [hEq'] at hqtJoin
         simpa only [γ] using hqtJoin
-      let qU : intrPullBall (E := E) R :=
+      let qU : intrinsicPullBall (E := E) R :=
         ⟨γ t, by
           change γ t ∈ Metric.ball (0 : E) R
           rw [Metric.mem_ball, dist_zero_right]
           exact hqtNorm.trans_lt haR⟩
-      have hqU : qU ∈ intrCore (E := E) R a := by
+      have hqU : qU ∈ intrinsicCore (E := E) R a := by
         exact hqtNorm
       let v : E :=
         minimizingVec
           (I := 𝓘(Real, E)) gExt hExt (pt : E) (qU : E)
       obtain ⟨B, hvB, hgerm⟩ :=
-        intrCore_dist_germ
+        intrinsicCore_dist_germ
           (I := I) g hEnorm p hR h4aR hloc hK hsmall hRm hpt hqU
       have hgermF :
           branchEnergy (I := 𝓘(Real, E)) gExt B =ᶠ[𝓝 (γ t)] f := by
@@ -892,7 +892,7 @@ theorem intrCore_jensen_min
           riemannianEDistOf
               (I := 𝓘(Real, E)) gExt (pt : E) (qU : E) ≤
             ENNReal.ofReal (2 * a) :=
-        intrExt_edist_le (I := I) g hEnorm p hR hloc hpt hqU haInner
+        intrinsicExt_edist_le (I := I) g hEnorm p hR hloc hpt hqU haInner
       have hdistReal :
           (riemannianEDistOf
             (I := 𝓘(Real, E)) gExt (pt : E) (qU : E)).toReal ≤
@@ -915,10 +915,10 @@ theorem intrCore_jensen_min
             (I := 𝓘(Real, E)) gExt hExt (pt : E) (qU : E)
       have hvFence :
           ∀ s ∈ Set.Icc (0 : Real) 1,
-            ‖intrExtLaunch (I := I) g hEnorm p hR hloc
+            ‖intrinsicExtLaunch (I := I) g hEnorm p hR hloc
               (pt : E) v s‖ < 3 * R / 4 := by
-        simpa only [gExt, hExt, v, intrExtJoin, minJoin, intrExtLaunch] using
-          intrExtJoin_fenced
+        simpa only [gExt, hExt, v, intrinsicExtJoin, minJoin, intrinsicExtLaunch] using
+          intrinsicExtJoin_fenced
             (I := I) g hEnorm p hR h4aR hloc hpt hqU
       let Y : E :=
         tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) (γ t)
@@ -930,7 +930,7 @@ theorem intrCore_jensen_min
           (I := 𝓘(Real, E)) (γ t)).injective
         simpa only [map_zero, Y] using hYzero
       have hposRaw :=
-        intrBranch_hess_pos
+        intrinsicBranch_hess_pos
           (I := I) g hEnorm p hR hloc hK hRm hsmallL
             (x := (pt : E)) v hvFence hvL B hvB (Y := Y) hY
       have hvEndγ :
@@ -973,7 +973,7 @@ theorem intrCore_jensen_min
     have hqt := hcoreJoin x hx y hy t ht
     have hEq := (hjoin x hx y hy).2.2.2.2.2 ht
     have hEq' :
-        ((join x y t : intrPullBall (E := E) R) : E) = γ t := by
+        ((join x y t : intrinsicPullBall (E := E) R) : E) = γ t := by
       simpa only [γ] using hEq
     have hdistPull :
         dist (join x y t) pt =
@@ -984,14 +984,14 @@ theorem intrCore_jensen_min
         _ = (riemannianEDist 𝓘(Real, E) pt (join x y t)).toReal :=
           HopfRinow.riemMetric_dist_eq
             (I := 𝓘(Real, E))
-            (M := intrPullBall (E := E) R) pt (join x y t)
+            (M := intrinsicPullBall (E := E) R) pt (join x y t)
         _ = (riemannianEDistOf
               (I := 𝓘(Real, E)) gPull pt (join x y t)).toReal := by
           rfl
         _ = (riemannianEDistOf
               (I := 𝓘(Real, E)) gExt (pt : E)
-                ((join x y t : intrPullBall (E := E) R) : E)).toReal := by
-          rw [intrCore_edist_eq
+                ((join x y t : intrinsicPullBall (E := E) R) : E)).toReal := by
+          rw [intrinsicCore_edist_eq
             (I := I) g hEnorm p hR h4aR hloc hpt hqt]
         _ = (riemannianEDistOf
               (I := 𝓘(Real, E)) gExt (pt : E) (γ t)).toReal := by
@@ -1010,27 +1010,27 @@ theorem coreJoin_len
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
     {join :
-      intrPullBall (E := E) R →
-      intrPullBall (E := E) R →
-      Real → intrPullBall (E := E) R}
+      intrinsicPullBall (E := E) R →
+      intrinsicPullBall (E := E) R →
+      Real → intrinsicPullBall (E := E) R}
     (hjoin : IsCoreMinJoin (I := I) (a := a)
       g hEnorm p hR hloc join)
-    {x y : intrPullBall (E := E) R}
-    (hx : x ∈ intrCore (E := E) R a)
-    (hy : y ∈ intrCore (E := E) R a) :
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    {x y : intrinsicPullBall (E := E) R}
+    (hx : x ∈ intrinsicCore (E := E) R a)
+    (hy : y ∈ intrinsicCore (E := E) R a) :
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     Manifold.pathELength 𝓘(Real, E) (join x y) 0 1 =
       riemannianEDistOf (I := 𝓘(Real, E)) gPull x y := by
-  let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
   let : RiemannianBundle
-      (fun z : intrPullBall (E := E) R ↦
+      (fun z : intrinsicPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  let γU : Real → intrPullBall (E := E) R := join x y
+  let γU : Real → intrinsicPullBall (E := E) R := join x y
   let γE : Real → E := fun t => (γU t : E)
   have hspec := hjoin x hx y hy
   have hγU :
@@ -1043,10 +1043,10 @@ theorem coreJoin_len
     exact
       ((contMDiff_subtype_val (n := (⊤ : WithTop ℕ∞))
         (I := 𝓘(Real, E))
-        (U := intrPullBall (E := E) R)).of_le
+        (U := intrinsicPullBall (E := E) R)).of_le
           (show (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞) from le_top)
         ).comp_contMDiffOn hγU
-  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let gExt := intrinsicExtMetric (I := I) g hEnorm p hR hloc
   let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
@@ -1058,7 +1058,7 @@ theorem coreJoin_len
   let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
   let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
   let : CompleteSpace E :=
-    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+    (intrinsicExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
     fun z v =>
@@ -1068,9 +1068,9 @@ theorem coreJoin_len
       Manifold.pathELength 𝓘(Real, E) γU 0 1 =
         Manifold.pathELength I
           ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γE) 0 1 := by
-    have hraw := (intrPull_pathLen (I := I) g hEnorm p hloc hγU).symm
+    have hraw := (intrinsicPull_pathLen (I := I) g hEnorm p hloc hγU).symm
     have hcurve :
-        (intrExpOn (I := I) g hEnorm p R ∘ γU) =
+        (intrinsicExpOn (I := I) g hEnorm p R ∘ γU) =
           (intrinsicFramedExp (I := I) g hEnorm p) ∘ γE := by
       funext t
       with_unfolding_all rfl
@@ -1081,24 +1081,24 @@ theorem coreJoin_len
         Manifold.pathELength I
           ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γE) 0 1 := by
     simpa only [gExt] using
-      (intrExt_pathLen (I := I) g hEnorm p hR hloc hγE
+      (intrinsicExt_pathLen (I := I) g hEnorm p hR hloc hγE
         (fun t ht => by
           rw [Metric.mem_closedBall, dist_zero_right]
           exact (hspec.2.2.2.2.1 t ht).le))
   have hjoinLen :
       Manifold.pathELength 𝓘(Real, E)
-          (intrExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E))
+          (intrinsicExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E))
           0 1 =
         riemannianEDistOf
           (I := 𝓘(Real, E)) gExt (x : E) (y : E) := by
     calc
       Manifold.pathELength 𝓘(Real, E)
-            (intrExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E))
+            (intrinsicExtJoin (I := I) g hEnorm p hR hloc (x : E) (y : E))
             0 1 =
           ENNReal.ofReal
             ((riemannianEDistOf
               (I := 𝓘(Real, E)) gExt (x : E) (y : E)).toReal) := by
-        simpa only [intrExtJoin, gExt, riemannianEDistOf] using
+        simpa only [intrinsicExtJoin, gExt, riemannianEDistOf] using
           (minJoin_pathLen
             (I := 𝓘(Real, E)) gExt hExt (x : E) (y : E))
       _ = riemannianEDistOf
@@ -1111,7 +1111,7 @@ theorem coreJoin_len
       change Manifold.pathELength 𝓘(Real, E) γU 0 1 = _
       exact hpull.trans hext.symm
     _ = Manifold.pathELength 𝓘(Real, E)
-          (intrExtJoin (I := I) g hEnorm p hR hloc
+          (intrinsicExtJoin (I := I) g hEnorm p hR hloc
             (x : E) (y : E)) 0 1 :=
       Manifold.pathELength_congr hspec.2.2.2.2.2.1
     _ = riemannianEDistOf
@@ -1119,11 +1119,11 @@ theorem coreJoin_len
     _ = riemannianEDistOf
           (I := 𝓘(Real, E)) gPull x y := by
       symm
-      exact intrCore_edist_eq
+      exact intrinsicCore_edist_eq
         (I := I) g hEnorm p hR h4aR hloc hx hy
 
 attribute [-instance] Subtype.metricSpace Subtype.pseudoMetricSpace in
-theorem intrCore_jensen
+theorem intrinsicCore_jensen
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
@@ -1141,33 +1141,33 @@ theorem intrCore_jensen
           (Geometry.Curvature.metricRm04At
             (I := I) (M := M) g
             (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K) :
-    let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    let gPull := intrinsicPullMetric (I := I) g hEnorm p hloc
     letI : RiemannianBundle
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.toRiemannianMetric⟩
     letI : IsContinuousRiemannianBundle E
-        (fun z : intrPullBall (E := E) R ↦
+        (fun z : intrinsicPullBall (E := E) R ↦
           TangentSpace 𝓘(Real, E) z) :=
       ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-    letI : ConnectedSpace (intrPullBall (E := E) R) :=
+    letI : ConnectedSpace (intrinsicPullBall (E := E) R) :=
       Subtype.connectedSpace (isConnected_ball hR)
-    letI : MetricSpace (intrPullBall (E := E) R) :=
+    letI : MetricSpace (intrinsicPullBall (E := E) R) :=
       HopfRinow.riemMetricSpace
-        (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
+        (I := 𝓘(Real, E)) (M := intrinsicPullBall (E := E) R)
     ∃ join :
-        intrPullBall (E := E) R →
-        intrPullBall (E := E) R →
-        Real → intrPullBall (E := E) R,
-      ∀ pt ∈ intrCore (E := E) R a,
+        intrinsicPullBall (E := E) R →
+        intrinsicPullBall (E := E) R →
+        Real → intrinsicPullBall (E := E) R,
+      ∀ pt ∈ intrinsicCore (E := E) R a,
         CenterOfMass.StrictMidJensenOn join
-          (intrCore (E := E) R a) (CenterOfMass.halfSqDist pt) := by
+          (intrinsicCore (E := E) R a) (CenterOfMass.halfSqDist pt) := by
   obtain ⟨join, _, hjensen⟩ :=
-    intrCore_jensen_min (I := I) g hEnorm p hR h4aR hloc
+    intrinsicCore_jensen_min (I := I) g hEnorm p hR h4aR hloc
       hK hsmall hRm
   exact ⟨join, hjensen⟩
 
-end CGT
+end CheegerGromovTaylor
 end Riemannian
 end Geometry
 end DifferentialGeometry

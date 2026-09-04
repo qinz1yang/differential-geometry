@@ -112,7 +112,7 @@ private lemma exists_chartedDiagExp_contDiffOn
       ContDiffOn ℝ ∞ (chartedDiagExp (I := I) g hEnorm p) U := by
   classical
   obtain ⟨Φ, ρ, T, t', hρ_pos, hT_pos, ht'_Ioo, ht'_pos, hG_cd,
-    hΦ_init, hΦ_ode, hΦ_target, _hΦ_cd⟩ :=
+    hΦ_initial, hΦ_ode, hΦ_target, _hΦ_cd⟩ :=
     exists_chartExp_jointContDiffOn_infty (I := I) g p
   set ctr : E × E := ((extChartAt I p p, (0 : E)) : E × E) with hctr_def
   set R : E × E → E × E := fun z => (z.1, t'⁻¹ • z.2) with hR_def
@@ -150,14 +150,14 @@ private lemma exists_chartedDiagExp_contDiffOn
   have hzero_Icc : (0 : ℝ) ∈ Set.Icc (-T) T := by
     constructor <;> linarith
   have hRz_target := hΦ_target (R z) hRz_ball 0 hzero_Icc
-  rw [hΦ_init (R z) hRz_ball] at hRz_target
+  rw [hΦ_initial (R z) hRz_ball] at hRz_target
   have hz_target : z ∈
       (interior (extChartAt I p).target) ×ˢ (Set.univ : Set E) := by
     refine ⟨?_, Set.mem_univ _⟩
     simpa [hR_def] using hRz_target.1
   set u : TangentBundle I M :=
     (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)).symm z with hu_def
-  have hu_proj_src : u.proj ∈ (chartAt H p).source := by
+  have hu_proj_source : u.proj ∈ (chartAt H p).source := by
     rw [hu_def]
     exact chartAt_source_of_extChartAt_tangent_zero_symm (I := I) p hz_target
   have hchart_u :
@@ -167,18 +167,18 @@ private lemma exists_chartedDiagExp_contDiffOn
   have hscaled : chartFiberCoord (I := I) p
         (⟨u.proj, t'⁻¹ • u.snd⟩ : TangentBundle I M) =
       t'⁻¹ • chartFiberCoord (I := I) p u :=
-    chartFiberCoord_fiberScale (I := I) p (t'⁻¹) (q := u) hu_proj_src
+    chartFiberCoord_fiberScale (I := I) p (t'⁻¹) (q := u) hu_proj_source
   have hphase : ((extChartAt I p u.proj,
         chartFiberCoord (I := I) p
           (⟨u.proj, t'⁻¹ • u.snd⟩ : TangentBundle I M)) : E × E) = R z := by
     rw [hscaled, ← hchart_u,
-      extChartAt_tangent_zero_apply_chartFiber (I := I) p (p := u) hu_proj_src, hR_def]
+      extChartAt_tangent_zero_apply_chartFiber (I := I) p (p := u) hu_proj_source, hR_def]
   have hG_cd_one : ContDiffOn ℝ (1 : ℕ∞) G (Metric.ball ctr ρ) :=
     hG_cd.of_le (by exact_mod_cast (le_top : (1 : ℕ∞) ≤ ⊤))
   have hbridge := expMapIntrinsic_eq_chartFlow_proj_residual (I := I) g hEnorm p
     1 Φ ρ T t'
-    ⟨hρ_pos, hT_pos, ht'_Ioo, ht'_pos, hG_cd_one, hΦ_init, hΦ_ode, hΦ_target⟩
-    u.proj hu_proj_src u.snd (hphase.symm ▸ hRz_ball)
+    ⟨hρ_pos, hT_pos, ht'_Ioo, ht'_pos, hG_cd_one, hΦ_initial, hΦ_ode, hΦ_target⟩
+    u.proj hu_proj_source u.snd (hphase.symm ▸ hRz_ball)
   rw [hphase] at hbridge
   have hu_proj : u.proj = (extChartAt I p).symm z.1 := by
     rw [hu_def]
@@ -228,13 +228,13 @@ private lemma extChartAt_tangent_zero_symm_zero_fiber
   classical
   set q : M := (extChartAt I p).symm z.1 with hq_def
   have hz1_target : z.1 ∈ (extChartAt I p).target := interior_subset hz.1
-  have hq_src : q ∈ (chartAt H p).source := by
+  have hq_source : q ∈ (chartAt H p).source := by
     rw [hq_def, ← extChartAt_source I]; exact (extChartAt I p).map_target hz1_target
   have hchart_zero : extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)
       (⟨q, (0 : E)⟩ : TangentBundle I M) = z := by
     rw [extChartAt_tangent_zero_apply_chartFiber (I := I) p
-      (p := (⟨q, (0 : E)⟩ : TangentBundle I M)) (by exact hq_src)]
-    rw [chartFiberCoord_mk_zero (I := I) p q hq_src]
+      (p := (⟨q, (0 : E)⟩ : TangentBundle I M)) (by exact hq_source)]
+    rw [chartFiberCoord_mk_zero (I := I) p q hq_source]
     have hz1 : extChartAt I p q = z.1 := by
       rw [hq_def, (extChartAt I p).right_inv hz1_target]
     rw [hz1, ← hz2]
@@ -242,7 +242,7 @@ private lemma extChartAt_tangent_zero_symm_zero_fiber
     (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)).symm hchart_zero
   rw [(extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)).left_inv
     (by rw [extChartAt_source];
-        exact (mem_chartAt_modelProd_zero_source_iff (I := I) p _).mpr hq_src)] at hsymm
+        exact (mem_chartAt_modelProd_zero_source_iff (I := I) p _).mpr hq_source)] at hsymm
   rw [← hsymm]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -842,14 +842,14 @@ theorem diagExpInv_diagExp
         (⟨p, (0 : E)⟩ : TangentBundle I M)).source :=
     extChartAt_source_mem_nhds (I := I.tangent)
       (⟨p, (0 : E)⟩ : TangentBundle I M)
-  filter_upwards [hev1, hev_u] with u hu hu_src
+  filter_upwards [hev1, hev_u] with u hu hu_source
   have hinner :
       (extChartAt I.tangent
         (⟨p, (0 : E)⟩ : TangentBundle I M)).symm
           (extChartAt I.tangent
             (⟨p, (0 : E)⟩ : TangentBundle I M) u) = u :=
     (extChartAt I.tangent
-      (⟨p, (0 : E)⟩ : TangentBundle I M)).left_inv hu_src
+      (⟨p, (0 : E)⟩ : TangentBundle I M)).left_inv hu_source
   have hforward :
       (diagExpIFT (I := I) g hEnorm p)
           (extChartAt I.tangent
@@ -960,7 +960,7 @@ theorem exists_diagonalInverse_smooth_domain
       extChartAt (I.prod I) (p, p) y ∈ V :=
     (continuousAt_extChartAt (I := I.prod I) (p, p)).preimage_mem_nhds
       (hV_open.mem_nhds hcenter_coord)
-  have hchart_src : ∀ᶠ y in 𝓝 (p, p),
+  have hchart_source : ∀ᶠ y in 𝓝 (p, p),
       y ∈ (extChartAt (I.prod I) (p, p)).source :=
     extChartAt_source_mem_nhds (I := I.prod I) (p, p)
   have hright := diagExp_diagExpInv (I := I) g hEnorm p
@@ -968,7 +968,7 @@ theorem exists_diagonalInverse_smooth_domain
       extChartAt (I.prod I) (p, p) y ∈ V ∧
       y ∈ (extChartAt (I.prod I) (p, p)).source ∧
       diagExp (I := I) g hEnorm (diagExpInv (I := I) g hEnorm p y) = y := by
-    filter_upwards [hcoordV, hchart_src, hright] with y hyV hysrc hyright
+    filter_upwards [hcoordV, hchart_source, hright] with y hyV hysrc hyright
     exact ⟨hyV, hysrc, hyright⟩
   obtain ⟨U, hU, hU_open, hpU⟩ := _root_.mem_nhds_iff.mp hgood
   have hsmooth : ContMDiffOn (I.prod I) I.tangent ∞

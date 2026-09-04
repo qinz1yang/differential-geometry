@@ -164,7 +164,7 @@ private lemma rawTensorConnLap_toSection_eq_cometricDoubleTrace (g : SmoothRiema
   simpa only [tangentSpaceModel_cons_cons, Fin.cons_zero, Fin.cons_succ,
     ContinuousLinearEquiv.apply_symm_apply] using
     (DeTurck.cometric_dualTrace_eq_orthoFrame_diag (I := I) g (s := s) x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 2) I x from
           (iteratedCovGrad (I := I) g r s 2 Φ).toSection x) D))

@@ -6,7 +6,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set
 open scoped BigOperators ContDiff Manifold Topology
@@ -28,7 +28,7 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
 
-noncomputable def chartCmEqnC
+noncomputable def chartCenterOfMassEquation
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -39,7 +39,7 @@ noncomputable def chartCmEqnC
   ∑ i, params.1 i •
     B.chartDiagonalInverseCoordinates c (c.hom z, c.hom (params.2 i))
 
-def HasCmSolC
+def HasCenterOfMassChartSolution
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -51,24 +51,24 @@ def HasCmSolC
   z ∈ Metric.ball (0 : E) c.radius ∧
     (∀ i, params.2 i ∈ Metric.ball (0 : E) c.radius) ∧
     (∀ i, (c.hom z, c.hom (params.2 i)) ∈ B.chartCoordinateDomain c) ∧
-    chartCmEqnC (I := I) g hEnorm p c B z params = 0 ∧
+    chartCenterOfMassEquation (I := I) g hEnorm p c B z params = 0 ∧
     ∃ L : E ≃L[Real] E,
       HasFDerivAt
-          (fun u : E => chartCmEqnC (I := I) g hEnorm p c B u params)
+          (fun u : E => chartCenterOfMassEquation (I := I) g hEnorm p c B u params)
           (L : E →L[Real] E) z ∧
         ∃ (f : ((ι → Real) × (ι → E)) → E)
             (Df : ((ι → Real) × (ι → E)) →L[Real] E),
           f params = z ∧ HasStrictFDerivAt f Df params ∧
             (∀ᶠ params' in nhds params,
-              chartCmEqnC (I := I) g hEnorm p c B
+              chartCenterOfMassEquation (I := I) g hEnorm p c B
                 (f params') params' = 0) ∧
             (∀ᶠ zp in nhds (z, params),
-              chartCmEqnC (I := I) g hEnorm p c B zp.1 zp.2 = 0 →
+              chartCenterOfMassEquation (I := I) g hEnorm p c B zp.1 zp.2 = 0 →
                 zp.1 = f zp.2)
 
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] [ConnectedSpace M]
     [T3Space M] in
-theorem chartCmC_zero_of_sum
+theorem chartCenterOfMassEquation_zero_of_sum
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -82,7 +82,7 @@ theorem chartCmC_zero_of_sum
     (hsum : ∑ i, mu i •
       (show TangentSpace I (c.hom z) from
         (B.inv (c.hom z, c.hom (xi i))).snd) = 0) :
-    chartCmEqnC (I := I) g hEnorm p c B z (mu, xi) = 0 := by
+    chartCenterOfMassEquation (I := I) g hEnorm p c B z (mu, xi) = 0 := by
   classical
   have hzTarget : c.hom z ∈ c.restrictBall.target := by
     have hmap := c.restrictBall.map_source hz
@@ -102,7 +102,7 @@ theorem chartCmC_zero_of_sum
             (B.inv (c.hom z, c.hom (xi i))).snd) := by
     unfold DiagonalInverseBranch.chartDiagonalInverseCoordinates
     rw [hinvBase i, c.tangentHome_symm_apply hzTarget]
-  unfold chartCmEqnC
+  unfold chartCenterOfMassEquation
   have hlinear :
       ∑ i, mu i • B.chartDiagonalInverseCoordinates c (c.hom z, c.hom (xi i)) =
         mfderiv I (modelWithCornersSelf Real E) c.inv (c.hom z)
@@ -119,7 +119,7 @@ theorem chartCmC_zero_of_sum
 
 omit [CompleteSpace E] [ConnectedSpace M] [T3Space M] in
 omit [T2Space (TangentBundle I M)] in
-theorem chartCmEqnC_cdAt
+theorem chartCenterOfMassEquation_cdAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -134,9 +134,9 @@ theorem chartCmEqnC_cdAt
       (c.hom z₀, c.hom (params₀.2 i)) ∈ B.chartCoordinateDomain c) :
     ContDiffAt Real n
       (fun w : E × ((ι → Real) × (ι → E)) =>
-        chartCmEqnC (I := I) g hEnorm p c B w.1 w.2)
+        chartCenterOfMassEquation (I := I) g hEnorm p c B w.1 w.2)
       (z₀, params₀) := by
-  unfold chartCmEqnC
+  unfold chartCenterOfMassEquation
   apply ContDiffAt.sum
   intro i _
   apply ContDiffAt.smul
@@ -184,7 +184,7 @@ theorem chartCmEqnC_cdAt
 
 omit [CompleteSpace E] [ConnectedSpace M] [T3Space M]
   [T2Space (TangentBundle I M)] in
-theorem chartCmEqnC_implicitFunction_hasStrictFDerivAt
+theorem chartCenterOfMassEquation_implicitFunction_hasStrictFDerivAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -198,36 +198,36 @@ theorem chartCmEqnC_implicitFunction_hasStrictFDerivAt
       (c.hom z₀, c.hom (params₀.2 i)) ∈ B.chartCoordinateDomain c)
     (hinv : ∃ L : E ≃L[Real] E,
       HasFDerivAt
-        (fun z : E => chartCmEqnC (I := I) g hEnorm p c B z params₀)
+        (fun z : E => chartCenterOfMassEquation (I := I) g hEnorm p c B z params₀)
         (L : E →L[Real] E) z₀)
-    (hzero : chartCmEqnC (I := I) g hEnorm p c B z₀ params₀ = 0) :
+    (hzero : chartCenterOfMassEquation (I := I) g hEnorm p c B z₀ params₀ = 0) :
     ∃ (f : ((ι → Real) × (ι → E)) → E)
       (Df : ((ι → Real) × (ι → E)) →L[Real] E),
       f params₀ = z₀ ∧ HasStrictFDerivAt f Df params₀ ∧
         (∀ᶠ params in nhds params₀,
-          chartCmEqnC (I := I) g hEnorm p c B (f params) params = 0) ∧
+          chartCenterOfMassEquation (I := I) g hEnorm p c B (f params) params = 0) ∧
         (∀ᶠ zp in nhds (z₀, params₀),
-          chartCmEqnC (I := I) g hEnorm p c B zp.1 zp.2 = 0 →
+          chartCenterOfMassEquation (I := I) g hEnorm p c B zp.1 zp.2 = 0 →
             zp.1 = f zp.2) := by
   have hsmooth : ContDiffAt Real 1
       (fun w : E × ((ι → Real) × (ι → E)) =>
-        chartCmEqnC (I := I) g hEnorm p c B w.1 w.2)
+        chartCenterOfMassEquation (I := I) g hEnorm p c B w.1 w.2)
       (z₀, params₀) :=
-    chartCmEqnC_cdAt (I := I) g hEnorm p c B z₀ params₀ 1 hz hξ hdom
+    chartCenterOfMassEquation_cdAt (I := I) g hEnorm p c B z₀ params₀ 1 hz hξ hdom
   have hjoint : HasStrictFDerivAt
       (fun w : E × ((ι → Real) × (ι → E)) =>
-        chartCmEqnC (I := I) g hEnorm p c B w.1 w.2)
+        chartCenterOfMassEquation (I := I) g hEnorm p c B w.1 w.2)
       (fderiv Real (fun w : E × ((ι → Real) × (ι → E)) =>
-        chartCmEqnC (I := I) g hEnorm p c B w.1 w.2) (z₀, params₀))
+        chartCenterOfMassEquation (I := I) g hEnorm p c B w.1 w.2) (z₀, params₀))
       (z₀, params₀) :=
     hsmooth.hasStrictFDerivAt one_ne_zero
-  exact implicitSol_hasStrictFDerivAt
-    (fun z params => chartCmEqnC (I := I) g hEnorm p c B z params)
+  exact implicitSolution_hasStrictFDerivAt
+    (fun z params => chartCenterOfMassEquation (I := I) g hEnorm p c B z params)
     z₀ params₀ _ hjoint hinv hzero
 
 omit [CompleteSpace E] [ConnectedSpace M] [T3Space M]
   [T2Space (TangentBundle I M)] in
-theorem chartCmEqnC_implicitFunction_contDiffAt
+theorem chartCenterOfMassEquation_implicitFunction_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -242,23 +242,23 @@ theorem chartCmEqnC_implicitFunction_contDiffAt
       (c.hom z₀, c.hom (params₀.2 i)) ∈ B.chartCoordinateDomain c)
     (hinv : ∃ L : E ≃L[Real] E,
       HasFDerivAt
-        (fun z : E => chartCmEqnC (I := I) g hEnorm p c B z params₀)
+        (fun z : E => chartCenterOfMassEquation (I := I) g hEnorm p c B z params₀)
         (L : E →L[Real] E) z₀)
-    (hzero : chartCmEqnC (I := I) g hEnorm p c B z₀ params₀ = 0) :
+    (hzero : chartCenterOfMassEquation (I := I) g hEnorm p c B z₀ params₀ = 0) :
     ∃ f : ((ι → Real) × (ι → E)) → E,
       f params₀ = z₀ ∧ ContDiffAt Real (n : ℕ∞) f params₀ ∧
         (∀ᶠ params in nhds params₀,
-          chartCmEqnC (I := I) g hEnorm p c B (f params) params = 0) ∧
+          chartCenterOfMassEquation (I := I) g hEnorm p c B (f params) params = 0) ∧
         (∀ᶠ zp in nhds (z₀, params₀),
-          chartCmEqnC (I := I) g hEnorm p c B zp.1 zp.2 = 0 →
+          chartCenterOfMassEquation (I := I) g hEnorm p c B zp.1 zp.2 = 0 →
             zp.1 = f zp.2) := by
   have hjoint : ContDiffAt Real (n : ℕ∞)
       (fun w : E × ((ι → Real) × (ι → E)) =>
-        chartCmEqnC (I := I) g hEnorm p c B w.1 w.2) (z₀, params₀) :=
-    chartCmEqnC_cdAt (I := I) g hEnorm p c B z₀ params₀ n hz hξ hdom
-  exact implicitSol_contDiffAt
-    (fun z params => chartCmEqnC (I := I) g hEnorm p c B z params)
+        chartCenterOfMassEquation (I := I) g hEnorm p c B w.1 w.2) (z₀, params₀) :=
+    chartCenterOfMassEquation_cdAt (I := I) g hEnorm p c B z₀ params₀ n hz hξ hdom
+  exact implicitSolution_contDiffAt
+    (fun z params => chartCenterOfMassEquation (I := I) g hEnorm p c B z params)
     z₀ params₀ n hn hjoint hinv hzero
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

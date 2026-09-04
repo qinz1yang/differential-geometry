@@ -173,7 +173,7 @@ private theorem skewDiag_zero (g : SmoothRiemannianMetric I M) (x : M)
   · exact h
 
 omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] in
-theorem frameCorr_vanish (g g_bg : SmoothRiemannianMetric I M) (x : M)
+theorem frameCorrection_vanish (g g_bg : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     ∑ i : Fin (Module.finrank ℝ E),
         connectionDifference (I := I) g g_bg x
@@ -251,7 +251,7 @@ theorem deTurckVF_covDeriv_eq (g g_bg : SmoothRiemannianMetric I M) (x : M)
         ∑ i : Fin (Module.finrank ℝ E),
           diffSec (LeviCivita (I := I) g_bg) (LeviCivita (I := I) g)
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i) b := by
-    filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x] with b hb
+    filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x] with b hb
     rw [deTurckVF_frame_trace (I := I) g g_bg b
       (fun i => smoothOrthoFrame (I := I) g x i b)
       (fun i j => smoothOrthoFrame_orthonormal (I := I) g x hb i j)]
@@ -303,7 +303,7 @@ theorem deTurckVF_covDeriv_eq (g g_bg : SmoothRiemannianMetric I M) (x : M)
       connectionDifference (I := I) g g_bg x
         ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v)
         (smoothOrthoFrame (I := I) g x i x) = 0 :=
-    frameCorr_vanish (I := I) g g_bg x v
+    frameCorrection_vanish (I := I) g g_bg x v
   have hcorr1 : ∑ i : Fin (Module.finrank ℝ E),
       connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x)
         ((LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g x i) x v) = 0 := by

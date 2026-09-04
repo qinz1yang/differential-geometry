@@ -60,7 +60,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_two
       ((Module.finrank ℝ E : ℝ)) ^ 2 * B := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_component_sq_of_basis (I := I) (M := M) g₀ 2 2 x
     (show TensorRSSpace 2 2 I x from
@@ -243,7 +243,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul
       ((Module.finrank ℝ E : ℝ)) ^ s * B := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_component_sq_of_basis (I := I) (M := M) g₀ s s x
     (show TensorRSSpace s s I x from

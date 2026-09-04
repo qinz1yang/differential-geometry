@@ -38,7 +38,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-private noncomputable def secondCovDeriv_GlobalCorr
+private noncomputable def secondCovDeriv_GlobalCorrection
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -51,7 +51,7 @@ private noncomputable def secondCovDeriv_GlobalCorr
     (secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
       (I := I) (M := M) g r s α Idx Jdx k l) I' J' m
 
-private noncomputable def secondCovDeriv_GlobalCorr0
+private noncomputable def secondCovDeriv_GlobalCorrection0
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -66,7 +66,7 @@ private noncomputable def secondCovDeriv_GlobalCorr0
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma secondCovDeriv_GlobalCorr_contDiffOn
+private lemma secondCovDeriv_GlobalCorrection_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -75,7 +75,7 @@ private lemma secondCovDeriv_GlobalCorr_contDiffOn
     (J' : Fin s → Fin (Module.finrank ℝ E))
     (m : Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
-      (secondCovDeriv_GlobalCorr (I := I) (M := M) g r s α Idx Jdx k l I' J' m)
+      (secondCovDeriv_GlobalCorrection (I := I) (M := M) g r s α Idx Jdx k l I' J' m)
       (chartTargetEuclid (I := I) (M := M) α) :=
   (Classical.choose_spec
       (Classical.choose_spec
@@ -84,7 +84,7 @@ private lemma secondCovDeriv_GlobalCorr_contDiffOn
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma secondCovDeriv_GlobalCorr0_contDiffOn
+private lemma secondCovDeriv_GlobalCorrection0_contDiffOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -92,7 +92,7 @@ private lemma secondCovDeriv_GlobalCorr0_contDiffOn
     (I' : Fin r → Fin (Module.finrank ℝ E))
     (J' : Fin s → Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
-      (secondCovDeriv_GlobalCorr0 (I := I) (M := M) g r s α Idx Jdx k l I' J')
+      (secondCovDeriv_GlobalCorrection0 (I := I) (M := M) g r s α Idx Jdx k l I' J')
       (chartTargetEuclid (I := I) (M := M) α) :=
   (Classical.choose_spec
       (Classical.choose_spec
@@ -100,7 +100,7 @@ private lemma secondCovDeriv_GlobalCorr0_contDiffOn
           (I := I) (M := M) g r s α Idx Jdx k l))).2.1 I' J'
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma secondCovDeriv_GlobalCorr_pointwise
+private lemma secondCovDeriv_GlobalCorrection_pointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -124,7 +124,7 @@ private lemma secondCovDeriv_GlobalCorr_pointwise
       (∑ I' : Fin r → Fin (Module.finrank ℝ E),
         ∑ J' : Fin s → Fin (Module.finrank ℝ E),
         ∑ m : Fin (Module.finrank ℝ E),
-        secondCovDeriv_GlobalCorr (I := I) (M := M) g r s α Idx Jdx k l I' J' m
+        secondCovDeriv_GlobalCorrection (I := I) (M := M) g r s α Idx Jdx k l I' J' m
             ((toEuclidean (E := E)) ((extChartAt I α) b)) *
           euclidPartial (E := E) m
             (chartPushedRaw I α
@@ -132,7 +132,7 @@ private lemma secondCovDeriv_GlobalCorr_pointwise
             ((toEuclidean (E := E)) ((extChartAt I α) b))) +
       (∑ I' : Fin r → Fin (Module.finrank ℝ E),
         ∑ J' : Fin s → Fin (Module.finrank ℝ E),
-        secondCovDeriv_GlobalCorr0 (I := I) (M := M) g r s α Idx Jdx k l I' J'
+        secondCovDeriv_GlobalCorrection0 (I := I) (M := M) g r s α Idx Jdx k l I' J'
             ((toEuclidean (E := E)) ((extChartAt I α) b)) *
           chartPushedRaw I α
             (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')
@@ -284,14 +284,14 @@ private lemma invGramPull_at_b_eq
     invGramPull (I := I) (M := M) g α k l
         ((toEuclidean (E := E)) ((extChartAt I α) b)) =
       chartInvGramMatrix (I := I) g α b k l := by
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hsymm : (toEuclidean (E := E)).symm
       ((toEuclidean (E := E)) ((extChartAt I α) b)) =
       (extChartAt I α) b :=
     (toEuclidean (E := E)).symm_apply_apply _
   have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   unfold invGramPull
   rw [hsymm, hleft_inv]
 
@@ -304,14 +304,14 @@ private lemma chartFrameCoordPull_at_b_eq
     chartFrameCoordPull (I := I) (M := M) g α i k
         ((toEuclidean (E := E)) ((extChartAt I α) b)) =
       chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k b := by
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hsymm : (toEuclidean (E := E)).symm
       ((toEuclidean (E := E)) ((extChartAt I α) b)) =
       (extChartAt I α) b :=
     (toEuclidean (E := E)).symm_apply_apply _
   have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   unfold chartFrameCoordPull
   rw [hsymm, hleft_inv]
 
@@ -326,14 +326,14 @@ private lemma chartFrameCoordDirDerivPull_at_b_eq
       mvfderiv (I := I)
         (chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i k) b
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l b) := by
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hsymm : (toEuclidean (E := E)).symm
       ((toEuclidean (E := E)) ((extChartAt I α) b)) =
       (extChartAt I α) b :=
     (toEuclidean (E := E)).symm_apply_apply _
   have hleft_inv : (extChartAt I α).symm ((extChartAt I α) b) = b :=
-    (extChartAt I α).left_inv hb_src
+    (extChartAt I α).left_inv hb_source
   unfold chartFrameCoordDirDerivPull
   rw [hsymm, hleft_inv]
 
@@ -365,7 +365,7 @@ private noncomputable def C_1_firstDeriv
     (∑ k : Fin (Module.finrank ℝ E),
       ∑ l : Fin (Module.finrank ℝ E),
         invGramPull (I := I) (M := M) g α k l y *
-          secondCovDeriv_GlobalCorr (I := I) (M := M) g r s α Idx Jdx k l I' J' m y) +
+          secondCovDeriv_GlobalCorrection (I := I) (M := M) g r s α Idx Jdx k l I' J' m y) +
     (if I' = Idx ∧ J' = Jdx then
        ∑ i : Fin (Module.finrank ℝ E),
          ∑ l : Fin (Module.finrank ℝ E),
@@ -391,7 +391,7 @@ private lemma C_1_firstDeriv_contDiffOn
     · refine ContDiffOn.sum (fun k _ => ?_)
       refine ContDiffOn.sum (fun l _ => ?_)
       exact (invGramPull_contDiffOn (I := I) (M := M) g α k l).mul
-        (secondCovDeriv_GlobalCorr_contDiffOn
+        (secondCovDeriv_GlobalCorrection_contDiffOn
           (I := I) (M := M) g r s α Idx Jdx k l I' J' m)
     · by_cases h : I' = Idx ∧ J' = Jdx
       · simp only [h]
@@ -415,7 +415,7 @@ private noncomputable def C_0_zeroth
     (∑ k : Fin (Module.finrank ℝ E),
       ∑ l : Fin (Module.finrank ℝ E),
         invGramPull (I := I) (M := M) g α k l y *
-          secondCovDeriv_GlobalCorr0 (I := I) (M := M) g r s α Idx Jdx k l I' J' y) +
+          secondCovDeriv_GlobalCorrection0 (I := I) (M := M) g r s α Idx Jdx k l I' J' y) +
     (∑ i : Fin (Module.finrank ℝ E),
       ∑ l : Fin (Module.finrank ℝ E),
         ∑ k : Fin (Module.finrank ℝ E),
@@ -440,7 +440,7 @@ private lemma C_0_zeroth_contDiffOn
     · refine ContDiffOn.sum (fun k _ => ?_)
       refine ContDiffOn.sum (fun l _ => ?_)
       exact (invGramPull_contDiffOn (I := I) (M := M) g α k l).mul
-        (secondCovDeriv_GlobalCorr0_contDiffOn
+        (secondCovDeriv_GlobalCorrection0_contDiffOn
           (I := I) (M := M) g r s α Idx Jdx k l I' J')
     · refine ContDiffOn.sum (fun i _ => ?_)
       refine ContDiffOn.sum (fun l _ => ?_)
@@ -528,13 +528,13 @@ private theorem rawTensorConnLap_chartα_raw_eq_T₀_linear_formula_pointwise
            (Fin s → Fin (Module.finrank ℝ E)) →
            Fin (Module.finrank ℝ E) → ℝ :=
     fun k l I' J' m =>
-      secondCovDeriv_GlobalCorr (I := I) (M := M) g r s α Idx Jdx k l I' J' m y
+      secondCovDeriv_GlobalCorrection (I := I) (M := M) g r s α Idx Jdx k l I' J' m y
     with hGC_def
   set GC0 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
             (Fin r → Fin (Module.finrank ℝ E)) →
             (Fin s → Fin (Module.finrank ℝ E)) → ℝ :=
     fun k l I' J' =>
-      secondCovDeriv_GlobalCorr0 (I := I) (M := M) g r s α Idx Jdx k l I' J' y
+      secondCovDeriv_GlobalCorrection0 (I := I) (M := M) g r s α Idx Jdx k l I' J' y
     with hGC0_def
   set CF : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i l => chartFrameCoordPull (I := I) (M := M) g α i l y
@@ -572,7 +572,7 @@ private theorem rawTensorConnLap_chartα_raw_eq_T₀_linear_formula_pointwise
     unfold chartInvGramPrincipalSum
     refine Finset.sum_congr rfl (fun k _ => ?_)
     refine Finset.sum_congr rfl (fun l _ => ?_)
-    rw [secondCovDeriv_GlobalCorr_pointwise
+    rw [secondCovDeriv_GlobalCorrection_pointwise
       (I := I) (M := M) g r s α Idx Jdx k l T₀ hb_good]
     rw [← invGramPull_at_b_eq (I := I) (M := M) g α k l hb_good]
   rw [hPrincipal_unfold]

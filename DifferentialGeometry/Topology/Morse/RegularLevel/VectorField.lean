@@ -424,7 +424,7 @@ theorem exists_unitSpeedVectorField_on_compact (I : ModelWithCorners ℝ (MorseM
     have hVdef : (NormedSpace.fromTangentSpace (f y)) ((mfderiv I 𝓘(ℝ, ℝ) f y) (V y)) = L (V y) := by
       simp [L]
     rw [hVdef]
-    have hfinSuppρ : Function.HasFiniteSupport (fun x : K => ρ x y) := by
+    have hfinSupportρ : Function.HasFiniteSupport (fun x : K => ρ x y) := by
       have hlf : LocallyFinite (fun x : K => {z : M | ρ x z ≠ 0}) := ρ.locallyFinite
       have hlfy := hlf y
       rcases hlfy with ⟨N, hN, hfinN⟩
@@ -434,11 +434,11 @@ theorem exists_unitSpeedVectorField_on_compact (I : ModelWithCorners ℝ (MorseM
         rw [Function.support] at hx
         exact ⟨y, ⟨hx, mem_of_mem_nhds hN⟩⟩
       exact Set.Finite.subset hfinN hsub
-    have hfinSupp : Function.HasFiniteSupport (fun x : K => ρ x y • W x y) := by
-      exact Set.Finite.subset hfinSuppρ (by intro x hx; exact fun hρ0 => hx (by simp [hρ0]))
+    have hfinSupport : Function.HasFiniteSupport (fun x : K => ρ x y • W x y) := by
+      exact Set.Finite.subset hfinSupportρ (by intro x hx; exact fun hρ0 => hx (by simp [hρ0]))
     have hlin : L (V y) = ∑ᶠ x : K, L (ρ x y • W x y) := by
       dsimp [V]
-      have hmap := (AddMonoidHom.map_finsum (g := (L : TangentSpace I y →+ ℝ)) (hf := hfinSupp))
+      have hmap := (AddMonoidHom.map_finsum (g := (L : TangentSpace I y →+ ℝ)) (hf := hfinSupport))
       simpa using hmap
     rw [hlin]
     have hterm : ∀ x : K, L (ρ x y • W x y) = ρ x y • L (W x y) := by
@@ -463,7 +463,7 @@ theorem exists_unitSpeedVectorField_on_compact (I : ModelWithCorners ℝ (MorseM
     rw [hrew]
     have hsum : (∑ᶠ x : K, ρ x y • (-1 : ℝ)) = -(∑ᶠ x : K, (ρ x y : ℝ)) := by
       have hsmul' : (∑ᶠ x : K, ρ x y • (-1 : ℝ)) = (∑ᶠ x : K, ρ x y) • (-1 : ℝ) := by
-        exact (finsum_smul' hfinSuppρ (-1 : ℝ)).symm
+        exact (finsum_smul' hfinSupportρ (-1 : ℝ)).symm
       rw [hsmul']
       simp
     exact hsum
@@ -563,7 +563,7 @@ theorem exists_unitSpeedVectorField_on_strip (I : ModelWithCorners ℝ (MorseMod
     have hVdef : (NormedSpace.fromTangentSpace (f y)) ((mfderiv I 𝓘(ℝ, ℝ) f y) (V y)) = L (V y) := by
       simp [L]
     rw [hVdef]
-    have hfinSuppρ : Function.HasFiniteSupport (fun x : K => ρ x y) := by
+    have hfinSupportρ : Function.HasFiniteSupport (fun x : K => ρ x y) := by
       have hlf : LocallyFinite (fun x : K => {z : M | ρ x z ≠ 0}) := ρ.locallyFinite
       have hlfy := hlf y
       rcases hlfy with ⟨N, hN, hfinN⟩
@@ -573,11 +573,11 @@ theorem exists_unitSpeedVectorField_on_strip (I : ModelWithCorners ℝ (MorseMod
         rw [Function.support] at hx
         exact ⟨y, ⟨hx, mem_of_mem_nhds hN⟩⟩
       exact Set.Finite.subset hfinN hsub
-    have hfinSupp : Function.HasFiniteSupport (fun x : K => ρ x y • W x y) := by
-      exact Set.Finite.subset hfinSuppρ (by intro x hx; exact fun hρ0 => hx (by simp [hρ0]))
+    have hfinSupport : Function.HasFiniteSupport (fun x : K => ρ x y • W x y) := by
+      exact Set.Finite.subset hfinSupportρ (by intro x hx; exact fun hρ0 => hx (by simp [hρ0]))
     have hlin : L (V y) = ∑ᶠ x : K, L (ρ x y • W x y) := by
       dsimp [V]
-      have hmap := (AddMonoidHom.map_finsum (g := (L : TangentSpace I y →+ ℝ)) (hf := hfinSupp))
+      have hmap := (AddMonoidHom.map_finsum (g := (L : TangentSpace I y →+ ℝ)) (hf := hfinSupport))
       simpa using hmap
     rw [hlin]
     have hterm : ∀ x : K, L (ρ x y • W x y) = ρ x y • L (W x y) := by
@@ -602,7 +602,7 @@ theorem exists_unitSpeedVectorField_on_strip (I : ModelWithCorners ℝ (MorseMod
     rw [hrew]
     have hsum : (∑ᶠ x : K, ρ x y • (-1 : ℝ)) = -(∑ᶠ x : K, (ρ x y : ℝ)) := by
       have hsmul' : (∑ᶠ x : K, ρ x y • (-1 : ℝ)) = (∑ᶠ x : K, ρ x y) • (-1 : ℝ) := by
-        exact (finsum_smul' hfinSuppρ (-1 : ℝ)).symm
+        exact (finsum_smul' hfinSupportρ (-1 : ℝ)).symm
       rw [hsmul']
       simp
     exact hsum

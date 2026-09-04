@@ -31,7 +31,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
+theorem lRegularizedAction_minimizer_acceleration_eq_at_partition_nodes
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 3) → Real)
@@ -48,7 +48,7 @@ theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
     ∀ q : Fin (m + 1),
       let c := t q.succ.castSucc
       MDifferentiableAt (modelWithCornersSelf Real Real) I gamma c ∧
@@ -57,7 +57,7 @@ theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
           (fun r ↦ lVelocity (I := I) gamma r) c) c ∧
       covDerivAlong (I := I) (S.base.metric (T - c ^ 2)) gamma
           (fun r ↦ lVelocity (I := I) gamma r) c =
-        lRegAccel S T c (gamma c) (lVelocity (I := I) gamma c) := by
+        lRegularizedAccel S T c (gamma c) (lVelocity (I := I) gamma c) := by
   classical
   intro q
   dsimp only
@@ -82,7 +82,7 @@ theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
   have hcb : c < b := by
     rw [← htlast]
     exact hcj.trans_le (ht.monotone (Fin.le_last j.succ))
-  have hcurve1 := lRegAction_minimizer_contMDiffOn_one_of_chart_partition (I := I) S hS T a b (m := m + 2)
+  have hcurve1 := lRegularizedAction_minimizer_contMDiffOn_one_of_chart_partition (I := I) S hS T a b (m := m + 2)
     (by omega) t ht0 htlast p gamma hgamma u
     (fun k ↦ ht Fin.castSucc_lt_succ) hsrc hrep hreg hmin
   have hIcc : Icc a b ∈ 𝓝 c :=
@@ -141,27 +141,27 @@ theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
     rcases lt_or_gt_of_ne hrne with hrc' | hcr'
     · have hri : r ∈ Ioo (t i.castSucc) (t i.succ) := by
         simpa only [i, c] using ⟨hrwin.1, hrc'⟩
-      have hr2 := lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior (I := I) S hS T a b t ht ht0 htlast
+      have hr2 := lRegularizedAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior (I := I) S hS T a b t ht ht0 htlast
         p gamma hgamma u hsrc hrep hreg hmin i r hri
       have hvel :=
         DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.velocity_coord_diff
           (I := I) gamma r hr2
-      have hacc := lRegAction_minimizer_acceleration_eq_on_chart_piece_interior (I := I) S hS T a b t ht ht0
+      have hacc := lRegularizedAction_minimizer_acceleration_eq_on_chart_piece_interior (I := I) S hS T a b t ht ht0
         htlast p gamma hgamma u hsrc hrep hreg hmin i r hri
       simpa only [z, X] using
-        lRegCurve_phase (I := I) S T x gamma r
+        lRegularizedCurve_phase (I := I) S T x gamma r
           (hr2.mdifferentiableAt (by norm_num)) hrsrc hvel hacc
     · have hrj : r ∈ Ioo (t j.castSucc) (t j.succ) := by
         simpa only [j, c] using ⟨hcr', hrwin.2⟩
-      have hr2 := lRegAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior (I := I) S hS T a b t ht ht0 htlast
+      have hr2 := lRegularizedAction_minimizer_contMDiffAt_two_of_mem_chart_piece_interior (I := I) S hS T a b t ht ht0 htlast
         p gamma hgamma u hsrc hrep hreg hmin j r hrj
       have hvel :=
         DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.velocity_coord_diff
           (I := I) gamma r hr2
-      have hacc := lRegAction_minimizer_acceleration_eq_on_chart_piece_interior (I := I) S hS T a b t ht ht0
+      have hacc := lRegularizedAction_minimizer_acceleration_eq_on_chart_piece_interior (I := I) S hS T a b t ht ht0
         htlast p gamma hgamma u hsrc hrep hreg hmin j r hrj
       simpa only [z, X] using
-        lRegCurve_phase (I := I) S T x gamma r
+        lRegularizedCurve_phase (I := I) S T x gamma r
           (hr2.mdifferentiableAt (by norm_num)) hrsrc hvel hacc
   have hzder : HasDerivAt z (lPhaseField S T x c (z c)) c :=
     DifferentialGeometry.hasDerivAt_of_punct hpunc hzcont hgcont
@@ -179,13 +179,13 @@ theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
     exact (extChartAt I x).left_inv (by
       simpa only [extChartAt_source] using hrsrc)
   have hvelEq : ∀ᶠ r in 𝓝 c,
-      (lPhaseVel (I := I) x z r : E) = (X r : E) := by
+      (lPhaseVelocity (I := I) x z r : E) = (X r : E) := by
     filter_upwards [hxsrc'] with r hrsrc
     have hrbase : gamma r ∈
         (trivializationAt E (TangentSpace I) x).baseSet := by
       rw [TangentBundle.trivializationAt_baseSet]
       exact hrsrc
-    simp only [lPhaseVel, lPhaseCurve, z, chartCurve, chartRepAtBase_apply]
+    simp only [lPhaseVelocity, lPhaseCurve, z, chartCurve, chartRepAtBase_apply]
     rw [(extChartAt I x).left_inv (by
       simpa only [extChartAt_source] using hrsrc)]
     exact congrArg (fun A : TangentSpace I (gamma r) ↦ (A : E))
@@ -193,17 +193,17 @@ theorem lRegAction_minimizer_acceleration_eq_at_partition_nodes
   have hcov :=
     DifferentialGeometry.Geometry.Riemannian.covDerivAlong_congr_curve
       (I := I) (S.base.metric (T - c ^ 2))
-      (lPhaseVel (I := I) x z) X hcurve hvelEq
+      (lPhaseVelocity (I := I) x z) X hcurve hvelEq
   refine ⟨hmdiff, hveldiff, ?_⟩
   change
     (covDerivAlong (I := I) (S.base.metric (T - c ^ 2)) gamma X c : E) =
-      (lRegAccel S T c (gamma c) (X c) : E)
+      (lRegularizedAccel S T c (gamma c) (X c) : E)
   rw [← hcov]
   have hphaseE :
       (covDerivAlong (I := I) (S.base.metric (T - c ^ 2))
-          (lPhaseCurve (I := I) x z) (lPhaseVel (I := I) x z) c : E) =
-        (lRegAccel S T c (lPhaseCurve (I := I) x z c)
-          (lPhaseVel (I := I) x z c) : E) :=
+          (lPhaseCurve (I := I) x z) (lPhaseVelocity (I := I) x z) c : E) =
+        (lRegularizedAccel S T c (lPhaseCurve (I := I) x z c)
+          (lPhaseVelocity (I := I) x z c) : E) :=
     congrArg
       (fun A : TangentSpace I (lPhaseCurve (I := I) x z c) ↦ (A : E)) hphase
   exact hphaseE.trans (by

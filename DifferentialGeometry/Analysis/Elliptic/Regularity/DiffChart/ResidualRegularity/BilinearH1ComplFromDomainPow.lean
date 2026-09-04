@@ -46,9 +46,9 @@ noncomputable def chosenSecondPartialChartPushedU
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g)
     (i j : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 j
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
       (d := Module.finrank ℝ E) 2 i
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
         (I := I) (M := M) (chartAtlasPOU I M) α
@@ -79,7 +79,7 @@ private lemma chosenSecondPartialChartPushedU_memLp_two
       (I := I) (M := M) g hu_h).1.1
     exact h_memWkpChart α
   have h_inner_memW1p : DeGiorgi.MemW1p 2
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 i
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α
@@ -91,7 +91,7 @@ private lemma chosenSecondPartialChartPushedU_memLp_two
     have h_step := h_memWkp_2.chosenWeakPartial_mem i
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p] at h_step
     exact h_step
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
     h_inner_memW1p j
 
 theorem chosenSecondPartialChartPushedU_locally_memLp
@@ -126,7 +126,7 @@ private noncomputable def chosenInnerPartialChartPushedU
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g)
     (i : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 i
     (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
       (I := I) (M := M) (chartAtlasPOU I M) α
@@ -195,7 +195,7 @@ private lemma chosenInnerPartialChartPushedU_isWeakPartial
         (I := I) (M := M) α) := by
   have h_chartPushed_memW1p := chartPushed_memW1p_of_laplacianDomainPow_two
     (I := I) (M := M) g α hu_h
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
     h_chartPushed_memW1p i
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -269,7 +269,7 @@ private lemma chartPushedWeakPartialLp_ae_eq_chosenInner_on_open
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α)) := by
     unfold chosenInnerPartialChartPushedU
-    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       (chartPushed_memW1p_of_laplacianDomainPow_two
         (I := I) (M := M) g α hu_h) i
   have hK_meas : MeasurableSet K := hK_compact.isClosed.measurableSet
@@ -286,21 +286,21 @@ private lemma chartPushedWeakPartialLp_ae_eq_chosenInner_on_open
     rw [← h_chartTarget_restrict_K]
     exact h_chosenInner_memLp_chartTarget.restrict K
   have hΩ'_meas : MeasurableSet Ω' := hΩ'_open.measurableSet
-  have h_chartPushed_locInt : LocallyIntegrable
+  have h_chartPushed_localInt : LocallyIntegrable
       (((chartPushedWeakPartialLp (I := I) (M := M) g α i
         (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
        ) : EuclN → ℝ))
       ((volume : Measure EuclN).restrict Ω') :=
     locallyIntegrable_of_memLp_two_compact_open_subset
       K Ω' hK_compact hΩ'_subset_K hΩ'_meas h_chartPushed_memLp_K
-  have h_chosenInner_locInt : LocallyIntegrable
+  have h_chosenInner_localInt : LocallyIntegrable
       (chosenInnerPartialChartPushedU (I := I) (M := M) g α u_h i)
       ((volume : Measure EuclN).restrict Ω') :=
     locallyIntegrable_of_memLp_two_compact_open_subset
       K Ω' hK_compact hΩ'_subset_K hΩ'_meas h_chosenInner_memLp_K
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ'_open
     h_chartPushed_restr h_chosenInner_restr
-    h_chartPushed_locInt h_chosenInner_locInt
+    h_chartPushed_localInt h_chosenInner_localInt
 
 theorem hasWeakPartialDeriv_chosenSecond_of_chartPushedWeakPartialLp
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -317,7 +317,7 @@ theorem hasWeakPartialDeriv_chosenSecond_of_chartPushedWeakPartialLp
   classical
   have h_chosenSecond_def :
       chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i k =
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 k
         (chosenInnerPartialChartPushedU (I := I) (M := M) g α u_h i)
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
@@ -333,9 +333,9 @@ theorem hasWeakPartialDeriv_chosenSecond_of_chartPushedWeakPartialLp
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α) := by
     rw [h_chosenSecond_def]
-    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       h_inner_memW1p k
-  intro ψ hψ_smooth hψ_cs hψ_supp
+  intro ψ hψ_smooth hψ_cs hψ_support
   have hΩ_open :
       IsOpen (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α) :=
@@ -345,7 +345,7 @@ theorem hasWeakPartialDeriv_chosenSecond_of_chartPushedWeakPartialLp
       ∃ δ : ℝ, 0 < δ ∧ Metric.cthickening δ (tsupport ψ) ⊆
         DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α :=
-    hψ_cs.exists_cthickening_subset_open hΩ_open hψ_supp
+    hψ_cs.exists_cthickening_subset_open hΩ_open hψ_support
   set Ω' : Set EuclN := Metric.thickening δ (tsupport ψ) with hΩ'_def
   set K : Set EuclN := Metric.cthickening δ (tsupport ψ) with hK_def
   have hΩ'_open : IsOpen Ω' := Metric.isOpen_thickening
@@ -396,12 +396,12 @@ theorem hasWeakPartialDeriv_chosenSecond_of_chartPushedWeakPartialLp
     have h_compl_open : IsOpen ((tsupport ψ)ᶜ) :=
       (isClosed_tsupport _).isOpen_compl
     have hx_in_compl : x ∈ (tsupport ψ)ᶜ := hx
-    have hψ_zero_nbhd : ∀ᶠ y in 𝓝 x, ψ y = 0 := by
+    have hψ_zero_neighborhood : ∀ᶠ y in 𝓝 x, ψ y = 0 := by
       filter_upwards [h_compl_open.mem_nhds hx_in_compl] with y hy
       exact image_eq_zero_of_notMem_tsupport hy
     have hψ_const_zero : fderiv ℝ ψ x = fderiv ℝ (fun _ : EuclN => (0 : ℝ)) x := by
       apply Filter.EventuallyEq.fderiv_eq
-      filter_upwards [hψ_zero_nbhd] with y hy
+      filter_upwards [hψ_zero_neighborhood] with y hy
       rw [hy]
     rw [hψ_const_zero]; simp
   have h_LHS_eq :
@@ -507,7 +507,7 @@ noncomputable def chosenFChartDeriv
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (direction : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 direction
     (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
@@ -535,7 +535,7 @@ lemma chosenFChartDeriv_isWeakPartial
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α) := by
   unfold chosenFChartDeriv
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
     h_memW1p direction
 
 omit [SigmaCompactSpace M] in
@@ -555,7 +555,7 @@ private lemma chosenFChartDeriv_memLp
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α)) := by
   unfold chosenFChartDeriv
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
     h_memW1p direction
 
 omit [SigmaCompactSpace M] in
@@ -1046,7 +1046,7 @@ lemma base_f_chart_memW1p_from_residual_memW1p
   exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae hΩ
     h_decomp.symm).mp h_sum_memW1p
 
-noncomputable def diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoViaResidual
+noncomputable def diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoOfResidualMemW1p
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (direction : Fin (Module.finrank ℝ E))

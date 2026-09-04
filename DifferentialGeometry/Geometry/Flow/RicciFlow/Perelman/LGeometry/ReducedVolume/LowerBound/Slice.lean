@@ -36,10 +36,10 @@ theorem redVolume_slice_low
       ∀ {T : Real}, a ≤ T → T < omega →
         ∀ {x : M} {W : TangentSpace I x},
           Icc a₀ T ⊆ D.regular →
-          Real.sqrt (T - a₀) ∈ lRegDomain S T x W →
+          Real.sqrt (T - a₀) ∈ lRegularizedDomain S T x W →
           (W, T - a₁) ∈ lMinDomain S T x →
           redLength S T x
-              (lRegCurve S T x W (Real.sqrt (T - a₁))) (T - a₁) ≤ l₀ →
+              (lRegularizedCurve S T x W (Real.sqrt (T - a₁))) (T - a₁) ≤ l₀ →
           v₀ ≤ redVolume S T x (T - a₀) := by
   classical
   obtain ⟨K, v, _hK, hv, hslice⟩ :=

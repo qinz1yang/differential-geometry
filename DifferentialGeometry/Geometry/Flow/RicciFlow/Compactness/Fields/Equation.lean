@@ -17,7 +17,7 @@ open scoped Manifold Topology ContDiff
 open DifferentialGeometry.PDE.RicciFlow (metric_derivWithin_eq_neg_two_ricci)
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 private theorem function_le_max_zero_one_two
     (C : Nat → Real) {a : Nat} (ha : a ≤ 2) :
@@ -79,7 +79,7 @@ theorem gSeqExt_ricci
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (k : Nat) (t : Real) (x : P.M)
     (hx : letI : TopologicalSpace P.M := P.topology; x ∈ bf.grow k)
     (v w : letI : TopologicalSpace P.M := P.topology
@@ -97,7 +97,7 @@ theorem gSeqExt_ricci
     letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
       sourceDomSigmaOf (I := I) Φ k (hsrc k)
     ricciTensor (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x v w =
-      ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t)
+      ricciTensor (I := I) (sourceMetric (I := I) Φ hsrc htgt k t)
         ⟨x, bf.grow_subset k hx⟩ v w := by
   classical
   let : TopologicalSpace P.M := P.topology
@@ -140,24 +140,24 @@ theorem gSeqExt_ricci
   let xsrc : SourceDomain (I := I) Φ k := ⟨x, bf.grow_subset k hx⟩
   have hxO : xsrc ∈ O := hgrowW hx
   have hres :
-      (srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O =
-        (resSrc (I := I) Φ k
+      (sourceMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O =
+        (sourceMetricRestriction (I := I) Φ (k := k)
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O := by
     apply smoothRiemannianMetric_eq_of_inner (I := I)
     funext y
     ext a b
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
-    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+    change (sourceMetric (I := I) Φ hsrc htgt k t).inner
         (y : SourceDomain (I := I) Φ k)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
-      (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
+      (sourceMetricRestriction (I := I) Φ (k := k) (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
         (y : SourceDomain (I := I) Φ k)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b)
-    rw [resSrc_inner (I := I) Φ k]
-    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+    rw [resSource_inner (I := I) Φ k]
+    change (sourceMetric (I := I) Φ hsrc htgt k t).inner
         (y : SourceDomain (I := I) Φ k)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
@@ -173,10 +173,10 @@ theorem gSeqExt_ricci
     rw [hW1 _ y.2]
     simp
   have hricSource :
-      ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc
+      ricciTensor (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc
           (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) =
         ricciTensor (I := I)
-          (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
+          (sourceMetricRestriction (I := I) Φ (k := k) (gSeqExt (I := I) Φ R bf hsrc htgt k t))
           xsrc (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) := by
     let xO : O := ⟨xsrc, hxO⟩
     let vO : TangentSpace I xO := show E from v
@@ -187,18 +187,18 @@ theorem gSeqExt_ricci
     have hwO : mfderiv I I (Subtype.val : O → SourceDomain (I := I) Φ k) xO wO =
         (show TangentSpace I xsrc from w) := by
       rw [mfderiv_subtype_val_apply]
-    change ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc
+    change ricciTensor (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc
         (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) =
       ricciTensor (I := I)
-        (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc
+        (sourceMetricRestriction (I := I) Φ (k := k) (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc
         (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w)
     calc
       _ = ricciTensor (I := I)
-          ((srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O)
+          ((sourceMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O)
           xO vO wO := by
         rw [ricciTensor_restrictOpen, hvO, hwO]
       _ = ricciTensor (I := I)
-          ((resSrc (I := I) Φ k
+          ((sourceMetricRestriction (I := I) Φ (k := k)
             (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O)
           xO vO wO := by rw [hres]
       _ = _ := by
@@ -219,7 +219,7 @@ theorem gSeqExt_ricci
   have sourceT2Inst : T2Space ↥(sourceOpen (I := I) Φ k) := sourceT2
   have hricAmbient :
       ricciTensor (I := I)
-          (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc
+          (sourceMetricRestriction (I := I) Φ (k := k) (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc
           (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) =
         ricciTensor (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x v w := by
     have h :=
@@ -232,7 +232,7 @@ theorem gSeqExt_ricci
     rw [mfderiv_subtype_val_apply, mfderiv_subtype_val_apply] at h
     exact h
   change ricciTensor (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x v w =
-    ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc
+    ricciTensor (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc
       (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w)
   exact hricAmbient.symm.trans hricSource.symm
 
@@ -242,7 +242,7 @@ theorem gSeqExt_scalar
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (k : Nat) (t : Real) (x : P.M)
     (hx : letI : TopologicalSpace P.M := P.topology; x ∈ bf.grow k) :
     letI : TopologicalSpace P.M := P.topology
@@ -336,24 +336,24 @@ theorem gSeqExt_scalar
   let xsrc : SourceDomain (I := I) Φ k := ⟨x, bf.grow_subset k hx⟩
   have hxO : xsrc ∈ O := hgrowW hx
   have hres :
-      (srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O =
-        (resSrc (I := I) Φ k
+      (sourceMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O =
+        (sourceMetricRestriction (I := I) Φ (k := k)
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O := by
     apply smoothRiemannianMetric_eq_of_inner (I := I)
     funext y
     ext a b
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
-    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+    change (sourceMetric (I := I) Φ hsrc htgt k t).inner
         (y : SourceDomain (I := I) Φ k)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
-      (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
+      (sourceMetricRestriction (I := I) Φ (k := k) (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
         (y : SourceDomain (I := I) Φ k)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b)
-    rw [resSrc_inner (I := I) Φ k]
-    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+    rw [resSource_inner (I := I) Φ k]
+    change (sourceMetric (I := I) Φ hsrc htgt k t).inner
         (y : SourceDomain (I := I) Φ k)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
@@ -369,13 +369,13 @@ theorem gSeqExt_scalar
     rw [hW1 _ y.2]
     simp
   have hscalarSource :
-      metricScalarAt (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc =
+      metricScalarAt (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc =
         metricScalarAt (I := I)
-          (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc := by
+          (sourceMetricRestriction (I := I) Φ (k := k) (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc := by
     rw [← metricScalarAt_restrictOpen (I := I)
-        (srcMetric (I := I) Φ hsrc htgt k t) O ⟨xsrc, hxO⟩,
+        (sourceMetric (I := I) Φ hsrc htgt k t) O ⟨xsrc, hxO⟩,
       ← metricScalarAt_restrictOpen (I := I)
-        (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
+        (sourceMetricRestriction (I := I) Φ (k := k) (gSeqExt (I := I) Φ R bf hsrc htgt k t))
         O ⟨xsrc, hxO⟩,
       hres]
   let sourceTopInst : TopologicalSpace ↑(sourceOpen (I := I) Φ k) :=
@@ -400,7 +400,7 @@ theorem gSeqExt_scalar
       sourceSigma sourceT2 (by infer_instance) (by infer_instance) xsrc
   calc
     metricScalarAt (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x =
-        metricScalarAt (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc :=
+        metricScalarAt (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc :=
       hscalarAmbient.symm.trans hscalarSource.symm
     _ = (sourceFlow (I := I) Φ k (hsrc k) (htgt k)).scalar t xsrc := rfl
     _ = (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S
@@ -425,7 +425,7 @@ theorem gSeqExt_ricNorm
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (k : Nat) (t : Real) (x : P.M)
     (hx : letI : TopologicalSpace P.M := P.topology; x ∈ bf.grow k) :
     letI : TopologicalSpace P.M := P.topology
@@ -531,24 +531,24 @@ theorem gSeqExt_ricNorm
   let xsrc : SourceDomain (I := I) Φ k := ⟨x, bf.grow_subset k hx⟩
   have hxO : xsrc ∈ O := hgrowW hx
   have hres :
-      (srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O =
-        (resSrc (I := I) Φ k
+      (sourceMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O =
+        (sourceMetricRestriction (I := I) Φ (k := k)
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O := by
     apply smoothRiemannianMetric_eq_of_inner (I := I)
     funext y
     ext a b
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
-    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+    change (sourceMetric (I := I) Φ hsrc htgt k t).inner
         (y : SourceDomain (I := I) Φ k)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
-      (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
+      (sourceMetricRestriction (I := I) Φ (k := k) (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
         (y : SourceDomain (I := I) Φ k)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b)
-    rw [resSrc_inner (I := I) Φ k]
-    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+    rw [resSource_inner (I := I) Φ k]
+    change (sourceMetric (I := I) Φ hsrc htgt k t).inner
         (y : SourceDomain (I := I) Φ k)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
         (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
@@ -564,18 +564,18 @@ theorem gSeqExt_ricNorm
     rw [hW1 _ y.2]
     simp
   have hnormSource :
-      normSq0S (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc 2
-          (metricRicci (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc) =
+      normSq0S (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc 2
+          (metricRicci (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc) =
         normSq0S (I := I)
-          (resSrc (I := I) Φ k
+          (sourceMetricRestriction (I := I) Φ (k := k)
             (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc 2
           (metricRicci (I := I)
-            (resSrc (I := I) Φ k
+            (sourceMetricRestriction (I := I) Φ (k := k)
               (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc) := by
     rw [← ricNorm_restrict (I := I)
-        (srcMetric (I := I) Φ hsrc htgt k t) O ⟨xsrc, hxO⟩,
+        (sourceMetric (I := I) Φ hsrc htgt k t) O ⟨xsrc, hxO⟩,
       ← ricNorm_restrict (I := I)
-        (resSrc (I := I) Φ k
+        (sourceMetricRestriction (I := I) Φ (k := k)
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)) O ⟨xsrc, hxO⟩,
       hres]
   let sourceTopInst : TopologicalSpace ↑(sourceOpen (I := I) Φ k) :=
@@ -599,8 +599,8 @@ theorem gSeqExt_ricNorm
   calc
     normSq0S (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x 2
         (metricRicci (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x) =
-        normSq0S (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc 2
-          (metricRicci (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc) :=
+        normSq0S (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc 2
+          (metricRicci (I := I) (sourceMetric (I := I) Φ hsrc htgt k t) xsrc) :=
       hnormAmbient.symm.trans hnormSource.symm
     _ = DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
           (sourceFlow (I := I) Φ k (hsrc k) (htgt k)) t xsrc := by
@@ -630,7 +630,7 @@ theorem gSeqExt_pde
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (k : Nat) (β ψ t : Real) (hwin : Set.Icc β ψ ⊆ X.D.regular)
     (ht : t ∈ Set.Icc β ψ) (x : P.M)
     (hx : letI : TopologicalSpace P.M := P.topology; x ∈ bf.grow k)
@@ -676,19 +676,19 @@ theorem gSeqExt_pde
     (sourceFlow (I := I) Φ k (hsrc k) (htgt k))
     (isSolutionOn_sourceFlow (I := I) Φ k (hsrc k) (htgt k)) τ xsrc vsrc wsrc
   have hflow' : HasDerivWithinAt
-      (fun s : Real => (srcMetric (I := I) Φ hsrc htgt k s).inner xsrc vsrc wsrc)
+      (fun s : Real => (sourceMetric (I := I) Φ hsrc htgt k s).inner xsrc vsrc wsrc)
       ((-2 : Real) * ricciTensor (I := I)
-        (srcMetric (I := I) Φ hsrc htgt k t) xsrc vsrc wsrc)
+        (sourceMetric (I := I) Φ hsrc htgt k t) xsrc vsrc wsrc)
       X.D.carrier t := by
     change HasDerivWithinAt
-      (fun s : Real => (srcMetric (I := I) Φ hsrc htgt k s).inner xsrc vsrc wsrc)
+      (fun s : Real => (sourceMetric (I := I) Φ hsrc htgt k s).inner xsrc vsrc wsrc)
       ((-2 : Real) * metricRicciAt (I := I)
-        (srcMetric (I := I) Φ hsrc htgt k t) xsrc (vec2 (I := I) vsrc wsrc))
+        (sourceMetric (I := I) Φ hsrc htgt k t) xsrc (vec2 (I := I) vsrc wsrc))
       X.D.carrier t at hflow
     exact hflow.congr_deriv (by rw [metricRicciAt_apply_eq_ricciTensor])
   have hcoeff : ∀ s : Real,
       (gSeqExt (I := I) Φ R bf hsrc htgt k s).inner x v w =
-        (srcMetric (I := I) Φ hsrc htgt k s).inner xsrc vsrc wsrc := by
+        (sourceMetric (I := I) Φ hsrc htgt k s).inner xsrc vsrc wsrc := by
     intro s
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k s x xsrc.2 v w]
     obtain ⟨W, _hWopen, hgrowW, hW1⟩ := bf.chi_one k
@@ -701,7 +701,7 @@ theorem gSeqExt_pde
   have hder : HasDerivWithinAt
       (fun s : Real => (gSeqExt (I := I) Φ R bf hsrc htgt k s).inner x v w)
       ((-2 : Real) * ricciTensor (I := I)
-        (srcMetric (I := I) Φ hsrc htgt k t) xsrc vsrc wsrc)
+        (sourceMetric (I := I) Φ hsrc htgt k t) xsrc vsrc wsrc)
       (Set.Icc β ψ) t :=
     hflow'.congr_mono (fun s _hs => hcoeff s) (hcoeff t) hwindow
   have hric := gSeqExt_ricci (I := I) Φ R bf hsrc htgt k t x hx v w
@@ -712,7 +712,7 @@ theorem FlowMetricConvergenceData.gInf_pde
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (β ψ : Real) (hwin : Set.Icc β ψ ⊆ X.D.regular)
     (cLow : Real) (hcLow : 0 < cLow)
     (hbound : letI : TopologicalSpace P.M := P.topology
@@ -732,7 +732,7 @@ theorem FlowMetricConvergenceData.gInf_pde
               sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
               sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
@@ -776,7 +776,7 @@ theorem FlowMetricConvergenceData.gInf_pde
         ∀ a : Nat, a ≤ p →
           metricDerivNorm (I := I) a (gTail k u) (co.gInf u) R x < ε := by
     intro p ε hε
-    obtain ⟨k0, hk0⟩ := co.convPt {x} isCompact_singleton p ε hε
+    obtain ⟨k0, hk0⟩ := co.convergencePt {x} isCompact_singleton p ε hε
     refine ⟨k0, fun k hk u hu a ha ↦ ?_⟩
     simpa only [gTail] using
       hk0 (k + kgrow) (by omega) u hu a ha x (Set.mem_singleton x)
@@ -831,25 +831,25 @@ theorem FlowMetricConvergenceData.gInf_pde
     have hseq := hbddSeqC k0 u hu a ha
     have hCa := hCmax a ha
     exact le_max_zero_add_one_of_le_add htri hd (le_trans hseq hCa)
-  have hRicConv : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
+  have hRicConvergence : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
       ∀ u ∈ Set.Icc β ψ,
         |ricciTensor (I := I) (gTail k u) x v w -
           ricciTensor (I := I) (co.gInf u) x v w| < ε :=
-    ricciConv_of_dnConv (I := I) R x gTail co.gInf β ψ lam B0 hlam hB0
+    ricciConvergence_of_dnConvergence (I := I) R x gTail co.gInf β ψ lam B0 hlam hB0
       hlowSeq hlowInf hbddSeq hbddInf (hconvTail 2) v w
   refine metric_limit_pde_of_metric_sequence (I := I) gTail β ψ co.gInf x v w ?_
-    (fun u hu ↦ hinner u hu v w) hRicConv ht
+    (fun u hu ↦ hinner u hu v w) hRicConvergence ht
   refine ⟨0, fun k _hk u hu ↦ ?_⟩
   simpa only [gTail] using
     gSeqExt_pde (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) β ψ u hwin hu x
       (hxgrow k) v w
 
-theorem FlowMetricConvergenceData.scalar_conv_at
+theorem FlowMetricConvergenceData.scalar_convergence_at
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (β ψ : Real) (cLow : Real) (hcLow : 0 < cLow)
     (hbound : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
@@ -868,7 +868,7 @@ theorem FlowMetricConvergenceData.scalar_conv_at
               sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
               sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
@@ -923,7 +923,7 @@ theorem FlowMetricConvergenceData.scalar_conv_at
         ∀ a : Nat, a ≤ p →
           metricDerivNorm (I := I) a (gTail k u) (co.gInf u) R x < ε := by
     intro p ε hε
-    obtain ⟨k0, hk0⟩ := co.convPt {x} isCompact_singleton p ε hε
+    obtain ⟨k0, hk0⟩ := co.convergencePt {x} isCompact_singleton p ε hε
     refine ⟨k0, fun k hk u hu a ha ↦ ?_⟩
     simpa only [gTail] using
       hk0 (k + kgrow) (by omega) u hu a ha x (Set.mem_singleton x)
@@ -977,18 +977,18 @@ theorem FlowMetricConvergenceData.scalar_conv_at
     have hseq := hbddSeqC k0 u hu a ha
     have hCa := hCmax a ha
     exact le_max_zero_add_one_of_le_add htri hd (le_trans hseq hCa)
-  have hScalarConv : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
+  have hScalarConvergence : ∀ ε : Real, 0 < ε → ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k →
       ∀ u ∈ Set.Icc β ψ,
         |metricScalarAt (I := I) (gTail k u) x -
           metricScalarAt (I := I) (co.gInf u) x| < ε :=
-    scalarConv_of_dnConv (I := I) R x gTail co.gInf β ψ lam B0 hlam hB0
+    scalarConvergence_of_dnConvergence (I := I) R x gTail co.gInf β ψ lam B0 hlam hB0
       hlowSeq hlowInf hbddSeq hbddInf (hconvTail 2)
   have hscalarTail : Filter.Tendsto
       (fun k ↦ metricScalarAt (I := I) (gTail k t) x) Filter.atTop
       (nhds (metricScalarAt (I := I) (co.gInf t) x)) := by
     rw [Metric.tendsto_atTop]
     intro ε hε
-    obtain ⟨k0, hk0⟩ := hScalarConv ε hε
+    obtain ⟨k0, hk0⟩ := hScalarConvergence ε hε
     refine ⟨k0, fun k hk ↦ ?_⟩
     rw [Real.dist_eq]
     exact hk0 k hk t ht
@@ -998,12 +998,12 @@ theorem FlowMetricConvergenceData.scalar_conv_at
   simpa only [gTail, Function.comp_apply] using
     gSeqExt_scalar (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) t x (hxgrow k)
 
-theorem FlowMetricConvergenceData.ricNorm_conv_at
+theorem FlowMetricConvergenceData.ricNorm_convergence_at
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
     (β ψ : Real) (cLow : Real) (hcLow : 0 < cLow)
     (hbound : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
@@ -1022,7 +1022,7 @@ theorem FlowMetricConvergenceData.ricNorm_conv_at
               sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
               sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
@@ -1080,7 +1080,7 @@ theorem FlowMetricConvergenceData.ricNorm_conv_at
         ∀ a : Nat, a ≤ p →
           metricDerivNorm (I := I) a (gTail k u) (co.gInf u) R x < ε := by
     intro p ε hε
-    obtain ⟨k0, hk0⟩ := co.convPt {x} isCompact_singleton p ε hε
+    obtain ⟨k0, hk0⟩ := co.convergencePt {x} isCompact_singleton p ε hε
     refine ⟨k0, fun k hk u hu a ha ↦ ?_⟩
     simpa only [gTail] using
       hk0 (k + kgrow) (by omega) u hu a ha x (Set.mem_singleton x)
@@ -1134,13 +1134,13 @@ theorem FlowMetricConvergenceData.ricNorm_conv_at
     have hseq := hbddSeqC k0 u hu a ha
     have hCa := hCmax a ha
     exact le_max_zero_add_one_of_le_add htri hd (le_trans hseq hCa)
-  have hRicNormConv : ∀ ε : Real, 0 < ε →
+  have hRicNormConvergence : ∀ ε : Real, 0 < ε →
       ∃ k0 : Nat, ∀ k : Nat, k0 ≤ k → ∀ u ∈ Set.Icc β ψ,
         |normSq0S (I := I) (gTail k u) x 2
               (metricRicci (I := I) (gTail k u) x) -
             normSq0S (I := I) (co.gInf u) x 2
               (metricRicci (I := I) (co.gInf u) x)| < ε :=
-    ricNormConv_of_dn (I := I) R x gTail co.gInf β ψ lam B0 hlam hB0
+    ricNormConvergence_of_dn (I := I) R x gTail co.gInf β ψ lam B0 hlam hB0
       hlowSeq hlowInf hbddSeq hbddInf (hconvTail 2)
   have hricNormTail : Filter.Tendsto
       (fun k ↦ normSq0S (I := I) (gTail k t) x 2
@@ -1150,7 +1150,7 @@ theorem FlowMetricConvergenceData.ricNorm_conv_at
         (metricRicci (I := I) (co.gInf t) x))) := by
     rw [Metric.tendsto_atTop]
     intro ε hε
-    obtain ⟨k0, hk0⟩ := hRicNormConv ε hε
+    obtain ⟨k0, hk0⟩ := hRicNormConvergence ε hε
     refine ⟨k0, fun k hk ↦ ?_⟩
     rw [Real.dist_eq]
     exact hk0 k hk t ht
@@ -1160,5 +1160,5 @@ theorem FlowMetricConvergenceData.ricNorm_conv_at
   simpa only [gTail, Function.comp_apply] using
     gSeqExt_ricNorm (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) t x (hxgrow k)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

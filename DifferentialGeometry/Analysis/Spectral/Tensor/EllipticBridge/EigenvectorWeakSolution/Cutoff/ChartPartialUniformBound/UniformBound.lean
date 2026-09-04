@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChristoffelCorrection.CovL2BoundFromH1
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChristoffelCorrection.ChristoffelBound
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ChartFormLowerOrder
+import DifferentialGeometry.Analysis.Integration.LpNorm
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothFChartResidual.BilinearBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.ChartPartialUniformBound.ScalarBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.ChartPartialUniformBound.Regularity
@@ -161,7 +162,7 @@ private lemma euclidPartial_cutoffComponentEuclid_eq_three_terms
   classical
   rw [euclidPartial_cutoffComponentEuclid_eq_leibniz
     (I := I) (M := M) g r s S α k Idx Jdx hy,
-    euclidPartial_rawPushed_eq_covDerivComponent_sub'
+    euclidPartial_rawPushed_eq_covDerivComponent_sub
       (I := I) (M := M) g r s S α k Idx Jdx hy]
   unfold cutoffCovDerivComponent cutoffLeibnizCrossTerm cutoffLowerOrderTerm
   ring
@@ -184,7 +185,7 @@ private lemma euclidPartial_chartPushedRaw_cutoff_continuousOn
         (chartPushedRaw (I := I) (M := M) α
           (⇑(chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯))))
       (chartTargetEuclid (I := I) (M := M) α) :=
-  (euclidPartial_contDiff_of_contDiff' (E := E)
+  (euclidPartial_contDiff_of_contDiff (E := E)
     (chartPushedRaw_cutoff_contDiff (I := I) (M := M) α) k).continuous.continuousOn
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
@@ -208,14 +209,14 @@ private lemma cutoffCovDerivComponent_continuousOn
   have hgalt_cont : ContinuousOn galt
       (chartTargetEuclid (I := I) (M := M) α) :=
     (chartPushedRaw_cutoff_continuousOn (I := I) (M := M) α).mul
-      ((euclidPartial_chartPushedRaw_rawComponent_continuousOn'
+      ((euclidPartial_chartPushedRaw_rawComponent_continuousOn
         (I := I) (M := M) g r s S α k Idx Jdx).add
       (covDerivComponent_lowerOrder_contDiffOn (I := I) (M := M) g r s S α
         k Idx Jdx
         (fun Idx' Jdx' => chartPushedRaw_tensorChartComponentRaw_contDiffOn
           (I := I) (M := M) g r s S α Idx' Jdx')).continuousOn)
   refine hgalt_cont.congr (fun y hy => ?_)
-  have h := euclidPartial_rawPushed_eq_covDerivComponent_sub'
+  have h := euclidPartial_rawPushed_eq_covDerivComponent_sub
     (I := I) (M := M) g r s S α k Idx Jdx hy
   unfold cutoffCovDerivComponent
   rw [hgalt_def, show
@@ -262,7 +263,7 @@ private lemma cutoffLeibnizCrossTerm_continuousOn
   unfold cutoffLeibnizCrossTerm
   exact (euclidPartial_chartPushedRaw_cutoff_continuousOn
       (I := I) (M := M) α k).mul
-    (chartPushedRaw_rawComponent_continuousOn' (I := I) (M := M)
+    (chartPushedRaw_rawComponent_continuousOn (I := I) (M := M)
       g r s S α Idx Jdx)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -312,7 +313,7 @@ private lemma euclidPartial_chartPushedRaw_cutoff_tsupport_subset
         (⇑(chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯)) hy_off)
     set b : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y)
       with hb_def
-    have hb_src : b ∈ (chartAt H α).source :=
+    have hb_source : b ∈ (chartAt H α).source :=
       symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy_target
     have hb_cut : b ∈ cutoffKernelM (I := I) (M := M) α := by
       refine subset_tsupport _ ?_
@@ -325,7 +326,7 @@ private lemma euclidPartial_chartPushedRaw_cutoff_tsupport_subset
     have hb_ext : b ∈ (extChartAt I α).source := by
       rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)]
-      exact hb_src
+      exact hb_source
     have hy_symm : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
       rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy_target
       exact hy_target
@@ -532,7 +533,7 @@ private lemma exists_const_eLpNorm_rawComponentCutoffM_le
       (eLpNorm f 2 μ) ^ 2 ≤
         ENNReal.ofReal (C *
           tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun) := by
-    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq' μ f]
+    rw [DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq]
     have h_lint_le :
         ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
           ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
@@ -569,8 +570,8 @@ private lemma exists_const_eLpNorm_rawComponentCutoffM_le
     with hStotal_def
   have hStotal_nn : 0 ≤ Stotal := mul_nonneg hC_nn h_inner_nn
   have h_eLp_le : eLpNorm f 2 μ ≤ ENNReal.ofReal (Real.sqrt Stotal) := by
-    have h_pow := le_sqrt_of_sq_le' h_sq
-    rw [sqrt_ofReal_eq_ofReal_sqrt' hStotal_nn] at h_pow
+    have h_pow := le_rpow_half_of_sq_le h_sq
+    rw [ofReal_rpow_half_eq_ofReal_sqrt hStotal_nn] at h_pow
     exact h_pow
   have h_sqrt_factor : Real.sqrt Stotal = Real.sqrt C * ‖S‖ := by
     rw [hStotal_def, h_norm_sq, Real.sqrt_mul hC_nn,
@@ -600,9 +601,9 @@ private lemma exists_const_euclidPartial_chartPushedRaw_cutoff_le
         (⇑(chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯))) with hχ_def
   have hχ_cont : Continuous χ := by
     rw [hχ_def]
-    exact (euclidPartial_contDiff_of_contDiff' (E := E)
+    exact (euclidPartial_contDiff_of_contDiff (E := E)
       (chartPushedRaw_cutoff_contDiff (I := I) (M := M) α) k).continuous
-  have hχ_cpt : HasCompactSupport χ := by
+  have hχ_compact : HasCompactSupport χ := by
     refine HasCompactSupport.of_support_subset_isCompact
       (K := (toEuclidean (E := E)) ''
         ((extChartAt I α) '' (cutoffKernelM (I := I) (M := M) α))) ?_ ?_
@@ -618,7 +619,7 @@ private lemma exists_const_euclidPartial_chartPushedRaw_cutoff_le
       exact subset_tsupport _
   by_cases hK_ne : (tsupport χ).Nonempty
   · obtain ⟨x₀, _, hx₀_max⟩ :=
-      hχ_cpt.exists_isMaxOn hK_ne (hχ_cont.norm.continuousOn)
+      hχ_compact.exists_isMaxOn hK_ne (hχ_cont.norm.continuousOn)
     refine ⟨max ‖χ x₀‖ 0, le_max_right _ _, fun y => ?_⟩
     by_cases hy : y ∈ tsupport χ
     · exact (hx₀_max hy).trans (le_max_left _ _)
@@ -672,7 +673,7 @@ private lemma cutoffLeibnizCrossTerm_le_const_mul_chartPushedRaw_cutoff
         have hy_symm : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
           rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
           exact hy
-        have hb'_src : b' ∈ (extChartAt I α).source := by
+        have hb'_source : b' ∈ (extChartAt I α).source := by
           rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
             (I := I) (M := M)]
           exact cutoffKernelM_subset_chart_source (I := I) (M := M) α hb'_cut
@@ -680,7 +681,7 @@ private lemma cutoffLeibnizCrossTerm_le_const_mul_chartPushedRaw_cutoff
           rw [← hz_eq]
           exact (toEuclidean (E := E)).symm_apply_apply z
         have hb_eq_b' : b = b' := by
-          rw [hb_def, h_symm_y, ← hb'_eq, (extChartAt I α).left_inv hb'_src]
+          rw [hb_def, h_symm_y, ← hb'_eq, (extChartAt I α).left_inv hb'_source]
         rw [hb_eq_b']
         exact hb'_cut
       rw [h_cross_zero, norm_zero]
@@ -905,14 +906,14 @@ private lemma exists_const_eLpNorm_cutoffCovDerivComponent_le_uniform
     rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg hC_proj_nn]
   have hv_meas : Measurable v :=
     cutoffCovNormSumFun_measurable (I := I) (M := M) g r s S.toCcTensor α
-  have hv_supp : tsupport v ⊆ Kα :=
+  have hv_support : tsupport v ⊆ Kα :=
     cutoffCovNormSumFun_tsupport_subset (I := I) (M := M) g r s S.toCcTensor α
   have h_bridge :
       eLpNorm (chartPushedRaw (I := I) (M := M) α v) 2 μ ≤
         ENNReal.ofReal C_bridge *
           eLpNorm v 2
             (riemannianMeasure (I := I) g (chartAtlasPOU I M)) :=
-    hC_bridge hv_meas hv_supp
+    hC_bridge hv_meas hv_support
   have h_meas_eq :
       riemannianMeasure (I := I) g (chartAtlasPOU I M) =
         riemannianVolumeMeasure (I := I) (M := M) g := rfl
@@ -989,7 +990,7 @@ private lemma mem_cutoffKernelM_image_of_cutoffComponentEuclid_ne_zero
   have hy_symm : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
     rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
     exact hy
-  have hb_src : b ∈ (extChartAt I α).source := by
+  have hb_source : b ∈ (extChartAt I α).source := by
     rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
       (I := I) (M := M)]
     exact cutoffKernelM_subset_chart_source (I := I) (M := M) α hb_cut
@@ -1028,10 +1029,10 @@ private theorem exists_const_covDerivLowerOrderCoeff_bdd_cutoff
       isOpen_extChartAt_target (I := I) α
     rw [h_open.interior_eq]
     rintro y ⟨x, hx, rfl⟩
-    have hx_src : x ∈ (extChartAt I α).source := by
+    have hx_source : x ∈ (extChartAt I α).source := by
       rw [extChartAt_source]
       exact cutoffKernelM_subset_chart_source (I := I) (M := M) α hx
-    exact (extChartAt I α).map_source hx_src
+    exact (extChartAt I α).map_source hx_source
   obtain ⟨Cχ, hCχ_nn, hCχ⟩ :=
     chartChristoffel_bdd_on_compact (I := I) (M := M) g α
       hKE_compact hKE_sub_interior
@@ -1049,7 +1050,7 @@ private theorem exists_const_covDerivLowerOrderCoeff_bdd_cutoff
     have hy_symm : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
       rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
       exact hy
-    have hb'_src : b' ∈ (extChartAt I α).source := by
+    have hb'_source : b' ∈ (extChartAt I α).source := by
       rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)]
       exact cutoffKernelM_subset_chart_source (I := I) (M := M) α hb'_cut
@@ -1057,7 +1058,7 @@ private theorem exists_const_covDerivLowerOrderCoeff_bdd_cutoff
       rw [← hz_eq]
       exact (toEuclidean (E := E)).symm_apply_apply z
     have hb_eq_b' : b = b' := by
-      rw [hb_def, h_symm_y, ← hb'_eq, (extChartAt I α).left_inv hb'_src]
+      rw [hb_def, h_symm_y, ← hb'_eq, (extChartAt I α).left_inv hb'_source]
     rw [hb_eq_b']
     exact ⟨b', hb'_cut, rfl⟩
   have hinput : ∀ k : Fin r,
@@ -1074,7 +1075,7 @@ private theorem exists_const_covDerivLowerOrderCoeff_bdd_cutoff
               (if Idx' i = Idx i then (1 : ℝ) else 0)|
         ≤ Cχ * 1 := by
           refine mul_le_mul (hCχ _ himg _ _ _)
-            (abs_prod_kronecker_le_one' _ _) (abs_nonneg _) hCχ_nn
+            (abs_prod_kronecker_le_one _ _) (abs_nonneg _) hCχ_nn
       _ = Cχ := mul_one _
   have houtput : ∀ l : Fin s,
       |outputSlotCoeff (I := I) (M := M) g s α m l Jdx Jdx' y| ≤ Cχ := by
@@ -1090,13 +1091,13 @@ private theorem exists_const_covDerivLowerOrderCoeff_bdd_cutoff
               (if Jdx j = Jdx' j then (1 : ℝ) else 0)|
         ≤ Cχ * 1 := by
           refine mul_le_mul (hCχ _ himg _ _ _)
-            (abs_prod_kronecker_le_one' _ _) (abs_nonneg _) hCχ_nn
+            (abs_prod_kronecker_le_one _ _) (abs_nonneg _) hCχ_nn
       _ = Cχ := mul_one _
   have hsum_input :
       |∑ k : Fin r,
           inputSlotCoeff (I := I) (M := M) g r α m k Idx Idx' y *
             (if Jdx' = Jdx then (1 : ℝ) else 0)| ≤ r * Cχ := by
-    have h := abs_sum_coeff_kronecker_le' (Finset.univ : Finset (Fin r))
+    have h := abs_sum_coeff_kronecker_le (Finset.univ : Finset (Fin r))
       (fun k => inputSlotCoeff (I := I) (M := M) g r α m k Idx Idx' y)
       (fun _ => Jdx' = Jdx) hCχ_nn (fun k _ => hinput k)
     rwa [Finset.card_univ, Fintype.card_fin] at h
@@ -1104,7 +1105,7 @@ private theorem exists_const_covDerivLowerOrderCoeff_bdd_cutoff
       |∑ l : Fin s,
           outputSlotCoeff (I := I) (M := M) g s α m l Jdx Jdx' y *
             (if Idx' = Idx then (1 : ℝ) else 0)| ≤ s * Cχ := by
-    have h := abs_sum_coeff_kronecker_le' (Finset.univ : Finset (Fin s))
+    have h := abs_sum_coeff_kronecker_le (Finset.univ : Finset (Fin s))
       (fun l => outputSlotCoeff (I := I) (M := M) g s α m l Jdx Jdx' y)
       (fun _ => Idx' = Idx) hCχ_nn (fun l _ => houtput l)
     rwa [Finset.card_univ, Fintype.card_fin] at h
@@ -1298,13 +1299,13 @@ private theorem exists_const_sum_eLpNorm_cutoffLowerOrderTerm_le_uniform
   rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
 
 omit [CompleteSpace E] in
-theorem exists_const_sum_eLpNorm_chosenWeakPartial'_cutoffComponentEuclid_le_uniform
+theorem exists_const_sum_eLpNorm_chosenWeakPartialOrZero_cutoffComponentEuclid_le_uniform
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensorH1 g r s)
       (Idx : Fin r → Fin (Module.finrank ℝ E))
       (Jdx : Fin s → Fin (Module.finrank ℝ E)),
       ∑ k : Fin (Module.finrank ℝ E),
-        eLpNorm (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        eLpNorm (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := Module.finrank ℝ E) 2 k
             (cutoffComponentEuclid (I := I) (M := M) g r s S.toCcTensor α Idx Jdx)
             (chartTargetEuclid (I := I) (M := M) α)) 2
@@ -1343,7 +1344,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_cutoffComponentEuclid_le_uni
   have hμ_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_measurableSet (I := I) (M := M) α
   have hdir : ∀ k : Fin n,
-      eLpNorm (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      eLpNorm (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M) g r s S.toCcTensor α Idx Jdx)
           (chartTargetEuclid (I := I) (M := M) α)) 2 μ ≤
@@ -1357,7 +1358,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_cutoffComponentEuclid_le_uni
               (cutoffLowerOrderTerm (I := I) (M := M) g r s S.toCcTensor α
                 k Idx Jdx) 2 μ := by
     intro k
-    have h_step1 := chosenWeakPartial'_cutoffComponentEuclid_ae_eq_euclidPartial
+    have h_step1 := chosenWeakPartialOrZero_cutoffComponentEuclid_ae_eq_euclidPartial
       (I := I) (M := M) g r s S.toCcTensor α k Idx Jdx
     rw [hμ_def, eLpNorm_congr_ae h_step1]
     set tCov : EuclN → ℝ :=

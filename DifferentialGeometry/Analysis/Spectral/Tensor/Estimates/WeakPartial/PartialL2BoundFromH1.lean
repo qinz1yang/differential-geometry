@@ -88,7 +88,7 @@ private lemma exists_eLpNorm_tensorChartComponentScalar_le_const_mul_h1Norm
   exact hB'
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar_le_const_mul_h1Norm
+theorem exists_eLpNorm_chosenWeakPartialOrZero_chartPushed_tensorChartComponentScalar_le_const_mul_h1Norm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (k : Fin (Module.finrank ℝ E))
     {C_grad : ℝ} (hC_grad_nn : 0 ≤ C_grad)
@@ -110,7 +110,7 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) 2 k
               (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
                 (tensorChartComponentScalar (I := I) (M := M)
@@ -144,7 +144,7 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
       (I := I) (M := M) g r s S.toCcTensor α Idx Jdx
   have h_bridge :
       eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := Module.finrank ℝ E) 2 k
             (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α u)
             (chartTargetEuclid (I := I) (M := M) α)) 2 μE =
@@ -154,7 +154,7 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
               (fun z : M => ((chartAtlasPOU I M α
                 : C^∞⟮I, M; ℝ⟯) : M → ℝ) z * u z)) y
               (EuclideanSpace.single k (1 : ℝ))) 2 μE :=
-    eLpNorm_chosenWeakPartial'_chartPushed_eq_eLpNorm_fderiv_chartSmoothExt
+    eLpNorm_chosenWeakPartialOrZero_chartPushed_eq_eLpNorm_fderiv_chartSmoothExt
       (I := I) (M := M) (α := α) (u := u) hu_smooth k
   have h_env_apply :
       eLpNorm
@@ -201,13 +201,13 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
     (ENNReal.ofReal_add hC_L2_nn hC_grad_nn).symm
   have h_main :
       eLpNorm
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             (d := Module.finrank ℝ E) 2 k
             (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α u)
             (chartTargetEuclid (I := I) (M := M) α)) 2 μE ≤
         ENNReal.ofReal C_env * (ENNReal.ofReal (C_L2 + C_grad) * NS) := by
     calc eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) 2 k
               (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α u)
               (chartTargetEuclid (I := I) (M := M) α)) 2 μE

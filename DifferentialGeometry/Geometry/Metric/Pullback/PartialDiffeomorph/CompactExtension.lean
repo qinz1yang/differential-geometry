@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -32,7 +32,7 @@ theorem exists_smooth_riemannian_metric_eq_pullback_on_compact
         G.inner x v w = h.inner ((Φ : M → N) x)
           (mfderiv I I (Φ : M → N) x v) (mfderiv I I (Φ : M → N) x w) := by
   classical
-  obtain ⟨χ, P₀, hP₀smooth, hχ, hχK, hχsupp, hχ01, hP₀def⟩ :=
+  obtain ⟨χ, P₀, hP₀smooth, hχ, hχK, hχsupport, hχ01, hP₀def⟩ :=
     DifferentialGeometry.PartialDiffeomorph.exists_cutoff_pullback_inner Φ hK hKs h
   set G : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ := fun x =>
     P₀ x + (1 - χ x) • gM.inner x with hG
@@ -51,7 +51,7 @@ theorem exists_smooth_riemannian_metric_eq_pullback_on_compact
     have hgM := gM.pos x v hv
     rcases lt_or_eq_of_le ha with ha' | ha'
     · have hxs : x ∈ Φ.source :=
-        hχsupp (subset_tsupport χ (Function.mem_support.mpr (ne_of_gt ha')))
+        hχsupport (subset_tsupport χ (Function.mem_support.mpr (ne_of_gt ha')))
       have hpull := DifferentialGeometry.PartialDiffeomorph.pullback_inner_pos Φ hxs h v hv
       nlinarith
     · rw [← ha']
@@ -107,5 +107,5 @@ theorem exists_metric_tensor_field_eq_pullback_on_compact
   rw [Tensor0SBundle.metricTensorField_apply]
   exact hG x hx (v 0) (v 1)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

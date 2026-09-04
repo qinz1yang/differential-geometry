@@ -283,7 +283,7 @@ theorem parallel_chart_overlap_consistency_contMDiffOn [I.Boundaryless]
                   (chartTransitionMap (I := I) α β x)) := by
         rw [htransform]; abel
       rw [hsub, map_neg]
-      have hinv := chartTransitionAt_comp_chartTransitionAt' (I := I) α β hsrc_t
+      have hinv := chartTransitionAt_reverse_comp (I := I) α β hsrc_t
       have hid := congrArg (fun L : E →L[ℝ] E => L
           (chartChristoffelContraction (I := I) g β
             (chartTransitionAt (I := I) α β x (uPrimeα t))
@@ -351,10 +351,10 @@ theorem exists_parallel_transport_on_Ioo_contMDiffOn [I.Boundaryless]
         have : (1 : ℕ) ≤ N := le_trans one_le_two hN
         exact_mod_cast this)
     exact (hderiv_cd.continuousOn).mono hIcc_sub_W
-  have hγa_src : γ t₀ ∈ (chartAt H α).source := hsrc t₀ ht₀
+  have hγa_source : γ t₀ ∈ (chartAt H α).source := hsrc t₀ ht₀
   set y₀ : E := (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ t₀) v₀ with
     hy₀_def
-  obtain ⟨Y, hY_deriv, hY_init⟩ :=
+  obtain ⟨Y, hY_deriv, hY_initial⟩ :=
     parallel_local_existence_on_Icc (I := I) g α γ uPrime hab.le ht₀
       huPrimeCont hcurveCont hsrc y₀
   set V : ∀ t, TangentSpace I (γ t) := fun s =>
@@ -394,9 +394,9 @@ theorem exists_parallel_transport_on_Ioo_contMDiffOn [I.Boundaryless]
   refine ⟨V, ?_, ?_, ?_, ?_⟩
   · rw [hV_def]
     simp only
-    rw [hY_init, hy₀_def]
+    rw [hY_initial, hy₀_def]
     have hbase : γ t₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-      rw [TangentBundle.trivializationAt_baseSet]; exact hγa_src
+      rw [TangentBundle.trivializationAt_baseSet]; exact hγa_source
     exact (trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt (R := ℝ) hbase v₀
   · intro t ht
     refine (DifferentiableAt.congr_of_eventuallyEq ?_ (hrep_eq t ht))
@@ -2073,7 +2073,7 @@ theorem radialTransportSection_nabla2_center_zero
     have hrad_pos : 0 < radialRadius (I := I) g p := radialRadius_pos (I := I) g p
     linarith
   have hγ0 : γ 0 = p := by simpa [hγ] using (radialCurve_zero (I := I) g p X)
-  have hγvel : mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ) = X := by
+  have hγvelocity : mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ) = X := by
     rw [hγ]
     exact radialCurve_velocity (I := I) g p X
   have hγ2 : ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ 0 := by
@@ -2161,13 +2161,13 @@ theorem radialTransportSection_nabla2_center_zero
         (chartCurve (I := I) p (fun s : ℝ => expMap (I := I) g p (s • X)) t)) =ᶠ[𝓝 (0 : ℝ)]
     (fun t : ℝ => c • N t) := by
     have h0 : (0 : ℝ) ∈ Set.Ioo (-1 : ℝ) 1 := ⟨by norm_num, by norm_num⟩
-    filter_upwards [isOpen_Ioo.mem_nhds h0, hsrcγ_nhd] with t ht ht_src
+    filter_upwards [isOpen_Ioo.mem_nhds h0, hsrcγ_nhd] with t ht ht_source
     rw [← hσ, ← hγ, ← hf]
     change (fderiv ℝ f (chartCurve (I := I) p γ t)) (X : E) +
         chartChristoffelContraction (I := I) g p (X : E)
           (chartESectionRepr (I := I) p σ (γ t)) (chartCurve (I := I) p γ t) =
       c • N t
-    rw [hsec_id t ht_src]
+    rw [hsec_id t ht_source]
     rw [hXE]
     rw [map_smul]
     rw [ChartChristoffel.contraction_smul_left c v₀ (f (chartCurve (I := I) p γ t))]
@@ -2184,7 +2184,7 @@ theorem radialTransportSection_nabla2_center_zero
     exact (smul_eq_zero.mp hc0).resolve_left hc_ne
   have hrep_eq : chartRepAt (I := I) γ (fun s => W' (γ s)) 0 =ᶠ[𝓝 (0 : ℝ)] N := by
     have h0 : (0 : ℝ) ∈ Set.Ioo (-1 : ℝ) 1 := ⟨by norm_num, by norm_num⟩
-    filter_upwards [isOpen_Ioo.mem_nhds h0, hsrcγ_nhd, hγu₀_nhd, hgood_nhd] with s hs hs_src hs_u₀ hs_good
+    filter_upwards [isOpen_Ioo.mem_nhds h0, hsrcγ_nhd, hγu₀_nhd, hgood_nhd] with s hs hs_source hs_u₀ hs_good
     rw [chartRepAt_apply]
     rw [hγ0]
     rw [hW']
@@ -2200,7 +2200,7 @@ theorem radialTransportSection_nabla2_center_zero
       simpa [hv₀] using chartE_section_repr_coordExtensionTangent_eq
         (I := I) p w (chartLeviCivitaGoodSet_mem_baseSet (I := I) hs_good)
     rw [hdir]
-    rw [hsec_id s hs_src]
+    rw [hsec_id s hs_source]
     rfl
   have hrep_deriv0 : deriv (chartRepAt (I := I) γ (fun s => W' (γ s)) 0) 0 = 0 := by
     rw [hrep_eq.deriv_eq]
@@ -2243,7 +2243,7 @@ theorem radialTransportSection_nabla2_center_zero
     rw [hbridge]
     rw [hγ0]
     have hvel : mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ) = c • w := by
-      rw [hγvel, hX_def]
+      rw [hγvelocity, hX_def]
     change (LeviCivita (I := I) g).toFun W' p (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) =
       (LeviCivita (I := I) g).toFun W' p (c • w)
     rw [hvel]
@@ -3145,7 +3145,7 @@ theorem radialTransportSection_contMDiffOn (g : SmoothRiemannianMetric I M) (p :
   · intro y hy
     have hy₀ : y ∈ U₀ := hy.1
     have hyV : y ∈ V := hU₀_sub hy₀
-    have hy_src : y ∈ (chartAt H p).source := hyV.1.1.1.1
+    have hy_source : y ∈ (chartAt H p).source := hyV.1.1.1.1
     have hyφW : φ y ∈ W := hyV.1.1.1.2
     have hyBρ : ‖normalChartAt (I := I) g p y‖ < ρ := hyV.2
     set x : E := normalChartAt (I := I) g p y with hx
@@ -3169,7 +3169,7 @@ theorem radialTransportSection_contMDiffOn (g : SmoothRiemannianMetric I M) (p :
           (fun ξ : E => radialTransportChartRep g p η₀ (ψ ξ) 1) (φ y) :=
         hF.contMDiffAt
       have hφy : ContMDiffAt I 𝓘(ℝ, E) ∞ φ y :=
-        contMDiffAt_extChartAt' (I := I) (n := ∞) (x := p) (x' := y) hy_src
+        contMDiffAt_extChartAt' (I := I) (n := ∞) (x := p) (x' := y) hy_source
       exact hF_md.comp y hφy
     have hchart_y : ContMDiffAt I 𝓘(ℝ, E) ∞ (chartESectionRepr (I := I) p σ) y := by
       refine hFφ.congr_of_eventuallyEq ?_
@@ -3177,7 +3177,7 @@ theorem radialTransportSection_contMDiffOn (g : SmoothRiemannianMetric I M) (p :
       exact (hident y' (hU₀_sub hy')).2
     have hy_base : y ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
       rw [TangentBundle.trivializationAt_baseSet]
-      exact hy_src
+      exact hy_source
     have hsec : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞ (T% σ) y :=
       (contMDiffAt_section_iff_chartE I p σ hy_base).mpr hchart_y
     exact hsec.contMDiffWithinAt

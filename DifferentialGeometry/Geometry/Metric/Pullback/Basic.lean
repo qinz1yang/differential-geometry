@@ -53,7 +53,7 @@ theorem Diffeomorph.pullbackInner_pos
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.precomp_apply]
   set hΦeq : TangentSpace I x ≃L[ℝ] TangentSpace I (Φ x) :=
     Diffeomorph.mfderivToContinuousLinearEquiv Φ infty_ne_zero x with hΦeq_def
-  have hvImg : mfderiv I I Φ x v ≠ 0 := by
+  have hvImage : mfderiv I I Φ x v ≠ 0 := by
     have h1 : hΦeq v ≠ 0 := (hΦeq.map_ne_zero_iff).mpr hv
     have h2 : (hΦeq : TangentSpace I x →L[ℝ] TangentSpace I (Φ x)) v
         = mfderiv I I Φ x v := by
@@ -62,7 +62,7 @@ theorem Diffeomorph.pullbackInner_pos
       exact congrArg (fun f : TangentSpace I x →L[ℝ] TangentSpace I (Φ x) => f v) heq
     have hcoe : (hΦeq : TangentSpace I x → TangentSpace I (Φ x)) v = hΦeq v := rfl
     rw [← h2]; exact fun h => h1 (by simpa [hcoe] using h)
-  exact g.pos (Φ x) _ hvImg
+  exact g.pos (Φ x) _ hvImage
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem inner_comp_smooth_along_diffeo
@@ -116,11 +116,11 @@ theorem Diffeomorph.pullbackInner_isVonNBounded
             TangentSpace I (Φ x) → TangentSpace I x) w = hΦeq.symm w := rfl
       rw [hsym]
       rw [pullbackInner_eval]
-      have hImg : mfderiv I I Φ x (hΦeq.symm w) = w := by
+      have hImage : mfderiv I I Φ x (hΦeq.symm w) = w := by
         have hmap := mfderiv_eq_mfderivCLE_apply (Φ := Φ) (x := x) (hΦeq.symm w)
         rw [← hmap]
         exact hΦeq.apply_symm_apply w
-      rw [hImg]; exact hw
+      rw [hImage]; exact hw
   rw [hseteq]
   exact himg
 

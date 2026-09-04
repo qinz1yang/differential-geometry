@@ -38,7 +38,7 @@ def lCutConj
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
     (tau : Real) : Set M :=
   {y | ∃ Z : E, Z ∈ lCutDomain S T x tau ∧
-    IsLConj S T x Z tau ∧ lExp S T x Z tau = y}
+    IsLConjugate S T x Z tau ∧ lExp S T x Z tau = y}
 
 def lCutMulti
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M)
@@ -89,17 +89,17 @@ theorem lMinSlice_closed
       linarith [hr.1]
     have hsqrt : Real.sqrt (T - r) ∈ Icc (0 : Real) (Real.sqrt tau) :=
       ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hle⟩
-    have hreg := lExpPosDom_reg S T x (Z 0) hdom0 hsqrt
+    have hreg := lExpPosDom_regularity S T x (Z 0) hdom0 hsqrt
     have heq : T - (Real.sqrt (T - r)) ^ 2 = r := by
       rw [Real.sq_sqrt hnonneg]
       ring
     simpa only [heq] using hreg
-  have hreg : b ∈ lRegDomain S T x Z₀ :=
-    mem_lRegDomain_of_time_slab S hS T x Z₀ b hb hslab
+  have hreg : b ∈ lRegularizedDomain S T x Z₀ :=
+    mem_lRegularizedDomain_of_time_slab S hS T x Z₀ b hb hslab
   have hdom : (Z₀, tau) ∈ lExpPosDom S T x :=
     (mem_lExpPosDom S T x Z₀ tau).2 ⟨htau, htau.le, by
       simpa only [b] using hreg⟩
-  exact lMinVec_lim S hS T x hmin hZ hdom
+  exact lMinimizingVector_lim S hS T x hmin hZ hdom
 
 theorem lCutDom_closed
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -127,7 +127,7 @@ theorem lCut_split
   ext y
   constructor
   · rintro ⟨Z, hcut, rfl⟩
-    rcases isLConj_or_exists_distinct_minimizer_same_endpoint S hS T x Z tau hcut with hconj | ⟨W, hWne, hWmin, hend⟩
+    rcases isLConjugate_or_exists_distinct_minimizer_same_endpoint S hS T x Z tau hcut with hconj | ⟨W, hWne, hWmin, hend⟩
     · exact Or.inl ⟨Z, hcut, hconj, rfl⟩
     · exact Or.inr ⟨Z, hcut, W, hWne, hWmin, hend, rfl⟩
   · rintro (⟨Z, hcut, hconj, rfl⟩ | ⟨Z, hcut, W, hWne, hWmin, hend, rfl⟩)

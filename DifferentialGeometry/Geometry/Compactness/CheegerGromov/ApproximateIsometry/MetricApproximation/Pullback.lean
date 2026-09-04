@@ -16,7 +16,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Set Topology TopologicalSpace
 open scoped Manifold ContDiff
@@ -265,5 +265,5 @@ theorem pullback_metric_deriv_norm_le
     rw [hzero, sub_zero]
     exact pullback_metric_cov_deriv_norm_le Φ U hU hUK gRef g D hq1 hqp x
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

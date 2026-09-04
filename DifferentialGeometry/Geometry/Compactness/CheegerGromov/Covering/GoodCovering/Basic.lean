@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Topology
@@ -454,5 +454,5 @@ theorem lambdaBallC_subset_of_inter (hd : InjectivityRadiusDecay (I := I) X)
 
 end InjectivityRadiusDecay
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

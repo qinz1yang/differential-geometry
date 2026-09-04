@@ -13,7 +13,7 @@ open Set Function Filter Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal
 
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 namespace DifferentialGeometry
 namespace PDE
@@ -231,7 +231,7 @@ theorem metricVariationEquation_pullback
         = metricRicciAt (I := I) (S.base.metric (t : ℝ)) (Φ x)
             (vec2 (mfderiv I I (Φ : M → N) x X) (mfderiv I I (Φ : M → N) x Y))
     rw [metricRicciAt_apply_eq_ricciTensor, metricRicciAt_apply_eq_ricciTensor]
-    exact DifferentialGeometry.HCGCompactness.ricciTensor_pullback (I := I)
+    exact DifferentialGeometry.CheegerGromovCompactness.ricciTensor_pullback (I := I)
       (S.base.metric (t : ℝ)) Φ x X Y
   rw [hcoeff, hric]
   exact hS.equation t (Φ x)
@@ -250,7 +250,7 @@ theorem scalar_pullback
   let _ := hManifoldM
   let _ := hManifoldN
   simp only [SolutionOn.scalar, SolutionFamily.scalar, solutionOnPullback]
-  exact DifferentialGeometry.HCGCompactness.metricScalarAt_pullback (I := I)
+  exact DifferentialGeometry.CheegerGromovCompactness.metricScalarAt_pullback (I := I)
     (S.base.metric t) Φ x
 
 omit [I.Boundaryless] in
@@ -322,7 +322,7 @@ theorem metricRicci_pullback_eval
       = ricciTensor (I := I) g (Φ x)
           (mfderiv I I (Φ : M → N) x (slots 0)) (mfderiv I I (Φ : M → N) x (slots 1)) := by
     rw [metricRicci_apply, metricRicciAt_apply_eq_ricciTensor]
-  have hpb := DifferentialGeometry.HCGCompactness.ricciTensor_pullback (I := I) g Φ x
+  have hpb := DifferentialGeometry.CheegerGromovCompactness.ricciTensor_pullback (I := I) g Φ x
     (slots 0) (slots 1)
   rw [show vec2 (slots 0) (slots 1) = slots from by funext i; fin_cases i <;> rfl] at hLHS
   rw [show vec2 (mfderiv I I (Φ : M → N) x (slots 0)) (mfderiv I I (Φ : M → N) x (slots 1))
@@ -349,7 +349,7 @@ theorem ricciNorm_pullback
         (metricRicci (I := I) (Diffeomorph.pullbackMetric (I := I) (S.base.metric t) Φ) x)
       = Tensor0SBundle.normSq0S (I := I) (S.base.metric t) (Φ x) 2
           (metricRicci (I := I) (S.base.metric t) (Φ x))
-  exact DifferentialGeometry.HCGCompactness.normSq0S_pullback_eval_of_orthonormal (I := I)
+  exact DifferentialGeometry.CheegerGromovCompactness.normSq0S_pullback_eval_of_orthonormal (I := I)
     (g := S.base.metric t) Φ x 2 B hB
     (metricRicci (I := I) (Diffeomorph.pullbackMetric (I := I) (S.base.metric t) Φ) x)
     (metricRicci (I := I) (S.base.metric t) (Φ x))
@@ -413,17 +413,17 @@ theorem metricRm04_pullback_eval
           (fun q : Fin 4 => mfderiv I I (Φ : M → N) x (slots q)) := by
   have hLHS : metricRm04 (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ) x
         (vec4 (slots 0) (slots 1) (slots 2) (slots 3))
-      = metricRm04StdAt (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ) x
+      = metricRm04StandardAt (I := I) (Diffeomorph.pullbackMetric (I := I) g Φ) x
           (slots 0) (slots 1) (slots 2) (slots 3) := by
-    rw [metricRm04_apply, metricRm04StdAt_apply]
+    rw [metricRm04_apply, metricRm04StandardAt_apply]
   have hRHS : metricRm04 (I := I) g (Φ x)
         (vec4 (mfderiv I I (Φ : M → N) x (slots 0)) (mfderiv I I (Φ : M → N) x (slots 1))
           (mfderiv I I (Φ : M → N) x (slots 2)) (mfderiv I I (Φ : M → N) x (slots 3)))
-      = metricRm04StdAt (I := I) g (Φ x)
+      = metricRm04StandardAt (I := I) g (Φ x)
           (mfderiv I I (Φ : M → N) x (slots 0)) (mfderiv I I (Φ : M → N) x (slots 1))
           (mfderiv I I (Φ : M → N) x (slots 2)) (mfderiv I I (Φ : M → N) x (slots 3)) := by
-    rw [metricRm04_apply, metricRm04StdAt_apply]
-  have hpb := metricRm04Std_pullback (I := I) g Φ x (slots 0) (slots 1) (slots 2) (slots 3)
+    rw [metricRm04_apply, metricRm04StandardAt_apply]
+  have hpb := metricRm04Standard_pullback (I := I) g Φ x (slots 0) (slots 1) (slots 2) (slots 3)
   rw [show vec4 (slots 0) (slots 1) (slots 2) (slots 3) = slots from by
       funext i; fin_cases i <;> rfl] at hLHS
   rw [show vec4 (mfderiv I I (Φ : M → N) x (slots 0)) (mfderiv I I (Φ : M → N) x (slots 1))

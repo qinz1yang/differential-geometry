@@ -49,10 +49,10 @@ private lemma nabla_tensor_toEucl_symm_preimage_target (α : M) :
   refine ⟨fun hy => ?_, fun hy => ?_⟩
   · refine ⟨(toEuclidean (E := E)).symm y, hy, ?_⟩
     exact (toEuclidean (E := E)).apply_symm_apply y
-  · rcases hy with ⟨z, hz_tgt, hz_eq⟩
+  · rcases hy with ⟨z, hz_target, hz_eq⟩
     have h_eq : (toEuclidean (E := E)).symm y = z := by
       rw [← hz_eq]; exact (toEuclidean (E := E)).symm_apply_apply z
-    rw [Set.mem_preimage, h_eq]; exact hz_tgt
+    rw [Set.mem_preimage, h_eq]; exact hz_target
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -97,10 +97,10 @@ private lemma nabla_tensor_raw_pull_contDiffOn
       (chartTargetEuclid (I := I) (M := M) α)
       (extChartAt I α).target := by
     intro y hy
-    rcases hy with ⟨z, hz_tgt, hz_eq⟩
+    rcases hy with ⟨z, hz_target, hz_eq⟩
     have h_eq : (toEuclidean (E := E)).symm y = z := by
       rw [← hz_eq]; exact (toEuclidean (E := E)).symm_apply_apply z
-    rw [h_eq]; exact hz_tgt
+    rw [h_eq]; exact hz_target
   exact h_raw_pull_contDiffOn.comp
     h_toEucl_symm_smooth.contDiffOn h_maps
 
@@ -310,12 +310,12 @@ private lemma nabla_tensor_pouPull_contOn (α : M) :
       (chartTargetEuclid (I := I) (M := M) α) := by
     refine hSymmCont.comp h_toEucl_cont.continuousOn ?_
     intro y hy
-    rcases hy with ⟨z, hz_tgt, hz_eq⟩
+    rcases hy with ⟨z, hz_target, hz_eq⟩
     rw [← hz_eq]
     change (toEuclidean (E := E)).symm
         ((toEuclidean (E := E)) z) ∈ (extChartAt I α).target
     rw [(toEuclidean (E := E)).symm_apply_apply]
-    exact hz_tgt
+    exact hz_target
   exact hPOU_cont.comp_continuousOn' h_inner
 
 omit [BoundarylessManifold I M] in

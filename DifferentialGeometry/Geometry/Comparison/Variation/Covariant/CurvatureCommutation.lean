@@ -220,10 +220,10 @@ lemma slice_secondCovDeriv_chartRep_differentiableAt
     have hincl : ContMDiff (𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ) (fun s : ℝ => (s, t)) :=
       contMDiff_id.prodMk contMDiff_const
     exact (hf : ContMDiff _ _ _ _).comp hincl
-  set velT : (s v : ℝ) → TangentSpace I (f s v) :=
+  set velocityT : (s v : ℝ) → TangentSpace I (f s v) :=
     fun s v => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f s w) v (1 : ℝ) with hvelT
   set Y : ℝ → E := fun s : ℝ =>
-    (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f s t) (velT s t) with hY
+    (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f s t) (velocityT s t) with hY
   have hY_C2 : ContDiffAt ℝ 2 Y 0 := by
     have hjoint : ContDiffAt ℝ 2 (fun p : ℝ × ℝ =>
         (trivializationAt E (TangentSpace I) (f 0 t)).continuousLinearMapAt ℝ (f p.1 p.2)
@@ -255,7 +255,7 @@ lemma slice_secondCovDeriv_chartRep_differentiableAt
     htransverse.continuous.isOpen_preimage _ (chartAt H β).open_source
   have h0L : (0 : ℝ) ∈ {s : ℝ | f s t ∈ (chartAt H β).source} := hsrcβ
   have hVTdiff : ∀ s : ℝ, DifferentiableAt ℝ
-      (chartRepAt (I := I) (fun s' : ℝ => f s' t) (fun s' : ℝ => velT s' t) s) s := by
+      (chartRepAt (I := I) (fun s' : ℝ => f s' t) (fun s' : ℝ => velocityT s' t) s) s := by
     intro s
     have hf' : IsSmoothVariation (I := I) (fun a b : ℝ => f (s + a) b) := by
       have hcomp : ContMDiff (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ)
@@ -267,7 +267,7 @@ lemma slice_secondCovDeriv_chartRep_differentiableAt
     set RF : ℝ → E := chartRepAt (I := I)
         (fun a' : ℝ => f (s + a') t)
         (fun a' : ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f (s + a') w) t (1 : ℝ)) 0 with hRF
-    have hrep : chartRepAt (I := I) (fun s' : ℝ => f s' t) (fun s' : ℝ => velT s' t) s
+    have hrep : chartRepAt (I := I) (fun s' : ℝ => f s' t) (fun s' : ℝ => velocityT s' t) s
         = (fun a : ℝ => RF (a - s)) := by
       funext a
       have hcancel : s + (a - s) = a := by ring
@@ -285,19 +285,19 @@ lemma slice_secondCovDeriv_chartRep_differentiableAt
     exact hcomp
   have hbridge : (chartRepAt (I := I) (fun s : ℝ => f s t)
         (fun s : ℝ => covDerivAlong (I := I) g (fun s' : ℝ => f s' t)
-          (fun s' : ℝ => velT s' t) s) 0)
+          (fun s' : ℝ => velocityT s' t) s) 0)
       =ᶠ[nhds (0 : ℝ)]
         (fun s : ℝ => chartCovDerivAlong (I := I) g β (fun s : ℝ => f s t) Y s) := by
     filter_upwards [hopenL.mem_nhds h0L] with s hs
     rw [chartRepAt_apply]
     change (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f s t)
-        (covDerivAlong (I := I) g (fun s' : ℝ => f s' t) (fun s' : ℝ => velT s' t) s)
+        (covDerivAlong (I := I) g (fun s' : ℝ => f s' t) (fun s' : ℝ => velocityT s' t) s)
       = chartCovDerivAlong (I := I) g β (fun s : ℝ => f s t) Y s
     have hfwd := chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase (I := I)
       (by norm_num) g
-      (fun s' : ℝ => f s' t) (fun s' : ℝ => velT s' t) s β htransverse hs (hVTdiff s)
+      (fun s' : ℝ => f s' t) (fun s' : ℝ => velocityT s' t) s β htransverse hs (hVTdiff s)
     rw [hfwd]
-    have hYeq : chartRepAtBase (I := I) β (fun s' : ℝ => f s' t) (fun s' : ℝ => velT s' t) = Y := by
+    have hYeq : chartRepAtBase (I := I) β (fun s' : ℝ => f s' t) (fun s' : ℝ => velocityT s' t) = Y := by
       funext s'; rw [chartRepAtBase_apply, hY]
     rw [hYeq]
   have hccd_diff : DifferentiableAt ℝ
@@ -522,17 +522,17 @@ theorem commute_ds_dt_curvature_innerS
     exact (hf : ContMDiff _ _ _ _).comp hincl
   have htransverse : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) (fun s : ℝ => f s t) := hslice_v t
   have hcentral : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) (fun v : ℝ => f 0 v) := hslice_u 0
-  set velS : (s v : ℝ) → TangentSpace I (f s v) :=
+  set velocityS : (s v : ℝ) → TangentSpace I (f s v) :=
     fun s v => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) s (1 : ℝ) with hvelS
   set Y : ℝ → ℝ → E := fun u v =>
-    (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f u v) (velS u v) with hY
+    (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f u v) (velocityS u v) with hY
   have hY_chartRepAtBase_u : ∀ u : ℝ,
       (fun v : ℝ => Y u v)
-        = chartRepAtBase (I := I) β (fun w : ℝ => f u w) (fun w : ℝ => velS u w) := by
+        = chartRepAtBase (I := I) β (fun w : ℝ => f u w) (fun w : ℝ => velocityS u w) := by
     intro u; funext v; rw [hY, chartRepAtBase_apply]
   have hY_chartRepAtBase_v : ∀ v : ℝ,
       (fun u : ℝ => Y u v)
-        = chartRepAtBase (I := I) β (fun w : ℝ => f w v) (fun w : ℝ => velS w v) := by
+        = chartRepAtBase (I := I) β (fun w : ℝ => f w v) (fun w : ℝ => velocityS w v) := by
     intro v; funext u; rw [hY, chartRepAtBase_apply]
   have hY_C2 : ContDiffAt ℝ 2 (fun p : ℝ × ℝ => Y p.1 p.2) (0, t) :=
     chartCoord_transverseVelocity_contDiffAt (I := I) f hf t
@@ -545,33 +545,33 @@ theorem commute_ds_dt_curvature_innerS
     hcentral.continuous.isOpen_preimage _ (chartAt H β).open_source
   have h0R : t ∈ {v : ℝ | f 0 v ∈ (chartAt H β).source} := hsrcβ
   have hinnerL_diff : ∀ s : ℝ, DifferentiableAt ℝ
-      (chartRepAt (I := I) (fun v : ℝ => f s v) (fun v : ℝ => velS s v) t) t := fun s =>
+      (chartRepAt (I := I) (fun v : ℝ => f s v) (fun v : ℝ => velocityS s v) t) t := fun s =>
     slice_transverseField_longitudinal_chartRep_differentiableAt (I := I) g f hf s t
   have hinnerL : ∀ s : ℝ, f s t ∈ (chartAt H β).source →
       chartCovDerivAlong (I := I) g β (fun v : ℝ => f s v) (fun v : ℝ => Y s v) t
         = (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f s t)
-            (covDerivAlong (I := I) g (fun v : ℝ => f s v) (fun v : ℝ => velS s v) t) := by
+            (covDerivAlong (I := I) g (fun v : ℝ => f s v) (fun v : ℝ => velocityS s v) t) := by
     intro s hs
     rw [hY_chartRepAtBase_u s]
     exact (chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase (I := I) (by norm_num) g
-      (fun w : ℝ => f s w) (fun w : ℝ => velS s w) t β (hslice_u s) hs
+      (fun w : ℝ => f s w) (fun w : ℝ => velocityS s w) t β (hslice_u s) hs
       (hinnerL_diff s)).symm
   have hinnerR_diff : ∀ v : ℝ, DifferentiableAt ℝ
-      (chartRepAt (I := I) (fun u : ℝ => f u v) (fun u : ℝ => velS u v) 0) 0 := fun v =>
+      (chartRepAt (I := I) (fun u : ℝ => f u v) (fun u : ℝ => velocityS u v) 0) 0 := fun v =>
     slice_transverseVelocity_chartRep_differentiableAt (I := I) g f hf v
   have hinnerR : ∀ v : ℝ, f 0 v ∈ (chartAt H β).source →
       chartCovDerivAlong (I := I) g β (fun u : ℝ => f u v) (fun u : ℝ => Y u v) 0
         = (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f 0 v)
-            (covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velS u v) 0) := by
+            (covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velocityS u v) 0) := by
     intro v hv
     rw [hY_chartRepAtBase_v v]
     exact (chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase (I := I) (by norm_num) g
-      (fun w : ℝ => f w v) (fun w : ℝ => velS w v) 0 β (hslice_v v) hv (hinnerR_diff v)).symm
+      (fun w : ℝ => f w v) (fun w : ℝ => velocityS w v) 0 β (hslice_v v) hv (hinnerR_diff v)).symm
   set innerL : ∀ s : ℝ, TangentSpace I ((fun s : ℝ => f s t) s) :=
-    fun s => covDerivAlong (I := I) g (fun v : ℝ => f s v) (fun v : ℝ => velS s v) t with
+    fun s => covDerivAlong (I := I) g (fun v : ℝ => f s v) (fun v : ℝ => velocityS s v) t with
                hinnerL_def
   set innerR : ∀ v : ℝ, TangentSpace I ((fun v : ℝ => f 0 v) v) :=
-    fun v => covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velS u v) 0 with
+    fun v => covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velocityS u v) 0 with
                hinnerR_def
   have hrepL_eq : chartRepAt (I := I) (fun s : ℝ => f s t) innerL 0
       =ᶠ[𝓝 (0 : ℝ)]
@@ -637,17 +637,17 @@ theorem commute_ds_dt_curvature_innerS
       - covDerivAlong (I := I) g (fun v : ℝ => f 0 v) innerR t = _
   rw [hLeft, hRight, ← map_sub]
   rw [hfixed]
-  have hfoot_src : f 0 t ∈ (chartAt H (f 0 t)).source := mem_chart_source H (f 0 t)
+  have hfoot_source : f 0 t ∈ (chartAt H (f 0 t)).source := mem_chart_source H (f 0 t)
   have hfoot_clm : ∀ x : TangentSpace I (f 0 t),
       (trivializationAt E (TangentSpace I) (f 0 t)).continuousLinearMapAt ℝ (f 0 t) x = x := by
     intro x
-    rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (I := I) hfoot_src]
+    rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (I := I) hfoot_source]
     exact (tangentBundleCore I M).coordChange_self (achart H (f 0 t)) (f 0 t)
       (mem_achart_source H (f 0 t)) x
   have hfoot_symmL : ∀ x : TangentSpace I (f 0 t),
       (trivializationAt E (TangentSpace I) (f 0 t)).symmL ℝ (f 0 t) x = x := by
     intro x
-    rw [TangentBundle.symmL_trivializationAt_eq_core (I := I) hfoot_src]
+    rw [TangentBundle.symmL_trivializationAt_eq_core (I := I) hfoot_source]
     exact (tangentBundleCore I M).coordChange_self (achart H (f 0 t)) (f 0 t)
       (mem_achart_source H (f 0 t)) x
   have hslotS : (fderiv ℝ (fun u : ℝ => extChartAt I (f 0 t) (f u t)) 0 (1 : ℝ))
@@ -655,7 +655,7 @@ theorem commute_ds_dt_curvature_innerS
     have hbridge := MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (γ := fun u : ℝ => f u t) ((hslice_v t).mdifferentiableAt (by norm_num))
         (f 0 t)
-      hfoot_src
+      hfoot_source
     have hcompfun : ((extChartAt I (f 0 t)) ∘ (fun u : ℝ => f u t))
         = (fun u : ℝ => extChartAt I (f 0 t) (f u t)) := rfl
     rw [hcompfun, hfoot_clm] at hbridge
@@ -665,14 +665,14 @@ theorem commute_ds_dt_curvature_innerS
     have hbridge := MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (γ := fun w : ℝ => f 0 w) ((hslice_u 0).mdifferentiableAt (by norm_num))
         (f 0 t)
-      hfoot_src
+      hfoot_source
     have hcompfun : ((extChartAt I (f 0 t)) ∘ (fun w : ℝ => f 0 w))
         = (fun w : ℝ => extChartAt I (f 0 t) (f 0 w)) := rfl
     rw [hcompfun, hfoot_clm] at hbridge
     exact hbridge.symm
   have hYft : Y 0 t = (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ) : E) := by
     rw [hY]
-    change (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f 0 t) (velS 0 t)
+    change (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f 0 t) (velocityS 0 t)
       = mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f u t) 0 (1 : ℝ)
     rw [hβ, hfoot_clm]
   rw [hslotS, hslotT, hYft]
@@ -725,17 +725,17 @@ theorem commute_ds_dt_curvature
     exact (hf : ContMDiff _ _ _ _).comp hincl
   have htransverse : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) (fun s : ℝ => f s t) := hslice_v t
   have hcentral : ContMDiff (𝓘(ℝ, ℝ)) I (8 : ℕ) (fun v : ℝ => f 0 v) := hslice_u 0
-  set velT : (s v : ℝ) → TangentSpace I (f s v) :=
+  set velocityT : (s v : ℝ) → TangentSpace I (f s v) :=
     fun s v => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f s w) v (1 : ℝ) with hvelT
   set Y : ℝ → ℝ → E := fun u v =>
-    (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f u v) (velT u v) with hY
+    (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f u v) (velocityT u v) with hY
   have hY_chartRepAtBase_u : ∀ u : ℝ,
       (fun v : ℝ => Y u v)
-        = chartRepAtBase (I := I) β (fun w : ℝ => f u w) (fun w : ℝ => velT u w) := by
+        = chartRepAtBase (I := I) β (fun w : ℝ => f u w) (fun w : ℝ => velocityT u w) := by
     intro u; funext v; rw [hY, chartRepAtBase_apply]
   have hY_chartRepAtBase_v : ∀ v : ℝ,
       (fun u : ℝ => Y u v)
-        = chartRepAtBase (I := I) β (fun w : ℝ => f w v) (fun w : ℝ => velT w v) := by
+        = chartRepAtBase (I := I) β (fun w : ℝ => f w v) (fun w : ℝ => velocityT w v) := by
     intro v; funext u; rw [hY, chartRepAtBase_apply]
   have hY_C2 : ContDiffAt ℝ 2 (fun p : ℝ × ℝ => Y p.1 p.2) (0, t) :=
     chartCoord_longitudinalVelocity_contDiffAt (I := I) f hf t
@@ -750,28 +750,28 @@ theorem commute_ds_dt_curvature
   have hinnerL : ∀ s : ℝ, f s t ∈ (chartAt H β).source →
       chartCovDerivAlong (I := I) g β (fun v : ℝ => f s v) (fun v : ℝ => Y s v) t
         = (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f s t)
-            (covDerivAlong (I := I) g (fun v : ℝ => f s v) (fun v : ℝ => velT s v) t) := by
+            (covDerivAlong (I := I) g (fun v : ℝ => f s v) (fun v : ℝ => velocityT s v) t) := by
     intro s hs
     rw [hY_chartRepAtBase_u s]
     exact (chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase (I := I) (by norm_num) g
-      (fun w : ℝ => f s w) (fun w : ℝ => velT s w) t β (hslice_u s) hs
+      (fun w : ℝ => f s w) (fun w : ℝ => velocityT s w) t β (hslice_u s) hs
       (slice_velocityField_chartRep_differentiableAt (I := I) f hf s t)).symm
   have hinnerR_diff : ∀ v : ℝ, DifferentiableAt ℝ
-      (chartRepAt (I := I) (fun u : ℝ => f u v) (fun u : ℝ => velT u v) 0) 0 := fun v =>
+      (chartRepAt (I := I) (fun u : ℝ => f u v) (fun u : ℝ => velocityT u v) 0) 0 := fun v =>
     slice_longitudinalField_transverse_chartRep_differentiableAt (I := I) f hf v
   have hinnerR : ∀ v : ℝ, f 0 v ∈ (chartAt H β).source →
       chartCovDerivAlong (I := I) g β (fun u : ℝ => f u v) (fun u : ℝ => Y u v) 0
         = (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f 0 v)
-            (covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velT u v) 0) := by
+            (covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velocityT u v) 0) := by
     intro v hv
     rw [hY_chartRepAtBase_v v]
     exact (chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase (I := I) (by norm_num) g
-      (fun w : ℝ => f w v) (fun w : ℝ => velT w v) 0 β (hslice_v v) hv (hinnerR_diff v)).symm
+      (fun w : ℝ => f w v) (fun w : ℝ => velocityT w v) 0 β (hslice_v v) hv (hinnerR_diff v)).symm
   set innerL : ∀ s : ℝ, TangentSpace I ((fun s : ℝ => f s t) s) :=
-    fun s => covDerivAlong (I := I) g (fun v : ℝ => f s v) (fun v : ℝ => velT s v) t with
+    fun s => covDerivAlong (I := I) g (fun v : ℝ => f s v) (fun v : ℝ => velocityT s v) t with
                hinnerL_def
   set innerR : ∀ v : ℝ, TangentSpace I ((fun v : ℝ => f 0 v) v) :=
-    fun v => covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velT u v) 0 with
+    fun v => covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velocityT u v) 0 with
                hinnerR_def
   have hrepL_eq : chartRepAt (I := I) (fun s : ℝ => f s t) innerL 0
       =ᶠ[𝓝 (0 : ℝ)]
@@ -837,17 +837,17 @@ theorem commute_ds_dt_curvature
       - covDerivAlong (I := I) g (fun v : ℝ => f 0 v) innerR t = _
   rw [hLeft, hRight, ← map_sub]
   rw [hfixed]
-  have hfoot_src : f 0 t ∈ (chartAt H (f 0 t)).source := mem_chart_source H (f 0 t)
+  have hfoot_source : f 0 t ∈ (chartAt H (f 0 t)).source := mem_chart_source H (f 0 t)
   have hfoot_clm : ∀ x : TangentSpace I (f 0 t),
       (trivializationAt E (TangentSpace I) (f 0 t)).continuousLinearMapAt ℝ (f 0 t) x = x := by
     intro x
-    rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (I := I) hfoot_src]
+    rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (I := I) hfoot_source]
     exact (tangentBundleCore I M).coordChange_self (achart H (f 0 t)) (f 0 t)
       (mem_achart_source H (f 0 t)) x
   have hfoot_symmL : ∀ x : TangentSpace I (f 0 t),
       (trivializationAt E (TangentSpace I) (f 0 t)).symmL ℝ (f 0 t) x = x := by
     intro x
-    rw [TangentBundle.symmL_trivializationAt_eq_core (I := I) hfoot_src]
+    rw [TangentBundle.symmL_trivializationAt_eq_core (I := I) hfoot_source]
     exact (tangentBundleCore I M).coordChange_self (achart H (f 0 t)) (f 0 t)
       (mem_achart_source H (f 0 t)) x
   have hslotS : (fderiv ℝ (fun u : ℝ => extChartAt I (f 0 t) (f u t)) 0 (1 : ℝ))
@@ -855,7 +855,7 @@ theorem commute_ds_dt_curvature
     have hbridge := MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (γ := fun u : ℝ => f u t) ((hslice_v t).mdifferentiableAt (by norm_num))
         (f 0 t)
-      hfoot_src
+      hfoot_source
     have hcompfun : ((extChartAt I (f 0 t)) ∘ (fun u : ℝ => f u t))
         = (fun u : ℝ => extChartAt I (f 0 t) (f u t)) := rfl
     rw [hcompfun, hfoot_clm] at hbridge
@@ -865,14 +865,14 @@ theorem commute_ds_dt_curvature
     have hbridge := MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
       (I := I) (M := M) (γ := fun w : ℝ => f 0 w) ((hslice_u 0).mdifferentiableAt (by norm_num))
         (f 0 t)
-      hfoot_src
+      hfoot_source
     have hcompfun : ((extChartAt I (f 0 t)) ∘ (fun w : ℝ => f 0 w))
         = (fun w : ℝ => extChartAt I (f 0 t) (f 0 w)) := rfl
     rw [hcompfun, hfoot_clm] at hbridge
     exact hbridge.symm
   have hYft : Y 0 t = (mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ) : E) := by
     rw [hY]
-    change (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f 0 t) (velT 0 t)
+    change (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f 0 t) (velocityT 0 t)
       = mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f 0 w) t (1 : ℝ)
     rw [hβ, hfoot_clm]
   rw [hslotS, hslotT, hYft]
@@ -1010,10 +1010,10 @@ lemma slice_secondCovDeriv_central_chartRep_differentiableAt
     have hincl : ContMDiff (𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ) (fun v : ℝ => ((0 : ℝ), v)) :=
       contMDiff_const.prodMk contMDiff_id
     exact (hf : ContMDiff _ _ _ _).comp hincl
-  set velS : (s v : ℝ) → TangentSpace I (f s v) :=
+  set velocityS : (s v : ℝ) → TangentSpace I (f s v) :=
     fun u v => mfderiv (𝓘(ℝ, ℝ)) I (fun w : ℝ => f w v) u (1 : ℝ) with hvelS
   set Y : ℝ → ℝ → E := fun u v =>
-    (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f u v) (velS u v) with hY
+    (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f u v) (velocityS u v) with hY
   have hY_C2 : ContDiffAt ℝ 2 (fun p : ℝ × ℝ => Y p.1 p.2) (0, t) :=
     chartCoord_transverseVelocity_contDiffAt (I := I) f hf t
   have hY0_C2 : ContDiffAt ℝ 2 (fun v : ℝ => Y 0 v) t := by
@@ -1072,22 +1072,22 @@ lemma slice_secondCovDeriv_central_chartRep_differentiableAt
   have h0R : t ∈ {v : ℝ | f 0 v ∈ (chartAt H β).source} := by
     change f 0 t ∈ (chartAt H β).source; exact hsrc0
   have hinnerR_diff : ∀ v : ℝ, DifferentiableAt ℝ
-      (chartRepAt (I := I) (fun u : ℝ => f u v) (fun u : ℝ => velS u v) 0) 0 := fun v =>
+      (chartRepAt (I := I) (fun u : ℝ => f u v) (fun u : ℝ => velocityS u v) 0) 0 := fun v =>
     slice_transverseVelocity_chartRep_differentiableAt (I := I) g f hf v
   have hbridge : (chartRepAt (I := I) (fun v : ℝ => f 0 v)
         (fun v : ℝ => covDerivAlong (I := I) g (fun u : ℝ => f u v)
-          (fun u : ℝ => velS u v) 0) t)
+          (fun u : ℝ => velocityS u v) 0) t)
       =ᶠ[nhds t] Z := by
     filter_upwards [hopen.mem_nhds h0R] with v hv
     rw [chartRepAt_apply]
     change (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (f 0 v)
-        (covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velS u v) 0)
+        (covDerivAlong (I := I) g (fun u : ℝ => f u v) (fun u : ℝ => velocityS u v) 0)
       = Z v
     have hfwd := chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase (I := I)
       (by norm_num) g
-      (fun u : ℝ => f u v) (fun u : ℝ => velS u v) 0 β (hslice_v v) hv (hinnerR_diff v)
+      (fun u : ℝ => f u v) (fun u : ℝ => velocityS u v) 0 β (hslice_v v) hv (hinnerR_diff v)
     rw [hfwd]
-    have hYeq : chartRepAtBase (I := I) β (fun u : ℝ => f u v) (fun u : ℝ => velS u v)
+    have hYeq : chartRepAtBase (I := I) β (fun u : ℝ => f u v) (fun u : ℝ => velocityS u v)
         = (fun u : ℝ => Y u v) := by
       funext u; rw [chartRepAtBase_apply, hY]
     rw [hYeq, hZdef]

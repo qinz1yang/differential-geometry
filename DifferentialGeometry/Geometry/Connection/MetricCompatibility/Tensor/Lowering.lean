@@ -305,7 +305,7 @@ lemma toModel_metricFormFun (g : SmoothRiemannianMetric I M) (r : ℕ)
         (fun i : Fin r ↦ tangentSpaceModelContinuousLinearEquiv (I := I) y (Y i y)) := by
   rw [metricFormFun, Tensor0SSpace.toModel_ofModel]
 
-private noncomputable def evalAtBasisCLE_loc (n : ℕ) :
+private noncomputable def evalAtBasisCLE_local (n : ℕ) :
     Tensor0SModel n ℝ E ≃L[ℝ]
       ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) := by
   set L : Tensor0SModel n ℝ E →ₗ[ℝ] ((Fin n → Fin (Module.finrank ℝ E)) → ℝ) :=
@@ -327,34 +327,34 @@ private noncomputable def evalAtBasisCLE_loc (n : ℕ) :
       ⟨hinj, (LinearMap.injective_iff_surjective_of_finrank_eq_finrank h_eq).mp hinj⟩)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-@[simp] private lemma evalAtBasisCLE_loc_apply (n : ℕ)
+@[simp] private lemma evalAtBasisCLE_local_apply (n : ℕ)
     (Φ : Tensor0SModel n ℝ E)
     (φ : Fin n → Fin (Module.finrank ℝ E)) :
-    evalAtBasisCLE_loc (E := E) n Φ φ =
+    evalAtBasisCLE_local (E := E) n Φ φ =
       Φ (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k)) := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [T2Space M]
     [BoundarylessManifold I M] in
-private lemma contMDiffOn_into_tensor0SModel_of_eval_basis_loc
+private lemma contMDiffOn_into_tensor0SModel_of_eval_basis_local
     {n : ℕ} {U : Set M} (Φ : M → Tensor0SModel n ℝ E)
     (h : ∀ φ : Fin n → Fin (Module.finrank ℝ E),
       ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun b : M =>
         Φ b (fun k : Fin n => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ k))) U) :
     ContMDiffOn I 𝓘(ℝ, Tensor0SModel n ℝ E) ∞ Φ U := by
   have hpi : ContMDiffOn I 𝓘(ℝ, (Fin n → Fin (Module.finrank ℝ E)) → ℝ) ∞
-      (fun b : M => evalAtBasisCLE_loc (E := E) n (Φ b)) U := by
+      (fun b : M => evalAtBasisCLE_local (E := E) n (Φ b)) U := by
     rw [contMDiffOn_pi_space]
     intro φ
     exact h φ
   have hsymm_smooth :
       ContMDiff 𝓘(ℝ, (Fin n → Fin (Module.finrank ℝ E)) → ℝ)
         𝓘(ℝ, Tensor0SModel n ℝ E) ∞
-        (evalAtBasisCLE_loc (E := E) n).symm :=
-    (evalAtBasisCLE_loc (E := E) n).symm.toContinuousLinearMap.contMDiff
+        (evalAtBasisCLE_local (E := E) n).symm :=
+    (evalAtBasisCLE_local (E := E) n).symm.toContinuousLinearMap.contMDiff
   have hcomp := hsymm_smooth.comp_contMDiffOn hpi
   refine hcomp.congr ?_
   intro b _
-  exact ((evalAtBasisCLE_loc (E := E) n).symm_apply_apply (Φ b)).symm
+  exact ((evalAtBasisCLE_local (E := E) n).symm_apply_apply (Φ b)).symm
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -377,7 +377,7 @@ private lemma contMDiffOn_metricFormFun_baseSet
     (s := fun y => metricFormFun (I := I) (M := M) g r Y y)
   rw [hbaseSet_eq] at h_iff
   refine h_iff.mpr ?_
-  refine contMDiffOn_into_tensor0SModel_of_eval_basis_loc (I := I) (M := M) _ ?_
+  refine contMDiffOn_into_tensor0SModel_of_eval_basis_local (I := I) (M := M) _ ?_
   intro ψ
   have hfibre : ∀ b ∈ (trivializationAt E (TangentSpace I) α).baseSet,
       (e (TotalSpace.mk' (Tensor0SModel r ℝ E)
@@ -1085,7 +1085,7 @@ private lemma loweredCovDeriv_metricForm_eval_aux (g : SmoothRiemannianMetric I 
       (separableFormAt (I := I) (M := M) g x (r + 1)
         (Function.update (fun l : Fin (r + 1) ↦
           tangentSpaceModelContinuousLinearEquiv (I := I) x (Y l x)) k (nablaY k))) m with hRHSk
-    have hgoalCorr : Tensor0SSpace.toModel
+    have hgoalCorrection : Tensor0SSpace.toModel
           ((show Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace s I x from T x)
             (tensor0SCovariantDerivative I M (r + 1) (LeviCivita (I := I) g)
               (fun y : M => metricFormSection (I := I) (M := M) g (r + 1) Y y) x v)) m =
@@ -1193,7 +1193,7 @@ private lemma loweredCovDeriv_metricForm_eval_aux (g : SmoothRiemannianMetric I 
           (Function.update (fun l : Fin r ↦
             tangentSpaceModelContinuousLinearEquiv (I := I) x (Y l.succ x)) j
               (nablaY j.succ)))]
-    rw [hgoalCorr, hIHcorr, hk0, add_comm, ← Fin.sum_univ_succ]
+    rw [hgoalCorrection, hIHcorr, hk0, add_comm, ← Fin.sum_univ_succ]
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in

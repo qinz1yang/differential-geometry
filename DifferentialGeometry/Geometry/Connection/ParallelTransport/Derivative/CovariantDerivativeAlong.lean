@@ -442,20 +442,20 @@ theorem covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
     chartRepAt (I := I) γ (fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s : ℝ →L[ℝ] _) (1 : ℝ)) t with hrep_def
   have hev_c2 : ∀ᶠ s in 𝓝 t, ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ s :=
     (contMDiffAt_iff_contMDiffAt_nhds (n := 2) (by decide)).mp hγ2
-  have hev_src : ∀ᶠ s in 𝓝 t, γ s ∈ (chartAt H (γ t)).source := by
+  have hev_source : ∀ᶠ s in 𝓝 t, γ s ∈ (chartAt H (γ t)).source := by
     have : (chartAt H (γ t)).source ∈ 𝓝 (γ t) :=
       (chartAt H (γ t)).open_source.mem_nhds (mem_chart_source H (γ t))
     exact hγ2.continuousAt.preimage_mem_nhds this
-  obtain ⟨U, hU_sub, hU_open, ht_U⟩ := eventually_nhds_iff.mp (hev_c2.and hev_src)
+  obtain ⟨U, hU_sub, hU_open, ht_U⟩ := eventually_nhds_iff.mp (hev_c2.and hev_source)
   have hUsub_c2 : ∀ s ∈ U, ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ s := fun s hs => (hU_sub s hs).1
-  have hUsub_src : ∀ s ∈ U, γ s ∈ (chartAt H (γ t)).source := fun s hs => (hU_sub s hs).2
+  have hUsub_source : ∀ s ∈ U, γ s ∈ (chartAt H (γ t)).source := fun s hs => (hU_sub s hs).2
   have hU_nhds : U ∈ 𝓝 t := hU_open.mem_nhds ht_U
   have hu_cdiffOn : ContDiffOn ℝ 2 u U := by
     have h_comp_mdiff : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, E) 2 ((extChartAt I (γ t)) ∘ γ) U := by
       have hφ : ContMDiffOn I 𝓘(ℝ, E) 2 (extChartAt I (γ t)) (chartAt H (γ t)).source :=
         contMDiffOn_extChartAt (I := I) (n := 2) (x := γ t)
       have hγU : ContMDiffOn 𝓘(ℝ, ℝ) I 2 γ U := fun s hs => (hUsub_c2 s hs).contMDiffWithinAt
-      have hmaps : MapsTo γ U (chartAt H (γ t)).source := fun s hs => hUsub_src s hs
+      have hmaps : MapsTo γ U (chartAt H (γ t)).source := fun s hs => hUsub_source s hs
       exact hφ.comp hγU hmaps
     have hfun : u = ((extChartAt I (γ t)) ∘ γ) := rfl
     rw [hfun]; exact contMDiffOn_iff_contDiffOn.mp h_comp_mdiff
@@ -474,12 +474,12 @@ theorem covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2
     hderiv_u_diffAt.hasDerivAt
   have hrep_eqOn : EqOn rep (deriv u) U := by
     intro s hs
-    have hs_src : γ s ∈ (chartAt H (γ t)).source := hUsub_src s hs
+    have hs_source : γ s ∈ (chartAt H (γ t)).source := hUsub_source s hs
     have hs_mdiff : MDifferentiableAt 𝓘(ℝ, ℝ) I γ s :=
       (hUsub_c2 s hs).mdifferentiableAt (by decide)
     rw [hrep_def, chartRepAt_apply]
     rw [MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
-      (I := I) (M := M) (γ := γ) hs_mdiff (γ t) (t := s) hs_src]
+      (I := I) (M := M) (γ := γ) hs_mdiff (γ t) (t := s) hs_source]
     rfl
   have hrep_eq : rep =ᶠ[𝓝 t] deriv u := hrep_eqOn.eventuallyEq_of_mem hU_nhds
   have hrep_t : rep t = deriv u t := hrep_eq.eq_of_nhds

@@ -314,7 +314,7 @@ private lemma extChartAtSymmGlob_measurable (α : M) :
     continuousOn_const
     (extChartAt_target_measurableSet (I := I) (M := M) α)
 
-lemma chartLocalMeasure_lintegral_via_chartTargetEuclid
+lemma chartLocalMeasure_lintegral_eq_chartTargetEuclid
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
     {F : M → ℝ≥0∞} (hF : Measurable F) :
     ∫⁻ x, F x ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α) =
@@ -590,7 +590,7 @@ lemma exists_inf_chartDensity_on_compact
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 lemma image_extChartAt_tsupport_compact_subset_target
     [CompactSpace M] {u : M → ℝ} {α : M}
-    (hu_supp : tsupport u ⊆ (chartAt H α).source) :
+    (hu_support : tsupport u ⊆ (chartAt H α).source) :
     IsCompact ((extChartAt I α) '' (tsupport u)) ∧
       (extChartAt I α) '' (tsupport u) ⊆ (extChartAt I α).target := by
   refine ⟨?_, ?_⟩
@@ -598,7 +598,7 @@ lemma image_extChartAt_tsupport_compact_subset_target
       intro x hx
       rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)]
-      exact hu_supp hx
+      exact hu_support hx
     have hcont : ContinuousOn (extChartAt I α) (tsupport u) :=
       (continuousOn_extChartAt α).mono hsub
     exact ((isClosed_tsupport _).isCompact).image_of_continuousOn hcont
@@ -606,22 +606,22 @@ lemma image_extChartAt_tsupport_compact_subset_target
     have hxsrc : x ∈ (extChartAt I α).source := by
       rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M)]
-      exact hu_supp hx
+      exact hu_support hx
     exact (extChartAt I α).map_source hxsrc
 
 omit [IsManifold I ∞ M] in
 lemma image_toEuclidean_extChartAt_tsupport_compact
     [CompactSpace M] {u : M → ℝ} {α : M}
-    (hu_supp : tsupport u ⊆ (chartAt H α).source) :
+    (hu_support : tsupport u ⊆ (chartAt H α).source) :
     IsCompact (toEuclidean ''
       ((extChartAt I α) '' (tsupport (u : M → ℝ)))) :=
   ((image_extChartAt_tsupport_compact_subset_target (I := I) (M := M)
-    (u := u) (α := α) hu_supp).1).image (toEuclidean (E := E)).continuous
+    (u := u) (α := α) hu_support).1).image (toEuclidean (E := E)).continuous
 
 omit [IsManifold I ∞ M] in
 lemma image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
     {u : M → ℝ} {α : M}
-    (hu_supp : tsupport u ⊆ (chartAt H α).source) :
+    (hu_support : tsupport u ⊆ (chartAt H α).source) :
     toEuclidean ''
       ((extChartAt I α) '' (tsupport (u : M → ℝ))) ⊆
       chartTargetEuclid (I := I) (M := M) α := by
@@ -632,7 +632,7 @@ lemma image_toEuclidean_extChartAt_tsupport_subset_chartTargetEuclid
   have hxsrc : x ∈ (extChartAt I α).source := by
     rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
       (I := I) (M := M)]
-    exact hu_supp hx
+    exact hu_support hx
   exact (extChartAt I α).map_source hxsrc
 
 omit [IsManifold I ∞ M] in
@@ -661,7 +661,7 @@ lemma lintegral_enorm_pow_riemannianMeasure_eq_chartLocalMeasure_of_supportIn
     [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu_supp : tsupport u ⊆ (chartAt H α).source)
+    (hu_support : tsupport u ⊆ (chartAt H α).source)
     {p : ℝ} (hp_pos : 0 < p) :
     ∫⁻ x, ‖u x‖ₑ ^ p
         ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
@@ -672,7 +672,7 @@ lemma lintegral_enorm_pow_riemannianMeasure_eq_chartLocalMeasure_of_supportIn
   apply riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn (I := I) (M := M) g α
   · exact (hu_meas.enorm).pow_const p
   · intro x hx
-    have hx_notsupp : x ∉ tsupport u := fun hcontra => hx (hu_supp hcontra)
+    have hx_notsupp : x ∉ tsupport u := fun hcontra => hx (hu_support hcontra)
     have hu_x_zero : u x = 0 := image_eq_zero_of_notMem_tsupport hx_notsupp
     rw [hu_x_zero]
     rw [enorm_zero, ENNReal.zero_rpow_of_pos hp_pos]
@@ -681,7 +681,7 @@ lemma lintegral_enorm_pow_riemannianMeasure_eq_const_mul_chartTargetEuclid
     [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu_supp : tsupport u ⊆ (chartAt H α).source)
+    (hu_support : tsupport u ⊆ (chartAt H α).source)
     {p : ℝ} (hp_pos : 0 < p) :
     ∫⁻ x, ‖u x‖ₑ ^ p
         ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
@@ -695,8 +695,8 @@ lemma lintegral_enorm_pow_riemannianMeasure_eq_const_mul_chartTargetEuclid
           ∂(volume : Measure (EuclN E)) := by
   classical
   rw [lintegral_enorm_pow_riemannianMeasure_eq_chartLocalMeasure_of_supportIn
-      (I := I) (M := M) g α hu_meas hu_supp hp_pos]
-  rw [chartLocalMeasure_lintegral_via_chartTargetEuclid (I := I) (M := M) g α
+      (I := I) (M := M) g α hu_meas hu_support hp_pos]
+  rw [chartLocalMeasure_lintegral_eq_chartTargetEuclid (I := I) (M := M) g α
     (F := fun x => ‖u x‖ₑ ^ p) ((hu_meas.enorm).pow_const p)]
   congr 1
   refine MeasureTheory.setLIntegral_congr_fun
@@ -710,7 +710,7 @@ theorem lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw
     [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu_supp : tsupport u ⊆ (chartAt H α).source)
+    (hu_support : tsupport u ⊆ (chartAt H α).source)
     {p : ℝ} (hp_pos : 0 < p) :
     ∃ C_α : ℝ, 0 < C_α ∧
       ∫⁻ x, ‖u x‖ₑ ^ p
@@ -721,13 +721,13 @@ theorem lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw
               ‖chartPushedRaw I α u y‖ₑ ^ p
               ∂(volume : Measure (EuclN E)) := by
   classical
-  by_cases hu_zero_supp : (tsupport u).Nonempty
+  by_cases hu_zero_support : (tsupport u).Nonempty
   · set K : Set E := (extChartAt I α) '' (tsupport u)
     have hK_decomp :=
       image_extChartAt_tsupport_compact_subset_target
-        (I := I) (M := M) (u := u) (α := α) hu_supp
+        (I := I) (M := M) (u := u) (α := α) hu_support
     obtain ⟨hK_compact, hK_sub_target⟩ := hK_decomp
-    have hK_ne : K.Nonempty := hu_zero_supp.image _
+    have hK_ne : K.Nonempty := hu_zero_support.image _
     obtain ⟨M_sup, hM_sup_pos, hM_sup_le⟩ :=
       exists_sup_chartDensity_on_compact_pos (I := I) (M := M) g α hK_compact
         hK_ne hK_sub_target
@@ -738,7 +738,7 @@ theorem lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw
       · exact hM_sup_pos
     refine ⟨C_α, hC_pos, ?_⟩
     rw [lintegral_enorm_pow_riemannianMeasure_eq_const_mul_chartTargetEuclid
-        (I := I) (M := M) g α hu_meas hu_supp hp_pos]
+        (I := I) (M := M) g α hu_meas hu_support hp_pos]
     set K_eucl : Set (EuclN E) := toEuclidean '' K with hK_eucl_def
     have hpt : ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
         ENNReal.ofReal
@@ -810,10 +810,10 @@ theorem lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw
           · congr 1
             rw [ENNReal.ofReal_coe_nnreal]
           · exact NNReal.coe_nonneg _
-  · rw [Set.not_nonempty_iff_eq_empty] at hu_zero_supp
+  · rw [Set.not_nonempty_iff_eq_empty] at hu_zero_support
     have hu_zero : u = 0 := by
       funext x
-      have hx_notsupp : x ∉ tsupport u := by rw [hu_zero_supp]; simp
+      have hx_notsupp : x ∉ tsupport u := by rw [hu_zero_support]; simp
       exact image_eq_zero_of_notMem_tsupport hx_notsupp
     refine ⟨1, one_pos, ?_⟩
     rw [hu_zero]
@@ -837,7 +837,7 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu_supp : tsupport u ⊆ (chartAt H α).source) :
+    (hu_support : tsupport u ⊆ (chartAt H α).source) :
     ∃ C_α : ℝ, 0 < C_α ∧
       eLpNorm u p
           (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
@@ -852,7 +852,7 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw
   have hp_toReal_pos : 0 < p.toReal := ENNReal.toReal_pos hp_ne_zero hp_top
   obtain ⟨C, hC_pos, hbnd⟩ :=
     lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw
-      (I := I) (M := M) g α hu_meas hu_supp hp_toReal_pos
+      (I := I) (M := M) g α hu_meas hu_support hp_toReal_pos
   refine ⟨C ^ (1 / p.toReal), Real.rpow_pos_of_pos hC_pos _, ?_⟩
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
   have h_lint_bound :
@@ -893,7 +893,7 @@ theorem lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure
     [T2Space M] [CompactSpace M]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu_supp : tsupport u ⊆ (chartAt H α).source)
+    (hu_support : tsupport u ⊆ (chartAt H α).source)
     {p : ℝ} (hp_pos : 0 < p) :
     ∃ C_α : ℝ, 0 < C_α ∧
       ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
@@ -904,13 +904,13 @@ theorem lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure
               ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
                   (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) := by
   classical
-  by_cases hu_zero_supp : (tsupport u).Nonempty
+  by_cases hu_zero_support : (tsupport u).Nonempty
   · set K : Set E := (extChartAt I α) '' (tsupport u)
     have hK_decomp :=
       image_extChartAt_tsupport_compact_subset_target
-        (I := I) (M := M) (u := u) (α := α) hu_supp
+        (I := I) (M := M) (u := u) (α := α) hu_support
     obtain ⟨hK_compact, hK_sub_target⟩ := hK_decomp
-    have hK_ne : K.Nonempty := hu_zero_supp.image _
+    have hK_ne : K.Nonempty := hu_zero_support.image _
     obtain ⟨M_inf, hM_inf_pos, hM_inf_le⟩ :=
       exists_inf_chartDensity_on_compact (I := I) (M := M) g α hK_compact
         hK_ne hK_sub_target
@@ -923,7 +923,7 @@ theorem lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure
       · exact hM_inf_pos
     refine ⟨C_α, hC_pos, ?_⟩
     rw [lintegral_enorm_pow_riemannianMeasure_eq_const_mul_chartTargetEuclid
-        (I := I) (M := M) g α hu_meas hu_supp hp_pos]
+        (I := I) (M := M) g α hu_meas hu_support hp_pos]
     set K_eucl : Set (EuclN E) := toEuclidean '' K with hK_eucl_def
     have hpt : ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
         ENNReal.ofReal (M_inf) * ‖chartPushedRaw I α u y‖ₑ ^ p
@@ -1011,10 +1011,10 @@ theorem lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure
       rw [hD_def, mul_assoc]
       gcongr
     rwa [ENNReal.mul_le_iff_le_inv hD_pos hD_ne_top] at h_step
-  · rw [Set.not_nonempty_iff_eq_empty] at hu_zero_supp
+  · rw [Set.not_nonempty_iff_eq_empty] at hu_zero_support
     have hu_zero : u = 0 := by
       funext x
-      have hx_notsupp : x ∉ tsupport u := by rw [hu_zero_supp]; simp
+      have hx_notsupp : x ∉ tsupport u := by rw [hu_zero_support]; simp
       exact image_eq_zero_of_notMem_tsupport hx_notsupp
     refine ⟨1, one_pos, ?_⟩
     rw [hu_zero]
@@ -1038,7 +1038,7 @@ theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure
     (g : DifferentialGeometry.SmoothRiemannianMetric I M) (α : M)
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {u : M → ℝ} (hu_meas : Measurable u)
-    (hu_supp : tsupport u ⊆ (chartAt H α).source) :
+    (hu_support : tsupport u ⊆ (chartAt H α).source) :
     ∃ C_α : ℝ, 0 < C_α ∧
       eLpNorm (chartPushedRaw I α u) p
           ((volume : Measure (EuclN E)).restrict
@@ -1053,7 +1053,7 @@ theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure
   have hp_toReal_pos : 0 < p.toReal := ENNReal.toReal_pos hp_ne_zero hp_top
   obtain ⟨C, hC_pos, hbnd⟩ :=
     lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure
-      (I := I) (M := M) g α hu_meas hu_supp hp_toReal_pos
+      (I := I) (M := M) g α hu_meas hu_support hp_toReal_pos
   refine ⟨C ^ (1 / p.toReal), Real.rpow_pos_of_pos hC_pos _, ?_⟩
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
   have h_LHS_eq :
@@ -1107,9 +1107,9 @@ theorem lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw_unifor
     · exact_mod_cast euclideanHaarFactor_pos
     · exact hM_sup_pos
   refine ⟨C_K, hC_K_pos, ?_⟩
-  intro u hu_meas hu_supp hu_supp_K p hp_pos
+  intro u hu_meas hu_support hu_support_K p hp_pos
   rw [lintegral_enorm_pow_riemannianMeasure_eq_const_mul_chartTargetEuclid
-      (I := I) (M := M) g α hu_meas hu_supp hp_pos]
+      (I := I) (M := M) g α hu_meas hu_support hp_pos]
   set K_eucl : Set (EuclN E) :=
     (toEuclidean : E ≃L[ℝ] EuclN E) '' ((extChartAt I α) '' (tsupport u))
     with hK_eucl_def
@@ -1122,7 +1122,7 @@ theorem lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw_unifor
     intro y hy_target
     by_cases hy_K_eucl : y ∈ K_eucl
     · obtain ⟨z_E, hz_E_chart, hz_Ey⟩ := hy_K_eucl
-      have hz_in_K : z_E ∈ K := hu_supp_K hz_E_chart
+      have hz_in_K : z_E ∈ K := hu_support_K hz_E_chart
       have hz_target : z_E ∈ (extChartAt I α).target := hK_sub hz_in_K
       have hsym_eq : (toEuclidean (E := E)).symm y = z_E := by
         rw [← hz_Ey]; exact (toEuclidean (E := E)).symm_apply_apply z_E
@@ -1209,8 +1209,8 @@ theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform
     lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw_uniform
       (I := I) (M := M) g α hK_compact hK_ne hK_sub
   refine ⟨C ^ (1 / p.toReal), Real.rpow_pos_of_pos hC_pos _, ?_⟩
-  intro u hu_meas hu_supp hu_K
-  have h_lint := hC_bnd hu_meas hu_supp hu_K hp_toReal_pos
+  intro u hu_meas hu_support hu_K
+  have h_lint := hC_bnd hu_meas hu_support hu_K hp_toReal_pos
   have h_lint' :
       ∫⁻ x, ‖u x‖ₑ ^ p.toReal
           ∂(DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
@@ -1289,9 +1289,9 @@ theorem lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure_unifor
     · exact_mod_cast euclideanHaarFactor_pos
     · exact hM_inf_pos
   refine ⟨C_K, hC_K_pos, ?_⟩
-  intro u hu_meas hu_supp hu_supp_K p hp_pos
+  intro u hu_meas hu_support hu_support_K p hp_pos
   rw [lintegral_enorm_pow_riemannianMeasure_eq_const_mul_chartTargetEuclid
-      (I := I) (M := M) g α hu_meas hu_supp hp_pos]
+      (I := I) (M := M) g α hu_meas hu_support hp_pos]
   set K_eucl : Set (EuclN E) := toEuclidean ''
     ((extChartAt I α) '' (tsupport u)) with hK_eucl_def
   have hpt : ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
@@ -1303,7 +1303,7 @@ theorem lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure_unifor
     intro y hy_target
     by_cases hy_K_eucl : y ∈ K_eucl
     · obtain ⟨z_E, hz_E_chart, hz_Ey⟩ := hy_K_eucl
-      have hz_in_K : z_E ∈ K := hu_supp_K hz_E_chart
+      have hz_in_K : z_E ∈ K := hu_support_K hz_E_chart
       have hz_target : z_E ∈ (extChartAt I α).target := hK_sub hz_in_K
       have hsym_eq : (toEuclidean (E := E)).symm y = z_E := by
         rw [← hz_Ey]; exact (toEuclidean (E := E)).symm_apply_apply z_E
@@ -1409,8 +1409,8 @@ theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure_uniform
     lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure_uniform
       (I := I) (M := M) g α hK_compact hK_ne hK_sub
   refine ⟨C ^ (1 / p.toReal), Real.rpow_pos_of_pos hC_pos _, ?_⟩
-  intro u hu_meas hu_supp hu_K
-  have h_lint := hC_bnd hu_meas hu_supp hu_K hp_toReal_pos
+  intro u hu_meas hu_support hu_K
+  have h_lint := hC_bnd hu_meas hu_support hu_K hp_toReal_pos
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne_zero hp_top]
   have h_LHS_eq :
       (∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
@@ -1529,12 +1529,12 @@ private lemma chartPushedRaw_aeEq_zero_of_ae_zero_riemannianMeasure
           (chartTargetEuclid (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)) := by
   classical
-  have h_chartSrc_meas : MeasurableSet (chartAt H α).source :=
+  have h_chartSource_meas : MeasurableSet (chartAt H α).source :=
     (chartAt H α).open_source.measurableSet
   set F : M → ℝ≥0∞ := fun x =>
     (chartAt H α).source.indicator (fun x => ‖d x‖ₑ ^ (2 : ℝ)) x with hF_def
   have hF_meas : Measurable F :=
-    ((hd_meas.enorm).pow_const _).indicator h_chartSrc_meas
+    ((hd_meas.enorm).pow_const _).indicator h_chartSource_meas
   have hF_zero_off : ∀ x, x ∉ (chartAt H α).source → F x = 0 := fun x hx =>
     Set.indicator_of_notMem hx _
   have h_lint_F_riemannian_zero :
@@ -1561,16 +1561,16 @@ private lemma chartPushedRaw_aeEq_zero_of_ae_zero_riemannianMeasure
   have h_lint_F_chartLocal_zero :
       ∫⁻ x, F x ∂(DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α) = 0 := by
     rw [← h_lint_F_chartLocal_eq]; exact h_lint_F_riemannian_zero
-  have h_chartLocal_offSrc_zero :
+  have h_chartLocal_offSource_zero :
       (DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α)
           ((chartAt H α).source)ᶜ = 0 :=
     DifferentialGeometry.Integral.Measure.chartLocalMeasure_apply_of_disjoint_source
-      (I := I) g α h_chartSrc_meas.compl disjoint_compl_left
+      (I := I) g α h_chartSource_meas.compl disjoint_compl_left
   have h_F_eq_norm_sq_ae :
       F =ᵐ[DifferentialGeometry.Integral.Measure.chartLocalMeasure (I := I) g α]
         (fun x => ‖d x‖ₑ ^ (2 : ℝ)) := by
     rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
-    refine MeasureTheory.measure_mono_null ?_ h_chartLocal_offSrc_zero
+    refine MeasureTheory.measure_mono_null ?_ h_chartLocal_offSource_zero
     intro x hx
     simp only [Set.mem_ofPred_eq] at hx
     by_cases hxsrc : x ∈ (chartAt H α).source
@@ -1588,7 +1588,7 @@ private lemma chartPushedRaw_aeEq_zero_of_ae_zero_riemannianMeasure
   have h_norm_sq_meas : Measurable (fun x : M => ‖d x‖ₑ ^ (2 : ℝ)) :=
     (hd_meas.enorm).pow_const _
   have h_bridge :=
-    chartLocalMeasure_lintegral_via_chartTargetEuclid (I := I) (M := M) g α h_norm_sq_meas
+    chartLocalMeasure_lintegral_eq_chartTargetEuclid (I := I) (M := M) g α h_norm_sq_meas
   rw [h_lint_d_chartLocal_zero] at h_bridge
   set GG : EuclN E → ℝ≥0∞ := fun y =>
     ENNReal.ofReal

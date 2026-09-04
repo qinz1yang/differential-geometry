@@ -149,7 +149,7 @@ theorem exp_eq_intr_of_c2
     dsimp only [O]
     constructor <;> linarith
   have hEqShift : Set.EqOn γRs γIs O := by
-    apply geo_eqOn_of_init (I := I) g isOpen_Ioo isPreconnected_Ioo h0O
+    apply geo_eqOn_of_initial (I := I) g isOpen_Ioo isPreconnected_Ioo h0O
       hγRs_geo hγIs_geo hγRs_cont hγIs_cont
     · exact hshift.eq_of_nhds
     · have hmfd :

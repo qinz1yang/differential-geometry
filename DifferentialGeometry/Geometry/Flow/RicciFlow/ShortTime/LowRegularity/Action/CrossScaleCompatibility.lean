@@ -84,7 +84,7 @@ def liftSecondOrderActionToH2 (g : SmoothRiemannianMetric I M) {ρ δ : ℝ}
     (hball : ∀ᵐ t ∂timeMeasure T,
       ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
         (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-        (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)‖ ≤ R) :
     ℝ → (TensorHs (I := I) (M := M) g 0 2 ((2 : ℝ) + 2) →L[ℝ]
       TensorHs (I := I) (M := M) g 0 2 (2 : ℝ)) :=
@@ -114,7 +114,7 @@ theorem liftSecondOrderActionToH2_data
           (hball : ∀ᵐ t ∂timeMeasure T,
             ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               (show (1 : ℝ) + 1 ≤ (1 : ℝ) + 2 by linarith)
-              (maxRegDuhamelSolField (I := I) (M := M) (1 : ℝ) hT
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) (1 : ℝ) hT
                 (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2))
                 f t)‖ ≤ R),
           AEStronglyMeasurable
@@ -218,12 +218,12 @@ theorem exists_compatible_cross_scale_field_realization
       nonautL2Map (I := I) (M := M) hT hT1
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           A2Lo hA2Lo C2Lo hC2Lo A1Lo hA1Lo fLo + f0Lo) :
-    ∃ (uHi : MaxRegSolutionSpace (I := I) (M := M)
+    ∃ (uHi : MaximalRegularitySolutionSpace (I := I) (M := M)
         (g := g) (r := 0) (s := 2) aHi T)
       (fHi : timeL2 (TensorHs (I := I) (M := M) g 0 2 aHi) T)
       (u : CrossScaleField (I := I) (M := M) g 0 2 aHi T),
       u.lo = uHi ∧
-        u.hiL2 = maxRegDuhamelSolField (I := I) (M := M) aHi hT 0 fHi ∧
+        u.hiL2 = maximalRegularityDuhamelSolutionField (I := I) (M := M) aHi hT 0 fHi ∧
         fHi =
           nonautL2Map (I := I) (M := M) hT hT1
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
@@ -241,7 +241,7 @@ theorem exists_compatible_cross_scale_field_realization
         (∀ t ∈ Icc (0 : ℝ) T,
           tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
               hOrd (u.lo.toFun t) =
-            (maxRegDuhamelMap (I := I) (M := M) aLo hT 0 fLo).toFun t) ∧
+            (maximalRegularityDuhamelMap (I := I) (M := M) aLo hT 0 fLo).toFun t) ∧
         u.repr 0 = (0 : TensorHs (I := I) (M := M) g 0 2 (aHi + 1)) ∧
         ContinuousOn (fun t => ‖u.repr t‖ ^ 2) (Icc (0 : ℝ) T) ∧
         (∀ t ∈ Icc (0 : ℝ) T,
@@ -249,7 +249,7 @@ theorem exists_compatible_cross_scale_field_realization
               hOrdUp (u.repr t) = u.lo.toFun t) ∧
         (fun t => tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           hOrdRp (u.repr t)) =ᵐ[timeMeasure T]
-            fun t => maxRegDuhamelSolField (I := I) (M := M)
+            fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M)
               aLo hT 0 fLo t := by
   subst hlo
   obtain ⟨uHi, fHi, huHi, hfHi, htrace, hderiv, hforce, hfield, hforce_ae, -⟩ :=
@@ -294,19 +294,19 @@ theorem low_radial_retractions_fix_maximal_regularity_solution
     (hforce : gforce =ᵐ[timeMeasure T]
       fun t => deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hreal (u t))
     (hball : ∀ᵐ t ∂timeMeasure T,
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
         lowerState (I := I) (M := M) g₀ 1 R) :
     (∀ᵐ t ∂timeMeasure T,
         lowRadialH3 (I := I) (M := M) g₀ ρ
             (tensorHsCongr (I := I) (M := M) g₀ 0 2
               (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-              (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
                 (0 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) gforce t)) =
           tensorHsCongr (I := I) (M := M) g₀ 0 2
             (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
               (0 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) gforce t)) ∧
       (∀ᵐ t ∂timeMeasure T,
@@ -315,14 +315,14 @@ theorem low_radial_retractions_fix_maximal_regularity_solution
               (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
               (tensorHsCongr (I := I) (M := M) g₀ 0 2
                 (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-                (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+                (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
                   (0 : TensorHs (I := I) (M := M) g₀ 0 2
                     (((1 : ℕ) : ℝ) + 2)) gforce t))) =
           tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
             (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
             (tensorHsCongr (I := I) (M := M) g₀ 0 2
               (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-              (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
                 (0 : TensorHs (I := I) (M := M) g₀ 0 2
                   (((1 : ℕ) : ℝ) + 2)) gforce t))) := by
   have hsymm := duhamel_solution_of_deTurck_remainder_symmetric_h3_ae (I := I) (M := M) g₀ g_bg hR hδ hreal
@@ -333,7 +333,7 @@ theorem low_radial_retractions_fix_maximal_regularity_solution
           (show (2 : ℝ) ≤ (3 : ℝ) by norm_num)
           (tensorHsCongr (I := I) (M := M) g₀ 0 2
             (show ((1 : ℕ) : ℝ) + 2 = (3 : ℝ) by norm_num)
-            (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
               (0 : TensorHs (I := I) (M := M) g₀ 0 2
                 (((1 : ℕ) : ℝ) + 2)) gforce t))‖ ≤ R := by
     filter_upwards [hball] with t ht

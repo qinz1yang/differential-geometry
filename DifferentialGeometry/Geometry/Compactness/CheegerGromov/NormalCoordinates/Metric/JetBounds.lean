@@ -11,7 +11,7 @@ open Bundle Set
 open scoped Manifold ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Geometry.Riemannian.Exponential
 open Geometry.Riemannian.NormalCoordinates
@@ -51,26 +51,26 @@ theorem intrinsic_metric_jet_abs_le
     (hjet : forall k, k ≤ n ->
       Real.sqrt
         (g.inner
-          (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
-          (intrLaunchJet (I := I) g hEnorm p u a b k (r, 1))
-          (intrLaunchJet (I := I) g hEnorm p u a b k (r, 1))) ≤ B) :
-    |intrMetricJet (I := I) g hEnorm p u a b n r| ≤
+          (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
+          (intrinsicLaunchJet (I := I) g hEnorm p u a b k (r, 1))
+          (intrinsicLaunchJet (I := I) g hEnorm p u a b k (r, 1))) ≤ B) :
+    |intrinsicMetricJet (I := I) g hEnorm p u a b n r| ≤
       2 ^ n * B ^ 2 := by
   classical
-  unfold intrMetricJet
+  unfold intrinsicMetricJet
   calc
     |∑ i ∈ Finset.range (n + 1),
         (n.choose i : Real) *
           g.inner
-            (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
-            (intrLaunchJet (I := I) g hEnorm p u a b i (r, 1))
-            (intrLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))| ≤
+            (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
+            (intrinsicLaunchJet (I := I) g hEnorm p u a b i (r, 1))
+            (intrinsicLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))| ≤
         ∑ i ∈ Finset.range (n + 1),
           |(n.choose i : Real) *
             g.inner
-              (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
-              (intrLaunchJet (I := I) g hEnorm p u a b i (r, 1))
-              (intrLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))| :=
+              (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
+              (intrinsicLaunchJet (I := I) g hEnorm p u a b i (r, 1))
+              (intrinsicLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))| :=
       Finset.abs_sum_le_sum_abs _ _
     _ ≤ ∑ i ∈ Finset.range (n + 1), (n.choose i : Real) * B ^ 2 := by
       refine Finset.sum_le_sum fun i hi => ?_
@@ -82,22 +82,22 @@ theorem intrinsic_metric_jet_abs_le
       have hinner :=
         Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
           (I := I) (M := M) g
-          (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
-          (intrLaunchJet (I := I) g hEnorm p u a b i (r, 1))
-          (intrLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))
+          (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
+          (intrinsicLaunchJet (I := I) g hEnorm p u a b i (r, 1))
+          (intrinsicLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))
       rw [abs_mul, abs_of_nonneg (Nat.cast_nonneg (n.choose i))]
       apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg (n.choose i))
       have hprod :
           Real.sqrt
                 (g.inner
-                  (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
-                  (intrLaunchJet (I := I) g hEnorm p u a b i (r, 1))
-                  (intrLaunchJet (I := I) g hEnorm p u a b i (r, 1))) *
+                  (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
+                  (intrinsicLaunchJet (I := I) g hEnorm p u a b i (r, 1))
+                  (intrinsicLaunchJet (I := I) g hEnorm p u a b i (r, 1))) *
               Real.sqrt
                 (g.inner
-                  (intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
-                  (intrLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))
-                  (intrLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))) ≤
+                  (intrinsicLaunch3 (I := I) g hEnorm p u a b ((r, 0), 1))
+                  (intrinsicLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))
+                  (intrinsicLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))) ≤
             B * B :=
         mul_le_mul hleft hright (Real.sqrt_nonneg _) hB
       exact hinner.trans (by simpa only [pow_two] using hprod)
@@ -149,7 +149,7 @@ theorem intrinsic_metric_jet_le_of_bounded_geometry
     Real.sqrt (P.metric.inner p u u) ≤ U →
     Real.sqrt (P.metric.inner p a a) ≤ D →
     Real.sqrt (P.metric.inner p b b) ≤ D →
-    |intrMetricJet (I := I) P.metric hEnorm p u a b n 0| ≤
+    |intrinsicMetricJet (I := I) P.metric hEnorm p u a b n 0| ≤
       2 ^ n * jacobiJetBound hP.C U D n ^ 2 := by
   let _ : TopologicalSpace P.M := P.topology
   let _ : ChartedSpace H P.M := P.charted
@@ -187,7 +187,7 @@ theorem intrinsic_metric_jet_le_of_bounded_geometry
   apply intrinsic_metric_jet_abs_le (I := I) P.metric hEnorm p u a b n 0
     (jacobiJetBound hP.C U D n) (jacobi_jet_bound_nonneg hP.C hD n)
   intro k hk
-  simpa only [IntrinsicJacobiJetAtom.eval, intrLaunchJet] using
+  simpa only [IntrinsicJacobiJetAtom.eval, intrinsicLaunchJet] using
     hjets.1 k hk 1 (by constructor <;> norm_num)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -227,9 +227,9 @@ theorem intrinsic_frame_metric_iterated_fderiv_norm_le
           Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
             (I := I) P.metric x v
     ContDiffAt Real ∞
-        (intrFrameMetric (I := I) P.metric hEnorm p) z →
+        (intrinsicFrameMetric (I := I) P.metric hEnorm p) z →
       ‖iteratedFDeriv Real n
-          (intrFrameMetric (I := I) P.metric hEnorm p) z‖ ≤
+          (intrinsicFrameMetric (I := I) P.metric hEnorm p) z‖ ≤
         ContinuousMultilinearMap.polarConst n *
           (2 * (2 ^ n * jacobiJetBound hP.C U 1 n ^ 2)) := by
   let _ : TopologicalSpace P.M := P.topology
@@ -263,7 +263,7 @@ theorem intrinsic_frame_metric_iterated_fderiv_norm_le
   intro hsmooth
   let A :=
     iteratedFDeriv Real n
-      (intrFrameMetric (I := I) P.metric hEnorm p) z
+      (intrinsicFrameMetric (I := I) P.metric hEnorm p) z
   let S : Real := 2 ^ n * jacobiJetBound hP.C U 1 n ^ 2
   have hS : 0 ≤ S := by
     exact mul_nonneg (by positivity) (sq_nonneg _)
@@ -279,22 +279,22 @@ theorem intrinsic_frame_metric_iterated_fderiv_norm_le
       intro v w
       have hmetric :
           (fun y : E =>
-              intrFrameMetric (I := I) P.metric hEnorm p y v w) =
+              intrinsicFrameMetric (I := I) P.metric hEnorm p y v w) =
             fun y : E =>
-              intrFrameMetric (I := I) P.metric hEnorm p y w v := by
+              intrinsicFrameMetric (I := I) P.metric hEnorm p y w v := by
         funext y
-        rw [intrFrameMetric_apply, intrFrameMetric_apply]
+        rw [intrinsicFrameMetric_apply, intrinsicFrameMetric_apply]
         exact P.metric.symm _ _ _
       calc
         B v w =
             iteratedFDeriv Real n
               (fun y : E =>
-                intrFrameMetric (I := I) P.metric hEnorm p y v w) z
+                intrinsicFrameMetric (I := I) P.metric hEnorm p y v w) z
               (fun _ => a) := by
           exact (iterFDeriv_apply₂ hsmooth n v w (fun _ => a)).symm
         _ = iteratedFDeriv Real n
               (fun y : E =>
-                intrFrameMetric (I := I) P.metric hEnorm p y w v) z
+                intrinsicFrameMetric (I := I) P.metric hEnorm p y w v) z
               (fun _ => a) := by rw [hmetric]
         _ = B w v :=
           iterFDeriv_apply₂ hsmooth n w v (fun _ => a)
@@ -326,9 +326,9 @@ theorem intrinsic_frame_metric_iterated_fderiv_norm_le
           (U := U) (D := 1) (by norm_num) hzu hau hbu
       change
         |iteratedFDeriv Real n
-            (intrFrameMetric (I := I) P.metric hEnorm p) z
+            (intrinsicFrameMetric (I := I) P.metric hEnorm p) z
             (fun _ => a) b b| ≤ S
-      rw [intrMetric_diag_jet (I := I) P.metric hEnorm p z a b n
+      rw [intrinsicMetric_diag_jet (I := I) P.metric hEnorm p z a b n
         hsmooth]
       exact hjet
     have hB :=
@@ -339,7 +339,7 @@ theorem intrinsic_frame_metric_iterated_fderiv_norm_le
       hAsymm htwoS hdiag
   simpa only [A, S] using hbound
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

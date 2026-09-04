@@ -11,7 +11,7 @@ open Set Bundle Manifold
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E] [CompleteSpace E]
@@ -30,7 +30,7 @@ omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
 theorem complete_at
     (hP : MetricComplete (I := I) P)
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real}
     (co : OpenMetricConvergenceData (I := I) Φ P.metric bf hsrc htgt a b t₀)
     (c : Nat → Real) (hc : ∀ n, 0 < c n)
@@ -52,7 +52,7 @@ theorem complete_at
   exact MetricComplete.complete_of_lower P hP (co.gInf t) c₀ hc₀ hlower
 
 end OpenMetricConvergenceData
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 end

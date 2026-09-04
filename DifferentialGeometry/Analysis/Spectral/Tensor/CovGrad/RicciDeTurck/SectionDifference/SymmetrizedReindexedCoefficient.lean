@@ -319,7 +319,7 @@ private def g1PrincipalVecCcross (g₀ gop gcov : SmoothRiemannianMetric I M)
           (koszulCovGradCovec (I := I) (M := M) g₀ gcov Z Y b)) x v :
         TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x)))
 
-private def alignCorrVecCrossMetric (g₀ gop gcov : SmoothRiemannianMetric I M)
+private def alignCorrectionVecCrossMetric (g₀ gop gcov : SmoothRiemannianMetric I M)
     (Z Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v : TangentSpace I x) :
     TangentSpace I x :=
   inverseMetricSharpFib (I := I) gop x
@@ -353,9 +353,9 @@ private lemma g1Principal_splitCcross
             (fun b => cotangentToCLM (I := I)
               (koszulCovGradCovec (I := I) (M := M) g₀ gcov Z Y b)) x v :
             TangentSpace I x →L[ℝ] ℝ) : Module.Dual ℝ (TangentSpace I x)))
-        + alignCorrVecCrossMetric (I := I) (M := M) g₀ gop gcov Z Y x v := by
+        + alignCorrectionVecCrossMetric (I := I) (M := M) g₀ gop gcov Z Y x v := by
   classical
-  rw [g1PrincipalVecCcross, alignCorrVecCrossMetric]
+  rw [g1PrincipalVecCcross, alignCorrectionVecCrossMetric]
   rw [← map_add]
   congr 1
   rw [← dualToCotangent_addC]
@@ -489,7 +489,7 @@ def alignmentTraceRemainderCross (g₀ gop gcov : SmoothRiemannianMetric I M)
   ∑ i : Fin (Module.finrank ℝ E),
     (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       (tangentSpaceModelContinuousLinearEquiv (I := I) x
-        (alignCorrVecCrossMetric (I := I) (M := M) g₀ gop gcov Z Y x
+        (alignCorrectionVecCrossMetric (I := I) (M := M) g₀ gop gcov Z Y x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) i
 
@@ -540,7 +540,7 @@ theorem palatini_tracedPrincipal_cross_eq_combinedTrace
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i
           + (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
               (tangentSpaceModelContinuousLinearEquiv (I := I) x
-                (alignCorrVecCrossMetric (I := I) (M := M) g₀ gop gcov Z Y x
+                (alignCorrectionVecCrossMetric (I := I) (M := M) g₀ gop gcov Z Y x
                   ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                     ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)))) i) := by
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -669,7 +669,7 @@ def palatiniTracedPrincipalZRemainderCross (g₀ gop gcov : SmoothRiemannianMetr
   + (∑ i : Fin (Module.finrank ℝ E),
     (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
       (tangentSpaceModelContinuousLinearEquiv (I := I) x
-        (alignCorrVecCrossMetric (I := I) (M := M) g₀ gop gcov
+        (alignCorrectionVecCrossMetric (I := I) (M := M) g₀ gop gcov
           (⟨smoothExtensionTangent (I := I) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),
             smoothExtensionTangent_contMDiff (I := I) x
@@ -736,7 +736,7 @@ theorem palatini_tracedPrincipal_Zslot_cross_eq_combinedTrace
                   ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) i
             + (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr
                 (tangentSpaceModelContinuousLinearEquiv (I := I) x
-                  (alignCorrVecCrossMetric (I := I) (M := M) g₀ gop gcov
+                  (alignCorrectionVecCrossMetric (I := I) (M := M) g₀ gop gcov
                     (⟨smoothExtensionTangent (I := I) x
                         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)),

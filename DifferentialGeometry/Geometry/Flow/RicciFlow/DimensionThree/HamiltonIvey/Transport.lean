@@ -22,12 +22,12 @@ variable [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold 
 variable [SigmaCompactSpace M] [T2Space M]
 
 omit [FiniteDimensional Real E] [CompleteSpace E] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
-private lemma tensor04StdAt_compU_apply
+private lemma tensor04StandardAt_compU_apply
     {x : M} (X : Tensor04At (I := I) (M := M) x)
     (U : TangentSpace I x →L[ℝ] TangentSpace I x)
     (v y z w : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) (X.compContinuousLinearMap (fun _ : Fin 4 => U)) v y z w =
-      tensor04StdAt (I := I) (M := M) X (U v) (U y) (U z) (U w) := by
+    tensor04StandardAt (I := I) (M := M) (X.compContinuousLinearMap (fun _ : Fin 4 => U)) v y z w =
+      tensor04StandardAt (I := I) (M := M) X (U v) (U y) (U z) (U w) := by
   change (X : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
       (fun i : Fin 4 => U (vec4 v y z w i)) =
     (X : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ)
@@ -45,20 +45,20 @@ private lemma uhlenbeckComp_mem_algebraicCurvatureTensorSubmodule
     (X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
         (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t) ∈
       algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
-  have hform : IsAlgCurvForm (tensor04StdAt (I := I) (M := M) (X : Tensor04At (I := I) (M := M) x)) :=
+  have hform : IsAlgCurvForm (tensor04StandardAt (I := I) (M := M) (X : Tensor04At (I := I) (M := M) x)) :=
     (mem_algebraicCurvatureTensorSubmodule (I := I) (M := M)).mp X.2
   rw [show (X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
         (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t) ∈
         algebraicCurvatureTensorSubmodule (I := I) (M := M) x ↔
-      IsAlgCurvForm (tensor04StdAt (I := I) (M := M)
+      IsAlgCurvForm (tensor04StandardAt (I := I) (M := M)
         ((X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
           (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t))) from
     mem_algebraicCurvatureTensorSubmodule (I := I) (M := M)]
   change IsAlgCurvForm (fun v y z w =>
-    tensor04StdAt (I := I) (M := M)
+    tensor04StandardAt (I := I) (M := M)
       ((X : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
         (fun _ : Fin 4 => uhlenbeckEndomorphismAt (basisAt x) iota t)) v y z w)
-  simp_rw [tensor04StdAt_compU_apply]
+  simp_rw [tensor04StandardAt_compU_apply]
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro x₁ x₂ y z w
     rw [map_add (uhlenbeckEndomorphismAt (basisAt x) iota t)]
@@ -114,7 +114,7 @@ theorem fiberInner_compUhlenbeck_isometry
       curvatureOperatorMatrixAt (I := I) x moving X := by
     ext p q
     unfold curvatureOperatorMatrixAt
-    rw [tensor04StdAt_compU_apply (X : Tensor04At (I := I) (M := M) x)
+    rw [tensor04StandardAt_compU_apply (X : Tensor04At (I := I) (M := M) x)
       (uhlenbeckEndomorphismAt (basisAt x) iota t)]
     simp [moving, uhlenbeckMovingBasis_apply]
   have hmatY : curvatureOperatorMatrixAt (I := I) x (basisAt x)
@@ -123,7 +123,7 @@ theorem fiberInner_compUhlenbeck_isometry
       curvatureOperatorMatrixAt (I := I) x moving Y := by
     ext p q
     unfold curvatureOperatorMatrixAt
-    rw [tensor04StdAt_compU_apply (Y : Tensor04At (I := I) (M := M) x)
+    rw [tensor04StandardAt_compU_apply (Y : Tensor04At (I := I) (M := M) x)
       (uhlenbeckEndomorphismAt (basisAt x) iota t)]
     simp [moving, uhlenbeckMovingBasis_apply]
   have hleft := inner0S_algebraic_eq_four_mul_operatorInner (I := I) (M := M) (S.base.metric 0) x

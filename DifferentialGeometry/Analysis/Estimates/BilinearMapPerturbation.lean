@@ -8,7 +8,7 @@ import Mathlib.Tactic.Ring
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace Real E']
 
@@ -129,5 +129,5 @@ theorem quadPerturbNeumann {B₀ B₁ : E' →L[Real] E' →L[Real] Real}
     gcongr
   gcongr
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

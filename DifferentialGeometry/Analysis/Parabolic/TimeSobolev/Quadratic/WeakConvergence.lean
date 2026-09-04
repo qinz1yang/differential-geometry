@@ -159,7 +159,7 @@ theorem timeQuad_weak_lim
     exact hrs.trans_le (le_liminf_of_le hcob hevQ)
   simpa only [q, qlim, timeQuad, Ln, L] using hliminf
 
-theorem timeQuad_weak_unif
+theorem timeQuad_weak_uniform
     (A : ℕ → ℝ → X →L[ℝ] X) (A_lim : ℝ → X →L[ℝ] X)
     (hA : ∀ n, AEStronglyMeasurable (A n) (timeMeasure T))
     (hA_lim : AEStronglyMeasurable A_lim (timeMeasure T))
@@ -183,14 +183,14 @@ theorem timeQuad_weak_unif
   have hcross : Tendsto (fun n ↦ inner ℝ (Ln n (u n)) u_lim) atTop
       (nhds qlim) := by
     simpa only [Ln, L, qlim] using
-      timeOp_weak_unif A A_lim hA hA_lim C C_lim hC hC_lim hconv
+      timeOp_weak_uniform A A_lim hA hA_lim C C_lim hC hC_lim hconv
         u u_lim hu u_lim
   have hu_const : ∀ z, Tendsto (fun _n : ℕ ↦ inner ℝ u_lim z) atTop
       (nhds (inner ℝ u_lim z)) := fun z ↦ tendsto_const_nhds
   have hfixed : Tendsto (fun n ↦ inner ℝ (Ln n u_lim) u_lim) atTop
       (nhds qlim) := by
     simpa only [Ln, L, qlim] using
-      timeOp_weak_unif A A_lim hA hA_lim C C_lim hC hC_lim hconv
+      timeOp_weak_uniform A A_lim hA hA_lim C C_lim hC hC_lim hconv
         (fun _ ↦ u_lim) u_lim hu_const u_lim
   have hlower (n : ℕ) :
       2 * inner ℝ (Ln n (u n)) u_lim - inner ℝ (Ln n u_lim) u_lim ≤ q n := by

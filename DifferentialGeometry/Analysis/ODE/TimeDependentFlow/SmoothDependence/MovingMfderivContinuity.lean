@@ -26,7 +26,7 @@ theorem slice_mfderiv_continuousAt_of_jointFlow
   have hmf := ContMDiffWithinAt.mfderivWithin (J := 𝓘(ℝ, ℝ)) (I := I) (I' := I)
     (n := ∞) (m := ∞) (f := fun s x => Φg x s) (g := fun _ : ℝ => y) (t := O) (u := Set.univ)
     hf hg hs₀ (Set.mapsTo_univ _ _) (le_refl _) uniqueMDiffOn_univ
-  have hmfAt := hmf.contMDiffAt (hO.mem_nhds hs₀)
+  have harmonicMapFlowAt := hmf.contMDiffAt (hO.mem_nhds hs₀)
   have hb₂ : ContMDiffAt (𝓘(ℝ, ℝ)) I ∞ (fun s : ℝ => Φg y s) s₀ := by
     have hcomp : ContMDiffAt (𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod I) ∞ (fun s : ℝ => (s, y)) s₀ :=
       contMDiffAt_id.prodMk contMDiffAt_const
@@ -39,7 +39,7 @@ theorem slice_mfderiv_continuousAt_of_jointFlow
     (b₁ := fun _ : ℝ => y) (b₂ := fun s : ℝ => Φg y s) (m₀ := s₀)
     (ϕ := fun s : ℝ => mfderivWithin I I (fun x => Φg x s) Set.univ y)
     (v := fun _ : ℝ => u)
-    hmfAt hv hb₂
+    harmonicMapFlowAt hv hb₂
   have hcont := happ.continuousAt
   simp only [mfderivWithin_univ] at hcont
   exact hcont

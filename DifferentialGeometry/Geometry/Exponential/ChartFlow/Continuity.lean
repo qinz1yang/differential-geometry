@@ -82,7 +82,7 @@ lemma maximalGeodesic_eqOn_lift_of_footInSource
     Set.EqOn (maximalGeodesic (I := I) g p v) (fun t => (f t).proj) J := by
   classical
   intro t ht
-  have hwit : MaximalGeodesicWitness (I := I) g p v t :=
+  have hwit : HasGeodesicAt (I := I) g p v t :=
     ⟨projectCurve (I := I) f, J, hJ_open, hJ_conn, h0J, ht,
       ⟨f, fun s => rfl, hf0, hf_on⟩⟩
   have htmem : t ∈ maximalGeodesicInterval (I := I) g p v := hwit
@@ -104,11 +104,11 @@ lemma maximalGeodesic_eqOn_lift_of_footInSource
     have hf'_on_K : IsMIntegralCurveOn f'
         (geodesicVectorFieldChart (I := I) g p) K :=
       hf'_on.mono Set.inter_subset_right
-    have hf_src_K : ∀ s ∈ K, (f s).proj ∈ (chartAt H p).source :=
+    have hf_source_K : ∀ s ∈ K, (f s).proj ∈ (chartAt H p).source :=
       fun s hs => hsrc s hs.1
     have heqOn := isMIntegralCurveOn_eq_of_isPreconnected (I := I) (g := g)
       (p := p) (f₁ := f) (f₂ := f') hK_open hK_conn h0_K hf_on_K hf'_on_K
-      hf_src_K (by rw [hf0, hf'0])
+      hf_source_K (by rw [hf0, hf'0])
     have ht_eq : f t = f' t := heqOn ht_K
     rw [ht_eq]
     exact (hproj' t).symm

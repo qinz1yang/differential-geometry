@@ -11,7 +11,7 @@ open DifferentialGeometry.Geometry.Curvature
 open scoped Manifold ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -173,5 +173,5 @@ theorem curvature_derivative_along_le
 
 end HasCurvDerivBound
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -108,14 +108,14 @@ private theorem linearODE_apriori_bound
       have hWs_eq : W s = Z (2 * c - s) := rfl
       rw [hWs_eq, norm_neg]
       linarith
-    have hW_init : ‖W c‖ ≤ ‖Z c‖ := by
+    have hW_initial : ‖W c‖ ≤ ‖Z c‖ := by
       have h_eq : W c = Z c := by
         change Z (2 * c - c) = Z c
         have : 2 * c - c = c := by ring
         rw [this]
       rw [h_eq]
     have habs := norm_le_gronwallBound_of_norm_deriv_right_le hW_cont
-      (fun s hs => hW_deriv_within_right s (Ico_subset_Icc_self hs)) hW_init
+      (fun s hs => hW_deriv_within_right s (Ico_subset_Icc_self hs)) hW_initial
       hW'_bound (2 * c - t) (right_mem_Icc.mpr h_2ctmt_ge_c)
     rw [gronwallBound_ε0] at habs
     have hW_eq_Z : W (2 * c - t) = Z t := by
@@ -272,7 +272,7 @@ theorem linearODE_gronwall_backward
     (h₀ := h₀) (β := 2 * h₀ - α) (K := K) (η := η) hK_nn
     hW₁_cont hW₂_cont hW₁_deriv hW₂_deriv hB₁_bd hdiff_bd' (2 * h₀ - t)
     ⟨by linarith [ht.2], by linarith [ht.1]⟩
-  have h_W_init : ‖W₁ h₀ - W₂ h₀‖ = ‖Z₁ h₀ - Z₂ h₀‖ := by
+  have h_W_initial : ‖W₁ h₀ - W₂ h₀‖ = ‖Z₁ h₀ - Z₂ h₀‖ := by
     have hW₁h : W₁ h₀ = Z₁ h₀ := by
       change Z₁ (2 * h₀ - h₀) = Z₁ h₀
       have : 2 * h₀ - h₀ = h₀ := by ring
@@ -287,7 +287,7 @@ theorem linearODE_gronwall_backward
     have h_eq : 2 * h₀ - (2 * h₀ - t) = t := by ring
     rw [h_eq]
   have h_time : 2 * h₀ - t - h₀ = h₀ - t := by ring
-  rw [h_time, h_W_init] at hres
+  rw [h_time, h_W_initial] at hres
   have h_lhs : ‖W₁ (2 * h₀ - t) - W₂ (2 * h₀ - t)‖ = ‖Z₁ t - Z₂ t‖ := by
     rw [h_W_t]
   rw [h_lhs] at hres
@@ -312,7 +312,7 @@ theorem linearODESolution_continuousOn
   have hZ_cont_t : ∀ x ∈ U, ContinuousOn (Z x) (Ioo a b) := by
     intro x hx t ht
     exact ((hZ_deriv x hx t ht).continuousAt).continuousWithinAt
-  have hZ_init : ∀ x, Z x h₀ = Z₀ x := fun x => linearODESolution_init A a b h₀ Z₀ x
+  have hZ_initial : ∀ x, Z x h₀ = Z₀ x := fun x => linearODESolution_initial A a b h₀ Z₀ x
   have hS_open : IsOpen (U ×ˢ Set.Ioo a b : Set (F × ℝ)) := hU.prod isOpen_Ioo
   refine IsOpen.continuousOn_iff hS_open |>.mpr ?_
   rintro ⟨x₀, t₀⟩ hp
@@ -401,7 +401,7 @@ theorem linearODESolution_continuousOn
   have hZ_apriori : ∀ x ∈ Wopen, ∀ t ∈ Icc α β,
       ‖Z x t‖ ≤ ‖Z₀ x‖ * Real.exp (K * (β - α)) := by
     intro x hx t ht
-    have hZxh₀_eq : Z x h₀ = Z₀ x := hZ_init x
+    have hZxh₀_eq : Z x h₀ = Z₀ x := hZ_initial x
     have hZx_deriv_all : ∀ s ∈ Ioo a b, HasDerivAt (Z x) (A x s (Z x s)) s :=
       hZ_deriv x (hWopen_sub_U hx)
     have habs := linearODE_apriori_bound (A := A x) (a := a) (b := b) (α := α) (β := β)
@@ -593,10 +593,10 @@ theorem linearODESolution_continuousOn
       have hres := linearODE_gronwall_forward (A₁ := A x₀) (A₂ := A x) (Z₁ := Z x₀) (Z₂ := Z x)
         hK_nn hZ₁_cont_ht hZ₂_cont_ht hZ₁_deriv_ht hZ₂_deriv_ht
         hAx₀_bd_ht hdiff_bd_ht t ⟨hh₀_le_t, ht.2⟩
-      have h_init_eq : ‖Z x₀ h₀ - Z x h₀‖ = ‖Z₀ x - Z₀ x₀‖ := by
-        rw [hZ_init x, hZ_init x₀]
+      have h_initial_eq : ‖Z x₀ h₀ - Z x h₀‖ = ‖Z₀ x - Z₀ x₀‖ := by
+        rw [hZ_initial x, hZ_initial x₀]
         rw [← norm_neg]; congr 1; abel
-      rw [h_init_eq] at hres
+      rw [h_initial_eq] at hres
       have h_lhs_eq : ‖Z x t - Z x₀ t‖ = ‖Z x₀ t - Z x t‖ := by
         rw [← norm_neg]; congr 1; abel
       rw [h_lhs_eq]
@@ -623,10 +623,10 @@ theorem linearODESolution_continuousOn
       have hres := linearODE_gronwall_backward (A₁ := A x₀) (A₂ := A x) (Z₁ := Z x₀) (Z₂ := Z x)
         hα_le_h₀ hK_nn hZ₁_cont_th hZ₂_cont_th hZ₁_deriv_th hZ₂_deriv_th
         hAx₀_bd_th hdiff_bd_th t ⟨ht.1, ht_le_h₀⟩
-      have h_init_eq : ‖Z x₀ h₀ - Z x h₀‖ = ‖Z₀ x - Z₀ x₀‖ := by
-        rw [hZ_init x, hZ_init x₀]
+      have h_initial_eq : ‖Z x₀ h₀ - Z x h₀‖ = ‖Z₀ x - Z₀ x₀‖ := by
+        rw [hZ_initial x, hZ_initial x₀]
         rw [← norm_neg]; congr 1; abel
-      rw [h_init_eq] at hres
+      rw [h_initial_eq] at hres
       have h_lhs_eq : ‖Z x t - Z x₀ t‖ = ‖Z x₀ t - Z x t‖ := by
         rw [← norm_neg]; congr 1; abel
       rw [h_lhs_eq]
@@ -685,16 +685,16 @@ theorem linearODESolution_continuousOn
     rw [dist_eq_norm] at hd
     exact hd
   have hbd := hbd_diff x hx_param t ht_Icc
-  have h_init_bd : ‖Z₀ x - Z₀ x₀‖ < δ_target := hWparam_diff_lt x hx_param
+  have h_initial_bd : ‖Z₀ x - Z₀ x₀‖ < δ_target := hWparam_diff_lt x hx_param
   have h_t_h0_le_T : |t - h₀| ≤ T := by
     rw [hT_def]
     rcases le_total h₀ t with hht | hth
     · rw [abs_of_nonneg (by linarith)]; linarith [ht_Icc.2, hh₀_mem_Icc.1]
     · rw [abs_of_nonpos (by linarith)]; linarith [ht_Icc.1, hh₀_mem_Icc.2]
   have h_t_h0_nn : 0 ≤ |t - h₀| := abs_nonneg _
-  have h_init_nn : 0 ≤ ‖Z₀ x - Z₀ x₀‖ := norm_nonneg _
+  have h_initial_nn : 0 ≤ ‖Z₀ x - Z₀ x₀‖ := norm_nonneg _
   have h_eta_nn : 0 ≤ η_target := le_of_lt hη_target_pos
-  have h_gb_mono := gronwallBound_mono h_init_nn h_eta_nn hK_nn h_t_h0_le_T
+  have h_gb_mono := gronwallBound_mono h_initial_nn h_eta_nn hK_nn h_t_h0_le_T
   have hbd' : ‖Z x t - Z x₀ t‖ ≤ gronwallBound ‖Z₀ x - Z₀ x₀‖ K η_target T :=
     le_trans hbd h_gb_mono
   have h_param_piece : ‖Z x t - Z x₀ t‖ < ε / 2 := by
@@ -703,9 +703,9 @@ theorem linearODESolution_continuousOn
           gronwallBound δ_target K η_target T := by
         simp only [gronwallBound_of_K_ne_0 hK_ne]
         have h_exp_pos : 0 < Real.exp (K * T) := Real.exp_pos _
-        have h_init_le : ‖Z₀ x - Z₀ x₀‖ ≤ δ_target := le_of_lt h_init_bd
+        have h_initial_le : ‖Z₀ x - Z₀ x₀‖ ≤ δ_target := le_of_lt h_initial_bd
         have h_mul_le : ‖Z₀ x - Z₀ x₀‖ * Real.exp (K * T) ≤ δ_target * Real.exp (K * T) :=
-          mul_le_mul_of_nonneg_right h_init_le h_exp_pos.le
+          mul_le_mul_of_nonneg_right h_initial_le h_exp_pos.le
         linarith
       have h_inner_lt : gronwallBound δ_target K η_target T < ε / 2 := by
         have h_pair_in_ball : (δ_target, η_target) ∈ Metric.ball ((0 : ℝ), (0 : ℝ)) ρ := by

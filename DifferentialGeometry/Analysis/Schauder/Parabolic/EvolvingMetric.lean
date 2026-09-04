@@ -519,9 +519,9 @@ theorem exists_uniform_parabolic_chart_principal_coefficient_quadratic_lower_bou
     · intro hp
       exact ⟨hp.1, ⟨e p.space, hp.2, by simp [e]⟩⟩
     · intro hp
-      rcases hp.2 with ⟨y, hy, hyp⟩
+      rcases hp.2 with ⟨y, hy, hyperbolic⟩
       have hey : e p.space = y := by
-        rw [← hyp]
+        rw [← hyperbolic]
         simp [e]
       refine ⟨hp.1, ?_⟩
       change e p.space ∈ K r

@@ -39,7 +39,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.B
     [SigmaCompactSpace M] in
 private lemma tsupport_chartPushedRaw_subset_chartImage
     (α : M) {u : M → ℝ}
-    (hu_supp : tsupport u ⊆ (chartAt H α).source) :
+    (hu_support : tsupport u ⊆ (chartAt H α).source) :
     tsupport (chartPushedRaw (I := I) (M := M) α u) ⊆
       (fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) '' (tsupport u) := by
   classical
@@ -47,7 +47,7 @@ private lemma tsupport_chartPushedRaw_subset_chartImage
       IsCompact ((fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) ''
         (tsupport u)) :=
     chartImage_isCompact_of_compact_in_source (I := I) (M := M) α
-      (isClosed_tsupport u).isCompact hu_supp
+      (isClosed_tsupport u).isCompact hu_support
   refine closure_minimal ?_ h_image_compact.isClosed
   intro y hy
   rw [Function.mem_support] at hy
@@ -55,8 +55,8 @@ private lemma tsupport_chartPushedRaw_subset_chartImage
   have hy_off' : y ∉ (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport u)) := by
     intro hy_in
     apply hy_off
-    obtain ⟨z, ⟨x, hx_supp, hxz⟩, hzy⟩ := hy_in
-    exact ⟨x, hx_supp, by rw [← hzy, ← hxz]⟩
+    obtain ⟨z, ⟨x, hx_support, hxz⟩, hzy⟩ := hy_in
+    exact ⟨x, hx_support, by rw [← hzy, ← hxz]⟩
   by_cases hy_target : y ∈ chartTargetEuclid (I := I) (M := M) α
   · exact hy (chartPushedRaw_eq_zero_off_image_tsupport
       (I := I) (M := M) (u := u) α hy_target hy_off')
@@ -83,7 +83,7 @@ private lemma wkpComp_const'_pos
     exact_mod_cast Nat.factorial_pos k
   have h_deriv_pos : (0 : ℝ) < Φ.derivBoundMaxOne ^ k :=
     pow_pos Φ.derivBoundMaxOne_pos k
-  have h_jac_pos : 0 < Φ.jacobianLowerBound := Φ.jacobian_lower_bound_pos
+  have h_jacobian_pos : 0 < Φ.jacobianLowerBound := Φ.jacobian_lower_bound_pos
   have h_rpow_pos : (0 : ℝ) < (1 / Φ.jacobianLowerBound) ^ (1 / p.toReal) :=
     Real.rpow_pos_of_pos (by positivity) _
   have h_k1_pos : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by
@@ -103,7 +103,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
     (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω')
     (Φ : SmoothDiffeoBoundedAtOrder d Ω Ω' kmax)
     {u : EuclideanSpace ℝ (Fin d) → ℝ} (hu : MemWkp (d := d) k p u Ω')
-    (hu_compactSupport : HasCompactSupport u) (hu_supp : tsupport u ⊆ Ω') :
+    (hu_compactSupport : HasCompactSupport u) (hu_support : tsupport u ⊆ Ω') :
     iteratedWeakSobolevNorm (d := d) k p (fun x => u (Φ.toFun x)) Ω ≤
       ENNReal.ofReal (Φ.wkpCompConst' k p) * iteratedWeakSobolevNorm (d := d) k p u Ω' := by
   classical
@@ -117,13 +117,13 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
     intro n
     have h_pos : 0 < (1 : ℝ) / (n + 1 : ℝ) := by positivity
     exact MemWkp.exists_smooth_compactSupport_approx
-      (d := d) hΩ' k p hp_one hp_top hu hu_compactSupport hu_supp _ h_pos
+      (d := d) hΩ' k p hp_one hp_top hu hu_compactSupport hu_support _ h_pos
   let ψ : ℕ → EuclideanSpace ℝ (Fin d) → ℝ := fun n => (h_approx n).choose
   have hψ_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (ψ n) := fun n =>
     (h_approx n).choose_spec.1
-  have hψ_cpt : ∀ n, HasCompactSupport (ψ n) := fun n =>
+  have hψ_compact : ∀ n, HasCompactSupport (ψ n) := fun n =>
     (h_approx n).choose_spec.2.1
-  have hψ_supp : ∀ n, tsupport (ψ n) ⊆ Ω' := fun n =>
+  have hψ_support : ∀ n, tsupport (ψ n) ⊆ Ω' := fun n =>
     (h_approx n).choose_spec.2.2.1
   have hψ_close : ∀ n,
       iteratedWeakSobolevNorm (d := d) k p (fun x => u x - ψ n x) Ω' ≤
@@ -131,11 +131,11 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
     (h_approx n).choose_spec.2.2.2
   have hψ_mem_target : ∀ n, MemWkp (d := d) k p (ψ n) Ω' := fun n =>
     MemWkp_of_smooth_compactSupport
-      (d := d) hΩ' (hψ_smooth n) (hψ_cpt n) (hψ_supp n) hp_one k
+      (d := d) hΩ' (hψ_smooth n) (hψ_compact n) (hψ_support n) hp_one k
   have hψ_comp_mem : ∀ n, MemWkp (d := d) k p (fun x => ψ n (Φ.toFun x)) Ω :=
     fun n =>
       MemWkp.comp_smoothDiffeoBoundedAtOrder (d := d) k hk hp_one hp_top hΩ hΩ'
-        Φ (hψ_mem_target n) (hψ_cpt n) (hψ_supp n)
+        Φ (hψ_mem_target n) (hψ_compact n) (hψ_support n)
   have h_cauchy : ∀ ε > 0, ∃ N : ℕ, ∀ m n, N ≤ m → N ≤ n →
       iteratedWeakSobolevNorm (d := d) k p
         (fun x => (ψ m (Φ.toFun x)) - (ψ n (Φ.toFun x))) Ω ≤
@@ -157,9 +157,9 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
     intro m n hm hn
     let δ : EuclideanSpace ℝ (Fin d) → ℝ := fun x => ψ m x - ψ n x
     have hδ_smooth : ContDiff ℝ (⊤ : ℕ∞) δ := (hψ_smooth m).sub (hψ_smooth n)
-    have hδ_cpt : HasCompactSupport δ := (hψ_cpt m).sub (hψ_cpt n)
-    have hδ_supp : tsupport δ ⊆ Ω' := by
-      have h_supp_sub : Function.support δ ⊆
+    have hδ_compact : HasCompactSupport δ := (hψ_compact m).sub (hψ_compact n)
+    have hδ_support : tsupport δ ⊆ Ω' := by
+      have h_support_sub : Function.support δ ⊆
           Function.support (ψ m) ∪ Function.support (ψ n) := by
         intro x hx
         by_cases hxm : x ∈ Function.support (ψ m)
@@ -172,11 +172,11 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
           rw [Function.notMem_support.mp hxm, hxn, sub_zero]
       have h_tsupp_sub : tsupport δ ⊆ tsupport (ψ m) ∪ tsupport (ψ n) := by
         unfold tsupport
-        refine (closure_mono h_supp_sub).trans ?_
+        refine (closure_mono h_support_sub).trans ?_
         rw [closure_union]
-      exact h_tsupp_sub.trans (Set.union_subset (hψ_supp m) (hψ_supp n))
+      exact h_tsupp_sub.trans (Set.union_subset (hψ_support m) (hψ_support n))
     have hS1 := Φ.wkpNorm_comp_smooth_le hp_one hp_top hΩ hΩ'
-      k hk hδ_smooth hδ_cpt hδ_supp
+      k hk hδ_smooth hδ_compact hδ_support
     have h_δ_alg : δ = (fun x => (u x - ψ n x) - (u x - ψ m x)) := by
       funext x
       change ψ m x - ψ n x = u x - ψ n x - (u x - ψ m x)
@@ -427,7 +427,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
             iteratedWeakSobolevNorm (d := d) k p u Ω') := by
     intro n
     have h_smooth := Φ.wkpNorm_comp_smooth_le hp_one hp_top hΩ hΩ'
-      k hk (hψ_smooth n) (hψ_cpt n) (hψ_supp n)
+      k hk (hψ_smooth n) (hψ_compact n) (hψ_support n)
     refine h_smooth.trans ?_
     refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     have hψn_alg : (ψ n) = (fun x => (ψ n x - u x) + u x) := by funext x; ring
@@ -564,27 +564,27 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
   have hTβ_open : IsOpen Tβ := chartTargetEuclid_isOpen (I := I) (M := M) β
   have hcM_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ cM :=
     contMDiff_transportCoeffManifold (I := I) (M := M) r s β α P₀ Q
-  have hcM_supp_α : tsupport cM ⊆ (chartAt H α).source :=
+  have hcM_support_α : tsupport cM ⊆ (chartAt H α).source :=
     tsupport_transportCoeffManifold_subset_sourceα (I := I) (M := M) r s β α P₀ Q
-  have hcM_supp_β : tsupport cM ⊆ (chartAt H β).source :=
+  have hcM_support_β : tsupport cM ⊆ (chartAt H β).source :=
     tsupport_transportCoeffManifold_subset_sourceβ (I := I) (M := M) r s β α P₀ Q
   set Kc : Set M := tsupport cM with hKc_def
   have hKc_compact : IsCompact Kc := (isClosed_tsupport cM).isCompact
-  have hKc_in_α : Kc ⊆ (chartAt H α).source := hcM_supp_α
-  have hKc_in_β : Kc ⊆ (chartAt H β).source := hcM_supp_β
+  have hKc_in_α : Kc ⊆ (chartAt H α).source := hcM_support_α
+  have hKc_in_β : Kc ⊆ (chartAt H β).source := hcM_support_β
   have hcE_smooth : ContDiff ℝ ∞ cE :=
     Analysis.Laplacian.SmoothFChartResidualBilinearBound.chartPushedRaw_contDiff
-      (I := I) (M := M) hcM_smooth hcM_supp_α
+      (I := I) (M := M) hcM_smooth hcM_support_α
   have hcE_smooth' : ContDiff ℝ (⊤ : ℕ∞) cE := hcE_smooth
-  have hcE_cpt : HasCompactSupport cE :=
+  have hcE_compact : HasCompactSupport cE :=
     chartPushedRaw_smooth_hasCompactSupport_local
-      (I := I) (M := M) hcM_supp_α
+      (I := I) (M := M) hcM_support_α
   obtain ⟨Ccoeff, hCcoeff_nn, hCcoeff_bound⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
-      (d := d) hcE_smooth' hcE_cpt k
+      (d := d) hcE_smooth' hcE_compact k
   have hcE_tsupp_subset :
       tsupport cE ⊆ (fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) '' Kc :=
-    tsupport_chartPushedRaw_subset_chartImage (I := I) (M := M) α hcM_supp_α
+    tsupport_chartPushedRaw_subset_chartImage (I := I) (M := M) α hcM_support_α
   obtain ⟨Ωαβ, Ωβα, hΩαβ_open, hΩβα_open, hΩαβ_subset_target,
     hΩβα_subset_target, _hΩαβ_overlap, _hΩβα_overlap, hKc_image_in_Ωαβ, Φ,
     hΦ_eq, _hΦ_inv_eq⟩ :=
@@ -609,14 +609,14 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
   have hUβ_open : IsOpen Uβ := hΩβα_open.inter hTβ_open
   have hKEβ_in_Uβ : KEβ ⊆ Uβ :=
     Set.subset_inter hKEβ_in_Ωβα (hKEβ_in_Ωβα.trans hΩβα_subset_target)
-  obtain ⟨δ, χ, _hδ_pos, _hδ_subset, hχ_smooth, hχ_cpt, _hχ_range,
-    hχ_one, hχ_supp⟩ :=
+  obtain ⟨δ, χ, _hδ_pos, _hδ_subset, hχ_smooth, hχ_compact, _hχ_range,
+    hχ_one, hχ_support⟩ :=
     exists_smooth_cutoff_with_neighborhood (d := d) hKEβ_compact hUβ_open hKEβ_in_Uβ
-  have hχ_supp_Ωβα : tsupport χ ⊆ Ωβα := fun y hy => (hχ_supp hy).1
-  have hχ_supp_Tβ : tsupport χ ⊆ Tβ := fun y hy => (hχ_supp hy).2
+  have hχ_support_Ωβα : tsupport χ ⊆ Ωβα := fun y hy => (hχ_support hy).1
+  have hχ_support_Tβ : tsupport χ ⊆ Tβ := fun y hy => (hχ_support hy).2
   obtain ⟨Cχ, hCχ_nn, hCχ_bound⟩ :=
     exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
-      (d := d) (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ) hχ_cpt k
+      (d := d) (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ) hχ_compact k
   obtain ⟨Kχ, hKχ_pos, hKχ_bound⟩ :=
     wkpNorm_smul_smooth_bounded_le (d := d) k (p := (2 : ℝ≥0∞))
       (by norm_num) (by norm_num)
@@ -633,10 +633,10 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
   intro f hf
   set T : EuclN → ℝ := fun y => (f : EuclN → ℝ) y with hT_def
   set v : EuclN → ℝ := fun y => χ y * T y with hv_def
-  have hv_supp_χ : tsupport v ⊆ tsupport χ :=
+  have hv_support_χ : tsupport v ⊆ tsupport χ :=
     tsupport_smul_subset_left χ T
-  have hv_supp_Ωβα : tsupport v ⊆ Ωβα := hv_supp_χ.trans hχ_supp_Ωβα
-  have hv_cpt : HasCompactSupport v := hχ_cpt.mul_right
+  have hv_support_Ωβα : tsupport v ⊆ Ωβα := hv_support_χ.trans hχ_support_Ωβα
+  have hv_compact : HasCompactSupport v := hχ_compact.mul_right
   have hv_memWkp_Tβ : MemWkp (d := d) k 2 v Tβ :=
     MemWkp.smul_smooth_bounded (d := d) k (by norm_num) hTβ_open
       (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
@@ -647,12 +647,12 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
   have hv_comp_memWkp_Ωαβ : MemWkp (d := d) k 2 (fun y => v (Φ.toFun y)) Ωαβ :=
     MemWkp.comp_smoothDiffeoBoundedAtOrder (d := d) k (le_refl k)
       (by norm_num) (by norm_num) hΩαβ_open hΩβα_open Φ
-      hv_memWkp_Ωβα hv_cpt hv_supp_Ωβα
+      hv_memWkp_Ωβα hv_compact hv_support_Ωβα
   set w : EuclN → ℝ := fun y => cE y * v (Φ.toFun y) with hw_def
   have hw_memWkp_Ωαβ : MemWkp (d := d) k 2 w Ωαβ :=
     MemWkp.smul_smooth_bounded (d := d) k (by norm_num) hΩαβ_open
       hcE_smooth' (fun j hj y _ => hCcoeff_bound y j hj) hv_comp_memWkp_Ωαβ
-  have hw_supp_cE : tsupport w ⊆ tsupport cE := by
+  have hw_support_cE : tsupport w ⊆ tsupport cE := by
     refine closure_mono ?_
     intro y hy
     rw [Function.mem_support] at hy
@@ -661,9 +661,9 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
       apply hy
       simp only [hw_def, h0, zero_mul]
     exact Function.mem_support.mpr hcE_ne
-  have hw_supp_Ωαβ : tsupport w ⊆ Ωαβ := hw_supp_cE.trans hcE_tsupp_Ωαβ
-  have hw_cpt : HasCompactSupport w :=
-    hcE_cpt.of_isClosed_subset (isClosed_tsupport w) hw_supp_cE
+  have hw_support_Ωαβ : tsupport w ⊆ Ωαβ := hw_support_cE.trans hcE_tsupp_Ωαβ
+  have hw_compact : HasCompactSupport w :=
+    hcE_compact.of_isClosed_subset (isClosed_tsupport w) hw_support_cE
   have h_coeFn : (fun y => ((chartTransitionTransportCLM
         (I := I) (M := M) r s β α P₀ Q f :
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
@@ -698,14 +698,14 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
     rw [h_pointwise]
   have hw_memWkp_Tα : MemWkp (d := d) k 2 w Tα :=
     MemWkp.extend_zero (d := d) (by norm_num)
-      hΩαβ_open hTα_open hΩαβ_subset_target hw_memWkp_Ωαβ hw_supp_Ωαβ hw_cpt
+      hΩαβ_open hTα_open hΩαβ_subset_target hw_memWkp_Ωαβ hw_support_Ωαβ hw_compact
   refine ⟨(MemWkp_congr_ae (d := d) (by norm_num) hTα_open h_ae).mpr hw_memWkp_Tα,
     ?_⟩
   rw [wkpNorm_congr_ae (d := d) (by norm_num) hTα_open h_ae]
   have h_w_norm_extend :
       iteratedWeakSobolevNorm (d := d) k 2 w Tα = iteratedWeakSobolevNorm (d := d) k 2 w Ωαβ :=
     wkpNorm_extend_zero (d := d) (by norm_num)
-      hΩαβ_open hTα_open hΩαβ_subset_target hw_memWkp_Ωαβ hw_supp_Ωαβ hw_cpt
+      hΩαβ_open hTα_open hΩαβ_subset_target hw_memWkp_Ωαβ hw_support_Ωαβ hw_compact
   rw [h_w_norm_extend]
   have h_w_le_v_comp :
       iteratedWeakSobolevNorm (d := d) k 2 w Ωαβ ≤
@@ -721,11 +721,11 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
         ENNReal.ofReal Kcomp * iteratedWeakSobolevNorm (d := d) k 2 v Ωβα :=
     wkpNorm_comp_smoothDiffeoBoundedAtOrder_le (d := d) k (le_refl k)
       (by norm_num) (by norm_num) hΩαβ_open hΩβα_open Φ
-      hv_memWkp_Ωβα hv_cpt hv_supp_Ωβα
+      hv_memWkp_Ωβα hv_compact hv_support_Ωβα
   have h_v_norm_extend :
       iteratedWeakSobolevNorm (d := d) k 2 v Tβ = iteratedWeakSobolevNorm (d := d) k 2 v Ωβα :=
     wkpNorm_extend_zero (d := d) (by norm_num)
-      hΩβα_open hTβ_open hΩβα_subset_target hv_memWkp_Ωβα hv_supp_Ωβα hv_cpt
+      hΩβα_open hTβ_open hΩβα_subset_target hv_memWkp_Ωβα hv_support_Ωβα hv_compact
   have h_v_le_f :
       iteratedWeakSobolevNorm (d := d) k 2 v Tβ ≤
         ENNReal.ofReal Kχ *

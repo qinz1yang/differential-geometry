@@ -49,12 +49,12 @@ private lemma chartE_section_repr_contMDiffOn_chartSource
       (fun b : M => chartESectionRepr (I := I) α X b)
       ((chartAt H α).source) := by
   classical
-  intro b hb_src
+  intro b hb_source
   have hbase_eq :
       (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source :=
     DifferentialGeometry.Integral.Measure.trivializationAt_baseSet_eq_chartAt_source α
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    rw [hbase_eq]; exact hb_src
+    rw [hbase_eq]; exact hb_source
   have hX_at : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞ (T% X) b :=
     hX.contMDiffAt
   have h := (contMDiffAt_section_iff_chartE I α X (k := (⊤ : ℕ∞)) hb_base).mp hX_at
@@ -86,20 +86,20 @@ private lemma chartChristoffel_contMDiffOn_chartSource
       (fun b : M => chartChristoffel (I := I) g α i j k (extChartAt I α b))
       ((chartAt H α).source) := by
   classical
-  intro b hb_src
+  intro b hb_source
   have hφ_at : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I α) b :=
-    contMDiffAt_extChartAt' (I := I) (n := ∞) hb_src
+    contMDiffAt_extChartAt' (I := I) (n := ∞) hb_source
   have h_target_open : IsOpen ((extChartAt I α).target : Set E) :=
     isOpen_extChartAt_target α
   have h_int_eq : interior ((extChartAt I α).target : Set E) =
       (extChartAt I α).target := h_target_open.interior_eq
-  have hb_ext_src : b ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hb_src
-  have hxφ_tgt : extChartAt I α b ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb_ext_src
+  have hb_ext_source : b ∈ (extChartAt I α).source := by
+    rw [extChartAt_source]; exact hb_source
+  have hxφ_target : extChartAt I α b ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hb_ext_source
   have hxφ_int : extChartAt I α b ∈
       interior ((extChartAt I α).target : Set E) := by
-    rw [h_int_eq]; exact hxφ_tgt
+    rw [h_int_eq]; exact hxφ_target
   have hΓ_on : ContDiffOn ℝ ∞ (chartChristoffel (I := I) g α i j k)
       (interior (extChartAt I α).target) :=
     chartChristoffel_contDiffOn_interior (I := I) g α i j k
@@ -282,20 +282,20 @@ private lemma chartChristoffel_contMDiffOn_chartSource'
       (fun b : M => chartChristoffel (I := I) g α i j' k (extChartAt I α b))
       ((chartAt H α).source) := by
   classical
-  intro b hb_src
+  intro b hb_source
   have hφ_at : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I α) b :=
-    contMDiffAt_extChartAt' (I := I) (n := ∞) hb_src
+    contMDiffAt_extChartAt' (I := I) (n := ∞) hb_source
   have h_target_open : IsOpen ((extChartAt I α).target : Set E) :=
     isOpen_extChartAt_target α
   have h_int_eq : interior ((extChartAt I α).target : Set E) =
       (extChartAt I α).target := h_target_open.interior_eq
-  have hb_ext_src : b ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hb_src
-  have hxφ_tgt : extChartAt I α b ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb_ext_src
+  have hb_ext_source : b ∈ (extChartAt I α).source := by
+    rw [extChartAt_source]; exact hb_source
+  have hxφ_target : extChartAt I α b ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hb_ext_source
   have hxφ_int : extChartAt I α b ∈
       interior ((extChartAt I α).target : Set E) := by
-    rw [h_int_eq]; exact hxφ_tgt
+    rw [h_int_eq]; exact hxφ_target
   have hΓ_on : ContDiffOn ℝ ∞ (chartChristoffel (I := I) g α i j' k)
       (interior (extChartAt I α).target) :=
     chartChristoffel_contDiffOn_interior (I := I) g α i j' k

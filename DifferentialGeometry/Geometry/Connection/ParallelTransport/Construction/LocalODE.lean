@@ -234,7 +234,7 @@ private theorem parallel_local_existence_step [I.Boundaryless]
       linarith [h_LBdc]
   have hw₀_mem : w₀ ∈ Metric.closedBall w₀ (rN : ℝ) := by
     change dist w₀ w₀ ≤ (rN : ℝ); simp
-  obtain ⟨Y, hY_init, hY_deriv⟩ :=
+  obtain ⟨Y, hY_initial, hY_deriv⟩ :=
     hPL.exists_eq_forall_mem_Icc_hasDerivWithinAt hw₀_mem
   refine ⟨Y, ?_, ?_⟩
   · intro t ht
@@ -242,7 +242,7 @@ private theorem parallel_local_existence_step [I.Boundaryless]
     have heq : v t (Y t) = - chartChristoffelContractionRightCLM (I := I) g α
         (uPrime t) (chartCurve (I := I) α γ t) (Y t) := rfl
     rw [heq] at h; exact h
-  · have : Y (t_inIcc : ℝ) = w₀ := hY_init
+  · have : Y (t_inIcc : ℝ) = w₀ := hY_initial
     change Y t_in = w₀; exact this
 
 
@@ -343,9 +343,9 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
         (s := Set.Icc t₀ t₀) (x := t)).mpr hF
       convert this using 2
     | succ n IH =>
-      obtain ⟨Y₀, hY₀_init, hY₀_deriv⟩ := IH
+      obtain ⟨Y₀, hY₀_initial, hY₀_deriv⟩ := IH
       by_cases hsame : Tn n = Tn (n + 1)
-      · refine ⟨Y₀, hY₀_init, ?_⟩
+      · refine ⟨Y₀, hY₀_initial, ?_⟩
         intro t ht
         rw [← hsame] at ht ⊢
         exact hY₀_deriv t ht
@@ -354,12 +354,12 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
         have hT_a : a ≤ Tn n := ht₀_a.trans hT_t₀
         have hT'_b : Tn (n + 1) ≤ b := hTn_le_b (n + 1)
         have hlen' : (2 * (K : ℝ) + 2) * (Tn (n + 1) - Tn n) ≤ 1 := hTn_diff_bound n
-        obtain ⟨Z, hZ_deriv, hZ_init⟩ :=
+        obtain ⟨Z, hZ_deriv, hZ_initial⟩ :=
           parallel_local_existence_step (I := I) g α γ uPrime hu hγ hsource hK
             (le_of_lt hlt) hT_a hT'_b (le_refl _) (le_of_lt hlt) hlen' (Y₀ (Tn n))
         refine ⟨fun t => if t ≤ Tn n then Y₀ t else Z t, ?_, ?_⟩
         · change (if t₀ ≤ Tn n then Y₀ t₀ else Z t₀) = v₀
-          rw [if_pos hT_t₀]; exact hY₀_init
+          rw [if_pos hT_t₀]; exact hY₀_initial
         · intro t ht
           set Yp : ℝ → E := fun t => if t ≤ Tn n then Y₀ t else Z t with hYp
           change HasDerivWithinAt Yp
@@ -407,20 +407,20 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
                       (chartCurve (I := I) α γ (Tn n)) (Z (Tn n)))
                   (Set.Icc (Tn n) (Tn (n + 1))) (Tn n) :=
                 hZ_deriv (Tn n) ⟨le_refl _, le_of_lt hlt⟩
-              have hZ_init_eq : Z (Tn n) = Y₀ (Tn n) := hZ_init
+              have hZ_initial_eq : Z (Tn n) = Y₀ (Tn n) := hZ_initial
               have hcongr_R : ∀ s ∈ Set.Icc (Tn n) (Tn (n + 1)), Yp s = Z s := by
                 intro s hs
                 change (if s ≤ Tn n then Y₀ s else Z s) = Z s
                 by_cases hs_le : s ≤ Tn n
                 · have : s = Tn n := le_antisymm hs_le hs.1
-                  rw [if_pos hs_le, this, hZ_init_eq]
+                  rw [if_pos hs_le, this, hZ_initial_eq]
                 · rw [if_neg hs_le]
               have hYp_R : HasDerivWithinAt Yp
                   (- chartChristoffelContractionRightCLM (I := I) g α (uPrime (Tn n))
                       (chartCurve (I := I) α γ (Tn n)) (Z (Tn n)))
                   (Set.Icc (Tn n) (Tn (n + 1))) (Tn n) :=
                 hZ_at_Tn.congr hcongr_R (hcongr_R (Tn n) ⟨le_refl _, le_of_lt hlt⟩)
-              rw [hZ_init_eq] at hYp_R
+              rw [hZ_initial_eq] at hYp_R
               have hUeq : Set.Icc t₀ (Tn n) ∪ Set.Icc (Tn n) (Tn (n + 1))
                   = Set.Icc t₀ (Tn (n + 1)) :=
                 Set.Icc_union_Icc_eq_Icc hT_t₀ (le_of_lt hlt)
@@ -434,13 +434,13 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
             have ht_in_right : t ∈ Set.Icc (Tn n) (Tn (n + 1)) :=
               ⟨le_of_lt hT, ht.2⟩
             have hZ_at := hZ_deriv t ht_in_right
-            have hZ_init_eq : Z (Tn n) = Y₀ (Tn n) := hZ_init
+            have hZ_initial_eq : Z (Tn n) = Y₀ (Tn n) := hZ_initial
             have hcongr_R : ∀ s ∈ Set.Icc (Tn n) (Tn (n + 1)), Yp s = Z s := by
               intro s hs
               change (if s ≤ Tn n then Y₀ s else Z s) = Z s
               by_cases hs_le : s ≤ Tn n
               · have : s = Tn n := le_antisymm hs_le hs.1
-                rw [if_pos hs_le, this, hZ_init_eq]
+                rw [if_pos hs_le, this, hZ_initial_eq]
               · rw [if_neg hs_le]
             have hsmall := hZ_at.congr hcongr_R (hcongr_R t ht_in_right)
             have hself : Yp t = Z t := hcongr_R t ht_in_right
@@ -462,7 +462,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
     change min b (t₀ + (N : ℕ) * h) = b
     have : t₀ + ((N : ℕ) : ℝ) * h ≥ b := by linarith
     exact min_eq_left this
-  obtain ⟨Y_R, hY_R_init, hY_R_deriv⟩ := rightExist N
+  obtain ⟨Y_R, hY_R_initial, hY_R_deriv⟩ := rightExist N
   rw [hTn_N_eq] at hY_R_deriv
   let Sn : ℕ → ℝ := fun n => max a (t₀ - n * h)
   have hSn_zero : Sn 0 = t₀ := by
@@ -532,22 +532,22 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
         (s := Set.Icc t₀ t₀) (x := t)).mpr hF
       convert this using 2
     | succ n IH =>
-      obtain ⟨Y₀, hY₀_init, hY₀_deriv⟩ := IH
+      obtain ⟨Y₀, hY₀_initial, hY₀_deriv⟩ := IH
       by_cases hsame : Sn n = Sn (n + 1)
-      · refine ⟨Y₀, hY₀_init, ?_⟩
+      · refine ⟨Y₀, hY₀_initial, ?_⟩
         intro t ht
         rw [← hsame] at ht ⊢
         exact hY₀_deriv t ht
       · have hlt : Sn (n + 1) < Sn n := lt_of_le_of_ne (hSn_mono n) (Ne.symm hsame)
         have hSn1_a : a ≤ Sn (n + 1) := hSn_ge_a (n + 1)
         have hSn_b : Sn n ≤ b := (hSn_le_t₀ n).trans ht₀_b
-        obtain ⟨Z, hZ_deriv, hZ_init⟩ :=
+        obtain ⟨Z, hZ_deriv, hZ_initial⟩ :=
           parallel_local_existence_step (I := I) g α γ uPrime hu hγ hsource hK
             (le_of_lt hlt) hSn1_a hSn_b (le_of_lt hlt) (le_refl _)
             (hSn_diff_bound n) (Y₀ (Sn n))
         refine ⟨fun t => if t < Sn n then Z t else Y₀ t, ?_, ?_⟩
         · change (if t₀ < Sn n then Z t₀ else Y₀ t₀) = v₀
-          rw [if_neg (not_lt.mpr (hSn_le_t₀ n))]; exact hY₀_init
+          rw [if_neg (not_lt.mpr (hSn_le_t₀ n))]; exact hY₀_initial
         · intro t ht
           set Yp : ℝ → E := fun t => if t < Sn n then Z t else Y₀ t with hYp
           change HasDerivWithinAt Yp
@@ -557,7 +557,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
           · have ht_in : t ∈ Set.Icc (Sn (n + 1)) (Sn n) :=
               ⟨ht.1, le_of_lt hSn_lt⟩
             have hZ_at := hZ_deriv t ht_in
-            have hZ_init_eq : Z (Sn n) = Y₀ (Sn n) := hZ_init
+            have hZ_initial_eq : Z (Sn n) = Y₀ (Sn n) := hZ_initial
             have hcongr : ∀ s ∈ Set.Icc (Sn (n + 1)) (Sn n), Yp s = Z s := by
               intro s hs
               change (if s < Sn n then Z s else Y₀ s) = Z s
@@ -565,7 +565,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
               · rw [if_pos hs_lt]
               · push Not at hs_lt
                 have : s = Sn n := le_antisymm hs.2 hs_lt
-                rw [if_neg (not_lt.mpr hs_lt), this, hZ_init_eq]
+                rw [if_neg (not_lt.mpr hs_lt), this, hZ_initial_eq]
             have hsmall := hZ_at.congr hcongr (hcongr t ht_in)
             have hself : Yp t = Z t := hcongr t ht_in
             have hopen : Set.Iio (Sn n) ∈ 𝓝 t := isOpen_Iio.mem_nhds hSn_lt
@@ -586,7 +586,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
                       (chartCurve (I := I) α γ (Sn n)) (Z (Sn n)))
                   (Set.Icc (Sn (n + 1)) (Sn n)) (Sn n) :=
                 hZ_deriv (Sn n) ⟨le_of_lt hlt, le_refl _⟩
-              have hZ_init_eq : Z (Sn n) = Y₀ (Sn n) := hZ_init
+              have hZ_initial_eq : Z (Sn n) = Y₀ (Sn n) := hZ_initial
               have hcongr_L : ∀ s ∈ Set.Icc (Sn (n + 1)) (Sn n), Yp s = Z s := by
                 intro s hs
                 change (if s < Sn n then Z s else Y₀ s) = Z s
@@ -594,7 +594,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
                 · rw [if_pos hs_lt]
                 · push Not at hs_lt
                   have : s = Sn n := le_antisymm hs.2 hs_lt
-                  rw [if_neg (not_lt.mpr hs_lt), this, hZ_init_eq]
+                  rw [if_neg (not_lt.mpr hs_lt), this, hZ_initial_eq]
               have hYp_L : HasDerivWithinAt Yp
                   (- chartChristoffelContractionRightCLM (I := I) g α (uPrime (Sn n))
                       (chartCurve (I := I) α γ (Sn n)) (Z (Sn n)))
@@ -614,7 +614,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
                       (chartCurve (I := I) α γ (Sn n)) (Y₀ (Sn n)))
                   (Set.Icc (Sn n) t₀) (Sn n) :=
                 hY₀_at_Sn.congr hcongr_R (hcongr_R (Sn n) ⟨le_refl _, hSn_le_t₀ n⟩)
-              rw [hZ_init_eq] at hYp_L
+              rw [hZ_initial_eq] at hYp_L
               have hUeq : Set.Icc (Sn (n + 1)) (Sn n) ∪ Set.Icc (Sn n) t₀
                   = Set.Icc (Sn (n + 1)) t₀ :=
                 Set.Icc_union_Icc_eq_Icc (le_of_lt hlt) (hSn_le_t₀ n)
@@ -650,7 +650,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
     change max a (t₀ - (N : ℕ) * h) = a
     have : t₀ - ((N : ℕ) : ℝ) * h ≤ a := by linarith
     exact max_eq_left this
-  obtain ⟨Y_L, hY_L_init, hY_L_deriv⟩ := leftExist N
+  obtain ⟨Y_L, hY_L_initial, hY_L_deriv⟩ := leftExist N
   rw [hSn_N_eq] at hY_L_deriv
   have h_unfold :
       ∀ (s : ℝ) (Yv : E),
@@ -661,7 +661,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
   refine ⟨fun t => if t ≤ t₀ then Y_L t else Y_R t, ?_, ?_⟩
   · intro t ht
     set Y : ℝ → E := fun t => if t ≤ t₀ then Y_L t else Y_R t with hY
-    have hLR_eq : Y_L t₀ = Y_R t₀ := by rw [hY_L_init, hY_R_init]
+    have hLR_eq : Y_L t₀ = Y_R t₀ := by rw [hY_L_initial, hY_R_initial]
     by_cases ht_t₀ : t ≤ t₀
     · by_cases ht_strict : t < t₀
       · have ht_in : t ∈ Set.Icc a t₀ := ⟨ht.1, ht_t₀⟩
@@ -748,7 +748,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
             (chartCurve (I := I) α γ t) (Y_R t)) from by rw [h_unfold, hself]]
       exact hsmall.mono_of_mem_nhdsWithin hmem
   · change (if t₀ ≤ t₀ then Y_L t₀ else Y_R t₀) = v₀
-    rw [if_pos (le_refl _)]; exact hY_L_init
+    rw [if_pos (le_refl _)]; exact hY_L_initial
 
 
 omit [NeZero (Module.finrank ℝ E)] in

@@ -211,7 +211,7 @@ theorem ccTensorBilin_abs_le_fibreNorm_mul_sqrt
     rfl
   have hcompsq : (∑ p : Fin n × Fin n, comp p ^ 2) =
       ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 := by
-    rw [← riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 2 x
+    rw [← riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 2 x
       (T.toSection x)]
     rw [hriemannianFiberNormSq (T.toSection x)]
     rw [Fintype.sum_unique (fun K : Fin 0 → Fin n =>

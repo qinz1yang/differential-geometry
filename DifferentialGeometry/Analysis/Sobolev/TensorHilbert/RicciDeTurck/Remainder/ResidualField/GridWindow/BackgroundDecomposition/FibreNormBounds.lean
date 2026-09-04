@@ -149,7 +149,7 @@ lemma riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (T : SmoothCcTensor g
       (Module.finrank ℝ E : ℝ) ^ 2 * δ ^ 2 := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hrepr, _hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt (I := I) (M := M) g₀ 0 2 x
     ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) e hnE horth]

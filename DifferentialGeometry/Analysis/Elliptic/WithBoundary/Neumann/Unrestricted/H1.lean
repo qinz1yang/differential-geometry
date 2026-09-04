@@ -110,7 +110,7 @@ lemma UnrestrictedSmoothScalar.norm_smoothToLp_sq
 
 lemma UnrestrictedSmoothScalar.norm_sq_eq_inner_self
     {g : SmoothRiemannianMetric (I_half n) M} (f : UnrestrictedSmoothScalar g) :
-    ‖f‖ ^ 2 = fullSmoothScalarH1Inner f f := by
+    ‖f‖ ^ 2 = unrestrictedSmoothScalarH1Inner f f := by
   have h := real_inner_self_eq_norm_sq f
   rw [UnrestrictedSmoothScalar.inner_def] at h
   exact h.symm
@@ -119,7 +119,7 @@ lemma UnrestrictedSmoothScalar.norm_smoothToLp_sq_le
     {g : SmoothRiemannianMetric (I_half n) M} (f : UnrestrictedSmoothScalar g) :
     ‖smoothToLpLinUnrestricted g f‖ ^ 2 ≤ ‖f‖ ^ 2 := by
   rw [f.norm_smoothToLp_sq, f.norm_sq_eq_inner_self]
-  unfold fullSmoothScalarH1Inner
+  unfold unrestrictedSmoothScalarH1Inner
   have h_grad_nonneg :
       0 ≤ ∫ x, g.inner x (gradFun (I := I_half n) g f.toFun x)
             (gradFun (I := I_half n) g f.toFun x)

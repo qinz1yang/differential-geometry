@@ -71,86 +71,86 @@ variable {V F : Type*}
   [Nontrivial V]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
 
-def d2DuhConst (v w : V) (K : ℝ≥0) : ℝ :=
+def d2DuhamelConst (v w : V) (K : ℝ≥0) : ℝ :=
   ‖v‖ * ‖w‖ * (K : ℝ) * heatC2Half V
 
-def d2DuhMajor (v w : V) (K : ℝ≥0) (t s : ℝ) : ℝ :=
-  d2DuhConst v w K * heatScale34 (t - s)
+def d2DuhamelMajor (v w : V) (K : ℝ≥0) (t s : ℝ) : ℝ :=
+  d2DuhamelConst v w K * heatScale34 (t - s)
 
 omit [Nontrivial V] in
-theorem d2DuhMajor_intble {t : ℝ} (v w : V) (K : ℝ≥0) :
-    IntervalIntegrable (d2DuhMajor v w K t) volume 0 t := by
-  exact (scale34_intble).const_mul (d2DuhConst v w K)
+theorem d2DuhamelMajor_intble {t : ℝ} (v w : V) (K : ℝ≥0) :
+    IntervalIntegrable (d2DuhamelMajor v w K t) volume 0 t := by
+  exact (scale34_intble).const_mul (d2DuhamelConst v w K)
 
 omit [Nontrivial V] in
-theorem d2DuhMajor_int {t : ℝ} (v w : V) (K : ℝ≥0) :
-    ∫ s : ℝ in 0..t, d2DuhMajor v w K t s =
-      d2DuhConst v w K * (4 * t ^ (1 / 4 : ℝ)) := by
-  unfold d2DuhMajor
+theorem d2DuhamelMajor_int {t : ℝ} (v w : V) (K : ℝ≥0) :
+    ∫ s : ℝ in 0..t, d2DuhamelMajor v w K t s =
+      d2DuhamelConst v w K * (4 * t ^ (1 / 4 : ℝ)) := by
+  unfold d2DuhamelMajor
   rw [intervalIntegral.integral_const_mul, timeScale34_int]
 
-def heatD2Duh (t : ℝ) (v w : V) (f : ℝ → V → F) (x : V) : F :=
-  ∫ s : ℝ in 0..t, heatD2Conv (t - s) v w (f s) x
+def heatD2Duhamel (t : ℝ) (v w : V) (f : ℝ → V → F) (x : V) : F :=
+  ∫ s : ℝ in 0..t, heatD2Convolution (t - s) v w (f s) x
 
 omit [Nontrivial V] [CompleteSpace F] in
-theorem heatD2Duh_comm (t : ℝ) (v w : V) (f : ℝ → V → F) (x : V) :
-    heatD2Duh t v w f x = heatD2Duh t w v f x := by
-  unfold heatD2Duh
+theorem heatD2Duhamel_comm (t : ℝ) (v w : V) (f : ℝ → V → F) (x : V) :
+    heatD2Duhamel t v w f x = heatD2Duhamel t w v f x := by
+  unfold heatD2Duhamel
   apply intervalIntegral.integral_congr
   intro s _
-  exact heatD2Conv_comm (t - s) v w (f s) x
+  exact heatD2Convolution_comm (t - s) v w (f s) x
 
-theorem heatD2Duh_int {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
+theorem heatD2Duhamel_int {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     (f : ℝ → V → F)
     (hf : ∀ s ∈ Set.Icc (0 : ℝ) t,
       HolderWith K (1 / 2 : ℝ≥0) (f s))
     (v w x : V)
     (hmeas : AEStronglyMeasurable
-      (fun s : ℝ => heatD2Conv (t - s) v w (f s) x)
+      (fun s : ℝ => heatD2Convolution (t - s) v w (f s) x)
       (volume.restrict (Set.uIoc (0 : ℝ) t))) :
     IntervalIntegrable
-      (fun s : ℝ => heatD2Conv (t - s) v w (f s) x) volume 0 t := by
-  apply (d2DuhMajor_intble v w K).mono_fun' hmeas
+      (fun s : ℝ => heatD2Convolution (t - s) v w (f s) x) volume 0 t := by
+  apply (d2DuhamelMajor_intble v w K).mono_fun' hmeas
   have hne : ∀ᵐ s ∂(volume : Measure ℝ), s ≠ t := by
     simp [ae_iff, measure_singleton]
   filter_upwards [ae_restrict_mem measurableSet_uIoc,
     ae_restrict_of_ae (s := Set.uIoc (0 : ℝ) t) hne] with s hs hst
   rw [Set.uIoc_of_le ht.le] at hs
   have hstlt : s < t := lt_of_le_of_ne hs.2 hst
-  rw [heatD2Conv_eq_cancel (sub_pos.mpr hstlt) (hf s ⟨hs.1.le, hs.2⟩) v w x]
+  rw [heatD2Convolution_eq_cancel (sub_pos.mpr hstlt) (hf s ⟨hs.1.le, hs.2⟩) v w x]
   refine (heatD2Cancel_norm (sub_pos.mpr hstlt)
     (hf s ⟨hs.1.le, hs.2⟩) v w x).trans_eq ?_
-  unfold d2DuhMajor d2DuhConst
+  unfold d2DuhamelMajor d2DuhamelConst
   ring
 
-theorem heatD2Duh_norm {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
+theorem heatD2Duhamel_norm {t : ℝ} (ht : 0 < t) {K : ℝ≥0}
     (f : ℝ → V → F)
     (hf : ∀ s ∈ Set.Icc (0 : ℝ) t,
       HolderWith K (1 / 2 : ℝ≥0) (f s))
     (v w x : V)
     (hmeas : AEStronglyMeasurable
-      (fun s : ℝ => heatD2Conv (t - s) v w (f s) x)
+      (fun s : ℝ => heatD2Convolution (t - s) v w (f s) x)
       (volume.restrict (Set.uIoc (0 : ℝ) t))) :
-    ‖heatD2Duh t v w f x‖ ≤
-      d2DuhConst v w K * (4 * t ^ (1 / 4 : ℝ)) := by
-  have hint := heatD2Duh_int ht f hf v w x hmeas
-  unfold heatD2Duh
+    ‖heatD2Duhamel t v w f x‖ ≤
+      d2DuhamelConst v w K * (4 * t ^ (1 / 4 : ℝ)) := by
+  have hint := heatD2Duhamel_int ht f hf v w x hmeas
+  unfold heatD2Duhamel
   calc
-    ‖∫ s : ℝ in 0..t, heatD2Conv (t - s) v w (f s) x‖
-        ≤ ∫ s : ℝ in 0..t, ‖heatD2Conv (t - s) v w (f s) x‖ :=
+    ‖∫ s : ℝ in 0..t, heatD2Convolution (t - s) v w (f s) x‖
+        ≤ ∫ s : ℝ in 0..t, ‖heatD2Convolution (t - s) v w (f s) x‖ :=
       intervalIntegral.norm_integral_le_integral_norm ht.le
-    _ ≤ ∫ s : ℝ in 0..t, d2DuhMajor v w K t s := by
+    _ ≤ ∫ s : ℝ in 0..t, d2DuhamelMajor v w K t s := by
       apply intervalIntegral.integral_mono_on_of_le_Ioo ht.le hint.norm
-        (d2DuhMajor_intble v w K)
+        (d2DuhamelMajor_intble v w K)
       intro s hs
-      rw [heatD2Conv_eq_cancel (sub_pos.mpr hs.2)
+      rw [heatD2Convolution_eq_cancel (sub_pos.mpr hs.2)
         (hf s ⟨hs.1.le, hs.2.le⟩) v w x]
       refine (heatD2Cancel_norm (sub_pos.mpr hs.2)
         (hf s ⟨hs.1.le, hs.2.le⟩) v w x).trans_eq ?_
-      unfold d2DuhMajor d2DuhConst
+      unfold d2DuhamelMajor d2DuhamelConst
       ring
-    _ = d2DuhConst v w K * (4 * t ^ (1 / 4 : ℝ)) :=
-      d2DuhMajor_int v w K
+    _ = d2DuhamelConst v w K * (4 * t ^ (1 / 4 : ℝ)) :=
+      d2DuhamelMajor_int v w K
 
 end Duhamel
 

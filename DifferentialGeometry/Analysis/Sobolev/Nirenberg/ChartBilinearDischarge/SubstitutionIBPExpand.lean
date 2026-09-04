@@ -41,8 +41,8 @@ theorem chart_bilinear_identity_h1_0_smooth_seq
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
-    (hη_supp_in_K_0 : tsupport η ⊆ K_0)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
+    (hη_support_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
@@ -74,11 +74,11 @@ theorem chart_bilinear_identity_h1_0_smooth_seq
     cthickening_K_0_isCompact (E := E) hK_0_compact
   intro n
   obtain ⟨h_v_smooth, h_v_cs⟩ :=
-    nirenbergTestFunction_smooth_seq hη hη_supp k hh hu_seq_smooth n
-  have h_v_supp : tsupport (nirenbergTestFunction (d := Module.finrank ℝ E)
+    nirenbergTestFunction_smooth_seq hη hη_support k hh hu_seq_smooth n
+  have h_v_support : tsupport (nirenbergTestFunction (d := Module.finrank ℝ E)
       k h η (uSeq n)) ⊆ Metric.cthickening |h| K_0 :=
     nirenbergTestFunction_tsupport_in_thickening (E := E) k h
-      hη_supp_in_K_0 (uSeq n)
+      hη_support_in_K_0 (uSeq n)
   set ψ : EuclN → ℝ := nirenbergTestFunction (d := Module.finrank ℝ E)
     k h η (uSeq n) with hψ_def
   set weak_partial_ψ : Fin (Module.finrank ℝ E) → EuclN → ℝ :=
@@ -101,8 +101,8 @@ theorem chart_bilinear_identity_h1_0_smooth_seq
   set ψ_seq : ℕ → EuclN → ℝ := fun _ => ψ with hψseq_def
   have hψ_seq_smooth : ∀ m, ContDiff ℝ (⊤ : ℕ∞) (ψ_seq m) := fun _ => h_v_smooth
   have hψ_seq_cs : ∀ m, HasCompactSupport (ψ_seq m) := fun _ => h_v_cs
-  have hψ_seq_supp : ∀ m, tsupport (ψ_seq m) ⊆ Metric.cthickening |h| K_0 :=
-    fun _ => h_v_supp
+  have hψ_seq_support : ∀ m, tsupport (ψ_seq m) ⊆ Metric.cthickening |h| K_0 :=
+    fun _ => h_v_support
   have hψ_seq_l2 :
       Tendsto (fun m => eLpNorm (fun x => ψ_seq m x - ψ x) 2
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)))
@@ -145,7 +145,7 @@ theorem chart_bilinear_identity_h1_0_smooth_seq
     exact tendsto_const_nhds
   exact chart_bilinear_identity_h1_0 (I := I) (M := M) D
     h_thick_compact h_thick ψ weak_partial_ψ hψ_lp hψ_grad_lp ψ_seq
-    hψ_seq_smooth hψ_seq_cs hψ_seq_supp hψ_seq_l2 hψ_seq_grad_l2
+    hψ_seq_smooth hψ_seq_cs hψ_seq_support hψ_seq_l2 hψ_seq_grad_l2
 
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -154,7 +154,7 @@ theorem variational_identity_at_v_h
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
-    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
     (h_thick : Metric.cthickening |h| K_0 ⊆
@@ -168,7 +168,7 @@ theorem variational_identity_at_v_h
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)))
     (uSeq : ℕ → EuclN → ℝ)
     (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n))
-    (h_v_seq_supp : ∀ n,
+    (h_v_seq_support : ∀ n,
       tsupport (nirenbergTestFunction (d := Module.finrank ℝ E)
         k h η (uSeq n)) ⊆ Metric.cthickening |h| K_0)
     (h_v_seq_l2 :
@@ -209,12 +209,12 @@ theorem variational_identity_at_v_h
     nirenbergTestFunction (d := Module.finrank ℝ E) k h η (uSeq n)
     with hvhseq_def
   have h_v_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (v_h_seq n) := fun n =>
-    (nirenbergTestFunction_smooth_seq hη hη_supp k hh hu_seq_smooth n).1
+    (nirenbergTestFunction_smooth_seq hη hη_support k hh hu_seq_smooth n).1
   have h_v_seq_cs : ∀ n, HasCompactSupport (v_h_seq n) := fun n =>
-    (nirenbergTestFunction_smooth_seq hη hη_supp k hh hu_seq_smooth n).2
+    (nirenbergTestFunction_smooth_seq hη hη_support k hh hu_seq_smooth n).2
   exact chart_bilinear_identity_h1_0 (I := I) (M := M) D
     h_thick_compact h_thick v_h weak_partial_v_h hv_h_lp hv_h_grad_lp
-    v_h_seq h_v_seq_smooth h_v_seq_cs h_v_seq_supp h_v_seq_l2
+    v_h_seq h_v_seq_smooth h_v_seq_cs h_v_seq_support h_v_seq_l2
     h_v_seq_grad_l2
 
 

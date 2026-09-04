@@ -45,9 +45,9 @@ theorem metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_if
       ∀ (n : Nat) (c : Fin n → Real)
         (v w : Fin n → TangentSpace I x),
         0 ≤ ∑ i, ∑ j, c i * c j *
-          metricRm04StdAt (I := I) (M := M) g x
+          metricRm04StandardAt (I := I) (M := M) g x
             (v i) (w i) (w j) (v j) := by
   simp [algebraicCurvatureOperatorQuadraticEval,
-    metricRm04StdAt_apply]
+    metricRm04StandardAt_apply]
 
 end DifferentialGeometry.Geometry.Curvature

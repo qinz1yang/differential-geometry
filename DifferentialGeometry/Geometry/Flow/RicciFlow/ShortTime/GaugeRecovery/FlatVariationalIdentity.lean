@@ -85,7 +85,7 @@ theorem flat_raw_variational_identity
     (horbit_cont : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       ContinuousAt (fun y : M => (Φ_fam t : M → M) y) x ∧
       ContinuousAt (fun s : ℝ => (Φ_fam s : M → M) x) t)
-    (hx_src : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, x ∈ (chartAt H (Φ_fam t x)).source)
+    (hx_source : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, x ∈ (chartAt H (Φ_fam t x)).source)
     (hGfd : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       ∃ G' : E →L[ℝ] (E →L[ℝ] E),
         HasFDerivAt (fun z => chartMovingTriv (I := I) (Φ_fam t x) z) G'
@@ -99,9 +99,9 @@ theorem flat_raw_variational_identity
     intro t ht x v
     obtain ⟨T₀, hT₀, W, hW, hxW, hode⟩ := hΦfam_ode t ht x
     obtain ⟨G', hG'⟩ := hGfd t ht x
-    obtain ⟨ΦE, velChart, Pv, _hvel, hident⟩ :=
+    obtain ⟨ΦE, velocityChart, Pv, _hvel, hident⟩ :=
       rawVariationalIdentityFlat_of_jointSmoothField (I := I) X hX hXauto Φ_fam t x v
-        (hx_src t ht x) hT₀ hW hxW hode (horbit_cont t ht x).1 (horbit_cont t ht x).2 hG'
+        (hx_source t ht x) hT₀ hW hxW hode (horbit_cont t ht x).1 (horbit_cont t ht x).2 hG'
     exact ⟨_, _, hident⟩
   choose! Tv Pv hTv using hpoint
   exact ⟨Tv, Pv, fun t ht x v => hTv t ht x v⟩
@@ -109,7 +109,7 @@ theorem flat_raw_variational_identity
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem flat_christoffel_correction_eqn
+theorem flat_christoffel_correction_equation
     (g_DT : ℝ → SmoothRiemannianMetric I M) (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Φ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
     (T' P' : ℝ → ∀ x : M, TangentSpace I x → (E →L[ℝ] E))

@@ -202,13 +202,13 @@ theorem time_dependent_vf_chart_local_picard_with_bounds
       intro t' ht'
       nth_rw 1 [← hβ]
       rw [ODE.FunSpace.compProj_of_mem ht', ODE.FunSpace.next_apply]
-  choose! flow hflow_init hflow_rest using hpt
+  choose! flow hflow_initial hflow_rest using hpt
   refine ⟨T, hT_pos, r', hr'_pos, Lbound, hLbound_pos.le, flow, ?_⟩
   intro y hy
   have hy' : y ∈ Metric.closedBall x₀ rN := by
     rw [Metric.mem_closedBall] at hy ⊢
     rw [hrN]; exact hy
-  refine ⟨hflow_init y hy', ?_⟩
+  refine ⟨hflow_initial y hy', ?_⟩
   intro t ht
   obtain ⟨hd, hmem⟩ := hflow_rest y hy' t ht
   refine ⟨hd, hball_aN_sub_r hmem, ?_⟩

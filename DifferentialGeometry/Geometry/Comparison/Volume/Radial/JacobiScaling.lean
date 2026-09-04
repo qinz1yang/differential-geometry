@@ -190,7 +190,7 @@ lemma basisUnitScaleSmall {r : ℝ} (hr : 0 < r) :
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
-lemma basisInit_smul_le
+lemma basisInitial_smul_le
     (g : SmoothRiemannianMetric I M) (p : M) {a A : ℝ} (ha : 0 < a)
     (hbasis : ∀ k : Fin (Module.finrank ℝ E),
       Real.sqrt (g.inner p ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤ A) :
@@ -239,7 +239,7 @@ lemma basisModel_le_smul
       Real.sqrt (g.inner p (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) (a • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k)) ≤
         a * A) ∧
     a * A + gronwallBound 0 (max K 1) (K * (b * (a * A))) 1 ≤ a * B := by
-  exact ⟨basisInit_smul_le (I := I) g p ha hbasis, model_le_smul ha hmodel⟩
+  exact ⟨basisInitial_smul_le (I := I) g p ha hbasis, model_le_smul ha hmodel⟩
 
 
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -293,9 +293,9 @@ theorem radialJacobi_fin_le_of_deriv_eq_at
       Real.sqrt (g.inner (expMap (I := I) g p (show TangentSpace I p from x))
         (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) 1)
         (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k) 1)) ≤ B :=
-  radialJacobi_fin_le_of_init_bound_at (I := I) g p x hK hb h1b hγ hcard F hpar hON
+  radialJacobi_fin_le_of_initial_bound_at (I := I) g p x hK hb h1b hγ hcard F hpar hON
     hFdiff hJdiff hDJdiff hODE
-    (radialJacobi_init_le_of_deriv_eq (I := I) g p x hderiv hbasis) hmodel
+    (radialJacobi_initial_le_of_deriv_eq (I := I) g p x hderiv hbasis) hmodel
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in

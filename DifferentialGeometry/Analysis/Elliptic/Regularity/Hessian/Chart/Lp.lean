@@ -52,15 +52,15 @@ theorem smoothTensorPairing_eq_hessPairingChart_on_chartSource
       hessPairingChart (I := I) g φ
         (smoothScalarToContMDiffMap (I := I) (g := g) v) x := by
   classical
-  have hx_src_ext : x ∈ (extChartAt I α).source := by
+  have hx_source_ext : x ∈ (extChartAt I α).source := by
     rwa [extChartAt_source_eq_chartAt_source]
-  have hx_tgt_ext : extChartAt I α x ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hx_src_ext
+  have hx_target_ext : extChartAt I α x ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hx_source_ext
   have h_toE_mem : (toEuclidean (E := E)) (extChartAt I α x) ∈
       chartTargetEuclid (I := I) (M := M) α := by
     unfold chartTargetEuclid
     simp only [Set.mem_image]
-    exact ⟨extChartAt I α x, hx_tgt_ext, rfl⟩
+    exact ⟨extChartAt I α x, hx_target_ext, rfl⟩
   have h_bridge := smoothTensorPairingChart_eq_hessPairingChart_pullback
     (I := I) (M := M) g α φ v h_toE_mem
   rw [h_bridge]
@@ -68,7 +68,7 @@ theorem smoothTensorPairing_eq_hessPairingChart_on_chartSource
       ((toEuclidean (E := E)) (extChartAt I α x)) = extChartAt I α x :=
     (toEuclidean (E := E)).symm_apply_apply _
   rw [h_toE_inv]
-  rw [(extChartAt I α).left_inv hx_src_ext]
+  rw [(extChartAt I α).left_inv hx_source_ext]
 
 theorem pou_weighted_tensor_pairing_eq_hessPairingChart_pointwise
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
@@ -90,14 +90,14 @@ theorem pou_weighted_tensor_pairing_eq_hessPairingChart_pointwise
     intro α hα
     by_cases h_pou : (chartAtlasPOU I M α : M → ℝ) x = 0
     · rw [h_pou, zero_mul, zero_mul]
-    · have h_x_supp : x ∈ tsupport ((chartAtlasPOU I M α : M → ℝ)) := by
+    · have h_x_support : x ∈ tsupport ((chartAtlasPOU I M α : M → ℝ)) := by
         apply subset_tsupport _
         simp only [Function.mem_support, ne_eq]
         exact h_pou
       have h_tsupport_subset :
           tsupport ((chartAtlasPOU I M α : M → ℝ)) ⊆ (chartAt H α).source :=
         chartAtlasPOU_isSubordinate I M α
-      have h_x_chart : x ∈ (chartAt H α).source := h_tsupport_subset h_x_supp
+      have h_x_chart : x ∈ (chartAt H α).source := h_tsupport_subset h_x_support
       congr 1
       exact smoothTensorPairing_eq_hessPairingChart_on_chartSource
         (I := I) (M := M) g α φ v h_x_chart

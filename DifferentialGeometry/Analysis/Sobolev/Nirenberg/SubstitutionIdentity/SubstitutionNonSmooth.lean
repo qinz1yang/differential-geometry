@@ -67,11 +67,11 @@ theorem principal_term_ge_lambda_norm_sq_nonsmooth
     {g : Fin d → EuclN → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure EuclN))
     {η : EuclN → ℝ} (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : HasCompactSupport η)
+    (hη_support : HasCompactSupport η)
     {Ω' : Set EuclN}
     (hΩ'_in_Ω : closure Ω' ⊆ Ω)
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d) {h : ℝ} (hh_le : |h| ≤ R₀) :
     B.lam *
@@ -87,7 +87,7 @@ theorem principal_term_ge_lambda_norm_sq_nonsmooth
       ∂(volume : Measure EuclN) := by
   classical
   have h_thick_in_Ω : Metric.cthickening |h| (tsupport η) ⊆ Ω :=
-    (hh_supp_in_Ω' hh_le).trans (subset_closure.trans hΩ'_in_Ω)
+    (hh_support_in_Ω' hh_le).trans (subset_closure.trans hΩ'_in_Ω)
   have h_pointwise : ∀ x : EuclN,
       B.lam * ((η x)^2 *
           ∑ i : Fin d, (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x)^2) ≤
@@ -169,7 +169,7 @@ theorem principal_term_ge_lambda_norm_sq_nonsmooth
         (volume : Measure EuclN) := by
       intro i
       have hint := integrable_const_eta_sq_diffQuot_g_sq (d := d) hg_l2 hη_smooth_top
-        hη_supp i k h 1
+        hη_support i k h 1
       have h_eq : (fun x : EuclN => (η x)^2 *
           (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x)^2) =
           (fun x : EuclN => 1 * (η x)^2 *
@@ -197,12 +197,12 @@ theorem principal_term_ge_lambda_norm_sq_nonsmooth
     intro i j
     classical
     have hη_sq_cont : Continuous (fun x : EuclN => η x ^ 2) := hη_smooth.continuous.pow 2
-    have hη_sq_supp : HasCompactSupport (fun x : EuclN => η x ^ 2) := by
+    have hη_sq_support : HasCompactSupport (fun x : EuclN => η x ^ 2) := by
       have heq : (fun y : EuclN => η y ^ 2) = (fun y : EuclN => η y * η y) := by
         funext y; ring
-      rw [heq]; exact hη_supp.mul_right
+      rw [heq]; exact hη_support.mul_right
     obtain ⟨Mη2, _, hMη2⟩ :=
-      exists_bound_of_continuous_compactSupport hη_sq_cont hη_sq_supp
+      exists_bound_of_continuous_compactSupport hη_sq_cont hη_sq_support
     have h_translate_a_cont : Continuous
         (DifferentialGeometry.Analysis.Sobolev.translate k h
           (fun y : EuclN => B.a y i j)) := by
@@ -213,13 +213,13 @@ theorem principal_term_ge_lambda_norm_sq_nonsmooth
           (DifferentialGeometry.Analysis.Sobolev.translate k h
             (fun y : EuclN => B.a y i j)) x) :=
       hη_sq_cont.mul h_translate_a_cont
-    have h_prod_supp : HasCompactSupport
+    have h_prod_support : HasCompactSupport
         (fun x : EuclN => (η x)^2 *
           (DifferentialGeometry.Analysis.Sobolev.translate k h
             (fun y : EuclN => B.a y i j)) x) :=
-      hη_sq_supp.mul_right
+      hη_sq_support.mul_right
     obtain ⟨Mprod, hMprod_nn, hMprod⟩ :=
-      exists_bound_of_continuous_compactSupport h_prod_cont h_prod_supp
+      exists_bound_of_continuous_compactSupport h_prod_cont h_prod_support
     have h_dq_g_l2 : ∀ i', MemLp
         (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i')) 2
         (volume : Measure EuclN) :=
@@ -354,17 +354,17 @@ theorem nirenberg_master_inequality_nonsmooth
     {Ω : Set EuclN} (B : SmoothEllipticBilinearForm d Ω)
     {u f : EuclN → ℝ}
     (hu_l2 : MemLp u 2 (volume : Measure EuclN))
-    (hf_l2_loc : ∀ {Ω' : Set EuclN}, IsCompact (closure Ω') →
+    (hf_l2_local : ∀ {Ω' : Set EuclN}, IsCompact (closure Ω') →
       MemLp f 2 (volume.restrict Ω'))
     {g : Fin d → EuclN → ℝ}
     (hg_l2 : ∀ i, MemLp (g i) 2 (volume : Measure EuclN))
-    {η : EuclN → ℝ} (hη : ContDiff ℝ ⊤ η) (hη_supp : HasCompactSupport η)
+    {η : EuclN → ℝ} (hη : ContDiff ℝ ⊤ η) (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set EuclN} (hΩ' : IsOpen Ω') (hΩ'_compact : IsCompact (closure Ω'))
     (hΩ'_closure : closure Ω' ⊆ Ω)
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (k : Fin d)
     (h_FK_diffQuot_u_bound : ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
@@ -464,10 +464,10 @@ theorem nirenberg_master_inequality_nonsmooth
               k h η u x ∂(volume : Measure EuclN)| := by
     intro h hh hh_le
     have h_thick : Metric.cthickening |h| (tsupport η) ⊆ Ω :=
-      (hh_supp_in_Ω' hh_le).trans (subset_closure.trans hΩ'_closure)
+      (hh_support_in_Ω' hh_le).trans (subset_closure.trans hΩ'_closure)
     have h_sub := h_substitution_identity hh hh_le h_thick
     have h_principal := principal_term_ge_lambda_norm_sq_nonsmooth (d := d)
-      B hg_l2 hη_top hη_supp hΩ'_closure hh_supp_in_Ω' k hh_le
+      B hg_l2 hη_top hη_support hΩ'_closure hh_support_in_Ω' k hh_le
     set I : ℝ := ∫ x, (η x)^2 *
         ∑ i : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x ^ 2
         ∂(volume : Measure EuclN) with hI_def
@@ -510,7 +510,7 @@ theorem nirenberg_master_inequality_nonsmooth
     have h_principal_le : B.lam * I ≤ P := h_principal
     have hP_alt : P = R - C1 - C2 - C3 - Q := by linarith
     rw [hP_alt] at h_principal_le
-    have h_v_supp : tsupport
+    have h_v_support : tsupport
         (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
           k h η u) ⊆ Ω :=
       ((tsupport_nirenbergTestFunction_subset
@@ -530,7 +530,7 @@ theorem nirenberg_master_inequality_nonsmooth
         have hx_not :
             x ∉ tsupport
               (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-                k h η u) := fun hin => hx (h_v_supp hin)
+                k h η u) := fun hin => hx (h_v_support hin)
         have h_zero :
           (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             k h η u) x = 0 := image_eq_zero_of_notMem_tsupport hx_not
@@ -563,7 +563,7 @@ theorem nirenberg_master_inequality_nonsmooth
         have hx_not :
             x ∉ tsupport
               (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-                k h η u) := fun hin => hx (h_v_supp hin)
+                k h η u) := fun hin => hx (h_v_support hin)
         have h_zero :
           (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             k h η u) x = 0 := image_eq_zero_of_notMem_tsupport hx_not
@@ -623,8 +623,8 @@ theorem nirenberg_master_inequality_nonsmooth
       exact h_combine
     exact h_combine_final
   exact nirenberg_master_inequality_after_young_nonsmooth (d := d) B hu_l2
-    hf_l2_loc hg_l2 hη_top hη_supp hη_range hN h_fderiv_eta
-    hΩ' hΩ'_closure hΩ'_compact hh_supp_in_Ω' k
+    hf_l2_local hg_l2 hη_top hη_support hη_range hN h_fderiv_eta
+    hΩ' hΩ'_closure hΩ'_compact hh_support_in_Ω' k
     h_FK_diffQuot_u_bound h_v_test_sq_bound
     h_master_nonsmooth
 

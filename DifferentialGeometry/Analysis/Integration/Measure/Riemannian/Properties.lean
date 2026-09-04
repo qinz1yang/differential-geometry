@@ -203,7 +203,7 @@ private lemma pou_term_le_chartLocalMeasure
           rw [lintegral_indicator htsup_meas, Measure.restrict_restrict htsup_meas,
               setLIntegral_const, one_mul, Set.inter_comm]
 
-theorem vol_le_tsum_supp
+theorem vol_le_tsum_support
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {S : Set M} (hS : MeasurableSet S) :
@@ -219,7 +219,7 @@ theorem vol_le_tsum_chart
     {S : Set M} (hS : MeasurableSet S) :
     riemannianVolumeMeasure (I := I) (M := M) g S ≤
       ∑' α : M, chartLocalMeasure (I := I) g α S :=
-  (vol_le_tsum_supp g hS).trans
+  (vol_le_tsum_support g hS).trans
     (ENNReal.tsum_le_tsum (fun _ => measure_mono Set.inter_subset_left))
 
 theorem riemannianMeasure_compact_lt_top
@@ -363,33 +363,33 @@ private lemma interior_isInteriorPoint_dense :
   have hs_open : IsOpen s := hVopen.inter (chartAt H x).open_source
   have hxs : x ∈ s := ⟨hxV, hxsrc⟩
   have hs_nhd : s ∈ 𝓝 x := hs_open.mem_nhds hxs
-  have h_img_nhdW :
+  have h_image_nhdW :
       (extChartAt I x) '' s ∈ 𝓝[range I] (extChartAt I x x) := by
     rw [← map_extChartAt_nhds (x := x)]
     exact Filter.image_mem_map hs_nhd
-  rcases mem_nhdsWithin.mp h_img_nhdW with ⟨U, hU_open, hU_mem, hU_sub⟩
-  have hxImg_inRange : extChartAt I x x ∈ range I :=
+  rcases mem_nhdsWithin.mp h_image_nhdW with ⟨U, hU_open, hU_mem, hU_sub⟩
+  have hxImage_inRange : extChartAt I x x ∈ range I :=
     extChartAt_target_subset_range (I := I) x ((extChartAt I x).map_source hxext)
-  have hxImg_inClosure :
+  have hxImage_inClosure :
       extChartAt I x x ∈ closure (interior (range I)) := by
-    rw [← I.range_eq_closure_interior]; exact hxImg_inRange
-  rcases mem_closure_iff.mp hxImg_inClosure U hU_open hU_mem with ⟨p, hp_U, hp_int⟩
+    rw [← I.range_eq_closure_interior]; exact hxImage_inRange
+  rcases mem_closure_iff.mp hxImage_inClosure U hU_open hU_mem with ⟨p, hp_U, hp_int⟩
   have hp_inRange : p ∈ range I := interior_subset hp_int
-  have hp_inImg : p ∈ (extChartAt I x) '' s := hU_sub ⟨hp_U, hp_inRange⟩
-  rcases hp_inImg with ⟨y, hys, hyEq⟩
+  have hp_inImage : p ∈ (extChartAt I x) '' s := hU_sub ⟨hp_U, hp_inRange⟩
+  rcases hp_inImage with ⟨y, hys, hyEq⟩
   refine ⟨y, hys.1, ?_⟩
-  have hy_chartSrc : y ∈ (chartAt H x).source := hys.2
+  have hy_chartSource : y ∈ (chartAt H x).source := hys.2
   have hyEq' : ((chartAt H x).extend I) y = p := hyEq
   have hp_inExtTarget :
       ((chartAt H x).extend I) y ∈ interior ((chartAt H x).extend I).target := by
     have hy_chartTarget : (chartAt H x) y ∈ (chartAt H x).target :=
-      (chartAt H x).map_source hy_chartSrc
+      (chartAt H x).map_source hy_chartSource
     have hI_inInterior : I ((chartAt H x) y) ∈ interior (range I) := by
       change ((chartAt H x).extend I) y ∈ interior (range I)
       rw [hyEq']; exact hp_int
     exact (chartAt H x).mem_interior_extend_target hy_chartTarget hI_inInterior
   have hntop : (∞ : WithTop ℕ∞) ≠ 0 := by simp
-  exact (I.isInteriorPoint_iff_of_mem_atlas hntop (chart_mem_atlas H x) hy_chartSrc).mpr
+  exact (I.isInteriorPoint_iff_of_mem_atlas hntop (chart_mem_atlas H x) hy_chartSource).mpr
     hp_inExtTarget
 
 private lemma chartLocalMeasure_open_pos_of_mem
@@ -412,11 +412,11 @@ private lemma chartLocalMeasure_open_pos_of_mem
   have hVsub' : V ⊆ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hVsub
   have hV_nhds : V ∈ 𝓝 x₁ := hVopen.mem_nhds hx₁V
-  have hx₁src : x₁ ∈ (extChartAt I α).source := hVsub' hx₁V
-  have hImgNhd : (extChartAt I α) '' V ∈ 𝓝 ((extChartAt I α) x₁) :=
+  have hx₁source : x₁ ∈ (extChartAt I α).source := hVsub' hx₁V
+  have hImageNhd : (extChartAt I α) '' V ∈ 𝓝 ((extChartAt I α) x₁) :=
     extChartAt_image_nhds_mem_nhds_of_mem_interior_range (I := I) (M := M)
-      (x := α) (y := x₁) hx₁src hx₁_int hV_nhds
-  rcases mem_nhds_iff.mp hImgNhd with ⟨W, hW_sub, hW_open, hW_mem⟩
+      (x := α) (y := x₁) hx₁source hx₁_int hV_nhds
+  rcases mem_nhds_iff.mp hImageNhd with ⟨W, hW_sub, hW_open, hW_mem⟩
   have hW_meas : MeasurableSet W := hW_open.measurableSet
   have hW_ne : W.Nonempty := ⟨(extChartAt I α) x₁, hW_mem⟩
   have hW_pos : 0 < (modelHaar (E := E)) W := hW_open.measure_pos _ hW_ne
@@ -524,7 +524,7 @@ private lemma chartLocalMeasure_open_pos_of_mem
   exact (ne_of_gt hW_pos) hW_full_empty
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
-private lemma exists_open_nbhd_pou_pos
+private lemma exists_open_neighborhood_pou_pos
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source))
     {α : M} {U : Set M} (hUopen : IsOpen U) {x : M} (hxU : x ∈ U)
@@ -560,14 +560,14 @@ theorem riemannianMeasure_isOpenPosMeasure
   have hexpos : ∃ α, 0 < ρ α x :=
     ρ.exists_pos_of_mem (Set.mem_univ _)
   rcases hexpos with ⟨α, hαpos⟩
-  rcases exists_open_nbhd_pou_pos (I := I) (M := M) ρ hρ hUopen hxU hαpos with
+  rcases exists_open_neighborhood_pou_pos (I := I) (M := M) ρ hρ hUopen hxU hαpos with
     ⟨V, hVopen, hxV, hVU, hVsource, c, hcpos, hcbound⟩
   have hVmeas : MeasurableSet V := hVopen.measurableSet
-  have hx_chartαSrc : x ∈ (chartAt H α).source := hVsource hxV
+  have hx_chartαSource : x ∈ (chartAt H α).source := hVsource hxV
   have hntop : (∞ : WithTop ℕ∞) ≠ 0 := by simp
   have hx_intExtTarget :
       ((chartAt H α).extend I) x ∈ interior ((chartAt H α).extend I).target :=
-    (I.isInteriorPoint_iff_of_mem_atlas hntop (chart_mem_atlas H α) hx_chartαSrc).mp
+    (I.isInteriorPoint_iff_of_mem_atlas hntop (chart_mem_atlas H α) hx_chartαSource).mp
       hx_int
   have hx_intRange : extChartAt I α x ∈ interior (range I) :=
     (chartAt H α).interior_extend_target_subset_interior_range hx_intExtTarget

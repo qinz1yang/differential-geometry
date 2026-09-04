@@ -207,7 +207,7 @@ theorem tensorChartComponent_eLpNorm_le_uniform
     exact h_chain
   · refine ⟨0, le_refl 0, ?_⟩
     intro S Idx Jdx
-    have h_supp_empty :
+    have h_support_empty :
         ¬ (tsupport (tensorChartComponentScalar (I := I) (M := M)
           g r s S α Idx Jdx)).Nonempty := by
       intro h_ne
@@ -221,7 +221,7 @@ theorem tensorChartComponent_eLpNorm_le_uniform
       funext x
       have hx : x ∉ tsupport (tensorChartComponentScalar
           (I := I) (M := M) g r s S α Idx Jdx) := fun hxs =>
-        h_supp_empty ⟨x, hxs⟩
+        h_support_empty ⟨x, hxs⟩
       exact image_eq_zero_of_notMem_tsupport hx
     have h_comp_zero :
         tensorChartComponent (I := I) (M := M) g r s S α Idx Jdx =

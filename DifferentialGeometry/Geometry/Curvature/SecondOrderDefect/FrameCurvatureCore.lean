@@ -128,13 +128,13 @@ theorem frozenFrameTrace_eq_rawTensorConnLap_fixedFrame
   rw [tensorSecondCovDeriv_def]
 
 omit [CompactSpace M] [I.Boundaryless] in
-theorem frozenFrameTrace_eq_rawTensorConnLap_of_mem_nbhd
+theorem frozenFrameTrace_eq_rawTensorConnLap_of_mem_neighborhood
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b)
     (hT_total : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) y (T y)))
-    (x : M) {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x) :
+    (x : M) {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x) :
     frozenFrameTrace (I := I) g r s T x y = rawTensorConnLap (I := I) g r s T y := by
   rw [frozenFrameTrace_eq_rawTensorConnLap_fixedFrame]
   exact (rawTensorConnLap_eq_fixedFrame_of_orthonormal (I := I) g r s T hT_total
@@ -152,8 +152,8 @@ theorem rawTensorConnLap_eventuallyEq_frozenFrameTrace
     (x : M) :
     ∀ᶠ y in 𝓝 x, rawTensorConnLap (I := I) g r s T y =
       frozenFrameTrace (I := I) g r s T x y := by
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x] with y hy
-  exact (frozenFrameTrace_eq_rawTensorConnLap_of_mem_nbhd (I := I) g r s T hT_total x hy).symm
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x] with y hy
+  exact (frozenFrameTrace_eq_rawTensorConnLap_of_mem_neighborhood (I := I) g r s T hT_total x hy).symm
 
 end FrozenFrame
 

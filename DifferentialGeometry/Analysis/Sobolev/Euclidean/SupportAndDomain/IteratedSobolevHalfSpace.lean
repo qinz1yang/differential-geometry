@@ -399,7 +399,7 @@ theorem fderiv_isWeakPartialDeriv_of_smooth_interiorHalfSpace [NeZero d]
 theorem fderiv_memLp_of_smooth_compactSupport
     {p : ℝ≥0∞} {Ω : Set E}
     {u : E → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
-    (hu_supp : HasCompactSupport u) (i : Fin d) :
+    (hu_support : HasCompactSupport u) (i : Fin d) :
     MemLp (fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1)) p
       ((volume : Measure E).restrict (interiorHalfSpace Ω)) := by
   have h_smooth : ContDiff ℝ ∞
@@ -408,32 +408,32 @@ theorem fderiv_memLp_of_smooth_compactSupport
       hu_smooth.fderiv_right (m := (∞ : WithTop ℕ∞)) (by
         rw [ENat.coe_top_add_one])
     exact h_fderiv.clm_apply contDiff_const
-  have h_supp : HasCompactSupport
+  have h_support : HasCompactSupport
       (fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1)) :=
-    hu_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
+    hu_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
   have h_global : MemLp
       (fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1)) p volume :=
-    h_smooth.continuous.memLp_of_hasCompactSupport h_supp
+    h_smooth.continuous.memLp_of_hasCompactSupport h_support
   exact h_global.restrict (interiorHalfSpace Ω)
 
 theorem memLp_of_smooth_compactSupport
     {p : ℝ≥0∞} {Ω : Set E}
     {u : E → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
-    (hu_supp : HasCompactSupport u) :
+    (hu_support : HasCompactSupport u) :
     MemLp u p ((volume : Measure E).restrict (interiorHalfSpace Ω)) := by
   have h_global : MemLp u p (volume : Measure E) :=
-    hu_smooth.continuous.memLp_of_hasCompactSupport hu_supp
+    hu_smooth.continuous.memLp_of_hasCompactSupport hu_support
   exact h_global.restrict (interiorHalfSpace Ω)
 
 theorem memW1p_of_smooth_compactSupport_interiorHalfSpace
     {p : ℝ≥0∞} {Ω : Set E} (hΩ : IsHalfSpaceRelOpen (d := d) Ω)
     {u : E → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
-    (hu_supp : HasCompactSupport u) :
+    (hu_support : HasCompactSupport u) :
     DeGiorgi.MemW1p p u (interiorHalfSpace Ω) := by
-  refine ⟨memLp_of_smooth_compactSupport hu_smooth hu_supp, ?_⟩
+  refine ⟨memLp_of_smooth_compactSupport hu_smooth hu_support, ?_⟩
   intro i
   refine ⟨fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1),
-    fderiv_memLp_of_smooth_compactSupport hu_smooth hu_supp i, ?_⟩
+    fderiv_memLp_of_smooth_compactSupport hu_smooth hu_support i, ?_⟩
   exact fderiv_isWeakPartialDeriv_of_smooth_interiorHalfSpace hΩ
     (hu_smooth.of_le (by norm_cast)) i
 

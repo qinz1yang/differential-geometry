@@ -18,7 +18,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Set Filter
 open scoped Manifold ContDiff Topology
 open DifferentialGeometry.Integral.Connection
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -143,7 +143,7 @@ theorem ricci_flow_forward_unique
     ∀ t ∈ Set.Ico a b, g₁ t = g₂ t := by
   exact forward_unique_of_gram (I := I) g₁ g₂ hab
     h1smooth h2smooth h1pde h2pde h0
-    (fuSlab_of_gram (I := I) g₁ g₂ h1smooth h2smooth h1pde h2pde)
+    (forwardUniquenessSlab_of_gram (I := I) g₁ g₂ h1smooth h2smooth h1pde h2pde)
     (energyEdgeCont (I := I) g₁ g₂ hab h1smooth h2smooth)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in

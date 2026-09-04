@@ -21,7 +21,7 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic
-  (lowerState norm_maxRegDuhamelSolField_zero_le zero_mem_lowerState)
+  (lowerState norm_maximalRegularityDuhamelSolutionField_zero_le zero_mem_lowerState)
 open DifferentialGeometry.Analysis.Spectral
   (ccTensorToHs ccToHsLin smoothCcToTensorHs tensorResolventL2_isCompactOperator)
 
@@ -57,7 +57,7 @@ private def affState
     loH3 (I := I) (M := M) g :=
   tensorHsCongr (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = 3 by norm_num)
-    (maxRegDuhamelSolField (I := I) (M := M)
+    (maximalRegularityDuhamelSolutionField (I := I) (M := M)
       (1 : ℝ) hT 0 f t)
 
 def stateField
@@ -69,7 +69,7 @@ def stateField
   (tensorHsCongrL (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)).compLpL
       2 (timeMeasure T)
-      (maxRegDuhamelSolField (I := I) (M := M)
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (1 : ℝ) hT 0 f)
 
 omit [BoundarylessManifold I M] in
@@ -81,15 +81,15 @@ private theorem stateField_ae
     stateField (I := I) (M := M) g hT f =ᵐ[timeMeasure T]
       fun t => tensorHsCongr (I := I) (M := M) g 0 2
         (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)
-        (maxRegDuhamelSolField (I := I) (M := M)
+        (maximalRegularityDuhamelSolutionField (I := I) (M := M)
           (1 : ℝ) hT 0 f t) := by
   exact (tensorHsCongrL (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = ((1 : ℕ) : ℝ) + 2 by norm_num)).coeFn_compLpL
       (p := 2) (μ := timeMeasure T)
-      (maxRegDuhamelSolField (I := I) (M := M)
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (1 : ℝ) hT 0 f)
 
-def duhH3
+def duhamelH3
     (g : SmoothRiemannianMetric I M) {T : ℝ}
     (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
@@ -97,22 +97,22 @@ def duhH3
   (tensorHsCongrL (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = (3 : ℝ) by norm_num)).compLpL
       2 (timeMeasure T)
-      (maxRegDuhamelSolField (I := I) (M := M)
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (1 : ℝ) hT
         (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem duhH3_ae
+private theorem duhamelH3_ae
     (g : SmoothRiemannianMetric I M) {T : ℝ}
     (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
-    duhH3 (I := I) (M := M) g hT f =ᵐ[timeMeasure T]
+    duhamelH3 (I := I) (M := M) g hT f =ᵐ[timeMeasure T]
       affState (I := I) (M := M) g hT f :=
   (tensorHsCongrL (I := I) (M := M) g 0 2
     (show (1 : ℝ) + 2 = (3 : ℝ) by norm_num)).coeFn_compLpL
       (p := 2) (μ := timeMeasure T)
-      (maxRegDuhamelSolField (I := I) (M := M)
+      (maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (1 : ℝ) hT
         (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f)
 
@@ -130,14 +130,14 @@ theorem norm_congrLp (g : SmoothRiemannianMetric I M) {a b T : ℝ} (h : a = b)
   rw [ht, tensorHsCongrL_apply, norm_tensorHsCongr]
 
 omit [BoundarylessManifold I M] in
-theorem norm_duhH3_le
+theorem norm_duhamelH3_le
     (g : SmoothRiemannianMetric I M) {T : ℝ}
     (hT : 0 < T)
     (f : timeL2 (loH1 (I := I) (M := M) g) T) :
-    ‖duhH3 (I := I) (M := M) g hT f‖ ≤ (1 + T) * ‖f‖ :=
+    ‖duhamelH3 (I := I) (M := M) g hT f‖ ≤ (1 + T) * ‖f‖ :=
   le_trans
     (le_of_eq (norm_congrLp (I := I) (M := M) g _ _))
-    (norm_maxRegDuhamelSolField_zero_le (I := I) (M := M) (g₀ := g) hT f)
+    (norm_maximalRegularityDuhamelSolutionField_zero_le (I := I) (M := M) (g₀ := g) hT f)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -148,7 +148,7 @@ private theorem affState_aemeas
     AEStronglyMeasurable
       (affState (I := I) (M := M) g hT f) (timeMeasure T) := by
   have hfield : AEStronglyMeasurable
-      (fun t => maxRegDuhamelSolField (I := I) (M := M)
+      (fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (1 : ℝ) hT
         (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)
       (timeMeasure T) :=
@@ -258,7 +258,7 @@ theorem lowAffineSecondOrderAction_data
   let u : ℝ → loH3 (I := I) (M := M) g :=
     affState (I := I) (M := M) g hT f
   have hfield : AEStronglyMeasurable
-      (fun t => maxRegDuhamelSolField (I := I) (M := M)
+      (fun t => maximalRegularityDuhamelSolutionField (I := I) (M := M)
         (1 : ℝ) hT
         (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f t)
       (timeMeasure T) :=
@@ -635,10 +635,10 @@ theorem lowFirstOrderAffineOperator_memLp
     ∃ hmem : MemLp
         (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) 2 (timeMeasure T),
       ‖hmem.toLp (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f)‖ ≤
-        L * ‖duhH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z := by
-  refine memLp_clm_affine (duhH3 (I := I) (M := M) g hT f) _
+        L * ‖duhamelH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z := by
+  refine memLp_clm_affine (duhamelH3 (I := I) (M := M) g hT f) _
     (lowFirstOrderAffineOperator_aestronglyMeasurable (I := I) (M := M) g ρ FLo hFLo hT f) hL hZ ?_
-  filter_upwards [duhH3_ae (I := I) (M := M) g hT f] with t hd
+  filter_upwards [duhamelH3_ae (I := I) (M := M) g hT f] with t hd
   rw [hd]
   exact (lowFirstOrderAffineOperator_norm_le (I := I) (M := M) g hρ FLo hT f t).trans (hFbd _)
 
@@ -759,10 +759,10 @@ theorem highFirstOrderAffineOperator_memLp
     ∃ hmem : MemLp
         (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f) 2 (timeMeasure T),
       ‖hmem.toLp (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f)‖ ≤
-        L * ‖duhH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z := by
-  refine memLp_clm_affine (duhH3 (I := I) (M := M) g hT f) _
+        L * ‖duhamelH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z := by
+  refine memLp_clm_affine (duhamelH3 (I := I) (M := M) g hT f) _
     (highFirstOrderAffineOperator_aestronglyMeasurable (I := I) (M := M) g ρ FHi hFHi hT f) hL hZ ?_
-  filter_upwards [duhH3_ae (I := I) (M := M) g hT f] with t hd
+  filter_upwards [duhamelH3_ae (I := I) (M := M) g hT f] with t hd
   rw [hd]
   exact (highFirstOrderAffineOperator_norm_le (I := I) (M := M) g hρ FHi hT f t).trans (hFbd _)
 
@@ -788,34 +788,34 @@ theorem firstOrderAffineOperators_compatible
   have hsq : ∀ t : ℝ,
       (tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show (1 : ℝ) ≤ (2 : ℝ) by norm_num)).comp
-          ((FHi (duhH3 (I := I) (M := M) g hT f t)).comp
+          ((FHi (duhamelH3 (I := I) (M := M) g hT f t)).comp
             (radialCLM (I := I) (M := M) g
               (show (0 : ℝ) ≤ 3 by norm_num) ρ
               (incl32 (I := I) (M := M) g
-                (duhH3 (I := I) (M := M) g hT f t)))) =
-        ((FLo (duhH3 (I := I) (M := M) g hT f t)).comp
+                (duhamelH3 (I := I) (M := M) g hT f t)))) =
+        ((FLo (duhamelH3 (I := I) (M := M) g hT f t)).comp
             (radialCLM (I := I) (M := M) g
               (show (0 : ℝ) ≤ 2 by norm_num) ρ
               (incl32 (I := I) (M := M) g
-                (duhH3 (I := I) (M := M) g hT f t)))).comp
+                (duhamelH3 (I := I) (M := M) g hT f t)))).comp
           (incl32 (I := I) (M := M) g) := by
     intro t
     refine ContinuousLinearMap.ext fun x => ?_
     have hcoef := DFunLike.congr_fun
-      (hFComm (duhH3 (I := I) (M := M) g hT f t))
+      (hFComm (duhamelH3 (I := I) (M := M) g hT f t))
       (radialCLM (I := I) (M := M) g
         (show (0 : ℝ) ≤ 3 by norm_num) ρ
         (incl32 (I := I) (M := M) g
-          (duhH3 (I := I) (M := M) g hT f t)) x)
+          (duhamelH3 (I := I) (M := M) g hT f t)) x)
     have hrad := DFunLike.congr_fun
       (radialCLM_incl (I := I) (M := M) g
         (show (0 : ℝ) ≤ 2 by norm_num) (show (0 : ℝ) ≤ 3 by norm_num)
         (show (2 : ℝ) ≤ 3 by norm_num) ρ
         (incl32 (I := I) (M := M) g
-          (duhH3 (I := I) (M := M) g hT f t))) x
+          (duhamelH3 (I := I) (M := M) g hT f t))) x
     simp only [ContinuousLinearMap.comp_apply] at hcoef hrad ⊢
     rw [hcoef, hrad]
-  filter_upwards [duhH3_ae (I := I) (M := M) g hT f] with t hd
+  filter_upwards [duhamelH3_ae (I := I) (M := M) g hT f] with t hd
   refine ContinuousLinearMap.ext fun x => ?_
   have hpt := DFunLike.congr_fun (hsq t)
     (tensorHsCongrL (I := I) (M := M) g 0 2
@@ -849,7 +849,7 @@ private theorem firstOrderAffineOperator_self
         (affState (I := I) (M := M) g hT f t)) :
     lowerScaleForce (I := I) (M := M) g +
         (lowAffineSecondOrderAction (I := I) (M := M) g hρ.le hδ0 hδ_le hreal hT f t
-            (maxRegDuhamelSolField (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M)
               (1 : ℝ) hT 0 f t) +
           lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f t v) =
       lowerScaleNonlinearityWithFirstOrderOperator (I := I) (M := M) g hρ.le hδ0 hδ_le hreal FLo
@@ -860,7 +860,7 @@ private theorem firstOrderAffineOperator_self
           (affState (I := I) (M := M) g hT f t))
         (tensorHsCongr (I := I) (M := M) g 0 2
           (show (1 : ℝ) + 2 = 3 by norm_num)
-          (maxRegDuhamelSolField (I := I) (M := M)
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M)
             (1 : ℝ) hT 0 f t)) =
       lowRadialH3 (I := I) (M := M) g ρ
         (affState (I := I) (M := M) g hT f t) :=
@@ -945,7 +945,7 @@ theorem low_order_forcing_eq_affine_fixed_point
           (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f) hA1 f +
         liftForceLo (I := I) (M := M) g g T := by
   let field :=
-    maxRegDuhamelSolField (I := I) (M := M)
+    maximalRegularityDuhamelSolutionField (I := I) (M := M)
       (1 : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g 0 2 ((1 : ℝ) + 2)) f
   let state := stateField (I := I) (M := M) g hT f
@@ -1143,10 +1143,10 @@ theorem exists_affine_forcing_operator_data
           (timeMeasure T)),
       (C2 : ℝ) = B2 ∧
       ‖hA1.toLp (lowFirstOrderAffineOperator (I := I) (M := M) g ρ FLo hT f)‖ ≤
-          L * ‖duhH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z ∧
+          L * ‖duhamelH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z ∧
         ‖hA1Hi.toLp
             (highFirstOrderAffineOperator (I := I) (M := M) g ρ FHi hT f)‖ ≤
-          L * ‖duhH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z ∧
+          L * ‖duhamelH3 (I := I) (M := M) g hT f‖ + Real.sqrt T * Z ∧
         (∀ᵐ t ∂timeMeasure T,
           (tensorHsInclusion (I := I) (M := M)
               (g := g) (r := 0) (s := 2)

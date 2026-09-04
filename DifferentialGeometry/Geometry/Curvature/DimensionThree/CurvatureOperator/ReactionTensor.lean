@@ -50,19 +50,19 @@ private theorem sum_fin_four_fun
       exact fin4SlotsEquiv.left_inv s
     rw [hslot]
 
-theorem tensor04StdAt_eq_curvatureTensorEval3_of_components
+theorem tensor04StandardAt_eq_curvatureTensorEval3_of_components
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (A : Tensor04At (I := I) (M := M) x)
     (R : Fin 3 → Fin 3 → Fin 3 → Fin 3 → Real)
     (hcomp : ∀ a b c d,
-      tensor04StdAt (I := I) (M := M) A
+      tensor04StandardAt (I := I) (M := M) A
         (basis a) (basis b) (basis c) (basis d) = R a b c d)
     (v w z u : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) A v w z u =
+    tensor04StandardAt (I := I) (M := M) A v w z u =
       DifferentialGeometry.Dim3Reaction.curvatureTensorEval3 R
         (fun a ↦ basis.coord a v) (fun a ↦ basis.coord a w)
         (fun a ↦ basis.coord a z) (fun a ↦ basis.coord a u) := by
-  unfold tensor04StdAt
+  unfold tensor04StandardAt
   rw [tensor0S_apply_eq_sum (I := I) basis A (vec4 (I := I) v w z u)]
   rw [sum_fin_four_fun]
   unfold DifferentialGeometry.Dim3Reaction.curvatureTensorEval3
@@ -79,7 +79,7 @@ theorem tensor04StdAt_eq_curvatureTensorEval3_of_components
     rw [component0S_apply]
     change A (fun i ↦ basis (componentSlots4 a b c d i)) = R a b c d
     rw [← hcomp a b c d]
-    unfold tensor04StdAt
+    unfold tensor04StandardAt
     congr 1
     funext i
     fin_cases i <;> simp [componentSlots4, vec4]
@@ -93,7 +93,7 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_curvatureOperatorQuadraticEva
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (R : Fin 3 → Fin 3 → Fin 3 → Fin 3 → Real)
     (hcomp : ∀ a b c d,
-      tensor04StdAt (I := I) (M := M)
+      tensor04StandardAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)
         (basis a) (basis b) (basis c) (basis d) = R a b c d)
     {n : Nat} (c : Fin n → Real)
@@ -108,7 +108,7 @@ theorem algebraicCurvatureOperatorQuadraticEval_eq_curvatureOperatorQuadraticEva
   intro i hi
   apply Finset.sum_congr rfl
   intro j hj
-  rw [tensor04StdAt_eq_curvatureTensorEval3_of_components basis
+  rw [tensor04StandardAt_eq_curvatureTensorEval3_of_components basis
     (A : Tensor04At (I := I) (M := M) x) R hcomp]
 
 theorem algebraicCurvatureOperatorNonnegative_of_components_eq_rm
@@ -116,7 +116,7 @@ theorem algebraicCurvatureOperatorNonnegative_of_components_eq_rm
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (K12 K13 K23 : Real) (h12 : 0 ≤ K12) (h13 : 0 ≤ K13) (h23 : 0 ≤ K23)
     (hcomp : ∀ a b c d,
-      tensor04StdAt (I := I) (M := M)
+      tensor04StandardAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)
         (basis a) (basis b) (basis c) (basis d) =
           DifferentialGeometry.Dim3Reaction.rm
@@ -135,7 +135,7 @@ theorem algebraicCurvatureOperatorNonnegative_of_components_eq_reaction
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (K12 K13 K23 : Real) (h12 : 0 ≤ K12) (h13 : 0 ≤ K13) (h23 : 0 ≤ K23)
     (hcomp : ∀ a b c d,
-      tensor04StdAt (I := I) (M := M)
+      tensor04StandardAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)
         (basis a) (basis b) (basis c) (basis d) =
           DifferentialGeometry.Dim3Reaction.curvatureTensorReaction3

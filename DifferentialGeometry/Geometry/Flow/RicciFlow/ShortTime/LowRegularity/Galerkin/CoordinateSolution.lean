@@ -70,7 +70,7 @@ theorem exists_galerkin_coordinate_solution (g₀ g_bg : SmoothRiemannianMetric 
         ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
         HasDerivWithinAt (fun r => U N r i)
           (-(TensorEigenIdx.lambda (I := I) (M := M) i) * U N t i +
-            galTameForce (I := I) (M := M) g₀ 1
+            galerkinTameForce (I := I) (M := M) g₀ 1
               (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
               (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal)
               (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i)
@@ -91,7 +91,7 @@ theorem exists_galerkin_coordinate_solution (g₀ g_bg : SmoothRiemannianMetric 
           ∀ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
           HasDerivWithinAt (fun r => V r i)
             (-(TensorEigenIdx.lambda (I := I) (M := M) i) * V t i +
-              galTameForce (I := I) (M := M) g₀ 1 hRpos.le
+              galerkinTameForce (I := I) (M := M) g₀ 1 hRpos.le
                 (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal)
                 (eigenIdxFinset (I := I) (M := M) g₀ N) (V t) i)
             (Set.Ici t) t) ∧
@@ -104,7 +104,7 @@ theorem exists_galerkin_coordinate_solution (g₀ g_bg : SmoothRiemannianMetric 
       intro i hi
       rw [mem_eigenIdxFinset] at hi
       linarith
-    exact galTameSolOne (I := I) (M := M) g₀ 1 hRpos.le
+    exact galerkinTameSolutionOne (I := I) (M := M) g₀ 1 hRpos.le
       (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hδ hCtop hB1 hρ hP hreal)
       hCtop hB0 hB1 hQnn htame
       (eigenIdxFinset (I := I) (M := M) g₀ N) hκ0 hκ hT

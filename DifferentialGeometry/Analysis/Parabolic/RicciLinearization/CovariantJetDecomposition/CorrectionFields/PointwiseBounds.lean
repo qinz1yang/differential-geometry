@@ -138,7 +138,7 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
   refine ⟨((Module.finrank ℝ E : ℝ) ^ 4 * C₀ ^ 2) ^ 2, by positivity, ?_⟩
   intro g₁ P h δ hδ hδ0 hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum_riemannianFiberNormSq⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   set G : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hG_def
@@ -673,9 +673,9 @@ def backgroundRiemannBiContrFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem backgroundRiemannBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemannianMetric I M)
+theorem backgroundRiemannBiContrFib_eq_fixedFrame_on_neighborhood (g₀ g₁ : SmoothRiemannianMetric I M)
     (x₀ : M)
-    {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    {y : M} (hy : y ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     backgroundRiemannBiContrFib (I := I) g₀ g₁ y =
       backgroundRiemannBiContrFibFixedFrame (I := I) g₀ (smoothOrthoFrame (I := I) g₁ x₀) y := by
   classical
@@ -726,11 +726,11 @@ theorem backgroundRiemannBiContrFib_contMDiff (g₀ g₁ : SmoothRiemannianMetri
     backgroundRiemannBiContrFibFixedFrame_contMDiff (I := I) g₀ (smoothOrthoFrame (I := I) g₁ x₀)
       (fun i => smoothOrthoFrame_smooth (I := I) g₁ x₀ i) x₀
   refine h_fixed.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   exact congrArg (TotalSpace.mk' (TensorRSModel 2 2 ℝ E)
     (E := fun z : M => TensorRSSpace 2 2 I z) y)
     (congrArg TensorRSSpace.ofCLM
-      (backgroundRiemannBiContrFib_eq_fixedFrame_on_nbhd (I := I) g₀ g₁ x₀ hy))
+      (backgroundRiemannBiContrFib_eq_fixedFrame_on_neighborhood (I := I) g₀ g₁ x₀ hy))
 
 def ricciOrderZeroBackgroundCurvatureCoeffField (g₀ g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 where
@@ -817,7 +817,7 @@ theorem riemannianFiberNormSq_backgroundRiemannBiContrFib_le
     by positivity, ?_⟩
   intro g₁ P h δ hδ hδ0 hbound x
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr_v, hsum_riemannianFiberNormSq⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   have h1mδ : 0 < 1 - δ := by linarith
   have hframe_le : ∀ c : Fin (Module.finrank ℝ E),

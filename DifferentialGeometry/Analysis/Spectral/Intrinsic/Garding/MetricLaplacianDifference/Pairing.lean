@@ -99,13 +99,13 @@ theorem lapDiff_pair_energy
         (v : TensorHs (I := I) (M := M) q 0 0 2)
         (hv : (Function.support v.coeff).Finite),
         (Module.finrank Real E : Real) *
-            HCGCompactness.metricDerivNormSupOn
+            CheegerGromovCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h k k <= (1 / 2 : Real) →
           ∫ x, (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
                 ΔG (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
               ∂(riemannianVolumeMeasure (I := I) (M := M) q) <=
             C *
-              (HCGCompactness.metricDerivNormSupOn
+              (CheegerGromovCompactness.metricDerivNormSupOn
                 (I := I) Set.univ 1 h k k) ^ 2 * ‖v‖ ^ 2 := by
   obtain ⟨CX, hCX, hcross⟩ := cross_energy_le (I := I) (M := M) q k
   let n : Real := Module.finrank Real E
@@ -120,7 +120,7 @@ theorem lapDiff_pair_energy
   let hf : ContMDiff I 𝓘(Real, Real) ∞ f :=
     reprScalar0_smooth (I := I) (M := M) v hv
   let rho : Real :=
-    HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1 h k k
+    CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1 h k k
   let A : Real := 8 * n ^ 2 * rho ^ 2
   let B : Real := 72 * n * rho ^ 2
   let P : Real := A + B
@@ -165,7 +165,7 @@ theorem lapDiff_pair_energy
   have hP0 : 0 <= P := add_nonneg hA0 hB0
   have hpoint : ∀ x : M, lhs x <= P * energy x := by
     intro x
-    have hbase := HCGCompactness.lapDiff_sq_le
+    have hbase := CheegerGromovCompactness.lapDiff_sq_le
       (I := I) k h hf x hsmall
     have hH0 : 0 <= HessNorm x := by
       exact normSq0S_nonneg (I := I) k x 2 _
@@ -214,28 +214,28 @@ theorem lapDiff_pair_energy
       simp only [P, A, B, C, Kc]
       ring
     _ = C *
-        (HCGCompactness.metricDerivNormSupOn
+        (CheegerGromovCompactness.metricDerivNormSupOn
           (I := I) Set.univ 1 h k k) ^ 2 * ‖v‖ ^ 2 := by
       rfl
 
-theorem lapDiff_pair_core
+theorem exists_lapDiffCore_norm_sub_le
     (q k : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 <= C ∧
       ∀ (h : SmoothRiemannianMetric I M)
         (v : ScalarH2Core (I := I) (M := M) q),
         (Module.finrank Real E : Real) *
-            HCGCompactness.metricDerivNormSupOn
+            CheegerGromovCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h k k <= (1 / 2 : Real) →
           ‖lapDiffCore (I := I) (M := M) q h v -
               lapDiffCore (I := I) (M := M) q k v‖ <=
             Real.sqrt C *
-              |HCGCompactness.metricDerivNormSupOn
+              |CheegerGromovCompactness.metricDerivNormSupOn
                 (I := I) Set.univ 1 h k k| * ‖v‖ := by
   obtain ⟨C, hC, henergy⟩ := lapDiff_pair_energy (I := I) (M := M) q k
   refine ⟨C, hC, ?_⟩
   intro h v hsmall
   let rho : Real :=
-    HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1 h k k
+    CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1 h k k
   have hsq :
       ‖lapDiffCore (I := I) (M := M) q h v -
           lapDiffCore (I := I) (M := M) q k v‖ ^ 2 <=
@@ -257,24 +257,24 @@ theorem lapDiff_pair_norm
     ∃ C : Real, 0 <= C ∧
       ∀ (h : SmoothRiemannianMetric I M),
         (Module.finrank Real E : Real) *
-            HCGCompactness.metricDerivNormSupOn
+            CheegerGromovCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h q q <= (1 / 2 : Real) →
         (Module.finrank Real E : Real) *
-            HCGCompactness.metricDerivNormSupOn
+            CheegerGromovCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 k q q <= (1 / 2 : Real) →
         (Module.finrank Real E : Real) *
-            HCGCompactness.metricDerivNormSupOn
+            CheegerGromovCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h k k <= (1 / 2 : Real) →
           ‖lapDiffOp (I := I) (M := M) q h -
               lapDiffOp (I := I) (M := M) q k‖ <=
             Real.sqrt C *
-              |HCGCompactness.metricDerivNormSupOn
+              |CheegerGromovCompactness.metricDerivNormSupOn
                 (I := I) Set.univ 1 h k k| := by
-  obtain ⟨C, hC, hcore⟩ := lapDiff_pair_core (I := I) (M := M) q k
+  obtain ⟨C, hC, hcore⟩ := exists_lapDiffCore_norm_sub_le (I := I) (M := M) q k
   refine ⟨C, hC, ?_⟩
   intro h hqh hqk hkh
   let rho : Real :=
-    HCGCompactness.metricDerivNormSupOn (I := I) Set.univ 1 h k k
+    CheegerGromovCompactness.metricDerivNormSupOn (I := I) Set.univ 1 h k k
   let B : Real := Real.sqrt C * |rho|
   have hB : 0 <= B := by positivity
   have hdense :
@@ -292,8 +292,8 @@ theorem lapDiff_pair_norm
   · intro v
     rw [sub_apply]
     simp only [Submodule.coe_subtype]
-    rw [lapDiffOp_core (I := I) (M := M) q h v hqh,
-      lapDiffOp_core (I := I) (M := M) q k v hqk]
+    rw [lapDiffOp_apply_scalarH2Core (I := I) (M := M) q h v hqh,
+      lapDiffOp_apply_scalarH2Core (I := I) (M := M) q k v hqk]
     simpa only [B, rho, Submodule.norm_coe] using hcore h v hkh
 
 end Spectral

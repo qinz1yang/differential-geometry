@@ -74,10 +74,10 @@ private theorem normal_dens_lower
     dsimp only [U]
     exact Ψ.contMDiffOn_toFun.continuousOn.isOpen_inter_preimage
       Ψ.open_source (trivializationAt E (TangentSpace I) p).open_baseSet
-  have hzero_src : (0 : E) ∈ Ψ.source := by
+  have hzero_source : (0 : E) ∈ Ψ.source := by
     simpa only [Ψ] using zero_mem_expMapDiffeo_source (I := I) g p
   have hzeroU : (0 : E) ∈ U := by
-    refine ⟨hzero_src, ?_⟩
+    refine ⟨hzero_source, ?_⟩
     change Ψ (0 : E) ∈ (trivializationAt E (TangentSpace I) p).baseSet
     rw [show Ψ (0 : E) = p by simpa only [Ψ] using expMapDiffeo_zero (I := I) g p]
     exact mem_baseSet_trivializationAt E (TangentSpace I) p
@@ -87,7 +87,7 @@ private theorem normal_dens_lower
         Set.inter_subset_left (fun w hw => hw.2)
   have hzero_pos : 0 < normalChartDensity (I := I) g p 0 := by
     simpa only [normalChartDensity, Ψ] using
-      paramDensity_pos (I := I) g Ψ hzero_src
+      paramDensity_pos (I := I) g Ψ hzero_source
   let c : ℝ := normalChartDensity (I := I) g p 0 / 2
   have hc : 0 < c := half_pos hzero_pos
   have hc_lt : c < normalChartDensity (I := I) g p 0 := by

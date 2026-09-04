@@ -116,7 +116,7 @@ variable (I) in
 omit [FiniteDimensional ℝ E] in
 theorem mdifferentiableAt_section_iff_chartE_fderiv
     (α : M) (σ : Π x : M, TangentSpace I x) {x : M}
-    (hx_src : x ∈ (chartAt H α).source)
+    (hx_source : x ∈ (chartAt H α).source)
     (hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E)) :
     MDiffAt (T% σ) x ↔
@@ -126,7 +126,7 @@ theorem mdifferentiableAt_section_iff_chartE_fderiv
   classical
   rw [mdifferentiableAt_section_iff_chartE I α σ hx_base]
   rw [mdifferentiableAt_iff_pullback_of_mem_source α
-      (chartESectionRepr (I := I) α σ) hx_src]
+      (chartESectionRepr (I := I) α σ) hx_source]
   exact mdifferentiableWithinAt_range_iff_differentiableAt_of_interior (α := α) hx_int
 
 variable (I) in
@@ -172,7 +172,7 @@ variable (I) in
 omit [FiniteDimensional ℝ E] in
 theorem mfderiv_section_eq_chartE_fderiv
     (α : M) (σ : Π x : M, TangentSpace I x) {x : M}
-    (hx_src : x ∈ (chartAt H α).source)
+    (hx_source : x ∈ (chartAt H α).source)
     (hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E))
     (hσ : MDiffAt (T% σ) x)
@@ -192,7 +192,7 @@ theorem mfderiv_section_eq_chartE_fderiv
     have : φ.symm (φ y) = y := φ.left_inv hy
     rw [this]
   have hsrc_extChart : x ∈ φ.source := by
-    rw [extChartAt_source]; exact hx_src
+    rw [extChartAt_source]; exact hx_source
   have hsrc_nhds : φ.source ∈ 𝓝 x := extChartAt_source_mem_nhds' (I := I) hsrc_extChart
   have hev : fE =ᶠ[𝓝 x] gE ∘ φ := by
     filter_upwards [hsrc_nhds] with y hy
@@ -200,9 +200,9 @@ theorem mfderiv_section_eq_chartE_fderiv
   have hmfderiv_eq :
       mfderiv I 𝓘(ℝ, E) fE x = mfderiv I 𝓘(ℝ, E) (gE ∘ φ) x :=
     Filter.EventuallyEq.mfderiv_eq hev
-  have hφ_mdiff : MDiffAt φ x := mdifferentiableAt_extChartAt (I := I) (x := α) hx_src
+  have hφ_mdiff : MDiffAt φ x := mdifferentiableAt_extChartAt (I := I) (x := α) hx_source
   have hgE_diff : DifferentiableAt ℝ gE y₀ :=
-    (mdifferentiableAt_section_iff_chartE_fderiv (I := I) α σ hx_src hx_base hx_int).mp hσ
+    (mdifferentiableAt_section_iff_chartE_fderiv (I := I) α σ hx_source hx_base hx_int).mp hσ
   have hgE_mdiff : MDifferentiableAt 𝓘(ℝ, E) 𝓘(ℝ, E) gE y₀ :=
     hgE_diff.mdifferentiableAt
   have hchain :
@@ -216,7 +216,7 @@ theorem mfderiv_section_eq_chartE_fderiv
       mfderiv I 𝓘(ℝ, E) (extChartAt I α) x =
         (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x :=
     (TangentBundle.continuousLinearMapAt_trivializationAt (𝕜 := ℝ) (I := I)
-      (x₀ := α) (x := x) hx_src).symm
+      (x₀ := α) (x := x) hx_source).symm
   rw [hmfderiv_eq, hchain, hmf_to_fderiv]
   change (fderiv ℝ gE (φ x))
         ((mfderiv I 𝓘(ℝ, E) (extChartAt I α) x) v) =
@@ -237,21 +237,21 @@ theorem contDiffOn_chartE_pullback_of_contMDiff_section
         (extChartAt I α).target) := by
   classical
   intro y hy
-  obtain ⟨⟨x, ⟨hx_src, hx_base⟩, hx_eq⟩, hy_target⟩ := hy
+  obtain ⟨⟨x, ⟨hx_source, hx_base⟩, hx_eq⟩, hy_target⟩ := hy
   subst hx_eq
   set fE := chartESectionRepr (I := I) α σ
   set φ := extChartAt I α
   have hfE_at : ContMDiffAt I 𝓘(ℝ, E) k fE x :=
     (contMDiffAt_section_iff_chartE I α σ hx_base).mp (hσ x)
-  have hxφ_src : x ∈ φ.source := by rw [extChartAt_source]; exact hx_src
-  have hxφ_tgt : φ x ∈ φ.target := φ.map_source hxφ_src
-  have hxφ_inv : φ.symm (φ x) = x := φ.left_inv hxφ_src
+  have hxφ_source : x ∈ φ.source := by rw [extChartAt_source]; exact hx_source
+  have hxφ_target : φ x ∈ φ.target := φ.map_source hxφ_source
+  have hxφ_inv : φ.symm (φ x) = x := φ.left_inv hxφ_source
   have hsymm_at : ContMDiffWithinAt 𝓘(ℝ, E) I (k : WithTop ℕ∞) φ.symm φ.target (φ x) := by
     have hsymm_on_inf : ContMDiffOn 𝓘(ℝ, E) I (∞ : WithTop ℕ∞) φ.symm φ.target :=
       contMDiffOn_extChartAt_symm (I := I) (n := ∞) (x := α)
     have hsymm_on : ContMDiffOn 𝓘(ℝ, E) I (k : WithTop ℕ∞) φ.symm φ.target :=
       hsymm_on_inf.of_le (by exact_mod_cast le_top)
-    exact hsymm_on (φ x) hxφ_tgt
+    exact hsymm_on (φ x) hxφ_target
   have hcomp_at : ContMDiffWithinAt 𝓘(ℝ, E) 𝓘(ℝ, E) k (fE ∘ φ.symm) φ.target (φ x) := by
     have hfE_at' : ContMDiffAt I 𝓘(ℝ, E) k fE (φ.symm (φ x)) := by
       rw [hxφ_inv]; exact hfE_at
@@ -328,7 +328,7 @@ variable (I) in
 omit [FiniteDimensional ℝ E] in
 theorem mfderiv_scalar_eq_chart_fderiv
     (α : M) (f : M → ℝ) {x : M}
-    (hx_src : x ∈ (chartAt H α).source)
+    (hx_source : x ∈ (chartAt H α).source)
     (hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E))
     (hf : MDiffAt f x)
     (v : TangentSpace I x) :
@@ -344,7 +344,7 @@ theorem mfderiv_scalar_eq_chart_fderiv
     change f y = f (φ.symm (φ y))
     rw [φ.left_inv hy]
   have hsrc_extChart : x ∈ φ.source := by
-    rw [extChartAt_source]; exact hx_src
+    rw [extChartAt_source]; exact hx_source
   have hsrc_nhds : φ.source ∈ 𝓝 x := extChartAt_source_mem_nhds' (I := I) hsrc_extChart
   have hev : f =ᶠ[𝓝 x] g ∘ φ := by
     filter_upwards [hsrc_nhds] with y hy
@@ -352,12 +352,12 @@ theorem mfderiv_scalar_eq_chart_fderiv
   have hmfderiv_eq :
       mfderiv I 𝓘(ℝ) f x = mfderiv I 𝓘(ℝ) (g ∘ φ) x :=
     Filter.EventuallyEq.mfderiv_eq hev
-  have hφ_mdiff : MDiffAt φ x := mdifferentiableAt_extChartAt (I := I) (x := α) hx_src
-  have hxφ_tgt : φ x ∈ φ.target := φ.map_source hsrc_extChart
+  have hφ_mdiff : MDiffAt φ x := mdifferentiableAt_extChartAt (I := I) (x := α) hx_source
+  have hxφ_target : φ x ∈ φ.target := φ.map_source hsrc_extChart
   have hxφ_inv : φ.symm (φ x) = x := φ.left_inv hsrc_extChart
   have hsymm_within :
       MDifferentiableWithinAt 𝓘(ℝ, E) I φ.symm (range I) (φ x) :=
-    mdifferentiableWithinAt_extChartAt_symm (I := I) (x := α) hxφ_tgt
+    mdifferentiableWithinAt_extChartAt_symm (I := I) (x := α) hxφ_target
   have hrange_nhds : range I ∈ 𝓝 (φ x) := by
     have hint_open : IsOpen (interior ((extChartAt I α).target : Set E)) := isOpen_interior
     exact Filter.mem_of_superset
@@ -384,7 +384,7 @@ theorem mfderiv_scalar_eq_chart_fderiv
       mfderiv I 𝓘(ℝ, E) (extChartAt I α) x =
         (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x :=
     (TangentBundle.continuousLinearMapAt_trivializationAt (𝕜 := ℝ) (I := I)
-      (x₀ := α) (x := x) hx_src).symm
+      (x₀ := α) (x := x) hx_source).symm
   rw [hmfderiv_eq, hchain, hmf_to_fderiv]
   change (fderiv ℝ g (φ x))
         ((mfderiv I 𝓘(ℝ, E) (extChartAt I α) x) v) =

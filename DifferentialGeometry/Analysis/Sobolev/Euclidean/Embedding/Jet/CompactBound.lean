@@ -22,7 +22,7 @@ theorem wkp_bdd_of_jet
     {p : ℝ≥0∞} (hp : 1 ≤ p) (k : ℕ)
     (F : ι → EuclN → ℝ)
     (hF_smooth : ∀ i : ι, ContDiff ℝ (⊤ : ℕ∞) (F i))
-    (hF_supp : ∀ i : ι, tsupport (F i) ⊆ K)
+    (hF_support : ∀ i : ι, tsupport (F i) ⊆ K)
     (C : ℝ) (hC : 0 ≤ C)
     (hF_jet : ∀ i : ι, ∀ j : ℕ, j ≤ k → ∀ x : EuclN,
       ‖iteratedFDeriv ℝ j (F i) x‖ ≤ C) :
@@ -47,12 +47,12 @@ theorem wkp_bdd_of_jet
         exact ENNReal.coe_lt_top)
   refine ⟨A, hA_top, ?_⟩
   intro i
-  have hF_cpt : HasCompactSupport (F i) :=
-    hK.of_isClosed_subset (isClosed_tsupport _) (hF_supp i)
-  have hF_supp_Ω : tsupport (F i) ⊆ Ω := (hF_supp i).trans hKΩ
+  have hF_compact : HasCompactSupport (F i) :=
+    hK.of_isClosed_subset (isClosed_tsupport _) (hF_support i)
+  have hF_support_Ω : tsupport (F i) ⊆ Ω := (hF_support i).trans hKΩ
   have hF_mem : MemWkp (d := d) k p (F i) Ω :=
     MemWkp_of_smooth_compactSupport
-      (d := d) hΩ (hF_smooth i) hF_cpt hF_supp_Ω hp k
+      (d := d) hΩ (hF_smooth i) hF_compact hF_support_Ω hp k
   refine ⟨hF_mem, ?_⟩
   rw [wkpNorm_eq_sum]
   dsimp [A]
@@ -64,7 +64,7 @@ theorem wkp_bdd_of_jet
   refine Finset.sum_le_sum ?_
   intro β hβ
   have hweak := iterWeakPartial_smooth_ae_eq_iterClassicalPartial
-    (d := d) hp hΩ j β (hF_smooth i) hF_cpt hF_supp_Ω
+    (d := d) hp hΩ j β (hF_smooth i) hF_compact hF_support_Ω
   rw [eLpNorm_congr_ae hweak]
   let G : EuclN → ℝ := fun x => ‖iteratedFDeriv ℝ j (F i) x‖
   have hclass_le :
@@ -75,22 +75,22 @@ theorem wkp_bdd_of_jet
     have hx := norm_iterClassicalPartial_le_iteratedFDeriv
       (d := d) j β (hF_smooth i) x
     simpa only [G, norm_norm] using hx
-  have hG_supp : Function.support G ⊆ K := by
+  have hG_support : Function.support G ⊆ K := by
     intro x hx
     have hx_deriv : iteratedFDeriv ℝ j (F i) x ≠ 0 := by
       intro hzero
       apply hx
       simp only [G, hzero, norm_zero]
-    exact hF_supp i
+    exact hF_support i
       ((support_iteratedFDeriv_subset (𝕜 := ℝ) (f := F i) j) hx_deriv)
   have hG_restrict :
       eLpNorm G p (volume.restrict Ω) =
         eLpNorm G p (volume.restrict K) := by
     calc
       eLpNorm G p (volume.restrict Ω) = eLpNorm G p volume :=
-        eLpNorm_restrict_eq_of_support_subset (hG_supp.trans hKΩ)
+        eLpNorm_restrict_eq_of_support_subset (hG_support.trans hKΩ)
       _ = eLpNorm G p (volume.restrict K) :=
-        (eLpNorm_restrict_eq_of_support_subset hG_supp).symm
+        (eLpNorm_restrict_eq_of_support_subset hG_support).symm
   have hG_bound :
       eLpNorm G p (volume.restrict K) ≤
         (volume : Measure EuclN) K ^ p.toReal⁻¹ * ENNReal.ofReal C := by

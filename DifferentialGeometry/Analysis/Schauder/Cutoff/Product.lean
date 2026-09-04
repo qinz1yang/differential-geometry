@@ -15,7 +15,7 @@ variable {X A B C : Type*} [TopologicalSpace X]
   [NormedAddCommGroup B] [NormedSpace Real B]
   [NormedAddCommGroup C] [NormedSpace Real C]
 
-def bilinearBcf
+def bilinearBoundedContinuousFunction
     (L : A →L[Real] B →L[Real] C)
     (f : BoundedContinuousFunction X A)
     (g : BoundedContinuousFunction X B) :
@@ -30,11 +30,11 @@ def bilinearBcf
       · exact g.norm_coe_le_norm x))
 
 @[simp]
-theorem bilinearBcf_apply
+theorem bilinearBoundedContinuousFunction_apply
     (L : A →L[Real] B →L[Real] C)
     (f : BoundedContinuousFunction X A)
     (g : BoundedContinuousFunction X B) (x : X) :
-    bilinearBcf L f g x = L (f x) (g x) := rfl
+    bilinearBoundedContinuousFunction L f g x = L (f x) (g x) := rfl
 
 section Cutoff
 
@@ -76,7 +76,7 @@ def cutoffJet1
     (du : BoundedContinuousFunction V (V →L[Real] F)) :
     BoundedContinuousFunction V (V →L[Real] F) :=
   chi • du +
-    bilinearBcf (ContinuousLinearMap.smulRightL Real V F) dchi u
+    bilinearBoundedContinuousFunction (ContinuousLinearMap.smulRightL Real V F) dchi u
 
 @[simp]
 theorem cutoffJet1_apply
@@ -96,11 +96,11 @@ def cutoffJet2
     (d2u : BoundedContinuousFunction V (V →L[Real] V →L[Real] F)) :
     BoundedContinuousFunction V (V →L[Real] V →L[Real] F) :=
   chi • d2u +
-    bilinearBcf (ContinuousLinearMap.smulRightL Real V (V →L[Real] F))
+    bilinearBoundedContinuousFunction (ContinuousLinearMap.smulRightL Real V (V →L[Real] F))
       dchi du +
-    bilinearBcf (ContinuousLinearMap.precompR V
+    bilinearBoundedContinuousFunction (ContinuousLinearMap.precompR V
       (ContinuousLinearMap.smulRightL Real V F)) dchi du +
-    bilinearBcf (ContinuousLinearMap.precompL V
+    bilinearBoundedContinuousFunction (ContinuousLinearMap.precompL V
       (ContinuousLinearMap.smulRightL Real V F)) d2chi u
 
 @[simp]

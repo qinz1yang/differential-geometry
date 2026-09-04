@@ -187,7 +187,7 @@ theorem pairTrace_decomposition (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     rw [cometricDoubleTraceFib_toModel (I := I) gm s x Z]
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) gm x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) gm x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel Z) mm]
     simp only [tangentSpaceModelContinuousLinearEquiv_apply]
   rw [hLHS]
@@ -215,7 +215,7 @@ theorem pairTrace_decomposition (g gm : SmoothRiemannianMetric I M) (s : Nat) :
     rw [cometricDoubleTraceFib_toModel (I := I) g s x]
     rw [modelDoubleTrace_apply (E := E) s (cometricLmodel (I := I) g x)]
     rw [cometric_dualTrace_eq_orthoFrame_diag (I := I) g x
-      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (mem_smoothOrthoFrameNeighborhood_self (I := I) (M := M) x)
       (Tensor0SSpace.toModel
         (slotInsertEndoFib (I := I) (M := M) (s + 2) 0 x
           (metricComparisonEndomorphismField (I := I) (M := M) g gm x) Z)) mm]

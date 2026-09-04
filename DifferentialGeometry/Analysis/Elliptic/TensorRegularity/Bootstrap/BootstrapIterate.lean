@@ -123,19 +123,19 @@ theorem tensorComponent_aPriori_estimate
               iteratedWeakSobolevNorm (d := dimE) 1 2
                 (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'') by
     obtain ⟨C, hC_nn, hC⟩ := h_tuple
-    refine ⟨C, hC_nn, fun T F hT_supp hF_supp hT_K hF_K hweak => ?_⟩
+    refine ⟨C, hC_nn, fun T F hT_support hF_support hT_K hF_K hweak => ?_⟩
     exact (Finset.single_le_sum
       (f := fun P : CompIdx E r s => iteratedWeakSobolevNorm (d := dimE) (2 * k + 2) 2
         (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'')
       (fun P _ => zero_le) (Finset.mem_univ P₀)).trans
-        (hC T F hT_supp hF_supp hT_K hF_K hweak)
+        (hC T F hT_support hF_support hT_K hF_K hweak)
   induction k with
   | zero =>
       obtain ⟨C, hC_nn, hC⟩ :=
         tensorComponent_aPriori_succ_sum (I := I) (M := M) g r s α hK hK_target
           0 hΩ''_open hΩ''_compact_closure hΩ''_target hK_Ω''
-      refine ⟨C, hC_nn, fun T F hT_supp hF_supp hT_K hF_K hweak => ?_⟩
-      have h := hC T F hT_supp hF_supp hT_K hF_K hweak
+      refine ⟨C, hC_nn, fun T F hT_support hF_support hT_K hF_K hweak => ?_⟩
+      have h := hC T F hT_support hF_support hT_K hF_K hweak
       simpa using h
   | succ k ih =>
       obtain ⟨Ck, hCk_nn, hCk⟩ := ih
@@ -146,12 +146,12 @@ theorem tensorComponent_aPriori_estimate
         tensorComponent_aPriori_succ_sum (I := I) (M := M) g r s α hK hK_target
           (2 * k + 2) hΩ''_open hΩ''_compact_closure hΩ''_target hK_Ω''
       refine ⟨B * (1 + A * (1 + Ck)), by positivity,
-        fun T F hT_supp hF_supp hT_K hF_K hweak => ?_⟩
+        fun T F hT_support hF_support hT_K hF_K hweak => ?_⟩
       set L : ℝ≥0∞ := ∑ P : CompIdx E r s, iteratedWeakSobolevNorm (d := dimE) 1 2
         (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'' with hL_def
-      have h_ih := hCk T F hT_supp hF_supp hT_K hF_K hweak
-      have h_step1 := hA T F hT_supp hF_supp hT_K hF_K hweak
-      have h_step2 := hB T F hT_supp hF_supp hT_K hF_K hweak
+      have h_ih := hCk T F hT_support hF_support hT_K hF_K hweak
+      have h_step1 := hA T F hT_support hF_support hT_K hF_K hweak
+      have h_step2 := hB T F hT_support hF_support hT_K hF_K hweak
       have h_23 :
           (∑ P : CompIdx E r s, iteratedWeakSobolevNorm (d := dimE) (2 * k + 1 + 2) 2
             (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'') ≤
@@ -238,8 +238,8 @@ theorem tensorComponent_aPriori_estimate_all
   refine ⟨(Finset.univ : Finset (CompIdx E r s)).sup' hCI_ne Cf, ?_, ?_⟩
   · exact le_trans (hCf_nn (Classical.arbitrary (CompIdx E r s)))
       (Finset.le_sup' Cf (Finset.mem_univ _))
-  · intro P₀ T F hT_supp hF_supp hT_K hF_K hweak
-    refine (hCf P₀ T F hT_supp hF_supp hT_K hF_K hweak).trans ?_
+  · intro P₀ T F hT_support hF_support hT_K hF_K hweak
+    refine (hCf P₀ T F hT_support hF_support hT_K hF_K hweak).trans ?_
     exact mul_le_mul_of_nonneg_right
       (ENNReal.ofReal_le_ofReal (Finset.le_sup' Cf (Finset.mem_univ P₀)))
       (zero_le)

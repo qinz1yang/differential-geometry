@@ -129,15 +129,15 @@ private lemma pou_smul_raw_eq_transition_sum
     unfold tensorChartComponentPou
     rw [hβ]
     ring
-  · have hx_supp : x ∈
+  · have hx_support : x ∈
         tsupport
           (fun y : M => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) y) :=
       subset_tsupport _ hβ
     have hx_β : x ∈ (chartAt H β).source :=
-      chartAtlasPOU_isSubordinate I M β hx_supp
+      chartAtlasPOU_isSubordinate I M β hx_support
     have hχβ : ((chartKernelCutoff (I := I) (M := M) β : C^∞⟮I, M; ℝ⟯) :
         M → ℝ) x = 1 :=
-      chartKernelCutoff_eqOn_one (I := I) (M := M) β hx_supp
+      chartKernelCutoff_eqOn_one (I := I) (M := M) β hx_support
     have hdecomp :=
       tensorChartComponentRaw_eq_transitionCoeff_sum
         (E := E) (I := I) (M := M) g r s S β α P₀ ⟨hx_β, hx_α⟩
@@ -168,12 +168,12 @@ private lemma cutoffComponentScalar_eq_pou_transport_sum
     rw [show ((chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x
           = χα from rfl, hχα]
     ring
-  · have hx_supp : x ∈
+  · have hx_support : x ∈
         tsupport
           ((chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
       subset_tsupport _ hχα
     have hx_α : x ∈ (chartAt H α).source :=
-      chartKernelCutoff_tsupport_subset_source (I := I) (M := M) α hx_supp
+      chartKernelCutoff_tsupport_subset_source (I := I) (M := M) α hx_support
     have h_rhs :
         (∑ β ∈ transportChartCenters (I := I) (M := M) α,
           ∑ Q : TensorCompIdx (E := E) r s,

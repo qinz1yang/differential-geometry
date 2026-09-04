@@ -46,7 +46,7 @@ lemma chartKernelCutoff_contMDiff (α : M) :
   (chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯).contMDiff
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
-lemma euclidPartial_contDiff_of_contDiff'
+lemma euclidPartial_contDiff_of_contDiff
     {u : EuclN → ℝ} (hu : ContDiff ℝ ∞ u) (k : Fin (Module.finrank ℝ E)) :
     ContDiff ℝ ∞ (euclidPartial (E := E) k u) := by
   have hfd : ContDiff ℝ ∞ (fun z => fderiv ℝ u z) :=
@@ -111,13 +111,13 @@ private lemma cutoffComponentEuclid_tsupport_subset
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma chosenWeakPartial'_cutoffComponentEuclid_ae_eq_euclidPartial
+lemma chosenWeakPartialOrZero_cutoffComponentEuclid_ae_eq_euclidPartial
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (k : Fin (Module.finrank ℝ E))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 k
         (cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α)
@@ -130,7 +130,7 @@ lemma chosenWeakPartial'_cutoffComponentEuclid_ae_eq_euclidPartial
     cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx with hu_def
   have hu_smooth : ContDiff ℝ (⊤ : ℕ∞) u :=
     cutoffComponentEuclid_contDiff (I := I) (M := M) g r s S α Idx Jdx
-  have hu_cpt : HasCompactSupport u :=
+  have hu_compact : HasCompactSupport u :=
     cutoffComponentEuclid_hasCompactSupport (I := I) (M := M) g r s S α Idx Jdx
   have hu_tsupp : tsupport u ⊆ chartTargetEuclid (I := I) (M := M) α :=
     cutoffComponentEuclid_tsupport_subset (I := I) (M := M) g r s S α Idx Jdx
@@ -140,7 +140,7 @@ lemma chosenWeakPartial'_cutoffComponentEuclid_ae_eq_euclidPartial
   have hu_W1 : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 1 2 u (chartTargetEuclid (I := I) (M := M) α) :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
-      (d := Module.finrank ℝ E) hΩ_open hu_smooth hu_cpt hu_tsupp hp_one 1
+      (d := Module.finrank ℝ E) hΩ_open hu_smooth hu_compact hu_tsupp hp_one 1
   have hu_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 u
       (chartTargetEuclid (I := I) (M := M) α) :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p.mp hu_W1
@@ -153,7 +153,7 @@ lemma chosenWeakPartial'_cutoffComponentEuclid_ae_eq_euclidPartial
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-lemma chartPushedRaw_rawComponent_continuousOn'
+lemma chartPushedRaw_rawComponent_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -167,7 +167,7 @@ lemma chartPushedRaw_rawComponent_continuousOn'
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
-lemma euclidPartial_chartPushedRaw_rawComponent_continuousOn'
+lemma euclidPartial_chartPushedRaw_rawComponent_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
     (k : Fin (Module.finrank ℝ E))

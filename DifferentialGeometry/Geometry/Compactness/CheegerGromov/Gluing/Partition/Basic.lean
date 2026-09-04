@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set
 open scoped Topology Manifold ContDiff
@@ -675,5 +675,5 @@ theorem hatPOU_active_data (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
 
 end NetLimitData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

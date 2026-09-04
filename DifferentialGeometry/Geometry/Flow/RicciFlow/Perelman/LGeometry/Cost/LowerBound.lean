@@ -30,15 +30,15 @@ private def actionRmFactor (E : Type uE) [NormedAddCommGroup E]
 
 omit [NeZero (Module.finrank Real E)] [T2Space M]
   [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
-private theorem regSpeed_int_c1
+private theorem regularitySpeed_int_c1
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
     (T a b : Real) (hab : a ≤ b) (alpha : Real → M)
     (halpha : ContMDiffOn (modelWithCornersSelf Real Real) I 1 alpha (Icc a b))
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
-    IntervalIntegrable (lRegSpeedSq S T alpha) volume a b := by
-  have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab alpha halpha hreg
+    IntervalIntegrable (lRegularizedSpeedSq S T alpha) volume a b := by
+  have hLag := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab alpha halpha hreg
   have hcarrier : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.carrier := by
     intro s hs
     exact D.regular_subset (hreg s (by simpa only [uIcc_of_le hab] using hs))
@@ -47,10 +47,10 @@ private theorem regSpeed_int_c1
     lScalar_int (I := I) S hSc T a b alpha hcarrier (by
       simpa only [uIcc_of_le hab] using halpha.continuousOn)
   have hhalf : IntervalIntegrable
-      (fun s ↦ (1 / 2 : Real) * lRegSpeedSq S T alpha s) volume a b := by
+      (fun s ↦ (1 / 2 : Real) * lRegularizedSpeedSq S T alpha s) volume a b := by
     convert hLag.sub hpot using 1
     funext s
-    unfold lRegLagrangian lRegSpeedSq
+    unfold lRegularizedLagrangian lRegularizedSpeedSq
     ring
   have htwice := hhalf.const_mul 2
   convert htwice using 1
@@ -59,7 +59,7 @@ private theorem regSpeed_int_c1
 
 omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)] in
 omit [SigmaCompactSpace M] in
-theorem lRegCosts_bdd_rm
+theorem lRegularizedCosts_bdd_rm
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T a b : Real) (ha : 0 ≤ a) (hab : a ≤ b)
     (hreg : Icc (T - b ^ 2) T ⊆ D.regular)
@@ -68,7 +68,7 @@ theorem lRegCosts_bdd_rm
     (x y : M) :
     BddBelow {r : Real | ∃ alpha : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 alpha ∧
-        alpha a = x ∧ alpha b = y ∧ lRegAction S T alpha a b = r} := by
+        alpha a = x ∧ alpha b = y ∧ lRegularizedAction S T alpha a b = r} := by
   let C : Real := -2 * b ^ 2 * actionRmFactor E K
   have hb : 0 ≤ b := ha.trans hab
   have hregBack : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular := by
@@ -82,19 +82,19 @@ theorem lRegCosts_bdd_rm
   have hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric :=
     hS.smoothMetric
   have hSc : ScalarSTContOn (I := I) (M := M) S := ⟨hS.scalarCont⟩
-  have hkin := regSpeed_int_c1 (I := I) S hMet hSc T a b hab alpha
+  have hkin := regularitySpeed_int_c1 (I := I) S hMet hSc T a b hab alpha
     halpha.contMDiffOn hregBack
-  have hLag := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab alpha
+  have hLag := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := I) S hMet hSc T a b hab alpha
     halpha.contMDiffOn hregBack
-  have hbound := lRegKinetic_le (I := I) S T alpha a b
-    (lRegAction S T alpha a b) C hab
-    (fun s hs ↦ lRegPot_lower_rm (I := I) S K T b hb hRm s
+  have hbound := lRegularizedKinetic_le (I := I) S T alpha a b
+    (lRegularizedAction S T alpha a b) C hab
+    (fun s hs ↦ lRegularizedPot_lower_rm (I := I) S K T b hb hRm s
       ⟨ha.trans hs.1, hs.2⟩ (alpha s))
     hkin hLag le_rfl
-  have hnonneg : 0 ≤ ∫ s in a..b, lRegSpeedSq S T alpha s := by
+  have hnonneg : 0 ≤ ∫ s in a..b, lRegularizedSpeedSq S T alpha s := by
     apply intervalIntegral.integral_nonneg hab
     intro s _hs
-    exact lRegSpeedSq_nonneg (I := I) S T alpha s
+    exact lRegularizedSpeedSq_nonneg (I := I) S T alpha s
   linarith
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

@@ -303,7 +303,7 @@ lemma bianchi_bracket_jacobi_sum_eq_zero
     exact (hZ x).of_le hle
   have hJacobi := VectorField.leibniz_identity_mlieBracket_apply (I := I)
     (U := X) (V := Y) (W := Z) (x := x) hX2 hY2 hZ2
-  have hJac_cyc :
+  have hJacobian_cyc :
       VectorField.mlieBracket I (VectorField.mlieBracket I X Y) Z x +
         VectorField.mlieBracket I (VectorField.mlieBracket I Z X) Y x +
         VectorField.mlieBracket I (VectorField.mlieBracket I Y Z) X x = 0 := by
@@ -341,7 +341,7 @@ lemma bianchi_bracket_jacobi_sum_eq_zero
         + VectorField.mlieBracket I (VectorField.mlieBracket I Z X) Y x
         + VectorField.mlieBracket I (VectorField.mlieBracket I Y Z) X x := by
         rw [p1, p2, p3]
-    _ = 0 := hJac_cyc
+    _ = 0 := hJacobian_cyc
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem second_bianchi_levi_civita

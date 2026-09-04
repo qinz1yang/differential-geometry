@@ -16,7 +16,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 
@@ -338,7 +338,7 @@ theorem covNorm_restrictOpen
 
 end FixedManifold
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
 
 namespace DifferentialGeometry.PDE.RicciFlow

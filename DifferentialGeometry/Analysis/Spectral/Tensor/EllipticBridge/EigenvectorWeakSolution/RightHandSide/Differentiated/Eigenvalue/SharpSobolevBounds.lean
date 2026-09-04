@@ -79,13 +79,13 @@ lemma sharpDiff_wkpNorm_coef_mul_factor_le_uniform
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport χ
-    · have hy_chart : y ∈ chartTargetEuclid (I := I) (M := M) α := hχ_tsupp hy_supp
+    by_cases hy_support : y ∈ tsupport χ
+    · have hy_chart : y ∈ chartTargetEuclid (I := I) (M := M) α := hχ_tsupp hy_support
       exact hχ_smooth.contDiffAt.mul
         ((hcoef_chart y hy_chart).contDiffAt (hΩ_open.mem_nhds hy_chart))
     · have h_eq_zero : (fun y => χ y * coef y)
           =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_open_compl.mem_nhds hy_supp] with z hz
+        filter_upwards [h_open_compl.mem_nhds hy_support] with z hz
         rw [image_eq_zero_of_notMem_tsupport hz, zero_mul]
       exact contDiffAt_const.congr_of_eventuallyEq h_eq_zero
   have hχ_coef_cs : HasCompactSupport (fun y => χ y * coef y) :=
@@ -579,7 +579,7 @@ private lemma sharpDiff_recursion
                   (tensorResolventL2_isCompactOperator
                     (I := I) (M := M) g r s) i‖ := by
         intro i a
-        have h_chart_cpt_mem :
+        have h_chart_compact_mem :
             MemWkp (d := Module.finrank ℝ E) (K + (m + 1)) 2
               (eigenvectorChartComponentFun (I := I) (M := M)
                 g r s i α P₀)
@@ -589,7 +589,7 @@ private lemma sharpDiff_recursion
         have h_bridge :=
           (eigenvectorChartIteratedPartial_wkpNorm_le_of_memWkp
             (I := I) (M := M) g r s i α P₀ (m + 1) K
-            h_chart_cpt_mem
+            h_chart_compact_mem
             (Fin.cons a (Fin.init l))).2
         refine le_trans h_bridge ?_
         have h_eig := H.hCeig_bd i (K + (m + 1))
@@ -599,7 +599,7 @@ private lemma sharpDiff_recursion
       have hAtomB_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s)
           (a b : Fin (Module.finrank ℝ E)),
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) 2 b
                 (eigenvectorChartIteratedPartial (I := I) (M := M)
                   g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
@@ -618,7 +618,7 @@ private lemma sharpDiff_recursion
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))) b
         refine le_trans h_chosen ?_
-        have h_chart_cpt_mem :
+        have h_chart_compact_mem :
             MemWkp (d := Module.finrank ℝ E) ((K + 1) + (m + 1)) 2
               (eigenvectorChartComponentFun (I := I) (M := M)
                 g r s i α P₀)
@@ -628,7 +628,7 @@ private lemma sharpDiff_recursion
         have h_bridge :=
           (eigenvectorChartIteratedPartial_wkpNorm_le_of_memWkp
             (I := I) (M := M) g r s i α P₀ (m + 1) (K + 1)
-            h_chart_cpt_mem
+            h_chart_compact_mem
             (Fin.cons a (Fin.init l))).2
         refine le_trans h_bridge ?_
         have h_eig := H.hCeig_bd i ((K + 1) + (m + 1))
@@ -648,7 +648,7 @@ private lemma sharpDiff_recursion
                   (tensorResolventL2_isCompactOperator
                     (I := I) (M := M) g r s) i‖ := by
         intro i
-        have h_chart_cpt_mem :
+        have h_chart_compact_mem :
             MemWkp (d := Module.finrank ℝ E) (K + m) 2
               (eigenvectorChartComponentFun (I := I) (M := M)
                 g r s i α P₀)
@@ -658,7 +658,7 @@ private lemma sharpDiff_recursion
         have h_bridge :=
           (eigenvectorChartIteratedPartial_wkpNorm_le_of_memWkp
             (I := I) (M := M) g r s i α P₀ m K
-            h_chart_cpt_mem
+            h_chart_compact_mem
             (Fin.init l)).2
         refine le_trans h_bridge ?_
         exact H.hCeig_bd i (K + m)
@@ -675,7 +675,7 @@ private lemma sharpDiff_recursion
                     (I := I) (M := M) g r s) i‖ := hC_K_bd
       have hAtomE_bd : ∀ (i : TensorEigenIdx (I := I) (M := M) g r s),
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) 2 (l (Fin.last m))
                 (eigenvectorChartRHSDiff (I := I) (M := M)
                   g r s i α P₀ m (Fin.init l))
@@ -722,7 +722,7 @@ private lemma sharpDiff_recursion
         refine eigenvectorChartRHSDiffNumerator_memWkp_of_iter
           (I := I) (M := M) g r s i α P₀ m K l ?_ ?_ ?_
         · intro j idx
-          have h_chart_cpt_mem :
+          have h_chart_compact_mem :
               MemWkp (d := Module.finrank ℝ E) ((2 + K) + j) 2
                 (eigenvectorChartComponentFun (I := I) (M := M)
                   g r s i α P₀)
@@ -731,7 +731,7 @@ private lemma sharpDiff_recursion
               g r s i ((2 + K) + j) α P₀
           exact (eigenvectorChartIteratedPartial_wkpNorm_le_of_memWkp
             (I := I) (M := M) g r s i α P₀ j (2 + K)
-            h_chart_cpt_mem idx).1
+            h_chart_compact_mem idx).1
         · exact h_prev_mem_succ i
         · exact h_prev_ae_zero i
       have h_num_ae_zero :

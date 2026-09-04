@@ -25,24 +25,24 @@ variable {D : RealTimeInterval}
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [CompactSpace M] in
-theorem lRegLag_time_cont
+theorem lRegularizedLag_time_cont
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (alpha : Real → M)
     (halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha) :
     ContinuousOn
-      (fun q : Real × Real ↦ lRegLagrangian S q.1 alpha q.2)
+      (fun q : Real × Real ↦ lRegularizedLagrangian S q.1 alpha q.2)
       {q : Real × Real | q.1 - q.2 ^ 2 ∈ D.regular} := by
   let U : Set (Real × Real) :=
     {q : Real × Real | q.1 - q.2 ^ 2 ∈ D.regular}
   let P := {q : Real × Real // q ∈ U}
   let timeLift : P → {t : Real // t ∈ D.carrier} := fun q ↦
     ⟨q.1.1 - q.1.2 ^ 2, D.regular_subset q.2⟩
-  let velLift : P → TangentBundle I M := fun q ↦
+  let velocityLift : P → TangentBundle I M := fun q ↦
     ⟨alpha q.1.2, lVelocity (I := I) alpha q.1.2⟩
   have htime : Continuous timeLift := by
     exact (((continuous_fst.comp continuous_subtype_val).sub
       ((continuous_snd.comp continuous_subtype_val).pow 2)).subtype_mk _)
-  have hvel : Continuous velLift := by
+  have hvel : Continuous velocityLift := by
     exact
       (DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve.continuous_tangentMap_unitLift
         (I := I) (M := M) (n := (1 : WithTop ℕ∞)) (by simp) halpha).comp
@@ -60,7 +60,7 @@ theorem lRegLag_time_cont
         (lVelocity (I := I) alpha q.1.2)) := by
     have heq : (DifferentialGeometry.metricTimeBundleQuad
         (I := I) S.family.metric D.carrier ∘ fun q : P ↦
-          (timeLift q, velLift q)) = fun q : P ↦
+          (timeLift q, velocityLift q)) = fun q : P ↦
         (S.base.metric (q.1.1 - q.1.2 ^ 2)).inner (alpha q.1.2)
           (lVelocity (I := I) alpha q.1.2)
           (lVelocity (I := I) alpha q.1.2) := by
@@ -81,7 +81,7 @@ theorem lRegLag_time_cont
         ((continuous_snd.comp continuous_subtype_val).pow 2)).mul hscalar)
   rw [continuousOn_iff_continuous_domRestrict]
   have heq : U.domRestrict (fun q : Real × Real ↦
-      lRegLagrangian S q.1 alpha q.2) = fun q : P ↦
+      lRegularizedLagrangian S q.1 alpha q.2) = fun q : P ↦
         (1 / 2 : Real) *
             (S.base.metric (q.1.1 - q.1.2 ^ 2)).inner (alpha q.1.2)
               (lVelocity (I := I) alpha q.1.2)
@@ -90,22 +90,22 @@ theorem lRegLag_time_cont
     funext q
     rfl
   change Continuous (U.domRestrict (fun q : Real × Real ↦
-    lRegLagrangian S q.1 alpha q.2))
+    lRegularizedLagrangian S q.1 alpha q.2))
   rw [heq]
   exact hlag
 
-theorem lRegTime_nhds (D : RealTimeInterval) (T a b : Real)
+theorem lRegularizedTime_nhds (D : RealTimeInterval) (T a b : Real)
     (hreg : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.regular) :
     ∀ᶠ R in nhds T, ∀ s ∈ uIcc a b, R - s ^ 2 ∈ D.regular := by
   let J₀ : Set Real := (fun s : Real ↦ T - s ^ 2) '' uIcc a b
   have hJ₀c : IsCompact J₀ :=
     isCompact_uIcc.image_of_continuousOn
       (continuous_const.sub (continuous_id.pow 2)).continuousOn
-  have hJ₀reg : J₀ ⊆ D.regular := by
+  have hJ₀regularity : J₀ ⊆ D.regular := by
     rintro _ ⟨s, hs, rfl⟩
     exact hreg s hs
   obtain ⟨delta, hdelta, hthick⟩ :=
-    hJ₀c.exists_thickening_subset_open D.regular_isOpen hJ₀reg
+    hJ₀c.exists_thickening_subset_open D.regular_isOpen hJ₀regularity
   filter_upwards [Metric.ball_mem_nhds T hdelta] with R hR s hs
   apply hthick
   apply Metric.mem_thickening_iff.mpr
@@ -116,22 +116,22 @@ theorem lRegTime_nhds (D : RealTimeInterval) (T a b : Real)
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [CompactSpace M] in
-theorem lRegAction_T_cont
+theorem lRegularizedAction_T_cont
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (alpha : Real → M)
     (halpha : ContMDiff (modelWithCornersSelf Real Real) I 1 alpha)
     (hreg : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.regular) :
-    ContinuousAt (fun R ↦ lRegAction S R alpha a b) T := by
-  have hlag := lRegLag_time_cont (I := I) S hS alpha halpha
+    ContinuousAt (fun R ↦ lRegularizedAction S R alpha a b) T := by
+  have hlag := lRegularizedLag_time_cont (I := I) S hS alpha halpha
   let J₀ : Set Real := (fun s : Real ↦ T - s ^ 2) '' uIcc a b
   have hJ₀c : IsCompact J₀ :=
     isCompact_uIcc.image_of_continuousOn
       (continuous_const.sub (continuous_id.pow 2)).continuousOn
-  have hJ₀reg : J₀ ⊆ D.regular := by
+  have hJ₀regularity : J₀ ⊆ D.regular := by
     rintro _ ⟨s, hs, rfl⟩
     exact hreg s hs
   obtain ⟨delta, hdelta, hthick⟩ :=
-    hJ₀c.exists_thickening_subset_open D.regular_isOpen hJ₀reg
+    hJ₀c.exists_thickening_subset_open D.regular_isOpen hJ₀regularity
   let eta : Real := delta / 2
   have heta : 0 < eta := half_pos hdelta
   let KT : Set Real := Icc (T - eta) (T + eta)
@@ -148,7 +148,7 @@ theorem lRegAction_T_cont
       exact ⟨by linarith [hq.1.1], by linarith [hq.1.2]⟩
     simpa only [sub_sub_sub_cancel_right] using hdist.trans_lt (half_lt_self hdelta)
   have hlagK : ContinuousOn
-      (fun q : Real × Real ↦ lRegLagrangian S q.1 alpha q.2) K :=
+      (fun q : Real × Real ↦ lRegularizedLagrangian S q.1 alpha q.2) K :=
     hlag.mono hKreg
   obtain ⟨C, hC⟩ := hKc.exists_bound_of_continuousOn hlagK
   let C₀ : Real := max C 0
@@ -159,7 +159,7 @@ theorem lRegAction_T_cont
     · change T < T + eta
       linarith
   apply intervalIntegral.continuousAt_of_dominated_interval
-      (F := fun R s ↦ lRegLagrangian S R alpha s) (bound := fun _ ↦ C₀)
+      (F := fun R s ↦ lRegularizedLagrangian S R alpha s) (bound := fun _ ↦ C₀)
   · filter_upwards [hTnh] with R hR
     exact ((hlagK.comp
       (continuous_const.prodMk continuous_id).continuousOn
@@ -191,7 +191,7 @@ theorem lCost_lt_T_event
     (halpha0 : alpha 0 = x) (halphab : alpha (Real.sqrt tau) = y)
     (hreg : ∀ s ∈ Icc (0 : Real) (Real.sqrt tau),
       T - s ^ 2 ∈ D.regular) (A : Real)
-    (hA : lRegAction S T alpha 0 (Real.sqrt tau) < A) :
+    (hA : lRegularizedAction S T alpha 0 (Real.sqrt tau) < A) :
     ∀ᶠ n in atTop, lCost S (Tn n) x y tau < A := by
   have hb0 : 0 < Real.sqrt tau := Real.sqrt_pos.2 htau
   have hregU : ∀ s ∈ uIcc (0 : Real) (Real.sqrt tau),
@@ -199,22 +199,22 @@ theorem lCost_lt_T_event
     simpa only [uIcc_of_le hb0.le] using hreg
   have hregEvent : ∀ᶠ n in atTop, ∀ s ∈ Icc (0 : Real) (Real.sqrt tau),
       Tn n - s ^ 2 ∈ D.regular := by
-    have hnh := lRegTime_nhds D T 0 (Real.sqrt tau) hregU
+    have hnh := lRegularizedTime_nhds D T 0 (Real.sqrt tau) hregU
     filter_upwards [hTn.eventually hnh] with n hn
     simpa only [uIcc_of_le hb0.le] using hn
   have hactEvent : ∀ᶠ n in atTop,
-      lRegAction S (Tn n) alpha 0 (Real.sqrt tau) < A :=
-    ((lRegAction_T_cont (I := I) S hS T 0 (Real.sqrt tau) alpha halpha
+      lRegularizedAction S (Tn n) alpha 0 (Real.sqrt tau) < A :=
+    ((lRegularizedAction_T_cont (I := I) S hS T 0 (Real.sqrt tau) alpha halpha
       hregU).tendsto.comp hTn).eventually (Iio_mem_nhds hA)
-  filter_upwards [hregEvent, hactEvent] with n hnReg hnAct
-  rw [lCost_eq_reg (I := I) S (Tn n) x y tau htau.le]
+  filter_upwards [hregEvent, hactEvent] with n hnRegularity hnAct
+  rw [lCost_eq_regularity (I := I) S (Tn n) x y tau htau.le]
   have htime : Icc (Tn n - tau) (Tn n) ⊆ D.carrier := by
     intro r hr
     have hnonneg : 0 ≤ Tn n - r := by linarith [hr.2]
     have hle : Tn n - r ≤ tau := by linarith [hr.1]
     have hsqrt : Real.sqrt (Tn n - r) ∈ Icc (0 : Real) (Real.sqrt tau) :=
       ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hle⟩
-    have hregR := hnReg (Real.sqrt (Tn n - r)) hsqrt
+    have hregR := hnRegularity (Real.sqrt (Tn n - r)) hsqrt
     have heqR : Tn n - (Real.sqrt (Tn n - r)) ^ 2 = r := by
       rw [Real.sq_sqrt hnonneg]
       ring
@@ -228,9 +228,9 @@ theorem lCost_lt_T_event
           (sq_le_sq₀ hs.1 hb0.le).2 hs.2
         _ = tau := Real.sq_sqrt htau.le
     exact ⟨by linarith, by nlinarith [sq_nonneg s]⟩
-  exact (lRegCostC1_le (I := I) S hS
+  exact (lRegularizedCostC1_le (I := I) S hS
     (Tn n) (Tn n - tau) (Tn n) 0 (Real.sqrt tau) hb0.le
-    htime hback x y alpha halpha halpha0 halphab hnReg).trans_lt hnAct
+    htime hback x y alpha halpha halpha0 halphab hnRegularity).trans_lt hnAct
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

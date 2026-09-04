@@ -10,7 +10,7 @@ open DifferentialGeometry.Geometry.Operator
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -28,7 +28,7 @@ variable [IsManifold I 1 M] [IsManifold I 2 M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
 
-def SolSwapData
+def SolutionTimeDerivativeCommutation
     (gRef : SmoothRiemannianMetric I M)
     (D : Nat -> RealTimeInterval)
     (S : (i : Nat) -> SolutionOn (I := I) (M := M) (D i)) : Prop :=
@@ -37,12 +37,12 @@ def SolSwapData
       (TangentSpace I : M -> Type _), forall x0 : M,
     FixedBaseExtDerivTimeDerivativeOnRegular (I := I) (D i).carrier (D i).regular
       ({x0} : Set M)
-      (fun r y => (covDerivOfField (I := I) gRef (solnMetricField (I := I) (S i) r) p') y
+      (fun r y => (covDerivOfField (I := I) gRef (solutionMetricField (I := I) (S i) r) p') y
         (fun a : Fin (p' + 2) => V a y))
-      (fun r y => (covDerivOfField (I := I) gRef (solnEvolField (I := I) (S i) r) p') y
+      (fun r y => (covDerivOfField (I := I) gRef (solutionEvolutionField (I := I) (S i) r) p') y
         (fun a : Fin (p' + 2) => V a y))
 
-structure SolCovData
+structure SolutionCovariantDerivativeBounds
     (β ψ t0 : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M)
@@ -51,7 +51,7 @@ structure SolCovData
   pack : forall K' : Set M, IsCompact K' -> forall N : Nat, 1 <= N ->
     exists U : Set M, IsOpen U /\ K' ⊆ U /\
       exists B : Real -> Real, exists Bmax : Real, exists KShi : Real,
-      exists initC : Nat -> Real, exists timeRadius : Real,
+      exists initialC : Nat -> Real, exists timeRadius : Real,
         MetricUniformEquivalentOnWindow (I := I) U β ψ gRef gSeq B /\
         1 <= Bmax /\ (forall t, t ∈ Set.Icc β ψ -> B t <= Bmax) /\
         0 <= KShi /\
@@ -62,12 +62,12 @@ structure SolCovData
                 (ricCovTower (I := I) (gSeq i t) (gSeq i t) s x)) <= KShi) /\
         t0 ∈ Set.Icc β ψ /\
         (forall i : Nat, forall {t : Real}, t ∈ (D i).regular -> (D i).regular ∈ nhds t) /\
-        (forall r : Nat, 0 <= initC r) /\
+        (forall r : Nat, 0 <= initialC r) /\
         (forall r : Nat, 1 <= r -> r <= N -> forall i : Nat, forall x, x ∈ U ->
-          metricCovDerivNorm (I := I) r (gSeq i t0) gRef x <= initC r) /\
+          metricCovDerivNorm (I := I) r (gSeq i t0) gRef x <= initialC r) /\
         (forall t : Real, t ∈ Set.Icc β ψ -> |t - t0| <= timeRadius)
 
-structure SolLipData
+structure SolutionMetricLipschitzBounds
     (K : Set M) (β ψ : Real) (p : Nat)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M)
@@ -90,7 +90,7 @@ structure SolLipData
         0 <= CN /\
         MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef a CN
 
-structure SolLip0Data
+structure SolutionZeroOrderMetricBounds
     (K : Set M) (beta psiT : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) where
@@ -109,7 +109,7 @@ structure SolLip0Data
         (Tensor0SBundle.normSq0S (I := I) (gSeq i t) x 2
           (ricCovTower (I := I) (gSeq i t) (gSeq i t) 0 x)) <= KShi0
 
-def SolLowData
+def SolutionSubsequenceMetricLowerBound
     (beta psiT : Real)
     (gSeq : Nat -> Real -> SmoothRiemannianMetric I M)
     (gRef : SmoothRiemannianMetric I M) : Prop :=
@@ -117,7 +117,7 @@ def SolLowData
     exists c : Real, 0 < c /\ forall (k : Nat) (x : M) (v : TangentSpace I x),
       c * gRef.inner x v v <= (gSeq (rho k) t).inner x v v
 
-inductive SolWindowData : Type _ where
+inductive SolutionWindowCompactnessInput : Type _ where
   | mk
       (K : Set M) (hK : IsCompact K)
       (beta psiT t0 : Real) (hbeta : beta <= psiT) (p : Nat)
@@ -128,11 +128,11 @@ inductive SolWindowData : Type _ where
       (hS : forall i : Nat, IsSolutionOn (I := I) (S i))
       (hmet : forall (i : Nat) (r : Real), (S i).family.metric r = gSeq i r)
       (hreg : forall i : Nat, Set.Icc beta psiT ⊆ (D i).regular)
-      (H0 : SolLip0Data (I := I) K beta psiT gSeq gRef)
-      (hswap : SolSwapData (I := I) gRef D S)
-      (Hcov : SolCovData (I := I) beta psiT t0 gSeq gRef D S)
-      (Hlip : SolLipData (I := I) K beta psiT p gSeq gRef D S)
-      (hlow : SolLowData (I := I) beta psiT gSeq gRef)
+      (H0 : SolutionZeroOrderMetricBounds (I := I) K beta psiT gSeq gRef)
+      (hswap : SolutionTimeDerivativeCommutation (I := I) gRef D S)
+      (Hcov : SolutionCovariantDerivativeBounds (I := I) beta psiT t0 gSeq gRef D S)
+      (Hlip : SolutionMetricLipschitzBounds (I := I) K beta psiT p gSeq gRef D S)
+      (hlow : SolutionSubsequenceMetricLowerBound (I := I) beta psiT gSeq gRef)
 
 inductive WindowMetricPrecompactnessConclusion : Type _ where
   | intro
@@ -218,33 +218,33 @@ theorem exists_uniform_metric_covariant_derivative_bound_for_solution_subsequenc
     (hS : forall i : Nat, IsSolutionOn (I := I) (S i))
     (hmet : forall (i : Nat) (r : Real), (S i).family.metric r = gSeq i r)
     (hreg : forall i : Nat, Set.Icc β ψ ⊆ (D i).regular)
-    (H : SolCovData (I := I) β ψ t0 gSeq gRef D S) :
+    (H : SolutionCovariantDerivativeBounds (I := I) β ψ t0 gSeq gRef D S) :
     forall rho : Nat -> Nat, forall t, t ∈ Set.Icc β ψ ->
       forall q : Nat, forall K' : Set M, IsCompact K' -> exists C : Real,
         forall k : Nat, forall z, z ∈ K' ->
           metricCovDerivNorm (I := I) q (gSeq (rho k) t) gRef z <= C := by
   intro rho t ht q K' hK'
   rcases q with _ | q
-  · obtain ⟨U, hU, hK'U, B, Bmax, KShi, initC, timeRadius, hequiv,
+  · obtain ⟨U, hU, hK'U, B, Bmax, KShi, initialC, timeRadius, hequiv,
       hBmax1, hBmax, _hKShi0, _hShi, _ht0, _hDreg, _hinitC0, _hinit, _htime⟩ :=
       H.pack K' hK' 1 (by norm_num)
     obtain ⟨C, hC⟩ := exists_uniform_zero_order_metric_covariant_derivative_bound (I := I) B
       (metricUniformEquivalentOnWindow_mono (I := I) hK'U hequiv) Bmax hBmax1 hBmax
     exact ⟨C, fun k z hz => hC (rho k) t ht z hz⟩
   · have hq : 1 <= q.succ := Nat.succ_pos q
-    obtain ⟨U, hU, hK'U, B, Bmax, KShi, initC, timeRadius, hequiv,
+    obtain ⟨U, hU, hK'U, B, Bmax, KShi, initialC, timeRadius, hequiv,
       hBmax1, hBmax, hKShi0, hShi, ht0, hDreg, hinitC0, hinit, htime⟩ :=
       H.pack K' hK' q.succ hq
-    have horders := covOrderBound_of_soln (I := I) hK' hU hK'U q.succ
+    have horders := covOrderBound_of_solution (I := I) hK' hU hK'U q.succ
       D S hS hmet hreg B hequiv Bmax hBmax1 hBmax KShi hKShi0 hShi ht0
-      hDreg initC hinitC0 hinit timeRadius htime
+      hDreg initialC hinitC0 hinit timeRadius htime
     obtain ⟨C, hC⟩ := horders q.succ hq le_rfl
     exact ⟨C, fun k z hz => hC (rho k) t ht z hz⟩
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
-theorem hgLip0Sol
+theorem hgLip0Solution
     [Module.Finite ℝ E]
     {K U : Set M} {β ψ : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
@@ -315,7 +315,7 @@ theorem hgLip0Sol
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem hgLipFinSol
+theorem hgLipFinSolution
     [Module.Finite ℝ E]
     {K : Set M} {β ψ : Real} {p : Nat}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
@@ -326,12 +326,12 @@ theorem hgLipFinSol
     (hS : forall i : Nat, IsSolutionOn (I := I) (S i))
     (hmet : forall (i : Nat) (r : Real), (S i).family.metric r = gSeq i r)
     (hreg : forall i : Nat, Set.Icc β ψ ⊆ (D i).regular)
-    (hswap : SolSwapData (I := I) gRef D S)
+    (hswap : SolutionTimeDerivativeCommutation (I := I) gRef D S)
     (h0 : exists L0 : Real, 0 <= L0 /\
       forall i : Nat, forall s, s ∈ Set.Icc β ψ -> forall t, t ∈ Set.Icc β ψ ->
         forall x, x ∈ K ->
           metricDerivNorm (I := I) 0 (gSeq i s) (gSeq i t) gRef x <= L0 * |s - t|)
-    (H : SolLipData (I := I) K β ψ p gSeq gRef D S) :
+    (H : SolutionMetricLipschitzBounds (I := I) K β ψ p gSeq gRef D S) :
     exists L : Real, 0 <= L /\
       forall i : Nat, forall s, s ∈ Set.Icc β ψ -> forall t, t ∈ Set.Icc β ψ ->
         forall a : Nat, a <= p -> forall x, x ∈ K ->
@@ -411,23 +411,23 @@ theorem metricWindowSubsequence_of_solution
     (hS : forall i : Nat, IsSolutionOn (I := I) (S i))
     (hmet : forall (i : Nat) (r : Real), (S i).family.metric r = gSeq i r)
     (hreg : forall i : Nat, Set.Icc beta psiT ⊆ (D i).regular)
-    (H0 : SolLip0Data (I := I) K beta psiT gSeq gRef)
-    (hswap : SolSwapData (I := I) gRef D S)
-    (Hcov : SolCovData (I := I) beta psiT t0 gSeq gRef D S)
-    (Hlip : SolLipData (I := I) K beta psiT p gSeq gRef D S)
-    (hlow : SolLowData (I := I) beta psiT gSeq gRef) :
+    (H0 : SolutionZeroOrderMetricBounds (I := I) K beta psiT gSeq gRef)
+    (hswap : SolutionTimeDerivativeCommutation (I := I) gRef D S)
+    (Hcov : SolutionCovariantDerivativeBounds (I := I) beta psiT t0 gSeq gRef D S)
+    (Hlip : SolutionMetricLipschitzBounds (I := I) K beta psiT p gSeq gRef D S)
+    (hlow : SolutionSubsequenceMetricLowerBound (I := I) beta psiT gSeq gRef) :
     MetricWindowSubsequence (E := E) (H := H) (I := I) (M := M) K beta psiT p gSeq gRef := by
   classical
   obtain ⟨e, he, hdense⟩ := denseIccSeq hbeta
-  have h0 := hgLip0Sol (I := I) H0.hKU0 H0.B0 H0.hequiv0 H0.Bmax0 H0.hBmax01
+  have h0 := hgLip0Solution (I := I) H0.hKU0 H0.B0 H0.hequiv0 H0.Bmax0 H0.hBmax01
     H0.hBmax0 H0.KShi0 H0.hKShi00 H0.hShi0 D S hS hmet hreg
   obtain ⟨L, hL, hgLip⟩ :=
-    hgLipFinSol (I := I) hK hS hmet hreg hswap h0 Hlip
+    hgLipFinSolution (I := I) hK hS hmet hreg hswap h0 Hlip
   have hlow' :
       forall rho : Nat -> Nat, StrictMono rho -> forall t, t ∈ Set.Icc beta psiT ->
         exists c : Real, 0 < c /\ forall (k : Nat) (x : M) (v : TangentSpace I x),
           c * gRef.inner x v v <= (gSeq (rho k) t).inner x v v := by
-    simpa [SolLowData] using hlow
+    simpa [SolutionSubsequenceMetricLowerBound] using hlow
   exact metricWindowSubsequence_of_bounds (E := E) (H := H) (I := I) (M := M)
     hne K hK beta psiT p gSeq gRef e he hdense
     L hL hgLip
@@ -437,7 +437,7 @@ theorem metricWindowSubsequence_of_solution
     hlow'
 
 noncomputable def windowMetricPrecompactnessConclusion (hne : Nonempty M)
-    (W : SolWindowData (I := I) (M := M)) :
+    (W : SolutionWindowCompactnessInput (I := I) (M := M)) :
     WindowMetricPrecompactnessConclusion (E := E) (H := H) (I := I) (M := M) := by
   classical
   cases W with
@@ -448,5 +448,5 @@ noncomputable def windowMetricPrecompactnessConclusion (hne : Nonempty M)
 
 end
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

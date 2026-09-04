@@ -69,8 +69,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
   exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
   linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
-  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrField linearizedRicciFirstOrderBaseCoeff
-  linearizedRicciFirstOrderCorrField ricciDeTurckPrincipalCoefficient traceHessianCoeff
+  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff
+  linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff
   linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
@@ -1246,7 +1246,7 @@ theorem riemannianFiberNormSq_operatorFieldComposition_sharpFlatEndoCc_contravar
   have h1δ : (0 : ℝ) < 1 - δ := by linarith
   have h1δ₀ : (0 : ℝ) < 1 - δ₀ := by linarith
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hexpand, hrepr02⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   have hWop : ∀ u : TangentSpace I x,
       g₀.inner x (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism (I := I)
@@ -2386,7 +2386,7 @@ theorem riemannianFiberNormSq_operatorFieldComposition_ricciCometricFourTraceCas
   have h1δ : (0 : ℝ) < 1 - δ := by linarith
   have h1δ₀ : (0 : ℝ) < 1 - δ₀ := by linarith
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hexpand, hrepr02⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   have hWop : ∀ u : TangentSpace I x,
       g₀.inner x (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.metricComparisonEndomorphism (I := I)

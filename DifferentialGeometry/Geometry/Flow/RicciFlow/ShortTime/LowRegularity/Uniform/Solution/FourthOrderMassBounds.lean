@@ -12,7 +12,7 @@ open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -22,7 +22,7 @@ open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Spectral
-  (eigenIdxFinset fatou_sq_mass galerkinEnergy solFieldMass
+  (eigenIdxFinset fatou_sq_mass galerkinEnergy solutionFieldMass
     tendsto_eigenIdxFinset_atTop)
 
 variable
@@ -46,7 +46,7 @@ theorem weighted_mode_mass_four_bound_of_uniform_galerkin_energy
         Tendsto
           (fun N => galerkinSolutionMode (I := I) (M := M) g fseq N t i)
           atTop
-          (𝓝 (perModeConv
+          (𝓝 (perModeConvolution
             (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t)))
     (hΦ : ∀ N : ℕ, ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -55,11 +55,11 @@ theorem weighted_mode_mass_four_bound_of_uniform_galerkin_energy
         (galerkinSolutionMode (I := I) (M := M) g fseq N) 4 t ≤ Φ) :
     ∀ t ∈ Set.Icc (0 : ℝ) T,
       Summable (fun i => tensorSobolevWeight (I := I) (M := M) i 4 *
-        (perModeConv
+        (perModeConvolution
           (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t) ^ 2) ∧
       ∑' i, tensorSobolevWeight (I := I) (M := M) i 4 *
-        (perModeConv
+        (perModeConvolution
           (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t) ^ 2 ≤ Φ := by
   intro t ht
@@ -69,7 +69,7 @@ theorem weighted_mode_mass_four_bound_of_uniform_galerkin_energy
     (fun i => tensorSobolevWeight (I := I) (M := M) i 4)
     (fun i => tensorSobolevWeight_nonneg (I := I) (M := M) i 4)
     (fun N i => galerkinSolutionMode (I := I) (M := M) g fseq N t i)
-    (fun i => perModeConv
+    (fun i => perModeConvolution
       (TensorEigenIdx.lambda (I := I) (M := M) i)
       (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t)
     (fun i => hconv i t ht) Φ (fun N => hΦ N t ht)
@@ -87,7 +87,7 @@ theorem summable_solution_mode_mass_five_of_integrated_galerkin_energy
         Tendsto
           (fun N => galerkinSolutionMode (I := I) (M := M) g fseq N t i)
           atTop
-          (𝓝 (perModeConv
+          (𝓝 (perModeConvolution
             (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t)))
     (hΦ : ∀ N : ℕ, ∫ t,
@@ -95,14 +95,14 @@ theorem summable_solution_mode_mass_five_of_integrated_galerkin_energy
         (eigenIdxFinset (I := I) (M := M) g N)
         (galerkinSolutionMode (I := I) (M := M) g fseq N) 5 t
         ∂(timeMeasure T) ≤ Φ) :
-    Summable (solFieldMass (I := I) (M := M) hT gforce 5) := by
+    Summable (solutionFieldMass (I := I) (M := M) hT gforce 5) := by
   have hmass := integral_fatou_sq_mass
     (eigenIdxFinset (I := I) (M := M) g)
     (tendsto_eigenIdxFinset_atTop (I := I) (M := M) g)
     (fun i => tensorSobolevWeight (I := I) (M := M) i 5)
     (fun i => tensorSobolevWeight_nonneg (I := I) (M := M) i 5)
     (fun N t i => galerkinSolutionMode (I := I) (M := M) g fseq N t i)
-    (fun t i => perModeConv
+    (fun t i => perModeConvolution
       (TensorEigenIdx.lambda (I := I) (M := M) i)
       (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t)
     (fun N i => galerkinSolutionMode_continuous (I := I) (M := M) g hT fseq N i)
@@ -110,8 +110,8 @@ theorem summable_solution_mode_mass_five_of_integrated_galerkin_energy
       intro N
       simpa only [galerkinEnergy, timeMeasure] using hΦ N)
   refine hmass.1.congr (fun i => ?_)
-  unfold solFieldMass solModeCoeff
-  rw [norm_perModeConvL2_sq_eq]
+  unfold solutionFieldMass solutionModeCoeff
+  rw [norm_perModeConvolutionL2_sq_eq]
 
 theorem exists_uniform_background_lowRegularity_solution_with_weighted_mode_mass_four_and_five
     (hDim : Module.finrank ℝ E = 3)
@@ -124,7 +124,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_weighted_mode_mass
             MetricUniformEquivalentOn (I := I) Set.univ gBase g Λ →
             (∀ a : ℕ, a ≤ 3 →
               MetricCovDerivOrderBoundOn (I := I) Set.univ a g gBase Λ) →
-            ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
+            ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M)
                 ((1 : ℕ) : ℝ) T)
               (gforce : timeL2
                 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T),
@@ -134,19 +134,19 @@ theorem exists_uniform_background_lowRegularity_solution_with_weighted_mode_mass
                 (∃ C4 : ℝ, ∀ t ∈ Set.Icc (0 : ℝ) T,
                   Summable (fun i =>
                     tensorSobolevWeight (I := I) (M := M) i 4 *
-                      (perModeConv
+                      (perModeConvolution
                         (TensorEigenIdx.lambda (I := I) (M := M) i)
                         (fun s => (timeModeCoeff (I := I) (M := M)
                           gforce i) s) t) ^ 2) ∧
                   ∑' i, tensorSobolevWeight (I := I) (M := M) i 4 *
-                    (perModeConv
+                    (perModeConvolution
                       (TensorEigenIdx.lambda (I := I) (M := M) i)
                       (fun s => (timeModeCoeff (I := I) (M := M)
                         gforce i) s) t) ^ 2 ≤ C4) ∧
-                Summable (solFieldMass (I := I) (M := M) hT.le gforce 5) := by
-  obtain ⟨K, hKunif, T, hT, hT1, hsolve⟩ :=
+                Summable (solutionFieldMass (I := I) (M := M) hT.le gforce 5) := by
+  obtain ⟨K, hKuniform, T, hT, hT1, hsolve⟩ :=
     exists_uniform_background_lowRegularity_solution_with_galerkin_energy_four_and_dissipation_five_bounds (I := I) (M := M) hDim gBase hΛ
-  refine ⟨K, hKunif, T, hT, hT1, ?_⟩
+  refine ⟨K, hKuniform, T, hT, hT1, ?_⟩
   intro g hEq hjet
   obtain ⟨u, gforce, fseq, _Φ3, Φ4, Φ5, hsolveAt, hconv, _hΦ3, hΦ4, hΦ5⟩ :=
     hsolve g hEq hjet

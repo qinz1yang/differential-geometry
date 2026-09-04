@@ -384,7 +384,7 @@ private theorem radialJacobi_eq_intr
           (show TangentSpace I p from x + r • w) s) 0) 1
   exact happ
 
-private theorem intrJacobi_smul
+private theorem intrinsicJacobi_smul
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) (x w : E) (t s : Real) :
@@ -532,7 +532,7 @@ theorem radialLap_eq_mean
   have hVT (i : ι) (s : Real) :
       (VT i s : E) = (VI i (t * s) : E) := by
     simpa only [VT, VI] using
-      intrJacobi_smul (I := I) g hEnorm p x (v i) t s
+      intrinsicJacobi_smul (I := I) g hEnorm p x (v i) t s
   have hGramT :
       curveGram (I := I) g γT VT 1 =
         curveGram (I := I) g γI VI t := by

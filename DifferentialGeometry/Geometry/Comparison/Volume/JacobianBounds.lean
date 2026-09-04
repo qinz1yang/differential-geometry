@@ -374,7 +374,7 @@ lemma density_le_gronwall
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
-lemma density_le_gronwall_of_init_bound
+lemma density_le_gronwall_of_initial_bound
     (g : SmoothRiemannianMetric I M) (p : M) {x : E} {K b A B : ℝ}
     (hxsrc : x ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source)
     (hxrad : ‖x‖ < expMapC2Radius (I := I) g p)
@@ -425,7 +425,7 @@ lemma density_le_gronwall_of_init_bound
         (B * B) ^ Module.finrank ℝ E) :=
   normalDensity_le_of_radial_length_bound
     (I := I) g p hxsrc hxrad hBnn
-    (radialJacobi_fin_le_of_init_bound (I := I) g p x hK hb h1b hγ hcard F
+    (radialJacobi_fin_le_of_initial_bound (I := I) g p x hK hb h1b hγ hcard F
       hpar hON hFdiff hJdiff hDJdiff hODE hinit hmodel)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1145,7 +1145,7 @@ theorem exists_dens_two_rm04
     hinit hmodelLe hmodelGe
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
-lemma ball_src_of_radius
+lemma ball_source_of_radius
     (g : SmoothRiemannianMetric I M) (p : M) {R : ℝ}
     (hR : R ≤ expMapC2Radius (I := I) g p) :
     Metric.ball (0 : E) R ⊆ (NormalCoordinates.expMapDiffeo (I := I) g p).source := by
@@ -1178,7 +1178,7 @@ lemma density_ge_det_ball
       Real.sqrt c ≤ normalChartDensity (I := I) g p w := by
   intro w hw
   have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-    ball_src_of_radius (I := I) g p hR hw
+    ball_source_of_radius (I := I) g p hR hw
   have hwrad : ‖w‖ < expMapC2Radius (I := I) g p := by
     have hwR : ‖w‖ < R := by
       simpa [Metric.mem_ball, dist_eq_norm] using hw
@@ -1199,7 +1199,7 @@ lemma density_ge_rayleigh_ball
       Real.sqrt (a ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w := by
   intro w hw
   have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-    ball_src_of_radius (I := I) g p hR hw
+    ball_source_of_radius (I := I) g p hR hw
   have hwrad : ‖w‖ < expMapC2Radius (I := I) g p := by
     have hwR : ‖w‖ < R := by
       simpa [Metric.mem_ball, dist_eq_norm] using hw
@@ -1221,7 +1221,7 @@ lemma density_ge_combo_ball
       Real.sqrt (a ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w := by
   intro w hw
   have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-    ball_src_of_radius (I := I) g p hR hw
+    ball_source_of_radius (I := I) g p hR hw
   have hwrad : ‖w‖ < expMapC2Radius (I := I) g p := by
     have hwR : ‖w‖ < R := by
       simpa [Metric.mem_ball, dist_eq_norm] using hw
@@ -1245,7 +1245,7 @@ lemma density_ge_dir_ball
       Real.sqrt (a ^ Module.finrank ℝ E) ≤ normalChartDensity (I := I) g p w := by
   intro w hw
   have hwsrc : w ∈ (NormalCoordinates.expMapDiffeo (I := I) g p).source :=
-    ball_src_of_radius (I := I) g p hR hw
+    ball_source_of_radius (I := I) g p hR hw
   have hwrad : ‖w‖ < expMapC2Radius (I := I) g p := by
     have hwR : ‖w‖ < R := by
       simpa [Metric.mem_ball, dist_eq_norm] using hw

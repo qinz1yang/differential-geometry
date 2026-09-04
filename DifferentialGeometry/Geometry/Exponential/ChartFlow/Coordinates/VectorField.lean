@@ -53,7 +53,7 @@ lemma mem_chartAt_modelProd_zero_source_iff
     (⟨α, (0 : E)⟩ : TangentBundle I M)
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
-lemma trivializationAt_tangent_continuousLinearMapAt_eq_core
+lemma trivializationAt_tangent_continuousLinearMapAt_eq_coordChange
     (α : M) (q : TangentBundle I M)
     (hq : q.proj ∈ (chartAt H α).source) :
     (trivializationAt (E × E) (TangentSpace I.tangent)
@@ -61,11 +61,11 @@ lemma trivializationAt_tangent_continuousLinearMapAt_eq_core
       (tangentBundleCore I.tangent (TangentBundle I M)).coordChange
         (achart (ModelProd H E) q)
         (achart (ModelProd H E) (⟨α, (0 : E)⟩ : TangentBundle I M)) q := by
-  have hq_src : q ∈
+  have hq_source : q ∈
       (chartAt (ModelProd H E) (⟨α, (0 : E)⟩ : TangentBundle I M)).source :=
     (mem_chartAt_modelProd_zero_source_iff (I := I) α q).mpr hq
   exact TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
-    (𝕜 := ℝ) (b₀ := (⟨α, (0 : E)⟩ : TangentBundle I M)) (b := q) hq_src
+    (𝕜 := ℝ) (b₀ := (⟨α, (0 : E)⟩ : TangentBundle I M)) (b := q) hq_source
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma tangentCoordChange_tangent_eq_triv
@@ -77,7 +77,7 @@ lemma tangentCoordChange_tangent_eq_triv
         (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)).continuousLinearMapAt ℝ q
           ((tangentSpaceModelContinuousLinearEquiv (I := I.tangent) q).symm V) := by
   have hcore :=
-    trivializationAt_tangent_continuousLinearMapAt_eq_core (I := I) α q hq
+    trivializationAt_tangent_continuousLinearMapAt_eq_coordChange (I := I) α q hq
   have h_at := DFunLike.congr_fun hcore
     ((tangentSpaceModelContinuousLinearEquiv (I := I.tangent) q).symm V)
   change (trivializationAt (E × E) (TangentSpace I.tangent)
@@ -296,10 +296,10 @@ theorem chartPushLift_eventually_hasDerivAt_chartPhaseVF
     apply hcomp0.preimage_mem_nhds
     rw [hf0_α]
     exact hα_nhds
-  filter_upwards [hd, hsrc_nhds] with t htD ht_src
+  filter_upwards [hd, hsrc_nhds] with t htD ht_source
   have hreplace : chartPushVF (I := I) g α f 0 t =
       chartPhaseVF (I := I) g α (chartPushLift (I := I) f 0 t) :=
-    chartPushVF_eq_chartPhaseVF (I := I) g α hf0_proj t ht_src
+    chartPushVF_eq_chartPhaseVF (I := I) g α hf0_proj t ht_source
   rw [hreplace] at htD
   exact htD
 
@@ -331,20 +331,20 @@ theorem chartPushLift_eventually_hasDerivAt_chartPhaseVF_and_target_interior
   have hd_phase :=
     chartPushLift_eventually_hasDerivAt_chartPhaseVF (I := I) (g := g) (α := α)
       (f := f) hf0_proj hf
-  filter_upwards [hd_phase, hsrc_nhds] with t htD ht_src
+  filter_upwards [hd_phase, hsrc_nhds] with t htD ht_source
   refine ⟨htD, ?_⟩
   have hpair : chartPushLift (I := I) f 0 t =
       (extChartAt I α (f t).proj, chartFiberCoord (I := I) α (f t)) := by
     have h_eq := chartPushLift_eq_pair (I := I) (f := f) (t₀ := 0) (t := t) ?_
     · rw [h_eq]; rw [hf0_α]
-    · rw [hf0_α]; exact ht_src
+    · rw [hf0_α]; exact ht_source
   rw [hpair]
   refine ⟨?_, Set.mem_univ _⟩
   have h_target : extChartAt I α (f t).proj ∈ (extChartAt I α).target := by
-    have h_src : (f t).proj ∈ (extChartAt I α).source := by
+    have h_source : (f t).proj ∈ (extChartAt I α).source := by
       rw [extChartAt_source]
-      exact ht_src
-    exact (extChartAt I α).map_source h_src
+      exact ht_source
+    exact (extChartAt I α).map_source h_source
   exact extChartAt_target_subset_interior_of_boundaryless (I := I) α h_target
 
 end EventualChartPhase
@@ -354,7 +354,7 @@ section Bridge
 variable [I.Boundaryless] [CompleteSpace E]
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chartPushedFlow_eq_witness_curve_eventually
+theorem exists_chartFlowGeodesicCurve_eventually_eq
     (g : SmoothRiemannianMetric I M) (p : M) (v_chart : E)
     {γ : ℝ → M}
     {f : ℝ → TangentBundle I M}
@@ -370,7 +370,7 @@ theorem chartPushedFlow_eq_witness_curve_eventually
   have hf0_proj : (f 0).proj = p := by rw [hf0]
   have hd := chartPushLift_eventually_hasDerivAt_chartPhaseVF_and_target_interior
     (I := I) (g := g) (α := p) (f := f) hf0_proj hf_int_at0
-  exact chartPushedFlow_eq_witness_curve_eventually_of_chart_phase
+  exact exists_chartFlowGeodesicCurve_eventually_eq_of_chart_phase
     (I := I) (g := g) (p := p) (v_chart := v_chart)
     (γ := γ) (f := f) hproj hf0 hf_int_at0 hd
 
@@ -390,7 +390,7 @@ theorem chartPushedFlow_eq_maximalGeodesicChosenCurve_eventually
       (∀ᶠ t in 𝓝 (0 : ℝ),
         maximalGeodesicChosenCurve (I := I) g p v ht₁ t =
           chartFlowGeodesicCurve (I := I) Φ p (v : E) t) :=
-  chartPushedFlow_eq_witness_curve_eventually
+  exists_chartFlowGeodesicCurve_eventually_eq
     (I := I) (g := g) (p := p) (v_chart := (v : E))
     (γ := maximalGeodesicChosenCurve (I := I) g p v ht₁)
     (f := f) hproj_chosen hf0 hf_int_at0

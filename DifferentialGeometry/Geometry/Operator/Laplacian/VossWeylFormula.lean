@@ -161,9 +161,9 @@ private lemma chartCoeffOnE_grad_g_eq_gradChartCoeffOnE [I.Boundaryless]
       gradChartCoeffOnE (I := I) g α f i y := by
   classical
   set z : M := (extChartAt I α).symm y with hz_def
-  have hz_src : z ∈ (extChartAt I α).source := (extChartAt I α).map_target hy
+  have hz_source : z ∈ (extChartAt I α).source := (extChartAt I α).map_target hy
   have hz_chart : z ∈ (chartAt H α).source := by
-    rw [extChartAt_source_eq_chartAt_source (I := I)] at hz_src; exact hz_src
+    rw [extChartAt_source_eq_chartAt_source (I := I)] at hz_source; exact hz_source
   have hz_base : z ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]; exact hz_chart
   have htarget_eq_int :

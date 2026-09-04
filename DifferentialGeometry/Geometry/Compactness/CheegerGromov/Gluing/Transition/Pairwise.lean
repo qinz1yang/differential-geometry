@@ -14,7 +14,7 @@ open Filter Set
 open scoped Topology Manifold ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -419,10 +419,10 @@ theorem MetricCompactnessInputs.exists_pair_trans
           ContDiffOn Real (⊤ : ℕ∞) (Jbarinf i) (V i) ∧
           ContinuousOn (Jinf i) (U i) ∧
           ContinuousOn (Jbarinf i) (V i) ∧
-          MapCInfConvOnCompacts (U i)
+          MapCInfConvergenceOnCompacts (U i)
             (fun k => normalTransition (I := I) (X.obj (L.φ (phi k)))
               (x i (phi k)) (y i (phi k))) (Jinf i) ∧
-          MapCInfConvOnCompacts (V i)
+          MapCInfConvergenceOnCompacts (V i)
             (fun k => normalTransition (I := I) (X.obj (L.φ (phi k)))
               (y i (phi k)) (x i (phi k))) (Jbarinf i) ∧
           (∀ z, z ∈ U i → Jinf i z ∈ V i → Jbarinf i (Jinf i z) = z) ∧
@@ -480,5 +480,5 @@ theorem MetricCompactnessInputs.exists_pair_trans
         left := fun _ hz => (hf.2.2.2.2.2.1).cancel hz
         right := fun _ hw => (hr.2.2.2.2.2.1).cancel hw }
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

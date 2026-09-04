@@ -299,7 +299,7 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_locally
     (σ : Cₛ^n⟮I; F₁, E₁⟯) {U : Set M} (hU : IsOpen U)
     (hσU : ∀ x ∈ U, σ x = 0) : ∀ p ∈ U, (F σ) p = 0 := by
   intro p hp
-  obtain ⟨ψ, -, hψsupp⟩ :=
+  obtain ⟨ψ, -, hψsupport⟩ :=
     (SmoothBumpFunction.nhds_basis_tsupport (I := I) p).mem_iff.mp (hU.mem_nhds hp)
   let ψ' : C^n⟮I, M; ℝ⟯ :=
     ⟨ψ, ψ.contMDiff.of_le (WithTop.coe_le_coe.mpr le_top)⟩
@@ -307,7 +307,7 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_locally
     ext x
     simp only [ContMDiffSection.coe_smulContMDiffMap, Pi.zero_apply, ContMDiffSection.coe_zero]
     by_cases hx : x ∈ Function.support (ψ : M → ℝ)
-    · exact smul_eq_zero_of_right _ (hσU x (hψsupp (subset_closure hx)))
+    · exact smul_eq_zero_of_right _ (hσU x (hψsupport (subset_closure hx)))
     · simp only [Function.mem_support, not_not] at hx
       exact smul_eq_zero_of_left hx _
   have key : ψ' • F σ = 0 := by rw [← F.map_smul, hψσ, map_zero]
@@ -334,7 +334,7 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise
   have he : p ∈ e.baseSet := mem_baseSet_trivializationAt F₁ E₁ p
   have hframe := e.isLocalFrameOn_localFrame_baseSet I (↑n) b
   obtain ⟨s', hs'⟩ := hframe.exists_contMDiffSection_eqOn_nhd e.open_baseSet he
-  obtain ⟨χ, -, hχsupp⟩ := (SmoothBumpFunction.nhds_basis_tsupport (I := I) p).mem_iff.mp
+  obtain ⟨χ, -, hχsupport⟩ := (SmoothBumpFunction.nhds_basis_tsupport (I := I) p).mem_iff.mp
     (e.open_baseSet.mem_nhds he)
   have hcoeff_smooth : ∀ i, ContMDiff I 𝓘(ℝ) (↑n)
       (fun x => χ x • hframe.coeff i x (τ x)) := by
@@ -344,7 +344,7 @@ theorem ContMDiffVectorBundleHom.linearMap_acts_pointwise
       intro x
       by_cases hx : x ∈ tsupport (χ : M → ℝ)
       · exact (χ.contMDiff.of_le (WithTop.coe_le_coe.mpr le_top)).contMDiffAt.smul
-          (contMDiffAt_localFrameCoeff b (hχsupp hx) τ.contMDiff.contMDiffAt i)
+          (contMDiffAt_localFrameCoeff b (hχsupport hx) τ.contMDiff.contMDiffAt i)
       · have hχ_zero : ∀ᶠ y in nhds x, (χ : M → ℝ) y = 0 := by
           apply Filter.Eventually.mono
             ((isClosed_tsupport (χ : M → ℝ)).isOpen_compl.mem_nhds hx)

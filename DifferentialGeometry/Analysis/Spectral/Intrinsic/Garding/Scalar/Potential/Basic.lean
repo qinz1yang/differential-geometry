@@ -188,7 +188,7 @@ noncomputable def scalarPotOp
     (ScalarH1Core (I := I) (M := M) q).subtype
 
 omit [BoundarylessManifold I M] in
-theorem scalarPotOp_core
+theorem scalarPotOp_apply_scalarH1Core
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯)
     (v : ScalarH1Core (I := I) (M := M) q) :
     scalarPotOp (I := I) (M := M) q ζ v.1 =
@@ -284,7 +284,7 @@ theorem scalarPotH0_inner_eq_smoothCore
     change inner Real (scalarPotOp (I := I) (M := M) q ζ w.1)
         (inc v.1) =
       inner Real (inc w.1) (scalarPotCore (I := I) (M := M) q ζ v)
-    rw [scalarPotOp_core]
+    rw [scalarPotOp_apply_scalarH1Core]
     rw [← tensorHsSmoothRepr_toL2 (I := I) (M := M)
         (show (0 : Real) ≤ 1 by norm_num) v.1 v.2,
       ← tensorHsSmoothRepr_toL2 (I := I) (M := M)
@@ -340,7 +340,7 @@ private theorem scalarPotCore_sub
   exact (sub_smul _ _ _).symm
 
 omit [BoundarylessManifold I M] in
-theorem scalarPot_pair_core
+theorem scalarPotCore_sub_norm_le
     (q : SmoothRiemannianMetric I M) (ζ η : C^∞⟮I, M; Real⟯)
     {C : Real} (hC : 0 ≤ C)
     (hζη : ∀ x : M, |(ζ : M → Real) x - (η : M → Real) x| ≤ C)
@@ -374,9 +374,9 @@ theorem scalarPot_pair_norm
   · intro v
     rw [sub_apply]
     simp only [Submodule.coe_subtype]
-    rw [scalarPotOp_core (I := I) (M := M) q ζ v,
-      scalarPotOp_core (I := I) (M := M) q η v]
-    exact scalarPot_pair_core (I := I) (M := M) q ζ η hC hζη v
+    rw [scalarPotOp_apply_scalarH1Core (I := I) (M := M) q ζ v,
+      scalarPotOp_apply_scalarH1Core (I := I) (M := M) q η v]
+    exact scalarPotCore_sub_norm_le (I := I) (M := M) q ζ η hC hζη v
 
 omit [BoundarylessManifold I M] in
 theorem scalarPotH0_pair
@@ -418,7 +418,7 @@ private theorem smulHs_bound
         ((Set.univ : Set M) ×ˢ (Set.univ : Set Real)) := by
     exact (ζ.contMDiff.comp contMDiff_fst).contMDiffOn
   obtain ⟨C, hC, hbound⟩ :=
-    smul_hs_unif (I := I) (M := M) q zeta
+    smul_hs_uniform (I := I) (M := M) q zeta
       (K := ({0} : Set Real)) (S := Set.univ)
       isCompact_singleton (Set.subset_univ _) hzeta m
   refine ⟨C, hC, ?_⟩
@@ -433,7 +433,7 @@ noncomputable def scalarPotHs
       (scalarSmulLin (I := I) (M := M) q ζ)).extendOfNorm
     (ccToHsLin (I := I) (M := M) q 0 (m : Real))
 
-theorem scalarPotHs_core
+theorem scalarPotHs_apply_ccTensorToHs
     (q : SmoothRiemannianMetric I M) (ζ : C^∞⟮I, M; Real⟯) (m : ℕ)
     (U : SmoothCcTensor q 0 0) :
     scalarPotHs (I := I) (M := M) q ζ m
@@ -472,7 +472,7 @@ theorem scalarPotHs_app
   · exact (appHs q 0 0 m (scalarCc (I := I) (M := M) q ζ)).continuous
   · intro W
     simp only [ccToHsLin_apply]
-    rw [scalarPotHs_core, appHs_core, app_scalarCc]
+    rw [scalarPotHs_apply_ccTensorToHs, appHs_apply_ccTensorToHs, app_scalarCc]
 
 private theorem ccHs_inc
     (q : SmoothRiemannianMetric I M) {τ σ : Real} (hτσ : τ ≤ σ)
@@ -533,7 +533,7 @@ private theorem scalarPotH0_cc
               (tensorResolventL2_isCompactOperator
                 (I := I) (M := M) q 0 0)).symm
               (SmoothCcTensor.toL2 W) := by
-          rw [scalarPotH0_apply, scalarPotOp_core, scalarPotCore_apply]
+          rw [scalarPotH0_apply, scalarPotOp_apply_scalarH1Core, scalarPotCore_apply]
         _ = ccTensorToHs (I := I) (M := M) q 0 0 W := by
           apply TensorHs.ext
           funext i
@@ -547,7 +547,7 @@ private theorem scalarPotH0_cc
               h0n
               (scalarPotHs (I := I) (M := M) q ζ 1
                 (ccTensorToHs (I := I) (M := M) q 0 ((1 : ℕ) : Real) S)) := by
-          rw [scalarPotHs_core]
+          rw [scalarPotHs_apply_ccTensorToHs]
         _ = tensorHsInclusion (I := I) (M := M) (g := q) (r := 0) (s := 0)
               h0n
               (scalarPotHs (I := I) (M := M) q ζ 1
@@ -568,7 +568,7 @@ private theorem scalarPotH0_cc
         (ccTensorToHs (I := I) (M := M) q 0 ((1 : ℕ) : Real)
           (scalarSmul (I := I) (M := M) q 0 0 ζ U)) := by
       rw [ccHs_inc (I := I) (M := M) q hn1,
-        scalarPotHs_core]
+        scalarPotHs_apply_ccTensorToHs]
     _ = ccTensorToHs (I := I) (M := M) q 0 0
         (scalarSmul (I := I) (M := M) q 0 0 ζ U) :=
       ccHs_inc (I := I) (M := M) q h0n _
@@ -598,12 +598,12 @@ theorem scalarPotHs_inc
           hm).continuous
   · intro U
     simp only [ccToHsLin_apply]
-    rw [scalarPotHs_core,
+    rw [scalarPotHs_apply_ccTensorToHs,
       ccHs_inc (I := I) (M := M) q h0m,
       ccHs_inc (I := I) (M := M) q hm,
       scalarPotH0_cc]
 
-theorem scalarPotHs_unif
+theorem scalarPotHs_uniform
     (q : SmoothRiemannianMetric I M)
     (zeta : Real → C^∞⟮I, M; Real⟯) {S K : Set Real}
     (hK : IsCompact K) (hKS : K ⊆ S)
@@ -613,7 +613,7 @@ theorem scalarPotHs_unif
     ∃ C : Real, 0 ≤ C ∧
       ∀ t, t ∈ K → ‖scalarPotHs (I := I) (M := M) q (zeta t) m‖ ≤ C := by
   obtain ⟨C, hC, hbound⟩ :=
-    smul_hs_unif (I := I) (M := M) q zeta hK hKS hzeta m
+    smul_hs_uniform (I := I) (M := M) q zeta hK hKS hzeta m
   refine ⟨C, hC, ?_⟩
   intro t ht
   have hdense : DenseRange

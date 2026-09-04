@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Bundle Manifold
 open scoped ContDiff Manifold
@@ -100,10 +100,10 @@ theorem BoundedGeometryNormalChartData.preapprox_tail
     (Nat.le_max_left _ _).trans ((Nat.le_max_right Nfwd _).trans hk)
   have hlRev : Nrev ≤ l :=
     (Nat.le_max_left _ _).trans ((Nat.le_max_right Nfwd _).trans hl)
-  have hkLoc : Nloc ≤ k :=
+  have hkLocal : Nloc ≤ k :=
     (Nat.le_max_left _ _).trans
       ((Nat.le_max_right Nrev _).trans ((Nat.le_max_right Nfwd _).trans hk))
-  have hlLoc : Nloc ≤ l :=
+  have hlLocal : Nloc ≤ l :=
     (Nat.le_max_left _ _).trans
       ((Nat.le_max_right Nrev _).trans ((Nat.le_max_right Nfwd _).trans hl))
   have hkInj : Ninj ≤ k :=
@@ -138,7 +138,7 @@ theorem BoundedGeometryNormalChartData.preapprox_tail
   let K : Set Yk.M := Metric.closedBall Yk.basepoint R
   let K' : Set Yk.M := Metric.closedBall Yk.basepoint S
   let W : Set Yk.M := Metric.ball Yk.basepoint T
-  have hlocKL := hloc k hkLoc l hlLoc
+  have hlocKL := hloc k hkLocal l hlLocal
   have hinjKL := hinj k hkInj l hlInj
   have hfwdKL := hfwd k hkFwd l hlFwd
   have hrevKL := hrev k hkRev l hlRev
@@ -186,5 +186,5 @@ theorem BoundedGeometryNormalChartData.preapprox_tail
     · exact ha
     · simpa only [K, W, NetLimitData.hatSourceBall, F, Yk, Yl, Lphi] using hy
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -82,20 +82,20 @@ private lemma coefIJ_M_smooth
     ContMDiff I 𝓘(ℝ, ℝ) ∞ (coefIJ_M (I := I) (M := M) g α i j) := by
   classical
   intro x₀
-  by_cases hx_src : x₀ ∈ (chartAt H α).source
-  · have h_chart_src_open : IsOpen ((chartAt H α).source) :=
+  by_cases hx_source : x₀ ∈ (chartAt H α).source
+  · have h_chart_source_open : IsOpen ((chartAt H α).source) :=
       (chartAt H α).open_source
     have h_cut_smooth : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
         (chartStrictCutoff (I := I) (M := M) α) x₀ :=
       (chartStrictCutoff_contMDiff (I := I) (M := M) α).contMDiffAt
     have hbase : x₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-      rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_src
+      rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_source
     have h_invGram_on : ContMDiffOn I 𝓘(ℝ) ∞
         (fun x : M => chartInvGramMatrix (I := I) g α x i j)
         (trivializationAt E (TangentSpace I) α).baseSet :=
       chartInvGramMatrix_entry_contMDiffOn (I := I) g α i j
     have h_base_open : IsOpen ((trivializationAt E (TangentSpace I) α).baseSet) := by
-      rw [trivializationAt_baseSet_eq_chartAt_source]; exact h_chart_src_open
+      rw [trivializationAt_baseSet_eq_chartAt_source]; exact h_chart_source_open
     have h_invGram_at : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
         (fun x : M => chartInvGramMatrix (I := I) g α x i j) x₀ := by
       have h := (h_invGram_on x₀ hbase).contMDiffAt
@@ -128,9 +128,9 @@ private lemma coefIJ_M_smooth
         exact h_scalarOnE_contDiffOn.fderiv_of_isOpen h_target_open h_le
       exact h_fderiv_smooth.clm_apply contDiffOn_const
     have hx_target : extChartAt I α x₀ ∈ (extChartAt I α).target := by
-      have hx_ext_src : x₀ ∈ (extChartAt I α).source := by
-        rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_src
-      exact (extChartAt I α).map_source hx_ext_src
+      have hx_ext_source : x₀ ∈ (extChartAt I α).source := by
+        rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx_source
+      exact (extChartAt I α).map_source hx_ext_source
     have h_partial_at_E : ContDiffAt ℝ ∞
         (fun y : E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (scalarOnE (I := I) α
@@ -140,10 +140,10 @@ private lemma coefIJ_M_smooth
       exact h_within.contDiffAt (h_target_open.mem_nhds hx_target)
     have h_extChart_contMDiff : ContMDiffAt I 𝓘(ℝ, E) ∞
         (extChartAt I α) x₀ := by
-      have h_open_src : IsOpen ((chartAt H α).source) := (chartAt H α).open_source
+      have h_open_source : IsOpen ((chartAt H α).source) := (chartAt H α).open_source
       have h_on : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α) (chartAt H α).source :=
         contMDiffOn_extChartAt (I := I) (x := α)
-      exact (h_on x₀ hx_src).contMDiffAt (h_open_src.mem_nhds hx_src)
+      exact (h_on x₀ hx_source).contMDiffAt (h_open_source.mem_nhds hx_source)
     have h_partial_at : ContMDiffAt I 𝓘(ℝ, ℝ) ∞
         (fun x : M => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (scalarOnE (I := I) α
@@ -158,7 +158,7 @@ private lemma coefIJ_M_smooth
       exact h_partial_at_E_mDiff.comp _ h_extChart_contMDiff
     unfold coefIJ_M
     exact (h_cut_smooth.mul h_invGram_at).mul h_partial_at
-  · have hx_compl : x₀ ∈ ((chartAt H α).source)ᶜ := hx_src
+  · have hx_compl : x₀ ∈ ((chartAt H α).source)ᶜ := hx_source
     have h_ev_zero : ∀ᶠ x in 𝓝 x₀,
         chartStrictCutoff (I := I) (M := M) α x = 0 := by
       have h_ev_nhdsSet :=
@@ -181,7 +181,7 @@ private lemma tsupport_coefIJ_M_subset
     (i j : Fin (Module.finrank ℝ E)) :
     tsupport (coefIJ_M (I := I) (M := M) g α i j) ⊆ (chartAt H α).source := by
   classical
-  have h_supp_subset : Function.support (coefIJ_M (I := I) (M := M) g α i j) ⊆
+  have h_support_subset : Function.support (coefIJ_M (I := I) (M := M) g α i j) ⊆
       Function.support (chartStrictCutoff (I := I) (M := M) α) := by
     intro x hx
     by_contra hxoff
@@ -192,7 +192,7 @@ private lemma tsupport_coefIJ_M_subset
       g α i j h0
   have h_tsupp_subset : tsupport (coefIJ_M (I := I) (M := M) g α i j) ⊆
       tsupport (chartStrictCutoff (I := I) (M := M) α) :=
-    closure_minimal (h_supp_subset.trans (subset_tsupport _))
+    closure_minimal (h_support_subset.trans (subset_tsupport _))
       (isClosed_tsupport _)
   exact h_tsupp_subset.trans (chartStrictCutoff_tsupport_subset (I := I) (M := M) α)
 
@@ -212,12 +212,12 @@ private lemma chartPushedRaw_coefIJ_M_apply
   rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α
     (coefIJ_M (I := I) (M := M) g α i j) hy]
   unfold coefIJ_M
-  have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
+  have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
     rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy; exact hy
   have h_φx_eq : extChartAt I α ((extChartAt I α).symm
         ((toEuclidean (E := E)).symm y)) =
       (toEuclidean (E := E)).symm y :=
-    (extChartAt I α).right_inv h_tgt
+    (extChartAt I α).right_inv h_target
   rw [h_φx_eq]
   unfold partialDerivOnEuclid invGramOnEuclid
   rfl

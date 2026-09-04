@@ -20,7 +20,7 @@ omit [NeZero d] in
 theorem integral_diffQuot_mul_eq_neg_integral_mul_diffQuot_locally_supported
     {f g : E → ℝ} (k : Fin d) {h : ℝ} (hh : h ≠ 0)
     (hf_continuous : Continuous f) (hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g)
-    (hg_supp : HasCompactSupport g) :
+    (hg_support : HasCompactSupport g) :
     ∫ x, diffQuot k h f x * g x ∂(volume : Measure E) =
       -∫ x, f x * diffQuot k (-h) g x ∂(volume : Measure E) := by
   set e : E := EuclideanSpace.single k (1 : ℝ) with he
@@ -28,32 +28,32 @@ theorem integral_diffQuot_mul_eq_neg_integral_mul_diffQuot_locally_supported
   have hg_cont : Continuous g := hg_smooth.continuous
   have h_diffQuot_neg_g_cont : Continuous (diffQuot k (-h) g) :=
     continuous_diffQuot_of_continuous (d := d) k (-h) hg_cont
-  have h_diffQuot_neg_g_supp : HasCompactSupport (diffQuot k (-h) g) :=
-    hasCompactSupport_diffQuot_of_hasCompactSupport (d := d) hg_supp k (-h)
+  have h_diffQuot_neg_g_support : HasCompactSupport (diffQuot k (-h) g) :=
+    hasCompactSupport_diffQuot_of_hasCompactSupport (d := d) hg_support k (-h)
   have h_translate_h_f_cont : Continuous (translate k h f) :=
     continuous_translate (d := d) k h hf_continuous
   have h_translate_neg_h_g_cont : Continuous (translate k (-h) g) :=
     continuous_translate (d := d) k (-h) hg_cont
-  have h_translate_neg_h_g_supp : HasCompactSupport (translate k (-h) g) :=
-    hasCompactSupport_translate_of_hasCompactSupport (d := d) hg_supp k (-h)
+  have h_translate_neg_h_g_support : HasCompactSupport (translate k (-h) g) :=
+    hasCompactSupport_translate_of_hasCompactSupport (d := d) hg_support k (-h)
   have hfg_int : Integrable (fun x => f x * g x) volume := by
     have hcont : Continuous (fun x : E => f x * g x) := hf_continuous.mul hg_cont
     have hsupp : HasCompactSupport (fun x : E => f x * g x) :=
-      hg_supp.mul_left
+      hg_support.mul_left
     exact hcont.integrable_of_hasCompactSupport hsupp
   have h_translate_f_g_int :
       Integrable (fun x => translate k h f x * g x) volume := by
     have hcont : Continuous (fun x : E => translate k h f x * g x) :=
       h_translate_h_f_cont.mul hg_cont
     have hsupp : HasCompactSupport (fun x : E => translate k h f x * g x) :=
-      hg_supp.mul_left
+      hg_support.mul_left
     exact hcont.integrable_of_hasCompactSupport hsupp
   have h_f_translate_g_int :
       Integrable (fun x => f x * translate k (-h) g x) volume := by
     have hcont : Continuous (fun x : E => f x * translate k (-h) g x) :=
       hf_continuous.mul h_translate_neg_h_g_cont
     have hsupp : HasCompactSupport (fun x : E => f x * translate k (-h) g x) :=
-      h_translate_neg_h_g_supp.mul_left
+      h_translate_neg_h_g_support.mul_left
     exact hcont.integrable_of_hasCompactSupport hsupp
   have hLHS_pointwise : ∀ x : E,
       diffQuot k h f x * g x =
@@ -137,18 +137,18 @@ theorem integral_diffQuot_mul_eq_neg_integral_mul_diffQuot_locally_supported
 
 omit [NeZero d] in
 theorem nirenbergTestFunction_contDiff_hasCompactSupport_tsupport_subset
-    {η u : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η u : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (hu : ContDiff ℝ (⊤ : ℕ∞) u)
     {Ω : Set E}
     (k : Fin d) {h : ℝ} (hh : h ≠ 0)
-    (hh_supp : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
+    (hh_support : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
     ContDiff ℝ (⊤ : ℕ∞) (nirenbergTestFunction k h η u) ∧
     HasCompactSupport (nirenbergTestFunction k h η u) ∧
     tsupport (nirenbergTestFunction k h η u) ⊆ Ω := by
   refine ⟨?_, ?_, ?_⟩
   · exact contDiff_nirenbergTestFunction (d := d) hη hu k hh
-  · exact hasCompactSupport_nirenbergTestFunction (d := d) hη_supp k h
-  · exact (tsupport_nirenbergTestFunction_subset (d := d) η u k h).trans hh_supp
+  · exact hasCompactSupport_nirenbergTestFunction (d := d) hη_support k h
+  · exact (tsupport_nirenbergTestFunction_subset (d := d) η u k h).trans hh_support
 
 omit [NeZero d] in
 private lemma fderiv_diffQuot_pointwise
@@ -164,7 +164,7 @@ private lemma fderiv_diffQuot_pointwise
 theorem integral_a_partial_u_partial_diffQuot_eq
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (i j k : Fin d) {h : ℝ} (hh : h ≠ 0) :
     ∫ x, B.a x i j *
         ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
@@ -183,13 +183,13 @@ theorem integral_a_partial_u_partial_diffQuot_eq
     have h_diffQuot_u : ContDiff ℝ (⊤ : ℕ∞) (diffQuot k h u) :=
       contDiff_diffQuot_of_contDiff (d := d) hu k hh
     exact h_eta_sq.mul h_diffQuot_u
-  have hg_supp : HasCompactSupport g := by
-    have h_eta_sq_supp : HasCompactSupport (fun y : E => η y ^ 2) := by
+  have hg_support : HasCompactSupport g := by
+    have h_eta_sq_support : HasCompactSupport (fun y : E => η y ^ 2) := by
       have heq : (fun y : E => η y ^ 2) = (fun y : E => η y * η y) := by
         funext y; ring
       rw [heq]
-      exact hη_supp.mul_right
-    exact h_eta_sq_supp.mul_right
+      exact hη_support.mul_right
+    exact h_eta_sq_support.mul_right
   set f : E → ℝ := fun y : E =>
     B.a y i j * ((fderiv ℝ u y) (EuclideanSpace.single i 1)) with hf_def
   have hf_cont : Continuous f := by
@@ -222,10 +222,10 @@ theorem integral_a_partial_u_partial_diffQuot_eq
       exact (ContinuousLinearMap.apply ℝ ℝ
         (EuclideanSpace.single j (1 : ℝ))).contDiff
     exact h_apply_smooth.comp h_fderiv_smooth
-  have hG_supp :
+  have hG_support :
       HasCompactSupport
         (fun y : E => (fderiv ℝ g y) (EuclideanSpace.single j 1)) :=
-    hg_supp.fderiv_apply (𝕜 := ℝ) _
+    hg_support.fderiv_apply (𝕜 := ℝ) _
   have h_IBP :
       ∫ x, diffQuot k h f x *
           (fun y : E => (fderiv ℝ g y) (EuclideanSpace.single j 1)) x
@@ -234,7 +234,7 @@ theorem integral_a_partial_u_partial_diffQuot_eq
             (fun y : E => (fderiv ℝ g y) (EuclideanSpace.single j 1)) x
             ∂(volume : Measure E) := by
     exact integral_diffQuot_mul_eq_neg_integral_mul_diffQuot_locally_supported
-      (d := d) k hh hf_cont hG_smooth hG_supp
+      (d := d) k hh hf_cont hG_smooth hG_support
   rw [h_LHS_rewrite]
   have hLHS_eq :
       ∫ x, f x * diffQuot k (-h)
@@ -249,7 +249,7 @@ theorem integral_a_partial_u_partial_diffQuot_eq
 theorem integral_principalIntegrand_eq_sum_integral
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u v : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (hv : ContDiff ℝ (⊤ : ℕ∞) v)
-    (hv_supp : HasCompactSupport v) :
+    (hv_support : HasCompactSupport v) :
     ∫ x, B.principalIntegrand u v x ∂(volume : Measure E) =
       ∑ i : Fin d, ∑ j : Fin d, ∫ x, B.a x i j *
           ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
@@ -264,10 +264,10 @@ theorem integral_principalIntegrand_eq_sum_integral
   have h_partial_v_cont : ∀ j : Fin d,
       Continuous (fun x : E => (fderiv ℝ v x) (EuclideanSpace.single j 1)) :=
     fun j => (hv_C1.continuous_fderiv (by norm_num)).clm_apply continuous_const
-  have h_partial_v_supp : ∀ j : Fin d,
+  have h_partial_v_support : ∀ j : Fin d,
       HasCompactSupport
         (fun x : E => (fderiv ℝ v x) (EuclideanSpace.single j 1)) :=
-    fun j => hv_supp.fderiv_apply (𝕜 := ℝ) _
+    fun j => hv_support.fderiv_apply (𝕜 := ℝ) _
   have h_pair_int : ∀ i j : Fin d,
       Integrable (fun x : E =>
         B.a x i j * ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
@@ -282,12 +282,12 @@ theorem integral_principalIntegrand_eq_sum_integral
           B.a x i j * ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
             ((fderiv ℝ v x) (EuclideanSpace.single j 1))) :=
       h1.mul (h_partial_v_cont j)
-    have h_supp : HasCompactSupport
+    have h_support : HasCompactSupport
         (fun x : E =>
           B.a x i j * ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
             ((fderiv ℝ v x) (EuclideanSpace.single j 1))) := by
-      exact (h_partial_v_supp j).mul_left
-    exact h2.integrable_of_hasCompactSupport h_supp
+      exact (h_partial_v_support j).mul_left
+    exact h2.integrable_of_hasCompactSupport h_support
   have h_eq_fun :
       (fun x : E => B.principalIntegrand u v x) =
         fun x : E =>
@@ -329,9 +329,9 @@ theorem nirenberg_substitution_identity
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     (h_weak : B.IsSmoothWeakSolution u f)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (k : Fin d) {h : ℝ} (hh : h ≠ 0)
-    (hh_supp : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
+    (hh_support : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
     -∑ i : Fin d, ∑ j : Fin d, ∫ x, diffQuot k h (fun y => B.a y i j *
             ((fderiv ℝ u y) (EuclideanSpace.single i 1))) x *
           ((fderiv ℝ (fun y : E => η y ^ 2 * diffQuot k h u y) x)
@@ -341,11 +341,11 @@ theorem nirenberg_substitution_identity
     = ∫ x in Ω, f x * nirenbergTestFunction k h η u x := by
   classical
   have hu : ContDiff ℝ (⊤ : ℕ∞) u := h_weak.1
-  obtain ⟨h_v_smooth, h_v_supp, h_v_tsupp⟩ :=
-    nirenbergTestFunction_contDiff_hasCompactSupport_tsupport_subset (d := d) hη hη_supp hu k hh hh_supp
+  obtain ⟨h_v_smooth, h_v_support, h_v_tsupp⟩ :=
+    nirenbergTestFunction_contDiff_hasCompactSupport_tsupport_subset (d := d) hη hη_support hu k hh hh_support
   have h_bilin : B.bilin u (nirenbergTestFunction k h η u) =
       ∫ x in Ω, f x * nirenbergTestFunction k h η u x :=
-    h_weak.2 (nirenbergTestFunction k h η u) h_v_smooth h_v_supp h_v_tsupp
+    h_weak.2 (nirenbergTestFunction k h η u) h_v_smooth h_v_support h_v_tsupp
   have h_bilin_unfold :
       B.bilin u (nirenbergTestFunction k h η u) =
         ∫ x in Ω, B.principalIntegrand u (nirenbergTestFunction k h η u) x +
@@ -356,17 +356,17 @@ theorem nirenberg_substitution_identity
   have h_principal_cont :
       Continuous (B.principalIntegrand u (nirenbergTestFunction k h η u)) :=
     B.continuous_principalIntegrand hu_C1 h_v_C1
-  have h_partial_v_supp : ∀ j : Fin d,
+  have h_partial_v_support : ∀ j : Fin d,
       HasCompactSupport
         (fun x : E =>
           (fderiv ℝ (nirenbergTestFunction k h η u) x)
             (EuclideanSpace.single j 1)) :=
-    fun j => h_v_supp.fderiv_apply (𝕜 := ℝ) _
-  have h_principal_supp :
+    fun j => h_v_support.fderiv_apply (𝕜 := ℝ) _
+  have h_principal_support :
       HasCompactSupport (B.principalIntegrand u (nirenbergTestFunction k h η u)) := by
     unfold SmoothEllipticBilinearForm.principalIntegrand
     refine HasCompactSupport.intro (K := tsupport (nirenbergTestFunction k h η u))
-      (h_v_supp) ?_
+      (h_v_support) ?_
     intro x hx
     have h_fderiv_v_zero : fderiv ℝ (nirenbergTestFunction k h η u) x = 0 :=
       fderiv_of_notMem_tsupport (𝕜 := ℝ) hx
@@ -380,22 +380,22 @@ theorem nirenberg_substitution_identity
       Continuous
         (fun x : E => B.c x * u x * (nirenbergTestFunction k h η u) x) :=
     (B.continuous_c.mul hu.continuous).mul h_v_smooth.continuous
-  have h_c_u_v_supp :
+  have h_c_u_v_support :
       HasCompactSupport
         (fun x : E => B.c x * u x * (nirenbergTestFunction k h η u) x) :=
-    h_v_supp.mul_left
+    h_v_support.mul_left
   have h_bilin_integrand_cont :
       Continuous
         (fun x : E =>
           B.principalIntegrand u (nirenbergTestFunction k h η u) x +
             B.c x * u x * (nirenbergTestFunction k h η u) x) :=
     h_principal_cont.add h_c_u_v_cont
-  have h_bilin_integrand_supp :
+  have h_bilin_integrand_support :
       HasCompactSupport
         (fun x : E =>
           B.principalIntegrand u (nirenbergTestFunction k h η u) x +
             B.c x * u x * (nirenbergTestFunction k h η u) x) :=
-    h_principal_supp.add h_c_u_v_supp
+    h_principal_support.add h_c_u_v_support
   have h_bilin_integrand_tsupport :
       tsupport
         (fun x : E =>
@@ -432,8 +432,8 @@ theorem nirenberg_substitution_identity
         intro hv0
         apply hQ
         rw [hv0, mul_zero]
-      have hv_supp : x ∈ Function.support (nirenbergTestFunction k h η u) := hv_ne
-      exact subset_closure hv_supp
+      have hv_support : x ∈ Function.support (nirenbergTestFunction k h η u) := hv_ne
+      exact subset_closure hv_support
   have h_bilin_to_univ :
       ∫ x in Ω, B.principalIntegrand u (nirenbergTestFunction k h η u) x +
             B.c x * u x * (nirenbergTestFunction k h η u) x =
@@ -492,11 +492,11 @@ theorem nirenberg_substitution_identity
   have h_principal_int :
       Integrable (B.principalIntegrand u (nirenbergTestFunction k h η u))
         volume :=
-    h_principal_cont.integrable_of_hasCompactSupport h_principal_supp
+    h_principal_cont.integrable_of_hasCompactSupport h_principal_support
   have h_c_u_v_int :
       Integrable
         (fun x => B.c x * u x * nirenbergTestFunction k h η u x) volume :=
-    h_c_u_v_cont.integrable_of_hasCompactSupport h_c_u_v_supp
+    h_c_u_v_cont.integrable_of_hasCompactSupport h_c_u_v_support
   have h_bilin_split :
       ∫ x, B.principalIntegrand u (nirenbergTestFunction k h η u) x +
           B.c x * u x * (nirenbergTestFunction k h η u) x
@@ -514,7 +514,7 @@ theorem nirenberg_substitution_identity
           ((fderiv ℝ (nirenbergTestFunction k h η u) x)
             (EuclideanSpace.single j 1))
         ∂(volume : Measure E) :=
-    integral_principalIntegrand_eq_sum_integral (d := d) B hu h_v_smooth h_v_supp
+    integral_principalIntegrand_eq_sum_integral (d := d) B hu h_v_smooth h_v_support
   have h_pair_IBP : ∀ i j : Fin d,
       ∫ x, B.a x i j *
           ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
@@ -527,7 +527,7 @@ theorem nirenberg_substitution_identity
               (EuclideanSpace.single j 1))
           ∂(volume : Measure E) := by
     intro i j
-    exact integral_a_partial_u_partial_diffQuot_eq (d := d) B hu hη hη_supp
+    exact integral_a_partial_u_partial_diffQuot_eq (d := d) B hu hη hη_support
       i j k hh
   have hSwap_sum_neg :
       ∑ i : Fin d, ∑ j : Fin d, ∫ x, B.a x i j *

@@ -110,7 +110,7 @@ private theorem global_lip_ibp
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     (hu_cont.mul hdiv_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
-  have hφ_supp (α : M) : tsupport (φ α) ⊆ (chartAt H α).source := by
+  have hφ_support (α : M) : tsupport (φ α) ⊆ (chartAt H α).source := by
     exact tsupport_mul_subset_left.trans (hρsub α)
   have hφ_compact (α : M) : HasCompactSupport (φ α) :=
     HasCompactSupport.of_compactSpace _
@@ -152,7 +152,7 @@ private theorem global_lip_ibp
           ∂(chartLocalMeasure (I := I) g α) := by
     intro α _
     exact chart_local_ibp_lip (I := I) g α X (hD α)
-      (hφ_compact α) (hφ_supp α)
+      (hφ_compact α) (hφ_support α)
   have htrans : ∀ α ∈ S,
       Integrable (tangentSectionAction (I := I) X (φ α))
           (riemannianVolumeMeasure (I := I) (M := M) g) ∧
@@ -162,9 +162,9 @@ private theorem global_lip_ibp
             ∂(chartLocalMeasure (I := I) g α) := by
     intro α _
     apply chart_int_eq_global (I := I) (M := M) g α
-      (tangent_lip_int (I := I) g α X (hD α) (hφ_compact α) (hφ_supp α))
+      (tangent_lip_int (I := I) g α X (hD α) (hφ_compact α) (hφ_support α))
     intro x hx
-    have hxt : x ∉ tsupport (φ α) := fun h => hx (hφ_supp α h)
+    have hxt : x ∉ tsupport (φ α) := fun h => hx (hφ_support α h)
     have hev : (φ α) =ᶠ[𝓝 x] (fun _ => (0 : ℝ)) := by
       change Filter.EventuallyEq (nhds x) (φ α) (0 : M → ℝ)
       exact notMem_tsupport_iff_eventuallyEq.mp hxt

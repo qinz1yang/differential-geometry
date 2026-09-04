@@ -388,7 +388,7 @@ private lemma covApply_chartFrame_value
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma nablaCurvSec_chartBasisVec_alpha_corr_firstAntisym
+private lemma nablaCurvSec_chartBasisVec_alpha_correction_firstAntisym
     (g : SmoothRiemannianMetric I M) (α : M)
     (p q r s : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -446,7 +446,7 @@ private lemma nablaCurvSec_chartBasisVec_alpha_corr_firstAntisym
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma nablaCurvSec_chartBasisVec_alpha_corr_secondAntisym
+private lemma nablaCurvSec_chartBasisVec_alpha_correction_secondAntisym
     (g : SmoothRiemannianMetric I M) (α : M)
     (p q r s : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -505,7 +505,7 @@ private lemma nablaCurvSec_chartBasisVec_alpha_corr_secondAntisym
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma nablaCurvSec_chartBasisVec_alpha_corr_acted
+private lemma nablaCurvSec_chartBasisVec_alpha_correction_acted
     (g : SmoothRiemannianMetric I M) (α : M)
     (p q r s : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
@@ -586,11 +586,11 @@ theorem nablaCurvSec_chartBasisVec_alpha_frame_expand
   rw [nablaCurvSec_def]
   rw [nablaCurvSec_chartBasisVec_alpha_leadingTerm (I := I) g α p q r s hx
       hXp hXq hXr hXs hU_open hxU hU_good hXp_eq hXq_eq hXr_eq hXs_eq,
-    nablaCurvSec_chartBasisVec_alpha_corr_firstAntisym (I := I) g α p q r s hx
+    nablaCurvSec_chartBasisVec_alpha_correction_firstAntisym (I := I) g α p q r s hx
       hXp hXq hXr hXs hU_open hxU hU_good hXp_eq hXq_eq hXr_eq hXs_eq,
-    nablaCurvSec_chartBasisVec_alpha_corr_secondAntisym (I := I) g α p q r s hx
+    nablaCurvSec_chartBasisVec_alpha_correction_secondAntisym (I := I) g α p q r s hx
       hXp hXq hXr hXs hU_open hxU hU_good hXp_eq hXq_eq hXr_eq hXs_eq,
-    nablaCurvSec_chartBasisVec_alpha_corr_acted (I := I) g α p q r s hx
+    nablaCurvSec_chartBasisVec_alpha_correction_acted (I := I) g α p q r s hx
       hXp hXq hXr hXs hU_open hxU hU_good hXp_eq hXq_eq hXr_eq hXs_eq]
   rw [← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl (fun l _ => ?_)

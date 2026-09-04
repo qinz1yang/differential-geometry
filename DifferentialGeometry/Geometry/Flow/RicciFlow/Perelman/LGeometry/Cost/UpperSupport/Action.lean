@@ -101,7 +101,7 @@ private theorem contMDiffOn_lVelocity_family
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] in
-private theorem contDiffOn_lRegLagrangian_family
+private theorem contDiffOn_lRegularizedLagrangian_family
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {alpha : E × Real → M} {V : Set E} {K : Set Real}
     (hVopen : IsOpen V) (hKopen : IsOpen K)
@@ -109,7 +109,7 @@ private theorem contDiffOn_lRegLagrangian_family
       (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha (V ×ˢ K))
     (hreg : ∀ q ∈ V ×ˢ K, T - q.2 ^ 2 ∈ D.regular) :
     ContDiffOn Real ∞
-      (fun q : E × Real ↦ lRegLagrangian S T (fun s ↦ alpha (q.1, s)) q.2)
+      (fun q : E × Real ↦ lRegularizedLagrangian S T (fun s ↦ alpha (q.1, s)) q.2)
       (V ×ˢ K) := by
   let J := 𝓘(Real, E).prod 𝓘(Real, Real)
   intro q hq
@@ -157,15 +157,15 @@ private theorem contDiffOn_lRegLagrangian_family
     (contMDiffAt_const.mul htotal.2).add
       ((contMDiffAt_const.mul (contMDiffAt_snd.pow 2)).mul hscalar)
   have hlag' : ContDiffAt Real ∞
-      (fun p : E × Real ↦ lRegLagrangian S T (fun s ↦ alpha (p.1, s)) p.2) q := by
+      (fun p : E × Real ↦ lRegularizedLagrangian S T (fun s ↦ alpha (p.1, s)) p.2) q := by
     rw [← contMDiffAt_iff_contDiffAt, modelWithCornersSelf_prod,
       ← chartedSpaceSelf_prod]
-    simpa only [J, lRegLagrangian] using hlag
+    simpa only [J, lRegularizedLagrangian] using hlag
   exact hlag'.contDiffWithinAt
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem hasDerivAt_lRegAction_family_eq_boundary
+private theorem hasDerivAt_lRegularizedAction_family_eq_boundary
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
     (a b : Real)
@@ -173,9 +173,9 @@ private theorem hasDerivAt_lRegAction_family_eq_boundary
     (hEuler : ∀ s ∈ uIcc a b,
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) (f 0)
           (fun r : Real ↦ lVelocity (I := I) (f 0) r) s =
-        lRegAccel S T s (f 0 s) (lVelocity (I := I) (f 0) s))
+        lRegularizedAccel S T s (f 0 s) (lVelocity (I := I) (f 0) s))
     (hfix : ∀ u : Real, f u a = f 0 a) :
-    HasDerivAt (fun u : Real ↦ lRegAction S T (f u) a b)
+    HasDerivAt (fun u : Real ↦ lRegularizedAction S T (f u) a b)
       ((S.base.metric (T - b ^ 2)).inner (f 0 b)
         (lVelocity (I := I) (fun u : Real ↦ f u b) 0)
         (lVelocity (I := I) (f 0) b)) 0 := by
@@ -187,31 +187,31 @@ private theorem hasDerivAt_lRegAction_family_eq_boundary
     rw [lVelocity, mfderiv_const]
     rfl
   have heuler : ∀ s ∈ uIcc a b,
-      lRegEulerPair S T (f 0) s
+      lRegularizedEulerPair S T (f 0) s
         (lVelocity (I := I) (fun u : Real ↦ f u s) 0) = 0 := by
     intro s hs
-    simp only [lRegEulerPair]
+    simp only [lRegularizedEulerPair]
     rw [hEuler s hs, sub_self, map_zero]
   have hint : (∫ s in a..b,
-      lRegEulerPair S T (f 0) s
+      lRegularizedEulerPair S T (f 0) s
         (lVelocity (I := I) (fun u : Real ↦ f u s) 0)) = 0 := by
     calc
       (∫ s in a..b,
-          lRegEulerPair S T (f 0) s
+          lRegularizedEulerPair S T (f 0) s
             (lVelocity (I := I) (fun u : Real ↦ f u s) 0)) =
           ∫ _s in a..b, (0 : Real) := by
             apply intervalIntegral.integral_congr
             intro s hs
             exact heuler s hs
       _ = 0 := by simp only [intervalIntegral.integral_zero]
-  have hfirst := lRegAction_first_variation (I := I) S hS T f hf a b hreg
+  have hfirst := lRegularizedAction_first_variation (I := I) S hS T f hf a b hreg
   simpa only [hzero, map_zero, zero_apply, hint,
     sub_zero] using hfirst
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] in
-theorem exists_contDiffOn_lRegAction_family
+theorem exists_contDiffOn_lRegularizedAction_family
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -223,7 +223,7 @@ theorem exists_contDiffOn_lRegAction_family
     (hreg : ∀ q ∈ V ×ˢ K, T - q.2 ^ 2 ∈ D.regular) :
     ∃ U : Set E, IsOpen U ∧ A0 ∈ U ∧ U ⊆ V ∧
       ContDiffOn Real ∞
-        (fun A : E ↦ lRegAction S T (fun s ↦ alpha (A, s)) a b) U := by
+        (fun A : E ↦ lRegularizedAction S T (fun s ↦ alpha (A, s)) a b) U := by
   obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, _hrhoDeriv, hrhoK⟩ :=
     DifferentialGeometry.exists_smooth_time_clamp_range_subset
       hKopen hab (hKconn.ordConnected.out haK hbK)
@@ -241,9 +241,9 @@ theorem exists_contDiffOn_lRegAction_family
     rw [Metric.mem_ball] at h ⊢
     simpa only [phi, dist_eq_norm, add_sub_cancel_left, sub_zero] using h
   let G : E → Real → Real := fun A u ↦
-    (b - a) * lRegLagrangian S T (fun s ↦ alpha (phi A, s))
+    (b - a) * lRegularizedLagrangian S T (fun s ↦ alpha (phi A, s))
       (rho (a + (b - a) * u))
-  have hlag := contDiffOn_lRegLagrangian_family S hS T hVopen hKopen halpha hreg
+  have hlag := contDiffOn_lRegularizedLagrangian_family S hS T hVopen hKopen halpha hreg
   have hG : ContDiffOn Real ∞ (fun q : E × Real ↦ G q.1 q.2) univ := by
     intro q _
     have hp := hphi.contDiffAt.comp q contDiffAt_fst
@@ -260,7 +260,7 @@ theorem exists_contDiffOn_lRegAction_family
     change ContDiffWithinAt Real ∞
       (fun x : E × Real ↦ (b - a) *
         ((fun r : E × Real ↦
-          lRegLagrangian S T (fun s ↦ alpha (r.1, s)) r.2) ∘
+          lRegularizedLagrangian S T (fun s ↦ alpha (r.1, s)) r.2) ∘
             fun x ↦ (phi x.1, rho (a + (b - a) * x.2))) x)
       Set.univ q
     exact (contDiffAt_const.mul hc).contDiffWithinAt
@@ -271,7 +271,7 @@ theorem exists_contDiffOn_lRegAction_family
   refine ⟨U, Metric.isOpen_ball, by simpa [U] using half_pos heps,
     fun A hA ↦ hball (Metric.ball_subset_ball (half_le_self heps.le) hA), ?_⟩
   have heq : Set.EqOn Aact
-      (fun A : E ↦ lRegAction S T (fun s ↦ alpha (A, s)) a b) U := by
+      (fun A : E ↦ lRegularizedAction S T (fun s ↦ alpha (A, s)) a b) U := by
     intro A hAU
     have hrad : bump.radial (A - A0) = A - A0 := by
       apply bump.radial_eq_self
@@ -288,25 +288,25 @@ theorem exists_contDiffOn_lRegAction_family
     rw [show Aact A = ∫ u in (0 : Real)..1, G A u by rfl]
     have hcongr : (∫ u in (0 : Real)..1, G A u) =
         ∫ u in (0 : Real)..1, (b-a) *
-          lRegLagrangian S T (fun s ↦ alpha (A,s)) (a+(b-a)*u) := by
+          lRegularizedLagrangian S T (fun s ↦ alpha (A,s)) (a+(b-a)*u) := by
       apply intervalIntegral.integral_congr
       intro u hu
       have hu' : u ∈ Icc (0 : Real) 1 := by
         simpa only [uIcc_of_le zero_le_one] using hu
       simp only [G, hphiA, hclamp hu']
     rw [hcongr]
-    simp only [lRegAction]
+    simp only [lRegularizedAction]
     have hright : a + (b - a) = b := by ring
     simpa only [intervalIntegral.integral_const_mul, smul_eq_mul,
       mul_zero, add_zero, mul_one, hright] using
       (intervalIntegral.smul_integral_comp_add_mul
-      (f := fun s : Real ↦ lRegLagrangian S T (fun r ↦ alpha (A,r)) s)
+      (f := fun s : Real ↦ lRegularizedLagrangian S T (fun r ↦ alpha (A,r)) s)
       (a := (0 : Real)) (b := 1) (b - a) a)
   exact (hAact.mono (fun _ _ ↦ mem_univ _)).congr fun A hA ↦ (heq hA).symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem hasFDerivAt_lRegAction_family_endpoint
+theorem hasFDerivAt_lRegularizedAction_family_endpoint
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -322,33 +322,33 @@ theorem hasFDerivAt_lRegAction_family_endpoint
           (fun r : Real ↦ alpha (A0, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A0, z)) r) s =
-        lRegAccel S T s (alpha (A0, s))
+        lRegularizedAccel S T s (alpha (A0, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A0, r)) s)) :
     HasFDerivAt
       (fun p : E × Real ↦
-        lRegAction S T (fun s ↦ alpha (p.1, s)) a p.2)
+        lRegularizedAction S T (fun s ↦ alpha (p.1, s)) a p.2)
       (((((S.base.metric (T - b ^ 2)).inner (alpha (A0, b))
               (lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b)).comp
             (mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 :
               E →L[Real] TangentSpace I (alpha (A0, b)))).comp
           (ContinuousLinearMap.fst Real E Real)) +
-        (lRegLagrangian S T (fun s : Real ↦ alpha (A0, s)) b) •
+        (lRegularizedLagrangian S T (fun s : Real ↦ alpha (A0, s)) b) •
           ContinuousLinearMap.snd Real E Real) (A0, b) := by
   obtain ⟨W, hWopen, hA0W, hWV, hactW⟩ :=
-    exists_contDiffOn_lRegAction_family S hS T a b hab hVopen hA0V hKopen hKconn
+    exists_contDiffOn_lRegularizedAction_family S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg
   obtain ⟨rho, lo, hi, hloa, hbhi, hrho, hrhoId, _hrhoDeriv, hrhoK⟩ :=
     DifferentialGeometry.exists_smooth_time_clamp_range_subset
       hKopen hab (hKconn.ordConnected.out haK hbK)
   let Act : E × Real → Real := fun p ↦
-    lRegAction S T (fun s ↦ alpha (p.1, s)) a p.2
+    lRegularizedAction S T (fun s ↦ alpha (p.1, s)) a p.2
   let U : Set (E × Real) := V ×ˢ Ioo a hi
   have hUopen : IsOpen U := hVopen.prod isOpen_Ioo
   have hpU : (A0, b) ∈ U := ⟨hA0V, hab, hbhi⟩
   let G : (E × Real) → Real → Real := fun p u ↦
-    (p.2 - a) * lRegLagrangian S T (fun s ↦ alpha (p.1, s))
+    (p.2 - a) * lRegularizedLagrangian S T (fun s ↦ alpha (p.1, s))
       (rho (a + (p.2 - a) * u))
-  have hlag := contDiffOn_lRegLagrangian_family S hS T hVopen hKopen halpha hreg
+  have hlag := contDiffOn_lRegularizedLagrangian_family S hS T hVopen hKopen halpha hreg
   have h1inf : (↑(1 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat) :=
     WithTop.coe_le_coe.mpr le_top
   have hG : ContDiffOn Real 1
@@ -376,14 +376,14 @@ theorem hasFDerivAt_lRegAction_family_endpoint
       ⟨hq.1.1, hrhoK _⟩
     have hlagAt : ContDiffAt Real 1
         (fun r : E × Real ↦
-          lRegLagrangian S T (fun s ↦ alpha (r.1, s)) r.2)
+          lRegularizedLagrangian S T (fun s ↦ alpha (r.1, s)) r.2)
         (q.1.1, rho (a + (q.1.2 - a) * q.2)) :=
       (hlag.contDiffAt ((hVopen.prod hKopen).mem_nhds hpairMem)).of_le h1inf
     have hcomp := hlagAt.comp q hpair
     change ContDiffWithinAt Real 1
       (fun x : (E × Real) × Real ↦ (x.1.2 - a) *
         ((fun r : E × Real ↦
-          lRegLagrangian S T (fun s ↦ alpha (r.1, s)) r.2) ∘
+          lRegularizedLagrangian S T (fun s ↦ alpha (r.1, s)) r.2) ∘
             fun x ↦ (x.1.1, rho (a + (x.1.2 - a) * x.2))) x)
       (U ×ˢ Set.univ) q
     exact (hlen.mul hcomp).contDiffWithinAt
@@ -406,27 +406,27 @@ theorem hasFDerivAt_lRegAction_family_endpoint
       · nlinarith [hu.2, hpa, hp.2.2]
     have hcongr : (∫ u in (0 : Real)..1, G p u) =
         ∫ u in (0 : Real)..1, (p.2 - a) *
-          lRegLagrangian S T (fun s ↦ alpha (p.1, s))
+          lRegularizedLagrangian S T (fun s ↦ alpha (p.1, s))
             (a + (p.2 - a) * u) := by
       apply intervalIntegral.integral_congr
       intro u hu
       have hu' : u ∈ Icc (0 : Real) 1 := by
         simpa only [uIcc_of_le zero_le_one] using hu
       simp only [G, hclamp hu']
-    change lRegAction S T (fun s ↦ alpha (p.1, s)) a p.2 = _
+    change lRegularizedAction S T (fun s ↦ alpha (p.1, s)) a p.2 = _
     rw [hcongr]
-    simp only [lRegAction]
+    simp only [lRegularizedAction]
     have hright : a + (p.2 - a) = p.2 := by ring
     simpa only [intervalIntegral.integral_const_mul, smul_eq_mul,
       mul_zero, add_zero, mul_one, hright] using
       (intervalIntegral.smul_integral_comp_add_mul
-        (f := fun s : Real ↦ lRegLagrangian S T (fun r ↦ alpha (p.1, r)) s)
+        (f := fun s : Real ↦ lRegularizedLagrangian S T (fun r ↦ alpha (p.1, r)) s)
         (a := (0 : Real)) (b := 1) (p.2 - a) a).symm
   have hActDiff : DifferentiableAt Real Act (A0, b) :=
     (hInt.congr_of_eventuallyEq hEq).differentiableAt
   let endMap : E → M := fun A ↦ alpha (A, b)
   let Asp : E → Real := fun A ↦
-    lRegAction S T (fun s ↦ alpha (A, s)) a b
+    lRegularizedAction S T (fun s ↦ alpha (A, s)) a b
   let Lsp : E →L[Real] Real :=
     ((S.base.metric (T - b ^ 2)).inner (alpha (A0, b))
       (lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b)).comp
@@ -448,7 +448,7 @@ theorem hasFDerivAt_lRegAction_family_endpoint
             (fun r : Real ↦ lVelocity (I := I) gamma r) s) s ∧
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
             (fun r : Real ↦ lVelocity (I := I) gamma r) s =
-          lRegAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
+          lRegularizedAccel S T s (gamma s) (lVelocity (I := I) gamma s) := by
     intro s hs
     have hsK : s ∈ K := hseg hs
     have halphaAt : ContMDiffAt
@@ -479,7 +479,7 @@ theorem hasFDerivAt_lRegAction_family_endpoint
   have hAspEq : fderiv Real Asp A0 = Lsp := by
     apply ContinuousLinearMap.ext
     intro Y
-    obtain ⟨zeta, hzeta, hzetaW, hzeta0, hzetaVel⟩ :=
+    obtain ⟨zeta, hzeta, hzetaW, hzeta0, hzetaVelocity⟩ :=
       exists_smooth_curve (I := 𝓘(Real, E)) (M := E)
         A0 Y W hWopen hA0W
     have h8inf : (↑(8 : ENat) : WithTop ENat) ≤ ↑(⊤ : ENat) :=
@@ -525,7 +525,7 @@ theorem hasFDerivAt_lRegAction_family_endpoint
               (fun r : Real ↦ lVelocity (I := I) (f 0) r) s) s ∧
           covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) (f 0)
               (fun r : Real ↦ lVelocity (I := I) (f 0) r) s =
-            lRegAccel S T s (f 0 s) (lVelocity (I := I) (f 0) s) := by
+            lRegularizedAccel S T s (f 0 s) (lVelocity (I := I) (f 0) s) := by
       intro s hs
       have hsI : s ∈ Icc a b := by
         simpa only [uIcc_of_le hab.le] using hs
@@ -537,13 +537,13 @@ theorem hasFDerivAt_lRegAction_family_endpoint
         rw [hzeta0]
         simpa only [id_eq] using congrArg (fun q ↦ alpha (A0, q))
           (hrhoId ⟨hr.1.le, hr.2.le⟩)
-      exact lRegData_congr S T s heq (hgammaData s hsI)
-    have hfReg : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.regular :=
+      exact lRegularizedData_congr S T s heq (hgammaData s hsI)
+    have hfRegularity : ∀ s ∈ uIcc a b, T - s ^ 2 ∈ D.regular :=
       fun s hs ↦ (hfData s hs).1
     have hfEuler : ∀ s ∈ uIcc a b,
         covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) (f 0)
             (fun r : Real ↦ lVelocity (I := I) (f 0) r) s =
-          lRegAccel S T s (f 0 s) (lVelocity (I := I) (f 0) s) :=
+          lRegularizedAccel S T s (f 0 s) (lVelocity (I := I) (f 0) s) :=
       fun s hs ↦ (hfData s hs).2.2.2
     have hfu : ∀ u : Real, Set.EqOn (f u)
         (fun s : Real ↦ alpha (zeta u, s)) (Icc a b) := by
@@ -552,10 +552,10 @@ theorem hasFDerivAt_lRegAction_family_endpoint
       exact congrArg (fun q ↦ alpha (zeta u, q))
         (by simpa only [id_eq] using
           (hrhoId ⟨hloa.le.trans hs.1, hs.2.trans hbhi.le⟩))
-    have hact : (fun u : Real ↦ lRegAction S T (f u) a b) =
+    have hact : (fun u : Real ↦ lRegularizedAction S T (f u) a b) =
         fun u : Real ↦ Asp (zeta u) := by
       funext u
-      have heq := lRegAction_congr (I := I) S T (f u)
+      have heq := lRegularizedAction_congr (I := I) S T (f u)
         (fun s : Real ↦ alpha (zeta u, s)) a b (by
           intro s hs
           apply hfu u
@@ -567,7 +567,7 @@ theorem hasFDerivAt_lRegAction_family_endpoint
       funext u
       change alpha (zeta u, rho b) = alpha (zeta u, b)
       rw [hrhob]
-    have hcentVel : lVelocity (I := I) (f 0) b =
+    have hcentVelocity : lVelocity (I := I) (f 0) b =
         lVelocity (I := I) gamma b := by
       have heq : (f 0) =ᶠ[nhds b] gamma := by
         filter_upwards
@@ -598,7 +598,7 @@ theorem hasFDerivAt_lRegAction_family_endpoint
     have hendMD0 : MDifferentiableAt 𝓘(Real, E) I endMap (zeta 0) := by
       simpa only [hzeta0] using hendMD
     have hcompMF := hendMD0.hasMFDerivAt.comp 0 hzetaMD.hasMFDerivAt
-    have hendVel : lVelocity (I := I) (fun u : Real ↦ f u b) 0 =
+    have hendVelocity : lVelocity (I := I) (fun u : Real ↦ f u b) 0 =
         mfderiv 𝓘(Real, E) I endMap A0 Y := by
       unfold lVelocity
       rw [hend]
@@ -608,9 +608,9 @@ theorem hasFDerivAt_lRegAction_family_endpoint
       change mfderiv 𝓘(Real, E) I endMap (zeta 0)
           (mfderiv 𝓘(Real, Real) 𝓘(Real, E) zeta 0 (1 : Real)) =
         mfderiv 𝓘(Real, E) I endMap A0 Y
-      rw [hzetaVel, hzeta0]
-    have hbdry := hasDerivAt_lRegAction_family_eq_boundary
-      S hS T f hf a b hfReg hfEuler hfix
+      rw [hzetaVelocity, hzeta0]
+    have hbdry := hasDerivAt_lRegularizedAction_family_eq_boundary
+      S hS T f hf a b hfRegularity hfEuler hfix
     have hfb : f 0 b = alpha (A0, b) := by
       change alpha (zeta 0, rho b) = alpha (A0, b)
       rw [hrhob, hzeta0]
@@ -620,7 +620,7 @@ theorem hasFDerivAt_lRegAction_family_endpoint
           (mfderiv 𝓘(Real, E) I endMap A0 Y)
           (lVelocity (I := I) gamma b)) 0 := by
       rw [← hact]
-      simpa only [hendVel, hcentVel, gamma, endMap] using hbdry
+      simpa only [hendVelocity, hcentVelocity, gamma, endMap] using hbdry
     have hzetaF := hzetaMD.hasMFDerivAt.hasFDerivAt
     have hAsp0 : HasFDerivAt Asp (fderiv Real Asp A0) (zeta 0) := by
       simpa only [hzeta0] using hAspBase
@@ -633,7 +633,7 @@ theorem hasFDerivAt_lRegAction_family_endpoint
       change fderiv Real Asp A0
         (mfderiv 𝓘(Real, Real) 𝓘(Real, E) zeta 0 (1 : Real)) =
           fderiv Real Asp A0 Y
-      rw [hzetaVel]
+      rw [hzetaVelocity]
     have hval := hline.unique hbdry'
     calc
       fderiv Real Asp A0 Y =
@@ -658,14 +658,14 @@ theorem hasFDerivAt_lRegAction_family_endpoint
     simpa only [Act, Asp] using hAspGiven
   have hspaceEq := hspaceSlice.unique hspace
   let lag : Real → Real := fun s ↦
-    lRegLagrangian S T (fun r ↦ alpha (A0, r)) s
+    lRegularizedLagrangian S T (fun r ↦ alpha (A0, r)) s
   have hlagK : ContinuousOn lag K := by
     have hcomp := hlag.continuousOn.comp
       (continuousOn_const.prodMk continuousOn_id)
       (fun s hs ↦ ⟨hA0V, hs⟩)
     change ContinuousOn
       ((fun q : E × Real ↦
-        lRegLagrangian S T (fun s ↦ alpha (q.1, s)) q.2) ∘
+        lRegularizedLagrangian S T (fun s ↦ alpha (q.1, s)) q.2) ∘
           fun s : Real ↦ (A0, id s)) K
     exact hcomp
   have hlagI : ContinuousOn lag (uIcc a b) := by
@@ -677,7 +677,7 @@ theorem hasFDerivAt_lRegAction_family_endpoint
       (hlagK.stronglyMeasurableAtFilter hKopen b hbK)
       (hlagK.continuousAt (hKopen.mem_nhds hbK))
   have htime : HasDerivAt (fun r : Real ↦ Act (A0, r)) (lag b) b := by
-    simpa only [Act, lRegAction, lag] using hupper
+    simpa only [Act, lRegularizedAction, lag] using hupper
   have htins : HasFDerivAt (fun r : Real ↦ (A0, r))
       (ContinuousLinearMap.inr Real E Real) b :=
     hasFDerivAt_prodMk_right A0 b
@@ -722,7 +722,7 @@ theorem hasFDerivAt_lRegAction_family_endpoint
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem hasMFDerivAt_lRegAction_endpointBranch
+theorem hasMFDerivAt_lRegularizedAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -738,21 +738,21 @@ theorem hasMFDerivAt_lRegAction_endpointBranch
           (fun r : Real ↦ alpha (A0, r))
           (fun r : Real ↦
             lVelocity (I := I) (fun z : Real ↦ alpha (A0, z)) r) s =
-        lRegAccel S T s (alpha (A0, s))
+        lRegularizedAccel S T s (alpha (A0, s))
           (lVelocity (I := I) (fun r : Real ↦ alpha (A0, r)) s))
     (hinj : Function.Injective fun B : E ↦
       mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0 B) :
     let hloc := Coordinates.isLocalDiffeomorphAt_parameter_graph_of_slice_mfderiv_injective hVopen hA0V hKopen hbK halpha hinj
     HasMFDerivAt (I.prod 𝓘(Real, Real)) 𝓘(Real, Real)
       (fun q : M × Real ↦
-        lRegAction S T
+        lRegularizedAction S T
           (fun s : Real ↦ alpha ((hloc.localInverse q).1, s))
           a (hloc.localInverse q).2)
       (alpha (A0, b), b)
       (((S.base.metric (T - b ^ 2)).inner (alpha (A0, b))
             (lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b)).comp
           (ContinuousLinearMap.fst Real E Real) +
-        (lRegLagrangian S T (fun s : Real ↦ alpha (A0, s)) b -
+        (lRegularizedLagrangian S T (fun s : Real ↦ alpha (A0, s)) b -
           (S.base.metric (T - b ^ 2)).inner (alpha (A0, b))
             (lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b)
             (lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b)) •
@@ -763,11 +763,11 @@ theorem hasMFDerivAt_lRegAction_endpointBranch
   let q0 : M × Real := (alpha (A0, b), b)
   let hloc := Coordinates.isLocalDiffeomorphAt_parameter_graph_of_slice_mfderiv_injective hVopen hA0V hKopen hbK halpha hinj
   let Act : E × Real → Real := fun p ↦
-    lRegAction S T (fun s : Real ↦ alpha (p.1, s)) a p.2
+    lRegularizedAction S T (fun s : Real ↦ alpha (p.1, s)) a p.2
   let g := S.base.metric (T - b ^ 2)
   let Ab : TangentSpace I (alpha (A0, b)) :=
     lVelocity (I := I) (fun s : Real ↦ alpha (A0, s)) b
-  let Lb : Real := lRegLagrangian S T (fun s : Real ↦ alpha (A0, s)) b
+  let Lb : Real := lRegularizedLagrangian S T (fun s : Real ↦ alpha (A0, s)) b
   let endMap : E → M := fun A ↦ alpha (A, b)
   let dAct : E × Real →L[Real] Real :=
     (((g.inner (alpha (A0, b)) Ab).comp
@@ -783,8 +783,8 @@ theorem hasMFDerivAt_lRegAction_endpointBranch
     change HasMFDerivAt (𝓘(Real, E).prod 𝓘(Real, Real))
       𝓘(Real, Real)
       (fun p : E × Real ↦
-        lRegAction S T (fun s ↦ alpha (p.1, s)) a p.2) (A0, b) _
-    exact (hasFDerivAt_lRegAction_family_endpoint
+        lRegularizedAction S T (fun s ↦ alpha (p.1, s)) a p.2) (A0, b) _
+    exact (hasFDerivAt_lRegularizedAction_family_endpoint
       S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK hstart halpha hreg hEuler).hasMFDerivAt
   have hq0 : hloc.localInverse q0 = (A0, b) := by
@@ -896,7 +896,7 @@ theorem hasMFDerivAt_lRegAction_endpointBranch
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_contMDiffOn_lRegAction_endpointBranch
+theorem exists_contMDiffOn_lRegularizedAction_endpointBranch
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
     {alpha : E × Real → M} {V : Set E} {K : Set Real} {A0 : E}
@@ -911,12 +911,12 @@ theorem exists_contMDiffOn_lRegAction_endpointBranch
     ∃ U : Set M, IsOpen U ∧ alpha (A0, b) ∈ U ∧
       ∃ F : M → Real,
         ContMDiffOn I 𝓘(Real, Real) ∞ F U ∧
-        ∀ y ∈ U, F y = lRegAction S T
+        ∀ y ∈ U, F y = lRegularizedAction S T
           (fun s ↦ alpha
             ((Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj).localInverse y, s))
           a b := by
   obtain ⟨W, hWopen, hA0W, hWV, hact⟩ :=
-    exists_contDiffOn_lRegAction_family
+    exists_contDiffOn_lRegularizedAction_family
       S hS T a b hab hVopen hA0V hKopen hKconn
       haK hbK halpha hreg
   let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
@@ -931,10 +931,10 @@ theorem exists_contMDiffOn_lRegAction_endpointBranch
     change hloc.localInverse (alpha (A0, b)) ∈ W
     rw [hinv]
     exact hA0W
-  let F : M → Real := fun y ↦ lRegAction S T
+  let F : M → Real := fun y ↦ lRegularizedAction S T
     (fun s ↦ alpha (hloc.localInverse y, s)) a b
   have hactM : ContMDiffOn 𝓘(Real, E) 𝓘(Real, Real) ∞
-      (fun A : E ↦ lRegAction S T (fun s ↦ alpha (A, s)) a b) W :=
+      (fun A : E ↦ lRegularizedAction S T (fun s ↦ alpha (A, s)) a b) W :=
     contMDiffOn_iff_contDiffOn.mpr hact
   have hinvMD := hloc.localInverse_contMDiffOn.mono
     (inter_subset_left : U ⊆ hloc.localInverse.source)
@@ -984,7 +984,7 @@ theorem exists_contMDiffOn_lCost_upper_support
           F (lExp S T x Z tau) =
             lCost S T x (lExp S T x Z tau) tau ∧
           ∀ y ∈ U, lCost S T x y tau ≤ F y := by
-  let gamma : Real → MM := lRegCurve S T x Z
+  let gamma : Real → MM := lRegularizedCurve S T x Z
   let b : Real := Real.sqrt tau
   let x0 : MM := gamma s0
   let A0 : TangentSpace IM x0 := lVelocity (I := IM) gamma s0
@@ -996,39 +996,39 @@ theorem exists_contMDiffOn_lCost_upper_support
   have hs0b' : s0 < b := by simpa only [b] using hs0b
   obtain ⟨V, hVopen, hA0V, Ktime, hKopen, hKconn, h0K, hs0K,
       hbK, alpha, halpha, hcurves, hinj⟩ :=
-    exists_lRegGeodesicFamily_with_injective_endpoint_mfderiv
+    exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv
       (E := EM) (I := IM) S hS K T x hmin hreg hRm
       hs00 hs0b
-  have hbdom : b ∈ lRegDomain S T x Z := by
+  have hbdom : b ∈ lRegularizedDomain S T x Z := by
     have hpos : (Z, tau) ∈ lExpPosDom S T x :=
       ((mem_lMinDomain S T x Z tau).1 hmin).1
     simpa only [b] using
       ((mem_lExpPosDom S T x Z tau).1 hpos).2.2
-  let J : Set Real := lRegDomain S T x Z
+  let J : Set Real := lRegularizedDomain S T x Z
   have hJopen : IsOpen J := by
-    simpa only [J] using lRegDomain_isOpen S T x Z
+    simpa only [J] using lRegularizedDomain_isOpen S T x Z
   have hJconn : IsPreconnected J := by
-    simpa only [J] using lRegDomain_preconn S T x Z
+    simpa only [J] using lRegularizedDomain_preconn S T x Z
   have h0J : 0 ∈ J := by
-    simpa only [J] using lRegDomain_seg S T x Z hbdom le_rfl hb0.le
+    simpa only [J] using lRegularizedDomain_segment S T x Z hbdom le_rfl hb0.le
   have hs0J : s0 ∈ J := by
     simpa only [J] using
-      lRegDomain_seg S T x Z hbdom hs00.le hs0b'.le
+      lRegularizedDomain_segment S T x Z hbdom hs00.le hs0b'.le
   have hbJ : b ∈ J := by simpa only [J] using hbdom
-  have hgamma : IsLRegGeodesicOn S T gamma J := by
+  have hgamma : IsLRegularizedGeodesicOn S T gamma J := by
     intro r hr
-    have hrdom : r ∈ lRegDomain S T x Z := by simpa only [J] using hr
+    have hrdom : r ∈ lRegularizedDomain S T x Z := by simpa only [J] using hr
     obtain ⟨L, hLopen, hLconn, h0L, hrL, hchosen⟩ :=
-      lRegChosen_spec S T x Z hrdom
-    have heqOn : Set.EqOn gamma (lRegChosen S T x Z hrdom) L := by
+      lRegularizedChosen_spec S T x Z hrdom
+    have heqOn : Set.EqOn gamma (lRegularizedChosen S T x Z hrdom) L := by
       simpa only [gamma] using
-        lRegCurve_eqOn S hS T hLopen hLconn h0L hchosen
-    have heq : gamma =ᶠ[nhds r] lRegChosen S T x Z hrdom :=
+        lRegularizedCurve_eqOn S hS T hLopen hLconn h0L hchosen
+    have heq : gamma =ᶠ[nhds r] lRegularizedChosen S T x Z hrdom :=
       heqOn.eventuallyEq_of_mem (hLopen.mem_nhds hrL)
-    exact lRegData_congr S T r heq (hchosen.2.2 r hrL)
+    exact lRegularizedData_congr S T r heq (hchosen.2.2 r hrL)
   have hcenterEq : Set.EqOn (fun r ↦ alpha (A0, r)) gamma
       (Ktime ∩ J) :=
-    lRegSol_eqOn S hS T hKopen hKconn hs0K hJopen hJconn hs0J
+    lRegularizedSolution_eqOn S hS T hKopen hKconn hs0K hJopen hJconn hs0J
       (hcurves A0 hA0V).2.2 hgamma
       (by simpa only [x0] using (hcurves A0 hA0V).1)
       (by simpa only [A0] using (hcurves A0 hA0V).2.1)
@@ -1045,7 +1045,7 @@ theorem exists_contMDiffOn_lCost_upper_support
     intro q hq
     exact ((hcurves q.1 hq.1).2.2 q.2 hq.2).1
   obtain ⟨U0, hU0open, hzU0, F0, hF0smooth, hF0eq⟩ :=
-    exists_contMDiffOn_lRegAction_endpointBranch
+    exists_contMDiffOn_lRegularizedAction_endpointBranch
       S hS T s0 b hs0b' hVopen hA0V hKopen
       hKconn hs0K hbK halpha hregFamily hinj
   rw [hcenterEnd] at hzU0
@@ -1056,18 +1056,18 @@ theorem exists_contMDiffOn_lCost_upper_support
     hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hVopen
   have hUopen : IsOpen U := hU0open.inter hbranchOpen
-  have hzSrc : lExp S T x Z tau ∈ hloc.localInverse.source := by
+  have hzSource : lExp S T x Z tau ∈ hloc.localInverse.source := by
     rw [← hcenterEnd]
     exact hloc.localInverse_mem_source
   have hinv0 : hloc.localInverse (lExp S T x Z tau) = A0 := by
     rw [← hcenterEnd]
     exact hloc.localInverse_left_inv hloc.localInverse_mem_target
   have hzU : lExp S T x Z tau ∈ U := by
-    refine ⟨hzU0, hzSrc, ?_⟩
+    refine ⟨hzU0, hzSource, ?_⟩
     change hloc.localInverse (lExp S T x Z tau) ∈ V
     rw [hinv0]
     exact hA0V
-  let F : MM → Real := fun y ↦ lRegAction S T gamma 0 s0 + F0 y
+  let F : MM → Real := fun y ↦ lRegularizedAction S T gamma 0 s0 + F0 y
   have hFsmooth : ContMDiffOn IM 𝓘(Real, Real) ∞ F U := by
     exact contMDiffOn_const.add
       (hF0smooth.mono fun _ hy ↦ hy.1)
@@ -1083,54 +1083,54 @@ theorem exists_contMDiffOn_lCost_upper_support
     simpa only [hb2] using hRm
   have hgammaC1 : ContMDiffOn 𝓘(Real, Real) IM 1 gamma
       (Icc (0 : Real) b) := by
-    simpa only [gamma] using lRegCurve_c1On S hS T x Z hbdom
+    simpa only [gamma] using lRegularizedCurve_c1On S hS T x Z hbdom
   have hheadC1 : ContMDiffOn 𝓘(Real, Real) IM 1 gamma
       (Icc (0 : Real) s0) :=
     hgammaC1.mono fun s hs ↦ ⟨hs.1, hs.2.trans hs0b'.le⟩
   have htailC1 : ContMDiffOn 𝓘(Real, Real) IM 1 gamma
       (Icc s0 b) :=
     hgammaC1.mono fun s hs ↦ ⟨hs00.le.trans hs.1, hs.2⟩
-  have hheadInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := IM) S hS.smoothMetric
+  have hheadInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := IM) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T 0 s0 hs00.le gamma hheadC1
     (fun s hs ↦ hregSq s ⟨hs.1, hs.2.trans hs0b'.le⟩)
-  have htailInt := intervalIntegrable_lRegLagrangian_of_contMDiffOn_one (I := IM) S hS.smoothMetric
+  have htailInt := intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one (I := IM) S hS.smoothMetric
     ⟨hS.scalarCont⟩ T s0 b hs0b'.le gamma htailC1
     (fun s hs ↦ hregSq s ⟨hs00.le.trans hs.1, hs.2⟩)
-  have hactionAdd := lRegAction_add (I := IM) S T gamma 0 s0 b
+  have hactionAdd := lRegularizedAction_add (I := IM) S T gamma 0 s0 b
     hheadInt htailInt
-  have htailEq : lRegAction S T (fun r ↦ alpha (A0, r)) s0 b =
-      lRegAction S T gamma s0 b := by
-    apply lRegAction_congr (I := IM) S T
+  have htailEq : lRegularizedAction S T (fun r ↦ alpha (A0, r)) s0 b =
+      lRegularizedAction S T gamma s0 b := by
+    apply lRegularizedAction_congr (I := IM) S T
     intro s hs
     have hs' : s ∈ Ioo s0 b := by
       simpa only [uIoo_of_le hs0b'.le] using hs
     have hsI : s ∈ Icc (0 : Real) b :=
       ⟨hs00.le.trans hs'.1.le, hs'.2.le⟩
     exact hcenterEq ⟨hsegK hsI, hsegJ hsI⟩
-  have hfullCost : lRegAction S T gamma 0 b =
+  have hfullCost : lRegularizedAction S T gamma 0 b =
       lCost S T x (lExp S T x Z tau) tau := by
     have hvec := (mem_lMinDomain S T x Z tau).1 hmin
     calc
-      lRegAction S T gamma 0 b =
+      lRegularizedAction S T gamma 0 b =
           lLength S T (squareRootReparametrization gamma) 0 tau := by
         simpa only [gamma, b] using
-          (lLength_squareRootReparametrization_eq_lRegAction (I := IM) S T gamma tau htau.le).symm
+          (lLength_squareRootReparametrization_eq_lRegularizedAction (I := IM) S T gamma tau htau.le).symm
       _ = lCost S T x (lExp S T x Z tau) tau := by
-        change lLength S T (squareRootReparametrization (lRegCurve S T x Z)) 0 tau =
-          lCost S T x (lRegCurve S T x Z (Real.sqrt tau)) tau
+        change lLength S T (squareRootReparametrization (lRegularizedCurve S T x Z)) 0 tau =
+          lCost S T x (lRegularizedCurve S T x Z (Real.sqrt tau)) tau
         exact hvec.2
   have hF0center := hF0eq (lExp S T x Z tau) hzU0
   have hFcenter : F (lExp S T x Z tau) =
       lCost S T x (lExp S T x Z tau) tau := by
     rw [show F (lExp S T x Z tau) =
-      lRegAction S T gamma 0 s0 + F0 (lExp S T x Z tau) by rfl,
+      lRegularizedAction S T gamma 0 s0 + F0 (lExp S T x Z tau) by rfl,
       hF0center]
     simp only [hinv0]
     rw [htailEq, hactionAdd, hfullCost]
   refine ⟨U, hUopen, hzU, F, hFsmooth, hFcenter, ?_⟩
   intro y hy
   have hy0 : y ∈ U0 := hy.1
-  have hySrc : y ∈ hloc.localInverse.source := hy.2.1
+  have hySource : y ∈ hloc.localInverse.source := hy.2.1
   have hyV : hloc.localInverse y ∈ V := hy.2.2
   let A : EM := hloc.localInverse y
   let beta : Real → MM := fun s ↦ alpha (A, s)
@@ -1150,15 +1150,15 @@ theorem exists_contMDiffOn_lCost_upper_support
       ((hcurves (hloc.localInverse y) hyV).1).symm
   have hend : beta b = y := by
     simpa only [beta, A, hloc] using
-      hloc.localInverse_right_inv hySrc
-  have hbdd := lRegCosts_bdd_rm (I := IM) S hS K T 0 b
+      hloc.localInverse_right_inv hySource
+  have hbdd := lRegularizedCosts_bdd_rm (I := IM) S hS K T 0 b
     (by norm_num) hb0.le (by simpa only [hb2] using hreg) hRmSq x y
   have hle := lCost_le_join_bdd (I := IM) S hS T b hb0 x y
     hs00 hs0b' hbdd hregSq gamma beta hheadC1 hbeta hnode
-    (by simpa only [gamma] using lRegCurve_zero S T x Z) hend
+    (by simpa only [gamma] using lRegularizedCurve_zero S T x Z) hend
   have hF0y := hF0eq y hy0
   change lCost S T x y tau ≤
-    lRegAction S T gamma 0 s0 + F0 y
+    lRegularizedAction S T gamma 0 s0 + F0 y
   rw [hF0y]
   simpa only [hloc, A, beta, hb2] using hle
 

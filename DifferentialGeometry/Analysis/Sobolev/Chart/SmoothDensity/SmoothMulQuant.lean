@@ -47,25 +47,25 @@ theorem MemWkpChart_smooth_mul_per_chart_quant
               (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
             (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  obtain ⟨b, hb_smooth, _, hb_one_on_tsupp, hb_supp⟩ :=
+  obtain ⟨b, hb_smooth, _, hb_one_on_tsupp, hb_support⟩ :=
     exists_chart_cutoff_M (I := I) (M := M) α
   have hbφ_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M => b x * (φ : M → ℝ) x) :=
     hb_smooth.mul φ.contMDiff
-  have hbφ_supp : tsupport (fun x : M => b x * (φ : M → ℝ) x) ⊆ (chartAt H α).source := by
+  have hbφ_support : tsupport (fun x : M => b x * (φ : M → ℝ) x) ⊆ (chartAt H α).source := by
     have h_eq : (fun x : M => b x * (φ : M → ℝ) x) = (fun x : M => b x • (φ : M → ℝ) x) := by
       funext x; rfl
     rw [h_eq]
-    refine (tsupport_smul_subset_left (f := b) (g := (φ : M → ℝ))).trans hb_supp
+    refine (tsupport_smul_subset_left (f := b) (g := (φ : M → ℝ))).trans hb_support
   obtain ⟨C, hC_nn, hC_bound⟩ :=
     smoothExtensionScalar_iteratedFDeriv_bound
-      (I := I) (M := M) α hbφ_smooth hbφ_supp k
+      (I := I) (M := M) α hbφ_smooth hbφ_support k
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
   set Λ : EuclN → ℝ := smoothExtensionScalar (I := I) (M := M) α
     (fun x : M => b x * (φ : M → ℝ) x) with hΛ_def
   have hΛ_smooth : ContDiff ℝ ∞ Λ := by
     rw [hΛ_def]
-    exact contDiff_smoothExtensionScalar (I := I) (M := M) α hbφ_smooth hbφ_supp
+    exact contDiff_smoothExtensionScalar (I := I) (M := M) α hbφ_smooth hbφ_support
   have hΛ_smooth_top : ContDiff ℝ (⊤ : ℕ∞) Λ := hΛ_smooth
   have hΛ_bound :
       ∀ j ≤ k, ∀ y ∈ Ω, ‖iteratedFDeriv ℝ j Λ y‖ ≤ C := fun j hj y _ =>

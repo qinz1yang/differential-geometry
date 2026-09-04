@@ -173,7 +173,7 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
           mul_le_mul_of_nonneg_right hδc_le hnnw
       _ = δm * Real.sqrt (g₀.inner y v v) * Real.sqrt (g₀.inner y w' w') := by ring
   obtain ⟨n', e, bse, hn, hbse, horth, hpars, hrepr_v, hlastw⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n' = Module.finrank ℝ E := by rw [hn]; rfl
   subst hnE
   set G : ℝ :=

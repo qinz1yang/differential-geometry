@@ -60,12 +60,12 @@ def eigenvectorRotatedTestSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     SmoothCcTensor g r s :=
   rotatedTestSection (I := I) (M := M) g r s α P₀
     (chartTestPullback (I := I) (M := M) α ψ)
     (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
-    (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_supp)
+    (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_support)
 
 omit [CompleteSpace E] [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -73,12 +73,12 @@ private lemma tensorComponentEuclid_eigenvectorRotatedTestSection_eqOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P : TensorCompIdx (E := E) r s) :
     Set.EqOn
       (tensorComponentEuclid (I := I) (M := M) g r s
         (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-          hψ hψ_cs hψ_supp) α P)
+          hψ hψ_cs hψ_support) α P)
       (fun y => covChartMetricGramInv (I := I) (M := M) g r s α y P P₀ * ψ y)
       (chartTargetEuclid (I := I) (M := M) α) := by
   intro y hy
@@ -86,7 +86,7 @@ private lemma tensorComponentEuclid_eigenvectorRotatedTestSection_eqOn
     tensorComponentEuclid_apply_of_mem (I := I) (M := M) g r s _ α P hy,
     rotatedTestSection_chartComp (I := I) (M := M) g r s α P₀
       (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
-      (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_supp)
+      (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_support)
       P hy,
     chartPushedRaw_chartTestPullback_eqOn (I := I) (M := M) α ψ hy]
 
@@ -96,13 +96,13 @@ private lemma eigenvectorRotatedTestSection_tsupport_subset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     tsupport (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-        hψ hψ_cs hψ_supp).toFun ⊆ (chartAt H α).source := by
+        hψ hψ_cs hψ_support).toFun ⊆ (chartAt H α).source := by
   classical
   refine (closure_minimal ?_
     (isClosed_tsupport (chartTestPullback (I := I) (M := M) α ψ))).trans
-    (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_supp)
+    (chartTestPullback_tsupport_subset_source (I := I) (M := M) α hψ_cs hψ_support)
   intro b hb
   rw [Function.mem_support] at hb
   by_contra hb_notin
@@ -116,7 +116,7 @@ private lemma eigenvectorRotatedTestSection_tsupport_subset
             (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ))
           (gramInvWeight_mul_bump_tsupport (I := I) (M := M) g r s α P₀ Q
             (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-              hψ_cs hψ_supp))
+              hψ_cs hψ_support))
           Q).toFun b =
       ∑ Q : CompIdx E r s,
         (chartBasisTensorSection (I := I) (M := M) g r s α
@@ -126,7 +126,7 @@ private lemma eigenvectorRotatedTestSection_tsupport_subset
             (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ))
           (gramInvWeight_mul_bump_tsupport (I := I) (M := M) g r s α P₀ Q
             (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-              hψ_cs hψ_supp))
+              hψ_cs hψ_support))
           Q).toFun b
       from by
         induction (Finset.univ : Finset (CompIdx E r s)) using Finset.induction with
@@ -146,14 +146,14 @@ lemma eigenvectorMainDir_tendsto
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Filter.Tendsto
       (fun n => ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor
           (pouSmul (I := I) (M := M) g r s α
             (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-              hψ hψ_cs hψ_supp)) x
+              hψ hψ_cs hψ_support)) x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g))
       atTop
       (𝓝 ((1 - i.fst.val) *
@@ -167,7 +167,7 @@ lemma eigenvectorMainDir_tendsto
             ψ y ∂(volume : Measure EuclN))) := by
   classical
   set vRot : SmoothCcTensor g r s :=
-    eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_supp
+    eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_support
     with hvRot_def
   set φ : TensorL2 r s g :=
     tensorResolventEigenbasisVec (I := I) (M := M)
@@ -231,7 +231,7 @@ lemma eigenvectorMainDir_tendsto
     tensorL2Inner_pouSmul_tensorL2ChartComponent_pull (I := I) (M := M)
       g r s α φ vRot
       (eigenvectorRotatedTestSection_tsupport_subset (I := I) (M := M)
-        g r s α P₀ hψ hψ_cs hψ_supp)
+        g r s α P₀ hψ hψ_cs hψ_support)
   have h_collapse :
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
@@ -252,7 +252,7 @@ lemma eigenvectorMainDir_tendsto
         tensorComponentEuclid (I := I) (M := M) g r s vRot α P y =
           covChartMetricGramInv (I := I) (M := M) g r s α y P P₀ * ψ y :=
       fun P => tensorComponentEuclid_eigenvectorRotatedTestSection_eqOn
-        (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_supp P hy
+        (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_support P hy
     rw [show (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
           covChartMetricGram (I := I) (M := M) g r s α P Q y *
             tensorComponentEuclid (I := I) (M := M) g r s vRot α P y *
@@ -319,7 +319,7 @@ private lemma crossLeftPairing_integrable
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (P Q : TensorCompIdx (E := E) r (s + 1))
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
     Integrable (fun y => densityOnEuclid (I := I) g α y *
         (covChartMetricGram (I := I) (M := M) g r (s + 1) α P Q y *
           ((tensorL2ChartComponentCutoff (I := I) (M := M) g r (s + 1)
@@ -334,7 +334,7 @@ private lemma crossLeftPairing_integrable
                 (chartTestPullback (I := I) (M := M) α ψ)
                 (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
                 (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-                  hψ_cs hψ_supp)))
+                  hψ_cs hψ_support)))
             α Q y))
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
@@ -347,7 +347,7 @@ private lemma crossLeftPairing_integrable
     have h := density_coeff_test_memLp (I := I) (M := M) g α
       ((covChartMetricGram_contDiffOn (I := I) (M := M) g r (s + 1) α P Q).mul
         (crossLeftTestCoeff_contDiffOn (I := I) (M := M) g r s α P₀ Q))
-      hψ hψ_cs hψ_supp
+      hψ hψ_cs hψ_support
     exact h
   have hcut_memLp : MemLp (fun y =>
       ((tensorL2ChartComponentCutoff (I := I) (M := M) g r (s + 1)
@@ -377,7 +377,7 @@ private lemma crossLeftPairing_integrable
     (Filter.Eventually.of_forall (fun y hy => ?_))
   simp only []
   rw [tensorComponentEuclid_prependCovGradSlot_rotatedTestSection_chartTestPullback_eqOn
-    (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_supp Q hy]
+    (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_support Q hy]
   ring
 
 omit [CompleteSpace E] in
@@ -387,7 +387,7 @@ lemma crossLeftLimitPairing_integrable
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (P Q : TensorCompIdx (E := E) r (s + 1))
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Integrable (fun y => densityOnEuclid (I := I) g α y *
         (covChartMetricGram (I := I) (M := M) g r (s + 1) α P Q y *
             crossLeftTestCoeff (I := I) (M := M) g r s α P₀ Q y *
@@ -406,7 +406,7 @@ lemma crossLeftLimitPairing_integrable
     density_coeff_test_memLp (I := I) (M := M) g α
       ((covChartMetricGram_contDiffOn (I := I) (M := M) g r (s + 1) α P Q).mul
         (crossLeftTestCoeff_contDiffOn (I := I) (M := M) g r s α P₀ Q))
-      hψ hψ_cs hψ_supp
+      hψ hψ_cs hψ_support
   have hlim_memLp : MemLp (fun y =>
       ((crossLeftLimitComponent (I := I) (M := M) g r s i α P :
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 2
@@ -431,14 +431,14 @@ lemma eigenvectorCrossLeft_tendsto
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Filter.Tendsto
       (fun n => ∫ x, tensorCovDerivCrossLeft (I := I) (M := M) g r s
           (chartAtlasPOU I M α)
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor
           (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-            hψ hψ_cs hψ_supp) x
+            hψ hψ_cs hψ_support) x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g))
       atTop
       (𝓝 (∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -457,7 +457,7 @@ lemma eigenvectorCrossLeft_tendsto
     fun P Q => (density_coeff_test_memLp (I := I) (M := M) g α
       ((covChartMetricGram_contDiffOn (I := I) (M := M) g r (s + 1) α P Q).mul
         (crossLeftTestCoeff_contDiffOn (I := I) (M := M) g r s α P₀ Q))
-      hψ hψ_cs hψ_supp).toLp _ with hmtest_def
+      hψ hψ_cs hψ_support).toLp _ with hmtest_def
   have h_dir : ∀ (P Q : TensorCompIdx (E := E) r (s + 1)),
       Filter.Tendsto
         (fun n => ∫ y, (mtest P Q : EuclN → ℝ) y *
@@ -507,7 +507,7 @@ lemma eigenvectorCrossLeft_tendsto
           (eigenvectorSmoothApprox (I := I) (M := M)
             g r s i n).toCcTensor
           (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-            hψ hψ_cs hψ_supp) x
+            hψ hψ_cs hψ_support) x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∑ P : TensorCompIdx (E := E) r (s + 1),
         ∑ Q : TensorCompIdx (E := E) r (s + 1),
@@ -527,7 +527,7 @@ lemma eigenvectorCrossLeft_tendsto
           (chartTestPullback (I := I) (M := M) α ψ)
           (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
           (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-            hψ_cs hψ_supp))]
+            hψ_cs hψ_support))]
     have hpair : ∀ (P Q : TensorCompIdx (E := E) r (s + 1)),
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
             densityOnEuclid (I := I) g α y *
@@ -546,7 +546,7 @@ lemma eigenvectorCrossLeft_tendsto
                       (chartTestPullback (I := I) (M := M) α ψ)
                       (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
                       (chartTestPullback_tsupport_subset_source
-                        (I := I) (M := M) α hψ_cs hψ_supp)))
+                        (I := I) (M := M) α hψ_cs hψ_support)))
                   α Q y)
             ∂(volume : Measure EuclN) =
           ∫ y, (mtest P Q : EuclN → ℝ) y *
@@ -570,7 +570,7 @@ lemma eigenvectorCrossLeft_tendsto
           (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr
           (Filter.Eventually.of_forall (fun y hy =>
             tensorComponentEuclid_prependCovGradSlot_rotatedTestSection_chartTestPullback_eqOn
-              (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_supp Q hy))]
+              (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_support Q hy))]
         with y hy_m hy_decouple
       rw [hy_m, hy_decouple]
       ring
@@ -592,7 +592,7 @@ lemma eigenvectorCrossLeft_tendsto
                       (chartTestPullback (I := I) (M := M) α ψ)
                       (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
                       (chartTestPullback_tsupport_subset_source
-                        (I := I) (M := M) α hψ_cs hψ_supp)))
+                        (I := I) (M := M) α hψ_cs hψ_support)))
                   α Q y)) =
         fun y => ∑ P : TensorCompIdx (E := E) r (s + 1),
           ∑ Q : TensorCompIdx (E := E) r (s + 1),
@@ -612,7 +612,7 @@ lemma eigenvectorCrossLeft_tendsto
                       (chartTestPullback (I := I) (M := M) α ψ)
                       (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
                       (chartTestPullback_tsupport_subset_source
-                        (I := I) (M := M) α hψ_cs hψ_supp)))
+                        (I := I) (M := M) α hψ_cs hψ_support)))
                   α Q y)
         from funext (fun y => by
           rw [Finset.mul_sum]
@@ -620,11 +620,11 @@ lemma eigenvectorCrossLeft_tendsto
     rw [MeasureTheory.integral_finsetSum _ (fun P _ =>
         MeasureTheory.integrable_finsetSum _ (fun Q _ =>
           crossLeftPairing_integrable (I := I) (M := M) g r s i
-            α P₀ P Q hψ hψ_cs hψ_supp n))]
+            α P₀ P Q hψ hψ_cs hψ_support n))]
     refine Finset.sum_congr rfl (fun P _ => ?_)
     rw [MeasureTheory.integral_finsetSum _ (fun Q _ =>
         crossLeftPairing_integrable (I := I) (M := M) g r s i
-          α P₀ P Q hψ hψ_cs hψ_supp n)]
+          α P₀ P Q hψ hψ_cs hψ_support n)]
     exact Finset.sum_congr rfl (fun Q _ => hpair P Q)
   have h_limit_eq :
       ∑ P : TensorCompIdx (E := E) r (s + 1),
@@ -674,11 +674,11 @@ lemma eigenvectorCrossLeft_tendsto
     rw [Finset.sum_congr rfl (fun P _ =>
       (MeasureTheory.integral_finsetSum _ (fun Q _ =>
         crossLeftLimitPairing_integrable (I := I) (M := M)
-          g r s i α P₀ P Q hψ hψ_cs hψ_supp)).symm)]
+          g r s i α P₀ P Q hψ hψ_cs hψ_support)).symm)]
     rw [← MeasureTheory.integral_finsetSum _ (fun P _ =>
       MeasureTheory.integrable_finsetSum _ (fun Q _ =>
         crossLeftLimitPairing_integrable (I := I) (M := M)
-          g r s i α P₀ P Q hψ hψ_cs hψ_supp))]
+          g r s i α P₀ P Q hψ hψ_cs hψ_support))]
     refine MeasureTheory.setIntegral_congr_fun
       (chartTargetEuclid_measurableSet (I := I) (M := M) α) (fun y _ => ?_)
     simp only [Finset.mul_sum, Finset.sum_mul]
@@ -687,7 +687,7 @@ lemma eigenvectorCrossLeft_tendsto
         (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor
         (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-          hψ hψ_cs hψ_supp) x
+          hψ hψ_cs hψ_support) x
       ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
       (fun n => ∑ P : TensorCompIdx (E := E) r (s + 1),
         ∑ Q : TensorCompIdx (E := E) r (s + 1),
@@ -710,7 +710,7 @@ private lemma crossRightValuePairing_integrable
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (P Q : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
     Integrable (fun y => densityOnEuclid (I := I) g α y *
         (covChartMetricGram (I := I) (M := M) g r s α P Q y *
             crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y *
@@ -731,7 +731,7 @@ private lemma crossRightValuePairing_integrable
     density_coeff_test_memLp (I := I) (M := M) g α
       ((covChartMetricGram_contDiffOn (I := I) (M := M) g r s α P Q).mul
         (crossRightTestValueCoeff_contDiffOn (I := I) (M := M) g r s α P₀ Q))
-      hψ hψ_cs hψ_supp
+      hψ hψ_cs hψ_support
   have hcut_memLp : MemLp (fun y =>
       ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
         (((eigenvectorSmoothApprox (I := I) (M := M)
@@ -763,7 +763,7 @@ lemma crossRightValueLimitPairing_integrable
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (P Q : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Integrable (fun y => densityOnEuclid (I := I) g α y *
         (covChartMetricGram (I := I) (M := M) g r s α P Q y *
             crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y *
@@ -782,7 +782,7 @@ lemma crossRightValueLimitPairing_integrable
     density_coeff_test_memLp (I := I) (M := M) g α
       ((covChartMetricGram_contDiffOn (I := I) (M := M) g r s α P Q).mul
         (crossRightTestValueCoeff_contDiffOn (I := I) (M := M) g r s α P₀ Q))
-      hψ hψ_cs hψ_supp
+      hψ hψ_cs hψ_support
   have hlim_memLp : MemLp (fun y =>
       ((crossRightLimitComponent (I := I) (M := M) g r s i α P :
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 2
@@ -807,7 +807,7 @@ lemma eigenvectorCrossRight_tendsto
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Filter.Tendsto
       (fun n => ∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityOnEuclid (I := I) g α y *
@@ -838,7 +838,7 @@ lemma eigenvectorCrossRight_tendsto
     fun P Q => (density_coeff_test_memLp (I := I) (M := M) g α
       ((covChartMetricGram_contDiffOn (I := I) (M := M) g r s α P Q).mul
         (crossRightTestValueCoeff_contDiffOn (I := I) (M := M) g r s α P₀ Q))
-      hψ hψ_cs hψ_supp).toLp _ with hmtest_def
+      hψ hψ_cs hψ_support).toLp _ with hmtest_def
   have h_dir : ∀ (P Q : TensorCompIdx (E := E) r s),
       Filter.Tendsto
         (fun n => ∫ y, (mtest P Q : EuclN → ℝ) y *
@@ -961,11 +961,11 @@ lemma eigenvectorCrossRight_tendsto
     rw [MeasureTheory.integral_finsetSum _ (fun P _ =>
         MeasureTheory.integrable_finsetSum _ (fun Q _ =>
           crossRightValuePairing_integrable (I := I) (M := M) g r s i
-            α P₀ P Q hψ hψ_cs hψ_supp n))]
+            α P₀ P Q hψ hψ_cs hψ_support n))]
     refine Finset.sum_congr rfl (fun P _ => ?_)
     rw [MeasureTheory.integral_finsetSum _ (fun Q _ =>
         crossRightValuePairing_integrable (I := I) (M := M) g r s i
-          α P₀ P Q hψ hψ_cs hψ_supp n)]
+          α P₀ P Q hψ hψ_cs hψ_support n)]
     exact Finset.sum_congr rfl (fun Q _ => hpair P Q)
   have h_limit_eq :
       ∑ P : TensorCompIdx (E := E) r s,
@@ -1015,11 +1015,11 @@ lemma eigenvectorCrossRight_tendsto
     rw [Finset.sum_congr rfl (fun P _ =>
       (MeasureTheory.integral_finsetSum _ (fun Q _ =>
         crossRightValueLimitPairing_integrable (I := I) (M := M)
-          g r s i α P₀ P Q hψ hψ_cs hψ_supp)).symm)]
+          g r s i α P₀ P Q hψ hψ_cs hψ_support)).symm)]
     rw [← MeasureTheory.integral_finsetSum _ (fun P _ =>
       MeasureTheory.integrable_finsetSum _ (fun Q _ =>
         crossRightValueLimitPairing_integrable (I := I) (M := M)
-          g r s i α P₀ P Q hψ hψ_cs hψ_supp))]
+          g r s i α P₀ P Q hψ hψ_cs hψ_support))]
     refine MeasureTheory.setIntegral_congr_fun
       (chartTargetEuclid_measurableSet (I := I) (M := M) α) (fun y _ => ?_)
     simp only [Finset.mul_sum, Finset.sum_mul]
@@ -1054,7 +1054,7 @@ lemma eigenvectorCrossRightGrad_tendsto
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Filter.Tendsto
       (fun n => ∑ l : Fin (Module.finrank ℝ E),
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -1090,7 +1090,7 @@ lemma eigenvectorCrossRightGrad_tendsto
     rw [crossRightTestGradTerm_byParts (I := I) (M := M) g r s
       (eigenvectorSmoothApprox (I := I) (M := M)
         g r s i n).toCcTensor
-      α P₀ hψ hψ_cs hψ_supp]
+      α P₀ hψ hψ_cs hψ_support]
     congr 1
     have h_m_ae : (m : EuclN → ℝ) =ᵐ[chartLebesgueMeasure (I := I) (M := M) α] ψ := by
       rw [hm_def]; exact MemLp.coeFn_toLp _
@@ -1153,39 +1153,39 @@ lemma eigenvectorSource_integral_split
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
     (∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s
         (eigenvectorPouApprox (I := I) (M := M) g r s i α n)
         (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-          hψ hψ_cs hψ_supp) x
+          hψ hψ_cs hψ_support) x
       ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
     (∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s
         (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor
         (pouSmul (I := I) (M := M) g r s α
           (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-            hψ hψ_cs hψ_supp)) x
+            hψ hψ_cs hψ_support)) x
       ∂(riemannianVolumeMeasure (I := I) (M := M) g)) -
     (∫ x, tensorCovDerivCrossLeft (I := I) (M := M) g r s
         (chartAtlasPOU I M α)
         (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor
         (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-          hψ hψ_cs hψ_supp) x
+          hψ hψ_cs hψ_support) x
       ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
     (∫ x, tensorCovDerivCrossRight (I := I) (M := M) g r s
         (chartAtlasPOU I M α)
         (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor
         (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-          hψ hψ_cs hψ_supp) x
+          hψ hψ_cs hψ_support) x
       ∂(riemannianVolumeMeasure (I := I) (M := M) g)) := by
   classical
   set wₙ : SmoothCcTensor g r s :=
     (eigenvectorSmoothApprox (I := I) (M := M) g r s i n).toCcTensor
     with hwₙ_def
   set vRot : SmoothCcTensor g r s :=
-    eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_supp
+    eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_support
     with hvRot_def
   set Amain : M → ℝ := fun x => tensorCovDerivPointwiseInner (I := I) (M := M)
     g r s wₙ (scalarSmul (I := I) (M := M) g r s (chartAtlasPOU I M α) vRot) x
@@ -1259,7 +1259,7 @@ private lemma density_crossRightTestGradTerm_partialTest_integrable
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     (l : Fin (Module.finrank ℝ E))
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
     Integrable (fun y => densityOnEuclid (I := I) g α y *
         crossRightTestGradTerm (I := I) (M := M) g r s
           (eigenvectorSmoothApprox (I := I) (M := M)
@@ -1277,9 +1277,9 @@ private lemma density_crossRightTestGradTerm_partialTest_integrable
     rw [Function.mem_support] at hy
     by_contra hyψ
     exact hy (euclidPartial_zero_off_tsupport (E := E) l hyψ)
-  have hdψ_supp : tsupport (euclidPartial (E := E) l ψ) ⊆
+  have hdψ_support : tsupport (euclidPartial (E := E) l ψ) ⊆
       chartTargetEuclid (I := I) (M := M) α := by
-    refine (closure_minimal ?_ (isClosed_tsupport _)).trans hψ_supp
+    refine (closure_minimal ?_ (isClosed_tsupport _)).trans hψ_support
     intro z hz
     rw [Function.mem_support] at hz
     by_contra hz'
@@ -1293,7 +1293,7 @@ private lemma density_crossRightTestGradTerm_partialTest_integrable
       (densityOnEuclid_mul_crossRightTestGradTerm_contDiffOn (I := I) (M := M)
         g r s (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor α P₀ l)
-      hdψ_cd hdψ_supp
+      hdψ_cd hdψ_support
   have hcs : HasCompactSupport (fun y => densityOnEuclid (I := I) g α y *
       crossRightTestGradTerm (I := I) (M := M) g r s
         (eigenvectorSmoothApprox (I := I) (M := M)
@@ -1308,7 +1308,7 @@ private lemma density_crossRightValueSum_test_integrable
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
     Integrable (fun y => densityOnEuclid (I := I) g α y *
         (∑ P : TensorCompIdx (E := E) r s,
           ∑ Q : TensorCompIdx (E := E) r s,
@@ -1339,7 +1339,7 @@ private lemma density_crossRightValueSum_test_integrable
     MeasureTheory.integrable_finsetSum _ (fun P _ =>
       MeasureTheory.integrable_finsetSum _ (fun Q _ =>
         crossRightValuePairing_integrable (I := I) (M := M) g r s i
-          α P₀ P Q hψ hψ_cs hψ_supp n))
+          α P₀ P Q hψ hψ_cs hψ_support n))
   refine h_sum_int.congr ?_
   refine Filter.Eventually.of_forall (fun y => ?_)
   simp only [Finset.mul_sum, Finset.sum_mul]
@@ -1370,13 +1370,13 @@ lemma eigenvectorCrossRight_integral_eq_value_plus_grad
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) (n : ℕ) :
     (∫ x, tensorCovDerivCrossRight (I := I) (M := M) g r s
         (chartAtlasPOU I M α)
         (eigenvectorSmoothApprox (I := I) (M := M)
           g r s i n).toCcTensor
         (eigenvectorRotatedTestSection (I := I) (M := M) g r s α P₀
-          hψ hψ_cs hψ_supp) x
+          hψ hψ_cs hψ_support) x
       ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
@@ -1406,7 +1406,7 @@ lemma eigenvectorCrossRight_integral_eq_value_plus_grad
         (chartTestPullback (I := I) (M := M) α ψ)
         (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
         (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-          hψ_cs hψ_supp))]
+          hψ_cs hψ_support))]
   set valueIntegrand : EuclN → ℝ := fun y => densityOnEuclid (I := I) g α y *
     (∑ P : TensorCompIdx (E := E) r s,
       ∑ Q : TensorCompIdx (E := E) r s,
@@ -1440,7 +1440,7 @@ lemma eigenvectorCrossRight_integral_eq_value_plus_grad
                   (chartTestPullback (I := I) (M := M) α ψ)
                   (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
                   (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-                    hψ_cs hψ_supp))
+                    hψ_cs hψ_support))
                 (chartAtlasPOU I M α)) α Q y))
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
@@ -1459,14 +1459,14 @@ lemma eigenvectorCrossRight_integral_eq_value_plus_grad
               (chartTestPullback (I := I) (M := M) α ψ)
               (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
               (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-                hψ_cs hψ_supp))
+                hψ_cs hψ_support))
             (chartAtlasPOU I M α)) α Q y =
           crossRightTestValueCoeff (I := I) (M := M) g r s α P₀ Q y * ψ y +
           ∑ l : Fin (Module.finrank ℝ E),
             crossRightTestGradCoeff (I := I) (M := M) g r s α P₀ Q l y *
               euclidPartial (E := E) l ψ y :=
       fun Q => tensorComponentEuclid_covDerivAlongGrad_rotatedTestSection_chartTestPullback_eqOn
-        (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_supp Q hy
+        (I := I) (M := M) g r s α P₀ hψ hψ_cs hψ_support Q hy
     change densityOnEuclid (I := I) g α y *
         (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
           covChartMetricGram (I := I) (M := M) g r s α P Q y *
@@ -1481,7 +1481,7 @@ lemma eigenvectorCrossRight_integral_eq_value_plus_grad
                   (chartTestPullback (I := I) (M := M) α ψ)
                   (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
                   (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-                    hψ_cs hψ_supp))
+                    hψ_cs hψ_support))
                 (chartAtlasPOU I M α)) α Q y) =
       valueIntegrand y + gradIntegrand y
     rw [hvalueIntegrand_def, hgradIntegrand_def]
@@ -1523,7 +1523,7 @@ lemma eigenvectorCrossRight_integral_eq_value_plus_grad
                     (chartTestPullback (I := I) (M := M) α ψ)
                     (chartTestPullback_contMDiffOn (I := I) (M := M) α hψ)
                     (chartTestPullback_tsupport_subset_source (I := I) (M := M) α
-                      hψ_cs hψ_supp))
+                      hψ_cs hψ_support))
                   (chartAtlasPOU I M α)) α Q y) =
         ∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
           densityOnEuclid (I := I) g α y *
@@ -1598,15 +1598,15 @@ lemma eigenvectorCrossRight_integral_eq_value_plus_grad
   rw [MeasureTheory.integral_congr_ae h_integrand_ae]
   rw [MeasureTheory.integral_add
     (hvalueIntegrand_def ▸ density_crossRightValueSum_test_integrable
-      (I := I) (M := M) g r s i α P₀ hψ hψ_cs hψ_supp n)
+      (I := I) (M := M) g r s i α P₀ hψ hψ_cs hψ_support n)
     (hgradIntegrand_def ▸ MeasureTheory.integrable_finsetSum _
       (fun l _ => density_crossRightTestGradTerm_partialTest_integrable
-        (I := I) (M := M) g r s i α P₀ l hψ hψ_cs hψ_supp n))]
+        (I := I) (M := M) g r s i α P₀ l hψ hψ_cs hψ_support n))]
   congr 1
   rw [hgradIntegrand_def]
   exact MeasureTheory.integral_finsetSum _
     (fun l _ => density_crossRightTestGradTerm_partialTest_integrable
-      (I := I) (M := M) g r s i α P₀ l hψ hψ_cs hψ_supp n)
+      (I := I) (M := M) g r s i α P₀ l hψ hψ_cs hψ_support n)
 
 end TensorSpectral
 end Parabolic

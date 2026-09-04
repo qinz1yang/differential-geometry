@@ -25,7 +25,7 @@ theorem chartKin_liminf {D : RealTimeInterval}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (hL : 0 ≤ L) (τ : Real → Real)
     (hτc : ContinuousOn τ (Icc (0 : Real) L))
-    (hτreg : MapsTo τ (Icc (0 : Real) L) D.regular)
+    (hτregularity : MapsTo τ (Icc (0 : Real) L) D.regular)
     {K : Set E} (hKc : IsCompact K)
     (hKchart : K ⊆ interior (extChartAt I alpha).target)
     (u : ℕ → timeH1 E L) (uLim : timeH1 E L)
@@ -49,7 +49,7 @@ theorem chartKin_liminf {D : RealTimeInterval}
   have hJc : IsCompact J := isCompact_Icc.image_of_continuousOn hτc
   have hJreg : J ⊆ D.regular := by
     rintro t ⟨r, hr, rfl⟩
-    exact hτreg hr
+    exact hτregularity hr
   let A : ℕ → Real → E →L[Real] E := fun n r ↦
     (1 / 2 : Real) • chartGramOp (I := I) G alpha (τ r, (u n).toFun r)
   let ALim : Real → E →L[Real] E := fun r ↦
@@ -95,16 +95,16 @@ theorem chartKin_liminf {D : RealTimeInterval}
     exact (mul_le_mul_of_nonneg_left hb (by norm_num)).trans (by
       have hC0 := NNReal.coe_nonneg C
       linarith)
-  have hGramUnif : TendstoUniformly
+  have hGramUniform : TendstoUniformly
       (fun n (r : Icc (0 : Real) L) ↦
         chartGramOp (I := I) G alpha (τ r.1, (u n).toFun r.1))
       (fun r ↦ chartGramOp (I := I) G alpha (τ r.1, uLim.toFun r.1)) atTop :=
-    chartGramOp_unif (I := I) hG hJreg hJc alpha hKchart hKc
+    chartGramOp_uniform (I := I) hG hJreg hJc alpha hKchart hKc
       (fun r ↦ ⟨r.1, r.2, rfl⟩) (Eventually.of_forall huK) huLimK hu
   have hconv : ∀ δ : Real, 0 < δ → ∀ᶠ n in atTop,
       ∀ᵐ r ∂timeMeasure L, ‖A n r - ALim r‖ ≤ δ := by
     intro δ hδ
-    have hev := (Metric.tendstoUniformly_iff.1 hGramUnif) (2 * δ) (by positivity)
+    have hev := (Metric.tendstoUniformly_iff.1 hGramUniform) (2 * δ) (by positivity)
     filter_upwards [hev] with n hn
     filter_upwards [ae_restrict_mem measurableSet_Icc] with r hr
     have hraw := hn ⟨r, hr⟩
@@ -131,7 +131,7 @@ theorem chartKin_liminf {D : RealTimeInterval}
     rw [smul_apply, real_inner_smul_left]
     exact mul_nonneg (by norm_num)
       (chartGramOp_nonneg (I := I) G alpha (τ r, (u n).toFun r) x)
-  have hq := timeQuad_weak_unif A ALim hA hALim (fun _ ↦ C) C hC hCLim hconv
+  have hq := timeQuad_weak_uniform A ALim hA hALim (fun _ ↦ C) C hC hCLim hconv
     hself hpos (fun n ↦ (u n).deriv) uLim.deriv hdu
   have hlimEq := timeQuad_eq_integral ALim hALim C hCLim hL uLim.deriv
   have hseqEq :
@@ -149,7 +149,7 @@ theorem chartH1_norm_bound {D : RealTimeInterval}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (hL : 0 ≤ L) (τ : Real → Real)
     (hτc : ContinuousOn τ (Icc (0 : Real) L))
-    (hτreg : MapsTo τ (Icc (0 : Real) L) D.regular)
+    (hτregularity : MapsTo τ (Icc (0 : Real) L) D.regular)
     {K : Set E} (hKc : IsCompact K)
     (hKchart : K ⊆ interior (extChartAt I alpha).target)
     (u : ℕ → timeH1 E L) {B : Real}
@@ -163,13 +163,13 @@ theorem chartH1_norm_bound {D : RealTimeInterval}
   have hJc : IsCompact J := isCompact_Icc.image_of_continuousOn hτc
   have hJreg : J ⊆ D.regular := by
     rintro t ⟨r, hr, rfl⟩
-    exact hτreg hr
+    exact hτregularity hr
   obtain ⟨c, hc, hcLower⟩ :=
     chartGramOp_lower (I := I) hG hJreg hJc alpha hKchart hKc
   obtain ⟨A, hA⟩ := hKc.bddAbove_image continuous_norm.continuousOn
-  have hinit (n : ℕ) : ‖(u n).init‖ ≤ A := by
+  have hinit (n : ℕ) : ‖(u n).initial‖ ≤ A := by
     apply hA
-    refine ⟨(u n).init, ?_, rfl⟩
+    refine ⟨(u n).initial, ?_, rfl⟩
     rw [← timeH1.toFun_zero]
     exact huK n ⟨0, ⟨le_refl 0, hL⟩⟩
   have hderiv (n : ℕ) : ‖(u n).deriv‖ ^ 2 ≤ B / (c / 2) := by
@@ -227,8 +227,8 @@ theorem chartH1_norm_bound {D : RealTimeInterval}
     exact (le_div_iff₀' (by positivity : 0 < c / 2)).2 (hmono.trans (hkin n))
   let C : Real := Real.sqrt (A ^ 2 + B / (c / 2))
   refine ⟨C, fun n ↦ ?_⟩
-  have hinitSq : ‖(u n).init‖ ^ 2 ≤ A ^ 2 := by
-    nlinarith [hinit n, norm_nonneg (u n).init]
+  have hinitSq : ‖(u n).initial‖ ^ 2 ≤ A ^ 2 := by
+    nlinarith [hinit n, norm_nonneg (u n).initial]
   have hsq : ‖u n‖ ^ 2 ≤ A ^ 2 + B / (c / 2) := by
     rw [timeH1.norm_sq_eq]
     exact add_le_add hinitSq (hderiv n)
@@ -243,7 +243,7 @@ theorem chartH1_subseq {D : RealTimeInterval}
     (hG : MetricFamilySmoothOn (I := I) (M := M) D G.metric)
     (alpha : M) {L : Real} (hL : 0 ≤ L) (τ : Real → Real)
     (hτc : ContinuousOn τ (Icc (0 : Real) L))
-    (hτreg : MapsTo τ (Icc (0 : Real) L) D.regular)
+    (hτregularity : MapsTo τ (Icc (0 : Real) L) D.regular)
     {K : Set E} (hKc : IsCompact K)
     (hKchart : K ⊆ interior (extChartAt I alpha).target)
     (u : ℕ → timeH1 E L) {B : Real}
@@ -260,13 +260,13 @@ theorem chartH1_subseq {D : RealTimeInterval}
         TendstoUniformly
           (fun n (r : Icc (0 : Real) L) ↦ (u (phi n)).toFun r.1)
           (fun r ↦ uLim.toFun r.1) atTop := by
-  obtain ⟨C, hC⟩ := chartH1_norm_bound (I := I) hG alpha hL τ hτc hτreg
+  obtain ⟨C, hC⟩ := chartH1_norm_bound (I := I) hG alpha hL τ hτc hτregularity
     hKc hKchart u huK hkin
-  obtain ⟨phi, uLim, hphi, hweak, hunif⟩ := timeH1.compact_subseq u hC
-  refine ⟨phi, uLim, hphi, ?_, hunif⟩
+  obtain ⟨phi, uLim, hphi, hweak, huniform⟩ := timeH1.compact_subseq u hC
+  refine ⟨phi, uLim, hphi, ?_, huniform⟩
   intro z
   have hz := hweak (timeH1.mk 0 z)
-  simpa only [timeH1.inner_def, timeH1.init_mk, timeH1.deriv_mk,
+  simpa only [timeH1.inner_def, timeH1.initial_mk, timeH1.deriv_mk,
     inner_zero_right, zero_add] using hz
 
 theorem chartH1_fin {D : RealTimeInterval}
@@ -275,7 +275,7 @@ theorem chartH1_fin {D : RealTimeInterval}
     {m : ℕ} (p : Fin m → M) (L : Fin m → Real)
     (hL : ∀ i, 0 ≤ L i) (τ : (i : Fin m) → Real → Real)
     (hτc : ∀ i, ContinuousOn (τ i) (Icc (0 : Real) (L i)))
-    (hτreg : ∀ i, MapsTo (τ i) (Icc (0 : Real) (L i)) D.regular)
+    (hτregularity : ∀ i, MapsTo (τ i) (Icc (0 : Real) (L i)) D.regular)
     (K : Fin m → Set E) (hKc : ∀ i, IsCompact (K i))
     (hKchart : ∀ i, K i ⊆ interior (extChartAt I (p i)).target)
     (u : (i : Fin m) → ℕ → timeH1 E (L i)) (B : Fin m → Real)
@@ -293,7 +293,7 @@ theorem chartH1_fin {D : RealTimeInterval}
           (fun n (r : Icc (0 : Real) (L i)) ↦ (u i (phi n)).toFun r.1)
           (fun r ↦ (uLim i).toFun r.1) atTop) := by
   have hbound : ∀ i, ∃ C : Real, ∀ n, ‖u i n‖ ≤ C := fun i =>
-    chartH1_norm_bound (I := I) hG (p i) (hL i) (τ i) (hτc i) (hτreg i)
+    chartH1_norm_bound (I := I) hG (p i) (hL i) (τ i) (hτc i) (hτregularity i)
       (hKc i) (hKchart i) (u i) (huK i) (hkin i)
   choose C hC using hbound
   exact timeH1.compact_subseq_fin L u C hC

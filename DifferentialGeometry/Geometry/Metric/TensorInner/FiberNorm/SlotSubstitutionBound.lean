@@ -301,7 +301,7 @@ theorem riemannianFiberNormSq_slotSub_le
         (embedRS (I := I) (M := M) x s A0) := by
   classical
   obtain ⟨n, e, _bse, hn, _hbse, horth, hpars, hexpand, hreprS⟩ :=
-    tangent_orthonormalBasisS_witness (I := I) (M := M) g s x
+    exists_tangent_orthonormalBasisS_with_norm_sum (I := I) (M := M) g s x
   set K₀ : Fin 0 → Fin n := fun k => k.elim0 with hK₀
   set Q := - ∑ k : Fin s, tensorSlotSubstCLM (I := I) s x (tangentSlotCLM (I := I) s k W) A0 with hQ
   rw [riemannianFiberNormSq_eq_sum_componentS_sq (I := I) (M := M) g x s e hreprS

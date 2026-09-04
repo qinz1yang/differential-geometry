@@ -47,7 +47,7 @@ theorem radial_maximalGeodesic_hasGeodesicEquationAt_of_small
           DifferentialGeometry.Geometry.Riemannian.Geodesic.HasGeodesicEquationAt
             (I := I) g (fun s : ℝ => maximalGeodesic (I := I) g p v s) t := by
   classical
-  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, _hF⟩ :=
+  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, _hF⟩ :=
     Exponential.exists_uniform_existence_interval (I := I) (g := g) (p := p)
   set t' : ℝ := T / 2 with ht'_def
   have ht'_pos : 0 < t' := by rw [ht'_def]; linarith
@@ -77,7 +77,7 @@ theorem radial_maximalGeodesic_hasGeodesicEquationAt_of_small
   set F : ℝ → TangentBundle I M :=
     Exponential.chartFlowOrbitLiftRescaled (I := I) Φ p t' vb with hF_def
   have hF0 : F 0 = (⟨p, t' • vb⟩ : TangentBundle I M) :=
-    Exponential.chartFlowOrbitLiftRescaled_zero (I := I) p vb t' (hΦ_init vb hvb_ball)
+    Exponential.chartFlowOrbitLiftRescaled_zero (I := I) p vb t' (hΦ_initial vb hvb_ball)
   have hF_int :
       IsMIntegralCurveOn F
         (Geodesic.geodesicVectorFieldChart (I := I) g p) J :=
@@ -88,17 +88,17 @@ theorem radial_maximalGeodesic_hasGeodesicEquationAt_of_small
     intro s hs
     have h := Exponential.chartFlowOrbitLiftRescaled_proj_eq_maximalGeodesic_on_Ioo
       (I := I) (g := g) (p := p) (v := vb) (T := T) (t' := t') ht'_pos
-      (hΦ_init vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball) (s := s) hs
+      (hΦ_initial vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball) (s := s) hs
     rw [show (t' • vb : TangentSpace I p) = v from hvb_resc] at h
     exact h
-  have hgeo_init :
+  have hgeo_initial :
       Geodesic.IsGeodesicOnWithInitial (I := I) g
         (fun s : ℝ => (F s).proj) J p v := by
     refine ⟨F, fun _ => rfl, ?_, hF_int⟩
     rw [hF0, show (t' • vb : TangentSpace I p) = v from hvb_resc]
-  obtain ⟨ρ_src, hρ_src_pos, hsrc⟩ :=
+  obtain ⟨ρ_source, hρ_source_pos, hsrc⟩ :=
     Exponential.foot_in_source_throughout (I := I) (g := g) (p := p)
-  have hF_src : (F t).proj ∈ (chartAt H p).source := by
+  have hF_source : (F t).proj ∈ (chartAt H p).source := by
     have hts_Icc : t' * t ∈ Set.Icc (-T) T := by
       obtain ⟨ht0, ht1⟩ := ht
       refine ⟨?_, ?_⟩
@@ -111,7 +111,7 @@ theorem radial_maximalGeodesic_hasGeodesicEquationAt_of_small
     rw [hF_def]; exact hsrc'
   have hgeoAt :
       Geodesic.IsGeodesicAt (I := I) g (fun s : ℝ => (F s).proj) t :=
-    hgeo_init.isGeodesicAt (hJ_open.mem_nhds ht_J) hF_src
+    hgeo_initial.isGeodesicAt (hJ_open.mem_nhds ht_J) hF_source
   have hgeoEqF :
       Geodesic.HasGeodesicEquationAt (I := I) g (fun s : ℝ => (F s).proj) t :=
     hgeoAt.hasGeodesicEquationAt g
@@ -133,7 +133,7 @@ theorem radial_maximalGeodesic_cont_and_foot_in_source_of_small
         ∀ t ∈ Set.Ioo (-1 : ℝ) 2,
           maximalGeodesic (I := I) g p v t ∈ (chartAt H p).source := by
   classical
-  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_init, hΦ_target, hΦ_phase, _hF⟩ :=
+  obtain ⟨ρ₀, T, Φ, hρ₀_pos, hT_pos, hΦ_initial, hΦ_target, hΦ_phase, _hF⟩ :=
     Exponential.exists_uniform_existence_interval (I := I) (g := g) (p := p)
   set t' : ℝ := T / 2 with ht'_def
   have ht'_pos : 0 < t' := by rw [ht'_def]; linarith
@@ -169,7 +169,7 @@ theorem radial_maximalGeodesic_cont_and_foot_in_source_of_small
     intro r hr
     have h := Exponential.chartFlowOrbitLiftRescaled_proj_eq_maximalGeodesic_on_Ioo
       (I := I) (g := g) (p := p) (v := vb) (T := T) (t' := t') ht'_pos
-      (hΦ_init vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball) (s := r) hr
+      (hΦ_initial vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball) (s := r) hr
     rw [show (t' • vb : TangentSpace I p) = v from hvb_resc] at h
     exact h.symm
   refine ⟨?_, ?_⟩
@@ -187,7 +187,7 @@ theorem radial_maximalGeodesic_cont_and_foot_in_source_of_small
     have ht_J : t ∈ Set.Ioo (-T / t') (T / t') := h12_sub_J ht
     have hEq := Exponential.chartFlowOrbitLiftRescaled_proj_eq_maximalGeodesic_on_Ioo
       (I := I) (g := g) (p := p) (v := vb) (T := T) (t' := t') ht'_pos
-      (hΦ_init vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball) (s := t) ht_J
+      (hΦ_initial vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball) (s := t) ht_J
     rw [show (t' • vb : TangentSpace I p) = v from hvb_resc] at hEq
     rw [← hEq]; exact hsrc'
 
@@ -745,7 +745,7 @@ private lemma variationFieldChartRep_differentiableAt_of_contDiffAt2
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space (TangentBundle I M)] in
-private lemma longitVelChartRep_differentiableAt_of_contDiffAt2
+private lemma longitVelocityChartRep_differentiableAt_of_contDiffAt2
     (f : ℝ → ℝ → M) (t₀ : ℝ)
     (hF2 : ContDiffAt ℝ 2 (fun q : ℝ × ℝ => extChartAt I (f 0 t₀) (f q.1 q.2)) (0, t₀))
     (htransverse_cont : ContinuousAt (fun s : ℝ => f s t₀) 0)
@@ -993,9 +993,9 @@ private lemma gauss_phi_hasDerivAt
     exact (contMDiffAt_iff_contDiffAt.mp hmdiff).differentiableAt (by norm_num)
   have hφ_mc := metric_compat_hasDerivAt_inner_of_chartCurveDeriv (I := I) g γ V W t₀
     hγC2.continuousAt hchartDeriv hVdiff hWdiff
-  have hV_vel : V = fun t : ℝ => (mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] _) (1 : ℝ) := rfl
+  have hV_velocity : V = fun t : ℝ => (mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] _) (1 : ℝ) := rfl
   have hVcov0 : covDerivAlong (I := I) g γ V t₀ = 0 := by
-    rw [hV_vel]
+    rw [hV_velocity]
     exact covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2 (I := I) g γ t₀ hγC2 hγgeo
   have hWcov_eq : covDerivAlong (I := I) g γ W t₀
       = covDerivAlong (I := I) g (fun s : ℝ => F s t₀)
@@ -1038,7 +1038,7 @@ private lemma gauss_phi_hasDerivAt
       MDifferentiableAt 𝓘(ℝ, ℝ) I (fun u : ℝ => F s u) t₀ := by
     filter_upwards [hslice_u_ev] with s hs using hs.mdifferentiableAt (by decide)
   have hUdiff : DifferentiableAt ℝ (chartRepAt (I := I) σ U 0) 0 :=
-    longitVelChartRep_differentiableAt_of_contDiffAt2 (I := I) F t₀ hF2
+    longitVelocityChartRep_differentiableAt_of_contDiffAt2 (I := I) F t₀ hF2
       htransverse_cont hslice_u_md
   have hσ_mc := metric_compat_hasDerivAt_inner_of_chartCurveDeriv (I := I) g σ U U 0
     hσC2.continuousAt hσchartDeriv hUdiff hUdiff

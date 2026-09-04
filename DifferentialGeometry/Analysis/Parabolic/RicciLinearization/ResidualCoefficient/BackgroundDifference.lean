@@ -105,7 +105,7 @@ private lemma toModel_slotSwapFib_pair (x : M) (D : Tensor0SBundle.Tensor0SSpace
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-lemma unitModel_sub_loc (g : SmoothRiemannianMetric I M) (s : ℕ)
+lemma unitModel_sub_local (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (A - B) x =
       unitModel (I := I) (M := M) g s A x - unitModel (I := I) (M := M) g s B x := by
@@ -115,7 +115,7 @@ lemma unitModel_sub_loc (g : SmoothRiemannianMetric I M) (s : ℕ)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_add_loc (g : SmoothRiemannianMetric I M) (s : ℕ)
+private lemma unitModel_add_local (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (A + B) x =
       unitModel (I := I) (M := M) g s A x + unitModel (I := I) (M := M) g s B x := by
@@ -125,7 +125,7 @@ private lemma unitModel_add_loc (g : SmoothRiemannianMetric I M) (s : ℕ)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_smul_loc (g : SmoothRiemannianMetric I M) (s : ℕ) (c : ℝ)
+private lemma unitModel_smul_local (g : SmoothRiemannianMetric I M) (s : ℕ) (c : ℝ)
     (A : SmoothCcTensor g 0 s) (x : M) :
     unitModel (I := I) (M := M) g s (c • A) x =
       c • unitModel (I := I) (M := M) g s A x := by
@@ -1035,19 +1035,19 @@ private lemma swappedBackgroundCurvature_apply (g₀ g₁ : SmoothRiemannianMetr
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_smul_apply_loc (g : SmoothRiemannianMetric I M) (s : ℕ) (c : ℝ)
+private lemma unitModel_smul_apply_local (g : SmoothRiemannianMetric I M) (s : ℕ) (c : ℝ)
     (A : SmoothCcTensor g 0 s) (x : M) (v : Fin s → E) :
     unitModel (I := I) (M := M) g s (c • A) x v =
       c * unitModel (I := I) (M := M) g s A x v := by
-  rw [unitModel_smul_loc, smul_apply, smul_eq_mul]
+  rw [unitModel_smul_local, smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_sub_apply_loc (g : SmoothRiemannianMetric I M) (s : ℕ)
+private lemma unitModel_sub_apply_local (g : SmoothRiemannianMetric I M) (s : ℕ)
     (A B : SmoothCcTensor g 0 s) (x : M) (v : Fin s → E) :
     unitModel (I := I) (M := M) g s (A - B) x v =
       unitModel (I := I) (M := M) g s A x v - unitModel (I := I) (M := M) g s B x v := by
-  rw [unitModel_sub_loc, sub_apply]
+  rw [unitModel_sub_local, sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma sharpRaisedKoszulVec_eq_connectionDifference (g₀ g₁ : SmoothRiemannianMetric I M)
@@ -1251,13 +1251,13 @@ theorem ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_resi
     operatorFieldApplication_add_left (I := I) (M := M) g₀ 2 2, operatorFieldApplication_smul_left (I := I) (M := M) g₀ 2 2]
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
   refine ContinuousMultilinearMap.ext (fun v => ?_)
-  rw [unitModel_smul_apply_loc (I := I) (M := M) g₀ 2 (1 / 2 : ℝ) _ x v,
-    unitModel_sub_apply_loc (I := I) (M := M) g₀ 2 _ _ x v]
-  rw [unitModel_add_loc (I := I) (M := M) g₀ 2 _ _ x, add_apply,
-    unitModel_add_loc (I := I) (M := M) g₀ 2 _ _ x, add_apply,
-    unitModel_sub_loc (I := I) (M := M) g₀ 2 _ _ x, sub_apply,
-    unitModel_add_loc (I := I) (M := M) g₀ 2 _ _ x, add_apply,
-    unitModel_smul_apply_loc (I := I) (M := M) g₀ 2 (1 / 2 : ℝ) _ x v]
+  rw [unitModel_smul_apply_local (I := I) (M := M) g₀ 2 (1 / 2 : ℝ) _ x v,
+    unitModel_sub_apply_local (I := I) (M := M) g₀ 2 _ _ x v]
+  rw [unitModel_add_local (I := I) (M := M) g₀ 2 _ _ x, add_apply,
+    unitModel_add_local (I := I) (M := M) g₀ 2 _ _ x, add_apply,
+    unitModel_sub_local (I := I) (M := M) g₀ 2 _ _ x, sub_apply,
+    unitModel_add_local (I := I) (M := M) g₀ 2 _ _ x, add_apply,
+    unitModel_smul_apply_local (I := I) (M := M) g₀ 2 (1 / 2 : ℝ) _ x v]
   rw [ricciOrderZeroRiemannCoeff_operatorFieldApplication_eq (I := I) (M := M) g₀ g₁ W x v,
     ricciOrderZeroRiemannCoeff_operatorFieldApplication_eq (I := I) (M := M) g₀ g₀ W x v]
   rw [connectionDifferenceAACommCoeffField_apply (I := I) (M := M) g₀ g₁ W x v,

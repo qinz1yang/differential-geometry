@@ -8,7 +8,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Topology ENNReal Bundle
@@ -100,5 +100,5 @@ end RealizesDistance
 
 end InjectivityRadiusDecay
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

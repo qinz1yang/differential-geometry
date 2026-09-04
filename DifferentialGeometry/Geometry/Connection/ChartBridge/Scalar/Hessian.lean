@@ -1343,16 +1343,16 @@ theorem chartAlphaMatrixIdentity_holds [I.Boundaryless]
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x) =
       chartHessianTensor (I := I) g α f i j x := by
   classical
-  have hx_src_ext : x ∈ (extChartAt I α).source := by
+  have hx_source_ext : x ∈ (extChartAt I α).source := by
     rwa [extChartAt_source_eq_chartAt_source]
-  have hx_tgt : extChartAt I α x ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hx_src_ext
+  have hx_target : extChartAt I α x ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hx_source_ext
   have hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E) :=
-    extChartAt_target_subset_interior_of_boundaryless (I := I) α hx_tgt
+    extChartAt_target_subset_interior_of_boundaryless (I := I) α hx_target
   have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) α :=
-    mem_chartLeviCivitaGoodSet_iff.mpr ⟨hx_src_ext, hbase, hx_int⟩
+    mem_chartLeviCivitaGoodSet_iff.mpr ⟨hx_source_ext, hbase, hx_int⟩
   exact chartAlphaMatrixIdentity_holds_on_goodSet
     (I := I) (M := M) g α hf hx_good i j
 

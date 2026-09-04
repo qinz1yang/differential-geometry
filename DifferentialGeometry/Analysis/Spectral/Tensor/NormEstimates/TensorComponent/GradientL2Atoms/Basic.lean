@@ -14,6 +14,7 @@ import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovariantDerivati
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberFromModel
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberToModel
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Analysis.Integration.LpNorm
 import Mathlib.MeasureTheory.Integral.IntegrableOn
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.GradientL2Atoms.CovariantChartSource
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.GradientL2Atoms.Measurability
@@ -179,23 +180,6 @@ private lemma indicator_scalarOnE_raw_sq_le_const_mul_tensorInner
     rw [hzero_sq]
     exact h_RHS_nn
 
-lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) :
-    (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
-  classical
-  have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
-  have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
-  have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
-  rw [h2_toReal]
-  have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
-      ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
-    refine lintegral_congr_ae ?_
-    filter_upwards with x
-    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, ENNReal.rpow_natCast]
-  rw [h_inner_eq, ← ENNReal.rpow_natCast _ 2, ← ENNReal.rpow_mul]
-  norm_num
-
 lemma le_sqrt_of_sq_le {x y : ℝ≥0∞} (h : x ^ 2 ≤ y) :
     x ≤ y ^ ((1 : ℝ) / 2) := by
   have h_xpow : x = (x ^ 2) ^ ((1 : ℝ) / 2) := by
@@ -274,7 +258,7 @@ private lemma sq_eLpNorm_indicator_raw_le_const_mul_tensorL2Inner
     intro b
     exact mul_nonneg hC_nn
       (tensorInnerPointwise_nonneg (I := I) (M := M) g r s b _)
-  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f]
+  rw [DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq]
   have h_lint_le :
       ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
         ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
@@ -729,7 +713,7 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
     rw [h_l2_eq]
     exact SmoothCcTensorH1.l2NormSq_le_h1NormSq S
   have h_sq : (eLpNorm f 2 μ) ^ 2 ≤ ENNReal.ofReal (C * ‖S‖ ^ 2) := by
-    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq μ f]
+    rw [DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq]
     calc ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ
         ≤ ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
             (I := I) (M := M) g r s b

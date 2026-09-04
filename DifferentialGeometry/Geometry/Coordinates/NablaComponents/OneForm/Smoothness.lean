@@ -380,12 +380,12 @@ theorem nabla0SFun_one_contMDiff
     have haj : σ a = j := by
       fin_cases a
       simp [j]
-    have hp_src : p ∈ (chartAt H x₀).source := by
+    have hp_source : p ∈ (chartAt H x₀).source := by
       simpa [coordinateFrameSet, coordinateTrivializationAt] using hp
     rw [haj, coordinateFrameAt_apply_of_mem (I := I) (x₀ := x₀) (x := p) hp j]
     exact congrArg
       (fun L : E →L[𝕜] TangentSpace I p => L (b j))
-      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hp_src)
+      (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hp_source)
   rw [continuousMultilinearMap_basis_repr]
   change ((trivializationAt (Tensor0SModel 1 𝕜 E)
       (Bundle.continuousMultilinearMap 𝕜 1 E (TangentSpace I : M -> Type _)) x₀

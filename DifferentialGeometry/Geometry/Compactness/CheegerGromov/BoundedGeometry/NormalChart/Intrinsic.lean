@@ -7,7 +7,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Set
 open scoped Manifold ContDiff Topology Bundle
@@ -148,7 +148,7 @@ structure IntrinsicBallChartData
           (I := I) (X.obj k).metric y w
     IntrinsicBallChart (I := I) (X.obj k).metric hEnorm x
       (ratio * hd.mu (hd.dist k x (X.obj k).basepoint))
-  intr_equiv : ∀ (k : Nat) (x : (X.obj k).M),
+  intrinsic_equiv : ∀ (k : Nat) (x : (X.obj k).M),
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
     letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -185,8 +185,8 @@ structure IntrinsicBallChartData
     ∀ z ∈ Metric.ball (0 : E)
         (ratio * hd.mu (hd.dist k x (X.obj k).basepoint)), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤
-          intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
-        intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
+          intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ∧
+        intrinsicFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
           2 * ‖v‖ ^ 2
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -307,5 +307,5 @@ omit [CompleteSpace E] in
       d.ratio * hd.mu (hd.dist k x (X.obj k).basepoint) := by
   rfl
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

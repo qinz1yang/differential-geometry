@@ -33,21 +33,21 @@ private theorem holderConjugate_conj (p : ℝ≥0∞) (hp : 1 ≤ p) :
 
 omit [NeZero d] in
 private lemma memLp_of_contDiff_hasCompactSupport
-    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφ_supp : HasCompactSupport φ)
+    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφ_support : HasCompactSupport φ)
     (Ω : Set E) (q : ℝ≥0∞) :
     MemLp φ q (volume.restrict Ω) :=
-  (hφ.continuous.memLp_of_hasCompactSupport hφ_supp).restrict _
+  (hφ.continuous.memLp_of_hasCompactSupport hφ_support).restrict _
 
 omit [NeZero d] in
 private lemma fderiv_apply_memLp
-    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφ_supp : HasCompactSupport φ)
+    {φ : E → ℝ} (hφ : ContDiff ℝ (⊤ : ℕ∞) φ) (hφ_support : HasCompactSupport φ)
     (v : E) (Ω : Set E) (q : ℝ≥0∞) :
     MemLp (fun x => (fderiv ℝ φ x) v) q (volume.restrict Ω) := by
   have hcont : Continuous (fun x => (fderiv ℝ φ x) v) :=
     (hφ.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
       continuous_const
   have hcpt : HasCompactSupport (fun x => (fderiv ℝ φ x) v) :=
-    hφ_supp.fderiv_apply (𝕜 := ℝ) v
+    hφ_support.fderiv_apply (𝕜 := ℝ) v
   exact (hcont.memLp_of_hasCompactSupport hcpt).restrict _
 
 omit [NeZero d] in
@@ -151,7 +151,7 @@ theorem hasWeakPartialDeriv_of_tendsto_eLpNorm
       (fun n => eLpNorm (fun x => g_n n x - g x) p (volume.restrict Ω))
       atTop (𝓝 0)) :
     DeGiorgi.HasWeakPartialDeriv i g u Ω := by
-  intro φ hφ hφ_supp hφ_sub
+  intro φ hφ hφ_support hφ_sub
   let μ : Measure E := volume.restrict Ω
   let dφ : E → ℝ := fun x => (fderiv ℝ φ x) (EuclideanSpace.single i 1)
   let q : ℝ≥0∞ := conj p
@@ -160,9 +160,9 @@ theorem hasWeakPartialDeriv_of_tendsto_eLpNorm
   have hpq1 : ENNReal.HolderTriple p q 1 := hpq
   have hpq1_symm : ENNReal.HolderTriple q p 1 := hpq_symm
   have hdφ_memLp : MemLp dφ q μ :=
-    fderiv_apply_memLp hφ hφ_supp (EuclideanSpace.single i 1) Ω q
+    fderiv_apply_memLp hφ hφ_support (EuclideanSpace.single i 1) Ω q
   have hφ_memLp : MemLp φ q μ :=
-    memLp_of_contDiff_hasCompactSupport hφ hφ_supp Ω q
+    memLp_of_contDiff_hasCompactSupport hφ hφ_support Ω q
   have h_u_diff_memLp : ∀ n, MemLp (fun x => u_n n x - u x) p μ := fun n =>
     (hu_n_lp n).sub hu_lp
   have h_g_diff_memLp : ∀ n, MemLp (fun x => g_n n x - g x) p μ := fun n =>
@@ -234,7 +234,7 @@ theorem hasWeakPartialDeriv_of_tendsto_eLpNorm
   have h_eq_n :
       ∀ n, ∫ x in Ω, u_n n x * dφ x = -∫ x in Ω, g_n n x * φ x := by
     intro n
-    exact h_weak n φ hφ hφ_supp hφ_sub
+    exact h_weak n φ hφ hφ_support hφ_sub
   have h_eq_tendsto :
       Tendsto (fun n => ∫ x in Ω, u_n n x * dφ x)
         atTop (𝓝 (-∫ x in Ω, g x * φ x)) := by
@@ -258,15 +258,15 @@ private theorem memW1p_and_chosenWeakPartial_ae_of_tendsto
       atTop (𝓝 0))
     (h_partial_tendsto : ∀ i, Tendsto
       (fun n => eLpNorm
-        (fun x => chosenWeakPartial' p i (u_n n) Ω x - g i x)
+        (fun x => chosenWeakPartialOrZero p i (u_n n) Ω x - g i x)
         p (volume.restrict Ω))
       atTop (𝓝 0)) :
     DeGiorgi.MemW1p p u Ω ∧
-      ∀ i, chosenWeakPartial' p i u Ω =ᵐ[volume.restrict Ω] g i := by
+      ∀ i, chosenWeakPartialOrZero p i u Ω =ᵐ[volume.restrict Ω] g i := by
   classical
   have h_chosen_lp : ∀ n i,
-      MemLp (chosenWeakPartial' p i (u_n n) Ω) p (volume.restrict Ω) :=
-    fun n i => chosenWeakPartial'_memLp_of_mem (hu_n_w1p n) i
+      MemLp (chosenWeakPartialOrZero p i (u_n n) Ω) p (volume.restrict Ω) :=
+    fun n i => chosenWeakPartialOrZero_memLp_of_mem (hu_n_w1p n) i
   have hu_n_lp : ∀ n, MemLp (u_n n) p (volume.restrict Ω) :=
     fun n => (hu_n_w1p n).1
   have h_weak_g : ∀ i, DeGiorgi.HasWeakPartialDeriv i (g i) u Ω := by
@@ -274,7 +274,7 @@ private theorem memW1p_and_chosenWeakPartial_ae_of_tendsto
     refine hasWeakPartialDeriv_of_tendsto_eLpNorm hp_one i
       hu_n_lp (fun n => h_chosen_lp n i) hu_lp (hg_lp i) ?_ h_u_tendsto (h_partial_tendsto i)
     intro n
-    exact chosenWeakPartial'_isWeakPartial_of_mem (hu_n_w1p n) i
+    exact chosenWeakPartialOrZero_isWeakPartial_of_mem (hu_n_w1p n) i
   have hu_w1p : DeGiorgi.MemW1p p u Ω := by
     refine ⟨hu_lp, ?_⟩
     intro i
@@ -282,14 +282,14 @@ private theorem memW1p_and_chosenWeakPartial_ae_of_tendsto
   refine ⟨hu_w1p, ?_⟩
   intro i
   have h_chosen_weak : DeGiorgi.HasWeakPartialDeriv i
-      (chosenWeakPartial' p i u Ω) u Ω :=
-    chosenWeakPartial'_isWeakPartial_of_mem hu_w1p i
-  have h_chosen_loc : LocallyIntegrable (chosenWeakPartial' p i u Ω)
+      (chosenWeakPartialOrZero p i u Ω) u Ω :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hu_w1p i
+  have h_chosen_local : LocallyIntegrable (chosenWeakPartialOrZero p i u Ω)
       (volume.restrict Ω) :=
-    (chosenWeakPartial'_memLp_of_mem hu_w1p i).locallyIntegrable hp_one
-  have hg_loc : LocallyIntegrable (g i) (volume.restrict Ω) :=
+    (chosenWeakPartialOrZero_memLp_of_mem hu_w1p i).locallyIntegrable hp_one
+  have hg_local : LocallyIntegrable (g i) (volume.restrict Ω) :=
     (hg_lp i).locallyIntegrable hp_one
-  exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ h_chosen_weak (h_weak_g i) h_chosen_loc hg_loc
+  exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ h_chosen_weak (h_weak_g i) h_chosen_local hg_local
 
 omit [NeZero d] in
 theorem MemWkp_of_iter_tendsto_eLpNorm
@@ -340,7 +340,7 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
         exact hv_lp 1 ![i] (Nat.one_le_iff_ne_zero.mpr (Nat.succ_ne_zero _))
       have h_partial_tendsto : ∀ i, Tendsto
           (fun n => eLpNorm
-            (fun x => chosenWeakPartial' p i (u_n n) Ω x - g i x)
+            (fun x => chosenWeakPartialOrZero p i (u_n n) Ω x - g i x)
             p (volume.restrict Ω))
           atTop (𝓝 0) := by
         intro i
@@ -348,7 +348,7 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
           (Nat.one_le_iff_ne_zero.mpr (Nat.succ_ne_zero _))
         have h_iter_eq : ∀ n,
             iterWeakPartial (d := d) p 1 ![i] (u_n n) Ω =
-              chosenWeakPartial' p i (u_n n) Ω := by
+              chosenWeakPartialOrZero p i (u_n n) Ω := by
           intro n
           rw [iterWeakPartial_succ]
           have h0 : (![i] : Fin 1 → Fin d) 0 = i := by simp
@@ -359,7 +359,7 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
               (fun x => iterWeakPartial (d := d) p 1 ![i] (u_n n) Ω x - g i x) p
               (volume.restrict Ω)) =
             (fun n => eLpNorm
-              (fun x => chosenWeakPartial' p i (u_n n) Ω x - g i x) p
+              (fun x => chosenWeakPartialOrZero p i (u_n n) Ω x - g i x) p
               (volume.restrict Ω)) := by
           funext n
           rw [h_iter_eq]
@@ -378,19 +378,19 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
           intro j β hj
           exact hv_lp (j + 1) (Fin.cons i β) (Nat.succ_le_succ hj)
         have h_iter_i : ∀ n, MemWkp (d := d) k p
-            (chosenWeakPartial' p i (u_n n) Ω) Ω :=
+            (chosenWeakPartialOrZero p i (u_n n) Ω) Ω :=
           fun n => (hu_n_mem n).chosenWeakPartial_mem i
         have h_iter_i_tendsto : ∀ (j : ℕ) (β : Fin j → Fin d), j ≤ k →
             Tendsto
               (fun n => eLpNorm
                 (fun x => iterWeakPartial (d := d) p j β
-                  (chosenWeakPartial' p i (u_n n) Ω) Ω x - v_i j β x)
+                  (chosenWeakPartialOrZero p i (u_n n) Ω) Ω x - v_i j β x)
                 p (volume.restrict Ω))
               atTop (𝓝 0) := by
           intro j β hj
           have h_iter_eq : ∀ n,
               iterWeakPartial (d := d) p j β
-                  (chosenWeakPartial' p i (u_n n) Ω) Ω =
+                  (chosenWeakPartialOrZero p i (u_n n) Ω) Ω =
                 iterWeakPartial (d := d) p (j + 1) (Fin.cons i β) (u_n n) Ω := by
             intro n
             rw [iterWeakPartial_succ]
@@ -407,7 +407,7 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
                 p (volume.restrict Ω)) =
               (fun n => eLpNorm
                 (fun x => iterWeakPartial (d := d) p j β
-                    (chosenWeakPartial' p i (u_n n) Ω) Ω x - v_i j β x)
+                    (chosenWeakPartialOrZero p i (u_n n) Ω) Ω x - v_i j β x)
                 p (volume.restrict Ω)) := by
             funext n
             rw [h_iter_eq n]
@@ -430,7 +430,7 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
         rw [MemWkp_succ]
         refine ⟨hu_w1p, ?_⟩
         intro i
-        have h_ae : chosenWeakPartial' p i (v 0 ![]) Ω =ᵐ[volume.restrict Ω] g i :=
+        have h_ae : chosenWeakPartialOrZero p i (v 0 ![]) Ω =ᵐ[volume.restrict Ω] g i :=
           h_chosen_ae i
         exact (MemWkp_congr_ae (d := d) hp_one hΩ h_ae).mpr (h_chosen_mem_k i)
       refine ⟨hu_memWkp, ?_⟩
@@ -445,11 +445,11 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
           rw [iterWeakPartial_succ]
           have hj' : j ≤ k := Nat.le_of_succ_le_succ hj
           have h_chosen_β_ae :
-              chosenWeakPartial' p (β 0) (v 0 ![]) Ω =ᵐ[volume.restrict Ω] g (β 0) :=
+              chosenWeakPartialOrZero p (β 0) (v 0 ![]) Ω =ᵐ[volume.restrict Ω] g (β 0) :=
             h_chosen_ae (β 0)
           have h_iter_congr :
               iterWeakPartial (d := d) p j (fun i : Fin j => β i.succ)
-                  (chosenWeakPartial' p (β 0) (v 0 ![]) Ω) Ω
+                  (chosenWeakPartialOrZero p (β 0) (v 0 ![]) Ω) Ω
                 =ᵐ[volume.restrict Ω]
               iterWeakPartial (d := d) p j (fun i : Fin j => β i.succ) (g (β 0)) Ω :=
             iterWeakPartial_ae_congr (d := d) hp_one hΩ j _ h_chosen_β_ae
@@ -460,19 +460,19 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
             intro j' β' hj'
             exact hv_lp (j' + 1) (Fin.cons (β 0) β') (Nat.succ_le_succ hj')
           have h_iter_i : ∀ n, MemWkp (d := d) k p
-              (chosenWeakPartial' p (β 0) (u_n n) Ω) Ω :=
+              (chosenWeakPartialOrZero p (β 0) (u_n n) Ω) Ω :=
             fun n => (hu_n_mem n).chosenWeakPartial_mem (β 0)
           have h_iter_i_tendsto : ∀ (j' : ℕ) (β' : Fin j' → Fin d), j' ≤ k →
               Tendsto
                 (fun n => eLpNorm
                   (fun x => iterWeakPartial (d := d) p j' β'
-                    (chosenWeakPartial' p (β 0) (u_n n) Ω) Ω x - v_i j' β' x)
+                    (chosenWeakPartialOrZero p (β 0) (u_n n) Ω) Ω x - v_i j' β' x)
                   p (volume.restrict Ω))
                 atTop (𝓝 0) := by
             intro j' β' hj'
             have h_iter_eq : ∀ n,
                 iterWeakPartial (d := d) p j' β'
-                    (chosenWeakPartial' p (β 0) (u_n n) Ω) Ω =
+                    (chosenWeakPartialOrZero p (β 0) (u_n n) Ω) Ω =
                   iterWeakPartial (d := d) p (j' + 1)
                     (Fin.cons (β 0) β') (u_n n) Ω := by
               intro n
@@ -493,7 +493,7 @@ theorem MemWkp_of_iter_tendsto_eLpNorm
                   p (volume.restrict Ω)) =
                 (fun n => eLpNorm
                   (fun x => iterWeakPartial (d := d) p j' β'
-                      (chosenWeakPartial' p (β 0) (u_n n) Ω) Ω x - v_i j' β' x)
+                      (chosenWeakPartialOrZero p (β 0) (u_n n) Ω) Ω x - v_i j' β' x)
                   p (volume.restrict Ω)) := by
               funext n
               rw [h_iter_eq n]

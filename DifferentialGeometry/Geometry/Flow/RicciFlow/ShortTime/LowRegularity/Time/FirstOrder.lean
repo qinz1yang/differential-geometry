@@ -116,7 +116,7 @@ private theorem radial_j3
   · intro T
     have hrad := lowRadialH3_le (I := I) (M := M) g hρ
       (ccToHsLin (I := I) (M := M) g 2 (3 : ℝ) T)
-    rw [lowRadialH3_core (I := I) (M := M) g hρ T] at hrad
+    rw [lowRadialH3_apply_ccToHsLin (I := I) (M := M) g hρ T] at hrad
     simp only [ccToHsLin_apply] at hrad
     refine (hjet (lowRadial (I := I) (M := M) g ρ T)).trans ?_
     exact pow_le_pow_left₀

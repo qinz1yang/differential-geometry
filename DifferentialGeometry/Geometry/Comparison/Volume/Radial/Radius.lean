@@ -101,14 +101,14 @@ theorem rm04Data_jacobi
   refine ⟨?_, ?_, ?_⟩
   · exact hdiff.1
   · exact hdiff.2
-  · have hJac : ∀ t ∈ Ioo (0 : ℝ) b,
+  · have hJacobian : ∀ t ∈ Ioo (0 : ℝ) b,
         IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
           (radialJacobiField (I := I) g p x w) t := by
       intro t ht
       have ht01 : t ∈ Ioo (0 : ℝ) 1 :=
         ⟨ht.1, lt_of_lt_of_le ht.2 hb⟩
       exact radial_jacobi_of_lt (I := I) g p hx hw t ht01
-    have hJac0 :
+    have hJacobian0 :
         IsJacobiAt (I := I) g (radialCurve (I := I) g p x)
           (radialJacobiField (I := I) g p x w) 0 := by
       exact jacobi_zero_of_lt (I := I) g hEnorm p hx hw
@@ -164,8 +164,8 @@ theorem rm04Data_jacobi
         mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_left hA_le_R hCnn) hVsq
       exact hmul.trans hKbound
-    exact ode_Ico_of_Ioo_d2 (I := I) g p x w hJac hcurv
-      (d2_zero_of_jac0 (I := I) g p x w hJac0)
+    exact ode_Ico_of_Ioo_d2 (I := I) g p x w hJacobian hcurv
+      (d2_zero_of_jacobian0 (I := I) g p x w hJacobian0)
 
 open Bundle in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

@@ -102,22 +102,22 @@ private def varTensor
     Tensor04At (I := I) (M := M) x :=
   hessVarTensor N - (2 : Real) • rawTensor (I := I) g Ric Rm04
 
-private def solNablaRic
+private def solutionNablaRic
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3 :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     2 (S.family.connection t) (S.ricci t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       2 (S.family.connection t) (connSmoothInf (I := I) S t) (S.ricci t))
 
-private def solNabla2Ric
+private def solutionNabla2Ric
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (x : M) :
     Tensor04At (I := I) (M := M) x :=
   totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-    3 (S.family.connection t) (solNablaRic (I := I) S t) x
+    3 (S.family.connection t) (solutionNablaRic (I := I) S t) x
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem coordNab2_eq
@@ -125,7 +125,7 @@ private theorem coordNab2_eq
     (S : SolutionOn (I := I) (M := M) D) (x₀ : M) (t : Real)
     (d a i j : CoordinateIdx (𝕜 := Real) E) :
     coordNab2Ric (I := I) S x₀ t x₀ d a i j =
-      solNabla2Ric (I := I) S t x₀
+      solutionNabla2Ric (I := I) S t x₀
         (vec4 (I := I)
           (coordinateFrameAt (I := I) x₀ d x₀)
           (coordinateFrameAt (I := I) x₀ a x₀)
@@ -346,11 +346,11 @@ private theorem rawCoord_eq
   let Dv := coordinateFrameAt (I := I) x₀ (m 3) x₀
   let β := tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
     (S.base.ricciAt t x₀) Dv
-  have hcov := connSmoothOfSol (I := I) S t
+  have hcov := connSmoothOfSolution (I := I) S t
   have hcoord :=
     DifferentialGeometry.Geometry.Curvature.rm13_eval_eq_christoffelCurvCoord
       (I := I) (S.family.connection t) hcov (S.base.rm13 t) x₀ β
-      (rm13OfSol (I := I) S t) (connCurvOfSol (I := I) S x₀ t)
+      (rm13OfSolution (I := I) S t) (connCurvOfSolution (I := I) S x₀ t)
       (m 0) (m 1) (m 2)
   have hβ (p : CoordinateIdx (𝕜 := Real) E) :
       β (fun _ : Fin 1 ↦ coordinateFrameAt (I := I) x₀ p x₀) =
@@ -395,7 +395,7 @@ private theorem rm04Var_eq_tensor
     (x₀ : M) (t : Real)
     (m : Fin 4 → CoordinateIdx (𝕜 := Real) E) :
     rm04VarRHS (I := I) S x₀ (coordNab2Ric (I := I) S x₀) t m =
-      varTensor (I := I) (S.base.metric t) (solNabla2Ric (I := I) S t x₀)
+      varTensor (I := I) (S.base.metric t) (solutionNabla2Ric (I := I) S t x₀)
         (S.base.ricciAt t x₀) (S.base.rm04 t x₀)
         (fun q ↦ coordinateFrameAt (I := I) x₀ (m q) x₀) := by
   classical
@@ -463,7 +463,7 @@ private theorem rm04Var_eq_tensor
       ring
     _ = _ := by
       rw [hvec]
-      change _ = hessVarTensor (solNabla2Ric (I := I) S t x₀)
+      change _ = hessVarTensor (solutionNabla2Ric (I := I) S t x₀)
           (vec4 (I := I)
             (coordinateFrameAt (I := I) x₀ (m 0) x₀)
             (coordinateFrameAt (I := I) x₀ (m 1) x₀)
@@ -491,7 +491,7 @@ private theorem varTensor_eq_ham
     (hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Idx)))
     (m : Fin 4 → Idx) :
-    varTensor (I := I) (S.base.metric t) (solNabla2Ric (I := I) S t x)
+    varTensor (I := I) (S.base.metric t) (solutionNabla2Ric (I := I) S t x)
         (S.base.ricciAt t x) (S.base.rm04 t x) (fun q ↦ basis (m q)) =
       tensor0SComponent (I := I)
           (metricTrace0S2TensorInBasis (I := I) basis
@@ -507,7 +507,7 @@ private theorem varTensor_eq_ham
       vec4 (I := I) (basis (m 0)) (basis (m 1)) (basis (m 2)) (basis (m 3)) by
     funext q
     fin_cases q <;> rfl]
-  change hessVarTensor (solNabla2Ric (I := I) S t x)
+  change hessVarTensor (solutionNabla2Ric (I := I) S t x)
       (vec4 (I := I) (basis (m 0)) (basis (m 1)) (basis (m 2)) (basis (m 3))) -
     2 * rawTensor (I := I) (S.base.metric t) (S.base.ricciAt t x)
       (S.base.rm04 t x)
@@ -529,7 +529,7 @@ private theorem varTensor_eq_ham
         vec4 (I := I) (basis (q 0)) (basis (q 1)) (basis (q 2)) (basis (q 3)) := by
     funext p
     fin_cases p <;> rfl
-  simpa [solNabla2Ric, solNablaRic, nablaKRm04Field_succ,
+  simpa [solutionNabla2Ric, solutionNablaRic, nablaKRm04Field_succ,
     SolutionFamily.connection, SolutionFamily.rm04, SolutionFamily.ricci,
     SolutionFamily.ricciAt, metricRm04, metricRicci, metricTrace0S2InBasis,
     htraceInput, hvec, identityInvMetric, diagonalInvMetric, metricCov,
@@ -592,7 +592,7 @@ private theorem rm04Var_of_solution
     HasDerivWithinAt
       (fun s : Real ↦ S.base.rm04 s x₀ v)
       (varTensor (I := I) (S.base.metric (t : Real))
-        (solNabla2Ric (I := I) S (t : Real) x₀)
+        (solutionNabla2Ric (I := I) S (t : Real) x₀)
         (S.base.ricciAt (t : Real) x₀) (S.base.rm04 (t : Real) x₀) v)
       D.carrier (t : Real) := by
   classical
@@ -607,7 +607,7 @@ private theorem rm04Var_of_solution
       ChristoffelEvolutionEquationInFrameOn
         (I := I) S (coordInv (I := I) S x₀) frame
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀) nablaRic := by
-    simpa [frame, nablaRic] using coordGammaEvol (I := I) S hS x₀ hmetric
+    simpa [frame, nablaRic] using coordGammaEvolution (I := I) S hS x₀ hmetric
   have hvar :
       ChristoffelVariationEquationInFrameOn
         (I := I) S frame
@@ -618,7 +618,7 @@ private theorem rm04Var_of_solution
       ChristoffelVariationMixedDerivativeInFrameOnRegular
         (I := I) S frame (coordinateFrameAt_isLocalFrame_one (I := I) x₀) rhs := by
     simpa [rhs, frame, nablaRic] using coordGammaMix (I := I) S hS x₀ hGamma
-  have hnablaReg := coordNab2Reg (I := I) S x₀
+  have hnablaRegularity := coordNab2Regularity (I := I) S x₀
   have hgamma
       (d k i j : CoordinateIdx (𝕜 := Real) E) :
       christoffelVariationCovDerivCoordAt
@@ -628,11 +628,11 @@ private theorem rm04Var_of_solution
           (M := M) (coordInv (I := I) S x₀) nabla2Ric
           (t : Real) x₀ d k i j := by
     simpa [rhs, nablaRic, nabla2Ric] using
-      gammaCovNab2Core
+      christoffelVariationCovDerivCoordAt_eq_nablaGammaDtFromNabla2RicInFrame_of_coordinate_identities
         (I := I) S (coordInv (I := I) S x₀) nablaRic nabla2Ric
         x₀ t d k i j
         (fun a b ↦ coordInvMdiff (I := I) S x₀ (t : Real) a b)
-        (fun a b c ↦ hnablaReg.first.mdiffAt
+        (fun a b c ↦ hnablaRegularity.first.mdiffAt
           (t : Real) x₀ (coordinateFrameAt_mem (I := I) x₀) a b c)
         (fun a b ↦ coordInvCovZero (I := I) S x₀ t d a b)
         (fun a b c e ↦ coordNab2At (I := I) S x₀ (t : Real) a b c e)
@@ -642,7 +642,7 @@ private theorem rm04Var_of_solution
         (fun s : Real ↦ S.base.rm04 s x₀
           (fun q ↦ coordinateFrameAt (I := I) x₀ (m q) x₀))
         (varTensor (I := I) (S.base.metric (t : Real))
-          (solNabla2Ric (I := I) S (t : Real) x₀)
+          (solutionNabla2Ric (I := I) S (t : Real) x₀)
           (S.base.ricciAt (t : Real) x₀) (S.base.rm04 (t : Real) x₀)
           (fun q ↦ coordinateFrameAt (I := I) x₀ (m q) x₀))
         D.carrier (t : Real) := by
@@ -654,8 +654,8 @@ private theorem rm04Var_of_solution
               metricCompInFrame (I := I) S frame s x₀ (m 3) p := by
       intro s hs
       simpa [frame] using solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients
-        (I := I) S x₀ s (rm13OfSol (I := I) S s)
-        (connCurvOfSol (I := I) S x₀ s) m
+        (I := I) S x₀ s (rm13OfSolution (I := I) S s)
+        (connCurvOfSolution (I := I) S x₀ s) m
     have hraw :
         HasDerivWithinAt
           (fun s : Real ↦ solutionCurvatureComponents (I := I) S x₀ s x₀ m)
@@ -729,7 +729,7 @@ private theorem rm04Var_of_solution
     simpa only [solutionCurvatureComponents_apply] using h
   have htransport := rm04Deriv_of_coord (I := I) S x₀ t
     (fun m ↦ varTensor (I := I) (S.base.metric (t : Real))
-      (solNabla2Ric (I := I) S (t : Real) x₀)
+      (solutionNabla2Ric (I := I) S (t : Real) x₀)
       (S.base.ricciAt (t : Real) x₀) (S.base.rm04 (t : Real) x₀)
       (fun q ↦ coordinateFrameAt (I := I) x₀ (m q) x₀))
     hcoord v
@@ -737,7 +737,7 @@ private theorem rm04Var_of_solution
   have hexp := tensor0S_apply_eq_sum
     (I := I) (coordinateFrameAtToBasis (I := I) x₀)
     (varTensor (I := I) (S.base.metric (t : Real))
-      (solNabla2Ric (I := I) S (t : Real) x₀)
+      (solutionNabla2Ric (I := I) S (t : Real) x₀)
       (S.base.ricciAt (t : Real) x₀) (S.base.rm04 (t : Real) x₀)) v
   simpa only [component0S_apply, coordinateFrameAt_toBasis_apply] using hexp.symm
 

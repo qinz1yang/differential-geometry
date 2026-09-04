@@ -333,9 +333,9 @@ theorem exists_isVariationalSolutionOn_Ioo_local
     rw [mem_closedBall_zero_iff]
     change ‖δ‖ ≤ r
     rfl
-  obtain ⟨y, hy_init, hy_deriv⟩ :=
+  obtain ⟨y, hy_initial, hy_deriv⟩ :=
     hpl.exists_eq_forall_mem_Icc_hasDerivWithinAt hδ_mem
-  refine ⟨ε', hε', ?_, y, hy_init, ?_⟩
+  refine ⟨ε', hε', ?_, y, hy_initial, ?_⟩
   · intro τ hτ
     apply hIcc_sub_s
     refine ⟨le_of_lt ?_, le_of_lt ?_⟩

@@ -397,42 +397,42 @@ theorem ballCutoffFDeriv_holderWith
     rw [Real.coe_toNNReal _ hN]
     exact norm_ballCutoffFDeriv2_le hr hrR x
 
-def ballCutoffBcf
+def ballCutoffBoundedContinuousFunction
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) :
     BoundedContinuousFunction V Real :=
-  compactSupportBcf (ballCutoff center r R)
+  compactSupportBoundedContinuousFunction (ballCutoff center r R)
     (ballCutoff_contDiff center r R).continuous
     (ballCutoff_hasCompactSupport hr hrR)
 
-def ballCutoffFDerivBcf
+def ballCutoffFDerivBoundedContinuousFunction
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) :
     BoundedContinuousFunction V (V →L[Real] Real) :=
-  compactSupportBcf (ballCutoffFDeriv center r R)
+  compactSupportBoundedContinuousFunction (ballCutoffFDeriv center r R)
     (ballCutoffFDeriv_contDiff center r R).continuous
     (ballCutoffFDeriv_hasCompactSupport hr hrR)
 
-def ballCutoffFDeriv2Bcf
+def ballCutoffFDeriv2BoundedContinuousFunction
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) :
     BoundedContinuousFunction V (V →L[Real] V →L[Real] Real) :=
-  compactSupportBcf (ballCutoffFDeriv2 center r R)
+  compactSupportBoundedContinuousFunction (ballCutoffFDeriv2 center r R)
     (ballCutoffFDeriv2_contDiff center r R).continuous
     (ballCutoffFDeriv2_hasCompactSupport hr hrR)
 
 @[simp]
-theorem ballCutoffBcf_apply
+theorem ballCutoffBoundedContinuousFunction_apply
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) (x : V) :
-    ballCutoffBcf center hr hrR x = ballCutoff center r R x := rfl
+    ballCutoffBoundedContinuousFunction center hr hrR x = ballCutoff center r R x := rfl
 
 @[simp]
-theorem ballCutoffFDerivBcf_apply
+theorem ballCutoffFDerivBoundedContinuousFunction_apply
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) (x : V) :
-    ballCutoffFDerivBcf center hr hrR x =
+    ballCutoffFDerivBoundedContinuousFunction center hr hrR x =
       ballCutoffFDeriv center r R x := rfl
 
 @[simp]
-theorem ballCutoffFDeriv2Bcf_apply
+theorem ballCutoffFDeriv2BoundedContinuousFunction_apply
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) (x : V) :
-    ballCutoffFDeriv2Bcf center hr hrR x =
+    ballCutoffFDeriv2BoundedContinuousFunction center hr hrR x =
       ballCutoffFDeriv2 center r R x := rfl
 
 theorem lapEval_ballCutoffFDeriv2
@@ -468,9 +468,9 @@ theorem lapEval_ballCutoffFDeriv2
   unfold ballCutoffLaplacian
   ring
 
-theorem coreLap_ballCutoffFDeriv2Bcf
+theorem coreLap_ballCutoffFDeriv2BoundedContinuousFunction
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R) (x : V) :
-    coreLap (ballCutoffFDeriv2Bcf center hr hrR) x =
+    coreLap (ballCutoffFDeriv2BoundedContinuousFunction center hr hrR) x =
       ballCutoffLaplacian center r R x := by
   change lapEval (ballCutoffFDeriv2 center r R x) = _
   exact lapEval_ballCutoffFDeriv2 center r R x

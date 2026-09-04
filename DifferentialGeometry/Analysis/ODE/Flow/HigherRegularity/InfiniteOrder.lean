@@ -159,7 +159,7 @@ theorem IsLocalFlow.contDiffOn_top
           exact (hvsf.2 s (Ioo_subset_Icc_self hs_mid)).hasDerivAt (Icc_mem_nhds_iff.mpr hs_mid))
         (fun s hs => linearODESolution_hasDerivAt_of_hasSolution A (t₀ - T) (t₀ + T) t₀
           (fun _ => δ) h_exists hs)
-        (by rw [hvsf.1, linearODESolution_init])
+        (by rw [hvsf.1, linearODESolution_initial])
       simp only [hLsp_eq_vlm, hvlm_eq, uncurry]
       have h_eq := h_uniq ht_Ioo
       dsimp at h_eq

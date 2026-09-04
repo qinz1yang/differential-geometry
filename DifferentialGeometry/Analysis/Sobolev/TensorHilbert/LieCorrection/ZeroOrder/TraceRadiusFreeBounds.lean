@@ -204,7 +204,7 @@ private theorem trace_grid_of
   linarith
 
 omit [SigmaCompactSpace M] in
-theorem trace_grid_unif
+theorem trace_grid_uniform
     (p : ℕ) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -222,7 +222,7 @@ theorem trace_grid_unif
               (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) k := by
   classical
-  obtain ⟨CD, hCD_nn, hCD⟩ := invDiff_zero_unif (I := I) (M := M) hδ₀
+  obtain ⟨CD, hCD_nn, hCD⟩ := invDiff_zero_uniform (I := I) (M := M) hδ₀
   let fr : ℝ := Module.finrank ℝ E
   let S : ℕ → ℝ := fun i => if i = 0 then fr ^ (p + 6) else 0
   let C : ℕ → ℝ := fun i =>
@@ -271,7 +271,7 @@ theorem trace_grid_unif
       g₁ P htie hδ_le hδ_nonneg hbound σ i x
 
 omit [SigmaCompactSpace M] in
-theorem trace2_grid_unif
+theorem trace2_grid_uniform
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -288,7 +288,7 @@ theorem trace2_grid_unif
             Combinatorics.antidiagonalTupleGrid
               (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) k := by
-  simpa only [Nat.reduceAdd] using trace_grid_unif (I := I) (M := M) 2 hδ₀
+  simpa only [Nat.reduceAdd] using trace_grid_uniform (I := I) (M := M) 2 hδ₀
 
 theorem trace_grid_rf
     (p : ℕ) (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

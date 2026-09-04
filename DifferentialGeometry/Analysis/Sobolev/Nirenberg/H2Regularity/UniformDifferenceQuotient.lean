@@ -115,18 +115,18 @@ theorem uniform_diffQuot_bound
       d (Set.univ : Set Eucl))
     {u_g f_g : Eucl → ℝ}
     (hu_g_l2 : MemLp u_g 2 (volume : Measure Eucl))
-    (hf_g_l2_loc : ∀ {Ω' : Set Eucl}, IsCompact (closure Ω') →
+    (hf_g_l2_local : ∀ {Ω' : Set Eucl}, IsCompact (closure Ω') →
       MemLp f_g 2 ((volume : Measure Eucl).restrict Ω'))
     {g_g : Fin d → Eucl → ℝ}
     (hg_g_l2 : ∀ i, MemLp (g_g i) 2 (volume : Measure Eucl))
     {η : Eucl → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : HasCompactSupport η)
+    (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : Eucl, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set Eucl} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_meas : MeasurableSet Ω'')
@@ -209,9 +209,9 @@ theorem uniform_diffQuot_bound
               ∫ x in Ω', (f_g x)^2 ∂(volume : Measure Eucl)) := by
     intro k
     exact nirenberg_diffQuot_g_localL2_bound (d := d)
-      B hu_g_l2 hf_g_l2_loc hg_g_l2
-      hη hη_supp hη_range hN h_fderiv_eta hΩ' (Set.subset_univ _) hΩ'_compact
-      hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas k
+      B hu_g_l2 hf_g_l2_local hg_g_l2
+      hη hη_support hη_range hN h_fderiv_eta hΩ' (Set.subset_univ _) hΩ'_compact
+      hh_support_in_Ω' hη_one_on_Ω'' hΩ''_meas k
       (h_diffQuot_u_bound k)
       (h_testFunction_sq_bound k)
       (h_coercivity k)
@@ -336,18 +336,18 @@ theorem uniform_diffQuot_bound_quantitative
       d (Set.univ : Set Eucl))
     {u_g f_g : Eucl → ℝ}
     (hu_g_l2 : MemLp u_g 2 (volume : Measure Eucl))
-    (hf_g_l2_loc : ∀ {Ω' : Set Eucl}, IsCompact (closure Ω') →
+    (hf_g_l2_local : ∀ {Ω' : Set Eucl}, IsCompact (closure Ω') →
       MemLp f_g 2 ((volume : Measure Eucl).restrict Ω'))
     {g_g : Fin d → Eucl → ℝ}
     (hg_g_l2 : ∀ i, MemLp (g_g i) 2 (volume : Measure Eucl))
     {η : Eucl → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : HasCompactSupport η)
+    (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : Eucl, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' Ω'' : Set Eucl} (hΩ' : IsOpen Ω')
     (hΩ'_compact : IsCompact (closure Ω'))
     {R₀ : ℝ}
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_meas : MeasurableSet Ω'')
@@ -434,9 +434,9 @@ theorem uniform_diffQuot_bound_quantitative
               ∫ x in Ω', (u_g x)^2 ∂(volume : Measure Eucl) +
               ∫ x in Ω', (f_g x)^2 ∂(volume : Measure Eucl)) :=
     nirenberg_diffQuot_g_localL2_bound_quantitative (d := d)
-      B hu_g_l2 hf_g_l2_loc hg_g_l2
-      hη hη_supp hη_range hN h_fderiv_eta hΩ' (Set.subset_univ _) hΩ'_compact
-      hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas k
+      B hu_g_l2 hf_g_l2_local hg_g_l2
+      hη hη_support hη_range hN h_fderiv_eta hΩ' (Set.subset_univ _) hΩ'_compact
+      hh_support_in_Ω' hη_one_on_Ω'' hΩ''_meas k
       (h_diffQuot_u_bound k)
       (h_testFunction_sq_bound k)
       (h_coercivity k) hh_ne hh_le

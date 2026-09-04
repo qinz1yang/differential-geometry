@@ -42,7 +42,7 @@ def diffNumeratorAggregate
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    (fChartEffPrev : EuclN → ℝ) : ℝ≥0∞ :=
+    (fChartEffectivePrev : EuclN → ℝ) : ℝ≥0∞ :=
   (∑ a : Fin (Module.finrank ℝ E),
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 2 2
         (eigenvectorChartIteratedPartial (I := I) (M := M)
@@ -52,9 +52,9 @@ def diffNumeratorAggregate
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ m (Fin.init l))
         (chartTargetEuclid (I := I) (M := M) α)
-    + iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 1 2 fChartEffPrev
+    + iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 1 2 fChartEffectivePrev
         (chartTargetEuclid (I := I) (M := M) α)
-    + eLpNorm fChartEffPrev 2
+    + eLpNorm fChartEffectivePrev 2
         ((volume : Measure EuclN).restrict
           (chartPouKernel (I := I) (M := M) α))
 
@@ -127,7 +127,7 @@ lemma eLpNorm_iteratedPartial_le :
 omit [CompleteSpace E] in
 lemma eLpNorm_chosenWeakPartial_iteratedPartial_succ_le
     (a b : Fin (Module.finrank ℝ E)) :
-    eLpNorm (chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+    eLpNorm (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
         (chartTargetEuclid (I := I) (M := M) α)) 2

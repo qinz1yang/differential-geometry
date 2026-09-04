@@ -732,11 +732,11 @@ theorem eLpNorm_diffQuot_le_eLpNorm_partialDeriv
 
 omit [NeZero d] in
 private lemma diffQuot_bound_of_lipschitz
-    {φ : E → ℝ} (hφ_C1 : ContDiff ℝ 1 φ) (hφ_supp : HasCompactSupport φ)
+    {φ : E → ℝ} (hφ_C1 : ContDiff ℝ 1 φ) (hφ_support : HasCompactSupport φ)
     (i : Fin d) :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ h : ℝ, ∀ x : E, |diffQuot i h φ x| ≤ L := by
   obtain ⟨L, hL_nn, hLip⟩ :=
-    lipschitz_of_contDiff_compactSupport (d := d) hφ_C1 hφ_supp
+    lipschitz_of_contDiff_compactSupport (d := d) hφ_C1 hφ_support
   refine ⟨L, hL_nn, fun h x => ?_⟩
   by_cases hh : h = 0
   · rw [hh, diffQuot_zero_h]; simpa using hL_nn
@@ -783,10 +783,10 @@ theorem hasWeakPartialDeriv_of_diffQuot_tendsto_inner
           (𝓝 (∫ x, v x * (fderiv ℝ φ x) (EuclideanSpace.single i 1)
             ∂(volume : Measure E)))) :
     DeGiorgi.HasWeakPartialDeriv i g v Set.univ := by
-  intro φ hφ_smooth hφ_supp _
+  intro φ hφ_smooth hφ_support _
   have hφ_C1 : ContDiff ℝ 1 φ := hφ_smooth.of_le (by norm_cast)
   have hφ_memLp : MemLp φ 2 volume :=
-    hφ_smooth.continuous.memLp_of_hasCompactSupport hφ_supp
+    hφ_smooth.continuous.memLp_of_hasCompactSupport hφ_support
   have hIBP : ∀ n : ℕ,
       ∫ x, diffQuot i (hₙ n) v x * φ x ∂(volume : Measure E) =
         -∫ x, v x * diffQuot i (-(hₙ n)) φ x ∂(volume : Measure E) := by
@@ -799,7 +799,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_tendsto_inner
         atTop
         (𝓝 (∫ x, v x * (fderiv ℝ φ x) (EuclideanSpace.single i 1)
           ∂(volume : Measure E))) :=
-    h_dual φ hφ_smooth hφ_supp
+    h_dual φ hφ_smooth hφ_support
   have hIBP_RHS_tendsto :
       Tendsto (fun n =>
         -∫ x, v x * diffQuot i (-(hₙ n)) φ x ∂(volume : Measure E))
@@ -812,7 +812,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_tendsto_inner
         ∫ x, diffQuot i (hₙ n) v x * φ x ∂(volume : Measure E))
         atTop
         (𝓝 (∫ x, g x * φ x ∂(volume : Measure E))) :=
-    h_weak φ hφ_smooth hφ_supp
+    h_weak φ hφ_smooth hφ_support
   have hLHS_eq_RHS_tendsto :
       Tendsto (fun n =>
         ∫ x, diffQuot i (hₙ n) v x * φ x ∂(volume : Measure E))

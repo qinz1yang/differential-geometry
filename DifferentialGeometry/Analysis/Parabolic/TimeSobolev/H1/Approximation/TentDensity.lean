@@ -61,7 +61,7 @@ theorem exists_tent_c1 {T c : ℝ} (hc : 0 < c) (hcT : c < T) (z : X) :
     dsimp only [uL]
     rw [timeH1.slice_toFun u 0 c (by positivity) hcT.le
       (show (0 : ℝ) ∈ Icc (0 : ℝ) (c - 0) by constructor <;> simp [hc.le])]
-    simp only [zero_add, u, timeH1.tent_init, timeH1.toFun_zero]
+    simp only [zero_add, u, timeH1.tent_initial, timeH1.toFun_zero]
   have huLc : uL.toFun (c - 0) = z := by
     dsimp only [uL]
     rw [timeH1.slice_toFun u 0 c (by positivity) hcT.le
@@ -339,10 +339,10 @@ theorem exists_tent_c1 {T c : ℝ} (hc : 0 < c) (hcT : c < T) (z : X) :
       simpa only [hvsq] using hsum
     have hsqrt := hsq.sqrt
     simpa only [Real.sqrt_sq_eq_abs, abs_norm, Real.sqrt_zero] using hsqrt
-  have hvinit : ∀ n, (v n).init = u.init := by
+  have hvinit : ∀ n, (v n).initial = u.initial := by
     intro n
-    simp only [v, timeH1.ofContDiffOn, timeH1.init_mk, hf0 n, u,
-      timeH1.tent_init]
+    simp only [v, timeH1.ofContDiffOn, timeH1.initial_mk, hf0 n, u,
+      timeH1.tent_initial]
   have hv : Tendsto v atTop (𝓝 u) := by
     rw [tendsto_iff_norm_sub_tendsto_zero]
     have hnormD : Tendsto (fun n => ‖(v n).deriv - u.deriv‖) atTop (𝓝 0) :=
@@ -350,7 +350,7 @@ theorem exists_tent_c1 {T c : ℝ} (hc : 0 < c) (hcT : c < T) (z : X) :
     have hnorm : ∀ n, ‖v n - u‖ = ‖(v n).deriv - u.deriv‖ := by
       intro n
       have hsquare := timeH1.norm_sq_eq (v n - u)
-      change ‖v n - u‖ ^ 2 = ‖(v n).init - u.init‖ ^ 2 +
+      change ‖v n - u‖ ^ 2 = ‖(v n).initial - u.initial‖ ^ 2 +
         ‖(v n).deriv - u.deriv‖ ^ 2 at hsquare
       rw [hvinit n, sub_self, norm_zero] at hsquare
       norm_num at hsquare

@@ -42,7 +42,7 @@ theorem exists_chartH1_coordinates_with_compact_range_of_tendstoUniformly
       (interior (Kman i)))
     (alpha : ℕ → Real → M)
     (halpha : ∀ n, ContMDiffOn 𝓘(Real, Real) I 1 (alpha n) (Icc a b))
-    (hunif : TendstoUniformly
+    (huniform : TendstoUniformly
       (fun n (s : Icc a b) ↦ alpha n s.1) (fun s ↦ gamma s.1) atTop) :
     ∃ (N : ℕ) (Kcoord : Fin m → Set E)
       (u : (i : Fin m) → ℕ → timeH1 E (partitionIntervalLength t i)),
@@ -75,7 +75,7 @@ theorem exists_chartH1_coordinates_with_compact_range_of_tendstoUniformly
       (fun s ↦ gamma s.1) atTop := by
     let incl : Icc (t i.castSucc) (t i.succ) → Icc a b :=
       fun s ↦ ⟨s.1, hpieceSub i s.2⟩
-    with_unfolding_all exact hunif.comp incl
+    with_unfolding_all exact huniform.comp incl
   have hevent (i : Fin m) : ∀ᶠ n in atTop,
       MapsTo (alpha n) (Icc (t i.castSucc) (t i.succ))
         (interior (Kman i)) := by
@@ -129,28 +129,28 @@ theorem exists_chartH1_coordinates_with_compact_range_of_tendstoUniformly
       (Icc (0 : Real) (partitionIntervalLength t i)) :=
     (halpha (n + N)).comp
       (contMDiff_const.add contMDiff_id).contMDiffOn (hshift i)
-  have hlocalSrc (i : Fin m) (n : ℕ) : MapsTo
+  have hlocalSource (i : Fin m) (n : ℕ) : MapsTo
       (fun r : Real ↦ alpha (n + N) (t i.castSucc + r))
       (Icc (0 : Real) (partitionIntervalLength t i)) (chartAt H (p i)).source :=
     (hsrc i n).comp (hshiftPiece i)
   let u : (i : Fin m) → ℕ → timeH1 E (partitionIntervalLength t i) := fun i n ↦
     chartTimeH1 I (sub_nonneg.mpr (hseg i)) (p i)
       (fun r ↦ alpha (n + N) (t i.castSucc + r))
-      (hlocalMD i n) (hlocalSrc i n)
+      (hlocalMD i n) (hlocalSource i n)
   have hrep (i : Fin m) (n : ℕ) : EqOn (u i n).toFun
       (fun r ↦ extChartAt I (p i) (alpha (n + N) (t i.castSucc + r)))
       (Icc (0 : Real) (partitionIntervalLength t i)) := by
     with_unfolding_all
       exact chartTimeH1_toFun I (sub_nonneg.mpr (hseg i)) (p i)
         (fun r ↦ alpha (n + N) (t i.castSucc + r))
-        (hlocalMD i n) (hlocalSrc i n)
+        (hlocalMD i n) (hlocalSource i n)
   refine ⟨N, Kcoord, u, hKcoordC, hKcoordChart, hsrc, hrep, ?_⟩
   intro i n r
   rw [hrep i n r.2]
   refine ⟨alpha (n + N) (t i.castSucc + r.1), ?_, rfl⟩
   exact interior_subset (htail i n (hshiftPiece i r.2))
 
-theorem exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le
+theorem exists_chartH1_weakly_convergent_subsequence_of_lRegularizedAction_le
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -158,7 +158,7 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le
     (htmono : Monotone t) (ht0 : t 0 = a) (htlast : t (Fin.last m) = b)
     (p : Fin m → M) (alpha : ℕ → Real → M)
     (halpha : ∀ n, ContMDiffOn 𝓘(Real, Real) I 1 (alpha n) (Icc a b))
-    (hLag : ∀ n, IntervalIntegrable (lRegLagrangian S T (alpha n)) volume a b)
+    (hLag : ∀ n, IntervalIntegrable (lRegularizedLagrangian S T (alpha n)) volume a b)
     (u : (i : Fin m) → ℕ → timeH1 E (partitionIntervalLength t i))
     (hsrc : ∀ i n, MapsTo (alpha n) (Icc (t i.castSucc) (t i.succ))
       (chartAt H (p i)).source)
@@ -169,7 +169,7 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le
     (hKchart : ∀ i, K i ⊆ interior (extChartAt I (p i)).target)
     (huK : ∀ i n (r : Icc (0 : Real) (partitionIntervalLength t i)),
       (u i n).toFun r.1 ∈ K i)
-    {A : Real} (hact : ∀ n, lRegAction S T (alpha n) a b ≤ A)
+    {A : Real} (hact : ∀ n, lRegularizedAction S T (alpha n) a b ≤ A)
     (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.regular) :
     ∃ (phi : ℕ → ℕ)
       (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i)),
@@ -202,11 +202,11 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le
         (S.base.metric (T - s ^ 2)).inner (alpha n s)
           (lVelocity (I := I) (alpha n) s)
           (lVelocity (I := I) (alpha n) s)) volume a b := by
-    simpa only [lRegLagrangian, add_sub_cancel_right] using (hLag n).sub (hpotInt n)
-  have hsplit (n : ℕ) : lRegAction S T (alpha n) a b = kin n + pot n := by
-    simpa only [lRegAction, lRegLagrangian, kin, pot] using
+    simpa only [lRegularizedLagrangian, add_sub_cancel_right] using (hLag n).sub (hpotInt n)
+  have hsplit (n : ℕ) : lRegularizedAction S T (alpha n) a b = kin n + pot n := by
+    simpa only [lRegularizedAction, lRegularizedLagrangian, kin, pot] using
       intervalIntegral.integral_add (hkinInt n) (hpotInt n)
-  obtain ⟨C, hC⟩ := exists_uniform_lower_bound_lRegPotential (I := I) S hSc T a b hcarrier
+  obtain ⟨C, hC⟩ := exists_uniform_lower_bound_lRegularizedPotential (I := I) S hSc T a b hcarrier
   have hpotLower (n : ℕ) : C * (b - a) ≤ pot n := by
     have hmono := intervalIntegral.integral_mono_on hab
       intervalIntegrable_const (hpotInt n) (fun s hs ↦
@@ -294,7 +294,7 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le
       (fun r : Real ↦ T - (t i.castSucc + r) ^ 2)
       (Icc (0 : Real) (partitionIntervalLength t i)) :=
     (continuous_const.sub ((continuous_const.add continuous_id).pow 2)).continuousOn
-  have hτreg (i : Fin m) : MapsTo
+  have hτregularity (i : Fin m) : MapsTo
       (fun r : Real ↦ T - (t i.castSucc + r) ^ 2)
       (Icc (0 : Real) (partitionIntervalLength t i)) D.regular := by
     intro r hr
@@ -305,7 +305,7 @@ theorem exists_chartH1_weakly_convergent_subsequence_of_lRegAction_le
     (fun i ↦ partitionIntervalLength t i) (fun i ↦ by
       change 0 ≤ t i.succ - t i.castSucc
       exact sub_nonneg.mpr (hseg i))
-    (fun i r ↦ T - (t i.castSucc + r) ^ 2) hτc hτreg K hKc hKchart
+    (fun i r ↦ T - (t i.castSucc + r) ^ 2) hτc hτregularity K hKc hKchart
     u (fun _ ↦ B) huK hchart
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

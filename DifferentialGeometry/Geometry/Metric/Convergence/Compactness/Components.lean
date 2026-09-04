@@ -11,7 +11,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 
@@ -112,7 +112,7 @@ theorem bumpFderiv_eq_chartTowerStep
 
 omit [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
-theorem bumpTowerStep_chartConv
+theorem bumpTowerStep_chartConvergence
     (gRef : SmoothRiemannianMetric I M)
     (A0Seq : ℕ → Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
@@ -131,12 +131,12 @@ theorem bumpTowerStep_chartConv
     {U : Set E} (hU : IsOpen U) (hχU : Set.EqOn χ 1 U)
     (hUKc : ∀ z ∈ U, (extChartAt I x₀).symm z ∈ Kc)
     (hUtarget : U ⊆ (extChartAt I x₀).target)
-    (hconv : MapCInfConvOnCompacts U
+    (hconv : MapCInfConvergenceOnCompacts U
       (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) p) w (fun a => V a w)) z)
       (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef A0inf p) w (fun a => V a w)) z)) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (towerStep (I := I) gRef (A0Seq k) p V σ) z)
       (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
@@ -176,7 +176,7 @@ theorem chartRep_contDiffOn (f : M → Real) (x₀ : M)
 
 omit [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
-theorem bumpTower_slotExpand_conv
+theorem bumpTower_slotExpand_convergence
     (gRef : SmoothRiemannianMetric I M)
     (A0Seq : ℕ → Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
@@ -197,14 +197,14 @@ theorem bumpTower_slotExpand_conv
     (j : Fin (p + 2))
     {S : Set M} (hUS : ∀ z ∈ U, (extChartAt I x₀).symm z ∈ S)
     (hexpand : ∀ w ∈ S, (V j) w = ∑ i ∈ s, c i w • frame i w)
-    (hconv : ∀ i, MapCInfConvOnCompacts U
+    (hconv : ∀ i, MapCInfConvergenceOnCompacts U
       (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) p) w
           (fun a => (Function.update V j (frame i)) a w)) z)
       (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef A0inf p) w
           (fun a => (Function.update V j (frame i)) a w)) z)) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) p) w (fun a => V a w)) z)
       (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
@@ -226,7 +226,7 @@ theorem bumpTower_slotExpand_conv
           (fun a => (Function.update V j (frame i)) a w)) z) :=
     fun i => bumpTowerScalar_contDiff (I := I) gRef A0inf p
       (Function.update V j (frame i)) x₀ hχ htsupp
-  have hsum := MapCInfConvOnCompacts.sum s
+  have hsum := MapCInfConvergenceOnCompacts.sum s
     (fun i => (hconv i).mulLeft (hg i) (fun k => hcarrSeq i k) (hcarrInf i))
     (fun i k => (hg i).mul (hcarrSeq i k)) (fun i => (hg i).mul (hcarrInf i))
   have hmulti : ∀ (A0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -373,7 +373,7 @@ theorem bumpTowerStepScalar_contDiff
 
 omit [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
-theorem bumpTowerCons_conv
+theorem bumpTowerCons_convergence
     (gRef : SmoothRiemannianMetric I M)
     (A0Seq : ℕ → Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
@@ -392,12 +392,12 @@ theorem bumpTowerCons_conv
       (TangentSpace I : M → Type _))
     (IH : ∀ (V : Fin (p + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _)),
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) p) w (fun a => V a w)) z)
           (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef A0inf p) w (fun a => V a w)) z)) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) (p + 1)) w
           (Fin.cons (σ w) (fun a : Fin (p + 2) => V' a w))) z)
@@ -405,26 +405,26 @@ theorem bumpTowerCons_conv
         (fun w : M => (covDerivOfField (I := I) gRef A0inf (p + 1)) w
           (Fin.cons (σ w) (fun a : Fin (p + 2) => V' a w))) z) := by
   classical
-  set corrSec : Fin (p + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
+  set correctionSec : Fin (p + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     fun a => covSection (I := I) (leviCivitaConnectionOfMetric (I := I) gRef)
       (leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I) gRef)
       σ (V' a) with hcorrSec
-  have hTS := bumpTowerStep_chartConv (I := I) gRef A0Seq A0inf p V' x₀ v σ hσ hKchart
+  have hTS := bumpTowerStep_chartConvergence (I := I) gRef A0Seq A0inf p V' x₀ v σ hσ hKchart
     hχ htsupp hU hχU hUKc hUtarget (IH V')
-  have hSumCorr := MapCInfConvOnCompacts.sum (Finset.univ : Finset (Fin (p + 2)))
-    (fun a => IH (Function.update V' a (corrSec a)))
+  have hSumCorrection := MapCInfConvergenceOnCompacts.sum (Finset.univ : Finset (Fin (p + 2)))
+    (fun a => IH (Function.update V' a (correctionSec a)))
     (fun a k => bumpTowerScalar_contDiff (I := I) gRef (A0Seq k) p
-      (Function.update V' a (corrSec a)) x₀ hχ htsupp)
+      (Function.update V' a (correctionSec a)) x₀ hχ htsupp)
     (fun a => bumpTowerScalar_contDiff (I := I) gRef A0inf p
-      (Function.update V' a (corrSec a)) x₀ hχ htsupp)
-  have hsub := hTS.sub hSumCorr
+      (Function.update V' a (correctionSec a)) x₀ hχ htsupp)
+  have hsub := hTS.sub hSumCorrection
     (fun k => bumpTowerStepScalar_contDiff (I := I) gRef (A0Seq k) p V' σ x₀ hχ htsupp)
     (bumpTowerStepScalar_contDiff (I := I) gRef A0inf p V' σ x₀ hχ htsupp)
     (fun k => ContDiff.sum fun a _ => bumpTowerScalar_contDiff (I := I) gRef (A0Seq k) p
-      (Function.update V' a (corrSec a)) x₀ hχ htsupp)
+      (Function.update V' a (correctionSec a)) x₀ hχ htsupp)
     (ContDiff.sum fun a _ => bumpTowerScalar_contDiff (I := I) gRef A0inf p
-      (Function.update V' a (corrSec a)) x₀ hχ htsupp)
+      (Function.update V' a (correctionSec a)) x₀ hχ htsupp)
   have hfeq_seq : (fun (k : ℕ) (z : E) => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) (p + 1)) w
           (Fin.cons (σ w) (fun a : Fin (p + 2) => V' a w))) z)
@@ -432,7 +432,7 @@ theorem bumpTowerCons_conv
             (towerStep (I := I) gRef (A0Seq k) p V' σ) z
           - ∑ a : Fin (p + 2), χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
               (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) p) w
-                (fun b => (Function.update V' a (corrSec a)) b w)) z := by
+                (fun b => (Function.update V' a (correctionSec a)) b w)) z := by
     funext k z
     exact bumpTowerStep_split (I := I) gRef (A0Seq k) p V' σ x₀ χ z
   have hfeq_inf : (fun (z : E) => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
@@ -442,7 +442,7 @@ theorem bumpTowerCons_conv
             (towerStep (I := I) gRef A0inf p V' σ) z
           - ∑ a : Fin (p + 2), χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
               (fun w : M => (covDerivOfField (I := I) gRef A0inf p) w
-                (fun b => (Function.update V' a (corrSec a)) b w)) z := by
+                (fun b => (Function.update V' a (correctionSec a)) b w)) z := by
     funext z
     exact bumpTowerStep_split (I := I) gRef A0inf p V' σ x₀ χ z
   rw [hfeq_seq, hfeq_inf]
@@ -477,21 +477,21 @@ theorem bumpTowerCarrier_step
           ∧ ∀ w ∈ Kc, W0 w = ∑ i ∈ s, c i w • frame i w)
     (IH : ∀ (V : Fin (p + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _)),
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) p) w (fun a => V a w)) z)
           (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef A0inf p) w (fun a => V a w)) z))
     (W : Fin (p + 3) → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) (p + 1)) w (fun a => W a w)) z)
       (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef A0inf (p + 1)) w (fun a => W a w)) z) := by
   classical
   obtain ⟨c, hc, hexpand⟩ := hspan (W 0)
-  refine bumpTower_slotExpand_conv (I := I) gRef A0Seq A0inf (p + 1) x₀ hχ htsupp
+  refine bumpTower_slotExpand_convergence (I := I) gRef A0Seq A0inf (p + 1) x₀ hχ htsupp
     hU hχU s frame c hc W 0 hUKc hexpand ?_
   intro i
   have hslot : ∀ (A0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -524,7 +524,7 @@ theorem bumpTowerCarrier_step
     funext z
     rw [hslot A0inf]
   rw [hbr_seq, hbr_inf]
-  exact bumpTowerCons_conv (I := I) gRef A0Seq A0inf p x₀ hχ htsupp hU hχU hUtarget
+  exact bumpTowerCons_convergence (I := I) gRef A0Seq A0inf p x₀ hχ htsupp hU hχU hUtarget
     hKchart hUKc (vbasis i) (frame i) (hframeσ i) (Fin.tail W) IH
 
 omit [IsManifold I 2 M] in
@@ -556,14 +556,14 @@ theorem bumpTowerCarrier_all
           ∧ ∀ w ∈ Kc, W0 w = ∑ i ∈ s, c i w • frame i w)
     (hbase : ∀ (V : Fin (0 + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _)),
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) 0) w (fun a => V a w)) z)
           (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef A0inf 0) w (fun a => V a w)) z)) :
     ∀ (a : ℕ) (V : Fin (a + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M → Type _)),
-        MapCInfConvOnCompacts U
+        MapCInfConvergenceOnCompacts U
           (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) a) w (fun a => V a w)) z)
           (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
@@ -639,7 +639,7 @@ theorem hbase_of_framePairs
           (∀ i, ContMDiffOn I 𝓘(Real, Real) (∞ : WithTop ℕ∞) (c i)
             (chartAt H x₀).source)
           ∧ ∀ w ∈ Kc, W0 w = ∑ i ∈ s, c i w • frame i w)
-    (hpairs : ∀ (i j : ι), MapCInfConvOnCompacts U
+    (hpairs : ∀ (i j : ι), MapCInfConvergenceOnCompacts U
       (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) 0) w
           (fun a => (Function.update (fun _ : Fin 2 => frame i) 1 (frame j)) a w)) z)
@@ -648,14 +648,14 @@ theorem hbase_of_framePairs
           (fun a => (Function.update (fun _ : Fin 2 => frame i) 1 (frame j)) a w)) z))
     (V : Fin 2 → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) :
-    MapCInfConvOnCompacts U
+    MapCInfConvergenceOnCompacts U
       (fun k z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef (A0Seq k) 0) w (fun a => V a w)) z)
       (fun z => χ z * writtenInExtChartAt I 𝓘(Real, Real) x₀
         (fun w : M => (covDerivOfField (I := I) gRef A0inf 0) w (fun a => V a w)) z) := by
   classical
   obtain ⟨c0, hc0, hexp0⟩ := hspan (V 0)
-  refine bumpTower_slotExpand_conv (I := I) gRef A0Seq A0inf 0 x₀ hχ htsupp
+  refine bumpTower_slotExpand_convergence (I := I) gRef A0Seq A0inf 0 x₀ hχ htsupp
     hU hχU s frame c0 hc0 V 0 hUKc hexp0 ?_
   intro i
   obtain ⟨c1, hc1, hexp1⟩ := hspan (V 1)
@@ -663,7 +663,7 @@ theorem hbase_of_framePairs
     intro w hw
     rw [Function.update_of_ne (by decide : (1 : Fin 2) ≠ 0)]
     exact hexp1 w hw
-  refine bumpTower_slotExpand_conv (I := I) gRef A0Seq A0inf 0 x₀ hχ htsupp
+  refine bumpTower_slotExpand_convergence (I := I) gRef A0Seq A0inf 0 x₀ hχ htsupp
     hU hχU s frame c1 hc1 (Function.update V 0 (frame i)) 1 hUKc hexp1' ?_
   intro j
   have hbridge : ∀ (A0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -729,27 +729,27 @@ private theorem chart_component_precompactness_family
   classical
   have : NormalSpace E := inferInstance
   have : LocallyCompactSpace E := inferInstance
-  set tgt := (extChartAt I x₀).target with htgt
-  have htgt_open : IsOpen tgt := isOpen_extChartAt_target (I := I) x₀
+  set target := (extChartAt I x₀).target with htgt
+  have htgt_open : IsOpen target := isOpen_extChartAt_target (I := I) x₀
   set EK₀ : Set E := extChartAt I x₀ '' K₀ with hEK₀
-  have hEK₀cpt : IsCompact EK₀ :=
+  have hEK₀compact : IsCompact EK₀ :=
     hK₀.image_of_continuousOn ((continuousOn_extChartAt (I := I) x₀).mono
       (by rw [extChartAt_source]; exact hK₀chart))
-  have hEK₀tgt : EK₀ ⊆ tgt := by
+  have hEK₀target : EK₀ ⊆ target := by
     rintro z ⟨y, hy, rfl⟩
     exact (extChartAt I x₀).map_source (by rw [extChartAt_source]; exact hK₀chart hy)
-  obtain ⟨L, hLcpt, hEK₀L, hLt⟩ := exists_compact_between hEK₀cpt htgt_open hEK₀tgt
+  obtain ⟨L, hLcpt, hEK₀L, hLt⟩ := exists_compact_between hEK₀compact htgt_open hEK₀target
   obtain ⟨χM, hχ1, hχ0, -⟩ :=
     exists_contMDiffMap_one_nhds_of_subset_interior (I := 𝓘(Real, E)) (M := E)
-      (n := (⊤ : ℕ∞)) hEK₀cpt.isClosed hEK₀L
+      (n := (⊤ : ℕ∞)) hEK₀compact.isClosed hEK₀L
   set χ : E → Real := (χM : E → Real) with hχdef
   have hχcd : ContDiff Real (∞ : WithTop ℕ∞) χ :=
     contMDiff_iff_contDiff.mp (χM.contMDiff.of_le (by exact_mod_cast le_top))
   have hχLsub : tsupport χ ⊆ L :=
     closure_minimal (fun x hx => by by_contra hxL; exact hx (hχ0 x hxL)) hLcpt.isClosed
-  have hχcpt : IsCompact (tsupport χ) :=
+  have hχcompact : IsCompact (tsupport χ) :=
     hLcpt.of_isClosed_subset (isClosed_tsupport χ) hχLsub
-  have hχtsupp : tsupport χ ⊆ tgt := subset_trans hχLsub hLt
+  have hχtsupp : tsupport χ ⊆ target := subset_trans hχLsub hLt
   obtain ⟨V₂, hV₂o, htsχV₂, hV₂t⟩ :=
     normal_exists_closure_subset (isClosed_tsupport χ) htgt_open hχtsupp
   obtain ⟨χ1M, hχ1one, hχ1zero, -⟩ :=
@@ -758,12 +758,12 @@ private theorem chart_component_precompactness_family
   set χ1 : E → Real := (χ1M : E → Real) with hχ1def
   have hχ1cd : ContDiff Real (∞ : WithTop ℕ∞) χ1 :=
     contMDiff_iff_contDiff.mp (χ1M.contMDiff.of_le (by exact_mod_cast le_top))
-  have hχ1tsupp : tsupport χ1 ⊆ tgt := by
+  have hχ1tsupp : tsupport χ1 ⊆ target := by
     refine subset_trans (closure_mono ?_) hV₂t
     intro x hx; by_contra hxV; exact hx (hχ1zero x hxV)
   set Kc : Set M := (extChartAt I x₀).symm '' (tsupport χ) with hKcdef
   have hKccpt : IsCompact Kc :=
-    hχcpt.image_of_continuousOn
+    hχcompact.image_of_continuousOn
       ((continuousOn_extChartAt_symm (I := I) x₀).mono hχtsupp)
   have hKcsrc : Kc ⊆ (chartAt H x₀).source := by
     rintro w ⟨z, hz, rfl⟩
@@ -775,7 +775,7 @@ private theorem chart_component_precompactness_family
       (fun w : M => (covDerivOfField (I := I) gRef
         (Tensor0SBundle.metricTensorField (I := I) (gSeq k)) 0) w (fun a => Vfam p a w))
     with hcr
-  have hcrOn : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (cr k) tgt := by
+  have hcrOn : ∀ k, ContDiffOn Real (∞ : WithTop ℕ∞) (cr k) target := by
     intro k z hz
     have hzsrc : (extChartAt I x₀).symm z ∈ (chartAt H x₀).source := by
       rw [← extChartAt_source (I := I)]; exact (extChartAt I x₀).map_target hz
@@ -790,7 +790,7 @@ private theorem chart_component_precompactness_family
     have hbd : ∀ i : ℕ, ∃ Bi : Real, ∀ x ∈ tsupport χ,
         ‖iteratedFDeriv Real i χ x‖ ≤ Bi := by
       intro i
-      obtain ⟨Bi, hBi⟩ := hχcpt.bddAbove_image
+      obtain ⟨Bi, hBi⟩ := hχcompact.bddAbove_image
         ((hχcd.continuous_iteratedFDeriv (by exact_mod_cast le_top)).norm).continuousOn
       exact ⟨Bi, fun x hx => hBi ⟨x, hx, rfl⟩⟩
     choose Bi hBi using hbd
@@ -900,7 +900,7 @@ theorem exists_chart_refs
     ∃ (φ : ℕ → ℕ) (Φinf : E → Real) (χ : E → Real),
       StrictMono φ ∧ ContDiff Real (∞ : WithTop ℕ∞) Φinf ∧
       (∀ y ∈ K₀, χ (extChartAt I x₀ y) = 1) ∧
-      MapCInfConvOnCompacts Set.univ
+      MapCInfConvergenceOnCompacts Set.univ
         (fun k => fun x : E => χ x *
           writtenInExtChartAt I 𝓘(Real, Real) x₀
             (fun w : M => (covDerivOfField (I := I) gBase
@@ -908,7 +908,7 @@ theorem exists_chart_refs
                 (fun a => V a w)) x) Φinf := by
   let Vfam : Unit → Fin 2 →
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) := fun _ => V
-  obtain ⟨χ, _hχcd, _hχsupp, hχ1, hfamily⟩ :=
+  obtain ⟨χ, _hχcd, _hχsupport, hχ1, hfamily⟩ :=
     exists_chart_component_precompactness_family_of_reference_sequence (I := I) gBase gRef gSeq hbdd x₀ Vfam hK₀ hK₀chart
   obtain ⟨hΦcd, hΦbd⟩ := hfamily ()
   let Φ : ℕ → E → Real := fun k x => χ x * writtenInExtChartAt I 𝓘(Real, Real) x₀
@@ -918,8 +918,8 @@ theorem exists_chart_refs
     exists_cInf_subseq Φ hΦcd
       (fun r K _ => by obtain ⟨C, hC⟩ := hΦbd r; exact ⟨C, fun k x _ => hC k x⟩)
   refine ⟨φ, Φinf, χ, hφ, hΦinf, hχ1, ?_⟩
-  change MapCInfConvOnCompacts Set.univ (fun k => Φ (φ k)) Φinf
+  change MapCInfConvergenceOnCompacts Set.univ (fun k => Φ (φ k)) Φinf
   exact hconv
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

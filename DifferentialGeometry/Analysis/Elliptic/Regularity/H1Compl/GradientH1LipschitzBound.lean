@@ -162,7 +162,7 @@ private lemma chartPulledWeightedConst_nonneg
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma eLpNorm_chartPulledWeighted_le_eLpNorm_volume_of_support_in_kPou
     (g : SmoothRiemannianMetric I M) (α : M)
-    {f : EuclN → ℝ} (hf_supp : Function.support f ⊆ kPouCompact (I := I) (M := M) α) :
+    {f : EuclN → ℝ} (hf_support : Function.support f ⊆ kPouCompact (I := I) (M := M) α) :
     eLpNorm f 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α)) ≤
@@ -192,8 +192,8 @@ private lemma eLpNorm_chartPulledWeighted_le_eLpNorm_volume_of_support_in_kPou
   have hK_sub_ChTE : kPouCompact (I := I) (M := M) α ⊆
       chartTargetEuclid (I := I) (M := M) α :=
     kPouCompact_subset_chartTargetEuclid (I := I) (M := M) α
-  have h_supp_in_ChTE : Function.support f ⊆ chartTargetEuclid (I := I) (M := M) α :=
-    hf_supp.trans hK_sub_ChTE
+  have h_support_in_ChTE : Function.support f ⊆ chartTargetEuclid (I := I) (M := M) α :=
+    hf_support.trans hK_sub_ChTE
   have h_LHS_eq : eLpNorm f 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) =
@@ -204,12 +204,12 @@ private lemma eLpNorm_chartPulledWeighted_le_eLpNorm_volume_of_support_in_kPou
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) =
         eLpNorm f 2 (chartPulledWeightedMeasure (I := I) g α) from
-        eLpNorm_restrict_eq_of_support_subset h_supp_in_ChTE]
+        eLpNorm_restrict_eq_of_support_subset h_support_in_ChTE]
     rw [show eLpNorm f 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (kPouCompact (I := I) (M := M) α)) =
         eLpNorm f 2 (chartPulledWeightedMeasure (I := I) g α) from
-        eLpNorm_restrict_eq_of_support_subset hf_supp]
+        eLpNorm_restrict_eq_of_support_subset hf_support]
   have h_RHS_eq : eLpNorm f 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) =
@@ -220,12 +220,12 @@ private lemma eLpNorm_chartPulledWeighted_le_eLpNorm_volume_of_support_in_kPou
         ((volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α)) =
         eLpNorm f 2 (volume : Measure EuclN) from
-        eLpNorm_restrict_eq_of_support_subset h_supp_in_ChTE]
+        eLpNorm_restrict_eq_of_support_subset h_support_in_ChTE]
     rw [show eLpNorm f 2
         ((volume : Measure EuclN).restrict
           (kPouCompact (I := I) (M := M) α)) =
         eLpNorm f 2 (volume : Measure EuclN) from
-        eLpNorm_restrict_eq_of_support_subset hf_supp]
+        eLpNorm_restrict_eq_of_support_subset hf_support]
   rw [h_LHS_eq, h_RHS_eq]
   have h_mono : eLpNorm f 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -431,7 +431,7 @@ theorem chartPushedPartial_h1_lipschitz
   have h_aeEq := chartPushedPartial_aeEq_fderiv_chartSmoothExt
     (I := I) (M := M) g α j v
   rw [eLpNorm_congr_ae h_aeEq]
-  have h_supp : Function.support (fun y : EuclN => (fderiv ℝ
+  have h_support : Function.support (fun y : EuclN => (fderiv ℝ
         (chartSmoothExt (I := I) (M := M) α
           (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x * v.toFun x)) y)
         (EuclideanSpace.single j 1)) ⊆ kPouCompact (I := I) (M := M) α := by
@@ -466,7 +466,7 @@ theorem chartPushedPartial_h1_lipschitz
     (I := I) (M := M) g α (f := fun y : EuclN => (fderiv ℝ
       (chartSmoothExt (I := I) (M := M) α
         (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x * v.toFun x)) y)
-      (EuclideanSpace.single j 1)) h_supp
+      (EuclideanSpace.single j 1)) h_support
   refine h_density_le.trans ?_
   have h_grad_bd := hC_grad_bd v.smooth j
   have h_v_le := eLpNorm_v_toFun_le_norm (I := I) (M := M) v

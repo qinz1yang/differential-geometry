@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Topology
 open Bundle Manifold
@@ -87,7 +87,7 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
         (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
     let Q : LiveSlot L inp.pack r → Nat → Nat →
         E → (E →L[Real] E →L[Real] Real) := fun alpha k l z =>
-      _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+      _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (B alpha l (A alpha k l z), fderiv Real (A alpha k l) z)
     let Gamma : LiveSlot L inp.pack r → Nat → E →
         Fin (Module.finrank Real E) → Fin (Module.finrank Real E) →
@@ -150,7 +150,7 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
       (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
   let Q : LiveSlot L inp.pack r → Nat → Nat →
       E → (E →L[Real] E →L[Real] Real) := fun alpha k l z =>
-    _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (B alpha l (A alpha k l z), fderiv Real (A alpha k l) z)
   let Gamma : LiveSlot L inp.pack r → Nat → E →
       Fin (Module.finrank Real E) → Fin (Module.finrank Real E) →
@@ -169,7 +169,7 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
           (e (slots 0)) (e (slots 1))) a
   rcases hstage with ⟨hdata, hmetric, hjets, hbase⟩
   have hshape := hdata
-  dsimp only [HasSuppConvDataOn] at hshape
+  dsimp only [HasSupportedCenterMapConvergenceOn] at hshape
   rcases hshape with
     ⟨_hopen, _hU8, _hC0compact, _hC1compact, _hC01, _hC1U,
       _hconvex, _hzero, hbuffer, _hcore, _hgeom, _hrest⟩
@@ -279,9 +279,9 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
             (seqCenterD inp.decay P Lphi (kn n) (alpha.1 : Nat))).hom
           W (Lphi.hatSourceBall inp.decay P S (kn n)) := by
       simpa only [V, W, Lphi] using hstay
-    have hQconv : MapCInfConvOnCompacts V
+    have hQconv : MapCInfConvergenceOnCompacts V
         (fun n => Q alpha (kn n) (ln n)) (gInf alpha) := by
-      have hraw := HasStageJetDataOn.pb_conv (I := I) inp P L hr phi hphi
+      have hraw := HasStageJetDataOn.pb_convergence (I := I) inp P L hr phi hphi
         d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
         ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha V W
         hVopen hVcompact hVW hWint kn ln hkn hln hstay'
@@ -296,12 +296,12 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
     have hVD : V ⊆ D := subset_closure.trans (hVW.trans hWD)
     have hclosureD : closure V ⊆ D := hVW.trans hWD
     have hVU : V ⊆ U alpha := hVD.trans hIntU
-    have hGconvD : MapCInfConvOnCompacts D
+    have hGconvD : MapCInfConvergenceOnCompacts D
         (fun n => B alpha (kn n)) (gInf alpha) := by
       intro K hK hKD p'
       exact (hBconv.comp_tendsto_atTop hkn) K hK
         (hKD.trans hDVmetric) p'
-    have hGconvV : MapCInfConvOnCompacts V
+    have hGconvV : MapCInfConvergenceOnCompacts V
         (fun n => B alpha (kn n)) (gInf alpha) := by
       intro K hK hKV p'
       exact hGconvD K hK (hKV.trans hVD) p'
@@ -350,10 +350,10 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
         (hgEquiv z (hDVmetric (hVD hz)) v).1
     obtain ⟨rho, hrho, hthick⟩ :=
       hVcompact.exists_cthickening_subset_open hDopen hclosureD
-    have hAconvW : MapCInfConvOnCompacts W
+    have hAconvW : MapCInfConvergenceOnCompacts W
         (fun n => A alpha (kn n) (ln n)) id := by
       simpa only [A, Lphi] using
-        HasStageJetDataOn.chart_conv (I := I) inp P L hr phi hphi
+        HasStageJetDataOn.chart_convergence (I := I) inp P L hr phi hphi
           d.chart Vmetric U C0 C1 aInf Jinf Jbarinf gInf
           ⟨hdata, hmetric, hjets, hbase⟩ S hSr alpha W hWint
           kn ln hkn hln hstay'
@@ -420,13 +420,13 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
         exact ((((hNsm n hn).1).contDiffAt (hVopen.mem_nhds hz)).fderiv_right
           (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt
       have hpull :=
-        (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
+        (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm.contDiff
           (E := E) (F := E)).comp_contDiffOn (hBAc.prodMk hDAc)
       with_unfolding_all
         exact hpull
     let Qp : Nat → E → (E →L[Real] E →L[Real] Real) := fun n =>
       if Nsm ≤ n then Q alpha (kn n) (ln n) else gInf alpha
-    have hQpconv : MapCInfConvOnCompacts V Qp (gInf alpha) := by
+    have hQpconv : MapCInfConvergenceOnCompacts V Qp (gInf alpha) := by
       apply hQconv.congr_eventually hVopen
       · filter_upwards [eventually_atTop.2 ⟨Nsm, fun n hn => hn⟩] with n hn
         intro z _hz
@@ -437,7 +437,7 @@ theorem BoundedGeometryNormalChartData.cov_comp_tail
       by_cases hn : Nsm ≤ n
       · simpa only [Qp, if_pos hn] using hQsmooth n hn
       · simpa only [Qp, if_neg hn] using hgInfV
-    have htower := metric_tower_conv hVopen e
+    have htower := metric_tower_convergence hVopen e
       (fun n => B alpha (kn n)) Qp (gInf alpha)
       hGconvV hQpconv hBcd hQpcd hgInfV hBco hgInfCo (a : Nat)
     let K : Set E := Metric.closedBall zInf (q / 2)
@@ -625,7 +625,7 @@ private theorem chart_pull_coeff
     (u v : E) :
     let A : E → E := fun q ↦ cl.inv (F (ck.hom q))
     ck.metric G z u v =
-      _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+      _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
         (cl.metric gl (A z), fderiv Real A z) u v := by
   let A : E → E := fun q ↦ cl.inv (F (ck.hom q))
   dsimp only
@@ -677,7 +677,7 @@ private theorem chart_pull_coeff
   have hu := DFunLike.congr_fun hcomp u
   have hv := DFunLike.congr_fun hcomp v
   rw [ck.metric_apply G, hG]
-  rw [_root_.DifferentialGeometry.HCGCompactness.pullbackForm_apply]
+  rw [_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm_apply]
   rw [cl.metric_apply gl, hbase]
   exact congrArg₂
     (fun a b ↦ gl.inner (F (ck.hom z)) a b) hu.symm hv.symm
@@ -744,7 +744,7 @@ private theorem chart_local_norm_le
   let : LocallyCompactSpace c.ball := c.ball.2.locallyCompactSpace
   let : SigmaCompactSpace c.ball := inferInstance
   intro V _ hVc z0 cut G Q B a z bnd
-    hcut_one hcut_supp hBcd hbnd hQ hB hco hequiv hdiff hcomp
+    hcut_one hcut_support hBcd hbnd hQ hB hco hequiv hdiff hcomp
   classical
   let e : Module.Basis (Fin (Module.finrank Real E)) Real E :=
     (stdOrthonormalBasis Real E).toBasis
@@ -775,7 +775,7 @@ private theorem chart_local_norm_le
     fun w ↦ ⟨cut.nonneg, cut.le_one⟩
   let gTot : SmoothRiemannianMetric 𝓘(Real, E) E :=
     (flatApproximationModelMetric (E := E)).bumpExtendOpen c.ball (c.localMetric g)
-      (cut : E → Real) hcut_smooth hcut_range hcut_supp
+      (cut : E → Real) hcut_smooth hcut_range hcut_support
   have hgv : gv =
       gTot.restrictOpen (I := 𝓘(Real, E)) V := by
     apply SmoothRiemannianMetric.ext_inner
@@ -788,7 +788,7 @@ private theorem chart_local_norm_le
     simpa only [gTot] using
       bumpExtendOpen_eq_gU_on (I := 𝓘(Real, E))
         (flatApproximationModelMetric (E := E)) c.ball (c.localMetric g)
-        (cut : E → Real) hcut_smooth hcut_range hcut_supp
+        (cut : E → Real) hcut_smooth hcut_range hcut_support
         (V : Set E) hcut_one hVc (w : E) w.2 u v
   have hchrEq :
       (fun w ↦ Tensor.Coordinates.christoffelSymbolInFrame
@@ -835,7 +835,7 @@ private theorem chart_local_norm_le
           simpa only [gTot] using
             bumpExtendOpen_eq_gU_on (I := 𝓘(Real, E))
               (flatApproximationModelMetric (E := E)) c.ball (c.localMetric g)
-              (cut : E → Real) hcut_smooth hcut_range hcut_supp
+              (cut : E → Real) hcut_smooth hcut_range hcut_support
               (V : Set E) hcut_one hVc y hy u v
         _ = B y u v := hB ⟨y, hy⟩ u v
     have hBdiff : DifferentiableAt Real B (w : E) :=
@@ -1001,12 +1001,12 @@ theorem BoundedGeometryNormalChartData.fwd_norm_tail
     (Nat.le_max_left _ _).trans ((Nat.le_max_right Ncomp _).trans hk)
   have hlJet : Njet ≤ l :=
     (Nat.le_max_left _ _).trans ((Nat.le_max_right Ncomp _).trans hl)
-  have hkLoc : Nloc ≤ k :=
+  have hkLocal : Nloc ≤ k :=
     (Nat.le_max_right _ _).trans ((Nat.le_max_right Ncomp _).trans hk)
-  have hlLoc : Nloc ≤ l :=
+  have hlLocal : Nloc ≤ l :=
     (Nat.le_max_right _ _).trans ((Nat.le_max_right Ncomp _).trans hl)
   have hjetKL := hjet k hkJet l hlJet
-  have hlocKL := hloc k hkLoc l hlLoc
+  have hlocKL := hloc k hkLocal l hlLocal
   intro G hG a ha y hy
   obtain ⟨alpha, z, hzy, hbuffer, hcompZ⟩ :=
     hcomp k hkComp l hlComp y hy
@@ -1021,7 +1021,7 @@ theorem BoundedGeometryNormalChartData.fwd_norm_tail
   let BL : E → (E →L[Real] E →L[Real] Real) :=
     d.chartMetric (Lphi.φ l) cl
   let Q : E → (E →L[Real] E →L[Real] Real) := fun q ↦
-    _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (BL (A q), fderiv Real A q)
   obtain ⟨_hUopen, _hC0compact, _hC1compact, hC01, hC1U⟩ :=
     hdata.core_on inp P L r hr d.chart U C0 C1 aInf Jinf Jbarinf alpha
@@ -1159,7 +1159,7 @@ theorem BoundedGeometryNormalChartData.fwd_norm_tail
       (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt)
   have hQcd : ContDiffOn Real (∞ : WithTop ℕ∞) Q V := by
     have hpull :=
-      (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
+      (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm.contDiff
         (E := E) (F := E)).comp_contDiffOn (hBAcd.prodMk hDAcd)
     with_unfolding_all
       exact hpull
@@ -1192,7 +1192,7 @@ theorem BoundedGeometryNormalChartData.fwd_norm_tail
     apply cut.one_of_mem_closedBall
     change w ∈ Metric.closedBall z (eta alpha / 2)
     exact Metric.ball_subset_closedBall hw.1
-  have hcut_supp :
+  have hcut_support :
       tsupport (cut : E → Real) ⊆ (chiK.ball : Set E) := by
     rw [cut.tsupport_eq]
     change Metric.closedBall z (eta alpha) ⊆ (chiK.ball : Set E)
@@ -1200,7 +1200,7 @@ theorem BoundedGeometryNormalChartData.fwd_norm_tail
       hRadK (hC1U (interior_subset (hC01 (interior_subset hq))))
   let zV : V := ⟨z, hzV⟩
   have hlocal := chart_local_norm_le (I := I) Yk.metric chiK
-    V hVc cut G Q B a zV hcut_one hcut_supp hBcd
+    V hVc cut G Q B a zV hcut_one hcut_support hBcd
     hepsComp.le hQcoeff hBcoeff hBco hequiv hdiff hcompLe
   let : LocallyCompactSpace chiK.ball := chiK.ball.2.locallyCompactSpace
   let : SigmaCompactSpace chiK.ball := inferInstance
@@ -1369,13 +1369,13 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
   let Hinv := Function.invFunOn F (Metric.ball Yk.basepoint T)
   have hkComp : Ncomp ≤ k := by dsimp only [N] at hk; omega
   have hlComp : Ncomp ≤ l := by dsimp only [N] at hl; omega
-  have hkLoc : Nloc ≤ k := by dsimp only [N] at hk; omega
-  have hlLoc : Nloc ≤ l := by dsimp only [N] at hl; omega
+  have hkLocal : Nloc ≤ k := by dsimp only [N] at hk; omega
+  have hlLocal : Nloc ≤ l := by dsimp only [N] at hl; omega
   have hkInj : Ninj ≤ k := by dsimp only [N] at hk; omega
   have hlInj : Ninj ≤ l := by dsimp only [N] at hl; omega
   have hmoveLe (alpha : LiveSlot L inp.pack r) : Nmove alpha ≤ NmoveAll :=
     Finset.le_sup (f := Nmove) (Finset.mem_univ alpha)
-  have hlocKL := hloc k hkLoc l hlLoc
+  have hlocKL := hloc k hkLocal l hlLocal
   have hinjKL := hinj k hkInj l hlInj
   intro G hG a ha q hq
   rcases hq with ⟨y, hy, rfl⟩
@@ -1393,7 +1393,7 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
   let BL : E → (E →L[Real] E →L[Real] Real) :=
     d.chartMetric (Lphi.φ l) cl
   let Q : E → (E →L[Real] E →L[Real] Real) := fun w =>
-    _root_.DifferentialGeometry.HCGCompactness.pullbackForm
+    _root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm
       (BK (Grev w), fderiv Real Grev w)
   have hzInt : z ∈ interior (C0 alpha) :=
     hbuffer (Metric.mem_closedBall_self (heta alpha).le)
@@ -1446,16 +1446,16 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
     exact hlocKL ⟨x, Metric.ball_subset_closedBall hx⟩
   have hinjBall : Set.InjOn F (Metric.ball Yk.basepoint T) :=
     hinjKL.mono Metric.ball_subset_closedBall
-  obtain ⟨Phi, hPhiSrc, hPhiTgt, hPhiEq⟩ :=
+  obtain ⟨Phi, hPhiSource, hPhiTarget, hPhiEq⟩ :=
     exists_partial_diffeomorph_of_is_local_diffeomorph_on_inj_on hlocBall hBallOpen hinjBall
   have hsymmEq : Set.EqOn (Phi.symm : Yl.M → Yk.M) Hinv Phi.target := by
     intro q hq
-    rw [hPhiTgt] at hq
+    rw [hPhiTarget] at hq
     obtain ⟨x, hx, rfl⟩ := hq
     have hPhix : (Phi : Yk.M → Yl.M) x = F x := hPhiEq hx
     have hleft : (Phi.symm : Yl.M → Yk.M) (F x) = x := by
       rw [← hPhix]
-      exact Phi.toPartialEquiv.left_inv (by rw [hPhiSrc]; exact hx)
+      exact Phi.toPartialEquiv.left_inv (by rw [hPhiSource]; exact hx)
     have hinv : Hinv (F x) = x :=
       hinjBall.leftInvOn_invFunOn hx
     rw [hleft, hinv]
@@ -1467,7 +1467,7 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
     rw [ProperMetricOn.top_eq Yk (P (Lphi.φ k))] at hb
     exact hb
   have hBallSsub : Metric.ball Yk.basepoint S ⊆ Phi.source := by
-    rw [hPhiSrc]
+    rw [hPhiSource]
     exact Metric.ball_subset_ball hST.le
   have hImageOpen : IsOpen ((Phi : Yk.M → Yl.M) ''
       Metric.ball Yk.basepoint S) :=
@@ -1530,7 +1530,7 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
     change chiL.restrictBall (A z) ∈ Wphi
     rw [NormalBallChart.restrict_ball_apply, hdecode]
     refine ⟨⟨y, hySopen, hPhiY⟩, ?_, ?_⟩
-    · rw [hPhiTgt]
+    · rw [hPhiTarget]
       exact ⟨y, Metric.ball_subset_ball hST.le hySopen, rfl⟩
     · change Phi.symm (F y) ∈ chiK.restrictBall.target
       rw [hPhiSymmY]
@@ -1661,7 +1661,7 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
       (m := (∞ : WithTop ℕ∞)) (by simp)).contDiffWithinAt)
   have hQcd : ContDiffOn Real (∞ : WithTop ℕ∞) Q V := by
     have hpull :=
-      (_root_.DifferentialGeometry.HCGCompactness.pullbackForm.contDiff
+      (_root_.DifferentialGeometry.CheegerGromovCompactness.pullbackForm.contDiff
         (E := E) (F := E)).comp_contDiffOn (hBKcd.prodMk hDGrev)
     with_unfolding_all
       exact hpull
@@ -1694,7 +1694,7 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
     apply cut.one_of_mem_closedBall
     change w ∈ Metric.closedBall (A z) (eta alpha / 4)
     exact Metric.ball_subset_closedBall hw.1
-  have hcut_supp :
+  have hcut_support :
       tsupport (cut : E → Real) ⊆ (chiL.ball : Set E) := by
     rw [cut.tsupport_eq]
     intro w hw
@@ -1712,7 +1712,7 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
           (Metric.mem_closedBall.mpr hwz))))))
   let wV : V := ⟨A z, hAzV⟩
   have hlocal := chart_local_norm_le (I := I) Yl.metric chiL
-    V hVc cut G Q BL a wV hcut_one hcut_supp hBLcd
+    V hVc cut G Q BL a wV hcut_one hcut_support hBLcd
     hepsComp.le hQcoeff hBcoeff hBLco hequiv hdiff hcompLe
   let : LocallyCompactSpace chiL.ball := chiL.ball.2.locallyCompactSpace
   let : SigmaCompactSpace chiL.ball := inferInstance
@@ -1748,5 +1748,5 @@ theorem BoundedGeometryNormalChartData.inv_norm_tail
       let afin : Fin (p + 1) := ⟨a, Nat.lt_succ_iff.mpr ha⟩
       simpa only [fac, afin, mul_assoc] using hbudget afin
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

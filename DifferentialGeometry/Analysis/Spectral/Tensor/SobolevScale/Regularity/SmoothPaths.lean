@@ -103,7 +103,7 @@ theorem smoothHs_path_cd
       (fun t => appHs g 0 2 n (Phi t) U) =
         fun t => smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (Phi t) := by
     funext t
-    rw [appHs_core, operatorFieldApplication_one (I := I) (M := M), ccHs_eq_smoothHs]
+    rw [appHs_apply_ccTensorToHs, operatorFieldApplication_one (I := I) (M := M), ccHs_eq_smoothHs]
   rwa [hpath] at h
 
 theorem smoothHs_deriv
@@ -143,10 +143,10 @@ theorem smoothHs_deriv
       (fun tau => appHs g 0 2 n (Phi tau) U) =
         fun tau => smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (Phi tau) := by
     funext tau
-    rw [appHs_core, operatorFieldApplication_one (I := I) (M := M), ccHs_eq_smoothHs]
+    rw [appHs_apply_ccTensorToHs, operatorFieldApplication_one (I := I) (M := M), ccHs_eq_smoothHs]
   have hdval : appHs g 0 2 n (dPhi t) U =
       smoothCcToTensorHs (I := I) (M := M) g (n : ℝ) (dPhi t) := by
-    rw [appHs_core, operatorFieldApplication_one (I := I) (M := M), ccHs_eq_smoothHs]
+    rw [appHs_apply_ccTensorToHs, operatorFieldApplication_one (I := I) (M := M), ccHs_eq_smoothHs]
   rwa [hpath, hdval] at happ
 
 end DifferentialGeometry.Analysis.Spectral

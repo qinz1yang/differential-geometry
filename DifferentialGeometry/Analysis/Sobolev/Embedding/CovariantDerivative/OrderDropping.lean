@@ -392,7 +392,7 @@ private lemma pouPull_eq_zero_off_kernel (α : M) (y : EuclN)
   classical
   set b : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hb_def
   by_contra hne
-  have hb_supp : b ∈ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
+  have hb_support : b ∈ tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
     subset_tsupport _ (by simpa [Function.mem_support] using hne)
   have hy_pre : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
     rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
@@ -400,7 +400,7 @@ private lemma pouPull_eq_zero_off_kernel (α : M) (y : EuclN)
   have h_round : (extChartAt I α) b = (toEuclidean (E := E)).symm y := by
     rw [hb_def]; exact (extChartAt I α).right_inv hy_pre
   apply hy_off
-  refine ⟨(extChartAt I α) b, ⟨b, hb_supp, rfl⟩, ?_⟩
+  refine ⟨(extChartAt I α) b, ⟨b, hb_support, rfl⟩, ?_⟩
   rw [h_round]; simp
 
 omit [CompactSpace M] in

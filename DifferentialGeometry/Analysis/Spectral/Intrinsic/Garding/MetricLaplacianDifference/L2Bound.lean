@@ -100,7 +100,7 @@ theorem lapDiffA20_cont_of
         (g_fam (T : Real))).toContinuousLinearMap
   exact post.continuous.comp_continuousOn hcont
 
-theorem lapDiffA20_core
+theorem eventually_lapDiffA20_apply_scalarH2Core
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (hG : MetricFamilySmoothOn (I := I) (M := M) D g_fam)
@@ -113,7 +113,7 @@ theorem lapDiffA20_core
             (lapDiffA20 (I := I) (M := M) g_fam T s v.1) =
           lapDiffCore (I := I) (M := M) (g_fam (T : Real))
             (g_fam ((T : Real) - s)) v := by
-  filter_upwards [lapDiffA2_core (I := I) (M := M) g_fam hG T] with s hs
+  filter_upwards [eventually_lapDiffA2_apply_scalarH2Core (I := I) (M := M) g_fam hG T] with s hs
   intro v
   rw [lapDiffA20_apply, LinearIsometryEquiv.apply_symm_apply, hs v]
 
@@ -139,7 +139,7 @@ theorem lapDiffA20_graph
                   lapDiffCore (I := I) (M := M)
                     (g_fam (T : Real))
                     (g_fam ((T : Real) - s)) v)) := by
-  filter_upwards [lapDiffA20_core (I := I) (M := M) g_fam hG T] with s hs
+  filter_upwards [eventually_lapDiffA20_apply_scalarH2Core (I := I) (M := M) g_fam hG T] with s hs
   intro u
   let J := tensorHsZeroEquivL2 (I := I) (M := M)
     (tensorResolventL2_isCompactOperator

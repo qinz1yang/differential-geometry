@@ -42,7 +42,7 @@ def cinftyLimitDataOfAllMBounds
                 (S.base.metric s).inner x v v ∧
               (S.base.metric s).inner x v v ≤
                 Lambda * (S.base.metric alpha).inner x v v) :
-    CinftyLimitData (I := I) S.base.metric alpha omega hαω := by
+    SmoothLimitData (I := I) S.base.metric alpha omega hαω := by
   classical
   have hex := exists_endMetric (I := I) S hdim hS hbound hEquiv
   refine
@@ -65,7 +65,7 @@ def cinftyLimitDataOfSolution
     (hbound : ∃ K : ℝ, ∀ (t : ℝ) (x : M),
         alpha ≤ t → t < omega →
           Tensor0SBundle.normSq0S (I := I) (S.base.metric t) x 4 (Rm04 t x) ≤ K) :
-    CinftyLimitData (I := I) S.base.metric alpha omega hαω := by
+    SmoothLimitData (I := I) S.base.metric alpha omega hαω := by
   have hRmRaw : ∀ t ∈ Set.Ico alpha omega,
       rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (Rm04 t) := by
@@ -76,11 +76,11 @@ def cinftyLimitDataOfSolution
   have hCan := canonical_curvature_norm_sq_bounded_of_realization
     (I := I) Rm04 hRmRaw hbound
   have hK := hbound.choose_spec
-  have hRic := ric_quad_le_of_soln (I := I) hRmRaw hK
+  have hRic := ric_quad_le_of_solution (I := I) hRmRaw hK
   have hRicConst :
       0 ≤ (Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt hbound.choose := by
     positivity
-  have hEquiv := hell_of_soln (I := I) hS hRicConst hRic
+  have hEquiv := hell_of_solution (I := I) hS hRicConst hRic
   exact cinftyLimitDataOfAllMBounds (I := I) S hS hdim hCan hEquiv
 
 end DifferentialGeometry.PDE.RicciFlow

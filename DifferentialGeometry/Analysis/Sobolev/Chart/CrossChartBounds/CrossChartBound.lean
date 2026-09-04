@@ -110,7 +110,7 @@ theorem cross_chart_bound_empty
             (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   refine ⟨1, one_pos, ?_⟩
-  intro χ _hχ_smooth _hχ_cpt hχ_supp
+  intro χ _hχ_smooth _hχ_compact hχ_support
   have h_pushed_zero : chartPushed (I := I) (M := M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ
       (chartPullback I α χ) =
@@ -121,7 +121,7 @@ theorem cross_chart_bound_empty
     by_cases hρ_zero : (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M γ
         : C^∞⟮I, M; ℝ⟯) z = 0
     · rw [hρ_zero]; ring
-    · have hz_in_supp_γ : z ∈ tsupport
+    · have hz_in_support_γ : z ∈ tsupport
           ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M γ
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
         have h_in : z ∈ Function.support
@@ -141,16 +141,16 @@ theorem cross_chart_bound_empty
           have : (toEuclidean (E := E)) (extChartAt I α z) ∈ Function.support χ := by
             simp only [Function.mem_support, ne_eq]; exact hpb_zero
           exact subset_tsupport _ this
-        have h_arg_in_chartα_img : (toEuclidean (E := E)) (extChartAt I α z) ∈
+        have h_arg_in_chartα_image : (toEuclidean (E := E)) (extChartAt I α z) ∈
             (fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) ''
               tsupport
                 ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
                   : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
-          hχ_supp h_arg_in_tsupp
-        obtain ⟨x', hx'_in_supp_α, hx'_eq⟩ := h_arg_in_chartα_img
+          hχ_support h_arg_in_tsupp
+        obtain ⟨x', hx'_in_support_α, hx'_eq⟩ := h_arg_in_chartα_image
         have hx'_chartα : x' ∈ (chartAt H α).source :=
           DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
-            hx'_in_supp_α
+            hx'_in_support_α
         have h_eq_chart_α : extChartAt I α x' = extChartAt I α z := by
           have : (toEuclidean (E := E)) (extChartAt I α x') =
               (toEuclidean (E := E)) (extChartAt I α z) := hx'_eq
@@ -167,12 +167,12 @@ theorem cross_chart_bound_empty
           have h_inj := (extChartAt I α).injOn hx'_extChart_source hz_extChart_source
             h_eq_chart_α
           exact h_inj.symm
-        have hz_in_supp_α : z ∈ tsupport
+        have hz_in_support_α : z ∈ tsupport
             ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
               : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
-          rw [hz_eq_x']; exact hx'_in_supp_α
+          rw [hz_eq_x']; exact hx'_in_support_α
         have hz_in_K : z ∈ crossChartCompact (I := I) (M := M) γ α :=
-          ⟨hz_in_supp_γ, hz_in_supp_α⟩
+          ⟨hz_in_support_γ, hz_in_support_α⟩
         rw [hempty] at hz_in_K
         exact Set.notMem_empty z hz_in_K
   rw [h_pushed_zero]

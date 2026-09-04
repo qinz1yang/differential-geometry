@@ -95,16 +95,16 @@ private theorem chartPushedRaw_eqOn_covDerivComponentEuclid_uniform
   have hV_open : IsOpen V := hcont_comp.isOpen_inter_preimage hchartT_open hU_open
   have hV_sub : V ⊆ chartTargetEuclid (I := I) (M := M) α := fun y hy => hy.1
   have hb₀_good : b₀ ∈ chartLeviCivitaGoodSet (I := I) α := hU_sub_good hb₀_U
-  have hb₀_src : b₀ ∈ (extChartAt I α).source :=
+  have hb₀_source : b₀ ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb₀_good
-  have hb₀_tgt : (extChartAt I α) b₀ ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hb₀_src
+  have hb₀_target : (extChartAt I α) b₀ ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hb₀_source
   have hb₀_V : (toEuclidean (E := E)) ((extChartAt I α) b₀) ∈ V := by
-    refine ⟨⟨(extChartAt I α) b₀, hb₀_tgt, rfl⟩, ?_⟩
+    refine ⟨⟨(extChartAt I α) b₀, hb₀_target, rfl⟩, ?_⟩
     change (extChartAt I α).symm
         ((toEuclidean (E := E)).symm
           ((toEuclidean (E := E)) ((extChartAt I α) b₀))) ∈ U
-    rw [(toEuclidean (E := E)).symm_apply_apply, (extChartAt I α).left_inv hb₀_src]
+    rw [(toEuclidean (E := E)).symm_apply_apply, (extChartAt I α).left_inv hb₀_source]
     exact hb₀_U
   refine ⟨S_k_ext, V, hV_open, hV_sub, hb₀_V, ?_⟩
   intro Idx Jdx y hy
@@ -294,13 +294,13 @@ theorem covDerivComponentEuclid_S_k_ext_eq_iteratedFDeriv_T₀_add_lowerOrder
     ∃ S_k_ext : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
                        fun b : M => TensorRSSpace r s I b⟯,
     ∃ V : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E))),
-    ∃ (Corr_T₀l_LO Corr_S_k_LO :
+    ∃ (Correction_T₀l_LO Correction_S_k_LO :
         EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ),
       IsOpen V ∧
       V ⊆ chartTargetEuclid (I := I) (M := M) α ∧
       (toEuclidean (E := E)) ((extChartAt I α) b₀) ∈ V ∧
-      ContDiffOn ℝ ∞ Corr_T₀l_LO (chartTargetEuclid (I := I) (M := M) α) ∧
-      ContDiffOn ℝ ∞ Corr_S_k_LO (chartTargetEuclid (I := I) (M := M) α) ∧
+      ContDiffOn ℝ ∞ Correction_T₀l_LO (chartTargetEuclid (I := I) (M := M) α) ∧
+      ContDiffOn ℝ ∞ Correction_S_k_LO (chartTargetEuclid (I := I) (M := M) α) ∧
       (∀ y ∈ V,
         covDerivComponentEuclid (I := I) (M := M) g r s α
             (packageAsCcExp (I := I) (M := M) g r s S_k_ext) l Idx Jdx y =
@@ -308,19 +308,19 @@ theorem covDerivComponentEuclid_S_k_ext_eq_iteratedFDeriv_T₀_add_lowerOrder
               (euclidPartial (E := E) k
                 (chartPushedRaw I α
                   (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx))) y
-            + Corr_T₀l_LO y + Corr_S_k_LO y) := by
+            + Correction_T₀l_LO y + Correction_S_k_LO y) := by
   classical
   obtain ⟨S_k_ext, V, hV_open, hV_sub, hb₀_V, hVeqOn⟩ :=
     chartPushedRaw_eqOn_covDerivComponentEuclid_uniform
       (I := I) (M := M) g r s α T₀ k (b₀ := b₀) hb₀
   set S_k_packed : SmoothCcTensor g r s :=
     packageAsCcExp (I := I) (M := M) g r s S_k_ext with hS_k_packed_def
-  let Corr_T₀l_LO : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
+  let Correction_T₀l_LO : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
     euclidPartial (E := E) l
       (covDerivLowerOrderTerm (I := I) (M := M) g r s T₀ α k Idx Jdx)
-  let Corr_S_k_LO : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
+  let Correction_S_k_LO : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
     covDerivLowerOrderTerm (I := I) (M := M) g r s S_k_packed α l Idx Jdx
-  refine ⟨S_k_ext, V, Corr_T₀l_LO, Corr_S_k_LO, hV_open, hV_sub, hb₀_V, ?_, ?_, ?_⟩
+  refine ⟨S_k_ext, V, Correction_T₀l_LO, Correction_S_k_LO, hV_open, hV_sub, hb₀_V, ?_, ?_, ?_⟩
   · have hLO_T₀ : ContDiffOn ℝ ∞
         (covDerivLowerOrderTerm (I := I) (M := M) g r s T₀ α k Idx Jdx)
         (chartTargetEuclid (I := I) (M := M) α) :=

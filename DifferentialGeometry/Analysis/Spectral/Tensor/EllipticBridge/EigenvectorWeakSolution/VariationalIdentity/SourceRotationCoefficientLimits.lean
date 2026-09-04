@@ -61,7 +61,7 @@ theorem covPrincipalRotationCoeff_source_tendsto
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Filter.Tendsto
       (fun n => ∫ y, densityOnEuclid (I := I) g α y *
           covPrincipalRotationCoeff (I := I) (M := M) g r s
@@ -74,7 +74,7 @@ theorem covPrincipalRotationCoeff_source_tendsto
   classical
   set μch : Measure EuclN := chartLebesgueMeasure (I := I) (M := M) α with hμch_def
   set m : Lp ℝ 2 μch :=
-    (densityOnEuclid_mul_test_memLp (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp _
+    (densityOnEuclid_mul_test_memLp (I := I) (M := M) g α hψ hψ_cs hψ_support).toLp _
     with hm_def
   set glim : Lp ℝ 2 μch :=
     (covPrincipalRotationCoeffLimit_memLp (I := I) (M := M)
@@ -108,7 +108,7 @@ theorem covPrincipalRotationCoeff_source_tendsto
     rw [integral_congr_ae h_ae_prod, hμch_def, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
-    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_support h)), mul_zero]
   have h_int_lim :
       ∫ y, (m : EuclN → ℝ) y * (glim : EuclN → ℝ) y ∂μch =
         ∫ y, densityOnEuclid (I := I) g α y *
@@ -131,7 +131,7 @@ theorem covPrincipalRotationCoeff_source_tendsto
     rw [integral_congr_ae h_ae_prod, hμch_def, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
-    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_support h)), mul_zero]
   have h_tendsto_lp : Filter.Tendsto gseq atTop (𝓝 glim) := by
     rw [hgseq_def, hglim_def]
     exact covPrincipalRotationCoeff_tendsto (I := I) (M := M)
@@ -146,7 +146,7 @@ theorem covLowerOrderRotationValueCoeff_source_tendsto
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Filter.Tendsto
       (fun n => ∫ y, densityOnEuclid (I := I) g α y *
           covLowerOrderRotationValueCoeff (I := I) (M := M) g r s
@@ -159,7 +159,7 @@ theorem covLowerOrderRotationValueCoeff_source_tendsto
   classical
   set μch : Measure EuclN := chartLebesgueMeasure (I := I) (M := M) α with hμch_def
   set m : Lp ℝ 2 μch :=
-    (densityOnEuclid_mul_test_memLp (I := I) (M := M) g α hψ hψ_cs hψ_supp).toLp _
+    (densityOnEuclid_mul_test_memLp (I := I) (M := M) g α hψ hψ_cs hψ_support).toLp _
     with hm_def
   set glim : Lp ℝ 2 μch :=
     (covLowerOrderRotationValueCoeffLimit_memLp (I := I) (M := M)
@@ -193,7 +193,7 @@ theorem covLowerOrderRotationValueCoeff_source_tendsto
     rw [integral_congr_ae h_ae_prod, hμch_def, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
-    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_support h)), mul_zero]
   have h_int_lim :
       ∫ y, (m : EuclN → ℝ) y * (glim : EuclN → ℝ) y ∂μch =
         ∫ y, densityOnEuclid (I := I) g α y *
@@ -216,7 +216,7 @@ theorem covLowerOrderRotationValueCoeff_source_tendsto
     rw [integral_congr_ae h_ae_prod, hμch_def, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
-    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_support h)), mul_zero]
   have h_tendsto_lp : Filter.Tendsto gseq atTop (𝓝 glim) := by
     rw [hgseq_def, hglim_def]
     exact covLowerOrderRotationValueCoeff_tendsto (I := I) (M := M)
@@ -231,7 +231,7 @@ theorem weightedGradCoeffDivSum_source_tendsto
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ ∞ ψ) (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     Filter.Tendsto
       (fun n => ∫ y, (∑ l : Fin (Module.finrank ℝ E),
           euclidPartial (E := E) l
@@ -299,7 +299,7 @@ theorem weightedGradCoeffDivSum_source_tendsto
     rw [integral_congr_ae h_ae_prod, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
-    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_support h)), mul_zero]
   have h_int_lim :
       ∫ y, (m : EuclN → ℝ) y * (glim : EuclN → ℝ) y
           ∂(chartLebesgueMeasure (I := I) (M := M) α) =
@@ -316,7 +316,7 @@ theorem weightedGradCoeffDivSum_source_tendsto
     rw [integral_congr_ae h_ae_prod, chartLebesgueMeasure]
     refine MeasureTheory.setIntegral_eq_integral_of_forall_compl_eq_zero ?_
     intro y hy
-    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_supp h)), mul_zero]
+    rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hψ_support h)), mul_zero]
   have h_tendsto_lp : Filter.Tendsto gseq atTop (𝓝 glim) :=
     weightedGradCoeffDivSum_tendsto (I := I) (M := M)
       g r s i α P₀

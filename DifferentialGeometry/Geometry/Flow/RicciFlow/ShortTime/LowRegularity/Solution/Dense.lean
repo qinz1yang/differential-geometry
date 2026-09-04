@@ -271,28 +271,28 @@ structure LowRegularityTimeSolution
         metricCauchySchwarzBound (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ S) δ)
     (hT : 0 < T) (hT1 : T ≤ 1) where
-  u : MaxRegSolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T
+  u : MaximalRegularitySolutionSpace (I := I) (M := M) ((1 : ℕ) : ℝ) T
   gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ)) T
   solution_eq :
-    u = maxRegDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+    u = maximalRegularityDuhamelMap (I := I) (M := M) ((1 : ℕ) : ℝ) hT
       (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce
   state_ae :
     ∀ᵐ t ∂(timeMeasure T),
-      maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+      maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
           (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2)) gforce t ∈
         lowerState (I := I) (M := M) g₀ 1 R
   forcing_ae :
     gforce =ᵐ[timeMeasure T] fun t =>
       deTurckRemainderOnLowerState (I := I) (M := M) g₀ g_bg hR hδ hrealR
         (aeSetLift (zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) t)
   trace_zero : timeH1.trace0 _ T u = 0
   evolution :
     timeH1.timeDeriv _ T u =
       timeScaleLaplacian (I := I) (M := M) ((1 : ℕ) : ℝ)
-          (maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+          (maximalRegularityDuhamelSolutionField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 (((1 : ℕ) : ℝ) + 2))
             gforce) +
         gforce
@@ -452,7 +452,7 @@ theorem exists_lowRegularity_partial_solution
       ‖Nfun ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩‖ ≤ D :=
     le_rfl
   obtain ⟨T₀, _hT₀eq, hT₀, hsol⟩ :=
-    partial_sol_tame (I := I) (M := M) g₀ 1 hR Nfun hcont
+    partial_solution_tame (I := I) (M := M) g₀ 1 hR Nfun hcont
       A B C D hD hzero hsmallA hsmallC hsingle
   refine ⟨{
     R := R

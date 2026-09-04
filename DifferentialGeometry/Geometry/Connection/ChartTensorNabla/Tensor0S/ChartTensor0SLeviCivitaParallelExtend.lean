@@ -49,19 +49,19 @@ private lemma chartTensor0SParallelExtend_zero_scalar_pullback_eventuallyEq
   have hU_open : IsOpen e.baseSet := e.open_baseSet
   have hb_U : b ∈ e.baseSet :=
     chartLeviCivitaGoodSet_mem_tensor0S_baseSet (I := I) (r := 0) hb
-  have hb_src : b ∈ (extChartAt I α).source :=
+  have hb_source : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hb_int : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
   have hint_open : IsOpen (interior ((extChartAt I α).target : Set E)) :=
     isOpen_interior
   have hsymm_cont : ContinuousAt (extChartAt I α).symm (extChartAt I α b) :=
-    continuousAt_extChartAt_symm' hb_src
+    continuousAt_extChartAt_symm' hb_source
   have hU_preim_nhds :
       (extChartAt I α).symm ⁻¹' e.baseSet ∈ 𝓝 (extChartAt I α b) := by
     apply hsymm_cont.preimage_mem_nhds
     have hxφ_inv : (extChartAt I α).symm (extChartAt I α b) = b :=
-      (extChartAt I α).left_inv hb_src
+      (extChartAt I α).left_inv hb_source
     rw [hxφ_inv]
     exact hU_open.mem_nhds hb_U
   have hint_nhds : interior ((extChartAt I α).target : Set E) ∈
@@ -183,9 +183,9 @@ private lemma chartTensor0SParallelExtend_zero_scalar_mfderiv_eq_zero
           (fun i : Fin 0 => Fin.elim0 i)) :=
     chartTensor0SParallelExtend_zero_scalar_pullback_eventuallyEq
       (I := I) α hb T₀
-  have hb_src_chart : b ∈ (chartAt H α).source :=
+  have hb_source_chart : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
-  have hb_tgt_int : φ b ∈ interior (φ.target : Set E) :=
+  have hb_target_int : φ b ∈ interior (φ.target : Set E) :=
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
   have hFderiv : fderiv ℝ (scalarFn ∘ φ.symm) (φ b) = 0 := by
     rw [Filter.EventuallyEq.fderiv_eq hev]
@@ -194,7 +194,7 @@ private lemma chartTensor0SParallelExtend_zero_scalar_mfderiv_eq_zero
     chartTensor0SParallelExtend_zero_scalar_mdifferentiableAt
       (I := I) α hb T₀
   have hkey := mfderiv_scalar_eq_chart_fderiv (I := I) α scalarFn (x := b)
-    hb_src_chart hb_tgt_int hscalarFn_at v
+    hb_source_chart hb_target_int hscalarFn_at v
   rw [hkey, hFderiv]
   rfl
 

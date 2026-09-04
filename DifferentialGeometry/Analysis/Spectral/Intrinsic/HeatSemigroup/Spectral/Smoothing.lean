@@ -60,28 +60,28 @@ private lemma baseHZero_coeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
         u₀ i :=
   tensorHsZeroEquivL2_symm_coeff (I := I) (M := M) _ u₀ i
 
-def heatHsWitness (g : SmoothRiemannianMetric I M) (r s : ℕ)
+def tensorHeatSemigroupHs (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : ℝ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g) :
     TensorHs (I := I) (M := M) g r s σ :=
   TensorHs.heatHsFun (I := I) (M := M) σ ht
     (baseHZero (I := I) (M := M) g r s u₀)
 
-@[simp] theorem heatHsWitness_coeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
+@[simp] theorem tensorHeatSemigroupHs_coeff (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (σ : ℝ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g)
     (i : TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g r s) :
-    (heatHsWitness (I := I) (M := M) g r s σ ht u₀).coeff i =
+    (tensorHeatSemigroupHs (I := I) (M := M) g r s σ ht u₀).coeff i =
       Real.exp (-(TensorHeatEquation.TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
         tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
           u₀ i := by
-  unfold heatHsWitness
+  unfold tensorHeatSemigroupHs
   rw [TensorHs.heatHsFun_coeff, baseHZero_coeff]
 
 theorem heat_semigroup_into_tensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {σ : ℝ} (hσ : 0 ≤ σ) {t : ℝ} (ht : 0 < t) (u₀ : TensorL2 r s g) :
     tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s)
-        hσ (heatHsWitness (I := I) (M := M) g r s σ ht u₀) =
+        hσ (tensorHeatSemigroupHs (I := I) (M := M) g r s σ ht u₀) =
       tensorHeatSemigroup (I := I) (M := M) g r s t u₀ := by
   set h_compact :=
     tensorResolventL2_isCompactOperator (I := I) (M := M) g r s
@@ -93,13 +93,13 @@ theorem heat_semigroup_into_tensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ
       ((tensorResolventHilbertEigenbasisSigma
           (I := I) (M := M) h_compact).repr
         (tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
-          h_compact hσ (heatHsWitness (I := I) (M := M) g r s σ ht u₀))) i =
+          h_compact hσ (tensorHeatSemigroupHs (I := I) (M := M) g r s σ ht u₀))) i =
         Real.exp (-(TensorHeatEquation.TensorEigenIdx.lambda (I := I) (M := M) i) * t) *
           tensorL2Coeff (I := I) (M := M) h_compact u₀ i := by
     have h := tensorHsToL2_tensorL2Coeff
       (I := I) (M := M) (h_compact := h_compact) hσ
-      (heatHsWitness (I := I) (M := M) g r s σ ht u₀) i
-    rw [heatHsWitness_coeff] at h
+      (tensorHeatSemigroupHs (I := I) (M := M) g r s σ ht u₀) i
+    rw [tensorHeatSemigroupHs_coeff] at h
     simpa only [tensorL2Coeff] using h
   have hrhs :
       ((tensorResolventHilbertEigenbasisSigma
@@ -121,7 +121,7 @@ theorem heat_semigroup_into_all_tensorHs (g : SmoothRiemannianMetric I M)
               (I := I) (M := M) g r s) hσ v =
           tensorHeatSemigroup (I := I) (M := M) g r s t u₀ :=
   fun σ hσ =>
-    ⟨heatHsWitness (I := I) (M := M) g r s σ ht u₀,
+    ⟨tensorHeatSemigroupHs (I := I) (M := M) g r s σ ht u₀,
       heat_semigroup_into_tensorHs (I := I) (M := M) g r s hσ ht u₀⟩
 
 def SpectralSmoothRealizesAsSmooth (g : SmoothRiemannianMetric I M)
@@ -142,7 +142,7 @@ theorem spectral_smooth_realization_reduction
       (T : TensorL2 r s g) =
         tensorHeatSemigroup (I := I) (M := M) g r s t u₀ :=
   h_gate _ (fun σ hσ =>
-    ⟨heatHsWitness (I := I) (M := M) g r s σ ht u₀,
+    ⟨tensorHeatSemigroupHs (I := I) (M := M) g r s σ ht u₀,
       heat_semigroup_into_tensorHs (I := I) (M := M) g r s hσ ht u₀⟩)
 
 end Spectral

@@ -67,7 +67,7 @@ omit [SigmaCompactSpace M] in
 theorem ricci_of_rm
     (g : SmoothRiemannianMetric I M) (x : M) (c : ℝ)
     (hRm : ∀ X Y Z W : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Z W =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Z W =
         c * (g.inner x Y Z * g.inner x X W -
           g.inner x X Z * g.inner x Y W))
     (v w : TangentSpace I x) :
@@ -80,7 +80,7 @@ omit [SigmaCompactSpace M] in
 theorem ricci_of_sec
     (g : SmoothRiemannianMetric I M) (c : ℝ)
     (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y))
     (x : M) (v w : TangentSpace I x) :
@@ -93,7 +93,7 @@ omit [SigmaCompactSpace M] in
 theorem ricciBound_of_sec
     (g : SmoothRiemannianMetric I M) (c : ℝ)
     (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
-      metricRm04StdAt (I := I) (M := M) g x X Y Y X =
+      metricRm04StandardAt (I := I) (M := M) g x X Y Y X =
         c * (g.inner x X X * g.inner x Y Y -
           g.inner x X Y * g.inner x X Y)) :
     DifferentialGeometry.Geometry.Riemannian.BonnetMyers.RicciBoundedBelow

@@ -148,7 +148,7 @@ private lemma riemannianFiberNormSq_cometricRaiseSlot0Field_eq
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s + 2) x (S.toSection x) := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hrepr, _hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_basis (I := I) (M := M) g₀ 1 (s + 1) x
     ((cometricRaiseSlot0Field (I := I) (M := M) g₀ s S).toSection x) e bse hnE hbse horth]
@@ -378,7 +378,7 @@ private lemma iteratedCovGrad_zero_tensor (g₀ : SmoothRiemannianMetric I M) (r
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma unitModel_eq_ccTensorBilin_loc (g₀ : SmoothRiemannianMetric I M)
+private lemma unitModel_eq_ccTensorBilin_local (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (b : M) (u w : TangentSpace I b) :
     unitModel (I := I) (M := M) g₀ 2 S b
         ![tangentSpaceModelContinuousLinearEquiv (I := I) b u,
@@ -499,7 +499,7 @@ private lemma omRecoverEndoCc_eq_idEndo_add_raise
       · simp only [Fin.cons_succ]
         fin_cases j
         rfl]
-    rw [unitModel_eq_ccTensorBilin_loc, smoothCcTensorBilinForm_ccTensor02Symm]]
+    rw [unitModel_eq_ccTensorBilin_local, smoothCcTensorBilinForm_ccTensor02Symm]]
   rw [htie]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in

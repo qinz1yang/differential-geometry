@@ -17,7 +17,7 @@ namespace DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 open DifferentialGeometry.Geometry.Riemannian.Variation
-open DifferentialGeometry.Geometry.Riemannian.CGT
+open DifferentialGeometry.Geometry.Riemannian.CheegerGromovTaylor
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.Integral.Measure
 
@@ -43,7 +43,7 @@ variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
 
-noncomputable def intrPullVol
+noncomputable def intrinsicPullVol
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -61,7 +61,7 @@ noncomputable def intrPullVol
     ∂(volume : Measure E)
 
 omit [CompleteSpace E] [ConnectedSpace M] in
-theorem intrPullVol_le_hyp
+theorem intrinsicPullVol_le_hyperbolic
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -73,10 +73,10 @@ theorem intrPullVol_le_hyp
             TangentSpace I p) : E))
     (hRic : RicciBoundedBelow (I := I) g
       (-(((Module.finrank Real E - 1 : Nat) : Real) * q ^ 2))) :
-    intrPullVol (I := I) g hEnorm p R ≤
+    intrinsicPullVol (I := I) g hEnorm p R ≤
       (volume : Measure E).toSphere Set.univ *
         ENNReal.ofReal
-          (hypRadVol q (Module.finrank Real E - 1) R) := by
+          (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
   classical
   let : Nontrivial E :=
     Module.nontrivial_of_finrank_pos
@@ -91,7 +91,7 @@ theorem intrPullVol_le_hyp
       1
   let Dh : E → ENNReal := fun z =>
     ENNReal.ofReal
-      (hypDensity (q * ‖z‖) (Module.finrank Real E - 1) 1)
+      (hyperbolicDensity (q * ‖z‖) (Module.finrank Real E - 1) 1)
   have hpoint :
       ∀ᵐ z ∂(volume : Measure E), z ∈ ball (0 : E) R →
         ENNReal.ofReal (Dn z) ≤ Dh z := by
@@ -101,7 +101,7 @@ theorem intrPullVol_le_hyp
       apply hz0
       exact L.injective (by simpa only [map_zero] using hLz)
     have hdens :=
-      expDens_le_hyp (I := I) g hEnorm p (L z)
+      expDens_le_hyperbolic (I := I) g hEnorm p (L z)
         (normalBasis (I := I) g p)
         (normalBasis_inner (I := I) g p)
         q hq hu0 (hno z hz hz0) hRic
@@ -117,14 +117,14 @@ theorem intrPullVol_le_hyp
         ∫⁻ z in ball (0 : E) R, Dh z ∂(volume : Measure E) :=
     setLIntegral_mono_ae' measurableSet_ball hpoint
   calc
-    intrPullVol (I := I) g hEnorm p R =
+    intrinsicPullVol (I := I) g hEnorm p R =
         ∫⁻ z in ball (0 : E) R,
           ENNReal.ofReal (Dn z) ∂(volume : Measure E) := rfl
     _ ≤ ∫⁻ z in ball (0 : E) R, Dh z ∂(volume : Measure E) := hmono
     _ = (volume : Measure E).toSphere Set.univ *
         ENNReal.ofReal
-          (hypRadVol q (Module.finrank Real E - 1) R) := by
-      simpa only [Dh] using hypBall_lintegral (E := E) q hq hR
+          (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
+      simpa only [Dh] using hyperbolicBall_lintegral (E := E) q hq hR
 
 private theorem ratio_le_half
     {r L : Real} {V P : ENNReal}
@@ -165,7 +165,7 @@ private theorem ratio_le_half
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-private theorem flatLoop_ge_cgt_on
+private theorem flatLoop_ge_cheeger_gromov_taylor_on
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -189,20 +189,20 @@ private theorem flatLoop_ge_cgt_on
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hell : 0 < ell)
     (hcLen : pathLen (I := I) c = ENNReal.ofReal (2 * ell))
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0) :
     ENNReal.ofReal (r₀ / 2) *
           riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
         (riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
-          intrPullVol (I := I) g hEnorm p (r₀ + s))
+          intrinsicPullVol (I := I) g hEnorm p (r₀ + s))
       ≤ ENNReal.ofReal ell := by
   classical
   let V : ENNReal :=
     riemannianVolumeMeasure (I := I) (M := M) g
       {y : M | riemannianEDist I p y < ENNReal.ofReal s}
-  let P : ENNReal := intrPullVol (I := I) g hEnorm p (r₀ + s)
+  let P : ENNReal := intrinsicPullVol (I := I) g hEnorm p (r₀ + s)
   let A₀ : ENNReal := ENNReal.ofReal (r₀ / 2) * V / (V + P)
   change A₀ ≤ ENNReal.ofReal ell
   have h4rR : 4 * r₀ < R := by
@@ -282,19 +282,19 @@ private theorem flatLoop_ge_cgt_on
             intrinsicFramedExp (I := I) g hEnorm p w = y}.encard := by
       intro y hy
       have hcount' :=
-        CGT.intrFiber_count_core (I := I) g hEnorm p
+        CheegerGromovTaylor.intrinsicFiber_encard_ge_of_riemannianEDist_lt (I := I) g hEnorm p
           hR h4rR hL.le hr₀.le hfitL hloc hK.le hsmall hRm
           c hc hcLenL A hA (N - 1) hpredMul hs has
           (q := y) (by simpa only [S, Set.mem_ofPred_eq] using hy)
       have hENat :
           ((N - 1 : Nat) : ENat) + 1 = (N : ENat) := by
         exact_mod_cast Nat.sub_add_cancel hNge
-      simpa only [U, CGT.intrFiber, Set.mem_ofPred_eq,
+      simpa only [U, CheegerGromovTaylor.intrinsicFiber, Set.mem_ofPred_eq,
         hENat] using hcount'
     have harea :=
       framed_mul_le_area (I := I) g hEnorm p hU hS
         (m := (N : ENat)) hlocU hcount
-    simpa only [N, V, P, U, S, ENat.toENNReal_coe, intrPullVol] using harea
+    simpa only [N, V, P, U, S, ENat.toENNReal_coe, intrinsicPullVol] using harea
   have hratio_bound :
       ∀ L : Real, 2 * ell < L → L < r₀ →
         A₀ ≤ ENNReal.ofReal (L / 2) := by
@@ -339,7 +339,7 @@ private theorem flatLoop_ge_cgt_on
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-theorem flatLoop_ge_cgt
+theorem flatLoop_ge_cheeger_gromov_taylor
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -357,23 +357,23 @@ theorem flatLoop_ge_cgt
     (c : Path p p) (hc : IsFlatC1Path (I := I) c)
     (hell : 0 < ell)
     (hcLen : pathLen (I := I) c = ENNReal.ofReal (2 * ell))
-    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1)
     (hA : A.toFun 1 ≠ 0) :
     ENNReal.ofReal (r₀ / 2) *
           riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
         (riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
-          intrPullVol (I := I) g hEnorm p (r₀ + s))
+          intrinsicPullVol (I := I) g hEnorm p (r₀ + s))
       ≤ ENNReal.ofReal ell := by
   exact
-    flatLoop_ge_cgt_on (I := I) g hEnorm p hK hR hRpi
+    flatLoop_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi
       (fun z _ ↦ hRm (intrinsicFramedExp (I := I) g hEnorm p z))
       hloc hr₀ hs hfit hquarter c hc hell hcLen A hA
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-private theorem collision_ge_cgt_on
+private theorem collision_ge_cheeger_gromov_taylor_on
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -405,7 +405,7 @@ private theorem collision_ge_cgt_on
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
         (riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
-          intrPullVol (I := I) g hEnorm p (r₀ + s))
+          intrinsicPullVol (I := I) g hEnorm p (r₀ + s))
       ≤ ENNReal.ofReal ell := by
   let pu :
       Path p (intrinsicFramedExp (I := I) g hEnorm p u) :=
@@ -445,11 +445,11 @@ private theorem collision_ge_cgt_on
     rw [hcLen]
     exact (ENNReal.ofReal_lt_ofReal_iff hR).2 (by linarith)
   have hex :
-      Nonempty (IntrFrameLift (I := I) g hEnorm p c.extend 0 1) :=
+      Nonempty (IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1) :=
     exists_intr_lift (I := I) g hEnorm p zero_le_one
       hc.c1.contMDiffOn (by simp only [c, Path.extend_zero])
       hR hcR hloc
-  let A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1 :=
+  let A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1 :=
     Classical.choice hex
   have hpuR :
       pathLen (I := I) pu < ENNReal.ofReal R := by
@@ -466,7 +466,7 @@ private theorem collision_ge_cgt_on
   have hmid :
       A.toFun (1 / 2) = u := by
     let Au :
-        IntrFrameLift (I := I) g hEnorm p pu.extend 0 1 :=
+        IntrinsicFrameLift (I := I) g hEnorm p pu.extend 0 1 :=
       radialFlatLift (I := I) g hEnorm p u
     have hAu :
         Au.toFun 1 = u := by
@@ -478,7 +478,7 @@ private theorem collision_ge_cgt_on
   have hA : A.toFun 1 ≠ 0 := by
     intro hA0
     let B :
-        IntrFrameLift (I := I) g hEnorm p
+        IntrinsicFrameLift (I := I) g hEnorm p
           (radialFlat (I := I) g hEnorm p v).extend 0 1 := {
       toFun := fun t => A.toFun (1 - t / 2)
       contDiff := by
@@ -520,12 +520,12 @@ private theorem collision_ge_cgt_on
         norm_num
       _ = v := hBv
   exact
-    flatLoop_ge_cgt_on (I := I) g hEnorm p hK hR hRpi hRm hloc
+    flatLoop_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi hRm hloc
       hr₀ hs hfit hquarter c hc hell hcLen A hA
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-theorem collision_ge_cgt
+theorem collision_ge_cheeger_gromov_taylor
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -551,16 +551,16 @@ theorem collision_ge_cgt
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
         (riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
-          intrPullVol (I := I) g hEnorm p (r₀ + s))
+          intrinsicPullVol (I := I) g hEnorm p (r₀ + s))
       ≤ ENNReal.ofReal ell := by
   exact
-    collision_ge_cgt_on (I := I) g hEnorm p hK hR hRpi
+    collision_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi
       (fun z _ ↦ hRm (intrinsicFramedExp (I := I) g hEnorm p z))
       hloc hr₀ hs hfit hquarter huv hcollision hell hlen hshort
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-theorem intrLoop_ge_cgt
+theorem intrinsicLoop_ge_cheeger_gromov_taylor
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -582,7 +582,7 @@ theorem intrLoop_ge_cgt
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
         (riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
-          intrPullVol (I := I) g hEnorm p (r₀ + s))
+          intrinsicPullVol (I := I) g hEnorm p (r₀ + s))
       ≤ ENNReal.ofReal ell := by
   let c : Path p p :=
     (radialFlat (I := I) g hEnorm p u).cast rfl hloop.symm
@@ -599,7 +599,7 @@ theorem intrLoop_ge_cgt
       pathLen (I := I) c = ENNReal.ofReal (2 * ell) := by
     simpa only [pathLen, c, Path.extend_cast, hlen] using
       radialFlat_len (I := I) g hEnorm p u
-  let A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1 := {
+  let A : IntrinsicFrameLift (I := I) g hEnorm p c.extend 0 1 := {
     toFun := (radialFlatLift (I := I) g hEnorm p u).toFun
     contDiff := (radialFlatLift (I := I) g hEnorm p u).contDiff
     start := (radialFlatLift (I := I) g hEnorm p u).start
@@ -615,12 +615,12 @@ theorem intrLoop_ge_cgt
       simpa only [A] using radialLift_one (I := I) g hEnorm p u
     exact hAone.symm ▸ hu0
   exact
-    flatLoop_ge_cgt (I := I) g hEnorm p hK hR hRpi hRm hloc
+    flatLoop_ge_cheeger_gromov_taylor (I := I) g hEnorm p hK hR hRpi hRm hloc
       hr₀ hs hfit hquarter c hc hell hcLen A hA
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-theorem intrInj_ge_cgt_on
+theorem intrinsicInjRadius_ge_cheeger_gromov_taylor_on
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -646,15 +646,15 @@ theorem intrInj_ge_cgt_on
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
         (riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
-          intrPullVol (I := I) g hEnorm p (r₀ + s))
-      ≤ intrInjRadius (I := I) g hEnorm p := by
+          intrinsicPullVol (I := I) g hEnorm p (r₀ + s))
+      ≤ intrinsicInjRadius (I := I) g hEnorm p := by
   classical
   let V : ENNReal :=
     riemannianVolumeMeasure (I := I) (M := M) g
       {y : M | riemannianEDist I p y < ENNReal.ofReal s}
-  let P : ENNReal := intrPullVol (I := I) g hEnorm p (r₀ + s)
+  let P : ENNReal := intrinsicPullVol (I := I) g hEnorm p (r₀ + s)
   let A₀ : ENNReal := ENNReal.ofReal (r₀ / 2) * V / (V + P)
-  change A₀ ≤ intrInjRadius (I := I) g hEnorm p
+  change A₀ ≤ intrinsicInjRadius (I := I) g hEnorm p
   apply le_intrInjRadius (I := I) g hEnorm p
   change InjOn (intrinsicFramedExp (I := I) g hEnorm p)
     (Metric.eball (0 : E) A₀)
@@ -706,7 +706,7 @@ theorem intrInj_ge_cgt_on
   have hcg :
       A₀ ≤ ENNReal.ofReal ell := by
     simpa only [A₀, V, P] using
-      collision_ge_cgt_on (I := I) g hEnorm p hK hR hRpi hRm hloc
+      collision_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi hRm hloc
         hr₀ hs hfit hquarter huv hcollision hell hlen hshort
   have hellReal : ell < A₀.toReal := by
     dsimp only [ell]
@@ -717,7 +717,7 @@ theorem intrInj_ge_cgt_on
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-theorem intrInj_ge_cgt
+theorem intrinsicInjRadius_ge_cheeger_gromov_taylor
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -737,10 +737,10 @@ theorem intrInj_ge_cgt
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
         (riemannianVolumeMeasure (I := I) (M := M) g
             {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
-          intrPullVol (I := I) g hEnorm p (r₀ + s))
-      ≤ intrInjRadius (I := I) g hEnorm p := by
+          intrinsicPullVol (I := I) g hEnorm p (r₀ + s))
+      ≤ intrinsicInjRadius (I := I) g hEnorm p := by
   exact
-    intrInj_ge_cgt_on (I := I) g hEnorm p hK hR hRpi
+    intrinsicInjRadius_ge_cheeger_gromov_taylor_on (I := I) g hEnorm p hK hR hRpi
       (fun z _ ↦ hRm (intrinsicFramedExp (I := I) g hEnorm p z))
       hloc hr₀ hs hfit hquarter
 

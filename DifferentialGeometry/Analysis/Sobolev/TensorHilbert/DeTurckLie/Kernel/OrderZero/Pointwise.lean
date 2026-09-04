@@ -380,7 +380,7 @@ private theorem deTurckLieConnectionDifferenceDerivCoeffField_fiberNormSq_le_of_
         ((Module.finrank ℝ E : ℝ) * ((Module.finrank ℝ E : ℝ) *
           (4 * CK * (κ * κ)))) ^ 2 := by
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr, _hsum⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := hn
   have hunit : ∀ i : Fin n, g₀.inner x (e i) (e i) = 1 := by
     intro i

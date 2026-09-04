@@ -929,7 +929,7 @@ theorem nabla0SFun_eval_tangentConstInChart_contMDiffAt
   rw [nabla0SFun_eval_coordFrame_moving
     (I := I) cov X V α p hpair_md hV_md hVmodel_p hcoord_p]
 
-theorem nabla0S_reg (s : ℕ)
+theorem nabla0S_regularity (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))

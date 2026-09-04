@@ -396,7 +396,7 @@ private lemma local_grad_l2_le
   have hq : Measurable q := by
     exact Measurable.ite (isClosed_tsupport _).measurableSet
       (Real.continuous_sqrt.measurable.comp (measurable_const.mul hsum)) measurable_const
-  have hq_supp : tsupport q ⊆ K := by
+  have hq_support : tsupport q ⊆ K := by
     apply closure_minimal
     · intro x hx
       by_contra hxK
@@ -446,7 +446,7 @@ private lemma local_grad_l2_le
     · exact le_rfl
   refine ⟨q, hq_nonneg,
     hq.aestronglyMeasurable, (by simpa only [f] using hGq), ?_⟩
-  refine (hbridge hq hq_supp).trans ?_
+  refine (hbridge hq hq_support).trans ?_
   have hraw_lip := raw_sub_lip (I := I) (M := M) g α hu hB hv
   obtain ⟨Cr, hraw_lip⟩ := hraw_lip
   have hraw_compact : HasCompactSupport raw := by
@@ -727,7 +727,7 @@ theorem exists_smooth_grad
       rw [ENNReal.ofReal_mul hC]
     _ ≤ ENNReal.ofReal ε := ENNReal.ofReal_le_ofReal hmul
 
-theorem exists_smooth_supp
+theorem exists_smooth_support
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L B : NNReal}
@@ -751,7 +751,7 @@ theorem exists_smooth_supp
     DifferentialGeometry.Analysis.Sobolev.Equivalence.eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
       (I := I) (M := M) g (p := (2 : ENNReal)) (by norm_num) (by norm_num)
   obtain ⟨Cg, hCg, hgrad⟩ := grad_sub_l2_le (I := I) (M := M) g
-  obtain ⟨χ, hχ, _hχc, hχone, hχsupp, _hχrange⟩ :=
+  obtain ⟨χ, hχ, _hχc, hχone, hχsupport, _hχrange⟩ :=
     DifferentialGeometry.Analysis.exists_mfd_bump
       (I := I) (M := M) (K := tsupport u) (U := U)
         (isClosed_tsupport u).isCompact hU huU
@@ -773,8 +773,8 @@ theorem exists_smooth_supp
         hu_chart hδ
   let φ : M → ℝ := fun x => χ x * v x
   have hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ := hχ.mul hv
-  have hφsupp : tsupport φ ⊆ U := by
-    refine (closure_minimal ?_ (isClosed_tsupport χ)).trans hχsupp
+  have hφsupport : tsupport φ ⊆ U := by
+    refine (closure_minimal ?_ (isClosed_tsupport χ)).trans hχsupport
     intro x hx
     apply subset_closure
     intro hχx
@@ -821,7 +821,7 @@ theorem exists_smooth_supp
     (mul_le_mul_of_nonneg_right hCl2D hδ.le).trans hbase
   have hgscale : Cg * Cm * δ ≤ ε :=
     (mul_le_mul_of_nonneg_right hCgD hδ.le).trans hbase
-  refine ⟨φ, hφ, hφsupp, ?_, ?_⟩
+  refine ⟨φ, hφ, hφsupport, ?_, ?_⟩
   · have hu_cont : Continuous u :=
       DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.intrinsic_lip_cont
         (I := I) (M := M) g hu

@@ -319,9 +319,9 @@ lemma covDivergenceRaw_eq_codiffPsi_smoothOrthoFrame_trace
   rw [covDivergenceRaw, hcentral_trace, ← hB_trace]
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
-lemma covDivergenceRaw_eq_fixedFrame_on_nbhd
+lemma covDivergenceRaw_eq_fixedFrame_on_neighborhood
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (x₀ : M)
-    {b : M} (hb : b ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    {b : M} (hb : b ∈ smoothOrthoFrameNeighborhood (I := I) (M := M) x₀) :
     covDivergenceRaw (I := I) (M := M) g s V b =
       covDivergenceFixedFrame (I := I) (M := M) g s V
         (fun i => smoothOrthoFrameSection (I := I) (M := M) g x₀ i) b := by
@@ -365,10 +365,10 @@ theorem covDivergenceRaw_contMDiff
         (E := fun z : M => TensorRSSpace 0 s I z) b
         (covDivergenceFixedFrame (I := I) (M := M) g s V
           (fun i => smoothOrthoFrameSection (I := I) (M := M) g x₀ i) b)) := by
-    filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with b hb
+    filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with b hb
     exact congrArg (TotalSpace.mk' (TensorRSModel 0 s ℝ E)
       (E := fun z : M => TensorRSSpace 0 s I z) b)
-      (covDivergenceRaw_eq_fixedFrame_on_nbhd (I := I) (M := M) g s V x₀ hb)
+      (covDivergenceRaw_eq_fixedFrame_on_neighborhood (I := I) (M := M) g s V x₀ hb)
   exact h_fixed_at.congr_of_eventuallyEq h_eventuallyEq
 
 omit [CompactSpace M] [SigmaCompactSpace M] in

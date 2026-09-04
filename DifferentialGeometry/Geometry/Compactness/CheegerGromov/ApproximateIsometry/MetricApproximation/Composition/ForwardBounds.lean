@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -226,7 +226,7 @@ noncomputable def PartialDiffeomorphMetricApproximationBounds.transForward
     intro x hxV v
     have hxU : x ∈ (U₁ : Set M) := hKGU (hVKG hxV)
     have hxs : x ∈ Φ.source := hU₁ hxU
-    have hΦxImg : (Φ : M → N) x ∈ (Φ : M → N) '' (U₁ : Set M) :=
+    have hΦxImage : (Φ : M → N) x ∈ (Φ : M → N) '' (U₁ : Set M) :=
       Set.mem_image_of_mem _ hxU
     have hfg : (Φ.symm : N → M) ∘ (Φ : M → N) =ᶠ[nhds x] id := by
       filter_upwards [Φ.open_source.mem_nhds hxs] with y hy
@@ -251,7 +251,7 @@ noncomputable def PartialDiffeomorphMetricApproximationBounds.transForward
       change mfderiv I I (Φ.symm : N → M) ((Φ : M → N) x)
         (mfderiv I I (Φ : M → N) x w) = w at hw
       exact hw
-    rw [D₁.reverse.pullback_apply ((Φ : M → N) x) hΦxImg
+    rw [D₁.reverse.pullback_apply ((Φ : M → N) x) hΦxImage
         (fun q => mfderiv I I (Φ : M → N) x (v q))]
     rw [Tensor0SBundle.metricTensorField_apply]
     have hl : (Φ.symm : N → M) ((Φ : M → N) x) = x := Φ.left_inv' hxs
@@ -501,5 +501,5 @@ noncomputable def PartialDiffeomorphMetricApproximationBounds.transForward
 
 end Composition
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

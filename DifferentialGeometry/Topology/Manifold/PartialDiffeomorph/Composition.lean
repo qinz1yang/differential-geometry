@@ -24,7 +24,7 @@ noncomputable def PartialDiffeomorph.refl (M : Type u) [TopologicalSpace M]
   contMDiffOn_toFun := contMDiff_id.contMDiffOn
   contMDiffOn_invFun := contMDiff_id.contMDiffOn
 
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 section Chain
 
@@ -39,7 +39,7 @@ noncomputable def chainComp {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j
       _root_.PartialDiffeomorph.trans (I := I) prev (Ψ (j + l)))
     l
 
-noncomputable def chainComp' {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
+noncomputable def chainCompOfAddEq {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞)) :
     ∀ (l j m : ℕ), j + l = m → PartialDiffeomorph I I (Mf j) (Mf m) (∞ : WithTop ℕ∞) :=
@@ -176,52 +176,52 @@ theorem chainCompAssoc_eq {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
   funext x
   exact chainCompAssoc_apply (I := I) (Mf := Mf) Ψ j a b x
 
-theorem chainComp'_apply_succ {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
+theorem chainCompOfAddEq_apply_succ {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (l j m : ℕ) (h : j + (l + 1) = m) (x : Mf j) :
-    (chainComp' (I := I) (Mf := Mf) Ψ (l + 1) j m h : Mf j → Mf m) x
-      = (chainComp' (I := I) (Mf := Mf) Ψ l (j + 1) m (by omega) : Mf (j + 1) → Mf m)
+    (chainCompOfAddEq (I := I) (Mf := Mf) Ψ (l + 1) j m h : Mf j → Mf m) x
+      = (chainCompOfAddEq (I := I) (Mf := Mf) Ψ l (j + 1) m (by omega) : Mf (j + 1) → Mf m)
           ((Ψ j : Mf j → Mf (j + 1)) x) :=
   rfl
 
-theorem chainComp'_apply_zero {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
+theorem chainCompOfAddEq_apply_zero {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (j m : ℕ) (h : j + 0 = m) (x : Mf j) :
-    (chainComp' (I := I) (Mf := Mf) Ψ 0 j m h : Mf j → Mf m) x
+    (chainCompOfAddEq (I := I) (Mf := Mf) Ψ 0 j m h : Mf j → Mf m) x
       = (Nat.add_zero j ▸ h : j = m) ▸ x := by
   have hj : j = m := Nat.add_zero j ▸ h
   subst hj
   rfl
 
-theorem chainComp'_snoc {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
+theorem chainCompOfAddEq_snoc {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞)) :
     ∀ (l j m : ℕ) (h : j + (l + 1) = m) (x : Mf j),
-      (chainComp' (I := I) (Mf := Mf) Ψ (l + 1) j m h : Mf j → Mf m) x
+      (chainCompOfAddEq (I := I) (Mf := Mf) Ψ (l + 1) j m h : Mf j → Mf m) x
         = (h ▸ ((Ψ (j + l) : Mf (j + l) → Mf (j + l + 1))
-            ((chainComp' (I := I) (Mf := Mf) Ψ l j (j + l) rfl :
+            ((chainCompOfAddEq (I := I) (Mf := Mf) Ψ l j (j + l) rfl :
               Mf j → Mf (j + l)) x)) : Mf m) := by
   intro l
   induction l with
   | zero =>
       intro j m h x
       subst h
-      rw [chainComp'_apply_succ, chainComp'_apply_zero, chainComp'_apply_zero]
+      rw [chainCompOfAddEq_apply_succ, chainCompOfAddEq_apply_zero, chainCompOfAddEq_apply_zero]
       rfl
   | succ l ih =>
       intro j m h x
       subst h
-      rw [chainComp'_apply_succ,
+      rw [chainCompOfAddEq_apply_succ,
         ih (j + 1) (j + (l + 1 + 1)) (by omega) ((Ψ j : Mf j → Mf (j + 1)) x)]
-      conv_rhs => rw [chainComp'_apply_succ]
+      conv_rhs => rw [chainCompOfAddEq_apply_succ]
       have hcast : ∀ (a : ℕ) (ha : (j + 1) + l = a),
           (Ψ a : Mf a → Mf (a + 1))
-              ((chainComp' (I := I) (Mf := Mf) Ψ l (j + 1) a ha : Mf (j + 1) → Mf a)
+              ((chainCompOfAddEq (I := I) (Mf := Mf) Ψ l (j + 1) a ha : Mf (j + 1) → Mf a)
                 ((Ψ j : Mf j → Mf (j + 1)) x))
             = ha ▸ ((Ψ ((j + 1) + l) : Mf ((j + 1) + l) → Mf ((j + 1) + l + 1))
-                ((chainComp' (I := I) (Mf := Mf) Ψ l (j + 1) ((j + 1) + l) rfl :
+                ((chainCompOfAddEq (I := I) (Mf := Mf) Ψ l (j + 1) ((j + 1) + l) rfl :
                     Mf (j + 1) → Mf ((j + 1) + l))
                   ((Ψ j : Mf j → Mf (j + 1)) x))) := by
         intro a ha; subst ha; rfl
@@ -233,42 +233,42 @@ theorem chainComp_eq_right {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞))
     (l j : ℕ) :
     (chainComp (I := I) (Mf := Mf) Ψ j l : Mf j → Mf (j + l))
-      = (chainComp' (I := I) (Mf := Mf) Ψ l j (j + l) rfl :
+      = (chainCompOfAddEq (I := I) (Mf := Mf) Ψ l j (j + l) rfl :
           Mf j → Mf (j + l)) := by
   funext x
   induction l generalizing j with
   | zero =>
-      rw [chainComp'_apply_zero]
+      rw [chainCompOfAddEq_apply_zero]
       rfl
   | succ l ih =>
-      rw [chainComp_apply_succ, ih j, chainComp'_snoc]
+      rw [chainComp_apply_succ, ih j, chainCompOfAddEq_snoc]
 
 theorem chainComp_coe_head {Mf : ℕ → Type u} [∀ j, TopologicalSpace (Mf j)]
     [∀ j, ChartedSpace H (Mf j)]
     (Ψ : ∀ j, PartialDiffeomorph I I (Mf j) (Mf (j + 1)) (∞ : WithTop ℕ∞)) :
     ∀ (l j : ℕ) (x : Mf j),
       (chainComp (I := I) (Mf := Mf) Ψ j (l + 1) : Mf j → Mf (j + (l + 1))) x
-        = (chainComp' (I := I) (Mf := Mf) Ψ l (j + 1) (j + (l + 1)) (by omega) :
+        = (chainCompOfAddEq (I := I) (Mf := Mf) Ψ l (j + 1) (j + (l + 1)) (by omega) :
             Mf (j + 1) → Mf (j + (l + 1)))
             ((Ψ j : Mf j → Mf (j + 1)) x) := by
   have lemmaA : ∀ (l j : ℕ) (x : Mf j),
       (chainComp (I := I) (Mf := Mf) Ψ j l : Mf j → Mf (j + l)) x
-        = (chainComp' (I := I) (Mf := Mf) Ψ l j (j + l) rfl :
+        = (chainCompOfAddEq (I := I) (Mf := Mf) Ψ l j (j + l) rfl :
             Mf j → Mf (j + l)) x := by
     intro l
     induction l with
     | zero =>
         intro j x
-        rw [chainComp'_apply_zero]
+        rw [chainCompOfAddEq_apply_zero]
         rfl
     | succ l ih =>
         intro j x
-        rw [chainComp_apply_succ, ih j x, chainComp'_snoc]
+        rw [chainComp_apply_succ, ih j x, chainCompOfAddEq_snoc]
   intro l j x
   rw [lemmaA (l + 1) j x]
-  rw [chainComp'_apply_succ]
+  rw [chainCompOfAddEq_apply_succ]
 
 end Chain
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

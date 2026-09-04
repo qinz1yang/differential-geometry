@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -118,13 +118,13 @@ omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I] in
 omit [SigmaCompactSpace M] in
-theorem exists_initC
+theorem exists_initialC
     [Module.Finite ℝ E]
     [CompactSpace M]
     (g gRef : SmoothRiemannianMetric I M) :
-    ∃ initC : Nat → Real, (∀ r : Nat, 0 ≤ initC r) ∧
+    ∃ initialC : Nat → Real, (∀ r : Nat, 0 ≤ initialC r) ∧
       ∀ r : Nat, ∀ x : M,
-        metricCovDerivNorm (I := I) r g gRef x ≤ initC r := by
+        metricCovDerivNorm (I := I) r g gRef x ≤ initialC r := by
   have hb : ∀ r : Nat, ∃ C : Real, ∀ x : M,
       metricCovDerivNorm (I := I) r g gRef x ≤ C := by
     intro r
@@ -146,7 +146,7 @@ theorem covOrder_stage_const
     (Bmax : Real) (hBmax1 : 1 ≤ Bmax)
     (Cg : Nat → Real)
     (KShi : Real) (hKShi0 : 0 ≤ KShi)
-    (initC : Real) (hinitC0 : 0 ≤ initC)
+    (initialC : Real) (hinitC0 : 0 ≤ initialC)
     (timeRadius : Real) :
     ∃ Cw : Real,
       ∀ {β ψ t0 : Real}
@@ -164,25 +164,25 @@ theorem covOrder_stage_const
               (fun r : Real => metricCovDeriv (I := I) (gSeq i r) gRef N x v)
               (((-2 : Real) • nablaRicReal (I := I) gSeq gRef N i s x) v) s)
         (_hinit : ∀ i : Nat, ∀ x : M, x ∈ K →
-          metricCovDerivNorm (I := I) N (gSeq i t0) gRef x ≤ initC)
+          metricCovDerivNorm (I := I) N (gSeq i t0) gRef x ≤ initialC)
         (_htime : ∀ t : Real, t ∈ Set.Icc β ψ → |t - t0| ≤ timeRadius),
         MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef N Cw := by
   obtain ⟨Cpp, Cppp, hCpp, hCppp, hfield⟩ :=
     ric_bound_const (I := I) hKc hU hKU N hN Bmax hBmax1 Cg KShi hKShi0
-  refine ⟨metricCovOrderEvolutionConstant Cpp Cppp timeRadius initC, ?_⟩
+  refine ⟨metricCovOrderEvolutionConstant Cpp Cppp timeRadius initialC, ?_⟩
   intro β ψ t0 gSeq B hequiv hBmax hBprev hShi ht0 hevComp hinit htime
   exact metricCovOrderWindow_of_evolution (I := I)
     { t0_mem := ht0
       nablaRic := nablaRicReal (I := I) gSeq gRef N
-      normsq_evol := normsq_evol_of_comp (I := I) hevComp
+      normsq_evolution := normsq_evolution_of_comp (I := I) hevComp
       Cpp := Cpp
       Cppp := Cppp
       Cpp_nonneg := hCpp
       Cppp_nonneg := hCppp
       ric_bound := hfield B hequiv hBmax hBprev hShi
-      initC := initC
-      initC_nonneg := hinitC0
-      init_bound := hinit
+      initialC := initialC
+      initialC_nonneg := hinitC0
+      initial_bound := hinit
       timeRadius := timeRadius
       time_abs_le := htime }
 
@@ -196,7 +196,7 @@ theorem covOrder_tower_const
     (N : Nat)
     (Bmax : Real) (hBmax1 : 1 ≤ Bmax)
     (KShi : Real) (hKShi0 : 0 ≤ KShi)
-    (initC : Nat → Real) (hinitC0 : ∀ r : Nat, 0 ≤ initC r)
+    (initialC : Nat → Real) (hinitC0 : ∀ r : Nat, 0 ≤ initialC r)
     (timeRadius : Real) :
     ∀ r : Nat, 1 ≤ r → r ≤ N →
       ∃ Cw : Real,
@@ -215,7 +215,7 @@ theorem covOrder_tower_const
                   (((-2 : Real) • nablaRicReal (I := I) gSeq gRef q i s x) v) s)
           (_hinit : ∀ q : Nat, 1 ≤ q → q ≤ N →
             ∀ i : Nat, ∀ x ∈ U,
-              metricCovDerivNorm (I := I) q (gSeq i t0) gRef x ≤ initC q)
+              metricCovDerivNorm (I := I) q (gSeq i t0) gRef x ≤ initialC q)
           (_htime : ∀ t : Real, t ∈ Set.Icc β ψ → |t - t0| ≤ timeRadius),
           MetricCovDerivOrderBoundOnWindow (I := I) K β ψ gSeq gRef r Cw := by
   have : LocallyCompactSpace H := I.locallyCompactSpace
@@ -236,7 +236,7 @@ theorem covOrder_tower_const
               (((-2 : Real) • nablaRicReal (I := I) gSeq gRef q i s x) v) s)
       (_hinit : ∀ q : Nat, 1 ≤ q → q ≤ N →
         ∀ i : Nat, ∀ x ∈ U,
-          metricCovDerivNorm (I := I) q (gSeq i t0) gRef x ≤ initC q)
+          metricCovDerivNorm (I := I) q (gSeq i t0) gRef x ≤ initialC q)
       (_htime : ∀ t : Real, t ∈ Set.Icc β ψ → |t - t0| ≤ timeRadius),
       MetricCovDerivOrderBoundOnWindow (I := I) K' β ψ gSeq gRef r Cw
   have hmain : ∀ r : Nat, 1 ≤ r → r ≤ N →
@@ -259,7 +259,7 @@ theorem covOrder_tower_const
         · exact ⟨0, fun ha hb => absurd ⟨ha, hb⟩ hq⟩
       choose Cg hCg using hex
       obtain ⟨Cw, hCw⟩ := covOrder_stage_const (I := I) hK'c isOpen_interior hKL
-        r h1 Bmax hBmax1 Cg KShi hKShi0 (initC r) (hinitC0 r) timeRadius
+        r h1 Bmax hBmax1 Cg KShi hKShi0 (initialC r) (hinitC0 r) timeRadius
       refine ⟨Cw, ?_⟩
       dsimp only [Stable]
       intro β ψ t0 gSeq B hequiv hBmax hShi ht0 hev hinit htime
@@ -288,7 +288,7 @@ theorem covOrder_Ico_tail
     (N : Nat)
     (Bmax : Real) (hBmax1 : 1 ≤ Bmax)
     (KShi : Real) (hKShi0 : 0 ≤ KShi)
-    (initC : Nat → Real) (hinitC0 : ∀ r : Nat, 0 ≤ initC r)
+    (initialC : Nat → Real) (hinitC0 : ∀ r : Nat, 0 ≤ initialC r)
     (timeRadius : Real)
     (B : Real → Real)
     (hequiv : ∀ ψ ∈ Set.Ico t0 omega,
@@ -304,14 +304,14 @@ theorem covOrder_Ico_tail
             (((-2 : Real) • nablaRicReal (I := I) gSeq gRef q i s x) v) s)
     (hinit : ∀ q : Nat, 1 ≤ q → q ≤ N →
       ∀ i : Nat, ∀ x ∈ U,
-        metricCovDerivNorm (I := I) q (gSeq i t0) gRef x ≤ initC q)
+        metricCovDerivNorm (I := I) q (gSeq i t0) gRef x ≤ initialC q)
     (htime : ∀ t ∈ Set.Ico t0 omega, |t - t0| ≤ timeRadius) :
     ∀ r : Nat, 1 ≤ r → r ≤ N →
       ∃ Cw : Real, ∀ i : Nat, ∀ s ∈ Set.Ico t0 omega,
         MetricCovDerivOrderBoundOn (I := I) K r (gSeq i s) gRef Cw := by
   intro r h1 hrN
   obtain ⟨Cw, hCw⟩ := covOrder_tower_const (I := I) hKc hU hKU N
-    Bmax hBmax1 KShi hKShi0 initC hinitC0 timeRadius r h1 hrN
+    Bmax hBmax1 KShi hKShi0 initialC hinitC0 timeRadius r h1 hrN
   refine ⟨Cw, ?_⟩
   intro i s hs
   obtain ⟨ψ, hsψ, hψω⟩ := exists_between hs.2
@@ -323,5 +323,5 @@ theorem covOrder_Ico_tail
     (fun t ht => htime t ⟨ht.1, lt_of_le_of_lt ht.2 hψω⟩)
   exact hwindow i s hsIcc
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

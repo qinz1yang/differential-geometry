@@ -256,7 +256,7 @@ variable {F : Type*}
 def heatD3Cancel (t : Real) (u v w : V) (f : V → F) (x : V) : F :=
   ∫ y : V, heatD3 t u v w y • (f (x - y) - f x)
 
-def heatD3Conv (t : Real) (u v w : V) (f : V → F) (x : V) : F :=
+def heatD3Convolution (t : Real) (u v w : V) (f : V → F) (x : V) : F :=
   ∫ y : V, heatD3 t u v w y • f (x - y)
 
 omit [InnerProductSpace Real V] [FiniteDimensional Real V]
@@ -313,7 +313,7 @@ theorem heatD3Cancel_int_of_holder {alpha K : NNReal}
   exact d3_cancel_bound_of_holder ht hf u v w x y
 
 omit [CompleteSpace F] in
-theorem heatD3Conv_int_of_holder {alpha K : NNReal}
+theorem heatD3Convolution_int_of_holder {alpha K : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {t : Real} (ht : 0 < t) {f : V → F} (hf : HolderWith K alpha f)
     (u v w x : V) :
@@ -323,14 +323,14 @@ theorem heatD3Conv_int_of_holder {alpha K : NNReal}
   refine (hcancel.add hconst).congr (Filter.Eventually.of_forall fun y => ?_)
   simp only [Pi.add_apply, smul_sub, sub_add_cancel]
 
-theorem heatD3Conv_eq_cancel_of_holder {alpha K : NNReal}
+theorem heatD3Convolution_eq_cancel_of_holder {alpha K : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {t : Real} (ht : 0 < t) {f : V → F} (hf : HolderWith K alpha f)
     (u v w x : V) :
-    heatD3Conv t u v w f x = heatD3Cancel t u v w f x := by
+    heatD3Convolution t u v w f x = heatD3Cancel t u v w f x := by
   have hcancel := heatD3Cancel_int_of_holder halpha0 halpha1 ht hf u v w x
   have hconst := (heatD3_int (V := V) ht u v w).smul_const (f x)
-  unfold heatD3Conv heatD3Cancel
+  unfold heatD3Convolution heatD3Cancel
   calc
     (∫ y : V, heatD3 t u v w y • f (x - y)) =
         ∫ y : V, heatD3 t u v w y • (f (x - y) - f x) +
@@ -368,14 +368,14 @@ theorem heatD3Cancel_norm_of_holder {alpha K : NNReal}
       rw [holderThirdHeatScale_eq alpha ht]
       ring
 
-theorem heatD3Conv_norm_of_holder {alpha K : NNReal}
+theorem heatD3Convolution_norm_of_holder {alpha K : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {t : Real} (ht : 0 < t) {f : V → F} (hf : HolderWith K alpha f)
     (u v w x : V) :
-    ‖heatD3Conv t u v w f x‖ ≤
+    ‖heatD3Convolution t u v w f x‖ ≤
       ‖u‖ * ‖v‖ * ‖w‖ * (K : Real) * holderThirdHeatScale alpha t *
         heatC3Holder (V := V) alpha := by
-  rw [heatD3Conv_eq_cancel_of_holder halpha0 halpha1 ht hf]
+  rw [heatD3Convolution_eq_cancel_of_holder halpha0 halpha1 ht hf]
   exact heatD3Cancel_norm_of_holder halpha1 ht hf u v w x
 
 end Cancellation

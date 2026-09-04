@@ -170,12 +170,12 @@ lemma chartHessianTensor_add_of_smooth
   have hf'_smooth_target : ContDiffOn ℝ ∞ (scalarOnE (I := I) α f')
       (extChartAt I α).target :=
     scalarOnE_contDiffOn (I := I) α hf'
-  have hx_src_ext : x ∈ (extChartAt I α).source := by
+  have hx_source_ext : x ∈ (extChartAt I α).source := by
     rwa [extChartAt_source_eq_chartAt_source]
-  have hx_tgt : extChartAt I α x ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hx_src_ext
+  have hx_target : extChartAt I α x ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hx_source_ext
   have hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E) :=
-    extChartAt_target_subset_interior_of_boundaryless (I := I) α hx_tgt
+    extChartAt_target_subset_interior_of_boundaryless (I := I) α hx_target
   have hopen_int : IsOpen (interior ((extChartAt I α).target : Set E)) := isOpen_interior
   have hf_int_diff : ∀ y ∈ interior ((extChartAt I α).target : Set E),
       DifferentiableAt ℝ (scalarOnE (I := I) α f) y := by
@@ -312,12 +312,12 @@ lemma chartHessianTensor_neg_of_smooth
   have hf_smooth_target : ContDiffOn ℝ ∞ (scalarOnE (I := I) α f)
       (extChartAt I α).target :=
     scalarOnE_contDiffOn (I := I) α hf
-  have hx_src_ext : x ∈ (extChartAt I α).source := by
+  have hx_source_ext : x ∈ (extChartAt I α).source := by
     rwa [extChartAt_source_eq_chartAt_source]
-  have hx_tgt : extChartAt I α x ∈ (extChartAt I α).target :=
-    (extChartAt I α).map_source hx_src_ext
+  have hx_target : extChartAt I α x ∈ (extChartAt I α).target :=
+    (extChartAt I α).map_source hx_source_ext
   have hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E) :=
-    extChartAt_target_subset_interior_of_boundaryless (I := I) α hx_tgt
+    extChartAt_target_subset_interior_of_boundaryless (I := I) α hx_target
   have hopen_int : IsOpen (interior ((extChartAt I α).target : Set E)) := isOpen_interior
   set u : E → ℝ := scalarOnE (I := I) α f with hu_def
   set z : E := extChartAt I α x with hz_def

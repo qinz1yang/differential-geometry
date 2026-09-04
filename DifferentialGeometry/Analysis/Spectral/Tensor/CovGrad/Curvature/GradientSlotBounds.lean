@@ -238,7 +238,7 @@ theorem gradSlot_riemannianFiberNormSq_zero
   classical
   intro x
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hrepr⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 2 4 x
     (show TensorRSSpace 2 4 I x from
@@ -284,7 +284,7 @@ theorem gradSlot_riemannianFiberNormSq_one
   classical
   intro x
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hrepr⟩ :=
-    tangent_orthonormalBasis_witness (I := I) (M := M) g x
+    exists_tangent_orthonormalBasis_with_norm_sum (I := I) (M := M) g x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_rs_eq_sum_componentSq_of_basis (I := I) (M := M) g 2 5 x
     (show TensorRSSpace 2 5 I x from

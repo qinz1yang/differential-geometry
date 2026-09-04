@@ -257,10 +257,10 @@ theorem not_hasPrincipalSymbol_zero_operator [I.Boundaryless]
   rintro ⟨σ, P, ⟨R, hR_first, hsplit⟩, hσ⟩
   set hξt : ChartMetricPerturbation E := symbolTestPerturbation (I := I) x x ξ t ht with hξt_def
   have hy_int : extChartAt I x x ∈ interior (extChartAt I x).target := by
-    have hx_src : x ∈ (extChartAt I x).source := by
+    have hx_source : x ∈ (extChartAt I x).source := by
       rw [extChartAt_source_eq_chartAt_source (I := I)]; exact mem_chart_source H x
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) x
-      ((extChartAt I x).map_source hx_src)
+      ((extChartAt I x).map_source hx_source)
   obtain ⟨gfam, hfam0, hfam_deriv, hfam_smooth, hfam_jet1, hfam_jet2⟩ := hfam hξt
   have hσ_zero : ∀ i j : Fin (Module.finrank ℝ E),
       (σ x ξ t) (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)

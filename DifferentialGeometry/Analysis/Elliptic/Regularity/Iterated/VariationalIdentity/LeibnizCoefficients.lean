@@ -124,9 +124,9 @@ theorem weightedInvGramMthDerivOnEuclid_two_eq_weightedInvGramSecondDerivOnEucli
   have h_last_1 : (Fin.last 1 : Fin 2) = 1 := rfl
   rw [h_last_1]
   rw [weightedInvGramMthDerivOnEuclid_one_eq_weightedInvGramDerivOnEuclid]
-  have h_init_0 : (Fin.init idx) 0 = idx 0 := by
+  have h_initial_0 : (Fin.init idx) 0 = idx 0 := by
     simp [Fin.init]
-  rw [h_init_0]
+  rw [h_initial_0]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -141,9 +141,9 @@ theorem densityMthDerivOnEuclid_two_eq_densitySecondDerivOnEuclid
   have h_last_1 : (Fin.last 1 : Fin 2) = 1 := rfl
   rw [h_last_1]
   rw [densityMthDerivOnEuclid_one_eq_densityDerivOnEuclid]
-  have h_init_0 : (Fin.init idx) 0 = idx 0 := by
+  have h_initial_0 : (Fin.init idx) 0 = idx 0 := by
     simp [Fin.init]
-  rw [h_init_0]
+  rw [h_initial_0]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in

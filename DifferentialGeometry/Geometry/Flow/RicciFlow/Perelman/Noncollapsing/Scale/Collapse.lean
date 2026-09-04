@@ -47,7 +47,7 @@ omit [IsManifold I 1 M] in
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 omit [IsManifold I 1 M] in
-theorem dyadic_succ_rad (B : FlowMetricBall S time) (j : ℕ) :
+theorem dyadic_succ_radius (B : FlowMetricBall S time) (j : ℕ) :
     (B.dyadic (j + 1)).radius = (B.dyadic j).radius / 2 := by
   simp only [dyadic_radius, pow_succ]
   ring
@@ -157,7 +157,7 @@ theorem exists_coll_scale
     have hrn : 0 < (B.dyadic j).radius ^ n := pow_pos hrj n
     have hsuc : (B.dyadic (j + 1)).radius ^ n =
         (B.dyadic j).radius ^ n / (2 : ℝ) ^ n := by
-      rw [dyadic_succ_rad, div_pow]
+      rw [dyadic_succ_radius, div_pow]
     have hdrop : (1 / 2 : ℝ) *
         (V j / (B.dyadic j).radius ^ n) <
           V (j + 1) / ((B.dyadic j).radius ^ n / (2 : ℝ) ^ n) := by
@@ -168,7 +168,7 @@ theorem exists_coll_scale
       field_simp at hscaled
       rw [pow_succ]
       nlinarith
-    rw [← dyadic_succ_rad]
+    rw [← dyadic_succ_radius]
     change V j < (2 : ℝ) ^ (n + 1) * V (j + 1)
     exact hV
 

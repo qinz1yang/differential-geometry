@@ -9,7 +9,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 
@@ -85,5 +85,5 @@ theorem metricCovDeriv_succ_component_coordFrame
   simp only [hsecx]
   rw [hcd]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

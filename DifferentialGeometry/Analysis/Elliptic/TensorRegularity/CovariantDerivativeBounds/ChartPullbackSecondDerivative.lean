@@ -182,17 +182,17 @@ private lemma inputSlotPiece_contDiffAt_two
     refine Filter.eventually_of_mem (hU_open.mem_nhds hx_mem) ?_
     intro y hy
     rcases hy with ⟨x', hx'_good, hx'y⟩
-    have hx'_src : x' ∈ (chartAt H α).source :=
+    have hx'_source : x' ∈ (chartAt H α).source :=
       chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx'_good
     have hx'_extsrc : x' ∈ (extChartAt I α).source := by
-      rw [extChartAt_source]; exact hx'_src
+      rw [extChartAt_source]; exact hx'_source
     have hx'_inv : (extChartAt I α).symm y = x' := by
       rw [← hx'y]; exact (extChartAt I α).left_inv hx'_extsrc
     exact chartTensorRSInputSlotCorrection_chart_kernel_factorization
       (I := I) (M := M) g r s α
       (fun b' : M => T.toSection b') B.toFun
       (b := (extChartAt I α).symm y)
-      (by rw [hx'_inv]; exact hx'_src) k
+      (by rw [hx'_inv]; exact hx'_source) k
   exact h_kernel_F_at.congr_of_eventuallyEq h_evt
 
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
@@ -276,17 +276,17 @@ private lemma outputSlotPiece_contDiffAt_two
     refine Filter.eventually_of_mem (hU_open.mem_nhds hx_mem) ?_
     intro y hy
     rcases hy with ⟨x', hx'_good, hx'y⟩
-    have hx'_src : x' ∈ (chartAt H α).source :=
+    have hx'_source : x' ∈ (chartAt H α).source :=
       chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx'_good
     have hx'_extsrc : x' ∈ (extChartAt I α).source := by
-      rw [extChartAt_source]; exact hx'_src
+      rw [extChartAt_source]; exact hx'_source
     have hx'_inv : (extChartAt I α).symm y = x' := by
       rw [← hx'y]; exact (extChartAt I α).left_inv hx'_extsrc
     exact chartTensorRSOutputSlotCorrection_chart_kernel_factorization
       (I := I) (M := M) g r s α
       (fun b' : M => T.toSection b') B.toFun
       (b := (extChartAt I α).symm y)
-      (by rw [hx'_inv]; exact hx'_src) l
+      (by rw [hx'_inv]; exact hx'_source) l
   exact h_kernel_F_at.congr_of_eventuallyEq h_evt
 
 omit [CompactSpace M] in
@@ -332,10 +332,10 @@ private lemma chart_pulled_covApply_repr_eventuallyEq'
   refine Filter.eventually_of_mem (hU_open.mem_nhds hmem) ?_
   intro y hy
   rcases hy with ⟨x, hx_good, hxy⟩
-  have hx_src : x ∈ (chartAt H α).source :=
+  have hx_source : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx_good
   have hx_extsrc : x ∈ (extChartAt I α).source := by
-    rw [extChartAt_source]; exact hx_src
+    rw [extChartAt_source]; exact hx_source
   have hy_target : y ∈ (extChartAt I α).target := by
     rw [← hxy]; exact (extChartAt I α).map_source hx_extsrc
   have hx_inv : (extChartAt I α).symm y = x := by

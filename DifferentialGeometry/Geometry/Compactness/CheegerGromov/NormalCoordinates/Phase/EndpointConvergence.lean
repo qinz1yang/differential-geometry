@@ -13,7 +13,7 @@ open Set
 open scoped ContDiff Manifold
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -25,7 +25,7 @@ variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
 namespace NormalRadiusProfile
 
-theorem diag_end_conv
+theorem diag_end_convergence
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -38,7 +38,7 @@ theorem diag_end_conv
       (Metric.ball 0 (h.phaseRadius R)))
     (hgInf_lo : ∀ z ∈ Metric.ball (0 : E) (h.phaseRadius R), ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gInf z v v)
-    (hg_conv : MapCInfConvOnCompacts
+    (hg_convergence : MapCInfConvergenceOnCompacts
       (Metric.ball 0 (h.phaseRadius R))
       (fun n ↦ normalCoordMetric (I := I) (X.obj n) (c n)) gInf)
     {Φ : Nat → (E × E) → Real → E × E}
@@ -60,7 +60,7 @@ theorem diag_end_conv
       (ΦInf z t).1 ∈ Metric.ball 0 (h.phaseRadius R))
     (he : ∀ n, (e n : E × E → E × E) =
       fun z ↦ (z.1, (Φ n z 1).1)) :
-    MapCInfConvOnCompacts Q
+    MapCInfConvergenceOnCompacts Q
       (fun n ↦ (e n : E × E → E × E))
       (fun z ↦ (z.1, (ΦInf z 1).1)) := by
   have hg_cd : ∀ n, ContDiffOn Real ∞
@@ -86,13 +86,13 @@ theorem diag_end_conv
     refine ⟨1 / 2, by norm_num, ?_⟩
     intro v
     simpa only [pow_two, mul_assoc] using hgInf_lo z hz v
-  have hconv := normalDiag_end_conv
+  have hconv := normalDiag_end_convergence
     (Metric.isOpen_ball : IsOpen (Metric.ball (0 : E) (h.phaseRadius R)))
-    hQ hg_cd hgInf_cd hg_co hgInf_co hg_conv hΦ hΦInf hstay hstayInf
+    hQ hg_cd hgInf_cd hg_co hgInf_co hg_convergence hΦ hΦInf hstay hstayInf
   exact hconv.congr hQ
     (fun n z _hz ↦ congrFun (he n) z)
     (fun _z _hz ↦ rfl)
 
 end NormalRadiusProfile
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -338,17 +338,17 @@ theorem closedCompare
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (horig_reg :
+    (horig_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
             fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) x)
         s0)
-    (hclosed_reg :
+    (hclosed_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
@@ -375,11 +375,11 @@ theorem closedCompare
         ∂(volumeMeasureFamily (I := I) (M := M) G s0) := by
   have horig :=
     fFunctionalBaseIntegral_hasDerivAt_at (I := I) (M := M) G
-      hscalar_deriv hgrad_deriv hpotential_deriv htrace hmetric_reg horig_reg
+      hscalar_deriv hgrad_deriv hpotential_deriv htrace hmetric_regularity horig_regularity
   have hclosed :=
     closedBase_deriv (I := I) (M := M) G
-      hscalar_deriv hlap_deriv hpotential_deriv htrace hmetric_reg
-      hclosed_reg
+      hscalar_deriv hlap_deriv hpotential_deriv htrace hmetric_regularity
+      hclosed_regularity
   have hclosed_orig :
       HasDerivAt
         (fun s : Real =>
@@ -473,17 +473,17 @@ theorem first_variation_eq_pre_integration_by_parts_of_weighted_divergence
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (horig_reg :
+    (horig_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
             fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) x)
         s0)
-    (hclosed_reg :
+    (hclosed_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
@@ -517,7 +517,7 @@ theorem first_variation_eq_pre_integration_by_parts_of_weighted_divergence
   apply first_variation_eq_pre_integration_by_parts_of_closed_bracket (I := I) (M := M) G hmeas
   · exact closedCompare (I := I) (M := M) G hbase_eq
       hscalar_deriv hgrad_deriv hlap_deriv hpotential_deriv htrace
-      hmetric_reg horig_reg hclosed_reg hpotential0 hscalar0 hlap0
+      hmetric_regularity horig_regularity hclosed_regularity hpotential0 hscalar0 hlap0
   · exact hclosed_variation
 
 theorem first_variation_eq_pre_integration_by_parts
@@ -573,17 +573,17 @@ theorem first_variation_eq_pre_integration_by_parts
     (htrace :
       ∀ x : M,
         traceTimeDerivMetricAt (I := I) G s0 x = metricVariationTrace x)
-    (hmetric_reg :
+    (hmetric_regularity :
       MetricFamilyRegularAt (I := I)
         (metricFamilyForMeasure (I := I) (M := M) G) s0)
-    (horig_reg :
+    (horig_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
             fFunctionalBracket (scalarCurvaturePath s)
               (gradPotentialNormSqPath s) x)
         s0)
-    (hclosed_reg :
+    (hclosed_regularity :
       FunctionRegularAt
         (fun s : Real => fun x : M =>
           expNegPotentialDensity (potentialPath s) x *
@@ -629,9 +629,9 @@ theorem first_variation_eq_pre_integration_by_parts
   · exact hlap_deriv
   · exact hpotential_deriv
   · exact htrace
-  · exact hmetric_reg
-  · exact horig_reg
-  · exact hclosed_reg
+  · exact hmetric_regularity
+  · exact horig_regularity
+  · exact hclosed_regularity
   · exact hpotential0
   · exact hscalar0
   · exact hlap0

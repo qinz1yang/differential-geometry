@@ -92,12 +92,12 @@ theorem lKTail_tendsto
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {b : Real}
-    (hb : 0 < b) (hbdom : b ∈ lRegDomain S T x Z) :
+    (hb : 0 < b) (hbdom : b ∈ lRegularizedDomain S T x Z) :
     Tendsto
-      (fun a ↦ lKTail S T (lRegCurve S T x Z) a b)
+      (fun a ↦ lKTail S T (lRegularizedCurve S T x Z) a b)
       (𝓝[>] 0)
-      (𝓝 (lK S T (lRegCurve S T x Z) b)) := by
-  let alpha : Real → M := lRegCurve S T x Z
+      (𝓝 (lK S T (lRegularizedCurve S T x Z) b)) := by
+  let alpha : Real → M := lRegularizedCurve S T x Z
   let H : Real → Real := fun s ↦ lHamSq S T alpha s
   let F : Real → Real → Real := fun a s ↦
     if a < s then ((s - a) / s) ^ 2 * H s else 0
@@ -213,43 +213,43 @@ private theorem lTraceInt_data
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {b : Real}
-    (hb : 0 < b) (hbdom : b ∈ lRegDomain S T x Z)
+    (hb : 0 < b) (hbdom : b ∈ lRegularizedDomain S T x Z)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     (hP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
-      (S.base.metric (T - b ^ 2)).inner (lRegCurve S T x Z b)
+      (S.base.metric (T - b ^ 2)).inner (lRegularizedCurve S T x Z b)
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 b) :
     IntervalIntegrable
-        (fun s ↦ lHamSq S T (lRegCurve S T x Z) s)
+        (fun s ↦ lHamSq S T (lRegularizedCurve S T x Z) s)
         MeasureTheory.volume 0 b ∧
       ∫ s in (0 : Real)..b,
           ((s / b) ^ 2 * ∑ i : Fin (Module.finrank Real E),
-              lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
+              lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s) -
             (2 * s ^ 2 / b ^ 2) *
-              S.scalar (T - s ^ 2) (lRegCurve S T x Z s) =
-        -b * S.scalar (T - b ^ 2) (lRegCurve S T x Z b) -
-          lK S T (lRegCurve S T x Z) b / (2 * b ^ 2) := by
+              S.scalar (T - s ^ 2) (lRegularizedCurve S T x Z s) =
+        -b * S.scalar (T - b ^ 2) (lRegularizedCurve S T x Z b) -
+          lK S T (lRegularizedCurve S T x Z) b / (2 * b ^ 2) := by
   classical
-  let U : Set Real := lRegDomain S T x Z
-  let alpha : Real → M := lRegCurve S T x Z
+  let U : Set Real := lRegularizedDomain S T x Z
+  let alpha : Real → M := lRegularizedCurve S T x Z
   let R : Real → Real := fun s ↦ S.scalar (T - s ^ 2) (alpha s)
   let F : Real → Real := fun s ↦ s ^ 3 * R s
   let Q : Real → Real := fun s ↦
     s ^ 2 * ∑ i : Fin (Module.finrank Real E),
-      lRegIndexIntegrand S T alpha (P i) (P i) s - 2 * s ^ 2 * R s
-  have hgeo := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb hbdom
+      lRegularizedIndexIntegrand S T alpha (P i) (P i) s - 2 * s ^ 2 * R s
+  have hgeo := lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hb hbdom
   have ht : ∀ s ∈ Set.Icc (0 : Real) b, T - s ^ 2 ∈ D.regular := by
     intro s hs
     exact (hgeo.2.2 s (by
@@ -272,7 +272,7 @@ private theorem lTraceInt_data
       (fun r hr ↦ hDP j r ⟨le_trans hs.1 hr.1, hr.2⟩)]
     simpa only [alpha] using hON i j
   have hUopen : IsOpen U := by
-    simpa only [U] using lRegDomain_isOpen S T x Z
+    simpa only [U] using lRegularizedDomain_isOpen S T x Z
   let z : E := Z
   have hpair : ContMDiff (modelWithCornersSelf Real Real)
       ((modelWithCornersSelf Real E).prod
@@ -281,12 +281,12 @@ private theorem lTraceInt_data
     contMDiff_const.prodMk contMDiff_id
   have halphaInf : ContMDiffOn (modelWithCornersSelf Real Real) I ∞ alpha U := by
     change ContMDiffOn (modelWithCornersSelf Real Real) I ∞
-      ((fun q : E × Real ↦ lRegCurve S T x q.1 q.2) ∘
+      ((fun q : E × Real ↦ lRegularizedCurve S T x q.1 q.2) ∘
         fun s : Real ↦ (z, s)) U
-    exact (lRegCurve_smoothOn S hS T x).comp hpair.contMDiffOn
+    exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
       (fun s (hs : s ∈ U) ↦ by
-        change s ∈ lRegDomain S T x z
-        change s ∈ lRegDomain S T x Z at hs
+        change s ∈ lRegularizedDomain S T x z
+        change s ∈ lRegularizedDomain S T x Z at hs
         exact hs)
   have htime : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞
@@ -304,7 +304,7 @@ private theorem lTraceInt_data
         fun s : Real ↦ (T - s ^ 2, alpha s)) U
     exact (scalar_joint (I := I) S hS).comp harg
       (fun s (hs : s ∈ U) ↦
-        ⟨lRegDomain_reg S T x Z (by simpa only [U] using hs),
+        ⟨lRegularizedDomain_regularity S T x Z (by simpa only [U] using hs),
           Set.mem_univ _⟩)
   have hR : ContDiffOn Real ∞ R U :=
     contMDiffOn_iff_contDiffOn.mp hRmd
@@ -312,7 +312,7 @@ private theorem lTraceInt_data
     simpa only [F, id_eq] using (contDiff_id.pow 3).contDiffOn.mul hR
   have hsegU : Set.Icc (0 : Real) b ⊆ U := by
     intro s hs
-    simpa only [U] using lRegDomain_seg S T x Z hbdom hs.1 hs.2
+    simpa only [U] using lRegularizedDomain_segment S T x Z hbdom hs.1 hs.2
   have hRcont : ContinuousOn R (Set.Icc (0 : Real) b) :=
     hR.continuousOn.mono hsegU
   have hFdcont : ContinuousOn (deriv F) (Set.Icc (0 : Real) b) :=
@@ -322,7 +322,7 @@ private theorem lTraceInt_data
   have hidxInt : IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
         ∑ i : Fin (Module.finrank Real E),
-          lRegIndexIntegrand S T alpha (P i) (P i) s)
+          lRegularizedIndexIntegrand S T alpha (P i) (P i) s)
       MeasureTheory.volume 0 b := by
     have hsum := IntervalIntegrable.sum
       (Finset.univ : Finset (Fin (Module.finrank Real E)))
@@ -339,7 +339,7 @@ private theorem lTraceInt_data
   have hscaled : IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
           ∑ i : Fin (Module.finrank Real E),
-            lRegIndexIntegrand S T alpha (P i) (P i) s -
+            lRegularizedIndexIntegrand S T alpha (P i) (P i) s -
         (2 * s ^ 2 / b ^ 2) * R s)
       MeasureTheory.volume 0 b := hidxInt.sub hRterm
   have hQint : IntervalIntegrable Q MeasureTheory.volume 0 b := by
@@ -391,7 +391,7 @@ private theorem lTraceInt_data
         b ^ 2 * ∫ s in (0 : Real)..b,
           ((s / b) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexIntegrand S T alpha (P i) (P i) s -
+                lRegularizedIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s ^ 2 / b ^ 2) * R s) := by
     rw [← intervalIntegral.integral_const_mul]
     apply intervalIntegral.integral_congr
@@ -403,7 +403,7 @@ private theorem lTraceInt_data
       (∫ s in (0 : Real)..b,
           ((s / b) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexIntegrand S T alpha (P i) (P i) s -
+                lRegularizedIndexIntegrand S T alpha (P i) (P i) s -
             (2 * s ^ 2 / b ^ 2) * R s)) =
         -b * R b - lK S T alpha b / (2 * b ^ 2) := by
     have hb2 : b ^ 2 ≠ 0 := pow_ne_zero 2 hb.ne'
@@ -411,7 +411,7 @@ private theorem lTraceInt_data
         (∫ s in (0 : Real)..b,
             ((s / b) ^ 2 *
                 ∑ i : Fin (Module.finrank Real E),
-                  lRegIndexIntegrand S T alpha (P i) (P i) s -
+                  lRegularizedIndexIntegrand S T alpha (P i) (P i) s -
               (2 * s ^ 2 / b ^ 2) * R s)) =
           (-b ^ 3 * R b - lK S T alpha b / 2) / b ^ 2 := by
       apply (eq_div_iff hb2).2
@@ -427,56 +427,56 @@ private theorem lTracePos_data
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {a b : Real}
-    (ha : 0 < a) (hab : a < b) (hbdom : b ∈ lRegDomain S T x Z)
+    (ha : 0 < a) (hab : a < b) (hbdom : b ∈ lRegularizedDomain S T x Z)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     (hP : ∀ i s, s ∈ Set.Icc a b →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc a b →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
-      (S.base.metric (T - b ^ 2)).inner (lRegCurve S T x Z b)
+      (S.base.metric (T - b ^ 2)).inner (lRegularizedCurve S T x Z b)
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ ((s - a) / (b - a)) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume a b) :
     IntervalIntegrable
         (fun s ↦ ((s - a) / s) ^ 2 *
-          lHamSq S T (lRegCurve S T x Z) s)
+          lHamSq S T (lRegularizedCurve S T x Z) s)
         MeasureTheory.volume a b ∧
       ∫ s in a..b,
           (((s - a) / (b - a)) ^ 2 *
               ∑ i : Fin (Module.finrank Real E),
-                lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s -
+                lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s -
             (2 * s * (s - a) / (b - a) ^ 2) *
-              S.scalar (T - s ^ 2) (lRegCurve S T x Z s)) =
-        -b * S.scalar (T - b ^ 2) (lRegCurve S T x Z b) -
-          lKTail S T (lRegCurve S T x Z) a b /
+              S.scalar (T - s ^ 2) (lRegularizedCurve S T x Z s)) =
+        -b * S.scalar (T - b ^ 2) (lRegularizedCurve S T x Z b) -
+          lKTail S T (lRegularizedCurve S T x Z) a b /
             (2 * (b - a) ^ 2) := by
   classical
-  let U : Set Real := lRegDomain S T x Z
-  let alpha : Real → M := lRegCurve S T x Z
+  let U : Set Real := lRegularizedDomain S T x Z
+  let alpha : Real → M := lRegularizedCurve S T x Z
   let R : Real → Real := fun s ↦ S.scalar (T - s ^ 2) (alpha s)
   let F : Real → Real := fun s ↦ s ^ 3 * R s
   let c : Real → Real := fun s ↦ ((s - a) / s) ^ 2
   let G : Real → Real := fun s ↦ s * (s - a) ^ 2 * R s
   let Q : Real → Real := fun s ↦
     s ^ 2 * ∑ i : Fin (Module.finrank Real E),
-      lRegIndexIntegrand S T alpha (P i) (P i) s - 2 * s ^ 2 * R s
+      lRegularizedIndexIntegrand S T alpha (P i) (P i) s - 2 * s ^ 2 * R s
   let A : Real → Real := fun s ↦
     ((s - a) / (b - a)) ^ 2 *
         ∑ i : Fin (Module.finrank Real E),
-          lRegIndexIntegrand S T alpha (P i) (P i) s -
+          lRegularizedIndexIntegrand S T alpha (P i) (P i) s -
       (2 * s * (s - a) / (b - a) ^ 2) * R s
   let W : Real → Real := fun s ↦ c s * lHamSq S T alpha s
   have hb : 0 < b := lt_trans ha hab
   have hba : b - a ≠ 0 := sub_ne_zero.mpr (ne_of_gt hab)
-  have hgeo := lRegCurve_isLRegCurveOn (I := I) S hS T x Z hb hbdom
+  have hgeo := lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hb hbdom
   have ht : ∀ s ∈ Set.Icc a b, T - s ^ 2 ∈ D.regular := by
     intro s hs
     exact (hgeo.2.2 s (by
@@ -501,7 +501,7 @@ private theorem lTracePos_data
       (fun r hr ↦ hDP j r ⟨le_trans hs.1 hr.1, hr.2⟩)]
     simpa only [alpha] using hON i j
   have hUopen : IsOpen U := by
-    simpa only [U] using lRegDomain_isOpen S T x Z
+    simpa only [U] using lRegularizedDomain_isOpen S T x Z
   let z : E := Z
   have hpair : ContMDiff (modelWithCornersSelf Real Real)
       ((modelWithCornersSelf Real E).prod
@@ -510,12 +510,12 @@ private theorem lTracePos_data
     contMDiff_const.prodMk contMDiff_id
   have halphaInf : ContMDiffOn (modelWithCornersSelf Real Real) I ∞ alpha U := by
     change ContMDiffOn (modelWithCornersSelf Real Real) I ∞
-      ((fun q : E × Real ↦ lRegCurve S T x q.1 q.2) ∘
+      ((fun q : E × Real ↦ lRegularizedCurve S T x q.1 q.2) ∘
         fun s : Real ↦ (z, s)) U
-    exact (lRegCurve_smoothOn S hS T x).comp hpair.contMDiffOn
+    exact (lRegularizedCurve_smoothOn S hS T x).comp hpair.contMDiffOn
       (fun s (hs : s ∈ U) ↦ by
-        change s ∈ lRegDomain S T x z
-        change s ∈ lRegDomain S T x Z at hs
+        change s ∈ lRegularizedDomain S T x z
+        change s ∈ lRegularizedDomain S T x Z at hs
         exact hs)
   have htime : ContMDiff (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real Real) ∞
@@ -533,7 +533,7 @@ private theorem lTracePos_data
         fun s : Real ↦ (T - s ^ 2, alpha s)) U
     exact (scalar_joint (I := I) S hS).comp harg
       (fun s (hs : s ∈ U) ↦
-        ⟨lRegDomain_reg S T x Z (by simpa only [U] using hs),
+        ⟨lRegularizedDomain_regularity S T x Z (by simpa only [U] using hs),
           Set.mem_univ _⟩)
   have hR : ContDiffOn Real ∞ R U :=
     contMDiffOn_iff_contDiffOn.mp hRmd
@@ -543,7 +543,7 @@ private theorem lTracePos_data
   have hsegU : Set.Icc a b ⊆ U := by
     intro s hs
     simpa only [U] using
-      lRegDomain_seg S T x Z hbdom (ha.le.trans hs.1) hs.2
+      lRegularizedDomain_segment S T x Z hbdom (ha.le.trans hs.1) hs.2
   have hRcont : ContinuousOn R (Set.Icc a b) :=
     hR.continuousOn.mono hsegU
   have hGdcont : ContinuousOn (deriv G) (Set.Icc a b) :=
@@ -553,7 +553,7 @@ private theorem lTracePos_data
   have hidxInt : IntervalIntegrable
       (fun s : Real ↦ ((s - a) / (b - a)) ^ 2 *
         ∑ i : Fin (Module.finrank Real E),
-          lRegIndexIntegrand S T alpha (P i) (P i) s)
+          lRegularizedIndexIntegrand S T alpha (P i) (P i) s)
       MeasureTheory.volume a b := by
     have hsum := IntervalIntegrable.sum
       (Finset.univ : Finset (Fin (Module.finrank Real E)))
@@ -650,26 +650,26 @@ theorem lHamSq_int
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {b : Real}
-    (hb : 0 < b) (hbdom : b ∈ lRegDomain S T x Z)
+    (hb : 0 < b) (hbdom : b ∈ lRegularizedDomain S T x Z)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     (hP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
-      (S.base.metric (T - b ^ 2)).inner (lRegCurve S T x Z b)
+      (S.base.metric (T - b ^ 2)).inner (lRegularizedCurve S T x Z b)
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 b) :
     IntervalIntegrable
-      (fun s ↦ lHamSq S T (lRegCurve S T x Z) s)
+      (fun s ↦ lHamSq S T (lRegularizedCurve S T x Z) s)
       MeasureTheory.volume 0 b :=
   (lTraceInt_data S hS T x Z hb hbdom P hP hDP hON hIint).1
 
@@ -679,31 +679,31 @@ theorem lTraceInt_eq
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {b : Real}
-    (hb : 0 < b) (hbdom : b ∈ lRegDomain S T x Z)
+    (hb : 0 < b) (hbdom : b ∈ lRegularizedDomain S T x Z)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     (hP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc (0 : Real) b →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
-      (S.base.metric (T - b ^ 2)).inner (lRegCurve S T x Z b)
+      (S.base.metric (T - b ^ 2)).inner (lRegularizedCurve S T x Z b)
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ (s / b) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume 0 b) :
     ∫ s in (0 : Real)..b,
         ((s / b) ^ 2 * ∑ i : Fin (Module.finrank Real E),
-            lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s) -
+            lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s) -
           (2 * s ^ 2 / b ^ 2) *
-            S.scalar (T - s ^ 2) (lRegCurve S T x Z s) =
-      -b * S.scalar (T - b ^ 2) (lRegCurve S T x Z b) -
-        lK S T (lRegCurve S T x Z) b / (2 * b ^ 2) :=
+            S.scalar (T - s ^ 2) (lRegularizedCurve S T x Z s) =
+      -b * S.scalar (T - b ^ 2) (lRegularizedCurve S T x Z b) -
+        lK S T (lRegularizedCurve S T x Z) b / (2 * b ^ 2) :=
   (lTraceInt_data S hS T x Z hb hbdom P hP hDP hON hIint).2
 
 omit [InnerProductSpace Real E] in
@@ -712,32 +712,32 @@ theorem lTraceInt_pos
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
     (x : M) (Z : TangentSpace I x) {a b : Real}
-    (ha : 0 < a) (hab : a < b) (hbdom : b ∈ lRegDomain S T x Z)
+    (ha : 0 < a) (hab : a < b) (hbdom : b ∈ lRegularizedDomain S T x Z)
     (P : Fin (Module.finrank Real E) →
-      ∀ s, TangentSpace I (lRegCurve S T x Z s))
+      ∀ s, TangentSpace I (lRegularizedCurve S T x Z s))
     (hP : ∀ i s, s ∈ Set.Icc a b →
       DifferentiableAt Real
-        (chartRepAt (I := I) (lRegCurve S T x Z) (P i) s) s)
+        (chartRepAt (I := I) (lRegularizedCurve S T x Z) (P i) s) s)
     (hDP : ∀ i s, s ∈ Set.Icc a b →
       covDerivAlong (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z) (P i) s =
+          (lRegularizedCurve S T x Z) (P i) s =
         (-2 * s) • ricciSharp (I := I) (S.base.metric (T - s ^ 2))
-          (lRegCurve S T x Z s) (P i s))
+          (lRegularizedCurve S T x Z s) (P i s))
     (hON : ∀ i j,
-      (S.base.metric (T - b ^ 2)).inner (lRegCurve S T x Z b)
+      (S.base.metric (T - b ^ 2)).inner (lRegularizedCurve S T x Z b)
           (P i b) (P j b) = if i = j then 1 else 0)
     (hIint : ∀ i, IntervalIntegrable
       (fun s : Real ↦ ((s - a) / (b - a)) ^ 2 *
-        lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s)
+        lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s)
       MeasureTheory.volume a b) :
     ∫ s in a..b,
         (((s - a) / (b - a)) ^ 2 *
             ∑ i : Fin (Module.finrank Real E),
-              lRegIndexIntegrand S T (lRegCurve S T x Z) (P i) (P i) s -
+              lRegularizedIndexIntegrand S T (lRegularizedCurve S T x Z) (P i) (P i) s -
           (2 * s * (s - a) / (b - a) ^ 2) *
-            S.scalar (T - s ^ 2) (lRegCurve S T x Z s)) =
-      -b * S.scalar (T - b ^ 2) (lRegCurve S T x Z b) -
-        lKTail S T (lRegCurve S T x Z) a b /
+            S.scalar (T - s ^ 2) (lRegularizedCurve S T x Z s)) =
+      -b * S.scalar (T - b ^ 2) (lRegularizedCurve S T x Z b) -
+        lKTail S T (lRegularizedCurve S T x Z) a b /
           (2 * (b - a) ^ 2) :=
   (lTracePos_data S hS T x Z ha hab hbdom P hP hDP hON hIint).2
 

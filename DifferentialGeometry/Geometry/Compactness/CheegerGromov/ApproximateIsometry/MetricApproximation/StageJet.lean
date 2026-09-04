@@ -13,7 +13,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Filter Bundle Manifold
 open scoped ContDiff Manifold
@@ -59,12 +59,12 @@ theorem preapprox_pair
   classical
   obtain ⟨Φ, hsrc, htgt, hEq⟩ :=
     Geometry.Riemannian.exists_partial_diffeomorph_of_is_local_diffeomorph_on_inj_on hloc hU hinj
-  have hK'src : K' ⊆ Φ.source := by
+  have hK'source : K' ⊆ Φ.source := by
     rw [hsrc]
     exact hK'U
-  have hKsrc : K ⊆ Φ.source := hKK'.trans hK'src
+  have hKsrc : K ⊆ Φ.source := hKK'.trans hK'source
   obtain ⟨Pf, Gf, hPf, hGfΦ, hTfΦ⟩ :=
-    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ hK'c hK'src h g
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ hK'c hK'source h g
   have hevF : ∀ x ∈ K', (Φ : M → N) =ᶠ[nhds x] F := by
     intro x hx
     exact Filter.eventuallyEq_of_mem (hU.mem_nhds (hK'U hx)) hEq
@@ -94,16 +94,16 @@ theorem preapprox_pair
   have hFK'c : IsCompact (F '' K') := by
     rw [← himage]
     exact hK'c.image_of_continuousOn
-      (Φ.contMDiffOn_toFun.continuousOn.mono hK'src)
-  have hFK'tgt : F '' K' ⊆ Φ.target := by
+      (Φ.contMDiffOn_toFun.continuousOn.mono hK'source)
+  have hFK'target : F '' K' ⊆ Φ.target := by
     rw [htgt]
     exact Set.image_mono hK'U
-  have hFK'src : F '' K' ⊆ Φ.symm.source := by
+  have hFK'source : F '' K' ⊆ Φ.symm.source := by
     with_unfolding_all
       change F '' K' ⊆ Φ.target
-    exact hFK'tgt
+    exact hFK'target
   obtain ⟨Pr, Gr, hPr, hGrΦ, hTrΦ⟩ :=
-    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ.symm hFK'c hFK'src g h
+    exists_metric_tensor_field_eq_pullback_on_compact (I := I) Φ.symm hFK'c hFK'source g h
   have hsymmEq : Set.EqOn (Φ.symm : N → M)
       (Function.invFunOn F U) Φ.target := by
     intro z hz
@@ -120,7 +120,7 @@ theorem preapprox_pair
       Function.invFunOn F U := by
     intro y hy
     exact Filter.eventuallyEq_of_mem
-      (Φ.open_target.mem_nhds (hFK'tgt hy)) hsymmEq
+      (Φ.open_target.mem_nhds (hFK'target hy)) hsymmEq
   have hGrInv : ∀ y ∈ F '' K', ∀ v w : TangentSpace I y,
       Gr.inner y v w = g.inner (Function.invFunOn F U y)
         (mfderiv I I (Function.invFunOn F U) y v)
@@ -130,7 +130,7 @@ theorem preapprox_pair
     rw [(hevR y hy).self_of_nhds, (hevR y hy).mfderiv_eq] at hout
     exact hout
   have hFKtgt : F '' K ⊆ Φ.target :=
-    (Set.image_mono hKK').trans hFK'tgt
+    (Set.image_mono hKK').trans hFK'target
   have hFKsrc : F '' K ⊆ Φ.symm.source := by
     with_unfolding_all
       change F '' K ⊆ Φ.target
@@ -233,10 +233,10 @@ theorem HasStageJetData.preapprox_tail
     (Nat.le_max_left _ _).trans ((Nat.le_max_right Nfwd _).trans hk)
   have hlRev : Nrev ≤ l :=
     (Nat.le_max_left _ _).trans ((Nat.le_max_right Nfwd _).trans hl)
-  have hkLoc : Nloc ≤ k :=
+  have hkLocal : Nloc ≤ k :=
     (Nat.le_max_left _ _).trans
       ((Nat.le_max_right Nrev _).trans ((Nat.le_max_right Nfwd _).trans hk))
-  have hlLoc : Nloc ≤ l :=
+  have hlLocal : Nloc ≤ l :=
     (Nat.le_max_left _ _).trans
       ((Nat.le_max_right Nrev _).trans ((Nat.le_max_right Nfwd _).trans hl))
   have hkInj : Ninj ≤ k :=
@@ -270,7 +270,7 @@ theorem HasStageJetData.preapprox_tail
   let K : Set Yk.M := Metric.closedBall Yk.basepoint R
   let K' : Set Yk.M := Metric.closedBall Yk.basepoint S
   let W : Set Yk.M := Metric.ball Yk.basepoint T
-  have hlocKL := hloc k hkLoc l hlLoc
+  have hlocKL := hloc k hkLocal l hlLocal
   have hinjKL := hinj k hkInj l hlInj
   have hfwdKL := hfwd k hkFwd l hlFwd
   have hrevKL := hrev k hkRev l hlRev
@@ -318,5 +318,5 @@ theorem HasStageJetData.preapprox_tail
     · exact ha
     · simpa only [K, W, NetLimitData.hatSourceBall, F, Yk, Yl, Lphi] using hy
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

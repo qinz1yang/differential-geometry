@@ -324,7 +324,7 @@ theorem sum5_swap_fourth_last
   rw [Fintype.sum_prod_type]
   rw [Fintype.sum_prod_type]
 
-theorem inner0S_two_metricCompatible_coord_corrA1
+theorem inner0S_two_metricCompatible_coord_correctionA1
     {Idx : Type*} [Fintype Idx]
     (U Γ A B : Idx -> Idx -> Real) :
     (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
@@ -362,7 +362,7 @@ theorem inner0S_two_metricCompatible_coord_corrA1
             _ = (∑ a : Idx, Γ a i * U a k) * U j l * A i j * B k l := by
                   ring
 
-theorem inner0S_two_metricCompatible_coord_corrA2
+theorem inner0S_two_metricCompatible_coord_correctionA2
     {Idx : Type*} [Fintype Idx]
     (U Γ A B : Idx -> Idx -> Real) :
     (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
@@ -404,7 +404,7 @@ theorem inner0S_two_metricCompatible_coord_corrA2
             _ = U i k * (∑ a : Idx, Γ a j * U a l) * A i j * B k l := by
                   ring
 
-theorem inner0S_two_metricCompatible_coord_corrB1
+theorem inner0S_two_metricCompatible_coord_correctionB1
     {Idx : Type*} [Fintype Idx]
     (U Γ A B : Idx -> Idx -> Real) :
     (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
@@ -442,7 +442,7 @@ theorem inner0S_two_metricCompatible_coord_corrB1
             _ = (∑ a : Idx, Γ a k * U i a) * U j l * A i j * B k l := by
                   ring
 
-theorem inner0S_two_metricCompatible_coord_corrB2
+theorem inner0S_two_metricCompatible_coord_correctionB2
     {Idx : Type*} [Fintype Idx]
     (U Γ A B : Idx -> Idx -> Real) :
     (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
@@ -565,8 +565,8 @@ theorem inner0S_two_metricCompatible_coord_DU_first
         (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
           U i k * U j l * (A i j * (∑ a : Idx, Γ k a * B a l))) := by
   classical
-  have hA1 := inner0S_two_metricCompatible_coord_corrA1 (U := U) (Γ := Γ) (A := A) (B := B)
-  have hB1 := inner0S_two_metricCompatible_coord_corrB1 (U := U) (Γ := Γ) (A := A) (B := B)
+  have hA1 := inner0S_two_metricCompatible_coord_correctionA1 (U := U) (Γ := Γ) (A := A) (B := B)
+  have hB1 := inner0S_two_metricCompatible_coord_correctionB1 (U := U) (Γ := Γ) (A := A) (B := B)
   rw [hA1, hB1]
   calc
     (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
@@ -602,8 +602,8 @@ theorem inner0S_two_metricCompatible_coord_DU_second
         (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
           U i k * U j l * (A i j * (∑ a : Idx, Γ l a * B k a))) := by
   classical
-  have hA2 := inner0S_two_metricCompatible_coord_corrA2 (U := U) (Γ := Γ) (A := A) (B := B)
-  have hB2 := inner0S_two_metricCompatible_coord_corrB2 (U := U) (Γ := Γ) (A := A) (B := B)
+  have hA2 := inner0S_two_metricCompatible_coord_correctionA2 (U := U) (Γ := Γ) (A := A) (B := B)
+  have hB2 := inner0S_two_metricCompatible_coord_correctionB2 (U := U) (Γ := Γ) (A := A) (B := B)
   rw [hA2, hB2]
   calc
     (∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,

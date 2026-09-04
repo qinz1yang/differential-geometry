@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -45,7 +45,7 @@ private noncomputable local instance supportSelectionModelBilinearNormedSpace :
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem binfMemClosed {U V' : Set E} {B : Nat -> E -> E} {Binf : E -> E}
-    (hB : MapCInfConvOnCompacts U B Binf) {v : E} (hv : v ∈ U)
+    (hB : MapCInfConvergenceOnCompacts U B Binf) {v : E} (hv : v ∈ U)
     (hV'closed : IsClosed V') (hmem : ∀ᶠ a in Filter.atTop, B a v ∈ V') :
     Binf v ∈ V' :=
   hV'closed.mem_of_tendsto (tendsto_of_cInf hB hv) hmem
@@ -65,7 +65,7 @@ theorem HasAtomWeightLim.binf_of_live
     (phi : Nat -> Nat) (hphi : StrictMono phi)
     (gamma : LiveSlot L inp.pack r)
     (Binf : E -> E)
-    (hB : MapCInfConvOnCompacts U
+    (hB : MapCInfConvergenceOnCompacts U
       (fun k => normalTransition (I := I) (X.obj (L.φ (phi k)))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
         (seqCenterD inp.decay P L (phi k) (gamma.1 : Nat)))
@@ -138,7 +138,7 @@ theorem HasAtomWeightLim.binf_of_slot
     (phi : Nat -> Nat) (hphi : StrictMono phi)
     (target : InterSlot L inp.pack r alpha)
     (Binf : InterSlot L inp.pack r alpha -> E -> E)
-    (hB : MapCInfConvOnCompacts U
+    (hB : MapCInfConvergenceOnCompacts U
       (fun k => normalTransition (I := I) (X.obj (L.φ (phi k)))
         (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
         (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)))
@@ -177,7 +177,7 @@ theorem HasAtomWeightLim.binf_of_weight
     (phi : Nat -> Nat) (hphi : StrictMono phi)
     (Binf : InterSlot L inp.pack r alpha -> E -> E)
     (hB : forall target : InterSlot L inp.pack r alpha,
-      MapCInfConvOnCompacts U
+      MapCInfConvergenceOnCompacts U
         (fun k => normalTransition (I := I) (X.obj (L.φ (phi k)))
           (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
           (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)))
@@ -211,7 +211,7 @@ theorem HasAtomWeightLim.binf_of_weight
     (hlim.binf_of_slot inp hradRatio P L r hr hgp alpha U aInf
       phi hphi target Binf (hB target) hz (by simpa only [target] using hweight))
 
-theorem MetricCompactnessInputs.exists_supp_trans
+theorem MetricCompactnessInputs.exists_support_trans
     (inp : MetricCompactnessInputs (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
@@ -246,13 +246,13 @@ theorem MetricCompactnessInputs.exists_supp_trans
               (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))) ∧
           ContinuousOn (Jbarinf target)
               (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))) ∧
-          MapCInfConvOnCompacts
+          MapCInfConvergenceOnCompacts
             (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
             (fun k => normalTransition (I := I) (X.obj (L.φ (phi k)))
               (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
               (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)))
             (Jinf target) ∧
-          MapCInfConvOnCompacts
+          MapCInfConvergenceOnCompacts
             (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
             (fun k => normalTransition (I := I) (X.obj (L.φ (phi k)))
               (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat))
@@ -293,7 +293,7 @@ theorem MetricCompactnessInputs.exists_supp_trans
       (hspec target).2.2.2.2.1 K hK (hKU.trans hUsub) p)
     hz gamma hweight
 
-theorem MetricCompactnessInputs.exists_supp_fin
+theorem MetricCompactnessInputs.exists_support_fin
     (inp : MetricCompactnessInputs (I := I) X)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
@@ -334,13 +334,13 @@ theorem MetricCompactnessInputs.exists_supp_fin
               (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))) ∧
           ContinuousOn (Jbarinf alpha target)
               (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))) ∧
-          MapCInfConvOnCompacts
+          MapCInfConvergenceOnCompacts
             (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
             (fun k => normalTransition (I := I) (X.obj (L.φ (phi k)))
               (seqCenterD inp.decay P L (phi k) (alpha.1 : Nat))
               (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat)))
             (Jinf alpha target) ∧
-          MapCInfConvOnCompacts
+          MapCInfConvergenceOnCompacts
             (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
             (fun k => normalTransition (I := I) (X.obj (L.φ (phi k)))
               (seqCenterD inp.decay P L (phi k) (target.1.1 : Nat))
@@ -410,42 +410,42 @@ noncomputable def interSlot?
     else
       none
 
-noncomputable def totalPts
+noncomputable def totalPoints
     {M : Type u}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
-    (pairPts : (alpha : LiveSlot L pb r) →
+    (pairPoints : (alpha : LiveSlot L pb r) →
       InterSlot L pb r alpha → Nat → Nat → M → M)
     (alpha : LiveSlot L pb r) (a b : Nat) (x : M)
     (gamma : Fin (pb.A r)) : M :=
   match interSlot? alpha gamma with
-  | some target => pairPts alpha target a b x
+  | some target => pairPoints alpha target a b x
   | none => x
 
 omit [CompleteSpace E] in
-@[simp] theorem activeFill_totalPts_zero
+@[simp] theorem activeFill_totalPoints_zero
     {M : Type u}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (mu : M → Fin (pb.A r) → Real)
-    (pairPts : (alpha : LiveSlot L pb r) →
+    (pairPoints : (alpha : LiveSlot L pb r) →
       InterSlot L pb r alpha → Nat → Nat → M → M)
     (alpha : LiveSlot L pb r) (a b : Nat) (x : M)
     (gamma : Fin (pb.A r)) (hzero : mu x gamma = 0) :
-    centerAverage.activeFill mu (totalPts pairPts alpha a b)
+    centerAverage.activeFill mu (totalPoints pairPoints alpha a b)
         (fun y => y) x gamma = x := by
   simp [centerAverage.activeFill, hzero]
 
 omit [CompleteSpace E] in
-theorem activeFill_totalPts_of_ne
+theorem activeFill_totalPoints_of_ne
     {M : Type u}
     {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : NetLimitData hd D P} {pb : hd.PackingBound D} {r : Real}
     (mu : M → Fin (pb.A r) → Real)
-    (pairPts : (alpha : LiveSlot L pb r) →
+    (pairPoints : (alpha : LiveSlot L pb r) →
       InterSlot L pb r alpha → Nat → Nat → M → M)
     (alpha : LiveSlot L pb r) (a b : Nat) (x : M)
     (gamma : Fin (pb.A r))
@@ -454,8 +454,8 @@ theorem activeFill_totalPts_of_ne
     (hne : mu x gamma ≠ 0) :
     ∃ target : InterSlot L pb r alpha,
       target.1.1 = gamma ∧
-        centerAverage.activeFill mu (totalPts pairPts alpha a b)
-            (fun y => y) x gamma = pairPts alpha target a b x := by
+        centerAverage.activeFill mu (totalPoints pairPoints alpha a b)
+            (fun y => y) x gamma = pairPoints alpha target a b x := by
   classical
   obtain ⟨target, htarget⟩ := hslot hne
   have hexists :
@@ -472,9 +472,9 @@ theorem activeFill_totalPts_of_ne
     next h =>
       exact (h hexists).elim
   refine ⟨target, htarget, ?_⟩
-  simp [centerAverage.activeFill, hne, totalPts, hlookup]
+  simp [centerAverage.activeFill, hne, totalPoints, hlookup]
 
-theorem MetricCompactnessInputs.exists_atom_supp_fin
+theorem MetricCompactnessInputs.exists_atom_support_fin
     (inp : MetricCompactnessInputs (I := I) X)
     (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
@@ -574,13 +574,13 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
             (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat))) ∧
         ContinuousOn (Jbarinf alpha target)
             (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat))) ∧
-        MapCInfConvOnCompacts
+        MapCInfConvergenceOnCompacts
           (Metric.ball 0 (8 * L.lamInf (alpha.1 : Nat)))
           (fun k => normalTransition (I := I) (X.obj (Lphi.φ k))
             (seqCenterD inp.decay P Lphi k (alpha.1 : Nat))
             (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)))
           (Jinf alpha target) ∧
-        MapCInfConvOnCompacts
+        MapCInfConvergenceOnCompacts
           (Metric.ball 0 (8 * L.lamInf (target.1.1 : Nat)))
           (fun k => normalTransition (I := I) (X.obj (Lphi.φ k))
             (seqCenterD inp.decay P Lphi k (target.1.1 : Nat))
@@ -860,12 +860,12 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
         simp only [beta, Lphi, phi, NetLimitData.subseq_phi, Function.comp_apply,
           seqCenterD_subseq, NetLimitData.innerBall_subseq]
       all_goals rfl
-    have hgPhi : MapCInfConvOnCompacts Set.univ
+    have hgPhi : MapCInfConvergenceOnCompacts Set.univ
         (fun k _ gamma => normalCoordMetric (I := I) (X.obj (Lphi.φ k))
           (seqCenterD inp.decay P Lphi k (gamma.1 : Nat)) 0) gInf := by
       simpa only [Lphi, phi, NetLimitData.subseq_phi, Function.comp_apply,
         seqCenterD_subseq] using hg.comp_subseq (htau.comp hshift)
-    have hgU : MapCInfConvOnCompacts (U alpha)
+    have hgU : MapCInfConvergenceOnCompacts (U alpha)
         (fun k _ gamma => normalCoordMetric (I := I) (X.obj (Lphi.φ k))
           (seqCenterD inp.decay P Lphi k (gamma.1 : Nat)) 0) gInf := by
       intro K hK hKU p
@@ -875,8 +875,8 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
     have hJInf (target : InterSlot L inp.pack r alpha) :
         ContDiffOn Real (∞ : WithTop ℕ∞) (Jinf alpha target) (U alpha) :=
       (hspec (⟨alpha, target⟩ : PairSlot)).1.mono (hU8 alpha)
-    have hJConv (target : InterSlot L inp.pack r alpha) :
-        MapCInfConvOnCompacts (U alpha)
+    have hJConvergence (target : InterSlot L inp.pack r alpha) :
+        MapCInfConvergenceOnCompacts (U alpha)
           (fun k => normalTransition (I := I) (X.obj (Lphi.φ k))
             (beta k) (seqCenterD inp.decay P Lphi k (target.1.1 : Nat)))
           (Jinf alpha target) := by
@@ -908,7 +908,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
       intro z hz
       exact hover z (hU8 alpha hz)
     have hatom (gamma : Fin (inp.pack.A r)) :
-        MapCInfConvOnCompacts (U alpha)
+        MapCInfConvergenceOnCompacts (U alpha)
           (fun k => seqAtomChart (I := I) inp.decay inp.hD P Lphi inp.pack r
             beta gamma k) (aInf alpha gamma) := by
       by_cases htarget : ∃ target : InterSlot L inp.pack r alpha,
@@ -917,13 +917,13 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
         have hslot : target.1.1 = gamma := Classical.choose_spec htarget
         have hgamma : Lphi.alive (gamma : Nat) = true := by
           simpa only [Lphi, NetLimitData.subseq, hslot] using target.1.2
-        have hraw := quadPiBump_conv (hUopen alpha) hgU (hJConv target)
+        have hraw := quadPiBump_convergence (hUopen alpha) hgU (hJConvergence target)
           (fun _ => contDiffOn_const) hginfU (hJStage target) (hJInf target)
           target.1 (gluingBump (L.lamInf (gamma : Nat))
             (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))))
           (gluingBump (L.lamInf (gamma : Nat))
             (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))).contDiff
-        have hstep : MapCInfConvOnCompacts (U alpha)
+        have hstep : MapCInfConvergenceOnCompacts (U alpha)
             (fun k => gluingAtomChart (I := I) (X.obj (Lphi.φ k)) (beta k)
               (seqCenterD inp.decay P Lphi k (gamma : Nat))
               (L.lamInf (gamma : Nat))
@@ -937,7 +937,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
                 (inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat)))
                 ((hOverlap target k) z hz).2)
           · simp only [aInf, dif_pos htarget, target]
-        exact seqAtom_live_conv (I := I) inp.decay inp.hD P Lphi inp.pack r
+        exact seqAtom_live_convergence (I := I) inp.decay inp.hD P Lphi inp.pack r
           hgpPhi beta gamma (hUopen alpha) hgamma (by
             simpa only [Lphi, NetLimitData.subseq_lamInf] using hstep)
       · cases hgamma : L.alive (gamma : Nat) with
@@ -945,7 +945,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
             have hgammaPhi : Lphi.alive (gamma : Nat) = false := by
               simpa only [Lphi, NetLimitData.subseq] using hgamma
             simpa only [aInf, dif_neg htarget] using
-              (seqAtom_dead_conv (I := I) inp.decay inp.hD P Lphi inp.pack r
+              (seqAtom_dead_convergence (I := I) inp.decay inp.hD P Lphi inp.pack r
                 beta gamma (hUopen alpha) hgammaPhi)
         | true =>
             rcases hstable (alpha.1 : Nat) (gamma : Nat) with hinter | hdisjoint
@@ -973,7 +973,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
                     (Lphi.hatBall inp.decay inp.D P inp.pack r k alpha.1) :=
                 Filter.Eventually.of_forall hsourcePhi
               simpa only [aInf, dif_neg htarget] using
-                (atom_disjoint_conv (I := I) inp.decay inp.hD P Lphi inp.pack r
+                (atom_disjoint_convergence (I := I) inp.decay inp.hD P Lphi inp.pack r
                   beta alpha.1 gamma (hUopen alpha) hsourceTail
                   hdisjointPhi)
     have hdead (gamma : Fin (inp.pack.A r))
@@ -1100,7 +1100,7 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
         (fun k => seqCenterD inp.decay P Lphi k (alphaPhi.1 : Nat))
         (U alpha) (aInf alpha) := by
       simpa only [alphaPhi] using hlimAll alpha
-    have hB : MapCInfConvOnCompacts (U alpha)
+    have hB : MapCInfConvergenceOnCompacts (U alpha)
         (fun k => normalTransition (I := I) (X.obj (Lphi.φ k))
           (seqCenterD inp.decay P Lphi k (alphaPhi.1 : Nat))
           (seqCenterD inp.decay P Lphi k (gammaPhi.1 : Nat)))
@@ -1121,5 +1121,5 @@ theorem MetricCompactnessInputs.exists_atom_supp_fin
     simpa only [Jinf, gammaPhi, hslot, Lphi, NetLimitData.subseq_lamInf] using hmem
 
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

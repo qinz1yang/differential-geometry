@@ -390,7 +390,7 @@ theorem lInner_deriv
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-theorem lRegInner_deriv
+theorem lRegularizedInner_deriv
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (alpha : Real → M)
     (V W : ∀ s, TangentSpace I (alpha s)) (s : Real)

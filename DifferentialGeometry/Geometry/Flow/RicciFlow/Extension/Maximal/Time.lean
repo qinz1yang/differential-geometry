@@ -152,7 +152,7 @@ theorem extends_of_rmBounded
     (_hbound : Rm04NormSqBoundedAt (I := I) S Rm04) :
     ExtendsPastEndpoint (I := I) hαω S := by
   let g_fam := S.base.metric
-  have hleft := ricciFlowPDE_Ici_of_soln (I := I) _hS
+  have hleft := ricciFlowPDE_Ici_of_solution (I := I) _hS
   obtain ⟨K', hK'bound⟩ := _hbound
   have hbound_raw : ∀ t : ℝ, ∀ x : M, alpha ≤ t → t < omega →
       Tensor0SBundle.normSq0S (I := I) (S.base.metric t) x 4 ((Rm04 t) x) ≤ K' := by
@@ -165,10 +165,10 @@ theorem extends_of_rmBounded
     intro t ht
     have h := _hRm ⟨t, ht⟩
     simpa [SolutionOn.family, SolutionFamily.connection, metricCov] using h
-  have hric := ric_quad_le_of_soln (I := I) hRmRaw hbound_raw
+  have hric := ric_quad_le_of_solution (I := I) hRmRaw hbound_raw
   have hbound_can := canonical_curvature_norm_sq_bounded_of_realization
     (I := I) Rm04 hRmRaw ⟨K', hbound_raw⟩
-  obtain ⟨hell, hcov⟩ := extendInputs_of_soln (I := I) hdim _hS
+  obtain ⟨hell, hcov⟩ := extendInputs_of_solution (I := I) hdim _hS
     (K := (Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt K') (by positivity) hric hbound_can
   obtain ⟨t_star, ht_star, TT, hreach, rr, hrr0, hrr_smooth, hrr_cont, hrr_pde⟩ :=
     ricci_flow_interior_restart (I := I) hdim g_fam hαω hell hcov
@@ -176,9 +176,9 @@ theorem extends_of_rmBounded
   have ht1 : alpha ≤ t_star := ht_star.1.le
   have ht2 : t_star < omega := ht_star.2
   have hsmooth_left := fun (x₀ : M) (i j : Fin (Module.finrank ℝ E)) =>
-    chartGram_smooth_of_soln (I := I) _hS x₀ i j
+    chartGram_smooth_of_solution (I := I) _hS x₀ i j
   have hcont_left := fun (x₀ : M) (i j : Fin (Module.finrank ℝ E)) =>
-    chartGram_cont_of_soln (I := I) _hS x₀ i j
+    chartGram_cont_of_solution (I := I) _hS x₀ i j
   have hshift : ContMDiff (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod I) ∞
       (fun p : ℝ × M => ((p.1 - t_star, p.2) : ℝ × M)) :=
     (contMDiff_fst.sub contMDiff_const).prodMk contMDiff_snd

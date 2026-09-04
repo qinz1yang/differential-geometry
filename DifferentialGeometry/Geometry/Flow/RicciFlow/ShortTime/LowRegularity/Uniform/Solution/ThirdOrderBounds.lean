@@ -11,7 +11,7 @@ open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection
@@ -43,7 +43,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_th
             MetricUniformEquivalentOn (I := I) Set.univ gBase g Λ →
             (∀ a : ℕ, a ≤ 3 →
               MetricCovDerivOrderBoundOn (I := I) Set.univ a g gBase Λ) →
-            ∃ (u : MaxRegSolutionSpace (I := I) (M := M)
+            ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M)
                 ((1 : ℕ) : ℝ) T)
               (gforce : timeL2
                 (TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ)) T)
@@ -58,7 +58,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_th
                     Tendsto
                       (fun N => galerkinSolutionMode (I := I) (M := M) g fseq N t i)
                       atTop
-                      (𝓝 (perModeConv
+                      (𝓝 (perModeConvolution
                         (TensorEigenIdx.lambda (I := I) (M := M) i)
                         (fun s => (timeModeCoeff (I := I) (M := M) gforce i) s) t))) ∧
                 ∀ N : ℕ, ∀ t ∈ Set.Icc (0 : ℝ) T,
@@ -67,7 +67,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_th
                     (galerkinSolutionMode (I := I) (M := M) g fseq N) 3 t ≤ Φ := by
   obtain ⟨delta, R0, hdelta, hdeltathird, hR0, _hR0one, hpair⟩ :=
     galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_le (I := I) (M := M) hDim gBase hΛ one_pos
-  obtain ⟨K, hKunif, hKdelta, hKstate⟩ :=
+  obtain ⟨K, hKuniform, hKdelta, hKstate⟩ :=
     exists_lowBounds_at (I := I) (M := M) hDim gBase hΛ
       hdelta hdeltathird hR0
   subst delta
@@ -77,17 +77,17 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_th
     exact lowRegularityTimeHorizon_pos K.top_nonneg K.base_nonneg K.slope_nonneg
       K.zero_nonneg K.outer_pos K.realize_pos
   have hT1 : T ≤ 1 := lowRegularityTimeHorizon_le_one
-  refine ⟨K, hKunif, T, hT, hT1, ?_⟩
+  refine ⟨K, hKuniform, T, hT, hT1, ?_⟩
   intro g hEq hjet
-  have hK := hKunif.bounds g hEq hjet
+  have hK := hKuniform.bounds g hEq hjet
   obtain ⟨u, gforce, hsolve⟩ :=
     exists_background_lowRegularity_solution (I := I) (M := M) g gBase K hK hT le_rfl hT1
   let hsolveAt : IsBackgroundLowRegularitySolutionAt (I := I) (M := M) g gBase K hT hT1
       u gforce (lowRegularityStateRadius K.top K.slope K.outer K.realize) := {
     bounds := hK
     solve := hsolve
-    hTτ := le_rfl
-    hcap := le_rfl
+    time_le_horizon := le_rfl
+    stateRadius_le := le_rfl
   }
   obtain ⟨fseq, _hconv, hmode, hpack⟩ :=
     exists_galerkin_projected_forcing_sequence_with_mode_convergence_background (I := I) (M := M) g gBase K hT hT1
@@ -102,12 +102,12 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_th
           (((1 : ℕ) : ℝ) + 1) S‖ ≤ R →
         gFibreOpBound (I := I) (M := M) g
           (ccTensorBilinSymm (I := I) g S) K.threshold :=
-    lowRegularityMetricRealization (I := I) (M := M) g K.realize_pos.le hK.hreal
+    lowRegularityMetricRealization (I := I) (M := M) g K.realize_pos.le hK.metric_realization
   have hpair' := hpairG hR hKstate K.threshold_lt hreal
   have hpair'' : ∀
       (F : Finset (TensorEigenIdx (I := I) (M := M) g 0 2))
       (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
-      ‖galLowView (I := I) (M := M) g 1
+      ‖galerkinLowView (I := I) (M := M) g 1
           (finiteEigenComboHs (I := I) (M := M) g F c
             (((1 : ℕ) : ℝ) + 2))‖ ≤ R →
       2 * |∑ i ∈ F,
@@ -135,10 +135,10 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_th
     exists_uniform_galerkin_energy_three_bound_background_of_pairing_bounds (I := I) (M := M) g gBase hT
       K.threshold_lt hK.threshold_nonneg hK.threshold_le_third
       K.top_nonneg K.base_nonneg K.slope_nonneg K.outer_pos K.realize_pos
-      hK.hreal hK.core_cont hK.htame hG
+      hK.metric_realization hK.smoothCore_continuous hK.remainder_lipschitz hG
       (by
         intro F c hc
-        have hc' : ‖galLowView (I := I) (M := M) g 1
+        have hc' : ‖galerkinLowView (I := I) (M := M) g 1
             (finiteEigenComboHs (I := I) (M := M) g F c
               (((1 : ℕ) : ℝ) + 2))‖ ≤ R := by
           exact hc
@@ -147,7 +147,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_th
                 (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg
                   K.outer_pos K.realize_pos).le K.threshold_lt
                 (lowRegularityMetricRealization (I := I) (M := M) g
-                  K.realize_pos.le hK.hreal) F c =
+                  K.realize_pos.le hK.metric_realization) F c =
               galerkinActionVectorBackground (I := I) (M := M) g gBase hR
                 K.threshold_lt hreal F c := by
           rfl

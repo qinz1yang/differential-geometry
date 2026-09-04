@@ -84,13 +84,13 @@ private lemma memWkp_coef_mul_factor
       (isClosed_tsupport _).isOpen_compl
     rw [contDiff_iff_contDiffAt]
     intro y
-    by_cases hy_supp : y ∈ tsupport χ
-    · have hy_chart : y ∈ Ωα (I := I) (M := M) α := hχ_tsupp hy_supp
+    by_cases hy_support : y ∈ tsupport χ
+    · have hy_chart : y ∈ Ωα (I := I) (M := M) α := hχ_tsupp hy_support
       exact hχ_smooth.contDiffAt.mul
         ((hcoef_chart y hy_chart).contDiffAt (h_open_chart.mem_nhds hy_chart))
     · have h_eq_zero : (fun y => χ y * coef y)
           =ᶠ[𝓝 y] (fun _ : EuclN => (0 : ℝ)) := by
-        filter_upwards [h_open_compl.mem_nhds hy_supp] with z hz
+        filter_upwards [h_open_compl.mem_nhds hy_support] with z hz
         rw [image_eq_zero_of_notMem_tsupport hz, zero_mul]
       exact contDiffAt_const.congr_of_eventuallyEq h_eq_zero
   have hχ_coef_cs : HasCompactSupport (fun y => χ y * coef y) :=
@@ -198,15 +198,15 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma layer_D_memWkp
     (g : SmoothRiemannianMetric I M) (α : M) (K : ℕ)
     (lₙ : Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
+    {fChartEffectivePrev : EuclN → ℝ}
     (h_prev_memWkp_K :
-      MemWkp (d := Module.finrank ℝ E) K 2 fChartEffPrev
+      MemWkp (d := Module.finrank ℝ E) K 2 fChartEffectivePrev
         (Ωα (I := I) (M := M) α))
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : fChartEffectivePrev =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     MemWkp (d := Module.finrank ℝ E) K 2
-      (fun y => densityDerivOnEuclid (I := I) g α lₙ y * fChartEffPrev y)
+      (fun y => densityDerivOnEuclid (I := I) g α lₙ y * fChartEffectivePrev y)
       (Ωα (I := I) (M := M) α) :=
   memWkp_coef_mul_factor (I := I) (M := M) α K
     (densityDerivOnEuclid_contDiffOn (I := I) g α lₙ)
@@ -216,26 +216,26 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma layer_E_memWkp
     (g : SmoothRiemannianMetric I M) (α : M) (K : ℕ)
     (lₙ : Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
+    {fChartEffectivePrev : EuclN → ℝ}
     (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffPrev
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffectivePrev
         (Ωα (I := I) (M := M) α))
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : fChartEffectivePrev =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     MemWkp (d := Module.finrank ℝ E) K 2
       (fun y =>
         densityOnEuclid (I := I) g α y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 lₙ
-          fChartEffPrev (Ωα (I := I) (M := M) α) y)
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 lₙ
+          fChartEffectivePrev (Ωα (I := I) (M := M) α) y)
       (Ωα (I := I) (M := M) α) := by
   have h_factor_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 lₙ
-        fChartEffPrev (Ωα (I := I) (M := M) α))
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 lₙ
+        fChartEffectivePrev (Ωα (I := I) (M := M) α))
       (Ωα (I := I) (M := M) α) :=
     h_prev_memWkp_succ.chosenWeakPartial_mem lₙ
   have h_factor_ae_zero :=
-    chosenWeakPartial'_ae_zero_off_chartPouKernel_of_ae_zero
+    chosenWeakPartialOrZero_ae_zero_off_chartPouKernel_of_ae_zero
       (I := I) (M := M) α h_prev_ae_zero lₙ
   exact memWkp_coef_mul_factor (I := I) (M := M) α K
     (densityOnEuclid_contDiffOn (I := I) g α)
@@ -376,7 +376,7 @@ private lemma layer_B_pair_memWkp_unconditional
     MemWkp (d := Module.finrank ℝ E) K 2
       (fun y =>
         weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
           (Ωα (I := I) (M := M) α) y)
@@ -399,7 +399,7 @@ private lemma layer_B_pair_memWkp_unconditional
       (I := I) (M := M) g r s i α P₀ (m + 1) (K + 1) h_comp_K_plus
       (Fin.cons a (Fin.init l))
   have h_factor_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
-      (chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+      (chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
         (Ωα (I := I) (M := M) α))
@@ -408,7 +408,7 @@ private lemma layer_B_pair_memWkp_unconditional
   have h_inner_ae := iteratedPartial_ae_zero_off_Kα_unconditional
     (I := I) (M := M) g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))
   have h_factor_ae_zero :=
-    chosenWeakPartial'_ae_zero_off_chartPouKernel_of_ae_zero
+    chosenWeakPartialOrZero_ae_zero_off_chartPouKernel_of_ae_zero
       (I := I) (M := M) α h_inner_ae b
   exact memWkp_coef_mul_factor (I := I) (M := M) α K h_coef_smooth
     h_factor_memWkp h_factor_ae_zero
@@ -427,7 +427,7 @@ private lemma layer_B_memWkp_unconditional
       (fun y => ∑ a : Fin (Module.finrank ℝ E),
         ∑ b : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
               (Ωα (I := I) (M := M) α) y)
@@ -437,7 +437,7 @@ private lemma layer_B_memWkp_unconditional
       MemWkp (d := Module.finrank ℝ E) K 2
         (fun y => ∑ b : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-            chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+            chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
               (eigenvectorChartIteratedPartial (I := I) (M := M)
                 g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
               (Ωα (I := I) (M := M) α) y)
@@ -447,7 +447,7 @@ private lemma layer_B_memWkp_unconditional
       (α := α) (K := K) (s := Finset.univ)
       (f := fun b y =>
         weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
             (eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
             (Ωα (I := I) (M := M) α) y)
@@ -457,7 +457,7 @@ private lemma layer_B_memWkp_unconditional
     (α := α) (K := K) (s := Finset.univ)
     (f := fun a y => ∑ b : Fin (Module.finrank ℝ E),
       weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
           (eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
           (Ωα (I := I) (M := M) α) y)
@@ -506,19 +506,19 @@ lemma eigenvectorChartRHSDiffNumerator_memWkp
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
+    {fChartEffectivePrev : EuclN → ℝ}
     (h_comp : MemWkp (d := Module.finrank ℝ E) (m + 2 + K) 2
       (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
       (Ωα (I := I) (M := M) α))
     (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffPrev
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffectivePrev
         (Ωα (I := I) (M := M) α))
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : fChartEffectivePrev =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     MemWkp (d := Module.finrank ℝ E) K 2
       (eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-        g r s i α P₀ m l fChartEffPrev)
+        g r s i α P₀ m l fChartEffectivePrev)
       (Ωα (I := I) (M := M) α) := by
   classical
   have h_open : IsOpen (Ωα (I := I) (M := M) α) := Ωα_isOpen (I := I) (M := M) α
@@ -540,7 +540,7 @@ lemma eigenvectorChartRHSDiffNumerator_memWkp
     h_comp_m_plus_2_K
   have hC := layer_C_memWkp_unconditional (I := I) (M := M) g r s i α P₀ m K l
     h_comp_m_K
-  have h_prev_memWkp_K : MemWkp (d := Module.finrank ℝ E) K 2 fChartEffPrev
+  have h_prev_memWkp_K : MemWkp (d := Module.finrank ℝ E) K 2 fChartEffectivePrev
       (Ωα (I := I) (M := M) α) := h_prev_memWkp_succ.le_of_le (by omega)
   have hD := layer_D_memWkp (I := I) (M := M) g α K (l (Fin.last m))
     h_prev_memWkp_K h_prev_ae_zero
@@ -565,7 +565,7 @@ lemma eigenvectorChartRHSDiffNumerator_memWkp
         (∑ a : Fin (Module.finrank ℝ E),
           ∑ b : Fin (Module.finrank ℝ E),
             weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-              chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+              chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
                 (eigenvectorChartIteratedPartial (I := I) (M := M)
                   g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
                 (Ωα (I := I) (M := M) α) y)) -
@@ -573,12 +573,12 @@ lemma eigenvectorChartRHSDiffNumerator_memWkp
           eigenvectorChartIteratedPartial (I := I) (M := M)
             g r s i α P₀ m (Fin.init l) y) +
         densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y *
-          fChartEffPrev y) +
+          fChartEffectivePrev y) +
         densityOnEuclid (I := I) g α y *
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 (l (Fin.last m))
-            fChartEffPrev (Ωα (I := I) (M := M) α) y) =
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (l (Fin.last m))
+            fChartEffectivePrev (Ωα (I := I) (M := M) α) y) =
       eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-        g r s i α P₀ m l fChartEffPrev := by
+        g r s i α P₀ m l fChartEffectivePrev := by
     funext y
     rfl
   rw [← h_eq]
@@ -590,12 +590,12 @@ private lemma eigenvectorChartRHSDiffNumerator_unconditional_ae_zero_off_Kα
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
+    {fChartEffectivePrev : EuclN → ℝ}
+    (h_prev_ae_zero : fChartEffectivePrev =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-        g r s i α P₀ m l fChartEffPrev
+        g r s i α P₀ m l fChartEffectivePrev
       =ᵐ[(volume : Measure EuclN).restrict
         (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ : EuclN => (0 : ℝ)) := by
@@ -609,18 +609,18 @@ private lemma eigenvectorChartRHSDiffNumerator_unconditional_ae_zero_off_Kα
     iteratedPartial_ae_zero_off_Kα_unconditional (I := I) (M := M)
       g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l))
   have hB_ae : ∀ a b : Fin (Module.finrank ℝ E),
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
         (Ωα (I := I) (M := M) α)
         =ᵐ[(volume : Measure EuclN).restrict
           (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
         (fun _ => (0 : ℝ)) := fun a b =>
-    chosenWeakPartial'_ae_zero_off_chartPouKernel_of_ae_zero
+    chosenWeakPartialOrZero_ae_zero_off_chartPouKernel_of_ae_zero
       (I := I) (M := M) α (hA_ae a) b
   have hC_ae := iteratedPartial_ae_zero_off_Kα_unconditional
     (I := I) (M := M) g r s i α P₀ m (Fin.init l)
-  have hE_ae := chosenWeakPartial'_ae_zero_off_chartPouKernel_of_ae_zero
+  have hE_ae := chosenWeakPartialOrZero_ae_zero_off_chartPouKernel_of_ae_zero
     (I := I) (M := M) α h_prev_ae_zero (l (Fin.last m))
   have hA_sum_ae : (fun y => ∑ a : Fin (Module.finrank ℝ E),
       ∑ b : Fin (Module.finrank ℝ E),
@@ -651,7 +651,7 @@ private lemma eigenvectorChartRHSDiffNumerator_unconditional_ae_zero_off_Kα
   have hB_sum_ae : (fun y => ∑ a : Fin (Module.finrank ℝ E),
       ∑ b : Fin (Module.finrank ℝ E),
         weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
             (eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
             (Ωα (I := I) (M := M) α) y)
@@ -661,7 +661,7 @@ private lemma eigenvectorChartRHSDiffNumerator_unconditional_ae_zero_off_Kα
     have h_all : ∀ᵐ y ∂((volume : Measure EuclN).restrict
         (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)),
         ∀ a : Fin (Module.finrank ℝ E), ∀ b : Fin (Module.finrank ℝ E),
-          chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+          chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
             (eigenvectorChartIteratedPartial (I := I) (M := M)
               g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
             (Ωα (I := I) (M := M) α) y = 0 := by
@@ -673,7 +673,7 @@ private lemma eigenvectorChartRHSDiffNumerator_unconditional_ae_zero_off_Kα
     filter_upwards [h_all] with y hy
     refine Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun b _ => ?_
     change weightedInvGramDerivOnEuclid (I := I) g α a b (l (Fin.last m)) y *
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 b
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 b
         (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ (m + 1) (Fin.cons a (Fin.init l)))
         (Ωα (I := I) (M := M) α) y = 0
@@ -691,30 +691,30 @@ private lemma eigenvectorChartRHSDiffNumerator_unconditional_ae_zero_off_Kα
         g r s i α P₀ m (Fin.init l) y = 0
     rw [hy]; ring
   have hD_term_ae : (fun y =>
-      densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y * fChartEffPrev y)
+      densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y * fChartEffectivePrev y)
       =ᵐ[(volume : Measure EuclN).restrict
         (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)) := by
     filter_upwards [h_prev_ae_zero] with y hy
     show densityDerivOnEuclid (I := I) g α (l (Fin.last m)) y *
-      fChartEffPrev y = 0
+      fChartEffectivePrev y = 0
     rw [hy]; ring
   have hE_term_ae : (fun y =>
       densityOnEuclid (I := I) g α y *
-        chosenWeakPartial' (d := Module.finrank ℝ E) 2 (l (Fin.last m))
-          fChartEffPrev (Ωα (I := I) (M := M) α) y)
+        chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (l (Fin.last m))
+          fChartEffectivePrev (Ωα (I := I) (M := M) α) y)
       =ᵐ[(volume : Measure EuclN).restrict
         (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ)) := by
     filter_upwards [hE_ae] with y hy
     show densityOnEuclid (I := I) g α y *
-      chosenWeakPartial' (d := Module.finrank ℝ E) 2 (l (Fin.last m))
-        fChartEffPrev (Ωα (I := I) (M := M) α) y = 0
+      chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2 (l (Fin.last m))
+        fChartEffectivePrev (Ωα (I := I) (M := M) α) y = 0
     rw [hy]; ring
   filter_upwards [hA_sum_ae, hB_sum_ae, hC_term_ae, hD_term_ae, hE_term_ae]
     with y hA hB hC hD hE
   show eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-      g r s i α P₀ m l fChartEffPrev y = 0
+      g r s i α P₀ m l fChartEffectivePrev y = 0
   unfold eigenvectorChartRHSDiffNumerator
   rw [hA, hB, hC, hD, hE]; ring
 
@@ -724,30 +724,30 @@ lemma eigenvectorChartRHSDiffNumerator_div_density_memWkp
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m K : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
+    {fChartEffectivePrev : EuclN → ℝ}
     (h_comp : MemWkp (d := Module.finrank ℝ E) (m + 2 + K) 2
       (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
       (Ωα (I := I) (M := M) α))
     (h_prev_memWkp_succ :
-      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffPrev
+      MemWkp (d := Module.finrank ℝ E) (K + 1) 2 fChartEffectivePrev
         (Ωα (I := I) (M := M) α))
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
+    (h_prev_ae_zero : fChartEffectivePrev =ᵐ[(volume : Measure EuclN).restrict
       (Ωα (I := I) (M := M) α \ Kα (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     MemWkp (d := Module.finrank ℝ E) K 2
       (fun y =>
         eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-          g r s i α P₀ m l fChartEffPrev y /
+          g r s i α P₀ m l fChartEffectivePrev y /
         densityOnEuclid (I := I) g α y)
       (Ωα (I := I) (M := M) α) := by
   classical
   have h_eq : (fun y =>
       eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-        g r s i α P₀ m l fChartEffPrev y /
+        g r s i α P₀ m l fChartEffectivePrev y /
       densityOnEuclid (I := I) g α y) =
       (fun y => (1 / densityOnEuclid (I := I) g α y) *
         eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-          g r s i α P₀ m l fChartEffPrev y) := by
+          g r s i α P₀ m l fChartEffectivePrev y) := by
     funext y
     rw [one_div, mul_comm, ← div_eq_mul_inv]
   rw [h_eq]
@@ -766,14 +766,14 @@ lemma eigenvectorChartRHSDiffNumerator_div_density_ae_zero_off_chartPouKernel
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) (m : ℕ)
     (l : Fin (m + 1) → Fin (Module.finrank ℝ E))
-    {fChartEffPrev : EuclN → ℝ}
-    (h_prev_ae_zero : fChartEffPrev =ᵐ[(volume : Measure EuclN).restrict
+    {fChartEffectivePrev : EuclN → ℝ}
+    (h_prev_ae_zero : fChartEffectivePrev =ᵐ[(volume : Measure EuclN).restrict
       (chartTargetEuclid (I := I) (M := M) α \
         chartPouKernel (I := I) (M := M) α)]
       (fun _ => (0 : ℝ))) :
     (fun y =>
         eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-          g r s i α P₀ m l fChartEffPrev y /
+          g r s i α P₀ m l fChartEffectivePrev y /
         densityOnEuclid (I := I) g α y)
       =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \
@@ -783,7 +783,7 @@ lemma eigenvectorChartRHSDiffNumerator_div_density_ae_zero_off_chartPouKernel
     (I := I) (M := M) g r s i α P₀ m l h_prev_ae_zero
   filter_upwards [h_num_ae_zero] with y hy
   show eigenvectorChartRHSDiffNumerator (I := I) (M := M)
-      g r s i α P₀ m l fChartEffPrev y /
+      g r s i α P₀ m l fChartEffectivePrev y /
     densityOnEuclid (I := I) g α y = 0
   rw [hy]; simp
 

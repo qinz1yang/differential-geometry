@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 
 open scoped Manifold ContDiff BigOperators
 
@@ -718,7 +718,7 @@ theorem movingGinv_le
     simp only [dotProduct, Matrix.mulVec, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ =>
       Finset.sum_congr rfl fun j _ => by ring
-  have hquadRef := DifferentialGeometry.HCGCompactness.quad_lb_of_near_id
+  have hquadRef := DifferentialGeometry.CheegerGromovCompactness.quad_lb_of_near_id
     (fun i j => gramE (I := I) e₀ gRef basisE z i j) ε hε0 hGnear hsmall
   have hquadG : ∀ v : Idx → Real,
       (1 / (2 * Beq)) * (v ⬝ᵥ v) ≤

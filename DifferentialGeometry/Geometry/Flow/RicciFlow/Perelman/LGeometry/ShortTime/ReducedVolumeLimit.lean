@@ -29,11 +29,11 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem continuousOn_lRedJac_mul_lSrcDensity
+private theorem continuousOn_lReducedJacobian_mul_lSourceDensity
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (tau : Real) (htau : 0 < tau) :
     ContinuousOn
-      (fun Z : E ↦ lRedJac S T x Z tau * lSrcDensity S T x)
+      (fun Z : E ↦ lReducedJacobian S T x Z tau * lSourceDensity S T x)
       (lInjDomain S T x tau) := by
   let U : Set E := lInjDomain S T x tau
   let Ψ := lExpPartial S hS T x tau htau
@@ -82,7 +82,7 @@ private theorem continuousOn_lRedJac_mul_lSrcDensity
     dsimp only [Ψ]
     rw [lExpPartial_apply S hS T x tau htau hZ]
   exact (hden.mul hred).congr fun Z hZ ↦
-    lRedJac_mul_src S hS T x htau hZ
+    lReducedJacobian_mul_source S hS T x htau hZ
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -95,25 +95,25 @@ theorem redVolume_le_one
   rw [redVolume_lint S hS T x tau htau hslab]
   calc
     (∫⁻ Z in lInjDomain S T x tau,
-        ENNReal.ofReal (lRedJac S T x Z tau * lSrcDensity S T x)
+        ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
         ∂modelHaar (E := E)) ≤
         ∫⁻ Z in lInjDomain S T x tau,
-          ENNReal.ofReal (lSrcGauss S T x Z)
+          ENNReal.ofReal (lSourceGaussian S T x Z)
           ∂modelHaar (E := E) := by
       refine MeasureTheory.setLIntegral_mono'
         (lInj_isOpen S hS T x tau).measurableSet ?_
       intro Z hZ
       apply ENNReal.ofReal_le_ofReal
-      rw [lSrcGauss_eq]
+      rw [lSourceGaussian_eq_metric_norm]
       simpa only [mul_assoc, mul_comm, mul_left_comm] using
         mul_le_mul_of_nonneg_right
-          (lRedJac_le_gaussian S hS T x htau hZ)
-          (lSrcDensity_pos S T x).le
-    _ ≤ ∫⁻ Z : E, ENNReal.ofReal (lSrcGauss S T x Z)
+          (lReducedJacobian_le_gaussian S hS T x htau hZ)
+          (lSourceDensity_pos S T x).le
+    _ ≤ ∫⁻ Z : E, ENNReal.ofReal (lSourceGaussian S T x Z)
           ∂modelHaar (E := E) := by
       simpa using MeasureTheory.lintegral_mono_set
         (Set.subset_univ (lInjDomain S T x tau))
-    _ = 1 := lSrcGauss_mass S T x
+    _ = 1 := lSourceGaussian_mass S T x
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -127,8 +127,8 @@ theorem tendsto_redVolume_at_zero
   let F : Real → E → ENNReal := fun tau Z ↦
     (lInjDomain S T x tau).indicator
       (fun W ↦ ENNReal.ofReal
-        (lRedJac S T x W tau * lSrcDensity S T x)) Z
-  let G : E → ENNReal := fun Z ↦ ENNReal.ofReal (lSrcGauss S T x Z)
+        (lReducedJacobian S T x W tau * lSourceDensity S T x)) Z
+  let G : E → ENNReal := fun Z ↦ ENNReal.ofReal (lSourceGaussian S T x Z)
   obtain ⟨a, b, hTab, hreg⟩ := D.exists_Icc_regular hT
   have hsmall : ∀ᶠ tau in 𝓝[>] (0 : Real), tau < T - a := by
     have hTa : 0 < T - a := sub_pos.mpr hTab.1
@@ -141,9 +141,9 @@ theorem tendsto_redVolume_at_zero
   have hmeas : ∀ᶠ tau in 𝓝[>] (0 : Real), Measurable (F tau) := by
     filter_upwards [self_mem_nhdsWithin] with tau htau
     have hU := (lInj_isOpen S hS T x tau).measurableSet
-    have hcont := continuousOn_lRedJac_mul_lSrcDensity S hS T x tau htau
+    have hcont := continuousOn_lReducedJacobian_mul_lSourceDensity S hS T x tau htau
     change Measurable ((lInjDomain S T x tau).piecewise
-      (ENNReal.ofReal ∘ fun Z ↦ lRedJac S T x Z tau * lSrcDensity S T x) 0)
+      (ENNReal.ofReal ∘ fun Z ↦ lReducedJacobian S T x Z tau * lSourceDensity S T x) 0)
     exact ContinuousOn.measurable_piecewise
       (ENNReal.continuous_ofReal.comp_continuousOn hcont)
       continuous_zero.continuousOn hU
@@ -155,15 +155,15 @@ theorem tendsto_redVolume_at_zero
     by_cases hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau
     · simp only [F, G, Set.indicator_of_mem hZ]
       apply ENNReal.ofReal_le_ofReal
-      rw [lSrcGauss_eq]
+      rw [lSourceGaussian_eq_metric_norm]
       simpa only [mul_assoc, mul_comm, mul_left_comm] using
         mul_le_mul_of_nonneg_right
-          (lRedJac_le_gaussian S hS T x htau hZ)
-          (lSrcDensity_pos S T x).le
+          (lReducedJacobian_le_gaussian S hS T x htau hZ)
+          (lSourceDensity_pos S T x).le
     · simp only [F, Set.indicator_of_notMem hZ, zero_le]
   have hfin : ∫⁻ Z : E, G Z ∂modelHaar (E := E) ≠ (⊤ : ENNReal) := by
     rw [show (∫⁻ Z : E, G Z ∂modelHaar (E := E)) = 1 by
-      simpa only [G] using lSrcGauss_mass S T x]
+      simpa only [G] using lSourceGaussian_mass S T x]
     simp
   have hlim : ∀ᵐ Z ∂modelHaar (E := E),
       Tendsto (fun tau : Real ↦ F tau Z)
@@ -172,18 +172,18 @@ theorem tendsto_redVolume_at_zero
     intro Z
     have hZev := eventually_mem_lInjDomain S hS T x Z hT
     obtain ⟨rho, hZrho⟩ := hZev.exists
-    have hraw := (tendsto_lRedJac_at_zero S hS T x Z hZrho).mul_const
-      (lSrcDensity S T x)
+    have hraw := (tendsto_lReducedJacobian_at_zero S hS T x Z hZrho).mul_const
+      (lSourceDensity S T x)
     have hof := ENNReal.continuous_ofReal.continuousAt.tendsto.comp hraw
     have hFeq : (fun tau : Real ↦ F tau Z) =ᶠ[𝓝[>] (0 : Real)]
         (fun tau ↦ ENNReal.ofReal
-          (lRedJac S T x Z tau * lSrcDensity S T x)) := by
+          (lReducedJacobian S T x Z tau * lSourceDensity S T x)) := by
       filter_upwards [hZev] with tau hZ
       change (lInjDomain S T x tau).indicator
           (fun W ↦ ENNReal.ofReal
-            (lRedJac S T x W tau * lSrcDensity S T x)) Z = _
+            (lReducedJacobian S T x W tau * lSourceDensity S T x)) Z = _
       exact Set.indicator_of_mem hZ _
-    simpa only [G, lSrcGauss_eq, Function.comp_apply, mul_assoc,
+    simpa only [G, lSourceGaussian_eq_metric_norm, Function.comp_apply, mul_assoc,
       mul_comm, mul_left_comm] using
       hof.congr' hFeq.symm
   have hDCT : Tendsto (fun tau : Real ↦
@@ -193,7 +193,7 @@ theorem tendsto_redVolume_at_zero
     MeasureTheory.tendsto_lintegral_filter_of_dominated_convergence
       G hmeas hbound hfin hlim
   have hmass : (∫⁻ Z : E, G Z ∂modelHaar (E := E)) = 1 :=
-    by simpa only [G] using lSrcGauss_mass S T x
+    by simpa only [G] using lSourceGaussian_mass S T x
   rw [hmass] at hDCT
   apply hDCT.congr'
   filter_upwards [self_mem_nhdsWithin, hslab] with tau htau hslab_tau

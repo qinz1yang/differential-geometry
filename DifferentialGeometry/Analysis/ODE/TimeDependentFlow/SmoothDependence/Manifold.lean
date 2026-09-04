@@ -390,7 +390,7 @@ theorem chartFlow_eq_integralCurve_on
   set u : ℝ → E := fun s => ΦE (extChartAt I p₀ p, s) with hu
   have htgt_t : u t ∈ (extChartAt I p₀).target := hconf p hp t ht
   set q : M := (extChartAt I p₀).symm (u t) with hq_def
-  have hq_src : q ∈ (extChartAt I p₀).source := (extChartAt I p₀).map_target htgt_t
+  have hq_source : q ∈ (extChartAt I p₀).source := (extChartAt I p₀).map_target htgt_t
   have hq_round : extChartAt I p₀ q = u t := (extChartAt I p₀).right_inv htgt_t
   have hconf_range : u ⁻¹' (Set.range I) ∈ 𝓝[Set.Ioo a b] t := by
     refine Filter.mem_of_superset self_mem_nhdsWithin ?_
@@ -408,7 +408,7 @@ theorem chartFlow_eq_integralCurve_on
         = X t q := by
     rw [hF t (u t)]
     rw [← hq_def, ← hq_round]
-    exact pushforward_velocity_cancellation (I := I) p₀ q hq_src (X t q)
+    exact pushforward_velocity_cancellation (I := I) p₀ q hq_source (X t q)
   let w : TangentSpace 𝓘(ℝ, E) (u t) := F t (u t)
   have hw :
       (mfderivWithin 𝓘(ℝ, E) I (extChartAt I p₀).symm (Set.range I) (u t)) w =
@@ -446,10 +446,10 @@ theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryle
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (Φ p t)))) := by
   set x₀ : E := extChartAt I p₀ p₀ with hx₀
-  have hx₀_tgt : x₀ ∈ (extChartAt I p₀).target := by
+  have hx₀_target : x₀ ∈ (extChartAt I p₀).target := by
     rw [hx₀]; exact (extChartAt I p₀).map_source (mem_extChartAt_source p₀)
   obtain ⟨ρ, hρ_pos, hρ_sub⟩ :=
-    Metric.isOpen_iff.mp (isOpen_extChartAt_target p₀) x₀ hx₀_tgt
+    Metric.isOpen_iff.mp (isOpen_extChartAt_target p₀) x₀ hx₀_target
   obtain ⟨G, ρ', hρ'_pos, hρ'_le, hG_smooth, hGF⟩ :=
     chart_pushforward_field_cutoff_globalContDiff X hX p₀ hρ_pos hρ_sub
   obtain ⟨r, ε, hr_pos, hε_pos, ΦE, hflow, ρ_E, T_E, hρE_pos, hTE_pos, hρE_le_r, hTE_le_ε,
@@ -503,14 +503,14 @@ theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryle
     refine ⟨mem_extChartAt_source p₀, ?_⟩
     rw [Set.mem_preimage, ← hx₀]
     exact Metric.mem_ball_self hρ''_pos
-  have hU_src : U ⊆ (extChartAt I p₀).source := Set.inter_subset_left
+  have hU_source : U ⊆ (extChartAt I p₀).source := Set.inter_subset_left
   have hU_ball : ∀ p ∈ U, extChartAt I p₀ p ∈ Metric.ball x₀ ρ'' := fun p hp => hp.2
   have hchartODE :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         HasDerivWithinAt (fun s => ΦE (extChartAt I p₀ p, s))
           (F t (ΦE (extChartAt I p₀ p, t))) (Set.Ioo (t₀ - T') (t₀ + T')) t :=
     fun p hp t ht => hchartODE_raw (extChartAt I p₀ p) (hU_ball p hp) t ht
-  have hconf_tgt :
+  have hconf_target :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         ΦE (extChartAt I p₀ p, t) ∈ (extChartAt I p₀).target := by
     intro p hp t ht
@@ -534,7 +534,7 @@ theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryle
         (Set.Ioo (t₀ - T') (t₀ + T') ×ˢ U) := by
     refine manifoldFlow_contMDiffOn_of_jointContDiffOn (I := I) p₀ ΦE
       (ρ := ρ'ₒₚ) (T := T') (t₀ := t₀) U ?_ ?_ ?_ ?_
-    · rw [← extChartAt_source (I := I)]; exact hU_src
+    · rw [← extChartAt_source (I := I)]; exact hU_source
     · intro p hp
       rw [hcoe p, hcoe₀]
       exact Metric.ball_subset_ball hρ''_le (hU_ball p hp)
@@ -544,7 +544,7 @@ theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryle
       · exact Set.Ioo_subset_Ioo (by linarith [hT'_le]) (by linarith [hT'_le])
     · intro p hp s hs
       rw [hcoe p]
-      exact hconf_tgt p hp s hs
+      exact hconf_target p hp s hs
   have hContMDiffOn' :
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.2 q.1)
         (Set.Ioo (t₀ - T') (t₀ + T') ×ˢ U) := by
@@ -558,7 +558,7 @@ theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryle
           (Set.Ioo (t₀ - T') (t₀ + T')) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight
             (X t ((extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, t))))) :=
-    chartFlow_eq_integralCurve_on (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt
+    chartFlow_eq_integralCurve_on (I := I) X p₀ F ΦE U hchartODE hF_id hconf_target
   have hbare :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t
@@ -568,14 +568,14 @@ theorem local_flow_jointSmooth_and_integralCurve [CompleteSpace E] [I.Boundaryle
       isOpen_Ioo.mem_nhds ht
     have := (hbare_within p hp t ht).hasMFDerivAt hnhds
     rw [hΦ]; exact this
-  have hΦinit : ∀ p ∈ U, Φ p t₀ = p := by
+  have hΦinitial : ∀ p ∈ U, Φ p t₀ = p := by
     intro p hp
     have hcb : extChartAt I p₀ p ∈ Metric.closedBall x₀ (r : ℝ) :=
       Metric.ball_subset_closedBall (Metric.ball_subset_ball hρ''_le_r (hU_ball p hp))
     change (extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, t₀)) = p
     rw [hflow.apply_initial (extChartAt I p₀ p) hcb]
-    exact (extChartAt I p₀).left_inv (hU_src hp)
-  exact ⟨U, hU_open, hp₀_U, T', hT'_pos, Φ, hΦinit, hContMDiffOn', hbare⟩
+    exact (extChartAt I p₀).left_inv (hU_source hp)
+  exact ⟨U, hU_open, hp₀_U, T', hT'_pos, Φ, hΦinitial, hContMDiffOn', hbare⟩
 
 omit [BoundarylessManifold I M] [T2Space M] in
 theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundaryless]
@@ -603,10 +603,10 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (Φ p t)))) := by
   set x₀ : E := extChartAt I p₀ p₀ with hx₀
-  have hx₀_tgt : x₀ ∈ (extChartAt I p₀).target := by
+  have hx₀_target : x₀ ∈ (extChartAt I p₀).target := by
     rw [hx₀]; exact (extChartAt I p₀).map_source (mem_extChartAt_source p₀)
   obtain ⟨ρ, hρ_pos, hρ_sub⟩ :=
-    Metric.isOpen_iff.mp (isOpen_extChartAt_target p₀) x₀ hx₀_tgt
+    Metric.isOpen_iff.mp (isOpen_extChartAt_target p₀) x₀ hx₀_target
   obtain ⟨G, ρ', hρ'_pos, hρ'_le, hG_smooth, hGF⟩ :=
     chart_pushforward_field_cutoff_globalContDiff X hX p₀ hρ_pos hρ_sub
   obtain ⟨r, ε, hr_pos, hε_pos, ΦE, hflow, ρ_E, T_E, hρE_pos, hTE_pos, hρE_le_r, hTE_le_ε,
@@ -657,14 +657,14 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
     refine ⟨mem_extChartAt_source p₀, ?_⟩
     rw [Set.mem_preimage, ← hx₀]
     exact Metric.mem_ball_self hρ''_pos
-  have hU_src : U ⊆ (extChartAt I p₀).source := Set.inter_subset_left
+  have hU_source : U ⊆ (extChartAt I p₀).source := Set.inter_subset_left
   have hU_ball : ∀ p ∈ U, extChartAt I p₀ p ∈ Metric.ball x₀ ρ'' := fun p hp => hp.2
   have hchartODE :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         HasDerivWithinAt (fun s => ΦE (extChartAt I p₀ p, s))
           (F t (ΦE (extChartAt I p₀ p, t))) (Set.Ioo (t₀ - T') (t₀ + T')) t :=
     fun p hp t ht => hchartODE_raw (extChartAt I p₀ p) (hU_ball p hp) t ht
-  have hconf_tgt :
+  have hconf_target :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         ΦE (extChartAt I p₀ p, t) ∈ (extChartAt I p₀).target := by
     intro p hp t ht
@@ -686,7 +686,7 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
         (Set.Ioo (t₀ - T') (t₀ + T') ×ˢ U) := by
     refine manifoldFlow_contMDiffOn_of_jointContDiffOn (I := I) p₀ ΦE
       (ρ := ρ'ₒₚ) (T := T') (t₀ := t₀) U ?_ ?_ ?_ ?_
-    · rw [← extChartAt_source (I := I)]; exact hU_src
+    · rw [← extChartAt_source (I := I)]; exact hU_source
     · intro p hp
       rw [hcoe p, hcoe₀]
       exact Metric.ball_subset_ball hρ''_le (hU_ball p hp)
@@ -696,7 +696,7 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
       · exact Set.Ioo_subset_Ioo (by linarith [hT'_le]) (by linarith [hT'_le])
     · intro p hp s hs
       rw [hcoe p]
-      exact hconf_tgt p hp s hs
+      exact hconf_target p hp s hs
   have hContMDiffOn' :
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Φ q.2 q.1)
         (Set.Ioo (t₀ - T') (t₀ + T') ×ˢ U) := by
@@ -710,7 +710,7 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
           (Set.Ioo (t₀ - T') (t₀ + T')) t
           ((1 : ℝ →L[ℝ] ℝ).smulRight
             (X t ((extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, t))))) :=
-    chartFlow_eq_integralCurve_on (I := I) X p₀ F ΦE U hchartODE hF_id hconf_tgt
+    chartFlow_eq_integralCurve_on (I := I) X p₀ F ΦE U hchartODE hF_id hconf_target
   have hbare :
       ∀ (p : M), p ∈ U → ∀ t ∈ Set.Ioo (t₀ - T') (t₀ + T'),
         HasMFDerivAt 𝓘(ℝ, ℝ) I (fun s => Φ p s) t
@@ -719,17 +719,17 @@ theorem local_flow_chartIsLocalFlow_and_realisation [CompleteSpace E] [I.Boundar
     have hnhds : Set.Ioo (t₀ - T') (t₀ + T') ∈ 𝓝 t := isOpen_Ioo.mem_nhds ht
     have := (hbare_within p hp t ht).hasMFDerivAt hnhds
     rw [hΦ]; exact this
-  have hΦinit : ∀ p ∈ U, Φ p t₀ = p := by
+  have hΦinitial : ∀ p ∈ U, Φ p t₀ = p := by
     intro p hp
     have hcb : extChartAt I p₀ p ∈ Metric.closedBall x₀ (r : ℝ) :=
       Metric.ball_subset_closedBall (Metric.ball_subset_ball hρ''_le_r (hU_ball p hp))
     change (extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, t₀)) = p
     rw [hflow.apply_initial (extChartAt I p₀ p) hcb]
-    exact (extChartAt I p₀).left_inv (hU_src hp)
+    exact (extChartAt I p₀).left_inv (hU_source hp)
   have hreal : ∀ p ∈ U, ∀ s : ℝ,
       Φ p s = (extChartAt I p₀).symm (ΦE (extChartAt I p₀ p, s)) := fun p _ s => rfl
   exact ⟨U, hU_open, hp₀_U, T', hT'_pos, Φ, G, x₀, r, ε, ΦE, hG_smooth, rfl, hr_pos, hε_pos,
-    hflow, ⟨ρ_E, T_E, hρE_pos, hTE_pos, hΦE_smooth⟩, hΦinit, hreal, hconf_tgt, hContMDiffOn',
+    hflow, ⟨ρ_E, T_E, hρE_pos, hTE_pos, hΦE_smooth⟩, hΦinitial, hreal, hconf_target, hContMDiffOn',
     hbare⟩
 
 end Manifold

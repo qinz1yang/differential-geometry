@@ -24,7 +24,7 @@ private abbrev Euc (n : Type*) := EuclideanSpace Real n
 def laplacianSchauderConst
     (alpha K B : NNReal) (u : BoundedContinuousFunction V F) : NNReal :=
   heatSupSchauderConst (V := V) 1 u +
-    heatDuhConstSchauderConst (V := V) alpha K B 1
+    heatDuhamelConstSchauderConst (V := V) alpha K B 1
 
 theorem laplacian_schauder_estimate
     {alpha K B : NNReal}
@@ -51,9 +51,9 @@ theorem laplacian_schauder_estimate
       (u : V → F) :=
     huzero.of_le_of_le hulip.holderWith (by positivity) (by norm_num)
   have hrep : (u : V → F) =
-      (fun x ↦ heatSup 1 u x) - heatDuh 1 (fun _ ↦ coreLap d2u) := by
+      (fun x ↦ heatSup 1 u x) - heatDuhamel 1 (fun _ ↦ coreLap d2u) := by
     funext x
-    rw [Pi.sub_apply, heatDuh_const_eq_integral_heatSup]
+    rw [Pi.sub_apply, heatDuhamel_const_eq_integral_heatSup]
     have hprim := heatSup_primitive (t := 1) one_pos u du d2u hu hdu huhalf x
     rw [hprim]
     abel
@@ -61,11 +61,11 @@ theorem laplacian_schauder_estimate
     contDiff_two_of_hasFDerivAt u du d2u hu hdu
   have hheatC2 : ContDiff Real 2 (fun x : V ↦ heatSup 1 u x) :=
     heatSup_contDiff_two one_pos u
-  have hduhEq : heatDuh 1 (fun _ ↦ coreLap d2u) =
+  have hduhEq : heatDuhamel 1 (fun _ ↦ coreLap d2u) =
       (fun x ↦ heatSup 1 u x) - (u : V → F) := by
     rw [hrep]
     abel
-  have hduhC2 : ContDiff Real 2 (heatDuh 1 (fun _ ↦ coreLap d2u)) := by
+  have hduhC2 : ContDiff Real 2 (heatDuhamel 1 (fun _ ↦ coreLap d2u)) := by
     rw [hduhEq]
     exact hheatC2.sub huC2
   rw [hrep]
@@ -73,7 +73,7 @@ theorem laplacian_schauder_estimate
     (fun _ _ ↦ hheatC2.contDiffAt)
     (fun _ _ ↦ hduhC2.contDiffAt)).trans ?_
   have hheat := heatSup_schauder_estimate halpha1.le one_pos u
-  have hduh := heatDuh_const_schauder_estimate
+  have hduh := heatDuhamel_const_schauder_estimate
     halpha0 halpha1 (T := 1) (S := 2) one_pos (by norm_num)
     (coreLap d2u) hbound hholder
   exact (add_le_add hheat hduh).trans_eq (by
@@ -137,7 +137,7 @@ def spdMatrixLap (A : Matrix n n Real) (hA : A.PosDef)
     (d2u : BoundedContinuousFunction (Euc n)
       (Euc n →L[Real] Euc n →L[Real] F)) :
     BoundedContinuousFunction (Euc n) F :=
-  linPullBcf (spdSqrtEquiv A hA).symm
+  linPullBoundedContinuousFunction (spdSqrtEquiv A hA).symm
     (coreLap (pullJet2 (spdSqrtEquiv A hA) d2u))
 
 omit [Nonempty n] [CompleteSpace F] in
@@ -166,7 +166,7 @@ def spdLaplacianSchauderConst
   let L := spdSqrtEquiv A hA
   let K' := K * ‖(L : Euc n →L[Real] Euc n)‖₊ ^ (alpha : Real)
   contDiffHolderLinearEquivConst L alpha
-    (laplacianSchauderConst alpha K' B (linPullBcf L u))
+    (laplacianSchauderConst alpha K' B (linPullBoundedContinuousFunction L u))
 
 def spdLaplacianSchauderDefectConst
     (A : Matrix n n Real) (hA : A.PosDef)
@@ -174,7 +174,7 @@ def spdLaplacianSchauderDefectConst
   let L := spdSqrtEquiv A hA
   let K' := K * ‖(L : Euc n →L[Real] Euc n)‖₊ ^ (alpha : Real)
   contDiffHolderLinearEquivConst L alpha
-    (heatDuhConstSchauderConst (V := Euc n) alpha K' B 1)
+    (heatDuhamelConstSchauderConst (V := Euc n) alpha K' B 1)
 
 omit [Nonempty n] [NormedSpace Real F] [CompleteSpace F] in
 theorem spdLaplacianSchauderConst_add_source
@@ -193,14 +193,14 @@ theorem spdLaplacianSchauderConst_add_source
     spdLaplacianSchauderDefectConst]
   change contDiffHolderLinearEquivConst L alpha
       (laplacianSchauderConst alpha ((K₁ + K₂) * q)
-        (B₁ + B₂) (linPullBcf L u)) =
+        (B₁ + B₂) (linPullBoundedContinuousFunction L u)) =
     contDiffHolderLinearEquivConst L alpha
-        (laplacianSchauderConst alpha (K₁ * q) B₁ (linPullBcf L u)) +
+        (laplacianSchauderConst alpha (K₁ * q) B₁ (linPullBoundedContinuousFunction L u)) +
       contDiffHolderLinearEquivConst L alpha
-        (heatDuhConstSchauderConst (V := Euc n) alpha (K₂ * q) B₂ 1)
+        (heatDuhamelConstSchauderConst (V := Euc n) alpha (K₂ * q) B₂ 1)
   rw [hK]
   unfold laplacianSchauderConst
-  rw [heatDuhConstSchauderConst_add halpha1
+  rw [heatDuhamelConstSchauderConst_add halpha1
     (K₁ * q) (K₂ * q) B₁ B₂ (by norm_num)]
   unfold contDiffHolderLinearEquivConst
   ring
@@ -216,12 +216,12 @@ theorem spdLaplacianSchauderDefectConst_nnreal_mul
   rw [spdLaplacianSchauderDefectConst,
     spdLaplacianSchauderDefectConst]
   change contDiffHolderLinearEquivConst L alpha
-      (heatDuhConstSchauderConst (V := Euc n) alpha
+      (heatDuhamelConstSchauderConst (V := Euc n) alpha
         ((c * K) * q) (c * B) 1) =
     c * contDiffHolderLinearEquivConst L alpha
-      (heatDuhConstSchauderConst (V := Euc n) alpha (K * q) B 1)
+      (heatDuhamelConstSchauderConst (V := Euc n) alpha (K * q) B 1)
   rw [show (c * K) * q = c * (K * q) by ring,
-    heatDuhConstSchauderConst_nnreal_mul]
+    heatDuhamelConstSchauderConst_nnreal_mul]
   unfold contDiffHolderLinearEquivConst
   ring
 
@@ -241,20 +241,20 @@ theorem spd_laplacian_schauder_estimate
     eContDiffHolderGaugeOn 2 alpha Set.univ (u : Euc n → F) ≤
       spdLaplacianSchauderConst A hA alpha K B u := by
   let L := spdSqrtEquiv A hA
-  let up := linPullBcf L u
+  let up := linPullBoundedContinuousFunction L u
   let dup := pullJet1 L du
   let d2up := pullJet2 L d2u
   let fp := coreLap d2up
   let K' := K * ‖(L : Euc n →L[Real] Euc n)‖₊ ^ (alpha : Real)
-  have hfp : fp = linPullBcf L (spdMatrixLap A hA d2u) := by
+  have hfp : fp = linPullBoundedContinuousFunction L (spdMatrixLap A hA d2u) := by
     apply BoundedContinuousFunction.ext
     intro x
-    simp only [fp, d2up, linPullBcf_apply]
+    simp only [fp, d2up, linPullBoundedContinuousFunction_apply]
     change coreLap (pullJet2 L d2u) x =
       coreLap (pullJet2 L d2u) (L.symm (L x))
     rw [L.symm_apply_apply]
   have hbound' : ‖fp‖ ≤ B := by
-    rw [hfp, norm_linPullBcf]
+    rw [hfp, norm_linPullBoundedContinuousFunction]
     exact hbound
   have hholder' : HolderWith K' alpha fp := by
     rw [hfp]
@@ -262,7 +262,7 @@ theorem spd_laplacian_schauder_estimate
     have hraw' : HolderWith K' alpha
         ((spdMatrixLap A hA d2u : Euc n → F) ∘ L) := by
       simpa only [K', NNReal.coe_one, NNReal.rpow_one, one_mul, mul_one] using hraw
-    let h : HolderWith K' alpha (linPullBcf L (spdMatrixLap A hA d2u)) := hraw'
+    let h : HolderWith K' alpha (linPullBoundedContinuousFunction L (spdMatrixLap A hA d2u)) := hraw'
     exact h
   have hup : ∀ x : Euc n,
       HasFDerivAt (up : Euc n → F) (dup x) x :=

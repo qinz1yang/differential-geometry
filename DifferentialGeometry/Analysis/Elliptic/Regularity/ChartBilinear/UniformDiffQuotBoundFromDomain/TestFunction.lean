@@ -201,13 +201,13 @@ theorem integral_sq_nirenbergTestFunction_le
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η)
-    (hη_supp : HasCompactSupport η)
+    (hη_support : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1)
     {N : ℝ} (hN : 0 ≤ N) (h_fderiv_eta : ∀ x : EuclN, ‖fderiv ℝ η x‖ ≤ N)
     {Ω' : Set EuclN}
     (hΩ'_chart : closure Ω' ⊆ chartTargetEuclid (I := I) (M := M) α)
     {R₀ : ℝ} (hR₀_pos : 0 < R₀)
-    (hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
+    (hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ Ω') :
     ∀ (k : Fin (Module.finrank ℝ E)), ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
       ∫ x,
@@ -224,11 +224,11 @@ theorem integral_sq_nirenbergTestFunction_le
               (d := Module.finrank ℝ E) k h (D.weakPartial k) x)^2
           ∂(volume : Measure EuclN) := by
   classical
-  have hη_tsupp_compact : IsCompact (tsupport η) := hη_supp
+  have hη_tsupp_compact : IsCompact (tsupport η) := hη_support
   have h_cthickR0_compact : IsCompact (Metric.cthickening R₀ (tsupport η)) :=
     hη_tsupp_compact.cthickening
   have h_cthickR0_in_Ω' : Metric.cthickening R₀ (tsupport η) ⊆ Ω' := by
-    have h := hh_supp_in_Ω' (h := R₀) (by rw [abs_of_pos hR₀_pos])
+    have h := hh_support_in_Ω' (h := R₀) (by rw [abs_of_pos hR₀_pos])
     rw [abs_of_pos hR₀_pos] at h
     exact h
   have h_cthickR0_in_chart :
@@ -285,12 +285,12 @@ theorem integral_sq_nirenbergTestFunction_le
       (G i) u_g Set.univ := fun i =>
     cutoff_uChart_hasWeakPartialDeriv_univ (I := I) (M := M) D
       hχ_smooth hχ_cs hχ_tsupp i
-  have hu_g_locInt :
+  have hu_g_localInt :
       LocallyIntegrable u_g ((volume : Measure EuclN).restrict Set.univ) := by
     have : LocallyIntegrable u_g (volume : Measure EuclN) :=
       hu_g_l2.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     rw [Measure.restrict_univ]; exact this
-  have hG_locInt : ∀ i,
+  have hG_localInt : ∀ i,
       LocallyIntegrable (G i) ((volume : Measure EuclN).restrict Set.univ) :=
     fun i => by
       have : LocallyIntegrable (G i) (volume : Measure EuclN) :=
@@ -312,7 +312,7 @@ theorem integral_sq_nirenbergTestFunction_le
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g y)
         Set.univ :=
     hasWeakPartialDeriv_cutoff_sq_mul_diffQuot
-      (d := Module.finrank ℝ E) k k h hη hu_g_locInt (hG_locInt k) (hG_isWP k)
+      (d := Module.finrank ℝ E) k k h hη hu_g_localInt (hG_localInt k) (hG_isWP k)
   have h_self_subset_cthick :
       tsupport η ⊆ Metric.cthickening |h| (tsupport η) :=
     Metric.self_subset_cthickening _
@@ -457,14 +457,14 @@ theorem integral_sq_nirenbergTestFunction_le
     nlinarith [h.1, h.2]
   have h_abs_eta_le_one : ∀ x, |η x| ≤ 1 := fun x =>
     abs_le.mpr ⟨by linarith [hη_nn x], hη_le_one x⟩
-  have hη_sq_supp : HasCompactSupport (fun y : EuclN => (η y)^2) := by
+  have hη_sq_support : HasCompactSupport (fun y : EuclN => (η y)^2) := by
     have heq : (fun y : EuclN => (η y)^2) = (fun y : EuclN => η y * η y) := by
       funext y; ring
-    rw [heq]; exact hη_supp.mul_right
+    rw [heq]; exact hη_support.mul_right
   have hF_cs : HasCompactSupport F := by
-    rw [hF_def]; exact hη_sq_supp.mul_right
-  have hF_supp_subset : tsupport F ⊆ tsupport η := by
-    have h_supp_subset : Function.support F ⊆ Function.support η := by
+    rw [hF_def]; exact hη_sq_support.mul_right
+  have hF_support_subset : tsupport F ⊆ tsupport η := by
+    have h_support_subset : Function.support F ⊆ Function.support η := by
       intro x hx
       change (η x)^2 *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -474,7 +474,7 @@ theorem integral_sq_nirenbergTestFunction_le
         have hη_sq_zero : (η x)^2 = 0 := by rw [hη_zero]; ring
         apply hx; rw [hη_sq_zero, zero_mul]
       exact hη_x_ne
-    exact (closure_mono h_supp_subset)
+    exact (closure_mono h_support_subset)
   have h_translate_u_g_l2 :
       MemLp
         (DifferentialGeometry.Analysis.Sobolev.translate
@@ -594,7 +594,7 @@ theorem integral_sq_nirenbergTestFunction_le
   have h_eta_sq_fderiv_cs : HasCompactSupport
       (fun y : EuclN =>
         (fderiv ℝ (fun z => (η z)^2) y) (EuclideanSpace.single k 1)) :=
-    hη_sq_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single k 1)
+    hη_sq_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single k 1)
   have h_eta_sq_fderiv_bound : ∀ y : EuclN,
       |(fderiv ℝ (fun z => (η z)^2) y) (EuclideanSpace.single k 1)| ≤ 2 * N := by
     intro y
@@ -848,7 +848,7 @@ theorem integral_sq_nirenbergTestFunction_le
           (d := Module.finrank ℝ E) k h (G k) x)^2)
         (volume : Measure EuclN) := by
     have hbase := integrable_const_eta_sq_diffQuot_g_sq
-      (d := Module.finrank ℝ E) hG_l2 hη hη_supp k k h 1
+      (d := Module.finrank ℝ E) hG_l2 hη hη_support k k h 1
     simpa only [one_mul] using hbase
   have h_indicator_dq_u_g_sq_int : Integrable (fun x : EuclN =>
       8 * N^2 *
@@ -857,7 +857,7 @@ theorem integral_sq_nirenbergTestFunction_le
         (d := Module.finrank ℝ E) k h u_g x)^2)
       (volume : Measure EuclN) :=
     integrable_const_indicator_diffQuot_u_sq
-      (d := Module.finrank ℝ E) hu_g_l2 hη_supp k h (8 * N^2)
+      (d := Module.finrank ℝ E) hu_g_l2 hη_support k h (8 * N^2)
   have hG_F_sq_int : Integrable (fun x : EuclN => (G_F x)^2)
       (volume : Measure EuclN) := hG_F_l2.integrable_sq
   have h_two_eta_sq_dq_int : Integrable (fun x : EuclN =>

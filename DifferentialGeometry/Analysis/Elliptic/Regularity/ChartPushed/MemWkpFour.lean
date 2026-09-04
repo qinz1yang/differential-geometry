@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegul
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpFourSmooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.H4Bridge
 
 noncomputable section
 
@@ -68,7 +67,7 @@ private lemma twice_diff_identities_at
           densityOnEuclid (I := I) g α y *
             effectiveSourceChartSecondOrder (I := I) (M := M) g α l₁ l₂ hu_h y * ψ y
           ∂(volume : Measure EuclN) := by
-  intro l₁ l₂ ψ hψ_smooth hψ_cs hψ_supp
+  intro l₁ l₂ ψ hψ_smooth hψ_cs hψ_support
   have h_base_f_chart_memWkp22 :=
     base_f_chart_memWkp_two_two
       (I := I) (M := M) g α hu_h
@@ -77,7 +76,7 @@ private lemma twice_diff_identities_at
       (I := I) (M := M) g α hu_h l₁ h_base_f_chart_memWkp22
   exact twice_differentiated_variational_identity_holds
     (I := I) (M := M) g α hu_h l₁ l₂ h_chosenFChartDeriv_memW1p
-    hψ_smooth hψ_cs hψ_supp
+    hψ_smooth hψ_cs hψ_support
 
 theorem chartPushed_memWkp_four_two_of_laplacianDomainPow_two
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -121,18 +120,6 @@ theorem laplacianDomainPow_memWkpChart_four_two_of_laplacianDomainPow_two
   laplacianDomainPow_memWkpChart_four_two_of_twice_diff_identities
     (I := I) (M := M) g hu_h
     (fun α => twice_diff_identities_at (I := I) (M := M) g α hu_h)
-
-theorem chartSideH4Bridge_of_laplacianDomainPow_two
-    (g : SmoothRiemannianMetric I M)
-    {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
-    DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH4Bridge.ChartSideH4Bridge
-      (I := I) (M := M)
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :=
-  chartSideH4Bridge_of_chartSideH2kBridge_two (I := I) (M := M)
-    (chartSideH2kBridge_two_of_laplacianDomainPow_two
-      (I := I) (M := M) g hu_h)
 
 end ChartPushedMemWkpFour
 end Laplacian

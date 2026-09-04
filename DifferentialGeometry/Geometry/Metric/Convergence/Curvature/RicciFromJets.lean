@@ -21,7 +21,7 @@ set_option autoImplicit false
 noncomputable section
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology BigOperators
 
@@ -174,7 +174,7 @@ private lemma sRep_pd2_val
                 (covSection (I := I) (leviCivitaConnectionOfMetric (I := I) gRef)
                   (leviCivitaConnectionOfMetric_contMDiffCovariantDerivative
                     (I := I) gRef) σm (W a))) σmm x := by
-  have hαtgt : extChartAt I x x ∈ (extChartAt I x).target :=
+  have hαtarget : extChartAt I x x ∈ (extChartAt I x).target :=
     (extChartAt I x).map_source (mem_extChartAt_source (I := I) x)
   have hgerm := sRep_fderiv_germ gRef x A0 0 W ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m) σm hσm
   have hinner : DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (sRep gRef x A0 0 W)
@@ -185,7 +185,7 @@ private lemma sRep_pd2_val
           (towerStep (I := I) gRef A0 0 W σm)) (extChartAt I x x) := by
     rw [hinner]
     exact hgerm.fderiv_eq
-  set corr : Fin 2 → (E → Real) := fun a =>
+  set correction : Fin 2 → (E → Real) := fun a =>
     sRep gRef x A0 0
       (Function.update W a
         (covSection (I := I) (leviCivitaConnectionOfMetric (I := I) gRef)
@@ -194,23 +194,23 @@ private lemma sRep_pd2_val
   have hsplit := towerStep_rep_split gRef x A0 0 W σm
   have hsplit' : writtenInExtChartAt I 𝓘(Real, Real) x
       (towerStep (I := I) gRef A0 0 W σm) =
-        fun z => sRep gRef x A0 1 (Fin.cons σm W) z + ∑ a : Fin 2, corr a z := by
+        fun z => sRep gRef x A0 1 (Fin.cons σm W) z + ∑ a : Fin 2, correction a z := by
     rw [hsplit]
   have hd1 : DifferentiableAt Real (sRep gRef x A0 1 (Fin.cons σm W))
-      (extChartAt I x x) := sRep_diffAt gRef x A0 1 (Fin.cons σm W) hαtgt
-  have hdc : ∀ a : Fin 2, DifferentiableAt Real (corr a) (extChartAt I x x) :=
-    fun a => sRep_diffAt gRef x A0 0 _ hαtgt
+      (extChartAt I x x) := sRep_diffAt gRef x A0 1 (Fin.cons σm W) hαtarget
+  have hdc : ∀ a : Fin 2, DifferentiableAt Real (correction a) (extChartAt I x x) :=
+    fun a => sRep_diffAt gRef x A0 0 _ hαtarget
   have hsum : fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x
         (towerStep (I := I) gRef A0 0 W σm)) (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
       = fderiv Real (sRep gRef x A0 1 (Fin.cons σm W)) (extChartAt I x x)
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
-        + ∑ a : Fin 2, fderiv Real (corr a) (extChartAt I x x)
+        + ∑ a : Fin 2, fderiv Real (correction a) (extChartAt I x x)
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm) := by
     have hcsum := (hdc 0).hasFDerivAt.add (hdc 1).hasFDerivAt
     have htot : HasFDerivAt (writtenInExtChartAt I 𝓘(Real, Real) x
         (towerStep (I := I) gRef A0 0 W σm))
         (fderiv Real (sRep gRef x A0 1 (Fin.cons σm W)) (extChartAt I x x)
-          + ∑ a : Fin 2, fderiv Real (corr a) (extChartAt I x x)) (extChartAt I x x) := by
+          + ∑ a : Fin 2, fderiv Real (correction a) (extChartAt I x x)) (extChartAt I x x) := by
       rw [hsplit']
       simp only [Fin.sum_univ_two]
       exact hd1.hasFDerivAt.add hcsum
@@ -225,7 +225,7 @@ private lemma sRep_pd2_val
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm) := by rw [hfd]
     _ = fderiv Real (sRep gRef x A0 1 (Fin.cons σm W)) (extChartAt I x x)
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
-          + ∑ a : Fin 2, fderiv Real (corr a) (extChartAt I x x)
+          + ∑ a : Fin 2, fderiv Real (correction a) (extChartAt I x x)
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm) := hsum
     _ = towerStep (I := I) gRef A0 1 (Fin.cons σm W) σmm x
           + ∑ a : Fin 2,
@@ -241,8 +241,8 @@ private lemma sRep_pd2_val
         rw [sRep_pd_val gRef x A0 1 (Fin.cons σm W) mm σmm hσmm]
         congr 1
         refine Finset.sum_congr rfl fun a _ => ?_
-        rw [show fderiv Real (corr a) (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
-            = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) mm (corr a) (extChartAt I x x) from rfl]
+        rw [show fderiv Real (correction a) (extChartAt I x x) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) mm)
+            = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) mm (correction a) (extChartAt I x x) from rfl]
         exact sRep_pd_val gRef x A0 0 _ mm σmm hσmm
 
 omit [Module.Finite ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
@@ -431,13 +431,13 @@ private lemma gram_germ
     chartGramOnE (I := I) u x i j
       =ᶠ[𝓝 (extChartAt I x x)]
       sRep gRef x (Tensor0SBundle.metricTensorField (I := I) u) 0 ![σi, σj] := by
-  have hαtgt : extChartAt I x x ∈ (extChartAt I x).target :=
+  have hαtarget : extChartAt I x x ∈ (extChartAt I x).target :=
     (extChartAt I x).map_source (mem_extChartAt_source (I := I) x)
   have hx : (extChartAt I x).symm (extChartAt I x x) = x :=
     (extChartAt I x).left_inv (mem_extChartAt_source (I := I) x)
   have htend : Filter.Tendsto (extChartAt I x).symm
       (𝓝 (extChartAt I x x)) (𝓝 x) := by
-    have h := (continuousAt_extChartAt_symm'' (I := I) (x := x) hαtgt).tendsto
+    have h := (continuousAt_extChartAt_symm'' (I := I) (x := x) hαtarget).tendsto
     rwa [hx] at h
   have hσi0 : ∀ᶠ q in 𝓝 x,
       σi q = tangentConstInChart (𝕜 := Real) (I := I) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) q := by
@@ -1331,11 +1331,11 @@ theorem chartRicci_sub_le
   obtain ⟨Mb, hMb0, hMb⟩ := invGram_le_of_low gRef x lam hlam
   have hxbase : x ∈ (trivializationAt E (TangentSpace I : M → Type _) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x
-  have hαtgt : extChartAt I x x ∈ (extChartAt I x).target :=
+  have hαtarget : extChartAt I x x ∈ (extChartAt I x).target :=
     (extChartAt I x).map_source (mem_extChartAt_source (I := I) x)
   have hyInt : extChartAt I x x ∈ interior (extChartAt I x).target := by
     rw [(isOpen_extChartAt_target (I := I) x).interior_eq]
-    exact hαtgt
+    exact hαtarget
   have hψ : (extChartAt I x).symm (extChartAt I x x) = x :=
     (extChartAt I x).left_inv (mem_extChartAt_source (I := I) x)
   set nR : Real := (Module.finrank Real E : Real) with hnR
@@ -1731,7 +1731,7 @@ theorem ricciSub_le_dNorm
 
 omit [Module.Finite ℝ E] in
 omit [IsManifold I 2 M] in
-theorem ricciConv_of_dnConv
+theorem ricciConvergence_of_dnConvergence
     [Module.Finite ℝ E]
     (gSeq : ℕ → Real → SmoothRiemannianMetric I M)
     (gInf : Real → SmoothRiemannianMetric I M)
@@ -2051,7 +2051,7 @@ theorem scalarSub_le_dNorm
 
 omit [Module.Finite ℝ E] in
 omit [IsManifold I 2 M] in
-theorem scalarConv_of_dnConv
+theorem scalarConvergence_of_dnConvergence
     [Module.Finite ℝ E]
     (gSeq : ℕ → Real → SmoothRiemannianMetric I M)
     (gInf : Real → SmoothRiemannianMetric I M)
@@ -2391,7 +2391,7 @@ theorem ricNormSub_le_dn (lam B : Real) (hlam : 0 < lam) (hB : 0 ≤ B) :
   rw [hEq]
   exact mul_le_mul_of_nonneg_right (by linarith) hS0
 omit [IsManifold I 2 M] in
-theorem ricNormConv_of_dn
+theorem ricNormConvergence_of_dn
     (gSeq : ℕ → Real → SmoothRiemannianMetric I M)
     (gInf : Real → SmoothRiemannianMetric I M)
     (β ψ lam B : Real) (hlam : 0 < lam) (hB : 0 ≤ B)
@@ -2438,5 +2438,5 @@ theorem ricNormConv_of_dn
 
 end ScalarEndpoints
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

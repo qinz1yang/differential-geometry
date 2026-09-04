@@ -280,24 +280,6 @@ structure DiffTwiceChartBilinearH1ComplData
           fChartDeriv2 y * ψ y
         ∂(volume : Measure EuclN))
 
-abbrev base1Data
-    [I.Boundaryless] [T2Space M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α) :
-    DiffChartBilinearH1ComplData (I := I) (M := M) g α := D.base1
-
-abbrev baseData
-    [I.Boundaryless] [T2Space M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α) :
-    ChartBilinearH1ComplData (I := I) (M := M) g α := D.base1.base
-
-abbrev direction1
-    [I.Boundaryless] [T2Space M] [CompactSpace M]
-    {g : SmoothRiemannianMetric I M} {α : M}
-    (D : DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α) :
-    Fin (Module.finrank ℝ E) := D.base1.direction
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem twice_differentiated_chart_bilinear_identity
     [I.Boundaryless] [T2Space M] [CompactSpace M]
@@ -305,7 +287,7 @@ theorem twice_differentiated_chart_bilinear_identity
     (D : DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -367,16 +349,16 @@ theorem twice_differentiated_chart_bilinear_identity
       densityDerivOnEuclid (I := I) g α D.base1.direction y *
         D.fChartDeriv2 y * ψ y
       ∂(volume : Measure EuclN)) :=
-  D.twice_differentiated_variational_identity ψ hψ hψ_cs hψ_supp
+  D.twice_differentiated_variational_identity ψ hψ hψ_cs hψ_support
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem differentiated_chart_bilinear_identity_via_base1
+theorem differentiated_chart_bilinear_identity_of_twice_differentiated
     [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -405,16 +387,16 @@ theorem differentiated_chart_bilinear_identity_via_base1
       densityDerivOnEuclid (I := I) g α D.base1.direction y *
         D.base1.base.fChart y * ψ y
       ∂(volume : Measure EuclN)) :=
-  D.base1.differentiated_variational_identity ψ hψ hψ_cs hψ_supp
+  D.base1.differentiated_variational_identity ψ hψ hψ_cs hψ_support
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem base_chart_bilinear_identity_via_base1
+theorem base_chart_bilinear_identity_of_twice_differentiated
     [I.Boundaryless] [T2Space M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α)
     {ψ : EuclN → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
+    (hψ_support : tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -428,7 +410,7 @@ theorem base_chart_bilinear_identity_via_base1
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y * D.base1.base.fChart y * ψ y
       ∂(volume : Measure EuclN) :=
-  D.base1.base.variational_identity ψ hψ hψ_cs hψ_supp
+  D.base1.base.variational_identity ψ hψ hψ_cs hψ_support
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem u_chart_second_deriv_isMixedWeakPartial
@@ -465,7 +447,7 @@ noncomputable def chosenSecondPartialUChartDeriv
     {g : SmoothRiemannianMetric I M} {α : M}
     (D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (l₂ : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 l₂ D₁.uChartDeriv
     (chartTargetEuclid (I := I) (M := M) α)
 
@@ -473,7 +455,7 @@ noncomputable def chosenSecondPartialFChartDeriv
     {g : SmoothRiemannianMetric I M} {α : M}
     (D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (l₂ : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 l₂ D₁.fChartDeriv
     (chartTargetEuclid (I := I) (M := M) α)
 
@@ -481,7 +463,7 @@ noncomputable def chosenSecondPartialWeakPartialDeriv
     {g : SmoothRiemannianMetric I M} {α : M}
     (D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (i l₂ : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 l₂ (D₁.weakPartialDeriv i)
     (chartTargetEuclid (I := I) (M := M) α)
 
@@ -497,7 +479,7 @@ private lemma chosenSecondPartialUChartDeriv_isWeakPartial
       D₁.uChartDeriv
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold chosenSecondPartialUChartDeriv
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
     h_memW1p l₂
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -512,7 +494,7 @@ private lemma chosenSecondPartialFChartDeriv_isWeakPartial
       D₁.fChartDeriv
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold chosenSecondPartialFChartDeriv
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
     h_memW1p l₂
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -528,7 +510,7 @@ private lemma chosenSecondPartialWeakPartialDeriv_isWeakPartial
       (D₁.weakPartialDeriv i)
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold chosenSecondPartialWeakPartialDeriv
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
     h_memW1p l₂
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -542,7 +524,7 @@ private lemma chosenSecondPartialUChartDeriv_memLp
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   unfold chosenSecondPartialUChartDeriv
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
     h_memW1p l₂
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -556,7 +538,7 @@ private lemma chosenSecondPartialFChartDeriv_memLp
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   unfold chosenSecondPartialFChartDeriv
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
     h_memW1p l₂
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -571,7 +553,7 @@ private lemma chosenSecondPartialWeakPartialDeriv_memLp
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   unfold chosenSecondPartialWeakPartialDeriv
-  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
     h_memW1p l₂
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]

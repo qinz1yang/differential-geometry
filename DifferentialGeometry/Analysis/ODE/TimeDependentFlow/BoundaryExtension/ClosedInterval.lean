@@ -283,12 +283,12 @@ private theorem autonomized_localUniform_curve
           ((fun (_ : ℝ) (q : ℝ × M) => autonomizedFlowVF Xt q) q'.1 q'.2) :
           TangentBundle (𝓘(ℝ, ℝ).prod I) (ℝ × M))) :=
     (autonomizedFlowVF_section_contMDiff Xt hXt).comp contMDiff_snd
-  obtain ⟨U, hU_open, hpt_U, T, hT_pos, Ψ, hΨinit, _hΨsm, hΨbare⟩ :=
+  obtain ⟨U, hU_open, hpt_U, T, hT_pos, Ψ, hΨinitial, _hΨsm, hΨbare⟩ :=
     local_flow_jointSmooth_and_integralCurve
       (I := 𝓘(ℝ, ℝ).prod I) (M := ℝ × M)
       (fun (_ : ℝ) (q : ℝ × M) => autonomizedFlowVF Xt q) hsm 0 pt
   refine ⟨U, hU_open, hpt_U, T, hT_pos, fun q hq => ⟨fun s => Ψ q s, ?_, ?_⟩⟩
-  · have := hΨinit q hq; simpa using this
+  · have := hΨinitial q hq; simpa using this
   · intro t ht
     exact (hΨbare q hq t (by simpa using ht)).hasMFDerivWithinAt
 
@@ -313,11 +313,11 @@ private theorem autonomized_localUniform_jointSmooth
           ((fun (_ : ℝ) (q : ℝ × M) => autonomizedFlowVF Xt q) q'.1 q'.2) :
           TangentBundle (𝓘(ℝ, ℝ).prod I) (ℝ × M))) :=
     (autonomizedFlowVF_section_contMDiff Xt hXt).comp contMDiff_snd
-  obtain ⟨U, hU_open, hpt_U, T, hT_pos, Ψ, hΨinit, hΨsm, hΨbare⟩ :=
+  obtain ⟨U, hU_open, hpt_U, T, hT_pos, Ψ, hΨinitial, hΨsm, hΨbare⟩ :=
     local_flow_jointSmooth_and_integralCurve
       (I := 𝓘(ℝ, ℝ).prod I) (M := ℝ × M)
       (fun (_ : ℝ) (q : ℝ × M) => autonomizedFlowVF Xt q) hsm 0 pt
-  refine ⟨U, hU_open, hpt_U, T, hT_pos, Ψ, hΨinit, ?_, fun q hq t ht => ?_⟩
+  refine ⟨U, hU_open, hpt_U, T, hT_pos, Ψ, hΨinitial, ?_, fun q hq t ht => ?_⟩
   · have hwin : Set.Ioo (-T) T ×ˢ U = Set.Ioo ((0 : ℝ) - T) (0 + T) ×ˢ U := by
       rw [zero_sub, zero_add]
     rw [hwin]; exact hΨsm

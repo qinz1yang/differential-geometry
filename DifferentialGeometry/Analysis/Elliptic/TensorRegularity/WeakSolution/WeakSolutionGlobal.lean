@@ -726,13 +726,13 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
 private lemma image_tsupport_isCompact
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
-    (hS_supp : tsupport S.toFun ⊆ (chartAt H α).source) :
+    (hS_support : tsupport S.toFun ⊆ (chartAt H α).source) :
     IsCompact (toEuclidean '' ((extChartAt I α) '' tsupport S.toFun)) := by
   have hcontOn : ContinuousOn (extChartAt I α) (tsupport S.toFun) := by
     refine (continuousOn_extChartAt (I := I) α).mono ?_
     intro x hx
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hS_supp hx
+    exact hS_support hx
   have hTcompact : IsCompact (tsupport S.toFun) := S.hasCompactSupport
   have himg1 : IsCompact ((extChartAt I α) '' tsupport S.toFun) :=
     hTcompact.image_of_continuousOn hcontOn
@@ -743,15 +743,15 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
 private lemma image_tsupport_subset_target
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
-    (hS_supp : tsupport S.toFun ⊆ (chartAt H α).source) :
+    (hS_support : tsupport S.toFun ⊆ (chartAt H α).source) :
     toEuclidean '' ((extChartAt I α) '' tsupport S.toFun) ⊆
       chartTargetEuclid (I := I) (M := M) α := by
   rintro y ⟨w, ⟨x, hx, rfl⟩, rfl⟩
   refine ⟨(extChartAt I α) x, ?_, rfl⟩
-  have hx_src : x ∈ (extChartAt I α).source := by
+  have hx_source : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hS_supp hx
-  exact (extChartAt I α).map_source hx_src
+    exact hS_support hx
+  exact (extChartAt I α).map_source hx_source
 
 omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -759,8 +759,8 @@ theorem tensorComponentWeakRHS_contDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T F : SmoothCcTensor g r s) (α : M)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source)
-    (hF_supp : tsupport F.toFun ⊆ (chartAt H α).source) :
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source)
+    (hF_support : tsupport F.toFun ⊆ (chartAt H α).source) :
     ContDiff ℝ ∞
       (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) := by
   classical
@@ -772,13 +772,13 @@ theorem tensorComponentWeakRHS_contDiff
   set CF : Set EuclN := toEuclidean '' ((extChartAt I α) '' tsupport F.toFun)
     with hCF_def
   have hCT_compact : IsCompact CT :=
-    image_tsupport_isCompact (I := I) (M := M) g r s T α hT_supp
+    image_tsupport_isCompact (I := I) (M := M) g r s T α hT_support
   have hCF_compact : IsCompact CF :=
-    image_tsupport_isCompact (I := I) (M := M) g r s F α hF_supp
+    image_tsupport_isCompact (I := I) (M := M) g r s F α hF_support
   have hCT_target : CT ⊆ chartTargetEuclid (I := I) (M := M) α :=
-    image_tsupport_subset_target (I := I) (M := M) g r s T α hT_supp
+    image_tsupport_subset_target (I := I) (M := M) g r s T α hT_support
   have hCF_target : CF ⊆ chartTargetEuclid (I := I) (M := M) α :=
-    image_tsupport_subset_target (I := I) (M := M) g r s F α hF_supp
+    image_tsupport_subset_target (I := I) (M := M) g r s F α hF_support
   have hK'_compact : IsCompact (CT ∪ CF) := hCT_compact.union hCF_compact
   have hK'_target : CT ∪ CF ⊆ chartTargetEuclid (I := I) (M := M) α :=
     Set.union_subset hCT_target hCF_target

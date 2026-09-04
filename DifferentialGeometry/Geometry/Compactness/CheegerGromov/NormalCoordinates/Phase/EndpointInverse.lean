@@ -11,7 +11,7 @@ open Filter Set Topology Metric
 open scoped Manifold ContDiff NNReal Topology
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -124,5 +124,5 @@ theorem exists_normal_inv
   exact ⟨q, Φ, e, δ, hq, hqRadius, hΦ0, hΦcont, hΦderiv, hΦbox,
     hδ, hsource, hcoe, htarget⟩
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

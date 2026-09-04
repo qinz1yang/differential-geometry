@@ -24,7 +24,7 @@ open DifferentialGeometry.PDE.RicciFlow (SolutionOn IsSolutionOn MetricVariation
   ricciNorm SolutionFamily RicciAtFamily)
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]
@@ -111,11 +111,11 @@ theorem ricciTensor_restrictOpen
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [(g.restrictOpen (I := I) U).symm x
         (riemannOp (LeviCivita (I := I) (g.restrictOpen (I := I) U)) x (BU i) v w) (BU i),
-    ← metricRm04StdAt_eq_inner_riemannOp (I := I) (M := U) (g.restrictOpen (I := I) U)
+    ← metricRm04StandardAt_eq_inner_riemannOp (I := I) (M := U) (g.restrictOpen (I := I) U)
         x (BU i) v w (BU i),
-    metricRm04StdAt_restrictOpen (I := I) g U x (BU i) v w (BU i),
+    metricRm04StandardAt_restrictOpen (I := I) g U x (BU i) v w (BU i),
     hBU_apply,
-    metricRm04StdAt_eq_inner_riemannOp (I := I) (M := M) g (x : M)
+    metricRm04StandardAt_eq_inner_riemannOp (I := I) (M := M) g (x : M)
       (Bf i) (mfderiv I I (Subtype.val : U → M) x v)
       (mfderiv I I (Subtype.val : U → M) x w) (Bf i),
     g.symm (x : M) (Bf i)
@@ -247,18 +247,18 @@ theorem metricRm04_restrictOpen_eval
       = metricRm04 (I := I) (M := M) g (x : M)
           (fun q => mfderiv I I (Subtype.val : U → M) x (slots q)) := by
   have hLHS : metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
-      = metricRm04StdAt (I := I) (M := U) (g.restrictOpen (I := I) U) x
+      = metricRm04StandardAt (I := I) (M := U) (g.restrictOpen (I := I) U) x
           (slots 0) (slots 1) (slots 2) (slots 3) := by
     have hcmm : metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x slots
         = metricRm04 (I := I) (M := U) (g.restrictOpen (I := I) U) x
             (vec4 (slots 0) (slots 1) (slots 2) (slots 3)) :=
       congrArg _ (by funext i; fin_cases i <;> rfl)
     rw [hcmm, metricRm04_apply]
-    exact (metricRm04StdAt_apply (I := I) (M := U) (g.restrictOpen (I := I) U) x
+    exact (metricRm04StandardAt_apply (I := I) (M := U) (g.restrictOpen (I := I) U) x
       (slots 0) (slots 1) (slots 2) (slots 3)).symm
   have hRHS : metricRm04 (I := I) (M := M) g (x : M)
         (fun q => mfderiv I I (Subtype.val : U → M) x (slots q))
-      = metricRm04StdAt (I := I) (M := M) g (x : M)
+      = metricRm04StandardAt (I := I) (M := M) g (x : M)
           (mfderiv I I (Subtype.val : U → M) x (slots 0))
           (mfderiv I I (Subtype.val : U → M) x (slots 1))
           (mfderiv I I (Subtype.val : U → M) x (slots 2))
@@ -272,13 +272,13 @@ theorem metricRm04_restrictOpen_eval
               (mfderiv I I (Subtype.val : U → M) x (slots 3))) :=
       congrArg _ (by funext i; fin_cases i <;> rfl)
     rw [hcmm, metricRm04_apply]
-    exact (metricRm04StdAt_apply (I := I) (M := M) g (x : M)
+    exact (metricRm04StandardAt_apply (I := I) (M := M) g (x : M)
       (mfderiv I I (Subtype.val : U → M) x (slots 0))
       (mfderiv I I (Subtype.val : U → M) x (slots 1))
       (mfderiv I I (Subtype.val : U → M) x (slots 2))
       (mfderiv I I (Subtype.val : U → M) x (slots 3))).symm
   rw [hLHS, hRHS]
-  exact metricRm04StdAt_restrictOpen (I := I) g U x (slots 0) (slots 1) (slots 2) (slots 3)
+  exact metricRm04StandardAt_restrictOpen (I := I) g U x (slots 0) (slots 1) (slots 2) (slots 3)
 
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
@@ -698,5 +698,5 @@ theorem isSolutionOn_restrictOpen
     exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I)
       ((solutionOnRestrictOpen (I := I) S U).family.metric t) hsmooth x
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

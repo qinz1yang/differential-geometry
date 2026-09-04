@@ -12,7 +12,7 @@ open scoped ContDiff ENNReal Manifold Topology
 namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
-namespace CGT
+namespace CheegerGromovTaylor
 
 open Exponential NormalCoordinates
 
@@ -46,7 +46,7 @@ theorem exists_lift_family
         (Metric.ball (0 : E) R)) :
     ∃ lift :
         (t : unitInterval) →
-          IntrFrameLift (I := I) g hEnorm x
+          IntrinsicFrameLift (I := I) g hEnorm x
             (F.hom.eval t).extend 0 1,
       ∀ t : unitInterval,
         (lift t).toFun 1 = (lift 0).toFun 1 := by
@@ -71,13 +71,13 @@ theorem exists_lift_family
     (F.flat t).c1.contMDiffOn
   have hex (t : unitInterval) :
       Nonempty
-        (IntrFrameLift (I := I) g hEnorm x
+        (IntrinsicFrameLift (I := I) g hEnorm x
           (F.hom.eval t).extend 0 1) :=
     exists_intr_lift (I := I) g hEnorm x zero_le_one
       (hcd t) (hstart t) hR (hlen t) hloc
   let lift :
       (t : unitInterval) →
-        IntrFrameLift (I := I) g hEnorm x
+        IntrinsicFrameLift (I := I) g hEnorm x
           (F.hom.eval t).extend 0 1 :=
     fun t => Classical.choice (hex t)
   let U : Opens E := ⟨Metric.ball (0 : E) R, Metric.isOpen_ball⟩
@@ -134,10 +134,10 @@ theorem lift_end_eq
         (intrinsicFramedExp (I := I) g hEnorm x)
         (Metric.ball (0 : E) R))
     (P :
-      IntrFrameLift (I := I) g hEnorm x
+      IntrinsicFrameLift (I := I) g hEnorm x
         (F.hom.eval 0).extend 0 1)
     (Q :
-      IntrFrameLift (I := I) g hEnorm x
+      IntrinsicFrameLift (I := I) g hEnorm x
         (F.hom.eval 1).extend 0 1) :
     P.toFun 1 = Q.toFun 1 := by
   obtain ⟨lift, hend⟩ := F.exists_lift_family hLR hloc
@@ -165,7 +165,7 @@ theorem lift_end_eq
 
 end ShortHomotopy
 
-namespace IntrFrameLift
+namespace IntrinsicFrameLift
 
 variable {g : SmoothRiemannianMetric I M}
   {hEnorm : ∀ (x : M) (v : TangentSpace I x),
@@ -175,9 +175,9 @@ variable {g : SmoothRiemannianMetric I M}
 
 theorem append_mid_eq
     (A :
-      IntrFrameLift (I := I) g hEnorm x p.extend 0 1)
+      IntrinsicFrameLift (I := I) g hEnorm x p.extend 0 1)
     (P :
-      IntrFrameLift (I := I) g hEnorm x (p.trans c).extend 0 1)
+      IntrinsicFrameLift (I := I) g hEnorm x (p.trans c).extend 0 1)
     (hR : 0 < R)
     (hp : pathLen (I := I) p < ENNReal.ofReal R)
     (hpc : pathLen (I := I) (p.trans c) < ENNReal.ofReal R)
@@ -226,9 +226,9 @@ theorem append_mid_eq
 
 theorem cancel_right
     (P :
-      IntrFrameLift (I := I) g hEnorm x (p.trans c).extend 0 1)
+      IntrinsicFrameLift (I := I) g hEnorm x (p.trans c).extend 0 1)
     (Q :
-      IntrFrameLift (I := I) g hEnorm x (q.trans c).extend 0 1)
+      IntrinsicFrameLift (I := I) g hEnorm x (q.trans c).extend 0 1)
     (hR : 0 < R)
     (hpc : pathLen (I := I) (p.trans c) < ENNReal.ofReal R)
     (hqc : pathLen (I := I) (q.trans c) < ENNReal.ofReal R)
@@ -275,13 +275,13 @@ theorem cancel_right
 
 theorem end_eq_of_append
     (A :
-      IntrFrameLift (I := I) g hEnorm x p.extend 0 1)
+      IntrinsicFrameLift (I := I) g hEnorm x p.extend 0 1)
     (B :
-      IntrFrameLift (I := I) g hEnorm x q.extend 0 1)
+      IntrinsicFrameLift (I := I) g hEnorm x q.extend 0 1)
     (P :
-      IntrFrameLift (I := I) g hEnorm x (p.trans c).extend 0 1)
+      IntrinsicFrameLift (I := I) g hEnorm x (p.trans c).extend 0 1)
     (Q :
-      IntrFrameLift (I := I) g hEnorm x (q.trans c).extend 0 1)
+      IntrinsicFrameLift (I := I) g hEnorm x (q.trans c).extend 0 1)
     (hR : 0 < R)
     (hp : pathLen (I := I) p < ENNReal.ofReal R)
     (hq : pathLen (I := I) q < ENNReal.ofReal R)
@@ -301,7 +301,7 @@ theorem end_eq_of_append
     _ = B.toFun 1 :=
       append_mid_eq B Q hR hq hqc hloc
 
-end IntrFrameLift
+end IntrinsicFrameLift
 
 namespace ShortHomotopy
 
@@ -320,12 +320,12 @@ theorem lift_end_cancel
       IsLocalDiffeomorphOn 𝓘(Real, E) I ∞
         (intrinsicFramedExp (I := I) g hEnorm x)
         (Metric.ball (0 : E) R))
-    (P : IntrFrameLift (I := I) g hEnorm x p.extend 0 1)
-    (Q : IntrFrameLift (I := I) g hEnorm x q.extend 0 1) :
+    (P : IntrinsicFrameLift (I := I) g hEnorm x p.extend 0 1)
+    (Q : IntrinsicFrameLift (I := I) g hEnorm x q.extend 0 1) :
     P.toFun 1 = Q.toFun 1 := by
   obtain ⟨lift, hend⟩ := F.exists_lift_family hLR hloc
   let T :
-      IntrFrameLift (I := I) g hEnorm x
+      IntrinsicFrameLift (I := I) g hEnorm x
         (p.trans c).extend 0 1 := {
     toFun := (lift (0 : unitInterval)).toFun
     contDiff := (lift (0 : unitInterval)).contDiff
@@ -333,7 +333,7 @@ theorem lift_end_cancel
     lifts := by
       simpa using (lift (0 : unitInterval)).lifts }
   let U :
-      IntrFrameLift (I := I) g hEnorm x
+      IntrinsicFrameLift (I := I) g hEnorm x
         (q.trans c).extend 0 1 := {
     toFun := (lift (1 : unitInterval)).toFun
     contDiff := (lift (1 : unitInterval)).contDiff
@@ -357,12 +357,12 @@ theorem lift_end_cancel
   have hTU : T.toFun 1 = U.toFun 1 := by
     exact (hend (1 : unitInterval)).symm
   exact
-    IntrFrameLift.end_eq_of_append P Q T U hR hpR hqR hpc hqc
+    IntrinsicFrameLift.end_eq_of_append P Q T U hR hpR hqR hpc hqc
       hloc hTU
 
 end ShortHomotopy
 
-end CGT
+end CheegerGromovTaylor
 end Riemannian
 end Geometry
 end DifferentialGeometry

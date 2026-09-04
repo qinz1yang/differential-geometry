@@ -85,22 +85,22 @@ theorem scalar_curvature_positive_of_nonnegative_initial
   have hscalarContinuous : ContinuousOn
       (fun p : Real × M ↦ S.scalar p.1 p.2)
       (spacetimeSlab (M := M) T) := by
-    exact hS.scalarReg.scalar_continuousOn.mono
+    exact hS.scalarRegularity.scalar_continuousOn.mono
       (Set.prod_mono hcarrier Set.Subset.rfl)
   have hscalarTime : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
       DifferentiableWithinAt Real (fun s : Real ↦ S.scalar s x)
         (Set.Icc 0 T) t := by
     intro t ht x
-    exact hS.scalarReg.scalar_time_within ht hcarrier x
+    exact hS.scalarRegularity.scalar_time_within ht hcarrier x
   have hscalarSpace : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
       MDifferentiableAt I (modelWithCornersSelf Real Real) (S.scalar t) x := by
     intro t ht x
-    exact hS.scalarReg.scalar_space t (hcarrier ht) x
+    exact hS.scalarRegularity.scalar_space t (hcarrier ht) x
   have hscalarGrad : ∀ t ∈ Set.Icc 0 T, ∀ x : M,
       MDiffAt (T% fun y : M ↦
         gradientFun (I := I) (G.metric t) (S.scalar t) y) x := by
     intro t ht x
-    exact hS.scalarReg.scalar_grad t (hcarrier ht) x
+    exact hS.scalarRegularity.scalar_grad t (hcarrier ht) x
   have hscalarHeatSuper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       0 ≤ derivWithin (fun s : Real ↦ S.scalar s x) (Set.Icc 0 T) t -
         laplacianAt (I := I) G t (S.scalar t) x := by
@@ -211,7 +211,7 @@ theorem scalar_curvature_positive_of_nonnegative_initial
     exact h
   have huContinuous : ContinuousOn (fun p : Real × M ↦ u' p.1 p.2)
       (spacetimeSlab (M := M) T') := by
-    have h := (hS.scalarReg.scalar_continuousOn.mono
+    have h := (hS.scalarRegularity.scalar_continuousOn.mono
       (Set.prod_mono (hwindow.trans D.regular_subset) Set.Subset.rfl)).comp
         hmapContinuous.continuousOn hmap
     change ContinuousOn (fun p : Real × M => S.scalar (p.1 + a) p.2)
@@ -239,13 +239,13 @@ theorem scalar_curvature_positive_of_nonnegative_initial
   have huSpace : ∀ s ∈ Set.Icc 0 T', 0 < s → ∀ x : M,
       MDifferentiableAt I (modelWithCornersSelf Real Real) (u' s) x := by
     intro s hs hspos x
-    exact hS.scalarReg.scalar_space (s + a)
+    exact hS.scalarRegularity.scalar_space (s + a)
       (D.regular_subset (hwindow (hshift s hs))) x
   have huGrad : ∀ s ∈ Set.Icc 0 T', 0 < s → ∀ x : M,
       MDiffAt (T% fun y : M ↦
         gradientFun (I := I) (G'.metric s) (u' s) y) x := by
     intro s hs hspos x
-    exact hS.scalarReg.scalar_grad (s + a)
+    exact hS.scalarRegularity.scalar_grad (s + a)
       (D.regular_subset (hwindow (hshift s hs))) x
   have huSuper : ∀ s ∈ Set.Icc 0 T', 0 < s → ∀ x : M,
       0 ≤ derivWithin (fun r : Real ↦ u' r x) (Set.Icc 0 T') s -

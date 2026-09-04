@@ -54,17 +54,17 @@ theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
     rw [basisTensor0S_component, component0S_apply,
       Tensor0SSpace.constInChart_apply (I := I) r hxE]
     rw [coordinateFrameAt_toBasis_eq_finBasis (I := I) x₀]
-    have hx_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
+    have hx_source : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     have hclm :
         (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt 𝕜 x₀ =
           (tangentBundleCore I M).coordChange (achart H x₀) (achart H x₀) x₀ := by
       exact TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
-        (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := x₀) hx_src
+        (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := x₀) hx_source
     have hcoord :
         (tangentBundleCore I M).coordChange (achart H x₀) (achart H x₀) x₀ =
           ContinuousLinearMap.id 𝕜 E := by
       ext v
-      exact (tangentBundleCore I M).coordChange_self (achart H x₀) x₀ hx_src v
+      exact (tangentBundleCore I M).coordChange_self (achart H x₀) x₀ hx_source v
     rw [hclm]
     rw [hcoord]
     change
@@ -75,9 +75,9 @@ theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
     rw [← continuousMultilinearMap_basis_repr (Module.finBasis 𝕜 E) r,
       Module.Basis.repr_self, Finsupp.single_apply]
   · funext b
-    have hx_src : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
+    have hx_source : x₀ ∈ (chartAt H x₀).source := mem_chart_source H x₀
     rw [coordinateFrameAt_toBasis_eq_finBasis (I := I) x₀]
-    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_src]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hx_source]
     rw [mfderivWithin_range_extChartAt_symm]
     rfl
 
@@ -110,18 +110,18 @@ private theorem model_RS_component_eq_coord_component_comp_eventually {r s : ℕ
     (r := r) (s := s)]
   · congr 2
     funext b
-    have hy_src : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
+    have hy_source : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
       rw [← extChartAt_source (I := I)]
       exact (extChartAt I x₀).map_target hy
     have hy_base : (extChartAt I x₀).symm y ∈ coordinateFrameSet (I := I) x₀ := by
-      simpa [coordinateFrameSet, coordinateTrivializationAt] using hy_src
+      simpa [coordinateFrameSet, coordinateTrivializationAt] using hy_source
     rw [coordinateFrameAt_apply_of_mem (I := I) hy_base (lower b)]
-    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hy_src]
+    rw [TangentBundle.symmL_trivializationAt (I := I) (𝕜 := 𝕜) hy_source]
     rfl
-  · have hy_src : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
+  · have hy_source : (extChartAt I x₀).symm y ∈ (chartAt H x₀).source := by
       rw [← extChartAt_source (I := I)]
       exact (extChartAt I x₀).map_target hy
-    simpa [trivializationAt] using hy_src
+    simpa [trivializationAt] using hy_source
 
 omit [IsManifold I 2 M] in
 theorem modelDeriv_eq_coordDerivRSAt {r s : ℕ}

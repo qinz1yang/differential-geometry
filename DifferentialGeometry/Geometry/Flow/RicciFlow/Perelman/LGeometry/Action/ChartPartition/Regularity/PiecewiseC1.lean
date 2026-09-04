@@ -25,7 +25,7 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [CompactSpace M] in
-theorem lRegAction_minimizer_chart_piece_contDiffOn_one
+theorem lRegularizedAction_minimizer_chart_piece_contDiffOn_one
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
@@ -42,7 +42,7 @@ theorem lRegAction_minimizer_chart_piece_contDiffOn_one
     (hmin : ∀ delta : Real → M,
       ContMDiff (modelWithCornersSelf Real Real) I 1 delta →
       delta a = gamma a → delta b = gamma b →
-      lRegAction S T gamma a b ≤ lRegAction S T delta a b) :
+      lRegularizedAction S T gamma a b ≤ lRegularizedAction S T delta a b) :
     ∀ i, ContDiffOn Real 1 (u i).toFun
       (Icc (0 : Real) (partitionIntervalLength t i)) := by
   classical
@@ -79,7 +79,7 @@ theorem lRegAction_minimizer_chart_piece_contDiffOn_one
   have hlocal : IsLocalMinOn
       (lChartAction S T (t i.castSucc) (p i))
       (sameTimeEnds (u i)) (u i) :=
-    lChartAction_isLocalMinOn_of_lRegAction_minimizer S hS.smoothMetric hSc T a b t ht.monotone
+    lChartAction_isLocalMinOn_of_lRegularizedAction_minimizer S hS.smoothMetric hSc T a b t ht.monotone
       ht0 htlast p gamma hgamma u hsrc hrep hreg hmin i hpos
   exact (lChartAction_minimizer_contDiffOn_one S hS T (t i.castSucc) (p i) hL
     (u i) hregi hchart hlocal).choose_spec.2.2.1

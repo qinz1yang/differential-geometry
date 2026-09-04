@@ -214,13 +214,13 @@ private lemma pou_smul_eq_pou_smul_cutoff_smul
   classical
   by_cases hρ : ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0
   · rw [hρ, zero_mul, zero_mul]
-  · have hx_supp : x ∈
+  · have hx_support : x ∈
         tsupport
           (fun y : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) y) :=
       subset_tsupport _ hρ
     have hχ : ((chartKernelCutoff (I := I) (M := M) α : C^∞⟮I, M; ℝ⟯) :
         M → ℝ) x = 1 :=
-      chartKernelCutoff_eqOn_one (I := I) (M := M) α hx_supp
+      chartKernelCutoff_eqOn_one (I := I) (M := M) α hx_support
     rw [hχ, one_mul]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in

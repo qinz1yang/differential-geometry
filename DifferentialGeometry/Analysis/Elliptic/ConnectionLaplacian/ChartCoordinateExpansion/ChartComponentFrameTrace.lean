@@ -68,7 +68,7 @@ theorem tensorChartComponentRaw_rawTensorConnLap_eq_chart_frame_trace_sum
           (fun i : Fin (Module.finrank ℝ E) =>
             (chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun)
           (fun z : M => T₀.toSection z) b :=
-    rawTensorConnLap_via_chartFrameNormGlobalSmooth
+    rawTensorConnLap_eq_rawTensorConnLapFixedFrame
       (I := I) (M := M) g r s T₀ α hb
   have hSum :
       rawTensorConnLapFixedFrame (I := I) g r s

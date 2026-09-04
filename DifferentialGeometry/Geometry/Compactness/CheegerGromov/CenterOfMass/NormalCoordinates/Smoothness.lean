@@ -7,7 +7,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff Topology
@@ -33,7 +33,7 @@ variable [PseudoEMetricSpace M'] [IsRiemannianManifold I M'] [CompleteSpace M']
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
-theorem chartCm_contDiffOn
+theorem normalChartCenterOfMass_contDiffOn
     [Module.Finite ℝ E]
     [IsContinuousRiemannianBundle E (fun x : M' => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M')
@@ -61,19 +61,19 @@ theorem chartCm_contDiffOn
             join p r (H params₀))),
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv' : ∀ params₀ ∈ V, ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqn' (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E)
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E)
         (NormalCoordinates.normalChartAt (I := I) g p
           (centerOfMass (I := I) g params₀.1
             (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i))
             join p r (H params₀))))
     (hz₀' : ∀ params₀ ∈ V,
-      chartCmEqn' (I := I) g hEnorm p
+      normalChartCenterOfMassEquationStandard (I := I) g hEnorm p
         (NormalCoordinates.normalChartAt (I := I) g p
           (centerOfMass (I := I) g params₀.1
             (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i))
             join p r (H params₀))) params₀ = 0)
     (hc_solves : ∀ params₀ ∈ V, ∀ᶠ params in nhds params₀,
-      chartCmEqn' (I := I) g hEnorm p
+      normalChartCenterOfMassEquationStandard (I := I) g hEnorm p
         (NormalCoordinates.normalChartAt (I := I) g p
           (centerOfMass (I := I) g params.1
             (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
@@ -107,5 +107,5 @@ theorem chartCm_contDiffOn
 
 end NormalCoordinateSmoothness
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

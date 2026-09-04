@@ -42,13 +42,13 @@ theorem lapDiff_energy_le
         (v : TensorHs (I := I) (M := M) g 0 0 2)
         (hv : (Function.support v.coeff).Finite),
         (Module.finrank Real E : Real) *
-            DifferentialGeometry.HCGCompactness.metricDerivNormSupOn
+            DifferentialGeometry.CheegerGromovCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h g g <= (1 / 2 : Real) ->
         ∫ x, (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
             ΔG (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) <=
           C *
-            (DifferentialGeometry.HCGCompactness.metricDerivNormSupOn
+            (DifferentialGeometry.CheegerGromovCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h g g) ^ 2 * ‖v‖ ^ 2 := by
   obtain ⟨CH, hCH, hHess⟩ := hess_energy_le (I := I) (M := M) g
   let n : Real := Module.finrank Real E
@@ -61,7 +61,7 @@ theorem lapDiff_energy_le
   let hf : ContMDiff I 𝓘(Real, Real) ∞ f :=
     reprScalar0_smooth (I := I) (M := M) v hv
   let rho : Real :=
-    DifferentialGeometry.HCGCompactness.metricDerivNormSupOn
+    DifferentialGeometry.CheegerGromovCompactness.metricDerivNormSupOn
       (I := I) Set.univ 1 h g g
   let A : Real := 8 * n ^ 2 * rho ^ 2
   let B : Real := 72 * n * rho ^ 2
@@ -110,7 +110,7 @@ theorem lapDiff_energy_le
   have hpoint : forall x : M, lhs x <= rhs x := by
     intro x
     simpa only [lhs, rhs, A, B, n, rho, HessNorm, duNorm, f, hf] using
-      DifferentialGeometry.HCGCompactness.lapDiff_sq_le
+      DifferentialGeometry.CheegerGromovCompactness.lapDiff_sq_le
         (I := I) g h hf x hsmall
   have hint :
       (∫ x, lhs x ∂(riemannianVolumeMeasure (I := I) (M := M) g)) <=
@@ -154,7 +154,7 @@ theorem lapDiff_energy_le
       simp only [A, B, C]
       ring
     _ = C *
-        (DifferentialGeometry.HCGCompactness.metricDerivNormSupOn
+        (DifferentialGeometry.CheegerGromovCompactness.metricDerivNormSupOn
           (I := I) Set.univ 1 h g g) ^ 2 * ‖v‖ ^ 2 := by rfl
 
 end Spectral

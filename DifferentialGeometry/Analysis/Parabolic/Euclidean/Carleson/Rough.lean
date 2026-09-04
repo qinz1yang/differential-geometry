@@ -17,10 +17,10 @@ variable {V : Type*}
   [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V]
 
-def paraCyl (x : V) (R : ℝ) : Set (ℝ × V) :=
+def forwardParabolicCylinder (x : V) (R : ℝ) : Set (ℝ × V) :=
   Set.Ioc 0 (R ^ 2) ×ˢ Metric.ball x R
 
-def stVolume : Measure (ℝ × V) :=
+def spaceTimeVolume : Measure (ℝ × V) :=
   (volume : Measure ℝ).prod (volume : Measure V)
 
 end Cylinders
@@ -33,37 +33,37 @@ variable {V G F : Type*}
   [NormedAddCommGroup G]
   [NormedAddCommGroup F]
 
-def gradMass (d : ℝ × V → G) (x : V) (R : ℝ) : ℝ≥0∞ :=
-  ∫⁻ z in paraCyl x R, ENNReal.ofReal (‖d z‖ ^ 2) ∂(stVolume : Measure (ℝ × V))
+def gradientCarlesonMass (d : ℝ × V → G) (x : V) (R : ℝ) : ℝ≥0∞ :=
+  ∫⁻ z in forwardParabolicCylinder x R, ENNReal.ofReal (‖d z‖ ^ 2) ∂(spaceTimeVolume : Measure (ℝ × V))
 
-def srcMass (f : ℝ × V → F) (x : V) (R : ℝ) : ℝ≥0∞ :=
-  ∫⁻ z in paraCyl x R, ENNReal.ofReal ‖f z‖ ∂(stVolume : Measure (ℝ × V))
+def sourceCarlesonMass (f : ℝ × V → F) (x : V) (R : ℝ) : ℝ≥0∞ :=
+  ∫⁻ z in forwardParabolicCylinder x R, ENNReal.ofReal ‖f z‖ ∂(spaceTimeVolume : Measure (ℝ × V))
 
-structure GradCarl (T : ℝ) (C : ℝ≥0∞) (d : ℝ × V → G) : Prop where
-  ae : AEStronglyMeasurable d (stVolume : Measure (ℝ × V))
+structure GradientCarlesonBound (T : ℝ) (C : ℝ≥0∞) (d : ℝ × V → G) : Prop where
+  ae : AEStronglyMeasurable d (spaceTimeVolume : Measure (ℝ × V))
   bound : ∀ x R, 0 < R → R ^ 2 ≤ T →
-    gradMass d x R ≤ C * ENNReal.ofReal (R ^ Module.finrank ℝ V)
+    gradientCarlesonMass d x R ≤ C * ENNReal.ofReal (R ^ Module.finrank ℝ V)
 
-structure SrcCarl (T : ℝ) (C : ℝ≥0∞) (f : ℝ × V → F) : Prop where
-  ae : AEStronglyMeasurable f (stVolume : Measure (ℝ × V))
+structure SourceCarlesonBound (T : ℝ) (C : ℝ≥0∞) (f : ℝ × V → F) : Prop where
+  ae : AEStronglyMeasurable f (spaceTimeVolume : Measure (ℝ × V))
   bound : ∀ x R, 0 < R → R ^ 2 ≤ T →
-    srcMass f x R ≤ C * ENNReal.ofReal (R ^ Module.finrank ℝ V)
+    sourceCarlesonMass f x R ≤ C * ENNReal.ofReal (R ^ Module.finrank ℝ V)
 
-def PathSup (T A : ℝ) (u : ℝ × V → G) : Prop :=
+def PathUniformBound (T A : ℝ) (u : ℝ × V → G) : Prop :=
   ∀ t x, 0 < t → t ≤ T → ‖u (t, x)‖ ≤ A
 
-def GradWt (T A : ℝ) (d : ℝ × V → G) : Prop :=
+def GradientWeightedBound (T A : ℝ) (d : ℝ × V → G) : Prop :=
   ∀ t x, 0 < t → t ≤ T → Real.sqrt t * ‖d (t, x)‖ ≤ A
 
-def SrcWt (T A : ℝ) (f : ℝ × V → F) : Prop :=
+def SourceWeightedBound (T A : ℝ) (f : ℝ × V → F) : Prop :=
   ∀ t x, 0 < t → t ≤ T → t * ‖f (t, x)‖ ≤ A
 
-def InRoughPath (T A₀ A₁ : ℝ) (C₁ : ℝ≥0∞)
+def HasRoughPathBounds (T A₀ A₁ : ℝ) (C₁ : ℝ≥0∞)
     (u : ℝ × V → F) (d : ℝ × V → G) : Prop :=
-  PathSup T A₀ u ∧ GradWt T A₁ d ∧ GradCarl T C₁ d
+  PathUniformBound T A₀ u ∧ GradientWeightedBound T A₁ d ∧ GradientCarlesonBound T C₁ d
 
-def InRoughSrc (T A : ℝ) (C : ℝ≥0∞) (f : ℝ × V → F) : Prop :=
-  SrcWt T A f ∧ SrcCarl T C f
+def HasRoughSourceBounds (T A : ℝ) (C : ℝ≥0∞) (f : ℝ × V → F) : Prop :=
+  SourceWeightedBound T A f ∧ SourceCarlesonBound T C f
 
 end Masses
 
@@ -78,10 +78,10 @@ variable {V G H F : Type*}
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
-theorem linWt_of_bound (A : ℝ × V → G →L[ℝ] F)
+theorem linear_weighted_bound (A : ℝ × V → G →L[ℝ] F)
     {T K C : ℝ} {d : ℝ × V → G}
-    (hK : ∀ z, ‖A z‖ ≤ K) (hK0 : 0 ≤ K) (hd : GradWt T C d) :
-    GradWt T (K * C) (fun z ↦ A z (d z)) := by
+    (hK : ∀ z, ‖A z‖ ≤ K) (hK0 : 0 ≤ K) (hd : GradientWeightedBound T C d) :
+    GradientWeightedBound T (K * C) (fun z ↦ A z (d z)) := by
   intro t x ht hT
   calc
     Real.sqrt t * ‖A (t, x) (d (t, x))‖
@@ -94,17 +94,17 @@ theorem linWt_of_bound (A : ℝ × V → G →L[ℝ] F)
     _ = K * (Real.sqrt t * ‖d (t, x)‖) := by ring
     _ ≤ K * C := mul_le_mul_of_nonneg_left (hd t x ht hT) hK0
 
-theorem linCarl_of_bound (A : ℝ × V → G →L[ℝ] F)
+theorem linear_carleson_bound (A : ℝ × V → G →L[ℝ] F)
     {T K : ℝ} {C : ℝ≥0∞} {d : ℝ × V → G}
     (hK : ∀ z, ‖A z‖ ≤ K) (hK0 : 0 ≤ K)
     (hae : AEStronglyMeasurable (fun z ↦ A z (d z))
-      (stVolume : Measure (ℝ × V)))
-    (hd : GradCarl T C d) :
-    GradCarl T (ENNReal.ofReal (K ^ 2) * C) (fun z ↦ A z (d z)) := by
+      (spaceTimeVolume : Measure (ℝ × V)))
+    (hd : GradientCarlesonBound T C d) :
+    GradientCarlesonBound T (ENNReal.ofReal (K ^ 2) * C) (fun z ↦ A z (d z)) := by
   refine ⟨hae, ?_⟩
   intro x R hR hRT
   let μ : Measure (ℝ × V) :=
-    (stVolume : Measure (ℝ × V)).restrict (paraCyl x R)
+    (spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)
   have hmd : AEMeasurable (fun z ↦ ENNReal.ofReal (‖d z‖ ^ 2)) μ :=
     ((hd.ae.norm.pow 2).aemeasurable.ennreal_ofReal).mono_measure
       Measure.restrict_le_self
@@ -129,7 +129,7 @@ theorem linCarl_of_bound (A : ℝ × V → G →L[ℝ] F)
     (∫⁻ z, ENNReal.ofReal (‖A z (d z)‖ ^ 2) ∂μ)
         ≤ ∫⁻ z, ENNReal.ofReal (K ^ 2) * ENNReal.ofReal (‖d z‖ ^ 2) ∂μ :=
       lintegral_mono hpoint
-    _ = ENNReal.ofReal (K ^ 2) * gradMass d x R := by
+    _ = ENNReal.ofReal (K ^ 2) * gradientCarlesonMass d x R := by
       rw [lintegral_const_mul'' _ hmd]
       rfl
     _ ≤ ENNReal.ofReal (K ^ 2) *
@@ -139,7 +139,7 @@ theorem linCarl_of_bound (A : ℝ × V → G →L[ℝ] F)
           ENNReal.ofReal (R ^ Module.finrank ℝ V) := by
       ring
 
-theorem bilin_sq_bound (B : G →L[ℝ] H →L[ℝ] F) (a : G) (b : H) :
+theorem norm_bilinear_apply_le_norm_mul_add_sq (B : G →L[ℝ] H →L[ℝ] F) (a : G) (b : H) :
     ‖B a b‖ ≤ ‖B‖ * (‖a‖ ^ 2 + ‖b‖ ^ 2) := by
   have hab : ‖a‖ * ‖b‖ ≤ ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
     nlinarith [sq_nonneg (‖a‖ - ‖b‖)]
@@ -153,11 +153,11 @@ theorem bilin_sq_bound (B : G →L[ℝ] H →L[ℝ] F) (a : G) (b : H) :
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
-theorem bilinWt_of_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
+theorem bilinear_weighted_bound_of_norm_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
     {T K A₁ A₂ : ℝ} {d₁ : ℝ × V → G} {d₂ : ℝ × V → H}
     (hK : ∀ z, ‖B z‖ ≤ K) (hK0 : 0 ≤ K) (hA₁ : 0 ≤ A₁)
-    (h₁ : GradWt T A₁ d₁) (h₂ : GradWt T A₂ d₂) :
-    SrcWt T (K * A₁ * A₂) (fun z ↦ B z (d₁ z) (d₂ z)) := by
+    (h₁ : GradientWeightedBound T A₁ d₁) (h₂ : GradientWeightedBound T A₂ d₂) :
+    SourceWeightedBound T (K * A₁ * A₂) (fun z ↦ B z (d₁ z) (d₂ z)) := by
   intro t x ht hT
   have hd₁ := h₁ t x ht hT
   have hd₂ := h₂ t x ht hT
@@ -190,17 +190,17 @@ theorem bilinWt_of_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] in
-theorem bilinWt (B : G →L[ℝ] H →L[ℝ] F)
+theorem bilinear_weighted_bound (B : G →L[ℝ] H →L[ℝ] F)
     {T A₁ A₂ : ℝ} {d₁ : ℝ × V → G} {d₂ : ℝ × V → H}
-    (hA₁ : 0 ≤ A₁) (h₁ : GradWt T A₁ d₁) (h₂ : GradWt T A₂ d₂) :
-    SrcWt T (‖B‖ * A₁ * A₂) (fun z ↦ B (d₁ z) (d₂ z)) := by
-  exact bilinWt_of_bound (fun _ ↦ B) (fun _ ↦ le_rfl) (norm_nonneg B) hA₁ h₁ h₂
+    (hA₁ : 0 ≤ A₁) (h₁ : GradientWeightedBound T A₁ d₁) (h₂ : GradientWeightedBound T A₂ d₂) :
+    SourceWeightedBound T (‖B‖ * A₁ * A₂) (fun z ↦ B (d₁ z) (d₂ z)) := by
+  exact bilinear_weighted_bound_of_norm_bound (fun _ ↦ B) (fun _ ↦ le_rfl) (norm_nonneg B) hA₁ h₁ h₂
 
 omit [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [NormedSpace ℝ F] in
-theorem srcWt_add {T A₁ A₂ : ℝ} {f₁ f₂ : ℝ × V → F}
-    (h₁ : SrcWt T A₁ f₁) (h₂ : SrcWt T A₂ f₂) :
-    SrcWt T (A₁ + A₂) (fun z ↦ f₁ z + f₂ z) := by
+theorem SourceWeightedBound.add {T A₁ A₂ : ℝ} {f₁ f₂ : ℝ × V → F}
+    (h₁ : SourceWeightedBound T A₁ f₁) (h₂ : SourceWeightedBound T A₂ f₂) :
+    SourceWeightedBound T (A₁ + A₂) (fun z ↦ f₁ z + f₂ z) := by
   intro t x ht hT
   calc
     t * ‖f₁ (t, x) + f₂ (t, x)‖
@@ -209,17 +209,17 @@ theorem srcWt_add {T A₁ A₂ : ℝ} {f₁ f₂ : ℝ × V → F}
     _ = t * ‖f₁ (t, x)‖ + t * ‖f₂ (t, x)‖ := by ring
     _ ≤ A₁ + A₂ := add_le_add (h₁ t x ht hT) (h₂ t x ht hT)
 
-theorem bilinCarl (B : G →L[ℝ] H →L[ℝ] F)
+theorem bilinear_carleson_bound (B : G →L[ℝ] H →L[ℝ] F)
     {T : ℝ} {C₁ C₂ : ℝ≥0∞} {d₁ : ℝ × V → G} {d₂ : ℝ × V → H}
-    (h₁ : GradCarl T C₁ d₁) (h₂ : GradCarl T C₂ d₂) :
-    SrcCarl T (ENNReal.ofReal ‖B‖ * (C₁ + C₂)) (fun z ↦ B (d₁ z) (d₂ z)) := by
+    (h₁ : GradientCarlesonBound T C₁ d₁) (h₂ : GradientCarlesonBound T C₂ d₂) :
+    SourceCarlesonBound T (ENNReal.ofReal ‖B‖ * (C₁ + C₂)) (fun z ↦ B (d₁ z) (d₂ z)) := by
   refine ⟨?_, ?_⟩
   · have hB : Continuous (fun p : G × H ↦ B p.1 p.2) :=
       (B.continuous.comp continuous_fst).clm_apply continuous_snd
     exact hB.comp_aestronglyMeasurable (h₁.ae.prodMk h₂.ae)
   · intro x R hR hRT
     let μ : Measure (ℝ × V) :=
-      (stVolume : Measure (ℝ × V)).restrict (paraCyl x R)
+      (spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)
     have hm₁ : AEMeasurable (fun z ↦ ENNReal.ofReal (‖d₁ z‖ ^ 2)) μ :=
       ((h₁.ae.norm.pow 2).aemeasurable.ennreal_ofReal).mono_measure
         Measure.restrict_le_self
@@ -237,7 +237,7 @@ theorem bilinCarl (B : G →L[ℝ] H →L[ℝ] F)
       calc
         ENNReal.ofReal ‖B (d₁ z) (d₂ z)‖
             ≤ ENNReal.ofReal (‖B‖ * (‖d₁ z‖ ^ 2 + ‖d₂ z‖ ^ 2)) :=
-          ENNReal.ofReal_le_ofReal (bilin_sq_bound B (d₁ z) (d₂ z))
+          ENNReal.ofReal_le_ofReal (norm_bilinear_apply_le_norm_mul_add_sq B (d₁ z) (d₂ z))
         _ = ENNReal.ofReal ‖B‖ *
               (ENNReal.ofReal (‖d₁ z‖ ^ 2) + ENNReal.ofReal (‖d₂ z‖ ^ 2)) := by
           rw [ENNReal.ofReal_mul (norm_nonneg B),
@@ -254,7 +254,7 @@ theorem bilinCarl (B : G →L[ℝ] H →L[ℝ] F)
             ((∫⁻ z, ENNReal.ofReal (‖d₁ z‖ ^ 2) ∂μ) +
               ∫⁻ z, ENNReal.ofReal (‖d₂ z‖ ^ 2) ∂μ) := by
         rw [lintegral_const_mul'' _ hmadd, lintegral_add_left' hm₁]
-      _ = ENNReal.ofReal ‖B‖ * (gradMass d₁ x R + gradMass d₂ x R) := by
+      _ = ENNReal.ofReal ‖B‖ * (gradientCarlesonMass d₁ x R + gradientCarlesonMass d₂ x R) := by
         rfl
       _ ≤ ENNReal.ofReal ‖B‖ *
             ((C₁ * ENNReal.ofReal (R ^ Module.finrank ℝ V)) +
@@ -266,18 +266,18 @@ theorem bilinCarl (B : G →L[ℝ] H →L[ℝ] F)
             ENNReal.ofReal (R ^ Module.finrank ℝ V) := by
         ring
 
-theorem bilinCarl_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
+theorem bilinear_carleson_bound_of_norm_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
     {T K : ℝ} {C₁ C₂ : ℝ≥0∞} {d₁ : ℝ × V → G} {d₂ : ℝ × V → H}
     (hK : ∀ z, ‖B z‖ ≤ K) (hK0 : 0 ≤ K)
     (hae : AEStronglyMeasurable (fun z ↦ B z (d₁ z) (d₂ z))
-      (stVolume : Measure (ℝ × V)))
-    (h₁ : GradCarl T C₁ d₁) (h₂ : GradCarl T C₂ d₂) :
-    SrcCarl T (ENNReal.ofReal K * (C₁ + C₂))
+      (spaceTimeVolume : Measure (ℝ × V)))
+    (h₁ : GradientCarlesonBound T C₁ d₁) (h₂ : GradientCarlesonBound T C₂ d₂) :
+    SourceCarlesonBound T (ENNReal.ofReal K * (C₁ + C₂))
       (fun z ↦ B z (d₁ z) (d₂ z)) := by
   refine ⟨hae, ?_⟩
   intro x R hR hRT
   let μ : Measure (ℝ × V) :=
-    (stVolume : Measure (ℝ × V)).restrict (paraCyl x R)
+    (spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)
   have hm₁ : AEMeasurable (fun z ↦ ENNReal.ofReal (‖d₁ z‖ ^ 2)) μ :=
     ((h₁.ae.norm.pow 2).aemeasurable.ennreal_ofReal).mono_measure
       Measure.restrict_le_self
@@ -294,7 +294,7 @@ theorem bilinCarl_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
     intro z
     have hreal : ‖B z (d₁ z) (d₂ z)‖ ≤
         K * (‖d₁ z‖ ^ 2 + ‖d₂ z‖ ^ 2) := by
-      exact (bilin_sq_bound (B z) (d₁ z) (d₂ z)).trans
+      exact (norm_bilinear_apply_le_norm_mul_add_sq (B z) (d₁ z) (d₂ z)).trans
         (mul_le_mul_of_nonneg_right (hK z)
           (add_nonneg (sq_nonneg _) (sq_nonneg _)))
     calc
@@ -313,7 +313,7 @@ theorem bilinCarl_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
         ≤ ∫⁻ z, ENNReal.ofReal K *
             (ENNReal.ofReal (‖d₁ z‖ ^ 2) + ENNReal.ofReal (‖d₂ z‖ ^ 2)) ∂μ :=
       lintegral_mono hpoint
-    _ = ENNReal.ofReal K * (gradMass d₁ x R + gradMass d₂ x R) := by
+    _ = ENNReal.ofReal K * (gradientCarlesonMass d₁ x R + gradientCarlesonMass d₂ x R) := by
       rw [lintegral_const_mul'' _ hmadd, lintegral_add_left' hm₁]
       rfl
     _ ≤ ENNReal.ofReal K *
@@ -327,14 +327,14 @@ theorem bilinCarl_bound (B : ℝ × V → G →L[ℝ] H →L[ℝ] F)
       ring
 
 omit [NormedSpace ℝ F] in
-theorem srcCarl_add {T : ℝ} {C₁ C₂ : ℝ≥0∞}
+theorem SourceCarlesonBound.add {T : ℝ} {C₁ C₂ : ℝ≥0∞}
     {f₁ f₂ : ℝ × V → F}
-    (h₁ : SrcCarl T C₁ f₁) (h₂ : SrcCarl T C₂ f₂) :
-    SrcCarl T (C₁ + C₂) (fun z ↦ f₁ z + f₂ z) := by
+    (h₁ : SourceCarlesonBound T C₁ f₁) (h₂ : SourceCarlesonBound T C₂ f₂) :
+    SourceCarlesonBound T (C₁ + C₂) (fun z ↦ f₁ z + f₂ z) := by
   refine ⟨h₁.ae.add h₂.ae, ?_⟩
   intro x R hR hRT
   let μ : Measure (ℝ × V) :=
-    (stVolume : Measure (ℝ × V)).restrict (paraCyl x R)
+    (spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)
   have hm₁ : AEMeasurable (fun z ↦ ENNReal.ofReal ‖f₁ z‖) μ :=
     (h₁.ae.norm.aemeasurable.ennreal_ofReal).mono_measure
       Measure.restrict_le_self
@@ -350,7 +350,7 @@ theorem srcCarl_add {T : ℝ} {C₁ C₂ : ℝ≥0∞}
     (∫⁻ z, ENNReal.ofReal ‖f₁ z + f₂ z‖ ∂μ)
         ≤ ∫⁻ z, ENNReal.ofReal ‖f₁ z‖ + ENNReal.ofReal ‖f₂ z‖ ∂μ :=
       lintegral_mono hpoint
-    _ = srcMass f₁ x R + srcMass f₂ x R := by
+    _ = sourceCarlesonMass f₁ x R + sourceCarlesonMass f₂ x R := by
       rw [lintegral_add_left' hm₁]
       rfl
     _ ≤ C₁ * ENNReal.ofReal (R ^ Module.finrank ℝ V) +

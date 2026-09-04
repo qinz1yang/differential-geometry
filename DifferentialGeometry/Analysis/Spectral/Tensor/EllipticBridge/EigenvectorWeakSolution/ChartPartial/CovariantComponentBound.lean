@@ -176,11 +176,11 @@ private lemma covNormSumFun_continuous
     rfl
   rw [hfun_eq]
   refine continuous_of_tsupport (fun x hx => ?_)
-  have hx_supp : x ∈ tsupport ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
+  have hx_support : x ∈ tsupport ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) :=
     tsupport_smul_subset_left
       (f := fun b : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) b) (g := w) hx
-  have hx_src : x ∈ (chartAt H α).source :=
-    chartAtlasPOU_isSubordinate I M α hx_supp
+  have hx_source : x ∈ (chartAt H α).source :=
+    chartAtlasPOU_isSubordinate I M α hx_support
   have hρ_contAt : ContinuousAt ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x :=
     (ρ.contMDiff.continuous).continuousAt
   have hw_contOn : ContinuousOn w ((chartAt H α).source) := by
@@ -188,7 +188,7 @@ private lemma covNormSumFun_continuous
     exact (covNormSqSum_continuousOn_chart_source (I := I) (M := M)
       g r s S α).sqrt
   have hw_contAt : ContinuousAt w x :=
-    hw_contOn.continuousAt ((chartAt H α).open_source.mem_nhds hx_src)
+    hw_contOn.continuousAt ((chartAt H α).open_source.mem_nhds hx_source)
   exact hρ_contAt.smul hw_contAt
 
 omit [CompleteSpace E] in
@@ -264,7 +264,7 @@ private lemma pou_covDerivComponent_le_chartPushedRaw
       with hb_def
     have hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α :=
       chartBasePoint_mem_goodSet (I := I) (M := M) α hy
-    have hb_src : b ∈ (chartAt H α).source := by
+    have hb_source : b ∈ (chartAt H α).source := by
       have := symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy
       rwa [← hb_def] at this
     have hρ_nn : 0 ≤ ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b :=
@@ -296,7 +296,7 @@ private lemma pou_covDerivComponent_le_chartPushedRaw
       rw [← tensorCovDerivAt_eq_chartTensorRSCovariantDerivative (I := I) (M := M)
         g r s S α m hb_good]
       rw [triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel (I := I) (M := M)
-        r s α hb_src
+        r s α hb_source
         (tensorCovDerivAt (I := I) (M := M) g r s S b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
             (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)))]
@@ -479,14 +479,14 @@ private lemma exists_const_eLpNorm_pou_covDerivComponent_le_uniform
     rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg hC_proj_nn]
   have hv_meas : Measurable v :=
     covNormSumFun_measurable (I := I) (M := M) g r s S.toCcTensor α
-  have hv_supp : tsupport v ⊆ Kα :=
+  have hv_support : tsupport v ⊆ Kα :=
     covNormSumFun_tsupport_subset (I := I) (M := M) g r s S.toCcTensor α
   have h_bridge :
       eLpNorm (chartPushedRaw (I := I) (M := M) α v) 2 μ ≤
         ENNReal.ofReal C_bridge *
           eLpNorm v 2
             (riemannianMeasure (I := I) g (chartAtlasPOU I M)) :=
-    hC_bridge hv_meas hv_supp
+    hC_bridge hv_meas hv_support
   have h_meas_eq :
       riemannianMeasure (I := I) g (chartAtlasPOU I M) =
         riemannianVolumeMeasure (I := I) (M := M) g := rfl

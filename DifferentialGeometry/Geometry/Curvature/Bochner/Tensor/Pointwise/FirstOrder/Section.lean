@@ -50,7 +50,7 @@ lemma gradTermFib_moving_section_contMDiff
     gradTermFib_frozen_section_contMDiff (I := I) (M := M) g s
       (fun i => smoothOrthoFrame_smooth (I := I) g x₀ i) hY x₀
   refine hfrozen.congr_of_eventuallyEq ?_
-  filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
+  filter_upwards [smoothOrthoFrameNeighborhood_mem_nhds (I := I) (M := M) x₀] with y hy
   refine congrArg (TotalSpace.mk' (TensorRSModel 0 (s + 1) ℝ E)
     (E := fun z : M => TensorRSSpace 0 (s + 1) I z) y) ?_
   rw [gradTermFib_apply, gradTermFib_apply,
@@ -106,7 +106,7 @@ lemma diffTermSection_slice_eq
             (covGrad (I := I) (M := M) g 0 s S)).toSection x) := by
     rw [curvatureCommutatorRemainderSection, SmoothCcTensor.toSection_sub]; rfl
   rw [hsub, sub_apply, map_sub, sub_apply,
-    tensor0SAsRS_sub' (I := I) (M := M) s x]
+    tensor0SAsRS_sub (I := I) (M := M) s x]
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (curvatureGradContractionSection (I := I) (M := M) g s
           (covGrad (I := I) (M := M) g 0 s S)).toSection x) =
@@ -203,7 +203,7 @@ lemma diffTermSection_value_local
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T)
             (unitZeroSec (I := I) (M := M) x)) v := by
     intro T
-    conv_lhs => rw [tensor0S_zero_span' (I := I) (M := M) x D]
+    conv_lhs => rw [tensor0S_zero_span (I := I) (M := M) x D]
     rw [ContinuousLinearMap.map_smul]
     simp only [smul_apply, smul_eq_mul]
   rw [hredD, hredD]
@@ -246,7 +246,7 @@ lemma diffTermSection_value_local
             (unitZeroSec (I := I) (M := M) x)) m := by
     intro S
     rw [tensor0SAsRS_apply (I := I) (M := M) x _ (unitZeroSec (I := I) (M := M) x),
-      tensor00Scalar_unitZeroSec' (I := I) (M := M) x, one_smul]
+      tensor00Scalar_unitZeroSec (I := I) (M := M) x, one_smul]
   rw [hbridge S₁, hbridge S₂]
   rw [diffTermSection_slice_eval_value_local (I := I) (M := M) g s S₁ x a m,
     diffTermSection_slice_eval_value_local (I := I) (M := M) g s S₂ x a m]

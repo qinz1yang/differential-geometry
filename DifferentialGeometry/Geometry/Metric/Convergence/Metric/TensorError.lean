@@ -9,7 +9,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -112,5 +112,5 @@ theorem tensor02CovDerivNormWith_metricTensorField_eq_metricDerivNorm
   rw [iterCov_sub, show 1 + b = b + 1 by omega,
     iterCov_metric_zero g b, sub_zero]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

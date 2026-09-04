@@ -193,9 +193,9 @@ theorem time_dependent_vf_chart_local_picard_with_lipschitz
   have hy' : y ∈ Metric.closedBall x₀ rN := by
     rw [Metric.mem_closedBall] at hy ⊢
     rw [hrN]; exact hy
-  obtain ⟨h_init, h_flow⟩ := hflow y hy'
+  obtain ⟨h_initial, h_flow⟩ := hflow y hy'
   refine ⟨?_, ?_⟩
-  · have : flow y (t₀_set : ℝ) = y := h_init
+  · have : flow y (t₀_set : ℝ) = y := h_initial
     simpa [t₀_set] using this
   · intro t ht
     have hd := h_flow t ht

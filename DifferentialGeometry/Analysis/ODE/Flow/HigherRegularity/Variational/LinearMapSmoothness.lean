@@ -82,17 +82,17 @@ theorem exists_isVariationalFlowProjection_of_C
           rw [h2, ← add_assoc]
         rw [h_eq_wt]
         exact hf_Cn_plus_2
-      have h_augVF_Cn_plus_1 :
+      have h_augmentedVectorField_Cn_plus_1 :
           ContDiffOn ℝ ((n : ℕ∞) + 1) (Function.uncurry (augmentedVectorField f))
             (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) :=
-        augVF_uncurry_contDiff (k := ((n : ℕ∞) + 1)) hf_Cn_plus_2_as_succ
-      have h_augVF_C1 : ContDiffOn ℝ 1 (Function.uncurry (augmentedVectorField f))
+        augmentedVectorField_uncurry_contDiff (k := ((n : ℕ∞) + 1)) hf_Cn_plus_2_as_succ
+      have h_augmentedVectorField_C1 : ContDiffOn ℝ 1 (Function.uncurry (augmentedVectorField f))
           (Set.univ : Set (ℝ × (E × (E →L[ℝ] E)))) := by
-        refine h_augVF_Cn_plus_1.of_le ?_
+        refine h_augmentedVectorField_Cn_plus_1.of_le ?_
         have h1 : (1 : ℕ∞) ≤ (n : ℕ∞) + 1 := le_add_self
         exact_mod_cast h1
       obtain ⟨R_aug, ε_aug, hR_aug_pos, hε_aug_pos, aΦ, haΦ⟩ :=
-        exists_isLocalFlow_of_contDiffOn_univ (augmentedVectorField f) h_augVF_C1 t₀
+        exists_isLocalFlow_of_contDiffOn_univ (augmentedVectorField f) h_augmentedVectorField_C1 t₀
           (x₀, ContinuousLinearMap.id ℝ E)
       have hR_aug_R : (0 : ℝ) < (R_aug : ℝ) := by exact_mod_cast hR_aug_pos
       have ht₀_a_Ioo : t₀ ∈ Set.Ioo (t₀ - ε_aug) (t₀ + ε_aug) :=
@@ -100,7 +100,7 @@ theorem exists_isVariationalFlowProjection_of_C
       have hIH := IH (E × (E →L[ℝ] E)) (f := augmentedVectorField f) (t₀ := t₀)
         (x₀ := (x₀, ContinuousLinearMap.id ℝ E)) (r := R_aug)
         (tmin := t₀ - ε_aug) (tmax := t₀ + ε_aug) (Φ := aΦ)
-        haΦ ht₀_a_Ioo hR_aug_R h_augVF_Cn_plus_1
+        haΦ ht₀_a_Ioo hR_aug_R h_augmentedVectorField_Cn_plus_1
       obtain ⟨T_ih, ρ_ih, hT_ih_pos, hρ_ih_pos, Y_ih, hY_ih⟩ := hIH
       have h_succ := exists_isVariationalFlowProjection_succ_C_step
         (f := f) (t₀ := t₀) (x₀ := x₀) (r := r) (tmin := tmin) (tmax := tmax)

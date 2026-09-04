@@ -8,7 +8,7 @@ import Lean.Elab.Tactic.Omega
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Topology
 
@@ -64,5 +64,5 @@ theorem exists_strictMono_ge (T : ℕ → ℕ) :
     change T j ≤ j + Finset.sup (Finset.range (j + 1)) T
     exact le_trans (Finset.le_sup (Finset.self_mem_range_succ j)) (Nat.le_add_left _ j)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

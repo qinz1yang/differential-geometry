@@ -88,16 +88,16 @@ theorem triv_continuousLinearMapAt_eq_compContinuousLinearMap
 theorem multilinear_trivAt_symmL_apply_eq_self_on_locality
     (s : ℕ) (b₀ : M) {b : M}
     (h_chart : chartAt H b = chartAt H b₀)
-    (h_src : b ∈ (chartAt H b₀).source)
+    (h_source : b ∈ (chartAt H b₀).source)
     (T : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) :
     ((trivializationAt (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
         (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) b₀).symmL ℝ b T :
         ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) = T := by
   have h_base : b ∈ (trivializationAt E (TangentSpace I) b₀).baseSet := by
     rw [tangent_trivializationAt_baseSet (I := I) b₀]
-    exact h_src
+    exact h_source
   have h_clmAt_id := tangent_trivb₀_clmAt_eq_id_of_chartAt_eq (I := I) (M := M)
-    h_chart h_src
+    h_chart h_source
   rw [Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
     (𝕜 := ℝ) (F := E) (E := (TangentSpace I : M → Type _)) (s := s) b₀ b h_base T]
   rw [h_clmAt_id]
@@ -109,7 +109,7 @@ theorem multilinear_trivAt_symmL_apply_eq_self_on_locality
 theorem multilinear_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
     (s : ℕ) (b₀ : M) {b : M}
     (h_chart : chartAt H b = chartAt H b₀)
-    (h_src : b ∈ (chartAt H b₀).source)
+    (h_source : b ∈ (chartAt H b₀).source)
     (T : Bundle.continuousMultilinearMap ℝ s E (TangentSpace I) b) :
     ((trivializationAt (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
         (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) b₀).continuousLinearMapAt
@@ -118,9 +118,9 @@ theorem multilinear_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
       (T : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) := by
   have h_base : b ∈ (trivializationAt E (TangentSpace I) b₀).baseSet := by
     rw [tangent_trivializationAt_baseSet (I := I) b₀]
-    exact h_src
+    exact h_source
   have h_symmL_id := tangent_trivb₀_symmL_eq_id_of_chartAt_eq (I := I) (M := M)
-    h_chart h_src
+    h_chart h_source
   rw [triv_continuousLinearMapAt_eq_compContinuousLinearMap (I := I)
     (s := s) b₀ b h_base T]
   rw [h_symmL_id]
@@ -132,7 +132,7 @@ theorem multilinear_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
 theorem tensor0S_trivAt_symmL_eq_one_on_locality
     (s : ℕ) (b₀ : M) {b : M}
     (h_chart : chartAt H b = chartAt H b₀)
-    (h_src : b ∈ (chartAt H b₀).source)
+    (h_source : b ∈ (chartAt H b₀).source)
     (T : Tensor0SModel s ℝ E) :
     ((trivializationAt (Tensor0SModel s ℝ E)
         (fun y : M => Tensor0SSpace s I y) b₀).symmL ℝ b T :
@@ -141,12 +141,12 @@ theorem tensor0S_trivAt_symmL_eq_one_on_locality
       (ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ)
       (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) b₀).symmL ℝ b T = T
   exact multilinear_trivAt_symmL_apply_eq_self_on_locality
-    (s := s) (b₀ := b₀) (b := b) (h_chart := h_chart) (h_src := h_src) (T := T)
+    (s := s) (b₀ := b₀) (b := b) (h_chart := h_chart) (h_source := h_source) (T := T)
 
 theorem tensor0S_trivAt_continuousLinearMapAt_eq_one_on_locality
     (s : ℕ) (b₀ : M) {b : M}
     (h_chart : chartAt H b = chartAt H b₀)
-    (h_src : b ∈ (chartAt H b₀).source)
+    (h_source : b ∈ (chartAt H b₀).source)
     (T : Tensor0SSpace s I b) :
     ((trivializationAt (Tensor0SModel s ℝ E)
         (fun y : M => Tensor0SSpace s I y) b₀).continuousLinearMapAt ℝ b T :
@@ -157,7 +157,7 @@ theorem tensor0S_trivAt_continuousLinearMapAt_eq_one_on_locality
       (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)) b₀).continuousLinearMapAt
         ℝ b T = T
   exact multilinear_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
-    (s := s) (b₀ := b₀) (b := b) (h_chart := h_chart) (h_src := h_src) (T := T)
+    (s := s) (b₀ := b₀) (b := b) (h_chart := h_chart) (h_source := h_source) (T := T)
 
 end Tensor
 end DifferentialGeometry

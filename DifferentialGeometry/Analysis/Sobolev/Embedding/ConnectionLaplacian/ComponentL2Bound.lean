@@ -256,7 +256,7 @@ private lemma sq_eLpNorm_scalar_le_const_mul_hsNorm_zero_summand
   set w : M → ℝ := tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx with hw_def
   have hw_meas : Measurable w :=
     measurable_sqrtPou (I := I) (M := M) g r s T α Idx Jdx
-  have hw_supp : tsupport w ⊆ Kα :=
+  have hw_support : tsupport w ⊆ Kα :=
     tsupport_sqrtPou_subset (I := I) (M := M) g r s T α Idx Jdx
   have h_ptwise : ∀ x : M,
       ‖tensorChartComponentScalar (I := I) (M := M) g r s T α Idx Jdx x‖ ≤ ‖w x‖ := by
@@ -294,7 +294,7 @@ private lemma sq_eLpNorm_scalar_le_const_mul_hsNorm_zero_summand
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         eLpNorm w 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
     eLpNorm_mono h_ptwise
-  have h_bridge := hCbr (u := w) hw_meas hw_supp
+  have h_bridge := hCbr (u := w) hw_meas hw_support
   rw [show DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)
         = DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g

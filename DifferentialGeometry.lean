@@ -308,8 +308,6 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.LeibnizSource
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.LocalRegularity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.H4
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.H4Bridge
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.Smooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.H1Completion
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.Identity
@@ -2946,7 +2944,6 @@ import DifferentialGeometry.Geometry.Exponential.LocalAddition.Coordinates.Targe
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.SecondDerivative.Trace
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.Coordinates.VerticalInverse
 import DifferentialGeometry.Geometry.Metric.DeTurck.Naturality
-import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.NearIdentity
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.CoefficientRegularity
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.MapRegularity
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.Energy

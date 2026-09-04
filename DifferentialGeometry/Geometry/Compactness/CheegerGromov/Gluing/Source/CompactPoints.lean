@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Filter Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
@@ -34,13 +34,13 @@ namespace NetLimitData
 
 omit [FiniteDimensional ℝ E] in
 omit [CompleteSpace E] in
-theorem hatPtsOfCompact
+theorem hatPointsOfCompact
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
-    (ptsSeq :
+    (pointsSeq :
       Nat -> Nat -> (X.obj (L.φ n)).M -> Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (hconn :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
@@ -75,7 +75,7 @@ theorem hatPtsOfCompact
           forall eps : Real, eps > 0 -> exists N : Nat,
             forall a : Nat, a >= N -> forall b : Nat, b >= N ->
               forall x : (X.obj (L.φ n)).M, x ∈ K ->
-                dist x (ptsSeq a b x gamma) < eps) :
+                dist x (pointsSeq a b x gamma) < eps) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
     letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -103,7 +103,7 @@ theorem hatPtsOfCompact
             x ∈ (NetLimitData.hatBall (I := I) (X := X) (hd := hd) (D := D)
               (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
               Set (X.obj (L.φ n)).M) ->
-              dist x (ptsSeq a b x gamma) < eps := by
+              dist x (pointsSeq a b x gamma) < eps := by
   let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
   let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -139,11 +139,11 @@ theorem hatPtsOfCompact
   exact hN a ha b hb x (hsub ⟨hxsrc, hxhat⟩)
 
 omit [FiniteDimensional ℝ E] in
-theorem hatChartPts
+theorem hatChartPoints
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (center : Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (coordK : Fin (pb.A r) -> Set E)
@@ -262,7 +262,7 @@ theorem hatChartPts
     intro x hx
     exact hcoord gamma x hx.1 hx.2
   obtain ⟨N, hN⟩ :=
-    chartPtsConv (I := I) (g := (X.obj (L.φ n)).metric)
+    chartPointsConvergence (I := I) (g := (X.obj (L.φ n)).metric)
       (p := center gamma) (S := S) (K := coordK gamma)
       (hK gamma) (hKtarget gamma) hSsource hScoord (F gamma)
       (hclose gamma) eps heps
@@ -270,11 +270,11 @@ theorem hatChartPts
   exact hN a ha b hb x ⟨hxsrc, hxhat⟩
 
 omit [FiniteDimensional ℝ E] in
-theorem hatChartPtsSrcK
+theorem hat_chart_points_converge_on_source_compact
     [FiniteDimensional Real E]
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : forall k : Nat, ProperMetricOn (I := I) (X.obj k))
-    (L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P)
+    (L : DifferentialGeometry.CheegerGromovCompactness.NetLimitData (X := X) hd D P)
     (pb : hd.PackingBound D) (r : Real) (n : Nat)
     (center : Fin (pb.A r) -> (X.obj (L.φ n)).M)
     (sourceK : Fin (pb.A r) -> Set (X.obj (L.φ n)).M)
@@ -370,7 +370,7 @@ theorem hatChartPtsSrcK
         (P := P) (L := L) (pb := pb) (r := r) (k := n) (γ := gamma) :
         Set (X.obj (L.φ n)).M)
   obtain ⟨N, hN⟩ :=
-    chartPtsSrcK (I := I) (g := (X.obj (L.φ n)).metric)
+    chart_points_converge_on_source_compact (I := I) (g := (X.obj (L.φ n)).metric)
       (p := center gamma) (S := S) (Ksrc := sourceK gamma)
       (hKsrc gamma) (hSsub gamma) (hsrcK gamma) (F gamma)
       (hclose gamma) eps heps
@@ -379,5 +379,5 @@ theorem hatChartPtsSrcK
 
 end NetLimitData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -23,8 +23,8 @@ omit [NeZero n] in
 theorem metricRm04_round_invariant
     (e : E ≃ₗᵢ[ℝ] E) (x : sphere (0 : E) 1)
     (X Y Z W : TangentSpace (𝓡 n) x) :
-    metricRm04StdAt (roundMetric (E := E) (n := n)) x X Y Z W
-      = metricRm04StdAt (roundMetric (E := E) (n := n)) (sphereDiffeo (n := n) e x)
+    metricRm04StandardAt (roundMetric (E := E) (n := n)) x X Y Z W
+      = metricRm04StandardAt (roundMetric (E := E) (n := n)) (sphereDiffeo (n := n) e x)
           (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) e) x X)
           (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) e) x Y)
           (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) e) x Z)
@@ -55,7 +55,7 @@ theorem metricRm04_round_invariant
     have hmf : mfderiv (𝓡 0) (𝓡 0) (sphereDiffeo (n := 0) e) x
         (0 : TangentSpace (𝓡 0) x) = 0 :=
       (mfderiv (𝓡 0) (𝓡 0) (sphereDiffeo (n := 0) e) x).map_zero
-    unfold metricRm04StdAt tensor04StdAt
+    unfold metricRm04StandardAt tensor04StandardAt
     rw [hmf, hvx, hvy]
     exact ((metricRm04At (I := 𝓡 0) (M := sphere (0 : E) 1)
       (roundMetric (E := E) (n := 0)) x).map_coord_zero 0 rfl).trans
@@ -69,14 +69,14 @@ theorem metricRm04_round_invariant
       EuclideanSpace.instIsManifoldSphere.of_le le_top
     have : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) (sphere (0 : E) 1) :=
       EuclideanSpace.instIsManifoldSphere.of_le le_top
-    have h := metricRm04Std_pullback (roundMetric (E := E) (n := n))
+    have h := metricRm04Standard_pullback (roundMetric (E := E) (n := n))
       (sphereDiffeo (n := n) e) x X Y Z W
     rwa [pullbackMetric_round_eq] at h
 
 omit [NeZero n] in
 omit [FiniteDimensional ℝ E] in
 theorem roundMetric_sec_value (x : sphere (0 : E) 1) (X Y : TangentSpace (𝓡 n) x) :
-    metricRm04StdAt (roundMetric (E := E) (n := n)) x X Y Y X
+    metricRm04StandardAt (roundMetric (E := E) (n := n)) x X Y Y X
       = (roundMetric (E := E) (n := n)).inner x X X * (roundMetric (E := E) (n := n)).inner x Y Y
         - (roundMetric (E := E) (n := n)).inner x X Y * (roundMetric (E := E) (n := n)).inner x X
           Y := by
@@ -86,7 +86,7 @@ theorem roundMetric_sec_value (x : sphere (0 : E) 1) (X Y : TangentSpace (𝓡 n
     exists_contMDiffSection_eventuallyEq_tangentConstAt (I := 𝓡 n) x X
   obtain ⟨Yc, hYc, hYcx⟩ :=
     exists_contMDiffSection_eventuallyEq_tangentConstAt (I := 𝓡 n) x Y
-  rw [metricRm04StdAt_apply,
+  rw [metricRm04StandardAt_apply,
     show metricRm04At (roundMetric (E := E) (n := n)) x
         = riemannCurvature04At (roundMetric (E := E) (n := n))
             (metricCov (roundMetric (E := E) (n := n)))
@@ -112,7 +112,7 @@ omit [NeZero n]
   [FiniteDimensional ℝ E] in
 theorem roundMetric_constPosSec :
     ∃ c : ℝ, 0 < c ∧ ∀ (x : sphere (0 : E) 1) (X Y : TangentSpace (𝓡 n) x),
-      metricRm04StdAt (roundMetric (E := E) (n := n)) x X Y Y X
+      metricRm04StandardAt (roundMetric (E := E) (n := n)) x X Y Y X
         = c * ((roundMetric (E := E) (n := n)).inner x X X * (roundMetric (E := E) (n := n)).inner x
           Y Y
             - (roundMetric (E := E) (n := n)).inner x X Y * (roundMetric (E := E) (n := n)).inner x
@@ -153,7 +153,7 @@ theorem round_riemann_one (x : sphere (0 : E) 1)
       EuclideanSpace.instIsManifoldSphere.of_le le_top
     have hRm :
         ∀ A B C D : TangentSpace (𝓡 n) x,
-          metricRm04StdAt (roundMetric (E := E) (n := n)) x A B C D =
+          metricRm04StandardAt (roundMetric (E := E) (n := n)) x A B C D =
             1 * ((roundMetric (E := E) (n := n)).inner x B C *
                 (roundMetric (E := E) (n := n)).inner x A D -
               (roundMetric (E := E) (n := n)).inner x A C *

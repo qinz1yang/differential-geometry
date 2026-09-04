@@ -38,8 +38,8 @@ variable
 theorem duhamel_integral_time_deriv
     (lam : ℝ) (f : ℝ → ℝ) {T : ℝ}
     (hf : ContinuousOn f (Set.Icc 0 T)) {t : ℝ} (ht : t ∈ Set.Ioo (0 : ℝ) T) :
-    HasDerivAt (fun s : ℝ => perModeConv lam f s)
-      (-lam * perModeConv lam f t + f t) t := by
+    HasDerivAt (fun s : ℝ => perModeConvolution lam f s)
+      (-lam * perModeConvolution lam f t + f t) t := by
   obtain ⟨ht0, htT⟩ := ht
   set g : ℝ → ℝ := fun s => Real.exp (lam * s) * f s with hg_def
   set ψ : ℝ → ℝ := fun t => ∫ s in (0 : ℝ)..t, g s with hψ_def
@@ -56,10 +56,10 @@ theorem duhamel_integral_time_deriv
     hg_Ioo.stronglyMeasurableAtFilter isOpen_Ioo t ht_Ioo
   have hg_at : ContinuousAt g t :=
     hg_Ioo.continuousAt (isOpen_Ioo.mem_nhds ht_Ioo)
-  have hsplit : (fun s : ℝ => perModeConv lam f s)
+  have hsplit : (fun s : ℝ => perModeConvolution lam f s)
       = fun t => Real.exp (-(lam * t)) * ψ t := by
     funext u
-    rw [perModeConv, hψ_def, ← intervalIntegral.integral_const_mul]
+    rw [perModeConvolution, hψ_def, ← intervalIntegral.integral_const_mul]
     refine intervalIntegral.integral_congr (fun s _ => ?_)
     have hk : Real.exp (-(lam * (u - s))) = Real.exp (-(lam * u)) * Real.exp (lam * s) := by
       rw [← Real.exp_add]; ring_nf
@@ -86,7 +86,7 @@ theorem duhamel_integral_time_deriv
     have hone : Real.exp (-(lam * t)) * g t = f t := by
       rw [hg_def]; rw [← mul_assoc, hcancel, one_mul]
     rw [hone]; ring
-  have hval : perModeConv lam f t = Real.exp (-(lam * t)) * ψ t := by
+  have hval : perModeConvolution lam f t = Real.exp (-(lam * t)) * ψ t := by
     have := congrFun hsplit t
     simpa using this
   rw [hsplit, hval]

@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Manifold Set TopologicalSpace
 open scoped ContDiff Manifold Topology
@@ -29,7 +29,7 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-def HasHatCmEqn
+def HasHatCenterOfMassEquationSolution
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -40,7 +40,7 @@ def HasHatCmEqn
       ConnectedSpace (X.obj j).M)
     (q : LiveSlot L pb r → NNReal) (δ : LiveSlot L pb r → Real)
     (mu : Fin (pb.A r) → Real)
-    (pts : Fin (pb.A r) → (X.obj (L.φ n)).M)
+    (points : Fin (pb.A r) → (X.obj (L.φ n)).M)
     (join : (X.obj (L.φ n)).M → (X.obj (L.φ n)).M → Real →
       (X.obj (L.φ n)).M)
     (x : (X.obj (L.φ n)).M) (rad : Real)
@@ -74,7 +74,7 @@ def HasHatCmEqn
           (hcomplete.complete (L.φ n))
       letI : MetricSpace (X.obj (L.φ n)).M :=
         HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
-      CenterInput (I := I) (X.obj (L.φ n)).metric mu pts join x rad) : Prop :=
+      CenterInput (I := I) (X.obj (L.φ n)).metric mu points join x rad) : Prop :=
   letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
   letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -116,17 +116,17 @@ def HasHatCmEqn
         let B := IsNormalDiag.toBranch (I := I) (X.obj (L.φ n))
           (hcomplete.complete (L.φ n)) (hconn (L.φ n)) x0 hq he
         let c := centerOfMass (I := I) (X.obj (L.φ n)).metric
-          mu pts join x rad hcm
+          mu points join x rad hcm
         let xi : Fin (pb.A r) → E := fun i =>
           NormalCoordinates.normalChartAt
-            (I := I) (X.obj (L.φ n)).metric x0 (pts i)
-        chartCmEqnB (I := I) (X.obj (L.φ n)).metric
+            (I := I) (X.obj (L.φ n)).metric x0 (points i)
+        normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ n)).metric
           (normal_enorm (I := I) (X.obj (L.φ n))) x0 B
           (NormalCoordinates.normalChartAt
             (I := I) (X.obj (L.φ n)).metric x0 c)
           (mu, xi) = 0
 
-def HasHatCmStrictAt
+def HasHatStrictCenterOfMassSolutionAt
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -138,7 +138,7 @@ def HasHatCmStrictAt
     (q : LiveSlot L pb r → NNReal) (δ : LiveSlot L pb r → Real)
     (alpha : LiveSlot L pb r)
     (mu : Fin (pb.A r) → Real)
-    (pts : Fin (pb.A r) → (X.obj (L.φ n)).M)
+    (points : Fin (pb.A r) → (X.obj (L.φ n)).M)
     (join : (X.obj (L.φ n)).M → (X.obj (L.φ n)).M → Real →
       (X.obj (L.φ n)).M)
     (x : (X.obj (L.φ n)).M) (rad : Real)
@@ -172,7 +172,7 @@ def HasHatCmStrictAt
           (hcomplete.complete (L.φ n))
       letI : MetricSpace (X.obj (L.φ n)).M :=
         HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
-      CenterInput (I := I) (X.obj (L.φ n)).metric mu pts join x rad) : Prop :=
+      CenterInput (I := I) (X.obj (L.φ n)).metric mu points join x rad) : Prop :=
   letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
   letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
   letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -213,22 +213,22 @@ def HasHatCmStrictAt
         let B := IsNormalDiag.toBranch (I := I) (X.obj (L.φ n))
           (hcomplete.complete (L.φ n)) (hconn (L.φ n)) x0 hq he
         let c := centerOfMass (I := I) (X.obj (L.φ n)).metric
-          mu pts join x rad hcm
+          mu points join x rad hcm
         let z := NormalCoordinates.normalChartAt
           (I := I) (X.obj (L.φ n)).metric x0 c
         let xi : Fin (pb.A r) → E := fun i =>
           NormalCoordinates.normalChartAt
-            (I := I) (X.obj (L.φ n)).metric x0 (pts i)
+            (I := I) (X.obj (L.φ n)).metric x0 (points i)
         c ∈ (NormalCoordinates.normalChartAt
             (I := I) (X.obj (L.φ n)).metric x0).source ∧
           (∀ i, (z, xi i) ∈ e.target) ∧
             z ∈ normalBall (I := I) (X.obj (L.φ n)) x0 ∧
-            chartCmEqnB (I := I) (X.obj (L.φ n)).metric
+            normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ n)).metric
                 (normal_enorm (I := I) (X.obj (L.φ n))) x0 B
                 z (mu, xi) = 0 ∧
               ∃ Lcm : E ≃L[Real] E,
                 HasFDerivAt
-                    (fun u : E => chartCmEqnB (I := I) (X.obj (L.φ n)).metric
+                    (fun u : E => normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ n)).metric
                       (normal_enorm (I := I) (X.obj (L.φ n))) x0 B
                       u (mu, xi))
                     (Lcm : E →L[Real] E) z ∧
@@ -237,16 +237,16 @@ def HasHatCmStrictAt
                         (Fin (pb.A r) → E)) →L[Real] E),
                     f (mu, xi) = z ∧ HasStrictFDerivAt f Df (mu, xi) ∧
                       (∀ᶠ params in nhds (mu, xi),
-                        chartCmEqnB (I := I) (X.obj (L.φ n)).metric
+                        normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ n)).metric
                           (normal_enorm (I := I) (X.obj (L.φ n))) x0 B
                           (f params) params = 0) ∧
                       (∀ᶠ zp in nhds (z, (mu, xi)),
-                        chartCmEqnB (I := I) (X.obj (L.φ n)).metric
+                        normalChartCenterOfMassEquationWithBranch (I := I) (X.obj (L.φ n)).metric
                             (normal_enorm (I := I) (X.obj (L.φ n))) x0 B
                           zp.1 zp.2 = 0 →
                           zp.1 = f zp.2)
 
-def HasHatCmStrict
+def HasHatStrictCenterOfMassSolution
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -257,7 +257,7 @@ def HasHatCmStrict
       ConnectedSpace (X.obj j).M)
     (q : LiveSlot L pb r → NNReal) (δ : LiveSlot L pb r → Real)
     (mu : Fin (pb.A r) → Real)
-    (pts : Fin (pb.A r) → (X.obj (L.φ n)).M)
+    (points : Fin (pb.A r) → (X.obj (L.φ n)).M)
     (join : (X.obj (L.φ n)).M → (X.obj (L.φ n)).M → Real →
       (X.obj (L.φ n)).M)
     (x : (X.obj (L.φ n)).M) (rad : Real)
@@ -291,12 +291,12 @@ def HasHatCmStrict
           (hcomplete.complete (L.φ n))
       letI : MetricSpace (X.obj (L.φ n)).M :=
         HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
-      CenterInput (I := I) (X.obj (L.φ n)).metric mu pts join x rad) : Prop :=
+      CenterInput (I := I) (X.obj (L.φ n)).metric mu points join x rad) : Prop :=
   ∃ alpha : LiveSlot L pb r,
-    HasHatCmStrictAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
-      mu pts join x rad hcm
+    HasHatStrictCenterOfMassSolutionAt (I := I) hd P L pb r n hcomplete hconn q δ alpha
+      mu points join x rad hcm
 
-theorem exists_hat_cm_tail
+theorem exists_hat_center_of_mass_tail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -384,7 +384,7 @@ theorem exists_hat_cm_tail
                   rho.IsSubordinate (fun gamma : Fin (pb.A r) =>
                     (NetLimitData.hatBall (I := I) (X := X) hd D P L pb r n gamma :
                       Set (X.obj (L.φ n)).M)))
-                (ptsSeq : Nat → Nat → (X.obj (L.φ n)).M → Fin (pb.A r) →
+                (pointsSeq : Nat → Nat → (X.obj (L.φ n)).M → Fin (pb.A r) →
                   (X.obj (L.φ n)).M)
                 (_hpts :
                   letI : TopologicalSpace (X.obj (L.φ n)).M :=
@@ -424,7 +424,7 @@ theorem exists_hat_cm_tail
                         x ∈ (NetLimitData.hatBall
                           (I := I) (X := X) hd D P L pb r n gamma :
                             Set (X.obj (L.φ n)).M) →
-                          dist x (ptsSeq a b x gamma) < eps),
+                          dist x (pointsSeq a b x gamma) < eps),
                   letI : TopologicalSpace (X.obj (L.φ n)).M :=
                     (X.obj (L.φ n)).topology
                   letI : ChartedSpace H (X.obj (L.φ n)).M :=
@@ -463,7 +463,7 @@ theorem exists_hat_cm_tail
                     (∀ a b x,
                       x ∈ NetLimitData.hatSourceBall (I := I) hd P L r n →
                         ∀ gamma : Fin (pb.A r), rho gamma x ≠ 0 →
-                          dist x (ptsSeq a b x gamma) < radSeq a b x) ∧
+                          dist x (pointsSeq a b x gamma) < radSeq a b x) ∧
                     (∀ eps : Real, eps > 0 → ∃ N : Nat,
                       ∀ a ≥ N, ∀ b ≥ N, ∀ x : (X.obj (L.φ n)).M,
                         x ∈ NetLimitData.hatSourceBall (I := I) hd P L r n →
@@ -475,19 +475,19 @@ theorem exists_hat_cm_tail
                             Real → (X.obj (L.φ n)).M),
                             StrictDistInput (I := I) (X.obj (L.φ n)).metric
                               (centerAverage.activeFill
-                                (fun y gamma ↦ rho gamma y) (ptsSeq a b)
+                                (fun y gamma ↦ rho gamma y) (pointsSeq a b)
                                 (fun y ↦ y) x)
                               join x (radSeq a b x) →
                               ∃ hcm : CenterInput (I := I)
                                 (X.obj (L.φ n)).metric (fun gamma ↦ rho gamma x)
                                 (centerAverage.activeFill
-                                  (fun y gamma ↦ rho gamma y) (ptsSeq a b)
+                                  (fun y gamma ↦ rho gamma y) (pointsSeq a b)
                                   (fun y ↦ y) x)
                                 join x (radSeq a b x),
-                                HasHatCmEqn (I := I) hd P L pb r n hcomplete hconn
+                                HasHatCenterOfMassEquationSolution (I := I) hd P L pb r n hcomplete hconn
                                   q δ (fun gamma ↦ rho gamma x)
                                   (centerAverage.activeFill
-                                    (fun y gamma ↦ rho gamma y) (ptsSeq a b)
+                                    (fun y gamma ↦ rho gamma y) (pointsSeq a b)
                                     (fun y ↦ y) x)
                                   join x (radSeq a b x) hcm := by
   classical
@@ -540,37 +540,37 @@ theorem exists_hat_cm_tail
     rw [hcD]
     exact (lamInf_lt_halfMin hd _hD _hphys P L (gamma : Nat)).trans_le
       (by simpa only [gammaLive] using hfloor)
-  · intro rho _hrho ptsSeq _hpts
+  · intro rho _hrho pointsSeq _hpts
     obtain ⟨radSeq, hpos, hactive, htail⟩ :=
-      NetLimitData.exists_hat_radius (I := I) hd P L pb r n rho _hrho ptsSeq
+      NetLimitData.exists_hat_radius (I := I) hd P L pb r n rho _hrho pointsSeq
         (hconn (L.φ n)) _hpts
     refine ⟨radSeq, hpos, hactive, htail, ?_⟩
-    obtain ⟨N, hN⟩ := exists_rad_cage hd _hD haMin _hphys P L pb r n
+    obtain ⟨N, hN⟩ := eventually_cage_radius_bound hd _hD haMin _hphys P L pb r n
       (NetLimitData.hatSourceBall (I := I) hd P L r n) radSeq htail
     refine ⟨N, ?_⟩
     intro a ha b hbN x hx join hstrict
     let weights : (X.obj (L.φ n)).M → Fin (pb.A r) → Real :=
       fun y gamma ↦ rho gamma y
-    let pts := centerAverage.activeFill weights (ptsSeq a b) (fun y ↦ y) x
+    let points := centerAverage.activeFill weights (pointsSeq a b) (fun y ↦ y) x
     let hcomplete' :=
       NetLimitData.sourceComplete (I := I) hd P L n hcomplete (hconn (L.φ n))
     have hdata := NetLimitData.hatPOUDataTwo
       (I := I) hd P L pb r n rho _hrho hx
     have hcm : CenterInput (I := I) (X.obj (L.φ n)).metric
-        (fun gamma ↦ rho gamma x) pts join x (radSeq a b x) := by
-      simpa only [weights, pts] using
+        (fun gamma ↦ rho gamma x) points join x (radSeq a b x) := by
+      simpa only [weights, points] using
         centerAverage.inputOfFillSelf (I := I)
           (g := (X.obj (L.φ n)).metric) (μ := weights)
-          (pts := ptsSeq a b) (join := join) (r := radSeq a b)
+          (points := pointsSeq a b) (join := join) (r := radSeq a b)
           (qstar := fun y ↦ y) x hcomplete' (hpos a b x hx)
           (hactive a b x hx) hdata.1.1 hdata.1.2.1 hstrict
     refine ⟨hcm, ?_⟩
-    have hout := exists_hat_cm_eqn (I := I) hd P hre L pb r n hcomplete hconn
-      q δ hstable hqdata hn (fun gamma ↦ rho gamma x) pts join x
+    have hout := exists_hat_center_of_mass_equation (I := I) hd P hre L pb r n hcomplete hconn
+      q δ hstable hqdata hn (fun gamma ↦ rho gamma x) points join x
       (radSeq a b x) hcm hdata.2 (hN a ha b hbN x hx)
-    simpa only [HasHatCmEqn] using hout
+    simpa only [HasHatCenterOfMassEquationSolution] using hout
 
-theorem exists_hat_cm_tail_support
+theorem exists_hat_center_of_mass_tail_support
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -638,17 +638,17 @@ theorem exists_hat_cm_tail_support
                 (mu : (X.obj (L.φ n)).M → Fin (pb.A r) → Real)
                 (hmu : centerAverage.WeightDataOn s
                   (fun _ : Fin (pb.A r) => Set.univ) mu)
-                (ptsSeq : Nat → Nat → (X.obj (L.φ n)).M →
+                (pointsSeq : Nat → Nat → (X.obj (L.φ n)).M →
                   Fin (pb.A r) → (X.obj (L.φ n)).M)
                 (hpts : ∀ gamma : Fin (pb.A r), ∀ epsilon : Real,
                   0 < epsilon → ∃ N : Nat,
                     ∀ a ≥ N, ∀ b ≥ N,
                       ∀ x ∈ s, mu x gamma ≠ 0 →
-                        dist x (ptsSeq a b x gamma) < epsilon),
+                        dist x (pointsSeq a b x gamma) < epsilon),
                   ∃ radSeq : Nat → Nat → (X.obj (L.φ n)).M → Real,
                     (∀ a b x, x ∈ s → 0 < radSeq a b x) ∧
                     (∀ a b x, x ∈ s → ∀ gamma, mu x gamma ≠ 0 →
-                      dist x (ptsSeq a b x gamma) < radSeq a b x) ∧
+                      dist x (pointsSeq a b x gamma) < radSeq a b x) ∧
                     (∀ epsilon > 0, ∃ N : Nat,
                       ∀ a ≥ N, ∀ b ≥ N,
                         ∀ x ∈ s, radSeq a b x < epsilon) ∧
@@ -657,17 +657,17 @@ theorem exists_hat_cm_tail_support
                         ∀ join : (X.obj (L.φ n)).M →
                             (X.obj (L.φ n)).M → Real → (X.obj (L.φ n)).M,
                           StrictDistInput (I := I) (X.obj (L.φ n)).metric
-                            (centerAverage.activeFill mu (ptsSeq a b)
+                            (centerAverage.activeFill mu (pointsSeq a b)
                               (fun y => y) x)
                             join x (radSeq a b x) →
                           ∃ hcm : CenterInput (I := I)
                               (X.obj (L.φ n)).metric (mu x)
-                              (centerAverage.activeFill mu (ptsSeq a b)
+                              (centerAverage.activeFill mu (pointsSeq a b)
                                 (fun y => y) x)
                               join x (radSeq a b x),
-                            HasHatCmStrictAt (I := I) hd P L pb r n hcomplete hconn
+                            HasHatStrictCenterOfMassSolutionAt (I := I) hd P L pb r n hcomplete hconn
                               q δ alpha (mu x)
-                              (centerAverage.activeFill mu (ptsSeq a b)
+                              (centerAverage.activeFill mu (pointsSeq a b)
                                 (fun y => y) x)
                               join x (radSeq a b x) hcm := by
   classical
@@ -720,39 +720,39 @@ theorem exists_hat_cm_tail_support
     rw [hcD]
     exact (lamInf_lt_halfMin hd hD hphys P L (gamma : Nat)).trans_le
       (by simpa only [gammaLive] using hfloor)
-  · intro alpha s hs mu hmu ptsSeq hpts
+  · intro alpha s hs mu hmu pointsSeq hpts
     obtain ⟨radSeq, hpos, hactive, htail⟩ :=
       centerAverage.exists_active_radius
         (s := s) (target := fun x => x)
-        (μSeq := fun _ _ => mu) (ptsSeq := ptsSeq) hpts
+        (μSeq := fun _ _ => mu) (pointsSeq := pointsSeq) hpts
     refine ⟨radSeq, ?_, ?_, htail, ?_⟩
     · intro a b x _hx
       exact hpos a b x
     · intro a b x hx gamma hne
       exact hactive a b x hx gamma hne
-    · obtain ⟨N, hN⟩ := exists_rad_cage hd hD haMin hphys P L pb r n
+    · obtain ⟨N, hN⟩ := eventually_cage_radius_bound hd hD haMin hphys P L pb r n
         s radSeq htail
       refine ⟨N, ?_⟩
       intro a ha b hbN x hx join hstrict
-      let pts := centerAverage.activeFill mu (ptsSeq a b) (fun y => y) x
+      let points := centerAverage.activeFill mu (pointsSeq a b) (fun y => y) x
       let hcomplete' :=
         NetLimitData.sourceComplete (I := I) hd P L n hcomplete (hconn (L.φ n))
       have hcm : CenterInput (I := I) (X.obj (L.φ n)).metric
-          (mu x) pts join x (radSeq a b x) := by
-        simpa only [pts] using
+          (mu x) points join x (radSeq a b x) := by
+        simpa only [points] using
           centerAverage.inputOfFillSelf (I := I)
             (g := (X.obj (L.φ n)).metric) (μ := mu)
-            (pts := ptsSeq a b) (join := join) (r := radSeq a b)
+            (points := pointsSeq a b) (join := join) (r := radSeq a b)
             (qstar := fun y => y) x hcomplete' (hpos a b x)
             (hactive a b x hx) (hmu.nonneg x hx) (hmu.pos x hx) hstrict
       refine ⟨hcm, ?_⟩
-      have hout := exists_hat_cm_sol_at (I := I) hd P hre L pb r n
-        hcomplete hconn q δ hqdata hn alpha (mu x) pts join x
+      have hout := exists_hat_center_of_mass_solution_at (I := I) hd P hre L pb r n
+        hcomplete hconn q δ hqdata hn alpha (mu x) points join x
         (radSeq a b x) hcm (hmu.sum_one x hx) (hs hx)
         (hN a ha b hbN x hx alpha)
-      simpa only [HasHatCmStrictAt] using hout
+      simpa only [HasHatStrictCenterOfMassSolutionAt] using hout
 
-theorem exists_hat_cm_min
+theorem exists_hat_center_of_mass_min
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -857,17 +857,17 @@ theorem exists_hat_cm_min
                 (mu : (X.obj (L.φ n)).M → Fin (pb.A r) → Real)
                 (hmu : centerAverage.WeightDataOn s
                   (fun _ : Fin (pb.A r) => Set.univ) mu)
-                (ptsSeq : Nat → Nat → (X.obj (L.φ n)).M →
+                (pointsSeq : Nat → Nat → (X.obj (L.φ n)).M →
                   Fin (pb.A r) → (X.obj (L.φ n)).M)
                 (hpts : ∀ gamma : Fin (pb.A r), ∀ epsilon : Real,
                   0 < epsilon → ∃ N : Nat,
                     ∀ a ≥ N, ∀ b ≥ N,
                       ∀ x ∈ s, mu x gamma ≠ 0 →
-                        dist x (ptsSeq a b x gamma) < epsilon),
+                        dist x (pointsSeq a b x gamma) < epsilon),
                   ∃ radSeq : Nat → Nat → (X.obj (L.φ n)).M → Real,
                     (∀ a b x, x ∈ s → 0 < radSeq a b x) ∧
                     (∀ a b x, x ∈ s → ∀ gamma, mu x gamma ≠ 0 →
-                      dist x (ptsSeq a b x gamma) < radSeq a b x) ∧
+                      dist x (pointsSeq a b x gamma) < radSeq a b x) ∧
                     (∀ epsilon > 0, ∃ N : Nat,
                       ∀ a ≥ N, ∀ b ≥ N,
                         ∀ x ∈ s, radSeq a b x < epsilon) ∧
@@ -875,13 +875,13 @@ theorem exists_hat_cm_min
                       ∀ x ∈ s,
                         let join := minJoin (I := I) (X.obj (L.φ n)).metric
                           (normal_enorm (I := I) (X.obj (L.φ n)))
-                        let pts := centerAverage.activeFill mu (ptsSeq a b)
+                        let points := centerAverage.activeFill mu (pointsSeq a b)
                           (fun y => y) x
                         ∃ hcm : CenterInput (I := I)
-                            (X.obj (L.φ n)).metric (mu x) pts join x
+                            (X.obj (L.φ n)).metric (mu x) points join x
                             (radSeq a b x),
-                          HasHatCmStrictAt (I := I) hd P L pb r n hcomplete hconn
-                            q δ alpha (mu x) pts join x (radSeq a b x) hcm := by
+                          HasHatStrictCenterOfMassSolutionAt (I := I) hd P L pb r n hcomplete hconn
+                            q δ alpha (mu x) points join x (radSeq a b x) hcm := by
   classical
   obtain ⟨aMin, haMin, hmin⟩ :=
     exists_slot_min (I := I) hprof hre hcomplete hconn
@@ -960,11 +960,11 @@ theorem exists_hat_cm_min
     rw [hcD]
     exact (lamInf_lt_halfMin hd hD hphys P L (gamma : Nat)).trans_le
       (by simpa only [gammaLive] using hfloor)
-  · intro alpha s hs mu hmu ptsSeq hpts
+  · intro alpha s hs mu hmu pointsSeq hpts
     obtain ⟨radSeq, hpos, hactive, htail⟩ :=
       centerAverage.exists_active_radius
         (s := s) (target := fun x => x)
-        (μSeq := fun _ _ => mu) (ptsSeq := ptsSeq) hpts
+        (μSeq := fun _ _ => mu) (pointsSeq := pointsSeq) hpts
     refine ⟨radSeq, ?_, ?_, htail, ?_⟩
     · intro a b x _hx
       exact hpos a b x
@@ -978,11 +978,11 @@ theorem exists_hat_cm_min
         refine ⟨N, ?_⟩
         intro a ha b hbN x hx
         nlinarith [hN a ha b hbN x hx]
-      obtain ⟨N, hN⟩ := exists_rad_cage hd hD haMin hphys P L pb r n
+      obtain ⟨N, hN⟩ := eventually_cage_radius_bound hd hD haMin hphys P L pb r n
         s (fun a b x => 3 * radSeq a b x) htail3
       refine ⟨N, ?_⟩
       intro a ha b hbN x hx
-      let pts := centerAverage.activeFill mu (ptsSeq a b) (fun y => y) x
+      let points := centerAverage.activeFill mu (pointsSeq a b) (fun y => y) x
       let join := minJoin (I := I) (X.obj (L.φ n)).metric
         (normal_enorm (I := I) (X.obj (L.φ n)))
       let x0 := seqCenterD hd P L n (alpha.1 : Nat)
@@ -1008,9 +1008,9 @@ theorem exists_hat_cm_min
         rw [dist_comm, HopfRinow.riemMetric_dist_eq, hed,
           ENNReal.toReal_ofReal (hre.dist_nonneg (L.φ n) x x0)]
         exact hhd.le
-      have hptsFilled : ∀ gamma, dist x (pts gamma) < radSeq a b x := by
-        simpa only [pts] using centerAverage.activeFill_close
-          (g := (X.obj (L.φ n)).metric) (μ := mu) (pts := ptsSeq a b)
+      have hptsFilled : ∀ gamma, dist x (points gamma) < radSeq a b x := by
+        simpa only [points] using centerAverage.activeFill_close
+          (g := (X.obj (L.φ n)).metric) (μ := mu) (points := pointsSeq a b)
             (qstar := fun y => y) (x := x) (hpos a b x)
             (hactive a b x hx)
       have hcage6 : ENNReal.ofReal
@@ -1024,21 +1024,21 @@ theorem exists_hat_cm_min
         rw [heq] at hc
         simpa only [rho0] using hc
       have hstrict : StrictDistInput (I := I) (X.obj (L.φ n)).metric
-          pts join x (radSeq a b x) := by
-        simpa only [pts, join, x0, rho0] using
+          points join x (radSeq a b x) := by
+        simpa only [points, join, x0, rho0] using
           HasControlledNormalBranch.strict_dist_input (I := I) hb (L.φ n)
             (hcomplete.complete (L.φ n)) (hconn (L.φ n)) x0 hfull
-            (hqAcc alpha) pts x (radSeq a b x)
+            (hqAcc alpha) points x (radSeq a b x)
             (4 * L.lamInf (alpha.1 : Nat)) (hquarterN alpha)
             hρ hρq hρmetric hρexp (hpos a b x) hpq hptsFilled hcage6
       let hcomplete' :=
         NetLimitData.sourceComplete (I := I) hd P L n hcomplete (hconn (L.φ n))
       have hcm : CenterInput (I := I) (X.obj (L.φ n)).metric
-          (mu x) pts join x (radSeq a b x) := by
-        simpa only [pts, join] using
+          (mu x) points join x (radSeq a b x) := by
+        simpa only [points, join] using
           centerAverage.inputOfFillSelf (I := I)
             (g := (X.obj (L.φ n)).metric) (μ := mu)
-            (pts := ptsSeq a b) (join := join) (r := radSeq a b)
+            (points := pointsSeq a b) (join := join) (r := radSeq a b)
             (qstar := fun y => y) x hcomplete' (hpos a b x)
             (hactive a b x hx) (hmu.nonneg x hx) (hmu.pos x hx) hstrict
       have hradCage : ENNReal.ofReal
@@ -1047,10 +1047,10 @@ theorem exists_hat_cm_min
         apply (ENNReal.ofReal_le_ofReal ?_).trans_lt hcage6
         nlinarith [hpos a b x]
       refine ⟨hcm, ?_⟩
-      have hout := exists_hat_cm_sol_at (I := I) hd P hre L pb r n
-        hcomplete hconn q δ hqdata hn alpha (mu x) pts join x
+      have hout := exists_hat_center_of_mass_solution_at (I := I) hd P hre L pb r n
+        hcomplete hconn q δ hqdata hn alpha (mu x) points join x
         (radSeq a b x) hcm (hmu.sum_one x hx) (hs hx) hradCage
-      simpa only [HasHatCmStrictAt, pts, join] using hout
+      simpa only [HasHatStrictCenterOfMassSolutionAt, points, join] using hout
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

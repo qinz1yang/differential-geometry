@@ -273,14 +273,14 @@ theorem flow_cov_variation
         (mfderiv I I (Φ_fam t : M → M) x v)) := by
   classical
   obtain ⟨ht0, htT⟩ := ht
-  obtain ⟨δc, hδc, hcc_smooth, hcc0, hcc_vel⟩ := exists_chartLineCurve_global (I := I) x v
+  obtain ⟨δc, hδc, hcc_smooth, hcc0, hcc_velocity⟩ := exists_chartLineCurve_global (I := I) x v
   set cc : ℝ → M := chartLineCurve (I := I) x v δc with hcc_def
   have h8le : ((8 : ℕ) : WithTop ℕ∞) ≤ ∞ := by
     show ((8 : ℕ) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞)
     exact WithTop.coe_le_coe.mpr (le_top : ((8 : ℕ) : ℕ∞) ≤ ⊤)
   have hcc_mderiv : mfderiv 𝓘(ℝ, ℝ) I cc 0
       (constantModelVectorField (1 : ℝ) 0) = v := by
-    rw [hcc_vel.mfderiv]
+    rw [hcc_velocity.mfderiv]
     rw [hcc0]
     simp [tangentLinearMapOfModel, constantModelVectorField]
   have hcc_mdiff : MDifferentiableAt 𝓘(ℝ, ℝ) I cc 0 :=

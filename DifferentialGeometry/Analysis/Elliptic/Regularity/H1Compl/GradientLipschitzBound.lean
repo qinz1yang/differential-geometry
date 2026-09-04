@@ -54,17 +54,17 @@ theorem kPouCompact_isCompact (α : M) :
   have h_tsupp_compact : IsCompact (tsupport
       fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x) :=
     isClosed_tsupport _ |>.isCompact
-  have h_tsupp_sub_src : tsupport (fun x : M =>
+  have h_tsupp_sub_source : tsupport (fun x : M =>
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x) ⊆
       (chartAt H α).source :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α
   have h_ext_cont : ContinuousOn (extChartAt I α)
       (tsupport fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x) := by
-    have h_src_eq : (chartAt H α).source = (extChartAt I α).source :=
+    have h_source_eq : (chartAt H α).source = (extChartAt I α).source :=
       (DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
         (I := I) (M := M) α).symm
     refine (continuousOn_extChartAt (I := I) α).mono ?_
-    rw [← h_src_eq]; exact h_tsupp_sub_src
+    rw [← h_source_eq]; exact h_tsupp_sub_source
   have h_ext_image_compact : IsCompact ((extChartAt I α) '' (tsupport
       fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x)) :=
     h_tsupp_compact.image_of_continuousOn h_ext_cont
@@ -78,14 +78,14 @@ theorem kPouCompact_subset_chartTargetEuclid (α : M) :
   intro y hy
   rcases hy with ⟨z, hz, hzy⟩
   rcases hz with ⟨x, hx, hxz⟩
-  have h_tsupp_sub_src : tsupport (fun x : M =>
+  have h_tsupp_sub_source : tsupport (fun x : M =>
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x) ⊆
       (chartAt H α).source :=
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M) α
   have hxsrc : x ∈ (extChartAt I α).source := by
     rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
       (I := I) (M := M)]
-    exact h_tsupp_sub_src hx
+    exact h_tsupp_sub_source hx
   have hz_target : z ∈ (extChartAt I α).target := by
     rw [← hxz]; exact (extChartAt I α).map_source hxsrc
   refine ⟨z, hz_target, hzy⟩
@@ -115,11 +115,11 @@ theorem smoothChartExt_support_subset_kPouCompact
     have h_pou_zero : (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) ((extChartAt I α).symm w) = 0 := by
       by_contra h_pou_ne
       apply h_notin
-      have h_pou_in_supp : (extChartAt I α).symm w ∈ Function.support
+      have h_pou_in_support : (extChartAt I α).symm w ∈ Function.support
           fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x := h_pou_ne
       have h_pou_in_tsupp : (extChartAt I α).symm w ∈ tsupport
           fun x : M => (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x :=
-        subset_tsupport _ h_pou_in_supp
+        subset_tsupport _ h_pou_in_support
       have h_ext_right : (extChartAt I α) ((extChartAt I α).symm w) = w :=
         (extChartAt I α).right_inv hw_target
       exact ⟨w, ⟨(extChartAt I α).symm w, h_pou_in_tsupp, h_ext_right⟩, hwy⟩
@@ -148,10 +148,10 @@ theorem smoothChartExtPartial_tsupport_subset_kPouCompact
     (v : SmoothScalar g) :
     tsupport (smoothChartExtPartial (I := I) (M := M) g α j v) ⊆
       kPouCompact (I := I) (M := M) α := by
-  have h_fderiv_supp : tsupport (smoothChartExtPartial (I := I) (M := M) g α j v) ⊆
+  have h_fderiv_support : tsupport (smoothChartExtPartial (I := I) (M := M) g α j v) ⊆
       tsupport (smoothChartExt (I := I) (M := M) g α v) :=
     tsupport_fderiv_apply_subset (𝕜 := ℝ) (EuclideanSpace.single j 1)
-  exact h_fderiv_supp.trans
+  exact h_fderiv_support.trans
     (smoothChartExt_tsupport_subset_kPouCompact (I := I) (M := M) g α v)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in

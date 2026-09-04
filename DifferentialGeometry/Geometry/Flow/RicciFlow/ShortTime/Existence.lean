@@ -52,11 +52,11 @@ theorem ricci_flow_short_time_existence
             DifferentialGeometry.Geometry.Curvature.ricciTensor
               (I := I) (g_fam t) x v w) (Set.Ici 0) t) := by
   obtain ⟨T_DT, g_DT, hDT, hJ⟩ :=
-    DifferentialGeometry.PDE.RicciFlow.deTurckRicci_solution_with_jointReg
+    DifferentialGeometry.PDE.RicciFlow.deTurckRicci_solution_with_jointRegularity
       (I := I) (M := M) g₀ g₀
-  obtain ⟨h_reg, h_smooth0, h_gram_DT, -, h_gramOnE0_DT, h_C2_DT⟩ :=
+  obtain ⟨h_regularity, h_smooth0, h_gram_DT, -, h_gramOnE0_DT, h_C2_DT⟩ :=
     deTurckRicci_chartRegularity_of_jointChartGramSmooth (I := I) g₀ T_DT g_DT hJ
-  obtain ⟨hT_DT_pos, hDT_init, hDT_deriv⟩ := hDT
+  obtain ⟨hT_DT_pos, hDT_initial, hDT_deriv⟩ := hDT
   have h_construct :
       ∃ T : ℝ, 0 < T ∧ ∃ g_fam : ℝ → SmoothRiemannianMetric I M,
         g_fam 0 = g₀ ∧
@@ -118,27 +118,27 @@ theorem ricci_flow_short_time_existence
       intro α i j k hk
       exact (h_C2_DT α i j k hk).mono
         (Set.prod_mono_left (Set.Icc_subset_Icc_right hT_le))
-    have h_reg_T : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
+    have h_regularity_T : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, E)) ∞
         (fun q : ℝ × M => (TotalSpace.mk' E q.2 (deTurckVF (I := I) (g_DT q.1) g₀ q.2)
           : TangentBundle I M))
         (Set.Ioo (0 : ℝ) T ×ˢ Set.univ) :=
-      h_reg.mono (Set.prod_mono_left (Set.Ioo_subset_Ioo_right hT_le))
+      h_regularity.mono (Set.prod_mono_left (Set.Ioo_subset_Ioo_right hT_le))
     obtain ⟨hΦ_orbit, hΦ_total⟩ :=
       conjugating_flow_orbit_pushforward_continuity_data (I := I) g_DT g₀ T Φ_fam hΦode'
-        h_reg_T hΦorbit0 hΦmfderiv0
+        h_regularity_T hΦorbit0 hΦmfderiv0
     have h_gram_fam :=
       conjugating_flow_pullback_jointGram_onesided (I := I) g_DT T Φ_fam hΦjoint h_gramIcc_T
     refine ⟨T, hT0, fun s => Diffeomorph.pullbackMetric (g_DT s) (Φ_fam s),
       ?_, h_gram_fam, ?_⟩
     · change Diffeomorph.pullbackMetric (g_DT 0) (Φ_fam 0) = g₀
-      rw [hΦ0, Diffeomorph.pullbackMetric_refl, hDT_init]
+      rw [hΦ0, Diffeomorph.pullbackMetric_refl, hDT_initial]
     · have hDT_deriv_Ico : ∀ s ∈ Set.Ico (0 : ℝ) T, ∀ y : M, ∀ a b : TangentSpace I y,
           HasDerivWithinAt (fun u : ℝ => (g_DT u).inner y a b)
             (deTurckRicciRHS (I := I) g₀ (g_DT s) y a b) (Set.Ici 0) s := by
         intro s hs y a b
         exact hDT_deriv' s ⟨hs.1, lt_of_lt_of_le hs.2 hT_le⟩ y a b
       have h_interior :=
-        conjugating_flow_flat_data (I := I) g_DT g₀ T Φ_fam hDT_deriv_Ico hΦode h_reg_T
+        conjugating_flow_flat_data (I := I) g_DT g₀ T Φ_fam hDT_deriv_Ico hΦode h_regularity_T
           h_gram_DT_T
       intro t ht x v w
       rcases eq_or_lt_of_le ht.1 with h0 | h0

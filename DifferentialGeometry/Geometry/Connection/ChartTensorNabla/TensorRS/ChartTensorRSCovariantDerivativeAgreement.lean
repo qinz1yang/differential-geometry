@@ -243,13 +243,13 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
     have hrepr_α_diff : MDifferentiableAt I 𝓘(ℝ, TensorRSModel r s ℝ E)
         (tensorRSChartESectionRepr (I := I) r s α T.toFun) b :=
       hα_repr_diff.congr_of_eventuallyEq h_funeq
-    have hb_src : b ∈ (chartAt H α).source :=
+    have hb_source : b ∈ (chartAt H α).source :=
       chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
     have hb_int : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) :=
       chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
     have hpb := mdifferentiableAt_iff_source_of_mem_source (I := I)
       (E' := TensorRSModel r s ℝ E) (I' := 𝓘(ℝ, TensorRSModel r s ℝ E)) (x := α)
-      (f := tensorRSChartESectionRepr (I := I) r s α T.toFun) hb_src
+      (f := tensorRSChartESectionRepr (I := I) r s α T.toFun) hb_source
     have hwithin := hpb.mp hrepr_α_diff
     have htgt_subset : (extChartAt I α).target ⊆ range I :=
       extChartAt_target_subset_range α
@@ -395,7 +395,7 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
           (tensorPartialEval (I := I) (M := M) r 0 T.toFun w) X.toFun b
           (fun i : Fin 0 => Fin.elim0 i)]
       have hCurryFactor :=
-        tensorRSIntrinsicChartCLM_factor_via_tensorPartialEval
+        tensorRSIntrinsicChartCLM_factor
           (I := I) r 0 α T.toFun (b := b) hb α_input hT_pull X.toFun
       have hRank0_raw :=
         tensor0SIntrinsicChartCLM_zero_apply_empty_eq_mfderiv
@@ -406,7 +406,7 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
     · rw [chartTensor0SCovariantDerivative_succ_apply (I := I) n g α
           (tensorPartialEval (I := I) (M := M) r (n + 1) T.toFun w) X.toFun b m]
       have hCurryFactor :=
-        tensorRSIntrinsicChartCLM_factor_via_tensorPartialEval
+        tensorRSIntrinsicChartCLM_factor
           (I := I) r (n + 1) α T.toFun (b := b) hb α_input hT_pull X.toFun
       have hCurryFactor_at_m :
           Tensor0SSpace.eval

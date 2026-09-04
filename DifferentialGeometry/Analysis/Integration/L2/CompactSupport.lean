@@ -337,9 +337,9 @@ private lemma exists_contMDiff_uniform_approx_sub_compact_support
         Function.support (g : M → ℝ) ⊆ Function.support φ := by
   have hε_cont : Continuous (fun _ : M => δ) := continuous_const
   have hε_pos : ∀ x : M, 0 < (fun _ : M => δ) x := fun _ => hδ
-  obtain ⟨g, g_approx, g_supp⟩ :=
+  obtain ⟨g, g_approx, g_support⟩ :=
     hφ.exists_contMDiff_approx (F := ℝ) I (⊤ : ℕ∞) hε_cont hε_pos
-  refine ⟨g, ?_, g_supp⟩
+  refine ⟨g, ?_, g_support⟩
   intro x
   have := g_approx x
   simpa [Real.dist_eq] using this
@@ -353,7 +353,7 @@ private lemma eLpNorm_le_of_bound_and_support_le_measure
     {δ : ℝ} (hδ : 0 ≤ δ)
     (h_bound : ∀ x : M, ‖h x‖ ≤ δ)
     {K : Set M} (hK : IsCompact K)
-    (h_supp : ∀ x : M, x ∉ K → h x = 0) :
+    (h_support : ∀ x : M, x ∉ K → h x = 0) :
     eLpNorm h p (riemannianVolumeMeasure (I := I) (M := M) g) ≤
       (riemannianVolumeMeasure (I := I) (M := M) g K) ^ (p.toReal⁻¹) *
         ENNReal.ofReal δ := by
@@ -364,7 +364,7 @@ private lemma eLpNorm_le_of_bound_and_support_le_measure
     ext x
     by_cases hx : x ∈ K
     · simp [Set.indicator_of_mem hx]
-    · simp [Set.indicator_of_notMem hx, h_supp x hx]
+    · simp [Set.indicator_of_notMem hx, h_support x hx]
   rw [h_eq]
   have hpt : ∀ x : M,
       ‖K.indicator h x‖ ≤ ‖K.indicator (fun _ : M => δ) x‖ := by
@@ -395,7 +395,7 @@ private lemma exists_smoothCompactSupport_eLpNorm_sub_le_of_continuous
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp' : p ≠ ⊤)
-    {φ : M → ℝ} (hφ_cont : Continuous φ) (hφ_supp : HasCompactSupport φ)
+    {φ : M → ℝ} (hφ_cont : Continuous φ) (hφ_support : HasCompactSupport φ)
     {ε : ℝ≥0∞} (hε : ε ≠ 0) :
     ∃ f : C^∞⟮I, M; ℝ⟯,
       f ∈ compactlySupportedSmoothFunctions I M ∧
@@ -406,7 +406,7 @@ private lemma exists_smoothCompactSupport_eLpNorm_sub_le_of_continuous
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   set μ := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
   set K : Set M := tsupport φ with hK_def
-  have hK_compact : IsCompact K := hφ_supp
+  have hK_compact : IsCompact K := hφ_support
   have hμK_lt : μ K < ⊤ := hK_compact.measure_lt_top
   have hμK_ne : μ K ≠ ⊤ := hμK_lt.ne
   have hp_pos : 0 < p := lt_of_lt_of_le zero_lt_one hp
@@ -454,7 +454,7 @@ private lemma exists_smoothCompactSupport_eLpNorm_sub_le_of_continuous
           ≤ ENNReal.ofReal ε.toReal := h1
         _ = ε := ENNReal.ofReal_toReal hε_top
   obtain ⟨δ, hδ_pos, hδ_bound⟩ := hchoice
-  obtain ⟨f, hf_approx, hf_supp_le⟩ :=
+  obtain ⟨f, hf_approx, hf_support_le⟩ :=
     exists_contMDiff_uniform_approx_sub_compact_support (I := I) (M := M)
       hφ_cont hδ_pos
   set h : M → ℝ := φ - (f : M → ℝ) with hh_def
@@ -465,7 +465,7 @@ private lemma exists_smoothCompactSupport_eLpNorm_sub_le_of_continuous
     change |φ x - (f : M → ℝ) x| ≤ δ
     have habs : |(f : M → ℝ) x - φ x| = |φ x - (f : M → ℝ) x| := abs_sub_comm _ _
     linarith [this, habs.symm.le]
-  have h_supp : ∀ x : M, x ∉ K → h x = 0 := by
+  have h_support : ∀ x : M, x ∉ K → h x = 0 := by
     intro x hx
     have hφx : φ x = 0 := by
       by_contra hne
@@ -473,20 +473,20 @@ private lemma exists_smoothCompactSupport_eLpNorm_sub_le_of_continuous
     have hfx : (f : M → ℝ) x = 0 := by
       by_contra hne
       have : x ∈ Function.support ((f : M → ℝ)) := hne
-      have : x ∈ Function.support φ := hf_supp_le this
+      have : x ∈ Function.support φ := hf_support_le this
       exact this hφx
     simp [h, hφx, hfx]
   have h_meas : AEStronglyMeasurable h μ := by
     apply Continuous.aestronglyMeasurable
     exact hφ_cont.sub f.contMDiff.continuous
   have h_estimate := eLpNorm_le_of_bound_and_support_le_measure (I := I) (M := M) g
-    (p := p) (h := h) h_meas (le_of_lt hδ_pos) h_bound hK_compact h_supp
+    (p := p) (h := h) h_meas (le_of_lt hδ_pos) h_bound hK_compact h_support
   have hμK_eq : μ K ^ (p.toReal⁻¹) = factor := rfl
   refine ⟨f, ?_, ?_⟩
   · change HasCompactSupport ((f : M → ℝ))
-    refine HasCompactSupport.mono' (f := φ) hφ_supp ?_
+    refine HasCompactSupport.mono' (f := φ) hφ_support ?_
     intro x hx
-    have : x ∈ Function.support φ := hf_supp_le hx
+    have : x ∈ Function.support φ := hf_support_le hx
     exact subset_tsupport φ this
   · calc
       eLpNorm h p μ ≤ μ K ^ (p.toReal⁻¹) * ENNReal.ofReal δ := h_estimate
@@ -519,11 +519,11 @@ theorem compactlySupportedSmoothFunctions_denseRange_in_Lp
     rw [Ne, ENNReal.ofReal_eq_zero, not_le]
     exact hε4_pos
   have hu_mem : MemLp ((u : M → ℝ)) p μ := Lp.memLp u
-  obtain ⟨φ, φ_supp, φ_approx, φ_cont, _φ_mem⟩ :=
+  obtain ⟨φ, φ_support, φ_approx, φ_cont, _φ_mem⟩ :=
     hu_mem.exists_hasCompactSupport_eLpNorm_sub_le (μ := μ) hp' hε4_enn_ne
   obtain ⟨f, hf_mem, f_approx⟩ :=
     exists_smoothCompactSupport_eLpNorm_sub_le_of_continuous
-      (I := I) (M := M) g hp hp' φ_cont φ_supp hε4_enn_ne
+      (I := I) (M := M) g hp hp' φ_cont φ_support hε4_enn_ne
   refine ⟨f, hf_mem, ?_⟩
   set fLp := (compactlySupportedSmoothFunctions_memLp (I := I) (M := M) g hf_mem).toLp
       ((f : M → ℝ))

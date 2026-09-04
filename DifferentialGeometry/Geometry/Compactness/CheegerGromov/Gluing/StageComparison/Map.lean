@@ -10,7 +10,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Set Bundle Manifold
 open scoped ContDiff Manifold Topology
@@ -167,7 +167,7 @@ theorem stageTarget_subseq
 
 noncomputable def stageCenterEnergy
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
-    {ι : Type*} [Fintype ι] (mu : ι → Real) (pts : ι → Y.M)
+    {ι : Type*} [Fintype ι] (mu : ι → Real) (points : ι → Y.M)
     (y : Y.M) : Real :=
   letI : TopologicalSpace Y.M := Y.topology
   letI : ChartedSpace H Y.M := Y.charted
@@ -175,30 +175,30 @@ noncomputable def stageCenterEnergy
   letI : T2Space Y.M := Y.t2
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  CenterOfMass.centerEnergy (I := I) Y.metric mu pts y
+  CenterOfMass.centerEnergy (I := I) Y.metric mu points y
 
 def IsStageCenter
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
-    {ι : Type*} [Fintype ι] (mu : ι → Real) (pts : ι → Y.M)
+    {ι : Type*} [Fintype ι] (mu : ι → Real) (points : ι → Y.M)
     (y : Y.M) : Prop :=
   ∀ z : Y.M,
-    stageCenterEnergy (I := I) Y mu pts y ≤
-      stageCenterEnergy (I := I) Y mu pts z
+    stageCenterEnergy (I := I) Y mu points y ≤
+      stageCenterEnergy (I := I) Y mu points z
 
 omit [FiniteDimensional Real E] [CompleteSpace E] [NeZero (Module.finrank Real E)]
     [I.Boundaryless] in
 private theorem stageCenterChoice_heq
     {Y Y' : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {ι : Type*} [Fintype ι]
-    {mu mu' : ι → Real} {pts : ι → Y.M} {pts' : ι → Y'.M}
-    (hY : Y = Y') (hmu : mu = mu') (hpts : HEq pts pts')
-    (h : ∃! y : Y.M, IsStageCenter (I := I) Y mu pts y)
-    (h' : ∃! y : Y'.M, IsStageCenter (I := I) Y' mu' pts' y) :
+    {mu mu' : ι → Real} {points : ι → Y.M} {points' : ι → Y'.M}
+    (hY : Y = Y') (hmu : mu = mu') (hpts : HEq points points')
+    (h : ∃! y : Y.M, IsStageCenter (I := I) Y mu points y)
+    (h' : ∃! y : Y'.M, IsStageCenter (I := I) Y' mu' points' y) :
     HEq (Classical.choose h.exists) (Classical.choose h'.exists) := by
   subst Y'
   subst mu'
-  have hpts' : pts = pts' := eq_of_heq hpts
-  subst pts'
+  have hpts' : points = points' := eq_of_heq hpts
+  subst points'
   exact heq_of_eq
     (h.unique (Classical.choose_spec h.exists)
       (Classical.choose_spec h'.exists))
@@ -468,5 +468,5 @@ theorem stageCompare_base
     · exact hmin
   · simp only [stageComparisonMap, hx, huniq, dite_true, dite_false]
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

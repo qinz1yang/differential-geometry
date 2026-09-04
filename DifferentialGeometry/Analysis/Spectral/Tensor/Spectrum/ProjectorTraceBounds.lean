@@ -274,7 +274,7 @@ theorem eigenProjector_diagonal_le (g : SmoothRiemannianMetric I M) :
           ((eigenSmooth (I := I) (M := M) g i).toSection x) =
         ∑ a, (inner ℝ ((eigenSmooth (I := I) (M := M) g i).toSection x) (b a)) ^ 2 := by
     intro i
-    rw [riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g 0 2 x _]
+    rw [riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g 0 2 x _]
     exact (OrthonormalBasis.sum_sq_inner_left b
       ((eigenSmooth (I := I) (M := M) g i).toSection x)).symm
   calc ∑ i ∈ eigenSubLevel (I := I) (M := M) g Λ,

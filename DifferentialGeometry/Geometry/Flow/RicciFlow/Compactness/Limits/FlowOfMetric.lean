@@ -37,7 +37,7 @@ variable [IsManifold I 1 M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem isSolutionOn_of_reg
+theorem isSolutionOn_of_regularity
     {D : RealTimeInterval}
     (g : Real -> SmoothRiemannianMetric I M)
     (hsmooth : MetricFamilySmoothOn (I := I) (M := M) D
@@ -108,7 +108,7 @@ theorem isSolutionOn_of_reg
 end RicciFlow
 end PDE
 
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 universe u uE uH
 
@@ -246,5 +246,5 @@ theorem flowOfMetric_atTime
          metric := m } : PointedRiemannianManifold.{u, uE, uH} (I := I)))
     h
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

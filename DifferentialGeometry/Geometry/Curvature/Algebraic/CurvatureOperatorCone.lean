@@ -23,7 +23,7 @@ def algebraicCurvatureOperatorQuadraticEval {x : M} {n : Nat}
     (c : Fin n → Real)
     (v w : Fin n → TangentSpace I x) : Real :=
   ∑ i, ∑ j, c i * c j *
-    tensor04StdAt (I := I) (M := M)
+    tensor04StandardAt (I := I) (M := M)
       (A : Tensor04At (I := I) (M := M) x) (v i) (w i) (w j) (v j)
 
 noncomputable def algebraicCurvatureOperatorQuadraticEvalCLM {x : M} {n : Nat}
@@ -46,7 +46,7 @@ theorem algebraicCurvatureOperatorQuadraticEvalCLM_apply {x : M} {n : Nat}
       algebraicCurvatureOperatorQuadraticEval
         (I := I) (M := M) A c v w := by
   simp [algebraicCurvatureOperatorQuadraticEvalCLM,
-    algebraicCurvatureOperatorQuadraticEval, tensor04StdAt]
+    algebraicCurvatureOperatorQuadraticEval, tensor04StandardAt]
 
 noncomputable def algebraicCurvatureOperatorNonnegativeCone {x : M} :
     ProperCone Real
@@ -100,7 +100,7 @@ theorem algebraicCurvatureOperatorQuadraticEval_singleton {x : M}
       tensor04SectionalEval (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x) v w := by
   simp only [algebraicCurvatureOperatorQuadraticEval, Fin.sum_univ_one,
-    mul_one, one_mul, tensor04StdAt]
+    mul_one, one_mul, tensor04StandardAt]
   unfold tensor04SectionalEval
   congr 1
 
@@ -134,7 +134,7 @@ theorem algebraicCurvatureOperatorQuadraticEval_pullback {x y : M} {n : Nat}
   intro i hi
   apply Finset.sum_congr rfl
   intro j hj
-  rw [algebraicCurvatureTensorPullbackCLE_apply, tensor04StdAt_pullback]
+  rw [algebraicCurvatureTensorPullbackCLE_apply, tensor04StandardAt_pullback]
 
 theorem algebraicCurvatureTensorPullbackCLE_mem_curvatureOperatorNonnegativeCone_iff
     {x y : M}

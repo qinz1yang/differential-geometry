@@ -16,44 +16,44 @@ open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Integral.Measure
 
-private lemma hypSn_scale (q δ t : Real) (hδ : δ ≠ 0) :
-    δ * hypSn (q * δ) t = hypSn q (δ * t) := by
+private lemma hyperbolicSn_scale (q δ t : Real) (hδ : δ ≠ 0) :
+    δ * hyperbolicSn (q * δ) t = hyperbolicSn q (δ * t) := by
   by_cases hq : q = 0
   · subst q
-    simp [hypSn]
-  · rw [hypSn, if_neg (mul_ne_zero hq hδ), hypSn, if_neg hq]
+    simp [hyperbolicSn]
+  · rw [hyperbolicSn, if_neg (mul_ne_zero hq hδ), hyperbolicSn, if_neg hq]
     rw [show (q * δ) * t = q * (δ * t) by ring]
     field_simp
 
-theorem hypDens_scale (q δ : Real) (d : Nat) (t : Real)
+theorem hyperbolicDens_scale (q δ : Real) (d : Nat) (t : Real)
     (hδ : δ ≠ 0) :
-    δ ^ d * hypDensity (q * δ) d t = hypDensity q d (δ * t) := by
-  rw [hypDensity, hypDensity, ← mul_pow, hypSn_scale q δ t hδ]
+    δ ^ d * hyperbolicDensity (q * δ) d t = hyperbolicDensity q d (δ * t) := by
+  rw [hyperbolicDensity, hyperbolicDensity, ← mul_pow, hyperbolicSn_scale q δ t hδ]
 
 private lemma ratio_rescale
     (F : Real → Real) (q δ b : Real) (d : Nat)
     (hq : 0 ≤ q) (hδ : 0 < δ)
     (hanti : AntitoneOn
-      (fun t => t ^ d * F (δ * t) / hypDensity (q * δ) d t)
+      (fun t => t ^ d * F (δ * t) / hyperbolicDensity (q * δ) d t)
       (Ioo (0 : Real) b)) :
     AntitoneOn
-      (fun s => s ^ d * F s / hypDensity q d s)
+      (fun s => s ^ d * F s / hyperbolicDensity q d s)
       (Ioo (0 : Real) (δ * b)) := by
   have hqδ : 0 ≤ q * δ := mul_nonneg hq hδ.le
   have ratio_eq (s : Real) (hs : 0 < s) :
       (s / δ) ^ d * F (δ * (s / δ)) /
-          hypDensity (q * δ) d (s / δ) =
-        s ^ d * F s / hypDensity q d s := by
+          hyperbolicDensity (q * δ) d (s / δ) =
+        s ^ d * F s / hyperbolicDensity q d s := by
     have hδne : δ ≠ 0 := hδ.ne'
     have ht : 0 < s / δ := div_pos hs hδ
-    have hscale := hypDens_scale q δ d (s / δ) hδne
+    have hscale := hyperbolicDens_scale q δ d (s / δ) hδne
     rw [mul_div_cancel₀ s hδne] at hscale
     rw [mul_div_cancel₀ s hδne, div_pow]
     calc
-      (s ^ d / δ ^ d) * F s / hypDensity (q * δ) d (s / δ) =
+      (s ^ d / δ ^ d) * F s / hyperbolicDensity (q * δ) d (s / δ) =
           s ^ d * F s /
-            (δ ^ d * hypDensity (q * δ) d (s / δ)) := by ring
-      _ = s ^ d * F s / hypDensity q d s := by rw [hscale]
+            (δ ^ d * hyperbolicDensity (q * δ) d (s / δ)) := by ring
+      _ = s ^ d * F s / hyperbolicDensity q d s := by rw [hscale]
   intro r hr s hs hrs
   have hrδ : r / δ ∈ Ioo (0 : Real) b := by
     constructor
@@ -269,12 +269,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
-def hypRadVol (q : Real) (d : Nat) (R : Real) : Real :=
-  ∫ t in (0 : Real)..R, hypDensity q d t
+def hyperbolicRadialVolume (q : Real) (d : Nat) (R : Real) : Real :=
+  ∫ t in (0 : Real)..R, hyperbolicDensity q d t
 
-theorem hypRadVol_zero (d : Nat) (R : Real) :
-    hypRadVol 0 d R = R ^ (d + 1) / (d + 1) := by
-  simp [hypRadVol, hypDensity, hypSn, integral_pow]
+theorem hyperbolicRadialVolume_zero (d : Nat) (R : Real) :
+    hyperbolicRadialVolume 0 d R = R ^ (d + 1) / (d + 1) := by
+  simp [hyperbolicRadialVolume, hyperbolicDensity, hyperbolicSn, integral_pow]
 
 theorem volSphere_finrank
     [MeasurableSpace E] [BorelSpace E] :
@@ -291,19 +291,19 @@ theorem volSphere_finrank
     InnerProductSpace.volume_ball, EuclideanSpace.volume_ball]
   simp only [finrank_euclideanSpace, Fintype.card_fin]
 
-theorem hypRadVol_pos {q R : Real} {d : Nat} (hq : 0 ≤ q) (hR : 0 < R) :
-    0 < hypRadVol q d R := by
+theorem hyperbolicRadialVolume_pos {q R : Real} {d : Nat} (hq : 0 ≤ q) (hR : 0 < R) :
+    0 < hyperbolicRadialVolume q d R := by
   exact intervalIntegral.intervalIntegral_pos_of_pos_on
-    ((hypDen_continuous q d).intervalIntegrable (0 : Real) R)
-    (fun t ht => hypDensity_pos hq ht.1) hR
+    ((hyperbolicDen_continuous q d).intervalIntegrable (0 : Real) R)
+    (fun t ht => hyperbolicDensity_pos hq ht.1) hR
 
-theorem hypRad_lintegral
+theorem lintegral_hyperbolicDensity_eq_hyperbolicRadialVolume
     (q : Real) (hq : 0 ≤ q) (d : Nat) {R : Real} (hR : 0 < R) :
     (∫⁻ r : Ioi (0 : Real),
         (Iio (⟨R, hR⟩ : Ioi (0 : Real))).indicator
-          (fun r => ENNReal.ofReal (hypDensity (q * r.1) d 1)) r
+          (fun r => ENNReal.ofReal (hyperbolicDensity (q * r.1) d 1)) r
         ∂Measure.volumeIoiPow d) =
-      ENNReal.ofReal (hypRadVol q d R) := by
+      ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
   have hpowMeas : Measurable (fun r : Ioi (0 : Real) =>
       ENNReal.ofReal (r.1 ^ d)) :=
     ENNReal.measurable_ofReal.comp (measurable_subtype_coe.pow_const d)
@@ -313,65 +313,65 @@ theorem hypRad_lintegral
   · have hmul :
         (∫⁻ r : Ioi (0 : Real) in Iio (⟨R, hR⟩ : Ioi (0 : Real)),
             ENNReal.ofReal (r.1 ^ d) *
-              ENNReal.ofReal (hypDensity (q * r.1) d 1)
+              ENNReal.ofReal (hyperbolicDensity (q * r.1) d 1)
             ∂Measure.comap Subtype.val volume) =
           ∫⁻ r : Ioi (0 : Real) in Iio (⟨R, hR⟩ : Ioi (0 : Real)),
-            ENNReal.ofReal (hypDensity q d r.1)
+            ENNReal.ofReal (hyperbolicDensity q d r.1)
             ∂Measure.comap Subtype.val volume := by
           apply setLIntegral_congr_fun measurableSet_Iio
           intro r _hr
           change
             ENNReal.ofReal (r.1 ^ d) *
-                ENNReal.ofReal (hypDensity (q * r.1) d 1) =
-              ENNReal.ofReal (hypDensity q d r.1)
+                ENNReal.ofReal (hyperbolicDensity (q * r.1) d 1) =
+              ENNReal.ofReal (hyperbolicDensity q d r.1)
           rw [← ENNReal.ofReal_mul (pow_nonneg r.2.le d),
-            hypDens_scale q r.1 d 1 r.2.ne']
+            hyperbolicDens_scale q r.1 d 1 r.2.ne']
           simp only [mul_one]
     simp only [Pi.mul_apply]
     rw [hmul]
     rw [setLIntegral_subtype measurableSet_Ioi _
-      (fun t : Real => ENNReal.ofReal (hypDensity q d t))]
+      (fun t : Real => ENNReal.ofReal (hyperbolicDensity q d t))]
     rw [image_subtype_val_Ioi_Iio, Measure.restrict_congr_set Ioo_ae_eq_Ioc]
     rw [← ofReal_integral_eq_lintegral_ofReal]
-    · rw [hypRadVol, intervalIntegral.integral_of_le hR.le]
-    · exact (hypDen_continuous q d).intervalIntegrable (0 : Real) R |>.1
+    · rw [hyperbolicRadialVolume, intervalIntegral.integral_of_le hR.le]
+    · exact (hyperbolicDen_continuous q d).intervalIntegrable (0 : Real) R |>.1
     · filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
-      exact (hypDensity_pos hq ht.1).le
+      exact (hyperbolicDensity_pos hq ht.1).le
   · filter_upwards [] with r
     exact ENNReal.ofReal_lt_top
 
-theorem hypBall_lintegral
+theorem hyperbolicBall_lintegral
     [MeasurableSpace E] [BorelSpace E]
     (q : Real) (hq : 0 ≤ q) {R : Real} (hR : 0 < R) :
     (∫⁻ w in ball (0 : E) R,
         ENNReal.ofReal
-          (hypDensity (q * ‖w‖) (Module.finrank Real E - 1) 1)
+          (hyperbolicDensity (q * ‖w‖) (Module.finrank Real E - 1) 1)
         ∂(volume : Measure E)) =
       (volume : Measure E).toSphere Set.univ *
         ENNReal.ofReal
-          (hypRadVol q (Module.finrank Real E - 1) R) := by
+          (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
   let _ : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   let d : Nat := Module.finrank Real E - 1
   let F : E → ENNReal :=
     (ball (0 : E) R).indicator
-      (fun w => ENNReal.ofReal (hypDensity (q * ‖w‖) d 1))
+      (fun w => ENNReal.ofReal (hyperbolicDensity (q * ‖w‖) d 1))
   let G : Ioi (0 : Real) → ENNReal :=
     (Iio (⟨R, hR⟩ : Ioi (0 : Real))).indicator
-      (fun r => ENNReal.ofReal (hypDensity (q * r.1) d 1))
+      (fun r => ENNReal.ofReal (hyperbolicDensity (q * r.1) d 1))
   have hscale (r : Ioi (0 : Real)) :
-      hypDensity (q * r.1) d 1 = hypDensity q d r.1 / r.1 ^ d := by
+      hyperbolicDensity (q * r.1) d 1 = hyperbolicDensity q d r.1 / r.1 ^ d := by
     apply (eq_div_iff (pow_ne_zero d r.2.ne')).2
     simpa only [mul_comm, mul_one] using
-      (hypDens_scale q r.1 d 1 r.2.ne')
+      (hyperbolicDens_scale q r.1 d 1 r.2.ne')
   have hrawMeas :
       Measurable (fun r : Ioi (0 : Real) =>
-        ENNReal.ofReal (hypDensity (q * r.1) d 1)) := by
+        ENNReal.ofReal (hyperbolicDensity (q * r.1) d 1)) := by
     have hreal :
         Measurable (fun r : Ioi (0 : Real) =>
-          hypDensity (q * r.1) d 1) := by
+          hyperbolicDensity (q * r.1) d 1) := by
       simp_rw [hscale]
-      exact ((hypDen_continuous q d).measurable.comp measurable_subtype_coe).div
+      exact ((hyperbolicDen_continuous q d).measurable.comp measurable_subtype_coe).div
         (measurable_subtype_coe.pow_const d)
     exact ENNReal.measurable_ofReal.comp hreal
   have hG : Measurable G := by
@@ -395,12 +395,12 @@ theorem hypBall_lintegral
         Set.indicator_of_notMem (fun h => hz (hmem.mp h)), one_mul]
   have hrad :
       (∫⁻ r : Ioi (0 : Real), G r ∂Measure.volumeIoiPow d) =
-        ENNReal.ofReal (hypRadVol q d R) := by
+        ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
     dsimp only [G]
-    exact hypRad_lintegral q hq d hR
+    exact lintegral_hyperbolicDensity_eq_hyperbolicRadialVolume q hq d hR
   calc
     (∫⁻ w in ball (0 : E) R,
-        ENNReal.ofReal (hypDensity (q * ‖w‖) d 1)
+        ENNReal.ofReal (hyperbolicDensity (q * ‖w‖) d 1)
         ∂(volume : Measure E)) =
         ∫⁻ w, F w ∂(volume : Measure E) := by
           dsimp only [F]
@@ -420,7 +420,7 @@ theorem hypBall_lintegral
         ∫⁻ r : Ioi (0 : Real), G r ∂Measure.volumeIoiPow d :=
       lintegral_prod_mul aemeasurable_const hG.aemeasurable
     _ = (volume : Measure E).toSphere Set.univ *
-        ENNReal.ofReal (hypRadVol q d R) := by
+        ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
       rw [lintegral_const, one_mul, hrad]
 
 def normalBallVolume (g : SmoothRiemannianMetric I M) (p : M)
@@ -448,7 +448,7 @@ theorem exists_framed_ratio
             r ^ (Module.finrank Real E - 1) *
                 paramDensity (I := I) g (framedExpDiffeo (I := I) g p)
                   (r • u.1) /
-              hypDensity q (Module.finrank Real E - 1) r)
+              hyperbolicDensity q (Module.finrank Real E - 1) r)
           (Ioo (0 : Real) ρ) := by
   let d : Nat := Module.finrank Real E - 1
   obtain ⟨r₀, hr₀, hcmp⟩ :=
@@ -637,7 +637,7 @@ theorem exists_framed_ratio
         curveDensity (I := I) g (radialCurve (I := I) g p (B none))
             (fun i : Fin d => radialJacobiField (I := I) g p (B none)
               (B (some i))) t /
-          hypDensity (q * δ) d t)
+          hyperbolicDensity (q * δ) d t)
       (Ioo (0 : Real) (1 / 2)) := by
     simpa only [hscaledSqrt, Fintype.card_fin] using hcmpData.2
   have hrad : ∀ t ∈ Ioo (0 : Real) (1 / 2),
@@ -662,17 +662,17 @@ theorem exists_framed_ratio
   let F : Real → Real := fun s =>
     normalChartDensity (I := I) g p (s • x)
   have hrawParam : AntitoneOn
-      (fun t => t ^ d * F (δ * t) / hypDensity (q * δ) d t)
+      (fun t => t ^ d * F (δ * t) / hyperbolicDensity (q * δ) d t)
       (Ioo (0 : Real) (1 / 2)) := by
     simpa only [F, hBnone, Fintype.card_fin, smul_smul, mul_comm] using hrawScaled
   have hrawPhysical := ratio_rescale F q δ (1 / 2) d hq hδ hrawParam
   have hrawPhysical' : AntitoneOn
       (fun s => s ^ d * normalChartDensity (I := I) g p
-          (s • ιp (normalFrame (I := I) g p u.1)) / hypDensity q d s)
+          (s • ιp (normalFrame (I := I) g p u.1)) / hyperbolicDensity q d s)
       (Ioo (0 : Real) ρ) := by
     rw [← hxFrame]
     simpa only [F, ρ, div_eq_mul_inv, one_mul] using hrawPhysical
-  have hframedSrc : MapsTo (fun s : Real => s • u.1)
+  have hframedSource : MapsTo (fun s : Real => s • u.1)
       (Ioo (0 : Real) ρ) (framedExpDiffeo (I := I) g p).source := by
     intro s hs
     apply hballSource
@@ -680,7 +680,7 @@ theorem exists_framed_ratio
       Real.norm_of_nonneg hs.1.le, huNorm, mul_one]
     exact hs.2
   simpa only [d] using
-    framedRatio_anti (I := I) g p u.1 q d hframedSrc hrawPhysical'
+    framedRatio_anti (I := I) g p u.1 q d hframedSource hrawPhysical'
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -697,9 +697,9 @@ theorem normalBall_cross
     ∃ ρ : Real, 0 < ρ ∧ ∀ {r R : Real},
       0 < r → r ≤ R → R < ρ →
         normalBallVolume (I := I) g p R *
-            ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) r) ≤
+            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) r) ≤
           normalBallVolume (I := I) g p r *
-            ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) := by
+            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
   let _ : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   let _ : MeasurableSpace E := borel E
@@ -747,10 +747,10 @@ theorem normalBall_cross
     dsimp only [A]
     exact intervalIntegral.integral_nonneg hs fun t ht =>
       mul_nonneg (pow_nonneg ht.1 d) (hP_nonneg u t)
-  have hmodel_pos {s : Real} (hs : 0 < s) : 0 < hypRadVol q d s := by
+  have hmodel_pos {s : Real} (hs : 0 < s) : 0 < hyperbolicRadialVolume q d s := by
     exact intervalIntegral.intervalIntegral_pos_of_pos_on
-      ((hypDen_continuous q d).intervalIntegrable (0 : Real) s)
-      (fun t ht => hypDensity_pos hq ht.1) hs
+      ((hyperbolicDen_continuous q d).intervalIntegrable (0 : Real) s)
+      (fun t ht => hyperbolicDensity_pos hq ht.1) hs
   have hpolar (s : Real) (hs : 0 < s) (hsρ : s < ρ) :
       normalBallVolume (I := I) g p s =
         ∫⁻ u : sphere (0 : E) 1, ENNReal.ofReal (A u s)
@@ -762,32 +762,32 @@ theorem normalBall_cross
     exact radial_lintegral_eq (P u) d hs
       (hP_cont u hs.le hsρ) (fun t _ht => hP_nonneg u t)
   have hdir_real (u : sphere (0 : E) 1) :
-      A u R * hypRadVol q d r ≤ A u r * hypRadVol q d R := by
+      A u R * hyperbolicRadialVolume q d r ≤ A u r * hyperbolicRadialVolume q d R := by
     have hfcont : ContinuousOn (fun t : Real => t ^ d * P u t)
         (Icc (0 : Real) b) :=
       (continuousOn_pow d).mul (hP_cont u hb.le hbρ)
-    have hgcont : ContinuousOn (hypDensity q d) (Icc (0 : Real) b) :=
-      (hypDen_continuous q d).continuousOn
+    have hgcont : ContinuousOn (hyperbolicDensity q d) (Icc (0 : Real) b) :=
+      (hyperbolicDen_continuous q d).continuousOn
     have hpoint : AntitoneOn
-        (fun t => (t ^ d * P u t) / hypDensity q d t)
+        (fun t => (t ^ d * P u t) / hyperbolicDensity q d t)
         (Ioo (0 : Real) b) := by
       exact (hratio u).mono fun t ht => ⟨ht.1, ht.2.trans hbρ⟩
     have hcum := integralRatio_anti_on hfcont hgcont
-      (fun t ht => hypDensity_pos hq ht.1) hpoint
+      (fun t ht => hyperbolicDensity_pos hq ht.1) hpoint
     have hquot := hcum
       ⟨hr, hrR.trans_lt hRb⟩ ⟨hR, hRb⟩ hrR
     exact (div_le_div_iff₀ (hmodel_pos hR) (hmodel_pos hr)).mp hquot
   have hdir (u : sphere (0 : E) 1) :
-      ENNReal.ofReal (A u R) * ENNReal.ofReal (hypRadVol q d r) ≤
-        ENNReal.ofReal (A u r) * ENNReal.ofReal (hypRadVol q d R) := by
+      ENNReal.ofReal (A u R) * ENNReal.ofReal (hyperbolicRadialVolume q d r) ≤
+        ENNReal.ofReal (A u r) * ENNReal.ofReal (hyperbolicRadialVolume q d R) := by
     rw [← ENNReal.ofReal_mul (hA_nonneg u hR.le),
       ← ENNReal.ofReal_mul (hA_nonneg u hr.le)]
     exact ENNReal.ofReal_le_ofReal (hdir_real u)
   rw [show Module.finrank Real E - 1 = d by rfl]
   rw [hpolar R hR hRρ, hpolar r hr (hrR.trans_lt hRρ)]
-  rw [← lintegral_mul_const' (ENNReal.ofReal (hypRadVol q d r))
+  rw [← lintegral_mul_const' (ENNReal.ofReal (hyperbolicRadialVolume q d r))
     (fun u : sphere (0 : E) 1 => ENNReal.ofReal (A u R)) ENNReal.ofReal_ne_top]
-  rw [← lintegral_mul_const' (ENNReal.ofReal (hypRadVol q d R))
+  rw [← lintegral_mul_const' (ENNReal.ofReal (hyperbolicRadialVolume q d R))
     (fun u : sphere (0 : E) 1 => ENNReal.ofReal (A u r)) ENNReal.ofReal_ne_top]
   exact lintegral_mono hdir
 
@@ -806,18 +806,18 @@ theorem normalBall_ratio
     ∃ ρ : Real, 0 < ρ ∧
       AntitoneOn
         (fun R => normalBallVolume (I := I) g p R /
-          ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R))
+          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
   obtain ⟨ρ, hρ, hcross⟩ := normalBall_cross (I := I) g hEnorm p q hq hd hRic
   refine ⟨ρ, hρ, ?_⟩
   intro r hr R hR hrR
-  have hmr : 0 < hypRadVol q (Module.finrank Real E - 1) r :=
-    hypRadVol_pos hq hr.1
-  have hmR : 0 < hypRadVol q (Module.finrank Real E - 1) R :=
-    hypRadVol_pos hq hR.1
-  have hmr0 : ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) r) ≠ 0 :=
+  have hmr : 0 < hyperbolicRadialVolume q (Module.finrank Real E - 1) r :=
+    hyperbolicRadialVolume_pos hq hr.1
+  have hmR : 0 < hyperbolicRadialVolume q (Module.finrank Real E - 1) R :=
+    hyperbolicRadialVolume_pos hq hR.1
+  have hmr0 : ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) r) ≠ 0 :=
     ENNReal.ofReal_ne_zero_iff.mpr hmr
-  have hmR0 : ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) ≠ 0 :=
+  have hmR0 : ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) ≠ 0 :=
     ENNReal.ofReal_ne_zero_iff.mpr hmR
   rw [ENNReal.div_le_iff hmR0 ENNReal.ofReal_ne_top]
   rw [← ENNReal.mul_div_right_comm]
@@ -836,9 +836,9 @@ theorem normalBall_cross_of_complete_metric
     ∃ ρ : Real, 0 < ρ ∧ ∀ {r R : Real},
       0 < r → r ≤ R → R < ρ →
         normalBallVolume (I := I) g p R *
-            ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) r) ≤
+            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) r) ≤
           normalBallVolume (I := I) g p r *
-            ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) := by
+            ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R) := by
   let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
@@ -869,7 +869,7 @@ theorem normalBall_ratio_of_complete_metric
     ∃ ρ : Real, 0 < ρ ∧
       AntitoneOn
         (fun R => normalBallVolume (I := I) g p R /
-          ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R))
+          ENNReal.ofReal (hyperbolicRadialVolume q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
   let _ : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))

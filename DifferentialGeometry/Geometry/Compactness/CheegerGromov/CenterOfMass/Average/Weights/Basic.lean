@@ -10,7 +10,7 @@ noncomputable section
 universe uX uι
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped BigOperators
 
@@ -209,5 +209,5 @@ theorem cutWeights_data {X : Type uX} {ι : Type} [Fintype ι] [DecidableEq ι]
   · intro x hx i hi
     exact hactive x hx i (num_ne_of_cut_ne hi)
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

@@ -25,29 +25,29 @@ variable {D : RealTimeInterval}
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem lRegKinetic_le
+theorem lRegularizedKinetic_le
     (S : SolutionOn (I := I) (M := M) D) (T : Real)
     (alpha : Real → M) (a b A C : Real) (hab : a ≤ b)
     (hpot : ∀ s ∈ Set.Icc a b,
       C ≤ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s))
-    (hkin : IntervalIntegrable (lRegSpeedSq S T alpha) volume a b)
-    (hLag : IntervalIntegrable (lRegLagrangian S T alpha) volume a b)
-    (hA : lRegAction S T alpha a b ≤ A) :
-    (∫ s in a..b, lRegSpeedSq S T alpha s) ≤
+    (hkin : IntervalIntegrable (lRegularizedSpeedSq S T alpha) volume a b)
+    (hLag : IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b)
+    (hA : lRegularizedAction S T alpha a b ≤ A) :
+    (∫ s in a..b, lRegularizedSpeedSq S T alpha s) ≤
       2 * (A - C * (b - a)) := by
   have hleft : IntervalIntegrable
-      (fun s ↦ (1 / 2 : Real) * lRegSpeedSq S T alpha s + C)
+      (fun s ↦ (1 / 2 : Real) * lRegularizedSpeedSq S T alpha s + C)
       volume a b :=
     (hkin.const_mul (1 / 2 : Real)).add intervalIntegrable_const
   have hmono :
-      (∫ s in a..b, (1 / 2 : Real) * lRegSpeedSq S T alpha s + C) ≤
-        lRegAction S T alpha a b := by
-    unfold lRegAction
+      (∫ s in a..b, (1 / 2 : Real) * lRegularizedSpeedSq S T alpha s + C) ≤
+        lRegularizedAction S T alpha a b := by
+    unfold lRegularizedAction
     apply intervalIntegral.integral_mono_on hab hleft hLag
     intro s hs
-    simpa only [lRegLagrangian, lRegSpeedSq, add_comm] using
+    simpa only [lRegularizedLagrangian, lRegularizedSpeedSq, add_comm] using
       add_le_add_left (hpot s hs)
-        ((1 / 2 : Real) * lRegSpeedSq S T alpha s)
+        ((1 / 2 : Real) * lRegularizedSpeedSq S T alpha s)
   rw [intervalIntegral.integral_add (hkin.const_mul (1 / 2 : Real))
       intervalIntegrable_const,
     intervalIntegral.integral_const_mul,
@@ -58,24 +58,24 @@ theorem lRegKinetic_le
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem lRegKinetic_bound
+theorem lRegularizedKinetic_bound
     [CompactSpace M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : ScalarSTContOn (I := I) (M := M) S)
     (T a b A : Real) (hab : a ≤ b)
     (ht : ∀ s ∈ Set.Icc a b, T - s ^ 2 ∈ D.carrier) :
     ∃ C : Real, ∀ alpha : Real → M,
-      IntervalIntegrable (lRegSpeedSq S T alpha) volume a b →
-        IntervalIntegrable (lRegLagrangian S T alpha) volume a b →
-          lRegAction S T alpha a b ≤ A →
-            (∫ s in a..b, lRegSpeedSq S T alpha s) ≤
+      IntervalIntegrable (lRegularizedSpeedSq S T alpha) volume a b →
+        IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b →
+          lRegularizedAction S T alpha a b ≤ A →
+            (∫ s in a..b, lRegularizedSpeedSq S T alpha s) ≤
               2 * (A - C * (b - a)) := by
-  obtain ⟨C, hC⟩ := exists_uniform_lower_bound_lRegPotential (I := I) S hS T a b (by
+  obtain ⟨C, hC⟩ := exists_uniform_lower_bound_lRegularizedPotential (I := I) S hS T a b (by
     intro s hs
     exact ht s (by simpa only [Set.uIcc_of_le hab] using hs))
   refine ⟨C, ?_⟩
   intro alpha hkin hLag hA
-  exact lRegKinetic_le (I := I) S T alpha a b A C hab
+  exact lRegularizedKinetic_le (I := I) S T alpha a b A C hab
     (fun s hs ↦ hC s (by
       simpa only [Set.uIcc_of_le hab] using hs) (alpha s))
     hkin hLag hA

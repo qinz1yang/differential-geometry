@@ -240,7 +240,7 @@ private theorem exists_uniform_partial_fderiv_local
     ∃ δ : ℝ, 0 < δ ∧ ∀ τ ∈ Icc a b, ∀ z : E, ‖z - α τ‖ < δ →
       ‖fderiv ℝ (f τ) z - fderiv ℝ (f τ) (α τ)‖ < ε := by
   set K_graph : Set (ℝ × E) := (fun τ : ℝ => (τ, α τ)) '' Icc a b with hK_graph_def
-  have hK_graph_cpt : IsCompact K_graph :=
+  have hK_graph_compact : IsCompact K_graph :=
     isCompact_Icc.image_of_continuousOn (continuousOn_id.prodMk hα)
   set F : ℝ × E → (E →L[ℝ] E) := fun p => fderiv ℝ (f p.1) p.2 with hF_def
   have hF_contOn : ContinuousOn F Ω := by
@@ -250,9 +250,9 @@ private theorem exists_uniform_partial_fderiv_local
   have hF_contAt : ∀ p ∈ K_graph, ContinuousAt F p := by
     rintro p ⟨τ, hτ, rfl⟩
     exact hF_contOn.continuousAt (hΩ.mem_nhds (hgraph τ hτ))
-  have hr_unif : { x : (E →L[ℝ] E) × (E →L[ℝ] E) | dist x.1 x.2 < ε } ∈ 𝓤 (E →L[ℝ] E) :=
+  have hr_uniform : { x : (E →L[ℝ] E) × (E →L[ℝ] E) | dist x.1 x.2 < ε } ∈ 𝓤 (E →L[ℝ] E) :=
     Metric.dist_mem_uniformity hε
-  have h := hK_graph_cpt.uniformContinuousAt_of_continuousAt F hF_contAt hr_unif
+  have h := hK_graph_compact.uniformContinuousAt_of_continuousAt F hF_contAt hr_uniform
   rcases Metric.mem_uniformity_dist.mp h with ⟨δ, hδ_pos, hδ⟩
   refine ⟨δ, hδ_pos, ?_⟩
   intro τ hτ z hz
@@ -288,13 +288,13 @@ private theorem exists_orbit_tube_local
     ∃ rtube : ℝ, 0 < rtube ∧ ∀ τ ∈ Icc (t₀ - T) (t₀ + T), ∀ z : E,
       ‖z - Φ (x, τ)‖ ≤ rtube → (τ, z) ∈ Ω := by
   set G : Set (ℝ × E) := (fun τ : ℝ => (τ, Φ (x, τ))) '' Icc (t₀ - T) (t₀ + T) with hG_def
-  have hG_cpt : IsCompact G :=
+  have hG_compact : IsCompact G :=
     isCompact_Icc.image_of_continuousOn
       (continuousOn_id.prodMk ((hΦ.orbit_continuousOn x hx).mono hsub))
   have hG_sub : G ⊆ Ω := by
     rintro p ⟨τ, hτ, rfl⟩
     exact hΩ_flow x hx τ (hsub hτ)
-  obtain ⟨rtube, hrtube_pos, hrtube_sub⟩ := hG_cpt.exists_cthickening_subset_open hΩ hG_sub
+  obtain ⟨rtube, hrtube_pos, hrtube_sub⟩ := hG_compact.exists_cthickening_subset_open hΩ hG_sub
   refine ⟨rtube, hrtube_pos, ?_⟩
   intro τ hτ z hz
   apply hrtube_sub
@@ -331,8 +331,8 @@ private theorem hasFDerivAt_flow_at_initial_local
     (hΦ.continuousOn_fderiv_along_orbit_local hΩ hf_C1 hΩ_flow x₀ hx₀_in_ball).mono hsub
       with hA_cont_def
   set A : ℝ → E →L[ℝ] E := fun s => fderiv ℝ (f s) (Φ ⟨x₀, s⟩) with hA_def
-  set vSol := variationalSolutionFun (f := f) (α := fun s => Φ ⟨x₀, s⟩) (t₀ := t₀)
-    hT hM hMT hA_cont hA_bd with hvSol_def
+  set vSolution := variationalSolutionFun (f := f) (α := fun s => Φ ⟨x₀, s⟩) (t₀ := t₀)
+    hT hM hMT hA_cont hA_bd with hvSolution_def
   set Lmap := variationalLinearMapAt (f := f) (α := fun s => Φ ⟨x₀, s⟩) (t₀ := t₀)
     hT hM hMT hA_cont hA_bd ht with hLmap_def
   obtain ⟨L, hL_lip⟩ := hΦ.exists_lipschitz
@@ -467,21 +467,21 @@ private theorem hasFDerivAt_flow_at_initial_local
   have hh_CE_lt_δuc : CE * ‖h‖ < δ_uc :=
     mk_bd hCE_nn h_CE_le_CEpos hCEpos_pos
       (lt_of_lt_of_le (lt_of_lt_of_le hh (min_le_right _ _)) (min_le_right _ _))
-  set y_h : ℝ → E := vSol h with hy_h_def
-  have hy_h_sol :
+  set y_h : ℝ → E := vSolution h with hy_h_def
+  have hy_h_solution :
       IsVariationalSolutionOn f (fun s => Φ ⟨x₀, s⟩) h t₀ y_h (Icc (t₀ - T) (t₀ + T)) :=
     variationalSolutionFun_isSolution hT hM hMT hA_cont hA_bd h
-  have hy_h_init : y_h t₀ = h := hy_h_sol.1
+  have hy_h_initial : y_h t₀ = h := hy_h_solution.1
   have hy_h_bd : ∀ s ∈ Icc (t₀ - T) (t₀ + T), ‖y_h s‖ ≤ CE * ‖h‖ := by
     intro s hs
     exact variationalSolutionFun_norm_le hT hM hMT hA_cont hA_bd h hs
-  have hy_h_cont : ContinuousOn y_h (Icc (t₀ - T) (t₀ + T)) := hy_h_sol.continuousOn
+  have hy_h_cont : ContinuousOn y_h (Icc (t₀ - T) (t₀ + T)) := hy_h_solution.continuousOn
   set α_h : ℝ → E := fun s => Φ ⟨x₀ + h, s⟩ with hα_h_def
   set β_h : ℝ → E := fun s => Φ ⟨x₀, s⟩ + y_h s with hβ_h_def
-  have hα_h_init : α_h t₀ = x₀ + h := hΦ.apply_initial (x₀ + h) hxh_mem_ball
-  have hβ_h_init : β_h t₀ = x₀ + h := by
+  have hα_h_initial : α_h t₀ = x₀ + h := hΦ.apply_initial (x₀ + h) hxh_mem_ball
+  have hβ_h_initial : β_h t₀ = x₀ + h := by
     change Φ ⟨x₀, t₀⟩ + y_h t₀ = x₀ + h
-    rw [hΦ.apply_initial x₀ hx₀_in_ball, hy_h_init]
+    rw [hΦ.apply_initial x₀ hx₀_in_ball, hy_h_initial]
   have hα_h_deriv_full : ∀ s ∈ Icc tmin tmax,
       HasDerivWithinAt α_h (f s (α_h s)) (Icc tmin tmax) s :=
     fun s hs => hΦ.hasDerivWithinAt (x₀ + h) hxh_mem_ball s hs
@@ -517,33 +517,33 @@ private theorem hasFDerivAt_flow_at_initial_local
     intro s hs
     have hs' : s ∈ Icc tmin tmax := hsub hs
     have h1 := (hΦc_deriv_full s hs').mono hsub
-    have h2 := hy_h_sol.2 s hs
+    have h2 := hy_h_solution.2 s hs
     exact h1.add h2
   have hβ_h_cont : ContinuousOn β_h (Icc (t₀ - T) (t₀ + T)) := by
     apply ContinuousOn.add (horbit_cont') hy_h_cont
   have h_residual_bound : ∀ s ∈ Icc (t₀ - T) (t₀ + T),
       ‖f s (Φ ⟨x₀, s⟩) + A s (y_h s) - f s (β_h s)‖ ≤ ε_target * ‖y_h s‖ := by
     intro s hs
-    set ρ_seg : ℝ := CE * ‖h‖ with hρ_seg_def
-    have hρ_seg_nn : 0 ≤ ρ_seg := mul_nonneg hCE_nn hh_nn
-    set S_seg : Set E := closedBall (Φ ⟨x₀, s⟩) ρ_seg with hS_seg_def
-    have hS_seg_conv : Convex ℝ S_seg := convex_closedBall _ _
-    have hf_diff : ∀ z ∈ S_seg, DifferentiableAt ℝ (f s) z := by
+    set ρ_segment : ℝ := CE * ‖h‖ with hρ_segment_def
+    have hρ_segment_nn : 0 ≤ ρ_segment := mul_nonneg hCE_nn hh_nn
+    set S_segment : Set E := closedBall (Φ ⟨x₀, s⟩) ρ_segment with hS_segment_def
+    have hS_segment_convergence : Convex ℝ S_segment := convex_closedBall _ _
+    have hf_diff : ∀ z ∈ S_segment, DifferentiableAt ℝ (f s) z := by
       intro z hz
-      have h_norm_le : ‖z - Φ ⟨x₀, s⟩‖ ≤ ρ_seg := by
+      have h_norm_le : ‖z - Φ ⟨x₀, s⟩‖ ≤ ρ_segment := by
         have := Metric.mem_closedBall.mp hz
         rw [dist_eq_norm] at this; exact this
       exact hf_diff_pt s z
         (hr_tube s hs z (h_norm_le.trans ((le_of_lt hh_CE_bd).trans hδ_K_strict_le_tube)))
-    have hx_seg : Φ ⟨x₀, s⟩ ∈ S_seg := Metric.mem_closedBall_self hρ_seg_nn
-    have hxv_seg : Φ ⟨x₀, s⟩ + y_h s ∈ S_seg := by
-      rw [hS_seg_def, mem_closedBall, dist_eq_norm]
-      change ‖Φ ⟨x₀, s⟩ + y_h s - Φ ⟨x₀, s⟩‖ ≤ ρ_seg
+    have hx_segment : Φ ⟨x₀, s⟩ ∈ S_segment := Metric.mem_closedBall_self hρ_segment_nn
+    have hxv_segment : Φ ⟨x₀, s⟩ + y_h s ∈ S_segment := by
+      rw [hS_segment_def, mem_closedBall, dist_eq_norm]
+      change ‖Φ ⟨x₀, s⟩ + y_h s - Φ ⟨x₀, s⟩‖ ≤ ρ_segment
       have heq : Φ ⟨x₀, s⟩ + y_h s - Φ ⟨x₀, s⟩ = y_h s := by abel
-      rw [heq, hρ_seg_def]; exact hy_h_bd s hs
-    have hC : ∀ z ∈ S_seg, ‖fderiv ℝ (f s) z - fderiv ℝ (f s) (Φ ⟨x₀, s⟩)‖ ≤ ε_target := by
+      rw [heq, hρ_segment_def]; exact hy_h_bd s hs
+    have hC : ∀ z ∈ S_segment, ‖fderiv ℝ (f s) z - fderiv ℝ (f s) (Φ ⟨x₀, s⟩)‖ ≤ ε_target := by
       intro z hz
-      have h_norm_le : ‖z - Φ ⟨x₀, s⟩‖ ≤ ρ_seg := by
+      have h_norm_le : ‖z - Φ ⟨x₀, s⟩‖ ≤ ρ_segment := by
         have := Metric.mem_closedBall.mp hz
         rw [dist_eq_norm] at this; exact this
       have h_norm_lt : ‖z - Φ ⟨x₀, s⟩‖ < δ_uc :=
@@ -551,7 +551,7 @@ private theorem hasFDerivAt_flow_at_initial_local
       exact le_of_lt (hδ_uc s hs z h_norm_lt)
     have h_residual : ‖f s (Φ ⟨x₀, s⟩ + y_h s) - f s (Φ ⟨x₀, s⟩)
         - (fderiv ℝ (f s) (Φ ⟨x₀, s⟩)) (y_h s)‖ ≤ ε_target * ‖y_h s‖ :=
-      norm_residual_le_of_diffOn s (Φ ⟨x₀, s⟩) (y_h s) hS_seg_conv hf_diff hx_seg hxv_seg hC
+      norm_residual_le_of_diffOn s (Φ ⟨x₀, s⟩) (y_h s) hS_segment_convergence hf_diff hx_segment hxv_segment hC
     have h_eq : f s (Φ ⟨x₀, s⟩) + A s (y_h s) - f s (β_h s)
         = -(f s (Φ ⟨x₀, s⟩ + y_h s) - f s (Φ ⟨x₀, s⟩) - (fderiv ℝ (f s) (Φ ⟨x₀, s⟩)) (y_h s)) := by
       change f s (Φ ⟨x₀, s⟩) + (fderiv ℝ (f s) (Φ ⟨x₀, s⟩)) (y_h s)
@@ -612,15 +612,15 @@ private theorem hasFDerivAt_flow_at_initial_local
     have hgs : ∀ τ ∈ Ico t₀ (t₀ + T), β_h τ ∈ s_set τ := by
       intro τ hτR
       exact hβ_h_mem_ball τ (hsub_R ⟨hτR.1, le_of_lt hτR.2⟩)
-    have ha_init : dist (α_h t₀) (β_h t₀) ≤ 0 := by
-      rw [hα_h_init, hβ_h_init, dist_self]
+    have ha_initial : dist (α_h t₀) (β_h t₀) ≤ 0 := by
+      rw [hα_h_initial, hβ_h_initial, dist_self]
     have hG := dist_le_of_approx_trajectories_ODE_of_mem
       (v := f) (s := s_set) (K := ⟨K_lip, hK_lip_nn⟩)
       (f := α_h) (g := β_h) (f' := fun τ => f τ (α_h τ))
       (g' := fun τ => f τ (Φ ⟨x₀, τ⟩) + A τ (y_h τ))
       (εf := 0) (εg := εg) (δ := 0)
       hv_lip hα_h_cont_R hα_h_deriv_R hf_bound hfs
-      hβ_h_cont_R hβ_h_deriv_R hg_bound hgs ha_init τ hτ
+      hβ_h_cont_R hβ_h_deriv_R hg_bound hgs ha_initial τ hτ
     rw [dist_eq_norm] at hG
     have h_zero_add : (0 : ℝ) + εg = εg := zero_add _
     rw [h_zero_add] at hG
@@ -783,10 +783,10 @@ private theorem hasFDerivAt_flow_at_initial_local
       intro τ' hτ'R
       change β_h (2 * t₀ - τ') ∈ closedBall (Φ ⟨x₀, 2 * t₀ - τ'⟩) δ_K_strict
       exact hβ_h_mem_ball (2 * t₀ - τ') (hψ_reflect_in_sub τ' ⟨hτ'R.1, le_of_lt hτ'R.2⟩)
-    have ha_init : dist (αR t₀) (βR t₀) ≤ 0 := by
+    have ha_initial : dist (αR t₀) (βR t₀) ≤ 0 := by
       change dist (α_h (2 * t₀ - t₀)) (β_h (2 * t₀ - t₀)) ≤ 0
       have h_simp : 2 * t₀ - t₀ = t₀ := by ring
-      rw [h_simp, hα_h_init, hβ_h_init, dist_self]
+      rw [h_simp, hα_h_initial, hβ_h_initial, dist_self]
     set s_eval : ℝ := 2 * t₀ - τ with hs_eval_def
     have hs_eval_mem : s_eval ∈ Icc t₀ (t₀ + T) := by
       refine ⟨?_, ?_⟩
@@ -799,7 +799,7 @@ private theorem hasFDerivAt_flow_at_initial_local
         + A (2 * t₀ - τ') (y_h (2 * t₀ - τ'))))
       (εf := 0) (εg := εg) (δ := 0)
       hvR_lip hαR_cont_R hαR_deriv_R hf_bound hfs
-      hβR_cont_R hβR_deriv_R hg_bound hgs ha_init s_eval hs_eval_mem
+      hβR_cont_R hβR_deriv_R hg_bound hgs ha_initial s_eval hs_eval_mem
     rw [dist_eq_norm] at hG
     have h_zero_add : (0 : ℝ) + εg = εg := zero_add _
     rw [h_zero_add] at hG
@@ -838,7 +838,7 @@ private theorem hasFDerivAt_flow_at_initial_local
   have h_final_bd : ‖α_h t - β_h t‖ ≤ GfactorR * (ε_target * CE * ‖h‖) := h_diff_full t ht
   have h_lhs : α_h t - β_h t = Φ ⟨x₀ + h, t⟩ - Φ ⟨x₀, t⟩ - Lmap h := by
     change Φ ⟨x₀ + h, t⟩ - (Φ ⟨x₀, t⟩ + y_h t) = _
-    have : Lmap h = vSol h t := rfl
+    have : Lmap h = vSolution h t := rfl
     rw [this]; abel
   rw [h_lhs] at h_final_bd
   have h_bound_le : GfactorR * (ε_target * CE * ‖h‖) ≤ c * ‖h‖ := by
@@ -1001,7 +1001,7 @@ private theorem hasFDerivAt_flow_jointly_center_local
   have hseg_sub : Icc u_lo u_hi ⊆ Icc (t - ρ_t_raw) (t + ρ_t_raw) := by
     intro u hu
     exact ⟨h_uloIcc.trans hu.1, hu.2.trans h_uhiIcc⟩
-  have h_seg_dist : ∀ u ∈ Icc u_lo u_hi, |u - t| ≤ |s| := by
+  have h_segment_dist : ∀ u ∈ Icc u_lo u_hi, |u - t| ≤ |s| := by
     intro u hu
     rcases le_or_gt 0 s with hs_nn | hs_neg
     · have hlo : u_lo = t := min_eq_left (by linarith)
@@ -1024,7 +1024,7 @@ private theorem hasFDerivAt_flow_jointly_center_local
       rw [abs_of_nonpos h3]
       have habs_s : |s| = -s := abs_of_neg hs_neg
       rw [habs_s]; exact h4
-  have hpair_dist_seg : ∀ u ∈ Icc u_lo u_hi,
+  have hpair_dist_segment : ∀ u ∈ Icc u_lo u_hi,
       dist ((x₀ + δ, u) : E × ℝ) (x₀, t) < ρ₀ := by
     intro u hu
     rw [Prod.dist_eq]
@@ -1033,15 +1033,15 @@ private theorem hasFDerivAt_flow_jointly_center_local
     have h2 : dist u t = |u - t| := Real.dist_eq u t
     rw [h1, h2]
     have h3 : ‖δ‖ < ρ₀ := hδ_lt_ρ₀
-    have h4 : |u - t| < ρ₀ := lt_of_le_of_lt (h_seg_dist u hu) hs_lt_ρ₀
+    have h4 : |u - t| < ρ₀ := lt_of_le_of_lt (h_segment_dist u hu) hs_lt_ρ₀
     exact max_lt h3 h4
-  have hΦ_seg : ∀ u ∈ Icc u_lo u_hi,
+  have hΦ_segment : ∀ u ∈ Icc u_lo u_hi,
       dist (α u) (Φ ⟨x₀, t⟩) < η_half := by
     intro u hu
     have hpair_in : (x₀ + δ, u) ∈ closedBall x₀ r ×ˢ Icc tmin tmax := by
       refine ⟨hx_in_ball, ?_⟩
       exact h_ab_sub_tmin (hseg_sub hu)
-    exact hΦ_close hpair_in (hpair_dist_seg u hu)
+    exact hΦ_close hpair_in (hpair_dist_segment u hu)
   have hpair_dist_f : ∀ u ∈ Icc u_lo u_hi,
       dist ((u, α u) : ℝ × E) (t, Φ ⟨x₀, t⟩) < η_f := by
     intro u hu
@@ -1049,27 +1049,27 @@ private theorem hasFDerivAt_flow_jointly_center_local
     have h1 : dist u t = |u - t| := Real.dist_eq u t
     rw [h1]
     have hu_t : |u - t| < η_half := by
-      have h_le : |u - t| ≤ |s| := h_seg_dist u hu
+      have h_le : |u - t| ≤ |s| := h_segment_dist u hu
       exact lt_of_le_of_lt h_le hs_lt_η_half
-    have h2 : dist (α u) (Φ ⟨x₀, t⟩) < η_half := hΦ_seg u hu
+    have h2 : dist (α u) (Φ ⟨x₀, t⟩) < η_half := hΦ_segment u hu
     have h3 : max (|u - t|) (dist (α u) (Φ ⟨x₀, t⟩)) < η_half := max_lt hu_t h2
     exact lt_trans h3 hη_half_lt
-  have hf_close_seg : ∀ u ∈ Icc u_lo u_hi, ‖f u (α u) - v₀‖ ≤ c2 := by
+  have hf_close_segment : ∀ u ∈ Icc u_lo u_hi, ‖f u (α u) - v₀‖ ≤ c2 := by
     intro u hu
     have hd := hpair_dist_f u hu
     have h := hη_f hd
     rw [dist_eq_norm] at h
     change ‖f u (α u) - v₀‖ ≤ c2
     exact le_of_lt h
-  have hg_deriv_seg : ∀ u ∈ Icc u_lo u_hi,
+  have hg_deriv_segment : ∀ u ∈ Icc u_lo u_hi,
       HasDerivWithinAt g (f u (α u) - v₀) (Icc u_lo u_hi) u := fun u hu =>
     (hg_deriv u (hseg_sub hu)).mono hseg_sub
-  have hf_seg_bound : ∀ u ∈ Ico u_lo u_hi, ‖f u (α u) - v₀‖ ≤ c2 := fun u hu =>
-    hf_close_seg u ⟨hu.1, le_of_lt hu.2⟩
+  have hf_segment_bound : ∀ u ∈ Ico u_lo u_hi, ‖f u (α u) - v₀‖ ≤ c2 := fun u hu =>
+    hf_close_segment u ⟨hu.1, le_of_lt hu.2⟩
   have h_mvt :=
     norm_image_sub_le_of_norm_deriv_le_segment' (f := g)
       (f' := fun u => f u (α u) - v₀) (C := c2) (a := u_lo) (b := u_hi)
-      hg_deriv_seg hf_seg_bound u_hi (right_mem_Icc.mpr hu_lo_le_u_hi)
+      hg_deriv_segment hf_segment_bound u_hi (right_mem_Icc.mpr hu_lo_le_u_hi)
   have h_u_diff : u_hi - u_lo = |s| := by
     rcases le_or_gt 0 s with hs_nn | hs_neg
     · have hlo : u_lo = t := min_eq_left (by linarith)
@@ -1365,7 +1365,7 @@ theorem IsLocalFlow.contDiffOn_top_local
             exact (hvsf.2 s (Ioo_subset_Icc_self hs_mid)).hasDerivAt (Icc_mem_nhds_iff.mpr hs_mid))
           (fun s hs => linearODESolution_hasDerivAt_of_hasSolution A (t₀ - T) (t₀ + T) t₀
             (fun _ => δ) h_exists hs)
-          (by rw [hvsf.1, linearODESolution_init])
+          (by rw [hvsf.1, linearODESolution_initial])
         simp only [hLsp_eq_vlm, hvlm_eq, uncurry]
         have h_eq := h_uniq ht_Ioo
         dsimp at h_eq

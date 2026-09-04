@@ -282,12 +282,12 @@ lemma fwdVariationalSolutionFun_linear
       HasDerivWithinAt (F (c₁ • J₁ + c₂ • J₂))
         ((A t) (F (c₁ • J₁ + c₂ • J₂) t)) (Ici t) t :=
     fun t ht => hasDerivWithinAt_Ici_of_Ici_zero (h12_d t ht) ht.1
-  have hL_init : L 0 = c₁ • J₁ + c₂ • J₂ := by
+  have hL_initial : L 0 = c₁ • J₁ + c₂ • J₂ := by
     change c₁ • F J₁ 0 + c₂ • F J₂ 0 = c₁ • J₁ + c₂ • J₂
     rw [hF, h1_0, h2_0]
   have hinit :
       fwdVariationalSolutionFun hδ hM hMδ hAcont hAbd (c₁ • J₁ + c₂ • J₂) 0 = L 0 := by
-    rw [h12_0, hL_init]
+    rw [h12_0, hL_initial]
   exact (forward_variational_unique hM hAbd h12_cont h12_d' hL_cont hL_deriv hinit) ht
 
 lemma fwdVariationalSolutionFun_norm_le
@@ -360,7 +360,7 @@ theorem forward_flow_hasFDerivAt_initial
         hδ hM hMδ hAcont hAbd ht) x₀ := by
   have hx₀_in_ball : x₀ ∈ closedBall x₀ r := Metric.mem_closedBall_self (le_of_lt hr)
   set A : ℝ → E →L[ℝ] E := fun s => fderiv ℝ (f s) (Φ x₀ s) with hA_def
-  set vSol := fwdVariationalSolutionFun (A := A) hδ hM hMδ hAcont hAbd with hvSol_def
+  set vSolution := fwdVariationalSolutionFun (A := A) hδ hM hMδ hAcont hAbd with hvSolution_def
   set Lmap := fwdVariationalLinearMapAt (A := A) hδ hM hMδ hAcont hAbd ht with hLmap_def
   obtain ⟨L, hL_lip⟩ := hΦlip
   have hL_nn : (0 : ℝ) ≤ L := L.coe_nonneg
@@ -477,8 +477,8 @@ theorem forward_flow_hasFDerivAt_initial
       (lt_of_lt_of_le (lt_of_lt_of_le hh (min_le_right _ _)) (min_le_right _ _))
   obtain ⟨hyh0, hyh_cont, hyh_d_ici0⟩ :=
     fwdVariationalSolutionFun_spec (A := A) hδ hM hMδ hAcont hAbd h
-  set y_h : ℝ → E := vSol h with hy_h_def
-  have hy_h_init : y_h 0 = h := hyh0
+  set y_h : ℝ → E := vSolution h with hy_h_def
+  have hy_h_initial : y_h 0 = h := hyh0
   have hy_h_cont : ContinuousOn y_h (Icc (0 : ℝ) δ) := hyh_cont
   have hy_h_d : ∀ s ∈ Ico (0 : ℝ) δ, HasDerivWithinAt y_h ((A s) (y_h s)) (Ici s) s :=
     fun s hs => hasDerivWithinAt_Ici_of_Ici_zero (hyh_d_ici0 s hs) hs.1
@@ -488,10 +488,10 @@ theorem forward_flow_hasFDerivAt_initial
     rw [hCE_def]; exact this
   set α_h : ℝ → E := fun s => Φ (x₀ + h) s with hα_h_def
   set β_h : ℝ → E := fun s => Φ x₀ s + y_h s with hβ_h_def
-  have hα_h_init : α_h 0 = x₀ + h := hΦ0 (x₀ + h) hxh_mem_ball
-  have hβ_h_init : β_h 0 = x₀ + h := by
+  have hα_h_initial : α_h 0 = x₀ + h := hΦ0 (x₀ + h) hxh_mem_ball
+  have hβ_h_initial : β_h 0 = x₀ + h := by
     change Φ x₀ 0 + y_h 0 = x₀ + h
-    rw [hΦ0 x₀ hx₀_in_ball, hy_h_init]
+    rw [hΦ0 x₀ hx₀_in_ball, hy_h_initial]
   have hα_h_cont' : ContinuousOn α_h (Icc (0 : ℝ) δ) := hΦcont (x₀ + h) hxh_mem_ball
   have hα_h_close : ∀ s ∈ Icc (0 : ℝ) δ, ‖α_h s - Φ x₀ s‖ ≤ L * ‖h‖ := by
     intro s hs
@@ -520,26 +520,26 @@ theorem forward_flow_hasFDerivAt_initial
   have h_residual_bound : ∀ s ∈ Icc (0 : ℝ) δ,
       ‖f s (Φ x₀ s) + A s (y_h s) - f s (β_h s)‖ ≤ ε_target * ‖y_h s‖ := by
     intro s hs
-    set ρ_seg : ℝ := CE * ‖h‖ with hρ_seg_def
-    have hρ_seg_nn : 0 ≤ ρ_seg := mul_nonneg hCE_nn hh_nn
-    set S_seg : Set E := closedBall (Φ x₀ s) ρ_seg with hS_seg_def
-    have hS_seg_conv : Convex ℝ S_seg := convex_closedBall _ _
-    have hf_diff : ∀ z ∈ S_seg, DifferentiableAt ℝ (f s) z := fun z _ => hf_diff_pt s z
-    have hx_seg : Φ x₀ s ∈ S_seg := Metric.mem_closedBall_self hρ_seg_nn
-    have hxv_seg : Φ x₀ s + y_h s ∈ S_seg := by
-      rw [hS_seg_def, mem_closedBall, dist_eq_norm]
-      change ‖Φ x₀ s + y_h s - Φ x₀ s‖ ≤ ρ_seg
+    set ρ_segment : ℝ := CE * ‖h‖ with hρ_segment_def
+    have hρ_segment_nn : 0 ≤ ρ_segment := mul_nonneg hCE_nn hh_nn
+    set S_segment : Set E := closedBall (Φ x₀ s) ρ_segment with hS_segment_def
+    have hS_segment_convergence : Convex ℝ S_segment := convex_closedBall _ _
+    have hf_diff : ∀ z ∈ S_segment, DifferentiableAt ℝ (f s) z := fun z _ => hf_diff_pt s z
+    have hx_segment : Φ x₀ s ∈ S_segment := Metric.mem_closedBall_self hρ_segment_nn
+    have hxv_segment : Φ x₀ s + y_h s ∈ S_segment := by
+      rw [hS_segment_def, mem_closedBall, dist_eq_norm]
+      change ‖Φ x₀ s + y_h s - Φ x₀ s‖ ≤ ρ_segment
       have heq : Φ x₀ s + y_h s - Φ x₀ s = y_h s := by abel
-      rw [heq, hρ_seg_def]; exact hy_h_bd s hs
-    have hC : ∀ z ∈ S_seg, ‖fderiv ℝ (f s) z - fderiv ℝ (f s) (Φ x₀ s)‖ ≤ ε_target := by
+      rw [heq, hρ_segment_def]; exact hy_h_bd s hs
+    have hC : ∀ z ∈ S_segment, ‖fderiv ℝ (f s) z - fderiv ℝ (f s) (Φ x₀ s)‖ ≤ ε_target := by
       intro z hz
-      have h_norm_le : ‖z - Φ x₀ s‖ ≤ ρ_seg := by
+      have h_norm_le : ‖z - Φ x₀ s‖ ≤ ρ_segment := by
         have := Metric.mem_closedBall.mp hz; rw [dist_eq_norm] at this; exact this
       have h_norm_lt : ‖z - Φ x₀ s‖ < δ_uc := lt_of_le_of_lt h_norm_le hh_CE_lt_δuc
       exact le_of_lt (hδ_uc s hs z h_norm_lt)
     have h_residual : ‖f s (Φ x₀ s + y_h s) - f s (Φ x₀ s)
         - (fderiv ℝ (f s) (Φ x₀ s)) (y_h s)‖ ≤ ε_target * ‖y_h s‖ :=
-      norm_residual_le_of_diffOn s (Φ x₀ s) (y_h s) hS_seg_conv hf_diff hx_seg hxv_seg hC
+      norm_residual_le_of_diffOn s (Φ x₀ s) (y_h s) hS_segment_convergence hf_diff hx_segment hxv_segment hC
     have h_eq : f s (Φ x₀ s) + A s (y_h s) - f s (β_h s)
         = -(f s (Φ x₀ s + y_h s) - f s (Φ x₀ s) - (fderiv ℝ (f s) (Φ x₀ s)) (y_h s)) := by
       change f s (Φ x₀ s) + (fderiv ℝ (f s) (Φ x₀ s)) (y_h s) - f s (Φ x₀ s + y_h s)
@@ -576,15 +576,15 @@ theorem forward_flow_hasFDerivAt_initial
       rw [dist_eq_norm]; exact le_trans h_res h_combine
     have hgs : ∀ τ ∈ Ico (0 : ℝ) δ, β_h τ ∈ s_set τ :=
       fun τ hτR => hβ_h_mem_ball τ ⟨hτR.1, le_of_lt hτR.2⟩
-    have ha_init : dist (α_h 0) (β_h 0) ≤ 0 := by
-      rw [hα_h_init, hβ_h_init, dist_self]
+    have ha_initial : dist (α_h 0) (β_h 0) ≤ 0 := by
+      rw [hα_h_initial, hβ_h_initial, dist_self]
     have hG := dist_le_of_approx_trajectories_ODE_of_mem
       (v := f) (s := s_set) (K := Real.toNNReal K_lip)
       (f := α_h) (g := β_h) (f' := fun τ => f τ (α_h τ))
       (g' := fun τ => f τ (Φ x₀ τ) + A τ (y_h τ))
       (εf := 0) (εg := εg) (δ := 0)
       hv_lip hα_h_cont' hα_h_deriv_R hf_bound hfs
-      hβ_h_cont hβ_h_deriv hg_bound hgs ha_init τ hτ
+      hβ_h_cont hβ_h_deriv hg_bound hgs ha_initial τ hτ
     rw [dist_eq_norm] at hG
     rw [zero_add] at hG
     rw [Real.coe_toNNReal K_lip hK_lip_nn] at hG
@@ -606,7 +606,7 @@ theorem forward_flow_hasFDerivAt_initial
   have h_final_bd : ‖α_h t - β_h t‖ ≤ GfactorR * (ε_target * CE * ‖h‖) := h_diff_right t ht
   have h_lhs : α_h t - β_h t = Φ (x₀ + h) t - Φ x₀ t - Lmap h := by
     change Φ (x₀ + h) t - (Φ x₀ t + y_h t) = _
-    have : Lmap h = vSol h t := rfl
+    have : Lmap h = vSolution h t := rfl
     rw [this]; abel
   rw [h_lhs] at h_final_bd
   have h_bound_le : GfactorR * (ε_target * CE * ‖h‖) ≤ c * ‖h‖ := by

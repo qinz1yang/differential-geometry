@@ -211,13 +211,13 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
               g r s i α P₀ m directions)
             (chartTargetEuclid (I := I) (M := M) α)
           + eLpNorm
-              ((eigenvectorIteratedTensorChartBilinearDataToData
+              ((EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
                   (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart)
               2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                   (chartTargetEuclid (I := I) (M := M) α))) := by
   classical
   set D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀ :=
-    eigenvectorIteratedTensorChartBilinearDataToData
+    EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
       (I := I) (M := M) g r s i α P₀ D_m h_parent
     with hD_def
   have hD_u_chart : D.uChart =
@@ -237,11 +237,11 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
   have hD_u_chart_P : D.uChart = P := by rw [hD_u_chart, hP_def, h_dir]
   have hD_weak_partial : ∀ j,
       D.weakPartial j =
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 j P (chartTargetEuclid (I := I) (M := M) α) := by
     intro j
     rw [hP_def]
-    change DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    change DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         2 j (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ m D_m.directions)
         (chartTargetEuclid (I := I) (M := M) α) = _
@@ -307,24 +307,24 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
         (D.weak_partial_isWeakPartial j)
     have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
         (d := Module.finrank ℝ E) j
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 j D.uChart Ω'') D.uChart Ω'' :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
         h_uChart_memW1p j
-    have h_chosen_loc : MeasureTheory.LocallyIntegrable
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_chosen_local : MeasureTheory.LocallyIntegrable
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 j D.uChart Ω'') ((volume : Measure EuclN).restrict Ω'') :=
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_uChart_memW1p j).locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-    have h_dwp_loc : MeasureTheory.LocallyIntegrable (D.weakPartial j)
+    have h_dwp_local : MeasureTheory.LocallyIntegrable (D.weakPartial j)
         ((volume : Measure EuclN).restrict Ω'') :=
       (h_wp_memW1p j).1.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have h_ae :
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 j D.uChart Ω'' =ᵐ[(volume : Measure EuclN).restrict Ω'']
             D.weakPartial j :=
       DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial
-        h_dwp_weak_uChart_Ω'' h_chosen_loc h_dwp_loc
+        h_dwp_weak_uChart_Ω'' h_chosen_local h_dwp_local
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]
     exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae
       hΩ''_open h_ae.symm).mp (h_wp_memW1p j)
@@ -352,13 +352,13 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
   have hΩ_η_open : IsOpen Ω_η := Metric.isOpen_thickening
   have hK_η_in_Ω_η : K_η ⊆ Ω_η :=
     Metric.cthickening_subset_thickening' (by positivity) (by linarith) K_Ω
-  obtain ⟨_δ_η, η, _hδ_η_pos, _hδ_η_sub_Ωη, hη_smooth, hη_supp, hη_range,
+  obtain ⟨_δ_η, η, _hδ_η_pos, _hδ_η_sub_Ωη, hη_smooth, hη_support, hη_range,
       hη_one_on_cthick_K_η, hη_tsupp_in_Ω_η⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E) hK_η_compact hΩ_η_open hK_η_in_Ω_η
   obtain ⟨N, hN_pos, h_fderiv_eta⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.exists_grad_bound_of_compactSupport_smooth
-      hη_smooth hη_supp
+      hη_smooth hη_support
   have hN_nn : 0 ≤ N := hN_pos.le
   have hη_one_on_K_η : ∀ x ∈ K_η, η x = 1 := fun x hx =>
     hη_one_on_cthick_K_η x (Metric.self_subset_cthickening _ hx)
@@ -374,7 +374,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
     refine Metric.mem_thickening_iff_infEDist_lt.mpr ?_
     have h := Metric.mem_thickening_iff_infEDist_lt.mp hy
     exact lt_of_lt_of_le h (ENNReal.ofReal_le_ofReal (by linarith))
-  have hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ ε →
+  have hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ ε →
       Metric.cthickening |h| (tsupport η) ⊆ Ω' := by
     intro h hh
     have h_tsupp_in_cthick_5ε : tsupport η ⊆ Metric.cthickening (5 * ε) K_Ω := by
@@ -404,10 +404,10 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
       chartTargetEuclid (I := I) (M := M) α :=
     (Metric.cthickening_mono (by rw [hε_def]; linarith) (closure Ω'')).trans h_room
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
-    tensor_h2_chart_loc_of_data_quantitative (I := I) (M := M) (g := g)
+    tensor_h2_chart_local_of_data_quantitative (I := I) (M := M) (g := g)
       (α := α) (r := r) (s := s) (P₀ := P₀)
-      hη_smooth hη_supp hη_range hN_nn h_fderiv_eta hΩ'_open h_closureΩ'_in_chart
-      hΩ'_compact_closure hη_in_Ω' hε_pos hh_supp_in_Ω' hη_one_on_Ω''
+      hη_smooth hη_support hη_range hN_nn h_fderiv_eta hΩ'_open h_closureΩ'_in_chart
+      hΩ'_compact_closure hη_in_Ω' hε_pos hh_support_in_Ω' hη_one_on_Ω''
       hΩ''_open hΩ''_compact_closure h_room_ε
   clear_value P K Ω'' Ω'
   set RHS_inner : ℝ≥0∞ :=
@@ -433,7 +433,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) := by
     rw [hD_f_chart]
-    exact D_m.fChartEff_memLp_weighted
+    exact D_m.fChartEffective_memLp_weighted
   have h_fchart_eLpNorm_finite :
       eLpNorm D.fChart 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -494,7 +494,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
               (chartTargetEuclid (I := I) (M := M) α)) =
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 0 2
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               2 l P (chartTargetEuclid (I := I) (M := M) α))
             (chartTargetEuclid (I := I) (M := M) α) := by
       rw [hD_weak_partial l,
@@ -502,7 +502,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
     have h_chosen_le :
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 0 2
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               2 l P (chartTargetEuclid (I := I) (M := M) α))
             (chartTargetEuclid (I := I) (M := M) α) ≤
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -636,7 +636,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
       _ ≤ ENNReal.ofReal C₁ * RHS_inner :=
           mul_le_mul_right h_ofReal_AB_le_RHS _
   have h_chosen_ae_wp : ∀ i' : Fin (Module.finrank ℝ E),
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i' D.uChart Ω''
         =ᵐ[(volume : Measure EuclN).restrict Ω''] D.weakPartial i' := by
     intro i'
@@ -646,24 +646,24 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
         (D.weak_partial_isWeakPartial i')
     have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
         (d := Module.finrank ℝ E) i'
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i' D.uChart Ω'') D.uChart Ω'' :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
         h_uChart_memW1p i'
-    have h_chosen_loc : MeasureTheory.LocallyIntegrable
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_chosen_local : MeasureTheory.LocallyIntegrable
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i' D.uChart Ω'') ((volume : Measure EuclN).restrict Ω'') :=
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_uChart_memW1p i').locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-    have h_dwp_loc : MeasureTheory.LocallyIntegrable (D.weakPartial i')
+    have h_dwp_local : MeasureTheory.LocallyIntegrable (D.weakPartial i')
         ((volume : Measure EuclN).restrict Ω'') :=
       (h_wp_memW1p i').1.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial
-      h_dwp_weak_uChart_Ω'' h_chosen_loc h_dwp_loc
+      h_dwp_weak_uChart_Ω'' h_chosen_local h_dwp_local
   have h_per_i_bound : ∀ i' : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 1 2
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             2 i' D.uChart Ω'') Ω''
         ≤ RHS_inner +
           ∑ _k' : Fin (Module.finrank ℝ E), ENNReal.ofReal C₁ * RHS_inner := by
@@ -688,7 +688,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
                 (chartTargetEuclid (I := I) (M := M) α)) =
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) 0 2
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 2 i' P (chartTargetEuclid (I := I) (M := M) α))
               (chartTargetEuclid (I := I) (M := M) α) := by
         rw [hD_weak_partial i',
@@ -696,7 +696,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
       have h_chosen_le :
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) 0 2
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 2 i' P (chartTargetEuclid (I := I) (M := M) α))
               (chartTargetEuclid (I := I) (M := M) α) ≤
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -716,24 +716,24 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
       obtain ⟨g_ik, hg_ik_memLp, hg_ik_weak, hg_ik_bd⟩ := h_gik_bound i' k'
       have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
           (d := Module.finrank ℝ E) k'
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             2 k' (D.weakPartial i') Ω'') (D.weakPartial i') Ω'' :=
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
           (h_wp_memW1p i') k'
-      have h_chosen_loc : MeasureTheory.LocallyIntegrable
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      have h_chosen_local : MeasureTheory.LocallyIntegrable
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             2 k' (D.weakPartial i') Ω'') ((volume : Measure EuclN).restrict Ω'') :=
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
           (h_wp_memW1p i') k').locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-      have h_g_ik_loc : MeasureTheory.LocallyIntegrable g_ik
+      have h_g_ik_local : MeasureTheory.LocallyIntegrable g_ik
           ((volume : Measure EuclN).restrict Ω'') :=
         hg_ik_memLp.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       have h_ae :
-          DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               2 k' (D.weakPartial i') Ω''
             =ᵐ[(volume : Measure EuclN).restrict Ω''] g_ik :=
         DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial hg_ik_weak
-          h_chosen_loc h_g_ik_loc
+          h_chosen_local h_g_ik_local
       rw [eLpNorm_congr_ae h_ae]
       exact hg_ik_bd
   set C' : ℝ :=
@@ -783,7 +783,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le
         (∑ i' : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 1 2
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               2 i' D.uChart Ω'') Ω'')
           ≤ ∑ _i' : Fin (Module.finrank ℝ E),
               (RHS_inner +
@@ -871,7 +871,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
                   g r s i α P₀ m directions)
                 (chartTargetEuclid (I := I) (M := M) α)
               + eLpNorm
-                  ((eigenvectorIteratedTensorChartBilinearDataToData
+                  ((EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
                       (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart)
                   2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                       (chartTargetEuclid (I := I) (M := M) α))) := by
@@ -945,13 +945,13 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
   have hΩ_η_open : IsOpen Ω_η := Metric.isOpen_thickening
   have hK_η_in_Ω_η : K_η ⊆ Ω_η :=
     Metric.cthickening_subset_thickening' (by positivity) (by linarith) K_Ω
-  obtain ⟨_δ_η, η, _hδ_η_pos, _hδ_η_sub_Ωη, hη_smooth, hη_supp, hη_range,
+  obtain ⟨_δ_η, η, _hδ_η_pos, _hδ_η_sub_Ωη, hη_smooth, hη_support, hη_range,
       hη_one_on_cthick_K_η, hη_tsupp_in_Ω_η⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
       (d := Module.finrank ℝ E) hK_η_compact hΩ_η_open hK_η_in_Ω_η
   obtain ⟨N, hN_pos, h_fderiv_eta⟩ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.exists_grad_bound_of_compactSupport_smooth
-      hη_smooth hη_supp
+      hη_smooth hη_support
   have hN_nn : 0 ≤ N := hN_pos.le
   have hη_one_on_K_η : ∀ x ∈ K_η, η x = 1 := fun x hx =>
     hη_one_on_cthick_K_η x (Metric.self_subset_cthickening _ hx)
@@ -967,7 +967,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
     refine Metric.mem_thickening_iff_infEDist_lt.mpr ?_
     have h := Metric.mem_thickening_iff_infEDist_lt.mp hy
     exact lt_of_lt_of_le h (ENNReal.ofReal_le_ofReal (by linarith))
-  have hh_supp_in_Ω' : ∀ {h : ℝ}, |h| ≤ ε →
+  have hh_support_in_Ω' : ∀ {h : ℝ}, |h| ≤ ε →
       Metric.cthickening |h| (tsupport η) ⊆ Ω' := by
     intro h hh
     have h_tsupp_in_cthick_5ε : tsupport η ⊆ Metric.cthickening (5 * ε) K_Ω := by
@@ -997,10 +997,10 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
       chartTargetEuclid (I := I) (M := M) α :=
     (Metric.cthickening_mono (by rw [hε_def]; linarith) (closure Ω'')).trans h_room
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
-    tensor_h2_chart_loc_of_data_quantitative (I := I) (M := M) (g := g)
+    tensor_h2_chart_local_of_data_quantitative (I := I) (M := M) (g := g)
       (α := α) (r := r) (s := s) (P₀ := P₀)
-      hη_smooth hη_supp hη_range hN_nn h_fderiv_eta hΩ'_open h_closureΩ'_in_chart
-      hΩ'_compact_closure hη_in_Ω' hε_pos hh_supp_in_Ω' hη_one_on_Ω''
+      hη_smooth hη_support hη_range hN_nn h_fderiv_eta hΩ'_open h_closureΩ'_in_chart
+      hΩ'_compact_closure hη_in_Ω' hε_pos hh_support_in_Ω' hη_one_on_Ω''
       hΩ''_open hΩ''_compact_closure h_room_ε
   clear_value K Ω'' Ω'
   obtain ⟨c_d, hc_d_nn, h_fchart_density_uniform⟩ :=
@@ -1050,7 +1050,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
   refine ⟨K_prom * C', mul_pos hK_prom_pos hC'_pos, ?_⟩
   intro i directions D_m h_dir h_parent
   set D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀ :=
-    eigenvectorIteratedTensorChartBilinearDataToData
+    EigenvectorIteratedTensorChartBilinearData.toTensorChartBilinearH1ComplData
       (I := I) (M := M) g r s i α P₀ D_m h_parent
     with hD_def
   have hD_u_chart : D.uChart =
@@ -1070,11 +1070,11 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
   have hD_u_chart_P : D.uChart = P := by rw [hD_u_chart, hP_def, h_dir]
   have hD_weak_partial : ∀ j,
       D.weakPartial j =
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 j P (chartTargetEuclid (I := I) (M := M) α) := by
     intro j
     rw [hP_def]
-    change DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    change DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         2 j (eigenvectorChartIteratedPartial (I := I) (M := M)
           g r s i α P₀ m D_m.directions)
         (chartTargetEuclid (I := I) (M := M) α) = _
@@ -1095,24 +1095,24 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
         (D.weak_partial_isWeakPartial j)
     have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
         (d := Module.finrank ℝ E) j
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 j D.uChart Ω'') D.uChart Ω'' :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
         h_uChart_memW1p j
-    have h_chosen_loc : MeasureTheory.LocallyIntegrable
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_chosen_local : MeasureTheory.LocallyIntegrable
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 j D.uChart Ω'') ((volume : Measure EuclN).restrict Ω'') :=
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_uChart_memW1p j).locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-    have h_dwp_loc : MeasureTheory.LocallyIntegrable (D.weakPartial j)
+    have h_dwp_local : MeasureTheory.LocallyIntegrable (D.weakPartial j)
         ((volume : Measure EuclN).restrict Ω'') :=
       (h_wp_memW1p j).1.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have h_ae :
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 j D.uChart Ω'' =ᵐ[(volume : Measure EuclN).restrict Ω'']
             D.weakPartial j :=
       DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial
-        h_dwp_weak_uChart_Ω'' h_chosen_loc h_dwp_loc
+        h_dwp_weak_uChart_Ω'' h_chosen_local h_dwp_local
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]
     exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemW1p_congr_ae
       hΩ''_open h_ae.symm).mp (h_wp_memW1p j)
@@ -1139,7 +1139,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) := by
     rw [hD_f_chart]
-    exact D_m.fChartEff_memLp_weighted
+    exact D_m.fChartEffective_memLp_weighted
   have h_fchart_eLpNorm_finite :
       eLpNorm D.fChart 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -1203,7 +1203,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
               (chartTargetEuclid (I := I) (M := M) α)) =
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 0 2
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               2 l P (chartTargetEuclid (I := I) (M := M) α))
             (chartTargetEuclid (I := I) (M := M) α) := by
       rw [hD_weak_partial l,
@@ -1211,7 +1211,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
     have h_chosen_le :
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 0 2
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               2 l P (chartTargetEuclid (I := I) (M := M) α))
             (chartTargetEuclid (I := I) (M := M) α) ≤
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -1319,7 +1319,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
       _ ≤ ENNReal.ofReal C₁ * RHS_inner :=
           mul_le_mul_right h_ofReal_AB_le_RHS _
   have h_chosen_ae_wp : ∀ i' : Fin (Module.finrank ℝ E),
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i' D.uChart Ω''
         =ᵐ[(volume : Measure EuclN).restrict Ω''] D.weakPartial i' := by
     intro i'
@@ -1329,24 +1329,24 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
         (D.weak_partial_isWeakPartial i')
     have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
         (d := Module.finrank ℝ E) i'
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i' D.uChart Ω'') D.uChart Ω'' :=
-      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
         h_uChart_memW1p i'
-    have h_chosen_loc : MeasureTheory.LocallyIntegrable
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    have h_chosen_local : MeasureTheory.LocallyIntegrable
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           2 i' D.uChart Ω'') ((volume : Measure EuclN).restrict Ω'') :=
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
         h_uChart_memW1p i').locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-    have h_dwp_loc : MeasureTheory.LocallyIntegrable (D.weakPartial i')
+    have h_dwp_local : MeasureTheory.LocallyIntegrable (D.weakPartial i')
         ((volume : Measure EuclN).restrict Ω'') :=
       (h_wp_memW1p i').1.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     exact DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial
-      h_dwp_weak_uChart_Ω'' h_chosen_loc h_dwp_loc
+      h_dwp_weak_uChart_Ω'' h_chosen_local h_dwp_local
   have h_per_i_bound : ∀ i' : Fin (Module.finrank ℝ E),
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 1 2
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             2 i' D.uChart Ω'') Ω''
         ≤ RHS_inner +
           ∑ _k' : Fin (Module.finrank ℝ E), ENNReal.ofReal C₁ * RHS_inner := by
@@ -1371,7 +1371,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
                 (chartTargetEuclid (I := I) (M := M) α)) =
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) 0 2
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 2 i' P (chartTargetEuclid (I := I) (M := M) α))
               (chartTargetEuclid (I := I) (M := M) α) := by
         rw [hD_weak_partial i',
@@ -1379,7 +1379,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
       have h_chosen_le :
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) 0 2
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 2 i' P (chartTargetEuclid (I := I) (M := M) α))
               (chartTargetEuclid (I := I) (M := M) α) ≤
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -1399,24 +1399,24 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
       obtain ⟨g_ik, hg_ik_memLp, hg_ik_weak, hg_ik_bd⟩ := h_gik_bound i' k'
       have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
           (d := Module.finrank ℝ E) k'
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             2 k' (D.weakPartial i') Ω'') (D.weakPartial i') Ω'' :=
-        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
           (h_wp_memW1p i') k'
-      have h_chosen_loc : MeasureTheory.LocallyIntegrable
-          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      have h_chosen_local : MeasureTheory.LocallyIntegrable
+          (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
             2 k' (D.weakPartial i') Ω'') ((volume : Measure EuclN).restrict Ω'') :=
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
           (h_wp_memW1p i') k').locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-      have h_g_ik_loc : MeasureTheory.LocallyIntegrable g_ik
+      have h_g_ik_local : MeasureTheory.LocallyIntegrable g_ik
           ((volume : Measure EuclN).restrict Ω'') :=
         hg_ik_memLp.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       have h_ae :
-          DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+          DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               2 k' (D.weakPartial i') Ω''
             =ᵐ[(volume : Measure EuclN).restrict Ω''] g_ik :=
         DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial hg_ik_weak
-          h_chosen_loc h_g_ik_loc
+          h_chosen_local h_g_ik_local
       rw [eLpNorm_congr_ae h_ae]
       exact hg_ik_bd
   have h_interior_bound :
@@ -1457,7 +1457,7 @@ theorem eigenvectorChartIteratedPartial_wkpNorm_two_two_le_uniform
         (∑ i' : Fin (Module.finrank ℝ E),
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 1 2
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               2 i' D.uChart Ω'') Ω'')
           ≤ ∑ _i' : Fin (Module.finrank ℝ E),
               (RHS_inner +

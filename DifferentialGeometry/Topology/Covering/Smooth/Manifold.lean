@@ -154,7 +154,7 @@ instance instIsManifold :
           = (localSection a).symm ((chartAt H (proj a)).symm h) := rfl
       rw [hSymm] at hin
       rwa [localSection_collapse a b hhCaTarget] at hin
-    have hMTrans_restr_src :
+    have hMTrans_restr_source :
         (MTrans.restrOpen CovT.source hCovT_open).source = CovT.source := by
       rw [OpenPartialHomeomorph.restrOpen_source]
       exact Set.inter_eq_right.mpr hsub
@@ -172,7 +172,7 @@ instance instIsManifold :
       exact hMR
     have hEq : CovT ≈ MTrans.restrOpen CovT.source hCovT_open := by
       refine ⟨?_, ?_⟩
-      · rw [hMTrans_restr_src]
+      · rw [hMTrans_restr_source]
       · intro h hh
         simp only [OpenPartialHomeomorph.coe_restrOpen]
         rw [hCovT_def, OpenPartialHomeomorph.trans_source] at hh
@@ -243,11 +243,11 @@ theorem proj_contMDiff :
       have hfun := proj_eq_localSection xt
       have := congrArg (fun f => f z) hfun
       simpa using this.symm
-    have hprojSrc : proj z ∈ (chartAt H (proj xt)).source := by
+    have hprojSource : proj z ∈ (chartAt H (proj xt)).source := by
       rw [← hLSproj]; exact hzLSproj
     change (chartAt H (proj xt)).symm ((coverChartAt xt) z) = proj z
     rw [hCovApp, hLSproj]
-    exact (chartAt H (proj xt)).left_inv hprojSrc
+    exact (chartAt H (proj xt)).left_inv hprojSource
   set CXT : OpenPartialHomeomorph
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) H :=
     coverChartAt xt with hCXT_def
@@ -550,8 +550,8 @@ instance instLocallyCompactSpace [LocallyCompactSpace M] :
     UniversalCover.proj_isCoveringMap.isLocalHomeomorph
   refine ⟨fun xt n hn => ?_⟩
   obtain ⟨e, hxte, _hfe⟩ := hLH xt
-  have hSrcNhd : e.source ∈ 𝓝 xt := e.open_source.mem_nhds hxte
-  have hInterNhd : n ∩ e.source ∈ 𝓝 xt := Filter.inter_mem hn hSrcNhd
+  have hSourceNhd : e.source ∈ 𝓝 xt := e.open_source.mem_nhds hxte
+  have hInterNhd : n ∩ e.source ∈ 𝓝 xt := Filter.inter_mem hn hSourceNhd
   have himg : e '' (n ∩ e.source) ∈ 𝓝 (e xt) :=
     e.image_mem_nhds hxte hInterNhd
   obtain ⟨K, hK_nhd, hKsub, hKcomp⟩ :=

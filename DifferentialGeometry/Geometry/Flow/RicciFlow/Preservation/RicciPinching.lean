@@ -113,7 +113,7 @@ theorem pinchSpatialModel
       (I := I) (M := M) 2
     let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3
-    have hRic := (ricciSpatialWMP (I := I) S).first t
+    have hRic := (ricciSpatialWeakMaximumPrinciple (I := I) S).first t
     have hRg := scalarMetric1Sec_realizes (I := I) S t
     have hscaled :
         TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
@@ -161,7 +161,7 @@ theorem pinchSpatialModel
       (I := I) (M := M) 3
     let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 4
-    have hRic := (ricciSpatialWMP (I := I) S).second t
+    have hRic := (ricciSpatialWeakMaximumPrinciple (I := I) S).second t
     have hRg := scalarMetric2Sec_realizes (I := I) S t
     have hscaled := TotalNabla0SRealizes.smul (I := I) (M := M)
       delta hRg
@@ -622,7 +622,7 @@ theorem pinchSmallLip
           |epsilon * (d + t - t0) * (S.base.metric t).inner x v v| := by
       simp [c, gvv, mul_assoc]
 
-theorem pinchBarrierReg
+theorem pinchBarrierRegularity
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -700,9 +700,9 @@ theorem pinchSecCore
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) (pinchSec (I := I) S delta))
       X N T) :
-    TensorWMPSectionCore (I := I) (M := M)
+    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M)
       (fun t : Real => S.base.metric t) (pinchSec (I := I) S delta) X N T := by
-  exact TensorWMPSectionCore.ofSmoothMetric (I := I) (M := M)
+  exact TensorWeakMaximumPrincipleSectionCore.ofSmoothMetric (I := I) (M := M)
     (G := S.family) (S := pinchSec (I := I) S delta)
     (X := X) (N := N) (T := T)
     hTsub hS.smoothMetric
@@ -714,21 +714,21 @@ theorem pinchSecCore
     (fun epsilon d t0 _hepsilon _hd hsub x v =>
       hbar.barrier_eval_continuous epsilon d t0 hsub x v v)
 
-structure RicciWMPData
+structure RicciWeakMaximumPrincipleInput
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (T : Real) : Type _ where
   X : TimeDependentVectorField (I := I) (M := M)
   N : TwoTensorReaction (I := I) (M := M)
-  reg :
-    TensorWMPSectionCore (I := I) (M := M)
+  regularity :
+    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M)
       (fun t : Real => S.base.metric t) S.ricci X N T
   parabolic :
     TensorParabolicSupersolutionWithDriftOn (I := I) (M := M)
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) X N
-      (fun t x => ricciNabla2WMP (I := I) S t x)
-      (fun t x => ricciNablaWMP (I := I) S t x) T
+      (fun t x => ricciNabla2WeakMaximumPrinciple (I := I) S t x)
+      (fun t x => ricciNablaWeakMaximumPrinciple (I := I) S t x) T
   null :
     TensorNullEigenvectorCondition (I := I) (M := M)
       (fun t : Real => S.base.metric t) N (Set.Icc 0 T)
@@ -736,30 +736,30 @@ structure RicciWMPData
     TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) 0
 
-namespace RicciWMPData
+namespace RicciWeakMaximumPrincipleInput
 
 theorem toInput
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} {T : Real}
-    (data : RicciWMPData (I := I) (M := M) S T) (hT : 0 <= T) :
-    TensorWMPInput (I := I) (M := M)
+    (data : RicciWeakMaximumPrincipleInput (I := I) (M := M) S T) (hT : 0 <= T) :
+    TensorWeakMaximumPrincipleInput (I := I) (M := M)
       (fun t : Real => S.base.metric t) S.ricci data.X data.N
       (fun t : Real => S.base.connection t)
-      (ricciNablaWMP (I := I) S) (ricciNabla2WMP (I := I) S) T where
+      (ricciNablaWeakMaximumPrinciple (I := I) S) (ricciNabla2WeakMaximumPrinciple (I := I) S) T where
   hT := hT
-  reg := data.reg
+  regularity := data.regularity
   parabolic := data.parabolic
   null := data.null
   initial := data.initial
   hcov1 := fun t => ricciCov1 (I := I) S t
   hcovInf := fun t => ricciCovInf (I := I) S t
   hmc := fun t => ricciMetricComp (I := I) S t
-  spatial := ricciSpatialWMP (I := I) S
+  spatial := ricciSpatialWeakMaximumPrinciple (I := I) S
 
-end RicciWMPData
+end RicciWeakMaximumPrincipleInput
 
-structure PinchWMPData
+structure RicciPinchingWeakMaximumPrincipleInput
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : TwoTensorFamily (I := I) (M := M))
     (scalar : Real -> M -> Real) (T delta : Real) : Type _ where
@@ -772,8 +772,8 @@ structure PinchWMPData
   section_eq :
     twoTensorSecToFamily (I := I) (M := M) S =
       pinchTensor (I := I) (M := M) G Ric scalar delta
-  reg :
-    TensorWMPSectionCore (I := I) (M := M) G S X N T
+  regularity :
+    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M) G S X N T
   parabolic :
     TensorParabolicSupersolutionWithDriftOn (I := I) (M := M) G
       (twoTensorSecToFamily (I := I) (M := M) S) X N
@@ -793,21 +793,21 @@ structure PinchWMPData
       DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) (cov t) (G t)
   spatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S
 
-namespace PinchWMPData
+namespace RicciPinchingWeakMaximumPrincipleInput
 
 theorem toInput
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
     {T delta : Real}
-    (data : PinchWMPData (I := I) (M := M) G Ric scalar T delta)
+    (data : RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta)
     (hT : 0 <= T)
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (pinchTensor (I := I) (M := M) G Ric scalar delta) 0) :
-    TensorWMPInput (I := I) (M := M)
+    TensorWeakMaximumPrincipleInput (I := I) (M := M)
       G data.S data.X data.N data.cov data.nablaS data.nabla2S T where
   hT := hT
-  reg := data.reg
+  regularity := data.regularity
   parabolic := data.parabolic
   null := data.null
   initial := by
@@ -817,16 +817,16 @@ theorem toInput
   hmc := data.hmc
   spatial := data.spatial
 
-end PinchWMPData
+end RicciPinchingWeakMaximumPrincipleInput
 
-structure PinchFlowWMPData
+structure RicciPinchingFlowWeakMaximumPrincipleInput
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (T delta : Real) : Type _ where
   X : TimeDependentVectorField (I := I) (M := M)
   N : TwoTensorReaction (I := I) (M := M)
-  reg :
-    TensorWMPSectionCore (I := I) (M := M)
+  regularity :
+    TensorWeakMaximumPrincipleSectionCore (I := I) (M := M)
       (fun t : Real => S.base.metric t) (pinchSec (I := I) S delta) X N T
   spatial :
     TensorSpatialDerivs (I := I) (M := M)
@@ -843,7 +843,7 @@ structure PinchFlowWMPData
     TensorNullEigenvectorCondition (I := I) (M := M)
       (fun t : Real => S.base.metric t) N (Set.Icc 0 T)
 
-namespace PinchFlowWMPData
+namespace RicciPinchingFlowWeakMaximumPrincipleInput
 
 def ofBarrier
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -867,10 +867,10 @@ def ofBarrier
     (hnull :
       TensorNullEigenvectorCondition (I := I) (M := M)
         (fun t : Real => S.base.metric t) N (Set.Icc 0 T)) :
-    PinchFlowWMPData (I := I) (M := M) S T delta where
+    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta where
   X := X
   N := N
-  reg := pinchSecCore (I := I) S hS hTsub hbar
+  regularity := pinchSecCore (I := I) S hS hTsub hbar
   spatial := pinchSpatialModel (I := I) S delta
   parabolic := hparabolic
   null := hnull
@@ -900,7 +900,7 @@ def ofSymmNull
     (hnull :
       TensorNullEigenvectorConditionSymm (I := I) (M := M)
         (fun t : Real => S.base.metric t) N (Set.Icc 0 T)) :
-    PinchFlowWMPData (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
   ofBarrier (I := I) (M := M) hS hTsub X N hbar hparabolic
     (null_of_symm (I := I) (M := M) hdep hnull)
 
@@ -924,7 +924,7 @@ def ofShiftN
         X (shiftNRaw (I := I) (M := M) delta)
         (fun t x => pinchNab2ModelSec (I := I) S delta t x)
         (fun t x => pinchNablaModel (I := I) S delta t x) T) :
-    PinchFlowWMPData (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
   ofSymmNull (I := I) (M := M) hS hTsub X
     (shiftNRaw (I := I) (M := M) delta) hbar hparabolic
     (shiftNRaw_symmInputOn (I := I) (M := M)
@@ -953,7 +953,7 @@ def ofShiftNLt
         X (shiftNRaw (I := I) (M := M) delta)
         (fun t x => pinchNab2ModelSec (I := I) S delta t x)
         (fun t x => pinchNablaModel (I := I) S delta t x) T) :
-    PinchFlowWMPData (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
   ofSymmNull (I := I) (M := M) hS hTsub X
     (shiftNRaw (I := I) (M := M) delta) hbar hparabolic
     (shiftNRaw_symmInputOn (I := I) (M := M)
@@ -983,7 +983,7 @@ def ofShiftNReact
           (twoTensorSecToFamily (I := I) (M := M)
             (pinchSec (I := I) S delta) t)) x v v =
           pinchCoordReact (I := I) S delta t x v) :
-    PinchFlowWMPData (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
   ofShiftN (I := I) (M := M) hS.isSolution hdelta13 hdim hTsub
     (fun _t x => (0 : TangentSpace I x)) hbar
     (pinchParabolic_of_react (I := I) (M := M) S hS
@@ -1004,7 +1004,7 @@ def ofShiftNDirect
       (twoTensorSecToFamily (I := I) (M := M) (pinchSec (I := I) S delta))
       (fun _t x => (0 : TangentSpace I x))
       (shiftNRaw (I := I) (M := M) delta) T) :
-    PinchFlowWMPData (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
   ofShiftN (I := I) (M := M) hS.isSolution hdelta13 hdim hTsub
     (fun _t x => (0 : TangentSpace I x)) hbar
     (pinchParabolic (I := I) (M := M) S hS hdelta13 hdim hTsub hTreg)
@@ -1019,17 +1019,17 @@ def ofShiftNClosed
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (hTreg : Set.Ioc 0 T ⊆ D.regular) :
-    PinchFlowWMPData (I := I) (M := M) S T delta :=
+    RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta :=
   ofShiftNDirect (I := I) (M := M) hS hdelta13 hdim hTsub hTreg
-    (pinchBarrierReg (I := I) (M := M) S hS.isSolution
+    (pinchBarrierRegularity (I := I) (M := M) S hS.isSolution
       hdelta13 hdim hTsub hTreg)
 
-def toPinchWMPData
+def toRicciPinchingWeakMaximumPrincipleInput
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
     {S : SolutionOn (I := I) (M := M) D} {T delta : Real}
-    (data : PinchFlowWMPData (I := I) (M := M) S T delta) :
-    PinchWMPData (I := I) (M := M)
+    (data : RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta) :
+    RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M)
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci)
       S.scalar T delta where
@@ -1040,7 +1040,7 @@ def toPinchWMPData
   nablaS := pinchNablaModel (I := I) S delta
   nabla2S := pinchNab2ModelSec (I := I) S delta
   section_eq := pinchSec_eq (I := I) S delta
-  reg := data.reg
+  regularity := data.regularity
   parabolic := data.parabolic
   null := data.null
   hcov1 := fun t => ricciCov1 (I := I) S t
@@ -1048,9 +1048,9 @@ def toPinchWMPData
   hmc := fun t => ricciMetricComp (I := I) S t
   spatial := data.spatial
 
-end PinchFlowWMPData
+end RicciPinchingFlowWeakMaximumPrincipleInput
 
-theorem ricci_nonneg_wmp_of_hypotheses
+theorem ricci_nonneg_weak_maximum_principle_of_hypotheses
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {X : TimeDependentVectorField (I := I) (M := M)}
@@ -1058,17 +1058,17 @@ theorem ricci_nonneg_wmp_of_hypotheses
     {nabla2Ric : TensorNabla2Family (I := I) (M := M)}
     {nablaRic : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
-    (hreg : TensorWMPRegularityOn (I := I) (M := M) G Ric X N T)
+    (hreg : TensorWeakMaximumPrincipleRegularityOn (I := I) (M := M) G Ric X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G Ric X N nabla2Ric nablaRic T)
     (hnull : TensorNullEigenvectorCondition (I := I) (M := M) G N (Set.Icc 0 T))
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M) Ric 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) Ric (Set.Icc 0 T) := by
-  exact hamilton_tensor_wmp (I := I) (M := M) (G := G) (S := Ric)
+  exact hamilton_tensor_weak_maximum_principle (I := I) (M := M) (G := G) (S := Ric)
     (X := X) (N := N) (nabla2S := nabla2Ric) (nablaS := nablaRic)
     hreg hparabolic hnull hinit
 
-theorem ricci_nonneg_wmp
+theorem ricci_nonneg_weak_maximum_principle
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1083,16 +1083,16 @@ theorem ricci_nonneg_wmp
     {T : Real}
     (hRic :
       twoTensorSecToFamily (I := I) (M := M) RicSec = Ric)
-    (data : TensorWMPInput (I := I) (M := M)
+    (data : TensorWeakMaximumPrincipleInput (I := I) (M := M)
       G RicSec X N cov nablaRic nabla2Ric T) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M) Ric (Set.Icc 0 T) := by
   have hsec :
       TwoTensorFamilyNonnegativeOn (I := I) (M := M)
         (twoTensorSecToFamily (I := I) (M := M) RicSec) (Set.Icc 0 T) :=
-    tensor_wmp (I := I) (M := M) data
+    tensor_weak_maximum_principle (I := I) (M := M) data
   simpa [hRic] using hsec
 
-theorem ricci_nonnegative_of_solution_wmp_data
+theorem ricci_nonnegative_of_solution_weak_maximum_principle_data
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1101,13 +1101,13 @@ theorem ricci_nonnegative_of_solution_wmp_data
     (S : SolutionOn (I := I) (M := M) D)
     {T : Real}
     (hT : 0 <= T)
-    (data : RicciWMPData (I := I) (M := M) S T) :
+    (data : RicciWeakMaximumPrincipleInput (I := I) (M := M) S T) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) (Set.Icc 0 T) := by
-  exact tensor_wmp (I := I) (M := M) (RicciWMPData.toInput
+  exact tensor_weak_maximum_principle (I := I) (M := M) (RicciWeakMaximumPrincipleInput.toInput
     (I := I) (M := M) data hT)
 
-theorem ricci_pinch_wmp_of_hypotheses
+theorem ricci_pinch_weak_maximum_principle_of_hypotheses
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
@@ -1117,7 +1117,7 @@ theorem ricci_pinch_wmp_of_hypotheses
     {nabla2S : TensorNabla2Family (I := I) (M := M)}
     {nablaS : TensorNabla1Family (I := I) (M := M)}
     {T : Real}
-    (hreg : TensorWMPRegularityOn (I := I) (M := M) G
+    (hreg : TensorWeakMaximumPrincipleRegularityOn (I := I) (M := M) G
       (pinchTensor (I := I) (M := M) G Ric scalar delta) X N T)
     (hparabolic : TensorParabolicSupersolutionWithDriftOn
       (I := I) (M := M) G
@@ -1128,12 +1128,12 @@ theorem ricci_pinch_wmp_of_hypotheses
       (pinchTensor (I := I) (M := M) G Ric scalar delta) 0) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (pinchTensor (I := I) (M := M) G Ric scalar delta) (Set.Icc 0 T) := by
-  exact hamilton_tensor_wmp (I := I) (M := M) (G := G)
+  exact hamilton_tensor_weak_maximum_principle (I := I) (M := M) (G := G)
     (S := pinchTensor (I := I) (M := M) G Ric scalar delta)
     (X := X) (N := N) (nabla2S := nabla2S) (nablaS := nablaS)
     hreg hparabolic hnull hinit
 
-theorem ricci_pinch_wmp
+theorem ricci_pinch_weak_maximum_principle
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1151,16 +1151,16 @@ theorem ricci_pinch_wmp
     (hS :
       twoTensorSecToFamily (I := I) (M := M) S =
         pinchTensor (I := I) (M := M) G Ric scalar delta)
-    (data : TensorWMPInput (I := I) (M := M)
+    (data : TensorWeakMaximumPrincipleInput (I := I) (M := M)
       G S X N cov nablaS nabla2S T) :
     PinchPres (I := I) (M := M) G Ric scalar T delta := by
   have hsec :
       TwoTensorFamilyNonnegativeOn (I := I) (M := M)
         (twoTensorSecToFamily (I := I) (M := M) S) (Set.Icc 0 T) :=
-    tensor_wmp (I := I) (M := M) data
+    tensor_weak_maximum_principle (I := I) (M := M) data
   simpa [PinchPres, hS] using hsec
 
-namespace PinchWMPData
+namespace RicciPinchingWeakMaximumPrincipleInput
 
 theorem preserve
     [I.Boundaryless] [T2Space M]
@@ -1170,20 +1170,20 @@ theorem preserve
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
     {T delta : Real}
-    (data : PinchWMPData (I := I) (M := M) G Ric scalar T delta)
+    (data : RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta)
     (hT : 0 <= T)
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (pinchTensor (I := I) (M := M) G Ric scalar delta) 0) :
     PinchPres (I := I) (M := M) G Ric scalar T delta := by
-  exact ricci_pinch_wmp (I := I) (M := M) (G := G) (Ric := Ric)
+  exact ricci_pinch_weak_maximum_principle (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (delta := delta) (S := data.S) (X := data.X)
     (N := data.N) (cov := data.cov) (nablaS := data.nablaS)
     (nabla2S := data.nabla2S) (T := T)
     data.section_eq (data.toInput hT hinit)
 
-end PinchWMPData
+end RicciPinchingWeakMaximumPrincipleInput
 
-namespace PinchFlowWMPData
+namespace RicciPinchingFlowWeakMaximumPrincipleInput
 
 theorem preserve
     [I.Boundaryless] [T2Space M]
@@ -1193,19 +1193,19 @@ theorem preserve
     [CompleteSpace E] [SigmaCompactSpace M]
     {S : SolutionOn (I := I) (M := M) D}
     {T delta : Real}
-    (data : PinchFlowWMPData (I := I) (M := M) S T delta)
+    (data : RicciPinchingFlowWeakMaximumPrincipleInput (I := I) (M := M) S T delta)
     (hT : 0 <= T)
     (hinit : TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
       (pinchTensor (I := I) (M := M) (fun t : Real => S.base.metric t)
         (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar delta) 0) :
     PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
-  exact (data.toPinchWMPData (I := I) (M := M)).preserve
+  exact (data.toRicciPinchingWeakMaximumPrincipleInput (I := I) (M := M)).preserve
     (I := I) (M := M) hT hinit
 
-end PinchFlowWMPData
+end RicciPinchingFlowWeakMaximumPrincipleInput
 
-theorem pinch_sol_closed
+theorem pinch_solution_closed
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1224,11 +1224,11 @@ theorem pinch_sol_closed
         (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar delta) 0) :
     PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
-  exact (PinchFlowWMPData.ofShiftNClosed (I := I) (M := M) hS
+  exact (RicciPinchingFlowWeakMaximumPrincipleInput.ofShiftNClosed (I := I) (M := M) hS
     hdelta13 hdim hTsub hTreg).preserve
       (I := I) (M := M) hT hinit
 
-theorem pinch_sol_closed_nonneg
+theorem pinch_solution_closed_nonneg
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1247,14 +1247,14 @@ theorem pinch_sol_closed_nonneg
         (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar delta) 0) :
     PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
-  exact (PinchFlowWMPData.ofShiftNLt (I := I) (M := M) hS.isSolution
+  exact (RicciPinchingFlowWeakMaximumPrincipleInput.ofShiftNLt (I := I) (M := M) hS.isSolution
     hdelta13 hdim hTsub (fun _t x => (0 : TangentSpace I x))
-    (pinchBarrierReg (I := I) (M := M) S hS.isSolution
+    (pinchBarrierRegularity (I := I) (M := M) S hS.isSolution
       hdelta13 hdim hTsub hTreg)
     (pinchParabolic (I := I) (M := M) S hS hdelta13 hdim hTsub hTreg)).preserve
       (I := I) (M := M) hT hinit
 
-theorem ricci_nonnegative_of_closed_solution_wmp_data
+theorem ricci_nonnegative_of_closed_solution_weak_maximum_principle_data
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1279,13 +1279,13 @@ theorem ricci_nonnegative_of_closed_solution_wmp_data
   have hpinch : PinchPres (I := I) (M := M)
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T 0 :=
-    pinch_sol_closed_nonneg (I := I) (M := M) hS hT
+    pinch_solution_closed_nonneg (I := I) (M := M) hS hT
       (by norm_num) hdim hTsub hTreg hinit0
   intro t ht x v
   exact (by
     simpa [PinchPres, pinchTensor] using hpinch t ht x v)
 
-theorem pinch_init_wmp
+theorem pinch_initial_weak_maximum_principle
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1294,10 +1294,10 @@ theorem pinch_init_wmp
     {scalar : Real -> M -> Real}
     {T : Real}
     (hT : 0 <= T)
-    (hinit : PinchInit (I := I) (M := M) G Ric scalar)
+    (hinit : PinchInitial (I := I) (M := M) G Ric scalar)
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1307,7 +1307,7 @@ theorem pinch_init_wmp
   exact data.preserve (I := I) (M := M) hT
     hpinch0
 
-theorem pinch_init_wmp_lt
+theorem pinch_initial_weak_maximum_principle_lt
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1316,10 +1316,10 @@ theorem pinch_init_wmp_lt
     {scalar : Real -> M -> Real}
     {T : Real}
     (hT : 0 <= T)
-    (hinit : PinchInitLt (I := I) (M := M) G Ric scalar)
+    (hinit : PinchInitialLt (I := I) (M := M) G Ric scalar)
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
@@ -1329,7 +1329,7 @@ theorem pinch_init_wmp_lt
   exact data.preserve (I := I) (M := M) hT
     hpinch0
 
-theorem pinch_init_sol_lt
+theorem pinch_initial_solution_lt
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1342,22 +1342,22 @@ theorem pinch_init_sol_lt
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (hTreg : Set.Ioc 0 T ⊆ D.regular)
-    (hinit : PinchInitLt (I := I) (M := M)
+    (hinit : PinchInitialLt (I := I) (M := M)
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
           (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
-  refine pinch_init_wmp_lt (I := I) (M := M)
+  refine pinch_initial_weak_maximum_principle_lt (I := I) (M := M)
     (G := fun t : Real => S.base.metric t)
     (Ric := twoTensorSecToFamily (I := I) (M := M) S.ricci)
     (scalar := S.scalar) (T := T) hT hinit ?_
   intro delta hdelta0 hdelta13
-  exact (PinchFlowWMPData.ofShiftNClosed (I := I) (M := M) hS
-    hdelta13 hdim hTsub hTreg).toPinchWMPData (I := I) (M := M)
+  exact (RicciPinchingFlowWeakMaximumPrincipleInput.ofShiftNClosed (I := I) (M := M) hS
+    hdelta13 hdim hTsub hTreg).toRicciPinchingWeakMaximumPrincipleInput (I := I) (M := M)
 
-theorem strict_pinch_wmp
+theorem strict_pinch_weak_maximum_principle
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1366,21 +1366,21 @@ theorem strict_pinch_wmp
     {scalar : Real -> M -> Real}
     {T : Real}
     (hT : 0 <= T)
-    (hpos : RicciPosInit (I := I) (M := M) Ric)
+    (hpos : RicciPosInitial (I := I) (M := M) Ric)
     (hselect : BoundsOfPosRic (I := I) (M := M) G Ric scalar)
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
-  exact pinch_init_wmp (I := I) (M := M) (G := G) (Ric := Ric)
+  exact pinch_initial_weak_maximum_principle (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (T := T) hT
-    (pinchInit_of_pos (I := I) (M := M) (G := G) (Ric := Ric)
+    (pinchInitial_of_pos (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) hpos hselect)
     hdata
 
-theorem strict_pinch_wmp_lt
+theorem strict_pinch_weak_maximum_principle_lt
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1389,17 +1389,17 @@ theorem strict_pinch_wmp_lt
     {scalar : Real -> M -> Real}
     {T : Real}
     (hT : 0 <= T)
-    (hpos : RicciPosInit (I := I) (M := M) Ric)
+    (hpos : RicciPosInitial (I := I) (M := M) Ric)
     (hselect : BoundsOfPosRic (I := I) (M := M) G Ric scalar)
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
-  exact pinch_init_wmp_lt (I := I) (M := M) (G := G) (Ric := Ric)
+  exact pinch_initial_weak_maximum_principle_lt (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (T := T) hT
-    (pinchInitLt_of_pos (I := I) (M := M) (G := G) (Ric := Ric)
+    (pinchInitialLt_of_pos (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) hpos hselect)
     hdata
 
@@ -1414,17 +1414,17 @@ theorem strict_pinch_min
     {ricMin : M -> Real}
     {T : Real}
     (hT : 0 <= T)
-    (hmin : RicMinData (I := I) (M := M) G Ric ricMin)
+    (hmin : HasPositiveRicciLowerBound (I := I) (M := M) G Ric ricMin)
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
-  exact pinch_init_wmp (I := I) (M := M) (G := G) (Ric := Ric)
+  exact pinch_initial_weak_maximum_principle (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (T := T) hT
-    (pinchInit_ricMin (I := I) (M := M) (G := G) (Ric := Ric)
+    (pinchInitial_ricMin (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) (ricMin := ricMin) hmin hscalar)
     hdata
 
@@ -1439,17 +1439,17 @@ theorem strict_pinch_min_lt
     {ricMin : M -> Real}
     {T : Real}
     (hT : 0 <= T)
-    (hmin : RicMinData (I := I) (M := M) G Ric ricMin)
+    (hmin : HasPositiveRicciLowerBound (I := I) (M := M) G Ric ricMin)
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
-  exact pinch_init_wmp_lt (I := I) (M := M) (G := G) (Ric := Ric)
+  exact pinch_initial_weak_maximum_principle_lt (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (T := T) hT
-    (pinchInitLt_ricMin (I := I) (M := M) (G := G) (Ric := Ric)
+    (pinchInitialLt_ricMin (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) (ricMin := ricMin) hmin hscalar)
     hdata
 
@@ -1469,13 +1469,13 @@ theorem strict_pinch_metric
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
-  exact pinch_init_wmp (I := I) (M := M) (G := G) (Ric := Ric)
+  exact pinch_initial_weak_maximum_principle (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (T := T) hT
-    (pinchInit_metric (I := I) (M := M) (G := G) (Ric := Ric)
+    (pinchInitial_metric (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) (ricMin := ricMin) D hmin hscalar)
     hdata
 
@@ -1495,13 +1495,13 @@ theorem strict_pinch_metric_lt
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
-  exact pinch_init_wmp_lt (I := I) (M := M) (G := G) (Ric := Ric)
+  exact pinch_initial_weak_maximum_principle_lt (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (T := T) hT
-    (pinchInitLt_metric (I := I) (M := M) (G := G) (Ric := Ric)
+    (pinchInitialLt_metric (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) (ricMin := ricMin) D hmin hscalar)
     hdata
 
@@ -1520,13 +1520,13 @@ theorem strict_pinch_pos
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta <= (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta <= (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
-  exact pinch_init_wmp (I := I) (M := M) (G := G) (Ric := Ric)
+  exact pinch_initial_weak_maximum_principle (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (T := T) hT
-    (pinchInit_pos (I := I) (M := M) (G := G) (Ric := Ric)
+    (pinchInitial_pos (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) D hpos hscalar)
     hdata
 
@@ -1545,17 +1545,17 @@ theorem strict_pinch_pos_lt
     (hscalar : Continuous (fun x : M => scalar 0 x))
     (hdata :
       ∀ delta : Real, 0 < delta -> delta < (1 : Real) / 3 ->
-        PinchWMPData (I := I) (M := M) G Ric scalar T delta) :
+        RicciPinchingWeakMaximumPrincipleInput (I := I) (M := M) G Ric scalar T delta) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) G Ric scalar T delta := by
-  exact pinch_init_wmp_lt (I := I) (M := M) (G := G) (Ric := Ric)
+  exact pinch_initial_weak_maximum_principle_lt (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (T := T) hT
-    (pinchInitLt_pos (I := I) (M := M) (G := G) (Ric := Ric)
+    (pinchInitialLt_pos (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) D hpos hscalar)
     hdata
 
-theorem strict_pinch_sol_lt
+theorem strict_pinch_solution_lt
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
@@ -1569,14 +1569,14 @@ theorem strict_pinch_sol_lt
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
     (hTreg : Set.Ioc 0 T ⊆ D.regular)
-    (hpos : RicciPosInit (I := I) (M := M)
+    (hpos : RicciPosInitial (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci)) :
     ∃ delta : Real,
       0 < delta ∧ delta < (1 : Real) / 3 ∧
         PinchPres (I := I) (M := M) (fun t : Real => S.base.metric t)
           (twoTensorSecToFamily (I := I) (M := M) S.ricci) S.scalar T delta := by
-  exact pinch_init_sol_lt (I := I) (M := M) hS hT hdim hTsub hTreg
-    (pinchInitLt_pos (I := I) (M := M)
+  exact pinch_initial_solution_lt (I := I) (M := M) hS hT hdim hTsub hTreg
+    (pinchInitialLt_pos (I := I) (M := M)
       (G := fun t : Real => S.base.metric t)
       (Ric := twoTensorSecToFamily (I := I) (M := M) S.ricci)
       (scalar := S.scalar)

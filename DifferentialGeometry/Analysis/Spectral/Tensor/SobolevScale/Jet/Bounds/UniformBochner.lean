@@ -106,7 +106,7 @@ private theorem norm_add_cross_scalar_close
       base + (Cfun0 ^ 2 + 2 * (Crc * (dimR * Cfun1))) * sum ^ 2 := by
   nlinarith
 
-theorem bochner_step_unif
+theorem bochner_step_uniform
     (g₀ : SmoothRiemannianMetric I M) (s k : ℕ)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -254,7 +254,7 @@ theorem bochner_step_unif
   exact bochner_scalar_close hbase_le hpair_bound hneg_le
 
 omit [CompactSpace M] in
-theorem roughLapComm_unif
+theorem roughLapComm_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -403,7 +403,7 @@ theorem roughLapComm_unif
       _ = (Fc p + Cm (p + 1)) * fullSum := hfinal
 
 omit [CompactSpace M] in
-theorem rawConnLapIter_unif
+theorem rawConnLapIter_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -420,7 +420,7 @@ theorem rawConnLapIter_unif
   obtain ⟨K, hK_one, hK⟩ :=
     exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_covariantTensor (I := I) (M := M) g₀
   obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
-    roughLapComm_unif (I := I) (M := M) g₀ Fc hFc hcurv a s
+    roughLapComm_uniform (I := I) (M := M) g₀ Fc hFc hcurv a s
   have hK_nn : 0 ≤ K := le_trans (by norm_num) hK_one
   refine ⟨K + Cfun 0, add_nonneg hK_nn (hCfun_nn 0), fun S => ?_⟩
   set FULL : ℝ := ∑ b ∈ Finset.range (a + 3), ‖iteratedCovGrad (I := I) g₀ 0 s b S‖ with hFULL
@@ -485,7 +485,7 @@ theorem rawConnLapIter_unif
           (mul_le_mul_of_nonneg_left hsub_le (hCfun_nn 0))
     _ = (K + Cfun 0) * FULL := by ring
 
-theorem baseAddLower_unif
+theorem baseAddLower_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -513,9 +513,9 @@ theorem baseAddLower_unif
     rw [hD0]
     simp
   · obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
-      roughLapComm_unif (I := I) (M := M) g₀ Fc hFc hcurv (j + 1) s
+      roughLapComm_uniform (I := I) (M := M) g₀ Fc hFc hcurv (j + 1) s
     obtain ⟨Crc, hCrc_nn, hCrc⟩ :=
-      rawConnLapIter_unif (I := I) (M := M) g₀ Fc hFc hcurv j s
+      rawConnLapIter_uniform (I := I) (M := M) g₀ Fc hFc hcurv j s
     set dimR : ℝ := Real.sqrt (Module.finrank ℝ E) with hdimR
     have hdimR_nn : 0 ≤ dimR := Real.sqrt_nonneg _
     refine ⟨(Cfun 0) ^ 2 + 2 * (Crc * (dimR * Cfun 1)),
@@ -642,9 +642,9 @@ theorem bochner_step_hcurv
         + C * (∑ a ∈ Finset.range (k + 2),
             ‖iteratedCovGrad (I := I) g₀ 0 s a u‖) ^ 2 := by
   obtain ⟨Cbase, hCbase_nn, hbase⟩ :=
-    baseAddLower_unif (I := I) (M := M) g₀ Fc hFc hcurv s k
+    baseAddLower_uniform (I := I) (M := M) g₀ Fc hFc hcurv s k
   exact ⟨Cbase + Fc 0, add_nonneg hCbase_nn (hFc 0),
-    bochner_step_unif (I := I) (M := M) g₀ s k Fc hFc hcurv Cbase hbase⟩
+    bochner_step_uniform (I := I) (M := M) g₀ s k Fc hFc hcurv Cbase hbase⟩
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
@@ -821,7 +821,7 @@ private theorem elliptic_engine
       exact mul_le_mul_of_nonneg_right (le_max_right _ _)
         (Finset.sum_nonneg (fun _ _ => norm_nonneg _))
 
-theorem elliptic_lapSum_unif
+theorem elliptic_lapSum_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -841,7 +841,7 @@ theorem elliptic_lapSum_unif
   exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono (by omega))
     (fun i _ _ => norm_nonneg _)
 
-theorem jetEven_unif
+theorem jetEven_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -853,7 +853,7 @@ theorem jetEven_unif
     ∃ C : ℝ, 0 ≤ C ∧ ∀ S : SmoothCcTensor g₀ 0 s,
       ∑ j ∈ Finset.range (2 * k + 1), ‖iteratedCovGrad (I := I) g₀ 0 s j S‖ ≤
         C * ‖ccTensorToHs (I := I) (M := M) g₀ s ((2 * k : ℕ) : ℝ) S‖ := by
-  obtain ⟨Cg, hCg_nn, hCg⟩ := elliptic_lapSum_unif (I := I) (M := M) g₀ Fc hFc hcurv s k
+  obtain ⟨Cg, hCg_nn, hCg⟩ := elliptic_lapSum_uniform (I := I) (M := M) g₀ Fc hFc hcurv s k
   refine ⟨((2 * k + 1 : ℕ) : ℝ) * (Cg * ((k : ℝ) + 1)), by positivity, fun S => ?_⟩
   set Nspec : ℝ := ‖ccTensorToHs (I := I) (M := M) g₀ s ((2 * k : ℕ) : ℝ) S‖ with hNspec
   have hNspec_nn : 0 ≤ Nspec := norm_nonneg _
@@ -884,7 +884,7 @@ theorem jetEven_unif
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; push_cast; ring
 
 omit [CompactSpace M] in
-theorem iterRawLap_unif
+theorem iterRawLap_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -911,14 +911,14 @@ theorem iterRawLap_unif
     intro s
     obtain ⟨Cfun, hCfun_nn, hCfun⟩ := ih s
     set coef : ℕ → ℝ := fun a =>
-      (rawConnLapIter_unif (I := I) (M := M) g₀ Fc hFc hcurv a s).choose with hcoef_def
+      (rawConnLapIter_uniform (I := I) (M := M) g₀ Fc hFc hcurv a s).choose with hcoef_def
     have hcoef_nn : ∀ a, 0 ≤ coef a := fun a =>
-      (rawConnLapIter_unif (I := I) (M := M) g₀ Fc hFc hcurv a s).choose_spec.1
+      (rawConnLapIter_uniform (I := I) (M := M) g₀ Fc hFc hcurv a s).choose_spec.1
     have hcoef_bound : ∀ a (S : SmoothCcTensor g₀ 0 s),
         ‖iteratedCovGrad (I := I) g₀ 0 s a (rawTensorConnLapSmooth (I := I) g₀ 0 s S)‖ ≤
           coef a * ∑ b ∈ Finset.range (a + 3),
             ‖iteratedCovGrad (I := I) g₀ 0 s b S‖ := fun a S =>
-      (rawConnLapIter_unif (I := I) (M := M) g₀ Fc hFc hcurv a s).choose_spec.2 S
+      (rawConnLapIter_uniform (I := I) (M := M) g₀ Fc hFc hcurv a s).choose_spec.2 S
     refine ⟨fun p => Cfun p * ∑ a ∈ Finset.range (2 * i + p + 1), coef a,
       fun p => mul_nonneg (hCfun_nn p) (Finset.sum_nonneg (fun a _ => hcoef_nn a)),
       fun p S => ?_⟩
@@ -992,7 +992,7 @@ private theorem mode_summable_inl
     exact mul_le_mul_of_nonneg_right
       (pow_le_pow_left₀ hbase_nn hbase_le j) (sq_nonneg _)
 
-theorem modeLeJet_unif
+theorem modeLeJet_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -1013,7 +1013,7 @@ theorem modeLeJet_unif
   classical
   rcases Nat.even_or_odd j with ⟨i, hi⟩ | ⟨i, hi⟩
   · obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
-      iterRawLap_unif (I := I) (M := M) g₀ Fc hFc hcurv i s
+      iterRawLap_uniform (I := I) (M := M) g₀ Fc hFc hcurv i s
     refine ⟨(Cfun 0) ^ 2, by positivity, fun S => ?_⟩
     have hj : j = 2 * i := by omega
     have htsum :
@@ -1051,7 +1051,7 @@ theorem modeLeJet_unif
       _ = (Cfun 0) ^ 2 * (∑ a ∈ Finset.range (j + 1),
             ‖iteratedCovGrad (I := I) g₀ 0 s a S‖) ^ 2 := by ring
   · obtain ⟨Cfun, hCfun_nn, hCfun⟩ :=
-      iterRawLap_unif (I := I) (M := M) g₀ Fc hFc hcurv i s
+      iterRawLap_uniform (I := I) (M := M) g₀ Fc hFc hcurv i s
     refine ⟨(Cfun 1) ^ 2, by positivity, fun S => ?_⟩
     have hj : j = 2 * i + 1 := by omega
     have htsum :
@@ -1093,7 +1093,7 @@ theorem modeLeJet_unif
       _ = (Cfun 1) ^ 2 * (∑ a ∈ Finset.range (j + 1),
             ‖iteratedCovGrad (I := I) g₀ 0 s a S‖) ^ 2 := by ring
 
-theorem hsCovsum_unif
+theorem hsCovsum_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -1107,8 +1107,8 @@ theorem hsCovsum_unif
         C * ∑ j ∈ Finset.range (n + 1),
           ‖iteratedCovGrad (I := I) g₀ 0 s j S‖ := by
   classical
-  obtain ⟨C₀, hC₀_nn, hC₀⟩ := modeLeJet_unif (I := I) (M := M) g₀ Fc hFc hcurv s 0
-  obtain ⟨Cₙ, hCₙ_nn, hCₙ⟩ := modeLeJet_unif (I := I) (M := M) g₀ Fc hFc hcurv s n
+  obtain ⟨C₀, hC₀_nn, hC₀⟩ := modeLeJet_uniform (I := I) (M := M) g₀ Fc hFc hcurv s 0
+  obtain ⟨Cₙ, hCₙ_nn, hCₙ⟩ := modeLeJet_uniform (I := I) (M := M) g₀ Fc hFc hcurv s n
   set F : ℝ := (2 : ℝ) ^ (n - 1) with hF_def
   have hF_nn : 0 ≤ F := by rw [hF_def]; positivity
   have hcoef_nn : 0 ≤ F * (C₀ + Cₙ) :=
@@ -1210,7 +1210,7 @@ theorem hsCovsum_unif
   simpa only [hSall_def] using hsqrt
 
 omit [CompactSpace M] in
-theorem iterLapGradComm_unif
+theorem iterLapGradComm_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -1247,18 +1247,18 @@ theorem iterLapGradComm_unif
   | succ i ih =>
     obtain ⟨Cfun, hCfun_nn, hCfun⟩ := ih
     obtain ⟨Cmaster, hCmaster_nn, hCmaster⟩ :=
-      iterRawLap_unif (I := I) (M := M) g₀ Fc hFc hcurv i s
+      iterRawLap_uniform (I := I) (M := M) g₀ Fc hFc hcurv i s
     set coefB : ℕ → ℝ := fun p =>
-      (rawConnLapIter_unif (I := I) (M := M) g₀ Fc hFc hcurv p (s + 1)).choose
+      (rawConnLapIter_uniform (I := I) (M := M) g₀ Fc hFc hcurv p (s + 1)).choose
       with hcoefB_def
     have hcoefB_nn : ∀ p, 0 ≤ coefB p := fun p =>
-      (rawConnLapIter_unif (I := I) (M := M) g₀ Fc hFc hcurv p (s + 1)).choose_spec.1
+      (rawConnLapIter_uniform (I := I) (M := M) g₀ Fc hFc hcurv p (s + 1)).choose_spec.1
     have hcoefB_bound : ∀ p (W : SmoothCcTensor g₀ 0 (s + 1)),
         ‖iteratedCovGrad (I := I) g₀ 0 (s + 1) p
             (rawTensorConnLapSmooth (I := I) g₀ 0 (s + 1) W)‖ ≤
           coefB p * ∑ q ∈ Finset.range (p + 3),
             ‖iteratedCovGrad (I := I) g₀ 0 (s + 1) q W‖ := fun p W =>
-      (rawConnLapIter_unif (I := I) (M := M) g₀ Fc hFc hcurv p (s + 1)).choose_spec.2 W
+      (rawConnLapIter_uniform (I := I) (M := M) g₀ Fc hFc hcurv p (s + 1)).choose_spec.2 W
     refine ⟨fun p =>
         Fc p * (∑ a ∈ Finset.range (p + 2), Cmaster a) +
           coefB p * (∑ q ∈ Finset.range (p + 3), Cfun q), fun p => ?_, fun p S => ?_⟩
@@ -1380,7 +1380,7 @@ theorem iterLapGradComm_unif
               coefB p * (∑ q ∈ Finset.range (p + 3), Cfun q)) * FULL := by ring
 
 omit [CompactSpace M] in
-theorem rawConnLapCovComm_unif
+theorem rawConnLapCovComm_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -1394,7 +1394,7 @@ theorem rawConnLapCovComm_unif
           covGrad (I := I) (M := M) g₀ 0 s (rawTensorConnLapIter (I := I) g₀ 0 s i S)‖ ≤
         C * ∑ a ∈ Finset.range (2 * i), ‖iteratedCovGrad (I := I) g₀ 0 s a S‖ := by
   obtain ⟨Cfun, hCfun_nn, hbound⟩ :=
-    iterLapGradComm_unif (I := I) (M := M) g₀ Fc hFc hcurv s i
+    iterLapGradComm_uniform (I := I) (M := M) g₀ Fc hFc hcurv s i
   refine ⟨Cfun 0, hCfun_nn 0, fun S => ?_⟩
   have h := hbound 0 S
   simpa only [iteratedCovGrad_zero, Nat.add_zero] using h
@@ -1406,7 +1406,7 @@ private theorem norm_iteratedCovGrad_order_eq
     ‖iteratedCovGrad (I := I) g₀ 0 s n S‖ = ‖iteratedCovGrad (I := I) g₀ 0 s n' S‖ := by
   subst h; rfl
 
-theorem jetOdd_unif
+theorem jetOdd_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -1419,16 +1419,16 @@ theorem jetOdd_unif
       ∑ j ∈ Finset.range (2 * k + 1 + 1), ‖iteratedCovGrad (I := I) g₀ 0 s j S‖ ≤
         C * ‖ccTensorToHs (I := I) (M := M) g₀ s ((2 * k + 1 : ℕ) : ℝ) S‖ := by
   classical
-  obtain ⟨Clow, hClow_nn, hClow⟩ := jetEven_unif (I := I) (M := M) g₀ Fc hFc hcurv s k
+  obtain ⟨Clow, hClow_nn, hClow⟩ := jetEven_uniform (I := I) (M := M) g₀ Fc hFc hcurv s k
   obtain ⟨Cgard, hCgard_nn, hCgard⟩ :=
-    elliptic_lapSum_unif (I := I) (M := M) g₀ Fc hFc hcurv (s + 1) k
-  obtain ⟨Ceven, hCeven_nn, hCeven⟩ := jetEven_unif (I := I) (M := M) g₀ Fc hFc hcurv s k
+    elliptic_lapSum_uniform (I := I) (M := M) g₀ Fc hFc hcurv (s + 1) k
+  obtain ⟨Ceven, hCeven_nn, hCeven⟩ := jetEven_uniform (I := I) (M := M) g₀ Fc hFc hcurv s k
   have hcommfam : ∀ i : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ S : SmoothCcTensor g₀ 0 s,
         ‖rawTensorConnLapIter (I := I) g₀ 0 (s + 1) i (covGrad (I := I) (M := M) g₀ 0 s S) -
             covGrad (I := I) (M := M) g₀ 0 s (rawTensorConnLapIter (I := I) g₀ 0 s i S)‖ ≤
           C * ∑ a ∈ Finset.range (2 * i), ‖iteratedCovGrad (I := I) g₀ 0 s a S‖ :=
-    fun i => rawConnLapCovComm_unif (I := I) (M := M) g₀ Fc hFc hcurv s i
+    fun i => rawConnLapCovComm_uniform (I := I) (M := M) g₀ Fc hFc hcurv s i
   set Ccomm : ℕ → ℝ := fun i => Classical.choose (hcommfam i) with hCcomm_def
   have hCcomm_nn : ∀ i, 0 ≤ Ccomm i := fun i => (Classical.choose_spec (hcommfam i)).1
   have hCcomm : ∀ i, ∀ S : SmoothCcTensor g₀ 0 s,
@@ -1556,7 +1556,7 @@ theorem jetOdd_unif
         add_le_add hlowsum htop_le
     _ = (Clow + Cgard * (((k + 1 : ℕ) : ℝ) + Ccommsum * Ceven)) * Nspec := by ring
 
-theorem covsum_hs_unif
+theorem covsum_hs_uniform
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -1570,12 +1570,12 @@ theorem covsum_hs_unif
         C * ‖ccTensorToHs (I := I) (M := M) g₀ s (n : ℝ) S‖ := by
   classical
   rcases Nat.even_or_odd n with ⟨k, hk⟩ | ⟨k, hk⟩
-  · obtain ⟨C, hC_nn, hC⟩ := jetEven_unif (I := I) (M := M) g₀ Fc hFc hcurv s k
+  · obtain ⟨C, hC_nn, hC⟩ := jetEven_uniform (I := I) (M := M) g₀ Fc hFc hcurv s k
     refine ⟨C, hC_nn, fun S => ?_⟩
     have hn2k : n = 2 * k := by omega
     subst hn2k
     exact hC S
-  · obtain ⟨C, hC_nn, hC⟩ := jetOdd_unif (I := I) (M := M) g₀ Fc hFc hcurv s k
+  · obtain ⟨C, hC_nn, hC⟩ := jetOdd_uniform (I := I) (M := M) g₀ Fc hFc hcurv s k
     refine ⟨C, hC_nn, fun S => ?_⟩
     have hn : n = 2 * k + 1 := by omega
     subst hn
@@ -2564,7 +2564,7 @@ theorem bochnerStep_const
       + bochnerStepC Fc (Module.finrank ℝ E) k * (∑ a ∈ Finset.range (k + 2),
           ‖iteratedCovGrad (I := I) g₀ 0 s a u‖) ^ 2 := by
   unfold bochnerStepC
-  exact bochner_step_unif (I := I) (M := M) g₀ s k Fc hFc hcurv
+  exact bochner_step_uniform (I := I) (M := M) g₀ s k Fc hFc hcurv
     (baseLowerC Fc (Module.finrank ℝ E) k)
     (fun v => baseAddLower_const (I := I) (M := M) g₀ Fc hFc hcurv s k v) u
 
@@ -3008,7 +3008,7 @@ theorem modeLeJet_const
       _ = iterRawLapC Fc (Module.finrank ℝ E) i 1 ^ 2 * (∑ a ∈ Finset.range (j + 1),
             ‖iteratedCovGrad (I := I) g₀ 0 s a S‖) ^ 2 := by ring
 
-theorem hsCovsum_unif_const
+theorem hsCovsum_uniform_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),
@@ -3471,7 +3471,7 @@ theorem jetOdd_const
     _ = (jetEvenC Fc (Module.finrank ℝ E) k + ellipticEngC Fc (Module.finrank ℝ E) (2 * k) *
           (((k + 1 : ℕ) : ℝ) + (∑ i ∈ Finset.range (k + 1), lapGradCommC Fc (Module.finrank ℝ E) i 0) * jetEvenC Fc (Module.finrank ℝ E) k)) * Nspec := by ring
 
-theorem covsum_hs_unif_const
+theorem covsum_hs_uniform_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
     (hcurv : ∀ (r p : ℕ) (S : SmoothCcTensor g₀ 0 r),

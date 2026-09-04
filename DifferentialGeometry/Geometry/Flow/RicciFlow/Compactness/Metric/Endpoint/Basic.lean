@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
@@ -40,7 +40,7 @@ def canonicalMetricCompactness
   let Ppsi : forall k : Nat, ProperMetricOn (I := I) ((X.subseq psi).obj k) :=
     fun k => P (psi k)
   let canon : CanonicalMetricCompactness (I := I) (X.subseq psi) :=
-    HCGCompactness.canonicalMetricCompactness Ppsi B
+    CheegerGromovCompactness.canonicalMetricCompactness Ppsi B
   exact canon.ofSubsequence psi hpsi
 
 def metricCompactness
@@ -54,5 +54,5 @@ def metricCompactness
   (canonicalMetricCompactness inp hcomplete hconn).compactness
 
 end MetricCompactnessInputs
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

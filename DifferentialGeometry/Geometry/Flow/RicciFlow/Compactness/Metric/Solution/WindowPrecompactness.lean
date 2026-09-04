@@ -11,7 +11,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Manifold ContDiff Topology
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -30,7 +30,7 @@ variable [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem evolNorm_bound_of_ricBound
+theorem evolutionNorm_bound_of_ricBound
     [Module.Finite ℝ E]
     {K U : Set M} {β ψ : Real}
     {gSeq : Nat -> Real -> SmoothRiemannianMetric I M}
@@ -96,15 +96,15 @@ theorem hgLip_orderN_of_solutions
         (TangentSpace I : M → Type _), ∀ x₀ : M,
       FixedBaseExtDerivTimeDerivativeOnRegular (I := I) (D i).carrier (D i).regular
         ({x₀} : Set M)
-        (fun r p' => (covDerivOfField (I := I) gRef (solnMetricField (I := I) (S i) r) p) p'
+        (fun r p' => (covDerivOfField (I := I) gRef (solutionMetricField (I := I) (S i) r) p) p'
           (fun a : Fin (p + 2) => V a p'))
-        (fun r p' => (covDerivOfField (I := I) gRef (solnEvolField (I := I) (S i) r) p) p'
+        (fun r p' => (covDerivOfField (I := I) gRef (solutionEvolutionField (I := I) (S i) r) p) p'
           (fun a : Fin (p + 2) => V a p'))) :
     ∃ L : Real, 0 ≤ L ∧
       ∀ i : Nat, ∀ s : Real, s ∈ Set.Icc β ψ -> ∀ t : Real, t ∈ Set.Icc β ψ ->
         ∀ x : M, x ∈ K ->
           metricDerivNorm (I := I) N (gSeq i s) (gSeq i t) gRef x ≤ L * |s - t| := by
-  obtain ⟨L, hL0, hLbound⟩ := evolNorm_bound_of_ricBound (I := I) hKc hU hKU hN
+  obtain ⟨L, hL0, hLbound⟩ := evolutionNorm_bound_of_ricBound (I := I) hKc hU hKU hN
     B hequiv Bmax hBmax1 hBmax Cg hBprev KShi hKShi0 hShi CN hCN0 hboundN
   have hev := hevComp_of_solutions (I := I) (β := β) (ψ := ψ)
     (gSeq := gSeq) (gRef := gRef) (N := N) D S hS hmet hreg hswap
@@ -116,5 +116,5 @@ theorem hgLip_orderN_of_solutions
     (fun x' hx' s' hs' => hLbound i x' hx' s' hs')
     s hs t ht x hx
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

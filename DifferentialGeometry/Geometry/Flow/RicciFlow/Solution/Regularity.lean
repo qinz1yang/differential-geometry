@@ -26,7 +26,7 @@ variable [IsManifold I 1 M]
 variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 omit [SigmaCompactSpace M] in
-theorem scalarSmoothOfSol
+theorem scalarSmoothOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) :
@@ -36,7 +36,7 @@ theorem scalarSmoothOfSol
   exact metricScalar_smooth (I := I) (M := M) (S.family.metric t)
 
 omit [SigmaCompactSpace M] in
-theorem scalarContOfSol
+theorem scalarContOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
@@ -45,7 +45,7 @@ theorem scalarContOfSol
   exact hS.scalarCont
 
 omit [SigmaCompactSpace M] in
-theorem scalarTimeOfSol
+theorem scalarTimeOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -55,7 +55,7 @@ theorem scalarTimeOfSol
   exact hS.scalarTime ht hK x
 
 omit [SigmaCompactSpace M] in
-theorem scalarRegOfSol
+theorem scalarRegularityOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
@@ -73,17 +73,17 @@ theorem scalarRegOfSol
       scalar_sq_div_grad := ?_
       scalar_grad_sub_const := ?_
       scalar_grad_const_mul_sub_const := ?_ }
-  · exact scalarContOfSol (I := I) S hS
+  · exact scalarContOfSolution (I := I) S hS
   · intro K t ht hK x
-    exact scalarTimeOfSol (I := I) S hS ht hK x
+    exact scalarTimeOfSolution (I := I) S hS ht hK x
   · intro t ht x
-    exact ((scalarSmoothOfSol (I := I) S t).contMDiffAt).mdifferentiableAt
+    exact ((scalarSmoothOfSolution (I := I) S t).contMDiffAt).mdifferentiableAt
       (by simp)
   · intro t ht x
     exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I) (S.family.metric t)
-      (scalarSmoothOfSol (I := I) S t) x
+      (scalarSmoothOfSolution (I := I) S t) x
   · intro t ht x
-    have hsmooth := scalarSmoothOfSol (I := I) S t
+    have hsmooth := scalarSmoothOfSolution (I := I) S t
     have hspace : ∀ y : M,
         MDifferentiableAt I 𝓘(Real, Real) (S.scalar t) y := by
       intro y
@@ -99,7 +99,7 @@ theorem scalarRegOfSol
       (S.family.metric t)
       hspace hgrad
   · intro t ht x
-    have hsmooth := scalarSmoothOfSol (I := I) S t
+    have hsmooth := scalarSmoothOfSolution (I := I) S t
     have hsq : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun y : M => S.scalar t y ^ 2) := by
       have hmul : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
@@ -108,7 +108,7 @@ theorem scalarRegOfSol
       simpa [pow_two] using hmul
     exact hsq.contMDiffAt.mdifferentiableAt (by simp)
   · intro t ht x
-    have hsmooth := scalarSmoothOfSol (I := I) S t
+    have hsmooth := scalarSmoothOfSolution (I := I) S t
     have hsq : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun y : M => S.scalar t y ^ 2) := by
       have hmul : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
@@ -118,7 +118,7 @@ theorem scalarRegOfSol
     exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I) (S.family.metric t)
       hsq x
   · intro t ht x
-    have hsmooth := scalarSmoothOfSol (I := I) S t
+    have hsmooth := scalarSmoothOfSolution (I := I) S t
     have hsq : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun y : M => S.scalar t y ^ 2) := by
       have hmul : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
@@ -132,7 +132,7 @@ theorem scalarRegOfSol
       exact (hsq.mul hconst).congr (fun _ => by simp [div_eq_mul_inv])
     exact hsqDiv.contMDiffAt.mdifferentiableAt (by simp)
   · intro t ht x
-    have hsmooth := scalarSmoothOfSol (I := I) S t
+    have hsmooth := scalarSmoothOfSolution (I := I) S t
     have hsq : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun y : M => S.scalar t y ^ 2) := by
       have hmul : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
@@ -147,14 +147,14 @@ theorem scalarRegOfSol
     exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I) (S.family.metric t)
       hsqDiv x
   · intro t ht c x
-    have hsmooth := scalarSmoothOfSol (I := I) S t
+    have hsmooth := scalarSmoothOfSolution (I := I) S t
     have hshift : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun z : M => S.scalar t z - c) :=
       hsmooth.sub contMDiff_const
     exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I) (S.family.metric t)
       hshift x
   · intro t ht a c x
-    have hsmooth := scalarSmoothOfSol (I := I) S t
+    have hsmooth := scalarSmoothOfSolution (I := I) S t
     have hshift : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun z : M => S.scalar t z - c) :=
       hsmooth.sub contMDiff_const
@@ -165,16 +165,16 @@ theorem scalarRegOfSol
       hscaled x
 
 omit [SigmaCompactSpace M] in
-theorem scalarSTContOfSol
+theorem scalarSTContOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
     ScalarSTContOn (I := I) (M := M) S := by
   exact CanonicalScalarRegularOn.toScalarSTCont (I := I) (M := M)
-    (scalarRegOfSol (I := I) S hS)
+    (scalarRegularityOfSolution (I := I) S hS)
 
 omit [SigmaCompactSpace M] in
-theorem ricciRegOfSol
+theorem ricciRegularityOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
@@ -186,7 +186,7 @@ theorem ricciRegOfSol
       ricci_norm_grad := hS.ricciNormGrad }
 
 omit [SigmaCompactSpace M] in
-theorem invEvolOfSol
+theorem invEvolutionOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -195,10 +195,10 @@ theorem invEvolOfSol
       (I := I) S (coordInv (I := I) S x0)
       (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0)
       (DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
-  exact coordInvEvol (I := I) S hS x0
+  exact coordInvEvolution (I := I) S hS x0
 
 omit [SigmaCompactSpace M] in
-theorem ricciEvolOfSol
+theorem ricciEvolutionOfSolution
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -216,10 +216,10 @@ theorem ricciEvolOfSol
         (t : Real) x0 i j)
       D.carrier
       (t : Real) := by
-  exact coordRicciEvol (I := I) S hS x0 t i j
+  exact coordRicciEvolution (I := I) S hS x0 t i j
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem invSymmOfSol
+theorem invSymmOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x0 : M) :
@@ -232,7 +232,7 @@ theorem invSymmOfSol
       (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_mem (I := I) x0) i j
 
 omit [SigmaCompactSpace M] in
-theorem ricciSymmOfSol
+theorem ricciSymmOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x0 : M) :
@@ -606,7 +606,7 @@ theorem rough_laplacian_ricci_component_of_coordinate_realization
           rw [hinput, hnab2 a b i j]
 
 omit [SigmaCompactSpace M] in
-theorem ricciLapOfSol
+theorem ricciLapOfSolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) :
     ∀ t x,
@@ -806,7 +806,7 @@ theorem ricciLapOfSol
   simpa [roughLapRic, gInv, frame] using hval
 
 omit [SigmaCompactSpace M] in
-theorem smoothOfSol
+theorem smoothOfSolution
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -814,14 +814,14 @@ theorem smoothOfSol
     IsSmoothSolutionOn (I := I) (M := M) S := by
   exact
     { isSolution := hS
-      scalarSTCont := scalarSTContOfSol (I := I) S hS
-      scalarRegular := scalarRegOfSol (I := I) S hS
-      ricciRegular := ricciRegOfSol (I := I) S hS
+      scalarSTCont := scalarSTContOfSolution (I := I) S hS
+      scalarRegular := scalarRegularityOfSolution (I := I) S hS
+      ricciRegular := ricciRegularityOfSolution (I := I) S hS
       scalarEvolution := scalarEvolution_of_isSolution (I := I) S hS
-      invEvol := invEvolOfSol (I := I) S hS
-      ricciEvol := ricciEvolOfSol (I := I) S hS
-      invSymm := invSymmOfSol (I := I) S
-      ricciSymm := ricciSymmOfSol (I := I) S
-      ricciLap := ricciLapOfSol (I := I) S }
+      invEvolution := invEvolutionOfSolution (I := I) S hS
+      ricciEvolution := ricciEvolutionOfSolution (I := I) S hS
+      invSymm := invSymmOfSolution (I := I) S
+      ricciSymm := ricciSymmOfSolution (I := I) S
+      ricciLap := ricciLapOfSolution (I := I) S }
 
 end DifferentialGeometry.PDE.RicciFlow

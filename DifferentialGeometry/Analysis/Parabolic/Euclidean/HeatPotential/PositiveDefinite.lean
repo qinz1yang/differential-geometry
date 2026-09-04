@@ -19,29 +19,29 @@ variable {n F : Type*} [Fintype n] [DecidableEq n] [Nonempty n]
 def spdHeatSource (A : Matrix n n Real) (hA : A.PosDef)
     (f : Real → BoundedContinuousFunction (Euc n) F) :
     Real → BoundedContinuousFunction (Euc n) F :=
-  fun t => linPullBcf (spdSqrtEquiv A hA) (f t)
+  fun t => linPullBoundedContinuousFunction (spdSqrtEquiv A hA) (f t)
 
 def spdSourceHolderConst (A : Matrix n n Real) (hA : A.PosDef)
     (alpha K : NNReal) : NNReal :=
   K * (max 1 ‖(spdSqrtEquiv A hA : Euc n →L[Real] Euc n)‖₊) ^
     (alpha : Real)
 
-def spdHeatDuh (A : Matrix n n Real) (hA : A.PosDef) (t : Real)
+def spdHeatDuhamel (A : Matrix n n Real) (hA : A.PosDef) (t : Real)
     (f : Real → BoundedContinuousFunction (Euc n) F) (x : Euc n) : F :=
-  heatDuh t (spdHeatSource A hA f) ((spdSqrtEquiv A hA).symm x)
+  heatDuhamel t (spdHeatSource A hA f) ((spdSqrtEquiv A hA).symm x)
 
-def spdHeatDuhGradient (A : Matrix n n Real) (hA : A.PosDef) (t : Real)
+def spdHeatDuhamelGradient (A : Matrix n n Real) (hA : A.PosDef) (t : Real)
     (f : Real → BoundedContinuousFunction (Euc n) F) (x : Euc n) :
     Euc n →L[Real] F :=
-  (heatDuhGradientMap t (spdHeatSource A hA f)
+  (heatDuhamelGradientMap t (spdHeatSource A hA f)
     ((spdSqrtEquiv A hA).symm x)).comp
       ((spdSqrtEquiv A hA).symm : Euc n →L[Real] Euc n)
 
-def spdHeatDuhHessian (A : Matrix n n Real) (hA : A.PosDef) (t : Real)
+def spdHeatDuhamelHessian (A : Matrix n n Real) (hA : A.PosDef) (t : Real)
     (f : Real → BoundedContinuousFunction (Euc n) F) (x : Euc n) :
     Euc n →L[Real] Euc n →L[Real] F :=
   pushHess (F := F) (spdSqrtEquiv A hA).symm
-    (heatDuhHessian t (spdHeatSource A hA f)
+    (heatDuhamelHessian t (spdHeatSource A hA f)
       ((spdSqrtEquiv A hA).symm x))
 
 def eSpdParabolicC2HolderGaugeOn
@@ -109,7 +109,7 @@ omit [Nonempty n] [NormedSpace Real F] [CompleteSpace F] in
 theorem spdHeatSource_norm (A : Matrix n n Real) (hA : A.PosDef)
     (f : Real → BoundedContinuousFunction (Euc n) F) (t : Real) :
     ‖spdHeatSource A hA f t‖ = ‖f t‖ := by
-  exact norm_linPullBcf (spdSqrtEquiv A hA) (f t)
+  exact norm_linPullBoundedContinuousFunction (spdSqrtEquiv A hA) (f t)
 
 omit [Nonempty n] [NormedSpace Real F] [CompleteSpace F] in
 theorem spdHeatSource_parabolic_holder
@@ -139,7 +139,7 @@ theorem spdHeatSource_parabolic_holder
       ((f q.time) ((spdSqrtEquiv A hA : Euc n →L[Real] Euc n) q.space)) ≤ _
   exact h p hp' q hq'
 
-theorem spdHeatDuh_schauder_estimate
+theorem spdHeatDuhamel_schauder_estimate
     {alpha K B : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S T : Real} (hT : 0 ≤ T) (hTS : T < S)
@@ -151,7 +151,7 @@ theorem spdHeatDuh_schauder_estimate
         (fun p => f p.time p.space))) :
     eSpdParabolicC2HolderGaugeOn A hA alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
-      (fun t x => spdHeatDuh A hA t f x) ≤
+      (fun t x => spdHeatDuhamel A hA t f x) ≤
       heatPotentialSchauderConst (V := Euc n) alpha
         (spdSourceHolderConst A hA alpha K) B
         (spdSourceHolderConst A hA alpha K) T := by
@@ -160,13 +160,13 @@ theorem spdHeatDuh_schauder_estimate
     intro r hr
     rw [spdHeatSource_norm]
     exact hbound r hr
-  have h := heatDuh_schauder_estimate_of_parabolic_holder
+  have h := heatDuhamel_schauder_estimate_of_parabolic_holder
     halpha0 halpha1 hT hTS (spdHeatSource A hA f) hbound'
       (spdHeatSource_parabolic_holder A hA f hsource)
-  unfold eSpdParabolicC2HolderGaugeOn spdHeatDuh
+  unfold eSpdParabolicC2HolderGaugeOn spdHeatDuhamel
   simpa only [ContinuousLinearEquiv.symm_apply_apply] using h
 
-theorem spdHeatDuh_schauder_estimate_euclidean
+theorem spdHeatDuhamel_schauder_estimate_euclidean
     {alpha K B : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S T : Real} (hT : 0 ≤ T) (hTS : T < S)
@@ -178,18 +178,18 @@ theorem spdHeatDuh_schauder_estimate_euclidean
         (fun p => f p.time p.space))) :
     eParabolicC2HolderGaugeOn alpha
       (parabolicCylinder (Ioc (0 : Real) T) Set.univ)
-      (fun t x => spdHeatDuh A hA t f x) ≤
+      (fun t x => spdHeatDuhamel A hA t f x) ≤
       spdHeatPotentialSchauderConst A hA alpha K B T := by
   apply eParabolicC2HolderGaugeOn_linearEquiv_le
     (spdSqrtEquiv A hA) alpha
     (heatPotentialSchauderConst (V := Euc n) alpha
       (spdSourceHolderConst A hA alpha K) B
       (spdSourceHolderConst A hA alpha K) T)
-    (Ioc (0 : Real) T) (fun t x => spdHeatDuh A hA t f x)
-  exact spdHeatDuh_schauder_estimate halpha0 halpha1 hT hTS
+    (Ioc (0 : Real) T) (fun t x => spdHeatDuhamel A hA t f x)
+  exact spdHeatDuhamel_schauder_estimate halpha0 halpha1 hT hTS
     A hA f hbound hsource
 
-theorem spdHeatDuh_matrixLap
+theorem spdHeatDuhamel_matrixLap
     {alpha K B : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha ≤ 1)
     {S t : Real} (ht : t ∈ Ioc (0 : Real) S)
     (A : Matrix n n Real) (hA : A.PosDef)
@@ -199,12 +199,12 @@ theorem spdHeatDuh_matrixLap
       ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)))
     (x : Euc n) :
-    matrixLap A (spdHeatDuhHessian A hA t f x) =
-      heatLapDuh t (fun s y => spdHeatSource A hA f s y)
+    matrixLap A (spdHeatDuhamelHessian A hA t f x) =
+      heatLapDuhamel t (fun s y => spdHeatSource A hA f s y)
         ((spdSqrtEquiv A hA).symm x) := by
   let L := spdSqrtEquiv A hA
   let fp := spdHeatSource A hA f
-  let H := heatDuhHessian t fp (L.symm x)
+  let H := heatDuhamelHessian t fp (L.symm x)
   have hbound' : ∀ s ∈ Icc (0 : Real) t, ‖fp s‖ ≤ B := by
     intro s hs
     change ‖spdHeatSource A hA f s‖ ≤ B
@@ -237,16 +237,16 @@ theorem spdHeatDuh_matrixLap
           ((stdOrthonormalBasis Real (Euc n)) i) :=
       lapEval_basis (stdOrthonormalBasis Real (Euc n)) H
     _ = ∑ i : Fin (Module.finrank Real (Euc n)),
-        heatD2Duh t ((stdOrthonormalBasis Real (Euc n)) i)
+        heatD2Duhamel t ((stdOrthonormalBasis Real (Euc n)) i)
           ((stdOrthonormalBasis Real (Euc n)) i)
           (fun s y => fp s y) (L.symm x) := by
       apply Finset.sum_congr rfl
       intro i hi
-      exact heatDuhHessian_apply halpha0 halpha1 ht.1 fp hbound' hf hm1 hm2
+      exact heatDuhamelHessian_apply halpha0 halpha1 ht.1 fp hbound' hf hm1 hm2
         (L.symm x) _ _
-    _ = heatLapDuh t (fun s y => fp s y) (L.symm x) := rfl
+    _ = heatLapDuhamel t (fun s y => fp s y) (L.symm x) := rfl
 
-theorem spdHeatDuh_pde
+theorem spdHeatDuhamel_pde
     {alpha K B : NNReal} (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {S t : Real} (ht : t ∈ Ioo (0 : Real) S)
     (A : Matrix n n Real) (hA : A.PosDef)
@@ -256,12 +256,12 @@ theorem spdHeatDuh_pde
       ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)))
     (x : Euc n) :
-    HasFDerivAt (spdHeatDuh A hA t f)
-        (spdHeatDuhGradient A hA t f x) x ∧
-      HasFDerivAt (spdHeatDuhGradient A hA t f)
-        (spdHeatDuhHessian A hA t f x) x ∧
-      HasDerivAt (fun q : Real => spdHeatDuh A hA q f x)
-        (matrixLap A (spdHeatDuhHessian A hA t f x) + f t x) t := by
+    HasFDerivAt (spdHeatDuhamel A hA t f)
+        (spdHeatDuhamelGradient A hA t f x) x ∧
+      HasFDerivAt (spdHeatDuhamelGradient A hA t f)
+        (spdHeatDuhamelHessian A hA t f x) x ∧
+      HasDerivAt (fun q : Real => spdHeatDuhamel A hA q f x)
+        (matrixLap A (spdHeatDuhamelHessian A hA t f x) + f t x) t := by
   let L := spdSqrtEquiv A hA
   let fp := spdHeatSource A hA f
   let LinvLinear : Euc n →ₗ[Real] Euc n :=
@@ -301,9 +301,9 @@ theorem spdHeatDuh_pde
       (volume.restrict (uIoc (0 : Real) t)) := fun z =>
     heatSupHessian_timeSource_aestronglyMeasurable_of_parabolic_holder
       halpha0 ht' fp hsource' z
-  have hv := (heatDuh_hasFDerivAt ht.1 fp hbound' hm0 hm1 (Linv x)).comp
+  have hv := (heatDuhamel_hasFDerivAt ht.1 fp hbound' hm0 hm1 (Linv x)).comp
     x Linv.hasFDerivAt
-  have hg0 := heatDuhGradientMap_hasFDerivAt halpha0 halpha1.le ht.1 fp
+  have hg0 := heatDuhamelGradientMap_hasFDerivAt halpha0 halpha1.le ht.1 fp
     hbound' hf' hm1 hm2 (Linv x)
   have hg1 := hg0.comp x Linv.hasFDerivAt
   have hg := (precompJet (F := F) L.symm).hasFDerivAt.comp x hg1
@@ -318,29 +318,29 @@ theorem spdHeatDuh_pde
         (volume.restrict (uIoc (0 : Real) q)) := fun q hq z =>
     heatSupHessian_timeSource_aestronglyMeasurable_of_parabolic_holder
       halpha0 hq fp (spdHeatSource_parabolic_holder A hA f hsource) z
-  have htime := heatDuh_time halpha0 halpha1 ht fp hf hsourceOpen hm2all (L.symm x)
-  have hlap := spdHeatDuh_matrixLap halpha0 halpha1.le ht' A hA f
+  have htime := heatDuhamel_time halpha0 halpha1 ht fp hf hsourceOpen hm2all (L.symm x)
+  have hlap := spdHeatDuhamel_matrixLap halpha0 halpha1.le ht' A hA f
     hbound hsource x
   refine ⟨?_, ?_, ?_⟩
   · have hv' := hv.congr_of_eventuallyEq
       (Filter.Eventually.of_forall fun y => by
-        change spdHeatDuh A hA t f y = heatDuh t fp (Linv y)
+        change spdHeatDuhamel A hA t f y = heatDuhamel t fp (Linv y)
         rfl)
     refine hv'.congr_fderiv ?_
     ext v
     rfl
   · have hg' := hg.congr_of_eventuallyEq
       (Filter.Eventually.of_forall fun y => by
-        change spdHeatDuhGradient A hA t f y =
-          precompJet (F := F) L.symm (heatDuhGradientMap t fp (Linv y))
+        change spdHeatDuhamelGradient A hA t f y =
+          precompJet (F := F) L.symm (heatDuhamelGradientMap t fp (Linv y))
         ext v
         rfl)
     refine hg'.congr_fderiv ?_
     ext v w
     rfl
   · rw [hlap]
-    simpa only [spdHeatDuh, fp, spdHeatSource, linPullBcf_apply,
-      heatDuhTimeDerivativeField, heatDuhTimeDerivative, parabolicPoint_time,
+    simpa only [spdHeatDuhamel, fp, spdHeatSource, linPullBoundedContinuousFunction_apply,
+      heatDuhamelTimeDerivativeField, heatDuhamelTimeDerivative, parabolicPoint_time,
       parabolicPoint_space, L, ContinuousLinearEquiv.apply_symm_apply,
       add_comm] using htime
 

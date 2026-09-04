@@ -44,7 +44,7 @@ def metricNabla0S (g : SmoothRiemannianMetric I M)
       (n := (∞ : WithTop ℕ∞)) (s + 1) :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
     (metricCov (I := I) g) T
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M) s
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M) s
       (metricCov (I := I) g) (metricCov_smooth (I := I) g) T)
 
 omit [SigmaCompactSpace M] in

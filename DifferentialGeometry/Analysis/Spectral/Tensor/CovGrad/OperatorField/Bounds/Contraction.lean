@@ -223,7 +223,7 @@ theorem riemannianFiberNormSq_comp_le_mul
         riemannianFiberNormSq (I := I) (M := M) g 0 r x Wx := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hexpand, _hreprRS⟩ :=
-    tangent_orthonormalBasisRS_witness (I := I) (M := M) g r s x
+    exists_tangent_orthonormalBasisRS_with_norm_sum (I := I) (M := M) g r s x
   set K₀ : Fin 0 → Fin n := fun k => k.elim0 with hK₀
   have hreprS : ∀ S : TensorRSSpace 0 s I x,
       riemannianFiberNormSq (I := I) (M := M) g 0 s x S =

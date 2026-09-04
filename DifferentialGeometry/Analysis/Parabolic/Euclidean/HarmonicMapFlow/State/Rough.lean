@@ -15,7 +15,7 @@ variable {V Y G F : Type*}
   [NormedAddCommGroup G] [NormedSpace ℝ G]
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
-structure HmfStateCoeff (eps L : ℝ)
+structure HarmonicMapFlowStateCoefficients (eps L : ℝ)
     (A : ℝ × V → Y → G →L[ℝ] F) : Prop where
   eps0 : 0 ≤ eps
   L0 : 0 ≤ L
@@ -30,7 +30,7 @@ omit [NormedAddCommGroup V]
   [NormedSpace ℝ Y] in
 theorem stateCoeff_bound {eps L R : ℝ}
     {A : ℝ × V → Y → G →L[ℝ] F}
-    (h : HmfStateCoeff eps L A) {z : ℝ × V} {y : Y}
+    (h : HarmonicMapFlowStateCoefficients eps L A) {z : ℝ × V} {y : Y}
     (hy : ‖y‖ ≤ R) :
     ‖A z y‖ ≤ eps + L * R := by
   calc
@@ -51,13 +51,13 @@ omit [NormedAddCommGroup V]
   [NormedSpace ℝ Y] in
 theorem stateCoeff_sub {eps L D : ℝ}
     {A : ℝ × V → Y → G →L[ℝ] F}
-    (h : HmfStateCoeff eps L A) {z : ℝ × V} {y₁ y₂ : Y}
+    (h : HarmonicMapFlowStateCoefficients eps L A) {z : ℝ × V} {y₁ y₂ : Y}
     (hy : ‖y₁ - y₂‖ ≤ D) :
     ‖A z y₁ - A z y₂‖ ≤ L * D :=
   (h.state_lip z y₁ y₂).trans
     (mul_le_mul_of_nonneg_left hy h.L0)
 
-def hmfStateFlux
+def harmonicMapFlowStateFlux
     (A : ℝ × V → Y → G →L[ℝ] F)
     (p : ℝ × V → Y) (d : ℝ × V → G) (z : ℝ × V) : F :=
   A z (p z) (d z)
@@ -69,13 +69,13 @@ omit [NormedAddCommGroup V]
   [BorelSpace V]
   [NormedAddCommGroup Y]
   [NormedSpace ℝ Y] in
-theorem hmfStateFlux_sub
+theorem harmonicMapFlowStateFlux_sub
     (A : ℝ × V → Y → G →L[ℝ] F)
     (p₁ p₂ : ℝ × V → Y) (d₁ d₂ : ℝ × V → G) (z : ℝ × V) :
-    hmfStateFlux A p₁ d₁ z - hmfStateFlux A p₂ d₂ z =
+    harmonicMapFlowStateFlux A p₁ d₁ z - harmonicMapFlowStateFlux A p₂ d₂ z =
       A z (p₁ z) (d₁ z - d₂ z) +
         (A z (p₁ z) - A z (p₂ z)) (d₂ z) := by
-  simp only [hmfStateFlux, map_sub, sub_apply]
+  simp only [harmonicMapFlowStateFlux, map_sub, sub_apply]
   abel
 
 omit [NormedAddCommGroup V]
@@ -84,18 +84,18 @@ omit [NormedAddCommGroup V]
   [MeasurableSpace V]
   [BorelSpace V]
   [NormedSpace ℝ Y] in
-theorem hmfStateFluxWt
+theorem harmonicMapFlowStateFluxWeightedBound
     {eps L T R Dp Rg Dg : ℝ}
     {A : ℝ × V → Y → G →L[ℝ] F}
-    (h : HmfStateCoeff eps L A)
+    (h : HarmonicMapFlowStateCoefficients eps L A)
     (hR : 0 ≤ R) (hDp : 0 ≤ Dp)
     {p₁ p₂ : ℝ × V → Y} {d₁ d₂ : ℝ × V → G}
-    (hp₁ : PathSup T R p₁)
-    (hpΔ : PathSup T Dp (fun z ↦ p₁ z - p₂ z))
-    (hd₂ : GradWt T Rg d₂)
-    (hdΔ : GradWt T Dg (fun z ↦ d₁ z - d₂ z)) :
-    GradWt T ((eps + L * R) * Dg + (L * Dp) * Rg)
-      (fun z ↦ hmfStateFlux A p₁ d₁ z - hmfStateFlux A p₂ d₂ z) := by
+    (hp₁ : PathUniformBound T R p₁)
+    (hpΔ : PathUniformBound T Dp (fun z ↦ p₁ z - p₂ z))
+    (hd₂ : GradientWeightedBound T Rg d₂)
+    (hdΔ : GradientWeightedBound T Dg (fun z ↦ d₁ z - d₂ z)) :
+    GradientWeightedBound T ((eps + L * R) * Dg + (L * Dp) * Rg)
+      (fun z ↦ harmonicMapFlowStateFlux A p₁ d₁ z - harmonicMapFlowStateFlux A p₂ d₂ z) := by
   intro t x ht hT
   let z : ℝ × V := (t, x)
   have hp₁R : ‖p₁ z‖ ≤ R := hp₁ t x ht hT
@@ -108,9 +108,9 @@ theorem hmfStateFluxWt
     add_nonneg h.eps0 (mul_nonneg h.L0 hR)
   have hcoefD : 0 ≤ L * Dp := mul_nonneg h.L0 hDp
   change Real.sqrt t *
-      ‖hmfStateFlux A p₁ d₁ z - hmfStateFlux A p₂ d₂ z‖ ≤
+      ‖harmonicMapFlowStateFlux A p₁ d₁ z - harmonicMapFlowStateFlux A p₂ d₂ z‖ ≤
         (eps + L * R) * Dg + L * Dp * Rg
-  rw [hmfStateFlux_sub]
+  rw [harmonicMapFlowStateFlux_sub]
   calc
     Real.sqrt t *
         ‖A z (p₁ z) (d₁ z - d₂ z) +
@@ -139,12 +139,12 @@ omit [NormedAddCommGroup V]
   [FiniteDimensional ℝ V]
   [MeasurableSpace V]
   [BorelSpace V] in
-theorem linWtOn
+theorem linear_weighted_boundOn
     (B : ℝ × V → G →L[ℝ] F)
     {T K C : ℝ} {d : ℝ × V → G}
     (hK : ∀ t x, 0 < t → t ≤ T → ‖B (t, x)‖ ≤ K)
-    (hK0 : 0 ≤ K) (hd : GradWt T C d) :
-    GradWt T (K * C) (fun z ↦ B z (d z)) := by
+    (hK0 : 0 ≤ K) (hd : GradientWeightedBound T C d) :
+    GradientWeightedBound T (K * C) (fun z ↦ B z (d z)) := by
   intro t x ht hT
   calc
     Real.sqrt t * ‖B (t, x) (d (t, x))‖
@@ -156,19 +156,19 @@ theorem linWtOn
     _ = K * (Real.sqrt t * ‖d (t, x)‖) := by ring
     _ ≤ K * C := mul_le_mul_of_nonneg_left (hd t x ht hT) hK0
 
-theorem linCarlOn
+theorem linear_carleson_boundOn
     (B : ℝ × V → G →L[ℝ] F)
     {T K : ℝ} {C : ℝ≥0∞} {d : ℝ × V → G}
     (hK : ∀ t x, 0 < t → t ≤ T → ‖B (t, x)‖ ≤ K)
     (hK0 : 0 ≤ K)
     (hae : AEStronglyMeasurable (fun z ↦ B z (d z))
-      (stVolume : Measure (ℝ × V)))
-    (hd : GradCarl T C d) :
-    GradCarl T (ENNReal.ofReal (K ^ 2) * C) (fun z ↦ B z (d z)) := by
+      (spaceTimeVolume : Measure (ℝ × V)))
+    (hd : GradientCarlesonBound T C d) :
+    GradientCarlesonBound T (ENNReal.ofReal (K ^ 2) * C) (fun z ↦ B z (d z)) := by
   refine ⟨hae, ?_⟩
   intro x R hR hRT
   let μ : Measure (ℝ × V) :=
-    (stVolume : Measure (ℝ × V)).restrict (paraCyl x R)
+    (spaceTimeVolume : Measure (ℝ × V)).restrict (forwardParabolicCylinder x R)
   have hmd : AEMeasurable (fun z ↦ ENNReal.ofReal (‖d z‖ ^ 2)) μ :=
     ((hd.ae.norm.pow 2).aemeasurable.ennreal_ofReal).mono_measure
       Measure.restrict_le_self
@@ -197,7 +197,7 @@ theorem linCarlOn
     (∫⁻ z, ENNReal.ofReal (‖B z (d z)‖ ^ 2) ∂μ)
         ≤ ∫⁻ z, ENNReal.ofReal (K ^ 2) *
             ENNReal.ofReal (‖d z‖ ^ 2) ∂μ := lintegral_mono_ae hpoint
-    _ = ENNReal.ofReal (K ^ 2) * gradMass d x R := by
+    _ = ENNReal.ofReal (K ^ 2) * gradientCarlesonMass d x R := by
       rw [lintegral_const_mul'' _ hmd]
       rfl
     _ ≤ ENNReal.ofReal (K ^ 2) *
@@ -212,60 +212,60 @@ omit [NormedAddCommGroup V]
   [MeasurableSpace V]
   [BorelSpace V]
   [NormedSpace ℝ Y] in
-theorem hmfStateFluxWt2
+theorem harmonicMapFlowStateFluxTermsWeightedBounds
     {eps L T R Dp Rg Dg : ℝ}
     {A : ℝ × V → Y → G →L[ℝ] F}
-    (h : HmfStateCoeff eps L A)
+    (h : HarmonicMapFlowStateCoefficients eps L A)
     (hR : 0 ≤ R) (hDp : 0 ≤ Dp)
     {p₁ p₂ : ℝ × V → Y} {d₁ d₂ : ℝ × V → G}
-    (hp₁ : PathSup T R p₁)
-    (hpΔ : PathSup T Dp (fun z ↦ p₁ z - p₂ z))
-    (hd₂ : GradWt T Rg d₂)
-    (hdΔ : GradWt T Dg (fun z ↦ d₁ z - d₂ z)) :
-    GradWt T ((eps + L * R) * Dg)
+    (hp₁ : PathUniformBound T R p₁)
+    (hpΔ : PathUniformBound T Dp (fun z ↦ p₁ z - p₂ z))
+    (hd₂ : GradientWeightedBound T Rg d₂)
+    (hdΔ : GradientWeightedBound T Dg (fun z ↦ d₁ z - d₂ z)) :
+    GradientWeightedBound T ((eps + L * R) * Dg)
         (fun z ↦ A z (p₁ z) (d₁ z - d₂ z)) ∧
-      GradWt T ((L * Dp) * Rg)
+      GradientWeightedBound T ((L * Dp) * Rg)
         (fun z ↦ (A z (p₁ z) - A z (p₂ z)) (d₂ z)) := by
   have hcoef : 0 ≤ eps + L * R :=
     add_nonneg h.eps0 (mul_nonneg h.L0 hR)
   have hcoefD : 0 ≤ L * Dp := mul_nonneg h.L0 hDp
   constructor
-  · apply linWtOn (fun z ↦ A z (p₁ z))
+  · apply linear_weighted_boundOn (fun z ↦ A z (p₁ z))
       (fun t x ht hT ↦ stateCoeff_bound h (hp₁ t x ht hT))
       hcoef hdΔ
-  · apply linWtOn (fun z ↦ A z (p₁ z) - A z (p₂ z))
+  · apply linear_weighted_boundOn (fun z ↦ A z (p₁ z) - A z (p₂ z))
       (fun t x ht hT ↦ stateCoeff_sub h (hpΔ t x ht hT))
       hcoefD hd₂
 
 omit [NormedSpace ℝ Y] in
-theorem hmfStateFluxCarl
+theorem harmonicMapFlowStateFluxTermsCarlesonBounds
     {eps L T R Dp : ℝ} {C₂ CΔ : ℝ≥0∞}
     {A : ℝ × V → Y → G →L[ℝ] F}
-    (h : HmfStateCoeff eps L A)
+    (h : HarmonicMapFlowStateCoefficients eps L A)
     (hR : 0 ≤ R) (hDp : 0 ≤ Dp)
     {p₁ p₂ : ℝ × V → Y} {d₁ d₂ : ℝ × V → G}
-    (hp₁ : PathSup T R p₁)
-    (hpΔ : PathSup T Dp (fun z ↦ p₁ z - p₂ z))
+    (hp₁ : PathUniformBound T R p₁)
+    (hpΔ : PathUniformBound T Dp (fun z ↦ p₁ z - p₂ z))
     (hae₁ : AEStronglyMeasurable
       (fun z ↦ A z (p₁ z) (d₁ z - d₂ z))
-      (stVolume : Measure (ℝ × V)))
+      (spaceTimeVolume : Measure (ℝ × V)))
     (hae₂ : AEStronglyMeasurable
       (fun z ↦ (A z (p₁ z) - A z (p₂ z)) (d₂ z))
-      (stVolume : Measure (ℝ × V)))
-    (hd₂ : GradCarl T C₂ d₂)
-    (hdΔ : GradCarl T CΔ (fun z ↦ d₁ z - d₂ z)) :
-    GradCarl T (ENNReal.ofReal ((eps + L * R) ^ 2) * CΔ)
+      (spaceTimeVolume : Measure (ℝ × V)))
+    (hd₂ : GradientCarlesonBound T C₂ d₂)
+    (hdΔ : GradientCarlesonBound T CΔ (fun z ↦ d₁ z - d₂ z)) :
+    GradientCarlesonBound T (ENNReal.ofReal ((eps + L * R) ^ 2) * CΔ)
         (fun z ↦ A z (p₁ z) (d₁ z - d₂ z)) ∧
-      GradCarl T (ENNReal.ofReal ((L * Dp) ^ 2) * C₂)
+      GradientCarlesonBound T (ENNReal.ofReal ((L * Dp) ^ 2) * C₂)
         (fun z ↦ (A z (p₁ z) - A z (p₂ z)) (d₂ z)) := by
   have hcoef : 0 ≤ eps + L * R :=
     add_nonneg h.eps0 (mul_nonneg h.L0 hR)
   have hcoefD : 0 ≤ L * Dp := mul_nonneg h.L0 hDp
   constructor
-  · apply linCarlOn (fun z ↦ A z (p₁ z))
+  · apply linear_carleson_boundOn (fun z ↦ A z (p₁ z))
       (fun t x ht hT ↦ stateCoeff_bound h (hp₁ t x ht hT))
       hcoef hae₁ hdΔ
-  · apply linCarlOn (fun z ↦ A z (p₁ z) - A z (p₂ z))
+  · apply linear_carleson_boundOn (fun z ↦ A z (p₁ z) - A z (p₂ z))
       (fun t x ht hT ↦ stateCoeff_sub h (hpΔ t x ht hT))
       hcoefD hae₂ hd₂
 

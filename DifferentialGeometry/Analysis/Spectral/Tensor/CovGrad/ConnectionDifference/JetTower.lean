@@ -2123,8 +2123,8 @@ theorem norm_iteratedCovGrad_two_ccTensor02Symm_le
     have hfib := riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection
       (I := I) (M := M) g₀ (s := 2) (Equiv.swap 0 1) T 2 x
     rw [← hTsw_def] at hfib
-    rw [riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 4 x,
-        riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g₀ 0 4 x] at hfib
+    rw [riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 4 x,
+        riemannianFiberNormSq_eq_bundle_norm_sq (I := I) (M := M) g₀ 0 4 x] at hfib
     have hnn1 : (0 : ℝ) ≤ ‖((iteratedCovGrad (I := I) g₀ 0 2 2 Tsw).toSection x :
         Tensor0SBundle.TensorRSSpace 0 4 I x)‖ := norm_nonneg _
     have hnn2 : (0 : ℝ) ≤ ‖((iteratedCovGrad (I := I) g₀ 0 2 2 T).toSection x :

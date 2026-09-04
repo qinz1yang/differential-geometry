@@ -59,14 +59,14 @@ def euclideanChartImageOfTsupport (α : M) (f : M → ℝ) : Set EuclN :=
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma euclideanChartImageOfTsupport_isCompact
     (α : M) {f : M → ℝ} (hf_cs : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     IsCompact (euclideanChartImageOfTsupport (I := I) (M := M) α f) := by
   unfold euclideanChartImageOfTsupport
   have hcontOn : ContinuousOn (extChartAt I α) (tsupport f) := by
     refine (continuousOn_extChartAt (I := I) α).mono ?_
     intro x hx
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hf_supp hx
+    exact hf_support hx
   have hImage1 : IsCompact ((extChartAt I α) '' tsupport f) :=
     (hf_cs : IsCompact (tsupport f)).image_of_continuousOn hcontOn
   have hcont_toE : Continuous (toEuclidean (E := E)) :=
@@ -76,23 +76,23 @@ lemma euclideanChartImageOfTsupport_isCompact
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma euclideanChartImageOfTsupport_isClosed
     (α : M) {f : M → ℝ} (hf_cs : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     IsClosed (euclideanChartImageOfTsupport (I := I) (M := M) α f) :=
-  (euclideanChartImageOfTsupport_isCompact (I := I) (M := M) α hf_cs hf_supp).isClosed
+  (euclideanChartImageOfTsupport_isCompact (I := I) (M := M) α hf_cs hf_support).isClosed
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma euclideanChartImageOfTsupport_subset_chartTargetEuclid
-    (α : M) {f : M → ℝ} (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (α : M) {f : M → ℝ} (hf_support : tsupport f ⊆ (chartAt H α).source) :
     euclideanChartImageOfTsupport (I := I) (M := M) α f ⊆
       chartTargetEuclid (I := I) (M := M) α := by
   intro y hy
   rcases hy with ⟨z, hz_target, hz_eq⟩
-  rcases hz_target with ⟨x, hx_supp, hx_eq⟩
+  rcases hz_target with ⟨x, hx_support, hx_eq⟩
   refine ⟨z, ?_, hz_eq⟩
   rw [← hx_eq]
   have hxsrc : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I)]
-    exact hf_supp hx_supp
+    exact hf_support hx_support
   exact (extChartAt I α).map_source hxsrc
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
@@ -104,14 +104,14 @@ lemma chartPullback_support_subset
   rw [Function.mem_support] at hy
   by_cases hyT : y ∈ chartTargetEuclid (I := I) (M := M) α
   · rw [chartPullback_apply_of_mem (I := I) α f hyT] at hy
-    have hsymm_supp : (extChartAt I α).symm ((toEuclidean (E := E)).symm y)
+    have hsymm_support : (extChartAt I α).symm ((toEuclidean (E := E)).symm y)
         ∈ tsupport f := subset_tsupport _ hy
     refine ⟨(extChartAt I α) ((extChartAt I α).symm
         ((toEuclidean (E := E)).symm y)), ?_, ?_⟩
-    · exact ⟨_, hsymm_supp, rfl⟩
-    · rcases hyT with ⟨z, hz_tgt, hz_eq⟩
+    · exact ⟨_, hsymm_support, rfl⟩
+    · rcases hyT with ⟨z, hz_target, hz_eq⟩
       have h1 : (extChartAt I α) ((extChartAt I α).symm z) = z :=
-        (extChartAt I α).right_inv hz_tgt
+        (extChartAt I α).right_inv hz_target
       have hsymm_eq : (toEuclidean (E := E)).symm y = z := by
         rw [← hz_eq]; simp
       rw [hsymm_eq, h1, hz_eq]
@@ -121,28 +121,28 @@ lemma chartPullback_support_subset
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma chartPullback_tsupport_subset
     (α : M) {f : M → ℝ} (hf_cs : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     tsupport (chartPullback (I := I) α f) ⊆
       euclideanChartImageOfTsupport (I := I) (M := M) α f := by
   refine closure_minimal (chartPullback_support_subset (I := I) α f) ?_
-  exact euclideanChartImageOfTsupport_isClosed (I := I) (M := M) α hf_cs hf_supp
+  exact euclideanChartImageOfTsupport_isClosed (I := I) (M := M) α hf_cs hf_support
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma chartPullback_tsupport_subset_chartTargetEuclid
     (α : M) {f : M → ℝ} (hf_cs : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     tsupport (chartPullback (I := I) α f) ⊆
       chartTargetEuclid (I := I) (M := M) α :=
-  (chartPullback_tsupport_subset (I := I) α hf_cs hf_supp).trans
-    (euclideanChartImageOfTsupport_subset_chartTargetEuclid (I := I) (M := M) α hf_supp)
+  (chartPullback_tsupport_subset (I := I) α hf_cs hf_support).trans
+    (euclideanChartImageOfTsupport_subset_chartTargetEuclid (I := I) (M := M) α hf_support)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
 lemma chartPullback_hasCompactSupport
     (α : M) {f : M → ℝ} (hf_cs : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     HasCompactSupport (chartPullback (I := I) α f) :=
   HasCompactSupport.of_support_subset_isCompact
-    (euclideanChartImageOfTsupport_isCompact (I := I) (M := M) α hf_cs hf_supp)
+    (euclideanChartImageOfTsupport_isCompact (I := I) (M := M) α hf_cs hf_support)
     (chartPullback_support_subset (I := I) α f)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] in
@@ -205,29 +205,29 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma chartPullback_contDiff [I.Boundaryless]
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_cs : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source) :
+    (hf_support : tsupport f ⊆ (chartAt H α).source) :
     ContDiff ℝ ∞ (chartPullback (I := I) α f) := by
   refine contDiff_of_smooth_on_open_zero_outside
     (U := chartTargetEuclid (I := I) (M := M) α)
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
     (K := euclideanChartImageOfTsupport (I := I) (M := M) α f)
-    (euclideanChartImageOfTsupport_isClosed (I := I) (M := M) α hf_cs hf_supp)
-    (euclideanChartImageOfTsupport_subset_chartTargetEuclid (I := I) (M := M) α hf_supp)
+    (euclideanChartImageOfTsupport_isClosed (I := I) (M := M) α hf_cs hf_support)
+    (euclideanChartImageOfTsupport_subset_chartTargetEuclid (I := I) (M := M) α hf_support)
     ?_ ?_
   · exact chartPullback_contDiffOn_chartTargetEuclid (I := I) α hf
   · intro y hy
     by_cases hyT : y ∈ chartTargetEuclid (I := I) (M := M) α
     · rw [chartPullback_apply_of_mem (I := I) α f hyT]
       by_contra hne
-      have hsymm_supp : (extChartAt I α).symm ((toEuclidean (E := E)).symm y)
+      have hsymm_support : (extChartAt I α).symm ((toEuclidean (E := E)).symm y)
           ∈ tsupport f := subset_tsupport _ hne
       refine hy ?_
       refine ⟨(extChartAt I α) ((extChartAt I α).symm
           ((toEuclidean (E := E)).symm y)), ?_, ?_⟩
-      · exact ⟨_, hsymm_supp, rfl⟩
-      · rcases hyT with ⟨z, hz_tgt, hz_eq⟩
+      · exact ⟨_, hsymm_support, rfl⟩
+      · rcases hyT with ⟨z, hz_target, hz_eq⟩
         have h1 : (extChartAt I α) ((extChartAt I α).symm z) = z :=
-          (extChartAt I α).right_inv hz_tgt
+          (extChartAt I α).right_inv hz_target
         have hsymm_eq : (toEuclidean (E := E)).symm y = z := by
           rw [← hz_eq]; simp
         rw [hsymm_eq, h1, hz_eq]
@@ -275,7 +275,7 @@ theorem chart_pulled_smooth_weak_solution_of_chartIdentity
     [I.Boundaryless] (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hf_cs : HasCompactSupport f)
-    (hf_supp : tsupport f ⊆ (chartAt H α).source)
+    (hf_support : tsupport f ⊆ (chartAt H α).source)
     (B : SmoothEllipticBilinearForm (Module.finrank ℝ E) (Set.univ : Set EuclN))
     (hbilin :
       ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
@@ -283,8 +283,8 @@ theorem chart_pulled_smooth_weak_solution_of_chartIdentity
           ∫ y, negDensityLaplacianPullback (I := I) g hf α y * ψ y) :
     B.IsSmoothWeakSolution (chartPullback (I := I) α f)
       (negDensityLaplacianPullback (I := I) g hf α) := by
-  refine ⟨chartPullback_contDiff (I := I) α hf hf_cs hf_supp, ?_⟩
-  intro ψ hψ hψ_cs _hψ_supp
+  refine ⟨chartPullback_contDiff (I := I) α hf hf_cs hf_support, ?_⟩
+  intro ψ hψ hψ_cs _hψ_support
   rw [MeasureTheory.setIntegral_univ]
   exact hbilin ψ hψ hψ_cs
 

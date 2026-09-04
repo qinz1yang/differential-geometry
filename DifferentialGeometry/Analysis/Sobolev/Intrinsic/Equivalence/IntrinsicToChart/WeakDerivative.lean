@@ -88,7 +88,7 @@ lemma contDiff_chartSmoothExt_pou_mul_local_reverse
     DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
   set f : M → ℝ := fun y : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) y * u y
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f := ρ.contMDiff.mul hu
-  have hf_supp_chart : tsupport f ⊆ (chartAt H α).source := by
+  have hf_support_chart : tsupport f ⊆ (chartAt H α).source := by
     have h1 : tsupport f ⊆ tsupport
         ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
       have h_eq : f = (fun y : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) y • u y) := by
@@ -161,7 +161,7 @@ lemma contDiff_chartSmoothExt_pou_mul_local_reverse
           intro x hx
           rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
             (I := I) (M := M)]
-          exact hf_supp_chart hx)
+          exact hf_support_chart hx)
       have h1 : IsCompact ((extChartAt I α) '' (tsupport f)) :=
         hf_compact.image_of_continuousOn h_extChart_cont
       exact h1.image (toEuclidean (E := E)).continuous
@@ -172,7 +172,7 @@ lemma contDiff_chartSmoothExt_pou_mul_local_reverse
       have hxsource : x ∈ (extChartAt I α).source := by
         rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
           (I := I) (M := M)]
-        exact hf_supp_chart hx
+        exact hf_support_chart hx
       exact ⟨extChartAt I α x, (extChartAt I α).map_source hxsource, rfl⟩
     have hy_off_K : y ∉ K := fun hy_in => hy_target (hK_subset hy_in)
     have hK_compl_open : IsOpen Kᶜ := hK_compact.isClosed.isOpen_compl
@@ -206,7 +206,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
     (α : M) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (i : Fin (Module.finrank ℝ E)) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -228,7 +228,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
     (fun z : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) z * u z)
   set f : M → ℝ := fun z : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) z * u z
   have hf_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞ f := ρ.contMDiff.mul hu
-  have hf_supp_chart : tsupport f ⊆ (chartAt H α).source := by
+  have hf_support_chart : tsupport f ⊆ (chartAt H α).source := by
     have h1 : tsupport f ⊆ tsupport ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) := by
       have h_eq : f = (fun z : M => ((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) z • u z) := by
         funext z; rfl
@@ -240,7 +240,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
   have hf_compact : IsCompact (tsupport f) := (isClosed_tsupport _).isCompact
   have hψ_smooth : ContDiff ℝ ∞ ψ :=
     contDiff_chartSmoothExt_pou_mul_local_reverse (I := I) (M := M) α hu
-  have hψ_supp : tsupport ψ ⊆
+  have hψ_support : tsupport ψ ⊆
       DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α := by
     set K_eucl : Set EuclN_E := (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport f))
@@ -250,7 +250,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
           intro x hx
           rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
             (I := I) (M := M)]
-          exact hf_supp_chart hx)
+          exact hf_support_chart hx)
       have h1 : IsCompact ((extChartAt I α) '' (tsupport f)) :=
         hf_compact.image_of_continuousOn h_extChart_cont
       exact h1.image (toEuclidean (E := E)).continuous
@@ -261,7 +261,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
       have hxsource : x ∈ (extChartAt I α).source := by
         rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
           (I := I) (M := M)]
-        exact hf_supp_chart hx
+        exact hf_support_chart hx
       exact ⟨extChartAt I α x, (extChartAt I α).map_source hxsource, rfl⟩
     have h_sub_image : tsupport ψ ⊆ K_eucl := by
       apply closure_minimal _ hK_compact.isClosed
@@ -288,7 +288,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
                 else (0 : ℝ)) = 0
         rw [if_neg hz_target]
     exact h_sub_image.trans hK_subset
-  have hψ_compact_supp : HasCompactSupport ψ := by
+  have hψ_compact_support : HasCompactSupport ψ := by
     set K_eucl : Set EuclN_E := (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport f))
     have hK_compact : IsCompact K_eucl := by
       have h_extChart_cont : ContinuousOn (extChartAt I α) (tsupport f) :=
@@ -296,7 +296,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
           intro x hx
           rw [DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
             (I := I) (M := M)]
-          exact hf_supp_chart hx)
+          exact hf_support_chart hx)
       have h1 : IsCompact ((extChartAt I α) '' (tsupport f)) :=
         hf_compact.image_of_continuousOn h_extChart_cont
       exact h1.image (toEuclidean (E := E)).continuous
@@ -332,7 +332,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
       (d := Module.finrank ℝ E)
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
         (I := I) (M := M) α)
-      hψ_smooth hψ_compact_supp hψ_supp hp_one 1
+      hψ_smooth hψ_compact_support hψ_support hp_one 1
     exact (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p).mp h
   have h_ae_chartPushed : DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
       (I := I) (M := M) (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u
@@ -354,15 +354,15 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
       (hψ_smooth.of_le (by norm_cast))
   have h_chosen_isWeak :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) p i ψ
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)) ψ
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α) :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       hψ_mem_W1p i
-  have h_classical_loc : LocallyIntegrable
+  have h_classical_local : LocallyIntegrable
       (fun y : EuclN_E => fderiv ℝ ψ y (EuclideanSpace.single i (1 : ℝ)))
       ((volume : Measure EuclN_E).restrict
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
@@ -371,18 +371,18 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
         (fun y : EuclN_E => fderiv ℝ ψ y (EuclideanSpace.single i (1 : ℝ))) :=
       (hψ_smooth.continuous_fderiv (by simp)).clm_apply continuous_const
     exact h_cont.locallyIntegrable.mono_measure Measure.restrict_le_self
-  have h_chosen_loc : LocallyIntegrable
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have h_chosen_local : LocallyIntegrable
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i ψ
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α))
       ((volume : Measure EuclN_E).restrict
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α)) :=
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       hψ_mem_W1p i).locallyIntegrable hp_one
   have h_chosen_psi_ae :
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i ψ
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α))
@@ -396,7 +396,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
         (I := I) (M := M) α)
       h_chosen_isWeak h_classical_isWeak
-      h_chosen_loc h_classical_loc
+      h_chosen_local h_classical_local
   have h_chartPushed_mem_W1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) p
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
         (I := I) (M := M) (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -420,7 +420,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
         (I := I) (M := M) α) h_ae_chartPushed).mpr h_psi_mem
   have h_chosen_chartPushed_isWeak :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) p i
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
             (I := I) (M := M) (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -430,11 +430,11 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
           (I := I) (M := M) (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α) :=
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_isWeakPartial_of_mem
       h_chartPushed_mem_W1p i
   have h_chosen_chartPushed_isWeak_psi :
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
           (d := Module.finrank ℝ E) p i
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
             (I := I) (M := M) (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -443,8 +443,8 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
         ψ
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α) := by
-    intro φ hφ_smooth hφ_compact hφ_supp
-    have h_lhs := h_chosen_chartPushed_isWeak φ hφ_smooth hφ_compact hφ_supp
+    intro φ hφ_smooth hφ_compact hφ_support
+    have h_lhs := h_chosen_chartPushed_isWeak φ hφ_smooth hφ_compact hφ_support
     rw [show (∫ x in DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α,
             ψ x * (fderiv ℝ φ x) (EuclideanSpace.single i 1)) =
@@ -458,8 +458,8 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
     · refine MeasureTheory.integral_congr_ae ?_
       filter_upwards [h_ae_chartPushed] with x hx
       rw [hx]
-  have h_chosen_chartPushed_loc : LocallyIntegrable
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  have h_chosen_chartPushed_local : LocallyIntegrable
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) p i
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
@@ -468,7 +468,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
       ((volume : Measure EuclN_E).restrict
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α)) :=
-    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
+    (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
       h_chartPushed_mem_W1p i).locallyIntegrable hp_one
   exact DeGiorgi.HasWeakPartialDeriv.ae_eq
     (Ω := DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
@@ -476,7 +476,7 @@ lemma chosenWeakPartial_chartPushed_ae_eq_fderiv
     (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
       (I := I) (M := M) α)
     h_chosen_chartPushed_isWeak_psi h_classical_isWeak
-    h_chosen_chartPushed_loc h_classical_loc
+    h_chosen_chartPushed_local h_classical_local
 
 end EquivalenceReverse
 end Sobolev

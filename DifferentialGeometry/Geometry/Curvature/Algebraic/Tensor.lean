@@ -19,12 +19,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 
 omit [FiniteDimensional Real E] in
-private theorem tensor04StdAt_add_left {x : M}
+private theorem tensor04StandardAt_add_left {x : M}
     (A : Tensor04At (I := I) (M := M) x)
     (x₁ x₂ y z w : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) A (x₁ + x₂) y z w =
-      tensor04StdAt (I := I) (M := M) A x₁ y z w +
-        tensor04StdAt (I := I) (M := M) A x₂ y z w := by
+    tensor04StandardAt (I := I) (M := M) A (x₁ + x₂) y z w =
+      tensor04StandardAt (I := I) (M := M) A x₁ y z w +
+        tensor04StandardAt (I := I) (M := M) A x₂ y z w := by
   have h := A.map_update_add (vec4 (I := I) 0 y z w) (0 : Fin 4) x₁ x₂
   have hupdate (v : TangentSpace I x) :
       Function.update (vec4 (I := I) 0 y z w) (0 : Fin 4) v =
@@ -35,11 +35,11 @@ private theorem tensor04StdAt_add_left {x : M}
   exact h
 
 omit [FiniteDimensional Real E] in
-private theorem tensor04StdAt_smul_left {x : M}
+private theorem tensor04StandardAt_smul_left {x : M}
     (A : Tensor04At (I := I) (M := M) x)
     (a : Real) (v y z w : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) A (a • v) y z w =
-      a * tensor04StdAt (I := I) (M := M) A v y z w := by
+    tensor04StandardAt (I := I) (M := M) A (a • v) y z w =
+      a * tensor04StandardAt (I := I) (M := M) A v y z w := by
   have h := A.map_update_smul (vec4 (I := I) 0 y z w) (0 : Fin 4) a v
   have hupdate (u : TangentSpace I x) :
       Function.update (vec4 (I := I) 0 y z w) (0 : Fin 4) u =
@@ -53,18 +53,18 @@ private theorem tensor04StdAt_smul_left {x : M}
 
 noncomputable def algebraicCurvatureTensorSubmodule (x : M) :
     Submodule Real (Tensor04At (I := I) (M := M) x) where
-  carrier := {A | IsAlgCurvForm (tensor04StdAt (I := I) (M := M) A)}
+  carrier := {A | IsAlgCurvForm (tensor04StandardAt (I := I) (M := M) A)}
   zero_mem' := by
     change IsAlgCurvForm (fun _ _ _ _ : TangentSpace I x => 0)
     exact IsAlgCurvForm.zero
   add_mem' := by
     intro A B hA hB
     change IsAlgCurvForm (fun x y z w =>
-      tensor04StdAt A x y z w + tensor04StdAt B x y z w)
+      tensor04StandardAt A x y z w + tensor04StandardAt B x y z w)
     exact hA.add hB
   smul_mem' := by
     intro c A hA
-    change IsAlgCurvForm (fun x y z w => c * tensor04StdAt A x y z w)
+    change IsAlgCurvForm (fun x y z w => c * tensor04StandardAt A x y z w)
     exact hA.smul c
 
 omit [FiniteDimensional Real E] in
@@ -72,7 +72,7 @@ omit [FiniteDimensional Real E] in
 theorem mem_algebraicCurvatureTensorSubmodule {x : M}
     {A : Tensor04At (I := I) (M := M) x} :
     A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x ↔
-      IsAlgCurvForm (tensor04StdAt (I := I) (M := M) A) :=
+      IsAlgCurvForm (tensor04StandardAt (I := I) (M := M) A) :=
   Iff.rfl
 
 omit [FiniteDimensional Real E] in
@@ -80,15 +80,15 @@ theorem mem_algebraicCurvatureTensorSubmodule_iff_symmetries {x : M}
     {A : Tensor04At (I := I) (M := M) x} :
     A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x ↔
       (∀ X Y Z W : TangentSpace I x,
-        tensor04StdAt (I := I) (M := M) A X Y Z W =
-          -tensor04StdAt (I := I) (M := M) A Y X Z W) ∧
+        tensor04StandardAt (I := I) (M := M) A X Y Z W =
+          -tensor04StandardAt (I := I) (M := M) A Y X Z W) ∧
       (∀ X Y Z W : TangentSpace I x,
-        tensor04StdAt (I := I) (M := M) A X Y Z W =
-          -tensor04StdAt (I := I) (M := M) A X Y W Z) ∧
+        tensor04StandardAt (I := I) (M := M) A X Y Z W =
+          -tensor04StandardAt (I := I) (M := M) A X Y W Z) ∧
       (∀ X Y Z W : TangentSpace I x,
-        tensor04StdAt (I := I) (M := M) A X Y Z W +
-          tensor04StdAt (I := I) (M := M) A Y Z X W +
-          tensor04StdAt (I := I) (M := M) A Z X Y W = 0) := by
+        tensor04StandardAt (I := I) (M := M) A X Y Z W +
+          tensor04StandardAt (I := I) (M := M) A Y Z X W +
+          tensor04StandardAt (I := I) (M := M) A Z X Y W = 0) := by
   constructor
   · intro hA
     have hForm := mem_algebraicCurvatureTensorSubmodule.mp hA
@@ -96,20 +96,20 @@ theorem mem_algebraicCurvatureTensorSubmodule_iff_symmetries {x : M}
   · rintro ⟨hFirst, hLast, hBianchi⟩
     apply mem_algebraicCurvatureTensorSubmodule.mpr
     exact
-      { add_left := tensor04StdAt_add_left (I := I) (M := M) A
-        smul_left := tensor04StdAt_smul_left (I := I) (M := M) A
+      { add_left := tensor04StandardAt_add_left (I := I) (M := M) A
+        smul_left := tensor04StandardAt_smul_left (I := I) (M := M) A
         anti_first := hFirst
         anti_last := hLast
         bianchi := hBianchi }
 
 omit [FiniteDimensional Real E] in
-theorem tensor04StdAt_compContinuousLinearMap
+theorem tensor04StandardAt_compContinuousLinearMap
     {x : M} (A : Tensor04At (I := I) (M := M) x)
     (L : TangentSpace I x →L[Real] TangentSpace I x)
     (X Y Z W : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M)
+    tensor04StandardAt (I := I) (M := M)
         (A.compContinuousLinearMap (fun _ : Fin 4 => L)) X Y Z W =
-      tensor04StdAt (I := I) (M := M) A (L X) (L Y) (L Z) (L W) := by
+      tensor04StandardAt (I := I) (M := M) A (L X) (L Y) (L Z) (L W) := by
   change (A : ContinuousMultilinearMap Real (fun _ : Fin 4 => TangentSpace I x) Real)
       (fun i : Fin 4 => L (vec4 X Y Z W i)) =
     (A : ContinuousMultilinearMap Real (fun _ : Fin 4 => TangentSpace I x) Real)
@@ -126,14 +126,14 @@ theorem compContinuousLinearMap_mem_algebraicCurvatureTensorSubmodule
         (fun _ : Fin 4 => L) ∈
       algebraicCurvatureTensorSubmodule (I := I) (M := M) x := by
   have hA : IsAlgCurvForm
-      (tensor04StdAt (I := I) (M := M)
+      (tensor04StandardAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)) :=
     mem_algebraicCurvatureTensorSubmodule.mp A.2
   change IsAlgCurvForm (fun X Y Z W =>
-    tensor04StdAt (I := I) (M := M)
+    tensor04StandardAt (I := I) (M := M)
       ((A : Tensor04At (I := I) (M := M) x).compContinuousLinearMap
         (fun _ : Fin 4 => L)) X Y Z W)
-  simp_rw [tensor04StdAt_compContinuousLinearMap]
+  simp_rw [tensor04StandardAt_compContinuousLinearMap]
   refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro X₁ X₂ Y Z W
     rw [map_add]
@@ -146,22 +146,22 @@ theorem compContinuousLinearMap_mem_algebraicCurvatureTensorSubmodule
   · exact fun X Y Z W => hA.bianchi _ _ _ _
 
 omit [FiniteDimensional Real E] in
-theorem tensor04StdAt_pair_swap_of_mem_algebraicCurvatureTensorSubmodule
+theorem tensor04StandardAt_pair_swap_of_mem_algebraicCurvatureTensorSubmodule
     {x : M} {A : Tensor04At (I := I) (M := M) x}
     (hA : A ∈ algebraicCurvatureTensorSubmodule (I := I) (M := M) x)
     (X Y Z W : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M) A X Y Z W =
-      tensor04StdAt (I := I) (M := M) A Z W X Y :=
+    tensor04StandardAt (I := I) (M := M) A X Y Z W =
+      tensor04StandardAt (I := I) (M := M) A Z W X Y :=
   (mem_algebraicCurvatureTensorSubmodule.mp hA).pair_swap X Y Z W
 
-theorem tensor04StdAt_pullback {x y : M}
+theorem tensor04StandardAt_pullback {x y : M}
     (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y)
     (A : Tensor04At (I := I) (M := M) y)
     (v₀ v₁ v₂ v₃ : TangentSpace I x) :
-    tensor04StdAt (I := I) (M := M)
+    tensor04StandardAt (I := I) (M := M)
         (tensor0SPullbackCLE (I := I) (M := M) 4 e A) v₀ v₁ v₂ v₃ =
-      tensor04StdAt (I := I) (M := M) A (e v₀) (e v₁) (e v₂) (e v₃) := by
-  unfold tensor04StdAt
+      tensor04StandardAt (I := I) (M := M) A (e v₀) (e v₁) (e v₂) (e v₃) := by
+  unfold tensor04StandardAt
   rw [tensor0SPullbackCLE_apply, tensor0SPullbackCLM_apply]
   congr 1
   funext i
@@ -185,24 +185,24 @@ theorem tensor0SPullbackCLE_mem_algebraicCurvatureTensorSubmodule_iff
         anti_last := ?_
         bianchi := ?_ }
     · intro x₁ x₂ z w q
-      exact tensor04StdAt_add_left (I := I) (M := M) A x₁ x₂ z w q
+      exact tensor04StandardAt_add_left (I := I) (M := M) A x₁ x₂ z w q
     · intro a x z w q
-      exact tensor04StdAt_smul_left (I := I) (M := M) A a x z w q
+      exact tensor04StandardAt_smul_left (I := I) (M := M) A a x z w q
     · intro v₀ v₁ v₂ v₃
       have h := hPull.anti_first
         (e.symm v₀) (e.symm v₁) (e.symm v₂) (e.symm v₃)
-      rw [tensor04StdAt_pullback, tensor04StdAt_pullback] at h
+      rw [tensor04StandardAt_pullback, tensor04StandardAt_pullback] at h
       simpa using h
     · intro v₀ v₁ v₂ v₃
       have h := hPull.anti_last
         (e.symm v₀) (e.symm v₁) (e.symm v₂) (e.symm v₃)
-      rw [tensor04StdAt_pullback, tensor04StdAt_pullback] at h
+      rw [tensor04StandardAt_pullback, tensor04StandardAt_pullback] at h
       simpa using h
     · intro v₀ v₁ v₂ v₃
       have h := hPull.bianchi
         (e.symm v₀) (e.symm v₁) (e.symm v₂) (e.symm v₃)
-      rw [tensor04StdAt_pullback, tensor04StdAt_pullback,
-        tensor04StdAt_pullback] at h
+      rw [tensor04StandardAt_pullback, tensor04StandardAt_pullback,
+        tensor04StandardAt_pullback] at h
       simpa using h
   · intro hA
     have hForm := mem_algebraicCurvatureTensorSubmodule.mp hA
@@ -214,20 +214,20 @@ theorem tensor0SPullbackCLE_mem_algebraicCurvatureTensorSubmodule_iff
         anti_last := ?_
         bianchi := ?_ }
     · intro x₁ x₂ z w q
-      exact tensor04StdAt_add_left (I := I) (M := M)
+      exact tensor04StandardAt_add_left (I := I) (M := M)
         (tensor0SPullbackCLE (I := I) (M := M) 4 e A) x₁ x₂ z w q
     · intro a x z w q
-      exact tensor04StdAt_smul_left (I := I) (M := M)
+      exact tensor04StandardAt_smul_left (I := I) (M := M)
         (tensor0SPullbackCLE (I := I) (M := M) 4 e A) a x z w q
     · intro v₀ v₁ v₂ v₃
-      rw [tensor04StdAt_pullback, tensor04StdAt_pullback]
+      rw [tensor04StandardAt_pullback, tensor04StandardAt_pullback]
       exact hForm.anti_first (e v₀) (e v₁) (e v₂) (e v₃)
     · intro v₀ v₁ v₂ v₃
-      rw [tensor04StdAt_pullback, tensor04StdAt_pullback]
+      rw [tensor04StandardAt_pullback, tensor04StandardAt_pullback]
       exact hForm.anti_last (e v₀) (e v₁) (e v₂) (e v₃)
     · intro v₀ v₁ v₂ v₃
-      rw [tensor04StdAt_pullback, tensor04StdAt_pullback,
-        tensor04StdAt_pullback]
+      rw [tensor04StandardAt_pullback, tensor04StandardAt_pullback,
+        tensor04StandardAt_pullback]
       exact hForm.bianchi (e v₀) (e v₁) (e v₂) (e v₃)
 
 theorem algebraicCurvatureTensorSubmodule_map_pullback {x y : M}

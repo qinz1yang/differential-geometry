@@ -386,12 +386,12 @@ theorem tangentSectionAction_contMDiff [I.Boundaryless]
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) :
     ContMDiff I 𝓘(ℝ) ∞ (tangentSectionAction (I := I) X f) := by
   intro x
-  have hx_src : x ∈ (chartAt H x).source := mem_chart_source H x
+  have hx_source : x ∈ (chartAt H x).source := mem_chart_source H x
   have hsrc_open : IsOpen ((chartAt H x).source) := (chartAt H x).open_source
   have hsmooth : ContMDiffOn I 𝓘(ℝ) ∞ (tangentSectionAction (I := I) X f)
       (chartAt H x).source :=
     tangentSectionAction_contMDiffOn_baseSet (I := I) x X hf
-  exact (hsmooth x hx_src).contMDiffAt (hsrc_open.mem_nhds hx_src)
+  exact (hsmooth x hx_source).contMDiffAt (hsrc_open.mem_nhds hx_source)
 
 end DivergenceTheorem
 end Integral

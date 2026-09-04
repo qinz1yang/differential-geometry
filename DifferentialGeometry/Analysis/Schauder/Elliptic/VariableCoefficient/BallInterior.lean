@@ -19,9 +19,9 @@ def variableBallCutoffSourceSupConst
     (f u : BoundedContinuousFunction (Euc n) F)
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[Real] F)) : NNReal :=
   variableCutoffSourceSupConst A
-    ‖ballCutoffFDerivBcf center hr hrR‖₊ ‖du‖₊
+    ‖ballCutoffFDerivBoundedContinuousFunction center hr hrR‖₊ ‖du‖₊
     (Real.toNNReal (ballCutoffFDeriv2Bound r R)) ‖u‖₊
-    (ballCutoffBcf center hr hrR) f
+    (ballCutoffBoundedContinuousFunction center hr hrR) f
 
 def variableBallCutoffSourceHolderConst
     (center : Euc n) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
@@ -31,9 +31,9 @@ def variableBallCutoffSourceHolderConst
   variableCutoffSourceHolderConst A Ka
     (ballCutoffHolderConst r R) Kf
     (ballCutoffFDerivHolderConst r R) Kdu Kd2chi Ku
-    ‖ballCutoffFDerivBcf center hr hrR‖₊ ‖du‖₊
+    ‖ballCutoffFDerivBoundedContinuousFunction center hr hrR‖₊ ‖du‖₊
     (Real.toNNReal (ballCutoffFDeriv2Bound r R)) ‖u‖₊
-    (ballCutoffBcf center hr hrR) f
+    (ballCutoffBoundedContinuousFunction center hr hrR) f
 
 def variableBallInteriorSchauderConst
     (center : Euc n) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
@@ -47,7 +47,7 @@ def variableBallInteriorSchauderConst
       (variableBallCutoffSourceHolderConst center hr hrR
         A Ka Kf Kdu Kd2chi Ku f u du)
       (variableBallCutoffSourceSupConst center hr hrR A f u du)
-      (cutoffValue (ballCutoffBcf center hr hrR) u)) /
+      (cutoffValue (ballCutoffBoundedContinuousFunction center hr hrR) u)) /
     (1 - spdLaplacianSchauderDefectConst
       (fun i j ↦ a i j x0) hA alpha
         (∑ i, ∑ j, (omega i j + Ka i j))
@@ -76,20 +76,20 @@ theorem variable_coefficient_ball_interior_schauder_estimate_of_cutoffJet2_contr
     (hduHolder : HolderWith Kdu alpha
       (du : Euc n → Euc n →L[Real] F))
     (hd2chiHolder : HolderWith Kd2chi alpha
-      (ballCutoffFDeriv2Bcf center (hrho.trans hrhor.le) hrR :
+      (ballCutoffFDeriv2BoundedContinuousFunction center (hrho.trans hrhor.le) hrR :
         Euc n → Euc n →L[Real] Euc n →L[Real] Real))
     (huHolder : HolderWith Ku alpha (u : Euc n → F))
     (hd2wNorm : ∀ x,
       ‖cutoffJet2
-        (ballCutoffBcf center (hrho.trans hrhor.le) hrR)
-        (ballCutoffFDerivBcf center (hrho.trans hrhor.le) hrR)
-        (ballCutoffFDeriv2Bcf center (hrho.trans hrhor.le) hrR)
+        (ballCutoffBoundedContinuousFunction center (hrho.trans hrhor.le) hrR)
+        (ballCutoffFDerivBoundedContinuousFunction center (hrho.trans hrhor.le) hrR)
+        (ballCutoffFDeriv2BoundedContinuousFunction center (hrho.trans hrhor.le) hrR)
         u du d2u x‖ ≤ Md2w)
     (hd2wHolder : HolderWith Kd2w alpha
       (cutoffJet2
-        (ballCutoffBcf center (hrho.trans hrhor.le) hrR)
-        (ballCutoffFDerivBcf center (hrho.trans hrhor.le) hrR)
-        (ballCutoffFDeriv2Bcf center (hrho.trans hrhor.le) hrR)
+        (ballCutoffBoundedContinuousFunction center (hrho.trans hrhor.le) hrR)
+        (ballCutoffFDerivBoundedContinuousFunction center (hrho.trans hrhor.le) hrR)
+        (ballCutoffFDeriv2BoundedContinuousFunction center (hrho.trans hrhor.le) hrR)
         u du d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F))
     (hsmall : spdLaplacianSchauderDefectConst
       (fun i j ↦ a i j x0) hA alpha
@@ -101,9 +101,9 @@ theorem variable_coefficient_ball_interior_schauder_estimate_of_cutoffJet2_contr
         a x0 hA alpha (fun i j ↦ ‖a i j‖₊) Ka omega
         Kf Kdu Kd2chi Ku f u du := by
   let hr : 0 ≤ r := hrho.trans hrhor.le
-  let chi := ballCutoffBcf center hr hrR
-  let dchi := ballCutoffFDerivBcf center hr hrR
-  let d2chi := ballCutoffFDeriv2Bcf center hr hrR
+  let chi := ballCutoffBoundedContinuousFunction center hr hrR
+  let dchi := ballCutoffFDerivBoundedContinuousFunction center hr hrR
+  let d2chi := ballCutoffFDeriv2BoundedContinuousFunction center hr hrR
   have hsU : Metric.closedBall center rho ⊆ Metric.ball center r := by
     intro x hx
     exact Metric.mem_ball.mpr ((Metric.mem_closedBall.mp hx).trans_lt hrhor)
@@ -186,9 +186,9 @@ theorem variable_coefficient_ball_interior_schauder_estimate_of_global_small_coe
         (ballCutoffFDeriv2HolderConst center (hrho.trans hrhor.le) hrR)
         Ku f u du := by
   let hr : 0 ≤ r := hrho.trans hrhor.le
-  let chi := ballCutoffBcf center hr hrR
-  let dchi := ballCutoffFDerivBcf center hr hrR
-  let d2chi := ballCutoffFDeriv2Bcf center hr hrR
+  let chi := ballCutoffBoundedContinuousFunction center hr hrR
+  let dchi := ballCutoffFDerivBoundedContinuousFunction center hr hrR
+  let d2chi := ballCutoffFDeriv2BoundedContinuousFunction center hr hrR
   let Kchi := ballCutoffHolderConst r R
   let Kdchi := ballCutoffFDerivHolderConst r R
   let Kd2chi := ballCutoffFDeriv2HolderConst center hr hrR
@@ -275,9 +275,9 @@ theorem variable_coefficient_ball_interior_schauder_estimate_of_coefficient_osci
         (ballCutoffFDeriv2HolderConst center (hrho.trans hrhor.le) hrR)
         Ku f u du := by
   let hr : 0 ≤ r := hrho.trans hrhor.le
-  let chi := ballCutoffBcf center hr hrR
-  let dchi := ballCutoffFDerivBcf center hr hrR
-  let d2chi := ballCutoffFDeriv2Bcf center hr hrR
+  let chi := ballCutoffBoundedContinuousFunction center hr hrR
+  let dchi := ballCutoffFDerivBoundedContinuousFunction center hr hrR
+  let d2chi := ballCutoffFDeriv2BoundedContinuousFunction center hr hrR
   let Kchi := ballCutoffHolderConst r R
   let Kdchi := ballCutoffFDerivHolderConst r R
   let Kd2chi := ballCutoffFDeriv2HolderConst center hr hrR

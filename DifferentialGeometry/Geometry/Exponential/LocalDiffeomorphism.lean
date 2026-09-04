@@ -185,16 +185,16 @@ private theorem exists_nice_open_nhds
   have hcont_on_uopen : ContinuousOn
       (fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M)) u_open :=
     ContMDiffOn.continuousOn (hu_smooth_on.mono hu_open_sub)
-  have h_extSrc_open : IsOpen ((extChartAt I p).source) :=
+  have h_extSource_open : IsOpen ((extChartAt I p).source) :=
     isOpen_extChartAt_source (I := I) (x := p)
-  have h0_in_extSrc : (expMap (I := I) g p (show TangentSpace I p from (0 : E)) : M)
+  have h0_in_extSource : (expMap (I := I) g p (show TangentSpace I p from (0 : E)) : M)
       ∈ (extChartAt I p).source := by
     have hpt : expMap (I := I) g p (show TangentSpace I p from (0 : E)) = p :=
       expMap_zero (I := I) g p
     rw [hpt]
     exact mem_extChartAt_source (I := I) p
   obtain ⟨w_open, hw_open_isOpen, hw_open_eq⟩ :=
-    continuousOn_iff'.mp hcont_on_uopen (extChartAt I p).source h_extSrc_open
+    continuousOn_iff'.mp hcont_on_uopen (extChartAt I p).source h_extSource_open
   have hcont_chartedExp : ContinuousOn (chartedExpAt (I := I) g p)
       (chartedExpAtIFTHomeomorph (I := I) g p).source := by
     have := (chartedExpAtIFTHomeomorph (I := I) g p).continuousOn_toFun
@@ -208,7 +208,7 @@ private theorem exists_nice_open_nhds
   have h0_w_open : (0 : E) ∈ w_open := by
     have h0_preim : (0 : E) ∈
         ((fun v : E => (expMap (I := I) g p (show TangentSpace I p from v) : M))
-          ⁻¹' (extChartAt I p).source) ∩ u_open := ⟨h0_in_extSrc, hu_open_mem⟩
+          ⁻¹' (extChartAt I p).source) ∩ u_open := ⟨h0_in_extSource, hu_open_mem⟩
     rw [hw_open_eq] at h0_preim
     exact h0_preim.1
   have h0_w_chart : (0 : E) ∈ w_chart := by
@@ -225,7 +225,7 @@ private theorem exists_nice_open_nhds
     apply hu_smooth_on.mono
     intro v hv
     exact hu_open_sub hv.1.1.2
-  have hU_extSrc : ∀ v ∈ U,
+  have hU_extSource : ∀ v ∈ U,
       (expMap (I := I) g p (show TangentSpace I p from v) : M)
         ∈ (extChartAt I p).source := by
     intro v hv
@@ -243,7 +243,7 @@ private theorem exists_nice_open_nhds
         (chartedExpAtIFTHomeomorph (I := I) g p).source := by
       rw [hw_chart_eq]; exact hv_wIFT
     exact hv_inv.1
-  exact ⟨U, W, hU_isOpen, h0U, hU_sub_IFT, hU_smooth, hU_extSrc, hW_open, hW_sub_target,
+  exact ⟨U, W, hU_isOpen, h0U, hU_sub_IFT, hU_smooth, hU_extSource, hW_open, hW_sub_target,
     hW_smooth, hU_chartedExp_W⟩
 
 private def expLocalDiffeoSource (g : SmoothRiemannianMetric I M) (p : M) : Set E :=
@@ -289,7 +289,7 @@ private lemma niceSource_smoothOn (g : SmoothRiemannianMetric I M) (p : M) :
       (expLocalDiffeoSource (I := I) g p) :=
   (niceSource_spec (I := I) g p).2.2.2.1
 
-private lemma niceSource_extSrc (g : SmoothRiemannianMetric I M) (p : M) :
+private lemma niceSource_extSource (g : SmoothRiemannianMetric I M) (p : M) :
     ∀ v ∈ expLocalDiffeoSource (I := I) g p,
       (expMap (I := I) g p (show TangentSpace I p from v) : M)
         ∈ (extChartAt I p).source :=
@@ -334,18 +334,18 @@ private lemma niceTarget_eq_source_inter_preimage
   ext q
   constructor
   · rintro ⟨v, hv, rfl⟩
-    refine ⟨niceSource_extSrc (I := I) g p v hv, ?_⟩
+    refine ⟨niceSource_extSource (I := I) g p v hv, ?_⟩
     refine ⟨v, hv, rfl⟩
-  · rintro ⟨hq_src, hq_pre⟩
+  · rintro ⟨hq_source, hq_pre⟩
     rcases hq_pre with ⟨v, hv, hwv⟩
     refine ⟨v, hv, ?_⟩
     have h_eq : (extChartAt I p) q =
         (extChartAt I p)
           (expMap (I := I) g p (show TangentSpace I p from v)) := by
       rw [← hwv]; rfl
-    have hexp_src : (expMap (I := I) g p (show TangentSpace I p from v) : M)
-        ∈ (extChartAt I p).source := niceSource_extSrc (I := I) g p v hv
-    have hinj := (extChartAt I p).injOn hq_src hexp_src h_eq
+    have hexp_source : (expMap (I := I) g p (show TangentSpace I p from v) : M)
+        ∈ (extChartAt I p).source := niceSource_extSource (I := I) g p v hv
+    have hinj := (extChartAt I p).injOn hq_source hexp_source h_eq
     exact hinj.symm
 
 private lemma niceTarget_isOpen
@@ -361,7 +361,7 @@ private lemma niceTarget_sub_extChartSource
     expLocalDiffeoTarget (I := I) g p ⊆ (extChartAt I p).source := by
   classical
   rintro q ⟨v, hv, rfl⟩
-  exact niceSource_extSrc (I := I) g p v hv
+  exact niceSource_extSource (I := I) g p v hv
 
 private lemma niceTarget_sub_chartSource
     (g : SmoothRiemannianMetric I M) (p : M) :

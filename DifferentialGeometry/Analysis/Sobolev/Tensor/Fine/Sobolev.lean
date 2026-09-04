@@ -382,12 +382,12 @@ private theorem chartMul_mem
         (fun x => (φ : M → ℝ) x * u x))
       (Chart.chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  obtain ⟨b, hb_smooth, _, hb_one, hb_supp⟩ :=
+  obtain ⟨b, hb_smooth, _, hb_one, hb_support⟩ :=
     Chart.exists_chart_cutoff_M (I := I) (M := M) α
   have hbφ_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun x : M => b x * (φ : M → ℝ) x) :=
     hb_smooth.mul φ.contMDiff
-  have hbφ_supp : tsupport (fun x : M => b x * (φ : M → ℝ) x) ⊆
+  have hbφ_support : tsupport (fun x : M => b x * (φ : M → ℝ) x) ⊆
       (chartAt H α).source := by
     have heq : (fun x : M => b x * (φ : M → ℝ) x) =
         (fun x : M => b x • (φ : M → ℝ) x) := by
@@ -395,10 +395,10 @@ private theorem chartMul_mem
       rfl
     rw [heq]
     exact (tsupport_smul_subset_left (f := b)
-      (g := (φ : M → ℝ))).trans hb_supp
+      (g := (φ : M → ℝ))).trans hb_support
   obtain ⟨C, _hC, hC⟩ :=
     Chart.smoothExtensionScalar_iteratedFDeriv_bound
-      (I := I) (M := M) α hbφ_smooth hbφ_supp k
+      (I := I) (M := M) α hbφ_smooth hbφ_support k
   let Ω : Set EuclN :=
     Chart.chartTargetEuclid (I := I) (M := M) α
   let Λ : EuclN → ℝ :=
@@ -408,7 +408,7 @@ private theorem chartMul_mem
     Chart.chartTargetEuclid_isOpen (I := I) (M := M) α
   have hΛ : ContDiff ℝ (⊤ : ℕ∞) Λ := by
     exact Chart.contDiff_smoothExtensionScalar
-      (I := I) (M := M) α hbφ_smooth hbφ_supp
+      (I := I) (M := M) α hbφ_smooth hbφ_support
   have hfactor :
       Chart.chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
           (fun x => (φ : M → ℝ) x * u x) =ᵐ[volume.restrict Ω]
@@ -434,7 +434,7 @@ private theorem chartMul_mem
   exact (MemWkp_congr_ae (d := Module.finrank ℝ E)
     hp hΩ hfactor.symm).mp hprod
 
-noncomputable def fineLocComp
+noncomputable def fineLocalComp
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) : EuclN → ℝ :=
@@ -445,117 +445,117 @@ noncomputable def fineLocComp
           secCompRaw (I := I) (M := M) r s S α P.1 P.2 x))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem fineLoc_apply
+theorem fineLocal_apply
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) {y : EuclN}
     (hy : y ∈ Chart.chartTargetEuclid (I := I) (M := M) α) :
-    fineLocComp (I := I) (M := M) r s φ S α P y =
+    fineLocalComp (I := I) (M := M) r s φ S α P y =
       (φ : M → ℝ)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
         secChartComp (I := I) (M := M) r s S α P.1 P.2 y := by
-  rw [fineLocComp,
+  rw [fineLocalComp,
     Chart.chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy,
     secComp_apply_mem (I := I) (M := M) r s S α P.1 P.2 hy]
   unfold secCompPou
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem fineLoc_apply_off
+theorem fineLocal_apply_off
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) {y : EuclN}
     (hy : y ∉ Chart.chartTargetEuclid (I := I) (M := M) α) :
-    fineLocComp (I := I) (M := M) r s φ S α P y = 0 := by
-  unfold fineLocComp
+    fineLocalComp (I := I) (M := M) r s φ S α P y = 0 := by
+  unfold fineLocalComp
   exact Chart.chartPushedRaw_apply_of_notMem
     (I := I) (M := M) α _ hy
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem fineLoc_add
+theorem fineLocal_add
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S T : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) :
-    fineLocComp (I := I) (M := M) r s φ (S + T) α P =
-      fineLocComp (I := I) (M := M) r s φ S α P +
-        fineLocComp (I := I) (M := M) r s φ T α P := by
+    fineLocalComp (I := I) (M := M) r s φ (S + T) α P =
+      fineLocalComp (I := I) (M := M) r s φ S α P +
+        fineLocalComp (I := I) (M := M) r s φ T α P := by
   funext y
   by_cases hy : y ∈ Chart.chartTargetEuclid (I := I) (M := M) α
-  · rw [fineLoc_apply (I := I) (M := M) r s φ (S + T) α P hy]
+  · rw [fineLocal_apply (I := I) (M := M) r s φ (S + T) α P hy]
     simp only [Pi.add_apply]
     rw [
-      fineLoc_apply (I := I) (M := M) r s φ S α P hy,
-      fineLoc_apply (I := I) (M := M) r s φ T α P hy,
+      fineLocal_apply (I := I) (M := M) r s φ S α P hy,
+      fineLocal_apply (I := I) (M := M) r s φ T α P hy,
       secChartComp_add (I := I) (M := M) r s S T α P.1 P.2]
     simp only [Pi.add_apply]
     ring
-  · rw [fineLoc_apply_off (I := I) (M := M) r s φ (S + T) α P hy]
+  · rw [fineLocal_apply_off (I := I) (M := M) r s φ (S + T) α P hy]
     simp only [Pi.add_apply]
     rw [
-      fineLoc_apply_off (I := I) (M := M) r s φ S α P hy,
-      fineLoc_apply_off (I := I) (M := M) r s φ T α P hy]
+      fineLocal_apply_off (I := I) (M := M) r s φ S α P hy,
+      fineLocal_apply_off (I := I) (M := M) r s φ T α P hy]
     simp
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem fineLoc_smul
+theorem fineLocal_smul
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯) (c : ℝ)
     (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) :
-    fineLocComp (I := I) (M := M) r s φ (c • S) α P =
-      c • fineLocComp (I := I) (M := M) r s φ S α P := by
+    fineLocalComp (I := I) (M := M) r s φ (c • S) α P =
+      c • fineLocalComp (I := I) (M := M) r s φ S α P := by
   funext y
   by_cases hy : y ∈ Chart.chartTargetEuclid (I := I) (M := M) α
-  · rw [fineLoc_apply (I := I) (M := M) r s φ (c • S) α P hy]
+  · rw [fineLocal_apply (I := I) (M := M) r s φ (c • S) α P hy]
     simp only [Pi.smul_apply]
     rw [
-      fineLoc_apply (I := I) (M := M) r s φ S α P hy,
+      fineLocal_apply (I := I) (M := M) r s φ S α P hy,
       secChartComp_smul (I := I) (M := M) r s c S α P.1 P.2]
     simp only [Pi.smul_apply, smul_eq_mul]
     ring
-  · rw [fineLoc_apply_off (I := I) (M := M) r s φ (c • S) α P hy]
+  · rw [fineLocal_apply_off (I := I) (M := M) r s φ (c • S) α P hy]
     simp only [Pi.smul_apply]
     rw [
-      fineLoc_apply_off (I := I) (M := M) r s φ S α P hy]
+      fineLocal_apply_off (I := I) (M := M) r s φ S α P hy]
     simp
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem fineLoc_support
+theorem fineLocal_support
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) :
-    tsupport (fineLocComp (I := I) (M := M) r s φ S α P) ⊆
+    tsupport (fineLocalComp (I := I) (M := M) r s φ S α P) ⊆
       Chart.chartTargetEuclid (I := I) (M := M) α := by
-  unfold fineLocComp
+  unfold fineLocalComp
   exact Chart.ChartTower.tsupport_chartPushedRaw_pou_mul_subset_target
     (I := I) (M := M) α
       (fun x => (φ : M → ℝ) x *
         secCompRaw (I := I) (M := M) r s S α P.1 P.2 x)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-theorem fineLoc_compact
+theorem fineLocal_compact
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) :
     HasCompactSupport
-      (fineLocComp (I := I) (M := M) r s φ S α P) := by
-  unfold fineLocComp
+      (fineLocalComp (I := I) (M := M) r s φ S α P) := by
+  unfold fineLocalComp
   exact Chart.ChartTower.hasCompactSupport_chartPushedRaw_pou_mul
     (I := I) (M := M) α
       (fun x => (φ : M → ℝ) x *
         secCompRaw (I := I) (M := M) r s S α P.1 P.2 x)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private theorem fineLoc_target_ae
+private theorem fineLocal_target_ae
     (r s : ℕ) (φ : C^∞⟮I, M; ℝ⟯)
     (S : RSTensorSection I M r s) (α : M)
     (P : TensorCompIdx (E := E) r s) :
-    fineLocComp (I := I) (M := M) r s φ S α P =ᵐ[
+    fineLocalComp (I := I) (M := M) r s φ S α P =ᵐ[
       volume.restrict
         (Chart.chartTargetEuclid (I := I) (M := M) α)]
       Chart.chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
         (fun x => (φ : M → ℝ) x *
           secCompRaw (I := I) (M := M) r s S α P.1 P.2 x) := by
-  simpa only [fineLocComp] using
+  simpa only [fineLocalComp] using
     (Chart.chartPushedRaw_pou_mul_ae_eq_chartPushed_on_target
       (I := I) (M := M) (chartAtlasPOU I M) α
       (fun x => (φ : M → ℝ) x *
@@ -579,7 +579,7 @@ private theorem secComp_target_ae
       (secCompRaw (I := I) (M := M) r s S α P.1 P.2) at h
   exact h
 
-theorem fineLoc_joint
+theorem fineLocal_joint
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
@@ -587,10 +587,10 @@ theorem fineLoc_joint
     ∃ K : ℝ, 0 < K ∧
       ∀ S : WkpTensor (I := I) (M := M) r s k p hp,
         MemWkp (d := Module.finrank ℝ E) k p
-            (fineLocComp (I := I) (M := M) r s φ S.1 α P)
+            (fineLocalComp (I := I) (M := M) r s φ S.1 α P)
             (Chart.chartTargetEuclid (I := I) (M := M) α) ∧
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
-              (fineLocComp (I := I) (M := M) r s φ S.1 α P)
+              (fineLocalComp (I := I) (M := M) r s φ S.1 α P)
               (Chart.chartTargetEuclid (I := I) (M := M) α) ≤
             ENNReal.ofReal K *
               wkpTensorNorm (I := I) (M := M) k p S.1 := by
@@ -615,21 +615,21 @@ theorem fineLoc_joint
   have hlocChart := chartMul_mem (I := I) (M := M)
     k hp φ α hsec
   have hloc : MemWkp (d := Module.finrank ℝ E) k p
-      (fineLocComp (I := I) (M := M) r s φ S.1 α P) Ω :=
+      (fineLocalComp (I := I) (M := M) r s φ S.1 α P) Ω :=
     (MemWkp_congr_ae (d := Module.finrank ℝ E) hp hΩ
-      (fineLoc_target_ae (I := I) (M := M) r s φ S.1 α P).symm).mp
+      (fineLocal_target_ae (I := I) (M := M) r s φ S.1 α P).symm).mp
         hlocChart
   refine ⟨hloc, ?_⟩
   calc
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
-        (fineLocComp (I := I) (M := M) r s φ S.1 α P) Ω =
+        (fineLocalComp (I := I) (M := M) r s φ S.1 α P) Ω =
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
         (Chart.chartPushed (I := I) (M := M)
           (chartAtlasPOU I M) α
           (fun x => (φ : M → ℝ) x *
             secCompRaw (I := I) (M := M) r s S.1 α P.1 P.2 x)) Ω :=
         wkpNorm_congr_ae (d := Module.finrank ℝ E) hp hΩ
-          (fineLoc_target_ae (I := I) (M := M) r s φ S.1 α P)
+          (fineLocal_target_ae (I := I) (M := M) r s φ S.1 α P)
     _ ≤ ENNReal.ofReal K *
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
           (Chart.chartPushed (I := I) (M := M)
@@ -648,60 +648,60 @@ theorem fineLoc_joint
         (wkpNorm_secComp_le (I := I) (M := M) k p
           S.1 α P.1 P.2) _
 
-theorem fineLoc_mem_univ
+theorem fineLocal_mem_univ
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
     (S : WkpTensor (I := I) (M := M) r s k p hp) :
     MemWkp (d := Module.finrank ℝ E) k p
-      (fineLocComp (I := I) (M := M) r s φ S.1 α P) Set.univ := by
+      (fineLocalComp (I := I) (M := M) r s φ S.1 α P) Set.univ := by
   apply MemWkp.extend_zero (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M) α)
     isOpen_univ (subset_univ _)
-  · exact ((fineLoc_joint (I := I) (M := M) r s k hp hp_top
+  · exact ((fineLocal_joint (I := I) (M := M) r s k hp hp_top
       φ α P).choose_spec.2 S).1
-  · exact fineLoc_support (I := I) (M := M) r s φ S.1 α P
-  · exact fineLoc_compact (I := I) (M := M) r s φ S.1 α P
+  · exact fineLocal_support (I := I) (M := M) r s φ S.1 α P
+  · exact fineLocal_compact (I := I) (M := M) r s φ S.1 α P
 
-theorem fineLoc_norm_univ
+theorem fineLocal_norm_univ
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
     (S : WkpTensor (I := I) (M := M) r s k p hp) :
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
-        (fineLocComp (I := I) (M := M) r s φ S.1 α P) Set.univ =
+        (fineLocalComp (I := I) (M := M) r s φ S.1 α P) Set.univ =
       iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
-        (fineLocComp (I := I) (M := M) r s φ S.1 α P)
+        (fineLocalComp (I := I) (M := M) r s φ S.1 α P)
         (Chart.chartTargetEuclid (I := I) (M := M) α) := by
   exact wkpNorm_extend_zero (d := Module.finrank ℝ E) hp
     (Chart.chartTargetEuclid_isOpen (I := I) (M := M) α)
     isOpen_univ (subset_univ _)
-    ((fineLoc_joint (I := I) (M := M) r s k hp hp_top
+    ((fineLocal_joint (I := I) (M := M) r s k hp hp_top
       φ α P).choose_spec.2 S).1
-    (fineLoc_support (I := I) (M := M) r s φ S.1 α P)
-    (fineLoc_compact (I := I) (M := M) r s φ S.1 α P)
+    (fineLocal_support (I := I) (M := M) r s φ S.1 α P)
+    (fineLocal_compact (I := I) (M := M) r s φ S.1 α P)
 
-noncomputable def fineLocWkp
+noncomputable def fineLocalWkp
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
     (S : WkpTensor (I := I) (M := M) r s k p hp) :
     @EuclidWkp (Module.finrank ℝ E) k p hp Set.univ ⟨isOpen_univ⟩ :=
-  ⟨fineLocComp (I := I) (M := M) r s φ S.1 α P,
-    fineLoc_mem_univ (I := I) (M := M) r s k hp hp_top φ α P S⟩
+  ⟨fineLocalComp (I := I) (M := M) r s φ S.1 α P,
+    fineLocal_mem_univ (I := I) (M := M) r s k hp hp_top φ α P S⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-theorem fineLoc_ae
+theorem fineLocal_ae
     (r s : ℕ)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
     {S T : RSTensorSection I M r s}
     (hST : TensorAEEq (I := I) (M := M) S T) :
-    fineLocComp (I := I) (M := M) r s φ S α P =ᵐ[volume]
-      fineLocComp (I := I) (M := M) r s φ T α P := by
+    fineLocalComp (I := I) (M := M) r s φ S α P =ᵐ[volume]
+      fineLocalComp (I := I) (M := M) r s φ T α P := by
   let Ω : Set EuclN :=
     Chart.chartTargetEuclid (I := I) (M := M) α
   apply MeasureTheory.ae_of_ae_restrict_of_ae_restrict_compl Ω
@@ -709,17 +709,17 @@ theorem fineLoc_ae
       ae_restrict_mem
         (Chart.chartTargetEuclid_measurableSet (I := I) (M := M) α)
     filter_upwards [hST α P.1 P.2, hmem] with y hSy hy
-    rw [fineLoc_apply (I := I) (M := M) r s φ S α P hy,
-      fineLoc_apply (I := I) (M := M) r s φ T α P hy, hSy]
+    rw [fineLocal_apply (I := I) (M := M) r s φ S α P hy,
+      fineLocal_apply (I := I) (M := M) r s φ T α P hy, hSy]
   · have hmem : ∀ᵐ y ∂(volume : Measure EuclN).restrict Ωᶜ, y ∈ Ωᶜ :=
       ae_restrict_mem
         (Chart.chartTargetEuclid_measurableSet
           (I := I) (M := M) α).compl
     filter_upwards [hmem] with y hy
-    rw [fineLoc_apply_off (I := I) (M := M) r s φ S α P hy,
-      fineLoc_apply_off (I := I) (M := M) r s φ T α P hy]
+    rw [fineLocal_apply_off (I := I) (M := M) r s φ S α P hy,
+      fineLocal_apply_off (I := I) (M := M) r s φ T α P hy]
 
-noncomputable def fineLocMap
+noncomputable def fineLocalMap
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
@@ -730,55 +730,55 @@ noncomputable def fineLocMap
     (fun S => Quotient.mk
       (@euclidWkpSetoid (Module.finrank ℝ E) k p hp Set.univ
         ⟨isOpen_univ⟩)
-      (fineLocWkp (I := I) (M := M) r s k hp hp_top φ α P S))
+      (fineLocalWkp (I := I) (M := M) r s k hp hp_top φ α P S))
     (fun S T hST => Quotient.sound (by
-      change fineLocComp (I := I) (M := M) r s φ S.1 α P =ᵐ[
+      change fineLocalComp (I := I) (M := M) r s φ S.1 α P =ᵐ[
         volume.restrict Set.univ]
-          fineLocComp (I := I) (M := M) r s φ T.1 α P
+          fineLocalComp (I := I) (M := M) r s φ T.1 α P
       simpa only [Measure.restrict_univ] using
-        fineLoc_ae (I := I) (M := M) r s φ α P hST))
+        fineLocal_ae (I := I) (M := M) r s φ α P hST))
 
-theorem fineLocMap_add
+theorem fineLocalMap_add
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s)
     (a b : WkpTensorQuot (I := I) (M := M) r s k p hp) :
-    fineLocMap (I := I) (M := M) r s k hp hp_top φ α P
+    fineLocalMap (I := I) (M := M) r s k hp hp_top φ α P
         (qadd (I := I) (M := M) r s k p hp a b) =
       eadd k p hp Set.univ
-        (fineLocMap (I := I) (M := M) r s k hp hp_top φ α P a)
-        (fineLocMap (I := I) (M := M) r s k hp hp_top φ α P b) := by
+        (fineLocalMap (I := I) (M := M) r s k hp hp_top φ α P a)
+        (fineLocalMap (I := I) (M := M) r s k hp hp_top φ α P b) := by
   refine Quotient.inductionOn₂ a b ?_
   intro S T
   apply Quotient.sound
-  change fineLocComp (I := I) (M := M) r s φ (S.1 + T.1) α P =ᵐ[
+  change fineLocalComp (I := I) (M := M) r s φ (S.1 + T.1) α P =ᵐ[
       volume.restrict Set.univ]
-    (fineLocComp (I := I) (M := M) r s φ S.1 α P +
-      fineLocComp (I := I) (M := M) r s φ T.1 α P)
+    (fineLocalComp (I := I) (M := M) r s φ S.1 α P +
+      fineLocalComp (I := I) (M := M) r s φ T.1 α P)
   exact Filter.Eventually.of_forall (fun y =>
-    congrFun (fineLoc_add (I := I) (M := M) r s φ S.1 T.1 α P) y)
+    congrFun (fineLocal_add (I := I) (M := M) r s φ S.1 T.1 α P) y)
 
-theorem fineLocMap_smul
+theorem fineLocalMap_smul
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
     (P : TensorCompIdx (E := E) r s) (c : ℝ)
     (a : WkpTensorQuot (I := I) (M := M) r s k p hp) :
-    fineLocMap (I := I) (M := M) r s k hp hp_top φ α P
+    fineLocalMap (I := I) (M := M) r s k hp hp_top φ α P
         (qsmul (I := I) (M := M) r s k p hp c a) =
       esmul k p hp Set.univ c
-        (fineLocMap (I := I) (M := M) r s k hp hp_top φ α P a) := by
+        (fineLocalMap (I := I) (M := M) r s k hp hp_top φ α P a) := by
   refine Quotient.inductionOn a ?_
   intro S
   apply Quotient.sound
-  change fineLocComp (I := I) (M := M) r s φ (c • S.1) α P =ᵐ[
+  change fineLocalComp (I := I) (M := M) r s φ (c • S.1) α P =ᵐ[
       volume.restrict Set.univ]
-    (c • fineLocComp (I := I) (M := M) r s φ S.1 α P)
+    (c • fineLocalComp (I := I) (M := M) r s φ S.1 α P)
   exact Filter.Eventually.of_forall (fun y =>
-    congrFun (fineLoc_smul (I := I) (M := M) r s φ c S.1 α P) y)
+    congrFun (fineLocal_smul (I := I) (M := M) r s φ c S.1 α P) y)
 
-theorem fineLocMap_bound
+theorem fineLocalMap_bound
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
     (φ : C^∞⟮I, M; ℝ⟯) (α : M)
@@ -786,20 +786,20 @@ theorem fineLocMap_bound
     ∃ K : ℝ, 0 < K ∧
       ∀ a : WkpTensorQuot (I := I) (M := M) r s k p hp,
         ewkpNorm (d := Module.finrank ℝ E) k p hp Set.univ
-            (fineLocMap (I := I) (M := M) r s k hp hp_top φ α P a) ≤
+            (fineLocalMap (I := I) (M := M) r s k hp hp_top φ α P a) ≤
           ENNReal.ofReal K *
             wkpTensorQNorm (I := I) (M := M) r s k p hp a := by
   obtain ⟨K, hK, hjoint⟩ :=
-    fineLoc_joint (I := I) (M := M) r s k hp hp_top φ α P
+    fineLocal_joint (I := I) (M := M) r s k hp hp_top φ α P
   refine ⟨K, hK, ?_⟩
   intro a
   refine Quotient.inductionOn a ?_
   intro S
   change iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
-      (fineLocComp (I := I) (M := M) r s φ S.1 α P) Set.univ ≤
+      (fineLocalComp (I := I) (M := M) r s φ S.1 α P) Set.univ ≤
     ENNReal.ofReal K *
       wkpTensorNorm (I := I) (M := M) k p S.1
-  rw [fineLoc_norm_univ (I := I) (M := M) r s k hp hp_top φ α P S]
+  rw [fineLocal_norm_univ (I := I) (M := M) r s k hp hp_top φ α P S]
   exact (hjoint S).2
 
 noncomputable def fineExtractMap
@@ -809,7 +809,7 @@ noncomputable def fineExtractMap
     WkpTensorQuot (I := I) (M := M) r s k p hp →
       FineWkpArray (E := E) ι r s k p hp :=
   fun a z P =>
-    fineLocMap (I := I) (M := M) r s k hp hp_top (φ z) (α z) P a
+    fineLocalMap (I := I) (M := M) r s k hp hp_top (φ z) (α z) P a
 
 theorem fineExtract_add
     {ι : Type*} (r s k : ℕ)
@@ -822,7 +822,7 @@ theorem fineExtract_add
         (fineExtractMap (I := I) (M := M) r s k hp hp_top φ α a z P)
         (fineExtractMap (I := I) (M := M) r s k hp hp_top φ α b z P) := by
   funext z P
-  exact fineLocMap_add (I := I) (M := M) r s k hp hp_top
+  exact fineLocalMap_add (I := I) (M := M) r s k hp hp_top
     (φ z) (α z) P a b
 
 theorem fineExtract_smul
@@ -835,7 +835,7 @@ theorem fineExtract_smul
       fun z P => esmul k p hp Set.univ c
         (fineExtractMap (I := I) (M := M) r s k hp hp_top φ α a z P) := by
   funext z P
-  exact fineLocMap_smul (I := I) (M := M) r s k hp hp_top
+  exact fineLocalMap_smul (I := I) (M := M) r s k hp hp_top
     (φ z) (α z) P c a
 
 end Tensor

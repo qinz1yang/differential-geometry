@@ -28,16 +28,16 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-private theorem continuousOn_lRegLagrangian_variation
+private theorem continuousOn_lRegularizedLagrangian_variation
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) {x : M} {alpha : E × Real → M} {V : Set E} {K : Set Real}
     (hVopen : IsOpen V) (hKopen : IsOpen K)
     (halpha : ContMDiffOn
       (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha (V ×ˢ K))
     (hcurves : ∀ Z ∈ V,
-      IsLRegCurveOn S T (fun s ↦ alpha (Z, s)) K x Z) :
+      IsLRegularizedCurveOn S T (fun s ↦ alpha (Z, s)) K x Z) :
     ContinuousOn
-      (fun q : E × Real ↦ lRegLagrangian S T (fun s ↦ alpha (q.1, s)) q.2)
+      (fun q : E × Real ↦ lRegularizedLagrangian S T (fun s ↦ alpha (q.1, s)) q.2)
       (V ×ˢ K) := by
   let J := 𝓘(Real, E).prod 𝓘(Real, Real)
   let U := V ×ˢ K
@@ -102,15 +102,15 @@ private theorem continuousOn_lRegLagrangian_variation
   let P := {q : E × Real // q ∈ U}
   let timeLift : P → {t : Real // t ∈ D.carrier} := fun q ↦
     ⟨T - q.1.2 ^ 2, D.regular_subset ((hcurves q.1.1 q.2.1).2.2 q.1.2 q.2.2).1⟩
-  let velLift : P → TangentBundle I M := fun q ↦
+  let velocityLift : P → TangentBundle I M := fun q ↦
     ⟨F q.1, lVelocity (I := I) (fun s ↦ F (q.1.1, s)) q.1.2⟩
   have htime : Continuous timeLift := by
     exact ((continuous_const.sub
       ((continuous_snd.comp continuous_subtype_val).pow 2)).subtype_mk _)
-  have hvel : Continuous velLift := by
+  have hvel : Continuous velocityLift := by
     have hvelOn := hvelSmooth.continuousOn
     rw [continuousOn_iff_continuous_domRestrict] at hvelOn
-    change Continuous velLift at hvelOn
+    change Continuous velocityLift at hvelOn
     exact hvelOn
   have hbase : Continuous (fun q : P ↦ F q.1) := by
     have hbaseOn := hF.continuousOn
@@ -144,30 +144,30 @@ private theorem continuousOn_lRegLagrangian_variation
         ((continuous_snd.comp continuous_subtype_val).pow 2)).mul hscalar)
   rw [continuousOn_iff_continuous_domRestrict]
   change Continuous ((V ×ˢ K).domRestrict
-    (fun q : E × Real ↦ lRegLagrangian S T (fun s ↦ alpha (q.1, s)) q.2)) at hlag
+    (fun q : E × Real ↦ lRegularizedLagrangian S T (fun s ↦ alpha (q.1, s)) q.2)) at hlag
   exact hlag
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem tendsto_lRegAction_lRegCurve_sequence
+private theorem tendsto_lRegularizedAction_lRegularizedCurve_sequence
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) {Z : Nat → TangentSpace I x}
     {Z₀ : TangentSpace I x} {b : Nat → Real} {b₀ : Real}
-    (hb₀ : 0 < b₀) (hdom : b₀ ∈ lRegDomain S T x Z₀)
+    (hb₀ : 0 < b₀) (hdom : b₀ ∈ lRegularizedDomain S T x Z₀)
     (hZ : Tendsto Z atTop (nhds Z₀))
     (hb : Tendsto b atTop (nhds b₀)) :
     Tendsto
-      (fun n ↦ lRegAction S T (lRegCurve S T x (Z n)) 0 (b n))
+      (fun n ↦ lRegularizedAction S T (lRegularizedCurve S T x (Z n)) 0 (b n))
       atTop
-      (nhds (lRegAction S T (lRegCurve S T x Z₀) 0 b₀)) := by
+      (nhds (lRegularizedAction S T (lRegularizedCurve S T x Z₀) 0 b₀)) := by
   obtain ⟨J₀, hJ₀open, hJ₀conn, h0J₀, hb₀J₀, hchosen⟩ :=
-    lRegChosen_spec S T x Z₀ hdom
+    lRegularizedChosen_spec S T x Z₀ hdom
   obtain ⟨V, hVopen, hZ₀V, K, hKopen, hKconn, h0K, hb₀K,
       alpha, halpha, hcurves⟩ :=
-    lRegFamily_extend S hS T hJ₀open hJ₀conn h0J₀ hb₀J₀ hchosen
-  have hlag := continuousOn_lRegLagrangian_variation (I := I) S hS T hVopen hKopen halpha hcurves
+    lRegularizedFamily_extend S hS T hJ₀open hJ₀conn h0J₀ hb₀J₀ hchosen
+  have hlag := continuousOn_lRegularizedLagrangian_variation (I := I) S hS T hVopen hKopen halpha hcurves
   obtain ⟨ε, hε, hεK⟩ := (Metric.isOpen_iff.1 hKopen) b₀ hb₀K
   let δ : Real := min (ε / 2) (b₀ / 2)
   have hδ : 0 < δ := by
@@ -227,7 +227,7 @@ private theorem tendsto_lRegAction_lRegCurve_sequence
     exact (norm_nonneg _).trans
       (hC (Z₀, 0) ⟨mem_insert _ _, hzeroL⟩)
   let F : E → Real → Real := fun z s ↦
-    lRegLagrangian S T (fun r ↦ alpha (z, r)) s
+    lRegularizedLagrangian S T (fun r ↦ alpha (z, r)) s
   have hb₀L : b₀ ∈ L := by
     exact ⟨hb₀.le, by linarith⟩
   have hzeroL : (0 : Real) ∈ L := by
@@ -265,7 +265,7 @@ private theorem tendsto_lRegAction_lRegCurve_sequence
             (nhds (Z₀, s)) := hZs.prodMk_nhds tendsto_const_nhds
         have hAt : ContinuousAt
             (fun q : E × Real ↦
-              lRegLagrangian S T (fun r ↦ alpha (q.1, r)) q.2) (Z₀, s) :=
+              lRegularizedLagrangian S T (fun r ↦ alpha (q.1, r)) q.2) (Z₀, s) :=
           (hlag (Z₀, s) ⟨hZ₀V, hLK hsL⟩).continuousAt
             ((hVopen.prod hKopen).mem_nhds ⟨hZ₀V, hLK hsL⟩)
         have h := hAt.tendsto.comp hpair
@@ -286,7 +286,7 @@ private theorem tendsto_lRegAction_lRegCurve_sequence
       simpa only [sub_self, abs_zero] using (hbs.sub_const b₀).abs
     simpa only [mul_zero] using tendsto_const_nhds.mul habs
   have hsplit (n : Nat) :
-      lRegAction S T (fun s ↦ alpha (Zs n, s)) 0 (bs n) =
+      lRegularizedAction S T (fun s ↦ alpha (Zs n, s)) 0 (bs n) =
         (∫ s in (0 : Real)..b₀, F (Zs n) s) +
           ∫ s in b₀..bs n, F (Zs n) s := by
     have hzQ : Zs n ∈ Q := mem_insert_iff.mpr <| Or.inr ⟨n, rfl⟩
@@ -296,44 +296,44 @@ private theorem tendsto_lRegAction_lRegCurve_sequence
     have hbb : IntervalIntegrable (F (Zs n)) volume b₀ (bs n) := by
       exact ((hcont (Zs n) hzQ).mono
         (Set.uIcc_subset_Icc hb₀L (hbsL n))).intervalIntegrable
-    simpa only [lRegAction, F] using
-      (lRegAction_add (I := I) S T (fun s ↦ alpha (Zs n, s))
+    simpa only [lRegularizedAction, F] using
+      (lRegularizedAction_add (I := I) S T (fun s ↦ alpha (Zs n, s))
         0 b₀ (bs n) h0b hbb).symm
   have halphaLim : Tendsto
-      (fun n ↦ lRegAction S T (fun s ↦ alpha (Zs n, s)) 0 (bs n))
+      (fun n ↦ lRegularizedAction S T (fun s ↦ alpha (Zs n, s)) 0 (bs n))
       atTop
-      (nhds (lRegAction S T (fun s ↦ alpha (Z₀, s)) 0 b₀)) := by
+      (nhds (lRegularizedAction S T (fun s ↦ alpha (Z₀, s)) 0 b₀)) := by
     have hadd := hfixed.add htailZero
     have hact' : Tendsto
-        (fun n ↦ lRegAction S T (fun s ↦ alpha (Zs n, s)) 0 (bs n))
+        (fun n ↦ lRegularizedAction S T (fun s ↦ alpha (Zs n, s)) 0 (bs n))
         atTop (nhds ((∫ s in (0 : Real)..b₀, F Z₀ s) + 0)) := by
       apply hadd.congr'
       filter_upwards with n
       exact (hsplit n).symm
     have hact : Tendsto
-        (fun n ↦ lRegAction S T (fun s ↦ alpha (Zs n, s)) 0 (bs n))
+        (fun n ↦ lRegularizedAction S T (fun s ↦ alpha (Zs n, s)) 0 (bs n))
         atTop (nhds (∫ s in (0 : Real)..b₀, F Z₀ s)) := by
       simpa only [add_zero] using hact'
-    simpa only [lRegAction, F] using hact
+    simpa only [lRegularizedAction, F] using hact
   have hlimitEq :
-      lRegAction S T (lRegCurve S T x Z₀) 0 b₀ =
-        lRegAction S T (fun s ↦ alpha (Z₀, s)) 0 b₀ := by
-    have heq := lRegCurve_eqOn S hS T hKopen hKconn h0K
+      lRegularizedAction S T (lRegularizedCurve S T x Z₀) 0 b₀ =
+        lRegularizedAction S T (fun s ↦ alpha (Z₀, s)) 0 b₀ := by
+    have heq := lRegularizedCurve_eqOn S hS T hKopen hKconn h0K
       (hcurves Z₀ hZ₀V)
-    exact lRegAction_congr (I := I) S T
-      (lRegCurve S T x Z₀) (fun s ↦ alpha (Z₀, s)) 0 b₀
+    exact lRegularizedAction_congr (I := I) S T
+      (lRegularizedCurve S T x Z₀) (fun s ↦ alpha (Z₀, s)) 0 b₀
       (heq.mono (Set.uIoo_subset_uIcc_self.trans
         (hKconn.ordConnected.uIcc_subset h0K hb₀K)))
   have hrayShift : Tendsto
-      (fun n ↦ lRegAction S T (lRegCurve S T x (Zs n)) 0 (bs n))
-      atTop (nhds (lRegAction S T (lRegCurve S T x Z₀) 0 b₀)) := by
+      (fun n ↦ lRegularizedAction S T (lRegularizedCurve S T x (Zs n)) 0 (bs n))
+      atTop (nhds (lRegularizedAction S T (lRegularizedCurve S T x Z₀) 0 b₀)) := by
     rw [hlimitEq]
     apply halphaLim.congr'
     filter_upwards with n
-    have heq := lRegCurve_eqOn S hS T hKopen hKconn h0K
+    have heq := lRegularizedCurve_eqOn S hS T hKopen hKconn h0K
       (hcurves (Zs n) (htailGood n).1)
-    exact (lRegAction_congr (I := I) S T
-      (lRegCurve S T x (Zs n)) (fun s ↦ alpha (Zs n, s)) 0 (bs n)
+    exact (lRegularizedAction_congr (I := I) S T
+      (lRegularizedCurve S T x (Zs n)) (fun s ↦ alpha (Zs n, s)) 0 (bs n)
       (heq.mono (Set.uIoo_subset_uIcc_self.trans
         (hKconn.ordConnected.uIcc_subset h0K (hLK (hbsL n)))))).symm
   exact (tendsto_add_atTop_iff_nat N).1 (by
@@ -343,13 +343,13 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem continuousAt_lRegAction_lRegCurve
+theorem continuousAt_lRegularizedAction_lRegularizedCurve
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) {Z : TangentSpace I x} {b : Real}
-    (hb : 0 < b) (hdom : b ∈ lRegDomain S T x Z) :
+    (hb : 0 < b) (hdom : b ∈ lRegularizedDomain S T x Z) :
     ContinuousAt
       (fun p : E × Real ↦
-        lRegAction S T (lRegCurve S T x p.1) 0 p.2)
+        lRegularizedAction S T (lRegularizedCurve S T x p.1) 0 p.2)
       (Z, b) := by
   rw [ContinuousAt, tendsto_nhds_iff_seq_tendsto]
   intro p hp
@@ -358,6 +358,6 @@ theorem continuousAt_lRegAction_lRegCurve
   have hb' : Tendsto (fun n ↦ (p n).2) atTop (nhds b) :=
     continuousAt_snd.tendsto.comp hp
   simpa only [Function.comp_def] using
-    tendsto_lRegAction_lRegCurve_sequence S hS T x hb hdom hZ hb'
+    tendsto_lRegularizedAction_lRegularizedCurve_sequence S hS T x hb hdom hZ hb'
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

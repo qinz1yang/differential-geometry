@@ -5,7 +5,7 @@ import Mathlib.Analysis.Normed.Operator.Prod
 set_option autoImplicit false
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Topology
 
@@ -98,5 +98,5 @@ theorem neumannOfDerivNorm {G : E' → E'} {x : E'} {ε : Real}
   rw [hsub, norm_sub_rev] at h
   exact h
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry
