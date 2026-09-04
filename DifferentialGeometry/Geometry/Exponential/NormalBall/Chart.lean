@@ -1,7 +1,7 @@
 import Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 import DifferentialGeometry.Geometry.Geodesic.Equation.Koszul
 

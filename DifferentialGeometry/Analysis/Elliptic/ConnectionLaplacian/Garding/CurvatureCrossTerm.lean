@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.RemainderDivergenceForm
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.IntegratedNullity
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.CurvatureTracePairing
-import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.BracketContraction

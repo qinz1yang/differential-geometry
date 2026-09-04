@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.VariationalMapContDiffOnK
+import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FiniteOrder
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC
 
 noncomputable section

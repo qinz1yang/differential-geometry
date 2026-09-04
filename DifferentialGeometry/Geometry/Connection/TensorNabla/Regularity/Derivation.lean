@@ -24,7 +24,7 @@ import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.Topology.Algebra.Module.FiniteDimension
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Bundle.TangentSpace
 
 namespace DifferentialGeometry

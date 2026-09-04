@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormIdentity
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.CovariantDerivativePathIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.PathIntegralFibreNorm
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Decomposition

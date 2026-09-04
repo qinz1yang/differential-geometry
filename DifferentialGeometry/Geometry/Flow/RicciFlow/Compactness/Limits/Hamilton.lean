@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.Solution
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.SolutionInputs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.BoundedGeometryCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.SolutionInputs
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.BoundedGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.CanonicalCompatibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Local
 

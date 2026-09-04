@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Morse.Attachment.ModelCell
 import DifferentialGeometry.Topology.Morse.Attachment.ModelHandle
-import DifferentialGeometry.Topology.Handle.Attachment
+import DifferentialGeometry.Topology.Handle.Attachment.Basic
 import DifferentialGeometry.Topology.Handle.Gluing
 import DifferentialGeometry.Topology.Handle.Manifold
 import DifferentialGeometry.Topology.Handle.Retraction

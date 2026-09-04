@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartIdentification
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.VectorFieldIdentification
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.Chart
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.VectorField
 import DifferentialGeometry.Geometry.Exponential.Defs
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.UniformUniqueness
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Basic
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.UniformUniqueness
 import DifferentialGeometry.Geometry.Geodesic.Equation.FromIntegralCurve
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 open DifferentialGeometry.Geometry.Curvature

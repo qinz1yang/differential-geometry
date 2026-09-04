@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.CompactJetWkpBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Jet.CompactBound
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Basic
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.RawNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.IntrinsicThirdJet

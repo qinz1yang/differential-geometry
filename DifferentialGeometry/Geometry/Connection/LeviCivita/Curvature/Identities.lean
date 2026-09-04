@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
-import DifferentialGeometry.Geometry.Curvature.Bianchi
+import DifferentialGeometry.Geometry.Curvature.Riemann.Bianchi
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
@@ -30,7 +30,7 @@ import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTrace02
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity

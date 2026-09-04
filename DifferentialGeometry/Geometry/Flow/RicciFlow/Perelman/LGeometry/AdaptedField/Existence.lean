@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedFi
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Chart
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Regularity.Joint
 import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Smoothness
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion

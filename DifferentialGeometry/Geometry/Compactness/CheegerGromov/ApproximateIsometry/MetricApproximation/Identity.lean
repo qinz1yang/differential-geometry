@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 
 set_option autoImplicit false
 

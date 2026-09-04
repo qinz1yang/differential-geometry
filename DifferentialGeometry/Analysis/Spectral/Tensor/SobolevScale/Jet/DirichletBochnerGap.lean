@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.PartitionOfUnityNormComparison
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
-import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.Divergence
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 open DifferentialGeometry.Analysis.Sobolev

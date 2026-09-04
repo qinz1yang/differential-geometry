@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Tensor
+import DifferentialGeometry.Geometry.Curvature.Riemann.Tensor
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

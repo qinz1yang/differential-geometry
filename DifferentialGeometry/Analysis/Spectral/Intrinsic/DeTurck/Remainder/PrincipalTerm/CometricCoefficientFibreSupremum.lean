@@ -13,9 +13,9 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.ChartS
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedCovariantTensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.AffinePointwiseNormIntegral
-import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets
-import DifferentialGeometry.Analysis.Integration.L2.FiniteProductHolderFiberNorm
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiniteProductHolder
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ResolventFactorization
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedMixedTensor
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.Pointwise

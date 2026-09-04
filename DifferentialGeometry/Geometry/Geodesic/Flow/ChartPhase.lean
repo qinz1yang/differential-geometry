@@ -4,8 +4,8 @@ import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 import DifferentialGeometry.Geometry.Geodesic.Local.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Local.Uniqueness
 import DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.ContDiffOnOne
-import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.VariationalMapContDiffOnK
-import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.ContDiffOnTop
+import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FiniteOrder
+import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.InfiniteOrder
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

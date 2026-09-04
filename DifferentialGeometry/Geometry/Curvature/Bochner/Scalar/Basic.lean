@@ -12,7 +12,7 @@ import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Realizati
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Formula
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.MixedComponents
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
-import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
+import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra

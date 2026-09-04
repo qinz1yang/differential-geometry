@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FixedDomainBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.FixedDomain
 
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra

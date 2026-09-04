@@ -3,7 +3,7 @@ import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Basic
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
 import DifferentialGeometry.Analysis.Sobolev.Tools.FrechetKolmogorov
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.Basic
 import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Kernel
 import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.WeakDerivative
 

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Iterated
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Raising
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.SolutionEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Lichnerowicz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Equation.Lichnerowicz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ProductLeibniz
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermutation

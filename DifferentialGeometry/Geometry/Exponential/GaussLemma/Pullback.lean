@@ -7,9 +7,9 @@ import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Local.Uniqueness
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.SmallVelocityRescaling
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.RescaledLift
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.UniformExistence
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.SmallVelocity
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Lift
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.UniformExistence
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
 import Mathlib.Geometry.Manifold.Riemannian.PathELength

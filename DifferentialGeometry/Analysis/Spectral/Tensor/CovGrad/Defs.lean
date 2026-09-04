@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Scalar
-import DifferentialGeometry.Tensor.RSTensor.CovariantSlotEquiv
+import DifferentialGeometry.Tensor.RSTensor.Reindexing.CovariantSlot
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

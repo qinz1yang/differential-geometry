@@ -1,7 +1,7 @@
 import Mathlib.Analysis.Calculus.ContDiff.Operations
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

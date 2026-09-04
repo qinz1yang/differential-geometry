@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
 
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Components
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
 import DifferentialGeometry.Geometry.Metric.Pullback.Local

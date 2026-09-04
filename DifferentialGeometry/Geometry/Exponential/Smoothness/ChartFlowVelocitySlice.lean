@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartFlowGeodesicLink
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartIdentification
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.VectorFieldIdentification
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Basic
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.Chart
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.VectorField
 import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 

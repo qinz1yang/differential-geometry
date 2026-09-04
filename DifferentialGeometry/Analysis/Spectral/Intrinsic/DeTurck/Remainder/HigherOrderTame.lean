@@ -1,9 +1,9 @@
-import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormIdentity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets
-import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ManifoldC0
 import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.OrderDropping

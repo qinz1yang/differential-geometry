@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ContractionLeibniz
-import DifferentialGeometry.Tensor.RSTensor.Product
+import DifferentialGeometry.Tensor.RSTensor.Algebra.Product
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

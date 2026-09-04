@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.VectorFieldIdentification
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Basic
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.VectorField
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import Mathlib.Geometry.Manifold.IntegralCurve.Transform
 

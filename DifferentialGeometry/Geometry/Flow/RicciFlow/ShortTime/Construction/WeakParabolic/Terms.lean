@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.CompactJetWkpBound
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Jet.CompactBound
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Locality
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.IntrinsicThirdJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.CovariantDerivative.PartitionOfUnityLeibniz

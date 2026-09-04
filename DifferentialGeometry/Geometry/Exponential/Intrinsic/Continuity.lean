@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChainedFlowContinuity
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Continuity
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas

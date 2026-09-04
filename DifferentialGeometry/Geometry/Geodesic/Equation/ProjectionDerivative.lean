@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Local.Existence
 import DifferentialGeometry.Geometry.Geodesic.Equation.FromIntegralCurve
 import DifferentialGeometry.Geometry.Geodesic.Local.Smoothness
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartIdentification
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.Chart
 import Mathlib.Geometry.Manifold.IntegralCurve.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent

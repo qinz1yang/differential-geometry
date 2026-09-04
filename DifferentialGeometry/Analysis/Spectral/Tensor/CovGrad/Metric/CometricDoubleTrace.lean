@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
-import DifferentialGeometry.Tensor.RSTensor.Contraction
+import DifferentialGeometry.Tensor.RSTensor.Algebra.Contraction
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation

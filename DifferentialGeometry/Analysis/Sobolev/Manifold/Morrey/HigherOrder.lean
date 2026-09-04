@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.MorreyHigherOrder
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.HigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.Basic
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.ChartSobolevDensity
 

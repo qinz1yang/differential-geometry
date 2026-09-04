@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Chart.Wkp.Quotient
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.MorreyHigherOrder
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.HigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevCauchy
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
 open DifferentialGeometry.Geometry.Curvature

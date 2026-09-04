@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormIdentity
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H1L6
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum

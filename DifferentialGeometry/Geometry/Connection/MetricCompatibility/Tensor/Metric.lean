@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 open DifferentialGeometry.Tensor.RSTensor
 
 set_option autoImplicit false

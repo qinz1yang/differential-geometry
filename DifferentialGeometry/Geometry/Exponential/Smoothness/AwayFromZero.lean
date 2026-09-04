@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Exponential.Smoothness.MatchDataReduction
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChainedFlowContinuity
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Continuity
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

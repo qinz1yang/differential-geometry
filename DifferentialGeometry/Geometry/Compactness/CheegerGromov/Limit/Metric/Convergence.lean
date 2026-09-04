@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.Comp
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Convergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Estimates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Tail
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 
 open DifferentialGeometry.Geometry.Curvature
 

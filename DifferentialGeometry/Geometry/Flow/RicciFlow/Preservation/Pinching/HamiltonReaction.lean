@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.QuotientEvolution
-import DifferentialGeometry.Tensor.RSTensor.Product
+import DifferentialGeometry.Tensor.RSTensor.Algebra.Product
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

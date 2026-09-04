@@ -11,11 +11,11 @@ import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyInput
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
-import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
+import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.LogDensity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Variation.RicciCoord
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 set_option autoImplicit false
 

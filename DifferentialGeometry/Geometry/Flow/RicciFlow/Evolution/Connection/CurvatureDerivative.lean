@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.GammaCoord
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Derivation.ChristoffelCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.MetricCovariantDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 open DifferentialGeometry.PDE.RicciFlow

@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.CanonicalCompatibility
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.Compatibility
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Local
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.SourceCovariantLipschitz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Source.CovariantLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Upgrade
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

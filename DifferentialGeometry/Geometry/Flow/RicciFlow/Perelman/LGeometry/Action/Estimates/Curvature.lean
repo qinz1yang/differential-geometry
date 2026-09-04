@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciOperator
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FlowUniformEquivalence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.QuadraticForm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.UniformEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.Range
 
 set_option autoImplicit false

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.ParametricInverseFunctionTheorem
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Parametric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.MinimizingFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound

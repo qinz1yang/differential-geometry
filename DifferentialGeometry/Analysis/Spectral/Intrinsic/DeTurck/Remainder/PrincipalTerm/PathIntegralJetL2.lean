@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormIdentity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
@@ -13,9 +13,9 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.ChartSobolevBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedCovariantTensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
-import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets
-import DifferentialGeometry.Analysis.Integration.L2.FiniteProductHolderFiberNorm
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiniteProductHolder
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ResolventFactorization
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Weitzenbock.IntegratedMixedTensor
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.Pointwise

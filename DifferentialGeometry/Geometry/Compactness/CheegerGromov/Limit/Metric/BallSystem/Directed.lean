@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.BallImage
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.BallSystem.Basic
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 
 open DifferentialGeometry.Geometry.Curvature
 

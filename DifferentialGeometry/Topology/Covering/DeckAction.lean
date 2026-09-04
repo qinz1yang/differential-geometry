@@ -1,6 +1,6 @@
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.Geometry.Manifold.Diffeomorph
-import DifferentialGeometry.Topology.Covering.Manifold
+import DifferentialGeometry.Topology.Covering.Smooth.Manifold
 
 open Set Function
 open scoped Topology ContDiff Manifold

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
-import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
+import DifferentialGeometry.Tensor.RSTensor.Smoothness.Parametric
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.ProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.L2.PathIntegralCoeffFieldPairing
+import DifferentialGeometry.Analysis.Integration.L2.Parametric.CoefficientFieldPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.LowerScalePathDecomposition
 
 noncomputable section

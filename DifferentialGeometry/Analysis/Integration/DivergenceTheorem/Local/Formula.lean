@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
 import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
-import DifferentialGeometry.Geometry.Coordinates.VectorField
+import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Analysis.Calculus.FDeriv.Equiv

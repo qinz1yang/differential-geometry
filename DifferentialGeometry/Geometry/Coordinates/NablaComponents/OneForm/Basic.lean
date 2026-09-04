@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 set_option autoImplicit false
 

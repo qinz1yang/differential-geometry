@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.CoordinateRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Derivation.CoordinateRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.CoordinateRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Regularity.Basic
 open DifferentialGeometry.Geometry.Curvature

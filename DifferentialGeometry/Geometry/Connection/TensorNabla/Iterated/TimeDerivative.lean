@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 set_option autoImplicit false
 

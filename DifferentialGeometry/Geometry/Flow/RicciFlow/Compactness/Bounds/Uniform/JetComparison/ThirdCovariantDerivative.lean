@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.ConnectionSecondDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Connection.SecondDerivative
 
 
 set_option autoImplicit false

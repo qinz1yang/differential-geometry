@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.HigherOrder
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.MorreyHigherOrder
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.HigherOrder
 
 
 noncomputable section

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
-import DifferentialGeometry.Geometry.Coordinates.Tensor
+import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison

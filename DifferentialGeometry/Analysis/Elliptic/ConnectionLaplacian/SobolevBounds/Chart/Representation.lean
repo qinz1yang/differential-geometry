@@ -5,8 +5,8 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.TensorPullback
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Chart.PartitionOfUnityL2
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Defs
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.FderivToWkpNormBridge
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.IteratedFderivToWkpNormBridge
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Derivative.SobolevNorm
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Derivative.IteratedSobolevNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.ChartTransition.TensorChartTransition
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovariantDerivativeBounds.SlotCorrection.FirstDerivative

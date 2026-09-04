@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FixedDomainBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solutions
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.FixedDomain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.Bounds
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

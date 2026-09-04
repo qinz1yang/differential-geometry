@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Bounds.MetricPerturbationRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Remainder.ZeroOrderClass
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Remainder.DenseTameBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.AllTimesBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.AllTimes
 
 noncomputable section
 

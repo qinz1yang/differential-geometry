@@ -3,7 +3,7 @@ import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.UniformExistence
-import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.ContDiffOnTop
+import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.InfiniteOrder
 
 
 namespace DifferentialGeometry.Analysis.ODE

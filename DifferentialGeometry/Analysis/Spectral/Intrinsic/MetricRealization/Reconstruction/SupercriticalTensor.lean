@@ -12,7 +12,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.ChartTransit
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.CovariantDerivative.PartitionOfUnityLeibniz
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.QuasiMeasurePreserving
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.ChartPullbackSmooth
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.IteratedSobolevEmbedding
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Iterated
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Curvature.JetDifference
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.ConnectionSecondDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Connection.SecondDerivative
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.SecondBianchi
 

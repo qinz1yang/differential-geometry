@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
-import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
+import DifferentialGeometry.Tensor.RSTensor.Smoothness.Parametric
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.GramDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PositiveDefinitePerturbation
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.HigherRegularity
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Convergence.HigherRegularity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.ScaleSelection
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.MetricLimits
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageConstruction.Diagonal

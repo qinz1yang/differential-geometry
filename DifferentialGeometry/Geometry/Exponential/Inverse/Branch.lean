@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
-import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

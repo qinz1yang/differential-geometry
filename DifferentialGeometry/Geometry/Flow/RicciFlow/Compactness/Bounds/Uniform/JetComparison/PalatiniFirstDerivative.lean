@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDiffe
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Curvature.JetDifference
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.ConnectionSecondDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Connection.SecondDerivative
 
 set_option autoImplicit false
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.IntrinsicDerivation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.NormEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Equation.Norm
 
 
 open DifferentialGeometry.Tensor.RicciIdentity

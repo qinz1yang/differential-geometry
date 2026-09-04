@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.RescaledLift
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Lift
 import DifferentialGeometry.Geometry.Exponential.Smoothness.ZeroSectionConstancy
 import DifferentialGeometry.Geometry.Exponential.Smoothness.MatchDataReduction
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartFlowData
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.Data
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Subcritical
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.Basic
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.Basic
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.Basic

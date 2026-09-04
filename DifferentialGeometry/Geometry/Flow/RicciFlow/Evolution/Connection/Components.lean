@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.InverseSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Covariant
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Evolution
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.Basic
 import DifferentialGeometry.Geometry.Curvature.Components.Lowering
 import DifferentialGeometry.Geometry.Curvature.Components.TraceOneForm
@@ -14,7 +14,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 
 open DifferentialGeometry.PDE.RicciFlow

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv

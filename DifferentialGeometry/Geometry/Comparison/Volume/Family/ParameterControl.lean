@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
-import DifferentialGeometry.Topology.Manifold.TangentPartialDiffeomorph
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Tangent
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Bundle.FiberBundleHausdorff

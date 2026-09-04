@@ -4,10 +4,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CutoffEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Regularity.Norm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Defs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciTowerTrace
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CurvatureTowerBridge
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Trace
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.TowerBridge
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

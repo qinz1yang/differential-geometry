@@ -1,6 +1,6 @@
 import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
-import DifferentialGeometry.Geometry.Coordinates.ScalarFunction
-import DifferentialGeometry.Geometry.Coordinates.VectorField
+import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
+import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv

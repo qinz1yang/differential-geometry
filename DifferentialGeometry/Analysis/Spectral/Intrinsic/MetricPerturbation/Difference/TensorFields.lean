@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Difference.CovariantSmoothness
-import DifferentialGeometry.Geometry.Coordinates.ChartFrame
+import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
 import DifferentialGeometry.Tensor.Mixed.Field
 
 open DifferentialGeometry.Tensor.Multilinear

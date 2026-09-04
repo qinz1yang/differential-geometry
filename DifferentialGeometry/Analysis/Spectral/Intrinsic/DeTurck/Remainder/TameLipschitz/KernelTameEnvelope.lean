@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.KernelTopOrderBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.BackgroundBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.CurvatureContraction
-import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
+import DifferentialGeometry.Tensor.RSTensor.Smoothness.Parametric
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

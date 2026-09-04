@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Regularized
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.JointRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Regularity.Joint
 import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 
 set_option autoImplicit false

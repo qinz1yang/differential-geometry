@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Endomorph
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 namespace DifferentialGeometry
 namespace TensorLieDeriv

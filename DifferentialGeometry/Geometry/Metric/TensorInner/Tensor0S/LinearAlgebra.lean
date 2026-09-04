@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.InnerProductSpace.Trace
 import Mathlib.Algebra.Order.BigOperators.Group.Finset

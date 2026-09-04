@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.OrderPeeling
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.MorreyHigherOrder
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.HigherOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.Representation.TensorChartFrameSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.Representation.TensorL2ChartComponentExt
 import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.OrderDropping

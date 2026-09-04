@@ -5,8 +5,8 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.BranchScale
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Source.CageScale
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.ChartSolution
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Extension
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.ChartSolution
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.Extension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Smoothness
 open DifferentialGeometry.Geometry.Curvature
 

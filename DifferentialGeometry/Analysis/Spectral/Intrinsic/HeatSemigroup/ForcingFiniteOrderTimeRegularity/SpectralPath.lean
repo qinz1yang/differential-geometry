@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegulari
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerModeL2
 import DifferentialGeometry.Analysis.Calculus.Smoothness.ExtendInterval
-import DifferentialGeometry.Analysis.Integration.L2.ForcingFiniteOrderTimeRegularityParametricIntegral
+import DifferentialGeometry.Analysis.Integration.L2.Parametric.FiniteOrderRegularity
 open DifferentialGeometry.Analysis.Integration DifferentialGeometry.Analysis.Sobolev.CSupTensor
     DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
     DifferentialGeometry.PDE.RicciFlow

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.ChartFlow.VectorFieldIdentification
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Coordinates.VectorField
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Local.Existence
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase

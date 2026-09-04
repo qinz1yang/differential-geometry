@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.IteratedComponents
-import DifferentialGeometry.Analysis.Estimates.IteratedCovariantRecurrence
+import DifferentialGeometry.Analysis.Estimates.IteratedCovariant.Recurrence
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Difference
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

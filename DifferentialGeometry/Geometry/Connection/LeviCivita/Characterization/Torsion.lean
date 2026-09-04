@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
-import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

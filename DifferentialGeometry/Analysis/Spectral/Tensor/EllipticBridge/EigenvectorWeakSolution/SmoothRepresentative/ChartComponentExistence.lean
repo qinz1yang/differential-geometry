@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.ArbitraryOrderChartSobolev
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.IteratedRegularity.Support
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.IteratedSobolevEmbedding
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Iterated
 
 noncomputable section
 

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
-import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.VariationalMapContDiffOnK
+import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FiniteOrder
 
 set_option autoImplicit false
 

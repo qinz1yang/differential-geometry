@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calcu
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
-import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
+import DifferentialGeometry.Tensor.RSTensor.Smoothness.Parametric
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature

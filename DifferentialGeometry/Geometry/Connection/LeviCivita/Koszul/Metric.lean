@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.CorrectionContraction
 import DifferentialGeometry.Geometry.Geodesic.Equation.Koszul
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import Mathlib.Analysis.Calculus.FDeriv.CompCLM
 open DifferentialGeometry.Geometry.Curvature
 

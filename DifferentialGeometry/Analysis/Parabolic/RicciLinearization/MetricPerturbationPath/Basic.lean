@@ -12,7 +12,7 @@ import DifferentialGeometry.Geometry.Metric.Family.InverseMetricRegularity
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamily.ChartSmoothness
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ParametricSmoothness
-import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
+import DifferentialGeometry.Tensor.RSTensor.Smoothness.Parametric
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.ParametricSmoothness
 open DifferentialGeometry.Analysis.Spectral DifferentialGeometry.Analysis.Spectral.DeTurck
     DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

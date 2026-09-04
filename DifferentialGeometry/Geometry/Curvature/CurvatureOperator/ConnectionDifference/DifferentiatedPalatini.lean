@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
-import DifferentialGeometry.Geometry.Curvature.Bianchi
+import DifferentialGeometry.Geometry.Curvature.Riemann.Bianchi
 
 set_option autoImplicit false
 

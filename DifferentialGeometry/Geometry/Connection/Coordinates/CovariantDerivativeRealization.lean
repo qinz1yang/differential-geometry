@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeComponents
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 set_option autoImplicit false
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.TangentPartialDiffeomorph
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Tangent
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Chart
 
 set_option autoImplicit false

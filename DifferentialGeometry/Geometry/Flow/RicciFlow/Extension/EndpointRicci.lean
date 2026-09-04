@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivativeEstimate
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.Estimate
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Limit
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets

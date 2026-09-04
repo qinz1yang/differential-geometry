@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Curvature.Tensor
+import DifferentialGeometry.Geometry.Curvature.Riemann.Tensor
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection
 import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent

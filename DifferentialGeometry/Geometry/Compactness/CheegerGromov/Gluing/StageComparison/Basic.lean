@@ -1,16 +1,16 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.StageComparison.Map
 import DifferentialGeometry.Analysis.Calculus.Inverse.DerivativePerturbation
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Fill
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.RootConvergence
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.Fill
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Convergence.Root
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.StrictDistance.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.Branch
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.EquationSelection
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Support
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Selection.Equation
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Construction.Support
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Construction.ChartSolution
-import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem
+import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

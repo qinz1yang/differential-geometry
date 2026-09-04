@@ -10,8 +10,8 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ProperMet
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Addition
 import DifferentialGeometry.Analysis.Calculus.Compactness.DiagonalSubsequence
 import DifferentialGeometry.Analysis.Estimates.IteratedApproximationError
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphComposition
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

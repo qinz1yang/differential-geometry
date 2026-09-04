@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Family.InverseMetricSmoothness
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
-import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
+import DifferentialGeometry.Tensor.RSTensor.Smoothness.Parametric
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 
 open DifferentialGeometry.Geometry.Curvature

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SpeedDerivative
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.HeatEquation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 

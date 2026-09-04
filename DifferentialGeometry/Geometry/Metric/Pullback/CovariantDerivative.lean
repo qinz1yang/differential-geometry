@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Restriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback

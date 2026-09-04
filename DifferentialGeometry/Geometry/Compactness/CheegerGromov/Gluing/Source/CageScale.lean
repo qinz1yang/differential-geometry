@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Indexing
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Data.Indexing
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Basic

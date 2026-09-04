@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.FixedFi
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.SecondOrder
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceIntertwining
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.ContractedBianchi
-import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.CurvatureTraceFiberEnergy
 import DifferentialGeometry.Geometry.Connection.TensorNabla.FiberNorm.FrameSum
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceFrame

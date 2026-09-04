@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Geometry.Coordinates.ChartFrame
+import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
 import Mathlib.Geometry.Manifold.Algebra.Monoid
 import Mathlib.Geometry.Manifold.Algebra.Structures
 import Mathlib.LinearAlgebra.Matrix.PosDef

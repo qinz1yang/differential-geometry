@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
-import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Rellich.Basic
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 import DifferentialGeometry.Analysis.Sobolev.Chart.AtlasNorm.Atlas
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic

@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.FixedDomainBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.FixedDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.RestartExtension
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivativeTail
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Tower
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.Tail
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Estimate
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.ChartGramContinuity
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram

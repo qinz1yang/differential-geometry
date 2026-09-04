@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormIdentity
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.CoefficientIntegral
 import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra

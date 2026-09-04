@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Metric
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Metric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic

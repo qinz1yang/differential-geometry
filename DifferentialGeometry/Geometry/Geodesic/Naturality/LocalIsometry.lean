@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Geodesic.Chart.Regularity
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Geodesic.Naturality.PullbackCross

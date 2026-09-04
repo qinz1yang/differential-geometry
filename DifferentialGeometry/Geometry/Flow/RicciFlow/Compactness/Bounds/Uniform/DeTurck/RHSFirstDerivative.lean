@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.J
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.JetComparison.ReverseSecondDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.CovariantDerivative
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciTowerTrace
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Trace
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.OperatorFieldApplication
 import DifferentialGeometry.Geometry.Connection.MetricTrace.NormBound
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
-import DifferentialGeometry.Tensor.RSTensor.Pullback
+import DifferentialGeometry.Tensor.RSTensor.Functoriality.Pullback
 
 set_option autoImplicit false
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RicciJet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.CovariantDerivativeFields
-import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
+import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

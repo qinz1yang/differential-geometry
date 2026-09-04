@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Regularity.Joint
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Distribution.AEEqOfIntegralContDiff
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
+import DifferentialGeometry.Tensor.RSTensor.Smoothness.Parametric
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Field
 

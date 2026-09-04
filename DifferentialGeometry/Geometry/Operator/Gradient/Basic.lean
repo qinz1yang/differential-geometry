@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Coordinates.ScalarFunction
-import DifferentialGeometry.Geometry.Coordinates.VectorField
+import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
+import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Tensor.Coordinates.PartialDerivative

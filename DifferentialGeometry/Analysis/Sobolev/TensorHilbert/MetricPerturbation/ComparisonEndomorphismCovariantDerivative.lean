@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.FibreBounds
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.HebeyToHilbertSobolev
 import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.OrderDropping
-import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
+import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SlotInsertion
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.SecondBianchi
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic

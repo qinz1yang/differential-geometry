@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.ConnectionCoefficients
+import DifferentialGeometry.Geometry.Coordinates.Connection.Coefficients
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Bundle.TangentSpace
 

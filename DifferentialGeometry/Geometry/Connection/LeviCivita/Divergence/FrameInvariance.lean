@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.DivergenceCovariantTrace
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
-import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection
 import Mathlib.Geometry.Manifold.MFDeriv.Tangent

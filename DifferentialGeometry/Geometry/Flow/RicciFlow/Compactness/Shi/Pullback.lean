@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Tower
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 open DifferentialGeometry.Geometry.Curvature

@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Metric.Construction.BumpExtension
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solutions
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.Bounds
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

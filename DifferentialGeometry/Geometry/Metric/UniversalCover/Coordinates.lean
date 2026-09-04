@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Covering.Manifold
+import DifferentialGeometry.Topology.Covering.Smooth.Manifold
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density

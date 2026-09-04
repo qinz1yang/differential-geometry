@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.FirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities
 open DifferentialGeometry.Geometry.Curvature

@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Calculus.MapConvergence.QuadraticEvaluation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Average.Weights.Convergence
 import DifferentialGeometry.Analysis.Calculus.Compactness.BilinearForm
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.AtomWeights.Basic
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Indexing
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.CenterMap.Data.Indexing
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

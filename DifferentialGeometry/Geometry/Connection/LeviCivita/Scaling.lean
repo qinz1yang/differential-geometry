@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Metric.Scaling
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

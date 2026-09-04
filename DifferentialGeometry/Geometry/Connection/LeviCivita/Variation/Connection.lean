@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
-import DifferentialGeometry.Geometry.Coordinates.ChristoffelTensor
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Connection.ChristoffelTensor
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
-import DifferentialGeometry.Geometry.Curvature.Basic
+import DifferentialGeometry.Geometry.Curvature.Riemann.RawFields
 import DifferentialGeometry.Geometry.Curvature.Components.Basic
 import DifferentialGeometry.Geometry.Curvature.Components.Lowering
 import DifferentialGeometry.Geometry.Curvature.Components.TraceOneForm
@@ -16,7 +16,7 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Tors
 import DifferentialGeometry.Geometry.Connection.Variation.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

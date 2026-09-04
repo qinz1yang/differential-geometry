@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Energy.Absorption
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.AllTimesBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.AllTimes
 
 noncomputable section
 
