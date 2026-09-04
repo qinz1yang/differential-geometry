@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.Smoothness.DerivativeAtZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.Derivative
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace

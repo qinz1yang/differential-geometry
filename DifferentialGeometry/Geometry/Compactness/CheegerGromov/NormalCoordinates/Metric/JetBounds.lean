@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.MetricJets
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.MetricJets
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Jacobi.JetBounds
 
 

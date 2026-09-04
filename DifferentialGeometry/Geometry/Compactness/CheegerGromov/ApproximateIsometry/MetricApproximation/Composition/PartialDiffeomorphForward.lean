@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Defs
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.TensorError
-import DifferentialGeometry.Geometry.Metric.Pullback.CompactExtension
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.CompactExtension
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 
 open DifferentialGeometry.Geometry.Curvature

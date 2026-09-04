@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Princi
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.CrossScaleCauchySchwarz
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
 import DifferentialGeometry.Analysis.ODE.Existence.GlobalLipschitzAffine
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Spectral.Plancherel
 import Mathlib.Analysis.InnerProductSpace.PiL2
 open DifferentialGeometry.Geometry.Curvature
 

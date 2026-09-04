@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
-import DifferentialGeometry.Geometry.Operator.Family.Gram
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
 
 set_option autoImplicit false
 

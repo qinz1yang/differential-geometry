@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

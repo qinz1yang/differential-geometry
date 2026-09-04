@@ -5,7 +5,7 @@ import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Geometry.Comparison.Variation.Field.ChartConstruction
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
-import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Regularity.Joint
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension

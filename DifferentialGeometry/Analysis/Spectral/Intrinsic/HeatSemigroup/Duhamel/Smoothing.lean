@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Spectral.Smoothing
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerModeEndpoint
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator.Basic
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerMode.Endpoint
 
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Geometry.Curvature

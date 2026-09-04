@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Re
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
-import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
 
 set_option autoImplicit false

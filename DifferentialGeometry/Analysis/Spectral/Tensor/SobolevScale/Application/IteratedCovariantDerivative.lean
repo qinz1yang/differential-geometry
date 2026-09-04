@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 open DifferentialGeometry.Analysis.Spectral

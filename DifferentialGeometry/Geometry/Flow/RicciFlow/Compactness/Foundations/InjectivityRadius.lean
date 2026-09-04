@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.InjectivityRadius
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.InjectivityRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Defs
 
 noncomputable section

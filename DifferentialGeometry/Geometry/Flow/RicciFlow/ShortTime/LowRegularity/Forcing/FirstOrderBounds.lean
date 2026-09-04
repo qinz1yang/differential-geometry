@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ComponentL2.Unifo
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.ChartComponentIdentity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.IntrinsicThirdJet
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.MetricJets.CovariantInput
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
     DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
     DifferentialGeometry.Analysis.Spectral.MetricRealization

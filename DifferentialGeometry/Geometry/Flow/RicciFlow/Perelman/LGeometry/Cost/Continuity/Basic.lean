@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Ch
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Ramp
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Ramp
 
 set_option autoImplicit false
 

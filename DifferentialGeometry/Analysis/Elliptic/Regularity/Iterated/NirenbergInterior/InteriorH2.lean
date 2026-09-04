@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIde
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.DerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.WeakPartialDerivativeBound
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartHk.H2NonSmooth
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 open DifferentialGeometry.Geometry.Curvature
 
 

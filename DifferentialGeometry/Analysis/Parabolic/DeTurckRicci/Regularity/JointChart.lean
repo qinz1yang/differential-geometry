@@ -7,8 +7,8 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Smoothness
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
-import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
-import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateComponents
+import DifferentialGeometry.Geometry.Metric.DeTurck.Coordinates.Formula
+import DifferentialGeometry.Geometry.Metric.DeTurck.Coordinates.Components
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.MatrixChartIdentification
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs

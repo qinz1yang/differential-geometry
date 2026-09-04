@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.Inverse.Radius
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Smoothness
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement
 import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Shape

@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThree
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThree
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedData
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 open DifferentialGeometry.Geometry.Curvature
 

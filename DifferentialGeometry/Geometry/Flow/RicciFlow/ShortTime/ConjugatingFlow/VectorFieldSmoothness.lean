@@ -6,7 +6,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.C
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
-import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
+import DifferentialGeometry.Geometry.Metric.DeTurck.Coordinates.Formula
 
 
 open DifferentialGeometry.Geometry.Curvature

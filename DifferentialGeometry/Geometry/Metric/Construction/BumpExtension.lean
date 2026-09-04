@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Construction.SmoothMetricFromCoefficients
-import DifferentialGeometry.Geometry.Metric.Pullback.OpenSubtype
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 open DifferentialGeometry.Geometry.Curvature
 

@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.Iter
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuantK
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 open DifferentialGeometry.Geometry.Curvature
 
 

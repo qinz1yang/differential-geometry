@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.TameBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.DirichletBochnerGap
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bochner.DirichletGap
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.FiniteSpectral
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral

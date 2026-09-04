@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricCompar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Integrability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.EndpointControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.SourceTailControl
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.CurvatureBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Curvature.ScalarBound
 
 set_option autoImplicit false
 

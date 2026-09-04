@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Schauder.Elliptic.CompactEllipticity
 import DifferentialGeometry.Analysis.Schauder.Holder.CompactRegularity
 import DifferentialGeometry.Analysis.Schauder.Parabolic.Chart.Operator
 import DifferentialGeometry.Analysis.TimeInterval
-import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 
 noncomputable section
 

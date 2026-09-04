@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Basic
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Subcritical
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
-import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDense
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.FirstOrder
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Rellich.Compactness
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff.ClassicalSchauder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff.Gauge
-import DifferentialGeometry.Analysis.Schauder.Cutoff.ParabolicBall
+import DifferentialGeometry.Analysis.Schauder.Cutoff.Parabolic.Ball
 
 
 noncomputable section

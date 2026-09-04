@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.ManifoldLimitWkp
-import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDenseLemmas
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Preliminaries
 
 noncomputable section
 

@@ -16,8 +16,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Completen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.FlowLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.WindowEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Blowup
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.EarlyTime
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ScaleTransfer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Persistence.EarlyTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Scale.Transfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Canonical.Compatibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.BoundedGeometry

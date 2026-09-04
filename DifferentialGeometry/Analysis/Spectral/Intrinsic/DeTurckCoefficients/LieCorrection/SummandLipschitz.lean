@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
-import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateComponents
+import DifferentialGeometry.Geometry.Metric.DeTurck.Coordinates.Components
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

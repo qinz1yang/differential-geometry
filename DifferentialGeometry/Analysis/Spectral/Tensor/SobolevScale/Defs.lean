@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Semigroup
+import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Semigroup.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 open DifferentialGeometry.Geometry.Curvature
 

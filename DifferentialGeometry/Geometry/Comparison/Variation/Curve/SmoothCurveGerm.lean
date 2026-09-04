@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas

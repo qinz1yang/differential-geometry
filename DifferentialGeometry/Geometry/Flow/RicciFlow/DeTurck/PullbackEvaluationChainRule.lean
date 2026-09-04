@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.Pullback
-import DifferentialGeometry.Geometry.Metric.Pullback.EvaluationChainRule
-import DifferentialGeometry.Geometry.Metric.Pullback.DerivativeDecomposition
+import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.ChainRule
+import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.DerivativeDecomposition
 import Mathlib.Analysis.Calculus.Deriv.Comp
 import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Analysis.Calculus.FDeriv.Prod

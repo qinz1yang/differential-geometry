@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Schauder.Cutoff.Value
-import DifferentialGeometry.Analysis.Schauder.Cutoff.SecondJet
+import DifferentialGeometry.Analysis.Schauder.Cutoff.Bounds.Value
+import DifferentialGeometry.Analysis.Schauder.Cutoff.Bounds.SecondJet
 import DifferentialGeometry.Analysis.Schauder.Elliptic.VariableCoefficient.Cutoff
 
 noncomputable section

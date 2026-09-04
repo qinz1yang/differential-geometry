@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.TimeTruncation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.TimeTruncation
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.SolutionHeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Regularity.Norm

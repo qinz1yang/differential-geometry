@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Galerkin.DeTurckEnergy
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Existence.Quasilinear
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerModeL2
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerMode.L2
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Spectral.Plancherel
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.Space
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.PointwiseSpectralCoordinates
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.FixedPoint.Forcing
@@ -9,7 +9,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.TensorHsInterpolationLim
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Projection.TimeL2EigenProjection
 import DifferentialGeometry.Analysis.ProjectedContractionFixedPoint
 import Mathlib.Analysis.ODE.Gronwall
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator.Basic
 import Mathlib.Topology.Algebra.InfiniteSum.Real
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Regularity.InteriorTimeSmoothing
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
@@ -20,9 +20,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Regularity.Ser
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DeTurckRemainderPathTimeJet.WithMass
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Regularity.SmoothCoordinateJetPreservation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Spectral.MassUniformBound
-import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLineParam
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Parametric
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.ForcingFiniteOrderTimeRegularity.Driver
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TimeL2InterpolationLimit
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Interpolation.TimeL2Limit
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Symmetry
@@ -32,9 +32,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Duhamel.Sm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralEigenSeriesJointGram.JointSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.PointwiseDerivative
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Regularity.PointwiseDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Modulus
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Compactness.Modulus
 
 section
 open DifferentialGeometry.Analysis.Sobolev.CSupTensor

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.PartitionOfUnityNormComparison
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.DirichletBochnerGap
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.LaplacianIterateLadder
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bochner.DirichletGap
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bochner.LaplacianIterateLadder
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.ApplicationJetWindow
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CometricSlotPairing
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier

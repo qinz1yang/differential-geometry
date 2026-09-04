@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplResidualMemW1p
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplResidual
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidual
-import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDenseHigherOrder
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.HigherOrder
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.HigherOrder
 
 noncomputable section

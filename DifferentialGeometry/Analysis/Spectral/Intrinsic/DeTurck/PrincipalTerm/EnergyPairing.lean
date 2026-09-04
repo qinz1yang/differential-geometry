@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.PartitionOfUnityNormComparison
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CometricSlotPairing
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.OperatorField.Application
@@ -12,8 +12,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.Connecti
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.EigenBasis
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SlotInsertion
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.DirichletBochnerGap
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bochner.DirichletGap
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Algebra.IteratedApplication
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SelfAdjointDerivative
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.SlotInsertSelfAdjointPairing

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
-import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 

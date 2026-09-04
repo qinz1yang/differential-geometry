@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lipschitz.Basic
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
-import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDenseLemmas
-import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDense
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Preliminaries
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.FirstOrder
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMulQuant
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.NormEquivalence
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact

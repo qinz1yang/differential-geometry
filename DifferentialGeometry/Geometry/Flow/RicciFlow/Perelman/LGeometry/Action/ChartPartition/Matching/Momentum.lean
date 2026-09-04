@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Ch
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Matching.SameChartMomentum
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Chart.OverlapDerivative
 import DifferentialGeometry.Topology.Manifold.CurveChart.InitialSegment
-import DifferentialGeometry.Geometry.Operator.Family.Gram
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
 
 set_option autoImplicit false
 

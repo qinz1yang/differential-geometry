@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Local
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.Monotonicity
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

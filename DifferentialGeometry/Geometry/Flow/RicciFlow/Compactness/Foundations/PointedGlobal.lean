@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.PointedMaps
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BonnetMyers
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.BonnetMyers
 
 import Mathlib.Topology.Connected.Clopen
 open DifferentialGeometry.Geometry.Curvature

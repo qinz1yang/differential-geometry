@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCo
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.LocallyLipschitzTruncation
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ManifoldC0
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.HebeyToHilbertSobolev
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.PartitionOfUnityNormComparison
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

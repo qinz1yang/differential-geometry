@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CrossTermIBP
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 
 
 noncomputable section

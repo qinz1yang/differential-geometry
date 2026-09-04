@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Analysis.Calculus.Cutoff.BumpClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.RadialBump
 
 
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.TwoParameter

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Curvature.FirstJet
 
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FirstOrder.Bounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.UniformBochnerBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.UniformBochner
 
 noncomputable section
 

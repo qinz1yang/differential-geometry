@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Pairing.MixedDerivativeH4Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Application.MixedTensorFirstSecondOrderBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.SecondDerivativePairing.FirstOrderCoefficient
 
 set_option autoImplicit false

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Naturality
 import DifferentialGeometry.Geometry.Metric.DeTurck.PullbackEvaluation
-import DifferentialGeometry.Geometry.Metric.Pullback.EvaluationDerivative
+import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.Derivative
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.VariationalEquation.VariationalFlow
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.PushforwardSmooth
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalD
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.Symmetry
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.FaithfulH1Embedding
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2PointwiseUniform
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.LaplacianIterateLadder
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bochner.LaplacianIterateLadder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.GagliardoNirenberg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Application.CovariantTensorBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Application.CovariantDerivativeSlotBounds

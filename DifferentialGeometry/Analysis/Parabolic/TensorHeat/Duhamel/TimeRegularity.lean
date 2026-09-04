@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.TensorHeat.Duhamel.MildSolution
-import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.AbstractSpectralDuhamelTimeRegularity
+import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.DuhamelTimeRegularity
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.GraphNorm
 
 noncomputable section

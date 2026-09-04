@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Regularity.AllOrders
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.RemainderRepresentation
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Decomposition.Remainder
 
 noncomputable section
 

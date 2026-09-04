@@ -5,10 +5,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricFamilyRegularity
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnectionDifference
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Variation.ConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.GramDifference
-import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Tensor.RSTensor

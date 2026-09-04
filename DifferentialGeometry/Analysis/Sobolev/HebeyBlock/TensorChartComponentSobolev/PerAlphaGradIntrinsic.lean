@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.TensorChartComponentSobolev.PerChartGradientL2Headline
-import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorChartComponentSobolevBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.SobolevBound
 open DifferentialGeometry.Geometry.Operator
 
 

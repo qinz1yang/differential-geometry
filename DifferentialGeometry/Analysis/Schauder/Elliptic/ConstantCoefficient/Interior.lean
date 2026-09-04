@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Schauder.Elliptic.ConstantCoefficient.Estimate
-import DifferentialGeometry.Analysis.Schauder.Cutoff.Existence
-import DifferentialGeometry.Analysis.Schauder.Cutoff.Laplacian
+import DifferentialGeometry.Analysis.Schauder.Cutoff.Elliptic.Existence
+import DifferentialGeometry.Analysis.Schauder.Cutoff.Elliptic.Laplacian
 
 noncomputable section
 

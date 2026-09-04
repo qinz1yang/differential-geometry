@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.SubcriticalSmallTime
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TimeL2InterpolationLimit
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Interpolation.TimeL2Limit
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.TimeSupremumTrace
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Duhamel.Estimates
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Bochner.MixedNorm

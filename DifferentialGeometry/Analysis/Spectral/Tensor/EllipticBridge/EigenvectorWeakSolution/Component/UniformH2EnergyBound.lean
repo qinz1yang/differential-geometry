@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Component.H2EnergyBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.IteratedRegularity.Support
-import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorChartComponentSobolevBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.SobolevBound
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 

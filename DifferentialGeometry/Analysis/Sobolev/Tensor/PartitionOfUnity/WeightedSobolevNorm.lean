@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedNorm
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

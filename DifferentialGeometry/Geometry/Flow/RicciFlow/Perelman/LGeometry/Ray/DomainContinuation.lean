@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.CompactCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
-import DifferentialGeometry.Geometry.Operator.Family.Gram
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
 
 set_option autoImplicit false
 

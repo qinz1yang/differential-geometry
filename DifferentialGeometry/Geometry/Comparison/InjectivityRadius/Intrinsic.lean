@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.FramedCoordinates
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Coordinates
 import Mathlib.Data.ENNReal.Real
 
 set_option autoImplicit false

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.SolutionHeatEquation
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CutoffEstimate
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Estimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Regularity.Norm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Defs

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Cutoff.Basic
-import DifferentialGeometry.Analysis.Schauder.Cutoff.SecondJet
+import DifferentialGeometry.Analysis.Schauder.Cutoff.Bounds.SecondJet
 
 noncomputable section
 

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.CoordinateTransfer
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Smoothness
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion

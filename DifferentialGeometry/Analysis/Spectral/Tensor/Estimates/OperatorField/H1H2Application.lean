@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.LpProduct
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H1L6
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

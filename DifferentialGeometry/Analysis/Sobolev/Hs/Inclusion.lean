@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Hs.SpectralDefs
+import DifferentialGeometry.Analysis.Sobolev.Hs.Defs
 
 noncomputable section
 

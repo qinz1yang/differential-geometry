@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.StrictParabolicity
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Smoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.ConnectionLaplacianMaximalRegularity
-import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.PointwiseDerivative
+import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Regularity.PointwiseDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.InitialData
 
 namespace DifferentialGeometry.PDE.RicciFlow

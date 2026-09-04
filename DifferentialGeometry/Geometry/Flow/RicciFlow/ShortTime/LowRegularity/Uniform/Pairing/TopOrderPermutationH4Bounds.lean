@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.LinearTerms
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.LpProduct
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2PointwiseUniform
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.FirstOrder
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.LaplacianIterateLadder
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Order.First
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bochner.LaplacianIterateLadder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.H1L6
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.FiberLpThreeSixComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.Morrey

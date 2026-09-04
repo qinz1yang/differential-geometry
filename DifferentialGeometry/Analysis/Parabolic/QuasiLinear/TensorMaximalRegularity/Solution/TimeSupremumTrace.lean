@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.PointwiseSpectralCoordinates
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerModeEndpoint
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TimeL2InterpolationLimit
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerMode.Endpoint
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Interpolation.TimeL2Limit
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature

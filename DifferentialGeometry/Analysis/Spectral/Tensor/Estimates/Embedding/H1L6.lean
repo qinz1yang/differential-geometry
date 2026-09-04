@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ComponentL2.TensorSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentWkpNormBoundFromH1
-import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponentGradientEpNormPerAlpha
+import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.GradientLpNormPerIndex
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Subcritical
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.L2
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner

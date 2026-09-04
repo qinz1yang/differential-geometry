@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Solution.SymmetryPreservation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Forcing.SmoothIdentification
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.Basic
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.SectionRealization
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Realization.Section
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.ExponentCongruence
 
 noncomputable section

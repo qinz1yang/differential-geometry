@@ -8,7 +8,7 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.JointSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.ManifoldSmoothness
-import DifferentialGeometry.Geometry.Metric.Family.InverseMetricRegularity
+import DifferentialGeometry.Geometry.Metric.Family.InverseMetric.Regularity
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamily.ChartSmoothness
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ParametricSmoothness

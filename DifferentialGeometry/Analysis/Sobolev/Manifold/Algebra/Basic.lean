@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.Basic
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.MultiplyQuant
 import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
-import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDenseLemmas
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Preliminaries
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Algebra.SmoothExtension
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Algebra.SmoothMultiplierWkpBound
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Algebra.ChartSmoothFactors

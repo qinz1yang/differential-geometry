@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.Basic
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lp.Basic
-import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDense
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.FirstOrder
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Subcritical

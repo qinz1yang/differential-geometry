@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Remainder
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSymbolFormula
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Symbol.Formula
 open DifferentialGeometry.Geometry.Operator
 
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Continuity
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Continuity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.Completeness
 import Mathlib.Topology.Connected.PathConnected

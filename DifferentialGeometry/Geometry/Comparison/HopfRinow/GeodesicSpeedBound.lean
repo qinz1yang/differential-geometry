@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Geodesic.Maximal.Homogeneity
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import DifferentialGeometry.Geometry.Geodesic.Equation.ProjectionDerivative
 import DifferentialGeometry.Geometry.Exponential.Defs
-import DifferentialGeometry.Geometry.Exponential.Smoothness.ZeroSectionConstancy
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionConstancy
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density

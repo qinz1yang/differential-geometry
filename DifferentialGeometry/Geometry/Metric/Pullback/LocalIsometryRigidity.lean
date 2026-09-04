@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry
 open DifferentialGeometry.Geometry.Curvature

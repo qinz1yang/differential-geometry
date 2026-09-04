@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPotential.Weak
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Strong
-import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 
 set_option autoImplicit false
 

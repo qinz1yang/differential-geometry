@@ -12,7 +12,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.NoConjugatePoints.Mini
 import DifferentialGeometry.Geometry.Comparison.Distance.Calabi
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient
-import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicDerivativeAtZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDerivative
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

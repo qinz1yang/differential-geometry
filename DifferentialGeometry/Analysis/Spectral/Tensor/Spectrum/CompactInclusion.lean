@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Rellich.TensorL2SubsequenceExtraction
-import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorChartComponentSobolevBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.SobolevBound
 import Mathlib.Analysis.Normed.Operator.Compact.Basic
 import Mathlib.Topology.Sequences
 

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.PartitionOfUnityNormComparison
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev

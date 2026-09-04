@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalD
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.FiberNorm
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.ZeroDecomposition
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Decomposition.AtZero
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.PathIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Principal.H2H3
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetIntegral

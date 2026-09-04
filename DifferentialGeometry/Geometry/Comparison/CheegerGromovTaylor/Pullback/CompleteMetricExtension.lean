@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
 import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Smoothness
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Construction.CompactPerturbationCompleteness

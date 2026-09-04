@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.UniformFamily
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.FirstDerivativeUniform
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Bounds.UniformFamily
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Bounds.FirstDerivativeUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.InverseGramLowerBound
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 open DifferentialGeometry.Analysis.Spectral

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChristoffelCorrec
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.ChartGramContinuity
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.H1Compl
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorChartComponentSobolevBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.SobolevBound
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartTensor0SCovariantDerivative

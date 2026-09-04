@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chri
 import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetPartialDeriv
-import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGlueParam
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Parametric
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Evolution
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 open DifferentialGeometry.Geometry.Curvature

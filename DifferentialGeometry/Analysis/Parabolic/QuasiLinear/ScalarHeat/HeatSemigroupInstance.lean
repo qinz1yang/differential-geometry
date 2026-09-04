@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupContinuity
+import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroup.Continuity
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.BoundedC0Semigroup
 
 noncomputable section

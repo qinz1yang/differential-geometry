@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.SecondOrder
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Order.Second
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Grid.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Grid.ConvexJets
 

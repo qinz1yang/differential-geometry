@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.Cutoff.BumpClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.RadialBump
 import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Pullback.CompleteMetricExtension

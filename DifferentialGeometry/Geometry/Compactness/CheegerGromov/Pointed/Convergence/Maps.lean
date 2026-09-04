@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Topology.Exhaustion
 open DifferentialGeometry.Geometry.Curvature

@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiate
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CrossTermIBP
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThree
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.ResidualMemW1p
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 import Mathlib.Analysis.Distribution.AEEqOfIntegralContDiff
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

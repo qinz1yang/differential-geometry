@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
-import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import Mathlib.Analysis.Calculus.Deriv.Comp
 
 set_option autoImplicit false

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.FirstOrder
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Order.First
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Interpolation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients.LowOrderJetBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.Morrey

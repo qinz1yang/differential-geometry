@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLineParam
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerMode
+import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Parametric
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.PerMode.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DeTurckRemainderPathTimeJet.WithMass
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
@@ -8,7 +8,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Defs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Spectral.PointwiseFlowDerivative
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Spectral.SmoothRepresentativeRealization
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Regularity.SeriesContinuity
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Spectral.Plancherel
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Geometry.Curvature
 

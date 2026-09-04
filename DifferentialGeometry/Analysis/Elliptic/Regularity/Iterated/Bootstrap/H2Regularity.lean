@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Defs
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.WeakPartialOnVolume
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 
 noncomputable section
 

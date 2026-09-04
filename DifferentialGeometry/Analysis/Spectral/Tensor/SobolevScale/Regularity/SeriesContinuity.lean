@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.WeylSummability
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Synthesis
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Spectral.Synthesis
 import Mathlib.Analysis.Normed.Group.FunctionSeries
 open DifferentialGeometry.Geometry.Curvature
 

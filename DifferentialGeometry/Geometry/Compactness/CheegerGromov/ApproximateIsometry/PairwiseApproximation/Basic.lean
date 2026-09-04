@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Congruence
 
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ProperMetric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Proper
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
 open DifferentialGeometry.Geometry.Curvature
 

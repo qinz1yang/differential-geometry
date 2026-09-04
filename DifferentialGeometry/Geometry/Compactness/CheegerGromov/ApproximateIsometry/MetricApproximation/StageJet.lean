@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.OfMetricDerivNorm
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PairwiseApproximation.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricDerivativeBounds.StageJet
-import DifferentialGeometry.Geometry.Metric.Pullback.CompactExtension
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.CompactExtension
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.UniformBochnerBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.UniformBochner
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Regularity.SmoothPaths
 
 noncomputable section

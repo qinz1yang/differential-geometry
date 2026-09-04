@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CurvatureDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.CurvatureDerivative.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.CovariantDerivativeFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.IteratedCovariantDerivativeFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Raising
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.SolutionEvolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Evolution.Solution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Equation.Lichnerowicz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci

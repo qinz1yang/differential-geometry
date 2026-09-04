@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.TensorPullback
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnityDensityBound
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.PartitionOfUnity.DensityBound
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Tensor.RSTensor.Defs

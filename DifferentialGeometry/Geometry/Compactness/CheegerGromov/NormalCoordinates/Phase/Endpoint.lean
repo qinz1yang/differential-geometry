@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Exponential.Variation.Smoothness
 
 
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Exponential.NormalBall.Geodesic
@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.EndpointInverse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.GeodesicRealization
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Phase.SymmetricFlow
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

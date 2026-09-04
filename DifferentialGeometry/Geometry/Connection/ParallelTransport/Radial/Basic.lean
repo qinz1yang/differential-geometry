@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
-import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero.ChartFlow
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic

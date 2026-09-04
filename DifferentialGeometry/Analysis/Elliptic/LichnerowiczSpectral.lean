@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
 import DifferentialGeometry.Analysis.Spectral.Scalar.EigenBasis
 import DifferentialGeometry.Analysis.Heat.Semigroup.Defs
-import DifferentialGeometry.Analysis.Heat.Smoothing.SmoothingOfClosed
+import DifferentialGeometry.Analysis.Heat.Smoothing.Regularity.ClosedManifold
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

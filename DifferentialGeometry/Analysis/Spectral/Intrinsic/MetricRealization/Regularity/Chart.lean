@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevBanach
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.Bootstrap.BootstrapMixed
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Spectral.Plancherel
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

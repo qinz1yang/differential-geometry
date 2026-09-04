@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.DirectLimit.Defs
-import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Basic
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import Mathlib.Geometry.Manifold.Riemannian.PathELength

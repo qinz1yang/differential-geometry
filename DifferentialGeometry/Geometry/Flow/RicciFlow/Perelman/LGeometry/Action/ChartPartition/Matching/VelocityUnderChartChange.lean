@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Matching.Momentum
-import DifferentialGeometry.Geometry.Operator.Family.InverseGram
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Inverse
 
 set_option autoImplicit false
 

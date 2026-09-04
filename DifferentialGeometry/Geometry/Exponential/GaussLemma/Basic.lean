@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Exponential.Defs
-import DifferentialGeometry.Geometry.Exponential.Smoothness.DerivativeAtZero
-import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.Derivative
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero.ChartFlow
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic

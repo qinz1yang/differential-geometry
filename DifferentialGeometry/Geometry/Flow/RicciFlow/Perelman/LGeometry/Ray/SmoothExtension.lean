@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Smoothness
 
 set_option autoImplicit false

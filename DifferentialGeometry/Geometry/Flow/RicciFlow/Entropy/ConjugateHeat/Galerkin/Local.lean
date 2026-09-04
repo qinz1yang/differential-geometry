@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.ExactFormula
 import DifferentialGeometry.Analysis.Spectral.Scalar.WeylBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Classical
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.PotentialSpan
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential.Span
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral

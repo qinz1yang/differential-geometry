@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.AbstractSpectralSemigroupContinuity
-import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Semigroup
+import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.SemigroupContinuity
+import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Semigroup.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
 open DifferentialGeometry.Geometry.Curvature
 

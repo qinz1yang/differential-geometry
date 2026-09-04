@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Defs
 
 open DifferentialGeometry.PDE.RicciFlow

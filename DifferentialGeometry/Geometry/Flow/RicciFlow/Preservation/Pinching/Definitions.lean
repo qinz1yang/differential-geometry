@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.TraceAlgebr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.RmTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.EvolutionEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Equation.Norm
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicci.Norm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Basic
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RicciControlsRiemann

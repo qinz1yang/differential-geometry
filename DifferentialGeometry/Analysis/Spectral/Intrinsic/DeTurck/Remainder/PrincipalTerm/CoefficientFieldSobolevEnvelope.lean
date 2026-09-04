@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometri
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalTerm.SpectralGarding
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.HigherOrderTame
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.PartitionOfUnityNormComparison
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
 import DifferentialGeometry.Analysis.Convex.LogConvexSequence
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.CrossScale
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier

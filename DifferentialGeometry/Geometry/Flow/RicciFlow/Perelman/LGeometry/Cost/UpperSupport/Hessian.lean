@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangen
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.AffineParameter
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.SmoothCurveGerm
-import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 
 set_option autoImplicit false
 

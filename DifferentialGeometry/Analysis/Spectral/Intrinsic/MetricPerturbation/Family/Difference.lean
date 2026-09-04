@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetBounds
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricFamilyConnectionDifference
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Variation.ConnectionDifference
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.GramDifference
-import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs

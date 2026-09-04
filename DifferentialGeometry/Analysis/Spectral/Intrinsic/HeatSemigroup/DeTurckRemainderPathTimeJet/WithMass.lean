@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Regularity.JointChar
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Parametric.FiberInnerSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.PartitionOfUnityNormComparison
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SimpLemmas
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DeTurckRemainderPathTimeJet.JointSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.DeTurckRemainderPathTimeJet.OneMinusConnectionLaplacianNormContinuity

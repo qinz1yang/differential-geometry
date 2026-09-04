@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.UniformBochnerBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.UniformBochner
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.AllTimes
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Curvature.ActionZero
 

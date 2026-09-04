@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
 import DifferentialGeometry.Geometry.Exponential.Variation.Smoothness
-import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicDerivativeAtZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDerivative
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv
 import Mathlib.Analysis.Calculus.DerivativeTest

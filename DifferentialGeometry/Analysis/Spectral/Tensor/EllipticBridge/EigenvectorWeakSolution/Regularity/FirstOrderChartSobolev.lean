@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.VariationalIdentity.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.TensorNonSmoothDiffQuot
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.WeakPartialDerivativeBound
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 
 noncomputable section
 

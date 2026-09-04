@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangen
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
-import DifferentialGeometry.Analysis.Calculus.Cutoff.BumpClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.RadialBump
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 

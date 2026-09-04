@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Basic
-import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.SmoothingHs
+import DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.Smoothing.Sobolev
 import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Geometry.Curvature

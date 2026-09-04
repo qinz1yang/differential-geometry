@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.Regularity
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Quadratic.L1Regularity
-import DifferentialGeometry.Geometry.Operator.Family.InverseGram
+import DifferentialGeometry.Geometry.Operator.Family.Gram.Inverse
 
 set_option autoImplicit false
 

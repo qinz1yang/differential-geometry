@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateComponents
+import DifferentialGeometry.Geometry.Metric.DeTurck.Coordinates.Components
 open DifferentialGeometry.Geometry.Operator
 
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.OperatorEquation
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator.Equation
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 open DifferentialGeometry.Geometry.Curvature
 

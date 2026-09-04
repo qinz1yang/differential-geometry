@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
-import DifferentialGeometry.Geometry.Metric.Pullback.DerivativeDecomposition
+import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.DerivativeDecomposition
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Naturality
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Naturality
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField

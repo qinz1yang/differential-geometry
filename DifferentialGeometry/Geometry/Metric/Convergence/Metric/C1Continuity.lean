@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Family.PairSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.TimeRegularity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity

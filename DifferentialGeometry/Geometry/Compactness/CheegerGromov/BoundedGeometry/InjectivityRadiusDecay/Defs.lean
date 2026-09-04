@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.InjectivityRadius
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.InjectivityRadius
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
 
 set_option autoImplicit false
 

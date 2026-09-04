@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Schauder.Cutoff.Ball
+import DifferentialGeometry.Analysis.Schauder.Cutoff.Elliptic.Ball
 import DifferentialGeometry.Analysis.Schauder.Elliptic.ConstantCoefficient.Interior
 
 noncomputable section

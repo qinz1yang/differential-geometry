@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.Family.InverseMetricSmoothness
+import DifferentialGeometry.Geometry.Metric.Family.InverseMetric.Smoothness
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 import DifferentialGeometry.Tensor.RSTensor.Smoothness.Parametric
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace

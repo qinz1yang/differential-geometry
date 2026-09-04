@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSymbol
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Symbol.Basic
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Basic
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.Operator
 

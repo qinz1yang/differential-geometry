@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.MetricLowerBound
 
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.MetricCompleteness
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Completeness
 
 set_option autoImplicit false
 

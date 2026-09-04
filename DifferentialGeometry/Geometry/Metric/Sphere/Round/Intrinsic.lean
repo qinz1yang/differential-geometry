@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.GreatCircle
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 open DifferentialGeometry.Geometry.Curvature
 
 

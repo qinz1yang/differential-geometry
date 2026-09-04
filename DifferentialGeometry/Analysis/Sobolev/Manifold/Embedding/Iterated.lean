@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey.Basic
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.Basic
-import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDense
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.FirstOrder
 import DifferentialGeometry.External.DeGiorgi.WholeSpaceSobolev
 
 

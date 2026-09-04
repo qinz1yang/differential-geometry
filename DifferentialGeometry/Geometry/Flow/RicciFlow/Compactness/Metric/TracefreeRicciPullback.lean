@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCross
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciNorm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicci.Norm
 
 open DifferentialGeometry.Geometry.Curvature
 

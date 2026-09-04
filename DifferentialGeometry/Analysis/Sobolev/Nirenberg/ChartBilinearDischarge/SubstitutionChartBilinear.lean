@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Nirenberg.SubstitutionIdentity.SubstitutionNonSmoothChartBilinear
 import DifferentialGeometry.Analysis.Sobolev.Tools.Mollification.Basic
-import DifferentialGeometry.Analysis.Sobolev.Approximation.H1WeakSolutionApprox
+import DifferentialGeometry.Analysis.Sobolev.Approximation.WeakSolution.H1
 
 
 noncomputable section

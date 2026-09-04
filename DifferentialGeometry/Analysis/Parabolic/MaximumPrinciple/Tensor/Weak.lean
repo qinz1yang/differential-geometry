@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.BarrierCertification
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.BarrierContinuation
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier.Certification
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier.Continuation
 import DifferentialGeometry.Geometry.Operator.Heat.Tensor
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 open DifferentialGeometry.PDE.RicciFlow

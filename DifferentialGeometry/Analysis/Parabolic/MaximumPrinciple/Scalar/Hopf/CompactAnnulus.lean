@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Barrier
 import DifferentialGeometry.Geometry.Boundary.DefiningFunction.Curve
-import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
+import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 
 
 set_option autoImplicit false

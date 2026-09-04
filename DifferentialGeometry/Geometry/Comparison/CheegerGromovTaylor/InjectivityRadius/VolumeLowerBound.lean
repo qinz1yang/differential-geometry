@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.EuclideanUpper
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.FramedCoordinates
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.FramedJacobi
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Coordinates
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Jacobi
 
 set_option autoImplicit false
 

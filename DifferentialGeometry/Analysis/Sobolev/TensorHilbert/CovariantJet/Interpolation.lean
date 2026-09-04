@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Basic
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
 
 noncomputable section
 

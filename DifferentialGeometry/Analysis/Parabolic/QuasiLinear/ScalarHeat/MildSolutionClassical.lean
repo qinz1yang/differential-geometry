@@ -1,10 +1,10 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.ScalarHeat.MildSolution
-import DifferentialGeometry.Analysis.Heat.Semigroup.Duhamel
-import DifferentialGeometry.Analysis.Heat.Smoothing.MildSolution
-import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupHs
-import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupHsExt
+import DifferentialGeometry.Analysis.Heat.Semigroup.Solution.Duhamel
+import DifferentialGeometry.Analysis.Heat.Smoothing.Scalar.MildSolution
+import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroup.Basic
+import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroup.Extension
 import DifferentialGeometry.Analysis.Sobolev.Hs.Inclusion
-import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroupContinuity
+import DifferentialGeometry.Analysis.Sobolev.Hs.HeatSemigroup.Continuity
 
 noncomputable section
 

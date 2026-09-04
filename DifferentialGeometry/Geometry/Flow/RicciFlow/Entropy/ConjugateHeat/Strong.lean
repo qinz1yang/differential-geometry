@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLaplacianDifference.Measurability
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nonautonomous.Basic
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.FieldIdentification

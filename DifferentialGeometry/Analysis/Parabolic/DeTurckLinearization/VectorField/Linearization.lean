@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateComponents
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ChristoffelLinearization
+import DifferentialGeometry.Geometry.Metric.DeTurck.Coordinates.Components
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Variation.Christoffel
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

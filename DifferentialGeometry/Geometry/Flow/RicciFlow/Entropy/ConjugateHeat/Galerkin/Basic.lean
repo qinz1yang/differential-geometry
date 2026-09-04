@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.ODE.Existence.GlobalLipschitzAffine
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Spectral.Plancherel
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLaplacianDifference.Measurability
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.LaplacianDifferenceCore
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature

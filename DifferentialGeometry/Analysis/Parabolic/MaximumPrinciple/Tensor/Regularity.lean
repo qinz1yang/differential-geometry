@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNullCompactness
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNullSigns
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNull.Compactness
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNull.Signs
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow

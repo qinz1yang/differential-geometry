@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.TangentLift
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.InverseManifoldChain
-import DifferentialGeometry.Geometry.Exponential.Smoothness.ZeroSectionConstancy
-import DifferentialGeometry.Geometry.Exponential.Smoothness.MatchDataReduction
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionConstancy
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.MatchData
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.UniformExistence
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 open DifferentialGeometry.Geometry.Curvature

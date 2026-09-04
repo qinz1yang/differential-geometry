@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingMetric.SmallExponentLocalBoundedness
-import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 
 

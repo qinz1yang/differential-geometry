@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Galerkin.Energy
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.CriticalTame
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Critical.Tame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Basic
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature

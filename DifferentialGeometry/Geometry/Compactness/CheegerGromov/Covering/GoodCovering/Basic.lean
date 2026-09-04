@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.BallMultiplicityBound
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
 
 set_option autoImplicit false
 

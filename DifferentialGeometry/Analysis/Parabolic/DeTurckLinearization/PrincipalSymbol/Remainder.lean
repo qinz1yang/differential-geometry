@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.SecondOrder
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSymbol
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Symbol.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

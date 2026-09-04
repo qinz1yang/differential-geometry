@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Duhamel.Smoothing
-import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Operator.Basic
 
 noncomputable section
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
-import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.Basic
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero.ChartFlow
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Basic
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Geodesic.Reparametrization.Affine
 open DifferentialGeometry.Geometry.Curvature

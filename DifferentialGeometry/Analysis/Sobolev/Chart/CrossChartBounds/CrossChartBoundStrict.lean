@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartBound
 import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.TransitionDiffeo
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.Transition
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.ChartSobolevDensity

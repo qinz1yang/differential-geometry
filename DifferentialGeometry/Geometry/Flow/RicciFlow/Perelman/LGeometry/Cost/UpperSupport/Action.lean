@@ -3,9 +3,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.ChartLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.LowerBound
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
-import DifferentialGeometry.Analysis.Calculus.Cutoff.BumpClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.RadialBump
 import DifferentialGeometry.Analysis.Calculus.Derivative.ParametricIntervalIntegral
-import DifferentialGeometry.Analysis.Calculus.Cutoff.SmoothClamp
+import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
 
 set_option autoImplicit false
 

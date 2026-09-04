@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pull
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
-import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 import DifferentialGeometry.Topology.SigmaCompactOpen
 

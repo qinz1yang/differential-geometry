@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.SummandLipschitz
-import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
+import DifferentialGeometry.Geometry.Metric.DeTurck.Coordinates.Formula
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.H2
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 
 

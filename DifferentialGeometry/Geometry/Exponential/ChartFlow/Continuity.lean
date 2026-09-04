@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.Defs
-import DifferentialGeometry.Geometry.Exponential.Smoothness.ZeroSectionConstancy
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionConstancy
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.PreconnectedPropagation
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic

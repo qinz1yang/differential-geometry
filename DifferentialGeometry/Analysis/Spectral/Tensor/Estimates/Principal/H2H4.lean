@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
-import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.IteratedCovariantDerivative
 
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

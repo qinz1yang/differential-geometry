@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Schauder.Parabolic.EvolvingMetric
-import DifferentialGeometry.Analysis.Schauder.Cutoff.ParabolicBallExtension
+import DifferentialGeometry.Analysis.Schauder.Cutoff.Parabolic.BallExtension
 
 
 noncomputable section

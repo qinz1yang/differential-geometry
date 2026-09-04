@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 import Mathlib.Analysis.Normed.Operator.Extend
 import Mathlib.Analysis.Normed.Operator.ContinuousLinearMap

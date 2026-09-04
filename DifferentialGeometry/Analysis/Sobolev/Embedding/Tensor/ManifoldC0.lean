@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.OffCentreFibre
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Local.BallL2
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedSobolevNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Topology.MetricSpace.Pseudo.Lemmas
 open DifferentialGeometry.Geometry.Curvature

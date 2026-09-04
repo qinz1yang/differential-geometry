@@ -1,7 +1,7 @@
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
-import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero
+import DifferentialGeometry.Geometry.Exponential.Smoothness.AwayFromZero.ChartFlow
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay.Defs
 

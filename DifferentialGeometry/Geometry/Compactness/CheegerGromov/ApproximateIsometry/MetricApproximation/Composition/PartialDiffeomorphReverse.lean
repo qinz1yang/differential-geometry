@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.MetricApproximation.Composition.PartialDiffeomorphForward
-import DifferentialGeometry.Geometry.Metric.Pullback.CompactExtension
+import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.CompactExtension
 import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
 
 

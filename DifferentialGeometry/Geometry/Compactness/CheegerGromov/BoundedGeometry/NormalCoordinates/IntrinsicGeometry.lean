@@ -3,10 +3,10 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Radius
 import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.BallChart
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.BallChart
 import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.Gronwall
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.BoundedGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
 open DifferentialGeometry.Geometry.Curvature
 

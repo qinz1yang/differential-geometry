@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chart.RemainderPolynomial
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.PrincipalSymbol
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSecondOrderPart
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Symbol.SecondOrderPart
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Remainder
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 open DifferentialGeometry.Geometry.Curvature

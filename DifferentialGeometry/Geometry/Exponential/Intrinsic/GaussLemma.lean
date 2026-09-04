@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.NormDiamond
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
-import DifferentialGeometry.Geometry.Exponential.Intrinsic.FramedCoordinates
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.Coordinates
 import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Analysis.Calculus.Seminorm.Radial
