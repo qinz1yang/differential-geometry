@@ -62,6 +62,40 @@ theorem isMetricNorm_of_riemannianBundle (g : SmoothRiemannianMetric I M) :
     IsMetricNorm (I := I) (M := M) g :=
   fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
 
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem inner_eq_of_isMetricNorm
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (x : M) (v w : TangentSpace I x) :
+    (inner ℝ v w : ℝ) = g.inner x v w := by
+  have hnonneg : ∀ z : TangentSpace I x, 0 ≤ g.inner x z z := by
+    intro z
+    rcases eq_or_ne z 0 with rfl | hz
+    · simp
+    · exact (g.pos x z hz).le
+  have hdiag : ∀ z : TangentSpace I x,
+      (inner ℝ z z : ℝ) = g.inner x z z := by
+    intro z
+    have hnorm : ‖z‖ = Real.sqrt (g.inner x z z) := by
+      have hz := hEnorm x z
+      rw [← ofReal_norm] at hz
+      exact (ENNReal.ofReal_eq_ofReal_iff (norm_nonneg z) (Real.sqrt_nonneg _)).mp hz
+    rw [real_inner_self_eq_norm_sq, hnorm, Real.sq_sqrt (hnonneg z)]
+  have hinner : (inner ℝ v w : ℝ) =
+      ((inner ℝ (v + w) (v + w) : ℝ) - inner ℝ v v - inner ℝ w w) / 2 := by
+    rw [real_inner_add_add_self]
+    ring
+  have hginner : g.inner x v w =
+      (g.inner x (v + w) (v + w) - g.inner x v v - g.inner x w w) / 2 := by
+    have hadd : g.inner x (v + w) (v + w) =
+        g.inner x v v + g.inner x v w + g.inner x w v + g.inner x w w := by
+      simp [map_add, add_apply]
+      ring
+    rw [hadd, g.symm x w v]
+    ring
+  rw [hinner, hginner, hdiag (v + w), hdiag v, hdiag w]
+
 end MetricNorm
 
 end DifferentialGeometry.Geometry.Riemannian
