@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Pointwise
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
-import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerTensor
+import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Basic
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.MetricFlatBasis
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative

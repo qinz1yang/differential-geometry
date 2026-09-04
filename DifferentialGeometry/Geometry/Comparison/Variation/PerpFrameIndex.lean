@@ -1,8 +1,8 @@
-import DifferentialGeometry.Analysis.ODE.IndexForm
+import DifferentialGeometry.Analysis.ODE.IndexForm.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiCoord
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 
 
 open DifferentialGeometry.Geometry.Curvature

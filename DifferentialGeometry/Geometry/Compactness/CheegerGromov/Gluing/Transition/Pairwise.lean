@@ -112,39 +112,39 @@ theorem MetricCompactnessInputs.atom_trans_small
       have hlam : 0 < L.lamInf (gamma : Nat) :=
         inp.decay.lambda_pos inp.hD (L.rInf (gamma : Nat))
       have hhalf : (1 / 2 : Real) ≤
-          Geometry.Riemannian.gpCoerciveConst
+          Geometry.Riemannian.metricCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y :=
-        inp.normalBounds.half_le_gp_const (L.φ k) y
+        inp.normalBounds.half_le_metricCoerciveConst (L.φ k) y
       have hsqrtPos : 0 < Real.sqrt
-          (Geometry.Riemannian.gpCoerciveConst
+          (Geometry.Riemannian.metricCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y) :=
-        Real.sqrt_pos.mpr (Geometry.Riemannian.gpCoerciveConst_pos
+        Real.sqrt_pos.mpr (Geometry.Riemannian.metricCoerciveConst_pos
           (I := I) (X.obj (L.φ k)).metric y)
       have hsqrtTwoThirds : (2 / 3 : Real) < Real.sqrt (1 / 2 : Real) := by
         have hs := Real.sq_sqrt (by norm_num : (0 : Real) ≤ 1 / 2)
         have hn := Real.sqrt_nonneg (1 / 2 : Real)
         nlinarith
       have hsqrt : (2 / 3 : Real) < Real.sqrt
-          (Geometry.Riemannian.gpCoerciveConst
+          (Geometry.Riemannian.metricCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y) :=
         hsqrtTwoThirds.trans_le (Real.sqrt_le_sqrt hhalf)
       have hcoord : 4 * L.lamInf (gamma : Nat) /
-            Real.sqrt (Geometry.Riemannian.gpCoerciveConst
+            Real.sqrt (Geometry.Riemannian.metricCoerciveConst
               (I := I) (X.obj (L.φ k)).metric y) <
           6 * L.lamInf (gamma : Nat) := by
         rw [div_lt_iff₀ hsqrtPos]
         have hfour : (4 : Real) < 6 * Real.sqrt
-            (Geometry.Riemannian.gpCoerciveConst
+            (Geometry.Riemannian.metricCoerciveConst
               (I := I) (X.obj (L.φ k)).metric y) := by
           nlinarith
         calc
           4 * L.lamInf (gamma : Nat) <
-              (6 * Real.sqrt (Geometry.Riemannian.gpCoerciveConst
+              (6 * Real.sqrt (Geometry.Riemannian.metricCoerciveConst
                 (I := I) (X.obj (L.φ k)).metric y)) *
                 L.lamInf (gamma : Nat) :=
             mul_lt_mul_of_pos_right hfour hlam
           _ = 6 * L.lamInf (gamma : Nat) *
-              Real.sqrt (Geometry.Riemannian.gpCoerciveConst
+              Real.sqrt (Geometry.Riemannian.metricCoerciveConst
                 (I := I) (X.obj (L.φ k)).metric y) := by ring
       have htarget := properBall_to_exp (I := I) (X.obj (L.φ k))
         (P (L.φ k)).ms (P (L.φ k)).realizes
@@ -248,7 +248,7 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
     inp.normalRadius.radius_scale_tail inp.hD
       (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r
-  have hgp := inp.normalRadius.half_gp_scale_tail inp.hD
+  have hgp := inp.normalRadius.half_metricCoerciveRatio_scale_tail inp.hD
     (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
     P inp.realizes L inp.pack r
   have hα := seqCenterD_live inp.decay P L (α.1 : Nat) α.2
@@ -279,10 +279,10 @@ theorem MetricCompactnessInputs.pair_exp_maps_tail
     exact (inp.normalBounds.metric_equiv (L.φ k)
       (seqCenterD inp.decay P L k (α.1 : Nat)) 0 hzeroX z).2
   have hhalf : (1 / 2 : Real) ≤
-      Geometry.Riemannian.gpCoerciveConst (I := I)
+      Geometry.Riemannian.metricCoerciveConst (I := I)
         (X.obj (L.φ k)).metric
         (seqCenterD inp.decay P L k (β.1 : Nat)) :=
-    inp.normalBounds.half_le_gp_const (L.φ k)
+    inp.normalBounds.half_le_metricCoerciveConst (L.φ k)
       (seqCenterD inp.decay P L k (β.1 : Nat))
   exact L.pair_exp_maps inp.decay inp.hD P inp.pack r α.1 β.1
     hfreq k hk hx hy hradk hmetric hhalf

@@ -651,11 +651,11 @@ theorem rhsTop_eq_raw
     rw [ccBilin_sub (I := I) (M := M) g₀ T T' y u z,
       ccBilin_sub (I := I) (M := M) g₀ T T' y z u,
       hTsymm y u z, hT'symm y u z]
-  have hsymmS : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
+  have hccTensor02Symm : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
     ccTensor02Symm_eq_self (I := I) (M := M) g₀ (T - T') hSsymm
   have hLie := lieTop_add_swap (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
-  rw [hsymmS] at hLie
+  rw [hccTensor02Symm] at hLie
   unfold rhsTopTerm
   rw [deTurckMetricPrincipalDefectTotal_metricPerturbationPath_eq (I := I) (M := M) g₀ T T' hδ hδ' s,
     operatorFieldApplication_sub_left, operatorFieldApplication_add_left, unitModel_sub_app, unitModel_add_app,

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Bochner.ScalarBochner
+import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Torsion
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.OneForm.Basic

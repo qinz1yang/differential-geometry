@@ -68,7 +68,7 @@ private lemma lieTerm_rawComponent_eq_unitModel_frame (g : SmoothRiemannianMetri
   rfl
 omit [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma lieTerm_symmS_rawComponent (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
+private lemma lieTerm_ccTensor02Symm_rawComponent (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
     (x : M)
     (c d : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (chartAt H x).source) :
@@ -94,7 +94,7 @@ private lemma lieTerm_symmS_rawComponent (g : SmoothRiemannianMetric I M) (S : S
   rw [smul_eq_mul]
 omit [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
-private lemma lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
+private lemma lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -120,7 +120,7 @@ private lemma lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x).map_target hy_tgt
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
-  rw [lieTerm_symmS_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
+  rw [lieTerm_ccTensor02Symm_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def,
     DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
@@ -1347,7 +1347,7 @@ private lemma lieCorrectionZero_symmetrizedDifference_chartComponent (hδ_lt : �
         ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) d] =
       realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d (extChartAt I x x) := by
   classical
-  have hev := lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
+  have hev := lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x c d
   have hpt := hev.self_of_nhds
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def] at hpt

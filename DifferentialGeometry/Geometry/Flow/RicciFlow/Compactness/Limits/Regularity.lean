@@ -3,9 +3,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Poin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Equation
 import DifferentialGeometry.Geometry.Metric.Convergence.Precompactness
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
-import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartBridge.DiffRiemannBasisIdentityOffCentre
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Analysis.Calculus.SpaceJet

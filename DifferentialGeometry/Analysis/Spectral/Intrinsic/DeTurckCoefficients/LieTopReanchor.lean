@@ -344,7 +344,7 @@ private lemma lieTerm_unitModel3_basisChart_decomposition
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private lemma lieTerm_symmS_rawComponent
+private lemma lieTerm_ccTensor02Symm_rawComponent
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (x : M)
     (c d : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (chartAt H x).source) :
@@ -372,7 +372,7 @@ private lemma lieTerm_symmS_rawComponent
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
+private lemma lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -398,14 +398,14 @@ private lemma lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x).map_target hy_tgt
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
-  rw [lieTerm_symmS_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
+  rw [lieTerm_ccTensor02Symm_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def,
     DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma lieTerm_partialDeriv_symmS_scalar_eventuallyEq
+private lemma lieTerm_partialDeriv_ccTensor02Symm_scalar_eventuallyEq
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -418,7 +418,7 @@ private lemma lieTerm_partialDeriv_symmS_scalar_eventuallyEq
             (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![c, d])) =ᶠ[𝓝 (extChartAt I x x)]
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
         (realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d) := by
-  have hev := (lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
+  have hev := (lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x c d).eventuallyEq_nhds
   filter_upwards [hev] with y hy
   unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
@@ -453,7 +453,7 @@ private lemma lieTerm_secondOrderCovariantJet_chartComponent
     [euclidPartial2_chartPushedRaw_eq_partialDeriv2_scalarOnE
     (I := I) (M := M) g₀
     (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x b a c d]
-  have hev1 := lieTerm_partialDeriv_symmS_scalar_eventuallyEq (I := I) g₀ T T'
+  have hev1 := lieTerm_partialDeriv_ccTensor02Symm_scalar_eventuallyEq (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x b c d
   change fderiv ℝ
       (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) b
@@ -509,7 +509,7 @@ private lemma lieTerm_firstOrderCovariantJet_chartComponent
       (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![b, c]) x a hYmem
   rw [hround] at h
   rw [← h]
-  have hev1 := lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
+  have hev1 := lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x b c
   unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [hev1.fderiv_eq]

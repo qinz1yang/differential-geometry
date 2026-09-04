@@ -1,8 +1,7 @@
-import DifferentialGeometry.Geometry.Exponential.DiagonalExponentialDerivative
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
-import Mathlib.Topology.Connected.LocallyConnected
-
+import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 
 open DifferentialGeometry.Geometry.Curvature
 
@@ -15,6 +14,7 @@ namespace DifferentialGeometry
 namespace Geometry
 namespace Riemannian
 namespace Exponential
+namespace LocalAddition
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -24,229 +24,206 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 
-def connCompOpen (p : M) : Opens M := by
-  letI : LocallyConnectedSpace H := I.toHomeomorph.locallyConnectedSpace
-  letI : LocallyConnectedSpace M := ChartedSpace.locallyConnectedSpace H M
-  exact ⟨connectedComponent p, isOpen_connectedComponent⟩
-
-def connCompPt (p : M) : connCompOpen (I := I) p :=
-  ⟨p, mem_connectedComponent⟩
-
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
-    [T2Space M] [CompactSpace M] in
-theorem connCompConnected (p : M) :
-    ConnectedSpace (connCompOpen (I := I) p) := by
-  apply Subtype.connectedSpace
-  unfold connCompOpen
-  exact isConnected_connectedComponent
-
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
-    [T2Space M] in
-theorem connCompCompact (p : M) :
-    CompactSpace (connCompOpen (I := I) p) := by
-  apply isCompact_iff_compactSpace.mp
-  unfold connCompOpen
-  exact (isClosed_connectedComponent (x := p)).isCompact
-
-noncomputable def connCompMetric
+noncomputable def connectedComponentMetric
     (g : SmoothRiemannianMetric I M) (p : M) :
-    SmoothRiemannianMetric I (connCompOpen (I := I) p) := by
-  letI : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
-  exact g.restrictOpen (I := I) (connCompOpen (I := I) p)
+    SmoothRiemannianMetric I (connectedComponentOpen (I := I) p) := by
+  letI : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
+  exact g.restrictOpen (I := I) (connectedComponentOpen (I := I) p)
 
 section
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace
 
-@[reducible] private noncomputable def connCompRiemBundle
+@[reducible] private noncomputable def connectedComponentRiemannianBundle
     (g : SmoothRiemannianMetric I M) (p : M) :
     RiemannianBundle
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-  ⟨(connCompMetric (I := I) g p).toRiemannianMetric⟩
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+  ⟨(connectedComponentMetric (I := I) g p).toRiemannianMetric⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
-private theorem connCompContBundle
+private theorem connectedComponentContinuousRiemannianBundle
     (g : SmoothRiemannianMetric I M) (p : M) :
     letI : RiemannianBundle
-        (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-      connCompRiemBundle (I := I) g p
+        (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+      connectedComponentRiemannianBundle (I := I) g p
     IsContinuousRiemannianBundle E
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) := by
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) := by
   let : RiemannianBundle
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompRiemBundle (I := I) g p
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentRiemannianBundle (I := I) g p
   exact
-    ⟨(connCompMetric (I := I) g p).inner,
-      (connCompMetric (I := I) g p).contMDiff.continuous,
+    ⟨(connectedComponentMetric (I := I) g p).inner,
+      (connectedComponentMetric (I := I) g p).contMDiff.continuous,
       fun _ _ _ => rfl⟩
 
-@[reducible] private noncomputable def connCompEMetric
+@[reducible] private noncomputable def connectedComponentPseudoEMetricSpace
     (g : SmoothRiemannianMetric I M) (p : M) :
     letI : RiemannianBundle
-        (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-      connCompRiemBundle (I := I) g p
-    PseudoEMetricSpace (connCompOpen (I := I) p) := by
-  letI : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
+        (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+      connectedComponentRiemannianBundle (I := I) g p
+    PseudoEMetricSpace (connectedComponentOpen (I := I) p) := by
+  letI : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
   letI : RiemannianBundle
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompRiemBundle (I := I) g p
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentRiemannianBundle (I := I) g p
   letI : IsContinuousRiemannianBundle E
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompContBundle (I := I) g p
-  exact PseudoEMetricSpace.ofRiemannianMetric I (connCompOpen (I := I) p)
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentContinuousRiemannianBundle (I := I) g p
+  exact PseudoEMetricSpace.ofRiemannianMetric I (connectedComponentOpen (I := I) p)
 
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem connCompRiemMan
+private theorem connectedComponentIsRiemannianManifold
     (g : SmoothRiemannianMetric I M) (p : M) :
     letI : RiemannianBundle
-        (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-      connCompRiemBundle (I := I) g p
-    letI : PseudoEMetricSpace (connCompOpen (I := I) p) :=
-      connCompEMetric (I := I) g p
-    IsRiemannianManifold I (connCompOpen (I := I) p) := by
+        (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+      connectedComponentRiemannianBundle (I := I) g p
+    letI : PseudoEMetricSpace (connectedComponentOpen (I := I) p) :=
+      connectedComponentPseudoEMetricSpace (I := I) g p
+    IsRiemannianManifold I (connectedComponentOpen (I := I) p) := by
   let : RiemannianBundle
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompRiemBundle (I := I) g p
-  let : PseudoEMetricSpace (connCompOpen (I := I) p) :=
-    connCompEMetric (I := I) g p
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentRiemannianBundle (I := I) g p
+  let : PseudoEMetricSpace (connectedComponentOpen (I := I) p) :=
+    connectedComponentPseudoEMetricSpace (I := I) g p
   exact ⟨fun _ _ => rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] in
-private theorem connComp_enorm
+private theorem connectedComponent_isMetricNorm
     (g : SmoothRiemannianMetric I M) (p : M) :
     letI : RiemannianBundle
-        (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-      connCompRiemBundle (I := I) g p
-    IsMetricNorm (I := I) (M := connCompOpen (I := I) p)
-      (connCompMetric (I := I) g p) := by
+        (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+      connectedComponentRiemannianBundle (I := I) g p
+    IsMetricNorm (I := I) (M := connectedComponentOpen (I := I) p)
+      (connectedComponentMetric (I := I) g p) := by
   let : RiemannianBundle
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompRiemBundle (I := I) g p
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentRiemannianBundle (I := I) g p
   intro x v
   rw [← ofReal_norm, norm_eq_sqrt_real_inner]
   rfl
 
-noncomputable def connDiagExp
+noncomputable def connectedComponentDiagonalExponential
     (g : SmoothRiemannianMetric I M) (p : M) :
-    TangentBundle I (connCompOpen (I := I) p) →
-      connCompOpen (I := I) p × connCompOpen (I := I) p := by
-  letI : ConnectedSpace (connCompOpen (I := I) p) := connCompConnected (I := I) p
-  letI : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
+    TangentBundle I (connectedComponentOpen (I := I) p) →
+      connectedComponentOpen (I := I) p × connectedComponentOpen (I := I) p := by
+  letI : ConnectedSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_connectedSpace (I := I) p
+  letI : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
   letI : RiemannianBundle
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompRiemBundle (I := I) g p
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentRiemannianBundle (I := I) g p
   letI : IsContinuousRiemannianBundle E
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompContBundle (I := I) g p
-  letI : PseudoEMetricSpace (connCompOpen (I := I) p) :=
-    connCompEMetric (I := I) g p
-  letI : IsRiemannianManifold I (connCompOpen (I := I) p) :=
-    connCompRiemMan (I := I) g p
-  exact diagExp (I := I) (connCompMetric (I := I) g p)
-    (connComp_enorm (I := I) g p)
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentContinuousRiemannianBundle (I := I) g p
+  letI : PseudoEMetricSpace (connectedComponentOpen (I := I) p) :=
+    connectedComponentPseudoEMetricSpace (I := I) g p
+  letI : IsRiemannianManifold I (connectedComponentOpen (I := I) p) :=
+    connectedComponentIsRiemannianManifold (I := I) g p
+  exact diagExp (I := I) (connectedComponentMetric (I := I) g p)
+    (connectedComponent_isMetricNorm (I := I) g p)
 
 end
 
-noncomputable def connAddChart
+noncomputable def localAdditionCoordinateMap
     (g : SmoothRiemannianMetric I M) (p : M) : E × E → E × E :=
-  let z : TangentBundle I (connCompOpen (I := I) p) :=
-    (⟨connCompPt (I := I) p, (0 : E)⟩ :
-      TangentBundle I (connCompOpen (I := I) p))
-  extChartAt (I.prod I) (connDiagExp (I := I) g p z) ∘
-    connDiagExp (I := I) g p ∘
+  let z : TangentBundle I (connectedComponentOpen (I := I) p) :=
+    (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+      TangentBundle I (connectedComponentOpen (I := I) p))
+  extChartAt (I.prod I) (connectedComponentDiagonalExponential (I := I) g p z) ∘
+    connectedComponentDiagonalExponential (I := I) g p ∘
     (extChartAt I.tangent z).symm
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-@[simp] theorem connAdd_zero
+@[simp] theorem connectedComponentDiagonalExponential_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
-    connDiagExp (I := I) g p
-        (⟨connCompPt (I := I) p, (0 : E)⟩ :
-          TangentBundle I (connCompOpen (I := I) p)) =
-      (connCompPt (I := I) p, connCompPt (I := I) p) := by
+    connectedComponentDiagonalExponential (I := I) g p
+        (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+          TangentBundle I (connectedComponentOpen (I := I) p)) =
+      (connectedComponentPoint (I := I) p, connectedComponentPoint (I := I) p) := by
   classical
-  let : ConnectedSpace (connCompOpen (I := I) p) := connCompConnected (I := I) p
-  let : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
+  let : ConnectedSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_connectedSpace (I := I) p
+  let : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
   let : RiemannianBundle
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompRiemBundle (I := I) g p
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentRiemannianBundle (I := I) g p
   let : IsContinuousRiemannianBundle E
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompContBundle (I := I) g p
-  let : PseudoEMetricSpace (connCompOpen (I := I) p) :=
-    connCompEMetric (I := I) g p
-  let : IsRiemannianManifold I (connCompOpen (I := I) p) :=
-    connCompRiemMan (I := I) g p
-  change diagExp (I := I) (connCompMetric (I := I) g p)
-      (connComp_enorm (I := I) g p)
-      (⟨connCompPt (I := I) p, (0 : E)⟩ :
-        TangentBundle I (connCompOpen (I := I) p)) = _
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentContinuousRiemannianBundle (I := I) g p
+  let : PseudoEMetricSpace (connectedComponentOpen (I := I) p) :=
+    connectedComponentPseudoEMetricSpace (I := I) g p
+  let : IsRiemannianManifold I (connectedComponentOpen (I := I) p) :=
+    connectedComponentIsRiemannianManifold (I := I) g p
+  change diagExp (I := I) (connectedComponentMetric (I := I) g p)
+      (connectedComponent_isMetricNorm (I := I) g p)
+      (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+        TangentBundle I (connectedComponentOpen (I := I) p)) = _
   rw [diagExp_apply]
   exact Prod.ext rfl
-    (expMapIntrinsic_zero (I := I) (connCompMetric (I := I) g p)
-      (connComp_enorm (I := I) g p) (connCompPt (I := I) p))
+    (expMapIntrinsic_zero (I := I) (connectedComponentMetric (I := I) g p)
+      (connectedComponent_isMetricNorm (I := I) g p) (connectedComponentPoint (I := I) p))
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem connAdd_cd
+theorem connectedComponentDiagonalExponential_contMDiffAt_zero
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) :
     ContMDiffAt I.tangent (I.prod I) (n : ℕ∞)
-      (connDiagExp (I := I) g p)
-      (⟨connCompPt (I := I) p, (0 : E)⟩ :
-        TangentBundle I (connCompOpen (I := I) p)) := by
+      (connectedComponentDiagonalExponential (I := I) g p)
+      (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+        TangentBundle I (connectedComponentOpen (I := I) p)) := by
   classical
-  let : ConnectedSpace (connCompOpen (I := I) p) := connCompConnected (I := I) p
-  let : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
+  let : ConnectedSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_connectedSpace (I := I) p
+  let : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
   let : RiemannianBundle
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompRiemBundle (I := I) g p
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentRiemannianBundle (I := I) g p
   let : IsContinuousRiemannianBundle E
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompContBundle (I := I) g p
-  let : PseudoEMetricSpace (connCompOpen (I := I) p) :=
-    connCompEMetric (I := I) g p
-  let : IsRiemannianManifold I (connCompOpen (I := I) p) :=
-    connCompRiemMan (I := I) g p
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentContinuousRiemannianBundle (I := I) g p
+  let : PseudoEMetricSpace (connectedComponentOpen (I := I) p) :=
+    connectedComponentPseudoEMetricSpace (I := I) g p
+  let : IsRiemannianManifold I (connectedComponentOpen (I := I) p) :=
+    connectedComponentIsRiemannianManifold (I := I) g p
   change ContMDiffAt I.tangent (I.prod I) (n : ℕ∞)
-    (diagExp (I := I) (connCompMetric (I := I) g p)
-      (connComp_enorm (I := I) g p))
-    (⟨connCompPt (I := I) p, (0 : E)⟩ :
-      TangentBundle I (connCompOpen (I := I) p))
+    (diagExp (I := I) (connectedComponentMetric (I := I) g p)
+      (connectedComponent_isMetricNorm (I := I) g p))
+    (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+      TangentBundle I (connectedComponentOpen (I := I) p))
   exact diagExp_contMDiffAt_zero (I := I)
-    (connCompMetric (I := I) g p) (connComp_enorm (I := I) g p)
-    (connCompPt (I := I) p) n
+    (connectedComponentMetric (I := I) g p) (connectedComponent_isMetricNorm (I := I) g p)
+    (connectedComponentPoint (I := I) p) n
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem connAdd_fderiv
+theorem localAdditionCoordinateMap_hasFDerivAt
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) :
-    HasFDerivAt (connAddChart (I := I) g p)
-      (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E))
+    HasFDerivAt (localAdditionCoordinateMap (I := I) g p)
+      (DifferentialGeometry.PhaseFlow.freeDiagCLE (E := E) : (E × E) →L[ℝ] (E × E))
       (extChartAt I.tangent
-        (⟨connCompPt (I := I) p, (0 : E)⟩ :
-          TangentBundle I (connCompOpen (I := I) p))
-        (⟨connCompPt (I := I) p, (0 : E)⟩ :
-          TangentBundle I (connCompOpen (I := I) p))) := by
+        (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+          TangentBundle I (connectedComponentOpen (I := I) p))
+        (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+          TangentBundle I (connectedComponentOpen (I := I) p))) := by
   classical
-  let : ConnectedSpace (connCompOpen (I := I) p) := connCompConnected (I := I) p
-  let : CompactSpace (connCompOpen (I := I) p) := connCompCompact (I := I) p
+  let : ConnectedSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_connectedSpace (I := I) p
+  let : CompactSpace (connectedComponentOpen (I := I) p) := connectedComponentOpen_compactSpace (I := I) p
   let : RiemannianBundle
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompRiemBundle (I := I) g p
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentRiemannianBundle (I := I) g p
   let : IsContinuousRiemannianBundle E
-      (fun x : connCompOpen (I := I) p ↦ TangentSpace I x) :=
-    connCompContBundle (I := I) g p
-  let : PseudoEMetricSpace (connCompOpen (I := I) p) :=
-    connCompEMetric (I := I) g p
-  let : IsRiemannianManifold I (connCompOpen (I := I) p) :=
-    connCompRiemMan (I := I) g p
-  have h := diagExp_hasFDerivAt_zero_unipotent (I := I)
-    (connCompMetric (I := I) g p) (connComp_enorm (I := I) g p)
-    (connCompPt (I := I) p) n hn
+      (fun x : connectedComponentOpen (I := I) p ↦ TangentSpace I x) :=
+    connectedComponentContinuousRiemannianBundle (I := I) g p
+  let : PseudoEMetricSpace (connectedComponentOpen (I := I) p) :=
+    connectedComponentPseudoEMetricSpace (I := I) g p
+  let : IsRiemannianManifold I (connectedComponentOpen (I := I) p) :=
+    connectedComponentIsRiemannianManifold (I := I) g p
+  have h := diagExp_hasFDerivAt_zero_linearEquiv (I := I)
+    (connectedComponentMetric (I := I) g p) (connectedComponent_isMetricNorm (I := I) g p)
+    (connectedComponentPoint (I := I) p) n hn
   exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ ↦ rfl)
 
+end LocalAddition
 end Exponential
 end Riemannian
 end Geometry

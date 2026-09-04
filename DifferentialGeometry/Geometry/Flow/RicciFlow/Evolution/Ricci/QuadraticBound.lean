@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

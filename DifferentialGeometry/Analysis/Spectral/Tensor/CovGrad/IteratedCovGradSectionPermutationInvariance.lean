@@ -52,7 +52,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le
           (ccTensor02Symm (I := I) (M := M) g P)).toSection x) ≤
       riemannianFiberNormSq (I := I) (M := M) g 0 (2 + k) x
         ((iteratedCovGrad (I := I) g 0 2 k P).toSection x) := by
-  rw [iteratedCovGrad_symmS_eq (I := I) (M := M) g P k]
+  rw [iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g P k]
   rw [show (((1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 k P +
       (1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 k
         (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) P)).toSection x) =

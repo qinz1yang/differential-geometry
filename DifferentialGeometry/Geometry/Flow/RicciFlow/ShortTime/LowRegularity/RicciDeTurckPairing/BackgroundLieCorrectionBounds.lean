@@ -31,7 +31,7 @@ open DifferentialGeometry.Analysis.Spectral
   (ccOperatorFieldComp operatorFieldComposition_sub_left operatorFieldComposition_sub_right ccTensorToHs ccTensorToHs_smul
     metricComparisonEndomorphismField hs2_low2 lieCorrectionZeroMixedConnection lieCorrectionZeroInsertion lieCorrectionZeroKappa lieCorrectionZeroPbLow lieCorrectionZeroField
     lieCorrectionZero_decomp slotExtend slotExtendIter slotExtend_sub
-    symmS_eq_self_of_ccTensorBilin_symm)
+    ccTensor02Symm_eq_self)
 open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroCore
   (lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc)
@@ -1066,11 +1066,10 @@ private theorem reindexedThirdSlot_pairing_secondOrder_bound
             (metricComparisonEndomorphismField (I := I) (M := M) gU g)) ≤
       (Module.finrank ℝ E : ℝ) ^ 3 *
         covariantJetNormSq (I := I) (M := M) g 2 (T - U) := by
-  have hsymm : symmS (I := I) (M := M) g (T - U) = T - U := by
-    change ccTensor02Symm (I := I) (M := M) g (T - U) = T - U
-    rw [symmS_sub,
-      symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g T hT,
-      symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g U hU]
+  have hsymm : ccTensor02Symm (I := I) (M := M) g (T - U) = T - U := by
+    rw [ccTensor02Symm_sub,
+      ccTensor02Symm_eq_self (I := I) (M := M) g T hT,
+      ccTensor02Symm_eq_self (I := I) (M := M) g U hU]
   rw [← slotInsertEndoCc_sub,
     RicciDeTurckLowOrder.fullRev_sub (I := I) (M := M)
       g gT gU T U hTtie hUtie]

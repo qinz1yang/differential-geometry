@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionLeibnizGrid
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Uniform.ProportionalBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.Proportional
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.EvaluationLeibniz
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

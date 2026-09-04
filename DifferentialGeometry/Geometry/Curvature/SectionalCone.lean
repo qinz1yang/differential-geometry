@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Convex.Tensor04SectionalNonnegativeCone
-import DifferentialGeometry.Geometry.Curvature.AlgebraicSectionalCone
-import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
+import DifferentialGeometry.Geometry.Curvature.Algebraic.SectionalCone
+import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
 import DifferentialGeometry.Geometry.Curvature.Metric
 
 set_option autoImplicit false

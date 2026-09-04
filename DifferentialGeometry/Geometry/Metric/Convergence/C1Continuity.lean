@@ -328,7 +328,7 @@ private theorem metric1_pair_cont
   have hdb (d i j : Idx) : ContinuousAt (fun p ↦ db p d i j) ((t, t), x₀) := by
     have hs := (hG.frameCompSmooth frame hframe i j).contMDiffAt
       (prod_mem_nhds (D.regular_isOpen.mem_nhds ht) (hUo.mem_nhds hxU))
-    have hd := prodExtDerivAt_inf (I := I) hs
+    have hd := prodExtDerivAt_smooth (I := I) hs
       ((hframe.contMDiffAt hUo hxU d))
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.1, p.2))
@@ -339,7 +339,7 @@ private theorem metric1_pair_cont
   have hdv (d i j : Idx) : ContinuousAt (fun p ↦ dv p d i j) ((t, t), x₀) := by
     have hs := (hG.frameCompSmooth frame hframe i j).contMDiffAt
       (prod_mem_nhds (D.regular_isOpen.mem_nhds ht) (hUo.mem_nhds hxU))
-    have hd := prodExtDerivAt_inf (I := I) hs
+    have hd := prodExtDerivAt_smooth (I := I) hs
       ((hframe.contMDiffAt hUo hxU d))
     exact ContinuousAt.comp'
       (f := fun p : (Real × Real) × M ↦ (p.1.2, p.2))

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
-import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 
 noncomputable section
 

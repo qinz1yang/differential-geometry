@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ProperMetric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.TransitionBounds
-import DifferentialGeometry.Geometry.Comparison.GeodesicConvexity
+import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 
 
 open DifferentialGeometry.Geometry.Curvature

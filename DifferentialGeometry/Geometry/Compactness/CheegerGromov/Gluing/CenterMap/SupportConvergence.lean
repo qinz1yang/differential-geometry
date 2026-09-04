@@ -441,7 +441,7 @@ theorem HasSuppConvData.subseq
 
 theorem MetricCompactnessInputs.exists_supp_pts_fin
     (inp : MetricCompactnessInputs (I := I) X)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -807,7 +807,7 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
         exact NetLimitData.hatCageSub (I := I) (X := X) inp.decay P
           (L.subseq hphi) inp.pack r n alpha.1 ⟨hx.1.1, hmap.1⟩
       have hR : 4 * L.lamInf (alpha.1 : Nat) <
-          expRadiusGp (I := I) Y.metric
+          metricCoerciveExpRadius (I := I) Y.metric
             (seqCenterD inp.decay P (L.subseq hphi) n (alpha.1 : Nat)) :=
         hgpN alpha.1 _ (hcenterN alpha)
       have hsrc : ∀ target : InterSlot L inp.pack r alpha,
@@ -822,44 +822,44 @@ theorem MetricCompactnessInputs.exists_supp_pts_fin
         intro target
         simpa only [U8] using (htrans alpha target).2.2.1
       have hsigma : 4 * L.lamInf (alpha.1 : Nat) /
-            Real.sqrt (gpCoerciveConst (I := I) Y.metric
+            Real.sqrt (metricCoerciveConst (I := I) Y.metric
               (seqCenterD inp.decay P (L.subseq hphi) n
                 (alpha.1 : Nat))) <
           8 * L.lamInf (alpha.1 : Nat) := by
-        have hhalf : (1 / 2 : Real) ≤ gpCoerciveConst (I := I) Y.metric
+        have hhalf : (1 / 2 : Real) ≤ metricCoerciveConst (I := I) Y.metric
             (seqCenterD inp.decay P (L.subseq hphi) n (alpha.1 : Nat)) :=
-          inp.normalBounds.half_le_gp_const ((L.subseq hphi).φ n)
+          inp.normalBounds.half_le_metricCoerciveConst ((L.subseq hphi).φ n)
             (seqCenterD inp.decay P (L.subseq hphi) n (alpha.1 : Nat))
         have hsqrtHalf : (1 / 2 : Real) < Real.sqrt (1 / 2 : Real) := by
           have hs := Real.sq_sqrt (by norm_num : (0 : Real) ≤ 1 / 2)
           have hn := Real.sqrt_nonneg (1 / 2 : Real)
           nlinarith
         have hsqrt : (1 / 2 : Real) < Real.sqrt
-            (gpCoerciveConst (I := I) Y.metric
+            (metricCoerciveConst (I := I) Y.metric
               (seqCenterD inp.decay P (L.subseq hphi) n
                 (alpha.1 : Nat))) :=
           hsqrtHalf.trans_le (Real.sqrt_le_sqrt hhalf)
-        have hsc : 0 < Real.sqrt (gpCoerciveConst (I := I) Y.metric
+        have hsc : 0 < Real.sqrt (metricCoerciveConst (I := I) Y.metric
             (seqCenterD inp.decay P (L.subseq hphi) n
               (alpha.1 : Nat))) :=
-          Real.sqrt_pos.mpr (gpCoerciveConst_pos (I := I) Y.metric
+          Real.sqrt_pos.mpr (metricCoerciveConst_pos (I := I) Y.metric
             (seqCenterD inp.decay P (L.subseq hphi) n (alpha.1 : Nat)))
         have hlam : 0 < L.lamInf (alpha.1 : Nat) :=
           inp.decay.lambda_pos inp.hD (L.rInf (alpha.1 : Nat))
         apply (div_lt_iff₀ hsc).2
         have hfour : (4 : Real) < 8 * Real.sqrt
-            (gpCoerciveConst (I := I) Y.metric
+            (metricCoerciveConst (I := I) Y.metric
               (seqCenterD inp.decay P (L.subseq hphi) n
                 (alpha.1 : Nat))) := by
           nlinarith
         calc
           4 * L.lamInf (alpha.1 : Nat) <
-              (8 * Real.sqrt (gpCoerciveConst (I := I) Y.metric
+              (8 * Real.sqrt (metricCoerciveConst (I := I) Y.metric
                 (seqCenterD inp.decay P (L.subseq hphi) n
                   (alpha.1 : Nat)))) * L.lamInf (alpha.1 : Nat) :=
             mul_lt_mul_of_pos_right hfour hlam
           _ = (8 * L.lamInf (alpha.1 : Nat)) *
-              Real.sqrt (gpCoerciveConst (I := I) Y.metric
+              Real.sqrt (metricCoerciveConst (I := I) Y.metric
                 (seqCenterD inp.decay P (L.subseq hphi) n
                   (alpha.1 : Nat))) := by ring
       have hKU : ∀ target : InterSlot L inp.pack r alpha,

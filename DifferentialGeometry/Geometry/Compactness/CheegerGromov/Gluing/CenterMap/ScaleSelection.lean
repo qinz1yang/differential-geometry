@@ -62,7 +62,7 @@ theorem properBallImgOfRad
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      R < expRadiusGp (I := I) Y.metric c) :
+      R < metricCoerciveExpRadius (I := I) Y.metric c) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -95,7 +95,7 @@ theorem properBallImgOfRad
       _ = ENNReal.ofReal (dist c q) := P.realizes c q
   have hfin : riemannianEDist I c q ≠ (⊤ : ℝ≥0∞) := by
     rw [hed]; exact ENNReal.ofReal_ne_top
-  have hsmall : (riemannianEDist I c q).toReal < expRadiusGp (I := I) Y.metric c := by
+  have hsmall : (riemannianEDist I c q).toReal < metricCoerciveExpRadius (I := I) Y.metric c := by
     rw [hed, ENNReal.toReal_ofReal (dist_nonneg : 0 ≤ dist c q)]
     exact lt_of_le_of_lt hdist_le hR
   obtain ⟨v, hv_tgt, _hv_dom, hv_len, hy_eq⟩ :=
@@ -107,7 +107,7 @@ theorem properBallImgOfRad
     rw [← hsymm]
     exact (NormalCoordinates.normalChartAt (I := I) Y.metric c).right_inv hv_tgt
   rw [Metric.mem_ball, dist_zero_right, hchart]
-  have hsq : Real.sqrt (Y.metric.inner c v v) < expRadiusGp (I := I) Y.metric c := by
+  have hsq : Real.sqrt (Y.metric.inner c v v) < metricCoerciveExpRadius (I := I) Y.metric c := by
     rw [hv_len]; exact hsmall
   exact norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) Y.metric c hsq
 
@@ -120,14 +120,14 @@ theorem properBallImgOfRad'
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      R < expRadiusGp (I := I) Y.metric c)
+      R < metricCoerciveExpRadius (I := I) Y.metric c)
     (hσ :
       letI : TopologicalSpace Y.M := Y.topology
       letI : ChartedSpace H Y.M := Y.charted
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      R / Real.sqrt (gpCoerciveConst (I := I) Y.metric c) < σ) :
+      R / Real.sqrt (metricCoerciveConst (I := I) Y.metric c) < σ) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -160,7 +160,7 @@ theorem properBallImgOfRad'
       _ = ENNReal.ofReal (dist c q) := P.realizes c q
   have hfin : riemannianEDist I c q ≠ (⊤ : ℝ≥0∞) := by
     rw [hed]; exact ENNReal.ofReal_ne_top
-  have hsmall : (riemannianEDist I c q).toReal < expRadiusGp (I := I) Y.metric c := by
+  have hsmall : (riemannianEDist I c q).toReal < metricCoerciveExpRadius (I := I) Y.metric c := by
     rw [hed, ENNReal.toReal_ofReal (dist_nonneg : 0 ≤ dist c q)]
     exact lt_of_le_of_lt hdist_le hR
   obtain ⟨v, hv_tgt, _hv_dom, hv_len, hy_eq⟩ :=
@@ -172,25 +172,25 @@ theorem properBallImgOfRad'
     rw [← hsymm]
     exact (NormalCoordinates.normalChartAt (I := I) Y.metric c).right_inv hv_tgt
   rw [Metric.mem_ball, dist_zero_right, hchart]
-  have hcoerc : 0 < gpCoerciveConst (I := I) Y.metric c := gpCoerciveConst_pos (I := I) Y.metric c
-  have hsc : 0 < Real.sqrt (gpCoerciveConst (I := I) Y.metric c) := Real.sqrt_pos.mpr hcoerc
-  have hcle : gpCoerciveConst (I := I) Y.metric c * ‖v‖ ^ 2 ≤ Y.metric.inner c v v :=
-    gpCoerciveConst_le (I := I) Y.metric c v
+  have hcoerc : 0 < metricCoerciveConst (I := I) Y.metric c := metricCoerciveConst_pos (I := I) Y.metric c
+  have hsc : 0 < Real.sqrt (metricCoerciveConst (I := I) Y.metric c) := Real.sqrt_pos.mpr hcoerc
+  have hcle : metricCoerciveConst (I := I) Y.metric c * ‖v‖ ^ 2 ≤ Y.metric.inner c v v :=
+    metricCoerciveConst_le (I := I) Y.metric c v
   have hsqrt_le :
-      Real.sqrt (gpCoerciveConst (I := I) Y.metric c) * ‖v‖ ≤
+      Real.sqrt (metricCoerciveConst (I := I) Y.metric c) * ‖v‖ ≤
         Real.sqrt (Y.metric.inner c v v) := by
-    have hrw : Real.sqrt (gpCoerciveConst (I := I) Y.metric c) * ‖v‖
-        = Real.sqrt (gpCoerciveConst (I := I) Y.metric c * ‖v‖ ^ 2) := by
+    have hrw : Real.sqrt (metricCoerciveConst (I := I) Y.metric c) * ‖v‖
+        = Real.sqrt (metricCoerciveConst (I := I) Y.metric c * ‖v‖ ^ 2) := by
       rw [Real.sqrt_mul (le_of_lt hcoerc), Real.sqrt_sq (norm_nonneg v)]
     rw [hrw]
     exact Real.sqrt_le_sqrt hcle
   have hgc_le : Real.sqrt (Y.metric.inner c v v) ≤ R := by
     rw [hv_len, hed, ENNReal.toReal_ofReal (dist_nonneg : 0 ≤ dist c q)]
     exact hdist_le
-  have hbound : ‖v‖ ≤ R / Real.sqrt (gpCoerciveConst (I := I) Y.metric c) := by
+  have hbound : ‖v‖ ≤ R / Real.sqrt (metricCoerciveConst (I := I) Y.metric c) := by
     rw [le_div_iff₀ hsc]
-    calc ‖v‖ * Real.sqrt (gpCoerciveConst (I := I) Y.metric c)
-        = Real.sqrt (gpCoerciveConst (I := I) Y.metric c) * ‖v‖ := by ring
+    calc ‖v‖ * Real.sqrt (metricCoerciveConst (I := I) Y.metric c)
+        = Real.sqrt (metricCoerciveConst (I := I) Y.metric c) * ‖v‖ := by ring
       _ ≤ Real.sqrt (Y.metric.inner c v v) := hsqrt_le
       _ ≤ R := hgc_le
   exact lt_of_le_of_lt hbound hσ
@@ -209,7 +209,7 @@ theorem hatCageImg (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
       letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
         (X.obj (L.φ n)).t2TangentBundle
       4 * L.lamInf (gamma : Nat) <
-        expRadiusGp (I := I) (X.obj (L.φ n)).metric (center gamma)) :
+        metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric (center gamma)) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
     letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -249,7 +249,7 @@ theorem hatCageImg' (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
       letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
         (X.obj (L.φ n)).t2TangentBundle
       4 * L.lamInf (gamma : Nat) <
-        expRadiusGp (I := I) (X.obj (L.φ n)).metric (center gamma))
+        metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric (center gamma))
     (hσ :
       letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
       letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -258,7 +258,7 @@ theorem hatCageImg' (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
       letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
         (X.obj (L.φ n)).t2TangentBundle
       4 * L.lamInf (gamma : Nat) /
-          Real.sqrt (gpCoerciveConst (I := I) (X.obj (L.φ n)).metric (center gamma)) <
+          Real.sqrt (metricCoerciveConst (I := I) (X.obj (L.φ n)).metric (center gamma)) <
         sigma gamma) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
@@ -318,7 +318,7 @@ def SigmaScaleAt (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
       (X.obj (L.φ n)).t2TangentBundle
     4 * L.lamInf (gamma : Nat) /
-        Real.sqrt (gpCoerciveConst (I := I) (X.obj (L.φ n)).metric (x gamma n)) < σ gamma ∧
+        Real.sqrt (metricCoerciveConst (I := I) (X.obj (L.φ n)).metric (x gamma n)) < σ gamma ∧
       σ gamma ≤ expMapC2Radius (I := I) (X.obj (L.φ n)).metric (x gamma n)
 
 def SigmaScaleTail (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
@@ -341,7 +341,7 @@ def SigmaScaleField (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
     letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
     letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) := (X.obj (L.φ k)).t2TangentBundle
     4 * L.lamInf (gamma : Nat) /
-        Real.sqrt (gpCoerciveConst (I := I) (X.obj (L.φ k)).metric (x gamma k)) < σ gamma ∧
+        Real.sqrt (metricCoerciveConst (I := I) (X.obj (L.φ k)).metric (x gamma k)) < σ gamma ∧
       σ gamma ≤ expMapC2Radius (I := I) (X.obj (L.φ k)).metric (x gamma k)
 
 theorem SigmaScaleField.at {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
@@ -397,7 +397,7 @@ theorem SigmaScaleTail.exists_field
   intro gamma k
   exact hN (ψ k) (by simp only [ψ]; omega) gamma
 
-theorem SigmaScaleField.expRadiusGp {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
+theorem SigmaScaleField.metricCoerciveExpRadius {hd : InjectivityRadiusDecay (I := I) X} {D : Real}
     {P : forall k : Nat, ProperMetricOn (I := I) (X.obj k)}
     {L : DifferentialGeometry.HCGCompactness.NetLimitData (X := X) hd D P}
     {pb : hd.PackingBound D} {r : Real}
@@ -410,17 +410,17 @@ theorem SigmaScaleField.expRadiusGp {hd : InjectivityRadiusDecay (I := I) X} {D 
     letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
     letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) := (X.obj (L.φ k)).t2TangentBundle
     4 * L.lamInf (gamma : Nat) <
-      expRadiusGp (I := I) (X.obj (L.φ k)).metric (x gamma k) := by
+      metricCoerciveExpRadius (I := I) (X.obj (L.φ k)).metric (x gamma k) := by
   let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
   let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
   let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
   let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
   let : T2Space (TangentBundle I (X.obj (L.φ k)).M) := (X.obj (L.φ k)).t2TangentBundle
   obtain ⟨hlo, hhi⟩ := hfield gamma k
-  have hsc : 0 < Real.sqrt (gpCoerciveConst (I := I) (X.obj (L.φ k)).metric (x gamma k)) :=
-    Real.sqrt_pos.mpr (gpCoerciveConst_pos (I := I) (X.obj (L.φ k)).metric (x gamma k))
+  have hsc : 0 < Real.sqrt (metricCoerciveConst (I := I) (X.obj (L.φ k)).metric (x gamma k)) :=
+    Real.sqrt_pos.mpr (metricCoerciveConst_pos (I := I) (X.obj (L.φ k)).metric (x gamma k))
   have h1 : 4 * L.lamInf (gamma : Nat) /
-      Real.sqrt (gpCoerciveConst (I := I) (X.obj (L.φ k)).metric (x gamma k)) <
+      Real.sqrt (metricCoerciveConst (I := I) (X.obj (L.φ k)).metric (x gamma k)) <
       expMapC2Radius (I := I) (X.obj (L.φ k)).metric (x gamma k) := lt_of_lt_of_le hlo hhi
   rw [div_lt_iff₀ hsc] at h1
   exact h1.trans_eq (mul_comm _ _)
@@ -459,35 +459,35 @@ theorem NormalRadiusProfile.sigmaCenterTail
   let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
   constructor
-  · have hhalf : (1 / 2 : Real) ≤ gpCoerciveConst (I := I)
+  · have hhalf : (1 / 2 : Real) ≤ metricCoerciveConst (I := I)
         (X.obj (L.φ n)).metric (seqCenterD hd P L n (gamma : Nat)) :=
-      hb.half_le_gp_const (L.φ n) (seqCenterD hd P L n (gamma : Nat))
+      hb.half_le_metricCoerciveConst (L.φ n) (seqCenterD hd P L n (gamma : Nat))
     have hsqrt_half : (1 / 2 : Real) < Real.sqrt (1 / 2 : Real) := by
       have hs := Real.sq_sqrt (by norm_num : (0 : Real) ≤ 1 / 2)
       have hn := Real.sqrt_nonneg (1 / 2 : Real)
       nlinarith
-    have hsqrt : (1 / 2 : Real) < Real.sqrt (gpCoerciveConst (I := I)
+    have hsqrt : (1 / 2 : Real) < Real.sqrt (metricCoerciveConst (I := I)
         (X.obj (L.φ n)).metric (seqCenterD hd P L n (gamma : Nat))) :=
       hsqrt_half.trans_le (Real.sqrt_le_sqrt hhalf)
-    have hsc : 0 < Real.sqrt (gpCoerciveConst (I := I)
+    have hsc : 0 < Real.sqrt (metricCoerciveConst (I := I)
         (X.obj (L.φ n)).metric (seqCenterD hd P L n (gamma : Nat))) :=
-      Real.sqrt_pos.mpr (gpCoerciveConst_pos (I := I)
+      Real.sqrt_pos.mpr (metricCoerciveConst_pos (I := I)
         (X.obj (L.φ n)).metric (seqCenterD hd P L n (gamma : Nat)))
     have hlam : 0 < L.lamInf (gamma : Nat) :=
       hd.lambda_pos hD (L.rInf (gamma : Nat))
     apply (div_lt_iff₀ hsc).2
-    have hfour : (4 : Real) < 8 * Real.sqrt (gpCoerciveConst (I := I)
+    have hfour : (4 : Real) < 8 * Real.sqrt (metricCoerciveConst (I := I)
         (X.obj (L.φ n)).metric (seqCenterD hd P L n (gamma : Nat))) := by
       nlinarith
     calc
       4 * L.lamInf (gamma : Nat) <
-          (8 * Real.sqrt (gpCoerciveConst (I := I)
+          (8 * Real.sqrt (metricCoerciveConst (I := I)
             (X.obj (L.φ n)).metric
               (seqCenterD hd P L n (gamma : Nat)))) *
             L.lamInf (gamma : Nat) :=
         mul_lt_mul_of_pos_right hfour hlam
       _ = (8 * L.lamInf (gamma : Nat)) *
-          Real.sqrt (gpCoerciveConst (I := I) (X.obj (L.φ n)).metric
+          Real.sqrt (metricCoerciveConst (I := I) (X.obj (L.φ n)).metric
             (seqCenterD hd P L n (gamma : Nat))) := by ring
   · calc
       8 * L.lamInf (gamma : Nat) =

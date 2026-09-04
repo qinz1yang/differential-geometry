@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Trace

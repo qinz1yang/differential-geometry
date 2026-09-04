@@ -1,12 +1,12 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.KoszulCovariantDerivative
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnectionDifferenceCovGradBridge
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.ConnectionDifferenceCovGradBridge
 import DifferentialGeometry.Geometry.Metric.InverseMetricField
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradSlotPermutationNaturality
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.RicciTraceCarrier
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorField
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.RicciTraceCarrier
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Field
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.KoszulSecondCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.PrincipalEndomorphismTrace
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
@@ -48,10 +48,6 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 noncomputable def ccTensor02Symm (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
     SmoothCcTensor g₀ 0 2 :=
   (1 / 2 : ℝ) • (T + domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T)
-
-abbrev symmS (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
-    SmoothCcTensor g₀ 0 2 :=
-  ccTensor02Symm (I := I) (M := M) g₀ T
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -107,7 +103,7 @@ lemma ccTensorBilin_smul (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem ccTensorBilin_symmS (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
+theorem smoothCcTensorBilinForm_ccTensor02Symm (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (b : M) (u w : TangentSpace I b) :
     smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) b u w =
       ccTensorBilinSymm (I := I) g₀ T b u w := by
@@ -149,13 +145,13 @@ theorem ccTensor02Symm_eq_self (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem symmS_hbil_of_realize (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
+theorem smoothCcTensorBilinForm_ccTensor02Symm_eq_metric_sub (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (hg₁ : ∀ (b : M) (u w : TangentSpace I b),
       g₁.inner b u w = g₀.inner b u w + ccTensorBilinSymm (I := I) g₀ T b u w)
     (b : M) (u w : TangentSpace I b) :
     smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) b u w =
       g₁.inner b u w - g₀.inner b u w := by
-  rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T b u w, hg₁ b u w]
+  rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ T b u w, hg₁ b u w]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -198,7 +194,7 @@ private lemma unitModel_domDomCongrSection_swap_smul (g₀ : SmoothRiemannianMet
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem symmS_add (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2) :
+theorem ccTensor02Symm_add (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2) :
     ccTensor02Symm (I := I) (M := M) g₀ (T + T') =
       ccTensor02Symm (I := I) (M := M) g₀ T + ccTensor02Symm (I := I) (M := M) g₀ T' := by
   apply smoothCcTensor_ext_of_unitModel
@@ -208,7 +204,7 @@ theorem symmS_add (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g�
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem symmS_smul (g₀ : SmoothRiemannianMetric I M) (c : ℝ) (T : SmoothCcTensor g₀ 0 2) :
+theorem ccTensor02Symm_smul (g₀ : SmoothRiemannianMetric I M) (c : ℝ) (T : SmoothCcTensor g₀ 0 2) :
     ccTensor02Symm (I := I) (M := M) g₀ (c • T) = c • ccTensor02Symm (I := I) (M := M) g₀ T := by
   apply smoothCcTensor_ext_of_unitModel
   intro x
@@ -217,18 +213,18 @@ theorem symmS_smul (g₀ : SmoothRiemannianMetric I M) (c : ℝ) (T : SmoothCcTe
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem symmS_neg (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
+theorem ccTensor02Symm_neg (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
     ccTensor02Symm (I := I) (M := M) g₀ (-T) = -ccTensor02Symm (I := I) (M := M) g₀ T := by
-  have h := symmS_smul (I := I) (M := M) g₀ (-1 : ℝ) T
+  have h := ccTensor02Symm_smul (I := I) (M := M) g₀ (-1 : ℝ) T
   rw [neg_one_smul, neg_one_smul] at h
   exact h
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem symmS_sub (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2) :
+theorem ccTensor02Symm_sub (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2) :
     ccTensor02Symm (I := I) (M := M) g₀ (T - T') =
       ccTensor02Symm (I := I) (M := M) g₀ T - ccTensor02Symm (I := I) (M := M) g₀ T' := by
-  rw [sub_eq_add_neg, symmS_add, symmS_neg, sub_eq_add_neg]
+  rw [sub_eq_add_neg, ccTensor02Symm_add, ccTensor02Symm_neg, sub_eq_add_neg]
 
 end NormedSpaceModel
 
@@ -611,17 +607,17 @@ theorem palatini_tracedPrincipalDiff_covector_eq_combinedTrace
   have hbil : ∀ (b : M) (u w : TangentSpace I b),
       smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) b u w =
         g₁.inner b u w - g₀.inner b u w :=
-    symmS_hbil_of_realize (I := I) (M := M) g₀ g₁ T hg₁
+    smoothCcTensorBilinForm_ccTensor02Symm_eq_metric_sub (I := I) (M := M) g₀ g₁ T hg₁
   have hbil' : ∀ (b : M) (u w : TangentSpace I b),
       smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T') b u w =
         g₁'.inner b u w - g₀.inner b u w :=
-    symmS_hbil_of_realize (I := I) (M := M) g₀ g₁' T' hg₁'
+    smoothCcTensorBilinForm_ccTensor02Symm_eq_metric_sub (I := I) (M := M) g₀ g₁' T' hg₁'
   rw [palatini_tracedPrincipal_eq_combinedTrace (I := I) (M := M) g₀ g₁
         (ccTensor02Symm (I := I) (M := M) g₀ T) hbil Z Y x]
   rw [palatini_tracedPrincipal_cross_eq_combinedTrace (I := I) (M := M) g₀ g₁ g₁'
         (ccTensor02Symm (I := I) (M := M) g₀ T') hbil' Z Y x]
   rw [palatiniTracedPrincipalDiffRemainder]
-  rw [symmS_sub (I := I) (M := M) g₀ T T']
+  rw [ccTensor02Symm_sub (I := I) (M := M) g₀ T T']
   rw [iteratedCovGrad_sub (I := I) g₀ 0 2 2
         (ccTensor02Symm (I := I) (M := M) g₀ T) (ccTensor02Symm (I := I) (M := M) g₀ T')]
   have hoperatorFieldApplication_sub : operatorFieldApply (I := I) (M := M) g₀ 4 2
@@ -825,7 +821,7 @@ theorem palatini_tracedPrincipalDiff_Zslot_eq_combinedTrace
   rw [palatini_tracedPrincipal_Zslot_cross_eq_combinedTrace (I := I) (M := M) g₀ g₁ g₁'
         (ccTensor02Symm (I := I) (M := M) g₀ T') V W x]
   rw [palatiniTracedPrincipalZDiffRemainder]
-  rw [symmS_sub (I := I) (M := M) g₀ T T']
+  rw [ccTensor02Symm_sub (I := I) (M := M) g₀ T T']
   rw [iteratedCovGrad_sub (I := I) g₀ 0 2 2
         (ccTensor02Symm (I := I) (M := M) g₀ T) (ccTensor02Symm (I := I) (M := M) g₀ T')]
   have hoperatorFieldApplication_sub : operatorFieldApply (I := I) (M := M) g₀ 4 2
@@ -1014,48 +1010,7 @@ end DifferentialGeometry
 
 namespace DifferentialGeometry.Analysis.Spectral
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open DifferentialGeometry.Integral.L2
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-  [T2Space M] [SigmaCompactSpace M]
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem symmS_eq_self_of_ccTensorBilin_symm (g₀ : SmoothRiemannianMetric I M)
-    (S : SmoothCcTensor g₀ 0 2)
-    (hsymm : ∀ (x : M) (u w : TangentSpace I x),
-      smoothCcTensorBilinForm (I := I) g₀ S x u w =
-        smoothCcTensorBilinForm (I := I) g₀ S x w u) :
-    ccTensor02Symm (I := I) (M := M) g₀ S = S := by
-  have hswap : domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S = S := by
-    refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
-    rw [domDomCongrSection_unitModel]
-    refine ContinuousMultilinearMap.ext (fun v => ?_)
-    rw [ContinuousMultilinearMap.domDomCongr_apply]
-    have hv : ∀ u w : TangentSpace I x,
-        unitModel (I := I) (M := M) g₀ 2 S x ![u, w] =
-          unitModel (I := I) (M := M) g₀ 2 S x ![w, u] := by
-      intro u w
-      rw [unitModel_eq_ccTensorBilin (I := I) (M := M) g₀ S x u w,
-        unitModel_eq_ccTensorBilin (I := I) (M := M) g₀ S x w u]
-      exact hsymm x u w
-    have hveta : (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
-      funext i
-      fin_cases i <;> rfl
-    have hveta' : v = ![v 0, v 1] := by
-      funext i
-      fin_cases i <;> rfl
-    rw [hveta]
-    conv_rhs => rw [hveta']
-    exact hv (v 1) (v 0)
-  rw [ccTensor02Symm, hswap, ← two_smul ℝ S, smul_smul,
-    show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
+export DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ccTensor02Symm_eq_self)
 
 end DifferentialGeometry.Analysis.Spectral
 

@@ -278,7 +278,7 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_smul
 
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-theorem curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_symmS
+theorem curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_ccTensor02Symm
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (σ : Equiv.Perm (Fin 4)) :
     (1 / 2 : ℝ) •
@@ -311,7 +311,7 @@ theorem curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_symmS
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight (g₀ : SmoothRiemannianMetric I M)
+theorem deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -328,7 +328,7 @@ theorem deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight (g₀
   congr 1
   refine Finset.sum_congr rfl (fun i _ => ?_)
   congr 1
-  exact curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_symmS (I := I) (M := M) g₀
+  exact curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_ccTensor02Symm (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (q i)
 
 end TensorSpectral

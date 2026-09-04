@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciComponents
 import DifferentialGeometry.Geometry.Metric.Convergence.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -77,7 +77,7 @@ theorem strict_dist_input
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ hb.radius k x →
-      ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+      ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       0 < r →
       dist x p ≤ R →
       (∀ i, dist p (pts i) < r) →
@@ -209,7 +209,7 @@ theorem strict_dist_input
           continuous_const) continuous_const
     have hsmooth : ContMDiffOn I 𝓘(Real) ∞
         (CenterOfMass.halfSqDist pt) S := by
-      simpa only [S] using IsNormalDiag.halfSq_inf (I := I) hb k hcomplete
+      simpa only [S] using IsNormalDiag.halfSqDist_contMDiffOn (I := I) hb k hcomplete
         hconn x hq he hf hρ hρq hρmetric hρexp
     have hmap : MapsTo γ unitInterval S := by
       intro t ht

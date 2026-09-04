@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamilyChartLinearization
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
@@ -13,7 +13,7 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamily
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ParametricSmoothness
 import DifferentialGeometry.Tensor.RSTensor.ParametricSmoothness
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotInsertionParametricSmoothness
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.ParametricSmoothness
 open DifferentialGeometry.Analysis.Spectral DifferentialGeometry.Analysis.Spectral.DeTurck
     DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
     DifferentialGeometry.Analysis.Spectral.MetricRealization DifferentialGeometry.PDE.RicciFlow

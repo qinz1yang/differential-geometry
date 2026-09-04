@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.DerivativeDecomposition
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturality
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Naturality
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Naturality
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Mul

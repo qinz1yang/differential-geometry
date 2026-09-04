@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.DifferentiatedSecondBianchi
-import DifferentialGeometry.Geometry.Curvature.CurvatureActionLower
+import DifferentialGeometry.Geometry.Curvature.Contractions.CurvatureActionLowering
 
 
 open DifferentialGeometry.Tensor.RSTensor

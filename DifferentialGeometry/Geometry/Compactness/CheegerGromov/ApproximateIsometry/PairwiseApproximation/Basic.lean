@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsomet
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ProperMetric
-import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

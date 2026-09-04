@@ -153,7 +153,7 @@ private lemma ricciDecomposition2_eq
   have hsymm : ccTensor02Symm (I := I) (M := M) g T = T :=
     ccTensor02Symm_eq_self (I := I) (M := M) g T hT
   rw [ricciDecomposition2,
-    riemannPalatiniDecompositionC2Family_eq_symmS_kernel
+    riemannPalatiniDecompositionC2Family_eq_ccTensor02Symm_kernel
       (I := I) (M := M) g T hδ hδZ
       ricciDecompositionQA ricciDecompositionQB (fun _ => rfl) s,
     hsymm, smul_smul]

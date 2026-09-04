@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 import Mathlib.Analysis.InnerProductSpace.PiL2

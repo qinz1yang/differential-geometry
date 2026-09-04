@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.DifferentiatedTowerNormalForm
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorFiberNormBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.FiberNorm
 
 
 open DifferentialGeometry.Geometry.Connection.Realization

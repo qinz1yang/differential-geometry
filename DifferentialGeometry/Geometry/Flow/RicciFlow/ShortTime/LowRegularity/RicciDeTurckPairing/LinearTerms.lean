@@ -2514,7 +2514,7 @@ open DifferentialGeometry.Analysis.Spectral
    operatorFieldComposition_toSection operatorFieldComposition_zero_eq_operatorFieldApply ccInputSlotSymm ccInputSlotSymm ccOperatorFieldComp
    ccSlotSwapField ccSlotSwapField_toSection deTurckLieTopOrderPairingFamily lieCorrectionZeroMixedConnection lieCorrectionZeroKappa lieCorrectionZeroRiemann lieCorrectionZeroVectorBundle
    lieCorrectionZeroField operatorFieldApply permCoeff ricciConnectionDifferenceQuadraticTerm ricciConnectionDifferenceQuadraticKernel rsDomDomCongr slotExtend slotSwapFib slotSwapFib_apply
-   slotExtendFib_apply slotExtend_toSection slotExtendIter symmS_eq_self_of_ccTensorBilin_symm
+   slotExtendFib_apply slotExtend_toSection slotExtendIter ccTensor02Symm_eq_self
    tail_base_split toModel_rsDomDomCongr_apply)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc slotInsertEndoCc_toSection)
 open DifferentialGeometry.Geometry.Curvature (slotInsertEndoFib_apply_eval)
@@ -3058,7 +3058,7 @@ theorem koszulCovectorCoefficient_apply
         (koszulCovectorCoefficient (I := I) (M := M) g)
         (covGrad (I := I) (M := M) g 0 2 T) =
       koszulCovecCc (I := I) g T := by
-  have hs := symmS_eq_self_of_ccTensorBilin_symm
+  have hs := ccTensor02Symm_eq_self
     (I := I) (M := M) g T hT
   have hp (ρ : Equiv.Perm (Fin 3)) :
       operatorFieldApply (I := I) (M := M) g 3 3
@@ -3071,7 +3071,7 @@ theorem koszulCovectorCoefficient_apply
         (covGrad (I := I) (M := M) g 0 2 T)
   rw [operatorFieldComposition_zero_eq_operatorFieldApply, koszulCovectorCoefficient, operatorFieldApplication_smul_left,
     operatorFieldApplication_sub_left, operatorFieldApplication_add_left, hp, hp, hp]
-  rw [koszulCovecCc, symmSCovGrad3, hs]
+  rw [koszulCovecCc, ccTensor02SymmCovGrad3, hs]
 
 noncomputable def metricConnectionDifferenceLoweringCoefficient
     (g : SmoothRiemannianMetric I M) : SmoothCcTensor g 3 3 :=
@@ -3381,7 +3381,7 @@ theorem connectionDifferenceInsertionInnerDerivativeCoefficient_apply
     (g gm : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2) :
     operatorFieldApply (I := I) (M := M) g 2 3
         (connectionDifferenceContrInsertionInnerField (I := I) g gm)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 3
         (connectionDifferenceInsertionInnerDerivativeCoefficient (I := I) (M := M) g W)
         (metricLoweredConnectionDifferenceCoefficient (I := I) g gm) := by
@@ -3401,11 +3401,11 @@ theorem connectionDifferenceInsertionInnerDerivativeCoefficient_apply
   rw [unitModel, unitModel, operatorFieldApplication_toSection, operatorFieldApplication_toSection,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
   rw [connContr11_insert_toModel]
-  change unitModel (I := I) (M := M) g 2 (symmS (I := I) (M := M) g W) x _ = _
+  change unitModel (I := I) (M := M) g 2 (ccTensor02Symm (I := I) (M := M) g W) x _ = _
   rw [unitModel_eq_ccTensorBilin_toModel]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one,
     ContinuousLinearEquiv.symm_apply_apply]
-  rw [ccTensorBilin_symmS]
+  rw [smoothCcTensorBilinForm_ccTensor02Symm]
   change _ = Tensor0SSpace.toModel
     (DifferentialGeometry.Geometry.Curvature.slotInsertEndoFib (I := I) (M := M) 3 0 x
       (symmRaiseEndo (I := I) (M := M) g W x)
@@ -3454,7 +3454,7 @@ theorem connectionDifferenceInsertionInnerActionCoefficient_apply
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
     operatorFieldApply (I := I) (M := M) g 2 3
         (connectionDifferenceContrInsertionInnerField (I := I) g gm)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 3
         (connectionDifferenceInsertionInnerActionCoefficient (I := I) (M := M) g gm W)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3469,9 +3469,9 @@ private theorem operatorFieldApplication_reindexCoeffGen_symmetrized_input
     (R : SmoothCcTensor g 2 s) (W : SmoothCcTensor g 0 2) :
     operatorFieldApply (I := I) (M := M) g 2 s
         (reindexCoeffGen (I := I) (M := M) g 2 s R innerCoreInPerm10)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 2 s R
-        (symmS (I := I) (M := M) g W) := by
+        (ccTensor02Symm (I := I) (M := M) g W) := by
   have hperm : innerCoreInPerm10 = Equiv.swap (0 : Fin 2) 1 := by
     ext j
     fin_cases j <;> rfl
@@ -3485,20 +3485,20 @@ private theorem operatorFieldApplication_reindexCoeffGen_symmetrized_input
       (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
         (Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (symmS (I := I) (M := M) g W).toSection x)
+            (ccTensor02Symm (I := I) (M := M) g W).toSection x)
             (unitTensor (I := I) (M := M) x)))) =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (symmS (I := I) (M := M) g W).toSection x)
+        (ccTensor02Symm (I := I) (M := M) g W).toSection x)
         (unitTensor (I := I) (M := M) x) := by
     apply Tensor0SSpace.toModel_injective
     change ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
         (Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (symmS (I := I) (M := M) g W).toSection x)
+            (ccTensor02Symm (I := I) (M := M) g W).toSection x)
             (unitTensor (I := I) (M := M) x))) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (symmS (I := I) (M := M) g W).toSection x)
+          (ccTensor02Symm (I := I) (M := M) g W).toSection x)
           (unitTensor (I := I) (M := M) x))
     apply ContinuousMultilinearMap.ext
     intro v
@@ -3512,29 +3512,29 @@ private theorem operatorFieldApplication_reindexCoeffGen_symmetrized_input
     rw [hv]
     conv_rhs => rw [hv']
     change unitModel (I := I) (M := M) g 2
-        (symmS (I := I) (M := M) g W) x ![v 1, v 0] =
+        (ccTensor02Symm (I := I) (M := M) g W) x ![v 1, v 0] =
       unitModel (I := I) (M := M) g 2
-        (symmS (I := I) (M := M) g W) x ![v 0, v 1]
+        (ccTensor02Symm (I := I) (M := M) g W) x ![v 0, v 1]
     have hleft := unitModel_eq_ccTensorBilin_local (I := I) (M := M) g
-      (symmS (I := I) (M := M) g W) x
+      (ccTensor02Symm (I := I) (M := M) g W) x
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
     have hright := unitModel_eq_ccTensorBilin_local (I := I) (M := M) g
-      (symmS (I := I) (M := M) g W) x
+      (ccTensor02Symm (I := I) (M := M) g W) x
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
-    change unitModel (I := I) (M := M) g 2 (symmS (I := I) (M := M) g W) x
+    change unitModel (I := I) (M := M) g 2 (ccTensor02Symm (I := I) (M := M) g W) x
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)),
           tangentSpaceModelContinuousLinearEquiv (I := I) x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))] = _ at hleft
-    change unitModel (I := I) (M := M) g 2 (symmS (I := I) (M := M) g W) x
+    change unitModel (I := I) (M := M) g 2 (ccTensor02Symm (I := I) (M := M) g W) x
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)),
           tangentSpaceModelContinuousLinearEquiv (I := I) x
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))] = _ at hright
     simp only [ContinuousLinearEquiv.apply_symm_apply] at hleft hright
-    rw [hleft, hright, ccTensorBilin_symmS, ccTensorBilin_symmS]
+    rw [hleft, hright, smoothCcTensorBilinForm_ccTensor02Symm, smoothCcTensorBilinForm_ccTensor02Symm]
     exact ccTensorBilinSymm_symm (I := I) g W x
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
@@ -3605,7 +3605,7 @@ theorem ricciQuadraticKernelDerivativeNestedTerm_apply
             (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
               (permCoeff (I := I) (M := M) g mid)
               (connectionDifferenceContrInsertionInnerField (I := I) g gm))))
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W mid out)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3628,7 +3628,7 @@ private theorem nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeO
       gm.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
     operatorFieldApply (I := I) (M := M) g 2 4 (nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo (I := I) (M := M) g gm)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationCycleZeroThreeOneTwo)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3741,7 +3741,7 @@ theorem ricciQuadraticKernelDerivativeBareTerm_apply
           (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
             (connectionDifferenceContravariantInsertionField (I := I) g gm)
             (connectionDifferenceContrInsertionInnerField (I := I) g gm)))
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm W out)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3764,7 +3764,7 @@ private theorem reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBl
       gm.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
     operatorFieldApply (I := I) (M := M) g 2 4 (reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks (I := I) (M := M) g gm)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3783,7 +3783,7 @@ private theorem nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThree
       gm.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
     operatorFieldApply (I := I) (M := M) g 2 4 (nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo (I := I) (M := M) g gm)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3802,7 +3802,7 @@ private theorem reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
       gm.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
     operatorFieldApply (I := I) (M := M) g 2 4 (reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo (I := I) (M := M) g gm)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneThreeTwo)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3820,7 +3820,7 @@ private theorem bareConnectionDifferenceKernelTerm_cycleZeroOneTwo_apply
       gm.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
     operatorFieldApply (I := I) (M := M) g 2 4 (bareConnectionDifferenceKernelTerm_cycleZeroOneTwo (I := I) (M := M) g gm)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gm W ricciQuadraticPermutationCycleZeroOneTwo)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3838,7 +3838,7 @@ private theorem reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZ
       gm.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
     operatorFieldApply (I := I) (M := M) g 2 4 (reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroTwo (I := I) (M := M) g gm)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 4
         (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gm W ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3875,7 +3875,7 @@ theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_apply
         g.inner x u v + ccTensorBilinSymm (I := I) g P x u v) :
     operatorFieldApply (I := I) (M := M) g 2 2
         (ricciConnectionDifferenceQuadraticTerm (I := I) (M := M) g gm)
-        (symmS (I := I) (M := M) g W) =
+        (ccTensor02Symm (I := I) (M := M) g W) =
       operatorFieldApply (I := I) (M := M) g 3 2
         (ricciConnectionDifferenceQuadraticDerivativeCoefficient (I := I) (M := M) g gm W)
         (covGrad (I := I) (M := M) g 0 2 P) := by
@@ -3923,12 +3923,12 @@ private theorem operatorFieldApplication_ccInputSlotSymm_apply
     operatorFieldApply (I := I) (M := M) g 2 2
         (ccInputSlotSymm (I := I) (M := M) g C) W =
       operatorFieldApply (I := I) (M := M) g 2 2 C
-        (symmS (I := I) (M := M) g W) := by
+        (ccTensor02Symm (I := I) (M := M) g W) := by
   simp only [ccInputSlotSymm, ccInputSlotSymm]
   have hswap := operatorFieldApplication_ccSlotSwapField_apply (I := I) (M := M) g W
   rw [operatorFieldApplication_smul_left, operatorFieldApplication_add_left, ← operatorFieldApplication_assoc,
     hswap]
-  simp only [symmS, ccTensor02Symm]
+  simp only [ccTensor02Symm, ccTensor02Symm]
   rw [operatorFieldApplication_smul_right, operatorFieldApplication_add_right]
 
 noncomputable def ricciConnectionDifferenceDerivativeCoefficient
@@ -3936,7 +3936,7 @@ noncomputable def ricciConnectionDifferenceDerivativeCoefficient
     SmoothCcTensor g 3 2 :=
   ricciConnectionDifferenceQuadraticDerivativeCoefficient (I := I) (M := M) g gm W +
     RicciDeTurckLowOrder.ricciConnectionDerivativeTransposedCoefficient (I := I) (M := M) g gm
-      (symmS (I := I) (M := M) g W)
+      (ccTensor02Symm (I := I) (M := M) g W)
 
 omit [SigmaCompactSpace M] in
 theorem ricciConnectionDifferenceDerivativeCoefficient_apply
@@ -3956,7 +3956,7 @@ theorem ricciConnectionDifferenceDerivativeCoefficient_apply
     (RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gm P) W
   have haa := ricciConnectionDifferenceQuadraticDerivativeCoefficient_apply (I := I) (M := M) g gm P W hP htie
   have hda := RicciDeTurckLowOrder.ricciCovariantDerivativeConnectionDifferenceLowOrder_apply (I := I) (M := M) g gm P
-    (symmS (I := I) (M := M) g W)
+    (ccTensor02Symm (I := I) (M := M) g W)
   rw [RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient, hsymmInput,
     RicciDeTurckLowOrder.ricciConnectionDifferenceLowOrderCoefficient, operatorFieldApplication_add_left]
   rw [haa, hda]

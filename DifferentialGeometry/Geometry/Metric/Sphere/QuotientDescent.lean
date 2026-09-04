@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
 import DifferentialGeometry.Geometry.Metric.BumpExtend
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphOpens
 import DifferentialGeometry.Topology.SigmaCompactOpen
-import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityLocal
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Local
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
 
 open DifferentialGeometry.Geometry.Curvature

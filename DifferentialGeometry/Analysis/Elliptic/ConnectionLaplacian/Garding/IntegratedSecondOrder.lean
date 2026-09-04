@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.IntegratedOrder2WeitzenbockCurvature
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.IntegratedOrder2WeitzenbockCurvature
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.FirstDerivativeBound
 open DifferentialGeometry.Analysis.Elliptic
 

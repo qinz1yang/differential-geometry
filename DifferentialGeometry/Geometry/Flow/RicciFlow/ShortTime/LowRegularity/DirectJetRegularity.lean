@@ -19,7 +19,7 @@ open DifferentialGeometry.Analysis.Parabolic (field_mem_lower lowerState zero_me
 open DifferentialGeometry.Analysis.Spectral
   (JetSpectralMassControl contDiffOn_Icc_scalar_globalExtend deTurckSmoothN
     deTurckSmoothN_path_coeff_finiteOrder_jetSpectralMass deTurckSmoothRemainder
-    exists_smoothCcPath_realizing_coeff gFibreOpBound_symmS
+    exists_smoothCcPath_realizing_coeff gFibreOpBound_ccTensor02Symm
     perModeConv_allOrder_timeDeriv_spectralMass_le
     perModeConv_finiteOrder_timeJet_spectralMass_gain smoothCcToTensorHs
     smoothCcToTensorHs_coeff smoothCcToTensorHs_smul smoothCcToTensorHs_zero symmCoeffPath
@@ -34,7 +34,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (symmS) in
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ccTensor02Symm) in
 private theorem force_step_one
     (g g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 < R) (hδ : δ < 1)
@@ -211,8 +211,8 @@ private theorem force_step_one
             smoothCcToTensorHs_coeff]]
       exact hball_all t)
   have hδS : ∀ t : ℝ, gFibreOpBound (I := I) (M := M) g
-      (ccTensorBilinSymm (I := I) g (symmS (I := I) (M := M) g (F t))) δ :=
-    fun t => gFibreOpBound_symmS (I := I) (M := M) g (F t) (hδF t)
+      (ccTensorBilinSymm (I := I) g (ccTensor02Symm (I := I) (M := M) g (F t))) δ :=
+    fun t => gFibreOpBound_ccTensor02Symm (I := I) (M := M) g (F t) (hδF t)
   have hφ'_smooth : ∀ i, ContDiff ℝ (k : ℕ)
       (symmCoeffPath (I := I) (M := M) g φ i) :=
     symmCoeffPath_contDiff (I := I) (M := M) g hφ_smooth
@@ -230,12 +230,12 @@ private theorem force_step_one
       ∀ i : TensorEigenIdx (I := I) (M := M) g 0 2,
       tensorL2Coeff (I := I) (M := M) hc
           (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2)
-            (symmS (I := I) (M := M) g (F t))) i =
+            (ccTensor02Symm (I := I) (M := M) g (F t))) i =
         symmCoeffPath (I := I) (M := M) g φ i t := fun t ht i =>
     symmCoeffPath_realizes (I := I) (M := M) g φ (F t) (fun j => hF_coeff t ht j) i
   obtain ⟨ψ, hψ_smooth, hψ_mass, hψ_coeff⟩ :=
     deTurckSmoothN_path_coeff_finiteOrder_jetSpectralMass (I := I) (M := M)
-      g g_bg 1 hT k (fun t => symmS (I := I) (M := M) g (F t)) hδ hδS
+      g g_bg 1 hT k (fun t => ccTensor02Symm (I := I) (M := M) g (F t)) hδ hδS
       (symmCoeffPath (I := I) (M := M) g φ) hφ'_smooth hcoeff' hφ'_mass
   have hpinF : ∀ᵐ t ∂timeMeasure T,
       smoothCcToTensorHs (I := I) (M := M) g
@@ -744,7 +744,7 @@ private theorem direct_state_bound
   rw [hmode t ht, norm_tensorHsCongr]
   exact hrepr t ht
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (symmS) in
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ccTensor02Symm) in
 private theorem direct_force_coeff
     (g g_bg : SmoothRiemannianMetric I M) {R δ T : ℝ}
     (hR : 0 < R) (hδ : δ < 1)
@@ -797,8 +797,8 @@ private theorem direct_force_coeff
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2)
             (deTurckSmoothRemainder (I := I) g g_bg
-              (symmS (I := I) (M := M) g (F t)) hδ'_lt
-              (gFibreOpBound_symmS (I := I) (M := M) g (F t)
+              (ccTensor02Symm (I := I) (M := M) g (F t)) hδ'_lt
+              (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g (F t)
                 (hδ' t)))) i := by
   classical
   intro F δ' hδ'_lt hδ' hpin
@@ -927,14 +927,14 @@ private theorem direct_force_coeff
       tensorL2Coeff (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
           (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2)
-            (symmS (I := I) (M := M) g (F t))) i =
+            (ccTensor02Symm (I := I) (M := M) g (F t))) i =
         symmCoeffPath (I := I) (M := M) g φ i t := fun t ht i =>
     symmCoeffPath_realizes (I := I) (M := M) g φ (F t)
       (fun j => hF_coeff t ht j) i
   obtain ⟨ψ, hψ_smooth, -, hψ_coeff⟩ :=
     deTurckSmoothN_path_coeff_finiteOrder_jetSpectralMass (I := I) (M := M)
-      g g_bg 1 hT 1 (fun t => symmS (I := I) (M := M) g (F t)) hδ'_lt
-      (fun t => gFibreOpBound_symmS (I := I) (M := M) g (F t) (hδ' t))
+      g g_bg 1 hT 1 (fun t => ccTensor02Symm (I := I) (M := M) g (F t)) hδ'_lt
+      (fun t => gFibreOpBound_ccTensor02Symm (I := I) (M := M) g (F t) (hδ' t))
       (symmCoeffPath (I := I) (M := M) g φ) hφ'_smooth hcoeff' hφ'_mass
   have hae : ∀ i, fc i =ᵐ[timeMeasure T] ψ i := by
     intro i
@@ -943,21 +943,21 @@ private theorem direct_force_coeff
       with t hpin_t hsmooth_t ht
     have hcut : Fcut t = F t := by simp only [hFcut_def, ht, if_pos]
     have hwd : deTurckSmoothN (I := I) (M := M) g g_bg 1
-          (symmS (I := I) (M := M) g (Fcut t)) hδ
-          (gFibreOpBound_symmS (I := I) (M := M) g (Fcut t) (hδcut t)) =
+          (ccTensor02Symm (I := I) (M := M) g (Fcut t)) hδ
+          (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g (Fcut t) (hδcut t)) =
         deTurckSmoothN (I := I) (M := M) g g_bg 1
-          (symmS (I := I) (M := M) g (F t)) hδ'_lt
-          (gFibreOpBound_symmS (I := I) (M := M) g (F t) (hδ' t)) := by
+          (ccTensor02Symm (I := I) (M := M) g (F t)) hδ'_lt
+          (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g (F t) (hδ' t)) := by
       apply deTurckSmoothRemainderTensorHs_eq_of_smoothCcToTensorHs_eq (I := I) (M := M)
       rw [hcut]
     calc fc i t = (fLo t).coeff i := (hpin_t).symm
       _ = (deTurckSmoothN (I := I) (M := M) g g_bg 1
-          (symmS (I := I) (M := M) g (Fcut t)) hδ
-          (gFibreOpBound_symmS (I := I) (M := M) g (Fcut t) (hδcut t))).coeff i := by
+          (ccTensor02Symm (I := I) (M := M) g (Fcut t)) hδ
+          (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g (Fcut t) (hδcut t))).coeff i := by
             rw [hsmooth_t]
       _ = (deTurckSmoothN (I := I) (M := M) g g_bg 1
-          (symmS (I := I) (M := M) g (F t)) hδ'_lt
-          (gFibreOpBound_symmS (I := I) (M := M) g (F t) (hδ' t))).coeff i := by
+          (ccTensor02Symm (I := I) (M := M) g (F t)) hδ'_lt
+          (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g (F t) (hδ' t))).coeff i := by
             rw [hwd]
       _ = ψ i t := hψ_coeff t ht i
   have heqOn : ∀ i, Set.EqOn (fc i) (ψ i) (Set.Ico (0 : ℝ) T) := by
@@ -1032,7 +1032,7 @@ private theorem direct_radius
     exact Real.sqrt_le_sqrt hsq_le
   linarith only [hnorm_le]
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (symmS) in
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ccTensor02Symm) in
 theorem direct_jet_of_mass
     (g g_bg : SmoothRiemannianMetric I M) {R δ T : ℝ}
     (hR : 0 < R) (hδ : δ < 1)
@@ -1101,8 +1101,8 @@ theorem direct_jet_of_mass
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
               (SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2)
                 (deTurckSmoothRemainder (I := I) g g_bg
-                  (symmS (I := I) (M := M) g (F t)) hδ'_lt
-                  (gFibreOpBound_symmS (I := I) (M := M) g (F t)
+                  (ccTensor02Symm (I := I) (M := M) g (F t)) hδ'_lt
+                  (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g (F t)
                     (hδ' t)))) i) ∧
       (∀ t ∈ Set.Icc (0 : ℝ) T, ‖timeH1.toFun u t‖ ≤ R) := by
   classical

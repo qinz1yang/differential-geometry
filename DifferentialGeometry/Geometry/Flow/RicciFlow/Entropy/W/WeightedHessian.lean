@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciDrift
-import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcrete
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Drift
+import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Connection.ChartBridge.HessFrobenius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.WeightedFirstVariation

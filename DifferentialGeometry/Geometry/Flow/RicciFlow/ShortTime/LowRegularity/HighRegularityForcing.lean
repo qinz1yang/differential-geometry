@@ -61,7 +61,7 @@ theorem force_hi_smooth
           (((1 : ℕ) : ℝ) + 2) (F t))‖ ≤ R) :
     (fun t => fHi t) =ᵐ[timeMeasure T]
       fun t => deTurckSmoothN (I := I) (M := M) g₀ g_bg 2
-        (symmS (I := I) (M := M) g₀ (F t)) hδ
+        (ccTensor02Symm (I := I) (M := M) g₀ (F t)) hδ
         (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ (F t) (hball t))) := by
   have hlo := deTurck_remainder_forcing_eq_smooth_remainder_ae (I := I) (M := M) g₀ g_bg hR hδ
     hreal hcore field fLo hstate hforce F hpin hball
@@ -72,16 +72,16 @@ theorem force_hi_smooth
     tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         (show ((1 : ℕ) : ℝ) ≤ (2 : ℝ) by norm_num) (fHi t) = fLo t := hi
     _ = deTurckSmoothN (I := I) (M := M) g₀ g_bg 1
-        (symmS (I := I) (M := M) g₀ (F t)) hδ
+        (ccTensor02Symm (I := I) (M := M) g₀ (F t)) hδ
         (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ (F t) (hball t))) := hlow
     _ = tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         (show ((1 : ℕ) : ℝ) ≤ (2 : ℝ) by norm_num)
         (deTurckSmoothN (I := I) (M := M) g₀ g_bg 2
-          (symmS (I := I) (M := M) g₀ (F t)) hδ
+          (ccTensor02Symm (I := I) (M := M) g₀ (F t)) hδ
           (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ (F t) (hball t)))) :=
       (deTurckSmoothN_incl (I := I) (M := M) g₀ g_bg
         (a := 1) (b := 2) (by norm_num)
-        (symmS (I := I) (M := M) g₀ (F t)) hδ
+        (ccTensor02Symm (I := I) (M := M) g₀ (F t)) hδ
         (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ (F t) (hball t)))).symm
 
 noncomputable def liftHiN

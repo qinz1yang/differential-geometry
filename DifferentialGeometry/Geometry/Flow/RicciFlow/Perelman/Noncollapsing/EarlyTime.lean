@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.FamilySmallBall
+import DifferentialGeometry.Geometry.Comparison.Volume.Family.SmallBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Persistence
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow

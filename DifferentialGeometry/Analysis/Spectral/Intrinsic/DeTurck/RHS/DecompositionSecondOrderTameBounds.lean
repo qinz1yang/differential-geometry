@@ -382,7 +382,7 @@ theorem exists_decompositionKernelContractionMonomialField_secondOrder_tame_boun
   intro g1 P delta sigma A htie hPsymm hdelta_le hdelta_nonneg hbound hA hPjet
   have hsymm :
       ccTensor02Symm (I := I) (M := M) g P = P :=
-    symmS_eq_self_of_ccTensorBilin_symm
+    ccTensor02Symm_eq_self
       (I := I) (M := M) g P hPsymm
   exact hint P
     (decompositionKernelContractionMonomialField
@@ -747,7 +747,7 @@ theorem exists_decompositionKernelContractionField_secondOrder_tame_bound
   intro g1 P delta A htie hPsymm hdelta_le hdelta_nonneg hbound hA hPjet
   have hsymm :
       ccTensor02Symm (I := I) (M := M) g P = P :=
-    symmS_eq_self_of_ccTensorBilin_symm
+    ccTensor02Symm_eq_self
       (I := I) (M := M) g P hPsymm
   exact hint P
     (decompositionKernelContractionField (I := I) (M := M) g g1
@@ -891,19 +891,19 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_covariantJetN
       g1.inner y v w =
         g.inner y v w + ccTensorBilinSymm (I := I) g Ps y v w := by
     intro y v w
-    simpa only [Ps, ccTensorBilinSymm_symmS_apply] using htie y v w
+    simpa only [Ps, ccTensorBilinSymm_ccTensor02Symm_apply] using htie y v w
   have hboundS :
       gFibreOpBound (I := I) (M := M) g
         (ccTensorBilinSymm (I := I) g Ps) delta := by
     simpa only [Ps] using
-      gFibreOpBound_symmS (I := I) (M := M) g P hbound
+      gFibreOpBound_ccTensor02Symm (I := I) (M := M) g P hbound
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (Ps.toSection x) <=
         ((Module.finrank Real E : Real) * delta0) ^ 2 := by
     intro x
     simpa only [Ps] using
-      riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g
+      riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall (I := I) (M := M) g
         hdelta0_nonneg P hdelta_le hdelta_nonneg hbound x
   have hperS : ∀ i,
       norm (iteratedCovGrad (I := I) g 2 2 i
@@ -1061,19 +1061,19 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_covariantJetNormSq_two_tam
       g1.inner y v w =
         g.inner y v w + ccTensorBilinSymm (I := I) g Ps y v w := by
     intro y v w
-    simpa only [Ps, ccTensorBilinSymm_symmS_apply] using htie y v w
+    simpa only [Ps, ccTensorBilinSymm_ccTensor02Symm_apply] using htie y v w
   have hboundS :
       gFibreOpBound (I := I) (M := M) g
         (ccTensorBilinSymm (I := I) g Ps) delta := by
     simpa only [Ps] using
-      gFibreOpBound_symmS (I := I) (M := M) g P hbound
+      gFibreOpBound_ccTensor02Symm (I := I) (M := M) g P hbound
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (Ps.toSection x) <=
         ((Module.finrank Real E : Real) * delta0) ^ 2 := by
     intro x
     simpa only [Ps] using
-      riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g
+      riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall (I := I) (M := M) g
         hdelta0_nonneg P hdelta_le hdelta_nonneg hbound x
   have hperS : ∀ i, i < 3 ->
       norm (iteratedCovGrad (I := I) g 2 2 i
@@ -1235,7 +1235,7 @@ theorem exists_lieCorrectionZeroCoefficient_secondOrder_tame_bound
         ((Module.finrank Real E : Real) * delta0) ^ 2 := by
     intro x
     simpa only [Ps] using
-      riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g
+      riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall (I := I) (M := M) g
         hdelta0_nonneg P hdelta_le hdelta_nonneg hbound x
   have hperS : ∀ i, i < 3 ->
       norm (iteratedCovGrad (I := I) g 2 2 i

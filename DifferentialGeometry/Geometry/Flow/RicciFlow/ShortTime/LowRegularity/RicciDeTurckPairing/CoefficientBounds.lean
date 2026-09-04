@@ -863,9 +863,9 @@ theorem ricciConnectionDifferenceDerivativeCoefficient_metricPerturbationPath_jo
       (metricPerturbationPathDomain (δ := δ) (δ' := δ))
       (fun t => RicciDeTurckLowOrder.ricciConnectionDerivativeTransposedCoefficient (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t)
-        (symmS (I := I) (M := M) g W)) :=
+        (ccTensor02Symm (I := I) (M := M) g W)) :=
     RicciDeTurckLowOrder.ricciConnectionDerivativeTransposedCoefficient_joint (I := I) (M := M) g T
-      (symmS (I := I) (M := M) g W) hδ hδZ
+      (ccTensor02Symm (I := I) (M := M) g W) hδ hδZ
   simpa only [ricciConnectionDifferenceDerivativeCoefficient] using jointlySmoothCcTensorFamily_add (I := I) (M := M) g hA hD
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -1700,7 +1700,7 @@ theorem ricciConnectionDifferenceDerivativeCoefficient_smul
     (W : SmoothCcTensor g 0 2) :
     ricciConnectionDifferenceDerivativeCoefficient (I := I) (M := M) g gm (a • W) =
       a • ricciConnectionDifferenceDerivativeCoefficient (I := I) (M := M) g gm W := by
-  simp only [ricciConnectionDifferenceDerivativeCoefficient, ricciConnectionDifferenceQuadraticDerivativeCoefficient_smul, symmS_smul, ricciConnectionDerivativeTransposedCoefficient_smul]
+  simp only [ricciConnectionDifferenceDerivativeCoefficient, ricciConnectionDifferenceQuadraticDerivativeCoefficient_smul, ccTensor02Symm_smul, ricciConnectionDerivativeTransposedCoefficient_smul]
   module
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -1957,8 +1957,8 @@ open DifferentialGeometry.Analysis.Spectral
     operatorFieldComposition_sub_left operatorFieldComposition_sub_right ccTensorToHs ccTensorToHs_smul deTurckLieTopOrderPairingFamily
     metricComparisonEndomorphismField
     iteratedCovGrad_neg lieCorrectionZeroRiemann norm_iteratedCovGrad_domDomCongrSection permCoeff pureTrace
-    pureTrace_toSection riemannianFiberNormSq_symmS_zero_le_fibreSmall slotExtend slotExtend_sub slotExtendIter
-    symmS_eq_self_of_ccTensorBilin_symm)
+    pureTrace_toSection riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall slotExtend slotExtend_sub slotExtendIter
+    ccTensor02Symm_eq_self)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc)
 open DifferentialGeometry.Geometry.Curvature
   (connectionDifferenceFib_apply_eval connectionDifferenceSection connectionDifferenceSection_self connectionDifferenceSection_toSection
@@ -2116,15 +2116,15 @@ theorem exists_cometricCastG0_covariantJetNormSq_two_low_bound
       (I := I) (M := M) g aStar hδ₀ hΛ₀0
   refine ⟨F 2, hF 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
-  have hsymm : symmS (I := I) (M := M) g P = P :=
-    symmS_eq_self_of_ccTensorBilin_symm
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
+    ccTensor02Symm_eq_self
       (I := I) (M := M) g P hP
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   have hraw := (hcast g₁ P htie hδ_le hδ0 hδ hsup).2 2 (by
     dsimp only [aStar]
@@ -3613,7 +3613,7 @@ theorem covariantJetNormSq_slotInsertEndoCc_le
 theorem covariantJetNormSq_slotInsertEndoCc_symmRaiseEndo_le
     (g : SmoothRiemannianMetric I M) (s m : ℕ)
     (D : SmoothCcTensor g 0 2)
-    (hD : symmS (I := I) (M := M) g D = D) :
+    (hD : ccTensor02Symm (I := I) (M := M) g D = D) :
     covariantJetNormSq (I := I) (M := M) g m
         (slotInsertEndoCc (I := I) (M := M) g s
           (symmRaiseEndo (I := I) (M := M) g D)) ≤
@@ -3630,11 +3630,11 @@ theorem covariantJetNormSq_slotInsertEndoCc_symmRaiseEndo_le
           (cometricRaiseSlot0Field (I := I) (M := M) g 0
             (domDomCongrSection (I := I) g
               (Equiv.swap (0 : Fin 2) 1)
-              (symmS (I := I) (M := M) g D))) =
+              (ccTensor02Symm (I := I) (M := M) g D))) =
         covariantJetNormSq (I := I) (M := M) g m
           (domDomCongrSection (I := I) g
             (Equiv.swap (0 : Fin 2) 1)
-            (symmS (I := I) (M := M) g D)) := by
+            (ccTensor02Symm (I := I) (M := M) g D)) := by
           unfold covariantJetNormSq
           apply Finset.sum_congr rfl
           intro q _
@@ -3642,15 +3642,15 @@ theorem covariantJetNormSq_slotInsertEndoCc_symmRaiseEndo_le
             (I := I) (M := M) g 0
             (domDomCongrSection (I := I) g
               (Equiv.swap (0 : Fin 2) 1)
-              (symmS (I := I) (M := M) g D)) q]
+              (ccTensor02Symm (I := I) (M := M) g D)) q]
       _ = covariantJetNormSq (I := I) (M := M) g m
-          (symmS (I := I) (M := M) g D) := by
+          (ccTensor02Symm (I := I) (M := M) g D) := by
         unfold covariantJetNormSq
         apply Finset.sum_congr rfl
         intro q _
         rw [norm_iteratedCovGrad_domDomCongrSection
           (I := I) (M := M) g (Equiv.swap (0 : Fin 2) 1)
-          (symmS (I := I) (M := M) g D) q]
+          (ccTensor02Symm (I := I) (M := M) g D) q]
       _ = covariantJetNormSq (I := I) (M := M) g m D := by rw [hD]
   have hslot := covariantJetNormSq_slotInsertEndoCc_le (I := I) (M := M) g s m
     (symmRaiseEndo (I := I) (M := M) g D)
@@ -3729,15 +3729,15 @@ theorem exists_sharpFlatEndoCc_covariantJetNormSq_two_bound
         (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 2, hFlow0 2, ?_⟩
   intro gm P hP htie δ hδ_le hδ0 hδ
-  have hsymm : symmS (I := I) (M := M) g P = P :=
-    symmS_eq_self_of_ccTensorBilin_symm
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
+    ccTensor02Symm_eq_self
       (I := I) (M := M) g P hP
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   simpa only [covariantJetNormSq, Nat.reduceAdd] using
     (hFlow gm P htie hδ_le hδ0 hδ hsup).2 2 (by omega)
@@ -3831,8 +3831,8 @@ theorem exists_connectionDifferenceInsertionInnerActionCoefficient_covariantJetN
     simpa only [B] using Real.sq_sqrt hK
   refine ⟨ρ, B, hρ, hB, ?_⟩
   intro gm P W hP hW htie R hR hW2 hPn
-  have hsymm : symmS (I := I) (M := M) g W = W :=
-    symmS_eq_self_of_ccTensorBilin_symm
+  have hsymm : ccTensor02Symm (I := I) (M := M) g W = W :=
+    ccTensor02Symm_eq_self
       (I := I) (M := M) g W hW
   have hins := covariantJetNormSq_slotInsertEndoCc_symmRaiseEndo_le (I := I) (M := M) g 2 2 W hsymm
   have hone :
@@ -4341,15 +4341,15 @@ theorem exists_ricciConnectionDifferenceDerivativeCoefficient_covariantJetNormSq
   refine ⟨ρ, B, hρ, fun R hR => Real.sqrt_nonneg _, ?_⟩
   intro gm P W hP hW htie δ hδ_le hδ0 hδP hδZ
     R A hR hA hP2 hP3 hW2 hPn
-  have hsymm : symmS (I := I) (M := M) g W = W :=
-    symmS_eq_self_of_ccTensorBilin_symm
+  have hsymm : ccTensor02Symm (I := I) (M := M) g W = W :=
+    ccTensor02Symm_eq_self
       (I := I) (M := M) g W hW
   have hW2' : covariantJetNormSq (I := I) (M := M) g 2
-      (symmS (I := I) (M := M) g W) ≤ R ^ 2 := by
+      (ccTensor02Symm (I := I) (M := M) g W) ≤ R ^ 2 := by
     simpa only [hsymm] using hW2
   have ha := haa gm P W hP hW htie hδ_le hδ0 hδP hδZ
     R A hR hA hP2 hP3 hW2 hPn
-  have hd := hda gm P (symmS (I := I) (M := M) g W)
+  have hd := hda gm P (ccTensor02Symm (I := I) (M := M) g W)
     hP htie hδ_le hδ0 hδP R A hR hA hP2 hP3 hW2'
   rw [ricciConnectionDifferenceDerivativeCoefficient]
   refine (covariantJetNormSq_add_le (I := I) (M := M) g 2 _ _).trans ?_
@@ -4358,7 +4358,7 @@ theorem exists_ricciConnectionDifferenceDerivativeCoefficient_covariantJetNormSq
           (ricciConnectionDifferenceQuadraticDerivativeCoefficient (I := I) (M := M) g gm W) +
         covariantJetNormSq (I := I) (M := M) g 2
           (RicciDeTurckLowOrder.ricciConnectionDerivativeTransposedCoefficient (I := I) (M := M) g gm
-            (symmS (I := I) (M := M) g W))) ≤
+            (ccTensor02Symm (I := I) (M := M) g W))) ≤
       2 * ((Ba R * (1 + A)) ^ 2 + (Bd R * (1 + A)) ^ 2) :=
         mul_le_mul_of_nonneg_left (add_le_add ha hd) (by norm_num)
     _ = L R * (1 + A) ^ 2 := by simp only [L]; ring
@@ -4425,7 +4425,7 @@ open DifferentialGeometry.Analysis.Sobolev (metricConnectionDifferenceLoweredCoe
 open DifferentialGeometry.Analysis.Spectral
   (ccOperatorFieldComp operatorFieldComposition_sub_left operatorFieldComposition_sub_right ccTensorToHs ccTensorToHs_smul
     metricComparisonEndomorphismField permCoeff slotExtend slotExtend_sub slotExtendIter
-    symmS_eq_self_of_ccTensorBilin_symm)
+    ccTensor02Symm_eq_self)
 open DifferentialGeometry.Geometry.Connection
   (slotInsertEndoCc slotInsertEndoCc_add)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
@@ -5055,8 +5055,8 @@ theorem exists_metricComparisonSlotInsertion_covariantJetNormSq_two_bound
       (add_nonneg hJ₀ (mul_nonneg (pow_nonneg hfr 2) (sq_nonneg R)))
   refine ⟨B, fun R hR => Real.sqrt_nonneg _, ?_⟩
   intro gm P hP htie R hR hP2
-  have hsymm : symmS (I := I) (M := M) g P = P :=
-    symmS_eq_self_of_ccTensorBilin_symm
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
+    ccTensor02Symm_eq_self
       (I := I) (M := M) g P hP
   have hpert :
       covariantJetNormSq (I := I) (M := M) g 2
@@ -6884,7 +6884,7 @@ open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.Analysis.Spectral
   (ccOperatorFieldComp operatorFieldComposition_sub_left operatorFieldComposition_sub_right ccTensorToHs permCoeff
-    symmS_eq_self_of_ccTensorBilin_symm)
+    ccTensor02Symm_eq_self)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
@@ -7034,8 +7034,8 @@ theorem exists_connectionDifferenceInsertionInnerDerivativeCoefficient_pairing_s
     intro x u v
     simpa only [D, ccTensorBilin_apply, ccTensorModel_sub, sub_apply] using
         congrArg₂ (fun a b : ℝ => a - b) (hT x u v) (hU x u v)
-  have hDself : symmS (I := I) (M := M) g D = D :=
-    symmS_eq_self_of_ccTensorBilin_symm
+  have hDself : ccTensor02Symm (I := I) (M := M) g D = D :=
+    ccTensor02Symm_eq_self
       (I := I) (M := M) g D hDsymm
   have hraise :
       symmRaiseEndo (I := I) (M := M) g T -
@@ -7113,8 +7113,8 @@ theorem exists_connectionDifferenceInsertionInnerDerivativeCoefficient_secondOrd
     simpa only [C] using Real.sq_sqrt hL
   refine ⟨C, hC, ?_⟩
   intro W hW R hR hW2
-  have hWself : symmS (I := I) (M := M) g W = W :=
-    symmS_eq_self_of_ccTensorBilin_symm
+  have hWself : ccTensor02Symm (I := I) (M := M) g W = W :=
+    ccTensor02Symm_eq_self
       (I := I) (M := M) g W hW
   have hins : covariantJetNormSq (I := I) (M := M) g 2
       (slotInsertEndoCc (I := I) (M := M) g 2

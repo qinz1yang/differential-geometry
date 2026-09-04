@@ -480,7 +480,7 @@ theorem insert_riemannianFiberNormSq (g₀ : SmoothRiemannianMetric I M)
       (Module.finrank ℝ E : ℝ) ^ 3 *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
           ((iteratedCovGrad (I := I) g₀ 0 2 j
-            (symmS (I := I) (M := M) g₀ T)).toSection x) :=
+            (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) :=
   riemannianFiberNormSq_iteratedCovGrad_slotInsert3_deTurckLieConnectionDifferenceDerivativePerturb_le (I := I) (M := M) g₀ T j x
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in

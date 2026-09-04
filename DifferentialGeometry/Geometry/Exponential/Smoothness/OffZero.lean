@@ -702,7 +702,7 @@ private theorem exists_unified_chartFlow_data_inf
       (I := I) p hx₀_target
   obtain ⟨b, r, ε, ρ_V4, T_V4, Φ, hr, hε, hρ_V4_pos, hT_V4_pos, hb_sub, hΦ_ILF,
     hΦ_cd_V4_inf, hΦ_init0⟩ :=
-    Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined_inf
+    Geodesic.exists_smooth_chartPhase_localFlow
       (I := I) (g := g) (α := p) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   have hΦ_cd_V4 : ContDiffOn ℝ 1 Φ
       ((Metric.ball ((x₀, (0 : E)) : E × E) ρ_V4) ×ˢ Set.Ioo (-T_V4) T_V4) :=
@@ -1182,7 +1182,7 @@ theorem exists_chartExp_jointContDiffOn_infty
       (I := I) α hx₀_target
   obtain ⟨b, r, ε, ρ_V, T_V, Φ, hr, hε, hρ_V_pos, hT_V_pos, hb_sub, hΦ_ILF,
     hΦ_cd_V, hΦ_init0⟩ :=
-    Geodesic.exists_chartPhase_contDiffOn_isLocalFlow_combined_inf
+    Geodesic.exists_smooth_chartPhase_localFlow
       (I := I) (g := g) (α := α) (x₀ := x₀) (v₀ := (0 : E)) hx₀_interior
   have hΦ_cd_V1 : ContDiffOn ℝ 1 Φ
       ((Metric.ball ((x₀, (0 : E)) : E × E) ρ_V) ×ˢ Set.Ioo (-T_V) T_V) := by

@@ -1274,11 +1274,11 @@ private theorem coeffJets_domDomCongr_sub
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem symm_grad3_sub
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2) :
-    symmSCovGrad3 (I := I) (M := M) g (T - U) =
-      symmSCovGrad3 (I := I) (M := M) g T -
-        symmSCovGrad3 (I := I) (M := M) g U := by
-  rw [symmSCovGrad3_def, symmSCovGrad3_def, symmSCovGrad3_def,
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.symmS_sub,
+    ccTensor02SymmCovGrad3 (I := I) (M := M) g (T - U) =
+      ccTensor02SymmCovGrad3 (I := I) (M := M) g T -
+        ccTensor02SymmCovGrad3 (I := I) (M := M) g U := by
+  rw [ccTensor02SymmCovGrad3_def, ccTensor02SymmCovGrad3_def, ccTensor02SymmCovGrad3_def,
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ccTensor02Symm_sub,
     DifferentialGeometry.Analysis.Spectral.covGrad_sub]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in

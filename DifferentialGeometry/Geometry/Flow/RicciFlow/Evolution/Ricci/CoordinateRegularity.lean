@@ -1184,7 +1184,7 @@ private theorem coordDgSmAt
         (fun p : Real × M =>
           mvfderiv (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
         ((t : Real), x) :=
-    prodExtDerivAt_inf (I := I) (F := F) (X := X) hF hX
+    prodExtDerivAt_smooth (I := I) (F := F) (X := X) hF hX
   have heq :
       (fun p : Real × M =>
         fderivWithin Real

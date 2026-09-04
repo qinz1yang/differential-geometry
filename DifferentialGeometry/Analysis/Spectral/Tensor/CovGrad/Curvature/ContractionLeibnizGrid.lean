@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Uniform.SmoothTensorBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Uniform.ProportionalBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.SmoothTensor
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.Proportional
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionLeibnizGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.DifferentialOperatorProportionalBounds

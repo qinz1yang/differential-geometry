@@ -1,10 +1,10 @@
 import DifferentialGeometry.Analysis.ODE.TubeStability
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.IntrinsicCoreGeometry
-import DifferentialGeometry.Geometry.Comparison.GeodesicConvexity
+import DifferentialGeometry.Geometry.Comparison.Convexity.Geodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
-import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
-import DifferentialGeometry.Geometry.Exponential.EndpointShape
-import DifferentialGeometry.Geometry.Exponential.IntrinsicGeodesicSmoothness
+import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
+import DifferentialGeometry.Geometry.Exponential.Variation.EndpointShape
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Smoothness
 import DifferentialGeometry.Geometry.Geodesic.LocalIsometry
 import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.CompactPerturbationComplete

@@ -1,8 +1,8 @@
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
-import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
-import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
 import DifferentialGeometry.Geometry.Exponential.Smoothness.OffZero
-import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
+import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.InjectivityRadiusDecay.Defs
 
 open DifferentialGeometry.Geometry.Curvature

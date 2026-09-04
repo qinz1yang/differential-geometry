@@ -1,11 +1,11 @@
 import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
 import DifferentialGeometry.Geometry.Comparison.Variation.MinimizingNoConj
 import DifferentialGeometry.Geometry.Comparison.RadialLaplacian
-import DifferentialGeometry.Geometry.Comparison.Volume.BishopIntrinsic
-import DifferentialGeometry.Geometry.Comparison.Volume.BishopIntrinsicLocal
-import DifferentialGeometry.Geometry.Exponential.DiagonalExponentialDerivative
-import DifferentialGeometry.Geometry.Exponential.ExponentialInverseBranch
-import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
+import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Intrinsic
+import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.IntrinsicLocal
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
+import DifferentialGeometry.Geometry.Exponential.Inverse.Branch
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 open DifferentialGeometry.Geometry.Curvature
@@ -1139,13 +1139,13 @@ theorem exists_calabi_tail
       let tail : Real → TangentBundle I M := fun s =>
         ⟨(velocity s).proj, (1 - s) • (velocity s).snd⟩
       tail s₀ ∈
-          (Geometry.Riemannian.Exponential.stdBranch (I := I) g hEnorm x).hom.source ∧
+          (Geometry.Riemannian.Exponential.standardDiagonalInverseBranch (I := I) g hEnorm x).hom.source ∧
         ((tail s₀).proj, x) ∈
-          (Geometry.Riemannian.Exponential.stdBranch (I := I) g hEnorm x).dom ∧
+          (Geometry.Riemannian.Exponential.standardDiagonalInverseBranch (I := I) g hEnorm x).dom ∧
         expMapIntrinsic (I := I) g hEnorm (tail s₀).proj (tail s₀).snd = x ∧
-        (Geometry.Riemannian.Exponential.stdBranch (I := I) g hEnorm x).inv
+        (Geometry.Riemannian.Exponential.standardDiagonalInverseBranch (I := I) g hEnorm x).inv
           ((tail s₀).proj, x) = tail s₀ := by
   exact calabi_tail_of (I := I) g hEnorm O x hOx
-    (Geometry.Riemannian.Exponential.stdBranch (I := I) g hEnorm x)
+    (Geometry.Riemannian.Exponential.standardDiagonalInverseBranch (I := I) g hEnorm x)
 
 end DifferentialGeometry

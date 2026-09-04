@@ -37,24 +37,24 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [T2Space M] in
-private theorem ccTensorBilinSymm_symmS_app_rf
+private theorem ccTensorBilinSymm_ccTensor02Symm_app_rf
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (x : M) (v w : TangentSpace I x) :
-    ccTensorBilinSymm (I := I) g₀ (symmS (I := I) (M := M) g₀ T) x v w =
+    ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) x v w =
       ccTensorBilinSymm (I := I) g₀ T x v w := by
-  rw [ccTensorBilinSymm_apply, ccTensorBilin_symmS, ccTensorBilin_symmS,
+  rw [ccTensorBilinSymm_apply, smoothCcTensorBilinForm_ccTensor02Symm, smoothCcTensorBilinForm_ccTensor02Symm,
     ccTensorBilinSymm_symm (I := I) g₀ T x w v, ccTensorBilinSymm_apply]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [T2Space M] in
-private theorem gFibreOpBound_symmS_rf
+private theorem gFibreOpBound_ccTensor02Symm_rf
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
     gFibreOpBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ (symmS (I := I) (M := M) g₀ T)) δ := by
+      (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T)) δ := by
   intro x v w
-  rw [ccTensorBilinSymm_symmS_app_rf (I := I) (M := M) g₀ T x v w]
+  rw [ccTensorBilinSymm_ccTensor02Symm_app_rf (I := I) (M := M) g₀ T x v w]
   exact hδ x v w
 
 private lemma sum_shift_le_rf (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : ℕ) :
@@ -85,15 +85,15 @@ theorem ricciOrderZeroBaseCoeff_perOrder_l2_radiusFree
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
           g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
         (_hsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-          ((symmS (I := I) (M := M) g₀ T).toSection x) ≤ Λ₀ ^ 2)
+          ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) ≤ Λ₀ ^ 2)
         (i : ℕ),
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
               ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
           Atop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-              (symmS (I := I) (M := M) g₀ T)‖ ^ 2 +
+              (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 +
           Alow i * (1 + ∑ j ∈ Finset.range (i + 2),
-            ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
+            ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
@@ -115,22 +115,22 @@ theorem ricciOrderZeroBaseCoeff_perOrder_l2_radiusFree
   intro g₁ T δ hδ_le hδ0 hδ htie hsup i
   have htie_s : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w +
-        ccTensorBilinSymm (I := I) g₀ (symmS (I := I) (M := M) g₀ T) y v w := by
+        ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) y v w := by
     intro y v w
-    rw [ccTensorBilinSymm_symmS_app_rf (I := I) (M := M) g₀ T y v w]
+    rw [ccTensorBilinSymm_ccTensor02Symm_app_rf (I := I) (M := M) g₀ T y v w]
     exact htie y v w
   have hbound_s : gFibreOpBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ (symmS (I := I) (M := M) g₀ T)) δ :=
-    gFibreOpBound_symmS_rf (I := I) (M := M) g₀ T hδ
+      (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T)) δ :=
+    gFibreOpBound_ccTensor02Symm_rf (I := I) (M := M) g₀ T hδ
   obtain ⟨HdCr, hCr_head, hCr_res⟩ :=
-    hCr g₁ (symmS (I := I) (M := M) g₀ T) htie_s hδ_le hδ0 hbound_s i
+    hCr g₁ (ccTensor02Symm (I := I) (M := M) g₀ T) htie_s hδ_le hδ0 hbound_s i
   obtain ⟨HdCu, hCu_head, hCu_res⟩ :=
-    hCu g₁ (symmS (I := I) (M := M) g₀ T) htie_s hδ_le hδ0 hbound_s i
-  obtain ⟨hgate_int, hgate_bd⟩ := hgate (symmS (I := I) (M := M) g₀ T) hsup i
+    hCu g₁ (ccTensor02Symm (I := I) (M := M) g₀ T) htie_s hδ_le hδ0 hbound_s i
+  obtain ⟨hgate_int, hgate_bd⟩ := hgate (ccTensor02Symm (I := I) (M := M) g₀ T) hsup i
   set W : ℝ := ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-    (symmS (I := I) (M := M) g₀ T)‖ ^ 2 with hW
+    (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 with hW
   set low : ℝ := ∑ j ∈ Finset.range (i + 2),
-    ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2 with hlow
+    ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 with hlow
   set RieDiff : SmoothCcTensor g₀ 2 (2 + i) := iteratedCovGrad (I := I) g₀ 2 2 i
     (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
       ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₀) with hRieDiff
@@ -181,28 +181,28 @@ theorem ricciOrderZeroBaseCoeff_perOrder_l2_radiusFree
       (∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x (Hd.toSection x) ≤
         Kt * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-            (symmS (I := I) (M := M) g₀ T)).toSection x)) →
+            (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x)) →
       ‖Hd‖ ^ 2 ≤ Kt * W := by
     intro Hd Kt hhead
     have hFint : MeasureTheory.Integrable
         (fun x => Kt * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-            (symmS (I := I) (M := M) g₀ T)).toSection x))
+            (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
       (integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 0 (2 + (i + 2))
-        (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) (symmS (I := I) (M := M) g₀ T))).const_mul _
+        (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) (ccTensor02Symm (I := I) (M := M) g₀ T))).const_mul _
     have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M)
       g₀ 2 (2 + i) Hd _ hFint hhead
     rw [MeasureTheory.integral_const_mul] at key
     rw [show (∫ x, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-            (symmS (I := I) (M := M) g₀ T)).toSection x)
+            (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) = W from by
       rw [hW, SmoothCcTensor.norm_def (I := I) (M := M)
-          (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) (symmS (I := I) (M := M) g₀ T)),
+          (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) (ccTensor02Symm (I := I) (M := M) g₀ T)),
         tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M)
           g₀ 0 (2 + (i + 2))
-          (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) (symmS (I := I) (M := M) g₀ T))]] at key
+          (iteratedCovGrad (I := I) g₀ 0 2 (i + 2) (ccTensor02Symm (I := I) (M := M) g₀ T))]] at key
     exact key
   have hHcr : ‖HdCr‖ ^ 2 ≤ KtCr * W := hheadL2 HdCr KtCr hCr_head
   have hHcu : ‖HdCu‖ ^ 2 ≤ KtCu * W := hheadL2 HdCu KtCu hCu_head
@@ -211,14 +211,14 @@ theorem ricciOrderZeroBaseCoeff_perOrder_l2_radiusFree
         Kc * Combinatorics.boundedFactorGridWindow
           (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 2 l
-              (symmS (I := I) (M := M) g₀ T)).toSection x)) (i + 1) (i + 3)) →
+              (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x)) (i + 1) (i + 3)) →
       ‖D‖ ^ 2 ≤ Kc * Klg i * (1 + low) + Kc * Ktg i * W := by
     intro D Kc hKc_nn hres
     have hFint : MeasureTheory.Integrable
         (fun x => Kc * Combinatorics.boundedFactorGridWindow
           (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 2 l
-              (symmS (I := I) (M := M) g₀ T)).toSection x)) (i + 1) (i + 3))
+              (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x)) (i + 1) (i + 3))
         (riemannianVolumeMeasure (I := I) (M := M) g₀) := hgate_int.const_mul _
     have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M)
       g₀ 2 (2 + i) D _ hFint hres
@@ -264,9 +264,9 @@ theorem ricciOrderZeroBaseCoeff_summed_l2_radiusFree
               (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
                 ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
           Ktop * (∑ j ∈ Finset.range (a + 3),
-              ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) +
+              ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) +
           Klow * (1 + ∑ j ∈ Finset.range (a + 2),
-              ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
+              ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Atop, hAtop_nn, Alow, hAlow_nn, hper⟩ :=
     ricciOrderZeroBaseCoeff_perOrder_l2_radiusFree (I := I) (M := M) g₀ hδ₀
@@ -301,22 +301,22 @@ theorem ricciOrderZeroBaseCoeff_summed_l2_radiusFree
     have hmaxeq : max 0 ((Module.finrank ℝ E : ℝ) * δ₀) = (Module.finrank ℝ E : ℝ) * δ₀ :=
       max_eq_right (mul_nonneg (Nat.cast_nonneg _) hδ₀0)
     have hsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-        ((symmS (I := I) (M := M) g₀ T).toSection x) ≤
+        ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) ≤
         (max 0 ((Module.finrank ℝ E : ℝ) * δ₀)) ^ 2 := by
       intro x
       rw [hmaxeq]
-      exact riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
+      exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
     have hper' : ∀ i, i ≤ a →
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (ricciOrderZeroRiemannCoeff (I := I) (M := M) g₀ g₁ -
               ricciOrderZeroCurvCoeff (I := I) (M := M) g₀ g₁)‖ ^ 2 ≤
           Atop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-              (symmS (I := I) (M := M) g₀ T)‖ ^ 2 +
+              (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 +
           Alow i * (1 + ∑ j ∈ Finset.range (i + 2),
-            ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) :=
+            ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) :=
       fun i _ => hper g₁ T hδ_le hδ0 hδ htie hsup i
     set w : ℕ → ℝ := fun j =>
-      ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2 with hw
+      ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 with hw
     have hw_nn : ∀ j, 0 ≤ w j := fun j => sq_nonneg _
     have hAtop_sum_nn : 0 ≤ ∑ i ∈ Finset.range (a + 1), Atop i :=
       Finset.sum_nonneg (fun i _ => hAtop_nn i)
@@ -373,15 +373,15 @@ theorem ricciOrderZeroBaseCoeff_summed_l2_radiusFree
     rw [hL0]
     have h1 : 0 ≤ (∑ i ∈ Finset.range (a + 1), Atop i) *
         (∑ j ∈ Finset.range (a + 3),
-          ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) :=
+          ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) :=
       mul_nonneg (Finset.sum_nonneg (fun i _ => hAtop_nn i))
         (Finset.sum_nonneg (fun j _ => sq_nonneg _))
     have h2 : 0 ≤ (∑ i ∈ Finset.range (a + 1), Alow i) *
         (1 + ∑ j ∈ Finset.range (a + 2),
-          ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
+          ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
       refine mul_nonneg (Finset.sum_nonneg (fun i _ => hAlow_nn i)) ?_
       have : 0 ≤ ∑ j ∈ Finset.range (a + 2),
-          ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2 :=
+          ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 :=
         Finset.sum_nonneg (fun j _ => sq_nonneg _)
       linarith
     linarith

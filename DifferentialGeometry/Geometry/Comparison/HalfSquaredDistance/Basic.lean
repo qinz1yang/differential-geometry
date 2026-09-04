@@ -1,9 +1,9 @@
-import DifferentialGeometry.Geometry.Comparison.CenterOfMass
+import DifferentialGeometry.Geometry.CenterOfMass.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
-import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
-import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
-import DifferentialGeometry.Geometry.Exponential.DiagonalExponentialDerivative
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

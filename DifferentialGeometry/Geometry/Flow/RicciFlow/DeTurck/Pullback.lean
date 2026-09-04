@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturality
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Naturality
 import DifferentialGeometry.Geometry.Metric.DeTurck.PullbackEvaluation
 import DifferentialGeometry.Geometry.Metric.Pullback.EvaluationDerivative
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.VariationalEquation.VariationalFlow

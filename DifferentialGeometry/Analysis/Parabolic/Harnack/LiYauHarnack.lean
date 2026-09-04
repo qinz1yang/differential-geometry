@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Harnack.LiYau
 import DifferentialGeometry.Analysis.Parabolic.Harnack.PathIntegration
 import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 
 
 noncomputable section

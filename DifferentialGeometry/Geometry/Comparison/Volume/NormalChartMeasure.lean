@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
-import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
-import DifferentialGeometry.Geometry.Exponential.JacobiVariation
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
+import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

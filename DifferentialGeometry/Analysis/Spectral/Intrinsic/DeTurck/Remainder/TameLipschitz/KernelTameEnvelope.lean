@@ -36,7 +36,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
-  symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
+  ccTensor02Symm_sub smoothCcTensorBilinForm_ccTensor02Symm iteratedCovGrad_ccTensor02Symm_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
@@ -157,8 +157,8 @@ private theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfC
         smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ P) y v w =
         smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ P) y w v := by
       intro y v w
-      rw [ccTensorBilin_symmS (I := I) (M := M) g₀ P y v w,
-        ccTensorBilin_symmS (I := I) (M := M) g₀ P y w v,
+      rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P y v w,
+        smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P y w v,
         ccTensorBilinSymm_apply, ccTensorBilinSymm_apply]
       ring
     have htie' : ∀ (y : M) (v w : TangentSpace I y),
@@ -171,8 +171,8 @@ private theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfC
             + smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ P) y w v)
               from by
         rw [ccTensorBilinSymm_apply]]
-      rw [ccTensorBilin_symmS (I := I) (M := M) g₀ P y v w,
-        ccTensorBilin_symmS (I := I) (M := M) g₀ P y w v,
+      rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P y v w,
+        smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P y w v,
         ccTensorBilinSymm_apply, ccTensorBilinSymm_apply, htie y v w,
         ccTensorBilinSymm_apply]
       ring

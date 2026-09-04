@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionJetTower
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.RicciTraceCarrier
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorField
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.RicciTraceCarrier
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Field
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorConeMetric
-import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
+import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
+import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
 import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.LinearAlgebra.Matrix.Trace

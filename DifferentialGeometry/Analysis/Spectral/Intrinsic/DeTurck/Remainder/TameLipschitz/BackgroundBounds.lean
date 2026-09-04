@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.ProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradUniformBound
@@ -74,7 +74,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
-  symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
+  ccTensor02Symm_sub smoothCcTensorBilinForm_ccTensor02Symm iteratedCovGrad_ccTensor02Symm_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
@@ -251,7 +251,7 @@ private theorem eq_metricDifferenceCcTensor_of_inner_add (g₀ g₁ : SmoothRiem
       fin_cases k <;> rfl]
     rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀
       (ccTensor02Symm (I := I) (M := M) g₀ P) x (m 0) (m 1)]
-    rw [ccTensorBilin_symmS (I := I) (M := M) g₀ P x (m 0) (m 1)]
+    rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P x (m 0) (m 1)]
     rw [htie x (m 0) (m 1)]
     ring
   rw [hmd, hsymm]

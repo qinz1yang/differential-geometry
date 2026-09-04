@@ -621,13 +621,13 @@ private theorem revEndoAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetri
             (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀)) +
         iteratedCovGrad (I := I) g₀ 1 1 q
           (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-            (symmS (I := I) (M := M) g₀ P))).toSection x) =
+            (ccTensor02Symm (I := I) (M := M) g₀ P))).toSection x) =
         (iteratedCovGrad (I := I) g₀ 1 1 q
             (slotInsertEndoCc (I := I) (M := M) g₀ 0
               (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀))).toSection x +
           (iteratedCovGrad (I := I) g₀ 1 1 q
             (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-              (symmS (I := I) (M := M) g₀ P))).toSection x
+              (ccTensor02Symm (I := I) (M := M) g₀ P))).toSection x
         from by rw [SmoothCcTensor.toSection_add]; rfl]
     refine le_trans (riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 1 (1 + q) x _ _) ?_
     have hA : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + q) x
@@ -647,25 +647,25 @@ private theorem revEndoAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetri
     have hB : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + q) x
         ((iteratedCovGrad (I := I) g₀ 1 1 q
           (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-            (symmS (I := I) (M := M) g₀ P))).toSection x) ≤
+            (ccTensor02Symm (I := I) (M := M) g₀ P))).toSection x) ≤
         (fr * d0) ^ 2 + Combinatorics.antidiagonalTupleGridWindow
           (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (q + 1) := by
       rw [riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 0
-        (symmS (I := I) (M := M) g₀ P) q x]
+        (ccTensor02Symm (I := I) (M := M) g₀ P) q x]
       match q with
       | 0 =>
-          have hz := riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g₀ hd0_nn P
+          have hz := riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall (I := I) (M := M) g₀ hd0_nn P
             (le_trans hδ_le (le_max_left _ _)) hδ0 hδ x
           have hred : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (0 + 2 + 0) x
                 ((iteratedCovGrad (I := I) g₀ 0 (0 + 2) 0
-                  (symmS (I := I) (M := M) g₀ P)).toSection x) =
+                  (ccTensor02Symm (I := I) (M := M) g₀ P)).toSection x) =
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-                ((symmS (I := I) (M := M) g₀ P).toSection x) := rfl
+                ((ccTensor02Symm (I := I) (M := M) g₀ P).toSection x) := rfl
           rw [hred]
           linarith [hz, hWnn]
       | (m + 1) =>
           refine le_trans
-            (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise
+            (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_pointwise
                 (I := I) (M := M) g₀ P (m + 1) x) ?_
           have hgb : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (m + 1)) x
               ((iteratedCovGrad (I := I) g₀ 0 2 (m + 1) P).toSection x) =

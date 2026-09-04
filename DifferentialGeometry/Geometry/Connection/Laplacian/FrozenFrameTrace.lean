@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Order2Defect.PartialMetricTrace
+import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.PartialMetricTrace
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

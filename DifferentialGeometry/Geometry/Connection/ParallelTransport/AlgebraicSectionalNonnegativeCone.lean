@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.SectionalNonnegativeCone
-import DifferentialGeometry.Geometry.Curvature.AlgebraicSectionalCone
+import DifferentialGeometry.Geometry.Curvature.Algebraic.SectionalCone
 
 set_option autoImplicit false
 

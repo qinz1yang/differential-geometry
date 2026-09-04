@@ -101,7 +101,7 @@ private theorem residualPerturbation_eq_metricDifference (g₀ g₁ : SmoothRiem
       fin_cases k <;> rfl]
     rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀
       (ccTensor02Symm (I := I) (M := M) g₀ P) x (m 0) (m 1)]
-    rw [ccTensorBilin_symmS (I := I) (M := M) g₀ P x (m 0) (m 1)]
+    rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P x (m 0) (m 1)]
     rw [htie x (m 0) (m 1)]
     ring
   rw [hmd, hsymm]

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.FibreBounds
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Uniform.OperatorNorm
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.OperatorNorm
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantDerivativeQuadraticBounds
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 

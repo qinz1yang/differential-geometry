@@ -126,7 +126,7 @@ theorem NetLimitData.pair_exp_maps
       letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
       (1 / 2 : Real) ≤
-        Geometry.Riemannian.gpCoerciveConst
+        Geometry.Riemannian.metricCoerciveConst
           (I := I) (X.obj (L.φ k)).metric y)
     (hgp :
       letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -135,7 +135,7 @@ theorem NetLimitData.pair_exp_maps
       letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
         (X.obj (L.φ k)).t2TangentBundle
       (exponentialBallRadiusFactor hd D / 2) * L.lamInf (β : Nat) <
-        Geometry.Riemannian.expRadiusGp
+        Geometry.Riemannian.metricCoerciveExpRadius
           (I := I) (X.obj (L.φ k)).metric y) :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
     letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -184,16 +184,16 @@ theorem NetLimitData.pair_exp_maps
   have hApos : 0 < exponentialBallRadiusFactor hd D * L.lamInf (β : Nat) :=
     mul_pos (exponential_ball_radius_factor_pos hd D) (hd.lambda_pos hD (L.rInf (β : Nat)))
   have hcoercPos :
-      0 < Geometry.Riemannian.gpCoerciveConst
+      0 < Geometry.Riemannian.metricCoerciveConst
         (I := I) (X.obj (L.φ k)).metric y :=
-    Geometry.Riemannian.gpCoerciveConst_pos
+    Geometry.Riemannian.metricCoerciveConst_pos
       (I := I) (X.obj (L.φ k)).metric y
   have hsqrtPos :
-      0 < Real.sqrt (Geometry.Riemannian.gpCoerciveConst
+      0 < Real.sqrt (Geometry.Riemannian.metricCoerciveConst
         (I := I) (X.obj (L.φ k)).metric y) := Real.sqrt_pos.mpr hcoercPos
   have hsqrtHalf :
       Real.sqrt (1 / 2 : Real) ≤
-        Real.sqrt (Geometry.Riemannian.gpCoerciveConst
+        Real.sqrt (Geometry.Riemannian.metricCoerciveConst
           (I := I) (X.obj (L.φ k)).metric y) := Real.sqrt_le_sqrt hhalf
   have hhalfLt : (1 / 2 : Real) < Real.sqrt (1 / 2 : Real) := by
     have hsqrtSq := Real.sq_sqrt (by norm_num : (0 : Real) ≤ 1 / 2)
@@ -201,11 +201,11 @@ theorem NetLimitData.pair_exp_maps
     nlinarith
   have hhalfSqrt :
       (1 / 2 : Real) < Real.sqrt
-        (Geometry.Riemannian.gpCoerciveConst
+        (Geometry.Riemannian.metricCoerciveConst
           (I := I) (X.obj (L.φ k)).metric y) := hhalfLt.trans_le hsqrtHalf
   have hcoord :
       ((exponentialBallRadiusFactor hd D / 2) * L.lamInf (β : Nat)) /
-          Real.sqrt (Geometry.Riemannian.gpCoerciveConst
+          Real.sqrt (Geometry.Riemannian.metricCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y) <
         exponentialBallRadiusFactor hd D * L.lamInf (β : Nat) := by
     rw [div_lt_iff₀ hsqrtPos]
@@ -213,7 +213,7 @@ theorem NetLimitData.pair_exp_maps
       (exponentialBallRadiusFactor hd D / 2) * L.lamInf (β : Nat) =
           (exponentialBallRadiusFactor hd D * L.lamInf (β : Nat)) * (1 / 2 : Real) := by ring
       _ < (exponentialBallRadiusFactor hd D * L.lamInf (β : Nat)) *
-          Real.sqrt (Geometry.Riemannian.gpCoerciveConst
+          Real.sqrt (Geometry.Riemannian.metricCoerciveConst
             (I := I) (X.obj (L.φ k)).metric y) :=
         mul_lt_mul_of_pos_left hhalfSqrt hApos
   have htarget := properBall_to_exp (I := I) (X.obj (L.φ k))

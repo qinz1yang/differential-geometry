@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.IndexFormPositive
+import DifferentialGeometry.Analysis.ODE.IndexForm.Positivity
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrameIndex
 
 set_option autoImplicit false
@@ -138,7 +138,7 @@ theorem jacobi_pair_pos
         rw [hinner, real_inner_self_eq_norm_sq]
   have hpair :
       0 < inner ℝ (v 1) (y 1) :=
-    hsol.end_pair_pos hRcont hy0 hy1 hκ0 hκπ hupper
+    hsol.inner_velocity_position_at_right_pos hRcont hy0 hy1 hκ0 hκπ hupper
   have hJlift :
       (∑ i, y 1 i • e i 1) = J 1 := by
     simpa only [perpFrameLift, y] using

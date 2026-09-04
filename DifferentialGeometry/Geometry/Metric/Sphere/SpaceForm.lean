@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.Closed
 import DifferentialGeometry.Geometry.Curvature.MetricConditions
 import DifferentialGeometry.Geometry.Metric.Sphere.PositiveSpaceForm
-import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 
 set_option autoImplicit false
 

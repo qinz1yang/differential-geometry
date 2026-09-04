@@ -28,7 +28,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
     iteratedCovGrad_reindexCoeffGen norm_reindexCoeffGen_eq
     domDomCongrFibRank domDomCongrFibRank_apply tensor0SProdKappaFib
     metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_contMDiff
-    symmS cometricRaiseSlot0Field unitModel unitTensor covGrad covGrad_zero
+    ccTensor02Symm cometricRaiseSlot0Field unitModel unitTensor covGrad covGrad_zero
     metricConnectionDifferenceLoweredFib_toModel smoothCcTensor_ext_of_unitModel)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev
@@ -3013,14 +3013,14 @@ theorem lieCorrectionZeroField_per_order_l2_radius_free
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
           g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
         (_hsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-          ((symmS (I := I) (M := M) g₀ T).toSection x) ≤ Λ₀ ^ 2)
+          ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) ≤ Λ₀ ^ 2)
         (i : ℕ) (_hi : i ≤ a),
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
           Atop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-              (symmS (I := I) (M := M) g₀ T)‖ ^ 2 +
+              (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 +
           Alow i * (1 + ∑ j ∈ Finset.range (i + 2),
-            ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
+            ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Kb_top, hKb_top_nn, Fb, hFb_nn, hbase⟩ :=
     lieCorrectionZeroBase_perOrder_rf (I := I) (M := M) g₀ a hδ₀ hΛ₀0
@@ -3040,17 +3040,17 @@ theorem lieCorrectionZeroField_per_order_l2_radius_free
       have := hFb_nn i; have := hFd_nn i; have := hFvm_nn i; have := hFr_nn i
       linarith, ?_⟩
   intro g₁ T δ hδ_le hδ0 hδ htie hsup i hi
-  set P : SmoothCcTensor g₀ 0 2 := symmS (I := I) (M := M) g₀ T with hP_def
+  set P : SmoothCcTensor g₀ 0 2 := ccTensor02Symm (I := I) (M := M) g₀ T with hP_def
   have htie' : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w := by
     intro y v w
     rw [hP_def,
-      DifferentialGeometry.Analysis.Spectral.ccTensorBilinSymm_symmS_apply
+      DifferentialGeometry.Analysis.Spectral.ccTensorBilinSymm_ccTensor02Symm_apply
         (I := I) (M := M) g₀ T y v w]
     exact htie y v w
   have hδ' : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P) δ := by
     rw [hP_def]
-    exact DifferentialGeometry.Analysis.Spectral.gFibreOpBound_symmS
+    exact DifferentialGeometry.Analysis.Spectral.gFibreOpBound_ccTensor02Symm
       (I := I) (M := M) g₀ T hδ
   have hb := hbase g₁ P htie' hδ_le hδ0 hδ' hsup i hi
   have hd := hdiff g₁ P htie' hδ_le hδ0 hδ' hsup i
@@ -3163,9 +3163,9 @@ theorem lieCorrectionZeroField_summed_l2_radius_free
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
               (lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
           Ktop * (∑ j ∈ Finset.range (a + 3),
-              ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) +
+              ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) +
           Klow * (1 + ∑ j ∈ Finset.range (a + 2),
-              ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
+              ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Atop, hAtop_nn, Alow, hAlow_nn, hper⟩ :=
     lieCorrectionZeroField_per_order_l2_radius_free (I := I) (M := M) g₀ g_bg a ha_super hδ₀
@@ -3200,21 +3200,21 @@ theorem lieCorrectionZeroField_summed_l2_radius_free
     have hmaxeq : max 0 ((Module.finrank ℝ E : ℝ) * δ₀) = (Module.finrank ℝ E : ℝ) * δ₀ :=
       max_eq_right (mul_nonneg (Nat.cast_nonneg _) hδ₀0)
     have hsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-        ((symmS (I := I) (M := M) g₀ T).toSection x) ≤
+        ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) ≤
         (max 0 ((Module.finrank ℝ E : ℝ) * δ₀)) ^ 2 := by
       intro x
       rw [hmaxeq]
-      exact riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
+      exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
     have hper' : ∀ i, i ≤ a →
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
           Atop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-              (symmS (I := I) (M := M) g₀ T)‖ ^ 2 +
+              (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 +
           Alow i * (1 + ∑ j ∈ Finset.range (i + 2),
-            ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) :=
+            ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) :=
       fun i hi => hper g₁ T hδ_le hδ0 hδ htie hsup i hi
     set w : ℕ → ℝ := fun j =>
-      ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2 with hw
+      ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 with hw
     have hw_nn : ∀ j, 0 ≤ w j := fun j => sq_nonneg _
     calc ∑ i ∈ Finset.range (a + 1),
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
@@ -3264,15 +3264,15 @@ theorem lieCorrectionZeroField_summed_l2_radius_free
     rw [hL0]
     have h1 : 0 ≤ (∑ i ∈ Finset.range (a + 1), Atop i) *
         (∑ j ∈ Finset.range (a + 3),
-          ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) :=
+          ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) :=
       mul_nonneg (Finset.sum_nonneg (fun i _ => hAtop_nn i))
         (Finset.sum_nonneg (fun j _ => sq_nonneg _))
     have h2 : 0 ≤ (∑ i ∈ Finset.range (a + 1), Alow i) *
         (1 + ∑ j ∈ Finset.range (a + 2),
-          ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
+          ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
       refine mul_nonneg (Finset.sum_nonneg (fun i _ => hAlow_nn i)) ?_
       have : 0 ≤ ∑ j ∈ Finset.range (a + 2),
-          ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2 :=
+          ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 :=
         Finset.sum_nonneg (fun j _ => sq_nonneg _)
       linarith
     linarith

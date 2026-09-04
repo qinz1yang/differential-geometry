@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.TensorHeat
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReactionPreservation
-import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorConeMetric
+import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.RicciPinching
 

@@ -571,13 +571,13 @@ lemma unitModel_eq_ccTensorBilin_pt (g₀ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric I M)
+lemma slotInsert_perturbationSharp_eq_raise_ccTensor02Symm (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
         (perturbationSharpEndoField (I := I) (M := M) g₀ T) =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-          (symmS (I := I) (M := M) g₀ T)) := by
+          (ccTensor02Symm (I := I) (M := M) g₀ T)) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -616,12 +616,12 @@ lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-            (symmS (I := I) (M := M) g₀ T))).toSection x) om) =
+            (ccTensor02Symm (I := I) (M := M) g₀ T))).toSection x) om) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         cometricRaiseSlot0Fib g₀ 0 x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
             (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-              (symmS (I := I) (M := M) g₀ T)).toSection x)
+              (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x)
             (unitTensor (I := I) (M := M) x))) om) from rfl]
   rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 0 x _ om]
   rw [interiorProduct_toModel_eval_pal (I := I) (M := M) 1 x
@@ -629,13 +629,13 @@ lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-          (symmS (I := I) (M := M) g₀ T)).toSection x)
+          (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x)
         (unitTensor (I := I) (M := M) x)) =
       unitModel (I := I) (M := M) g₀ 2
         (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-          (symmS (I := I) (M := M) g₀ T)) x from rfl]
+          (ccTensor02Symm (I := I) (M := M) g₀ T)) x from rfl]
   rw [domDomCongrSection_unitModel (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-    (symmS (I := I) (M := M) g₀ T) x]
+    (ccTensor02Symm (I := I) (M := M) g₀ T) x]
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 2 =>
       (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -646,21 +646,21 @@ lemma slotInsert_perturbationSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric
     funext i
     fin_cases i <;> rfl]
   have hunit : unitModel (I := I) (M := M) g₀ 2
-      (symmS (I := I) (M := M) g₀ T) x
+      (ccTensor02Symm (I := I) (M := M) g₀ T) x
       (![w 0, tangentSpaceModelContinuousLinearEquiv (I := I) x
         (inverseMetricSharpFib (I := I) g₀ x om)] : Fin 2 → E) =
-      ccTensorBilin (I := I) g₀ (symmS (I := I) (M := M) g₀ T) x
+      ccTensorBilin (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) x
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
         (inverseMetricSharpFib (I := I) g₀ x om) := by
     rw [ccTensorBilin_apply, ccTensorModel]
-    rw [show ccTensorMultilinear (I := I) g₀ (symmS (I := I) (M := M) g₀ T) x =
+    rw [show ccTensorMultilinear (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) x =
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (symmS (I := I) (M := M) g₀ T).toSection x)
+          (ccTensor02Symm (I := I) (M := M) g₀ T).toSection x)
           (unitZeroSec (I := I) (M := M) x) from rfl]
     rw [unitModel]
     rfl
   rw [hunit]
-  rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x]
+  rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ T x]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
@@ -864,42 +864,42 @@ lemma fiberNormSqComponent_zero_toModel_pt
   rfl
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma riemannianFiberNormSq_symmS_zero_le_of_ball (g₀ : SmoothRiemannianMetric I M)
+lemma riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-        ((symmS (I := I) (M := M) g₀ T).toSection x) ≤
+        ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) ≤
       (Module.finrank ℝ E : ℝ) ^ 2 * δ ^ 2 := by
   classical
   obtain ⟨n, e, bse, hn, hbse, horth, _hpars, _hrepr, _hsum⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl
   rw [riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt (I := I) (M := M) g₀ 0 2 x
-    ((symmS (I := I) (M := M) g₀ T).toSection x) e hnE horth]
+    ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) e hnE horth]
   have hcomp : ∀ (K : Fin 0 → Fin n) (J : Fin 2 → Fin n),
       (fiberNormSqComponent (I := I) (M := M) g₀ x 0 2
-        ((symmS (I := I) (M := M) g₀ T).toSection x) n e K J) ^ 2 ≤ δ ^ 2 := by
+        ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) n e K J) ^ 2 ≤ δ ^ 2 := by
     intro K J
     have hval : fiberNormSqComponent (I := I) (M := M) g₀ x 0 2
-        ((symmS (I := I) (M := M) g₀ T).toSection x) n e K J =
+        ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) n e K J =
         ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)) := by
       rw [fiberNormSqComponent_zero_toModel_pt (I := I) (M := M) g₀ 2 x
-        (symmS (I := I) (M := M) g₀ T) e K J]
+        (ccTensor02Symm (I := I) (M := M) g₀ T) e K J]
       rw [show Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (symmS (I := I) (M := M) g₀ T).toSection x)
+            (ccTensor02Symm (I := I) (M := M) g₀ T).toSection x)
             (unitTensor (I := I) (M := M) x))
           (fun k => (show E from e (J k))) =
-          unitModel (I := I) (M := M) g₀ 2 (symmS (I := I) (M := M) g₀ T) x
+          unitModel (I := I) (M := M) g₀ 2 (ccTensor02Symm (I := I) (M := M) g₀ T) x
             ![e (J 0), e (J 1)] from by
         rw [unitModel]
         refine congrArg _ ?_
         funext k
         fin_cases k <;> rfl]
       rw [unitModel_eq_ccTensorBilin_pt (I := I) (M := M) g₀
-        (symmS (I := I) (M := M) g₀ T) x (e (J 0)) (e (J 1))]
-      rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
+        (ccTensor02Symm (I := I) (M := M) g₀ T) x (e (J 0)) (e (J 1))]
+      rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by
@@ -911,7 +911,7 @@ lemma riemannianFiberNormSq_symmS_zero_le_of_ball (g₀ : SmoothRiemannianMetric
     nlinarith [habs, sq_abs (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))]
   calc (∑ K : Fin 0 → Fin n, ∑ J : Fin 2 → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x 0 2
-          ((symmS (I := I) (M := M) g₀ T).toSection x) n e K J) ^ 2)
+          ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) n e K J) ^ 2)
       ≤ ∑ K : Fin 0 → Fin n, ∑ J : Fin 2 → Fin n, δ ^ 2 :=
         Finset.sum_le_sum fun K _ => Finset.sum_le_sum fun J _ => hcomp K J
     _ = (Fintype.card (Fin 0 → Fin n) : ℝ) * ((Fintype.card (Fin 2 → Fin n) : ℝ) * δ ^ 2) := by
@@ -935,16 +935,16 @@ lemma riemannianFiberNormSq_iteratedCovGrad_slotInsert3_perturbationSharp_le
             (perturbationSharpEndoField (I := I) (M := M) g₀ T))).toSection x) ≤
       (Module.finrank ℝ E : ℝ) ^ 3 *
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
-          ((iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)).toSection x) := by
+          ((iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) := by
   refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 3
     (perturbationSharpEndoField (I := I) (M := M) g₀ T) j x) ?_
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-  rw [slotInsert_perturbationSharp_eq_raise_symmS (I := I) (M := M) g₀ T]
+  rw [slotInsert_perturbationSharp_eq_raise_ccTensor02Symm (I := I) (M := M) g₀ T]
   rw [riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 0
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-      (symmS (I := I) (M := M) g₀ T)) j x]
+      (ccTensor02Symm (I := I) (M := M) g₀ T)) j x]
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
-    (Equiv.swap (0 : Fin 2) 1) (symmS (I := I) (M := M) g₀ T) j x]
+    (Equiv.swap (0 : Fin 2) 1) (ccTensor02Symm (I := I) (M := M) g₀ T) j x]
 
 end CurvatureCoefficientDifferenceJetTower
 

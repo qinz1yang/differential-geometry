@@ -403,8 +403,8 @@ lemma raisedKoszul_eq_cometricRaiseSlot0Field_koszulCovecCc
     funext k
     fin_cases k <;> rfl]
   rw [koszulCovecCc_unitModel (I := I) g₀ T x (YZ 0) (YZ 1) u]
-  rw [connectionDifferenceInner_g1_eq_half_covGradSymmS (I := I) g₀ g₁ T htie x (YZ 0) (YZ 1) u]
-  rw [symmSCovGrad3]
+  rw [connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm (I := I) g₀ g₁ T htie x (YZ 0) (YZ 1) u]
+  rw [ccTensor02SymmCovGrad3]
   rw [hunitModelEval, hunitModelEval, hunitModelEval]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]

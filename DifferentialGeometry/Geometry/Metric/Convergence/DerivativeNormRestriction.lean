@@ -3,8 +3,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeComponents
-import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 
 

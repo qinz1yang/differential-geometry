@@ -1,0 +1,43 @@
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Basic
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
+open DifferentialGeometry.Geometry.Curvature
+
+
+set_option autoImplicit false
+
+noncomputable section
+
+namespace DifferentialGeometry.Geometry.Curvature
+
+open scoped Manifold ContDiff Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable [FiniteDimensional Real E] [CompleteSpace E] [NeZero (Module.finrank Real E)]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {N : Type*} [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N]
+variable [IsManifold I 1 N]
+variable [T2Space N] [SigmaCompactSpace N]
+
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace N] in
+theorem metricRm04StdAt_pullback_localDiffeo
+    (g : SmoothRiemannianMetric I N)
+    (V : TopologicalSpace.Opens N) [SigmaCompactSpace V] [T2Space V]
+      [IsManifold I 1 V]
+    (W : TopologicalSpace.Opens M) [T2Space W]
+      [IsManifold I 1 W]
+    (Ψ : W ≃ₘ⟮I, I⟯ V) (x : W) (X Y Z W' : TangentSpace I x) :
+    metricRm04StdAt (I := I) (M := W)
+        (Diffeomorph.pullbackMetric (I := I) (g.restrictOpen (I := I) V) Ψ) x X Y Z W' =
+      metricRm04StdAt (I := I) (M := N) g ((Ψ x : V) : N)
+        (mfderiv I I (Ψ : W → V) x X) (mfderiv I I (Ψ : W → V) x Y)
+        (mfderiv I I (Ψ : W → V) x Z) (mfderiv I I (Ψ : W → V) x W') := by
+  rw [metricRm04Std_pullback (I := I) (g.restrictOpen (I := I) V) Ψ x X Y Z W',
+    metricRm04StdAt_restrictOpen (I := I) g V (Ψ x)
+      (mfderiv I I (Ψ : W → V) x X) (mfderiv I I (Ψ : W → V) x Y)
+      (mfderiv I I (Ψ : W → V) x Z) (mfderiv I I (Ψ : W → V) x W')]
+  simp only [mfderiv_subtype_val_apply]
+
+end DifferentialGeometry.Geometry.Curvature

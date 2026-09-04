@@ -155,8 +155,8 @@ theorem deTurckRemainderOnSmoothCore_tame_uniform_bound
   intro g hEq hjet R hR hRρ hreal x y
   let X : SmoothCcTensor g 0 2 := coreRep g x
   let Y : SmoothCcTensor g 0 2 := coreRep g y
-  let S : SmoothCcTensor g 0 2 := symmS (I := I) (M := M) g X
-  let S' : SmoothCcTensor g 0 2 := symmS (I := I) (M := M) g Y
+  let S : SmoothCcTensor g 0 2 := ccTensor02Symm (I := I) (M := M) g X
+  let S' : SmoothCcTensor g 0 2 := ccTensor02Symm (I := I) (M := M) g Y
   have hS2 :
       ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1) S‖ ≤ R := by
     simpa only [S, X] using coreSymm_h2 (I := I) (M := M) g x
@@ -166,9 +166,9 @@ theorem deTurckRemainderOnSmoothCore_tame_uniform_bound
   have hδS := hreal S hS2
   have hδS' := hreal S' hS2'
   have hbase := hsmooth g hEq hjet S S'
-    (fun z v w => ccTensorBilin_symmS_symm
+    (fun z v w => smoothCcTensorBilinForm_ccTensor02Symm_symm
       (I := I) (M := M) g X z v w)
-    (fun z v w => ccTensorBilin_symmS_symm
+    (fun z v w => smoothCcTensorBilinForm_ccTensor02Symm_symm
       (I := I) (M := M) g Y z v w)
     hδS hδS' R hR hRρ hS2 hS2'
   have hS3 :
@@ -178,7 +178,7 @@ theorem deTurckRemainderOnSmoothCore_tame_uniform_bound
     calc
       _ ≤ ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 2) X‖ := by
         simpa only [S] using
-          norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g
+          norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g
             (((1 : ℕ) : ℝ) + 2) X
       _ = _ := by
         simp only [X]
@@ -190,7 +190,7 @@ theorem deTurckRemainderOnSmoothCore_tame_uniform_bound
     calc
       _ ≤ ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 2) Y‖ := by
         simpa only [S'] using
-          norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g
+          norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g
             (((1 : ℕ) : ℝ) + 2) Y
       _ = _ := by
         simp only [Y]
@@ -201,12 +201,12 @@ theorem deTurckRemainderOnSmoothCore_tame_uniform_bound
           (((1 : ℕ) : ℝ) + 2)) - y.1.1‖ := by
     calc
       _ = ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 2)
-          (symmS (I := I) (M := M) g (X - Y))‖ := by
+          (ccTensor02Symm (I := I) (M := M) g (X - Y))‖ := by
         simp only [S, S']
-        rw [← symmS_sub]
+        rw [← ccTensor02Symm_sub]
       _ ≤ ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 2)
           (X - Y)‖ :=
-        norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g
+        norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g
           (((1 : ℕ) : ℝ) + 2) (X - Y)
       _ = _ := by
         rw [smoothCcToTensorHs_sub]
@@ -220,12 +220,12 @@ theorem deTurckRemainderOnSmoothCore_tame_uniform_bound
             (((1 : ℕ) : ℝ) + 2)) - y.1.1)‖ := by
     calc
       _ = ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1)
-          (symmS (I := I) (M := M) g (X - Y))‖ := by
+          (ccTensor02Symm (I := I) (M := M) g (X - Y))‖ := by
         simp only [S, S']
-        rw [← symmS_sub]
+        rw [← ccTensor02Symm_sub]
       _ ≤ ‖smoothCcToTensorHs (I := I) (M := M) g (((1 : ℕ) : ℝ) + 1)
           (X - Y)‖ :=
-        norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g
+        norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g
           (((1 : ℕ) : ℝ) + 1) (X - Y)
       _ = ‖tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)

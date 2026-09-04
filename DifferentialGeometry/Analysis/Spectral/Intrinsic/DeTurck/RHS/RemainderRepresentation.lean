@@ -27,10 +27,10 @@ variable
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 omit [SigmaCompactSpace M] in
-private theorem rawConnLap_symmS
+private theorem rawConnLap_ccTensor02Symm
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
-    rawTensorConnLapSmooth (I := I) g₀ 0 2 (symmS (I := I) (M := M) g₀ S) =
-      symmS (I := I) (M := M) g₀ (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) := by
+    rawTensorConnLapSmooth (I := I) g₀ 0 2 (ccTensor02Symm (I := I) (M := M) g₀ S) =
+      ccTensor02Symm (I := I) (M := M) g₀ (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) := by
   have hhalf : ∀ W : SmoothCcTensor g₀ 0 2,
       (1 / 2 : ℝ) • W + (1 / 2 : ℝ) • W = W := fun W => by
     rw [← add_smul, show (1 / 2 : ℝ) + 1 / 2 = 1 by norm_num, one_smul]
@@ -48,9 +48,9 @@ private theorem rawConnLap_symmS
       rawTensorConnLapSmooth_sub (I := I) (M := M) g₀ 0 2 0 B, hzero,
       zero_sub, sub_neg_eq_add]
   have hLV : rawTensorConnLapSmooth (I := I) g₀ 0 2
-        (symmS (I := I) (M := M) g₀ S) +
+        (ccTensor02Symm (I := I) (M := M) g₀ S) +
       rawTensorConnLapSmooth (I := I) g₀ 0 2
-        (symmS (I := I) (M := M) g₀ S) =
+        (ccTensor02Symm (I := I) (M := M) g₀ S) =
       rawTensorConnLapSmooth (I := I) g₀ 0 2 S +
         domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) := by
@@ -59,13 +59,13 @@ private theorem rawConnLap_symmS
     rw [hhalf, hadd,
       rawTensorConnLapSmooth_domDomCongrSection (I := I) (M := M) g₀
         (Equiv.swap (0 : Fin 2) 1) S]
-  have hgoal : symmS (I := I) (M := M) g₀
+  have hgoal : ccTensor02Symm (I := I) (M := M) g₀
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) =
       (1 / 2 : ℝ) •
         (rawTensorConnLapSmooth (I := I) g₀ 0 2
-            (symmS (I := I) (M := M) g₀ S) +
+            (ccTensor02Symm (I := I) (M := M) g₀ S) +
           rawTensorConnLapSmooth (I := I) g₀ 0 2
-            (symmS (I := I) (M := M) g₀ S)) := by
+            (ccTensor02Symm (I := I) (M := M) g₀ S)) := by
     change (1 / 2 : ℝ) •
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 S +
           domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
@@ -138,8 +138,8 @@ theorem deTurck_rem_repr
     (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) g₀
         (deTurckSmoothRemainder (I := I) (M := M) g₀ g_bg
-            (symmS (I := I) (M := M) g₀ S) hδ_lt
-            (gFibreOpBound_symmS (I := I) (M := M) g₀ S hδ) +
+            (ccTensor02Symm (I := I) (M := M) g₀ S) hδ_lt
+            (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g₀ S hδ) +
           rawTensorConnLapSmooth (I := I) g₀ 0 2 S) x v w =
       deTurckRicciRHS (I := I) g_bg
         (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδ) x v w := by
@@ -147,41 +147,41 @@ theorem deTurck_rem_repr
       (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) x v w =
       ccTensorBilinSymm (I := I) g₀
         (rawTensorConnLapSmooth (I := I) g₀ 0 2
-          (symmS (I := I) (M := M) g₀ S)) x v w := by
-    rw [rawConnLap_symmS (I := I) (M := M) g₀ S,
-      ccTensorBilinSymm_symmS_apply (I := I) (M := M) g₀
+          (ccTensor02Symm (I := I) (M := M) g₀ S)) x v w := by
+    rw [rawConnLap_ccTensor02Symm (I := I) (M := M) g₀ S,
+      ccTensorBilinSymm_ccTensor02Symm_apply (I := I) (M := M) g₀
         (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) x v w]
   rw [bilinSymm_add (I := I) (M := M) g₀
       (deTurckSmoothRemainder (I := I) (M := M) g₀ g_bg
-        (symmS (I := I) (M := M) g₀ S) hδ_lt
-        (gFibreOpBound_symmS (I := I) (M := M) g₀ S hδ))
+        (ccTensor02Symm (I := I) (M := M) g₀ S) hδ_lt
+        (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g₀ S hδ))
       (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) x v w,
     hlap,
     ← bilinSymm_add (I := I) (M := M) g₀
       (deTurckSmoothRemainder (I := I) (M := M) g₀ g_bg
-        (symmS (I := I) (M := M) g₀ S) hδ_lt
-        (gFibreOpBound_symmS (I := I) (M := M) g₀ S hδ))
+        (ccTensor02Symm (I := I) (M := M) g₀ S) hδ_lt
+        (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g₀ S hδ))
       (rawTensorConnLapSmooth (I := I) g₀ 0 2
-        (symmS (I := I) (M := M) g₀ S)) x v w]
+        (ccTensor02Symm (I := I) (M := M) g₀ S)) x v w]
   set gDT := tensorSectionRealizeMetric (I := I) g₀
-    (symmS (I := I) (M := M) g₀ S) hδ_lt
-    (gFibreOpBound_symmS (I := I) (M := M) g₀ S hδ) with hgDT_def
+    (ccTensor02Symm (I := I) (M := M) g₀ S) hδ_lt
+    (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g₀ S hδ) with hgDT_def
   set R : SmoothCcTensor g₀ 0 2 :=
     { toSection := (deTurckRHSSection (I := I) g_bg gDT).toSection
       hasCompactSupport := (deTurckRHSSection (I := I) g_bg gDT).hasCompactSupport }
     with hR_def
   have hsum_eq : deTurckSmoothRemainder (I := I) (M := M) g₀ g_bg
-      (symmS (I := I) (M := M) g₀ S) hδ_lt
-      (gFibreOpBound_symmS (I := I) (M := M) g₀ S hδ) +
+      (ccTensor02Symm (I := I) (M := M) g₀ S) hδ_lt
+      (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g₀ S hδ) +
       rawTensorConnLapSmooth (I := I) g₀ 0 2
-        (symmS (I := I) (M := M) g₀ S) = R := by
+        (ccTensor02Symm (I := I) (M := M) g₀ S) = R := by
     rw [deTurckSmoothRemainder, sub_add_cancel]
   rw [hsum_eq,
     bilinSymm_sec_congr R (deTurckRHSSectionBackground (I := I) g_bg gDT)
       (by rw [hR_def, deTurckRHSSectionBackground_toSection]) x v w]
   have hreal : gDT = tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδ :=
-    tensorSectionRealizeMetric_symmS_eq (I := I) g₀ S hδ_lt hδ hδ_lt
-      (gFibreOpBound_symmS (I := I) (M := M) g₀ S hδ)
+    tensorSectionRealizeMetric_ccTensor02Symm_eq (I := I) g₀ S hδ_lt hδ hδ_lt
+      (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g₀ S hδ)
   rw [← hreal]
   exact deTurckRHSSection_ccTensorBilinSymm_eq_deTurckRicciRHS
     (I := I) g_bg gDT x v w

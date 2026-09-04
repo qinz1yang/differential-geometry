@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 
-import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 
 
 open DifferentialGeometry.Geometry.Curvature

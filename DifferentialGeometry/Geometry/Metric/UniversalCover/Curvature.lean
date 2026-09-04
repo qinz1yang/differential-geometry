@@ -1,11 +1,11 @@
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Coordinates
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
-import DifferentialGeometry.Geometry.Curvature.CoordRm04Bridge
+import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
 import DifferentialGeometry.Geometry.Curvature.MetricSectional
 import Mathlib.Topology.Covering.Basic
 import Mathlib.Topology.Homotopy.Lifting

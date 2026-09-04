@@ -253,7 +253,7 @@ theorem seqAtom_live_conv
   let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   let q := expMapDiffeo (I := I) (X.obj (L.φ k)).metric (beta k) z
   have hR : 4 * L.lamInf (gamma : Nat) <
-      expRadiusGp (I := I) (X.obj (L.φ k)).metric
+      metricCoerciveExpRadius (I := I) (X.obj (L.φ k)).metric
         (seqCenterD hd P L k (gamma : Nat)) :=
     hgp k gamma (seqCenterD hd P L k (gamma : Nat)) hk
   change seqAtom hd hD P L pb r k gamma q =

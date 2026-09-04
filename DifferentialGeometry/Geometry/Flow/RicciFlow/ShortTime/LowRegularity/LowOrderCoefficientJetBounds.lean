@@ -74,11 +74,11 @@ theorem firstOrderKernel_jet_bound_background
   have hTsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g 0 2 x
       (T.toSection x) ≤ ((Module.finrank ℝ E : ℝ) * (1 / 3)) ^ 2 := by
     intro x
-    have h := riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    have h := riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g h30 T hδ_le hδ0 hδg x
-    have hsT : symmS (I := I) (M := M) g T = T := by
-      simpa only [symmS] using
-        symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g T hT
+    have hsT : ccTensor02Symm (I := I) (M := M) g T = T := by
+      simpa only [ccTensor02Symm] using
+        ccTensor02Symm_eq_self (I := I) (M := M) g T hT
     rwa [hsT] at h
   obtain ⟨⟨δ', hδ'0, hδ'_le, hP⟩, htie, hPsup, hPjet⟩ :=
     metricPerturbationPath_isControlledMetricPerturbation (I := I) (M := M) g T hδ0 hδ_le hδ_lt hδg hδZ hTsup hs
@@ -346,11 +346,11 @@ theorem selfLow_jet
   have hTsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g 0 2 x
       (T.toSection x) ≤ ((Module.finrank ℝ E : ℝ) * (1 / 3)) ^ 2 := by
     intro x
-    have h := riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    have h := riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g h30 T hδ_le hδ0 hδg x
-    have hsT : symmS (I := I) (M := M) g T = T := by
-      simpa only [symmS] using
-        symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g T hT
+    have hsT : ccTensor02Symm (I := I) (M := M) g T = T := by
+      simpa only [ccTensor02Symm] using
+        ccTensor02Symm_eq_self (I := I) (M := M) g T hT
     rwa [hsT] at h
   obtain ⟨⟨δ', hδ'0, hδ'_le, hP⟩, htie, hPsup, hPjet⟩ :=
     metricPerturbationPath_isControlledMetricPerturbation (I := I) (M := M) g T hδ0 hδ_le hδ_lt hδg hδZ hTsup hs
@@ -950,11 +950,11 @@ theorem selfLowJetQBackground
   have hTsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g 0 2 x
       (T.toSection x) ≤ ((Module.finrank ℝ E : ℝ) * (1 / 3)) ^ 2 := by
     intro x
-    have h := riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    have h := riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g h30 T hδ_le hδ0 hδg x
-    have hsT : symmS (I := I) (M := M) g T = T := by
-      simpa only [symmS] using
-        symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g T hT
+    have hsT : ccTensor02Symm (I := I) (M := M) g T = T := by
+      simpa only [ccTensor02Symm] using
+        ccTensor02Symm_eq_self (I := I) (M := M) g T hT
     rwa [hsT] at h
   obtain ⟨⟨δ', hδ'0, hδ'_le, hP⟩, htie, hPsup, hPjet⟩ :=
     metricPerturbationPath_isControlledMetricPerturbation (I := I) (M := M) g T hδ0 hδ_le hδ_lt hδg hδZ hTsup hs

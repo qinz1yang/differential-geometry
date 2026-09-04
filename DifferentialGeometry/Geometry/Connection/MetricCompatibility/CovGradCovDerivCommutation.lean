@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.GradientField
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorThirdOrderWeitzenbock
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.GradientField
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder
 open DifferentialGeometry.Geometry.Curvature
 
 

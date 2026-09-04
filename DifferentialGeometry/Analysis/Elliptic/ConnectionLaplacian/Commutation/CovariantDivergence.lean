@@ -4,9 +4,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.RoughLaplaci
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.Linearization
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SlotExtendCovariantParallelism
-import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorBochner
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.GradientField
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
+import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.Basic
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.GradientField
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.AllOrder
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.HomFieldActionL2JetBound
 open DifferentialGeometry.Analysis.Sobolev

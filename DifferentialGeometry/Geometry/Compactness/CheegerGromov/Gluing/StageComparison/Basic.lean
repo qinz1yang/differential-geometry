@@ -201,7 +201,7 @@ theorem stageCompare_eq_cm
 
 theorem HasSuppConvData.pts_target_tail
     (inp : MetricCompactnessInputs (I := I) X)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -454,7 +454,7 @@ theorem HasSuppConvData.pts_target_tail
 
 theorem HasSuppConvData.pts_target_dist
     (inp : MetricCompactnessInputs (I := I) X)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -522,7 +522,7 @@ theorem HasSuppConvData.actual_cm_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -573,7 +573,7 @@ theorem HasSuppConvData.actual_cm_tail
         Metric.ball (0 : E) rho ⊆
             normalQuarter (I := I) (X.obj (Lphi.φ n)) x ∧
           rho ≤ inp.normalBounds.radius (Lphi.φ n) x ∧
-          rho / 2 ≤ expRadiusGp
+          rho / 2 ≤ metricCoerciveExpRadius
             (I := I) (X.obj (Lphi.φ n)).metric x)
     (alpha : LiveSlot L inp.pack r)
     (eps : Real) (heps : 0 < eps) :
@@ -802,7 +802,7 @@ theorem HasSuppConvData.actual_cm_tail
   have hscaleL := hscale l hlS alpha
   dsimp only [Lphi] at hscaleL
   rcases hscaleL with ⟨hquarter, hρmetric, hρexp⟩
-  have hρexp' : rho / 2 ≤ expRadiusGp (I := I) Yl.metric x0 := by
+  have hρexp' : rho / 2 ≤ metricCoerciveExpRadius (I := I) Yl.metric x0 := by
     simpa only [rho, Yl, x0, Lphi, NetLimitData.subseq] using hρexp
   have hfull := hbranch l hlB alpha
   rcases hqdata alpha with ⟨_hq, _hδ, hρ, hρq⟩
@@ -849,7 +849,7 @@ theorem HasSuppConvData.actual_cm_tail
           (hcomplete.complete (Lphi.φ l)) (hconn (Lphi.φ l)) xGamma
           (q gamma) (δ gamma) rhoGamma ∧
         rhoGamma ≤ inp.normalBounds.radius (Lphi.φ l) xGamma ∧
-        rhoGamma / 2 ≤ expRadiusGp
+        rhoGamma / 2 ≤ metricCoerciveExpRadius
           (I := I) (X.obj (Lphi.φ l)).metric xGamma := by
     intro gamma
     have hfullGamma := hbranch l hlB gamma
@@ -894,12 +894,12 @@ theorem HasSuppConvData.actual_cm_tail
       rw [← HopfRinow.riemMetric_dist_eq]
       exact hxt
     have htExp : (riemannianEDist I x0 (join p c t)).toReal <
-        expRadiusGp (I := I) Yl.metric x0 := by
+        metricCoerciveExpRadius (I := I) Yl.metric x0 := by
       apply htReal.trans_lt
       calc
         4 * L.lamInf (alpha.1 : Nat) + 2 * rad < rhoBase / 2 := by
           nlinarith [hrad]
-        _ ≤ expRadiusGp (I := I) Yl.metric x0 := by
+        _ ≤ metricCoerciveExpRadius (I := I) Yl.metric x0 := by
           simpa only [rhoBase] using hρexp'
     have htControl := inp.normalBounds.raw_chart_mem_norm_le (Lphi.φ l) x0
       (join p c t) ⟨Exponential.riemannianEDist_ne_top (I := I) _ _, htExp⟩
@@ -2194,7 +2194,7 @@ theorem HasSuppConvData.stage_root_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -2245,7 +2245,7 @@ theorem HasSuppConvData.stage_root_tail
         Metric.ball (0 : E) rho ⊆
             normalQuarter (I := I) (X.obj (Lphi.φ n)) x ∧
           rho ≤ inp.normalBounds.radius (Lphi.φ n) x ∧
-          rho / 2 ≤ expRadiusGp
+          rho / 2 ≤ metricCoerciveExpRadius
             (I := I) (X.obj (Lphi.φ n)).metric x)
     (alpha : LiveSlot L inp.pack r)
     (e : Nat → OpenPartialHomeomorph (E × E) (E × E))
@@ -2975,7 +2975,7 @@ theorem HasSuppConvData.exists_stage_tail
     (inp : MetricCompactnessInputs (I := I) X)
     (aMin : Real) (haMin : 0 < aMin)
     (hphys : 8 * Real.exp inp.decay.C < aMin * inp.D)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -3026,7 +3026,7 @@ theorem HasSuppConvData.exists_stage_tail
       Metric.ball (0 : E) rho ⊆
           normalQuarter (I := I) (X.obj (Lphi.φ n)) x ∧
         rho ≤ inp.normalBounds.radius (Lphi.φ n) x ∧
-        rho / 2 ≤ expRadiusGp
+        rho / 2 ≤ metricCoerciveExpRadius
           (I := I) (X.obj (Lphi.φ n)).metric x)
     (deltaInf : LiveSlot L inp.pack r → Real)
     (e : LiveSlot L inp.pack r →

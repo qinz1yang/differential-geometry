@@ -49,7 +49,7 @@ def galerkinFirstOrderActionFixedVectorBackground
     (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ) :
     TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
   let T : SmoothCcTensor g 0 2 :=
-    symmS (I := I) (M := M) g
+    ccTensor02Symm (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c)
   let hT := galRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
@@ -85,7 +85,7 @@ def galerkinFirstOrderActionRemainderVectorBackground
     (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ) :
     TensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) :=
   let T : SmoothCcTensor g 0 2 :=
-    symmS (I := I) (M := M) g
+    ccTensor02Symm (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c)
   let hT := galRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
@@ -154,32 +154,32 @@ theorem galTermPair3_split
 
 private theorem lowTerm_symm
     (g gBase : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
-    (hTsymm : symmS (I := I) (M := M) g T = T)
+    (hTsymm : ccTensor02Symm (I := I) (M := M) g T = T)
     {δ : ℝ} (hδ : δ < 1) (hδ0 : 0 ≤ δ) (hδ3 : δ ≤ 1 / 3)
     (hT : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) δ)
     (hZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) δ) :
     let A := lowerScaleActionCoefficients (I := I) (M := M) g gBase T hδ hT hZ
-    symmS (I := I) (M := M) g
+    ccTensor02Symm (I := I) (M := M) g
         (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T) =
       A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T := by
   dsimp only
   obtain ⟨_, _, hsplit⟩ := lowData_split (I := I) (M := M) g gBase
   have hsplitT := (hsplit T
-    (bilin_symm_of_symmS (I := I) (M := M) g hTsymm)
+    (bilin_symm_of_ccTensor02Symm (I := I) (M := M) g hTsymm)
     hδ3 hδ0 hT hZ).1
-  have hzero : symmS (I := I) (M := M) g
+  have hzero : ccTensor02Symm (I := I) (M := M) g
       (0 : SmoothCcTensor g 0 2) = 0 := by
     simpa only [zero_smul] using
-      (symmS_smul (I := I) (M := M) g (0 : ℝ)
+      (ccTensor02Symm_smul (I := I) (M := M) g (0 : ℝ)
         (0 : SmoothCcTensor g 0 2))
   have hsT :=
-    symmS_smoothRem (I := I) (M := M) g gBase T hδ hT hTsymm
+    ccTensor02Symm_smoothRem (I := I) (M := M) g gBase T hδ hT hTsymm
   change ccTensor02Symm (I := I) (M := M) g
       (deTurckSmoothRemainder (I := I) g gBase T hδ hT) = _ at hsT
   have hsZ :=
-    symmS_smoothRem (I := I) (M := M) g gBase
+    ccTensor02Symm_smoothRem (I := I) (M := M) g gBase
       (0 : SmoothCcTensor g 0 2) hδ hZ hzero
   change ccTensor02Symm (I := I) (M := M) g
       (deTurckSmoothRemainder (I := I) g gBase
@@ -189,7 +189,7 @@ private theorem lowTerm_symm
       (deTurckSmoothRemainder (I := I) g gBase T hδ hT -
         deTurckSmoothRemainder (I := I) g gBase
           (0 : SmoothCcTensor g 0 2) hδ hZ) = _
-  rw [symmS_sub, hsT, hsZ]
+  rw [ccTensor02Symm_sub, hsT, hsZ]
 
 theorem galTermPair3_diag
     (g gBase : SmoothRiemannianMetric I M) {R δ : ℝ}
@@ -204,7 +204,7 @@ theorem galTermPair3_diag
     let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g 1
       (finiteEigenComboHs (I := I) (M := M) g F c (((1 : ℕ) : ℝ) + 2))‖)
     let T : SmoothCcTensor g 0 2 :=
-      symmS (I := I) (M := M) g
+      ccTensor02Symm (I := I) (M := M) g
         (galCoreRep (I := I) (M := M) g R F c)
     let hT := galRepFib (I := I) (M := M) g hR hreal F c
     let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
@@ -221,25 +221,23 @@ theorem galTermPair3_diag
   let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g 1
     (finiteEigenComboHs (I := I) (M := M) g F c (((1 : ℕ) : ℝ) + 2))‖)
   let T : SmoothCcTensor g 0 2 :=
-    symmS (I := I) (M := M) g
+    ccTensor02Symm (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c)
   let hT := galRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
   let A := lowerScaleActionCoefficients (I := I) (M := M) g gBase T hδ hT hZ
-  have hTfix : symmS (I := I) (M := M) g T = T := by
+  have hTfix : ccTensor02Symm (I := I) (M := M) g T = T := by
     dsimp only [T]
-    exact symmS_idem (I := I) (M := M) g _
-  have hA : symmS (I := I) (M := M) g
+    exact ccTensor02Symm_idem (I := I) (M := M) g _
+  have hA : ccTensor02Symm (I := I) (M := M) g
       (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T) =
         A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T := by
     exact lowTerm_symm (I := I) (M := M) g gBase T hTfix hδ hδ0 hδ3 hT hZ
-  have hrep : T = θ • symmS (I := I) (M := M) g
+  have hrep : T = θ • ccTensor02Symm (I := I) (M := M) g
       (finiteEigenCombo (I := I) (M := M) g F c) := by
     dsimp only [T, θ]
     rw [galCoreRep]
-    change ccTensor02Symm (I := I) (M := M) g (_ • _) =
-      _ • ccTensor02Symm (I := I) (M := M) g _
-    rw [symmS_smul]
+    rw [ccTensor02Symm_smul]
   have hpair := finite_symm_scale (I := I) (M := M) g F c
     (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T)
     1 2 θ hA
@@ -264,7 +262,7 @@ theorem galTermPair3_diag
   simp_rw [hcoeff]
   have hthree : (((1 + 2 : ℕ) : ℝ)) = (3 : ℝ) := by norm_num
   rw [hthree] at hpair
-  have hTfold : symmS (I := I) (M := M) g
+  have hTfold : ccTensor02Symm (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c) = T := rfl
   simp only [hTfold]
   have hAfold : lowerScaleActionCoefficients (I := I) (M := M)
@@ -285,7 +283,7 @@ theorem galTermPair4_diag
     let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g 1
       (finiteEigenComboHs (I := I) (M := M) g F c (((1 : ℕ) : ℝ) + 2))‖)
     let T : SmoothCcTensor g 0 2 :=
-      symmS (I := I) (M := M) g
+      ccTensor02Symm (I := I) (M := M) g
         (galCoreRep (I := I) (M := M) g R F c)
     let hT := galRepFib (I := I) (M := M) g hR hreal F c
     let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
@@ -302,25 +300,23 @@ theorem galTermPair4_diag
   let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g 1
     (finiteEigenComboHs (I := I) (M := M) g F c (((1 : ℕ) : ℝ) + 2))‖)
   let T : SmoothCcTensor g 0 2 :=
-    symmS (I := I) (M := M) g
+    ccTensor02Symm (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c)
   let hT := galRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
   let A := lowerScaleActionCoefficients (I := I) (M := M) g gBase T hδ hT hZ
-  have hTfix : symmS (I := I) (M := M) g T = T := by
+  have hTfix : ccTensor02Symm (I := I) (M := M) g T = T := by
     dsimp only [T]
-    exact symmS_idem (I := I) (M := M) g _
-  have hA : symmS (I := I) (M := M) g
+    exact ccTensor02Symm_idem (I := I) (M := M) g _
+  have hA : ccTensor02Symm (I := I) (M := M) g
       (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T) =
         A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T := by
     exact lowTerm_symm (I := I) (M := M) g gBase T hTfix hδ hδ0 hδ3 hT hZ
-  have hrep : T = θ • symmS (I := I) (M := M) g
+  have hrep : T = θ • ccTensor02Symm (I := I) (M := M) g
       (finiteEigenCombo (I := I) (M := M) g F c) := by
     dsimp only [T, θ]
     rw [galCoreRep]
-    change ccTensor02Symm (I := I) (M := M) g (_ • _) =
-      _ • ccTensor02Symm (I := I) (M := M) g _
-    rw [symmS_smul]
+    rw [ccTensor02Symm_smul]
   have hpair := finite_symm_scale (I := I) (M := M) g F c
     (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T)
     1 3 θ hA
@@ -345,7 +341,7 @@ theorem galTermPair4_diag
   simp_rw [hcoeff]
   have hfour : (((1 + 3 : ℕ) : ℝ)) = (4 : ℝ) := by norm_num
   rw [hfour] at hpair
-  have hTfold : symmS (I := I) (M := M) g
+  have hTfold : ccTensor02Symm (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c) = T := rfl
   simp only [hTfold]
   have hAfold : lowerScaleActionCoefficients (I := I) (M := M)
@@ -394,7 +390,7 @@ theorem galerkinFirstOrderActionFixedPairing_h3_bound
   intro R δ hR hRcap hδ_le hδ_nonneg hreal F c
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le hδ₀
   let T : SmoothCcTensor g 0 2 :=
-    symmS (I := I) (M := M) g
+    ccTensor02Symm (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c)
   let hT := galRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal

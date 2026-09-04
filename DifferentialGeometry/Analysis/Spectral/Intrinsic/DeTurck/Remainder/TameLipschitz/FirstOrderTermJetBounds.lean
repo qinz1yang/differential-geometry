@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.ProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
@@ -73,7 +73,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
-  symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
+  ccTensor02Symm_sub smoothCcTensorBilinForm_ccTensor02Symm iteratedCovGrad_ccTensor02Symm_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
@@ -755,7 +755,7 @@ theorem pAO_kappa_jetSum_tame (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
           ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 := by
       intro j _
       rw [lieCorrectionZero_normSq_iteratedCovGrad_raise_eq (I := I) (M := M) g₀ 0 (ccTensor02Symm (I := I) (M := M) g₀ P) j]
-      exact lieCorrectionZero_normSq_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ P j
+      exact lieCorrectionZero_normSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ P j
     refine le_trans (Finset.sum_le_sum hstep) ?_
     rw [hW_def]
     have hmono : ∑ j ∈ Finset.range (q + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 ≤

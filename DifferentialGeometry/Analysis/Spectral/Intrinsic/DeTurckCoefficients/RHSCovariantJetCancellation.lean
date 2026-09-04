@@ -141,37 +141,6 @@ private theorem hjoint_add
     (E := fun z : M => TensorRSSpace r 2 I z) p.1 t) ?_
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private theorem symmS_eq_self_local
-    (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
-    (hS : ∀ (x : M) (v w : TangentSpace I x),
-      smoothCcTensorBilinForm (I := I) g S x v w = smoothCcTensorBilinForm (I := I) g S x w v) :
-    ccTensor02Symm (I := I) (M := M) g S = S := by
-  have hswap : domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) S = S := by
-    refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g (fun x => ?_)
-    rw [domDomCongrSection_unitModel]
-    refine ContinuousMultilinearMap.ext (fun v => ?_)
-    rw [ContinuousMultilinearMap.domDomCongr_apply]
-    have hv : ∀ u w : TangentSpace I x,
-        unitModel (I := I) (M := M) g 2 S x ![u, w] =
-          unitModel (I := I) (M := M) g 2 S x ![w, u] := by
-      intro u w
-      rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g S x u w,
-        unitModel_eq_ccTensorBilin_local (I := I) (M := M) g S x w u]
-      exact hS x u w
-    have hveta : (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
-      funext i
-      fin_cases i <;> rfl
-    have hveta' : v = ![v 0, v 1] := by
-      funext i
-      fin_cases i <;> rfl
-    rw [hveta]
-    conv_rhs => rw [hveta']
-    exact hv (v 1) (v 0)
-  rw [ccTensor02Symm, hswap, ← two_smul ℝ S, smul_smul,
-    show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
-
 omit [CompactSpace M] [SigmaCompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -401,15 +370,15 @@ theorem ricciDeTurckRemainderLowOrder_eq_terms
         smoothCcTensorBilinForm (I := I) g₀ (T - T') y z u := by
     intro y u z
     rw [ccTensorBilin_sub, ccTensorBilin_sub, hTsymm y u z, hT'symm y u z]
-  have hsymmS : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
-    symmS_eq_self_local (I := I) (M := M) g₀ (T - T') hsubsymm
+  have hccTensor02Symm : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
+    ccTensor02Symm_eq_self (I := I) (M := M) g₀ (T - T') hsubsymm
   have hLie := lieSum_eq_terms (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' x v w hs
   have hLieSplit := lieSum_eq_split (I := I) g₀ g_bg T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
   have hTop := lieTop_add_swap (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x v w s
-  rw [hsymmS] at hLie hTop
+  rw [hccTensor02Symm] at hLie hTop
   rw [tangent_model_pair_eq] at hTop
   have hLower :
       lieOneSum (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x v w s +

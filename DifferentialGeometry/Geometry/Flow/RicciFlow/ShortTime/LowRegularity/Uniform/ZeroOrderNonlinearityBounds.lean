@@ -176,14 +176,14 @@ theorem deTurckRemainderOnLowerState_zero_eq_deTurckRHS (g₀ g_bg : SmoothRiema
           smoothCore (I := I) (M := M) g₀ R)) = 0 := by
     rw [coreRep_spec]
   have hsymm : smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2)
-      (symmS (I := I) (M := M) g₀
+      (ccTensor02Symm (I := I) (M := M) g₀
         (coreRep (I := I) (M := M) g₀
           (⟨⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩, hmem⟩ :
             smoothCore (I := I) (M := M) g₀ R))) =
       smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 2)
         (0 : SmoothCcTensor g₀ 0 2) := by
     rw [smoothCcToTensorHs_zero]
-    have hle := norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀
+    have hle := norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀
       (((1 : ℕ) : ℝ) + 2)
       (coreRep (I := I) (M := M) g₀
         (⟨⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩, hmem⟩ :
@@ -202,7 +202,7 @@ theorem deTurckRemainderOnLowerState_zero_eq_deTurckRHS (g₀ g_bg : SmoothRiema
         (smoothCore_dense (I := I) (M := M) g₀ hR).extend_eq hcore
           ⟨⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩, hmem⟩
     _ = deTurckSmoothN (I := I) (M := M) g₀ g_bg 1
-          (symmS (I := I) (M := M) g₀
+          (ccTensor02Symm (I := I) (M := M) g₀
             (coreRep (I := I) (M := M) g₀
               ⟨⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩, hmem⟩)) hδ
           (hreal _ (coreSymm_h2 (I := I) (M := M) g₀

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Bochner.ScalarBochner
+import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Identities
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Curvature.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Hessian

@@ -281,7 +281,7 @@ theorem unifHatCageData
         (X.obj (L.φ n)).t2TangentBundle
       forall gamma : Fin (pb.A r),
         4 * L.lamInf (gamma : Nat) <
-          expRadiusGp (I := I) (X.obj (L.φ n)).metric (center gamma))
+          metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric (center gamma))
     (hrad : forall a b : Nat, forall x : (X.obj (L.φ n)).M,
       x ∈ NetLimitData.hatSourceBall (I := I) (X := X) hd P L r n ->
         0 < radSeq a b x)

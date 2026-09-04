@@ -356,7 +356,7 @@ theorem exists_hat_cm_tail
                 seqCenter hd D P (L.φ n) (gamma : Nat) = some c →
                   c = seqCenterD hd P L n (gamma : Nat) ∧
                     4 * L.lamInf (gamma : Nat) <
-                      expRadiusGp (I := I) (X.obj (L.φ n)).metric c) ∧
+                      metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric c) ∧
               ∀ (rho :
                   letI : TopologicalSpace (X.obj (L.φ n)).M :=
                     (X.obj (L.φ n)).topology
@@ -630,7 +630,7 @@ theorem exists_hat_cm_tail_support
                 seqCenter hd D P (L.φ n) (gamma : Nat) = some c →
                   c = seqCenterD hd P L n (gamma : Nat) ∧
                     4 * L.lamInf (gamma : Nat) <
-                      expRadiusGp (I := I) (X.obj (L.φ n)).metric c) ∧
+                      metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric c) ∧
               ∀ (alpha : LiveSlot L pb r)
                 (s : Set (X.obj (L.φ n)).M)
                 (hs : s ⊆ NetLimitData.hatBall (I := I) (X := X)
@@ -809,7 +809,7 @@ theorem exists_hat_cm_min
               Metric.ball (0 : E) rho ⊆
                   normalQuarter (I := I) (X.obj (L.φ n)) x ∧
                 rho ≤ hb.radius (L.φ n) x ∧
-                rho / 2 ≤ expRadiusGp
+                rho / 2 ≤ metricCoerciveExpRadius
                   (I := I) (X.obj (L.φ n)).metric x) ∧
             ∀ᶠ n in Filter.atTop,
               letI : TopologicalSpace (X.obj (L.φ n)).M :=
@@ -849,7 +849,7 @@ theorem exists_hat_cm_min
                 seqCenter hd D P (L.φ n) (gamma : Nat) = some c →
                   c = seqCenterD hd P L n (gamma : Nat) ∧
                     4 * L.lamInf (gamma : Nat) <
-                      expRadiusGp (I := I) (X.obj (L.φ n)).metric c) ∧
+                      metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric c) ∧
               ∀ (alpha : LiveSlot L pb r)
                 (s : Set (X.obj (L.φ n)).M)
                 (hs : s ⊆ NetLimitData.hatBall (I := I) (X := X)
@@ -910,7 +910,7 @@ theorem exists_hat_cm_min
       Metric.ball (0 : E) rho ⊆
           normalQuarter (I := I) (X.obj (L.φ n)) x ∧
         rho ≤ hb.radius (L.φ n) x ∧
-        rho / 2 ≤ expRadiusGp
+        rho / 2 ≤ metricCoerciveExpRadius
           (I := I) (X.obj (L.φ n)).metric x := by
     filter_upwards [hquarter, hbranch] with n hquarterN hn
     intro gamma

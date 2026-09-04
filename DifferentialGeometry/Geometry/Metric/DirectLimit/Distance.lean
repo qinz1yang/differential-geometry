@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.DirectLimit.Defs
-import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 
 set_option autoImplicit false
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativePullback
 
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormRestriction
-import DifferentialGeometry.Geometry.Curvature.RestrictOpenRm04
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 

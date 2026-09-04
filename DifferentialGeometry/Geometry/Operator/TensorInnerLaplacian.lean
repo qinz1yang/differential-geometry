@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Bochner.TensorNormProduct
+import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Norm.Product
 import DifferentialGeometry.Geometry.Operator.HessianTraceRealization
 import DifferentialGeometry.Geometry.Operator.MetricFamily
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative

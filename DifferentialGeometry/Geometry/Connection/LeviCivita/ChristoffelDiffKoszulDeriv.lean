@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.HigherOrder
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TotalNabla0S
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Smooth.CovariantDerivative
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

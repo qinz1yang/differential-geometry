@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CovariantDerivativeNorm
-import DifferentialGeometry.Geometry.Comparison.Volume.BallVolume
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Norm
+import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.InjectivityRadius
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 

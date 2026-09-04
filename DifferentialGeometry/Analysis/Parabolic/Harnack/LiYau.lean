@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Operator.VossWeyl
 import DifferentialGeometry.Geometry.Operator.LaplacianBridge
 import DifferentialGeometry.Geometry.Operator.NormGradSq
 import DifferentialGeometry.Geometry.Operator.HessianTraceInequality
-import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcrete
+import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
 import DifferentialGeometry.Analysis.Calculus.Extrema
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 import DifferentialGeometry.Geometry.Operator.MetricFamily

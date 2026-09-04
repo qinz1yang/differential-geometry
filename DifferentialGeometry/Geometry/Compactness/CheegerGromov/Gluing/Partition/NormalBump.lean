@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Basic
 
 
-import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -200,7 +200,7 @@ theorem quadNormal_one (g : SmoothRiemannianMetric I M) (p : M)
 
 theorem quadNormal_tsupport (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : Real))
-    (hr : Real.sqrt f.rOut < expRadiusGp (I := I) g p) :
+    (hr : Real.sqrt f.rOut < metricCoerciveExpRadius (I := I) g p) :
     tsupport (quadNormal g p f) ⊆
       (normalChartAt (I := I) g p).symm ''
         {v : E | g.inner p v v ≤ f.rOut} := by
@@ -213,7 +213,7 @@ theorem quadNormal_tsupport (g : SmoothRiemannianMetric I M) (p : M)
     exact isClosed_le hquad continuous_const
   have hKtgt : K ⊆ ψ.target := by
     intro v hv
-    have hsqrt : Real.sqrt (g.inner p v v) < expRadiusGp (I := I) g p :=
+    have hsqrt : Real.sqrt (g.inner p v v) < metricCoerciveExpRadius (I := I) g p :=
       (Real.sqrt_le_sqrt hv).trans_lt hr
     have hvnorm : ‖v‖ < expMapC2Radius (I := I) g p :=
       norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) g p hsqrt
@@ -221,7 +221,7 @@ theorem quadNormal_tsupport (g : SmoothRiemannianMetric I M) (p : M)
   have hKbounded : Bornology.IsBounded K := by
     rw [isBounded_iff_forall_norm_le]
     refine ⟨expMapC2Radius (I := I) g p, fun v hv => ?_⟩
-    have hsqrt : Real.sqrt (g.inner p v v) < expRadiusGp (I := I) g p :=
+    have hsqrt : Real.sqrt (g.inner p v v) < metricCoerciveExpRadius (I := I) g p :=
       (Real.sqrt_le_sqrt hv).trans_lt hr
     exact (norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) g p hsqrt).le
   have hKcompact : IsCompact K :=
@@ -257,12 +257,12 @@ theorem quadNormal_tsupport (g : SmoothRiemannianMetric I M) (p : M)
 
 theorem quadNormal_contMDiff (g : SmoothRiemannianMetric I M) (p : M)
     (f : ContDiffBump (0 : Real))
-    (hr : Real.sqrt f.rOut < expRadiusGp (I := I) g p) :
+    (hr : Real.sqrt f.rOut < metricCoerciveExpRadius (I := I) g p) :
     ContMDiff I (modelWithCornersSelf Real Real) ∞ (quadNormal g p f) := by
   let ψ := normalChartAt (I := I) g p
   refine contMDiff_of_tsupport fun q hq => ?_
   obtain ⟨v, hv, hqv⟩ := quadNormal_tsupport g p f hr hq
-  have hsqrt : Real.sqrt (g.inner p v v) < expRadiusGp (I := I) g p :=
+  have hsqrt : Real.sqrt (g.inner p v v) < metricCoerciveExpRadius (I := I) g p :=
     (Real.sqrt_le_sqrt hv).trans_lt hr
   have hvnorm : ‖v‖ < expMapC2Radius (I := I) g p :=
     norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) g p hsqrt

@@ -838,8 +838,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfBackgroun
       smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ P) y v w =
       smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ P) y w v := by
     intro y v w
-    rw [ccTensorBilin_symmS (I := I) (M := M) g₀ P y v w,
-      ccTensorBilin_symmS (I := I) (M := M) g₀ P y w v,
+    rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P y v w,
+      smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P y w v,
       ccTensorBilinSymm_apply, ccTensorBilinSymm_apply]
     ring
   have htie' : ∀ (y : M) (v w : TangentSpace I y),
@@ -852,8 +852,8 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfBackgroun
           + smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ P) y w v)
             from by
       rw [ccTensorBilinSymm_apply]]
-    rw [ccTensorBilin_symmS (I := I) (M := M) g₀ P y v w,
-      ccTensorBilin_symmS (I := I) (M := M) g₀ P y w v,
+    rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P y v w,
+      smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P y w v,
       ccTensorBilinSymm_apply, ccTensorBilinSymm_apply, htie y v w,
       ccTensorBilinSymm_apply]
     ring

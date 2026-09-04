@@ -639,7 +639,7 @@ theorem centerOfMass_chartCmEqnB_eq_zero_of_normalBounds
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ hb.radius k x →
-      ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+      ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       let c := centerOfMass (I := I) (X.obj k).metric mu pts join p r h
       (∀ i, max (riemannianEDist I x c) (riemannianEDist I x (pts i)) <
         ENNReal.ofReal (ρ / 2)) →
@@ -699,7 +699,7 @@ theorem centerOfMass_chartCmEqnB_eq_zero_of_normalBounds
     have hsmooth : ContMDiffOn I 𝓘(Real) ∞
         (CenterOfMass.halfSqDist (pts i)) S := by
       simpa only [S] using
-        IsNormalDiag.halfSq_inf (I := I) hb k hcomplete hconn x hq he hf
+        IsNormalDiag.halfSqDist_contMDiffOn (I := I) hb k hcomplete hconn x hq he hf
           hρ hρq hρmetric hρexp
     have hcS : c ∈ S := by
       with_unfolding_all exact hpairs i

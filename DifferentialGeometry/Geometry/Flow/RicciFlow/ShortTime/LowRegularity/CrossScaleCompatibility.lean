@@ -355,7 +355,7 @@ def deTurckRemainderOnSmoothCoreAt (g₀ g_bg : SmoothRiemannianMetric I M) (a :
     smoothCore (I := I) (M := M) g₀ R →
       TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ) :=
   fun x => deTurckSmoothN (I := I) (M := M) g₀ g_bg a
-    (symmS (I := I) (M := M) g₀ (coreRep g₀ x)) hδ
+    (ccTensor02Symm (I := I) (M := M) g₀ (coreRep g₀ x)) hδ
     (hreal _ (coreSymm_h2 (I := I) (M := M) g₀ x))
 
 theorem deTurckRemainderOnSmoothCoreAt_one (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}

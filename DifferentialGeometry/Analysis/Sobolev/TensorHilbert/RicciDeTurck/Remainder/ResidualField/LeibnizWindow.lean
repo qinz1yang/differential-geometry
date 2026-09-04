@@ -1543,7 +1543,7 @@ theorem riemannianFiberNormSq_secondMetricPairTraceOperator_leibnizDiagonal_ricc
             (ccTensor02Symm (I := I) (M := M) g₀ P) x
       _ ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (2 + i)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (2 + i) P).toSection x) :=
-          riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (I := I) (M := M) g₀ P (2 + i) x
+          riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_pointwise (I := I) (M := M) g₀ P (2 + i) x
       _ = riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x) :=
           riemannianFiberNormSq_iteratedCovGrad_order_congr_local (I := I) (M := M) g₀ 0 2
@@ -1678,7 +1678,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContract
       (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ P)) k x]
     rw [riemannianFiberNormSq_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 2 k
       (ccTensor02Symm (I := I) (M := M) g₀ P) x]
-    have hstep := riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (I := I) (M := M) g₀ P (2 + k) x
+    have hstep := riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_pointwise (I := I) (M := M) g₀ P (2 + k) x
     calc fr * (fr * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (2 + k)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (2 + k)
               (ccTensor02Symm (I := I) (M := M) g₀ P)).toSection x))

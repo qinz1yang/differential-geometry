@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.SegmentCount
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Count
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.VolumeComparison

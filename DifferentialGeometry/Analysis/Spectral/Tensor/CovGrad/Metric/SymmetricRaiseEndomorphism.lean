@@ -294,7 +294,7 @@ lemma insert_symmRaise_eq (g : SmoothRiemannianMetric I M)
         (symmRaiseEndo (I := I) (M := M) g T) =
       cometricRaiseSlot0Field (I := I) (M := M) g 0
         (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
-          (symmS (I := I) (M := M) g T)) := by
+          (ccTensor02Symm (I := I) (M := M) g T)) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -339,12 +339,12 @@ lemma insert_symmRaise_eq (g : SmoothRiemannianMetric I M)
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (cometricRaiseSlot0Field (I := I) (M := M) g 0
           (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
-            (symmS (I := I) (M := M) g T))).toSection x) om) =
+            (ccTensor02Symm (I := I) (M := M) g T))).toSection x) om) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         cometricRaiseSlot0Fib g 0 x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
             (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
-              (symmS (I := I) (M := M) g T)).toSection x)
+              (ccTensor02Symm (I := I) (M := M) g T)).toSection x)
             (unitTensor (I := I) (M := M) x))) om) from rfl]
   rw [cometricRaiseSlot0Fib_clm_apply (I := I) g 0 x _ om]
   rw [interior_product_toModel_eval (I := I) (M := M) 1 x
@@ -352,14 +352,14 @@ lemma insert_symmRaise_eq (g : SmoothRiemannianMetric I M)
   rw [show Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
         (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
-          (symmS (I := I) (M := M) g T)).toSection x)
+          (ccTensor02Symm (I := I) (M := M) g T)).toSection x)
         (unitTensor (I := I) (M := M) x)) =
       unitModel (I := I) (M := M) g 2
         (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1)
-          (symmS (I := I) (M := M) g T)) x from rfl]
+          (ccTensor02Symm (I := I) (M := M) g T)) x from rfl]
   rw [domDomCongrSection_unitModel (I := I) g
     (Equiv.swap (0 : Fin 2) 1)
-    (symmS (I := I) (M := M) g T) x]
+    (ccTensor02Symm (I := I) (M := M) g T) x]
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 2 =>
       (Fin.cons
@@ -371,10 +371,10 @@ lemma insert_symmRaise_eq (g : SmoothRiemannianMetric I M)
     funext i
     fin_cases i <;> rfl]
   rw [unitModel_eq_bilin (I := I) (M := M) g
-    (symmS (I := I) (M := M) g T) x
+    (ccTensor02Symm (I := I) (M := M) g T) x
     (w 0) (tangentSpaceModelContinuousLinearEquiv (I := I) x
       (inverseMetricSharpFib (I := I) g x om))]
-  rw [ccTensorBilin_symmS (I := I) (M := M) g T x]
+  rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g T x]
   rw [ContinuousLinearEquiv.symm_apply_apply]
 
 end TensorSpectral

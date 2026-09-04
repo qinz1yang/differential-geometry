@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.PosDefPerturbation
-import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
 import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 

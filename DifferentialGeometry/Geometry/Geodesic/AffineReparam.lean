@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Geometry.Geodesic.MaximalInterval
-import DifferentialGeometry.Geometry.Exponential.Smoothness.UniformChartFlowBridge
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartPushVFEq
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 import Mathlib.Geometry.Manifold.IntegralCurve.Transform

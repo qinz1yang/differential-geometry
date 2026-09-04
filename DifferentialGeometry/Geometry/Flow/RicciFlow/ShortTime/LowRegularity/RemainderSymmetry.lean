@@ -96,44 +96,44 @@ theorem ddc_swap_sub (g : SmoothRiemannianMetric I M)
     ccTensorBilin_sub (I := I) (M := M) g]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem symmS_of_swap (g₀ : SmoothRiemannianMetric I M) {X : SmoothCcTensor g₀ 0 2}
+theorem ccTensor02Symm_of_swap (g₀ : SmoothRiemannianMetric I M) {X : SmoothCcTensor g₀ 0 2}
     (h : domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) X = X) :
-    symmS (I := I) (M := M) g₀ X = X := by
-  simp only [symmS, ccTensor02Symm, h, ← two_smul ℝ X, smul_smul,
+    ccTensor02Symm (I := I) (M := M) g₀ X = X := by
+  simp only [ccTensor02Symm, ccTensor02Symm, h, ← two_smul ℝ X, smul_smul,
     show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem swap_symmS (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
+theorem swap_ccTensor02Symm (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
     domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
-        (symmS (I := I) (M := M) g₀ T) =
-      symmS (I := I) (M := M) g₀ T := by
+        (ccTensor02Symm (I := I) (M := M) g₀ T) =
+      ccTensor02Symm (I := I) (M := M) g₀ T := by
   refine ccTensor_ext_bilin (I := I) (M := M) g₀ (fun x u w => ?_)
   rw [bilin_ddc_swap (I := I) (M := M) g₀]
-  simp only [ccTensorBilin_symmS (I := I) (M := M) g₀]
+  simp only [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀]
   exact ccTensorBilinSymm_symm (I := I) g₀ T x w u
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem symmS_idem (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
-    symmS (I := I) (M := M) g₀ (symmS (I := I) (M := M) g₀ T) =
-      symmS (I := I) (M := M) g₀ T :=
-  symmS_of_swap (I := I) (M := M) g₀ (swap_symmS (I := I) (M := M) g₀ T)
+theorem ccTensor02Symm_idem (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
+    ccTensor02Symm (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) =
+      ccTensor02Symm (I := I) (M := M) g₀ T :=
+  ccTensor02Symm_of_swap (I := I) (M := M) g₀ (swap_ccTensor02Symm (I := I) (M := M) g₀ T)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem swap_of_symmS (g₀ : SmoothRiemannianMetric I M) {X : SmoothCcTensor g₀ 0 2}
-    (h : symmS (I := I) (M := M) g₀ X = X) :
+theorem swap_of_ccTensor02Symm (g₀ : SmoothRiemannianMetric I M) {X : SmoothCcTensor g₀ 0 2}
+    (h : ccTensor02Symm (I := I) (M := M) g₀ X = X) :
     domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) X = X := by
   conv_lhs => rw [← h]
-  rw [swap_symmS (I := I) (M := M) g₀, h]
+  rw [swap_ccTensor02Symm (I := I) (M := M) g₀, h]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem bilin_symm_of_symmS (g₀ : SmoothRiemannianMetric I M)
-    {X : SmoothCcTensor g₀ 0 2} (h : symmS (I := I) (M := M) g₀ X = X)
+theorem bilin_symm_of_ccTensor02Symm (g₀ : SmoothRiemannianMetric I M)
+    {X : SmoothCcTensor g₀ 0 2} (h : ccTensor02Symm (I := I) (M := M) g₀ X = X)
     (x : M) (v w : TangentSpace I x) :
     ccTensorBilin (I := I) g₀ X x v w = ccTensorBilin (I := I) g₀ X x w v := by
   conv_lhs => rw [← h]
   conv_rhs => rw [← h]
-  rw [ccTensorBilin_symmS (I := I) (M := M) g₀ X x v w,
-    ccTensorBilin_symmS (I := I) (M := M) g₀ X x w v,
+  rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ X x v w,
+    smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ X x w v,
     ccTensorBilinSymm_symm (I := I) g₀ X x v w]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -184,42 +184,42 @@ theorem swap_smoothRem (g₀ g_bg : SmoothRiemannianMetric I M)
     hT]
 
 omit [SigmaCompactSpace M] in
-theorem symmS_smoothRem (g₀ g_bg : SmoothRiemannianMetric I M)
+theorem ccTensor02Symm_smoothRem (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    (hT : symmS (I := I) (M := M) g₀ T = T) :
-    symmS (I := I) (M := M) g₀
+    (hT : ccTensor02Symm (I := I) (M := M) g₀ T = T) :
+    ccTensor02Symm (I := I) (M := M) g₀
         (deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ) =
       deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ :=
-  symmS_of_swap (I := I) (M := M) g₀
+  ccTensor02Symm_of_swap (I := I) (M := M) g₀
     (swap_smoothRem (I := I) (M := M) g₀ g_bg T hδ_lt hδ
-      (swap_of_symmS (I := I) (M := M) g₀ hT))
+      (swap_of_ccTensor02Symm (I := I) (M := M) g₀ hT))
 
 omit [SigmaCompactSpace M] in
-theorem symmS_remSymmS (g₀ g_bg : SmoothRiemannianMetric I M)
+theorem ccTensor02Symm_deTurckSmoothRemainder_of_ccTensor02Symm (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ (symmS (I := I) (M := M) g₀ T)) δ) :
-    symmS (I := I) (M := M) g₀
+      (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T)) δ) :
+    ccTensor02Symm (I := I) (M := M) g₀
         (deTurckSmoothRemainder (I := I) g₀ g_bg
-          (symmS (I := I) (M := M) g₀ T) hδ_lt hδ) =
+          (ccTensor02Symm (I := I) (M := M) g₀ T) hδ_lt hδ) =
       deTurckSmoothRemainder (I := I) g₀ g_bg
-        (symmS (I := I) (M := M) g₀ T) hδ_lt hδ :=
-  symmS_smoothRem (I := I) (M := M) g₀ g_bg _ hδ_lt hδ
-    (symmS_idem (I := I) (M := M) g₀ T)
+        (ccTensor02Symm (I := I) (M := M) g₀ T) hδ_lt hδ :=
+  ccTensor02Symm_smoothRem (I := I) (M := M) g₀ g_bg _ hδ_lt hδ
+    (ccTensor02Symm_idem (I := I) (M := M) g₀ T)
 
 omit [SigmaCompactSpace M] in
 theorem bilin_smoothRem_symm (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    (hT : symmS (I := I) (M := M) g₀ T = T)
+    (hT : ccTensor02Symm (I := I) (M := M) g₀ T = T)
     (x : M) (v w : TangentSpace I x) :
     ccTensorBilin (I := I) g₀
         (deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ) x v w =
       ccTensorBilin (I := I) g₀
         (deTurckSmoothRemainder (I := I) g₀ g_bg T hδ_lt hδ) x w v :=
-  bilin_symm_of_symmS (I := I) (M := M) g₀
-    (symmS_smoothRem (I := I) (M := M) g₀ g_bg T hδ_lt hδ hT) x v w
+  bilin_symm_of_ccTensor02Symm (I := I) (M := M) g₀
+    (ccTensor02Symm_smoothRem (I := I) (M := M) g₀ g_bg T hδ_lt hδ hT) x v w
 
 theorem smoothN_eq_embed (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
@@ -233,13 +233,13 @@ theorem smoothN_eq_embed (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
 theorem symmHs_smoothN (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (hσ : (0 : ℝ) ≤ (a : ℝ)) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-    (hT : symmS (I := I) (M := M) g₀ T = T) :
+    (hT : ccTensor02Symm (I := I) (M := M) g₀ T = T) :
     symmHs (I := I) (M := M) g₀ hσ
         (deTurckSmoothN (I := I) (M := M) g₀ g_bg a T hδ_lt hδ) =
       deTurckSmoothN (I := I) (M := M) g₀ g_bg a T hδ_lt hδ := by
   rw [smoothN_eq_embed (I := I) (M := M) g₀ g_bg a T hδ_lt hδ]
   exact symmHs_smoothCc_eq_self (I := I) (M := M) g₀ hσ _
-    (symmS_smoothRem (I := I) (M := M) g₀ g_bg T hδ_lt hδ hT)
+    (ccTensor02Symm_smoothRem (I := I) (M := M) g₀ g_bg T hδ_lt hδ hT)
 
 theorem symmHs_deTurckRemainderOnSmoothCore (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hδ : δ < 1)
@@ -253,9 +253,9 @@ theorem symmHs_deTurckRemainderOnSmoothCore (g₀ g_bg : SmoothRiemannianMetric 
         (deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal x) =
       deTurckRemainderOnSmoothCore (I := I) (M := M) g₀ g_bg hδ hreal x :=
   symmHs_smoothN (I := I) (M := M) g₀ g_bg 1 hσ
-    (symmS (I := I) (M := M) g₀ (coreRep g₀ x)) hδ
+    (ccTensor02Symm (I := I) (M := M) g₀ (coreRep g₀ x)) hδ
     (hreal _ (coreSymm_h2 (I := I) (M := M) g₀ x))
-    (symmS_idem (I := I) (M := M) g₀ (coreRep g₀ x))
+    (ccTensor02Symm_idem (I := I) (M := M) g₀ (coreRep g₀ x))
 
 theorem symmHs_deTurckRemainderOnLowerState (g₀ g_bg : SmoothRiemannianMetric I M) {R δ : ℝ}
     (hR : 0 < R) (hδ : δ < 1)

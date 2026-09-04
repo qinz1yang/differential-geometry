@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Exponential.IntrinsicFramedCoordinates
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.FramedCoordinates
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphOpen
-import DifferentialGeometry.Geometry.Curvature.Rm04OperatorBound
-import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityLocalCross
+import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Metric.LocalPullback
 import DifferentialGeometry.Topology.SigmaCompactOpen
 

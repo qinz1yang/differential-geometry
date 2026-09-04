@@ -1234,7 +1234,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Spectral
-  (ccTensorToHs symmS_eq_self_of_ccTensorBilin_symm)
+  (ccTensorToHs ccTensor02Symm_eq_self)
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -1313,10 +1313,10 @@ theorem exists_ricciConnectionDifferenceDerivativeCoefficient_pairing_secondOrde
   have h1A : 0 ≤ 1 + A := add_nonneg (by norm_num) hA
   have hx0 : 0 ≤ x := mul_nonneg (mul_nonneg (hBa R hR) h1A) hD
   have hy0 : 0 ≤ y := mul_nonneg (mul_nonneg (hBd R hR) h1A) hD
-  have hsymmT : symmS (I := I) (M := M) g T = T :=
-    symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g T hT
-  have hsymmU : symmS (I := I) (M := M) g U = U :=
-    symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g U hU
+  have hsymmT : ccTensor02Symm (I := I) (M := M) g T = T :=
+    ccTensor02Symm_eq_self (I := I) (M := M) g T hT
+  have hsymmU : ccTensor02Symm (I := I) (M := M) g U = U :=
+    ccTensor02Symm_eq_self (I := I) (M := M) g U hU
   have haa' : covariantJetNormSq (I := I) (M := M) g 2
       (ricciConnectionDifferenceQuadraticDerivativeCoefficient (I := I) (M := M) g gT T -
         ricciConnectionDifferenceQuadraticDerivativeCoefficient (I := I) (M := M) g gU U) ≤ x ^ 2 := by

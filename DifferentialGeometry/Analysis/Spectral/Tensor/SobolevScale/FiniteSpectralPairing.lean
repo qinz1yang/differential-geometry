@@ -232,23 +232,23 @@ private theorem connIter_smul
       rw [hraw, smul_sub]
 
 omit [SigmaCompactSpace M] in
-private theorem connIter_symmS
+private theorem connIter_ccTensor02Symm
     (g : SmoothRiemannianMetric I M) (k : ℕ) (T : SmoothCcTensor g 0 2) :
     oneMinusConnLapSmoothIter (I := I) g 0 2 k
-        (symmS (I := I) (M := M) g T) =
-      symmS (I := I) (M := M) g
+        (ccTensor02Symm (I := I) (M := M) g T) =
+      ccTensor02Symm (I := I) (M := M) g
         (oneMinusConnLapSmoothIter (I := I) g 0 2 k T) := by
   induction k with
   | zero => simp only [oneMinusConnLapSmoothIter_zero]
   | succ k ih =>
       have hraw :
           rawTensorConnLapSmooth (I := I) g 0 2
-              (symmS (I := I) (M := M) g
+              (ccTensor02Symm (I := I) (M := M) g
                 (oneMinusConnLapSmoothIter (I := I) g 0 2 k T)) =
-            symmS (I := I) (M := M) g
+            ccTensor02Symm (I := I) (M := M) g
               (rawTensorConnLapSmooth (I := I) g 0 2
                 (oneMinusConnLapSmoothIter (I := I) g 0 2 k T)) := by
-        unfold symmS ccTensor02Symm
+        unfold ccTensor02Symm
         have hsmul :
             rawTensorConnLapSmooth (I := I) g 0 2
                 ((1 / 2 : ℝ) •
@@ -295,7 +295,7 @@ private theorem connIter_symmS
       rw [oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_succ, ih]
       unfold oneMinusConnLapSmooth
       rw [hraw]
-      exact (symmS_sub (I := I) (M := M) g _ _).symm
+      exact (ccTensor02Symm_sub (I := I) (M := M) g _ _).symm
 
 theorem finite_symm_scale
     (g : SmoothRiemannianMetric I M)
@@ -305,7 +305,7 @@ theorem finite_symm_scale
     (c : DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
       (I := I) (M := M) g 0 2 → ℝ)
     (A : SmoothCcTensor g 0 2) (a b : ℕ) (theta : ℝ)
-    (hA : symmS (I := I) (M := M) g A = A) :
+    (hA : ccTensor02Symm (I := I) (M := M) g A = A) :
     theta * (∑ i ∈ F,
         tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
           (c i * tensorL2Coeff (I := I) (M := M)
@@ -313,27 +313,27 @@ theorem finite_symm_scale
             (SmoothCcTensor.toL2 A) i)) =
       tensorL2Inner (I := I) (M := M) g 0 2
         (oneMinusConnLapSmoothIter (I := I) g 0 2 b
-          (theta • symmS (I := I) (M := M) g
+          (theta • ccTensor02Symm (I := I) (M := M) g
             (finiteEigenCombo (I := I) (M := M) g F c))).toFun
         (oneMinusConnLapSmoothIter (I := I) g 0 2 a A).toFun := by
   rw [finite_pair_split (I := I) (M := M) g F c A a b]
   have hsymmA :
-      symmS (I := I) (M := M) g
+      ccTensor02Symm (I := I) (M := M) g
           (oneMinusConnLapSmoothIter (I := I) g 0 2 a A) =
         oneMinusConnLapSmoothIter (I := I) g 0 2 a A := by
-    rw [← connIter_symmS (I := I) (M := M) g a A, hA]
+    rw [← connIter_ccTensor02Symm (I := I) (M := M) g a A, hA]
   have hsymm_pair (S T : SmoothCcTensor g 0 2) :
       tensorL2Inner (I := I) (M := M) g 0 2
-          (symmS (I := I) (M := M) g S).toFun T.toFun =
+          (ccTensor02Symm (I := I) (M := M) g S).toFun T.toFun =
         tensorL2Inner (I := I) (M := M) g 0 2
-          S.toFun (symmS (I := I) (M := M) g T).toFun := by
+          S.toFun (ccTensor02Symm (I := I) (M := M) g T).toFun := by
     rw [← SmoothCcTensor.inner_def (I := I) (M := M),
       ← SmoothCcTensor.inner_def (I := I) (M := M)]
-    unfold symmS ccTensor02Symm
+    unfold ccTensor02Symm
     rw [real_inner_smul_left, real_inner_smul_right, inner_add_left, inner_add_right,
       inner_domDomCongrSection_swap (I := I) (M := M) g]
   rw [connIter_smul (I := I) (M := M),
-    connIter_symmS (I := I) (M := M), SmoothCcTensor.toFun_smul,
+    connIter_ccTensor02Symm (I := I) (M := M), SmoothCcTensor.toFun_smul,
     tensorL2Inner_smul_left, hsymm_pair, hsymmA]
 
 theorem finite_repr_norm

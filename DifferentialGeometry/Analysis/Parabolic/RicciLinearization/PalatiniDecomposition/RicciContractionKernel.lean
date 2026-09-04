@@ -79,7 +79,7 @@ lemma riemannianFiberNormSq_addsub4_le (g : SmoothRiemannianMetric I M)
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem riemannPalatiniDecompositionC2Family_eq_symmS_kernel
+theorem riemannPalatiniDecompositionC2Family_eq_ccTensor02Symm_kernel
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (hδZ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -93,13 +93,13 @@ theorem riemannPalatiniDecompositionC2Family_eq_symmS_kernel
         (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ T))
         (qA 0) (qA 1) (qA 2) (qA 3) := by
-  have h0 := curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_symmS (I := I) (M := M) g₀
+  have h0 := curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_ccTensor02Symm (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (qA 0)
-  have h1 := curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_symmS (I := I) (M := M) g₀
+  have h1 := curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_ccTensor02Symm (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (qA 1)
-  have h2 := curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_symmS (I := I) (M := M) g₀
+  have h2 := curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_ccTensor02Symm (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (qA 2)
-  have h3 := curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_symmS (I := I) (M := M) g₀
+  have h3 := curvatureDecompositionMonomialCoeffField_unitValue_pair_eq_ccTensor02Symm (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) T (qA 3)
   rw [riemannPalatiniDecompositionC2Family, hq 0, hq 1, hq 2, hq 3]
   simp only [Equiv.Perm.mul_def, curvatureActionKernelCoeffField]
@@ -113,38 +113,6 @@ lemma ccTensorBilin_smul_local (g₀ : SmoothRiemannianMetric I M)
       c * smoothCcTensorBilinForm (I := I) g₀ S b u w := by
   rw [ccTensorBilin_apply, ccTensorBilin_apply, ccTensorModel_smul,
     smul_apply, smul_eq_mul]
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma symmS_eq_self_of_symm (g₀ : SmoothRiemannianMetric I M)
-    (S : SmoothCcTensor g₀ 0 2)
-    (hsymm : ∀ (x : M) (u w : TangentSpace I x),
-      smoothCcTensorBilinForm (I := I) g₀ S x u w = smoothCcTensorBilinForm (I := I) g₀ S x w u) :
-    ccTensor02Symm (I := I) (M := M) g₀ S = S := by
-  have hswap : domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S = S := by
-    refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
-    rw [domDomCongrSection_unitModel]
-    refine ContinuousMultilinearMap.ext (fun v => ?_)
-    rw [ContinuousMultilinearMap.domDomCongr_apply]
-    have hv : ∀ u w : TangentSpace I x,
-        unitModel (I := I) (M := M) g₀ 2 S x ![u, w] =
-          unitModel (I := I) (M := M) g₀ 2 S x ![w, u] := by
-      intro u w
-      rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x u w,
-        unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x w u]
-      exact hsymm x u w
-    have hveta : (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
-      funext i
-      fin_cases i <;> rfl
-    have hveta' : v = ![v 0, v 1] := by
-      funext i
-      fin_cases i <;> rfl
-    rw [hveta]
-    conv_rhs => rw [hveta']
-    exact hv (v 1) (v 0)
-  have htwo : S + S = (2 : ℝ) • S := (two_smul ℝ S).symm
-  rw [ccTensor02Symm, hswap, htwo, smul_smul,
-    show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
-
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem covariantJetJointSmoothness_const_local (g₀ : SmoothRiemannianMetric I M) {r : ℕ}

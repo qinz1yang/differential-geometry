@@ -82,16 +82,16 @@ omit [NeZero (Module.finrank ℝ E)] in
 private theorem symmICG (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (k : ℕ) :
     ‖iteratedCovGrad (I := I) g 0 2 k
-        (symmS (I := I) (M := M) g T)‖ ≤
+        (ccTensor02Symm (I := I) (M := M) g T)‖ ≤
       ‖iteratedCovGrad (I := I) g 0 2 k T‖ := by
   classical
   have hiter :
       iteratedCovGrad (I := I) g 0 2 k
-          (symmS (I := I) (M := M) g T) =
+          (ccTensor02Symm (I := I) (M := M) g T) =
         (1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 k T +
           (1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 k
             (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) T) :=
-    iteratedCovGrad_symmS_eq (I := I) (M := M) g T k
+    iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g T k
   rw [hiter]
   refine (norm_add_le _ _).trans ?_
   rw [norm_smul, norm_smul,
@@ -181,18 +181,18 @@ private theorem perturbICG
       _ = ‖iteratedCovGrad (I := I) g 0 2 i
           (domDomCongrSection (I := I) g
             (Equiv.swap (0 : Fin 2) 1)
-            (symmS (I := I) (M := M) g T))‖ := by
+            (ccTensor02Symm (I := I) (M := M) g T))‖ := by
             simpa only [Nat.zero_add, Nat.reduceAdd] using
               norm_iteratedCovGrad_cometricRaiseSlot0Field_eq
                 (I := I) (M := M) g 0
                 (domDomCongrSection (I := I) g
                   (Equiv.swap (0 : Fin 2) 1)
-                  (symmS (I := I) (M := M) g T)) i
+                  (ccTensor02Symm (I := I) (M := M) g T)) i
       _ = ‖iteratedCovGrad (I := I) g 0 2 i
-          (symmS (I := I) (M := M) g T)‖ :=
+          (ccTensor02Symm (I := I) (M := M) g T)‖ :=
         permICG (I := I) (M := M) g
           (Equiv.swap (0 : Fin 2) 1)
-          (symmS (I := I) (M := M) g T) i
+          (ccTensor02Symm (I := I) (M := M) g T) i
       _ ≤ _ := symmICG (I := I) (M := M) g T i
   exact hslot.trans (mul_le_mul_of_nonneg_left hbase (by norm_num))
 

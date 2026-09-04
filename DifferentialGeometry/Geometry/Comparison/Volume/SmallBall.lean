@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.BallVolume
+import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 import DifferentialGeometry.Geometry.Comparison.RiemannianDistContinuity
 open DifferentialGeometry.Geometry.Curvature

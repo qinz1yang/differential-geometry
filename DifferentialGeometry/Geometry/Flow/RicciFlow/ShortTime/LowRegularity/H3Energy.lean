@@ -61,17 +61,17 @@ private theorem iteratedCovGrad_domDomCongrSection_norm_eq
   exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem iteratedCovGrad_symmS_norm_le
+theorem iteratedCovGrad_ccTensor02Symm_norm_le
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2) (j : ℕ) :
-    ‖iteratedCovGrad (I := I) g 0 2 j (symmS (I := I) (M := M) g T)‖ ≤
+    ‖iteratedCovGrad (I := I) g 0 2 j (ccTensor02Symm (I := I) (M := M) g T)‖ ≤
       ‖iteratedCovGrad (I := I) g 0 2 j T‖ := by
   classical
   have hiter :
-      iteratedCovGrad (I := I) g 0 2 j (symmS (I := I) (M := M) g T) =
+      iteratedCovGrad (I := I) g 0 2 j (ccTensor02Symm (I := I) (M := M) g T) =
         (1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 j T +
           (1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 j
             (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) T) :=
-    iteratedCovGrad_symmS_eq (I := I) (M := M) g T j
+    iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g T j
   rw [hiter]
   refine (norm_add_le _ _).trans ?_
   rw [norm_smul, norm_smul, show ‖(1 / 2 : ℝ)‖ = 1 / 2 by
@@ -86,7 +86,7 @@ theorem galerkinRepresentation_iteratedCovGrad_sum_le (g₀ : SmoothRiemannianMe
           (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ),
           ∑ j ∈ Finset.range (n + 1),
               ‖iteratedCovGrad (I := I) g₀ 0 2 j
-                (symmS (I := I) (M := M) g₀
+                (ccTensor02Symm (I := I) (M := M) g₀
                   (galCoreRep (I := I) (M := M) g₀ R F c))‖ ≤
             C * Real.sqrt (∑ i ∈ F,
               tensorSobolevWeight (I := I) (M := M) i (n : ℝ) * (c i) ^ 2) := by
@@ -98,9 +98,9 @@ theorem galerkinRepresentation_iteratedCovGrad_sum_le (g₀ : SmoothRiemannianMe
     (finiteEigenComboHs (I := I) (M := M) g₀ F c (((1 : ℕ) : ℝ) + 2))‖) with hθdef
   have hθ1 : θ ≤ 1 := min_le_left _ _
   have hθ0 : 0 ≤ θ := le_min zero_le_one (div_nonneg hR (norm_nonneg _))
-  have hrep : symmS (I := I) (M := M) g₀
+  have hrep : ccTensor02Symm (I := I) (M := M) g₀
       (galCoreRep (I := I) (M := M) g₀ R F c) =
-        θ • symmS (I := I) (M := M) g₀
+        θ • ccTensor02Symm (I := I) (M := M) g₀
           (finiteEigenCombo (I := I) (M := M) g₀ F c) := by
     rw [galCoreRep]
     change ccTensor02Symm (I := I) (M := M) g₀
@@ -110,20 +110,20 @@ theorem galerkinRepresentation_iteratedCovGrad_sum_le (g₀ : SmoothRiemannianMe
           finiteEigenCombo (I := I) (M := M) g₀ F c) =
       θ • ccTensor02Symm (I := I) (M := M) g₀
         (finiteEigenCombo (I := I) (M := M) g₀ F c)
-    rw [symmS_smul, ← hθdef]
+    rw [ccTensor02Symm_smul, ← hθdef]
   have hstep : ∀ j : ℕ,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
-          (symmS (I := I) (M := M) g₀
+          (ccTensor02Symm (I := I) (M := M) g₀
             (galCoreRep (I := I) (M := M) g₀ R F c))‖ ≤
         ‖iteratedCovGrad (I := I) g₀ 0 2 j
           (finiteEigenCombo (I := I) (M := M) g₀ F c)‖ := by
     intro j
     rw [hrep, iteratedCovGrad_smul, norm_smul, Real.norm_eq_abs,
       abs_of_nonneg hθ0]
-    have hsymm := iteratedCovGrad_symmS_norm_le (I := I) (M := M) g₀
+    have hsymm := iteratedCovGrad_ccTensor02Symm_norm_le (I := I) (M := M) g₀
       (finiteEigenCombo (I := I) (M := M) g₀ F c) j
     nlinarith [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j
-      (symmS (I := I) (M := M) g₀
+      (ccTensor02Symm (I := I) (M := M) g₀
         (finiteEigenCombo (I := I) (M := M) g₀ F c))), hsymm, hθ0, hθ1]
   refine le_trans (Finset.sum_le_sum (fun j _ => hstep j)) ?_
   refine le_trans (hjet (finiteEigenCombo (I := I) (M := M) g₀ F c)) ?_
@@ -143,7 +143,7 @@ theorem galerkinRepresentation_lowOrder_iteratedCovGrad_sum_le (g₀ : SmoothRie
           (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ),
           ∑ j ∈ Finset.range 3,
               ‖iteratedCovGrad (I := I) g₀ 0 2 j
-                (symmS (I := I) (M := M) g₀
+                (ccTensor02Symm (I := I) (M := M) g₀
                   (galCoreRep (I := I) (M := M) g₀ R F c))‖ ≤ C * R := by
   obtain ⟨C, hC, hjet⟩ :=
     exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ 2
@@ -153,7 +153,7 @@ theorem galerkinRepresentation_lowOrder_iteratedCovGrad_sum_le (g₀ : SmoothRie
     (galCoreRep (I := I) (M := M) g₀ R F c)
     (galCoreRep_ball (I := I) (M := M) g₀ hR F c)
   have hcast : ((2 : ℕ) : ℝ) = ((1 : ℕ) : ℝ) + 1 := by norm_num
-  have hbase := hjet (symmS (I := I) (M := M) g₀
+  have hbase := hjet (ccTensor02Symm (I := I) (M := M) g₀
     (galCoreRep (I := I) (M := M) g₀ R F c))
   rw [hcast] at hbase
   refine le_trans (by simpa using hbase) ?_
@@ -464,19 +464,19 @@ def galerkinActionVector (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ} (hR : 
     TensorHs (I := I) (M := M) g₀ 0 2 ((1 : ℕ) : ℝ) :=
   smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
     ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-          (symmS (I := I) (M := M) g₀
+          (ccTensor02Symm (I := I) (M := M) g₀
             (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
           (galRepFib (I := I) (M := M) g₀ hR hreal F c)
           (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderAction
         (I := I) (M := M)
-        (symmS (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)) +
+        (ccTensor02Symm (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)) +
       (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-          (symmS (I := I) (M := M) g₀
+          (ccTensor02Symm (I := I) (M := M) g₀
             (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
           (galRepFib (I := I) (M := M) g₀ hR hreal F c)
           (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).firstOrderAction
         (I := I) (M := M)
-        (symmS (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)))
+        (ccTensor02Symm (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)))
 
 theorem exists_galerkin_action_h2_tame_bound_constants (hDim : Module.finrank ℝ E = 3)
     (g₀ : SmoothRiemannianMetric I M) :
@@ -522,14 +522,14 @@ theorem exists_galerkin_action_h2_tame_bound_constants (hDim : Module.finrank �
       (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) (x : M),
       riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 2) 2 x
           ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-            (symmS (I := I) (M := M) g₀
+            (ccTensor02Symm (I := I) (M := M) g₀
               (galCoreRep (I := I) (M := M) g₀ R S c)) hδ
             (galRepFib (I := I) (M := M) g₀ hR hreal S c)
             (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderCoefficient.toSection x) ≤
         Cδ ^ 2 := by
     intro S c x
     exact (hsplit _
-      (ccTensorBilin_symmS_symm (I := I) (M := M)
+      (smoothCcTensorBilinForm_ccTensor02Symm_symm (I := I) (M := M)
         g₀ (galCoreRep (I := I) (M := M) g₀ R S c))
       hδ3 hδ0 (galRepFib (I := I) (M := M) g₀ hR hreal S c)
       (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).2 x
@@ -544,43 +544,43 @@ theorem exists_galerkin_action_h2_tame_bound_constants (hDim : Module.finrank �
     tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2) with hs3def
   have hs4nn : (0 : ℝ) ≤ s4 := by rw [hs4def]; positivity
   have hs3nn : (0 : ℝ) ≤ s3 := by rw [hs3def]; positivity
-  have hsym := ccTensorBilin_symmS_symm
+  have hsym := smoothCcTensorBilinForm_ccTensor02Symm_symm
     (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)
   have h5 : Real.sqrt (∑ j ∈ Finset.range 5,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
-        (symmS (I := I) (M := M) g₀
+        (ccTensor02Symm (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C4 * s4 :=
     le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 5 _) (hjet4 hR F c)
   have h4 : Real.sqrt (∑ j ∈ Finset.range 4,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
-        (symmS (I := I) (M := M) g₀
+        (ccTensor02Symm (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ C3 * s3 :=
     le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 4 _) (hjet3 hR F c)
   have h3 : Real.sqrt (∑ j ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 0 2 j
-        (symmS (I := I) (M := M) g₀
+        (ccTensor02Symm (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R F c))‖ ^ 2) ≤ CR * R :=
     le_trans (iteratedCovGrad_l2_window_le_l1_window (I := I) (M := M) g₀ 3 _) (hjetR hR F c)
-  have hladb := hlad (symmS (I := I) (M := M) g₀
+  have hladb := hlad (ccTensor02Symm (I := I) (M := M) g₀
       (galCoreRep (I := I) (M := M) g₀ R F c)) hsym hδ0 hδ3
     (galRepFib (I := I) (M := M) g₀ hR hreal F c)
     (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal) hCδ (hcap F c)
     (mul_nonneg hC3 hs3nn) (mul_nonneg hCR hR) h5 h4 h3
   have hmass := cc_partial_le_norm (I := I) (M := M) g₀ 2 (2 : ℝ)
     ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-          (symmS (I := I) (M := M) g₀
+          (ccTensor02Symm (I := I) (M := M) g₀
             (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
           (galRepFib (I := I) (M := M) g₀ hR hreal F c)
           (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderAction
         (I := I) (M := M)
-        (symmS (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)) +
+        (ccTensor02Symm (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c)) +
       (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-          (symmS (I := I) (M := M) g₀
+          (ccTensor02Symm (I := I) (M := M) g₀
             (galCoreRep (I := I) (M := M) g₀ R F c)) hδ
           (galRepFib (I := I) (M := M) g₀ hR hreal F c)
           (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).firstOrderAction
         (I := I) (M := M)
-        (symmS (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c))) F
+        (ccTensor02Symm (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R F c))) F
   refine le_trans (le_trans (Real.sqrt_le_sqrt hmass)
     (le_of_eq (Real.sqrt_sq (norm_nonneg _)))) ?_
   refine le_trans (hhs _) ?_

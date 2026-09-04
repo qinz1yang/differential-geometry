@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivCommutation
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SecondBianchi
-import DifferentialGeometry.Geometry.Curvature.Order2Defect.GradientSlotLeibniz
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.SecondBianchi
+import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.GradientSlotLeibniz
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

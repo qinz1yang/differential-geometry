@@ -363,7 +363,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
         (∀ᶠ k in Filter.atTop,
           ¬ BInter inp.decay inp.D P L.lamInf a b (L.φ k))) ∧
       8 * Real.exp inp.decay.C < aMin * inp.D ∧
-      (8 : Real) < inp.normalRadius.gpRatio * inp.D ∧
+      (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D ∧
       2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D ∧
       2 * exponentialBallRadiusFactor inp.decay inp.D <
         inp.normalRadius.ratio * inp.D ∧
@@ -407,7 +407,7 @@ theorem MetricCompactBase.exists_supp_cm_fin
         Metric.ball (0 : E) rho ⊆
             normalQuarter (I := I) (X.obj (Lphi.φ n)) x ∧
           rho ≤ inp.normalBounds.radius (Lphi.φ n) x ∧
-          rho / 2 ≤ expRadiusGp
+          rho / 2 ≤ metricCoerciveExpRadius
             (I := I) (X.obj (Lphi.φ n)).metric x) ∧
       ∀ᶠ n in Filter.atTop,
         let Y := X.obj (Lphi.φ n)
@@ -460,12 +460,12 @@ theorem MetricCompactBase.exists_supp_cm_fin
     exists_hat_cm_min (I := I) b.normalRadius b.realizes
       hcomplete hconn
   let c0 :=
-    (8 * Real.exp b.decay.C / aMin) * b.normalRadius.gpRatio
+    (8 * Real.exp b.decay.C / aMin) * b.normalRadius.metricCoerciveRatio
   obtain ⟨D, hD_one, _hmuD, hc0, h8, _h16, hradD, hradRatio, hcap⟩ :=
     b.exists_large_divisor_for_exponential_scales c0
   have hD : 0 < D := zero_lt_one.trans hD_one
   let inp := MetricCompactnessInputs.ofBase b D hD hcap
-  have h8' : (8 : Real) < inp.normalRadius.gpRatio * inp.D := by
+  have h8' : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D := by
     simpa only [inp, MetricCompactnessInputs.ofBase] using h8
   have hradD' : 2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D := by
     simpa only [inp, MetricCompactnessInputs.ofBase] using hradD
@@ -473,8 +473,8 @@ theorem MetricCompactBase.exists_supp_cm_fin
       inp.normalRadius.ratio * inp.D := by
     simpa only [inp, MetricCompactnessInputs.ofBase] using hradRatio
   have hc0' :
-      (8 * Real.exp inp.decay.C / aMin) * inp.normalRadius.gpRatio <
-        inp.normalRadius.gpRatio * inp.D := by
+      (8 * Real.exp inp.decay.C / aMin) * inp.normalRadius.metricCoerciveRatio <
+        inp.normalRadius.metricCoerciveRatio * inp.D := by
     simpa only [inp, c0, MetricCompactnessInputs.ofBase] using hc0
   have hphys : 8 * Real.exp inp.decay.C < aMin * inp.D :=
     inp.physScale_of_extra haMin hc0'
@@ -638,7 +638,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
         (∀ᶠ k in Filter.atTop,
           ¬ BInter inp.decay inp.D P L.lamInf a b (L.φ k))) ∧
       8 * Real.exp inp.decay.C < aMin * inp.D ∧
-      (8 : Real) < inp.normalRadius.gpRatio * inp.D ∧
+      (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D ∧
       2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D ∧
       2 * exponentialBallRadiusFactor inp.decay inp.D <
         inp.normalRadius.ratio * inp.D ∧
@@ -696,7 +696,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
         Metric.ball (0 : E) rho ⊆
             normalQuarter (I := I) (X.obj (Ltheta.φ n)) x ∧
           rho ≤ inp.normalBounds.radius (Ltheta.φ n) x ∧
-          rho / 2 ≤ expRadiusGp
+          rho / 2 ≤ metricCoerciveExpRadius
             (I := I) (X.obj (Ltheta.φ n)).metric x) ∧
       (∀ alpha,
         HasDiagPairConv (I := I) (hcomplete.subseq index)
@@ -745,7 +745,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
       Metric.ball (0 : E) rho ⊆
           normalQuarter (I := I) (X.obj (Lphi.φ n)) x ∧
         rho ≤ inp.normalBounds.radius (Lphi.φ n) x ∧
-        rho / 2 ≤ expRadiusGp
+        rho / 2 ≤ metricCoerciveExpRadius
           (I := I) (X.obj (Lphi.φ n)).metric x
   let Q : Nat → Prop := fun n ↦
     HasSuppCmData (I := I) inp P L r hr phi hphi n
@@ -809,7 +809,7 @@ theorem MetricCompactBase.exists_supp_diag_fin
       Metric.ball (0 : E) rho ⊆
           normalQuarter (I := I) (X.obj (Ltheta.φ n)) x ∧
         rho ≤ inp.normalBounds.radius (Ltheta.φ n) x ∧
-        rho / 2 ≤ expRadiusGp
+        rho / 2 ≤ metricCoerciveExpRadius
           (I := I) (X.obj (Ltheta.φ n)).metric x := by
     intro n gamma
     have hn := hQAll n

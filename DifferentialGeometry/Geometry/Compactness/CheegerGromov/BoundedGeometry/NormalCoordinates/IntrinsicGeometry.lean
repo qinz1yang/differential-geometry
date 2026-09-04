@@ -1,10 +1,10 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.RadialRadius
+import DifferentialGeometry.Geometry.Comparison.Volume.Radial.Radius
 
-import DifferentialGeometry.Geometry.Comparison.Volume.BallVolume
+import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceDeriv
-import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
-import DifferentialGeometry.Geometry.Exponential.IntrinsicBallChart
-import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicGronwall
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.BallChart
+import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.Gronwall
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.BoundedGeometry
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
@@ -204,7 +204,7 @@ def framedJacobiRadius
   letI : T2Space Y.M := Y.t2
   letI : SigmaCompactSpace Y.M := Y.sigmaCompact
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  exact expRadiusGp (I := I) Y.metric x / 26
+  exact metricCoerciveExpRadius (I := I) Y.metric x / 26
 
 lemma framedJacobiRadius_pos
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
@@ -218,7 +218,7 @@ lemma framedJacobiRadius_pos
   let : IsManifold I ∞ Y.M := Y.smooth
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   rw [framedJacobiRadius]
-  exact div_pos (expRadiusGp_pos (I := I) Y.metric x) (by norm_num)
+  exact div_pos (metricCoerciveExpRadius_pos (I := I) Y.metric x) (by norm_num)
 
 lemma normalFrame_lt_jac
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
@@ -380,7 +380,7 @@ theorem framed_metric_jacobi
     let L : E ≃L[Real] E :=
       (normalFrame (I := I) Y.metric x).trans
         (tangentSpaceModelContinuousLinearEquiv (I := I) x)
-    ‖z‖ < expRadiusGp (I := I) Y.metric x →
+    ‖z‖ < metricCoerciveExpRadius (I := I) Y.metric x →
     NormalCoordinates.framedMetric (I := I) Y.metric x z v w =
       Y.metric.inner
         (expMap (I := I) Y.metric x
@@ -399,7 +399,7 @@ theorem framed_metric_jacobi
   let L : E ≃L[Real] E :=
     (normalFrame (I := I) Y.metric x).trans
       (tangentSpaceModelContinuousLinearEquiv (I := I) x)
-  change ‖z‖ < expRadiusGp (I := I) Y.metric x →
+  change ‖z‖ < metricCoerciveExpRadius (I := I) Y.metric x →
     NormalCoordinates.framedMetric (I := I) Y.metric x z v w =
       Y.metric.inner
         (expMap (I := I) Y.metric x
@@ -486,7 +486,7 @@ theorem framed_rm04_bounds
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   let xRaw : E := show E from normalFrame (I := I) Y.metric x z
   let vRaw : E := show E from normalFrame (I := I) Y.metric x v
-  have hzDef : ‖z‖ < expRadiusGp (I := I) Y.metric x / 26 := by
+  have hzDef : ‖z‖ < metricCoerciveExpRadius (I := I) Y.metric x / 26 := by
     have hz' := hz
     rw [framedJacobiRadius] at hz'
     exact hz'
@@ -568,9 +568,9 @@ theorem framed_rm04_bounds
     hKbound hRmRaw hgamma (hcard _ hzMem) (D.F _)
     (hpar _ hzMem) (hON _ hzMem) (hFdiff _ hzMem)
     (by simpa only [one_mul, hscaled] using hmodelGe)
-  have hzGp : ‖z‖ < expRadiusGp (I := I) Y.metric x := by
+  have hzGp : ‖z‖ < metricCoerciveExpRadius (I := I) Y.metric x := by
     rw [framedJacobiRadius] at hz
-    have hpos := expRadiusGp_pos (I := I) Y.metric x
+    have hpos := metricCoerciveExpRadius_pos (I := I) Y.metric x
     linarith
   rw [framed_metric_jacobi (I := I) Y x z v v hzGp]
   exact ⟨hlower, hupper⟩
@@ -1168,9 +1168,9 @@ theorem exists_rm04_radii
     (Bhi := (5 / 4 : Real) * ‖v‖)
     ha hK hr₀.le hzJac hav hzRadius.le le_rfl hKbound
     (framed_rm04_of_seq (I := I) hgeom k x z) hmodelLe hmodelGe
-  have hzGp : ‖z‖ < expRadiusGp (I := I) (X.obj k).metric x := by
+  have hzGp : ‖z‖ < metricCoerciveExpRadius (I := I) (X.obj k).metric x := by
     rw [framedJacobiRadius] at hzJac
-    have hpos := expRadiusGp_pos (I := I) (X.obj k).metric x
+    have hpos := metricCoerciveExpRadius_pos (I := I) (X.obj k).metric x
     linarith
   have hmetricNonneg :
       0 ≤ NormalCoordinates.framedMetric
@@ -1214,7 +1214,7 @@ theorem framed_equiv_jacobi
     letI : T2Space Y.M := Y.t2
     letI : SigmaCompactSpace Y.M := Y.sigmaCompact
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    (∀ z ∈ U, ‖z‖ < expRadiusGp (I := I) Y.metric x) →
+    (∀ z ∈ U, ‖z‖ < metricCoerciveExpRadius (I := I) Y.metric x) →
     (∀ z ∈ U, ∀ v : E,
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤
         Y.metric.inner
@@ -1367,7 +1367,7 @@ theorem exists_equiv_ball
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-    ∃ r : Real, 0 < r ∧ r ≤ expRadiusGp (I := I) Y.metric x ∧
+    ∃ r : Real, 0 < r ∧ r ≤ metricCoerciveExpRadius (I := I) Y.metric x ∧
       FramedNormalCoordMetricEquivOn (I := I) Y x
         (Metric.ball (0 : E) r) := by
   let : TopologicalSpace Y.M := Y.topology
@@ -1378,8 +1378,8 @@ theorem exists_equiv_ball
   have hcont : ContinuousAt f 0 := by
     simpa only [f] using framedMetric_continuousAt_zero (I := I) Y x
   obtain ⟨r₀, hr₀, hclose⟩ := exists_close_ball (E := E) f hcont
-  let r := min r₀ (expRadiusGp (I := I) Y.metric x)
-  refine ⟨r, lt_min hr₀ (expRadiusGp_pos (I := I) Y.metric x),
+  let r := min r₀ (metricCoerciveExpRadius (I := I) Y.metric x)
+  refine ⟨r, lt_min hr₀ (metricCoerciveExpRadius_pos (I := I) Y.metric x),
     min_le_right _ _, ?_⟩
   intro z hz v
   have hz₀ : z ∈ Metric.ball (0 : E) r₀ := by
@@ -1405,7 +1405,7 @@ theorem exists_equiv_radii
         letI : T2Space (TangentBundle I (X.obj k).M) :=
           (X.obj k).t2TangentBundle
         0 < radius k x ∧
-          radius k x ≤ expRadiusGp (I := I) (X.obj k).metric x ∧
+          radius k x ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x ∧
       FramedNormalCoordMetricEquivOn (I := I) (X.obj k) x
             (Metric.ball (0 : E) (radius k x)) := by
   choose radius hpos hle hequiv using fun k x =>

@@ -11,7 +11,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Famil
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
 import DifferentialGeometry.Geometry.Connection.Laplacian.Musical
-import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -22,7 +21,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped ENNReal Manifold Topology ContDiff
 
@@ -30,7 +28,6 @@ namespace DifferentialGeometry.PDE.RicciFlow.Pullback
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
-open DifferentialGeometry.Geometry.Riemannian.Exponential
 
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -48,44 +45,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
-
-noncomputable def connAddZeroCoord (p : M) : E × E :=
-  extChartAt I.tangent
-    (⟨connCompPt (I := I) p, (0 : E)⟩ :
-      TangentBundle I (connCompOpen (I := I) p))
-    (⟨connCompPt (I := I) p, (0 : E)⟩ :
-      TangentBundle I (connCompOpen (I := I) p))
-
-noncomputable def connAddTarget
-    (g : SmoothRiemannianMetric I M) (p : M) : E × E → E :=
-  fun z => (connAddChart (I := I) g p z).2
-
-omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
-theorem connAddTarget_fd
-    (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) :
-    HasFDerivAt (connAddTarget (I := I) g p)
-      ((ContinuousLinearMap.snd ℝ E E).comp
-        (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E)))
-      (connAddZeroCoord (I := I) p) := by
-  let : NormedAddCommGroup (E × E) := Prod.normedAddCommGroup
-  let : NormedSpace ℝ (E × E) := Prod.normedSpace
-  change HasFDerivAt (fun z : E × E => (connAddChart (I := I) g p z).2)
-    ((ContinuousLinearMap.snd ℝ E E).comp
-      (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E)))
-    (extChartAt I.tangent
-      (⟨connCompPt (I := I) p, (0 : E)⟩ :
-        TangentBundle I (connCompOpen (I := I) p))
-      (⟨connCompPt (I := I) p, (0 : E)⟩ :
-        TangentBundle I (connCompOpen (I := I) p)))
-  exact (connAdd_fderiv (I := I) g p n hn).snd
-
-omit [SigmaCompactSpace M] [BoundarylessManifold I M] in
-theorem connAdd_vert
-    (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) (v : E) :
-    fderiv ℝ (connAddTarget (I := I) g p)
-        (connAddZeroCoord (I := I) p) (0, v) = v := by
-  rw [(connAddTarget_fd (I := I) g p n hn).fderiv]
-  simp [unipotentCLE, DifferentialGeometry.PhaseFlow.freeDiagCLE_apply]
 
 abbrev hmfState (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ) :
     Set (DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation.TensorHs
@@ -1633,17 +1592,6 @@ theorem hmfEdge_coercive
       (metricDifferenceCcTensor (I := I) (M := M) q (g t)))
     (fun y v w => by rw [metricDifference_symVal]; ring)
     (δ := (1 / 4 : ℝ)) (by norm_num) (by norm_num) (hop t ht) u
-
-omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
-omit [BoundarylessManifold I M] in
-theorem connAdd_lap_vert
-    (g₀ : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n)
-    (S : SmoothCcTensor g₀ 0 1) :
-    fderiv ℝ (connAddTarget (I := I) g₀ p)
-        (connAddZeroCoord (I := I) p)
-        (0, hmfPrincipal (I := I) g₀ S p) =
-      hmfPrincipal (I := I) g₀ S p :=
-  connAdd_vert (I := I) g₀ p n hn (hmfPrincipal (I := I) g₀ S p)
 
 end DifferentialGeometry.PDE.RicciFlow.Pullback
 

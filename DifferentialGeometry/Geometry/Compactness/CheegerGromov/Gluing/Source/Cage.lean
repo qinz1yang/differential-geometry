@@ -375,7 +375,7 @@ theorem hatCageSrcOfRad
       letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
         (X.obj (L.φ n)).t2TangentBundle
       4 * L.lamInf (gamma : Nat) <
-        expRadiusGp (I := I) (X.obj (L.φ n)).metric (center gamma)) :
+        metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric (center gamma)) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
     letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
@@ -408,7 +408,7 @@ theorem hatCageSrcCases
         seqCenter hd D P (L.φ n) (gamma : Nat) = some c ->
           c = center gamma ∧
             4 * L.lamInf (gamma : Nat) <
-              expRadiusGp (I := I) (X.obj (L.φ n)).metric c) :
+              metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric c) :
     letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
     letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
     letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth

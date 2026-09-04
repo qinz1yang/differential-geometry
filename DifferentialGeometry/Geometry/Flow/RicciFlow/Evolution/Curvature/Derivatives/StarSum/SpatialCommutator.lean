@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.Routing
-import DifferentialGeometry.Geometry.Curvature.CurvatureActionLower
+import DifferentialGeometry.Geometry.Curvature.Contractions.CurvatureActionLowering
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

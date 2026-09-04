@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.GaussLemma
+import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
 import DifferentialGeometry.Geometry.Metric.DistanceScaling
 import DifferentialGeometry.Geometry.Operator.Gradient
 import DifferentialGeometry.Bundle.FiberBundleHausdorff

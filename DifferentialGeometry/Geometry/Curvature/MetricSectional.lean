@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.AlgebraicForm
-import DifferentialGeometry.Geometry.Curvature.CoordRm04Bridge
+import DifferentialGeometry.Geometry.Curvature.Algebraic.Form
+import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
 import DifferentialGeometry.Geometry.Curvature.Scaling
 open DifferentialGeometry.Geometry.Curvature
 

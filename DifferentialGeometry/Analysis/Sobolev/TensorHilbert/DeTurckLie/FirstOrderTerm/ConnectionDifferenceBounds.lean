@@ -1222,7 +1222,7 @@ private theorem lieFirstOrder_riemannianFiberNormSq_smul (g : SmoothRiemannianMe
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma lieFirstOrder_riemannianFiberNormSq_iteratedCovGrad_symmS_le (g₀ : SmoothRiemannianMetric I M)
+private lemma lieFirstOrder_riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
         ((iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
@@ -1233,7 +1233,7 @@ private lemma lieFirstOrder_riemannianFiberNormSq_iteratedCovGrad_symmS_le (g₀
       (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x +
         (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g₀ 0 2 j
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T)).toSection x := by
-    rw [iteratedCovGrad_symmS_eq (I := I) (M := M) g₀ T j, SmoothCcTensor.toSection_add]
+    rw [iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g₀ T j, SmoothCcTensor.toSection_add]
     rw [show (((1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 j T).toSection +
         ((1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 j
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T)).toSection) x =
@@ -1254,13 +1254,13 @@ private lemma lieFirstOrder_riemannianFiberNormSq_iteratedCovGrad_symmS_le (g₀
     ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)]
 
 omit [NeZero (Module.finrank ℝ E)] in
-lemma lieFirstOrder_normSq_iteratedCovGrad_symmS_le (g₀ : SmoothRiemannianMetric I M)
+lemma lieFirstOrder_normSq_iteratedCovGrad_ccTensor02Symm_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 ≤
       ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2 := by
   rw [lieFirstOrder_normSq_eq_integral, lieFirstOrder_normSq_eq_integral]
   refine MeasureTheory.integral_mono ?_ ?_
-    (fun x => lieFirstOrder_riemannianFiberNormSq_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ T j x)
+    (fun x => lieFirstOrder_riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ T j x)
   · exact integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 0 (2 + j)
       (iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T))
   · exact integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 0 (2 + j)
@@ -1268,7 +1268,7 @@ lemma lieFirstOrder_normSq_iteratedCovGrad_symmS_le (g₀ : SmoothRiemannianMetr
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma lieFirstOrder_riemannianFiberNormSq_symmS_zero_le (g₀ : SmoothRiemannianMetric I M)
+lemma lieFirstOrder_riemannianFiberNormSq_ccTensor02Symm_zero_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (x : M) :
@@ -1327,7 +1327,7 @@ lemma lieFirstOrder_riemannianFiberNormSq_symmS_zero_le (g₀ : SmoothRiemannian
             (e (J 1)) from
         unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ T) x (e (J 0)) (e (J 1))]
-      rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
+      rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by

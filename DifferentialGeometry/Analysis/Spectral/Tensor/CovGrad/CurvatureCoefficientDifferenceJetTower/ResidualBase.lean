@@ -51,15 +51,15 @@ section TopOrderSeparatedResidualIntegrator
 
 
 omit [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_symmS_zero_le_fibreSmall
+theorem riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_le : δ ≤ δ₀) (hδ0 : 0 ≤ δ)
     (hbound : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-        ((symmS (I := I) (M := M) g₀ T).toSection x) ≤
+        ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) ≤
       ((Module.finrank ℝ E : ℝ) * δ₀) ^ 2 := by
-  have h := riemannianFiberNormSq_symmS_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound x
+  have h := riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound x
   rw [mul_pow]
   refine le_trans h ?_
   have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := (sq_le_sq₀ hδ0 hδ₀0).2 hδ_le

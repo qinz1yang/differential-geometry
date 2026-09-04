@@ -91,10 +91,10 @@ noncomputable def koszulCovecCc (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 0 3 :=
   (1 / 2 : ℝ) •
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 3) 2)
-          (symmSCovGrad3 (I := I) g₀ T)
-        + domDomCongrSection (I := I) g₀ (finRotate 3) (symmSCovGrad3 (I := I) g₀ T)
+          (ccTensor02SymmCovGrad3 (I := I) g₀ T)
+        + domDomCongrSection (I := I) g₀ (finRotate 3) (ccTensor02SymmCovGrad3 (I := I) g₀ T)
         - domDomCongrSection (I := I) g₀ (Equiv.swap (1 : Fin 3) 2)
-          (symmSCovGrad3 (I := I) g₀ T))
+          (ccTensor02SymmCovGrad3 (I := I) g₀ T))
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -105,20 +105,20 @@ lemma koszulCovecCc_unitModel (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcT
           tangentSpaceModelContinuousLinearEquiv (I := I) x a,
           tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
       (1 / 2 : ℝ) *
-        (unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x
+        (unitModel (I := I) (M := M) g₀ 3 (ccTensor02SymmCovGrad3 (I := I) g₀ T) x
             ![tangentSpaceModelContinuousLinearEquiv (I := I) x b,
               tangentSpaceModelContinuousLinearEquiv (I := I) x a,
               tangentSpaceModelContinuousLinearEquiv (I := I) x c]
-          + unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x
+          + unitModel (I := I) (M := M) g₀ 3 (ccTensor02SymmCovGrad3 (I := I) g₀ T) x
             ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
               tangentSpaceModelContinuousLinearEquiv (I := I) x b,
               tangentSpaceModelContinuousLinearEquiv (I := I) x c]
-          - unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x
+          - unitModel (I := I) (M := M) g₀ 3 (ccTensor02SymmCovGrad3 (I := I) g₀ T) x
             ![tangentSpaceModelContinuousLinearEquiv (I := I) x c,
               tangentSpaceModelContinuousLinearEquiv (I := I) x b,
               tangentSpaceModelContinuousLinearEquiv (I := I) x a]) := by
   classical
-  set W : SmoothCcTensor g₀ 0 3 := symmSCovGrad3 (I := I) g₀ T with hW
+  set W : SmoothCcTensor g₀ 0 3 := ccTensor02SymmCovGrad3 (I := I) g₀ T with hW
   have hperm : ∀ (σ : Equiv.Perm (Fin 3)) (m : Fin 3 → E),
       unitModel (I := I) (M := M) g₀ 3 (domDomCongrSection (I := I) g₀ σ W) x m =
         unitModel (I := I) (M := M) g₀ 3 W x (fun i => m (σ i)) := by

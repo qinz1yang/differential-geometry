@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 open DifferentialGeometry.Analysis.Spectral (ccOperatorFieldComp operatorFieldComposition_sub_left operatorFieldComposition_sub_right covGrad_sub
   metricComparisonEndomorphismField metricComparisonEndomorphismField_apply inverseMetricDifferenceSlotCoefficient permCoeff
-  symmS_eq_self_of_ccTensorBilin_symm)
+  ccTensor02Symm_eq_self)
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
@@ -214,15 +214,15 @@ theorem exists_slotInsertEndoCc_metricComparisonEndomorphismField_covariantJetNo
     ccOperatorFieldComp (I := I) (M := M) g 2 2 2 P LT
   let Y : SmoothCcTensor g 2 2 :=
     ccOperatorFieldComp (I := I) (M := M) g 2 2 2 LU X
-  have hsymm : symmS (I := I) (M := M) g (T - U) = T - U := by
-    have hTs := symmS_eq_self_of_ccTensorBilin_symm
+  have hsymm : ccTensor02Symm (I := I) (M := M) g (T - U) = T - U := by
+    have hTs := ccTensor02Symm_eq_self
       (I := I) (M := M) g T hT
-    have hUs := symmS_eq_self_of_ccTensorBilin_symm
+    have hUs := ccTensor02Symm_eq_self
       (I := I) (M := M) g U hU
     change ccTensor02Symm (I := I) (M := M) g T = T at hTs
     change ccTensor02Symm (I := I) (M := M) g U = U at hUs
     change ccTensor02Symm (I := I) (M := M) g (T - U) = T - U
-    rw [symmS_sub, hTs, hUs]
+    rw [ccTensor02Symm_sub, hTs, hUs]
   have hLT2 :
       covariantJetNormSq (I := I) (M := M) g 2 LT ≤ (Bh R) ^ 2 := by
     simpa only [LT] using

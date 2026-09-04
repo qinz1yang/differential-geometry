@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticBounds
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
 

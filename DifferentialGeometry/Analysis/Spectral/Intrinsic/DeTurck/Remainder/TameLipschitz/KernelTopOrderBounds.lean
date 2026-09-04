@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.ProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
@@ -74,7 +74,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
-  symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
+  ccTensor02Symm_sub smoothCcTensorBilinForm_ccTensor02Symm iteratedCovGrad_ccTensor02Symm_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
@@ -216,24 +216,24 @@ private lemma domDomCongrSection_refl (g : SmoothRiemannianMetric I M) {s : ℕ}
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma symmS_eq_half (g₀ : SmoothRiemannianMetric I M)
+private lemma ccTensor02Symm_eq_half (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     ccTensor02Symm (I := I) (M := M) g₀ T =
       (1 / 2 : ℝ) • T +
         (1 / 2 : ℝ) • domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T := by
-  have h := iteratedCovGrad_symmS_eq (I := I) (M := M) g₀ T 0
+  have h := iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g₀ T 0
   rw [iteratedCovGrad_zero, iteratedCovGrad_zero, iteratedCovGrad_zero] at h
   exact h
 
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma domDomCongrSection_symmS (g₀ : SmoothRiemannianMetric I M)
+private lemma domDomCongrSection_ccTensor02Symm (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
         (ccTensor02Symm (I := I) (M := M) g₀ T) =
       ccTensor02Symm (I := I) (M := M) g₀ T := by
-  conv_lhs => rw [symmS_eq_half (I := I) (M := M) g₀ T]
+  conv_lhs => rw [ccTensor02Symm_eq_half (I := I) (M := M) g₀ T]
   rw [domDomCongrSection_add (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 2) 1),
     domDomCongrSection_smul (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 2) 1) (1 / 2) T,
     domDomCongrSection_smul (I := I) (M := M) g₀ (Equiv.swap (0 : Fin 2) 1) (1 / 2)
@@ -243,7 +243,7 @@ private lemma domDomCongrSection_symmS (g₀ : SmoothRiemannianMetric I M)
     show (Equiv.swap (0 : Fin 2) 1).trans (Equiv.swap (0 : Fin 2) 1) =
       Equiv.refl (Fin 2) from by decide,
     domDomCongrSection_refl (I := I) (M := M) g₀ T,
-    symmS_eq_half (I := I) (M := M) g₀ T]
+    ccTensor02Symm_eq_half (I := I) (M := M) g₀ T]
   abel
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -266,7 +266,7 @@ private lemma zeroTensor_eq_smul_unitTensor (x : M)
 omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma symmS_toModel_relation (g₀ : SmoothRiemannianMetric I M)
+private lemma ccTensor02Symm_toModel_relation (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     ∀ (y : M) (d : Tensor0SBundle.Tensor0SSpace 0 I y),
       Tensor0SBundle.Tensor0SSpace.toModel
@@ -282,7 +282,7 @@ private lemma symmS_toModel_relation (g₀ : SmoothRiemannianMetric I M)
       ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
         (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel (I := I) (M := M)
           g₀ 2 (ccTensor02Symm (I := I) (M := M) g₀ T) y) := by
-    conv_lhs => rw [← domDomCongrSection_symmS (I := I) (M := M) g₀ T]
+    conv_lhs => rw [← domDomCongrSection_ccTensor02Symm (I := I) (M := M) g₀ T]
     rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel]
   rw [zeroTensor_eq_smul_unitTensor (I := I) (M := M) y d]
   rw [ContinuousLinearMap.map_smul, Tensor0SBundle.Tensor0SSpace.toModel_smul,
@@ -292,11 +292,11 @@ private lemma symmS_toModel_relation (g₀ : SmoothRiemannianMetric I M)
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma symmSCovGrad3_swap12 (g₀ : SmoothRiemannianMetric I M)
+private lemma ccTensor02SymmCovGrad3_swap12 (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     domDomCongrSection (I := I) g₀ (Equiv.swap (1 : Fin 3) 2)
-        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.symmSCovGrad3 (I := I) g₀ T) =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.symmSCovGrad3 (I := I) g₀ T := by
+        (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ccTensor02SymmCovGrad3 (I := I) g₀ T) =
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ccTensor02SymmCovGrad3 (I := I) g₀ T := by
   apply smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀
   intro x
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.domDomCongrSection_unitModel]
@@ -306,13 +306,13 @@ private lemma symmSCovGrad3_swap12 (g₀ : SmoothRiemannianMetric I M)
   have hnat := DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_rs_toModel_domDomCongr
     (I := I) (M := M) g₀ 0 2 (Equiv.swap (0 : Fin 2) 1)
     (ccTensor02Symm (I := I) (M := M) g₀ T) (ccTensor02Symm (I := I) (M := M) g₀ T)
-    (symmS_toModel_relation (I := I) (M := M) g₀ T) x
+    (ccTensor02Symm_toModel_relation (I := I) (M := M) g₀ T) x
     (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitTensor (I := I) (M := M) x) v
   rw [show Equiv.Perm.decomposeFin.symm ((0 : Fin 3), Equiv.swap (0 : Fin 2) 1) =
     Equiv.swap (1 : Fin 3) 2 from by decide] at hnat
   rw [ContinuousMultilinearMap.domDomCongr_apply] at hnat
   simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel,
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.symmSCovGrad3_def]
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ccTensor02SymmCovGrad3_def]
   exact hnat.symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -401,10 +401,10 @@ theorem riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_le_iteratedCovGrad_s
           (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) := by
   classical
   set B : SmoothCcTensor g₀ 0 3 :=
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.symmSCovGrad3 (I := I) g₀ T
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ccTensor02SymmCovGrad3 (I := I) g₀ T
     with hB_def
   have hπ : domDomCongrSection (I := I) g₀ (Equiv.swap (1 : Fin 3) 2) B = B :=
-    symmSCovGrad3_swap12 (I := I) (M := M) g₀ T
+    ccTensor02SymmCovGrad3_swap12 (I := I) (M := M) g₀ T
   have hkC : DifferentialGeometry.Analysis.Parabolic.TensorSpectral.koszulCovecCc
       (I := I) g₀ T =
       (1 / 2 : ℝ) •
@@ -584,7 +584,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_le_iteratedCovGrad_s
     have hS3cov : B = iteratedCovGrad (I := I) g₀ 0 2 1
       (ccTensor02Symm (I := I) (M := M) g₀ T) := by
       rw [hB_def]
-      rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.symmSCovGrad3_def]
+      rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.ccTensor02SymmCovGrad3_def]
       rw [iteratedCovGrad_succ (I := I) g₀ 0 2 0, iteratedCovGrad_zero (I := I) g₀ 0 2]
     rw [hS3cov]
     have hcomp := riemannianFiberNormSq_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 1 u

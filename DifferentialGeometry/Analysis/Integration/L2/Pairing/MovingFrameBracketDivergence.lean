@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantDerivative
-import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorBochner
+import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.Basic
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Algebra
 open DifferentialGeometry.Geometry.Curvature
 

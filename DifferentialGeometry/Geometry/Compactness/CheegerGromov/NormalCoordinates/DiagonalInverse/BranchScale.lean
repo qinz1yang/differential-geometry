@@ -386,20 +386,20 @@ theorem normalMinScale
                 (hconn k) x q δ (aMin * hd.mu R) ∧
               aMin * hd.mu R ≤ hb.radius k x ∧
               (aMin * hd.mu R) / 2 ≤
-                Geometry.Riemannian.expRadiusGp (I := I) (X.obj k).metric x := by
+                Geometry.Riemannian.metricCoerciveExpRadius (I := I) (X.obj k).metric x := by
   obtain ⟨aq, aδ, aρ, haq, haδ, haρ, hall⟩ :=
     normalBrAccept (I := I) h hcomplete hconn
-  let aMin : Real := min aρ (min (aq / 4) h.gpRatio)
+  let aMin : Real := min aρ (min (aq / 4) h.metricCoerciveRatio)
   have haMin : 0 < aMin := by
     dsimp only [aMin]
-    exact lt_min haρ (lt_min (div_pos haq (by norm_num)) h.gp_ratio_pos)
+    exact lt_min haρ (lt_min (div_pos haq (by norm_num)) h.metricCoerciveRatio_pos)
   have haMinρ : aMin ≤ aρ := by
     dsimp only [aMin]
     exact min_le_left _ _
   have haMinq : aMin ≤ aq / 4 := by
     dsimp only [aMin]
     exact (min_le_right _ _).trans (min_le_left _ _)
-  have haMinGp : aMin ≤ h.gpRatio := by
+  have haMinGp : aMin ≤ h.metricCoerciveRatio := by
     dsimp only [aMin]
     exact (min_le_right _ _).trans (min_le_right _ _)
   refine ⟨aq, aδ, aMin, haq, haδ, haMin, ?_⟩
@@ -428,18 +428,18 @@ theorem normalMinScale
       (hconn k) x q δ (aMin * hd.mu R) :=
     HasNormalBrFull.mono (I := I) (X.obj k) (hcomplete.complete k)
       (hconn k) x (hfull k x hx) hρsmall
-  have hMinRatio : aMin ≤ h.ratio := haMinGp.trans h.gp_ratio_le_ratio
+  have hMinRatio : aMin ≤ h.ratio := haMinGp.trans h.metricCoerciveRatio_le_ratio
   have hradius : aMin * hd.mu R ≤ hb.radius k x :=
     (mul_le_mul_of_nonneg_right hMinRatio (hd.mu_nonneg R)).trans
       (h.floor_le_radius hx)
-  have hMinFloor : aMin * hd.mu R ≤ h.gpRatio * hd.mu R :=
+  have hMinFloor : aMin * hd.mu R ≤ h.metricCoerciveRatio * hd.mu R :=
     mul_le_mul_of_nonneg_right haMinGp (hd.mu_nonneg R)
-  have hhalfFloor : (aMin * hd.mu R) / 2 ≤ h.gpRatio * hd.mu R := by
+  have hhalfFloor : (aMin * hd.mu R) / 2 ≤ h.metricCoerciveRatio * hd.mu R := by
     calc
       (aMin * hd.mu R) / 2 ≤ aMin * hd.mu R := by
         nlinarith [mul_nonneg haMin.le (hd.mu_nonneg R)]
-      _ ≤ h.gpRatio * hd.mu R := hMinFloor
-  exact ⟨hbranch, hradius, hhalfFloor.trans (h.floor_le_exp_gp hx)⟩
+      _ ≤ h.metricCoerciveRatio * hd.mu R := hMinFloor
+  exact ⟨hbranch, hradius, hhalfFloor.trans (h.floor_le_metricCoerciveExpRadius hx)⟩
 
 theorem normalBrScale
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartLieBracket
 import DifferentialGeometry.Geometry.Connection.CovApplyCovRSChartBasisExtension
 open DifferentialGeometry.Geometry.Curvature

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Lichnerowicz
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

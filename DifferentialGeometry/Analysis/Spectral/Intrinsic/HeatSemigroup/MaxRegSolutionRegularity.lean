@@ -2207,7 +2207,7 @@ theorem maxRegForcing_smoothTimeJetDriver_of_galerkinSpatialMass
       exact hψ_eqOn i ht
     exact (hF_ae 0 i).trans hf0ψ
 
-section SymmSCoefficientBlockTransfer
+section CcTensor02SymmCoefficientBlockTransfer
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (ccTensor02Symm domDomCongrSection tensorResolventHilbertEigenbasisSigma
@@ -2359,7 +2359,7 @@ private lemma tensorL2Coeff_toL2_swap_eq_blockSum (g₀ : SmoothRiemannianMetric
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [real_inner_smul_left, ← tensorL2Coeff_eq_inner]
 
-private lemma tensorL2Coeff_toL2_symmS_eq_blockSum (g₀ : SmoothRiemannianMetric I M)
+private lemma tensorL2Coeff_toL2_ccTensor02Symm_eq_blockSum (g₀ : SmoothRiemannianMetric I M)
     (X : SmoothCcTensor g₀ 0 2)
     (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2) :
     tensorL2Coeff (I := I) (M := M) (hCompact (I := I) (M := M) g₀)
@@ -2416,7 +2416,7 @@ lemma symmCoeffPath_realizes (g₀ : SmoothRiemannianMetric I M)
         (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) (ccTensor02Symm (I := I) (M := M) g₀ X)) i
           =
       symmCoeffPath (I := I) (M := M) g₀ φ i t := by
-  rw [tensorL2Coeff_toL2_symmS_eq_blockSum (I := I) (M := M) g₀ X i, hX i]
+  rw [tensorL2Coeff_toL2_ccTensor02Symm_eq_blockSum (I := I) (M := M) g₀ X i, hX i]
   unfold symmCoeffPath
   congr 2
   exact Finset.sum_congr rfl fun j _ => by rw [hX j]
@@ -2608,7 +2608,7 @@ theorem exists_smoothCcPath_realizing_coeff (g₀ : SmoothRiemannianMetric I M)
   choose! S₀ hS₀ using hreconstruct
   exact ⟨S₀, hS₀⟩
 
-private theorem deTurckSobolevNHa2Symm_embed_eq_raw_embed_symmS
+private theorem deTurckSobolevNHa2Symm_embed_eq_raw_embed_ccTensor02Symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) (X : SmoothCcTensor g₀ 0 2)
     (hball : ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) X‖ ≤
@@ -2631,7 +2631,7 @@ private theorem deTurckSobolevNHa2Symm_embed_eq_raw_embed_symmS
   exact (deTurckSobolevNHa2_eq_smoothN (I := I) (M := M) g₀ g_bg a ha_super
     (ccTensor02Symm (I := I) (M := M) g₀ X) hδ_lt
     (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ X (hp_ball X hball))
-    (le_trans (norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ ((a : ℝ) + 2) X)
+    (le_trans (norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ ((a : ℝ) + 2) X)
       hball)).symm
 
 
@@ -2691,7 +2691,7 @@ private theorem deTurckForcing_jetSpectralMass_preservingSymm
           (ccTensor02Symm (I := I) (M := M) g₀ (F t))‖ ≤
         deTurckRealizabilityRadius (I := I) (M := M) g₀ a ha_super := by
     filter_upwards [hw_ball, hwF] with t hwball_t hwF_t
-    refine le_trans (norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ ((a : ℝ) + 2)
+    refine le_trans (norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ ((a : ℝ) + 2)
       (F t)) ?_
     rw [← hwF_t]
     exact hwball_t
@@ -2718,7 +2718,7 @@ private theorem deTurckForcing_jetSpectralMass_preservingSymm
         (I := I) (M := M) g₀ a ha_super)).1 := by
     rw [← hwF_t]
     exact hwball_t
-  rw [hwF_t, deTurckSobolevNHa2Symm_embed_eq_raw_embed_symmS (I := I) (M := M)
+  rw [hwF_t, deTurckSobolevNHa2Symm_embed_eq_raw_embed_ccTensor02Symm (I := I) (M := M)
     g₀ g_bg a ha_super (F t) hballF]
   exact hψt
 
@@ -2789,7 +2789,7 @@ private theorem deTurckSobolevNHa2Symm_finiteOrder_jetSpectralMass_preserving
           (ccTensor02Symm (I := I) (M := M) g₀ (F t))‖ ≤
         deTurckRealizabilityRadius (I := I) (M := M) g₀ a ha_super := by
     filter_upwards [hw_ball, hwF] with t hwball_t hwF_t
-    refine le_trans (norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ ((a : ℝ) + 2)
+    refine le_trans (norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ ((a : ℝ) + 2)
       (F t)) ?_
     rw [← hwF_t]
     exact hwball_t
@@ -2816,7 +2816,7 @@ private theorem deTurckSobolevNHa2Symm_finiteOrder_jetSpectralMass_preserving
         (I := I) (M := M) g₀ a ha_super)).1 := by
     rw [← hwF_t]
     exact hwball_t
-  rw [hwF_t, deTurckSobolevNHa2Symm_embed_eq_raw_embed_symmS (I := I) (M := M)
+  rw [hwF_t, deTurckSobolevNHa2Symm_embed_eq_raw_embed_ccTensor02Symm (I := I) (M := M)
     g₀ g_bg a ha_super (F t) hballF]
   exact hψt
 
@@ -3007,7 +3007,7 @@ theorem maxRegForcing_smoothTimeJetDriver_of_galerkinSpatialMassSymm
       exact hψ_eqOn i ht
     exact (hF_ae 0 i).trans hf0ψ
 
-end SymmSCoefficientBlockTransfer
+end CcTensor02SymmCoefficientBlockTransfer
 
 
 theorem maxRegSolField_parabolicInterior_jetSpectralMassSymm

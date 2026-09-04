@@ -22,7 +22,7 @@ open DifferentialGeometry.Analysis.Parabolic (lowerState)
 open DifferentialGeometry.Analysis.Spectral
   (ccTensorToHs ccTensorToHs_add ccTensorToHs_coeff ccToHsLin ccToHsLin_apply
     ccToHsLin_dense deTurckSmoothN deTurckSmoothRemainder
-    deTurckSmoothRemainderTensorHs norm_smoothCcToTensorHs_symmS_le smoothCcToTensorHs
+    deTurckSmoothRemainderTensorHs norm_smoothCcToTensorHs_ccTensor02Symm_le smoothCcToTensorHs
     tensorHsInclusion_smoothCcToTensorHs)
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -338,12 +338,12 @@ theorem deTurckRemainderOnLowerState_affine
           (show ((1 : ℕ) : ℝ) + 1 = (2 : ℝ) by norm_num) S]
       exact hnorm
     have hsymm2 : ‖ccTensorToHs (I := I) (M := M) g₀ 2 (2 : ℝ)
-        (symmS (I := I) (M := M) g₀ S)‖ ≤ ρ := by
+        (ccTensor02Symm (I := I) (M := M) g₀ S)‖ ≤ ρ := by
       refine le_trans ?_ (le_trans hnorm2 hRρ)
       rw [← smoothCcToTensorHs_eq_ccToHs, ← smoothCcToTensorHs_eq_ccToHs]
-      exact norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ (2 : ℝ) S
+      exact norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ (2 : ℝ) S
     have hrad : lowRadial (I := I) (M := M) g₀ ρ S =
-        symmS (I := I) (M := M) g₀ S :=
+        ccTensor02Symm (I := I) (M := M) g₀ S :=
       lowRadial_eq_self (I := I) (M := M) g₀ S hsymm2
     have hveq : v = ⟨smoothCcToTensorHs (I := I) (M := M) g₀
         (((1 : ℕ) : ℝ) + 2) S, hball⟩ := Subtype.ext hS.symm
@@ -351,21 +351,21 @@ theorem deTurckRemainderOnLowerState_affine
     set S' := lowRadial (I := I) (M := M) g₀ ρ S with hS'
     have hsmoothN :
         deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g₀ 1
-            (symmS (I := I) (M := M) g₀ S) hδ
+            (ccTensor02Symm (I := I) (M := M) g₀ S) hδ
             (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ S hball)) =
           smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
             (deTurckSmoothRemainder (I := I) g₀ g₀
-              (symmS (I := I) (M := M) g₀ S) hδ
+              (ccTensor02Symm (I := I) (M := M) g₀ S) hδ
               (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ S hball))) := by
       exact deTurckSmoothN_eq (I := I) (M := M) g₀ g₀ 1
-        (symmS (I := I) (M := M) g₀ S) hδ
+        (ccTensor02Symm (I := I) (M := M) g₀ S) hδ
         (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ S hball))
     have hLHS : tensorHsCongr (I := I) (M := M) g₀ 0 2
           (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num)
           (deTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hR hδ hreal v) =
         ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
           (deTurckSmoothRemainder (I := I) g₀ g₀
-            (symmS (I := I) (M := M) g₀ S) hδ
+            (ccTensor02Symm (I := I) (M := M) g₀ S) hδ
             (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ S hball))) := by
       rw [hveq,
         deTurckRemainderOnLowerState_on_smooth (I := I) (M := M) g₀ g₀ hR hδ hreal hcore S hball,
@@ -409,7 +409,7 @@ theorem deTurckRemainderOnLowerState_affine
           (ccToHsLin (I := I) (M := M) g₀ 2 (3 : ℝ) S) =
         ccTensorToHs (I := I) (M := M) g₀ 2 (1 : ℝ)
           (deTurckSmoothRemainder (I := I) g₀ g₀
-            (symmS (I := I) (M := M) g₀ S) hδ
+            (ccTensor02Symm (I := I) (M := M) g₀ S) hδ
             (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ S hball))) := by
       rw [show lowerScaleNonlinearityWithFirstOrderOperator (I := I) (M := M)
             g₀ hρ.le hδ0 hδ_le hreal' FLo
@@ -442,7 +442,7 @@ theorem deTurckRemainderOnLowerState_affine
       have hrem : deTurckSmoothRemainder (I := I) g₀ g₀ S' hδ
             (hreal' _ (lowRadial_norm (I := I) (M := M) g₀ hρ.le S)) =
           deTurckSmoothRemainder (I := I) g₀ g₀
-            (symmS (I := I) (M := M) g₀ S) hδ
+            (ccTensor02Symm (I := I) (M := M) g₀ S) hδ
             (hreal _ (symm_h2_of_state (I := I) (M := M) g₀ S hball)) :=
         deTurckSmoothRem_congr (I := I) (M := M) g₀ g₀ hrad hδ _ _
       rw [← hrem, add_assoc, ← hsplit, hz0, ← hz1]

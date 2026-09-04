@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.IntrinsicJacobiJets
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.JacobiJets
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CurvatureOperatorBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 

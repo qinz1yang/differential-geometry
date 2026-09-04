@@ -150,5 +150,24 @@ theorem sectionD2_cancel
   rw [sectionCompD2 F v p a b hF hv, add_sub_cancel_right]
   exact ContinuousLinearMap.IsInvertible.inverse_apply_self hJ _
 
+theorem fderiv_fderiv_prod_apply
+    {P X Y : Type*}
+    [NormedAddCommGroup P] [NormedSpace Real P]
+    [NormedAddCommGroup X] [NormedSpace Real X]
+    [NormedAddCommGroup Y] [NormedSpace Real Y]
+    (F : P × X → Y) (p : P) (x : X) (a b : P) (u v : X) :
+    fderiv Real (fderiv Real F) (p, x) (a, u) (b, v) =
+      fderiv Real (fderiv Real F) (p, x) (a, 0) (b, 0) +
+        fderiv Real (fderiv Real F) (p, x) (a, 0) (0, v) +
+        fderiv Real (fderiv Real F) (p, x) (0, u) (b, 0) +
+        fderiv Real (fderiv Real F) (p, x) (0, u) (0, v) := by
+  have ha : (a, u) = (a, 0) + (0, u) := by
+    ext <;> simp
+  have hb : (b, v) = (b, 0) + (0, v) := by
+    ext <;> simp
+  rw [ha, hb]
+  simp only [map_add, add_apply]
+  abel
+
 end Analysis
 end DifferentialGeometry

@@ -452,7 +452,7 @@ private lemma covGrad3Eval_eq_metricDiff
   have hbil : ∀ (b : M) (u w : TangentSpace I b),
       smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) g₀ T) b u w =
         g₁.inner b u w - g₀.inner b u w :=
-    symmS_hbil_of_realize (I := I) (M := M) g₀ g₁ T hg₁
+    smoothCcTensorBilinForm_ccTensor02Symm_eq_metric_sub (I := I) (M := M) g₀ g₁ T hg₁
   rw [covGrad3Eval,
     covGrad02_unitModel_eval_eq_metricDiffCovDeriv' (I := I) (M := M) g₀ g₁ g₀
       (ccTensor02Symm (I := I) g₀ T) hbil P Q R x]
@@ -503,7 +503,7 @@ private lemma abs_covGrad3Eval_le
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma norm_covGrad_symmS_le
+private lemma norm_covGrad_ccTensor02Symm_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M) :
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
@@ -690,7 +690,7 @@ theorem connectionDifference_gFibreNorm_le_iteratedCovGrad
       rw [hu_sharp, ← hθ_flat]
     rw [huu]
     exact hsfib
-  have hsymmnorm := norm_covGrad_symmS_le (I := I) (M := M) g₀ T x
+  have hsymmnorm := norm_covGrad_ccTensor02Symm_le (I := I) (M := M) g₀ T x
   rw [← hGnorm_def] at hsymmnorm
   have hiter_norm : ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ =
@@ -855,7 +855,7 @@ theorem connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one
       rw [hu_sharp, ← hθ_flat]
     rw [huu]
     exact hsfib
-  have hsymmnorm := norm_covGrad_symmS_le (I := I) (M := M) g₀ T x
+  have hsymmnorm := norm_covGrad_ccTensor02Symm_le (I := I) (M := M) g₀ T x
   rw [← hGnorm_def] at hsymmnorm
   have hiter_norm : ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ =

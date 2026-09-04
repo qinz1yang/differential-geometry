@@ -268,7 +268,7 @@ theorem exists_riemannPalatini_decomposition_identity_data
       intro x v w
       rw [ccTensorBilin_smul_local, ccTensorBilin_smul_local, hTsymm x v w]
     have hsymmT : ccTensor02Symm (I := I) (M := M) g₀ T = T :=
-      symmS_eq_self_of_symm (I := I) (M := M) g₀ T hTsymm
+      ccTensor02Symm_eq_self (I := I) (M := M) g₀ T hTsymm
     beta_reduce
     simp only [iteratedCovGrad_zero]
     have hfam : (2 : ℝ) • riemannPalatiniDecompositionC2Family (I := I) (M := M) g₀ T hδ hδZ
@@ -283,7 +283,7 @@ theorem exists_riemannPalatini_decomposition_identity_data
           (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀ T)
           (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
           (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 := by
-      rw [riemannPalatiniDecompositionC2Family_eq_symmS_kernel (I := I) (M := M) g₀ T hδ hδZ _ _
+      rw [riemannPalatiniDecompositionC2Family_eq_ccTensor02Symm_kernel (I := I) (M := M) g₀ T hδ hδZ _ _
         (fun _ => rfl) s,
         hsymmT, smul_smul]
       rfl
@@ -569,8 +569,8 @@ theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
       (convexPerturbation (I := I) g₀ T 0 s) htie hδ_lt hδP
       (ccTensorUnitValueSection (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T))
-      hδ0 (toModel_unitValue_symmS_abs_le (I := I) (M := M) g₀ T hδ) σp x
-  rw [riemannPalatiniDecompositionC2Family_eq_symmS_kernel (I := I) (M := M) g₀ T hδ hδZ
+      hδ0 (toModel_unitValue_ccTensor02Symm_abs_le (I := I) (M := M) g₀ T hδ) σp x
+  rw [riemannPalatiniDecompositionC2Family_eq_ccTensor02Symm_kernel (I := I) (M := M) g₀ T hδ hδZ
     qA qB hq s]
   rw [smul_smul, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
     DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
@@ -676,16 +676,16 @@ theorem exists_riemannPalatiniDecompositionC2Family_l2JetWindow
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨K0, hK0_nn, hK0⟩ :=
-    exists_curvatureDecompositionMonomialCoeffField_symmS_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀ (qA 0)
   obtain ⟨K1, hK1_nn, hK1⟩ :=
-    exists_curvatureDecompositionMonomialCoeffField_symmS_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀ (qA 1)
   obtain ⟨K2, hK2_nn, hK2⟩ :=
-    exists_curvatureDecompositionMonomialCoeffField_symmS_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀ (qA 2)
   obtain ⟨K3, hK3_nn, hK3⟩ :=
-    exists_curvatureDecompositionMonomialCoeffField_symmS_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀ (qA 3)
   refine ⟨fun i => 4 * (K0 i + K1 i + K2 i + K3 i), fun i => by
     have h0 := hK0_nn i; have h1 := hK1_nn i; have h2 := hK2_nn i; have h3 := hK3_nn i
@@ -697,7 +697,7 @@ theorem exists_riemannPalatiniDecompositionC2Family_l2JetWindow
     qA qB hq, ?_⟩
   intro i s hs
   obtain ⟨hs0, hs1⟩ := hs
-  rw [riemannPalatiniDecompositionC2Family_eq_symmS_kernel (I := I) (M := M) g₀ T hδ hδZ
+  rw [riemannPalatiniDecompositionC2Family_eq_ccTensor02Symm_kernel (I := I) (M := M) g₀ T hδ hδZ
     qA qB hq s]
   rw [curvatureActionKernelCoeffField, iteratedCovGrad_smul_real,
     iteratedCovGrad_smul_real, iteratedCovGrad_smul_real,
@@ -805,13 +805,13 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨K0, hK0_nn, hK0⟩ :=
-    exists_curvatureDecompositionMonomialCoeffField_symmS_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀ (q 0)
   obtain ⟨K1, hK1_nn, hK1⟩ :=
-    exists_curvatureDecompositionMonomialCoeffField_symmS_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀ (q 1)
   obtain ⟨K2, hK2_nn, hK2⟩ :=
-    exists_curvatureDecompositionMonomialCoeffField_symmS_metricPerturbationPath_l2JetWindow (I := I) (M := M)
+    exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀ (q 2)
   refine ⟨fun i => 3 * (K0 i + K1 i + K2 i),
     fun i => by have h0 := hK0_nn i; have h1 := hK1_nn i; have h2 := hK2_nn i; linarith, ?_⟩
@@ -915,7 +915,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
         (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
         (convexPerturbation (I := I) g₀ T 0 s) htie hδ_lt hδP
         (ccTensorUnitValueSection (I := I) (M := M) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T))
-        hδ0 (toModel_unitValue_symmS_abs_le (I := I) (M := M) g₀ T hδ) σp x
+        hδ0 (toModel_unitValue_ccTensor02Symm_abs_le (I := I) (M := M) g₀ T hδ) σp x
     have hterm_le : ∀ (c : ℝ), |c| ≤ 1 → ∀ σp : Equiv.Perm (Fin 4),
         riemannianFiberNormSq (I := I) (M := M) g₀ 4 2 x
             (c • ((curvatureActionMonomialCoeffField (I := I) (M := M) g₀
@@ -937,7 +937,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
           (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀
             (ccTensor02Symm (I := I) (M := M) g₀ T)) σp).toSection x)
       nlinarith only [h1, hc2, h0, sq_nonneg c]
-    rw [deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight (I := I) (M := M) g₀ T hδ hδZ q ε s]
+    rw [deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight (I := I) (M := M) g₀ T hδ hδZ q ε s]
     rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
       DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
     simp only [Fin.sum_univ_three, SmoothCcTensor.toSection_add,
@@ -987,7 +987,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
     nlinarith only [hr0, hr1, hr2, h3, hs2, hsum_nn,
       sq_nonneg (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2))]
   · intro i s hs
-    rw [deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight (I := I) (M := M) g₀ T hδ hδZ q ε s,
+    rw [deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight (I := I) (M := M) g₀ T hδ hδZ q ε s,
       iteratedCovGrad_smul_real]
     simp only [Fin.sum_univ_three]
     rw [iteratedCovGrad_add, iteratedCovGrad_add, iteratedCovGrad_smul_real,

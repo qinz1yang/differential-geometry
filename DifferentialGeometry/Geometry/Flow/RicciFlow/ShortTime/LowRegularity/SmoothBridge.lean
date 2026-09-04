@@ -39,7 +39,7 @@ theorem symm_h2_of_state
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1)
         (ccTensor02Symm (I := I) (M := M) g₀ S)‖ ≤
         ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) S‖ :=
-      norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀
+      norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀
         (((1 : ℕ) : ℝ) + 1) S
     _ = ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
         (show ((1 : ℕ) : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2 by linarith)

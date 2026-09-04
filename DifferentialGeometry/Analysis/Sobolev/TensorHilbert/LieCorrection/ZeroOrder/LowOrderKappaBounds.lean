@@ -59,7 +59,7 @@ private theorem koszul_g1 (g₀ g₁ : SmoothRiemannianMetric I M)
             tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
       g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a b) c := by
   rw [koszulCovecCc_unitModel (I := I) (M := M) g₀ P x a b c]
-  rw [connectionDifferenceInner_g1_eq_half_covGradSymmS
+  rw [connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm
     (I := I) (M := M) g₀ g₁ P htie x a b c]
   rfl
 
@@ -242,7 +242,7 @@ theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
       ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2
         (lieFirstOrderFixCd (I := I) (M := M) g₀ gB)
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-          (symmS (I := I) (M := M) g₀ P)) := by
+          (ccTensor02Symm (I := I) (M := M) g₀ P)) := by
   apply Integral.L2.SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
@@ -312,14 +312,14 @@ theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
         (lieFirstOrderFixCd (I := I) (M := M) g₀ gB).toSection x).comp
         (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
           (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-            (symmS (I := I) (M := M) g₀ P)).toSection x)) om YZ =
+            (ccTensor02Symm (I := I) (M := M) g₀ P)).toSection x)) om YZ =
       ccTensorBilinSymm (I := I) g₀ P x
         (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1)) u := by
     rw [ContinuousLinearMap.comp_apply]
     set om' : Tensor0SSpace 1 I x :=
       (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-          (symmS (I := I) (M := M) g₀ P)).toSection x) om with hom'
+          (ccTensor02Symm (I := I) (M := M) g₀ P)).toSection x) om with hom'
     rw [show (lieFirstOrderFixCd (I := I) (M := M) g₀ gB).toSection x =
       connectionDifferenceFib (I := I) g₀ gB x from rfl]
     rw [connectionDifferenceFib_apply_eval (I := I) g₀ gB x om' YZ]
@@ -331,10 +331,10 @@ theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
     rw [hom']
     rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-          (symmS (I := I) (M := M) g₀ P)).toSection x) om) =
+          (ccTensor02Symm (I := I) (M := M) g₀ P)).toSection x) om) =
         cometricRaiseSlot0Fib (I := I) g₀ 0 x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (symmS (I := I) (M := M) g₀ P).toSection x)
+            (ccTensor02Symm (I := I) (M := M) g₀ P).toSection x)
             (unitTensor (I := I) (M := M) x)) om from by
       rw [cometricRaiseSlot0Field_toSection]]
     rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 0 x _ om]
@@ -342,13 +342,13 @@ theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
         (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (0 + 1) x
           (inverseMetricSharpFib (I := I) g₀ x om)
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (symmS (I := I) (M := M) g₀ P).toSection x)
+            (ccTensor02Symm (I := I) (M := M) g₀ P).toSection x)
             (unitTensor (I := I) (M := M) x)))
         (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x
           (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1))) =
         Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (symmS (I := I) (M := M) g₀ P).toSection x)
+            (ccTensor02Symm (I := I) (M := M) g₀ P).toSection x)
             (unitTensor (I := I) (M := M) x))
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x u)
             (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -359,13 +359,13 @@ theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
           (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1))), ← hu]]
     rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-          (symmS (I := I) (M := M) g₀ P).toSection x)
+          (ccTensor02Symm (I := I) (M := M) g₀ P).toSection x)
           (unitTensor (I := I) (M := M) x))
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x u)
           (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x
             (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1)))) =
         unitModel (I := I) (M := M) g₀ 2
-          (symmS (I := I) (M := M) g₀ P) x
+          (ccTensor02Symm (I := I) (M := M) g₀ P) x
           ![tangentSpaceModelContinuousLinearEquiv (I := I) x u,
             tangentSpaceModelContinuousLinearEquiv (I := I) x
               (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1))] from by
@@ -374,18 +374,18 @@ theorem pbLow_raise (g₀ gB : SmoothRiemannianMetric I M)
       funext k
       fin_cases k <;> rfl]
     have hunit := unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀
-      (symmS (I := I) (M := M) g₀ P) x u
+      (ccTensor02Symm (I := I) (M := M) g₀ P) x u
       (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1))
     change unitModel (I := I) (M := M) g₀ 2
-        (symmS (I := I) (M := M) g₀ P) x
+        (ccTensor02Symm (I := I) (M := M) g₀ P) x
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x u,
           tangentSpaceModelContinuousLinearEquiv (I := I) x
             (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1))] =
       smoothCcTensorBilinForm (I := I) g₀
-        (symmS (I := I) (M := M) g₀ P) x u
+        (ccTensor02Symm (I := I) (M := M) g₀ P) x u
         (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1)) at hunit
     rw [hunit]
-    rw [ccTensorBilin_symmS (I := I) (M := M) g₀ P x u
+    rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P x u
       (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1))]
     exact ccTensorBilinSymm_symm (I := I) g₀ P x u
       (PDE.DeTurck.connectionDifference (I := I) g₀ gB x (YZ 0) (YZ 1))
@@ -403,7 +403,7 @@ theorem pbLow_riemannianFiberNormSq (g₀ gB : SmoothRiemannianMetric I M)
           (ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2
             (lieFirstOrderFixCd (I := I) (M := M) g₀ gB)
             (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-              (symmS (I := I) (M := M) g₀ P)))).toSection x) := by
+              (ccTensor02Symm (I := I) (M := M) g₀ P)))).toSection x) := by
   calc
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + n) x
         ((iteratedCovGrad (I := I) g₀ 0 3 n
@@ -429,7 +429,7 @@ theorem pbLow_riemannianFiberNormSq (g₀ gB : SmoothRiemannianMetric I M)
             (ccOperatorFieldComp (I := I) (M := M) g₀ 1 1 2
               (lieFirstOrderFixCd (I := I) (M := M) g₀ gB)
               (cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-                (symmS (I := I) (M := M) g₀ P)))).toSection x) := by
+                (ccTensor02Symm (I := I) (M := M) g₀ P)))).toSection x) := by
         rw [pbLow_raise (I := I) (M := M) g₀ gB P]
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

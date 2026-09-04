@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.FrameInvariant
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricDeriv
-import DifferentialGeometry.Geometry.Curvature.Bochner.TensorNormProduct
+import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Norm.Product
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

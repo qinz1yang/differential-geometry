@@ -1,5 +1,5 @@
 import Mathlib.Analysis.InnerProductSpace.EuclideanDist
-import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Metric.Sphere.CoverQuotient
 import DifferentialGeometry.Geometry.Metric.Sphere.PositiveCover
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected

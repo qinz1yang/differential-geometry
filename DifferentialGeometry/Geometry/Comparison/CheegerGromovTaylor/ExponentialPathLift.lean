@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.IntrinsicGauss
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.GaussLemma
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphLift
 
 set_option autoImplicit false

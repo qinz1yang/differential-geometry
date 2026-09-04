@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
+import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionIntegrability
 
@@ -95,15 +95,15 @@ private theorem isBounded_range_of_metric_inner_le
     (eps Q : Real) (heps : 0 < eps)
     (hmetric : ∀ n, 4 * eps * g.inner x (Z n) (Z n) ≤ Q) :
     Bornology.IsBounded (Set.range Z) := by
-  let c : Real := gpCoerciveConst (I := I) g x
-  have hc : 0 < c := gpCoerciveConst_pos (I := I) g x
+  let c : Real := metricCoerciveConst (I := I) g x
+  have hc : 0 < c := metricCoerciveConst_pos (I := I) g x
   let d : Real := 4 * eps * c
   have hd : 0 < d := mul_pos (mul_pos (by norm_num) heps) hc
   let L : Real := Real.sqrt (Q / d)
   have hnorm : ∀ n, ‖Z n‖ ≤ L := by
     intro n
     have hcoerc : c * ‖Z n‖ ^ 2 ≤ g.inner x (Z n) (Z n) := by
-      with_unfolding_all exact gpCoerciveConst_le (I := I) g x (Z n)
+      with_unfolding_all exact metricCoerciveConst_le (I := I) g x (Z n)
     have hscaled : d * ‖Z n‖ ^ 2 ≤ Q := by
       calc
         d * ‖Z n‖ ^ 2 = 4 * eps * (c * ‖Z n‖ ^ 2) := by

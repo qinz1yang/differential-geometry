@@ -83,12 +83,12 @@ theorem exists_uniform_galerkin_action_all_order_affine_bound
   refine ⟨Ca2, Ca1, hCa2, hCa1, ?_⟩
   intro F c R4 hE4 m
   let T : SmoothCcTensor g 0 2 :=
-    symmS (I := I) (M := M) g (galCoreRep (I := I) (M := M) g R F c)
+    ccTensor02Symm (I := I) (M := M) g (galCoreRep (I := I) (M := M) g R F c)
   have hT : ∀ (x : M) (u v : TangentSpace I x),
       ccTensorBilin (I := I) g T x u v =
         ccTensorBilin (I := I) g T x v u := by
     dsimp only [T]
-    exact ccTensorBilin_symmS_symm (I := I) (M := M) g _
+    exact smoothCcTensorBilinForm_ccTensor02Symm_symm (I := I) (M := M) g _
   have hδg : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g T) δ := by
     dsimp only [T]

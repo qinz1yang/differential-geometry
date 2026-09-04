@@ -360,7 +360,7 @@ private theorem covariantJetNormSq_two_slotInsertEndoCc_le
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covariantJetNormSq_two_slotInsert_symmRaiseEndo_eq
     (g : SmoothRiemannianMetric I M) (D : SmoothCcTensor g 0 2)
-    (hD : symmS (I := I) (M := M) g D = D) :
+    (hD : ccTensor02Symm (I := I) (M := M) g D = D) :
     covariantJetNormSq (I := I) (M := M) g 2
         (slotInsertEndoCc (I := I) (M := M) g 0
           (symmRaiseEndo (I := I) (M := M) g D)) =
@@ -371,11 +371,11 @@ private theorem covariantJetNormSq_two_slotInsert_symmRaiseEndo_eq
         (cometricRaiseSlot0Field (I := I) (M := M) g 0
           (domDomCongrSection (I := I) g
             (Equiv.swap (0 : Fin 2) 1)
-            (symmS (I := I) (M := M) g D))) =
+            (ccTensor02Symm (I := I) (M := M) g D))) =
       covariantJetNormSq (I := I) (M := M) g 2
         (domDomCongrSection (I := I) g
           (Equiv.swap (0 : Fin 2) 1)
-          (symmS (I := I) (M := M) g D)) := by
+          (ccTensor02Symm (I := I) (M := M) g D)) := by
         unfold covariantJetNormSq
         apply Finset.sum_congr rfl
         intro q _
@@ -383,12 +383,12 @@ private theorem covariantJetNormSq_two_slotInsert_symmRaiseEndo_eq
           (I := I) (M := M) g 0
           (domDomCongrSection (I := I) g
             (Equiv.swap (0 : Fin 2) 1)
-            (symmS (I := I) (M := M) g D)) q]
+            (ccTensor02Symm (I := I) (M := M) g D)) q]
     _ = covariantJetNormSq (I := I) (M := M) g 2
-          (symmS (I := I) (M := M) g D) :=
+          (ccTensor02Symm (I := I) (M := M) g D) :=
       covariantJetNormSq_two_domDomCongrSection (I := I) (M := M) g
         (Equiv.swap (0 : Fin 2) 1)
-        (symmS (I := I) (M := M) g D)
+        (ccTensor02Symm (I := I) (M := M) g D)
     _ = covariantJetNormSq (I := I) (M := M) g 2 D := by rw [hD]
 
 private theorem metricComparisonEndomorphism_third_slot_difference_covariantJetNormSq_two_le
@@ -413,13 +413,13 @@ private theorem metricComparisonEndomorphism_third_slot_difference_covariantJetN
             (metricComparisonEndomorphismField (I := I) (M := M) gU g)) ≤
       (Module.finrank ℝ E : ℝ) ^ 3 *
         covariantJetNormSq (I := I) (M := M) g 2 (T - U) := by
-  have hsymm : symmS (I := I) (M := M) g (T - U) = T - U := by
+  have hsymm : ccTensor02Symm (I := I) (M := M) g (T - U) = T - U := by
     have hTs := ccTensor02Symm_eq_self (I := I) (M := M) g T hT
     have hUs := ccTensor02Symm_eq_self (I := I) (M := M) g U hU
     change ccTensor02Symm (I := I) (M := M) g T = T at hTs
     change ccTensor02Symm (I := I) (M := M) g U = U at hUs
     change ccTensor02Symm (I := I) (M := M) g (T - U) = T - U
-    rw [symmS_sub, hTs, hUs]
+    rw [ccTensor02Symm_sub, hTs, hUs]
   rw [← slotInsertEndoCc_sub,
     RicciDeTurckLowOrder.fullRev_sub (I := I) (M := M)
       g gT gU T U hTtie hUtie]
@@ -2339,13 +2339,13 @@ private theorem exists_operatorFieldComposition_difference_covariantJetNormSq_on
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
-private theorem symmSCovGrad3_sub
+private theorem ccTensor02SymmCovGrad3_sub
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2) :
-    symmSCovGrad3 (I := I) (M := M) g (T - U) =
-      symmSCovGrad3 (I := I) (M := M) g T -
-        symmSCovGrad3 (I := I) (M := M) g U := by
-  rw [symmSCovGrad3_def, symmSCovGrad3_def, symmSCovGrad3_def,
-    symmS_sub, covGrad_sub]
+    ccTensor02SymmCovGrad3 (I := I) (M := M) g (T - U) =
+      ccTensor02SymmCovGrad3 (I := I) (M := M) g T -
+        ccTensor02SymmCovGrad3 (I := I) (M := M) g U := by
+  rw [ccTensor02SymmCovGrad3_def, ccTensor02SymmCovGrad3_def, ccTensor02SymmCovGrad3_def,
+    ccTensor02Symm_sub, covGrad_sub]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -2354,7 +2354,7 @@ private theorem koszulCovecCc_sub
     koszulCovecCc (I := I) g (T - U) =
       koszulCovecCc (I := I) g T - koszulCovecCc (I := I) g U := by
   unfold koszulCovecCc
-  rw [symmSCovGrad3_sub]
+  rw [ccTensor02SymmCovGrad3_sub]
   rw [domDomCongrSection_sub, domDomCongrSection_sub, domDomCongrSection_sub]
   module
 
@@ -2470,7 +2470,7 @@ private theorem exists_lieCorrectionZeroPbLow_covariantJetNormSq_two_bound
   intro P A hA hP
   let W : SmoothCcTensor g 1 1 :=
     cometricRaiseSlot0Field (I := I) (M := M) g 0
-      (symmS (I := I) (M := M) g P)
+      (ccTensor02Symm (I := I) (M := M) g P)
   have hWterm : ∀ j ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g 1 1 j W‖ ^ 2 ≤
         ‖iteratedCovGrad (I := I) g 0 2 j P‖ ^ 2 := by
@@ -2478,16 +2478,16 @@ private theorem exists_lieCorrectionZeroPbLow_covariantJetNormSq_two_bound
     have hraise :
         ‖iteratedCovGrad (I := I) g 1 1 j W‖ ^ 2 =
           ‖iteratedCovGrad (I := I) g 0 2 j
-            (symmS (I := I) (M := M) g P)‖ ^ 2 := by
+            (ccTensor02Symm (I := I) (M := M) g P)‖ ^ 2 := by
       simpa only [W] using congrArg (fun z : ℝ => z ^ 2)
         (norm_iteratedCovGrad_cometricRaiseSlot0Field_eq
           (I := I) (M := M) g 0
-          (symmS (I := I) (M := M) g P) j)
+          (ccTensor02Symm (I := I) (M := M) g P) j)
     rw [hraise]
-    have hs := norm_iteratedCovGrad_symmS_le
+    have hs := norm_iteratedCovGrad_ccTensor02Symm_le
       (I := I) (M := M) g P j
     nlinarith [norm_nonneg (iteratedCovGrad (I := I) g 0 2 j
-      (symmS (I := I) (M := M) g P)),
+      (ccTensor02Symm (I := I) (M := M) g P)),
       norm_nonneg (iteratedCovGrad (I := I) g 0 2 j P)]
   have hW : covariantJetNormSq (I := I) (M := M) g 2 W ≤ A ^ 2 := by
     unfold covariantJetNormSq

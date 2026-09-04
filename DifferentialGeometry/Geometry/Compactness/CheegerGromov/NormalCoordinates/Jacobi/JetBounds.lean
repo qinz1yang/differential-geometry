@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.IntrinsicGronwall
+import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.Gronwall
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Jacobi.CurvatureJet
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Jacobi.ForceBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.CurvatureOperatorBounds

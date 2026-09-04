@@ -57,7 +57,7 @@ theorem galRepHs_scale (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
     let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g₀ 1
       (finiteEigenComboHs (I := I) (M := M) g₀ F c (((1 : ℕ) : ℝ) + 2))‖)
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ
-        (symmS (I := I) (M := M) g₀
+        (ccTensor02Symm (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R F c))‖ ≤
       θ * Real.sqrt (∑ i ∈ F,
         tensorSobolevWeight (I := I) (M := M) i σ * (c i) ^ 2) := by
@@ -66,7 +66,7 @@ theorem galRepHs_scale (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
   have hθ0 : 0 ≤ θ := by
     dsimp only [θ]
     exact le_min zero_le_one (div_nonneg hR (norm_nonneg _))
-  refine (norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ σ _).trans ?_
+  refine (norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ σ _).trans ?_
   have hrep : galCoreRep (I := I) (M := M) g₀ R F c =
       θ • finiteEigenCombo (I := I) (M := M) g₀ F c := rfl
   rw [hrep, smoothCcToTensorHs_smul, norm_smul, Real.norm_eq_abs,
@@ -87,11 +87,11 @@ theorem galRepHs_le (g₀ : SmoothRiemannianMetric I M) (σ : ℝ)
     (F : Finset (TensorEigenIdx (I := I) (M := M) g₀ 0 2))
     (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) :
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ σ
-        (symmS (I := I) (M := M) g₀
+        (ccTensor02Symm (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R F c))‖ ≤
       Real.sqrt (∑ i ∈ F,
         tensorSobolevWeight (I := I) (M := M) i σ * (c i) ^ 2) := by
-  refine (norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ σ _).trans ?_
+  refine (norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ σ _).trans ?_
   let θ : ℝ := min 1 (R / ‖galLowView (I := I) (M := M) g₀ 1
     (finiteEigenComboHs (I := I) (M := M) g₀ F c (((1 : ℕ) : ℝ) + 2))‖)
   have hθ0 : 0 ≤ θ := by
@@ -151,7 +151,7 @@ theorem galRepFib (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ} (hR : 0 ≤ R
     (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) :
     gFibreOpBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀
-        (symmS (I := I) (M := M) g₀
+        (ccTensor02Symm (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R S c))) δ :=
   hreal _ (symm_h2_of_state (I := I) (M := M) g₀
     (galCoreRep (I := I) (M := M) g₀ R S c)
@@ -183,7 +183,7 @@ theorem galN_eval (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
         ⟨galTameStateC (I := I) (M := M) g₀ 1 R S c,
           galTameStateC_mem (I := I) (M := M) g₀ 1 hR.le S c⟩ =
       deTurckSmoothN (I := I) (M := M) g₀ g₀ 1
-        (symmS (I := I) (M := M) g₀
+        (ccTensor02Symm (I := I) (M := M) g₀
           (galCoreRep (I := I) (M := M) g₀ R S c)) hδ
         (galRepFib (I := I) (M := M) g₀ hR.le hreal S c) := by
   have hsub : (⟨galTameStateC (I := I) (M := M) g₀ 1 R S c,
@@ -215,23 +215,23 @@ theorem galTermId (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
           ⟨0, zero_mem_lowerState (I := I) (M := M) g₀ 1 hR.le⟩ =
       smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
         ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-              (symmS (I := I) (M := M) g₀
+              (ccTensor02Symm (I := I) (M := M) g₀
                 (galCoreRep (I := I) (M := M) g₀ R S c)) hδ
               (galRepFib (I := I) (M := M) g₀ hR.le hreal S c)
               (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR.le hreal)).secondOrderAction
             (I := I) (M := M)
-            (symmS (I := I) (M := M) g₀
+            (ccTensor02Symm (I := I) (M := M) g₀
               (galCoreRep (I := I) (M := M) g₀ R S c)) +
           (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-              (symmS (I := I) (M := M) g₀
+              (ccTensor02Symm (I := I) (M := M) g₀
                 (galCoreRep (I := I) (M := M) g₀ R S c)) hδ
               (galRepFib (I := I) (M := M) g₀ hR.le hreal S c)
               (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR.le hreal)).firstOrderAction
             (I := I) (M := M)
-            (symmS (I := I) (M := M) g₀
+            (ccTensor02Symm (I := I) (M := M) g₀
               (galCoreRep (I := I) (M := M) g₀ R S c))) := by
   obtain ⟨_, _, hsplit⟩ := lowData_split (I := I) (M := M) g₀ g₀
-  set W := symmS (I := I) (M := M) g₀
+  set W := ccTensor02Symm (I := I) (M := M) g₀
     (galCoreRep (I := I) (M := M) g₀ R S c) with hW
   set U : lowerState (I := I) (M := M) g₀ 1 R :=
     ⟨galTameStateC (I := I) (M := M) g₀ 1 R S c,
@@ -269,7 +269,7 @@ theorem galTermId (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
   have hsymm : ∀ (x : M) (u v : TangentSpace I x),
       ccTensorBilin (I := I) g₀ W x u v = ccTensorBilin (I := I) g₀ W x v u := by
     rw [hW]
-    exact ccTensorBilin_symmS_symm
+    exact smoothCcTensorBilinForm_ccTensor02Symm_symm
       (I := I) (M := M) g₀ (galCoreRep (I := I) (M := M) g₀ R S c)
   have h₃ : Rm - Rm₀ = A := by
     rw [hA]
@@ -290,7 +290,7 @@ theorem galTermCap (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
         (c : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 2) 2 x
             ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-              (symmS (I := I) (M := M) g₀
+              (ccTensor02Symm (I := I) (M := M) g₀
                 (galCoreRep (I := I) (M := M) g₀ R S c)) hδ
               (galRepFib (I := I) (M := M) g₀ hR hreal S c)
               (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).secondOrderCoefficient.toSection x) ≤
@@ -300,7 +300,7 @@ theorem galTermCap (g₀ : SmoothRiemannianMetric I M) {R δ : ℝ}
     mul_nonneg hK (div_nonneg hδ0 (sq_nonneg _)), ?_⟩
   intro S c x
   exact (hsplit _
-    (ccTensorBilin_symmS_symm (I := I) (M := M)
+    (smoothCcTensorBilinForm_ccTensor02Symm_symm (I := I) (M := M)
       g₀ (galCoreRep (I := I) (M := M) g₀ R S c))
     hδ3 hδ0 (galRepFib (I := I) (M := M) g₀ hR hreal S c)
     (zeroMetricPerturbation_fibre_bound (I := I) (M := M) g₀ hR hreal)).2 x
@@ -329,7 +329,7 @@ theorem galForceTerm (g₀ : SmoothRiemannianMetric I M)
               (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le⟩).coeff i +
           (smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
             ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-                  (symmS (I := I) (M := M) g₀
+                  (ccTensor02Symm (I := I) (M := M) g₀
                     (galCoreRep (I := I) (M := M) g₀
                       (lowRegularityStateRadius Ctop B1 ρ P) S c)) hδ
                   (galRepFib (I := I) (M := M) g₀
@@ -340,11 +340,11 @@ theorem galForceTerm (g₀ : SmoothRiemannianMetric I M)
                     (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
                     (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop)
                       (B1 := B1) (ρ := ρ) hP.le hreal))).secondOrderAction (I := I) (M := M)
-                (symmS (I := I) (M := M) g₀
+                (ccTensor02Symm (I := I) (M := M) g₀
                   (galCoreRep (I := I) (M := M) g₀
                     (lowRegularityStateRadius Ctop B1 ρ P) S c)) +
               (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-                  (symmS (I := I) (M := M) g₀
+                  (ccTensor02Symm (I := I) (M := M) g₀
                     (galCoreRep (I := I) (M := M) g₀
                       (lowRegularityStateRadius Ctop B1 ρ P) S c)) hδ
                   (galRepFib (I := I) (M := M) g₀
@@ -355,7 +355,7 @@ theorem galForceTerm (g₀ : SmoothRiemannianMetric I M)
                     (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
                     (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop)
                       (B1 := B1) (ρ := ρ) hP.le hreal))).firstOrderAction (I := I) (M := M)
-                (symmS (I := I) (M := M) g₀
+                (ccTensor02Symm (I := I) (M := M) g₀
                   (galCoreRep (I := I) (M := M) g₀
                     (lowRegularityStateRadius Ctop B1 ρ P) S c)))).coeff i
       else 0 := by
@@ -374,7 +374,7 @@ theorem galForceTerm (g₀ : SmoothRiemannianMetric I M)
             (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le⟩ +
         smoothCcToTensorHs (I := I) (M := M) g₀ ((1 : ℕ) : ℝ)
           ((lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-                (symmS (I := I) (M := M) g₀
+                (ccTensor02Symm (I := I) (M := M) g₀
                   (galCoreRep (I := I) (M := M) g₀
                     (lowRegularityStateRadius Ctop B1 ρ P) S c)) hδ
                 (galRepFib (I := I) (M := M) g₀
@@ -385,11 +385,11 @@ theorem galForceTerm (g₀ : SmoothRiemannianMetric I M)
                   (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
                   (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop)
                     (B1 := B1) (ρ := ρ) hP.le hreal))).secondOrderAction (I := I) (M := M)
-              (symmS (I := I) (M := M) g₀
+              (ccTensor02Symm (I := I) (M := M) g₀
                 (galCoreRep (I := I) (M := M) g₀
                   (lowRegularityStateRadius Ctop B1 ρ P) S c)) +
             (lowerScaleActionCoefficients (I := I) (M := M) g₀ g₀
-                (symmS (I := I) (M := M) g₀
+                (ccTensor02Symm (I := I) (M := M) g₀
                   (galCoreRep (I := I) (M := M) g₀
                     (lowRegularityStateRadius Ctop B1 ρ P) S c)) hδ
                 (galRepFib (I := I) (M := M) g₀
@@ -400,7 +400,7 @@ theorem galForceTerm (g₀ : SmoothRiemannianMetric I M)
                   (lowRegularityStateRadius_pos hCtop hB1 hρ hP).le
                   (lowRegularityMetricRealization (I := I) (M := M) g₀ (Ctop := Ctop)
                     (B1 := B1) (ρ := ρ) hP.le hreal))).firstOrderAction (I := I) (M := M)
-              (symmS (I := I) (M := M) g₀
+              (ccTensor02Symm (I := I) (M := M) g₀
                 (galCoreRep (I := I) (M := M) g₀
                   (lowRegularityStateRadius Ctop B1 ρ P) S c))) :=
     sub_eq_iff_eq_add'.mp harm

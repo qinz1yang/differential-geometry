@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.CenterOfMass
+import DifferentialGeometry.Geometry.CenterOfMass.Basic
 import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.MinimizingVector
 import Mathlib.Analysis.Normed.Module.Connected
 
@@ -55,7 +55,7 @@ private theorem branchEnergy_inf
       (fun _ : M => gp) B.dom :=
     contMDiffOn_const
   have hinv : ContMDiffOn I 𝓘(Real, E) ∞ B.inv B.dom :=
-    B.inv_inf
+    B.inv_contMDiffOn
   have hinner : ContMDiffOn I 𝓘(Real, Real) ∞
       (fun z : M => g.inner p (B.inv z) (B.inv z)) B.dom := by
     with_unfolding_all exact (hgp.clm_apply hinv).clm_apply hinv

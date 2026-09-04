@@ -1054,7 +1054,7 @@ private lemma sharpRaisedKoszulVec_eq_connectionDifference (g₀ g₁ : SmoothRi
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
-    (hsymmS : ccTensor02Symm (I := I) (M := M) g₀ P = P)
+    (hccTensor02Symm : ccTensor02Symm (I := I) (M := M) g₀ P = P)
     (x : M) (u ζ : TangentSpace I x) :
     sharpRaisedKoszulVec (I := I) g₀ g₁ P x u ζ =
       PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u ζ := by
@@ -1063,7 +1063,7 @@ private lemma sharpRaisedKoszulVec_eq_connectionDifference (g₀ g₁ : SmoothRi
   rw [sharpRaisedKoszulVec,
     DifferentialGeometry.Geometry.Operator.inner_metricSharp (I := I) g₁ x _ z,
     linearizedKoszulCovec_apply,
-    connectionDifferenceInner_g1_eq_half_covGradSymmS (I := I) g₀ g₁ P htie x u ζ z, hsymmS]
+    connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm (I := I) g₀ g₁ P htie x u ζ z, hccTensor02Symm]
   have hunit (a b c : TangentSpace I x) :
       unitModel (I := I) (M := M) g₀ 3 (covGrad (I := I) (M := M) g₀ 0 2 P) x
           ![tangentSpaceModelContinuousLinearEquiv (I := I) x a,
@@ -1079,7 +1079,7 @@ private lemma connectionDifference_quadratic_kernel_split (g₀ g₁ : SmoothRie
     (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
-    (hsymmS : ccTensor02Symm (I := I) (M := M) g₀ P = P)
+    (hccTensor02Symm : ccTensor02Symm (I := I) (M := M) g₀ P = P)
     (x : M) (p q v0 v1 : TangentSpace I x) :
     - g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p)
         (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v1 v0)
@@ -1088,8 +1088,8 @@ private lemma connectionDifference_quadratic_kernel_split (g₀ g₁ : SmoothRie
     connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ x p q v0 v1
       + sharpGradKoszulKernelBilin (I := I) g₀ g₁ P x p q v0 v1 := by
   rw [connectionDifferenceAACommKernelBilin_apply, sharpGradKoszulKernelBilin_apply]
-  rw [sharpRaisedKoszulVec_eq_connectionDifference (I := I) (M := M) g₀ g₁ P htie hsymmS x q v0,
-    sharpRaisedKoszulVec_eq_connectionDifference (I := I) (M := M) g₀ g₁ P htie hsymmS x q p]
+  rw [sharpRaisedKoszulVec_eq_connectionDifference (I := I) (M := M) g₀ g₁ P htie hccTensor02Symm x q v0,
+    sharpRaisedKoszulVec_eq_connectionDifference (I := I) (M := M) g₀ g₁ P htie hccTensor02Symm x q p]
   rw [show PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
         (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0) p =
       PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x p
@@ -1245,7 +1245,7 @@ theorem ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_resi
               (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1)
             (iteratedCovGrad (I := I) g₀ 0 2 2 P) := by
   classical
-  have hsymmS : ccTensor02Symm (I := I) (M := M) g₀ P = P :=
+  have hccTensor02Symm : ccTensor02Symm (I := I) (M := M) g₀ P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g₀ P hPsymm
   rw [operatorFieldApplication_add_left (I := I) (M := M) g₀ 2 2, operatorFieldApplication_sub_left (I := I) (M := M) g₀ 2 2,
     operatorFieldApplication_add_left (I := I) (M := M) g₀ 2 2, operatorFieldApplication_smul_left (I := I) (M := M) g₀ 2 2]
@@ -1414,7 +1414,7 @@ theorem ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_resi
       ⟨smoothOrthoFrame (I := I) g₁ x a, smoothOrthoFrame_smooth (I := I) g₁ x a⟩
       ⟨smoothOrthoFrame (I := I) g₁ x b, smoothOrthoFrame_smooth (I := I) g₁ x b⟩
       x (v 1)
-    rw [hsymmS] at h
+    rw [hccTensor02Symm] at h
     rw [show ((⟨smoothExtensionTangent (I := I) x (v 0),
         smoothExtensionTangent_contMDiff (I := I) x (v 0)⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
@@ -1428,7 +1428,7 @@ theorem ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_resi
     rw [smoothExtensionTangent_eq (I := I) x (v 0)] at h
     simp only [tangentSpaceModelContinuousLinearEquiv_apply] at h
     rw [hv0, hv1] at h
-    have hq := connectionDifference_quadratic_kernel_split (I := I) (M := M) g₀ g₁ P htie hsymmS x
+    have hq := connectionDifference_quadratic_kernel_split (I := I) (M := M) g₀ g₁ P htie hccTensor02Symm x
       (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x) (v 0) (v 1)
     linarith [h, hq]
   have hric : ∀ a b : Fin (Module.finrank ℝ E),

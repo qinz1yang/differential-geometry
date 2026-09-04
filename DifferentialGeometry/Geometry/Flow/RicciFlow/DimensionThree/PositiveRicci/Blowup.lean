@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Local
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.RicciPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
-import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

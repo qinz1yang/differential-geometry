@@ -8,7 +8,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.EvolutionEq
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.NormEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
-import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerTensor
+import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Basic
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.PinchingAlgebra
 import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor

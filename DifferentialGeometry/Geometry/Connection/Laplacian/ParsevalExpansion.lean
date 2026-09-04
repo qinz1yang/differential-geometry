@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
 import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 open DifferentialGeometry.Analysis.Elliptic

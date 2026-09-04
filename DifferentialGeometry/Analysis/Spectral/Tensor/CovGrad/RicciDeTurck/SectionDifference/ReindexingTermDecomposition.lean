@@ -1,13 +1,13 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.KoszulCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CoefficientReindexing
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnectionDifferenceCovGradBridge
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.ConnectionDifferenceCovGradBridge
 import DifferentialGeometry.Geometry.Metric.InverseMetricField
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradSlotPermutationNaturality
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnectionDifferencePalatini
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.RicciTraceCarrier
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorField
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.RicciTraceCarrier
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Field
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.KoszulSecondCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.PrincipalEndomorphismTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.SymmetrizedReindexedCoefficient
@@ -63,7 +63,7 @@ private theorem iteratedCovGrad_smul (g : SmoothRiemannianMetric I M) (r s j : �
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem iteratedCovGrad_symmS_eq (g₀ : SmoothRiemannianMetric I M)
+theorem iteratedCovGrad_ccTensor02Symm_eq (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (k : ℕ) :
     iteratedCovGrad (I := I) g₀ 0 2 k (ccTensor02Symm (I := I) (M := M) g₀ T) =
       (1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 k T +

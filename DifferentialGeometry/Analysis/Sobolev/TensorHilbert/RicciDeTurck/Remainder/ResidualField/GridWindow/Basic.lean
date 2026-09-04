@@ -324,7 +324,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciCovariantTermSharpGradKoszulR
     ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x) with hb_def
   have hb_nn : ∀ l, 0 ≤ b l :=
     fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
-  rw [metricDifferenceCcTensor_eq_symmS (I := I) (M := M) g₀ g₁ P htie]
+  rw [metricDifferenceCcTensor_eq_ccTensor02Symm (I := I) (M := M) g₀ g₁ P htie]
   rw [sharpGradKoszulResidualField_eq_decomposition (I := I) (M := M) g₀ g₁ P htie]
   have hsm : (iteratedCovGrad (I := I) g₀ 2 2 i
       ((2 : ℝ) •
@@ -660,7 +660,7 @@ theorem
     ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x) with hb_def
   have hb_nn : ∀ l, 0 ≤ b l :=
     fun l => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x _
-  rw [metricDifferenceCcTensor_eq_symmS (I := I) (M := M) g₀ g₁ P htie]
+  rw [metricDifferenceCcTensor_eq_ccTensor02Symm (I := I) (M := M) g₀ g₁ P htie]
   rw [ricciContractionRemainderField_eq_decomposition (I := I) (M := M) g₀ g₁ (ccTensor02Symm (I := I) g₀ P)]
   have hsm : (iteratedCovGrad (I := I) g₀ 2 2 i
       ((-(1 / 2) : ℝ) •
@@ -1966,7 +1966,7 @@ private theorem exists_riemannianFiberNormSq_iteratedCovGrad_decompositionKernel
       (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) (M := M) g₀ P)) l x]
     rw [riemannianFiberNormSq_iteratedCovGrad_comp (I := I) (M := M) g₀ 0 2 2 l
       (ccTensor02Symm (I := I) (M := M) g₀ P) x]
-    have hsymm := riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (I := I) (M := M) g₀ P (2 + l) x
+    have hsymm := riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_pointwise (I := I) (M := M) g₀ P (2 + l) x
     have hstep : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (2 + l)) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (2 + l)
           (ccTensor02Symm (I := I) (M := M) g₀ P)).toSection x) ≤ b (2 + l) := hsymm

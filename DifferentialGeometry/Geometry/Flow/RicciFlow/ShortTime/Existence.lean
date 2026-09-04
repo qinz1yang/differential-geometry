@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Basic
@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.VectorFieldFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Regularity
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciNaturality
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Naturality
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Naturality
 import DifferentialGeometry.Geometry.Metric.Pullback.DerivativeDecomposition
 import Mathlib.Analysis.Calculus.Deriv.Basic

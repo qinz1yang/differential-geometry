@@ -2552,7 +2552,7 @@ theorem intrCore_short_inj
         (Iio_mem_nhds (by simpa only [hη0, hbrY] using hzvLt))
     have hInvDiff :
         ContMDiffAt 𝓘(Real, E) 𝓘(Real, E) ∞ Br.inv y₀ :=
-      Br.inv_inf.contMDiffAt (Br.hom.open_target.mem_nhds hyDom)
+      Br.inv_contMDiffOn.contMDiffAt (Br.hom.open_target.mem_nhds hyDom)
     have hleftCont :
         ContinuousAt (fun s : Real => (1 - s) • u₀) 0 :=
       (continuousAt_const.sub continuousAt_id).smul continuousAt_const

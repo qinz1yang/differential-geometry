@@ -33,7 +33,7 @@ theorem symmetricBilinearForm_of_tensorSymmetrization_eq_self (g₀ : SmoothRiem
     (T : SmoothCcTensor g₀ 0 2) (x : M) (v w : TangentSpace I x) :
     ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) x v w =
       ccTensorBilinSymm (I := I) g₀ T x v w := by
-  rw [ccTensorBilinSymm_apply, ccTensorBilin_symmS, ccTensorBilin_symmS,
+  rw [ccTensorBilinSymm_apply, smoothCcTensorBilinForm_ccTensor02Symm, smoothCcTensorBilinForm_ccTensor02Symm,
     ccTensorBilinSymm_symm (I := I) g₀ T x w v, ccTensorBilinSymm_apply]
   ring
 
@@ -54,7 +54,7 @@ theorem bilinearForm_of_tensorSymmetrization_symm (g₀ : SmoothRiemannianMetric
     (T : SmoothCcTensor g₀ 0 2) (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) x v w =
       smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) x w v := by
-  rw [ccTensorBilin_symmS, ccTensorBilin_symmS, ccTensorBilinSymm_symm]
+  rw [smoothCcTensorBilinForm_ccTensor02Symm, smoothCcTensorBilinForm_ccTensor02Symm, ccTensorBilinSymm_symm]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem norm_iteratedCovGrad_domDomCongrSection (g₀ : SmoothRiemannianMetric I M)
@@ -99,7 +99,7 @@ theorem norm_iteratedCovGrad_tensorSymmetrization_le (g₀ : SmoothRiemannianMet
   have hiter_eq : iteratedCovGrad (I := I) g₀ 0 2 k (ccTensor02Symm (I := I) (M := M) g₀ T) =
       (1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 k T +
         (1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 k Tsw := by
-    rw [hTsw_def]; exact iteratedCovGrad_symmS_eq (I := I) g₀ T k
+    rw [hTsw_def]; exact iteratedCovGrad_ccTensor02Symm_eq (I := I) g₀ T k
   rw [hiter_eq]
   refine le_trans (norm_add_le _ _) ?_
   rw [norm_smul, norm_smul]
@@ -110,9 +110,9 @@ theorem norm_iteratedCovGrad_tensorSymmetrization_le (g₀ : SmoothRiemannianMet
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem norm_iteratedCovGrad_symmS_le (g₀ : SmoothRiemannianMetric I M)
+theorem norm_iteratedCovGrad_ccTensor02Symm_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (k : ℕ) :
-    ‖iteratedCovGrad (I := I) g₀ 0 2 k (symmS (I := I) (M := M) g₀ T)‖ ≤
+    ‖iteratedCovGrad (I := I) g₀ 0 2 k (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ≤
       ‖iteratedCovGrad (I := I) g₀ 0 2 k T‖ :=
   norm_iteratedCovGrad_tensorSymmetrization_le (I := I) (M := M) g₀ T k
 

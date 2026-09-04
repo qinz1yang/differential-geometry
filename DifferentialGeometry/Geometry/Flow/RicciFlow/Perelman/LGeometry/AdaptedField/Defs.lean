@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.MovingMetric
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciIdentity
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
 
 set_option autoImplicit false
 

@@ -35,7 +35,7 @@ theorem contDiffOn_ode2
     exact ⟨(contDiffOn_succ_iff_deriv_of_isOpen hJ).mpr ⟨hdy, by simp, ihdy⟩,
       (contDiffOn_succ_iff_deriv_of_isOpen hJ).mpr ⟨hddy, by simp, hddn⟩⟩
 
-theorem contDiffOn_ode2_inf
+theorem contDiffOn_infty_of_secondOrderODE
     {F : E × E → E} {y : ℝ → E} {J : Set ℝ} {V : Set (E × E)}
     (hJ : IsOpen J) (hF : ContDiffOn ℝ ∞ F V)
     (hmem : ∀ t ∈ J, (y t, deriv y t) ∈ V)

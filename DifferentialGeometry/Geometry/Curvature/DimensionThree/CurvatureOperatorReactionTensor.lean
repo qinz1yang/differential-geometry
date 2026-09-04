@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorCone
+import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorCone
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
 import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
 

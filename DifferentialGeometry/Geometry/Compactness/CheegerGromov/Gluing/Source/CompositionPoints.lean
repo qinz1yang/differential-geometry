@@ -334,7 +334,7 @@ theorem hatSrcPtsCageComp
         (X.obj (L.φ n)).t2TangentBundle
       forall gamma : Fin (pb.A r),
         4 * L.lamInf (gamma : Nat) <
-          expRadiusGp (I := I) (X.obj (L.φ n)).metric (center gamma))
+          metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric (center gamma))
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
     (hB : forall gamma : Fin (pb.A r),
       MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))
@@ -437,7 +437,7 @@ theorem hatPtsCasesComp
         seqCenter hd D P (L.φ n) (gamma : Nat) = some c ->
           c = center gamma ∧
             4 * L.lamInf (gamma : Nat) <
-              expRadiusGp (I := I) (X.obj (L.φ n)).metric c)
+              metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric c)
     (hVopen : forall gamma : Fin (pb.A r), IsOpen (V gamma))
     (hB : forall gamma : Fin (pb.A r),
       MapCInfConvOnCompacts (U gamma) (B gamma) (Binf gamma))

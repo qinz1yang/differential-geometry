@@ -200,14 +200,14 @@ theorem exists_large_divisor
     (b : MetricCompactBase (I := I) X) (c : Real) :
     ∃ D : Real, 1 < D ∧
       b.decay.mu 0 ≤ D ∧
-      c < b.normalRadius.gpRatio * D ∧
+      c < b.normalRadius.metricCoerciveRatio * D ∧
       max 4 (50 * Real.exp (b.decay.C * (20 * b.decay.lambda D 0))) *
         b.decay.lambda D 0 ≤ b.volume.r0 := by
   let q : Real :=
     b.decay.a * (min b.decay.baseInj.ρ 1) ^ (Module.finrank Real E)
   let K : Real := max 4 (50 * Real.exp (b.decay.C * 20))
   let B : Real := max 1
-    (max q (max (K * q / b.volume.r0) (c / b.normalRadius.gpRatio)))
+    (max q (max (K * q / b.volume.r0) (c / b.normalRadius.metricCoerciveRatio)))
   let D : Real := B + 1
   have hB_lt : B < D := by
     dsimp only [D]
@@ -222,7 +222,7 @@ theorem exists_large_divisor
     dsimp only [B]
     exact ((le_max_left (K * q / b.volume.r0) _).trans
       (le_max_right q _)).trans (le_max_right 1 _)
-  have hcB : c / b.normalRadius.gpRatio ≤ B := by
+  have hcB : c / b.normalRadius.metricCoerciveRatio ≤ B := by
     dsimp only [B]
     exact ((le_max_right (K * q / b.volume.r0) _).trans
       (le_max_right q _)).trans (le_max_right 1 _)
@@ -257,9 +257,9 @@ theorem exists_large_divisor
         ring
       _ < b.volume.r0 := (div_lt_iff₀ hD).2 (by
         simpa only [mul_comm] using hKq)
-  have hc : c < b.normalRadius.gpRatio * D := by
+  have hc : c < b.normalRadius.metricCoerciveRatio * D := by
     simpa only [mul_comm] using
-      (div_lt_iff₀ b.normalRadius.gp_ratio_pos).1 (hcB.trans_lt hB_lt)
+      (div_lt_iff₀ b.normalRadius.metricCoerciveRatio_pos).1 (hcB.trans_lt hB_lt)
   refine ⟨D, hD_one, hmuD, hc, ?_⟩
   exact (mul_le_mul_of_nonneg_right hfac hlam_nonneg).trans hKlam.le
 
@@ -268,8 +268,8 @@ theorem exists_large_divisor_for_exponential_scales
     (b : MetricCompactBase (I := I) X) (c₀ : Real) :
     ∃ D : Real, 1 < D ∧
       b.decay.mu 0 ≤ D ∧
-      c₀ < b.normalRadius.gpRatio * D ∧
-      (8 : Real) < b.normalRadius.gpRatio * D ∧
+      c₀ < b.normalRadius.metricCoerciveRatio * D ∧
+      (8 : Real) < b.normalRadius.metricCoerciveRatio * D ∧
       (16 : Real) < b.normalRadius.ratio * D ∧
       2 * exponentialBallRadiusFactor b.decay D < D ∧
       2 * exponentialBallRadiusFactor b.decay D < b.normalRadius.ratio * D ∧
@@ -277,7 +277,7 @@ theorem exists_large_divisor_for_exponential_scales
         b.decay.lambda D 0 ≤ b.volume.r0 := by
   let Q : Real := 410 * Real.exp (b.decay.C * 20)
   let c : Real := max c₀ (max 8
-    (max Q (Q * b.normalRadius.gpRatio)))
+    (max Q (Q * b.normalRadius.metricCoerciveRatio)))
   obtain ⟨D, hD_one, hmuD, hc, hcap⟩ := b.exists_large_divisor c
   have hD : 0 < D := zero_lt_one.trans hD_one
   have hc₀c : c₀ ≤ c := by
@@ -290,21 +290,21 @@ theorem exists_large_divisor_for_exponential_scales
     dsimp only [c]
     exact ((le_max_left Q _).trans (le_max_right 8 _)).trans
       (le_max_right c₀ _)
-  have hQgc : Q * b.normalRadius.gpRatio ≤ c := by
+  have hQgc : Q * b.normalRadius.metricCoerciveRatio ≤ c := by
     dsimp only [c]
     exact ((le_max_right Q _).trans (le_max_right 8 _)).trans
       (le_max_right c₀ _)
-  have hc₀ : c₀ < b.normalRadius.gpRatio * D := hc₀c.trans_lt hc
-  have h8 : (8 : Real) < b.normalRadius.gpRatio * D := h8c.trans_lt hc
-  have hQgp : Q < b.normalRadius.gpRatio * D := hQc.trans_lt hc
-  have hQg : Q * b.normalRadius.gpRatio <
-      b.normalRadius.gpRatio * D := hQgc.trans_lt hc
+  have hc₀ : c₀ < b.normalRadius.metricCoerciveRatio * D := hc₀c.trans_lt hc
+  have h8 : (8 : Real) < b.normalRadius.metricCoerciveRatio * D := h8c.trans_lt hc
+  have hQgp : Q < b.normalRadius.metricCoerciveRatio * D := hQc.trans_lt hc
+  have hQg : Q * b.normalRadius.metricCoerciveRatio <
+      b.normalRadius.metricCoerciveRatio * D := hQgc.trans_lt hc
   have hQD : Q < D := by
     exact lt_of_mul_lt_mul_right (by simpa only [mul_comm] using hQg)
-      b.normalRadius.gp_ratio_pos.le
+      b.normalRadius.metricCoerciveRatio_pos.le
   have hQratio : Q < b.normalRadius.ratio * D := by
     exact hQgp.trans_le (mul_le_mul_of_nonneg_right
-      b.normalRadius.gp_ratio_le_ratio hD.le)
+      b.normalRadius.metricCoerciveRatio_le_ratio hD.le)
   have h16Q : (16 : Real) ≤ Q := by
     dsimp only [Q]
     have hexp : (1 : Real) ≤ Real.exp (b.decay.C * 20) :=
@@ -417,7 +417,7 @@ theorem exists_of_base
     (b : MetricCompactBase (I := I) X) (c : Real) :
     ∃ inp : MetricCompactnessInputs (I := I) X,
       1 < inp.D ∧ inp.decay.mu 0 ≤ inp.D ∧
-        c < inp.normalRadius.gpRatio * inp.D := by
+        c < inp.normalRadius.metricCoerciveRatio * inp.D := by
   obtain ⟨D, hD_one, hmuD, hc, hcap⟩ := b.exists_large_divisor c
   have hD : 0 < D := zero_lt_one.trans hD_one
   refine ⟨ofBase b D hD hcap, ?_, ?_, ?_⟩
@@ -430,8 +430,8 @@ theorem exists_of_base_with_exponential_scale_bounds
     (b : MetricCompactBase (I := I) X) (c₀ : Real) :
     ∃ inp : MetricCompactnessInputs (I := I) X,
       1 < inp.D ∧ inp.decay.mu 0 ≤ inp.D ∧
-      c₀ < inp.normalRadius.gpRatio * inp.D ∧
-      (8 : Real) < inp.normalRadius.gpRatio * inp.D ∧
+      c₀ < inp.normalRadius.metricCoerciveRatio * inp.D ∧
+      (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D ∧
       (16 : Real) < inp.normalRadius.ratio * inp.D ∧
       2 * exponentialBallRadiusFactor inp.decay inp.D < inp.D ∧
       2 * exponentialBallRadiusFactor inp.decay inp.D <
@@ -453,18 +453,18 @@ theorem physScale_of_extra
     (inp : MetricCompactnessInputs (I := I) X) {aMin : Real}
     (haMin : 0 < aMin)
     (hextra :
-      (8 * Real.exp inp.decay.C / aMin) * inp.normalRadius.gpRatio <
-        inp.normalRadius.gpRatio * inp.D) :
+      (8 * Real.exp inp.decay.C / aMin) * inp.normalRadius.metricCoerciveRatio <
+        inp.normalRadius.metricCoerciveRatio * inp.D) :
     8 * Real.exp inp.decay.C < aMin * inp.D := by
   have hD : 8 * Real.exp inp.decay.C / aMin < inp.D := by
     exact lt_of_mul_lt_mul_right
-      (by simpa only [mul_comm] using hextra) inp.normalRadius.gp_ratio_pos.le
+      (by simpa only [mul_comm] using hextra) inp.normalRadius.metricCoerciveRatio_pos.le
   simpa only [mul_comm] using (div_lt_iff₀ haMin).1 hD
 
 theorem exponential_scale_tails
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (inp : MetricCompactnessInputs (I := I) X)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -472,7 +472,7 @@ theorem exponential_scale_tails
     ExponentialRadiusScaleTail (I := I) inp.decay inp.D P L inp.pack r ∧
       ExponentialBallRadiusTail (I := I) inp.decay inp.D P L inp.pack r
         (exponentialBallRadiusFactor inp.decay inp.D) := by
-  exact ⟨inp.normalRadius.gp_scale_tail inp.hD h8 P inp.realizes L inp.pack r,
+  exact ⟨inp.normalRadius.metricCoerciveRatio_scale_tail inp.hD h8 P inp.realizes L inp.pack r,
     inp.normalRadius.radius_scale_tail inp.hD
       (exponential_ball_radius_factor_pos inp.decay inp.D) hradRatio
       P inp.realizes L inp.pack r⟩

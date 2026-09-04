@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 
 import DifferentialGeometry.Geometry.Metric.Convergence.ProductDerivativeNorm
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

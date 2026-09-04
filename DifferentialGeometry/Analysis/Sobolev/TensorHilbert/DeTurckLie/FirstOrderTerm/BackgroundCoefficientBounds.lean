@@ -644,7 +644,7 @@ private theorem lieFirstOrder_pbLow_raise_eq (g₀ : SmoothRiemannianMetric I M)
           tangentSpaceModelContinuousLinearEquiv (I := I) x
             (PDE.DeTurck.connectionDifference (I := I) gA gB x (YZ 0) (YZ 1))] = _ at hunit
     rw [hunit]
-    rw [ccTensorBilin_symmS (I := I) (M := M) g₀ P x u
+    rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P x u
       (PDE.DeTurck.connectionDifference (I := I) gA gB x (YZ 0) (YZ 1))]
   change Tensor0SSpace.eval
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
@@ -773,14 +773,14 @@ private theorem lieFirstOrder_WB_bounds (g₀ : SmoothRiemannianMetric I M) (a :
       (ccTensor02Symm (I := I) (M := M) g₀ P) 0 x
     simp only [iteratedCovGrad_zero] at h0
     rw [h0]
-    refine le_trans (lieFirstOrder_riemannianFiberNormSq_symmS_zero_le (I := I) (M := M) g₀ P hδ0 hδ x) ?_
+    refine le_trans (lieFirstOrder_riemannianFiberNormSq_ccTensor02Symm_zero_le (I := I) (M := M) g₀ P hδ0 hδ x) ?_
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
     have hδmax : δ ≤ max δ₀ 0 := le_trans hδ_le (le_max_left _ _)
     exact pow_le_pow_left₀ hδ0 hδmax 2
   · intro l hl
     rw [lieFirstOrder_normSq_iteratedCovGrad_raise_eq (I := I) (M := M) g₀ 0 (ccTensor02Symm (I := I) (M := M) g₀ P)
       l]
-    refine le_trans (lieFirstOrder_normSq_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ P l) ?_
+    refine le_trans (lieFirstOrder_normSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ P l) ?_
     have h1 := hPball l (by omega)
     exact pow_le_pow_left₀ (norm_nonneg _) h1 2
 

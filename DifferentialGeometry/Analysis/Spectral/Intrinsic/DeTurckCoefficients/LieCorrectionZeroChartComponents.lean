@@ -76,7 +76,7 @@ private lemma lieTerm_rawComponent_eq_unitModel_frame
   rfl
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-private lemma lieTerm_symmS_rawComponent
+private lemma lieTerm_ccTensor02Symm_rawComponent
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2) (x : M)
     (c d : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (chartAt H x).source) :
@@ -104,7 +104,7 @@ private lemma lieTerm_symmS_rawComponent
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
+private lemma lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -130,7 +130,7 @@ private lemma lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
     rw [← extChartAt_source (I := I)]
     exact (extChartAt I x).map_target hy_tgt
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
-  rw [lieTerm_symmS_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
+  rw [lieTerm_ccTensor02Symm_rawComponent (I := I) (M := M) g₀ (T - T') x c d hb]
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def,
     DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
 
@@ -211,7 +211,7 @@ theorem lieU3_chartComponent_decomposition (hδ_lt : δ < 1)
       (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![b, c]) x a hYmem
   rw [hround] at h
   rw [← h]
-  have hev1 := lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
+  have hev1 := lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x b c
   unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
   rw [hev1.fderiv_eq]
@@ -235,7 +235,7 @@ private lemma lieCorrectionZero_raw_chartComponent (hδ_lt : δ < 1)
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorChartComponentRaw
         (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![] ![c, d] x =
       realizedGramDeriv (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ' x c d (extChartAt I x x) := by
-  have hev := lieTerm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
+  have hev := lieTerm_scalarOnE_ccTensor02Symm_eventuallyEq_realizedGramDeriv (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x c d
   have hpt := hev.self_of_nhds
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def] at hpt
@@ -344,7 +344,7 @@ private lemma lieCorrectionZero_euclid_f_bridge (hδ_lt : δ < 1)
       obtain ⟨z, hz, rfl⟩ := hy
       rw [(toEuclidean (E := E)).symm_apply_apply, ← extChartAt_source (I := I)]
       exact (extChartAt I x).map_target hz
-    rw [lieTerm_symmS_rawComponent (I := I) (M := M) g₀ (T - T') x r d hb]
+    rw [lieTerm_ccTensor02Symm_rawComponent (I := I) (M := M) g₀ (T - T') x r d hb]
     ring
   rw [show euclidPartial (E := E) m
       (chartPushedRaw I x

@@ -1,9 +1,9 @@
-import DifferentialGeometry.Analysis.ODE.IndexFormNegativeSmooth
+import DifferentialGeometry.Analysis.ODE.IndexForm.SmoothNegativeDirection
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrameIndex
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariationMinimiser
 import DifferentialGeometry.Geometry.Comparison.Variation.VariationFieldSmooth
-import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
-import DifferentialGeometry.Geometry.Exponential.IntrinsicGeodesicSmoothness
+import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Smoothness
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

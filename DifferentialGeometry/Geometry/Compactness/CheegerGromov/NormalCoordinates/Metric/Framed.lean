@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Basic
-import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
 
 
-import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -90,7 +90,7 @@ theorem radialEnorm_framed
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     letI : RiemannianBundle (fun y : Y.M => TangentSpace I y) :=
       ⟨Y.metric.toRiemannianMetric⟩
-    ∀ t : Real, ‖t • v‖ < expRadiusGp (I := I) Y.metric x →
+    ∀ t : Real, ‖t • v‖ < metricCoerciveExpRadius (I := I) Y.metric x →
       ‖mfderiv 𝓘(Real, Real) I
           (fun s : Real => (expMap (I := I) Y.metric x
             (show TangentSpace I x from
@@ -180,14 +180,14 @@ theorem framedExp_smoothOn
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     ContMDiffOn 𝓘(Real, E) I ∞
       (fun z => framedExpDiffeo (I := I) Y.metric x z)
-      (Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x)) := by
+      (Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric x)) := by
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   have hmap : ContMDiffOn 𝓘(Real, E) I ∞
       (framedExpMap (I := I) Y.metric x)
-      (Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x)) := by
+      (Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric x)) := by
     intro z hz
     rw [Metric.mem_ball, dist_zero_right] at hz
     have hzRaw : ‖(show E from normalFrame (I := I) Y.metric x z)‖ <
@@ -352,8 +352,8 @@ theorem framedCoordMetric_contDiffOn
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  refine ⟨expRadiusGp (I := I) Y.metric x,
-    expRadiusGp_pos (I := I) Y.metric x, ?_⟩
+  refine ⟨metricCoerciveExpRadius (I := I) Y.metric x,
+    metricCoerciveExpRadius_pos (I := I) Y.metric x, ?_⟩
   exact (framedCoordMetric_contDiffOn_of_smooth (I := I) Y x
     Metric.isOpen_ball (framedExp_smoothOn (I := I) Y x)).mono Set.inter_subset_left
 
@@ -385,7 +385,7 @@ theorem framedCoordMetric_contDiffOn_expBall
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     ContDiffOn Real (⊤ : ℕ∞) (framedCoordMetric (I := I) Y x)
-      (Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x)) := by
+      (Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric x)) := by
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
@@ -402,7 +402,7 @@ theorem contDiffOn_framedCoordMetric_of_subset_expBall
       letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
       letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
       U ⊆ Metric.ball (0 : E)
-        (expRadiusGp (I := I) (X.obj k).metric (c k))) :
+        (metricCoerciveExpRadius (I := I) (X.obj k).metric (c k))) :
     ∀ k, ContDiffOn Real (⊤ : ℕ∞)
       (framedCoordMetric (I := I) (X.obj k) (c k)) U :=
   fun k =>
@@ -416,7 +416,7 @@ theorem framedChart_smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     ContMDiffOn I 𝓘(Real, E) ∞ (framedChartAt (I := I) Y.metric x)
       (framedExpMap (I := I) Y.metric x ''
-        Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x)) := by
+        Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric x)) := by
   let : TopologicalSpace Y.M := Y.topology
   let : ChartedSpace H Y.M := Y.charted
   let : IsManifold I ∞ Y.M := Y.smooth
@@ -450,7 +450,7 @@ theorem contDiffOn_framedTransition
       letI : ChartedSpace H Y.M := Y.charted
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      U ⊆ Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x))
+      U ⊆ Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric x))
     (hmaps :
       letI : TopologicalSpace Y.M := Y.topology
       letI : ChartedSpace H Y.M := Y.charted
@@ -458,7 +458,7 @@ theorem contDiffOn_framedTransition
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
       Set.MapsTo (fun z => framedExpDiffeo (I := I) Y.metric x z) U
         (framedExpMap (I := I) Y.metric y ''
-          Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric y))) :
+          Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric y))) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Variation.MovingMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.ConnectionBackward
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantJet
-import DifferentialGeometry.Geometry.Exponential.JacobiVariation
+import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeDifference
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.TensorDerivativeAlong
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity

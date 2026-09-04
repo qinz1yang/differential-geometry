@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.LengthBound
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
-import DifferentialGeometry.Geometry.Curvature.CoordRm04Bridge
+import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
 import DifferentialGeometry.Geometry.Curvature.SectionalCone
 
 set_option autoImplicit false

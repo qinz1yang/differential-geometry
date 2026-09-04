@@ -899,12 +899,12 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_topOrd
     have h1 := riemannianFiberNormSq_iteratedCovGrad_slotInsert3_perturbationSharp_le (I := I) (M := M)
       g₀ T 0 y
     rw [iteratedCovGrad_zero, iteratedCovGrad_zero] at h1
-    have h2 := riemannianFiberNormSq_symmS_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound y
+    have h2 := riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound y
     have hδ1 : δ ^ 2 ≤ 1 := by
       have hδle1 : δ ≤ 1 := le_of_lt (lt_of_le_of_lt hδ_le hδ₀)
       exact pow_le_one₀ hδ0 hδle1
     have h3 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 y
-        ((symmS (I := I) (M := M) g₀ T).toSection y) ≤ n ^ 2 := by
+        ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection y) ≤ n ^ 2 := by
       refine le_trans h2 ?_
       calc n ^ 2 * δ ^ 2 ≤ n ^ 2 * 1 :=
             mul_le_mul_of_nonneg_left hδ1 (pow_nonneg hn_nn 2)
@@ -912,7 +912,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_topOrd
     rw [hDress_def]
     refine le_trans h1 ?_
     calc n ^ 3 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 y
-          ((symmS (I := I) (M := M) g₀ T).toSection y)
+          ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection y)
         ≤ n ^ 3 * n ^ 2 := mul_le_mul_of_nonneg_left h3 (pow_nonneg hn_nn 3)
       _ = n ^ 5 := by ring
   refine ⟨domDomCongrSection (I := I) g₀ σo Hd0, ?_, ?_⟩
@@ -1029,7 +1029,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_topOrd
         refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotInsert3_perturbationSharp_le
           (I := I) (M := M) g₀ T (i - k) x) ?_
         refine mul_le_mul_of_nonneg_left ?_ (pow_nonneg hn_nn 3)
-        exact riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (I := I) (M := M) g₀ T (i - k) x
+        exact riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_pointwise (I := I) (M := M) g₀ T (i - k) x
       have hWjet : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + k) x
           ((iteratedCovGrad (I := I) g₀ 0 4 k WS).toSection x) ≤
           2 * (CA k * (∑ k' ∈ Finset.range (k + 3),

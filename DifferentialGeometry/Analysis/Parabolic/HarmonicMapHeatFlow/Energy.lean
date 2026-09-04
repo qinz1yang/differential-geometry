@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.Galerkin
 import DifferentialGeometry.Geometry.Metric.DeTurck.HarmonicMapTension
 import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuityParam
+import DifferentialGeometry.Geometry.Exponential.Variation.Smoothness
+import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

@@ -141,7 +141,7 @@ lemma fiberNormSqComponent_zero_toModel_pt
 
 omit [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma riemannianFiberNormSq_symmS_zero_le_of_ball (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
+lemma riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
@@ -175,7 +175,7 @@ lemma riemannianFiberNormSq_symmS_zero_le_of_ball (T : SmoothCcTensor g₀ 0 2) 
         fin_cases k <;> rfl]
       rw [unitModel_eq_ccTensorBilin_pt (I := I) (M := M) g₀
         (ccTensor02Symm (I := I) (M := M) g₀ T) x (e (J 0)) (e (J 1))]
-      rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
+      rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by
@@ -204,7 +204,7 @@ lemma riemannianFiberNormSq_symmS_zero_le_of_ball (T : SmoothCcTensor g₀ 0 2) 
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (T : SmoothCcTensor g₀ 0 2) (k : ℕ) (x : M) :
+lemma riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_pointwise (T : SmoothCcTensor g₀ 0 2) (k : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + k) x
         ((iteratedCovGrad (I := I) g₀ 0 2 k (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + k) x
@@ -222,7 +222,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (T : SmoothCcTensor 
   have htoSec : ((iteratedCovGrad (I := I) g₀ 0 2 k
         (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x : TensorRSSpace 0 (2 + k) I x) =
       (1 / 2 : ℝ) • (A.toSection x) + (1 / 2 : ℝ) • (B.toSection x) := by
-    rw [iteratedCovGrad_symmS_eq (I := I) (M := M) g₀ T k]
+    rw [iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g₀ T k]
     rw [show (((1 / 2 : ℝ) • A + (1 / 2 : ℝ) • B).toSection x) =
         ((1 / 2 : ℝ) • A).toSection x + ((1 / 2 : ℝ) • B).toSection x from by
       rw [SmoothCcTensor.toSection_add]; rfl]
@@ -257,7 +257,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_pointwise (T : SmoothC
       10 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 1)) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (i + 1) T).toSection x) := by
   classical
-  set W : SmoothCcTensor g₀ 0 3 := symmSCovGrad3 (I := I) g₀ T with hW
+  set W : SmoothCcTensor g₀ 0 3 := ccTensor02SymmCovGrad3 (I := I) g₀ T with hW
   set DA : SmoothCcTensor g₀ 0 3 :=
     domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 3) 2) W with hDA
   set DB : SmoothCcTensor g₀ 0 3 := domDomCongrSection (I := I) g₀ (finRotate 3) W with hDB
@@ -272,12 +272,12 @@ lemma riemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_pointwise (T : SmoothC
     intro σ
     rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀ σ W i x]
     rw [hW]
-    rw [show symmSCovGrad3 (I := I) g₀ T =
+    rw [show ccTensor02SymmCovGrad3 (I := I) g₀ T =
         covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ T) from rfl]
     have hcomm := riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs (I := I) (M := M) g₀ 0 2 i
       (ccTensor02Symm (I := I) g₀ T) x
     rw [hcomm]
-    exact riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (I := I) (M := M) g₀ T (i + 1) x
+    exact riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_pointwise (I := I) (M := M) g₀ T (i + 1) x
   have hkos : koszulCovecCc (I := I) g₀ T = (1 / 2 : ℝ) • (DA + DB - DC) := by
     rw [koszulCovecCc, hDA, hDB, hDC, hW]
   have hsub : iteratedCovGrad (I := I) g₀ 0 3 i (DA + DB - DC) =

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.MixedTensor
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Tensor.RSTensor.Contraction
-import DifferentialGeometry.Geometry.Curvature.Order2Defect.MetricTraceFrame
+import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceFrame
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Slot0CurryCovariantLeibniz
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

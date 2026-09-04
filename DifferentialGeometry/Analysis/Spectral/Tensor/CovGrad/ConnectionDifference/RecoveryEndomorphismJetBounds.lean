@@ -499,7 +499,7 @@ private lemma omRecoverEndoCc_eq_idEndo_add_raise
       · simp only [Fin.cons_succ]
         fin_cases j
         rfl]
-    rw [unitModel_eq_ccTensorBilin_loc, ccTensorBilin_symmS]]
+    rw [unitModel_eq_ccTensorBilin_loc, smoothCcTensorBilinForm_ccTensor02Symm]]
   rw [htie]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -561,7 +561,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_omRecoverEndoCc_le
       g₀ 0
       (ccTensor02Symm (I := I) (M := M) g₀ T) i x
     rw [hiso]
-    exact riemannianFiberNormSq_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ a T hTjet i (by omega) x
+    exact riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ a T hTjet i (by omega) x
   have hid : riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + i) x
       ((iteratedCovGrad (I := I) g₀ 1 1 i (sharpFlatEndoCc (I := I) g₀ g₀)).toSection x) ≤
         (Module.finrank ℝ E : ℝ) ^ 2 := by

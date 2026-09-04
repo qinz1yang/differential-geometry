@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Family.Difference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.UnitSelfBound
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
-import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

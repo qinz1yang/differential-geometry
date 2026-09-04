@@ -1,9 +1,10 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartFlowGeodesicLink
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartIdentification
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.ChartPushVFEq
+import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling
 import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Exponential.Smoothness.ChartFlowVelocitySlice
-import DifferentialGeometry.Geometry.Exponential.Smoothness.UniformChartFlowBridge
+import DifferentialGeometry.Geometry.Exponential.Smoothness.ChartFlowRepresentation
 import DifferentialGeometry.Geometry.Geodesic.SmoothFlow
 
 open DifferentialGeometry.Geometry.Curvature
@@ -317,7 +318,7 @@ theorem uniformChartFlowBridge_of_match
     (hval_p : (extChartAt I p).symm
       (Φ (((extChartAt I p p, (0 : E)) : E × E), t')).1 = p)
     (hmatch : ChartFlowGeodesicMatchAt (I := I) g p Φ t' ρ') :
-    UniformChartFlowBridge (I := I) g p := by
+    HasC1ChartFlowRepresentationAtZero (I := I) g p := by
   classical
   refine ⟨Φ, t', ρ', ht'_pos, hρ'_pos, ?_, hmatch⟩
   set x₀ : E := extChartAt I p p with hx₀_def
@@ -396,7 +397,7 @@ theorem expMap_contMDiffAt_zero_of_chartFlowGeodesicMatch
       (0 : E) := by
   obtain ⟨Φ, ρ, T, t', ρ', hρ, _hT, ht'_pos, ht'_in, hρ'_pos,
     hcd, hval, hval_p, hmatch⟩ := h
-  exact expMap_contMDiffAt_zero_of_uniformChartFlowBridge (I := I) (g := g) (p := p)
+  exact expMap_contMDiffAt_zero_of_c1ChartFlowRepresentation (I := I) (g := g) (p := p)
     (uniformChartFlowBridge_of_match (I := I) (g := g) (p := p)
       (Φ := Φ) (ρ := ρ) (T := T) (t' := t') (ρ' := ρ')
       hρ ht'_pos ht'_in hρ'_pos hcd hval hval_p hmatch)

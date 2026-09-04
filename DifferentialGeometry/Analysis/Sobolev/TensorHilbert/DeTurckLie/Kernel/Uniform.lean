@@ -316,7 +316,7 @@ private theorem sym_grid_of_conn
     | 0 =>
         have h0 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x
             ((iteratedCovGrad (I := I) g₀ 0 2 0
-              (symmS (I := I) (M := M) g₀ T)).toSection x) ≤ fr ^ 2 * δ ^ 2 := by
+              (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤ fr ^ 2 * δ ^ 2 := by
           rw [iteratedCovGrad_zero]
           exact symmC0_riemannianFiberNormSq_le (I := I) (M := M) g₀ T hδ_nonneg hbound x
         have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := by nlinarith [hδ_nonneg, hδ_le]
@@ -324,12 +324,12 @@ private theorem sym_grid_of_conn
           one_le_antidiagonalTupleGridPartialSum b hb (by omega)
         have hle1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x
             ((iteratedCovGrad (I := I) g₀ 0 2 0
-              (symmS (I := I) (M := M) g₀ T)).toSection x) ≤ fr ^ 2 * δ₀ ^ 2 :=
+              (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤ fr ^ 2 * δ₀ ^ 2 :=
           h0.trans (mul_le_mul_of_nonneg_left hδsq (by positivity))
         calc
           fr ^ 3 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 0
-                  (symmS (I := I) (M := M) g₀ T)).toSection x)
+                  (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x)
               ≤ fr ^ 3 * (fr ^ 2 * δ₀ ^ 2) := mul_le_mul_of_nonneg_left hle1 hfr3_nn
           _ ≤ fr ^ 3 * (fr ^ 2 * δ₀ ^ 2 + 1) := by
                 refine mul_le_mul_of_nonneg_left ?_ hfr3_nn
@@ -341,8 +341,8 @@ private theorem sym_grid_of_conn
     | (m + 1) =>
         have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (m + 1)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (m + 1)
-              (symmS (I := I) (M := M) g₀ T)).toSection x) ≤ b (m + 1) :=
-          riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDifferenceDerivative
+              (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤ b (m + 1) :=
+          riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le_deTurckLieConnectionDifferenceDerivative
             (I := I) (M := M) g₀ T (m + 1) x
         have h2 : b (m + 1) ≤ Combinatorics.antidiagonalTupleGrid b (m + 1) :=
           single_le_antidiagonalTupleGridPartialSum b hb (m + 1) (by omega)
@@ -355,7 +355,7 @@ private theorem sym_grid_of_conn
         calc
           fr ^ 3 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (m + 1)) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 (m + 1)
-                  (symmS (I := I) (M := M) g₀ T)).toSection x)
+                  (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x)
               ≤ fr ^ 3 * antidiagonalTupleGridPartialSum b ((m + 1) + 1) := by
                 refine mul_le_mul_of_nonneg_left ?_ hfr3_nn
                 exact h1.trans (h2.trans h3)

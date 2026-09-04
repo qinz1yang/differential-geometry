@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
-import DifferentialGeometry.Geometry.Curvature.ScalarNormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

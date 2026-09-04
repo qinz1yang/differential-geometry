@@ -36,7 +36,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M]
       [I.Boundaryless] [T2Space M]
 
-private theorem rawTensorConnLapSmooth_symmS
+private theorem rawTensorConnLapSmooth_ccTensor02Symm
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
     rawTensorConnLapSmooth (I := I) g₀ 0 2 (ccTensor02Symm (I := I) (M := M) g₀ S) =
       ccTensor02Symm (I := I) (M := M) g₀ (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) := by
@@ -93,7 +93,7 @@ theorem deTurckRicci_solution_with_jointReg
         ccTensorBilinSymm (I := I) g₀
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 (ccTensor02Symm (I := I) (M := M) g₀ S)) x v
             w := by
-      rw [rawTensorConnLapSmooth_symmS (I := I) (M := M) g₀ S,
+      rw [rawTensorConnLapSmooth_ccTensor02Symm (I := I) (M := M) g₀ S,
         symmetricBilinearForm_of_tensorSymmetrization_eq_self (I := I) (M := M) g₀
           (rawTensorConnLapSmooth (I := I) g₀ 0 2 S) x v w]
     rw [ccTensorBilinSymm_add (I := I) g₀
@@ -122,7 +122,7 @@ theorem deTurckRicci_solution_with_jointReg
       ccTensorBilinSymm_toSection_congr R (deTurckRHSSectionBackground (I := I) g_bg gDT)
         (by rw [hR_def, deTurckRHSSectionBackground_toSection]) x v w]
     have hreal : gDT = tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδ :=
-      tensorSectionRealizeMetric_symmS_eq (I := I) g₀ S hδ_lt hδ hδ_lt
+      tensorSectionRealizeMetric_ccTensor02Symm_eq (I := I) g₀ S hδ_lt hδ hδ_lt
         (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ S hδ)
     rw [← hreal]
     exact deTurckRHSSection_ccTensorBilinSymm_eq_deTurckRicciRHS (I := I) g_bg gDT x v w

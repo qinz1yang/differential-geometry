@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CoefficientFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.PathLinearization
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnectionDifferenceCovGradBridge
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.ConnectionDifferenceCovGradBridge
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identities
 import DifferentialGeometry.Tensor.Multilinear.ModelProductContinuousBilinear
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.FibreOperators
@@ -427,7 +427,7 @@ private lemma velocity_unitEval_domDomCongr_swap
       (realizedVelocityCc (I := I) g₀ T T' hδ hδ' s) y (m 1) (m 0) =
       smoothCcTensorBilinForm (I := I) g₀
         (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) y (m 1) (m 0) from rfl]
-  rw [ccTensorBilin_symmS, ccTensorBilin_symmS,
+  rw [smoothCcTensorBilinForm_ccTensor02Symm, smoothCcTensorBilinForm_ccTensor02Symm,
     ccTensorBilinSymm_apply, ccTensorBilinSymm_apply]
   ring
 

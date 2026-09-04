@@ -676,7 +676,7 @@ private lemma cotangentToDual_cometricRaiseSlot0_eq (g₀ : SmoothRiemannianMetr
     · simp only [Fin.cons_succ]
       fin_cases j
       rfl]
-  rw [unitModel_eq_ccTensorBilin_loc, ccTensorBilin_symmS]
+  rw [unitModel_eq_ccTensorBilin_loc, smoothCcTensorBilinForm_ccTensor02Symm]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -744,7 +744,7 @@ private lemma slotInsert_recovery_decomp
   exact add_comm _ _
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSq_iteratedCovGrad_symmS_le_pointwise
+private lemma riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le_pointwise
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (k : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + k) x
         ((iteratedCovGrad (I := I) g₀ 0 2 k (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
@@ -762,7 +762,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_symmS_le_pointwise
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T) with hB
   have hiter : iteratedCovGrad (I := I) g₀ 0 2 k (ccTensor02Symm (I := I) (M := M) g₀ T) =
       (1 / 2 : ℝ) • A + (1 / 2 : ℝ) • B := by
-    rw [hA, hB]; exact iteratedCovGrad_symmS_eq (I := I) (M := M) g₀ T k
+    rw [hA, hB]; exact iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g₀ T k
   have htoSec : ((iteratedCovGrad (I := I) g₀ 0 2 k
         (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x : TensorRSSpace 0 (2 + k) I x) =
       (1 / 2 : ℝ) • (A.toSection x) + (1 / 2 : ℝ) • (B.toSection x) := by
@@ -820,7 +820,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_SI_M_succ_le
       (0 : TensorRSSpace 1 (1 + (j + 1)) I x) from by rw [SmoothCcTensor.toSection_zero]; rfl]
   rw [zero_add]
   refine le_trans (le_of_eq ?_)
-    (riemannianFiberNormSq_iteratedCovGrad_symmS_le_pointwise (I := I) (M := M) g₀ T (j + 1) x)
+    (riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le_pointwise (I := I) (M := M) g₀ T (j + 1) x)
   exact riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (E := E) (I := I) (M := M)
     g₀ 0
     (ccTensor02Symm (I := I) (M := M) g₀ T) (j + 1) x

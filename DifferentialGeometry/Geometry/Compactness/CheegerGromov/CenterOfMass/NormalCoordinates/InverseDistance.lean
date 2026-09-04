@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Branch
-import DifferentialGeometry.Geometry.Comparison.CenterOfMass
+import DifferentialGeometry.Geometry.CenterOfMass.Basic
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
 open DifferentialGeometry.Geometry.Curvature
@@ -424,7 +424,7 @@ theorem halfSq_eq_ctrl
   rw [hinv, ← hlen, Real.sq_sqrt hinnerNonneg]
 
 omit [CompleteSpace E] in
-theorem halfSq_inf_ctrl
+theorem halfSqDist_contMDiffOn_of_normalDiagFence
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
     (hconn : letI : TopologicalSpace Y.M := Y.topology
@@ -511,7 +511,7 @@ theorem halfSq_inf_ctrl
     (contMDiff_id.prodMk contMDiff_const).contMDiffOn
   have hu : ContMDiffOn I I.tangent ∞
       (fun y : Y.M ↦ B.inv (y, pt)) S := by
-    with_unfolding_all exact B.inv_inf.comp hpair hdom
+    with_unfolding_all exact B.inv_contMDiffOn.comp hpair hdom
   have hbase : ContMDiffOn I I ∞
       (fun y : Y.M ↦ (B.inv (y, pt)).proj) S := by
     intro y hy
@@ -649,7 +649,7 @@ theorem grad_half_ctrl
   let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he
   have hsmooth : ContMDiffOn I 𝓘(Real) ∞
       (CenterOfMass.halfSqDist pt) S :=
-    halfSq_inf_ctrl (I := I) Y hcomplete hconn x mb hq he hf
+    halfSqDist_contMDiffOn_of_normalDiagFence (I := I) Y hcomplete hconn x mb hq he hf
       hρ hρq hρmetric hctrl
   have hdiff : MDifferentiableAt I 𝓘(Real, Real)
       (CenterOfMass.halfSqDist pt) y :=
@@ -757,7 +757,7 @@ theorem hess_half_ctrl
   let B := IsNormalDiag.toBranch (I := I) Y hcomplete hconn x hq he
   have hsmooth : ContMDiffOn I 𝓘(Real) ∞
       (CenterOfMass.halfSqDist pt) S :=
-    halfSq_inf_ctrl (I := I) Y hcomplete hconn x mb hq he hf
+    halfSqDist_contMDiffOn_of_normalDiagFence (I := I) Y hcomplete hconn x mb hq he hf
       hρ hρq hρmetric hctrl
   have hdom : ∀ z ∈ S, (z, pt) ∈ B.dom := by
     intro z hz
@@ -765,7 +765,7 @@ theorem hess_half_ctrl
       hρ hρq hρmetric (hctrl z hz).1 (hctrl z hz).2.1
       (hctrl z hz).2.2).choose_spec.1
   have hinv_at :=
-    ((B.inv_snd_inf hdom).contMDiffAt
+    ((B.inv_vector_contMDiffOn_at_fixed_target hdom).contMDiffAt
       (hSopen.mem_nhds hyS)).mdifferentiableAt (by simp)
   have hneg_at := mdifferentiableAt_neg_section hinv_at
   have hgrad :
@@ -841,7 +841,7 @@ theorem tan_mem_of_small
     0 < ρ →
     2 * ρ < (q : Real) →
     ρ ≤ hb.radius k x →
-    ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
     riemannianEDist I x y < ENNReal.ofReal (ρ / 2) →
     Real.sqrt ((X.obj k).metric.inner y v v) < ρ →
     (⟨y, v⟩ : TangentBundle I (X.obj k).M) ∈
@@ -1047,7 +1047,7 @@ theorem inv_is_min
     0 < ρ →
     2 * ρ < (q : Real) →
     ρ ≤ hb.radius k x →
-    ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
     max (riemannianEDist I x y) (riemannianEDist I x pt) <
       ENNReal.ofReal (ρ / 2) →
     let B := IsNormalDiag.toBranch (I := I) (X.obj k) hcomplete hconn
@@ -1175,7 +1175,7 @@ theorem halfSq_eq_inv
     0 < ρ →
     2 * ρ < (q : Real) →
     ρ ≤ hb.radius k x →
-    ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
     max (riemannianEDist I x y) (riemannianEDist I x pt) <
       ENNReal.ofReal (ρ / 2) →
     let B := IsNormalDiag.toBranch (I := I) (X.obj k) hcomplete hconn
@@ -1221,7 +1221,7 @@ theorem halfSq_eq_inv
   dsimp only
   rw [hinv, ← hlen, Real.sq_sqrt hinnerNonneg]
 
-theorem halfSq_inf
+theorem halfSqDist_contMDiffOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hb : NormalCoordMetricBounds (I := I) X) (k : Nat)
     (hcomplete : MetricComplete (I := I) (X.obj k))
@@ -1264,7 +1264,7 @@ theorem halfSq_inf
     0 < ρ →
     2 * ρ < (q : Real) →
     ρ ≤ hb.radius k x →
-    ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
     ContMDiffOn I 𝓘(Real) ∞ (CenterOfMass.halfSqDist pt)
       {y : (X.obj k).M |
         max (riemannianEDist I x y) (riemannianEDist I x pt) <
@@ -1306,7 +1306,7 @@ theorem halfSq_inf
   have hpair : ContMDiffOn I (I.prod I) ∞ (fun y : (X.obj k).M ↦ (y, pt)) S :=
     (contMDiff_id.prodMk contMDiff_const).contMDiffOn
   have hu : ContMDiffOn I I.tangent ∞ (fun y : (X.obj k).M ↦ B.inv (y, pt)) S := by
-    with_unfolding_all exact B.inv_inf.comp hpair hdom
+    with_unfolding_all exact B.inv_contMDiffOn.comp hpair hdom
   have hbase : ContMDiffOn I I ∞
       (fun y : (X.obj k).M ↦ (B.inv (y, pt)).proj) S := by
     intro y hy
@@ -1399,7 +1399,7 @@ theorem grad_half_inv
     0 < ρ →
     2 * ρ < (q : Real) →
     ρ ≤ hb.radius k x →
-    ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
     max (riemannianEDist I x y) (riemannianEDist I x pt) <
       ENNReal.ofReal (ρ / 2) →
     let B := IsNormalDiag.toBranch (I := I) (X.obj k) hcomplete hconn
@@ -1446,7 +1446,7 @@ theorem grad_half_inv
   have hsmooth : ContMDiffOn I 𝓘(Real) ∞
       (CenterOfMass.halfSqDist pt) S := by
     simpa only [S] using
-      halfSq_inf (I := I) hb k hcomplete hconn x hq he hf
+      halfSqDist_contMDiffOn (I := I) hb k hcomplete hconn x hq he hf
         hρ hρq hρmetric hρexp
   have hyS : y ∈ S := by
     with_unfolding_all exact hpairs
@@ -1508,7 +1508,7 @@ theorem hess_half_inv
     0 < ρ →
     2 * ρ < (q : Real) →
     ρ ≤ hb.radius k x →
-    ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
     max (riemannianEDist I x y) (riemannianEDist I x pt) <
       ENNReal.ofReal (ρ / 2) →
     let B := IsNormalDiag.toBranch (I := I) (X.obj k) hcomplete hconn
@@ -1560,14 +1560,14 @@ theorem hess_half_inv
   have hsmooth : ContMDiffOn I 𝓘(Real) ∞
       (CenterOfMass.halfSqDist pt) S := by
     simpa only [S] using
-      halfSq_inf (I := I) hb k hcomplete hconn x hq he hf
+      halfSqDist_contMDiffOn (I := I) hb k hcomplete hconn x hq he hf
         hρ hρq hρmetric hρexp
   have hdom : ∀ z ∈ S, (z, pt) ∈ B.dom := by
     intro z hz
     exact (inv_is_min (I := I) hb k hcomplete hconn x hq he hf
       hρ hρq hρmetric hρexp hz).choose_spec.1
   have hinv_at :=
-    ((B.inv_snd_inf hdom).contMDiffAt (hSopen.mem_nhds hyS)).mdifferentiableAt
+    ((B.inv_vector_contMDiffOn_at_fixed_target hdom).contMDiffAt (hSopen.mem_nhds hyS)).mdifferentiableAt
       (by simp)
   have hneg_at := mdifferentiableAt_neg_section hinv_at
   have hgrad :

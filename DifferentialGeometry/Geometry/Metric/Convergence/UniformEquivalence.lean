@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.WindowBounds
-import DifferentialGeometry.Geometry.Curvature.QuadraticFormBound
-import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
+import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
+import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Metric.CompactMetricLowerBound
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra

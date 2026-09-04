@@ -791,7 +791,7 @@ theorem deTurckGalerkin_solution_existsSymm
 section
 
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (ccTensor02Symm symmS_smul domDomCongrSection)
+  (ccTensor02Symm ccTensor02Symm_smul domDomCongrSection)
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
   (smoothCcTensorBilinForm)
 
@@ -1018,13 +1018,13 @@ theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
   have hc_nn : 0 ≤ c := le_min zero_le_one (div_nonneg hR₀.le (norm_nonneg _))
   have hc_le_one : c ≤ 1 := min_le_left _ _
   have hsmul : T₀ = c • Ts := by rw [hT₀_def, hc_def]; rfl
-  have hT₀_symmS : T₀ = ccTensor02Symm (I := I) (M := M) g₀ (c • Tb) := by
-    rw [hsmul, hTs_def, symmS_smul]
+  have hT₀_ccTensor02Symm : T₀ = ccTensor02Symm (I := I) (M := M) g₀ (c • Tb) := by
+    rw [hsmul, hTs_def, ccTensor02Symm_smul]
   have hTsymm : ∀ (x : M) (v w : TangentSpace I x),
       smoothCcTensorBilinForm (I := I) g₀ T₀ x v w = smoothCcTensorBilinForm (I := I) g₀ T₀ x w
         v := by
     intro x v w
-    rw [hT₀_symmS]
+    rw [hT₀_ccTensor02Symm]
     exact bilinearForm_of_tensorSymmetrization_symm (I := I) (M := M) g₀ (c • Tb) x v w
   have hbridge : ∀ (τ : ℝ),
       finiteEigenComboHs (I := I) (M := M) g₀ S (U N t) τ =
@@ -1049,7 +1049,7 @@ theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
         (SmoothCcTensor.toL2 Ts) i = 0 := by
     intro i hi
     rw [hTs_def]
-    exact tensorL2Coeff_toL2_symmS_eq_zero_of_notMem (I := I) (M := M) (g := g₀) S
+    exact tensorL2Coeff_toL2_ccTensor02Symm_eq_zero_of_notMem (I := I) (M := M) (g := g₀) S
       (eigenIdxFinset_mem_iff_of_eigenvalue_eq g₀ N) Tb hTb_L2_off i hi
   have hTs_coeff_off : ∀ i, i ∉ S →
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) Ts).coeff i = 0 := by
@@ -1141,7 +1141,7 @@ theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
             (SmoothCcTensor.toL2 (ccTensor02Symm (I := I) (M := M) g₀ Tb)) i) ^ 2 := by
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [smoothCcToTensorHs_coeff, hTs_def]
-    have hstep2 := sum_tensorSobolevWeight_mul_sq_tensorL2Coeff_toL2_symmS_le
+    have hstep2 := sum_tensorSobolevWeight_mul_sq_tensorL2Coeff_toL2_ccTensor02Symm_le
       (I := I) (M := M) (g := g₀) τ S
       Tb hTb_L2_off
     have hstep3 : (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ *
@@ -1256,9 +1256,9 @@ private lemma deTurckSobolevNHa2Symm_zero_eq
     rw [TensorHs.zero_coeff, smoothCcToTensorHs_coeff,
       show SmoothCcTensor.toL2 (0 : SmoothCcTensor g₀ 0 2) = 0 from map_zero _,
       tensorL2Coeff_eq_inner, inner_zero_right]
-  have hsymmS_zero : ccTensor02Symm (I := I) (M := M) g₀ (0 : SmoothCcTensor g₀ 0 2) =
+  have hccTensor02Symm_zero : ccTensor02Symm (I := I) (M := M) g₀ (0 : SmoothCcTensor g₀ 0 2) =
       (0 : SmoothCcTensor g₀ 0 2) := by
-    have h0 := symmS_smul (I := I) (M := M) g₀ (0 : ℝ) (0 : SmoothCcTensor g₀ 0 2)
+    have h0 := ccTensor02Symm_smul (I := I) (M := M) g₀ (0 : ℝ) (0 : SmoothCcTensor g₀ 0 2)
     rw [zero_smul, zero_smul] at h0
     exact h0
   conv_lhs => rw [hzero_embed]
@@ -1266,7 +1266,7 @@ private lemma deTurckSobolevNHa2Symm_zero_eq
       (0 : SmoothCcTensor g₀ 0 2),
     ← deTurckSobolevNHa2_smoothEmbed_eq (I := I) (M := M) g₀ g_bg a ha_super
       (ccTensor02Symm (I := I) (M := M) g₀ (0 : SmoothCcTensor g₀ 0 2)),
-    hsymmS_zero, ← hzero_embed]
+    hccTensor02Symm_zero, ← hzero_embed]
 
 private theorem deTurckGalerkinForcingSymm_tame_diff_mass_perScale
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)

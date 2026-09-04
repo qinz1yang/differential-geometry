@@ -57,7 +57,7 @@ theorem chartCurve_contDiffOn [I.Boundaryless]
       (fun z : E × E => - chartChristoffelContraction (I := I) g q z.2 z.2 z.1)
       ((interior (extChartAt I q).target) ×ˢ (Set.univ : Set E)) :=
     (chartChristoffelContraction_contDiffOn (I := I) g q).neg
-  exact contDiffOn_ode2_inf hO hF hmem hy₁ hy₂
+  exact contDiffOn_infty_of_secondOrderODE hO hF hmem hy₁ hy₂
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]

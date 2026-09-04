@@ -335,9 +335,9 @@ theorem ricciDeTurckLowOrderAction_pairing_upper_bound
     edge_bound_mono (I := I) (M := M) g P hrad
       (by simpa only [P] using hPraw)
   have hWfix : ccTensor02Symm (I := I) (M := M) g W = W :=
-    symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g W hWsymm
+    ccTensor02Symm_eq_self (I := I) (M := M) g W hWsymm
   have hPfix : ccTensor02Symm (I := I) (M := M) g P = P := by
-    simp only [P, symmS_smul, hWfix]
+    simp only [P, ccTensor02Symm_smul, hWfix]
   have hp := hcore gm C0 C1 P hB0 hB1 hdelta hdelta0
     htie hPbound hPfix hsmall hC0 hC1
   have hcoreSmul :

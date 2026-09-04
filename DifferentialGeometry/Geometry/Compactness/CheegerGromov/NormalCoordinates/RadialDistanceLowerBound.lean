@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DistanceComparison
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Framed
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Sequence
-import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
+import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 
 set_option autoImplicit false
 
@@ -357,7 +357,7 @@ theorem normLowerOfSepFramedExp
     letI : T2Space (TangentBundle J' Y.M) := Y.t2TangentBundle
     letI : RiemannianBundle (fun y : Y.M => TangentSpace J' y) :=
       ⟨Y.metric.toRiemannianMetric⟩
-    U ⊆ Metric.ball (0 : F) (expRadiusGp (I := J') Y.metric x) →
+    U ⊆ Metric.ball (0 : F) (metricCoerciveExpRadius (I := J') Y.metric x) →
     ∀ {lam : ℝ},
       ENNReal.ofReal lam ≤ Manifold.riemannianEDist J' x
         (expMap (I := J') Y.metric x
@@ -372,7 +372,7 @@ theorem normLowerOfSepFramedExp
     ⟨Y.metric.toRiemannianMetric⟩
   intro hsub lam hlam
   have hsmall : ∀ t ∈ Set.Icc (0 : ℝ) 1,
-      ‖t • v‖ < expRadiusGp (I := J') Y.metric x := by
+      ‖t • v‖ < metricCoerciveExpRadius (I := J') Y.metric x := by
     intro t ht
     simpa only [Metric.mem_ball, dist_zero_right] using hsub (hseg t ht)
   have hraw : ∀ t ∈ Set.Icc (0 : ℝ) 1,
@@ -441,7 +441,7 @@ theorem seqFramedChartNorm_ge
     (∀ t : Real, t ∈ Set.Icc (0 : Real) 1 →
       t • NormalCoordinates.framedChartAt (I := J') (Z.obj k).metric c
         (Z.obj k).basepoint ∈ U) →
-    U ⊆ Metric.ball (0 : F) (expRadiusGp (I := J') (Z.obj k).metric c) →
+    U ⊆ Metric.ball (0 : F) (metricCoerciveExpRadius (I := J') (Z.obj k).metric c) →
     hd.lambda D 0 / Real.sqrt 2 ≤
       ‖NormalCoordinates.framedChartAt (I := J') (Z.obj k).metric c
         (Z.obj k).basepoint‖ := by

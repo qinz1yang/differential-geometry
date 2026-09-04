@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.Integr
 import DifferentialGeometry.Geometry.Connection.Laplacian.RankZero
 import DifferentialGeometry.Geometry.Operator.LaplacianBridge
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.Tensor0SRSCovariantDerivativeAgreement
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.GradientField
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.GradientField
 import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
 import DifferentialGeometry.Tensor.RSTensor.RankZero
 open DifferentialGeometry.Analysis.Sobolev

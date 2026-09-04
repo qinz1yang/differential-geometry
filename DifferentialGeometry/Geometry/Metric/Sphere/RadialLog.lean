@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.PolarBij
 import DifferentialGeometry.Geometry.Metric.Sphere.RoundIntrinsic
-import DifferentialGeometry.Geometry.Exponential.DiagonalExponentialDerivative
-import DifferentialGeometry.Geometry.Exponential.FixedBasePartialDiffeomorph
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.FixedBasePartialDiffeomorph
 
 
 open DifferentialGeometry.Geometry.Curvature
@@ -275,10 +275,10 @@ private theorem log_eq_branch
       (0 : E) 1) (roundMetric (E := E) (n := n)))
     (p : sphere (0 : E) 1) :
     roundLog (n := n) p =ᶠ[𝓝 p]
-      (stdBranch (I := 𝓡 n) (roundMetric (E := E) (n := n))
+      (standardDiagonalInverseBranch (I := 𝓡 n) (roundMetric (E := E) (n := n))
         hEnorm p).fixedBasePartialDiffeomorph.symm := by
   let B :=
-    stdBranch (I := 𝓡 n) (roundMetric (E := E) (n := n)) hEnorm p
+    standardDiagonalInverseBranch (I := 𝓡 n) (roundMetric (E := E) (n := n)) hEnorm p
   have hpneg : p ≠ -p := ne_neg_of_mem_unit_sphere ℝ p
   have hnotneg : ∀ᶠ x in 𝓝 p, x ≠ -p := by
     have hopen : IsOpen {x : sphere (0 : E) 1 | x ≠ -p} := by
@@ -321,7 +321,7 @@ theorem roundLog_smooth
     ContMDiffOn (𝓡 n) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞
       (roundLog (n := n) p) {x | x ≠ -p} := by
   let B :=
-    stdBranch (I := 𝓡 n) (roundMetric (E := E) (n := n)) hEnorm p
+    standardDiagonalInverseBranch (I := 𝓡 n) (roundMetric (E := E) (n := n)) hEnorm p
   intro x hx
   by_cases hxp : x = p
   · subst x

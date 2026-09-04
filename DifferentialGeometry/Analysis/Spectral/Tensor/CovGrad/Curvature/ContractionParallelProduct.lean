@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovariantBilinearLeibniz
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Uniform.SmoothTensorBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.SmoothTensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.ContractionCovariantLeibnizBounds
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

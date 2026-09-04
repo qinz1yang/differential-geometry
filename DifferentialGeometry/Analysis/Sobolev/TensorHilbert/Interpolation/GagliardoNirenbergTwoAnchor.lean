@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.PointwiseBounds
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergLpFiberNorm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 import DifferentialGeometry.Analysis.Integration.L2.FiniteProductHolderFiberNorm
 
 noncomputable section

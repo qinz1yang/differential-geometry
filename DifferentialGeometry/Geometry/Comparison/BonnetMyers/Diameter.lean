@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.LengthBound
 import DifferentialGeometry.Geometry.Metric.Completeness
-import DifferentialGeometry.Geometry.Comparison.HopfRinow
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.Basic
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.MFDerivAlongCurve

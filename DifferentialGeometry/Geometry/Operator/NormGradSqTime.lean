@@ -70,7 +70,7 @@ theorem gradSq_joint
       ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
         (fun q : Real × M => dF q i) p := by
     simpa only [dF] using
-      DifferentialGeometry.prodExtDerivAt_inf hF
+      DifferentialGeometry.prodExtDerivAt_smooth hF
         (hframe.contMDiffAt e.open_baseSet hxe i)
   have det_smooth
       (N : (Real × M) -> Matrix Idx Idx Real)

@@ -32,7 +32,7 @@ theorem exists_c_inf_convergent_subsequence
   exists_cInf_subseq Φ hΦ hbdd
 
 omit [FiniteDimensional ℝ E] in
-theorem comp_eq_id_of_c_inf
+theorem comp_eq_id_of_mapCInfConvOnCompacts
     {Φ : ℕ → F → E} {Φinf : F → E} {Ψ : ℕ → E → F} {Ψinf : E → F}
     (hΦ : MapCInfConvOnCompacts Set.univ Φ Φinf) (hΦc : Continuous Φinf)
     (hΨ : MapCInfConvOnCompacts Set.univ Ψ Ψinf)
@@ -67,9 +67,9 @@ theorem exists_smooth_inverse_limit_subsequence
   have hΦconv' : MapCInfConvOnCompacts Set.univ (fun k => Φ (φ1 (φ2 k))) Φinf :=
     hΦconv.comp_subseq hφ2
   refine ⟨φ1 ∘ φ2, Φinf, Ψinf, hφ1.comp hφ2, hΦinf, hΨinf, hΦconv', hΨconv, ?_, ?_⟩
-  · exact comp_eq_id_of_c_inf hΨconv hΨinf.continuous hΦconv'
+  · exact comp_eq_id_of_mapCInfConvOnCompacts hΨconv hΨinf.continuous hΦconv'
       (fun k x => hLeft (φ1 (φ2 k)) x)
-  · exact comp_eq_id_of_c_inf hΦconv' hΦinf.continuous hΨconv
+  · exact comp_eq_id_of_mapCInfConvOnCompacts hΦconv' hΦinf.continuous hΨconv
       (fun k y => hRight (φ1 (φ2 k)) y)
 
 end HCGCompactness

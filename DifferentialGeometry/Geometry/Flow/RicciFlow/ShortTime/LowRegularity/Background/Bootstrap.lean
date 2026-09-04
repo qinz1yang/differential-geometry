@@ -24,7 +24,7 @@ open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic (lowerState zero_mem_lowerState)
 open DifferentialGeometry.Analysis.Spectral
-  (deTurckSmoothRemainder gFibreOpBound_symmS
+  (deTurckSmoothRemainder gFibreOpBound_ccTensor02Symm
     maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
     smoothCcToTensorHs tensorResolventL2_isCompactOperator)
 
@@ -36,15 +36,15 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (symmS) in
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ccTensor02Symm) in
 noncomputable def deTurckRemainderSectionBackground (g g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g S) δ) :
     SmoothCcTensor g 0 2 :=
   deTurckSmoothRemainder (I := I) g g_bg
-    (symmS (I := I) (M := M) g S) hδ_lt
-    (gFibreOpBound_symmS (I := I) (M := M) g S hδ)
+    (ccTensor02Symm (I := I) (M := M) g S) hδ_lt
+    (gFibreOpBound_ccTensor02Symm (I := I) (M := M) g S hδ)
 
 
 structure BackgroundSmoothRicciDeTurckSolution (g g_bg : SmoothRiemannianMetric I M)

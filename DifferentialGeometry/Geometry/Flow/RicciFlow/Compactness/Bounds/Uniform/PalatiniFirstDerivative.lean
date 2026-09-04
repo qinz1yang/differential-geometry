@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.DifferentiatedPalatini
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.DifferentiatedPalatini
 import DifferentialGeometry.Geometry.Metric.InnerExpansion
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.CurvatureJetDifference

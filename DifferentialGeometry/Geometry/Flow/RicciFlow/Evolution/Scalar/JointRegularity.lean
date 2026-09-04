@@ -243,7 +243,7 @@ theorem chartScalarDeriv
         (chartBasisVecFiber (I := I) α j y)) x :=
     (chartBasisVec_contMDiffOn (I := I) α j).contMDiffAt
       ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hxbase)
-  have hderiv := DifferentialGeometry.prodExtDerivAt_inf hscalar hframe
+  have hderiv := DifferentialGeometry.prodExtDerivAt_smooth hscalar hframe
   have hsymm : ContMDiffAt 𝓘(Real, E) I ∞
       (extChartAt I α).symm p.2 :=
     ((contMDiffOn_extChartAt_symm (I := I) α) p.2

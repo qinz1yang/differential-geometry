@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorThirdOrderWeitzenbock
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.SecondDerivativeBound
 
 

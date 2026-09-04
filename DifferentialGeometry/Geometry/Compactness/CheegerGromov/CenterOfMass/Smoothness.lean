@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Existence
 
 
-import DifferentialGeometry.Geometry.Exponential.DiagonalExponentialDerivative
-import DifferentialGeometry.Geometry.Exponential.DiagonalInverseCoordinates
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.InverseCoordinates
 import Mathlib.Analysis.Calculus.Implicit
 open DifferentialGeometry.Geometry.Curvature
 
@@ -549,7 +549,7 @@ theorem exists_trivialized_diagExpInv_smooth_localData
         expMapIntrinsic (I := I) g hEnorm y.1
           (diagExpInv (I := I) g hEnorm p y).snd = y.2 := by
   obtain ⟨U, hUopen, hpU, hUsmooth, hU⟩ :=
-    exists_diagInvDom_inf (I := I) g hEnorm p
+    exists_diagonalInverse_smooth_domain (I := I) g hEnorm p
   let e := trivializationAt E (TangentSpace I) p
   let V := U ∩ Prod.fst ⁻¹' e.baseSet
   have hVopen : IsOpen V := hUopen.inter (e.open_baseSet.preimage continuous_fst)
@@ -763,10 +763,10 @@ theorem chartCmEqnB_std
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z : E) (params : (ι → ℝ) × (ι → E)) :
-    chartCmEqnB (I := I) g hEnorm p (stdBranch (I := I) g hEnorm p) z params =
+    chartCmEqnB (I := I) g hEnorm p (standardDiagonalInverseBranch (I := I) g hEnorm p) z params =
       chartCmEqn' (I := I) g hEnorm p z params := by
   unfold chartCmEqnB chartCmEqn' DiagonalInverseBranch.diagonalInverseCoordinates
-  rw [std_inv_eq (I := I) g hEnorm p]
+  rw [standardDiagonalInverseBranch_inv (I := I) g hEnorm p]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

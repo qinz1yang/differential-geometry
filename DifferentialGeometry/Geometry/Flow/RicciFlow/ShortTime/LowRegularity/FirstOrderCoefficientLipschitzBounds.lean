@@ -191,7 +191,7 @@ private theorem koszulOp_app
   have hs := ccTensor02Symm_eq_self (I := I) (M := M) g T hT
   rw [koszulOp, app_smul_left, operatorFieldComposition_sub_left,
     operatorFieldComposition_add_left, permCoeff_app, permCoeff_app, permCoeff_app]
-  rw [koszulCovecCc, symmSCovGrad3, hs]
+  rw [koszulCovecCc, ccTensor02SymmCovGrad3, hs]
 
 private noncomputable def kappaOp
     (g : SmoothRiemannianMetric I M) : SmoothCcTensor g 3 3 :=
@@ -1545,7 +1545,7 @@ theorem sharp_h2_low
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   simpa only [covariantJetNormSq, Nat.reduceAdd] using
     (hFlow gm P htie hδ_le hδ0 hδ hsup).2 2 (by omega)
@@ -1878,7 +1878,7 @@ private theorem wXi_h2_low
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   simpa only [covariantJetNormSq, Nat.reduceAdd] using
     hFlow gm P htie hδ_le hδ0 hδ hsup 2 (by omega)
@@ -4156,7 +4156,7 @@ theorem sharp_pair_h2
         exact mul_le_mul_of_nonneg_left (add_le_add le_rfl hU2) hKs
   have hDsymm :
       ccTensor02Symm (I := I) (M := M) g (T - U) = T - U := by
-    rw [symmS_sub, ccTensor02Symm_eq_self (I := I) (M := M) g T hT,
+    rw [ccTensor02Symm_sub, ccTensor02Symm_eq_self (I := I) (M := M) g T hT,
       ccTensor02Symm_eq_self (I := I) (M := M) g U hU]
   have hD2 :
       covariantJetNormSq (I := I) (M := M) g 2 (T - U) ≤
@@ -4564,7 +4564,7 @@ theorem revSlot_pair_h2
         covariantJetNormSq (I := I) (M := M) g 2 (T - U) := by
   have hsymm :
       ccTensor02Symm (I := I) (M := M) g (T - U) = T - U := by
-    rw [symmS_sub, ccTensor02Symm_eq_self (I := I) (M := M) g T hT,
+    rw [ccTensor02Symm_sub, ccTensor02Symm_eq_self (I := I) (M := M) g T hT,
       ccTensor02Symm_eq_self (I := I) (M := M) g U hU]
   rw [← slotInsertEndoCc_sub,
     fullRev_sub (I := I) (M := M) g gT gU T U hTtie hUtie]
@@ -5282,7 +5282,7 @@ theorem fullSlot_pair_h1
     δT δU hδT_le hδT0 hδT hδU_le hδU0 hδU
     R A D2 hR hA hD2 hU2 hT3 hTU2
   have hsymm : ccTensor02Symm (I := I) (M := M) g (T - U) = T - U := by
-    rw [symmS_sub, ccTensor02Symm_eq_self (I := I) (M := M) g T hT,
+    rw [ccTensor02Symm_sub, ccTensor02Symm_eq_self (I := I) (M := M) g T hT,
       ccTensor02Symm_eq_self (I := I) (M := M) g U hU]
   have hdiff :
       metricComparisonEndomorphismField (I := I) (M := M) g gT -

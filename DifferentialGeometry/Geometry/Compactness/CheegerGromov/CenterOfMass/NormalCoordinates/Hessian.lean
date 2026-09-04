@@ -219,7 +219,7 @@ theorem normalPhaseRead_cd
     exact hu
   have htan : ContMDiffAt 𝓘(Real, E × E) I.tangent ∞
       (normalTanHome (I := I) Y x) (u, v) :=
-    ((normalTanHome_inf (I := I) Y x) (u, v) hzSource).contMDiffAt
+    ((normalTanHome_contMDiffOn (I := I) Y x) (u, v) hzSource).contMDiffAt
       ((normalTanHome (I := I) Y x).open_source.mem_nhds hzSource)
   have hzTriv : normalTanHome (I := I) Y x (u, v) ∈
       (trivializationAt E (TangentSpace I) x).source := by
@@ -638,7 +638,7 @@ theorem inv_cov_coord
     exact hy
   have hZsec : ContMDiffOn I I.tangent ∞
       (T% Zloc) S :=
-    B.inv_snd_inf hdom
+    B.inv_vector_contMDiffOn_at_fixed_target hdom
   obtain ⟨Zexts, hZexts⟩ := exists_contMDiffSection_eqOn_nhd
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
     (s := fun _ : Unit => Zloc)
@@ -767,7 +767,7 @@ theorem hess_inv_coord
     0 < ρ →
     2 * ρ < (q : Real) →
     ρ ≤ hb.radius k x →
-    ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
     max
       (riemannianEDist I x
         (expMapDiffeo (I := I) (X.obj k).metric x z))
@@ -850,7 +850,7 @@ theorem hess_inv_coord
         with_unfolding_all
           exact hy)).choose_spec.1
   have hZat : MDifferentiableAt I I.tangent (T% Z) y0 :=
-    ((B.inv_snd_inf hdom).contMDiffAt (hSopen.mem_nhds hyS)).mdifferentiableAt
+    ((B.inv_vector_contMDiffOn_at_fixed_target hdom).contMDiffAt (hSopen.mem_nhds hyS)).mdifferentiableAt
       (by simp)
   have hneg :
       (LeviCivita (I := I) (X.obj k).metric).toFun
@@ -1029,7 +1029,7 @@ theorem hess_inv_lower
     0 < ρ →
     2 * ρ < (q : Real) →
     ρ ≤ hb.radius k x →
-    ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
     max
       (riemannianEDist I x
         (expMapDiffeo (I := I) (X.obj k).metric x z))
@@ -1245,7 +1245,7 @@ theorem hess_inv_sixth
     0 < ρ →
     2 * ρ < (q : Real) →
     ρ ≤ hb.radius k x →
-    ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
     max
       (riemannianEDist I x
         (expMapDiffeo (I := I) (X.obj k).metric x z))
@@ -2647,7 +2647,7 @@ theorem hess_pos
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ hb.radius k x →
-      ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+      ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       ∀ {y pt : (X.obj k).M},
         max (riemannianEDist I x y) (riemannianEDist I x pt) <
             ENNReal.ofReal (ρ / 2) →

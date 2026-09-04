@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.Application
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CorrectionFields.ChristoffelCoefficients
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ContractedBianchi
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.ContractedBianchi
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotSubstitutionBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredTrilinear
 open DifferentialGeometry.Analysis.Spectral
@@ -383,7 +383,7 @@ private def firstOrderLowerSwapPermA : Equiv.Perm (Fin 3) :=
 private def firstOrderLowerSwapPermC : Equiv.Perm (Fin 3) :=
   ⟨![2, 1, 0], ![2, 1, 0], by decide, by decide⟩
 
-private noncomputable def covGradSymmSValue (g₀ : SmoothRiemannianMetric I M)
+private noncomputable def covGradCcTensor02SymmValue (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) (x : M) : Tensor0SBundle.Tensor0SSpace 3 I x :=
   (show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I x from
     (covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ V)).toSection x)
@@ -392,12 +392,12 @@ private noncomputable def covGradSymmSValue (g₀ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem covGradSymmSValue_contMDiff (g₀ : SmoothRiemannianMetric I M)
+private theorem covGradCcTensor02SymmValue_contMDiff (g₀ : SmoothRiemannianMetric I M)
     (V : SmoothCcTensor g₀ 0 2) :
     ContMDiff I (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) x
-        (covGradSymmSValue (I := I) g₀ V x)) := by
+        (covGradCcTensor02SymmValue (I := I) g₀ V x)) := by
   have h := ContMDiff.clm_bundle_apply (b := id)
     (covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ V)).toSection.contMDiff
     (unitZeroSec (I := I) (M := M)).contMDiff
@@ -407,25 +407,25 @@ private theorem covGradSymmSValue_contMDiff (g₀ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem covGradSymmSValue_convexPerturbation (g₀ : SmoothRiemannianMetric I M)
+private theorem covGradCcTensor02SymmValue_convexPerturbation (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2) (s : ℝ) (x : M) :
-    covGradSymmSValue (I := I) g₀ (convexPerturbation (I := I) g₀ T T' s) x =
-      (1 - s) • covGradSymmSValue (I := I) g₀ T' x +
-        s • covGradSymmSValue (I := I) g₀ T x := by
+    covGradCcTensor02SymmValue (I := I) g₀ (convexPerturbation (I := I) g₀ T T' s) x =
+      (1 - s) • covGradCcTensor02SymmValue (I := I) g₀ T' x +
+        s • covGradCcTensor02SymmValue (I := I) g₀ T x := by
   have hsplit : covGrad (I := I) (M := M) g₀ 0 2
       (ccTensor02Symm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' s)) =
       (1 - s) • covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ T')
         + s • covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ T) := by
-    rw [convexPerturbation, symmS_add, symmS_smul, symmS_smul, covGrad_add,
+    rw [convexPerturbation, ccTensor02Symm_add, ccTensor02Symm_smul, ccTensor02Symm_smul, covGrad_add,
       covGrad_smul, covGrad_smul]
-  rw [covGradSymmSValue, hsplit, SmoothCcTensor.toSection_add, SmoothCcTensor.toSection_smul,
+  rw [covGradCcTensor02SymmValue, hsplit, SmoothCcTensor.toSection_add, SmoothCcTensor.toSection_smul,
     SmoothCcTensor.toSection_smul]
   rfl
 
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private theorem covGradSymmSValueFam_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
+private theorem covGradCcTensor02SymmValueFam_jointContMDiffOn (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (_hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T)
       δ)
@@ -434,36 +434,36 @@ private theorem covGradSymmSValueFam_jointContMDiffOn (g₀ : SmoothRiemannianMe
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1
-        (covGradSymmSValue (I := I) g₀ (convexPerturbation (I := I) g₀ T T' p.2) p.1))
+        (covGradCcTensor02SymmValue (I := I) g₀ (convexPerturbation (I := I) g₀ T T' p.2) p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   have hP' : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1
-        (covGradSymmSValue (I := I) g₀ T' p.1))
+        (covGradCcTensor02SymmValue (I := I) g₀ T' p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
-    (covGradSymmSValue_contMDiff (I := I) g₀ T').comp_contMDiffOn contMDiffOn_fst
+    (covGradCcTensor02SymmValue_contMDiff (I := I) g₀ T').comp_contMDiffOn contMDiffOn_fst
   have hP : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1
-        (covGradSymmSValue (I := I) g₀ T p.1))
+        (covGradCcTensor02SymmValue (I := I) g₀ T p.1))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
-    (covGradSymmSValue_contMDiff (I := I) g₀ T).comp_contMDiffOn contMDiffOn_fst
+    (covGradCcTensor02SymmValue_contMDiff (I := I) g₀ T).comp_contMDiffOn contMDiffOn_fst
   have hone : ContDiff ℝ ∞ (fun s : ℝ => 1 - s) := contDiff_const.sub contDiff_id
   have hids : ContDiff ℝ ∞ (fun s : ℝ => s) := contDiff_id
   have h1 := jointTotalSpace0S_smulFun_local (I := I) (d := 3)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) hone
-    (fun p : M × ℝ => covGradSymmSValue (I := I) g₀ T' p.1) hP'
+    (fun p : M × ℝ => covGradCcTensor02SymmValue (I := I) g₀ T' p.1) hP'
   have h2 := jointTotalSpace0S_smulFun_local (I := I) (d := 3)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) hids
-    (fun p : M × ℝ => covGradSymmSValue (I := I) g₀ T p.1) hP
+    (fun p : M × ℝ => covGradCcTensor02SymmValue (I := I) g₀ T p.1) hP
   have hsum := jointTotalSpace0S_add_local (I := I) (d := 3)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun p : M × ℝ => (1 - p.2) • covGradSymmSValue (I := I) g₀ T' p.1)
-    (fun p : M × ℝ => p.2 • covGradSymmSValue (I := I) g₀ T p.1) h1 h2
+    (fun p : M × ℝ => (1 - p.2) • covGradCcTensor02SymmValue (I := I) g₀ T' p.1)
+    (fun p : M × ℝ => p.2 • covGradCcTensor02SymmValue (I := I) g₀ T p.1) h1 h2
   refine hsum.congr (fun p _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1 t) ?_
-  rw [covGradSymmSValue_convexPerturbation]
+  rw [covGradCcTensor02SymmValue_convexPerturbation]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -547,13 +547,13 @@ theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
   set Vfam : ∀ p : M × ℝ, Tensor0SBundle.Tensor0SSpace 3 I p.1 :=
-    fun p => covGradSymmSValue (I := I) g₀ (convexPerturbation (I := I) g₀ T T' p.2) p.1
+    fun p => covGradCcTensor02SymmValue (I := I) g₀ (convexPerturbation (I := I) g₀ T T' p.2) p.1
     with hVfamdef
   have hV : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 3 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 3 I z) p.1 (Vfam p))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) :=
-    covGradSymmSValueFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
+    covGradCcTensor02SymmValueFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
   have hU1 := domDomCongrField_jointContMDiffOn (I := I) firstOrderLowerSwapPermA
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) Vfam hV
   have hU3 := domDomCongrField_jointContMDiffOn (I := I) firstOrderLowerSwapPermC
@@ -603,7 +603,7 @@ theorem metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
         g₀.inner b u w +
           ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' p.2) b u w :=
     fun b u w => metricPerturbationPath_inner_of_mem (I := I) g₀ T T' hδ hδ' hp.2 b u w
-  have hid := connectionDifferenceInner_g1_eq_half_covGradSymmS (I := I) (M := M) g₀
+  have hid := connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm (I := I) (M := M) g₀
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2)
     (convexPerturbation (I := I) g₀ T T' p.2) hg₁ p.1
     ((tangentSpaceModelContinuousLinearEquiv (I := I) p.1).symm (v 0))

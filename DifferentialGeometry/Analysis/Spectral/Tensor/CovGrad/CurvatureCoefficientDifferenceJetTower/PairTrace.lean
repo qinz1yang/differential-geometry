@@ -966,16 +966,16 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagon
         (Module.finrank ℝ E : ℝ) ^ 3 *
           riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + i') x
             ((iteratedCovGrad (I := I) g₀ 0 2 i'
-              (symmS (I := I) (M := M) g₀ T)).toSection x) :=
+              (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) :=
       riemannianFiberNormSq_iteratedCovGrad_slotInsert3_perturbationSharp_le (I := I) (M := M) g₀ T i' x
     cases i' with
     | zero =>
         have hsym0 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x
             ((iteratedCovGrad (I := I) g₀ 0 2 0
-              (symmS (I := I) (M := M) g₀ T)).toSection x) ≤
+              (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
             (Module.finrank ℝ E : ℝ) ^ 2 * δ₀ ^ 2 := by
           rw [iteratedCovGrad_zero]
-          refine le_trans (riemannianFiberNormSq_symmS_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound x) ?_
+          refine le_trans (riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (I := I) (M := M) g₀ T hδ0 hbound x) ?_
           have hδsq : δ ^ 2 ≤ δ₀ ^ 2 :=
             (sq_le_sq₀ hδ0 (le_trans hδ0 hδ_le)).2 hδ_le
           exact mul_le_mul_of_nonneg_left hδsq (sq_nonneg _)
@@ -1084,9 +1084,9 @@ theorem riemannianFiberNormSq_iteratedCovGrad_riemannG1LoweringDifference_diagon
             (Finset.mem_range.mpr (by omega))
         have hsym_le : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i'' + 1)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (i'' + 1)
-              (symmS (I := I) (M := M) g₀ T)).toSection x) ≤
+              (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
             ∑ k ∈ Finset.range ((i'' + 1) + 1), Combinatorics.antidiagonalTupleGrid b k :=
-          le_trans (riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (I := I) (M := M) g₀ T (i'' + 1) x)
+          le_trans (riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_pointwise (I := I) (M := M) g₀ T (i'' + 1) x)
             (le_trans hb_le_grid hgrid_le_gsum)
         have hm3 : ∀ l ∈ Finset.range (i + 1 - (i'' + 1)),
             (∑ k ∈ Finset.range ((i'' + 1) + 1), Combinatorics.antidiagonalTupleGrid b k) *

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
+import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.KineticBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionIntegrability
 
@@ -199,13 +199,13 @@ theorem isBounded_range_initialVector_of_lRegAction_le_mul_parameter
     exact (mul_le_mul_iff_of_pos_left hb).mp hscaled'
   let q : Real := e * c
   let g := S.base.metric T
-  let a : Real := gpCoerciveConst (I := I) g x
-  have ha : 0 < a := gpCoerciveConst_pos (I := I) g x
+  let a : Real := metricCoerciveConst (I := I) g x
+  have ha : 0 < a := metricCoerciveConst_pos (I := I) g x
   let L : Real := Real.sqrt (q / (4 * a))
   have hnorm : ∀ n, ‖Z n‖ ≤ L := by
     intro n
     have hcoerc : a * ‖Z n‖ ^ 2 ≤ g.inner x (Z n) (Z n) := by
-      with_unfolding_all exact gpCoerciveConst_le (I := I) g x (Z n)
+      with_unfolding_all exact metricCoerciveConst_le (I := I) g x (Z n)
     have hsq : ‖Z n‖ ^ 2 ≤ q / (4 * a) := by
       rw [le_div_iff₀ (mul_pos (by norm_num) ha)]
       calc

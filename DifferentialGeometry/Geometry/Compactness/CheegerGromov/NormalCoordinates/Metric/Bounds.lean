@@ -144,7 +144,7 @@ structure NormalCoordMetricBounds
 
 namespace NormalCoordMetricBounds
 
-theorem half_le_gp_const
+theorem half_le_metricCoerciveConst
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : NormalCoordMetricBounds (I := I) X)
     (k : Nat) (x : (X.obj k).M) :
@@ -153,7 +153,7 @@ theorem half_le_gp_const
     letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
     letI : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
-    (1 / 2 : Real) ≤ gpCoerciveConst (I := I) (X.obj k).metric x := by
+    (1 / 2 : Real) ≤ metricCoerciveConst (I := I) (X.obj k).metric x := by
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
   let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -162,7 +162,7 @@ theorem half_le_gp_const
   have h0 : (0 : E) ∈ Metric.ball 0 (h.radius k x) := by
     rw [Metric.mem_ball, dist_self]
     exact h.radius_pos k x
-  apply le_gpCoerciveConst (I := I)
+  apply le_metricCoerciveConst (I := I)
   intro v
   rw [← normal_coord_metric_zero (I := I) (X.obj k) x]
   exact (h.metric_equiv k x 0 h0 v).1

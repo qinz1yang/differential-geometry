@@ -421,19 +421,19 @@ theorem HasMoserTameBounds.reference {g : SmoothRiemannianMetric I M}
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-private theorem riemannianFiberNormSq_symmS_le (g : SmoothRiemannianMetric I M)
+private theorem riemannianFiberNormSq_ccTensor02Symm_le (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 (2 + j) x
         ((iteratedCovGrad (I := I) g 0 2 j
-          (symmS (I := I) (M := M) g T)).toSection x) ≤
+          (ccTensor02Symm (I := I) (M := M) g T)).toSection x) ≤
       1 * riemannianFiberNormSq (I := I) (M := M) g 0 (2 + j) x
         ((iteratedCovGrad (I := I) g 0 2 j T).toSection x) := by
   have hsec : (iteratedCovGrad (I := I) g 0 2 j
-        (symmS (I := I) (M := M) g T)).toSection x =
+        (ccTensor02Symm (I := I) (M := M) g T)).toSection x =
       (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g 0 2 j T).toSection x +
         (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g 0 2 j
           (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) T)).toSection x := by
-    rw [iteratedCovGrad_symmS_eq (I := I) (M := M) g T j,
+    rw [iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g T j,
       SmoothCcTensor.toSection_add]
     rw [show (((1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 j T).toSection +
         ((1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 j
@@ -462,16 +462,16 @@ theorem HasMoserTameBounds.symmetrization
         (∀ x : M, riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (T.toSection x) ≤ ((Module.finrank ℝ E : ℝ) * δ₀) ^ 2) →
         HasMoserTameBounds (I := I) (M := M) g T A S
-          (symmS (I := I) (M := M) g T) := by
+          (ccTensor02Symm (I := I) (M := M) g T) := by
   refine ⟨fun _ => 1, (Module.finrank ℝ E : ℝ) * δ₀, ?_⟩
   intro T hTsup
   refine ⟨mul_nonneg (Nat.cast_nonneg _) hδ₀0, fun x => ?_, fun n => ?_⟩
   · refine le_trans ?_ (hTsup x)
     simpa only [iteratedCovGrad_zero, Nat.add_zero, one_mul] using
-      riemannianFiberNormSq_symmS_le (I := I) (M := M) g T 0 x
+      riemannianFiberNormSq_ccTensor02Symm_le (I := I) (M := M) g T 0 x
   · rw [one_mul]
-    have hj := covariantJetNormSq_le_of_pointwise_iteratedCovGrad_le (I := I) (M := M) g (symmS (I := I) (M := M) g T) T
-      (fun i x => riemannianFiberNormSq_symmS_le (I := I) (M := M) g T i x) n
+    have hj := covariantJetNormSq_le_of_pointwise_iteratedCovGrad_le (I := I) (M := M) g (ccTensor02Symm (I := I) (M := M) g T) T
+      (fun i x => riemannianFiberNormSq_ccTensor02Symm_le (I := I) (M := M) g T i x) n
     rw [one_mul] at hj
     have := covariantJetNormSq_nonneg (I := I) (M := M) (m := n) g T
     linarith
@@ -1127,10 +1127,10 @@ theorem HasMoserTameBounds.lieDecomposition2 (g : SmoothRiemannianMetric I M)
         (curvatureDecompositionMonomialCoeffField (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hδg hδZ s)
           (ccTensorUnitValueSection (I := I) (M := M) g
-            (symmS (I := I) (M := M) g T))
+            (ccTensor02Symm (I := I) (M := M) g T))
           (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g
-            (symmS (I := I) (M := M) g T)) σ) :=
-    fun σ => hM T _ _ hpert (symmS (I := I) (M := M) g T) σ (hY T hTsup)
+            (ccTensor02Symm (I := I) (M := M) g T)) σ) :=
+    fun σ => hM T _ _ hpert (ccTensor02Symm (I := I) (M := M) g T) σ (hY T hTsup)
   have hAM : ∀ n, 0 ≤ AM n :=
     fun n => HasMoserTameBounds.coefficient_nonneg (I := I) (M := M) (hmono ricciConnectionDifferenceDerivativeCyclicPermutation) n
   have hSM : 0 ≤ SM := (hmono ricciConnectionDifferenceDerivativeCyclicPermutation).1
@@ -1140,9 +1140,9 @@ theorem HasMoserTameBounds.lieDecomposition2 (g : SmoothRiemannianMetric I M)
           curvatureDecompositionMonomialCoeffField (I := I) (M := M) g
             (metricPerturbationPath (I := I) g T 0 hδg hδZ s)
             (ccTensorUnitValueSection (I := I) (M := M) g
-              (symmS (I := I) (M := M) g T))
+              (ccTensor02Symm (I := I) (M := M) g T))
             (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g
-              (symmS (I := I) (M := M) g T)) (lieDecompositionQ i)) := by
+              (ccTensor02Symm (I := I) (M := M) g T)) (lieDecompositionQ i)) := by
     intro i
     have heps : |lieDecompositionEps i| ≤ (1 : ℝ) := by
       fin_cases i <;> simp [lieDecompositionEps]
@@ -1154,7 +1154,7 @@ theorem HasMoserTameBounds.lieDecomposition2 (g : SmoothRiemannianMetric I M)
     · nlinarith [hAM n]
     · nlinarith [hSM, abs_nonneg (lieDecompositionEps i)]
   rw [DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral.lieDecomposition2,
-    deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight,
+    deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight,
     Fin.sum_univ_three]
   have hsum := HasMoserTameBounds.add (I := I) (M := M)
     (HasMoserTameBounds.add (I := I) (M := M) (hscal 0) (hscal 1)) (hscal 2)

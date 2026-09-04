@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.Bochner.PointwiseTensorBochner
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Uniform.SmoothTensorBound
+import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.Basic
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.SmoothTensor
 
 
 noncomputable section

@@ -82,7 +82,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_for_smaller_metri
       (finiteEigenComboHs (I := I) (M := M) g F c
         (((1 : ℕ) : ℝ) + 2))‖)
   let T : SmoothCcTensor g 0 2 :=
-    symmS (I := I) (M := M) g
+    ccTensor02Symm (I := I) (M := M) g
       (galCoreRep (I := I) (M := M) g R F c)
   let hT := galRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
@@ -113,9 +113,9 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_for_smaller_metri
   have hTsymm : ∀ (x : M) (u v : TangentSpace I x),
       ccTensorBilin (I := I) g T x u v =
         ccTensorBilin (I := I) g T x v u := by
-    apply bilin_symm_of_symmS (I := I) (M := M) g
+    apply bilin_symm_of_ccTensor02Symm (I := I) (M := M) g
     dsimp only [T]
-    exact symmS_idem (I := I) (M := M) g _
+    exact ccTensor02Symm_idem (I := I) (M := M) g _
   have hmain := hpairG T hTsymm hdelta_lt hT hZ hR hRR0 hT2
   have hdiag := galTermPair3_diag (I := I) (M := M) g gBase hR
     hdelta_lt hdelta.le hdeltathird hreal F c

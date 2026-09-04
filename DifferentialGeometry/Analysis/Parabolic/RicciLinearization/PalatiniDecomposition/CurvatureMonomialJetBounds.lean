@@ -79,7 +79,7 @@ lemma riemannianFiberNormSq_add3_le (g : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma toModel_unitValue_symmS_abs_le (g₀ : SmoothRiemannianMetric I M)
+lemma toModel_unitValue_ccTensor02Symm_abs_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (y : M) (v w : TangentSpace I y) :
@@ -449,7 +449,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
         CS l * Combinatorics.antidiagonalTupleGridWindow b (l + 2) := by
       rcases Nat.eq_zero_or_pos l with hl0 | hl1
       · subst hl0
-        have hzero := riemannianFiberNormSq_symmS_le_of_gFibreOpBound (I := I) (M := M) g₀ S hδ0
+        have hzero := riemannianFiberNormSq_ccTensor02Symm_le_of_gFibreOpBound (I := I) (M := M) g₀ S hδ0
           hboundS x
         have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := by nlinarith
         have hone : (1 : ℝ) ≤ Combinatorics.antidiagonalTupleGridWindow b (0 + 2) :=
@@ -466,7 +466,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
         refine le_trans hstep ?_
         have hcs_nn : (0 : ℝ) ≤ fr ^ 2 * δ₀ ^ 2 := by positivity
         nlinarith [mul_le_mul_of_nonneg_left hone hcs_nn]
-      · have hsymm := bdRiemannianFiberNormSq_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ S l x
+      · have hsymm := bdRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ S l x
         have hsingle : b l ≤ Combinatorics.antidiagonalTupleGrid b l :=
           bdSingle_b_le_grid b hb l hl1
         have hgw : Combinatorics.antidiagonalTupleGrid b l ≤
@@ -714,7 +714,7 @@ private theorem iteratedCovGrad_normSq_tameEnvelope_of_gridWindow_rank42
         ring
 
 
-theorem exists_curvatureDecompositionMonomialCoeffField_symmS_metricPerturbationPath_l2JetWindow
+theorem exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPerturbationPath_l2JetWindow
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (σ : Equiv.Perm (Fin 4)) :

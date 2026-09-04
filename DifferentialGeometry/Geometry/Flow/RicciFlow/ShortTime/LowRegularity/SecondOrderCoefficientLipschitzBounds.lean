@@ -878,7 +878,7 @@ private theorem symm_iteratedCovGrad_norm_c2
         (1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 k T +
           (1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 k Tsw := by
     dsimp only [Tsw]
-    exact iteratedCovGrad_symmS_eq (I := I) (M := M) g T k
+    exact iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g T k
   rw [hiter]
   refine (norm_add_le _ _).trans ?_
   rw [norm_smul, norm_smul]
@@ -939,7 +939,7 @@ private theorem domperm_sub_c2
     ContinuousMultilinearMap.domDomCongr_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem symmS_sub_c2
+private theorem ccTensor02Symm_sub_c2
     (g : SmoothRiemannianMetric I M)
     (T U : SmoothCcTensor g 0 2) :
     ccTensor02Symm (I := I) (M := M) g (T - U) =
@@ -2325,7 +2325,7 @@ private theorem lieSecondOrderExpansion_pairing_lipschitz_bound
       secondOrderCoefficientJetNormSq (I := I) (M := M) g
           (ccTensor02Symm (I := I) (M := M) g T -
             ccTensor02Symm (I := I) (M := M) g U) ≤ D ^ 2 := by
-    rw [← symmS_sub_c2 (I := I) (M := M) g T U]
+    rw [← ccTensor02Symm_sub_c2 (I := I) (M := M) g T U]
     calc
       secondOrderCoefficientJetNormSq (I := I) (M := M) g
           (ccTensor02Symm (I := I) (M := M) g (T - U)) ≤
@@ -2394,8 +2394,8 @@ private theorem lieSecondOrderExpansion_pairing_lipschitz_bound
           lieDecomposition2 (I := I) (M := M) g U hUδ hZδ s =
         s • (W 0 + W 1 + W 2) := by
     rw [lieDecomposition2, lieDecomposition2,
-      deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight,
-      deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight]
+      deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight,
+      deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight]
     simp only [Fin.sum_univ_three, W, V, gmT, gmU]
     module
   have h01 :

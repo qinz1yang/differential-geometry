@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.N
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.NormalCoordinates.Hessian
-import DifferentialGeometry.Geometry.Exponential.NormalBallGeodesic
+import DifferentialGeometry.Geometry.Exponential.NormalBall.Geodesic
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -142,7 +142,7 @@ theorem halfCage_ctrl
   exact ⟨hyTarget, hyCoord, hyp⟩
 
 omit [CompleteSpace E] in
-theorem halfSq_inf
+theorem halfSqDist_contMDiffOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalChartData (I := I) X hd) (k : Nat)
@@ -221,7 +221,7 @@ theorem halfSq_inf
   let : MetricSpace (X.obj k).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
   intro hρ hρq hρChart
-  apply IsNormalDiag.halfSq_inf_ctrl (I := I) (X.obj k)
+  apply IsNormalDiag.halfSqDist_contMDiffOn_of_normalDiagFence (I := I) (X.obj k)
     hcomplete hconn x (d.metricBounds k x) hq he hf
     hρ hρq
   · simpa only [metricBounds] using hρChart
@@ -585,7 +585,7 @@ theorem inv_cov
       exact hpairDom
   have hdom : ∀ y ∈ S, (y, pt) ∈ B.dom := fun _ hy => hy
   have hZsec : ContMDiffOn I I.tangent ∞ (T% Zloc) S :=
-    B.inv_snd_inf hdom
+    B.inv_vector_contMDiffOn_at_fixed_target hdom
   obtain ⟨Zexts, hZexts⟩ := exists_contMDiffSection_eqOn_nhd
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
     (s := fun _ : Unit => Zloc)
@@ -774,7 +774,7 @@ theorem hess_coord
         hρ hρq (by simpa only [metricBounds] using hρChart)
         hctrl.1 hctrl.2.1 hctrl.2.2).choose_spec.1
   have hZat : MDifferentiableAt I I.tangent (T% Z) y0 :=
-    ((B.inv_snd_inf hdom).contMDiffAt
+    ((B.inv_vector_contMDiffOn_at_fixed_target hdom).contMDiffAt
       (hSopen.mem_nhds hyS)).mdifferentiableAt (by simp)
   have hneg :
       (LeviCivita (I := I) (X.obj k).metric).toFun
@@ -1590,7 +1590,7 @@ theorem center_of_mass_normal_coordinate_data
     have hsmooth : ContMDiffOn I 𝓘(Real) ∞
         (CenterOfMass.halfSqDist (pts i)) S := by
       simpa only [S] using
-        d.halfSq_inf k hcomplete hconn x hq he hf hρ hρq hρChart
+        d.halfSqDist_contMDiffOn k hcomplete hconn x hq he hf hρ hρq hρChart
     have hyS : y ∈ S := by
       change max (riemannianEDist I x y) (riemannianEDist I x (pts i)) <
         ENNReal.ofReal (ρ / 2)

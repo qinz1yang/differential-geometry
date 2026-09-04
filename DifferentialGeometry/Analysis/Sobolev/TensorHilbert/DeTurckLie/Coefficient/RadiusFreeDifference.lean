@@ -229,14 +229,14 @@ theorem deTurckLieCoeffField_perOrder_l2_radiusFree
         (_htie : ∀ (y : M) (v w : TangentSpace I y),
           g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
         (_hsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-          ((symmS (I := I) (M := M) g₀ T).toSection x) ≤ Λ₀ ^ 2)
+          ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) ≤ Λ₀ ^ 2)
         (i : ℕ) (_hi : i ≤ a),
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
           Atop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-              (symmS (I := I) (M := M) g₀ T)‖ ^ 2 +
+              (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 +
           Alow i * (1 + ∑ j ∈ Finset.range (i + 2),
-            ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
+            ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Ka_top, hKa_top_nn, Ka_low, hKa_low_nn, hDLa⟩ :=
     exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
@@ -249,17 +249,17 @@ theorem deTurckLieCoeffField_perOrder_l2_radiusFree
     fun i => 2 * Ka_low i + 2 * Kb_low i,
     fun i => by have := hKa_low_nn i; have := hKb_low_nn i; linarith, ?_⟩
   intro g₁ T δ hδ_le hδ0 hδ htie hsup i hi
-  set P : SmoothCcTensor g₀ 0 2 := symmS (I := I) (M := M) g₀ T with hP_def
+  set P : SmoothCcTensor g₀ 0 2 := ccTensor02Symm (I := I) (M := M) g₀ T with hP_def
   have htie' : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w := by
     intro y v w
     rw [hP_def,
-      DifferentialGeometry.Analysis.Spectral.ccTensorBilinSymm_symmS_apply
+      DifferentialGeometry.Analysis.Spectral.ccTensorBilinSymm_ccTensor02Symm_apply
         (I := I) (M := M) g₀ T y v w]
     exact htie y v w
   have hδ' : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P) δ := by
     rw [hP_def]
-    exact DifferentialGeometry.Analysis.Spectral.gFibreOpBound_symmS
+    exact DifferentialGeometry.Analysis.Spectral.gFibreOpBound_ccTensor02Symm
       (I := I) (M := M) g₀ T hδ
   have ha := hDLa g₁ P htie' hδ_le hδ0 hδ' hsup i
   have hb := hDLb g₁ P htie' hδ_le hδ0 hδ' hsup i hi
@@ -321,9 +321,9 @@ theorem deTurckLieCoeffField_summed_l2_radiusFree
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
               (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
           Ktop * (∑ j ∈ Finset.range (a + 3),
-              ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) +
+              ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) +
           Klow * (1 + ∑ j ∈ Finset.range (a + 2),
-              ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
+              ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Atop, hAtop_nn, Alow, hAlow_nn, hper⟩ :=
     deTurckLieCoeffField_perOrder_l2_radiusFree (I := I) (M := M) g₀ g_bg a hδ₀
@@ -358,21 +358,21 @@ theorem deTurckLieCoeffField_summed_l2_radiusFree
     have hmaxeq : max 0 ((Module.finrank ℝ E : ℝ) * δ₀) = (Module.finrank ℝ E : ℝ) * δ₀ :=
       max_eq_right (mul_nonneg (Nat.cast_nonneg _) hδ₀0)
     have hsup : ∀ x : M, riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
-        ((symmS (I := I) (M := M) g₀ T).toSection x) ≤
+        ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) ≤
         (max 0 ((Module.finrank ℝ E : ℝ) * δ₀)) ^ 2 := by
       intro x
       rw [hmaxeq]
-      exact riemannianFiberNormSq_symmS_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
+      exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall (I := I) (M := M) g₀ hδ₀0 T hδ_le hδ0 hδ x
     have hper' : ∀ i, i ≤ a →
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
             (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 ≤
           Atop i * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2)
-              (symmS (I := I) (M := M) g₀ T)‖ ^ 2 +
+              (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 +
           Alow i * (1 + ∑ j ∈ Finset.range (i + 2),
-            ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) :=
+            ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) :=
       fun i hi => hper g₁ T hδ_le hδ0 hδ htie hsup i hi
     set w : ℕ → ℝ := fun j =>
-      ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2 with hw
+      ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 with hw
     have hw_nn : ∀ j, 0 ≤ w j := fun j => sq_nonneg _
     calc ∑ i ∈ Finset.range (a + 1),
             ‖iteratedCovGrad (I := I) g₀ 2 2 i
@@ -422,15 +422,15 @@ theorem deTurckLieCoeffField_summed_l2_radiusFree
     rw [hL0]
     have h1 : 0 ≤ (∑ i ∈ Finset.range (a + 1), Atop i) *
         (∑ j ∈ Finset.range (a + 3),
-          ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) :=
+          ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) :=
       mul_nonneg (Finset.sum_nonneg (fun i _ => hAtop_nn i))
         (Finset.sum_nonneg (fun j _ => sq_nonneg _))
     have h2 : 0 ≤ (∑ i ∈ Finset.range (a + 1), Alow i) *
         (1 + ∑ j ∈ Finset.range (a + 2),
-          ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2) := by
+          ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
       refine mul_nonneg (Finset.sum_nonneg (fun i _ => hAlow_nn i)) ?_
       have : 0 ≤ ∑ j ∈ Finset.range (a + 2),
-          ‖iteratedCovGrad (I := I) g₀ 0 2 j (symmS (I := I) (M := M) g₀ T)‖ ^ 2 :=
+          ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2 :=
         Finset.sum_nonneg (fun j _ => sq_nonneg _)
       linarith
     linarith

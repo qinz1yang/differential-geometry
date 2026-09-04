@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorDerivative
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.SlotFree
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 
 set_option autoImplicit false

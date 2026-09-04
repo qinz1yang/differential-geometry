@@ -796,7 +796,7 @@ theorem exists_chartPhase_contDiffOn_isLocalFlow_combined_nat
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_chartPhase_contDiffOn_isLocalFlow_combined_inf
+theorem exists_smooth_chartPhase_localFlow
     [CompleteSpace E]
     (g : SmoothRiemannianMetric I M) (α : M) {x₀ v₀ : E}
     (hx₀ : x₀ ∈ interior (extChartAt I α).target) :

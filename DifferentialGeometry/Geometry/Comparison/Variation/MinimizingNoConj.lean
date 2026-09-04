@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.MinimalGeodesicNoConjugate
-import DifferentialGeometry.Geometry.Exponential.ConjugatePoint
-import DifferentialGeometry.Geometry.Exponential.IntrinsicVelocity
+import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.Basic
+import DifferentialGeometry.Geometry.Exponential.Intrinsic.Velocity
 
 
 open DifferentialGeometry.Geometry.Curvature

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Bounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.ChartFamily
-import DifferentialGeometry.Geometry.Exponential.DiagonalInverseCoordinates
-import DifferentialGeometry.Geometry.Exponential.NormalBallHomeomorphism
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.InverseCoordinates
+import DifferentialGeometry.Geometry.Exponential.NormalBall.Homeomorphism
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.BoundedGeometry.NormalCoordinates.Phase
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Extension
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.DiagonalInverse.Existence
@@ -219,7 +219,7 @@ private theorem pair_mem_target
     exact hwA
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem normalTanHome_inf
+theorem normalTanHome_contMDiffOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -261,7 +261,7 @@ theorem normalTanHome_inf
   exact ht.comp' hmOn
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem normalTan_inv_inf
+theorem normalTanHome_symm_contMDiffOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -307,7 +307,7 @@ theorem normalTan_inv_inf
   exact hmOn.comp' ht
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem normalPairHome_inf
+theorem normalPairHome_contMDiffOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -325,7 +325,7 @@ theorem normalPairHome_inf
   convert! h using 1
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem normalPair_inv_inf
+theorem normalPairHome_symm_contMDiffOn
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -364,7 +364,7 @@ theorem chart_mem_norm_le
       letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
       riemannianEDist I c y ≠ ⊤ ∧
         (riemannianEDist I c y).toReal <
-          expRadiusGp (I := I) (X.obj k).metric c) :
+          metricCoerciveExpRadius (I := I) (X.obj k).metric c) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
     letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -459,7 +459,7 @@ theorem raw_chart_mem_norm_le
       letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
       riemannianEDist I c y ≠ ⊤ ∧
         (riemannianEDist I c y).toReal <
-          expRadiusGp (I := I) (X.obj k).metric c) :
+          metricCoerciveExpRadius (I := I) (X.obj k).metric c) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
     letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
@@ -677,7 +677,7 @@ noncomputable def toBranch
       normalPair (I := I) Y x (e z) (c := c) =
         diagExp (I := I) Y.metric (normal_enorm (I := I) Y)
           (normalTangent (I := I) Y x z (c := c)) at h
-  rcases h with ⟨hsource, hzero, _heInf, _htarget, hinvInf, hdiag⟩
+  rcases h with ⟨hsource, hzero, _heInf, _htarget, hinvSmooth, hdiag⟩
   let A := chartTanHome (I := I) Y x c
   let P := chartPairHome (I := I) Y x c
   let D := chartDiagHome (I := I) Y x c e
@@ -700,7 +700,7 @@ noncomputable def toBranch
     { hom := D
       zero_mem := ?_
       hom_eq := ?_
-      inv_inf := ?_ }
+      inv_contMDiffOn := ?_ }
   · change u0 ∈ D.source
     change u0 ∈ (A.symm.trans (e.trans P)).source
     rw [OpenPartialHomeomorph.trans_source]
@@ -751,21 +751,21 @@ noncomputable def toBranch
         congrArg (diagExp (I := I) Y.metric (normal_enorm (I := I) Y)) hztan
   · let B := e.trans P
     have hPInv : ContMDiffOn (I.prod I) 𝓘(Real, E × E) ∞
-        P.symm P.target := c.pairHome_inv_inf
+        P.symm P.target := c.pairHome_symm_contMDiffOn
     have heInv : ContMDiffOn 𝓘(Real, E × E) 𝓘(Real, E × E) ∞
-        e.symm e.target := hinvInf.contMDiffOn
+        e.symm e.target := hinvSmooth.contMDiffOn
     have hBInv : ContMDiffOn (I.prod I) 𝓘(Real, E × E) ∞
         B.symm B.target := by
       change ContMDiffOn (I.prod I) 𝓘(Real, E × E) ∞
         ((e.symm : E × E → E × E) ∘ (P.symm : Y.M × Y.M → E × E))
         (P.target ∩ (P.symm : Y.M × Y.M → E × E) ⁻¹' e.target)
       exact heInv.comp' hPInv
-    have hAInf : ContMDiffOn 𝓘(Real, E × E) I.tangent ∞ A A.source :=
-      c.tangentHome_inf
+    have hASmooth : ContMDiffOn 𝓘(Real, E × E) I.tangent ∞ A A.source :=
+      c.tangentHome_contMDiffOn
     change ContMDiffOn (I.prod I) I.tangent ∞
       ((A : E × E → TangentBundle I Y.M) ∘ (B.symm : Y.M × Y.M → E × E))
       (B.target ∩ (B.symm : Y.M × Y.M → E × E) ⁻¹' A.source)
-    exact hAInf.comp' hBInv
+    exact hASmooth.comp' hBInv
 
 @[simp] theorem toBranch_hom
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -900,7 +900,7 @@ theorem full_transport
       normalPair (I := I) Y x (e z) (c := c) =
         diagExp (I := I) Y.metric (normal_enorm (I := I) Y)
           (normalTangent (I := I) Y x z (c := c)) at hdata
-  rcases hdata with ⟨hsource, _hzero, _heInf, _htarget, _hinvInf, _hdiag⟩
+  rcases hdata with ⟨hsource, _hzero, _heInf, _htarget, _hinvSmooth, _hdiag⟩
   have hfence := hf
   change ∀ z ∈ Metric.closedBall (0 : E × E) q,
     z.1 ∈ Metric.ball (0 : E) c.radius ∧
@@ -1215,7 +1215,7 @@ theorem symm_fst_eq
       normalPair (I := I) Y x (e z) (c := c) =
         diagExp (I := I) Y.metric (normal_enorm (I := I) Y)
           (normalTangent (I := I) Y x z (c := c)) at hdata
-  rcases hdata with ⟨hsource, _hzero, _heInf, _htarget, _hinvInf, hdiag⟩
+  rcases hdata with ⟨hsource, _hzero, _heInf, _htarget, _hinvSmooth, hdiag⟩
   have hfence := hf
   change ∀ z ∈ Metric.closedBall (0 : E × E) q,
     z.1 ∈ Metric.ball (0 : E) c.radius ∧
@@ -1615,7 +1615,7 @@ theorem pair_mem_of_closed
       normalPair (I := I) Y x (e z) (c := c) =
         diagExp (I := I) Y.metric (normal_enorm (I := I) Y)
           (normalTangent (I := I) Y x z (c := c)) at h
-  rcases h with ⟨hsource, _hzero, _heInf, htarget, _hinvInf, _hdiag⟩
+  rcases h with ⟨hsource, _hzero, _heInf, htarget, _hinvSmooth, _hdiag⟩
   let A := chartTanHome (I := I) Y x c
   let P := chartPairHome (I := I) Y x c
   have hwnorm : ‖w‖ ≤ ρ := by
@@ -1759,7 +1759,7 @@ theorem exists_pair_branch
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     letI : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) hcomplete
-    ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 < metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       (∀ i, max (riemannianEDist I x (a i)) (riemannianEDist I x (b i)) <
         ENNReal.ofReal (ρ / 2)) →
       ∃ B : DiagonalInverseBranch (I := I) (X.obj k).metric
@@ -1899,7 +1899,7 @@ theorem exists_branch_containing_pairs
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     letI : CompleteSpace (X.obj k).M :=
       MetricComplete.complete (I := I) (X.obj k) hcomplete
-    ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
+    ρ / 2 < metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       (∀ i, max (riemannianEDist I x (a i)) (riemannianEDist I x (b i)) <
         ENNReal.ofReal (ρ / 2)) →
       ∃ B : DiagonalInverseBranch (I := I) (X.obj k).metric

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.TameLipschitz.CoefficientDifferencePathIntegral
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
-import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenbergProductTwoTerm
+import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.ProductTwoTerm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
@@ -76,7 +76,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
   exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
   unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
-  symmS_sub ccTensorBilin_symmS iteratedCovGrad_symmS_eq domDomCongrSection
+  ccTensor02Symm_sub smoothCcTensorBilinForm_ccTensor02Symm iteratedCovGrad_ccTensor02Symm_eq domDomCongrSection
   riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
@@ -1955,16 +1955,16 @@ private theorem deTurckRHSCovariantTermDifference_iteratedCovGrad_l2_tame_ballUn
     intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball
     have hδS : metricCauchySchwarzBound (I := I) (M := M) g₀
         (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) g₀ T)) δ :=
-      gFibreOpBound_ccTensorBilinSymm_symmS (I := I) g₀ T hδ
+      gFibreOpBound_ccTensorBilinSymm_ccTensor02Symm (I := I) g₀ T hδ
     have hδ'S : metricCauchySchwarzBound (I := I) (M := M) g₀
         (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) g₀ T')) δ' :=
-      gFibreOpBound_ccTensorBilinSymm_symmS (I := I) g₀ T' hδ'
+      gFibreOpBound_ccTensorBilinSymm_ccTensor02Symm (I := I) g₀ T' hδ'
     have hTballS : ∀ j : ℕ, j ≤ a + 2 →
         ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) g₀ T)‖ ≤ R := fun j hj =>
-      (tensorL2Norm_iteratedCovGrad_symmS_le (I := I) g₀ T j).trans (hTball j hj)
+      (tensorL2Norm_iteratedCovGrad_ccTensor02Symm_le (I := I) g₀ T j).trans (hTball j hj)
     have hT'ballS : ∀ j : ℕ, j ≤ a + 2 →
         ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) g₀ T')‖ ≤ R := fun j hj =>
-      (tensorL2Norm_iteratedCovGrad_symmS_le (I := I) g₀ T' j).trans (hT'ball j hj)
+      (tensorL2Norm_iteratedCovGrad_ccTensor02Symm_le (I := I) g₀ T' j).trans (hT'ball j hj)
     have hSle : ∑ i ∈ Finset.range (a + 2 + 1),
           ‖iteratedCovGrad (I := I) g₀ 0 2 i
             (ccTensor02Symm (I := I) g₀ T - ccTensor02Symm (I := I) g₀ T')‖ ^ 2 ≤
@@ -1972,9 +1972,9 @@ private theorem deTurckRHSCovariantTermDifference_iteratedCovGrad_l2_tame_ballUn
           ‖iteratedCovGrad (I := I) g₀ 0 2 i (T - T')‖ ^ 2 := by
       refine Finset.sum_le_sum (fun i _ => ?_)
       have hsymeq : ccTensor02Symm (I := I) g₀ T - ccTensor02Symm (I := I) g₀ T' =
-          ccTensor02Symm (I := I) g₀ (T - T') := (symmS_sub (I := I) g₀ T T').symm
+          ccTensor02Symm (I := I) g₀ (T - T') := (ccTensor02Symm_sub (I := I) g₀ T T').symm
       rw [hsymeq]
-      have hle := tensorL2Norm_iteratedCovGrad_symmS_le (I := I) g₀ (T - T') i
+      have hle := tensorL2Norm_iteratedCovGrad_ccTensor02Symm_le (I := I) g₀ (T - T') i
       have hnn : 0 ≤ ‖iteratedCovGrad (I := I) g₀ 0 2 i (ccTensor02Symm (I := I) g₀ (T - T'))‖ :=
         norm_nonneg _
       exact pow_le_pow_left₀ hnn hle 2
@@ -1989,8 +1989,8 @@ private theorem deTurckRHSCovariantTermDifference_iteratedCovGrad_l2_tame_ballUn
       Finset.sum_nonneg fun i _ => sq_nonneg _
     obtain ⟨hC0S, hL0S, hLaS⟩ :=
       hEndS (ccTensor02Symm (I := I) g₀ T) (ccTensor02Symm (I := I) g₀ T') hδ_le hδS hδ'_le hδ'S
-        (ccTensorBilin_symmS_symm (I := I) g₀ T)
-        (ccTensorBilin_symmS_symm (I := I) g₀ T') hTballS hT'ballS
+        (smoothCcTensorBilinForm_ccTensor02Symm_symm (I := I) g₀ T)
+        (smoothCcTensorBilinForm_ccTensor02Symm_symm (I := I) g₀ T') hTballS hT'ballS
     have hN_eq :
         deTurckRHSTermG0 (I := I) g₀ g_bg (ccTensor02Symm (I := I) g₀ T)
             (lt_of_le_of_lt hδ_le hδ₀) hδS -
@@ -1998,9 +1998,9 @@ private theorem deTurckRHSCovariantTermDifference_iteratedCovGrad_l2_tame_ballUn
             (lt_of_le_of_lt hδ'_le hδ₀) hδ'S =
         deTurckRHSTermG0 (I := I) g₀ g_bg T (lt_of_le_of_lt hδ_le hδ₀) hδ -
           deTurckRHSTermG0 (I := I) g₀ g_bg T' (lt_of_le_of_lt hδ'_le hδ₀) hδ' := by
-      rw [deTurckRHSTermG0_symmS_eq (I := I) g₀ g_bg T
+      rw [deTurckRHSTermG0_ccTensor02Symm_eq (I := I) g₀ g_bg T
           (lt_of_le_of_lt hδ_le hδ₀) hδ (lt_of_le_of_lt hδ_le hδ₀) hδS,
-        deTurckRHSTermG0_symmS_eq (I := I) g₀ g_bg T'
+        deTurckRHSTermG0_ccTensor02Symm_eq (I := I) g₀ g_bg T'
           (lt_of_le_of_lt hδ'_le hδ₀) hδ' (lt_of_le_of_lt hδ'_le hδ₀) hδ'S]
     rw [hN_eq] at hC0S hL0S hLaS
     refine ⟨fun x => ?_, ?_, ?_⟩
@@ -2381,15 +2381,15 @@ private theorem deTurckRHSCovariantTermDifference_covariantJet_coeffC0_jetL2_cru
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball
   have hδ_s : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) g₀ T)) δ :=
-    gFibreOpBound_ccTensorBilinSymm_symmS g₀ T hδ
+    gFibreOpBound_ccTensorBilinSymm_ccTensor02Symm g₀ T hδ
   have hδ'_s : metricCauchySchwarzBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) g₀ T')) δ' :=
-    gFibreOpBound_ccTensorBilinSymm_symmS g₀ T' hδ'
+    gFibreOpBound_ccTensorBilinSymm_ccTensor02Symm g₀ T' hδ'
   obtain ⟨C₀, C₁, C₂, hid, h0s, h1s, h2s, h0j, h1j, h2j⟩ :=
     hsymm (ccTensor02Symm (I := I) g₀ T) (ccTensor02Symm (I := I) g₀ T') hδ_le hδ_s hδ'_le hδ'_s
-      (ccTensorBilin_symmS_symm g₀ T) (ccTensorBilin_symmS_symm g₀ T')
-      (fun j hj => le_trans (tensorL2Norm_iteratedCovGrad_symmS_le g₀ T j) (hTball j hj))
-      (fun j hj => le_trans (tensorL2Norm_iteratedCovGrad_symmS_le g₀ T' j) (hT'ball j hj))
+      (smoothCcTensorBilinForm_ccTensor02Symm_symm g₀ T) (smoothCcTensorBilinForm_ccTensor02Symm_symm g₀ T')
+      (fun j hj => le_trans (tensorL2Norm_iteratedCovGrad_ccTensor02Symm_le g₀ T j) (hTball j hj))
+      (fun j hj => le_trans (tensorL2Norm_iteratedCovGrad_ccTensor02Symm_le g₀ T' j) (hT'ball j hj))
   obtain ⟨σ'₀, hσ'₀⟩ :=
     exists_iteratedCovGrad_unitModel_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (0 : Fin 2) 1) (T - T') 0
@@ -2432,10 +2432,10 @@ private theorem deTurckRHSCovariantTermDifference_covariantJet_coeffC0_jetL2_cru
       apply ContinuousMultilinearMap.ext
       intro v
       exact symmAbsorbedCoeff_operatorFieldApplication_eq (I := I) (M := M) g₀ 2 (T - T') C₂ σ'₂ hσ'₂ x v
-    rw [he0, he1, he2, symmS_sub g₀ T T',
-      ← deTurckRHSTermG0_symmS_eq g₀ g_bg T (lt_of_le_of_lt hδ_le hδ₀) hδ
+    rw [he0, he1, he2, ccTensor02Symm_sub g₀ T T',
+      ← deTurckRHSTermG0_ccTensor02Symm_eq g₀ g_bg T (lt_of_le_of_lt hδ_le hδ₀) hδ
         (lt_of_le_of_lt hδ_le hδ₀) hδ_s,
-      ← deTurckRHSTermG0_symmS_eq g₀ g_bg T' (lt_of_le_of_lt hδ'_le hδ₀) hδ'
+      ← deTurckRHSTermG0_ccTensor02Symm_eq g₀ g_bg T' (lt_of_le_of_lt hδ'_le hδ₀) hδ'
         (lt_of_le_of_lt hδ'_le hδ₀) hδ'_s]
     exact hid
   · intro x

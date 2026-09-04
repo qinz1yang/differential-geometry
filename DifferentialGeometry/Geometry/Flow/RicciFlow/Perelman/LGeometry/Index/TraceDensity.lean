@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.LaplacianBound
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.DifferentiatedRicciEndomorphism
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.RicciEndomorphism
 
 set_option autoImplicit false
 

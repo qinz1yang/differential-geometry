@@ -1,14 +1,11 @@
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 
-
 noncomputable section
 
 open Bundle Manifold
 open scoped Manifold Topology ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.Pullback
-
-open DifferentialGeometry.Geometry.Riemannian.Exponential
+namespace DifferentialGeometry.Geometry.Riemannian.Exponential.LocalAddition
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -18,42 +15,42 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [CompactSpace M] [T2Space M]
 
-noncomputable def localAddZeroCoord (p : M) : E × E :=
+noncomputable def zeroCoordinates (p : M) : E × E :=
   extChartAt I.tangent
-    (⟨connCompPt (I := I) p, (0 : E)⟩ :
-      TangentBundle I (connCompOpen (I := I) p))
-    (⟨connCompPt (I := I) p, (0 : E)⟩ :
-      TangentBundle I (connCompOpen (I := I) p))
+    (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+      TangentBundle I (connectedComponentOpen (I := I) p))
+    (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+      TangentBundle I (connectedComponentOpen (I := I) p))
 
-noncomputable def localAddTarget
+noncomputable def targetCoordinates
     (g : SmoothRiemannianMetric I M) (p : M) : E × E → E :=
-  fun z => (connAddChart (I := I) g p z).2
+  fun z => (localAdditionCoordinateMap (I := I) g p z).2
 
-lemma localAddTarget_fd
+lemma targetCoordinates_hasFDerivAt
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) :
-    HasFDerivAt (localAddTarget (I := I) g p)
+    HasFDerivAt (targetCoordinates (I := I) g p)
       ((ContinuousLinearMap.snd ℝ E E).comp
-        (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E)))
-      (localAddZeroCoord (I := I) p) := by
+        (DifferentialGeometry.PhaseFlow.freeDiagCLE (E := E) : (E × E) →L[ℝ] (E × E)))
+      (zeroCoordinates (I := I) p) := by
   let : NormedAddCommGroup (E × E) := Prod.normedAddCommGroup
   let : NormedSpace ℝ (E × E) := Prod.normedSpace
-  change HasFDerivAt (fun z : E × E => (connAddChart (I := I) g p z).2)
+  change HasFDerivAt (fun z : E × E => (localAdditionCoordinateMap (I := I) g p z).2)
     ((ContinuousLinearMap.snd ℝ E E).comp
-      (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E)))
+      (DifferentialGeometry.PhaseFlow.freeDiagCLE (E := E) : (E × E) →L[ℝ] (E × E)))
     (extChartAt I.tangent
-      (⟨connCompPt (I := I) p, (0 : E)⟩ :
-        TangentBundle I (connCompOpen (I := I) p))
-      (⟨connCompPt (I := I) p, (0 : E)⟩ :
-        TangentBundle I (connCompOpen (I := I) p)))
-  exact (connAdd_fderiv (I := I) g p n hn).snd
+      (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+        TangentBundle I (connectedComponentOpen (I := I) p))
+      (⟨connectedComponentPoint (I := I) p, (0 : E)⟩ :
+        TangentBundle I (connectedComponentOpen (I := I) p)))
+  exact (localAdditionCoordinateMap_hasFDerivAt (I := I) g p n hn).snd
 
-lemma localAddTarget_vert
+lemma targetCoordinates_fderiv_vertical
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) (v : E) :
-    fderiv ℝ (localAddTarget (I := I) g p)
-        (localAddZeroCoord (I := I) p) (0, v) = v := by
-  rw [(localAddTarget_fd (I := I) g p n hn).fderiv]
-  simp [unipotentCLE, DifferentialGeometry.PhaseFlow.freeDiagCLE_apply]
+    fderiv ℝ (targetCoordinates (I := I) g p)
+        (zeroCoordinates (I := I) p) (0, v) = v := by
+  rw [(targetCoordinates_hasFDerivAt (I := I) g p n hn).fderiv]
+  simp [DifferentialGeometry.PhaseFlow.freeDiagCLE]
 
-end DifferentialGeometry.PDE.RicciFlow.Pullback
+end DifferentialGeometry.Geometry.Riemannian.Exponential.LocalAddition
 
 end

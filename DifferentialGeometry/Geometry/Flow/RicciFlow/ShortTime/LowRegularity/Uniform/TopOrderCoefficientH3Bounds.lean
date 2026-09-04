@@ -1425,7 +1425,7 @@ theorem lie_second_order_expansion_h3_uniform
   have hdecomposition :
       lieDecomposition2 (I := I) (M := M) g T hdelta hdeltaZ a =
         a • (U 0 + U 1 + U 2) := by
-    rw [lieDecomposition2, deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight]
+    rw [lieDecomposition2, deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight]
     simp only [Fin.sum_univ_three, U, V, gm,
       symm_self (I := I) (M := M) g T _hT]
   have h01 : (∑ j ∈ Finset.range 4,

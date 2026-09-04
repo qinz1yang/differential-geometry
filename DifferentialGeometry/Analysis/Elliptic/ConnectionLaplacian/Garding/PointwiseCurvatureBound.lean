@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.CurvatureControlledSecondOrder
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.CurvatureDefect
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.CurvatureDefect
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorPointwiseBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.Pointwise
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

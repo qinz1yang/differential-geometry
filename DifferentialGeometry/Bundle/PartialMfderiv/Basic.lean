@@ -946,7 +946,7 @@ theorem prodExtDerivAt_gen
         (e.symmL Real p.2 (Xcoord p))
   rw [hcancel]
 
-theorem prodExtDerivAt_inf
+theorem prodExtDerivAt_smooth
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]

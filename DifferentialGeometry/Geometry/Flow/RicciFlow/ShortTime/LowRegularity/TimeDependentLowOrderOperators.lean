@@ -93,7 +93,7 @@ private noncomputable def symmCoreMap
       TensorHs (I := I) (M := M) g 0 2 σ :=
   fun x =>
     ccToHsLin (I := I) (M := M) g 2 σ
-      (symmS (I := I) (M := M) g
+      (ccTensor02Symm (I := I) (M := M) g
         (symmRep (I := I) (M := M) g σ x))
 
 private theorem symmCore_lip
@@ -116,15 +116,15 @@ private theorem symmCore_lip
       symmRep_spec (I := I) (M := M) g σ y
   change
     ‖ccTensorToHs (I := I) (M := M) g 2 σ
-          (symmS (I := I) (M := M) g
+          (ccTensor02Symm (I := I) (M := M) g
             (symmRep (I := I) (M := M) g σ x)) -
         ccTensorToHs (I := I) (M := M) g 2 σ
-          (symmS (I := I) (M := M) g
+          (ccTensor02Symm (I := I) (M := M) g
             (symmRep (I := I) (M := M) g σ y))‖ ≤
       ‖(x : TensorHs (I := I) (M := M) g 0 2 σ) -
         (y : TensorHs (I := I) (M := M) g 0 2 σ)‖
-  rw [← ccToHs_sub, ← symmS_sub, ← hx, ← hy, ← ccToHs_sub]
-  exact norm_smoothCcToTensorHs_symmS_le
+  rw [← ccToHs_sub, ← ccTensor02Symm_sub, ← hx, ← hy, ← ccToHs_sub]
+  exact norm_smoothCcToTensorHs_ccTensor02Symm_le
     (I := I) (M := M) g σ
       (symmRep (I := I) (M := M) g σ x -
         symmRep (I := I) (M := M) g σ y)
@@ -171,7 +171,7 @@ private theorem symmFun_zero
       ccTensor02Symm (I := I) (M := M) g (0 : SmoothCcTensor g 0 2) = 0 := by
     rw [show (0 : SmoothCcTensor g 0 2) =
         (0 : ℝ) • (0 : SmoothCcTensor g 0 2) by simp,
-      symmS_smul]
+      ccTensor02Symm_smul]
     simp
   simpa only [map_zero, hsymm] using
     symmFun_core (I := I) (M := M) g hσ
@@ -210,7 +210,7 @@ private theorem symmFun_add
       symmFun_core (I := I) (M := M) g hσ,
       symmFun_core (I := I) (M := M) g hσ,
       symmFun_core (I := I) (M := M) g hσ,
-      symmS_add, map_add]
+      ccTensor02Symm_add, map_add]
   have hD : Dense D :=
     ccToHsLin_dense (I := I) (M := M) g 2 hσ
   have hC : C = Set.univ := by
@@ -247,7 +247,7 @@ private theorem symmFun_smul
     rw [← map_smul,
       symmFun_core (I := I) (M := M) g hσ,
       symmFun_core (I := I) (M := M) g hσ,
-      symmS_smul, map_smul]
+      ccTensor02Symm_smul, map_smul]
   have hD : Dense D :=
     ccToHsLin_dense (I := I) (M := M) g 2 hσ
   have hC : C = Set.univ := by
@@ -284,7 +284,7 @@ theorem symmHs_core
     symmHs (I := I) (M := M) g hσ
         (ccToHsLin (I := I) (M := M) g 2 σ T) =
       ccToHsLin (I := I) (M := M) g 2 σ
-        (symmS (I := I) (M := M) g T) :=
+        (ccTensor02Symm (I := I) (M := M) g T) :=
   symmFun_core (I := I) (M := M) g hσ T
 
 theorem symmHs_le
@@ -447,17 +447,17 @@ noncomputable def lowRadial
   (min 1
       (ρ /
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-          (symmS (I := I) (M := M) g T)‖)) •
-    symmS (I := I) (M := M) g T
+          (ccTensor02Symm (I := I) (M := M) g T)‖)) •
+    ccTensor02Symm (I := I) (M := M) g T
 
 @[simp] theorem lowRadial_zero
     (g : SmoothRiemannianMetric I M) (ρ : ℝ) :
     lowRadial (I := I) (M := M) g ρ
         (0 : SmoothCcTensor g 0 2) = 0 := by
   have hs :
-      symmS (I := I) (M := M) g (0 : SmoothCcTensor g 0 2) = 0 := by
+      ccTensor02Symm (I := I) (M := M) g (0 : SmoothCcTensor g 0 2) = 0 := by
     simpa only [zero_smul] using
-      symmS_smul (I := I) (M := M) g (0 : ℝ)
+      ccTensor02Symm_smul (I := I) (M := M) g (0 : ℝ)
         (0 : SmoothCcTensor g 0 2)
   rw [lowRadial, hs, smul_zero]
 
@@ -468,7 +468,7 @@ theorem lowRadial_embed
         (lowRadial (I := I) (M := M) g ρ T) =
       ballRetraction ρ
         (ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-          (symmS (I := I) (M := M) g T)) := by
+          (ccTensor02Symm (I := I) (M := M) g T)) := by
   rw [lowRadial, ccTensorToHs_smul, ballRetraction]
 
 theorem lowRadial_norm
@@ -483,16 +483,16 @@ theorem lowRadial_eq_self
     (g : SmoothRiemannianMetric I M) {ρ : ℝ}
     (T : SmoothCcTensor g 0 2)
     (hT : ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-      (symmS (I := I) (M := M) g T)‖ ≤ ρ) :
-    lowRadial (I := I) (M := M) g ρ T = symmS (I := I) (M := M) g T := by
+      (ccTensor02Symm (I := I) (M := M) g T)‖ ≤ ρ) :
+    lowRadial (I := I) (M := M) g ρ T = ccTensor02Symm (I := I) (M := M) g T := by
   rcases eq_or_lt_of_le (norm_nonneg
       (ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-        (symmS (I := I) (M := M) g T))) with hz | hz
+        (ccTensor02Symm (I := I) (M := M) g T))) with hz | hz
   · have hzero : ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
         (0 : SmoothCcTensor g 0 2) = 0 := by
       simpa only [ccToHsLin_apply] using
         map_zero (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ))
-    have hS : symmS (I := I) (M := M) g T = (0 : SmoothCcTensor g 0 2) :=
+    have hS : ccTensor02Symm (I := I) (M := M) g T = (0 : SmoothCcTensor g 0 2) :=
       ccToHs_injective (I := I) (M := M) g 2 (2 : ℝ)
         ((norm_eq_zero.mp hz.symm).trans hzero.symm)
     rw [lowRadial, hS, smul_zero]
@@ -507,7 +507,7 @@ theorem lowRadial_symm
       ccTensorBilin (I := I) g
         (lowRadial (I := I) (M := M) g ρ T) x v u := by
   rw [lowRadial, ccBilin_smul, ccBilin_smul,
-    ccTensorBilin_symmS, ccTensorBilin_symmS,
+    smoothCcTensorBilinForm_ccTensor02Symm, smoothCcTensorBilinForm_ccTensor02Symm,
     ccTensorBilinSymm_symm (I := I) g T x u v]
 
 theorem lowRadial_lip
@@ -525,29 +525,28 @@ theorem lowRadial_lip
     (lipschitzWith_one_ballRetraction
       (X := metricH2 (I := I) (M := M) g) hρ).dist_le_mul
         (ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-          (symmS (I := I) (M := M) g T))
+          (ccTensor02Symm (I := I) (M := M) g T))
         (ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-          (symmS (I := I) (M := M) g U))
+          (ccTensor02Symm (I := I) (M := M) g U))
   rw [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm] at hretract
   calc
     ‖ballRetraction ρ
           (ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-            (symmS (I := I) (M := M) g T)) -
+            (ccTensor02Symm (I := I) (M := M) g T)) -
         ballRetraction ρ
           (ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-            (symmS (I := I) (M := M) g U))‖ ≤
+            (ccTensor02Symm (I := I) (M := M) g U))‖ ≤
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-            (symmS (I := I) (M := M) g T) -
+            (ccTensor02Symm (I := I) (M := M) g T) -
           ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-            (symmS (I := I) (M := M) g U)‖ := hretract
+            (ccTensor02Symm (I := I) (M := M) g U)‖ := hretract
     _ =
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-          (symmS (I := I) (M := M) g (T - U))‖ := by
-      simp only [symmS]
-      rw [symmS_sub, ccToHs_sub]
+          (ccTensor02Symm (I := I) (M := M) g (T - U))‖ := by
+      rw [ccTensor02Symm_sub, ccToHs_sub]
     _ ≤
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ := by
-      exact norm_smoothCcToTensorHs_symmS_le
+      exact norm_smoothCcToTensorHs_ccTensor02Symm_le
         (I := I) (M := M) g (2 : ℝ) (T - U)
     _ =
         ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T -
@@ -579,7 +578,7 @@ theorem lowRadial_h3_eq
         (lowRadial (I := I) (M := M) g ρ T) =
       lowScaleCutoff (incl32 (I := I) (M := M) g) ρ
         (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-          (symmS (I := I) (M := M) g T)) := by
+          (ccTensor02Symm (I := I) (M := M) g T)) := by
   rw [lowRadial, lowScaleCutoff, ccTensorToHs_smul,
     incl32_ccToHs (I := I) (M := M)]
 
@@ -600,10 +599,10 @@ theorem lowRadial_h3_sub
           ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ := by
   let T3 :=
     ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-      (symmS (I := I) (M := M) g T)
+      (ccTensor02Symm (I := I) (M := M) g T)
   let U3 :=
     ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-      (symmS (I := I) (M := M) g U)
+      (ccTensor02Symm (I := I) (M := M) g U)
   have hcut :=
     lowScaleCutoff_sub_le (incl32 (I := I) (M := M) g)
       (tensorHsInclusion_injective (I := I) (M := M) (g := g)
@@ -615,24 +614,24 @@ theorem lowRadial_h3_sub
           ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U‖ := by
     rw [show T3 - U3 =
         ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-          (symmS (I := I) (M := M) g (T - U)) by
-      simp only [T3, U3, symmS_sub, ccToHs_sub]]
+          (ccTensor02Symm (I := I) (M := M) g (T - U)) by
+      simp only [T3, U3, ccTensor02Symm_sub, ccToHs_sub]]
     calc
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-          (symmS (I := I) (M := M) g (T - U))‖ ≤
+          (ccTensor02Symm (I := I) (M := M) g (T - U))‖ ≤
           ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) (T - U)‖ :=
-        norm_smoothCcToTensorHs_symmS_le
+        norm_smoothCcToTensorHs_ccTensor02Symm_le
           (I := I) (M := M) g (3 : ℝ) (T - U)
       _ = ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T -
           ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U‖ := by
         rw [ccToHs_sub]
   have hT3 :
       ‖T3‖ ≤ ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ :=
-    norm_smoothCcToTensorHs_symmS_le
+    norm_smoothCcToTensorHs_ccTensor02Symm_le
       (I := I) (M := M) g (3 : ℝ) T
   have hU3 :
       ‖U3‖ ≤ ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) U‖ :=
-    norm_smoothCcToTensorHs_symmS_le
+    norm_smoothCcToTensorHs_ccTensor02Symm_le
       (I := I) (M := M) g (3 : ℝ) U
   have h2diff :
       ‖incl32 (I := I) (M := M) g T3 -
@@ -642,13 +641,13 @@ theorem lowRadial_h3_sub
     rw [show incl32 (I := I) (M := M) g T3 -
         incl32 (I := I) (M := M) g U3 =
           ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-            (symmS (I := I) (M := M) g (T - U)) by
-      simp only [T3, U3, incl32_ccToHs, symmS_sub, ccToHs_sub]]
+            (ccTensor02Symm (I := I) (M := M) g (T - U)) by
+      simp only [T3, U3, incl32_ccToHs, ccTensor02Symm_sub, ccToHs_sub]]
     calc
       ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ)
-          (symmS (I := I) (M := M) g (T - U))‖ ≤
+          (ccTensor02Symm (I := I) (M := M) g (T - U))‖ ≤
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) (T - U)‖ :=
-        norm_smoothCcToTensorHs_symmS_le
+        norm_smoothCcToTensorHs_ccTensor02Symm_le
           (I := I) (M := M) g (2 : ℝ) (T - U)
       _ = ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T -
           ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) U‖ := by
@@ -934,7 +933,7 @@ theorem lowRadialH3_le
       ρ /
         ‖incl32 (I := I) (M := M) g
           (ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-            (symmS (I := I) (M := M) g T))‖
+            (ccTensor02Symm (I := I) (M := M) g T))‖
     have hq : 0 ≤ q := by
       exact div_nonneg hρ.le (norm_nonneg _)
     have hmin0 : 0 ≤ min 1 q := le_min zero_le_one hq
@@ -942,22 +941,22 @@ theorem lowRadialH3_le
     change
       ‖min 1 q‖ *
           ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-            (symmS (I := I) (M := M) g T)‖ ≤
+            (ccTensor02Symm (I := I) (M := M) g T)‖ ≤
         ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖
     rw [Real.norm_eq_abs, abs_of_nonneg hmin0]
     calc
       min 1 q *
           ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-            (symmS (I := I) (M := M) g T)‖ ≤
+            (ccTensor02Symm (I := I) (M := M) g T)‖ ≤
         1 *
           ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-            (symmS (I := I) (M := M) g T)‖ :=
+            (ccTensor02Symm (I := I) (M := M) g T)‖ :=
         mul_le_mul_of_nonneg_right hmin1 (norm_nonneg _)
       _ =
           ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ)
-            (symmS (I := I) (M := M) g T)‖ := one_mul _
+            (ccTensor02Symm (I := I) (M := M) g T)‖ := one_mul _
       _ ≤ ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) T‖ :=
-        norm_smoothCcToTensorHs_symmS_le
+        norm_smoothCcToTensorHs_ccTensor02Symm_le
           (I := I) (M := M) g (3 : ℝ) T
   have hD : Dense D :=
     ccToHsLin_dense (I := I) (M := M) g 2 (by positivity)

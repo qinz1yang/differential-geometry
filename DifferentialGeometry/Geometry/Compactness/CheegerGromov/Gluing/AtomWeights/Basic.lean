@@ -88,7 +88,7 @@ theorem gluing_atom_mem_ball
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      4 * lam < expRadiusGp (I := I) Y.metric p)
+      4 * lam < metricCoerciveExpRadius (I := I) Y.metric p)
     (hq : gluingAtom Y p lam hlam q ≠ 0) :
     letI : MetricSpace Y.M := P.ms
     q ∈ Metric.ball p (4 * lam) := by
@@ -108,7 +108,7 @@ theorem gluing_atom_mem_ball
   have hsqrt_lt : Real.sqrt (Y.metric.inner p v v) < 4 * lam :=
     (Real.sqrt_le_sqrt hv).trans_lt (gluing_bump_outer_radius_lt lam hlam)
   have hsmall : Real.sqrt (Y.metric.inner p v v) <
-      expRadiusGp (I := I) Y.metric p := hsqrt_lt.trans hR
+      metricCoerciveExpRadius (I := I) Y.metric p := hsqrt_lt.trans hR
   have hvnorm : ‖v‖ < expMapC2Radius (I := I) Y.metric p :=
     norm_lt_expMapC2Radius_of_sqrt_inner_lt (I := I) Y.metric p hsmall
   have hvtgt : v ∈ (normalChartAt (I := I) Y.metric p).target :=
@@ -135,7 +135,7 @@ theorem gluing_atom_eq_dist
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      4 * lam < expRadiusGp (I := I) Y.metric p) :
+      4 * lam < metricCoerciveExpRadius (I := I) Y.metric p) :
     letI : MetricSpace Y.M := P.ms
     gluingAtom Y p lam hlam q =
       gluingBump lam hlam ((dist p q) ^ 2) := by
@@ -166,9 +166,9 @@ theorem gluing_atom_eq_dist
       exact ψ.toPartialEquiv.right_inv hvtgt
     have hquad_nonneg : 0 ≤ Y.metric.inner p v v := by
       exact (mul_nonneg
-        (gpCoerciveConst_pos (I := I) Y.metric p).le
+        (metricCoerciveConst_pos (I := I) Y.metric p).le
         (sq_nonneg ‖v‖)).trans
-          (gpCoerciveConst_le (I := I) Y.metric p v)
+          (metricCoerciveConst_le (I := I) Y.metric p v)
     rw [gluingAtom, quadNormal_of_mem Y.metric p
       (gluingBump lam hlam) (by simpa only [ψ] using hqsrc)]
     rw [show normalChartAt (I := I) Y.metric p q = v by
@@ -275,7 +275,7 @@ theorem seqAtom_contMDiff (hd : InjectivityRadiusDecay (I := I) X) {D : Real}
       let lam := L.lamInf (gamma : Nat)
       let hlam := hd.lambda_pos hD (L.rInf (gamma : Nat))
       have hR : 4 * lam <
-          expRadiusGp (I := I) (X.obj (L.φ k)).metric c := by
+          metricCoerciveExpRadius (I := I) (X.obj (L.φ k)).metric c := by
         simpa only [lam] using hgp gamma c hc
       have heq :
           (fun q => gluingBump lam hlam ((dist c q) ^ 2)) =

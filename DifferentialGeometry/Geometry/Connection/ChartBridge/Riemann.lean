@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
 open DifferentialGeometry.Geometry.Curvature

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturba
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.JetTower
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 import DifferentialGeometry.Geometry.Operator.MetricSharpSmooth
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
 import Mathlib.Analysis.Calculus.Deriv.Slope
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -241,7 +241,7 @@ lemma realizedVelocityCc_bilin
       unfold ccTensorModel
       rw [hmulti, Tensor0SSpace.toModel_sub]
     rw [hmodel, sub_apply]
-  rw [htrans, ccTensorBilin_symmS (I := I) (M := M) g₀ (T - T') b u w,
+  rw [htrans, smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ (T - T') b u w,
     tensorSectionRealizeMetric_inner, tensorSectionRealizeMetric_inner]
   simp only [ccTensorBilinSymm_apply]
   rw [hsub u w, hsub w u]

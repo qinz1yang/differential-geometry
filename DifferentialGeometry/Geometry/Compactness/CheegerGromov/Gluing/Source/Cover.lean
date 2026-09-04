@@ -164,7 +164,7 @@ theorem liveMetric0_symm
 
 theorem MetricCompactnessInputs.exists_live_cores
     (inp : MetricCompactnessInputs (I := I) X)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -466,7 +466,7 @@ theorem MetricCompactnessInputs.exists_live_cores
       rw [Real.sqrt_sq (mul_nonneg (by norm_num) hlambda.le)] at hs
       exact hs
     have hsmall : Real.sqrt (Y.metric.inner c v v) <
-        expRadiusGp (I := I) Y.metric c :=
+        metricCoerciveExpRadius (I := I) Y.metric c :=
       hsqrt.trans <| (by
         have := hgpk alpha.1 c hcenterk
         nlinarith)
@@ -588,7 +588,7 @@ theorem MetricCompactnessInputs.exists_live_cores
 
 theorem MetricCompactnessInputs.exists_live_source_cover
     (inp : MetricCompactnessInputs (I := I) X)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

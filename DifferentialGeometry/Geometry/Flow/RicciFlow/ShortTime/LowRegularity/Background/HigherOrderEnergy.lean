@@ -17,7 +17,7 @@ open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Parabolic (zero_mem_lowerState)
 open DifferentialGeometry.Analysis.Spectral
-  (cc_partial_le_norm ccTensorBilin_symmS_symm eigenIdxFinset galerkinEnergy
+  (cc_partial_le_norm smoothCcTensorBilinForm_ccTensor02Symm_symm eigenIdxFinset galerkinEnergy
     galerkin_energy_uniform_bound_perScale smoothCcToTensorHs)
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -56,13 +56,13 @@ theorem galerkin_action_all_order_tame_bound_background (g₀ g_bg : SmoothRiema
   refine ⟨Clower R5 m, hClower R5 m, ?_⟩
   intro F c hE5
   let T : SmoothCcTensor g₀ 0 2 :=
-    symmS (I := I) (M := M) g₀
+    ccTensor02Symm (I := I) (M := M) g₀
       (galCoreRep (I := I) (M := M) g₀ R F c)
   have hsym : ∀ (x : M) (u v : TangentSpace I x),
       ccTensorBilin (I := I) g₀ T x u v =
         ccTensorBilin (I := I) g₀ T x v u := by
     dsimp only [T]
-    exact ccTensorBilin_symmS_symm
+    exact smoothCcTensorBilinForm_ccTensor02Symm_symm
       (I := I) (M := M) g₀ _
   have hδg : gFibreOpBound (I := I) (M := M) g₀
       (ccTensorBilinSymm (I := I) g₀ T) δ := by

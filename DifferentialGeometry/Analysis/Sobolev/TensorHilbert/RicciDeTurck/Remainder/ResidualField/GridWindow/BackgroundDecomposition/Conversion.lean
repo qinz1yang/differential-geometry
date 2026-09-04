@@ -49,7 +49,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 variable (g₀ g₁ : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-lemma metricDifferenceCcTensor_eq_symmS (P : SmoothCcTensor g₀ 0 2)
+lemma metricDifferenceCcTensor_eq_ccTensor02Symm (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w) :
     metricDifferenceCcTensor (I := I) (M := M) g₀ g₁ = ccTensor02Symm (I := I) g₀ P := by
@@ -71,7 +71,7 @@ lemma metricDifferenceCcTensor_eq_symmS (P : SmoothCcTensor g₀ 0 2)
     fin_cases k <;> rfl]
   rw [unitModel_eq_ccTensorBilin_pt (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ P) x (m 0)
     (m 1)]
-  rw [ccTensorBilin_symmS (I := I) (M := M) g₀ P x (m 0) (m 1)]
+  rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ P x (m 0) (m 1)]
   rw [htie x (m 0) (m 1)]
   ring
 
@@ -577,7 +577,7 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeightGeneral
     | 0, _ =>
         rw [iteratedCovGrad_zero]
         have hδ1 : δ ^ 2 ≤ 1 := by nlinarith
-        have h0 := riemannianFiberNormSq_symmS_zero_le_of_ball (I := I) (M := M) g₀ P hδ0 hbound x
+        have h0 := riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (I := I) (M := M) g₀ P hδ0 hbound x
         calc riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
               ((ccTensor02Symm (I := I) (M := M) g₀ P).toSection x)
             ≤ fr ^ 2 * δ ^ 2 := h0
@@ -589,7 +589,7 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_ricciContractionWeightGeneral
               refine mul_le_mul_of_nonneg_left hW_one ?_
               positivity
     | (k + 1), hw₄ =>
-        refine le_trans (riemannianFiberNormSq_iteratedCovGrad_symmS_pointwise (I := I) (M := M) g₀ P
+        refine le_trans (riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_pointwise (I := I) (M := M) g₀ P
           (k + 1) x) ?_
         calc b (k + 1)
             ≤ Combinatorics.antidiagonalTupleGrid b (k + 1) :=
@@ -807,7 +807,7 @@ lemma bgRCommCoeffField_eq_decomposition (g : SmoothRiemannianMetric I M) :
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma sharpRaisedKoszulVec_symmS_eq_connectionDifference (P : SmoothCcTensor g₀ 0 2)
+private lemma sharpRaisedKoszulVec_ccTensor02Symm_eq_connectionDifference (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
     (x : M) (u ζ : TangentSpace I x) :
@@ -820,7 +820,7 @@ private lemma sharpRaisedKoszulVec_symmS_eq_connectionDifference (P : SmoothCcTe
       (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u ζ)) z =
       g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x u ζ) z from rfl]
   rw [linearizedKoszulCovec_apply (I := I) g₀ (ccTensor02Symm (I := I) g₀ P) x u ζ z]
-  rw [connectionDifferenceInner_g1_eq_half_covGradSymmS (I := I) g₀ g₁ P htie x u ζ z]
+  rw [connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm (I := I) g₀ g₁ P htie x u ζ z]
   with_unfolding_all
     rfl
 
@@ -849,7 +849,7 @@ lemma koszulCovecCc_unitModel_eq_connectionDifference_g1_inner (P : SmoothCcTens
           (tangentSpaceModelContinuousLinearEquiv (I := I) x) b] =
       g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a b) c := by
   rw [koszulCovecCc_unitModel (I := I) (M := M) g₀ P x a b c]
-  rw [connectionDifferenceInner_g1_eq_half_covGradSymmS (I := I) g₀ g₁ P htie x a b c]
+  rw [connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm (I := I) g₀ g₁ P htie x a b c]
   rfl
 
 end NormedKoszulCovectorConnectionDifferenceIdentity
@@ -1350,8 +1350,8 @@ private lemma sharpGradKoszulKernel_contractionWeights_unitModel (P : SmoothCcTe
     add_apply]
   rw [hM1, hM2, hM3, hM4]
   rw [sharpGradKoszulKernelBilin_apply (I := I) g₀ g₁ (ccTensor02Symm (I := I) g₀ P) x p q v0 v1]
-  rw [sharpRaisedKoszulVec_symmS_eq_connectionDifference (I := I) (M := M) g₀ g₁ P htie x q v0,
-    sharpRaisedKoszulVec_symmS_eq_connectionDifference (I := I) (M := M) g₀ g₁ P htie x q p]
+  rw [sharpRaisedKoszulVec_ccTensor02Symm_eq_connectionDifference (I := I) (M := M) g₀ g₁ P htie x q v0,
+    sharpRaisedKoszulVec_ccTensor02Symm_eq_connectionDifference (I := I) (M := M) g₀ g₁ P htie x q p]
   rw [hT1, hT2, hT3, hT4]
 
 omit [SigmaCompactSpace M] in

@@ -120,26 +120,26 @@ theorem lieDecomposition2_cap
       riemannianFiberNormSq (I := I) (M := M) g 4 2 x
           ((curvatureDecompositionMonomialCoeffField (I := I) (M := M) g gm
             (ccTensorUnitValueSection (I := I) (M := M) g
-              (symmS (I := I) (M := M) g T))
+              (ccTensor02Symm (I := I) (M := M) g T))
             (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g
-              (symmS (I := I) (M := M) g T)) σ).toSection x) ≤ B ^ 2 := by
+              (ccTensor02Symm (I := I) (M := M) g T)) σ).toSection x) ≤ B ^ 2 := by
     intro σ
     have hunit : ∀ (y : M) (v w : TangentSpace I y),
         |Tensor0SSpace.toModel
           (ccTensorUnitValueSection (I := I) (M := M) g
-            (symmS (I := I) (M := M) g T) y) ![(v : E), (w : E)]| ≤
+            (ccTensor02Symm (I := I) (M := M) g T) y) ![(v : E), (w : E)]| ≤
           δ * Real.sqrt (g.inner y v v) * Real.sqrt (g.inner y w w) := by
       intro y v w
       change |unitModel (I := I) (M := M) g 2
-        (symmS (I := I) (M := M) g T) y ![v, w]| ≤ _
-      rw [unitModel_eq_ccTensorBilin_local, ccTensorBilin_symmS]
+        (ccTensor02Symm (I := I) (M := M) g T) y ![v, w]| ≤ _
+      rw [unitModel_eq_ccTensorBilin_local, smoothCcTensorBilinForm_ccTensor02Symm]
       exact hδ y v w
     rw [curvatureDecompositionMonomialCoeffField_toSection]
     simpa only [B] using
       (riemannianFiberNormSq_curvatureDecompositionMonomialBiContrFib_le
         (I := I) (M := M) g gm P htie hδ_lt hP
         (ccTensorUnitValueSection (I := I) (M := M) g
-          (symmS (I := I) (M := M) g T))
+          (ccTensor02Symm (I := I) (M := M) g T))
         hδ0 hunit σ x)
   have heps : ∀ i : Fin 3, |lieDecompositionEps i| ≤ (1 : ℝ) := by
     intro i
@@ -148,9 +148,9 @@ theorem lieDecomposition2_cap
     ((lieDecompositionEps i) •
       curvatureDecompositionMonomialCoeffField (I := I) (M := M) g gm
         (ccTensorUnitValueSection (I := I) (M := M) g
-          (symmS (I := I) (M := M) g T))
+          (ccTensor02Symm (I := I) (M := M) g T))
         (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g
-          (symmS (I := I) (M := M) g T))
+          (ccTensor02Symm (I := I) (M := M) g T))
         (lieDecompositionQ i)).toSection x
   have hterm : ∀ i : Fin 3,
       riemannianFiberNormSq (I := I) (M := M) g 4 2 x
@@ -164,7 +164,7 @@ theorem lieDecomposition2_cap
     exact (mul_le_mul he2 (hmono (lieDecompositionQ i))
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g 4 2 x _) (by norm_num)).trans
       (by nlinarith [sq_nonneg B])
-  rw [lieDecomposition2, deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight,
+  rw [lieDecomposition2, deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight,
     SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
     DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
   simp only [Fin.sum_univ_three, SmoothCcTensor.toSection_add,

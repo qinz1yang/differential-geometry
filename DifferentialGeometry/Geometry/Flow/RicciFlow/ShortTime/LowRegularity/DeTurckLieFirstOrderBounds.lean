@@ -294,15 +294,15 @@ private theorem perm_norm_eq
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem symm_norm_le
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2) (j : ℕ) :
-    ‖iteratedCovGrad (I := I) g 0 2 j (symmS (I := I) (M := M) g T)‖ ≤
+    ‖iteratedCovGrad (I := I) g 0 2 j (ccTensor02Symm (I := I) (M := M) g T)‖ ≤
       ‖iteratedCovGrad (I := I) g 0 2 j T‖ := by
   classical
   have hiter :
-      iteratedCovGrad (I := I) g 0 2 j (symmS (I := I) (M := M) g T) =
+      iteratedCovGrad (I := I) g 0 2 j (ccTensor02Symm (I := I) (M := M) g T) =
         (1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 j T +
           (1 / 2 : ℝ) • iteratedCovGrad (I := I) g 0 2 j
             (domDomCongrSection (I := I) g (Equiv.swap (0 : Fin 2) 1) T) :=
-    iteratedCovGrad_symmS_eq (I := I) (M := M) g T j
+    iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g T j
   rw [hiter]
   refine (norm_add_le _ _).trans ?_
   rw [norm_smul, norm_smul, show ‖(1 / 2 : ℝ)‖ = 1 / 2 by
@@ -357,7 +357,7 @@ theorem pbLow_h2_uniform
   intro g₀ hEq hjet1 hjet2 hjet3 P R hR hP
   let W : SmoothCcTensor g₀ 1 1 :=
     cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-      (symmS (I := I) (M := M) g₀ P)
+      (ccTensor02Symm (I := I) (M := M) g₀ P)
   have hWterm : ∀ j ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 1 1 j W‖ ^ 2 ≤
         ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 := by
@@ -365,7 +365,7 @@ theorem pbLow_h2_uniform
     have hraise :
         ‖iteratedCovGrad (I := I) g₀ 1 1 j W‖ ^ 2 =
           ‖iteratedCovGrad (I := I) g₀ 0 2 j
-            (symmS (I := I) (M := M) g₀ P)‖ ^ 2 := by
+            (ccTensor02Symm (I := I) (M := M) g₀ P)‖ ^ 2 := by
       rw [SmoothCcTensor.norm_def, SmoothCcTensor.norm_def,
         tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs,
         tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs]
@@ -373,11 +373,11 @@ theorem pbLow_h2_uniform
         simpa only [W] using
           (riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq
             (I := I) (M := M) g₀ 0
-            (symmS (I := I) (M := M) g₀ P) j x))
+            (ccTensor02Symm (I := I) (M := M) g₀ P) j x))
     rw [hraise]
     have hs := symm_norm_le (I := I) (M := M) g₀ P j
     nlinarith [norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j
-      (symmS (I := I) (M := M) g₀ P)),
+      (ccTensor02Symm (I := I) (M := M) g₀ P)),
       norm_nonneg (iteratedCovGrad (I := I) g₀ 0 2 j P)]
   have hW : (∑ j ∈ Finset.range 3,
       ‖iteratedCovGrad (I := I) g₀ 1 1 j W‖ ^ 2) ≤ R ^ 2 :=

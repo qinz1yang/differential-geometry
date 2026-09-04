@@ -117,7 +117,7 @@ private theorem koszulOp_app
   have hs := ccTensor02Symm_eq_self (I := I) (M := M) g T hT
   rw [koszulOp, app_smul_left, operatorFieldComposition_sub_left,
     operatorFieldComposition_add_left, permCoeff_app, permCoeff_app, permCoeff_app]
-  rw [koszulCovecCc, symmSCovGrad3, hs]
+  rw [koszulCovecCc, ccTensor02SymmCovGrad3, hs]
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 private theorem raised_inner
@@ -171,7 +171,7 @@ private theorem koszulCc_unitModel_eq_connectionDifference_inner
           tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
       gm.inner x (PDE.DeTurck.connectionDifference (I := I) gm g x a b) c := by
   rw [koszulCovecCc_unitModel (I := I) g T x a b c]
-  rw [connectionDifferenceInner_g1_eq_half_covGradSymmS
+  rw [connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm
     (I := I) g gm T htie x a b c]
   rfl
 
@@ -1367,12 +1367,12 @@ private theorem ricciGood_eq_safe
   intro W
   rw [symmetrizedRicciConnectionDifferenceLowOrderCoefficient, ccInputSlotSymm_action]
   rw [reducedRicciConnectionDifferenceLowOrderCoefficient, ccInputSlotSymm_action]
-  let SW := symmS (I := I) (M := M) g W
+  let SW := ccTensor02Symm (I := I) (M := M) g W
   have hSW : ∀ (x : M) (u v : TangentSpace I x),
       ccTensorBilin (I := I) g SW x u v =
         ccTensorBilin (I := I) g SW x v u := by
     intro x u v
-    simp only [SW, ccTensorBilin_symmS, ccTensorBilinSymm_apply]
+    simp only [SW, smoothCcTensorBilinForm_ccTensor02Symm, ccTensorBilinSymm_apply]
     ring
   have hs := safeLow_action (I := I) (M := M)
     g gm P SW hP hSW htie
@@ -2682,7 +2682,7 @@ private theorem rhs_self_decomposition
             (Equiv.swap (0 : Fin 4) 2 *
               Equiv.swap (1 : Fin 4) 3) 1 := by
     rw [ricciDecomposition2,
-      riemannPalatiniDecompositionC2Family_eq_symmS_kernel
+      riemannPalatiniDecompositionC2Family_eq_ccTensor02Symm_kernel
         (I := I) (M := M) g T hδ hδZ
         ricciDecompositionQA ricciDecompositionQB (fun _ => rfl) s,
       hsymm, smul_smul]
@@ -3158,14 +3158,14 @@ private theorem trace_h2_rf
       mul_nonneg (hC0 q) (Finset.sum_nonneg fun k _ => hG0 k)
   refine ⟨K, hK0, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ σ
-  have hsymm : symmS (I := I) (M := M) g P = P :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g P hP
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   have hAG : ∀ k : ℕ,
       MeasureTheory.Integrable
@@ -3289,14 +3289,14 @@ private theorem conn_h2_rf
         (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 2, hFlow0 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
-  have hsymm : symmS (I := I) (M := M) g P = P :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g P hP
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   simpa only [covariantJetNormSq, Nat.reduceAdd] using
     hFlow g₁ P htie hδ_le hδ0 hδ hsup 2 (by omega)
@@ -5435,14 +5435,14 @@ private theorem sharp_h3_rf
         (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 3, hFlow0 3, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
-  have hsymm : symmS (I := I) (M := M) g P = P :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g P hP
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   simpa only [covariantJetNormSq, Nat.reduceAdd] using
     (hFlow g₁ P htie hδ_le hδ0 hδ hsup).2 3 (by omega)
@@ -5540,14 +5540,14 @@ private theorem sharp_h2_low
         (2 * Module.finrank ℝ E + 10) hδ₀ hΛ₀0
   refine ⟨Flow 2, hFlow0 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
-  have hsymm : symmS (I := I) (M := M) g P = P :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g P hP
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   simpa only [covariantJetNormSq, Nat.reduceAdd] using
     (hFlow g₁ P htie hδ_le hδ0 hδ hsup).2 2 (by omega)
@@ -7233,14 +7233,14 @@ private theorem cometric_h2_rf
       (I := I) (M := M) g aStar hδ₀ hΛ₀0
   refine ⟨F 2, hF 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
-  have hsymm : symmS (I := I) (M := M) g P = P :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g P hP
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   have hraw := (hcast g₁ P htie hδ_le hδ0 hδ hsup).2 2 (by
     dsimp only [aStar]
@@ -7283,14 +7283,14 @@ private theorem exists_cometricCastG0_covariantJetNormSq_two_low_bound
       (I := I) (M := M) g aStar hδ₀ hΛ₀0
   refine ⟨F 2, hF 2, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
-  have hsymm : symmS (I := I) (M := M) g P = P :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g P hP
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   have hraw := (hcast g₁ P htie hδ_le hδ0 hδ hsup).2 2 (by
     dsimp only [aStar]
@@ -7556,14 +7556,14 @@ private theorem mcd_h2_rf
     exact Finset.sum_nonneg fun q _ => hF q
   refine ⟨K, hK, ?_⟩
   intro g₁ P hP htie δ hδ_le hδ0 hδ
-  have hsymm : symmS (I := I) (M := M) g P = P :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g P hP
   have hsup : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           (P.toSection x) ≤ Λ₀ ^ 2 := by
     intro x
     rw [← hsymm]
-    exact riemannianFiberNormSq_symmS_zero_le_fibreSmall
+    exact riemannianFiberNormSq_ccTensor02Symm_zero_le_fibreSmall
       (I := I) (M := M) g hδ₀0 P hδ_le hδ0 hδ x
   unfold covariantJetNormSq
   calc
@@ -9465,14 +9465,14 @@ private theorem lieSecondOrderExpansion_sobolev_two_bound
           (cometricDoublePairTraceCoefficient (I := I) (M := M) g gm) ≤ Bp 1 :=
     hpair gm P hP htie hδ_le hδ0 hδP
       1 (by norm_num) hP2one
-  have hsymm : symmS (I := I) (M := M) g T = T :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g T = T :=
     ccTensor02Symm_eq_self (I := I) (M := M) g T hT
   let V : Fin 3 → SmoothCcTensor g 4 2 := fun i =>
     curvatureDecompositionMonomialCoeffField (I := I) (M := M) g gm
       (ccTensorUnitValueSection (I := I) (M := M) g
-        (symmS (I := I) (M := M) g T))
+        (ccTensor02Symm (I := I) (M := M) g T))
       (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g
-        (symmS (I := I) (M := M) g T)) (lieDecompositionQ i)
+        (ccTensor02Symm (I := I) (M := M) g T)) (lieDecompositionQ i)
   let U : Fin 3 → SmoothCcTensor g 4 2 := fun i =>
     lieDecompositionEps i • V i
   have hV (i : Fin 3) :
@@ -9512,7 +9512,7 @@ private theorem lieSecondOrderExpansion_sobolev_two_bound
       lieDecomposition2 (I := I) (M := M) g T hδ hδZ s =
         s • (U 0 + U 1 + U 2) := by
     rw [lieDecomposition2,
-      deTurckLieCovariantDerivativeDecompositionC2Family_eq_symmS_weight]
+      deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight]
     simp only [Fin.sum_univ_three, U, V, gm]
   have h01 :
       covariantJetNormSq (I := I) (M := M) g 2 (U 0 + U 1) ≤
@@ -9900,7 +9900,7 @@ private theorem fullRev_slot_h3
       (mul_nonneg (by norm_num) (add_nonneg hB (by norm_num)))
   refine ⟨K, hK, ?_⟩
   intro g₁ P hP htie
-  have hsymm : symmS (I := I) (M := M) g P = P :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g P hP
   have hrev0 :
       covariantJetNormSq (I := I) (M := M) g 3
@@ -9918,7 +9918,7 @@ private theorem fullRev_slot_h3
           (slotInsertEndoCc (I := I) (M := M) g 0
               (metricComparisonEndomorphismField (I := I) (M := M) g g) +
             cometricRaiseSlot0Field (I := I) (M := M) g 0
-              (symmS (I := I) (M := M) g P)) := by
+              (ccTensor02Symm (I := I) (M := M) g P)) := by
             rw [omRecover_add (I := I) (M := M) g g₁ P htie]
       _ ≤ 2 * (
           covariantJetNormSq (I := I) (M := M) g 3
@@ -9926,7 +9926,7 @@ private theorem fullRev_slot_h3
               (metricComparisonEndomorphismField (I := I) (M := M) g g)) +
           covariantJetNormSq (I := I) (M := M) g 3
             (cometricRaiseSlot0Field (I := I) (M := M) g 0
-              (symmS (I := I) (M := M) g P))) :=
+              (ccTensor02Symm (I := I) (M := M) g P))) :=
         covariantJetNormSq_add_le (I := I) (M := M) g 3 _ _
       _ = 2 * (B + covariantJetNormSq (I := I) (M := M) g 3 P) := by
         rw [hsymm, raise0_jet (I := I) (M := M) g P 3]
@@ -9990,7 +9990,7 @@ private theorem fullRev_slot_h2_low
       (mul_nonneg (by norm_num) (add_nonneg hB (by norm_num)))
   refine ⟨K, hK, ?_⟩
   intro g₁ P hP htie
-  have hsymm : symmS (I := I) (M := M) g P = P :=
+  have hsymm : ccTensor02Symm (I := I) (M := M) g P = P :=
     ccTensor02Symm_eq_self (I := I) (M := M) g P hP
   have hrev0 :
       covariantJetNormSq (I := I) (M := M) g 2
@@ -10008,7 +10008,7 @@ private theorem fullRev_slot_h2_low
           (slotInsertEndoCc (I := I) (M := M) g 0
               (metricComparisonEndomorphismField (I := I) (M := M) g g) +
             cometricRaiseSlot0Field (I := I) (M := M) g 0
-              (symmS (I := I) (M := M) g P)) := by
+              (ccTensor02Symm (I := I) (M := M) g P)) := by
             rw [omRecover_add (I := I) (M := M) g g₁ P htie]
       _ ≤ 2 * (
           covariantJetNormSq (I := I) (M := M) g 2
@@ -10016,7 +10016,7 @@ private theorem fullRev_slot_h2_low
               (metricComparisonEndomorphismField (I := I) (M := M) g g)) +
           covariantJetNormSq (I := I) (M := M) g 2
             (cometricRaiseSlot0Field (I := I) (M := M) g 0
-              (symmS (I := I) (M := M) g P))) :=
+              (ccTensor02Symm (I := I) (M := M) g P))) :=
         covariantJetNormSq_add_le (I := I) (M := M) g 2 _ _
       _ = 2 * (B + covariantJetNormSq (I := I) (M := M) g 2 P) := by
         rw [hsymm, raise0_jet (I := I) (M := M) g P 2]

@@ -1076,7 +1076,7 @@ theorem deTurckSobolevNHa2_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetric I 
     rw [deTurckSobolevNonlinearity, deTurckSobolevNonlinearity, dif_pos h, dif_pos h, hrecS]
   rw [hNeq, hSeq]
 
-theorem exists_norm_smoothCcToTensorHs_symmS_le (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
+theorem exists_norm_smoothCcToTensorHs_ccTensor02Symm_le (g₀ : SmoothRiemannianMetric I M) (n : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ T : SmoothCcTensor g₀ 0 2,
       ‖smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ≤
         C * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (n : ℝ) T‖ := by
@@ -1143,7 +1143,7 @@ theorem deTurckSmoothN_symm_embedding_wellDefined (g₀ g_bg : SmoothRiemannianM
     (ccTensor02Symm (I := I) (M := M) g₀ T) (ccTensor02Symm (I := I) (M := M) g₀ T') hδ_lt hδ hδ'_lt
       hδ' ?_
   obtain ⟨Csym, hCsym_nn, hCsym⟩ :=
-    exists_norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ (a + 2)
+    exists_norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ (a + 2)
   have hcast : ((a + 2 : ℕ) : ℝ) = (a : ℝ) + 2 := by push_cast; ring
   have hkey := hCsym (T - T')
   rw [hcast] at hkey
@@ -1166,7 +1166,7 @@ theorem deTurckSmoothN_symm_embedding_wellDefined (g₀ g_bg : SmoothRiemannianM
         (ccTensor02Symm (I := I) (M := M) g₀ T) -
       smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
         (ccTensor02Symm (I := I) (M := M) g₀ T') = 0 := by
-    rw [← smoothCcToTensorHs_sub, ← symmS_sub]
+    rw [← smoothCcToTensorHs_sub, ← ccTensor02Symm_sub]
     exact hzero
   exact sub_eq_zero.mp hsub
 
@@ -1250,12 +1250,12 @@ theorem deTurckSobolevNHa2Symm_lipschitzWith (g₀ g_bg : SmoothRiemannianMetric
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
               (ccTensor02Symm (I := I) (M := M) g₀
                 (Classical.choose x.2 - Classical.choose y.2))‖ := by
-            rw [← smoothCcToTensorHs_sub, ← symmS_sub]
+            rw [← smoothCcToTensorHs_sub, ← ccTensor02Symm_sub]
       _ ≤ (K : ℝ) *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
               (Classical.choose x.2 - Classical.choose y.2)‖ :=
             mul_le_mul_of_nonneg_left
-              (norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _)
+              (norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _)
               K.coe_nonneg
       _ = (K : ℝ) *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
@@ -1387,12 +1387,12 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (ccTensor02Symm (I := I) (M := M) g₀
                   (Classical.choose x.2 - Classical.choose y.2))‖ := by
-            rw [← smoothCcToTensorHs_sub, ← symmS_sub]
+            rw [← smoothCcToTensorHs_sub, ← ccTensor02Symm_sub]
       _ ≤ (K : ℝ) *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (Classical.choose x.2 - Classical.choose y.2)‖ :=
             mul_le_mul_of_nonneg_left
-              (norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _)
+              (norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _)
               K.coe_nonneg
       _ = (K : ℝ) *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
@@ -1434,7 +1434,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
             (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose hmem - T))‖
           ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
               (Classical.choose hmem - T)‖ :=
-            norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _
+            norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _
         _ = 0 := by rw [hdiff_zero, norm_zero]
     have hsymm_zero : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
         (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose hmem - T)) = 0 := by
@@ -1446,7 +1446,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
           (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose hmem)) -
         smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
           (ccTensor02Symm (I := I) (M := M) g₀ T) = 0 := by
-      rw [← smoothCcToTensorHs_sub, ← symmS_sub]
+      rw [← smoothCcToTensorHs_sub, ← ccTensor02Symm_sub]
       exact hsymm_zero
     exact sub_eq_zero.mp hsub
   refine deTurckSmoothN_embedding_wellDefined (I := I) (M := M) g₀ g_bg a ha_super
@@ -1458,7 +1458,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN (g₀ g_bg : SmoothRiemannianMetric I 
   calc ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
         (ccTensor02Symm (I := I) (M := M) g₀ T)‖
       ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T‖ :=
-        norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ ((a : ℝ) + 2) T
+        norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ ((a : ℝ) + 2) T
     _ ≤ R₀ := hball
 
 theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1551,12 +1551,12 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (ccTensor02Symm (I := I) (M := M) g₀
                   (Classical.choose x.2 - Classical.choose y.2))‖ := by
-            rw [← smoothCcToTensorHs_sub, ← symmS_sub]
+            rw [← smoothCcToTensorHs_sub, ← ccTensor02Symm_sub]
       _ ≤ (K : ℝ) *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (Classical.choose x.2 - Classical.choose y.2)‖ :=
             mul_le_mul_of_nonneg_left
-              (norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _)
+              (norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _)
               K.coe_nonneg
       _ = (K : ℝ) *
             ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
@@ -1599,7 +1599,7 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
             (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose hmem - T))‖
           ≤ ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
               (Classical.choose hmem - T)‖ :=
-            norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _
+            norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ ((a : ℝ) + 2) _
         _ = 0 := by rw [hdiff_zero, norm_zero]
     have hsymm_zero : smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
         (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose hmem - T)) = 0 := by
@@ -1611,7 +1611,7 @@ theorem deTurckSobolevNHa2Symm_smoothEmbed_eq (g₀ g_bg : SmoothRiemannianMetri
           (ccTensor02Symm (I := I) (M := M) g₀ (Classical.choose hmem)) -
         smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
           (ccTensor02Symm (I := I) (M := M) g₀ T) = 0 := by
-      rw [← smoothCcToTensorHs_sub, ← symmS_sub]
+      rw [← smoothCcToTensorHs_sub, ← ccTensor02Symm_sub]
       exact hsymm_zero
     exact sub_eq_zero.mp hsub
   refine deTurckSmoothN_embedding_wellDefined (I := I) (M := M) g₀ g_bg a ha_super
@@ -1635,7 +1635,7 @@ theorem deTurckSobolevNHa2Symm_eq_smoothN_of_symm (g₀ g_bg : SmoothRiemannianM
         (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) T) =
       deTurckSmoothRemainderTensorHs (I := I) (M := M) g₀ g_bg a T hδ_lt hδ := by
   have hEq : ccTensor02Symm (I := I) (M := M) g₀ T = T :=
-    symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g₀ T hTsymm
+    ccTensor02Symm_eq_self (I := I) (M := M) g₀ T hTsymm
   have h1 := deTurckSobolevNHa2Symm_eq_smoothN (I := I) (M := M) g₀ g_bg a ha_super T hδ_lt
     (fiberwiseOperatorNormBound_of_tensorSymmetrization (I := I) (M := M) g₀ T hδ) hball
   rw [h1]
@@ -1668,9 +1668,9 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
   set hτσ : (a : ℝ) + 1 ≤ (a : ℝ) + 2 := by linarith with hτσ_def
   set J := tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hτσ with hJ_def
   obtain ⟨Csym1, hCsym1_nn, hCsym1⟩ :=
-    exists_norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ (a + 1)
+    exists_norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ (a + 1)
   obtain ⟨Csym2, hCsym2_nn, hCsym2⟩ :=
-    exists_norm_smoothCcToTensorHs_symmS_le (I := I) (M := M) g₀ (a + 2)
+    exists_norm_smoothCcToTensorHs_ccTensor02Symm_le (I := I) (M := M) g₀ (a + 2)
   have hcast1 : ((a + 1 : ℕ) : ℝ) = (a : ℝ) + 1 := by push_cast; ring
   have hcast2 : ((a + 2 : ℕ) : ℝ) = (a : ℝ) + 2 := by push_cast; ring
   have hCsym1' : ∀ W : SmoothCcTensor g₀ 0 2,
@@ -1863,7 +1863,7 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
               (ccTensor02Symm (I := I) (M := M) g₀ T')‖
           = ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
               (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))‖ := by
-              rw [← smoothCcToTensorHs_sub, ← symmS_sub]
+              rw [← smoothCcToTensorHs_sub, ← ccTensor02Symm_sub]
         _ ≤ Csym2 * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) (T - T')‖ :=
               hCsym2' (T - T')
         _ = Csym2 * ‖p - p'‖ := by rw [smoothCcToTensorHs_sub]
@@ -1905,7 +1905,7 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
                 (ccTensor02Symm (I := I) (M := M) g₀ T'))‖
             = ‖J (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2)
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T')))‖ := by
-                rw [← smoothCcToTensorHs_sub, ← symmS_sub]
+                rw [← smoothCcToTensorHs_sub, ← ccTensor02Symm_sub]
           _ = ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 1)
                 (ccTensor02Symm (I := I) (M := M) g₀ (T - T'))‖ := by rw [hJembed]
           _ ≤ Csym1 * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 1) (T - T')‖ :=
@@ -1996,22 +1996,22 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
   simpa only [hJ_def] using this
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem ccTensorBilinSymm_symmS_apply (g₀ : SmoothRiemannianMetric I M)
+theorem ccTensorBilinSymm_ccTensor02Symm_apply (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) (v w : TangentSpace I x) :
-    ccTensorBilinSymm (I := I) g₀ (symmS (I := I) (M := M) g₀ T) x v w =
+    ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T) x v w =
       ccTensorBilinSymm (I := I) g₀ T x v w := by
-  rw [ccTensorBilinSymm_apply, ccTensorBilin_symmS, ccTensorBilin_symmS,
+  rw [ccTensorBilinSymm_apply, smoothCcTensorBilinForm_ccTensor02Symm, smoothCcTensorBilinForm_ccTensor02Symm,
     ccTensorBilinSymm_symm (I := I) g₀ T x w v, ccTensorBilinSymm_apply]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem gFibreOpBound_symmS (g₀ : SmoothRiemannianMetric I M)
+theorem gFibreOpBound_ccTensor02Symm (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ}
     (hδ : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) :
     gFibreOpBound (I := I) (M := M) g₀
-      (ccTensorBilinSymm (I := I) g₀ (symmS (I := I) (M := M) g₀ T)) δ := by
+      (ccTensorBilinSymm (I := I) g₀ (ccTensor02Symm (I := I) (M := M) g₀ T)) δ := by
   intro x v w
-  rw [ccTensorBilinSymm_symmS_apply (I := I) (M := M) g₀ T x v w]
+  rw [ccTensorBilinSymm_ccTensor02Symm_apply (I := I) (M := M) g₀ T x v w]
   exact hδ x v w
 
 end DifferentialGeometry.Analysis.Spectral

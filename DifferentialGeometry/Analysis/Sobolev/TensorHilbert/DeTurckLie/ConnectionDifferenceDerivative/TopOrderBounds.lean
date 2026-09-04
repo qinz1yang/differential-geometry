@@ -52,7 +52,7 @@ theorem symmC0_riemannianFiberNormSq_le (g₀ : SmoothRiemannianMetric I M)
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x
         ((ccTensor02Symm (I := I) (M := M) g₀ T).toSection x) ≤
       (Module.finrank ℝ E : ℝ) ^ 2 * δ ^ 2 :=
-  riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T hδ0 hbound x
+  riemannianFiberNormSq_ccTensor02Symm_zero_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T hδ0 hbound x
 
 private lemma engineRem_le_deTurckLieConnectionDifferenceDerivativeGridWin (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (j : ℕ) :
     ∑ k ∈ Finset.range j,
@@ -557,7 +557,7 @@ private theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDeriv
             ((iteratedCovGrad (I := I) g₀ 0 2 0
               (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤ fr ^ 2 * δ ^ 2 := by
           rw [iteratedCovGrad_zero]
-          exact riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T hδ0 hbound x
+          exact riemannianFiberNormSq_ccTensor02Symm_zero_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T hδ0 hbound x
         have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := by nlinarith [hδ0, hδ_le]
         have hwin1 : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b
           (0 + 1) := one_le_antidiagonalTupleGridPartialSum b hb (by omega)
@@ -578,7 +578,7 @@ private theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDeriv
         have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (m + 1)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (m + 1)
               (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤ b (m + 1) :=
-          riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T (m + 1) x
+          riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T (m + 1) x
         have h2 : b (m + 1) ≤ Combinatorics.antidiagonalTupleGrid b (m + 1) :=
           single_le_antidiagonalTupleGridPartialSum b hb (m + 1) (by omega)
         have h3 : Combinatorics.antidiagonalTupleGrid b (m + 1) ≤
@@ -605,7 +605,7 @@ private theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDeriv
         ((iteratedCovGrad (I := I) g₀ 0 2 0 (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
         fr ^ 2 * δ ^ 2 := by
       rw [iteratedCovGrad_zero]
-      exact riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T hδ0 hbound x
+      exact riemannianFiberNormSq_ccTensor02Symm_zero_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T hδ0 hbound x
     have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := by nlinarith [hδ0, hδ_le]
     rw [hcPer_def]
     calc fr ^ 3 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 0) x

@@ -422,14 +422,14 @@ omit [I.Boundaryless] [SigmaCompactSpace M] in
 @[simp] lemma raisedKoszul_toSection (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     (raisedKoszul (I := I) g₀ g₁).toSection x = raisedKoszulFib (I := I) g₀ g₁ x := rfl
 
-def symmSCovGrad3 (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
+def ccTensor02SymmCovGrad3 (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
     SmoothCcTensor g₀ 0 3 :=
   covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ T)
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma symmSCovGrad3_def (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
-    symmSCovGrad3 (I := I) (M := M) g₀ T =
+@[simp] lemma ccTensor02SymmCovGrad3_def (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) :
+    ccTensor02SymmCovGrad3 (I := I) (M := M) g₀ T =
       covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ T) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
@@ -474,7 +474,7 @@ private lemma connectionDifferenceVec_eq_invSharp_koszul
   connectionDifference_eq_operatorFieldApplication_invGram_covGrad (I := I) (M := M) g₀ g₁ X Y x
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem connectionDifferenceInner_g1_eq_half_covGradSymmS
+theorem connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm
     (g₀ g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
     (hg₁ : ∀ (b : M) (u w : TangentSpace I b),
       g₁.inner b u w = g₀.inner b u w + ccTensorBilinSymm (I := I) g₀ T b u w)
@@ -496,7 +496,7 @@ theorem connectionDifferenceInner_g1_eq_half_covGradSymmS
   have hbil : ∀ (b' : M) (u w : TangentSpace I b'),
       smoothCcTensorBilinForm (I := I) g₀ (ccTensor02Symm (I := I) g₀ T) b' u w =
         g₁.inner b' u w - g₀.inner b' u w :=
-    symmS_hbil_of_realize (I := I) (M := M) g₀ g₁ T hg₁
+    smoothCcTensorBilinForm_ccTensor02Symm_eq_metric_sub (I := I) (M := M) g₀ g₁ T hg₁
   set af : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
     ⟨smoothExtensionTangent (I := I) x a, smoothExtensionTangent_contMDiff (I := I) x a⟩ with haf
   set bf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
@@ -2087,7 +2087,7 @@ private lemma diagonalGrid_power_closure (G Bc : ℝ) (hG : 0 ≤ G) (hB : 0 ≤
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem norm_iteratedCovGrad_two_symmS_le
+theorem norm_iteratedCovGrad_two_ccTensor02Symm_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M) :
     letI instTens : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
@@ -2109,7 +2109,7 @@ theorem norm_iteratedCovGrad_two_symmS_le
       (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g₀ 0 2 2 T +
         iteratedCovGrad (I := I) g₀ 0 2 2 Tsw) := by
     rw [hTsw_def, smul_add]
-    exact iteratedCovGrad_symmS_eq (I := I) (M := M) g₀ T 2
+    exact iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g₀ T 2
   have htoSec : ((iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) g₀ T)).toSection x :
         Tensor0SBundle.TensorRSSpace 0 4 I x) =
       (1 / 2 : ℝ) • ((iteratedCovGrad (I := I) g₀ 0 2 2 T).toSection x +
@@ -2175,7 +2175,7 @@ theorem covDerivConnectionDifference_g1inner_eq_half_secondCovGrad_sub_connectio
             (inverseMetricSharpFib (I := I) g₁ x
               (koszulCovGradCovec (I := I) (M := M) g₀ g₁ Z Y x)) (X x)) ζ := by
   rw [covDerivConnectionDifference_g1inner_eq_secondCovGrad_lowerTerms (I := I) (M := M) g₀ g₁ X Y Z x ζ]
-  have hbil := symmS_hbil_of_realize (I := I) (M := M) g₀ g₁ T hg₁
+  have hbil := smoothCcTensorBilinForm_ccTensor02Symm_eq_metric_sub (I := I) (M := M) g₀ g₁ T hg₁
   have hTerm1 := koszulCovGradCovec_covDeriv_eq_secondCovGrad (I := I) (M := M) g₀ g₁
     (ccTensor02Symm (I := I) g₀ T) hbil X Y Z x ζ
   have e1 : ((cotangentCov (LeviCivita (I := I) g₀)).toFun
@@ -2188,9 +2188,9 @@ theorem covDerivConnectionDifference_g1inner_eq_half_secondCovGrad_sub_connectio
                 (koszulCovGradCovec (I := I) (M := M) g₀ g₁ Z Y b)) x (X x)))) ζ := by
     rw [cotangentToDual_dualToCotangent, ContinuousLinearMap.coe_coe]
   rw [e1, hTerm1]
-  rw [connectionDifferenceInner_g1_eq_half_covGradSymmS (I := I) g₀ g₁ T hg₁ x
+  rw [connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm (I := I) g₀ g₁ T hg₁ x
         (Y x) ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)) ζ]
-  rw [connectionDifferenceInner_g1_eq_half_covGradSymmS (I := I) g₀ g₁ T hg₁ x
+  rw [connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm (I := I) g₀ g₁ T hg₁ x
         ((LeviCivita (I := I) g₀).toFun (fun b => Y b) x (X x)) (Z x) ζ]
   ring
 

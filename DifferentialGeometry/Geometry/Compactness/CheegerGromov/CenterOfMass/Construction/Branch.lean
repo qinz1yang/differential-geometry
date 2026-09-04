@@ -119,7 +119,7 @@ theorem exists_slot_min
                   (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x
                   (q gamma) (δ gamma) rho ∧
                 rho ≤ hb.radius (L.φ k) x ∧
-                rho / 2 ≤ Geometry.Riemannian.expRadiusGp
+                rho / 2 ≤ Geometry.Riemannian.metricCoerciveExpRadius
                   (I := I) (X.obj (L.φ k)).metric x := by
   classical
   let N : NNReal :=
@@ -153,7 +153,7 @@ theorem exists_slot_min
               (hconn k) x q δ (aMin * hd.mu (L.rInf (gamma.1 : Nat) + 1)) ∧
             aMin * hd.mu (L.rInf (gamma.1 : Nat) + 1) ≤ hb.radius k x ∧
             (aMin * hd.mu (L.rInf (gamma.1 : Nat) + 1)) / 2 ≤
-              Geometry.Riemannian.expRadiusGp (I := I) (X.obj k).metric x := by
+              Geometry.Riemannian.metricCoerciveExpRadius (I := I) (X.obj k).metric x := by
     intro gamma
     apply hscale
     nlinarith [(L.rInf_mem (gamma.1 : Nat)).1]
@@ -283,7 +283,7 @@ theorem exists_live_min
         HasNormalBrFull (I := I) (X.obj (L.φ k))
             (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x q δ ρ ∧
           ρ ≤ hb.radius (L.φ k) x ∧
-          ρ / 2 ≤ Geometry.Riemannian.expRadiusGp
+          ρ / 2 ≤ Geometry.Riemannian.metricCoerciveExpRadius
             (I := I) (X.obj (L.φ k)).metric x := by
   obtain ⟨aq, aδ, aMin, haq, haδ, haMin, hscale⟩ :=
     normalMinScale (I := I) h hcomplete hconn
@@ -358,7 +358,7 @@ theorem HasNormalBrFull.exists_cm_eqn
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ hb.radius k x →
-      ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+      ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       ∃ (hq : 0 < q) (e : OpenPartialHomeomorph (E × E) (E × E))
           (he : IsNormalDiag (I := I) (X.obj k) hcomplete hconn x q δ e),
         NormalDiagFence (I := I) (X.obj k) x q e ∧
@@ -492,7 +492,7 @@ theorem HasNormalBrFull.exists_cm_deriv
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ hb.radius k x →
-      ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+      ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       ∃ (hq : 0 < q) (e : OpenPartialHomeomorph (E × E) (E × E))
           (he : IsNormalDiag (I := I) (X.obj k) hcomplete hconn x q δ e),
         NormalDiagFence (I := I) (X.obj k) x q e ∧
@@ -697,7 +697,7 @@ theorem HasNormalBrFull.exists_cmC
       0 < ρ →
       2 * ρ < (q : Real) →
       ρ ≤ hb.radius k x →
-      ρ / 2 ≤ expRadiusGp (I := I) (X.obj k).metric x →
+      ρ / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       HasChartCmSol (I := I) (X.obj k) hcomplete hconn x
         (c2RadiusNormalBallChart (I := I) (X.obj k) x)
         (q := q) (delta := δ) mu pts join p r h := by
@@ -938,7 +938,7 @@ theorem exists_hat_cm_eqn_at
           (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0
           (q gamma) (δ gamma) rho ∧
         rho ≤ hb.radius (L.φ k) x0 ∧
-        rho / 2 ≤ expRadiusGp (I := I) (X.obj (L.φ k)).metric x0)
+        rho / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj (L.φ k)).metric x0)
     (alpha : LiveSlot L pb r)
     :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
@@ -1097,7 +1097,7 @@ theorem exists_hat_cm_sol_at
           (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0
           (q gamma) (δ gamma) rho ∧
         rho ≤ hb.radius (L.φ k) x0 ∧
-        rho / 2 ≤ expRadiusGp (I := I) (X.obj (L.φ k)).metric x0)
+        rho / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj (L.φ k)).metric x0)
     (alpha : LiveSlot L pb r) :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
     letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -1281,7 +1281,7 @@ theorem exists_hat_cmC_at
           (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0
           (q gamma) (δ gamma) rho ∧
         rho ≤ hb.radius (L.φ k) x0 ∧
-        rho / 2 ≤ expRadiusGp (I := I) (X.obj (L.φ k)).metric x0)
+        rho / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj (L.φ k)).metric x0)
     (alpha : LiveSlot L pb r) :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
     letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -1428,7 +1428,7 @@ theorem exists_hat_cm_eqn
           (hcomplete.complete (L.φ k)) (hconn (L.φ k)) x0
           (q gamma) (δ gamma) rho ∧
         rho ≤ hb.radius (L.φ k) x0 ∧
-        rho / 2 ≤ expRadiusGp (I := I) (X.obj (L.φ k)).metric x0)
+        rho / 2 ≤ metricCoerciveExpRadius (I := I) (X.obj (L.φ k)).metric x0)
     :
     letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
     letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
@@ -1576,7 +1576,7 @@ theorem exists_cm_branch
           HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M);
         dist p x ≤ R) →
       ENNReal.ofReal (R + 2 * r) < ENNReal.ofReal (ρ / 2) →
-      ρ / 2 < expRadiusGp (I := I) (X.obj k).metric x →
+      ρ / 2 < metricCoerciveExpRadius (I := I) (X.obj k).metric x →
       ∃ B : DiagonalInverseBranch (I := I) (X.obj k).metric
           (normal_enorm (I := I) (X.obj k)) x,
         ∀ i, (centerOfMass (I := I) (ι := ι) (X.obj k).metric μ pts join p r h,

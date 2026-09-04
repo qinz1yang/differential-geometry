@@ -1038,7 +1038,7 @@ private lemma sqrt_inner_endoCov_sharpFlatRaiseEndo_apply_le
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma abs_unitModel4_iteratedCovGrad_symmS_le
+private lemma abs_unitModel4_iteratedCovGrad_ccTensor02Symm_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : TangentSpace I x) :
     letI : Bundle.RiemannianBundle
@@ -1066,7 +1066,7 @@ private lemma abs_unitModel4_iteratedCovGrad_symmS_le
   rw [hunit]
   have hprim := abs_tensor04_unit_eval_le_fibreNorm_mul_sqrt (I := I) (M := M) g₀ x W a b c d
   refine le_trans hprim ?_
-  have hnorm_le := norm_iteratedCovGrad_two_symmS_le (I := I) (M := M) g₀ T x
+  have hnorm_le := norm_iteratedCovGrad_two_ccTensor02Symm_le (I := I) (M := M) g₀ T x
   rw [← hW_def] at hnorm_le
   have hsqrt_nn : 0 ≤ Real.sqrt (g₀.inner x a a) * Real.sqrt (g₀.inner x b b) *
       Real.sqrt (g₀.inner x c c) * Real.sqrt (g₀.inner x d d) := by positivity
@@ -1089,7 +1089,7 @@ private lemma abs_unitModel4_iteratedCovGrad_symmS_le
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma half_iteratedCovGrad_symmS_combination_le
+private lemma half_iteratedCovGrad_ccTensor02Symm_combination_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : TangentSpace I x) :
     letI : Bundle.RiemannianBundle
@@ -1126,9 +1126,9 @@ private lemma half_iteratedCovGrad_symmS_combination_le
   let Nc : ℝ := Real.sqrt (g₀.inner x c c)
   let Nd : ℝ := Real.sqrt (g₀.inner x d d)
   let A : ℝ := G * Na * Nc * Nb * Nd
-  have h₁ := abs_unitModel4_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ T x a b c d
-  have h₂ := abs_unitModel4_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ T x a c b d
-  have h₃ := abs_unitModel4_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ T x a d b c
+  have h₁ := abs_unitModel4_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ T x a b c d
+  have h₂ := abs_unitModel4_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ T x a c b d
+  have h₃ := abs_unitModel4_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ T x a d b c
   change |r₁| ≤ G * Na * Nb * Nc * Nd at h₁
   change |r₂| ≤ G * Na * Nc * Nb * Nd at h₂
   change |r₃| ≤ G * Na * Nd * Nb * Nc at h₃
@@ -1381,7 +1381,7 @@ private lemma g1_inner_covDerivConnectionDifference_le_pointwise
     ⟨smoothExtensionTangent (I := I) x ζ, smoothExtensionTangent_contMDiff (I := I) x ζ⟩
     with hζf_def
   have hζfx : ζf x = ζ := smoothExtensionTangent_eq (I := I) x ζ
-  have hrank4 := half_iteratedCovGrad_symmS_combination_le
+  have hrank4 := half_iteratedCovGrad_ccTensor02Symm_combination_le
     (I := I) (M := M) g₀ T x (X x) (Z x) (Y x) ζ
   rw [← hG2_def, ← hNX_def, ← hNY_def, ← hNZ_def, ← hNζ_def] at hrank4
   set R41 : ℝ := unitModel (I := I) (M := M) g₀ 4

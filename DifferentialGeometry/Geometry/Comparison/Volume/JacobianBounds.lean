@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.Volume.RadialJacobiScaling
+import DifferentialGeometry.Geometry.Comparison.Volume.Radial.JacobiScaling
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 open DifferentialGeometry.Geometry.Curvature

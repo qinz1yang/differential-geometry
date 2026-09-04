@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation
-import DifferentialGeometry.Geometry.Exponential.ExponentialVariationSmoothness
+import DifferentialGeometry.Geometry.Exponential.Variation.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.ArctanDeriv

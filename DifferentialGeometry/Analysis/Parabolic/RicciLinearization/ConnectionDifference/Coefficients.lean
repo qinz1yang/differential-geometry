@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CoefficientFields
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.PathLinearization
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.ConnectionDifferenceCovGradBridge
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.ConnectionDifferenceCovGradBridge
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identities
 import DifferentialGeometry.Tensor.Multilinear.ModelProductContinuousBilinear
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.FibreOperators
@@ -42,39 +42,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma symmS_eq_self_of_symm (g₀ : SmoothRiemannianMetric I M)
-    (S : SmoothCcTensor g₀ 0 2)
-    (hsymm : ∀ (x : M) (u w : TangentSpace I x),
-      smoothCcTensorBilinForm (I := I) g₀ S x u w = smoothCcTensorBilinForm (I := I) g₀ S x w u) :
-    ccTensor02Symm (I := I) (M := M) g₀ S = S := by
-  have hswap : domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) S = S := by
-    refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g₀ (fun x => ?_)
-    rw [domDomCongrSection_unitModel]
-    refine ContinuousMultilinearMap.ext (fun v => ?_)
-    rw [ContinuousMultilinearMap.domDomCongr_apply]
-    have hv : ∀ u w : TangentSpace I x,
-        unitModel (I := I) (M := M) g₀ 2 S x ![u, w] =
-          unitModel (I := I) (M := M) g₀ 2 S x ![w, u] := by
-      intro u w
-      rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x u w,
-        unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀ S x w u]
-      exact hsymm x u w
-    have hveta : (fun i => v ((Equiv.swap (0 : Fin 2) 1) i)) = ![v 1, v 0] := by
-      funext i
-      fin_cases i <;> rfl
-    have hveta' : v = ![v 0, v 1] := by
-      funext i
-      fin_cases i <;> rfl
-    rw [hveta]
-    conv_rhs => rw [hveta']
-    exact hv (v 1) (v 0)
-  have htwo : S + S = (2 : ℝ) • S := (two_smul ℝ S).symm
-  rw [ccTensor02Symm, hswap, htwo, smul_smul,
-    show (1 / 2 : ℝ) * 2 = 1 by norm_num, one_smul]
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -2291,7 +2258,7 @@ theorem linearizedRicciAt_eq_covariantJet_connectionDifferenceCoeff (g₀ : Smoo
     intro b p q
     rw [ccTensorBilin_sub_two, ccTensorBilin_sub_two, hTsymm b p q, hT'symm b p q]
   have hcollapse : ccTensor02Symm (I := I) (M := M) g₀ (T - T') = T - T' :=
-    symmS_eq_self_of_symm (I := I) (M := M) g₀ (T - T') hsubsymm
+    ccTensor02Symm_eq_self (I := I) (M := M) g₀ (T - T') hsubsymm
   rw [← linearizedRicciConnectionDifferenceOrder0Coeff_eq_base_add_sub (I := I) g₀ T T' hδ hδ' s,
     ← linearizedRicciConnectionDifferenceOrder1Coeff_eq_base_add_sub (I := I) g₀ T T' hδ hδ' s]
   let A := operatorFieldApply (I := I) (M := M) g₀ 2 2

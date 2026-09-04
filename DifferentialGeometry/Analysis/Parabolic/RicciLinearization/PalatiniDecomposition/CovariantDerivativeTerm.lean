@@ -1008,7 +1008,7 @@ private lemma bdOmRecover_eq_idEndo_add_raise
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x
             (inverseMetricSharpFib (I := I) g₀ x om),
           tangentSpaceModelContinuousLinearEquiv (I := I) x w] = _ at hunit
-    rw [hunit, ccTensorBilin_symmS]]
+    rw [hunit, smoothCcTensorBilinForm_ccTensor02Symm]]
   rw [show cotangentToDual (I := I) om w =
       cotangentToDualLinear (I := I) (x := x) om w from rfl]
   rw [← inverseMetricSharpFib_inner (I := I) g₀ x om w]
@@ -1031,12 +1031,12 @@ theorem omRecover_add
       slotInsertEndoCc (I := I) (M := M) g₀ 0
           (metricComparisonEndomorphismField (I := I) (M := M) g₀ g₀) +
         cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
-          (symmS (I := I) (M := M) g₀ T) := by
+          (ccTensor02Symm (I := I) (M := M) g₀ T) := by
   exact bdOmRecover_eq_idEndo_add_raise (I := I) (M := M) g₀ g₁ T htie
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma bdRiemannianFiberNormSq_iteratedCovGrad_symmS_le (g₀ : SmoothRiemannianMetric I M)
+lemma bdRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
         ((iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
@@ -1047,7 +1047,7 @@ lemma bdRiemannianFiberNormSq_iteratedCovGrad_symmS_le (g₀ : SmoothRiemannianM
       (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x +
         (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g₀ 0 2 j
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T)).toSection x := by
-    rw [iteratedCovGrad_symmS_eq (I := I) (M := M) g₀ T j, SmoothCcTensor.toSection_add]
+    rw [iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g₀ T j, SmoothCcTensor.toSection_add]
     rw [show (((1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 j T).toSection +
         ((1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 j
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T)).toSection) x =
@@ -1069,7 +1069,7 @@ lemma bdRiemannianFiberNormSq_iteratedCovGrad_symmS_le (g₀ : SmoothRiemannianM
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma riemannianFiberNormSq_symmS_le_of_gFibreOpBound (g₀ : SmoothRiemannianMetric I M)
+lemma riemannianFiberNormSq_ccTensor02Symm_le_of_gFibreOpBound (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (x : M) :
@@ -1124,7 +1124,7 @@ lemma riemannianFiberNormSq_symmS_le_of_gFibreOpBound (g₀ : SmoothRiemannianMe
         fin_cases k <;> rfl]
       rw [unitModel_eq_ccTensorBilin_local (I := I) (M := M) g₀
         (ccTensor02Symm (I := I) (M := M) g₀ T) x (e (J 0)) (e (J 1))]
-      rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
+      rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by
@@ -1206,7 +1206,7 @@ theorem bdOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
       (ccTensor02Symm (I := I) (M := M) g₀ T) l x]
     match l with
     | 0 =>
-        have h1 := riemannianFiberNormSq_symmS_le_of_gFibreOpBound (I := I) (M := M) g₀ T hδ0 hbound
+        have h1 := riemannianFiberNormSq_ccTensor02Symm_le_of_gFibreOpBound (I := I) (M := M) g₀ T hδ0 hbound
           x
         have hδle : δ ^ 2 ≤ (max δ₀ 0) ^ 2 := by
           have h2 : δ ≤ max δ₀ 0 := le_trans hδ_le (le_max_left _ _)
@@ -1221,7 +1221,7 @@ theorem bdOmRecover_gridWindow (g₀ : SmoothRiemannianMetric I M)
           nlinarith [hδle, hfr]
         linarith [h3, hW_nn]
     | (m + 1) =>
-        have h1 := bdRiemannianFiberNormSq_iteratedCovGrad_symmS_le (I := I) (M := M) g₀ T (m + 1) x
+        have h1 := bdRiemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le (I := I) (M := M) g₀ T (m + 1) x
         have h2 : b (m + 1) ≤ Combinatorics.antidiagonalTupleGridWindow b (m + 1 + 1) := by
           have h3 : b (m + 1) * Combinatorics.antidiagonalTupleGrid b 0 ≤
               Combinatorics.antidiagonalTupleGrid b (0 + (m + 1)) :=

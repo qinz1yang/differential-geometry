@@ -64,27 +64,27 @@ def subseq
       Geometry.Riemannian.expMapC2Radius (I := I) (X.obj (f k)).metric x
     exact h.le_exp_radius (f k) x
 
-def gpRatio
+def metricCoerciveRatio
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) : Real :=
   Real.sqrt (1 / 2 : Real) * h.ratio
 
-theorem gp_ratio_pos
+theorem metricCoerciveRatio_pos
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
-    (h : NormalRadiusProfile hd hb) : 0 < h.gpRatio := by
-  rw [gpRatio]
+    (h : NormalRadiusProfile hd hb) : 0 < h.metricCoerciveRatio := by
+  rw [metricCoerciveRatio]
   exact mul_pos (Real.sqrt_pos.mpr (by norm_num)) h.ratio_pos
 
-theorem gp_ratio_le_ratio
+theorem metricCoerciveRatio_le_ratio
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
-    (h : NormalRadiusProfile hd hb) : h.gpRatio ≤ h.ratio := by
-  rw [gpRatio]
+    (h : NormalRadiusProfile hd hb) : h.metricCoerciveRatio ≤ h.ratio := by
+  rw [metricCoerciveRatio]
   have hsqrt : Real.sqrt (1 / 2 : Real) ≤ 1 :=
     Real.sqrt_le_one.mpr (by norm_num)
   simpa only [one_mul] using
@@ -134,7 +134,7 @@ theorem floor_le_exp
     _ ≤ Geometry.Riemannian.expMapC2Radius (I := I) (X.obj k).metric x :=
       h.le_exp_radius k x
 
-theorem floor_le_exp_gp
+theorem floor_le_metricCoerciveExpRadius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -144,21 +144,21 @@ theorem floor_le_exp_gp
     letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
     letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
     letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
-    h.gpRatio * hd.mu R ≤
-      Geometry.Riemannian.expRadiusGp (I := I) (X.obj k).metric x := by
+    h.metricCoerciveRatio * hd.mu R ≤
+      Geometry.Riemannian.metricCoerciveExpRadius (I := I) (X.obj k).metric x := by
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
   let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
   let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
-  rw [gpRatio, Geometry.Riemannian.expRadiusGp]
+  rw [metricCoerciveRatio, Geometry.Riemannian.metricCoerciveExpRadius]
   calc
     Real.sqrt (1 / 2 : Real) * h.ratio * hd.mu R =
         Real.sqrt (1 / 2 : Real) * (h.ratio * hd.mu R) := by ring
-    _ ≤ Real.sqrt (Geometry.Riemannian.gpCoerciveConst
+    _ ≤ Real.sqrt (Geometry.Riemannian.metricCoerciveConst
           (I := I) (X.obj k).metric x) * (h.ratio * hd.mu R) :=
       mul_le_mul_of_nonneg_right
-        (Real.sqrt_le_sqrt (hb.half_le_gp_const k x)) (h.floor_pos R).le
-    _ ≤ Real.sqrt (Geometry.Riemannian.gpCoerciveConst
+        (Real.sqrt_le_sqrt (hb.half_le_metricCoerciveConst k x)) (h.floor_pos R).le
+    _ ≤ Real.sqrt (Geometry.Riemannian.metricCoerciveConst
           (I := I) (X.obj k).metric x) *
           Geometry.Riemannian.expMapC2Radius (I := I) (X.obj k).metric x :=
       mul_le_mul_of_nonneg_left (h.floor_le_exp hx) (Real.sqrt_nonneg _)
@@ -207,12 +207,12 @@ theorem mul_lambda_lt_exp
   let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
   exact (h.mul_lambda_lt_floor hD hc).trans_le (h.floor_le_exp hx)
 
-theorem mul_lambda_lt_exp_gp
+theorem mul_lambda_lt_metricCoerciveExpRadius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D c R : Real}
-    (hD : 0 < D) (hc : c < h.gpRatio * D)
+    (hD : 0 < D) (hc : c < h.metricCoerciveRatio * D)
     {k : Nat} {x : (X.obj k).M}
     (hx : hd.dist k x (X.obj k).basepoint ≤ R) :
     letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
@@ -220,25 +220,25 @@ theorem mul_lambda_lt_exp_gp
     letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
     letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
     c * hd.lambda D R <
-      Geometry.Riemannian.expRadiusGp (I := I) (X.obj k).metric x := by
+      Geometry.Riemannian.metricCoerciveExpRadius (I := I) (X.obj k).metric x := by
   let : TopologicalSpace (X.obj k).M := (X.obj k).topology
   let : ChartedSpace H (X.obj k).M := (X.obj k).charted
   let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
   let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
-  have hfloor : c * hd.lambda D R < h.gpRatio * hd.mu R := by
+  have hfloor : c * hd.lambda D R < h.metricCoerciveRatio * hd.mu R := by
     rw [InjectivityRadiusDecay.lambda]
     calc
       c * (hd.mu R / D) = (c / D) * hd.mu R := by ring
-      _ < h.gpRatio * hd.mu R :=
+      _ < h.metricCoerciveRatio * hd.mu R :=
         mul_lt_mul_of_pos_right ((div_lt_iff₀ hD).2 hc) (hd.mu_pos R)
-  exact hfloor.trans_le (h.floor_le_exp_gp hx)
+  exact hfloor.trans_le (h.floor_le_metricCoerciveExpRadius hx)
 
-theorem gp_scale_tail
+theorem metricCoerciveRatio_scale_tail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
     (h : NormalRadiusProfile hd hb) {D : Real} (hD : 0 < D)
-    (h8 : (8 : Real) < h.gpRatio * D)
+    (h8 : (8 : Real) < h.metricCoerciveRatio * D)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
     (hre : hd.RealizesDistance) (L : NetLimitData (I := I) hd D P)
     (pb : hd.PackingBound D) (r : Real) :
@@ -270,12 +270,12 @@ theorem gp_scale_tail
     _ ≤ 8 * hd.lambda D (seqRadius hd D P (L.φ n) (γ : Nat)) :=
       mul_le_mul_of_nonneg_left
         (hn (γ : Nat) (Finset.mem_range.mpr γ.isLt)) (by norm_num)
-    _ < Geometry.Riemannian.expRadiusGp
+    _ < Geometry.Riemannian.metricCoerciveExpRadius
           (I := I) (X.obj (L.φ n)).metric c :=
-      h.mul_lambda_lt_exp_gp (D := D) (c := 8)
+      h.mul_lambda_lt_metricCoerciveExpRadius (D := D) (c := 8)
         (R := seqRadius hd D P (L.φ n) (γ : Nat)) hD h8 hx
 
-theorem half_gp_scale_tail
+theorem half_metricCoerciveRatio_scale_tail
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     {hb : NormalCoordMetricBounds (I := I) X}
@@ -293,19 +293,19 @@ theorem half_gp_scale_tail
         letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
           (X.obj (L.φ n)).t2TangentBundle
         (a / 2) * L.lamInf (γ : Nat) <
-          Geometry.Riemannian.expRadiusGp
+          Geometry.Riemannian.metricCoerciveExpRadius
             (I := I) (X.obj (L.φ n)).metric c := by
   have hsqrt : (1 / 2 : Real) < Real.sqrt (1 / 2 : Real) := by
     have hsqrtSq := Real.sq_sqrt (by norm_num : (0 : Real) ≤ 1 / 2)
     have hsqrtNonneg := Real.sqrt_nonneg (1 / 2 : Real)
     nlinarith
   have hratioD : 0 < h.ratio * D := mul_pos h.ratio_pos hD
-  have haGp : a < h.gpRatio * D := by
+  have haGp : a < h.metricCoerciveRatio * D := by
     calc
       a < (1 / 2 : Real) * (h.ratio * D) := by nlinarith
       _ < Real.sqrt (1 / 2 : Real) * (h.ratio * D) :=
         mul_lt_mul_of_pos_right hsqrt hratioD
-      _ = h.gpRatio * D := by rw [gpRatio]; ring
+      _ = h.metricCoerciveRatio * D := by rw [metricCoerciveRatio]; ring
   have hwin : ∀ᶠ n in atTop, ∀ γ ∈ Finset.range (pb.A r),
       L.lamInf γ / 2 ≤ hd.lambda D (seqRadius hd D P (L.φ n) γ) :=
     (Filter.eventually_all_finset _).mpr fun γ _ =>
@@ -334,9 +334,9 @@ theorem half_gp_scale_tail
     _ ≤ a * hd.lambda D (seqRadius hd D P (L.φ n) (γ : Nat)) :=
       mul_le_mul_of_nonneg_left
         (hn (γ : Nat) (Finset.mem_range.mpr γ.isLt)) ha.le
-    _ < Geometry.Riemannian.expRadiusGp
+    _ < Geometry.Riemannian.metricCoerciveExpRadius
           (I := I) (X.obj (L.φ n)).metric c :=
-      h.mul_lambda_lt_exp_gp (D := D) (c := a)
+      h.mul_lambda_lt_metricCoerciveExpRadius (D := D) (c := a)
         (R := seqRadius hd D P (L.φ n) (γ : Nat)) hD haGp hx
 
 theorem metric_scale_tail

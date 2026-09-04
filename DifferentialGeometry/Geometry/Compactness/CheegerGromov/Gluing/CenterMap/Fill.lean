@@ -1802,7 +1802,7 @@ theorem HasSuppConvData.ptsSub_conv
 
 theorem HasSuppConvData.pts_eq_ne
     (inp : MetricCompactnessInputs (I := I) X)
-    (h8 : (8 : Real) < inp.normalRadius.gpRatio * inp.D)
+    (h8 : (8 : Real) < inp.normalRadius.metricCoerciveRatio * inp.D)
     (hradRatio : 2 * exponentialBallRadiusFactor inp.decay inp.D <
       inp.normalRadius.ratio * inp.D)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))

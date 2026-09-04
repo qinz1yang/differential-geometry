@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Reconcile
 import DifferentialGeometry.Geometry.Curvature.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Curvature.Metric

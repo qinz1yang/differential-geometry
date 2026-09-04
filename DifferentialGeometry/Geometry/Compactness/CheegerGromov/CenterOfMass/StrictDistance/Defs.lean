@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.CenterOfMass
+import DifferentialGeometry.Geometry.CenterOfMass.Basic
 
 set_option autoImplicit false
 

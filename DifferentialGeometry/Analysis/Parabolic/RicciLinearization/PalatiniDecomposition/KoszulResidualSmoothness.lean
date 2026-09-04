@@ -156,7 +156,7 @@ private lemma bdKoszulCc_unitModel_eq_g1_inner (g₀ g₁ : SmoothRiemannianMetr
           tangentSpaceModelContinuousLinearEquiv (I := I) x b] =
       g₁.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a b) c := by
   rw [koszulCovecCc_unitModel (I := I) g₀ P x a b c]
-  rw [connectionDifferenceInner_g1_eq_half_covGradSymmS (I := I) g₀ g₁ P htie x a b c]
+  rw [connectionDifferenceInner_g1_eq_half_covGrad_ccTensor02Symm (I := I) g₀ g₁ P htie x a b c]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
@@ -651,11 +651,11 @@ private lemma bdCovGrad_unitModel_smul (g₀ : SmoothRiemannianMetric I M)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-private lemma bdSymmSCovGrad3_unitModel_smul (g₀ : SmoothRiemannianMetric I M)
+private lemma bdCcTensor02SymmCovGrad3_unitModel_smul (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (c : ℝ) (x : M) (v : Fin 3 → E) :
-    unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ (c • T)) x v =
-      c * unitModel (I := I) (M := M) g₀ 3 (symmSCovGrad3 (I := I) g₀ T) x v := by
-  rw [symmSCovGrad3_def, symmSCovGrad3_def, symmS_smul (I := I) (M := M) g₀ c T]
+    unitModel (I := I) (M := M) g₀ 3 (ccTensor02SymmCovGrad3 (I := I) g₀ (c • T)) x v =
+      c * unitModel (I := I) (M := M) g₀ 3 (ccTensor02SymmCovGrad3 (I := I) g₀ T) x v := by
+  rw [ccTensor02SymmCovGrad3_def, ccTensor02SymmCovGrad3_def, ccTensor02Symm_smul (I := I) (M := M) g₀ c T]
   exact bdCovGrad_unitModel_smul (I := I) (M := M) g₀ (ccTensor02Symm (I := I) g₀ T) c x v
 
 omit [SigmaCompactSpace M] in
@@ -677,9 +677,9 @@ private lemma bdKoszulCc_unitModel_smul (g₀ : SmoothRiemannianMetric I M)
     simpa only [mt, ContinuousLinearEquiv.apply_symm_apply] using hm]
   rw [koszulCovecCc_unitModel (I := I) g₀ (c • T) x (mt 1) (mt 2) (mt 0),
     koszulCovecCc_unitModel (I := I) g₀ T x (mt 1) (mt 2) (mt 0)]
-  rw [bdSymmSCovGrad3_unitModel_smul (I := I) (M := M) g₀ T c x,
-    bdSymmSCovGrad3_unitModel_smul (I := I) (M := M) g₀ T c x,
-    bdSymmSCovGrad3_unitModel_smul (I := I) (M := M) g₀ T c x]
+  rw [bdCcTensor02SymmCovGrad3_unitModel_smul (I := I) (M := M) g₀ T c x,
+    bdCcTensor02SymmCovGrad3_unitModel_smul (I := I) (M := M) g₀ T c x,
+    bdCcTensor02SymmCovGrad3_unitModel_smul (I := I) (M := M) g₀ T c x]
   ring
 
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in

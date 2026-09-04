@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Aver
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Gluing.Partition.Basic
 import DifferentialGeometry.Analysis.Calculus.MapConvergenceTwoParameter
-import DifferentialGeometry.Geometry.Exponential.GaussLemma
+import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -216,7 +216,7 @@ theorem properBallSrcOfRad
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      R < expRadiusGp (I := I) Y.metric c) :
+      R < metricCoerciveExpRadius (I := I) Y.metric c) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -254,7 +254,7 @@ theorem properBallSrcOfRad
   have hdist_le : dist c y ≤ R := by
     have hdist := (Metric.mem_closedBall.mp hy)
     simpa [dist_comm] using hdist
-  have hsmall : (riemannianEDist I c y).toReal < expRadiusGp (I := I) Y.metric c := by
+  have hsmall : (riemannianEDist I c y).toReal < metricCoerciveExpRadius (I := I) Y.metric c := by
     rw [hed, ENNReal.toReal_ofReal (dist_nonneg : 0 ≤ dist c y)]
     exact lt_of_le_of_lt hdist_le hR
   exact memNChartSrcOfDist (I := I) Y.metric c hEnorm hfin hsmall
@@ -270,7 +270,7 @@ theorem properBallNormal
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      R < expRadiusGp (I := I) Y.metric c)
+      R < metricCoerciveExpRadius (I := I) Y.metric c)
     (hy : letI : MetricSpace Y.M := P.ms; y ∈ Metric.ball c R) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
@@ -308,7 +308,7 @@ theorem properBallNormal
   have hdist_lt : dist c y < R := by
     simpa only [Metric.mem_ball, dist_comm] using hy
   have hsmall : (riemannianEDist I c y).toReal <
-      expRadiusGp (I := I) Y.metric c := by
+      metricCoerciveExpRadius (I := I) Y.metric c := by
     rw [hed, ENNReal.toReal_ofReal dist_nonneg]
     exact hdist_lt.trans hR
   obtain ⟨v, hvtgt, hvdom, hvlen, hyeq⟩ :=
@@ -329,7 +329,7 @@ theorem properExpDist
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      Real.sqrt (Y.metric.inner c v v) < expRadiusGp (I := I) Y.metric c) :
+      Real.sqrt (Y.metric.inner c v v) < metricCoerciveExpRadius (I := I) Y.metric c) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth

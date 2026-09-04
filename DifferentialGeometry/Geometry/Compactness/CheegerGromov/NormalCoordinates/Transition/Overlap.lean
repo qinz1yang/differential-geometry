@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.Metric.Framed
-import DifferentialGeometry.Geometry.Comparison.NormalCoordinateSmoothness
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Smoothness
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -232,7 +232,7 @@ private theorem mem_framed_src
       letI : ChartedSpace H Y.M := Y.charted
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      z ∈ Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x)) :
+      z ∈ Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric x)) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -258,7 +258,7 @@ private theorem mem_framed_src
           (normalFrame (I := I) Y.metric x z)) := by
             rfl
     _ = ‖z‖ := normalFrame_sqrt (I := I) Y.metric x z
-    _ < expRadiusGp (I := I) Y.metric x := hz
+    _ < metricCoerciveExpRadius (I := I) Y.metric x := hz
 
 theorem framedOverlap_of_map
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -268,13 +268,13 @@ theorem framedOverlap_of_map
       letI : ChartedSpace H Y.M := Y.charted
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      U ⊆ Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric x))
+      U ⊆ Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric x))
     (hVy :
       letI : TopologicalSpace Y.M := Y.topology
       letI : ChartedSpace H Y.M := Y.charted
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      V ⊆ Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric y))
+      V ⊆ Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric y))
     (hmaps :
       letI : TopologicalSpace Y.M := Y.topology
       letI : ChartedSpace H Y.M := Y.charted
@@ -308,7 +308,7 @@ theorem framedTransition_mapsTo
       letI : ChartedSpace H Y.M := Y.charted
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      V ⊆ Metric.ball (0 : E) (expRadiusGp (I := I) Y.metric y))
+      V ⊆ Metric.ball (0 : E) (metricCoerciveExpRadius (I := I) Y.metric y))
     (hmaps :
       letI : TopologicalSpace Y.M := Y.topology
       letI : ChartedSpace H Y.M := Y.charted

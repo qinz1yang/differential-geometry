@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Exponential.GaussLemma
+import DifferentialGeometry.Geometry.Exponential.GaussLemma.Basic
 
 
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
@@ -42,14 +42,14 @@ theorem properBall_to_exp
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      R < expRadiusGp (I := I) Y.metric c)
+      R < metricCoerciveExpRadius (I := I) Y.metric c)
     (hσ :
       letI : TopologicalSpace Y.M := Y.topology
       letI : ChartedSpace H Y.M := Y.charted
       letI : IsManifold I ∞ Y.M := Y.smooth
       letI : T2Space Y.M := Y.t2
       letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-      R / Real.sqrt (gpCoerciveConst (I := I) Y.metric c) < σ) :
+      R / Real.sqrt (metricCoerciveConst (I := I) Y.metric c) < σ) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
@@ -85,26 +85,26 @@ theorem properBall_to_exp
     rw [hed]
     exact ENNReal.ofReal_ne_top
   have hsmall :
-      (riemannianEDist I c q).toReal < expRadiusGp (I := I) Y.metric c := by
+      (riemannianEDist I c q).toReal < metricCoerciveExpRadius (I := I) Y.metric c := by
     rw [hed, ENNReal.toReal_ofReal (dist_nonneg : 0 ≤ dist c q)]
     exact hdistLe.trans_lt hR
   obtain ⟨v, _hvTarget, _hvDomain, hvLen, hqEq⟩ :=
     metricBall_subset_normalBall (I := I) Y.metric c hEnorm hfin hsmall
   refine ⟨v, ?_, hqEq.symm⟩
   rw [Metric.mem_ball, dist_zero_right]
-  have hcoerc : 0 < gpCoerciveConst (I := I) Y.metric c :=
-    gpCoerciveConst_pos (I := I) Y.metric c
-  have hsqrtPos : 0 < Real.sqrt (gpCoerciveConst (I := I) Y.metric c) :=
+  have hcoerc : 0 < metricCoerciveConst (I := I) Y.metric c :=
+    metricCoerciveConst_pos (I := I) Y.metric c
+  have hsqrtPos : 0 < Real.sqrt (metricCoerciveConst (I := I) Y.metric c) :=
     Real.sqrt_pos.mpr hcoerc
   have hcoercLe :
-      gpCoerciveConst (I := I) Y.metric c * ‖v‖ ^ 2 ≤ Y.metric.inner c v v :=
-    gpCoerciveConst_le (I := I) Y.metric c v
+      metricCoerciveConst (I := I) Y.metric c * ‖v‖ ^ 2 ≤ Y.metric.inner c v v :=
+    metricCoerciveConst_le (I := I) Y.metric c v
   have hsqrtLe :
-      Real.sqrt (gpCoerciveConst (I := I) Y.metric c) * ‖v‖ ≤
+      Real.sqrt (metricCoerciveConst (I := I) Y.metric c) * ‖v‖ ≤
         Real.sqrt (Y.metric.inner c v v) := by
     have hrw :
-        Real.sqrt (gpCoerciveConst (I := I) Y.metric c) * ‖v‖ =
-          Real.sqrt (gpCoerciveConst (I := I) Y.metric c * ‖v‖ ^ 2) := by
+        Real.sqrt (metricCoerciveConst (I := I) Y.metric c) * ‖v‖ =
+          Real.sqrt (metricCoerciveConst (I := I) Y.metric c * ‖v‖ ^ 2) := by
       rw [Real.sqrt_mul hcoerc.le, Real.sqrt_sq (norm_nonneg v)]
     rw [hrw]
     exact Real.sqrt_le_sqrt hcoercLe
@@ -112,11 +112,11 @@ theorem properBall_to_exp
     rw [hvLen, hed, ENNReal.toReal_ofReal (dist_nonneg : 0 ≤ dist c q)]
     exact hdistLe
   have hnormLe :
-      ‖v‖ ≤ R / Real.sqrt (gpCoerciveConst (I := I) Y.metric c) := by
+      ‖v‖ ≤ R / Real.sqrt (metricCoerciveConst (I := I) Y.metric c) := by
     rw [le_div_iff₀ hsqrtPos]
     calc
-      ‖v‖ * Real.sqrt (gpCoerciveConst (I := I) Y.metric c) =
-          Real.sqrt (gpCoerciveConst (I := I) Y.metric c) * ‖v‖ := by ring
+      ‖v‖ * Real.sqrt (metricCoerciveConst (I := I) Y.metric c) =
+          Real.sqrt (metricCoerciveConst (I := I) Y.metric c) * ‖v‖ := by ring
       _ ≤ Real.sqrt (Y.metric.inner c v v) := hsqrtLe
       _ ≤ R := hmetricLe
   exact hnormLe.trans_lt hσ

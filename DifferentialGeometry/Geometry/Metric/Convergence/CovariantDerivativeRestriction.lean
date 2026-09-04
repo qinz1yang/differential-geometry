@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
-import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
 
 
 open DifferentialGeometry.Geometry.Curvature

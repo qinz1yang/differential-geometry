@@ -104,7 +104,7 @@ theorem coreSymm_h2 (g₀ : SmoothRiemannianMetric I M) {R : ℝ}
     (x : smoothCore (I := I) (M := M) g₀ R) :
     ‖smoothCcToTensorHs (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1)
       (ccTensor02Symm (I := I) (M := M) g₀ (coreRep g₀ x))‖ ≤ R := by
-  have hsymm := norm_smoothCcToTensorHs_symmS_le
+  have hsymm := norm_smoothCcToTensorHs_ccTensor02Symm_le
     (I := I) (M := M) g₀ (((1 : ℕ) : ℝ) + 1) (coreRep g₀ x)
   have hincl := tensorHsInclusion_smoothCcToTensorHs
     (I := I) (M := M) g₀

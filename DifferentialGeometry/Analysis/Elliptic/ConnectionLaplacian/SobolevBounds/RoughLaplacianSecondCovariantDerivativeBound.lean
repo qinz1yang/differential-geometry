@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Order2Defect.MetricTraceFrame
+import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceFrame
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryReconstruction
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset

@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.ConvexPerturbationPointwi
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormUniformBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Tensor02FiberNormBound
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FiberNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.SingleSlotFibreNormBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
@@ -409,7 +409,7 @@ lemma unitModel_eq_ccTensorBilin_deTurckLieConnectionDifferenceDerivative (g₀ 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
-lemma deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_symmS (g₀ : SmoothRiemannianMetric I M)
+lemma deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_ccTensor02Symm (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T) =
       cometricRaiseSlot0Field (I := I) (M := M) g₀ 0
@@ -485,7 +485,7 @@ lemma deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_s
     (w 0) (tangentSpaceModelContinuousLinearEquiv (I := I) x
       (inverseMetricSharpFib (I := I) g₀ x om))]
   rw [ContinuousLinearEquiv.symm_apply_apply]
-  rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x]
+  rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ T x]
 
 noncomputable def deTurckLieConnectionDifferenceDerivativeLoweredPerturbCc (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (g₁ g_bg : SmoothRiemannianMetric I M) :

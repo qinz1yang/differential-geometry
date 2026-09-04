@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CovariantDerivativeNorm
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Norm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Scaling
 
 open DifferentialGeometry.Geometry.Curvature

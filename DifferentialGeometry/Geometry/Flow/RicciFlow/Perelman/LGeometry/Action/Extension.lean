@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Calculus.PuncturedDerivative
-import DifferentialGeometry.Geometry.Exponential.JacobiVariation
+import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ExponentialMap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.LocalExistence.Curve
 

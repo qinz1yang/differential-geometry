@@ -402,7 +402,7 @@ theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeLow
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
+lemma riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
         ((iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤
@@ -413,7 +413,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDiffere
       (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x +
         (1 / 2 : ℝ) • (iteratedCovGrad (I := I) g₀ 0 2 j
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T)).toSection x := by
-    rw [iteratedCovGrad_symmS_eq (I := I) (M := M) g₀ T j, SmoothCcTensor.toSection_add]
+    rw [iteratedCovGrad_ccTensor02Symm_eq (I := I) (M := M) g₀ T j, SmoothCcTensor.toSection_add]
     rw [show (((1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 j T).toSection +
         ((1 / 2 : ℝ) • iteratedCovGrad (I := I) g₀ 0 2 j
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) T)).toSection) x =
@@ -435,7 +435,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDiffere
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-lemma riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
+lemma riemannianFiberNormSq_ccTensor02Symm_zero_le_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ0 : 0 ≤ δ)
     (hbound : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
     (x : M) :
@@ -494,7 +494,7 @@ lemma riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivati
         (tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J 0)))
         (tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J 1)))]
       rw [ContinuousLinearEquiv.symm_apply_apply, ContinuousLinearEquiv.symm_apply_apply]
-      rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
+      rw [smoothCcTensorBilinForm_ccTensor02Symm (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by
@@ -535,7 +535,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_slotInsert3_deTurckLieConnectionDiff
   refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo (I := I) (M := M) g₀ 3
     (deTurckLieConnectionDifferenceDerivativePerturbSharpEndoField (I := I) (M := M) g₀ T) j x) ?_
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-  rw [deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_symmS (I := I) (M := M) g₀ T]
+  rw [deTurckLieConnectionDifferenceDerivativeSlotInsert_perturbSharp_eq_raise_ccTensor02Symm (I := I) (M := M) g₀ T]
   rw [riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq (I := I) (M := M) g₀ 0
     (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1)
       (ccTensor02Symm (I := I) (M := M) g₀ T)) j x]
@@ -599,7 +599,7 @@ theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeSym
             ((iteratedCovGrad (I := I) g₀ 0 2 0
               (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤ fr ^ 2 * δ ^ 2 := by
           rw [iteratedCovGrad_zero]
-          exact riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T hδ0 hbound x
+          exact riemannianFiberNormSq_ccTensor02Symm_zero_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T hδ0 hbound x
         have hδsq : δ ^ 2 ≤ δ₀ ^ 2 := by nlinarith [hδ0, hδ_le]
         have hwin1 : (1 : ℝ) ≤ antidiagonalTupleGridPartialSum b (0 + 1) := one_le_antidiagonalTupleGridPartialSum b hb
           (by omega)
@@ -622,7 +622,7 @@ theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeSym
         have h1 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (m + 1)) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (m + 1)
               (ccTensor02Symm (I := I) (M := M) g₀ T)).toSection x) ≤ b (m + 1) :=
-          riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T (m + 1) x
+          riemannianFiberNormSq_iteratedCovGrad_ccTensor02Symm_le_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ T (m + 1) x
         have h2 : b (m + 1) ≤ Combinatorics.antidiagonalTupleGrid b (m + 1) :=
           single_le_antidiagonalTupleGridPartialSum b hb (m + 1) (by omega)
         have h3 : Combinatorics.antidiagonalTupleGrid b (m + 1) ≤

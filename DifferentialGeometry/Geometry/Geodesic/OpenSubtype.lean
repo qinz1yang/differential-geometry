@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Geodesic.Equation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.OpenRestriction
 open DifferentialGeometry.Geometry.Curvature

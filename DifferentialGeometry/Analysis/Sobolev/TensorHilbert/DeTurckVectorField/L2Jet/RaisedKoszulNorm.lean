@@ -73,11 +73,11 @@ private lemma raisedKoszul_norm_iteratedCovGrad_domDomCongr_eq
   rw [hpt]
 
 omit [NeZero (Module.finrank ℝ E)] in
-private lemma raisedKoszul_norm_iteratedCovGrad_symmS_le
+private lemma raisedKoszul_norm_iteratedCovGrad_ccTensor02Symm_le
     (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2) (m : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 0 2 m (ccTensor02Symm (I := I) g₀ P)‖ ≤
       ‖iteratedCovGrad (I := I) g₀ 0 2 m P‖ := by
-  rw [iteratedCovGrad_symmS_eq (I := I) g₀ P m]
+  rw [iteratedCovGrad_ccTensor02Symm_eq (I := I) g₀ P m]
   refine le_trans (norm_add_le _ _) ?_
   simp only [norm_smul, Real.norm_eq_abs]
   rw [raisedKoszul_norm_iteratedCovGrad_domDomCongr_eq (I := I) g₀ 2 (Equiv.swap 0 1) P m,
@@ -111,7 +111,7 @@ private lemma raisedKoszul_norm_iteratedCovGrad_koszul_le
     (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2) (n : ℕ) :
     ‖iteratedCovGrad (I := I) g₀ 0 3 n (koszulCovecCc (I := I) g₀ P)‖ ≤
       (3 / 2) * ‖iteratedCovGrad (I := I) g₀ 0 2 (n + 1) P‖ := by
-  set W : SmoothCcTensor g₀ 0 3 := symmSCovGrad3 (I := I) g₀ P with hW
+  set W : SmoothCcTensor g₀ 0 3 := ccTensor02SymmCovGrad3 (I := I) g₀ P with hW
   set DA : SmoothCcTensor g₀ 0 3 :=
     domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 3) 2) W with hDA
   set DB : SmoothCcTensor g₀ 0 3 := domDomCongrSection (I := I) g₀ (finRotate 3) W with hDB
@@ -124,7 +124,7 @@ private lemma raisedKoszul_norm_iteratedCovGrad_koszul_le
     refine raisedKoszul_norm_eq_of_sq_eq (norm_nonneg _) (norm_nonneg _) ?_
     rw [SmoothCcTensor.norm_def, SmoothCcTensor.norm_def,
       tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs,
-      tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs, hW, symmSCovGrad3_def]
+      tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs, hW, ccTensor02SymmCovGrad3_def]
     have hpt : (fun x => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + n) x
           ((iteratedCovGrad (I := I) g₀ 0 3 n
             (covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ P))).toSection x)) =
@@ -142,9 +142,9 @@ private lemma raisedKoszul_norm_iteratedCovGrad_koszul_le
   have hDCeq : ‖iteratedCovGrad (I := I) g₀ 0 3 n DC‖ =
       ‖iteratedCovGrad (I := I) g₀ 0 3 n W‖ := by
     rw [hDC]; exact raisedKoszul_norm_iteratedCovGrad_domDomCongr_eq (I := I) g₀ 3 _ W n
-  have hsymmS_le := raisedKoszul_norm_iteratedCovGrad_symmS_le (I := I) g₀ P (n + 1)
+  have hccTensor02Symm_le := raisedKoszul_norm_iteratedCovGrad_ccTensor02Symm_le (I := I) g₀ P (n + 1)
   have hWbound : ‖iteratedCovGrad (I := I) g₀ 0 3 n W‖ ≤
-      ‖iteratedCovGrad (I := I) g₀ 0 2 (n + 1) P‖ := le_trans (le_of_eq hWeq) hsymmS_le
+      ‖iteratedCovGrad (I := I) g₀ 0 2 (n + 1) P‖ := le_trans (le_of_eq hWeq) hccTensor02Symm_le
   have htri : ‖iteratedCovGrad (I := I) g₀ 0 3 n (DA + DB - DC)‖ ≤
       ‖iteratedCovGrad (I := I) g₀ 0 3 n DA‖ + ‖iteratedCovGrad (I := I) g₀ 0 3 n DB‖ +
         ‖iteratedCovGrad (I := I) g₀ 0 3 n DC‖ := by

@@ -47,7 +47,7 @@ theorem iterRmComp_smoothAt
       simpa [iteratedRmComp_zero] using hbase m
   | succ k ih =>
       intro n
-      have hext := prodExtDerivAt_inf (I := I)
+      have hext := prodExtDerivAt_smooth (I := I)
         (hF := ih (Fin.tail n))
         (hX := hframe.contMDiffAt hu hx (n 0))
       have hsum :

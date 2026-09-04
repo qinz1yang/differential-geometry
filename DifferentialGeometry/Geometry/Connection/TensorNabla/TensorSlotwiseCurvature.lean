@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorRicciCommutator
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.HomBundleCurvatureLeibniz
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.HomBundleLeibniz
 open DifferentialGeometry.Geometry.Curvature
 
 

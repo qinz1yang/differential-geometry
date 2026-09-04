@@ -56,7 +56,7 @@ theorem iteratedFDerivBoundsOnCompacts.to_within {Φ : ℕ → E → F} (h : ite
   fun r K hK _ => h r K hK
 
 omit [FiniteDimensional ℝ E] in
-theorem comp_eq_id_of_c_inf_on
+theorem comp_eq_id_of_mapCInfConvOnCompacts_on
     {U : Set E} {V : Set F}
     {Φ : ℕ → F → E} {Φinf : F → E} {Ψ : ℕ → E → F} {Ψinf : E → F}
     (hV : IsOpen V)
@@ -105,10 +105,10 @@ theorem exists_smooth_inverse_limit_subsequence_on
     hΦconv.comp_subseq hφ2
   refine ⟨φ1 ∘ φ2, Φinf, Ψinf, hφ1.comp hφ2, hΦinf, hΨinf, hΦconv', hΨconv, ?_, ?_⟩
   · intro x hx hΦx
-    exact comp_eq_id_of_c_inf_on hV hΨconv hΨinf.continuousOn hΦconv'
+    exact comp_eq_id_of_mapCInfConvOnCompacts_on hV hΨconv hΨinf.continuousOn hΦconv'
       (fun k x' hx' => hLeft (φ1 (φ2 k)) x' hx') hx hΦx
   · intro y hy hΨy
-    exact comp_eq_id_of_c_inf_on hU hΦconv' hΦinf.continuousOn hΨconv
+    exact comp_eq_id_of_mapCInfConvOnCompacts_on hU hΦconv' hΦinf.continuousOn hΨconv
       (fun k y' hy' => hRight (φ1 (φ2 k)) y' hy') hy hΨy
 
 end HCGCompactness

@@ -1,5 +1,5 @@
 import Mathlib.Topology.MetricSpace.ProperSpace
-import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 
 set_option autoImplicit false

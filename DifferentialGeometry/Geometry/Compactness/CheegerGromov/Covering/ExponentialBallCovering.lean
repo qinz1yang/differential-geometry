@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorph
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
 
 
 
-import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
+import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCovering.Sequence
 
@@ -193,7 +193,7 @@ def ExponentialRadiusScaleInput (hd : InjectivityRadiusDecay (I := I) X) (D : Re
       letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
       letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
         (X.obj (L.φ n)).t2TangentBundle
-      4 * L.lamInf γ < expRadiusGp (I := I) (X.obj (L.φ n)).metric c
+      4 * L.lamInf γ < metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric c
 
 def ExponentialRadiusScaleAt (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -207,7 +207,7 @@ def ExponentialRadiusScaleAt (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
       letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
       letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
         (X.obj (L.φ n)).t2TangentBundle
-      4 * L.lamInf (γ : Nat) < expRadiusGp (I := I) (X.obj (L.φ n)).metric c
+      4 * L.lamInf (γ : Nat) < metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric c
 
 def ExponentialRadiusScaleTail (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -270,7 +270,7 @@ theorem PointedRiemannianManifold.exists_framed_exponential_ball_partial_diffeom
     letI := Y.t2
     letI := Y.t2TangentBundle
     ENNReal.ofReal ρ < framedInjRadius (I := I) Y.metric c →
-    ρ ≤ expRadiusGp (I := I) Y.metric c →
+    ρ ≤ metricCoerciveExpRadius (I := I) Y.metric c →
       ∃ Φ : PartialDiffeomorph 𝓘(ℝ, E) I E Y.M 1,
         Φ.source = Metric.ball (0 : E) ρ ∧
         Φ.target = framedExpMap (I := I) Y.metric c '' Metric.ball (0 : E) ρ ∧
@@ -297,7 +297,7 @@ def FramedExponentialBallRadiusInput (hd : InjectivityRadiusDecay (I := I) X) (D
     letI := (X.obj k).t2
     letI := (X.obj k).t2TangentBundle
     ENNReal.ofReal (ρ k α) < framedInjRadius (I := I) (X.obj k).metric c ∧
-      ρ k α ≤ expRadiusGp (I := I) (X.obj k).metric c
+      ρ k α ≤ metricCoerciveExpRadius (I := I) (X.obj k).metric c
 
 def FramedExponentialBallRadiusAt (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))
@@ -314,7 +314,7 @@ def FramedExponentialBallRadiusAt (hd : InjectivityRadiusDecay (I := I) X) (D : 
       ENNReal.ofReal (a * L.lamInf (γ : Nat)) <
           framedInjRadius (I := I) (X.obj (L.φ n)).metric c ∧
         a * L.lamInf (γ : Nat) ≤
-          expRadiusGp (I := I) (X.obj (L.φ n)).metric c
+          metricCoerciveExpRadius (I := I) (X.obj (L.φ n)).metric c
 
 def FramedExponentialBallRadiusTail (hd : InjectivityRadiusDecay (I := I) X) (D : Real)
     (P : ∀ k : Nat, ProperMetricOn (I := I) (X.obj k))

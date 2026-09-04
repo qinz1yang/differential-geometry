@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSectionsLocal
-import DifferentialGeometry.Geometry.Curvature.OpenSubtypeNaturality
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
 import DifferentialGeometry.Geometry.Metric.Convergence.IteratedCovariantComponents
 import DifferentialGeometry.Geometry.Metric.TensorInner.ComponentBounds

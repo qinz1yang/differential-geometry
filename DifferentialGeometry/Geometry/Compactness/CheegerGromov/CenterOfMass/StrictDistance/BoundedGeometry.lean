@@ -223,7 +223,7 @@ theorem strict_dist_input
     have hsmooth : ContMDiffOn I 𝓘(Real) ∞
         (CenterOfMass.halfSqDist pt) S := by
       simpa only [S] using
-        d.halfSq_inf k hcomplete hconn x hq he hf
+        d.halfSqDist_contMDiffOn k hcomplete hconn x hq he hf
           hρ hρq hρChart
     have hmap : MapsTo γ unitInterval S := by
       intro t ht

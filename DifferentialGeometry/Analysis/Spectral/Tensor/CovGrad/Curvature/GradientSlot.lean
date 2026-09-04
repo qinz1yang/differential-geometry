@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.Linearization
-import DifferentialGeometry.Geometry.Curvature.Bochner.TensorWeitzenbockIdentity
-import DifferentialGeometry.Geometry.Curvature.CovGradRoughLap.GradientField
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorField
-import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SlotFreeCurvatureOperatorDerivative
+import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Weitzenbock
+import DifferentialGeometry.Geometry.Curvature.CovariantDerivativeRoughLaplacian.GradientField
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Field
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.SlotFree
 
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
