@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature.Difference
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.VectorField.SmoothGlobalExtension
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Generic
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Leibniz
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PerChart
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.SmoothMulH1Compl
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.LocalRegularity
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.H1Completion
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMul
 
 noncomputable section

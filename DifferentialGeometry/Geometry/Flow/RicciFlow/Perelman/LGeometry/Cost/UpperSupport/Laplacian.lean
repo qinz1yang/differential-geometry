@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Hessian
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Laplacian
 
 set_option autoImplicit false
 

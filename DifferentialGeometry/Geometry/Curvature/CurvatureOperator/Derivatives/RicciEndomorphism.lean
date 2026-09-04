@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Par
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.ContractedBianchi
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartTensorRSCovariantDerivative
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Parseval
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.FrameInvariance
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.Defs
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import Mathlib.Analysis.Calculus.MeanValue
 
 set_option autoImplicit false

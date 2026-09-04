@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentity
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentity
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection

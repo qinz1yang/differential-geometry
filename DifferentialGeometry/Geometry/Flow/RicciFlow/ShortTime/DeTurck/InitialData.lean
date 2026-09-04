@@ -2,9 +2,9 @@ import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Regularity.JointChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.QuasilinearExistence
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SlotSwapEquivariance
 open DifferentialGeometry.Analysis.Elliptic

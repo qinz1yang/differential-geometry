@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.LeibnizCompensatedSource
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.VariationalLimit
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.VariationalLimitAnyTest
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.LeibnizSource
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.Limit
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.ArbitraryTest
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1ComplFromDom
 import DifferentialGeometry.Analysis.Elliptic.Operator.ChartMeasureEquiv
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison

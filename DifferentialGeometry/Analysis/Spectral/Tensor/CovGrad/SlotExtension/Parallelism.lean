@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.Covariant
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.CovariantCompatibility
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

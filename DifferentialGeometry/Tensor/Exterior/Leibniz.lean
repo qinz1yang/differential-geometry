@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.Alternating.Wedge
-import DifferentialGeometry.Tensor.Alternating.Permutation
+import DifferentialGeometry.Tensor.Alternating.Reindexing.Permutation
 import DifferentialGeometry.Tensor.Exterior.Basic
 import DifferentialGeometry.Tensor.Exterior.Defs
 import Mathlib.Analysis.Calculus.DifferentialForm.Basic

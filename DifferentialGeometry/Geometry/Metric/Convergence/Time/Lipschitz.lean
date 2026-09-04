@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Topology.Order.Compact

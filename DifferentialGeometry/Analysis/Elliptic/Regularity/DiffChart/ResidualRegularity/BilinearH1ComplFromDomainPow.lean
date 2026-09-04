@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.BilinearH1Compl
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.Data
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2RegularitySuccessor
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.VariationalIdentityIntegral
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Variational.IntegralIdentity
 
 
 noncomputable section

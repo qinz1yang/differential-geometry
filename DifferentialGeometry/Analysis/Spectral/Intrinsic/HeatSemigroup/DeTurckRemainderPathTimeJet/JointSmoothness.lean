@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralEigenSeriesJointGram.JointSmoothness
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Spectral.PointwiseFlowDerivative
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Regularity.JointChart
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.ParametricFiberInnerSmooth
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination

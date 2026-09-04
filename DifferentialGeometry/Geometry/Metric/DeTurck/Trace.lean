@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Basic
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

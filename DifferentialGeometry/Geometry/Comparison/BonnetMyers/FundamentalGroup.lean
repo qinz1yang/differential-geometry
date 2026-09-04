@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Compactness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Curvature
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
 import DifferentialGeometry.Topology.Covering.FibreEquiv
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisBracket
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
 import Mathlib.Topology.Connected.LocallyPathConnected
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup

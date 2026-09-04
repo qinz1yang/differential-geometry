@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Defs
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.IntegrationByParts
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.IntegrationByParts
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.PartitionOfUnity
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties

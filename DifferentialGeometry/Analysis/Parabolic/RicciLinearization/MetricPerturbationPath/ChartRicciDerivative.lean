@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamilyChartLinearization
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.MetricFamily.ChartLinearization
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 
 

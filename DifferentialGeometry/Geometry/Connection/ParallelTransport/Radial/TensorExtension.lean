@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Radial.Basic
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
 import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RicciControlsRiemann
 import DifferentialGeometry.Geometry.Operator.Hessian.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 
 set_option autoImplicit false
 

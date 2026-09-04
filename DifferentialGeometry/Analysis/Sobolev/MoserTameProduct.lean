@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.IntegratedSecondOrder
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.RoughLaplacianSecondCovariantDerivativeBound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Intrinsic.RoughLaplacianSecondDerivative
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

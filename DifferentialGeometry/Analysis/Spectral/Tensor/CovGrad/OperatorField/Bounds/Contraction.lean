@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.Covariant
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.FiberNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.ParallelNaturality
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

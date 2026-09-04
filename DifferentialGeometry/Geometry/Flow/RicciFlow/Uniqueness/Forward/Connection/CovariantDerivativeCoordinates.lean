@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature.Difference
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Tensor0S
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricContinuity
 
 set_option autoImplicit false

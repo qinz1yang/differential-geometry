@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.Family.Basic
-import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Topology.Algebra.MetricSpace.Lipschitz

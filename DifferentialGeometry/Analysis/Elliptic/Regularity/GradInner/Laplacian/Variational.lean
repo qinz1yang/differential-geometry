@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.Candidate
-import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.PairingLapDom
-import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.PairingChart
+import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.Pairing.LaplacianDomain
+import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.Pairing.Chart
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Ricci.PairingCLM
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

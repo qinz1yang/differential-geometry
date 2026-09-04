@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identities
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
 import Mathlib.Analysis.MeanInequalities
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckVectorFieldL2JetBoundEndomorphismCometricRaise
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.VectorField.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.L2Jet.DiagonalProductGridIntegral
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.L2Jet.RaisedKoszulNorm
 open DifferentialGeometry.Analysis.Sobolev

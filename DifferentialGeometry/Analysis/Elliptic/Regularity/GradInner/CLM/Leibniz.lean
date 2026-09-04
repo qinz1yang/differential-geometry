@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Defs
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.SmoothMulH1Compl
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Multiplication.H1Completion
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothScalar.MulLp
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.Data
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 open DifferentialGeometry.Geometry.Operator
 

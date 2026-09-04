@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Sobolev.Approximation.ContMDiffDense
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMulQuant
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.NormEquivalence
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

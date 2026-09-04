@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Defs
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Cotangent
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.CovariantCompatibility
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis

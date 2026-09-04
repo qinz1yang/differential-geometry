@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Ba
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature.Bounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 

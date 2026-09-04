@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivSecondOrderCommutation
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.SecondOrder
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Slotwise
 open DifferentialGeometry.Geometry.Curvature
 

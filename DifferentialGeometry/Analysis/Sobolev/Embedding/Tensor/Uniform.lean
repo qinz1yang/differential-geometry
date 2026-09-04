@@ -1,10 +1,10 @@
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.ParallelNaturality
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 
 set_option autoImplicit false
 

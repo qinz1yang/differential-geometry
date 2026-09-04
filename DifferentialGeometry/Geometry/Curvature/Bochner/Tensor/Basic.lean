@@ -4,11 +4,11 @@ import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
 import DifferentialGeometry.Geometry.Coordinates.Tensor
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Product
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Calculus.CovariantDerivative
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus

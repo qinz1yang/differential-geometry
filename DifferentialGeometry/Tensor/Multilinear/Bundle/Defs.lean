@@ -2,7 +2,7 @@
 Authors: Jack McCarthy
 Modified by: Ziyang Qin
 -/
-import DifferentialGeometry.Tensor.Alternating.Comp
+import DifferentialGeometry.Tensor.Alternating.Composition
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent

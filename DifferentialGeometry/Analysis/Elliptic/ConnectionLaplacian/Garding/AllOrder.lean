@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.IntegratedSecondOrder
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.CurvatureCrossTerm
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Iterates
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.RoughLaplacianSecondCovariantDerivativeBound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Intrinsic.RoughLaplacianSecondDerivative
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.Hebey
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets

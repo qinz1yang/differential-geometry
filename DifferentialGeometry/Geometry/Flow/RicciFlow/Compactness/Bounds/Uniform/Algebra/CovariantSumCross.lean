@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivative
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Product
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Connection.ConnectionDifferenceNorm
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.ChartJacobianMatrixEntrySmoothness
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import Mathlib.Analysis.Normed.Operator.NormedSpace

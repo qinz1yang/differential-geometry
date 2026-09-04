@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.ExponentialRescaling
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.ExponentialRescaling
 import DifferentialGeometry.Analysis.Parabolic.Moser.Logarithmic.Oscillation
 import Mathlib.MeasureTheory.Integral.Prod
 

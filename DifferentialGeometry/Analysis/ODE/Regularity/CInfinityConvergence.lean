@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Analysis.ODE.Flow.GlobalSliceSmoothness
 import DifferentialGeometry.Analysis.ODE.Flow.ParamTangent
-import DifferentialGeometry.Analysis.ODE.Flow.Variational
+import DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Variational
 import DifferentialGeometry.Analysis.ODE.Stability.Tube
 import Mathlib.Analysis.ODE.Basic
 import Mathlib.Topology.MetricSpace.Thickening

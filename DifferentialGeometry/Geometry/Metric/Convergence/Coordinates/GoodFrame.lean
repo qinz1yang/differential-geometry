@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.Control
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import Mathlib.Topology.Instances.Matrix
 import Mathlib.LinearAlgebra.QuadraticForm.Basic
 open DifferentialGeometry.Geometry.Curvature

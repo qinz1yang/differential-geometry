@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.H1Compl
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2Inclusion
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.L2
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.MeasurablePullback
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison

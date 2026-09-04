@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ChartTransition
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Chart.Transition
 
 noncomputable section
 

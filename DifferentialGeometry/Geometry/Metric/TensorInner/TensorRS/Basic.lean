@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Product
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Calculus.CovariantDerivative
 import Mathlib.LinearAlgebra.Trace
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.TensorRSMetric
 open DifferentialGeometry.Geometry.Curvature

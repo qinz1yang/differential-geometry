@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRicciRHSSymmetric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Symmetry
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.Naturality
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 

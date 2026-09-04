@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.SobolevScaleSummability
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Defs
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.LoweringIntertwiner
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantTensor.Lowering
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

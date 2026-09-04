@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermu
 import DifferentialGeometry.Geometry.Connection.Coordinates.ComponentNorm
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

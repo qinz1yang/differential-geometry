@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Operator.WithBoundary.Gradient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.IntegrationByParts
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.POUReduction
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.Green
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.PartitionOfUnity
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties

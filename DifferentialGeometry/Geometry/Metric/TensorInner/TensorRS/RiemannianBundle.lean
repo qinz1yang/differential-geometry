@@ -1,6 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.RiemannianBundle
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.Riemannian
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SInnerSectionContinuity
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Riemannian
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Defs

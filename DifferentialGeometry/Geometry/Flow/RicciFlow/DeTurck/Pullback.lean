@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Naturality
 import DifferentialGeometry.Geometry.Metric.DeTurck.PullbackEvaluation
 import DifferentialGeometry.Geometry.Metric.Pullback.EvaluationDerivative

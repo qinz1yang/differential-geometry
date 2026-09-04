@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.Flow.Variational
+import DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Variational
 
 set_option autoImplicit false
 

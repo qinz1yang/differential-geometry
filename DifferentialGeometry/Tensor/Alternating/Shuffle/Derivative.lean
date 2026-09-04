@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jack McCarthy
 -/
 import DifferentialGeometry.Tensor.Alternating.Shuffle.Decomposition
-import DifferentialGeometry.Tensor.Alternating.FinEquiv
+import DifferentialGeometry.Tensor.Alternating.Reindexing.FiniteEquivalence
 import Mathlib.GroupTheory.Perm.Fin
 import Mathlib.GroupTheory.Perm.Subgroup
 import Mathlib.Tactic

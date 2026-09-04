@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.ParallelNaturality
 
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 
 set_option autoImplicit false
 

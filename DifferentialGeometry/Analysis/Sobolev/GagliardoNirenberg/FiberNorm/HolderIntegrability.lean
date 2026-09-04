@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.HomFiel
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Bundle.Section
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.MixedTensor
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantTensor.Mixed
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

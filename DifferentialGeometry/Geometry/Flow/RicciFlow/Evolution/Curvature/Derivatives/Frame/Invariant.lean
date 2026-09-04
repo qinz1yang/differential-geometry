@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.ReactionBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Solution
-import DifferentialGeometry.Geometry.Connection.ChartBridge.OrthonormalComponents
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Metric.OrthonormalComponents
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

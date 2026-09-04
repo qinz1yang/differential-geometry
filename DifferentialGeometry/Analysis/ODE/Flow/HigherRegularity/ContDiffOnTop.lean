@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.Flow.ParametricLinearODE
+import DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Parametric
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 
 noncomputable section

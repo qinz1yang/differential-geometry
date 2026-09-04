@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Subcritical
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.Basic
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.IntegrationByParts
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.IntegrationByParts
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Complete

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.SecondBianchi
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Weitzenbock
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RicciControlsRiemann
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Reaction
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow

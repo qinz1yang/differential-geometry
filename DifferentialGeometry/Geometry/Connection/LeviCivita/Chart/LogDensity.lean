@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Gradient
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.GradientFormula
 import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
 open DifferentialGeometry.Geometry.Operator

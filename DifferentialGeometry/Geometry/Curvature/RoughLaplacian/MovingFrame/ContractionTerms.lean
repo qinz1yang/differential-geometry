@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.RemainderCarrierSection
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivSecondOrderCommutation
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.SecondOrder
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.ContractedBianchi
 open DifferentialGeometry.Geometry.Curvature
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Evolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Equation
-import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Metric.InverseGram
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquaredTime

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 
 
 noncomputable section

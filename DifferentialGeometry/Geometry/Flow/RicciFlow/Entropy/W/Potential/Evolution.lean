@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
 import DifferentialGeometry.Geometry.Coordinates.FixedBaseDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.FirstVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities

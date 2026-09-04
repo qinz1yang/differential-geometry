@@ -1,6 +1,6 @@
 import DifferentialGeometry.Bundle.SmoothScalarGerm
 import DifferentialGeometry.Geometry.Comparison.Variation.Coordinates.FixedChartIdentities
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisBracket
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.CovariantDerivativeAlong
 
 noncomputable section

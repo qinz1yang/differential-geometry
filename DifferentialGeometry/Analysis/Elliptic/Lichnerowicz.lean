@@ -1,11 +1,11 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Closed
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.CompactSupport
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.Identities
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Riemannian
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Set

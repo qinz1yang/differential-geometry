@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chart.LieDerivativeStructuralDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.MatrixChartIdentification
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivativeChartFrameIdentity
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.LieDerivative.ChartFrame
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section

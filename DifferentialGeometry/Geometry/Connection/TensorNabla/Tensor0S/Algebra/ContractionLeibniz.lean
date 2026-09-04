@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 import DifferentialGeometry.Tensor.Multilinear.Bundle.TensorProduct
 
 set_option autoImplicit false

@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.BaseFChart.Mem
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.ChosenFChartDerivMemW1p
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpFourSmooth
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PowH2kBridge
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PowH4Bridge
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.H4Bridge
 
 noncomputable section
 

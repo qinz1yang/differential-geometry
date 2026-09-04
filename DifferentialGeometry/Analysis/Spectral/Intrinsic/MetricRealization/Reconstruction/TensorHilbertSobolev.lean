@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PositiveDefinitePerturbation
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Section
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Cotangent
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.SpectralSeriesSecondOrderSobolev

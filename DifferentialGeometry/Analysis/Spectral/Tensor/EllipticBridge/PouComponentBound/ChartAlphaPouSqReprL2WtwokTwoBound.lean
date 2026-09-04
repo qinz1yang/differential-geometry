@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.PouComponentBound.ChartAlphaPouAlphaPouBetaCovBound
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.SecondDerivativeRepresentationL2Bound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Chart.SecondDerivativeRepresentation
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

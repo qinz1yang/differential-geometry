@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartTensorRSCovariantDerivative
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.ParallelNaturality
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.OrthonormalFrame.TensorRS
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import Mathlib.Analysis.InnerProductSpace.Adjoint

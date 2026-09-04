@@ -1,11 +1,11 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Components
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Ricci.AffineDifference
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentity
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.Ricci
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentity
 import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace
 import DifferentialGeometry.Geometry.Metric.Convergence.Window.AllPoints
 open DifferentialGeometry.Tensor.RicciIdentity

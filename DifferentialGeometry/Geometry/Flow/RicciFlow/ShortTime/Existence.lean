@@ -3,8 +3,8 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Basic
-import DifferentialGeometry.Analysis.Parabolic.StrictParabolicity
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
+import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol.DeTurck
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.VectorFieldFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Regularity

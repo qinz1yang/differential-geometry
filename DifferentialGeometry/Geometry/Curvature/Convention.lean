@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Curvature.Components.LocalFrame
 import DifferentialGeometry.Geometry.Curvature.Components.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RiemannFromRicci
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

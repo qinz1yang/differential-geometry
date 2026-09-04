@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Analysis.TimeInterval
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 import Mathlib.Analysis.Calculus.ContDiff.Basic

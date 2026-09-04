@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.IntegrationByParts
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Proper
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.IntegrationByParts
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.PartitionOfUnity
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.Support
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties

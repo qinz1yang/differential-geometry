@@ -1,8 +1,8 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.Identities
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Family.VolumeVariation
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Gradient
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.GradientFormula
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components

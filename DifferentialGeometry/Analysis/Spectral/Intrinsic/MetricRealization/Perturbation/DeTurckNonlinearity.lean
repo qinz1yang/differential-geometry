@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.FaithfulH1Embedding
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Section
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Iterates
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovariantDerivativeBounds.ChartPullbackFormula
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic

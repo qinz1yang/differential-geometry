@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartRepresentationBounds.CovariantDerivativeComponentBound
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartRepresentationBounds.Components.CovariantDerivative
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Smoothness
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

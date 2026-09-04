@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.Curvat
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FieldDecomposition
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.Proportional
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.SmoothTensor
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryBound
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Bound
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

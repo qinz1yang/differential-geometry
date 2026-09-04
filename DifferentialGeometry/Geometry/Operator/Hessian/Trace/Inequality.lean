@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Laplacian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 
 
 noncomputable section

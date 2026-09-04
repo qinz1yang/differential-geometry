@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactLowerBound
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

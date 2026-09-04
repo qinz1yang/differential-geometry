@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol
+import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol.Defs
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSecondOrderPart
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckCorrectionPrincipalSymbolRemainder
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Remainder
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

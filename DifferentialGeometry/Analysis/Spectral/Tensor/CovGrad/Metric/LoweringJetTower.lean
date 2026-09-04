@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Integration.L2.TensorFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.FiberNorm
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.Tensor0SRSCovariantDerivativeAgreement
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInner
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorRSMetricCompatible
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.RankZeroInner
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.MixedCompatibility
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 
 set_option autoImplicit false

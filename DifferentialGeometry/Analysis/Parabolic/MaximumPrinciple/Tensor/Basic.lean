@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Sections.Trace
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.OneJet

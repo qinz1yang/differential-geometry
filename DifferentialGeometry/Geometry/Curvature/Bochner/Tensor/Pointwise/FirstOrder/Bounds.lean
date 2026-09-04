@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.Basic
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.FixedFieldThirdOrder
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivSecondOrderCommutation
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.SecondOrder
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceIntertwining
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.ContractedBianchi
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.FiberNorm.FrameSum
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceFrame
 import DifferentialGeometry.Geometry.Connection.Laplacian.FrozenFrameTrace
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Parseval
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotSubstitutionBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.TensorIdentification
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Curvature.TensorRS

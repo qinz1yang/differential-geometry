@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Parseval
 import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner

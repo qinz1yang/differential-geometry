@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.LengthBound
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
-import DifferentialGeometry.Geometry.Curvature.SectionalCone
+import DifferentialGeometry.Geometry.Curvature.Metric.SectionalCone
 
 set_option autoImplicit false
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.GeneralCurvatureCommutation
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Bundle.SmoothScalarGerm
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisBracket
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic

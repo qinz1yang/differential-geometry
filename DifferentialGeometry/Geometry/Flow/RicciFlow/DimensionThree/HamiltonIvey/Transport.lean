@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Isometry
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.AlgebraicCurvatureOperatorMetric
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Metric
 
 set_option autoImplicit false
 

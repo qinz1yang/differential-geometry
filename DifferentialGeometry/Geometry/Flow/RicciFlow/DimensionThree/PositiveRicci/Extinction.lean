@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.MaximalFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.FiniteTime.Scalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Existence
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RicciControlsRiemann
 import DifferentialGeometry.Topology.ThreeManifold.Closed
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow

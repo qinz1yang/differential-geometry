@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Action
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.PiecewiseNonnegativity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.Algebra
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.AffineParameter

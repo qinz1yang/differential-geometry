@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Curvature.RiemannTensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.GramUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure

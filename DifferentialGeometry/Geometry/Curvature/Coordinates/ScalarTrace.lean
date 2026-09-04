@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.Ricci
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough
 

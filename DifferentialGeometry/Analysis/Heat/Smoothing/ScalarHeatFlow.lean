@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmo
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.FiniteIntegral
 import DifferentialGeometry.Analysis.Heat.Semigroup.Mass
-import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
 import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.Plancherel
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.AbstractSpectralSemigroup
 import DifferentialGeometry.Analysis.Spectral.Scalar.EigenIdx

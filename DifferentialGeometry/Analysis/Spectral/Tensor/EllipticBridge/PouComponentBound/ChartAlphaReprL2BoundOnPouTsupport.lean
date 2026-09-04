@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.SecondDerivativeRepresentationL2Bound
-import DifferentialGeometry.Tensor.Alternating.DeterminantNorm
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.Chart.SecondDerivativeRepresentation
+import DifferentialGeometry.Analysis.Estimates.Determinant
 import DifferentialGeometry.Analysis.Sobolev.Tensor.Defs
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

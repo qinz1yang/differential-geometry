@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplResidualChain
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.LpDecomposition
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplFromDomainPow
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.Data
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Leibniz
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Rellich.Compactness
 open DifferentialGeometry.Geometry.Curvature

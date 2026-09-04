@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.ScalarHessGraph
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.RankZeroRealization
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInner
-import DifferentialGeometry.Geometry.Connection.ChartBridge.HessFrobenius
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.RankZeroInner
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.HessianNorm
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

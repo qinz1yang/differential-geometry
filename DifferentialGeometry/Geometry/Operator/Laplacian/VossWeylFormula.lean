@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartInvariance
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.ChartInvariance
 
 
 noncomputable section

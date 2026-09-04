@@ -6,8 +6,8 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.Smo
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Gradient.CotangentSharpSmoothness
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.FrozenSlot
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Calculus.FrozenSlot
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Calculus.CovariantDerivative
 
 set_option autoImplicit false
 

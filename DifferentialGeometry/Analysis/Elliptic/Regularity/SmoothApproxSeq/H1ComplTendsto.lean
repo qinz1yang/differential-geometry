@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidualFull
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.H2
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.H2
 import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothBridge
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.NormEquivalence
 

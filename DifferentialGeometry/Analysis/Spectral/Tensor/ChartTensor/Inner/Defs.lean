@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.LowerAllUpperIndices
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra

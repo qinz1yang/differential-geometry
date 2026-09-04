@@ -3,8 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.A
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.Uniform
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.GradientField
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivCommutation
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.FirstOrder
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.Nabla0SFunAgreement
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 

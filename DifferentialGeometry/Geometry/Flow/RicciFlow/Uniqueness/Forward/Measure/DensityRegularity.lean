@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.Va
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Connection.CovariantDerivativeCoordinates
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Connection
-import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Metric.InverseGram
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.WithinSmoothness
 
 set_option autoImplicit false

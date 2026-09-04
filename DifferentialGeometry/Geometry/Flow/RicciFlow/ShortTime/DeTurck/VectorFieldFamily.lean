@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Existence
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
 import DifferentialGeometry.Geometry.Metric.DeTurck.Smoothness
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckVectorFieldContinuousInMetric
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.VectorField.MetricContinuity
 import DifferentialGeometry.Geometry.Metric.DeTurck.CoordinateFormula
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

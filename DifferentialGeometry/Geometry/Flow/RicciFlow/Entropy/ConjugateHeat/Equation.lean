@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Volume
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
-import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Family
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.Family
 import Mathlib.Analysis.Calculus.MeanValue
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

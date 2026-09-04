@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySmoothOn
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Laplacian
 import DifferentialGeometry.Geometry.Operator.Family.Basic
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartGramRegularity

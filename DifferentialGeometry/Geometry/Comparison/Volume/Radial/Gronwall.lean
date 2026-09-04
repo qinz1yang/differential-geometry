@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.Gronwall
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.NormalChartMeasure
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic

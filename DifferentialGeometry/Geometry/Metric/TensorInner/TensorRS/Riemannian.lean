@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra

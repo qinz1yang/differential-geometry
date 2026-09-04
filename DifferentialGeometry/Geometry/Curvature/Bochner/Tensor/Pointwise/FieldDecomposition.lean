@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryReconstruction
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Reconstruction
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.TraceDiscrepancy
 open DifferentialGeometry.Geometry.Curvature
 

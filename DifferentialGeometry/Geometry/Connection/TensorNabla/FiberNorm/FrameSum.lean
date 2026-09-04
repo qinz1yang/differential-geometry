@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryBound
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Parseval
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Bound
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.RiemannianBundle
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.Riemannian
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian

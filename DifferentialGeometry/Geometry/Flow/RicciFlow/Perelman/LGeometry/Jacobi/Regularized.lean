@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Riemannian
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 
 set_option autoImplicit false
 

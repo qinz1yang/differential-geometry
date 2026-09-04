@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Topology.Instances.Matrix

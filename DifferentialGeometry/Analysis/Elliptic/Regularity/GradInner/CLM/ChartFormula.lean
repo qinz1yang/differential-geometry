@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Defs
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.Smooth
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.Data
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Basic

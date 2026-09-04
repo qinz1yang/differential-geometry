@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricDeriv
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 set_option autoImplicit false

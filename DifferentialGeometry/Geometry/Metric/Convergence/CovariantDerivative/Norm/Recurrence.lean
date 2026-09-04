@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Recurrence
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

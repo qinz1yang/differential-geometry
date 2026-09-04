@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.ProjectedConnection
 import DifferentialGeometry.Geometry.Connection.Realization.Embedding
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Basic
-import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import Mathlib.Analysis.InnerProductSpace.Calculus
 
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FirstOrder.Bounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.LocalValues
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryReconstruction
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Reconstruction
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 open DifferentialGeometry.Geometry.Connection.Realization

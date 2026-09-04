@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Properties
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciContinuityInMetricTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import Mathlib.Analysis.Calculus.ContDiff.Comp

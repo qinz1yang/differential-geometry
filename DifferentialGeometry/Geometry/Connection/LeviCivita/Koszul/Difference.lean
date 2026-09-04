@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 
 set_option autoImplicit false

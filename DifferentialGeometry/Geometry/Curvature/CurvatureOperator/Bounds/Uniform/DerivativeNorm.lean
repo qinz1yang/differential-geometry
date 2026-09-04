@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.RicciEndomorphism
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
-import DifferentialGeometry.Geometry.Connection.ChartBridge.DiffRiemannBasisIdentityOffCentre
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.DifferentiatedBasisIdentityOffCenter
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.OperatorNorm
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

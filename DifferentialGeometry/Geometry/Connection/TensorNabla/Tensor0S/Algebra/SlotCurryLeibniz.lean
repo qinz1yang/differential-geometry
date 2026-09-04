@@ -1,7 +1,7 @@
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.CovariantCompatibility
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Parseval
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

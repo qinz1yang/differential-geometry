@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.ExponentialTail
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.LevelSetDecay
-import DifferentialGeometry.Analysis.Parabolic.ExponentialRescaling
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.ExponentialRescaling
 import DifferentialGeometry.Analysis.Parabolic.Moser.Spacetime.Measure
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.MeasureTheory.Integral.Bochner.Basic

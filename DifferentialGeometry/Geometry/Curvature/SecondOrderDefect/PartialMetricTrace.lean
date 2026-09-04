@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.OffDiagonalCurvatureCore
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.CovariantCompatibility
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection

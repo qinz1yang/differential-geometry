@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.PartitionOfUnity
 
 
 noncomputable section

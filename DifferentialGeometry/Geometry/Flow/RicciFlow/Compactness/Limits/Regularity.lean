@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactne
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Curvature.Naturality.OpenSubtype
-import DifferentialGeometry.Geometry.Connection.ChartBridge.DiffRiemannBasisIdentityOffCentre
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.DifferentiatedBasisIdentityOffCenter
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.SpaceJets
 import DifferentialGeometry.Analysis.Calculus.TimeJet.SliceSwap

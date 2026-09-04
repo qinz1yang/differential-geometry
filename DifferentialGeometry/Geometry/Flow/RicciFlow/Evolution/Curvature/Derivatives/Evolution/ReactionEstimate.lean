@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.HeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Frame.Invariant
-import DifferentialGeometry.Geometry.Connection.ChartBridge.OrthonormalComponents
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Metric.OrthonormalComponents
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.FiniteArrayNorm
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

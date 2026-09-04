@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CompleteManifoldExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Basic
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.FlatPaths
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.Flat
 
 set_option autoImplicit false
 

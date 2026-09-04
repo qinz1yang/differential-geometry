@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.Sphere.Isometry.OrthogonalAction
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Basic
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Shape
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
-import DifferentialGeometry.Geometry.Curvature.MetricSectional
+import DifferentialGeometry.Geometry.Curvature.Metric.Sectional
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.HarmonicMapHeatFlow.MapRegularity
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInner
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.RankZeroInner
 import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicDerivativeAtZero
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv

@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.Char
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.ChartHmMonotone
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.ChartHmDomainPow
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2RegularitySuccessor
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PowH2kBridge
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

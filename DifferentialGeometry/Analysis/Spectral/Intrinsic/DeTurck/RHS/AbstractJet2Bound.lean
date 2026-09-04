@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.PointwiseLipschitz
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.MatrixChartIdentification
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.LieDerivativePairing
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentity
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.LieDerivative.Pairing
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.Ricci
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentity
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

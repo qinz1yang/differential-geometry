@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Recons
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Existence.Quasilinear
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Regularity.Solution
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Regularity.JointChart
 open DifferentialGeometry.Analysis.Elliptic
 
 namespace DifferentialGeometry.PDE.RicciFlow

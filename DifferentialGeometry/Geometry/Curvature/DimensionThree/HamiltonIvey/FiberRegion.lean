@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.RegionDistance
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.AlgebraicCurvatureOperatorMetric
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Metric
 
 
 set_option autoImplicit false

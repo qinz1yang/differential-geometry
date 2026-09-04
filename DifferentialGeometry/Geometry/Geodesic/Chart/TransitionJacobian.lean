@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Geodesic.Chart.TransitionMap
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ChartGramChristoffel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Chart.GramChristoffel
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import Mathlib.Geometry.Manifold.IsManifold.ExtChartAt
 import Mathlib.Analysis.Calculus.FDeriv.Basic

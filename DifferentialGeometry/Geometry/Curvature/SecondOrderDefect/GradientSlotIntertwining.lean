@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.GradientSlotLeibniz
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.ParallelNaturality
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection

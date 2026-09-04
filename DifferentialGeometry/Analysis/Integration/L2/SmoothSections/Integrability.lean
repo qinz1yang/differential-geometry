@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Analysis.Integration.L2.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Riemannian
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
 import Mathlib.Geometry.Manifold.VectorBundle.Basic

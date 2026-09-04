@@ -1,6 +1,6 @@
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Bundle.TangentSpace
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Riemannian
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs

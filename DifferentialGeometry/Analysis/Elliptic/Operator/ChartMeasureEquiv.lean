@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Closed
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance

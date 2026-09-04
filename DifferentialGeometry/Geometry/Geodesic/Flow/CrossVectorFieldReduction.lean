@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Equation.FromIntegralCurve
 import DifferentialGeometry.Geometry.Geodesic.Local.Uniqueness
 import DifferentialGeometry.Geometry.Geodesic.Equation.ProjectionDerivative
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.ChartTransition
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Chart.Transition
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import Mathlib.Geometry.Manifold.IntegralCurve.Basic

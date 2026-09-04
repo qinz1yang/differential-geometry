@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.Basic
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Product
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product
 
 
 open DifferentialGeometry.PDE.RicciFlow

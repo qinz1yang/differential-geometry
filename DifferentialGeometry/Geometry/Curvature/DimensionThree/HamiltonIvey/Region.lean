@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Reaction
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import Mathlib.Analysis.Convex.Function

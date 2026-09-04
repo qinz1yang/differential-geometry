@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Norm
 import DifferentialGeometry.Geometry.Comparison.Volume.Ball.Basic
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.InjectivityRadius
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor

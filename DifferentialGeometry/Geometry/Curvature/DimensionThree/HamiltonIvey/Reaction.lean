@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Reaction
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Region
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.LeastEigenvalue
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.Convex.SupportFunction
 import DifferentialGeometry.Analysis.Calculus.Derivative.Right

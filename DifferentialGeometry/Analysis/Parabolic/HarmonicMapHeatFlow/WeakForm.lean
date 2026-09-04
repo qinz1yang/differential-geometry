@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.State.TensorSobolevLower
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.DirichletPairing
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.FirstOrder.DirichletPairing
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolumeEquivalence
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Continuity
 import DifferentialGeometry.Analysis.Integration.Measure.Family.VolumeVariation

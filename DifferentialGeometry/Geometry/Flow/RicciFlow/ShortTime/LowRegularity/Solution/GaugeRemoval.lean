@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Regularity.JointChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.ConjugatingDiffeoFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciFlowPdeAtZero
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Properties

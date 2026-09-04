@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation.Basic
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpendicularFrame.Basic
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
 import Mathlib.Analysis.Convex.Deriv
 
 

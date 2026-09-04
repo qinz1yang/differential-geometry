@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionL
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.DifferentialOperatorProportionalBounds
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.SmoothTensor
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.Proportional
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryBound
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Bound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.DifferentiatedTower
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

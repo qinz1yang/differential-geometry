@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderZero.KernelJetGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Algebra
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.OperatorFieldComposition
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.OperatorField.Composition
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral

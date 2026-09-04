@@ -8,12 +8,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Lichnerowicz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ProductLeibniz
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.SlotPermutation
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 import DifferentialGeometry.Geometry.Connection.MetricTrace.NablaTraceGen
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.UhlReaction3
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RiemannFromRicci
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RicciControlsRiemann
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Algebra.UhlenbeckReaction
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

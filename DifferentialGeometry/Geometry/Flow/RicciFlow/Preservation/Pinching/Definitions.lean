@@ -9,10 +9,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.NormEvolutio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Basic
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.PinchingAlgebra
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RicciControlsRiemann
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Algebra.Pinching
 import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

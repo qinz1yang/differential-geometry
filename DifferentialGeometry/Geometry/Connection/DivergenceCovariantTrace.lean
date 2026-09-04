@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.LocalizedFrame.Coordinates
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.ChartInvariance
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.ChartInvariance
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

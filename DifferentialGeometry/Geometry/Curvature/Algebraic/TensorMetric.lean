@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.Algebraic.Tensor
-import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
 
 set_option autoImplicit false

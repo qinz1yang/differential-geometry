@@ -5,8 +5,8 @@ Authors: Yury Kudryashov
 Coauthors: Jack McCarthy
 -/
 import DifferentialGeometry.Tensor.Alternating.Flip
-import DifferentialGeometry.Tensor.Alternating.Comp
-import DifferentialGeometry.Tensor.Alternating.Congr
+import DifferentialGeometry.Tensor.Alternating.Composition
+import DifferentialGeometry.Tensor.Alternating.Reindexing.Domain
 import DifferentialGeometry.Tensor.Alternating.Shuffle.Decomposition
 import Mathlib.Analysis.Normed.Module.Alternating.Curry
 import Mathlib.LinearAlgebra.Alternating.DomCoprod

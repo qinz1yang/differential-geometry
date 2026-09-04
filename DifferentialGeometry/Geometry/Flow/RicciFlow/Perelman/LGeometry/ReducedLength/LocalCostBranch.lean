@@ -5,8 +5,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Cont
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.Minimizer.Domain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.SmoothExtension
 import DifferentialGeometry.Geometry.Comparison.Variation.Curve.PrescribedTangentInOpenSet
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Hessian
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Hessian
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
 import DifferentialGeometry.Analysis.Calculus.Cutoff.BumpClamp
 import Mathlib.Analysis.Calculus.LocalExtr.Basic

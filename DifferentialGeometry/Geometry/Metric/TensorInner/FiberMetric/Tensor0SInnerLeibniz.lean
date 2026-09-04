@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Calculus.CovariantDerivative
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricDeriv
 open DifferentialGeometry.Geometry.Curvature
 

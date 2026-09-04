@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.FlatPaths
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.Paths.Flat
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.ExponentialBallPartialDiffeomorph
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.CutLocus.MeasureZero

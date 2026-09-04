@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Christoffel
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
 
 open DifferentialGeometry.Geometry.Connection

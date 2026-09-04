@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Hessian
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
-import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Operator.Gradient.CotangentSharpSmoothness
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField

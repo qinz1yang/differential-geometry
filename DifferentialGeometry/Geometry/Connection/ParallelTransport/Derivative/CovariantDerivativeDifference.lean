@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Basic
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.Pullback
-import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 
 set_option autoImplicit false
 

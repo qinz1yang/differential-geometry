@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
-import DifferentialGeometry.Geometry.Connection.ChartBridge.HessFrobenius
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.HessianNorm
 import DifferentialGeometry.Geometry.Operator.Laplacian.LeviCivitaIdentification
 import DifferentialGeometry.Geometry.Connection.ConnectionDifferenceNorm
 open DifferentialGeometry.Geometry.Curvature

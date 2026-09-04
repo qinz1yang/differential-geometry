@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.LieDerivative.Tensor
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
 import DifferentialGeometry.Tensor.Multilinear.Bundle.Defs
-import DifferentialGeometry.Tensor.Alternating.Comp
+import DifferentialGeometry.Tensor.Alternating.Composition
 import DifferentialGeometry.Tensor.Multilinear.Composition
 import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
 import Mathlib.Analysis.Calculus.ContDiff.Basic

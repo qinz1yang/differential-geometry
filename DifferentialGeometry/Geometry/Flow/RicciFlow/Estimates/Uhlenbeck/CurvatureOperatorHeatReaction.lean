@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Convex.Componentwise
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.LeastEigenvalue
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Frame
 
 

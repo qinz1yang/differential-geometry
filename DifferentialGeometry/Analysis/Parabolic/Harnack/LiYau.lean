@@ -14,7 +14,7 @@ import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
-import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
 
 
 noncomputable section

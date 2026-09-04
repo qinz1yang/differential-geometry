@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCo
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.NormBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.RankZeroInner
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.RankZeroInner
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

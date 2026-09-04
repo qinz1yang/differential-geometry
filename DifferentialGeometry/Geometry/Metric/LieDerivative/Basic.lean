@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartGramRegularity
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

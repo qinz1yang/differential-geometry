@@ -5,15 +5,15 @@ Authors: Yury Kudryashov
 Coauthors: Jack McCarthy
 Modified by: Ziyang Qin
 -/
-import DifferentialGeometry.Tensor.Alternating.Permutation
-import DifferentialGeometry.Tensor.Alternating.MultiKroneckerDelta
+import DifferentialGeometry.Tensor.Alternating.Reindexing.Permutation
+import DifferentialGeometry.Tensor.Alternating.Coordinates.MultiKroneckerDelta
 import DifferentialGeometry.Tensor.Multilinear.PredualBasis
 import DifferentialGeometry.Tensor.Alternating.Shuffle.Split
-import DifferentialGeometry.Tensor.Alternating.Congr
-import DifferentialGeometry.Tensor.Alternating.Comp
+import DifferentialGeometry.Tensor.Alternating.Reindexing.Domain
+import DifferentialGeometry.Tensor.Alternating.Composition
 import DifferentialGeometry.Tensor.Alternating.Curry
 import DifferentialGeometry.Tensor.Product.Defs
-import DifferentialGeometry.Tensor.Alternating.Basis
+import DifferentialGeometry.Tensor.Alternating.Coordinates.Basis
 import DifferentialGeometry.Tensor.Alternating.Shuffle.Derivative
 import DifferentialGeometry.Tensor.Alternating.Shuffle.Placement
 

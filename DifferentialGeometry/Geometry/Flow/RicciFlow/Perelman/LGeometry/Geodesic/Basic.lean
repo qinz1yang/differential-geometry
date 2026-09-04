@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Re
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Geometry.Comparison.Variation.Field.ChartConstruction
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Geodesic.Flow.ChartPhase
 import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness

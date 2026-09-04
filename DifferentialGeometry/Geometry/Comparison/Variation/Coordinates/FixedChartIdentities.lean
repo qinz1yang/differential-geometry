@@ -4,9 +4,9 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Riemann
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
-import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisBracket
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.Riemann
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.Ricci
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import Mathlib.Geometry.Manifold.ContMDiff.Defs
 import Mathlib.Analysis.Calculus.FDeriv.Symmetric

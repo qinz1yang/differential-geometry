@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.KoszulCovariantDerivative
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.ConnectionDifference.CovariantDerivative
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.InverseMetric
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.Naturality
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini

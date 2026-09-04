@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.Semigroup.MildSolutionExistence
-import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol
+import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol.Defs
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.PrincipalSymbol
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 open DifferentialGeometry.Geometry.Curvature

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Weak
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 

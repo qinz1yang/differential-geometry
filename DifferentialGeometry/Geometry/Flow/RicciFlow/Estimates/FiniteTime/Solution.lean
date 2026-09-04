@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.FiniteTime.Scalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RicciControlsRiemann
 
 set_option autoImplicit false
 

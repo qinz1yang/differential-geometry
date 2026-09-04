@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.SmoothCaseLpClass
+import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.SmoothCase.LpClass
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.Smooth
 
 noncomputable section

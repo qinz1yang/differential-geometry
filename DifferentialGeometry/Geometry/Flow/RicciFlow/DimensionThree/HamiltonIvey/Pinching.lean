@@ -1,6 +1,6 @@
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorLeastEigenvalue
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.LeastEigenvalue
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Region
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.RicciControlsRm
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Reconstruction.RicciControlsRiemann
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.ScalarLowerBound
 import Mathlib.Analysis.Calculus.Deriv.Comp

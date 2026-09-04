@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Lipschitz
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lp.Basic
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Closed
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.CompactSupport
 import DifferentialGeometry.Geometry.Operator.Gradient.LipschitzBound
 
 

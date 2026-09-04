@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Scaling
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 
 set_option autoImplicit false
 

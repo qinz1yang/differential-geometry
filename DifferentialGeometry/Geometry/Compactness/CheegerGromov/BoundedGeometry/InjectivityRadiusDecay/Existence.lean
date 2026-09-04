@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius
+import DifferentialGeometry.Geometry.Comparison.CheegerGromovTaylor.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Comparison.Volume.Intrinsic.BallVolume
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Ball.EuclideanUpper
 import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Count

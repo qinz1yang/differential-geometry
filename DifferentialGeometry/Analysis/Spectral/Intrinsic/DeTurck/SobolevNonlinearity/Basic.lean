@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chart.RemainderPolynomial
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Iterates
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Section
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.FaithfulH1Embedding
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nemytskii.LocallyLipschitzTruncation

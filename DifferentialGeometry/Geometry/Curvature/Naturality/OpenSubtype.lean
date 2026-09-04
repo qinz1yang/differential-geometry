@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Metric.Pullback.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartLieBracket
 

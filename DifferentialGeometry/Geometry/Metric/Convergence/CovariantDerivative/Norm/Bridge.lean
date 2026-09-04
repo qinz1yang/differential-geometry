@@ -6,9 +6,9 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.Nabla
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.GradientField
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.PDE.RicciFlow

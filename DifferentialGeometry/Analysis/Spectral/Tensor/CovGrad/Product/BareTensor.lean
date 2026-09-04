@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.Naturality
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivCommutation
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.FirstOrder
 import DifferentialGeometry.Tensor.Mixed.Field
 import DifferentialGeometry.Tensor.Multilinear.Bundle.ModelProduct
 import DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Closed
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.Identities
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.CompactSupport
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Riemannian
 import Mathlib.Analysis.InnerProductSpace.Defs

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.Closed
-import DifferentialGeometry.Geometry.Curvature.MetricConditions
+import DifferentialGeometry.Geometry.Curvature.Metric.Conditions
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.PositiveSpaceForm
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 

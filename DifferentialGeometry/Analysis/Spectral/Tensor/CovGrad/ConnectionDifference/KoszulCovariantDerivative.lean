@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.Linearization
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradCovDerivCommutation
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.FirstOrder
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Christoffel.DifferenceKoszul
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 open DifferentialGeometry.Geometry.Curvature

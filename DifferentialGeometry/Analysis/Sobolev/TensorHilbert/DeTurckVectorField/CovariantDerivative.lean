@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identit
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SlotInsertion
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckVectorFieldL2JetBoundEndomorphismCometricRaise
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.VectorField.L2JetBound
 import Mathlib.Analysis.MeanInequalities
 
 noncomputable section

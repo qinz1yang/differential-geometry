@@ -4,9 +4,9 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Boun
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Basic
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 
 
 open DifferentialGeometry.Geometry.Curvature

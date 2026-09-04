@@ -10,7 +10,7 @@ import DifferentialGeometry.Analysis.Calculus.Smoothness.Tsum
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.CompactChartJetBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.WeylSummability
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.SobolevDecay
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Regularity.JointChart
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.DirichletForm.RotatedTestSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.SmoothTensorAllOrderCompleteness
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.Representation.TensorReprFromFrame

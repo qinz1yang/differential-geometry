@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Christoffel
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas

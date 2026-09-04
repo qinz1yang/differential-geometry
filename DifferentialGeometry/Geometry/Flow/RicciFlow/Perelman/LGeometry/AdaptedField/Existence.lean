@@ -1,12 +1,12 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.AdaptedField.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Chart
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
-import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.JointRegularity
 import DifferentialGeometry.Geometry.Metric.Family.DifferentialOperatorRegularity
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Smoothness
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
-import DifferentialGeometry.Analysis.ODE.Flow.ParametricLinearODE
+import DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Parametric
 import Mathlib.Algebra.Order.Field.Pi
 import Mathlib.Analysis.Calculus.MeanValue
 

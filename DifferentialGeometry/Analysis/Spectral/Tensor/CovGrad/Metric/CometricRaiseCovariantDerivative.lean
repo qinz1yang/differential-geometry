@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.CometricRaise
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.InverseMetric
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CotangentCovariantDerivative
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

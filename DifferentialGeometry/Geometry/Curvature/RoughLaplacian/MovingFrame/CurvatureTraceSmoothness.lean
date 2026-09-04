@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FieldDecomposition
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.GenuineCurvatureField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.SmoothTensor
-import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryReconstruction
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Reconstruction
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection

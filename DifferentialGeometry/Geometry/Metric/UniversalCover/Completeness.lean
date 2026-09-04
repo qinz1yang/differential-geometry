@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Sections
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Ricci
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.Ricci
 import Mathlib.Topology.Covering.Basic
 import Mathlib.Topology.Homotopy.Lifting
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup

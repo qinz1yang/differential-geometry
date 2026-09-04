@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.LpIdentity
-import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.LpClass
+import DifferentialGeometry.Analysis.Elliptic.Regularity.Hessian.Lp.Basic
 import DifferentialGeometry.Geometry.Curvature.Bochner.Scalar.CoordinateFormula
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
