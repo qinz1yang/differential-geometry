@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 
 noncomputable section
 

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Tensor0S
 import DifferentialGeometry.Geometry.Coordinates.Tensor
-import DifferentialGeometry.Tensor.RSTensor.Components
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
 import DifferentialGeometry.Tensor.RSTensor.Field
-import DifferentialGeometry.Tensor.RSTensor.Basis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.TensorRS
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 open DifferentialGeometry.Tensor.Multilinear

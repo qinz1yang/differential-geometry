@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponentGradientL2Atoms
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.TensorFiberFromModel
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberFromModel
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 

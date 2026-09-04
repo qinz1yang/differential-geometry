@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CovariantCalculusRS
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.TensorRS
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.MixedTensor
 
 open DifferentialGeometry.Analysis.Spectral

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
-import DifferentialGeometry.Tensor.Multilinear.TensorProduct
+import DifferentialGeometry.Tensor.Multilinear.Bundle.TensorProduct
 
 set_option autoImplicit false
 

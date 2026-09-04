@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.Linearization
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Weitzenbock
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.GradientField

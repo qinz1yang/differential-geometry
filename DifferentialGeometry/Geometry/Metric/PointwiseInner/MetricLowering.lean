@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Riemannian

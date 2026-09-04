@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Component.L2Approximation
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.AbstractChartPullCutoff
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradCrossBridge
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradL2
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Bridge.Cross
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.L2
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

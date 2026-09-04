@@ -33,7 +33,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.SpectralEi
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.PointwiseDerivative
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Modulus
 
 section

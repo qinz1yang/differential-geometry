@@ -13,7 +13,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.AbstractChar
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.WeakSolutionDirichlet
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.Bootstrap.BootstrapSource
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.DirichletForm.RotatedTestSection
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovariantLeibniz
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Scalar
 open DifferentialGeometry.Geometry.Curvature
 
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.H1Compl.GradientChartBridge
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Indicator

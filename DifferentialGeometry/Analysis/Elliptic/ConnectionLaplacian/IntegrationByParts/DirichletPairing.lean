@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradMetricBridge
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Bridge.Metric
 
 
 noncomputable section

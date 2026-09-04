@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.H1Lp
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lp.H1
 import Mathlib.Analysis.InnerProductSpace.ProdL2
 import Mathlib.Analysis.Normed.Lp.WithLp
 import Mathlib.MeasureTheory.Function.LpSpace.Complete

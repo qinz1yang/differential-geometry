@@ -1,6 +1,6 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CovariantCalculusRS
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.TensorRS
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.Defs
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.HomTensorRSFibreNorm
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomTensorRSFiberNorm
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Geometry.Curvature
 

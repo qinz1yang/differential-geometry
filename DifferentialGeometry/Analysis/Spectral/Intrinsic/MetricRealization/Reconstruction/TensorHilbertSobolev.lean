@@ -1,10 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PositiveDefinitePerturbation
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Cotangent
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.SpectralSeriesSecondOrderSobolev
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FrameExpansion
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.SingleSlotFibreNormBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.SingleSlotFiberNorm
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor

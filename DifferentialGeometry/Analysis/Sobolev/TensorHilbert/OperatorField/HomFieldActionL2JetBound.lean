@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.HomFieldActionJetBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.IteratedApplicationLeibniz
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Algebra.IteratedApplication
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

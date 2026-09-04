@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Family.VolumeVariation
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Gradient
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
-import DifferentialGeometry.Tensor.RSTensor.Basis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Components
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field

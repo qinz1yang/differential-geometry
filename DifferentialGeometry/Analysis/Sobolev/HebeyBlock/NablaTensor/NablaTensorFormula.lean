@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartT
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedNorm
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.WeightedSobolevNorm
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Inclusion
-import DifferentialGeometry.Tensor.Multilinear.HsBoundOp
+import DifferentialGeometry.Tensor.Multilinear.Norm.HilbertSchmidt
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Geometry.Curvature
 

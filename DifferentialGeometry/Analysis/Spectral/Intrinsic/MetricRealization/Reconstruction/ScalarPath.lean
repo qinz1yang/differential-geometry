@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.Smoothness.Tsum
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Regularity.ScalarEigenfunctionJets
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.SmoothRepresentative
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.RankZero
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Geometry.Curvature

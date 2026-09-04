@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CometricSlotPairing
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.SlotInsertion
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SlotInsertion
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Defs
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

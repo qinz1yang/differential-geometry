@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Basic
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.SlotIdentities
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseMetricSlotCoefficient
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CoefficientReindexing
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Algebra.CoefficientReindexing
 
 noncomputable section
 

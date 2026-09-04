@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Boundary.OutwardNormal
+import DifferentialGeometry.Geometry.Boundary.Normal.Outward
 import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 open DifferentialGeometry.Geometry.Operator
 

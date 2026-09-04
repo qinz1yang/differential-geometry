@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.MetricJets.ChartBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.TensorFiberToModel
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberToModel
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentL2BoundUniform
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ComponentSecondFormula
 open DifferentialGeometry.Analysis.Sobolev

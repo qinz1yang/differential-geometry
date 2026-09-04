@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.RawDefs.MCovariant
 import DifferentialGeometry.Geometry.Connection.TensorNabla.RawDefs.Bundled
-import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Endomorphism
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic

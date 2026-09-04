@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Formula
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.MixedComponents
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
-import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
@@ -21,7 +21,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Product
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Geometry.Curvature

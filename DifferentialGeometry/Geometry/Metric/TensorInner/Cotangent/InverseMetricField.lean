@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Riemannian
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary

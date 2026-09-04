@@ -1,6 +1,6 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Tensor.Multilinear.Fiber
-import DifferentialGeometry.Tensor.Multilinear.Bundle
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Defs
 import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.Basic

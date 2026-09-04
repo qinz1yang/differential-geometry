@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinate
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Comparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Product
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Smooth
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
 import DifferentialGeometry.Geometry.Operator.Laplacian.Rough

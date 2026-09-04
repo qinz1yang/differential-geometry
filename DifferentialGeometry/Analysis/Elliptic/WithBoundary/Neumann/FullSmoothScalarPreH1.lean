@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Operator.WithBoundary.Gradient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.Green
 import DifferentialGeometry.Geometry.Operator.WithBoundary.Laplacian
 import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientContinuity
-import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
+import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Riemannian
 import Mathlib.Analysis.InnerProductSpace.Defs

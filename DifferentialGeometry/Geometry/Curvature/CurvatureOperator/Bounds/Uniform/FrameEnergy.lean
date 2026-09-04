@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.FiberNorm
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.RiemannTensorBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Curvature.RiemannTensor
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.UnitEvaluation
 import Mathlib.Topology.Order.Compact

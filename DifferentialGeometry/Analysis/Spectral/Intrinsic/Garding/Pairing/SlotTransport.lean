@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.Balanced
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.ApplicationJetBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.ApplicationJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.Parametric.ApplicationJetBound
 
 

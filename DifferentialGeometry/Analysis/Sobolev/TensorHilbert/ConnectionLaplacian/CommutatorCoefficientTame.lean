@@ -4,10 +4,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.PartitionO
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.LaplacianIterateLadder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.DirichletBochnerGap
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.IteratedCovariantDerivativeBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.ParallelRaise
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.ApplicationJetWindow
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
@@ -16,8 +16,8 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.Op
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.AllOrder
 import DifferentialGeometry.Analysis.Convex.LogConvexSequence
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.CrossScale
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CovariantCalculus
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.HomFieldActionJetBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.Covariant
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

@@ -1,10 +1,10 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Coefficients.InverseLipschitzBounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CometricTraceSelf
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.ParallelRaise
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.TopOrder.CurvatureBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SlotPermJet
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.Jets
 
 set_option autoImplicit false
 

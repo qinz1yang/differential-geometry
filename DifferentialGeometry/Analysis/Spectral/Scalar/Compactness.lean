@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Scalar.Resolvent
 import DifferentialGeometry.Analysis.Spectral.Scalar.Spectrum
 import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothBridge
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Rellich.OnManifold
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToChart.ComponentNormBound
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.Basic
 import Mathlib.Analysis.Normed.Operator.Compact.Basic
 import Mathlib.Topology.Sequences
 open DifferentialGeometry.Geometry.Operator

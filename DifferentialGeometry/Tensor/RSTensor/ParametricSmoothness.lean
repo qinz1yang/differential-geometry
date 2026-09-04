@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.Contraction
-import DifferentialGeometry.Tensor.Multilinear.DomDomCongrSection
+import DifferentialGeometry.Tensor.Multilinear.Bundle.DomainPermutation
 
 noncomputable section
 

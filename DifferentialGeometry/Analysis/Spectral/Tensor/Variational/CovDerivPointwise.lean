@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Riemannian
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import Mathlib.Analysis.InnerProductSpace.Defs

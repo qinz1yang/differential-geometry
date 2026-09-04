@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.MoserTameProduct
 import DifferentialGeometry.Geometry.Connection.TensorNabla.FiberNorm.FrameSum
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradCrossBridge
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Bridge.Cross
 import DifferentialGeometry.Geometry.Connection.TensorNabla.FiberNorm.SliceBound
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.GradientField
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.HomFieldJetDecomposition

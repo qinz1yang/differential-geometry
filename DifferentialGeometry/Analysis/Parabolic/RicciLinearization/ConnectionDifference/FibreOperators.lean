@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDe
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.PathLinearization
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.ConnectionDifference.CovariantDerivative
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identities
-import DifferentialGeometry.Tensor.Multilinear.ModelProductContinuousBilinear
+import DifferentialGeometry.Tensor.Multilinear.Bundle.ModelProduct
 open DifferentialGeometry.Geometry.Curvature
 
 

@@ -1,7 +1,7 @@
 import Mathlib.Analysis.Normed.Operator.NormedSpace
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Application.SecondOrderSobolevBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.SymmetricRaiseEndomorphism
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.FibreNormJet
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.ChartPartial.WeakPartials
 import DifferentialGeometry.Analysis.Spectral.Tensor.Spectrum.Defs
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradL2
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.L2
 
 open DifferentialGeometry.Analysis.Spectral
 noncomputable section

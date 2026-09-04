@@ -1,7 +1,7 @@
 /-
 Authors: Jack McCarthy
 -/
-import DifferentialGeometry.Tensor.Multilinear.Fiber
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
 
 noncomputable section
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.Basic
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 
 

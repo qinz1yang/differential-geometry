@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Basic
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldComposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
 
 noncomputable section
 

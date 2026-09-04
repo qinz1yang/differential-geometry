@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldApplicationLpProduct
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.LpProduct
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.GagliardoNirenberg
 

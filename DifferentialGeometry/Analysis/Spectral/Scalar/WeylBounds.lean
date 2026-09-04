@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Counting.Diagonal
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.TensorHsInterpolationLimit
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

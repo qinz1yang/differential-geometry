@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.WeakPartial.Chose
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentL2BoundUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentSobolevBoundFromH1
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.H1Compl
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToChart.ComponentNormBound
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section

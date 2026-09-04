@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3Principal
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Principal.H2H3
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Grid.Regularity
 
 set_option autoImplicit false

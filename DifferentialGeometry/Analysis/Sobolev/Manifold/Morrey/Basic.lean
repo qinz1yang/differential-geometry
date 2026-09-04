@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Embedding.Morrey
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.Basic
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Basic
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Subcritical
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison

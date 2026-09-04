@@ -2,8 +2,8 @@
 Authors: Yuan Liao, Jack McCarthy
 Modified by: Ziyang Qin
 -/
-import DifferentialGeometry.Tensor.Multilinear.Fiber
-import DifferentialGeometry.Tensor.Multilinear.Curry
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Fiber
+import DifferentialGeometry.Tensor.Multilinear.Curry.Basic
 import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent

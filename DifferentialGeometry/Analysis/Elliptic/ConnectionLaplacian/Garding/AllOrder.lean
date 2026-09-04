@@ -3,8 +3,8 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.Curvat
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Iterates
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SobolevBounds.RoughLaplacianSecondCovariantDerivativeBound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.Hebey
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.HomFieldActionJetBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomFieldActionJets
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ConnectionLaplacian.OrderDropping
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FirstOrder.Section
 open DifferentialGeometry.Analysis.Spectral

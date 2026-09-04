@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.RicciEndomorphism
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CovariantCalculus
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.Covariant
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature

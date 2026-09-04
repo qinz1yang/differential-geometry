@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToChart.ComponentNormBound
 import DifferentialGeometry.Analysis.Integration.L2.Basic
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm

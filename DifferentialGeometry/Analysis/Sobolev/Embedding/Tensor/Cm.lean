@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Iterated
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Morrey.HigherOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentSobolevBound
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.FiberNormRiemannianBridge
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.TensorSectionL2BoundByComponents
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ComponentL2.TensorSection
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.ManifoldC0
 import Mathlib.Geometry.Manifold.ContMDiff.Basic
 open DifferentialGeometry.Geometry.Curvature

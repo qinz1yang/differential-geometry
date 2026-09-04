@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
-import DifferentialGeometry.Tensor.Multilinear.TensorProduct
+import DifferentialGeometry.Tensor.Multilinear.Bundle.TensorProduct
 
 
 noncomputable section

@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.BracketContraction
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FirstOrder.Bounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.ContractionBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.Contraction
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.CauchySchwarz
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

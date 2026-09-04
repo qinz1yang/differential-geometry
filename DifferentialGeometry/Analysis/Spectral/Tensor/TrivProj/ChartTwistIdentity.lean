@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Riemannian
-import DifferentialGeometry.Tensor.Multilinear.Bundle
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Defs
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Basic
 open DifferentialGeometry.Geometry.Curvature

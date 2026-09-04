@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.GradNormChartBoundPouWeighted
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponentGradientL2Atoms
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.ChartTwistIdentity
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.TensorChartTwistUniformBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.ChartTwistBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.GradNormChartBound
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 

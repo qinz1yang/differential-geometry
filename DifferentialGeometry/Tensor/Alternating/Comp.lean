@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov
 Coauthors: Jack McCarthy
 -/
-import DifferentialGeometry.Tensor.Multilinear.Comp
+import DifferentialGeometry.Tensor.Multilinear.Composition
 import DifferentialGeometry.Analysis.Calculus.AnalyticTransfer
-import DifferentialGeometry.Tensor.Multilinear.LinearIsometryContDiff
+import DifferentialGeometry.Tensor.Multilinear.Smoothness.LinearIsometry
 import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.Analysis.Calculus.ContDiff.CPolynomial
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace

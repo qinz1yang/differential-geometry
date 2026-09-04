@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 open DifferentialGeometry.Analysis.Spectral DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Geometry.Curvature

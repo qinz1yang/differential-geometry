@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Algebra.CovariantSumCross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.MorreySecondDerivative
 

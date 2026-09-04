@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.RicciDeTurckPairing.BackgroundDifferenceFirstDerivativePairingBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Background.Forcing.GalerkinTerms
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3FirstOrder
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2PointwiseUnif
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Principal.H2H3FirstOrder
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2PointwiseUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.FiniteSpectral
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.CrossScaleCauchySchwarz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Remainder.Symmetry

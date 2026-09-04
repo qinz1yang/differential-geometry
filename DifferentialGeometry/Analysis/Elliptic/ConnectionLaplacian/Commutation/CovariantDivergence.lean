@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoub
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.RoughLaplacianCometricTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.Linearization
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SlotExtendCovariantParallelism
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SlotExtension.Parallelism
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.Basic
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.GradientField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator

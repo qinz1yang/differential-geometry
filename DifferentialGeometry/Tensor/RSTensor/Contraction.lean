@@ -3,8 +3,8 @@ Authors: Yuan Liao, Jack McCarthy
 Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Tensor.Multilinear.Curry
-import DifferentialGeometry.Tensor.Multilinear.TensorProduct
+import DifferentialGeometry.Tensor.Multilinear.Curry.Basic
+import DifferentialGeometry.Tensor.Multilinear.Bundle.TensorProduct
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import DifferentialGeometry.Tensor.Multilinear.PredualBasis
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent

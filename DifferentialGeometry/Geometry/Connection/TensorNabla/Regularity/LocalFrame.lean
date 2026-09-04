@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.FixedChart.Models
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Tangent
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 
 set_option autoImplicit false
 

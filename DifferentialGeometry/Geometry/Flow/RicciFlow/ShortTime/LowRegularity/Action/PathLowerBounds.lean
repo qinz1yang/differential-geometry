@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.Bounds.Coefficients
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3Principal
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldApplication
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Principal.H2H3
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Application
 open DifferentialGeometry.Analysis.Sobolev DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

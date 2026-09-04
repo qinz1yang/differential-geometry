@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionLeibnizGrid
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.DifferentiatedTowerNormalForm
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.DifferentiatedTower
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

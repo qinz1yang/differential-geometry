@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.Remainder
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3Principal
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Principal.H2H3
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Application.SecondCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense

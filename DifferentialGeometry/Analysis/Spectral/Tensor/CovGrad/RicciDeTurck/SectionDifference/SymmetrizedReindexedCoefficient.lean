@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.ConnectionDifferen
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.InverseMetricFieldParallel
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradSlotPermutationNaturality
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.Naturality
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.RicciPalatini
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Field

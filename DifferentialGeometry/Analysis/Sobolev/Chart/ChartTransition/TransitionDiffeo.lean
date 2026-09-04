@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.ChainRule.CompChainRuleK
 import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Bounds
 import Mathlib.Data.Nat.Choose.Bounds
 import Mathlib.Geometry.Manifold.IsManifold.ExtChartAt

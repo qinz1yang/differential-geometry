@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.RiemannTensorBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.GramMatrixUpperBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Curvature.RiemannTensor
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.GramUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
 import Mathlib.Algebra.Order.Chebyshev

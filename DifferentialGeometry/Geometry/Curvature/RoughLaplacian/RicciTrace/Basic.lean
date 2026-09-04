@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.CurvatureOperator.DifferentiatedCurvature
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.ContractionBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.Contraction
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 

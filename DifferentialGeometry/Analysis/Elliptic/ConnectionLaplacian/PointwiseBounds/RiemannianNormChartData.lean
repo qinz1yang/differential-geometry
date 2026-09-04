@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNormRawComponentBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.RawComponentBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.PointwiseBounds.UniformChartCoefficients
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

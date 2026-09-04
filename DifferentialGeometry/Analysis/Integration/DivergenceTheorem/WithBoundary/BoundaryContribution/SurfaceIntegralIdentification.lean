@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.BoundaryContribution.GreenWithBoundary
-import DifferentialGeometry.Geometry.Boundary.OutwardNormal
+import DifferentialGeometry.Geometry.Boundary.Normal.Outward
 import DifferentialGeometry.Geometry.Boundary.SurfaceMeasure
-import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
+import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 noncomputable section

@@ -3,11 +3,11 @@ Authors: Yuan Liao, Jack McCarthy
 Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Tensor.RSTensor.Basis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Tensor.Product.Defs
-import DifferentialGeometry.Tensor.Multilinear.Basis
-import DifferentialGeometry.Tensor.Multilinear.TensorProduct
-import DifferentialGeometry.Tensor.Multilinear.DomDomCongrSection
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
+import DifferentialGeometry.Tensor.Multilinear.Bundle.TensorProduct
+import DifferentialGeometry.Tensor.Multilinear.Bundle.DomainPermutation
 open DifferentialGeometry.Tensor.Multilinear
 
 

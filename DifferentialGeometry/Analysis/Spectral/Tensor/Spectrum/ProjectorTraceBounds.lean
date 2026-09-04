@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.ReverseZerothOrderBound
 import DifferentialGeometry.Analysis.Integration.L2.FiberNormBounds
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.SingleSlotFibreNormBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.SingleSlotFiberNorm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FrameExpansion
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 open DifferentialGeometry.Analysis.Elliptic

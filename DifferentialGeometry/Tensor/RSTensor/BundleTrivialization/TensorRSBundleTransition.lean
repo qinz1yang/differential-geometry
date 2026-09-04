@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleLocalityIdentities
-import DifferentialGeometry.Tensor.RSTensor.TensorRSSpaceOperatorNorm
+import DifferentialGeometry.Tensor.RSTensor.Norm.Operator
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Hom
 

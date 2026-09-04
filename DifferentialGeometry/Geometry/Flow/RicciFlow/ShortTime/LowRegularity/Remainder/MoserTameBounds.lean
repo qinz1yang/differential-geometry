@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.Remainder
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldCompositionJetMul
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.CompositionJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Naturality
 
 noncomputable section

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovariantLeibniz
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Scalar
 import DifferentialGeometry.Tensor.RSTensor.CovariantSlotEquiv
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

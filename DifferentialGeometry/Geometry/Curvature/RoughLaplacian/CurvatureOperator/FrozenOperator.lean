@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.Different
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.SmoothTensor
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.Proportional
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryBound
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.DifferentiatedTowerNormalForm
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.DifferentiatedTower
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

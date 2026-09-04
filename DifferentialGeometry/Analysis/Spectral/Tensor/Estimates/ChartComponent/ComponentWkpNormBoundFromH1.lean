@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.Co
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.WeakPartial.ComponentSobolevBoundDerivBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.WeakPartial.PartialL2BoundFromH1
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.WeakPartial.ChosenWeakPartialFderivBridge
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToChart.ComponentNormBound
 import DifferentialGeometry.Analysis.Sobolev.Chart.AtlasNorm.AtlasIndependence
 open DifferentialGeometry.Geometry.Operator
 

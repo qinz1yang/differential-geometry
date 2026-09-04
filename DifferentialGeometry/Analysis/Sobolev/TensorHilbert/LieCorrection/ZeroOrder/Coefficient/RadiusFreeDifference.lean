@@ -5,8 +5,8 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.En
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.RadiusFree
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.TraceRadiusFreeBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.SymmAbsorbedCoeffInputReindexBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldComposition
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.SymmetricCoefficientBounds
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
 
 noncomputable section
 

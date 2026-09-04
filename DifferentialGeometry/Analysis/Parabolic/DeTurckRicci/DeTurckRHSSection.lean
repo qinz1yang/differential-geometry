@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
 import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.LieDerivativePairing
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 import DifferentialGeometry.Tensor.Mixed.Field
-import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
+import DifferentialGeometry.Tensor.Multilinear.Curry.FiniteNorm
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 open DifferentialGeometry.Tensor.Multilinear
 

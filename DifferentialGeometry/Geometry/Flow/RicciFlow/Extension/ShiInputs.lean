@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.RestartExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivativeTail
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Estimate
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.ChartGramUniformContinuity
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.ChartGramContinuity
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 open DifferentialGeometry.PDE.RicciFlow

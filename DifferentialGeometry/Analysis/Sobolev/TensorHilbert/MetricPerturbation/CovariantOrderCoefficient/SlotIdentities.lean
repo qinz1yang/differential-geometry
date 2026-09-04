@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.PassZero
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CoefficientReindexing
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Algebra.CoefficientReindexing
 
 noncomputable section
 

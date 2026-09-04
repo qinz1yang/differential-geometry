@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.Components
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
 import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 
 set_option autoImplicit false

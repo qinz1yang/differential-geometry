@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.RawDefs.MCovariant
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Connection.TensorNabla.InducedConnection
 
 namespace DifferentialGeometry

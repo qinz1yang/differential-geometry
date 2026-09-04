@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Basic
 import DifferentialGeometry.Geometry.Metric.Family.Basic
-import DifferentialGeometry.Tensor.RSTensor.Components
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

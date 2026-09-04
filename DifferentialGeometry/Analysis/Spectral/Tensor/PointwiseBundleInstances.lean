@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Tensor
-import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
+import DifferentialGeometry.Tensor.Multilinear.Curry.FiniteNorm
 
 noncomputable section
 

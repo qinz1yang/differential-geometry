@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorCone
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
-import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.Expansion
 
 set_option autoImplicit false
 

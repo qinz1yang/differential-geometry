@@ -2,9 +2,9 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDiffe
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Defs
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Cotangent
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorMetricCompatible
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Connection.Realization.SmoothSections
-import DifferentialGeometry.Tensor.Multilinear.Basis
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Basis
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Geometry.Curvature
 

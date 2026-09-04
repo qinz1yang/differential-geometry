@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.SectionCalculus
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.CovariantCalculus
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.Covariant
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 open DifferentialGeometry.Geometry.Connection.Realization

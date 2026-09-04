@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.FluxJetBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.Parametric
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.GalerkinPairing
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.JetProductIntegral
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Tensor.RSTensor

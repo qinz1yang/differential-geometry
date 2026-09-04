@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Boundary.OutwardNormal
+import DifferentialGeometry.Geometry.Boundary.Normal.Outward
 
 
 noncomputable section

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.RSTensor.Basis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Smooth
 import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Hom

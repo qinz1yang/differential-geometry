@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Uniqueness
 import DifferentialGeometry.Geometry.Connection.LocalFrameRegularity
-import DifferentialGeometry.Tensor.RSTensor.Basis
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.BundleBasis
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.Smooth
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 open DifferentialGeometry.Geometry.Curvature

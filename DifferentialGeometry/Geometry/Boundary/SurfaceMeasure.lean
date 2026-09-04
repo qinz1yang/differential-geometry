@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Boundary.InducedMetric
+import DifferentialGeometry.Geometry.Boundary.Metric.Induced
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 

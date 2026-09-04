@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Boundary.InducedMetric
+import DifferentialGeometry.Geometry.Boundary.Metric.Induced
 import DifferentialGeometry.Geometry.Boundary.SurfaceMeasure
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 

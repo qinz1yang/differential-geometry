@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients.Basic
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.UniformL2FromRaw
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ComponentL2.UniformFromRaw
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.ChartComponentIdentity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.IntrinsicThirdJet
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.MetricJets.CovariantInput

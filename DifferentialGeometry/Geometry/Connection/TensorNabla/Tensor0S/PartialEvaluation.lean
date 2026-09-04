@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.Realization.Tensor0SBridge
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 
 
 noncomputable section

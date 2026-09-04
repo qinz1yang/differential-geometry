@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
-import DifferentialGeometry.Tensor.RSTensor.TensorRSSpaceOperatorNorm
+import DifferentialGeometry.Tensor.RSTensor.Norm.Operator
 import Mathlib.Analysis.Normed.Module.Multilinear.Basic
 open DifferentialGeometry.Analysis.Elliptic
 

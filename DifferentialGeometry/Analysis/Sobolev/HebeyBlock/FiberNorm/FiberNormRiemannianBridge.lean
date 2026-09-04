@@ -1,5 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.TensorFiberToModel
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.TensorFiberFromModel
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberToModel
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberFromModel
 import DifferentialGeometry.Tensor.RSTensor.BundleTrivialization.TensorRSBundleLocalityIdentities
 open DifferentialGeometry.Analysis.Elliptic
 

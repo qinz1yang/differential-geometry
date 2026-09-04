@@ -4,11 +4,11 @@ import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ApplyI
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.ModelBridge
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formula
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.RankOneTwo
-import DifferentialGeometry.Tensor.RSTensor.Components
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Generic
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.MetricTensor
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Connection.OneJet
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.Realization
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Tensor.RSTensor

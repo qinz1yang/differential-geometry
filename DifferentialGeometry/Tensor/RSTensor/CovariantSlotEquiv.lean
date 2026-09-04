@@ -1,5 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Tensor.Multilinear.BundleEvaluation
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
 import DifferentialGeometry.Bundle.Equiv
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Analysis.Normed.Module.Multilinear.Curry

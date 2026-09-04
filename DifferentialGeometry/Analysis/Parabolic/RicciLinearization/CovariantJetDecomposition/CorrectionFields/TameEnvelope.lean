@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDiff
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.CovariantOrderTerms.OrderOneKoszulTameEnvelope
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderOne.TameEnvelope
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderZero.KernelJetGrid
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.InputSlotSymmetrization
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Algebra.InputSlotSymmetrization
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.Basic
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral

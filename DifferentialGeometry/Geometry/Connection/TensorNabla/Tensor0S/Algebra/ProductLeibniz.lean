@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ContractionLeibniz
-import DifferentialGeometry.Tensor.Multilinear.DomDomCongrSection
+import DifferentialGeometry.Tensor.Multilinear.Bundle.DomainPermutation
 
 set_option autoImplicit false
 

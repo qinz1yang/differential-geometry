@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Connection.RicciIdentity.Tensor0S.Formula
 import DifferentialGeometry.Geometry.Connection.RicciIdentity.MixedComponents
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
-import DifferentialGeometry.Tensor.RSTensor.Components
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.GeneralComponents
 open DifferentialGeometry.Geometry.Curvature
 
 

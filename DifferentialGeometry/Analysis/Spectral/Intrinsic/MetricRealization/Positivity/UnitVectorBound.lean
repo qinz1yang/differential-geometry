@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PositiveDefinitePerturbation
 import DifferentialGeometry.Geometry.Curvature.Bounds.QuadraticForm
-import DifferentialGeometry.Tensor.Multilinear.FiniteCurryNorm
+import DifferentialGeometry.Tensor.Multilinear.Curry.FiniteNorm
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
 
 set_option autoImplicit false

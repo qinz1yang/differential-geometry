@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidualFull
 import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.H2
 import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothBridge
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceForward
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.NormEquivalence
 
 
 open DifferentialGeometry.Geometry.Curvature

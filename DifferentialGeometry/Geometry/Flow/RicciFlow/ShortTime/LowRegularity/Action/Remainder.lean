@@ -5,9 +5,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionD
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.Splitting
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.CoefficientBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldApplication
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H1H2OperatorFieldComposition
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H4Principal
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Application
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Principal.H2H4
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JetIntegral
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Basic
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.TraceRadiusFreeBounds

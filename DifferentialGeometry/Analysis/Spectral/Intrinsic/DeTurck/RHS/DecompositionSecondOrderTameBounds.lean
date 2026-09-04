@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.ZeroDecompos
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficient.RadiusFreeDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.Coefficient.RadiusFreeDifference
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H3BoundedGrid
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Grid.H3Bounded
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.RadiusFree
 
 noncomputable section

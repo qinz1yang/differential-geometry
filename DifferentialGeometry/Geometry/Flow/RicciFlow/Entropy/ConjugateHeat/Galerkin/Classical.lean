@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.RankZeroR
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.LaplacianDifferenceCore
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Potential.Basic
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.ScalarPath
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2Pointwise
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Regularity.SeriesContinuity
 import DifferentialGeometry.Geometry.Connection.ChartBridge.MetricInverse
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Slot0CurryParseval

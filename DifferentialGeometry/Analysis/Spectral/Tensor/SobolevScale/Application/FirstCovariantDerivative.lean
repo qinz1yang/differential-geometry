@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H3FirstOrder
+import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Principal.H2H3FirstOrder
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
 
 noncomputable section

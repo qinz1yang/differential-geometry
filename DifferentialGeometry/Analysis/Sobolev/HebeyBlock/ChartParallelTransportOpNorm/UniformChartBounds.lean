@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.FiberNorm.ChartFrameNorm
-import DifferentialGeometry.Tensor.Multilinear.HsBoundOp
+import DifferentialGeometry.Tensor.Multilinear.Norm.HilbertSchmidt
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Geometry.Curvature
 

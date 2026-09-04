@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.IntrinsicDerivative
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.IntrinsicDerivative
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovariantDerivativeBounds.SlotCorrection.OperatorNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartLeviCivitaParallelCLMOpNorm
 

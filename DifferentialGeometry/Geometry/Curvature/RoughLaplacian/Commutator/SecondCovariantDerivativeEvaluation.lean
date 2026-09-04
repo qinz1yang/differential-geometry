@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.Pointwise
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.GradientField
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.HomTensor.CovariantCalculus
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.IteratedCovGradLinear
+import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 

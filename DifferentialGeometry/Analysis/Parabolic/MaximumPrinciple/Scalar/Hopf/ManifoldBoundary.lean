@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.Barrier
-import DifferentialGeometry.Geometry.Boundary.InwardCurve
-import DifferentialGeometry.Geometry.Boundary.NormalDerivative
+import DifferentialGeometry.Geometry.Boundary.Normal.InwardCurve
+import DifferentialGeometry.Geometry.Boundary.Normal.Derivative
 
 set_option autoImplicit false
 
