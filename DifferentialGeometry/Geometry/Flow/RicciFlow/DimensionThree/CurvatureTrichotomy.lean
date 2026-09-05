@@ -456,24 +456,24 @@ inductive WholeFlowCurvatureAlternative
   | flat
       (hzero : ∀ t ∈ D.carrier, ∀ x,
         curvatureOperatorEndomorphismAt (I := I) (S.base.metric t) x
-          ⟨S.base.rm04 t x,
+          ⟨metricRm04 (I := I) (S.base.metric t) x,
             metricRm04At_mem_algebraicCurvatureTensorSubmodule
               (I := I) (S.base.metric t) x⟩ = 0)
       (hcover : ∀ t ∈ D.carrier,
         DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.HasEuclideanUniversalCover
           (I := I) (M := M) (S.base.metric t))
   | rankOne
-      (hrank : ∀ t ∈ D.carrier, curvatureOperatorImageRank (S.base.metric t) = 1)
+      (hrank : ∀ t ∈ D.carrier, ∀ x, curvatureOperatorImageRank (S.base.metric t) x = 1)
       (hproduct : ∀ t ∈ D.carrier,
         DifferentialGeometry.Geometry.Curvature.DimensionThree.HasCurvatureSurfaceProductSplitting
           (I := I) (M := M) (S.base.metric t))
   | positive
-      (hrank : ∀ t ∈ D.carrier, curvatureOperatorImageRank (S.base.metric t) = 3)
+      (hrank : ∀ t ∈ D.carrier, ∀ x, curvatureOperatorImageRank (S.base.metric t) x = 3)
       (hpositive : ∀ t ∈ D.carrier, ∀ x,
         ∀ a : TangentSpace I x [⋀^Fin 2]→L[Real] Real, a ≠ 0 →
           0 < (twoFormMetricData (I := I) (S.base.metric t) x).inner
             (curvatureOperatorEndomorphismAt (I := I) (S.base.metric t) x
-              ⟨S.base.rm04 t x,
+              ⟨metricRm04 (I := I) (S.base.metric t) x,
                 metricRm04At_mem_algebraicCurvatureTensorSubmodule
                   (I := I) (S.base.metric t) x⟩ a) a)
 
@@ -493,8 +493,8 @@ theorem whole_flow_trichotomy_of_constant_rank_mode
     (hcarrier : ∃ t, t ∈ D.carrier) :
     WholeFlowCurvatureAlternative S := by
   let global := fun (t : Real) (ht : t ∈ D.carrier) =>
-    curvature_time_slice_global_trichotomy_of_derived_data
-      (I := I) (M := M) (S.base.metric t) (data.slice t ht).dimension
+    curvatureOperator_time_slice_rank_trichotomy_of_complete_metric_nonnegative_reaction_constant_rank_parallel_kernel
+      (I := I) (M := M) (S.base.metric t) (data.complete t ht)
       (data.slice t ht).nonnegative (data.slice t ht).nullReaction
       (fun x y => by
         simpa [curvatureOperatorImageRank] using (data.slice t ht).spatialRank x y)
@@ -506,116 +506,117 @@ theorem whole_flow_trichotomy_of_constant_rank_mode
         ⟨metricRm04 (I := I) (S.base.metric t) x,
           metricRm04At_mem_algebraicCurvatureTensorSubmodule
             (I := I) (S.base.metric t) x⟩ = 0) →
-      curvatureOperatorImageRank (S.base.metric t) = 0 := by
-    intro t ht hzero
-    funext x
+    ∀ x, curvatureOperatorImageRank (S.base.metric t) x = 0 := by
+    intro t ht hzero x
     have hrange : curvatureOperatorImageAt (I := I) (S.base.metric t) x
         ⟨metricRm04 (I := I) (S.base.metric t) x,
           metricRm04At_mem_algebraicCurvatureTensorSubmodule
             (I := I) (S.base.metric t) x⟩ = ⊥ := by
       apply le_antisymm
       · rintro v ⟨a, rfl⟩
-        exact hzero x a
+        change (curvatureOperatorEndomorphismAt (I := I) (S.base.metric t) x
+          ⟨metricRm04 (I := I) (S.base.metric t) x,
+            metricRm04At_mem_algebraicCurvatureTensorSubmodule
+              (I := I) (S.base.metric t) x⟩) a = 0
+        rw [hzero x]
+        simp
       · exact bot_le
-    simp [curvatureOperatorImageRank, hrange]
+    change Module.finrank Real
+      (curvatureOperatorImageAt (I := I) (S.base.metric t) x
+        ⟨metricRm04 (I := I) (S.base.metric t) x,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule
+            (I := I) (S.base.metric t) x⟩) = 0
+    rw [hrange]
+    simp
   have hq_cases : q = 0 ∨ q = 1 ∨ q = 3 := by
-    rcases global t₀ ht₀ with
-      | .flat hzero _ =>
-          exact Or.inl ((hq t₀ ht₀ (Classical.choice (inferInstance : Nonempty M))).symm.trans
-            (rank_zero_of_zero ht₀ hzero))
-      | .rankOne hrank _ =>
-          exact Or.inr (Or.inl ((hq t₀ ht₀ (Classical.choice (inferInstance : Nonempty M))).symm.trans
-            (by simpa [curvatureOperatorImageRank] using
-              hrank (Classical.choice (inferInstance : Nonempty M)))))
-      | .positive hrank _ =>
-          exact Or.inr (Or.inr ((hq t₀ ht₀ (Classical.choice (inferInstance : Nonempty M))).symm.trans
-            (by simpa [curvatureOperatorImageRank] using
-              hrank (Classical.choice (inferInstance : Nonempty M)))))
+    rcases global t₀ ht₀ with hzero | hline | hpositive
+    · exact Or.inl ((hq t₀ ht₀ (Classical.choice (inferInstance : Nonempty M))).symm.trans
+        (rank_zero_of_zero ht₀ hzero.1
+          (Classical.choice (inferInstance : Nonempty M))))
+    · exact Or.inr (Or.inl ((hq t₀ ht₀ (Classical.choice (inferInstance : Nonempty M))).symm.trans
+        (by simpa [curvatureOperatorImageRank] using
+          hline.1 (Classical.choice (inferInstance : Nonempty M)))))
+    · exact Or.inr (Or.inr ((hq t₀ ht₀ (Classical.choice (inferInstance : Nonempty M))).symm.trans
+        (by simpa [curvatureOperatorImageRank] using
+          hpositive.1 (Classical.choice (inferInstance : Nonempty M)))))
   rcases hq_cases with rfl | rfl | rfl
   · refine .flat ?_ ?_
+    · intro t ht x
+      rcases global t ht with hzero | hline | hpositive
+      · exact hzero.1 x
+      · exfalso
+        have h := hq t ht x
+        have h' : curvatureOperatorImageRank (S.base.metric t) x = 1 := by
+          simpa [curvatureOperatorImageRank] using hline.1 x
+        omega
+      · exfalso
+        have h := hq t ht x
+        have h' : curvatureOperatorImageRank (S.base.metric t) x = 3 := by
+          simpa [curvatureOperatorImageRank] using hpositive.1 x
+        omega
     · intro t ht
-      rcases global t ht with
-        | .flat hzero _ => exact hzero
-        | .rankOne hrank _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-        | .positive hrank _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-    · intro t ht
-      rcases global t ht with
-        | .flat _ hcover => exact hcover
-        | .rankOne hrank _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-        | .positive hrank _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+      rcases global t ht with hzero | hline | hpositive
+      · exact hzero.2
+      · exfalso
+        have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+        have h' : curvatureOperatorImageRank (S.base.metric t)
+            (Classical.choice (inferInstance : Nonempty M)) = 1 := by
+          simpa [curvatureOperatorImageRank] using
+            hline.1 (Classical.choice (inferInstance : Nonempty M))
+        omega
+      · exfalso
+        have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+        have h' : curvatureOperatorImageRank (S.base.metric t)
+            (Classical.choice (inferInstance : Nonempty M)) = 3 := by
+          simpa [curvatureOperatorImageRank] using
+            hpositive.1 (Classical.choice (inferInstance : Nonempty M))
+        omega
   · refine .rankOne ?_ ?_
+    · intro t ht x
+      rcases global t ht with hzero | hline | hpositive
+      · have h := hq t ht x
+        have h' := rank_zero_of_zero ht hzero.1 x
+        omega
+      · simpa [curvatureOperatorImageRank] using hline.1 x
+      · have h := hq t ht x
+        have h' : curvatureOperatorImageRank (S.base.metric t) x = 3 := by
+          simpa [curvatureOperatorImageRank] using hpositive.1 x
+        omega
     · intro t ht
-      rcases global t ht with
-        | .flat hzero _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := rank_zero_of_zero ht hzero
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-        | .rankOne hrank _ =>
-            simpa [curvatureOperatorImageRank] using
-              hrank (Classical.choice (inferInstance : Nonempty M))
-        | .positive hrank _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-    · intro t ht
-      rcases global t ht with
-        | .flat hzero _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := rank_zero_of_zero ht hzero
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-        | .rankOne _ hproduct => exact hproduct
-        | .positive hrank _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
+      rcases global t ht with hzero | hline | hpositive
+      · exfalso
+        have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+        have h' := rank_zero_of_zero ht hzero.1
+          (Classical.choice (inferInstance : Nonempty M))
+        omega
+      · exact hline.2
+      · exfalso
+        have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
+        have h' : curvatureOperatorImageRank (S.base.metric t)
+            (Classical.choice (inferInstance : Nonempty M)) = 3 := by
+          simpa [curvatureOperatorImageRank] using
+            hpositive.1 (Classical.choice (inferInstance : Nonempty M))
+        omega
   · refine .positive ?_ ?_
-    · intro t ht
-      rcases global t ht with
-        | .flat hzero _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := rank_zero_of_zero ht hzero
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-        | .rankOne hrank _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-        | .positive hrank _ =>
-            simpa [curvatureOperatorImageRank] using
-              hrank (Classical.choice (inferInstance : Nonempty M))
+    · intro t ht x
+      rcases global t ht with hzero | hline | hpositive
+      · have h := hq t ht x
+        have h' := rank_zero_of_zero ht hzero.1 x
+        omega
+      · have h := hq t ht x
+        have h' : curvatureOperatorImageRank (S.base.metric t) x = 1 := by
+          simpa [curvatureOperatorImageRank] using hline.1 x
+        omega
+      · simpa [curvatureOperatorImageRank] using hpositive.1 x
     · intro t ht x a ha
-      rcases global t ht with
-        | .flat hzero _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := rank_zero_of_zero ht hzero
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-        | .rankOne hrank _ =>
-            exfalso
-            have h := hq t ht (Classical.choice (inferInstance : Nonempty M))
-            have h' := hrank (Classical.choice (inferInstance : Nonempty M))
-            simpa [curvatureOperatorImageRank] using h.trans h'.symm
-        | .positive _ hpositive => exact hpositive x a ha
+      rcases global t ht with hzero | hline | hpositive
+      · have h := hq t ht x
+        have h' := rank_zero_of_zero ht hzero.1 x
+        omega
+      · have h := hq t ht x
+        have h' : curvatureOperatorImageRank (S.base.metric t) x = 1 := by
+          simpa [curvatureOperatorImageRank] using hline.1 x
+        omega
+      · exact hpositive.2 x a ha
 
 end DifferentialGeometry.PDE.RicciFlow.DimensionThree
