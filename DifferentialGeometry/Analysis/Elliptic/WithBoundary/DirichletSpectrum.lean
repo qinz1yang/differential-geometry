@@ -188,6 +188,19 @@ theorem resolvent_eigenvalue_mem_unit_interval
   ⟨resolvent_eigenvalue_nonneg g hu hu_ne,
     resolvent_eigenvalue_le_one g hu hu_ne⟩
 
+theorem resolvent_eigenvalue_pos
+    (g : SmoothRiemannianMetric (I_half n) M) {μ : ℝ}
+    (hμ : Module.End.HasEigenvalue (resolventDirichletL2 g).toLinearMap μ) :
+    0 < μ := by
+  obtain ⟨u, hu, hune⟩ := hμ.exists_hasEigenvector
+  have hnonneg : 0 ≤ μ := resolvent_eigenvalue_nonneg g hu hune
+  have hne : μ ≠ 0 := by
+    intro hzero
+    change u ∈ resolventEigenspace g μ at hu
+    rw [hzero, resolventEigenspace_zero_eq_bot, Submodule.mem_bot] at hu
+    exact hune hu
+  exact lt_of_le_of_ne hnonneg hne.symm
+
 private lemma exists_unit_eigenvector
     (g : SmoothRiemannianMetric (I_half n) M) {μ : ℝ}
     (hμ : Module.End.HasEigenvalue (resolventDirichletL2 g).toLinearMap μ) :

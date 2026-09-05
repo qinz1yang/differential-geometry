@@ -67,7 +67,7 @@ theorem metric_eq_of_energy_zero_noncompact
   norm_num at hval
   linarith [hval]
 
-theorem ricci_flow_forward_unique_of_energy_deriv_bound
+theorem metric_eq_on_of_energy_deriv_bound
     (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {a b : ℝ} (hab : a < b)
     (K : ℝ)
     (hcont : ContinuousOn
