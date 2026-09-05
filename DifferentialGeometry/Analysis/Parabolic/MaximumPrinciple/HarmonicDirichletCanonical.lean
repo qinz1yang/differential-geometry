@@ -188,6 +188,30 @@ theorem eigenfunction_dirichlet_solution_spec
     (I := I) (c := c) G X hs hst ht Kset f₀ hf₀ hf₀_boundary hf₀_pos
       hf₀_eigen)
 
+theorem exists_local_scalar_dirichlet_solution_of_constant_data
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T s t : Real}
+    (X : Real → (x : M) → TangentSpace I x)
+    (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T) :
+    ∃ f : Real → M → Real,
+      IsLocalScalarDirichletSolution (I := I) G T X s t 0 Set.univ
+        (fun _ : M => (1 : Real)) f := by
+  have hharmonic : ∀ q ∈ Set.Ioc s t, ∀ z ∈ interior (Set.univ : Set M),
+      heatOperatorWithDrift (I := I) G q (X q) (fun _ : M => (1 : Real)) z = 0 := by
+    intro q hq z hz
+    unfold heatOperatorWithDrift laplacianAt driftTerm gradientAt
+    rw [laplacian_const, gradientFun_const]
+    simp
+  apply exists_local_scalar_dirichlet_solution_of_harmonic_data
+    (I := I) (c := 0) G X hs hst ht Set.univ (fun _ : M => (1 : Real))
+      contMDiff_const
+  · intro z hz
+    simp at hz
+  · intro z hz
+    simp
+  · exact hharmonic
+
 end
 
 end DifferentialGeometry.Analysis.Parabolic
