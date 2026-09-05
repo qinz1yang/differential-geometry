@@ -79,10 +79,9 @@ theorem tendsto_integral_one_sub_compactExhaustionCutoff_mul
 omit [BorelSpace M] in
 theorem eventually_integral_one_sub_compactExhaustionCutoff_mul_eq_zero
     (K : CompactExhaustion M) {μ : Measure M} {f : M → ℝ}
-    (hf : Integrable f μ) (hsupp : HasCompactSupport f) :
+    (hsupp : HasCompactSupport f) :
     ∀ᶠ n in atTop, ∫ x,
       (1 - compactExhaustionCutoff (I := I) (M := M) K n x) * f x ∂μ = 0 := by
-  let _ := hf
   have hone := compactExhaustionCutoff_eventually_one_on_compact
     (I := I) (M := M) K (tsupport f) hsupp.isCompact
   filter_upwards [hone] with n hn

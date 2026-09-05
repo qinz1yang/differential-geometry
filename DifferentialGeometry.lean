@@ -1989,6 +1989,7 @@ import DifferentialGeometry.Geometry.Comparison.HalfSqDistGradVar
 import DifferentialGeometry.Geometry.Comparison.HessianAlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow
 import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
+import DifferentialGeometry.Geometry.Metric.Exhaustion
 import DifferentialGeometry.Geometry.Comparison.InjectivityRadius
 import DifferentialGeometry.Geometry.Comparison.LocalGeodesicSeed
 import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
