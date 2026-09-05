@@ -186,6 +186,41 @@ theorem contMDiffAt_expMap
     Filter.eventuallyEq_of_mem (hU_open.mem_nhds hvU) (fun w hw => heq w hw)
   exact hF.contMDiffAt.congr_of_eventuallyEq heq_ev
 
+theorem mfderiv_expMap_smul
+    [I.Boundaryless] [T2Space (TangentBundle I M)]
+    (g : SmoothRiemannianMetric I M) (p : M) (a : E) (t₀ : ℝ)
+    (ht : (show TangentSpace I p from t₀ • a) ∈ expDomain (I := I) g p) :
+    mfderiv 𝓘(ℝ, ℝ) I
+        (fun u : ℝ => (expMap (I := I) g p (show TangentSpace I p from (u • a)) : M)) t₀ (1 : ℝ)
+      = mfderiv 𝓘(ℝ, E) I
+          (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) (t₀ • a)
+          (show TangentSpace I p from a) := by
+  have hexp_mdiff : MDifferentiableAt 𝓘(ℝ, E) I
+      (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
+        ((fun u : ℝ => u • a) t₀) :=
+    (contMDiffAt_expMap (I := I) g p ht).mdifferentiableAt (by decide)
+  have hsmul_mdiff : MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun u : ℝ => u • a) t₀ := by
+    have hs : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (fun u : ℝ => u • a) :=
+      contMDiff_id.smul contMDiff_const
+    exact hs.contMDiffAt.mdifferentiableAt (by decide)
+  have hcomp : (fun u : ℝ => (expMap (I := I) g p (show TangentSpace I p from (u • a)) : M))
+      = (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) ∘
+        (fun u : ℝ => u • a) := rfl
+  rw [hcomp, mfderiv_comp t₀ hexp_mdiff hsmul_mdiff]
+  have hlaunch : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun u : ℝ => u • a) t₀ (1 : ℝ) = a := by
+    rw [mfderiv_eq_fderiv]
+    have h : HasFDerivAt (fun u : ℝ => u • a)
+        (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) a) t₀ := by
+      exact (hasFDerivAt_id (t₀ : ℝ)).smul_const a
+    rw [h.fderiv]
+    change (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) a) (1 : ℝ) = a
+    rw [ContinuousLinearMap.smulRight_apply, one_apply_eq_self, one_smul]
+  exact (ContinuousLinearMap.comp_apply _ _ _).trans
+    (congrArg
+      (mfderiv 𝓘(ℝ, E) I
+        (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) (t₀ • a))
+      hlaunch)
+
 theorem isOpen_expDomain
     [I.Boundaryless] [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M) (p : M) :
