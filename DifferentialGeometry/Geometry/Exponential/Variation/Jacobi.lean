@@ -865,22 +865,10 @@ theorem radial_jacobi_one (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
       0 (1 : ℝ)
     = mfderiv (𝓘(ℝ, E)) I
         (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M)) x w := by
-  have hxdom : (show TangentSpace I p from x) ∈ expDomain (I := I) g p :=
-    mem_expDomain_of_norm_lt_radius (I := I) g p hx
-  have h := VolumeComparison.radialJacobiField_eq_mfderiv_expMap (I := I) g p x w 1
-    (by simpa only [one_smul] using! hxdom)
+  have h := VolumeComparison.radialJacobiField_one (I := I) g p x w
+    (mem_expDomain_of_norm_lt_radius (I := I) g p hx)
   rw [VolumeComparison.radialJacobiField_eq] at h
-  have hCLM : (mfderiv 𝓘(ℝ, E) I
-      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v))
-      ((1 : ℝ) • x) : E →L[ℝ] E) =
-      (mfderiv 𝓘(ℝ, E) I
-        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v))
-        x : E →L[ℝ] E) := by rw [one_smul]
-  exact h.trans ((congrArg (fun L : E →L[ℝ] E => L ((1 : ℝ) • w)) hCLM).trans
-    (congrArg
-      (mfderiv 𝓘(ℝ, E) I
-        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) x)
-      (one_smul ℝ w)))
+  exact h
 
 open DifferentialGeometry.Geometry.Riemannian.Exponential in
 omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in

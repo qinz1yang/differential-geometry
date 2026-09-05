@@ -478,4 +478,25 @@ theorem radialJacobiField_eq_mfderiv_expMap
     rw [hfoot]
   exact h.trans (congrArg (fun L : E →L[ℝ] E => L (t • w)) hCLM)
 
+omit [T2Space M] in
+theorem radialJacobiField_one
+    (g : SmoothRiemannianMetric I M) (p : M) (x w : E)
+    (hx : (show TangentSpace I p from x) ∈ expDomain (I := I) g p) :
+    radialJacobiField (I := I) g p x w 1 =
+      mfderiv 𝓘(ℝ, E) I
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) x w := by
+  have h := radialJacobiField_eq_mfderiv_expMap (I := I) g p x w 1
+    (by simpa only [one_smul] using! hx)
+  have hCLM : (mfderiv 𝓘(ℝ, E) I
+      (fun v : E => expMap (I := I) g p (show TangentSpace I p from v))
+      ((1 : ℝ) • x) : E →L[ℝ] E) =
+      (mfderiv 𝓘(ℝ, E) I
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v))
+        x : E →L[ℝ] E) := by rw [one_smul]
+  exact h.trans ((congrArg (fun L : E →L[ℝ] E => L ((1 : ℝ) • w)) hCLM).trans
+    (congrArg
+      (mfderiv 𝓘(ℝ, E) I
+        (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) x)
+      (one_smul ℝ w)))
+
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
