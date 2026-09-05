@@ -3195,6 +3195,7 @@ import DifferentialGeometry.Topology.Homotopy.EquivUnder
 import DifferentialGeometry.Topology.Homotopy.Interval
 import DifferentialGeometry.Topology.Morse.Attachment.ModelCell
 import DifferentialGeometry.Topology.Morse.Defs
+import DifferentialGeometry.Topology.Morse.CriticalPoint
 import DifferentialGeometry.Topology.Morse.RegularLevel.Flow
 import DifferentialGeometry.Topology.Morse.Attachment.ModelHandle
 import DifferentialGeometry.Topology.Morse.RegularLevel.LevelSet
