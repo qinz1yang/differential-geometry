@@ -2428,6 +2428,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Existence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.VectorFieldFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.NonnegativeCurvatureOperator
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureTrichotomy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.CurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.FixedFrameEvolution
