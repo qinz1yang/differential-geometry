@@ -575,6 +575,42 @@ theorem isGeodesicOn_Ioi_of_endpointContinuation
       obtain ⟨a, ha, hab⟩ := hbS
       exact hΓ_cont_at a ha t ht (lt_of_lt_of_eq htb hab.symm)
 
+omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
+    [IsRiemannianManifold I M] [CompleteSpace M] [I.Boundaryless] in
+theorem isGeodesicOn_Ioo_of_endpointContinuation
+    (g : SmoothRiemannianMetric I M) {γ₀ : ℝ → M} {a₀ b₀ B : ℝ}
+    (ha₀ : a₀ < 0) (hb₀ : 0 < b₀)
+    (hγ₀ : IsGeodesicOn (I := I) g γ₀ (Set.Ioo a₀ b₀))
+    (hγ₀_cont : ContinuousOn γ₀ (Set.Ioo a₀ b₀))
+    (hcont : ∀ (γ : ℝ → M) (b : ℝ), 0 < b → b < B →
+      IsGeodesicOn (I := I) g γ (Set.Ioo a₀ b) →
+      ContinuousOn γ (Set.Ioo a₀ b) →
+      (∀ t < b₀, t < b → γ t = γ₀ t) →
+      HasEndpointContinuation (I := I) g γ b) :
+    ∃ γ : ℝ → M,
+      IsGeodesicOn (I := I) g γ (Set.Ioo a₀ B) ∧
+      ContinuousOn γ (Set.Ioo a₀ B) ∧
+      (∀ t, t < b₀ → t < B → γ t = γ₀ t) := by
+  classical
+  by_contra htarget
+  have hcont' : ∀ (γ : ℝ → M) (b : ℝ), 0 < b →
+      IsGeodesicOn (I := I) g γ (Set.Ioo a₀ b) →
+      ContinuousOn γ (Set.Ioo a₀ b) →
+      (∀ t < b₀, t < b → γ t = γ₀ t) →
+      HasEndpointContinuation (I := I) g γ b := by
+    intro γ b hb hγ hγ_cont hagree
+    by_cases hbB : b < B
+    · exact hcont γ b hb hbB hγ hγ_cont hagree
+    · have hBb : B ≤ b := le_of_not_gt hbB
+      exact (htarget ⟨γ, hγ.mono (fun _ ht => ⟨ht.1, lt_of_lt_of_le ht.2 hBb⟩),
+        hγ_cont.mono (fun _ ht => ⟨ht.1, lt_of_lt_of_le ht.2 hBb⟩),
+        fun t htb₀ htB => hagree t htb₀ (lt_of_lt_of_le htB hBb)⟩).elim
+  obtain ⟨γ, hγ, hγ_cont, hagree⟩ :=
+    isGeodesicOn_Ioi_of_endpointContinuation (I := I) g ha₀ hb₀ hγ₀ hγ₀_cont hcont'
+  exact htarget ⟨γ, hγ.mono (fun _ ht => ht.1), hγ_cont.mono (fun _ ht => ht.1),
+    fun t htb₀ _ => hagree t htb₀⟩
+
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem isGeodesicOn_Ici_of_complete_Ioo

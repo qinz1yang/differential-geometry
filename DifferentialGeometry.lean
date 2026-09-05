@@ -1851,6 +1851,7 @@ import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.SmoothScalarGerm
 import DifferentialGeometry.Bundle.TangentCoordChange
 import DifferentialGeometry.Bundle.TangentChart
+import DifferentialGeometry.Bundle.VelocityLift
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Bundle.TensorProduct
 import DifferentialGeometry.Bundle.VectorField.Basic
@@ -1981,6 +1982,7 @@ import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Gradient
 import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Variation
 import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Basic
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.CompactBall
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.LocalGeodesicSeed
@@ -2412,6 +2414,7 @@ import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
 import DifferentialGeometry.Geometry.Exponential.Radial
+import DifferentialGeometry.Geometry.Exponential.CompactBall
 import DifferentialGeometry.Geometry.Exponential.Smoothness.Domain
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Convergence
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Frame
@@ -3023,6 +3026,7 @@ import DifferentialGeometry.Geometry.Geodesic.Chart.TransitionJacobian
 import DifferentialGeometry.Geometry.Geodesic.Chart.TransitionMap
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import DifferentialGeometry.Geometry.Geodesic.Flow.Uniqueness
+import DifferentialGeometry.Geometry.Geodesic.Flow.VelocityLift
 import DifferentialGeometry.Geometry.Geodesic.Flow.VectorField
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Local.Existence
