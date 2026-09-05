@@ -171,7 +171,7 @@ theorem positive_time_kernel_rigidity
       hreactionNull hAt hevolution
 
 theorem curvature_time_slice_trichotomy_of_derived_data
-    [I.Boundaryless] [ConnectedSpace M] [Nonempty M]
+    [I.Boundaryless] [Nonempty M]
     (hE : Module.finrank Real E = 3)
     (g : SmoothRiemannianMetric I M)
     (hpositive : ∀ x,
