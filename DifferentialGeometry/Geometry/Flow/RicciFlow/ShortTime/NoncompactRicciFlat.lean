@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 
 set_option autoImplicit false
 
@@ -51,6 +52,52 @@ def complete_bounded_curvature_solution_of_joint_ricci_flow
     exact hcomplete t ht
   · intro t ht
     exact hcurv t ht
+
+omit [BoundarylessManifold I M] [I.Boundaryless] in
+theorem CompleteBoundedCurvatureSolutionOn.exists_forward_restart
+    {D : RealTimeInterval}
+    (S : CompleteBoundedCurvatureSolutionOn (I := I) (M := M) (D := D))
+    {t₀ T : Real} (hT : 0 < T)
+    (hcarrier : ∀ s ∈ Set.Ico (0 : Real) T, s + t₀ ∈ D.carrier)
+    (hregular : ∀ s ∈ Set.Ioo (0 : Real) T, s + t₀ ∈ D.regular) :
+    ∃ S' : CompleteBoundedCurvatureSolutionOn (I := I) (M := M)
+        (D := RealTimeInterval.closedOpen 0 T hT),
+      S'.solution.base.metric 0 = S.solution.base.metric t₀ := by
+  let D' := RealTimeInterval.closedOpen 0 T hT
+  let Dshift := D.timeShift t₀
+  have hcarrier' : D'.carrier ⊆ Dshift.carrier := by
+    intro s hs
+    change s + t₀ ∈ D.carrier
+    change 0 ≤ s ∧ s < T at hs
+    exact hcarrier s hs
+  have hregular' : D'.regular ⊆ Dshift.regular := by
+    intro s hs
+    change s + t₀ ∈ D.regular
+    change 0 < s ∧ s < T at hs
+    exact hregular s hs
+  let Sshift : SolutionOn (I := I) (M := M) Dshift := S.solution.timeShift t₀
+  have hSshift : IsSolutionOn (I := I) Sshift :=
+    isSolutionOn_timeShift S.isSolution t₀
+  let S' : CompleteBoundedCurvatureSolutionOn (I := I) (M := M) (D := D') :=
+    { solution := Sshift.timeRestrict D'
+      isSolution := isSoln_timeRestrict hSshift hcarrier' hregular'
+      complete := by
+        intro s hs
+        change DifferentialGeometry.RiemannianMetricComplete (I := I)
+          (S.solution.base.metric (s + t₀))
+        change 0 ≤ s ∧ s < T at hs
+        exact S.complete (s + t₀) (hcarrier s hs)
+      curvatureBound := by
+        intro s hs
+        change ∃ C : Real, 0 ≤ C ∧ ∀ x : M,
+          normSq0S (I := I) (S.solution.base.metric (s + t₀)) x 4
+            (metricRm04At (I := I) (S.solution.base.metric (s + t₀)) x) ≤ C
+        change 0 ≤ s ∧ s < T at hs
+        exact S.curvatureBound (s + t₀) (hcarrier s hs) }
+  refine ⟨S', ?_⟩
+  dsimp [S', Sshift, SolutionOn.timeRestrict, SolutionOn.timeShift,
+    SolutionFamily.timeShift]
+  simp only [zero_add]
 
 theorem ricci_flow_short_time_existence_of_ricci_flat
     (g₀ : SmoothRiemannianMetric I M)
