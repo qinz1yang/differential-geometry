@@ -470,6 +470,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.CompactVolum
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.ExponentialTail
 import DifferentialGeometry.Analysis.Integration.Measure.Estimates.GaussianTail
 import DifferentialGeometry.Analysis.Integration.Measure.TightConvergence
+import DifferentialGeometry.Analysis.Integration.Measure.OpenPartialHomeomorph
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Continuity
 import DifferentialGeometry.Analysis.Integration.Measure.Family.ParametricContinuity
