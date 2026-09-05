@@ -21,7 +21,7 @@ section Homogeneity
 
 variable [I.Boundaryless] [CompleteSpace E]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem maximalGeodesic_smul_zero_time
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p) (c : ℝ) :
     maximalGeodesic (I := I) g p (c • v) 0 = p :=

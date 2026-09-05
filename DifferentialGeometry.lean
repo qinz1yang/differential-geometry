@@ -1849,6 +1849,7 @@ import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.SmoothScalarGerm
 import DifferentialGeometry.Bundle.TangentCoordChange
+import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Bundle.TensorProduct
 import DifferentialGeometry.Bundle.VectorField.Basic
@@ -3019,6 +3020,7 @@ import DifferentialGeometry.Geometry.Geodesic.Chart.TransitionJacobian
 import DifferentialGeometry.Geometry.Geodesic.Chart.TransitionMap
 import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
 import DifferentialGeometry.Geometry.Geodesic.Flow.Uniqueness
+import DifferentialGeometry.Geometry.Geodesic.Flow.VectorField
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Geodesic.Local.Existence
 import DifferentialGeometry.Geometry.Geodesic.Flow.FlatPhase
@@ -3027,6 +3029,7 @@ import DifferentialGeometry.Geometry.Geodesic.Naturality.GramPullback
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Homogeneity
 import DifferentialGeometry.Geometry.Geodesic.Naturality.LocalIsometry.Geodesic
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Uniqueness
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Rescaling
 import DifferentialGeometry.Geometry.Geodesic.Naturality.OpenSubtype
 import DifferentialGeometry.Geometry.Geodesic.Equation.ProjectionDerivative

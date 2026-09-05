@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Uniqueness
 import DifferentialGeometry.Geometry.Exponential.Defs
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.ZeroSectionConstancy
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
@@ -80,39 +81,9 @@ lemma maximalGeodesic_eqOn_lift_of_footInSource
     (hf_on : IsMIntegralCurveOn f (geodesicVectorFieldChart (I := I) g p) J)
     (hsrc : ∀ s ∈ J, (f s).proj ∈ (chartAt H p).source) :
     Set.EqOn (maximalGeodesic (I := I) g p v) (fun t => (f t).proj) J := by
-  classical
-  intro t ht
-  have hwit : HasGeodesicAt (I := I) g p v t :=
-    ⟨projectCurve (I := I) f, J, hJ_open, hJ_conn, h0J, ht,
-      ⟨f, fun s => rfl, hf0, hf_on⟩⟩
-  have htmem : t ∈ maximalGeodesicInterval (I := I) g p v := hwit
-  have hval : maximalGeodesic (I := I) g p v t = (f t).proj := by
-    rw [maximalGeodesic_of_mem (I := I) htmem]
-    obtain ⟨J', hJ'_open, hJ'_conn, h0J', htJ', f', hproj', hf'0, hf'_on⟩ :=
-      maximalGeodesicChosenCurve_spec (I := I) g p v htmem
-    set K : Set ℝ := J ∩ J' with hK_def
-    have hK_open : IsOpen K := hJ_open.inter hJ'_open
-    have hK_conn : IsPreconnected K := by
-      have hJ_ord : Set.OrdConnected J := hJ_conn.ordConnected
-      have hJ'_ord : Set.OrdConnected J' := hJ'_conn.ordConnected
-      exact (hJ_ord.inter hJ'_ord).isPreconnected
-    have h0_K : (0 : ℝ) ∈ K := ⟨h0J, h0J'⟩
-    have ht_K : t ∈ K := ⟨ht, htJ'⟩
-    have hf_on_K : IsMIntegralCurveOn f
-        (geodesicVectorFieldChart (I := I) g p) K :=
-      hf_on.mono Set.inter_subset_left
-    have hf'_on_K : IsMIntegralCurveOn f'
-        (geodesicVectorFieldChart (I := I) g p) K :=
-      hf'_on.mono Set.inter_subset_right
-    have hf_source_K : ∀ s ∈ K, (f s).proj ∈ (chartAt H p).source :=
-      fun s hs => hsrc s hs.1
-    have heqOn := isMIntegralCurveOn_eq_of_isPreconnected (I := I) (g := g)
-      (p := p) (f₁ := f) (f₂ := f') hK_open hK_conn h0_K hf_on_K hf'_on_K
-      hf_source_K (by rw [hf0, hf'0])
-    have ht_eq : f t = f' t := heqOn ht_K
-    rw [ht_eq]
-    exact (hproj' t).symm
-  exact hval
+  exact maximalGeodesic_eqOn g hJ_open hJ_conn h0J
+    ⟨f, fun _ => rfl, hf0,
+      (isMIntegralCurveOn_geodesicVectorFieldChart_iff g p hsrc).mp hf_on⟩
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in

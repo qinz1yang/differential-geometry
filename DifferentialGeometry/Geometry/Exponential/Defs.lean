@@ -53,9 +53,9 @@ theorem hasGeodesicAt_zero_all_times
     Set.mem_univ _, Set.mem_univ _, ?_⟩
   refine ⟨fun _ : ℝ => (⟨p, (0 : E)⟩ : TangentBundle I M), ?_, rfl, ?_⟩
   · intro _; rfl
-  · have hvf_zero : geodesicVectorFieldChart (I := I) g p
+  · have hvf_zero : geodesicVectorField (I := I) g
         (⟨p, (0 : E)⟩ : TangentBundle I M) = 0 :=
-      geodesicVectorFieldChart_zero_section (I := I) g p
+      geodesicVectorField_zero_section (I := I) g p
     exact (isMIntegralCurve_const hvf_zero).isMIntegralCurveOn Set.univ
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
@@ -205,8 +205,9 @@ theorem hasGeodesicAt_zero_curve_eq_p
   obtain ⟨f, hproj, hf0, hf_int⟩ := hγ
   intro s hs
   have hf_eq : f s = (⟨p, (0 : E)⟩ : TangentBundle I M) :=
-    isMIntegralCurveOn_zero_section_eq_const (I := I) g p
-      hJ_open hJ_conn h0J hf_int hf0 s hs
+    integralCurve_eqOn (I := I) g hJ_open hJ_conn h0J hf_int
+      ((isMIntegralCurve_const (geodesicVectorField_zero_section g p)).isMIntegralCurveOn J)
+      hf0 hs
   have := hproj s
   rw [hf_eq] at this
   exact this.symm

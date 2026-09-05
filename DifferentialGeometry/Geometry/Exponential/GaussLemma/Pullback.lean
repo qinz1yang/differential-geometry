@@ -91,13 +91,6 @@ theorem radial_maximalGeodesic_hasGeodesicEquationAt_of_small
       (hΦ_initial vb hvb_ball) (hΦ_target vb hvb_ball) (hΦ_phase vb hvb_ball) (s := s) hs
     rw [show (t' • vb : TangentSpace I p) = v from hvb_resc] at h
     exact h
-  have hgeo_initial :
-      Geodesic.IsGeodesicOnWithInitial (I := I) g
-        (fun s : ℝ => (F s).proj) J p v := by
-    refine ⟨F, fun _ => rfl, ?_, hF_int⟩
-    rw [hF0, show (t' • vb : TangentSpace I p) = v from hvb_resc]
-  obtain ⟨ρ_source, hρ_source_pos, hsrc⟩ :=
-    Exponential.foot_in_source_throughout (I := I) (g := g) (p := p)
   have hF_source : (F t).proj ∈ (chartAt H p).source := by
     have hts_Icc : t' * t ∈ Set.Icc (-T) T := by
       obtain ⟨ht0, ht1⟩ := ht
@@ -111,7 +104,7 @@ theorem radial_maximalGeodesic_hasGeodesicEquationAt_of_small
     rw [hF_def]; exact hsrc'
   have hgeoAt :
       Geodesic.IsGeodesicAt (I := I) g (fun s : ℝ => (F s).proj) t :=
-    hgeo_initial.isGeodesicAt (hJ_open.mem_nhds ht_J) hF_source
+    ⟨p, F, fun _ => rfl, hF_source, hF_int.isMIntegralCurveAt (hJ_open.mem_nhds ht_J)⟩
   have hgeoEqF :
       Geodesic.HasGeodesicEquationAt (I := I) g (fun s : ℝ => (F s).proj) t :=
     hgeoAt.hasGeodesicEquationAt g

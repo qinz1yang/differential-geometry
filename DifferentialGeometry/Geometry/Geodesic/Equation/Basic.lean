@@ -1,3 +1,4 @@
+import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import DifferentialGeometry.Geometry.Operator.Hessian.TraceFormula
 import Mathlib.Geometry.Manifold.IntegralCurve.Basic
@@ -184,14 +185,6 @@ def HasGeodesicEquationAt (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     a + chartChristoffelContraction (I := I) g (γ t) v v
         (extChartAt I (γ t) (γ t)) = 0
 
-def chartFiberCoord (α : M) (p : TangentBundle I M) : E :=
-  (trivializationAt E (TangentSpace I) α p).2
-
-omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
-@[simp] lemma chartFiberCoord_def (α : M) (p : TangentBundle I M) :
-    chartFiberCoord (I := I) α p =
-      (trivializationAt E (TangentSpace I) α p).2 := rfl
-
 def geodesicVectorFieldChartFiber (g : SmoothRiemannianMetric I M) (α : M)
     (p : TangentBundle I M) : E × E :=
   let v := chartFiberCoord (I := I) α p
@@ -243,20 +236,6 @@ lemma geodesicChartDomain_eq_trivBaseSet (α : M) :
       (M := TangentBundle I M) (⟨α, (0 : E)⟩ : TangentBundle I M)]
   exact (TangentBundle.mem_chart_source_iff (I := I) (M := M) p
     (⟨α, (0 : E)⟩ : TangentBundle I M)).symm
-
-omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
-lemma chartFiberCoord_self_zero (α : M) :
-    chartFiberCoord (I := I) α
-      (⟨α, (0 : E)⟩ : TangentBundle I M) = 0 := by
-  classical
-  have hα : α ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt' α
-  have hzero := (trivializationAt E (TangentSpace I) α).zeroSection ℝ (x := α) hα
-  have hzero' : (trivializationAt E (TangentSpace I) α)
-      (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M) = (α, 0) := hzero
-  change (trivializationAt E (TangentSpace I) α
-      (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)).2 = 0
-  rw [hzero']
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma geodesicVectorFieldChart_zero_section

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.ODE.Flow.Uniqueness
-import DifferentialGeometry.Geometry.Geodesic.Flow.CrossVectorFieldReduction
+import DifferentialGeometry.Geometry.Geodesic.Flow.VectorField
 
-open Bundle Set
-open scoped ContDiff Manifold
+open Bundle Filter Set
+open scoped ContDiff Manifold Topology
 
 namespace DifferentialGeometry.Geometry.Riemannian.Geodesic
 
@@ -22,6 +22,26 @@ theorem isMIntegralCurveOn_geodesicVectorFieldChart_iff
   · simpa only [geodesicVectorFieldChart_eq_geodesicVectorField
       (I := I) g α (hsrc t ht)] using hf t ht
 
+theorem isMIntegralCurveAt_geodesicVectorFieldChart_iff
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {f : ℝ → TangentBundle I M} {t : ℝ}
+    (hsrc : (f t).proj ∈ (chartAt H α).source) :
+    IsMIntegralCurveAt f (geodesicVectorFieldChart (I := I) g α) t ↔
+      IsMIntegralCurveAt f (geodesicVectorField (I := I) g) t := by
+  constructor <;> intro hf
+  all_goals
+    have hcont := (FiberBundle.continuous_proj E (TangentSpace I)).continuousAt.comp
+      hf.continuousAt
+    have hN : (fun u => (f u).proj) ⁻¹' (chartAt H α).source ∈ 𝓝 t :=
+      hcont.preimage_mem_nhds ((chartAt H α).open_source.mem_nhds hsrc)
+    obtain ⟨K, hK, hfK⟩ := isMIntegralCurveAt_iff.mp hf
+    refine isMIntegralCurveAt_iff.mpr ⟨K ∩ (fun u => (f u).proj) ⁻¹'
+      (chartAt H α).source, inter_mem hK hN, ?_⟩
+  · exact (isMIntegralCurveOn_geodesicVectorFieldChart_iff g α
+      (fun _ hu => hu.2)).mp (hfK.mono inter_subset_left)
+  · exact (isMIntegralCurveOn_geodesicVectorFieldChart_iff g α
+      (fun _ hu => hu.2)).mpr (hfK.mono inter_subset_left)
+
 theorem integralCurve_eqOn [T2Space (TangentBundle I M)]
     (g : SmoothRiemannianMetric I M)
     {f₁ f₂ : ℝ → TangentBundle I M} {K : Set ℝ} {t₀ : ℝ}
@@ -30,6 +50,6 @@ theorem integralCurve_eqOn [T2Space (TangentBundle I M)]
     (hf₂ : IsMIntegralCurveOn f₂ (geodesicVectorField (I := I) g) K)
     (heq : f₁ t₀ = f₂ t₀) : EqOn f₁ f₂ K :=
   isMIntegralCurveOn_eqOn_of_contMDiff_boundaryless hK hconn ht₀
-    ((geodesicVF_smooth g).of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)) hf₁ hf₂ heq
+    ((contMDiff_geodesicVectorField g).of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ∞)) hf₁ hf₂ heq
 
 end DifferentialGeometry.Geometry.Riemannian.Geodesic

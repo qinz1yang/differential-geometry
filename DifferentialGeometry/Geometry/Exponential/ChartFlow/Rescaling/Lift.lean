@@ -519,59 +519,17 @@ theorem chartFlowOrbitLiftRescaled_proj_eq_maximalGeodesic_on_Ioo
   have hT_div_neg : -T / t' < 0 := by
     rw [neg_div]; exact neg_lt_zero.mpr hT_div
   have h0_J : (0 : ℝ) ∈ J := ⟨hT_div_neg, hT_div⟩
-  obtain ⟨g_v, hg0, hg_int⟩ :=
-    exists_isMIntegralCurveAt_geodesicVectorFieldChart (I := I) (g := g)
-      (p := p) (v := t' • v)
-  obtain ⟨ε, hε, hg_on, hgeo, hg_source⟩ :=
-    exists_interval_isGeodesicOnWithInitial_of_integralCurveAt (I := I) (g := g) (p := p)
-      (v := t' • v) hg0 hg_int
-  have hgeo_F : IsGeodesicOnWithInitial (I := I) g
-      (fun s => (chartFlowOrbitLiftRescaled (I := I) Φ p t' v s).proj) J p (t' • v) := by
-    refine ⟨chartFlowOrbitLiftRescaled (I := I) Φ p t' v, ?_, hF0, hF_int⟩
-    intro _; rfl
-  have hs_witness : HasGeodesicAt (I := I) g p (t' • v) s :=
-    ⟨fun s => (chartFlowOrbitLiftRescaled (I := I) Φ p t' v s).proj,
-      J, hJ_open, hJ_conn, h0_J, hs, hgeo_F⟩
-  have hs_mem : s ∈ maximalGeodesicInterval (I := I) g p (t' • v) := hs_witness
-  rw [maximalGeodesic_of_mem (I := I) hs_mem]
-  obtain ⟨J', hJ'_open, hJ'_conn, h0_J', hs_J', hgeo'⟩ :=
-    maximalGeodesicChosenCurve_spec (I := I) g p (t' • v) hs_mem
-  obtain ⟨f', hproj', hf'_0, hf'_on⟩ := hgeo'
-  set K : Set ℝ := J ∩ J' with hK_def
-  have hK_open : IsOpen K := hJ_open.inter hJ'_open
-  have hK_conn : IsPreconnected K := by
-    have hJ_ord : OrdConnected J := hJ_conn.ordConnected
-    have hJ'_ord : OrdConnected J' := hJ'_conn.ordConnected
-    have hK_ord : OrdConnected K := hJ_ord.inter hJ'_ord
-    exact hK_ord.isPreconnected
-  have h0_K : (0 : ℝ) ∈ K := ⟨h0_J, h0_J'⟩
-  have hs_K : s ∈ K := ⟨hs, hs_J'⟩
-  have hF_on_K : IsMIntegralCurveOn (chartFlowOrbitLiftRescaled (I := I) Φ p t' v)
-      (geodesicVectorFieldChart (I := I) g p) K :=
-    hF_int.mono Set.inter_subset_left
-  have hf'_on_K : IsMIntegralCurveOn f'
-      (geodesicVectorFieldChart (I := I) g p) K :=
-    hf'_on.mono Set.inter_subset_right
-  have hF_source_K : ∀ s' ∈ K,
-      (chartFlowOrbitLiftRescaled (I := I) Φ p t' v s').proj ∈
-        (chartAt H p).source := by
-    intro s' hs'_K
-    have hs'_J : s' ∈ J := hs'_K.1
-    have hts' : t' * s' ∈ Set.Ioo (-T) T :=
-      mul_mem_Ioo_of_pos_of_lt ht'_pos hs'_J
-    have hΦ_target_s' := hΦ_target_Icc (t' * s') (Set.Ioo_subset_Icc_self hts')
-    exact chartFlowOrbitLiftRescaled_proj_mem_chartAt_source (I := I) p v t' s'
-      hΦ_target_s'
-  have h0_eq : chartFlowOrbitLiftRescaled (I := I) Φ p t' v 0 = f' 0 := by
-    rw [hF0, hf'_0]
-  have heqOn := isMIntegralCurveOn_eq_of_isPreconnected (I := I) (g := g) (p := p)
-    (f₁ := chartFlowOrbitLiftRescaled (I := I) Φ p t' v) (f₂ := f')
-    hK_open hK_conn h0_K hF_on_K hf'_on_K hF_source_K h0_eq
-  have hF_s_eq : chartFlowOrbitLiftRescaled (I := I) Φ p t' v s = f' s := heqOn hs_K
-  have : (chartFlowOrbitLiftRescaled (I := I) Φ p t' v s).proj = (f' s).proj := by
-    rw [hF_s_eq]
-  rw [this]
-  exact hproj' s
+  have hsrc : ∀ u ∈ J,
+      (chartFlowOrbitLiftRescaled (I := I) Φ p t' v u).proj ∈ (chartAt H p).source := by
+    intro u hu
+    exact chartFlowOrbitLiftRescaled_proj_mem_chartAt_source (I := I) p v t' u
+      (hΦ_target_Icc (t' * u)
+        (Set.Ioo_subset_Icc_self (mul_mem_Ioo_of_pos_of_lt ht'_pos hu)))
+  have hgeo : IsGeodesicOnWithInitial (I := I) g
+      (fun u => (chartFlowOrbitLiftRescaled (I := I) Φ p t' v u).proj) J p (t' • v) :=
+    ⟨_, fun _ => rfl, hF0,
+      (isMIntegralCurveOn_geodesicVectorFieldChart_iff g p hsrc).mp hF_int⟩
+  exact (maximalGeodesic_eqOn g hJ_open hJ_conn h0_J hgeo hs).symm
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartFlowOrbitLiftRescaled_proj_at_one

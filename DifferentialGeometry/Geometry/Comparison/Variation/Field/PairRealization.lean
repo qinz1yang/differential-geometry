@@ -63,7 +63,7 @@ theorem exists_var_pair
   have hX : ContMDiff I.tangent I.tangent.tangent ∞
       (fun q : TangentBundle I M ↦
         (⟨q, X q⟩ : TangentBundle I.tangent (TangentBundle I M))) := by
-    exact hpsi.smul_section (geodesicVF_smooth (I := I) g)
+    exact hpsi.smul_section (contMDiff_geodesicVectorField (I := I) g)
   have hXc : IsCompact (tsupport X) := by
     change HasCompactSupport (psi • geodesicVectorField (I := I) g)
     exact hpsic.smul_right

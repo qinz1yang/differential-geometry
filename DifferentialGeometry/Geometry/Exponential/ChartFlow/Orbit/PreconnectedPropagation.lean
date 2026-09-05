@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.TangentLift
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Uniqueness
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -24,7 +25,7 @@ section MaximalGeodesicWitnessFromLift
 
 variable [I.Boundaryless] [CompleteSpace E]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem exists_interval_isGeodesicOnWithInitial_of_integralCurveAt
     (g : SmoothRiemannianMetric I M) (p : M) (v : E)
     {g_v : ℝ → TangentBundle I M}
@@ -57,8 +58,10 @@ theorem exists_interval_isGeodesicOnWithInitial_of_integralCurveAt
   obtain ⟨ε₁, hε₁, hε₁_sub⟩ := Metric.mem_nhds_iff.mp hpreim_nhds
   refine ⟨min ε₀ ε₁, lt_min hε₀ hε₁, ?_, ?_, ?_⟩
   · exact hg_on.mono (Metric.ball_subset_ball (min_le_left _ _))
-  · exact ⟨g_v, fun _ => rfl, hg0,
-      hg_on.mono (Metric.ball_subset_ball (min_le_left _ _))⟩
+  · refine ⟨g_v, fun _ => rfl, hg0, ?_⟩
+    apply (isMIntegralCurveOn_geodesicVectorFieldChart_iff g p
+      (fun s hs => hε₁_sub (Metric.ball_subset_ball (min_le_right _ _) hs))).mp
+    exact hg_on.mono (Metric.ball_subset_ball (min_le_left _ _))
   · intro s hs
     have hs_ε₁ : s ∈ Metric.ball (0 : ℝ) ε₁ :=
       Metric.ball_subset_ball (min_le_right _ _) hs
@@ -201,45 +204,12 @@ theorem picardLift_proj_eq_maximalGeodesic_on_ball
       ∀ t ∈ Metric.ball (0 : ℝ) ε,
         maximalGeodesic (I := I) g p v t = (g_v t).proj := by
   classical
-  obtain ⟨ε, hε, hg_on, hgeo, hg_source⟩ :=
+  obtain ⟨ε, hε, _, hgeo, _⟩ :=
     exists_interval_isGeodesicOnWithInitial_of_integralCurveAt (I := I) (g := g) (p := p)
       (v := v) hg0 hg_int
-  set J : Set ℝ := Metric.ball (0 : ℝ) ε with hJ_def
   refine ⟨ε, hε, ?_⟩
-  intro t ht
-  have ht_witness : HasGeodesicAt (I := I) g p v t :=
-    ⟨projectCurve (I := I) g_v, J, Metric.isOpen_ball,
-      (convex_ball (0 : ℝ) ε).isPreconnected, Metric.mem_ball_self hε, ht, hgeo⟩
-  have ht_mem : t ∈ maximalGeodesicInterval (I := I) g p v := ht_witness
-  rw [maximalGeodesic_of_mem (I := I) ht_mem]
-  obtain ⟨J', hJ'_open, hJ'_conn, h0_J', ht_J', hgeo'⟩ :=
-    maximalGeodesicChosenCurve_spec (I := I) g p v ht_mem
-  obtain ⟨f', hproj', hf'_0, hf'_on⟩ := hgeo'
-  set K : Set ℝ := J ∩ J' with hK_def
-  have hK_open : IsOpen K := Metric.isOpen_ball.inter hJ'_open
-  have hK_conn : IsPreconnected K := by
-    have hJ_ord : OrdConnected J :=
-      ((convex_ball (0 : ℝ) ε).isPreconnected).ordConnected
-    have hJ'_ord : OrdConnected J' := hJ'_conn.ordConnected
-    have hK_ord : OrdConnected K := hJ_ord.inter hJ'_ord
-    exact hK_ord.isPreconnected
-  have h0_K : (0 : ℝ) ∈ K := ⟨Metric.mem_ball_self hε, h0_J'⟩
-  have ht_K : t ∈ K := ⟨ht, ht_J'⟩
-  have hg_on_K : IsMIntegralCurveOn g_v
-      (geodesicVectorFieldChart (I := I) g p) K :=
-    hg_on.mono Set.inter_subset_left
-  have hf'_on_K : IsMIntegralCurveOn f' (geodesicVectorFieldChart (I := I) g p) K :=
-    hf'_on.mono Set.inter_subset_right
-  have hg_source_K : ∀ s ∈ K, (g_v s).proj ∈ (chartAt H p).source := by
-    intro s hs_K
-    exact hg_source s hs_K.1
-  have heqOn := isMIntegralCurveOn_eq_of_isPreconnected (I := I) (g := g) (p := p)
-    (f₁ := g_v) (f₂ := f') hK_open hK_conn h0_K hg_on_K hf'_on_K hg_source_K
-    (by rw [hg0, hf'_0])
-  have hg_t_eq : g_v t = f' t := heqOn ht_K
-  have : (g_v t).proj = (f' t).proj := by rw [hg_t_eq]
-  rw [this]
-  exact (hproj' t).symm
+  exact maximalGeodesic_eqOn g Metric.isOpen_ball (convex_ball (0 : ℝ) ε).isPreconnected
+    (Metric.mem_ball_self hε) hgeo
 
 end PicardLiftProjEqMaximalGeodesic
 

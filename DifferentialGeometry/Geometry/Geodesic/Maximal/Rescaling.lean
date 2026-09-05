@@ -369,10 +369,14 @@ theorem maximalGeodesicChosenCurve_rescale_eventually
   obtain ⟨f_av, hproj_av, hf_av0, hf_av_int_on⟩ := hwit_av
   have hf_v_int : IsMIntegralCurveAt f_v
       (geodesicVectorFieldChart (I := I) g p) 0 :=
-    hf_v_int_on.isMIntegralCurveAt (_hJv_open.mem_nhds _h0_Jv)
+    (isMIntegralCurveAt_geodesicVectorFieldChart_iff g p
+      (by rw [hf_v0]; exact mem_chart_source H p)).mpr
+      (hf_v_int_on.isMIntegralCurveAt (_hJv_open.mem_nhds _h0_Jv))
   have hf_av_int : IsMIntegralCurveAt f_av
       (geodesicVectorFieldChart (I := I) g p) 0 :=
-    hf_av_int_on.isMIntegralCurveAt (_hJav_open.mem_nhds _h0_Jav)
+    (isMIntegralCurveAt_geodesicVectorFieldChart_iff g p
+      (by rw [hf_av0]; exact mem_chart_source H p)).mpr
+      (hf_av_int_on.isMIntegralCurveAt (_hJav_open.mem_nhds _h0_Jav))
   have hrescale := projectCurve_rescale_eventually (I := I)
     (g := g) (p := p) (a := a) (v := (v : E))
     (f_v := f_v) (f_av := f_av) hf_v0 hf_v_int hf_av0 hf_av_int
