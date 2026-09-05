@@ -183,16 +183,6 @@ theorem denseRange_H1ComplDirichletToLp
   funext f
   exact H1ComplDirichletToLp_smoothToH1ComplDirichlet g f
 
-theorem H1ComplDirichletToLp_injective
-    (g : SmoothRiemannianMetric (I_half n) M) :
-    Function.Injective (H1ComplDirichletToLp g) := by
-  rw [injective_iff_map_eq_zero]
-  intro u hu
-  apply (denseRange_smoothToH1ComplDirichlet g).eq_zero_of_inner_right (𝕜 := ℝ)
-  intro φ
-  rw [smoothToH1ComplDirichlet_eq_resolventDirichlet_oneSubLap,
-    resolventDirichlet_inner_eq_lpFunctional, hu, inner_zero_left]
-
 theorem resolventDirichlet_injective
     (g : SmoothRiemannianMetric (I_half n) M) :
     Function.Injective (resolventDirichlet g) := by

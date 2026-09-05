@@ -2450,6 +2450,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.VectorFieldFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.NonnegativeCurvatureOperator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureTrichotomy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.WholeFlowRankOne
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.CurvatureEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.FixedFrameEvolution
@@ -2537,6 +2538,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Criterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyVanishing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Noncompact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CompleteBoundedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CutoffEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CutoffBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionBounds
@@ -2995,6 +2997,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.Flat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciContinuityInMetricTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.GaugeRecovery.RicciFlowPdeAtZero
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Existence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.NoncompactRicciFlat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Properties
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.CutoffExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.VectorFieldSmoothness
@@ -3981,6 +3984,7 @@ import DifferentialGeometry.Analysis.Spectral.LowerKyFan
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Counterexamples
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.FirstContact
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.HarmonicDirichlet
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelRigidity
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KernelTimeConstancy
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
