@@ -285,6 +285,7 @@ private theorem minTail_edist
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [T2Space (TangentBundle I M)] in
 theorem tail_not_conj_of_min
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -438,6 +439,7 @@ theorem tail_not_conj_of_min
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [T2Space (TangentBundle I M)] in
 theorem tail_no_conj
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]

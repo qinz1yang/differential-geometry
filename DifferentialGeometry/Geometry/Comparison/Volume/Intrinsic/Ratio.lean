@@ -340,6 +340,7 @@ theorem intrinsicDens_le_hyperbolic
   exact ⟨N, hN,
     densUB_of_pole (I := I) g γ V (mul_nonneg hq (Real.sqrt_nonneg _)) hanti hcap⟩
 
+omit [T2Space (TangentBundle I M)] in
 theorem intrinsicNoConj_min
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)

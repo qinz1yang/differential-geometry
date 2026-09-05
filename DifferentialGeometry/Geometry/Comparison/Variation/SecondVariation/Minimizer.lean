@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.SecondVariation.Basic
+import DifferentialGeometry.Geometry.Comparison.Variation.Field.Realization
 import DifferentialGeometry.Geometry.Exponential.Variation.Smoothness
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDerivative
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
@@ -603,57 +604,40 @@ theorem exists_variation_realising_field
     rw [harg]
     exact expMapIntrinsic_zero (I := I) g hEnorm (γ L)
 
-omit [ConnectedSpace M] in
+end Construction
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [ConnectedSpace M] in
-theorem indexForm_nonneg_of_minimising_geodesic
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+theorem indexForm_nonneg_of_isLocalMin_arcLength
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (γ : ℝ → M) (L : ℝ) (V : ℝ → E)
-    (hL : 0 < L)
-    (hγ_smooth : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
-    (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
-      (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ t) (V t))))
+    (γ : ℝ → M) (f : ℝ → ℝ → M) (L : ℝ) (V : ℝ → E)
+    (hf_smooth : IsSmoothVariation (I := I) f)
+    (hf0 : ∀ t : ℝ, f 0 t = γ t)
+    (hf_velocity : ∀ t ∈ Set.Icc (0 : ℝ) L,
+      (mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => f s t) 0 (1 : ℝ) : E) = V t)
+    (hf_fix0 : ∀ s : ℝ, f s 0 = γ 0)
+    (hf_fixL : ∀ s : ℝ, f s L = γ L)
+    (hL : 0 ≤ L)
     (hγ : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))
-    (hmin : ∀ η : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Set.Icc 0 L) →
-      η 0 = γ 0 → η L = γ L →
-      arcLength (I := I) g γ 0 L ≤ arcLength (I := I) g η 0 L)
+    (hmin : IsLocalMin (fun s => arcLength (I := I) g (f s) 0 L) 0)
     (hUnit : ∀ t ∈ Set.Icc (0 : ℝ) L,
       g.inner (γ t)
           (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))
           (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 1)
     (hVperp : ∀ t ∈ Set.Icc (0 : ℝ) L,
-      g.inner (γ t) (V t) (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 0)
-    (hV0 : V 0 = 0) (hVL : V L = 0) :
+      g.inner (γ t) (V t) (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 0) :
     0 ≤ indexForm (I := I) g γ 0 L V V := by
+  rcases hL.eq_or_lt with hL | hL
+  · subst L
+    simp [indexForm]
   classical
-  obtain ⟨f, hf_smooth, hf0, hf_velocity, hf_fix0_if, hf_fixL_if⟩ :=
-    exists_variation_realising_field (I := I) g hEnorm γ V L hγ_smooth hVbundle
-  have hf_fix0 : ∀ s : ℝ, f s 0 = γ 0 := hf_fix0_if hV0
-  have hf_fixL : ∀ s : ℝ, f s L = γ L := hf_fixL_if hVL
-  set L_arc : ℝ → ℝ := fun s : ℝ => arcLength (I := I) g (fun t : ℝ => f s t) 0 L with hL_arc
-  set Vfield : ℝ → E :=
-    fun t : ℝ => (mfderiv (𝓘(ℝ, ℝ)) I (fun s : ℝ => f s t) 0 (1 : ℝ) : E) with hVfield
-  have hVfield_Icc : ∀ t ∈ Set.Icc (0 : ℝ) L, Vfield t = V t := fun t ht => hf_velocity t ht
-  have hslice_C1 : ∀ s : ℝ, ContMDiffOn 𝓘(ℝ, ℝ) I 1 (fun t : ℝ => f s t) (Set.Icc 0 L) := by
-    intro s
-    have hincl : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (8 : ℕ)
-        (fun t : ℝ => (s, t)) := contMDiff_const.prodMk contMDiff_id
-    have hcomp : ContMDiff 𝓘(ℝ, ℝ) I (8 : ℕ) (fun t : ℝ => f s t) :=
-      (hf_smooth : ContMDiff _ _ _ _).comp hincl
-    exact (hcomp.of_le (by exact_mod_cast (by norm_num : (1 : ℕ) ≤ 8))).contMDiffOn
-  have hmin_arc : ∀ s : ℝ, L_arc 0 ≤ L_arc s := by
-    intro s
-    have hcentral : L_arc 0 = arcLength (I := I) g γ 0 L := by
-      have hfun : (fun t : ℝ => f 0 t) = γ := by funext t; exact hf0 t
-      change arcLength (I := I) g (fun t : ℝ => f 0 t) 0 L = arcLength (I := I) g γ 0 L
-      rw [hfun]
-    rw [hcentral]
-    exact hmin (fun t : ℝ => f s t) (hslice_C1 s) (hf_fix0 s) (hf_fixL s)
-  have hLocalMin : IsLocalMin L_arc 0 :=
-    Filter.Eventually.of_forall hmin_arc
+  let L_arc : ℝ → ℝ := fun s => arcLength (I := I) g (f s) 0 L
+  let Vfield : ℝ → E :=
+    fun t => (mfderiv (𝓘(ℝ, ℝ)) I (fun s => f s t) 0 (1 : ℝ) : E)
+  have hVfield_Icc : ∀ t ∈ Set.Icc (0 : ℝ) L, Vfield t = V t :=
+    fun t ht => hf_velocity t ht
+  have hLocalMin : IsLocalMin L_arc 0 := hmin
   have hfirst : HasDerivAt L_arc 0 0 :=
     first_variation_vanishes_for_geodesic (I := I) g γ f L hf_smooth hL hγ hf0
       hf_fix0 hf_fixL hUnit
@@ -701,7 +685,40 @@ theorem indexForm_nonneg_of_minimising_geodesic
   rw [← hindexForm_eq]
   exact hnonneg_field
 
-end Construction
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem indexForm_nonneg_of_minimising_geodesic
+    (g : SmoothRiemannianMetric I M)
+    (γ : ℝ → M) (L : ℝ) (V : ℝ → E)
+    (hL : 0 ≤ L)
+    (hVbundle : ContMDiff 𝓘(ℝ, ℝ) I.tangent (8 : ℕ)
+      (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ t) (V t))))
+    (hγ : IsGeodesicOn (I := I) g γ (Set.Icc 0 L))
+    (hmin : ∀ η : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Set.Icc 0 L) →
+      η 0 = γ 0 → η L = γ L →
+      arcLength (I := I) g γ 0 L ≤ arcLength (I := I) g η 0 L)
+    (hUnit : ∀ t ∈ Set.Icc (0 : ℝ) L,
+      g.inner (γ t)
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))
+          (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 1)
+    (hVperp : ∀ t ∈ Set.Icc (0 : ℝ) L,
+      g.inner (γ t) (V t) (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 0)
+    (hV0 : V 0 = 0) (hVL : V L = 0) :
+    0 ≤ indexForm (I := I) g γ 0 L V V := by
+  obtain ⟨f, hf_smooth, hf0, hf_velocity, hf_fix0, hf_fixL⟩ :=
+    exists_var_fix_ends (I := I) g γ V 0 L hVbundle hV0 hVL
+  apply indexForm_nonneg_of_isLocalMin_arcLength (I := I) g γ f L V
+    hf_smooth hf0 (fun t ht => hf_velocity t (by simpa only [Set.uIcc_of_le hL] using ht))
+    hf_fix0 hf_fixL hL hγ ?_ hUnit hVperp
+  apply Filter.Eventually.of_forall
+  intro s
+  have hcentral : f 0 = γ := funext hf0
+  change arcLength (I := I) g (f 0) 0 L ≤ arcLength (I := I) g (f s) 0 L
+  rw [hcentral]
+  have hslice : ContMDiff 𝓘(ℝ, ℝ) I (8 : ℕ) (f s) :=
+    (hf_smooth : ContMDiff _ _ _ _).comp (contMDiff_const.prodMk contMDiff_id)
+  exact hmin (f s) (hslice.of_le (by norm_num)).contMDiffOn (hf_fix0 s) (hf_fixL s)
 
 end Variation
 end Riemannian

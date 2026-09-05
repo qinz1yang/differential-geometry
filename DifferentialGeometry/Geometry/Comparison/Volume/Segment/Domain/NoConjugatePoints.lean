@@ -27,7 +27,7 @@ variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [InnerProductSpace ℝ E] in
+omit [InnerProductSpace ℝ E] [T2Space (TangentBundle I M)] in
 theorem segmentDom_no_conj
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]

@@ -35,6 +35,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem not_conj_of_min_len
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -397,13 +398,14 @@ theorem not_conj_of_min_len
   have hnonneg :
       0 ≤ indexForm (I := I) g γ 0 L V V :=
     indexForm_nonneg_of_minimising_geodesic
-      (I := I) g hEnorm γ L V hL
-      hγ_smooth hV_bundle (hgeo.isGeodesicOn (Icc 0 L)) hminγ
+      (I := I) g γ L V hL.le
+      (hV_bundle.of_le (WithTop.coe_le_coe.2 le_top)) (hgeo.isGeodesicOn (Icc 0 L)) hminγ
       hUnit hVperp hV0 hVL
   exact (not_lt_of_ge hnonneg) hgeom_neg
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem not_conj_of_min
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]

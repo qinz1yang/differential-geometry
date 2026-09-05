@@ -495,9 +495,10 @@ theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
           DifferentialGeometry.Geometry.Riemannian.Variation.contMDiff_smul_bundleField
             (I := I) hγ_smooth hχ_smooth (hEbundle i)
         exact hprod
-      exact bonnet_myers_length_le_of_ricci_bound (I := I) g γ hL_pos hEnorm
-        hγ_smooth hγ_geoOn hK hdim hRic' uPrime huPrimeEq hγ_unit
-        e heDiff hParallel hON hPerp hIntegrandSum hRicIntegrable hγ_min hVbundle
+      exact bonnet_myers_length_le_of_ricci_bound (I := I) g γ hL_pos
+        hγ_geoOn hK hdim hRic' uPrime huPrimeEq hγ_unit
+        e heDiff hParallel hON hPerp hIntegrandSum hRicIntegrable hγ_min
+        (fun i => (hVbundle i).of_le (WithTop.coe_le_coe.2 le_top))
   exact hL_le
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

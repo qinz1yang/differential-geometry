@@ -893,34 +893,29 @@ theorem sum_index_form_bound_by_curvature_hypothesis
   apply le_of_eq
   ring
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_length_le_of_ricci_bound
-    [T2Space (TangentBundle I M)]
-    [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [CompleteSpace E]
-    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
-    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {L : ℝ} (_hL : 0 < L)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (_hγ_smooth : ContMDiff (𝓘(ℝ, ℝ)) I ∞ γ)
-    (_hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L)) {K : ℝ}
-    (_hK : 0 < K)
-    (_hdim : 2 ≤ Module.finrank ℝ E)
-    (_hRic : RicciBoundedBelow (I := I) g ((Module.finrank ℝ E - 1 : ℝ) * K))
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) {L : ℝ} (hL : 0 < L)
+    (hgeo : IsGeodesicOn (I := I) g γ (Set.Icc 0 L)) {K : ℝ}
+    (hK : 0 < K)
+    (hdim : 2 ≤ Module.finrank ℝ E)
+    (hRic : RicciBoundedBelow (I := I) g ((Module.finrank ℝ E - 1 : ℝ) * K))
     (uPrime : ℝ → E)
-    (_huPrimeEq : ∀ t ∈ Set.Icc (0 : ℝ) L,
+    (huPrimeEq : ∀ t ∈ Set.Icc (0 : ℝ) L,
       (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ) : E) = uPrime t)
-    (_hUnit : ∀ t ∈ Set.Icc (0 : ℝ) L, g.inner (γ t) (uPrime t) (uPrime t) = 1)
+    (hUnit : ∀ t ∈ Set.Icc (0 : ℝ) L, g.inner (γ t) (uPrime t) (uPrime t) = 1)
     (e : Fin (Module.finrank ℝ E - 1) → SectionAlongCurve I M γ)
-    (_heDiff : ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) L,
+    (heDiff : ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) L,
       DifferentiableAt ℝ (chartRepAt (I := I) γ (e i).toFun t) t)
-    (_hParallel : ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) L,
+    (hParallel : ∀ i, ∀ t ∈ Set.Icc (0 : ℝ) L,
       covDerivAlong (I := I) g γ (e i).toFun t = 0)
-    (_hON : ∀ t ∈ Set.Icc (0 : ℝ) L, ∀ i j,
+    (hON : ∀ t ∈ Set.Icc (0 : ℝ) L, ∀ i j,
       g.inner (γ t) ((e i).toFun t) ((e j).toFun t) = if i = j then 1 else 0)
-    (_hPerp : ∀ t ∈ Set.Icc (0 : ℝ) L, ∀ i,
+    (hPerp : ∀ t ∈ Set.Icc (0 : ℝ) L, ∀ i,
       g.inner (γ t) ((e i).toFun t) (uPrime t) = 0)
-    (_hIntegrandSum : ∀ i : Fin (Module.finrank ℝ E - 1),
+    (hIntegrandSum : ∀ i : Fin (Module.finrank ℝ E - 1),
       IntervalIntegrable
         (fun t : ℝ => indexFormIntegrand (I := I) g γ
           ((SectionAlongCurve.smulFun
@@ -928,31 +923,32 @@ theorem bonnet_myers_length_le_of_ricci_bound
           ((SectionAlongCurve.smulFun
             (fun s => Real.sin (Real.pi * s / L)) (e i)).toFun) t)
         MeasureTheory.volume 0 L)
-    (_hRicIntegrable : IntervalIntegrable
+    (hRicIntegrable : IntervalIntegrable
       (fun t : ℝ => ricciTensor (I := I) g (γ t) (uPrime t) (uPrime t))
       MeasureTheory.volume 0 L)
-    (_hmin : ∀ η : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Set.Icc 0 L) →
+    (hmin : ∀ η : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Set.Icc 0 L) →
       η 0 = γ 0 → η L = γ L →
       arcLength (I := I) g γ 0 L ≤ arcLength (I := I) g η 0 L)
-    (_hVbundle : ∀ i : Fin (Module.finrank ℝ E - 1),
-      ContMDiff 𝓘(ℝ, ℝ) I.tangent ∞
+    (hVbundle : ∀ i : Fin (Module.finrank ℝ E - 1),
+      ContMDiff 𝓘(ℝ, ℝ) I.tangent (8 : ℕ)
         (fun t : ℝ => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ t)
           ((SectionAlongCurve.smulFun
             (fun s => Real.sin (Real.pi * s / L)) (e i)).toFun t)))) :
     L ≤ Real.pi / Real.sqrt K := by
   classical
+  let _ : NeZero (Module.finrank ℝ E) := ⟨by omega⟩
   by_contra hcontra
   rw [not_le] at hcontra
   have h_pi_pos : (0 : ℝ) < Real.pi := Real.pi_pos
-  have h_sqrtK_pos : (0 : ℝ) < Real.sqrt K := Real.sqrt_pos.mpr _hK
-  have h_piOverL_pos : (0 : ℝ) < Real.pi / L := div_pos h_pi_pos _hL
+  have h_sqrtK_pos : (0 : ℝ) < Real.sqrt K := Real.sqrt_pos.mpr hK
+  have h_piOverL_pos : (0 : ℝ) < Real.pi / L := div_pos h_pi_pos hL
   have h_nm1_ge_one : (1 : ℝ) ≤ (Module.finrank ℝ E : ℝ) - 1 := by
-    have : (2 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := by exact_mod_cast _hdim
+    have : (2 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := by exact_mod_cast hdim
     linarith
   have h_nm1_pos : (0 : ℝ) < (Module.finrank ℝ E : ℝ) - 1 := by linarith
   have h_piOverL_lt_sqrtK : Real.pi / L < Real.sqrt K := by
     rw [div_lt_iff₀ h_sqrtK_pos] at hcontra
-    rw [div_lt_iff₀ _hL]
+    rw [div_lt_iff₀ hL]
     linarith
   have h_sq_lt_K : (Real.pi / L) ^ 2 < K := by
     have h_nonneg : (0 : ℝ) ≤ Real.pi / L := le_of_lt h_piOverL_pos
@@ -960,7 +956,7 @@ theorem bonnet_myers_length_le_of_ricci_bound
     have h_sq : (Real.pi / L) ^ 2 < (Real.sqrt K) ^ 2 := by
       have := mul_self_lt_mul_self h_nonneg h_piOverL_lt_sqrtK
       simpa [sq] using this
-    rw [Real.sq_sqrt (le_of_lt _hK)] at h_sq
+    rw [Real.sq_sqrt (le_of_lt hK)] at h_sq
     exact h_sq
   have h_upper :
       (∑ i : Fin (Module.finrank ℝ E - 1),
@@ -971,9 +967,9 @@ theorem bonnet_myers_length_le_of_ricci_bound
               (fun t => Real.sin (Real.pi * t / L)) (e i)).toFun))
         ≤ (Module.finrank ℝ E - 1 : ℝ) * (L / 2)
             * ((Real.pi / L) ^ 2 - K) :=
-    sum_index_form_bound_by_curvature_hypothesis (I := I) g γ _hL
-      _hRic uPrime _huPrimeEq _hUnit e _heDiff _hParallel _hON _hPerp
-      _hIntegrandSum _hRicIntegrable
+    sum_index_form_bound_by_curvature_hypothesis (I := I) g γ hL
+      hRic uPrime huPrimeEq hUnit e heDiff hParallel hON hPerp
+      hIntegrandSum hRicIntegrable
   have h_each_nonneg : ∀ i : Fin (Module.finrank ℝ E - 1),
       0 ≤ indexForm (I := I) g γ 0 L
         ((SectionAlongCurve.smulFun
@@ -986,29 +982,29 @@ theorem bonnet_myers_length_le_of_ricci_bound
             (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ))
             (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 1 := by
       intro t ht
-      rw [_huPrimeEq t ht]
-      exact _hUnit t ht
+      rw [huPrimeEq t ht]
+      exact hUnit t ht
     have hVperp : ∀ t ∈ Set.Icc (0 : ℝ) L,
         g.inner (γ t)
             ((SectionAlongCurve.smulFun
               (fun s => Real.sin (Real.pi * s / L)) (e i)).toFun t)
             (mfderiv (𝓘(ℝ, ℝ)) I γ t (1 : ℝ)) = 0 := by
       intro t ht
-      rw [_huPrimeEq t ht, SectionAlongCurve.smulFun_toFun]
+      rw [huPrimeEq t ht, SectionAlongCurve.smulFun_toFun]
       rw [show (g.inner (γ t)) (Real.sin (Real.pi * t / L) • (e i).toFun t)
             = Real.sin (Real.pi * t / L) • (g.inner (γ t)) ((e i).toFun t) from
           map_smul (g.inner (γ t)) _ _]
       with_unfolding_all
         change Real.sin (Real.pi * t / L) *
           g.inner (γ t) ((e i).toFun t) (uPrime t) = 0
-        rw [_hPerp t ht i, mul_zero]
+        rw [hPerp t ht i, mul_zero]
     refine indexForm_nonneg_of_minimising_geodesic
-      (I := I) g hEnorm γ L
+      (I := I) g γ L
       (fun t => (SectionAlongCurve.smulFun
         (fun t => Real.sin (Real.pi * t / L)) (e i)).toFun t)
-      _hL _hγ_smooth (_hVbundle i) _hgeo _hmin hUnit_mfd hVperp ?_ ?_
+      hL.le (hVbundle i) hgeo hmin hUnit_mfd hVperp ?_ ?_
     · simp [SectionAlongCurve.smulFun_toFun, Real.sin_zero]
-    · have hL_ne : L ≠ 0 := ne_of_gt _hL
+    · have hL_ne : L ≠ 0 := ne_of_gt hL
       have h_arg : Real.pi * L / L = Real.pi := by field_simp
       simp [SectionAlongCurve.smulFun_toFun, h_arg, Real.sin_pi]
   have h_sum_nonneg :
