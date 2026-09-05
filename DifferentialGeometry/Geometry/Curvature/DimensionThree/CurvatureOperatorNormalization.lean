@@ -84,6 +84,32 @@ theorem traceNormalizedCurvatureOperatorMatrixAt_trace_eq_twice_sectionalSum
     traceNormalizedCurvatureOperatorMatrix3_trace,
     curvatureOperatorMatrixAt_trace_eq_sectionalSum]
 
+theorem traceNormalizedCurvatureOperatorMatrixAt_isHermitian
+    (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    (traceNormalizedCurvatureOperatorMatrixAt (I := I) x basis A).IsHermitian :=
+  (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).smul (by rfl)
+
+theorem traceNormalizedCurvatureOperatorMatrixAt_eigenvalues
+    (x : M) (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    (traceNormalizedCurvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀ =
+      (2 : Real) • orderedSectionalCurvaturesAt (I := I) x basis A := by
+  exact DifferentialGeometry.Analysis.Convex.eigenvalues₀_smul_of_nonneg
+    (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A) (by norm_num)
+    (traceNormalizedCurvatureOperatorMatrixAt_isHermitian (I := I) x basis A)
+
+theorem traceNormalizedCurvatureOperatorMatrixAt_least_eigenvalue
+    (g : SmoothRiemannianMetric I M) (x : M)
+    (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
+    (horth : OrthonormalBasisAt (I := I) g x basis)
+    (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
+    (traceNormalizedCurvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀ 2 =
+      2 * leastCurvatureOperatorEigenvalueAt (I := I) g x A := by
+  rw [traceNormalizedCurvatureOperatorMatrixAt_eigenvalues,
+    leastCurvatureOperatorEigenvalueAt_eq_sectionalMin (I := I) g x basis horth]
+  rfl
+
 section MetricNormalization
 
 variable [FiniteDimensional Real E] [CompleteSpace E]

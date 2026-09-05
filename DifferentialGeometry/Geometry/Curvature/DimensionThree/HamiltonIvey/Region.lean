@@ -421,6 +421,78 @@ theorem hamiltonIveyBarrier_initial_le_sectionalSum
   · norm_num
   · simpa using hXK
 
+theorem mem_hamiltonIveyConvexMatrixRegion_initial_iff
+    {A : Matrix (Fin 3) (Fin 3) Real} {K : Real} (hK : 0 < K) :
+    A ∈ hamiltonIveyConvexMatrixRegion K 0 ↔
+      A.IsHermitian ∧ -3 * K ≤ A.trace ∧
+        (minimumRayleighQuotient3 A ≤ -K →
+          (-minimumRayleighQuotient3 A) *
+            (Real.log ((-minimumRayleighQuotient3 A) / K) - 3) ≤ A.trace) := by
+  constructor
+  · rintro ⟨hA, hbound⟩
+    have hparts := max_le_iff.mp hbound
+    refine ⟨hA, by simpa [scalarSectionalLowerBarrier3] using hparts.1, ?_⟩
+    intro hmin
+    have hneg : 0 ≤ -minimumRayleighQuotient3 A := by linarith
+    simpa only [max_eq_left hneg, hamiltonIveyBarrier, mul_zero,
+      add_zero, Real.log_one] using hparts.2
+  · rintro ⟨hA, htrace, hbound⟩
+    refine ⟨hA, max_le ?_ ?_⟩
+    · simpa [scalarSectionalLowerBarrier3] using htrace
+    · by_cases hmin : minimumRayleighQuotient3 A ≤ -K
+      · have hneg : 0 ≤ -minimumRayleighQuotient3 A := by linarith
+        simpa only [max_eq_left hneg, hamiltonIveyBarrier, mul_zero,
+          add_zero, Real.log_one] using hbound hmin
+      · apply hamiltonIveyBarrier_initial_le_sectionalSum
+          (neg_three_mul_neg_part_minimumRayleighQuotient3_le_trace hA) hK
+          (le_max_right _ _)
+        exact max_le (by linarith) hK.le
+
+theorem smul_mem_hamiltonIveyConvexMatrixRegion_initial
+    {K t : Real} (hK : 0 < K) (ht : 0 ≤ t)
+    {A : Matrix (Fin 3) (Fin 3) Real}
+    (hA : A ∈ hamiltonIveyConvexMatrixRegion K t) :
+    (1 + 2 * K * t) • A ∈ hamiltonIveyConvexMatrixRegion K 0 := by
+  let c := 1 + 2 * K * t
+  have hc : 0 < c := by dsimp [c]; positivity
+  have hscale : minimumRayleighQuotient3 (c • A) =
+      c * minimumRayleighQuotient3 A := by
+    have hAs := hA.1.smul (show star c = c from rfl)
+    rw [minimumRayleighQuotient3_eq_min_eigenvalue hAs,
+      minimumRayleighQuotient3_eq_min_eigenvalue hA.1,
+      eigenvalues₀_smul_of_nonneg hA.1 hc.le hAs]
+    rfl
+  have hmax : max (-minimumRayleighQuotient3 (c • A)) 0 =
+      c * max (-minimumRayleighQuotient3 A) 0 := by
+    rw [hscale, ← mul_neg, mul_max_of_nonneg _ _ hc.le, mul_zero]
+  have hbar : ∀ X : Real,
+      hamiltonIveyBarrier K 0 (c * X) = c * hamiltonIveyBarrier K t X := by
+    intro X
+    by_cases hX : X = 0
+    · simp [hX, hamiltonIveyBarrier]
+    · have harg : c * X / K = c * (X / K) := by ring
+      simp only [hamiltonIveyBarrier, mul_zero, add_zero, Real.log_one]
+      rw [harg, Real.log_mul hc.ne' (div_ne_zero hX hK.ne')]
+      dsimp [c]
+      ring
+  refine ⟨hA.1.smul (by rfl), max_le ?_ ?_⟩
+  · rw [Matrix.trace_smul]
+    change scalarSectionalLowerBarrier3 K 0 ≤ c * A.trace
+    have htr := (max_le_iff.mp hA.2).1
+    have hden : 0 < 1 + 4 * K * t := by positivity
+    have hbound : scalarSectionalLowerBarrier3 K 0 ≤
+        c * scalarSectionalLowerBarrier3 K t := by
+      simp only [scalarSectionalLowerBarrier3, mul_zero, add_zero, div_one]
+      rw [← mul_div_assoc]
+      apply (le_div_iff₀ hden).mpr
+      dsimp [c]
+      nlinarith [mul_nonneg (sq_nonneg K) ht]
+    exact hbound.trans (mul_le_mul_of_nonneg_left htr hc.le)
+  · change hamiltonIveyBarrier K 0 (max (-minimumRayleighQuotient3 (c • A)) 0) ≤
+        (c • A).trace
+    rw [hmax, hbar, Matrix.trace_smul]
+    exact mul_le_mul_of_nonneg_left (max_le_iff.mp hA.2).2 hc.le
+
 theorem hamiltonIveyBarrier_initial_le_sectionalSum_of_ordered
     {l1 l2 l3 K : Real} (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hpinch : -K ≤ l3) (hK : 0 < K) :
     hamiltonIveyBarrier K 0 (pinchHeight3 l3) ≤ sectionalSum3 l1 l2 l3 := by
