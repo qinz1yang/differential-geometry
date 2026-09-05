@@ -681,13 +681,14 @@ def HasLocalScalarDirichletSolution
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (X : Real → (x : M) → TangentSpace I x)
     (s t : Real) (Kset : Set M) : Prop :=
-  ∀ (c : Real), 0 ≤ c → ∀ f₀ : M → Real,
-    ContMDiff I 𝓘(Real, Real) ∞ f₀ →
-    (∀ z, 0 ≤ f₀ z) → HasCompactSupport f₀ →
-    tsupport f₀ ⊆ interior Kset →
-    (∃ z ∈ interior Kset, 0 < f₀ z) →
-    ∃ f : Real → M → Real, IsLocalScalarDirichletSolution
-      (I := I) G T X s t c Kset f₀ f
+  IsCompact Kset ∧ (interior Kset).Nonempty ∧ IsPreconnected (interior Kset) ∧
+    ∀ (c : Real), 0 ≤ c → ∀ f₀ : M → Real,
+      ContMDiff I 𝓘(Real, Real) ∞ f₀ →
+      (∀ z, 0 ≤ f₀ z) → HasCompactSupport f₀ →
+      tsupport f₀ ⊆ interior Kset →
+      (∃ z ∈ interior Kset, 0 < f₀ z) →
+      ∃ f : Real → M → Real, IsLocalScalarDirichletSolution
+        (I := I) G T X s t c Kset f₀ f
 
 theorem HasLocalScalarDirichletSolution.exists_solution
     {G : MetricConnectionFamily (I := I) (M := M) Real}
@@ -701,7 +702,7 @@ theorem HasLocalScalarDirichletSolution.exists_solution
     (hf₀_pos : ∃ z ∈ interior Kset, 0 < f₀ z) :
     ∃ f : Real → M → Real, IsLocalScalarDirichletSolution
       (I := I) G T X s t c Kset f₀ f :=
-  h c hc f₀ hf₀ hf₀_nonneg hf₀_compact hf₀_support hf₀_pos
+  h.2.2.2 c hc f₀ hf₀ hf₀_nonneg hf₀_compact hf₀_support hf₀_pos
 
 end Dirichlet
 
