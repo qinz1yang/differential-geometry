@@ -376,6 +376,7 @@ import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.Weak
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.WeakSolutionHeadline
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletCompactness
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletDensity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSpectrum
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorH1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorSmoothBridge
@@ -476,6 +477,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Defs
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Derived
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.StandardInstances
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+import DifferentialGeometry.Analysis.Integration.Measure.Boundary
 import DifferentialGeometry.Analysis.Integration.Measure.CompactParametricIntegral
 import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
 import DifferentialGeometry.Analysis.Integration.Measure.ExponentialTail
