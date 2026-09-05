@@ -2540,6 +2540,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyVan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Noncompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CompleteBoundedCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CutoffEnergy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CutoffLIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CutoffBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionTimeDerivative
