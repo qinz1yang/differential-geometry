@@ -77,6 +77,19 @@ theorem tendsto_integral_one_sub_compactExhaustionCutoff_mul
     (I := I) (M := M) K hf n)
 
 omit [BorelSpace M] in
+theorem integral_one_sub_compactExhaustionCutoff_mul_nonneg
+    (K : CompactExhaustion M) {μ : Measure M} {f : M → ℝ}
+    (hfnn : ∀ x, 0 ≤ f x) (n : ℕ) :
+    0 ≤ ∫ x,
+      (1 - compactExhaustionCutoff (I := I) (M := M) K n x) * f x ∂μ := by
+  apply integral_nonneg
+  intro x
+  have hrange := (compactExhaustionCutoff_spec (I := I) (M := M) K n).2.2.2.2
+    (show compactExhaustionCutoff (I := I) (M := M) K n x ∈
+      Set.range (compactExhaustionCutoff (I := I) (M := M) K n) from ⟨x, rfl⟩)
+  exact mul_nonneg (sub_nonneg.mpr hrange.2) (hfnn x)
+
+omit [BorelSpace M] in
 theorem eventually_integral_one_sub_compactExhaustionCutoff_mul_eq_zero
     (K : CompactExhaustion M) {μ : Measure M} {f : M → ℝ}
     (hsupp : HasCompactSupport f) :
