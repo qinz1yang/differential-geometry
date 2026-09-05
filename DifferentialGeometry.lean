@@ -2522,6 +2522,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Construction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Criterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyVanishing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Noncompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionDifference
@@ -2896,6 +2897,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Cutof
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.EarlyTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBallFunctional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Persistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Monotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.TimeSpan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ScaleTransfer
