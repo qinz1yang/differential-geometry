@@ -2526,6 +2526,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Extension.Regularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Criterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyVanishing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Noncompact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CutoffEnergy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionDifference
