@@ -684,6 +684,113 @@ theorem fiberwise_linear_ode_total_map_contMDiff_right
     hsection.comp (contMDiff_proj V)
   exact hsection'.clm_bundle_apply contMDiff_id
 
+private theorem model_fundamental_solution
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ F]
+    {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
+    (A : ℝ → F →L[ℝ] F) (hA : ContinuousOn A (Ioo a b)) :
+    ∃ Z : ℝ → F →L[ℝ] F,
+      Z t₀ = ContinuousLinearMap.id ℝ F ∧
+      (∀ t ∈ Ioo a b, HasDerivAt Z ((A t).comp (Z t)) t) ∧
+      ∀ t ∈ Ioo a b, Function.Bijective (Z t) := by
+  let B : ℝ → ℝ → (F →L[ℝ] F) →L[ℝ] F →L[ℝ] F :=
+    fun _ t => ContinuousLinearMap.compL ℝ F F F (A t)
+  have hB : ContinuousOn (Function.uncurry B) ((univ : Set ℝ) ×ˢ Ioo a b) := by
+    exact (ContinuousLinearMap.compL ℝ F F F).continuous.comp_continuousOn
+      (hA.comp continuousOn_snd fun _ hp => hp.2)
+  let Z : ℝ → F →L[ℝ] F :=
+    linearODESolution B a b t₀ (fun _ => ContinuousLinearMap.id ℝ F) 0
+  have hZ₀ : Z t₀ = ContinuousLinearMap.id ℝ F := linearODESolution_init _ _ _ _ _ _
+  have hZ : ∀ t ∈ Ioo a b, HasDerivAt Z ((A t).comp (Z t)) t := by
+    intro t ht
+    exact linearODESolution_hasDerivAt ht₀ hB (mem_univ (0 : ℝ)) ht
+  refine ⟨Z, hZ₀, hZ, ?_⟩
+  intro t ht
+  have hinj : Function.Injective (Z t) := by
+    intro v w hvw
+    let Y : ℝ → F := fun s => Z s (v - w)
+    have hY : ∀ s ∈ Ioo a b, HasDerivAt Y (A s (Y s)) s := by
+      intro s hs
+      simpa [Y] using (hZ s hs).clm_apply (hasDerivAt_const s (v - w))
+    have hzero : ∀ s ∈ Ioo a b,
+        HasDerivAt (fun _ : ℝ => (0 : F)) (A s 0) s := by
+      intro s _
+      simpa using hasDerivAt_const s (0 : F)
+    have hinit : Y t = 0 := by simp [Y, map_sub, hvw]
+    have h := linearODE_unique_on_Ioo ht hA hY hzero hinit ht₀
+    apply sub_eq_zero.mp
+    simpa [Y, hZ₀] using h
+  exact ⟨hinj, (LinearMap.injective_iff_surjective (f := (Z t).toLinearMap)).mp hinj⟩
+
+theorem exists_fiberwise_linear_ode_solution
+    {a b t₀ : ℝ} (ht₀ : t₀ ∈ Ioo a b)
+    (A : ℝ → ∀ x : M, V x →L[ℝ] V x)
+    (hA : ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+      (fun p : ℝ × M =>
+        (⟨p.2, A p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+      (Ioo a b ×ˢ (univ : Set M))) :
+    ∃ Φ : ℝ → ∀ x : M, V x →L[ℝ] V x,
+      (∀ x, Φ t₀ x = ContinuousLinearMap.id ℝ (V x)) ∧
+      ContMDiffOn (𝓘(ℝ, ℝ).prod I) (I.prod 𝓘(ℝ, F →L[ℝ] F)) ∞
+        (fun p : ℝ × M =>
+          (⟨p.2, Φ p.1 p.2⟩ : TotalSpace (F →L[ℝ] F) (fun x => V x →L[ℝ] V x)))
+        (Ioo a b ×ˢ (univ : Set M)) ∧
+      (∀ x : M, ∀ v : V x, ∀ t ∈ Ioo a b,
+        HasDerivAt (fun s : ℝ => Φ s x v) (A t x (Φ t x v)) t) ∧
+      (∀ x : M, ∀ t ∈ Ioo a b,
+        HasDerivAt (fun s : ℝ => Φ s x) ((A t x).comp (Φ t x)) t) ∧
+      ∀ t ∈ Ioo a b, ∀ x : M, Function.Bijective (Φ t x) := by
+  classical
+  let Acoord : M → ℝ → F →L[ℝ] F := fun x t =>
+    ContinuousLinearMap.inCoordinates F V F V x x x x (A t x)
+  have hAcoord : ∀ x, ContinuousOn (Acoord x) (Ioo a b) := by
+    intro x t ht
+    have h := hA.contMDiffAt (x := (t, x))
+      ((isOpen_Ioo.prod isOpen_univ).mem_nhds ⟨ht, mem_univ x⟩)
+    rw [contMDiffAt_hom_bundle] at h
+    have hpair : ContMDiffAt 𝓘(ℝ, ℝ) (𝓘(ℝ, ℝ).prod I) ∞
+        (fun s : ℝ => (s, x)) t := contMDiffAt_id.prodMk contMDiffAt_const
+    exact (h.2.comp t hpair).continuousAt.continuousWithinAt
+  choose Z hZ₀ hZ hZbij using fun x => model_fundamental_solution ht₀ (Acoord x) (hAcoord x)
+  let e : ∀ x : M, V x ≃L[ℝ] F := VectorBundle.continuousLinearEquivAt ℝ F V
+  have hAeq : ∀ x t, Acoord x t = (e x).toContinuousLinearMap.comp
+      ((A t x).comp (e x).symm.toContinuousLinearMap) := by
+    intro x t
+    exact ContinuousLinearMap.inCoordinates_eq
+      (mem_baseSet_trivializationAt F V x) (mem_baseSet_trivializationAt F V x)
+  let Φ : ℝ → ∀ x : M, V x →L[ℝ] V x := fun t x =>
+    (e x).symm.toContinuousLinearMap.comp ((Z x t).comp (e x).toContinuousLinearMap)
+  have hΦ₀ : ∀ x, Φ t₀ x = ContinuousLinearMap.id ℝ (V x) := by
+    intro x
+    ext v
+    simp [Φ, hZ₀]
+  have hΦop : ∀ x : M, ∀ t ∈ Ioo a b,
+      HasDerivAt (fun s : ℝ => Φ s x) ((A t x).comp (Φ t x)) t := by
+    intro x t ht
+    have h := continuousLinearMap_comp_hasDerivAt
+      ((e x).symm.arrowCongr (e x).symm).toContinuousLinearMap (hZ x t ht)
+    have hderiv : (e x).symm.arrowCongr (e x).symm ((Acoord x t).comp (Z x t)) =
+        (A t x).comp (Φ t x) := by
+      ext v
+      simp [Φ, hAeq, ContinuousLinearMap.comp_apply]
+    change HasDerivAt (fun s => Φ s x)
+      ((e x).symm.arrowCongr (e x).symm ((Acoord x t).comp (Z x t))) t at h
+    rw [hderiv] at h
+    exact h
+  have hΦ : ∀ x : M, ∀ v : V x, ∀ t ∈ Ioo a b,
+      HasDerivAt (fun s : ℝ => Φ s x v) (A t x (Φ t x v)) t := by
+    intro x v t ht
+    have h := (hZ x t ht).clm_apply (hasDerivAt_const t (e x v))
+    have h' := continuousLinearMap_comp_hasDerivAt (e x).symm.toContinuousLinearMap h
+    simpa [Φ, hAeq, ContinuousLinearMap.comp_apply] using h'
+  have hΦsmooth := fiberwise_linear_ode_solution_contMDiffOn
+    ht₀ A Φ hA (Φ t₀)
+    (fiberwise_linear_ode_solution_contMDiff ht₀ A Φ hA hΦ₀ hΦ t₀ ht₀)
+    (fun _ => rfl) hΦ
+  refine ⟨Φ, hΦ₀, hΦsmooth, hΦ, hΦop, ?_⟩
+  intro t ht x
+  exact (e x).symm.bijective.comp ((hZbij x t ht).comp (e x).bijective)
+
 end DifferentialGeometry.Analysis.ODE.Flow
 
 end
