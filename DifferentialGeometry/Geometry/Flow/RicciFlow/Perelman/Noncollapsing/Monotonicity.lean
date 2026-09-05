@@ -10,8 +10,6 @@ noncomputable section
 
 open scoped Manifold ContDiff ENNReal
 
-open scoped Manifold ContDiff ENNReal
-
 universe u uE uH
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
