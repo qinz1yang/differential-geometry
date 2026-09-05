@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Calculus.Smoothness.AnisotropicJoint
 import DifferentialGeometry.Analysis.Calculus.AnalyticTransfer
 import DifferentialGeometry.Analysis.Calculus.ApproximatesLinearOn
+import DifferentialGeometry.Analysis.Calculus.AbsolutelyContinuous
 import DifferentialGeometry.Analysis.Calculus.Compactness.ArzelaAscoli
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Ball
 import DifferentialGeometry.Analysis.Calculus.Retraction.Ball
