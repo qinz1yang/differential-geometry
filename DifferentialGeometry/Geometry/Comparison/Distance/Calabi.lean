@@ -240,7 +240,7 @@ theorem exists_calabiTail
     rw [intrinsicGeodesic_smul (I := I) g hEnorm]
     rw [show z.proj =
         intrinsicGeodesic (I := I) g hEnorm O v s₀ by
-          exact velocityLift_proj (I := I) g hEnorm O v s₀]
+          exact DifferentialGeometry.Geometry.Riemannian.Exponential.velocityLift_proj (I := I) g hEnorm O v s₀]
     rw [show z.snd =
         (mfderiv 𝓘(Real, Real) I
           (intrinsicGeodesic (I := I) g hEnorm O v) s₀ :
@@ -309,7 +309,7 @@ theorem exists_calabiTail
   have hspeed :
       g.inner z.proj z.snd z.snd = g.inner O v v := by
     rw [show z.proj = intrinsicGeodesic (I := I) g hEnorm O v s₀ by
-      exact velocityLift_proj (I := I) g hEnorm O v s₀]
+      exact DifferentialGeometry.Geometry.Riemannian.Exponential.velocityLift_proj (I := I) g hEnorm O v s₀]
     rw [show z.snd =
         (mfderiv 𝓘(Real, Real) I
           (intrinsicGeodesic (I := I) g hEnorm O v) s₀ :
@@ -323,7 +323,7 @@ theorem exists_calabiTail
       (sub_nonneg.mpr hs₀.2.le) z.snd, hspeed, hlen]
   have hleft :
       riemannianEDist I O z.proj = ENNReal.ofReal left := by
-    simpa only [z, velocityLift_proj, left] using
+    simpa only [z, DifferentialGeometry.Geometry.Riemannian.Exponential.velocityLift_proj, left] using
       Geometry.Riemannian.Variation.minSegment_edist
         (I := I) g hEnorm v hexp hlen hr_def hfin hs₀_closed
   have hleftPos : 0 < left := by
@@ -1083,7 +1083,7 @@ theorem calabi_tail_of
     rw [intrinsicGeodesic_smul (I := I) g hEnorm]
     rw [show (velocity s₀).proj =
         intrinsicGeodesic (I := I) g hEnorm O v s₀ by
-          exact velocityLift_proj (I := I) g hEnorm O v s₀]
+          exact DifferentialGeometry.Geometry.Riemannian.Exponential.velocityLift_proj (I := I) g hEnorm O v s₀]
     rw [show (velocity s₀).snd =
         (mfderiv 𝓘(Real, Real) I
           (intrinsicGeodesic (I := I) g hEnorm O v) s₀ :

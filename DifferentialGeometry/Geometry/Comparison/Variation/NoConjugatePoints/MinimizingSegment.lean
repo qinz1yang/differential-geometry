@@ -498,7 +498,7 @@ theorem tail_no_conj
   have hs₀_closed : s₀ ∈ Icc (0 : ℝ) 1 := ⟨hs₀.1.le, hs₀.2.le⟩
   have htail_dist :
       riemannianEDist I z.proj x = ENNReal.ofReal ell := by
-    simpa only [z, velocityLift_proj, ell, r] using
+    simpa only [z, DifferentialGeometry.Geometry.Riemannian.Exponential.velocityLift_proj, ell, r] using
       minTail_edist (I := I) g hEnorm v hexp hlen rfl hfin hs₀_closed
   have htail_curve :
       intrinsicGeodesic (I := I) g hEnorm z.proj uTail =

@@ -949,41 +949,8 @@ theorem velocity_chartRepAt_differentiableAt
     (γ : ℝ → M) (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ γ) (t : ℝ) :
     DifferentiableAt ℝ
       (chartRepAt (I := I) γ (fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ) : E)) t) t := by
-  classical
-  set α : M := γ t with hα_def
-  set urep : ℝ → E :=
-    chartRepAt (I := I) γ (fun s => (mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ) : E)) t with hurep_def
-  set U : Set ℝ := γ ⁻¹' (chartAt H α).source with hU_def
-  have hU_open : IsOpen U := (chartAt H α).open_source.preimage hγ.continuous
-  have ht_U : t ∈ U := by
-    rw [hU_def, Set.mem_preimage]; exact mem_chart_source H (γ t)
-  have hU_nhds : U ∈ 𝓝 t := hU_open.mem_nhds ht_U
-  have hu_cdiffOn : ContDiffOn ℝ ∞ (chartCurve (I := I) α γ) U := by
-    have h_comp_mdiff :
-        ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ ((extChartAt I α) ∘ γ) U := by
-      have hφ : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α) (chartAt H α).source :=
-        contMDiffOn_extChartAt (I := I) (n := ∞) (x := α)
-      have hγU : ContMDiffOn 𝓘(ℝ, ℝ) I ∞ γ U := hγ.contMDiffOn
-      have hmaps : Set.MapsTo γ U (chartAt H α).source := fun s hs => hs
-      exact hφ.comp hγU hmaps
-    have hfun : (chartCurve (I := I) α γ) = ((extChartAt I α) ∘ γ) := rfl
-    rw [hfun]
-    exact contMDiffOn_iff_contDiffOn.mp h_comp_mdiff
-  have hurep_eqOn : Set.EqOn urep (deriv (chartCurve (I := I) α γ)) U := by
-    intro s hs
-    have hs' : γ s ∈ (chartAt H α).source := hs
-    rw [hurep_def, chartRepAt_apply]
-    rw [MFDerivAlongCurve.chartCoord_mfderiv_along_curve_eq_fderiv
-      (I := I) (M := M) (γ := γ) hγ α (t := s) hs']
-    rfl
-  have hurep_eq : urep =ᶠ[𝓝 t] deriv (chartCurve (I := I) α γ) :=
-    hurep_eqOn.eventuallyEq_of_mem hU_nhds
-  have hderiv_u_cdiffOn :
-      ContDiffOn ℝ ∞ (deriv (chartCurve (I := I) α γ)) U :=
-    hu_cdiffOn.deriv_of_isOpen hU_open (by exact_mod_cast (le_refl (∞ : WithTop ℕ∞)))
-  have hderiv_u_diff : DifferentiableAt ℝ (deriv (chartCurve (I := I) α γ)) t :=
-    (hderiv_u_cdiffOn.differentiableOn (by simp) t ht_U).differentiableAt hU_nhds
-  exact hderiv_u_diff.congr_of_eventuallyEq hurep_eq
+  exact differentiableAt_chartRepAt_curveVelocity
+    (hγ.contMDiffAt.of_le (WithTop.coe_le_coe.2 le_top))
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

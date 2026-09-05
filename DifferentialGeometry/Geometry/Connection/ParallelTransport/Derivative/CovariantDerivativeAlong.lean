@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
+import DifferentialGeometry.Bundle.VelocityLift
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Derivative.MFDerivAlongCurve
 import DifferentialGeometry.Geometry.Geodesic.Equation.Basic
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Chart.Transition
@@ -32,6 +33,47 @@ omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
       (trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt ℝ (γ s) (V s) := rfl
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem mdifferentiableAt_tangentField_iff
+    {γ : ℝ → M} {V : ∀ t, TangentSpace I (γ t)} {t : ℝ} :
+    MDifferentiableAt 𝓘(ℝ, ℝ) I.tangent
+      (fun s => (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+        (γ s) (V s) : TangentBundle I M)) t ↔
+      MDifferentiableAt 𝓘(ℝ, ℝ) I γ t ∧
+        DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t := by
+  let F : ℝ → TangentBundle I M := fun s =>
+    TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ s) (V s)
+  rw [mdifferentiableAt_totalSpace]
+  change MDifferentiableAt 𝓘(ℝ, ℝ) I γ t ∧
+    MDifferentiableAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E)
+      (fun s => ((trivializationAt E (TangentSpace I) (γ t)) (F s)).2) t ↔ _
+  apply and_congr_right
+  intro hγ
+  have hmem : γ t ∈ (trivializationAt E (TangentSpace I) (γ t)).baseSet :=
+    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (γ t)
+  have hpre : γ ⁻¹' (trivializationAt E (TangentSpace I) (γ t)).baseSet ∈ 𝓝 t :=
+    hγ.continuousAt.preimage_mem_nhds
+      ((trivializationAt E (TangentSpace I) (γ t)).open_baseSet.mem_nhds hmem)
+  have heq : (fun s => ((trivializationAt E (TangentSpace I) (γ t)) (F s)).2)
+      =ᶠ[𝓝 t] chartRepAt (I := I) γ V t := by
+    filter_upwards [hpre] with s hs
+    rw [chartRepAt_apply]
+    simp only [F, TotalSpace.mk']
+    rw [(trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt_apply (R := ℝ)]
+    rw [(trivializationAt E (TangentSpace I) (γ t)).coe_linearMapAt_of_mem hs]
+  rw [mdifferentiableAt_iff_differentiableAt]
+  exact heq.differentiableAt_iff
+
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
+theorem differentiableAt_chartRepAt_curveVelocity
+    {γ : ℝ → M} {t : ℝ} (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ t) :
+    DifferentiableAt ℝ (chartRepAt (I := I) γ
+      (fun s => mfderiv 𝓘(ℝ, ℝ) I γ s (1 : ℝ)) t) t := by
+  have hvel : ContMDiffAt 𝓘(ℝ, ℝ) I.tangent 1
+      (DifferentialGeometry.velocityLift (I := I) γ) t :=
+    hγ.velocityLift (by norm_num)
+  exact (mdifferentiableAt_tangentField_iff.mp (hvel.mdifferentiableAt one_ne_zero)).2
+
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem differentiableAt_chartRepAt_of_contMDiffAt_two
     {γ : ℝ → M} {V : ∀ t, TangentSpace I (γ t)} {t : ℝ}
     (hV : ContMDiffAt 𝓘(ℝ, ℝ) I.tangent 2
@@ -39,33 +81,7 @@ theorem differentiableAt_chartRepAt_of_contMDiffAt_two
         (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
           (γ s) (V s) : TangentBundle I M)) t) :
     DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t := by
-  let F : ℝ → TangentBundle I M := fun s ↦
-    TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ s) (V s)
-  have hAt := Bundle.contMDiffAt_totalSpace.mp hV
-  have hbase := hAt.1
-  have hfiber := hAt.2
-  have hmem :
-      γ t ∈ (trivializationAt E (TangentSpace I) (γ t)).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (γ t)
-  have hpre :
-      γ ⁻¹' (trivializationAt E (TangentSpace I) (γ t)).baseSet ∈ 𝓝 t :=
-    hbase.continuousAt.preimage_mem_nhds
-      ((trivializationAt E (TangentSpace I) (γ t)).open_baseSet.mem_nhds hmem)
-  have heq :
-      (fun s : ℝ ↦
-        ((trivializationAt E (TangentSpace I) (γ t)) (F s)).2)
-        =ᶠ[𝓝 t] chartRepAt (I := I) γ V t := by
-    filter_upwards [hpre] with s hs
-    rw [chartRepAt_apply]
-    simp only [F, TotalSpace.mk']
-    rw [(trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt_apply
-      (R := ℝ)]
-    rw [(trivializationAt E (TangentSpace I) (γ t)).coe_linearMapAt_of_mem hs]
-  have hcoord : ContDiffAt ℝ 2
-      (fun s : ℝ ↦
-        ((trivializationAt E (TangentSpace I) (γ t)) (F s)).2) t :=
-    contMDiffAt_iff_contDiffAt.mp hfiber
-  exact (hcoord.differentiableAt (by norm_num)).congr_of_eventuallyEq heq.symm
+  exact (mdifferentiableAt_tangentField_iff.mp (hV.mdifferentiableAt (by norm_num))).2
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem differentiableAt_chartRepAt_of_contMDiff_two
@@ -880,41 +896,8 @@ theorem chartRep_diff
           (γ s) (V s) : TangentBundle I M)))
     (t : ℝ) :
     DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t := by
-  let S : ℝ → TangentBundle I M := fun s =>
-    TotalSpace.mk' E (E := (TangentSpace I : M → Type _)) (γ s) (V s)
-  have hAt : ContMDiffAt 𝓘(ℝ, ℝ) I.tangent ∞ S t := by
-    simpa only [S] using hV.contMDiffAt
-  rw [Bundle.contMDiffAt_totalSpace] at hAt
-  have hbase := hAt.1
-  have hfiber := hAt.2
-  have hmem :
-      γ t ∈ (trivializationAt E (TangentSpace I) (γ t)).baseSet :=
-    FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (γ t)
-  have hpre :
-      γ ⁻¹' (trivializationAt E (TangentSpace I) (γ t)).baseSet ∈ 𝓝 t :=
-    hbase.continuousAt.preimage_mem_nhds
-      ((trivializationAt E (TangentSpace I) (γ t)).open_baseSet.mem_nhds hmem)
-  have heq :
-      (fun s : ℝ => ((trivializationAt E (TangentSpace I) (γ t)) (S s)).2)
-        =ᶠ[𝓝 t]
-      fun s : ℝ =>
-        (trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt
-          ℝ (γ s) (V s) := by
-    filter_upwards [hpre] with s hs
-    simp only [S, TotalSpace.mk']
-    rw [(trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt_apply
-      (R := ℝ)]
-    rw [(trivializationAt E (TangentSpace I) (γ t)).coe_linearMapAt_of_mem hs]
-  have hfiber' := hfiber.congr_of_eventuallyEq heq.symm
-  have hfiberDiff : ContDiffAt ℝ ∞
-      (fun s : ℝ =>
-        (trivializationAt E (TangentSpace I) (γ t)).continuousLinearMapAt
-          ℝ (γ s) (V s)) t := by
-    rw [← contMDiffAt_iff_contDiffAt]
-    exact hfiber'
-  let hdiff : DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t :=
-    hfiberDiff.differentiableAt (by simp)
-  exact hdiff
+  exact (mdifferentiableAt_tangentField_iff.mp
+    ((hV.contMDiffAt (x := t)).mdifferentiableAt (by simp))).2
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma chartRepAt_sum {ι : Type*} (s : Finset ι) (γ : ℝ → M)
