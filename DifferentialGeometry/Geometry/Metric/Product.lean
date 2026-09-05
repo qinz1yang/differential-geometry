@@ -264,6 +264,110 @@ private def verticalLift (Y : (y : N) → TangentSpace J y) (x : M × N) :
     TangentSpace (I.prod J) x :=
   (0, Y x.2)
 
+def tangentProductHorizontalLift (X : (x : M) → TangentSpace I x) (x : M × N) :
+    TangentSpace (I.prod J) x :=
+  (X x.1, 0)
+
+def tangentProductVerticalLift (Y : (y : N) → TangentSpace J y) (x : M × N) :
+    TangentSpace (I.prod J) x :=
+  (0, Y x.2)
+
+def tangentProductHorizontalAt {x : M} (u : TangentSpace I x) (y : N) :
+    TangentSpace (I.prod J) (x, y) :=
+  (u, 0)
+
+def tangentProductVerticalAt (x : M) {y : N} (v : TangentSpace J y) :
+    TangentSpace (I.prod J) (x, y) :=
+  (0, v)
+
+theorem prod_inner_horizontalAt_horizontalAt
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    {x : M} {y : N} (u v : TangentSpace I x) :
+    (g.prod h).inner (x, y)
+        (tangentProductHorizontalAt (I := I) (J := J) u y)
+        (tangentProductHorizontalAt (I := I) (J := J) v y) =
+      g.inner x u v := by
+  have hfu : mfderiv (I.prod J) I Prod.fst (x, y)
+      (tangentProductHorizontalAt (I := I) (J := J) u y) = u := by
+    rw [mfderiv_fst]
+    rfl
+  have hfv : mfderiv (I.prod J) I Prod.fst (x, y)
+      (tangentProductHorizontalAt (I := I) (J := J) v y) = v := by
+    rw [mfderiv_fst]
+    rfl
+  have hsu : mfderiv (I.prod J) J Prod.snd (x, y)
+      (tangentProductHorizontalAt (I := I) (J := J) u y) = 0 := by
+    rw [mfderiv_snd]
+    rfl
+  have hsv : mfderiv (I.prod J) J Prod.snd (x, y)
+      (tangentProductHorizontalAt (I := I) (J := J) v y) = 0 := by
+    rw [mfderiv_snd]
+    rfl
+  rw [SmoothRiemannianMetric.prod_inner, hfu, hfv, hsu, hsv]
+  simp
+
+theorem prod_inner_verticalAt_verticalAt
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    {x : M} {y : N} (u v : TangentSpace J y) :
+    (g.prod h).inner (x, y)
+        (tangentProductVerticalAt (I := I) (J := J) x u)
+        (tangentProductVerticalAt (I := I) (J := J) x v) =
+      h.inner y u v := by
+  have hfu : mfderiv (I.prod J) I Prod.fst (x, y)
+      (tangentProductVerticalAt (I := I) (J := J) x u) = 0 := by
+    rw [mfderiv_fst]
+    rfl
+  have hfv : mfderiv (I.prod J) I Prod.fst (x, y)
+      (tangentProductVerticalAt (I := I) (J := J) x v) = 0 := by
+    rw [mfderiv_fst]
+    rfl
+  have hsu : mfderiv (I.prod J) J Prod.snd (x, y)
+      (tangentProductVerticalAt (I := I) (J := J) x u) = u := by
+    rw [mfderiv_snd]
+    rfl
+  have hsv : mfderiv (I.prod J) J Prod.snd (x, y)
+      (tangentProductVerticalAt (I := I) (J := J) x v) = v := by
+    rw [mfderiv_snd]
+    rfl
+  rw [SmoothRiemannianMetric.prod_inner, hfu, hfv, hsu, hsv]
+  simp
+
+theorem prod_inner_horizontalAt_verticalAt
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    {x : M} {y : N} (u : TangentSpace I x) (v : TangentSpace J y) :
+    (g.prod h).inner (x, y)
+        (tangentProductHorizontalAt (I := I) (J := J) u y)
+        (tangentProductVerticalAt (I := I) (J := J) x v) = 0 := by
+  have hfu : mfderiv (I.prod J) I Prod.fst (x, y)
+      (tangentProductHorizontalAt (I := I) (J := J) u y) = u := by
+    rw [mfderiv_fst]
+    rfl
+  have hfv : mfderiv (I.prod J) I Prod.fst (x, y)
+      (tangentProductVerticalAt (I := I) (J := J) x v) = 0 := by
+    rw [mfderiv_fst]
+    rfl
+  have hsu : mfderiv (I.prod J) J Prod.snd (x, y)
+      (tangentProductHorizontalAt (I := I) (J := J) u y) = 0 := by
+    rw [mfderiv_snd]
+    rfl
+  have hsv : mfderiv (I.prod J) J Prod.snd (x, y)
+      (tangentProductVerticalAt (I := I) (J := J) x v) = v := by
+    rw [mfderiv_snd]
+    rfl
+  rw [SmoothRiemannianMetric.prod_inner, hfu, hfv, hsu, hsv]
+  simp
+
+omit [FiniteDimensional Real E] [FiniteDimensional Real F]
+    [IsManifold I ∞ M] [IsManifold J ∞ N] in
+theorem tangentSpace_prod_decompose {x : M × N} (v : TangentSpace (I.prod J) x) :
+    v = tangentProductHorizontalLift (I := I) (J := J)
+        (fun _ => (show E × F from v).1) x +
+      tangentProductVerticalLift (I := I) (J := J)
+        (fun _ => (show E × F from v).2) x := by
+  change ((show E × F from v).1, (show E × F from v).2) =
+    ((show E × F from v).1 + 0, 0 + (show E × F from v).2)
+  exact Prod.ext (by simp) (by simp)
+
 omit [FiniteDimensional Real E] [FiniteDimensional Real F] in
 private lemma horizontalLift_contMDiff {X : (x : M) → TangentSpace I x}
     (hX : ContMDiff I (I.prod (modelWithCornersSelf Real E)) ∞ (T% X)) :

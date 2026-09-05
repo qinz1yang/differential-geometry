@@ -677,6 +677,156 @@ def IsLocalScalarDirichletSolution
     ∀ q ∈ Set.Ioc s t, ∀ z ∈ interior Kset,
       parabolicOperatorWithDrift (I := I) G T X f q z = -c * f q z
 
+structure IsGlobalScalarDirichletSolution
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (T : Real) (X : Real → (x : M) → TangentSpace I x)
+    (a : Real) (u : Real → M → Real) : Prop where
+  continuous : ContinuousOn (fun p : Real × M ↦ u p.1 p.2)
+    (Set.Icc 0 T ×ˢ Set.univ)
+  boundary : ∀ q ∈ Set.Icc 0 T, ∀ p : BoundaryManifold I M,
+    u q (p : M) = 0
+  time : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x : M,
+    DifferentiableWithinAt Real (fun r ↦ u r x) (Set.Icc 0 T) q
+  space : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x : M,
+    MDifferentiableAt I 𝓘(Real, Real) (u q) x
+  gradient : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x : M,
+    MDiffAt (T% fun y : M ↦ gradientFun (I := I) (G.metric q) (u q) y) x
+  equation : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x : M,
+    parabolicOperatorWithDrift (I := I) G T X u q x = -a * u q x
+
+theorem global_scalar_dirichlet_solution_unique
+    [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    {T : Real}
+    (X : Real → (x : M) → TangentSpace I x)
+    {a : Real} (ha : 0 ≤ a)
+    {u v : Real → M → Real}
+    (hu : IsGlobalScalarDirichletSolution (I := I) G T X a u)
+    (hv : IsGlobalScalarDirichletSolution (I := I) G T X a v)
+    (hinit : ∀ x : M, u 0 x = v 0 x) :
+    ∀ q ∈ Set.Icc 0 T, ∀ x : M, u q x = v q x := by
+  let w : Real → M → Real := fun q x => u q x - v q x
+  have hw_cont : ContinuousOn (fun p : Real × M => w p.1 p.2)
+      (Set.Icc 0 T ×ˢ Set.univ) := by
+    exact hu.continuous.sub hv.continuous
+  have hw0 : ∀ x : M, 0 ≤ w 0 x := by
+    intro x
+    simp [w, hinit x]
+  have hw_boundary : ∀ q ∈ Set.Icc 0 T, ∀ p : BoundaryManifold I M,
+      0 ≤ w q (p : M) := by
+    intro q hq p
+    change 0 ≤ u q (p : M) - v q (p : M)
+    rw [hu.boundary q hq p, hv.boundary q hq p]
+    norm_num
+  have hw_time : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x ∈ I.interior M,
+      DifferentiableWithinAt Real (fun r => w r x) (Set.Icc 0 T) q := by
+    intro q hq hqpos x _
+    exact (hu.time q hq hqpos x).sub (hv.time q hq hqpos x)
+  have hw_mdiff : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x ∈ I.interior M,
+      MDifferentiableAt I 𝓘(Real, Real) (w q) x := by
+    intro q hq hqpos x _
+    exact (hu.space q hq hqpos x).sub (hv.space q hq hqpos x)
+  have hw_grad : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x ∈ I.interior M,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric q) (w q) y) x := by
+    intro q hq hqpos x _
+    have hgrad_eq : (fun y : M => gradientFun (I := I) (G.metric q) (w q) y) =
+        (fun y : M => gradientFun (I := I) (G.metric q) (u q) y -
+          gradientFun (I := I) (G.metric q) (v q) y) := by
+      funext y
+      exact gradientFun_sub (I := I) (G.metric q)
+        (hu.space q hq hqpos y) (hv.space q hq hqpos y)
+    have hgrad_total :
+        (T% fun y : M => gradientFun (I := I) (G.metric q) (w q) y) =
+          (T% fun y : M => gradientFun (I := I) (G.metric q) (u q) y -
+            gradientFun (I := I) (G.metric q) (v q) y) := by
+      funext y
+      exact congrArg (fun z => (⟨y, z⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+        (congrFun hgrad_eq y)
+    rw [hgrad_total]
+    exact mdifferentiableAt_sub_section
+      (hu.gradient q hq hqpos x) (hv.gradient q hq hqpos x)
+  have hnegative : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x ∈ I.interior M,
+      w q x < 0 →
+        0 ≤ parabolicOperatorWithDrift (I := I) G T X w q x := by
+    intro q hq hqpos x hx hneg
+    have hsub := parabolic_sub (I := I) G T X u v q x
+      (hu.time q hq hqpos x) (hv.time q hq hqpos x)
+      (fun y => hu.space q hq hqpos y) (fun y => hv.space q hq hqpos y)
+      (hu.gradient q hq hqpos x)
+      (hv.gradient q hq hqpos x)
+    rw [hsub, hu.equation q hq hqpos x, hv.equation q hq hqpos x]
+    have hnonneg : 0 ≤ (-a) * (u q x - v q x) :=
+      mul_nonneg_of_nonpos_of_nonpos (neg_nonpos.mpr ha) hneg.le
+    dsimp [w] at hneg ⊢
+    nlinarith
+  have hw_nonneg := strict_barrier_on_compact_manifold_with_boundary
+    (I := I) G T X w hw_cont hw0 hw_boundary hw_time hw_mdiff hw_grad hnegative
+  let w' : Real → M → Real := fun q x => v q x - u q x
+  have hw'_cont : ContinuousOn (fun p : Real × M => w' p.1 p.2)
+      (Set.Icc 0 T ×ˢ Set.univ) := by
+    exact hv.continuous.sub hu.continuous
+  have hw'0 : ∀ x : M, 0 ≤ w' 0 x := by
+    intro x
+    simp [w', hinit x]
+  have hw'_boundary : ∀ q ∈ Set.Icc 0 T, ∀ p : BoundaryManifold I M,
+      0 ≤ w' q (p : M) := by
+    intro q hq p
+    change 0 ≤ v q (p : M) - u q (p : M)
+    rw [hv.boundary q hq p, hu.boundary q hq p]
+    norm_num
+  have hw'_time : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x ∈ I.interior M,
+      DifferentiableWithinAt Real (fun r => w' r x) (Set.Icc 0 T) q := by
+    intro q hq hqpos x _
+    exact (hv.time q hq hqpos x).sub (hu.time q hq hqpos x)
+  have hw'_mdiff : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x ∈ I.interior M,
+      MDifferentiableAt I 𝓘(Real, Real) (w' q) x := by
+    intro q hq hqpos x _
+    exact (hv.space q hq hqpos x).sub (hu.space q hq hqpos x)
+  have hw'_grad : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x ∈ I.interior M,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric q) (w' q) y) x := by
+    intro q hq hqpos x _
+    have hgrad_eq : (fun y : M => gradientFun (I := I) (G.metric q) (w' q) y) =
+        (fun y : M => gradientFun (I := I) (G.metric q) (v q) y -
+          gradientFun (I := I) (G.metric q) (u q) y) := by
+      funext y
+      exact gradientFun_sub (I := I) (G.metric q)
+        (hv.space q hq hqpos y) (hu.space q hq hqpos y)
+    have hgrad_total :
+        (T% fun y : M => gradientFun (I := I) (G.metric q) (w' q) y) =
+          (T% fun y : M => gradientFun (I := I) (G.metric q) (v q) y -
+            gradientFun (I := I) (G.metric q) (u q) y) := by
+      funext y
+      exact congrArg (fun z => (⟨y, z⟩ : TotalSpace E (TangentSpace I : M → Type _)))
+        (congrFun hgrad_eq y)
+    rw [hgrad_total]
+    exact mdifferentiableAt_sub_section
+      (hv.gradient q hq hqpos x) (hu.gradient q hq hqpos x)
+  have h'negative : ∀ q ∈ Set.Icc 0 T, 0 < q → ∀ x ∈ I.interior M,
+      w' q x < 0 →
+        0 ≤ parabolicOperatorWithDrift (I := I) G T X w' q x := by
+    intro q hq hqpos x hx hneg
+    have hsub := parabolic_sub (I := I) G T X v u q x
+      (hv.time q hq hqpos x) (hu.time q hq hqpos x)
+      (fun y => hv.space q hq hqpos y) (fun y => hu.space q hq hqpos y)
+      (hv.gradient q hq hqpos x)
+      (hu.gradient q hq hqpos x)
+    rw [hsub, hv.equation q hq hqpos x, hu.equation q hq hqpos x]
+    have hnonneg : 0 ≤ (-a) * (v q x - u q x) :=
+      mul_nonneg_of_nonpos_of_nonpos (neg_nonpos.mpr ha) hneg.le
+    dsimp [w'] at hneg ⊢
+    nlinarith
+  have hw'_nonneg := strict_barrier_on_compact_manifold_with_boundary
+    (I := I) G T X w' hw'_cont hw'0 hw'_boundary hw'_time hw'_mdiff hw'_grad
+      h'negative
+  intro q hq x
+  have hleft := hw_nonneg q hq x
+  have hright := hw'_nonneg q hq x
+  dsimp [w, w'] at hleft hright
+  linarith
+
 def HasLocalScalarDirichletSolution
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (X : Real → (x : M) → TangentSpace I x)

@@ -379,6 +379,7 @@ import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletCompactness
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletDensity
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletEigenBasis
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletHeatSemigroup
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletMildData
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletSpectrum
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletVariationalLaplacian
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorH1Compl

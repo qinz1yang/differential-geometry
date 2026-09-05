@@ -72,6 +72,7 @@ theorem positive_time_rank_spreading
             {B : V z →L[Real] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
     (hdirichlet : ∀ {s t : Real}, 0 ≤ s → s < t → t ≤ T →
       ∀ {Kset : Set M}, IsCompact Kset →
+        IsPreconnected (interior Kset) →
         HasLocalScalarDirichletSolution (I := I) G T X s t Kset)
     (hGconn : ∀ q ∈ Ioc 0 T,
       G.connection q = LeviCivita (I := I) (G.metric q))
@@ -618,5 +619,25 @@ theorem whole_flow_trichotomy_of_constant_rank_mode
           simpa [curvatureOperatorImageRank] using hline.1 x
         omega
       · exact hpositive.2 x a ha
+
+theorem ancient_curvature_trichotomy_of_constant_rank_mode
+    {H : Type} [TopologicalSpace H]
+    {I : ModelWithCorners Real
+      (DifferentialGeometry.Topology.Morse.MorseModel 3) H}
+    [I.Boundaryless]
+    {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [SigmaCompactSpace M] [ConnectedSpace M] [Nonempty M]
+    {T : Real}
+    (S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I) (M := M)
+      (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T))
+    (data : CurvatureFlowDerivedData (I := I) (M := M) S)
+    (hmode : ∃ q : Nat, ∀ t ∈
+      (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
+      ∀ x, curvatureOperatorImageRank (S.base.metric t) x = q) :
+    WholeFlowCurvatureAlternative S := by
+  apply whole_flow_trichotomy_of_constant_rank_mode S data hmode
+  exact ⟨T - 1,
+    (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).initial_mem⟩
 
 end DifferentialGeometry.PDE.RicciFlow.DimensionThree

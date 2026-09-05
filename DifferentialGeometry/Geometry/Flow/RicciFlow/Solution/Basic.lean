@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Defs
 import DifferentialGeometry.Geometry.Curvature.Metric
+import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Inverse
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Covariant
 import DifferentialGeometry.Geometry.Coordinates.MetricCompatibility.Coordinate
@@ -769,6 +770,44 @@ theorem isRicciFlowCandidateOn_of_isSolutionOn
       smoothConnection := hS.smoothConnection
       leviCivita := SolutionOn.leviCivita (I := I) S
       equation := hS.equation }
+
+structure CompleteBoundedCurvatureSolutionOn
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval} where
+  solution : SolutionOn (I := I) (M := M) D
+  isSolution : IsSolutionOn (I := I) solution
+  complete : ∀ t : Real, t ∈ D.carrier →
+    DifferentialGeometry.RiemannianMetricComplete (I := I) (solution.base.metric t)
+  curvatureBound : ∀ t : Real, t ∈ D.carrier → ∃ C : Real, 0 ≤ C ∧
+    ∀ x : M,
+      normSq0S (I := I) (solution.base.metric t) x 4
+        (metricRm04At (I := I) (M := M) (solution.base.metric t) x) ≤ C
+
+namespace CompleteBoundedCurvatureSolutionOn
+
+theorem isRicciFlowCandidateOn
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : CompleteBoundedCurvatureSolutionOn (I := I) (M := M) (D := D)) :
+    DifferentialGeometry.PDE.RicciFlow.IsRicciFlowCandidateOn (I := I)
+      S.solution.toRicciFlowCandidate :=
+  isRicciFlowCandidateOn_of_isSolutionOn S.isSolution
+
+theorem exists_curvature_bound
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : CompleteBoundedCurvatureSolutionOn (I := I) (M := M) (D := D))
+    (t : Real) (ht : t ∈ D.carrier) :
+    ∃ C : Real, 0 ≤ C ∧ ∀ x : M,
+      normSq0S (I := I) (S.solution.base.metric t) x 4
+        (metricRm04At (I := I) (M := M) (S.solution.base.metric t) x) ≤ C :=
+  S.curvatureBound t ht
+
+theorem complete_slice
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : CompleteBoundedCurvatureSolutionOn (I := I) (M := M) (D := D))
+    (t : Real) (ht : t ∈ D.carrier) :
+    DifferentialGeometry.RiemannianMetricComplete (I := I) (S.solution.base.metric t) :=
+  S.complete t ht
+
+end CompleteBoundedCurvatureSolutionOn
 
 
 omit [SigmaCompactSpace M] in
