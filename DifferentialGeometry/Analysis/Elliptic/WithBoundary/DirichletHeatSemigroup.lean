@@ -85,6 +85,20 @@ theorem dirichletHeat_mild_solution_exists
   exact DifferentialGeometry.PDE.linear_tensor_parabolic_shortTime_exists
     (dirichletHeatSemigroup g) u₀ F hF
 
+theorem dirichletHeat_mild_solution_unique
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (u₀ : Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g))
+    (F : ℝ → Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g))
+    {T : ℝ} {u v : ℝ →
+      Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)}
+    (hu : DifferentialGeometry.PDE.IsLinearTensorParabolicMildSolution
+      (dirichletHeatSemigroup g) u₀ F T u)
+    (hv : DifferentialGeometry.PDE.IsLinearTensorParabolicMildSolution
+      (dirichletHeatSemigroup g) u₀ F T v) :
+    Set.EqOn u v (Set.Icc (0 : ℝ) T) := by
+  intro t ht
+  rw [hu.2.2.2 t ht, hv.2.2.2 t ht]
+
 end Dirichlet
 end WithBoundary
 end Laplacian
