@@ -7,6 +7,7 @@ import DifferentialGeometry.Analysis.Calculus.BallRetraction
 import DifferentialGeometry.Analysis.Calculus.BumpClamp
 import DifferentialGeometry.Analysis.Calculus.CLMNeumann
 import DifferentialGeometry.Analysis.Calculus.CompactCutoff
+import DifferentialGeometry.Analysis.Calculus.CompactSupportSection
 import DifferentialGeometry.Analysis.Calculus.ContDiffExtendInterval
 import DifferentialGeometry.Analysis.Calculus.ContDiffOnTsum
 import DifferentialGeometry.Analysis.Calculus.CurveDerivative
@@ -528,6 +529,7 @@ import DifferentialGeometry.Analysis.ODE.Flow.SolutionOperator
 import DifferentialGeometry.Analysis.ODE.Flow.Variational
 import DifferentialGeometry.Analysis.ODE.ForwardVariationalFromZero
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
+import DifferentialGeometry.Analysis.ODE.HamiltonIvey
 import DifferentialGeometry.Analysis.ODE.IndexForm
 import DifferentialGeometry.Analysis.ODE.IndexFormNegative
 import DifferentialGeometry.Analysis.ODE.IndexFormNegativeSmooth
@@ -1847,6 +1849,7 @@ import DifferentialGeometry.Bundle.PartialMfderiv
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
+import DifferentialGeometry.Bundle.PartialMfderiv.TimeDerivative
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciDifferenceMeanValueClmSectionJointSmoothness
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.SectionOperations
