@@ -1983,6 +1983,7 @@ import DifferentialGeometry.Geometry.Comparison.HalfSquaredDistance.Variation
 import DifferentialGeometry.Geometry.Comparison.Hessian.AlongGeodesic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.CompactBall
+import DifferentialGeometry.Geometry.Comparison.RadialLength
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 import DifferentialGeometry.Geometry.Comparison.InjectivityRadius.Basic
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.LocalGeodesicSeed

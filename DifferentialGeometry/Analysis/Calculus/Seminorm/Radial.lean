@@ -1,3 +1,6 @@
+import DifferentialGeometry.Analysis.Calculus.AbsolutelyContinuous
+import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Analysis.Calculus.MeanValue
@@ -195,6 +198,50 @@ private lemma ftc_fencing_equality_case
   exact (MeasureTheory.integral_eq_iff_of_ae_le hρ'Ioo hφint hae_le).mp heqint
 
 end RadialLengthAnalyticEngine
+
+variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
+
+open MeasureTheory in
+theorem _root_.ContDiffOn.norm_sub_le_integral_of_inner_deriv_le
+    {η : ℝ → V} {φ : ℝ → ℝ} {a b : ℝ} (hη : ContDiffOn ℝ 1 η (Icc a b))
+    (hab : a ≤ b) (hφ : IntervalIntegrable φ volume a b)
+    (hφnn : ∀ t ∈ Ioo a b, 0 ≤ φ t)
+    (hrad : ∀ t ∈ Ioo a b,
+      Inner.inner ℝ (η t) (deriv η t) ≤ ‖η t‖ * φ t) :
+    ‖η b‖ - ‖η a‖ ≤ ∫ t in a..b, φ t := by
+  have hηac : AbsolutelyContinuousOnInterval η a b := by
+    apply ContDiffOn.absolutelyContinuousOnInterval
+    simpa only [uIcc_of_le hab] using hη
+  have hρac : AbsolutelyContinuousOnInterval (fun t => ‖η t‖) a b :=
+    lipschitzWith_one_norm.lipschitzOnWith.comp_absolutelyContinuousOnInterval
+      hηac (fun _ _ => mem_univ _)
+  have hderiv : ∀ t ∈ Ioo a b, deriv (fun s => ‖η s‖) t ≤ φ t := by
+    intro t ht
+    by_cases hη0 : η t = 0
+    · have hmin : IsLocalMin (fun s => ‖η s‖) t := by
+        filter_upwards with s
+        simpa only [hη0, norm_zero] using norm_nonneg (η s)
+      rw [hmin.deriv_eq_zero]
+      exact hφnn t ht
+    · have hηdiff : DifferentiableAt ℝ η t :=
+        ((hη.differentiableOn one_ne_zero) t (Ioo_subset_Icc_self ht)).differentiableAt
+          (Icc_mem_nhds ht.1 ht.2)
+      have hd := hηdiff.hasDerivAt.norm_sq.sqrt (pow_ne_zero 2 (norm_ne_zero_iff.mpr hη0))
+      have hnorm : HasDerivAt (fun s => ‖η s‖)
+          (Inner.inner ℝ (η t) (deriv η t) / ‖η t‖) t := by
+        convert hd using 1
+        · funext s
+          exact (Real.sqrt_sq (norm_nonneg (η s))).symm
+        · rw [Real.sqrt_sq (norm_nonneg _)]
+          rw [mul_div_mul_left _ _ (by norm_num : (2 : ℝ) ≠ 0)]
+      rw [hnorm.deriv]
+      exact (div_le_iff₀ (norm_pos_iff.mpr hη0)).mpr (by simpa only [mul_comm] using hrad t ht)
+  rw [← hρac.integral_deriv_eq_sub]
+  apply intervalIntegral.integral_mono_ae_restrict hab hρac.intervalIntegrable_deriv hφ
+  change ∀ᵐ t ∂volume.restrict (Icc a b), deriv (fun s => ‖η s‖) t ≤ φ t
+  rw [ae_restrict_iff' measurableSet_Icc]
+  filter_upwards [Ioo_ae_eq_Icc (μ := volume)] with t ht htab
+  exact hderiv t (ht.mpr htab)
 
 end Calculus
 end Analysis
