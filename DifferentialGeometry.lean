@@ -2527,6 +2527,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Criterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.EnergyVanishing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Noncompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CutoffEnergy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CutoffBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.ConnectionDifference
@@ -2544,6 +2545,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Curvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureTimeDerivative
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.TensorDecomposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.SmoothSolutions
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CutoffBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.FrameRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.HamiltonEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.SolutionEvolution
