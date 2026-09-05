@@ -433,6 +433,7 @@ import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientGlobalSection
 import DifferentialGeometry.Geometry.Operator.WithBoundary.Laplacian
 import DifferentialGeometry.Analysis.Integration.EntropyJensen
 import DifferentialGeometry.Analysis.Integration.EntropyMix
+import DifferentialGeometry.Analysis.Integration.WeightedIntegrationByParts
 import DifferentialGeometry.Analysis.Integration.Holder.Weighted
 import DifferentialGeometry.Analysis.Integration.L2.Basic
 import DifferentialGeometry.Analysis.Integration.L2.CompactSupport
