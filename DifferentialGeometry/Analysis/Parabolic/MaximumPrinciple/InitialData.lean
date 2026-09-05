@@ -854,6 +854,51 @@ theorem HasLocalScalarDirichletSolution.exists_solution
       (I := I) G T X s t c Kset f₀ f :=
   h.2.2.2 c hc f₀ hf₀ hf₀_nonneg hf₀_compact hf₀_support hf₀_pos
 
+theorem scalar_dirichlet_solution_nonnegative_and_positive_of_initial_point
+    [T2Space M] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M → Type _)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (T : Real)
+    (X : Real → (x : M) → TangentSpace I x)
+    (hgrad_cont : ∀ (rho : M → Real),
+      ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        (G.metric p.1).inner p.2
+          (gradientFun (I := I) (G.metric p.1) rho p.2)
+          (gradientFun (I := I) (G.metric p.1) rho p.2))
+        (spacetimeSlab (M := M) T))
+    (hheat_cont : ∀ (rho : M → Real),
+      ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2)
+        (spacetimeSlab (M := M) T))
+    (a : Real) (ha : 0 ≤ a)
+    (u : Real → M → Real)
+    (hu_cont : ContinuousOn (fun p : Real × M => u p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hu_initial : ∀ x : M, 0 ≤ u 0 x)
+    (hu_boundary : ∀ t ∈ Set.Icc 0 T, ∀ p : BoundaryManifold I M,
+      u t (p : M) = 0)
+    (hu_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ I.interior M,
+      DifferentiableWithinAt Real (fun s => u s x) (Set.Icc 0 T) t)
+    (hu_mdiff : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ I.interior M,
+      MDifferentiableAt I 𝓘(Real, Real) (u t) x)
+    (hu_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ I.interior M,
+      MDiffAt (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (u t) y) x)
+    (hu_equation : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x ∈ I.interior M,
+      parabolicOperatorWithDrift (I := I) G T X u t x = -a * u t x)
+    (hinterior_conn : IsPreconnected (I.interior M))
+    {c : M} (hcint : c ∈ I.interior M) (hc : 0 < u 0 c) :
+    (∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ u t x) ∧
+      (∀ t ∈ Set.Ioc 0 T, ∀ y ∈ I.interior M, 0 < u t y) := by
+  refine ⟨?_, ?_⟩
+  · exact scalar_dirichlet_solution_nonnegative (I := I) G T X a ha u
+      hu_cont hu_initial hu_boundary hu_time hu_mdiff hu_grad hu_equation
+  · exact scalar_dirichlet_solution_positive_of_initial_point (I := I) G T X
+      hgrad_cont hheat_cont a ha u hu_cont hu_initial hu_boundary hu_time
+      hu_mdiff hu_grad hu_equation hinterior_conn hcint hc
+
 end Dirichlet
 
 end
