@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KyFanBarrier
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
 import DifferentialGeometry.Analysis.FiniteDimensional.Rank
 import DifferentialGeometry.Topology.ConnectedCompactNeighborhood
@@ -233,6 +234,45 @@ theorem finrank_range_spatially_constant_and_locally_constant_from_left_of_sprea
   exact ContinuousLinearMap.IsPositive.eventually_finrank_range_ge_of_tendsto
     (hcontinuous x t ⟨ht.1.le, ht.2⟩)
 
+private theorem exists_uniform_lower_bound_near_terminal_time
+    {M : Type*} [TopologicalSpace M] [T2Space M]
+    {K : Set M} (hK : IsCompact K) {s t : Real} (hst : s ≤ t)
+    (phi : Real → M → Real)
+    (hphi : ContinuousOn (fun p : Real × M => phi p.1 p.2) (Icc s t ×ˢ K))
+    (hpos : ∀ x ∈ K, 0 < phi t x) :
+    ∃ delta eta : Real, 0 < delta ∧ 0 < eta ∧
+      ∀ q ∈ Icc s t, t - delta < q → ∀ x ∈ K, eta ≤ phi q x := by
+  have hslice : ContinuousOn (phi t) K := hphi.comp
+    (continuous_const.prodMk continuous_id).continuousOn
+    (fun x hx => ⟨⟨hst, le_rfl⟩, hx⟩)
+  obtain ⟨m, hm, hmin⟩ := hK.exists_forall_le' hslice hpos
+  let slab : Set (Real × M) := Icc s t ×ˢ K
+  let bad : Set (Real × M) :=
+    slab ∩ (fun p : Real × M => phi p.1 p.2) ⁻¹' Iic (m / 2)
+  have hslab : IsCompact slab := isCompact_Icc.prod hK
+  have hbadClosed : IsClosed bad :=
+    hphi.preimage_isClosed_of_isClosed hslab.isClosed isClosed_Iic
+  have hbad : IsCompact bad := hslab.of_isClosed_subset hbadClosed (fun _ hp => hp.1)
+  by_cases hbadNe : bad.Nonempty
+  · obtain ⟨p, hp, hpmax⟩ := hbad.exists_isMaxOn hbadNe continuous_fst.continuousOn
+    have hpt : p.1 < t := by
+      apply lt_of_le_of_ne hp.1.1.2
+      intro heq
+      have hvalue : phi p.1 p.2 ≤ m / 2 := hp.2
+      have hlower := hmin p.2 hp.1.2
+      rw [heq] at hvalue
+      linarith only [hm, hvalue, hlower]
+    refine ⟨t - p.1, m / 2, sub_pos.mpr hpt, half_pos hm, ?_⟩
+    intro q hq hlate x hx
+    by_contra hfail
+    have hqx : (q, x) ∈ bad := ⟨⟨hq, hx⟩, (lt_of_not_ge hfail).le⟩
+    have hmax : q ≤ p.1 := hpmax hqx
+    linarith only [hlate, hmax]
+  · refine ⟨1, m / 2, by norm_num, half_pos hm, ?_⟩
+    intro q hq hlate x hx
+    by_contra hfail
+    exact hbadNe ⟨(q, x), ⟨⟨hq, hx⟩, (lt_of_not_ge hfail).le⟩⟩
+
 variable {EModel : Type*} [NormedAddCommGroup EModel] [NormedSpace ℝ EModel]
   [FiniteDimensional ℝ EModel]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ EModel H}
@@ -297,6 +337,130 @@ variable {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
   [FiberBundle F V] [VectorBundle ℝ F V]
   [ContMDiffVectorBundle ∞ F V I]
   [IsContMDiffRiemannianBundle I ∞ F V]
+
+theorem lowerKyFanSum_pos_on_annulus
+    [VectorBundle Real EModel (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (cov : Real → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T s t : Real} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
+    {k : Nat} (hkpos : 0 < k) (hk : k ≤ Module.finrank Real F)
+    (rho : M → Real) (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
+    {r R : Real} (hrR : r < R)
+    (hK : IsCompact {y : M | r ≤ rho y ∧ rho y ≤ R})
+    (hKInterior : interior {y : M | r ≤ rho y ∧ rho y ≤ R} ⊆ I.interior M)
+    (A : Real → Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
+    (hAsymm : ∀ q y,
+      ((A q y : V y →L[Real] V y) : V y →ₗ[Real] V y).IsSymmetric)
+    (hApos : ∀ q ∈ Icc s t, ∀ y ∈ {y : M | r ≤ rho y ∧ rho y ≤ R},
+      (A q y).IsPositive)
+    (hphiCont : ContinuousOn (fun p : Real × M ↦
+      (hAsymm p.1 p.2).lowerKyFanSum k)
+      (Icc s t ×ˢ {y : M | r ≤ rho y ∧ rho y ≤ R}))
+    {B : Real} (hB : ∀ q ∈ Icc s t,
+      ∀ y ∈ {y : M | r ≤ rho y ∧ rho y ≤ R}, ‖A q y‖ ≤ B)
+    (X : Real → (y : M) → TangentSpace I y)
+    (reaction : Real → (y : M) →
+      (V y →L[Real] V y) → V y →L[Real] V y)
+    (hreactionNull : ∀ q y, satisfiesNullEigenvectorCondition (reaction q y))
+    {Klip : NNReal}
+    (hreactionLip : ∀ q ∈ Ioc s t,
+      ∀ y ∈ interior {y : M | r ≤ rho y ∧ rho y ≤ R},
+      LipschitzOnWith Klip (reaction q y)
+        {D : V y →L[Real] V y | D.IsPositive ∧ ‖D‖ ≤ 2 * B})
+    (hgrad : ContinuousOn (fun p : Real × M =>
+      (G.metric p.1).inner p.2
+        (gradientFun (I := I) (G.metric p.1) rho p.2)
+        (gradientFun (I := I) (G.metric p.1) rho p.2))
+      (Icc s t ×ˢ {x : M | r ≤ rho x ∧ rho x ≤ R}))
+    (hgrad_ne : ∀ q ∈ Icc s t, ∀ x ∈ {x : M | r ≤ rho x ∧ rho x ≤ R},
+      gradientFun (I := I) (G.metric q) rho x ≠ 0)
+    (hheat : ContinuousOn (fun p : Real × M =>
+      heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2)
+      (Icc s t ×ˢ {x : M | r ≤ rho x ∧ rho x ≤ R}))
+    (hinner : ∀ y, rho y = r → 0 < (hAsymm t y).lowerKyFanSum k)
+    (hGconn : ∀ q ∈ Ioc s t,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioc s t, ∀ y ∈ interior {y : M | r ≤ rho y ∧ rho y ≤ R},
+      DifferentiableAt Real (fun a ↦ A a y) q)
+    (hevolution : ∀ q ∈ Ioc s t,
+      ∀ y ∈ interior {y : M | r ≤ rho y ∧ rho y ≤ R},
+      deriv (fun a ↦ A a y) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun z ↦ A q z) y +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
+          reaction q y (A q y)) :
+    ∀ y ∈ {y : M | r ≤ rho y ∧ rho y < R},
+      0 < (hAsymm t y).lowerKyFanSum k := by
+  intro z hz
+  have hzK : z ∈ {y : M | r ≤ rho y ∧ rho y ≤ R} := ⟨hz.1, hz.2.le⟩
+  let _ : NeZero (Module.finrank Real EModel) := ⟨by
+    intro hzero
+    let _ : Subsingleton EModel := (Module.finrank_zero_iff (R := Real) (M := EModel)).mp hzero
+    let _ : Subsingleton (TangentSpace I z) := by unfold TangentSpace; infer_instance
+    exact hgrad_ne t ⟨hst.le, le_rfl⟩ z hzK (Subsingleton.elim _ _)⟩
+  let K : Set M := {y : M | r ≤ rho y ∧ rho y ≤ R}
+  let L : Set M := {y : M | rho y = r}
+  have hLK : L ⊆ K := by
+    intro y hy
+    change rho y = r at hy
+    exact ⟨hy.ge, hy.le.trans hrR.le⟩
+  have hL : IsCompact L := hK.of_isClosed_subset
+    (isClosed_eq hrho.continuous continuous_const) hLK
+  have hphiL : ContinuousOn (fun p : Real × M =>
+      (hAsymm p.1 p.2).lowerKyFanSum k) (Icc s t ×ˢ L) :=
+    hphiCont.mono (fun _ hp => ⟨hp.1, hLK hp.2⟩)
+  obtain ⟨delta, eta, hdelta, heta, hsource⟩ :=
+    exists_uniform_lower_bound_near_terminal_time hL hst.le
+      (fun q y => (hAsymm q y).lowerKyFanSum k) hphiL hinner
+  have hkReal : 0 < (k : Real) := by exact_mod_cast hkpos
+  let c : Real := (Klip : Real) + 1
+  have hc : (Klip : Real) < c := by dsimp only [c]; linarith
+  obtain ⟨f, hfSmooth, hfInitial, hfBound, hfOuter, hfEarly, hfFinal, hfP⟩ :=
+    exists_annular_parabolic_subsolution G hs hst ht X rho hrho hrR hK
+      hgrad hgrad_ne hheat (c := c) hdelta (div_pos heta hkReal)
+  have hphiNonneg (q : Real) (hq : q ∈ Icc s t) (y : M) (hy : y ∈ K) :
+      0 ≤ (hAsymm q y).lowerKyFanSum k :=
+    LinearMap.IsSymmetric.lowerKyFanSum_nonneg
+      ((ContinuousLinearMap.isPositive_toLinearMap_iff (A q y)).mpr (hApos q hq y hy)) k
+  have hfSlice (q : Real) : ContMDiff I 𝓘(Real, Real) ∞ (f q) :=
+    hfSmooth.comp (contMDiff_const.prodMk contMDiff_id)
+  have hfBoundary (q : Real) (hq : q ∈ Icc s t) (y : M) (hy : y ∈ frontier K) :
+      (k : Real) * f q y ≤ (hAsymm q y).lowerKyFanSum k := by
+    have hyK : y ∈ K := by
+      have hycl : y ∈ closure K := frontier_subset_closure hy
+      rwa [(show IsClosed K from hK.isClosed).closure_eq] at hycl
+    have hnonpos (hf : f q y ≤ 0) :
+        (k : Real) * f q y ≤ (hAsymm q y).lowerKyFanSum k :=
+      (mul_nonpos_of_nonneg_of_nonpos hkReal.le hf).trans (hphiNonneg q hq y hyK)
+    rcases DifferentialGeometry.Geometry.Boundary.frontier_levelSet_annulus_subset
+        hrho.continuous hy with hyr | hyR
+    · by_cases hqEarly : q ≤ t - delta
+      · exact hnonpos (hfEarly q hq hqEarly y hyK)
+      · have hsourceBound := hsource q hq (lt_of_not_ge hqEarly) y hyr
+        apply le_trans ?_ hsourceBound
+        have hmul := mul_le_mul_of_nonneg_left (hfBound q hq y hyK).le hkReal.le
+        simpa only [mul_div_cancel₀ eta hkReal.ne'] using hmul
+    · exact hnonpos (hfOuter q hq y hyK hyR)
+  have hT : 0 < T := (hs.trans_lt hst).trans_le ht
+  have hcomparison := mul_le_lowerKyFanSum_on_compact_set_of_subsolution
+    G cov hcov hT hs ht hkpos hk hK hKInterior A hAsymm hApos hphiCont hB
+      X reaction hreactionNull hreactionLip f hfSmooth.continuous.continuousOn
+      (fun y hy => (mul_nonpos_of_nonneg_of_nonpos hkReal.le (hfInitial y hy)).trans
+        (hphiNonneg s ⟨le_rfl, hst.le⟩ y hy)) hfBoundary
+      (fun q _ y _ =>
+        ((contMDiff_iff_contDiff.mp
+          (hfSmooth.comp (contMDiff_id.prodMk contMDiff_const))).differentiable
+          (by norm_num)) q)
+      (fun q _ y _ => (hfSlice q).mdifferentiable (by simp) y)
+      (fun q _ y _ => gradientFun_mdiffAt (I := I) (G.metric q) (hfSlice q) y)
+      hc (fun q hq y hy _ => hfP q ⟨hq.1.le, hq.2⟩ y (interior_subset hy))
+      hGconn hAt hevolution
+  exact (mul_pos hkReal (hfFinal z hzK hz.2)).trans_le
+    (hcomparison t ⟨hst.le, le_rfl⟩ z hzK)
 
 theorem lowerKyFanSum_pos_at_of_local_dirichlet_solution_exists
     [NeZero (Module.finrank ℝ EModel)]
