@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1Compl
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Embedding.Rellich
 import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Intrinsic.EquivalenceReverse
+import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Chart.Banach
 import Mathlib.Analysis.Normed.Operator.Compact.Basic
 import Mathlib.Topology.Sequences
 
@@ -222,6 +223,98 @@ theorem exists_smoothScalarDirichlet_wkpNormChart_bound
       rw [← ENNReal.ofReal_mul hC₀_nonneg]
       simp [ENNReal.ofReal_mul, hC₀_nonneg]
       ring
+
+abbrev DirichletChartWkp
+    : Type _ :=
+  DifferentialGeometry.Analysis.Sobolev.WithBoundary.WkpChart
+    (n := n) (M := M) 1 2 (by norm_num)
+
+abbrev H1ComplDirichletChartWkp
+    : Type _ :=
+  UniformSpace.Completion (DirichletChartWkp (n := n) (M := M))
+
+noncomputable def smoothToDirichletChartWkpLin
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    SmoothScalarDirichlet g →ₗ[ℝ] DirichletChartWkp (n := n) (M := M) :=
+  { toFun := fun s =>
+      ⟨s.toFun, smoothScalarDirichlet_memWkpChart (n := n) (M := M) s⟩
+    map_add' := by
+      intro s t
+      apply Subtype.ext
+      rfl
+    map_smul' := by
+      intro c s
+      apply Subtype.ext
+      rfl }
+
+theorem smoothToDirichletChartWkpLin_norm_le
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ s : SmoothScalarDirichlet g,
+      ‖smoothToDirichletChartWkpLin (n := n) (M := M) g s‖ ≤ C * ‖s‖ := by
+  obtain ⟨C, hC_nonneg, hC_bound⟩ :=
+    exists_smoothScalarDirichlet_wkpNormChart_bound (n := n) (M := M) g
+  refine ⟨C, hC_nonneg, ?_⟩
+  intro s
+  have h_bound := hC_bound s
+  change (DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
+      (n := n) (M := M) 1 2 s.toFun).toReal ≤ C * ‖s‖
+  have h_rhs_top : ENNReal.ofReal C * ENNReal.ofReal ‖s‖ ≠ (⊤ : ℝ≥0∞) :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top
+  have h_toReal := ENNReal.toReal_mono h_rhs_top h_bound
+  rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (norm_nonneg s)] at h_toReal
+  simpa [ENNReal.toReal_ofReal hC_nonneg] using h_toReal
+
+noncomputable def smoothToDirichletChartWkp
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    SmoothScalarDirichlet g →L[ℝ] DirichletChartWkp (n := n) (M := M) := by
+  classical
+  let h := smoothToDirichletChartWkpLin_norm_le (n := n) (M := M) g
+  exact (smoothToDirichletChartWkpLin (n := n) (M := M) g).mkContinuous
+    (Classical.choose h) (Classical.choose_spec h).2
+
+noncomputable def smoothToH1ComplDirichletChartWkp
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    SmoothScalarDirichlet g →L[ℝ]
+      H1ComplDirichletChartWkp (n := n) (M := M) :=
+  (UniformSpace.Completion.toComplL :
+      DirichletChartWkp (n := n) (M := M) →L[ℝ]
+        H1ComplDirichletChartWkp (n := n) (M := M)).comp
+    (smoothToDirichletChartWkp (n := n) (M := M) g)
+
+private lemma isUniformInducing_smoothToH1ComplDirichlet
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    IsUniformInducing (smoothToH1ComplDirichlet g) := by
+  change IsUniformInducing (UniformSpace.Completion.toComplL :
+    SmoothScalarDirichlet g →L[ℝ] H1ComplDirichlet g)
+  rw [show (UniformSpace.Completion.toComplL :
+      SmoothScalarDirichlet g → H1ComplDirichlet g) =
+      ((↑) : SmoothScalarDirichlet g →
+        UniformSpace.Completion (SmoothScalarDirichlet g)) from
+      UniformSpace.Completion.coe_toComplL]
+  exact UniformSpace.Completion.isUniformInducing_coe (SmoothScalarDirichlet g)
+
+noncomputable def H1ComplDirichletToChartWkp
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    H1ComplDirichlet g →L[ℝ]
+      H1ComplDirichletChartWkp (n := n) (M := M) :=
+  ContinuousLinearMap.extend
+    (smoothToH1ComplDirichletChartWkp (n := n) (M := M) g)
+    (smoothToH1ComplDirichlet g)
+
+@[simp] theorem H1ComplDirichletToChartWkp_smoothToH1ComplDirichlet
+    (g : SmoothRiemannianMetric (I_half n) M)
+    (s : SmoothScalarDirichlet g) :
+    H1ComplDirichletToChartWkp (n := n) (M := M) g
+        (smoothToH1ComplDirichlet g s) =
+      (smoothToDirichletChartWkp (n := n) (M := M) g s :
+        H1ComplDirichletChartWkp (n := n) (M := M)) := by
+  unfold H1ComplDirichletToChartWkp
+  rw [ContinuousLinearMap.extend_eq
+    (smoothToH1ComplDirichletChartWkp (n := n) (M := M) g)
+    (e := smoothToH1ComplDirichlet g)
+    (denseRange_smoothToH1ComplDirichlet g)
+    (isUniformInducing_smoothToH1ComplDirichlet (n := n) (M := M) g) s]
+  rfl
 
 private lemma exists_smooth_close_to_H1ComplDirichlet
     (g : SmoothRiemannianMetric (I_half n) M)
