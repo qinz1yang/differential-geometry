@@ -3069,6 +3069,8 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.SlotPermutation
 import DifferentialGeometry.Geometry.Metric.Polarization
+import DifferentialGeometry.Geometry.Metric.ChartLipschitz
+import DifferentialGeometry.Geometry.Curvature.WarpedProduct
 import DifferentialGeometry.Geometry.Metric.Pullback.Basic
 import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.DerivativeDecomposition
 import DifferentialGeometry.Geometry.Metric.Pullback.Evaluation.Derivative
