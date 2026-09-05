@@ -99,6 +99,29 @@ theorem metric_eq_on_of_energy_deriv_bound
   exact metric_eq_of_energy_zero_noncompact (I := I) g₁ g₂
     (hdcont t ht) (hden t ht) (hzero t ht)
 
+structure NoncompactForwardUniquenessCriterion
+    (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) (a b K : ℝ) (energy' : ℝ → ℝ) : Prop where
+  interval : a < b
+  energyCont : ContinuousOn
+    (forwardUniqueEnergy (I := I) (M := M) g₁ g₂) (Set.Icc a b)
+  energyDerivative : ∀ t ∈ Set.Ioo a b,
+    HasDerivAt (forwardUniqueEnergy (I := I) (M := M) g₁ g₂) (energy' t) t
+  energyBound : ∀ t ∈ Set.Ioo a b,
+    energy' t ≤ K * forwardUniqueEnergy (I := I) (M := M) g₁ g₂ t
+  initial : g₁ a = g₂ a
+  densityCont : ∀ t ∈ Set.Icc a b,
+    Continuous (fun x => forwardUniqueDensity (I := I) g₁ g₂ t x)
+  densityIntegrable : ∀ t ∈ Set.Icc a b,
+    Integrable (fun x => forwardUniqueDensity (I := I) g₁ g₂ t x)
+      (riemannianMeasureFamily (I := I) (M := M) g₁ t)
+
+theorem forward_unique_of_noncompact_criterion
+    (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) {a b K : ℝ} {energy' : ℝ → ℝ}
+    (h : NoncompactForwardUniquenessCriterion (I := I) g₁ g₂ a b K energy') :
+    ∀ t ∈ Set.Icc a b, g₁ t = g₂ t := by
+  exact metric_eq_on_of_energy_deriv_bound (I := I) g₁ g₂ h.interval K h.energyCont
+    energy' h.energyDerivative h.energyBound h.initial h.densityCont h.densityIntegrable
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end

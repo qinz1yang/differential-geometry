@@ -50,9 +50,8 @@ structure KappaSolution
   kappa_pos : 0 < kappa
   noncollapsed : KappaNoncollapsedOnAllScales S kappa
   bounded_curvature :
-    ∃ C : Real, 0 ≤ C ∧
-      ∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
-        ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C
+    ∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
+      ∃ C : Real, 0 ≤ C ∧ ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C
   nonflat :
     ¬ (∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
       ∀ x : M, S.base.rm04 t x = 0)
@@ -78,18 +77,25 @@ theorem KappaSolution.has_curvature_bound
     (hS : KappaSolution (I := I) (kappa := kappa) S)
     {t : Real} (ht : t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier) :
     ∃ C : Real, 0 ≤ C ∧ ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C := by
-  rcases hS.bounded_curvature with ⟨C, hC, hbound⟩
-  exact ⟨C, hC, fun x => hbound t ht x⟩
+  exact hS.bounded_curvature t ht
 
 theorem KappaSolution.has_global_curvature_bound
     {T kappa : Real}
     {S : SolutionOn (I := I) (M := M)
       (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T)}
     (hS : KappaSolution (I := I) (kappa := kappa) S) :
-    ∃ C : Real, 0 ≤ C ∧
-      ∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
-        ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C :=
+    ∀ t ∈ (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T).carrier,
+      ∃ C : Real, 0 ≤ C ∧ ∀ x : M, FlowMetricBall.rmNormSq S t x ≤ C :=
   hS.bounded_curvature
+
+theorem KappaSolution.noncollapsed_below_scale
+    {T kappa : Real}
+    {S : SolutionOn (I := I) (M := M)
+      (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.ancient T)}
+    (hS : KappaSolution (I := I) (kappa := kappa) S)
+    {rho : Real} (hrho : 0 < rho) :
+    KappaNoncollapsedBelowScale S kappa rho := by
+  exact (kappa_noncollapsed_on_all_scales_iff.mp hS.noncollapsed).2 rho hrho
 
 end
 
