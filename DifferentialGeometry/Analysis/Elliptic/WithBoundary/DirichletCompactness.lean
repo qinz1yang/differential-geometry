@@ -160,6 +160,69 @@ theorem eLpNorm_sqrt_g_inner_grad_smoothScalarDirichlet_le_norm
   rw [← h_lp_norm_def]
   exact h_Fp_norm_le
 
+theorem smoothScalarDirichlet_memWkpChart
+    {g : SmoothRiemannianMetric (I_half n) M} (s : SmoothScalarDirichlet g) :
+    DifferentialGeometry.Analysis.Sobolev.WithBoundary.MemWkpChart
+      (n := n) (M := M) 1 (2 : ℝ≥0∞) s.toFun := by
+  apply DifferentialGeometry.Analysis.Sobolev.WithBoundary.MemWkpChart_of_contMDiff_AllChartsInteriorSupport
+    (n := n) (M := M) (p := (2 : ℝ≥0∞))
+  · norm_num
+  · exact s.smooth
+  · exact DifferentialGeometry.Analysis.Sobolev.WithBoundary.allChartsInteriorSupport_of_tsupport_subset_interior
+      (n := n) (M := M) s.interior_support
+
+theorem exists_smoothScalarDirichlet_wkpNormChart_bound
+    (g : SmoothRiemannianMetric (I_half n) M) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      ∀ s : SmoothScalarDirichlet g,
+        DifferentialGeometry.Analysis.Sobolev.WithBoundary.wkpNormChart
+            (n := n) (M := M) 1 2 s.toFun ≤
+          ENNReal.ofReal C * ENNReal.ofReal ‖s‖ := by
+  obtain ⟨C₀, hC₀_nonneg, hC₀_bound⟩ :=
+    DifferentialGeometry.Analysis.Sobolev.WithBoundary.EquivalenceReverse.wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform
+      (n := n) (M := M) g
+  refine ⟨2 * C₀, mul_nonneg (by norm_num) hC₀_nonneg, ?_⟩
+  intro s
+  have hC := hC₀_bound s.smooth
+    (DifferentialGeometry.Analysis.Sobolev.WithBoundary.allChartsInteriorSupport_of_tsupport_subset_interior
+      (n := n) (M := M) s.interior_support)
+  have hsum :
+      eLpNorm s.toFun 2
+          (riemannianVolumeMeasure (I := I_half n) (M := M) g) +
+        eLpNorm (fun x : M => Real.sqrt
+          (g.inner x
+            (DifferentialGeometry.Geometry.Operator.gradFun
+              (I := I_half n) g s.toFun x)
+            (DifferentialGeometry.Geometry.Operator.gradFun
+              (I := I_half n) g s.toFun x))) 2
+          (riemannianVolumeMeasure (I := I_half n) (M := M) g) ≤
+      ENNReal.ofReal ‖s‖ + ENNReal.ofReal ‖s‖ :=
+    add_le_add (eLpNorm_smoothScalarDirichlet_le_norm s)
+      (eLpNorm_sqrt_g_inner_grad_smoothScalarDirichlet_le_norm s)
+  have hnorm : ENNReal.ofReal ‖s‖ + ENNReal.ofReal ‖s‖ =
+      ENNReal.ofReal (2 * ‖s‖) := by
+    rw [← ENNReal.ofReal_add (norm_nonneg s) (norm_nonneg s)]
+    congr 1
+    ring
+  rw [hnorm] at hsum
+  calc
+    _ ≤ ENNReal.ofReal C₀ *
+        (eLpNorm s.toFun 2
+            (riemannianVolumeMeasure (I := I_half n) (M := M) g) +
+          eLpNorm (fun x : M => Real.sqrt
+            (g.inner x
+              (DifferentialGeometry.Geometry.Operator.gradFun
+                (I := I_half n) g s.toFun x)
+              (DifferentialGeometry.Geometry.Operator.gradFun
+                (I := I_half n) g s.toFun x))) 2
+            (riemannianVolumeMeasure (I := I_half n) (M := M) g)) := hC
+    _ ≤ ENNReal.ofReal C₀ * ENNReal.ofReal (2 * ‖s‖) :=
+      mul_le_mul_of_nonneg_left hsum (by positivity)
+    _ = ENNReal.ofReal (2 * C₀) * ENNReal.ofReal ‖s‖ := by
+      rw [← ENNReal.ofReal_mul hC₀_nonneg]
+      simp [ENNReal.ofReal_mul, hC₀_nonneg]
+      ring
+
 private lemma exists_smooth_close_to_H1ComplDirichlet
     (g : SmoothRiemannianMetric (I_half n) M)
     (v : H1ComplDirichlet g) {δ : ℝ} (hδ : 0 < δ) :
