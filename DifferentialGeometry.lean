@@ -375,6 +375,7 @@ import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.Weak
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.WeakSolutionGlobal
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.WeakSolution.WeakSolutionHeadline
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletH1Compl
+import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletCompactness
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorH1Compl
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorSmoothBridge
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.InteriorSmoothScalarPreH1

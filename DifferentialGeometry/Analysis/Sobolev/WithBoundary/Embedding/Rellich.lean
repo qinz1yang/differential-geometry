@@ -27,7 +27,7 @@ local notation "I_hs" => modelWithCornersEuclideanHalfSpace n
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-private lemma allChartsInteriorSupport_of_tsupport_subset_interior
+theorem allChartsInteriorSupport_of_tsupport_subset_interior
     {u : M → ℝ}
     (hu : tsupport u ⊆ (modelWithCornersEuclideanHalfSpace n).interior M) :
     AllChartsInteriorSupport (n := n) (M := M) u := by
