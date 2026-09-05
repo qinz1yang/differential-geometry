@@ -160,6 +160,7 @@ private theorem inner_abs_le (g : SmoothRiemannianMetric I M) (s : ℕ)
   rw [← SmoothCcTensor.inner_def (I := I) (M := M) A B]
   exact abs_real_inner_le_norm A B
 
+omit [CompactSpace M] in
 theorem iterL_pair_le (g : SmoothRiemannianMetric I M)
     (s a r : ℕ) (hr : r ≤ a) (A B : SmoothCcTensor g 0 s) :
     |tensorL2Inner (I := I) (M := M) g 0 s

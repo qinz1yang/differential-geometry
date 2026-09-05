@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
+import DifferentialGeometry.Geometry.Boundary.SmoothAnnulus
 import DifferentialGeometry.Analysis.Elliptic.MetricBounds
 import Mathlib.Topology.Connected.Clopen
 
@@ -22,35 +23,6 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-
-private abbrev StrongEuclidean := EuclideanSpace Real (Fin (Module.finrank Real E))
-
-private def strongChartRadiusSq (a c x : M) : Real :=
-  ‖(toEuclidean (E := E)) (extChartAt I a x - extChartAt I a c)‖ ^ 2
-
-private theorem strongChartRadiusSq_contMDiffOn
-    (a c : M) :
-    ContMDiffOn I 𝓘(Real, Real) ∞ (strongChartRadiusSq (I := I) a c)
-      (chartAt H a).source := by
-  unfold strongChartRadiusSq
-  intro x hx
-  have hq : ContDiff Real ∞
-      (fun z : E => ‖(toEuclidean (E := E)) (z - extChartAt I a c)‖ ^ 2) := by
-    exact ((toEuclidean (E := E)).contDiff.comp
-      (contDiff_id.sub contDiff_const)).norm_sq Real
-  rw [show (fun x : M =>
-      ‖(toEuclidean (E := E)) (extChartAt I a x - extChartAt I a c)‖ ^ 2) =
-        (fun z : E => ‖(toEuclidean (E := E)) (z - extChartAt I a c)‖ ^ 2) ∘
-          extChartAt I a by
-    funext y
-    rfl]
-  exact (hq.contMDiff.contMDiffAt.comp x
-    (((contMDiffOn_extChartAt (I := I) (x := a)) x hx).contMDiffAt
-      ((chartAt H a).open_source.mem_nhds hx))).contMDiffWithinAt
-
-private def strongPropagationRadius
-    {a : M} (b : SmoothBumpFunction I a) (c : M) (Q : Real) (x : M) : Real :=
-  b x * strongChartRadiusSq (I := I) a c x + Q * (1 - b x)
 
 private def globalStrongStaticMetricFamily
     (g : SmoothRiemannianMetric I M) :
@@ -113,286 +85,6 @@ private theorem vadd_Icc_eq_Icc (a T : Real) :
   · intro ht
     refine ⟨t - a, ?_, by simp⟩
     constructor <;> linarith [ht.1, ht.2]
-
-private theorem strongPropagationRadius_contMDiff [T2Space M]
-    {a c : M} (b : SmoothBumpFunction I a)
-    (Q : Real) :
-    ContMDiff I 𝓘(Real, Real) ∞ (strongPropagationRadius (I := I) b c Q) := by
-  unfold strongPropagationRadius
-  have hfirst : ContMDiff I 𝓘(Real, Real) ∞
-      (fun x => b x * strongChartRadiusSq (I := I) a c x) := by
-    simpa only [smul_eq_mul] using
-      b.contMDiff_smul (strongChartRadiusSq_contMDiffOn (I := I) a c)
-  exact hfirst.add (contMDiff_const.mul (contMDiff_const.sub b.contMDiff))
-
-omit [IsManifold I ∞ M] in
-private theorem strongPropagationRadius_nonneg
-    {a c : M} (b : SmoothBumpFunction I a) {Q : Real} (hQ : 0 ≤ Q) (x : M) :
-    0 ≤ strongPropagationRadius (I := I) b c Q x := by
-  exact add_nonneg
-    (mul_nonneg b.nonneg (sq_nonneg _))
-    (mul_nonneg hQ (sub_nonneg.mpr b.le_one))
-
-omit [IsManifold I ∞ M] in
-private theorem strongPropagationRadius_pos_of_ne
-    {a c : M} (b : SmoothBumpFunction I a)
-    (hc : c ∈ (chartAt H a).source) {Q : Real} (hQ : 0 < Q)
-    {x : M} (hxc : x ≠ c) :
-    0 < strongPropagationRadius (I := I) b c Q x := by
-  by_cases hb : b x = 0
-  · simp [strongPropagationRadius, hb, hQ]
-  · have hbx : 0 < b x := lt_of_le_of_ne b.nonneg (Ne.symm hb)
-    have hx : x ∈ (chartAt H a).source := by
-      apply b.support_subset_source
-      simpa [Function.mem_support] using hb
-    have hchart : extChartAt I a x ≠ extChartAt I a c := by
-      intro heq
-      apply hxc
-      have := congrArg (extChartAt I a).symm heq
-      rw [(extChartAt I a).left_inv
-          (show x ∈ (extChartAt I a).source by simpa [extChartAt_source] using hx),
-        (extChartAt I a).left_inv
-          (show c ∈ (extChartAt I a).source by simpa [extChartAt_source] using hc)] at this
-      exact this
-    have hq : 0 < strongChartRadiusSq (I := I) a c x := by
-      unfold strongChartRadiusSq
-      have hsub : extChartAt I a x - extChartAt I a c ≠ 0 :=
-        sub_ne_zero.mpr hchart
-      have heucl : (toEuclidean (E := E))
-          (extChartAt I a x - extChartAt I a c) ≠ 0 := by
-        simpa using (toEuclidean (E := E)).injective.ne hsub
-      positivity
-    unfold strongPropagationRadius
-    exact add_pos_of_pos_of_nonneg (mul_pos hbx hq)
-      (mul_nonneg hQ.le (sub_nonneg.mpr b.le_one))
-
-private theorem exists_strongPropagationRadius_sublevel_subset
-    [T2Space M] [CompactSpace M]
-    {a c : M} (b : SmoothBumpFunction I a)
-    (hc : c ∈ (chartAt H a).source) {Q : Real} (hQ : 0 < Q)
-    {V : Set M} (hV : V ∈ nhds c) :
-    ∃ r : Real, 0 < r ∧
-      {x | strongPropagationRadius (I := I) b c Q x < r} ⊆ V := by
-  rcases mem_nhds_iff.mp hV with ⟨U, hUV, hUopen, hcU⟩
-  by_cases hK : (Uᶜ : Set M).Nonempty
-  · have hKcompact : IsCompact (Uᶜ : Set M) := hUopen.isClosed_compl.isCompact
-    obtain ⟨x0, hx0, hx0min⟩ := hKcompact.exists_isMinOn hK
-      (strongPropagationRadius_contMDiff (I := I) (c := c) b Q).continuous.continuousOn
-    have hx0c : x0 ≠ c := by
-      intro heq
-      subst x0
-      exact hx0 hcU
-    have hx0pos : 0 < strongPropagationRadius (I := I) b c Q x0 :=
-      strongPropagationRadius_pos_of_ne (I := I) b hc hQ hx0c
-    refine ⟨strongPropagationRadius (I := I) b c Q x0 / 2, by linarith, ?_⟩
-    intro x hx
-    apply hUV
-    by_contra hxU
-    have hmin := hx0min (show x ∈ Uᶜ by simpa using hxU)
-    change strongPropagationRadius (I := I) b c Q x0 ≤
-      strongPropagationRadius (I := I) b c Q x at hmin
-    change strongPropagationRadius (I := I) b c Q x <
-      strongPropagationRadius (I := I) b c Q x0 / 2 at hx
-    linarith
-  · refine ⟨1, by positivity, ?_⟩
-    intro x _
-    apply hUV
-    by_contra hxU
-    exact hK ⟨x, by simpa using hxU⟩
-
-omit [IsManifold I ∞ M] in
-private theorem strongPropagationRadius_lt_imp
-    {a c x : M} (b : SmoothBumpFunction I a) {Q R : Real}
-    (hRQ : R < Q) (h : strongPropagationRadius (I := I) b c Q x < R) :
-    0 < b x ∧ strongChartRadiusSq (I := I) a c x < Q := by
-  have hb0 := b.nonneg (x := x)
-  unfold strongPropagationRadius at h
-  have hfactor : b x * (strongChartRadiusSq (I := I) a c x - Q) < 0 := by
-    nlinarith
-  have hbne : b x ≠ 0 := by
-    intro hb
-    rw [hb, zero_mul] at hfactor
-    exact (lt_irrefl 0) hfactor
-  have hbpos : 0 < b x := lt_of_le_of_ne hb0 (Ne.symm hbne)
-  rcases (mul_neg_iff.mp hfactor) with hcase | hcase
-  · exact ⟨hbpos, by linarith [hcase.2]⟩
-  · exact (not_lt_of_ge hb0 hcase.1).elim
-
-omit [IsManifold I ∞ M] in
-private theorem strongPropagationRadius_eventuallyEq
-    {a c x : M} (b : SmoothBumpFunction I a)
-    (hx : x ∈ (chartAt H a).source)
-    (hd : dist (extChartAt I a x) (extChartAt I a a) < b.rIn)
-    (Q : Real) :
-    EventuallyEq (nhds x) (strongPropagationRadius (I := I) b c Q)
-      (strongChartRadiusSq (I := I) a c) := by
-  filter_upwards [b.eventuallyEq_one_of_dist_lt hx hd] with y hy
-  simp [strongPropagationRadius, hy]
-
-private theorem fderiv_chartRadiusSq_apply_self (z z0 : E) :
-    fderiv Real
-        (fun w : E => ‖(toEuclidean (E := E)) (w - z0)‖ ^ 2) z (z - z0) =
-      2 * ‖(toEuclidean (E := E)) (z - z0)‖ ^ 2 := by
-  have h := (((toEuclidean (E := E)).hasFDerivAt.comp z
-    ((hasFDerivAt_id z).sub_const z0))).norm_sq
-  change fderiv Real
-      (fun x => ‖((toEuclidean (E := E) : E → StrongEuclidean) ∘
-        fun y => id y - z0) x‖ ^ 2) z (z - z0) = _
-  rw [h.fderiv]
-  simp only [id_eq, Function.comp_apply, map_sub, ContinuousLinearMap.comp_id,
-    ContinuousLinearMap.sub_comp, FunLike.coe_smul,
-    FunLike.coe_sub, ContinuousLinearMap.coe_comp, coe_innerSL_apply,
-    ContinuousLinearEquiv.coe_coe, Pi.smul_apply, Pi.sub_apply, nsmul_eq_mul,
-    Nat.cast_ofNat]
-  rw [real_inner_self_eq_norm_sq, real_inner_self_eq_norm_sq,
-    real_inner_comm ((toEuclidean (E := E)) z0) ((toEuclidean (E := E)) z)]
-  rw [norm_sub_sq_real]
-  rw [real_inner_comm ((toEuclidean (E := E)) z0) ((toEuclidean (E := E)) z)]
-  ring
-
-private theorem strongChartRadiusSq_mfderiv_ne_zero
-    {a c x : M} (hc : c ∈ (chartAt H a).source)
-    (hx : x ∈ (chartAt H a).source) (hxc : x ≠ c) :
-    mfderiv I 𝓘(Real, Real) (strongChartRadiusSq (I := I) a c) x ≠ 0 := by
-  let z : E := extChartAt I a x
-  let z0 : E := extChartAt I a c
-  let q : E → Real := fun w => ‖(toEuclidean (E := E)) (w - z0)‖ ^ 2
-  have hq : MDifferentiableAt 𝓘(Real, E) 𝓘(Real, Real) q z := by
-    have hqcd : ContMDiff 𝓘(Real, E) 𝓘(Real, Real) ∞ q :=
-      (((toEuclidean (E := E)).contDiff.comp
-        (contDiff_id.sub contDiff_const)).norm_sq Real).contMDiff
-    exact hqcd.mdifferentiable (by simp) z
-  have hchart : MDifferentiableAt I 𝓘(Real, E) (extChartAt I a) x :=
-    mdifferentiableAt_extChartAt (I := I) hx
-  have hfun : strongChartRadiusSq (I := I) a c = q ∘ extChartAt I a := by
-    funext y
-    rfl
-  have hcomp :
-      mvfderiv I (strongChartRadiusSq (I := I) a c) x =
-        (mvfderiv 𝓘(Real, E) q z).comp
-          (mfderiv I 𝓘(Real, E) (extChartAt I a) x) := by
-    rw [hfun]
-    exact mvfderiv_comp x hq hchart
-  intro hzero
-  have hmvzero : mvfderiv I (strongChartRadiusSq (I := I) a c) x = 0 := by
-    simp [mvfderiv, hzero]
-  let v : TangentSpace 𝓘(Real, E) z :=
-    (NormedSpace.fromTangentSpace (𝕜 := Real) (E := E) z).symm (z - z0)
-  have hinv := isInvertible_mfderiv_extChartAt (I := I)
-    (show x ∈ (extChartAt I a).source by simpa [extChartAt_source] using hx)
-  obtain ⟨w, hw⟩ := hinv.surjective v
-  have happzero := congrArg
-    (fun L : TangentSpace I x →L[Real] Real => L w) hmvzero
-  rw [hcomp] at happzero
-  simp only [ContinuousLinearMap.comp_apply, zero_apply] at happzero
-  rw [hw] at happzero
-  have hz_ne : z ≠ z0 := by
-    intro hz
-    apply hxc
-    have hs := congrArg (extChartAt I a).symm hz
-    rw [(extChartAt I a).left_inv
-      (show x ∈ (extChartAt I a).source by simpa [extChartAt_source] using hx),
-      (extChartAt I a).left_inv
-        (show c ∈ (extChartAt I a).source by simpa [extChartAt_source] using hc)] at hs
-    exact hs
-  have hL_ne : (toEuclidean (E := E)) (z - z0) ≠ 0 := by
-    intro hL
-    have hsub := (toEuclidean (E := E)).injective
-      (show (toEuclidean (E := E)) (z - z0) =
-        (toEuclidean (E := E)) 0 by simpa using hL)
-    exact (sub_ne_zero.mpr hz_ne) hsub
-  have happ := fderiv_chartRadiusSq_apply_self (E := E) z z0
-  have happmv : mvfderiv 𝓘(Real, E) q z v =
-      2 * ‖(toEuclidean (E := E)) (z - z0)‖ ^ 2 := by
-    dsimp [v]
-    simp only [mvfderiv, mfderiv_eq_fderiv]
-    change fderiv Real q z (z - z0) =
-      2 * ‖(toEuclidean (E := E)) (z - z0)‖ ^ 2
-    simpa [q] using happ
-  rw [happmv] at happzero
-  have hpos : 0 < 2 * ‖(toEuclidean (E := E)) (z - z0)‖ ^ 2 := by
-    positivity
-  exact hpos.ne' happzero
-
-private theorem strongPropagationRadius_gradient_ne_zero
-    (g : SmoothRiemannianMetric I M) {a c x : M}
-    (b : SmoothBumpFunction I a) (hc : c ∈ (chartAt H a).source)
-    (hx : x ∈ (chartAt H a).source)
-    (hd : dist (extChartAt I a x) (extChartAt I a a) < b.rIn)
-    (hxc : x ≠ c) (Q : Real) :
-    gradientFun (I := I) g (strongPropagationRadius (I := I) b c Q) x ≠ 0 := by
-  have hev := strongPropagationRadius_eventuallyEq (I := I) (c := c) b hx hd Q
-  have hmf : mfderiv I 𝓘(Real, Real)
-      (strongPropagationRadius (I := I) b c Q) x ≠ 0 := by
-    rw [hev.mfderiv_eq]
-    exact strongChartRadiusSq_mfderiv_ne_zero (I := I) hc hx hxc
-  intro hgrad
-  apply hmf
-  apply ContinuousLinearMap.ext
-  intro v
-  have hinner := inner_gradientFun (I := I) g
-    (strongPropagationRadius (I := I) b c Q) x v
-  rw [hgrad] at hinner
-  apply (NormedSpace.fromTangentSpace
-    (strongPropagationRadius (I := I) b c Q x)).injective
-  simpa [mvfderiv] using hinner.symm
-
-omit [IsManifold I ∞ M] in
-private theorem strongChartRadiusSq_lt_imp_mem_core
-    {a c x : M} (b : SmoothBumpFunction I a)
-    (hc_dist : dist (extChartAt I a c) (extChartAt I a a) < b.rIn)
-    (hq : strongChartRadiusSq (I := I) a c x <
-      ((b.rIn - dist (extChartAt I a c) (extChartAt I a a)) /
-        (2 * (‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖ + 1))) ^ 2) :
-    dist (extChartAt I a x) (extChartAt I a a) < b.rIn := by
-  let C : Real := ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖ + 1
-  let s : Real :=
-    (b.rIn - dist (extChartAt I a c) (extChartAt I a a)) / (2 * C)
-  have hC : 0 < C := by
-    dsimp [C]
-    linarith [norm_nonneg
-      (toEuclidean (E := E)).symm.toContinuousLinearMap]
-  have hgap : 0 < b.rIn - dist (extChartAt I a c) (extChartAt I a a) :=
-    sub_pos.mpr hc_dist
-  have hs : 0 < s := by
-    dsimp [s]
-    positivity
-  have hxc_eucl : ‖(toEuclidean (E := E))
-      (extChartAt I a x - extChartAt I a c)‖ < s := by
-    apply (sq_lt_sq₀ (norm_nonneg _) hs.le).mp
-    simpa only [strongChartRadiusSq, s, C] using hq
-  have hxc : dist (extChartAt I a x) (extChartAt I a c) < C * s := by
-    have hop := (toEuclidean (E := E)).symm.toContinuousLinearMap.le_opNorm
-      ((toEuclidean (E := E)) (extChartAt I a x - extChartAt I a c))
-    rw [dist_eq_norm]
-    calc
-      ‖extChartAt I a x - extChartAt I a c‖ ≤
-          ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖ *
-            ‖(toEuclidean (E := E))
-              (extChartAt I a x - extChartAt I a c)‖ := by
-        simpa using hop
-      _ < C * s := by
-        apply mul_lt_mul_of_le_of_lt_of_nonneg_of_pos
-        · dsimp [C]
-          linarith [norm_nonneg
-            (toEuclidean (E := E)).symm.toContinuousLinearMap]
-        · exact hxc_eucl
-        · exact (norm_nonneg _)
-        · exact hC
-  calc
-    dist (extChartAt I a x) (extChartAt I a a) ≤
-        dist (extChartAt I a x) (extChartAt I a c) +
-          dist (extChartAt I a c) (extChartAt I a a) := dist_triangle _ _ _
-    _ < C * s + dist (extChartAt I a c) (extChartAt I a a) :=
-      by simpa [add_comm] using
-        add_lt_add_right hxc (dist (extChartAt I a c) (extChartAt I a a))
-    _ < b.rIn := by
-      have hCs : C * s =
-          (b.rIn - dist (extChartAt I a c) (extChartAt I a a)) / 2 := by
-        dsimp [s]
-        field_simp
-      rw [hCs]
-      nlinarith
 
 private theorem exists_positive_terminal_cylinder
     {T : Real} (hT : 0 ≤ T) (u : Real → M → Real)
@@ -515,25 +207,25 @@ private theorem fixed_metric_spatial_zero_drift
       hc_eucl_small.trans hsmall_lt_s
     let Q : Real := s ^ 2
     have hQ : 0 < Q := sq_pos_of_pos hs
-    have hqaQ : strongChartRadiusSq (I := I) a c a < Q := by
+    have hqaQ : SmoothBumpFunction.chartRadiusSq (I := I) a c a < Q := by
       apply (sq_lt_sq₀ (norm_nonneg _) hs.le).mpr
       change ‖(toEuclidean (E := E))
         (extChartAt I a a - extChartAt I a c)‖ < s
       simpa only [map_sub, norm_sub_rev] using hc_eucl
     obtain ⟨delta, eta, hdelta, heta, V, hV, hlocal⟩ :=
       exists_positive_terminal_cylinder (M := M) hT.le u hu_cont hcP
-    obtain ⟨r, hr, hrV⟩ := exists_strongPropagationRadius_sublevel_subset (I := I)
+    obtain ⟨r, hr, hrV⟩ := SmoothBumpFunction.exists_cutoffChartRadiusSq_sublevel_subset (I := I)
       b hcsource hQ hV
-    let rho : M → Real := strongPropagationRadius (I := I) b c Q
+    let rho : M → Real := SmoothBumpFunction.cutoffChartRadiusSq (I := I) b c Q
     have hrho : ContMDiff I 𝓘(Real, Real) ∞ rho :=
-      strongPropagationRadius_contMDiff (I := I) b Q
+      SmoothBumpFunction.cutoffChartRadiusSq_contMDiff (I := I) b Q
     have hrho_nonneg : ∀ x : M, 0 ≤ rho x :=
-      strongPropagationRadius_nonneg (I := I) b hQ.le
+      SmoothBumpFunction.cutoffChartRadiusSq_nonneg (I := I) b hQ.le
     have hbc : b c = 1 := b.one_of_dist_le hcsource hc_dist.le
     have hrhoc : rho c = 0 := by
-      simp [rho, strongPropagationRadius, strongChartRadiusSq, hbc]
-    have hrhoa : rho a = strongChartRadiusSq (I := I) a c a := by
-      simp [rho, strongPropagationRadius]
+      simp [rho, SmoothBumpFunction.cutoffChartRadiusSq, SmoothBumpFunction.chartRadiusSq, hbc]
+    have hrhoa : rho a = SmoothBumpFunction.chartRadiusSq (I := I) a c a := by
+      simp [rho, SmoothBumpFunction.cutoffChartRadiusSq]
     let R : Real := (rho a + Q) / 2
     have hrhoaR : rho a < R := by
       dsimp [R]
@@ -555,21 +247,21 @@ private theorem fixed_metric_spatial_zero_drift
       have hmidR : R < (R + Q) / 2 := by linarith
       have hmidQ : (R + Q) / 2 < Q := by linarith
       have hltmid : rho x < (R + Q) / 2 := hxR.trans_lt hmidR
-      have hrad := strongPropagationRadius_lt_imp (I := I) b hmidQ hltmid
+      have hrad := SmoothBumpFunction.pos_and_chartRadiusSq_lt_of_cutoffChartRadiusSq_lt (I := I) b hmidQ hltmid
       have hbx : b x ≠ 0 := ne_of_gt hrad.1
       have hxsource : x ∈ (chartAt H a).source := by
         apply b.support_subset_source
         simpa [Function.mem_support] using hbx
       have hxcore :
           dist (extChartAt I a x) (extChartAt I a a) < b.rIn := by
-        apply strongChartRadiusSq_lt_imp_mem_core (I := I) b hc_dist
+        apply SmoothBumpFunction.dist_lt_rIn_of_chartRadiusSq_lt (I := I) b hc_dist
         simpa [Q, s, C] using hrad.2
       have hxc : x ≠ c := by
         intro heq
         subst x
         rw [hrhoc] at hxr
         linarith
-      exact strongPropagationRadius_gradient_ne_zero (I := I) g b hcsource
+      exact SmoothBumpFunction.cutoffChartRadiusSq_gradient_ne_zero (I := I) g b hcsource
         hxsource hxcore hxc Q
     have hlocal' : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
         rho x < r → eta ≤ u t x := by
@@ -1090,25 +782,25 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
       hc_eucl_small.trans hsmall_lt_s
     let Q : Real := s ^ 2
     have hQ : 0 < Q := sq_pos_of_pos hs
-    have hqaQ : strongChartRadiusSq (I := I) a c a < Q := by
+    have hqaQ : SmoothBumpFunction.chartRadiusSq (I := I) a c a < Q := by
       apply (sq_lt_sq₀ (norm_nonneg _) hs.le).mpr
       change ‖(toEuclidean (E := E))
         (extChartAt I a a - extChartAt I a c)‖ < s
       simpa only [map_sub, norm_sub_rev] using hc_eucl
     obtain ⟨delta, eta, hdelta, heta, V, hV, hlocal⟩ :=
       exists_positive_terminal_cylinder (M := M) hT.le u hu_cont hcP
-    obtain ⟨r, hr, hrV⟩ := exists_strongPropagationRadius_sublevel_subset (I := I)
+    obtain ⟨r, hr, hrV⟩ := SmoothBumpFunction.exists_cutoffChartRadiusSq_sublevel_subset (I := I)
       b hcsource hQ hV
-    let rho : M → Real := strongPropagationRadius (I := I) b c Q
+    let rho : M → Real := SmoothBumpFunction.cutoffChartRadiusSq (I := I) b c Q
     have hrho : ContMDiff I 𝓘(Real, Real) ∞ rho :=
-      strongPropagationRadius_contMDiff (I := I) b Q
+      SmoothBumpFunction.cutoffChartRadiusSq_contMDiff (I := I) b Q
     have hrho_nonneg : ∀ x : M, 0 ≤ rho x :=
-      strongPropagationRadius_nonneg (I := I) b hQ.le
+      SmoothBumpFunction.cutoffChartRadiusSq_nonneg (I := I) b hQ.le
     have hbc : b c = 1 := b.one_of_dist_le hcsource hc_dist.le
     have hrhoc : rho c = 0 := by
-      simp [rho, strongPropagationRadius, strongChartRadiusSq, hbc]
-    have hrhoa : rho a = strongChartRadiusSq (I := I) a c a := by
-      simp [rho, strongPropagationRadius]
+      simp [rho, SmoothBumpFunction.cutoffChartRadiusSq, SmoothBumpFunction.chartRadiusSq, hbc]
+    have hrhoa : rho a = SmoothBumpFunction.chartRadiusSq (I := I) a c a := by
+      simp [rho, SmoothBumpFunction.cutoffChartRadiusSq]
     let R : Real := (rho a + Q) / 2
     have hrhoaR : rho a < R := by
       dsimp [R]
@@ -1130,21 +822,21 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
       have hmidR : R < (R + Q) / 2 := by linarith
       have hmidQ : (R + Q) / 2 < Q := by linarith
       have hltmid : rho x < (R + Q) / 2 := hxR.trans_lt hmidR
-      have hrad := strongPropagationRadius_lt_imp (I := I) b hmidQ hltmid
+      have hrad := SmoothBumpFunction.pos_and_chartRadiusSq_lt_of_cutoffChartRadiusSq_lt (I := I) b hmidQ hltmid
       have hbx : b x ≠ 0 := ne_of_gt hrad.1
       have hxsource : x ∈ (chartAt H a).source := by
         apply b.support_subset_source
         simpa [Function.mem_support] using hbx
       have hxcore :
           dist (extChartAt I a x) (extChartAt I a a) < b.rIn := by
-        apply strongChartRadiusSq_lt_imp_mem_core (I := I) b hc_dist
+        apply SmoothBumpFunction.dist_lt_rIn_of_chartRadiusSq_lt (I := I) b hc_dist
         simpa [Q, s, Cchart] using hrad.2
       have hxc : x ≠ c := by
         intro heq
         subst x
         rw [hrhoc] at hxr
         linarith
-      exact strongPropagationRadius_gradient_ne_zero (I := I) g b hcsource
+      exact SmoothBumpFunction.cutoffChartRadiusSq_gradient_ne_zero (I := I) g b hcsource
         hxsource hxcore hxc Q
     have hlocal' : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x : M,
         rho x < r → eta ≤ u t x := by
@@ -1712,20 +1404,20 @@ theorem exists_spatial_barrier_positive_at
   have hQ : 0 < Q := sq_pos_of_pos hs
   have hcsource : c ∈ (chartAt H c).source := mem_chart_source H c
   obtain ⟨R0, hR0, hR0V⟩ :=
-    exists_strongPropagationRadius_sublevel_subset (I := I)
+    SmoothBumpFunction.exists_cutoffChartRadiusSq_sublevel_subset (I := I)
       bump hcsource hQ hV
   let R : Real := min R0 (Q / 2)
   have hR : 0 < R := lt_min hR0 (half_pos hQ)
   have hRR0 : R ≤ R0 := min_le_left _ _
   have hRQ : R < Q :=
     (min_le_right R0 (Q / 2)).trans_lt (half_lt_self hQ)
-  let rho : M → Real := strongPropagationRadius (I := I) bump c Q
+  let rho : M → Real := SmoothBumpFunction.cutoffChartRadiusSq (I := I) bump c Q
   have hrho : ContMDiff I 𝓘(Real, Real) ∞ rho :=
-    strongPropagationRadius_contMDiff (I := I) bump Q
+    SmoothBumpFunction.cutoffChartRadiusSq_contMDiff (I := I) bump Q
   have hrho_nonneg : ∀ x : M, 0 ≤ rho x :=
-    strongPropagationRadius_nonneg (I := I) bump hQ.le
+    SmoothBumpFunction.cutoffChartRadiusSq_nonneg (I := I) bump hQ.le
   have hrhoc : rho c = 0 := by
-    simp [rho, strongPropagationRadius, strongChartRadiusSq]
+    simp [rho, SmoothBumpFunction.cutoffChartRadiusSq, SmoothBumpFunction.chartRadiusSq]
   have hsublevel : ∀ x : M, rho x < R → x ∈ V := by
     intro x hx
     exact hR0V (hx.trans_le hRR0)
@@ -1740,7 +1432,7 @@ theorem exists_spatial_barrier_positive_at
     intro t ht x hx
     have hmidR : R < (R + Q) / 2 := by linarith
     have hmidQ : (R + Q) / 2 < Q := by linarith
-    have hrad := strongPropagationRadius_lt_imp (I := I) bump hmidQ
+    have hrad := SmoothBumpFunction.pos_and_chartRadiusSq_lt_of_cutoffChartRadiusSq_lt (I := I) bump hmidQ
       (hx.2.trans_lt hmidR)
     have hbumpx : bump x ≠ 0 := ne_of_gt hrad.1
     have hxsource : x ∈ (chartAt H c).source := by
@@ -1751,7 +1443,7 @@ theorem exists_spatial_barrier_positive_at
       simpa using bump.rIn_pos
     have hxcore :
         dist (extChartAt I c x) (extChartAt I c c) < bump.rIn := by
-      apply strongChartRadiusSq_lt_imp_mem_core (I := I) bump hc_dist
+      apply SmoothBumpFunction.dist_lt_rIn_of_chartRadiusSq_lt (I := I) bump hc_dist
       simpa [Q, s, chartBound] using hrad.2
     have hxc : x ≠ c := by
       intro heq
@@ -1759,7 +1451,7 @@ theorem exists_spatial_barrier_positive_at
       change R / 2 ≤ rho c ∧ rho c ≤ R at hx
       rw [hrhoc] at hx
       linarith
-    exact strongPropagationRadius_gradient_ne_zero (I := I) (G.metric t)
+    exact SmoothBumpFunction.cutoffChartRadiusSq_gradient_ne_zero (I := I) (G.metric t)
       bump hcsource hxsource hxcore hxc Q
   let q : Real × M → Real := fun p =>
     (G.metric p.1).inner p.2
@@ -2118,25 +1810,25 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
       hc_eucl_small.trans hsmall_lt_s
     let Q : Real := s ^ 2
     have hQ : 0 < Q := sq_pos_of_pos hs
-    have hqaQ : strongChartRadiusSq (I := I) a c a < Q := by
+    have hqaQ : SmoothBumpFunction.chartRadiusSq (I := I) a c a < Q := by
       apply (sq_lt_sq₀ (norm_nonneg _) hs.le).mpr
       change ‖(toEuclidean (E := E))
         (extChartAt I a a - extChartAt I a c)‖ < s
       simpa only [map_sub, norm_sub_rev] using hc_eucl
     obtain ⟨delta, eta, hdelta, heta, V, hV, hlocal⟩ :=
       exists_positive_terminal_cylinder (M := M) hT.le u hu_cont hcP.2
-    obtain ⟨r, hr, hrV⟩ := exists_strongPropagationRadius_sublevel_subset (I := I)
+    obtain ⟨r, hr, hrV⟩ := SmoothBumpFunction.exists_cutoffChartRadiusSq_sublevel_subset (I := I)
       b hcsource hQ hV
-    let rho : M → Real := strongPropagationRadius (I := I) b c Q
+    let rho : M → Real := SmoothBumpFunction.cutoffChartRadiusSq (I := I) b c Q
     have hrho : ContMDiff I 𝓘(Real, Real) ∞ rho :=
-      strongPropagationRadius_contMDiff (I := I) b Q
+      SmoothBumpFunction.cutoffChartRadiusSq_contMDiff (I := I) b Q
     have hrho_nonneg : ∀ x : M, 0 ≤ rho x :=
-      strongPropagationRadius_nonneg (I := I) b hQ.le
+      SmoothBumpFunction.cutoffChartRadiusSq_nonneg (I := I) b hQ.le
     have hbc : b c = 1 := b.one_of_dist_le hcsource hc_dist.le
     have hrhoc : rho c = 0 := by
-      simp [rho, strongPropagationRadius, strongChartRadiusSq, hbc]
-    have hrhoa : rho a = strongChartRadiusSq (I := I) a c a := by
-      simp [rho, strongPropagationRadius]
+      simp [rho, SmoothBumpFunction.cutoffChartRadiusSq, SmoothBumpFunction.chartRadiusSq, hbc]
+    have hrhoa : rho a = SmoothBumpFunction.chartRadiusSq (I := I) a c a := by
+      simp [rho, SmoothBumpFunction.cutoffChartRadiusSq]
     let R : Real := (rho a + Q) / 2
     have hrhoaR : rho a < R := by
       dsimp [R]
@@ -2149,7 +1841,7 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
     have hR : 0 < R := lt_of_le_of_lt (hrho_nonneg a) hrhoaR
     have hsublevel : ∀ x : M, rho x < R → x ∈ U := by
       intro x hxR
-      have hrad := strongPropagationRadius_lt_imp (I := I) b hRQ hxR
+      have hrad := SmoothBumpFunction.pos_and_chartRadiusSq_lt_of_cutoffChartRadiusSq_lt (I := I) b hRQ hxR
       apply hbU
       exact subset_closure (by
         simpa [Function.mem_support] using ne_of_gt hrad.1)
@@ -2164,21 +1856,21 @@ theorem scalar_strong_maximum_principle_time_dependent_metric_with_drift_spatial
       have hmidR : R < (R + Q) / 2 := by linarith
       have hmidQ : (R + Q) / 2 < Q := by linarith
       have hltmid : rho x < (R + Q) / 2 := hxR.trans_lt hmidR
-      have hrad := strongPropagationRadius_lt_imp (I := I) b hmidQ hltmid
+      have hrad := SmoothBumpFunction.pos_and_chartRadiusSq_lt_of_cutoffChartRadiusSq_lt (I := I) b hmidQ hltmid
       have hbx : b x ≠ 0 := ne_of_gt hrad.1
       have hxsource : x ∈ (chartAt H a).source := by
         apply b.support_subset_source
         simpa [Function.mem_support] using hbx
       have hxcore :
           dist (extChartAt I a x) (extChartAt I a a) < b.rIn := by
-        apply strongChartRadiusSq_lt_imp_mem_core (I := I) b hc_dist
+        apply SmoothBumpFunction.dist_lt_rIn_of_chartRadiusSq_lt (I := I) b hc_dist
         simpa [Q, s, Cchart] using hrad.2
       have hxc : x ≠ c := by
         intro heq
         subst x
         rw [hrhoc] at hxr
         linarith
-      exact strongPropagationRadius_gradient_ne_zero (I := I) (G.metric t) b hcsource
+      exact SmoothBumpFunction.cutoffChartRadiusSq_gradient_ne_zero (I := I) (G.metric t) b hcsource
         hxsource hxcore hxc Q
     have hlocal' : ∀ t ∈ Set.Icc 0 T, T - delta < t → ∀ x ∈ U,
         rho x < r → eta ≤ u t x := by

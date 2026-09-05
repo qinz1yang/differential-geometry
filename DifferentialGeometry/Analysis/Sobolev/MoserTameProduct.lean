@@ -804,6 +804,7 @@ private theorem exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm
   DifferentialGeometry.Analysis.Elliptic.exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen
     (I := I) (M := M) g
 
+omit [CompactSpace M] in
 private theorem l2jet_logConvex_iteratedCovGrad
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ∃ K : ℝ, 1 ≤ K ∧

@@ -27,6 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 
+omit [CompactSpace M] in
 lemma tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1)
@@ -37,6 +38,7 @@ lemma tensorL2Inner_covGrad_self_eq_neg_rawConnLap_inner_gen
   tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_gen (I := I) (M := M) g s S S
 
 
+omit [CompactSpace M] in
 theorem covGrad_l2NormSq_le_rawConnLap_mul_self_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     tensorL2Norm (I := I) (M := M) g 0 (s + 1)
@@ -65,6 +67,7 @@ theorem covGrad_l2NormSq_le_rawConnLap_mul_self_gen
   exact le_trans hneg_le hcs
 
 
+omit [CompactSpace M] in
 theorem secondCovGrad_l2NormSq_le_of_cross_bound
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (Ccross : ℝ) (hCcross : 0 ≤ Ccross)

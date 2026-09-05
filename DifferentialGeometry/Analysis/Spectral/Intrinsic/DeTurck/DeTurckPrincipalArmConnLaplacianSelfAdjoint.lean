@@ -70,6 +70,7 @@ private local instance tensorRSModelSMul_local (r s : ℕ) :
     SMul ℝ (Tensor0SBundle.TensorRSModel r s ℝ E) :=
   ContinuousLinearMap.mulAction.toSMul
 
+omit [CompactSpace M] in
 theorem rawConnLap_selfAdjoint (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T v : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r s (rawTensorConnLapSmooth (I := I) g r s T).toFun v.toFun =

@@ -8,6 +8,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorL
 import DifferentialGeometry.Geometry.Metric.TensorInner.CotangentRiemannian
 import DifferentialGeometry.Analysis.ODE.GlobalLipschitzAffineExistence
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import DifferentialGeometry.Geometry.Metric.Family.Uhlenbeck
 
 set_option autoImplicit false
 

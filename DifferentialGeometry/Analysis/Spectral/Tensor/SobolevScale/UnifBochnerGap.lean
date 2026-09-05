@@ -106,6 +106,7 @@ private theorem norm_add_cross_scalar_close
       base + (Cfun0 ^ 2 + 2 * (Crc * (dimR * Cfun1))) * sum ^ 2 := by
   nlinarith
 
+omit [CompactSpace M] in
 theorem bochner_step_unif
     (g₀ : SmoothRiemannianMetric I M) (s k : ℕ)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -485,6 +486,7 @@ theorem rawConnLapIter_unif
           (mul_le_mul_of_nonneg_left hsub_le (hCfun_nn 0))
     _ = (K + Cfun 0) * FULL := by ring
 
+omit [CompactSpace M] in
 theorem baseAddLower_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -626,6 +628,7 @@ theorem baseAddLower_unif
       linarith [this]
     exact norm_add_cross_scalar_close hcross_le hDnorm_sq
 
+omit [CompactSpace M] in
 theorem bochner_step_hcurv
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -678,6 +681,7 @@ private theorem lap_shift_le
   have hnn : 0 ≤ ‖rawTensorConnLapIter (I := I) g₀ 0 s 0 S‖ := norm_nonneg _
   linarith [key, hmono, hnn]
 
+omit [CompactSpace M] in
 private theorem elliptic_engine
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -821,6 +825,7 @@ private theorem elliptic_engine
       exact mul_le_mul_of_nonneg_right (le_max_right _ _)
         (Finset.sum_nonneg (fun _ _ => norm_nonneg _))
 
+omit [CompactSpace M] in
 theorem elliptic_lapSum_unif
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -1759,6 +1764,7 @@ private lemma baseAddLower_tail
     A + 2 * I + D ≤ A + (C0 + 2 * (X * Y)) * S ^ 2 := by
   nlinarith
 
+omit [CompactSpace M] in
 theorem bochner_step_action
     (g₀ : SmoothRiemannianMetric I M) (s k : ℕ)
     (K : ℝ) (hact : IsCurvAction0 (I := I) (M := M) g₀ (s + k) K)
@@ -2388,6 +2394,7 @@ theorem rawConnLapIter_const
           (mul_le_mul_of_nonneg_left hsub_le hCfun_nn)
     _ = ((Module.finrank ℝ E : ℝ) + roughLapCommC Fc a 0) * FULL := by ring
 
+omit [CompactSpace M] in
 theorem baseAddLower_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -2549,6 +2556,7 @@ theorem baseAddLower_const
       (roughLapCommC Fc (j + 1) 0 ^ 2)
       hcross_le' hDnorm_sq
 
+omit [CompactSpace M] in
 theorem bochnerStep_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -2568,6 +2576,7 @@ theorem bochnerStep_const
     (baseLowerC Fc (Module.finrank ℝ E) k)
     (fun v => baseAddLower_const (I := I) (M := M) g₀ Fc hFc hcurv s k v) u
 
+omit [CompactSpace M] in
 private theorem elliptic_engine_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)
@@ -2759,6 +2768,7 @@ private theorem elliptic_engine_const
       exact mul_le_mul_of_nonneg_right (le_max_right _ _)
         (Finset.sum_nonneg (fun _ _ => norm_nonneg _))
 
+omit [CompactSpace M] in
 theorem ellipticLapSum_const
     (g₀ : SmoothRiemannianMetric I M)
     (Fc : ℕ → ℝ) (hFc : ∀ p, 0 ≤ Fc p)

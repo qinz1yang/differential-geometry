@@ -73,6 +73,7 @@ private theorem l2_sub_right_cc (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T₁.toFun x) (T₂.toFun x)
 
 
+omit [CompactSpace M] in
 theorem oneMinusConnLapSmooth_l2Inner_selfAdjoint
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T v : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r s
@@ -94,6 +95,7 @@ theorem oneMinusConnLapSmooth_l2Inner_selfAdjoint
       (rawTensorConnLapSmooth (I := I) g r s v)]
   rw [rawTensorConnLapSmooth_l2Inner_selfAdjoint (I := I) (M := M) g r s T v]
 
+omit [CompactSpace M] in
 theorem oneMinusConnLapSmooth_l2Inner_eq_add_covGrad
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (A B : SmoothCcTensor g r s) :
     tensorL2Inner (I := I) (M := M) g r s
@@ -128,6 +130,7 @@ theorem oneMinusConnLapSmoothIter_oneMinusConnLapSmooth_comm
     rw [oneMinusConnLapSmoothIter_succ, ih, oneMinusConnLapSmoothIter_succ]
 
 
+omit [CompactSpace M] in
 theorem oneMinusConnLapSmoothIter_l2Inner_selfAdjoint
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (n : ℕ)
     (T v : SmoothCcTensor g r s) :
@@ -159,6 +162,7 @@ theorem oneMinusConnLapSmoothIter_add
       oneMinusConnLapSmoothIter_succ, ih]
 
 
+omit [CompactSpace M] in
 theorem oneMinusConnLapSmoothIter_l2Inner_sym_split
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (a b : ℕ)
     (A B : SmoothCcTensor g r s) :
@@ -171,6 +175,7 @@ theorem oneMinusConnLapSmoothIter_l2Inner_sym_split
   rw [oneMinusConnLapSmoothIter_l2Inner_selfAdjoint (I := I) (M := M) g r s a
     (oneMinusConnLapSmoothIter (I := I) g r s b A) B]
 
+omit [CompactSpace M] in
 theorem oneMinusConnLapSmoothIter_l2Inner_eq_add_sum_covGrad
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (n : ℕ)
     (A B : SmoothCcTensor g r s) :

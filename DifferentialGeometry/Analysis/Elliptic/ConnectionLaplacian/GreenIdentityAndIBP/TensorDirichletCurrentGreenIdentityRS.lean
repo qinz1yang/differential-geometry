@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorConnLapGreenIntertwiner
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CovGradCrossBridge
+import DifferentialGeometry.Analysis.Calculus.CompactSupportSection
+import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRSCovariantDerivativeCongrLocally
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -729,6 +731,104 @@ theorem integral_sq_weighted_rawTensorConnLapSmooth_eq_neg_covDeriv
     ring
   rw [hcross_integral] at hgreen
   simpa only [pow_two, ContMDiffMap.coe_mul, Pi.mul_apply] using hgreen
+
+omit [CompactSpace M] in
+theorem integral_weighted_rawTensorConnLap_eq_neg_covDeriv_of_hasCompactSupport
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (ρ : C^∞⟮I, M; ℝ⟯) (hρ : HasCompactSupport (ρ : M → ℝ))
+    (T v : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
+      (fun x : M => TensorRSSpace r s I x)⟯) :
+    let cov := tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
+    let grad := fun S x => covGradBundleEquiv (I := I) (M := M) r s x (cov S x)
+    (∫ x, ρ x * tensorInnerPointwise (I := I) g r s x
+      (TensorRSSpace.toModel (rawTensorConnLap (I := I) g r s T x))
+      (TensorRSSpace.toModel (v x))
+      ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
+      -(∫ x, ρ x * tensorInnerPointwise (I := I) g r (s + 1) x
+        (TensorRSSpace.toModel (grad T x)) (TensorRSSpace.toModel (grad v x))
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g)) -
+      ∫ x, tensorInnerPointwise (I := I) g r (s + 1) x
+        (TensorRSSpace.toModel (grad T x))
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
+          ((mvfderiv (I := I) (ρ : M → ℝ) x).smulRight (v x))))
+        ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
+  classical
+  dsimp only
+  obtain ⟨Tc, hTc, hTeq⟩ := T.exists_compactly_supported_eq_nhdsSet hρ
+  obtain ⟨vc, hvc, hveq⟩ := v.exists_compactly_supported_eq_nhdsSet hρ
+  have hsupport (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
+      (fun x : M => TensorRSSpace r s I x)⟯)
+      (hS : IsCompact (closure {x : M | S x ≠ 0})) :
+      HasCompactSupport (fun x => TensorRSSpace.toModel (S x)) := by
+    apply HasCompactSupport.of_support_subset_isCompact hS
+    intro x hx
+    apply subset_closure
+    intro hzero
+    exact hx (by simp [hzero, TensorRSSpace.toModel_zero])
+  let T₀ : SmoothCcTensor g r s := ⟨Tc, hsupport Tc hTc⟩
+  let v₀ : SmoothCcTensor g r s := ⟨vc, hsupport vc hvc⟩
+  have hcov (S Sc : Cₛ^∞⟮I; TensorRSModel r s ℝ E,
+      (fun x : M => TensorRSSpace r s I x)⟯)
+      {x : M} (h : ∀ᶠ y in 𝓝 x, Sc y = S y) :
+      tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) Sc x =
+        tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) S x := by
+    exact tensorRSCovariantDerivative_congr_of_eventuallyEq (I := I) g r s h
+      (Sc.contMDiff.mdifferentiableAt (by simp))
+      (S.contMDiff.mdifferentiableAt (by simp))
+  have hlap : ∀ x, ρ x * tensorInnerPointwise (I := I) g r s x
+      ((rawTensorConnLapSmooth (I := I) g r s T₀).toFun x) (v₀.toFun x) =
+      ρ x * tensorInnerPointwise (I := I) g r s x
+        (TensorRSSpace.toModel (rawTensorConnLap (I := I) g r s T x))
+        (TensorRSSpace.toModel (v x)) := by
+    intro x
+    by_cases hx : x ∈ tsupport (ρ : M → ℝ)
+    · have hT := (nhds_le_nhdsSet hx) hTeq
+      have hv : ∀ᶠ y in 𝓝 x, vc y = v y := (nhds_le_nhdsSet hx) hveq
+      simp only [SmoothCcTensor.toFun_apply, rawTensorConnLapSmooth_toSection_apply]
+      rw [rawTensorConnLap_congr_of_eventuallyEq (I := I) g r s Tc T hT]
+      rw [show v₀.toSection x = v x from hv.self_of_nhds]
+    · simp [image_eq_zero_of_notMem_tsupport hx]
+  have hgrad : ∀ x, ρ x * tensorCovDerivPointwiseInner (I := I) g r s T₀ v₀ x =
+      ρ x * tensorInnerPointwise (I := I) g r (s + 1) x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
+          (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) T x)))
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
+          (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) v x))) := by
+    intro x
+    by_cases hx : x ∈ tsupport (ρ : M → ℝ)
+    · rw [tensorCovDerivPointwiseInner_eq_tensorInnerPointwise_grad,
+        covGrad_toSection_apply, covGrad_toSection_apply]
+      rw [hcov T Tc ((nhds_le_nhdsSet hx) hTeq),
+        hcov v vc ((nhds_le_nhdsSet hx) hveq)]
+    · simp [image_eq_zero_of_notMem_tsupport hx]
+  have hcross : ∀ x, tensorCovDerivCrossLeft (I := I) g r s ρ T₀ v₀ x =
+      tensorInnerPointwise (I := I) g r (s + 1) x
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
+          (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g) T x)))
+        (TensorRSSpace.toModel (covGradBundleEquiv (I := I) (M := M) r s x
+          ((mvfderiv (I := I) (ρ : M → ℝ) x).smulRight (v x)))) := by
+    intro x
+    rw [tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad,
+      covGrad_toSection_apply, prependCovGradSlot_toSection_apply]
+    by_cases hx : x ∈ tsupport (ρ : M → ℝ)
+    · rw [hcov T Tc ((nhds_le_nhdsSet hx) hTeq)]
+      have hv : ∀ᶠ y in 𝓝 x, vc y = v y := (nhds_le_nhdsSet hx) hveq
+      rw [show v₀.toSection x = v x from hv.self_of_nhds]
+    · have hzero : mvfderiv (I := I) (ρ : M → ℝ) x = 0 := by
+        have hev : (ρ : M → ℝ) =ᶠ[𝓝 x] (fun _ => 0) :=
+          notMem_tsupport_iff_eventuallyEq.mp hx
+        have hmfd_zero : mfderiv I 𝓘(ℝ, ℝ) (ρ : M → ℝ) x = 0 := by
+          rw [hev.mfderiv_eq]
+          exact mfderiv_const
+        simp [mvfderiv, hmfd_zero]
+      simp only [hzero, ContinuousLinearMap.zero_smulRight, map_zero,
+        TensorRSSpace.toModel_zero, tensorInnerPointwise_zero_right]
+  have hgreen := integral_weighted_rawTensorConnLapSmooth_eq_neg_covDeriv
+    (I := I) g r s ρ T₀ v₀
+  rw [integral_congr_ae (Filter.Eventually.of_forall hlap),
+    integral_congr_ae (Filter.Eventually.of_forall hgrad),
+    integral_congr_ae (Filter.Eventually.of_forall hcross)] at hgreen
+  exact hgreen
 
 end Elliptic
 end Analysis

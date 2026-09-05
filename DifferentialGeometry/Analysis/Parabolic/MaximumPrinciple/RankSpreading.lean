@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.KyFanBarrier
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Strong
+import DifferentialGeometry.Geometry.Boundary.SmoothAnnulus
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
 import DifferentialGeometry.Analysis.FiniteDimensional.Rank
 import DifferentialGeometry.Topology.ConnectedCompactNeighborhood
@@ -462,6 +463,143 @@ theorem lowerKyFanSum_pos_on_annulus
   exact (mul_pos hkReal (hfFinal z hzK hz.2)).trans_le
     (hcomparison t ⟨hst.le, le_rfl⟩ z hzK)
 
+theorem exists_lowerKyFanSum_positive_propagation_neighborhood
+    [VectorBundle Real EModel (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (cov : Real → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T s t : Real} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
+    {Omega : Set M} (hOmega : IsOpen Omega) (hOmegaInterior : Omega ⊆ I.interior M)
+    (a : M) (ha : a ∈ Omega)
+    {k : Nat} (hkpos : 0 < k) (hk : k ≤ Module.finrank Real F)
+    (A : Real → Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
+    (hAsymm : ∀ q y,
+      ((A q y : V y →L[Real] V y) : V y →ₗ[Real] V y).IsSymmetric)
+    (hApos : ∀ q ∈ Icc s t, ∀ y ∈ Omega, (A q y).IsPositive)
+    (hphiCont : ContinuousOn (fun p : Real × M =>
+      (hAsymm p.1 p.2).lowerKyFanSum k) (Icc s t ×ˢ Omega))
+    (hA_bound : ∀ {K : Set M}, IsCompact K → K ⊆ Omega →
+      ∃ B : Real, ∀ q ∈ Icc s t, ∀ y ∈ K, ‖A q y‖ ≤ B)
+    (X : Real → (y : M) → TangentSpace I y)
+    (reaction : Real → (y : M) →
+      (V y →L[Real] V y) → V y →L[Real] V y)
+    (hreactionNull : ∀ q y, satisfiesNullEigenvectorCondition (reaction q y))
+    (hreactionLip : ∀ {K : Set M}, IsCompact K → K ⊆ Omega → ∀ B : Real,
+      ∃ Klip : NNReal, ∀ q ∈ Ioc s t, ∀ y ∈ K,
+        LipschitzOnWith Klip (reaction q y)
+          {D : V y →L[Real] V y | D.IsPositive ∧ ‖D‖ ≤ 2 * B})
+    (hgrad : ∀ (rho : M → Real), ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        (G.metric p.1).inner p.2
+          (gradientFun (I := I) (G.metric p.1) rho p.2)
+          (gradientFun (I := I) (G.metric p.1) rho p.2)) (Icc s t ×ˢ Omega))
+    (hheat : ∀ (rho : M → Real), ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2) (Icc s t ×ˢ Omega))
+    (hGconn : ∀ q ∈ Ioc s t,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioc s t, ∀ y ∈ Omega, DifferentiableAt Real (fun r ↦ A r y) q)
+    (hevolution : ∀ q ∈ Ioc s t, ∀ y ∈ Omega,
+      deriv (fun r ↦ A r y) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun z ↦ A q z) y +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
+          reaction q y (A q y)) :
+    ∃ U : Set M, IsOpen U ∧ a ∈ U ∧ IsCompact (closure U) ∧ closure U ⊆ Omega ∧
+      ∀ x ∈ U, 0 < (hAsymm t x).lowerKyFanSum k →
+        ∀ y ∈ U, 0 < (hAsymm t y).lowerKyFanSum k := by
+  obtain ⟨U, hUopen, haU, hUcompact, hUOmega, hUprop⟩ :=
+    SmoothBumpFunction.exists_annulus_neighborhood (I := I) a (hOmega.mem_nhds ha)
+  refine ⟨U, hUopen, haU, hUcompact, hUOmega, ?_⟩
+  intro x hx hxpos y hy
+  by_cases hxy : x = y
+  · subst y
+    exact hxpos
+  have hxOmega : x ∈ Omega := hUOmega (subset_closure hx)
+  have htIcc : t ∈ Icc s t := ⟨hst.le, le_rfl⟩
+  have hphiWithin : ContinuousWithinAt (fun z => (hAsymm t z).lowerKyFanSum k) Omega x :=
+    (hphiCont (t, x) ⟨htIcc, hxOmega⟩).comp
+      (continuousAt_const.prodMk continuousAt_id).continuousWithinAt
+      (fun z hz => ⟨htIcc, hz⟩)
+  have hphiAt : ContinuousAt (fun z => (hAsymm t z).lowerKyFanSum k) x :=
+    hphiWithin.continuousAt (hOmega.mem_nhds hxOmega)
+  have hV : {z | 0 < (hAsymm t z).lowerKyFanSum k} ∈ nhds x :=
+    hphiAt.preimage_mem_nhds (Ioi_mem_nhds hxpos)
+  obtain ⟨rho, r, R, hrho, -, -, hrR, hK, hKOmega, hry, hyR, hinner, hgrad_ne⟩ :=
+    hUprop x hx y hy hxy _ hV
+  obtain ⟨B, hB⟩ := hA_bound hK hKOmega
+  obtain ⟨Klip, hLip⟩ := hreactionLip hK hKOmega B
+  exact lowerKyFanSum_pos_on_annulus G cov hcov hs hst ht hkpos hk rho hrho hrR hK
+    (interior_subset.trans (hKOmega.trans hOmegaInterior)) A hAsymm
+    (fun q hq z hz => hApos q hq z (hKOmega hz))
+    (hphiCont.mono (fun p hp => ⟨hp.1, hKOmega hp.2⟩)) hB X reaction hreactionNull
+    (fun q hq z hz => hLip q hq z (interior_subset hz))
+    ((hgrad rho hrho).mono (fun p hp => ⟨hp.1, hKOmega hp.2⟩))
+    (fun q _ z hz => hgrad_ne (G.metric q) z hz)
+    ((hheat rho hrho).mono (fun p hp => ⟨hp.1, hKOmega hp.2⟩))
+    hinner hGconn (fun q hq z hz => hAt q hq z (hKOmega (interior_subset hz)))
+    (fun q hq z hz => hevolution q hq z (hKOmega (interior_subset hz))) y ⟨hry, hyR⟩
+
+theorem lowerKyFanSum_pos_on_preconnected_open_set
+    [VectorBundle Real EModel (TangentSpace I : M → Type _)]
+    [fiberFinite : ∀ y, FiniteDimensional Real (V y)]
+    (G : MetricConnectionFamily (I := I) (M := M) Real)
+    (cov : Real → CovariantDerivative I F V)
+    [∀ q, ContMDiffCovariantDerivative (cov q) ∞]
+    (hcov : ∀ q, (cov q).IsMetricCompatible)
+    {T s t : Real} (hs : 0 ≤ s) (hst : s < t) (ht : t ≤ T)
+    {Omega : Set M} (hOmega : IsOpen Omega) (hOmegaInterior : Omega ⊆ I.interior M)
+    (hOmegaConnected : IsPreconnected Omega)
+    {k : Nat} (hkpos : 0 < k) (hk : k ≤ Module.finrank Real F)
+    (A : Real → Cₛ^∞⟮I; F →L[Real] F, (fun x : M ↦ V x →L[Real] V x)⟯)
+    (hAsymm : ∀ q y,
+      ((A q y : V y →L[Real] V y) : V y →ₗ[Real] V y).IsSymmetric)
+    (hApos : ∀ q ∈ Icc s t, ∀ y ∈ Omega, (A q y).IsPositive)
+    (hphiCont : ContinuousOn (fun p : Real × M =>
+      (hAsymm p.1 p.2).lowerKyFanSum k) (Icc s t ×ˢ Omega))
+    (hA_bound : ∀ {K : Set M}, IsCompact K → K ⊆ Omega →
+      ∃ B : Real, ∀ q ∈ Icc s t, ∀ y ∈ K, ‖A q y‖ ≤ B)
+    (X : Real → (y : M) → TangentSpace I y)
+    (reaction : Real → (y : M) →
+      (V y →L[Real] V y) → V y →L[Real] V y)
+    (hreactionNull : ∀ q y, satisfiesNullEigenvectorCondition (reaction q y))
+    (hreactionLip : ∀ {K : Set M}, IsCompact K → K ⊆ Omega → ∀ B : Real,
+      ∃ Klip : NNReal, ∀ q ∈ Ioc s t, ∀ y ∈ K,
+        LipschitzOnWith Klip (reaction q y)
+          {D : V y →L[Real] V y | D.IsPositive ∧ ‖D‖ ≤ 2 * B})
+    (hgrad : ∀ (rho : M → Real), ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        (G.metric p.1).inner p.2
+          (gradientFun (I := I) (G.metric p.1) rho p.2)
+          (gradientFun (I := I) (G.metric p.1) rho p.2)) (Icc s t ×ˢ Omega))
+    (hheat : ∀ (rho : M → Real), ContMDiff I 𝓘(Real, Real) ∞ rho →
+      ContinuousOn (fun p : Real × M =>
+        heatOperatorWithDrift (I := I) G p.1 (X p.1) rho p.2) (Icc s t ×ˢ Omega))
+    (hGconn : ∀ q ∈ Ioc s t,
+      G.connection q = LeviCivita (I := I) (G.metric q))
+    (hAt : ∀ q ∈ Ioc s t, ∀ y ∈ Omega, DifferentiableAt Real (fun r ↦ A r y) q)
+    (hevolution : ∀ q ∈ Ioc s t, ∀ y ∈ Omega,
+      deriv (fun r ↦ A r y) q =
+        rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov q)
+            (fun z ↦ A q z) y +
+          HomConnectionGen.homBundleCovariantDerivativeGen
+            I M F V F V (cov q) (cov q) (fun z ↦ A q z) y (X q y) +
+          reaction q y (A q y))
+    {x : M} (hx : x ∈ Omega) (hxpos : 0 < (hAsymm t x).lowerKyFanSum k) :
+    ∀ y ∈ Omega, 0 < (hAsymm t y).lowerKyFanSum k := by
+  refine IsPreconnected.forall_of_locally_imp
+    (P := fun z => 0 < (hAsymm t z).lowerKyFanSum k) hOmegaConnected ?_ hx hxpos
+  intro a ha
+  obtain ⟨U, hUopen, haU, -, hUOmega, hUprop⟩ :=
+      exists_lowerKyFanSum_positive_propagation_neighborhood G cov hcov hs hst ht
+        hOmega hOmegaInterior a ha hkpos hk A hAsymm hApos hphiCont hA_bound
+        X reaction hreactionNull hreactionLip hgrad hheat hGconn hAt hevolution
+  exact ⟨U, hUopen, haU, subset_closure.trans hUOmega, hUprop⟩
+
+
 theorem lowerKyFanSum_pos_at_of_local_dirichlet_solution_exists
     [NeZero (Module.finrank ℝ EModel)]
     [VectorBundle ℝ EModel (TangentSpace I : M → Type _)]
@@ -645,6 +783,7 @@ theorem finrank_range_le_of_local_dirichlet_solution_exists
             {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
     (hdirichlet : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
       ∀ {Kset : Set M}, IsCompact Kset →
+        IsPreconnected (interior Kset) →
         HasLocalScalarDirichletSolution (I := I) G T X s t Kset)
     (hGconn : ∀ q ∈ Ioc 0 T,
       G.connection q = LeviCivita (I := I) (G.metric q))
@@ -666,9 +805,11 @@ theorem finrank_range_le_of_local_dirichlet_solution_exists
     I.toHomeomorph.isOpenEmbedding.locallyPathConnectedSpace
   let _ : LocallyPathConnectedSpace M :=
     ChartedSpace.locallyPathConnectedSpace H M
-  obtain ⟨U, hU, -, hxU, hyU, hcompact⟩ :=
+  obtain ⟨U, hU, hUconn, hxU, hyU, hcompact⟩ :=
     DifferentialGeometry.exists_isOpen_isConnected_isCompact_closure x y
   let Kset := closure U
+  have hKsetConn : IsPreconnected (interior Kset) :=
+    hUconn.isPreconnected.subset_closure hU.subset_interior_closure interior_subset
   have hxKset : x ∈ interior Kset :=
     (interior_maximal subset_closure hU) hxU
   have hyKset : y ∈ interior Kset :=
@@ -710,7 +851,7 @@ theorem finrank_range_le_of_local_dirichlet_solution_exists
     (X := X) (reaction := reaction) (Klip := Klip)
     hcov hT hs hst ht hcompact hKsetInterior hxKset hyKset
     hAsymm hApos' hphiCont' hR hreactionNull hKlip
-    (hdirichlet hs hst ht hcompact) hGconn' hAt' hevolution'
+    (hdirichlet hs hst ht hcompact hKsetConn) hGconn' hAt' hevolution'
 
 theorem finrank_range_spatially_constant_and_locally_constant_of_local_dirichlet_solution_exists
     [I.Boundaryless] [ConnectedSpace M] [Nonempty M]
@@ -745,6 +886,7 @@ theorem finrank_range_spatially_constant_and_locally_constant_of_local_dirichlet
             {B : V z →L[ℝ] V z | B.IsPositive ∧ ‖B‖ ≤ 2 * R})
     (hdirichlet : ∀ {s t : ℝ}, 0 ≤ s → s < t → t ≤ T →
       ∀ {Kset : Set M}, IsCompact Kset →
+        IsPreconnected (interior Kset) →
         HasLocalScalarDirichletSolution (I := I) G T X s t Kset)
     (hGconn : ∀ q ∈ Ioc 0 T,
       G.connection q = LeviCivita (I := I) (G.metric q))
