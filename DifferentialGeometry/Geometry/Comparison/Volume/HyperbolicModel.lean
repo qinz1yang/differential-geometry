@@ -218,6 +218,15 @@ theorem hyperbolicSnRatio_tendsto (q : ℝ) :
     simp [hyperbolicSn, div_eq_inv_mul, smul_eq_mul]
   · simp [hyperbolicSnDeriv]
 
+theorem tendsto_hyperbolicDensity_div_pow (q : ℝ) (d : ℕ) :
+    Tendsto (fun r => hyperbolicDensity q d r / r ^ d)
+      (𝓝[≠] (0 : ℝ)) (𝓝 1) := by
+  have h : Tendsto (fun r => hyperbolicSn q r / r)
+      (𝓝[≠] (0 : ℝ)) (𝓝 1) := by
+    simpa [hyperbolicSn, hyperbolicSnDeriv, div_eq_inv_mul, smul_eq_mul] using
+      (hasDerivAt_hyperbolicSn q 0).tendsto_slope_zero
+  simpa only [hyperbolicDensity, div_pow, one_pow] using h.pow d
+
 theorem hyperbolicSn_le_two (q : ℝ) :
     ∀ᶠ r in 𝓝[>] (0 : ℝ), hyperbolicSn q r ≤ 2 * r := by
   have hratio := (hyperbolicSnRatio_tendsto q).eventually

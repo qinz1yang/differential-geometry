@@ -3,6 +3,7 @@ import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import DifferentialGeometry.Geometry.Exponential.GaussLemma.Pullback
 import DifferentialGeometry.Geometry.Comparison.Variation.Jacobi.Variation
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
+import Mathlib.LinearAlgebra.LinearIndependent.Basic
 
 open Set Filter
 open scoped Topology Manifold ContDiff
@@ -498,5 +499,27 @@ theorem radialJacobiField_one
       (mfderiv 𝓘(ℝ, E) I
         (fun v : E => expMap (I := I) g p (show TangentSpace I p from v)) x)
       (one_smul ℝ w)))
+
+omit [T2Space M] in
+theorem linearIndependent_radialJacobiField
+    {ι : Type*} {v : ι → E}
+    (g : SmoothRiemannianMetric I M) (p : M) (x : E) {t : ℝ}
+    (hv : LinearIndependent ℝ v) (ht : t ≠ 0)
+    (hdom : (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p)
+    (hinj : Function.Injective (mfderiv 𝓘(ℝ, E) I
+      (fun b : E => expMap (I := I) g p (show TangentSpace I p from b)) (t • x))) :
+    LinearIndependent ℝ (fun i => radialJacobiField (I := I) g p x (v i) t) := by
+  let L := mfderiv 𝓘(ℝ, E) I
+    (fun b : E => expMap (I := I) g p (show TangentSpace I p from b)) (t • x)
+  have hscaled : LinearIndependent ℝ (fun i => t • v i) :=
+    hv.units_smul (fun _ => Units.mk0 t ht)
+  have hmapped : LinearIndependent ℝ (fun i => L (t • v i)) :=
+    hscaled.map' L.toLinearMap (LinearMap.ker_eq_bot.mpr hinj)
+  have hfield : (fun i => radialJacobiField (I := I) g p x (v i) t) =
+      fun i => L (t • v i) := by
+    funext i
+    exact radialJacobiField_eq_mfderiv_expMap (I := I) g p x (v i) t hdom
+  rw [hfield]
+  exact hmapped
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
