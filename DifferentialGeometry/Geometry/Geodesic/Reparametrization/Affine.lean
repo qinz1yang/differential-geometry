@@ -610,6 +610,61 @@ theorem scaledTangentLift_transport
     rw [heq]
     exact hrev
 
+omit [NeZero (Module.finrank ℝ E)] in
+open Filter in
+theorem isMIntegralCurveOn_geodesicVectorField_comp_affine [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M)
+    {f : ℝ → TangentBundle I M} {S : Set ℝ}
+    (hf : IsMIntegralCurveOn f (geodesicVectorField (I := I) g) S)
+    (c d : ℝ) :
+    IsMIntegralCurveOn
+      (fun s : ℝ =>
+        (⟨(f (c * s + d)).proj, c • (f (c * s + d)).snd⟩ : TangentBundle I M))
+      (geodesicVectorField (I := I) g) {s : ℝ | c * s + d ∈ S} := by
+  classical
+  intro s₀ hs₀
+  let u₀ : ℝ := c * s₀ + d
+  let α : M := (f u₀).proj
+  let T : Set ℝ := S ∩ (fun t => (f t).proj) ⁻¹' (chartAt H α).source
+  have hu₀S : u₀ ∈ S := hs₀
+  have hu₀src : (f u₀).proj ∈ (chartAt H α).source := by
+    simp only [α]
+    exact mem_chart_source H (f u₀).proj
+  have hproj_cont : ContinuousWithinAt (fun t => (f t).proj) S u₀ :=
+    (FiberBundle.continuous_proj E (TangentSpace I)).continuousAt.comp_continuousWithinAt
+      (hf.continuousWithinAt hu₀S)
+  have hsrc_nhds : (fun t => (f t).proj) ⁻¹' (chartAt H α).source ∈ 𝓝[S] u₀ :=
+    hproj_cont.preimage_mem_nhdsWithin
+      ((chartAt H α).open_source.mem_nhds hu₀src)
+  have hT_nhds : T ∈ 𝓝[S] u₀ := by
+    dsimp only [T]
+    exact inter_mem self_mem_nhdsWithin hsrc_nhds
+  have hTsrc : ∀ t ∈ T, (f t).proj ∈ (chartAt H α).source :=
+    fun _ ht => ht.2
+  have hf_chart :
+      IsMIntegralCurveOn f (geodesicVectorFieldChart (I := I) g α) T := by
+    apply (isMIntegralCurveOn_geodesicVectorFieldChart_iff (I := I) g α hTsrc).mpr
+    exact hf.mono inter_subset_left
+  have hscaled := scaledTangentLift_transport (I := I) g α hf_chart c d
+  have hs₀T : c * s₀ + d ∈ T := by
+    rw [show c * s₀ + d = u₀ from rfl]
+    exact ⟨hu₀S, hu₀src⟩
+  have hderiv := hscaled s₀ hs₀T
+  have haff_cont : Continuous (fun s : ℝ => c * s + d) :=
+    (continuous_const.mul continuous_id).add continuous_const
+  have hpreT : {s : ℝ | c * s + d ∈ T} ∈ 𝓝[{s : ℝ | c * s + d ∈ S}] s₀ := by
+    change (fun s : ℝ => c * s + d) ⁻¹' T ∈
+      𝓝[(fun s : ℝ => c * s + d) ⁻¹' S] s₀
+    exact haff_cont.continuousAt.continuousWithinAt.preimage_mem_nhdsWithin'' hT_nhds rfl
+  have hderiv' := hderiv.mono_of_mem_nhdsWithin hpreT
+  have hLsrc :
+      ((⟨(f (c * s₀ + d)).proj, c • (f (c * s₀ + d)).snd⟩ :
+        TangentBundle I M)).proj ∈ (chartAt H α).source := by
+    change (f u₀).proj ∈ (chartAt H α).source
+    exact hu₀src
+  simpa only [geodesicVectorFieldChart_eq_geodesicVectorField
+    (I := I) g α hLsrc] using hderiv'
+
 section AffinePathELengthReparam
 
 

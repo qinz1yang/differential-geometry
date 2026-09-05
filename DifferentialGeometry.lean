@@ -2410,6 +2410,7 @@ import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
 import DifferentialGeometry.Geometry.Exponential.LocalAddition.Basic
 import DifferentialGeometry.Geometry.Exponential.LocalDiffeomorphism
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
+import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Convergence
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Frame
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Agreement

@@ -5,6 +5,8 @@ import DifferentialGeometry.Geometry.Exponential.ChartFlow.Rescaling.Basic
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.UniformUniqueness
 import DifferentialGeometry.Geometry.Geodesic.Equation.FromIntegralCurve
 import DifferentialGeometry.Geometry.Geodesic.Maximal.Interval
+import DifferentialGeometry.Geometry.Geodesic.Maximal.Uniqueness
+import DifferentialGeometry.Geometry.Geodesic.Reparametrization.Affine
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -432,6 +434,92 @@ theorem maximalGeodesic_rescale_at_one
     h1_in_agreement
 
 end RescaleAtOneSmallScale
+
+section
+
+variable [I.Boundaryless]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem IsGeodesicOnWithInitial.comp_mul
+    {g : SmoothRiemannianMetric I M} {γ : ℝ → M} {S : Set ℝ}
+    {p : M} {v : TangentSpace I p}
+    (hγ : IsGeodesicOnWithInitial g γ S p v) (c : ℝ) :
+    IsGeodesicOnWithInitial g (fun t => γ (c * t))
+      ((fun t => c * t) ⁻¹' S) p (c • v) := by
+  obtain ⟨f, hproj, hf0, hf⟩ := hγ
+  refine ⟨fun t => ⟨(f (c * t)).proj, c • (f (c * t)).snd⟩,
+    fun t => hproj (c * t), ?_, ?_⟩
+  · change (⟨(f (c * 0)).proj, c • (f (c * 0)).snd⟩ : TangentBundle I M) = _
+    rw [mul_zero, hf0]
+  · have hs := isMIntegralCurveOn_geodesicVectorField_comp_affine g hf c 0
+    have heq : (fun s : ℝ =>
+        (⟨(f (c * s + 0)).proj, c • (f (c * s + 0)).snd⟩ : TangentBundle I M)) =
+        (fun s : ℝ => ⟨(f (c * s)).proj, c • (f (c * s)).snd⟩) := by
+      funext s
+      rw [add_zero]
+    rw [heq] at hs
+    have hset : {s : ℝ | c * s + 0 ∈ S} = ((fun s : ℝ => c * s) ⁻¹' S) := by
+      ext s
+      change (c * s + 0 ∈ S) ↔ (c * s ∈ S)
+      rw [add_zero]
+    rw [hset] at hs
+    exact hs
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem HasGeodesicAt.smul
+    {g : SmoothRiemannianMetric I M} {p : M} {v : TangentSpace I p} {c t : ℝ}
+    (h : HasGeodesicAt g p v (c * t)) : HasGeodesicAt g p (c • v) t := by
+  obtain ⟨γ, J, hJ, hconn, h0, ht, hγ⟩ := h
+  refine ⟨_, (fun s => c * s) ⁻¹' J,
+    hJ.preimage (continuous_const.mul continuous_id), ?_, ?_, ht, hγ.comp_mul c⟩
+  · rcases le_total 0 c with hc | hc
+    · exact (hconn.ordConnected.preimage_mono
+        (fun _ _ hst => mul_le_mul_of_nonneg_left hst hc)).isPreconnected
+    · exact (hconn.ordConnected.preimage_anti
+        (fun _ _ hst => mul_le_mul_of_nonpos_left hst hc)).isPreconnected
+  · simpa only [mem_preimage, mul_zero] using h0
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem mem_maximalGeodesicInterval_smul_iff
+    {g : SmoothRiemannianMetric I M} {p : M} {v : TangentSpace I p} {c t : ℝ} :
+    t ∈ maximalGeodesicInterval g p (c • v) ↔ c * t ∈ maximalGeodesicInterval g p v := by
+  by_cases hc : c = 0
+  · subst c
+    exact iff_of_true
+      (by
+        change HasGeodesicAt g p (0 • v) t
+        simpa only [zero_smul] using Exponential.hasGeodesicAt_zero_all_times g p t)
+      (by simpa only [zero_mul] using zero_mem_maximalGeodesicInterval g p v)
+  change HasGeodesicAt g p (c • v) t ↔ HasGeodesicAt g p v (c * t)
+  constructor
+  · intro h
+    have h' : HasGeodesicAt g p (c • v) (c⁻¹ * (c * t)) := by
+      simpa only [← mul_assoc, inv_mul_cancel₀ hc, one_mul] using h
+    simpa only [smul_smul, inv_mul_cancel₀ hc, one_smul] using h'.smul
+  · exact HasGeodesicAt.smul
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem maximalGeodesic_smul [T2Space (TangentBundle I M)]
+    (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p) (c t : ℝ) :
+    maximalGeodesic g p (c • v) t = maximalGeodesic g p v (c * t) := by
+  by_cases h : c * t ∈ maximalGeodesicInterval g p v
+  swap
+  · have h' : t ∉ maximalGeodesicInterval g p (c • v) :=
+      fun ht => h (mem_maximalGeodesicInterval_smul_iff.mp ht)
+    rw [maximalGeodesic_of_not_mem h', maximalGeodesic_of_not_mem h]
+  obtain ⟨γ, J, hJ, hconn, h0, ht, hγ⟩ := h
+  have hp : IsPreconnected ((fun s => c * s) ⁻¹' J) := by
+    rcases le_total 0 c with hc | hc
+    · exact (hconn.ordConnected.preimage_mono
+        (fun _ _ hst => mul_le_mul_of_nonneg_left hst hc)).isPreconnected
+    · exact (hconn.ordConnected.preimage_anti
+        (fun _ _ hst => mul_le_mul_of_nonpos_left hst hc)).isPreconnected
+  have h0' : (0 : ℝ) ∈ (fun s => c * s) ⁻¹' J := by
+    simpa only [mem_preimage, mul_zero] using h0
+  exact (maximalGeodesic_eqOn g (hJ.preimage (continuous_const.mul continuous_id))
+    hp h0' (hγ.comp_mul c) ht).trans (maximalGeodesic_eqOn g hJ hconn h0 hγ ht).symm
+
+end
 
 end Geodesic
 end Riemannian
